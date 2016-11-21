@@ -14,7 +14,7 @@ import ModuleList from './ModuleList';
 
 type Props = {
   sandbox: Sandbox,
-  modules: { [id: number]: Module },
+  modules: { [id: string]: Module },
   params: {
     sandbox: string,
     module: string, // eslint-disable-line react/no-unused-prop-types

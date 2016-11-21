@@ -11,7 +11,7 @@ export type Sandbox = {
   id: number,
   name: string;
   description: string;
-  modules: Array<number>;
+  modules: Array<string>;
 };
 
 export default {

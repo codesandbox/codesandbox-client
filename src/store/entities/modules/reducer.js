@@ -5,8 +5,8 @@ export const CHANGE_CODE = 'CHANGE_CODE';
 export const SET_ERROR = 'SET_ERROR';
 
 export const actions = {
-  changeCode: (id: number, code: string) => ({ type: CHANGE_CODE, id, code }),
-  setError: (id: number, error: Error) => ({ type: SET_ERROR, id, error }),
+  changeCode: (id: string, code: string) => ({ type: CHANGE_CODE, id, code }),
+  setError: (id: string, error: Error) => ({ type: SET_ERROR, id, error }),
 };
 
 const DEFAULT_CODE = `import React from 'react';
@@ -41,7 +41,7 @@ const DEFAULT_3_CODE = `
 `;
 
 type State = {
-  [id: number]: Module;
+  [id: string]: Module;
 };
 
 const initialState: State = {

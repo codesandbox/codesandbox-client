@@ -6,10 +6,10 @@ import reducer, { actions } from './reducer';
 const schema = new Schema('modules');
 
 export type Module = {
-  id: number,
+  id: string,
   name: string;
   code: string;
-  sandboxId: number;
+  sandboxId: string;
   error: ?Error;
 };
 

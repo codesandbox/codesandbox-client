@@ -25,7 +25,7 @@ const Column = styled.div`
 type Props = {
   modules: Array<Module>;
   module: Module;
-  moduleId: number;
+  moduleId: string;
   changeCode: typeof actionCreators.changeCode;
   setError: typeof actionCreators.setError;
 };
