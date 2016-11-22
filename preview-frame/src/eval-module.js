@@ -1,9 +1,6 @@
-// @flow
 import React from 'react';
 import styled from 'styled-components';
 import { transform } from 'babel-standalone';
-
-import type { Module } from '../store/entities/modules/';
 
 const MAX_DEPTH = 20;
 
@@ -18,16 +15,11 @@ const compileCode = (code: string = '') => (
   }).code
 );
 
-const evalModule = (code: string, modules: Array<Module>, depth: number = 0) => {
+const evalModule = (code: string, modules, depth: number = 0) => {
   const exports = { default: {} };
-  /* eslint-disable */
-  const window = {}; // TODO check security on this
-  const document = {}; // TODO check security on this
-  const self = {}; // TODO check security on this
-
-  new Function("console.log(document.cookie)")()
-  /* eslint-enable */
+  const paths = [];
   const require = function require(path) { // eslint-disable-line no-unused-vars
+    paths.push(path);
     const dependency = dependencies.get(path);
 
     if (dependency) return dependency;
@@ -40,7 +32,6 @@ const evalModule = (code: string, modules: Array<Module>, depth: number = 0) => 
     }
     return evalModule(module.code, modules, depth + 1);
   };
-
   const compiledCode = compileCode(code);
   // don't use Function() here since it changes source locations
   eval(compiledCode); // eslint-disable-line no-eval

@@ -3,14 +3,14 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   entry: [
-    path.join(__dirname, 'index'),
+    path.join(__dirname, 'src', 'index'),
   ],
   module: {
     loaders: [
       // Process JS with Babel.
       {
         test: /\.(js|jsx)$/,
-        include: path.join(__dirname),
+        include: path.join(__dirname, 'src'),
         loader: 'babel',
         query: require('../config/babel.dev'),
       },
