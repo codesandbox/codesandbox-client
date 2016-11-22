@@ -20,13 +20,17 @@ function resolveApp(relativePath) {
   return path.resolve(relativePath);
 }
 
+const src = resolveApp('src');
+
 // config after eject: we're in ./config/
 module.exports = {
   appBuild: resolveApp('build'),
-  appHtml: resolveApp('index.html'),
+  appHtml: resolveApp('src/app/index.html'),
+  sandboxHtml: resolveApp('src/sandbox/index.html'),
   appPackageJson: resolveApp('package.json'),
-  appSrc: resolveApp('src'),
-  testsSetup: resolveApp('src/setupTests.js'),
+  src,
+  appSrc: path.join(src, 'app'),
+  sandboxSrc: path.join(src, 'sandbox'),
   appNodeModules: resolveApp('node_modules'),
   ownNodeModules: resolveApp('node_modules'),
   nodePaths: nodePaths

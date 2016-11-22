@@ -2,9 +2,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import ErrorComponent from './Error';
 import type { Module } from '../../store/entities/modules/';
-
 
 const StyledFrame = styled.iframe`
   border-width: 0px;
@@ -21,8 +19,6 @@ const Container = styled.div`
 type Props = {
   modules: Array<Module>;
   code: string;
-  error: ?Error;
-  setError: (error: Error) => void;
 }
 
 type State = {
@@ -70,13 +66,11 @@ export default class Preview extends React.Component {
   rootInstance: ?Object;
 
   render() {
-    const { error } = this.props;
     return (
       <div style={{ height: '100vh', position: 'relative', overflow: 'scroll' }}>
         <Container>
           <StyledFrame sandbox="allow-scripts" src="http://localhost:8080" id="sandbox" />
         </Container>
-        <ErrorComponent error={error} />
       </div>
     );
   }
