@@ -24,6 +24,8 @@ const evalModule = (code: string, modules: Array<Module>, depth: number = 0) => 
   const window = {}; // TODO check security on this
   const document = {}; // TODO check security on this
   const self = {}; // TODO check security on this
+
+  new Function("console.log(document.cookie)")()
   /* eslint-enable */
   const require = function require(path) { // eslint-disable-line no-unused-vars
     const dependency = dependencies.get(path);
