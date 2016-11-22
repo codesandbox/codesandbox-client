@@ -30,7 +30,7 @@
     "eslint-plugin-import": "^2.1.0",
     "eslint-plugin-jsx-a11y": "^2.2.3",
     "eslint-plugin-react": "^6.6.0",
-    "extract-text-webpack-plugin": "1.0.1",
+    "extract-text-webpack-plugin": "2.0.0-beta.4",
     "file-loader": "0.9.0",
     "filesize": "3.3.0",
     "flow-bin": "^0.35.0",
@@ -55,7 +55,7 @@
     "style-loader": "0.13.1",
     "url-loader": "0.5.7",
     "webpack": "2.1.0-beta.27",
-    "webpack-dev-server": "^1.16.2",
+    "webpack-dev-server": "2.1.0-beta.11",
     "whatwg-fetch": "^2.0.0"
   },
   "dependencies": {
@@ -82,28 +82,5 @@
     "build": "node scripts/build.js",
     "test": "jest --watch --env=jsdom",
     "lint": "eslint src"
-  },
-  "eslintConfig": {
-    "extends": "./config/eslint.js"
-  },
-  "jest": {
-    "moduleFileExtensions": [
-      "jsx",
-      "js",
-      "json"
-    ],
-    "moduleNameMapper": {
-      "^[./a-zA-Z0-9$_-]+\\.(jpg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm)$": "<rootDir>/config/jest/FileStub.js",
-      "^[./a-zA-Z0-9$_-]+\\.css$": "<rootDir>/config/jest/CSSStub.js"
-    },
-    "scriptPreprocessor": "<rootDir>/config/jest/transform.js",
-    "setupFiles": [
-      "<rootDir>/config/polyfills.js"
-    ],
-    "testPathIgnorePatterns": [
-      "<rootDir>/(build|docs|node_modules)/"
-    ],
-    "testEnvironment": "node",
-    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(js|jsx)$"
   }
 }

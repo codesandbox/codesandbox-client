@@ -1,4 +1,4 @@
-var path = require('path');
+const path = require('path');
 
 // We support resolving modules according to `NODE_PATH`.
 // This lets you use absolute paths in imports inside large monorepos:
@@ -11,7 +11,7 @@ var path = require('path');
 // It will then be used by Webpack configs.
 // Jest doesn’t need this because it already handles `NODE_PATH` out of the box.
 
-var nodePaths = (process.env.NODE_PATH || '')
+const nodePaths = (process.env.NODE_PATH || '')
   .split(process.platform === 'win32' ? ';' : ':')
   .filter(Boolean)
   .map(p => path.resolve(p));
@@ -21,17 +21,19 @@ function resolveApp(relativePath) {
 }
 
 const src = resolveApp('src');
+const appSrc = path.join(src, 'app');
+const sandboxSrc = path.join(src, 'sandbox');
 
 // config after eject: we're in ./config/
 module.exports = {
   appBuild: resolveApp('build'),
-  appHtml: resolveApp('src/app/index.html'),
-  sandboxHtml: resolveApp('src/sandbox/index.html'),
+  appHtml: path.join(appSrc, 'index.html'),
+  sandboxHtml: path.join(sandboxSrc, 'index.html'),
   appPackageJson: resolveApp('package.json'),
   src,
-  appSrc: path.join(src, 'app'),
-  sandboxSrc: path.join(src, 'sandbox'),
+  appSrc,
+  sandboxSrc,
   appNodeModules: resolveApp('node_modules'),
   ownNodeModules: resolveApp('node_modules'),
-  nodePaths: nodePaths
+  nodePaths,
 };

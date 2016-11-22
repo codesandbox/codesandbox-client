@@ -10,26 +10,13 @@ var execSync = require('child_process').execSync;
 var opn = require('opn');
 var detect = require('detect-port');
 var prompt = require('./utils/prompt');
-var config = require('../config/webpack.config.dev');
+var config = require('../config/webpack.config');
 var paths = require('../config/paths');
 
 // Tools like Cloud9 rely on this.
 var DEFAULT_PORT = process.env.PORT || 3000;
 var compiler;
 var handleCompile;
-
-// You can safely remove this after ejecting.
-// We only use this block for testing of Create React App itself:
-var isSmokeTest = process.argv.some(arg => arg.indexOf('--smoke-test') > -1);
-if (isSmokeTest) {
-  handleCompile = function (err, stats) {
-    if (err || stats.hasErrors() || stats.hasWarnings()) {
-      process.exit(1);
-    } else {
-      process.exit(0);
-    }
-  };
-}
 
 // Some custom utilities to prettify Webpack output.
 // This is a little hacky.
@@ -79,10 +66,10 @@ function setupCompiler(port, protocol) {
 
   // "done" event fires when Webpack has finished recompiling the bundle.
   // Whether or not you have warnings or errors, you will get this event.
-  compiler.plugin('done', function(stats) {
+  compiler.plugin('done', (stats) => {
     clearConsole();
-    var hasErrors = stats.hasErrors();
-    var hasWarnings = stats.hasWarnings();
+    const hasErrors = stats.hasErrors();
+    const hasWarnings = stats.hasWarnings();
     if (!hasErrors && !hasWarnings) {
       console.log(chalk.green('Compiled successfully!'));
       console.log();
@@ -169,7 +156,7 @@ function onProxyError(proxy) {
       ' from ' + chalk.cyan(host) + ' to ' + chalk.cyan(proxy) + '.'
     );
     console.log(
-      'See https://nodejs.org/api/errors.html#errors_common_system_errors for more information (' + 
+      'See https://nodejs.org/api/errors.html#errors_common_system_errors for more information (' +
       chalk.cyan(err.code) + ').'
     );
     console.log();
@@ -228,23 +215,6 @@ function addMiddleware(devServer) {
 
 function runDevServer(port, protocol) {
   var devServer = new WebpackDevServer(compiler, {
-    // By default WebpackDevServer also serves files from the current directory.
-    // This might be useful in legacy apps. However we already encourage people
-    // to use Webpack for importing assets in the code, so we don't need to
-    // additionally serve files by their filenames. Otherwise, even if it
-    // works in development, those files will be missing in production, unless
-    // we explicitly copy them. But even if we copy the all the files into
-    // the build output (which doesn't seem to be wise because it may contain
-    // private information such as files with API keys, for example), we would
-    // still have a problem. Since the filenames would be the same every time,
-    // browsers would cache their content, and updating file content would not
-    // work correctly. This is easily solved by importing assets through Webpack
-    // because if it can then append content hashes to filenames in production,
-    // just like it does for JS and CSS. And because we configured "html" loader
-    // to be used for HTML files, even <link href="./src/something.png"> would
-    // get resolved correctly by Webpack and handled both in development and
-    // in production without actually serving it by that path.
-    contentBase: [],
     // Enable hot reloading server. It will provide /sockjs-node/ endpoint
     // for the WebpackDevServer client so it can learn when the files were
     // updated. The WebpackDevServer client is included as an entry point
@@ -260,10 +230,10 @@ function runDevServer(port, protocol) {
     // Reportedly, this avoids CPU overload on some systems.
     // https://github.com/facebookincubator/create-react-app/issues/293
     watchOptions: {
-      ignored: /node_modules/
+      ignored: /node_modules/,
     },
     // Enable HTTPS if the HTTPS environment variable is set to 'true'
-    https: protocol === "https" ? true : false
+    https: protocol === 'https',
   });
 
   // Our custom middleware proxies requests to /index.html or a remote API.

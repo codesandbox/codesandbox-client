@@ -69,7 +69,7 @@ export default class Preview extends React.Component {
     return (
       <div style={{ height: '100vh', position: 'relative', overflow: 'scroll' }}>
         <Container>
-          <StyledFrame sandbox="allow-scripts" src="http://localhost:8080" id="sandbox" />
+          <StyledFrame sandbox="allow-scripts" src="/frame.html" id="sandbox" />
         </Container>
       </div>
     );

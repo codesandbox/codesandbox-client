@@ -6,8 +6,32 @@ const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const WatchMissingNodeModulesPlugin = require('../scripts/utils/WatchMissingNodeModulesPlugin');
 const env = require('./env');
 
-module.exports = {
-  devtool: 'eval',
+const babelDev = require('./babel.dev');
+const babelProd = require('./babel.prod');
+
+const NODE_ENV = JSON.parse(env['process.env.NODE_ENV']);
+const __DEV__ = NODE_ENV === 'development'; // eslint-disable-line no-underscore-dangle
+const __PROD__ = NODE_ENV === 'production'; // eslint-disable-line no-underscore-dangle
+
+const babelConfig = __DEV__ ? babelDev : babelProd;
+
+const getOutput = () => (
+  __DEV__ ? {
+    path: paths.appBuild,
+    pathinfo: true,
+    filename: 'static/js/[name].js',
+    publicPath: '/',
+  } : {
+    path: paths.appBuild,
+    pathinfo: true,
+    filename: 'static/js/[name].[chunkhash:8].js',
+    chunkFilename: 'static/js/[name].[chunkhash:8].chunk.js',
+    publicPath: '/',
+  }
+);
+
+const config = {
+  devtool: 'cheap-eval-source-map',
 
   entry: {
     app: [
@@ -20,12 +44,7 @@ module.exports = {
     ],
   },
 
-  output: {
-    path: paths.appBuild,
-    pathinfo: true,
-    filename: 'static/js/[name].js',
-    publicPath: '/',
-  },
+  output: getOutput(),
 
   module: {
     rules: [
@@ -33,7 +52,7 @@ module.exports = {
         test: /\.js$/,
         include: paths.src,
         loader: 'babel-loader',
-        options: require('./babel.dev'),
+        options: babelConfig,
       },
       // Used to remove strict mode from eval:
       {
@@ -41,10 +60,10 @@ module.exports = {
         include: paths.src,
         loader: 'babel-loader',
         options: (() => {
-          const config = Object.assign({}, require('./babel.dev'));
+          const altererdConfig = Object.assign({}, babelConfig);
 
-          config.plugins.push(require.resolve('babel-plugin-transform-remove-strict-mode'));
-          return config;
+          altererdConfig.plugins.push(require.resolve('babel-plugin-transform-remove-strict-mode'));
+          return altererdConfig;
         })(),
       },
       // JSON is not enabled by default in Webpack but both Node and Browserify
@@ -59,7 +78,7 @@ module.exports = {
       // In production, we use a plugin to extract that CSS to a file, but
       // in development "style" loader enables hot editing of CSS.
       {
-        test: /\.s?css$/,
+        test: /\.css$/,
         loaders: [
           'style-loader',
           'css-loader',
@@ -118,13 +137,13 @@ module.exports = {
     // Generates an `index.html` file with the <script> injected.
     new HtmlWebpackPlugin({
       inject: true,
-      chunks: ['app'],
+      chunks: ['common', 'app'],
       filename: 'index.html',
       template: paths.appHtml,
     }),
     new HtmlWebpackPlugin({
       inject: true,
-      chunks: ['sandbox'],
+      chunks: ['common', 'sandbox'],
       filename: 'frame.html',
       template: paths.sandboxHtml,
     }),
@@ -142,10 +161,21 @@ module.exports = {
     // makes the discovery automatic so you don't have to restart.
     // See https://github.com/facebookincubator/create-react-app/issues/186
     new WatchMissingNodeModulesPlugin(paths.appNodeModules),
-    new webpack.optimize.OccurrenceOrderPlugin(),
     // Try to dedupe duplicated modules, if any:
     new webpack.optimize.CommonsChunkPlugin({
       name: 'common',
     }),
   ],
 };
+
+if (__DEV__) {
+  const devEntries = [
+    'react-hot-loader/patch',
+    'webpack-dev-server/client?/',
+    'webpack/hot/only-dev-server',
+  ];
+
+  config.entry.app = [...devEntries, ...config.entry.app];
+}
+
+module.exports = config;
