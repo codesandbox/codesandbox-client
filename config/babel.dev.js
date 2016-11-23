@@ -31,7 +31,7 @@ module.exports = {
       regenerator: true,
       // Resolve the Babel runtime relative to the config.
       // You can safely remove this after ejecting:
-      moduleName: path.dirname(require.resolve('babel-runtime/package'))
+      moduleName: path.dirname(require.resolve('babel-runtime/package')),
     }],
     require.resolve('react-hot-loader/babel'),
   ],

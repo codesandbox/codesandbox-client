@@ -8,7 +8,7 @@ const Title = styled.h2`
 `;
 
 const Container = styled.div`
-  position: absolute;
+  position: fixed;
   font-family: monospace;
   background-color: rgb(204, 0, 0);
   color: white;
@@ -26,7 +26,7 @@ const Container = styled.div`
   bottom: 0;
 `;
 
-export default ({ error }: { error: ?Error }) => {
+export default ({ error }: { error: Error }) => {
   if (!error) return null;
 
   const [name, ...lines] = error.stack.split('\n').map(line => line.replace(/\s/g, '\u00a0'));

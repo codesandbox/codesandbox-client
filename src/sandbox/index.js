@@ -2,6 +2,7 @@ import React from 'react';
 import { render } from 'react-dom';
 import createProxy from 'react-proxy';
 import deepForceUpdate from 'react-deep-force-update';
+import 'normalize.css';
 
 import ErrorComponent from './Error';
 

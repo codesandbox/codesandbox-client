@@ -31,12 +31,12 @@ const mapStateToProps = (state, props: Props) => ({
 });
 
 const SandboxEditor = ({ params, sandbox, modules }: Props) => {
-  const moduleId = params.module === 'undefined' ? sandbox.modules[0] : +params.module;
+  const moduleId = params.module === 'undefined' ? sandbox.modules[0] : params.module;
   return (
     <Container>
       <ModuleList
         activeModule={moduleId}
-        modules={sandbox.modules.map(id => modules[+id])}
+        modules={sandbox.modules.map(id => modules[id])}
         url={module => editModuleUrl(sandbox, module)}
       />
       <Editor moduleId={moduleId} />

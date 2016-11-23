@@ -2,18 +2,12 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import type { Module } from '../../store/entities/modules/';
+import type { Module } from '../store/entities/modules/';
 
 const StyledFrame = styled.iframe`
   border-width: 0px;
   height: 100vh;
   width: 100%;
-`;
-
-const Container = styled.div`
-  position: relative;
-  margin: 1rem;
-  padding-bottom: 300px;
 `;
 
 type Props = {
@@ -68,9 +62,7 @@ export default class Preview extends React.Component {
   render() {
     return (
       <div style={{ height: '100vh', position: 'relative', overflow: 'scroll' }}>
-        <Container>
-          <StyledFrame sandbox="allow-scripts" src="/frame.html" id="sandbox" />
-        </Container>
+        <StyledFrame sandbox="allow-scripts" src="/frame.html" id="sandbox" />
       </div>
     );
   }

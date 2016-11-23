@@ -18,10 +18,10 @@ export default {
   schema,
   initialState: {
     1: { // $FlowIssue not used
-      id: 1,
+      id: '1',
       name: 'Test',
       description: 'Stub project',
-      modules: [1, 2, 3],
+      modules: ['1', '2', '3'],
     },
   },
 };

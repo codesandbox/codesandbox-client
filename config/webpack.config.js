@@ -24,14 +24,14 @@ const getOutput = () => (
   } : {
     path: paths.appBuild,
     pathinfo: true,
-    filename: 'static/js/[name].[chunkhash:8].js',
-    chunkFilename: 'static/js/[name].[chunkhash:8].chunk.js',
+    filename: 'static/js/[name].[hash:8].js',
+    chunkFilename: 'static/js/[name].[hash:8].chunk.js',
     publicPath: '/',
   }
 );
 
 const config = {
-  devtool: 'cheap-eval-source-map',
+  devtool: __DEV__ ? 'cheap-eval-source-map' : 'eval',
 
   entry: {
     app: [
@@ -140,18 +140,40 @@ const config = {
       chunks: ['common', 'app'],
       filename: 'index.html',
       template: paths.appHtml,
+      minify: __PROD__ && {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeRedundantAttributes: true,
+        useShortDoctype: true,
+        removeEmptyAttributes: true,
+        removeStyleLinkTypeAttributes: true,
+        keepClosingSlash: true,
+        minifyJS: true,
+        minifyCSS: true,
+        minifyURLs: true,
+      },
     }),
     new HtmlWebpackPlugin({
       inject: true,
       chunks: ['common', 'sandbox'],
       filename: 'frame.html',
       template: paths.sandboxHtml,
+      minify: __PROD__ && {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeRedundantAttributes: true,
+        useShortDoctype: true,
+        removeEmptyAttributes: true,
+        removeStyleLinkTypeAttributes: true,
+        keepClosingSlash: true,
+        minifyJS: true,
+        minifyCSS: true,
+        minifyURLs: true,
+      },
     }),
     // Makes some environment variables available to the JS code, for example:
     // if (process.env.NODE_ENV === 'development') { ... }. See `env.js`.
     new webpack.DefinePlugin(env),
-    // This is necessary to emit hot updates (currently CSS only):
-    new webpack.HotModuleReplacementPlugin(),
     // Watcher doesn't work well if you mistype casing in a path so we use
     // a plugin that prints an error when you attempt to do this.
     // See https://github.com/facebookincubator/create-react-app/issues/240
@@ -176,6 +198,33 @@ if (__DEV__) {
   ];
 
   config.entry.app = [...devEntries, ...config.entry.app];
+}
+
+if (__PROD__) {
+  config.plugins = [
+    ...config.plugins,
+    // This helps ensure the builds are consistent if source hasn't changed:
+    new webpack.optimize.OccurrenceOrderPlugin(),
+    // Try to dedupe duplicated modules, if any:
+    new webpack.optimize.DedupePlugin(),
+    // Minify the code.
+    new webpack.optimize.UglifyJsPlugin({
+      compress: {
+        unused: true,
+        dead_code: true,
+        screw_ie8: true, // React doesn't support IE8
+        warnings: false,
+      },
+      mangle: {
+        screw_ie8: true,
+      },
+    }),
+  ];
+} else {
+  config.plugins = [
+    ...config.plugins,
+    new webpack.HotModuleReplacementPlugin(),
+  ];
 }
 
 module.exports = config;

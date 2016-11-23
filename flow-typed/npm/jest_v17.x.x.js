@@ -1,5 +1,5 @@
-// flow-typed signature: d52a0d96fedbdaeed9d0715003f024f6
-// flow-typed version: fc5874dbeb/jest_v17.x.x/flow_>=v0.33.x
+// flow-typed signature: 3b21869742281dd21ab4a75770bbdf69
+// flow-typed version: e3b0f30349/jest_v17.x.x/flow_>=v0.33.x
 
 type JestMockFn = {
   (...args: Array<any>): any;
@@ -8,6 +8,7 @@ type JestMockFn = {
     instances: mixed;
   };
   mockClear(): Function;
+  mockReset(): Function;
   mockImplementation(fn: Function): JestMockFn;
   mockImplementationOnce(fn: Function): JestMockFn;
   mockReturnThis(): void;

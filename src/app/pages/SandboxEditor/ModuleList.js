@@ -24,7 +24,7 @@ const ModuleLink = styled(Link)`
 
 type Props = {
   modules: Array<Module>;
-  activeModule: number;
+  activeModule: string;
   url: (module: Module) => string;
 }
 export default ({ modules, activeModule, url }: Props) => (

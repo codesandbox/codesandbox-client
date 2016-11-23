@@ -52,25 +52,25 @@ type State = {
 
 const initialState: State = {
   1: {
-    id: 1,
+    id: '1',
     code: DEFAULT_CODE,
     error: null,
     name: 'Default',
-    sandboxId: 1,
+    sandboxId: '1',
   },
   2: {
-    id: 2,
+    id: '2',
     code: DEFAULT_2_CODE,
     error: null,
     name: 'Second',
-    sandboxId: 1,
+    sandboxId: '1',
   },
   3: {
-    id: 3,
+    id: '3',
     code: DEFAULT_3_CODE,
     error: null,
     name: 'Functions',
-    sandboxId: 1,
+    sandboxId: '1',
   },
 };
 
