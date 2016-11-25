@@ -36,7 +36,7 @@ export default class FunctionMode {
           ),
         };
       }
-      return { name: f, component: `${typeof module[f]}: ${f}` };
+      return { name: f, component: `${typeof module[f]}: ${f}=${JSON.stringify(module[f])}` };
     });
 
     render(
