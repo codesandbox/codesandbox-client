@@ -14,12 +14,23 @@ import { modulesSelector, singleModuleSelector } from '../../store/entities/modu
 import type { Module } from '../../store/entities/modules';
 
 const Container = styled.div`
-  display: flex;
   width: 100%;
+  background-color: #1B2B34;
 `;
 
-const Column = styled.div`
+const CodeEditorContainer = styled.div`
   width: 50%;
+`;
+
+const PreviewContainer = styled.div`
+  position: absolute;
+  width: 45%;
+  top: 8px;
+  right: 8px;
+  bottom: 8px;
+  z-index: 20;
+
+  box-shadow: -4px 8px 8px rgba(0, 0, 0, 0.4);
 `;
 
 type Props = {
@@ -55,17 +66,17 @@ class Editor extends React.Component {
     const { module, modules } = this.props;
     return (
       <Container>
-        <Column>
+        <CodeEditorContainer>
           <CodeEditor onChange={this.onChange} code={module.code} />
-        </Column>
-        <Column>
+        </CodeEditorContainer>
+        <PreviewContainer>
           <Preview
             setError={this.handleError}
-            code={module.code}
+            module={module}
             error={module.error}
             modules={modules}
           />
-        </Column>
+        </PreviewContainer>
       </Container>
     );
   }

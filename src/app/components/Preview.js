@@ -4,15 +4,23 @@ import styled from 'styled-components';
 
 import type { Module } from '../store/entities/modules/';
 
+const Container = styled.div`
+  overflow: scroll;
+  height: 100%;
+  width: 100%;
+  background-color: white;
+  border-radius: 3px;
+`;
+
 const StyledFrame = styled.iframe`
   border-width: 0px;
-  height: 100vh;
+  height: 100%;
   width: 100%;
 `;
 
 type Props = {
   modules: Array<Module>;
-  code: string;
+  module: Module;
 }
 
 type State = {
@@ -29,7 +37,7 @@ export default class Preview extends React.Component {
   }
 
   componentDidUpdate(prevProps: Props) {
-    if (prevProps.code !== this.props.code && this.state.frameInitialized) {
+    if (prevProps.module.code !== this.props.module.code && this.state.frameInitialized) {
       this.executeCode();
     }
   }
@@ -46,10 +54,10 @@ export default class Preview extends React.Component {
   }
 
   executeCode = () => {
-    const { modules, code } = this.props;
+    const { modules, module } = this.props;
 
     document.getElementById('sandbox').contentWindow.postMessage({
-      code, modules,
+      module, modules,
     }, '*');
   }
 
@@ -61,9 +69,13 @@ export default class Preview extends React.Component {
 
   render() {
     return (
-      <div style={{ height: '100vh', position: 'relative', overflow: 'scroll' }}>
-        <StyledFrame sandbox="allow-scripts" src="/frame.html" id="sandbox" />
-      </div>
+      <Container>
+        <StyledFrame
+          sandbox="allow-scripts allow-pointer-lock allow-same-origin allow-popups allow-modals allow-forms"
+          src="/frame.html"
+          id="sandbox"
+        />
+      </Container>
     );
   }
 }

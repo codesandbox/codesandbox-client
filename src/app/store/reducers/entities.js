@@ -4,7 +4,7 @@ import { mapValues } from 'lodash';
 import * as entities from '../entities';
 import _debug from '../../utils/debug';
 
-const d = _debug('store:reducers:entities');
+const d = _debug('cs:store:reducers:entities');
 
 /**
  * Generates a reducer which will handle all entity requests.
