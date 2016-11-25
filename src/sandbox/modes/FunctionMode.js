@@ -1,7 +1,12 @@
 import React from 'react';
 import { render } from 'react-dom';
+import styled from 'styled-components';
 
-export default class ReactMode {
+const Container = styled.div`
+  font-family: sans-serif;
+`;
+
+export default class FunctionMode {
   constructor(element) {
     this.element = element;
   }
@@ -18,18 +23,29 @@ export default class ReactMode {
             arg.replace(/\/\*.*\*\//, '').trim())
           .filter(arg => arg);
 
-        return `${typeof module[f]}: ${f}(${args.join(', ')})`;
+        return {
+          name: f,
+          component: (
+            <div>
+              <div>{typeof module[f]}: {f}({args.join(', ')})</div>
+              {args.map(arg => (
+                <input placeholder={arg} />
+              ))}
+              =
+            </div>
+          ),
+        };
       }
-      return `${typeof module[f]}: ${f}`;
+      return { name: f, component: `${typeof module[f]}: ${f}` };
     });
 
     render(
-      <div>
-        <h1>Function mode, not done yet</h1>
+      <Container>
+        <h1>Functions</h1>
         <ul>
-          {exported.map(f => <li key={f}>{f}</li>)}
+          {exported.map(f => <li key={f.name}>{f.component}</li>)}
         </ul>
-      </div>
+      </Container>
     , this.element);
   }
 }

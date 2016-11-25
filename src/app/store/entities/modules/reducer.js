@@ -25,25 +25,20 @@ export default class App extends React.Component {
 const DEFAULT_2_CODE = `import React from 'react';
 import Default from 'Default'
 
-const hack = (el) => {
-  // throw new Error(el.ownerDocument.cookie);
-}
-
 export default class App extends React.Component {
   render() {
     return (
       <div>
-        <h1 ref={hack}>Second component!</h1>
+        <h1>Second component!</h1>
       </div>
     )
   }
 };
 `;
 
-const DEFAULT_3_CODE = `
-  export function sum(a, b) {
-    return a + b;
-  };
+const DEFAULT_3_CODE = `export function sum(a, b) {
+  return a + b;
+};
 `;
 
 type State = {

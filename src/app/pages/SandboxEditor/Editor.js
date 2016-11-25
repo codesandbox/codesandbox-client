@@ -25,7 +25,7 @@ const CodeEditorContainer = styled.div`
 const PreviewContainer = styled.div`
   position: absolute;
   width: 45%;
-  top: 8px;
+  top: 43px;
   right: 8px;
   bottom: 8px;
   z-index: 20;

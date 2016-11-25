@@ -4799,6 +4799,16 @@ react-hot-loader@^3.0.0-beta.3:
     redbox-react "^1.2.5"
     source-map "^0.4.4"
 
+react-icon-base@2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/react-icon-base/-/react-icon-base-2.0.3.tgz#f5d9083f64c903d3e983fc9b3f292314b0c0f262"
+
+react-icons@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/react-icons/-/react-icons-2.2.1.tgz#354d725d60acf341d09fd50c6398ae7b97d7f157"
+  dependencies:
+    react-icon-base "2.0.3"
+
 react-proxy@2:
   version "2.0.8"
   resolved "https://registry.yarnpkg.com/react-proxy/-/react-proxy-2.0.8.tgz#76ae78c9be4e54d409cfec7bb7d513ec7f1b284c"

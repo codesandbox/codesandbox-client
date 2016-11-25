@@ -8,7 +8,7 @@ import 'codemirror/addon/selection/active-line';
 import { debounce } from 'lodash';
 
 injectGlobal`
-  .cm-s-oceanic.CodeMirror { background: #1B2B34; color: #e0e0e0; height: 100vh; }
+  .cm-s-oceanic.CodeMirror { background: #1B2B34; color: #e0e0e0; height: 100vh; font-size: 14px; }
   .cm-s-oceanic div.CodeMirror-selected { background: #343D46; }
   .cm-s-oceanic .CodeMirror-line::selection, .cm-s-oceanic .CodeMirror-line > span::selection, .cm-s-oceanic .CodeMirror-line > span > span::selection { background: #65737E; }
   .cm-s-oceanic .CodeMirror-line::-moz-selection, .cm-s-oceanic .CodeMirror-line > span::-moz-selection, .cm-s-oceanic .CodeMirror-line > span > span::-moz-selection { background: #65737E; }

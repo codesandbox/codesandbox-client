@@ -53,10 +53,6 @@ export default class Frame extends React.Component {
     });
   }
 
-  unstable_handleError() {
-    console.log('hahahah gevangen');
-  }
-
   render() {
     const { error } = this.state;
     return (
