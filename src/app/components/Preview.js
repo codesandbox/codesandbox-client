@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import type { Module } from '../store/entities/modules/';
 
 const Container = styled.div`
-  overflow: scroll;
   height: 100%;
   width: 100%;
   background-color: white;

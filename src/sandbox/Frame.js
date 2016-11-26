@@ -1,6 +1,7 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { ThemeProvider } from 'styled-components';
 
+import theme from '../common/theme';
 import ErrorComponent from './Error';
 import Navigator from './Navigator';
 import evalModule from './eval-module';
@@ -8,6 +9,12 @@ import ReactMode from './modes/ReactMode';
 import FunctionMode from './modes/FunctionMode';
 
 const View = styled.div`
+
+`;
+
+const FrameContainer = styled.div`
+
+
 `;
 
 export default class Frame extends React.Component {
@@ -56,13 +63,14 @@ export default class Frame extends React.Component {
   render() {
     const { error } = this.state;
     return (
-      <div>
-        <Navigator />
-        <View>
-          <div ref={this.initialize} />
-          <ErrorComponent error={error} />
-        </View>
-      </div>
+      <ThemeProvider theme={theme}>
+        <FrameContainer>
+          <View>
+            <div ref={this.initialize} />
+            <ErrorComponent error={error} />
+          </View>
+        </FrameContainer>
+      </ThemeProvider>
     );
   }
 }

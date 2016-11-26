@@ -7,12 +7,24 @@ import 'codemirror/lib/codemirror.css';
 import 'codemirror/addon/selection/active-line';
 import { debounce } from 'lodash';
 
+import theme from '../../common/theme';
+
 injectGlobal`
-  .cm-s-oceanic.CodeMirror { background: #1B2B34; color: #e0e0e0; height: 100vh; font-size: 14px; }
+  .cm-s-oceanic.CodeMirror {
+    font-family: 'Source Code Pro', monospace;
+    background: ${theme.background2()};
+    color: #e0e0e0;
+    height: 100%;
+    font-size: 14px;
+    font-weight: 500;
+   }
   .cm-s-oceanic div.CodeMirror-selected { background: #343D46; }
   .cm-s-oceanic .CodeMirror-line::selection, .cm-s-oceanic .CodeMirror-line > span::selection, .cm-s-oceanic .CodeMirror-line > span > span::selection { background: #65737E; }
   .cm-s-oceanic .CodeMirror-line::-moz-selection, .cm-s-oceanic .CodeMirror-line > span::-moz-selection, .cm-s-oceanic .CodeMirror-line > span > span::-moz-selection { background: #65737E; }
-  .cm-s-oceanic .CodeMirror-gutters { background: #1B2B34; border-right: 0px; }
+  .cm-s-oceanic .CodeMirror-gutters {
+    background: ${theme.background2()};
+    border-right: 0px;
+  }
   .cm-s-oceanic .CodeMirror-guttermarker { color: #ac4142; }
   .cm-s-oceanic .CodeMirror-guttermarker-subtle { color: #505050; }
   .cm-s-oceanic .CodeMirror-linenumber { color: #505050; }
@@ -83,7 +95,7 @@ export default class Editor extends React.Component {
 
   render() {
     return (
-      <div ref={this.getCodeMirror} />
+      <div style={{ height: '100%', width: '100%' }} ref={this.getCodeMirror} />
     );
   }
 }

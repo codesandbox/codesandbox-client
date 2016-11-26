@@ -9,7 +9,7 @@ const Title = styled.h2`
 
 const Container = styled.div`
   position: fixed;
-  font-family: monospace;
+  font-family: 'Source Code Pro', monospace;
   background-color: rgb(204, 0, 0);
   color: white;
 
@@ -17,7 +17,6 @@ const Container = styled.div`
   line-height: 1.2;
   text-align: left;
   font-size: 14px;
-  overflow: scroll;
   white-space: nowrap;
   height: 300px;
 

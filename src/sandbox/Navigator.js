@@ -3,14 +3,8 @@ import styled from 'styled-components';
 
 const Container = styled.div`
   width: 100%;
-
-  margin-top: -8px;
-  margin-left: -8px;
-  margin-right: -8px;
-
-  background-color: #F5F5F5;
+  background-color: ${props => props.theme.background};
   border-bottom: 1px solid #ccc;
-
   padding: 8px;
 `;
 
@@ -25,10 +19,11 @@ const Input = styled.input`
   flex: 1;
   font-size: inherit;
   line-height: inherit;
-  border: 1px solid #ccc;
+  border: none;
   padding: 2px;
   padding-left: 25px;
   color: rgb(153, 153, 153);
+  background-color: ${props => props.theme.background.lighten(0.5)}
 `;
 
 export default () => (

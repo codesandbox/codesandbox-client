@@ -1292,7 +1292,7 @@ color-string@^0.3.0:
   dependencies:
     color-name "^1.0.0"
 
-color@^0.11.0:
+color@^0.11.0, color@^0.11.4:
   version "0.11.4"
   resolved "https://registry.yarnpkg.com/color/-/color-0.11.4.tgz#6d7b5c74fb65e841cd48792ad1ed5e07b904d764"
   dependencies:
@@ -5471,7 +5471,14 @@ style-loader@0.13.1:
   dependencies:
     loader-utils "^0.2.7"
 
-styled-components@^1.1.1:
+styled-components-theme@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/styled-components-theme/-/styled-components-theme-1.0.2.tgz#1da8327ae3d0faecaf49be54a48384ec029c1f45"
+  dependencies:
+    color "^0.11.4"
+    styled-components "^1.0.11"
+
+styled-components@^1.0.11, styled-components@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/styled-components/-/styled-components-1.1.1.tgz#14fa0f4d34fec62e22edceaef3e291f108607d40"
   dependencies:

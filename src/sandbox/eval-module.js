@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import styled from 'styled-components';
+import * as styled from 'styled-components';
 import * as reactRouter from 'react-router';
 import { transform } from 'babel-standalone';
 

@@ -10,28 +10,28 @@ export const actions = {
 };
 
 const DEFAULT_CODE = `import React from 'react';
-export default class App extends React.Component {
-  render() {
-    return (
-      <div>
-        <h1>Hello world!</h1>
-        <h2>Start typing here to edit this component</h2>
-      </div>
-    )
-  }
-};
+import Welcome from 'Welcome';
+
+export default () => <Welcome name="world" />;
 `;
 
 const DEFAULT_2_CODE = `import React from 'react';
-import Default from 'Default'
+import styled from 'styled-components';
 
-export default class App extends React.Component {
+const Container = styled.default.div\`
+  font-family: 'Open Sans', sans-serif;
+  font-size: 32px;
+  text-align: center;
+\`
+
+export default class Welcome extends React.Component {
   render() {
     return (
-      <div>
-        <h1>Second component!</h1>
-      </div>
-    )
+      <Container>
+        <h1>Hello {this.props.name}!</h1>
+        <h2>Welcome to CodeSandbox</h2>
+      </Container>
+    );
   }
 };
 `;
@@ -57,7 +57,7 @@ const initialState: State = {
     id: '2',
     code: DEFAULT_2_CODE,
     error: null,
-    name: 'Second',
+    name: 'Welcome',
     sandboxId: '1',
   },
   3: {

@@ -14,8 +14,10 @@ import { modulesSelector, singleModuleSelector } from '../../store/entities/modu
 import type { Module } from '../../store/entities/modules';
 
 const Container = styled.div`
+  position: relative;
+  display: flex;
   width: 100%;
-  background-color: #1B2B34;
+  background-color: ${props => props.theme.background2};
 `;
 
 const CodeEditorContainer = styled.div`
@@ -23,11 +25,9 @@ const CodeEditorContainer = styled.div`
 `;
 
 const PreviewContainer = styled.div`
-  position: absolute;
-  width: 45%;
-  top: 43px;
-  right: 8px;
-  bottom: 8px;
+  position: relative;
+  margin: 8px;
+  width: 50%;
   z-index: 20;
 
   box-shadow: -4px 8px 8px rgba(0, 0, 0, 0.4);

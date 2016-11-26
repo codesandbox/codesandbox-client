@@ -9,7 +9,7 @@ schema.define({
 
 export type Sandbox = {
   id: number,
-  name: string;
+  title: string;
   description: string;
   modules: Array<string>;
 };
@@ -19,7 +19,7 @@ export default {
   initialState: {
     1: { // $FlowIssue not used
       id: '1',
-      name: 'Test',
+      title: 'Beautiful Project',
       description: 'Stub project',
       modules: ['1', '2', '3'],
     },
