@@ -19,7 +19,7 @@ const ModuleLink = styled(Link)`
   text-decoration: none;
   font-weight: 400;
   min-width: 100px;
-  border-right: 2px solid transparent;
+  border-left: 2px solid transparent;
 
   &:hover {
     background-color: ${props => props.theme.lightBackground.darken(0.2)};
