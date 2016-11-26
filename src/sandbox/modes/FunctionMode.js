@@ -29,14 +29,19 @@ export default class FunctionMode {
             <div>
               <div>{typeof module[f]}: {f}({args.join(', ')})</div>
               {args.map(arg => (
-                <input placeholder={arg} />
+                <input key={f + arg} placeholder={arg} />
               ))}
               =
             </div>
           ),
         };
       }
-      return { name: f, component: `${typeof module[f]}: ${f}=${JSON.stringify(module[f])}` };
+      return {
+        name: f,
+        component: (
+          <span>`${typeof module[f]}: ${f}=${JSON.stringify(module[f])}`</span>
+        ),
+      };
     });
 
     render(

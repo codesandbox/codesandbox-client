@@ -1,12 +1,11 @@
 // @flow
 import type { Module } from './';
+import findType from '../../../utils/find-type';
 
 export const CHANGE_CODE = 'CHANGE_CODE';
-export const SET_ERROR = 'SET_ERROR';
 
 export const actions = {
   changeCode: (id: string, code: string) => ({ type: CHANGE_CODE, id, code }),
-  setError: (id: string, error: Error) => ({ type: SET_ERROR, id, error }),
 };
 
 const DEFAULT_CODE = `import React from 'react';
@@ -49,23 +48,51 @@ const initialState: State = {
   1: {
     id: '1',
     code: DEFAULT_CODE,
-    error: null,
     name: 'Default',
     sandboxId: '1',
+    type: 'react',
   },
   2: {
     id: '2',
     code: DEFAULT_2_CODE,
-    error: null,
     name: 'Welcome',
     sandboxId: '1',
+    type: 'react',
   },
   3: {
     id: '3',
     code: DEFAULT_3_CODE,
-    error: null,
     name: 'Functions',
     sandboxId: '1',
+    type: 'function',
+  },
+  4: {
+    id: '4',
+    code: DEFAULT_2_CODE,
+    name: 'Hey',
+    sandboxId: '1',
+    type: 'react',
+  },
+  5: {
+    id: '5',
+    code: DEFAULT_2_CODE,
+    name: 'Hoi',
+    sandboxId: '1',
+    type: 'react',
+  },
+  6: {
+    id: '6',
+    code: DEFAULT_2_CODE,
+    name: 'Dependency here',
+    sandboxId: '1',
+    type: 'react',
+  },
+  7: {
+    id: '7',
+    code: DEFAULT_2_CODE,
+    name: 'Dependency there',
+    sandboxId: '1',
+    type: 'react',
   },
 };
 
@@ -75,12 +102,7 @@ const moduleReducer = (state: Module, action: Object): Module => {
       return {
         ...state,
         code: action.code,
-        error: null,
-      };
-    case SET_ERROR:
-      return {
-        ...state,
-        error: action.error,
+        type: findType(action.code),
       };
     default:
       return state;
@@ -90,7 +112,6 @@ const moduleReducer = (state: Module, action: Object): Module => {
 export default (state: State = initialState, action: Object): State => {
   switch (action.type) {
     case CHANGE_CODE:
-    case SET_ERROR:
       return {
         ...state,
         [action.id]: moduleReducer(state[action.id], action),

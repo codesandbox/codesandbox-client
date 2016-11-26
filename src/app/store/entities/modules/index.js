@@ -10,7 +10,7 @@ export type Module = {
   name: string;
   code: string;
   sandboxId: string;
-  error: ?Error;
+  type: string;
 };
 
 
