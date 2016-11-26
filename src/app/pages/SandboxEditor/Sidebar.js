@@ -37,19 +37,11 @@ export default ({ sandbox, modules, sandboxes, activeModuleId, url }: Props) => 
     <Title>{sandbox.title}</Title>
     <SandboxModuleList
       sandbox={sandbox}
+      sandboxes={sandboxes}
       modules={modules}
       activeModuleId={activeModuleId}
       url={url}
+      depth={0}
     />
-    {sandbox.sandboxes.map(sandboxId => (
-      <SandboxModuleList
-        key={sandboxId}
-        sandbox={sandboxes[sandboxId]}
-        modules={modules}
-        activeModuleId={activeModuleId}
-        url={url}
-        child
-      />
-    ))}
   </Container>
 );

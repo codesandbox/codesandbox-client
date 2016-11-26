@@ -38,7 +38,6 @@ type Props = {
   module: Module;
   moduleId: string;
   changeCode: typeof actionCreators.changeCode;
-  setError: typeof actionCreators.setError;
 };
 
 const mapStateToProps = (state, props: Props) => ({
@@ -50,16 +49,8 @@ class Editor extends React.Component {
   props: Props;
   onChange = (code: string = '') => {
     if (this.props.module.code !== code) {
-      try {
-        this.props.changeCode(this.props.moduleId, code);
-      } catch (e) {
-        this.handleError(e);
-      }
+      this.props.changeCode(this.props.moduleId, code);
     }
-  }
-
-  handleError = (error: Error) => {
-    this.props.setError(this.props.moduleId, error);
   }
 
   render() {
@@ -71,9 +62,7 @@ class Editor extends React.Component {
         </CodeEditorContainer>
         <PreviewContainer>
           <Preview
-            setError={this.handleError}
             module={module}
-            error={module.error}
             modules={modules}
           />
         </PreviewContainer>

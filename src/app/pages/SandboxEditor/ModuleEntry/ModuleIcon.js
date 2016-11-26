@@ -7,7 +7,7 @@ import ModuleIcon from 'react-icons/lib/fa/file-o';
 import FunctionIcon from 'react-icons/lib/fa/code';
 
 const Icon = styled.span`
-  margin-right: 4px;
+  margin-right: 8px;
 `;
 
 const getIcon = (type) => {

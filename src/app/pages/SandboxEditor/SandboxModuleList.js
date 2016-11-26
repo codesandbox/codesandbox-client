@@ -2,73 +2,88 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { Link } from 'react-router';
-
 import type { Sandbox } from '../../store/entities/sandboxes/';
 import type { Module } from '../../store/entities/modules/';
-import theme from '../../../common/theme';
 
-import ModuleIcon from './ModuleIcon';
+import ModuleEntry from './ModuleEntry/';
 
-const ChildContainer = styled.div`
-  margin-left: ${props => (props.child ? `${1}rem` : 0)};
+const Opener = styled.div`
+  overflow: hidden;
+  height: ${props => (props.isOpen ? 'auto' : 0)};
 `;
-
-const ModuleLink = styled(Link)`
-  transition: 0.3s ease all;
-  display: block;
-  font-size: 14px;
-  padding: 0.6rem;
-  margin-left: 1.5rem;
-  color: ${props => props.theme.background.lighten(2)};
-  text-decoration: none;
-  font-weight: 400;
-  min-width: 100px;
-  border-right: 2px solid transparent;
-
-  &:hover {
-    color: ${props => props.theme.background.lighten(5)};
-    border-color: ${props => props.theme.primary.darken(0.4)};
-  }
-`;
-
-const activeStyle = {
-  color: '#E0E0E0',
-  borderColor: theme.primary(),
-};
 
 type Props = {
-  child?: boolean;
   sandbox: Sandbox;
   modules: { [id: string]: Module };
+  sandboxes: { [id: string]: Sandbox };
   activeModuleId: string;
   url: (module: Module) => string;
+  depth: number;
 }
 
-export default ({ child, sandbox, modules, activeModuleId, url }: Props) => (
-  <ChildContainer child={child}>
-    <ModuleLink
-      activeStyle={activeStyle}
-      isActive={() => modules[sandbox.mainModule].id === activeModuleId}
-      to={url(modules[sandbox.mainModule])}
-      key={modules[sandbox.mainModule].id}
-    >
-      <ModuleIcon type="project" /> {sandbox.title}
-    </ModuleLink>
-    {sandbox.modules.map((moduleId) => {
-      const module = modules[moduleId];
-      return (
-        <ChildContainer child>
-          <ModuleLink
-            activeStyle={activeStyle}
-            isActive={() => module.id === activeModuleId}
-            to={url(module)}
-            key={module.id}
-          >
-            <ModuleIcon type={module.type} /> {module.name}
-          </ModuleLink>
-        </ChildContainer>
-      );
-    })}
-  </ChildContainer>
-);
+type State = {
+  isOpen: boolean;
+};
+
+export default class SandboxModuleList extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      isOpen: true,
+    };
+  }
+
+  toggleOpen = (event: Event) => {
+    event.preventDefault();
+
+    this.setState({
+      isOpen: !this.state.isOpen,
+    });
+  }
+
+  props: Props;
+  state: State;
+
+  render() {
+    const { depth, sandbox, sandboxes, modules, activeModuleId, url } = this.props;
+    return (
+      <div>
+        <ModuleEntry
+          module={modules[sandbox.mainModule]}
+          url={url}
+          isActive={modules[sandbox.mainModule].id === activeModuleId}
+          title={sandbox.title}
+          isProject
+          isOpen={this.state.isOpen}
+          toggleOpen={this.toggleOpen}
+          depth={depth}
+        />
+
+        <Opener isOpen={this.state.isOpen}>
+          {sandbox.modules.map((moduleId) => {
+            const module = modules[moduleId];
+            return (
+              <ModuleEntry
+                module={module}
+                url={url}
+                isActive={module.id === activeModuleId}
+                title={module.name}
+                depth={depth + 1}
+              />
+            );
+          })}
+          {depth === 0 && sandbox.sandboxes.map(sandboxId => (
+            <SandboxModuleList
+              key={sandboxId}
+              sandbox={sandboxes[sandboxId]}
+              modules={modules}
+              activeModuleId={activeModuleId}
+              url={url}
+              depth={1}
+            />
+          ))}
+        </Opener>
+      </div>
+    );
+  }
+}
