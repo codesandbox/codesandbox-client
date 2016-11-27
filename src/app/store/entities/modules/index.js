@@ -1,7 +1,9 @@
 // @flow
 import { Schema } from 'normalizr';
 
+import type { Entity } from '../';
 import reducer, { actions } from './reducer';
+import createEntityActions from '../../actions/entities';
 
 const schema = new Schema('modules');
 
@@ -13,9 +15,12 @@ export type Module = {
   type: string;
 };
 
-
-export default {
+const entity: Entity = {
   schema,
   reducer,
-  actions,
 };
+
+console.log(createEntityActions(entity));
+entity.actions = { ...actions, ...createEntityActions(entity) };
+
+export default entity;

@@ -71,7 +71,7 @@ export default class Preview extends React.Component {
       <Container>
         <StyledFrame
           sandbox="allow-scripts allow-pointer-lock allow-same-origin allow-popups allow-modals allow-forms"
-          src="/frame.html"
+          src="http://safe.dev.codesandbox.io/frame.html"
           id="sandbox"
         />
       </Container>

@@ -22,7 +22,7 @@ const ModuleLink = styled(Link)`
   border-left: 2px solid transparent;
 
   &:hover {
-    background-color: ${props => props.theme.lightBackground.darken(0.2)};
+    background-color: ${props => props.theme.background3.darken(0.2)};
     color: ${props => props.theme.background.lighten(5)};
     border-color: ${props => props.theme.primary.darken(0.4)};
   }
@@ -39,7 +39,7 @@ const StyledFolderIcon = styled(FolderIcon)`
 const activeStyle = {
   color: '#E0E0E0',
   borderColor: theme.primary(),
-  backgroundColor: theme.lightBackground(),
+  backgroundColor: theme.background3(),
 };
 
 type Props = {

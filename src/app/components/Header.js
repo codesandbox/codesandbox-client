@@ -4,8 +4,8 @@ import styled from 'styled-components';
 
 const Container = styled.div`
   position: relative;
-  background-color: white;
-  margin: 0.75rem 1rem;
+  background-color: #FAFAFA;
+  padding: 0.75rem 1rem;
 `;
 
 const Title = styled.h1`

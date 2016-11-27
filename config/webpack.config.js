@@ -31,7 +31,7 @@ const getOutput = () => (
 );
 
 const config = {
-  devtool: __DEV__ ? 'cheap-eval-source-map' : 'eval',
+  devtool: __DEV__ ? 'eval' : 'eval',
 
   entry: {
     app: [

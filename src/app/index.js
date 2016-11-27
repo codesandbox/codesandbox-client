@@ -11,7 +11,7 @@ import theme from '../common/theme';
 
 const rootEl = document.getElementById('root');
 
-const store = createStore;
+const store = createStore();
 const renderApp = (RootComponent) => {
   render(
     <AppContainer>

@@ -3,6 +3,7 @@
 
 declare class Normalizr$Schema {
   define(nestedSchema: Object): void;
+  getKey(): string;
 }
 type Normalizr$SchemaOrObject = Normalizr$Schema | Object;
 

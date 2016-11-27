@@ -17,7 +17,7 @@ injectGlobal`
     height: 100%;
     font-size: 14px;
     font-weight: 500;
-   }
+  }
   .cm-s-oceanic div.CodeMirror-selected { background: #343D46; }
   .cm-s-oceanic .CodeMirror-line::selection, .cm-s-oceanic .CodeMirror-line > span::selection, .cm-s-oceanic .CodeMirror-line > span > span::selection { background: #65737E; }
   .cm-s-oceanic .CodeMirror-line::-moz-selection, .cm-s-oceanic .CodeMirror-line > span::-moz-selection, .cm-s-oceanic .CodeMirror-line > span > span::-moz-selection { background: #65737E; }

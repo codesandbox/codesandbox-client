@@ -1,5 +1,6 @@
 // @flow
 import type { Module } from './';
+
 import findType from '../../../utils/find-type';
 
 export const CHANGE_CODE = 'CHANGE_CODE';

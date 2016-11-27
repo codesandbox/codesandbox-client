@@ -22,16 +22,13 @@ const createEntityReducer = entity =>
 
       if (!data) return reducer(state, action);
 
-      const recordData = mapValues(data, (obj) => {
-        const object = new entity.Record(obj);
+      const newEntities = mapValues(data, (obj) => {
         if (entity.afterReceiveReducer) {
-          return entity.afterReceiveReducer(object, state);
+          return entity.afterReceiveReducer(obj, state);
         }
-        return object;
+        return obj;
       });
-      newState = state.mergeWith((prev, next) => (
-        entity.shouldOverwrite ? entity.shouldOverwrite(prev, next) : next
-      ), recordData);
+      newState = { ...state, ...newEntities };
     }
 
     return reducer(newState, action);

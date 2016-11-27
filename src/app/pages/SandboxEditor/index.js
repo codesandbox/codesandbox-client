@@ -35,7 +35,7 @@ const mapStateToProps = (state, props: Props) => ({
 });
 
 const SandboxEditor = ({ params, sandbox, sandboxes, modules }: Props) => {
-  const moduleId = params.module === 'undefined' ? sandbox.modules[0] : params.module;
+  const moduleId = params.module === 'undefined' ? sandbox.mainModule : params.module;
   return (
     <Container>
       <Sidebar
