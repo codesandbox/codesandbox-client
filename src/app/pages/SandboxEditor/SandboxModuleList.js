@@ -2,7 +2,6 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import type { Sandbox } from '../../store/entities/sandboxes/';
 import type { Module } from '../../store/entities/modules/';
 
 import ModuleEntry from './ModuleEntry/';
@@ -13,12 +12,12 @@ const Opener = styled.div`
 `;
 
 type Props = {
-  sandbox: Sandbox;
-  modules: { [id: string]: Module };
-  sandboxes: { [id: string]: Sandbox };
+  module: Module;
+  modules: Array<Module>;
   activeModuleId: string;
   url: (module: Module) => string;
   depth: number;
+  title?: string;
 }
 
 type State = {
@@ -45,44 +44,36 @@ export default class SandboxModuleList extends React.Component {
   state: State;
 
   render() {
-    const { depth, sandbox, sandboxes, modules, activeModuleId, url } = this.props;
+    const { depth, modules, module, title, activeModuleId, url } = this.props;
     return (
       <div>
         <ModuleEntry
-          module={modules[sandbox.mainModule]}
+          module={module}
           url={url}
-          isActive={modules[sandbox.mainModule].id === activeModuleId}
-          title={sandbox.title}
-          isProject
+          isActive={module.id === activeModuleId}
+          title={title || module.title}
+          isProject={module.children.length > 0}
           isOpen={this.state.isOpen}
           toggleOpen={this.toggleOpen}
           depth={depth}
         />
+        {module.children.length > 0 &&
+          <Opener isOpen={this.state.isOpen}>
+            {module.children.map((moduleId) => {
+              const childModule = modules.find(m => m.id === moduleId);
 
-        <Opener isOpen={this.state.isOpen}>
-          {sandbox.modules.map((moduleId) => {
-            const module = modules[moduleId];
-            return (
-              <ModuleEntry
-                module={module}
-                url={url}
-                isActive={module.id === activeModuleId}
-                title={module.name}
-                depth={depth + 1}
-              />
-            );
-          })}
-          {depth === 0 && sandbox.sandboxes.map(sandboxId => (
-            <SandboxModuleList
-              key={sandboxId}
-              sandbox={sandboxes[sandboxId]}
-              modules={modules}
-              activeModuleId={activeModuleId}
-              url={url}
-              depth={1}
-            />
-          ))}
-        </Opener>
+              return (
+                <SandboxModuleList
+                  key={moduleId}
+                  depth={depth + 1}
+                  modules={modules}
+                  module={childModule}
+                  activeModuleId={activeModuleId}
+                  url={url}
+                />
+              );
+            })}
+          </Opener>}
       </div>
     );
   }

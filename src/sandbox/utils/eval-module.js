@@ -4,6 +4,10 @@ import * as styled from 'styled-components';
 import * as reactRouter from 'react-router';
 import { transform } from 'babel-standalone';
 
+import type { Module } from '../../app/store/entities/modules/';
+
+import resolveModule from './resolve-module';
+
 const MAX_DEPTH = 20;
 
 const dependencies = new Map([
@@ -20,22 +24,17 @@ const compileCode = (code: string = '') => (
   }).code
 );
 
-const evalModule = (mainModule: string, modules, depth: number = 0) => {
+const evalModule = (mainModule: Module, modules: Array<Module>, depth: number = 0) => {
   const exports = {};
   const require = function require(path) { // eslint-disable-line no-unused-vars
     if (depth > MAX_DEPTH) {
       throw new Error(`Exceeded the maximum require depth of ${MAX_DEPTH}.`);
     }
 
-    if (path === 'react') {
-      exports.__mode__ = 'react';
-    }
-
     const dependency = dependencies.get(path);
     if (dependency) return dependency;
 
-    const module = modules.find(m => m.name === path);
-    if (!module) throw new Error(`Cannot find module ${path}`);
+    const module = resolveModule(mainModule, path, modules);
 
     // Check if this module has ben evaluated before
     const cachedModule = moduleCache.get(module.id);

@@ -16,7 +16,16 @@ export default async function callApi(endpoint, { method = 'GET', body = null } 
     options.headers = { Authorization: authorization && `Bearer ${authorization}` };
   }
   if (body) {
-    options.body = JSON.stringify(decamelizeKeys(body));
+    if (method === 'GET') {
+      // Convert body to ?x=y&b=a format
+      const keyValues = Object.keys(body).map(key => (
+        `${key}=${body[key]}`
+      )).join('&');
+      const parameterizedBody = `?${keyValues}`;
+      options.url += parameterizedBody;
+    } else {
+      options.body = JSON.stringify(decamelizeKeys(body));
+    }
   }
 
   const result = await fetch(url, options);

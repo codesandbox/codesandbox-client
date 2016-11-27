@@ -55,9 +55,11 @@ export default class Preview extends React.Component {
   executeCode = () => {
     const { modules, module } = this.props;
 
-    document.getElementById('sandbox').contentWindow.postMessage({
-      module, modules,
-    }, '*');
+    requestAnimationFrame(() => {
+      document.getElementById('sandbox').contentWindow.postMessage({
+        module, modules,
+      }, '*');
+    });
   }
 
   props: Props;

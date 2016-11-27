@@ -1,15 +1,11 @@
 /* @flow */
 import React from 'react';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import { values } from 'lodash';
 import styled from 'styled-components';
 import 'normalize.css';
 
 import CodeEditor from '../../components/CodeEditor';
 import Preview from '../../components/Preview';
 import moduleEntity from '../../store/entities/modules/';
-import { modulesSelector, singleModuleSelector } from '../../store/entities/modules/selector';
 
 import type { Module } from '../../store/entities/modules';
 
@@ -33,33 +29,36 @@ const PreviewContainer = styled.div`
   box-shadow: -4px 8px 8px rgba(0, 0, 0, 0.4);
 `;
 
+const LoadingText = styled.div`
+  position: absolute;
+  color: ${props => props.theme.background.lighten(3.5)};
+  text-align: center;
+  vertical-align: middle;
+  font-size: 4rem;
+  flex: auto;
+  top: 50%; bottom: 0; left: 0; right: 0;
+  margin: auto;
+`;
+
 type Props = {
   modules: Array<Module>;
   module: Module;
-  moduleId: string;
   changeCode: typeof moduleEntity.actions.changeCode;
 };
 
-const mapStateToProps = (state, props: Props) => ({
-  modules: values(modulesSelector(state)),
-  module: singleModuleSelector(state, { id: props.moduleId }),
-});
-const mapDispatchToProps = dispatch => bindActionCreators(moduleEntity.actions, dispatch);
-class Editor extends React.Component {
+export default class Editor extends React.Component {
   props: Props;
   onChange = (code: string = '') => {
     if (this.props.module.code !== code) {
-      this.props.changeCode(this.props.moduleId, code);
+      this.props.changeCode(this.props.module.id, code);
     }
   };
 
-  componentDidMount() {
-    console.log('hoi');
-    this.props.getById('d451fa28-b44c-11e6-80f5-76304dec7eb7');
-  }
-
   render() {
     const { module, modules } = this.props;
+    if (!this.props.module) {
+      return <Container><LoadingText>Loading...</LoadingText></Container>;
+    }
     return (
       <Container>
         <CodeEditorContainer>
@@ -75,5 +74,3 @@ class Editor extends React.Component {
     );
   }
 }
-
-export default connect(mapStateToProps, mapDispatchToProps)(Editor);

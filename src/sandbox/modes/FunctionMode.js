@@ -48,7 +48,7 @@ export default class FunctionMode {
       <Container>
         <h1>Functions</h1>
         <ul>
-          {exported.map(f => <li key={f.name}>{f.component}</li>)}
+          {exported.map(f => <li key={f.title}>{f.component}</li>)}
         </ul>
       </Container>
     , this.element);

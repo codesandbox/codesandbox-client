@@ -4,7 +4,7 @@ import styled, { ThemeProvider } from 'styled-components';
 import theme from '../common/theme';
 import ErrorComponent from './Error';
 import Navigator from './Navigator';
-import evalModule from './eval-module';
+import evalModule from './utils/eval-module';
 import ReactMode from './modes/ReactMode';
 import FunctionMode from './modes/FunctionMode';
 
@@ -32,7 +32,7 @@ export default class Frame extends React.Component {
       const { modules, module } = message.data;
       try {
         const compiledModule = evalModule(module, modules);
-        const mode = compiledModule.__mode__ || 'function'; // eslint-disable-line no-underscore-dangle
+        const mode = module.type; // eslint-disable-line no-underscore-dangle
 
         if (mode === 'react') {
           if (this.mode == null || this.mode.type !== 'react') {

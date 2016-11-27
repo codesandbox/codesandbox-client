@@ -45,57 +45,7 @@ type State = {
   [id: string]: Module;
 };
 
-const initialState: State = {
-  1: {
-    id: '1',
-    code: DEFAULT_CODE,
-    name: 'Default',
-    sandboxId: '1',
-    type: 'react',
-  },
-  2: {
-    id: '2',
-    code: DEFAULT_2_CODE,
-    name: 'Welcome',
-    sandboxId: '1',
-    type: 'react',
-  },
-  3: {
-    id: '3',
-    code: DEFAULT_3_CODE,
-    name: 'Functions',
-    sandboxId: '1',
-    type: 'function',
-  },
-  4: {
-    id: '4',
-    code: DEFAULT_2_CODE,
-    name: 'Hey',
-    sandboxId: '1',
-    type: 'react',
-  },
-  5: {
-    id: '5',
-    code: DEFAULT_2_CODE,
-    name: 'Hoi',
-    sandboxId: '1',
-    type: 'react',
-  },
-  6: {
-    id: '6',
-    code: DEFAULT_2_CODE,
-    name: 'Dependency here',
-    sandboxId: '1',
-    type: 'react',
-  },
-  7: {
-    id: '7',
-    code: DEFAULT_2_CODE,
-    name: 'Dependency there',
-    sandboxId: '1',
-    type: 'react',
-  },
-};
+const initialState: State = {};
 
 const moduleReducer = (state: Module, action: Object): Module => {
   switch (action.type) {

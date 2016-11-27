@@ -22,9 +22,10 @@ const createEntityReducer = entity =>
 
       if (!data) return reducer(state, action);
 
+      const intermediateState = { ...state, ...data };
       const newEntities = mapValues(data, (obj) => {
         if (entity.afterReceiveReducer) {
-          return entity.afterReceiveReducer(obj, state);
+          return entity.afterReceiveReducer(obj, intermediateState);
         }
         return obj;
       });

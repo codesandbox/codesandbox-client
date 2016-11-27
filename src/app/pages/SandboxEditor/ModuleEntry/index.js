@@ -61,7 +61,7 @@ export default ({ module, title, url, isActive, isProject, isOpen, depth, toggle
     depth={depth}
   >
     {isProject && <StyledFolderIcon isOpen={isOpen} onClick={toggleOpen} />}
-    <ModuleIcon type={isProject ? 'project' : module.type} />
+    <ModuleIcon type={module.type} />
     {title}
   </ModuleLink>
 );

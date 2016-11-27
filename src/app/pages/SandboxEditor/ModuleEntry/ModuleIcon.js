@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 
 import IconBase from 'react-icons/IconBase';
-import ProjectIcon from 'react-icons/lib/fa/file-code-o';
 import ModuleIcon from 'react-icons/lib/fa/file-o';
 import FunctionIcon from 'react-icons/lib/fa/code';
 
@@ -11,8 +10,6 @@ const Icon = styled.span`
 `;
 
 const getIcon = (type) => {
-  if (type === 'project') return <ProjectIcon />;
-  if (type === 'function') return <FunctionIcon />;
   if (type === 'react') {
     return (
       <IconBase viewBox="0 0 600 600">
@@ -41,6 +38,7 @@ const getIcon = (type) => {
         </g>
       </IconBase>
     );
+    return <FunctionIcon />;
   }
 
   return ModuleIcon;

@@ -1,6 +1,7 @@
 // @flow
 import React from 'react';
 import styled from 'styled-components';
+import { values } from 'lodash';
 
 import SandboxModuleList from './SandboxModuleList';
 
@@ -26,22 +27,22 @@ const Title = styled.h2`
 `;
 
 type Props = {
-  modules: { [id: string]: Module };
-  sandboxes: { [id: string]: Sandbox };
+  modules: Array<Module>;
   activeModuleId: string;
   url: (module: Module) => string;
-  sandbox: Sandbox;
+  sandbox: ?Sandbox;
 }
-export default ({ sandbox, modules, sandboxes, activeModuleId, url }: Props) => (
+export default ({ sandbox, modules, activeModuleId, url }: Props) => (
   <Container>
-    <Title>{sandbox.title}</Title>
-    <SandboxModuleList
-      sandbox={sandbox}
-      sandboxes={sandboxes}
-      modules={modules}
-      activeModuleId={activeModuleId}
-      url={url}
-      depth={0}
-    />
+    <Title>{sandbox ? sandbox.title : 'Loading...'}</Title>
+    {sandbox &&
+      <SandboxModuleList
+        module={modules.find(x => x.mainModule)}
+        title={sandbox.slug}
+        modules={modules}
+        activeModuleId={activeModuleId}
+        url={url}
+        depth={0}
+      />}
   </Container>
 );

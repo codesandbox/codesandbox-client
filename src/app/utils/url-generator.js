@@ -1,3 +1,3 @@
 export const editModuleUrl = (sandbox, module) => (
-  `/sandbox/${sandbox.id}/${module.id}`
+  `/sandbox/${sandbox.slug}/${module.id}`
 );

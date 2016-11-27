@@ -1,11 +1,14 @@
 /* @flow */
 import React from 'react';
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
-import { singleSandboxSelector, sandboxesSelector } from '../../store/entities/sandboxes/selector';
+import { singleSandboxBySlugSelector } from '../../store/entities/sandboxes/selector';
 import type { Sandbox } from '../../store/entities/sandboxes/';
-import { modulesSelector } from '../../store/entities/modules/selector';
+import sandboxEntity from '../../store/entities/sandboxes';
+import moduleEntity from '../../store/entities/modules';
+import { modulesBySandboxSlugSelector } from '../../store/entities/modules/selector';
 import type { Module } from '../../store/entities/modules/';
 import { editModuleUrl } from '../../utils/url-generator';
 
@@ -13,13 +16,14 @@ import Editor from './Editor';
 import Sidebar from './Sidebar';
 
 type Props = {
-  sandbox: Sandbox,
-  sandboxes: { [id: string]: Sandbox },
-  modules: { [id: string]: Module },
+  sandbox: ?Sandbox,
+  modules: Array<Module>,
   params: {
     sandbox: string,
     module: string, // eslint-disable-line react/no-unused-prop-types
   },
+  sandboxActions: typeof sandboxEntity.actions;
+  moduleActions: typeof moduleEntity.actions;
 };
 
 const Container = styled.div`
@@ -29,24 +33,48 @@ const Container = styled.div`
 `;
 
 const mapStateToProps = (state, props: Props) => ({
-  sandbox: singleSandboxSelector(state, { id: props.params.sandbox }),
-  sandboxes: sandboxesSelector(state),
-  modules: modulesSelector(state),
+  sandbox: singleSandboxBySlugSelector(state, { slug: props.params.sandbox }),
+  modules: modulesBySandboxSlugSelector(state, { slug: props.params.sandbox }),
 });
+const mapDispatchToProps = dispatch => ({
+  sandboxActions: bindActionCreators(sandboxEntity.actions, dispatch),
+  moduleActions: bindActionCreators(moduleEntity.actions, dispatch),
+});
+class SandboxEditor extends React.Component {
+  componentDidMount() {
+    const sandboxId = this.props.params.sandbox;
+    this.props.sandboxActions.getById(sandboxId);
+  }
 
-const SandboxEditor = ({ params, sandbox, sandboxes, modules }: Props) => {
-  const moduleId = params.module === 'undefined' ? sandbox.mainModule : params.module;
-  return (
-    <Container>
-      <Sidebar
-        activeModuleId={moduleId}
-        sandbox={sandbox}
-        sandboxes={sandboxes}
-        modules={modules}
-        url={module => editModuleUrl(sandbox, module)}
-      />
-      <Editor moduleId={moduleId} />
-    </Container>
-  );
-};
-export default connect(mapStateToProps)(SandboxEditor);
+  getCurrentModuleId = () => {
+    const { modules } = this.props;
+    const module = modules.find(m => m.mainModule);
+
+    if (module) return module.id;
+    if (modules.length) return modules[0].id;
+
+    return '';
+  }
+
+  props: Props;
+  render() {
+    const { params, sandbox, modules, moduleActions } = this.props;
+    const moduleId = params.module === 'undefined' ? this.getCurrentModuleId() : params.module;
+    return (
+      <Container>
+        <Sidebar
+          activeModuleId={moduleId}
+          sandbox={sandbox}
+          modules={modules}
+          url={module => editModuleUrl(sandbox, module)}
+        />
+        <Editor
+          module={modules.find(m => m.id === moduleId)}
+          modules={modules}
+          changeCode={moduleActions.changeCode}
+        />
+      </Container>
+    );
+  }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(SandboxEditor);
