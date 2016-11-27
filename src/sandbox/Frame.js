@@ -3,7 +3,7 @@ import styled, { ThemeProvider } from 'styled-components';
 
 import theme from '../common/theme';
 import ErrorComponent from './Error';
-import Navigator from './Navigator';
+// import Navigator from './Navigator';
 import evalModule from './utils/eval-module';
 import ReactMode from './modes/ReactMode';
 import FunctionMode from './modes/FunctionMode';

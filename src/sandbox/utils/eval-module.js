@@ -35,7 +35,7 @@ const evalModule = (mainModule: Module, modules: Array<Module>, depth: number = 
     if (dependency) return dependency;
 
     const module = resolveModule(mainModule, path, modules);
-
+    if (!module) throw new Error(`Cannot find module in path: ${path}`);
     // Check if this module has ben evaluated before
     const cachedModule = moduleCache.get(module.id);
     if (cachedModule) return cachedModule;
