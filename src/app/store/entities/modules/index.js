@@ -1,9 +1,10 @@
 // @flow
 import { Schema } from 'normalizr';
-import { values } from 'lodash';
+import { values, sortBy } from 'lodash';
 
 import createEntity from '../create-entity';
-import reducer, { actions } from './reducer';
+import createActions from './actions';
+import reducer from './reducer';
 
 const schema = new Schema('modules');
 
@@ -18,6 +19,8 @@ export type Module = {
   type: string;
 };
 
+const actions = createActions(schema);
+
 export default createEntity(schema, {
   actions,
   reducer,
@@ -27,7 +30,12 @@ export default createEntity(schema, {
     // Also to mark the main module
     const modules = values(state);
 
-    const children = modules.filter(m => m.parentModuleId === module.id).map(m => m.id);
-    return { ...module, children, mainModule: module.parentModuleId === null };
+    const children = modules.filter(m => m.parentModuleId === module.id);
+    const orderedChildren = sortBy(children, m => m.title);
+    return {
+      ...module,
+      children: orderedChildren.map(m => m.id),
+      mainModule: module.parentModuleId === null,
+    };
   },
 });

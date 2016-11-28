@@ -58,6 +58,7 @@
     "whatwg-fetch": "^2.0.1"
   },
   "dependencies": {
+    "axios": "^0.15.3",
     "babel-plugin-transform-remove-strict-mode": "^0.0.2",
     "babel-standalone": "^6.19.0",
     "codemirror": "^5.21.0",
@@ -72,6 +73,7 @@
     "react-dom": "^15.4.1",
     "react-frame-component": "^0.6.5",
     "react-icons": "^2.2.1",
+    "react-modal": "CompuIves/react-modal",
     "react-proxy": "2",
     "react-redux": "^4.4.6",
     "react-router": "next",

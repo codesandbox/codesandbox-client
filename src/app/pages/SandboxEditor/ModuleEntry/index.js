@@ -6,6 +6,8 @@ import FolderIcon from 'react-icons/lib/md/keyboard-arrow-down';
 
 import type { Module } from '../../../store/entities/modules/';
 import ModuleIcon from './ModuleIcon';
+import ModuleTitle from './ModuleTitle';
+import Actions from './Actions';
 import theme from '../../../../common/theme';
 
 const ModuleLink = styled(Link)`
@@ -38,31 +40,91 @@ const StyledFolderIcon = styled(FolderIcon)`
 
 const activeStyle = {
   color: '#E0E0E0',
+
   borderColor: theme.primary(),
   backgroundColor: theme.background3(),
 };
 
 type Props = {
   module: Module;
-  title: string;
   url: (module: Module) => string;
   isActive: boolean;
-  isProject?: boolean;
+  hasChildren?: boolean;
   depth: number;
   toggleOpen?: (event: Event) => void;
   isOpen?: boolean;
+  renameModule: (id: string, title: string) => void;
 };
 
-export default ({ module, title, url, isActive, isProject, isOpen, depth, toggleOpen }: Props) => (
-  <ModuleLink
-    to={url(module)}
-    isActive={() => isActive}
-    activeStyle={activeStyle}
-    depth={depth}
-  >
-    {isProject && <StyledFolderIcon isOpen={isOpen} onClick={toggleOpen} />}
-    <ModuleIcon type={module.type} />
-    {title}
-  </ModuleLink>
-);
+type State = {
+  hovering: boolean;
+  editing: boolean;
+};
 
+export default class ModuleEntry extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      hovering: false,
+      editing: false,
+    };
+  }
+
+  handleMouseEnter = () => {
+    this.setState({ hovering: true });
+  };
+
+  handleMouseLeave = () => {
+    this.setState({ hovering: false });
+  };
+
+  startEditing = () => {
+    this.setState({ editing: true });
+  };
+
+  stopEditing = () => {
+    this.setState({ editing: false });
+  };
+
+  handleRename = (name: string) => {
+    this.props.renameModule(this.props.module.id, name);
+
+    this.stopEditing();
+  }
+
+  props: Props;
+  state: State;
+  render() {
+    const { module, url, isActive, hasChildren, isOpen, depth,
+      toggleOpen } = this.props;
+    const { editing } = this.state;
+    return (
+      <div
+        onMouseEnter={this.handleMouseEnter}
+        onMouseLeave={this.handleMouseLeave}
+        style={{ position: 'relative' }}
+      >
+        {!this.state.editing &&
+          <Actions
+            show={this.state.hovering}
+            startEditing={this.startEditing}
+          />}
+        <ModuleLink
+          to={url(module)}
+          isActive={() => isActive}
+          activeStyle={activeStyle}
+          depth={depth}
+        >
+          {hasChildren && <StyledFolderIcon isOpen={isOpen} onClick={toggleOpen} />}
+          <ModuleIcon type={module.type} />
+          <ModuleTitle
+            title={module.title}
+            editable={editing}
+            onEditCommit={this.handleRename}
+            cancelEdit={this.stopEditing}
+          />
+        </ModuleLink>
+      </div>
+    );
+  }
+}

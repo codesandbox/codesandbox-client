@@ -5,6 +5,7 @@ import 'normalize.css';
 
 import Header from '../components/Header';
 
+import Modal from '../containers/Modal';
 import Root from './Root';
 import SandboxEditor from './SandboxEditor/';
 
@@ -23,6 +24,7 @@ const Content = styled.div`
 export default () => (
   <BrowserRouter>
     <Container>
+      <Modal />
       <Header />
       <Content>
         <Match className="test" exactly pattern="/" component={Root} />

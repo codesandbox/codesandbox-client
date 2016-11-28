@@ -44,6 +44,7 @@ type Props = {
   modules: Array<Module>;
   module: Module;
   changeCode: typeof moduleEntity.actions.changeCode;
+  loading: boolean;
 };
 
 export default class Editor extends React.Component {
@@ -55,9 +56,12 @@ export default class Editor extends React.Component {
   };
 
   render() {
-    const { module, modules } = this.props;
-    if (!this.props.module) {
+    const { loading, module, modules } = this.props;
+    if (loading) {
       return <Container><LoadingText>Loading...</LoadingText></Container>;
+    }
+    if (!module) {
+      return <Container><LoadingText>Could not find module</LoadingText></Container>;
     }
     return (
       <Container>
