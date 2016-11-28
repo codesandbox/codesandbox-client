@@ -53,7 +53,7 @@ type Props = {
   depth: number;
   toggleOpen?: (event: Event) => void;
   isOpen?: boolean;
-  renameModule: (id: string, title: string) => void;
+  updateModule: (id: string, module: Module) => void;
 };
 
 type State = {
@@ -87,7 +87,11 @@ export default class ModuleEntry extends React.Component {
   };
 
   handleRename = (name: string) => {
-    this.props.renameModule(this.props.module.id, name);
+    if (this.props.module.title !== name) {
+      this.props.updateModule(this.props.module.id, { title: this.props.module.title }, {
+        title: name,
+      });
+    }
 
     this.stopEditing();
   }

@@ -3,7 +3,7 @@ import type { Module } from './';
 
 import findType from '../../../utils/find-type';
 
-import { CHANGE_CODE, RENAME_MODULE } from './actions';
+import { CHANGE_CODE } from './actions';
 
 type State = {
   [id: string]: Module;
@@ -19,11 +19,6 @@ const moduleReducer = (state: Module, action: Object): Module => {
         code: action.code,
         type: findType(action.code),
       };
-    case RENAME_MODULE:
-      return {
-        ...state,
-        title: action.title,
-      };
     default:
       return state;
   }
@@ -32,7 +27,6 @@ const moduleReducer = (state: Module, action: Object): Module => {
 export default (state: State = initialState, action: Object): State => {
   switch (action.type) {
     case CHANGE_CODE:
-    case RENAME_MODULE:
       return {
         ...state,
         [action.id]: moduleReducer(state[action.id], action),

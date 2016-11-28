@@ -2,6 +2,7 @@ import { combineReducers } from 'redux';
 import { mapValues } from 'lodash';
 
 import * as entities from '../entities';
+import { getKeys } from '../actions/entities';
 import _debug from '../../utils/debug';
 
 const d = _debug('cs:store:reducers:entities');
@@ -13,6 +14,7 @@ const d = _debug('cs:store:reducers:entities');
  */
 const createEntityReducer = entity =>
   (state = entity.initialState, action) => {
+    const entityKeys = getKeys(entity.schema);
     // If there is no reducer we should use a placeholder
     const reducer = entity.reducer || ((_state = entity.initialState || {}) => _state);
 
@@ -30,6 +32,17 @@ const createEntityReducer = entity =>
         return obj;
       });
       newState = { ...state, ...newEntities };
+    }
+
+    if (action.type === entityKeys.update.request) {
+      const updatedInfo = action.newData;
+
+      newState = { ...newState, [action.id]: { ...newState[action.id], ...updatedInfo } };
+    }
+    if (action.type === entityKeys.update.failure) {
+      const oldData = action.oldData;
+
+      newState = { ...newState, [action.id]: { ...newState[action.id], ...oldData } };
     }
 
     return reducer(newState, action);

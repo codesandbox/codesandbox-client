@@ -66,7 +66,7 @@ class SandboxEditor extends React.Component {
           activeModuleId={moduleId}
           sandbox={sandbox}
           modules={modules}
-          renameModule={moduleActions.renameModule}
+          updateModule={moduleActions.updateById}
           url={module => editModuleUrl(sandbox, module)}
         />
         <Editor
