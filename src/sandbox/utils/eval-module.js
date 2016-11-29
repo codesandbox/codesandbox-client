@@ -53,6 +53,7 @@ const evalModule = (mainModule: Module, modules: Array<Module>, depth: number = 
   } catch (e) {
     // Remove cache
     moduleCache.delete(mainModule.id);
+    e.module = e.module || mainModule;
     throw e;
   }
 

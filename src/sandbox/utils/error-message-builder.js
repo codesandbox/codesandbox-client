@@ -19,5 +19,11 @@ export default function buildErrorMessage(e) {
       [line, column] = matched;
     }
   }
-  return { title, message, line: parseInt(line, 10) - 1, column: parseInt(column, 10) };
+  return {
+    moduleId: e.module ? e.module.id : null,
+    title,
+    message,
+    line: parseInt(line, 10) - 1,
+    column: parseInt(column, 10),
+  };
 }

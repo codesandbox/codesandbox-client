@@ -22,6 +22,7 @@ export type Module = {
     line: number;
     column: number;
     title: string;
+    moduleId: ?string;
   };
 };
 

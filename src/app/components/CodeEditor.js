@@ -53,7 +53,9 @@ const handleError = (cm, currentModule, nextModule) => {
       cm.removeLineClass(currentModule.error.line, 'background', 'cm-line-error');
     }
 
-    if (nextModule.error) {
+    if (nextModule.error && (
+      nextModule.error.moduleId == null || nextModule.error.moduleId === nextModule.id)
+    ) {
       cm.addLineClass(nextModule.error.line, 'background', 'cm-line-error');
     }
   }
