@@ -120,11 +120,12 @@ export default class Editor extends React.PureComponent {
   codemirror: typeof CodeMirror;
 
   render() {
+    const { module } = this.props;
     return (
       <Container>
         <div ref={this.getCodeMirror} />
-        {this.props.module.error && (
-          <ErrorMessage>{this.props.module.error.message}</ErrorMessage>
+        {module.error && (
+          <ErrorMessage><b>{module.error.title}</b>: {module.error.message}</ErrorMessage>
         )}
       </Container>
     );

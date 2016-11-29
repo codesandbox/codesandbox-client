@@ -38,10 +38,11 @@ const getIcon = (type) => {
         </g>
       </IconBase>
     );
+  }
+  if (type === 'function') {
     return <FunctionIcon />;
   }
-
-  return ModuleIcon;
+  return <ModuleIcon />;
 };
 
 export default ({ type }: { type: string }) => (

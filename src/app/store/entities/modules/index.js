@@ -20,6 +20,8 @@ export type Module = {
   error?: ?{
     message: string;
     line: number;
+    column: number;
+    title: string;
   };
 };
 

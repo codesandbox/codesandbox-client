@@ -1,5 +1,6 @@
 export default function buildErrorMessage(e) {
-  const message = `${e.name}: ${e.message}`;
+  const title = e.name;
+  const message = e.message;
   let line = null;
   let column = null;
 
@@ -18,5 +19,5 @@ export default function buildErrorMessage(e) {
       [line, column] = matched;
     }
   }
-  return { message, line: parseInt(line, 10) - 1, column: parseInt(column, 10) };
+  return { title, message, line: parseInt(line, 10) - 1, column: parseInt(column, 10) };
 }
