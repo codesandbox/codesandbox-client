@@ -10,25 +10,55 @@ import ModuleTitle from './ModuleTitle';
 import Actions from './Actions';
 import theme from '../../../../common/theme';
 
-const ModuleLink = styled(Link)`
-  transition: 0.3s ease all;
-  position: relative;
-  display: block;
-  font-size: 14px;
-  padding: 0.6rem;
-  padding-left: ${props => props.depth + 2.9}rem;
-  color: ${props => props.theme.background.lighten(2)};
-  text-decoration: none;
-  font-weight: 400;
-  min-width: 100px;
-  border-left: 2px solid transparent;
+const getModuleStyles = (props) => {
+  const getBackgroundColor = (isHovering = false) => {
+    if (props.editing) return theme.background3.darken(0.3)();
+    if (props.active) return theme.background3();
+    if (isHovering) return props.theme.background3.darken(0.2)();
+    return 'initial';
+  };
 
-  &:hover {
-    background-color: ${props => props.theme.background3.darken(0.2)};
-    color: ${props => props.theme.background.lighten(5)};
-    border-color: ${props => props.theme.primary.darken(0.4)};
-  }
-`;
+  const getColor = () => {
+    if (props.editing) return props.theme.background.lighten(5)();
+    return props.theme.background.lighten(2)();
+  };
+
+  const getBorderColor = () => {
+    if (props.editing) return theme.primary();
+    return 'transparent';
+  };
+
+  return `
+    transition: 0.3s ease all;
+    position: relative;
+    display: block;
+    font-size: 14px;
+    padding: 0.6rem;
+    padding-left: ${props.depth + 2.9}rem;
+    color: ${getColor()};
+    text-decoration: none;
+    font-weight: 400;
+    min-width: 100px;
+    border-left: 2px solid transparent;
+    background-color: ${getBackgroundColor()};
+    border-color: ${getBorderColor()};
+
+    ${props.active ? `
+      color: #E0E0E0;
+
+      border-color: ${theme.primary()};
+    ` : `
+      &:hover {
+        background-color: ${getBackgroundColor(true)};
+        color: ${props.theme.background.lighten(5)()};
+        border-color: ${props.theme.primary.darken(0.4)()};
+      }
+    `}
+  `;
+};
+
+const ModuleLink = styled(Link)`${props => getModuleStyles(props)}`;
+const ModuleSpan = styled.span`${props => getModuleStyles(props)}`;
 
 const StyledFolderIcon = styled(FolderIcon)`
   transition: 0.3s ease transform;
@@ -37,13 +67,6 @@ const StyledFolderIcon = styled(FolderIcon)`
 
   transform: rotateZ(${props => (props.isOpen ? '0deg' : '-90deg')});
 `;
-
-const activeStyle = {
-  color: '#E0E0E0',
-
-  borderColor: theme.primary(),
-  backgroundColor: theme.background3(),
-};
 
 type Props = {
   module: Module;
@@ -94,6 +117,14 @@ export default class ModuleEntry extends React.Component {
     }
 
     this.stopEditing();
+  };
+
+  getLink = () => {
+    if (this.state.editing) {
+      return ModuleSpan;
+    }
+
+    return ModuleLink;
   }
 
   props: Props;
@@ -102,6 +133,8 @@ export default class ModuleEntry extends React.Component {
     const { module, url, isActive, hasChildren, isOpen, depth,
       toggleOpen } = this.props;
     const { editing } = this.state;
+
+    const ModuleContainer = this.getLink();
     return (
       <div
         onMouseEnter={this.handleMouseEnter}
@@ -113,11 +146,11 @@ export default class ModuleEntry extends React.Component {
             show={this.state.hovering}
             startEditing={this.startEditing}
           />}
-        <ModuleLink
+        <ModuleContainer
           to={url(module)}
-          isActive={() => isActive}
-          activeStyle={activeStyle}
+          active={isActive}
           depth={depth}
+          editing={editing}
         >
           {hasChildren && <StyledFolderIcon isOpen={isOpen} onClick={toggleOpen} />}
           <ModuleIcon type={module.type} />
@@ -127,7 +160,7 @@ export default class ModuleEntry extends React.Component {
             onEditCommit={this.handleRename}
             cancelEdit={this.stopEditing}
           />
-        </ModuleLink>
+        </ModuleContainer>
       </div>
     );
   }

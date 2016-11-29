@@ -5,7 +5,6 @@ import styled from 'styled-components';
 const InputContainer = styled.div`
   display: inline-block;
   z-index: 10;
-  background-color: black;
   input {
     font-family: inherit;
     position: absolute;

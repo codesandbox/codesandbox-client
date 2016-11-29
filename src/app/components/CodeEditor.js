@@ -55,6 +55,7 @@ const handleError = (cm, currentModule, nextModule) => {
 
     if (nextModule.error && (
       nextModule.error.moduleId == null || nextModule.error.moduleId === nextModule.id)
+      && nextModule.error.line !== 0 && nextModule.error.line <= nextModule.code.split('\n').length
     ) {
       cm.addLineClass(nextModule.error.line, 'background', 'cm-line-error');
     }
