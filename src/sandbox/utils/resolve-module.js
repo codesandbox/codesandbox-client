@@ -9,9 +9,14 @@ const getInitialModuleId = (module) => {
   return module.id;
 };
 
+/**
+ * Convert the module path to a module
+ */
 export default (module: Module, path: string, modules: Array<Module>) => {
+  // Split path
   const splitPath = path.replace(/^.\//, '').split('/');
 
+  // Initial module is the initial module to start searching fron
   const initialModuleId = getInitialModuleId(module);
   const initialModule = modules.find(m => m.id === initialModuleId);
 
@@ -21,6 +26,7 @@ export default (module: Module, path: string, modules: Array<Module>) => {
 
     const isParent = moduleName === '..';
     let foundModule = null;
+    // Go up if the found module is a parent
     if (isParent) {
       foundModule = modules.find(x => x.id === prev.parentModuleId);
     } else {

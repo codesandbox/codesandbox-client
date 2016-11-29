@@ -74,6 +74,7 @@ class SandboxEditor extends React.Component {
           loading={!sandbox}
           modules={modules}
           changeCode={moduleActions.changeCode}
+          setError={moduleActions.setError}
         />
       </Container>
     );

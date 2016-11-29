@@ -20,6 +20,7 @@ const StyledFrame = styled.iframe`
 type Props = {
   modules: Array<Module>;
   module: Module;
+  setError: (error: ?{ message: string; line: number }) => void;
 }
 
 type State = {
@@ -48,6 +49,14 @@ export default class Preview extends React.Component {
           frameInitialized: true,
         });
         this.executeCode();
+      } else {
+        const { type } = e.data;
+        if (type === 'error') {
+          const { error } = e.data;
+          this.props.setError(error);
+        } else if (type === 'success') {
+          this.props.setError(null);
+        }
       }
     });
   }

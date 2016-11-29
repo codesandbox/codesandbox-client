@@ -18,11 +18,17 @@ const dependencies = new Map([
 
 const moduleCache = new Map();
 
-const compileCode = (code: string = '') => (
-  transform(code, {
-    presets: ['es2015', 'react', 'stage-0'],
-  }).code
-);
+const compileCode = (code: string = '', moduleName: string = 'unknown') => {
+  try {
+    return transform(code, {
+      presets: ['es2015', 'react', 'stage-0'],
+      retainLines: true,
+    }).code;
+  } catch (e) {
+    e.message = e.message.split('\n')[0].replace('unknown', moduleName);
+    throw new Error(e);
+  }
+};
 
 const evalModule = (mainModule: Module, modules: Array<Module>, depth: number = 0) => {
   const exports = {};
@@ -36,19 +42,21 @@ const evalModule = (mainModule: Module, modules: Array<Module>, depth: number = 
 
     const module = resolveModule(mainModule, path, modules);
     if (!module) throw new Error(`Cannot find module in path: ${path}`);
-    // Check if this module has ben evaluated before
-    const cachedModule = moduleCache.get(module.id);
-    if (cachedModule) return cachedModule;
 
-    const compiledModule = evalModule(module, modules, depth + 1);
-    moduleCache.set(module.id, compiledModule);
-    return compiledModule;
+    // Check if this module has been evaluated before, if so return that
+    return moduleCache.get(module.id) || evalModule(module, modules, depth + 1);
   };
-  const compiledCode = compileCode(mainModule.code);
-  // don't use Function() here since it changes source locations
-  eval(compiledCode); // eslint-disable-line no-eval
+  try {
+    const compiledCode = compileCode(mainModule.code, mainModule.title);
+    // don't use Function() here since it changes source locations
+    eval(compiledCode); // eslint-disable-line no-eval
+  } catch (e) {
+    // Remove cache
+    moduleCache.delete(mainModule.id);
+    throw e;
+  }
 
-  // Always set a new cache for this module, because we know this changed
+  // Always set a (if no error) new cache for this module, because we know this changed
   moduleCache.set(mainModule.id, exports);
   return exports;
 };

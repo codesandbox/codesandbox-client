@@ -45,6 +45,7 @@ type Props = {
   module: Module;
   changeCode: typeof moduleEntity.actions.changeCode;
   loading: boolean;
+  setError: typeof moduleEntity.actions.setError;
 };
 
 export default class Editor extends React.Component {
@@ -55,6 +56,10 @@ export default class Editor extends React.Component {
     }
   };
 
+  setError = (error: ?{ message: string; line: number }) => {
+    this.props.setError(this.props.module.id, error);
+  }
+
   render() {
     const { loading, module, modules } = this.props;
     if (loading) {
@@ -63,15 +68,17 @@ export default class Editor extends React.Component {
     if (!module) {
       return <Container><LoadingText>Could not find module</LoadingText></Container>;
     }
+
     return (
       <Container>
         <CodeEditorContainer>
-          <CodeEditor onChange={this.onChange} code={module.code} />
+          <CodeEditor onChange={this.onChange} module={module} />
         </CodeEditorContainer>
         <PreviewContainer>
           <Preview
             module={module}
             modules={modules}
+            setError={this.setError}
           />
         </PreviewContainer>
       </Container>

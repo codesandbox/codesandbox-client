@@ -1,13 +1,140 @@
 // @flow
 import React from 'react';
 import CodeMirror from 'codemirror';
-import { injectGlobal } from 'styled-components';
-import 'codemirror/mode/jsx/jsx';
+import styled, { injectGlobal, keyframes } from 'styled-components';
+
 import 'codemirror/lib/codemirror.css';
+import 'codemirror/mode/jsx/jsx';
+import 'codemirror/keymap/sublime';
+import 'codemirror/addon/fold/xml-fold'; // Needed to match JSX
+import 'codemirror/addon/edit/matchtags';
+import 'codemirror/addon/edit/closebrackets';
+import 'codemirror/addon/comment/comment';
 import 'codemirror/addon/selection/active-line';
+
 import { debounce } from 'lodash';
 
+import type { Module } from '../store/entities/modules';
 import theme from '../../common/theme';
+
+const documentCache = {};
+
+type Props = {
+  module: Module;
+  onChange: (code: string) => void;
+};
+
+const Container = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100%;
+`;
+
+const ErrorMessage = styled.div`
+  position: absolute;
+  font-family: 'Source Code Pro', monospace;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #400000;
+  font-weight: 400;
+  padding: 0.5rem;
+  color: #F27777;
+`;
+
+const handleError = (cm, currentModule, nextModule) => {
+  if (currentModule.error || nextModule.error) {
+    if (currentModule.error && nextModule.error &&
+      currentModule.error.line === nextModule.error.line) {
+      return;
+    }
+
+    if (currentModule.error) {
+      cm.removeLineClass(currentModule.error.line, 'background', 'cm-line-error');
+    }
+
+    if (nextModule.error) {
+      cm.addLineClass(nextModule.error.line, 'background', 'cm-line-error');
+    }
+  }
+};
+
+export default class Editor extends React.PureComponent {
+  props: Props;
+  constructor() {
+    super();
+    this.handleChange = debounce(this.handleChange, 10);
+  }
+
+  componentWillReceiveProps(nextProps: Props) {
+    const cm = this.codemirror;
+    const { module: currentModule } = this.props;
+    const { module: nextModule } = nextProps;
+    if (cm) {
+      if (nextModule.id !== currentModule.id) {
+        if (!documentCache[nextModule.id]) {
+          documentCache[nextModule.id] = new CodeMirror.Doc(nextModule.code, 'jsx');
+        }
+        documentCache[currentModule.id] = cm.swapDoc(documentCache[nextModule.id]);
+      }
+
+      handleError(cm, currentModule, nextModule);
+    }
+  }
+
+  getCodeMirror = (el: Element) => {
+    const { module } = this.props;
+    documentCache[module.id] = new CodeMirror.Doc(module.code, 'jsx');
+
+    this.codemirror = new CodeMirror(el, {
+      mode: 'jsx',
+      theme: 'oceanic',
+      keyMap: 'sublime',
+      indentUnit: 2,
+      autoCloseBrackets: true,
+      matchTags: {
+        bothTags: true,
+      },
+      value: documentCache[module.id],
+      lineNumbers: true,
+      styleActiveLine: true,
+      extraKeys: {
+        'Cmd-/': (cm) => {
+          cm.listSelections().forEach(() => {
+            cm.toggleComment({ lineComment: '//' });
+          });
+        },
+      },
+    });
+
+
+    this.codemirror.on('change', this.handleChange);
+  };
+
+  handleChange = (cm: any, change: any) => {
+    if (this.props.onChange && change.origin !== 'setValue') {
+      this.props.onChange(cm.getValue());
+    }
+  };
+
+  codemirror: typeof CodeMirror;
+
+  render() {
+    return (
+      <Container>
+        <div ref={this.getCodeMirror} />
+        {this.props.module.error && (
+          <ErrorMessage>{this.props.module.error.message}</ErrorMessage>
+        )}
+      </Container>
+    );
+  }
+}
+
+const fadeInAnimation = keyframes`
+  0%   { background-color: #374140; }
+  100% { background-color: #561011; }
+`;
 
 injectGlobal`
   .cm-s-oceanic.CodeMirror {
@@ -46,56 +173,11 @@ injectGlobal`
   .cm-s-oceanic span.cm-link { color: #aa759f; }
   .cm-s-oceanic span.cm-error { background: #ac4142; color: #b0b0b0; }
 
-  .cm-s-oceanic .CodeMirror-activeline-background { background: #343D46; }
+  .cm-s-oceanic .CodeMirror-activeline-background { background: #374140; }
   .cm-s-oceanic .CodeMirror-matchingbracket { text-decoration: underline; color: white !important; }
+  .cm-s-oceanic span.CodeMirror-matchingtag { background-color: inherit; }
+  .cm-s-oceanic span.cm-tag.CodeMirror-matchingtag { text-decoration: underline; }
+  .cm-s-oceanic span.cm-tag.cm-bracket.CodeMirror-matchingtag { text-decoration: none; }
+
+  .cm-s-oceanic div.cm-line-error.CodeMirror-linebackground { animation: ${fadeInAnimation} 0.3s; background-color: #561011; }
 `;
-
-type Props = {
-  code: string;
-  onChange?: (code: string) => void;
-};
-
-export default class Editor extends React.Component {
-  props: Props;
-  constructor() {
-    super();
-    this.handleChange = debounce(this.handleChange, 10);
-  }
-
-  componentWillReceiveProps(nextProps: Props) {
-    if (this.codemirror && nextProps.code !== this.codemirror.getValue()) {
-      const prevScrollPosition = this.codemirror.getScrollInfo();
-      this.codemirror.setValue(nextProps.code);
-      this.codemirror.scrollTo(prevScrollPosition.left, prevScrollPosition.top);
-    }
-  }
-
-  getCodeMirror = (el: Element) => {
-    const { code } = this.props;
-    this.codemirror = new CodeMirror(el, {
-      mode: 'jsx',
-      theme: 'oceanic',
-      tabSize: 2,
-      value: code,
-      lineNumbers: true,
-      styleActiveLine: true,
-    });
-
-    this.codemirror.on('change', this.handleChange);
-  };
-
-  handleChange = (doc: any, change: any) => {
-    if (this.props.onChange && change.origin !== 'setValue') {
-       // $FlowIssue
-      this.props.onChange(doc.getValue());
-    }
-  };
-
-  codemirror: typeof CodeMirror;
-
-  render() {
-    return (
-      <div style={{ height: '100%', width: '100%' }} ref={this.getCodeMirror} />
-    );
-  }
-}

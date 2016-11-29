@@ -17,6 +17,10 @@ export type Module = {
   children: Array<string>; // Gets built by afterReceiveReducer
   mainModule: boolean;
   type: string;
+  error?: ?{
+    message: string;
+    line: number;
+  };
 };
 
 const actions = createActions(schema);
