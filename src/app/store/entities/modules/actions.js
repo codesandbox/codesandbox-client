@@ -1,3 +1,4 @@
+import { singleModuleSelector } from './selector';
 import createEntityActions from '../../actions/entities';
 
 export const CHANGE_CODE = 'CHANGE_CODE';
@@ -10,6 +11,13 @@ export default (schema) => {
     setError: (id: string, error: ?{ message: string; line: number }) => (
       { type: SET_ERROR, id, error }
     ),
+    renameModule: (id: string, title: string) => (dispatch, getState) => {
+      const state = getState();
+      const module = singleModuleSelector(state, { id });
+      if (module == null) return;
+
+      dispatch(entityActions.updateById(id, { title: module.title }, { title }));
+    },
   };
   return { ...entityActions, ...customActions };
 };

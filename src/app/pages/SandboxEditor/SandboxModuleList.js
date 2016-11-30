@@ -17,7 +17,7 @@ type Props = {
   activeModuleId: string;
   url: (module: Module) => string;
   depth: number;
-  updateModule: (id: string, module: Module) => void;
+  renameModule: (id: string, title: string) => void;
 }
 
 type State = {
@@ -44,7 +44,7 @@ export default class SandboxModuleList extends React.Component {
   state: State;
 
   render() {
-    const { depth, modules, module, activeModuleId, updateModule, url } = this.props;
+    const { depth, modules, module, activeModuleId, renameModule, url } = this.props;
     const children = module.children.map(id => modules.find(m => m.id === id));
     return (
       <div>
@@ -56,7 +56,7 @@ export default class SandboxModuleList extends React.Component {
           hasChildren={module.children.length > 0}
           isOpen={this.state.isOpen}
           toggleOpen={this.toggleOpen}
-          updateModule={updateModule}
+          renameModule={renameModule}
           depth={depth}
         />
         {module.children.length > 0 &&
@@ -68,7 +68,7 @@ export default class SandboxModuleList extends React.Component {
                 modules={modules}
                 module={childModule}
                 activeModuleId={activeModuleId}
-                updateModule={updateModule}
+                renameModule={renameModule}
                 url={url}
               />
             ))}

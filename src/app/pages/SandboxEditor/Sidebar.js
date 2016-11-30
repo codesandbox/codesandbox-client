@@ -29,11 +29,11 @@ const Title = styled.h2`
 type Props = {
   modules: Array<Module>;
   activeModuleId: string;
-  updateModule: (id: string, module: Module) => void;
+  renameModule: (id: string, title: string) => void;
   url: (module: Module) => string;
   sandbox: ?Sandbox;
 }
-export default ({ sandbox, modules, updateModule, activeModuleId, url }: Props) => (
+export default ({ sandbox, modules, renameModule, activeModuleId, url }: Props) => (
   <Container>
     <Title>{sandbox ? sandbox.title : 'Loading...'}</Title>
     {sandbox &&
@@ -43,7 +43,7 @@ export default ({ sandbox, modules, updateModule, activeModuleId, url }: Props) 
         activeModuleId={activeModuleId}
         url={url}
         depth={0}
-        updateModule={updateModule}
+        renameModule={renameModule}
       />}
   </Container>
 );
