@@ -24,7 +24,7 @@ type State = {
 
 const initialState: State = {};
 
-const moduleReducer = (state: Module, action: Object, wholeState: State): Module => {
+const moduleReducer = (state: Module, action: Object, wholeState: State): ?Module => {
   switch (action.type) {
     case CHANGE_CODE:
       return {
@@ -49,6 +49,9 @@ const moduleReducer = (state: Module, action: Object, wholeState: State): Module
     }
     case COMMIT_EDIT_MODULE:
     case CANCEL_EDIT_MODULE: {
+      if (action.type === CANCEL_EDIT_MODULE && action.id === 'new') {
+        return null;
+      }
       return {
         ...state,
         edits: null,
@@ -72,12 +75,19 @@ export default (state: State = initialState, action: Object): State => {
     case EDIT_MODULE:
     case CANCEL_EDIT_MODULE:
     case COMMIT_EDIT_MODULE:
-    case TOGGLE_MODULE_TREE_OPEN:
+    case TOGGLE_MODULE_TREE_OPEN: {
+      const newModule = moduleReducer(state[action.id], action, state);
+      if (newModule === null) {
+        const newState = { ...state };
+        delete newState[action.id];
+        return newState;
+      }
+
       return {
         ...state,
-        [action.id]: moduleReducer(state[action.id], action, state),
+        [action.id]: newModule,
       };
-    case CREATE_MODULE: {
+    } case CREATE_MODULE: {
       const sandboxId = state[action.parentModuleId].sandboxId;
       return {
         ...state,
@@ -94,10 +104,7 @@ export default (state: State = initialState, action: Object): State => {
       };
     }
     case requestKeys.create.success: {
-      const newState = {
-        ...state,
-        [action.data.id]: action.data,
-      };
+      const newState = { ...state };
       delete newState.new;
       return newState;
     }

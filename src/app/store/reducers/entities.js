@@ -39,10 +39,16 @@ const createEntityReducer = entity =>
 
       newState = { ...newState, [action.id]: { ...newState[action.id], ...updatedInfo } };
     }
+
     if (action.type === entityKeys.update.failure) {
       const oldData = action.oldData;
 
       newState = { ...newState, [action.id]: { ...newState[action.id], ...oldData } };
+    }
+
+    if (action.type === entityKeys.create.success) {
+      const { entity: newEntity } = action;
+      newState = { ...newState, [newEntity.id]: newEntity };
     }
 
     return reducer(newState, action);

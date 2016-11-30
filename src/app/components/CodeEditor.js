@@ -53,9 +53,10 @@ const handleError = (cm, currentModule, nextModule) => {
       cm.removeLineClass(currentModule.error.line, 'background', 'cm-line-error');
     }
 
+    const code = nextModule.code || '';
     if (nextModule.error && (
       nextModule.error.moduleId == null || nextModule.error.moduleId === nextModule.id)
-      && nextModule.error.line !== 0 && nextModule.error.line <= nextModule.code.split('\n').length
+      && nextModule.error.line !== 0 && nextModule.error.line <= code.split('\n').length
     ) {
       cm.addLineClass(nextModule.error.line, 'background', 'cm-line-error');
     }
@@ -76,7 +77,7 @@ export default class Editor extends React.PureComponent {
     if (cm) {
       if (nextModule.id !== currentModule.id) {
         if (!documentCache[nextModule.id]) {
-          documentCache[nextModule.id] = new CodeMirror.Doc(nextModule.code, 'jsx');
+          documentCache[nextModule.id] = new CodeMirror.Doc(nextModule.code || '', 'jsx');
         }
         documentCache[currentModule.id] = cm.swapDoc(documentCache[nextModule.id]);
       }
@@ -87,7 +88,7 @@ export default class Editor extends React.PureComponent {
 
   getCodeMirror = (el: Element) => {
     const { module } = this.props;
-    documentCache[module.id] = new CodeMirror.Doc(module.code, 'jsx');
+    documentCache[module.id] = new CodeMirror.Doc(module.code || '', 'jsx');
 
     this.codemirror = new CodeMirror(el, {
       mode: 'jsx',

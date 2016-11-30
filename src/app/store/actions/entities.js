@@ -46,13 +46,12 @@ export default (schema: typeof Schema) => {
       dispatch({ type: keys.request, data });
 
       try {
-        const result = await callApi(`${key}/`, {
+        const entity = await callApi(`${key}/`, {
           method: 'POST',
           body: { data },
         });
-        const { newModule } = result;
 
-        dispatch({ type: keys.success, module: newModule });
+        dispatch({ type: keys.success, entity });
       } catch (e) {
         dispatch({ type: keys.failure, error: e });
       }
