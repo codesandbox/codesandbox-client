@@ -2,12 +2,12 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import { sortBy } from 'lodash';
 import type { Module } from '../../store/entities/modules/';
 
 import ModuleEntry from './ModuleEntry/';
 
 const Opener = styled.div`
-  overflow: hidden;
   height: ${props => (props.isOpen ? 'auto' : 0)};
 `;
 
@@ -45,10 +45,12 @@ export default class SandboxModuleList extends React.Component {
 
   render() {
     const { depth, modules, module, activeModuleId, updateModule, url } = this.props;
+    const children = module.children.map(id => modules.find(m => m.id === id));
     return (
       <div>
         <ModuleEntry
           module={module}
+          modules={modules}
           url={url}
           isActive={module.id === activeModuleId}
           hasChildren={module.children.length > 0}
@@ -59,21 +61,17 @@ export default class SandboxModuleList extends React.Component {
         />
         {module.children.length > 0 &&
           <Opener isOpen={this.state.isOpen}>
-            {module.children.map((moduleId) => {
-              const childModule = modules.find(m => m.id === moduleId);
-
-              return (
-                <SandboxModuleList
-                  key={moduleId}
-                  depth={depth + 1}
-                  modules={modules}
-                  module={childModule}
-                  activeModuleId={activeModuleId}
-                  updateModule={updateModule}
-                  url={url}
-                />
-              );
-            })}
+            {sortBy(children.filter(x => x != null), m => m.title.toUpperCase()).map(childModule => (
+              <SandboxModuleList
+                key={childModule.id}
+                depth={depth + 1}
+                modules={modules}
+                module={childModule}
+                activeModuleId={activeModuleId}
+                updateModule={updateModule}
+                url={url}
+              />
+            ))}
           </Opener>}
       </div>
     );

@@ -49,6 +49,8 @@ const theme = createTheme({
   primary: '#D9CB9E',
   secondary: '#DC3522',
   white: '#E0E0E0',
+  redBackground: '#400000',
+  red: '#F27777',
 });
 
 export default theme;

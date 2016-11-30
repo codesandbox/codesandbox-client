@@ -5,10 +5,6 @@ import IconBase from 'react-icons/IconBase';
 import ModuleIcon from 'react-icons/lib/fa/file-o';
 import FunctionIcon from 'react-icons/lib/fa/code';
 
-const Icon = styled.span`
-  margin-right: 8px;
-`;
-
 const getIcon = (type) => {
   if (type === 'react') {
     return (
@@ -45,6 +41,4 @@ const getIcon = (type) => {
   return <ModuleIcon />;
 };
 
-export default ({ type }: { type: string }) => (
-  <Icon>{getIcon(type)}</Icon>
-);
+export default ({ type }: { type: string }) => getIcon(type);

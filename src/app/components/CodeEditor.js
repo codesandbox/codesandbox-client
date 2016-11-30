@@ -36,10 +36,10 @@ const ErrorMessage = styled.div`
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: #400000;
+  background-color: ${props => props.theme.redBackground};
   font-weight: 400;
   padding: 0.5rem;
-  color: #F27777;
+  color: ${props => props.theme.red};
 `;
 
 const handleError = (cm, currentModule, nextModule) => {
