@@ -1,4 +1,5 @@
 import type { Module } from './';
+import { getModuleChildren } from './selector';
 
 const validateTitle = (name: string, module: Module, modules: { [id: string]: Module }) => {
   if (!/^[0-9a-zA-Z]+$/.test(name)) {
@@ -10,8 +11,8 @@ const validateTitle = (name: string, module: Module, modules: { [id: string]: Mo
     // Check if there are other modules with the same name
     const parentModule = modules[module.parentModuleId];
     if (parentModule != null) {
-      const siblingNames: Array<string> = parentModule.children
-                              .map(id => modules[id])
+      const children = getModuleChildren(module, modules);
+      const siblingNames: Array<string> = children
                               .filter(x => x != null)
                               .filter(m => m.id !== module.id)
                               .map(m => m.title);

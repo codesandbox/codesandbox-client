@@ -9,11 +9,12 @@ const processEntity = (schema: typeof Schema, result: { entities: Object }) => {
   return normalizedResult;
 };
 
-export const getKeys = (schema: Schema) => {
-  const KEY = schema.getKey().toUpperCase();
+export const getKeys = (key: string) => {
+  const KEY = key.toUpperCase();
   const keys = {
     get: `REQUEST_SINGLE_${KEY}`,
     update: `UPDATE_SINGLE_${KEY}`,
+    create: `CREATE_SINGLE_${KEY}`,
   };
 
   return Object.keys(keys).reduce((prev, next) => ({
@@ -28,7 +29,7 @@ export const getKeys = (schema: Schema) => {
 
 export default (schema: typeof Schema) => {
   const key = schema.getKey();
-  const actionKeys = getKeys(schema);
+  const actionKeys = getKeys(key);
   return {
     getById: (id: string, body: ?Object = null) => async (dispatch: Function) => {
       const keys = actionKeys.get;
@@ -40,9 +41,22 @@ export default (schema: typeof Schema) => {
       dispatch({ type: keys.success, id, ...normalizedResult });
     },
 
-    // create: params => async (dispatch: Function) => {
-    //   dispatch({ type: `CREATE_SINGLE_${KEY}`, id });
-    // },
+    create: (data: Object) => async (dispatch: Function) => {
+      const keys = actionKeys.create;
+      dispatch({ type: keys.request, data });
+
+      try {
+        const result = await callApi(`${key}/`, {
+          method: 'POST',
+          body: { data },
+        });
+        const { newModule } = result;
+
+        dispatch({ type: keys.success, module: newModule });
+      } catch (e) {
+        dispatch({ type: keys.failure, error: e });
+      }
+    },
 
     updateById: (id: string, oldData: Object, newData: Object) => async (dispatch: Function) => {
       const keys = actionKeys.update;
@@ -56,7 +70,7 @@ export default (schema: typeof Schema) => {
 
         dispatch({ type: keys.success, id, newData });
       } catch (e) {
-        dispatch({ type: keys.failure, id, oldData });
+        dispatch({ type: keys.failure, id, oldData, error: e });
       }
     },
   };

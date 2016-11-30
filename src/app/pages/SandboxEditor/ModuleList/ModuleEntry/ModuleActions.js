@@ -32,17 +32,18 @@ const Icon = styled.div`
 type Props = {
   show: boolean;
   onEditClick: () => void;
+  onCreateClick: () => void;
 };
 
 export default class Actions extends React.Component {
   props: Props;
   render() {
-    const { show, onEditClick } = this.props;
+    const { show, onEditClick, onCreateClick } = this.props;
     return (
       <Container show={show}>
         <div>
           <Icon onClick={onEditClick}><EditIcon /></Icon>
-          <Icon><PlusIcon /></Icon>
+          <Icon onClick={onCreateClick}><PlusIcon /></Icon>
         </div>
       </Container>
     );

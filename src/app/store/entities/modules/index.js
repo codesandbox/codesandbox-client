@@ -1,6 +1,5 @@
 // @flow
 import { Schema } from 'normalizr';
-import { values, sortBy } from 'lodash';
 
 import createEntity from '../create-entity';
 import createActions from './actions';
@@ -14,7 +13,6 @@ export type Module = {
   code: string;
   sandboxId: string;
   parentModuleId: string;
-  children: Array<string>; // Gets built by afterReceiveReducer
   mainModule: boolean;
   type: string;
   error?: ?{
@@ -37,19 +35,9 @@ const actions = createActions(schema);
 export default createEntity(schema, {
   actions,
   reducer,
-  afterReceiveReducer: (module, state) => {
-    // Used to build the tree of children of a module, this is not done
-    // on the server
-    // Also to mark the main module
-    const modules = values(state);
-
-    const children = modules.filter(m => m.parentModuleId === module.id);
-    const orderedChildren = sortBy(children, m => m.title);
-    return {
-      ...module,
-      children: orderedChildren.map(m => m.id),
-      mainModule: module.parentModuleId === null,
-      isTreeOpen: true,
-    };
-  },
+  afterReceiveReducer: module => ({
+    ...module,
+    mainModule: module.parentModuleId === null,
+    isTreeOpen: true,
+  }),
 });

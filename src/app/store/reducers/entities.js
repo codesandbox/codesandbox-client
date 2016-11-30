@@ -14,7 +14,7 @@ const d = _debug('cs:store:reducers:entities');
  */
 const createEntityReducer = entity =>
   (state = entity.initialState, action) => {
-    const entityKeys = getKeys(entity.schema);
+    const entityKeys = getKeys(entity.schema.getKey());
     // If there is no reducer we should use a placeholder
     const reducer = entity.reducer || ((_state = entity.initialState || {}) => _state);
 

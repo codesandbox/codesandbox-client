@@ -54,7 +54,7 @@ export default class Preview extends React.Component {
         if (type === 'error') {
           const { error } = e.data;
           this.props.setError(error);
-        } else if (type === 'success') {
+        } else if (type === 'success' && this.props.module.error) {
           this.props.setError(null);
         }
       }

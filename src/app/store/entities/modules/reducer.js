@@ -5,14 +5,18 @@ import validator from './validator';
 
 import findType from '../../../utils/find-type';
 
+import { getKeys } from '../../actions/entities';
 import {
   CHANGE_CODE,
+  CREATE_MODULE,
   SET_ERROR,
   EDIT_MODULE,
   CANCEL_EDIT_MODULE,
   TOGGLE_MODULE_TREE_OPEN,
   COMMIT_EDIT_MODULE,
 } from './actions';
+
+const requestKeys = getKeys('modules');
 
 type State = {
   [id: string]: Module;
@@ -73,6 +77,30 @@ export default (state: State = initialState, action: Object): State => {
         ...state,
         [action.id]: moduleReducer(state[action.id], action, state),
       };
+    case CREATE_MODULE: {
+      const sandboxId = state[action.parentModuleId].sandboxId;
+      return {
+        ...state,
+        new: {
+          id: 'new',
+          parentModuleId: action.parentModuleId,
+          sandboxId,
+          edits: {
+            sandboxId,
+            parentModuleId: action.parentModuleId,
+          },
+          title: '',
+        },
+      };
+    }
+    case requestKeys.create.success: {
+      const newState = {
+        ...state,
+        [action.data.id]: action.data,
+      };
+      delete newState.new;
+      return newState;
+    }
     default:
       return state;
   }

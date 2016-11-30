@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { sortBy } from 'lodash';
 import type { Module } from '../../../store/entities/modules';
 import moduleEntity from '../../../store/entities/modules/';
+import { getModuleChildren } from '../../../store/entities/modules/selector';
 
 import ModuleLink from './ModuleEntry/ModuleLink';
 import ModuleEdit from './ModuleEntry/ModuleEdit';
@@ -23,6 +24,7 @@ type Props = {
   cancelEditModule: typeof moduleEntity.actions.cancelEditModule;
   commitEditModule: typeof moduleEntity.actions.commitEditModule;
   editModule: typeof moduleEntity.actions.editModule;
+  createModule: typeof moduleEntity.actions.createModule;
   toggleTreeOpen: typeof moduleEntity.actions.toggleTreeOpen;
 }
 
@@ -42,6 +44,9 @@ export default class SandboxModuleList extends React.Component {
 
   onCreateClick = (e: Event) => {
     e.preventDefault();
+
+    const { module, createModule } = this.props;
+    createModule(module.id);
   };
 
   onCancelEdit = () => {
@@ -65,11 +70,8 @@ export default class SandboxModuleList extends React.Component {
 
   render() {
     const { depth, modules, module, activeModuleId, url, commitEditModule,
-      toggleTreeOpen, cancelEditModule, editModule } = this.props;
-    const children = module.children
-      .map(id => modules.find(m => m.id === id))
-      .filter(x => x != null);
-    const sortedChildren = sortBy(children, m => m.title.toUpperCase());
+      toggleTreeOpen, cancelEditModule, editModule, createModule } = this.props;
+    const children = getModuleChildren(module, modules);
     const isActive = module.id === activeModuleId;
     return (
       <div>
@@ -87,6 +89,7 @@ export default class SandboxModuleList extends React.Component {
             <ModuleLink
               module={module}
               url={url}
+              hasChildren={children.length > 0}
               isActive={isActive}
               toggleOpen={this.toggleOpen}
               onEditClick={this.onEditClick}
@@ -95,9 +98,9 @@ export default class SandboxModuleList extends React.Component {
             />
           )}
         </div>
-        {module.children.length > 0 &&
+        {children.length > 0 &&
           <Opener isOpen={module.isTreeOpen}>
-            {sortedChildren.map(childModule => (
+            {children.map(childModule => (
               <SandboxModuleList
                 key={childModule.id}
                 depth={depth + 1}
@@ -106,6 +109,7 @@ export default class SandboxModuleList extends React.Component {
                 activeModuleId={activeModuleId}
                 commitEditModule={commitEditModule}
                 toggleTreeOpen={toggleTreeOpen}
+                createModule={createModule}
                 cancelEditModule={cancelEditModule}
                 editModule={editModule}
                 url={url}

@@ -67,6 +67,7 @@ class SandboxEditor extends React.Component {
           sandbox={sandbox}
           modules={modules}
           editModule={moduleActions.editModule}
+          createModule={moduleActions.createModule}
           cancelEditModule={moduleActions.cancelEditModule}
           commitEditModule={moduleActions.commitEditModule}
           toggleTreeOpen={moduleActions.toggleTreeOpen}

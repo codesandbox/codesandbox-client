@@ -32,6 +32,7 @@ type Props = {
   url: (module: Module) => string;
   sandbox: ?Sandbox;
   editModule: typeof moduleEntity.actions.editModule;
+  createModule: typeof moduleEntity.actions.createModule;
   cancelEditModule: typeof moduleEntity.actions.cancelEditModule;
   commitEditModule: typeof moduleEntity.actions.commitEditModule;
   toggleTreeOpen: typeof moduleEntity.actions.toggleTreeOpen;
@@ -42,6 +43,7 @@ export default ({
   cancelEditModule,
   commitEditModule,
   editModule,
+  createModule,
   toggleTreeOpen,
   activeModuleId,
   url,
@@ -53,6 +55,7 @@ export default ({
         module={modules.find(x => x.mainModule)}
         modules={modules}
         activeModuleId={activeModuleId}
+        createModule={createModule}
         editModule={editModule}
         cancelEditModule={cancelEditModule}
         commitEditModule={commitEditModule}

@@ -16,13 +16,14 @@ type Props = {
   url: (module: Module) => string;
   isActive: boolean;
   depth: number;
+  hasChildren: boolean;
   toggleOpen?: (event: Event) => void;
   onEditClick: (e: Event) => void;
   onCreateClick: (e: Event) => void;
 };
 
 export default ({
-  module, url, isActive, depth,
+  module, url, isActive, depth, hasChildren,
   toggleOpen, onEditClick, onCreateClick }: Props,
 ) => (
   <ModuleLink
@@ -32,7 +33,7 @@ export default ({
   >
     <ModuleIcons
       type={module.type}
-      hasChildren={!!module.children.length}
+      hasChildren={hasChildren}
       isOpen={module.isTreeOpen}
       onOpen={toggleOpen}
     />
