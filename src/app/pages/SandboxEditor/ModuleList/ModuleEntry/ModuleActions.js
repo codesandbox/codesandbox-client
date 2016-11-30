@@ -16,8 +16,7 @@ const Container = styled.div`
 
   z-index: 5;
   cursor: pointer;
-  opacity: ${props => (props.show ? 1 : 0)};
-
+  opacity: 0;
 `;
 
 const Icon = styled.div`
@@ -32,17 +31,17 @@ const Icon = styled.div`
 
 type Props = {
   show: boolean;
-  startEditing: () => void;
+  onEditClick: () => void;
 };
 
 export default class Actions extends React.Component {
   props: Props;
   render() {
-    const { show, startEditing } = this.props;
+    const { show, onEditClick } = this.props;
     return (
       <Container show={show}>
         <div>
-          <Icon onClick={startEditing}><EditIcon /></Icon>
+          <Icon onClick={onEditClick}><EditIcon /></Icon>
           <Icon><PlusIcon /></Icon>
         </div>
       </Container>

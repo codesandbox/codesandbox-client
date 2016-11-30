@@ -1,11 +1,11 @@
 // @flow
 import React from 'react';
 import styled from 'styled-components';
-import { values } from 'lodash';
 
-import SandboxModuleList from './SandboxModuleList';
+import ModuleList from './ModuleList';
 
-import type { Module } from '../../store/entities/modules/';
+import moduleEntity from '../../store/entities/modules/';
+import type { Module } from '../../store/entities/modules';
 import type { Sandbox } from '../../store/entities/sandboxes/';
 
 const Container = styled.div`
@@ -29,21 +29,36 @@ const Title = styled.h2`
 type Props = {
   modules: Array<Module>;
   activeModuleId: string;
-  renameModule: (id: string, title: string) => void;
   url: (module: Module) => string;
   sandbox: ?Sandbox;
+  editModule: typeof moduleEntity.actions.editModule;
+  cancelEditModule: typeof moduleEntity.actions.cancelEditModule;
+  commitEditModule: typeof moduleEntity.actions.commitEditModule;
+  toggleTreeOpen: typeof moduleEntity.actions.toggleTreeOpen;
 }
-export default ({ sandbox, modules, renameModule, activeModuleId, url }: Props) => (
+export default ({
+  sandbox,
+  modules,
+  cancelEditModule,
+  commitEditModule,
+  editModule,
+  toggleTreeOpen,
+  activeModuleId,
+  url,
+}: Props) => (
   <Container>
     <Title>{sandbox ? sandbox.title : 'Loading...'}</Title>
     {sandbox &&
-      <SandboxModuleList
+      <ModuleList
         module={modules.find(x => x.mainModule)}
         modules={modules}
         activeModuleId={activeModuleId}
+        editModule={editModule}
+        cancelEditModule={cancelEditModule}
+        commitEditModule={commitEditModule}
+        toggleTreeOpen={toggleTreeOpen}
         url={url}
         depth={0}
-        renameModule={renameModule}
       />}
   </Container>
 );

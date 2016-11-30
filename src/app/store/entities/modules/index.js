@@ -24,6 +24,12 @@ export type Module = {
     title: string;
     moduleId: ?string;
   };
+  edits?: ?{
+    error: ?string;
+    title: string;
+    validationErrors: Array<String>;
+  };
+  isTreeOpen: boolean;
 };
 
 const actions = createActions(schema);
@@ -43,6 +49,7 @@ export default createEntity(schema, {
       ...module,
       children: orderedChildren.map(m => m.id),
       mainModule: module.parentModuleId === null,
+      isTreeOpen: true,
     };
   },
 });

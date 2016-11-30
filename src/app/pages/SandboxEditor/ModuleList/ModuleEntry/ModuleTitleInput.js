@@ -28,8 +28,8 @@ const InputContainer = styled.div`
 
 type Props = {
   title: string;
-  onCommit: () => void;
-  cancelEdit: () => void;
+  onCommit: (force: ?boolean) => void;
+  onCancel: () => void;
   onChange: (name: string) => void;
 }
 
@@ -49,12 +49,8 @@ export default class ModuleTitleInput extends React.Component {
       this.props.onCommit();
     } else if (e.keyCode === 27) {
       // Escape
-      this.cancelEdit();
+      this.props.onCancel();
     }
-  };
-
-  cancelEdit = () => {
-    this.props.cancelEdit();
   };
 
   render() {

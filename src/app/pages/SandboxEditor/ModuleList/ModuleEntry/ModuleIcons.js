@@ -4,6 +4,15 @@ import styled from 'styled-components';
 import IconBase from 'react-icons/IconBase';
 import ModuleIcon from 'react-icons/lib/fa/file-o';
 import FunctionIcon from 'react-icons/lib/fa/code';
+import FolderIcon from 'react-icons/lib/md/keyboard-arrow-down';
+
+const StyledFolderIcon = styled(FolderIcon)`
+  transition: 0.3s ease transform;
+  margin-left: -16px;
+  margin-right: 8px;
+
+  transform: rotateZ(${props => (props.isOpen ? '0deg' : '-90deg')});
+`;
 
 const getIcon = (type) => {
   if (type === 'react') {
@@ -41,4 +50,15 @@ const getIcon = (type) => {
   return <ModuleIcon />;
 };
 
-export default ({ type }: { type: string }) => getIcon(type);
+type Props = {
+  type: string;
+  hasChildren: boolean;
+  isOpen?: boolean;
+  onOpen: () => void;
+}
+export default ({ type, hasChildren, isOpen, onOpen }: Props) => (
+  <span>
+    {hasChildren && isOpen != null && <StyledFolderIcon isOpen={isOpen} onClick={onOpen} />}
+    {getIcon(type)}
+  </span>
+);
