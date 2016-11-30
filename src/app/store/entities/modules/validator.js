@@ -11,7 +11,7 @@ const validateTitle = (name: string, module: Module, modules: { [id: string]: Mo
     // Check if there are other modules with the same name
     const parentModule = modules[module.parentModuleId];
     if (parentModule != null) {
-      const children = getModuleChildren(module, modules);
+      const children = getModuleChildren(parentModule, modules);
       const siblingNames: Array<string> = children
                               .filter(x => x != null)
                               .filter(m => m.id !== module.id)
