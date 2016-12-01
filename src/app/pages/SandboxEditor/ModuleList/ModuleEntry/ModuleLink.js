@@ -32,6 +32,7 @@ type Props = {
   connectDragSource: Function;
   connectDropTarget: Function;
   isChildOfModule: (firstModuleId: string, secondModuleId: string) => boolean;
+  addChild: (id: string) => void;
 };
 
 type State = {
@@ -90,11 +91,6 @@ class ModuleEntry extends React.PureComponent {
 const moduleSource = {
   canDrag: props => props.module.parentModuleId != null,
   beginDrag: props => ({ id: props.module.id }),
-  endDrag: (props, monitor, component) => {
-    if (!monitor.didDrop()) return;
-
-    console.log('Hoi');
-  },
 };
 
 const collectSource = (connect, monitor) => ({
@@ -103,8 +99,12 @@ const collectSource = (connect, monitor) => ({
 });
 
 const moduleTarget = {
-  drop: () => {
-    console.log('hey');
+  drop: (props, monitor) => {
+    if (monitor == null) return;
+
+    const sourceItem = monitor.getItem();
+
+    props.addChild(sourceItem.id);
   },
 
   canDrop: (props, monitor) => {

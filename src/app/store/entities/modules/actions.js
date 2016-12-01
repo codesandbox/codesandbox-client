@@ -22,6 +22,12 @@ export default (schema) => {
       const module = singleModuleSelector(getState(), { id });
       dispatch(entityActions.updateById(id, { title: module.title }, { title }));
     },
+    addChild: (id: string, childId: string) => (dispatch, getState) => {
+      const module = singleModuleSelector(getState(), { id: childId });
+      const oldData = { parentModuleId: module.parentModuleId };
+      const newData = { parentModuleId: id };
+      dispatch(entityActions.updateById(childId, oldData, newData));
+    },
     toggleTreeOpen: (id: string) => ({ type: TOGGLE_MODULE_TREE_OPEN, id }),
   };
   return { ...entityActions, ...customActions };

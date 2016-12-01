@@ -39,6 +39,7 @@ class ModuleListContainer extends React.PureComponent { // eslint-disable-line
         activeModuleId={activeModuleId}
         createModule={moduleActions.createModule}
         renameModule={moduleActions.renameModule}
+        addChild={moduleActions.addChild}
         toggleTreeOpen={moduleActions.toggleTreeOpen}
         url={url}
         depth={0}

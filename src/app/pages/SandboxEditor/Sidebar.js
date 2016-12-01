@@ -11,6 +11,7 @@ const Container = styled.div`
   position: relative;
   background-color: ${props => props.theme.background};
   width: 20rem;
+  overflow: auto;
 `;
 
 const Title = styled.h2`

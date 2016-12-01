@@ -21,9 +21,10 @@ type Props = {
   activeModuleId: string;
   url: (module: Module) => string;
   depth: number;
-  createModule: (id: string, title: string) => void;
-  renameModule: (id: string, title: string) => void;
+  createModule: typeof moduleEntity.actions.createModule;
+  renameModule: typeof moduleEntity.actions.renameModule;
   toggleTreeOpen: typeof moduleEntity.actions.toggleTreeOpen;
+  addChild: typeof moduleEntity.actions.addChild;
 };
 
 type State = {
@@ -103,16 +104,22 @@ export default class ModuleList extends React.PureComponent {
     }
   };
 
+  addChild = (childId: string) => {
+    const { module, addChild } = this.props;
+
+    addChild(module.id, childId);
+  }
+
   isChildOfModule = (firstModuleId: string, secondModuleId: string) => {
     const { modules } = this.props;
     return isChildOfModule(firstModuleId, secondModuleId, modules);
-  }
+  };
 
   props: Props;
   state: State;
 
   render() {
-    const { depth, modules, module, activeModuleId, url,
+    const { depth, modules, addChild, module, activeModuleId, url,
       toggleTreeOpen, renameModule, createModule } = this.props;
     const { state } = this.state;
     const children = getModuleChildren(module, modules);
@@ -139,6 +146,7 @@ export default class ModuleList extends React.PureComponent {
               toggleOpen={this.toggleOpen}
               onEditClick={this.onEditClick}
               onCreateClick={this.onCreateClick}
+              addChild={this.addChild}
               depth={depth}
               isChildOfModule={this.isChildOfModule}
             />
@@ -167,6 +175,7 @@ export default class ModuleList extends React.PureComponent {
                 toggleTreeOpen={toggleTreeOpen}
                 createModule={createModule}
                 renameModule={renameModule}
+                addChild={addChild}
                 url={url}
               />
             ))}
