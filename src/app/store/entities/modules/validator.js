@@ -12,7 +12,6 @@ export const validateTitle = (
     // It has whitespaces
     return 'Title cannot have whitespaces or special characters';
   }
-
   if (parentModule != null) {
     // Check if there are other modules with the same name
     const children = getModuleChildren(parentModule, modules);

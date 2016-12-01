@@ -63,26 +63,36 @@ export default class SandboxModuleList extends React.PureComponent {
     this.setState({ state: '' });
   }
 
-  handleValidateTitle = (title: string) => {
-    const { module, modules } = this.props;
-    const parentModule = modules.find(m => m.id === module.parentModuleId);
+  handleValidateTitle = (title: string, module: Module, parentModule: Module) => {
+    const { modules } = this.props;
     return validateTitle(title, module, parentModule, modules);
   };
 
+  handleRenameValidation = (title: string) => {
+    const { module, modules } = this.props;
+    const parentModule = modules.find(m => m.id === module.parentModuleId);
+    return this.handleValidateTitle(title, module, parentModule);
+  };
+
+  handleCreationValidation = (title: string) => {
+    const parentModule = this.props.module;
+    return this.handleValidateTitle(title, {}, parentModule);
+  };
+
   handleRename = (title: string, force?: boolean) => {
-    const isInvalidTitle = this.handleValidateTitle(title);
+    const { module } = this.props;
+    const isInvalidTitle = this.handleRenameValidation(title);
 
     if (isInvalidTitle && force) {
       this.resetState();
     } else if (!isInvalidTitle) {
-      const { module } = this.props;
       this.props.renameModule(module.id, title);
       this.resetState();
     }
   };
 
   handleCreate = (title: string, force?: boolean) => {
-    const isInvalidTitle = this.handleValidateTitle(title);
+    const isInvalidTitle = this.handleCreationValidation(title);
 
     if (isInvalidTitle && force) {
       this.resetState();
@@ -111,7 +121,7 @@ export default class SandboxModuleList extends React.PureComponent {
               title={module.title}
               type={module.type}
               isActive={isActive}
-              validateTitle={this.handleValidateTitle}
+              validateTitle={this.handleRenameValidation}
               onCancel={this.resetState}
               onCommit={this.handleRename}
             />
@@ -136,7 +146,7 @@ export default class SandboxModuleList extends React.PureComponent {
                 title=""
                 type=""
                 isActive={false}
-                validateTitle={this.handleValidateTitle}
+                validateTitle={this.handleCreationValidation}
                 onCancel={this.resetState}
                 onCommit={this.handleCreate}
               />
