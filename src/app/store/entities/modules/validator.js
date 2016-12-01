@@ -31,6 +31,23 @@ export const validateTitle = (
   return null;
 };
 
+export const isChildOfModule = (
+  firstModuleId: string,
+  secondModuleId: string,
+  modules: Array<Module>,
+) => {
+  const findModule = id => modules.find(m => m.id === id);
+  let secondModule = findModule(secondModuleId);
+
+  while (secondModule.parentModuleId != null) {
+    if (secondModule.parentModuleId === firstModuleId) return true;
+
+    secondModule = findModule(secondModule.parentModuleId);
+  }
+
+  return false;
+};
+
 export default (edits, module: Module, wholeState) => {
   const parentModule = wholeState[module.parentModuleId];
   return validateTitle(edits.title, module, parentModule, wholeState);

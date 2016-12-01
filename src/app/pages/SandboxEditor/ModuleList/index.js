@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import type { Module } from '../../../store/entities/modules';
 import moduleEntity from '../../../store/entities/modules/';
-import { validateTitle } from '../../../store/entities/modules/validator';
+import { validateTitle, isChildOfModule } from '../../../store/entities/modules/validator';
 import { getModuleChildren } from '../../../store/entities/modules/selector';
 
 import ModuleLink from './ModuleEntry/ModuleLink';
@@ -30,7 +30,7 @@ type State = {
   state: '' | 'editing' | 'creating'
 }
 
-export default class SandboxModuleList extends React.PureComponent {
+export default class ModuleList extends React.PureComponent {
   constructor() {
     super();
     this.state = {
@@ -101,6 +101,11 @@ export default class SandboxModuleList extends React.PureComponent {
       this.props.createModule(module.id, title);
       this.resetState();
     }
+  };
+
+  isChildOfModule = (firstModuleId: string, secondModuleId: string) => {
+    const { modules } = this.props;
+    return isChildOfModule(firstModuleId, secondModuleId, modules);
   }
 
   props: Props;
@@ -135,6 +140,7 @@ export default class SandboxModuleList extends React.PureComponent {
               onEditClick={this.onEditClick}
               onCreateClick={this.onCreateClick}
               depth={depth}
+              isChildOfModule={this.isChildOfModule}
             />
           )}
         </div>
@@ -152,7 +158,7 @@ export default class SandboxModuleList extends React.PureComponent {
               />
             )}
             {children.map(childModule => (
-              <SandboxModuleList
+              <ModuleList
                 key={childModule.id}
                 depth={depth + 1}
                 modules={modules}
