@@ -2,7 +2,6 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { sortBy } from 'lodash';
 import type { Module } from '../../../store/entities/modules';
 import moduleEntity from '../../../store/entities/modules/';
 import { getModuleChildren } from '../../../store/entities/modules/selector';
@@ -45,7 +44,9 @@ export default class SandboxModuleList extends React.Component {
   onCreateClick = (e: Event) => {
     e.preventDefault();
 
-    const { module, createModule } = this.props;
+    const { module, createModule, toggleTreeOpen } = this.props;
+    if (!module.isTreeOpen) toggleTreeOpen(module.id);
+
     createModule(module.id);
   };
 

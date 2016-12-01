@@ -4,7 +4,7 @@ export default (props) => {
   let styles = `
     transition: 0.3s ease all;
     position: relative;
-    display: block;
+    display: flex;
     font-size: 14px;
     padding: 0.6rem;
     padding-left: ${props.depth + 2.9}rem;
