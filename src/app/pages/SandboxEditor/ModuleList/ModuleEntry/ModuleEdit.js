@@ -3,35 +3,72 @@ import React from 'react';
 import styled from 'styled-components';
 
 import commonStyles from './styles';
-import type { Module } from '../../../../store/entities/modules';
 import ModuleIcons from './ModuleIcons';
 import ModuleTitleInput from './ModuleTitleInput';
 
 const ModuleContainer = styled.span`${props => commonStyles(props)}`;
 
 type Props = {
-  module: Module;
   isActive: boolean;
   depth: number;
-  onChange: (name: string) => void;
-  onCommit: (name: string) => void;
+  title: string;
+  type: string;
+  validateTitle: (name: string) => boolean;
+  onCommit: (title: string, force: ?boolean) => void;
   onCancel: () => void;
 };
 
+type State = {
+  currentTitle: string;
+  error: boolean;
+};
 
-export default ({ isActive, depth, module, onChange, onCancel, onCommit }: Props) => (
-  <ModuleContainer
-    active={isActive}
-    depth={depth}
-    nameValidationError={module.edits && module.edits.error}
-    editing
-  >
-    <ModuleIcons type={module.type} />
-    <ModuleTitleInput
-      title={module.edits ? module.edits.title : module.title}
-      onChange={onChange}
-      onCancel={onCancel}
-      onCommit={onCommit}
-    />
-  </ModuleContainer>
-);
+export default class ModuleEdit extends React.PureComponent {
+  constructor(props: Props) {
+    super(props);
+
+    this.state = {
+      currentTitle: props.title,
+      error: false,
+    };
+  }
+
+  onChange = (title: string) => {
+    const { validateTitle } = this.props;
+    const isError = validateTitle(title);
+
+    this.setState({
+      currentTitle: title,
+      error: isError,
+    });
+  };
+
+  onCommit = (force: ?boolean) => {
+    const { currentTitle } = this.state;
+    this.props.onCommit(currentTitle, force);
+  };
+
+  props: Props;
+  state: State;
+
+  render() {
+    const { isActive, depth, type, onCancel } = this.props;
+    const { currentTitle, error } = this.state;
+    return (
+      <ModuleContainer
+        active={isActive}
+        depth={depth}
+        nameValidationError={error}
+        editing
+      >
+        <ModuleIcons type={type} />
+        <ModuleTitleInput
+          title={currentTitle}
+          onChange={this.onChange}
+          onCancel={onCancel}
+          onCommit={this.onCommit}
+        />
+      </ModuleContainer>
+    );
+  }
+}

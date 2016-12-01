@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import type { Module } from '../../../store/entities/modules';
 import moduleEntity from '../../../store/entities/modules/';
+import { validateTitle } from '../../../store/entities/modules/validator';
 import { getModuleChildren } from '../../../store/entities/modules/selector';
 
 import ModuleLink from './ModuleEntry/ModuleLink';
@@ -20,14 +21,23 @@ type Props = {
   activeModuleId: string;
   url: (module: Module) => string;
   depth: number;
-  cancelEditModule: typeof moduleEntity.actions.cancelEditModule;
-  commitEditModule: typeof moduleEntity.actions.commitEditModule;
-  editModule: typeof moduleEntity.actions.editModule;
-  createModule: typeof moduleEntity.actions.createModule;
+  createModule: (id: string, title: string) => void;
+  renameModule: (id: string, title: string) => void;
   toggleTreeOpen: typeof moduleEntity.actions.toggleTreeOpen;
+};
+
+type State = {
+  state: '' | 'editing' | 'creating'
 }
 
-export default class SandboxModuleList extends React.Component {
+export default class SandboxModuleList extends React.PureComponent {
+  constructor() {
+    super();
+    this.state = {
+      state: '',
+    };
+  }
+
   toggleOpen = (event: Event) => {
     event.preventDefault();
 
@@ -37,54 +47,73 @@ export default class SandboxModuleList extends React.Component {
   onEditClick = (e: Event) => {
     e.preventDefault();
 
-    const { module, editModule } = this.props;
-    editModule(module.id, { title: module.title });
+    this.setState({ state: 'editing' });
   };
 
   onCreateClick = (e: Event) => {
     e.preventDefault();
 
-    const { module, createModule, toggleTreeOpen } = this.props;
+    const { module, toggleTreeOpen } = this.props;
     if (!module.isTreeOpen) toggleTreeOpen(module.id);
 
-    createModule(module.id);
+    this.setState({ state: 'creating' });
   };
 
-  onCancelEdit = () => {
-    const { module, cancelEditModule } = this.props;
-
-    cancelEditModule(module.id);
+  resetState = () => {
+    this.setState({ state: '' });
   }
 
-  onCommitEdit = () => {
-    const { module, commitEditModule } = this.props;
+  handleValidateTitle = (title: string) => {
+    const { module, modules } = this.props;
+    const parentModule = modules.find(m => m.id === module.parentModuleId);
+    return validateTitle(title, module, parentModule, modules);
+  };
 
-    commitEditModule(module.id);
-  }
+  handleRename = (title: string, force?: boolean) => {
+    const isInvalidTitle = this.handleValidateTitle(title);
 
-  onRenameChange = (name: string) => {
-    const { module, editModule } = this.props;
-    editModule(module.id, { title: name });
+    if (isInvalidTitle && force) {
+      this.resetState();
+    } else if (!isInvalidTitle) {
+      const { module } = this.props;
+      this.props.renameModule(module.id, title);
+      this.resetState();
+    }
+  };
+
+  handleCreate = (title: string, force?: boolean) => {
+    const isInvalidTitle = this.handleValidateTitle(title);
+
+    if (isInvalidTitle && force) {
+      this.resetState();
+    } else if (!isInvalidTitle) {
+      const { module } = this.props;
+      this.props.createModule(module.id, title);
+      this.resetState();
+    }
   }
 
   props: Props;
+  state: State;
 
   render() {
-    const { depth, modules, module, activeModuleId, url, commitEditModule,
-      toggleTreeOpen, cancelEditModule, editModule, createModule } = this.props;
+    const { depth, modules, module, activeModuleId, url,
+      toggleTreeOpen, renameModule, createModule } = this.props;
+    const { state } = this.state;
     const children = getModuleChildren(module, modules);
     const isActive = module.id === activeModuleId;
     return (
       <div>
         <div>
-          {module.edits ? (
+          {state === 'editing' ? (
             <ModuleEdit
               depth={depth}
-              module={module}
+              title={module.title}
+              type={module.type}
               isActive={isActive}
-              onChange={this.onRenameChange}
-              onCancel={this.onCancelEdit}
-              onCommit={this.onCommitEdit}
+              validateTitle={this.handleValidateTitle}
+              onCancel={this.resetState}
+              onCommit={this.handleRename}
             />
           ) : (
             <ModuleLink
@@ -99,8 +128,19 @@ export default class SandboxModuleList extends React.Component {
             />
           )}
         </div>
-        {children.length > 0 &&
+        {(children.length > 0 || state === 'creating') &&
           <Opener isOpen={module.isTreeOpen}>
+            {state === 'creating' && (
+              <ModuleEdit
+                depth={depth + 1}
+                title=""
+                type=""
+                isActive={false}
+                validateTitle={this.handleValidateTitle}
+                onCancel={this.resetState}
+                onCommit={this.handleCreate}
+              />
+            )}
             {children.map(childModule => (
               <SandboxModuleList
                 key={childModule.id}
@@ -108,11 +148,9 @@ export default class SandboxModuleList extends React.Component {
                 modules={modules}
                 module={childModule}
                 activeModuleId={activeModuleId}
-                commitEditModule={commitEditModule}
                 toggleTreeOpen={toggleTreeOpen}
                 createModule={createModule}
-                cancelEditModule={cancelEditModule}
-                editModule={editModule}
+                renameModule={renameModule}
                 url={url}
               />
             ))}

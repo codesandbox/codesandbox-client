@@ -1,22 +1,13 @@
 // @flow
 import type { Module } from './';
 
-import validator from './validator';
-
 import findType from '../../../utils/find-type';
 
-import { getKeys } from '../../actions/entities';
 import {
   CHANGE_CODE,
-  CREATE_MODULE,
   SET_ERROR,
-  EDIT_MODULE,
-  CANCEL_EDIT_MODULE,
   TOGGLE_MODULE_TREE_OPEN,
-  COMMIT_EDIT_MODULE,
 } from './actions';
-
-const requestKeys = getKeys('modules');
 
 type State = {
   [id: string]: Module;
@@ -24,7 +15,7 @@ type State = {
 
 const initialState: State = {};
 
-const moduleReducer = (state: Module, action: Object, wholeState: State): ?Module => {
+const moduleReducer = (state: Module, action: Object): ?Module => {
   switch (action.type) {
     case CHANGE_CODE:
       return {
@@ -36,25 +27,6 @@ const moduleReducer = (state: Module, action: Object, wholeState: State): ?Modul
       return {
         ...state,
         error: action.error,
-      };
-    }
-    case EDIT_MODULE: {
-      const newEdits = { ...state.edits, error: null, ...action.edits };
-      const error = validator(newEdits, state, wholeState);
-      newEdits.error = error;
-      return {
-        ...state,
-        edits: newEdits,
-      };
-    }
-    case COMMIT_EDIT_MODULE:
-    case CANCEL_EDIT_MODULE: {
-      if (action.type === CANCEL_EDIT_MODULE && action.id === 'new') {
-        return null;
-      }
-      return {
-        ...state,
-        edits: null,
       };
     }
     case TOGGLE_MODULE_TREE_OPEN: {
@@ -71,43 +43,12 @@ const moduleReducer = (state: Module, action: Object, wholeState: State): ?Modul
 export default (state: State = initialState, action: Object): State => {
   switch (action.type) {
     case CHANGE_CODE:
+    case TOGGLE_MODULE_TREE_OPEN:
     case SET_ERROR:
-    case EDIT_MODULE:
-    case CANCEL_EDIT_MODULE:
-    case COMMIT_EDIT_MODULE:
-    case TOGGLE_MODULE_TREE_OPEN: {
-      const newModule = moduleReducer(state[action.id], action, state);
-      if (newModule === null) {
-        const newState = { ...state };
-        delete newState[action.id];
-        return newState;
-      }
-
       return {
         ...state,
-        [action.id]: newModule,
+        [action.id]: moduleReducer(state[action.id], action),
       };
-    } case CREATE_MODULE: {
-      const sandboxId = state[action.parentModuleId].sandboxId;
-      return {
-        ...state,
-        new: {
-          id: 'new',
-          parentModuleId: action.parentModuleId,
-          sandboxId,
-          edits: {
-            sandboxId,
-            parentModuleId: action.parentModuleId,
-          },
-          title: '',
-        },
-      };
-    }
-    case requestKeys.create.success: {
-      const newState = { ...state };
-      delete newState.new;
-      return newState;
-    }
     default:
       return state;
   }

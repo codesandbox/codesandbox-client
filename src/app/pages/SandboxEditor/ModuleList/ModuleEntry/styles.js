@@ -42,8 +42,8 @@ export default (props) => {
 
     if (props.nameValidationError) {
       styles += `
-        border-color: ${theme.red()};
-        background-color: ${theme.redBackground.clearer(0.4)()};
+        border-color: ${theme.red()} !important;
+        background-color: ${theme.redBackground.clearer(0.4)()} !important;
       `;
     }
   }

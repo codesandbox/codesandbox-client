@@ -35,17 +35,11 @@ type Props = {
   onCreateClick: () => void;
 };
 
-export default class Actions extends React.Component {
-  props: Props;
-  render() {
-    const { show, onEditClick, onCreateClick } = this.props;
-    return (
-      <Container show={show}>
-        <div>
-          <Icon onClick={onEditClick}><EditIcon /></Icon>
-          <Icon onClick={onCreateClick}><PlusIcon /></Icon>
-        </div>
-      </Container>
-    );
-  }
-}
+export default ({ show, onEditClick, onCreateClick }: Props) => (
+  <Container show={show}>
+    <div>
+      <Icon onClick={onEditClick}><EditIcon /></Icon>
+      <Icon onClick={onCreateClick}><PlusIcon /></Icon>
+    </div>
+  </Container>
+);

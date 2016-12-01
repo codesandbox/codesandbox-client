@@ -6,12 +6,14 @@ import ModuleIcon from 'react-icons/lib/fa/file-o';
 import FunctionIcon from 'react-icons/lib/fa/code';
 import FolderIcon from 'react-icons/lib/md/keyboard-arrow-down';
 
-const StyledFolderIcon = styled(FolderIcon)`
-  transition: 0.3s ease transform;
-  margin-left: -16px;
-  margin-right: 8px;
+const StyledFolderIcon = styled.span`
+  svg {
+    transition: 0.3s ease transform;
+    margin-left: -16px;
+    margin-right: 8px;
 
-  transform: rotateZ(${props => (props.isOpen ? '0deg' : '-90deg')});
+    transform: rotateZ(${props => (props.isOpen ? '0deg' : '-90deg')});
+  }
 `;
 
 const getIcon = (type) => {
@@ -58,7 +60,11 @@ type Props = {
 }
 export default ({ type, hasChildren, isOpen, onOpen }: Props) => (
   <span>
-    {hasChildren && isOpen != null && <StyledFolderIcon isOpen={isOpen} onClick={onOpen} />}
+    {hasChildren && isOpen != null && (
+      <StyledFolderIcon isOpen={isOpen} onClick={onOpen}>
+        <FolderIcon />
+      </StyledFolderIcon>
+    )}
     {getIcon(type)}
   </span>
 );

@@ -22,11 +22,6 @@ export type Module = {
     title: string;
     moduleId: ?string;
   };
-  edits?: ?{
-    error: ?string;
-    title: string;
-    validationErrors: Array<String>;
-  };
   isTreeOpen: boolean;
 };
 
