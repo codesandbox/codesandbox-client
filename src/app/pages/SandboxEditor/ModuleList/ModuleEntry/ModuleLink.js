@@ -26,8 +26,9 @@ const activeClassName = css({
   color: `${theme.white()} !important`,
   borderColor: `${theme.primary()} !important`,
   backgroundColor: `${theme.background3()} !important`,
-});
+}).toString();
 
+// Don't trust flow checks for this component'
 type Props = {
   id: string;
   title: string;
