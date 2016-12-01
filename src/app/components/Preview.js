@@ -27,7 +27,7 @@ type State = {
   frameInitialized: boolean;
 }
 
-export default class Preview extends React.Component {
+export default class Preview extends React.PureComponent {
   constructor() {
     super();
 

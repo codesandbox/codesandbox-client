@@ -44,7 +44,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(modalActions, dispatch),
 });
-class Modal extends React.Component {
+class Modal extends React.PureComponent {
   props: Props;
 
   handleKeyPress = (event) => {

@@ -37,7 +37,7 @@ function select(el) {
   if (el) el.select();
 }
 
-export default class ModuleTitleInput extends React.Component {
+export default class ModuleTitleInput extends React.PureComponent {
   props: Props;
   handleChange = (el: Event) => {
     this.props.onChange(el.target.value);

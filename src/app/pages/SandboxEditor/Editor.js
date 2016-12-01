@@ -48,7 +48,7 @@ type Props = {
   setError: typeof moduleEntity.actions.setError;
 };
 
-export default class Editor extends React.Component {
+export default class Editor extends React.PureComponent {
   props: Props;
   onChange = (code: string = '') => {
     if (this.props.module.code !== code) {
@@ -72,7 +72,12 @@ export default class Editor extends React.Component {
     return (
       <Container>
         <CodeEditorContainer>
-          <CodeEditor onChange={this.onChange} module={module} />
+          <CodeEditor
+            onChange={this.onChange}
+            id={module.id}
+            error={module.error}
+            code={module.code}
+          />
         </CodeEditorContainer>
         <PreviewContainer>
           <Preview

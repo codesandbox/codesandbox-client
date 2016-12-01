@@ -40,7 +40,7 @@ const mapDispatchToProps = dispatch => ({
   sandboxActions: bindActionCreators(sandboxEntity.actions, dispatch),
   moduleActions: bindActionCreators(moduleEntity.actions, dispatch),
 });
-class SandboxEditor extends React.Component {
+class SandboxEditor extends React.PureComponent {
   componentDidMount() {
     const sandboxId = this.props.params.sandbox;
     this.props.sandboxActions.getById(sandboxId);

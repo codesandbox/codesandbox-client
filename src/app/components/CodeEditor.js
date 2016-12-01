@@ -14,13 +14,14 @@ import 'codemirror/addon/selection/active-line';
 
 import { debounce } from 'lodash';
 
-import type { Module } from '../store/entities/modules';
 import theme from '../../common/theme';
 
 const documentCache = {};
 
 type Props = {
-  module: Module;
+  code: ?string;
+  error: ?Object;
+  id: string;
   onChange: (code: string) => void;
 };
 
@@ -42,53 +43,57 @@ const ErrorMessage = styled.div`
   color: ${props => props.theme.red};
 `;
 
-const handleError = (cm, currentModule, nextModule) => {
-  if (currentModule.error || nextModule.error) {
-    if (currentModule.error && nextModule.error &&
-      currentModule.error.line === nextModule.error.line) {
+const handleError = (cm, currentError, nextError, nextCode, nextId) => {
+  if (currentError || nextError) {
+    if (currentError && nextError &&
+      currentError.line === nextError.line) {
       return;
     }
 
-    if (currentModule.error) {
-      cm.removeLineClass(currentModule.error.line, 'background', 'cm-line-error');
+    if (currentError) {
+      cm.removeLineClass(currentError.line, 'background', 'cm-line-error');
     }
 
-    const code = nextModule.code || '';
-    if (nextModule.error && (
-      nextModule.error.moduleId == null || nextModule.error.moduleId === nextModule.id)
-      && nextModule.error.line !== 0 && nextModule.error.line <= code.split('\n').length
+    const code = nextCode || '';
+    if (nextError && (
+      nextError.moduleId == null || nextError.moduleId === nextId)
+      && nextError.line !== 0 && nextError.line <= code.split('\n').length
     ) {
-      cm.addLineClass(nextModule.error.line, 'background', 'cm-line-error');
+      cm.addLineClass(nextError.line, 'background', 'cm-line-error');
     }
   }
 };
 
-export default class Editor extends React.PureComponent {
+export default class CodeEditor extends React.PureComponent {
   props: Props;
   constructor() {
     super();
     this.handleChange = debounce(this.handleChange, 10);
   }
 
+  shouldComponentUpdate(nextProps: Props) {
+    return nextProps.id !== this.props.id || nextProps.error !== this.props.error;
+  }
+
   componentWillReceiveProps(nextProps: Props) {
     const cm = this.codemirror;
-    const { module: currentModule } = this.props;
-    const { module: nextModule } = nextProps;
+    const { id: currentId, error: currentError } = this.props;
+    const { id: nextId, code: nextCode, error: nextError } = nextProps;
     if (cm) {
-      if (nextModule.id !== currentModule.id) {
-        if (!documentCache[nextModule.id]) {
-          documentCache[nextModule.id] = new CodeMirror.Doc(nextModule.code || '', 'jsx');
+      if (nextId !== currentId) {
+        if (!documentCache[nextId]) {
+          documentCache[nextId] = new CodeMirror.Doc(nextCode || '', 'jsx');
         }
-        documentCache[currentModule.id] = cm.swapDoc(documentCache[nextModule.id]);
+        documentCache[currentId] = cm.swapDoc(documentCache[nextId]);
       }
 
-      handleError(cm, currentModule, nextModule);
+      handleError(cm, currentError, nextError, nextCode, nextId);
     }
   }
 
   getCodeMirror = (el: Element) => {
-    const { module } = this.props;
-    documentCache[module.id] = new CodeMirror.Doc(module.code || '', 'jsx');
+    const { code, id } = this.props;
+    documentCache[id] = new CodeMirror.Doc(code || '', 'jsx');
 
     this.codemirror = new CodeMirror(el, {
       mode: 'jsx',
@@ -99,7 +104,7 @@ export default class Editor extends React.PureComponent {
       matchTags: {
         bothTags: true,
       },
-      value: documentCache[module.id],
+      value: documentCache[id],
       lineNumbers: true,
       styleActiveLine: true,
       extraKeys: {
@@ -124,12 +129,12 @@ export default class Editor extends React.PureComponent {
   codemirror: typeof CodeMirror;
 
   render() {
-    const { module } = this.props;
+    const { error } = this.props;
     return (
       <Container>
         <div ref={this.getCodeMirror} />
-        {module.error && (
-          <ErrorMessage><b>{module.error.title}</b>: {module.error.message}</ErrorMessage>
+        {error && (
+          <ErrorMessage><b>{error.title}</b>: {error.message}</ErrorMessage>
         )}
       </Container>
     );
