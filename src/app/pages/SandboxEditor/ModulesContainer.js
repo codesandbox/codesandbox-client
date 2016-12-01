@@ -3,8 +3,6 @@ import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { values } from 'lodash';
-import HTML5Backend from 'react-dnd-html5-backend';
-import { DragDropContext } from 'react-dnd';
 
 import ModuleList from './ModuleList';
 
@@ -24,24 +22,17 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   moduleActions: bindActionCreators(moduleEntity.actions, dispatch),
 });
-// Class because draggable uses refs
-class ModuleListContainer extends React.PureComponent { // eslint-disable-line
-  props: Props;
-  render() {
-    const { modules, moduleActions, url } = this.props;
-    return (
-      <ModuleList
-        module={modules.find(x => x.mainModule)}
-        modules={modules}
-        createModule={moduleActions.createModule}
-        renameModule={moduleActions.renameModule}
-        addChild={moduleActions.addChild}
-        toggleTreeOpen={moduleActions.toggleTreeOpen}
-        url={url}
-        depth={0}
-      />
-    );
-  }
-}
-export default
-  connect(mapStateToProps, mapDispatchToProps)(DragDropContext(HTML5Backend)(ModuleListContainer));
+
+const ModuleListContainer = ({ modules, moduleActions, url }: Props) => (
+  <ModuleList
+    module={modules.find(x => x.mainModule)}
+    modules={modules}
+    createModule={moduleActions.createModule}
+    renameModule={moduleActions.renameModule}
+    addChild={moduleActions.addChild}
+    toggleTreeOpen={moduleActions.toggleTreeOpen}
+    url={url}
+    depth={0}
+  />
+);
+export default connect(mapStateToProps, mapDispatchToProps)(ModuleListContainer);

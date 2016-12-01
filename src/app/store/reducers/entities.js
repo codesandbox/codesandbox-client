@@ -51,6 +51,16 @@ const createEntityReducer = entity =>
       newState = { ...newState, [newEntity.id]: newEntity };
     }
 
+    if (action.type === entityKeys.delete.request) {
+      newState = { ...newState };
+      delete newState[action.id];
+    }
+
+    if (action.type === entityKeys.delete.failure) {
+      const { entity: newEntity } = action;
+      newState = { ...newState, [newEntity.id]: newEntity };
+    }
+
     return reducer(newState, action);
   };
 

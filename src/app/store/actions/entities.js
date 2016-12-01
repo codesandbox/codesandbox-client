@@ -15,6 +15,7 @@ export const getKeys = (key: string) => {
     get: `REQUEST_SINGLE_${KEY}`,
     update: `UPDATE_SINGLE_${KEY}`,
     create: `CREATE_SINGLE_${KEY}`,
+    delete: `DELETE_SINGLE_${KEY}`,
   };
 
   return Object.keys(keys).reduce((prev, next) => ({
@@ -70,6 +71,23 @@ export default (schema: typeof Schema) => {
         dispatch({ type: keys.success, id, newData });
       } catch (e) {
         dispatch({ type: keys.failure, id, oldData, error: e });
+      }
+    },
+
+    delete: (id: string) => async (dispatch: Function, getState: Function) => {
+      const keys = actionKeys.delete;
+
+      const entityData = getState().entities[key][id];
+      dispatch({ type: keys.request, id });
+
+      try {
+        await callApi(`${key}/${id}`, {
+          method: 'DELETE',
+        });
+
+        dispatch({ type: keys.success, id });
+      } catch (e) {
+        dispatch({ type: keys.failure, id, entity: entityData });
       }
     },
   };

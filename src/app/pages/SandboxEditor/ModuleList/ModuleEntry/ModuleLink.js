@@ -33,7 +33,6 @@ type Props = {
   id: string;
   title: string;
   type: ?string;
-  isMainModule: boolean;
   isTreeOpen: boolean;
   hasChildren: boolean;
   url: string;
