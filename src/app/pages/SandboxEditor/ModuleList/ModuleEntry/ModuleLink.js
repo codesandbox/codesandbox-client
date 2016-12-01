@@ -76,7 +76,6 @@ class ModuleEntry extends React.PureComponent {
       title, type, isTreeOpen, url, depth, hasChildren, connectDragSource, connectDropTarget,
       toggleOpen, onEditClick, onCreateClick,
     } = this.props;
-    console.log('render');
     const { dragAbove } = this.state;
 
     return connectDropTarget(connectDragSource(
