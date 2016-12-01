@@ -27,14 +27,6 @@ export default (props) => {
     }
   `;
 
-  if (props.active) {
-    styles += `
-      color: ${theme.white()};
-      border-color: ${theme.primary()};
-      background-color: ${theme.background3()};
-    `;
-  }
-
   if (props.editing) {
     styles += `
       color: ${theme.white()}

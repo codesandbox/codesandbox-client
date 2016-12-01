@@ -28,18 +28,16 @@ const Title = styled.h2`
 
 
 type Props = {
-  activeModuleId: string;
   url: (module: Module) => string;
   sandbox: ?Sandbox;
 }
 export default ({
   sandbox,
-  activeModuleId,
   url,
 }: Props) => (
   <Container>
     <Title>{sandbox ? sandbox.title : 'Loading...'}</Title>
     {sandbox &&
-      <ModulesContainer activeModuleId={activeModuleId} url={url} />}
+      <ModulesContainer url={url} />}
   </Container>
 );

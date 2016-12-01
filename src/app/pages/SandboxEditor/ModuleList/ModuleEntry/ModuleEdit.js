@@ -1,6 +1,7 @@
 // @flow
 import React from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router';
 
 import commonStyles from './styles';
 import ModuleIcons from './ModuleIcons';
@@ -9,13 +10,13 @@ import ModuleTitleInput from './ModuleTitleInput';
 const ModuleContainer = styled.span`${props => commonStyles(props)}`;
 
 type Props = {
-  isActive: boolean;
   depth: number;
   title: string;
   type: string;
   validateTitle: (name: string) => boolean;
   onCommit: (title: string, force: ?boolean) => void;
   onCancel: () => void;
+  url: string
 };
 
 type State = {
@@ -52,23 +53,28 @@ export default class ModuleEdit extends React.PureComponent {
   state: State;
 
   render() {
-    const { isActive, depth, type, onCancel } = this.props;
+    const { depth, type, onCancel, url } = this.props;
     const { currentTitle, error } = this.state;
+
+    // We only use link for active matching
     return (
-      <ModuleContainer
-        active={isActive}
-        depth={depth}
-        nameValidationError={error}
-        editing
-      >
-        <ModuleIcons type={type} />
-        <ModuleTitleInput
-          title={currentTitle}
-          onChange={this.onChange}
-          onCancel={onCancel}
-          onCommit={this.onCommit}
-        />
-      </ModuleContainer>
+      <Link to={url}>{
+        ({ isActive }) =>
+          <ModuleContainer
+            depth={depth}
+            nameValidationError={error}
+            isActive={isActive}
+            editing
+          >
+            <ModuleIcons type={type} />
+            <ModuleTitleInput
+              title={currentTitle}
+              onChange={this.onChange}
+              onCancel={onCancel}
+              onCommit={this.onCommit}
+            />
+          </ModuleContainer>
+      }</Link>
     );
   }
 }

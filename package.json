@@ -64,6 +64,7 @@
     "codemirror": "^5.21.0",
     "color": "^0.11.4",
     "debug": "^2.3.3",
+    "glamor": "^2.20.8",
     "humps": "^2.0.0",
     "lodash": "^4.17.2",
     "normalize.css": "^5.0.0",

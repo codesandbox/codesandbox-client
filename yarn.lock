@@ -2300,7 +2300,7 @@ fb-watchman@^1.8.0, fb-watchman@^1.9.0:
   dependencies:
     bser "^1.0.2"
 
-fbjs@^0.8.1, fbjs@^0.8.4, fbjs@^0.8.5:
+fbjs@^0.8.1, fbjs@^0.8.4, fbjs@^0.8.5, fbjs@^0.8.6:
   version "0.8.6"
   resolved "https://registry.yarnpkg.com/fbjs/-/fbjs-0.8.6.tgz#7eb67d6986b2d5007a9b6e92e0e7cb6f75cad290"
   dependencies:
@@ -2523,6 +2523,12 @@ glamor@^2.15.5:
   resolved "https://registry.yarnpkg.com/glamor/-/glamor-2.17.14.tgz#5ffedc85e4bcc2421d7e286f9d0c32b5f73c721b"
   dependencies:
     fbjs "^0.8.5"
+
+glamor@^2.20.8:
+  version "2.20.8"
+  resolved "https://registry.yarnpkg.com/glamor/-/glamor-2.20.8.tgz#81f55ed8cca7b7a8a38d9d66cbb5291562bd9438"
+  dependencies:
+    fbjs "^0.8.6"
 
 glob-base@^0.3.0:
   version "0.3.0"

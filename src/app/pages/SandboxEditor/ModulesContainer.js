@@ -12,11 +12,9 @@ import moduleEntity from '../../store/entities/modules';
 import { modulesSelector } from '../../store/entities/modules/selector';
 import type { Module } from '../../store/entities/modules/';
 
-
 type Props = {
   modules: Array<Module>,
   moduleActions: typeof moduleEntity.actions;
-  activeModuleId: string;
   url: (module: Module) => string;
 };
 
@@ -30,13 +28,11 @@ const mapDispatchToProps = dispatch => ({
 class ModuleListContainer extends React.PureComponent { // eslint-disable-line
   props: Props;
   render() {
-    const { modules, moduleActions, url, activeModuleId } = this.props;
-
+    const { modules, moduleActions, url } = this.props;
     return (
       <ModuleList
         module={modules.find(x => x.mainModule)}
         modules={modules}
-        activeModuleId={activeModuleId}
         createModule={moduleActions.createModule}
         renameModule={moduleActions.renameModule}
         addChild={moduleActions.addChild}

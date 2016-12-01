@@ -63,7 +63,6 @@ class SandboxEditor extends React.Component {
     return (
       <Container>
         <Sidebar
-          activeModuleId={moduleId}
           sandbox={sandbox}
           url={module => editModuleUrl(sandbox, module)}
         />

@@ -18,7 +18,6 @@ const Opener = styled.div`
 type Props = {
   module: Module;
   modules: Array<Module>;
-  activeModuleId: string;
   url: (module: Module) => string;
   depth: number;
   createModule: typeof moduleEntity.actions.createModule;
@@ -110,29 +109,30 @@ export default class ModuleList extends React.PureComponent {
     addChild(module.id, childId);
   }
 
-  isChildOfModule = (firstModuleId: string, secondModuleId: string) => {
-    const { modules } = this.props;
-    return isChildOfModule(firstModuleId, secondModuleId, modules);
+  isChildOfModule = (firstModuleId: string) => {
+    const { modules, module } = this.props;
+    return isChildOfModule(firstModuleId, module.id, modules);
   };
 
   props: Props;
   state: State;
 
   render() {
-    const { depth, modules, addChild, module, activeModuleId, url,
+    const { depth, modules, addChild, module, url,
       toggleTreeOpen, renameModule, createModule } = this.props;
     const { state } = this.state;
     const children = getModuleChildren(module, modules);
-    const isActive = module.id === activeModuleId;
+    const hasChildren = children.length > 0 || state === 'creating';
+    const urlToModule = url(module);
     return (
       <div>
         <div>
           {state === 'editing' ? (
             <ModuleEdit
               depth={depth}
+              url={urlToModule}
               title={module.title}
               type={module.type}
-              isActive={isActive}
               validateTitle={this.handleRenameValidation}
               onCancel={this.resetState}
               onCommit={this.handleRename}
@@ -140,23 +140,28 @@ export default class ModuleList extends React.PureComponent {
           ) : (
             <ModuleLink
               module={module}
-              url={url}
+              url={urlToModule}
               hasChildren={children.length > 0}
-              isActive={isActive}
               toggleOpen={this.toggleOpen}
               onEditClick={this.onEditClick}
               onCreateClick={this.onCreateClick}
               addChild={this.addChild}
               depth={depth}
+              id={module.id}
+              title={module.title}
+              type={module.type}
+              isTreeOpen={module.isTreeOpen}
+              isMainModule={!module.parentModuleId}
               isChildOfModule={this.isChildOfModule}
             />
           )}
         </div>
-        {(children.length > 0 || state === 'creating') &&
+        {hasChildren &&
           <Opener isOpen={module.isTreeOpen}>
             {state === 'creating' && (
               <ModuleEdit
                 depth={depth + 1}
+                url=""
                 title=""
                 type=""
                 isActive={false}
@@ -171,7 +176,6 @@ export default class ModuleList extends React.PureComponent {
                 depth={depth + 1}
                 modules={modules}
                 module={childModule}
-                activeModuleId={activeModuleId}
                 toggleTreeOpen={toggleTreeOpen}
                 createModule={createModule}
                 renameModule={renameModule}

@@ -1,6 +1,7 @@
 // @flow
 import React from 'react';
 import styled from 'styled-components';
+import { css } from 'glamor';
 import { Link } from 'react-router';
 import { DragSource, DropTarget } from 'react-dnd';
 
@@ -9,8 +10,9 @@ import type { Module } from '../../../../store/entities/modules/';
 import ModuleIcons from './ModuleIcons';
 import ModuleTitle from './ModuleTitle';
 import ModuleActions from './ModuleActions';
+import theme from '../../../../../common/theme';
 
-const Container = styled.span`> a {${props => commonStyles(props)}}`;
+const Container = styled.span`a {${props => commonStyles(props)}}`;
 
 const DragOverlay = styled.div`
   position: absolute;
@@ -20,10 +22,20 @@ const DragOverlay = styled.div`
   background-color: rgba(0, 0, 0, 0.3);
 `;
 
+const activeClassName = css({
+  color: `${theme.white()} !important`,
+  borderColor: `${theme.primary()} !important`,
+  backgroundColor: `${theme.background3()} !important`,
+});
+
 type Props = {
-  module: Module;
-  url: (module: Module) => string;
-  isActive: boolean;
+  id: string;
+  title: string;
+  type: ?string;
+  isMainModule: boolean;
+  isTreeOpen: boolean;
+  hasChildren: boolean;
+  url: string;
   depth: number;
   hasChildren: boolean;
   toggleOpen?: (event: Event) => void;
@@ -31,7 +43,7 @@ type Props = {
   onCreateClick: (e: Event) => void;
   connectDragSource: Function;
   connectDropTarget: Function;
-  isChildOfModule: (firstModuleId: string, secondModuleId: string) => boolean;
+  isChildOfModule: (firstModuleId: string) => boolean;
   addChild: (id: string) => void;
 };
 
@@ -61,23 +73,24 @@ class ModuleEntry extends React.PureComponent {
   state: State;
   render() {
     const {
-      module, url, isActive, depth, hasChildren, connectDragSource, connectDropTarget,
+      title, type, isTreeOpen, url, depth, hasChildren, connectDragSource, connectDropTarget,
       toggleOpen, onEditClick, onCreateClick,
     } = this.props;
+    console.log('render');
     const { dragAbove } = this.state;
 
     return connectDropTarget(connectDragSource(
       <div style={{ position: 'relative' }}>
         {dragAbove && <DragOverlay />}
-        <Container active={isActive} depth={depth}>
-          <Link to={url(module)}>
+        <Container depth={depth}>
+          <Link activeClassName={activeClassName} to={url}>
             <ModuleIcons
-              type={module.type}
+              type={type}
               hasChildren={hasChildren}
-              isOpen={module.isTreeOpen}
+              isOpen={isTreeOpen}
               onOpen={toggleOpen}
             />
-            <ModuleTitle title={module.title} />
+            <ModuleTitle title={title} />
             <ModuleActions
               onEditClick={onEditClick}
               onCreateClick={onCreateClick}
@@ -89,8 +102,8 @@ class ModuleEntry extends React.PureComponent {
 }
 
 const moduleSource = {
-  canDrag: props => props.module.parentModuleId != null,
-  beginDrag: props => ({ id: props.module.id }),
+  canDrag: props => !props.isMainModule,
+  beginDrag: props => ({ id: props.id }),
 };
 
 const collectSource = (connect, monitor) => ({
@@ -112,8 +125,8 @@ const moduleTarget = {
     const source = monitor.getItem();
     if (source == null) return false;
 
-    if (source.id === props.module.id) return false;
-    if (props.isChildOfModule(source.id, props.module.id)) return false;
+    if (source.id === props.id) return false;
+    if (props.isChildOfModule(source.id)) return false;
     return true;
   },
 };
