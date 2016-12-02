@@ -23,20 +23,27 @@ type Props = {
   error: ?Object;
   id: string;
   onChange: (code: string) => void;
+  saveCode: (id: string) => void;
 };
 
 const Container = styled.div`
   position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: auto;
   width: 100%;
   height: 100%;
+  overflow: auto;
+`;
+
+const CodeContainer = styled.div`
+  height: 100%;
+  overflow: auto;
 `;
 
 const ErrorMessage = styled.div`
-  position: absolute;
   font-family: 'Source Code Pro', monospace;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  width: 100%;
   background-color: ${props => props.theme.redBackground};
   font-weight: 400;
   padding: 0.5rem;
@@ -69,6 +76,20 @@ export default class CodeEditor extends React.PureComponent {
   constructor() {
     super();
     this.handleChange = debounce(this.handleChange, 10);
+  }
+
+  componentDidMount() {
+    window.addEventListener('keydown', (event: KeyboardEvent) => {
+      if (event.ctrlKey || event.metaKey) {
+        if (event.key === 's') {
+          const { id } = this.props;
+          this.props.saveCode(id);
+          event.preventDefault();
+          return false;
+        }
+      }
+      return true;
+    });
   }
 
   shouldComponentUpdate(nextProps: Props) {
@@ -108,6 +129,10 @@ export default class CodeEditor extends React.PureComponent {
       lineNumbers: true,
       styleActiveLine: true,
       extraKeys: {
+        Tab: (cm) => {
+          const spaces = Array(cm.getOption('indentUnit') + 1).join(' ');
+          cm.replaceSelection(spaces);
+        },
         'Cmd-/': (cm) => {
           cm.listSelections().forEach(() => {
             cm.toggleComment({ lineComment: '//' });
@@ -132,7 +157,9 @@ export default class CodeEditor extends React.PureComponent {
     const { error } = this.props;
     return (
       <Container>
-        <div ref={this.getCodeMirror} />
+        <CodeContainer>
+          <div ref={this.getCodeMirror} />
+        </CodeContainer>
         {error && (
           <ErrorMessage><b>{error.title}</b>: {error.message}</ErrorMessage>
         )}

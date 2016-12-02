@@ -18,8 +18,8 @@ const Container = styled.div`
   min-width: inherit;
 
   background-color: ${props => (
-    props.isOver ? props.theme.redBackground.lighten(0.5)
-                 : props.theme.redBackground
+    props.isOver ? props.theme.redBackground.lighten(0.1)
+                 : props.theme.redBackground.lighten(0.5)
   )};
 
   text-align: center;

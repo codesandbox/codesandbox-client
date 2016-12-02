@@ -10,7 +10,6 @@ export type ModalState = {
   params: Object,
 }
 
-
 const initialState: ModalState = {
   show: false,
   template: undefined,

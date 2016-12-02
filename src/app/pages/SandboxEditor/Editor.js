@@ -44,6 +44,7 @@ type Props = {
   modules: Array<Module>;
   module: Module;
   changeCode: typeof moduleEntity.actions.changeCode;
+  saveCode: typeof moduleEntity.actions.saveCode;
   loading: boolean;
   setError: typeof moduleEntity.actions.setError;
 };
@@ -61,7 +62,7 @@ export default class Editor extends React.PureComponent {
   }
 
   render() {
-    const { loading, module, modules } = this.props;
+    const { loading, module, modules, saveCode } = this.props;
     if (loading) {
       return <Container><LoadingText>Loading...</LoadingText></Container>;
     }
@@ -77,6 +78,7 @@ export default class Editor extends React.PureComponent {
             id={module.id}
             error={module.error}
             code={module.code}
+            saveCode={saveCode}
           />
         </CodeEditorContainer>
         <PreviewContainer>

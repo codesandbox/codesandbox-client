@@ -34,7 +34,7 @@ type Props = {
   title: string;
   type: ?string;
   isTreeOpen: boolean;
-  hasChildren: boolean;
+  isNotSynced: ?boolean;
   url: string;
   depth: number;
   hasChildren: boolean;
@@ -74,7 +74,7 @@ class ModuleEntry extends React.PureComponent {
   render() {
     const {
       title, type, isTreeOpen, url, depth, hasChildren, connectDragSource, connectDropTarget,
-      toggleOpen, onEditClick, onCreateClick,
+      toggleOpen, onEditClick, onCreateClick, isNotSynced,
     } = this.props;
     const { dragAbove } = this.state;
 
@@ -89,7 +89,7 @@ class ModuleEntry extends React.PureComponent {
               isOpen={isTreeOpen}
               onOpen={toggleOpen}
             />
-            <ModuleTitle title={title} />
+            <ModuleTitle isNotSynced={isNotSynced} title={title} />
             <ModuleActions
               onEditClick={onEditClick}
               onCreateClick={onCreateClick}

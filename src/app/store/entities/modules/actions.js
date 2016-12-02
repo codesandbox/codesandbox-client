@@ -2,6 +2,7 @@ import { singleModuleSelector } from './selector';
 import createEntityActions from '../../actions/entities';
 
 export const CHANGE_CODE = 'CHANGE_CODE';
+export const SAVE_CODE = 'SAVE_CODE';
 export const SET_ERROR = 'SET_ERROR';
 export const TOGGLE_MODULE_TREE_OPEN = 'TOGGLE_MODULE_TREE_OPEN';
 
@@ -29,6 +30,14 @@ export default (schema) => {
       dispatch(entityActions.updateById(childId, oldData, newData));
     },
     toggleTreeOpen: (id: string) => ({ type: TOGGLE_MODULE_TREE_OPEN, id }),
+    saveCode: (id: string) => (dispatch, getState) => {
+      const module = singleModuleSelector(getState(), { id });
+      dispatch({ type: SAVE_CODE, id });
+
+      const revertData = { isNotSynced: module.isNotSynced };
+      const newData = { code: module.code, type: module.type };
+      dispatch(entityActions.updateById(id, revertData, newData));
+    },
   };
   return { ...entityActions, ...customActions };
 };

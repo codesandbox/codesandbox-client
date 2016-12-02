@@ -150,6 +150,7 @@ export default class ModuleList extends React.PureComponent {
               id={module.id}
               title={module.title}
               type={module.type}
+              isNotSynced={module.isNotSynced}
               isTreeOpen={module.isTreeOpen}
               isMainModule={!module.parentModuleId}
               isChildOfModule={this.isChildOfModule}

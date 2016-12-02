@@ -49,7 +49,7 @@ const getIcon = (type) => {
   if (type === 'function') {
     return <FunctionIcon />;
   }
-  return <ModuleIcon />;
+  return <FunctionIcon />;
 };
 
 type Props = {

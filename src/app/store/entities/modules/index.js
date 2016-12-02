@@ -23,6 +23,7 @@ export type Module = {
     moduleId: ?string;
   };
   isTreeOpen: boolean;
+  isNotSynced?: boolean;
 };
 
 const actions = createActions(schema);

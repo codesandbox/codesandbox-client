@@ -6,6 +6,7 @@ import findType from '../../../utils/find-type';
 import {
   CHANGE_CODE,
   SET_ERROR,
+  SAVE_CODE,
   TOGGLE_MODULE_TREE_OPEN,
 } from './actions';
 
@@ -22,6 +23,12 @@ const moduleReducer = (state: Module, action: Object): ?Module => {
         ...state,
         code: action.code,
         type: findType(action.code),
+        isNotSynced: true,
+      };
+    case SAVE_CODE:
+      return {
+        ...state,
+        isNotSynced: false,
       };
     case SET_ERROR: {
       return {
@@ -44,6 +51,7 @@ export default (state: State = initialState, action: Object): State => {
   switch (action.type) {
     case CHANGE_CODE:
     case TOGGLE_MODULE_TREE_OPEN:
+    case SAVE_CODE:
     case SET_ERROR:
       return {
         ...state,

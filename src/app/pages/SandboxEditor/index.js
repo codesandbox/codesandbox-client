@@ -73,6 +73,7 @@ class SandboxEditor extends React.PureComponent {
           modules={modules}
           changeCode={moduleActions.changeCode}
           setError={moduleActions.setError}
+          saveCode={moduleActions.saveCode}
         />
       </Container>
     );
