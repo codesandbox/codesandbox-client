@@ -88,8 +88,9 @@ class ModuleEntry extends React.PureComponent {
               hasChildren={hasChildren}
               isOpen={isTreeOpen}
               onOpen={toggleOpen}
+              isNotSynced={isNotSynced}
             />
-            <ModuleTitle isNotSynced={isNotSynced} title={title} />
+            <ModuleTitle title={title} />
             <ModuleActions
               onEditClick={onEditClick}
               onCreateClick={onCreateClick}

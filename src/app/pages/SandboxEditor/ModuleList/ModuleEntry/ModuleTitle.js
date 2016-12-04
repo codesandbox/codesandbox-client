@@ -1,7 +1,6 @@
 // @flow
 import React from 'react';
 import styled from 'styled-components';
-import NotSyncedIcon from 'react-icons/lib/go/primitive-dot';
 
 const TitleContainer = styled.span`
   display: inline-block;
@@ -12,14 +11,8 @@ const TitleContainer = styled.span`
   overflow: hidden;
 `;
 
-const NotSyncedIconWithMargin = styled(NotSyncedIcon)`
-  margin-left: 0.5rem;
-  color: ${props => props.theme.secondary};
-`;
-
-export default ({ title, isNotSynced }: { title: string, isNotSynced: ?boolean }) => (
+export default ({ title }: { title: string }) => (
   <TitleContainer title={title}>
     {title}
-    {isNotSynced && <NotSyncedIconWithMargin />}
   </TitleContainer>
 );

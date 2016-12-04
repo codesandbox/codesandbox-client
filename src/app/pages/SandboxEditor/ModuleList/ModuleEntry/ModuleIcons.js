@@ -2,9 +2,17 @@ import React from 'react';
 import styled from 'styled-components';
 
 import IconBase from 'react-icons/IconBase';
-import ModuleIcon from 'react-icons/lib/fa/file-o';
+// import ModuleIcon from 'react-icons/lib/fa/file-o';
 import FunctionIcon from 'react-icons/lib/fa/code';
 import FolderIcon from 'react-icons/lib/md/keyboard-arrow-down';
+import NotSyncedIcon from 'react-icons/lib/go/primitive-dot';
+
+const NotSyncedIconWithMargin = styled(NotSyncedIcon)`
+  position: absolute;
+  left: 0.6rem;
+  vertical-align: middle;
+  color: ${props => props.theme.secondary};
+`;
 
 const StyledFolderIcon = styled.span`
   svg {
@@ -55,11 +63,13 @@ const getIcon = (type) => {
 type Props = {
   type: string;
   hasChildren: boolean;
+  isNotSynced: ?boolean;
   isOpen?: boolean;
   onOpen: () => void;
 }
-export default ({ type, hasChildren, isOpen, onOpen }: Props) => (
+export default ({ type, hasChildren, isNotSynced, isOpen, onOpen }: Props) => (
   <span>
+    {isNotSynced && <NotSyncedIconWithMargin />}
     {hasChildren && isOpen != null && (
       <StyledFolderIcon isOpen={isOpen} onClick={onOpen}>
         <FolderIcon />
