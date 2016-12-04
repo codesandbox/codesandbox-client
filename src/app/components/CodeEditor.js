@@ -158,7 +158,7 @@ export default class CodeEditor extends React.PureComponent {
     return (
       <Container>
         <CodeContainer>
-          <div ref={this.getCodeMirror} />
+          <div style={{ height: '100%' }} ref={this.getCodeMirror} />
         </CodeContainer>
         {error && (
           <ErrorMessage><b>{error.title}</b>: {error.message}</ErrorMessage>
