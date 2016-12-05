@@ -50,6 +50,7 @@ const theme = createTheme({
   // secondary: '#DC3522',
   secondary: '#00B7FF',
   white: '#E0E0E0',
+  black: '#74757D',
   redBackground: '#400000',
   red: '#F27777',
 });

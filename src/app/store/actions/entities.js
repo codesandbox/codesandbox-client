@@ -1,5 +1,7 @@
 // @flow
 import { normalize } from 'normalizr';
+
+import notificationActions from './notifications';
 import type { Entity } from '../entities';
 
 import callApi from '../services/api';
@@ -39,7 +41,7 @@ export default (schema: typeof Schema) => {
       const result = await callApi(`${key}/${id}`, { body });
       const normalizedResult = processEntity(schema, result);
 
-      dispatch({ type: keys.success, id, ...normalizedResult });
+      return dispatch({ type: keys.success, id, ...normalizedResult });
     },
 
     create: (data: Object) => async (dispatch: Function) => {
@@ -55,6 +57,7 @@ export default (schema: typeof Schema) => {
         dispatch({ type: keys.success, entity });
       } catch (e) {
         dispatch({ type: keys.failure, error: e });
+        throw e;
       }
     },
 
@@ -71,6 +74,7 @@ export default (schema: typeof Schema) => {
         dispatch({ type: keys.success, id, newData });
       } catch (e) {
         dispatch({ type: keys.failure, id, oldData, error: e });
+        throw e;
       }
     },
 
@@ -88,6 +92,7 @@ export default (schema: typeof Schema) => {
         dispatch({ type: keys.success, id });
       } catch (e) {
         dispatch({ type: keys.failure, id, entity: entityData });
+        throw e;
       }
     },
   };

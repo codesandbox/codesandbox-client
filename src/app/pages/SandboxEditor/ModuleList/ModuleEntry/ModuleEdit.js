@@ -14,7 +14,7 @@ type Props = {
   title: string;
   type: string;
   validateTitle: (name: string) => boolean;
-  onCommit: (title: string, force: ?boolean) => void;
+  onCommit: (title: string, force?: boolean) => void;
   onCancel: () => void;
   url: string
 };

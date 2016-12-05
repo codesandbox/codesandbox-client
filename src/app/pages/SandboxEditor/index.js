@@ -65,7 +65,7 @@ class SandboxEditor extends React.PureComponent {
         <Sidebar
           sandbox={sandbox}
           url={module => editModuleUrl(sandbox, module)}
-          deleteModule={moduleActions.delete}
+          deleteModule={moduleActions.deleteModule}
         />
         <Editor
           module={modules.find(m => m.id === moduleId)}

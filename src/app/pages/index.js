@@ -6,6 +6,7 @@ import 'normalize.css';
 import Header from '../components/Header';
 
 import Modal from '../containers/Modal';
+import Notifications from '../containers/Notifications';
 import Root from './Root';
 import SandboxEditor from './SandboxEditor/';
 
@@ -24,6 +25,7 @@ const Content = styled.div`
 export default () => (
   <BrowserRouter>
     <Container>
+      <Notifications />
       <Modal />
       <Header />
       <Content>
