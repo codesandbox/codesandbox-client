@@ -3,27 +3,12 @@ import type { Module } from '../../app/store/entities/modules/';
 
 import { getModuleChildren } from '../../app/store/entities/modules/selector';
 
-const getInitialModuleId = (module, hasChildren) => {
-  if (!hasChildren) {
-    if (module.parentModuleId == null) return module.id;
-    return module.parentModuleId;
-  }
-  return module.id;
-};
-
 /**
  * Convert the module path to a module
  */
 export default (module: Module, path: string, modules: Array<Module>) => {
   // Split path
   const splitPath = path.replace(/^.\//, '').split('/');
-
-  const children = getModuleChildren(module, modules);
-  // Initial module is the initial module to start searching fron
-  const initialModuleId = getInitialModuleId(module, children.length > 0);
-  const initialModule = modules.find(m => m.id === initialModuleId);
-
-  if (!initialModule) throw new Error(`Cannot find module in path ${path}`);
 
   const resolvedModule = splitPath.reduce((prev, moduleName) => {
     if (moduleName === '') return prev;
@@ -38,7 +23,7 @@ export default (module: Module, path: string, modules: Array<Module>) => {
     if (!foundModule) throw Error(`Cannot find module in path ${path}`);
 
     return foundModule;
-  }, initialModule);
+  }, module);
 
   if (resolvedModule === module) throw new Error(`${module.title} is importing itself`);
   return resolvedModule;
