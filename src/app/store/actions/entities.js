@@ -1,8 +1,5 @@
 // @flow
-import { normalize } from 'normalizr';
-
-import notificationActions from './notifications';
-import type { Entity } from '../entities';
+import { normalize, Schema } from 'normalizr';
 
 import callApi from '../services/api';
 

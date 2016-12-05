@@ -11,7 +11,7 @@ export default async function callApi(endpoint, { method = 'GET', body = null } 
 
   // If it is an absolute url.
   const url = endpoint.split('')[0] === '/' ? endpoint : `${API_ROOT}${endpoint}`;
-  const authorization = (document.cookie.match(/[; ]jwt=([^\s;]*)/) || [])[1];
+  const authorization = (document.cookie.match(/[; ]?jwt=([^\s;]*)/) || [])[1];
   const options = { url, method };
   if (authorization) {
     options.headers = { Authorization: authorization && `Bearer ${authorization}` };
