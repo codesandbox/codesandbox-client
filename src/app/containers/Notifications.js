@@ -34,6 +34,7 @@ injectGlobal`
 const NotificationContainer = styled.div`
   position: fixed;
   left: 24px;
+  bottom: 0;
   zIndex: 20;
 `;
 
@@ -104,7 +105,7 @@ class Notifications extends React.PureComponent {
             {notifications.map((n: Notification, i: number) => (
               <Motion
                 key={n.id}
-                defaultStyle={{ y: 0 }}
+                defaultStyle={{ y: -150 }}
                 style={{ y: spring(24 + (140 * (notifications.length - 1 - i))) }}
               >
                 {({ y }) => (

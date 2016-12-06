@@ -38,6 +38,8 @@ export default (schema) => {
           if (e.response && e.response.data.errors.title) {
             const errorMessage = e.response.data.errors.title;
             dispatch(notificationActions.addNotification('Error while renaming', errorMessage, 'error'));
+          } else {
+            dispatch(notificationActions.addNotification('Error while renaming', 'Could not connect', 'error'));
           }
         }
       }
