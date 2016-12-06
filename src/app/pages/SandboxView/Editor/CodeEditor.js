@@ -75,7 +75,7 @@ export default class CodeEditor extends React.PureComponent {
   props: Props;
   constructor() {
     super();
-    this.handleChange = debounce(this.handleChange, 0);
+    this.handleChange = debounce(this.handleChange, 250);
   }
 
   componentDidMount() {
