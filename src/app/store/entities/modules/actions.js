@@ -14,11 +14,20 @@ export default (schema) => {
     setError: (id: string, error: ?{ message: string; line: number }) => (
       { type: SET_ERROR, id, error }
     ),
-    createModule: (parentModuleId: string, title: string) => (dispatch, getState) => {
+    createModule: (parentModuleId: string, title: string) => async (dispatch, getState) => {
       const parentModule = singleModuleSelector(getState(), { id: parentModuleId });
       const { sandboxId } = parentModule;
 
-      dispatch(entityActions.create({ title, parentModuleId, sandboxId }));
+      try {
+        await dispatch(entityActions.create({ title, parentModuleId, sandboxId }));
+      } catch (e) {
+        if (e.response) {
+          const maxModuleError = e.response.data.errors.sandbox_id;
+          if (maxModuleError) {
+            dispatch(notificationActions.addNotification('Error while creating module', maxModuleError[0], 'error'));
+          }
+        }
+      }
     },
     renameModule: (id: string, title: string) => async (dispatch, getState) => {
       const module = singleModuleSelector(getState(), { id });
