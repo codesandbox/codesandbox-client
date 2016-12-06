@@ -56,18 +56,20 @@ class RootPage extends React.PureComponent {
           <Content>
             <Match exactly pattern="/" component={Root} />
             <Match
-              pattern="/:username/:id" exactly render={props => (
+              pattern="/:sandbox/:id"
+              exactly
+              render={props => (
                 <Redirect to={`${props.location.pathname}/module`} />
               )}
             />
             <Match
               pattern="/:username/:slug/module/:module*"
-              render={patternMatch => (
-                <Content>
-                  <Match pattern="/sandbox/:id/module/:module*" component={SandboxEditor} />
-                  <Miss render={() => <SandboxEditor {...patternMatch} />} />
-                </Content>
-              )}
+              render={(patternMatch) => {
+                if (patternMatch.params.username === 'sandbox') {
+                  return <SandboxEditor id={patternMatch.params.slug} {...patternMatch} />;
+                }
+                return <SandboxEditor {...patternMatch} />;
+              }}
             />
           </Content>
         </Container>
