@@ -7,7 +7,6 @@ import { DragDropContext } from 'react-dnd';
 import ModulesContainer from './ModulesContainer';
 import DeleteTarget from './DeleteTarget';
 
-
 import type { Module } from '../../store/entities/modules';
 import type { Sandbox } from '../../store/entities/sandboxes/';
 
@@ -31,19 +30,18 @@ const Title = styled.h2`
 `;
 
 type Props = {
-  url: (module: Module) => string;
   sandbox: ?Sandbox;
   deleteModule: (id: string) => void;
 }
 class Sidebar extends React.PureComponent { // eslint-disable-line
   props: Props;
   render() {
-    const { sandbox, url, deleteModule } = this.props;
+    const { sandbox, deleteModule } = this.props;
 
     return (
       <Container>
         <Title>{sandbox ? sandbox.title : 'Loading...'}</Title>
-        {sandbox && <ModulesContainer url={url} />}
+        {sandbox && <ModulesContainer sandbox={sandbox} />}
         <DeleteTarget deleteModule={deleteModule} />
       </Container>
     );

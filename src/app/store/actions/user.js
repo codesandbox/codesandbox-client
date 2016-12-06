@@ -7,7 +7,7 @@ export default {
   getUser: () => async (dispatch) => {
     try {
       dispatch({ type: REQUEST_USER });
-      const result = await callApi('user');
+      const result = await callApi('users/current');
       dispatch({ type: REQUEST_USER_SUCCESS, data: result });
     } catch (e) {
       console.error(e);

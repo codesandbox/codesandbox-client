@@ -1,12 +1,16 @@
 // @flow
 import { Schema, arrayOf } from 'normalizr';
+
 import moduleEntity from '../modules/';
+import userEntity from '../users/';
 
 import createEntity from '../create-entity';
+import createActions from './actions';
 
 const schema = new Schema('sandboxes');
 schema.define({
   modules: arrayOf(moduleEntity.schema),
+  author: userEntity.schema,
 });
 
 export type Sandbox = {
@@ -15,6 +19,9 @@ export type Sandbox = {
   slug: string;
   description: string;
   modules: Array<string>;
+  author: ?string;
 };
 
-export default createEntity(schema);
+const actions = createActions(schema);
+
+export default createEntity(schema, { actions });

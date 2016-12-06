@@ -82,7 +82,7 @@ class ModuleEntry extends React.PureComponent {
       <div style={{ position: 'relative' }}>
         {dragAbove && <DragOverlay />}
         <Container depth={depth}>
-          <Link activeClassName={activeClassName} to={url}>
+          <Link activeOnlyWhenExact activeClassName={activeClassName} to={url}>
             <ModuleIcons
               type={type}
               hasChildren={hasChildren}

@@ -18,7 +18,7 @@ const Opener = styled.div`
 type Props = {
   module: Module;
   modules: Array<Module>;
-  url: (module: Module) => string;
+  url: string;
   depth: number;
   createModule: typeof moduleEntity.actions.createModule;
   renameModule: typeof moduleEntity.actions.renameModule;
@@ -123,14 +123,13 @@ export default class ModuleList extends React.PureComponent {
     const { state } = this.state;
     const children = getModuleChildren(module, modules);
     const hasChildren = children.length > 0 || state === 'creating';
-    const urlToModule = url(module);
     return (
       <div>
         <div>
           {state === 'editing' ? (
             <ModuleEdit
               depth={depth}
-              url={urlToModule}
+              url={url}
               title={module.title}
               type={module.type}
               validateTitle={this.handleRenameValidation}
@@ -140,7 +139,7 @@ export default class ModuleList extends React.PureComponent {
           ) : (
             <ModuleLink
               module={module}
-              url={urlToModule}
+              url={url}
               hasChildren={children.length > 0}
               toggleOpen={this.toggleOpen}
               onEditClick={this.onEditClick}
@@ -165,7 +164,6 @@ export default class ModuleList extends React.PureComponent {
                 url=""
                 title=""
                 type=""
-                isActive={false}
                 validateTitle={this.handleCreationValidation}
                 onCancel={this.resetState}
                 onCommit={this.handleCreate}
@@ -181,7 +179,7 @@ export default class ModuleList extends React.PureComponent {
                 createModule={createModule}
                 renameModule={renameModule}
                 addChild={addChild}
-                url={url}
+                url={`${url}/${childModule.title}`}
               />
             ))}
           </Opener>}

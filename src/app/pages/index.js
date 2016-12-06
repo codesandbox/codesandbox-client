@@ -3,7 +3,7 @@ import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { BrowserRouter, Match } from 'react-router';
+import { BrowserRouter, Match, Miss, Redirect } from 'react-router';
 import 'normalize.css';
 
 import Header from '../components/Header';
@@ -54,8 +54,21 @@ class RootPage extends React.PureComponent {
           <Modal />
           <Header username={user.username} />
           <Content>
-            <Match className="test" exactly pattern="/" component={Root} />
-            <Match pattern="/sandbox/:sandbox/:module?" component={SandboxEditor} />
+            <Match exactly pattern="/" component={Root} />
+            <Match
+              pattern="/:username/:id" exactly render={props => (
+                <Redirect to={`${props.location.pathname}/module`} />
+              )}
+            />
+            <Match
+              pattern="/:username/:slug/module/:module*"
+              render={patternMatch => (
+                <Content>
+                  <Match pattern="/sandbox/:id/module/:module*" component={SandboxEditor} />
+                  <Miss render={() => <SandboxEditor {...patternMatch} />} />
+                </Content>
+              )}
+            />
           </Content>
         </Container>
       </BrowserRouter>

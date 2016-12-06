@@ -1,7 +1,4 @@
 // @flow
-import React from 'react';
-import * as styled from 'styled-components';
-import * as reactRouter from 'react-router';
 import { transform } from 'babel-standalone';
 
 import type { Module } from '../../app/store/entities/modules/';
@@ -11,9 +8,9 @@ import resolveModule from './resolve-module';
 const MAX_DEPTH = 20;
 
 const dependencies = new Map([
-  ['react', React],
-  ['styled-components', styled],
-  ['react-router', reactRouter],
+  ['react', require('react')],
+  ['styled-components', require('styled-components')],
+  ['react-router', require('react-router')],
 ]);
 
 const moduleCache = new Map();
@@ -41,6 +38,7 @@ const evalModule = (mainModule: Module, modules: Array<Module>, depth: number = 
     if (dependency) return dependency;
 
     const module = resolveModule(mainModule, path, modules);
+    if (mainModule === module) throw new Error(`${mainModule.title} is importing itself`);
     if (!module) throw new Error(`Cannot find module in path: ${path}`);
 
     // Check if this module has been evaluated before, if so return that

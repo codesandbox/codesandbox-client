@@ -8,10 +8,15 @@ const processEntity = (schema: typeof Schema, result: { entities: Object }) => {
   return normalizedResult;
 };
 
+export const getEntity = async (url: string, schema: typeof Schema, body: ?Object) => {
+  const result = await callApi(url, { body });
+  return processEntity(schema, result);
+};
+
 export const getKeys = (key: string) => {
   const KEY = key.toUpperCase();
   const keys = {
-    get: `REQUEST_SINGLE_${KEY}`,
+    getSingle: `REQUEST_SINGLE_${KEY}`,
     update: `UPDATE_SINGLE_${KEY}`,
     create: `CREATE_SINGLE_${KEY}`,
     delete: `DELETE_SINGLE_${KEY}`,
@@ -32,12 +37,9 @@ export default (schema: typeof Schema) => {
   const actionKeys = getKeys(key);
   return {
     getById: (id: string, body: ?Object = null) => async (dispatch: Function) => {
-      const keys = actionKeys.get;
+      const keys = actionKeys.getSingle;
       dispatch({ type: keys.request, id });
-
-      const result = await callApi(`${key}/${id}`, { body });
-      const normalizedResult = processEntity(schema, result);
-
+      const normalizedResult = await getEntity(`${key}/${id}`, schema, body);
       return dispatch({ type: keys.success, id, ...normalizedResult });
     },
 

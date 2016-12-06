@@ -4,25 +4,32 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
-import { singleSandboxBySlugSelector } from '../../store/entities/sandboxes/selector';
+import { singleSandboxSelector } from '../../store/entities/sandboxes/selector';
 import type { Sandbox } from '../../store/entities/sandboxes/';
 import sandboxEntity from '../../store/entities/sandboxes';
+import sandboxActions from '../../store/entities/sandboxes/actions';
 import moduleEntity from '../../store/entities/modules';
-import { modulesBySandboxSlugSelector } from '../../store/entities/modules/selector';
+import { modulesBySandboxSelector } from '../../store/entities/modules/selector';
 import type { Module } from '../../store/entities/modules/';
-import { editModuleUrl } from '../../utils/url-generator';
+import { singleUserByUsernameSelector } from '../../store/entities/users/selector';
+import type { User } from '../../store/entities/users/';
+
+import resolveModule from '../../../sandbox/utils/resolve-module';
 
 import Editor from './Editor';
 import Sidebar from './Sidebar';
 
 type Props = {
   sandbox: ?Sandbox,
+  user: ?User,
   modules: Array<Module>,
   params: {
-    sandbox: string,
+    id: string,
+    username: ?string;
+    slug: ?string;
     module: string, // eslint-disable-line react/no-unused-prop-types
   },
-  sandboxActions: typeof sandboxEntity.actions;
+  sandboxActions: typeof sandboxActions;
   moduleActions: typeof moduleEntity.actions;
 };
 
@@ -33,8 +40,9 @@ const Container = styled.div`
 `;
 
 const mapStateToProps = (state, props: Props) => ({
-  sandbox: singleSandboxBySlugSelector(state, { slug: props.params.sandbox }),
-  modules: modulesBySandboxSlugSelector(state, { slug: props.params.sandbox }),
+  sandbox: singleSandboxSelector(state, props.params),
+  modules: modulesBySandboxSelector(state, props.params),
+  user: singleUserByUsernameSelector(state, props.params),
 });
 const mapDispatchToProps = dispatch => ({
   sandboxActions: bindActionCreators(sandboxEntity.actions, dispatch),
@@ -42,8 +50,12 @@ const mapDispatchToProps = dispatch => ({
 });
 class SandboxEditor extends React.PureComponent {
   componentDidMount() {
-    const sandboxId = this.props.params.sandbox;
-    this.props.sandboxActions.getById(sandboxId);
+    const { id, username, slug } = this.props.params;
+    if (username) {
+      this.props.sandboxActions.getByUserAndSlug(username, slug);
+    } else {
+      this.props.sandboxActions.getById(id);
+    }
   }
 
   getCurrentModuleId = () => {
@@ -59,16 +71,23 @@ class SandboxEditor extends React.PureComponent {
   props: Props;
   render() {
     const { params, sandbox, modules, moduleActions } = this.props;
-    const moduleId = params.module === 'undefined' ? this.getCurrentModuleId() : params.module;
+
+    const modulePath = params.module === 'undefined' ? './' : params.module;
+    const mainModule = modules.find(m => !m.parentModuleId);
+    let curModule;
+    try {
+      curModule = resolveModule(mainModule, modulePath, modules);
+    } catch (e) {
+      curModule = mainModule;
+    }
     return (
       <Container>
         <Sidebar
           sandbox={sandbox}
-          url={module => editModuleUrl(sandbox, module)}
           deleteModule={moduleActions.deleteModule}
         />
         <Editor
-          module={modules.find(m => m.id === moduleId)}
+          module={curModule}
           loading={!sandbox}
           modules={modules}
           changeCode={moduleActions.changeCode}

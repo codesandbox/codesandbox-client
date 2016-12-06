@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 import { values, sortBy } from 'lodash';
 
-import { singleSandboxBySlugSelector } from '../sandboxes/selector';
+import { singleSandboxSelector } from '../sandboxes/selector';
 
 export const modulesSelector = state => state.entities.modules;
 export const defaultModuleSelector = state => modulesSelector(state).default;
@@ -19,8 +19,8 @@ export const moduleChildrenSelector = createSelector(
   getModuleChildren,
 );
 
-export const modulesBySandboxSlugSelector = createSelector(
-  singleSandboxBySlugSelector,
+export const modulesBySandboxSelector = createSelector(
+  singleSandboxSelector,
   modulesSelector,
   (sandbox, modules) => {
     if (sandbox == null) return [];

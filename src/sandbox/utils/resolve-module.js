@@ -6,7 +6,8 @@ import { getModuleChildren } from '../../app/store/entities/modules/selector';
 /**
  * Convert the module path to a module
  */
-export default (module: Module, path: string, modules: Array<Module>) => {
+export default (module: ?Module, path: string, modules: Array<Module>) => {
+  if (module == null) return null;
   // Split path
   const splitPath = path.replace(/^.\//, '').split('/');
 
@@ -25,6 +26,5 @@ export default (module: Module, path: string, modules: Array<Module>) => {
     return foundModule;
   }, module);
 
-  if (resolvedModule === module) throw new Error(`${module.title} is importing itself`);
   return resolvedModule;
 };

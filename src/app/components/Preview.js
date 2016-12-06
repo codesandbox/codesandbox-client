@@ -38,7 +38,7 @@ export default class Preview extends React.PureComponent {
 
   componentDidUpdate(prevProps: Props) {
     if (prevProps.module.code !== this.props.module.code && this.state.frameInitialized) {
-      this.executeCode();
+      requestAnimationFrame(() => this.executeCode());
     }
   }
 
