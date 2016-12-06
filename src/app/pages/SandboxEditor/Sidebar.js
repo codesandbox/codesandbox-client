@@ -7,14 +7,13 @@ import { DragDropContext } from 'react-dnd';
 import ModulesContainer from './ModulesContainer';
 import DeleteTarget from './DeleteTarget';
 
-import type { Module } from '../../store/entities/modules';
 import type { Sandbox } from '../../store/entities/sandboxes/';
 
 const Container = styled.div`
   position: relative;
   background-color: ${props => props.theme.background};
   overflow: auto;
-  min-width: 20rem;
+  min-width: 16rem;
 `;
 
 const Title = styled.h2`
