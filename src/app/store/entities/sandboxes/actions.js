@@ -1,7 +1,9 @@
 // @flow
 import type { Schema } from 'normalizr';
+import slugify from 'slug';
 
 import createEntityActions, { getEntity } from '../../actions/entities';
+import { singleSandboxSelector } from './selector';
 
 export const GET_SANDBOX_BY_USERNAME_AND_SLUG = 'GET_SANDBOX_BY_USERNAME_AND_SLUG';
 export const GET_SANDBOX_BY_USERNAME_AND_SLUG_SUCCESS = 'GET_SANDBOX_BY_USERNAME_AND_SLUG_SUCCESS';
@@ -24,6 +26,17 @@ export default (schema: Schema) => {
         slug,
         ...normalizedResult,
       });
+    },
+
+    renameSandbox: (id: string, title: string) => async (dispatch, getState) => {
+      const sandbox = singleSandboxSelector(getState(), { id });
+
+      if (sandbox) {
+        const reverseData = { title: sandbox.title, slug: sandbox.slug };
+        const newData = { title, slug: slugify(title).toLowerCase() };
+
+        dispatch(entityActions.updateById(id, reverseData, newData));
+      }
     },
   };
   return { ...entityActions, ...customActions };

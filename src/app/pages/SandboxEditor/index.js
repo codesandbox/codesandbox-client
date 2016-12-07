@@ -70,7 +70,7 @@ class SandboxEditor extends React.PureComponent {
 
   props: Props;
   render() {
-    const { params, sandbox, modules, moduleActions } = this.props;
+    const { params, sandbox, modules, moduleActions, sandboxActions } = this.props;
 
     const modulePath = (!params.module || params.module === 'undefined') ? './' : params.module;
     const mainModule = modules.find(m => !m.parentModuleId);
@@ -86,6 +86,7 @@ class SandboxEditor extends React.PureComponent {
         <Sidebar
           sandbox={sandbox}
           deleteModule={moduleActions.deleteModule}
+          renameSandbox={sandboxActions.renameSandbox}
         />
         <Editor
           module={curModule}

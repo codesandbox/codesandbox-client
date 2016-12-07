@@ -14,7 +14,7 @@ schema.define({
 });
 
 export type Sandbox = {
-  id: number;
+  id: string;
   title: string;
   slug: string;
   description: string;

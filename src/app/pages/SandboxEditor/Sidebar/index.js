@@ -6,8 +6,10 @@ import { DragDropContext } from 'react-dnd';
 
 import ModulesContainer from './ModulesContainer';
 import DeleteTarget from './DeleteTarget';
+import SandboxTitle from './SandboxTitle';
 
-import type { Sandbox } from '../../store/entities/sandboxes/';
+import type { Sandbox } from '../../../store/entities/sandboxes/';
+import { editModuleUrl } from '../../../utils/url-generator';
 
 const Container = styled.div`
   position: relative;
@@ -16,35 +18,37 @@ const Container = styled.div`
   min-width: 16rem;
 `;
 
-const Title = styled.h2`
-  padding: 1rem;
-  margin: 0 1rem;
-  margin-top: 1.5rem;
-  margin-bottom: 1rem;
-  font-size: 1.2rem;
-  color: white;
-  font-weight: 300;
-
-  border-bottom: 1px solid ${props => props.theme.background.lighten(0.5)};
-`;
-
 type Props = {
   sandbox: ?Sandbox;
   deleteModule: (id: string) => void;
+  renameSandbox: (id: string, title: string) => void;
 }
 class Sidebar extends React.PureComponent { // eslint-disable-line
   props: Props;
+  handleRenameSandbox = (title: string) => {
+    const { sandbox, renameSandbox } = this.props;
+    if (sandbox && sandbox.id) {
+      const moduleUrl = document.location.pathname.replace(/.*?module\/?/, '');
+      renameSandbox(sandbox.id, title);
+      // Go to direct url of sandbox, so we don't have any problems with
+      // changing the url
+      this.context.router.transitionTo(`${editModuleUrl(sandbox, null)}/${moduleUrl}`);
+    }
+  }
+
   render() {
     const { sandbox, deleteModule } = this.props;
-
     return (
       <Container>
-        <Title>{sandbox ? sandbox.title : 'Loading...'}</Title>
+        <SandboxTitle renameSandbox={this.handleRenameSandbox} title={sandbox && sandbox.title} />
         {sandbox && <ModulesContainer sandbox={sandbox} />}
         <DeleteTarget deleteModule={deleteModule} />
       </Container>
     );
   }
 }
+Sidebar.contextTypes = {
+  router: React.PropTypes.object,
+};
 
 export default DragDropContext(HTML5Backend)(Sidebar);
