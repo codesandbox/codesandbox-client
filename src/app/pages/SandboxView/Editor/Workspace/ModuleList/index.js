@@ -2,10 +2,10 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import type { Module } from '../../../../store/entities/modules';
-import moduleEntity from '../../../../store/entities/modules/';
-import { validateTitle, isChildOfModule } from '../../../../store/entities/modules/validator';
-import { getModuleChildren } from '../../../../store/entities/modules/selector';
+import type { Module } from '../../../../../store/entities/modules';
+import moduleEntity from '../../../../../store/entities/modules/';
+import { validateTitle, isChildOfModule } from '../../../../../store/entities/modules/validator';
+import { getModuleChildren } from '../../../../../store/entities/modules/selector';
 
 import ModuleLink from './ModuleEntry/ModuleLink';
 import ModuleEdit from './ModuleEntry/ModuleEdit';

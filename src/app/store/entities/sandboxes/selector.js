@@ -9,12 +9,10 @@ export const singleSandboxSelector = createSelector(
   (state, props) => props,
   singleUserByUsernameSelector,
   (sandboxes, props, user) => {
-    const { slug, username, id } = props;
-    if (slug && username && username !== 'sandbox') {
-      return values(sandboxes).find(s => s.slug === slug && s.author === user.id);
-    }
+    const { id, slug } = props;
+    if (id) return sandboxes[id];
 
-    return sandboxes[id];
+    return values(sandboxes).find(s => s.slug === slug && s.author === user.id);
   },
 );
 export const singleSandboxBySlugSelector = (state, { slug }) => {

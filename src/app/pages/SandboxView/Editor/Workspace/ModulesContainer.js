@@ -3,16 +3,16 @@ import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { values } from 'lodash';
-import { editModuleUrl } from '../../../utils/url-generator';
+import { editModuleUrl } from '../../../../utils/url-generator';
 
 import ModuleList from './ModuleList';
 
-import moduleEntity from '../../../store/entities/modules';
-import { modulesBySandboxSelector } from '../../../store/entities/modules/selector';
-import { singleUserSelector } from '../../../store/entities/users/selector';
-import type { Module } from '../../../store/entities/modules/';
-import type { Sandbox } from '../../../store/entities/sandboxes/';
-import type { User } from '../../../store/entities/users/';
+import moduleEntity from '../../../../store/entities/modules';
+import { modulesBySandboxSelector } from '../../../../store/entities/modules/selector';
+import { singleUserSelector } from '../../../../store/entities/users/selector';
+import type { Module } from '../../../../store/entities/modules/';
+import type { Sandbox } from '../../../../store/entities/sandboxes/';
+import type { User } from '../../../../store/entities/users/';
 
 type Props = {
   sandbox: Sandbox;

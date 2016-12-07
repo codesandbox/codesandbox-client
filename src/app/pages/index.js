@@ -10,7 +10,7 @@ import Header from '../components/Header';
 import Modal from '../containers/Modal';
 import Notifications from '../containers/Notifications';
 import Root from './Root';
-import SandboxEditor from './SandboxEditor/';
+import SandboxView from './SandboxView/';
 import userActionCreators from '../store/actions/user';
 import type { User } from '../store/reducers/user';
 
@@ -55,22 +55,7 @@ class RootPage extends React.PureComponent {
           <Header username={user.username} />
           <Content>
             <Match exactly pattern="/" component={Root} />
-            <Match
-              pattern="/:sandbox/:id"
-              exactly
-              render={props => (
-                <Redirect to={`${props.location.pathname}/module`} />
-              )}
-            />
-            <Match
-              pattern="/:username/:slug/module/:module*"
-              render={(patternMatch) => {
-                if (patternMatch.params.username === 'sandbox') {
-                  return <SandboxEditor id={patternMatch.params.slug} {...patternMatch} />;
-                }
-                return <SandboxEditor {...patternMatch} />;
-              }}
-            />
+            <Match pattern="/:action" component={SandboxView} />
           </Content>
         </Container>
       </BrowserRouter>

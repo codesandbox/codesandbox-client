@@ -2,6 +2,7 @@ import { createSelector } from 'reselect';
 import { values, sortBy } from 'lodash';
 
 import { singleSandboxSelector } from '../sandboxes/selector';
+import resolveModule from '../../../../sandbox/utils/resolve-module';
 
 export const modulesSelector = state => state.entities.modules;
 export const defaultModuleSelector = state => modulesSelector(state).default;
@@ -26,5 +27,18 @@ export const modulesBySandboxSelector = createSelector(
     if (sandbox == null) return [];
 
     return values(modules).filter(m => m.sandboxId === sandbox.id);
+  },
+);
+
+export const moduleByPathSelector = createSelector(
+  modulesBySandboxSelector,
+  (_, { modulePath }) => modulePath,
+  (modules, modulePath) => {
+    const mainModule = modules.find(m => m.parentModuleId == null);
+    try {
+      return resolveModule(mainModule, modulePath, modules);
+    } catch (e) {
+      return mainModule;
+    }
   },
 );

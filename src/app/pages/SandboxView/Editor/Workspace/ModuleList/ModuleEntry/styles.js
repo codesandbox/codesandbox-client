@@ -1,4 +1,4 @@
-import theme from '../../../../../../common/theme';
+import theme from '../../../../../../../common/theme';
 
 export default (props) => {
   let styles = `

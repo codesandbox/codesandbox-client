@@ -1,19 +1,22 @@
 /* @flow */
 import React from 'react';
 import styled from 'styled-components';
-import 'normalize.css';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 
-import CodeEditor from '../../components/CodeEditor';
-import Preview from '../../components/Preview';
-import moduleEntity from '../../store/entities/modules/';
+import CodeEditor from './CodeEditor';
+import Preview from './Preview';
+import moduleEntity from '../../../store/entities/modules/';
+import { modulesBySandboxSelector, moduleByPathSelector } from '../../../store/entities/modules/selector';
+import Workspace from './Workspace';
 
-import type { Module } from '../../store/entities/modules';
+import type { Module } from '../../../store/entities/modules';
+import type { Sandbox } from '../../../store/entities/sandboxes';
 
 const Container = styled.div`
   position: relative;
   display: flex;
   width: 100%;
-  background-color: ${props => props.theme.background2};
 `;
 
 const CodeEditorContainer = styled.div`
@@ -41,44 +44,55 @@ const LoadingText = styled.div`
 `;
 
 type Props = {
+  sandbox: Sandbox;
   modules: Array<Module>;
   module: Module;
-  changeCode: typeof moduleEntity.actions.changeCode;
-  saveCode: typeof moduleEntity.actions.saveCode;
-  loading: boolean;
-  setError: typeof moduleEntity.actions.setError;
+  moduleActions: typeof moduleEntity.actions;
+  params: {
+    module: string;
+  };
 };
 
-export default class Editor extends React.PureComponent {
+const mapStateToProps = (state, props) => ({
+  modules: modulesBySandboxSelector(state, { id: props.sandbox.id }),
+  module: moduleByPathSelector(state, {
+    id: props.sandbox.id,
+    modulePath: (!props.params.module || props.params.module === 'undefined') ? './' : props.params.module,
+  }),
+});
+const mapDispatchToProps = dispatch => ({
+  moduleActions: bindActionCreators(moduleEntity.actions, dispatch),
+});
+class Editor extends React.PureComponent {
   props: Props;
   onChange = (code: string = '') => {
+    const { moduleActions, module } = this.props;
     if (this.props.module.code !== code) {
-      this.props.changeCode(this.props.module.id, code);
+      moduleActions.changeCode(module.id, code);
     }
   };
 
   setError = (error: ?{ message: string; line: number }) => {
-    this.props.setError(this.props.module.id, error);
+    this.props.moduleActions.setError(module.id, error);
   }
 
   render() {
-    const { loading, module, modules, saveCode } = this.props;
-    if (loading) {
-      return <Container><LoadingText>Loading...</LoadingText></Container>;
-    }
+    const { modules, module, moduleActions, sandbox } = this.props;
+
     if (!module) {
       return <Container><LoadingText>Could not find module</LoadingText></Container>;
     }
 
     return (
       <Container>
+        <Workspace sandbox={sandbox} />
         <CodeEditorContainer>
           <CodeEditor
             onChange={this.onChange}
             id={module.id}
             error={module.error}
             code={module.code}
-            saveCode={saveCode}
+            saveCode={moduleActions.saveCode}
           />
         </CodeEditorContainer>
         <PreviewContainer>
@@ -92,3 +106,4 @@ export default class Editor extends React.PureComponent {
     );
   }
 }
+export default connect(mapStateToProps, mapDispatchToProps)(Editor);

@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import EditIcon from 'react-icons/lib/go/pencil';
-import slugify from 'slug';
 
 const Container = styled.div`
   position: relative;

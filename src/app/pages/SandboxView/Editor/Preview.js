@@ -2,7 +2,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import type { Module } from '../store/entities/modules/';
+import type { Module } from '../../../store/entities/modules/';
 
 const Container = styled.div`
   height: 100%;

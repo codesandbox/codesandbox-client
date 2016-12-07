@@ -6,11 +6,11 @@ import { Link } from 'react-router';
 import { DragSource, DropTarget } from 'react-dnd';
 
 import commonStyles from './styles';
-import type { Module } from '../../../../../store/entities/modules/';
+import type { Module } from '../../../../../../store/entities/modules/';
 import ModuleIcons from './ModuleIcons';
 import ModuleTitle from './ModuleTitle';
 import ModuleActions from './ModuleActions';
-import theme from '../../../../../../common/theme';
+import theme from '../../../../../../../common/theme';
 
 const Container = styled.span`a {${props => commonStyles(props)}}`;
 

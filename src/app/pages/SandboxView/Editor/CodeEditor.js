@@ -14,7 +14,7 @@ import 'codemirror/addon/selection/active-line';
 
 import { debounce } from 'lodash';
 
-import theme from '../../common/theme';
+import theme from '../../../../common/theme';
 
 const documentCache = {};
 
