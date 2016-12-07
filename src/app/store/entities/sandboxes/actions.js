@@ -31,7 +31,7 @@ export default (schema: Schema) => {
     renameSandbox: (id: string, title: string) => async (dispatch, getState) => {
       const sandbox = singleSandboxSelector(getState(), { id });
 
-      if (sandbox) {
+      if (sandbox && sandbox.title !== title) {
         const reverseData = { title: sandbox.title, slug: sandbox.slug };
         const newData = { title, slug: slugify(title).toLowerCase() };
 
