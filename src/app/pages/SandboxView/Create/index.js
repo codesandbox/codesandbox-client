@@ -16,9 +16,12 @@ import theme from '../../../../common/theme';
 
 const Container = styled.div`
   position: relative;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   width: 100%;
-  color: ${props => props.theme.background2.lighten(1.5)};;
-  margin: 8rem 16rem;
+  color: ${props => props.theme.background2.lighten(1.5)};
 `;
 
 const Title = styled.h2`
@@ -33,7 +36,7 @@ const Name = styled.h3`
   color: white;
   width: 100%;
   text-align: center;
-  font-size: 3rem;
+  font-size: 2.5rem;
   font-weight: 300;
   margin-top: 0;
 `;
@@ -41,7 +44,9 @@ const Name = styled.h3`
 const Icons = styled.div`
   display: flex;
   width: 100%;
-  justify-content: center;
+  justify-content: space-between;
+
+  flex-wrap: wrap;
   margin-top: 6rem;
   color: ${props => props.theme.background2.lighten(1.5)};
 `;
@@ -50,8 +55,9 @@ const Icon = styled.div`
   transition: 0.3s ease all;
   position: relative;
 
-  height: 17rem;
-  width: 17rem;
+  flex: 1;
+  height: 15rem;
+  width: 15rem;
   font-size: 10rem;
   text-align: center;
 
@@ -71,9 +77,9 @@ const Icon = styled.div`
 
 const IconTitle = styled.div`
   position: absolute;
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: 300;
-  bottom: 2rem;
+  bottom: 1.5rem;
   left: 0;
   right: 0;
 `;
@@ -92,30 +98,32 @@ class Create extends React.PureComponent {
   render() {
     return (
       <Container>
-        <Title>Creating a sandbox</Title>
-        <Name>What preset would you like to start with?</Name>
+        <div>
+          <Title>Creating a sandbox</Title>
+          <Name>What preset would you like to start with?</Name>
 
-        <Icons>
-          <Icon>
-            <FunctionIcon />
-            <IconTitle>No Preset</IconTitle>
-          </Icon>
-          <Icon>
-            <ReactIcon />
-            <IconTitle>React</IconTitle>
-          </Icon>
-          <Icon disabled>
-            <VueIcon
-              color={theme.background2.lighten(0.4)()}
-              secondColor={theme.background2.lighten(1.5)()}
-            />
-            <IconTitle>Vue</IconTitle>
-          </Icon>
-          <Icon disabled>
-            <AngularIcon />
-            <IconTitle>AngularJS 2.0</IconTitle>
-          </Icon>
-        </Icons>
+          <Icons>
+            <Icon>
+              <FunctionIcon />
+              <IconTitle>No Preset</IconTitle>
+            </Icon>
+            <Icon>
+              <ReactIcon />
+              <IconTitle>React</IconTitle>
+            </Icon>
+            <Icon disabled>
+              <VueIcon
+                color={theme.background2.lighten(0.4)()}
+                secondColor={theme.background2.lighten(1.5)()}
+              />
+              <IconTitle>Vue</IconTitle>
+            </Icon>
+            <Icon disabled>
+              <AngularIcon />
+              <IconTitle>AngularJS 2.0</IconTitle>
+            </Icon>
+          </Icons>
+        </div>
       </Container>
     );
   }
