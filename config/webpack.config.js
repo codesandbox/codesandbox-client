@@ -26,12 +26,13 @@ const getOutput = () => (
     pathinfo: true,
     filename: 'static/js/[name].[hash:8].js',
     chunkFilename: 'static/js/[name].[hash:8].chunk.js',
+    sourceMapFilename: '[file].map', // Default
     publicPath: '/',
   }
 );
 
 const config = {
-  devtool: __DEV__ ? 'eval' : 'eval',
+  devtool: __DEV__ ? 'eval' : 'source-map',
 
   entry: {
     app: [
@@ -42,7 +43,16 @@ const config = {
       require.resolve('./polyfills'),
       path.join(paths.sandboxSrc, 'index.js'),
     ],
+    vendor: [
+      'babel-standalone',
+      'codemirror',
+      'react',
+      'styled-components',
+      'glamor',
+    ],
   },
+
+  target: 'web',
 
   output: getOutput(),
 
@@ -171,6 +181,8 @@ const config = {
         minifyURLs: true,
       },
     }),
+    // This ignores a unicode library which is 1MB! used for unicode in slugify
+    new webpack.IgnorePlugin(/unicode\/category\/So/),
     // Makes some environment variables available to the JS code, for example:
     // if (process.env.NODE_ENV === 'development') { ... }. See `env.js`.
     new webpack.DefinePlugin(env),
@@ -186,7 +198,13 @@ const config = {
     // Try to dedupe duplicated modules, if any:
     new webpack.optimize.CommonsChunkPlugin({
       name: 'common',
+      chunks: ['app', 'sandbox'],
     }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendor',
+      minChunks: Infinity,
+    }),
+    new webpack.NamedModulesPlugin(),
   ],
 };
 
@@ -203,21 +221,28 @@ if (__DEV__) {
 if (__PROD__) {
   config.plugins = [
     ...config.plugins,
-    // This helps ensure the builds are consistent if source hasn't changed:
-    new webpack.optimize.OccurrenceOrderPlugin(),
-    // Try to dedupe duplicated modules, if any:
-    new webpack.optimize.DedupePlugin(),
     // Minify the code.
+    new webpack.LoaderOptionsPlugin({
+      minimize: true,
+      debug: false,
+    }),
     new webpack.optimize.UglifyJsPlugin({
       compress: {
-        unused: true,
-        dead_code: true,
-        screw_ie8: true, // React doesn't support IE8
         warnings: false,
-      },
-      mangle: {
         screw_ie8: true,
+        conditionals: true,
+        unused: true,
+        comparisons: true,
+        sequences: true,
+        dead_code: true,
+        evaluate: true,
+        if_return: true,
+        join_vars: true,
       },
+      output: {
+        comments: false,
+      },
+      sourceMap: true,
     }),
   ];
 } else {

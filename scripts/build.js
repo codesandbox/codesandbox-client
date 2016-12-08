@@ -1,3 +1,4 @@
+/* eslint-disable */
 // Do this as the first thing so that any code reading it knows the right env.
 process.env.NODE_ENV = 'production';
 
@@ -76,7 +77,7 @@ function printFileSizes(stats, previousSizeMap) {
     });
   assets.sort((a, b) => b.size - a.size);
   let longestSizeLabelLength = Math.max.apply(null,
-    assets.map(a => stripAnsi(a.sizeLabel).length),
+    assets.map(a => stripAnsi(a.sizeLabel).length)
   );
   assets.forEach((asset) => {
     let sizeLabel = asset.sizeLabel;
@@ -86,8 +87,8 @@ function printFileSizes(stats, previousSizeMap) {
       sizeLabel += rightPadding;
     }
     console.log(
-      `  ${  sizeLabel 
-      }  ${  chalk.dim(asset.folder + path.sep)  }${chalk.cyan(asset.name)}`,
+      `  ${  sizeLabel
+      }  ${  chalk.dim(asset.folder + path.sep)  }${chalk.cyan(asset.name)}`
     );
   });
 }
@@ -108,6 +109,7 @@ function build(previousSizeMap) {
     console.log('File sizes after gzip:');
     console.log();
     printFileSizes(stats, previousSizeMap);
+    fs.writeFile(paths.appBuild + "/stats.json", JSON.stringify(stats.toJson()));
     console.log();
 
     let openCommand = process.platform === 'win32' ? 'start' : 'open';
