@@ -147,7 +147,7 @@ const config = {
     // Generates an `index.html` file with the <script> injected.
     new HtmlWebpackPlugin({
       inject: true,
-      chunks: ['common', 'app'],
+      chunks: ['vendor', 'common', 'app'],
       filename: 'index.html',
       template: paths.appHtml,
       minify: __PROD__ && {
@@ -165,7 +165,7 @@ const config = {
     }),
     new HtmlWebpackPlugin({
       inject: true,
-      chunks: ['common', 'sandbox'],
+      chunks: ['vendor', 'common', 'sandbox'],
       filename: 'frame.html',
       template: paths.sandboxHtml,
       minify: __PROD__ && {
