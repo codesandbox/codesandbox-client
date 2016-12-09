@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import FunctionIcon from 'react-icons/lib/fa/code';
 
+import callApi from '../../../store/services/api';
 import ReactIcon from '../../../components/ReactIcon';
 import AngularIcon from '../../../components/AngularIcon';
 import VueIcon from '../../../components/VueIcon';
@@ -84,9 +85,16 @@ const IconTitle = styled.div`
   right: 0;
 `;
 
+const ICON_MAP = {
+  react: <ReactIcon />,
+};
+
 type Props = {
   moduleActions: typeof moduleEntity.actions;
   sandboxActions: typeof sandboxEntity.actions;
+};
+type State = {
+  presets: Array<Object>;
 };
 const mapDispatchToProps = dispatch => ({
   moduleActions: bindActionCreators(moduleEntity.actions, dispatch),
@@ -94,35 +102,52 @@ const mapDispatchToProps = dispatch => ({
 });
 class Create extends React.PureComponent {
   props: Props;
+  state: State;
+
+  state = {
+    presets: [],
+  };
+
+  componentDidMount() {
+    callApi('sandbox_presets').then((result) => {
+      this.setState({ presets: result });
+    });
+  }
 
   render() {
+    const { presets } = this.state;
     return (
       <Container>
         <div>
           <Title>Creating a sandbox</Title>
           <Name>What preset would you like to start with?</Name>
 
-          <Icons>
-            <Icon>
-              <FunctionIcon />
-              <IconTitle>No Preset</IconTitle>
-            </Icon>
-            <Icon>
-              <ReactIcon />
-              <IconTitle>React</IconTitle>
-            </Icon>
-            <Icon disabled>
-              <VueIcon
-                color={theme.background2.lighten(0.4)()}
-                secondColor={theme.background2.lighten(1.5)()}
-              />
-              <IconTitle>Vue</IconTitle>
-            </Icon>
-            <Icon disabled>
-              <AngularIcon />
-              <IconTitle>AngularJS 2.0</IconTitle>
-            </Icon>
-          </Icons>
+          {presets.length === 0 ? <Title>Loading...</Title> : (
+            <Icons>
+              <Icon>
+                <FunctionIcon />
+                <IconTitle>No Preset</IconTitle>
+              </Icon>
+              {presets.map(preset => (
+                <Icon key={preset.id}>
+                  {ICON_MAP[preset.icon]}
+                  <IconTitle>{preset.name}</IconTitle>
+                </Icon>
+              ))}
+
+              <Icon disabled>
+                <VueIcon
+                  color={theme.background2.lighten(0.4)()}
+                  secondColor={theme.background2.lighten(1.5)()}
+                />
+                <IconTitle>Vue</IconTitle>
+              </Icon>
+              <Icon disabled>
+                <AngularIcon />
+                <IconTitle>AngularJS 2.0</IconTitle>
+              </Icon>
+            </Icons>
+          )}
         </div>
       </Container>
     );
