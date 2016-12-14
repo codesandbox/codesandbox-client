@@ -29,10 +29,7 @@ const Overlay = styled.div`
 `;
 
 const Opener = styled.div`
-  transition: 0.1s ease all;
-  // transform: scale(1, ${props => (props.open ? 1 : 0)});
   height: ${props => (props.open ? '100%' : '0px')};
-  transform-origin: 0% 0%;
   overflow: hidden;
 `;
 
