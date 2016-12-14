@@ -3,12 +3,13 @@ import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { BrowserRouter, Match, Miss, Redirect } from 'react-router';
+import { BrowserRouter, Match } from 'react-router';
 import 'normalize.css';
 
 import Header from '../components/Header';
 import Modal from '../containers/Modal';
 import Notifications from '../containers/Notifications';
+import ContextMenu from '../containers/ContextMenu';
 import Root from './Root';
 import SandboxView from './SandboxView/';
 import userActionCreators from '../store/actions/user';
@@ -51,6 +52,7 @@ class RootPage extends React.PureComponent {
       <BrowserRouter>
         <Container>
           <Notifications />
+          <ContextMenu />
           <Modal />
           <Header username={user.username} />
           <Content>

@@ -41,6 +41,7 @@ class SandboxFound extends React.PureComponent {
 
   render() {
     const { sandbox } = this.props;
+
     if (!sandbox) return null;
     return (
       <Match

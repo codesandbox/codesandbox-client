@@ -41,7 +41,11 @@ const moduleTarget = {
     if (monitor == null) return;
 
     const sourceItem = monitor.getItem();
-    props.deleteModule(sourceItem.id);
+    if (sourceItem.directory) {
+      props.deleteDirectory(sourceItem.id);
+    } else {
+      props.deleteModule(sourceItem.id);
+    }
   },
 };
 
@@ -58,5 +62,4 @@ function collectTarget(connect, monitor) {
   };
 }
 
-
-export default DropTarget('MODULE', moduleTarget, collectTarget)(DeleteTarget);
+export default DropTarget('ENTRY', moduleTarget, collectTarget)(DeleteTarget);

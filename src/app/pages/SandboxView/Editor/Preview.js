@@ -2,7 +2,10 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import { debounce } from 'lodash';
+
 import type { Module } from '../../../store/entities/modules/';
+import type { Directory } from '../../../store/entities/directories/index';
 
 const Container = styled.div`
   height: 100%;
@@ -19,18 +22,20 @@ const StyledFrame = styled.iframe`
 
 type Props = {
   modules: Array<Module>;
+  directories: Array<Directory>;
   module: Module;
   setError: (error: ?{ message: string; line: number }) => void;
-}
+};
 
 type State = {
   frameInitialized: boolean;
-}
+};
 
 export default class Preview extends React.PureComponent {
   constructor() {
     super();
 
+    this.executeCode = debounce(this.executeCode, 250);
     this.state = {
       frameInitialized: false,
     };
@@ -62,11 +67,11 @@ export default class Preview extends React.PureComponent {
   }
 
   executeCode = () => {
-    const { modules, module } = this.props;
+    const { modules, directories, module } = this.props;
 
     requestAnimationFrame(() => {
       document.getElementById('sandbox').contentWindow.postMessage({
-        module, modules,
+        module, modules, directories,
       }, '*');
     });
   }

@@ -28,25 +28,40 @@ const InputContainer = styled.div`
 
 type Props = {
   title: string;
-  onCommit: (force: ?boolean) => void;
+  onCommit: (title: string, force: ?boolean) => void;
   onCancel: () => void;
   onChange: (name: string) => void;
 }
+
+type State = {
+  currentValue: string;
+};
 
 function select(el) {
   if (el) el.select();
 }
 
-export default class ModuleTitleInput extends React.PureComponent {
+export default class EntryTitleInput extends React.PureComponent {
+  constructor(props: Props) {
+    super(props);
+
+    this.state = {
+      currentValue: props.title,
+    };
+  }
+
   props: Props;
+  state: State;
+
   handleChange = (el: Event) => {
     this.props.onChange(el.target.value);
+    this.setState({ currentValue: el.target.value });
   };
 
   handleKeyUp = (e: KeyboardEvent) => {
     if (e.keyCode === 13) {
       // Enter
-      this.props.onCommit();
+      this.props.onCommit(this.state.currentValue);
     } else if (e.keyCode === 27) {
       // Escape
       this.props.onCancel();
@@ -54,16 +69,17 @@ export default class ModuleTitleInput extends React.PureComponent {
   };
 
   render() {
-    const { title, onCommit } = this.props;
+    const { onCommit } = this.props;
+    const { currentValue } = this.state;
 
     return (
       <InputContainer>
         <input
           onChange={this.handleChange}
-          onBlur={() => onCommit(true)}
+          onBlur={() => onCommit(this.state.currentValue, true)}
           onKeyUp={this.handleKeyUp}
           ref={select}
-          value={title}
+          value={currentValue}
         />
       </InputContainer>
     );

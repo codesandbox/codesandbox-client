@@ -8,7 +8,7 @@ import Create from './Create';
 
 type Props = {
   params: {
-    action: string;
+    action: 'sandbox' | string;
   },
 };
 

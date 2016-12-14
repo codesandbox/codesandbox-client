@@ -3,6 +3,7 @@ import { values, sortBy } from 'lodash';
 
 import { singleSandboxSelector } from '../sandboxes/selector';
 import resolveModule from '../../../../sandbox/utils/resolve-module';
+import { directoriesBySandboxSelector } from '../directories/selector';
 
 export const modulesSelector = state => state.entities.modules;
 export const defaultModuleSelector = state => modulesSelector(state).default;
@@ -10,14 +11,8 @@ export const singleModuleSelector = (state, { id }) => (
   modulesSelector(state)[id] || defaultModuleSelector(state)
 );
 
-export const getModuleChildren = (module, modules) => (
-  sortBy(values(modules).filter(m => m.parentModuleId === module.id), m => m.title.toUpperCase())
-);
-
-export const moduleChildrenSelector = createSelector(
-  singleModuleSelector,
-  modulesSelector,
-  getModuleChildren,
+export const getModulesInDirectory = (directoryId, modules) => (
+  sortBy(values(modules).filter(m => m.directoryId === directoryId), m => m.title.toUpperCase())
 );
 
 export const modulesBySandboxSelector = createSelector(
@@ -32,13 +27,25 @@ export const modulesBySandboxSelector = createSelector(
 
 export const moduleByPathSelector = createSelector(
   modulesBySandboxSelector,
+  directoriesBySandboxSelector,
   (_, { modulePath }) => modulePath,
-  (modules, modulePath) => {
-    const mainModule = modules.find(m => m.parentModuleId == null);
+  (modules, directories, modulePath) => {
     try {
-      return resolveModule(mainModule, modulePath, modules);
+      return resolveModule(modulePath, modules, directories);
     } catch (e) {
-      return mainModule;
+      return modules[0];
     }
   },
 );
+
+export const rootModulesSelector = createSelector(
+  modulesBySandboxSelector,
+  modules => getModulesInDirectory(null, modules),
+);
+
+export const modulesInDirectorySelector = createSelector(
+  (_, { id }) => id,
+  modulesSelector,
+  getModulesInDirectory,
+);
+

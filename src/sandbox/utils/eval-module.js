@@ -4,6 +4,7 @@ import { transform } from 'babel-standalone';
 import type { Module } from '../../app/store/entities/modules/';
 
 import resolveModule from './resolve-module';
+import type { Directory } from '../../app/store/entities/directories/index';
 
 const MAX_DEPTH = 20;
 
@@ -27,7 +28,12 @@ const compileCode = (code: string = '', moduleName: string = 'unknown') => {
   }
 };
 
-const evalModule = (mainModule: Module, modules: Array<Module>, depth: number = 0) => {
+const evalModule = (
+  mainModule: Module,
+  modules: Array<Module>,
+  directories: Array<Directory>,
+  depth: number = 0,
+) => {
   const exports = {};
   const require = function require(path) { // eslint-disable-line no-unused-vars
     if (depth > MAX_DEPTH) {
@@ -37,12 +43,12 @@ const evalModule = (mainModule: Module, modules: Array<Module>, depth: number = 
     const dependency = dependencies.get(path);
     if (dependency) return dependency;
 
-    const module = resolveModule(mainModule, path, modules);
+    const module = resolveModule(path, modules, directories, mainModule.directoryId);
     if (mainModule === module) throw new Error(`${mainModule.title} is importing itself`);
     if (!module) throw new Error(`Cannot find module in path: ${path}`);
 
     // Check if this module has been evaluated before, if so return that
-    return moduleCache.get(module.id) || evalModule(module, modules, depth + 1);
+    return moduleCache.get(module.id) || evalModule(module, modules, directories, depth + 1);
   };
   try {
     const compiledCode = compileCode(mainModule.code, mainModule.title);

@@ -12,6 +12,8 @@ import Workspace from './Workspace';
 
 import type { Module } from '../../../store/entities/modules';
 import type { Sandbox } from '../../../store/entities/sandboxes';
+import type { Directory } from '../../../store/entities/directories/index';
+import { directoriesBySandboxSelector } from '../../../store/entities/directories/selector';
 
 const Container = styled.div`
   position: relative;
@@ -46,6 +48,7 @@ const LoadingText = styled.div`
 type Props = {
   sandbox: Sandbox;
   modules: Array<Module>;
+  directories: Array<Directory>;
   module: Module;
   moduleActions: typeof moduleEntity.actions;
   params: {
@@ -54,10 +57,11 @@ type Props = {
 };
 
 const mapStateToProps = (state, props) => ({
+  directories: directoriesBySandboxSelector(state, { id: props.sandbox.id }),
   modules: modulesBySandboxSelector(state, { id: props.sandbox.id }),
   module: moduleByPathSelector(state, {
     id: props.sandbox.id,
-    modulePath: (!props.params.module || props.params.module === 'undefined') ? './' : props.params.module,
+    modulePath: (!props.params.module || props.params.module === 'undefined') ? './' : `./${props.params.module}`,
   }),
 });
 const mapDispatchToProps = dispatch => ({
@@ -73,11 +77,12 @@ class Editor extends React.PureComponent {
   };
 
   setError = (error: ?{ message: string; line: number }) => {
+    const { module } = this.props;
     this.props.moduleActions.setError(module.id, error);
   }
 
   render() {
-    const { modules, module, moduleActions, sandbox } = this.props;
+    const { modules, directories, module, moduleActions, sandbox } = this.props;
 
     if (!module) {
       return <Container><LoadingText>Could not find module</LoadingText></Container>;
@@ -99,6 +104,7 @@ class Editor extends React.PureComponent {
           <Preview
             module={module}
             modules={modules}
+            directories={directories}
             setError={this.setError}
           />
         </PreviewContainer>
@@ -107,3 +113,4 @@ class Editor extends React.PureComponent {
   }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Editor);
+

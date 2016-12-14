@@ -12,8 +12,7 @@ export type Module = {
   title: string;
   code: string;
   sandboxId: string;
-  parentModuleId: string;
-  mainModule: boolean;
+  directoryId: string;
   type: string;
   error?: ?{
     message: string;
@@ -22,7 +21,6 @@ export type Module = {
     title: string;
     moduleId: ?string;
   };
-  isTreeOpen: boolean;
   isNotSynced?: boolean;
 };
 
@@ -31,9 +29,4 @@ const actions = createActions(schema);
 export default createEntity(schema, {
   actions,
   reducer,
-  afterReceiveReducer: module => ({
-    ...module,
-    mainModule: module.parentModuleId === null,
-    isTreeOpen: true,
-  }),
 });

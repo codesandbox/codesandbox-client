@@ -5,7 +5,6 @@ import notificationActions from '../../actions/notifications';
 export const CHANGE_CODE = 'CHANGE_CODE';
 export const SAVE_CODE = 'SAVE_CODE';
 export const SET_ERROR = 'SET_ERROR';
-export const TOGGLE_MODULE_TREE_OPEN = 'TOGGLE_MODULE_TREE_OPEN';
 
 export default (schema) => {
   const entityActions = createEntityActions(schema);
@@ -14,12 +13,10 @@ export default (schema) => {
     setError: (id: string, error: ?{ message: string; line: number }) => (
       { type: SET_ERROR, id, error }
     ),
-    createModule: (parentModuleId: string, title: string) => async (dispatch, getState) => {
-      const parentModule = singleModuleSelector(getState(), { id: parentModuleId });
-      const { sandboxId } = parentModule;
-
+    createModule: (title: string, sandboxId: string, directoryId?: string) =>
+    async (dispatch) => {
       try {
-        await dispatch(entityActions.create({ title, parentModuleId, sandboxId }));
+        await dispatch(entityActions.create({ title, directoryId, sandboxId }));
       } catch (e) {
         if (e.response) {
           const maxModuleError = e.response.data.errors.sandbox_id;
@@ -44,22 +41,21 @@ export default (schema) => {
         }
       }
     },
-    addChild: (id: string, childId: string) => async (dispatch, getState) => {
-      const module = singleModuleSelector(getState(), { id: childId });
-      if (module.parentModuleId !== id) {
+    moveToDirectory: (id: string, directoryId: string) => async (dispatch, getState) => {
+      const module = singleModuleSelector(getState(), { id });
+      if (module.directoryId !== directoryId) {
         try {
-          const oldData = { parentModuleId: module.parentModuleId };
-          const newData = { parentModuleId: id };
-          await dispatch(entityActions.updateById(childId, oldData, newData));
+          const oldData = { directoryId: module.directoryId };
+          const newData = { directoryId };
+          await dispatch(entityActions.updateById(id, oldData, newData));
         } catch (e) {
           if (e.response && e.response.data.errors.title) {
             const errorMessage = e.response.data.errors.title;
-            dispatch(notificationActions.addNotification('Error while changing parent', errorMessage, 'error'));
+            dispatch(notificationActions.addNotification('Error while moving to directory', errorMessage, 'error'));
           }
         }
       }
     },
-    toggleTreeOpen: (id: string) => ({ type: TOGGLE_MODULE_TREE_OPEN, id }),
     saveCode: (id: string) => async (dispatch, getState) => {
       const module = singleModuleSelector(getState(), { id });
       if (module.isNotSynced) {

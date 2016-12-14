@@ -6,15 +6,15 @@ import styled from 'styled-components';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { DragDropContext } from 'react-dnd';
 
-import ModulesContainer from './ModulesContainer';
 import DeleteTarget from './DeleteTarget';
 import SandboxTitle from './SandboxTitle';
+import DirectoryEntry from './DirectoryEntry';
 
 import type { Sandbox } from '../../../../store/entities/sandboxes/';
 import { editModuleUrl } from '../../../../utils/url-generator';
-import { singleSandboxSelector } from '../../../../store/entities/sandboxes/selector';
 import sandboxEntity from '../../../../store/entities/sandboxes';
 import moduleEntity from '../../../../store/entities/modules';
+import directoryEntity from '../../../../store/entities/directories';
 
 const Container = styled.div`
   position: relative;
@@ -27,6 +27,7 @@ type Props = {
   sandbox: ?Sandbox;
   moduleActions: typeof moduleEntity.actions;
   sandboxActions: typeof sandboxEntity.actions;
+  directoryActions: typeof directoryEntity.actions;
   params: {
     id: ?string;
     slug: ?string;
@@ -36,6 +37,7 @@ type Props = {
 const mapDispatchToProps = dispatch => ({
   moduleActions: bindActionCreators(moduleEntity.actions, dispatch),
   sandboxActions: bindActionCreators(sandboxEntity.actions, dispatch),
+  directoryActions: bindActionCreators(directoryEntity.actions, dispatch),
 });
 class Workspace extends React.PureComponent { // eslint-disable-line
   props: Props;
@@ -51,13 +53,18 @@ class Workspace extends React.PureComponent { // eslint-disable-line
   }
 
   render() {
-    const { sandbox, moduleActions } = this.props;
+    const { sandbox, moduleActions, directoryActions } = this.props;
+    const url = sandbox && editModuleUrl(sandbox);
 
     return (
       <Container>
         <SandboxTitle renameSandbox={this.handleRenameSandbox} title={sandbox && sandbox.title} />
-        {sandbox && <ModulesContainer sandbox={sandbox} />}
-        <DeleteTarget deleteModule={moduleActions.deleteModule} />
+        {sandbox &&
+          <DirectoryEntry root url={url} title={sandbox.title} sandboxId={sandbox.id} id={null} />}
+        <DeleteTarget
+          deleteDirectory={directoryActions.deleteDirectory}
+          deleteModule={moduleActions.deleteModule}
+        />
       </Container>
     );
   }

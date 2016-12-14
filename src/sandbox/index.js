@@ -8,9 +8,9 @@ const rootElement = document.getElementById('root');
 let errorHappened = false;
 
 window.addEventListener('message', (message) => {
-  const { modules, module } = message.data;
+  const { modules, directories, module } = message.data;
   try {
-    const compiledModule = evalModule(module, modules);
+    const compiledModule = evalModule(module, modules, directories);
     const mode = module.type; // eslint-disable-line no-underscore-dangle
 
     if (mode === 'react') {

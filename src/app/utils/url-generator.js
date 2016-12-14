@@ -1,4 +1,4 @@
-export const editModuleUrl = (sandbox, user = null) => (
-  user ? `/${user.username}/${sandbox.slug}/module`
+export const editModuleUrl = sandbox => (
+  sandbox.author ? `/${sandbox.author}/${sandbox.slug}/module`
   : `/sandbox/${sandbox.id}/module`
 );

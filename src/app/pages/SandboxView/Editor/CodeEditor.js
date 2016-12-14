@@ -12,8 +12,6 @@ import 'codemirror/addon/edit/closebrackets';
 import 'codemirror/addon/comment/comment';
 import 'codemirror/addon/selection/active-line';
 
-import { debounce } from 'lodash';
-
 import theme from '../../../../common/theme';
 
 const documentCache = {};
@@ -73,10 +71,6 @@ const handleError = (cm, currentError, nextError, nextCode, nextId) => {
 
 export default class CodeEditor extends React.PureComponent {
   props: Props;
-  constructor() {
-    super();
-    this.handleChange = debounce(this.handleChange, 250);
-  }
 
   componentDidMount() {
     window.addEventListener('keydown', (event: KeyboardEvent) => {
