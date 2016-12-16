@@ -3,6 +3,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { NavigationPrompt } from 'react-router';
 
 import CodeEditor from './CodeEditor';
 import Preview from './Preview';
@@ -69,6 +70,19 @@ const mapDispatchToProps = dispatch => ({
 });
 class Editor extends React.PureComponent {
   props: Props;
+
+  componentDidMount() {
+    window.onbeforeunload = () => {
+      const { modules } = this.props;
+      const notSynced = modules.some(m => m.isNotSynced);
+
+      if (notSynced) {
+        return 'You have not saved all your modules, are you sure you want to close this tab?';
+      }
+      return null;
+    };
+  }
+
   onChange = (code: string = '') => {
     const { moduleActions, module } = this.props;
     if (this.props.module.code !== code) {
