@@ -11,6 +11,9 @@ import 'codemirror/addon/edit/matchtags';
 import 'codemirror/addon/edit/closebrackets';
 import 'codemirror/addon/comment/comment';
 import 'codemirror/addon/selection/active-line';
+import 'codemirror/addon/fold/foldcode';
+import 'codemirror/addon/fold/foldgutter';
+import 'codemirror/addon/fold/brace-fold';
 
 import theme from '../../../../common/theme';
 
@@ -116,11 +119,12 @@ export default class CodeEditor extends React.PureComponent {
       keyMap: 'sublime',
       indentUnit: 2,
       autoCloseBrackets: true,
-      matchTags: {
-        bothTags: true,
-      },
+      matchTags: { bothTags: true },
+      foldGutter: true,
+      gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
       value: documentCache[id],
       lineNumbers: true,
+      lineWrapping: true,
       styleActiveLine: true,
       extraKeys: {
         Tab: (cm) => {

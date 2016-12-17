@@ -4,10 +4,8 @@ import EditIcon from 'react-icons/lib/go/pencil';
 
 const Container = styled.div`
   position: relative;
-  padding: 1rem;
+  padding: 1rem 0;
   margin: 0 1rem;
-  margin-top: 1.5rem;
-  margin-bottom: 1rem;
   color: white;
   border-bottom: 1px solid ${props => props.theme.background.lighten(0.5)};
 `;

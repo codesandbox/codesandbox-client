@@ -11,7 +11,6 @@ const Container = styled.div`
   height: 100%;
   width: 100%;
   background-color: white;
-  border-radius: 3px;
 `;
 
 const StyledFrame = styled.iframe`
@@ -35,7 +34,7 @@ export default class Preview extends React.PureComponent {
   constructor() {
     super();
 
-    this.executeCode = debounce(this.executeCode, 250);
+    this.setError = debounce(this.setError, 500);
     this.state = {
       frameInitialized: false,
     };
@@ -58,9 +57,10 @@ export default class Preview extends React.PureComponent {
         const { type } = e.data;
         if (type === 'error') {
           const { error } = e.data;
-          this.props.setError(error);
+          this.setError(error);
         } else if (type === 'success' && this.props.module.error) {
           this.props.setError(null);
+          this.setError(null); // To reset the debounce, but still quickly remove errors
         }
       }
     });
@@ -74,6 +74,10 @@ export default class Preview extends React.PureComponent {
         module, modules, directories,
       }, '*');
     });
+  }
+
+  setError = (e: ?{ message: string; line: number }) => {
+    this.props.setError(e);
   }
 
   props: Props;

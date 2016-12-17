@@ -33,6 +33,7 @@ type Props = {
   openMenu: Function;
   closeTree?: () => void;
   hasChildren?: boolean;
+  root: ?boolean;
 };
 
 type State = {
@@ -167,7 +168,7 @@ class Entry extends React.PureComponent {
 
   render() {
     const { title, depth, isOpen, hasChildren, type, active,
-      connectDragSource, onClick, isNotSynced } = this.props;
+      connectDragSource, onClick, isNotSynced, root } = this.props;
     const { state, error, selected } = this.state;
     return connectDragSource(
       <div>
@@ -184,6 +185,7 @@ class Entry extends React.PureComponent {
             hasChildren={hasChildren}
             isOpen={isOpen}
             type={type}
+            root={root}
           />
           {state === 'editing' ?
             <EntryTitleInput

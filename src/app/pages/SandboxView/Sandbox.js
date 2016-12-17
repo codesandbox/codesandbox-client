@@ -46,7 +46,9 @@ class SandboxFound extends React.PureComponent {
     return (
       <Match
         pattern="module/:module*" render={matchPattern => (
-          <Editor sandbox={sandbox} {...matchPattern} />
+          <div>
+            <Editor sandbox={sandbox} {...matchPattern} />
+          </div>
         )}
       />
     );

@@ -48,7 +48,7 @@ const theme = createTheme({
   background3: '#374140',
   primary: '#D9CB9E',
   // secondary: '#DC3522',
-  secondary: '#00B7FF',
+  secondary: '#00B1DF',
   white: '#E0E0E0',
   black: '#74757D',
   redBackground: '#400000',

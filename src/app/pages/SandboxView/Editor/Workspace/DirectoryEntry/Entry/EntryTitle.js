@@ -9,6 +9,7 @@ const TitleContainer = styled.span`
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+  vertical-align: middle;
 `;
 
 export default ({ title }: { title: string }) => (

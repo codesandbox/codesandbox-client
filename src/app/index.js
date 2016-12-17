@@ -6,6 +6,7 @@ import { ThemeProvider } from 'styled-components';
 
 import App from './pages/index';
 import './global.css';
+import './split-pane.css';
 import createStore from './store';
 import theme from '../common/theme';
 

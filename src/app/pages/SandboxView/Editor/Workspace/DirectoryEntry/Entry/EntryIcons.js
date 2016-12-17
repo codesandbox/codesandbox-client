@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-// import ModuleIcon from 'react-icons/lib/fa/file-o';
+import ProjectIcon from 'react-icons/lib/go/file-code';
 import FunctionIcon from 'react-icons/lib/fa/code';
 import FolderIcon from 'react-icons/lib/md/keyboard-arrow-down';
 import DirectoryIcon from 'react-icons/lib/go/file-directory';
@@ -24,7 +24,10 @@ const StyledFolderIcon = styled.span`
   }
 `;
 
-const getIcon = (type) => {
+const getIcon = (type, root) => {
+  if (root) {
+    return <ProjectIcon />;
+  }
   if (type === 'react') {
     return <ReactIcon />;
   }
@@ -43,15 +46,16 @@ type Props = {
   isNotSynced: ?boolean;
   isOpen?: boolean;
   onOpen: () => void;
+  root: ?boolean;
 };
-export default ({ type, hasChildren, isNotSynced, isOpen, onOpen }: Props) => (
-  <span>
+export default ({ type, root, hasChildren, isNotSynced, isOpen, onOpen }: Props) => (
+  <div style={{ display: 'inline-block', verticalAlign: 'middle' }}>
     {isNotSynced && <NotSyncedIconWithMargin />}
     {type === 'directory' && hasChildren && (
       <StyledFolderIcon isOpen={isOpen} onClick={onOpen}>
         <FolderIcon />
       </StyledFolderIcon>
     )}
-    {getIcon(type)}
-  </span>
+    {getIcon(type, root)}
+  </div>
 );

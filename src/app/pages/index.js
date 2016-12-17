@@ -64,5 +64,4 @@ class RootPage extends React.PureComponent {
     );
   }
 }
-
 export default connect(mapStateToProps, mapDispatchToProps)(RootPage);

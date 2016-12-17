@@ -4949,6 +4949,17 @@ react-router@next:
     query-string "4.2.3"
     react-broadcast "^0.1.1"
 
+react-split-pane@^0.1.57:
+  version "0.1.57"
+  resolved "https://registry.yarnpkg.com/react-split-pane/-/react-split-pane-0.1.57.tgz#7cc2d30841ae6a3e246ee613a9858012528d894f"
+  dependencies:
+    inline-style-prefixer "^2.0.4"
+    react-style-proptype "^1.4.0"
+
+react-style-proptype@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/react-style-proptype/-/react-style-proptype-1.4.0.tgz#d82c4093b73767e3efaacba013cea22a50e7b5ee"
+
 react@^15.4.1:
   version "15.4.1"
   resolved "https://registry.yarnpkg.com/react/-/react-15.4.1.tgz#498e918602677a3983cd0fd206dfe700389a0dd6"
@@ -5075,10 +5086,6 @@ reduce-function-call@^1.0.1:
   resolved "https://registry.yarnpkg.com/reduce-function-call/-/reduce-function-call-1.0.1.tgz#fa02e126e695824263cab91d3a5b0fdc1dd27a9a"
   dependencies:
     balanced-match "~0.1.0"
-
-redux-saga@^0.13.0:
-  version "0.13.0"
-  resolved "https://registry.yarnpkg.com/redux-saga/-/redux-saga-0.13.0.tgz#9294386550deb0d56bc9a1b3c90a613e7ddb6593"
 
 redux@^3.2.0, redux@^3.6.0:
   version "3.6.0"

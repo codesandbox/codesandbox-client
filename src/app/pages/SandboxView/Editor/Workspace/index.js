@@ -19,8 +19,8 @@ import directoryEntity from '../../../../store/entities/directories';
 const Container = styled.div`
   position: relative;
   background-color: ${props => props.theme.background};
+  height: 100%;
   overflow: auto;
-  min-width: 16rem;
 `;
 
 type Props = {
@@ -58,7 +58,6 @@ class Workspace extends React.PureComponent { // eslint-disable-line
 
     return (
       <Container>
-        <SandboxTitle renameSandbox={this.handleRenameSandbox} title={sandbox && sandbox.title} />
         {sandbox &&
           <DirectoryEntry root url={url} title={sandbox.title} sandboxId={sandbox.id} id={null} />}
         <DeleteTarget
@@ -73,3 +72,4 @@ Workspace.contextTypes = {
   router: React.PropTypes.object,
 };
 export default DragDropContext(HTML5Backend)(connect(null, mapDispatchToProps)(Workspace));
+// <SandboxTitle renameSandbox={this.handleRenameSandbox} title={sandbox && sandbox.title} />;

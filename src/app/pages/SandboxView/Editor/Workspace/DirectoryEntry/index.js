@@ -136,6 +136,7 @@ class DirectoryEntry extends React.PureComponent {
             title={title}
             depth={depth}
             type="directory"
+            root={root}
             isOpen={open}
             onClick={() => this.setOpen(!open)}
             renameValidator={newTitle => validateTitle(id, newTitle, siblings)}
