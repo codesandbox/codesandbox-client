@@ -54,6 +54,8 @@ export default (schema: typeof Schema) => {
         });
 
         dispatch({ type: keys.success, entity });
+
+        return entity;
       } catch (e) {
         dispatch({ type: keys.failure, error: e });
         console.error(e);

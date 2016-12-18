@@ -34,7 +34,6 @@ export default class Preview extends React.PureComponent {
   constructor() {
     super();
 
-    this.executeCode = debounce(this.executeCode, 0);
     this.setError = debounce(this.setError, 500);
     this.state = {
       frameInitialized: false,
@@ -59,7 +58,7 @@ export default class Preview extends React.PureComponent {
         if (type === 'error') {
           const { error } = e.data;
           this.setError(error);
-        } else if (type === 'success' && this.props.module.error) {
+        } else if (type === 'success') {
           this.setError.cancel();
           this.props.setError(null); // To reset the debounce, but still quickly remove errors
         }

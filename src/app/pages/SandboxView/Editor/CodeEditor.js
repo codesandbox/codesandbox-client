@@ -2,6 +2,7 @@
 import React from 'react';
 import CodeMirror from 'codemirror';
 import styled, { injectGlobal, keyframes } from 'styled-components';
+import { debounce } from 'lodash';
 
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/mode/jsx/jsx';
@@ -76,6 +77,11 @@ const handleError = (cm, currentError, nextError, nextCode, nextId) => {
 
 export default class CodeEditor extends React.PureComponent {
   props: Props;
+
+  constructor() {
+    super();
+    this.handleChange = debounce(this.handleChange, 100);
+  }
 
   componentDidMount() {
     window.addEventListener('keydown', (event: KeyboardEvent) => {

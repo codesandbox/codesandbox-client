@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect';
-import { values, sortBy } from 'lodash';
+import { values } from 'lodash';
 import { singleSandboxSelector } from '../sandboxes/selector';
+import { entriesInDirectorySelector } from '../../selectors/entry-selectors';
 
 export const directoriesSelector = state => state.entities.directories;
 
@@ -10,16 +11,11 @@ export const singleDirectoryByIdSelector = createSelector(
   (dirs, id) => dirs[id],
 );
 
-export const getDirectoriesInDirectory = (directoryId, directories) => (
-  sortBy(
-    values(directories).filter(m => m.directoryId === directoryId), m => m.title.toUpperCase(),
-  )
-);
-
 export const directoriesInDirectorySelector = createSelector(
   (_, { id }) => id,
+  (_, { sandboxId }) => sandboxId,
   directoriesSelector,
-  getDirectoriesInDirectory,
+  entriesInDirectorySelector,
 );
 
 export const directoriesBySandboxSelector = createSelector(

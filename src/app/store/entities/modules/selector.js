@@ -1,18 +1,15 @@
 import { createSelector } from 'reselect';
-import { values, sortBy } from 'lodash';
+import { values } from 'lodash';
 
 import { singleSandboxSelector } from '../sandboxes/selector';
 import resolveModule from '../../../../sandbox/utils/resolve-module';
 import { directoriesBySandboxSelector } from '../directories/selector';
+import { entriesInDirectorySelector } from '../../selectors/entry-selectors';
 
 export const modulesSelector = state => state.entities.modules;
 export const defaultModuleSelector = state => modulesSelector(state).default;
 export const singleModuleSelector = (state, { id }) => (
   modulesSelector(state)[id] || defaultModuleSelector(state)
-);
-
-export const getModulesInDirectory = (directoryId, modules) => (
-  sortBy(values(modules).filter(m => m.directoryId === directoryId), m => m.title.toUpperCase())
 );
 
 export const modulesBySandboxSelector = createSelector(
@@ -38,14 +35,10 @@ export const moduleByPathSelector = createSelector(
   },
 );
 
-export const rootModulesSelector = createSelector(
-  modulesBySandboxSelector,
-  modules => getModulesInDirectory(null, modules),
-);
-
 export const modulesInDirectorySelector = createSelector(
   (_, { id }) => id,
+  (_, { sandboxId }) => sandboxId,
   modulesSelector,
-  getModulesInDirectory,
+  entriesInDirectorySelector,
 );
 

@@ -33,9 +33,9 @@ const Opener = styled.div`
   overflow: hidden;
 `;
 
-const mapStateToProps = (state, { id }) => ({
-  directories: directoriesInDirectorySelector(state, { id }),
-  modules: modulesInDirectorySelector(state, { id }),
+const mapStateToProps = (state, { id, sandboxId }) => ({
+  directories: directoriesInDirectorySelector(state, { sandboxId, id }),
+  modules: modulesInDirectorySelector(state, { sandboxId, id }),
 });
 const mapDispatchToProps = dispatch => ({
   moduleActions: bindActionCreators(moduleEntity.actions, dispatch),

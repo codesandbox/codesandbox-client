@@ -2,6 +2,7 @@
 import type { Schema } from 'normalizr';
 
 import createEntityActions, { getEntity } from '../../actions/entities';
+import notificationActions from '../../actions/notifications';
 import { singleSandboxSelector } from './selector';
 
 export const GET_SANDBOX_BY_USERNAME_AND_SLUG = 'GET_SANDBOX_BY_USERNAME_AND_SLUG';
@@ -35,6 +36,16 @@ export default (schema: Schema) => {
         const newData = { title };
 
         dispatch(entityActions.updateById(id, reverseData, newData));
+      }
+    },
+
+    createSandbox: (title: string, preset: string = '') => async (dispatch) => {
+      try {
+        const result = await dispatch(entityActions.create({ title, fork_id: preset || null }));
+        return result;
+      } catch (e) {
+        dispatch(notificationActions.addNotification('There was a problem creating the sandbox', 'Please try again', 'error'));
+        return e;
       }
     },
   };
