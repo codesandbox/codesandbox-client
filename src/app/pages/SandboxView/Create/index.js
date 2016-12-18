@@ -7,8 +7,6 @@ import FunctionIcon from 'react-icons/lib/fa/code';
 
 import callApi from '../../../store/services/api';
 import ReactIcon from '../../../components/ReactIcon';
-import AngularIcon from '../../../components/AngularIcon';
-import VueIcon from '../../../components/VueIcon';
 
 import moduleEntity from '../../../store/entities/modules/';
 import sandboxEntity from '../../../store/entities/sandboxes/';
@@ -134,18 +132,6 @@ class Create extends React.PureComponent {
                   <IconTitle>{preset.name}</IconTitle>
                 </Icon>
               ))}
-
-              <Icon disabled>
-                <VueIcon
-                  color={theme.background2.lighten(0.4)()}
-                  secondColor={theme.background2.lighten(1.5)()}
-                />
-                <IconTitle>Vue</IconTitle>
-              </Icon>
-              <Icon disabled>
-                <AngularIcon />
-                <IconTitle>AngularJS 2.0</IconTitle>
-              </Icon>
             </Icons>
           )}
         </div>
