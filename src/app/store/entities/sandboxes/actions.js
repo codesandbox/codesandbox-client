@@ -1,6 +1,5 @@
 // @flow
 import type { Schema } from 'normalizr';
-import slugify from 'slug';
 
 import createEntityActions, { getEntity } from '../../actions/entities';
 import { singleSandboxSelector } from './selector';
@@ -32,8 +31,8 @@ export default (schema: Schema) => {
       const sandbox = singleSandboxSelector(getState(), { id });
 
       if (sandbox && sandbox.title !== title) {
-        const reverseData = { title: sandbox.title, slug: sandbox.slug };
-        const newData = { title, slug: slugify(title).toLowerCase() };
+        const reverseData = { title: sandbox.title };
+        const newData = { title };
 
         dispatch(entityActions.updateById(id, reverseData, newData));
       }

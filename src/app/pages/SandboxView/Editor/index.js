@@ -51,7 +51,9 @@ const Tab = styled.span`
 
 const Content = styled.div`
   display: flex;
-  flex: auto;
+  width: 100%;
+  height: 100%;
+  // flex: auto;
 `;
 
 const Frame = styled.div`
@@ -59,34 +61,13 @@ const Frame = styled.div`
   flex-direction: column;
   flex: auto;
   width: 100%;
-`;
-
-const Container = styled.div`
-  // position: relative;
-  // display: flex;
-  // width: 100%;
-`;
-
-const CodeEditorContainer = styled.div`
-  width: 100%;
   height: 100%;
 `;
 
-const PreviewContainer = styled.div`
-  width: 100%;
+const FullSize = styled.div`
   height: 100%;
+  width: 100%;
   pointer-events: ${props => props.inactive ? 'none' : 'all'};
-`;
-
-const LoadingText = styled.div`
-  position: absolute;
-  color: ${props => props.theme.background.lighten(3.5)};
-  text-align: center;
-  vertical-align: middle;
-  font-size: 4rem;
-  flex: auto;
-  top: 50%; bottom: 0; left: 0; right: 0;
-  margin: auto;
 `;
 
 type Props = {
@@ -150,31 +131,15 @@ class Editor extends React.PureComponent {
   render() {
     const { modules, directories, module, moduleActions, sandbox } = this.props;
 
-    if (!module) {
-      return <Container><LoadingText>Could not find module</LoadingText></Container>;
-    }
-
     return (
       <SplitPane split="vertical" minSize={100} defaultSize={16 * 16}>
         <Workspace sandbox={sandbox} />
-        <Frame>
+        {module && <Frame>
           <Tabs>
             <Tab active>
               <div>
                 <EntryIcons type="react" />
                 <span style={{ verticalAlign: 'middle' }}>{module.title}</span>
-              </div>
-            </Tab>
-            <Tab>
-              <div>
-                <EntryIcons type="react" />
-                <span style={{ verticalAlign: 'middle' }}>Lorem</span>
-              </div>
-            </Tab>
-            <Tab>
-              <div>
-                <EntryIcons type="react" />
-                <span style={{ verticalAlign: 'middle' }}>HelloWorld</span>
               </div>
             </Tab>
           </Tabs>
@@ -187,7 +152,7 @@ class Editor extends React.PureComponent {
               minSize={360}
               primary="second"
             >
-              <CodeEditorContainer>
+              <FullSize>
                 <CodeEditor
                   onChange={this.onChange}
                   id={module.id}
@@ -195,18 +160,18 @@ class Editor extends React.PureComponent {
                   code={module.code}
                   saveCode={moduleActions.saveCode}
                 />
-              </CodeEditorContainer>
-              <PreviewContainer inactive={this.state.resizing}>
+              </FullSize>
+              <FullSize inactive={this.state.resizing}>
                 <Preview
                   module={module}
                   modules={modules}
                   directories={directories}
                   setError={this.setError}
                 />
-              </PreviewContainer>
+              </FullSize>
             </SplitPane>
           </Content>
-        </Frame>
+        </Frame>}
       </SplitPane>
     );
   }

@@ -181,8 +181,6 @@ const config = {
         minifyURLs: true,
       },
     }),
-    // This ignores a unicode library which is 1MB! used for unicode in slugify
-    new webpack.IgnorePlugin(/unicode\/category\/So/),
     // Makes some environment variables available to the JS code, for example:
     // if (process.env.NODE_ENV === 'development') { ... }. See `env.js`.
     new webpack.DefinePlugin(env),

@@ -57,6 +57,7 @@ type Props = {
   moduleActions: typeof moduleEntity.actions;
   directoryActions: typeof directoryEntity.actions;
   openMenu: (e: Event) => void;
+  renameSandbox?: (title: string) => void;
 };
 type State = {
   creating: '' | 'module' | 'directory';
@@ -125,7 +126,8 @@ class DirectoryEntry extends React.PureComponent {
 
   render() {
     const { id, sandboxId, title, directories, openMenu, modules, moduleActions, url,
-      directoryActions, siblings, depth = 0, connectDropTarget, isOver, root } = this.props;
+      directoryActions, siblings, depth = 0, renameSandbox,
+      connectDropTarget, isOver, root } = this.props;
     const { creating, open } = this.state;
     return connectDropTarget(
       <div style={{ position: 'relative' }}>
@@ -139,8 +141,11 @@ class DirectoryEntry extends React.PureComponent {
             root={root}
             isOpen={open}
             onClick={() => this.setOpen(!open)}
-            renameValidator={newTitle => validateTitle(id, newTitle, siblings)}
-            rename={!root && directoryActions.renameDirectory}
+            renameValidator={newTitle => (root ? false : validateTitle(id, newTitle, siblings))}
+            rename={root
+              ? (_, newTitle) => renameSandbox(newTitle) :
+              directoryActions.renameDirectory
+            }
             onCreateModuleClick={this.onCreateModuleClick}
             onCreateDirectoryClick={this.onCreateDirectoryClick}
             deleteEntry={!root && this.deleteDirectory}

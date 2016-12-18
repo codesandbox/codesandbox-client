@@ -8,10 +8,14 @@ import type { Directory } from '../../app/store/entities/directories/index';
 
 const MAX_DEPTH = 20;
 
+const React = require('react');
+const styled = require('styled-components');
+const router = require('react-router');
+
 const dependencies = new Map([
-  ['react', require('react')],
-  ['styled-components', require('styled-components')],
-  ['react-router', require('react-router')],
+  ['react', { ...React, ...React.default }],
+  ['styled-components', { ...styled, ...styled.default }],
+  ['react-router', { ...router, ...router.default }],
 ]);
 
 const moduleCache = new Map();
@@ -28,14 +32,19 @@ const compileCode = (code: string = '', moduleName: string = 'unknown') => {
   }
 };
 
+function evaluate(code, require) {
+  const exports = { __esModule: true };
+  eval(code); // eslint-disable-line no-eval
+  return exports;
+}
+
 const evalModule = (
   mainModule: Module,
   modules: Array<Module>,
   directories: Array<Directory>,
   depth: number = 0,
 ) => {
-  const exports = {};
-  const require = function require(path) { // eslint-disable-line no-unused-vars
+  require = function require(path) { // eslint-disable-line no-unused-vars
     if (depth > MAX_DEPTH) {
       throw new Error(`Exceeded the maximum require depth of ${MAX_DEPTH}.`);
     }
@@ -50,20 +59,21 @@ const evalModule = (
     // Check if this module has been evaluated before, if so return that
     return moduleCache.get(module.id) || evalModule(module, modules, directories, depth + 1);
   };
+
   try {
     const compiledCode = compileCode(mainModule.code, mainModule.title);
     // don't use Function() here since it changes source locations
-    eval(compiledCode); // eslint-disable-line no-eval
+    const exports = evaluate(compiledCode, require);
+
+    // Always set a (if no error) new cache for this module, because we know this changed
+    moduleCache.set(mainModule.id, exports);
+    return exports;
   } catch (e) {
     // Remove cache
     moduleCache.delete(mainModule.id);
     e.module = e.module || mainModule;
     throw e;
   }
-
-  // Always set a (if no error) new cache for this module, because we know this changed
-  moduleCache.set(mainModule.id, exports);
-  return exports;
 };
 
 export default evalModule;

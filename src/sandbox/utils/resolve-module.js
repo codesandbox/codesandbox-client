@@ -56,8 +56,10 @@ export default (
     return indexModule;
   }
 
-  // Last resort, check if there is something in the same folder called index
-  const indexModule = modulesInFoundDirectory.find(m => m.title === 'index');
-  if (indexModule) return indexModule;
+  if (splitPath[splitPath.length - 1] === '') {
+    // Last resort, check if there is something in the same folder called index
+    const indexModule = modulesInFoundDirectory.find(m => m.title === 'index');
+    if (indexModule) return indexModule;
+  }
   throw new Error(`Cannot find module in ${path}`);
 };

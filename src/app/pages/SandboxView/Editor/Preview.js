@@ -34,6 +34,7 @@ export default class Preview extends React.PureComponent {
   constructor() {
     super();
 
+    this.executeCode = debounce(this.executeCode, 0);
     this.setError = debounce(this.setError, 500);
     this.state = {
       frameInitialized: false,
@@ -42,7 +43,7 @@ export default class Preview extends React.PureComponent {
 
   componentDidUpdate(prevProps: Props) {
     if (prevProps.module.code !== this.props.module.code && this.state.frameInitialized) {
-      requestAnimationFrame(() => this.executeCode());
+      requestAnimationFrame(this.executeCode);
     }
   }
 
@@ -59,8 +60,8 @@ export default class Preview extends React.PureComponent {
           const { error } = e.data;
           this.setError(error);
         } else if (type === 'success' && this.props.module.error) {
-          this.props.setError(null);
-          this.setError(null); // To reset the debounce, but still quickly remove errors
+          this.setError.cancel();
+          this.props.setError(null); // To reset the debounce, but still quickly remove errors
         }
       }
     });

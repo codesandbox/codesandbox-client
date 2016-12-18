@@ -40,6 +40,21 @@ const createEntityReducer = entity =>
       newState = { ...newState, [action.id]: { ...newState[action.id], ...updatedInfo } };
     }
 
+    if (action.type === entityKeys.update.success) {
+      const updatedInfo = action.newData;
+
+      // Only update selected fields
+      action.updateFields.forEach((field) => {
+        newState = {
+          ...newState,
+          [action.id]: {
+            ...newState[action.id],
+            [field]: updatedInfo[field],
+          },
+        };
+      });
+    }
+
     if (action.type === entityKeys.update.failure) {
       const oldData = action.oldData;
 

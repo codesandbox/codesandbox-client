@@ -1,6 +1,5 @@
 import resolveModule from './resolve-module';
 
-
 describe('root', () => {
   test('it resolves root path', () => {
     const path = './Test';
@@ -196,6 +195,27 @@ describe('relative', () => {
       directoryId: '1312423432',
     }];
     expect(resolveModule(path, modules, directories, '1312423432')).toBe(modules[0]);
+  });
+
+  test("it doesn't find itself if nothing is found", () => {
+    const path = './Tes';
+    const directories = [{
+      id: '123123123',
+      title: 'Test',
+      directoryId: null,
+    }];
+
+    const modules = [{
+      id: '12666',
+      title: 'index',
+      directoryId: '123123123',
+    }, {
+      id: '123123',
+      title: 'index',
+      directoryId: null,
+    }];
+
+    expect(() => resolveModule(path, modules, directories, null)).toThrow();
   });
 });
 

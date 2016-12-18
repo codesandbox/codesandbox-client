@@ -56,11 +56,13 @@ export default (schema: typeof Schema) => {
         dispatch({ type: keys.success, entity });
       } catch (e) {
         dispatch({ type: keys.failure, error: e });
+        console.error(e);
         throw e;
       }
     },
 
-    updateById: (id: string, oldData: Object, newData: Object) => async (dispatch: Function) => {
+    updateById: (id: string, oldData: Object, newData: Object, updateFields: Array<string> = []) =>
+    async (dispatch: Function) => {
       const keys = actionKeys.update;
       dispatch({ type: keys.request, id, newData });
 
@@ -70,9 +72,10 @@ export default (schema: typeof Schema) => {
           body: { data: newData },
         });
 
-        dispatch({ type: keys.success, id, newData });
+        dispatch({ type: keys.success, id, newData, updateFields });
       } catch (e) {
         dispatch({ type: keys.failure, id, oldData, error: e });
+        console.error(e);
         throw e;
       }
     },
@@ -91,6 +94,7 @@ export default (schema: typeof Schema) => {
         dispatch({ type: keys.success, id });
       } catch (e) {
         dispatch({ type: keys.failure, id, entity: entityData });
+        console.error(e);
         throw e;
       }
     },

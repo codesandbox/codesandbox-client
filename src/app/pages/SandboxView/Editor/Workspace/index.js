@@ -41,16 +41,13 @@ const mapDispatchToProps = dispatch => ({
 });
 class Workspace extends React.PureComponent { // eslint-disable-line
   props: Props;
-  handleRenameSandbox = (title: string) => {
+
+  renameSandbox = (title: string) => {
     const { sandbox, sandboxActions } = this.props;
     if (sandbox && sandbox.id) {
-      const moduleUrl = document.location.pathname.replace(/.*?module\/?/, '');
       sandboxActions.renameSandbox(sandbox.id, title);
-      // Go to direct url of sandbox, so we don't have any problems with
-      // changing the url
-      this.context.router.transitionTo(`${editModuleUrl(sandbox, null)}/${moduleUrl}`);
     }
-  }
+  };
 
   render() {
     const { sandbox, moduleActions, directoryActions } = this.props;
@@ -59,7 +56,14 @@ class Workspace extends React.PureComponent { // eslint-disable-line
     return (
       <Container>
         {sandbox &&
-          <DirectoryEntry root url={url} title={sandbox.title} sandboxId={sandbox.id} id={null} />}
+          <DirectoryEntry
+            root
+            url={url}
+            title={sandbox.title}
+            sandboxId={sandbox.id}
+            renameSandbox={this.renameSandbox}
+            id={null}
+          />}
         <DeleteTarget
           deleteDirectory={directoryActions.deleteDirectory}
           deleteModule={moduleActions.deleteModule}
@@ -68,8 +72,5 @@ class Workspace extends React.PureComponent { // eslint-disable-line
     );
   }
 }
-Workspace.contextTypes = {
-  router: React.PropTypes.object,
-};
 export default DragDropContext(HTML5Backend)(connect(null, mapDispatchToProps)(Workspace));
 // <SandboxTitle renameSandbox={this.handleRenameSandbox} title={sandbox && sandbox.title} />;

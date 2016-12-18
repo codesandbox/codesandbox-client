@@ -59,7 +59,9 @@ const handleError = (cm, currentError, nextError, nextCode, nextId) => {
     }
 
     if (currentError) {
-      cm.removeLineClass(currentError.line, 'background', 'cm-line-error');
+      cm.getValue().split('\n').forEach((_, i) => {
+        cm.removeLineClass(i, 'background', 'cm-line-error');
+      });
     }
 
     const code = nextCode || '';
