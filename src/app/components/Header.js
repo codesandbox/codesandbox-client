@@ -1,11 +1,11 @@
 // @flow
 import React from 'react';
+import { Match } from 'react-router';
 import styled from 'styled-components';
 
 import CloudIcon from 'react-icons/lib/md/cloud';
 import DownloadIcon from 'react-icons/lib/md/file-download';
 import RefreshIcon from 'react-icons/lib/md/refresh';
-import { compose } from 'redux';
 
 const Container = styled.div`
   position: relative;
@@ -76,20 +76,26 @@ const Logo = styled.span`
 export default ({ username }: { username: ?string }) => (
   <Container>
     <Logo>CodeSandbox</Logo>
-    <Actions>
-      <Action>
-        <CloudIcon />
-        <span>Save</span>
-      </Action>
-      <Action>
-        <DownloadIcon />
-        <span>Download</span>
-      </Action>
-      <Action>
-        <RefreshIcon />
-        <span>Refresh</span>
-      </Action>
-    </Actions>
+    <Match
+      pattern="*module*"
+      render={() => (
+        <Actions>
+          <Action>
+            <CloudIcon />
+            <span>Save</span>
+          </Action>
+          <Action>
+            <DownloadIcon />
+            <span>Download</span>
+          </Action>
+          <Action>
+            <RefreshIcon />
+            <span>Refresh</span>
+          </Action>
+        </Actions>
+      )}
+    />
+
     {username && <Username>{username}</Username>}
   </Container>
 );

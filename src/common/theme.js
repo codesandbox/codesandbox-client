@@ -47,6 +47,7 @@ const theme = createTheme({
   background2: '#1C2022',
   background3: '#374140',
   primary: '#D9CB9E',
+  primaryText: '#6E6B5B',
   // secondary: '#DC3522',
   secondary: '#00B1DF',
   white: '#E0E0E0',

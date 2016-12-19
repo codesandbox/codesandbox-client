@@ -116,13 +116,13 @@ const Icon = styled.div`
   cursor: pointer;
 
   ${props => props.active && `
-    background-color: ${props.theme.background()};
-    color: ${props.theme.primary()};
+    background-color: ${props.theme.primary()};
+    color: ${props.theme.primaryText()};
   `}
 
   &:hover {
-    background-color: ${props => !props.active && props.theme.background.clearer(0.5)};
-    color: ${props => !props.active && props.theme.primary.clearer(0.5)};
+    background-color: ${props => !props.active && props.theme.background};
+    color: ${props => !props.active && props.theme.primary};
   }
 `;
 
@@ -193,7 +193,8 @@ class Create extends React.PureComponent {
     if (result instanceof Error) {
       this.setState({ creating: false });
     } else {
-      const url = editModuleUrl(result);
+      const username = result.author ? result.author.username : null;
+      const url = editModuleUrl({ ...result, author: username });
       this.context.router.transitionTo(url);
     }
   };
