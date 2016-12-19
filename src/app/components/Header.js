@@ -49,9 +49,9 @@ const Action = styled.div`
 
   &:hover {
     box-shadow: 0px 3px 9px rgba(0, 0, 0, 0.2);
-    color: ${props => props.theme.background.clearer(0.4)};
-    border-right: 1px solid ${props => props.theme.primary.darken(0.2)};
-    background-color: ${props => props.theme.primary};
+    color: white;
+    border-right: 1px solid ${props => props.theme.secondary.darken(0.2)};
+    background-color: ${props => props.theme.secondary};
   }
 `;
 
@@ -65,13 +65,13 @@ const Username = styled.div`
 
 const Logo = styled.span`
   display: inline-block;
-  background-color: ${props => props.theme.secondary};
+  background-color: ${props => props.theme.primary};
   padding: 0 1rem;
   line-height: 3rem;
   vertical-align: middle;
   width: 14rem;
   font-weight: 400;
-  color: white;
+  color: ${props => props.theme.primaryText};
 `;
 
 export default ({ username }: { username: ?string }) => (
