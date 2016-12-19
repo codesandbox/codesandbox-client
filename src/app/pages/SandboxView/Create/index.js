@@ -87,6 +87,9 @@ const Name = styled.div`
     outline: none;
     text-align: center;
   }
+  input::-webkit-input-placeholder {
+    color: ${props => props.theme.background2.lighten(2.9)};
+  }
 `;
 
 const Icons = styled.div`

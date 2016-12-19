@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import CloudIcon from 'react-icons/lib/md/cloud';
 import DownloadIcon from 'react-icons/lib/md/file-download';
 import RefreshIcon from 'react-icons/lib/md/refresh';
+import ForkIcon from 'react-icons/lib/go/repo-clone';
 
 const Container = styled.div`
   position: relative;
@@ -82,7 +83,7 @@ export default ({ username }: { username: ?string }) => (
         <Actions>
           <Action>
             <CloudIcon />
-            <span>Save</span>
+            <span>Save Project</span>
           </Action>
           <Action>
             <DownloadIcon />
@@ -91,6 +92,10 @@ export default ({ username }: { username: ?string }) => (
           <Action>
             <RefreshIcon />
             <span>Refresh</span>
+          </Action>
+          <Action>
+            <ForkIcon />
+            <span>Fork</span>
           </Action>
         </Actions>
       )}
