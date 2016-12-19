@@ -77,7 +77,7 @@ export default ({ username }: { username: ?string }) => (
   <Container>
     <Logo>CodeSandbox</Logo>
     <Match
-      pattern="*module*"
+      pattern="/:username/:slug/module"
       render={() => (
         <Actions>
           <Action>
