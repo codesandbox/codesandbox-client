@@ -1,30 +1,32 @@
 import buildError from './utils/error-message-builder';
 import evalModule from './utils/eval-module';
 import ReactMode from './modes/ReactMode';
-import FunctionMode from './modes/FunctionMode';
-
-const rootElement = document.getElementById('root');
 
 let errorHappened = false;
+let lastMode = null;
+const rootElement = document.createElement('div');
+document.body.appendChild(rootElement);
 
 window.addEventListener('message', (message) => {
   const { modules, directories, module } = message.data;
+
   try {
     const compiledModule = evalModule(module, modules, directories);
     const mode = module.type; // eslint-disable-line no-underscore-dangle
 
+    if (lastMode == null || lastMode.type !== mode) {
+      while (rootElement.hasChildNodes()) {
+        rootElement.removeChild(rootElement.lastChild);
+      }
+    }
+
     if (mode === 'react') {
-      if (this.mode == null || this.mode.type !== 'react') {
-        this.mode = new ReactMode(rootElement);
+      if (lastMode == null || lastMode.type !== 'react') {
+        lastMode = new ReactMode(rootElement);
       }
-      this.mode.render(compiledModule.default, !!errorHappened);
-    } else if (mode === 'function') {
-      if (this.mode == null || this.mode.type !== 'function') {
-        this.mode = new FunctionMode(rootElement);
-      }
-      this.mode.render(compiledModule);
+      lastMode.render(compiledModule.default, !!errorHappened);
     } else {
-      this.mode = null;
+      lastMode = null;
     }
 
     errorHappened = false;

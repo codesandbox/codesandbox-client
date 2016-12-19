@@ -126,7 +126,7 @@ class Editor extends React.PureComponent {
   setError = (error: ?{ message: string; line: number }) => {
     const { module } = this.props;
     this.props.moduleActions.setError(module.id, error);
-  }
+  };
 
   render() {
     const { modules, directories, module, moduleActions, sandbox } = this.props;

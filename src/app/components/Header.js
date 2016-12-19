@@ -2,8 +2,14 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import CloudIcon from 'react-icons/lib/md/cloud';
+import DownloadIcon from 'react-icons/lib/md/file-download';
+import RefreshIcon from 'react-icons/lib/md/refresh';
+import { compose } from 'redux';
+
 const Container = styled.div`
   position: relative;
+  display: flex;
   background-color: ${props => props.theme.background};
   font-size: 1.2rem;
   color: ${props => props.theme.white};
@@ -12,16 +18,56 @@ const Container = styled.div`
   z-index: 40;
   margin: 0;
   font-weight: 400;
+  height: 3rem;
+`;
+
+const Actions = styled.div`
+  height: 100%;
+`;
+
+const Action = styled.div`
+  transition: 0.3s ease all;
+  display: inline-block;
+  font-size: 1rem;
+  color: ${props => props.theme.background.lighten(2.5)};
+  border-right: 1px solid ${props => props.theme.background.darken(0.2)};
+  vertical-align: middle;
+  cursor: pointer;
+
+  height: 100%;
+  line-height: 3rem;
+  padding: 0 2rem;
+  margin: 0rem;
+  svg {
+    font-size: 1.1rem;
+  }
+  span {
+    padding-left: 0.5rem;
+    vertical-align: middle;
+  }
+
+  &:hover {
+    box-shadow: 0px 3px 9px rgba(0, 0, 0, 0.2);
+    color: ${props => props.theme.background.clearer(0.4)};
+    border-right: 1px solid ${props => props.theme.primary.darken(0.2)};
+    background-color: ${props => props.theme.primary};
+  }
 `;
 
 const Username = styled.div`
-  float: right;
+  position: absolute;
+  right: 0;
+  padding: 0 1rem;
+  line-height: 3rem;
+  border-left: 1px solid ${props => props.theme.background.darken(0.2)};
 `;
 
 const Logo = styled.span`
   display: inline-block;
   background-color: ${props => props.theme.secondary};
-  padding: 0.75rem 1rem;
+  padding: 0 1rem;
+  line-height: 3rem;
+  vertical-align: middle;
   width: 14rem;
   font-weight: 400;
   color: white;
@@ -30,7 +76,21 @@ const Logo = styled.span`
 export default ({ username }: { username: ?string }) => (
   <Container>
     <Logo>CodeSandbox</Logo>
-    {username && <Username>Hello <b>{username}</b>!</Username>}
+    <Actions>
+      <Action>
+        <CloudIcon />
+        <span>Save</span>
+      </Action>
+      <Action>
+        <DownloadIcon />
+        <span>Download</span>
+      </Action>
+      <Action>
+        <RefreshIcon />
+        <span>Refresh</span>
+      </Action>
+    </Actions>
+    {username && <Username>{username}</Username>}
   </Container>
 );
 

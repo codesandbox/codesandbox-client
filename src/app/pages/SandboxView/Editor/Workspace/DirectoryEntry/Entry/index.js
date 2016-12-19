@@ -23,7 +23,7 @@ type Props = {
   type: string;
   onCreateModuleClick?: () => void;
   onCreateDirectoryClick?: () => void;
-  renameValidator: (title: string) => boolean;
+  renameValidator: (id: string, title: string) => boolean;
   rename: (id: string, title: string) => boolean;
   deleteEntry: (id: string) => void;
   onRenameCancel: () => void;
@@ -117,7 +117,7 @@ class Entry extends React.PureComponent {
   }
 
   handleValidateTitle = (title: string) => {
-    const isInvalidTitle = this.props.renameValidator(title);
+    const isInvalidTitle = this.props.renameValidator(this.props.id, title);
     this.setState({ error: isInvalidTitle });
   };
 

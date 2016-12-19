@@ -1,4 +1,5 @@
 import React from 'react';
+import { createSelector } from 'reselect';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -33,10 +34,12 @@ const Opener = styled.div`
   overflow: hidden;
 `;
 
-const mapStateToProps = (state, { id, sandboxId }) => ({
-  directories: directoriesInDirectorySelector(state, { sandboxId, id }),
-  modules: modulesInDirectorySelector(state, { sandboxId, id }),
-});
+
+const mapStateToProps = createSelector(
+  directoriesInDirectorySelector,
+  modulesInDirectorySelector,
+  (directories, modules) => ({ directories, modules }),
+);
 const mapDispatchToProps = dispatch => ({
   moduleActions: bindActionCreators(moduleEntity.actions, dispatch),
   directoryActions: bindActionCreators(directoryEntity.actions, dispatch),
@@ -122,12 +125,27 @@ class DirectoryEntry extends React.PureComponent {
     return true;
   };
 
+  renameSandbox = (_, newTitle) => this.props.renameSandbox(newTitle);
+
+  toggleOpen = () => this.setOpen(!this.state.open);
+  closeTree = () => this.setOpen(false);
   setOpen = open => this.setState({ open });
+
+  validateModuleTitle = (_, title) => {
+    const { id, directories, modules } = this.props;
+    return validateTitle(id, title, [...directories, ...modules]);
+  };
+
+  validateDirectoryTitle = (id, title) => {
+    const { root, siblings } = this.props;
+    if (root) return false;
+
+    return validateTitle(id, title, siblings);
+  };
 
   render() {
     const { id, sandboxId, title, directories, openMenu, modules, moduleActions, url,
-      directoryActions, siblings, depth = 0, renameSandbox,
-      connectDropTarget, isOver, root } = this.props;
+      directoryActions, connectDropTarget, isOver, depth = 0, root } = this.props;
     const { creating, open } = this.state;
     return connectDropTarget(
       <div style={{ position: 'relative' }}>
@@ -140,10 +158,10 @@ class DirectoryEntry extends React.PureComponent {
             type="directory"
             root={root}
             isOpen={open}
-            onClick={() => this.setOpen(!open)}
-            renameValidator={newTitle => (root ? false : validateTitle(id, newTitle, siblings))}
+            onClick={this.toggleOpen}
+            renameValidator={this.validateDirectoryTitle}
             rename={root
-              ? (_, newTitle) => renameSandbox(newTitle) :
+              ? this.renameSandbox :
               directoryActions.renameDirectory
             }
             onCreateModuleClick={this.onCreateModuleClick}
@@ -151,7 +169,7 @@ class DirectoryEntry extends React.PureComponent {
             deleteEntry={!root && this.deleteDirectory}
             hasChildren={directories.length + modules.length > 0}
             openMenu={openMenu}
-            closeTree={() => this.setOpen(false)}
+            closeTree={this.closeTree}
           />
         </EntryContainer>
         <Opener open={open == null ? true : open}>
@@ -162,9 +180,7 @@ class DirectoryEntry extends React.PureComponent {
               state="editing"
               type="directory"
               depth={depth + 1}
-              renameValidator={
-                newTitle => validateTitle(id, newTitle, [...directories, ...modules])
-              }
+              renameValidator={this.validateModuleTitle}
               rename={this.createDirectory}
               onRenameCancel={this.resetState}
             />
@@ -185,9 +201,7 @@ class DirectoryEntry extends React.PureComponent {
               title=""
               state="editing"
               depth={depth + 1}
-              renameValidator={
-                newTitle => validateTitle(id, newTitle, [...directories, ...modules])
-              }
+              renameValidator={this.validateModuleTitle}
               rename={this.createModule}
               onRenameCancel={this.resetState}
             />
