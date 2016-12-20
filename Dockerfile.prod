@@ -1,0 +1,13 @@
+FROM node:7.2.1
+MAINTAINER Ives van Hoorne
+
+RUN npm install -g yarn
+
+ADD package.json /app/package.json
+ADD yarn.lock /app/yarn.lock
+
+WORKDIR /app
+RUN yarn
+
+ADD . /app
+RUN npm run build
