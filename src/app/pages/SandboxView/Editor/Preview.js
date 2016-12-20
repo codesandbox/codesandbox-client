@@ -87,11 +87,12 @@ export default class Preview extends React.PureComponent {
   rootInstance: ?Object;
 
   render() {
+    const location = document.location;
     return (
       <Container>
         <StyledFrame
           sandbox="allow-scripts allow-pointer-lock allow-same-origin allow-popups allow-modals allow-forms"
-          src="http://safe.dev.codesandbox.io/frame.html"
+          src={`${location.protocol}//sandbox.${document.host}/frame.html`}
           id="sandbox"
         />
       </Container>
