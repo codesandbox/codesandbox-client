@@ -1,4 +1,4 @@
-FROM node:7.2.1
+FROM node:alpine
 MAINTAINER Ives van Hoorne
 
 RUN npm install -g yarn
@@ -11,3 +11,6 @@ RUN yarn
 
 ADD . /app
 RUN npm run build
+
+RUN rm -rf node_modules
+RUN rm -rf src
