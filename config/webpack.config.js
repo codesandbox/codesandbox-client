@@ -68,7 +68,7 @@ const config = {
       {
         test: /eval-component\.js$/,
         include: paths.src,
-        loader: 'babel-loader',
+        loader: 'babel-loader?cacheDirectory',
         options: (() => {
           const altererdConfig = Object.assign({}, babelConfig);
 

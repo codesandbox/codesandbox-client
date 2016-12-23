@@ -1,6 +1,6 @@
 /* @flow */
 import React from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { routerContext } from 'react-router/PropTypes';
@@ -12,26 +12,14 @@ import ReactIcon from '../../../components/ReactIcon';
 import moduleEntity from '../../../store/entities/modules/';
 import sandboxEntity from '../../../store/entities/sandboxes/';
 
-import theme from '../../../../common/theme';
 import { editModuleUrl } from '../../../utils/url-generator';
-
-const animation = keyframes`
-  0%   { opacity: 0; transform: translateY(10px); }
-  100% { opacity: 1; transform: translateY(0px); }
-`;
-
-const createDelayEffect = delay => (
-  `
-    animation: ${animation} 0.3s;
-    animation-delay: ${delay}s;
-    animation-fill-mode: forwards;
-    opacity: 0;
-  `
-);
+import delayEffect from '../../../utils/animation/delay-effect';
+import SubTitle from '../../../components/text/SubTitle';
+import Button from '../../../components/buttons/Button';
 
 const Container = styled.div`
   position: relative;
-  ${createDelayEffect(0)}
+  ${delayEffect(0)}
   display: flex;
   justify-content: center;
   flex-direction: column;
@@ -40,43 +28,16 @@ const Container = styled.div`
   color: ${props => props.theme.background2.lighten(1.5)};
 `;
 
-const Title = styled.h2`
-  ${createDelayEffect(0)}
-  text-align: center;
-  width: 100%;
-  font-size: 1.75rem;
-  color: ${props => props.theme.background2.lighten(1.5)};
-  font-weight: 300;
-  margin-bottom: 1.5rem;
-`;
-
 const ButtonContainer = styled.div`
-  ${createDelayEffect(0.4)}
+  ${delayEffect(0.4)}
   width: 100%;
   margin: 0 auto;
   text-align: center;
 `;
 
-const Button = styled.button`
-  transition: 0.3s ease all;
-  background-color: ${props => props.disabled ? props.theme.background2.darken(0.1) : props.theme.secondary};
-  color: ${props => props.disabled ? props.theme.background2.lighten(1.5) : 'white'};
-  padding: 1.25rem 2rem;
-  border: none;
-  outline: none;
-  box-shadow: ${props => !props.disabled && '0px 3px 3px rgba(0, 0, 0, 0.2);'}
-  cursor: pointer;
-
-  ${props => !props.disabled && `
-      &:hover {
-        background-color: ${props.theme.secondary.darken(0.25)()}
-      }
-  `}
-`;
-
 const Name = styled.div`
   input {
-    ${createDelayEffect(0.15)}
+    ${delayEffect(0.15)}
     opacity: 0;
     color: white;
     font-size: 2.5rem;
@@ -107,7 +68,7 @@ const Icon = styled.div`
   transition: 0.3s ease all;
   position: relative;
 
-  ${props => createDelayEffect(0.2 + (props.index != null ? (props.index + 1) * 0.1 : 0))};
+  ${props => delayEffect(0.2 + (props.index != null ? (props.index + 1) * 0.1 : 0))};
 
   flex: 1;
   height: 13rem;
@@ -204,12 +165,12 @@ class Create extends React.PureComponent {
 
   render() {
     const { presets, sandboxTitle, selectedPreset, creating } = this.state;
-    if (presets.length === 0) return <Title>Loading...</Title>;
+    if (presets.length === 0) return <SubTitle>Loading...</SubTitle>;
 
     if (creating) {
       return (
         <Container>
-          <Title>Creating sandbox, hang tight!</Title>
+          <SubTitle>Creating sandbox, hang tight!</SubTitle>
         </Container>
       );
     }
@@ -217,7 +178,7 @@ class Create extends React.PureComponent {
     return (
       <Container>
         <div>
-          <Title>Creating a sandbox</Title>
+          <SubTitle>Creating a sandbox</SubTitle>
           <Name>
             <input
               placeholder="Enter a Sandbox Name"

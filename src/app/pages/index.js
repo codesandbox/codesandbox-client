@@ -10,7 +10,7 @@ import Header from '../components/Header';
 import Modal from '../containers/Modal';
 import Notifications from '../containers/Notifications';
 import ContextMenu from '../containers/ContextMenu';
-import Root from './Root';
+import Homepage from './Homepage';
 import SandboxView from './SandboxView/';
 import userActionCreators from '../store/actions/user';
 import type { User } from '../store/reducers/user';
@@ -25,6 +25,7 @@ const Container = styled.div`
 const Content = styled.div`
   flex: auto;
   display: flex;
+  background-color: ${props => props.theme.background2};
 `;
 
 type Props = {
@@ -56,7 +57,7 @@ class RootPage extends React.PureComponent {
           <Modal />
           <Header username={user.username} />
           <Content>
-            <Match exactly pattern="/" component={Root} />
+            <Match exactly pattern="/" component={Homepage} />
             <Match pattern="/:action" component={SandboxView} />
           </Content>
         </Container>

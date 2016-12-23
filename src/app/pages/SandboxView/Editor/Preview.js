@@ -47,23 +47,29 @@ export default class Preview extends React.PureComponent {
   }
 
   componentDidMount() {
-    window.addEventListener('message', (e) => {
-      if (e.data === 'Ready!') {
-        this.setState({
-          frameInitialized: true,
-        });
-        this.executeCode();
-      } else {
-        const { type } = e.data;
-        if (type === 'error') {
-          const { error } = e.data;
-          this.setError(error);
-        } else if (type === 'success') {
-          this.setError.cancel();
-          this.props.setError(null); // To reset the debounce, but still quickly remove errors
-        }
+    window.addEventListener('message', this.handleMessage);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('message', this.handleMessage);
+  }
+
+  handleMessage = (e: Object) => {
+    if (e.data === 'Ready!') {
+      this.setState({
+        frameInitialized: true,
+      });
+      this.executeCode();
+    } else {
+      const { type } = e.data;
+      if (type === 'error') {
+        const { error } = e.data;
+        this.setError(error);
+      } else if (type === 'success') {
+        this.setError.cancel();
+        this.props.setError(null); // To reset the debounce, but still quickly remove errors
       }
-    });
+    }
   }
 
   executeCode = () => {

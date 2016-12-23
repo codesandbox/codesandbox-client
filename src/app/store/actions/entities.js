@@ -5,11 +5,16 @@ import callApi from '../services/api';
 
 const processEntity = (schema: typeof Schema, result: { entities: Object }) => {
   const normalizedResult = normalize(result, schema);
-  return normalizedResult;
+  return { entity: result, ...normalizedResult };
 };
 
-export const getEntity = async (url: string, schema: typeof Schema, body: ?Object) => {
-  const result = await callApi(url, { body });
+export const getEntity = async (
+  url: string,
+  schema: typeof Schema,
+  body: ?Object,
+  options: Object = {},
+) => {
+  const result = await callApi(url, { body, ...options });
   return processEntity(schema, result);
 };
 

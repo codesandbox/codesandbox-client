@@ -11,6 +11,7 @@ import { singleSandboxSelector } from '../../store/entities/sandboxes/selector';
 import type { Sandbox } from '../../store/entities/sandboxes/';
 
 import Editor from './Editor';
+import Fork from './Fork';
 
 type Props = {
   sandbox: ?Sandbox;
@@ -24,6 +25,12 @@ type Props = {
 type State = {
   notFound: boolean;
 };
+
+const Container = styled.div`
+  position: relative;
+  display: flex;
+  flex: auto;
+`;
 
 const NotFound = styled.h1`
   position: fixed;
@@ -73,21 +80,29 @@ class SandboxFound extends React.PureComponent {
   state = { notFound: false };
 
   render() {
-    const { sandbox } = this.props;
+    const { sandbox, sandboxActions } = this.props;
 
     if (this.state.notFound) {
       return <NotFound>404 Not Found!</NotFound>;
     }
     if (!sandbox) return null;
     return (
-      <Match
-        pattern="module/:module*"
-        render={matchPattern => (
-          <div style={{ width: '100%', height: '100%' }}>
-            <Editor sandbox={sandbox} {...matchPattern} />
-          </div>
-        )}
-      />
+      <Container>
+        <Match
+          pattern="module/:module*"
+          render={matchPattern => (
+            <div style={{ width: '100%', height: '100%' }}>
+              <Editor sandbox={sandbox} {...matchPattern} />
+            </div>
+          )}
+        />
+        <Match
+          pattern="fork"
+          render={() =>
+            <Fork sandbox={sandbox} forkSandbox={sandboxActions.forkSandbox} />
+          }
+        />
+      </Container>
     );
   }
 }

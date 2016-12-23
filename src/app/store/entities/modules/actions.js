@@ -1,10 +1,11 @@
-import { singleModuleSelector } from './selector';
+import { singleModuleSelector, modulesBySandboxSelector } from './selector';
 import createEntityActions from '../../actions/entities';
 import notificationActions from '../../actions/notifications';
 
 export const CHANGE_CODE = 'CHANGE_CODE';
 export const SAVE_CODE = 'SAVE_CODE';
 export const SET_ERROR = 'SET_ERROR';
+export const SAVE_ALL_MODULES = 'SAVE_ALL_MODULES';
 
 export default (schema) => {
   const entityActions = createEntityActions(schema);
@@ -70,6 +71,12 @@ export default (schema) => {
           dispatch(notificationActions.addNotification('Error while saving', errorMessage, 'error'));
         }
       }
+    },
+    saveAllModules: (sandboxId: string) => async (dispatch, getState) => {
+      const modules = modulesBySandboxSelector(getState(), { id: sandboxId });
+      dispatch({ type: SAVE_ALL_MODULES, sandboxId });
+
+      modules.filter(m => m.isNotSynced).forEach(m => dispatch(customActions.saveCode(m.id)));
     },
     deleteModule: (id: string) => async (dispatch) => {
       try {
