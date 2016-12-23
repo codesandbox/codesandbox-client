@@ -1,0 +1,5 @@
+node_modules
+.vscode
+deploy.sh
+Dockerfile
+Dockerfile.prod

@@ -1,4 +1,4 @@
-FROM node:alpine
+FROM node:7.3.0
 MAINTAINER Ives van Hoorne
 
 RUN npm install -g yarn
@@ -7,10 +7,10 @@ ADD package.json /app/package.json
 ADD yarn.lock /app/yarn.lock
 
 WORKDIR /app
-RUN yarn
+RUN yarn install
+
+# After yarn install, so dev deps are also installed (for building)
+ENV NODE_ENV production
 
 ADD . /app
 RUN npm run build
-
-RUN rm -rf node_modules
-RUN rm -rf src

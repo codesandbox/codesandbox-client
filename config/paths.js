@@ -26,7 +26,7 @@ const sandboxSrc = path.join(src, 'sandbox');
 
 // config after eject: we're in ./config/
 module.exports = {
-  appBuild: resolveApp('build'),
+  appBuild: resolveApp('www'),
   appHtml: path.join(appSrc, 'index.html'),
   sandboxHtml: path.join(sandboxSrc, 'index.html'),
   appPackageJson: resolveApp('package.json'),

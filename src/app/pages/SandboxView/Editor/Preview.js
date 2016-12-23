@@ -42,7 +42,7 @@ export default class Preview extends React.PureComponent {
 
   componentDidUpdate(prevProps: Props) {
     if (prevProps.module.code !== this.props.module.code && this.state.frameInitialized) {
-      requestAnimationFrame(this.executeCode);
+      this.executeCode();
     }
   }
 
@@ -92,7 +92,7 @@ export default class Preview extends React.PureComponent {
       <Container>
         <StyledFrame
           sandbox="allow-scripts allow-pointer-lock allow-same-origin allow-popups allow-modals allow-forms"
-          src={`${location.protocol}//sandbox.${document.host}/frame.html`}
+          src={`${location.protocol}//sandbox.${location.host}`}
           id="sandbox"
         />
       </Container>
