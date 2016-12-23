@@ -27,7 +27,7 @@ const getOutput = () => (
     filename: 'static/js/[name].[hash:8].js',
     chunkFilename: 'static/js/[name].[hash:8].chunk.js',
     sourceMapFilename: '[file].map', // Default
-    publicPath: '/',
+    publicPath: 'https://codesandbox.io/',
   }
 );
 

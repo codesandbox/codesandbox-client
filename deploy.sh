@@ -18,8 +18,5 @@ ssh nginx@codesandbox.io "rm -f code_sandbox_client.tar.gz"
 echo "Moving tar to server"
 scp .deliver/code_sandbox_client.tar.gz nginx@codesandbox.io:./
 
-echo "Cleaning WWW"
-ssh nginx@codesandbox.io "rm -rf www"
-
 echo "Untarring www files"
 ssh nginx@codesandbox.io "tar -xzf ./code_sandbox_client.tar.gz"

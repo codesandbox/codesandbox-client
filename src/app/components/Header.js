@@ -20,6 +20,7 @@ const Container = styled.div`
   margin: 0;
   font-weight: 400;
   height: 3rem;
+  min-height: 3rem;
 `;
 
 const Actions = styled.div`
