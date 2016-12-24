@@ -17,9 +17,10 @@ import moduleEntity from '../../../../store/entities/modules';
 import directoryEntity from '../../../../store/entities/directories';
 
 const Container = styled.div`
-  position: relative;
+  position: absolute;
   background-color: ${props => props.theme.background};
   height: 100%;
+  width: 100%;
   overflow: auto;
 `;
 

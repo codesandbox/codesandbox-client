@@ -13,8 +13,10 @@ const Container = styled.div`
   animation: ${fadein} 0.3s;
   transition: 0.3s ease all;
 
-  position: fixed;
-  top: 2.875rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
   min-width: inherit;
 
   background-color: ${props => (

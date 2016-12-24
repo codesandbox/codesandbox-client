@@ -50,10 +50,8 @@ const Tab = styled.span`
 `;
 
 const Content = styled.div`
-  display: flex;
-  width: 100%;
   height: 100%;
-  // flex: auto;
+  width: 100%;
 `;
 
 const Frame = styled.div`
@@ -151,6 +149,7 @@ class Editor extends React.PureComponent {
               defaultSize="50%"
               minSize={360}
               primary="second"
+              paneStyle={{ height: 'calc(100% - 35px)' }}
             >
               <FullSize>
                 <CodeEditor

@@ -3,6 +3,7 @@ import React from 'react';
 import CodeMirror from 'codemirror';
 import styled, { injectGlobal, keyframes } from 'styled-components';
 import { debounce } from 'lodash';
+import SaveIcon from 'react-icons/lib/md/save';
 
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/mode/jsx/jsx';
@@ -29,27 +30,36 @@ type Props = {
 };
 
 const Container = styled.div`
-  position: relative;
+  position: absolute;
   display: flex;
   flex-direction: column;
-  flex: auto;
   width: 100%;
   height: 100%;
   overflow: auto;
 `;
 
 const CodeContainer = styled.div`
-  height: 100%;
+  flex: 1 1 auto;
+  position: relative;
   overflow: auto;
+  height: 100%;
 `;
 
 const ErrorMessage = styled.div`
+  flex: 0 0 auto;
   font-family: 'Source Code Pro', monospace;
-  width: 100%;
   background-color: ${props => props.theme.redBackground};
   font-weight: 400;
   padding: 0.5rem;
   color: ${props => props.theme.red};
+`;
+
+const TopMessage = styled.div`
+  flex: 0 0 auto;
+  padding: 0.5rem 1rem;
+  font-size: 14px;
+  color: ${props => props.theme.background.lighten(1.5)};
+  vertical-align: middle;
 `;
 
 const handleError = (cm, currentError, nextError, nextCode, nextId) => {
@@ -85,8 +95,9 @@ export default class CodeEditor extends React.PureComponent {
 
   componentDidMount() {
     window.addEventListener('keydown', (event: KeyboardEvent) => {
+      console.log(event);
       if (event.ctrlKey || event.metaKey) {
-        if (event.key === 's') {
+        if (event.key === 's' || event.keyCode === 83) {
           const { id } = this.props;
           this.props.saveCode(id);
           event.preventDefault();
@@ -163,6 +174,12 @@ export default class CodeEditor extends React.PureComponent {
     const { error } = this.props;
     return (
       <Container>
+        <TopMessage>
+          <SaveIcon />
+          <span style={{ verticalAlign: 'middle', marginLeft: '0.5rem' }}>
+            Last update: 5 seconds ago
+          </span>
+        </TopMessage>
         <CodeContainer>
           <div style={{ height: '100%' }} ref={this.getCodeMirror} />
         </CodeContainer>

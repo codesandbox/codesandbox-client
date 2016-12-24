@@ -8,6 +8,7 @@ import type { Module } from '../../../store/entities/modules/';
 import type { Directory } from '../../../store/entities/directories/index';
 
 const Container = styled.div`
+  position: absolute;
   height: 100%;
   width: 100%;
   background-color: white;
@@ -97,7 +98,7 @@ export default class Preview extends React.PureComponent {
     return (
       <Container>
         <StyledFrame
-          sandbox="allow-scripts allow-pointer-lock allow-same-origin allow-popups allow-modals allow-forms"
+          sandbox="allow-scripts allow-pointer-lock allow-same-origin allow-popups allow-forms"
           src={`${location.protocol}//sandbox.${location.host}`}
           id="sandbox"
         />

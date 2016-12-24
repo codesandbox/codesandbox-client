@@ -30,6 +30,7 @@ export const moduleByPathSelector = createSelector(
     try {
       return resolveModule(modulePath, modules, directories);
     } catch (e) {
+      console.error(e);
       return modules[0];
     }
   },

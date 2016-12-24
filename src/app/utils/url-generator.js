@@ -1,8 +1,7 @@
 export const sandboxUrl = sandbox => (
-  sandbox.author ? `/${sandbox.author}/${sandbox.slug}/module`
+  sandbox.author ? `/${sandbox.author}/${sandbox.slug}`
   : `/anonymous/${sandbox.slug}`
 );
-
 
 export const editModuleUrl = sandbox => (
   `${sandboxUrl(sandbox)}/module`
