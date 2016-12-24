@@ -67,7 +67,7 @@
     "humps": "^2.0.0",
     "lodash": "^4.17.2",
     "normalize.css": "^5.0.0",
-    "normalizr": "^3.0.0-alpha.5",
+    "normalizr": "2.3.1",
     "react": "^15.4.1",
     "react-addons-css-transition-group": "^15.4.1",
     "react-deep-force-update": "^2.0.1",
