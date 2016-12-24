@@ -4,8 +4,16 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from './services/thunk-middleware';
 import rootReducer from './reducers';
 
+function getComposeEnhancers() {
+   // eslint-disable-next-line
+  if (process.env.NODE_ENV !== 'production' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) {
+    return window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__; // eslint-disable-line
+  }
+  return compose;
+}
+
 export default () => {
-  const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose; // eslint-disable-line
+  const composeEnhancers = getComposeEnhancers();
   const store = createStore(
     rootReducer,
     composeEnhancers(applyMiddleware(
