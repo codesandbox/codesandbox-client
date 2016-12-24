@@ -95,7 +95,6 @@ export default class CodeEditor extends React.PureComponent {
 
   componentDidMount() {
     window.addEventListener('keydown', (event: KeyboardEvent) => {
-      console.log(event);
       if (event.ctrlKey || event.metaKey) {
         if (event.key === 's' || event.keyCode === 83) {
           const { id } = this.props;
