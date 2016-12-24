@@ -90,7 +90,7 @@ export default class CodeEditor extends React.PureComponent {
 
   constructor() {
     super();
-    this.handleChange = debounce(this.handleChange, 250, { leading: true });
+    this.handleChange = debounce(this.handleChange, 0, { leading: true });
   }
 
   componentDidMount() {
