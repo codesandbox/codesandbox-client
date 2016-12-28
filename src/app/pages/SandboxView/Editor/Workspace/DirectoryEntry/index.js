@@ -34,7 +34,6 @@ const Opener = styled.div`
   overflow: hidden;
 `;
 
-
 const mapStateToProps = createSelector(
   directoriesInDirectorySelector,
   modulesInDirectorySelector,
@@ -51,6 +50,7 @@ type Props = {
   root: ?boolean;
   title: string;
   open: boolean;
+  sourceId: string;
   root?: boolean;
   directories: Array<Directory>;
   modules: Array<Module>;
@@ -84,8 +84,8 @@ class DirectoryEntry extends React.PureComponent {
   };
 
   createModule = (_, title) => {
-    const { id, sandboxId, moduleActions } = this.props;
-    moduleActions.createModule(title, sandboxId, id);
+    const { id, sourceId, moduleActions } = this.props;
+    moduleActions.createModule(title, sourceId, id);
     this.resetState();
   };
 
@@ -99,8 +99,8 @@ class DirectoryEntry extends React.PureComponent {
   };
 
   createDirectory = (_, title) => {
-    const { id, sandboxId, directoryActions } = this.props;
-    directoryActions.createDirectory(title, sandboxId, id);
+    const { id, sourceId, directoryActions } = this.props;
+    directoryActions.createDirectory(title, sourceId, id);
     this.resetState();
   };
 
@@ -145,7 +145,7 @@ class DirectoryEntry extends React.PureComponent {
 
   render() {
     const { id, sandboxId, title, directories, openMenu, modules, moduleActions, url,
-      directoryActions, connectDropTarget, isOver, depth = 0, root } = this.props;
+      directoryActions, connectDropTarget, isOver, sourceId, depth = 0, root } = this.props;
     const { creating, open } = this.state;
     return connectDropTarget(
       <div style={{ position: 'relative' }}>
@@ -193,6 +193,7 @@ class DirectoryEntry extends React.PureComponent {
             renameModule={moduleActions.renameModule}
             openMenu={openMenu}
             sandboxId={sandboxId}
+            sourceId={sourceId}
             deleteEntry={this.deleteModule}
           />
           {creating === 'module' && (

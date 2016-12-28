@@ -18,7 +18,7 @@ export const modulesBySandboxSelector = createSelector(
   (sandbox, modules) => {
     if (sandbox == null) return [];
 
-    return values(modules).filter(m => m.sandboxId === sandbox.id);
+    return values(modules).filter(m => m.sourceId === sandbox.source);
   },
 );
 
@@ -38,7 +38,7 @@ export const moduleByPathSelector = createSelector(
 
 export const modulesInDirectorySelector = createSelector(
   (_, { id }) => id,
-  (_, { sandboxId }) => sandboxId,
+  (_, { sourceId }) => sourceId,
   modulesSelector,
   entriesInDirectorySelector,
 );

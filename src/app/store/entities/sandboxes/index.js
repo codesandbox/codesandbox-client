@@ -1,17 +1,15 @@
 // @flow
-import { Schema, arrayOf } from 'normalizr';
+import { Schema } from 'normalizr';
 
-import moduleEntity from '../modules/';
-import directoryEntity from '../directories/';
 import userEntity from '../users/';
+import sourceEntity from '../sources/';
 
 import createEntity from '../create-entity';
 import createActions from './actions';
 
 const schema = new Schema('sandboxes');
 schema.define({
-  modules: arrayOf(moduleEntity.schema),
-  directories: arrayOf(directoryEntity.schema),
+  source: sourceEntity.schema,
   author: userEntity.schema,
 });
 
@@ -22,7 +20,7 @@ export type Sandbox = {
   description: string;
   modules: Array<string>;
   directories: Array<string>;
-  mainModule: string;
+  source: string;
   author: ?string;
 };
 

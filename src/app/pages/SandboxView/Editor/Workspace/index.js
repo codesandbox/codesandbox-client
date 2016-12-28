@@ -7,7 +7,6 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import { DragDropContext } from 'react-dnd';
 
 import DeleteTarget from './DeleteTarget';
-import SandboxTitle from './SandboxTitle';
 import DirectoryEntry from './DirectoryEntry';
 
 import type { Sandbox } from '../../../../store/entities/sandboxes/';
@@ -62,6 +61,7 @@ class Workspace extends React.PureComponent { // eslint-disable-line
             url={url}
             title={sandbox.title}
             sandboxId={sandbox.id}
+            sourceId={sandbox.source}
             renameSandbox={this.renameSandbox}
             id={null}
           />}

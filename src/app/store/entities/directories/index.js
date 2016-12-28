@@ -11,7 +11,7 @@ export type Directory = {
   id: string,
   title: string;
   directoryId: string;
-  sandboxId: string;
+  sourceId: string;
   open: boolean;
 };
 

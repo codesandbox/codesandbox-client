@@ -16,6 +16,7 @@ type Props = {
   url: string;
   openMenu: (event: Event) => void;
   sandboxId: string;
+  sourceId: string;
   deleteEntry: (id: string) => void;
 };
 
@@ -29,7 +30,7 @@ export default class DirectoryChildren extends React.PureComponent {
 
   render() {
     const {
-      depth = 0, url, renameModule, openMenu,
+      depth = 0, url, renameModule, openMenu, sourceId,
       directories, sandboxId, modules, deleteEntry,
     } = this.props;
 
@@ -44,6 +45,7 @@ export default class DirectoryChildren extends React.PureComponent {
             title={dir.title}
             open={dir.open}
             url={`${url}/${dir.title}`}
+            sourceId={sourceId}
             sandboxId={sandboxId}
           />
         ))}

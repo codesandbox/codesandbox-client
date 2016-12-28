@@ -14,13 +14,13 @@ export default (schema) => {
     setError: (id: string, error: ?{ message: string; line: number }) => (
       { type: SET_ERROR, id, error }
     ),
-    createModule: (title: string, sandboxId: string, directoryId?: string) =>
+    createModule: (title: string, sourceId: string, directoryId?: string) =>
     async (dispatch) => {
       try {
-        await dispatch(entityActions.create({ title, directoryId, sandboxId }));
+        await dispatch(entityActions.create({ title, directoryId, sourceId }));
       } catch (e) {
         if (e.response) {
-          const maxModuleError = e.response.data.errors.sandbox_id;
+          const maxModuleError = e.response.data.errors.source_id;
           if (maxModuleError) {
             dispatch(notificationActions.addNotification('Error while creating module', maxModuleError[0], 'error'));
           }

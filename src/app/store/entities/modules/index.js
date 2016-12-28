@@ -11,7 +11,7 @@ export type Module = {
   id: string,
   title: string;
   code: string;
-  sandboxId: string;
+  sourceId: string;
   directoryId: string;
   type: string;
   error?: ?{

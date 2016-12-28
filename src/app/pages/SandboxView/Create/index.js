@@ -68,7 +68,7 @@ const Icon = styled.div`
   transition: 0.3s ease all;
   position: relative;
 
-  ${props => delayEffect(0.2 + (props.index != null ? (props.index + 1) * 0.1 : 0))};
+  ${props => delayEffect(0.2 + (props.index * 0.1))};
 
   flex: 1;
   height: 13rem;
@@ -101,11 +101,11 @@ const IconTitle = styled.div`
 
 const ICON_MAP = {
   react: <ReactIcon />,
+  nopreset: <FunctionIcon />,
 };
 
 type Props = {
-  moduleActions: typeof moduleEntity.actions;
-  sandboxActions: typeof sandboxEntity.actions;
+  sandboxActions: sandboxEntity.actions;
 };
 type State = {
   presets: Array<Object>;
@@ -152,7 +152,7 @@ class Create extends React.PureComponent {
 
     const { presets, sandboxTitle, selectedPreset } = this.state;
     const forkPreset = presets.find(p => p.id === selectedPreset);
-    const preset = forkPreset ? forkPreset.sandboxId : null;
+    const preset = forkPreset ? forkPreset.sourceId : null;
     const result = await this.props.sandboxActions.createSandbox(sandboxTitle, preset);
     if (result instanceof Error) {
       this.setState({ creating: false });
@@ -189,13 +189,6 @@ class Create extends React.PureComponent {
           </Name>
 
           <Icons>
-            <Icon
-              active={selectedPreset === 'nopreset'}
-              onClick={() => this.setState({ selectedPreset: 'nopreset' })}
-            >
-              <FunctionIcon />
-              <IconTitle>No Preset</IconTitle>
-            </Icon>
             {presets.map((preset, i) => (
               <Icon
                 key={preset.id}

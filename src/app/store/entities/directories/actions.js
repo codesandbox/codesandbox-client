@@ -8,10 +8,10 @@ export default (schema) => {
   const entityActions = createEntityActions(schema);
   const customActions = {
     setOpen: (id: string, open: boolean) => ({ type: SET_DIRECTORY_OPEN, id, open }),
-    createDirectory: (title: string, sandboxId: string, directoryId?: string) =>
+    createDirectory: (title: string, sourceId: string, directoryId?: string) =>
     async (dispatch) => {
       try {
-        await dispatch(entityActions.create({ title, directoryId, sandboxId }));
+        await dispatch(entityActions.create({ title, directoryId, sourceId }));
       } catch (e) {
         if (e.response) {
           const maxModuleError = e.response.data.errors.sandbox_id;

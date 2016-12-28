@@ -13,7 +13,7 @@ export const singleDirectoryByIdSelector = createSelector(
 
 export const directoriesInDirectorySelector = createSelector(
   (_, { id }) => id,
-  (_, { sandboxId }) => sandboxId,
+  (_, { sourceId }) => sourceId,
   directoriesSelector,
   entriesInDirectorySelector,
 );
@@ -24,7 +24,7 @@ export const directoriesBySandboxSelector = createSelector(
   (sandbox, directories) => {
     if (sandbox == null) return [];
 
-    return values(directories).filter(d => d.sandboxId === sandbox.id);
+    return values(directories).filter(d => d.sourceId === sandbox.source);
   },
 );
 
