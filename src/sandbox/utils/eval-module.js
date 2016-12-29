@@ -8,16 +8,6 @@ import type { Directory } from '../../app/store/entities/directories/index';
 
 const MAX_DEPTH = 20;
 
-const React = require('react');
-const styled = require('styled-components');
-const router = require('react-router');
-
-const dependencies = new Map([
-  ['react', { ...React, ...React.default }],
-  ['styled-components', { ...styled, ...styled.default }],
-  ['react-router', { ...router, ...router.default }],
-]);
-
 const moduleCache = new Map();
 
 const compileCode = (code: string = '', moduleName: string = 'unknown') => {
@@ -42,22 +32,22 @@ const evalModule = (
   mainModule: Module,
   modules: Array<Module>,
   directories: Array<Directory>,
+  manifest: Object,
   depth: number = 0,
 ) => {
   require = function require(path) { // eslint-disable-line no-unused-vars
     if (depth > MAX_DEPTH) {
       throw new Error(`Exceeded the maximum require depth of ${MAX_DEPTH}.`);
     }
-
-    const dependency = dependencies.get(path);
-    if (dependency) return dependency;
+    const dependencyId = manifest[path] || manifest[`${path}.js`];
+    if (dependencyId) return window.dependencies(dependencyId.id);
 
     const module = resolveModule(path, modules, directories, mainModule.directoryId);
     if (mainModule === module) throw new Error(`${mainModule.title} is importing itself`);
     if (!module) throw new Error(`Cannot find module in path: ${path}`);
 
     // Check if this module has been evaluated before, if so return that
-    return moduleCache.get(module.id) || evalModule(module, modules, directories, depth + 1);
+    return moduleCache.get(module.id) || evalModule(module, modules, directories, manifest, depth + 1);
   };
 
   try {

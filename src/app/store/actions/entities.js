@@ -1,10 +1,12 @@
 // @flow
-import { normalize, Schema } from 'normalizr';
+import { normalize, Schema, arrayOf } from 'normalizr';
+import { isArray } from 'lodash';
 
 import callApi from '../services/api';
 
-const processEntity = (schema: typeof Schema, result: { entities: Object }) => {
-  const normalizedResult = normalize(result, schema);
+const processEntity = (schema: typeof Schema, result: { entities: Object | Array }) => {
+  const usedSchema = isArray(result.entities) ? arrayOf(schema) : schema;
+  const normalizedResult = normalize(result, usedSchema);
   return { entity: result, ...normalizedResult };
 };
 

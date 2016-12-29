@@ -4,9 +4,9 @@ import { Link } from 'react-router';
 
 import Entry from './Entry';
 import DirectoryEntry from './';
-import type { Module } from '../../../../../store/entities/modules';
-import type { Directory } from '../../../../../store/entities/directories';
-import { validateTitle } from '../../../../../store/entities/modules/validator';
+import type { Module } from '../../../../../../store/entities/modules';
+import type { Directory } from '../../../../../../store/entities/directories';
+import { validateTitle } from '../../../../../../store/entities/modules/validator';
 
 type Props = {
   depth: number;

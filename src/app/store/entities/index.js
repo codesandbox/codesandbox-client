@@ -4,7 +4,9 @@ import { Schema } from 'normalizr';
 import directories from './directories/';
 import modules from './modules/';
 import sandboxes from './sandboxes/';
+import sources from './sources';
 import users from './users';
+import versions from './versions';
 
 export type Entity = {
   schema: typeof Schema;
@@ -13,10 +15,11 @@ export type Entity = {
   initialState?: Object;
 }
 
-
 export default {
   directories,
   modules,
   sandboxes,
+  sources,
   users,
+  versions,
 };

@@ -2,7 +2,9 @@
 import React from 'react';
 import { Link, Match } from 'react-router';
 import styled from 'styled-components';
+
 import HeaderActions from '../pages/SandboxView/Editor/HeaderActions';
+import LogoIcon from '../pages/Homepage/logo.png';
 
 const Container = styled.div`
   position: relative;
@@ -29,21 +31,38 @@ const Username = styled.div`
 
 const Logo = styled(Link)`
   display: inline-block;
+  position: relative;
   background-color: ${props => props.theme.secondary};
-  padding: 0 1rem;
+  padding: 0;
   line-height: 3rem;
   vertical-align: middle;
-  width: 14rem;
+  width: 20rem;
   font-weight: 400;
   text-decoration: none;
   color: white;
 `;
 
+const LogoImage = styled.img`
+  border-right: 1px solid ${props => props.theme.background2.clearer(0.8)};
+  padding: 0.25rem 0.75rem;
+`;
+
+const LogoName = styled.span`
+  display: inline-block;
+  padding-left: 1rem;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+`;
+
 export default ({ username }: { username: ?string }) => (
   <Container>
-    <Logo to="/">CodeSandbox</Logo>
+    <Logo to="/">
+      <LogoImage src={LogoIcon} alt="CodeSandbox" width={40} height={40} />
+      <LogoName>CodeSandbox</LogoName>
+    </Logo>
     <Match
-      pattern="/:username/:slug/module"
+      pattern="/:username/:slug"
       component={HeaderActions}
     />
 

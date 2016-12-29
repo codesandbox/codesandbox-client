@@ -17,6 +17,7 @@ export type Source = {
   title: string;
   modules: Array<string>;
   directories: Array<string>;
+  npmDependencies: { [key: string]: string };
 };
 
 export default createEntity(schema);

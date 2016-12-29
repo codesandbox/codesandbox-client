@@ -6,7 +6,7 @@ import FunctionIcon from 'react-icons/lib/fa/code';
 import FolderIcon from 'react-icons/lib/md/keyboard-arrow-down';
 import DirectoryIcon from 'react-icons/lib/go/file-directory';
 import NotSyncedIcon from 'react-icons/lib/go/primitive-dot';
-import ReactIcon from '../../../../../../components/ReactIcon';
+import ReactIcon from '../../../../../../../components/ReactIcon';
 
 const NotSyncedIconWithMargin = styled(NotSyncedIcon)`
   margin-left: -20px;

@@ -48,7 +48,7 @@ const mapStateToProps = (state, props) => ({
 const mapDispatchToProps = dispatch => ({
   sandboxActions: bindActionCreators(sandboxEntity.actions, dispatch),
 });
-class SandboxFound extends React.PureComponent {
+class SandboxPage extends React.PureComponent {
   componentDidMount() {
     const { username, slug, id } = this.props.params;
     if (id) {
@@ -70,9 +70,10 @@ class SandboxFound extends React.PureComponent {
   }
 
   handleNotFound = (e) => {
-    if (e.response.status === 404) {
+    if (e.response && e.response.status === 404) {
       this.setState({ notFound: true });
     }
+    console.error(e);
   };
 
   props: Props;
@@ -89,11 +90,9 @@ class SandboxFound extends React.PureComponent {
     return (
       <Container>
         <Match
-          pattern="module/:module*"
+          pattern="(code|versions|info|dependencies)/:module*"
           render={matchPattern => (
-            <div style={{ width: '100%', height: '100%' }}>
-              <Editor sandbox={sandbox} {...matchPattern} />
-            </div>
+            <Editor sandbox={sandbox} {...matchPattern} />
           )}
         />
         <Match
@@ -106,4 +105,4 @@ class SandboxFound extends React.PureComponent {
     );
   }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(SandboxFound);
+export default connect(mapStateToProps, mapDispatchToProps)(SandboxPage);

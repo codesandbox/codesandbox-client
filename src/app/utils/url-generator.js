@@ -4,7 +4,19 @@ export const sandboxUrl = sandbox => (
 );
 
 export const editModuleUrl = sandbox => (
-  `${sandboxUrl(sandbox)}/module`
+  `${sandboxUrl(sandbox)}/code`
+);
+
+export const versionsUrl = sandbox => (
+  `${sandboxUrl(sandbox)}/versions`
+);
+
+export const sandboxInfoUrl = sandbox => (
+  `${sandboxUrl(sandbox)}/info`
+);
+
+export const sandboxDependenciesUrl = sandbox => (
+  `${sandboxUrl(sandbox)}/dependencies`
 );
 
 export const forkSandboxUrl = sandbox => (

@@ -6,15 +6,15 @@ import { bindActionCreators } from 'redux';
 import { DropTarget } from 'react-dnd';
 
 import Entry from './Entry';
-import moduleEntity from '../../../../../store/entities/modules/';
-import directoryEntity from '../../../../../store/entities/directories/';
-import type { Module } from '../../../../../store/entities/modules';
-import type { Directory } from '../../../../../store/entities/directories';
-import { validateTitle } from '../../../../../store/entities/modules/validator';
-import contextMenuActionCreators from '../../../../../store/actions/context-menu';
+import moduleEntity from '../../../../../../store/entities/modules/';
+import directoryEntity from '../../../../../../store/entities/directories/';
+import type { Module } from '../../../../../../store/entities/modules';
+import type { Directory } from '../../../../../../store/entities/directories';
+import { validateTitle } from '../../../../../../store/entities/modules/validator';
+import contextMenuActionCreators from '../../../../../../store/actions/context-menu';
 
-import { directoriesInDirectorySelector } from '../../../../../store/entities/directories/selector';
-import { modulesInDirectorySelector } from '../../../../../store/entities/modules/selector';
+import { directoriesInDirectorySelector } from '../../../../../../store/entities/directories/selector';
+import { modulesInDirectorySelector } from '../../../../../../store/entities/modules/selector';
 
 import DirectoryChildren from './DirectoryChildren';
 

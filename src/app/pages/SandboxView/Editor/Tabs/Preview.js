@@ -4,8 +4,8 @@ import styled from 'styled-components';
 
 import { debounce } from 'lodash';
 
-import type { Module } from '../../../store/entities/modules/';
-import type { Directory } from '../../../store/entities/directories/index';
+import type { Module } from '../../../../store/entities/modules/';
+import type { Directory } from '../../../../store/entities/directories/index';
 
 const Container = styled.div`
   position: absolute;
@@ -23,7 +23,9 @@ const StyledFrame = styled.iframe`
 type Props = {
   modules: Array<Module>;
   directories: Array<Directory>;
+  npmDependencies: Object;
   module: Module;
+  sourceId: string;
   setError: (error: ?{ message: string; line: number }) => void;
 };
 
@@ -74,11 +76,14 @@ export default class Preview extends React.PureComponent {
   }
 
   executeCode = () => {
-    const { modules, directories, module } = this.props;
+    const { modules, sourceId, directories, module } = this.props;
 
     requestAnimationFrame(() => {
       document.getElementById('sandbox').contentWindow.postMessage({
-        module, modules, directories,
+        module,
+        modules,
+        directories,
+        sourceId,
       }, '*');
     });
   }

@@ -1,19 +1,19 @@
 // @flow
 import React from 'react';
+import { Match } from 'react-router';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import HTML5Backend from 'react-dnd-html5-backend';
-import { DragDropContext } from 'react-dnd';
-
-import DeleteTarget from './DeleteTarget';
-import DirectoryEntry from './DirectoryEntry';
 
 import type { Sandbox } from '../../../../store/entities/sandboxes/';
-import { editModuleUrl } from '../../../../utils/url-generator';
 import sandboxEntity from '../../../../store/entities/sandboxes';
 import moduleEntity from '../../../../store/entities/modules';
 import directoryEntity from '../../../../store/entities/directories';
+import { editModuleUrl, versionsUrl, sandboxDependenciesUrl } from '../../../../utils/url-generator';
+
+import CodeEditor from './CodeEditor';
+import Versions from './Versions';
+import Dependencies from './Dependencies';
 
 const Container = styled.div`
   position: absolute;
@@ -42,36 +42,38 @@ const mapDispatchToProps = dispatch => ({
 class Workspace extends React.PureComponent { // eslint-disable-line
   props: Props;
 
-  renameSandbox = (title: string) => {
-    const { sandbox, sandboxActions } = this.props;
-    if (sandbox && sandbox.id) {
-      sandboxActions.renameSandbox(sandbox.id, title);
-    }
-  };
-
   render() {
-    const { sandbox, moduleActions, directoryActions } = this.props;
-    const url = sandbox && editModuleUrl(sandbox);
+    const { sandbox, moduleActions, directoryActions, sandboxActions } = this.props;
+    if (sandbox == null) return null;
 
     return (
       <Container>
-        {sandbox &&
-          <DirectoryEntry
-            root
-            url={url}
-            title={sandbox.title}
-            sandboxId={sandbox.id}
-            sourceId={sandbox.source}
-            renameSandbox={this.renameSandbox}
-            id={null}
-          />}
-        <DeleteTarget
-          deleteDirectory={directoryActions.deleteDirectory}
-          deleteModule={moduleActions.deleteModule}
+        <Match
+          pattern={editModuleUrl(sandbox)}
+          render={() => (
+            <CodeEditor
+              sandbox={sandbox}
+              moduleActions={moduleActions}
+              directoryActions={directoryActions}
+              sandboxActions={sandboxActions}
+            />
+          )}
+        />
+
+        <Match
+          pattern={versionsUrl(sandbox)}
+          render={() => (
+            <Versions sandbox={sandbox} />
+          )}
+        />
+
+        <Match
+          pattern={sandboxDependenciesUrl(sandbox)}
+          component={Dependencies}
         />
       </Container>
     );
   }
 }
-export default DragDropContext(HTML5Backend)(connect(null, mapDispatchToProps)(Workspace));
+export default connect(null, mapDispatchToProps)(Workspace);
 // <SandboxTitle renameSandbox={this.handleRenameSandbox} title={sandbox && sandbox.title} />;

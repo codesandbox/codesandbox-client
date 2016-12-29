@@ -1,6 +1,5 @@
 // @flow
 import React from 'react';
-import styled from 'styled-components';
 import { DragSource } from 'react-dnd';
 
 import FileIcon from 'react-icons/lib/fa/file';
@@ -8,8 +7,9 @@ import FolderIcon from 'react-icons/lib/fa/folder';
 import EditIcon from 'react-icons/lib/go/pencil';
 import DeleteIcon from 'react-icons/lib/go/trashcan';
 
-import theme from '../../../../../../../common/theme';
+import theme from '../../../../../../../../common/theme';
 
+import EntryContainer from '../../../EntryContainer';
 import EntryTitle from './EntryTitle';
 import EntryTitleInput from './EntryTitleInput';
 import EntryIcons from './EntryIcons';
@@ -41,63 +41,6 @@ type State = {
   error: boolean;
   selected: boolean;
 };
-
-const getContainerStyles = (props) => {
-  let styles = `
-    transition: 0.3s ease all;
-    position: relative;
-    display: flex;
-    font-size: 14px;
-    padding: 0.6rem;
-    padding-left: ${props.depth + 1.5}rem;
-    color: ${props.theme.background.lighten(2)()};
-    text-decoration: none;
-    font-weight: 400;
-    min-width: 100px;
-    border-left: 2px solid transparent;
-    cursor: pointer;
-    user-select: none;
-
-    &:hover {
-      ${props.active || props.editing ? '' : `
-        background-color: ${theme.background3.darken(0.2)()};
-        color: ${theme.background.lighten(5)()};
-        border-color: ${theme.primary.darken(0.4)()};
-      `}
-
-      > div {
-        opacity: 1; !important
-      }
-    }
-  `;
-
-  if (props.editing) {
-    styles += `
-      color: ${theme.white()};
-      background-color: ${theme.background3.darken(0.15)()};
-    `;
-
-    if (props.nameValidationError) {
-      styles += `
-        border-color: ${theme.red()} !important;
-        background-color: ${theme.redBackground.clearer(0.4)()} !important;
-      `;
-    }
-  }
-
-  if (props.active) {
-    styles += `
-      color: ${theme.white()} !important;
-      border-color: ${theme.primary()} !important;
-      background-color: ${theme.background3()} !important;
-    `;
-  }
-
-  return styles;
-};
-const ModuleContainer = styled.span`
-  ${props => getContainerStyles(props)}
-`;
 
 class Entry extends React.PureComponent {
   constructor(props: Props) {
@@ -172,7 +115,7 @@ class Entry extends React.PureComponent {
     const { state, error, selected } = this.state;
     return connectDragSource(
       <div>
-        <ModuleContainer
+        <EntryContainer
           onClick={onClick}
           depth={depth}
           nameValidationError={error}
@@ -195,7 +138,7 @@ class Entry extends React.PureComponent {
               onCommit={this.handleRename}
             />
           : <EntryTitle title={title} />}
-        </ModuleContainer>
+        </EntryContainer>
       </div>,
     );
   }
