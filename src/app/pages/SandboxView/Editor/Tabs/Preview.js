@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { debounce } from 'lodash';
 
 import type { Module } from '../../../../store/entities/modules/';
+import type { Source } from '../../../../store/entities/sources/';
 import type { Directory } from '../../../../store/entities/directories/index';
 
 const Container = styled.div`
@@ -23,9 +24,9 @@ const StyledFrame = styled.iframe`
 type Props = {
   modules: Array<Module>;
   directories: Array<Directory>;
-  npmDependencies: Object;
+  bundle: typeof Source.bundle;
+  fetchBundle: () => void;
   module: Module;
-  sourceId: string;
   setError: (error: ?{ message: string; line: number }) => void;
 };
 
@@ -44,7 +45,12 @@ export default class Preview extends React.PureComponent {
   }
 
   componentDidUpdate(prevProps: Props) {
-    if (prevProps.module.code !== this.props.module.code && this.state.frameInitialized) {
+    const { bundle: prevBundle = {} } = prevProps;
+    const { bundle = {} } = this.props;
+    if ((
+      prevProps.module.code !== this.props.module.code ||
+      prevBundle.hash !== bundle.hash
+     ) && this.state.frameInitialized) {
       this.executeCode();
     }
   }
@@ -76,14 +82,22 @@ export default class Preview extends React.PureComponent {
   }
 
   executeCode = () => {
-    const { modules, sourceId, directories, module } = this.props;
+    const { modules, directories, bundle = {}, fetchBundle, module } = this.props;
+
+    if (bundle.manifest == null) {
+      if (!bundle.progressing) {
+        fetchBundle();
+      }
+      return;
+    }
 
     requestAnimationFrame(() => {
       document.getElementById('sandbox').contentWindow.postMessage({
         module,
         modules,
         directories,
-        sourceId,
+        manifest: bundle.manifest,
+        url: bundle.url,
       }, '*');
     });
   }

@@ -4,7 +4,6 @@ import type { Schema } from 'normalizr';
 import createEntityActions, { getEntity } from '../../actions/entities';
 import notificationActions from '../../actions/notifications';
 import { singleSandboxSelector } from './selector';
-import callApi from '../../services/api';
 
 export const GET_SANDBOX_BY_USERNAME_AND_SLUG = 'GET_SANDBOX_BY_USERNAME_AND_SLUG';
 export const GET_SANDBOX_BY_USERNAME_AND_SLUG_SUCCESS = 'GET_SANDBOX_BY_USERNAME_AND_SLUG_SUCCESS';

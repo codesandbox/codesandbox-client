@@ -1,5 +1,6 @@
 // @flow
 import { combineReducers } from 'redux';
+
 import contextMenu from './context-menu';
 import entities from './entities';
 import modal from './modal';

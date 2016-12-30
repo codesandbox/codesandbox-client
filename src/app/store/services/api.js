@@ -6,7 +6,7 @@ const API_ROOT = '/api/v1/';
 /**
  * Sends a request to the API and returns a promise with camelized response
  */
-export default async function callApi(endpoint, { method = 'GET', body = null } = {}) {
+export default async function callApi(endpoint, { method = 'GET', body = null, shouldCamelize = true } = {}) {
   if (!endpoint) throw new Error('No endpoint is given');
 
   // If it is an absolute url.
@@ -31,5 +31,5 @@ export default async function callApi(endpoint, { method = 'GET', body = null } 
 
 
   const result = await axios(options);
-  return camelizeKeys(result.data.data);
+  return shouldCamelize ? camelizeKeys(result.data) : result.data;
 }

@@ -5,6 +5,8 @@ import moduleEntity from '../modules/';
 import directoryEntity from '../directories/';
 
 import createEntity from '../create-entity';
+import actions from './actions';
+import reducer from './reducer';
 
 const schema = new Schema('sources');
 schema.define({
@@ -18,6 +20,13 @@ export type Source = {
   modules: Array<string>;
   directories: Array<string>;
   npmDependencies: { [key: string]: string };
+  bundle: ?{
+    manifest?: Object;
+    hash?: string;
+    url?: string;
+    error?: string;
+    processing: boolean;
+  }
 };
 
-export default createEntity(schema);
+export default createEntity(schema, { actions, reducer });

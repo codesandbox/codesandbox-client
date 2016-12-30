@@ -14,6 +14,7 @@ import CodeEditor from './CodeEditor';
 import Preview from './Preview';
 import EntryIcons from '../Workspace/CodeEditor/DirectoryEntry/Entry/EntryIcons';
 import moduleEntity from '../../../../store/entities/modules/';
+import sourceEntity from '../../../../store/entities/sources/';
 import { directoriesBySandboxSelector } from '../../../../store/entities/directories/selector';
 import { moduleByPathSelector, modulesBySandboxSelector } from '../../../../store/entities/modules/selector';
 import { singleSourceSelector } from '../../../../store/entities/sources/selector';
@@ -76,7 +77,8 @@ type Props = {
   module: Module;
   source: Source;
   sandbox: Sandbox;
-  moduleActions: typeof moduleEntity.actions;
+  moduleActions: moduleEntity.actions;
+  sourceActions: sourceEntity.actions;
   params: {
     module: string;
   };
@@ -96,6 +98,7 @@ const mapStateToProps = (state, props) => ({
 });
 const mapDispatchToProps = dispatch => ({
   moduleActions: bindActionCreators(moduleEntity.actions, dispatch),
+  sourceActions: bindActionCreators(sourceEntity.actions, dispatch),
 });
 class Tabs extends React.PureComponent {
   componentDidMount() {
@@ -123,6 +126,11 @@ class Tabs extends React.PureComponent {
     this.props.moduleActions.setError(module.id, error);
   };
 
+  fetchBundle = () => {
+    const { source, sourceActions } = this.props;
+    sourceActions.fetchBundle(source.id);
+  };
+
   props: Props;
   state: State;
 
@@ -131,7 +139,7 @@ class Tabs extends React.PureComponent {
   };
 
   render() {
-    const { modules, sandbox, directories, source, module, moduleActions } = this.props;
+    const { modules, directories, source, module, moduleActions } = this.props;
     if (!module) return null;
     return (
       <Frame>
@@ -164,7 +172,8 @@ class Tabs extends React.PureComponent {
             </FullSize>
             <FullSize inactive={this.state.resizing}>
               <Preview
-                sourceId={sandbox.source}
+                bundle={source.bundle}
+                fetchBundle={this.fetchBundle}
                 module={module}
                 modules={modules}
                 directories={directories}

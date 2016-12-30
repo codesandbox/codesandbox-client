@@ -17,7 +17,7 @@ export const getEntity = async (
   options: Object = {},
 ) => {
   const result = await callApi(url, { body, ...options });
-  return processEntity(schema, result);
+  return processEntity(schema, result.data);
 };
 
 export const getKeys = (key: string) => {
@@ -55,10 +55,10 @@ export default (schema: typeof Schema) => {
       dispatch({ type: keys.request, data });
 
       try {
-        const entity = await callApi(`${key}/`, {
+        const entity = (await callApi(`${key}/`, {
           method: 'POST',
           body: { data },
-        });
+        }).data);
 
         dispatch({ type: keys.success, entity });
 

@@ -138,7 +138,7 @@ class Create extends React.PureComponent {
 
   componentDidMount() {
     callApi('sandbox_presets').then((result) => {
-      this.setState({ presets: result });
+      this.setState({ presets: result.data });
     });
   }
 
