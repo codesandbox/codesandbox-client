@@ -55,10 +55,11 @@ export default (schema: typeof Schema) => {
       dispatch({ type: keys.request, data });
 
       try {
-        const entity = (await callApi(`${key}/`, {
+        const response = await callApi(`${key}/`, {
           method: 'POST',
           body: { data },
-        }).data);
+        });
+        const entity = response.data;
 
         dispatch({ type: keys.success, entity });
 

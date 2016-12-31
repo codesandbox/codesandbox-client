@@ -154,6 +154,7 @@ class Create extends React.PureComponent {
     const forkPreset = presets.find(p => p.id === selectedPreset);
     const preset = forkPreset ? forkPreset.sourceId : null;
     const result = await this.props.sandboxActions.createSandbox(sandboxTitle, preset);
+
     if (result instanceof Error) {
       this.setState({ creating: false });
     } else {
