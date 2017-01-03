@@ -128,9 +128,15 @@ class Tabs extends React.PureComponent {
 
   fetchBundle = () => {
     const { source, sourceActions } = this.props;
-    sourceActions.fetchBundle(source.id);
+    if (this.currentBundler) {
+      this.currentBundler.cancel();
+    }
+    this.currentBundler = sourceActions.fetchBundle(source.id);
   };
 
+  currentBundler: {
+    cancel: () => void;
+  };
   props: Props;
   state: State;
 

@@ -18,49 +18,68 @@ type Result = {
   };
 };
 
-function handleSuccess(id, result: Result, dispatch) {
-  dispatch({
-    type: FETCH_SOURCE_BUNDLE_SUCCESS,
-    id,
-    manifest: result.manifest,
-    hash: result.hash,
-    url: result.url,
-  });
-}
+class BundleLoader {
+  constructor(id, dispatch) {
+    this.cancelled = false;
+    this.id = id;
+    this.dispatch = dispatch;
 
-async function fetchUntilResult(id: string, hash: string, dispatch) {
-  while (true) {
-    await delay(2000);
-    const result = await callApi(`/bundler/bundle/${hash}`, { shouldCamelize: false });
-    if (result.manifest) {
-      return handleSuccess(id, result, dispatch);
-    }
+    this.fetch();
   }
-}
 
-export default {
-  fetchBundle: (id: string) => async (dispatch) => {
-    dispatch({ type: FETCH_SOURCE_BUNDLE, id });
+  id: string;
+  dispatch: Function;
+
+  handleSuccess = (id, result: Result, dispatch) => {
+    dispatch({
+      type: FETCH_SOURCE_BUNDLE_SUCCESS,
+      id,
+      manifest: result.manifest,
+      hash: result.hash,
+      url: result.url,
+    });
+  };
+
+  cancel = () => {
+    this.cancelled = true;
+    console.log(`'${this.id}' bundle fetch got cancelled`);
+  }
+
+  fetch = async () => {
+    const { id } = this;
     try {
       const firstResult = await callApi('/bundler/bundle', { method: 'POST', body: { id }, shouldCamelize: false });
-      if (firstResult.manifest) {
-        handleSuccess(id, firstResult, dispatch);
+      if (firstResult.manifest && this.cancelled) {
+        this.handleSuccess(id, firstResult, this.dispatch);
       } else {
-        await fetchUntilResult(id, firstResult.hash, dispatch);
+        while (true && !this.cancelled) {
+          await delay(2000);
+          const result = await callApi(`/bundler/bundle/${firstResult.hash}`, { shouldCamelize: false });
+          if (result.manifest && this.cancelled) {
+            this.handleSuccess(id, result, this.dispatch);
+          }
+        }
       }
     } catch (e) {
       const error = e.response ? e.response.data.error : e;
-      dispatch({
+      this.dispatch({
         type: FETCH_SOURCE_BUNDLE_FAILURE,
         id,
         error,
       });
-      dispatch(notificationActions.addNotification(
+      this.dispatch(notificationActions.addNotification(
         'Something went wrong while fetching dependencies.',
         error,
         'error',
       ));
     }
+  }
+}
+
+export default {
+  fetchBundle: (id: string) => function fetchBundle(dispatch) {
+    dispatch({ type: FETCH_SOURCE_BUNDLE, id });
+    return new BundleLoader(id, dispatch);
   },
 
   addNPMDependency: (id: string, name: string, version: ?string = 'latest') => async (dispatch) => {
