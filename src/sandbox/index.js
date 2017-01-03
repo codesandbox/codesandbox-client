@@ -23,7 +23,7 @@ async function addDependencyBundle() {
 window.addEventListener('message', async (message) => {
   const { modules, directories, module, manifest, url: newUrl } = message.data;
 
-  if (url == null) {
+  if (url == null || url !== newUrl) {
     url = newUrl;
     await addDependencyBundle();
   }

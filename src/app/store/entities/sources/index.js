@@ -1,5 +1,6 @@
 // @flow
 import { Schema, arrayOf } from 'normalizr';
+import { decamelizeKeys } from 'humps';
 
 import moduleEntity from '../modules/';
 import directoryEntity from '../directories/';
@@ -13,6 +14,15 @@ schema.define({
   modules: arrayOf(moduleEntity.schema),
   directories: arrayOf(directoryEntity.schema),
 });
+
+const afterReceiveReducer = (source) => {
+  const newSource = {
+    ...source,
+    npmDependencies: decamelizeKeys(source.npmDependencies, { separator: '-' }),
+  };
+
+  return newSource;
+};
 
 export type Source = {
   id: string;
@@ -29,4 +39,4 @@ export type Source = {
   }
 };
 
-export default createEntity(schema, { actions, reducer });
+export default createEntity(schema, { actions, reducer, afterReceiveReducer });

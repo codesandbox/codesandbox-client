@@ -2,14 +2,14 @@ import styled from 'styled-components';
 
 import theme from '../../../../../common/theme';
 
-const getContainerStyles = (props) => {
+export const getContainerStyles = (props) => {
   let styles = `
     transition: 0.3s ease all;
     position: relative;
     display: flex;
     font-size: 14px;
     padding: 0.6rem;
-    padding-left: ${props.depth + 1.5}rem;
+    padding-left: ${props.depth != null ? `${props.depth + 1.5}rem` : 'calc(1rem - 2px)'};
     color: ${props.theme.background.lighten(2)()};
     text-decoration: none;
     font-weight: 400;

@@ -3,10 +3,12 @@ import callApi from '../../services/api';
 import delay from '../../services/delay';
 import notificationActions from '../../actions/notifications';
 
-
 export const FETCH_SOURCE_BUNDLE = 'FETCH_SOURCE_BUNDLE';
 export const FETCH_SOURCE_BUNDLE_SUCCESS = 'FETCH_SOURCE_BUNDLE_SUCCESS';
 export const FETCH_SOURCE_BUNDLE_FAILURE = 'FETCH_SOURCE_BUNDLE_FAILURE';
+
+export const ADD_NPM_DEPENDENCY = 'ADD_NPM_DEPENDENCY';
+export const REMOVE_NPM_DEPENDENCY = 'REMOVE_NPM_DEPENDENCY';
 
 type Result = {
   hash: string;
@@ -29,7 +31,7 @@ function handleSuccess(id, result: Result, dispatch) {
 async function fetchUntilResult(id: string, hash: string, dispatch) {
   while (true) {
     await delay(2000);
-    const result = await callApi(`/bundle/${hash}`, { shouldCamelize: false });
+    const result = await callApi(`/bundler/bundle/${hash}`, { shouldCamelize: false });
     if (result.manifest) {
       return handleSuccess(id, result, dispatch);
     }
@@ -40,7 +42,7 @@ export default {
   fetchBundle: (id: string) => async (dispatch) => {
     dispatch({ type: FETCH_SOURCE_BUNDLE, id });
     try {
-      const firstResult = await callApi('/bundle', { method: 'POST', body: { id }, shouldCamelize: false });
+      const firstResult = await callApi('/bundler/bundle', { method: 'POST', body: { id }, shouldCamelize: false });
       if (firstResult.manifest) {
         handleSuccess(id, firstResult, dispatch);
       } else {
@@ -60,4 +62,31 @@ export default {
       ));
     }
   },
+
+  addNPMDependency: (id: string, name: string, version: ?string = 'latest') => async (dispatch) => {
+    try {
+      const absoluteVersion = await callApi(`/bundler/npm/version/${name}/${version}`);
+      dispatch({
+        type: ADD_NPM_DEPENDENCY,
+        name: name.toLowerCase(),
+        version: absoluteVersion.version,
+        id,
+      });
+
+      // Return true if success
+      return true;
+    } catch (e) {
+      const message = e.response ? e.response.data.error : e.message;
+      dispatch(notificationActions.addNotification(
+        `Error adding package '${name}'`,
+        message,
+        'error',
+      ));
+
+      // Return false if failure
+      return false;
+    }
+  },
+
+  removeNPMDependency: (id: string, name: string) => ({ type: REMOVE_NPM_DEPENDENCY, id, name }),
 };

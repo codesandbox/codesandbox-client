@@ -71,13 +71,20 @@ export default (schema: typeof Schema) => {
       }
     },
 
-    updateById: (id: string, oldData: Object, newData: Object, updateFields: Array<string> = []) =>
+    updateById: (
+      id: string,
+      oldData: Object,
+      newData: Object,
+      updateFields: Array<string> = [],
+      customEndpoint: ?string,
+    ) =>
     async (dispatch: Function) => {
       const keys = actionKeys.update;
       dispatch({ type: keys.request, id, newData });
 
       try {
-        await callApi(`${key}/${id}`, {
+        const url = customEndpoint || `${key}/${id}`;
+        await callApi(url, {
           method: 'PATCH',
           body: { data: newData },
         });

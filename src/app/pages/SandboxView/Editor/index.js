@@ -3,12 +3,9 @@ import React from 'react';
 import styled from 'styled-components';
 import SplitPane from 'react-split-pane';
 
-import moduleEntity from '../../../store/entities/modules/';
 import Workspace from './Workspace';
 
-import type { Module } from '../../../store/entities/modules';
 import type { Sandbox } from '../../../store/entities/sandboxes';
-import type { Directory } from '../../../store/entities/directories';
 import Menu from './Menu';
 import Tabs from './Tabs';
 

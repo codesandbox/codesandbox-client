@@ -21,6 +21,16 @@ const StyledFrame = styled.iframe`
   width: 100%;
 `;
 
+const LoadingDepText = styled.div`
+  position: absolute;
+  font-size: 2rem;
+  color: black;
+  text-align: center;
+  vertical-align: middle;
+  top: 50%; bottom: 0; right: 0; left: 0;
+  margin: auto;
+`;
+
 type Props = {
   modules: Array<Module>;
   directories: Array<Directory>;
@@ -45,12 +55,7 @@ export default class Preview extends React.PureComponent {
   }
 
   componentDidUpdate(prevProps: Props) {
-    const { bundle: prevBundle = {} } = prevProps;
-    const { bundle = {} } = this.props;
-    if ((
-      prevProps.module.code !== this.props.module.code ||
-      prevBundle.hash !== bundle.hash
-     ) && this.state.frameInitialized) {
+    if ((prevProps.module.code !== this.props.module.code) && this.state.frameInitialized) {
       this.executeCode();
     }
   }
@@ -85,7 +90,7 @@ export default class Preview extends React.PureComponent {
     const { modules, directories, bundle = {}, fetchBundle, module } = this.props;
 
     if (bundle.manifest == null) {
-      if (!bundle.progressing) {
+      if (!bundle.processing) {
         fetchBundle();
       }
       return;
@@ -113,7 +118,15 @@ export default class Preview extends React.PureComponent {
   rootInstance: ?Object;
 
   render() {
+    const { bundle = {} } = this.props;
     const location = document.location;
+    if (bundle.processing) {
+      return (
+        <Container>
+          <LoadingDepText>Loading the dependencies...</LoadingDepText>
+        </Container>
+      );
+    }
     return (
       <Container>
         <StyledFrame

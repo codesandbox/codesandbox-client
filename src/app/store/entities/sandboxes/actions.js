@@ -1,9 +1,11 @@
 // @flow
 import type { Schema } from 'normalizr';
+import { decamelizeKeys } from 'humps';
 
 import createEntityActions, { getEntity } from '../../actions/entities';
 import notificationActions from '../../actions/notifications';
 import { singleSandboxSelector } from './selector';
+import { singleSourceSelector } from '../sources/selector';
 
 export const GET_SANDBOX_BY_USERNAME_AND_SLUG = 'GET_SANDBOX_BY_USERNAME_AND_SLUG';
 export const GET_SANDBOX_BY_USERNAME_AND_SLUG_SUCCESS = 'GET_SANDBOX_BY_USERNAME_AND_SLUG_SUCCESS';
@@ -12,6 +14,9 @@ export const GET_SANDBOX_BY_USERNAME_AND_SLUG_FAILURE = 'GET_SANDBOX_BY_USERNAME
 export const FORK_SANDBOX = 'FORK_SANDBOX';
 export const FORK_SANDBOX_SUCCESS = 'FORK_SANDBOX_SUCCESS';
 export const FORK_SANDBOX_FAILURE = 'FORK_SANDBOX_FAILURE';
+
+
+export const CLEAR_SOURCE_DEPENDENCIES = 'CLEAR_SOURCE_DEPENDENCIES';
 
 export default (schema: Schema) => {
   const entityActions = createEntityActions(schema);
@@ -69,6 +74,23 @@ export default (schema: Schema) => {
         dispatch(notificationActions.addNotification('There was a problem forking the sandbox', 'Please try again', 'error'));
         dispatch({ type: FORK_SANDBOX_FAILURE });
         return e;
+      }
+    },
+
+    commitDependencies: (id: string) => async (dispatch, getState) => {
+      try {
+        const sourceId = singleSandboxSelector(getState(), { id }).source;
+        const source = singleSourceSelector(getState(), { id: sourceId });
+        const dependencies = decamelizeKeys(source.npmDependencies, { separator: '-' });
+
+        const oldData = { npmDependencies: dependencies };
+        const newData = { npmDependencies: dependencies };
+        await dispatch(entityActions.updateById(id, oldData, newData, [], `sandboxes/${id}/set_dependencies`));
+
+        dispatch({ type: CLEAR_SOURCE_DEPENDENCIES, id: sourceId });
+      } catch (e) {
+        console.error(e);
+        dispatch(notificationActions.addNotification('Could not commit dependencies', 'Please try again', 'error'));
       }
     },
   };
