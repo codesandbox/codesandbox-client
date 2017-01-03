@@ -28,6 +28,8 @@ class BundleLoader {
   }
 
   id: string;
+  done: boolean;
+  cancelled: boolean;
   dispatch: Function;
 
   handleSuccess = (id, result: Result, dispatch) => {
@@ -38,25 +40,31 @@ class BundleLoader {
       hash: result.hash,
       url: result.url,
     });
+    this.done = true;
   };
 
   cancel = () => {
     this.cancelled = true;
-    console.log(`'${this.id}' bundle fetch got cancelled`);
+    if (!this.done) {
+      console.log(`'${this.id}' bundle fetch got cancelled`);
+    }
   }
 
   fetch = async () => {
     const { id } = this;
     try {
       const firstResult = await callApi('/bundler/bundle', { method: 'POST', body: { id }, shouldCamelize: false });
-      if (firstResult.manifest && this.cancelled) {
+      if (firstResult.manifest && !this.cancelled) {
         this.handleSuccess(id, firstResult, this.dispatch);
       } else {
-        while (true && !this.cancelled) {
+        while (!this.cancelled) {
           await delay(2000);
           const result = await callApi(`/bundler/bundle/${firstResult.hash}`, { shouldCamelize: false });
-          if (result.manifest && this.cancelled) {
-            this.handleSuccess(id, result, this.dispatch);
+          if (result.manifest) {
+            if (!this.cancelled) {
+              this.handleSuccess(id, result, this.dispatch);
+            }
+            return;
           }
         }
       }

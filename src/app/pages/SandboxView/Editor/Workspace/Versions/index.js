@@ -13,7 +13,8 @@ import type { Version } from '../../../../../store/entities/versions/index';
 import { versionsBySandboxSelector } from '../../../../../store/entities/versions/selector';
 
 import EntryContainer from '../EntryContainer';
-
+import WorkspaceInputContainer from '../WorkspaceInputContainer';
+import Button from '../../../../../components/buttons/Button';
 
 type Props = {
   sandbox: Sandbox;
@@ -30,6 +31,10 @@ const Description = styled.p`
 const VersionTitle = styled.span`
   padding-left: 0.5rem;
   vertical-align: middle;
+`;
+
+const Dot = styled.span`
+  color: ${props => props.theme.background.lighten(2)};
 `;
 
 const VersionDate = styled.div`
@@ -60,6 +65,15 @@ class Versions extends React.PureComponent {
           You can publish versions of your sandbox to make your sandbox available
           for others to use as a dependency.
         </Description>
+
+        <WorkspaceInputContainer>
+          <input placeholder="0" style={{ textAlign: 'center', flex: 1 }} />
+          <Dot>.</Dot>
+          <input placeholder="0" style={{ textAlign: 'center', flex: 1 }} />
+          <Dot>.</Dot>
+          <input placeholder="0" style={{ textAlign: 'center', flex: 1 }} />
+          <Button small style={{ flex: 5 }}>Publish</Button>
+        </WorkspaceInputContainer>
 
         {versions.map(v => (
           <EntryContainer key={v.version}>

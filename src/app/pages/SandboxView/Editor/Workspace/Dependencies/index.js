@@ -2,7 +2,6 @@ import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { decamelize } from 'humps';
 
 import WorkspaceTitle from '../WorkspaceTitle';
 import WorkspaceSubtitle from '../WorkspaceSubtitle';
@@ -20,18 +19,46 @@ type Props = {
   sandboxActions: sandboxEntity.actions;
 };
 
+type State = {
+  processing: boolean;
+};
+
+const Overlay = styled.div`
+  position: absolute;
+  display: flex;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.2);
+  align-items: center;
+  text-align: center;
+  z-index: 20;
+  user-select: none;
+`;
+
 const mapDispatchToProps = dispatch => ({
   sourceActions: bindActionCreators(sourceEntity.actions, dispatch),
   sandboxActions: bindActionCreators(sandboxEntity.actions, dispatch),
 });
 class Dependencies extends React.PureComponent {
+  state = {
+    processing: false,
+  };
+
   addDependency = async (name: string, version: ?string): Promise<boolean> => {
     const { source, sourceActions } = this.props;
     if (source) {
       const realVersion = version || 'latest';
       const realName = name.toLowerCase();
+      this.setState({
+        processing: true,
+      });
       const success = await sourceActions.addNPMDependency(source.id, realName, realVersion);
-
+      this.setState({
+        processing: false,
+      });
       if (success) {
         this.commitDependencies();
         return true;
@@ -57,10 +84,16 @@ class Dependencies extends React.PureComponent {
   }
 
   props: Props;
+  state: State;
+
   render() {
     const { source } = this.props;
+    const bundle = source.bundle || {};
+    const processing = bundle.processing || this.state.processing;
+
     return (
       <div>
+        {processing && <Overlay>We{"'"}re processing dependencies, please wait...</Overlay>}
         <WorkspaceTitle>
           Dependencies
         </WorkspaceTitle>
