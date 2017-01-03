@@ -26,15 +26,12 @@ const Description = styled.p`
   margin-top: 0;
   padding: 0 1rem;
   line-height: 1.2;
+  font-size: .875rem;
 `;
 
 const VersionTitle = styled.span`
   padding-left: 0.5rem;
   vertical-align: middle;
-`;
-
-const Dot = styled.span`
-  color: ${props => props.theme.background.lighten(2)};
 `;
 
 const VersionDate = styled.div`
@@ -68,11 +65,9 @@ class Versions extends React.PureComponent {
 
         <WorkspaceInputContainer>
           <input placeholder="0" style={{ textAlign: 'center', flex: 1 }} />
-          <Dot>.</Dot>
           <input placeholder="0" style={{ textAlign: 'center', flex: 1 }} />
-          <Dot>.</Dot>
           <input placeholder="0" style={{ textAlign: 'center', flex: 1 }} />
-          <Button small style={{ flex: 5 }}>Publish</Button>
+          <Button small style={{ flex: 5, marginLeft: '0.25rem' }}>Publish</Button>
         </WorkspaceInputContainer>
 
         {versions.map(v => (
