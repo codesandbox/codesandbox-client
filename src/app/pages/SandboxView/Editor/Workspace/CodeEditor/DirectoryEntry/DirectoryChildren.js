@@ -53,6 +53,7 @@ export default class DirectoryChildren extends React.PureComponent {
           const isActive = m.id === currentModuleId;
           return (
             <Entry
+              key={m.id}
               id={m.id}
               title={m.title}
               depth={depth + 1}

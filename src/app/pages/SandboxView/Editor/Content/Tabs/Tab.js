@@ -35,7 +35,6 @@ const TabContainer = styled.div`
 `;
 
 const CloseButton = styled.div`
-  transition: 0.3s ease all;
   display: inline-block;
   position: absolute;
   right: 0;
