@@ -5,6 +5,7 @@ import { singleSandboxSelector } from '../sandboxes/selector';
 import resolveModule from '../../../../sandbox/utils/resolve-module';
 import { directoriesBySandboxSelector } from '../directories/selector';
 import { entriesInDirectorySelector } from '../../selectors/entry-selectors';
+import {currentTabSelector} from '../../selectors/views/sandbox-selector';
 
 export const modulesSelector = state => state.entities.modules;
 export const defaultModuleSelector = state => modulesSelector(state).default;
@@ -19,6 +20,16 @@ export const modulesBySandboxSelector = createSelector(
     if (sandbox == null) return [];
 
     return values(modules).filter(m => m.sourceId === sandbox.source);
+  },
+);
+
+export const currentModuleSelector = createSelector(
+  currentTabSelector,
+  modulesSelector,
+  (tab, modules) => {
+    if (tab == null || tab.moduleId == null) return null;
+
+    return modules[tab.moduleId];
   },
 );
 

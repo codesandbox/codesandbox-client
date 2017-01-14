@@ -12,9 +12,10 @@ import type { Module } from '../../../../../../store/entities/modules';
 import type { Directory } from '../../../../../../store/entities/directories';
 import { validateTitle } from '../../../../../../store/entities/modules/validator';
 import contextMenuActionCreators from '../../../../../../store/actions/context-menu';
+import sandboxViewActions from '../../../../../../store/actions/views/sandbox';
 
 import { directoriesInDirectorySelector } from '../../../../../../store/entities/directories/selector';
-import { modulesInDirectorySelector } from '../../../../../../store/entities/modules/selector';
+import { modulesInDirectorySelector, currentModuleSelector } from '../../../../../../store/entities/modules/selector';
 
 import DirectoryChildren from './DirectoryChildren';
 
@@ -37,11 +38,17 @@ const Opener = styled.div`
 const mapStateToProps = createSelector(
   directoriesInDirectorySelector,
   modulesInDirectorySelector,
-  (directories, modules) => ({ directories, modules }),
+  currentModuleSelector,
+  (directories, modules, currentModule) => ({
+    directories,
+    modules,
+    currentModuleId: currentModule ? currentModule.id : null,
+  }),
 );
 const mapDispatchToProps = dispatch => ({
   moduleActions: bindActionCreators(moduleEntity.actions, dispatch),
   directoryActions: bindActionCreators(directoryEntity.actions, dispatch),
+  openModuleTab: bindActionCreators(sandboxViewActions, dispatch).openModuleTab,
   openMenu: bindActionCreators(contextMenuActionCreators, dispatch).openMenu,
 });
 type Props = {
@@ -56,11 +63,12 @@ type Props = {
   modules: Array<Module>;
   siblings: Array<Module | Directory>;
   depth: ?number;
-  url: string;
+  openModuleTab: (id: string) => void;
   moduleActions: typeof moduleEntity.actions;
   directoryActions: typeof directoryEntity.actions;
   openMenu: (e: Event) => void;
   renameSandbox?: (title: string) => void;
+  currentModuleId: ?string;
 };
 type State = {
   creating: '' | 'module' | 'directory';
@@ -144,8 +152,9 @@ class DirectoryEntry extends React.PureComponent {
   };
 
   render() {
-    const { id, sandboxId, title, directories, openMenu, modules, moduleActions, url,
-      directoryActions, connectDropTarget, isOver, sourceId, depth = 0, root } = this.props;
+    const { id, sandboxId, title, directories, openMenu, modules, moduleActions, openModuleTab,
+      currentModuleId, directoryActions,
+      connectDropTarget, isOver, sourceId, depth = 0, root } = this.props;
     const { creating, open } = this.state;
     return connectDropTarget(
       <div style={{ position: 'relative' }}>
@@ -189,12 +198,13 @@ class DirectoryEntry extends React.PureComponent {
             modules={modules}
             directories={directories}
             depth={depth}
-            url={url}
             renameModule={moduleActions.renameModule}
             openMenu={openMenu}
             sandboxId={sandboxId}
             sourceId={sourceId}
             deleteEntry={this.deleteModule}
+            openModuleTab={openModuleTab}
+            currentModuleId={currentModuleId}
           />
           {creating === 'module' && (
             <Entry

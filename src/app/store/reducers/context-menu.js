@@ -7,15 +7,15 @@ export type ContextMenuItem = {
   action: Function;
   icon?: React.Component<any, any>;
   color: ?string;
-}
+};
 
 export type ContextMenuState = {
   show: boolean;
   items: Array<ContextMenuItem>;
   x: number;
   y: number;
-  onClose: ?Function;
-}
+  onClose?: Function;
+};
 
 const initialState: ContextMenuState = {
   show: false,

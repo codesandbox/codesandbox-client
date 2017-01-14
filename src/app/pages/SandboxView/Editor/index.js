@@ -7,7 +7,7 @@ import Workspace from './Workspace';
 
 import type { Sandbox } from '../../../store/entities/sandboxes';
 import Menu from './Menu';
-import Tabs from './Tabs';
+import Content from './Content';
 
 const Container = styled.div`
   display: flex;
@@ -34,7 +34,7 @@ export default class Editor extends React.PureComponent {
         <div style={{ position: 'relative', flex: 'auto' }}>
           <SplitPane split="vertical" minSize={100} defaultSize={16 * 16}>
             <Workspace sandbox={sandbox} />
-            <Tabs sandbox={sandbox} params={this.props.params} />
+            <Content sandbox={sandbox} params={this.props.params} />
           </SplitPane>
         </div>
       </Container>

@@ -1,6 +1,5 @@
 // @flow
 import React from 'react';
-import { Link } from 'react-router';
 
 import Entry from './Entry';
 import DirectoryEntry from './';
@@ -13,25 +12,26 @@ type Props = {
   renameModule: (id: string, title: string) => boolean;
   directories: Array<Directory>;
   modules: Array<Module>;
-  url: string;
   openMenu: (event: Event) => void;
   sandboxId: string;
   sourceId: string;
   deleteEntry: (id: string) => void;
+  openModuleTab: (id: string) => void;
+  currentModuleId: ?string;
 };
 
 export default class DirectoryChildren extends React.PureComponent {
   props: Props;
 
-  validateTitle = (id, title) => {
+  validateTitle = (id: string, title: string) => {
     const { directories, modules } = this.props;
     return validateTitle(id, title, [...directories, ...modules]);
   }
 
   render() {
     const {
-      depth = 0, url, renameModule, openMenu, sourceId,
-      directories, sandboxId, modules, deleteEntry,
+      depth = 0, renameModule, openMenu, sourceId, openModuleTab,
+      directories, sandboxId, modules, deleteEntry, currentModuleId,
     } = this.props;
 
     return (
@@ -44,32 +44,27 @@ export default class DirectoryChildren extends React.PureComponent {
             id={dir.id}
             title={dir.title}
             open={dir.open}
-            url={`${url}/${dir.title}`}
             sourceId={sourceId}
             sandboxId={sandboxId}
+            currentModuleId={currentModuleId}
           />
         ))}
         {modules.map((m) => {
-          const moduleUrl = `${url}/${m.title}`;
+          const isActive = m.id === currentModuleId;
           return (
-            <Link key={m.id} to={moduleUrl}>{
-              ({ isActive }) => (
-                <Link style={{ textDecoration: 'none' }} to={moduleUrl}>
-                  <Entry
-                    id={m.id}
-                    title={m.title}
-                    depth={depth + 1}
-                    active={isActive}
-                    type={m.type}
-                    rename={renameModule}
-                    openMenu={openMenu}
-                    deleteEntry={deleteEntry}
-                    isNotSynced={m.isNotSynced}
-                    renameValidator={this.validateTitle}
-                  />
-                </Link>
-              )
-            }</Link>
+            <Entry
+              id={m.id}
+              title={m.title}
+              depth={depth + 1}
+              active={isActive}
+              type={m.type}
+              rename={renameModule}
+              openMenu={openMenu}
+              deleteEntry={deleteEntry}
+              isNotSynced={m.isNotSynced}
+              renameValidator={this.validateTitle}
+              openModuleTab={openModuleTab}
+            />
           );
         })}
       </div>

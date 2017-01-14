@@ -1,12 +1,10 @@
 import React from 'react';
-import styled from 'styled-components';
 
 import HTML5Backend from 'react-dnd-html5-backend';
 import { DragDropContext } from 'react-dnd';
 import DirectoryEntry from './DirectoryEntry/index';
 import DeleteTarget from './DeleteTarget';
 import type { Sandbox } from '../../../../../store/entities/sandboxes/';
-import { editModuleUrl } from '../../../../../utils/url-generator';
 import sandboxEntity from '../../../../../store/entities/sandboxes';
 import moduleEntity from '../../../../../store/entities/modules';
 import directoryEntity from '../../../../../store/entities/directories';
@@ -30,7 +28,6 @@ class CodeEditor extends React.PureComponent {
 
   render() {
     const { sandbox, moduleActions, directoryActions } = this.props;
-    const url = sandbox && editModuleUrl(sandbox);
 
     return (
       <div>
@@ -38,7 +35,6 @@ class CodeEditor extends React.PureComponent {
         {sandbox &&
           <DirectoryEntry
             root
-            url={url}
             title={sandbox.title}
             sandboxId={sandbox.id}
             sourceId={sandbox.source}

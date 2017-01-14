@@ -15,8 +15,8 @@ const animation = keyframes`
   34%  { transform: rotate(120deg); }
   37%  { transform: rotate(240deg); }
   65%  { transform: rotate(240deg); }
-  68%  { transform: rotate(359deg); }
-  100%  { transform: rotate(359deg); }
+  68%  { transform: rotate(360deg); }
+  100%  { transform: rotate(360deg); }
 `;
 
 const Image = styled.img`

@@ -9,53 +9,17 @@ import type { Module } from '../../../../store/entities/modules';
 import type { Directory } from '../../../../store/entities/directories';
 import type { Source } from '../../../../store/entities/sources';
 import type { Sandbox } from '../../../../store/entities/sandboxes';
+import type { State as ViewState } from '../../../../store/reducers/views/sandbox';
 
 import CodeEditor from './CodeEditor';
 import Preview from './Preview';
-import EntryIcons from '../Workspace/CodeEditor/DirectoryEntry/Entry/EntryIcons';
+import Tabs from './Tabs';
 import moduleEntity from '../../../../store/entities/modules/';
 import sourceEntity from '../../../../store/entities/sources/';
 import { directoriesBySandboxSelector } from '../../../../store/entities/directories/selector';
-import { moduleByPathSelector, modulesBySandboxSelector } from '../../../../store/entities/modules/selector';
+import { currentModuleSelector, modulesBySandboxSelector } from '../../../../store/entities/modules/selector';
 import { singleSourceSelector } from '../../../../store/entities/sources/selector';
-
-
-const TabsContainer = styled.div`
-  background-color: ${props => props.theme.background};
-  color: ${props => props.theme.white};
-  font-weight: 200;
-`;
-
-const Tab = styled.span`
-  transition: 0.3s ease all;
-  display: inline-block;
-
-  text-align: center;
-  background-color: ${props => props.active && props.theme.background2};
-  border-right: 1px solid ${props => props.theme.background2};
-  // border-left: 2px solid ${props => props.active ? props.theme.primary : 'transparent'};
-  border-radius: 2px;
-  font-weight: 400;
-  padding: 0.5rem 2rem;
-  // min-width: 100px;
-  cursor: pointer;
-  color: ${props => props.active ? 'inherit' : props.theme.white.clearer(0.5)};
-
-  svg {
-    margin-right: 0.5rem;
-    vertical-align: middle;
-  }
-
-  &:hover {
-    background-color: ${props => props.theme.background.darken(0.2)};
-    color: white;
-  }
-`;
-
-const Content = styled.div`
-  height: 100%;
-  width: 100%;
-`;
+import viewActions from '../../../../store/actions/views/sandbox';
 
 const Frame = styled.div`
   display: flex;
@@ -77,30 +41,32 @@ type Props = {
   module: Module;
   source: Source;
   sandbox: Sandbox;
+  view: ViewState;
   moduleActions: moduleEntity.actions;
   sourceActions: sourceEntity.actions;
   params: {
     module: string;
   };
+  setTab: (id: string) => void;
 };
 type State = {
   resizing: boolean;
 };
 
 const mapStateToProps = (state, props) => ({
+  view: state.views.sandbox,
   directories: directoriesBySandboxSelector(state, { id: props.sandbox.id }),
   modules: modulesBySandboxSelector(state, { id: props.sandbox.id }),
-  module: moduleByPathSelector(state, {
-    id: props.sandbox.id,
-    modulePath: (!props.params.module || props.params.module === 'undefined') ? './' : `./${props.params.module}`,
-  }),
+  module: currentModuleSelector(state),
   source: singleSourceSelector(state, { id: props.sandbox.source }),
 });
 const mapDispatchToProps = dispatch => ({
   moduleActions: bindActionCreators(moduleEntity.actions, dispatch),
   sourceActions: bindActionCreators(sourceEntity.actions, dispatch),
+  setTab: bindActionCreators(viewActions, dispatch).setTab,
+  closeTab: bindActionCreators(viewActions, dispatch).closeTab,
 });
-class Tabs extends React.PureComponent {
+class Content extends React.PureComponent {
   componentDidMount() {
     window.onbeforeunload = () => {
       const { modules } = this.props;
@@ -126,6 +92,9 @@ class Tabs extends React.PureComponent {
     this.props.moduleActions.setError(module.id, error);
   };
 
+  startResizing = () => this.setState({ resizing: true });
+  stopResizing = () => this.setState({ resizing: false });
+
   fetchBundle = () => {
     const { source, sourceActions } = this.props;
     if (this.currentBundler) {
@@ -145,22 +114,21 @@ class Tabs extends React.PureComponent {
   };
 
   render() {
-    const { modules, directories, source, module, moduleActions } = this.props;
+    const { modules, view, setTab, closeTab,
+      directories, source, module, moduleActions } = this.props;
     if (!module) return null;
     return (
       <Frame>
-        <TabsContainer>
-          <Tab active>
-            <div>
-              <EntryIcons type="react" />
-              <span style={{ verticalAlign: 'middle' }}>{module.title}</span>
-            </div>
-          </Tab>
-        </TabsContainer>
-        <Content>
+        <Tabs
+          setTab={setTab}
+          closeTab={closeTab}
+          currentTab={view.currentTab}
+          tabs={view.tabs}
+        />
+        <FullSize>
           <SplitPane
-            onDragStarted={() => this.setState({ resizing: true })}
-            onDragFinished={() => this.setState({ resizing: false })}
+            onDragStarted={this.startResizing}
+            onDragFinished={this.stopResizing}
             split="vertical"
             defaultSize="50%"
             minSize={360}
@@ -188,11 +156,11 @@ class Tabs extends React.PureComponent {
               />
             </FullSize>
           </SplitPane>
-        </Content>
+        </FullSize>
       </Frame>
     );
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Tabs);
+export default connect(mapStateToProps, mapDispatchToProps)(Content);
 

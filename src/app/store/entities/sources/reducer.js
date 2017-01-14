@@ -1,8 +1,9 @@
 // @flow
+import { omit } from 'lodash';
+
 import type { Source } from './';
 import * as actions from './actions';
-import { omit } from 'lodash';
-import { REMOVE_NOTIFICATION } from '../../actions/notifications';
+
 
 type State = {
   [id: string]: Source;
@@ -34,7 +35,7 @@ const sourceReducer = (state: Source, action: Object): ?Source => {
         ...state,
         bundle: {
           processing: false,
-          error: action.error,
+          error: action.error || 'Unknown error',
         },
       };
     case actions.ADD_NPM_DEPENDENCY:

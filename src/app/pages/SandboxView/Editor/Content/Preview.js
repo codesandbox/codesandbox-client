@@ -90,7 +90,7 @@ export default class Preview extends React.PureComponent {
     const { modules, directories, bundle = {}, fetchBundle, module } = this.props;
 
     if (bundle.manifest == null) {
-      if (!bundle.processing) {
+      if (!bundle.processing && !bundle.error) {
         fetchBundle();
       }
       return;

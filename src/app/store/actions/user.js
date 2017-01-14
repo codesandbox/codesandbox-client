@@ -8,7 +8,7 @@ export default {
     try {
       dispatch({ type: REQUEST_USER });
       const result = await callApi('users/current');
-      dispatch({ type: REQUEST_USER_SUCCESS, data: result });
+      dispatch({ type: REQUEST_USER_SUCCESS, data: result.data });
     } catch (e) {
       console.error(e);
       // Don't do anything with not logged in users

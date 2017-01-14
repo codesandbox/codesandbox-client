@@ -6,6 +6,7 @@ import entities from './entities';
 import modal from './modal';
 import notifications from './notifications';
 import user from './user';
+import views from './views';
 
 export default combineReducers({
   contextMenu,
@@ -13,4 +14,5 @@ export default combineReducers({
   modal,
   notifications,
   user,
+  views,
 });
