@@ -87,6 +87,7 @@ class DirectoryEntry extends React.PureComponent {
     directoryActions.setOpen(id, true);
     this.setState({
       creating: 'module',
+      open: true,
     });
     return true;
   };
@@ -102,6 +103,7 @@ class DirectoryEntry extends React.PureComponent {
     directoryActions.setOpen(id, true);
     this.setState({
       creating: 'directory',
+      open: true,
     });
     return true;
   };

@@ -1,8 +1,9 @@
-import { singleDirectoryByIdSelector } from './selector';
+import { singleDirectoryByIdSelector, directoriesSelector } from './selector';
 import createEntityActions from '../../actions/entities';
 import notificationActions from '../../actions/notifications';
 
 export const SET_DIRECTORY_OPEN = 'SET_DIRECTORY_OPEN';
+export const DELETE_ALL_MODULES_IN_DIRECTORY = 'DELETE_ALL_MODULES_IN_DIRECTORY';
 
 export default (schema) => {
   const entityActions = createEntityActions(schema);
@@ -36,9 +37,23 @@ export default (schema) => {
         }
       }
     },
-    deleteDirectory: (id: string) => async (dispatch) => {
+    deleteDirectory: (id: string) => async (dispatch, getState) => {
       try {
         await dispatch(entityActions.delete(id));
+
+        const directoriesInState = directoriesSelector(getState());
+        const directoriesToDelete = Object.keys(directoriesInState).reduce((prev, next) => {
+          const directory = directoriesInState[next];
+          if (prev.includes(directory.directoryId)) {
+            return [...prev, directory.id];
+          }
+          return prev;
+        }, [id]);
+
+        directoriesToDelete.forEach((d) => {
+          dispatch({ type: DELETE_ALL_MODULES_IN_DIRECTORY, id: d });
+        });
+
         dispatch(notificationActions.addNotification('Success', 'Succesfully deleted the directory', 'notice'));
       } catch (e) {
         const errorMessage = 'There was an error while deleting the directory, please try again later.';

@@ -1,4 +1,5 @@
 // @flow
+import { omitBy } from 'lodash';
 import type { Module } from './';
 
 import findType from '../../../utils/find-type';
@@ -8,6 +9,7 @@ import {
   SET_ERROR,
   SAVE_CODE,
 } from './actions';
+import { DELETE_ALL_MODULES_IN_DIRECTORY } from '../directories/actions';
 
 type State = {
   [id: string]: Module;
@@ -49,6 +51,8 @@ export default (state: State = initialState, action: Object): State => {
         ...state,
         [action.id]: moduleReducer(state[action.id], action),
       };
+    case DELETE_ALL_MODULES_IN_DIRECTORY:
+      return omitBy(state, m => m.directoryId === action.id);
     default:
       return state;
   }

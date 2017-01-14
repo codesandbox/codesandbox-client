@@ -13,8 +13,8 @@ type Props = {
 const mapStateProps = (state, props) => ({
   module: singleModuleSelector(state, { id: props.moduleId }),
 });
-const ModuleTab = ({ module, ...props }: Props) => (
+const ModuleTab = ({ module, ...props }: Props) => (module ? (
   <Tab title={module.title} {...props} />
-);
+) : null);
 
 export default connect(mapStateProps)(ModuleTab);
