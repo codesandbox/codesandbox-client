@@ -1,5 +1,6 @@
 // @flow
-import { SET_DIRECTORY_OPEN } from './actions';
+import { omitBy } from 'lodash';
+import { SET_DIRECTORY_OPEN, DELETE_ALL_DIRECTORIES_IN_DIRECTORY } from './actions';
 
 import type { Directory } from './';
 
@@ -29,6 +30,8 @@ export default (state: State = initialState, action: Object): State => {
         ...state,
         [action.id]: directoryReducer(state[action.id], action),
       };
+    case DELETE_ALL_DIRECTORIES_IN_DIRECTORY:
+      return omitBy(state, dir => dir.directoryId === action.id);
     default:
       return state;
   }

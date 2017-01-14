@@ -4,6 +4,7 @@ import notificationActions from '../../actions/notifications';
 
 export const SET_DIRECTORY_OPEN = 'SET_DIRECTORY_OPEN';
 export const DELETE_ALL_MODULES_IN_DIRECTORY = 'DELETE_ALL_MODULES_IN_DIRECTORY';
+export const DELETE_ALL_DIRECTORIES_IN_DIRECTORY = 'DELETE_ALL_DIRECTORIES_IN_DIRECTORY';
 
 export default (schema) => {
   const entityActions = createEntityActions(schema);
@@ -50,7 +51,9 @@ export default (schema) => {
           return prev;
         }, [id]);
 
+        // Delete all modules and directories in directory
         directoriesToDelete.forEach((d) => {
+          dispatch({ type: DELETE_ALL_DIRECTORIES_IN_DIRECTORY, id: d });
           dispatch({ type: DELETE_ALL_MODULES_IN_DIRECTORY, id: d });
         });
 
