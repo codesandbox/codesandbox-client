@@ -48,6 +48,7 @@ type Props = {
     module: string;
   };
   setTab: (id: string) => void;
+  closeTab: (id: string) => void;
 };
 type State = {
   resizing: boolean;
