@@ -4,9 +4,9 @@ import styled from 'styled-components';
 
 import { debounce } from 'lodash';
 
-import type { Module } from '../../../../store/entities/modules/';
-import type { Source } from '../../../../store/entities/sources/';
-import type { Directory } from '../../../../store/entities/directories/index';
+import type { Module } from '../../../../../store/entities/modules/';
+import type { Source } from '../../../../../store/entities/sources/';
+import type { Directory } from '../../../../../store/entities/directories/index';
 
 const Container = styled.div`
   position: absolute;
@@ -35,9 +35,9 @@ type Props = {
   modules: Array<Module>;
   directories: Array<Directory>;
   bundle: typeof Source.bundle;
-  fetchBundle: () => void;
+  fetchBundle: (id: string) => Object;
   module: Module;
-  setError: (error: ?{ message: string; line: number }) => void;
+  setError: (id: string, error: ?{ message: string; line: number }) => void;
 };
 
 type State = {
@@ -53,6 +53,18 @@ export default class Preview extends React.PureComponent {
       frameInitialized: false,
     };
   }
+
+  fetchBundle = () => {
+    const { module, fetchBundle } = this.props;
+    if (this.currentBundler) {
+      this.currentBundler.cancel();
+    }
+    this.currentBundler = fetchBundle(module.sourceId);
+  };
+
+  currentBundler: {
+    cancel: () => void;
+  };
 
   componentDidUpdate(prevProps: Props) {
     if ((prevProps.module.code !== this.props.module.code) && this.state.frameInitialized) {
@@ -81,17 +93,18 @@ export default class Preview extends React.PureComponent {
         this.setError(error);
       } else if (type === 'success') {
         this.setError.cancel();
-        this.props.setError(null); // To reset the debounce, but still quickly remove errors
+        // To reset the debounce, but still quickly remove errors
+        this.props.setError(this.props.module.id, null);
       }
     }
   }
 
   executeCode = () => {
-    const { modules, directories, bundle = {}, fetchBundle, module } = this.props;
+    const { modules, directories, bundle = {}, module } = this.props;
 
     if (bundle.manifest == null) {
       if (!bundle.processing && !bundle.error) {
-        fetchBundle();
+        this.fetchBundle();
       }
       return;
     }
@@ -108,7 +121,7 @@ export default class Preview extends React.PureComponent {
   }
 
   setError = (e: ?{ message: string; line: number }) => {
-    this.props.setError(e);
+    this.props.setError(this.props.module.id, e);
   }
 
   props: Props;

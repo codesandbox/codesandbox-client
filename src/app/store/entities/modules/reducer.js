@@ -20,6 +20,7 @@ const initialState: State = {};
 const moduleReducer = (state: Module, action: Object): ?Module => {
   switch (action.type) {
     case CHANGE_CODE:
+      if (action.code === state.code) return state;
       return {
         ...state,
         code: action.code,

@@ -17,7 +17,7 @@ import 'codemirror/addon/fold/foldcode';
 import 'codemirror/addon/fold/foldgutter';
 import 'codemirror/addon/fold/brace-fold';
 
-import theme from '../../../../../common/theme';
+import theme from '../../../../../../common/theme';
 
 const documentCache = {};
 
@@ -25,7 +25,7 @@ type Props = {
   code: ?string;
   error: ?Object;
   id: string;
-  onChange: (code: string) => void;
+  changeCode: (id: string, code: string) => void;
   saveCode: (id: string) => void;
 };
 
@@ -162,8 +162,8 @@ export default class CodeEditor extends React.PureComponent {
   };
 
   handleChange = (cm: any, change: any) => {
-    if (this.props.onChange && change.origin !== 'setValue') {
-      this.props.onChange(cm.getValue());
+    if (change.origin !== 'setValue') {
+      this.props.changeCode(this.props.id, cm.getValue());
     }
   };
 

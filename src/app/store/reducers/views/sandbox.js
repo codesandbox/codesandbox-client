@@ -3,21 +3,22 @@ import { findIndex } from 'lodash';
 
 import * as actions from '../../actions/views/sandbox';
 
-type Tab = {
-  id: string;
-};
-
 type CustomTab = {
   icon: ?string;
   title: string;
-} & Tab;
+};
 
-type ModuleTab = {
+export type ModuleTab = {
   moduleId: string;
   view: 'EditorPreview';
-} & Tab;
+};
 
-export type Tabs = Array<CustomTab | ModuleTab>;
+export type Tab = {
+  id: string;
+  view: 'EditorPreview';
+} & (CustomTab | ModuleTab);
+
+export type Tabs = Array<Tab>;
 
 export type State = {
   currentTab: ?string;
@@ -64,6 +65,7 @@ export default function sandboxReducer(state: State = initialState, action: any)
         }
         return state.currentTab;
       };
+
       return {
         ...state,
         tabs: newTabs,
