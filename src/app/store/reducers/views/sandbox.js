@@ -1,4 +1,6 @@
 // @flow
+import { findIndex } from 'lodash';
+
 import * as actions from '../../actions/views/sandbox';
 
 type Tab = {
@@ -51,16 +53,20 @@ export default function sandboxReducer(state: State = initialState, action: any)
       };
     }
     case actions.CLOSE_TAB: {
+      const newTabs = state.tabs.filter(t => t.id !== action.id);
       const newCurrentTab = () => {
         if (state.currentTab === action.id) {
-          if (state.tabs.length > 0) return state.tabs[0].id;
+          const oldTabPosition = findIndex(state.tabs, t => t.id === action.id);
+          const newCurrentTabPosition = Math.max(0, oldTabPosition - 1);
+
+          if (newTabs[newCurrentTabPosition]) return newTabs[newCurrentTabPosition].id;
           return null;
         }
         return state.currentTab;
       };
       return {
         ...state,
-        tabs: state.tabs.filter(t => t.id !== action.id),
+        tabs: newTabs,
         currentTab: newCurrentTab(),
       };
     }

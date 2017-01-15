@@ -117,7 +117,6 @@ class Content extends React.PureComponent {
   render() {
     const { modules, view, setTab, closeTab,
       directories, source, module, moduleActions } = this.props;
-    if (!module) return null;
     return (
       <Frame>
         <Tabs
@@ -126,6 +125,7 @@ class Content extends React.PureComponent {
           currentTab={view.currentTab}
           tabs={view.tabs}
         />
+        {module &&
         <FullSize>
           <SplitPane
             onDragStarted={this.startResizing}
@@ -157,11 +157,10 @@ class Content extends React.PureComponent {
               />
             </FullSize>
           </SplitPane>
-        </FullSize>
+        </FullSize>}
       </Frame>
     );
   }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Content);
-
