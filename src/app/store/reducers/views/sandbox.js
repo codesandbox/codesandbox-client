@@ -10,7 +10,7 @@ type CustomTab = {
 
 export type ModuleTab = {
   moduleId: string;
-  view: 'EditorPreview';
+  view: 'EditorPreview' | 'FullPreview';
 };
 
 export type Tab = {
@@ -41,7 +41,7 @@ export default function sandboxReducer(state: State = initialState, action: any)
         // only add tab if it is not yet in the tabs array
         newState.tabs = [
           ...state.tabs,
-          { id, moduleId: action.moduleId, view: 'EditorPreview' },
+          { id, moduleId: action.moduleId, view: action.view },
         ];
       }
 

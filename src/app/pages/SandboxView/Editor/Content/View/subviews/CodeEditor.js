@@ -17,7 +17,7 @@ import 'codemirror/addon/fold/foldcode';
 import 'codemirror/addon/fold/foldgutter';
 import 'codemirror/addon/fold/brace-fold';
 
-import theme from '../../../../../../common/theme';
+import theme from '../../../../../../../common/theme';
 
 const documentCache = {};
 

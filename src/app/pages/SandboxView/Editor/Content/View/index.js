@@ -2,6 +2,7 @@
 import React from 'react';
 
 import EditorPreview from './EditorPreview';
+import FullPreview from './FullPreview';
 import type { Tab } from '../../../../../store/reducers/views/sandbox';
 import type { Sandbox } from '../../../../../store/entities/sandboxes/index';
 
@@ -13,6 +14,7 @@ type Props = {
 
 const VIEW_MAPPING = {
   EditorPreview,
+  FullPreview,
 };
 
 export default ({ tab, sandbox }: Props) => {

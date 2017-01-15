@@ -67,7 +67,9 @@ class Content extends React.PureComponent {
           currentTab={view.currentTab}
           tabs={view.tabs}
         />
-        <View sandbox={sandbox} tab={view.tabs.find(t => t.id === view.currentTab)} />
+        <div>
+          <View sandbox={sandbox} tab={view.tabs.find(t => t.id === view.currentTab)} />
+        </div>
       </Frame>
     );
   }

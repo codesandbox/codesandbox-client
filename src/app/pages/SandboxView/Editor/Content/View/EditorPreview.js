@@ -10,10 +10,10 @@ import moduleEntity from '../../../../../store/entities/modules/';
 import sourceEntity from '../../../../../store/entities/sources/';
 import type { ModuleTab } from '../../../../../store/reducers/views/sandbox';
 
-import CodeEditor from './CodeEditor';
-import Preview from './Preview';
+import CodeEditor from './subviews/CodeEditor';
+import Preview from './subviews/Preview';
 import { directoriesBySandboxSelector } from '../../../../../store/entities/directories/selector';
-import { modulesBySandboxSelector, currentModuleSelector, singleModuleSelector } from '../../../../../store/entities/modules/selector';
+import { modulesBySandboxSelector, singleModuleSelector } from '../../../../../store/entities/modules/selector';
 import { singleSourceSelector } from '../../../../../store/entities/sources/selector';
 
 import type { Sandbox } from '../../../../../store/entities/sandboxes/index';
@@ -96,7 +96,6 @@ class EditorPreview extends React.PureComponent {
               modules={modules}
               directories={directories}
               setError={moduleActions.setError}
-              npmDependencies={source.npmDependencies}
             />
           </FullSize>
         </SplitPane>

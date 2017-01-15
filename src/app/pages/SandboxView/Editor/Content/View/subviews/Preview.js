@@ -4,9 +4,9 @@ import styled from 'styled-components';
 
 import { debounce } from 'lodash';
 
-import type { Module } from '../../../../../store/entities/modules/';
-import type { Source } from '../../../../../store/entities/sources/';
-import type { Directory } from '../../../../../store/entities/directories/index';
+import type { Module } from '../../../../../../store/entities/modules/';
+import type { Source } from '../../../../../../store/entities/sources/';
+import type { Directory } from '../../../../../../store/entities/directories/index';
 
 const Container = styled.div`
   position: absolute;
@@ -132,6 +132,7 @@ export default class Preview extends React.PureComponent {
 
   render() {
     const { bundle = {} } = this.props;
+
     const location = document.location;
     if (bundle.processing) {
       return (
@@ -140,6 +141,7 @@ export default class Preview extends React.PureComponent {
         </Container>
       );
     }
+
     return (
       <Container>
         <StyledFrame
