@@ -4,9 +4,9 @@ import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import DotIcon from 'react-icons/lib/go/primitive-dot';
 
 import WorkspaceTitle from '../WorkspaceTitle';
+import WorkspaceSubtitle from '../WorkspaceSubtitle';
 import versionEntity from '../../../../../store/entities/versions';
 import type { Sandbox } from '../../../../../store/entities/sandboxes/index';
 import type { Version } from '../../../../../store/entities/versions/index';
@@ -29,19 +29,10 @@ const Description = styled.p`
   font-size: .875rem;
 `;
 
-const VersionTitle = styled.span`
-  padding-left: 0.5rem;
-  vertical-align: middle;
-`;
-
 const VersionDate = styled.div`
   position: absolute;
   right: 1rem;
   color: ${props => props.theme.background.lighten(2).clearer(0.5)};
-`;
-
-const Icon = styled.span`
-  vertical-align: middle;
 `;
 
 const mapDispatchToProps = dispatch => ({
@@ -71,10 +62,10 @@ class Versions extends React.PureComponent {
 
         <PublishFields publishVersion={this.publishVersion} />
 
+        <WorkspaceSubtitle>Published versions</WorkspaceSubtitle>
         {versions.map(v => (
           <EntryContainer key={v.version}>
-            <Icon><DotIcon /></Icon>
-            <VersionTitle>{v.version}</VersionTitle>
+            <span>{v.version}</span>
             <VersionDate>{moment(v.insertedAt).format('lll')}</VersionDate>
           </EntryContainer>
         ))}

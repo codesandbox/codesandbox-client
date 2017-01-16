@@ -7,6 +7,7 @@ import Button from '../../../../../components/buttons/Button';
 import Relative from '../../../../../components/Relative';
 
 const Inputs = styled.div`
+  margin-bottom: 1rem;
   input {
     margin: 0;
     text-align: center;

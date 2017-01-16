@@ -29,7 +29,8 @@ export default (schema) => {
       try {
         await dispatch(entityActions.create({ version }, url));
       } catch (e) {
-        if (e.response && e.response.data.errors.version) {
+        if (e.response && e.response.data && e.response.data.errors
+          && e.response.data.errors.version) {
           const errorMessage = e.response.data.errors.version;
           dispatch(notificationActions.addNotification('Error while creating version', errorMessage, 'error'));
         } else {

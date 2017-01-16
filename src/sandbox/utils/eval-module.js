@@ -39,15 +39,16 @@ const evalModule = (
     if (depth > MAX_DEPTH) {
       throw new Error(`Exceeded the maximum require depth of ${MAX_DEPTH}.`);
     }
-    const dependencyId = manifest[path] || manifest[`${path}.js`];
-    if (dependencyId) return window.dependencies(dependencyId.id);
+    const dependencyManifest = manifest[path] || manifest[`${path}.js`];
+    if (dependencyManifest) return window.dependencies(dependencyManifest.id);
 
     const module = resolveModule(path, modules, directories, mainModule.directoryId);
     if (mainModule === module) throw new Error(`${mainModule.title} is importing itself`);
     if (!module) throw new Error(`Cannot find module in path: ${path}`);
 
     // Check if this module has been evaluated before, if so return that
-    return moduleCache.get(module.id) || evalModule(module, modules, directories, manifest, depth + 1);
+    return moduleCache.get(module.id) ||
+      evalModule(module, modules, directories, manifest, depth + 1);
   };
 
   try {
