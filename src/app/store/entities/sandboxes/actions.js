@@ -18,7 +18,7 @@ export const FORK_SANDBOX_FAILURE = 'FORK_SANDBOX_FAILURE';
 
 export const CLEAR_SOURCE_DEPENDENCIES = 'CLEAR_SOURCE_DEPENDENCIES';
 
-export default (schema: Schema) => {
+export default (schema: typeof Schema) => {
   const entityActions = createEntityActions(schema);
   const customActions = {
     getByUserAndSlug: (username: string, slug: string) => async (dispatch) => {

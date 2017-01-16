@@ -53,6 +53,8 @@ export default (schema) => {
           if (e.response && e.response.data.errors.title) {
             const errorMessage = e.response.data.errors.title;
             dispatch(notificationActions.addNotification('Error while moving to directory', errorMessage, 'error'));
+          } else {
+            dispatch(notificationActions.addNotification('Error while moving to directory', '', 'error'));
           }
         }
       }

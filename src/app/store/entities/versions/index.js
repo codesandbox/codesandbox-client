@@ -10,6 +10,7 @@ export type Version = {
   id: string;
   version: string;
   insertedAt: string;
+  sandbox: string;
 };
 
 const actions = createActions(schema);

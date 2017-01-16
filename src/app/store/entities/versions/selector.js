@@ -1,14 +1,14 @@
-import { sortBy } from 'lodash';
+import { sortBy, values } from 'lodash';
 import { createSelector } from 'reselect';
 
 export const allVersionsSelector = state => state.entities.versions;
 
 export const versionsBySandboxSelector = createSelector(
-  (_, props) => props.sandbox.versions,
+  (_, props) => props.sandboxId,
   allVersionsSelector,
-  (versionIds, versions) => (
+  (sandboxId, versions) => (
     sortBy(
-      versionIds.map(v => versions[v]),
+      values(versions).filter(v => v.sandbox === sandboxId),
       v => v.version,
     ).reverse()
   ),

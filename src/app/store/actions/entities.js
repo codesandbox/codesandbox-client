@@ -50,12 +50,12 @@ export default (schema: typeof Schema) => {
       return dispatch({ type: keys.success, id, ...normalizedResult });
     },
 
-    create: (data: Object) => async (dispatch: Function) => {
+    create: (data: Object, customEndpoint: ?string) => async (dispatch: Function) => {
       const keys = actionKeys.create;
       dispatch({ type: keys.request, data });
 
       try {
-        const response = await callApi(`${key}/`, {
+        const response = await callApi(customEndpoint || `${key}/`, {
           method: 'POST',
           body: { data },
         });
