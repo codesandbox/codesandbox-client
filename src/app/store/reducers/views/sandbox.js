@@ -72,6 +72,8 @@ export default function sandboxReducer(state: State = initialState, action: any)
         currentTab: newCurrentTab(),
       };
     }
+    case actions.RESET_SANDBOX_VIEW:
+      return initialState;
     default:
       return state;
   }

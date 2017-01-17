@@ -12,6 +12,7 @@ import type { Sandbox } from '../../store/entities/sandboxes/';
 
 import Editor from './Editor';
 import Fork from './Fork';
+import sandboxViewActionCreators from '../../store/actions/views/sandbox';
 
 type Props = {
   sandbox: ?Sandbox;
@@ -21,6 +22,7 @@ type Props = {
     slug: ?string;
     id: ?string;
   };
+  sandboxViewActions: sandboxViewActionCreators,
 };
 type State = {
   notFound: boolean;
@@ -38,7 +40,7 @@ const NotFound = styled.h1`
   margin: auto;
   text-align: center;
   color: white;
-  font-size: 4rem;
+  font-size: 3rem;
   vertical-align: middle;
 `;
 
@@ -47,6 +49,7 @@ const mapStateToProps = (state, props) => ({
 });
 const mapDispatchToProps = dispatch => ({
   sandboxActions: bindActionCreators(sandboxEntity.actions, dispatch),
+  sandboxViewActions: bindActionCreators(sandboxViewActionCreators, dispatch),
 });
 class SandboxPage extends React.PureComponent {
   componentDidMount() {
@@ -67,6 +70,12 @@ class SandboxPage extends React.PureComponent {
     ) {
       this.setState({ notFound: false });
     }
+
+    const { sandbox } = nextProps;
+    // Reset sandbox view info if sandbox changes
+    if (!sandbox || !this.props.sandbox || sandbox.id !== this.props.sandbox.id) {
+      this.props.sandboxViewActions.reset();
+    }
   }
 
   handleNotFound = (e) => {
@@ -84,7 +93,7 @@ class SandboxPage extends React.PureComponent {
     const { sandbox, sandboxActions } = this.props;
 
     if (this.state.notFound) {
-      return <NotFound>404 Not Found!</NotFound>;
+      return <NotFound>We could not find the page you{"'"}re looking for :(</NotFound>;
     }
     if (!sandbox) return null;
     return (

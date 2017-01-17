@@ -60,7 +60,7 @@ class Versions extends React.PureComponent {
           for others to use as a dependency.
         </Description>
 
-        <PublishFields publishVersion={this.publishVersion} />
+        <PublishFields versions={versions} publishVersion={this.publishVersion} />
 
         <WorkspaceSubtitle>Published versions</WorkspaceSubtitle>
         {versions.map(v => (

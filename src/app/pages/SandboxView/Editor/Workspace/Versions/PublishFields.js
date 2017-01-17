@@ -5,9 +5,11 @@ import styled from 'styled-components';
 import WorkspaceInputContainer from '../WorkspaceInputContainer';
 import Button from '../../../../../components/buttons/Button';
 import Relative from '../../../../../components/Relative';
+import type { Version } from '../../../../../store/entities/versions/index';
 
 const Inputs = styled.div`
   margin-bottom: 1rem;
+  padding: 0 0.25rem;
   input {
     margin: 0;
     text-align: center;
@@ -24,15 +26,25 @@ const Dot = styled.div`
   bottom: 0.4rem;
 `;
 
+const ErrorMessage = styled.div`
+  margin: 1rem;
+  font-size: .875rem;
+  color: ${props => props.theme.red};
+`;
+
 const initialState = {
   major: '',
   minor: '',
   patch: '',
+  errorMessage: '',
 };
 
 type Props = {
   publishVersion: (version: string) => Promise<>;
+  versions: Array<Version>;
 };
+
+const DUPLICATE_VERSION_INFO = 'You cannot publish a version that already exists.';
 
 export default class PublishFields extends React.PureComponent {
   props: Props;
@@ -42,6 +54,15 @@ export default class PublishFields extends React.PureComponent {
   major: ?HTMLInputElement;
   minor: ?HTMLInputElement;
   patch: ?HTMLInputElement;
+
+  getVersion = ({
+    major = this.state.major,
+    minor = this.state.minor,
+    patch = this.state.patch,
+  }: { major?: string, minor?: string, patch?: string } = {}) => `${major}.${minor}.${patch}`;
+
+  isDuplicateVersion = (version: string = this.getVersion()) =>
+    !!this.props.versions.find(v => v.version === version);
 
   handleMajorKey = (e: KeyboardEvent) => {
     if (e.keyCode === 190) {
@@ -78,22 +99,46 @@ export default class PublishFields extends React.PureComponent {
   };
 
   publishVersion = async () => {
-    const { major, minor, patch } = this.state;
-
-    const version = `${major}.${minor}.${patch}`;
+    const version = this.getVersion();
     await this.props.publishVersion(version);
 
     this.setState(initialState);
   };
 
+  setStatus = (versionInfo: { major?: string, minor?: string, patch?: string }) => {
+    if (this.isDuplicateVersion(this.getVersion(versionInfo))) {
+      this.setState({ errorMessage: DUPLICATE_VERSION_INFO });
+    } else {
+      this.setState({ errorMessage: '' });
+    }
+  }
+
   isValid = (n: string) => n === '' || /^[0-9]+$/.test(n);
 
-  setMajor = e => this.isValid(e.target.value) && this.setState({ major: e.target.value });
-  setMinor = e => this.isValid(e.target.value) && this.setState({ minor: e.target.value });
-  setPatch = e => this.isValid(e.target.value) && this.setState({ patch: e.target.value });
+  setMajor = (e) => {
+    if (this.isValid(e.target.value)) {
+      this.setState({ major: e.target.value });
+      this.setStatus({ major: e.target.value });
+    }
+  };
+  setMinor = (e) => {
+    if (this.isValid(e.target.value)) {
+      this.setState({ minor: e.target.value });
+      this.setStatus({ minor: e.target.value });
+    }
+  };
+  setPatch = (e) => {
+    if (this.isValid(e.target.value)) {
+      this.setState({ patch: e.target.value });
+      this.setStatus({ patch: e.target.value });
+    }
+  };
 
   render() {
     const { major, minor, patch } = this.state;
+
+    const duplicateVersion = this.isDuplicateVersion();
+
     return (
       <Inputs>
         <WorkspaceInputContainer>
@@ -129,12 +174,13 @@ export default class PublishFields extends React.PureComponent {
           <Button
             small
             style={{ flex: 4, marginLeft: '0.25rem' }}
-            disabled={!(major && minor && patch)}
+            disabled={!(major && minor && patch) || duplicateVersion}
             onClick={this.publishVersion}
           >
             Publish
           </Button>
         </WorkspaceInputContainer>
+        <ErrorMessage>{this.state.errorMessage}</ErrorMessage>
       </Inputs>
     );
   }
