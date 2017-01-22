@@ -1,13 +1,11 @@
 import delay from './utils/delay';
 import buildError from './utils/error-message-builder';
-import evalModule from './utils/eval-module';
-import ReactMode from './modes/ReactMode';
+import evalModule from './eval';
+import { getBoilerplates, evalBoilerplates, findBoilerplate } from './boilerplates';
 
 let errorHappened = false;
-let lastMode = null;
-const rootElement = document.createElement('div');
+let fetching = false;
 let url = null;
-document.body.appendChild(rootElement);
 
 async function addDependencyBundle() {
   const script = document.createElement('script');
@@ -21,34 +19,30 @@ async function addDependencyBundle() {
 }
 
 window.addEventListener('message', async (message) => {
-  const { modules, directories, module, manifest, url: newUrl } = message.data;
+  const { modules, directories, boilerplates, module, manifest, url: newUrl } = message.data;
+
+  if (fetching) return;
 
   if (url == null || url !== newUrl) {
+    fetching = true;
     url = newUrl;
     await addDependencyBundle();
+    fetching = false;
+    window.parent.postMessage('Ready!', '*');
+    return;
+  }
+
+  if (boilerplates.length !== 0 && getBoilerplates().length === 0 && manifest != null) {
+    evalBoilerplates(boilerplates, modules, directories, manifest);
   }
 
   try {
+    document.body.innerHTML = '';
+    document.head.innerHTML = '';
     const compiledModule = evalModule(module, modules, directories, manifest);
-    const mode = module.type; // eslint-disable-line no-underscore-dangle
 
-    if (lastMode == null || lastMode.type !== mode) {
-      while (rootElement.hasChildNodes()) {
-        rootElement.removeChild(rootElement.lastChild);
-      }
-    }
-
-    if (mode === 'react') {
-      if (lastMode == null || lastMode.type !== 'react') {
-        // Use the functions of the dependencies
-        const React = window.dependencies(manifest.react.id);
-        const ReactDOM = window.dependencies(manifest['react-dom'].id);
-        lastMode = new ReactMode(rootElement, React, ReactDOM);
-      }
-      lastMode.render(compiledModule.default, !!errorHappened);
-    } else {
-      lastMode = null;
-    }
+    const boilerplate = findBoilerplate(module);
+    boilerplate.module.default(compiledModule);
 
     errorHappened = false;
     window.parent.postMessage({

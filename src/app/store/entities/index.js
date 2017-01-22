@@ -1,6 +1,7 @@
 // @flow
 import { Schema } from 'normalizr';
 
+import boilerplates from './boilerplates';
 import directories from './directories/';
 import modules from './modules/';
 import sandboxes from './sandboxes/';
@@ -16,6 +17,7 @@ export type Entity = {
 }
 
 export default {
+  boilerplates,
   directories,
   modules,
   sandboxes,

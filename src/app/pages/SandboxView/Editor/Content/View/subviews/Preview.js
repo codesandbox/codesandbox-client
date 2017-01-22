@@ -7,6 +7,7 @@ import { debounce } from 'lodash';
 import type { Module } from '../../../../../../store/entities/modules/';
 import type { Source } from '../../../../../../store/entities/sources/';
 import type { Directory } from '../../../../../../store/entities/directories/index';
+import type { Boilerplate } from '../../../../../../store/entities/boilerplates';
 
 const Container = styled.div`
   position: absolute;
@@ -34,6 +35,7 @@ const LoadingDepText = styled.div`
 type Props = {
   modules: Array<Module>;
   directories: Array<Directory>;
+  boilerplates: Array<Boilerplate>;
   bundle: typeof Source.bundle;
   fetchBundle: (id: string) => Object;
   module: Module;
@@ -100,7 +102,7 @@ export default class Preview extends React.PureComponent {
   }
 
   executeCode = () => {
-    const { modules, directories, bundle = {}, module } = this.props;
+    const { modules, directories, boilerplates, bundle = {}, module } = this.props;
 
     if (bundle.manifest == null) {
       if (!bundle.processing && !bundle.error) {
@@ -111,6 +113,7 @@ export default class Preview extends React.PureComponent {
 
     requestAnimationFrame(() => {
       document.getElementById('sandbox').contentWindow.postMessage({
+        boilerplates,
         module,
         modules,
         directories,
@@ -145,7 +148,7 @@ export default class Preview extends React.PureComponent {
     return (
       <Container>
         <StyledFrame
-          sandbox="allow-scripts allow-pointer-lock allow-same-origin allow-popups allow-forms"
+          sandbox="allow-scripts allow-modals allow-pointer-lock allow-same-origin allow-popups allow-forms"
           src={`${location.protocol}//sandbox.${location.host}`}
           id="sandbox"
         />

@@ -7,7 +7,7 @@ export const validateTitle = (
   siblings: Array<Module | Sandbox>,
 ) => {
   if (title.length === 0) return 'title cannot be empty';
-  if (!/^[0-9a-zA-Z\-_]+$/.test(title)) {
+  if (!/^[0-9a-zA-Z\-_.]+$/.test(title)) {
     // It has whitespaces
     return 'Title cannot have whitespaces or special characters';
   }

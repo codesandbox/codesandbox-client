@@ -29,6 +29,10 @@ const TabContainer = styled.div`
     &:hover {
       background-color: ${props.theme.background.darken(0.1)()};
       color: white;
+
+      div {
+        visibility: visible;
+      }
     }
     `
   )}
@@ -36,6 +40,7 @@ const TabContainer = styled.div`
 
 const CloseButton = styled.div`
   display: inline-block;
+  visibility: ${props => (props.active ? 'visible' : 'hidden')};
   position: absolute;
   right: 0;
   line-height: 1;
@@ -69,7 +74,7 @@ export default class Tab extends React.Component {
     return (
       <TabContainer onClick={this.setTab} active={active}>
         {title}
-        <CloseButton onClick={this.closeTab}><CrossIcon /></CloseButton>
+        <CloseButton onClick={this.closeTab} active={active}><CrossIcon /></CloseButton>
       </TabContainer>
     );
   }

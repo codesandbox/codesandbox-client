@@ -1,0 +1,41 @@
+// @flow
+import type { Module } from '../../app/store/entities/modules/';
+
+import type { Directory } from '../../app/store/entities/directories/index';
+
+import evalJS from './js';
+import evalHTML from './html';
+import evalCSS from './css';
+
+const MAX_DEPTH = 20;
+
+function doEval(mainModule, modules, directories, manifest, depth) {
+  const html = /\.html$/;
+  const css = /\.css$/;
+
+  if (html.test(mainModule.title)) {
+    return evalHTML(mainModule, modules, directories, manifest, depth);
+  }
+
+  if (css.test(mainModule.title)) {
+    return evalCSS(mainModule, modules, directories, manifest, depth);
+  }
+
+  return evalJS(mainModule, modules, directories, manifest, depth);
+}
+
+const evalModule = (
+  mainModule: Module,
+  modules: Array<Module>,
+  directories: Array<Directory>,
+  manifest: Object,
+  depth: number = 0,
+) => {
+  if (depth > MAX_DEPTH) {
+    throw new Error(`Exceeded the maximum require depth of ${MAX_DEPTH}.`);
+  }
+
+  return doEval(mainModule, modules, directories, manifest, depth);
+};
+
+export default evalModule;

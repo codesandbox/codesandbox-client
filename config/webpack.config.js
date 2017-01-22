@@ -66,7 +66,7 @@ const config = {
       },
       // Used to remove strict mode from eval:
       {
-        test: /eval-component\.js$/,
+        test: /eval\/js\.js$/,
         include: paths.src,
         loader: 'babel-loader?cacheDirectory',
         options: (() => {

@@ -12,7 +12,7 @@ export type Module = {
   title: string;
   code: string;
   sourceId: string;
-  directoryId: string;
+  directoryId: ?string;
   type: string;
   error?: ?{
     message: string;

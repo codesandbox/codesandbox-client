@@ -4,6 +4,7 @@ import { decamelizeKeys } from 'humps';
 
 import moduleEntity from '../modules/';
 import directoryEntity from '../directories/';
+import boilerplateEntity from '../boilerplates/';
 
 import createEntity from '../create-entity';
 import actions from './actions';
@@ -13,6 +14,7 @@ const schema = new Schema('sources');
 schema.define({
   modules: arrayOf(moduleEntity.schema),
   directories: arrayOf(directoryEntity.schema),
+  boilerplates: arrayOf(boilerplateEntity.schema),
 });
 
 const afterReceiveReducer = (source) => {
@@ -35,8 +37,9 @@ export type Source = {
     hash?: string;
     url?: string;
     error?: string;
-    processing: boolean;
-  }
+    processing?: boolean;
+  },
+  boilerPlates: Array<string>;
 };
 
 export default createEntity(schema, { actions, reducer, afterReceiveReducer });
