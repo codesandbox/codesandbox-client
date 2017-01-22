@@ -1,5 +1,6 @@
 /* @flow */
 import React from 'react';
+import { Redirect } from 'react-router';
 import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -112,6 +113,7 @@ type State = {
   selectedPreset: string;
   sandboxTitle: string;
   creating: boolean;
+  redirect: ?string;
 };
 const mapDispatchToProps = dispatch => ({
   moduleActions: bindActionCreators(moduleEntity.actions, dispatch),
@@ -130,6 +132,7 @@ class Create extends React.PureComponent {
     selectedPreset: '',
     sandboxTitle: '',
     creating: false,
+    redirect: null,
   };
 
   updateTitle = (event: KeyboardEvent) => {
@@ -158,15 +161,19 @@ class Create extends React.PureComponent {
     if (result instanceof Error) {
       this.setState({ creating: false });
     } else {
-      const username = result.author ? result.author.username : null;
-      const url = editModuleUrl({ ...result, author: username });
-      this.context.router.transitionTo(url);
+      const username = result.entity.author ? result.entity.author.username : null;
+      const url = editModuleUrl({ ...result.entity, author: username });
+      this.setState({ redirect: url });
     }
   };
 
   render() {
-    const { presets, sandboxTitle, selectedPreset, creating } = this.state;
+    const { presets, sandboxTitle, selectedPreset, creating, redirect } = this.state;
     if (presets.length === 0) return <SubTitle>Loading...</SubTitle>;
+
+    if (redirect) {
+      return <Redirect to={redirect} />;
+    }
 
     if (creating) {
       return (

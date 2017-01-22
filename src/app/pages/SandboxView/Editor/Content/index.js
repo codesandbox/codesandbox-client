@@ -6,12 +6,13 @@ import { connect } from 'react-redux';
 
 import type { Module } from '../../../../store/entities/modules';
 import type { Sandbox } from '../../../../store/entities/sandboxes';
-import type { State as ViewState } from '../../../../store/reducers/views/sandbox';
+import type { SandboxState as ViewState } from '../../../../store/reducers/views/sandbox';
 
 import Tabs from './Tabs';
 import View from './View';
 import viewActions from '../../../../store/actions/views/sandbox';
 import { modulesBySandboxSelector } from '../../../../store/entities/modules/selector';
+import { sandboxViewSelector } from '../../../../store/selectors/views/sandbox-selector';
 
 const Frame = styled.div`
   display: flex;
@@ -33,7 +34,7 @@ type State = {
 };
 
 const mapStateToProps = (state, props) => ({
-  view: state.views.sandbox,
+  view: sandboxViewSelector(state),
   modules: modulesBySandboxSelector(state, { id: props.sandbox.id }),
 });
 const mapDispatchToProps = dispatch => ({

@@ -1,11 +1,16 @@
 import { createSelector } from 'reselect';
 
-export const sandboxViewSelector = state => state.views.sandbox;
+export const currentSandboxIdSelector = state => state.views.sandbox.currentSandboxId;
+
+export const sandboxViewSelector = state => (
+  state.views.sandbox[state.views.sandbox.currentSandboxId] || { tabs: [], currentTab: null }
+);
 
 export const tabsSelector = createSelector(
   sandboxViewSelector,
-  view => view.tabs,
+  view => view.tabs || [],
 );
+
 export const currentTabIdSelector = createSelector(
   sandboxViewSelector,
   view => view.currentTab,

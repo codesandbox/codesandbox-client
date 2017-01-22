@@ -71,7 +71,7 @@ class EditorPreview extends React.PureComponent {
     const { source, modules, directories, boilerplates,
       moduleActions, module, sourceActions } = this.props;
 
-    if (module == null) return null;
+    if (module == null || source == null) return null;
     return (
       <FullSize>
         <SplitPane

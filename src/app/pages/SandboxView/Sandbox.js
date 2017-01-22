@@ -7,6 +7,7 @@ import { Match } from 'react-router';
 
 import sandboxEntity from '../../store/entities/sandboxes';
 import { singleSandboxSelector } from '../../store/entities/sandboxes/selector';
+import { currentSandboxIdSelector } from '../../store/selectors/views/sandbox-selector';
 
 import type { Sandbox } from '../../store/entities/sandboxes/';
 
@@ -22,7 +23,8 @@ type Props = {
     slug: ?string;
     id: ?string;
   };
-  sandboxViewActions: sandboxViewActionCreators,
+  sandboxViewActions: sandboxViewActionCreators;
+  currentSandboxId: ?string;
 };
 type State = {
   notFound: boolean;
@@ -46,6 +48,7 @@ const NotFound = styled.h1`
 
 const mapStateToProps = (state, props) => ({
   sandbox: singleSandboxSelector(state, props.params),
+  currentSandboxId: currentSandboxIdSelector(state),
 });
 const mapDispatchToProps = dispatch => ({
   sandboxActions: bindActionCreators(sandboxEntity.actions, dispatch),
@@ -70,11 +73,10 @@ class SandboxPage extends React.PureComponent {
     ) {
       this.setState({ notFound: false });
     }
-
     const { sandbox } = nextProps;
     // Reset sandbox view info if sandbox changes
-    if (!sandbox || !this.props.sandbox || sandbox.id !== this.props.sandbox.id) {
-      this.props.sandboxViewActions.reset();
+    if (!this.props.sandbox || (sandbox && sandbox.id !== this.props.currentSandboxId)) {
+      this.props.sandboxViewActions.setCurrentSandbox(sandbox.id);
     }
   }
 

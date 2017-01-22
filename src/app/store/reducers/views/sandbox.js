@@ -20,17 +20,26 @@ export type Tab = {
 
 export type Tabs = Array<Tab>;
 
-export type State = {
+export type SandboxState = {
   currentTab: ?string;
   tabs: Tabs;
 };
 
-const initialState = {
-  currentTab: null,
-  tabs: [],
+export type State = {
+  [sandboxId: string]: SandboxState;
+  currentSandboxId: ?string;
 };
 
-export default function sandboxReducer(state: State = initialState, action: any) {
+const initialState = {
+  currentSandboxId: null,
+};
+
+const initialSandboxState: SandboxState = {
+  tabs: [],
+  currentTab: null,
+};
+
+function singleSandboxReducer(state: SandboxState = initialSandboxState, action: any) {
   switch (action.type) {
     case actions.OPEN_MODULE_TAB: {
       const id = `module${action.moduleId}`;
@@ -74,6 +83,26 @@ export default function sandboxReducer(state: State = initialState, action: any)
     }
     case actions.RESET_SANDBOX_VIEW:
       return initialState;
+    default:
+      return initialSandboxState;
+  }
+}
+
+export default function sandboxReducer(state: State = initialState, action: any) {
+  switch (action.type) {
+    case actions.OPEN_MODULE_TAB:
+    case actions.SET_TAB:
+    case actions.CLOSE_TAB:
+    case actions.RESET_SANDBOX_VIEW:
+      if (state.currentSandboxId == null) {
+        return state;
+      }
+      return {
+        ...state,
+        [state.currentSandboxId]: singleSandboxReducer(state[state.currentSandboxId], action),
+      };
+    case actions.SET_CURRENT_SANDBOX:
+      return { ...state, currentSandboxId: action.sandboxId };
     default:
       return state;
   }

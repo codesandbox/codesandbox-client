@@ -59,11 +59,10 @@ export default (schema: typeof Schema) => {
           method: 'POST',
           body: { data },
         });
-        const entity = response.data;
+        const normalizedResult = processEntity(schema, response.data);
+        dispatch({ type: keys.success, id: response.data.id, ...normalizedResult });
 
-        dispatch({ type: keys.success, entity });
-
-        return entity;
+        return normalizedResult;
       } catch (e) {
         dispatch({ type: keys.failure, error: e });
         console.error(e);
