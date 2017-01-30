@@ -54,6 +54,8 @@ const config = {
 
   target: 'web',
 
+  mainFields: ['browser', 'module', 'jsnext:main', 'main'],
+
   output: getOutput(),
 
   module: {
