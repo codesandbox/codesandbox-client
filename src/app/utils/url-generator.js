@@ -1,3 +1,5 @@
+export const host = () => (process.env.NODE_ENV === 'production' ? 'codesandbox.io' : 'codesandbox.dev');
+
 export const sandboxUrl = sandbox => (
   sandbox.author ? `/${sandbox.author}/${sandbox.slug}`
   : `/anonymous/${sandbox.slug}`

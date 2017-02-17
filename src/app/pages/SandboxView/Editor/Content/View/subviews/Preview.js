@@ -8,6 +8,7 @@ import type { Module } from '../../../../../../store/entities/modules/';
 import type { Source } from '../../../../../../store/entities/sources/';
 import type { Directory } from '../../../../../../store/entities/directories/index';
 import type { Boilerplate } from '../../../../../../store/entities/boilerplates';
+import { host } from '../../../../../../utils/url-generator';
 
 const Container = styled.div`
   position: absolute;
@@ -149,7 +150,7 @@ export default class Preview extends React.PureComponent {
       <Container>
         <StyledFrame
           sandbox="allow-scripts allow-modals allow-pointer-lock allow-same-origin allow-popups allow-forms"
-          src={`${location.protocol}//sandbox.${location.host}`}
+          src={`${location.protocol}//sandbox.${host()}`}
           id="sandbox"
         />
       </Container>
