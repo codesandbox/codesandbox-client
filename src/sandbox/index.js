@@ -1,6 +1,6 @@
 import delay from './utils/delay';
 import buildError from './utils/error-message-builder';
-import evalModule from './eval';
+import evalModule, { deleteCache } from './eval';
 import { getBoilerplates, evalBoilerplates, findBoilerplate } from './boilerplates';
 
 let errorHappened = false;
@@ -11,15 +11,23 @@ async function addDependencyBundle() {
   const script = document.createElement('script');
   script.setAttribute('src', url);
   script.setAttribute('async', false);
-  document.body.appendChild(script);
+  document.head.appendChild(script);
 
   while (window.dependencies == null) {
     await delay(100);
   }
 }
 
-window.addEventListener('message', async (message) => {
-  const { modules, directories, boilerplates, module, manifest, url: newUrl } = message.data;
+async function compile(message) {
+  const {
+    modules,
+    directories,
+    boilerplates,
+    module,
+    manifest,
+    url: newUrl,
+    changedModule,
+  } = message.data;
 
   if (fetching) return;
 
@@ -38,7 +46,7 @@ window.addEventListener('message', async (message) => {
 
   try {
     document.body.innerHTML = '';
-    document.head.innerHTML = '';
+    deleteCache(changedModule);
     const compiledModule = evalModule(module, modules, directories, manifest);
 
     const boilerplate = findBoilerplate(module);
@@ -56,6 +64,39 @@ window.addEventListener('message', async (message) => {
       error: buildError(e),
     }, '*');
   }
+}
+
+window.addEventListener('message', async (message) => {
+  if (message.data.type === 'compile') {
+    await compile(message);
+  } else if (message.data.type === 'urlback') {
+    history.back();
+  } else if (message.data.type === 'urlforward') {
+    history.forward();
+  }
 });
 
 window.parent.postMessage('Ready!', '*');
+
+function setupHistoryListeners() {
+  const pushState = window.history.pushState;
+  window.history.pushState = function (state) {
+    if (typeof history.onpushstate === 'function') {
+      window.history.onpushstate({ state });
+    }
+        // ... whatever else you want to do
+        // maybe call onhashchange e.handler
+    return pushState.apply(window.history, arguments);
+  };
+
+  history.onpushstate = (e) => {
+    setTimeout(() => {
+      window.parent.postMessage({
+        type: 'urlchange',
+        url: document.location.pathname + location.search,
+      }, '*');
+    });
+  };
+}
+
+setupHistoryListeners();

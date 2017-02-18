@@ -6,6 +6,7 @@ const styles = props => `
   transition: 0.3s ease all;
   text-transform: uppercase;
   text-decoration: none;
+  line-height: 1;
   background-color: ${props.disabled ? props.theme.background2.darken(0.1)() : props.theme.secondary()};
   color: ${props.disabled ? props.theme.background2.lighten(1.5)() : 'white'};
   ${(() => {

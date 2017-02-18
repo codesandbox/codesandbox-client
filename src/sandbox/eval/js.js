@@ -4,6 +4,10 @@ import resolveModule from '../utils/resolve-module';
 
 const moduleCache = new Map();
 
+export function deleteCache(module) {
+  moduleCache.delete(module.id);
+}
+
 const compileCode = (code: string = '', moduleName: string = 'unknown') => {
   try {
     return transform(code, {

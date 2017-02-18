@@ -13,7 +13,7 @@ import type { ModuleTab } from '../../../../../store/reducers/views/sandbox';
 import CodeEditor from './subviews/CodeEditor';
 import Preview from './subviews/Preview';
 import { directoriesBySandboxSelector } from '../../../../../store/entities/directories/selector';
-import { modulesBySandboxSelector, singleModuleSelector } from '../../../../../store/entities/modules/selector';
+import { modulesBySandboxSelector, singleModuleSelector, modulePathSelector } from '../../../../../store/entities/modules/selector';
 import { singleSourceSelector } from '../../../../../store/entities/sources/selector';
 
 import type { Sandbox } from '../../../../../store/entities/sandboxes/index';
@@ -33,6 +33,7 @@ type Props = {
   sandbox: ?Sandbox;
   moduleActions: moduleEntity.actions;
   sourceActions: sourceEntity.actions;
+  modulePath: ?string;
 };
 
 type State = {
@@ -51,6 +52,7 @@ const mapStateToProps = (state, props) => ({
   boilerplates: boilerplatesBySandboxSelector(state, { id: props.sandbox.id }),
   module: singleModuleSelector(state, { id: props.tab ? props.tab.moduleId : null }),
   source: singleSourceSelector(state, { id: props.sandbox.source }),
+  modulePath: modulePathSelector(state, { id: props.tab ? props.tab.moduleId : null }),
 });
 const mapDispatchToProps = dispatch => ({
   moduleActions: bindActionCreators(moduleEntity.actions, dispatch),
@@ -67,9 +69,17 @@ class EditorPreview extends React.PureComponent {
   startResizing = () => this.setState({ resizing: true });
   stopResizing = () => this.setState({ resizing: false });
 
+  saveCode = () => {
+    const { module, moduleActions } = this.props;
+
+    if (module == null) return;
+
+    moduleActions.saveCode(module.id);
+  };
+
   render() {
     const { source, modules, directories, boilerplates,
-      moduleActions, module, sourceActions } = this.props;
+      moduleActions, module, sourceActions, modulePath } = this.props;
 
     if (module == null || source == null) return null;
     return (
@@ -81,7 +91,7 @@ class EditorPreview extends React.PureComponent {
           defaultSize="50%"
           minSize={360}
           primary="second"
-          paneStyle={{ height: 'calc(100% - 35px)' }}
+          paneStyle={{ height: '100%' }}
         >
           <FullSize>
             <CodeEditor
@@ -89,7 +99,10 @@ class EditorPreview extends React.PureComponent {
               id={module.id}
               error={module.error}
               code={module.code}
-              saveCode={moduleActions.saveCode}
+              saveCode={this.saveCode}
+              title={module.title}
+              modulePath={modulePath}
+              canSave={module.isNotSynced}
             />
           </FullSize>
           <FullSize inactive={this.state.resizing}>

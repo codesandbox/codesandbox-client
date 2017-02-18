@@ -17,7 +17,8 @@ import 'codemirror/addon/fold/foldcode';
 import 'codemirror/addon/fold/foldgutter';
 import 'codemirror/addon/fold/brace-fold';
 
-import theme from '../../../../../../../common/theme';
+import theme from '../../../../../../../../common/theme';
+import Header from './Header';
 
 const documentCache = {};
 
@@ -25,8 +26,11 @@ type Props = {
   code: ?string;
   error: ?Object;
   id: string;
+  title: string;
+  modulePath: string;
   changeCode: (id: string, code: string) => void;
-  saveCode: (id: string) => void;
+  saveCode: () => void;
+  canSave: boolean;
 };
 
 const Container = styled.div`
@@ -52,14 +56,6 @@ const ErrorMessage = styled.div`
   font-weight: 400;
   padding: 0.5rem;
   color: ${props => props.theme.red};
-`;
-
-const TopMessage = styled.div`
-  flex: 0 0 auto;
-  padding: 0.5rem 1rem;
-  font-size: 14px;
-  color: ${props => props.theme.background.lighten(1.5)};
-  vertical-align: middle;
 `;
 
 const handleError = (cm, currentError, nextError, nextCode, nextId) => {
@@ -97,8 +93,7 @@ export default class CodeEditor extends React.PureComponent {
     window.addEventListener('keydown', (event: KeyboardEvent) => {
       if (event.ctrlKey || event.metaKey) {
         if (event.key === 's' || event.keyCode === 83) {
-          const { id } = this.props;
-          this.props.saveCode(id);
+          this.props.saveCode();
           event.preventDefault();
           return false;
         }
@@ -108,7 +103,9 @@ export default class CodeEditor extends React.PureComponent {
   }
 
   shouldComponentUpdate(nextProps: Props) {
-    return nextProps.id !== this.props.id || nextProps.error !== this.props.error;
+    return nextProps.id !== this.props.id ||
+      nextProps.error !== this.props.error ||
+      this.props.canSave !== nextProps.canSave;
   }
 
   componentWillReceiveProps(nextProps: Props) {
@@ -170,15 +167,10 @@ export default class CodeEditor extends React.PureComponent {
   codemirror: typeof CodeMirror;
 
   render() {
-    const { error } = this.props;
+    const { error, title, saveCode, canSave, modulePath } = this.props;
     return (
       <Container>
-        <TopMessage>
-          <SaveIcon />
-          <span style={{ verticalAlign: 'middle', marginLeft: '0.5rem' }}>
-            Last update: 5 seconds ago
-          </span>
-        </TopMessage>
+        <Header saveComponent={canSave && saveCode} title={title} path={modulePath} />
         <CodeContainer>
           <div style={{ height: '100%' }} ref={this.getCodeMirror} />
         </CodeContainer>
