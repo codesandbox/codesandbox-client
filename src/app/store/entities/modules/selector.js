@@ -3,7 +3,7 @@ import { values } from 'lodash';
 
 import { singleSandboxSelector } from '../sandboxes/selector';
 import resolveModule from '../../../../sandbox/utils/resolve-module';
-import { directoriesBySandboxSelector } from '../directories/selector';
+import { directoriesBySandboxSelector, directoriesSelector } from '../directories/selector';
 import { entriesInDirectorySelector } from '../../selectors/entry-selectors';
 import { currentTabSelector } from '../../selectors/views/sandbox-selector';
 import { isMainModule } from './index';
@@ -48,6 +48,25 @@ export const moduleByPathSelector = createSelector(
       console.error(e);
       return modules[0];
     }
+  },
+);
+
+export const modulePathSelector = createSelector(
+  modulesSelector,
+  directoriesSelector,
+  (_, { id }) => id,
+  (modules, directories, id) => {
+    const module = modules[id];
+
+    if (!module) return '';
+
+    let directory = directories[module.directoryId];
+    let path = '/';
+    while (directory != null) {
+      path = `/${directory.title}${path}`;
+      directory = directories[directory.directoryId];
+    }
+    return path;
   },
 );
 
