@@ -35,6 +35,7 @@ type Props = {
   hasChildren?: boolean;
   openModuleTab: (id: string) => void;
   root: ?boolean;
+  isMainModule: boolean;
 };
 
 type State = {
@@ -75,12 +76,18 @@ class Entry extends React.PureComponent {
   };
 
   openContextMenu = (event: MouseEvent) => {
+    const { id, isMainModule, onCreateModuleClick,
+      onCreateDirectoryClick, rename, deleteEntry } = this.props;
+
+    if (isMainModule) {
+      return;
+    }
+
     event.preventDefault();
     this.setState({
       selected: true,
     });
 
-    const { id, onCreateModuleClick, onCreateDirectoryClick, rename, deleteEntry } = this.props;
     const items = [onCreateModuleClick && {
       title: 'New Module',
       action: onCreateModuleClick,
@@ -149,7 +156,7 @@ class Entry extends React.PureComponent {
 }
 
 const entrySource = {
-  canDrag: props => !!props.id,
+  canDrag: props => !!props.id && !props.isMainModule,
   beginDrag: (props) => {
     if (props.closeTree) props.closeTree();
     return { id: props.id, directory: props.type === 'directory' };

@@ -77,6 +77,7 @@ class SandboxPage extends React.PureComponent {
     // Reset sandbox view info if sandbox changes
     if (!this.props.sandbox || (sandbox && sandbox.id !== this.props.currentSandboxId)) {
       this.props.sandboxViewActions.setCurrentSandbox(sandbox.id);
+      this.props.sandboxViewActions.openDefaultModuleTab();
     }
   }
 

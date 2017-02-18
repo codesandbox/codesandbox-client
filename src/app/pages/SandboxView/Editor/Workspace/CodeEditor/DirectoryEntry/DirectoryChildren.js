@@ -6,6 +6,7 @@ import DirectoryEntry from './';
 import type { Module } from '../../../../../../store/entities/modules';
 import type { Directory } from '../../../../../../store/entities/directories';
 import { validateTitle } from '../../../../../../store/entities/modules/validator';
+import { isMainModule } from '../../../../../../store/entities/modules/index';
 
 type Props = {
   depth: number;
@@ -51,6 +52,7 @@ export default class DirectoryChildren extends React.PureComponent {
         ))}
         {modules.map((m) => {
           const isActive = m.id === currentModuleId;
+          const mainModule = isMainModule(m);
           return (
             <Entry
               key={m.id}
@@ -65,6 +67,7 @@ export default class DirectoryChildren extends React.PureComponent {
               isNotSynced={m.isNotSynced}
               renameValidator={this.validateTitle}
               openModuleTab={openModuleTab}
+              isMainModule={mainModule}
             />
           );
         })}

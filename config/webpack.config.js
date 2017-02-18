@@ -54,7 +54,6 @@ const config = {
 
   target: 'web',
 
-  mainFields: ['browser', 'module', 'jsnext:main', 'main'],
 
   output: getOutput(),
 
@@ -138,11 +137,16 @@ const config = {
     ],
   },
   resolve: {
+    mainFields: ['browser', 'module', 'jsnext:main', 'main'],
     modules: [
       'node_modules',
     ],
 
     extensions: ['.js', '.json'],
+
+    alias: {
+      moment: 'moment/moment.js',
+    },
   },
 
   plugins: [

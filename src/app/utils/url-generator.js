@@ -5,6 +5,10 @@ export const sandboxUrl = sandbox => (
   : `/anonymous/${sandbox.slug}`
 );
 
+export const frameUrl = (append = '') => (
+  `${location.protocol}//sandbox.${host()}/${append}`
+);
+
 export const editModuleUrl = sandbox => (
   `${sandboxUrl(sandbox)}/code`
 );

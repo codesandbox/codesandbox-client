@@ -26,6 +26,10 @@ export type Module = {
 
 const actions = createActions(schema);
 
+export function isMainModule(module) {
+  return module.directoryId == null && module.title === 'index.js';
+}
+
 export default createEntity(schema, {
   actions,
   reducer,

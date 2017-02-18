@@ -3,7 +3,7 @@ import type { Module } from '../../app/store/entities/modules/';
 
 import type { Directory } from '../../app/store/entities/directories/index';
 
-import evalJS from './js';
+import evalJS, { deleteCache as deleteJSCache } from './js';
 import evalHTML from './html';
 import evalCSS from './css';
 
@@ -22,6 +22,12 @@ function doEval(mainModule, modules, directories, manifest, depth) {
   }
 
   return evalJS(mainModule, modules, directories, manifest, depth);
+}
+
+export function deleteCache(module: Module) {
+  if (module.title.includes('.js')) {
+    deleteJSCache(module);
+  }
 }
 
 const evalModule = (

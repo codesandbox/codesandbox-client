@@ -172,8 +172,8 @@ class DirectoryEntry extends React.PureComponent {
             onClick={this.toggleOpen}
             renameValidator={this.validateDirectoryTitle}
             rename={root
-              ? this.renameSandbox :
-              directoryActions.renameDirectory
+              ? this.renameSandbox
+              : directoryActions.renameDirectory
             }
             onCreateModuleClick={this.onCreateModuleClick}
             onCreateDirectoryClick={this.onCreateDirectoryClick}
