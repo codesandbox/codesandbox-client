@@ -81,7 +81,7 @@ class EditorPreview extends React.PureComponent {
           defaultSize="50%"
           minSize={360}
           primary="second"
-          paneStyle={{ height: 'calc(100% - 35px)' }}
+          paneStyle={{ height: '100%' }}
         >
           <FullSize>
             <CodeEditor

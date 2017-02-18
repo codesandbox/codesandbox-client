@@ -12,6 +12,7 @@ const Container = styled.div`
   color: ${props => (props.right ? props.theme.primaryText : props.theme.secondary.darken(0.5))};
   border: 1px solid #ccc;
   padding: calc(0.5rem - 1px);
+  height: 0.9rem;
   cursor: pointer;
 
   &:before, &:after {
@@ -23,7 +24,8 @@ const Container = styled.div`
 `;
 
 const Text = styled.span`
-  ${props => (props.right ? 'text-align: right' : 'text-align: left')};
+  position: absolute;
+  ${props => props.position}: 0.75rem;
   opacity: ${props => (props.right ? 1 : 0)};
 `;
 
@@ -47,8 +49,8 @@ type Props = {
 
 export default ({ right, onClick }: Props) => (
   <Container onClick={onClick} right={right}>
-    <Text right={right}>Project</Text>
-    <Text right={!right}>Local</Text>
+    <Text right={right} position="left">Project</Text>
+    <Text right={!right} position="right">Current</Text>
     <Dot right={right} />
   </Container>
 );

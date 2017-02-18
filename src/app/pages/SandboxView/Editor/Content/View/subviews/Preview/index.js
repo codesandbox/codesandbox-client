@@ -64,7 +64,7 @@ export default class Preview extends React.PureComponent {
       history: [],
       historyPosition: 0,
       urlInAddressBar: '',
-      isProjectView: false,
+      isProjectView: true,
     };
   }
 
