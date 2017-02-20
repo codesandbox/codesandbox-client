@@ -7,11 +7,13 @@ const Container = styled.div`
   vertical-align: middle;
 `;
 
-const Input = styled.input`
-  padding: 0.2rem 1rem;
-  color: black;
-  width: 100%;
-  box-sizing: border-box;
+const InputContainer = styled.div`
+  input {
+    padding: 0.2rem 1rem;
+    color: black;
+    width: 100%;
+    box-sizing: border-box;
+  }
 `;
 
 const Slash = styled.span`
@@ -48,12 +50,25 @@ export default class extends React.PureComponent {
     }
   }
 
+  focus = () => {
+    if (this.input) {
+      this.input.focus();
+    }
+  }
+
   render() {
     const { url = '' } = this.props;
     return (
-      <Container>
+      <Container onClick={this.focus}>
         <Slash>/</Slash>
-        <Input onChange={this.onChange} onKeyDown={this.handleKeyDown} value={url} />
+        <InputContainer>
+          <input
+            ref={(e) => { this.input = e; }}
+            onChange={this.onChange}
+            onKeyDown={this.handleKeyDown}
+            value={url}
+          />
+        </InputContainer>
       </Container>
     );
   }
