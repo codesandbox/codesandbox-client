@@ -4,7 +4,15 @@ import resolveModule from '../utils/resolve-module';
 
 const moduleCache = new Map();
 
+/**
+ * Deletes the cache of all modules that use module and module itself
+ */
 export function deleteCache(module) {
+  moduleCache.forEach((value) => {
+    if (value.requires.includes(module.id)) {
+      deleteCache(value.module);
+    }
+  });
   moduleCache.delete(module.id);
 }
 
@@ -28,6 +36,7 @@ function evaluate(code, require) {
 
 export default function evaluateJS(mainModule, modules, directories, manifest, depth) {
   try {
+    const requires = [];
     require = function require(path) { // eslint-disable-line no-unused-vars
       const dependencyManifest = manifest[path] || manifest[`${path}.js`];
       if (dependencyManifest) return window.dependencies(dependencyManifest.id);
@@ -36,9 +45,11 @@ export default function evaluateJS(mainModule, modules, directories, manifest, d
       if (mainModule === module) throw new Error(`${mainModule.title} is importing itself`);
       if (!module) throw new Error(`Cannot find module in path: ${path}`);
 
+      requires.push(module.id);
       // Check if this module has been evaluated before, if so return that
-      return moduleCache.get(module.id) ||
-        evalModule(module, modules, directories, manifest, depth + 1);
+      const cache = moduleCache.get(module.id);
+
+      return cache ? cache.exports : evalModule(module, modules, directories, manifest, depth + 1);
     };
 
     const compiledCode = compileCode(mainModule.code, mainModule.title);
@@ -47,7 +58,7 @@ export default function evaluateJS(mainModule, modules, directories, manifest, d
     const exports = evaluate(compiledCode, require);
 
     // Always set a (if no error) new cache for this module, because we know this changed
-    moduleCache.set(mainModule.id, exports);
+    moduleCache.set(mainModule.id, { exports, module: mainModule, requires });
     return exports;
   } catch (e) {
     // Remove cache
