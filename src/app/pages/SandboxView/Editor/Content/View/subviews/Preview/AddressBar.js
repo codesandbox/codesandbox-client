@@ -1,18 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
-import theme from '../../../../../../../../common/theme';
-
-const TEXT_COLOR = theme.gray.darken(0.2)();
 
 const Container = styled.div`
   position: relative;
-  color: ${TEXT_COLOR};
+  color: ${props => props.theme.gray.darken(0.2)()};
   vertical-align: middle;
 `;
 
 const Input = styled.input`
   padding: 0.2rem 1rem;
-  color: ${TEXT_COLOR};
+  color: black;
   width: 100%;
   box-sizing: border-box;
 `;
