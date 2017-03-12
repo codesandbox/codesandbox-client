@@ -5,7 +5,7 @@ import Centered from '../../../components/flex/Centered';
 import Title from '../../../components/text/Title';
 import SubTitle from '../../../components/text/SubTitle';
 import type { Sandbox } from '../../../store/entities/sandboxes/';
-import { editModuleUrl } from '../../../utils/url-generator';
+import { sandboxUrl } from '../../../utils/url-generator';
 
 type Props = {
   sandbox: Sandbox;
@@ -33,7 +33,7 @@ export default class Fork extends React.PureComponent {
       this.context.router.transitionTo(sandbox);
     } else {
       const username = result.entity.author ? result.entity.author.username : null;
-      const url = editModuleUrl({ ...result.entity, author: username });
+      const url = sandboxUrl({ ...result.entity, author: username });
       this.context.router.transitionTo(url);
     }
   }

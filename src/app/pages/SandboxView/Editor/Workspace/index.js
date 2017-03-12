@@ -11,7 +11,6 @@ import sandboxEntity from '../../../../store/entities/sandboxes';
 import moduleEntity from '../../../../store/entities/modules';
 import sourceEntity from '../../../../store/entities/sources';
 import directoryEntity from '../../../../store/entities/directories';
-import { editModuleUrl, versionsUrl, sandboxDependenciesUrl } from '../../../../utils/url-generator';
 
 import CodeEditor from './CodeEditor';
 import Versions from './Versions';
@@ -57,31 +56,14 @@ class Workspace extends React.PureComponent { // eslint-disable-line
 
     return (
       <Container>
-        <Match
-          pattern={editModuleUrl(sandbox)}
-          render={() => (
-            <CodeEditor
-              sandbox={sandbox}
-              moduleActions={moduleActions}
-              directoryActions={directoryActions}
-              sandboxActions={sandboxActions}
-            />
-          )}
+        <CodeEditor
+          sandbox={sandbox}
+          moduleActions={moduleActions}
+          directoryActions={directoryActions}
+          sandboxActions={sandboxActions}
         />
-
-        <Match
-          pattern={versionsUrl(sandbox)}
-          render={() => (
-            <Versions sandbox={sandbox} />
-          )}
-        />
-
-        <Match
-          pattern={sandboxDependenciesUrl(sandbox)}
-          render={() => (
-            <Dependencies source={source} sandbox={sandbox} />
-          )}
-        />
+        {/* <Versions sandbox={sandbox} />*/}
+        <Dependencies source={source} sandbox={sandbox} />
       </Container>
     );
   }

@@ -6,7 +6,6 @@ import directories from './directories/';
 import modules from './modules/';
 import sandboxes from './sandboxes/';
 import sources from './sources';
-import users from './users';
 import versions from './versions';
 
 export type Entity = {
@@ -22,6 +21,5 @@ export default {
   modules,
   sandboxes,
   sources,
-  users,
   versions,
 };

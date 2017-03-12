@@ -102,7 +102,7 @@ class SandboxPage extends React.PureComponent {
     return (
       <Container>
         <Match
-          pattern="(code|versions|info|dependencies)/:module*"
+          pattern="/"
           render={matchPattern => (
             <Editor sandbox={sandbox} {...matchPattern} />
           )}

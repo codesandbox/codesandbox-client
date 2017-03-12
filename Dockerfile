@@ -1,7 +1,5 @@
-FROM node:latest
+FROM node:7.6
 MAINTAINER Ives van Hoorne
-
-RUN npm install -g yarn
 
 RUN mkdir /usr/src/app
 

@@ -13,7 +13,7 @@ import ReactIcon from '../../../components/ReactIcon';
 import moduleEntity from '../../../store/entities/modules/';
 import sandboxEntity from '../../../store/entities/sandboxes/';
 
-import { editModuleUrl } from '../../../utils/url-generator';
+import { sandboxUrl } from '../../../utils/url-generator';
 import delayEffect from '../../../utils/animation/delay-effect';
 import SubTitle from '../../../components/text/SubTitle';
 import Button from '../../../components/buttons/Button';
@@ -162,7 +162,7 @@ class Create extends React.PureComponent {
       this.setState({ creating: false });
     } else {
       const username = result.entity.author ? result.entity.author.username : null;
-      const url = editModuleUrl({ ...result.entity, author: username });
+      const url = sandboxUrl({ ...result.entity, author: username });
       this.setState({ redirect: url });
     }
   };

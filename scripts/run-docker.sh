@@ -1,4 +1,4 @@
 #!/bin/bash
 
 yarn
-npm start
+yarn run start

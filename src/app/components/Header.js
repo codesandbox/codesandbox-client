@@ -4,7 +4,7 @@ import { Link, Match } from 'react-router';
 import styled from 'styled-components';
 
 import HeaderActions from '../pages/SandboxView/Editor/HeaderActions';
-import LogoIcon from '../pages/Homepage/logo.png';
+// import LogoIcon from '../pages/Homepage/logo.png';
 
 const Container = styled.div`
   position: relative;
@@ -36,7 +36,7 @@ const Logo = styled(Link)`
   padding: 0;
   line-height: 3rem;
   vertical-align: middle;
-  width: 20rem;
+  width: 16rem;
   font-weight: 400;
   text-decoration: none;
   color: white;
@@ -58,7 +58,6 @@ const LogoName = styled.span`
 export default ({ username }: { username: ?string }) => (
   <Container>
     <Logo to="/">
-      <LogoImage src={LogoIcon} alt="CodeSandbox" width={40} height={40} />
       <LogoName>CodeSandbox</LogoName>
     </Logo>
     <Match

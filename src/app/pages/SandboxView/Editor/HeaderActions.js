@@ -77,7 +77,7 @@ class HeaderActions extends React.PureComponent { // eslint-disable-line
 
   render() {
     const { sandbox } = this.props;
-    if (sandbox == null) return false;
+    if (sandbox == null) return null;
 
     return (
       <Actions>

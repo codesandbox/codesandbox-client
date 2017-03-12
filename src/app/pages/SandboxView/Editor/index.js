@@ -6,7 +6,6 @@ import SplitPane from 'react-split-pane';
 import Workspace from './Workspace';
 
 import type { Sandbox } from '../../../store/entities/sandboxes';
-import Menu from './Menu';
 import Content from './Content';
 
 const Container = styled.div`
@@ -30,7 +29,6 @@ export default class Editor extends React.PureComponent {
 
     return (
       <Container>
-        <Menu sandbox={sandbox} />
         <div style={{ position: 'relative', flex: 'auto' }}>
           <SplitPane split="vertical" minSize={100} defaultSize={16 * 16}>
             <Workspace sandbox={sandbox} />

@@ -12,7 +12,6 @@ import Notifications from '../containers/Notifications';
 import ContextMenu from '../containers/ContextMenu';
 import Homepage from './Homepage';
 import SandboxView from './SandboxView/';
-import userActionCreators from '../store/actions/user';
 import type { User } from '../store/reducers/user';
 
 const Container = styled.div`
@@ -29,22 +28,13 @@ const Content = styled.div`
 `;
 
 type Props = {
-  userActions: typeof userActionCreators;
   user: User;
 };
 
 const mapStateToProps = state => ({
   user: state.user,
 });
-const mapDispatchToProps = dispatch => ({
-  userActions: bindActionCreators(userActionCreators, dispatch),
-});
 class RootPage extends React.PureComponent {
-  componentDidMount() {
-    const { userActions } = this.props;
-    userActions.getUser();
-  }
-
   props: Props;
 
   render() {
@@ -65,4 +55,4 @@ class RootPage extends React.PureComponent {
     );
   }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(RootPage);
+export default connect(mapStateToProps)(RootPage);

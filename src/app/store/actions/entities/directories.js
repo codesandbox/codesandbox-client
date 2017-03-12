@@ -1,3 +1,4 @@
+// @flow
 import { singleDirectoryByIdSelector, directoriesSelector } from './selector';
 import createEntityActions from '../../actions/entities';
 import notificationActions from '../../actions/notifications';
