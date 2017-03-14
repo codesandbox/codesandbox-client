@@ -1,12 +1,14 @@
 // @flow
 import { createStore, applyMiddleware, compose } from 'redux';
 
-import thunk from './services/thunk-middleware';
-import rootReducer from './reducers';
+import thunk from './services/middleware/thunk-middleware';
+import rootReducer from './root-reducer';
 
 function getComposeEnhancers() {
-   // eslint-disable-next-line
-  if (process.env.NODE_ENV !== 'production' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) {
+  if (
+    process.env.NODE_ENV !== 'production' &&
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ // eslint-disable-line
+  ) {
     return window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__; // eslint-disable-line
   }
   return compose;
@@ -16,9 +18,7 @@ export default () => {
   const composeEnhancers = getComposeEnhancers();
   const store = createStore(
     rootReducer,
-    composeEnhancers(applyMiddleware(
-      thunk,
-    )),
+    composeEnhancers(applyMiddleware(thunk)),
   );
 
   if (process.env.NODE_ENV === 'development') {
@@ -27,4 +27,3 @@ export default () => {
 
   return store;
 };
-

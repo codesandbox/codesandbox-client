@@ -13,14 +13,12 @@ import theme from '../common/theme';
 const rootEl = document.getElementById('root');
 
 const store = createStore();
-const renderApp = (RootComponent) => {
+const renderApp = RootComponent => {
   render(
     <AppContainer>
       <ThemeProvider theme={theme}>
         <Provider store={store}>
-          <RootComponent
-            store={store}
-          />
+          <RootComponent store={store} />
         </Provider>
       </ThemeProvider>
     </AppContainer>,

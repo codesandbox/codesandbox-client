@@ -6,8 +6,8 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import theme from '../../common/theme';
 
-import type { ContextMenuState } from '../store/reducers/context-menu';
-import contextMenuActionCreators from '../store/actions/context-menu';
+import type { ContextMenuState } from '../store/context-menu/reducer';
+import contextMenuActionCreators from '../store/context-menu/actions';
 import Portal from '../components/Portal';
 
 const Container = styled.div`
@@ -43,15 +43,16 @@ const Item = styled.div`
   }
 
   &:hover {
-    color: ${props => (props.color ? props.color : theme.secondary())};
+    color: ${props => props.color ? props.color : theme.secondary()};
     background-color: ${() => theme.background2.lighten(0.3)()};
-    border-left-color: ${props => (props.color ? props.color : theme.secondary())};
+    border-left-color: ${props =>
+  props.color ? props.color : theme.secondary()};
   }
 `;
 
 type Props = {
-  contextMenu: ContextMenuState;
-  contextMenuActions: typeof contextMenuActionCreators;
+  contextMenu: ContextMenuState,
+  contextMenuActions: typeof contextMenuActionCreators,
 };
 
 const mapStateToProps = state => ({
@@ -64,8 +65,8 @@ class ContextMenu extends React.PureComponent {
   interval: number;
   props: Props;
 
-  setup = (el) => {
-    this.mousedown = window.addEventListener('mousedown', (event) => {
+  setup = el => {
+    this.mousedown = window.addEventListener('mousedown', event => {
       const { contextMenu } = this.props;
 
       if (contextMenu.show) {
@@ -75,7 +76,7 @@ class ContextMenu extends React.PureComponent {
       }
     });
 
-    this.keydown = window.addEventListener('keydown', (event) => {
+    this.keydown = window.addEventListener('keydown', event => {
       const { contextMenu } = this.props;
       if (event.keyCode === 27 && contextMenu.show) {
         // Escape
@@ -96,7 +97,7 @@ class ContextMenu extends React.PureComponent {
     const { contextMenu, contextMenuActions } = this.props;
     if (contextMenu.onClose) contextMenu.onClose();
     contextMenuActions.closeMenu();
-  }
+  };
 
   render() {
     const { contextMenu } = this.props;
@@ -106,7 +107,10 @@ class ContextMenu extends React.PureComponent {
           {contextMenu.show &&
             <Motion
               defaultStyle={{ size: 0.75, opacity: 0.6 }}
-              style={{ size: spring(1, { stiffness: 200, damping: 26 }), opacity: spring(1) }}
+              style={{
+                size: spring(1, { stiffness: 200, damping: 26 }),
+                opacity: spring(1),
+              }}
             >
               {({ size, opacity }) => (
                 <Container

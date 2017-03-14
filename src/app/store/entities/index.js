@@ -1,25 +1,11 @@
-// @flow
-import { Schema } from 'normalizr';
-
-import boilerplates from './boilerplates';
-import directories from './directories/';
-import modules from './modules/';
-import sandboxes from './sandboxes/';
-import sources from './sources';
-import versions from './versions';
-
-export type Entity = {
-  schema: typeof Schema;
-  reducer?: (state: Object, action: Object) => Object;
-  actions: { [name: string]: Function };
-  initialState?: Object;
-}
+import sources from './sources/entity';
+import modules from './sources/modules/entity';
+import directories from './sources/directories/entity';
+import sandboxes from './sandboxes/entity';
 
 export default {
-  boilerplates,
-  directories,
-  modules,
   sandboxes,
   sources,
-  versions,
+  modules,
+  directories,
 };

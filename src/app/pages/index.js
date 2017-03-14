@@ -1,18 +1,13 @@
 // @flow
 import React from 'react';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { BrowserRouter, Match } from 'react-router';
+import { BrowserRouter, Route, Redirect } from 'react-router-dom';
 import 'normalize.css';
 
-import Header from '../components/Header';
-import Modal from '../containers/Modal';
+// import Header from '../components/Header';
 import Notifications from '../containers/Notifications';
 import ContextMenu from '../containers/ContextMenu';
-import Homepage from './Homepage';
 import SandboxView from './SandboxView/';
-import type { User } from '../store/reducers/user';
 
 const Container = styled.div`
   display: flex;
@@ -27,32 +22,16 @@ const Content = styled.div`
   background-color: ${props => props.theme.background2};
 `;
 
-type Props = {
-  user: User;
-};
-
-const mapStateToProps = state => ({
-  user: state.user,
-});
-class RootPage extends React.PureComponent {
-  props: Props;
-
-  render() {
-    const { user } = this.props;
-    return (
-      <BrowserRouter>
-        <Container>
-          <Notifications />
-          <ContextMenu />
-          <Modal />
-          <Header username={user.username} />
-          <Content>
-            <Match exactly pattern="/" component={Homepage} />
-            <Match pattern="/:action" component={SandboxView} />
-          </Content>
-        </Container>
-      </BrowserRouter>
-    );
-  }
-}
-export default connect(mapStateToProps)(RootPage);
+export default () => (
+  <BrowserRouter>
+    <Container>
+      <Notifications />
+      <ContextMenu />
+      {/*<Header />*/}
+      <Content>
+        <Route exact path="/" render={() => <Redirect to="/sandbox/new" />} />
+        <Route path="/sandbox" component={SandboxView} />
+      </Content>
+    </Container>
+  </BrowserRouter>
+);
