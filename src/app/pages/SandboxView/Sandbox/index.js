@@ -16,7 +16,7 @@ import Title from '../../../components/text/Title';
 import Centered from '../../../components/flex/Centered';
 
 import Fork from './Fork';
-import Editor from './Editor';
+// import Editor from './Editor';
 
 type Props = {
   sandbox: ?Sandbox,
@@ -85,9 +85,8 @@ class SandboxPage extends React.PureComponent {
           />
           <Route
             path={`${match.url}`}
-            render={matchParams => (
-              <Editor sandbox={sandbox} {...matchParams} />
-            )}
+            render={matchParams =>
+              null && <Editor sandbox={sandbox} {...matchParams} />}
           />
         </Switch>
       </div>

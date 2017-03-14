@@ -22,7 +22,7 @@ export function createAPIActions(prefix: string, suffix: string): APIActions {
 export function doRequest(
   actions: APIActions,
   endpoint: string,
-  body: ?BodyType,
+  body?: BodyType,
 ) {
   return async (dispatch: Function) => {
     dispatch({

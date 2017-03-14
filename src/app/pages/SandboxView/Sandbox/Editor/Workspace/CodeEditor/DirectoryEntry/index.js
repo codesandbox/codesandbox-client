@@ -1,29 +1,26 @@
 import React from 'react';
-import { createSelector } from 'reselect';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { DropTarget } from 'react-dnd';
 
 import Entry from './Entry';
-import moduleEntity from '../../../../../../store/entities/modules/';
-import directoryEntity from '../../../../../../store/entities/directories/';
-import type { Module } from '../../../../../../store/entities/modules';
-import type { Directory } from '../../../../../../store/entities/directories';
+import sandboxActionCreators
+  from '../../../../../../../store/entities/sandboxes/actions';
+import type {
+  Module,
+} from '../../../../../../../store/entities//sandboxes/modules/entity';
+import type {
+  Sandbox,
+} from '../../../../../../../store/entities/sandboxes/entity';
+import type {
+  Directory,
+} from '../../../../../../../store/entities//sandboxes/directories/entity';
 import {
   validateTitle,
-} from '../../../../../../store/entities/modules/validator';
+} from '../../../../../../../store/entities//sandboxes/modules/validator';
 import contextMenuActionCreators
-  from '../../../../../../store/actions/context-menu';
-import sandboxViewActions from '../../../../../../store/actions/views/sandbox';
-
-import {
-  directoriesInDirectorySelector,
-} from '../../../../../../store/entities/directories/selector';
-import {
-  modulesInDirectorySelector,
-  currentModuleSelector,
-} from '../../../../../../store/entities/modules/selector';
+  from '../../../../../../../store/context-menu/actions';
 
 import DirectoryChildren from './DirectoryChildren';
 
@@ -44,28 +41,25 @@ const Opener = styled.div`
 `;
 
 const mapDispatchToProps = dispatch => ({
-  moduleActions: bindActionCreators(moduleEntity.actions, dispatch),
-  directoryActions: bindActionCreators(directoryEntity.actions, dispatch),
-  openModuleTab: bindActionCreators(sandboxViewActions, dispatch).openModuleTab,
+  sandboxActions: bindActionCreators(sandboxActionCreators, dispatch),
   openMenu: bindActionCreators(contextMenuActionCreators, dispatch).openMenu,
 });
 type Props = {
   id: string,
-  sandboxId: string,
+  sandbox: Sandbox,
   root: ?boolean,
   title: string,
   open: boolean,
   sourceId: string,
-  root?: boolean,
+  root: ?boolean,
   directories: Array<Directory>,
   modules: Array<Module>,
   siblings: Array<Module | Directory>,
   depth: ?number,
   openModuleTab: (id: string) => void,
-  moduleActions: typeof moduleEntity.actions,
-  directoryActions: typeof directoryEntity.actions,
   openMenu: (e: Event) => void,
-  renameSandbox?: (title: string) => void,
+  renameSandbox: ?(title: string) => void,
+  sandboxActions: typeof sandboxActionCreators,
   currentModuleId: ?string,
 };
 type State = {
@@ -81,8 +75,6 @@ class DirectoryEntry extends React.PureComponent {
   resetState = () => this.setState({ creating: '' });
 
   onCreateModuleClick = () => {
-    const { id, directoryActions } = this.props;
-    directoryActions.setOpen(id, true);
     this.setState({
       creating: 'module',
       open: true,
@@ -91,14 +83,26 @@ class DirectoryEntry extends React.PureComponent {
   };
 
   createModule = (_, title) => {
-    const { id, sourceId, moduleActions } = this.props;
-    moduleActions.createModule(title, sourceId, id);
+    const { sandbox, id, sandboxActions } = this.props;
+    sandboxActions.createModule(sandbox.id, title, id);
     this.resetState();
   };
 
+  deleteModule = (id: string) => {
+    const { modules, sandbox, sandboxActions } = this.props;
+    const module = modules.find(m => m.id === id);
+
+    const confirmed = confirm(
+      `Are you sure you want to delete ${module.title}?`,
+    );
+
+    if (confirmed) {
+      sandboxActions.deleteModule(sandbox.id, id);
+    }
+    return true;
+  };
+
   onCreateDirectoryClick = () => {
-    const { id, directoryActions } = this.props;
-    directoryActions.setOpen(id, true);
     this.setState({
       creating: 'directory',
       open: true,
@@ -107,8 +111,8 @@ class DirectoryEntry extends React.PureComponent {
   };
 
   createDirectory = (_, title) => {
-    const { id, sourceId, directoryActions } = this.props;
-    directoryActions.createDirectory(title, sourceId, id);
+    const { id, sourceId, sandboxActions } = this.props;
+    sandboxActions.createDirectory(title, sourceId, id);
     this.resetState();
   };
 
@@ -120,19 +124,6 @@ class DirectoryEntry extends React.PureComponent {
 
     if (confirmed) {
       directoryActions.deleteDirectory(id);
-    }
-    return true;
-  };
-
-  deleteModule = (id: string) => {
-    const { modules, moduleActions } = this.props;
-    const module = modules.find(m => m.id === id);
-
-    const confirmed = confirm(
-      `Are you sure you want to delete ${module.title}?`,
-    );
-    if (confirmed) {
-      moduleActions.deleteModule(id);
     }
     return true;
   };
