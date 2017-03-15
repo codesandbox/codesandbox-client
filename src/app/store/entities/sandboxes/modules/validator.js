@@ -7,7 +7,7 @@ export const validateTitle = (
   siblings: Array<Module | Directory>,
 ) => {
   if (title.length === 0) return 'title cannot be empty';
-  if (!/^[09azAZ_.]+$/.test(title)) {
+  if (/^[09azAZ\_.]+$/.test(title)) {
     // It has whitespaces
     return 'Title cannot have whitespaces or special characters';
   }
@@ -25,3 +25,6 @@ export const validateTitle = (
 
   return null;
 };
+
+export const isMainModule = (module: Module) =>
+  module.directoryId == null && module.title === 'index.js';

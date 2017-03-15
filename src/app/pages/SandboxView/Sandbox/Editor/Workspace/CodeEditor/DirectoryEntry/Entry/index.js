@@ -7,7 +7,7 @@ import FolderIcon from 'react-icons/lib/fa/folder';
 import EditIcon from 'react-icons/lib/go/pencil';
 import DeleteIcon from 'react-icons/lib/go/trashcan';
 
-import theme from '../../../../../../../../common/theme';
+import theme from '../../../../../../../../../common/theme';
 
 import EntryContainer from '../../../EntryContainer';
 import EntryTitle from './EntryTitle';
@@ -15,33 +15,33 @@ import EntryTitleInput from './EntryTitleInput';
 import EntryIcons from './EntryIcons';
 
 type Props = {
-  id: string;
-  title: string;
-  depth: number;
-  active: boolean;
-  isNotSynced: boolean;
-  type: string;
-  onCreateModuleClick?: () => void;
-  onCreateDirectoryClick?: () => void;
-  renameValidator: (id: string, title: string) => boolean;
-  rename: (id: string, title: string) => boolean;
-  deleteEntry: (id: string) => void;
-  onRenameCancel: () => void;
-  state?: '' | 'editing' | 'creating';
-  isOpen?: boolean;
-  onClick: Function;
-  openMenu: Function;
-  closeTree?: () => void;
-  hasChildren?: boolean;
-  openModuleTab: (id: string) => void;
-  root: ?boolean;
-  isMainModule: boolean;
+  id: string,
+  title: string,
+  depth: number,
+  active: boolean,
+  isNotSynced: boolean,
+  type: string,
+  onCreateModuleClick?: () => void,
+  onCreateDirectoryClick?: () => void,
+  renameValidator: (id: string, title: string) => boolean,
+  rename: (id: string, title: string) => boolean,
+  deleteEntry: (id: string) => void,
+  onRenameCancel: () => void,
+  state?: '' | 'editing' | 'creating',
+  isOpen?: boolean,
+  onClick: Function,
+  openMenu: Function,
+  closeTree?: () => void,
+  hasChildren?: boolean,
+  openModuleTab: (id: string) => void,
+  root: ?boolean,
+  isMainModule: boolean,
 };
 
 type State = {
-  state: '' | 'editing' | 'creating';
-  error: boolean;
-  selected: boolean;
+  state: '' | 'editing' | 'creating',
+  error: boolean,
+  selected: boolean,
 };
 
 class Entry extends React.PureComponent {
@@ -59,7 +59,7 @@ class Entry extends React.PureComponent {
       this.props.onRenameCancel();
     }
     this.setState({ state: '', error: false });
-  }
+  };
 
   handleValidateTitle = (title: string) => {
     const isInvalidTitle = this.props.renameValidator(this.props.id, title);
@@ -76,8 +76,14 @@ class Entry extends React.PureComponent {
   };
 
   openContextMenu = (event: MouseEvent) => {
-    const { id, isMainModule, onCreateModuleClick,
-      onCreateDirectoryClick, rename, deleteEntry } = this.props;
+    const {
+      id,
+      isMainModule,
+      onCreateModuleClick,
+      onCreateDirectoryClick,
+      rename,
+      deleteEntry,
+    } = this.props;
 
     if (isMainModule) {
       return;
@@ -88,27 +94,32 @@ class Entry extends React.PureComponent {
       selected: true,
     });
 
-    const items = [onCreateModuleClick && {
-      title: 'New Module',
-      action: onCreateModuleClick,
-      icon: FileIcon,
-    }, onCreateDirectoryClick && {
-      title: 'New Directory',
-      action: onCreateDirectoryClick,
-      icon: FolderIcon,
-    }, rename && {
-      title: 'Rename',
-      action: () => {
-        this.setState({ state: 'editing' });
-        return true; // To close it
+    const items = [
+      onCreateModuleClick && {
+        title: 'New Module',
+        action: onCreateModuleClick,
+        icon: FileIcon,
       },
-      icon: EditIcon,
-    }, deleteEntry && {
-      title: 'Delete',
-      action: () => deleteEntry(id),
-      color: theme.red.darken(0.2)(),
-      icon: DeleteIcon,
-    }].filter(x => x);
+      onCreateDirectoryClick && {
+        title: 'New Directory',
+        action: onCreateDirectoryClick,
+        icon: FolderIcon,
+      },
+      rename && {
+        title: 'Rename',
+        action: () => {
+          this.setState({ state: 'editing' });
+          return true; // To close it
+        },
+        icon: EditIcon,
+      },
+      deleteEntry && {
+        title: 'Delete',
+        action: () => deleteEntry(id),
+        color: theme.red.darken(0.2)(),
+        icon: DeleteIcon,
+      },
+    ].filter(x => x);
     this.props.openMenu(items, event.clientX, event.clientY, () => {
       this.setState({ selected: false });
     });
@@ -120,8 +131,19 @@ class Entry extends React.PureComponent {
   state: State;
 
   render() {
-    const { title, depth, isOpen, hasChildren, type, active, openModuleTab,
-      connectDragSource, onClick, isNotSynced, root } = this.props;
+    const {
+      title,
+      depth,
+      isOpen,
+      hasChildren,
+      type,
+      active,
+      openModuleTab,
+      connectDragSource,
+      onClick,
+      isNotSynced,
+      root,
+    } = this.props;
     const { state, error, selected } = this.state;
 
     return connectDragSource(
@@ -141,14 +163,14 @@ class Entry extends React.PureComponent {
             type={type}
             root={root}
           />
-          {state === 'editing' ?
-            <EntryTitleInput
-              title={title}
-              onChange={this.handleValidateTitle}
-              onCancel={this.resetState}
-              onCommit={this.handleRename}
-            />
-          : <EntryTitle title={title} />}
+          {state === 'editing'
+            ? <EntryTitleInput
+                title={title}
+                onChange={this.handleValidateTitle}
+                onCancel={this.resetState}
+                onCommit={this.handleRename}
+              />
+            : <EntryTitle title={title} />}
         </EntryContainer>
       </div>,
     );
@@ -157,7 +179,7 @@ class Entry extends React.PureComponent {
 
 const entrySource = {
   canDrag: props => !!props.id && !props.isMainModule,
-  beginDrag: (props) => {
+  beginDrag: props => {
     if (props.closeTree) props.closeTree();
     return { id: props.id, directory: props.type === 'directory' };
   },
@@ -167,6 +189,5 @@ const collectSource = (connect, monitor) => ({
   connectDragSource: connect.dragSource(),
   isDragging: monitor.isDragging(),
 });
-
 
 export default DragSource('ENTRY', entrySource, collectSource)(Entry);

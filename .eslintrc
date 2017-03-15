@@ -1,7 +1,9 @@
 {
   "extends": [
     "airbnb",
-    "prettier"
+    "prettier",
+    "prettier/react",
+    "prettier/flowtype"
   ],
   "parser": "babel-eslint",
   "env": {

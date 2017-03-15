@@ -3,7 +3,6 @@ import {
   ADD_DIRECTORY_TO_SANDBOX,
   REMOVE_MODULE_FROM_SANDBOX,
   REMOVE_DIRECTORY_FROM_SANDBOX,
-  REMOVE_DIRECTORY_FROM_SANDBOX_RECURSIVELY,
 } from './actions';
 
 const initialState = {};
@@ -20,21 +19,18 @@ function singleSandboxReducer(sandbox, action: Action) {
     case ADD_DIRECTORY_TO_SANDBOX:
       return {
         ...sandbox,
-        directories: [...sandbox.modules, action.directoryId],
+        directories: [...sandbox.directories, action.directoryId],
       };
     case REMOVE_MODULE_FROM_SANDBOX:
       return {
         ...sandbox,
-        modules: sandbox.modules.filter(m => m.id !== action.moduleId),
+        modules: sandbox.modules.filter(m => m !== action.moduleId),
       };
     case REMOVE_DIRECTORY_FROM_SANDBOX:
       return {
         ...sandbox,
-        directories: sandbox.directories.filter(
-          d => d.id !== action.directoryId,
-        ),
+        directories: sandbox.directories.filter(d => d !== action.directoryId),
       };
-    case REMOVE_DIRECTORY_FROM_SANDBOX_RECURSIVELY:
     default:
       return sandbox;
   }
@@ -46,11 +42,10 @@ export default function reducer(state = initialState, action: Action) {
     case ADD_DIRECTORY_TO_SANDBOX:
     case REMOVE_MODULE_FROM_SANDBOX:
     case REMOVE_DIRECTORY_FROM_SANDBOX:
-    case REMOVE_DIRECTORY_FROM_SANDBOX_RECURSIVELY:
       if (state[action.id]) {
         return {
           ...state,
-          [action.id]: singleSandboxReducer(state[action.id]),
+          [action.id]: singleSandboxReducer(state[action.id], action),
         };
       }
 

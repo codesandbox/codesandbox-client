@@ -6,7 +6,7 @@ import FunctionIcon from 'react-icons/lib/fa/code';
 import FolderIcon from 'react-icons/lib/md/keyboard-arrow-down';
 import DirectoryIcon from 'react-icons/lib/go/file-directory';
 import NotSyncedIcon from 'react-icons/lib/go/primitive-dot';
-import ReactIcon from '../../../../../../../components/ReactIcon';
+import ReactIcon from '../../../../../../../../components/ReactIcon';
 
 const NotSyncedIconWithMargin = styled(NotSyncedIcon)`
   margin-left: -20px;
@@ -20,7 +20,7 @@ const StyledFolderIcon = styled.span`
     margin-left: -20px;
     margin-right: 6px;
 
-    transform: rotateZ(${props => (props.isOpen ? '0deg' : '-90deg')});
+    transform: rotateZ(${props => props.isOpen ? '0deg' : '-90deg'});
   }
 `;
 
@@ -41,21 +41,23 @@ const getIcon = (type, root) => {
 };
 
 type Props = {
-  type: string;
-  hasChildren: boolean;
-  isNotSynced: ?boolean;
-  isOpen?: boolean;
-  onOpen: () => void;
-  root: ?boolean;
+  type: string,
+  hasChildren: boolean,
+  isNotSynced: ?boolean,
+  isOpen?: boolean,
+  onOpen: () => void,
+  root: ?boolean,
 };
-export default ({ type, root, hasChildren, isNotSynced, isOpen, onOpen }: Props) => (
+export default (
+  { type, root, hasChildren, isNotSynced, isOpen, onOpen }: Props,
+) => (
   <div style={{ display: 'inline-block', verticalAlign: 'middle' }}>
     {isNotSynced && <NotSyncedIconWithMargin />}
-    {type === 'directory' && hasChildren && (
+    {type === 'directory' &&
+      hasChildren &&
       <StyledFolderIcon isOpen={isOpen} onClick={onOpen}>
         <FolderIcon />
-      </StyledFolderIcon>
-    )}
+      </StyledFolderIcon>}
     {getIcon(type, root)}
   </div>
 );

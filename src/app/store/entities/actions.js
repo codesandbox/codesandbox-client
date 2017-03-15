@@ -7,7 +7,7 @@ export const ADD_ENTITIES = 'ADD_ENTITIES';
 
 export function normalizeResult(entity: schema.Entity, result: Object) {
   return async (dispatch: Function) => {
-    const normalizedResult = camelizeKeys(normalize(result, entity));
+    const normalizedResult = normalize(camelizeKeys(result), entity);
 
     dispatch({
       type: ADD_ENTITIES,

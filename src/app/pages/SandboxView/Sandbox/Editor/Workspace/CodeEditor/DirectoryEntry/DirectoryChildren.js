@@ -3,22 +3,29 @@ import React from 'react';
 
 import Entry from './Entry';
 import DirectoryEntry from './';
-import type { Module } from '../../../../../../store/entities/modules';
-import type { Directory } from '../../../../../../store/entities/directories';
-import { validateTitle } from '../../../../../../store/entities/modules/validator';
-import { isMainModule } from '../../../../../../store/entities/modules/index';
+import type {
+  Module,
+} from '../../../../../../../store/entities/sandboxes/modules/entity';
+import type {
+  Directory,
+} from '../../../../../../../store/entities/sandboxes/directories/entity';
+
+import {
+  validateTitle,
+  isMainModule,
+} from '../../../../../../../store/entities/sandboxes/modules/validator';
 
 type Props = {
-  depth: number;
-  renameModule: (id: string, title: string) => boolean;
-  directories: Array<Directory>;
-  modules: Array<Module>;
-  openMenu: (event: Event) => void;
-  sandboxId: string;
-  sourceId: string;
-  deleteEntry: (id: string) => void;
-  openModuleTab: (id: string) => void;
-  currentModuleId: ?string;
+  depth: number,
+  renameModule: (id: string, title: string) => boolean,
+  directories: Array<Directory>,
+  modules: Array<Module>,
+  openMenu: (event: Event) => void,
+  sandboxId: string,
+  deleteEntry: (id: string) => void,
+  openModuleTab: (id: string) => void,
+  currentModuleId: ?string,
+  parentId: string,
 };
 
 export default class DirectoryChildren extends React.PureComponent {
@@ -27,30 +34,40 @@ export default class DirectoryChildren extends React.PureComponent {
   validateTitle = (id: string, title: string) => {
     const { directories, modules } = this.props;
     return validateTitle(id, title, [...directories, ...modules]);
-  }
+  };
 
   render() {
     const {
-      depth = 0, renameModule, openMenu, sourceId, openModuleTab,
-      directories, sandboxId, modules, deleteEntry, currentModuleId,
+      depth = 0,
+      renameModule,
+      openMenu,
+      openModuleTab,
+      directories,
+      parentId,
+      sandboxId,
+      modules,
+      deleteEntry,
+      currentModuleId,
     } = this.props;
 
     return (
       <div>
-        {directories.map(dir => (
-          <DirectoryEntry
-            key={dir.id}
-            siblings={[...directories, ...modules]}
-            depth={depth + 1}
-            id={dir.id}
-            title={dir.title}
-            open={dir.open}
-            sourceId={sourceId}
-            sandboxId={sandboxId}
-            currentModuleId={currentModuleId}
-          />
-        ))}
-        {modules.map((m) => {
+        {directories
+          .filter(x => x.directoryId === parentId)
+          .map(dir => (
+            <DirectoryEntry
+              key={dir.id}
+              siblings={[...directories, ...modules]}
+              depth={depth + 1}
+              id={dir.id}
+              title={dir.title}
+              sandboxId={sandboxId}
+              modules={modules}
+              directories={directories}
+              currentModuleId={currentModuleId}
+            />
+          ))}
+        {modules.filter(x => x.directoryId === parentId).map(m => {
           const isActive = m.id === currentModuleId;
           const mainModule = isMainModule(m);
           return (

@@ -13,10 +13,9 @@ import sandboxActions from '../../../store/entities/sandboxes/actions';
 
 import type { Sandbox } from '../../../store/entities/sandboxes/entity';
 import Title from '../../../components/text/Title';
-import Centered from '../../../components/flex/Centered';
 
 import Fork from './Fork';
-// import Editor from './Editor';
+import Editor from './Editor';
 
 type Props = {
   sandbox: ?Sandbox,
@@ -38,9 +37,9 @@ const mapStateToProps = (state, props) => createSelector(
       return {
         sandbox: denormalize(sandbox, sandboxEntity, entities),
       };
-    } else {
-      return { sandbox: null };
     }
+
+    return { sandbox: null };
   },
 );
 const mapDispatchToProps = dispatch => ({
@@ -66,30 +65,26 @@ class SandboxPage extends React.PureComponent {
   state = { notFound: false };
 
   render() {
-    const { match, sandbox, sandboxActions } = this.props;
+    const { match, sandbox } = this.props;
     if (this.state.notFound) {
       return (
         <Title>
-          We could not find the Sandbox you're looking for...
+          We could not find the Sandbox you{"'"}re looking for...
         </Title>
       );
     }
     if (!sandbox) return null;
 
     return (
-      <div>
-        <Switch>
-          <Route
-            path={`${match.url}/fork`}
-            render={matchParams => <Fork sandbox={sandbox} {...matchParams} />}
-          />
-          <Route
-            path={`${match.url}`}
-            render={matchParams =>
-              null && <Editor sandbox={sandbox} {...matchParams} />}
-          />
-        </Switch>
-      </div>
+      <Switch>
+        <Route
+          path={`${match.url}/fork`}
+          render={matchParams => <Fork sandbox={sandbox} {...matchParams} />}
+        />
+        <Route
+          render={matchParams => <Editor sandbox={sandbox} {...matchParams} />}
+        />
+      </Switch>
     );
   }
 }

@@ -6,19 +6,18 @@ import SplitPane from 'react-split-pane';
 import Workspace from './Workspace';
 
 import type { Sandbox } from '../../../../store/entities/sandboxes/entity';
-import Content from './Content';
+// import Content from './Content';
 
-const Container = styled.div`
+const Frame = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   flex: auto;
+  width: 100%;
+  height: 100%;
 `;
 
 type Props = {
   sandbox: Sandbox,
-  params: {
-    module: string,
-  },
 };
 
 export default class Editor extends React.PureComponent {
@@ -28,14 +27,11 @@ export default class Editor extends React.PureComponent {
     const { sandbox } = this.props;
 
     return (
-      <Container>
-        <div style={{ position: 'relative', flex: 'auto' }}>
-          <SplitPane split="vertical" minSize={100} defaultSize={16 * 16}>
-            <Workspace sandbox={sandbox} />
-            <Content sandbox={sandbox} params={this.props.params} />
-          </SplitPane>
-        </div>
-      </Container>
+      <SplitPane split="vertical" minSize={100} defaultSize={16 * 16}>
+        <Workspace sandbox={sandbox} />
+        <Frame>Content</Frame>
+        {/* <Content sandbox={sandbox} params={this.props.params} /> */}
+      </SplitPane>
     );
   }
 }

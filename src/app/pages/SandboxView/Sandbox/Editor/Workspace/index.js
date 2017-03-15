@@ -1,22 +1,17 @@
 // @flow
 import React from 'react';
-import { Match } from 'react-router';
+
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
-import type { Sandbox } from '../../../../store/entities/sandboxes/entity';
-import sandboxEntity from '../../../../store/entities/sandboxes';
-import moduleEntity from '../../../../store/entities/modules';
-import sourceEntity from '../../../../store/entities/sources';
-import directoryEntity from '../../../../store/entities/directories';
+import type { Sandbox } from '../../../../../store/entities/sandboxes/entity';
+import sandboxActionCreators
+  from '../../../../../store/entities/sandboxes/actions';
 
 import CodeEditor from './CodeEditor';
-import Versions from './Versions';
-import Dependencies from './Dependencies';
-import {
-  singleSourceSelector,
-} from '../../../../store/entities/sources/selector';
+// import Versions from './Versions';
+// import Dependencies from './Dependencies';
 
 const Container = styled.div`
   position: absolute;
@@ -28,23 +23,11 @@ const Container = styled.div`
 
 type Props = {
   sandbox: ?Sandbox,
-  source: ?Source,
-  moduleActions: moduleEntity.actions,
-  sourceActions: sourceEntity.actions,
-  sandboxActions: sandboxEntity.actions,
-  directoryActions: directoryEntity.actions,
-  params: {
-    id: ?string,
-    slug: ?string,
-    username: ?string,
-  },
+  sandboxActions: typeof sandboxActionCreators,
 };
 
 const mapDispatchToProps = dispatch => ({
-  sourceActions: bindActionCreators(sourceEntity.actions, dispatch),
-  moduleActions: bindActionCreators(moduleEntity.actions, dispatch),
-  sandboxActions: bindActionCreators(sandboxEntity.actions, dispatch),
-  directoryActions: bindActionCreators(directoryEntity.actions, dispatch),
+  sandboxActions: bindActionCreators(sandboxActionCreators, dispatch),
 });
 class Workspace extends React.PureComponent {
   // eslint-disable-line
@@ -52,8 +35,6 @@ class Workspace extends React.PureComponent {
   render() {
     const {
       sandbox,
-      moduleActions,
-      directoryActions,
       sandboxActions,
     } = this.props;
 
@@ -61,14 +42,9 @@ class Workspace extends React.PureComponent {
 
     return (
       <Container>
-        <CodeEditor
-          sandbox={sandbox}
-          moduleActions={moduleActions}
-          directoryActions={directoryActions}
-          sandboxActions={sandboxActions}
-        />
+        <CodeEditor sandbox={sandbox} sandboxActions={sandboxActions} />
         {/* <Versions sandbox={sandbox} />*/}
-        <Dependencies source={sandbox.source} sandbox={sandbox} />
+        {/* <Dependencies source={sandbox.source} sandbox={sandbox} /> */}
       </Container>
     );
   }

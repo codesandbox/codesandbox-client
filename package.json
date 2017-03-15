@@ -64,7 +64,7 @@
     "babel-plugin-transform-remove-strict-mode": "^0.0.2",
     "babel-standalone": "^6.21.1-0",
     "codemirror": "^5.22.0",
-    "color": "^1.0.3",
+    "color": "^0.11.4",
     "debug": "^2.5.1",
     "glamor": "^2.20.12",
     "humps": "^2.0.0",

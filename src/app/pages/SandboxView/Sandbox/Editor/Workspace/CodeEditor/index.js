@@ -4,17 +4,16 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import { DragDropContext } from 'react-dnd';
 import DirectoryEntry from './DirectoryEntry/index';
 import DeleteTarget from './DeleteTarget';
-import type { Sandbox } from '../../../../../store/entities/sandboxes/';
-import sandboxEntity from '../../../../../store/entities/sandboxes';
-import moduleEntity from '../../../../../store/entities/modules';
-import directoryEntity from '../../../../../store/entities/directories';
+import type {
+  Sandbox,
+} from '../../../../../../store/entities/sandboxes/entity';
+import sandboxActionCreators
+  from '../../../../../../store/entities/sandboxes/actions';
 import WorkspaceTitle from '../WorkspaceTitle';
 
 type Props = {
   sandbox: ?Sandbox,
-  moduleActions: typeof moduleEntity.actions,
-  sandboxActions: typeof sandboxEntity.actions,
-  directoryActions: typeof directoryEntity.actions,
+  sandboxActions: typeof sandboxActionCreators,
 };
 class CodeEditor extends React.PureComponent {
   props: Props;
@@ -26,8 +25,22 @@ class CodeEditor extends React.PureComponent {
     }
   };
 
+  deleteModule = id => {
+    const { sandboxActions, sandbox } = this.props;
+    if (sandbox) {
+      sandboxActions.deleteModule(sandbox.id, id);
+    }
+  };
+
+  deleteDirectory = id => {
+    const { sandboxActions, sandbox } = this.props;
+    if (sandbox) {
+      sandboxActions.deleteDirectory(sandbox.id, id);
+    }
+  };
+
   render() {
-    const { sandbox, moduleActions, directoryActions } = this.props;
+    const { sandbox } = this.props;
 
     return (
       <div>
@@ -37,13 +50,14 @@ class CodeEditor extends React.PureComponent {
             root
             title={sandbox.title}
             sandboxId={sandbox.id}
-            source={sandbox.source}
+            modules={sandbox.modules}
+            directories={sandbox.directories}
             renameSandbox={this.renameSandbox}
             id={null}
           />}
         <DeleteTarget
-          deleteDirectory={directoryActions.deleteDirectory}
-          deleteModule={moduleActions.deleteModule}
+          deleteDirectory={this.deleteDirectory}
+          deleteModule={this.deleteModule}
         />
       </div>
     );

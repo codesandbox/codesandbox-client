@@ -46,14 +46,13 @@ const mapDispatchToProps = dispatch => ({
 });
 type Props = {
   id: string,
-  sandbox: Sandbox,
+  sandboxId: string,
   root: ?boolean,
   title: string,
-  open: boolean,
-  sourceId: string,
-  root: ?boolean,
-  directories: Array<Directory>,
   modules: Array<Module>,
+  directories: Array<Directory>,
+  sandboxId: string,
+  root: ?boolean,
   siblings: Array<Module | Directory>,
   depth: ?number,
   openModuleTab: (id: string) => void,
@@ -83,13 +82,18 @@ class DirectoryEntry extends React.PureComponent {
   };
 
   createModule = (_, title) => {
-    const { sandbox, id, sandboxActions } = this.props;
-    sandboxActions.createModule(sandbox.id, title, id);
+    const { sandboxId, id, sandboxActions } = this.props;
+    sandboxActions.createModule(sandboxId, title, id);
     this.resetState();
   };
 
+  renameModule = (id, title) => {
+    const { sandboxId, sandboxActions } = this.props;
+    sandboxActions.renameModule(sandboxId, id, title);
+  };
+
   deleteModule = (id: string) => {
-    const { modules, sandbox, sandboxActions } = this.props;
+    const { sandboxId, modules, sandboxActions } = this.props;
     const module = modules.find(m => m.id === id);
 
     const confirmed = confirm(
@@ -97,7 +101,7 @@ class DirectoryEntry extends React.PureComponent {
     );
 
     if (confirmed) {
-      sandboxActions.deleteModule(sandbox.id, id);
+      sandboxActions.deleteModule(sandboxId, id);
     }
     return true;
   };
@@ -111,19 +115,25 @@ class DirectoryEntry extends React.PureComponent {
   };
 
   createDirectory = (_, title) => {
-    const { id, sourceId, sandboxActions } = this.props;
-    sandboxActions.createDirectory(title, sourceId, id);
+    const { sandboxId, id, sandboxActions } = this.props;
+    sandboxActions.createDirectory(sandboxId, title, id);
     this.resetState();
   };
 
+  renameDirectory = (id, title) => {
+    const { sandboxId, sandboxActions } = this.props;
+    sandboxActions.renameDirectory(sandboxId, id, title);
+  };
+
   deleteDirectory = () => {
-    const { id, title, directoryActions } = this.props;
+    const { id, title, sandboxId, sandboxActions } = this.props;
+
     const confirmed = confirm(
       `Are you sure you want to delete ${title} and all its children?`,
     );
 
     if (confirmed) {
-      directoryActions.deleteDirectory(id);
+      sandboxActions.deleteDirectory(sandboxId, id);
     }
     return true;
   };
@@ -135,7 +145,7 @@ class DirectoryEntry extends React.PureComponent {
   setOpen = open => this.setState({ open });
 
   validateModuleTitle = (_, title) => {
-    const { id, directories, modules } = this.props;
+    const { directories, modules, id } = this.props;
     return validateTitle(id, title, [...directories, ...modules]);
   };
 
@@ -146,25 +156,32 @@ class DirectoryEntry extends React.PureComponent {
     return validateTitle(id, title, siblings);
   };
 
+  getChildren = () => {
+    const { modules, directories, id } = this.props;
+
+    return [
+      ...modules.filter(m => m.directoryId === id),
+      ...directories.filter(d => d.directoryId === id),
+    ];
+  };
+
   render() {
     const {
       id,
       sandboxId,
-      title,
-      directories,
-      openMenu,
       modules,
-      moduleActions,
+      directories,
+      title,
+      openMenu,
       openModuleTab,
       currentModuleId,
-      directoryActions,
       connectDropTarget,
       isOver,
-      sourceId,
       depth = 0,
       root,
     } = this.props;
     const { creating, open } = this.state;
+
     return connectDropTarget(
       <div style={{ position: 'relative' }}>
         <Overlay isOver={isOver} />
@@ -178,13 +195,11 @@ class DirectoryEntry extends React.PureComponent {
             isOpen={open}
             onClick={this.toggleOpen}
             renameValidator={this.validateDirectoryTitle}
-            rename={
-              root ? this.renameSandbox : directoryActions.renameDirectory
-            }
+            rename={root ? this.renameSandbox : this.renameDirectory}
             onCreateModuleClick={this.onCreateModuleClick}
             onCreateDirectoryClick={this.onCreateDirectoryClick}
             deleteEntry={!root && this.deleteDirectory}
-            hasChildren={directories.length + modules.length > 0}
+            hasChildren={this.getChildren().length > 0}
             openMenu={openMenu}
             closeTree={this.closeTree}
           />
@@ -205,10 +220,10 @@ class DirectoryEntry extends React.PureComponent {
             modules={modules}
             directories={directories}
             depth={depth}
-            renameModule={moduleActions.renameModule}
+            renameModule={this.renameModule}
             openMenu={openMenu}
             sandboxId={sandboxId}
-            sourceId={sourceId}
+            parentId={id}
             deleteEntry={this.deleteModule}
             openModuleTab={openModuleTab}
             currentModuleId={currentModuleId}
@@ -239,9 +254,17 @@ const entryTarget = {
     const sourceItem = monitor.getItem();
 
     if (sourceItem.directory) {
-      props.directoryActions.moveToDirectory(sourceItem.id, props.id);
+      props.sandboxActions.moveDirectoryToDirectory(
+        props.sandboxId,
+        sourceItem.id,
+        props.id,
+      );
     } else {
-      props.moduleActions.moveToDirectory(sourceItem.id, props.id);
+      props.sandboxActions.moveModuleToDirectory(
+        props.sandboxId,
+        sourceItem.id,
+        props.id,
+      );
     }
   },
 

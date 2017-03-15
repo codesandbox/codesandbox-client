@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
-import theme from '../../../../../common/theme';
+import theme from '../../../../../../common/theme';
 
-export const getContainerStyles = (props) => {
+export const getContainerStyles = props => {
   let styles = `
     transition: 0.3s ease all;
     position: relative;
