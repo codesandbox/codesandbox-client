@@ -3,6 +3,7 @@ import {
   ADD_DIRECTORY_TO_SANDBOX,
   REMOVE_MODULE_FROM_SANDBOX,
   REMOVE_DIRECTORY_FROM_SANDBOX,
+  SET_NPM_DEPENDENCIES,
 } from './actions';
 
 const initialState = {};
@@ -31,6 +32,11 @@ function singleSandboxReducer(sandbox, action: Action) {
         ...sandbox,
         directories: sandbox.directories.filter(d => d !== action.directoryId),
       };
+    case SET_NPM_DEPENDENCIES:
+      return {
+        ...sandbox,
+        npmDependencies: action.dependencies,
+      };
     default:
       return sandbox;
   }
@@ -42,6 +48,7 @@ export default function reducer(state = initialState, action: Action) {
     case ADD_DIRECTORY_TO_SANDBOX:
     case REMOVE_MODULE_FROM_SANDBOX:
     case REMOVE_DIRECTORY_FROM_SANDBOX:
+    case SET_NPM_DEPENDENCIES:
       if (state[action.id]) {
         return {
           ...state,

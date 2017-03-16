@@ -11,7 +11,7 @@ import sandboxActionCreators
 
 import CodeEditor from './CodeEditor';
 // import Versions from './Versions';
-// import Dependencies from './Dependencies';
+import Dependencies from './Dependencies';
 
 const Container = styled.div`
   position: absolute;
@@ -44,7 +44,11 @@ class Workspace extends React.PureComponent {
       <Container>
         <CodeEditor sandbox={sandbox} sandboxActions={sandboxActions} />
         {/* <Versions sandbox={sandbox} />*/}
-        {/* <Dependencies source={sandbox.source} sandbox={sandbox} /> */}
+        <Dependencies
+          sandboxId={sandbox.id}
+          npmDependencies={sandbox.npmDependencies}
+          sandboxActions={sandboxActions}
+        />
       </Container>
     );
   }

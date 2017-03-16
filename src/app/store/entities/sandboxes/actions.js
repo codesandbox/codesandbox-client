@@ -21,21 +21,30 @@ const UPDATE_MODULE_API_ACTIONS = createAPIActions('SANDBOX', 'UPDATE_MODULE');
 const DELETE_MODULE_API_ACTIONS = createAPIActions('SANDBOX', 'DELETE_MODULE');
 const CREATE_DIRECTORY_API_ACTIONS = createAPIActions(
   'SANDBOX',
-  'CREATE_DIRECTORY',
+  'CREATE_DIRECTORY'
 );
 const UPDATE_DIRECTORY_API_ACTIONS = createAPIActions(
   'SANDBOX',
-  'UPDATE_DIRECTORY',
+  'UPDATE_DIRECTORY'
 );
 const DELETE_DIRECTORY_API_ACTIONS = createAPIActions(
   'SANDBOX',
-  'DELETE_DIRECTORY',
+  'DELETE_DIRECTORY'
+);
+const UPDATE_NPM_DEPENDENCY_ACTIONS = createAPIActions(
+  'SANDBOX',
+  'UPDATE_NPM_DEPENDENCY'
+);
+const DELETE_NPM_DEPENDENCY_ACTIONS = createAPIActions(
+  'SANDBOX',
+  'DELETE_NPM_DEPENDENCY'
 );
 
 export const REMOVE_MODULE_FROM_SANDBOX = 'REMOVE_MODULE_FROM_SANDBOX';
 export const REMOVE_DIRECTORY_FROM_SANDBOX = 'REMOVE_DIRECTORY_FROM_SANDBOX';
 export const ADD_MODULE_TO_SANDBOX = 'ADD_MODULE_TO_SANDBOX';
 export const ADD_DIRECTORY_TO_SANDBOX = 'ADD_DIRECTORY_TO_SANDBOX';
+export const SET_NPM_DEPENDENCIES = 'SET_NPM_DEPENDENCIES';
 
 const addModuleToSandbox = (id, moduleId) => ({
   type: ADD_MODULE_TO_SANDBOX,
@@ -62,7 +71,7 @@ const removeChildrenOfDirectory = (
   directoryId,
   sandboxId: string,
   modules: Array<Module>,
-  directories: Array<Directory>,
+  directories: Array<Directory>
 ) => dispatch => {
     modules
       .filter(m => m.directoryId === directoryId)
@@ -70,7 +79,7 @@ const removeChildrenOfDirectory = (
     directories.filter(d => d.directoryId === directoryId).forEach(d => {
       dispatch(removeDirectoryFromSandbox(sandboxId, d.id));
       dispatch(
-        removeChildrenOfDirectory(d.id, sandboxId, modules, directories),
+        removeChildrenOfDirectory(d.id, sandboxId, modules, directories)
       );
     });
   };
@@ -78,7 +87,7 @@ const removeChildrenOfDirectory = (
 export default {
   getById: (id: string) => async (dispatch: Function) => {
     const { data } = await dispatch(
-      doRequest(SINGLE_SANDBOX_API_ACTIONS, `sandboxes/${id}`),
+      doRequest(SINGLE_SANDBOX_API_ACTIONS, `sandboxes/${id}`)
     );
 
     dispatch(normalizeResult(entity, data));
@@ -88,7 +97,7 @@ export default {
       doRequest(CREATE_SANDBOX_API_ACTIONS, `sandboxes`, {
         method: 'POST',
         body: { sandbox: {} },
-      }),
+      })
     );
 
     await dispatch(normalizeResult(entity, data));
@@ -99,7 +108,7 @@ export default {
     const { data } = await dispatch(
       doRequest(FORK_SANDBOX_API_ACTIONS, `sandboxes/${id}/fork`, {
         method: 'POST',
-      }),
+      })
     );
 
     await dispatch(normalizeResult(entity, data));
@@ -107,13 +116,13 @@ export default {
     return sandboxUrl(data);
   },
   createModule: (id: string, title: string, directoryId: ?string) => async (
-    dispatch: Function,
+    dispatch: Function
   ) => {
     const { data } = await dispatch(
       doRequest(CREATE_MODULE_API_ACTIONS, `sandboxes/${id}/modules`, {
         method: 'POST',
         body: { module: { title, directoryId } },
-      }),
+      })
     );
 
     dispatch(normalizeResult(moduleEntity, data));
@@ -121,7 +130,7 @@ export default {
   },
   renameModule: (id: string, moduleId: string, title: string) => async (
     dispatch: Function,
-    getState: Function,
+    getState: Function
   ) => {
     // Eager rename, just undo it when something goes wrong
     const oldTitle = modulesSelector(getState())[moduleId].title;
@@ -135,8 +144,8 @@ export default {
           {
             method: 'PUT',
             body: { module: { title } },
-          },
-        ),
+          }
+        )
       );
     } catch (e) {
       dispatch(moduleActions.renameModule(moduleId, oldTitle));
@@ -145,7 +154,7 @@ export default {
   moveModuleToDirectory: (
     sandboxId: string,
     moduleId: string,
-    directoryId: string,
+    directoryId: string
   ) => async (dispatch: Function, getState: Function) => {
       // Eager move it
       const oldDirectoryId = modulesSelector(getState())[moduleId].directoryId;
@@ -159,15 +168,15 @@ export default {
             {
               method: 'PUT',
               body: { module: { directoryId } },
-            },
-          ),
+            }
+          )
         );
       } catch (e) {
         dispatch(moduleActions.moveModule(moduleId, oldDirectoryId));
       }
     },
   deleteModule: (sandboxId: string, moduleId: string) => async (
-    dispatch: Function,
+    dispatch: Function
   ) => {
     // Eager remove it
     dispatch(removeModuleFromSandbox(sandboxId, moduleId));
@@ -179,8 +188,8 @@ export default {
           `sandboxes/${sandboxId}/modules/${moduleId}`,
           {
             method: 'DELETE',
-          },
-        ),
+          }
+        )
       );
     } catch (e) {
       // It failed, just add it back
@@ -188,13 +197,13 @@ export default {
     }
   },
   createDirectory: (id: string, title: string, directoryId: ?string) => async (
-    dispatch: Function,
+    dispatch: Function
   ) => {
     const { data } = await dispatch(
       doRequest(CREATE_DIRECTORY_API_ACTIONS, `sandboxes/${id}/directories`, {
         method: 'POST',
         body: { directory: { title, directoryId } },
-      }),
+      })
     );
 
     dispatch(normalizeResult(directoryEntity, data));
@@ -202,7 +211,7 @@ export default {
   },
   renameDirectory: (id: string, directoryId: string, title: string) => async (
     dispatch: Function,
-    getState: Function,
+    getState: Function
   ) => {
     // Eager rename, just undo it when something goes wrong
     const oldTitle = directoriesSelector(getState())[directoryId].title;
@@ -216,8 +225,8 @@ export default {
           {
             method: 'PUT',
             body: { directory: { title } },
-          },
-        ),
+          }
+        )
       );
     } catch (e) {
       dispatch(directoryActions.renameDirectory(directoryId, oldTitle));
@@ -226,7 +235,7 @@ export default {
   moveDirectoryToDirectory: (
     sandboxId: string,
     directoryId: string,
-    parentId: string,
+    parentId: string
   ) => async (dispatch: Function, getState: Function) => {
       // Eager move it
       const oldDirectoryId = directoriesSelector(getState())[
@@ -242,8 +251,8 @@ export default {
             {
               method: 'PUT',
               body: { directory: { directoryId: parentId } },
-            },
-          ),
+            }
+          )
         );
       } catch (e) {
         dispatch(directoryActions.moveDirectory(directoryId, oldDirectoryId));
@@ -251,7 +260,7 @@ export default {
     },
   deleteDirectory: (sandboxId: string, directoryId: string) => async (
     dispatch: Function,
-    getState: Function,
+    getState: Function
   ) => {
     dispatch(removeDirectoryFromSandbox(sandboxId, directoryId));
 
@@ -262,8 +271,8 @@ export default {
           `sandboxes/${sandboxId}/directories/${directoryId}`,
           {
             method: 'DELETE',
-          },
-        ),
+          }
+        )
       );
 
       const sandbox = singleSandboxSelector(getState(), { id: sandboxId });
@@ -274,11 +283,54 @@ export default {
 
       // Recursively delete all children
       dispatch(
-        removeChildrenOfDirectory(directoryId, sandboxId, modules, directories),
+        removeChildrenOfDirectory(directoryId, sandboxId, modules, directories)
       );
     } catch (e) {
       // It failed, add it back
       dispatch(addDirectoryToSandbox(sandboxId, directoryId));
     }
+  },
+  addNPMDependency: (sandboxId: string, dependency: string, version: string) =>
+    async (dispatch: Function) => {
+      const result = await dispatch(
+        doRequest(
+          UPDATE_NPM_DEPENDENCY_ACTIONS,
+          `sandboxes/${sandboxId}/dependencies`,
+          {
+            method: 'POST',
+            body: {
+              dependency: {
+                name: dependency,
+                version,
+              },
+            },
+          }
+        )
+      );
+
+      dispatch({
+        type: SET_NPM_DEPENDENCIES,
+        id: sandboxId,
+        dependencies: result.data,
+      });
+    },
+  removeNPMDependency: (sandboxId: string, dependency: string) => async (
+    dispatch: Function
+  ) => {
+    const result = await dispatch(
+      doRequest(
+        DELETE_NPM_DEPENDENCY_ACTIONS,
+        `sandboxes/${sandboxId}/dependencies/${dependency}`,
+        {
+          method: 'DELETE',
+        }
+      )
+    );
+
+    dispatch({
+      type: SET_NPM_DEPENDENCIES,
+      id: sandboxId,
+      dependencies: result.data,
+    });
   },
 };

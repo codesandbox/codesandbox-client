@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import WorkspaceSubtitle from '../WorkspaceSubtitle';
-import Button from '../../../../../components/buttons/Button';
+import Button from '../../../../../../components/buttons/Button';
 import WorkspaceInputContainer from '../WorkspaceInputContainer';
 
 const ButtonContainer = styled.div`
@@ -10,14 +10,14 @@ const ButtonContainer = styled.div`
 `;
 
 type State = {
-  name: string;
-  version: string;
+  name: string,
+  version: string,
 };
 
 type Props = {
-  addDependency: (dependency: string, version: string) => Promise<boolean>;
-  existingDependencies: Array<string>;
-  processing: boolean;
+  addDependency: (dependency: string, version: string) => Promise<boolean>,
+  existingDependencies: Array<string>,
+  processing: boolean,
 };
 
 const initialState = {
@@ -43,9 +43,8 @@ export default class AddVersion extends React.PureComponent {
 
   addDependency = async () => {
     if (this.state.name) {
-      const result = await this.props.addDependency(this.state.name, this.state.version);
-
-      if (result === true) this.setState(initialState);
+      await this.props.addDependency(this.state.name, this.state.version);
+      this.setState(initialState);
     }
   };
 
@@ -80,7 +79,12 @@ export default class AddVersion extends React.PureComponent {
           />
         </WorkspaceInputContainer>
         <ButtonContainer>
-          <Button disabled={!isValid || processing} block small onClick={this.addDependency}>
+          <Button
+            disabled={!isValid || processing}
+            block
+            small
+            onClick={this.addDependency}
+          >
             {replacing ? 'replace' : 'add'} Package
           </Button>
         </ButtonContainer>

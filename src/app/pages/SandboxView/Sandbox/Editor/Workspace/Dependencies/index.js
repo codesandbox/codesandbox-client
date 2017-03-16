@@ -1,26 +1,25 @@
+// @flow
+
 import React from 'react';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
 import styled from 'styled-components';
+
+import sandboxActionCreators
+  from '../../../../../../store/entities/sandboxes/actions';
 
 import WorkspaceTitle from '../WorkspaceTitle';
 import WorkspaceSubtitle from '../WorkspaceSubtitle';
 import AddVersion from './AddVersion';
-import sourceEntity from '../../../../../store/entities/sources';
-import sandboxEntity from '../../../../../store/entities/sandboxes';
-import type { Source } from '../../../../../store/entities/sources/';
-import type { Sandbox } from '../../../../../store/entities/sandboxes/';
+
 import VersionEntry from './VersionEntry';
 
 type Props = {
-  sandbox: Sandbox;
-  source: Source;
-  sourceActions: sourceEntity.actions;
-  sandboxActions: sandboxEntity.actions;
+  sandboxId: string,
+  npmDependencies: { [dep: string]: string },
+  sandboxActions: typeof sandboxActionCreators,
 };
 
 type State = {
-  processing: boolean;
+  processing: boolean,
 };
 
 const Overlay = styled.div`
@@ -38,62 +37,48 @@ const Overlay = styled.div`
   user-select: none;
 `;
 
-const mapDispatchToProps = dispatch => ({
-  sourceActions: bindActionCreators(sourceEntity.actions, dispatch),
-  sandboxActions: bindActionCreators(sandboxEntity.actions, dispatch),
-});
-class Dependencies extends React.PureComponent {
+export default class Dependencies extends React.PureComponent {
   state = {
     processing: false,
   };
 
-  addDependency = async (name: string, version: ?string): Promise<boolean> => {
-    const { source, sourceActions } = this.props;
-    if (source) {
-      const realVersion = version || 'latest';
-      const realName = name.toLowerCase();
-      this.setState({
-        processing: true,
-      });
-      const success = await sourceActions.addNPMDependency(source.id, realName, realVersion);
-      this.setState({
-        processing: false,
-      });
-      if (success) {
-        this.commitDependencies();
-        return true;
-      }
-    }
-    return false;
+  addDependency = async (name: string, version: ?string): Promise<void> => {
+    const { sandboxId, sandboxActions } = this.props;
+    const realVersion = version || 'latest';
+    const realName = name.toLowerCase();
+    this.setState({
+      processing: true,
+    });
+    try {
+      await sandboxActions.addNPMDependency(sandboxId, realName, realVersion);
+    } catch (e) {}
+    this.setState({
+      processing: false,
+    });
   };
 
-  commitDependencies = () => {
-    const { sandbox, sandboxActions } = this.props;
-    if (sandbox) {
-      sandboxActions.commitDependencies(sandbox.id);
-    }
+  handleRemove = async (name: string) => {
+    const { sandboxId, sandboxActions } = this.props;
+    this.setState({
+      processing: true,
+    });
+    await sandboxActions.removeNPMDependency(sandboxId, name);
+    this.setState({
+      processing: false,
+    });
   };
-
-  handleRemove = (name: string) => {
-    const { source, sourceActions } = this.props;
-    if (source) {
-      sourceActions.removeNPMDependency(source.id, name);
-
-      this.commitDependencies();
-    }
-  }
 
   props: Props;
   state: State;
 
   render() {
-    const { source } = this.props;
-    const bundle = source.bundle || {};
-    const processing = bundle.processing || this.state.processing;
+    const { npmDependencies } = this.props;
+    const processing = this.state.processing;
 
     return (
       <div>
-        {processing && <Overlay>We{"'"}re processing dependencies, please wait...</Overlay>}
+        {processing &&
+          <Overlay>We{"'"}re processing dependencies, please wait...</Overlay>}
         <WorkspaceTitle>
           Dependencies
         </WorkspaceTitle>
@@ -101,16 +86,18 @@ class Dependencies extends React.PureComponent {
           <WorkspaceSubtitle>
             NPM Packages
           </WorkspaceSubtitle>
-          {Object.keys(source.npmDependencies).sort().map(dep => (
-            <VersionEntry
-              key={dep}
-              dependencies={source.npmDependencies}
-              dependency={dep}
-              onRemove={this.handleRemove}
-            />
-          ))}
+          {Object.keys(npmDependencies)
+            .sort()
+            .map(dep => (
+              <VersionEntry
+                key={dep}
+                dependencies={npmDependencies}
+                dependency={dep}
+                onRemove={this.handleRemove}
+              />
+            ))}
           <AddVersion
-            existingDependencies={Object.keys(source.npmDependencies)}
+            existingDependencies={Object.keys(npmDependencies)}
             addDependency={this.addDependency}
           />
         </div>
@@ -118,5 +105,3 @@ class Dependencies extends React.PureComponent {
     );
   }
 }
-
-export default connect(null, mapDispatchToProps)(Dependencies);
