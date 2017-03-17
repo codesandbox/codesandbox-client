@@ -4,13 +4,22 @@ import styled from 'styled-components';
 
 import { debounce } from 'lodash';
 
-import type { Module } from '../../../../../../../store/entities/modules/';
-import type { Source } from '../../../../../../../store/entities/sources/';
-import type { Directory } from '../../../../../../../store/entities/directories/index';
-import type { Boilerplate } from '../../../../../../../store/entities/boilerplates';
-import { frameUrl } from '../../../../../../../utils/url-generator';
+import type {
+  Module,
+} from '../../../../../../../../store/entities/sandboxes/modules/entity';
+import type {
+  Sandbox,
+} from '../../../../../../../../store/entities/sandboxes/entity';
+import type {
+  Directory,
+} from '../../../../../../../../store/entities/sandboxes/directories/entity';
+import { frameUrl } from '../../../../../../../../utils/url-generator';
 import Navigator from './Navigator';
-import { isMainModule } from '../../../../../../../store/entities/modules/index';
+import {
+  isMainModule,
+} from '../../../../../../../../store/entities/sandboxes/modules/validator';
+import defaultBoilerplates
+  from '../../../../../../../../store/entities/sandboxes/boilerplates/default-boilerplates';
 
 const Container = styled.div`
   position: absolute;
@@ -36,22 +45,22 @@ const LoadingDepText = styled.div`
 `;
 
 type Props = {
-  modules: Array<Module>;
-  directories: Array<Directory>;
-  boilerplates: Array<Boilerplate>;
-  bundle: typeof Source.bundle;
-  fetchBundle: (id: string) => Object;
-  module: Module;
-  setError: (id: string, error: ?{ message: string; line: number }) => void;
+  sandboxId: string,
+  modules: Array<Module>,
+  directories: Array<Directory>,
+  bundle: Sandbox.dependencyBundle,
+  fetchBundle: (id: string) => Object,
+  module: Module,
+  setError: (id: string, error: ?{ message: string, line: number }) => void,
 };
 
 type State = {
-  frameInitialized: boolean;
-  url: string;
-  history: Array<string>;
-  historyPosition: number;
-  urlInAddressBar: string;
-  isProjectView: boolean;
+  frameInitialized: boolean,
+  url: ?string,
+  history: Array<string>,
+  historyPosition: number,
+  urlInAddressBar: string,
+  isProjectView: boolean,
 };
 
 export default class Preview extends React.PureComponent {
@@ -65,28 +74,27 @@ export default class Preview extends React.PureComponent {
       historyPosition: 0,
       urlInAddressBar: '',
       isProjectView: true,
+      url: null,
     };
   }
 
   fetchBundle = () => {
-    const { module, fetchBundle } = this.props;
-    if (this.currentBundler) {
-      this.currentBundler.cancel();
-    }
-    this.currentBundler = fetchBundle(module.sourceId);
-  };
-
-  currentBundler: {
-    cancel: () => void;
+    const { sandboxId, fetchBundle } = this.props;
+    fetchBundle(sandboxId);
   };
 
   componentDidUpdate(prevProps: Props) {
-    if (prevProps.module.id !== this.props.module.id && this.state.isProjectView) {
+    if (
+      prevProps.module.id !== this.props.module.id && this.state.isProjectView
+    ) {
       // If user only navigated while watching project
       return;
     }
 
-    if ((prevProps.module.code !== this.props.module.code) && this.state.frameInitialized) {
+    if (
+      prevProps.module.code !== this.props.module.code &&
+      this.state.frameInitialized
+    ) {
       this.executeCode();
     }
   }
@@ -122,7 +130,12 @@ export default class Preview extends React.PureComponent {
   };
 
   executeCode = () => {
-    const { modules, directories, boilerplates, bundle = {}, module } = this.props;
+    const {
+      modules,
+      directories,
+      bundle = {},
+      module,
+    } = this.props;
     const { isProjectView } = this.state;
 
     if (bundle.manifest == null) {
@@ -132,23 +145,26 @@ export default class Preview extends React.PureComponent {
       return;
     }
 
-    const mainModule = isProjectView ? modules.filter(isMainModule)[0] : module;
+    const mainModule = isProjectView ? modules.find(isMainModule) : module;
 
     requestAnimationFrame(() => {
-      document.getElementById('sandbox').contentWindow.postMessage({
-        type: 'compile',
-        boilerplates,
-        module: mainModule,
-        changedModule: module,
-        modules,
-        directories,
-        manifest: bundle.manifest,
-        url: bundle.url,
-      }, '*');
+      document.getElementById('sandbox').contentWindow.postMessage(
+        {
+          type: 'compile',
+          boilerplates: defaultBoilerplates,
+          module: mainModule,
+          changedModule: module,
+          modules,
+          directories,
+          manifest: bundle.manifest,
+          url: bundle.url,
+        },
+        '*'
+      );
     });
   };
 
-  setError = (e: ?{ message: string; line: number }) => {
+  setError = (e: ?{ message: string, line: number }) => {
     this.props.setError(this.props.module.id, e);
   };
 
@@ -161,7 +177,7 @@ export default class Preview extends React.PureComponent {
 
     document.getElementById('sandbox').src = frameUrl(urlInAddressBar);
     this.commitUrl(urlInAddressBar);
-  }
+  };
 
   handleRefresh = () => {
     const { history, historyPosition } = this.state;
@@ -170,12 +186,15 @@ export default class Preview extends React.PureComponent {
     this.setState({
       urlInAddressBar: history[historyPosition],
     });
-  }
+  };
 
   handleBack = () => {
-    document.getElementById('sandbox').contentWindow.postMessage({
-      type: 'urlback',
-    }, '*');
+    document.getElementById('sandbox').contentWindow.postMessage(
+      {
+        type: 'urlback',
+      },
+      '*'
+    );
 
     const { historyPosition, history } = this.state;
     this.setState({
@@ -185,9 +204,12 @@ export default class Preview extends React.PureComponent {
   };
 
   handleForward = () => {
-    document.getElementById('sandbox').contentWindow.postMessage({
-      type: 'urlforward',
-    }, '*');
+    document.getElementById('sandbox').contentWindow.postMessage(
+      {
+        type: 'urlforward',
+      },
+      '*'
+    );
 
     const { historyPosition, history } = this.state;
     this.setState({
@@ -220,7 +242,12 @@ export default class Preview extends React.PureComponent {
 
   render() {
     const { bundle = {} } = this.props;
-    const { historyPosition, history, urlInAddressBar, isProjectView } = this.state;
+    const {
+      historyPosition,
+      history,
+      urlInAddressBar,
+      isProjectView,
+    } = this.state;
 
     const url = urlInAddressBar || '';
 

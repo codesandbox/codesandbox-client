@@ -1,15 +1,10 @@
 // @flow
 import React from 'react';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
 
-import type { Module } from '../../../../store/entities/modules';
-import type { Sandbox } from '../../../../store/entities/sandboxes';
-import type { SandboxState as ViewState } from '../../../../store/reducers/views/sandbox';
+import type { Sandbox } from '../../../../../store/entities/sandboxes/entity';
 
-import View from './View';
-import { modulesBySandboxSelector } from '../../../../store/entities/modules/selector';
-import { sandboxViewSelector } from '../../../../store/selectors/views/sandbox-selector';
+import EditorPreview from './View/EditorPreview';
 
 const Frame = styled.div`
   display: flex;
@@ -20,23 +15,17 @@ const Frame = styled.div`
 `;
 
 type Props = {
-  modules: Array<Module>;
-  sandbox: Sandbox;
-  view: ViewState;
+  sandbox: Sandbox,
 };
 type State = {
-  resizing: boolean;
+  resizing: boolean,
 };
 
-const mapStateToProps = (state, props) => ({
-  view: sandboxViewSelector(state),
-  modules: modulesBySandboxSelector(state, { id: props.sandbox.id }),
-});
-class Content extends React.PureComponent {
+export default class Content extends React.PureComponent {
   componentDidMount() {
     window.onbeforeunload = () => {
-      const { modules } = this.props;
-      const notSynced = modules.some(m => m.isNotSynced);
+      const { sandbox } = this.props;
+      const notSynced = sandbox.modules.some(m => m.isNotSynced);
 
       if (notSynced) {
         return 'You have not saved all your modules, are you sure you want to close this tab?';
@@ -50,13 +39,11 @@ class Content extends React.PureComponent {
   state: State;
 
   render() {
-    const { view, sandbox } = this.props;
+    const { sandbox } = this.props;
     return (
       <Frame>
-        <View sandbox={sandbox} tab={view.tabs.find(t => t.id === view.currentTab)} />
+        <EditorPreview sandbox={sandbox} />
       </Frame>
     );
   }
 }
-
-export default connect(mapStateToProps)(Content);

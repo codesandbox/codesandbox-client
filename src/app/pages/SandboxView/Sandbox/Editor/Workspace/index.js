@@ -22,7 +22,7 @@ const Container = styled.div`
 `;
 
 type Props = {
-  sandbox: ?Sandbox,
+  sandbox: Sandbox,
   sandboxActions: typeof sandboxActionCreators,
 };
 
@@ -38,8 +38,6 @@ class Workspace extends React.PureComponent {
       sandboxActions,
     } = this.props;
 
-    if (sandbox == null) return null;
-
     return (
       <Container>
         <CodeEditor sandbox={sandbox} sandboxActions={sandboxActions} />
@@ -48,6 +46,9 @@ class Workspace extends React.PureComponent {
           sandboxId={sandbox.id}
           npmDependencies={sandbox.npmDependencies}
           sandboxActions={sandboxActions}
+          processing={
+            sandbox.dependencyBundle && sandbox.dependencyBundle.processing
+          }
         />
       </Container>
     );

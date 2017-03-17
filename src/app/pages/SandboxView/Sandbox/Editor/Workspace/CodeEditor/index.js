@@ -10,6 +10,9 @@ import type {
 import sandboxActionCreators
   from '../../../../../../store/entities/sandboxes/actions';
 import WorkspaceTitle from '../WorkspaceTitle';
+import {
+  isMainModule,
+} from '../../../../../../store/entities/sandboxes/modules/validator';
 
 type Props = {
   sandbox: ?Sandbox,
@@ -42,6 +45,10 @@ class CodeEditor extends React.PureComponent {
   render() {
     const { sandbox } = this.props;
 
+    const mainModule = sandbox.modules.find(isMainModule);
+
+    const { currentModule = mainModule } = sandbox;
+
     return (
       <div>
         <WorkspaceTitle>Code Editor</WorkspaceTitle>
@@ -51,6 +58,7 @@ class CodeEditor extends React.PureComponent {
             title={sandbox.title}
             sandboxId={sandbox.id}
             modules={sandbox.modules}
+            currentModuleId={currentModule.id}
             directories={sandbox.directories}
             renameSandbox={this.renameSandbox}
             id={null}

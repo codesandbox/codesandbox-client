@@ -1,15 +1,12 @@
 // @flow
 
-export const CHANGE_CODE = 'CHANGE_CODE';
 export const RENAME_MODULE = 'RENAME_MODULE';
 export const MOVE_MODULE = 'MOVE_MODULE';
+export const SET_CODE = 'SET_CODE';
+export const SET_MODULE_ERROR = 'SET_MODULE_ERROR';
+export const SET_MODULE_SYNCED = 'SET_MODULE_SYNCED';
 
 export default {
-  changeCode: (id: string, code: string) => ({
-    type: CHANGE_CODE,
-    id,
-    code,
-  }),
   renameModule: (id: string, title: string) => ({
     type: RENAME_MODULE,
     id,
@@ -19,5 +16,20 @@ export default {
     type: MOVE_MODULE,
     id,
     directoryId,
+  }),
+  setCode: (id: string, code: string) => ({
+    type: SET_CODE,
+    id,
+    code,
+    isNotSynced: true,
+  }),
+  setModuleSynced: (id: string) => ({
+    type: SET_MODULE_SYNCED,
+    id,
+  }),
+  setError: (id: string, error: Object) => ({
+    type: SET_MODULE_ERROR,
+    id,
+    error,
   }),
 };

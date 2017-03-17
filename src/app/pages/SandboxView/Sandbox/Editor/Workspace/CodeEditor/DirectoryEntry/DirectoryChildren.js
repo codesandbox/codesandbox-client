@@ -23,7 +23,7 @@ type Props = {
   openMenu: (event: Event) => void,
   sandboxId: string,
   deleteEntry: (id: string) => void,
-  openModuleTab: (id: string) => void,
+  setCurrentModule: (id: string) => void,
   currentModuleId: ?string,
   parentId: string,
 };
@@ -41,7 +41,7 @@ export default class DirectoryChildren extends React.PureComponent {
       depth = 0,
       renameModule,
       openMenu,
-      openModuleTab,
+      setCurrentModule,
       directories,
       parentId,
       sandboxId,
@@ -83,7 +83,7 @@ export default class DirectoryChildren extends React.PureComponent {
               deleteEntry={deleteEntry}
               isNotSynced={m.isNotSynced}
               renameValidator={this.validateTitle}
-              openModuleTab={openModuleTab}
+              setCurrentModule={setCurrentModule}
               isMainModule={mainModule}
             />
           );

@@ -49,9 +49,7 @@ export default class Dependencies extends React.PureComponent {
     this.setState({
       processing: true,
     });
-    try {
-      await sandboxActions.addNPMDependency(sandboxId, realName, realVersion);
-    } catch (e) {}
+    await sandboxActions.addNPMDependency(sandboxId, realName, realVersion);
     this.setState({
       processing: false,
     });
@@ -72,8 +70,8 @@ export default class Dependencies extends React.PureComponent {
   state: State;
 
   render() {
-    const { npmDependencies } = this.props;
-    const processing = this.state.processing;
+    const { npmDependencies, processing: fetchingDependencies } = this.props;
+    const processing = fetchingDependencies || this.state.processing;
 
     return (
       <div>

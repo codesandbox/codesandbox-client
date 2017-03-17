@@ -33,7 +33,7 @@ type Props = {
   openMenu: Function,
   closeTree?: () => void,
   hasChildren?: boolean,
-  openModuleTab: (id: string) => void,
+  setCurrentModule: (id: string) => void,
   root: ?boolean,
   isMainModule: boolean,
 };
@@ -125,7 +125,7 @@ class Entry extends React.PureComponent {
     });
   };
 
-  openModuleTab = () => this.props.openModuleTab(this.props.id);
+  setCurrentModule = () => this.props.setCurrentModule(this.props.id);
 
   props: Props;
   state: State;
@@ -138,7 +138,7 @@ class Entry extends React.PureComponent {
       hasChildren,
       type,
       active,
-      openModuleTab,
+      setCurrentModule,
       connectDragSource,
       onClick,
       isNotSynced,
@@ -149,7 +149,7 @@ class Entry extends React.PureComponent {
     return connectDragSource(
       <div>
         <EntryContainer
-          onClick={openModuleTab ? this.openModuleTab : onClick}
+          onClick={setCurrentModule ? this.setCurrentModule : onClick}
           depth={depth}
           nameValidationError={error}
           active={active}
@@ -172,7 +172,7 @@ class Entry extends React.PureComponent {
               />
             : <EntryTitle title={title} />}
         </EntryContainer>
-      </div>,
+      </div>
     );
   }
 }

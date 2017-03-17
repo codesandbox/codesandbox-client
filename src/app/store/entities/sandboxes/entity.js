@@ -10,13 +10,22 @@ export type Sandbox = {
   title: ?string,
   description: string,
   modules: Array<Module>,
+  currentModule: ?Module,
   directories: Array<Directory>,
   npmDependencies: {
     [dep: string]: string,
+  },
+  dependencyBundle: ?{
+    manifest?: Object,
+    hash?: string,
+    url?: string,
+    error?: string,
+    processing?: boolean,
   },
 };
 
 export default new schema.Entity('sandboxes', {
   modules: [moduleEntity],
   directories: [directoryEntity],
+  currentModule: moduleEntity,
 });

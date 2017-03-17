@@ -17,20 +17,20 @@ import 'codemirror/addon/fold/foldcode';
 import 'codemirror/addon/fold/foldgutter';
 import 'codemirror/addon/fold/brace-fold';
 
-import theme from '../../../../../../../../common/theme';
+import theme from '../../../../../../../../../common/theme';
 import Header from './Header';
 
 const documentCache = {};
 
 type Props = {
-  code: ?string;
-  error: ?Object;
-  id: string;
-  title: string;
-  modulePath: string;
-  changeCode: (id: string, code: string) => void;
-  saveCode: () => void;
-  canSave: boolean;
+  code: ?string,
+  error: ?Object,
+  id: string,
+  title: string,
+  modulePath: string,
+  changeCode: (id: string, code: string) => void,
+  saveCode: () => void,
+  canSave: boolean,
 };
 
 const Container = styled.div`
@@ -60,8 +60,7 @@ const ErrorMessage = styled.div`
 
 const handleError = (cm, currentError, nextError, nextCode, nextId) => {
   if (currentError || nextError) {
-    if (currentError && nextError &&
-      currentError.line === nextError.line) {
+    if (currentError && nextError && currentError.line === nextError.line) {
       return;
     }
 
@@ -72,9 +71,11 @@ const handleError = (cm, currentError, nextError, nextCode, nextId) => {
     }
 
     const code = nextCode || '';
-    if (nextError && (
-      nextError.moduleId == null || nextError.moduleId === nextId)
-      && nextError.line !== 0 && nextError.line <= code.split('\n').length
+    if (
+      nextError &&
+      (nextError.moduleId == null || nextError.moduleId === nextId) &&
+      nextError.line !== 0 &&
+      nextError.line <= code.split('\n').length
     ) {
       cm.addLineClass(nextError.line, 'background', 'cm-line-error');
     }
@@ -142,18 +143,17 @@ export default class CodeEditor extends React.PureComponent {
       lineWrapping: true,
       styleActiveLine: true,
       extraKeys: {
-        Tab: (cm) => {
+        Tab: cm => {
           const spaces = Array(cm.getOption('indentUnit') + 1).join(' ');
           cm.replaceSelection(spaces);
         },
-        'Cmd-/': (cm) => {
+        'Cmd-/': cm => {
           cm.listSelections().forEach(() => {
             cm.toggleComment({ lineComment: '//' });
           });
         },
       },
     });
-
 
     this.codemirror.on('change', this.handleChange);
   };
@@ -170,13 +170,16 @@ export default class CodeEditor extends React.PureComponent {
     const { error, title, saveCode, canSave, modulePath } = this.props;
     return (
       <Container>
-        <Header saveComponent={canSave && saveCode} title={title} path={modulePath} />
+        <Header
+          saveComponent={canSave && saveCode}
+          title={title}
+          path={modulePath}
+        />
         <CodeContainer>
           <div style={{ height: '100%' }} ref={this.getCodeMirror} />
         </CodeContainer>
-        {error && (
-          <ErrorMessage><b>{error.title}</b>: {error.message}</ErrorMessage>
-        )}
+        {error &&
+          <ErrorMessage><b>{error.title}</b>: {error.message}</ErrorMessage>}
       </Container>
     );
   }

@@ -11,9 +11,6 @@ import type {
   Module,
 } from '../../../../../../../store/entities//sandboxes/modules/entity';
 import type {
-  Sandbox,
-} from '../../../../../../../store/entities/sandboxes/entity';
-import type {
   Directory,
 } from '../../../../../../../store/entities//sandboxes/directories/entity';
 import {
@@ -97,7 +94,7 @@ class DirectoryEntry extends React.PureComponent {
     const module = modules.find(m => m.id === id);
 
     const confirmed = confirm(
-      `Are you sure you want to delete ${module.title}?`,
+      `Are you sure you want to delete ${module.title}?`
     );
 
     if (confirmed) {
@@ -114,7 +111,7 @@ class DirectoryEntry extends React.PureComponent {
     return true;
   };
 
-  createDirectory = (_, title) => {
+  createDirectory = (_: string, title: string) => {
     const { sandboxId, id, sandboxActions } = this.props;
     sandboxActions.createDirectory(sandboxId, title, id);
     this.resetState();
@@ -129,7 +126,7 @@ class DirectoryEntry extends React.PureComponent {
     const { id, title, sandboxId, sandboxActions } = this.props;
 
     const confirmed = confirm(
-      `Are you sure you want to delete ${title} and all its children?`,
+      `Are you sure you want to delete ${title} and all its children?`
     );
 
     if (confirmed) {
@@ -165,6 +162,11 @@ class DirectoryEntry extends React.PureComponent {
     ];
   };
 
+  setCurrentModule = (moduleId: string) => {
+    const { sandboxId, sandboxActions } = this.props;
+    sandboxActions.setCurrentModule(sandboxId, moduleId);
+  };
+
   render() {
     const {
       id,
@@ -173,7 +175,6 @@ class DirectoryEntry extends React.PureComponent {
       directories,
       title,
       openMenu,
-      openModuleTab,
       currentModuleId,
       connectDropTarget,
       isOver,
@@ -225,7 +226,7 @@ class DirectoryEntry extends React.PureComponent {
             sandboxId={sandboxId}
             parentId={id}
             deleteEntry={this.deleteModule}
-            openModuleTab={openModuleTab}
+            setCurrentModule={this.setCurrentModule}
             currentModuleId={currentModuleId}
           />
           {creating === 'module' &&
@@ -239,7 +240,7 @@ class DirectoryEntry extends React.PureComponent {
               onRenameCancel={this.resetState}
             />}
         </Opener>
-      </div>,
+      </div>
     );
   }
 }
@@ -257,13 +258,13 @@ const entryTarget = {
       props.sandboxActions.moveDirectoryToDirectory(
         props.sandboxId,
         sourceItem.id,
-        props.id,
+        props.id
       );
     } else {
       props.sandboxActions.moveModuleToDirectory(
         props.sandboxId,
         sourceItem.id,
-        props.id,
+        props.id
       );
     }
   },
@@ -291,5 +292,5 @@ function collectTarget(connect, monitor) {
 }
 
 export default connect(null, mapDispatchToProps)(
-  DropTarget('ENTRY', entryTarget, collectTarget)(DirectoryEntry),
+  DropTarget('ENTRY', entryTarget, collectTarget)(DirectoryEntry)
 );

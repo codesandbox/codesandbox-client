@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import SaveIcon from 'react-icons/lib/md/save';
-import Button from '../../../../../../../components/buttons/Button';
+import Button from '../../../../../../../../components/buttons/Button';
 
 const Container = styled.div`
   display: flex;
@@ -22,11 +22,10 @@ const Path = styled.span`
   padding-right: 0.1rem;
 `;
 
-
 type Props = {
-  title: string;
-  path: string;
-  saveComponent?: () => void;
+  title: string,
+  path: string,
+  saveComponent?: () => void,
 };
 
 export default ({ path, title, saveComponent }: Props) => (

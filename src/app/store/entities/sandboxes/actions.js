@@ -1,7 +1,9 @@
 // @flow
 import { createAPIActions, doRequest } from '../../api/actions';
 import { normalizeResult } from '../actions';
+import notificationActions from '../../notifications/actions';
 import entity from './entity';
+import fetchBundle from './bundle-loader';
 import type { Module } from './modules/entity';
 import moduleEntity from './modules/entity';
 import moduleActions from './modules/actions';
@@ -13,29 +15,46 @@ import { singleSandboxSelector } from './selectors';
 import { modulesSelector } from './modules/selectors';
 import { directoriesSelector } from './directories/selectors';
 
-const SINGLE_SANDBOX_API_ACTIONS = createAPIActions('SANDBOX', 'SINGLE');
-const CREATE_SANDBOX_API_ACTIONS = createAPIActions('SANDBOX', 'CREATE');
-const FORK_SANDBOX_API_ACTIONS = createAPIActions('SANDBOX', 'FORK');
-const CREATE_MODULE_API_ACTIONS = createAPIActions('SANDBOX', 'CREATE_MODULE');
-const UPDATE_MODULE_API_ACTIONS = createAPIActions('SANDBOX', 'UPDATE_MODULE');
-const DELETE_MODULE_API_ACTIONS = createAPIActions('SANDBOX', 'DELETE_MODULE');
-const CREATE_DIRECTORY_API_ACTIONS = createAPIActions(
+export const FETCH_BUNDLE_API_ACTIONS = createAPIActions(
+  'SANDBOX',
+  'FETCH_BUNDLE'
+);
+export const SINGLE_SANDBOX_API_ACTIONS = createAPIActions('SANDBOX', 'SINGLE');
+export const CREATE_SANDBOX_API_ACTIONS = createAPIActions('SANDBOX', 'CREATE');
+export const FORK_SANDBOX_API_ACTIONS = createAPIActions('SANDBOX', 'FORK');
+export const CREATE_MODULE_API_ACTIONS = createAPIActions(
+  'SANDBOX',
+  'CREATE_MODULE'
+);
+export const SAVE_MODULE_CODE_API_ACTIONS = createAPIActions(
+  'SANDBOX',
+  'SAVE_MODULE_CODE'
+);
+export const UPDATE_MODULE_API_ACTIONS = createAPIActions(
+  'SANDBOX',
+  'UPDATE_MODULE'
+);
+export const DELETE_MODULE_API_ACTIONS = createAPIActions(
+  'SANDBOX',
+  'DELETE_MODULE'
+);
+export const CREATE_DIRECTORY_API_ACTIONS = createAPIActions(
   'SANDBOX',
   'CREATE_DIRECTORY'
 );
-const UPDATE_DIRECTORY_API_ACTIONS = createAPIActions(
+export const UPDATE_DIRECTORY_API_ACTIONS = createAPIActions(
   'SANDBOX',
   'UPDATE_DIRECTORY'
 );
-const DELETE_DIRECTORY_API_ACTIONS = createAPIActions(
+export const DELETE_DIRECTORY_API_ACTIONS = createAPIActions(
   'SANDBOX',
   'DELETE_DIRECTORY'
 );
-const UPDATE_NPM_DEPENDENCY_ACTIONS = createAPIActions(
+export const UPDATE_NPM_DEPENDENCY_ACTIONS = createAPIActions(
   'SANDBOX',
   'UPDATE_NPM_DEPENDENCY'
 );
-const DELETE_NPM_DEPENDENCY_ACTIONS = createAPIActions(
+export const DELETE_NPM_DEPENDENCY_ACTIONS = createAPIActions(
   'SANDBOX',
   'DELETE_NPM_DEPENDENCY'
 );
@@ -45,6 +64,8 @@ export const REMOVE_DIRECTORY_FROM_SANDBOX = 'REMOVE_DIRECTORY_FROM_SANDBOX';
 export const ADD_MODULE_TO_SANDBOX = 'ADD_MODULE_TO_SANDBOX';
 export const ADD_DIRECTORY_TO_SANDBOX = 'ADD_DIRECTORY_TO_SANDBOX';
 export const SET_NPM_DEPENDENCIES = 'SET_NPM_DEPENDENCIES';
+export const SET_CURRENT_MODULE = 'SET_CURRENT_MODULE';
+export const SET_BUNDLE = 'SET_BUNDLE';
 
 const addModuleToSandbox = (id, moduleId) => ({
   type: ADD_MODULE_TO_SANDBOX,
@@ -85,6 +106,11 @@ const removeChildrenOfDirectory = (
   };
 
 export default {
+  setCurrentModule: (id: string, moduleId: string) => ({
+    type: SET_CURRENT_MODULE,
+    id,
+    moduleId,
+  }),
   getById: (id: string) => async (dispatch: Function) => {
     const { data } = await dispatch(
       doRequest(SINGLE_SANDBOX_API_ACTIONS, `sandboxes/${id}`)
@@ -127,6 +153,25 @@ export default {
 
     dispatch(normalizeResult(moduleEntity, data));
     dispatch(addModuleToSandbox(id, data.id));
+  },
+  saveModuleCode: (id: string, moduleId: string) => async (
+    dispatch: Function,
+    getState: Function
+  ) => {
+    const module = modulesSelector(getState())[moduleId];
+
+    await dispatch(
+      doRequest(
+        SAVE_MODULE_CODE_API_ACTIONS,
+        `sandboxes/${id}/modules/${moduleId}`,
+        {
+          method: 'PUT',
+          body: { module: { code: module.code } },
+        }
+      )
+    );
+
+    dispatch(moduleActions.setModuleSynced(moduleId));
   },
   renameModule: (id: string, moduleId: string, title: string) => async (
     dispatch: Function,
@@ -332,5 +377,29 @@ export default {
       id: sandboxId,
       dependencies: result.data,
     });
+  },
+
+  fetchDependenciesBundle: (sandboxId: string) => async (
+    dispatch: Function
+  ) => {
+    try {
+      const result = await dispatch(
+        fetchBundle(FETCH_BUNDLE_API_ACTIONS, sandboxId)
+      );
+
+      dispatch({
+        type: SET_BUNDLE,
+        id: sandboxId,
+        bundle: result,
+      });
+    } catch (e) {
+      dispatch(
+        notificationActions.addNotification(
+          'Could not fetch dependencies',
+          'Please try again later',
+          'error'
+        )
+      );
+    }
   },
 };
