@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { Route } from 'react-router-dom';
 import 'normalize.css';
 
-// import Header from '../components/Header';
+import Header from '../components/Header';
 import Notifications from '../containers/Notifications';
 import ContextMenu from '../containers/ContextMenu';
 import SandboxView from './SandboxView/';
@@ -27,7 +27,7 @@ export default () => (
   <Container>
     <Notifications />
     <ContextMenu />
-    {/*<Header />*/}
+    <Header />
     <Content>
       <Route exact path="/" component={Create} />
       <Route path="/s" component={SandboxView} />

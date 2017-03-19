@@ -6,7 +6,6 @@ import styled from 'styled-components';
 import sandboxActionCreators
   from '../../../../../../store/entities/sandboxes/actions';
 
-import WorkspaceTitle from '../WorkspaceTitle';
 import WorkspaceSubtitle from '../WorkspaceSubtitle';
 import AddVersion from './AddVersion';
 
@@ -16,6 +15,7 @@ type Props = {
   sandboxId: string,
   npmDependencies: { [dep: string]: string },
   sandboxActions: typeof sandboxActionCreators,
+  processing: boolean,
 };
 
 type State = {
@@ -77,9 +77,6 @@ export default class Dependencies extends React.PureComponent {
       <div>
         {processing &&
           <Overlay>We{"'"}re processing dependencies, please wait...</Overlay>}
-        <WorkspaceTitle>
-          Dependencies
-        </WorkspaceTitle>
         <div>
           <WorkspaceSubtitle>
             NPM Packages

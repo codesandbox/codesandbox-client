@@ -1,10 +1,7 @@
 // @flow
 import React from 'react';
-import { Link, Match } from 'react-router';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-
-import HeaderActions from '../pages/SandboxView/Editor/HeaderActions';
-// import LogoIcon from '../pages/Homepage/logo.png';
 
 const Container = styled.div`
   position: relative;
@@ -19,14 +16,6 @@ const Container = styled.div`
   font-weight: 400;
   height: 3rem;
   min-height: 3rem;
-`;
-
-const Username = styled.div`
-  position: absolute;
-  right: 0;
-  padding: 0 1rem;
-  line-height: 3rem;
-  border-left: 1px solid ${props => props.theme.background.darken(0.2)};
 `;
 
 const Logo = styled(Link)`
@@ -55,17 +44,10 @@ const LogoName = styled.span`
   bottom: 0;
 `;
 
-export default ({ username }: { username: ?string }) => (
+export default () => (
   <Container>
     <Logo to="/">
       <LogoName>CodeSandbox</LogoName>
     </Logo>
-    <Match
-      pattern="/:username/:slug"
-      component={HeaderActions}
-    />
-
-    {username && <Username>{username}</Username>}
   </Container>
 );
-

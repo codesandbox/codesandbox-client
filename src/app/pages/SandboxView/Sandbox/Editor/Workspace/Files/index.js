@@ -9,7 +9,6 @@ import type {
 } from '../../../../../../store/entities/sandboxes/entity';
 import sandboxActionCreators
   from '../../../../../../store/entities/sandboxes/actions';
-import WorkspaceTitle from '../WorkspaceTitle';
 import {
   isMainModule,
 } from '../../../../../../store/entities/sandboxes/modules/validator';
@@ -18,7 +17,7 @@ type Props = {
   sandbox: ?Sandbox,
   sandboxActions: typeof sandboxActionCreators,
 };
-class CodeEditor extends React.PureComponent {
+class Files extends React.PureComponent {
   props: Props;
 
   renameSandbox = (title: string) => {
@@ -51,11 +50,10 @@ class CodeEditor extends React.PureComponent {
 
     return (
       <div>
-        <WorkspaceTitle>Code Editor</WorkspaceTitle>
         {sandbox &&
           <DirectoryEntry
             root
-            title={sandbox.title}
+            title={sandbox.title || 'Project'}
             sandboxId={sandbox.id}
             modules={sandbox.modules}
             currentModuleId={currentModule.id}
@@ -72,4 +70,4 @@ class CodeEditor extends React.PureComponent {
   }
 }
 
-export default DragDropContext(HTML5Backend)(CodeEditor);
+export default DragDropContext(HTML5Backend)(Files);

@@ -9,12 +9,13 @@ import type { Sandbox } from '../../../../../store/entities/sandboxes/entity';
 import sandboxActionCreators
   from '../../../../../store/entities/sandboxes/actions';
 
-import CodeEditor from './CodeEditor';
+import Files from './Files';
 // import Versions from './Versions';
 import Dependencies from './Dependencies';
+import Summary from './Summary';
+import WorkspaceItem from './WorkspaceItem';
 
 const Container = styled.div`
-  position: absolute;
   background-color: ${props => props.theme.background};
   height: 100%;
   width: 100%;
@@ -29,32 +30,27 @@ type Props = {
 const mapDispatchToProps = dispatch => ({
   sandboxActions: bindActionCreators(sandboxActionCreators, dispatch),
 });
-class Workspace extends React.PureComponent {
-  // eslint-disable-line
-  props: Props;
-  render() {
-    const {
-      sandbox,
-      sandboxActions,
-    } = this.props;
+const Workspace = ({ sandbox, sandboxActions }: Props) => (
+  <Container>
+    <WorkspaceItem defaultOpen title="Project">
+      <Summary sandbox={sandbox} />
+    </WorkspaceItem>
 
-    console.log(sandbox.id);
+    <WorkspaceItem defaultOpen title="Files">
+      <Files sandbox={sandbox} sandboxActions={sandboxActions} />
+    </WorkspaceItem>
 
-    return (
-      <Container>
-        <CodeEditor sandbox={sandbox} sandboxActions={sandboxActions} />
-        {/* <Versions sandbox={sandbox} />*/}
-        <Dependencies
-          sandboxId={sandbox.id}
-          npmDependencies={sandbox.npmDependencies}
-          sandboxActions={sandboxActions}
-          processing={
-            sandbox.dependencyBundle && sandbox.dependencyBundle.processing
-          }
-        />
-      </Container>
-    );
-  }
-}
+    <WorkspaceItem title="Dependencies">
+      <Dependencies
+        sandboxId={sandbox.id}
+        npmDependencies={sandbox.npmDependencies}
+        sandboxActions={sandboxActions}
+        processing={
+          sandbox.dependencyBundle && sandbox.dependencyBundle.processing
+        }
+      />
+    </WorkspaceItem>
+  </Container>
+);
 export default connect(null, mapDispatchToProps)(Workspace);
 // <SandboxTitle renameSandbox={this.handleRenameSandbox} title={sandbox && sandbox.title} />;
