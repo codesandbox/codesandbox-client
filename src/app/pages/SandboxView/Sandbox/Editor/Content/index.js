@@ -16,6 +16,7 @@ import sandboxActionCreators
   from '../../../../../store/entities/sandboxes/actions';
 import {
   isMainModule,
+  getModulePath,
 } from '../../../../../store/entities/sandboxes/modules/selectors';
 
 type Props = {
@@ -82,6 +83,8 @@ class EditorPreview extends React.PureComponent {
     const mainModule = modules.find(isMainModule);
     const { currentModule = mainModule } = sandbox;
 
+    const modulePath = getModulePath(modules, directories, currentModule.id);
+
     if (currentModule == null) return null;
 
     return (
@@ -104,7 +107,7 @@ class EditorPreview extends React.PureComponent {
               title={currentModule.title}
               canSave={currentModule.isNotSynced}
               saveCode={this.saveCode}
-              modulePath="TODO"
+              modulePath={modulePath}
             />
           </FullSize>
           <FullSize inactive={this.state.resizing}>
