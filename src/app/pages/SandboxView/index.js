@@ -1,7 +1,6 @@
 /* @flow */
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
-import styled from 'styled-components';
 
 import Sandbox from './Sandbox';
 import Create from './Create';

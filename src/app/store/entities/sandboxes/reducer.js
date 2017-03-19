@@ -41,6 +41,7 @@ function singleSandboxReducer(sandbox, action: Action) {
       return {
         ...sandbox,
         npmDependencies: action.dependencies,
+        dependencyBundle: {}, // So we can fetch dependencies later on again
       };
     case FETCH_BUNDLE_API_ACTIONS.REQUEST:
       return {

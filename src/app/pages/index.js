@@ -1,13 +1,14 @@
 // @flow
 import React from 'react';
 import styled from 'styled-components';
-import { BrowserRouter, Route, Redirect } from 'react-router-dom';
+import { BrowserRouter, Route } from 'react-router-dom';
 import 'normalize.css';
 
 // import Header from '../components/Header';
 import Notifications from '../containers/Notifications';
 import ContextMenu from '../containers/ContextMenu';
 import SandboxView from './SandboxView/';
+import Create from './SandboxView/Create';
 
 const Container = styled.div`
   display: flex;
@@ -29,8 +30,8 @@ export default () => (
       <ContextMenu />
       {/*<Header />*/}
       <Content>
-        <Route exact path="/" render={() => <Redirect to="/sandbox/new" />} />
-        <Route path="/sandbox" component={SandboxView} />
+        <Route exact path="/" component={Create} />
+        <Route path="/s" component={SandboxView} />
       </Content>
     </Container>
   </BrowserRouter>

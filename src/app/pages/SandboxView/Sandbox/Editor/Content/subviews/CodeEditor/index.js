@@ -2,8 +2,6 @@
 import React from 'react';
 import CodeMirror from 'codemirror';
 import styled, { injectGlobal, keyframes } from 'styled-components';
-import { debounce } from 'lodash';
-import SaveIcon from 'react-icons/lib/md/save';
 
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/mode/jsx/jsx';
@@ -17,7 +15,7 @@ import 'codemirror/addon/fold/foldcode';
 import 'codemirror/addon/fold/foldgutter';
 import 'codemirror/addon/fold/brace-fold';
 
-import theme from '../../../../../../../../../common/theme';
+import theme from '../../../../../../../../common/theme';
 import Header from './Header';
 
 const documentCache = {};
@@ -28,7 +26,7 @@ type Props = {
   id: string,
   title: string,
   modulePath: string,
-  changeCode: (id: string, code: string) => void,
+  changeCode: (id: string, code: string) => Object,
   saveCode: () => void,
   canSave: boolean,
 };
@@ -84,11 +82,6 @@ const handleError = (cm, currentError, nextError, nextCode, nextId) => {
 
 export default class CodeEditor extends React.PureComponent {
   props: Props;
-
-  constructor() {
-    super();
-    this.handleChange = debounce(this.handleChange, 0, { leading: true });
-  }
 
   componentDidMount() {
     window.addEventListener('keydown', (event: KeyboardEvent) => {

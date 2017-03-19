@@ -6,20 +6,20 @@ import { debounce } from 'lodash';
 
 import type {
   Module,
-} from '../../../../../../../../store/entities/sandboxes/modules/entity';
+} from '../../../../../../../store/entities/sandboxes/modules/entity';
 import type {
   Sandbox,
-} from '../../../../../../../../store/entities/sandboxes/entity';
+} from '../../../../../../../store/entities/sandboxes/entity';
 import type {
   Directory,
-} from '../../../../../../../../store/entities/sandboxes/directories/entity';
-import { frameUrl } from '../../../../../../../../utils/url-generator';
+} from '../../../../../../../store/entities/sandboxes/directories/entity';
+import { frameUrl } from '../../../../../../../utils/url-generator';
 import Navigator from './Navigator';
 import {
   isMainModule,
-} from '../../../../../../../../store/entities/sandboxes/modules/validator';
+} from '../../../../../../../store/entities/sandboxes/modules/validator';
 import defaultBoilerplates
-  from '../../../../../../../../store/entities/sandboxes/boilerplates/default-boilerplates';
+  from '../../../../../../../store/entities/sandboxes/boilerplates/default-boilerplates';
 
 const Container = styled.div`
   position: absolute;
@@ -67,7 +67,6 @@ export default class Preview extends React.PureComponent {
   constructor() {
     super();
 
-    this.setError = debounce(this.setError, 500);
     this.state = {
       frameInitialized: false,
       history: [],
@@ -76,6 +75,8 @@ export default class Preview extends React.PureComponent {
       isProjectView: true,
       url: null,
     };
+
+    this.executeCode = debounce(this.executeCode, 500);
   }
 
   fetchBundle = () => {
@@ -119,9 +120,8 @@ export default class Preview extends React.PureComponent {
         const { error } = e.data;
         this.setError(error);
       } else if (type === 'success') {
-        this.setError.cancel();
         // To reset the debounce, but still quickly remove errors
-        this.props.setError(this.props.module.id, null);
+        this.setError(null);
       } else if (type === 'urlchange') {
         const url = e.data.url.replace('/', '');
         this.commitUrl(url);

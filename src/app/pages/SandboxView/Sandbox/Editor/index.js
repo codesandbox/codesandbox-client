@@ -11,17 +11,9 @@ type Props = {
   sandbox: Sandbox,
 };
 
-export default class Editor extends React.PureComponent {
-  props: Props;
-
-  render() {
-    const { sandbox } = this.props;
-
-    return (
-      <SplitPane split="vertical" minSize={100} defaultSize={16 * 16}>
-        <Workspace sandbox={sandbox} />
-        <Content sandbox={sandbox} />
-      </SplitPane>
-    );
-  }
-}
+export default ({ sandbox }: Props) => (
+  <SplitPane split="vertical" minSize={100} defaultSize={16 * 16}>
+    <Workspace sandbox={sandbox} />
+    <Content sandbox={sandbox} />
+  </SplitPane>
+);
