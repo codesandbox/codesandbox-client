@@ -1,5 +1,6 @@
 // @flow
 import { createStore, applyMiddleware, compose } from 'redux';
+import { ConnectedRouter, routerMiddleware, push } from 'react-router-redux';
 
 import thunk from './services/middleware/thunk-middleware';
 import rootReducer from './root-reducer';
@@ -14,11 +15,11 @@ function getComposeEnhancers() {
   return compose;
 }
 
-export default () => {
+export default history => {
   const composeEnhancers = getComposeEnhancers();
   const store = createStore(
     rootReducer,
-    composeEnhancers(applyMiddleware(thunk)),
+    composeEnhancers(applyMiddleware(thunk, routerMiddleware(history)))
   );
 
   if (process.env.NODE_ENV === 'development') {

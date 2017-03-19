@@ -9,6 +9,7 @@ import sandboxActions from '../../../store/entities/sandboxes/actions';
 import Title from '../../../components/text/Title';
 import SubTitle from '../../../components/text/SubTitle';
 import type { Sandbox } from '../../../store/entities/sandboxes/entity';
+import { sandboxUrl } from '../../../utils/url-generator';
 
 type Props = {
   sandboxActions: typeof sandboxActions,
@@ -38,8 +39,8 @@ class Fork extends React.PureComponent {
   forkSandbox = async () => {
     const { sandbox, sandboxActions } = this.props;
     try {
-      const redirect = await sandboxActions.forkSandbox(sandbox.id);
-
+      const newSandbox = await sandboxActions.forkSandbox(sandbox.id);
+      const redirect = sandboxUrl(newSandbox);
       this.setState({
         redirect,
       });

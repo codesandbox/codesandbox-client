@@ -4695,6 +4695,13 @@ react-router-dom@^4.0.0:
     history "^4.5.1"
     react-router "^4.0.0"
 
+react-router-redux@next:
+  version "5.0.0-alpha.3"
+  resolved "https://registry.yarnpkg.com/react-router-redux/-/react-router-redux-5.0.0-alpha.3.tgz#ecff3fb955dded28c2a23e57e244c58165d5bcc7"
+  dependencies:
+    history "^4.5.1"
+    react-router "^4.0.0"
+
 react-router@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/react-router/-/react-router-4.0.0.tgz#6532075231f0bb5077c2005c1d417ad6165b3997"

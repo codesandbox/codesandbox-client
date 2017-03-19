@@ -5,9 +5,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import sandboxActions from '../../store/entities/sandboxes/actions';
-import delayEffect from '../../utils/animation/delay-effect';
 import Title from '../../components/text/Title';
-import SubTitle from '../../components/text/SubTitle';
+import { sandboxUrl } from '../../utils/url-generator';
 
 type Props = {
   sandboxActions: typeof sandboxActions,
@@ -32,8 +31,8 @@ class Create extends React.PureComponent {
     this.props.sandboxActions
       .createSandbox()
       .then(
-        redirect => this.setState({ redirect }),
-        error => this.setState({ error: true }),
+        sandbox => this.setState({ redirect: sandboxUrl(sandbox) }),
+        _ => this.setState({ error: true })
       );
   }
 

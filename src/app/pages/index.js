@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import styled from 'styled-components';
-import { BrowserRouter, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import 'normalize.css';
 
 // import Header from '../components/Header';
@@ -24,15 +24,13 @@ const Content = styled.div`
 `;
 
 export default () => (
-  <BrowserRouter>
-    <Container>
-      <Notifications />
-      <ContextMenu />
-      {/*<Header />*/}
-      <Content>
-        <Route exact path="/" component={Create} />
-        <Route path="/s" component={SandboxView} />
-      </Content>
-    </Container>
-  </BrowserRouter>
+  <Container>
+    <Notifications />
+    <ContextMenu />
+    {/*<Header />*/}
+    <Content>
+      <Route exact path="/" component={Create} />
+      <Route path="/s" component={SandboxView} />
+    </Content>
+  </Container>
 );

@@ -38,6 +38,8 @@ class Workspace extends React.PureComponent {
       sandboxActions,
     } = this.props;
 
+    console.log(sandbox.id);
+
     return (
       <Container>
         <CodeEditor sandbox={sandbox} sandboxActions={sandboxActions} />

@@ -26,10 +26,10 @@ type State = {
   notFound: boolean,
 };
 
-const mapStateToProps = (state, props) => createSelector(
+const mapStateToProps = createSelector(
   sandboxesSelector,
   entitiesSelector,
-  () => props.match.params.id,
+  (_, props) => props.match.params.id,
   (sandboxes, entities, id) => {
     const sandbox = sandboxes[id];
 
@@ -40,7 +40,7 @@ const mapStateToProps = (state, props) => createSelector(
     }
 
     return { sandbox: null };
-  },
+  }
 );
 const mapDispatchToProps = dispatch => ({
   sandboxActions: bindActionCreators(sandboxActions, dispatch),
