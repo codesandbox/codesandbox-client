@@ -27,34 +27,34 @@ const Slash = styled.span`
 `;
 
 type Props = {
-  url: string;
-  onChange: (url: string) => void;
-  onConfirm: () => void;
+  url: string,
+  onChange: (url: string) => void,
+  onConfirm: () => void,
 };
 
 export default class extends React.PureComponent {
   props: Props;
 
-  onChange = (evt) => {
+  onChange = evt => {
     const { onChange } = this.props;
 
     onChange(evt.target.value);
   };
 
-  handleKeyDown = (e) => {
+  handleKeyDown = e => {
     const { onConfirm } = this.props;
 
     if (e.keyCode === 13) {
       // Enter
       onConfirm();
     }
-  }
+  };
 
   focus = () => {
     if (this.input) {
       this.input.focus();
     }
-  }
+  };
 
   render() {
     const { url = '' } = this.props;
@@ -63,7 +63,9 @@ export default class extends React.PureComponent {
         <Slash>/</Slash>
         <InputContainer>
           <input
-            ref={(e) => { this.input = e; }}
+            ref={e => {
+              this.input = e;
+            }}
             onChange={this.onChange}
             onKeyDown={this.handleKeyDown}
             value={url}
