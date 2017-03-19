@@ -6,11 +6,9 @@ import styled from 'styled-components';
 const Container = styled.div`
   position: relative;
   display: flex;
-  background-color: ${props => props.theme.background};
+  background-color: ${props => props.theme.secondary};
   font-size: 1.2rem;
   color: ${props => props.theme.white};
-  border-bottom: 1px solid ${props => props.theme.background.darken(0.2)};
-  // box-shadow: 0px 3px 9px rgba(0, 0, 0, 0.2);
   z-index: 40;
   margin: 0;
   font-weight: 400;
@@ -46,8 +44,6 @@ const LogoName = styled.span`
 
 export default () => (
   <Container>
-    <Logo to="/">
-      <LogoName>CodeSandbox</LogoName>
-    </Logo>
+    <Logo to="/"><LogoName>Temporary Header</LogoName></Logo>
   </Container>
 );

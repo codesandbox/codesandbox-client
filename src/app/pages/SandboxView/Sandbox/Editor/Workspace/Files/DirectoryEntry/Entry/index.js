@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import styled from 'styled-components';
 import { DragSource } from 'react-dnd';
 
 import FileIcon from 'react-icons/lib/fa/file';
@@ -13,6 +14,7 @@ import EntryContainer from '../../../EntryContainer';
 import EntryTitle from './EntryTitle';
 import EntryTitleInput from './EntryTitleInput';
 import EntryIcons from './EntryIcons';
+import EditIcons from './EditIcons';
 
 type Props = {
   id: string,
@@ -21,18 +23,17 @@ type Props = {
   active: boolean,
   isNotSynced: boolean,
   type: string,
-  onCreateModuleClick?: () => void,
-  onCreateDirectoryClick?: () => void,
+  onCreateModuleClick: ?() => void,
+  onCreateDirectoryClick: ?() => void,
   renameValidator: (id: string, title: string) => boolean,
   rename: (id: string, title: string) => boolean,
   deleteEntry: (id: string) => void,
   onRenameCancel: () => void,
-  state?: '' | 'editing' | 'creating',
-  isOpen?: boolean,
+  state: ?'' | 'editing' | 'creating',
+  isOpen: ?boolean,
   onClick: Function,
   openMenu: Function,
-  closeTree?: () => void,
-  hasChildren?: boolean,
+  hasChildren: ?boolean,
   setCurrentModule: (id: string) => void,
   root: ?boolean,
   isMainModule: boolean,
@@ -42,7 +43,13 @@ type State = {
   state: '' | 'editing' | 'creating',
   error: boolean,
   selected: boolean,
+  hovering: boolean,
 };
+
+const EditIconsContainer = styled(EditIcons)`
+  position: absolute;
+  right: 1rem;
+`;
 
 class Entry extends React.PureComponent {
   constructor(props: Props) {
@@ -51,6 +58,7 @@ class Entry extends React.PureComponent {
       state: props.state || '',
       error: false,
       selected: false,
+      hovering: false,
     };
   }
 
@@ -73,6 +81,16 @@ class Entry extends React.PureComponent {
       this.props.rename(id, title);
       this.resetState();
     } else if (force) this.resetState();
+  };
+
+  delete = () => {
+    const { id, deleteEntry } = this.props;
+    return deleteEntry(id);
+  };
+
+  rename = () => {
+    this.setState({ state: 'editing' });
+    return true; // To close it
   };
 
   openContextMenu = (event: MouseEvent) => {
@@ -107,15 +125,12 @@ class Entry extends React.PureComponent {
       },
       rename && {
         title: 'Rename',
-        action: () => {
-          this.setState({ state: 'editing' });
-          return true; // To close it
-        },
+        action: this.rename,
         icon: EditIcon,
       },
       deleteEntry && {
         title: 'Delete',
-        action: () => deleteEntry(id),
+        action: this.delete,
         color: theme.red.darken(0.2)(),
         icon: DeleteIcon,
       },
@@ -126,6 +141,9 @@ class Entry extends React.PureComponent {
   };
 
   setCurrentModule = () => this.props.setCurrentModule(this.props.id);
+
+  onMouseEnter = () => this.setState({ hovering: true });
+  onMouseLeave = () => this.setState({ hovering: false });
 
   props: Props;
   state: State;
@@ -140,11 +158,15 @@ class Entry extends React.PureComponent {
       active,
       setCurrentModule,
       connectDragSource,
+      onCreateModuleClick,
+      onCreateDirectoryClick,
+      deleteEntry,
       onClick,
+      rename,
       isNotSynced,
       root,
     } = this.props;
-    const { state, error, selected } = this.state;
+    const { state, error, selected, hovering } = this.state;
 
     return connectDragSource(
       <div>
@@ -155,6 +177,8 @@ class Entry extends React.PureComponent {
           active={active}
           editing={state === 'editing' || selected}
           onContextMenu={this.openContextMenu}
+          onMouseEnter={this.onMouseEnter}
+          onMouseLeave={this.onMouseLeave}
         >
           <EntryIcons
             isNotSynced={isNotSynced}
@@ -171,6 +195,14 @@ class Entry extends React.PureComponent {
                 onCommit={this.handleRename}
               />
             : <EntryTitle title={title} />}
+          {state === '' &&
+            <EditIconsContainer
+              hovering={hovering}
+              onCreateFile={onCreateModuleClick}
+              onCreateDirectory={onCreateDirectoryClick}
+              onDelete={deleteEntry && this.delete}
+              onEdit={rename && this.rename}
+            />}
         </EntryContainer>
       </div>
     );
