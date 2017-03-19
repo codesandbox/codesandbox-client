@@ -16,7 +16,6 @@ import { singleSandboxSelector } from './selectors';
 import { modulesSelector } from './modules/selectors';
 import { directoriesSelector } from './directories/selectors';
 import { sandboxUrl } from '../../../utils/url-generator';
-import {version} from 'babel-standalone';
 
 export const FETCH_BUNDLE_API_ACTIONS = createAPIActions(
   'SANDBOX',
