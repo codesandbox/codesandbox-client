@@ -157,8 +157,8 @@ class DirectoryEntry extends React.PureComponent {
     const { modules, directories, id } = this.props;
 
     return [
-      ...modules.filter(m => m.directoryId === id),
-      ...directories.filter(d => d.directoryId === id),
+      ...modules.filter(m => m.directoryShortid === id),
+      ...directories.filter(d => d.directoryShortid === id),
     ];
   };
 
@@ -196,7 +196,7 @@ class DirectoryEntry extends React.PureComponent {
             isOpen={open}
             onClick={this.toggleOpen}
             renameValidator={this.validateDirectoryTitle}
-            rename={root ? this.renameSandbox : this.renameDirectory}
+            rename={!root && this.renameDirectory}
             onCreateModuleClick={this.onCreateModuleClick}
             onCreateDirectoryClick={this.onCreateDirectoryClick}
             deleteEntry={!root && this.deleteDirectory}

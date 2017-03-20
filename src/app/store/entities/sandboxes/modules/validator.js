@@ -27,4 +27,4 @@ export const validateTitle = (
 };
 
 export const isMainModule = (module: Module) =>
-  module.directoryId == null && module.title === 'index.js';
+  module.directoryShortid == null && module.title === 'index.js';

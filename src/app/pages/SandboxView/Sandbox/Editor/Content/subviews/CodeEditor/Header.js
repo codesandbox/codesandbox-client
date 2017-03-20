@@ -37,8 +37,7 @@ export default ({ path, title, saveComponent }: Props) => (
     </div>
 
     <Button disabled={!saveComponent} onClick={saveComponent} small>
-      <SaveIcon />
-      &nbsp;Save
+      Save
     </Button>
   </Container>
 );

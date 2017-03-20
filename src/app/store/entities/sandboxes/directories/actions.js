@@ -9,9 +9,9 @@ export default {
     id,
     title,
   }),
-  moveDirectory: (id: string, directoryId: string) => ({
+  moveDirectory: (id: string, directoryShortid: string) => ({
     type: MOVE_DIRECTORY,
     id,
-    directoryId,
+    directoryShortid,
   }),
 };

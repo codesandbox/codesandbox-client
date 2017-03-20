@@ -39,4 +39,9 @@ if (module.hot) {
     const NextApp = require('./pages/index').default; // eslint-disable-line global-require
     renderApp(NextApp);
   });
+
+  module.hot.accept('../common/theme', () => {
+    const NextApp = require('./pages/index').default; // eslint-disable-line global-require
+    renderApp(NextApp);
+  });
 }

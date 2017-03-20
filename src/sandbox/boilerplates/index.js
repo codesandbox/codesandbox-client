@@ -19,7 +19,7 @@ export function evalBoilerplates(
       id: boilerplate.id,
       title: `boilerplate-${boilerplate.condition}`,
       code: boilerplate.code,
-      directoryId: null,
+      directoryShortid: null,
       sourceId: boilerplate.sourceId,
       isNotSynced: false,
       type: '',

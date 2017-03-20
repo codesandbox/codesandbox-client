@@ -3,7 +3,7 @@ import React from 'react';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { DragDropContext } from 'react-dnd';
 import DirectoryEntry from './DirectoryEntry/index';
-import DeleteTarget from './DeleteTarget';
+
 import type {
   Sandbox,
 } from '../../../../../../store/entities/sandboxes/entity';
@@ -48,24 +48,19 @@ class Files extends React.PureComponent {
 
     const { currentModule = mainModule } = sandbox;
 
+    if (sandbox == null) return null;
+
     return (
-      <div>
-        {sandbox &&
-          <DirectoryEntry
-            root
-            title={sandbox.title || 'Project'}
-            sandboxId={sandbox.id}
-            modules={sandbox.modules}
-            currentModuleId={currentModule.id}
-            directories={sandbox.directories}
-            renameSandbox={this.renameSandbox}
-            id={null}
-          />}
-        <DeleteTarget
-          deleteDirectory={this.deleteDirectory}
-          deleteModule={this.deleteModule}
-        />
-      </div>
+      <DirectoryEntry
+        root
+        title={sandbox.title || 'Project'}
+        sandboxId={sandbox.id}
+        modules={sandbox.modules}
+        currentModuleId={currentModule.id}
+        directories={sandbox.directories}
+        renameSandbox={this.renameSandbox}
+        id={null}
+      />
     );
   }
 }

@@ -12,10 +12,10 @@ export default {
     id,
     title,
   }),
-  moveModule: (id: string, directoryId: string) => ({
+  moveModule: (id: string, directoryShortid: string) => ({
     type: MOVE_MODULE,
     id,
-    directoryId,
+    directoryShortid,
   }),
   setCode: (id: string, code: string) => ({
     type: SET_CODE,

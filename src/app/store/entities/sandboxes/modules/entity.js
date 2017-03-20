@@ -5,7 +5,8 @@ export type Module = {
   id: string,
   title: string,
   code: ?string,
-  directoryId: ?string,
+  shortid: string,
+  directoryShortid: ?string,
   isNotSynced: boolean,
   error: ?{
     message: string,

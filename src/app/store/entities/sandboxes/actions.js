@@ -79,64 +79,73 @@ const removeModuleFromSandbox = (id, moduleId) => ({
   id,
   moduleId,
 });
-const addDirectoryToSandbox = (id, directoryId) => ({
+const addDirectoryToSandbox = (id, directoryShortid) => ({
   type: ADD_DIRECTORY_TO_SANDBOX,
   id,
-  directoryId,
+  directoryShortid,
 });
-const removeDirectoryFromSandbox = (id, directoryId) => ({
+const removeDirectoryFromSandbox = (id, directoryShortid) => ({
   type: REMOVE_DIRECTORY_FROM_SANDBOX,
   id,
-  directoryId,
+  directoryShortid,
 });
 
-const forkSandbox = (id: string) => async (dispatch: Function) => {
-  const { data } = await dispatch(
-    doRequest(FORK_SANDBOX_API_ACTIONS, `sandboxes/${id}/fork`, {
-      method: 'POST',
-    })
-  );
+const forkSandbox = (id: string) =>
+  async (dispatch: Function, getState: Function) => {
+    dispatch(
+      notificationActions.addNotification('Forking sandbox...', '', 'notice')
+    );
+    const { data } = await dispatch(
+      doRequest(FORK_SANDBOX_API_ACTIONS, `sandboxes/${id}/fork`, {
+        method: 'POST',
+      })
+    );
 
-  await dispatch(normalizeResult(entity, data));
+    const currentSandbox = singleSandboxSelector(getState(), { id });
+    if (currentSandbox) {
+      data.currentModule = currentSandbox.currentModule;
+    }
+    await dispatch(normalizeResult(entity, data));
 
-  return data;
-};
+    return data;
+  };
 
 /**
  * Will fork the sandbox if the sandbox is not owned
  * @param {string} sandboxId
  */
-const maybeForkSandbox = sandboxId => async (
-  dispatch: Function,
-  getState: Function
-) => {
-  const sandbox = singleSandboxSelector(getState(), { id: sandboxId });
-  if (sandbox.owned) {
-    return sandbox.id;
-  }
+const maybeForkSandbox = sandboxId =>
+  async (dispatch: Function, getState: Function) => {
+    const sandbox = singleSandboxSelector(getState(), { id: sandboxId });
+    if (sandbox.owned) {
+      return sandbox.id;
+    }
 
-  const forkedSandbox = await dispatch(forkSandbox(sandbox.id));
+    const forkedSandbox = await dispatch(forkSandbox(sandbox.id));
 
-  dispatch(push(sandboxUrl(forkedSandbox)));
+    dispatch(push(sandboxUrl(forkedSandbox)));
 
-  return forkedSandbox.id;
-};
+    return forkedSandbox.id;
+  };
 
 const removeChildrenOfDirectory = (
-  directoryId,
+  directoryShortid,
   sandboxId: string,
   modules: Array<Module>,
   directories: Array<Directory>
-) => dispatch => {
+) =>
+  dispatch => {
     modules
-      .filter(m => m.directoryId === directoryId)
+      .filter(m => m.directoryShortid === directoryShortid)
       .forEach(m => dispatch(removeModuleFromSandbox(sandboxId, m.id)));
-    directories.filter(d => d.directoryId === directoryId).forEach(d => {
-      dispatch(removeDirectoryFromSandbox(sandboxId, d.id));
-      dispatch(
-        removeChildrenOfDirectory(d.id, sandboxId, modules, directories)
-      );
-    });
+    directories
+      .filter(d => d.directoryShortid === directoryShortid)
+      .forEach(d => {
+        dispatch(removeDirectoryFromSandbox(sandboxId, d.id));
+        dispatch(
+          removeChildrenOfDirectory(d.id, sandboxId, modules, directories)
+        );
+      });
   };
 
 export default {
@@ -146,97 +155,71 @@ export default {
     moduleId,
   }),
 
-  getById: (id: string) => async (dispatch: Function) => {
-    const { data } = await dispatch(
-      doRequest(SINGLE_SANDBOX_API_ACTIONS, `sandboxes/${id}`)
-    );
+  getById: (id: string) =>
+    async (dispatch: Function) => {
+      const { data } = await dispatch(
+        doRequest(SINGLE_SANDBOX_API_ACTIONS, `sandboxes/${id}`)
+      );
 
-    dispatch(normalizeResult(entity, data));
-  },
+      dispatch(normalizeResult(entity, data));
+    },
 
-  createSandbox: () => async (dispatch: Function) => {
-    const { data } = await dispatch(
-      doRequest(CREATE_SANDBOX_API_ACTIONS, `sandboxes`, {
-        method: 'POST',
-        body: { sandbox: {} },
-      })
-    );
+  createSandbox: () =>
+    async (dispatch: Function) => {
+      const { data } = await dispatch(
+        doRequest(CREATE_SANDBOX_API_ACTIONS, `sandboxes`, {
+          method: 'POST',
+          body: { sandbox: {} },
+        })
+      );
 
-    await dispatch(normalizeResult(entity, data));
+      await dispatch(normalizeResult(entity, data));
 
-    return data;
-  },
+      return data;
+    },
 
   forkSandbox,
 
-  createModule: (id: string, title: string, directoryId: ?string) => async (
-    dispatch: Function
-  ) => {
-    const sandboxId = await dispatch(maybeForkSandbox(id));
+  createModule: (id: string, title: string, directoryShortid: ?string) =>
+    async (dispatch: Function) => {
+      const sandboxId = await dispatch(maybeForkSandbox(id));
 
-    const { data } = await dispatch(
-      doRequest(CREATE_MODULE_API_ACTIONS, `sandboxes/${sandboxId}/modules`, {
-        method: 'POST',
-        body: { module: { title, directoryId } },
-      })
-    );
+      const { data } = await dispatch(
+        doRequest(CREATE_MODULE_API_ACTIONS, `sandboxes/${sandboxId}/modules`, {
+          method: 'POST',
+          body: { module: { title, directoryShortid } },
+        })
+      );
 
-    dispatch(normalizeResult(moduleEntity, data));
-    dispatch(addModuleToSandbox(sandboxId, data.id));
-  },
+      dispatch(normalizeResult(moduleEntity, data));
+      dispatch(addModuleToSandbox(sandboxId, data.id));
+    },
 
-  saveModuleCode: (id: string, moduleId: string) => async (
-    dispatch: Function,
-    getState: Function
-  ) => {
-    const sandboxId = await dispatch(maybeForkSandbox(id));
-    const module = modulesSelector(getState())[moduleId];
+  saveModuleCode: (id: string, moduleId: string) =>
+    async (dispatch: Function, getState: Function) => {
+      const module = modulesSelector(getState())[moduleId];
+      const sandboxId = await dispatch(maybeForkSandbox(id));
 
-    await dispatch(
-      doRequest(
-        SAVE_MODULE_CODE_API_ACTIONS,
-        `sandboxes/${sandboxId}/modules/${moduleId}`,
-        {
-          method: 'PUT',
-          body: { module: { code: module.code } },
-        }
-      )
-    );
-
-    dispatch(moduleActions.setModuleSynced(moduleId));
-  },
-
-  renameModule: (id: string, moduleId: string, title: string) => async (
-    dispatch: Function,
-    getState: Function
-  ) => {
-    const sandboxId = await dispatch(maybeForkSandbox(id));
-    // Eager rename, just undo it when something goes wrong
-    const oldTitle = modulesSelector(getState())[moduleId].title;
-    dispatch(moduleActions.renameModule(moduleId, title));
-
-    try {
       await dispatch(
         doRequest(
-          UPDATE_MODULE_API_ACTIONS,
+          SAVE_MODULE_CODE_API_ACTIONS,
           `sandboxes/${sandboxId}/modules/${moduleId}`,
           {
             method: 'PUT',
-            body: { module: { title } },
+            body: { module: { code: module.code } },
           }
         )
       );
-    } catch (e) {
-      dispatch(moduleActions.renameModule(moduleId, oldTitle));
-    }
-  },
 
-  moveModuleToDirectory: (id: string, moduleId: string, directoryId: string) =>
+      dispatch(moduleActions.setModuleSynced(moduleId));
+    },
+
+  renameModule: (id: string, moduleId: string, title: string) =>
     async (dispatch: Function, getState: Function) => {
       const sandboxId = await dispatch(maybeForkSandbox(id));
-      // Eager move it
-      const oldDirectoryId = modulesSelector(getState())[moduleId].directoryId;
-      dispatch(moduleActions.moveModule(moduleId, directoryId));
+      // Eager rename, just undo it when something goes wrong
+      const oldTitle = modulesSelector(getState())[moduleId].title;
+      dispatch(moduleActions.renameModule(moduleId, title));
 
       try {
         await dispatch(
@@ -245,214 +228,242 @@ export default {
             `sandboxes/${sandboxId}/modules/${moduleId}`,
             {
               method: 'PUT',
-              body: { module: { directoryId } },
+              body: { module: { title } },
             }
           )
         );
       } catch (e) {
-        dispatch(moduleActions.moveModule(moduleId, oldDirectoryId));
+        dispatch(moduleActions.renameModule(moduleId, oldTitle));
       }
     },
 
-  deleteModule: (id: string, moduleId: string) => async (
-    dispatch: Function
-  ) => {
-    const sandboxId = await dispatch(maybeForkSandbox(id));
-    // Eager remove it
-    dispatch(removeModuleFromSandbox(sandboxId, moduleId));
-
-    try {
-      await dispatch(
-        doRequest(
-          DELETE_MODULE_API_ACTIONS,
-          `sandboxes/${sandboxId}/modules/${moduleId}`,
-          {
-            method: 'DELETE',
-          }
-        )
-      );
-    } catch (e) {
-      // It failed, just add it back
-      dispatch(addModuleToSandbox(sandboxId, moduleId));
-    }
-  },
-
-  createDirectory: (id: string, title: string, directoryId: ?string) => async (
-    dispatch: Function
-  ) => {
-    const sandboxId = await dispatch(maybeForkSandbox(id));
-    const { data } = await dispatch(
-      doRequest(
-        CREATE_DIRECTORY_API_ACTIONS,
-        `sandboxes/${sandboxId}/directories`,
-        {
-          method: 'POST',
-          body: { directory: { title, directoryId } },
-        }
-      )
-    );
-
-    dispatch(normalizeResult(directoryEntity, data));
-    dispatch(addDirectoryToSandbox(sandboxId, data.id));
-  },
-
-  renameDirectory: (id: string, directoryId: string, title: string) => async (
-    dispatch: Function,
-    getState: Function
-  ) => {
-    const sandboxId = await dispatch(maybeForkSandbox(id));
-    // Eager rename, just undo it when something goes wrong
-    const oldTitle = directoriesSelector(getState())[directoryId].title;
-    dispatch(directoryActions.renameDirectory(directoryId, title));
-
-    try {
-      await dispatch(
-        doRequest(
-          UPDATE_DIRECTORY_API_ACTIONS,
-          `sandboxes/${sandboxId}/directories/${directoryId}`,
-          {
-            method: 'PUT',
-            body: { directory: { title } },
-          }
-        )
-      );
-    } catch (e) {
-      dispatch(directoryActions.renameDirectory(directoryId, oldTitle));
-    }
-  },
-
-  moveDirectoryToDirectory: (
+  moveModuleToDirectory: (
     id: string,
-    directoryId: string,
-    parentId: string
-  ) => async (dispatch: Function, getState: Function) => {
+    moduleId: string,
+    directoryShortid: string
+  ) =>
+    async (dispatch: Function, getState: Function) => {
       const sandboxId = await dispatch(maybeForkSandbox(id));
       // Eager move it
-      const oldDirectoryId = directoriesSelector(getState())[
-        directoryId
-      ].parentId;
-      dispatch(directoryActions.moveDirectory(directoryId, parentId));
+      const olddirectoryShortid = modulesSelector(getState())[
+        moduleId
+      ].directoryShortid;
+      dispatch(moduleActions.moveModule(moduleId, directoryShortid));
+
+      try {
+        await dispatch(
+          doRequest(
+            UPDATE_MODULE_API_ACTIONS,
+            `sandboxes/${sandboxId}/modules/${moduleId}`,
+            {
+              method: 'PUT',
+              body: { module: { directoryShortid } },
+            }
+          )
+        );
+      } catch (e) {
+        dispatch(moduleActions.moveModule(moduleId, olddirectoryShortid));
+      }
+    },
+
+  deleteModule: (id: string, moduleId: string) =>
+    async (dispatch: Function) => {
+      const sandboxId = await dispatch(maybeForkSandbox(id));
+      // Eager remove it
+      dispatch(removeModuleFromSandbox(sandboxId, moduleId));
+
+      try {
+        await dispatch(
+          doRequest(
+            DELETE_MODULE_API_ACTIONS,
+            `sandboxes/${sandboxId}/modules/${moduleId}`,
+            {
+              method: 'DELETE',
+            }
+          )
+        );
+      } catch (e) {
+        // It failed, just add it back
+        dispatch(addModuleToSandbox(sandboxId, moduleId));
+      }
+    },
+
+  createDirectory: (id: string, title: string, directoryShortid: ?string) =>
+    async (dispatch: Function) => {
+      const sandboxId = await dispatch(maybeForkSandbox(id));
+      const { data } = await dispatch(
+        doRequest(
+          CREATE_DIRECTORY_API_ACTIONS,
+          `sandboxes/${sandboxId}/directories`,
+          {
+            method: 'POST',
+            body: { directory: { title, directoryShortid } },
+          }
+        )
+      );
+
+      dispatch(normalizeResult(directoryEntity, data));
+      dispatch(addDirectoryToSandbox(sandboxId, data.id));
+    },
+
+  renameDirectory: (id: string, directoryShortid: string, title: string) =>
+    async (dispatch: Function, getState: Function) => {
+      const sandboxId = await dispatch(maybeForkSandbox(id));
+      // Eager rename, just undo it when something goes wrong
+      const oldTitle = directoriesSelector(getState())[directoryShortid].title;
+      dispatch(directoryActions.renameDirectory(directoryShortid, title));
 
       try {
         await dispatch(
           doRequest(
             UPDATE_DIRECTORY_API_ACTIONS,
-            `sandboxes/${sandboxId}/directories/${directoryId}`,
+            `sandboxes/${sandboxId}/directories/${directoryShortid}`,
             {
               method: 'PUT',
-              body: { directory: { directoryId: parentId } },
+              body: { directory: { title } },
             }
           )
         );
       } catch (e) {
-        dispatch(directoryActions.moveDirectory(directoryId, oldDirectoryId));
+        dispatch(directoryActions.renameDirectory(directoryShortid, oldTitle));
       }
     },
 
-  deleteDirectory: (id: string, directoryId: string) => async (
-    dispatch: Function,
-    getState: Function
-  ) => {
-    const sandboxId = await dispatch(maybeForkSandbox(id));
-    dispatch(removeDirectoryFromSandbox(sandboxId, directoryId));
+  moveDirectoryToDirectory: (
+    id: string,
+    directoryShortid: string,
+    parentId: string
+  ) =>
+    async (dispatch: Function, getState: Function) => {
+      const sandboxId = await dispatch(maybeForkSandbox(id));
+      // Eager move it
+      const olddirectoryShortid = directoriesSelector(getState())[
+        directoryShortid
+      ].parentId;
+      dispatch(directoryActions.moveDirectory(directoryShortid, parentId));
 
-    try {
-      await dispatch(
+      try {
+        await dispatch(
+          doRequest(
+            UPDATE_DIRECTORY_API_ACTIONS,
+            `sandboxes/${sandboxId}/directories/${directoryShortid}`,
+            {
+              method: 'PUT',
+              body: { directory: { directoryShortid: parentId } },
+            }
+          )
+        );
+      } catch (e) {
+        dispatch(
+          directoryActions.moveDirectory(directoryShortid, olddirectoryShortid)
+        );
+      }
+    },
+
+  deleteDirectory: (id: string, directoryShortid: string) =>
+    async (dispatch: Function, getState: Function) => {
+      const sandboxId = await dispatch(maybeForkSandbox(id));
+      dispatch(removeDirectoryFromSandbox(sandboxId, directoryShortid));
+
+      try {
+        await dispatch(
+          doRequest(
+            DELETE_DIRECTORY_API_ACTIONS,
+            `sandboxes/${sandboxId}/directories/${directoryShortid}`,
+            {
+              method: 'DELETE',
+            }
+          )
+        );
+
+        const sandbox = singleSandboxSelector(getState(), { id: sandboxId });
+        const allModules = modulesSelector(getState());
+        const allDirectories = directoriesSelector(getState());
+        const modules = sandbox.modules.map(mid => allModules[mid]);
+        const directories = sandbox.directories.map(did => allDirectories[did]);
+
+        // Recursively delete all children
+        dispatch(
+          removeChildrenOfDirectory(
+            directoryShortid,
+            sandboxId,
+            modules,
+            directories
+          )
+        );
+      } catch (e) {
+        // It failed, add it back
+        dispatch(addDirectoryToSandbox(sandboxId, directoryShortid));
+      }
+    },
+
+  addNPMDependency: (id: string, dependency: string, version: string) =>
+    async (dispatch: Function) => {
+      const sandboxId = await dispatch(maybeForkSandbox(id));
+      const result = await dispatch(
         doRequest(
-          DELETE_DIRECTORY_API_ACTIONS,
-          `sandboxes/${sandboxId}/directories/${directoryId}`,
+          UPDATE_NPM_DEPENDENCY_ACTIONS,
+          `sandboxes/${sandboxId}/dependencies`,
+          {
+            method: 'POST',
+            body: {
+              dependency: {
+                name: dependency,
+                version,
+              },
+            },
+          }
+        )
+      );
+
+      dispatch({
+        type: SET_NPM_DEPENDENCIES,
+        id: sandboxId,
+        dependencies: result.data,
+      });
+    },
+
+  removeNPMDependency: (id: string, dependency: string) =>
+    async (dispatch: Function) => {
+      const sandboxId = await dispatch(maybeForkSandbox(id));
+
+      const result = await dispatch(
+        doRequest(
+          DELETE_NPM_DEPENDENCY_ACTIONS,
+          `sandboxes/${sandboxId}/dependencies/${dependency}`,
           {
             method: 'DELETE',
           }
         )
       );
 
-      const sandbox = singleSandboxSelector(getState(), { id: sandboxId });
-      const allModules = modulesSelector(getState());
-      const allDirectories = directoriesSelector(getState());
-      const modules = sandbox.modules.map(mid => allModules[mid]);
-      const directories = sandbox.directories.map(did => allDirectories[did]);
-
-      // Recursively delete all children
-      dispatch(
-        removeChildrenOfDirectory(directoryId, sandboxId, modules, directories)
-      );
-    } catch (e) {
-      // It failed, add it back
-      dispatch(addDirectoryToSandbox(sandboxId, directoryId));
-    }
-  },
-
-  addNPMDependency: (id: string, dependency: string, version: string) => async (
-    dispatch: Function
-  ) => {
-    const sandboxId = await dispatch(maybeForkSandbox(id));
-    const result = await dispatch(
-      doRequest(
-        UPDATE_NPM_DEPENDENCY_ACTIONS,
-        `sandboxes/${sandboxId}/dependencies`,
-        {
-          method: 'POST',
-          body: {
-            dependency: {
-              name: dependency,
-              version,
-            },
-          },
-        }
-      )
-    );
-
-    dispatch({
-      type: SET_NPM_DEPENDENCIES,
-      id: sandboxId,
-      dependencies: result.data,
-    });
-  },
-
-  removeNPMDependency: (id: string, dependency: string) => async (
-    dispatch: Function
-  ) => {
-    const sandboxId = await dispatch(maybeForkSandbox(id));
-
-    const result = await dispatch(
-      doRequest(
-        DELETE_NPM_DEPENDENCY_ACTIONS,
-        `sandboxes/${sandboxId}/dependencies/${dependency}`,
-        {
-          method: 'DELETE',
-        }
-      )
-    );
-
-    dispatch({
-      type: SET_NPM_DEPENDENCIES,
-      id: sandboxId,
-      dependencies: result.data,
-    });
-  },
-
-  fetchDependenciesBundle: (sandboxId: string) => async (
-    dispatch: Function
-  ) => {
-    try {
-      const result = await dispatch(
-        fetchBundle(FETCH_BUNDLE_API_ACTIONS, sandboxId)
-      );
-
       dispatch({
-        type: SET_BUNDLE,
+        type: SET_NPM_DEPENDENCIES,
         id: sandboxId,
-        bundle: result,
+        dependencies: result.data,
       });
-    } catch (e) {
-      dispatch(
-        notificationActions.addNotification(
-          'Could not fetch dependencies',
-          'Please try again later',
-          'error'
-        )
-      );
-    }
-  },
+    },
+
+  fetchDependenciesBundle: (sandboxId: string) =>
+    async (dispatch: Function) => {
+      try {
+        const result = await dispatch(
+          fetchBundle(FETCH_BUNDLE_API_ACTIONS, sandboxId)
+        );
+
+        dispatch({
+          type: SET_BUNDLE,
+          id: sandboxId,
+          bundle: result,
+        });
+      } catch (e) {
+        dispatch(
+          notificationActions.addNotification(
+            'Could not fetch dependencies',
+            'Please try again later',
+            'error'
+          )
+        );
+      }
+    },
 };

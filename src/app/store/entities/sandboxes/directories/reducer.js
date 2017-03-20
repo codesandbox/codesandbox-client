@@ -5,7 +5,7 @@ function directoryReducer(directory, action) {
     case RENAME_DIRECTORY:
       return { ...directory, title: action.title };
     case MOVE_DIRECTORY:
-      return { ...directory, directoryId: action.directoryId };
+      return { ...directory, directoryShortid: action.directoryShortid };
     default:
       return directory;
   }

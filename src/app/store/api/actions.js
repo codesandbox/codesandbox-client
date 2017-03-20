@@ -1,5 +1,7 @@
 // @flow
+import { values } from 'lodash';
 
+import notificationActions from '../notifications/actions';
 import apiRequest from '../services/api';
 import type { BodyType } from '../services/api';
 
@@ -19,10 +21,33 @@ export function createAPIActions(prefix: string, suffix: string): APIActions {
   };
 }
 
+const getMessage = (error: Error) => {
+  const response = error.response;
+
+  if (response && response.data && response.data.errors) {
+    const firstError = values(response.data.errors)[0][0];
+    if (firstError) {
+      return firstError;
+    }
+  }
+  return error.message;
+};
+
+const showError = error =>
+  dispatch => {
+    dispatch(
+      notificationActions.addNotification(
+        'Something went wrong',
+        getMessage(error),
+        'error'
+      )
+    );
+  };
+
 export function doRequest(
   actions: APIActions,
   endpoint: string,
-  body?: BodyType,
+  body?: BodyType
 ) {
   return async (dispatch: Function) => {
     dispatch({
@@ -45,6 +70,8 @@ export function doRequest(
         type: actions.FAILURE,
         error,
       });
+
+      dispatch(showError(error));
 
       throw error;
     }

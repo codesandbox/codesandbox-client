@@ -11,7 +11,7 @@ function moduleReducer(module, action) {
     case RENAME_MODULE:
       return { ...module, title: action.title };
     case MOVE_MODULE:
-      return { ...module, directoryId: action.directoryId };
+      return { ...module, directoryShortid: action.directoryShortid };
     case SET_CODE:
       return { ...module, code: action.code, isNotSynced: true };
     case SET_MODULE_SYNCED:

@@ -41,7 +41,7 @@ export default function evaluateJS(mainModule, modules, directories, manifest, d
       const dependencyManifest = manifest[path] || manifest[`${path}.js`];
       if (dependencyManifest) return window.dependencies(dependencyManifest.id);
 
-      const module = resolveModule(path, modules, directories, mainModule.directoryId);
+      const module = resolveModule(path, modules, directories, mainModule.directoryShortid);
       if (mainModule === module) throw new Error(`${mainModule.title} is importing itself`);
       if (!module) throw new Error(`Cannot find module in path: ${path}`);
 
