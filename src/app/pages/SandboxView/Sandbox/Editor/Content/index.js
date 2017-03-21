@@ -95,46 +95,58 @@ class EditorPreview extends React.PureComponent {
 
     if (currentModule == null) return null;
 
+    const EditorPane = (
+      <FullSize>
+        <CodeEditor
+          changeCode={moduleActions.setCode}
+          id={currentModule.id}
+          error={currentModule.error}
+          code={currentModule.code}
+          title={currentModule.title}
+          canSave={currentModule.isNotSynced}
+          saveCode={this.saveCode}
+          modulePath={modulePath}
+        />
+      </FullSize>
+    );
+
+    const PreviewPane = (
+      <FullSize inactive={this.state.resizing}>
+        <Preview
+          sandboxId={sandbox.id}
+          bundle={sandbox.dependencyBundle}
+          fetchBundle={sandboxActions.fetchDependenciesBundle}
+          module={currentModule}
+          modules={modules}
+          directories={directories}
+          setError={moduleActions.setError}
+          isInProjectView={sandbox.isInProjectView}
+          setProjectView={sandboxActions.setProjectView}
+        />
+      </FullSize>
+    );
+
+    const Both = (
+      <SplitPane
+        onDragStarted={this.startResizing}
+        onDragFinished={this.stopResizing}
+        split="vertical"
+        defaultSize="50%"
+        minSize={360}
+        primary="second"
+        paneStyle={{ height: '100%' }}
+      >
+        {EditorPane}
+        {PreviewPane}
+      </SplitPane>
+    );
+
     return (
       <FullSize>
         <Header sandbox={sandbox} sandboxActions={sandboxActions} />
-        <SplitPane
-          onDragStarted={this.startResizing}
-          onDragFinished={this.stopResizing}
-          split="vertical"
-          defaultSize={this.getDefaultSize()}
-          minSize={360}
-          primary="second"
-          paneStyle={{ height: '100%' }}
-        >
-          <FullSize>
-            {sandbox.showEditor &&
-              <CodeEditor
-                changeCode={moduleActions.setCode}
-                id={currentModule.id}
-                error={currentModule.error}
-                code={currentModule.code}
-                title={currentModule.title}
-                canSave={currentModule.isNotSynced}
-                saveCode={this.saveCode}
-                modulePath={modulePath}
-              />}
-          </FullSize>
-          <FullSize inactive={this.state.resizing}>
-            {sandbox.showPreview &&
-              <Preview
-                sandboxId={sandbox.id}
-                bundle={sandbox.dependencyBundle}
-                fetchBundle={sandboxActions.fetchDependenciesBundle}
-                module={currentModule}
-                modules={modules}
-                directories={directories}
-                setError={moduleActions.setError}
-                isInProjectView={sandbox.isInProjectView}
-                setProjectView={sandboxActions.setProjectView}
-              />}
-          </FullSize>
-        </SplitPane>
+        {sandbox.showEditor && !sandbox.showPreview && EditorPane}
+        {!sandbox.showEditor && sandbox.showPreview && PreviewPane}
+        {sandbox.showEditor && sandbox.showPreview && Both}
       </FullSize>
     );
   }

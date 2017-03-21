@@ -4,13 +4,13 @@ import styled from 'styled-components';
 
 const getBackgroundColor = ({ theme, secondary, transparent, disabled }) => {
   if (disabled) return theme.background2.darken(0.1)();
-  if (transparent) return 'rgba(0,0,0,0.2)';
+  if (transparent) return 'rgba(0,0,0,0.0)';
   if (secondary) return theme.primary();
   return theme.secondary();
 };
 
-const getBorder = ({ transparent }) => {
-  if (transparent) return `1px solid rgba(0, 0, 0, 0.5)`;
+const getBorder = ({ transparent, theme }) => {
+  if (transparent) return `1px solid ${theme.secondary.clearer(0.5)()}`;
   return 'none';
 };
 
@@ -40,7 +40,7 @@ const styles = props =>
     return 'padding: 0.75rem 1rem;';
   })()}
   outline: none;
-  box-shadow: ${!props.disabled && '0px 3px 3px rgba(0, 0, 0, 0.2);'};
+  box-shadow: ${!props.disabled && !props.transparent && '0px 3px 3px rgba(0, 0, 0, 0.2);'};
   width: ${props.block ? '100%' : 'inherit'};
 
   ${!props.disabled && `

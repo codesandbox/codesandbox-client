@@ -57,6 +57,10 @@ const Workspace = ({ sandbox, sandboxActions }: Props) => (
         }
       />
     </WorkspaceItem>
+
+    <WorkspaceItem title="Preferences">
+      <input type="checkbox" />
+    </WorkspaceItem>
   </Container>
 );
 export default connect(null, mapDispatchToProps)(Workspace);
