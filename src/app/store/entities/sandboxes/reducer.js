@@ -7,6 +7,7 @@ import {
   SET_CURRENT_MODULE,
   SET_BUNDLE,
   FETCH_BUNDLE_API_ACTIONS,
+  SET_SANDBOX_INFO,
 } from './actions';
 
 const initialState = {};
@@ -60,6 +61,12 @@ function singleSandboxReducer(sandbox, action: Action) {
         ...sandbox,
         dependencyBundle: action.bundle,
       };
+    case SET_SANDBOX_INFO:
+      return {
+        ...sandbox,
+        title: action.title,
+        description: action.description,
+      };
     default:
       return sandbox;
   }
@@ -75,6 +82,7 @@ export default function reducer(state = initialState, action: Action) {
     case SET_CURRENT_MODULE:
     case FETCH_BUNDLE_API_ACTIONS.REQUEST:
     case SET_BUNDLE:
+    case SET_SANDBOX_INFO:
       if (state[action.id]) {
         return {
           ...state,

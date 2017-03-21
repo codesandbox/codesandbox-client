@@ -12,7 +12,7 @@ import sandboxActionCreators
 import Files from './Files';
 // import Versions from './Versions';
 import Dependencies from './Dependencies';
-import Summary from './Summary';
+import Project from './Project';
 import WorkspaceItem from './WorkspaceItem';
 import SandboxDetails from './SandboxDetails';
 
@@ -35,7 +35,12 @@ const Workspace = ({ sandbox, sandboxActions }: Props) => (
   <Container>
     <SandboxDetails sandbox={sandbox} />
     <WorkspaceItem defaultOpen title="Project">
-      <Summary sandbox={sandbox} />
+      <Project
+        updateSandboxInfo={sandboxActions.updateSandboxInfo}
+        id={sandbox.id}
+        title={sandbox.title}
+        description={sandbox.description}
+      />
     </WorkspaceItem>
 
     <WorkspaceItem defaultOpen title="Files">

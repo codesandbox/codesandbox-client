@@ -23,6 +23,7 @@ export const FETCH_BUNDLE_API_ACTIONS = createAPIActions(
 );
 export const SINGLE_SANDBOX_API_ACTIONS = createAPIActions('SANDBOX', 'SINGLE');
 export const CREATE_SANDBOX_API_ACTIONS = createAPIActions('SANDBOX', 'CREATE');
+export const UPDATE_SANDBOX_API_ACTIONS = createAPIActions('SANDBOX', 'UPDATE');
 export const FORK_SANDBOX_API_ACTIONS = createAPIActions('SANDBOX', 'FORK');
 export const CREATE_MODULE_API_ACTIONS = createAPIActions(
   'SANDBOX',
@@ -62,6 +63,7 @@ export const DELETE_NPM_DEPENDENCY_ACTIONS = createAPIActions(
 );
 
 export const REMOVE_MODULE_FROM_SANDBOX = 'REMOVE_MODULE_FROM_SANDBOX';
+export const SET_SANDBOX_INFO = 'SET_SANDBOX_INFO';
 export const REMOVE_DIRECTORY_FROM_SANDBOX = 'REMOVE_DIRECTORY_FROM_SANDBOX';
 export const ADD_MODULE_TO_SANDBOX = 'ADD_MODULE_TO_SANDBOX';
 export const ADD_DIRECTORY_TO_SANDBOX = 'ADD_DIRECTORY_TO_SANDBOX';
@@ -149,6 +151,38 @@ const removeChildrenOfDirectory = (
   };
 
 export default {
+  updateSandboxInfo: (id: string, title: string, description: string) =>
+    async (dispatch: Function, getState: Function) => {
+      const sandboxId = await dispatch(maybeForkSandbox(id));
+      const {
+        title: oldTitle,
+        description: oldDescription,
+      } = singleSandboxSelector(getState(), { id: sandboxId });
+
+      dispatch({
+        type: SET_SANDBOX_INFO,
+        id: sandboxId,
+        title,
+        description,
+      });
+      try {
+        await dispatch(
+          doRequest(UPDATE_SANDBOX_API_ACTIONS, `sandboxes/${sandboxId}`, {
+            body: {
+              sandbox: { title, description },
+            },
+            method: 'PUT',
+          })
+        );
+      } catch (e) {
+        dispatch({
+          type: SET_SANDBOX_INFO,
+          id: sandboxId,
+          title: oldTitle,
+          description: oldDescription,
+        });
+      }
+    },
   setCurrentModule: (id: string, moduleId: string) => ({
     type: SET_CURRENT_MODULE,
     id,
