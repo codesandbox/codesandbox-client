@@ -1,13 +1,11 @@
 // @flow
 import React from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
 import Save from 'react-icons/lib/md/save';
 import Fork from 'react-icons/lib/go/repo-forked';
 
-import Button from './buttons/Button';
-
-import { forkSandboxUrl } from '../utils/url-generator';
+import type { Sandbox } from 'app/store/entities/sandboxes/entity';
+import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 
 const Container = styled.div`
   position: relative;
@@ -67,18 +65,39 @@ const Icon = styled.div`
   vertical-align: middle;
 `;
 
-export default ({ sandbox, sandboxActions }) => (
-  <Container>
-    <Action>
-      <Icon>
-        <Save />
-      </Icon> Save
-    </Action>
-    <Action onClick={() => sandboxActions.forkSandbox(sandbox.id)}>
-      <Icon>
-        <Fork />
-      </Icon> Fork
-    </Action>
-    <Logo>CodeSandbox</Logo>
-  </Container>
-);
+type Props = {
+  sandbox: Sandbox,
+  sandboxActions: typeof sandboxActionCreators,
+};
+
+export default class Header extends React.PureComponent {
+  props: Props;
+
+  massUpdateModules = () => {
+    const { sandbox, sandboxActions } = this.props;
+    sandboxActions.massUpdateModules(sandbox.id);
+  };
+
+  forkSandbox = () => {
+    const { sandbox, sandboxActions } = this.props;
+    sandboxActions.forkSandbox(sandbox.id);
+  };
+
+  render() {
+    return (
+      <Container>
+        <Action onClick={this.massUpdateModules}>
+          <Icon>
+            <Save />
+          </Icon> Save
+        </Action>
+        <Action onClick={this.forkSandbox}>
+          <Icon>
+            <Fork />
+          </Icon> Fork
+        </Action>
+        <Logo>CodeSandbox</Logo>
+      </Container>
+    );
+  }
+}

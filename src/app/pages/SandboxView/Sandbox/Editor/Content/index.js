@@ -18,7 +18,7 @@ import {
   isMainModule,
   getModulePath,
 } from '../../../../../store/entities/sandboxes/modules/selectors';
-import Header from '../../../../../components/Header';
+import Header from './Header';
 
 type Props = {
   sandbox: Sandbox,

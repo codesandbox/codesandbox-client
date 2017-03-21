@@ -15,30 +15,28 @@ const __PROD__ = NODE_ENV === 'production'; // eslint-disable-line no-underscore
 
 const babelConfig = __DEV__ ? babelDev : babelProd;
 
-const getOutput = () => (
-  __DEV__ ? {
-    path: paths.appBuild,
-    pathinfo: true,
-    filename: 'static/js/[name].js',
-    publicPath: '/',
-  } : {
-    path: paths.appBuild,
-    pathinfo: true,
-    filename: 'static/js/[name].[hash:8].js',
-    chunkFilename: 'static/js/[name].[hash:8].chunk.js',
-    sourceMapFilename: '[file].map', // Default
-    publicPath: 'https://codesandbox.io/',
-  }
-);
+const getOutput = () =>
+  __DEV__
+    ? {
+        path: paths.appBuild,
+        pathinfo: true,
+        filename: 'static/js/[name].js',
+        publicPath: '/',
+      }
+    : {
+        path: paths.appBuild,
+        pathinfo: true,
+        filename: 'static/js/[name].[hash:8].js',
+        chunkFilename: 'static/js/[name].[hash:8].chunk.js',
+        sourceMapFilename: '[file].map', // Default
+        publicPath: 'https://codesandbox.io/',
+      };
 
 const config = {
   devtool: __DEV__ ? 'eval' : 'source-map',
 
   entry: {
-    app: [
-      require.resolve('./polyfills'),
-      path.join(paths.appSrc, 'index.js'),
-    ],
+    app: [require.resolve('./polyfills'), path.join(paths.appSrc, 'index.js')],
     sandbox: [
       require.resolve('./polyfills'),
       path.join(paths.sandboxSrc, 'index.js'),
@@ -53,7 +51,6 @@ const config = {
   },
 
   target: 'web',
-
 
   output: getOutput(),
 
@@ -73,7 +70,9 @@ const config = {
         options: (() => {
           const altererdConfig = Object.assign({}, babelConfig);
 
-          altererdConfig.plugins.push(require.resolve('babel-plugin-transform-remove-strict-mode'));
+          altererdConfig.plugins.push(
+            require.resolve('babel-plugin-transform-remove-strict-mode')
+          );
           return altererdConfig;
         })(),
       },
@@ -90,10 +89,7 @@ const config = {
       // in development "style" loader enables hot editing of CSS.
       {
         test: /\.css$/,
-        loaders: [
-          'style-loader',
-          'css-loader',
-        ],
+        loaders: ['style-loader', 'css-loader'],
       },
       // "file" loader makes sure those assets get served by WebpackDevServer.
       // When you `import` an asset, you get its (virtual) filename.
@@ -138,9 +134,7 @@ const config = {
   },
   resolve: {
     mainFields: ['browser', 'module', 'jsnext:main', 'main'],
-    modules: [
-      'node_modules',
-    ],
+    modules: ['src', 'node_modules'],
 
     extensions: ['.js', '.json'],
 

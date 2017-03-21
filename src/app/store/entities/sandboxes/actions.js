@@ -37,6 +37,10 @@ export const UPDATE_MODULE_API_ACTIONS = createAPIActions(
   'SANDBOX',
   'UPDATE_MODULE'
 );
+export const MASS_UPDATE_MODULE_API_ACTIONS = createAPIActions(
+  'SANDBOX',
+  'MASS_UPDATE_MODULE'
+);
 export const DELETE_MODULE_API_ACTIONS = createAPIActions(
   'SANDBOX',
   'DELETE_MODULE'
@@ -507,5 +511,37 @@ export default {
           )
         );
       }
+    },
+
+  /**
+   * Updates all modules in a sandbox at once (only the code)
+   */
+  massUpdateModules: (id: string) =>
+    async (dispatch: Function, getState: Function) => {
+      const sandboxId = await dispatch(maybeForkSandbox(id));
+
+      const sandbox = singleSandboxSelector(getState(), { id: sandboxId });
+      const modules = modulesSelector(getState());
+
+      const modulesInSandbox = sandbox.modules.map(id => modules[id]);
+      const modulesNotInSyncInSandbox = modulesInSandbox.filter(
+        m => m.isNotSynced
+      );
+
+      await dispatch(
+        doRequest(
+          MASS_UPDATE_MODULE_API_ACTIONS,
+          `sandboxes/${sandboxId}/modules/mupdate`,
+          {
+            method: 'PUT',
+            body: {
+              modules: modulesNotInSyncInSandbox,
+            },
+          }
+        )
+      );
+
+      modulesNotInSyncInSandbox.forEach(m =>
+        dispatch(moduleActions.setModuleSynced(m.id)));
     },
 };

@@ -7,6 +7,10 @@ import {
   findBoilerplate,
 } from './boilerplates';
 
+const host = process.env.NODE_ENV === 'development'
+  ? 'http://codesandbox.dev/'
+  : 'https://codesandbox.io/';
+
 let fetching = false;
 let url = null;
 
@@ -39,7 +43,7 @@ async function compile(message) {
     url = newUrl;
     await addDependencyBundle();
     fetching = false;
-    window.parent.postMessage('Ready!', '*');
+    window.parent.postMessage('Ready!', host);
     return;
   }
 
@@ -63,10 +67,13 @@ async function compile(message) {
       {
         type: 'success',
       },
-      '*'
+      host
     );
   } catch (e) {
-    console.error(e);
+    if (process.env.NODE_ENV === 'development') {
+      console.error(e);
+    }
+
     window.parent.postMessage(
       {
         type: 'error',
@@ -87,7 +94,7 @@ window.addEventListener('message', async message => {
   }
 });
 
-window.parent.postMessage('Ready!', '*');
+window.parent.postMessage('Ready!', host);
 
 function setupHistoryListeners() {
   const pushState = window.history.pushState;
@@ -117,7 +124,7 @@ function setupHistoryListeners() {
           type: 'urlchange',
           url: document.location.pathname + location.search,
         },
-        '*'
+        host
       );
     });
   };
@@ -129,7 +136,7 @@ function setupHistoryListeners() {
           type: 'urlchange',
           url: document.location.pathname + location.search,
         },
-        '*'
+        host
       );
     });
   };

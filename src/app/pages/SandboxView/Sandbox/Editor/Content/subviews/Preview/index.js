@@ -14,12 +14,14 @@ import type {
   Directory,
 } from '../../../../../../../store/entities/sandboxes/directories/entity';
 import { frameUrl } from '../../../../../../../utils/url-generator';
-import Navigator from './Navigator';
 import {
   isMainModule,
 } from '../../../../../../../store/entities/sandboxes/modules/validator';
 import defaultBoilerplates
   from '../../../../../../../store/entities/sandboxes/boilerplates/default-boilerplates';
+
+import Navigator from './Navigator';
+import ErrorMessage from './ErrorMessage';
 
 const Container = styled.div`
   position: absolute;
@@ -240,7 +242,7 @@ export default class Preview extends React.PureComponent {
   rootInstance: ?Object;
 
   render() {
-    const { bundle = {}, isInProjectView } = this.props;
+    const { bundle = {}, isInProjectView, module } = this.props;
     const {
       historyPosition,
       history,
@@ -269,6 +271,7 @@ export default class Preview extends React.PureComponent {
           isProjectView={isInProjectView}
           toggleProjectView={this.toggleProjectView}
         />
+        {module.error && <ErrorMessage error={module.error} />}
         <StyledFrame
           sandbox="allow-scripts allow-modals allow-pointer-lock allow-same-origin allow-popups allow-forms"
           src={frameUrl()}

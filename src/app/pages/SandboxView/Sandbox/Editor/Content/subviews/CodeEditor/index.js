@@ -36,7 +36,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 100%;
+  height: calc(100% - 3rem);
   overflow: auto;
 `;
 
@@ -161,6 +161,7 @@ export default class CodeEditor extends React.PureComponent {
 
   render() {
     const { error, title, saveCode, canSave, modulePath } = this.props;
+
     return (
       <Container>
         <Header

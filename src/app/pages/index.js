@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import { Route, Redirect } from 'react-router-dom';
 import 'normalize.css';
 
-import Header from '../components/Header';
 import Notifications from '../containers/Notifications';
 import ContextMenu from '../containers/ContextMenu';
 import SandboxView from './SandboxView/';

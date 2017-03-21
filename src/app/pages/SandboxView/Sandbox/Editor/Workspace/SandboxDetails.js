@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
 import OwnerIcon from 'react-icons/lib/ti/user';
+import type { Sandbox } from '../../../../../store/entities/sandboxes/entity';
 
 import { sandboxUrl } from '../../../../../utils/url-generator';
 import Tooltip from '../../../../../components/Tooltip';
@@ -39,7 +40,7 @@ const Icons = styled.div`
   line-height: 1;
 `;
 
-export default ({ sandbox }) => (
+export default ({ sandbox }: { sandbox: Sandbox }) => (
   <Container>
     <div>
       <SandboxTitle>
