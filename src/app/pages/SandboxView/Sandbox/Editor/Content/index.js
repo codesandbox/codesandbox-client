@@ -73,6 +73,13 @@ class EditorPreview extends React.PureComponent {
     sandboxActions.saveModuleCode(sandbox.id, currentModule.id);
   };
 
+  getDefaultSize = () => {
+    const { sandbox } = this.props;
+    if (sandbox.showEditor && !sandbox.showPreview) return '0%';
+    if (!sandbox.showEditor && sandbox.showPreview) return '100%';
+    return '50%';
+  };
+
   render() {
     const {
       moduleActions,
@@ -95,35 +102,37 @@ class EditorPreview extends React.PureComponent {
           onDragStarted={this.startResizing}
           onDragFinished={this.stopResizing}
           split="vertical"
-          defaultSize="50%"
+          defaultSize={this.getDefaultSize()}
           minSize={360}
           primary="second"
           paneStyle={{ height: '100%' }}
         >
           <FullSize>
-            <CodeEditor
-              changeCode={moduleActions.setCode}
-              id={currentModule.id}
-              error={currentModule.error}
-              code={currentModule.code}
-              title={currentModule.title}
-              canSave={currentModule.isNotSynced}
-              saveCode={this.saveCode}
-              modulePath={modulePath}
-            />
+            {sandbox.showEditor &&
+              <CodeEditor
+                changeCode={moduleActions.setCode}
+                id={currentModule.id}
+                error={currentModule.error}
+                code={currentModule.code}
+                title={currentModule.title}
+                canSave={currentModule.isNotSynced}
+                saveCode={this.saveCode}
+                modulePath={modulePath}
+              />}
           </FullSize>
           <FullSize inactive={this.state.resizing}>
-            <Preview
-              sandboxId={sandbox.id}
-              bundle={sandbox.dependencyBundle}
-              fetchBundle={sandboxActions.fetchDependenciesBundle}
-              module={currentModule}
-              modules={modules}
-              directories={directories}
-              setError={moduleActions.setError}
-              isInProjectView={sandbox.isInProjectView}
-              setProjectView={sandboxActions.setProjectView}
-            />
+            {sandbox.showPreview &&
+              <Preview
+                sandboxId={sandbox.id}
+                bundle={sandbox.dependencyBundle}
+                fetchBundle={sandboxActions.fetchDependenciesBundle}
+                module={currentModule}
+                modules={modules}
+                directories={directories}
+                setError={moduleActions.setError}
+                isInProjectView={sandbox.isInProjectView}
+                setProjectView={sandboxActions.setProjectView}
+              />}
           </FullSize>
         </SplitPane>
       </FullSize>

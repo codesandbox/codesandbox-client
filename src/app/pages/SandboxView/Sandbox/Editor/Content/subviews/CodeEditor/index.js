@@ -4,6 +4,9 @@ import CodeMirror from 'codemirror';
 import styled, { injectGlobal, keyframes } from 'styled-components';
 
 import 'codemirror/lib/codemirror.css';
+import 'codemirror/addon/dialog/dialog.css';
+import 'codemirror/addon/hint/show-hint.css';
+import 'codemirror/addon/tern/tern.css';
 import 'codemirror/mode/jsx/jsx';
 import 'codemirror/keymap/sublime';
 import 'codemirror/addon/fold/xml-fold'; // Needed to match JSX
@@ -14,6 +17,12 @@ import 'codemirror/addon/selection/active-line';
 import 'codemirror/addon/fold/foldcode';
 import 'codemirror/addon/fold/foldgutter';
 import 'codemirror/addon/fold/brace-fold';
+import 'codemirror/addon/dialog/dialog';
+import 'codemirror/addon/hint/show-hint';
+import 'codemirror/addon/tern/tern';
+
+import ternJSON from 'tern/defs/ecmascript.json';
+import tern from 'tern';
 
 import theme from '../../../../../../../../common/theme';
 import Header from './Header';
@@ -121,6 +130,10 @@ export default class CodeEditor extends React.PureComponent {
   getCodeMirror = (el: Element) => {
     const { code, id } = this.props;
     documentCache[id] = new CodeMirror.Doc(code || '', 'jsx');
+    window.tern = tern;
+    const server = new CodeMirror.TernServer({
+      defs: [ternJSON],
+    });
 
     this.codemirror = new CodeMirror(el, {
       mode: 'jsx',
@@ -145,7 +158,38 @@ export default class CodeEditor extends React.PureComponent {
             cm.toggleComment({ lineComment: '//' });
           });
         },
+        'Ctrl-Space': function(cm) {
+          server.complete(cm);
+        },
+        'Ctrl-I': function(cm) {
+          server.showType(cm);
+        },
+        'Ctrl-O': function(cm) {
+          server.showDocs(cm);
+        },
+        'Alt-.': function(cm) {
+          server.jumpToDef(cm);
+        },
+        'Alt-,': function(cm) {
+          server.jumpBack(cm);
+        },
+        'Ctrl-Q': function(cm) {
+          server.rename(cm);
+        },
+        'Ctrl-.': function(cm) {
+          server.selectName(cm);
+        },
       },
+    });
+    this.codemirror.on('cursorActivity', function(cm) {
+      server.updateArgHints(cm);
+    });
+
+    this.codemirror.on('inputRead', function(cm) {
+      const filter = new RegExp('[\.a-z_$]', 'i');
+      if (cm.display.input.textarea.value.slice(-1).match(filter)) {
+        cm.showHint({ hint: server.getHint, completeSingle: false });
+      }
     });
 
     this.codemirror.on('change', this.handleChange);

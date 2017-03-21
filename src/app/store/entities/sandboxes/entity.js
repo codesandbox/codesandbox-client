@@ -23,6 +23,8 @@ export type Sandbox = {
     error?: string,
     processing?: boolean,
   },
+  showEditor: ?boolean,
+  showPreview: ?boolean,
 };
 
 export default new schema.Entity(
@@ -33,6 +35,11 @@ export default new schema.Entity(
     currentModule: moduleEntity,
   },
   {
-    processStrategy: value => ({ ...value, isInProjectView: true }),
+    processStrategy: value => ({
+      ...value,
+      isInProjectView: true,
+      showEditor: true,
+      showPreview: true,
+    }),
   }
 );

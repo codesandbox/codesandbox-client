@@ -75,6 +75,7 @@ export const SET_NPM_DEPENDENCIES = 'SET_NPM_DEPENDENCIES';
 export const SET_CURRENT_MODULE = 'SET_CURRENT_MODULE';
 export const SET_BUNDLE = 'SET_BUNDLE';
 export const SET_PROJECT_VIEW = 'SET_PROJECT_VIEW';
+export const SET_VIEW_MODE = 'SET_VIEW_MODE';
 
 const addModuleToSandbox = (id, moduleId) => ({
   type: ADD_MODULE_TO_SANDBOX,
@@ -187,6 +188,13 @@ export default {
         });
       }
     },
+
+  setViewMode: (id: string, showEditor: boolean, showPreview: boolean) => ({
+    type: SET_VIEW_MODE,
+    id,
+    showEditor,
+    showPreview,
+  }),
 
   setProjectView: (id: string, isInProjectView: boolean) => ({
     type: SET_PROJECT_VIEW,

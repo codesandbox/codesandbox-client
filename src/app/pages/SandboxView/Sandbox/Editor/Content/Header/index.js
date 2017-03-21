@@ -8,12 +8,13 @@ import Import from 'react-icons/lib/go/package';
 
 import type { Sandbox } from 'app/store/entities/sandboxes/entity';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
+import Tooltip from 'app/components/Tooltip';
 
 import Action from './Action';
 
 const Container = styled.div`
-  position: relative;
   display: flex;
+  justify-content: space-between;
   background-color: ${props => props.theme.background2};
   font-size: 1.2rem;
   color: ${props => props.theme.white};
@@ -44,6 +45,54 @@ const Logo = styled.h1`
   left: 0; right: 0;
 `;
 
+const Left = styled.div`
+  display: flex;
+  height: 100%;
+`;
+
+const Right = styled.div`
+  display: flex;
+  padding: 0.75rem 0;
+`;
+
+const Icon = styled.div`
+  display: inline-block;
+  width: ${props => props.half ? 1.5 : 3}rem;
+  height: 1.5rem;
+  border: 1px solid rgba(0,0,0,0.1);
+`;
+
+const ViewIcon = styled.div`
+  transition: 0.3s ease all;
+  position: relative;
+  margin: 0 0.5rem;
+  border-radius: 2px;
+  overflow: hidden;
+  cursor: pointer;
+
+  &:after {
+    transition: 0.3s ease all;
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: 0; top: 0;
+    background-color: rgba(0,0,0,0.6);
+    opacity: ${props => props.active ? 0 : 1};
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  &:hover::after {
+    opacity: 0;
+  }
+`;
+
+const EditorIcon = styled(Icon)`
+  background-color: ${props => props.theme.secondary};
+`;
+
+const PreviewIcon = styled(Icon)`
+  background-color: ${props => props.theme.primary};
+`;
+
 type Props = {
   sandbox: Sandbox,
   sandboxActions: typeof sandboxActionCreators,
@@ -62,14 +111,67 @@ export default class Header extends React.PureComponent {
     sandboxActions.forkSandbox(sandbox.id);
   };
 
+  setEditorView = () => {
+    const { sandbox, sandboxActions } = this.props;
+    sandboxActions.setViewMode(sandbox.id, true, false);
+  };
+
+  setMixedView = () => {
+    const { sandbox, sandboxActions } = this.props;
+    sandboxActions.setViewMode(sandbox.id, true, true);
+  };
+
+  setPreviewView = () => {
+    const { sandbox, sandboxActions } = this.props;
+    sandboxActions.setViewMode(sandbox.id, false, true);
+  };
+
   render() {
+    const { sandbox } = this.props;
+    const canSave = sandbox.modules.some(m => m.isNotSynced);
     return (
       <Container>
-        <Action onClick={this.forkSandbox} title="Fork" Icon={Fork} />
-        <Action onClick={this.massUpdateModules} title="Save" Icon={Save} />
-        <Action title="Download" Icon={Download} placeholder />
-        <Action title="Import" Icon={Import} placeholder />
+        <Left>
+          <Action onClick={this.forkSandbox} title="Fork" Icon={Fork} />
+          <Action
+            onClick={canSave && this.massUpdateModules}
+            placeholder={canSave ? false : 'All modules are saved'}
+            title="Save"
+            Icon={Save}
+          />
+          <Action title="Download" Icon={Download} placeholder="Coming soon!" />
+          <Action title="Import" Icon={Import} placeholder="Coming soon!" />
+        </Left>
+
         <Logo>CodeSandbox</Logo>
+
+        <Right>
+          <Tooltip message="Editor view">
+            <ViewIcon
+              onClick={this.setEditorView}
+              active={sandbox.showEditor && !sandbox.showPreview}
+            >
+              <EditorIcon />
+            </ViewIcon>
+          </Tooltip>
+          <Tooltip message="Split view">
+            <ViewIcon
+              onClick={this.setMixedView}
+              active={sandbox.showEditor && sandbox.showPreview}
+            >
+              <EditorIcon half />
+              <PreviewIcon half />
+            </ViewIcon>
+          </Tooltip>
+          <Tooltip message="Preview view">
+            <ViewIcon
+              onClick={this.setPreviewView}
+              active={!sandbox.showEditor && sandbox.showPreview}
+            >
+              <PreviewIcon />
+            </ViewIcon>
+          </Tooltip>
+        </Right>
       </Container>
     );
   }

@@ -87,10 +87,12 @@ export default class Preview extends React.PureComponent {
   };
 
   componentDidUpdate(prevProps: Props) {
-    if (
-      prevProps.module.id !== this.props.module.id && this.state.isProjectView
-    ) {
-      // If user only navigated while watching project
+    if (prevProps.module.id !== this.props.module.id) {
+      if (this.props.isInProjectView) {
+        // If user only navigated while watching project
+        return;
+      }
+      this.executeCodeImmediately();
       return;
     }
 
@@ -132,6 +134,12 @@ export default class Preview extends React.PureComponent {
   };
 
   executeCode = () => {
+    requestAnimationFrame(() => {
+      this.executeCodeImmediately();
+    });
+  };
+
+  executeCodeImmediately = () => {
     const {
       modules,
       directories,
@@ -148,22 +156,19 @@ export default class Preview extends React.PureComponent {
     }
 
     const mainModule = isInProjectView ? modules.find(isMainModule) : module;
-
-    requestAnimationFrame(() => {
-      document.getElementById('sandbox').contentWindow.postMessage(
-        {
-          type: 'compile',
-          boilerplates: defaultBoilerplates,
-          module: mainModule,
-          changedModule: module,
-          modules,
-          directories,
-          manifest: bundle.manifest,
-          url: bundle.url,
-        },
-        '*'
-      );
-    });
+    document.getElementById('sandbox').contentWindow.postMessage(
+      {
+        type: 'compile',
+        boilerplates: defaultBoilerplates,
+        module: mainModule,
+        changedModule: module,
+        modules,
+        directories,
+        manifest: bundle.manifest,
+        url: bundle.url,
+      },
+      '*'
+    );
   };
 
   setError = (e: ?{ message: string, line: number }) => {

@@ -60,7 +60,7 @@ type Props = {
 export default ({ onClick, Icon, title, placeholder }: Props) => {
   if (placeholder) {
     return (
-      <ActionTooltip message="Coming soon!">
+      <ActionTooltip message={placeholder}>
         <IconContainer>
           <Icon />
         </IconContainer> {title}
