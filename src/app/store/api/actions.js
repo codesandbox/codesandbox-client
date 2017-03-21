@@ -35,13 +35,7 @@ const getMessage = (error: Error) => {
 
 const showError = error =>
   dispatch => {
-    dispatch(
-      notificationActions.addNotification(
-        'Something went wrong',
-        getMessage(error),
-        'error'
-      )
-    );
+    dispatch(notificationActions.addNotification(getMessage(error), 'error'));
   };
 
 export function doRequest(

@@ -9,8 +9,7 @@ export type NotificationButton = {
 export type Notification = {
   id: number,
   title: string,
-  body: string,
-  type: 'notice' | 'warning' | 'error',
+  type: 'notice' | 'success' | 'warning' | 'error',
   number: Date,
   buttons: ?Array<NotificationButton>,
 };
@@ -27,7 +26,6 @@ export default function reducer(state: State = initialState, action: Object) {
         {
           id: action.id,
           title: action.title,
-          body: action.body,
           type: action.notificationType,
           endTime: action.endTime,
           buttons: action.buttons,

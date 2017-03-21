@@ -17,6 +17,8 @@ const Container = styled.div`
   align-items: center;
   line-height: 1;
   box-shadow: 0 1px 3px #ddd;
+  height: 3rem;
+  box-sizing: border-box;
 `;
 
 const Icons = styled.div`

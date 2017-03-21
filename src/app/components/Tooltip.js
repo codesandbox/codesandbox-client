@@ -5,13 +5,13 @@ const getDirectionTransforms = ({ left, right, bottom, top }) => {
   if (left) {
     return `
       top: -5px;
-      right: 145%;
+      right: 130%;
     `;
   }
 
   if (right) {
     return `
-      left: 145%;
+      left: 130%;
       top: -5px;
     `;
   }
@@ -19,13 +19,13 @@ const getDirectionTransforms = ({ left, right, bottom, top }) => {
   if (top) {
     return `
       left: 50%;
-      bottom: 145%;
+      bottom: 130%;
     `;
   }
 
   return `
       left: 50%;
-      top: 145%;
+      top: 130%;
   `;
 };
 
@@ -77,11 +77,15 @@ const Tooltip = styled.div`
   transition-delay: 0.3s;
   position: relative;
   width: inherit;
-  color: white;
+  height: inherit;
+  display: inherit;
+  font-size: inherit;
+  flex: inherit;
 
   .tooltip {
     position: absolute;
     transition: 0.3s ease all;
+    color: white;
     opacity: 0;
     visibility: hidden;
     ${getDirectionTransforms}
@@ -109,8 +113,14 @@ const Tooltip = styled.div`
   }
 `;
 
-export default ({ children, message, left, right, bottom, top }) => (
-  <Tooltip bottom={bottom} left={left} right={right} top={top}>
+export default ({ className, children, message, left, right, bottom, top }) => (
+  <Tooltip
+    className={className}
+    bottom={bottom}
+    left={left}
+    right={right}
+    top={top}
+  >
     {children}
     <span className="tooltip">{message}</span>
   </Tooltip>

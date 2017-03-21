@@ -9,15 +9,13 @@ let lastId = 0;
 export default {
   addNotification: (
     title: string,
-    body: string,
-    notificationType: 'notice' | 'warning' | 'error' = 'notice',
+    notificationType: 'notice' | 'warning' | 'error' | 'success' = 'notice',
     buttons: Array<NotificationButton> = [],
-    timeAlive: number = 5,
+    timeAlive: number = 5
   ) => ({
     id: (lastId += 1),
     type: ADD_NOTIFICATION,
     title,
-    body,
     notificationType,
     buttons,
     endTime: Date.now() + timeAlive * 1000,

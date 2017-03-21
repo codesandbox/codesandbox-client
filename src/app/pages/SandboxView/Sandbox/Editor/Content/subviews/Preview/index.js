@@ -251,14 +251,6 @@ export default class Preview extends React.PureComponent {
 
     const url = urlInAddressBar || '';
 
-    if (bundle.processing) {
-      return (
-        <Container>
-          <LoadingDepText>Loading the dependencies...</LoadingDepText>
-        </Container>
-      );
-    }
-
     return (
       <Container>
         <Navigator
@@ -272,11 +264,13 @@ export default class Preview extends React.PureComponent {
           toggleProjectView={this.toggleProjectView}
         />
         {module.error && <ErrorMessage error={module.error} />}
-        <StyledFrame
-          sandbox="allow-scripts allow-modals allow-pointer-lock allow-same-origin allow-popups allow-forms"
-          src={frameUrl()}
-          id="sandbox"
-        />
+        {bundle.processing
+          ? <LoadingDepText>Loading the dependencies...</LoadingDepText>
+          : <StyledFrame
+              sandbox="allow-scripts allow-modals allow-pointer-lock allow-same-origin allow-popups allow-forms"
+              src={frameUrl()}
+              id="sandbox"
+            />}
       </Container>
     );
   }

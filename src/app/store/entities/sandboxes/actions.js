@@ -99,9 +99,6 @@ const removeDirectoryFromSandbox = (id, directoryShortid) => ({
 
 const forkSandbox = (id: string) =>
   async (dispatch: Function, getState: Function) => {
-    dispatch(
-      notificationActions.addNotification('Forking sandbox...', '', 'notice')
-    );
     const { data } = await dispatch(
       doRequest(FORK_SANDBOX_API_ACTIONS, `sandboxes/${id}/fork`, {
         method: 'POST',
@@ -115,6 +112,8 @@ const forkSandbox = (id: string) =>
     await dispatch(normalizeResult(entity, data));
 
     dispatch(push(sandboxUrl(data)));
+
+    dispatch(notificationActions.addNotification('Forked sandbox!', 'success'));
 
     return data;
   };
@@ -437,6 +436,10 @@ export default {
             directories
           )
         );
+
+        dispatch(
+          notificationActions.addNotification('Deleted directory', 'success')
+        );
       } catch (e) {
         // It failed, add it back
         dispatch(addDirectoryToSandbox(sandboxId, directoryShortid));
@@ -493,6 +496,12 @@ export default {
   fetchDependenciesBundle: (sandboxId: string) =>
     async (dispatch: Function) => {
       try {
+        dispatch(
+          notificationActions.addNotification(
+            'Fetching dependencies...',
+            'notice'
+          )
+        );
         const result = await dispatch(
           fetchBundle(FETCH_BUNDLE_API_ACTIONS, sandboxId)
         );
@@ -502,11 +511,14 @@ export default {
           id: sandboxId,
           bundle: result,
         });
+
+        dispatch(
+          notificationActions.addNotification('Dependencies loaded!', 'success')
+        );
       } catch (e) {
         dispatch(
           notificationActions.addNotification(
             'Could not fetch dependencies',
-            'Please try again later',
             'error'
           )
         );

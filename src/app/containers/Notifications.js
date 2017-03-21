@@ -69,7 +69,7 @@ class Notifications extends React.PureComponent {
           });
         }
       },
-      3000,
+      3000
     );
   }
 
@@ -109,13 +109,12 @@ class Notifications extends React.PureComponent {
               <Motion
                 key={n.id}
                 defaultStyle={{ y: -150 }}
-                style={{ y: spring(24 + 140 * (notifications.length - 1 - i)) }}
+                style={{ y: spring(24 + 60 * (notifications.length - 1 - i)) }}
               >
                 {({ y }) => (
                   <NotificationContainer key={n.id} style={{ bottom: y }}>
                     <NotificationComponent
                       title={n.title}
-                      body={n.body}
                       type={n.type}
                       buttons={n.buttons}
                       close={() => this.closeNotification(n.id)}

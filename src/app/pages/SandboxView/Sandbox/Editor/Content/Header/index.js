@@ -3,9 +3,13 @@ import React from 'react';
 import styled from 'styled-components';
 import Save from 'react-icons/lib/md/save';
 import Fork from 'react-icons/lib/go/repo-forked';
+import Download from 'react-icons/lib/go/cloud-download';
+import Import from 'react-icons/lib/go/package';
 
 import type { Sandbox } from 'app/store/entities/sandboxes/entity';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
+
+import Action from './Action';
 
 const Container = styled.div`
   position: relative;
@@ -40,31 +44,6 @@ const Logo = styled.h1`
   left: 0; right: 0;
 `;
 
-const Action = styled.div`
-  transition: 0.3s ease all;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  vertical-align: middle;
-  font-size: 1rem;
-  line-height: 1;
-  padding: 0 1rem;
-  color: rgba(255,255,255,0.7);
-  cursor: pointer;
-  border-bottom: 2px solid transparent;
-  z-index: 1;
-
-  &:hover {
-    color: rgba(255,255,255, 1);
-    border-bottom: 2px solid ${props => props.theme.secondary};
-  }
-`;
-
-const Icon = styled.div`
-  padding-right: 0.5rem;
-  vertical-align: middle;
-`;
-
 type Props = {
   sandbox: Sandbox,
   sandboxActions: typeof sandboxActionCreators,
@@ -86,16 +65,10 @@ export default class Header extends React.PureComponent {
   render() {
     return (
       <Container>
-        <Action onClick={this.massUpdateModules}>
-          <Icon>
-            <Save />
-          </Icon> Save
-        </Action>
-        <Action onClick={this.forkSandbox}>
-          <Icon>
-            <Fork />
-          </Icon> Fork
-        </Action>
+        <Action onClick={this.forkSandbox} title="Fork" Icon={Fork} />
+        <Action onClick={this.massUpdateModules} title="Save" Icon={Save} />
+        <Action title="Download" Icon={Download} placeholder />
+        <Action title="Import" Icon={Import} placeholder />
         <Logo>CodeSandbox</Logo>
       </Container>
     );
