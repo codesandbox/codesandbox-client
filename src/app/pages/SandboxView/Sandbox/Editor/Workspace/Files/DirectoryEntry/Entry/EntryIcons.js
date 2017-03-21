@@ -49,7 +49,7 @@ type Props = {
   root: ?boolean,
 };
 export default (
-  { type, root, hasChildren, isNotSynced, isOpen, onOpen }: Props,
+  { type, root, hasChildren, isNotSynced, isOpen, onOpen }: Props
 ) => (
   <div style={{ display: 'inline-block', verticalAlign: 'middle' }}>
     {isNotSynced && <NotSyncedIconWithMargin />}

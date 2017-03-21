@@ -14,7 +14,6 @@ import sandboxActions from '../../../store/entities/sandboxes/actions';
 import type { Sandbox } from '../../../store/entities/sandboxes/entity';
 import Title from '../../../components/text/Title';
 
-import Fork from './Fork';
 import Editor from './Editor';
 
 type Props = {
@@ -47,10 +46,20 @@ const mapDispatchToProps = dispatch => ({
 });
 class SandboxPage extends React.PureComponent {
   componentDidMount() {
+    this.fetchSandbox();
+  }
+
+  fetchSandbox = () => {
     const { id } = this.props.match.params;
 
     if (id) {
       this.props.sandboxActions.getById(id).then(null, this.handleNotFound);
+    }
+  };
+
+  componentDidUpdate(oldProps) {
+    if (this.props.match.params.id !== oldProps.match.params.id) {
+      this.fetchSandbox();
     }
   }
 
@@ -77,10 +86,6 @@ class SandboxPage extends React.PureComponent {
 
     return (
       <Switch>
-        <Route
-          path={`${match.url}/fork`}
-          render={matchParams => <Fork sandbox={sandbox} {...matchParams} />}
-        />
         <Route
           render={matchParams => <Editor sandbox={sandbox} {...matchParams} />}
         />

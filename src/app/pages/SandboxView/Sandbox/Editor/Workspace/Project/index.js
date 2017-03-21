@@ -42,7 +42,7 @@ export default class Project extends React.PureComponent {
         <WorkspaceSubtitle>Title</WorkspaceSubtitle>
         <WorkspaceInputContainer>
           <input
-            value={title}
+            value={title || ''}
             onChange={this.setValue('title')}
             type="text"
             onBlur={this.updateSandboxInfo}
@@ -51,10 +51,11 @@ export default class Project extends React.PureComponent {
         <WorkspaceSubtitle>Description</WorkspaceSubtitle>
         <WorkspaceInputContainer>
           <textarea
-            value={description}
+            value={description || ''}
             onChange={this.setValue('description')}
             type="text"
             onBlur={this.updateSandboxInfo}
+            rows="5"
           />
         </WorkspaceInputContainer>
       </div>

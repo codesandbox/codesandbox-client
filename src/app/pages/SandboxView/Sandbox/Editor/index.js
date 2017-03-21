@@ -12,7 +12,12 @@ type Props = {
 };
 
 export default ({ sandbox }: Props) => (
-  <SplitPane split="vertical" minSize={100} defaultSize={16 * 16}>
+  <SplitPane
+    split="vertical"
+    minSize={100}
+    defaultSize={16 * 16}
+    style={{ top: 0 }}
+  >
     <Workspace sandbox={sandbox} />
     <Content sandbox={sandbox} />
   </SplitPane>

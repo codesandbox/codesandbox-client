@@ -7,6 +7,7 @@ import RefreshIcon from 'react-icons/lib/md/refresh';
 
 import AddressBar from './AddressBar';
 import Switch from './Switch';
+import Tooltip from '../../../../../../../components/Tooltip';
 
 const Container = styled.div`
   display: flex;
@@ -44,6 +45,10 @@ const AddressBarContainer = styled.div`
   margin: 0 0.5rem;
 `;
 
+const SwitchContainer = styled.div`
+  flex: 0 0 3.5rem;
+`;
+
 type Props = {
   url: string,
   onChange: (text: string) => void,
@@ -76,6 +81,13 @@ export default (
     <AddressBarContainer>
       <AddressBar url={url} onChange={onChange} onConfirm={onConfirm} />
     </AddressBarContainer>
-    <Switch right={isProjectView} onClick={toggleProjectView} />
+    <SwitchContainer>
+      <Tooltip
+        message={isProjectView ? `Project View` : 'Current module view'}
+        left
+      >
+        <Switch right={isProjectView} onClick={toggleProjectView} />
+      </Tooltip>
+    </SwitchContainer>
   </Container>
 );

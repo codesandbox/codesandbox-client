@@ -70,6 +70,7 @@ export const ADD_DIRECTORY_TO_SANDBOX = 'ADD_DIRECTORY_TO_SANDBOX';
 export const SET_NPM_DEPENDENCIES = 'SET_NPM_DEPENDENCIES';
 export const SET_CURRENT_MODULE = 'SET_CURRENT_MODULE';
 export const SET_BUNDLE = 'SET_BUNDLE';
+export const SET_PROJECT_VIEW = 'SET_PROJECT_VIEW';
 
 const addModuleToSandbox = (id, moduleId) => ({
   type: ADD_MODULE_TO_SANDBOX,
@@ -109,6 +110,8 @@ const forkSandbox = (id: string) =>
     }
     await dispatch(normalizeResult(entity, data));
 
+    dispatch(push(sandboxUrl(data)));
+
     return data;
   };
 
@@ -124,8 +127,6 @@ const maybeForkSandbox = sandboxId =>
     }
 
     const forkedSandbox = await dispatch(forkSandbox(sandbox.id));
-
-    dispatch(push(sandboxUrl(forkedSandbox)));
 
     return forkedSandbox.id;
   };
@@ -183,6 +184,13 @@ export default {
         });
       }
     },
+
+  setProjectView: (id: string, isInProjectView: boolean) => ({
+    type: SET_PROJECT_VIEW,
+    id,
+    isInProjectView,
+  }),
+
   setCurrentModule: (id: string, moduleId: string) => ({
     type: SET_CURRENT_MODULE,
     id,

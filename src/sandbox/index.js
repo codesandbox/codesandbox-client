@@ -6,7 +6,6 @@ import {
   evalBoilerplates,
   findBoilerplate,
 } from './boilerplates';
-import { search } from 'babel-standalone';
 
 let fetching = false;
 let url = null;

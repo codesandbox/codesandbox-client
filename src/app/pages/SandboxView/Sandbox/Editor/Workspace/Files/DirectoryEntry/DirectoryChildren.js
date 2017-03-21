@@ -48,6 +48,7 @@ export default class DirectoryChildren extends React.PureComponent {
       modules,
       deleteEntry,
       currentModuleId,
+      isInProjectView,
     } = this.props;
 
     return (
@@ -65,6 +66,7 @@ export default class DirectoryChildren extends React.PureComponent {
               modules={modules}
               directories={directories}
               currentModuleId={currentModuleId}
+              isInProjectView={isInProjectView}
             />
           ))}
         {modules.filter(x => x.directoryShortid === parentId).map(m => {
@@ -84,6 +86,7 @@ export default class DirectoryChildren extends React.PureComponent {
               isNotSynced={m.isNotSynced}
               renameValidator={this.validateTitle}
               setCurrentModule={setCurrentModule}
+              isInProjectView={isInProjectView}
               isMainModule={mainModule}
             />
           );

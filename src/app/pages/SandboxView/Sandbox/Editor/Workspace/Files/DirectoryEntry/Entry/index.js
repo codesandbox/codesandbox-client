@@ -37,6 +37,7 @@ type Props = {
   setCurrentModule: (id: string) => void,
   root: ?boolean,
   isMainModule: boolean,
+  isInProjectView: boolean,
 };
 
 type State = {
@@ -46,7 +47,7 @@ type State = {
   hovering: boolean,
 };
 
-const EditIconsContainer = styled(EditIcons)`
+const Right = styled.div`
   position: absolute;
   right: 1rem;
 `;
@@ -164,9 +165,13 @@ class Entry extends React.PureComponent {
       onClick,
       rename,
       isNotSynced,
+      isMainModule,
+      isInProjectView,
       root,
     } = this.props;
     const { state, error, selected, hovering } = this.state;
+
+    const isCurrentlyViewing = isInProjectView ? isMainModule : active;
 
     return connectDragSource(
       <div>
@@ -179,6 +184,7 @@ class Entry extends React.PureComponent {
           onContextMenu={this.openContextMenu}
           onMouseEnter={this.onMouseEnter}
           onMouseLeave={this.onMouseLeave}
+          alternative={isMainModule}
         >
           <EntryIcons
             isNotSynced={isNotSynced}
@@ -196,13 +202,17 @@ class Entry extends React.PureComponent {
               />
             : <EntryTitle title={title} />}
           {state === '' &&
-            <EditIconsContainer
-              hovering={hovering}
-              onCreateFile={onCreateModuleClick}
-              onCreateDirectory={onCreateDirectoryClick}
-              onDelete={deleteEntry && this.delete}
-              onEdit={rename && this.rename}
-            />}
+            <Right>
+              {isMainModule
+                ? <span style={{ opacity: hovering ? 1 : 0 }}>main</span>
+                : <EditIcons
+                    hovering={hovering}
+                    onCreateFile={onCreateModuleClick}
+                    onCreateDirectory={onCreateDirectoryClick}
+                    onDelete={deleteEntry && this.delete}
+                    onEdit={rename && this.rename}
+                  />}
+            </Right>}
         </EntryContainer>
       </div>
     );

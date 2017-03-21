@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import theme from '../../../../../../common/theme';
 
 export const getContainerStyles = props => {
+  const color = props.alternative ? theme.primary : theme.secondary;
   let styles = `
     transition: 0.3s ease all;
     position: relative;
@@ -20,9 +21,9 @@ export const getContainerStyles = props => {
 
     &:hover {
       ${props.active || props.editing ? '' : `
-        background-color: ${theme.background3.darken(0.2)()};
+        background-color: ${color.clearer(0.9)()};
         color: ${theme.background.lighten(5)()};
-        border-color: ${theme.primary.darken(0.4)()};
+        border-color: ${color.darken(0.4)()};
       `}
 
       > div {
@@ -34,7 +35,7 @@ export const getContainerStyles = props => {
   if (props.editing) {
     styles += `
       color: ${theme.white()};
-      background-color: ${theme.background3.darken(0.15)()};
+      background-color: ${color.clearer(0.9)()};
     `;
 
     if (props.nameValidationError) {
@@ -48,8 +49,8 @@ export const getContainerStyles = props => {
   if (props.active) {
     styles += `
       color: ${theme.white()} !important;
-      border-color: ${theme.primary()} !important;
-      background-color: ${theme.background3()} !important;
+      border-color: ${color()} !important;
+      background-color: ${color.lighten(0.1).clearer(0.8)()} !important;
     `;
   }
 

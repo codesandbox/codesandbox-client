@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { sortBy } from 'lodash';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { DragDropContext } from 'react-dnd';
 import DirectoryEntry from './DirectoryEntry/index';
@@ -55,9 +56,10 @@ class Files extends React.PureComponent {
         root
         title={sandbox.title || 'Project'}
         sandboxId={sandbox.id}
-        modules={sandbox.modules}
+        modules={sortBy(sandbox.modules, 'title')}
+        directories={sortBy(sandbox.directories, 'title')}
+        isInProjectView={sandbox.isInProjectView}
         currentModuleId={currentModule.id}
-        directories={sandbox.directories}
         renameSandbox={this.renameSandbox}
         id={null}
       />

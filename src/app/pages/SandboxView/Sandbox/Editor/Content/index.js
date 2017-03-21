@@ -90,7 +90,7 @@ class EditorPreview extends React.PureComponent {
 
     return (
       <FullSize>
-        <Header />
+        <Header sandbox={sandbox} sandboxActions={sandboxActions} />
         <SplitPane
           onDragStarted={this.startResizing}
           onDragFinished={this.stopResizing}
@@ -121,6 +121,8 @@ class EditorPreview extends React.PureComponent {
               modules={modules}
               directories={directories}
               setError={moduleActions.setError}
+              isInProjectView={sandbox.isInProjectView}
+              setProjectView={sandboxActions.setProjectView}
             />
           </FullSize>
         </SplitPane>

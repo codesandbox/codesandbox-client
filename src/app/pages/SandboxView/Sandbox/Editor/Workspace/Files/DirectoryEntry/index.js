@@ -57,6 +57,7 @@ type Props = {
   renameSandbox: ?(title: string) => void,
   sandboxActions: typeof sandboxActionCreators,
   currentModuleId: ?string,
+  isInProjectView: boolean,
 };
 type State = {
   creating: '' | 'module' | 'directory',
@@ -178,6 +179,7 @@ class DirectoryEntry extends React.PureComponent {
       currentModuleId,
       connectDropTarget,
       isOver,
+      isInProjectView,
       depth = 0,
       root,
     } = this.props;
@@ -228,6 +230,7 @@ class DirectoryEntry extends React.PureComponent {
             deleteEntry={this.deleteModule}
             setCurrentModule={this.setCurrentModule}
             currentModuleId={currentModuleId}
+            isInProjectView={isInProjectView}
           />
           {creating === 'module' &&
             <Entry

@@ -9,6 +9,9 @@ const Container = styled.div`
 
 const InputContainer = styled.div`
   input {
+    border-radius: 4px;
+    outline: none;
+    border: 1px solid #ccc;
     padding: 0.2rem 1rem;
     color: black;
     width: 100%;

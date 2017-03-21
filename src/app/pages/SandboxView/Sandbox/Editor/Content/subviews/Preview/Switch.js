@@ -4,17 +4,15 @@ import styled from 'styled-components';
 const Container = styled.div`
   transition: 0.3s ease all;
   position: relative;
-  background-color: ${props =>
-  props.right ? props.theme.primary : props.theme.secondary};
-  flex: 0 0 5.5rem;
-  border-radius: 50px;
-  font-size: .875rem;
-  color: ${props =>
-  props.right ? props.theme.primaryText : props.theme.secondary.darken(0.5)};
-  border: 1px solid #ccc;
-  padding: calc(0.5rem - 1px);
-  height: 0.9rem;
+  background-color: ${props => props.right ? props.theme.primary : props.theme.secondary};
+  width: 3.5rem;
+  color: rgba(0,0,0,0.5);
+  border: 1px solid rgba(0,0,0,.1);
+  padding: 0.5rem;
+  height: 26px;
+  box-sizing: border-box;
   cursor: pointer;
+  border-radius: 4px;
 
   &:before, &:after {
     position: absolute;
@@ -24,25 +22,17 @@ const Container = styled.div`
   }
 `;
 
-const Text = styled.span`
-  position: absolute;
-  ${props => props.position}: 0.75rem;
-  opacity: ${props => props.right ? 1 : 0};
-`;
-
 const Dot = styled.div`
   transition: inherit;
   position: absolute;
-  border-radius: 50%;
-  height: 1.5rem;
-  width: 1.5rem;
+  height: 22px;
+  width: 1rem;
   left: 0.2rem;
-  transform: translateX(${props => props.right ? '4.5rem' : '0'});
-  top: 0.1rem;
-  background-color: ${props =>
-  props.right ? props.theme.primaryText : props.theme.secondary.darken(0.5)};
-  box-shadow: 0 0 4px ${props =>
-  props.right ? props.theme.primaryText : props.theme.secondary.darken(0.5)};;
+  border-radius: 4px;
+  transform: translateX(${props => props.right ? 'calc(2rem + 2px)' : '0'});
+  top: calc(0.1rem - 1px);
+  background-color: white;
+  box-shadow: 0 0 4px rgba(0,0,0,0.2);
 `;
 
 type Props = {
@@ -52,8 +42,6 @@ type Props = {
 
 export default ({ right, onClick }: Props) => (
   <Container onClick={onClick} right={right}>
-    <Text right={right} position="left">Project</Text>
-    <Text right={!right} position="right">Current</Text>
     <Dot right={right} />
   </Container>
 );

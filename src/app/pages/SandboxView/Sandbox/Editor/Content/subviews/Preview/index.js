@@ -46,10 +46,12 @@ const LoadingDepText = styled.div`
 
 type Props = {
   sandboxId: string,
+  isInProjectView: boolean,
   modules: Array<Module>,
   directories: Array<Directory>,
   bundle: Sandbox.dependencyBundle,
   fetchBundle: (id: string) => Object,
+  setProjectView: (id: string, isInProjectView: boolean) => void,
   module: Module,
   setError: (id: string, error: ?{ message: string, line: number }) => void,
 };
@@ -60,7 +62,6 @@ type State = {
   history: Array<string>,
   historyPosition: number,
   urlInAddressBar: string,
-  isProjectView: boolean,
 };
 
 export default class Preview extends React.PureComponent {
@@ -72,7 +73,6 @@ export default class Preview extends React.PureComponent {
       history: [],
       historyPosition: 0,
       urlInAddressBar: '',
-      isProjectView: true,
       url: null,
     };
 
@@ -135,8 +135,8 @@ export default class Preview extends React.PureComponent {
       directories,
       bundle = {},
       module,
+      isInProjectView,
     } = this.props;
-    const { isProjectView } = this.state;
 
     if (bundle.manifest == null) {
       if (!bundle.processing && !bundle.error) {
@@ -145,7 +145,7 @@ export default class Preview extends React.PureComponent {
       return;
     }
 
-    const mainModule = isProjectView ? modules.find(isMainModule) : module;
+    const mainModule = isInProjectView ? modules.find(isMainModule) : module;
 
     requestAnimationFrame(() => {
       document.getElementById('sandbox').contentWindow.postMessage(
@@ -229,9 +229,8 @@ export default class Preview extends React.PureComponent {
   };
 
   toggleProjectView = () => {
-    this.setState({ isProjectView: !this.state.isProjectView }, () => {
-      this.executeCode();
-    });
+    const { setProjectView, isInProjectView, sandboxId } = this.props;
+    setProjectView(sandboxId, !isInProjectView);
   };
 
   props: Props;
@@ -241,12 +240,11 @@ export default class Preview extends React.PureComponent {
   rootInstance: ?Object;
 
   render() {
-    const { bundle = {} } = this.props;
+    const { bundle = {}, isInProjectView } = this.props;
     const {
       historyPosition,
       history,
       urlInAddressBar,
-      isProjectView,
     } = this.state;
 
     const url = urlInAddressBar || '';
@@ -268,7 +266,7 @@ export default class Preview extends React.PureComponent {
           onBack={historyPosition > 0 && this.handleBack}
           onForward={historyPosition < history.length - 1 && this.handleForward}
           onRefresh={this.handleRefresh}
-          isProjectView={isProjectView}
+          isProjectView={isInProjectView}
           toggleProjectView={this.toggleProjectView}
         />
         <StyledFrame

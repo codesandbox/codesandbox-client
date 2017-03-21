@@ -15,6 +15,7 @@ export type Sandbox = {
   npmDependencies: {
     [dep: string]: string,
   },
+  isInProjectView: ?boolean,
   dependencyBundle: ?{
     manifest?: Object,
     hash?: string,
@@ -24,8 +25,14 @@ export type Sandbox = {
   },
 };
 
-export default new schema.Entity('sandboxes', {
-  modules: [moduleEntity],
-  directories: [directoryEntity],
-  currentModule: moduleEntity,
-});
+export default new schema.Entity(
+  'sandboxes',
+  {
+    modules: [moduleEntity],
+    directories: [directoryEntity],
+    currentModule: moduleEntity,
+  },
+  {
+    processStrategy: value => ({ ...value, isInProjectView: true }),
+  }
+);

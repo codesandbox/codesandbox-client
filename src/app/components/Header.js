@@ -1,7 +1,13 @@
 // @flow
 import React from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
+import Save from 'react-icons/lib/md/save';
+import Fork from 'react-icons/lib/go/repo-forked';
+
 import Button from './buttons/Button';
+
+import { forkSandboxUrl } from '../utils/url-generator';
 
 const Container = styled.div`
   position: relative;
@@ -15,12 +21,14 @@ const Container = styled.div`
   font-weight: 400;
   flex: 0 0 3rem;
   box-sizing: border-box;
-  padding: 0.5rem 1rem;
   border-bottom: 1px solid ${props => props.theme.background2.darken(0.3)};
 `;
 
 const Logo = styled.h1`
-  background-color: ${props => props.theme.background2};
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 0;
   margin: 0;
   line-height: 3rem;
@@ -31,21 +39,46 @@ const Logo = styled.h1`
   font-weight: 400;
   text-decoration: none;
   color: white;
+  left: 0; right: 0;
 `;
 
-const LogoName = styled.span`
-  display: inline-block;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  left: 0;
-  text-align: center;
-  margin: auto;
+const Action = styled.div`
+  transition: 0.3s ease all;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  vertical-align: middle;
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0 1rem;
+  color: rgba(255,255,255,0.7);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  z-index: 1;
+
+  &:hover {
+    color: rgba(255,255,255, 1);
+    border-bottom: 2px solid ${props => props.theme.secondary};
+  }
 `;
 
-export default () => (
+const Icon = styled.div`
+  padding-right: 0.5rem;
+  vertical-align: middle;
+`;
+
+export default ({ sandbox, sandboxActions }) => (
   <Container>
-    <Logo><LogoName>CodeSandbox</LogoName></Logo>
+    <Action>
+      <Icon>
+        <Save />
+      </Icon> Save
+    </Action>
+    <Action onClick={() => sandboxActions.forkSandbox(sandbox.id)}>
+      <Icon>
+        <Fork />
+      </Icon> Fork
+    </Action>
+    <Logo>CodeSandbox</Logo>
   </Container>
 );

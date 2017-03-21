@@ -5,7 +5,6 @@ import styled from 'styled-components';
 const TitleContainer = styled.span`
   display: inline-block;
   margin-left: 0.5rem;
-  padding-right: 2.5rem;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;

@@ -8,6 +8,7 @@ import {
   SET_BUNDLE,
   FETCH_BUNDLE_API_ACTIONS,
   SET_SANDBOX_INFO,
+  SET_PROJECT_VIEW,
 } from './actions';
 
 const initialState = {};
@@ -19,6 +20,8 @@ type Action = {
 
 function singleSandboxReducer(sandbox, action: Action) {
   switch (action.type) {
+    case SET_PROJECT_VIEW:
+      return { ...sandbox, isInProjectView: action.isInProjectView };
     case SET_CURRENT_MODULE:
       return { ...sandbox, currentModule: action.moduleId };
     case ADD_MODULE_TO_SANDBOX:
@@ -83,6 +86,7 @@ export default function reducer(state = initialState, action: Action) {
     case FETCH_BUNDLE_API_ACTIONS.REQUEST:
     case SET_BUNDLE:
     case SET_SANDBOX_INFO:
+    case SET_PROJECT_VIEW:
       if (state[action.id]) {
         return {
           ...state,
