@@ -18,6 +18,7 @@ import {
   isMainModule,
   getModulePath,
 } from '../../../../../store/entities/sandboxes/modules/selectors';
+import Header from '../../../../../components/Header';
 
 type Props = {
   sandbox: Sandbox,
@@ -89,6 +90,7 @@ class EditorPreview extends React.PureComponent {
 
     return (
       <FullSize>
+        <Header />
         <SplitPane
           onDragStarted={this.startResizing}
           onDragFinished={this.stopResizing}

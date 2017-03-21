@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import Button from './buttons/Button';
 
 const Container = styled.div`
   position: relative;
@@ -11,28 +11,26 @@ const Container = styled.div`
   color: ${props => props.theme.white};
   z-index: 40;
   margin: 0;
-  font-weight: 400;
   height: 3rem;
-  min-height: 3rem;
+  font-weight: 400;
+  flex: 0 0 3rem;
+  box-sizing: border-box;
+  padding: 0.5rem 1rem;
   border-bottom: 1px solid ${props => props.theme.background2.darken(0.3)};
 `;
 
-const Logo = styled(Link)`
-  display: inline-block;
-  position: relative;
+const Logo = styled.h1`
   background-color: ${props => props.theme.background2};
   padding: 0;
+  margin: 0;
   line-height: 3rem;
+  font-size: 1.2rem;
+  font-weight: 500;
   vertical-align: middle;
   width: 100%;
   font-weight: 400;
   text-decoration: none;
-  color: ${props => props.theme.white};
-`;
-
-const LogoImage = styled.img`
-  border-right: 1px solid ${props => props.theme.background2.clearer(0.8)};
-  padding: 0.25rem 0.75rem;
+  color: white;
 `;
 
 const LogoName = styled.span`
@@ -48,6 +46,6 @@ const LogoName = styled.span`
 
 export default () => (
   <Container>
-    <Logo to="/"><LogoName>Temporary</LogoName></Logo>
+    <Logo><LogoName>CodeSandbox</LogoName></Logo>
   </Container>
 );

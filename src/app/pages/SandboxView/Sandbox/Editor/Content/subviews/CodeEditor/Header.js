@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import SaveIcon from 'react-icons/lib/md/save';
 import Button from '../../../../../../../components/buttons/Button';
 
 const Container = styled.div`
@@ -10,7 +9,7 @@ const Container = styled.div`
   box-shadow: 0 3px 3px ${props => props.theme.background2};
   color: ${props => props.theme.white};
   padding: 0.5rem 1rem;
-  height: 3rem;
+  flex: 0 0 3rem;
   box-sizing: border-box;
   justify-content: space-between;
   vertical-align: middle;
@@ -30,7 +29,6 @@ type Props = {
 
 export default ({ path, title, saveComponent }: Props) => (
   <Container>
-
     <div>
       <Path>{path}</Path>
       {title}

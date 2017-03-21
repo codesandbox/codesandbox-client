@@ -6,7 +6,7 @@ import ExpandIcon from 'react-icons/lib/md/keyboard-arrow-down';
 const ChildContainer = styled.div`
   position: relative;
   background-color: ${props => props.theme.background};
-  margin: 0rem;
+  margin: 0;
   padding: 0;
   border-bottom: 1px solid ${props => props.theme.background2};
 
@@ -14,20 +14,29 @@ const ChildContainer = styled.div`
   height: ${props => props.open ? '100%' : 0};
 `;
 
-const WorkspaceTitle = styled.h3`
+const ItemHeader = styled.div`
+  display: flex;
+  align-items: center;
   position: relative;
-  padding: 1rem 0.5rem;
+  padding: 0.5rem 1rem;
+  box-sizing: border-box;
+  vertical-align: middle;
+  height: calc(3rem - 1px);
   margin: 0;
-  font-size: 1rem;
-  font-weight: 400;
   color: ${props => props.theme.white};
   cursor: pointer;
+`;
+
+const Title = styled.h3`
+  font-size: 1rem;
+  margin: 0;
+  font-weight: 400;
 `;
 
 const ExpandIconContainer = styled(ExpandIcon)`
   transition: 0.3s ease all;
   position: absolute;
-  right: 0.5rem;
+  right: 1rem;
   font-size: 1rem;
 
   transform: rotateZ(${props => props.open ? 0 : 90}deg);
@@ -58,10 +67,10 @@ export default class WorkspaceItem extends React.PureComponent {
 
     return (
       <div>
-        <WorkspaceTitle onClick={this.toggleOpen}>
-          {title}
+        <ItemHeader onClick={this.toggleOpen}>
+          <Title>{title}</Title>
           <ExpandIconContainer open={open} />
-        </WorkspaceTitle>
+        </ItemHeader>
         <ChildContainer open={open}>
           {children}
         </ChildContainer>

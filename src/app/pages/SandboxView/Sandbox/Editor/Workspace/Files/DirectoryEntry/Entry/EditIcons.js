@@ -34,11 +34,12 @@ const Icon = styled.div`
   }
 `;
 
-const handleClick = func => (e: Event) => {
-  e.preventDefault();
-  e.stopPropagation();
-  func();
-};
+const handleClick = func =>
+  (e: Event) => {
+    e.preventDefault();
+    e.stopPropagation();
+    func();
+  };
 
 export default (
   {
@@ -53,7 +54,6 @@ export default (
   <div className={className}>
     {hovering &&
       <Container>
-        {onDelete && <Icon onClick={handleClick(onDelete)}><CrossIcon /></Icon>}
         {onEdit && <Icon onClick={handleClick(onEdit)}><EditIcon /></Icon>}
         {onCreateFile &&
           <Icon onClick={handleClick(onCreateFile)}><AddFileIcon /></Icon>}
@@ -61,6 +61,7 @@ export default (
           <Icon onClick={handleClick(onCreateDirectory)}>
             <AddDirectoryIcon />
           </Icon>}
+        {onDelete && <Icon onClick={handleClick(onDelete)}><CrossIcon /></Icon>}
       </Container>}
   </div>
 );

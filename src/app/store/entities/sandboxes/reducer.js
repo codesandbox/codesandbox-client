@@ -27,15 +27,22 @@ function singleSandboxReducer(sandbox, action: Action) {
         ...sandbox,
         directories: [...sandbox.directories, action.directoryShortid],
       };
-    case REMOVE_MODULE_FROM_SANDBOX:
+    case REMOVE_MODULE_FROM_SANDBOX: {
+      const currentModule = sandbox.currentModule;
+      const resetCurrentModule = currentModule === action.moduleId;
+
       return {
         ...sandbox,
+        currentModule: resetCurrentModule ? undefined : sandbox.currentModule,
         modules: sandbox.modules.filter(m => m !== action.moduleId),
       };
+    }
     case REMOVE_DIRECTORY_FROM_SANDBOX:
       return {
         ...sandbox,
-        directories: sandbox.directories.filter(d => d !== action.directoryShortid),
+        directories: sandbox.directories.filter(
+          d => d !== action.directoryShortid
+        ),
       };
     case SET_NPM_DEPENDENCIES:
       return {

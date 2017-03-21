@@ -12,6 +12,7 @@ const Container = styled.div`
   display: flex;
   background-color: #f2f2f2;
   padding: 0.5rem;
+  flex: 0 0 3rem;
   align-items: center;
   line-height: 1;
   box-shadow: 0 1px 3px #ddd;

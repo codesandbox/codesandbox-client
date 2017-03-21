@@ -14,6 +14,7 @@ import Files from './Files';
 import Dependencies from './Dependencies';
 import Summary from './Summary';
 import WorkspaceItem from './WorkspaceItem';
+import SandboxDetails from './SandboxDetails';
 
 const Container = styled.div`
   background-color: ${props => props.theme.background};
@@ -32,6 +33,7 @@ const mapDispatchToProps = dispatch => ({
 });
 const Workspace = ({ sandbox, sandboxActions }: Props) => (
   <Container>
+    <SandboxDetails sandbox={sandbox} />
     <WorkspaceItem defaultOpen title="Project">
       <Summary sandbox={sandbox} />
     </WorkspaceItem>
