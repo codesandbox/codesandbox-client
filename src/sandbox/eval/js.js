@@ -1,6 +1,7 @@
 import { transform } from 'babel-standalone';
 import evalModule from './';
 import resolveModule from '../utils/resolve-module';
+import DependencyNotFoundError from '../errors/dependency-not-found-error';
 
 const moduleCache = new Map();
 
@@ -8,7 +9,7 @@ const moduleCache = new Map();
  * Deletes the cache of all modules that use module and module itself
  */
 export function deleteCache(module) {
-  moduleCache.forEach((value) => {
+  moduleCache.forEach(value => {
     if (value.requires.includes(module.id)) {
       deleteCache(value.module);
     }
@@ -34,22 +35,46 @@ function evaluate(code, require) {
   return exports;
 }
 
-export default function evaluateJS(mainModule, modules, directories, manifest, depth) {
+export default function evaluateJS(
+  mainModule,
+  modules,
+  directories,
+  manifest,
+  depth
+) {
   try {
     const requires = [];
-    require = function require(path) { // eslint-disable-line no-unused-vars
+    require = function require(path: string) {
+      // eslint-disable-line no-unused-vars
+      if (path.startsWith('./')) {
+        const module = resolveModule(
+          path,
+          modules,
+          directories,
+          mainModule.directoryShortid
+        );
+        if (mainModule === module) {
+          throw new Error(`${mainModule.title} is importing itself`);
+        }
+
+        if (!module) throw new Error(`Cannot find module in path: ${path}`);
+
+        requires.push(module.id);
+        // Check if this module has been evaluated before, if so return that
+        const cache = moduleCache.get(module.id);
+
+        return cache
+          ? cache.exports
+          : evalModule(module, modules, directories, manifest, depth + 1);
+      }
+
+      // So it must be a dependency
       const dependencyManifest = manifest[path] || manifest[`${path}.js`];
-      if (dependencyManifest) return window.dependencies(dependencyManifest.id);
-
-      const module = resolveModule(path, modules, directories, mainModule.directoryId);
-      if (mainModule === module) throw new Error(`${mainModule.title} is importing itself`);
-      if (!module) throw new Error(`Cannot find module in path: ${path}`);
-
-      requires.push(module.id);
-      // Check if this module has been evaluated before, if so return that
-      const cache = moduleCache.get(module.id);
-
-      return cache ? cache.exports : evalModule(module, modules, directories, manifest, depth + 1);
+      if (dependencyManifest) {
+        return window.dependencies(dependencyManifest.id);
+      } else {
+        throw new DependencyNotFoundError(path);
+      }
     };
 
     const compiledCode = compileCode(mainModule.code, mainModule.title);

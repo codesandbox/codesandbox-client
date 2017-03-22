@@ -15,3 +15,7 @@ html, body {
 #root {
   height: 100%;
 }
+
+a {
+  color: #6CAEDD;
+}

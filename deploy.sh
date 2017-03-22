@@ -8,7 +8,6 @@ mkdir .deliver/www
 docker cp $id:/app/www/ ./.deliver/
 docker rm -v $id
 
-
 echo "Tarring build files"
 tar -C .deliver -zcvf .deliver/code_sandbox_client.tar.gz www
 
@@ -20,3 +19,4 @@ scp .deliver/code_sandbox_client.tar.gz nginx@ssh.codesandbox.io:./
 
 echo "Untarring www files"
 ssh nginx@ssh.codesandbox.io "tar -xzf ./code_sandbox_client.tar.gz"
+

@@ -1,9 +1,16 @@
 import delay from './utils/delay';
 import buildError from './utils/error-message-builder';
 import evalModule, { deleteCache } from './eval';
-import { getBoilerplates, evalBoilerplates, findBoilerplate } from './boilerplates';
+import {
+  getBoilerplates,
+  evalBoilerplates,
+  findBoilerplate,
+} from './boilerplates';
 
-let errorHappened = false;
+const host = process.env.NODE_ENV === 'development'
+  ? 'http://codesandbox.dev/'
+  : 'https://codesandbox.io/';
+
 let fetching = false;
 let url = null;
 
@@ -36,11 +43,15 @@ async function compile(message) {
     url = newUrl;
     await addDependencyBundle();
     fetching = false;
-    window.parent.postMessage('Ready!', '*');
+    window.parent.postMessage('Ready!', host);
     return;
   }
 
-  if (boilerplates.length !== 0 && getBoilerplates().length === 0 && manifest != null) {
+  if (
+    boilerplates.length !== 0 &&
+    getBoilerplates().length === 0 &&
+    manifest != null
+  ) {
     evalBoilerplates(boilerplates, modules, directories, manifest);
   }
 
@@ -52,21 +63,28 @@ async function compile(message) {
     const boilerplate = findBoilerplate(module);
     boilerplate.module.default(compiledModule);
 
-    errorHappened = false;
-    window.parent.postMessage({
-      type: 'success',
-    }, '*');
+    window.parent.postMessage(
+      {
+        type: 'success',
+      },
+      host
+    );
   } catch (e) {
-    console.error(e);
-    errorHappened = true;
-    window.parent.postMessage({
-      type: 'error',
-      error: buildError(e),
-    }, '*');
+    if (process.env.NODE_ENV === 'development') {
+      console.error(e);
+    }
+
+    window.parent.postMessage(
+      {
+        type: 'error',
+        error: buildError(e),
+      },
+      '*'
+    );
   }
 }
 
-window.addEventListener('message', async (message) => {
+window.addEventListener('message', async message => {
   if (message.data.type === 'compile') {
     await compile(message);
   } else if (message.data.type === 'urlback') {
@@ -76,25 +94,50 @@ window.addEventListener('message', async (message) => {
   }
 });
 
-window.parent.postMessage('Ready!', '*');
+window.parent.postMessage('Ready!', host);
 
 function setupHistoryListeners() {
   const pushState = window.history.pushState;
-  window.history.pushState = function (state) {
+  window.history.pushState = function(state) {
     if (typeof history.onpushstate === 'function') {
       window.history.onpushstate({ state });
     }
-        // ... whatever else you want to do
-        // maybe call onhashchange e.handler
+    // ... whatever else you want to do
+    // maybe call onhashchange e.handler
     return pushState.apply(window.history, arguments);
   };
 
-  history.onpushstate = (e) => {
+  const replaceState = window.history.replaceState;
+  window.history.replaceState = function(state) {
+    if (typeof history.onpushstate === 'function') {
+      window.history.onpushstate({ state });
+    }
+    // ... whatever else you want to do
+    // maybe call onhashchange e.handler
+    return replaceState.apply(window.history, arguments);
+  };
+
+  history.onpushstate = e => {
     setTimeout(() => {
-      window.parent.postMessage({
-        type: 'urlchange',
-        url: document.location.pathname + location.search,
-      }, '*');
+      window.parent.postMessage(
+        {
+          type: 'urlchange',
+          url: document.location.pathname + location.search,
+        },
+        host
+      );
+    });
+  };
+
+  history.onreplacestate = e => {
+    setTimeout(() => {
+      window.parent.postMessage(
+        {
+          type: 'urlchange',
+          url: document.location.pathname + location.search,
+        },
+        host
+      );
     });
   };
 }

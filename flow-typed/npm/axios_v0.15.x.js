@@ -1,5 +1,5 @@
-// flow-typed signature: 0341fc5cb920ad62c9155c38bfb57c02
-// flow-typed version: 11e2b14097/axios_v0.15.x/flow_>=v0.28.x
+// flow-typed signature: 09272b82e4d7a497eb3ffd12dd130407
+// flow-typed version: d28912a036/axios_v0.15.x/flow_>=v0.28.x
 
 declare module 'axios' {
   declare interface ProxyConfig {
@@ -84,8 +84,7 @@ declare module 'axios' {
   declare type AxiosPromise<T> = Promise<AxiosXHR<T>>;
   declare class Axios {
     constructor<T>(config?: AxiosXHRConfigBase<T>): void;
-    <T>(config: AxiosXHRConfig<T>): AxiosPromise<T>;
-    <T>(url: string, config?: AxiosXHRConfig<T>): AxiosPromise<T>;
+    $call: <T>(config: AxiosXHRConfig<T> | string, config?: AxiosXHRConfig<T>) => AxiosPromise<T>;
     request<T>(config: AxiosXHRConfig<T>): AxiosPromise<T>;
     delete<T>(url: string, config?: AxiosXHRConfigBase<T>): AxiosPromise<T>;
     get<T>(url: string, config?: AxiosXHRConfigBase<T>): AxiosPromise<T>;

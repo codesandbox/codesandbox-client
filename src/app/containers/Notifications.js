@@ -6,18 +6,18 @@ import { connect } from 'react-redux';
 import { spring, Motion } from 'react-motion';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
-import type { Notification } from '../store/reducers/notifications';
-import notificationActionCreators from '../store/actions/notifications';
+import type { Notification } from '../store/notifications/reducer';
+import notificationActionCreators from '../store/notifications/actions';
 import NotificationComponent from '../components/Notification';
 import Portal from '../components/Portal';
 
 type Props = {
-  notifications: Array<Notification>;
-  notificationActions: typeof notificationActionCreators;
+  notifications: Array<Notification>,
+  notificationActions: typeof notificationActionCreators,
 };
 
 type State = {
-  hovering: boolean;
+  hovering: boolean,
 };
 
 injectGlobal`
@@ -54,20 +54,23 @@ class Notifications extends React.PureComponent {
   }
 
   componentDidMount() {
-    this.interval = setInterval(() => {
-      // Only if user is not hovering
-      if (!this.state.hovering) {
-        const date = Date.now();
-        requestAnimationFrame(() => {
-          this.props.notifications.forEach((n) => {
-            // Delete notification if time is up
-            if (n.endTime < date) {
-              this.closeNotification(n.id);
-            }
+    this.interval = setInterval(
+      () => {
+        // Only if user is not hovering
+        if (!this.state.hovering) {
+          const date = Date.now();
+          requestAnimationFrame(() => {
+            this.props.notifications.forEach(n => {
+              // Delete notification if time is up
+              if (n.endTime < date) {
+                this.closeNotification(n.id);
+              }
+            });
           });
-        });
-      }
-    }, 3000);
+        }
+      },
+      3000
+    );
   }
 
   componentWillUnmount() {
@@ -76,9 +79,9 @@ class Notifications extends React.PureComponent {
     }
   }
 
-  closeNotification = (id) => {
+  closeNotification = id => {
     this.props.notificationActions.removeNotification(id);
-  }
+  };
 
   hoverOn = () => {
     this.setState({ hovering: true });
@@ -106,13 +109,12 @@ class Notifications extends React.PureComponent {
               <Motion
                 key={n.id}
                 defaultStyle={{ y: -150 }}
-                style={{ y: spring(24 + (140 * (notifications.length - 1 - i))) }}
+                style={{ y: spring(24 + 60 * (notifications.length - 1 - i)) }}
               >
                 {({ y }) => (
                   <NotificationContainer key={n.id} style={{ bottom: y }}>
                     <NotificationComponent
                       title={n.title}
-                      body={n.body}
                       type={n.type}
                       buttons={n.buttons}
                       close={() => this.closeNotification(n.id)}

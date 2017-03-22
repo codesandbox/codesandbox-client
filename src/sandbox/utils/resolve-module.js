@@ -16,11 +16,11 @@ export default (
   path: string,
   modules: Array<Module>,
   directories: Array<Directory>,
-  startDirectoryId: ?string = undefined,
+  startdirectoryShortid: ?string = undefined,
 ) => {
   // Split path
   const splitPath = path.replace(/^.\//, '').split('/');
-  const foundDirectoryId = splitPath.reduce((dirId: ?string, pathPart: string, i: number) => {
+  const founddirectoryShortid = splitPath.reduce((dirId: ?string, pathPart: string, i: number) => {
     // Meaning this is the last argument, so the file
     if (i === splitPath.length - 1) return dirId;
 
@@ -29,35 +29,35 @@ export default (
       const dir = directories.find(d => d.id === dirId);
       if (dir == null) throw new Error(`Cannot find module in ${path}`);
 
-      return dir.directoryId;
+      return dir.directoryShortid;
     }
 
     // For == check on null
     // eslint-disable-next-line eqeqeq
-    const directoriesInDirectory = directories.filter(m => m.directoryId == dirId);
+    const directoriesInDirectory = directories.filter(m => m.directoryShortid == dirId);
     const nextDirectory = directoriesInDirectory.find(d => compareTitle(d.title, pathPart));
 
     if (nextDirectory == null) throw new Error(`Cannot find module in ${path}`);
 
     return nextDirectory.id;
-  }, startDirectoryId);
+  }, startdirectoryShortid);
 
 
   const lastPath = splitPath[splitPath.length - 1];
   // eslint-disable-next-line eqeqeq
-  const modulesInFoundDirectory = modules.filter(m => m.directoryId == foundDirectoryId);
+  const modulesInFoundDirectory = modules.filter(m => m.directoryShortid == founddirectoryShortid);
 
   // Find module with same name
   const foundModule = modulesInFoundDirectory.find(m => compareTitle(m.title, lastPath));
   if (foundModule) return foundModule;
 
   // eslint-disable-next-line eqeqeq
-  const directoriesInFoundDirectory = directories.filter(m => m.directoryId == foundDirectoryId);
+  const directoriesInFoundDirectory = directories.filter(m => m.directoryShortid == founddirectoryShortid);
   const foundDirectory = directoriesInFoundDirectory.find(m => compareTitle(m.title, lastPath));
 
   if (foundDirectory) {
     // eslint-disable-next-line eqeqeq
-    const indexModule = modules.find(m => m.directoryId == foundDirectory.id && compareTitle(m.title, 'index'));
+    const indexModule = modules.find(m => m.directoryShortid == foundDirectory.id && compareTitle(m.title, 'index'));
     if (indexModule == null) throw new Error(`Cannot find module in ${path}`);
     return indexModule;
   }

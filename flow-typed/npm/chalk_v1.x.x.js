@@ -1,5 +1,5 @@
-// flow-typed signature: f8f8af9c4192e9e159c56fb23ec4efb3
-// flow-typed version: 94e9f7e0a4/chalk_v1.x.x/flow_>=v0.21.x
+// flow-typed signature: 7b4e29a4fd2be533e1822c1b0aade79b
+// flow-typed version: 549b484575/chalk_v1.x.x/flow_>=v0.21.x
 
 type $npm$chalk$StyleElement = {
   open: string;
@@ -12,6 +12,7 @@ type $npm$chalk$Style = {
   // General
   reset: $npm$chalk$Chain;
   bold: $npm$chalk$Chain;
+  dim: $npm$chalk$Chain;
   italic: $npm$chalk$Chain;
   underline: $npm$chalk$Chain;
   inverse: $npm$chalk$Chain;
@@ -44,6 +45,7 @@ type $npm$chalk$StyleMap = {
   // General
   reset: $npm$chalk$StyleElement;
   bold: $npm$chalk$StyleElement;
+  dim: $npm$chalk$StyleElement;
   italic: $npm$chalk$StyleElement;
   underline: $npm$chalk$StyleElement;
   inverse: $npm$chalk$StyleElement;
@@ -82,6 +84,7 @@ declare module "chalk" {
   // General
   declare var reset: $npm$chalk$Chain;
   declare var bold: $npm$chalk$Chain;
+  declare var dim: $npm$chalk$Chain;
   declare var italic: $npm$chalk$Chain;
   declare var underline: $npm$chalk$Chain;
   declare var inverse: $npm$chalk$Chain;

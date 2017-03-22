@@ -1,5 +1,10 @@
 {
-  "extends": "airbnb",
+  "extends": [
+    "airbnb",
+    "prettier",
+    "prettier/react",
+    "prettier/flowtype"
+  ],
   "parser": "babel-eslint",
   "env": {
     "browser": true,
@@ -10,6 +15,14 @@
   "rules": {
     "react/jsx-filename-extension": 0,
     "react/sort-comp": 0,
-    "import/no-extraneous-dependencies": 0
+    "import/no-extraneous-dependencies": 0,
+    "arrow-parens": 0
+  },
+  "settings": {
+    "import/resolver": {
+      "webpack": {
+        "config": "config/webpack.config.js"
+      }
+    }
   }
 }

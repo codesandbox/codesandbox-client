@@ -6,7 +6,7 @@ describe('root', () => {
     const modules = [{
       id: '123123',
       title: 'Test',
-      directoryId: null,
+      directoryShortid: null,
     }];
 
     const directories = [];
@@ -19,7 +19,7 @@ describe('root', () => {
     const modules = [{
       id: '123123',
       title: 'index',
-      directoryId: null,
+      directoryShortid: null,
     }];
 
     const directories = [];
@@ -34,13 +34,13 @@ describe('one directory deep', () => {
     const directories = [{
       id: '123123123',
       title: 'Directory',
-      directoryId: null,
+      directoryShortid: null,
     }];
 
     const modules = [{
       id: '123123',
       title: 'Test',
-      directoryId: directories[0].id,
+      directoryShortid: directories[0].id,
     }];
 
     expect(resolveModule(path, modules, directories)).toBe(modules[0]);
@@ -51,13 +51,13 @@ describe('one directory deep', () => {
     const directories = [{
       id: '123123123',
       title: 'Directory',
-      directoryId: null,
+      directoryShortid: null,
     }];
 
     const modules = [{
       id: '123123',
       title: 'index',
-      directoryId: directories[0].id,
+      directoryShortid: directories[0].id,
     }];
 
     expect(resolveModule(path, modules, directories)).toBe(modules[0]);
@@ -70,17 +70,17 @@ describe('two directories deep', () => {
     const directories = [{
       id: '123123123',
       title: 'Directory',
-      directoryId: null,
+      directoryShortid: null,
     }, {
       id: '1312423432',
       title: 'Directory2',
-      directoryId: '123123123',
+      directoryShortid: '123123123',
     }];
 
     const modules = [{
       id: '123123',
       title: 'Test',
-      directoryId: '1312423432',
+      directoryShortid: '1312423432',
     }];
 
     expect(resolveModule(path, modules, directories)).toBe(modules[0]);
@@ -91,17 +91,17 @@ describe('two directories deep', () => {
     const directories = [{
       id: '123123123',
       title: 'Directory',
-      directoryId: null,
+      directoryShortid: null,
     }, {
       id: '1312423432',
       title: 'Directory2',
-      directoryId: '123123123',
+      directoryShortid: '123123123',
     }];
 
     const modules = [{
       id: '123123',
       title: 'index',
-      directoryId: '1312423432',
+      directoryShortid: '1312423432',
     }];
 
     expect(resolveModule(path, modules, directories)).toBe(modules[0]);
@@ -114,17 +114,17 @@ describe('relative', () => {
     const directories = [{
       id: '123123123',
       title: 'Directory',
-      directoryId: null,
+      directoryShortid: null,
     }, {
       id: '1312423432',
       title: 'Directory2',
-      directoryId: '123123123',
+      directoryShortid: '123123123',
     }];
 
     const modules = [{
       id: '123123',
       title: 'index',
-      directoryId: '1312423432',
+      directoryShortid: '1312423432',
     }];
     expect(resolveModule(path, modules, directories, '123123123')).toBe(modules[0]);
   });
@@ -134,17 +134,17 @@ describe('relative', () => {
     const directories = [{
       id: '123123123',
       title: 'Directory',
-      directoryId: null,
+      directoryShortid: null,
     }, {
       id: '1312423432',
       title: 'Directory2',
-      directoryId: '123123123',
+      directoryShortid: '123123123',
     }];
 
     const modules = [{
       id: '123123',
       title: 'index',
-      directoryId: '1312423432',
+      directoryShortid: '1312423432',
     }];
     expect(resolveModule(path, modules, directories, '1312423432')).toBe(modules[0]);
   });
@@ -154,21 +154,21 @@ describe('relative', () => {
     const directories = [{
       id: '123123123',
       title: 'Directory',
-      directoryId: null,
+      directoryShortid: null,
     }, {
       id: '1312423432',
       title: 'Directory2',
-      directoryId: '123123123',
+      directoryShortid: '123123123',
     }];
 
     const modules = [{
       id: '12666',
       title: 'Test',
-      directoryId: null,
+      directoryShortid: null,
     }, {
       id: '123123',
       title: 'index',
-      directoryId: '1312423432',
+      directoryShortid: '1312423432',
     }];
     expect(resolveModule(path, modules, directories, '123123123')).toBe(modules[0]);
   });
@@ -178,21 +178,21 @@ describe('relative', () => {
     const directories = [{
       id: '123123123',
       title: 'Directory',
-      directoryId: null,
+      directoryShortid: null,
     }, {
       id: '1312423432',
       title: 'Directory2',
-      directoryId: '123123123',
+      directoryShortid: '123123123',
     }];
 
     const modules = [{
       id: '12666',
       title: 'Test',
-      directoryId: null,
+      directoryShortid: null,
     }, {
       id: '123123',
       title: 'index',
-      directoryId: '1312423432',
+      directoryShortid: '1312423432',
     }];
     expect(resolveModule(path, modules, directories, '1312423432')).toBe(modules[0]);
   });
@@ -202,17 +202,17 @@ describe('relative', () => {
     const directories = [{
       id: '123123123',
       title: 'Test',
-      directoryId: null,
+      directoryShortid: null,
     }];
 
     const modules = [{
       id: '12666',
       title: 'index',
-      directoryId: '123123123',
+      directoryShortid: '123123123',
     }, {
       id: '123123',
       title: 'index',
-      directoryId: null,
+      directoryShortid: null,
     }];
 
     expect(() => resolveModule(path, modules, directories, null)).toThrow();
@@ -225,21 +225,21 @@ describe('preference', () => {
     const directories = [{
       id: '123123123',
       title: 'Directory',
-      directoryId: null,
+      directoryShortid: null,
     }, {
       id: '1312423432',
       title: 'Test',
-      directoryId: '123123123',
+      directoryShortid: '123123123',
     }];
 
     const modules = [{
       id: '12666',
       title: 'Test',
-      directoryId: null,
+      directoryShortid: null,
     }, {
       id: '123123',
       title: 'index',
-      directoryId: '123123123',
+      directoryShortid: '123123123',
     }];
     expect(resolveModule(path, modules, directories)).toBe(modules[0]);
   });
@@ -251,11 +251,11 @@ describe('preference', () => {
     const modules = [{
       id: '123123',
       title: 'index',
-      directoryId: null,
+      directoryShortid: null,
     }, {
       id: '12666',
       title: 'Test',
-      directoryId: null,
+      directoryShortid: null,
     }];
     expect(resolveModule(path, modules, directories)).toBe(modules[1]);
   });

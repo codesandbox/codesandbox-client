@@ -1,29 +1,27 @@
 // @flow
 import evalModule from '../eval';
 
-import type { Boilerplate } from '../../app/store/entities/boilerplates';
-import type { Module } from '../../app/store/entities/modules';
-import type { Directory } from '../../app/store/entities/directories';
+import type { Module } from '../../app/store/entities/sandboxes/modules/entity';
+import type {
+  Directory,
+} from '../../app/store/entities/sandboxes/directories/entity';
 
-type EvalBoilerplate = Boilerplate & {
-  module: Object;
-};
-
-let cachedBoilerplates: Array<EvalBoilerplate> = [];
+let cachedBoilerplates = [];
 
 export function evalBoilerplates(
-  boilerplates: Array<Boilerplate>,
+  boilerplates: Array<any>,
   modules: Array<Module>,
   directories: Array<Directory>,
-  manifest: Object,
+  manifest: Object
 ) {
-  cachedBoilerplates = boilerplates.map((boilerplate) => {
+  cachedBoilerplates = boilerplates.map(boilerplate => {
     const fakeModule: Module = {
       id: boilerplate.id,
       title: `boilerplate-${boilerplate.condition}`,
       code: boilerplate.code,
-      directoryId: null,
+      directoryShortid: null,
       sourceId: boilerplate.sourceId,
+      isNotSynced: false,
       type: '',
     };
 
@@ -32,19 +30,21 @@ export function evalBoilerplates(
   });
 }
 
-export function getBoilerplates(): Array<EvalBoilerplate> {
+export function getBoilerplates(): Array<any> {
   return cachedBoilerplates;
 }
 
-export function findBoilerplate(module: Module): EvalBoilerplate {
+export function findBoilerplate(module: Module): any {
   const boilerplates = getBoilerplates();
-  const boilerplate = boilerplates.find((b) => {
+  const boilerplate = boilerplates.find(b => {
     const regex = new RegExp(b.condition);
     return regex.test(module.title);
   });
 
   if (boilerplate == null) {
-    throw new Error(`No boilerplate found for ${module.title}, you can create one in the future`);
+    throw new Error(
+      `No boilerplate found for ${module.title}, you can create one in the future`
+    );
   }
 
   return boilerplate;

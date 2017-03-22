@@ -1,30 +1,9 @@
-export const host = () => (process.env.NODE_ENV === 'production' ? 'codesandbox.io' : 'codesandbox.dev');
+export const host = () =>
+  process.env.NODE_ENV === 'production' ? 'codesandbox.io' : 'codesandbox.dev';
 
-export const sandboxUrl = sandbox => (
-  sandbox.author ? `/${sandbox.author}/${sandbox.slug}`
-  : `/anonymous/${sandbox.slug}`
-);
+export const sandboxUrl = sandbox => `/s/${sandbox.id}`;
 
-export const frameUrl = (append = '') => (
-  `${location.protocol}//sandbox.${host()}/${append}`
-);
+export const frameUrl = (append = '') =>
+  `${location.protocol}//sandbox.${host()}/${append}`;
 
-export const editModuleUrl = sandbox => (
-  `${sandboxUrl(sandbox)}/code`
-);
-
-export const versionsUrl = sandbox => (
-  `${sandboxUrl(sandbox)}/versions`
-);
-
-export const sandboxInfoUrl = sandbox => (
-  `${sandboxUrl(sandbox)}/info`
-);
-
-export const sandboxDependenciesUrl = sandbox => (
-  `${sandboxUrl(sandbox)}/dependencies`
-);
-
-export const forkSandboxUrl = sandbox => (
-  `${sandboxUrl(sandbox)}/fork`
-);
+export const forkSandboxUrl = sandbox => `${sandboxUrl(sandbox)}/fork`;
