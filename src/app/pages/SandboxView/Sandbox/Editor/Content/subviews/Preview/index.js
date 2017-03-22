@@ -89,8 +89,24 @@ export default class Preview extends React.PureComponent {
   };
 
   componentDidUpdate(prevProps: Props) {
+    if (prevProps.isInProjectView !== this.props.isInProjectView) {
+      this.executeCodeImmediately();
+      return;
+    }
+
+    if (
+      prevProps.bundle &&
+      this.props.bundle &&
+      prevProps.bundle.processing &&
+      !this.props.bundle.processing
+    ) {
+      // Just got the deps! Update immediately
+      this.executeCodeImmediately();
+      return;
+    }
+
     if (prevProps.module.id !== this.props.module.id) {
-      if (this.props.isInProjectView) {
+      if (prevProps.isInProjectView && this.props.isInProjectView) {
         // If user only navigated while watching project
         return;
       }
