@@ -3,6 +3,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { preferencesSelector } from 'app/store/preferences/selectors';
+import type { Preferences } from 'app/store/preferences/reducer';
 
 import SplitPane from 'react-split-pane';
 
@@ -22,6 +24,7 @@ import Header from './Header';
 
 type Props = {
   sandbox: Sandbox,
+  preferences: Preferences,
   moduleActions: typeof moduleActionCreators,
   sandboxActions: typeof sandboxActionCreators,
 };
@@ -36,6 +39,9 @@ const FullSize = styled.div`
   pointer-events: ${props => props.inactive ? 'none' : 'all'};
 `;
 
+const mapStateToProps = state => ({
+  preferences: preferencesSelector(state),
+});
 const mapDispatchToProps = dispatch => ({
   moduleActions: bindActionCreators(moduleActionCreators, dispatch),
   sandboxActions: bindActionCreators(sandboxActionCreators, dispatch),
@@ -85,6 +91,7 @@ class EditorPreview extends React.PureComponent {
       moduleActions,
       sandboxActions,
       sandbox,
+      preferences,
     } = this.props;
 
     const { modules, directories } = sandbox;
@@ -106,6 +113,7 @@ class EditorPreview extends React.PureComponent {
           canSave={currentModule.isNotSynced}
           saveCode={this.saveCode}
           modulePath={modulePath}
+          preferences={preferences}
         />
       </FullSize>
     );
@@ -152,4 +160,4 @@ class EditorPreview extends React.PureComponent {
   }
 }
 
-export default connect(null, mapDispatchToProps)(EditorPreview);
+export default connect(mapStateToProps, mapDispatchToProps)(EditorPreview);

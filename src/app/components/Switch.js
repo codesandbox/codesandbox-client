@@ -31,7 +31,7 @@ const Container = styled.div`
 const Dot = styled.div`
   transition: inherit;
   position: absolute;
-  height: ${props => props.small ? 16 : 20}px;
+  height: ${props => props.small ? 14 : 20}px;
   width: 1rem;
   left: 0.1rem;
   border-radius: 4px;

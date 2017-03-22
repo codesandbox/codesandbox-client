@@ -21,8 +21,7 @@ import 'codemirror/addon/dialog/dialog';
 import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/tern/tern';
 
-import ternJSON from 'tern/defs/ecmascript.json';
-import tern from 'tern';
+import type { Preferences } from 'app/store/preferences/reducer';
 
 import theme from '../../../../../../../../common/theme';
 import Header from './Header';
@@ -38,6 +37,7 @@ type Props = {
   changeCode: (id: string, code: string) => Object,
   saveCode: () => void,
   canSave: boolean,
+  preferences: Preferences,
 };
 
 const Container = styled.div`
@@ -108,7 +108,8 @@ export default class CodeEditor extends React.PureComponent {
   shouldComponentUpdate(nextProps: Props) {
     return nextProps.id !== this.props.id ||
       nextProps.error !== this.props.error ||
-      this.props.canSave !== nextProps.canSave;
+      this.props.canSave !== nextProps.canSave ||
+      this.props.preferences !== nextProps.preferences;
   }
 
   componentWillReceiveProps(nextProps: Props) {
@@ -127,13 +128,19 @@ export default class CodeEditor extends React.PureComponent {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.codemirror) {
+      if (this.props.preferences !== prevProps.preferences) {
+        this.setCodeMirrorPreferences();
+      }
+    }
+  }
+
   getCodeMirror = (el: Element) => {
-    const { code, id } = this.props;
+    const { code, id, saveCode } = this.props;
+    CodeMirror.commands.save = saveCode;
+
     documentCache[id] = new CodeMirror.Doc(code || '', 'jsx');
-    window.tern = tern;
-    const server = new CodeMirror.TernServer({
-      defs: [ternJSON],
-    });
 
     this.codemirror = new CodeMirror(el, {
       mode: 'jsx',
@@ -148,51 +155,89 @@ export default class CodeEditor extends React.PureComponent {
       lineNumbers: true,
       lineWrapping: true,
       styleActiveLine: true,
-      extraKeys: {
-        Tab: cm => {
-          const spaces = Array(cm.getOption('indentUnit') + 1).join(' ');
-          cm.replaceSelection(spaces);
-        },
-        'Cmd-/': cm => {
-          cm.listSelections().forEach(() => {
-            cm.toggleComment({ lineComment: '//' });
-          });
-        },
-        'Ctrl-Space': function(cm) {
-          server.complete(cm);
-        },
-        'Ctrl-I': function(cm) {
-          server.showType(cm);
-        },
-        'Ctrl-O': function(cm) {
-          server.showDocs(cm);
-        },
-        'Alt-.': function(cm) {
-          server.jumpToDef(cm);
-        },
-        'Alt-,': function(cm) {
-          server.jumpBack(cm);
-        },
-        'Ctrl-Q': function(cm) {
-          server.rename(cm);
-        },
-        'Ctrl-.': function(cm) {
-          server.selectName(cm);
-        },
-      },
-    });
-    this.codemirror.on('cursorActivity', function(cm) {
-      server.updateArgHints(cm);
-    });
-
-    this.codemirror.on('inputRead', function(cm) {
-      const filter = new RegExp('[\.a-z_$]', 'i');
-      if (cm.display.input.textarea.value.slice(-1).match(filter)) {
-        cm.showHint({ hint: server.getHint, completeSingle: false });
-      }
     });
 
     this.codemirror.on('change', this.handleChange);
+
+    this.setCodeMirrorPreferences();
+  };
+
+  setCodeMirrorPreferences = async () => {
+    const { preferences } = this.props;
+
+    const defaultKeys = {
+      Tab: cm => {
+        const spaces = Array(cm.getOption('indentUnit') + 1).join(' ');
+        cm.replaceSelection(spaces);
+      },
+      'Cmd-/': cm => {
+        cm.listSelections().forEach(() => {
+          cm.toggleComment({ lineComment: '//' });
+        });
+      },
+    };
+
+    const updateArgHints = cm => {
+      if (this.server) {
+        this.server.updateArgHints(cm);
+      }
+    };
+
+    const showAutoComplete = cm => {
+      if (this.server) {
+        const filter = new RegExp('[\.a-z_$]', 'i');
+        if (cm.display.input.textarea.value.slice(-1).match(filter)) {
+          cm.showHint({ hint: this.server.getHint, completeSingle: false });
+        }
+      }
+    };
+
+    if (preferences.autoCompleteEnabled) {
+      const tern = await System.import('tern');
+      const defs = await System.import('tern/defs/ecmascript.json');
+      window.tern = tern;
+      this.server = this.server ||
+        new CodeMirror.TernServer({
+          defs: [defs],
+        });
+      this.codemirror.on('cursorActivity', updateArgHints);
+      this.codemirror.on('inputRead', showAutoComplete);
+      this.codemirror.setOption('extraKeys', {
+        ...defaultKeys,
+        'Ctrl-Space': cm => {
+          if (this.server) this.server.complete(cm);
+        },
+        'Ctrl-I': cm => {
+          if (this.server) this.server.showType(cm);
+        },
+        'Ctrl-O': cm => {
+          if (this.server) this.server.showDocs(cm);
+        },
+        'Alt-.': cm => {
+          if (this.server) this.server.jumpToDef(cm);
+        },
+        'Alt-,': cm => {
+          if (this.server) this.server.jumpBack(cm);
+        },
+        'Ctrl-Q': cm => {
+          if (this.server) this.server.rename(cm);
+        },
+        'Ctrl-.': cm => {
+          if (this.server) this.server.selectName(cm);
+        },
+      });
+    } else {
+      this.server = null;
+      this.codemirror.off('cursorActivity', updateArgHints);
+      this.codemirror.off('inputRead', showAutoComplete);
+    }
+
+    if (preferences.vimMode) {
+      await System.import('codemirror/keymap/vim');
+      this.codemirror.setOption('keyMap', 'vim');
+    } else {
+      this.codemirror.setOption('keyMap', 'sublime');
+    }
   };
 
   handleChange = (cm: any, change: any) => {
@@ -202,6 +247,7 @@ export default class CodeEditor extends React.PureComponent {
   };
 
   codemirror: typeof CodeMirror;
+  server: typeof CodeMirror.TernServer;
 
   render() {
     const { error, title, saveCode, canSave, modulePath } = this.props;

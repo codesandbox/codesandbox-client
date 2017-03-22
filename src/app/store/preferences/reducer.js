@@ -6,6 +6,11 @@ import {
 } from './actions';
 import { AUTO_COMPLETE, VIM_MODE } from './keys';
 
+export type Preferences = {
+  autoCompleteEnabled: boolean,
+  vimMode: boolean,
+};
+
 const getKey = (key, defaultVal) => {
   try {
     const result = store.get(key);
@@ -16,7 +21,7 @@ const getKey = (key, defaultVal) => {
   }
 };
 
-const initialState = {
+const initialState: Preferences = {
   autoCompleteEnabled: getKey(AUTO_COMPLETE, true),
   vimMode: getKey(VIM_MODE, false),
 };
