@@ -251,7 +251,7 @@ export default class Preview extends React.PureComponent {
   rootInstance: ?Object;
 
   render() {
-    const { bundle = {}, isInProjectView, module } = this.props;
+    const { sandboxId, bundle = {}, isInProjectView, module } = this.props;
     const {
       historyPosition,
       history,
@@ -272,7 +272,9 @@ export default class Preview extends React.PureComponent {
           isProjectView={isInProjectView}
           toggleProjectView={this.toggleProjectView}
         />
-        {module.error && <ErrorMessage error={module.error} />}
+        {!bundle.processing &&
+          module.error &&
+          <ErrorMessage sandboxId={sandboxId} error={module.error} />}
         {bundle.processing
           ? <LoadingDepText>Loading the dependencies...</LoadingDepText>
           : <StyledFrame

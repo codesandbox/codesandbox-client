@@ -14,6 +14,7 @@ export type Module = {
     column: number,
     title: string,
     moduleId: ?string,
+    type: 'compile' | 'dependency-not-found',
   },
 };
 

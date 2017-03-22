@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import Switch from 'app/components/Switch';
+import Tooltip from 'app/components/Tooltip';
 
 const Container = styled.div`
   display: flex;
@@ -26,11 +27,15 @@ export default class Preference extends React.Component {
   };
 
   render() {
-    const { title, enabled } = this.props;
+    const { title, enabled, tooltip } = this.props;
+
+    const Title = tooltip
+      ? <Tooltip top message={tooltip}>{title}</Tooltip>
+      : <span>{title}</span>;
 
     return (
       <Container>
-        {title}
+        {Title}
         <Switch
           onClick={this.handleClick}
           small

@@ -45,7 +45,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: calc(100% - 3rem);
+  height: 100%;
   overflow: auto;
 `;
 
@@ -54,15 +54,6 @@ const CodeContainer = styled.div`
   position: relative;
   overflow: auto;
   height: 100%;
-`;
-
-const ErrorMessage = styled.div`
-  flex: 0 0 auto;
-  font-family: 'Source Code Pro', monospace;
-  background-color: ${props => props.theme.redBackground};
-  font-weight: 400;
-  padding: 0.5rem;
-  color: ${props => props.theme.red};
 `;
 
 const handleError = (cm, currentError, nextError, nextCode, nextId) => {
@@ -262,8 +253,6 @@ export default class CodeEditor extends React.PureComponent {
         <CodeContainer>
           <div style={{ height: '100%' }} ref={this.getCodeMirror} />
         </CodeContainer>
-        {error &&
-          <ErrorMessage><b>{error.title}</b>: {error.message}</ErrorMessage>}
       </Container>
     );
   }
