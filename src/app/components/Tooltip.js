@@ -1,31 +1,31 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const getDirectionTransforms = ({ left, right, bottom, top }) => {
+const getDirectionTransforms = ({ offset = 0, left, right, bottom, top }) => {
   if (left) {
     return `
       top: -5px;
-      right: 130%;
+      right: ${130 + offset}%;
     `;
   }
 
   if (right) {
     return `
-      left: 130%;
-      top: -5px;
+      left: ${130 + offset}%;
+      top: -15px;
     `;
   }
 
   if (top) {
     return `
       left: 50%;
-      bottom: 130%;
+      bottom: ${130 + offset}%;
     `;
   }
 
   return `
       left: 50%;
-      top: 130%;
+      top: ${130 + offset}%;
   `;
 };
 
@@ -81,6 +81,7 @@ const Tooltip = styled.div`
   display: inherit;
   font-size: inherit;
   flex: inherit;
+  box-sizing: border-box;
 
   .tooltip {
     position: absolute;
@@ -113,13 +114,27 @@ const Tooltip = styled.div`
   }
 `;
 
-export default ({ className, children, message, left, right, bottom, top }) => (
+type Props = {
+  className: ?tring,
+  offset: ?number,
+  children: React.CElement,
+  message: string,
+  left: ?boolean,
+  right: ?boolean,
+  top: ?boolean,
+  bottom: ?boolean,
+};
+
+export default (
+  { className, offset = 0, children, message, left, right, bottom, top }: Props
+) => (
   <Tooltip
     className={className}
     bottom={bottom}
     left={left}
     right={right}
     top={top}
+    offset={offset}
   >
     {children}
     <span className="tooltip">{message}</span>

@@ -21,21 +21,34 @@ const Path = styled.span`
   padding-right: 0.1rem;
 `;
 
+const Buttons = styled.div`
+  button {
+    width: 6rem;
+    margin-left: 1rem;
+  }
+`;
+
 type Props = {
   title: string,
   path: string,
   saveComponent: ?() => void,
+  prettify: Function,
 };
 
-export default ({ path, title, saveComponent }: Props) => (
+export default ({ path, title, saveComponent, prettify }: Props) => (
   <Container>
     <div>
       <Path>{path}</Path>
       {title}
     </div>
 
-    <Button disabled={!saveComponent} onClick={saveComponent} small>
-      Save
-    </Button>
+    <Buttons>
+      <Button onClick={prettify} small>
+        Prettify
+      </Button>
+      <Button disabled={!saveComponent} onClick={saveComponent} small>
+        Save
+      </Button>
+    </Buttons>
   </Container>
 );

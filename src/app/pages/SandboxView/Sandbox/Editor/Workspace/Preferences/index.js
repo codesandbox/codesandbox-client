@@ -44,6 +44,12 @@ class Preferences extends React.PureComponent {
             onClick={preferencesActions.setAutoCompletePreference}
           />
           <Preference
+            title="Prettify on save"
+            tooltip="Made possible by Prettier"
+            enabled={preferences.prettifyOnSaveEnabled}
+            onClick={preferencesActions.setPrettifyOnSavePreference}
+          />
+          <Preference
             title="VIM Mode"
             enabled={preferences.vimMode}
             onClick={preferencesActions.setVimPreference}

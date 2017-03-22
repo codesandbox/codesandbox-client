@@ -87,7 +87,7 @@ export default class CodeEditor extends React.PureComponent {
     window.addEventListener('keydown', (event: KeyboardEvent) => {
       if (event.ctrlKey || event.metaKey) {
         if (event.key === 's' || event.keyCode === 83) {
-          this.props.saveCode();
+          this.handleSaveCode();
           event.preventDefault();
           return false;
         }
@@ -119,6 +119,12 @@ export default class CodeEditor extends React.PureComponent {
     }
   }
 
+  updateCodeMirrorCode(code) {
+    const pos = this.codemirror.getCursor();
+    this.codemirror.setValue(code);
+    this.codemirror.setCursor(pos);
+  }
+
   componentDidUpdate(prevProps) {
     if (this.codemirror) {
       if (this.props.preferences !== prevProps.preferences) {
@@ -128,8 +134,8 @@ export default class CodeEditor extends React.PureComponent {
   }
 
   getCodeMirror = (el: Element) => {
-    const { code, id, saveCode } = this.props;
-    CodeMirror.commands.save = saveCode;
+    const { code, id } = this.props;
+    CodeMirror.commands.save = this.handleSaveCode;
 
     documentCache[id] = new CodeMirror.Doc(code || '', 'jsx');
 
@@ -237,16 +243,34 @@ export default class CodeEditor extends React.PureComponent {
     }
   };
 
+  prettify = async () => {
+    const { id, code } = this.props;
+    const prettier = await System.import('prettier');
+    const newCode = prettier.format(code);
+    this.props.changeCode(id, newCode);
+    this.updateCodeMirrorCode(newCode);
+  };
+
+  handleSaveCode = async () => {
+    const { saveCode, preferences } = this.props;
+    if (preferences.prettifyOnSaveEnabled) {
+      await this.prettify();
+    }
+
+    saveCode();
+  };
+
   codemirror: typeof CodeMirror;
   server: typeof CodeMirror.TernServer;
 
   render() {
-    const { error, title, saveCode, canSave, modulePath } = this.props;
+    const { error, title, canSave, modulePath } = this.props;
 
     return (
       <Container>
         <Header
-          saveComponent={canSave && saveCode}
+          saveComponent={canSave && this.handleSaveCode}
+          prettify={this.prettify}
           title={title}
           path={modulePath}
         />

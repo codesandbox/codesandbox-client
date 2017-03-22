@@ -30,7 +30,7 @@ export default class Preference extends React.Component {
     const { title, enabled, tooltip } = this.props;
 
     const Title = tooltip
-      ? <Tooltip top message={tooltip}>{title}</Tooltip>
+      ? <Tooltip right message={tooltip} offset={50}>{title}</Tooltip>
       : <span>{title}</span>;
 
     return (
