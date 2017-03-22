@@ -15,6 +15,7 @@ import Dependencies from './Dependencies';
 import Project from './Project';
 import WorkspaceItem from './WorkspaceItem';
 import SandboxDetails from './SandboxDetails';
+import Preferences from './Preferences';
 
 const Container = styled.div`
   background-color: ${props => props.theme.background};
@@ -59,7 +60,7 @@ const Workspace = ({ sandbox, sandboxActions }: Props) => (
     </WorkspaceItem>
 
     <WorkspaceItem title="Preferences">
-      <input type="checkbox" />
+      <Preferences />
     </WorkspaceItem>
   </Container>
 );

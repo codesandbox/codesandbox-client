@@ -6,7 +6,7 @@ import RightIcon from 'react-icons/lib/fa/angle-right';
 import RefreshIcon from 'react-icons/lib/md/refresh';
 
 import AddressBar from './AddressBar';
-import Switch from './Switch';
+import Switch from 'app/components/Switch';
 import Tooltip from '../../../../../../../components/Tooltip';
 
 const Container = styled.div`
