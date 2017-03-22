@@ -84,6 +84,10 @@ class SandboxPage extends React.PureComponent {
     }
     if (!sandbox) return null;
 
+    document.title = sandbox.title
+      ? `${sandbox.title} - CodeSandbox`
+      : 'CodeSandbox';
+
     return (
       <Switch>
         <Route
