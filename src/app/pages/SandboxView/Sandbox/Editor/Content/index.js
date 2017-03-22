@@ -130,6 +130,7 @@ class EditorPreview extends React.PureComponent {
           setError={moduleActions.setError}
           isInProjectView={sandbox.isInProjectView}
           setProjectView={sandboxActions.setProjectView}
+          preferences={preferences}
         />
       </FullSize>
     );

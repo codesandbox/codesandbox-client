@@ -3,12 +3,14 @@ import store from 'store/dist/store.modern';
 import {
   SET_PREFERENCE_AUTOCOMPLETE,
   SET_PREFERENCE_VIM_MODE,
+  SET_PREFERENCE_LIVE_PREVIEW,
 } from './actions';
-import { AUTO_COMPLETE, VIM_MODE } from './keys';
+import { AUTO_COMPLETE, VIM_MODE, LIVE_PREVIEW } from './keys';
 
 export type Preferences = {
   autoCompleteEnabled: boolean,
   vimMode: boolean,
+  livePreviewEnabled: boolean,
 };
 
 const getKey = (key, defaultVal) => {
@@ -24,6 +26,7 @@ const getKey = (key, defaultVal) => {
 const initialState: Preferences = {
   autoCompleteEnabled: getKey(AUTO_COMPLETE, true),
   vimMode: getKey(VIM_MODE, false),
+  livePreviewEnabled: getKey(LIVE_PREVIEW, true),
 };
 
 export default (state = initialState, action) => {
@@ -32,6 +35,8 @@ export default (state = initialState, action) => {
       return { ...state, autoCompleteEnabled: action.option };
     case SET_PREFERENCE_VIM_MODE:
       return { ...state, vimMode: action.option };
+    case SET_PREFERENCE_LIVE_PREVIEW:
+      return { ...state, livePreviewEnabled: action.option };
     default: {
       return state;
     }

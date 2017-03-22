@@ -49,6 +49,14 @@ class Preferences extends React.PureComponent {
             onClick={preferencesActions.setVimPreference}
           />
         </PreferenceContainer>
+        <WorkspaceSubtitle>Preview</WorkspaceSubtitle>
+        <PreferenceContainer>
+          <Preference
+            title="Live Preview"
+            enabled={preferences.livePreviewEnabled}
+            onClick={preferencesActions.setLivePreview}
+          />
+        </PreferenceContainer>
       </Container>
     );
   }

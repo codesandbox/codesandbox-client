@@ -3,6 +3,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { debounce } from 'lodash';
+import type { Preferences } from 'app/store/preferences/reducer';
 
 import type {
   Module,
@@ -52,6 +53,7 @@ type Props = {
   modules: Array<Module>,
   directories: Array<Directory>,
   bundle: Sandbox.dependencyBundle,
+  preferences: Preferences,
   fetchBundle: (id: string) => Object,
   setProjectView: (id: string, isInProjectView: boolean) => void,
   module: Module,
@@ -100,7 +102,9 @@ export default class Preview extends React.PureComponent {
       prevProps.module.code !== this.props.module.code &&
       this.state.frameInitialized
     ) {
-      this.executeCode();
+      if (this.props.preferences.livePreviewEnabled) {
+        this.executeCode();
+      }
     }
   }
 
