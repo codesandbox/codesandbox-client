@@ -9,7 +9,7 @@ docker cp $id:/app/www/ ./.deliver/ && \
 docker rm -v $id && \
 echo "Copy static files" && \
 cp www/* .deliver/www/* && \
-echo "Tarring build files"
+echo "Tarring build files" && \
 tar -C .deliver -zcvf .deliver/code_sandbox_client.tar.gz www && \
 echo "Cleaning remote tar" && \
 ssh nginx@ssh.codesandbox.io "rm -f code_sandbox_client.tar.gz" && \
