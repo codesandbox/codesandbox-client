@@ -117,7 +117,7 @@ const config = {
         include: [paths.src],
         loader: 'file-loader',
         options: {
-          name: 'favicon.ico?[hash:8]',
+          name: 'robots.txt?[hash:8]',
         },
       },
       // "url" loader works just like "file" loader but it also embeds
