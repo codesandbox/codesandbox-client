@@ -111,6 +111,15 @@ const config = {
           name: 'favicon.ico?[hash:8]',
         },
       },
+      // A special case for robots.txt to place it into build root directory.
+      {
+        test: /\/robots.txt$/,
+        include: [paths.src],
+        loader: 'file-loader',
+        options: {
+          name: 'favicon.ico?[hash:8]',
+        },
+      },
       // "url" loader works just like "file" loader but it also embeds
       // assets smaller than specified size as data URLs to avoid requests.
       {
