@@ -22,7 +22,7 @@ import defaultBoilerplates
   from '../../../../../../../store/entities/sandboxes/boilerplates/default-boilerplates';
 
 import Navigator from './Navigator';
-import ErrorMessage from './ErrorMessage';
+import Message from './Message';
 
 const Container = styled.div`
   position: absolute;
@@ -33,7 +33,7 @@ const Container = styled.div`
 
 const StyledFrame = styled.iframe`
   border-width: 0px;
-  height: 100%;
+  height: calc(100% - 6rem);
   width: 100%;
 `;
 
@@ -159,13 +159,17 @@ export default class Preview extends React.PureComponent {
     });
   };
 
+  getRenderedModule = () => {
+    const { modules, module, isInProjectView } = this.props;
+    return isInProjectView ? modules.find(isMainModule) : module;
+  };
+
   executeCodeImmediately = () => {
     const {
       modules,
       directories,
       bundle = {},
       module,
-      isInProjectView,
     } = this.props;
 
     if (bundle.manifest == null) {
@@ -175,12 +179,12 @@ export default class Preview extends React.PureComponent {
       return;
     }
 
-    const mainModule = isInProjectView ? modules.find(isMainModule) : module;
+    const renderedModule = this.getRenderedModule();
     document.getElementById('sandbox').contentWindow.postMessage(
       {
         type: 'compile',
         boilerplates: defaultBoilerplates,
-        module: mainModule,
+        module: renderedModule,
         changedModule: module,
         modules,
         directories,
@@ -191,8 +195,8 @@ export default class Preview extends React.PureComponent {
     );
   };
 
-  setError = (e: ?{ message: string, line: number }) => {
-    this.props.setError(this.props.module.id, e);
+  setError = (e: ?{ moduleId: string, message: string, line: number }) => {
+    this.props.setError(this.getRenderedModule().id, e);
   };
 
   updateUrl = (url: string) => {
@@ -267,12 +271,14 @@ export default class Preview extends React.PureComponent {
   rootInstance: ?Object;
 
   render() {
-    const { sandboxId, bundle = {}, isInProjectView, module } = this.props;
+    const { sandboxId, bundle = {}, isInProjectView } = this.props;
     const {
       historyPosition,
       history,
       urlInAddressBar,
     } = this.state;
+
+    const renderedModule = this.getRenderedModule();
 
     const url = urlInAddressBar || '';
 
@@ -288,11 +294,12 @@ export default class Preview extends React.PureComponent {
           isProjectView={isInProjectView}
           toggleProjectView={this.toggleProjectView}
         />
+
         {!bundle.processing &&
-          module.error &&
-          <ErrorMessage sandboxId={sandboxId} error={module.error} />}
+          renderedModule.error &&
+          <Message error={renderedModule.error} sandboxId={sandboxId} />}
         {bundle.processing
-          ? <LoadingDepText>Loading the dependencies...</LoadingDepText>
+          ? <Message message="Loading the dependencies..." />
           : <StyledFrame
               sandbox="allow-scripts allow-modals allow-pointer-lock allow-same-origin allow-popups allow-forms"
               src={frameUrl()}

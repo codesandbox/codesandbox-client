@@ -35,13 +35,17 @@ const evalModule = (
   modules: Array<Module>,
   directories: Array<Directory>,
   manifest: Object,
-  depth: number = 0,
+  depth: number = 0
 ) => {
   if (depth > MAX_DEPTH) {
     throw new Error(`Exceeded the maximum require depth of ${MAX_DEPTH}.`);
   }
-
-  return doEval(mainModule, modules, directories, manifest, depth);
+  try {
+    return doEval(mainModule, modules, directories, manifest, depth);
+  } catch (e) {
+    e.module = e.module || mainModule;
+    throw e;
+  }
 };
 
 export default evalModule;

@@ -1,17 +1,15 @@
-import DependencyNotFoundError from '../errors/dependency-not-found-error';
-
-const getType = error => {
-  if (error instanceof DependencyNotFoundError) {
-    return 'dependency-not-found';
+const getMessage = (e: Error) => {
+  if (e.message.includes('React error #130')) {
+    return "ReactDOM is trying to render a module that's not exporting a React component.";
   }
-  return error.type || 'compile';
+  return e.message;
 };
 
 export default function buildErrorMessage(e) {
-  const type = getType(e);
+  const type = e.type || 'compile';
 
   const title = e.name;
-  const message = e.message;
+  const message = getMessage(e);
   let line = null;
   let column = null;
 
@@ -31,11 +29,13 @@ export default function buildErrorMessage(e) {
     }
   }
   return {
-    moduleId: e.module ? e.module.id : null,
+    moduleId: e.module ? e.module.id : e.moduleId,
     type,
     title,
     message,
-    line: parseInt(line, 10) - 1,
+    line: parseInt(line, 10),
     column: parseInt(column, 10),
+    payload: e.payload || {},
+    severity: e.severity || 'error',
   };
 }

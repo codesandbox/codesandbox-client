@@ -1,11 +1,7 @@
 import delay from './utils/delay';
 import buildError from './utils/error-message-builder';
 import evalModule, { deleteCache } from './eval';
-import {
-  getBoilerplates,
-  evalBoilerplates,
-  findBoilerplate,
-} from './boilerplates';
+import NoDomChangeError from './errors/no-dom-change-error';
 
 const host = process.env.NODE_ENV === 'development'
   ? 'http://codesandbox.dev/'
@@ -47,21 +43,19 @@ async function compile(message) {
     return;
   }
 
-  if (
-    boilerplates.length !== 0 &&
-    getBoilerplates().length === 0 &&
-    manifest != null
-  ) {
-    evalBoilerplates(boilerplates, modules, directories, manifest);
-  }
-
   try {
     document.body.innerHTML = '';
     deleteCache(changedModule);
-    const compiledModule = evalModule(module, modules, directories, manifest);
 
-    const boilerplate = findBoilerplate(module);
-    boilerplate.module.default(compiledModule);
+    const evalled = evalModule(module, modules, directories, manifest);
+    const domChanged = document.body.innerHTML !== '';
+
+    if (!domChanged) {
+      const isReact = module.code.includes('react');
+      const functionName = evalled.default ? evalled.default.name : '';
+
+      throw new NoDomChangeError(isReact, functionName);
+    }
 
     window.parent.postMessage(
       {
@@ -74,12 +68,14 @@ async function compile(message) {
       console.error(e);
     }
 
+    e.module = e.module || changedModule;
+
     window.parent.postMessage(
       {
         type: 'error',
         error: buildError(e),
       },
-      '*'
+      host
     );
   }
 }

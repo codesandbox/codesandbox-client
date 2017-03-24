@@ -38,6 +38,7 @@ type Props = {
   root: ?boolean,
   isMainModule: boolean,
   isInProjectView: boolean,
+  moduleHasError: boolean,
 };
 
 type State = {
@@ -167,6 +168,7 @@ class Entry extends React.PureComponent {
       isNotSynced,
       isMainModule,
       isInProjectView,
+      moduleHasError,
       root,
     } = this.props;
     const { state, error, selected, hovering } = this.state;
@@ -192,6 +194,7 @@ class Entry extends React.PureComponent {
             isOpen={isOpen}
             type={type}
             root={root}
+            error={moduleHasError}
           />
           {state === 'editing'
             ? <EntryTitleInput

@@ -78,6 +78,7 @@
     "react-deep-force-update": "^2.0.1",
     "react-dnd": "^2.1.4",
     "react-dnd-html5-backend": "^2.1.2",
+    "react-docgen": "^2.13.0",
     "react-dom": "^15.4.1",
     "react-frame-component": "^1.0.2",
     "react-icons": "^2.2.2",

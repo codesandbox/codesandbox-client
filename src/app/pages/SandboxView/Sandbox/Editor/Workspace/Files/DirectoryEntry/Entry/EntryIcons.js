@@ -6,12 +6,17 @@ import FunctionIcon from 'react-icons/lib/fa/code';
 import FolderIcon from 'react-icons/lib/md/keyboard-arrow-down';
 import DirectoryIcon from 'react-icons/lib/go/file-directory';
 import NotSyncedIcon from 'react-icons/lib/go/primitive-dot';
+import ErrorIcon from 'react-icons/lib/md/error';
 import ReactIcon from '../../../../../../../../components/ReactIcon';
 
 const NotSyncedIconWithMargin = styled(NotSyncedIcon)`
   margin-left: -20px;
   margin-right: 6px;
   color: ${props => props.theme.secondary};
+`;
+
+const RedIcon = styled.span`
+  color: ${props => props.theme.red};
 `;
 
 const StyledFolderIcon = styled.span`
@@ -24,9 +29,12 @@ const StyledFolderIcon = styled.span`
   }
 `;
 
-const getIcon = (type, root) => {
+const getIcon = (type, error, root) => {
   if (root) {
     return <ProjectIcon />;
+  }
+  if (error) {
+    return <RedIcon><ErrorIcon /></RedIcon>;
   }
   if (type === 'react') {
     return <ReactIcon />;
@@ -47,9 +55,10 @@ type Props = {
   isOpen?: boolean,
   onOpen: () => void,
   root: ?boolean,
+  error: boolean,
 };
 export default (
-  { type, root, hasChildren, isNotSynced, isOpen, onOpen }: Props
+  { type, root, error, hasChildren, isNotSynced, isOpen, onOpen }: Props
 ) => (
   <div style={{ display: 'inline-block', verticalAlign: 'middle' }}>
     {isNotSynced && <NotSyncedIconWithMargin />}
@@ -58,6 +67,6 @@ export default (
       <StyledFolderIcon isOpen={isOpen} onClick={onOpen}>
         <FolderIcon />
       </StyledFolderIcon>}
-    {getIcon(type, root)}
+    {getIcon(type, error, root)}
   </div>
 );

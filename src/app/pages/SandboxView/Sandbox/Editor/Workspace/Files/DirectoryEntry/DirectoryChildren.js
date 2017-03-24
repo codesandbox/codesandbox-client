@@ -88,6 +88,7 @@ export default class DirectoryChildren extends React.PureComponent {
               setCurrentModule={setCurrentModule}
               isInProjectView={isInProjectView}
               isMainModule={mainModule}
+              moduleHasError={m.error && m.error.severity === 'error'}
             />
           );
         })}
