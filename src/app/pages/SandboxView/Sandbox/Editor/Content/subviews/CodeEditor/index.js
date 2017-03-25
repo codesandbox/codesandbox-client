@@ -219,10 +219,14 @@ export default class CodeEditor extends React.PureComponent {
 
   prettify = async () => {
     const { id, code } = this.props;
-    const prettier = await System.import('prettier');
-    const newCode = prettier.format(code);
-    this.props.changeCode(id, newCode);
-    this.updateCodeMirrorCode(newCode);
+    try {
+      const prettier = await System.import('prettier');
+      const newCode = prettier.format(code);
+      this.props.changeCode(id, newCode);
+      this.updateCodeMirrorCode(newCode);
+    } catch (e) {
+      this.props.changeCode(id, code);
+    }
   };
 
   handleSaveCode = async () => {
