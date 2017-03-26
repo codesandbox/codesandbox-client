@@ -1,0 +1,270 @@
+html, body {
+  font-family: 'Roboto', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-font-smoothing: antialiased;
+  font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-smooth: always;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  min-height: 100%;
+  -webkit-text-size-adjust: 100%;
+  height: 100%;
+  color: white;
+  background: #1C2022;
+  margin: 0;
+}
+
+a {
+  color: #6CAEDD;
+}
+
+h2 {
+  font-weight: 300;
+  font-size: 2rem;
+}
+
+h1 {
+  font-weight: 400;
+  font-size: 4rem;
+  text-transform: uppercase;
+}
+
+.primary {
+  color: #6CAEDD;
+}
+
+.secondary {
+  color: #FFD399;
+}
+
+.button {
+  transition: 0.3s ease all;
+  background: #1C2022;
+  background: rgba(255,211,153,0.20);
+  border: 1px solid #FED594;
+  border-radius: 4px;
+  padding: 0.75rem 2.5rem;
+  color: white;
+  text-transform: uppercase;
+  font-size: 1.5rem;
+  font-weight: 300;
+  text-decoration: none;
+
+  box-shadow: 1px 2px 2px rgba(0,0,0,0.5);
+}
+
+.button:hover {
+  border-color: #6CAEDD;
+  background: rgba(108,174,221,0.2);
+}
+
+.shadow {
+  box-shadow: 0px 3px 3px rgba(0,0,0,0.5);
+}
+
+.shadow--text {
+  text-shadow: 0px 2px 2px rgba(0,0,0,0.5);
+}
+
+.shadow--svg {
+  filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
+}
+
+.hero {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin: 0;
+  height: 74vh;
+  min-height: 600px;
+  background: #1C2022;
+  background-image: radial-gradient(circle, rgba(47, 170, 255, 0.04) 50%, rgba(255, 211, 153, 0.00) 100%);
+  overflow: hidden;
+}
+
+.title {
+  margin: 0;
+}
+
+.logo {
+  vertical-align: middle;
+  margin-right: 0.5rem;
+}
+
+.logocontent {
+  display: flex;
+  align-items: center;
+  vertical-align: middle;
+  margin-bottom: 5rem;
+}
+
+.subtitle {
+  margin: 0;
+  margin-left: 4px;
+  text-transform: uppercase;
+}
+
+.downiconcontainer {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: -78px;
+  left: 0;
+  right: 0;
+  margin: auto;
+  text-align: center;
+  z-index: 2;
+}
+
+.downicon {
+  position: relative;
+}
+
+.downicon svg {
+  position: relative;
+}
+
+.hexagon #fill {
+  transition: 0.3s ease all;
+}
+
+.hexagon #line {
+  transition: 0.3s ease all;
+}
+
+.hexagon:hover #fill {
+  fill: #6CAEDD;
+  stroke: #6CAEDD;
+}
+
+.hexagon:hover #line {
+  stroke: #6CAEDD;
+}
+
+.arrowicon {
+  position: absolute;
+  top: 0;
+  left: 32px;
+}
+
+.description {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column-reverse;
+  text-align: center;
+  margin: 0;
+  background-color: #FFD399;
+  color: rgba(0, 0, 0, 0.5);
+
+  border-top: 40px solid #6CAEDD;
+}
+
+.lines {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  margin-bottom: -80px;
+}
+
+.line {
+  position: absolute;
+  background-color: #6CAEDD;
+  min-height: 200px;;
+  top: 0;
+  right: -15px;
+  left: -15px;
+}
+
+.left {
+  transform: rotateZ(6deg);
+}
+
+.right {
+  transform: rotateZ(-6deg);
+}
+
+.description h3 {
+  max-width: 900px;
+  margin: 0;
+  padding: 5rem 0.5rem;
+  font-weight: 500;
+  font-size: 2.5rem;
+}
+
+.arrow {
+  position: absolute;
+  top: 49px;
+}
+
+.examples {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.examples h3 {
+  text-transform: uppercase;
+  margin: 2rem;
+  font-size: 2rem;
+  font-weight: 400;
+}
+
+.projects {
+  display: flex;
+  max-width: 900px;
+  flex-flow: row wrap;
+  justify-content: space-around;
+  align-content: space-between;
+}
+
+.project {
+  transition: 0.3s ease all;
+  padding: 1.5rem 3rem;
+  background: rgba(108,174,221,0.2);
+  border-radius: 4px;
+  border: 1px solid #6CAEDD;
+  font-size: 1.5rem;
+  font-weight: 300;
+  cursor: pointer;
+  text-decoration: none;
+  color: white;
+  margin: 1rem 0;
+  width: 300px;
+}
+
+.project:hover {
+  background: rgba(255,211,153,0.20);
+  border: 1px solid #FED594;
+}
+
+.about {
+  background: #272C2E;
+  color: rgba(255,255,255, 0.7);
+  padding: 1rem;
+  text-align: center;
+}
+
+@media only screen and (max-width: 660px) {
+  h1 {
+    font-size: 2.5rem;
+  }
+
+  h2 {
+    font-size: 2rem;
+  }
+
+  .logocontent {
+    flex-direction: column;
+    text-align: center;
+  }
+}

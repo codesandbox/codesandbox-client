@@ -15,22 +15,21 @@ const __PROD__ = NODE_ENV === 'production'; // eslint-disable-line no-underscore
 
 const babelConfig = __DEV__ ? babelDev : babelProd;
 
-const getOutput = () =>
-  __DEV__
-    ? {
-        path: paths.appBuild,
-        pathinfo: true,
-        filename: 'static/js/[name].js',
-        publicPath: '/',
-      }
-    : {
-        path: paths.appBuild,
-        pathinfo: true,
-        filename: 'static/js/[name].[hash:8].js',
-        chunkFilename: 'static/js/[name].[hash:8].chunk.js',
-        sourceMapFilename: '[file].map', // Default
-        publicPath: 'https://codesandbox.io/',
-      };
+const getOutput = () => __DEV__
+  ? {
+      path: paths.appBuild,
+      pathinfo: true,
+      filename: 'static/js/[name].js',
+      publicPath: '/',
+    }
+  : {
+      path: paths.appBuild,
+      pathinfo: true,
+      filename: 'static/js/[name].[hash:8].js',
+      chunkFilename: 'static/js/[name].[hash:8].chunk.js',
+      sourceMapFilename: '[file].map', // Default
+      publicPath: 'https://codesandbox.io/',
+    };
 
 const config = {
   devtool: __DEV__ ? 'eval' : 'source-map',
@@ -41,13 +40,7 @@ const config = {
       require.resolve('./polyfills'),
       path.join(paths.sandboxSrc, 'index.js'),
     ],
-    vendor: [
-      'babel-standalone',
-      'codemirror',
-      'react',
-      'styled-components',
-      'glamor',
-    ],
+    vendor: ['babel-standalone', 'codemirror', 'react', 'styled-components'],
   },
 
   target: 'web',
@@ -157,7 +150,7 @@ const config = {
     new HtmlWebpackPlugin({
       inject: true,
       chunks: ['vendor', 'common', 'app'],
-      filename: 'index.html',
+      filename: 'app.html',
       template: paths.appHtml,
       minify: __PROD__ && {
         removeComments: true,

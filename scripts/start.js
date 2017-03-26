@@ -67,7 +67,7 @@ function setupCompiler(port, protocol) {
 
   // "done" event fires when Webpack has finished recompiling the bundle.
   // Whether or not you have warnings or errors, you will get this event.
-  compiler.plugin('done', (stats) => {
+  compiler.plugin('done', stats => {
     clearConsole();
     const hasErrors = stats.hasErrors();
     const hasWarnings = stats.hasWarnings();
@@ -79,7 +79,9 @@ function setupCompiler(port, protocol) {
       console.log('  ' + chalk.cyan(protocol + '://localhost:' + port + '/'));
       console.log();
       console.log('Note that the development build is not optimized.');
-      console.log('To create a production build, use ' + chalk.cyan('npm run build') + '.');
+      console.log(
+        'To create a production build, use ' + chalk.cyan('npm run build') + '.'
+      );
       console.log();
       return;
     }
@@ -90,11 +92,11 @@ function setupCompiler(port, protocol) {
     // We use stats.toJson({}, true) to make output more compact and readable:
     // https://github.com/facebookincubator/create-react-app/issues/401#issuecomment-238291901
     var json = stats.toJson({}, true);
-    var formattedErrors = json.errors.map(message =>
-      'Error in ' + formatMessage(message)
+    var formattedErrors = json.errors.map(
+      message => 'Error in ' + formatMessage(message)
     );
-    var formattedWarnings = json.warnings.map(message =>
-      'Warning in ' + formatMessage(message)
+    var formattedWarnings = json.warnings.map(
+      message => 'Warning in ' + formatMessage(message)
     );
     if (hasErrors) {
       console.log(chalk.red('Failed to compile.'));
@@ -121,8 +123,16 @@ function setupCompiler(port, protocol) {
       });
       // Teach some ESLint tricks.
       console.log('You may use special comments to disable some warnings.');
-      console.log('Use ' + chalk.yellow('// eslint-disable-next-line') + ' to ignore the next line.');
-      console.log('Use ' + chalk.yellow('/* eslint-disable */') + ' to ignore all warnings in a file.');
+      console.log(
+        'Use ' +
+          chalk.yellow('// eslint-disable-next-line') +
+          ' to ignore the next line.'
+      );
+      console.log(
+        'Use ' +
+          chalk.yellow('/* eslint-disable */') +
+          ' to ignore all warnings in a file.'
+      );
     }
   });
 }
@@ -134,8 +144,12 @@ function openBrowser(port, protocol) {
       // on OS X Google Chrome with AppleScript
       execSync('ps cax | grep "Google Chrome"');
       execSync(
-        'osascript chrome.applescript ' + protocol + '://localhost:' + port + '/',
-        {cwd: path.join(__dirname, 'utils'), stdio: 'ignore'}
+        'osascript chrome.applescript ' +
+          protocol +
+          '://localhost:' +
+          port +
+          '/',
+        { cwd: path.join(__dirname, 'utils'), stdio: 'ignore' }
       );
       return;
     } catch (err) {
@@ -150,43 +164,59 @@ function openBrowser(port, protocol) {
 // We need to provide a custom onError function for httpProxyMiddleware.
 // It allows us to log custom error messages on the console.
 function onProxyError(proxy) {
-  return function(err, req, res){
+  return function(err, req, res) {
     var host = req.headers && req.headers.host;
     console.log(
-      chalk.red('Proxy error:') + ' Could not proxy request ' + chalk.cyan(req.url) +
-      ' from ' + chalk.cyan(host) + ' to ' + chalk.cyan(proxy) + '.'
+      chalk.red('Proxy error:') +
+        ' Could not proxy request ' +
+        chalk.cyan(req.url) +
+        ' from ' +
+        chalk.cyan(host) +
+        ' to ' +
+        chalk.cyan(proxy) +
+        '.'
     );
     console.log(
       'See https://nodejs.org/api/errors.html#errors_common_system_errors for more information (' +
-      chalk.cyan(err.code) + ').'
+        chalk.cyan(err.code) +
+        ').'
     );
     console.log();
-  }
+  };
 }
 
 function addMiddleware(devServer) {
   // `proxy` lets you to specify a fallback server during development.
   // Every unrecognized request will be forwarded to it.
   var proxy = require(paths.appPackageJson).proxy;
-  devServer.use(historyApiFallback({
-    // Allow paths with dots in them to be loaded, reference issue #387
-    disableDotRule: true,
-    // For single page apps, we generally want to fallback to /index.html.
-    // However we also want to respect `proxy` for API calls.
-    // So if `proxy` is specified, we need to decide which fallback to use.
-    // We use a heuristic: if request `accept`s text/html, we pick /index.html.
-    // Modern browsers include text/html into `accept` header when navigating.
-    // However API calls like `fetch()` won’t generally won’t accept text/html.
-    // If this heuristic doesn’t work well for you, don’t use `proxy`.
-    htmlAcceptHeaders: proxy ?
-      ['text/html'] :
-      ['text/html', '*/*']
-  }));
+  devServer.use(
+    historyApiFallback({
+      // Allow paths with dots in them to be loaded, reference issue #387
+      disableDotRule: true,
+      // For single page apps, we generally want to fallback to /index.html.
+      // However we also want to respect `proxy` for API calls.
+      // So if `proxy` is specified, we need to decide which fallback to use.
+      // We use a heuristic: if request `accept`s text/html, we pick /index.html.
+      // Modern browsers include text/html into `accept` header when navigating.
+      // However API calls like `fetch()` won’t generally won’t accept text/html.
+      // If this heuristic doesn’t work well for you, don’t use `proxy`.
+      htmlAcceptHeaders: proxy ? ['text/html'] : ['text/html', '*/*'],
+      index: '/app.html',
+    })
+  );
   if (proxy) {
     if (typeof proxy !== 'string') {
-      console.log(chalk.red('When specified, "proxy" in package.json must be a string.'));
-      console.log(chalk.red('Instead, the type of "proxy" was "' + typeof proxy + '".'));
-      console.log(chalk.red('Either remove "proxy" from package.json, or make it a string.'));
+      console.log(
+        chalk.red('When specified, "proxy" in package.json must be a string.')
+      );
+      console.log(
+        chalk.red('Instead, the type of "proxy" was "' + typeof proxy + '".')
+      );
+      console.log(
+        chalk.red(
+          'Either remove "proxy" from package.json, or make it a string.'
+        )
+      );
       process.exit(1);
     }
 
@@ -197,7 +227,8 @@ function addMiddleware(devServer) {
     // - /sockjs-node/* (WebpackDevServer uses this for hot reloading)
     // Tip: use https://www.debuggex.com/ to visualize the regex
     var mayProxy = /^(?!\/(index\.html$|.*\.hot-update\.json$|sockjs-node\/)).*$/;
-    devServer.use(mayProxy,
+    devServer.use(
+      mayProxy,
       // Pass the scope regex both to Express and to the middleware for proxying
       // of both HTTP and WebSockets to work without false positives.
       httpProxyMiddleware(pathname => mayProxy.test(pathname), {
@@ -205,7 +236,7 @@ function addMiddleware(devServer) {
         logLevel: 'silent',
         onError: onProxyError(proxy),
         secure: false,
-        changeOrigin: true
+        changeOrigin: true,
       })
     );
   }
@@ -235,6 +266,7 @@ function runDevServer(port, protocol) {
     },
     // Enable HTTPS if the HTTPS environment variable is set to 'true'
     https: protocol === 'https',
+    // contentBase: paths.staticPath,
   });
 
   // Our custom middleware proxies requests to /index.html or a remote API.
@@ -254,7 +286,7 @@ function runDevServer(port, protocol) {
 }
 
 function run(port) {
-  var protocol = process.env.HTTPS === 'true' ? "https" : "http";
+  var protocol = process.env.HTTPS === 'true' ? 'https' : 'http';
   setupCompiler(port, protocol);
   runDevServer(port, protocol);
 }
@@ -268,9 +300,9 @@ detect(DEFAULT_PORT).then(port => {
   }
 
   clearConsole();
-  var question =
-    chalk.yellow('Something is already running on port ' + DEFAULT_PORT + '.') +
-    '\n\nWould you like to run the app on another port instead?';
+  var question = chalk.yellow(
+    'Something is already running on port ' + DEFAULT_PORT + '.'
+  ) + '\n\nWould you like to run the app on another port instead?';
 
   prompt(question, true).then(shouldChangePort => {
     if (shouldChangePort) {

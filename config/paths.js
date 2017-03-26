@@ -30,6 +30,7 @@ module.exports = {
   appHtml: path.join(appSrc, 'index.html'),
   sandboxHtml: path.join(sandboxSrc, 'index.html'),
   appPackageJson: resolveApp('package.json'),
+  staticPath: resolveApp('public'),
   src,
   appSrc,
   sandboxSrc,

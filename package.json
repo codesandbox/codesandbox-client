@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
-    "autoprefixer": "^6.6.0",
+    "autoprefixer": "^6.7.7",
     "babel-core": "^6.21.0",
     "babel-eslint": "^7.1.1",
     "babel-jest": "^19.0.0",
@@ -67,8 +67,11 @@
     "babel-standalone": "^6.21.1-0",
     "codemirror": "^5.22.0",
     "color": "^0.11.4",
+    "cssnano": "^3.10.0",
     "debug": "^2.5.1",
     "glamor": "^2.20.12",
+    "gulp": "^3.9.1",
+    "gulp-postcss": "^6.4.0",
     "humps": "CompuIves/humps",
     "lodash": "^4.17.2",
     "moment": "^2.17.1",
@@ -98,7 +101,7 @@
   },
   "scripts": {
     "start": "node scripts/start.js",
-    "build": "node scripts/build.js",
+    "build": "node scripts/build.js && gulp",
     "test": "jest --env=jsdom",
     "test:watch": "jest --watch --env=jsdom",
     "lint": "eslint src"

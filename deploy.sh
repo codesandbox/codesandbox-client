@@ -7,8 +7,6 @@ mkdir .deliver && \
 mkdir .deliver/www && \
 docker cp $id:/app/www/ ./.deliver/ && \
 docker rm -v $id && \
-echo "Copy static files" && \
-cp -R static/ .deliver/www/ && \
 echo "Tarring build files" && \
 tar -C .deliver -zcvf .deliver/code_sandbox_client.tar.gz www && \
 echo "Cleaning remote tar" && \
