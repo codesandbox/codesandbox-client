@@ -49,7 +49,11 @@ export default class Dependencies extends React.PureComponent {
     this.setState({
       processing: true,
     });
-    await sandboxActions.addNPMDependency(sandboxId, realName, realVersion);
+    try {
+      await sandboxActions.addNPMDependency(sandboxId, realName, realVersion);
+    } catch (e) {
+      console.error(e);
+    }
     this.setState({
       processing: false,
     });
@@ -60,7 +64,11 @@ export default class Dependencies extends React.PureComponent {
     this.setState({
       processing: true,
     });
-    await sandboxActions.removeNPMDependency(sandboxId, name);
+    try {
+      await sandboxActions.removeNPMDependency(sandboxId, name);
+    } catch (e) {
+      console.error(e);
+    }
     this.setState({
       processing: false,
     });
