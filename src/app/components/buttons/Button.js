@@ -26,6 +26,7 @@ const styles = props => `
   text-transform: uppercase;
   text-decoration: none;
   line-height: 1;
+  font-weight: 300;
   background-color: ${getBackgroundColor(props)};
   border: ${getBorder(props)};
   color: ${getColor(props)};
@@ -51,13 +52,18 @@ const styles = props => `
   `}
 `;
 
-const LinkButton = styled(Link)`${props => styles(props)}`;
-const Button = styled.button`${props => styles(props)}`;
+const LinkButton = styled(Link)`${styles}`;
+const AButton = styled.a`${styles}`;
+const Button = styled.button`${styles}`;
 
 export default props => {
   // Link
   if (props.to) {
     return <LinkButton {...props} />;
+  }
+
+  if (props.href) {
+    return <AButton {...props} />;
   }
 
   return <Button {...props} />;

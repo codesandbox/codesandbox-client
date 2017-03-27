@@ -6,7 +6,7 @@ export default styled.h2`
   text-align: center;
   width: 100%;
   font-size: 1.75rem;
-  color: ${props => props.theme.background2.lighten(1.5)};
+  color: ${props => props.theme.background2.lighten(2)};
   font-weight: 300;
   margin-bottom: 1.5rem;
 `;

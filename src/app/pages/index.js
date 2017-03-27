@@ -1,12 +1,13 @@
 // @flow
 import React from 'react';
 import styled from 'styled-components';
-import { Route, Redirect } from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 import 'normalize.css';
 
 import Notifications from '../containers/Notifications';
 import ContextMenu from '../containers/ContextMenu';
 import SandboxView from './SandboxView/';
+import NotFound from './NotFound';
 
 const Container = styled.div`
   display: flex;
@@ -26,8 +27,11 @@ export default () => (
     <Notifications />
     <ContextMenu />
     <Content>
-      <Route exact path="/" render={() => <Redirect to="/s/new" />} />
-      <Route path="/s" component={SandboxView} />
+      <Switch>
+        <Route exact path="/" render={() => <Redirect to="/s/new" />} />
+        <Route path="/s" component={SandboxView} />
+        <Route component={NotFound} />
+      </Switch>
     </Content>
   </Container>
 );
