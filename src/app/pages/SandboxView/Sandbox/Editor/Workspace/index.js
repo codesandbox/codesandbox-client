@@ -34,7 +34,10 @@ const mapDispatchToProps = dispatch => ({
 });
 const Workspace = ({ sandbox, sandboxActions }: Props) => (
   <Container>
-    <SandboxDetails sandbox={sandbox} />
+    <SandboxDetails
+      sandbox={sandbox}
+      updateSandboxInfo={sandboxActions.updateSandboxInfo}
+    />
     <WorkspaceItem defaultOpen title="Project">
       <Project
         updateSandboxInfo={sandboxActions.updateSandboxInfo}

@@ -5,13 +5,14 @@ import styled from 'styled-components';
 const getBackgroundColor = ({ theme, secondary, transparent, disabled }) => {
   if (disabled) return theme.background2.darken(0.1)();
   if (transparent) return 'rgba(0,0,0,0.0)';
-  if (secondary) return theme.primary();
-  return theme.secondary();
+  if (secondary) return theme.primary.clearer(0.8)();
+  return theme.secondary.clearer(0.4)();
 };
 
-const getBorder = ({ transparent, theme }) => {
+const getBorder = ({ transparent, disabled, theme }) => {
   if (transparent) return `1px solid ${theme.secondary.clearer(0.5)()}`;
-  return 'none';
+  if (disabled) return 'none';
+  return `1px solid ${theme.secondary()};`;
 };
 
 const getColor = ({ transparent, disabled, theme }) => {
@@ -20,8 +21,7 @@ const getColor = ({ transparent, disabled, theme }) => {
   return 'white';
 };
 
-const styles = props =>
-  `
+const styles = props => `
   transition: 0.3s ease all;
   text-transform: uppercase;
   text-decoration: none;
@@ -31,22 +31,22 @@ const styles = props =>
   color: ${getColor(props)};
   border-radius: 2px;
   ${(() => {
-    if (props.small) {
-      return `
+  if (props.small) {
+    return `
         padding: 0.5rem 0.75rem;
         font-size: 0.875rem;
       `;
-    }
-    return 'padding: 0.75rem 1rem;';
-  })()}
+  }
+  return 'padding: 0.75rem 1rem;';
+})()}
   outline: none;
-  box-shadow: ${!props.disabled && !props.transparent && '0px 3px 3px rgba(0, 0, 0, 0.2);'};
   width: ${props.block ? '100%' : 'inherit'};
 
   ${!props.disabled && `
       cursor: pointer;
       &:hover {
-        background-color: ${props.theme.secondary.darken(0.25)()}
+        background-color: ${props.theme.primary.clearer(0.5)()};
+        border-color: ${props.theme.primary()};
       }
   `}
 `;
