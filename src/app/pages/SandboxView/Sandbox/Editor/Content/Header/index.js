@@ -108,6 +108,11 @@ export default class Header extends React.PureComponent {
     sandboxActions.massUpdateModules(sandbox.id);
   };
 
+  zipSandbox = () => {
+    const { sandbox, sandboxActions } = this.props;
+    sandboxActions.createZip(sandbox.id);
+  };
+
   forkSandbox = () => {
     const { sandbox, sandboxActions } = this.props;
 
@@ -147,7 +152,7 @@ export default class Header extends React.PureComponent {
             title="Save"
             Icon={Save}
           />
-          <Action title="Download" Icon={Download} placeholder="Coming soon!" />
+          <Action title="Download" Icon={Download} onClick={this.zipSandbox} />
           <Action title="Import" Icon={Import} placeholder="Coming soon!" />
         </Left>
 
