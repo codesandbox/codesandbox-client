@@ -11,7 +11,7 @@ const Container = styled.div`
   transition: 0.3s ease all;
   position: relative;
   background-color: ${getColor};
-  width: 3.5rem;
+  width: ${({ small }) => small ? 3 : 3.5}rem;
   color: rgba(0,0,0,0.5);
   border: 1px solid rgba(0,0,0,.1);
   padding: 0.5rem;
@@ -35,7 +35,8 @@ const Dot = styled.div`
   width: 1rem;
   left: 0.1rem;
   border-radius: 4px;
-  transform: translateX(${props => props.right ? 'calc(2rem + 2px)' : '0'});
+  transform: translateX(${props =>
+  props.right ? props.small ? 'calc(1.5rem + 2px)' : 'calc(2rem + 2px)' : '0'});
   top: ${({ small }) => small ? `calc(0.1rem + 1px)` : `calc(0.1rem)`};
   background-color: white;
   box-shadow: 0 0 4px rgba(0,0,0,0.2);
