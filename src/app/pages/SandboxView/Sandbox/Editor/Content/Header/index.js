@@ -110,7 +110,13 @@ export default class Header extends React.PureComponent {
 
   forkSandbox = () => {
     const { sandbox, sandboxActions } = this.props;
-    sandboxActions.forkSandbox(sandbox.id);
+
+    const shouldFork = sandbox.owned
+      ? confirm('Do you want to fork your own sandbox?')
+      : true;
+    if (shouldFork) {
+      sandboxActions.forkSandbox(sandbox.id);
+    }
   };
 
   setEditorView = () => {
