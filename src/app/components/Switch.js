@@ -36,7 +36,7 @@ const Dot = styled.div`
   left: 0.1rem;
   border-radius: 4px;
   transform: translateX(${props => props.right ? 'calc(2rem + 2px)' : '0'});
-  top: calc(0.1rem);
+  top: ${({ small }) => small ? `calc(0.1rem + 1px)` : `calc(0.1rem)`};
   background-color: white;
   box-shadow: 0 0 4px rgba(0,0,0,0.2);
 `;

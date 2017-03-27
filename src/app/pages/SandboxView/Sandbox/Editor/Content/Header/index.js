@@ -40,8 +40,10 @@ const Logo = styled.h1`
   vertical-align: middle;
   width: 100%;
   font-weight: 400;
-  text-decoration: none;
-  color: white;
+  a {
+    text-decoration: none;
+    color: white;
+  }
   left: 0; right: 0;
 `;
 
@@ -143,7 +145,7 @@ export default class Header extends React.PureComponent {
           <Action title="Import" Icon={Import} placeholder="Coming soon!" />
         </Left>
 
-        <Logo>CodeSandbox</Logo>
+        <Logo title="CodeSandbox"><a href="/">CodeSandbox</a></Logo>
 
         <Right>
           <Tooltip message="Editor view">
