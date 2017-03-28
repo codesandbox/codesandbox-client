@@ -1,7 +1,9 @@
 // @flow
-import type { Module } from '../../app/store/entities/modules/';
+import type { Module } from 'app/store/entities/sandboxes/modules/entity';
 
-import type { Directory } from '../../app/store/entities/directories/index';
+import type {
+  Directory,
+} from 'app/store/entities/sandboxes/directories/entity';
 
 import evalJS, { deleteCache as deleteJSCache } from './js';
 import evalHTML from './html';
