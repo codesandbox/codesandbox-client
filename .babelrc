@@ -1,7 +1,17 @@
 {
   "env": {
     "test": {
-      "presets": ["es2015", "react"]
+      "presets": [
+        "es2015",
+        "react"
+      ],
+      "plugins": [
+        "babel-plugin-transform-async-to-generator",
+        "babel-plugin-transform-object-rest-spread",
+        "babel-plugin-transform-class-properties",
+        "babel-plugin-transform-runtime",
+        "babel-plugin-lodash"
+      ]
     }
   }
 }

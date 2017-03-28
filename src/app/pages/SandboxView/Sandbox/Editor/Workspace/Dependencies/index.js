@@ -3,13 +3,17 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import MarginBottom from 'app/components/spacing/MarginBottom';
+
 import sandboxActionCreators
   from '../../../../../../store/entities/sandboxes/actions';
 
 import WorkspaceSubtitle from '../WorkspaceSubtitle';
-import AddVersion from './AddVersion';
 
+import AddVersion from './AddVersion';
 import VersionEntry from './VersionEntry';
+import AddResource from './AddResource';
+import ExternalResource from './ExternalResource';
 
 type Props = {
   sandboxId: string,
@@ -85,7 +89,7 @@ export default class Dependencies extends React.PureComponent {
       <div>
         {processing &&
           <Overlay>We{"'"}re processing dependencies, please wait...</Overlay>}
-        <div>
+        <MarginBottom>
           <WorkspaceSubtitle>
             NPM Packages
           </WorkspaceSubtitle>
@@ -103,6 +107,13 @@ export default class Dependencies extends React.PureComponent {
             existingDependencies={Object.keys(npmDependencies)}
             addDependency={this.addDependency}
           />
+        </MarginBottom>
+        <div>
+          <WorkspaceSubtitle>
+            External Resources
+          </WorkspaceSubtitle>
+          <ExternalResource resource="https://google.com/ives.js" />
+          <AddResource />
         </div>
       </div>
     );
