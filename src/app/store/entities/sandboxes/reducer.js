@@ -4,6 +4,7 @@ import {
   REMOVE_MODULE_FROM_SANDBOX,
   REMOVE_DIRECTORY_FROM_SANDBOX,
   SET_NPM_DEPENDENCIES,
+  SET_EXTERNAL_RESOURCES,
   SET_CURRENT_MODULE,
   SET_BUNDLE,
   FETCH_BUNDLE_API_ACTIONS,
@@ -61,6 +62,11 @@ function singleSandboxReducer(sandbox, action: Action) {
         npmDependencies: action.dependencies,
         dependencyBundle: {}, // So we can fetch dependencies later on again
       };
+    case SET_EXTERNAL_RESOURCES:
+      return {
+        ...sandbox,
+        externalResources: action.externalResources,
+      };
     case FETCH_BUNDLE_API_ACTIONS.REQUEST:
       return {
         ...sandbox,
@@ -89,6 +95,7 @@ export default function reducer(state = initialState, action: Action) {
     case REMOVE_MODULE_FROM_SANDBOX:
     case REMOVE_DIRECTORY_FROM_SANDBOX:
     case SET_NPM_DEPENDENCIES:
+    case SET_EXTERNAL_RESOURCES:
     case SET_CURRENT_MODULE:
     case FETCH_BUNDLE_API_ACTIONS.REQUEST:
     case SET_BUNDLE:

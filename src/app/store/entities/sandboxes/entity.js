@@ -15,6 +15,7 @@ export type Sandbox = {
   npmDependencies: {
     [dep: string]: string,
   },
+  externalResources: Array<string>,
   isInProjectView: ?boolean,
   dependencyBundle: ?{
     manifest?: Object,

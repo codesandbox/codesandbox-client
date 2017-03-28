@@ -9,6 +9,7 @@ const host = process.env.NODE_ENV === 'development'
 
 let fetching = false;
 let url = null;
+let cachedExternalResources = '';
 
 async function addDependencyBundle() {
   const script = document.createElement('script');
@@ -21,6 +22,49 @@ async function addDependencyBundle() {
   }
 }
 
+function getExternalResourcesConcatination(resources: Array<string>) {
+  return resources.sort().join('');
+}
+
+function clearExternalResources() {
+  let el = null;
+  while ((el = document.getElementById('external-css'))) {
+    el.remove();
+  }
+
+  while ((el = document.getElementById('external-js'))) {
+    el.remove();
+  }
+}
+
+function addCSS(resource: string) {
+  const head = document.getElementsByTagName('head')[0];
+  const link = document.createElement('link');
+  link.id = 'external-css';
+  link.rel = 'stylesheet';
+  link.type = 'text/css';
+  link.href = resource;
+  link.media = 'all';
+  head.appendChild(link);
+}
+
+function addJS(resource: string) {
+  const script = document.createElement('script');
+  script.setAttribute('src', resource);
+  script.setAttribute('id', 'external-js');
+  document.head.appendChild(script);
+}
+
+function addResource(resource: string) {
+  const kind = resource.match(/\.([^.]*)$/)[1];
+
+  if (kind === 'css') {
+    addCSS(resource);
+  } else if (kind === 'js') {
+    addJS(resource);
+  }
+}
+
 async function compile(message) {
   const {
     modules,
@@ -30,6 +74,7 @@ async function compile(message) {
     manifest,
     url: newUrl,
     changedModule,
+    externalResources,
   } = message.data;
 
   if (fetching) return;
@@ -41,6 +86,13 @@ async function compile(message) {
     fetching = false;
     window.parent.postMessage('Ready!', host);
     return;
+  }
+
+  const extResString = getExternalResourcesConcatination(externalResources);
+  if (extResString !== cachedExternalResources) {
+    clearExternalResources();
+    externalResources.forEach(addResource);
+    cachedExternalResources = extResString;
   }
 
   try {

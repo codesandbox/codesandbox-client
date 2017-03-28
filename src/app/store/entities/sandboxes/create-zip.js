@@ -9,7 +9,22 @@ import type { Directory } from './directories/entity';
 import README from './README.md';
 import favicon from '!base64-loader!./favicon.ico';
 
-const HTML = `<!doctype html>
+const CSSTag = (resource: string) =>
+  `<link rel="stylesheet" type="text/css" href="${resource}" media="all">`;
+const JSTag = (resource: string) =>
+  `<script src="${resource}" async="false"></script>`;
+
+function getResourceTag(resource: string) {
+  const kind = resource.match(/\.([^.]*)$/)[1];
+
+  if (kind === 'css') {
+    return CSSTag(resource);
+  } else if (kind === 'js') {
+    return JSTag(resource);
+  }
+}
+
+const getHTML = resources => `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -25,6 +40,7 @@ const HTML = `<!doctype html>
       Learn how to configure a non-root public URL by running \`npm run build\`.
     -->
     <title>React App</title>
+    ${resources.map(getResourceTag).join('\n')}
   </head>
   <body>
     <div id="root"></div>
@@ -117,7 +133,7 @@ export default (async function createZip(
     .forEach(x => createDirectoryWithFiles(modules, directories, x, src));
 
   const publicFolder = zip.folder('public');
-  publicFolder.file('index.html', HTML);
+  publicFolder.file('index.html', getHTML(sandbox.externalResources));
 
   publicFolder.file('favicon.ico', favicon, {
     base64: true,

@@ -55,9 +55,10 @@ const Workspace = ({ sandbox, sandboxActions }: Props) => (
       <Dependencies
         sandboxId={sandbox.id}
         npmDependencies={sandbox.npmDependencies}
+        externalResources={sandbox.externalResources}
         sandboxActions={sandboxActions}
         processing={
-          sandbox.dependencyBundle && sandbox.dependencyBundle.processing
+          !!(sandbox.dependencyBundle && sandbox.dependencyBundle.processing)
         }
       />
     </WorkspaceItem>

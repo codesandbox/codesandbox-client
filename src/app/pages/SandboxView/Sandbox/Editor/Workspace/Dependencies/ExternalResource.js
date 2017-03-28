@@ -37,18 +37,14 @@ export default class ExternalResource extends React.PureComponent {
   props: Props;
 
   removeResource = () => {
-    // this.props.removeResource(this.props.resource);
+    this.props.removeResource(this.props.resource);
   };
 
   render() {
     const { resource } = this.props;
     return (
       <EntryContainer>
-        <a
-          href={getNormalizedUrl(resource)}
-          rel="noopener noreferrer"
-          target="_blank"
-        >
+        <a href={resource} rel="noopener noreferrer" target="_blank">
           {getName(resource)}
         </a>
         <Icon onClick={this.removeResource}><CrossIcon /></Icon>

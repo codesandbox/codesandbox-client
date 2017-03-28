@@ -10,7 +10,6 @@ const ButtonContainer = styled.div`
 
 type State = {
   name: string,
-  version: string,
 };
 
 type Props = {
@@ -30,10 +29,6 @@ export default class AddVersion extends React.PureComponent {
   setName = (e: KeyboardEvent) => {
     const name = e.target.value;
     this.setState({ name });
-  };
-
-  setVersion = (e: KeyboardEvent) => {
-    this.setState({ version: e.target.value });
   };
 
   addResource = async () => {
@@ -64,7 +59,7 @@ export default class AddVersion extends React.PureComponent {
           />
         </WorkspaceInputContainer>
         <ButtonContainer>
-          <Button disabled={!isValid} block small onClick={this.addResource()}>
+          <Button disabled={!isValid} block small onClick={this.addResource}>
             Add Resource
           </Button>
         </ButtonContainer>

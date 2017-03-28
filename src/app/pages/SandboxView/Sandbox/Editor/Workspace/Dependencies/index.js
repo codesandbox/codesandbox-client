@@ -18,6 +18,7 @@ import ExternalResource from './ExternalResource';
 type Props = {
   sandboxId: string,
   npmDependencies: { [dep: string]: string },
+  externalResources: Array<string>,
   sandboxActions: typeof sandboxActionCreators,
   processing: boolean,
 };
@@ -63,7 +64,22 @@ export default class Dependencies extends React.PureComponent {
     });
   };
 
-  handleRemove = async (name: string) => {
+  addResource = async (resource: string) => {
+    const { sandboxId, sandboxActions } = this.props;
+    this.setState({
+      processing: true,
+    });
+    try {
+      await sandboxActions.addExternalResource(sandboxId, resource);
+    } catch (e) {
+      console.error(e);
+    }
+    this.setState({
+      processing: false,
+    });
+  };
+
+  removeDependency = async (name: string) => {
     const { sandboxId, sandboxActions } = this.props;
     this.setState({
       processing: true,
@@ -78,11 +94,30 @@ export default class Dependencies extends React.PureComponent {
     });
   };
 
+  removeResource = async (resource: string) => {
+    const { sandboxId, sandboxActions } = this.props;
+    this.setState({
+      processing: true,
+    });
+    try {
+      await sandboxActions.removeExternalResource(sandboxId, resource);
+    } catch (e) {
+      console.error(e);
+    }
+    this.setState({
+      processing: false,
+    });
+  };
+
   props: Props;
   state: State;
 
   render() {
-    const { npmDependencies, processing: fetchingDependencies } = this.props;
+    const {
+      npmDependencies,
+      externalResources,
+      processing: fetchingDependencies,
+    } = this.props;
     const processing = fetchingDependencies || this.state.processing;
 
     return (
@@ -100,7 +135,7 @@ export default class Dependencies extends React.PureComponent {
                 key={dep}
                 dependencies={npmDependencies}
                 dependency={dep}
-                onRemove={this.handleRemove}
+                onRemove={this.removeDependency}
               />
             ))}
           <AddVersion
@@ -112,8 +147,16 @@ export default class Dependencies extends React.PureComponent {
           <WorkspaceSubtitle>
             External Resources
           </WorkspaceSubtitle>
-          <ExternalResource resource="https://google.com/ives.js" />
-          <AddResource />
+          {externalResources
+            .sort()
+            .map(resource => (
+              <ExternalResource
+                key={resource}
+                resource={resource}
+                removeResource={this.removeResource}
+              />
+            ))}
+          <AddResource addResource={this.addResource} />
         </div>
       </div>
     );
