@@ -90,18 +90,41 @@ export default class CodeEditor extends React.PureComponent {
       this.props.preferences !== nextProps.preferences;
   }
 
+  swapDocuments = async (
+    {
+      currentId,
+      nextId,
+      nextCode,
+      nextTitle,
+    }: {
+      currentId: string,
+      nextId: string,
+      nextCode: ?string,
+      nextTitle: string,
+    }
+  ) => {
+    if (nextId !== currentId) {
+      if (!documentCache[nextId]) {
+        const mode = await this.getMode(nextTitle);
+
+        documentCache[nextId] = new CodeMirror.Doc(nextCode || '', mode);
+      }
+      documentCache[currentId] = this.codemirror.swapDoc(documentCache[nextId]);
+    }
+  };
+
   componentWillReceiveProps(nextProps: Props) {
     const cm = this.codemirror;
     const { id: currentId, error: currentError } = this.props;
-    const { id: nextId, code: nextCode, error: nextError } = nextProps;
-    if (cm) {
-      if (nextId !== currentId) {
-        if (!documentCache[nextId]) {
-          documentCache[nextId] = new CodeMirror.Doc(nextCode || '', 'jsx');
-        }
-        documentCache[currentId] = cm.swapDoc(documentCache[nextId]);
-      }
+    const {
+      id: nextId,
+      code: nextCode,
+      error: nextError,
+      title: nextTitle,
+    } = nextProps;
 
+    if (cm) {
+      this.swapDocuments({ currentId, nextId, nextCode, nextTitle });
       handleError(cm, currentError, nextError, nextCode, nextId);
     }
   }
@@ -120,11 +143,26 @@ export default class CodeEditor extends React.PureComponent {
     }
   }
 
-  getCodeMirror = (el: Element) => {
+  getMode = async (title: string) => {
+    if (title == null) return 'jsx';
+
+    const kind = title.match(/\.([^.]*)$/);
+
+    if (kind) {
+      if (kind[1] === 'css') {
+        await System.import('codemirror/mode/css/css');
+        return 'css';
+      }
+    }
+
+    return 'jsx';
+  };
+
+  getCodeMirror = async (el: Element) => {
     const { code, id } = this.props;
     CodeMirror.commands.save = this.handleSaveCode;
-
-    documentCache[id] = new CodeMirror.Doc(code || '', 'jsx');
+    const mode = await this.getMode();
+    documentCache[id] = new CodeMirror.Doc(code || '', mode);
 
     this.codemirror = getCodeMirror(el, documentCache[id]);
 

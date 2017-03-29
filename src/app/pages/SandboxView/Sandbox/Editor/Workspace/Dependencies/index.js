@@ -3,17 +3,22 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import MarginBottom from 'app/components/spacing/MarginBottom';
+
 import sandboxActionCreators
   from '../../../../../../store/entities/sandboxes/actions';
 
 import WorkspaceSubtitle from '../WorkspaceSubtitle';
-import AddVersion from './AddVersion';
 
+import AddVersion from './AddVersion';
 import VersionEntry from './VersionEntry';
+import AddResource from './AddResource';
+import ExternalResource from './ExternalResource';
 
 type Props = {
   sandboxId: string,
   npmDependencies: { [dep: string]: string },
+  externalResources: Array<string>,
   sandboxActions: typeof sandboxActionCreators,
   processing: boolean,
 };
@@ -59,7 +64,22 @@ export default class Dependencies extends React.PureComponent {
     });
   };
 
-  handleRemove = async (name: string) => {
+  addResource = async (resource: string) => {
+    const { sandboxId, sandboxActions } = this.props;
+    this.setState({
+      processing: true,
+    });
+    try {
+      await sandboxActions.addExternalResource(sandboxId, resource);
+    } catch (e) {
+      console.error(e);
+    }
+    this.setState({
+      processing: false,
+    });
+  };
+
+  removeDependency = async (name: string) => {
     const { sandboxId, sandboxActions } = this.props;
     this.setState({
       processing: true,
@@ -74,18 +94,37 @@ export default class Dependencies extends React.PureComponent {
     });
   };
 
+  removeResource = async (resource: string) => {
+    const { sandboxId, sandboxActions } = this.props;
+    this.setState({
+      processing: true,
+    });
+    try {
+      await sandboxActions.removeExternalResource(sandboxId, resource);
+    } catch (e) {
+      console.error(e);
+    }
+    this.setState({
+      processing: false,
+    });
+  };
+
   props: Props;
   state: State;
 
   render() {
-    const { npmDependencies, processing: fetchingDependencies } = this.props;
+    const {
+      npmDependencies,
+      externalResources,
+      processing: fetchingDependencies,
+    } = this.props;
     const processing = fetchingDependencies || this.state.processing;
 
     return (
       <div>
         {processing &&
           <Overlay>We{"'"}re processing dependencies, please wait...</Overlay>}
-        <div>
+        <MarginBottom>
           <WorkspaceSubtitle>
             NPM Packages
           </WorkspaceSubtitle>
@@ -96,13 +135,28 @@ export default class Dependencies extends React.PureComponent {
                 key={dep}
                 dependencies={npmDependencies}
                 dependency={dep}
-                onRemove={this.handleRemove}
+                onRemove={this.removeDependency}
               />
             ))}
           <AddVersion
             existingDependencies={Object.keys(npmDependencies)}
             addDependency={this.addDependency}
           />
+        </MarginBottom>
+        <div>
+          <WorkspaceSubtitle>
+            External Resources
+          </WorkspaceSubtitle>
+          {externalResources
+            .sort()
+            .map(resource => (
+              <ExternalResource
+                key={resource}
+                resource={resource}
+                removeResource={this.removeResource}
+              />
+            ))}
+          <AddResource addResource={this.addResource} />
         </div>
       </div>
     );

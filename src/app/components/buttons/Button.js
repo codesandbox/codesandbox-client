@@ -11,7 +11,7 @@ const getBackgroundColor = ({ theme, secondary, transparent, disabled }) => {
 
 const getBorder = ({ transparent, disabled, theme }) => {
   if (transparent) return `1px solid ${theme.secondary.clearer(0.5)()}`;
-  if (disabled) return 'none';
+  if (disabled) return '1px solid transparent';
   return `1px solid ${theme.secondary()};`;
 };
 

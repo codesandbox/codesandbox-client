@@ -1,0 +1,115 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ExternalResource renders file if there is an extension 1`] = `
+<span
+  className="dvmFoA"
+>
+  <a
+    href="https://ivesvh.com/ives.js"
+    rel="noopener noreferrer"
+    target="_blank"
+  >
+    ives.js
+  </a>
+  <div
+    className="bQGDfv"
+    onClick={[Function]}
+  >
+    <svg
+      fill="currentColor"
+      height="1em"
+      preserveAspectRatio="xMidYMid meet"
+      style={
+        Object {
+          "color": undefined,
+          "verticalAlign": "middle",
+        }
+      }
+      viewBox="0 0 40 40"
+      width="1em"
+    >
+      <g>
+        <path
+          d="m31.6 10.7l-9.3 9.3 9.3 9.3-2.3 2.3-9.3-9.3-9.3 9.3-2.3-2.3 9.3-9.3-9.3-9.3 2.3-2.3 9.3 9.3 9.3-9.3z"
+        />
+      </g>
+    </svg>
+  </div>
+</span>
+`;
+
+exports[`ExternalResource renders url if there is no extension 1`] = `
+<span
+  className="dvmFoA"
+>
+  <a
+    href="https://ivesvh.com/"
+    rel="noopener noreferrer"
+    target="_blank"
+  >
+    https://ivesvh.com/
+  </a>
+  <div
+    className="bQGDfv"
+    onClick={[Function]}
+  >
+    <svg
+      fill="currentColor"
+      height="1em"
+      preserveAspectRatio="xMidYMid meet"
+      style={
+        Object {
+          "color": undefined,
+          "verticalAlign": "middle",
+        }
+      }
+      viewBox="0 0 40 40"
+      width="1em"
+    >
+      <g>
+        <path
+          d="m31.6 10.7l-9.3 9.3 9.3 9.3-2.3 2.3-9.3-9.3-9.3 9.3-2.3-2.3 9.3-9.3-9.3-9.3 2.3-2.3 9.3 9.3 9.3-9.3z"
+        />
+      </g>
+    </svg>
+  </div>
+</span>
+`;
+
+exports[`ExternalResource renders url if there is no extension 2`] = `
+<span
+  className="dvmFoA"
+>
+  <a
+    href="https://ivesvh.com"
+    rel="noopener noreferrer"
+    target="_blank"
+  >
+    https://ivesvh.com/
+  </a>
+  <div
+    className="bQGDfv"
+    onClick={[Function]}
+  >
+    <svg
+      fill="currentColor"
+      height="1em"
+      preserveAspectRatio="xMidYMid meet"
+      style={
+        Object {
+          "color": undefined,
+          "verticalAlign": "middle",
+        }
+      }
+      viewBox="0 0 40 40"
+      width="1em"
+    >
+      <g>
+        <path
+          d="m31.6 10.7l-9.3 9.3 9.3 9.3-2.3 2.3-9.3-9.3-9.3 9.3-2.3-2.3 9.3-9.3-9.3-9.3 2.3-2.3 9.3 9.3 9.3-9.3z"
+        />
+      </g>
+    </svg>
+  </div>
+</span>
+`;

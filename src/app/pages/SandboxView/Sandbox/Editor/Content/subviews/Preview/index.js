@@ -37,22 +37,13 @@ const StyledFrame = styled.iframe`
   width: 100%;
 `;
 
-const LoadingDepText = styled.div`
-  position: absolute;
-  font-size: 2rem;
-  color: black;
-  text-align: center;
-  vertical-align: middle;
-  top: 50%; bottom: 0; right: 0; left: 0;
-  margin: auto;
-`;
-
 type Props = {
   sandboxId: string,
   isInProjectView: boolean,
   modules: Array<Module>,
   directories: Array<Directory>,
   bundle: Sandbox.dependencyBundle,
+  externalResources: typeof Sandbox.externalResources,
   preferences: Preferences,
   fetchBundle: (id: string) => Object,
   setProjectView: (id: string, isInProjectView: boolean) => void,
@@ -170,6 +161,7 @@ export default class Preview extends React.PureComponent {
       directories,
       bundle = {},
       module,
+      externalResources,
     } = this.props;
 
     if (bundle.manifest == null) {
@@ -190,6 +182,7 @@ export default class Preview extends React.PureComponent {
         directories,
         manifest: bundle.manifest,
         url: bundle.url,
+        externalResources,
       },
       '*'
     );

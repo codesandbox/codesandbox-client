@@ -65,6 +65,14 @@ export const DELETE_NPM_DEPENDENCY_ACTIONS = createAPIActions(
   'SANDBOX',
   'DELETE_NPM_DEPENDENCY'
 );
+export const ADD_EXTERNAL_RESOURCE_ACTIONS = createAPIActions(
+  'SANDBOX',
+  'ADD_EXTERNAL_RESOURCE'
+);
+export const DELETE_EXTERNAL_RESOURCE_ACTIONS = createAPIActions(
+  'SANDBOX',
+  'DELETE_EXTERNAL_RESOURCE'
+);
 
 export const REMOVE_MODULE_FROM_SANDBOX = 'REMOVE_MODULE_FROM_SANDBOX';
 export const SET_SANDBOX_INFO = 'SET_SANDBOX_INFO';
@@ -72,6 +80,7 @@ export const REMOVE_DIRECTORY_FROM_SANDBOX = 'REMOVE_DIRECTORY_FROM_SANDBOX';
 export const ADD_MODULE_TO_SANDBOX = 'ADD_MODULE_TO_SANDBOX';
 export const ADD_DIRECTORY_TO_SANDBOX = 'ADD_DIRECTORY_TO_SANDBOX';
 export const SET_NPM_DEPENDENCIES = 'SET_NPM_DEPENDENCIES';
+export const SET_EXTERNAL_RESOURCES = 'SET_EXTERNAL_RESOURCES';
 export const SET_CURRENT_MODULE = 'SET_CURRENT_MODULE';
 export const SET_BUNDLE = 'SET_BUNDLE';
 export const SET_PROJECT_VIEW = 'SET_PROJECT_VIEW';
@@ -509,6 +518,54 @@ export default {
       type: SET_NPM_DEPENDENCIES,
       id: sandboxId,
       dependencies: result.data,
+    });
+  },
+
+  addExternalResource: (id: string, resource: string) => async (
+    dispatch: Function
+  ) => {
+    const sandboxId = await dispatch(maybeForkSandbox(id));
+    const result = await dispatch(
+      doRequest(
+        ADD_EXTERNAL_RESOURCE_ACTIONS,
+        `sandboxes/${sandboxId}/resources`,
+        {
+          method: 'POST',
+          body: {
+            external_resource: resource,
+          },
+        }
+      )
+    );
+
+    dispatch({
+      type: SET_EXTERNAL_RESOURCES,
+      id: sandboxId,
+      externalResources: result.data,
+    });
+  },
+
+  removeExternalResource: (id: string, resource: string) => async (
+    dispatch: Function
+  ) => {
+    const sandboxId = await dispatch(maybeForkSandbox(id));
+    const result = await dispatch(
+      doRequest(
+        DELETE_EXTERNAL_RESOURCE_ACTIONS,
+        `sandboxes/${sandboxId}/resources/`,
+        {
+          method: 'DELETE',
+          body: {
+            id: resource,
+          },
+        }
+      )
+    );
+
+    dispatch({
+      type: SET_EXTERNAL_RESOURCES,
+      id: sandboxId,
+      externalResources: result.data,
     });
   },
 

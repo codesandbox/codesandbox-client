@@ -10,18 +10,14 @@ const ButtonContainer = styled.div`
 
 type State = {
   name: string,
-  version: string,
 };
 
 type Props = {
-  addDependency: (dependency: string, version: string) => Promise<boolean>,
-  existingDependencies: Array<string>,
-  processing: boolean,
+  addResource: (resource: string) => Promise<boolean>,
 };
 
 const initialState = {
   name: '',
-  version: '',
 };
 
 export default class AddVersion extends React.PureComponent {
@@ -31,18 +27,13 @@ export default class AddVersion extends React.PureComponent {
   props: Props;
 
   setName = (e: KeyboardEvent) => {
-    const { existingDependencies } = this.props;
     const name = e.target.value;
-    this.setState({ name, replacing: existingDependencies.includes(name) });
+    this.setState({ name });
   };
 
-  setVersion = (e: KeyboardEvent) => {
-    this.setState({ version: e.target.value });
-  };
-
-  addDependency = async () => {
+  addResource = async () => {
     if (this.state.name) {
-      await this.props.addDependency(this.state.name, this.state.version);
+      await this.props.addResource(this.state.name);
       this.setState(initialState);
     }
   };
@@ -50,40 +41,26 @@ export default class AddVersion extends React.PureComponent {
   handleKeyUp = (e: KeyboardEvent) => {
     if (e.keyCode === 13) {
       // Enter
-      this.addDependency();
+      this.addResource();
     }
   };
 
   render() {
-    const { name, version, replacing } = this.state;
-    const { processing } = this.props;
+    const { name } = this.state;
     const isValid = name !== '';
     return (
       <div style={{ position: 'relative' }}>
         <WorkspaceInputContainer>
           <input
-            style={{ flex: 3 }}
-            placeholder="package name"
+            placeholder="https://cdn.com/bootstrap.css"
             value={name}
             onChange={this.setName}
             onKeyUp={this.handleKeyUp}
           />
-          <input
-            style={{ flex: 1 }}
-            placeholder="version"
-            value={version}
-            onChange={this.setVersion}
-            onKeyUp={this.handleKeyUp}
-          />
         </WorkspaceInputContainer>
         <ButtonContainer>
-          <Button
-            disabled={!isValid || processing}
-            block
-            small
-            onClick={this.addDependency}
-          >
-            {replacing ? 'replace' : 'add'} Package
+          <Button disabled={!isValid} block small onClick={this.addResource}>
+            Add Resource
           </Button>
         </ButtonContainer>
       </div>

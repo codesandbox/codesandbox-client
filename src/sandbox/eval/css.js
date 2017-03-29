@@ -1,28 +1,49 @@
-export default module => module.code;
+const getStyleId = id => id + '-css'; // eslint-disable-line
 
+function getGeneratedClassNameCode(code: string, alteredClassNames) {
+  let newCode = code;
+  Object.keys(alteredClassNames).forEach(cn => {
+    const regex = new RegExp(`.${cn} `);
+    newCode = newCode.replace(regex, `.${alteredClassNames[cn]} `);
+  });
+  return newCode;
+}
 
-  // const css = module.code;
+function createStyleNode(id: string, content: string) {
+  const styleNode = document.getElementById(getStyleId(id)) ||
+    document.createElement('style');
 
-  // const classNameRegex = /\.(-?[_a-zA-Z]+[_a-zA-Z0-9-]*)/g;
-  // const classNames = css.match(classNameRegex);
+  styleNode.setAttribute('id', getStyleId(id));
+  styleNode.type = 'text/css';
+  if (styleNode.styleSheet) {
+    styleNode.styleSheet.cssText = content;
+  } else {
+    styleNode.innerHTML = '';
+    styleNode.appendChild(document.createTextNode(content));
+  }
+  document.head.appendChild(styleNode);
+}
 
-  // const alteredClassNames = classNames.map(t => t.replace('.', '')).reduce((prev, next) => (
-  //   { ...prev, [next]: `cs${module.id}-${next}` }
-  // ), {});
+function getGeneratedClassNames(id: string, classNames: Array<string>) {
+  return classNames
+    .map(t => t.replace('.', ''))
+    .reduce((prev, next) => ({ ...prev, [next]: `cs-${id}-${next}` }), {});
+}
 
-  // let newCode = module.code;
-  // Object.keys(alteredClassNames).forEach((cn) => {
-  //   const regex = new RegExp(`\.${cn} `);
-  //   newCode = newCode.replace(regex, `.${alteredClassNames[cn]} `);
-  // });
+/**
+ * Adds CSS to HEAD and creates a mapping of classname -> generatedClassname
+ */
+export default module => {
+  const css = module.code;
 
-  // const styleNode = document.createElement('style');
-  // styleNode.type = 'text/css';
-  // if (styleNode.styleSheet) {
-  //   styleNode.styleSheet.cssText = newCode;
-  // } else {
-  //   styleNode.appendChild(document.createTextNode(newCode));
-  // }
+  const classNameRegex = /\.(-?[_a-zA-Z]+[_a-zA-Z0-9-]*)/g;
+  const classNames = css.match(classNameRegex);
 
-  // document.head.appendChild(styleNode);
-  // return alteredClassNames;
+  // const alteredClassNames = getGeneratedClassNames(module.id, classNames);
+
+  // const newCode = getGeneratedClassNameCode(module.code, alteredClassNames);
+  const newCode = getGeneratedClassNameCode(module.code, classNames);
+  createStyleNode(module.id, newCode);
+
+  return classNames;
+};

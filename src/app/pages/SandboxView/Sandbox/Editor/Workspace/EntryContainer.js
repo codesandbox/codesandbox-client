@@ -11,7 +11,7 @@ export const getContainerStyles = props => {
     font-size: 14px;
     padding: 0.6rem;
     padding-left: ${props.depth != null ? `${props.depth + 1.5}rem` : 'calc(1rem - 2px)'};
-    color: ${props.theme.background.lighten(2)()};
+    color: ${theme.background.lighten(2)()};
     text-decoration: none;
     font-weight: 400;
     min-width: 100px;
