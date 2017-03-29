@@ -39,10 +39,11 @@ export default module => {
   const classNameRegex = /\.(-?[_a-zA-Z]+[_a-zA-Z0-9-]*)/g;
   const classNames = css.match(classNameRegex);
 
-  const alteredClassNames = getGeneratedClassNames(module.id, classNames);
+  // const alteredClassNames = getGeneratedClassNames(module.id, classNames);
 
-  const newCode = getGeneratedClassNameCode(module.code, alteredClassNames);
+  // const newCode = getGeneratedClassNameCode(module.code, alteredClassNames);
+  const newCode = getGeneratedClassNameCode(module.code, classNames);
   createStyleNode(module.id, newCode);
 
-  return alteredClassNames;
+  return classNames;
 };
