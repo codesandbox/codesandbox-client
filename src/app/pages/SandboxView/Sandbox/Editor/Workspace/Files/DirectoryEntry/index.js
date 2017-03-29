@@ -64,10 +64,16 @@ type State = {
 };
 class DirectoryEntry extends React.PureComponent {
   props: Props;
-  state: State = {
-    creating: '',
-    open: false,
-  };
+  state: State;
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      creating: '',
+      open: props.root,
+    };
+  }
 
   resetState = () => this.setState({ creating: '' });
 
@@ -207,7 +213,7 @@ class DirectoryEntry extends React.PureComponent {
             closeTree={this.closeTree}
           />
         </EntryContainer>
-        <Opener open={root || open}>
+        <Opener open={open}>
           {creating === 'directory' &&
             <Entry
               id=""
