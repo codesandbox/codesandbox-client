@@ -159,9 +159,9 @@ export default class CodeEditor extends React.PureComponent {
   };
 
   getCodeMirror = async (el: Element) => {
-    const { code, id } = this.props;
+    const { code, id, title } = this.props;
     CodeMirror.commands.save = this.handleSaveCode;
-    const mode = await this.getMode();
+    const mode = await this.getMode(title);
     documentCache[id] = new CodeMirror.Doc(code || '', mode);
 
     this.codemirror = getCodeMirror(el, documentCache[id]);

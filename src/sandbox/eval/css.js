@@ -42,8 +42,7 @@ export default module => {
   // const alteredClassNames = getGeneratedClassNames(module.id, classNames);
 
   // const newCode = getGeneratedClassNameCode(module.code, alteredClassNames);
-  const newCode = getGeneratedClassNameCode(module.code, classNames);
-  createStyleNode(module.id, newCode);
+  createStyleNode(module.id, css);
 
   return classNames;
 };
