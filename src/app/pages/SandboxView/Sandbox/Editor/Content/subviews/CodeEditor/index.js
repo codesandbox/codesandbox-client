@@ -262,9 +262,7 @@ export default class CodeEditor extends React.PureComponent {
       const newCode = prettier.format(code);
       this.props.changeCode(id, newCode);
       this.updateCodeMirrorCode(newCode);
-    } catch (e) {
-      this.props.changeCode(id, code);
-    }
+    } catch (e) {}
   };
 
   handleSaveCode = async () => {
