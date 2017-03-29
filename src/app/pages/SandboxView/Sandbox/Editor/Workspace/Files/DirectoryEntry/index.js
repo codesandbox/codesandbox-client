@@ -207,7 +207,7 @@ class DirectoryEntry extends React.PureComponent {
             closeTree={this.closeTree}
           />
         </EntryContainer>
-        <Opener open={open == null ? true : open}>
+        <Opener open={open}>
           {creating === 'directory' &&
             <Entry
               id=""
