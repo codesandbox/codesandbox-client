@@ -66,7 +66,7 @@ class DirectoryEntry extends React.PureComponent {
   props: Props;
   state: State = {
     creating: '',
-    open: true, // TODO move this permanently to store
+    open: false,
   };
 
   resetState = () => this.setState({ creating: '' });
