@@ -10,7 +10,6 @@ const ChildContainer = styled.div`
   padding: 0;
   border-bottom: 1px solid ${props => props.theme.background2};
 
-  overflow: auto;
   height: ${props => props.open ? '100%' : 0};
 `;
 
