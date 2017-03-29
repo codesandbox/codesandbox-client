@@ -252,6 +252,7 @@ h1 {
   color: rgba(255,255,255, 0.7);
   padding: 1rem;
   text-align: center;
+  line-height: 2;
 }
 
 @media only screen and (max-width: 660px) {
@@ -260,6 +261,10 @@ h1 {
   }
 
   h2 {
+    font-size: 2rem;
+  }
+
+  .description  h3{
     font-size: 2rem;
   }
 
