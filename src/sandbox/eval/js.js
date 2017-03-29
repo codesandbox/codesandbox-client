@@ -46,7 +46,7 @@ export default function evaluateJS(
     const requires = [];
     require = function require(path: string) {
       // eslint-disable-line no-unused-vars
-      if (path.startsWith('./')) {
+      if (/^\w/.test(path)) {
         const module = resolveModule(
           path,
           modules,

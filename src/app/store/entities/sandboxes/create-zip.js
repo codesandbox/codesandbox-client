@@ -22,6 +22,7 @@ function getResourceTag(resource: string) {
   } else if (kind === 'js') {
     return JSTag(resource);
   }
+  return '';
 }
 
 const getHTML = resources => `<!doctype html>
