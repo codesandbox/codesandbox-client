@@ -3,6 +3,12 @@ import buildError from './utils/error-message-builder';
 import evalModule, { deleteCache } from './eval';
 import NoDomChangeError from './errors/no-dom-change-error';
 
+import {
+  getBoilerplates,
+  evalBoilerplates,
+  findBoilerplate,
+} from './boilerplates';
+
 const host = process.env.NODE_ENV === 'development'
   ? 'http://codesandbox.dev/'
   : 'https://codesandbox.io/';
@@ -88,6 +94,15 @@ async function compile(message) {
     return;
   }
 
+  // initiate boilerplates
+  if (
+    boilerplates.length !== 0 &&
+    getBoilerplates().length === 0 &&
+    manifest != null
+  ) {
+    evalBoilerplates(boilerplates, modules, directories, manifest);
+  }
+
   const extResString = getExternalResourcesConcatination(externalResources);
   if (extResString !== cachedExternalResources) {
     clearExternalResources();
@@ -106,7 +121,12 @@ async function compile(message) {
       const isReact = module.code.includes('react');
       const functionName = evalled.default ? evalled.default.name : '';
 
-      throw new NoDomChangeError(isReact, functionName);
+      if (isReact) {
+        const boilerplate = findBoilerplate(module);
+        boilerplate.module.default(evalled);
+      } else {
+        throw new NoDomChangeError(isReact, functionName);
+      }
     }
 
     window.parent.postMessage(
