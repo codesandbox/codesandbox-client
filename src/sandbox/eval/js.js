@@ -47,6 +47,14 @@ export default function evaluateJS(
     require = function require(path: string) {
       // eslint-disable-line no-unused-vars
       if (/^\w/.test(path)) {
+        // So it must be a dependency
+        const dependencyManifest = manifest[path] || manifest[`${path}.js`];
+        if (dependencyManifest) {
+          return window.dependencies(dependencyManifest.id);
+        } else {
+          throw new DependencyNotFoundError(path);
+        }
+      } else {
         const module = resolveModule(
           path,
           modules,
@@ -66,14 +74,6 @@ export default function evaluateJS(
         return cache
           ? cache.exports
           : evalModule(module, modules, directories, manifest, depth + 1);
-      }
-
-      // So it must be a dependency
-      const dependencyManifest = manifest[path] || manifest[`${path}.js`];
-      if (dependencyManifest) {
-        return window.dependencies(dependencyManifest.id);
-      } else {
-        throw new DependencyNotFoundError(path);
       }
     };
 
