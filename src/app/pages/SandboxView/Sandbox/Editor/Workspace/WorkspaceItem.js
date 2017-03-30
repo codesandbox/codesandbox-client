@@ -9,7 +9,7 @@ const ChildContainer = styled.div`
   margin: 0;
   padding: 0;
   border-bottom: 1px solid ${props => props.theme.background2};
-
+  overflow: ${props => props.open ? 'inherit' : 'hidden'};
   height: ${props => props.open ? '100%' : 0};
 `;
 
