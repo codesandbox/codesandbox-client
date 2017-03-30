@@ -111,7 +111,7 @@ async function compile(message) {
   }
 
   try {
-    document.body.innerHTML = '';
+    document.body.innerHTML = '<div id="root"></div>';
     deleteCache(changedModule);
 
     const evalled = evalModule(module, modules, directories, manifest);

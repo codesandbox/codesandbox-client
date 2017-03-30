@@ -74,7 +74,7 @@ class SandboxPage extends React.PureComponent {
   state = { notFound: false };
 
   render() {
-    const { match, sandbox } = this.props;
+    const { sandbox } = this.props;
     if (this.state.notFound) {
       return (
         <Title>
@@ -86,7 +86,7 @@ class SandboxPage extends React.PureComponent {
 
     document.title = sandbox.title
       ? `${sandbox.title} - CodeSandbox`
-      : 'CodeSandbox';
+      : 'Editor - CodeSandbox';
 
     return (
       <Switch>
