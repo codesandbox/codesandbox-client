@@ -18,6 +18,7 @@ import Editor from './Editor';
 
 type Props = {
   sandbox: ?Sandbox,
+  sandboxes: { [id: string]: Sandbox },
   sandboxActions: typeof sandboxActions,
   match: { url: string, params: { id: ?string } },
 };
@@ -35,10 +36,11 @@ const mapStateToProps = createSelector(
     if (sandbox) {
       return {
         sandbox: denormalize(sandbox, sandboxEntity, entities),
+        sandboxes,
       };
     }
 
-    return { sandbox: null };
+    return { sandbox: null, sandboxes };
   }
 );
 const mapDispatchToProps = dispatch => ({
@@ -58,8 +60,13 @@ class SandboxPage extends React.PureComponent {
   };
 
   componentDidUpdate(oldProps) {
-    if (this.props.match.params.id !== oldProps.match.params.id) {
-      this.fetchSandbox();
+    const newId = this.props.match.params.id;
+    const oldId = oldProps.match.params.id;
+
+    if (newId != null && oldId !== newId) {
+      if (!this.props.sandboxes[newId]) {
+        this.fetchSandbox();
+      }
     }
   }
 
