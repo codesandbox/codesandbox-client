@@ -4,9 +4,9 @@ import styled from 'styled-components';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import 'normalize.css';
 
-import Notifications from '../containers/Notifications';
-import ContextMenu from '../containers/ContextMenu';
-import SandboxView from './SandboxView/';
+import Notifications from 'app/containers/Notifications';
+import ContextMenu from 'app/containers/ContextMenu';
+import Sandbox from './Sandbox/';
 import NotFound from './NotFound';
 
 const Container = styled.div`
@@ -29,7 +29,7 @@ export default () => (
     <Content>
       <Switch>
         <Route exact path="/" render={() => <Redirect to="/s/new" />} />
-        <Route path="/s" component={SandboxView} />
+        <Route path="/s/:id" component={Sandbox} />
         <Route component={NotFound} />
       </Switch>
     </Content>

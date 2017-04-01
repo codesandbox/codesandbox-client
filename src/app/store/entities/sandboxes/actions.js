@@ -112,6 +112,7 @@ const forkSandbox = (id: string) => async (
   dispatch: Function,
   getState: Function
 ) => {
+  console.log('asking for a friend');
   const { data } = await dispatch(
     doRequest(FORK_SANDBOX_API_ACTIONS, `sandboxes/${id}/fork`, {
       method: 'POST',
@@ -265,6 +266,7 @@ export default {
     dispatch: Function,
     getState: Function
   ) => {
+    console.log('Called');
     const module = modulesSelector(getState())[moduleId];
     const sandboxId = await dispatch(maybeForkSandbox(id));
 
@@ -614,7 +616,7 @@ export default {
     const sandbox = singleSandboxSelector(getState(), { id: sandboxId });
     const modules = modulesSelector(getState());
 
-    const modulesInSandbox = sandbox.modules.map(id => modules[id]);
+    const modulesInSandbox = sandbox.modules.map(mid => modules[mid]);
     const modulesNotInSyncInSandbox = modulesInSandbox.filter(
       m => m.isNotSynced
     );
