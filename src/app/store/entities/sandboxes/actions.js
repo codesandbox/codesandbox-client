@@ -112,7 +112,6 @@ const forkSandbox = (id: string) => async (
   dispatch: Function,
   getState: Function
 ) => {
-  console.log('asking for a friend');
   const { data } = await dispatch(
     doRequest(FORK_SANDBOX_API_ACTIONS, `sandboxes/${id}/fork`, {
       method: 'POST',
@@ -266,7 +265,6 @@ export default {
     dispatch: Function,
     getState: Function
   ) => {
-    console.log('Called');
     const module = modulesSelector(getState())[moduleId];
     const sandboxId = await dispatch(maybeForkSandbox(id));
 

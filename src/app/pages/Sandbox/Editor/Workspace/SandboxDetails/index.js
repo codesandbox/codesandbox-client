@@ -53,7 +53,7 @@ export default class SandboxDetails extends React.PureComponent {
         <div>
           <SandboxTitle
             renameSandbox={this.renameSandbox}
-            title={sandbox.title || sandbox.id}
+            title={sandbox.title || 'Untitled'}
           />
           {sandbox.forkedFromSandbox &&
             <ForkText>

@@ -83,9 +83,11 @@ export default class SandboxTitle extends React.PureComponent {
   };
 
   handleRename = () => {
+    const { title } = this.props;
     const { newTitle } = this.state;
-
-    this.props.renameSandbox(newTitle);
+    if (newTitle !== title) {
+      this.props.renameSandbox(newTitle);
+    }
 
     this.setState({
       editing: false,

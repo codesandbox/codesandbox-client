@@ -2,7 +2,6 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Route, Switch } from 'react-router-dom';
 import { createSelector } from 'reselect';
 import { denormalize } from 'normalizr';
 import sandboxEntity from 'app/store/entities/sandboxes/entity';
@@ -93,13 +92,7 @@ class SandboxPage extends React.PureComponent {
 
     return (
       <Centered horizontal vertical>
-        <Switch>
-          <Route
-            render={matchParams => (
-              <Editor sandbox={sandbox} {...matchParams} />
-            )}
-          />
-        </Switch>
+        <Editor sandbox={sandbox} />
       </Centered>
     );
   }

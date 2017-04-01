@@ -253,7 +253,6 @@ export default class CodeEditor extends React.PureComponent {
   };
 
   handleSaveCode = async () => {
-    console.log('nog een keer');
     const { saveCode, preferences } = this.props;
     if (preferences.prettifyOnSaveEnabled) {
       await this.prettify();
