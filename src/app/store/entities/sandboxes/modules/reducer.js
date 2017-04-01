@@ -23,20 +23,38 @@ function moduleReducer(module, action) {
   }
 }
 
+function shouldUpdate(module, action) {
+  switch (action.type) {
+    case SET_MODULE_ERROR:
+      return (action.error == null && module.error) ||
+        (action.error != null && module.error == null) ||
+        (action.error != null &&
+          module.error != null &&
+          (action.error.line !== module.error.line ||
+            action.error.title !== module.error.title ||
+            action.error.type !== module.error.type));
+
+    default:
+      return true;
+  }
+}
+
 export default function reducer(state: {}, action) {
   switch (action.type) {
     case RENAME_MODULE:
     case MOVE_MODULE:
     case SET_CODE:
     case SET_MODULE_SYNCED:
-    case SET_MODULE_ERROR:
-      if (state[action.id]) {
+    case SET_MODULE_ERROR: {
+      const module = state[action.id];
+      if (module && shouldUpdate(module, action)) {
         return {
           ...state,
-          [action.id]: moduleReducer(state[action.id], action),
+          [action.id]: moduleReducer(module, action),
         };
       }
       return state;
+    }
     default:
       return state;
   }

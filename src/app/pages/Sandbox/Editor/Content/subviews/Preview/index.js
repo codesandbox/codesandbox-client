@@ -3,6 +3,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { debounce } from 'lodash';
+
 import type { Preferences } from 'app/store/preferences/reducer';
 
 import type { Module } from 'app/store/entities/sandboxes/modules/entity';
@@ -65,7 +66,7 @@ export default class Preview extends React.PureComponent {
       url: null,
     };
 
-    this.executeCode = debounce(this.executeCode, 500);
+    this.executeCode = debounce(this.executeCode, 400);
   }
 
   fetchBundle = () => {
@@ -99,8 +100,16 @@ export default class Preview extends React.PureComponent {
       return;
     }
 
+    if (prevProps.module.isNotSynced && !this.props.module.isNotSynced) {
+      // After save
+      this.executeCodeImmediately();
+      return;
+    }
+
     if (
-      prevProps.module.code !== this.props.module.code &&
+      (prevProps.module.code !== this.props.module.code ||
+        prevProps.modules !== this.props.modules ||
+        prevProps.directories !== this.props.directories) &&
       this.state.frameInitialized
     ) {
       if (this.props.preferences.livePreviewEnabled) {
@@ -129,7 +138,6 @@ export default class Preview extends React.PureComponent {
         const { error } = e.data;
         this.setError(error);
       } else if (type === 'success') {
-        // To reset the debounce, but still quickly remove errors
         this.setError(null);
       } else if (type === 'urlchange') {
         const url = e.data.url.replace('/', '');

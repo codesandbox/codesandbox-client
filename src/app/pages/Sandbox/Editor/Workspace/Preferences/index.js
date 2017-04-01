@@ -61,7 +61,7 @@ class Preferences extends React.PureComponent {
             title="Live Preview"
             enabled={preferences.livePreviewEnabled}
             onClick={preferencesActions.setLivePreview}
-            tooltip="The alternative is to press the refresh button"
+            tooltip="Only update on save"
           />
         </PreferenceContainer>
       </Container>

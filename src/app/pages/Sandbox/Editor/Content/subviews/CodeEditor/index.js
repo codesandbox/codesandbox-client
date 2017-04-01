@@ -2,6 +2,7 @@
 import React from 'react';
 import CodeMirror from 'codemirror';
 import styled from 'styled-components';
+import { debounce } from 'lodash';
 
 import { getCodeMirror } from 'app/utils/codemirror';
 
@@ -69,6 +70,12 @@ const handleError = (cm, currentError, nextError, nextCode, nextId) => {
 
 export default class CodeEditor extends React.PureComponent {
   props: Props;
+
+  constructor(props) {
+    super(props);
+
+    this.handleChange = debounce(this.handleChange, 200);
+  }
 
   shouldComponentUpdate(nextProps: Props) {
     return nextProps.id !== this.props.id ||
@@ -242,13 +249,20 @@ export default class CodeEditor extends React.PureComponent {
     }
   };
 
+  getCode = () => {
+    return this.codemirror.getValue();
+  };
+
   prettify = async () => {
-    const { id, code } = this.props;
+    const { id } = this.props;
+    const code = this.getCode();
     try {
       const prettier = await System.import('prettier');
       const newCode = prettier.format(code);
-      this.props.changeCode(id, newCode);
-      this.updateCodeMirrorCode(newCode);
+      if (newCode !== code) {
+        this.props.changeCode(id, newCode);
+        this.updateCodeMirrorCode(newCode);
+      }
     } catch (e) {}
   };
 
@@ -257,7 +271,8 @@ export default class CodeEditor extends React.PureComponent {
     if (preferences.prettifyOnSaveEnabled) {
       await this.prettify();
     }
-
+    const { id } = this.props;
+    this.props.changeCode(id, this.getCode());
     saveCode();
   };
 

@@ -115,7 +115,7 @@ async function compile(message) {
     deleteCache(changedModule);
 
     const evalled = evalModule(module, modules, directories, manifest);
-    const domChanged = document.body.innerHTML !== '';
+    const domChanged = document.body.innerHTML !== '<div id="root"></div>';
 
     if (!domChanged) {
       const isReact = module.code.includes('react');

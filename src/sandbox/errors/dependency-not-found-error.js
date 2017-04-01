@@ -7,4 +7,5 @@ export default class DependencyNotFoundError extends Error {
   }
   type = 'dependency-not-found';
   severity = 'error';
+  line = -1;
 }
