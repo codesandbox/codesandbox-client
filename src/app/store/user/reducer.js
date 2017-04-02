@@ -33,7 +33,7 @@ export default (state = initialState, action) => {
       };
     case SIGN_OUT:
       return {
-        ...state,
+        ...initialState,
         jwt: null,
       };
     case SET_CURRENT_USER:

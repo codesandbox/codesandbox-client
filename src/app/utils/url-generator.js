@@ -1,5 +1,4 @@
 // @flow
-
 export const host = () =>
   process.env.NODE_ENV === 'production' ? 'codesandbox.io' : 'codesandbox.dev';
 

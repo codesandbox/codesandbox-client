@@ -18,7 +18,7 @@ const Title = styled.h2`
   margin: 0;
   font-weight: 400;
   font-size: 1rem;
-  width: 100%;
+  margin-right: .5rem;
   text-overflow: ellipsis;
 `;
 

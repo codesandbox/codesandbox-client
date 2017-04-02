@@ -52,7 +52,6 @@ export default class WorkspaceItem extends React.PureComponent {
     super(props);
     this.state = {
       open: !!props.defaultOpen,
-      contentHeight: 0,
     };
   }
 

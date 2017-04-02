@@ -29,6 +29,7 @@ export type Sandbox = {
   showEditor: ?boolean,
   showPreview: ?boolean,
   author: User,
+  forkedFromSandbox: ?{ title: string, id: string },
 };
 
 export default new schema.Entity(

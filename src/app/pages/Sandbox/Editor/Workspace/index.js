@@ -17,6 +17,7 @@ import SandboxDetails from './SandboxDetails';
 import Preferences from './Preferences';
 
 const Container = styled.div`
+  position: absolute;
   background-color: ${props => props.theme.background};
   height: 100%;
   width: 100%;
@@ -43,6 +44,7 @@ const Workspace = ({ sandbox, sandboxActions }: Props) => (
         id={sandbox.id}
         title={sandbox.title}
         description={sandbox.description}
+        forkedSandbox={sandbox.forkedFromSandbox}
       />
     </WorkspaceItem>
 
@@ -68,4 +70,3 @@ const Workspace = ({ sandbox, sandboxActions }: Props) => (
   </Container>
 );
 export default connect(null, mapDispatchToProps)(Workspace);
-// <SandboxTitle renameSandbox={this.handleRenameSandbox} title={sandbox && sandbox.title} />;

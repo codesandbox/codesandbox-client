@@ -293,7 +293,7 @@ export default class Preview extends React.PureComponent {
         {bundle.processing
           ? <Message message="Loading the dependencies..." />
           : <StyledFrame
-              sandbox="allow-scripts allow-modals allow-pointer-lock allow-same-origin allow-popups allow-forms"
+              sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups"
               src={frameUrl()}
               id="sandbox"
             />}

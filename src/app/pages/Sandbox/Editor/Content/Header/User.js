@@ -108,7 +108,7 @@ export default class UserView extends React.PureComponent {
     const { user, loadUserSandboxes } = this.props;
     return (
       <div style={{ position: 'relative' }}>
-        <Item onClick={this.toggleSandboxesMenu}>Your sandboxes</Item>
+        <Item onClick={this.toggleSandboxesMenu}>My sandboxes</Item>
         {this.state.sandboxesOpen &&
           <Sandboxes>
             <UserSandboxes user={user} loadUserSandboxes={loadUserSandboxes} />

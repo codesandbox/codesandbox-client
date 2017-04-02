@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import Tooltip from 'app/components/Tooltip';
 
-const Action = styled.div`
+const styles = props => `
   transition: 0.3s ease all;
   display: flex;
   flex-direction: row;
@@ -16,56 +16,32 @@ const Action = styled.div`
   height: 100%;
   color: rgba(255,255,255,0.7);
   cursor: pointer;
+  box-sizing: inherit;
   border-bottom: 2px solid transparent;
   z-index: 1;
 
   &:hover {
     color: rgba(255,255,255, 1);
-    border-bottom: 2px solid ${props => props.theme.secondary};
+    border-bottom: 2px solid ${props.theme.secondary()};
   }
+`;
+
+const Action = styled.div`
+  ${styles}
 `;
 
 const ActionLink = styled(Link)`
-  transition: 0.3s ease all;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  vertical-align: middle;
-  font-size: 1rem;
-  line-height: 1;
+  ${styles}
   text-decoration: none;
-  padding: 0 1rem;
-  height: 100%;
-  color: rgba(255,255,255,0.7);
-  cursor: pointer;
-  border-bottom: 2px solid transparent;
-  z-index: 1;
-
-  &:hover {
-    color: rgba(255,255,255, 1);
-    border-bottom: 2px solid ${props => props.theme.secondary};
-  }
 `;
 
 const ActionTooltip = styled(Tooltip)`
-  transition: 0.3s ease all;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  vertical-align: middle;
-  font-size: 1rem;
-  line-height: 1;
-  padding: 0 1rem;
-  height: 100%;
+  ${styles}
   color: rgba(255,255,255,0.3);
   cursor: default;
-  border-bottom: 2px solid transparent;
-  z-index: 1;
 
   &:hover {
     color: rgba(255,255,255, 0.4);
-    border-bottom: 2px solid ${props =>
-  props.secondary ? props.theme.primary : props.theme.secondary};
   }
 `;
 
