@@ -15,7 +15,7 @@ import {
   SET_VIEW_MODE,
 } from './actions';
 
-import { SET_CURRENT_USER } from '../../user/actions';
+import { SET_CURRENT_USER, SIGN_OUT } from '../../user/actions';
 
 const initialState = {};
 
@@ -120,6 +120,11 @@ export default function reducer(state = initialState, action: Action) {
       return mapValues(state, s => ({
         ...s,
         owned: s.owned || s.author === action.data.id,
+      }));
+    case SIGN_OUT:
+      return mapValues(state, s => ({
+        ...s,
+        owned: false,
       }));
     default:
       return state;

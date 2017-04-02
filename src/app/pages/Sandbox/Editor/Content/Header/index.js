@@ -5,6 +5,7 @@ import Save from 'react-icons/lib/md/save';
 import Fork from 'react-icons/lib/go/repo-forked';
 import Download from 'react-icons/lib/go/cloud-download';
 import Import from 'react-icons/lib/go/package';
+import PlusIcon from 'react-icons/lib/go/plus';
 import UserIcon from 'react-icons/lib/ti/user';
 import GithubIcon from 'react-icons/lib/go/mark-github';
 
@@ -16,6 +17,7 @@ import Tooltip from 'app/components/Tooltip';
 
 import Action from './Action';
 import UserView from './User';
+import { newSandboxUrl } from '../../../../../utils/url-generator';
 
 const Container = styled.div`
   display: flex;
@@ -63,7 +65,13 @@ const Left = styled.div`
 
 const Tooltips = styled.div`
   display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 0.75rem 0.5rem;
+  position: absolute;
+  left: 0;
+  right: 0;
+
 `;
 
 const Icon = styled.div`
@@ -151,7 +159,7 @@ export default class Header extends React.PureComponent {
   };
 
   render() {
-    const { sandbox, userActions, user } = this.props;
+    const { sandbox, userActions, sandboxActions, user } = this.props;
     const canSave = sandbox.modules.some(m => m.isNotSynced);
     return (
       <Container>
@@ -171,7 +179,9 @@ export default class Header extends React.PureComponent {
           />
         </Left>
 
-        <Logo title="CodeSandbox"><a href="/">CodeSandbox</a></Logo>
+        <Logo style={{ visibility: 'hidden' }} title="CodeSandbox">
+          <a href="/">CodeSandbox</a>
+        </Logo>
 
         <Right>
           <Tooltips>
@@ -202,8 +212,14 @@ export default class Header extends React.PureComponent {
             </Tooltip>
           </Tooltips>
 
+          <Action href={newSandboxUrl()} title="Create" Icon={PlusIcon} />
           {user.jwt
-            ? <UserView user={user} />
+            ? <UserView
+                signOut={userActions.signOut}
+                sandbox={sandbox}
+                loadUserSandboxes={userActions.loadUserSandboxes}
+                user={user}
+              />
             : <Action
                 onClick={userActions.signIn}
                 title="Sign in with Github"

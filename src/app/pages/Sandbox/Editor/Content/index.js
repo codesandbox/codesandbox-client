@@ -1,6 +1,7 @@
 // @flow
 import React from 'react';
 import styled from 'styled-components';
+import { Prompt } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { preferencesSelector } from 'app/store/preferences/selectors';
@@ -109,6 +110,8 @@ class EditorPreview extends React.PureComponent {
 
     if (currentModule == null) return null;
 
+    const notSynced = sandbox.modules.some(m => m.isNotSynced);
+
     const EditorPane = (
       <FullSize>
         <CodeEditor
@@ -160,6 +163,11 @@ class EditorPreview extends React.PureComponent {
 
     return (
       <FullSize>
+        <Prompt
+          when={notSynced}
+          message={() =>
+            'You have not saved this sandbox, are you sure you want to navigate away?'}
+        />
         <Header
           sandbox={sandbox}
           sandboxActions={sandboxActions}

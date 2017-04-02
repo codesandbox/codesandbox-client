@@ -1,5 +1,10 @@
 import getJwt from './utils/jwt';
-import { SIGN_IN_SUCCESFULL, SIGN_OUT, SET_CURRENT_USER } from './actions';
+import {
+  SIGN_IN_SUCCESFULL,
+  SIGN_OUT,
+  SET_CURRENT_USER,
+  SET_USER_SANDBOXES,
+} from './actions';
 
 export type User = {
   id: ?string,
@@ -35,6 +40,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         ...action.data,
+      };
+    case SET_USER_SANDBOXES:
+      return {
+        ...state,
+        sandboxes: action.data,
       };
     default: {
       return state;
