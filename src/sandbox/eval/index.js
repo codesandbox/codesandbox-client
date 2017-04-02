@@ -11,29 +11,44 @@ import evalCSS from './css';
 
 const MAX_DEPTH = 20;
 
-function doEval(mainModule, modules, directories, manifest, depth) {
+function doEval(mainModule, sandboxId, modules, directories, manifest, depth) {
   const html = /\.html$/;
   const css = /\.css$/;
 
   if (html.test(mainModule.title)) {
-    return evalHTML(mainModule, modules, directories, manifest, depth);
+    return evalHTML(
+      mainModule,
+      sandboxId,
+      modules,
+      directories,
+      manifest,
+      depth
+    );
   }
 
   if (css.test(mainModule.title)) {
-    return evalCSS(mainModule, modules, directories, manifest, depth);
+    return evalCSS(
+      mainModule,
+      sandboxId,
+      modules,
+      directories,
+      manifest,
+      depth
+    );
   }
 
-  return evalJS(mainModule, modules, directories, manifest, depth);
+  return evalJS(mainModule, sandboxId, modules, directories, manifest, depth);
 }
 
-export function deleteCache(module: Module) {
+export function deleteCache(sandboxId, module: Module) {
   if (module.title.includes('.js')) {
-    deleteJSCache(module);
+    deleteJSCache(sandboxId, module);
   }
 }
 
 const evalModule = (
   mainModule: Module,
+  sandboxId: string,
   modules: Array<Module>,
   directories: Array<Directory>,
   manifest: Object,
@@ -43,7 +58,7 @@ const evalModule = (
     throw new Error(`Exceeded the maximum require depth of ${MAX_DEPTH}.`);
   }
   try {
-    return doEval(mainModule, modules, directories, manifest, depth);
+    return doEval(mainModule, sandboxId, modules, directories, manifest, depth);
   } catch (e) {
     e.module = e.module || mainModule;
     throw e;

@@ -169,6 +169,7 @@ export default class Preview extends React.PureComponent {
       directories,
       bundle = {},
       module,
+      sandboxId,
       externalResources,
     } = this.props;
 
@@ -185,6 +186,7 @@ export default class Preview extends React.PureComponent {
       boilerplates: defaultBoilerplates,
       module: renderedModule,
       changedModule: module,
+      sandboxId,
       modules,
       directories,
       manifest: bundle.manifest,

@@ -136,18 +136,23 @@ export default class UserView extends React.PureComponent {
     );
   };
 
-  menuView = () => {
+  signOut = () => {
     const { signOut } = this.props;
-    return (
-      <Menu>
-        <Tooltip offset={-20} left message="Coming soon">
-          <Item disabled>Profile</Item>
-        </Tooltip>
-        {this.sandboxesMenu()}
-        <Item onClick={signOut}>Sign out</Item>
-      </Menu>
-    );
+    const yes = confirm('Are you sure you want to sign out?');
+    if (yes) {
+      signOut();
+    }
   };
+
+  menuView = () => (
+    <Menu>
+      <Tooltip offset={-20} left message="Coming soon">
+        <Item disabled>Profile</Item>
+      </Tooltip>
+      {this.sandboxesMenu()}
+      <Item onClick={this.signOut}>Sign out</Item>
+    </Menu>
+  );
 
   render() {
     return (

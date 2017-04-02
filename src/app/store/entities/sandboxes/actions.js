@@ -267,6 +267,7 @@ export default {
   ) => {
     const module = modulesSelector(getState())[moduleId];
     const sandboxId = await dispatch(maybeForkSandbox(id));
+    dispatch(moduleActions.setCode(module.id, module.code));
 
     await dispatch(
       doRequest(

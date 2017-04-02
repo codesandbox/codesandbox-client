@@ -1,3 +1,5 @@
+// @flow
+
 import { transform } from 'babel-standalone';
 import evalModule from './';
 import resolveModule from '../utils/resolve-module';
@@ -5,16 +7,18 @@ import DependencyNotFoundError from '../errors/dependency-not-found-error';
 
 const moduleCache = new Map();
 
+const getId = (sandboxId, module) => `${sandboxId}${module.id}`;
+
 /**
  * Deletes the cache of all modules that use module and module itself
  */
-export function deleteCache(module) {
+export function deleteCache(sandboxId, module) {
   moduleCache.forEach(value => {
-    if (value.requires.includes(module.id)) {
-      deleteCache(value.module);
+    if (value.requires.includes(getId(sandboxId, module))) {
+      deleteCache(sandboxId, value.module);
     }
   });
-  moduleCache.delete(module.id);
+  moduleCache.delete(getId(sandboxId, module));
 }
 
 const compileCode = (code: string = '', moduleName: string = 'unknown') => {
@@ -37,6 +41,7 @@ function evaluate(code, require) {
 
 export default function evaluateJS(
   mainModule,
+  sandboxId,
   modules,
   directories,
   manifest,
@@ -67,13 +72,20 @@ export default function evaluateJS(
 
         if (!module) throw new Error(`Cannot find module in path: ${path}`);
 
-        requires.push(module.id);
+        requires.push(getId(sandboxId, module.id));
         // Check if this module has been evaluated before, if so return that
-        const cache = moduleCache.get(module.id);
+        const cache = moduleCache.get(getId(sandboxId, module));
 
         return cache
           ? cache.exports
-          : evalModule(module, modules, directories, manifest, depth + 1);
+          : evalModule(
+              module,
+              sandboxId,
+              modules,
+              directories,
+              manifest,
+              depth + 1
+            );
       }
     };
 
@@ -83,11 +95,15 @@ export default function evaluateJS(
     const exports = evaluate(compiledCode, require);
 
     // Always set a (if no error) new cache for this module, because we know this changed
-    moduleCache.set(mainModule.id, { exports, module: mainModule, requires });
+    moduleCache.set(getId(sandboxId, mainModule), {
+      exports,
+      requires,
+      module: mainModule,
+    });
     return exports;
   } catch (e) {
     // Remove cache
-    moduleCache.delete(mainModule.id);
+    moduleCache.delete(getId(sandboxId, mainModule));
     throw e;
   }
 }

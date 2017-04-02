@@ -3,6 +3,8 @@ import buildError from './utils/error-message-builder';
 import evalModule, { deleteCache } from './eval';
 import NoDomChangeError from './errors/no-dom-change-error';
 
+import handleExternalResources from './external-resources';
+
 import {
   getBoilerplates,
   evalBoilerplates,
@@ -15,7 +17,6 @@ const host = process.env.NODE_ENV === 'development'
 
 let fetching = false;
 let url = null;
-let cachedExternalResources = '';
 
 async function addDependencyBundle() {
   const script = document.createElement('script');
@@ -25,49 +26,6 @@ async function addDependencyBundle() {
 
   while (window.dependencies == null) {
     await delay(100);
-  }
-}
-
-function getExternalResourcesConcatination(resources: Array<string>) {
-  return resources.sort().join('');
-}
-
-function clearExternalResources() {
-  let el = null;
-  while ((el = document.getElementById('external-css'))) {
-    el.remove();
-  }
-
-  while ((el = document.getElementById('external-js'))) {
-    el.remove();
-  }
-}
-
-function addCSS(resource: string) {
-  const head = document.getElementsByTagName('head')[0];
-  const link = document.createElement('link');
-  link.id = 'external-css';
-  link.rel = 'stylesheet';
-  link.type = 'text/css';
-  link.href = resource;
-  link.media = 'all';
-  head.appendChild(link);
-}
-
-function addJS(resource: string) {
-  const script = document.createElement('script');
-  script.setAttribute('src', resource);
-  script.setAttribute('id', 'external-js');
-  document.head.appendChild(script);
-}
-
-function addResource(resource: string) {
-  const kind = resource.match(/\.([^.]*)$/)[1];
-
-  if (kind === 'css') {
-    addCSS(resource);
-  } else if (kind === 'js') {
-    addJS(resource);
   }
 }
 
@@ -81,6 +39,7 @@ async function compile(message) {
     url: newUrl,
     changedModule,
     externalResources,
+    sandboxId,
   } = message.data;
 
   if (fetching) return;
@@ -103,18 +62,19 @@ async function compile(message) {
     evalBoilerplates(boilerplates, modules, directories, manifest);
   }
 
-  const extResString = getExternalResourcesConcatination(externalResources);
-  if (extResString !== cachedExternalResources) {
-    clearExternalResources();
-    externalResources.forEach(addResource);
-    cachedExternalResources = extResString;
-  }
+  handleExternalResources(externalResources);
 
   try {
     document.body.innerHTML = '<div id="root"></div>';
-    deleteCache(changedModule);
+    deleteCache(sandboxId, changedModule);
 
-    const evalled = evalModule(module, modules, directories, manifest);
+    const evalled = evalModule(
+      module,
+      sandboxId,
+      modules,
+      directories,
+      manifest
+    );
     const domChanged = document.body.innerHTML !== '<div id="root"></div>';
 
     if (!domChanged) {

@@ -25,7 +25,7 @@ export function evalBoilerplates(
       type: '',
     };
 
-    const module = evalModule(fakeModule, modules, directories, manifest);
+    const module = evalModule(fakeModule, '', modules, directories, manifest);
     return { ...boilerplate, module };
   });
 }

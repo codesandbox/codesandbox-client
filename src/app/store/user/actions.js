@@ -25,14 +25,11 @@ const deleteCookie = (name: string) => {
 };
 
 const signOut = () => async (dispatch: Function) => {
-  const yes = confirm('Are you sure you want to sign out?');
-  if (yes) {
-    deleteCookie('jwt');
+  deleteCookie('jwt');
 
-    dispatch({
-      type: SIGN_OUT,
-    });
-  }
+  dispatch({
+    type: SIGN_OUT,
+  });
 };
 
 const getCurrentUser = () => async (dispatch: Function, getState: Function) => {

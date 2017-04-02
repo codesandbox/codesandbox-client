@@ -33,7 +33,7 @@ function getGeneratedClassNames(id: string, classNames: Array<string>) {
 /**
  * Adds CSS to HEAD and creates a mapping of classname -> generatedClassname
  */
-export default module => {
+export default (module, sandboxId) => {
   const css = module.code;
 
   const classNameRegex = /\.(-?[_a-zA-Z]+[_a-zA-Z0-9-]*)/g;
@@ -42,7 +42,7 @@ export default module => {
   // const alteredClassNames = getGeneratedClassNames(module.id, classNames);
 
   // const newCode = getGeneratedClassNameCode(module.code, alteredClassNames);
-  createStyleNode(module.id, css);
+  createStyleNode(`${sandboxId}${module.id}`, css);
 
   return classNames;
 };
