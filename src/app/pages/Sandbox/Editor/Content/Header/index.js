@@ -7,7 +7,6 @@ import Download from 'react-icons/lib/go/cloud-download';
 import Import from 'react-icons/lib/go/package';
 import PlusIcon from 'react-icons/lib/go/plus';
 import GithubIcon from 'react-icons/lib/go/mark-github';
-import FeedbackIcon from 'react-icons/lib/go/comment-discussion';
 
 import type { Sandbox } from 'app/store/entities/sandboxes/entity';
 import type { User } from 'app/store/user/reducer';
@@ -17,6 +16,7 @@ import Tooltip from 'app/components/Tooltip';
 
 import Action from './Action';
 import UserView from './User';
+import FeedbackView from './FeedbackView';
 import { newSandboxUrl } from '../../../../../utils/url-generator';
 
 const Container = styled.div`
@@ -191,7 +191,7 @@ export default class Header extends React.PureComponent {
         </Tooltips>
 
         <Right>
-          <Action title="Feedback" Icon={FeedbackIcon} />
+          <FeedbackView sendMessage={userActions.sendFeedback} />
           <Action href={newSandboxUrl()} title="Create" Icon={PlusIcon} />
           {user.jwt
             ? <UserView

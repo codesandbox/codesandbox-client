@@ -2,6 +2,7 @@
 import { signInUrl } from 'app/utils/url-generator';
 
 import { createAPIActions, doRequest } from '../api/actions';
+import notifActions from '../notifications/actions';
 
 import openPopup from './utils/popup';
 import { jwtSelector } from './selectors';
@@ -17,6 +18,7 @@ export const LOAD_USER_SANDBOXES = createAPIActions(
   'CURRENT_USER',
   'FETCH_SANDBOXES'
 );
+export const SEND_FEEDBACK_API = createAPIActions('FEEDBACK', 'SEND');
 
 const deleteCookie = (name: string) => {
   document.cookie = `${name}=; Path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
@@ -81,9 +83,28 @@ const loadUserSandboxes = () => async (dispatch: Function) => {
   });
 };
 
+const sendFeedback = (message: string) => async (dispatch: Function) => {
+  await dispatch(
+    doRequest(SEND_FEEDBACK_API, 'feedbacks', {
+      method: 'POST',
+      body: {
+        feedback: {
+          feedback: message,
+          url: window.location.href,
+        },
+      },
+    })
+  );
+
+  dispatch(
+    notifActions.addNotification('Thanks a lot for your feedback!', 'success')
+  );
+};
+
 export default {
   signOut,
   signIn,
   getCurrentUser,
   loadUserSandboxes,
+  sendFeedback,
 };
