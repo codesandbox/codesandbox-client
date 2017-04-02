@@ -4,7 +4,7 @@ import delay from '../../services/delay';
 export default function fetch(actions, id: string) {
   return async (dispatch: Function) => {
     dispatch({ type: actions.REQUEST, initial: true, id });
-    const firstResult = await callApi('/bundler/bundle', {
+    const firstResult = await callApi('/bundler/bundle', null, {
       method: 'POST',
       body: { id },
     });

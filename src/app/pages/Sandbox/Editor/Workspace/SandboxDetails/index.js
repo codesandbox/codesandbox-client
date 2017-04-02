@@ -1,9 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
 
-import OwnerIcon from 'react-icons/lib/ti/user';
-import { sandboxUrl } from 'app/utils/url-generator';
+import LogoSvg from 'app/components/Logo';
 import Tooltip from 'app/components/Tooltip';
 import type { Sandbox } from 'app/store/entities/sandboxes/entity';
 
@@ -11,6 +9,7 @@ import SandboxTitle from './SandboxTitle';
 
 const Container = styled.div`
   display: flex;
+  position: relative;
   align-items: center;
   justify-content: space-between;
   color: ${props => props.theme.white};
@@ -22,15 +21,38 @@ const Container = styled.div`
   overflow: hidden;
 `;
 
-const ForkText = styled.span`
-  font-size: .875rem;
-  color: rgba(255,255,255,.5);
+const LogoLink = styled.a`
+  display: flex;
+  position: absolute;
+  right: 0;
+  margin-right: 1rem;
+  top: 0;
+  bottom: 0;
 `;
 
-const Icons = styled.div`
+const CenteredTooltip = styled(Tooltip)`
   display: flex;
-  vertical-align: middle;
-  line-height: 1;
+  align-items: center;
+`;
+
+const UserText = styled.span`
+  font-size: .875rem;
+  color: rgba(255,255,255,.6);
+`;
+
+const Username = styled.b`
+  color: rgba(255, 255, 255, .8);
+`;
+
+const Logo = styled.div`
+  display: relative;
+  display: flex;
+  align-items: center;
+`;
+
+const SandboxInfo = styled.div`
+  display: flex;
+  flex-direction: column;
 `;
 
 type Props = {
@@ -50,26 +72,26 @@ export default class SandboxDetails extends React.PureComponent {
     const { sandbox } = this.props;
     return (
       <Container>
-        <div>
-          <SandboxTitle
-            renameSandbox={this.renameSandbox}
-            title={sandbox.title || 'Untitled'}
-          />
-          {sandbox.forkedFromSandbox &&
-            <ForkText>
-              Forked from
-              {' '}
-              <Link to={sandboxUrl(sandbox.forkedFromSandbox)}>
-                {sandbox.forkedFromSandbox.title ||
-                  sandbox.forkedFromSandbox.id}
-              </Link>
-            </ForkText>}
-        </div>
-
-        <Icons>
-          {sandbox.owned &&
-            <Tooltip left message="You are the owner"><OwnerIcon /></Tooltip>}
-        </Icons>
+        <Logo>
+          <LogoLink href="/">
+            <CenteredTooltip message="CodeSandbox">
+              <LogoSvg width="30" height="30" />
+            </CenteredTooltip>
+          </LogoLink>
+          <SandboxInfo>
+            <SandboxTitle
+              renameSandbox={this.renameSandbox}
+              title={sandbox.title || 'Untitled'}
+            />
+            {(sandbox.author || sandbox.owned) &&
+              <UserText>
+                By{' '}
+                <Username>
+                  {sandbox.owned ? 'you!' : sandbox.author.username}
+                </Username>
+              </UserText>}
+          </SandboxInfo>
+        </Logo>
       </Container>
     );
   }

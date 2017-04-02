@@ -126,6 +126,12 @@ export default class Preview extends React.PureComponent {
     window.removeEventListener('message', this.handleMessage);
   }
 
+  sendMessage = (message: Object) => {
+    document
+      .getElementById('sandbox')
+      .contentWindow.postMessage(message, frameUrl());
+  };
+
   handleMessage = (e: Object) => {
     if (e.data === 'Ready!') {
       this.setState({
@@ -174,20 +180,17 @@ export default class Preview extends React.PureComponent {
     }
 
     const renderedModule = this.getRenderedModule();
-    document.getElementById('sandbox').contentWindow.postMessage(
-      {
-        type: 'compile',
-        boilerplates: defaultBoilerplates,
-        module: renderedModule,
-        changedModule: module,
-        modules,
-        directories,
-        manifest: bundle.manifest,
-        url: bundle.url,
-        externalResources,
-      },
-      '*'
-    );
+    this.sendMessage({
+      type: 'compile',
+      boilerplates: defaultBoilerplates,
+      module: renderedModule,
+      changedModule: module,
+      modules,
+      directories,
+      manifest: bundle.manifest,
+      url: bundle.url,
+      externalResources,
+    });
   };
 
   setError = (e: ?{ moduleId: string, message: string, line: number }) => {
@@ -215,12 +218,9 @@ export default class Preview extends React.PureComponent {
   };
 
   handleBack = () => {
-    document.getElementById('sandbox').contentWindow.postMessage(
-      {
-        type: 'urlback',
-      },
-      '*'
-    );
+    this.sendMessage({
+      type: 'urlback',
+    });
 
     const { historyPosition, history } = this.state;
     this.setState({
@@ -230,12 +230,9 @@ export default class Preview extends React.PureComponent {
   };
 
   handleForward = () => {
-    document.getElementById('sandbox').contentWindow.postMessage(
-      {
-        type: 'urlforward',
-      },
-      '*'
-    );
+    this.sendMessage({
+      type: 'urlforward',
+    });
 
     const { historyPosition, history } = this.state;
     this.setState({
@@ -296,7 +293,7 @@ export default class Preview extends React.PureComponent {
         {bundle.processing
           ? <Message message="Loading the dependencies..." />
           : <StyledFrame
-              sandbox="allow-scripts allow-modals allow-pointer-lock allow-same-origin allow-popups allow-forms"
+              sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups"
               src={frameUrl()}
               id="sandbox"
             />}

@@ -1,11 +1,21 @@
 import React from 'react';
+import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 import WorkspaceSubtitle from '../WorkspaceSubtitle';
 import WorkspaceInputContainer from '../WorkspaceInputContainer';
+import { sandboxUrl } from '../../../../../utils/url-generator';
+
+const Item = styled.div`
+  margin: 1rem;
+  margin-top: 0;
+  font-size: .875rem;
+`;
 
 type Props = {
   id: string,
   title: string,
   description: string,
+  forkedSandbox: ?{ title: string, id: string },
   updateSandboxInfo: (id: string, title: string, description: string) => void,
 };
 
@@ -48,6 +58,7 @@ export default class Project extends React.PureComponent {
   };
 
   render() {
+    const { forkedSandbox } = this.props;
     const { title, description } = this.state;
     return (
       <div>
@@ -72,6 +83,16 @@ export default class Project extends React.PureComponent {
             rows="5"
           />
         </WorkspaceInputContainer>
+        {forkedSandbox &&
+          <div>
+            <WorkspaceSubtitle>Forked from</WorkspaceSubtitle>
+
+            <Item>
+              <Link to={sandboxUrl(forkedSandbox)}>
+                {forkedSandbox.title || forkedSandbox.id}
+              </Link>
+            </Item>
+          </div>}
       </div>
     );
   }

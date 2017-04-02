@@ -5,19 +5,27 @@ import Save from 'react-icons/lib/md/save';
 import Fork from 'react-icons/lib/go/repo-forked';
 import Download from 'react-icons/lib/go/cloud-download';
 import Import from 'react-icons/lib/go/package';
+import PlusIcon from 'react-icons/lib/go/plus';
+import GithubIcon from 'react-icons/lib/go/mark-github';
 
 import type { Sandbox } from 'app/store/entities/sandboxes/entity';
+import type { User } from 'app/store/user/reducer';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
+import userActionCreators from 'app/store/user/actions';
 import Tooltip from 'app/components/Tooltip';
 
 import Action from './Action';
+import UserView from './User';
+import FeedbackView from './FeedbackView';
+import { newSandboxUrl } from '../../../../../utils/url-generator';
 
 const Container = styled.div`
   display: flex;
+  position: relative;
   justify-content: space-between;
   background-color: ${props => props.theme.background2};
   font-size: 1.2rem;
-  color: ${props => props.theme.white};
+  color: rgba(255, 255, 255, 0.7);
   z-index: 40;
   margin: 0;
   height: 3rem;
@@ -27,24 +35,9 @@ const Container = styled.div`
   border-bottom: 1px solid ${props => props.theme.background2.darken(0.3)};
 `;
 
-const Logo = styled.h1`
-  position: absolute;
+const Right = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  margin: 0;
-  line-height: 3rem;
-  font-size: 1.2rem;
-  font-weight: 500;
-  vertical-align: middle;
-  width: 100%;
-  font-weight: 400;
-  a {
-    text-decoration: none;
-    color: white;
-  }
-  left: 0; right: 0;
+  height: 100%;
 `;
 
 const Left = styled.div`
@@ -52,19 +45,26 @@ const Left = styled.div`
   height: 100%;
 `;
 
-const Right = styled.div`
+const Tooltips = styled.div`
   display: flex;
-  padding: 0.75rem 0;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
 `;
 
 const Icon = styled.div`
   display: inline-block;
   width: ${props => props.half ? 1.5 : 3}rem;
-  height: 1.5rem;
   border: 1px solid rgba(0,0,0,0.1);
 `;
 
 const ViewIcon = styled.div`
+  display: flex;
+  height: 1.5rem;
   transition: 0.3s ease all;
   position: relative;
   margin: 0 0.5rem;
@@ -98,6 +98,8 @@ const PreviewIcon = styled(Icon)`
 type Props = {
   sandbox: Sandbox,
   sandboxActions: typeof sandboxActionCreators,
+  userActions: typeof userActionCreators,
+  user: User,
 };
 
 export default class Header extends React.PureComponent {
@@ -140,7 +142,7 @@ export default class Header extends React.PureComponent {
   };
 
   render() {
-    const { sandbox } = this.props;
+    const { sandbox, userActions, user } = this.props;
     const canSave = sandbox.modules.some(m => m.isNotSynced);
     return (
       <Container>
@@ -153,12 +155,14 @@ export default class Header extends React.PureComponent {
             Icon={Save}
           />
           <Action title="Download" Icon={Download} onClick={this.zipSandbox} />
-          <Action title="Import" Icon={Import} placeholder="Coming soon!" />
+          <Action
+            title="Publish"
+            Icon={Import}
+            placeholder="Library publishing is coming soon!"
+          />
         </Left>
 
-        <Logo title="CodeSandbox"><a href="/">CodeSandbox</a></Logo>
-
-        <Right>
+        <Tooltips>
           <Tooltip message="Editor view">
             <ViewIcon
               onClick={this.setEditorView}
@@ -184,6 +188,23 @@ export default class Header extends React.PureComponent {
               <PreviewIcon />
             </ViewIcon>
           </Tooltip>
+        </Tooltips>
+
+        <Right>
+          <FeedbackView sendMessage={userActions.sendFeedback} />
+          <Action href={newSandboxUrl()} title="Create" Icon={PlusIcon} />
+          {user.jwt
+            ? <UserView
+                signOut={userActions.signOut}
+                sandbox={sandbox}
+                loadUserSandboxes={userActions.loadUserSandboxes}
+                user={user}
+              />
+            : <Action
+                onClick={userActions.signIn}
+                title="Sign in with Github"
+                Icon={GithubIcon}
+              />}
         </Right>
       </Container>
     );

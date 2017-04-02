@@ -1,13 +1,17 @@
 // @flow
 import React from 'react';
 import styled from 'styled-components';
+import { Prompt } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { preferencesSelector } from 'app/store/preferences/selectors';
 import type { Preferences } from 'app/store/preferences/reducer';
 import type { Sandbox } from 'app/store/entities/sandboxes/entity';
+import type { User } from 'app/store/user/reducer';
+import { userSelector } from 'app/store/user/selectors';
 import moduleActionCreators from 'app/store/entities/sandboxes/modules/actions';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
+import userActionCreators from 'app/store/user/actions';
 import {
   isMainModule,
   getModulePath,
@@ -22,9 +26,11 @@ import Header from './Header';
 
 type Props = {
   sandbox: Sandbox,
+  user: User,
   preferences: Preferences,
   moduleActions: typeof moduleActionCreators,
   sandboxActions: typeof sandboxActionCreators,
+  userActions: typeof userActionCreators,
 };
 
 type State = {
@@ -39,10 +45,12 @@ const FullSize = styled.div`
 
 const mapStateToProps = state => ({
   preferences: preferencesSelector(state),
+  user: userSelector(state),
 });
 const mapDispatchToProps = dispatch => ({
   moduleActions: bindActionCreators(moduleActionCreators, dispatch),
   sandboxActions: bindActionCreators(sandboxActionCreators, dispatch),
+  userActions: bindActionCreators(userActionCreators, dispatch),
 });
 class EditorPreview extends React.PureComponent {
   props: Props;
@@ -90,6 +98,8 @@ class EditorPreview extends React.PureComponent {
       sandboxActions,
       sandbox,
       preferences,
+      userActions,
+      user,
     } = this.props;
 
     const { modules, directories } = sandbox;
@@ -99,6 +109,8 @@ class EditorPreview extends React.PureComponent {
     const modulePath = getModulePath(modules, directories, currentModule.id);
 
     if (currentModule == null) return null;
+
+    const notSynced = sandbox.modules.some(m => m.isNotSynced);
 
     const EditorPane = (
       <FullSize>
@@ -151,7 +163,17 @@ class EditorPreview extends React.PureComponent {
 
     return (
       <FullSize>
-        <Header sandbox={sandbox} sandboxActions={sandboxActions} />
+        <Prompt
+          when={notSynced}
+          message={() =>
+            'You have not saved this sandbox, are you sure you want to navigate away?'}
+        />
+        <Header
+          sandbox={sandbox}
+          sandboxActions={sandboxActions}
+          userActions={userActions}
+          user={user}
+        />
         {sandbox.showEditor && !sandbox.showPreview && EditorPane}
         {!sandbox.showEditor && sandbox.showPreview && PreviewPane}
         {sandbox.showEditor && sandbox.showPreview && Both}

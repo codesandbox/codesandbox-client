@@ -7,6 +7,7 @@ import _debug from '../../utils/debug';
 import sandboxReducer from './sandboxes/reducer';
 import moduleReducer from './sandboxes/modules/reducer';
 import directoryReducer from './sandboxes/directories/reducer';
+import userReducer from './sandboxes/users/reducer';
 
 const d = _debug('cw:app:store:reducers:entities');
 
@@ -14,6 +15,7 @@ const entityReducers = {
   sandboxes: sandboxReducer,
   modules: moduleReducer,
   directories: directoryReducer,
+  users: userReducer,
 };
 
 /**
@@ -38,7 +40,7 @@ const createEntityReducer = key => (state = {}, action) => {
 };
 
 d(
-  `Generating entity reducers for these entities: ${Object.keys(entities.default)}`,
+  `Generating entity reducers for these entities: ${Object.keys(entities.default)}`
 );
 const reducers = Object.keys(entities.default).reduce(
   (total, next) => {
@@ -48,7 +50,7 @@ const reducers = Object.keys(entities.default).reduce(
       [next]: createEntityReducer(next, entity),
     };
   },
-  {},
+  {}
 );
 d('Generated entity reducers');
 export default combineReducers(reducers);

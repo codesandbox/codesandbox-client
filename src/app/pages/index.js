@@ -7,6 +7,7 @@ import 'normalize.css';
 import Notifications from 'app/containers/Notifications';
 import ContextMenu from 'app/containers/ContextMenu';
 import Sandbox from './Sandbox/';
+import SignIn from './SignIn';
 import NotFound from './NotFound';
 
 const Container = styled.div`
@@ -30,6 +31,7 @@ export default () => (
       <Switch>
         <Route exact path="/" render={() => <Redirect to="/s/new" />} />
         <Route path="/s/:id" component={Sandbox} />
+        <Route path="/signin/:jwt?" component={SignIn} />
         <Route component={NotFound} />
       </Switch>
     </Content>

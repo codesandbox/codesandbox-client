@@ -10,8 +10,8 @@ import {
 } from './boilerplates';
 
 const host = process.env.NODE_ENV === 'development'
-  ? 'http://codesandbox.dev/'
-  : 'https://codesandbox.io/';
+  ? 'http://codesandbox.dev'
+  : 'https://codesandbox.io';
 
 let fetching = false;
 let url = null;

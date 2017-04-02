@@ -4,6 +4,7 @@ import { values } from 'lodash';
 import notificationActions from '../notifications/actions';
 import apiRequest from '../services/api';
 import type { BodyType } from '../services/api';
+import { jwtSelector } from '../user/selectors';
 
 type APIActions = {
   REQUEST: string,
@@ -25,33 +26,38 @@ const getMessage = (error: Error) => {
   const response = error.response;
 
   if (response && response.data && response.data.errors) {
-    const firstError = values(response.data.errors)[0][0];
-    if (firstError) {
-      return firstError;
+    const errors = values(response.data.errors)[0];
+    if (Array.isArray(errors)) {
+      if (errors[0]) {
+        return errors[0];
+      }
+    } else {
+      return errors;
     }
   }
   return error.message;
 };
 
-const showError = error =>
-  dispatch => {
-    dispatch(notificationActions.addNotification(getMessage(error), 'error'));
-  };
+const showError = error => dispatch => {
+  dispatch(notificationActions.addNotification(getMessage(error), 'error'));
+};
 
 export function doRequest(
   actions: APIActions,
   endpoint: string,
   body?: BodyType
 ) {
-  return async (dispatch: Function) => {
+  return async (dispatch: Function, getState: Function) => {
+    const jwt = jwtSelector(getState());
     dispatch({
       type: actions.REQUEST,
       endpoint,
       body,
+      jwt,
     });
 
     try {
-      const data = await apiRequest(endpoint, body);
+      const data = await apiRequest(endpoint, jwt, body);
 
       dispatch({
         type: actions.SUCCESS,

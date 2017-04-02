@@ -126,7 +126,7 @@ export default class Dependencies extends React.PureComponent {
           <WorkspaceSubtitle>
             NPM Packages
           </WorkspaceSubtitle>
-          {Object.keys(npmDependencies)
+          {(Object.keys(npmDependencies) || [])
             .sort()
             .map(dep => (
               <VersionEntry
@@ -145,7 +145,7 @@ export default class Dependencies extends React.PureComponent {
           <WorkspaceSubtitle>
             External Resources
           </WorkspaceSubtitle>
-          {externalResources
+          {(externalResources || [])
             .sort()
             .map(resource => (
               <ExternalResource

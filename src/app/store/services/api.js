@@ -1,7 +1,8 @@
 // @flow
-
 import { camelizeKeys, decamelizeKeys } from 'humps';
 import axios from 'axios';
+
+import getJwt from '../user/utils/jwt';
 
 const API_ROOT = '/api/v1/';
 
@@ -9,6 +10,7 @@ export type BodyType = {
   method: ?string,
   body: ?Object,
   shouldCamelize: ?boolean,
+  jwt: ?string,
 };
 
 /**
@@ -16,7 +18,12 @@ export type BodyType = {
  */
 export default (async function callApi(
   endpoint: string,
-  { method = 'GET', body = null, shouldCamelize = true }: ?BodyType = {},
+  jwt: ?string,
+  {
+    method = 'GET',
+    body = null,
+    shouldCamelize = true,
+  }: ?BodyType = {}
 ) {
   if (!endpoint) throw new Error('No endpoint is given');
 
@@ -26,6 +33,12 @@ export default (async function callApi(
     : `${API_ROOT}${endpoint}`;
 
   const options = { url, method };
+
+  if (jwt) {
+    options.headers = {
+      Authorization: `Bearer ${jwt}`,
+    };
+  }
 
   if (body) {
     if (method === 'GET' && body != null) {
