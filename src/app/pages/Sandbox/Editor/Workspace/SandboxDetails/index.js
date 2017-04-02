@@ -75,7 +75,7 @@ export default class SandboxDetails extends React.PureComponent {
         <Logo>
           <LogoLink href="/">
             <CenteredTooltip message="CodeSandbox">
-              <LogoSvg width="34" height="34" />
+              <LogoSvg width="30" height="30" />
             </CenteredTooltip>
           </LogoLink>
           <SandboxInfo>
