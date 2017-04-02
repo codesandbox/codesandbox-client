@@ -1,3 +1,5 @@
+import { mapValues } from 'lodash';
+
 import {
   ADD_MODULE_TO_SANDBOX,
   ADD_DIRECTORY_TO_SANDBOX,
@@ -12,6 +14,8 @@ import {
   SET_PROJECT_VIEW,
   SET_VIEW_MODE,
 } from './actions';
+
+import { SET_CURRENT_USER } from '../../user/actions';
 
 const initialState = {};
 
@@ -110,6 +114,13 @@ export default function reducer(state = initialState, action: Action) {
       }
 
       return state;
+    // The user has changed, we need to mark all sandboxes as owned if the author
+    // id corresponds with the new user id
+    case SET_CURRENT_USER:
+      return mapValues(state, s => ({
+        ...s,
+        owned: s.owned || s.author === action.data.id,
+      }));
     default:
       return state;
   }

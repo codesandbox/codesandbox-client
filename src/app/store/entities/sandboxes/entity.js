@@ -4,6 +4,8 @@ import moduleEntity from './modules/entity';
 import type { Module } from './modules/entity';
 import directoryEntity from './directories/entity';
 import type { Directory } from './directories/entity';
+import userEntity from './users/entity';
+import type { User } from './users/entity';
 
 export type Sandbox = {
   id: string,
@@ -26,6 +28,7 @@ export type Sandbox = {
   },
   showEditor: ?boolean,
   showPreview: ?boolean,
+  author: User,
 };
 
 export default new schema.Entity(
@@ -34,6 +37,7 @@ export default new schema.Entity(
     modules: [moduleEntity],
     directories: [directoryEntity],
     currentModule: moduleEntity,
+    author: userEntity,
   },
   {
     processStrategy: value => ({

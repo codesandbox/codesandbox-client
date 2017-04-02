@@ -41,7 +41,8 @@ const ActionTooltip = styled(Tooltip)`
 
   &:hover {
     color: rgba(255,255,255, 0.4);
-    border-bottom: 2px solid ${props => props.theme.secondary};
+    border-bottom: 2px solid ${props =>
+  props.secondary ? props.theme.primary : props.theme.secondary};
   }
 `;
 

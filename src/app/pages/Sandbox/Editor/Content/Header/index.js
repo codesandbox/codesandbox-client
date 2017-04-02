@@ -5,19 +5,24 @@ import Save from 'react-icons/lib/md/save';
 import Fork from 'react-icons/lib/go/repo-forked';
 import Download from 'react-icons/lib/go/cloud-download';
 import Import from 'react-icons/lib/go/package';
+import UserIcon from 'react-icons/lib/ti/user';
+import GithubIcon from 'react-icons/lib/go/mark-github';
 
 import type { Sandbox } from 'app/store/entities/sandboxes/entity';
+import type { User } from 'app/store/user/reducer';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
+import userActionCreators from 'app/store/user/actions';
 import Tooltip from 'app/components/Tooltip';
 
 import Action from './Action';
+import UserView from './User';
 
 const Container = styled.div`
   display: flex;
   justify-content: space-between;
   background-color: ${props => props.theme.background2};
   font-size: 1.2rem;
-  color: ${props => props.theme.white};
+  color: rgba(255, 255, 255, 0.7);
   z-index: 40;
   margin: 0;
   height: 3rem;
@@ -47,14 +52,18 @@ const Logo = styled.h1`
   left: 0; right: 0;
 `;
 
+const Right = styled.div`
+  display: flex;
+`;
+
 const Left = styled.div`
   display: flex;
   height: 100%;
 `;
 
-const Right = styled.div`
+const Tooltips = styled.div`
   display: flex;
-  padding: 0.75rem 0;
+  padding: 0.75rem 0.5rem;
 `;
 
 const Icon = styled.div`
@@ -98,6 +107,8 @@ const PreviewIcon = styled(Icon)`
 type Props = {
   sandbox: Sandbox,
   sandboxActions: typeof sandboxActionCreators,
+  userActions: typeof userActionCreators,
+  user: User,
 };
 
 export default class Header extends React.PureComponent {
@@ -140,7 +151,7 @@ export default class Header extends React.PureComponent {
   };
 
   render() {
-    const { sandbox } = this.props;
+    const { sandbox, userActions, user } = this.props;
     const canSave = sandbox.modules.some(m => m.isNotSynced);
     return (
       <Container>
@@ -153,37 +164,51 @@ export default class Header extends React.PureComponent {
             Icon={Save}
           />
           <Action title="Download" Icon={Download} onClick={this.zipSandbox} />
-          <Action title="Import" Icon={Import} placeholder="Coming soon!" />
+          <Action
+            title="Publish"
+            Icon={Import}
+            placeholder="Library publishing is coming soon!"
+          />
         </Left>
 
         <Logo title="CodeSandbox"><a href="/">CodeSandbox</a></Logo>
 
         <Right>
-          <Tooltip message="Editor view">
-            <ViewIcon
-              onClick={this.setEditorView}
-              active={sandbox.showEditor && !sandbox.showPreview}
-            >
-              <EditorIcon />
-            </ViewIcon>
-          </Tooltip>
-          <Tooltip message="Split view">
-            <ViewIcon
-              onClick={this.setMixedView}
-              active={sandbox.showEditor && sandbox.showPreview}
-            >
-              <EditorIcon half />
-              <PreviewIcon half />
-            </ViewIcon>
-          </Tooltip>
-          <Tooltip message="Preview view">
-            <ViewIcon
-              onClick={this.setPreviewView}
-              active={!sandbox.showEditor && sandbox.showPreview}
-            >
-              <PreviewIcon />
-            </ViewIcon>
-          </Tooltip>
+          <Tooltips>
+            <Tooltip message="Editor view">
+              <ViewIcon
+                onClick={this.setEditorView}
+                active={sandbox.showEditor && !sandbox.showPreview}
+              >
+                <EditorIcon />
+              </ViewIcon>
+            </Tooltip>
+            <Tooltip message="Split view">
+              <ViewIcon
+                onClick={this.setMixedView}
+                active={sandbox.showEditor && sandbox.showPreview}
+              >
+                <EditorIcon half />
+                <PreviewIcon half />
+              </ViewIcon>
+            </Tooltip>
+            <Tooltip message="Preview view">
+              <ViewIcon
+                onClick={this.setPreviewView}
+                active={!sandbox.showEditor && sandbox.showPreview}
+              >
+                <PreviewIcon />
+              </ViewIcon>
+            </Tooltip>
+          </Tooltips>
+
+          {user.jwt
+            ? <UserView user={user} />
+            : <Action
+                onClick={userActions.signIn}
+                title="Sign in with Github"
+                Icon={GithubIcon}
+              />}
         </Right>
       </Container>
     );

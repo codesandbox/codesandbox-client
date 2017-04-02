@@ -9,6 +9,8 @@ import sandboxEntity from 'app/store/entities/sandboxes/entity';
 import { sandboxesSelector } from 'app/store/entities/sandboxes/selectors';
 import { entitiesSelector } from 'app/store/entities/selectors';
 import sandboxActions from 'app/store/entities/sandboxes/actions';
+import userActionCreators from 'app/store/user/actions';
+import { jwtSelector, userIdSelector } from 'app/store/user/selectors';
 
 import type { Sandbox } from 'app/store/entities/sandboxes/entity';
 import Title from 'app/components/text/Title';
@@ -20,6 +22,8 @@ type Props = {
   sandbox: ?Sandbox,
   sandboxes: { [id: string]: Sandbox },
   sandboxActions: typeof sandboxActions,
+  userActions: typeof userActionCreators,
+  hasLogin: boolean,
   match: { url: string, params: { id: ?string } },
 };
 type State = {
@@ -30,25 +34,28 @@ const mapStateToProps = createSelector(
   sandboxesSelector,
   entitiesSelector,
   (_, props) => props.match.params.id,
-  (sandboxes, entities, id) => {
-    const sandbox = sandboxes[id];
+  jwtSelector,
+  (sandboxes, entities, id, jwt) => {
+    let sandbox = sandboxes[id];
 
     if (sandbox) {
-      return {
-        sandbox: denormalize(sandbox, sandboxEntity, entities),
-        sandboxes,
-      };
+      sandbox = denormalize(sandboxes[id], sandboxEntity, entities);
     }
 
-    return { sandbox: null, sandboxes };
+    return { sandbox, sandboxes, hasLogin: !!jwt };
   }
 );
 const mapDispatchToProps = dispatch => ({
   sandboxActions: bindActionCreators(sandboxActions, dispatch),
+  userActions: bindActionCreators(userActionCreators, dispatch),
 });
 class SandboxPage extends React.PureComponent {
   componentDidMount() {
     this.fetchSandbox();
+
+    if (this.props.hasLogin) {
+      this.props.userActions.getCurrentUser();
+    }
   }
 
   fetchSandbox = () => {
