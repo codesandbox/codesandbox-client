@@ -8,6 +8,7 @@ import Button from '../../../../../components/buttons/Button';
 const Container = styled.div`
   position: relative;
   z-index: 2;
+  height: 100%;
 `;
 
 const MessageView = styled.div`
