@@ -87,7 +87,15 @@ export default class SandboxDetails extends React.PureComponent {
               <UserText>
                 By{' '}
                 <Username>
-                  {sandbox.owned ? 'you!' : sandbox.author.username}
+                  {sandbox.owned
+                    ? 'you!'
+                    : <a
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href={`https://github.com/${sandbox.author.username}`}
+                      >
+                        {sandbox.author.username}
+                      </a>}
                 </Username>
               </UserText>}
           </SandboxInfo>
