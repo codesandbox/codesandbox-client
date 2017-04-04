@@ -161,11 +161,6 @@ class EditorPreview extends React.PureComponent {
 
     return (
       <FullSize>
-        <Prompt
-          when={notSynced}
-          message={() =>
-            'You have not saved this sandbox, are you sure you want to navigate away?'}
-        />
         <Header
           sandbox={sandbox}
           sandboxActions={sandboxActions}

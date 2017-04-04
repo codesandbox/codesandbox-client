@@ -45,6 +45,7 @@ const Workspace = ({ sandbox, sandboxActions }: Props) => (
         title={sandbox.title}
         description={sandbox.description}
         forkedSandbox={sandbox.forkedFromSandbox}
+        preventTransition={sandbox.modules.some(m => m.isNotSynced)}
       />
     </WorkspaceItem>
 

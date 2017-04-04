@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import ConfirmLink from 'app/components/ConfirmLink';
 import WorkspaceSubtitle from '../WorkspaceSubtitle';
 import WorkspaceInputContainer from '../WorkspaceInputContainer';
 import { sandboxUrl } from '../../../../../utils/url-generator';
@@ -58,7 +58,7 @@ export default class Project extends React.PureComponent {
   };
 
   render() {
-    const { forkedSandbox } = this.props;
+    const { forkedSandbox, preventTransition } = this.props;
     const { title, description } = this.state;
     return (
       <div>
@@ -88,9 +88,13 @@ export default class Project extends React.PureComponent {
             <WorkspaceSubtitle>Forked from</WorkspaceSubtitle>
 
             <Item>
-              <Link to={sandboxUrl(forkedSandbox)}>
+              <ConfirmLink
+                enabled={preventTransition}
+                message="You have unsaved changes. Are you sure you want to navigate away?"
+                to={sandboxUrl(forkedSandbox)}
+              >
                 {forkedSandbox.title || forkedSandbox.id}
-              </Link>
+              </ConfirmLink>
             </Item>
           </div>}
       </div>
