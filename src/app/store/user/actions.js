@@ -40,6 +40,12 @@ const getCurrentUser = () => async (dispatch: Function, getState: Function) => {
         doRequest(GET_CURRENT_USER_API, `users/current`)
       );
 
+      Raven.setUserContext({
+        email: data.email,
+        id: data.id,
+        username: data.username,
+      });
+
       dispatch({ type: SET_CURRENT_USER, data });
     } catch (e) {
       dispatch(signOut());

@@ -1,6 +1,7 @@
 // @flow
 import { values } from 'lodash';
 
+import sendError from 'app/utils/error';
 import notificationActions from '../notifications/actions';
 import apiRequest from '../services/api';
 import type { BodyType } from '../services/api';
@@ -24,6 +25,10 @@ export function createAPIActions(prefix: string, suffix: string): APIActions {
 
 const getMessage = (error: Error) => {
   const response = error.response;
+
+  if (response.status >= 500) {
+    sendError(error);
+  }
 
   if (response && response.data && response.data.errors) {
     const errors = values(response.data.errors)[0];

@@ -12,6 +12,10 @@
     "jest": true,
     "es6": true
   },
+  "globals": {
+    "Raven": true,
+    "VERSION": true
+  },
   "rules": {
     "react/jsx-filename-extension": 0,
     "react/sort-comp": 0,

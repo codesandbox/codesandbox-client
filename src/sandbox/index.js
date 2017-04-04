@@ -96,9 +96,8 @@ async function compile(message) {
       host
     );
   } catch (e) {
-    if (process.env.NODE_ENV === 'development') {
-      console.error(e);
-    }
+    console.log('Error in sandbox:');
+    console.error(e);
 
     e.module = e.module || changedModule;
 

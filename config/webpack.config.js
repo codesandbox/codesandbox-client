@@ -3,6 +3,7 @@ const path = require('path');
 const paths = require('./paths');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
+const childProcess = require('child_process');
 const WatchMissingNodeModulesPlugin = require('../scripts/utils/WatchMissingNodeModulesPlugin');
 const env = require('./env');
 
@@ -14,6 +15,15 @@ const __DEV__ = NODE_ENV === 'development'; // eslint-disable-line no-underscore
 const __PROD__ = NODE_ENV === 'production'; // eslint-disable-line no-underscore-dangle
 
 const babelConfig = __DEV__ ? babelDev : babelProd;
+
+const COMMIT_COUNT = childProcess
+  .execSync('git rev-list --count HEAD')
+  .toString();
+
+const COMMIT_HASH = childProcess
+  .execSync('git rev-parse --short HEAD')
+  .toString();
+const VERSION = `${COMMIT_COUNT}-${COMMIT_HASH}`;
 
 const getOutput = () => __DEV__
   ? {
@@ -182,6 +192,7 @@ const config = {
     // Makes some environment variables available to the JS code, for example:
     // if (process.env.NODE_ENV === 'development') { ... }. See `env.js`.
     new webpack.DefinePlugin(env),
+    new webpack.DefinePlugin({ VERSION: JSON.stringify(VERSION) }),
     // Watcher doesn't work well if you mistype casing in a path so we use
     // a plugin that prints an error when you attempt to do this.
     // See https://github.com/facebookincubator/create-react-app/issues/240
