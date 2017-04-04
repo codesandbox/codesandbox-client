@@ -1,7 +1,6 @@
 // @flow
 import React from 'react';
 import styled from 'styled-components';
-import { Link, Route } from 'react-router-dom';
 import Save from 'react-icons/lib/md/save';
 import Fork from 'react-icons/lib/go/repo-forked';
 import Download from 'react-icons/lib/go/cloud-download';
@@ -18,12 +17,7 @@ import Tooltip from 'app/components/Tooltip';
 import Action from './Action';
 import UserView from './User';
 import FeedbackView from './FeedbackView';
-import {
-  newSandboxUrl,
-  sandboxUrl,
-  editorSandbox,
-  fullscreenSandbox,
-} from '../../../../../utils/url-generator';
+import { newSandboxUrl } from '../../../../../utils/url-generator';
 
 const Container = styled.div`
   display: flex;
@@ -132,10 +126,24 @@ export default class Header extends React.PureComponent {
     }
   };
 
-  render() {
-    const { sandbox, userActions, user, match } = this.props;
-    const canSave = sandbox.modules.some(m => m.isNotSynced);
+  setEditorView = () => {
+    const { sandbox, sandboxActions } = this.props;
+    sandboxActions.setViewMode(sandbox.id, true, false);
+  };
 
+  setMixedView = () => {
+    const { sandbox, sandboxActions } = this.props;
+    sandboxActions.setViewMode(sandbox.id, true, true);
+  };
+
+  setPreviewView = () => {
+    const { sandbox, sandboxActions } = this.props;
+    sandboxActions.setViewMode(sandbox.id, false, true);
+  };
+
+  render() {
+    const { sandbox, userActions, user } = this.props;
+    const canSave = sandbox.modules.some(m => m.isNotSynced);
     return (
       <Container>
         <Left>
@@ -156,42 +164,29 @@ export default class Header extends React.PureComponent {
 
         <Tooltips>
           <Tooltip message="Editor view">
-            <Route
-              path={`${match.url}/editor`}
-              children={active => (
-                <Link to={editorSandbox(sandbox)}>
-                  <ViewIcon active={active.match}>
-                    <EditorIcon />
-                  </ViewIcon>
-                </Link>
-              )}
-            />
+            <ViewIcon
+              onClick={this.setEditorView}
+              active={sandbox.showEditor && !sandbox.showPreview}
+            >
+              <EditorIcon />
+            </ViewIcon>
           </Tooltip>
           <Tooltip message="Split view">
-            <Route
-              path={`${match.url}/`}
-              exact
-              children={active => (
-                <Link to={sandboxUrl(sandbox)}>
-                  <ViewIcon active={active.match}>
-                    <EditorIcon half />
-                    <PreviewIcon half />
-                  </ViewIcon>
-                </Link>
-              )}
-            />
+            <ViewIcon
+              onClick={this.setMixedView}
+              active={sandbox.showEditor && sandbox.showPreview}
+            >
+              <EditorIcon half />
+              <PreviewIcon half />
+            </ViewIcon>
           </Tooltip>
           <Tooltip message="Preview view">
-            <Route
-              path={`${match.url}/fullscreen`}
-              children={active => (
-                <Link to={fullscreenSandbox(sandbox)}>
-                  <ViewIcon active={active.match}>
-                    <PreviewIcon />
-                  </ViewIcon>
-                </Link>
-              )}
-            />
+            <ViewIcon
+              onClick={this.setPreviewView}
+              active={!sandbox.showEditor && sandbox.showPreview}
+            >
+              <PreviewIcon />
+            </ViewIcon>
           </Tooltip>
         </Tooltips>
 
