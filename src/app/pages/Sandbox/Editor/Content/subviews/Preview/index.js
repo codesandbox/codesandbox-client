@@ -112,7 +112,10 @@ export default class Preview extends React.PureComponent {
         prevProps.directories !== this.props.directories) &&
       this.state.frameInitialized
     ) {
-      if (this.props.preferences.livePreviewEnabled) {
+      if (
+        this.props.preferences.livePreviewEnabled &&
+        prevProps.bundle === this.props.bundle
+      ) {
         this.executeCode();
       }
     }
