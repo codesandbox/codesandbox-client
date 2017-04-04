@@ -20,7 +20,6 @@ import Navigator from './Navigator';
 import Message from './Message';
 
 const Container = styled.div`
-  position: absolute;
   height: 100%;
   width: 100%;
   background-color: white;
@@ -130,9 +129,11 @@ export default class Preview extends React.PureComponent {
   }
 
   sendMessage = (message: Object) => {
-    document
-      .getElementById('sandbox')
-      .contentWindow.postMessage(message, frameUrl());
+    const element = document.getElementById('sandbox');
+
+    if (element) {
+      element.contentWindow.postMessage(message, frameUrl());
+    }
   };
 
   handleMessage = (e: Object) => {

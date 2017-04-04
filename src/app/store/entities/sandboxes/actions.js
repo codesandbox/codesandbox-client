@@ -84,7 +84,6 @@ export const SET_EXTERNAL_RESOURCES = 'SET_EXTERNAL_RESOURCES';
 export const SET_CURRENT_MODULE = 'SET_CURRENT_MODULE';
 export const SET_BUNDLE = 'SET_BUNDLE';
 export const SET_PROJECT_VIEW = 'SET_PROJECT_VIEW';
-export const SET_VIEW_MODE = 'SET_VIEW_MODE';
 export const CREATE_ZIP = 'CREATE_ZIP';
 
 const addModuleToSandbox = (id, moduleId) => ({
@@ -203,13 +202,6 @@ export default {
       });
     }
   },
-
-  setViewMode: (id: string, showEditor: boolean, showPreview: boolean) => ({
-    type: SET_VIEW_MODE,
-    id,
-    showEditor,
-    showPreview,
-  }),
 
   setProjectView: (id: string, isInProjectView: boolean) => ({
     type: SET_PROJECT_VIEW,

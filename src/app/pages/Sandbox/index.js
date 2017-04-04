@@ -2,6 +2,7 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { createSelector } from 'reselect';
 import { denormalize } from 'normalizr';
 import sandboxEntity from 'app/store/entities/sandboxes/entity';
@@ -10,7 +11,7 @@ import { sandboxesSelector } from 'app/store/entities/sandboxes/selectors';
 import { entitiesSelector } from 'app/store/entities/selectors';
 import sandboxActions from 'app/store/entities/sandboxes/actions';
 import userActionCreators from 'app/store/user/actions';
-import { jwtSelector, userIdSelector } from 'app/store/user/selectors';
+import { jwtSelector } from 'app/store/user/selectors';
 
 import type { Sandbox } from 'app/store/entities/sandboxes/entity';
 import Title from 'app/components/text/Title';
@@ -71,6 +72,7 @@ class SandboxPage extends React.PureComponent {
     const oldId = oldProps.match.params.id;
 
     if (newId != null && oldId !== newId) {
+      this.setState({ notFound: false });
       if (!this.props.sandboxes[newId]) {
         this.fetchSandbox();
       }
@@ -88,12 +90,15 @@ class SandboxPage extends React.PureComponent {
   state = { notFound: false };
 
   render() {
-    const { sandbox } = this.props;
+    const { sandbox, match } = this.props;
     if (this.state.notFound) {
       return (
         <Centered horizontal vertical>
           <Title>
             We could not find the Sandbox you{"'"}re looking for...
+            <br />
+            <br />
+            <Link to="/s/new">Create Sandbox</Link>
           </Title>
         </Centered>
       );
@@ -106,7 +111,7 @@ class SandboxPage extends React.PureComponent {
 
     return (
       <Centered horizontal vertical>
-        <Editor sandbox={sandbox} />
+        <Editor match={match} sandbox={sandbox} />
       </Centered>
     );
   }

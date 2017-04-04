@@ -12,7 +12,6 @@ import {
   FETCH_BUNDLE_API_ACTIONS,
   SET_SANDBOX_INFO,
   SET_PROJECT_VIEW,
-  SET_VIEW_MODE,
 } from './actions';
 
 import { SET_CURRENT_USER, SIGN_OUT } from '../../user/actions';
@@ -26,12 +25,6 @@ type Action = {
 
 function singleSandboxReducer(sandbox, action: Action) {
   switch (action.type) {
-    case SET_VIEW_MODE:
-      return {
-        ...sandbox,
-        showEditor: action.showEditor,
-        showPreview: action.showPreview,
-      };
     case SET_PROJECT_VIEW:
       return { ...sandbox, isInProjectView: action.isInProjectView };
     case SET_CURRENT_MODULE:
@@ -105,7 +98,6 @@ export default function reducer(state = initialState, action: Action) {
     case SET_BUNDLE:
     case SET_SANDBOX_INFO:
     case SET_PROJECT_VIEW:
-    case SET_VIEW_MODE:
       if (state[action.id]) {
         return {
           ...state,

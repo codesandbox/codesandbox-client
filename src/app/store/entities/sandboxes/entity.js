@@ -26,8 +26,6 @@ export type Sandbox = {
     error?: string,
     processing?: boolean,
   },
-  showEditor: ?boolean,
-  showPreview: ?boolean,
   author: User,
   forkedFromSandbox: ?{ title: string, id: string },
 };
@@ -44,8 +42,6 @@ export default new schema.Entity(
     processStrategy: value => ({
       ...value,
       isInProjectView: true,
-      showEditor: true,
-      showPreview: true,
     }),
   }
 );

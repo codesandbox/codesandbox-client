@@ -9,16 +9,31 @@ import Content from './Content';
 
 type Props = {
   sandbox: Sandbox,
+  match: Object,
 };
 
-export default ({ sandbox }: Props) => (
-  <SplitPane
-    split="vertical"
-    minSize={100}
-    defaultSize={16 * 16}
-    style={{ top: 0 }}
-  >
-    <Workspace sandbox={sandbox} />
-    <Content sandbox={sandbox} />
-  </SplitPane>
-);
+export default class ContentSplit extends React.PureComponent {
+  props: Props;
+  state = { resizing: false };
+
+  startResizing = () => this.setState({ resizing: true });
+  stopResizing = () => this.setState({ resizing: false });
+
+  render() {
+    const { sandbox, match } = this.props;
+    const { resizing } = this.state;
+    return (
+      <SplitPane
+        split="vertical"
+        minSize={100}
+        defaultSize={16 * 16}
+        style={{ top: 0 }}
+        onDragStarted={this.startResizing}
+        onDragFinished={this.stopResizing}
+      >
+        <Workspace sandbox={sandbox} />
+        <Content sandbox={sandbox} resizing={resizing} match={match} />
+      </SplitPane>
+    );
+  }
+}

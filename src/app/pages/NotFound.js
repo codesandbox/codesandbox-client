@@ -37,7 +37,7 @@ export default () => (
     <Title>404</Title>
     <SubTitle>We could not find the page you{"'"}re looking for :(</SubTitle>
     <Buttons>
-      <Button href="/">TO Homepage</Button>
+      <Button href="/">To Homepage</Button>
       <Button to={newSandboxUrl()}>Create Sandbox</Button>
     </Buttons>
   </Container>
