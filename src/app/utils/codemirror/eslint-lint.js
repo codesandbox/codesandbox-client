@@ -2,8 +2,8 @@ import CodeMirror from 'codemirror';
 import 'codemirror/addon/lint/lint.css';
 import 'codemirror/addon/lint/lint';
 import fixer from 'eslint/lib/util/source-code-fixer';
-import './eslint';
 import error from '../error';
+import delay from '../../store/services/delay';
 
 const allRules = {
   'react/jsx-uses-react': require('eslint-plugin-react/lib/rules/jsx-uses-react'),
@@ -68,12 +68,6 @@ const allRules = {
   'react/wrap-multilines': require('eslint-plugin-react/lib/rules/wrap-multilines'),
   'react/jsx-tag-spacing': require('eslint-plugin-react/lib/rules/jsx-tag-spacing'),
 };
-
-try {
-  window.eslint.defineRules(allRules);
-} catch (e) {
-  error(e);
-}
 
 const defaultConfig = {
   extends: ['prettier', 'prettier/react', 'prettier/flowtype'],
@@ -1609,4 +1603,19 @@ export function fix(source) {
   return fixer.applyFixes(window.eslint.getSourceCode(), errors);
 }
 
-CodeMirror.registerHelper('lint', 'javascript', validator);
+export default (async function initialize() {
+  if (!window.eslint) {
+    // Add eslint as script
+    const script = document.createElement('script');
+    script.setAttribute('src', 'static/js/eslint.3.18.0.js');
+    script.setAttribute('async', false);
+    document.head.appendChild(script);
+  }
+
+  while (!window.eslint) {
+    await delay(100);
+  }
+
+  window.eslint.defineRules(allRules);
+  CodeMirror.registerHelper('lint', 'javascript', validator);
+});
