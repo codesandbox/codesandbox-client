@@ -244,13 +244,9 @@ export default class CodeEditor extends React.PureComponent {
     }
 
     if (preferences.lintEnabled) {
-      System.import('app/utils/codemirror/eslint-lint')
-        .then(initializer => {
-          return initializer.default();
-        })
-        .then(() => {
-          this.codemirror.setOption('lint', true);
-        });
+      System.import('app/utils/codemirror/eslint-lint').then(() => {
+        this.codemirror.setOption('lint', true);
+      });
     } else {
       this.codemirror.setOption('lint', false);
     }
