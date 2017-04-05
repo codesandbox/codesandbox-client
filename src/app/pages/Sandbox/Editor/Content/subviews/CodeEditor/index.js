@@ -126,7 +126,7 @@ export default class CodeEditor extends React.PureComponent {
     }
   }
 
-  updateCodeMirrorCode(code: string) {
+  updateCodeMirrorCode(code: string = '') {
     const pos = this.codemirror.getCursor();
     this.codemirror.setValue(code);
     this.codemirror.setCursor(pos);
