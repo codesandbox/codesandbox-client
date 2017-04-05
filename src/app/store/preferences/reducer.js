@@ -19,6 +19,8 @@ export type Preferences = {
   autoCompleteEnabled: boolean,
   vimMode: boolean,
   livePreviewEnabled: boolean,
+  prettifyOnSaveEnabled: boolean,
+  lintEnabled: boolean,
 };
 
 const getKey = (key, defaultVal) => {
@@ -36,7 +38,7 @@ const initialState: Preferences = {
   vimMode: getKey(VIM_MODE, false),
   livePreviewEnabled: getKey(LIVE_PREVIEW, true),
   prettifyOnSaveEnabled: getKey(PRETTIFY_ON_SAVE, false),
-  lintEnabled: getKey(LINT_ENABLED, false),
+  lintEnabled: getKey(LINT_ENABLED, true),
 };
 
 export default (state = initialState, action) => {
