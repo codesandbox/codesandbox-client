@@ -59,7 +59,11 @@ async function compile(message) {
     getBoilerplates().length === 0 &&
     manifest != null
   ) {
-    evalBoilerplates(boilerplates, modules, directories, manifest);
+    try {
+      evalBoilerplates(boilerplates, modules, directories, manifest);
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   handleExternalResources(externalResources);
@@ -78,7 +82,7 @@ async function compile(message) {
     const domChanged = document.body.innerHTML !== '<div id="root"></div>';
 
     if (!domChanged) {
-      const isReact = module.code.includes('react');
+      const isReact = module.code.includes("'react'");
       const functionName = evalled.default ? evalled.default.name : '';
 
       if (isReact) {
