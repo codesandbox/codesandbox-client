@@ -105,6 +105,8 @@ export default class CodeEditor extends React.PureComponent {
         documentCache[nextId] = new CodeMirror.Doc(nextCode || '', mode);
       }
       documentCache[currentId] = this.codemirror.swapDoc(documentCache[nextId]);
+
+      this.updateCodeMirrorCode(nextCode);
     }
   };
 
