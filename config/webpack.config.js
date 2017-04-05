@@ -3,6 +3,7 @@ const path = require('path');
 const paths = require('./paths');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
+const BabiliPlugin = require('babili-webpack-plugin');
 const childProcess = require('child_process');
 const WatchMissingNodeModulesPlugin = require('../scripts/utils/WatchMissingNodeModulesPlugin');
 const env = require('./env');
@@ -234,10 +235,11 @@ if (__PROD__) {
       minimize: true,
       debug: false,
     }),
+    new BabiliPlugin(),
     new webpack.optimize.UglifyJsPlugin({
       beautify: false,
       compress: {
-        warnings: false,
+        warnings: true,
         screw_ie8: true,
         conditionals: true,
         unused: true,

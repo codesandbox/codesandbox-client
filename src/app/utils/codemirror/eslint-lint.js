@@ -3,6 +3,7 @@ import 'codemirror/addon/lint/lint.css';
 import 'codemirror/addon/lint/lint';
 import fixer from 'eslint/lib/util/source-code-fixer';
 import './eslint';
+import error from '../error';
 
 const allRules = {
   'react/jsx-uses-react': require('eslint-plugin-react/lib/rules/jsx-uses-react'),
@@ -69,8 +70,10 @@ const allRules = {
 };
 
 try {
-  eslint.defineRules(allRules);
-} catch (e) {}
+  window.eslint.defineRules(allRules);
+} catch (e) {
+  error(e);
+}
 
 const defaultConfig = {
   extends: ['prettier', 'prettier/react', 'prettier/flowtype'],
@@ -1589,7 +1592,7 @@ function getSeverity(error) {
 
 function eslintValidate(text) {
   if (!window.eslint) return [];
-  return eslint.verify(text, defaultConfig);
+  return window.eslint.verify(text, defaultConfig);
 }
 
 export function validator(text, options) {
@@ -1603,7 +1606,7 @@ export function validator(text, options) {
 
 export function fix(source) {
   const errors = eslintValidate(source);
-  return fixer.applyFixes(eslint.getSourceCode(), errors);
+  return fixer.applyFixes(window.eslint.getSourceCode(), errors);
 }
 
 CodeMirror.registerHelper('lint', 'javascript', validator);
