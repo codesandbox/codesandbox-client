@@ -16,6 +16,10 @@ import 'codemirror/addon/selection/active-line';
 import 'codemirror/addon/fold/foldcode';
 import 'codemirror/addon/fold/foldgutter';
 import 'codemirror/addon/fold/brace-fold';
+import 'codemirror/addon/lint/lint.css';
+import 'codemirror/addon/lint/lint';
+
+import initializeEslint from './codemirror/eslint-lint';
 
 const fadeInAnimation = keyframes`
   0%   { background-color: #374140; }
@@ -68,8 +72,9 @@ export const getCodeMirror = (el, doc) => {
 
     .cm-s-oceanic div.cm-line-error.CodeMirror-linebackground { animation: ${fadeInAnimation} 0.3s; background-color: #561011; }
   `;
+  initializeEslint();
 
-  return new CodeMirror(el, {
+  const cm = new CodeMirror(el, {
     value: doc,
     theme: 'oceanic',
     keyMap: 'sublime',
@@ -81,5 +86,8 @@ export const getCodeMirror = (el, doc) => {
     lineNumbers: true,
     lineWrapping: true,
     styleActiveLine: true,
+    lint: true,
   });
+
+  return cm;
 };

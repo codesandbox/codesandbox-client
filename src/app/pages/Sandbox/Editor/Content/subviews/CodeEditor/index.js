@@ -258,7 +258,9 @@ export default class CodeEditor extends React.PureComponent {
     const code = this.getCode();
     try {
       const prettier = await System.import('prettier');
-      const newCode = prettier.format(code);
+      const newCode = prettier.format(code, {
+        singleQuote: true,
+      });
       if (newCode !== code) {
         this.props.changeCode(id, newCode);
         this.updateCodeMirrorCode(newCode);
