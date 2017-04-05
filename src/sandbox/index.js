@@ -62,7 +62,7 @@ async function compile(message) {
     try {
       evalBoilerplates(boilerplates, modules, directories, manifest);
     } catch (e) {
-      console.error(e);
+      console.log("Couldn't load all boilerplates");
     }
   }
 
@@ -82,12 +82,18 @@ async function compile(message) {
     const domChanged = document.body.innerHTML !== '<div id="root"></div>';
 
     if (!domChanged) {
-      const isReact = module.code.includes("'react'");
+      const isReact = module.code.includes('React');
       const functionName = evalled.default ? evalled.default.name : '';
 
       if (isReact) {
         const boilerplate = findBoilerplate(module);
-        boilerplate.module.default(evalled);
+        if (boilerplate) {
+          try {
+            boilerplate.module.default(evalled);
+          } catch (e) {
+            throw new NoDomChangeError(isReact, functionName);
+          }
+        }
       } else {
         throw new NoDomChangeError(isReact, functionName);
       }
