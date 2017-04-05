@@ -1607,7 +1607,7 @@ export default (async function initialize() {
   if (!window.eslint) {
     // Add eslint as script
     const script = document.createElement('script');
-    script.setAttribute('src', 'static/js/eslint.3.18.0.js');
+    script.setAttribute('src', '/static/js/eslint.3.18.0.js');
     script.setAttribute('async', false);
     document.head.appendChild(script);
   }

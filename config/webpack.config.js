@@ -235,7 +235,7 @@ if (__PROD__) {
       minimize: true,
       debug: false,
     }),
-    new BabiliPlugin(),
+    // new BabiliPlugin(),
     new webpack.optimize.UglifyJsPlugin({
       beautify: false,
       compress: {
