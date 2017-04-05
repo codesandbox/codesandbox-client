@@ -44,6 +44,13 @@ class Preferences extends React.PureComponent {
             onClick={preferencesActions.setAutoCompletePreference}
           />
           <Preference
+            title="Linter"
+            tooltip="Made possible by eslint"
+            offset={175}
+            enabled={preferences.lintEnabled}
+            onClick={preferencesActions.setLintPreference}
+          />
+          <Preference
             title="Prettify on save"
             tooltip="Made possible by Prettier"
             enabled={preferences.prettifyOnSaveEnabled}
