@@ -62,6 +62,7 @@ const config = {
       {
         test: /\.js$/,
         include: paths.src,
+        exclude: [/eslint\.js$/],
         loader: 'babel-loader',
         options: babelConfig,
       },
@@ -234,6 +235,7 @@ if (__PROD__) {
       debug: false,
     }),
     new webpack.optimize.UglifyJsPlugin({
+      beautify: false,
       compress: {
         warnings: false,
         screw_ie8: true,

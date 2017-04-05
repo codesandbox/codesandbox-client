@@ -69,7 +69,7 @@ export const getCodeMirror = (el, doc) => {
     .cm-s-oceanic div.cm-line-error.CodeMirror-linebackground { animation: ${fadeInAnimation} 0.3s; background-color: #561011; }
   `;
 
-  return new CodeMirror(el, {
+  const cm = new CodeMirror(el, {
     value: doc,
     theme: 'oceanic',
     keyMap: 'sublime',
@@ -81,5 +81,8 @@ export const getCodeMirror = (el, doc) => {
     lineNumbers: true,
     lineWrapping: true,
     styleActiveLine: true,
+    lint: false,
   });
+
+  return cm;
 };

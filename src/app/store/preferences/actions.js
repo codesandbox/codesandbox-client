@@ -5,12 +5,14 @@ import {
   AUTO_COMPLETE,
   LIVE_PREVIEW,
   PRETTIFY_ON_SAVE,
+  LINT_ENABLED,
 } from './keys';
 
 export const SET_PREFERENCE_AUTOCOMPLETE = 'SET_PREFERENCE_AUTOCOMPLETE';
 export const SET_PREFERENCE_VIM_MODE = 'SET_PREFERENCE_VIM_MODE';
 export const SET_PREFERENCE_LIVE_PREVIEW = 'SET_PREFERENCE_LIVE_PREVIEW';
 export const SET_PREFERENCE_PRETTIFY_ON_SAVE = 'SET_PREFERENCE_PRETTIFY_ON_SAVE';
+export const SET_PREFERENCE_LINT = 'SET_PREFERENCE_LINT';
 
 const setOption = (key, val) => {
   try {
@@ -23,43 +25,50 @@ const setOption = (key, val) => {
 };
 
 export default {
-  setVimPreference: (vimMode: boolean) =>
-    (dispatch: Function) => {
-      setOption(VIM_MODE, vimMode);
+  setVimPreference: (vimMode: boolean) => (dispatch: Function) => {
+    setOption(VIM_MODE, vimMode);
 
-      dispatch({
-        type: SET_PREFERENCE_VIM_MODE,
-        option: vimMode,
-      });
-    },
+    dispatch({
+      type: SET_PREFERENCE_VIM_MODE,
+      option: vimMode,
+    });
+  },
 
-  setAutoCompletePreference: (autoComplete: boolean) =>
-    (dispatch: Function) => {
-      setOption(AUTO_COMPLETE, autoComplete);
+  setAutoCompletePreference: (autoComplete: boolean) => (
+    dispatch: Function
+  ) => {
+    setOption(AUTO_COMPLETE, autoComplete);
 
-      dispatch({
-        type: SET_PREFERENCE_AUTOCOMPLETE,
-        option: autoComplete,
-      });
-    },
+    dispatch({
+      type: SET_PREFERENCE_AUTOCOMPLETE,
+      option: autoComplete,
+    });
+  },
 
-  setLivePreview: (livePreview: boolean) =>
-    (dispatch: Function) => {
-      setOption(LIVE_PREVIEW, livePreview);
+  setLivePreview: (livePreview: boolean) => (dispatch: Function) => {
+    setOption(LIVE_PREVIEW, livePreview);
 
-      dispatch({
-        type: SET_PREFERENCE_LIVE_PREVIEW,
-        option: livePreview,
-      });
-    },
+    dispatch({
+      type: SET_PREFERENCE_LIVE_PREVIEW,
+      option: livePreview,
+    });
+  },
 
-  setPrettifyOnSavePreference: (prettify: boolean) =>
-    (dispatch: Function) => {
-      setOption(PRETTIFY_ON_SAVE, prettify);
+  setPrettifyOnSavePreference: (prettify: boolean) => (dispatch: Function) => {
+    setOption(PRETTIFY_ON_SAVE, prettify);
 
-      dispatch({
-        type: SET_PREFERENCE_PRETTIFY_ON_SAVE,
-        option: prettify,
-      });
-    },
+    dispatch({
+      type: SET_PREFERENCE_PRETTIFY_ON_SAVE,
+      option: prettify,
+    });
+  },
+
+  setLintPreference: (lint: boolean) => (dispatch: Function) => {
+    setOption(LINT_ENABLED, lint);
+
+    dispatch({
+      type: SET_PREFERENCE_LINT,
+      option: lint,
+    });
+  },
 };

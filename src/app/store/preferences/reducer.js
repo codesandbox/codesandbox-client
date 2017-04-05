@@ -5,12 +5,14 @@ import {
   SET_PREFERENCE_VIM_MODE,
   SET_PREFERENCE_LIVE_PREVIEW,
   SET_PREFERENCE_PRETTIFY_ON_SAVE,
+  SET_PREFERENCE_LINT,
 } from './actions';
 import {
   AUTO_COMPLETE,
   VIM_MODE,
   LIVE_PREVIEW,
   PRETTIFY_ON_SAVE,
+  LINT_ENABLED,
 } from './keys';
 
 export type Preferences = {
@@ -34,6 +36,7 @@ const initialState: Preferences = {
   vimMode: getKey(VIM_MODE, false),
   livePreviewEnabled: getKey(LIVE_PREVIEW, true),
   prettifyOnSaveEnabled: getKey(PRETTIFY_ON_SAVE, false),
+  lintEnabled: getKey(LINT_ENABLED, false),
 };
 
 export default (state = initialState, action) => {
@@ -46,6 +49,8 @@ export default (state = initialState, action) => {
       return { ...state, livePreviewEnabled: action.option };
     case SET_PREFERENCE_PRETTIFY_ON_SAVE:
       return { ...state, prettifyOnSaveEnabled: action.option };
+    case SET_PREFERENCE_LINT:
+      return { ...state, lintEnabled: action.option };
     default: {
       return state;
     }

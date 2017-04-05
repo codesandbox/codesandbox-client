@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { debounce } from 'lodash';
 
 import { getCodeMirror } from 'app/utils/codemirror';
+import prettify from 'app/utils/codemirror/prettify';
 
 import 'codemirror/addon/dialog/dialog';
 import 'codemirror/addon/hint/show-hint';
@@ -241,6 +242,14 @@ export default class CodeEditor extends React.PureComponent {
     } else {
       this.codemirror.setOption('keyMap', 'sublime');
     }
+
+    if (preferences.lintEnabled) {
+      System.import('app/utils/codemirror/eslint-lint').then(() => {
+        this.codemirror.setOption('lint', true);
+      });
+    } else {
+      this.codemirror.setOption('lint', false);
+    }
   };
 
   handleChange = (cm: any, change: any) => {
@@ -249,16 +258,14 @@ export default class CodeEditor extends React.PureComponent {
     }
   };
 
-  getCode = () => {
-    return this.codemirror.getValue();
-  };
+  getCode = () => this.codemirror.getValue();
 
   prettify = async () => {
-    const { id } = this.props;
+    const { id, preferences } = this.props;
     const code = this.getCode();
     try {
-      const prettier = await System.import('prettier');
-      const newCode = prettier.format(code);
+      const newCode = await prettify(code, preferences.lintEnabled);
+
       if (newCode !== code) {
         this.props.changeCode(id, newCode);
         this.updateCodeMirrorCode(newCode);
