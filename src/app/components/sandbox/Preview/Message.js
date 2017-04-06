@@ -8,9 +8,6 @@ import ErrorIcon from 'react-icons/lib/md/error';
 
 import Button from 'app/components/buttons/Button';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
-import {
-  modulesSelector,
-} from 'app/store/entities/sandboxes/modules/selectors';
 
 import Editor from './Editor';
 
@@ -54,9 +51,6 @@ type Props = {
 const mapDispatchToProps = dispatch => ({
   sandboxActions: bindActionCreators(sandboxActionCreators, dispatch),
 });
-const mapStateToProps = state => ({
-  modules: modulesSelector(state),
-});
 class Message extends React.PureComponent {
   props: Props;
 
@@ -64,20 +58,16 @@ class Message extends React.PureComponent {
     const { error, message } = this.props;
 
     if (message) return <Icon><InfoIcon /></Icon>;
-
-    const severity = error.severity;
-
-    if (severity === 'warning') return <Icon><WarningIcon /></Icon>;
+    if (error.severity === 'warning') return <Icon><WarningIcon /></Icon>;
 
     return <Icon><ErrorIcon /></Icon>;
   };
 
-  addDependency = name =>
-    async () => {
-      const { sandboxId, sandboxActions } = this.props;
-      await sandboxActions.addNPMDependency(sandboxId, name);
-      sandboxActions.fetchDependenciesBundle(sandboxId);
-    };
+  addDependency = name => async () => {
+    const { sandboxId, sandboxActions } = this.props;
+    await sandboxActions.addNPMDependency(sandboxId, name);
+    sandboxActions.fetchDependenciesBundle(sandboxId);
+  };
 
   openModule = () => {
     const { error, sandboxId, sandboxActions } = this.props;
@@ -86,7 +76,7 @@ class Message extends React.PureComponent {
 
   getMessage = () => {
     const { error, modules } = this.props;
-    const module = modules[error.moduleId];
+
     if (error.type === 'dependency-not-found') {
       return (
         <div>
@@ -151,4 +141,4 @@ class Message extends React.PureComponent {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Message);
+export default Message;

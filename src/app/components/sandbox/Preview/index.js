@@ -15,6 +15,7 @@ import { frameUrl } from 'app/utils/url-generator';
 import { isMainModule } from 'app/store/entities/sandboxes/modules/validator';
 import defaultBoilerplates
   from 'app/store/entities/sandboxes/boilerplates/default-boilerplates';
+import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 
 import Navigator from './Navigator';
 import Message from './Message';
@@ -43,6 +44,7 @@ type Props = {
   setProjectView: (id: string, isInProjectView: boolean) => void,
   module: Module,
   setError: (id: string, error: ?{ message: string, line: number }) => void,
+  sandboxActions: typeof sandboxActionCreators,
 };
 
 type State = {
@@ -269,7 +271,14 @@ export default class Preview extends React.PureComponent {
   rootInstance: ?Object;
 
   render() {
-    const { sandboxId, bundle = {}, isInProjectView } = this.props;
+    const {
+      sandboxId,
+      bundle = {},
+      modules,
+      sandboxActions,
+      isInProjectView,
+      setProjectView,
+    } = this.props;
     const {
       historyPosition,
       history,
@@ -290,19 +299,28 @@ export default class Preview extends React.PureComponent {
           onForward={historyPosition < history.length - 1 && this.handleForward}
           onRefresh={this.handleRefresh}
           isProjectView={isInProjectView}
-          toggleProjectView={this.toggleProjectView}
+          toggleProjectView={setProjectView && this.toggleProjectView}
         />
 
         {!bundle.processing &&
           renderedModule.error &&
-          <Message error={renderedModule.error} sandboxId={sandboxId} />}
-        {bundle.processing
-          ? <Message message="Loading the dependencies..." />
-          : <StyledFrame
-              sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups"
-              src={frameUrl()}
-              id="sandbox"
-            />}
+          <Message
+            modules={modules}
+            sandboxActions={sandboxActions}
+            error={renderedModule.error}
+            sandboxId={sandboxId}
+          />}
+        {bundle.processing &&
+          <Message
+            modules={modules}
+            sandboxActions={sandboxActions}
+            message="Loading the dependencies..."
+          />}
+        <StyledFrame
+          sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups"
+          src={frameUrl()}
+          id="sandbox"
+        />
       </Container>
     );
   }

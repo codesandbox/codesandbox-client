@@ -61,7 +61,7 @@
     "webpack": "^2.2.1",
     "webpack-dev-middleware": "^1.10.1",
     "webpack-dev-server": "^2.4.2",
-    "whatwg-fetch": "^2.0.1"
+    "whatwg-fetch": "^2.0.3"
   },
   "dependencies": {
     "axios": "^0.15.3",

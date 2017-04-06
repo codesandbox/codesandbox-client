@@ -5,9 +5,10 @@ import { Provider } from 'react-redux';
 import { ThemeProvider } from 'styled-components';
 import createHistory from 'history/createBrowserHistory';
 import { ConnectedRouter } from 'react-router-redux';
+import 'normalize.css';
 
 import App from './pages/index';
-import './global.css';
+import '../common/global.css';
 import './split-pane.css';
 import createStore from './store';
 import theme from '../common/theme';

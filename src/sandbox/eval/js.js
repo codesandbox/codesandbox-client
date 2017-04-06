@@ -25,6 +25,12 @@ const compileCode = (code: string = '', moduleName: string = 'unknown') => {
   try {
     return transform(code, {
       presets: ['es2015', 'react', 'stage-0'],
+      plugins: [
+        require('babel-plugin-transform-async-to-generator'),
+        require('babel-plugin-transform-object-rest-spread'),
+        require('babel-plugin-transform-class-properties'),
+        require('babel-plugin-transform-runtime'),
+      ],
       retainLines: true,
     }).code;
   } catch (e) {
