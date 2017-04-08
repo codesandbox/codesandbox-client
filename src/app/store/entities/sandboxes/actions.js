@@ -646,7 +646,7 @@ export default {
     const directories = directoriesSelector(getState());
     const sandbox = singleSandboxSelector(getState(), { id });
 
-    const createZip = await System.import('./create-zip');
+    const createZip = await System.import('./utils/create-zip');
 
     createZip.default(
       sandbox,
