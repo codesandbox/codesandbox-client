@@ -19,14 +19,26 @@ let fetching = false;
 let url = null;
 
 async function addDependencyBundle() {
-  const script = document.createElement('script');
-  script.setAttribute('src', url);
-  script.setAttribute('async', false);
-  document.head.appendChild(script);
+  if (url !== '') {
+    const script = document.createElement('script');
+    script.setAttribute('src', url);
+    script.setAttribute('async', false);
+    document.head.appendChild(script);
 
-  while (window.dependencies == null) {
-    await delay(100);
+    while (window.dependencies == null) {
+      await delay(100);
+    }
   }
+}
+
+function getIndexHtml(modules) {
+  const module = modules.find(
+    m => m.title === 'index.html' && m.directoryShortid == null
+  );
+  if (module) {
+    return module.code;
+  }
+  return '<div id="root"></div>';
 }
 
 async function compile(message) {
@@ -52,24 +64,11 @@ async function compile(message) {
     window.parent.postMessage('Ready!', host);
     return;
   }
-
-  // initiate boilerplates
-  if (
-    boilerplates.length !== 0 &&
-    getBoilerplates().length === 0 &&
-    manifest != null
-  ) {
-    try {
-      evalBoilerplates(boilerplates, modules, directories, manifest);
-    } catch (e) {
-      console.log("Couldn't load all boilerplates");
-    }
-  }
-
   handleExternalResources(externalResources);
 
   try {
-    document.body.innerHTML = '<div id="root"></div>';
+    const html = getIndexHtml(modules);
+    document.body.innerHTML = html;
     deleteCache(sandboxId, changedModule);
 
     const evalled = evalModule(
@@ -79,13 +78,26 @@ async function compile(message) {
       directories,
       manifest
     );
-    const domChanged = document.body.innerHTML !== '<div id="root"></div>';
+    const domChanged = document.body.innerHTML !== html;
 
-    if (!domChanged) {
+    if (!domChanged && !module.title.endsWith('.html')) {
       const isReact = module.code.includes('React');
       const functionName = evalled.default ? evalled.default.name : '';
 
       if (isReact) {
+        // initiate boilerplates
+        if (
+          boilerplates.length !== 0 &&
+          getBoilerplates().length === 0 &&
+          manifest != null
+        ) {
+          try {
+            evalBoilerplates(boilerplates, modules, directories, manifest);
+          } catch (e) {
+            console.log("Couldn't load all boilerplates");
+          }
+        }
+
         const boilerplate = findBoilerplate(module);
         if (boilerplate) {
           try {

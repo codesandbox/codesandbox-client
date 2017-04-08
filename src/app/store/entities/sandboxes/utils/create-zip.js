@@ -2,9 +2,9 @@
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 
-import type { Sandbox } from './entity';
-import type { Module } from './modules/entity';
-import type { Directory } from './directories/entity';
+import type { Sandbox } from '../entity';
+import type { Module } from '../modules/entity';
+import type { Directory } from '../directories/entity';
 
 import README from './README.md';
 import favicon from '!base64-loader!./favicon.ico';
@@ -25,7 +25,19 @@ function getResourceTag(resource: string) {
   return '';
 }
 
-const getHTML = resources => `<!doctype html>
+function getIndexHtmlBody(modules) {
+  const indexHtmlModule = modules.find(
+    m => m.title === 'index.html' && m.directoryShortid == null
+  );
+
+  if (indexHtmlModule) {
+    return indexHtmlModule.code || '';
+  }
+
+  return `<div id="root"></div>`;
+}
+
+const getHTML = (modules, resources) => `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -44,17 +56,7 @@ const getHTML = resources => `<!doctype html>
     ${resources.map(getResourceTag).join('\n')}
   </head>
   <body>
-    <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
-
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run \`npm start\`.
-      To create a production bundle, use \`npm run build\`.
-    -->
+    ${getIndexHtmlBody(modules)}
   </body>
 </html>`;
 
@@ -127,6 +129,7 @@ export default (async function createZip(
   const src = zip.folder('src');
   modules
     .filter(x => x.directoryShortid == null)
+    .filter(x => x.title !== 'index.html') // This will be included in the body
     .forEach(x => src.file(x.title, x.code));
 
   directories
@@ -134,11 +137,12 @@ export default (async function createZip(
     .forEach(x => createDirectoryWithFiles(modules, directories, x, src));
 
   const publicFolder = zip.folder('public');
-  publicFolder.file('index.html', getHTML(sandbox.externalResources));
 
   publicFolder.file('favicon.ico', favicon, {
     base64: true,
   });
+
+  publicFolder.file('index.html', getHTML(modules, sandbox.externalResources));
 
   if (
     !modules.find(x => x.directoryShortid == null && x.title === 'README.md')
