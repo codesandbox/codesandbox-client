@@ -23,13 +23,6 @@ function createStyleNode(id: string, content: string) {
   }
   document.head.appendChild(styleNode);
 }
-
-function getGeneratedClassNames(id: string, classNames: Array<string>) {
-  return classNames
-    .map(t => t.replace('.', ''))
-    .reduce((prev, next) => ({ ...prev, [next]: `cs-${id}-${next}` }), {});
-}
-
 /**
  * Adds CSS to HEAD and creates a mapping of classname -> generatedClassname
  */
