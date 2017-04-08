@@ -23,13 +23,26 @@ const Container = styled.div`
 type State = {
   notFound: boolean,
   sandbox: Sandbox,
+  showEditor: boolean,
+  showPreview: boolean,
 };
 
 export default class App extends React.PureComponent {
-  state: State = {
-    notFound: false,
-    sandbox: null,
-  };
+  state: State;
+
+  constructor() {
+    super();
+
+    const isPreviewScreen = location.search.includes('view=preview');
+    const isEditorScreen = location.search.includes('view=editor');
+
+    this.state = {
+      notFound: false,
+      sandbox: null,
+      showEditor: !isPreviewScreen,
+      showPreview: !isEditorScreen,
+    };
+  }
 
   getId = () => {
     const matches = location.pathname.match(/^\/embed\/(.*?)(\/|$)/);
@@ -72,6 +85,11 @@ export default class App extends React.PureComponent {
     this.fetchSandbox(id);
   }
 
+  setEditorView = () => this.setState({ showEditor: true, showPreview: false });
+  setPreviewView = () =>
+    this.setState({ showEditor: false, showPreview: true });
+  setMixedView = () => this.setState({ showEditor: true, showPreview: true });
+
   content = () => {
     if (this.state.notFound) {
       return (
@@ -92,10 +110,23 @@ export default class App extends React.PureComponent {
       );
     }
 
+    const { showEditor, showPreview } = this.state;
+
     return (
       <Container>
-        <Header sandbox={this.state.sandbox} />
-        <Content sandbox={this.state.sandbox} />
+        <Header
+          showEditor={showEditor}
+          showPreview={showPreview}
+          setEditorView={this.setEditorView}
+          setPreviewView={this.setPreviewView}
+          setMixedView={this.setMixedView}
+          sandbox={this.state.sandbox}
+        />
+        <Content
+          showEditor={showEditor}
+          showPreview={showPreview}
+          sandbox={this.state.sandbox}
+        />
       </Container>
     );
   };

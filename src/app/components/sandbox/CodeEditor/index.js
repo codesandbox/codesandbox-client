@@ -164,9 +164,11 @@ export default class CodeEditor extends React.PureComponent {
 
     this.codemirror = getCodeMirror(el, documentCache[id]);
 
-    this.codemirror.on('change', this.handleChange);
     if (!this.props.onlyViewMode) {
+      this.codemirror.on('change', this.handleChange);
       this.setCodeMirrorPreferences();
+    } else {
+      this.codemirror.setOption('readOnly', true);
     }
   };
 
@@ -303,7 +305,7 @@ export default class CodeEditor extends React.PureComponent {
       <Container>
         <Header
           saveComponent={canSave && !onlyViewMode && this.handleSaveCode}
-          prettify={this.prettify}
+          prettify={!onlyViewMode && this.prettify}
           title={title}
           path={modulePath}
         />

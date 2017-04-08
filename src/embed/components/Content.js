@@ -4,6 +4,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Preview from 'app/components/sandbox/Preview';
 import CodeEditor from 'app/components/sandbox/CodeEditor';
+import Title from 'app/components/text/Title';
 import { getModulePath } from 'app/store/entities/sandboxes/modules/selectors';
 
 import type { Sandbox } from 'app/store/entities/sandboxes/entity';
@@ -18,23 +19,24 @@ const Container = styled.div`
 
 const Split = styled.div`
   position: relative;
-  width: 100%;
+  width: ${props => props.show ? '100%' : '0px'};
   height: 100%;
+
 `;
 
 type Props = {
   sandbox: Sandbox,
+  showEditor: boolean,
+  showPreview: boolean,
 };
 
 type State = {
   bundle: Object,
-  codes: { [moduleId: string]: string },
 };
 
 export default class Content extends React.Component {
   state = {
     bundle: { processing: true },
-    codes: {},
   };
 
   componentDidMount() {
@@ -52,28 +54,24 @@ export default class Content extends React.Component {
     });
   };
 
-  updateModuleCode = (id, code) => {
-    this.setState({ codes: { ...this.state.codes, [id]: code } });
-  };
-
   props: Props;
+  state: State;
   render() {
-    const { sandbox } = this.props;
-    const { codes } = this.state;
+    const { sandbox, showEditor, showPreview } = this.props;
 
     const preferences = { livePreviewEnabled: true };
 
-    let mainModule = sandbox.modules.find(
+    const mainModule = sandbox.modules.find(
       m => m.title === 'index.js' && m.directoryShortid == null
     );
 
-    if (codes[mainModule.id]) {
-      mainModule = { ...mainModule, code: codes[mainModule.id] };
+    if (!mainModule) {
+      return <Container><Title>Module is not found</Title></Container>;
     }
 
     return (
       <Container>
-        <Split>
+        <Split show={showEditor}>
           <CodeEditor
             code={mainModule.code}
             error={null}
@@ -85,11 +83,11 @@ export default class Content extends React.Component {
               mainModule.id
             )}
             preferences={preferences}
-            changeCode={this.updateModuleCode}
             onlyViewMode
           />
         </Split>
-        <Split>
+
+        <Split show={showPreview}>
           <Preview
             sandboxId={sandbox.id}
             isInProjectView={false}
