@@ -40,8 +40,8 @@ const initialState = {
 };
 
 type Props = {
-  publishVersion: (version: string) => Promise<>;
-  versions: Array<Version>;
+  publishVersion: (version: string) => Promise<>,
+  versions: Array<Version>,
 };
 
 const DUPLICATE_VERSION_INFO = 'You cannot publish a version that already exists.';
@@ -55,11 +55,13 @@ export default class PublishFields extends React.PureComponent {
   minor: ?HTMLInputElement;
   patch: ?HTMLInputElement;
 
-  getVersion = ({
-    major = this.state.major,
-    minor = this.state.minor,
-    patch = this.state.patch,
-  }: { major?: string, minor?: string, patch?: string } = {}) => `${major}.${minor}.${patch}`;
+  getVersion = (
+    {
+      major = this.state.major,
+      minor = this.state.minor,
+      patch = this.state.patch,
+    }: { major?: string, minor?: string, patch?: string } = {}
+  ) => `${major}.${minor}.${patch}`;
 
   isDuplicateVersion = (version: string = this.getVersion()) =>
     !!this.props.versions.find(v => v.version === version);
@@ -105,29 +107,31 @@ export default class PublishFields extends React.PureComponent {
     this.setState(initialState);
   };
 
-  setStatus = (versionInfo: { major?: string, minor?: string, patch?: string }) => {
+  setStatus = (
+    versionInfo: { major?: string, minor?: string, patch?: string }
+  ) => {
     if (this.isDuplicateVersion(this.getVersion(versionInfo))) {
       this.setState({ errorMessage: DUPLICATE_VERSION_INFO });
     } else {
       this.setState({ errorMessage: '' });
     }
-  }
+  };
 
   isValid = (n: string) => n === '' || /^[0-9]+$/.test(n);
 
-  setMajor = (e) => {
+  setMajor = e => {
     if (this.isValid(e.target.value)) {
       this.setState({ major: e.target.value });
       this.setStatus({ major: e.target.value });
     }
   };
-  setMinor = (e) => {
+  setMinor = e => {
     if (this.isValid(e.target.value)) {
       this.setState({ minor: e.target.value });
       this.setStatus({ minor: e.target.value });
     }
   };
-  setPatch = (e) => {
+  setPatch = e => {
     if (this.isValid(e.target.value)) {
       this.setState({ patch: e.target.value });
       this.setStatus({ patch: e.target.value });
@@ -137,7 +141,7 @@ export default class PublishFields extends React.PureComponent {
   render() {
     const { major, minor, patch } = this.state;
 
-    const duplicateVersion = this.isDuplicateVersion();
+    const duplicateVersion = false && this.isDuplicateVersion();
 
     return (
       <Inputs>
@@ -145,7 +149,9 @@ export default class PublishFields extends React.PureComponent {
           <Relative style={{ flex: 1 }}>
             <input
               placeholder="0"
-              ref={(e) => { this.major = e; }}
+              ref={e => {
+                this.major = e;
+              }}
               value={major}
               onChange={this.setMajor}
               onKeyDown={this.handleMajorKey}
@@ -155,7 +161,9 @@ export default class PublishFields extends React.PureComponent {
           <Relative style={{ flex: 1 }}>
             <input
               placeholder="0"
-              ref={(e) => { this.minor = e; }}
+              ref={e => {
+                this.minor = e;
+              }}
               value={minor}
               onChange={this.setMinor}
               onKeyDown={this.handleMinorKey}
@@ -165,7 +173,9 @@ export default class PublishFields extends React.PureComponent {
           <Relative style={{ flex: 1 }}>
             <input
               placeholder="0"
-              ref={(e) => { this.patch = e; }}
+              ref={e => {
+                this.patch = e;
+              }}
               value={patch}
               onChange={this.setPatch}
               onKeyDown={this.handlePatchKey}

@@ -14,3 +14,12 @@ export const forkSandboxUrl = (sandbox: { id: string }) =>
   `${sandboxUrl(sandbox)}/fork`;
 
 export const signInUrl = () => '/auth/github';
+
+export const optionsToParameterizedUrl = (options: Object) => {
+  const keyValues = Object.keys(options)
+    .map(key => `${key}=${options[key]}`)
+    .join('&');
+
+  if (keyValues.length === 0) return '';
+  return `?${keyValues}`;
+};

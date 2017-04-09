@@ -3,6 +3,7 @@ import { camelizeKeys, decamelizeKeys } from 'humps';
 import axios from 'axios';
 
 import getJwt from '../user/utils/jwt';
+import { optionsToParameterizedUrl } from '../../utils/url-generator';
 
 const API_ROOT = '/api/v1/';
 
@@ -43,11 +44,7 @@ export default (async function callApi(
   if (body) {
     if (method === 'GET' && body != null) {
       // Convert body to ?x=y&b=a format
-      const keyValues = Object.keys(decamelizeKeys(body))
-        .map(key => `${key}=${body[key]}`)
-        .join('&');
-      const parameterizedBody = `?${keyValues}`;
-      options.url += parameterizedBody;
+      options.url += optionsToParameterizedUrl(decamelizeKeys(body));
     } else {
       options.data = decamelizeKeys(body);
     }

@@ -11,6 +11,26 @@ const ChildContainer = styled.div`
   border-bottom: 1px solid ${props => props.theme.background2};
   overflow: ${props => props.open ? 'inherit' : 'hidden'};
   height: ${props => props.open ? '100%' : 0};
+
+  ${({ disabled }) => disabled && `
+    pointer-events: none;
+
+    &:after {
+      content: "${disabled || ''}";
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: absolute;
+
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+  `}
 `;
 
 const ItemHeader = styled.div`
@@ -45,6 +65,7 @@ type Props = {
   title: string,
   children: React.Element,
   defaultOpen: ?boolean,
+  disabled: ?string,
 };
 
 export default class WorkspaceItem extends React.PureComponent {
@@ -60,7 +81,7 @@ export default class WorkspaceItem extends React.PureComponent {
   toggleOpen = () => this.setState({ open: !this.state.open });
 
   render() {
-    const { children, title } = this.props;
+    const { children, title, disabled } = this.props;
     const { open } = this.state;
 
     return (
@@ -69,7 +90,7 @@ export default class WorkspaceItem extends React.PureComponent {
           <Title>{title}</Title>
           <ExpandIconContainer open={open} />
         </ItemHeader>
-        <ChildContainer open={open}>
+        <ChildContainer disabled={disabled} open={open}>
           {children}
         </ChildContainer>
       </div>

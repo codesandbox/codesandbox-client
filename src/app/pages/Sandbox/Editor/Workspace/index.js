@@ -5,11 +5,11 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
-import type { Sandbox } from 'app/store/entities/sandboxes/entity';
+import type { Sandbox } from 'common/types';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 
 import Files from './Files';
-// import Versions from './Versions';
+import Versions from './Versions';
 import Dependencies from './Dependencies';
 import Project from './Project';
 import WorkspaceItem from './WorkspaceItem';
@@ -63,6 +63,13 @@ const Workspace = ({ sandbox, sandboxActions }: Props) => (
           !!(sandbox.dependencyBundle && sandbox.dependencyBundle.processing)
         }
       />
+    </WorkspaceItem>
+
+    <WorkspaceItem
+      disabled="It will be possible to publish sandboxes soon (tm)"
+      title="Publishing"
+    >
+      <Versions />
     </WorkspaceItem>
 
     <WorkspaceItem title="Preferences">

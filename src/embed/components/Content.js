@@ -60,11 +60,10 @@ export default class Content extends React.Component {
     const { sandbox, showEditor, showPreview, currentModule } = this.props;
 
     const preferences = { livePreviewEnabled: true };
-    const mainModule = sandbox.modules.find(m => m.id === currentModule);
-
-    if (!mainModule) {
-      return <Container><Title>Module not found</Title></Container>;
-    }
+    const mainModule = sandbox.modules.find(m => m.id === currentModule) ||
+      sandbox.modules.find(
+        m => m.title === 'index.js' && m.directoryShortid == null
+      );
 
     return (
       <Container>

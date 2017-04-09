@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import FeedbackIcon from 'react-icons/lib/go/comment-discussion';
 
+import HoverMenu from './HoverMenu';
 import Action from './Action';
 import Button from '../../../../../components/buttons/Button';
 
@@ -56,7 +57,6 @@ export default class FeedbackView extends React.PureComponent {
     message: '',
   };
 
-  toggle = () => this.setState({ open: !this.state.open });
   handleChange = e => this.setState({ message: e.target.value });
 
   handleSend = () => {
@@ -70,8 +70,13 @@ export default class FeedbackView extends React.PureComponent {
   render() {
     return (
       <Container>
-        <Action onClick={this.toggle} title="Feedback" Icon={FeedbackIcon} />
-        {this.state.open &&
+        <HoverMenu
+          HeaderComponent={Action}
+          headerProps={{
+            title: 'Feedback',
+            Icon: FeedbackIcon,
+          }}
+        >
           <MessageView>
             <h3>Send feedback</h3>
             <textarea
@@ -81,7 +86,8 @@ export default class FeedbackView extends React.PureComponent {
               onChange={this.handleChange}
             />
             <Button onClick={this.handleSend}>Send</Button>
-          </MessageView>}
+          </MessageView>
+        </HoverMenu>
       </Container>
     );
   }

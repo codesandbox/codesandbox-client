@@ -1,25 +1,16 @@
 // @flow
 import React from 'react';
 import styled from 'styled-components';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
 import moment from 'moment';
-import versionEntity from 'app/store/entities/versions';
-import type { Sandbox } from 'app/store/entities/sandboxes/entity';
-import type { Version } from 'app/store/entities/versions/index';
-import {
-  versionsBySandboxSelector,
-} from 'app/store/entities/versions/selector';
 
-import WorkspaceTitle from '../WorkspaceTitle';
 import WorkspaceSubtitle from '../WorkspaceSubtitle';
 import EntryContainer from '../EntryContainer';
 import PublishFields from './PublishFields';
 
 type Props = {
-  sandbox: Sandbox,
-  versions: Array<Version>,
-  versionActions: typeof versionEntity.actions,
+  // sandbox: Sandbox,
+  // versions: Array<Version>,
+  // versionActions: typeof versionEntity.actions,
 };
 
 const Description = styled.p`
@@ -36,38 +27,66 @@ const VersionDate = styled.div`
   color: ${props => props.theme.background.lighten(2).clearer(0.5)};
 `;
 
-const mapDispatchToProps = dispatch => ({
-  versionActions: bindActionCreators(versionEntity.actions, dispatch),
-});
-const mapStateToProps = (state, props: Props) => ({
-  versions: versionsBySandboxSelector(state, { sandboxId: props.sandbox.id }),
-});
-class Versions extends React.PureComponent {
+// const mapDispatchToProps = dispatch => ({
+//   versionActions: bindActionCreators(versionEntity.actions, dispatch),
+// });
+// const mapStateToProps = (state, props: Props) => ({
+//   versions: versionsBySandboxSelector(state, { sandboxId: props.sandbox.id }),
+// });
+// class Versions extends React.PureComponent {
+//   props: Props;
+
+//   publishVersion = version => {
+//     const { sandbox } = this.props;
+
+//     this.props.versionActions.publishVersion(sandbox.id, version);
+//   };
+
+//   render() {
+//     const { versions } = this.props;
+//     return (
+//       <div>
+//         <WorkspaceTitle>Versions</WorkspaceTitle>
+//         <Description>
+//           You can publish versions of your sandbox to make your sandbox available
+//           for others to use as a dependency.
+//         </Description>
+
+//         <PublishFields
+//           versions={versions}
+//           publishVersion={this.publishVersion}
+//         />
+
+//         <WorkspaceSubtitle>Published versions</WorkspaceSubtitle>
+//         {versions.map(v => (
+//           <EntryContainer key={v.version}>
+//             <span>{v.version}</span>
+//             <VersionDate>{moment(v.insertedAt).format('lll')}</VersionDate>
+//           </EntryContainer>
+//         ))}
+
+//       </div>
+//     );
+//   }
+// }
+
+// export default connect(mapStateToProps, mapDispatchToProps)(Versions);
+
+export default class Versions extends React.PureComponent {
   props: Props;
 
-  publishVersion = version => {
-    const { sandbox } = this.props;
-
-    this.props.versionActions.publishVersion(sandbox.id, version);
-  };
-
   render() {
-    const { versions } = this.props;
     return (
       <div>
-        <WorkspaceTitle>Versions</WorkspaceTitle>
         <Description>
           You can publish versions of your sandbox to make your sandbox available
           for others to use as a dependency.
         </Description>
 
-        <PublishFields
-          versions={versions}
-          publishVersion={this.publishVersion}
-        />
+        <PublishFields />
 
         <WorkspaceSubtitle>Published versions</WorkspaceSubtitle>
-        {versions.map(v => (
+        {[].map(v => (
           <EntryContainer key={v.version}>
             <span>{v.version}</span>
             <VersionDate>{moment(v.insertedAt).format('lll')}</VersionDate>
@@ -78,5 +97,3 @@ class Versions extends React.PureComponent {
     );
   }
 }
-
-export default connect(mapStateToProps, mapDispatchToProps)(Versions);

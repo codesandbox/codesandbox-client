@@ -7,7 +7,7 @@ import EditorLink from './EditorLink';
 import Files from './Files';
 import EntryContainer
   from '../../app/pages/Sandbox/Editor/Workspace/EntryContainer';
-import Margin from '../../app/components/spacing/Margin';
+import Padding from '../../app/components/spacing/Padding';
 
 const Container = styled.div`
   flex: 250px;
@@ -16,6 +16,7 @@ const Container = styled.div`
   color: rgba(255, 255, 255, 0.8);
   z-index: 10;
   background-color: ${props => props.theme.background.darken(0.1)};
+  overflow: auto;
 `;
 
 const Title = styled.h2`
@@ -33,7 +34,7 @@ const Subtitle = styled.h3`
   font-size: .875rem;
   margin: 0.5rem 1rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.5);
 `;
 
 const Description = styled.p`
@@ -43,6 +44,8 @@ const Description = styled.p`
 
 const Item = styled.div`
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  ${({ hover, theme }) =>
+  hover && `&:hover { background-color: ${theme.background.darken(0.3)()};}`}
 `;
 
 const Version = styled.div`
@@ -118,10 +121,10 @@ export default ({ sandbox, setCurrentModule, currentModule }: Props) => (
         </EntryContainer>
       ))}
     </Item>
-    <Item>
-      <Margin>
+    <Item hover>
+      <Padding>
         <EditorLink id={sandbox.id} />
-      </Margin>
+      </Padding>
     </Item>
   </Container>
 );

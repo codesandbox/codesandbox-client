@@ -15,8 +15,8 @@ const Container = styled.div`
   height: 3rem;
   padding: 0 1rem;
   box-sizing: border-box;
-  border-bottom: 1px solid ${props => props.theme.background2};
-  background-color: ${props => props.theme.background};
+  border-bottom: 1px solid ${props => props.theme.background2.darken(0.3)};
+  background-color: ${props => props.theme.background2};
 `;
 
 const MenuIcon = styled(MenuIconSVG)`
@@ -67,7 +67,7 @@ export default class Header extends React.PureComponent {
           setMixedView={setMixedView}
         />
         <RightAligned>
-          <EditorLink id={sandbox.id} />
+          <EditorLink small id={sandbox.id} />
         </RightAligned>
       </Container>
     );
