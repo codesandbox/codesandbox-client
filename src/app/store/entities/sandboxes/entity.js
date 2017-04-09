@@ -3,6 +3,7 @@ import { schema } from 'normalizr';
 import moduleEntity from './modules/entity';
 import directoryEntity from './directories/entity';
 import userEntity from './users/entity';
+import { getSandboxOptions } from 'common/url';
 
 export default new schema.Entity(
   'sandboxes',
@@ -13,11 +14,19 @@ export default new schema.Entity(
     author: userEntity,
   },
   {
-    processStrategy: value => ({
-      ...value,
-      isInProjectView: true,
-      showEditor: true,
-      showPreview: true,
-    }),
+    processStrategy: sandbox => {
+      const {
+        currentModule,
+        isEditorScreen,
+        isPreviewScreen,
+      } = getSandboxOptions();
+      return {
+        ...sandbox,
+        isInProjectView: currentModule == null,
+        showEditor: !isPreviewScreen,
+        showPreview: !isEditorScreen,
+        currentModule,
+      };
+    },
   }
 );

@@ -15,7 +15,7 @@ import Action from './Action';
 import {
   isMainModule,
 } from '../../../../../store/entities/sandboxes/modules/selectors';
-import { sandboxUrl } from '../../../../../utils/url-generator';
+import { sandboxUrl, embedUrl } from '../../../../../utils/url-generator';
 
 const Container = styled.div`
   position: relative;
@@ -107,7 +107,7 @@ type Props = {
 export default class ShareView extends React.PureComponent {
   props: Props;
   state = {
-    showEditor: false,
+    showEditor: true,
     showPreview: true,
     defaultModule: null,
   };
@@ -129,19 +129,10 @@ export default class ShareView extends React.PureComponent {
 
   setDefaultModule = id => this.setState({ defaultModule: id });
 
-  getEditorUrl = () => {
-    const { sandbox } = this.props;
-
-    return protocolAndHost() + sandboxUrl(sandbox);
-  };
-
-  getEmbedUrl = () => {
-    const { sandbox } = this.props;
+  getOptionsUrl = () => {
     const { defaultModule, showEditor, showPreview } = this.state;
 
     const options = {};
-
-    const url = `/embed/${sandbox.id}`;
 
     if (defaultModule) {
       options.module = defaultModule;
@@ -153,8 +144,19 @@ export default class ShareView extends React.PureComponent {
     if (!showEditor && showPreview) {
       options.view = 'preview';
     }
+    return optionsToParameterizedUrl(options);
+  };
 
-    return protocolAndHost() + url + optionsToParameterizedUrl(options);
+  getEditorUrl = () => {
+    const { sandbox } = this.props;
+
+    return protocolAndHost() + sandboxUrl(sandbox) + this.getOptionsUrl();
+  };
+
+  getEmbedUrl = () => {
+    const { sandbox } = this.props;
+
+    return protocolAndHost() + embedUrl(sandbox) + this.getOptionsUrl();
   };
 
   getIframeScript = () =>

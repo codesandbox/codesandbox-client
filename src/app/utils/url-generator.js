@@ -6,6 +6,7 @@ export const protocolAndHost = () => `${location.protocol}//${host()}`;
 
 export const sandboxUrl = (sandbox: { id: string }) => `/s/${sandbox.id}`;
 export const newSandboxUrl = () => `/s/new`;
+export const embedUrl = (sandbox: { id: string }) => `/embed/${sandbox.id}`;
 
 export const frameUrl = (append: string = '') =>
   `${location.protocol}//sandbox.${host()}/${append}`;

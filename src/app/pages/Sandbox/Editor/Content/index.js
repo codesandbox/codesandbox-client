@@ -181,7 +181,7 @@ class EditorPreview extends React.PureComponent {
                 : 'inherit',
             }}
           >
-            {EditorPane}
+            {sandbox.showEditor && EditorPane}
             {PreviewPane}
           </SplitPane>
         </div>

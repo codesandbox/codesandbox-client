@@ -12,6 +12,7 @@ import SubTitle from 'app/components/text/SubTitle';
 import Header from './components/Header';
 import Content from './components/Content';
 import Sidebar from './components/Sidebar';
+import { getSandboxOptions } from '../common/url';
 
 const Container = styled.div`
   display: flex;
@@ -50,18 +51,6 @@ type State = {
   sidebarOpen: boolean,
 };
 
-const getQueryParameters = () => {
-  const result = {};
-  const moduleMatch = location.search.match(/(\?|\&)(module)\=([^&]+)/);
-  if (moduleMatch) {
-    result.currentModule = moduleMatch[3];
-  }
-  result.isPreviewScreen = location.search.includes('view=preview');
-  result.isEditorScreen = location.search.includes('view=editor');
-
-  return result;
-};
-
 export default class App extends React.PureComponent {
   state: State;
 
@@ -72,7 +61,7 @@ export default class App extends React.PureComponent {
       currentModule,
       isPreviewScreen,
       isEditorScreen,
-    } = getQueryParameters();
+    } = getSandboxOptions();
 
     this.state = {
       notFound: false,
