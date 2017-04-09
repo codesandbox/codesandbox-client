@@ -8,11 +8,14 @@ import {
   protocolAndHost,
 } from 'app/utils/url-generator';
 
+import type { Sandbox } from 'common/types';
+
 import HoverMenu from './HoverMenu';
 import Action from './Action';
 import {
   isMainModule,
 } from '../../../../../store/entities/sandboxes/modules/selectors';
+import { sandboxUrl } from '../../../../../utils/url-generator';
 
 const Container = styled.div`
   position: relative;
@@ -97,13 +100,14 @@ const Column = styled.div`
 `;
 
 type Props = {
+  sandbox: Sandbox,
   sendMessage: (message: string) => void,
 };
 
 export default class ShareView extends React.PureComponent {
   props: Props;
   state = {
-    showEditor: true,
+    showEditor: false,
     showPreview: true,
     defaultModule: null,
   };
@@ -124,6 +128,12 @@ export default class ShareView extends React.PureComponent {
   setMixedView = () => this.setState({ showEditor: true, showPreview: true });
 
   setDefaultModule = id => this.setState({ defaultModule: id });
+
+  getEditorUrl = () => {
+    const { sandbox } = this.props;
+
+    return protocolAndHost() + sandboxUrl(sandbox);
+  };
 
   getEmbedUrl = () => {
     const { sandbox } = this.props;
@@ -207,9 +217,11 @@ export default class ShareView extends React.PureComponent {
               </Column>
               <Column>
                 <Inputs>
-                  <LinkName>Fullscreen link</LinkName>
+                  <LinkName>Editor url</LinkName>
+                  <input onFocus={this.select} value={this.getEditorUrl()} />
+                  <LinkName>Fullscreen url</LinkName>
                   <input onFocus={this.select} value={this.getEmbedUrl()} />
-                  <LinkName>Embed link (Medium/Embedly)</LinkName>
+                  <LinkName>Embed url (Medium/Embedly)</LinkName>
                   <input onFocus={this.select} value={this.getEmbedUrl()} />
                   <LinkName>iframe</LinkName>
                   <textarea
