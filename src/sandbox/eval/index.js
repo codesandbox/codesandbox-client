@@ -8,12 +8,14 @@ import type {
 import evalJS, { deleteCache as deleteJSCache } from './js';
 import evalHTML from './html';
 import evalCSS from './css';
+import evalJson from './json';
 
 const MAX_DEPTH = 20;
 
 function doEval(mainModule, sandboxId, modules, directories, manifest, depth) {
   const html = /\.html$/;
   const css = /\.css$/;
+  const json = /\.json$/;
 
   if (html.test(mainModule.title)) {
     return evalHTML(
@@ -28,6 +30,17 @@ function doEval(mainModule, sandboxId, modules, directories, manifest, depth) {
 
   if (css.test(mainModule.title)) {
     return evalCSS(
+      mainModule,
+      sandboxId,
+      modules,
+      directories,
+      manifest,
+      depth
+    );
+  }
+
+  if (json.test(mainModule.title)) {
+    return evalJson(
       mainModule,
       sandboxId,
       modules,

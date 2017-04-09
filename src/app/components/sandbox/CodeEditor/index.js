@@ -148,6 +148,9 @@ export default class CodeEditor extends React.PureComponent {
       if (kind[1] === 'css') {
         await System.import('codemirror/mode/css/css');
         return 'css';
+      } else if (kind[1] === 'html') {
+        await System.import('codemirror/mode/htmlmixed/htmlmixed');
+        return 'htmlmixed';
       }
     }
 
@@ -271,17 +274,20 @@ export default class CodeEditor extends React.PureComponent {
   getCode = () => this.codemirror.getValue();
 
   prettify = async () => {
-    const { id, preferences } = this.props;
+    const { id, title, preferences } = this.props;
     const code = this.getCode();
-    try {
-      const newCode = await prettify(code, preferences.lintEnabled);
+    const mode = await this.getMode(title);
+    if (mode === 'jsx') {
+      try {
+        const newCode = await prettify(code, preferences.lintEnabled);
 
-      if (newCode !== code) {
-        this.props.changeCode(id, newCode);
-        this.updateCodeMirrorCode(newCode);
+        if (newCode !== code) {
+          this.props.changeCode(id, newCode);
+          this.updateCodeMirrorCode(newCode);
+        }
+      } catch (e) {
+        console.error(e);
       }
-    } catch (e) {
-      console.error(e);
     }
   };
 
