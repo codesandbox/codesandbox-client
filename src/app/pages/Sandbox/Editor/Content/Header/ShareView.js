@@ -209,7 +209,7 @@ export default class ShareView extends React.PureComponent {
                 <Inputs>
                   <LinkName>Fullscreen link</LinkName>
                   <input onFocus={this.select} value={this.getEmbedUrl()} />
-                  <LinkName>Embed link (Medium)</LinkName>
+                  <LinkName>Embed link (Medium/Embedly)</LinkName>
                   <input onFocus={this.select} value={this.getEmbedUrl()} />
                   <LinkName>iframe</LinkName>
                   <textarea
