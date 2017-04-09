@@ -52,7 +52,11 @@ const config = {
       require.resolve('./polyfills'),
       path.join(paths.sandboxSrc, 'index.js'),
     ],
-    vendor: ['babel-standalone', 'codemirror', 'react', 'styled-components'],
+    embed: [
+      require.resolve('./polyfills'),
+      path.join(paths.embedSrc, 'index.js'),
+    ],
+    vendor: ['codemirror', 'react', 'react-dom', 'styled-components'],
   },
 
   target: 'web',
@@ -192,6 +196,24 @@ const config = {
         minifyURLs: true,
       },
     }),
+    new HtmlWebpackPlugin({
+      inject: true,
+      chunks: ['vendor', 'embed'],
+      filename: 'embed.html',
+      template: path.join(paths.embedSrc, 'index.html'),
+      minify: __PROD__ && {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeRedundantAttributes: true,
+        useShortDoctype: true,
+        removeEmptyAttributes: true,
+        removeStyleLinkTypeAttributes: true,
+        keepClosingSlash: true,
+        minifyJS: true,
+        minifyCSS: true,
+        minifyURLs: true,
+      },
+    }),
     // Makes some environment variables available to the JS code, for example:
     // if (process.env.NODE_ENV === 'development') { ... }. See `env.js`.
     new webpack.DefinePlugin(env),
@@ -226,6 +248,7 @@ if (__DEV__) {
   ];
 
   config.entry.app = [...devEntries, ...config.entry.app];
+  config.entry.embed = [...devEntries, ...config.entry.embed];
 }
 
 if (__PROD__) {

@@ -2,7 +2,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Route, Switch, Redirect } from 'react-router-dom';
-import 'normalize.css';
 
 import Notifications from 'app/containers/Notifications';
 import ContextMenu from 'app/containers/ContextMenu';

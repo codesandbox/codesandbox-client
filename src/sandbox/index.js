@@ -81,7 +81,7 @@ async function compile(message) {
     const domChanged = document.body.innerHTML !== html;
 
     if (!domChanged && !module.title.endsWith('.html')) {
-      const isReact = module.code.includes('React');
+      const isReact = module.code && module.code.includes('React');
       const functionName = evalled.default ? evalled.default.name : '';
 
       if (isReact) {

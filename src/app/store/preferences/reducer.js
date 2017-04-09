@@ -1,3 +1,6 @@
+// @flow
+
+import type { Preferences } from 'common/types';
 import store from 'store/dist/store.modern';
 
 import {
@@ -14,14 +17,6 @@ import {
   PRETTIFY_ON_SAVE,
   LINT_ENABLED,
 } from './keys';
-
-export type Preferences = {
-  autoCompleteEnabled: boolean,
-  vimMode: boolean,
-  livePreviewEnabled: boolean,
-  prettifyOnSaveEnabled: boolean,
-  lintEnabled: boolean,
-};
 
 const getKey = (key, defaultVal) => {
   try {
@@ -41,7 +36,7 @@ const initialState: Preferences = {
   lintEnabled: getKey(LINT_ENABLED, false),
 };
 
-export default (state = initialState, action) => {
+export default (state: Preferences = initialState, action) => {
   switch (action.type) {
     case SET_PREFERENCE_AUTOCOMPLETE:
       return { ...state, autoCompleteEnabled: action.option };

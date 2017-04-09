@@ -4,19 +4,19 @@ import styled from 'styled-components';
 import Save from 'react-icons/lib/md/save';
 import Fork from 'react-icons/lib/go/repo-forked';
 import Download from 'react-icons/lib/go/cloud-download';
-import Import from 'react-icons/lib/go/package';
 import PlusIcon from 'react-icons/lib/go/plus';
 import GithubIcon from 'react-icons/lib/go/mark-github';
 
-import type { Sandbox } from 'app/store/entities/sandboxes/entity';
-import type { User } from 'app/store/user/reducer';
+import type { Sandbox, CurrentUser } from 'common/types';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 import userActionCreators from 'app/store/user/actions';
-import Tooltip from 'app/components/Tooltip';
+
+import ModeIcons from 'app/components/sandbox/ModeIcons';
 
 import Action from './Action';
 import UserView from './User';
 import FeedbackView from './FeedbackView';
+import ShareView from './ShareView';
 import { newSandboxUrl } from '../../../../../utils/url-generator';
 
 const Container = styled.div`
@@ -45,61 +45,11 @@ const Left = styled.div`
   height: 100%;
 `;
 
-const Tooltips = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-`;
-
-const Icon = styled.div`
-  display: inline-block;
-  width: ${props => props.half ? 1.5 : 3}rem;
-  border: 1px solid rgba(0,0,0,0.1);
-`;
-
-const ViewIcon = styled.div`
-  display: flex;
-  height: 1.5rem;
-  transition: 0.3s ease all;
-  position: relative;
-  margin: 0 0.5rem;
-  border-radius: 2px;
-  overflow: hidden;
-  cursor: pointer;
-
-  &:after {
-    transition: 0.3s ease all;
-    content: "";
-    position: absolute;
-    left: 0; right: 0; bottom: 0; top: 0;
-    background-color: rgba(0,0,0,0.6);
-    opacity: ${props => props.active ? 0 : 1};
-    border-radius: 2px;
-    overflow: hidden;
-  }
-  &:hover::after {
-    opacity: 0;
-  }
-`;
-
-const EditorIcon = styled(Icon)`
-  background-color: ${props => props.theme.secondary};
-`;
-
-const PreviewIcon = styled(Icon)`
-  background-color: ${props => props.theme.primary};
-`;
-
 type Props = {
   sandbox: Sandbox,
   sandboxActions: typeof sandboxActionCreators,
   userActions: typeof userActionCreators,
-  user: User,
+  user: CurrentUser,
 };
 
 export default class Header extends React.PureComponent {
@@ -155,44 +105,20 @@ export default class Header extends React.PureComponent {
             Icon={Save}
           />
           <Action title="Download" Icon={Download} onClick={this.zipSandbox} />
-          <Action
-            title="Publish"
-            Icon={Import}
-            placeholder="Library publishing is coming soon!"
-          />
+          <ShareView sandbox={sandbox} />
         </Left>
 
-        <Tooltips>
-          <Tooltip message="Editor view">
-            <ViewIcon
-              onClick={this.setEditorView}
-              active={sandbox.showEditor && !sandbox.showPreview}
-            >
-              <EditorIcon />
-            </ViewIcon>
-          </Tooltip>
-          <Tooltip message="Split view">
-            <ViewIcon
-              onClick={this.setMixedView}
-              active={sandbox.showEditor && sandbox.showPreview}
-            >
-              <EditorIcon half />
-              <PreviewIcon half />
-            </ViewIcon>
-          </Tooltip>
-          <Tooltip message="Preview view">
-            <ViewIcon
-              onClick={this.setPreviewView}
-              active={!sandbox.showEditor && sandbox.showPreview}
-            >
-              <PreviewIcon />
-            </ViewIcon>
-          </Tooltip>
-        </Tooltips>
+        <ModeIcons
+          showEditor={sandbox.showEditor}
+          showPreview={sandbox.showPreview}
+          setMixedView={this.setMixedView}
+          setEditorView={this.setEditorView}
+          setPreviewView={this.setPreviewView}
+        />
 
         <Right>
           <FeedbackView sendMessage={userActions.sendFeedback} />
-          <Action href={newSandboxUrl()} title="Create" Icon={PlusIcon} />
+          <Action href={newSandboxUrl()} title="New" Icon={PlusIcon} />
           {user.jwt
             ? <UserView
                 signOut={userActions.signOut}

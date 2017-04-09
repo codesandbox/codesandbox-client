@@ -11,7 +11,7 @@ import 'codemirror/addon/dialog/dialog';
 import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/tern/tern';
 
-import type { Preferences } from 'app/store/preferences/reducer';
+import type { Preferences } from 'common/types';
 
 import Header from './Header';
 
@@ -27,22 +27,21 @@ type Props = {
   saveCode: () => void,
   canSave: boolean,
   preferences: Preferences,
+  onlyViewMode: boolean,
 };
 
 const Container = styled.div`
-  position: absolute;
+  position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: calc(100% - 3rem);
+  height: 100%;
   overflow: auto;
 `;
 
 const CodeContainer = styled.div`
-  flex: 1 1 auto;
   position: relative;
   overflow: auto;
-  height: calc(100% - 6rem);
 `;
 
 const handleError = (cm, currentError, nextError, nextCode, nextId) => {
@@ -106,7 +105,7 @@ export default class CodeEditor extends React.PureComponent {
       }
       documentCache[currentId] = this.codemirror.swapDoc(documentCache[nextId]);
 
-      this.updateCodeMirrorCode(nextCode);
+      this.updateCodeMirrorCode(nextCode || '');
     }
   };
 
@@ -160,15 +159,20 @@ export default class CodeEditor extends React.PureComponent {
 
   getCodeMirror = async (el: Element) => {
     const { code, id, title } = this.props;
-    CodeMirror.commands.save = this.handleSaveCode;
+    if (!this.props.onlyViewMode) {
+      CodeMirror.commands.save = this.handleSaveCode;
+    }
     const mode = await this.getMode(title);
     documentCache[id] = new CodeMirror.Doc(code || '', mode);
 
     this.codemirror = getCodeMirror(el, documentCache[id]);
 
-    this.codemirror.on('change', this.handleChange);
-
-    this.setCodeMirrorPreferences();
+    if (!this.props.onlyViewMode) {
+      this.codemirror.on('change', this.handleChange);
+      this.setCodeMirrorPreferences();
+    } else {
+      this.codemirror.setOption('readOnly', true);
+    }
   };
 
   setCodeMirrorPreferences = async () => {
@@ -281,7 +285,9 @@ export default class CodeEditor extends React.PureComponent {
           this.props.changeCode(id, newCode);
           this.updateCodeMirrorCode(newCode);
         }
-      } catch (e) {}
+      } catch (e) {
+        console.error(e);
+      }
     }
   };
 
@@ -299,13 +305,13 @@ export default class CodeEditor extends React.PureComponent {
   server: typeof CodeMirror.TernServer;
 
   render() {
-    const { title, canSave, modulePath } = this.props;
+    const { title, canSave, onlyViewMode, modulePath } = this.props;
 
     return (
       <Container>
         <Header
-          saveComponent={canSave && this.handleSaveCode}
-          prettify={this.prettify}
+          saveComponent={canSave && !onlyViewMode && this.handleSaveCode}
+          prettify={!onlyViewMode && this.prettify}
           title={title}
           path={modulePath}
         />

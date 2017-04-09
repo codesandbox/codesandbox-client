@@ -85,13 +85,14 @@ export default (
     <AddressBarContainer>
       <AddressBar url={url} onChange={onChange} onConfirm={onConfirm} />
     </AddressBarContainer>
-    <SwitchContainer>
-      <Tooltip
-        message={isProjectView ? `Project View` : 'Current module view'}
-        left
-      >
-        <Switch right={isProjectView} onClick={toggleProjectView} />
-      </Tooltip>
-    </SwitchContainer>
+    {toggleProjectView &&
+      <SwitchContainer>
+        <Tooltip
+          message={isProjectView ? `Project View` : 'Current module view'}
+          left
+        >
+          <Switch right={isProjectView} onClick={toggleProjectView} />
+        </Tooltip>
+      </SwitchContainer>}
   </Container>
 );

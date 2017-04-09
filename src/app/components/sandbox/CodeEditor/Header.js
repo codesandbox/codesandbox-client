@@ -34,7 +34,7 @@ type Props = {
   title: string,
   path: string,
   saveComponent: ?() => void,
-  prettify: Function,
+  prettify: ?Function,
 };
 
 export default ({ path, title, saveComponent, prettify }: Props) => (
@@ -46,7 +46,7 @@ export default ({ path, title, saveComponent, prettify }: Props) => (
 
     <Buttons>
       <Tooltip bottom offset={-25} message="Made possible by Prettier">
-        <Button onClick={prettify} small>
+        <Button disabled={!prettify} onClick={prettify} small>
           Prettify
         </Button>
       </Tooltip>

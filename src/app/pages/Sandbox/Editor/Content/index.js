@@ -19,10 +19,11 @@ import {
 
 import SplitPane from 'react-split-pane';
 
-import CodeEditor from './subviews/CodeEditor';
-import Preview from './subviews/Preview';
+import CodeEditor from 'app/components/sandbox/CodeEditor';
+import Preview from 'app/components/sandbox/Preview';
 
 import Header from './Header';
+import Relative from '../../../../components/Relative';
 
 type Props = {
   sandbox: Sandbox,
@@ -38,6 +39,9 @@ type State = {
 };
 
 const FullSize = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: auto;
   height: 100%;
   width: 100%;
   pointer-events: ${props => props.inactive ? 'none' : 'all'};
@@ -142,6 +146,7 @@ class EditorPreview extends React.PureComponent {
           externalResources={sandbox.externalResources}
           setProjectView={sandboxActions.setProjectView}
           preferences={preferences}
+          sandboxActions={sandboxActions}
         />
       </FullSize>
     );
@@ -159,25 +164,27 @@ class EditorPreview extends React.PureComponent {
           userActions={userActions}
           user={user}
         />
-        <SplitPane
-          onDragStarted={this.startResizing}
-          onDragFinished={this.stopResizing}
-          split="vertical"
-          defaultSize="50%"
-          minSize={360}
-          primary="second"
-          paneStyle={{ height: '100%' }}
-          pane1Style={{ display: sandbox.showEditor ? 'block' : 'none' }}
-          pane2Style={{
-            display: sandbox.showPreview ? 'block' : 'none',
-            minWidth: sandbox.showPreview && !sandbox.showEditor
-              ? '100%'
-              : 'inherit',
-          }}
-        >
-          {EditorPane}
-          {PreviewPane}
-        </SplitPane>
+        <div style={{ height: '100%', width: '100%', position: 'relative' }}>
+          <SplitPane
+            onDragStarted={this.startResizing}
+            onDragFinished={this.stopResizing}
+            split="vertical"
+            defaultSize="50%"
+            minSize={360}
+            primary="second"
+            paneStyle={{ height: '100%' }}
+            pane1Style={{ display: sandbox.showEditor ? 'block' : 'none' }}
+            pane2Style={{
+              display: sandbox.showPreview ? 'block' : 'none',
+              minWidth: sandbox.showPreview && !sandbox.showEditor
+                ? '100%'
+                : 'inherit',
+            }}
+          >
+            {sandbox.showEditor && EditorPane}
+            {PreviewPane}
+          </SplitPane>
+        </div>
       </FullSize>
     );
   }

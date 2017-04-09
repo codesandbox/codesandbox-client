@@ -1,18 +1,6 @@
 // @flow
+import type { Notification } from 'common/types';
 import { ADD_NOTIFICATION, REMOVE_NOTIFICATION } from './actions';
-
-export type NotificationButton = {
-  title: string,
-  action: Function,
-};
-
-export type Notification = {
-  id: number,
-  title: string,
-  type: 'notice' | 'success' | 'warning' | 'error',
-  number: Date,
-  buttons: ?Array<NotificationButton>,
-};
 
 type State = Array<Notification>;
 
