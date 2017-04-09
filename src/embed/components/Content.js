@@ -7,7 +7,7 @@ import CodeEditor from 'app/components/sandbox/CodeEditor';
 import Title from 'app/components/text/Title';
 import { getModulePath } from 'app/store/entities/sandboxes/modules/selectors';
 
-import type { Sandbox } from 'app/store/entities/sandboxes/entity';
+import type { Sandbox } from 'common/types';
 import fetchBundle from './bundle-fetcher';
 
 const Container = styled.div`
@@ -21,11 +21,11 @@ const Split = styled.div`
   position: relative;
   width: ${props => props.show ? '100%' : '0px'};
   height: 100%;
-
 `;
 
 type Props = {
   sandbox: Sandbox,
+  currentModule: string,
   showEditor: boolean,
   showPreview: boolean,
 };
@@ -57,34 +57,32 @@ export default class Content extends React.Component {
   props: Props;
   state: State;
   render() {
-    const { sandbox, showEditor, showPreview } = this.props;
+    const { sandbox, showEditor, showPreview, currentModule } = this.props;
 
     const preferences = { livePreviewEnabled: true };
-
-    const mainModule = sandbox.modules.find(
-      m => m.title === 'index.js' && m.directoryShortid == null
-    );
+    const mainModule = sandbox.modules.find(m => m.id === currentModule);
 
     if (!mainModule) {
-      return <Container><Title>Module is not found</Title></Container>;
+      return <Container><Title>Module not found</Title></Container>;
     }
 
     return (
       <Container>
         <Split show={showEditor}>
-          <CodeEditor
-            code={mainModule.code}
-            error={null}
-            id={mainModule.id}
-            title={mainModule.title}
-            modulePath={getModulePath(
-              sandbox.modules,
-              sandbox.directories,
-              mainModule.id
-            )}
-            preferences={preferences}
-            onlyViewMode
-          />
+          {showEditor &&
+            <CodeEditor
+              code={mainModule.code}
+              error={null}
+              id={mainModule.id}
+              title={mainModule.title}
+              modulePath={getModulePath(
+                sandbox.modules,
+                sandbox.directories,
+                mainModule.id
+              )}
+              preferences={preferences}
+              onlyViewMode
+            />}
         </Split>
 
         <Split show={showPreview}>

@@ -4,7 +4,7 @@ import { sortBy } from 'lodash';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { DragDropContext } from 'react-dnd';
 
-import type { Sandbox } from 'app/store/entities/sandboxes/entity';
+import type { Sandbox } from 'common/types';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 import { isMainModule } from 'app/store/entities/sandboxes/modules/validator';
 

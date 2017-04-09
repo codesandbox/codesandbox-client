@@ -6,11 +6,7 @@ import { debounce } from 'lodash';
 
 import type { Preferences } from 'app/store/preferences/reducer';
 
-import type { Module } from 'app/store/entities/sandboxes/modules/entity';
-import type { Sandbox } from 'app/store/entities/sandboxes/entity';
-import type {
-  Directory,
-} from 'app/store/entities/sandboxes/directories/entity';
+import type { Module, Sandbox, Directory } from 'common/types';
 import { frameUrl } from 'app/utils/url-generator';
 import { isMainModule } from 'app/store/entities/sandboxes/modules/validator';
 import defaultBoilerplates

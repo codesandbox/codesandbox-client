@@ -1,3 +1,5 @@
+// @flow
+import type { CurrentUser } from 'common/types';
 import getJwt from './utils/jwt';
 import {
   SIGN_IN_SUCCESFULL,
@@ -6,16 +8,7 @@ import {
   SET_USER_SANDBOXES,
 } from './actions';
 
-export type User = {
-  id: ?string,
-  email: ?string,
-  name: ?string,
-  username: ?string,
-  avatar_url: ?string,
-  jwt: ?string,
-};
-
-const initialState: User = {
+const initialState: CurrentUser = {
   id: null,
   email: null,
   name: null,
@@ -24,7 +17,7 @@ const initialState: User = {
   jwt: getJwt(),
 };
 
-export default (state = initialState, action) => {
+export default (state: CurrentUser = initialState, action: Object) => {
   switch (action.type) {
     case SIGN_IN_SUCCESFULL:
       return {

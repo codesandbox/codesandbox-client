@@ -36,7 +36,7 @@
     "extract-text-webpack-plugin": "^2.1.0",
     "file-loader": "^0.10.1",
     "filesize": "^3.5.6",
-    "flow-bin": "^0.41.0",
+    "flow-bin": "0.43.0",
     "fs-extra": "^2.0.0",
     "gzip-size": "3.0.0",
     "html-loader": "^0.4.4",

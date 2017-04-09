@@ -3,8 +3,9 @@ import React from 'react';
 import styled from 'styled-components';
 import MenuIconSVG from 'react-icons/lib/md/menu';
 
-import type { Sandbox } from 'app/store/entities/sandboxes/entity';
+import type { Sandbox } from 'common/types';
 import ModeIcons from 'app/components/sandbox/ModeIcons';
+import EditorLink from './EditorLink';
 
 const Container = styled.div`
   position: relative;
@@ -23,6 +24,12 @@ const MenuIcon = styled(MenuIconSVG)`
   color: rgba(255, 255, 255, 0.7);
   margin-right: 1rem;
   cursor: pointer;
+  z-index: 10;
+`;
+
+const RightAligned = styled.div`
+  position: absolute;
+  right: 1rem;
 `;
 
 type Props = {
@@ -32,6 +39,7 @@ type Props = {
   setEditorView: () => void,
   setPreviewView: () => void,
   setMixedView: () => void,
+  toggleSidebar: () => void,
 };
 
 export default class Header extends React.PureComponent {
@@ -45,10 +53,11 @@ export default class Header extends React.PureComponent {
       setEditorView,
       setPreviewView,
       setMixedView,
+      toggleSidebar,
     } = this.props;
     return (
       <Container>
-        <MenuIcon />
+        <MenuIcon onClick={toggleSidebar} />
         <span>{sandbox.title || sandbox.id}</span>
         <ModeIcons
           showEditor={showEditor}
@@ -57,6 +66,9 @@ export default class Header extends React.PureComponent {
           setPreviewView={setPreviewView}
           setMixedView={setMixedView}
         />
+        <RightAligned>
+          <EditorLink id={sandbox.id} />
+        </RightAligned>
       </Container>
     );
   }

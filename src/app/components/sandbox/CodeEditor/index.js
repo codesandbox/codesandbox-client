@@ -11,7 +11,7 @@ import 'codemirror/addon/dialog/dialog';
 import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/tern/tern';
 
-import type { Preferences } from 'app/store/preferences/reducer';
+import type { Preferences } from 'common/types';
 
 import Header from './Header';
 
@@ -105,7 +105,7 @@ export default class CodeEditor extends React.PureComponent {
       }
       documentCache[currentId] = this.codemirror.swapDoc(documentCache[nextId]);
 
-      this.updateCodeMirrorCode(nextCode);
+      this.updateCodeMirrorCode(nextCode || '');
     }
   };
 
