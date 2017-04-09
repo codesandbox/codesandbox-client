@@ -36,7 +36,7 @@ const ShareOptions = styled.div`
   padding: 1rem;
 
   box-shadow: 1px 1px 1px rgba(0,0,0,0.2);
-  background-color: ${props => props.theme.background2.darken(0.2)};
+  background-color: ${props => props.theme.background2.darken(0.1)};
 
   width: 700px;
 

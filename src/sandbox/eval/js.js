@@ -1,6 +1,12 @@
 // @flow
 
 import { transform } from 'babel-standalone';
+
+import asyncPlugin from 'babel-plugin-transform-async-to-generator';
+import restSpread from 'babel-plugin-transform-object-rest-spread';
+import classProperties from 'babel-plugin-transform-class-properties';
+import transformRuntime from 'babel-plugin-transform-runtime';
+
 import evalModule from './';
 import resolveModule from '../utils/resolve-module';
 import DependencyNotFoundError from '../errors/dependency-not-found-error';
@@ -25,12 +31,7 @@ const compileCode = (code: string = '', moduleName: string = 'unknown') => {
   try {
     return transform(code, {
       presets: ['es2015', 'react', 'stage-0'],
-      plugins: [
-        require('babel-plugin-transform-async-to-generator'),
-        require('babel-plugin-transform-object-rest-spread'),
-        require('babel-plugin-transform-class-properties'),
-        require('babel-plugin-transform-runtime'),
-      ],
+      plugins: [asyncPlugin, restSpread, classProperties, transformRuntime],
       retainLines: true,
     }).code;
   } catch (e) {
