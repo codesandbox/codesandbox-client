@@ -3,11 +3,15 @@ import React from 'react';
 import styled from 'styled-components';
 import { Route, Switch, Redirect } from 'react-router-dom';
 
+import _debug from 'app/utils/debug';
+
 import Notifications from 'app/containers/Notifications';
 import ContextMenu from 'app/containers/ContextMenu';
 import Sandbox from './Sandbox/';
 import SignIn from './SignIn';
 import NotFound from './NotFound';
+
+const routeDebugger = _debug('cs:app:router');
 
 const Container = styled.div`
   display: flex;
@@ -24,6 +28,19 @@ const Content = styled.div`
 
 export default () => (
   <Container>
+    <Route
+      path="/"
+      render={({ location }) => {
+        routeDebugger(
+          `Sending '${location.pathname + location.search}' to ga.`
+        );
+        if (typeof window.ga === 'function') {
+          window.ga('set', 'page', location.pathname + location.search);
+          window.ga('send', 'pageview');
+        }
+        return null;
+      }}
+    />
     <Notifications />
     <ContextMenu />
     <Content>
