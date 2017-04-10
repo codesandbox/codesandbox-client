@@ -24,7 +24,7 @@ const Container = styled.div`
 
 const StyledFrame = styled.iframe`
   border-width: 0px;
-  height: calc(100% - 6rem);
+  height: calc(100% - 3rem);
   width: 100%;
 `;
 

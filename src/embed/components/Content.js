@@ -20,7 +20,7 @@ const Container = styled.div`
 const Split = styled.div`
   position: relative;
   width: ${props => props.show ? '100%' : '0px'};
-  height: 100%;
+  height: ${props => props.editor ? 'calc(100% + 3rem)' : '100%'};
 `;
 
 type Props = {
@@ -67,7 +67,7 @@ export default class Content extends React.Component {
 
     return (
       <Container>
-        <Split show={showEditor}>
+        <Split editor show={showEditor}>
           {showEditor &&
             <CodeEditor
               code={mainModule.code}

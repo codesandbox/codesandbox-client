@@ -160,7 +160,7 @@ export default class ShareView extends React.PureComponent {
   };
 
   getIframeScript = () =>
-    `<iframe src=${this.getEmbedUrl()} style="width:100%; height:500px; border:0; border-radius: 3px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>`;
+    `<iframe src=${this.getEmbedUrl()} style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>`;
 
   select = function(event) {
     event.target.select();
