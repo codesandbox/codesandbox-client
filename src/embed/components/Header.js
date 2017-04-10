@@ -37,6 +37,12 @@ const RightAligned = styled.div`
   justify-content: center;
 `;
 
+const Title = styled.div`
+  @media (max-width: 450px) {
+    display: none;
+  }
+`;
+
 type Props = {
   sandbox: Sandbox,
   showEditor: boolean,
@@ -63,7 +69,7 @@ export default class Header extends React.PureComponent {
     return (
       <Container>
         <MenuIcon onClick={toggleSidebar} />
-        <span>{sandbox.title || sandbox.id}</span>
+        <Title>{sandbox.title || sandbox.id}</Title>
         <ModeIcons
           showEditor={showEditor}
           showPreview={showPreview}
