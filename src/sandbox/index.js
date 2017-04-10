@@ -20,6 +20,7 @@ let url = null;
 
 async function addDependencyBundle() {
   if (url !== '') {
+    window.dependencies = null;
     const script = document.createElement('script');
     script.setAttribute('src', url);
     script.setAttribute('async', false);
