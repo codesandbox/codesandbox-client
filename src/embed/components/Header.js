@@ -30,6 +30,11 @@ const MenuIcon = styled(MenuIconSVG)`
 const RightAligned = styled.div`
   position: absolute;
   right: 1rem;
+  top: 0;
+  bottom: 0;
+  height: 100%;
+  display: flex;
+  justify-content: center;
 `;
 
 type Props = {

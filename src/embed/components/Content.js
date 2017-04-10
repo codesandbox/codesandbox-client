@@ -18,7 +18,9 @@ const Container = styled.div`
 
 const Split = styled.div`
   position: relative;
-  width: ${props => props.show ? '100%' : '0px'};
+  width: ${props => props.show ? '50%' : '0px'};
+  max-width: ${props => props.only ? '100%' : '50%'};
+  min-width: ${props => props.only ? '100%' : '50%'};
   height: ${props => props.editor ? 'calc(100% + 3rem)' : '100%'};
 `;
 
@@ -66,8 +68,8 @@ export default class Content extends React.Component {
 
     return (
       <Container>
-        <Split editor show={showEditor}>
-          {showEditor &&
+        {showEditor &&
+          <Split editor show={showEditor} only={showEditor && !showPreview}>
             <CodeEditor
               code={mainModule.code}
               error={null}
@@ -80,23 +82,24 @@ export default class Content extends React.Component {
               )}
               preferences={preferences}
               onlyViewMode
-            />}
-        </Split>
+            />
+          </Split>}
 
-        <Split show={showPreview}>
-          <Preview
-            sandboxId={sandbox.id}
-            isInProjectView={false}
-            modules={sandbox.modules}
-            directories={sandbox.directories}
-            bundle={this.state.bundle}
-            externalResources={sandbox.externalResources}
-            module={mainModule}
-            fetchBundle={this.fetchBundle}
-            setError={() => {}}
-            preferences={preferences}
-          />
-        </Split>
+        {showPreview &&
+          <Split show={showPreview} only={showPreview && !showEditor}>
+            <Preview
+              sandboxId={sandbox.id}
+              isInProjectView={false}
+              modules={sandbox.modules}
+              directories={sandbox.directories}
+              bundle={this.state.bundle}
+              externalResources={sandbox.externalResources}
+              module={mainModule}
+              fetchBundle={this.fetchBundle}
+              setError={() => {}}
+              preferences={preferences}
+            />
+          </Split>}
       </Container>
     );
   }
