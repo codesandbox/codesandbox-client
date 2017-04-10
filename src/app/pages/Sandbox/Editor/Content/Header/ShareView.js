@@ -207,7 +207,7 @@ export default class ShareView extends React.PureComponent {
                     </div>
                   </div>
                   <div>
-                    <h4>Default module</h4>
+                    <h4>Default module to show and preview</h4>
 
                     <Files
                       modules={sandbox.modules}

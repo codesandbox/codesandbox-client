@@ -33,11 +33,13 @@ type Props = {
 
 type State = {
   bundle: Object,
+  isInProjectView: boolean,
 };
 
 export default class Content extends React.Component {
   state = {
     bundle: { processing: true },
+    isInProjectView: false,
   };
 
   componentDidMount() {
@@ -53,6 +55,10 @@ export default class Content extends React.Component {
         this.setState({ bundle: { ...result, processing: false } });
       }
     });
+  };
+
+  setProjectView = (id: string, view) => {
+    this.setState({ isInProjectView: view });
   };
 
   props: Props;
@@ -89,7 +95,7 @@ export default class Content extends React.Component {
           <Split show={showPreview} only={showPreview && !showEditor}>
             <Preview
               sandboxId={sandbox.id}
-              isInProjectView={false}
+              isInProjectView={this.state.isInProjectView}
               modules={sandbox.modules}
               directories={sandbox.directories}
               bundle={this.state.bundle}
@@ -98,6 +104,7 @@ export default class Content extends React.Component {
               fetchBundle={this.fetchBundle}
               setError={() => {}}
               preferences={preferences}
+              setProjectView={this.setProjectView}
             />
           </Split>}
       </Container>
