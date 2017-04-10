@@ -4,7 +4,6 @@ import React from 'react';
 import styled from 'styled-components';
 import Preview from 'app/components/sandbox/Preview';
 import CodeEditor from 'app/components/sandbox/CodeEditor';
-import Title from 'app/components/text/Title';
 import { getModulePath } from 'app/store/entities/sandboxes/modules/selectors';
 
 import type { Sandbox } from 'common/types';

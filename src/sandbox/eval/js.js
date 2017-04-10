@@ -5,7 +5,6 @@ import { transform } from 'babel-standalone';
 import asyncPlugin from 'babel-plugin-transform-async-to-generator';
 import restSpread from 'babel-plugin-transform-object-rest-spread';
 import classProperties from 'babel-plugin-transform-class-properties';
-import transformRuntime from 'babel-plugin-transform-runtime';
 
 import evalModule from './';
 import resolveModule from '../utils/resolve-module';
