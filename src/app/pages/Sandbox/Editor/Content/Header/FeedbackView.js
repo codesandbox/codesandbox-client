@@ -53,15 +53,14 @@ type Props = {
 export default class FeedbackView extends React.PureComponent {
   props: Props;
   state = {
-    open: false,
     message: '',
   };
 
   handleChange = e => this.setState({ message: e.target.value });
 
-  handleSend = () => {
+  handleSend = toggle => () => {
     if (this.state.message !== '') {
-      this.toggle();
+      toggle();
       this.props.sendMessage(this.state.message);
       this.setState({ message: '' });
     }
@@ -77,16 +76,18 @@ export default class FeedbackView extends React.PureComponent {
             Icon: FeedbackIcon,
           }}
         >
-          <MessageView>
-            <h3>Send feedback</h3>
-            <textarea
-              rows="5"
-              value={this.state.message}
-              placeholder="Ideas? Feedback? Thoughts? We'd love to hear them all!"
-              onChange={this.handleChange}
-            />
-            <Button onClick={this.handleSend}>Send</Button>
-          </MessageView>
+          {toggle => (
+            <MessageView>
+              <h3>Send feedback</h3>
+              <textarea
+                rows="5"
+                value={this.state.message}
+                placeholder="Ideas? Feedback? Thoughts? We'd love to hear them all!"
+                onChange={this.handleChange}
+              />
+              <Button onClick={this.handleSend(toggle)}>Send</Button>
+            </MessageView>
+          )}
         </HoverMenu>
       </Container>
     );

@@ -182,58 +182,60 @@ export default class ShareView extends React.PureComponent {
             Icon: ShareIcon,
           }}
         >
-          <ShareOptions>
-            <h3>Share options</h3>
-            <Divider>
-              <Column>
-                <div>
-                  <h4>Default view</h4>
-                  <div
-                    style={{
-                      position: 'relative',
-                      height: '2rem',
-                      width: '200px',
-                      marginLeft: '-10px',
-                    }}
-                  >
-                    <ModeIcons
-                      showEditor={showEditor}
-                      showPreview={showPreview}
-                      setEditorView={this.setEditorView}
-                      setPreviewView={this.setPreviewView}
-                      setMixedView={this.setMixedView}
+          {() => (
+            <ShareOptions>
+              <h3>Share options</h3>
+              <Divider>
+                <Column>
+                  <div>
+                    <h4>Default view</h4>
+                    <div
+                      style={{
+                        position: 'relative',
+                        height: '2rem',
+                        width: '200px',
+                        marginLeft: '-10px',
+                      }}
+                    >
+                      <ModeIcons
+                        showEditor={showEditor}
+                        showPreview={showPreview}
+                        setEditorView={this.setEditorView}
+                        setPreviewView={this.setPreviewView}
+                        setMixedView={this.setMixedView}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <h4>Default module</h4>
+
+                    <Files
+                      modules={sandbox.modules}
+                      directories={sandbox.directories}
+                      directoryId={null}
+                      currentModule={defaultModule}
+                      setCurrentModule={this.setDefaultModule}
                     />
                   </div>
-                </div>
-                <div>
-                  <h4>Default module</h4>
-
-                  <Files
-                    modules={sandbox.modules}
-                    directories={sandbox.directories}
-                    directoryId={null}
-                    currentModule={defaultModule}
-                    setCurrentModule={this.setDefaultModule}
-                  />
-                </div>
-              </Column>
-              <Column>
-                <Inputs>
-                  <LinkName>Editor url</LinkName>
-                  <input onFocus={this.select} value={this.getEditorUrl()} />
-                  <LinkName>Fullscreen url</LinkName>
-                  <input onFocus={this.select} value={this.getEmbedUrl()} />
-                  {/*<LinkName>Embed url (Medium/Embedly)</LinkName>
+                </Column>
+                <Column>
+                  <Inputs>
+                    <LinkName>Editor url</LinkName>
+                    <input onFocus={this.select} value={this.getEditorUrl()} />
+                    <LinkName>Fullscreen url</LinkName>
+                    <input onFocus={this.select} value={this.getEmbedUrl()} />
+                    {/*<LinkName>Embed url (Medium/Embedly)</LinkName>
                   <input onFocus={this.select} value={this.getEmbedUrl()} />*/}
-                  <LinkName>iframe</LinkName>
-                  <textarea
-                    onFocus={this.select}
-                    value={this.getIframeScript()}
-                  />
-                </Inputs>
-              </Column>
-            </Divider>
-          </ShareOptions>
+                    <LinkName>iframe</LinkName>
+                    <textarea
+                      onFocus={this.select}
+                      value={this.getIframeScript()}
+                    />
+                  </Inputs>
+                </Column>
+              </Divider>
+            </ShareOptions>
+          )}
         </HoverMenu>
       </Container>
     );

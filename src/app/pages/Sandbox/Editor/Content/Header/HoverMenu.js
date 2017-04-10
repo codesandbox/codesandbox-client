@@ -50,8 +50,10 @@ export default class HoverMenu extends React.PureComponent {
   }
 
   toggle = e => {
-    e.stopPropagation();
-    e.preventDefault();
+    if (e) {
+      e.stopPropagation();
+      e.preventDefault();
+    }
     this.setState({ open: !this.state.open });
   };
 
@@ -62,7 +64,7 @@ export default class HoverMenu extends React.PureComponent {
       <span>
         <HeaderComponent {...headerProps} onClick={this.toggle} />
         <div ref={this.setOnclickListener}>
-          {open && children}
+          {open && children(this.toggle)}
         </div>
       </span>
     );
