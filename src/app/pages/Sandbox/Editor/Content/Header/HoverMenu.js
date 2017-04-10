@@ -23,21 +23,30 @@ export default class HoverMenu extends React.PureComponent {
     }
   };
 
-  setOnclickListener = el => {
-    el.addEventListener('click', e => {
-      // Prevent element from closing itself when you click on it
-      this.setState({ clicked: true });
+  handleViewClick = e => {
+    // Prevent element from closing itself when you click on it
+    this.setState({ clicked: true });
 
-      setTimeout(() => {
-        this.setState({ clicked: false });
-      });
+    setTimeout(() => {
+      this.setState({ clicked: false });
     });
+  };
+
+  setOnclickListener = el => {
+    this.element = el;
+    if (el) {
+      el.addEventListener('click', this.handleViewClick);
+    }
 
     document.addEventListener('click', this.handleDocumentClick);
   };
 
   commponentWillUnmount() {
     document.removeEventListener('click', this.handleDocumentClick);
+
+    if (this.element) {
+      this.element.removeEventListener('click', this.handleViewClick);
+    }
   }
 
   toggle = e => {
