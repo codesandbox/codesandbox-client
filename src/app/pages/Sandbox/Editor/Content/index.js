@@ -5,9 +5,7 @@ import { Prompt } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { preferencesSelector } from 'app/store/preferences/selectors';
-import type { Preferences } from 'app/store/preferences/reducer';
-import type { Sandbox } from 'app/store/entities/sandboxes/entity';
-import type { User } from 'app/store/user/reducer';
+import type { Preferences, Sandbox, CurrentUser } from 'common/types';
 import { userSelector } from 'app/store/user/selectors';
 import moduleActionCreators from 'app/store/entities/sandboxes/modules/actions';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
@@ -26,7 +24,7 @@ import Header from './Header';
 
 type Props = {
   sandbox: Sandbox,
-  user: User,
+  user: CurrentUser,
   preferences: Preferences,
   moduleActions: typeof moduleActionCreators,
   sandboxActions: typeof sandboxActionCreators,
@@ -166,9 +164,13 @@ class EditorPreview extends React.PureComponent {
           split="vertical"
           defaultSize="50%"
           minSize={360}
-          primary="second"
           paneStyle={{ height: '100%' }}
-          pane1Style={{ display: sandbox.showEditor ? 'block' : 'none' }}
+          pane1Style={{
+            display: sandbox.showEditor ? 'block' : 'none',
+            minWidth: !sandbox.showPreview && sandbox.showEditor
+              ? '100%'
+              : 'inherit',
+          }}
           pane2Style={{
             display: sandbox.showPreview ? 'block' : 'none',
             minWidth: sandbox.showPreview && !sandbox.showEditor
