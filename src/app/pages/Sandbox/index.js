@@ -73,7 +73,7 @@ class SandboxPage extends React.PureComponent {
 
     if (newId != null && oldId !== newId) {
       this.setState({ notFound: false });
-      if (!this.props.sandboxes[newId]) {
+      if (!this.props.sandboxes[newId] || !this.props.sandboxes[newId].forked) {
         this.fetchSandbox();
       }
     }

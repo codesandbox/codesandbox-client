@@ -122,6 +122,7 @@ const forkSandbox = (id: string) => async (
   if (currentSandbox) {
     data.currentModule = currentSandbox.currentModule;
   }
+  data.forked = true;
   await dispatch(normalizeResult(entity, data));
 
   dispatch(push(sandboxUrl(data)));

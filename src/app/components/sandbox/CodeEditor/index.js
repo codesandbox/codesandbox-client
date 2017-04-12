@@ -68,12 +68,6 @@ const handleError = (cm, currentError, nextError, nextCode, nextId) => {
 export default class CodeEditor extends React.PureComponent {
   props: Props;
 
-  constructor(props) {
-    super(props);
-
-    this.handleChange = debounce(this.handleChange, 200);
-  }
-
   shouldComponentUpdate(nextProps: Props) {
     return nextProps.id !== this.props.id ||
       nextProps.error !== this.props.error ||
@@ -94,7 +88,7 @@ export default class CodeEditor extends React.PureComponent {
       nextTitle: string,
     }
   ) => {
-    if (nextId !== currentId) {
+    if (nextId !== currentId || nextCode !== this.getCode()) {
       if (!documentCache[nextId]) {
         const mode = await this.getMode(nextTitle);
 
