@@ -4,6 +4,7 @@ const autoprefixer = require('autoprefixer');
 const cssnano = require('cssnano');
 const rev = require('gulp-rev');
 const replace = require('gulp-replace');
+const runSequence = require('run-sequence');
 
 const config = require('./config/paths');
 
@@ -38,4 +39,8 @@ gulp.task('static', function() {
     .pipe(gulp.dest(`${config.appBuild}/`));
 });
 
-gulp.task('default', ['css', 'javascript', 'static', 'html']);
+gulp.task('build', function(cb) {
+  return runSequence(['css', 'javascript', 'static'], 'html', cb);
+});
+
+gulp.task('default', ['build']);
