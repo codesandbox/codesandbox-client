@@ -25,7 +25,8 @@ export default function buildErrorMessage(e) {
   } else if (e.stack) {
     const matched = e.stack.match(/(\d+):(\d+)/);
     if (matched) {
-      [line, column] = matched;
+      line = matched[1];
+      column = matched[2];
     }
   }
   return {
