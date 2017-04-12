@@ -23,7 +23,7 @@ export default function buildErrorMessage(e) {
 
     // Chrome
   } else if (e.stack) {
-    const matched = e.stack.match(/(\d+):(\d+)/);
+    const matched = e.stack.match(/<anonymous>:(\d+):(\d+)/);
     if (matched) {
       line = matched[1];
       column = matched[2];
