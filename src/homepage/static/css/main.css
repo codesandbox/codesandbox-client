@@ -219,6 +219,36 @@ h1 {
   font-weight: 400;
 }
 
+.picked {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  padding-bottom: 2rem;
+  background-color: #272C2E;
+}
+
+.picked-project {
+  width: 100%;
+  max-width: 1200px;
+  margin-bottom: 2rem;
+}
+
+.picked h3 {
+  text-transform: uppercase;
+  margin: 2rem;
+  margin-bottom: 0;
+  font-size: 2rem;
+  font-weight: 400;
+}
+
+.picked h4 {
+  margin: 1rem;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
 .projects {
   display: flex;
   max-width: 900px;

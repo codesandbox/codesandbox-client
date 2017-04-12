@@ -236,6 +236,11 @@ const config = {
       name: 'vendor',
       minChunks: Infinity,
     }),
+    new webpack.optimize.CommonsChunkPlugin({
+      async: true,
+      children: true,
+      minChunks: 4,
+    }),
     new webpack.NamedModulesPlugin(),
   ],
 };
