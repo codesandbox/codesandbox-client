@@ -110,7 +110,12 @@ export default class Preview extends React.PureComponent {
       this.state.frameInitialized
     ) {
       if (this.props.preferences.livePreviewEnabled) {
-        this.executeCode();
+        if (
+          this.props.bundle === prevProps.bundle || // So we don't trigger after every dep change
+          this.props.sandboxId !== prevProps.sandboxId
+        ) {
+          this.executeCode();
+        }
       }
     }
   }
