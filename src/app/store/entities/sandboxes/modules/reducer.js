@@ -32,6 +32,8 @@ function shouldUpdate(module, action) {
           module.error != null &&
           (action.error.line !== module.error.line ||
             action.error.title !== module.error.title ||
+            action.error.column !== module.error.column ||
+            action.error.message !== module.error.message ||
             action.error.type !== module.error.type));
 
     default:

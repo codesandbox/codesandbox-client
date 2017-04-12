@@ -1,10 +1,9 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import InfoIcon from 'react-icons/lib/md/info';
 import WarningIcon from 'react-icons/lib/md/warning';
 import ErrorIcon from 'react-icons/lib/md/error';
+import type { Module } from 'common/types';
 
 import Button from 'app/components/buttons/Button';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
@@ -46,11 +45,9 @@ type Props = {
   error: ?{ type: string, title: string, message: string },
   message: ?string,
   sandboxActions: typeof sandboxActionCreators,
+  modules: Array<Module>,
 };
 
-const mapDispatchToProps = dispatch => ({
-  sandboxActions: bindActionCreators(sandboxActionCreators, dispatch),
-});
 class Message extends React.PureComponent {
   props: Props;
 
@@ -77,6 +74,7 @@ class Message extends React.PureComponent {
   getMessage = () => {
     const { error, modules } = this.props;
 
+    const module = modules.find(m => m.id === error.moduleId) || {};
     if (error.type === 'dependency-not-found') {
       return (
         <div>
