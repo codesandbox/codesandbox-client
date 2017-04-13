@@ -55,6 +55,9 @@ export default class Project extends React.PureComponent {
     if (nextProps.title !== this.props.title) {
       this.setState({ title: nextProps.title });
     }
+    if (nextProps.description !== this.props.description) {
+      this.setState({ description: nextProps.description });
+    }
   };
 
   render() {
