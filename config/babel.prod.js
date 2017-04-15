@@ -15,6 +15,13 @@ module.exports = {
     require.resolve('babel-plugin-transform-class-properties'),
     require.resolve('babel-plugin-transform-runtime'),
     require.resolve('babel-plugin-lodash'),
+    [
+      require.resolve('react-loadable/babel'),
+      {
+        server: true,
+        webpack: true,
+      },
+    ],
     // Optimization: hoist JSX that never changes out of render()
     // Disabled because of issues:
     // * https://github.com/facebookincubator/create-react-app/issues/525

@@ -98,6 +98,7 @@
     "react-dom": "^15.4.1",
     "react-frame-component": "^1.0.2",
     "react-icons": "^2.2.2",
+    "react-loadable": "^3.2.2",
     "react-motion": "^0.4.7",
     "react-proxy": "2",
     "react-redux": "^5.0.1",
