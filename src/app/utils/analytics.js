@@ -4,7 +4,7 @@ import type { CurrentUser } from 'common/types';
 
 const debug = _debug('cs:analytics');
 
-const heapAvailable = () => typeof window.heap === 'function';
+const heapAvailable = () => typeof window.heap === 'object';
 const sentryAvailable = () => typeof window.Raven === 'object';
 
 export default function track(event: string, data: Object) {
