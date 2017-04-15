@@ -6,6 +6,8 @@ import ModeIcons from 'app/components/sandbox/ModeIcons';
 import {
   optionsToParameterizedUrl,
   protocolAndHost,
+  sandboxUrl,
+  embedUrl,
 } from 'app/utils/url-generator';
 
 import type { Sandbox } from 'common/types';
@@ -15,7 +17,6 @@ import Action from './Action';
 import {
   isMainModule,
 } from '../../../../../store/entities/sandboxes/modules/selectors';
-import { sandboxUrl, embedUrl } from '../../../../../utils/url-generator';
 
 const Container = styled.div`
   position: relative;
@@ -26,7 +27,7 @@ const Container = styled.div`
 const ShareOptions = styled.div`
   position: absolute;
   top: calc(100% + 0.25rem);
-  left: -150px;
+  left: -250px;
   box-sizing: border-box;
   z-index: 2;
   border-radius: 4px;
@@ -35,10 +36,10 @@ const ShareOptions = styled.div`
   color: rgba(255, 255, 255, 0.8);
   padding: 1rem;
 
-  box-shadow: 1px 1px 1px rgba(0,0,0,0.2);
-  background-color: ${props => props.theme.background2.darken(0.1)};
+  box-shadow: -1px 4px 5px rgba(0,0,0,0.5);
+  background-color: ${props => props.theme.background2};
 
-  width: 700px;
+  width: 900px;
 
 
   h3 {
@@ -55,21 +56,23 @@ const Inputs = styled.div`
     border: none;
     outline: none;
     width: 100%;
-    background-color: ${props => props.theme.background};
+    background-color: rgba(255, 255, 255, 0.1);
     color: white;
     padding: 0.2rem;
     margin: 0.5rem 0;
+    border-radius: 4px;
   }
 
   textarea {
     border: none;
     outline: none;
     width: 100%;
-    background-color: ${props => props.theme.background};
+    background-color: rgba(255, 255, 255, 0.1);
     color: white;
     padding: 0.2rem;
     margin: 0.5rem 0;
-    height: 120px;
+    height: 100px;
+    border-radius: 4px;
   }
 `;
 
@@ -88,10 +91,10 @@ const Divider = styled.div`
 const Column = styled.div`
   display: flex;
   flex-direction: column;
-  flex: 50%;
+  flex: 100%;
 
   color: rgba(255, 255, 255, 0.8);
-  margin: 0 .5rem;
+  margin: 0 .75rem;
 
   h4 {
     margin: 1rem 0;
@@ -99,10 +102,22 @@ const Column = styled.div`
   }
 `;
 
+const ButtonContainer = styled.div`
+  margin-top: 0.25rem;
+`;
+
+const ButtonName = styled.div`
+  margin: 0.5rem 0;
+  font-weight: 500;
+  margin-bottom: 0;
+`;
+
 type Props = {
   sandbox: Sandbox,
   sendMessage: (message: string) => void,
 };
+
+const BUTTON_URL = 'https://codesandbox.io/static/img/play-codesandbox.svg';
 
 export default class ShareView extends React.PureComponent {
   props: Props;
@@ -166,12 +181,27 @@ export default class ShareView extends React.PureComponent {
     event.target.select();
   };
 
+  // eslint-disable-next-line
+  getButtonMarkdown = () => {
+    const { sandbox } = this.props;
+    return `[![Edit ${sandbox.title || sandbox.id}](${BUTTON_URL})](${this.getEditorUrl()})`;
+  };
+
+  // eslint-disable-next-line
+  getButtonHTML = () => {
+    const { sandbox } = this.props;
+    return `<a href="${this.getEditorUrl()}">
+  <img alt="Edit ${sandbox.title || sandbox.id}" src="${BUTTON_URL}">
+</a>
+`;
+  };
+
   render() {
     const { sandbox } = this.props;
     const { showEditor, showPreview } = this.state;
 
-    const defaultModule = this.state.defaultModule ||
-      sandbox.modules.find(isMainModule).id;
+    const defaultModule =
+      this.state.defaultModule || sandbox.modules.find(isMainModule).id;
 
     return (
       <Container>
@@ -187,6 +217,7 @@ export default class ShareView extends React.PureComponent {
               <h3>Share options</h3>
               <Divider>
                 <Column>
+                  <ButtonName>URL Options</ButtonName>
                   <div>
                     <h4>Default view</h4>
                     <div
@@ -219,6 +250,7 @@ export default class ShareView extends React.PureComponent {
                   </div>
                 </Column>
                 <Column>
+                  <ButtonName>Links</ButtonName>
                   <Inputs>
                     <LinkName>Editor url</LinkName>
                     <input onFocus={this.select} value={this.getEditorUrl()} />
@@ -230,6 +262,30 @@ export default class ShareView extends React.PureComponent {
                     <textarea
                       onFocus={this.select}
                       value={this.getIframeScript()}
+                    />
+                  </Inputs>
+                </Column>
+                <Column>
+                  <ButtonName>Button</ButtonName>
+                  <Inputs>
+                    <ButtonContainer>
+                      <a href={sandboxUrl(sandbox)}>
+                        <img
+                          alt={sandbox.title || 'Untitled'}
+                          src={BUTTON_URL}
+                        />
+                      </a>
+                    </ButtonContainer>
+                    <LinkName>Markdown</LinkName>
+                    <textarea
+                      onFocus={this.select}
+                      value={this.getButtonMarkdown()}
+                    />
+
+                    <LinkName>HTML</LinkName>
+                    <textarea
+                      onFocus={this.select}
+                      value={this.getButtonHTML()}
                     />
                   </Inputs>
                 </Column>
