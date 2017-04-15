@@ -1,5 +1,6 @@
 // @flow
 import { signInUrl } from 'app/utils/url-generator';
+import { identify } from 'app/utils/analytics';
 
 import { createAPIActions, doRequest } from '../api/actions';
 import notifActions from '../notifications/actions';
@@ -40,11 +41,7 @@ const getCurrentUser = () => async (dispatch: Function, getState: Function) => {
         doRequest(GET_CURRENT_USER_API, `users/current`)
       );
 
-      Raven.setUserContext({
-        email: data.email,
-        id: data.id,
-        username: data.username,
-      });
+      identify(data);
 
       dispatch({ type: SET_CURRENT_USER, data });
     } catch (e) {

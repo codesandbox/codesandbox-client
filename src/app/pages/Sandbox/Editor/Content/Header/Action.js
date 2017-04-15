@@ -100,7 +100,7 @@ export default ({
   }
 
   return (
-    <ActionLink highlight={highlight} to={href}>
+    <ActionLink to={href}>
       <IconContainer>
         <Icon />
       </IconContainer> {title}
