@@ -24,7 +24,6 @@ function identifyHeap(user: CurrentUser) {
     window.heap.addUserProperties({
       id: user.id,
       name: user.name,
-      email: user.email,
     });
   }
 }
@@ -33,7 +32,6 @@ function identifySentry(user: CurrentUser) {
   if (!sentryAvailable()) return;
 
   window.Raven.setUserContext({
-    email: user.email,
     id: user.id,
     username: user.username,
   });
