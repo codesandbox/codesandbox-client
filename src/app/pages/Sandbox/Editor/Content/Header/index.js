@@ -130,6 +130,7 @@ export default class Header extends React.PureComponent {
                 onClick={userActions.signIn}
                 title="Sign in with Github"
                 Icon={GithubIcon}
+                highlight
               />}
         </Right>
       </Container>

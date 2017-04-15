@@ -4,7 +4,8 @@ import styled from 'styled-components';
 
 import Tooltip from 'app/components/Tooltip';
 
-const styles = props => `
+const styles = props =>
+  `
   transition: 0.3s ease all;
   display: flex;
   flex-direction: row;
@@ -19,11 +20,23 @@ const styles = props => `
   box-sizing: inherit;
   border-bottom: 2px solid transparent;
   z-index: 1;
+  ${props.highlight ? `
+      background-color: ${props.theme.secondary.darken(0.1)()};
+      color: white;
+      border-bottom: 0px solid transparent;
 
-  &:hover {
-    color: rgba(255,255,255, 1);
-    border-bottom: 2px solid ${props.theme.secondary()};
-  }
+      &:hover {
+        background-color: ${props.theme.secondary.darken(0.2)()};
+      }
+  ` : `
+
+    &:hover {
+      color: rgba(255,255,255, 1);
+      border-color: ${props.theme.secondary()}
+    }
+  `}
+
+
 `;
 
 const Action = styled.div`
@@ -56,9 +69,17 @@ type Props = {
   title: string,
   href: ?string,
   placeholder: ?boolean,
+  highlight: ?boolean,
 };
 
-export default ({ onClick, href, Icon, title, placeholder }: Props) => {
+export default ({
+  onClick,
+  href,
+  Icon,
+  title,
+  highlight,
+  placeholder,
+}: Props) => {
   if (placeholder) {
     return (
       <ActionTooltip message={placeholder}>
@@ -70,7 +91,7 @@ export default ({ onClick, href, Icon, title, placeholder }: Props) => {
   }
   if (onClick) {
     return (
-      <Action onClick={onClick}>
+      <Action highlight={highlight} onClick={onClick}>
         <IconContainer>
           <Icon />
         </IconContainer> {title}
@@ -79,7 +100,7 @@ export default ({ onClick, href, Icon, title, placeholder }: Props) => {
   }
 
   return (
-    <ActionLink to={href}>
+    <ActionLink highlight={highlight} to={href}>
       <IconContainer>
         <Icon />
       </IconContainer> {title}
