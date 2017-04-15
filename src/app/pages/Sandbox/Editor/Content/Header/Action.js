@@ -23,7 +23,7 @@ const styles = props =>
   ${props.highlight ? `
       background-color: ${props.theme.secondary.darken(0.1)()};
       color: white;
-      border-bottom: 0px solid transparent;
+      border-bottom: 1px solid ${props.theme.secondary.darken(0.1)()};
 
       &:hover {
         background-color: ${props.theme.secondary.darken(0.2)()};
