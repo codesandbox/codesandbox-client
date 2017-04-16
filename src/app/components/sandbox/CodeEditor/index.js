@@ -69,25 +69,25 @@ export default class CodeEditor extends React.PureComponent {
   props: Props;
 
   shouldComponentUpdate(nextProps: Props) {
-    return nextProps.id !== this.props.id ||
+    return (
+      nextProps.id !== this.props.id ||
       nextProps.error !== this.props.error ||
       this.props.canSave !== nextProps.canSave ||
-      this.props.preferences !== nextProps.preferences;
+      this.props.preferences !== nextProps.preferences
+    );
   }
 
-  swapDocuments = async (
-    {
-      currentId,
-      nextId,
-      nextCode,
-      nextTitle,
-    }: {
-      currentId: string,
-      nextId: string,
-      nextCode: ?string,
-      nextTitle: string,
-    }
-  ) => {
+  swapDocuments = async ({
+    currentId,
+    nextId,
+    nextCode,
+    nextTitle,
+  }: {
+    currentId: string,
+    nextId: string,
+    nextCode: ?string,
+    nextTitle: string,
+  }) => {
     if (nextId !== currentId || nextCode !== this.getCode()) {
       if (!documentCache[nextId]) {
         const mode = await this.getMode(nextTitle);
@@ -170,10 +170,6 @@ export default class CodeEditor extends React.PureComponent {
     const { preferences } = this.props;
 
     const defaultKeys = {
-      Tab: cm => {
-        const spaces = Array(cm.getOption('indentUnit') + 1).join(' ');
-        cm.replaceSelection(spaces);
-      },
       'Cmd-/': cm => {
         cm.listSelections().forEach(() => {
           cm.toggleComment({ lineComment: '//' });
@@ -200,14 +196,14 @@ export default class CodeEditor extends React.PureComponent {
       const tern = await System.import('tern');
       const defs = await System.import('tern/defs/ecmascript.json');
       window.tern = tern;
-      this.server = this.server ||
+      this.server =
+        this.server ||
         new CodeMirror.TernServer({
           defs: [defs],
         });
       this.codemirror.on('cursorActivity', updateArgHints);
       this.codemirror.on('inputRead', showAutoComplete);
       this.codemirror.setOption('extraKeys', {
-        ...defaultKeys,
         'Ctrl-Space': cm => {
           if (this.server) this.server.complete(cm);
         },
@@ -229,6 +225,7 @@ export default class CodeEditor extends React.PureComponent {
         'Ctrl-.': cm => {
           if (this.server) this.server.selectName(cm);
         },
+        ...defaultKeys,
       });
     } else {
       this.server = null;
