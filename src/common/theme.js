@@ -25,8 +25,8 @@ const colorMethods = [
  * original function to get the color and then modifies that color, ultimately returning another
  * color string.
  */
-const addModifier = (fn, method, ...modifierArgs) =>
-  (...args) => new Color(fn(...args))[method](...modifierArgs).rgbString();
+const addModifier = (fn, method, ...modifierArgs) => (...args) =>
+  new Color(fn(...args))[method](...modifierArgs).rgbString();
 
 /**
  * Add useful methods directly to selector function, as well as put an rgbString() call at the end
