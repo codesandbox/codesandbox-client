@@ -25,7 +25,7 @@ const StyledFolderIcon = styled.span`
     margin-left: -20px;
     margin-right: 6px;
 
-    transform: rotateZ(${props => props.isOpen ? '0deg' : '-90deg'});
+    transform: rotateZ(${props => (props.isOpen ? '0deg' : '-90deg')});
   }
 `;
 
@@ -57,9 +57,15 @@ type Props = {
   root: ?boolean,
   error: boolean,
 };
-export default (
-  { type, root, error, hasChildren, isNotSynced, isOpen, onOpen }: Props
-) => (
+export default ({
+  type,
+  root,
+  error,
+  hasChildren,
+  isNotSynced,
+  isOpen,
+  onOpen,
+}: Props) => (
   <div style={{ display: 'inline-block', verticalAlign: 'middle' }}>
     {isNotSynced && <NotSyncedIconWithMargin />}
     {type === 'directory' &&

@@ -11,11 +11,11 @@ const Container = styled.div`
   transition: 0.3s ease all;
   position: relative;
   background-color: ${getColor};
-  width: ${({ small }) => small ? 3 : 3.5}rem;
+  width: ${({ small }) => (small ? 3 : 3.5)}rem;
   color: rgba(0,0,0,0.5);
   border: 1px solid rgba(0,0,0,.1);
   padding: 0.5rem;
-  height: ${props => props.small ? 20 : 26}px;
+  height: ${props => (props.small ? 20 : 26)}px;
   box-sizing: border-box;
   cursor: pointer;
   border-radius: 4px;
@@ -31,13 +31,12 @@ const Container = styled.div`
 const Dot = styled.div`
   transition: inherit;
   position: absolute;
-  height: ${props => props.small ? 14 : 20}px;
+  height: ${props => (props.small ? 14 : 20)}px;
   width: 1rem;
   left: 0.1rem;
   border-radius: 4px;
-  transform: translateX(${props =>
-  props.right ? props.small ? 'calc(1.5rem + 2px)' : 'calc(2rem + 2px)' : '0'});
-  top: ${({ small }) => small ? `calc(0.1rem + 1px)` : `calc(0.1rem)`};
+  transform: translateX(${props => (props.right ? props.small ? 'calc(1.5rem + 2px)' : 'calc(2rem + 2px)' : '0')});
+  top: ${({ small }) => (small ? `calc(0.1rem + 1px)` : `calc(0.1rem)`)};
   background-color: white;
   box-shadow: 0 0 4px rgba(0,0,0,0.2);
 `;
@@ -50,9 +49,13 @@ type Props = {
   secondary: ?boolean,
 };
 
-export default (
-  { right, onClick, secondary = false, offMode = false, small = false }: Props
-) => (
+export default ({
+  right,
+  onClick,
+  secondary = false,
+  offMode = false,
+  small = false,
+}: Props) => (
   <Container
     small={small}
     secondary={secondary}

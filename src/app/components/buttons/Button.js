@@ -21,7 +21,8 @@ const getColor = ({ transparent, disabled, theme }) => {
   return 'white';
 };
 
-const styles = props => `
+const styles = props =>
+  `
   transition: 0.3s ease all;
   text-transform: uppercase;
   text-decoration: none;
@@ -32,14 +33,14 @@ const styles = props => `
   color: ${getColor(props)};
   border-radius: 2px;
   ${(() => {
-  if (props.small) {
-    return `
+    if (props.small) {
+      return `
         padding: 0.5rem 0.75rem;
         font-size: 0.875rem;
       `;
-  }
-  return 'padding: 0.75rem 1rem;';
-})()}
+    }
+    return 'padding: 0.75rem 1rem;';
+  })()}
   outline: none;
   width: ${props.block ? '100%' : 'inherit'};
 

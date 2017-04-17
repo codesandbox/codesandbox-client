@@ -50,7 +50,7 @@ const showError = error => dispatch => {
 export function doRequest(
   actions: APIActions,
   endpoint: string,
-  body?: BodyType
+  body?: BodyType,
 ) {
   return async (dispatch: Function, getState: Function) => {
     const jwt = jwtSelector(getState());

@@ -10,8 +10,8 @@ function getGeneratedClassNameCode(code: string, alteredClassNames) {
 }
 
 function createStyleNode(id: string, content: string) {
-  const styleNode = document.getElementById(getStyleId(id)) ||
-    document.createElement('style');
+  const styleNode =
+    document.getElementById(getStyleId(id)) || document.createElement('style');
 
   styleNode.setAttribute('id', getStyleId(id));
   styleNode.type = 'text/css';

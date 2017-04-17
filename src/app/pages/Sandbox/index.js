@@ -44,7 +44,7 @@ const mapStateToProps = createSelector(
     }
 
     return { sandbox, sandboxes, hasLogin: !!jwt };
-  }
+  },
 );
 const mapDispatchToProps = dispatch => ({
   sandboxActions: bindActionCreators(sandboxActions, dispatch),

@@ -27,7 +27,7 @@ function getResourceTag(resource: string) {
 
 function getIndexHtmlBody(modules) {
   const indexHtmlModule = modules.find(
-    m => m.title === 'index.html' && m.directoryShortid == null
+    m => m.title === 'index.html' && m.directoryShortid == null,
   );
 
   if (indexHtmlModule) {
@@ -37,7 +37,8 @@ function getIndexHtmlBody(modules) {
   return `<div id="root"></div>`;
 }
 
-const getHTML = (modules, resources) => `<!doctype html>
+const getHTML = (modules, resources) =>
+  `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -98,7 +99,7 @@ function createPackageJSON(sandbox: Sandbox) {
       },
     },
     null,
-    '  '
+    '  ',
   );
 }
 
@@ -106,7 +107,7 @@ function createDirectoryWithFiles(
   modules: Array<Module>,
   directories: Array<Directory>,
   directory: Directory,
-  zip
+  zip,
 ) {
   const newZip = zip.folder(directory.title);
 
@@ -122,7 +123,7 @@ function createDirectoryWithFiles(
 export default (async function createZip(
   sandbox: Sandbox,
   modules: Array<Module>,
-  directories: Array<Directory>
+  directories: Array<Directory>,
 ) {
   const zip = new JSZip();
 

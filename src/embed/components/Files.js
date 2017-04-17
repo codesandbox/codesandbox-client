@@ -20,22 +20,20 @@ type Props = {
   setCurrentModule: (id: string) => void,
 };
 
-const Files = (
-  {
-    modules,
-    directories,
-    directoryId,
-    depth = 0,
-    currentModule,
-    setCurrentModule,
-  }: Props
-) => {
+const Files = ({
+  modules,
+  directories,
+  directoryId,
+  depth = 0,
+  currentModule,
+  setCurrentModule,
+}: Props) => {
   const childrenModules = modules.filter(
-    m => m.directoryShortid === directoryId
+    m => m.directoryShortid === directoryId,
   );
 
   const childrenDirectories = directories.filter(
-    d => d.directoryShortid === directoryId
+    d => d.directoryShortid === directoryId,
   );
 
   return (

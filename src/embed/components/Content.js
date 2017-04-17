@@ -18,10 +18,10 @@ const Container = styled.div`
 
 const Split = styled.div`
   position: relative;
-  width: ${props => props.show ? '50%' : '0px'};
-  max-width: ${props => props.only ? '100%' : '50%'};
-  min-width: ${props => props.only ? '100%' : '50%'};
-  height: ${props => props.editor ? 'calc(100% + 3rem)' : '100%'};
+  width: ${props => (props.show ? '50%' : '0px')};
+  max-width: ${props => (props.only ? '100%' : '50%')};
+  min-width: ${props => (props.only ? '100%' : '50%')};
+  height: ${props => (props.editor ? 'calc(100% + 3rem)' : '100%')};
 `;
 
 type Props = {
@@ -67,9 +67,10 @@ export default class Content extends React.Component {
     const { sandbox, showEditor, showPreview, currentModule } = this.props;
 
     const preferences = { livePreviewEnabled: true };
-    const mainModule = sandbox.modules.find(m => m.id === currentModule) ||
+    const mainModule =
+      sandbox.modules.find(m => m.id === currentModule) ||
       sandbox.modules.find(
-        m => m.title === 'index.js' && m.directoryShortid == null
+        m => m.title === 'index.js' && m.directoryShortid == null,
       );
 
     return (
@@ -84,7 +85,7 @@ export default class Content extends React.Component {
               modulePath={getModulePath(
                 sandbox.modules,
                 sandbox.directories,
-                mainModule.id
+                mainModule.id,
               )}
               preferences={preferences}
               onlyViewMode

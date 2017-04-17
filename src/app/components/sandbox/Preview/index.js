@@ -277,11 +277,7 @@ export default class Preview extends React.PureComponent {
       isInProjectView,
       setProjectView,
     } = this.props;
-    const {
-      historyPosition,
-      history,
-      urlInAddressBar,
-    } = this.state;
+    const { historyPosition, history, urlInAddressBar } = this.state;
 
     const renderedModule = this.getRenderedModule();
 

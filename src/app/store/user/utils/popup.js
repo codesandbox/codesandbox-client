@@ -1,4 +1,5 @@
-const settings = 'scrollbars=no,toolbar=no,location=no,titlebar=no,directories=no,status=no,menubar=no';
+const settings =
+  'scrollbars=no,toolbar=no,location=no,titlebar=no,directories=no,status=no,menubar=no';
 
 function getPopupOffset({ width, height }) {
   const wLeft = window.screenLeft ? window.screenLeft : window.screenX;

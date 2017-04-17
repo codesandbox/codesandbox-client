@@ -40,17 +40,14 @@ const createEntityReducer = key => (state = {}, action) => {
 };
 
 d(
-  `Generating entity reducers for these entities: ${Object.keys(entities.default)}`
+  `Generating entity reducers for these entities: ${Object.keys(entities.default)}`,
 );
-const reducers = Object.keys(entities.default).reduce(
-  (total, next) => {
-    const entity = entities.default[next];
-    return {
-      ...total,
-      [next]: createEntityReducer(next, entity),
-    };
-  },
-  {}
-);
+const reducers = Object.keys(entities.default).reduce((total, next) => {
+  const entity = entities.default[next];
+  return {
+    ...total,
+    [next]: createEntityReducer(next, entity),
+  };
+}, {});
 d('Generated entity reducers');
 export default combineReducers(reducers);

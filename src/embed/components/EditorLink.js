@@ -20,7 +20,7 @@ const EditText = styled.a`
 
 const Text = styled.span`
   @media (max-width: 620px) {
-    ${props => props.small ? 'display: none;' : ''};
+    ${props => (props.small ? 'display: none;' : '')};
   }
 `;
 

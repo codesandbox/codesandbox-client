@@ -34,7 +34,7 @@ async function addDependencyBundle() {
 
 function getIndexHtml(modules) {
   const module = modules.find(
-    m => m.title === 'index.html' && m.directoryShortid == null
+    m => m.title === 'index.html' && m.directoryShortid == null,
   );
   if (module) {
     return module.code;
@@ -77,7 +77,7 @@ async function compile(message) {
       sandboxId,
       modules,
       directories,
-      manifest
+      manifest,
     );
     const domChanged = document.body.innerHTML !== html;
 
@@ -116,7 +116,7 @@ async function compile(message) {
       {
         type: 'success',
       },
-      host
+      host,
     );
   } catch (e) {
     console.log('Error in sandbox:');
@@ -129,7 +129,7 @@ async function compile(message) {
         type: 'error',
         error: buildError(e),
       },
-      host
+      host,
     );
   }
 }
@@ -174,7 +174,7 @@ function setupHistoryListeners() {
           type: 'urlchange',
           url: document.location.pathname + location.search,
         },
-        host
+        host,
       );
     });
   };
@@ -186,7 +186,7 @@ function setupHistoryListeners() {
           type: 'urlchange',
           url: document.location.pathname + location.search,
         },
-        host
+        host,
       );
     });
   };

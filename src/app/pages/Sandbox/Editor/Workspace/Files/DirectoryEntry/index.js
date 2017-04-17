@@ -23,11 +23,11 @@ const Overlay = styled.div`
   position: absolute;
   top: 0; bottom: 0; left: 0; right: 0;
   background-color: rgba(0, 0, 0, 0.3);
-  display: ${props => props.isOver ? 'block' : 'none'};
+  display: ${props => (props.isOver ? 'block' : 'none')};
 `;
 
 const Opener = styled.div`
-  height: ${props => props.open ? '100%' : '0px'};
+  height: ${props => (props.open ? '100%' : '0px')};
   overflow: hidden;
 `;
 
@@ -95,7 +95,7 @@ class DirectoryEntry extends React.PureComponent {
     const module = modules.find(m => m.id === id);
 
     const confirmed = confirm(
-      `Are you sure you want to delete ${module.title}?`
+      `Are you sure you want to delete ${module.title}?`,
     );
 
     if (confirmed) {
@@ -127,7 +127,7 @@ class DirectoryEntry extends React.PureComponent {
     const { id, title, sandboxId, sandboxActions } = this.props;
 
     const confirmed = confirm(
-      `Are you sure you want to delete ${title} and all its children?`
+      `Are you sure you want to delete ${title} and all its children?`,
     );
 
     if (confirmed) {
@@ -243,7 +243,7 @@ class DirectoryEntry extends React.PureComponent {
               onRenameCancel={this.resetState}
             />}
         </Opener>
-      </div>
+      </div>,
     );
   }
 }
@@ -261,13 +261,13 @@ const entryTarget = {
       props.sandboxActions.moveDirectoryToDirectory(
         props.sandboxId,
         sourceItem.id,
-        props.id
+        props.id,
       );
     } else {
       props.sandboxActions.moveModuleToDirectory(
         props.sandboxId,
         sourceItem.id,
-        props.id
+        props.id,
       );
     }
   },
@@ -295,5 +295,5 @@ function collectTarget(connect, monitor) {
 }
 
 export default connect(null, mapDispatchToProps)(
-  DropTarget('ENTRY', entryTarget, collectTarget)(DirectoryEntry)
+  DropTarget('ENTRY', entryTarget, collectTarget)(DirectoryEntry),
 );

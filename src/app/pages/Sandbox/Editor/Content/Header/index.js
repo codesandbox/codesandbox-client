@@ -117,7 +117,10 @@ export default class Header extends React.PureComponent {
         />
 
         <Right>
-          <FeedbackView email={user.email} sendMessage={userActions.sendFeedback} />
+          <FeedbackView
+            email={user.email}
+            sendMessage={userActions.sendFeedback}
+          />
           <Action href={newSandboxUrl()} title="New" Icon={PlusIcon} />
           {user.jwt
             ? <UserView

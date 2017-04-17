@@ -26,7 +26,8 @@ function moduleReducer(module, action) {
 function shouldUpdate(module, action) {
   switch (action.type) {
     case SET_MODULE_ERROR:
-      return (action.error == null && module.error) ||
+      return (
+        (action.error == null && module.error) ||
         (action.error != null && module.error == null) ||
         (action.error != null &&
           module.error != null &&
@@ -34,7 +35,8 @@ function shouldUpdate(module, action) {
             action.error.title !== module.error.title ||
             action.error.column !== module.error.column ||
             action.error.message !== module.error.message ||
-            action.error.type !== module.error.type));
+            action.error.type !== module.error.type))
+      );
 
     default:
       return true;

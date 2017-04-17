@@ -31,7 +31,7 @@ const ViewIcon = styled.div`
     position: absolute;
     left: 0; right: 0; bottom: 0; top: 0;
     background-color: rgba(0,0,0,0.6);
-    opacity: ${props => props.active ? 0 : 1};
+    opacity: ${props => (props.active ? 0 : 1)};
     border-radius: 2px;
     overflow: hidden;
   }
@@ -63,15 +63,13 @@ type Props = {
   setMixedView: () => void,
 };
 
-export default function AllIcons(
-  {
-    showEditor,
-    showPreview,
-    setEditorView,
-    setMixedView,
-    setPreviewView,
-  }: Props
-) {
+export default function AllIcons({
+  showEditor,
+  showPreview,
+  setEditorView,
+  setMixedView,
+  setPreviewView,
+}: Props) {
   return (
     <Tooltips>
       <Tooltip message="Editor view">

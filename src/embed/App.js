@@ -38,7 +38,7 @@ const Moving = styled.div`
   bottom: 0;
   left: 0;
   right: 0;
-  transform: translateX(${props => props.sidebarOpen ? 250 : 0}px);
+  transform: translateX(${props => (props.sidebarOpen ? 250 : 0)}px);
   box-shadow: -3px 3px 3px rgba(0, 0, 0, 0.5);
 `;
 
@@ -89,7 +89,7 @@ export default class App extends React.PureComponent {
   fetchSandbox = async (id: string) => {
     try {
       const response = await fetch(
-        `${this.getAppOrigin()}/api/v1/sandboxes/${id}`
+        `${this.getAppOrigin()}/api/v1/sandboxes/${id}`,
       )
         .then(res => res.json())
         .then(camelizeKeys);
@@ -98,7 +98,7 @@ export default class App extends React.PureComponent {
         sandbox: response.data,
         currentModule: this.state.currentModule ||
           response.data.modules.find(
-            m => m.title === 'index.js' && m.directoryShortid == null
+            m => m.title === 'index.js' && m.directoryShortid == null,
           ).id,
       });
     } catch (e) {

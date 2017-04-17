@@ -24,7 +24,7 @@ function doEval(mainModule, sandboxId, modules, directories, manifest, depth) {
       modules,
       directories,
       manifest,
-      depth
+      depth,
     );
   }
 
@@ -35,7 +35,7 @@ function doEval(mainModule, sandboxId, modules, directories, manifest, depth) {
       modules,
       directories,
       manifest,
-      depth
+      depth,
     );
   }
 
@@ -46,7 +46,7 @@ function doEval(mainModule, sandboxId, modules, directories, manifest, depth) {
       modules,
       directories,
       manifest,
-      depth
+      depth,
     );
   }
 
@@ -65,7 +65,7 @@ const evalModule = (
   modules: Array<Module>,
   directories: Array<Directory>,
   manifest: Object,
-  depth: number = 0
+  depth: number = 0,
 ) => {
   if (depth > MAX_DEPTH) {
     throw new Error(`Exceeded the maximum require depth of ${MAX_DEPTH}.`);

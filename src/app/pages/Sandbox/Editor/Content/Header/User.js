@@ -56,13 +56,13 @@ const Menu = styled.div`
 const Item = styled.div`
   transition: 0.3s ease all;
   padding: 0 1rem;
-  cursor: ${props => props.disabled ? 'default' : 'pointer'};
+  cursor: ${props => (props.disabled ? 'default' : 'pointer')};
   overflow: hidden;
   border-left: 2px solid transparent;
   ${props => props.disabled && 'color: rgba(255, 255, 255, 0.3);'}
 
   &:hover {
-    color: ${props => props.disabled ? 'inherit' : props.theme.secondary};
+    color: ${props => (props.disabled ? 'inherit' : props.theme.secondary)};
     border-color: ${props => props.theme.secondary};
     background-color: rgba(255, 255, 255, 0.1);
   }
@@ -97,7 +97,7 @@ export default class UserView extends React.PureComponent {
   };
 
   toggleMenu = () =>
-    this.state.open ? this.closeMenu() : this.setState({ open: true });
+    (this.state.open ? this.closeMenu() : this.setState({ open: true }));
   closeMenu = () => this.setState({ open: false, sandboxesOpen: false });
 
   toggleSandboxesMenu = () => {

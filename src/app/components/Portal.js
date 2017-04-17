@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 
 type Props = {
   children: React.Element<*>,
-}
+};
 
 export default class Portal extends React.Component {
   props: Props;

@@ -51,7 +51,7 @@ export default function evaluateJS(
   modules,
   directories,
   manifest,
-  depth
+  depth,
 ) {
   try {
     const requires = [];
@@ -70,7 +70,7 @@ export default function evaluateJS(
           path,
           modules,
           directories,
-          mainModule.directoryShortid
+          mainModule.directoryShortid,
         );
         if (mainModule === module) {
           throw new Error(`${mainModule.title} is importing itself`);
@@ -90,7 +90,7 @@ export default function evaluateJS(
               modules,
               directories,
               manifest,
-              depth + 1
+              depth + 1,
             );
       }
     };

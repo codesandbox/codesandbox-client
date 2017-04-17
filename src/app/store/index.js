@@ -19,7 +19,7 @@ export default history => {
   const composeEnhancers = getComposeEnhancers();
   const store = createStore(
     rootReducer,
-    composeEnhancers(applyMiddleware(thunk, routerMiddleware(history)))
+    composeEnhancers(applyMiddleware(thunk, routerMiddleware(history))),
   );
 
   if (process.env.NODE_ENV === 'development') {

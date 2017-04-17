@@ -217,7 +217,7 @@ class Entry extends React.PureComponent {
                   />}
             </Right>}
         </EntryContainer>
-      </div>
+      </div>,
     );
   }
 }

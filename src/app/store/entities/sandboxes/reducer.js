@@ -57,7 +57,7 @@ function singleSandboxReducer(sandbox, action: Action) {
       return {
         ...sandbox,
         directories: sandbox.directories.filter(
-          d => d !== action.directoryShortid
+          d => d !== action.directoryShortid,
         ),
       };
     case SET_NPM_DEPENDENCIES:

@@ -38,7 +38,7 @@ type State = {
 const FullSize = styled.div`
   height: 100%;
   width: 100%;
-  pointer-events: ${props => props.inactive ? 'none' : 'all'};
+  pointer-events: ${props => (props.inactive ? 'none' : 'all')};
 `;
 
 const mapStateToProps = state => ({

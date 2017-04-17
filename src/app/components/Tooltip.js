@@ -125,9 +125,16 @@ type Props = {
   bottom: ?boolean,
 };
 
-export default (
-  { className, offset = 0, children, message, left, right, bottom, top }: Props
-) => (
+export default ({
+  className,
+  offset = 0,
+  children,
+  message,
+  left,
+  right,
+  bottom,
+  top,
+}: Props) => (
   <Tooltip
     className={className}
     bottom={bottom}

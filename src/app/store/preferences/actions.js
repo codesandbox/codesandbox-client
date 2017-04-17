@@ -11,7 +11,8 @@ import {
 export const SET_PREFERENCE_AUTOCOMPLETE = 'SET_PREFERENCE_AUTOCOMPLETE';
 export const SET_PREFERENCE_VIM_MODE = 'SET_PREFERENCE_VIM_MODE';
 export const SET_PREFERENCE_LIVE_PREVIEW = 'SET_PREFERENCE_LIVE_PREVIEW';
-export const SET_PREFERENCE_PRETTIFY_ON_SAVE = 'SET_PREFERENCE_PRETTIFY_ON_SAVE';
+export const SET_PREFERENCE_PRETTIFY_ON_SAVE =
+  'SET_PREFERENCE_PRETTIFY_ON_SAVE';
 export const SET_PREFERENCE_LINT = 'SET_PREFERENCE_LINT';
 
 const setOption = (key, val) => {
@@ -35,7 +36,7 @@ export default {
   },
 
   setAutoCompletePreference: (autoComplete: boolean) => (
-    dispatch: Function
+    dispatch: Function,
   ) => {
     setOption(AUTO_COMPLETE, autoComplete);
 

@@ -27,14 +27,14 @@ const InputContainer = styled.div`
 `;
 
 type Props = {
-  title: string;
-  onCommit: (title: string, force: ?boolean) => void;
-  onCancel: () => void;
-  onChange: (name: string) => void;
-}
+  title: string,
+  onCommit: (title: string, force: ?boolean) => void,
+  onCancel: () => void,
+  onChange: (name: string) => void,
+};
 
 type State = {
-  currentValue: string;
+  currentValue: string,
 };
 
 function select(el) {

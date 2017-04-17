@@ -28,8 +28,7 @@ const Icons = styled.div`
 
 const Icon = styled.div`
   display: inline-block;
-  color: ${props =>
-  props.disabled ? props.theme.gray : props.theme.gray.darken(0.3)};
+  color: ${props => (props.disabled ? props.theme.gray : props.theme.gray.darken(0.3))};
   font-size: 1.5rem;
   line-height: 0.5;
   margin: 0 0.1rem;
@@ -64,18 +63,16 @@ type Props = {
   toggleProjectView: () => void,
 };
 
-export default (
-  {
-    url,
-    onChange,
-    onConfirm,
-    onBack,
-    onForward,
-    onRefresh,
-    isProjectView,
-    toggleProjectView,
-  }: Props
-) => (
+export default ({
+  url,
+  onChange,
+  onConfirm,
+  onBack,
+  onForward,
+  onRefresh,
+  isProjectView,
+  toggleProjectView,
+}: Props) => (
   <Container>
     <Icons>
       <Icon disabled={!onBack} onClick={onBack}><LeftIcon /></Icon>

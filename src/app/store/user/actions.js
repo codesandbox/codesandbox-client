@@ -17,7 +17,7 @@ export const SET_USER_SANDBOXES = 'SET_USER_SANDBOXES';
 export const GET_CURRENT_USER_API = createAPIActions('CURRENT_USER', 'FETCH');
 export const LOAD_USER_SANDBOXES = createAPIActions(
   'CURRENT_USER',
-  'FETCH_SANDBOXES'
+  'FETCH_SANDBOXES',
 );
 export const SEND_FEEDBACK_API = createAPIActions('FEEDBACK', 'SEND');
 
@@ -38,7 +38,7 @@ const getCurrentUser = () => async (dispatch: Function, getState: Function) => {
   if (jwt) {
     try {
       const { data } = await dispatch(
-        doRequest(GET_CURRENT_USER_API, `users/current`)
+        doRequest(GET_CURRENT_USER_API, `users/current`),
       );
 
       identify(data);
@@ -93,11 +93,11 @@ const sendFeedback = (message: string) => async (dispatch: Function) => {
           url: window.location.href,
         },
       },
-    })
+    }),
   );
 
   dispatch(
-    notifActions.addNotification('Thanks a lot for your feedback!', 'success')
+    notifActions.addNotification('Thanks a lot for your feedback!', 'success'),
   );
 };
 

@@ -28,7 +28,7 @@ export default class SignIn extends React.PureComponent {
                 jwt: props.match.params.jwt,
               },
             },
-            protocolAndHost()
+            protocolAndHost(),
           );
         }
         return;
@@ -55,12 +55,9 @@ export default class SignIn extends React.PureComponent {
     }
     if (this.state.jwt) return 'Signing in...';
     if (this.state.jwt == null) {
-      setTimeout(
-        () => {
-          document.location.href = signInUrl();
-        },
-        2000
-      );
+      setTimeout(() => {
+        document.location.href = signInUrl();
+      }, 2000);
       return 'Redirecting to sign in page...';
     }
 
