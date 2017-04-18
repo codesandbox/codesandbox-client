@@ -43,6 +43,7 @@ export type Sandbox = {
   id: string,
   title: ?string,
   description: string,
+  viewCount: number,
   modules: Array<Module>,
   currentModule: ?Module,
   directories: Array<Directory>,

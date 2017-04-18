@@ -43,6 +43,7 @@ const Workspace = ({ sandbox, sandboxActions }: Props) => (
         updateSandboxInfo={sandboxActions.updateSandboxInfo}
         id={sandbox.id}
         title={sandbox.title}
+        viewCount={sandbox.viewCount}
         description={sandbox.description}
         forkedSandbox={sandbox.forkedFromSandbox}
         preventTransition={sandbox.modules.some(m => m.isNotSynced)}

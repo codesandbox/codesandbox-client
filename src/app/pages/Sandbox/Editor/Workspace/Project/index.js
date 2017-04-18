@@ -11,12 +11,28 @@ const Item = styled.div`
   font-size: .875rem;
 `;
 
+const ViewCount = styled.span`
+  color: white;
+  font-weight: 500;
+`;
+
+const ViewCountDescription = styled.span`
+  color: rgba(255, 255, 255, 0.6);
+`;
+
+const ViewCountContainer = styled.div`
+  margin: .5rem 1rem;
+  font-size: .875rem;
+`;
+
 type Props = {
   id: string,
   title: string,
   description: string,
+  viewCount: number,
   forkedSandbox: ?{ title: string, id: string },
   updateSandboxInfo: (id: string, title: string, description: string) => void,
+  preventTransition: boolean,
 };
 
 export default class Project extends React.PureComponent {
@@ -61,7 +77,7 @@ export default class Project extends React.PureComponent {
   };
 
   render() {
-    const { forkedSandbox, preventTransition } = this.props;
+    const { forkedSandbox, viewCount, preventTransition } = this.props;
     const { title, description } = this.state;
     return (
       <div>
@@ -100,6 +116,14 @@ export default class Project extends React.PureComponent {
               </ConfirmLink>
             </Item>
           </div>}
+        <WorkspaceSubtitle>Statistics</WorkspaceSubtitle>
+        <ViewCountContainer>
+          <ViewCount>{viewCount}{' '}</ViewCount>
+          <ViewCountDescription>
+            unique
+            {viewCount === 1 ? ' view' : ' views'}
+          </ViewCountDescription>
+        </ViewCountContainer>
       </div>
     );
   }

@@ -32,11 +32,11 @@ function addJS(resource: string) {
 }
 
 function addResource(resource: string) {
-  const kind = resource.match(/\.([^.]*)$/)[1];
+  const match = resource.match(/\.([^.]*)$/);
 
-  if (kind === 'css') {
+  if (match && match[1] === 'css') {
     addCSS(resource);
-  } else if (kind === 'js') {
+  } else {
     addJS(resource);
   }
 }
