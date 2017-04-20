@@ -6,6 +6,7 @@ import Fork from 'react-icons/lib/go/repo-forked';
 import Download from 'react-icons/lib/go/cloud-download';
 import PlusIcon from 'react-icons/lib/go/plus';
 import GithubIcon from 'react-icons/lib/go/mark-github';
+import ChevronLeft from 'react-icons/lib/go/chevron-left';
 
 import type { Sandbox, CurrentUser } from 'common/types';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
@@ -45,7 +46,28 @@ const Left = styled.div`
   height: 100%;
 `;
 
+const Chevron = styled(ChevronLeft)`
+  transition: 0.3s ease all;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  margin-left: 0.5rem;
+  z-index: 20;
+
+  cursor: pointer;
+  &:hover {
+    transform: rotateZ(${props => (props.workspaceHidden ? '135deg' : '45deg')});
+    color: white;
+  }
+
+  transform: rotateZ(${props => (props.workspaceHidden ? '180deg' : '0')});
+`;
+
 type Props = {
+  toggleWorkspace: () => void,
+  workspaceHidden: boolean,
   sandbox: Sandbox,
   sandboxActions: typeof sandboxActionCreators,
   userActions: typeof userActionCreators,
@@ -92,11 +114,21 @@ export default class Header extends React.PureComponent {
   };
 
   render() {
-    const { sandbox, userActions, user } = this.props;
+    const {
+      sandbox,
+      userActions,
+      user,
+      toggleWorkspace,
+      workspaceHidden,
+    } = this.props;
     const canSave = sandbox.modules.some(m => m.isNotSynced);
     return (
       <Container>
         <Left>
+          <Chevron
+            onClick={toggleWorkspace}
+            workspaceHidden={workspaceHidden}
+          />
           <Action onClick={this.forkSandbox} title="Fork" Icon={Fork} />
           <Action
             onClick={canSave && this.massUpdateModules}
