@@ -1,15 +1,14 @@
 // @flow
 import { push } from 'react-router-redux';
+import type { Module, Directory } from 'common/types';
 
 import { createAPIActions, doRequest } from '../../api/actions';
 import { normalizeResult } from '../actions';
 import notificationActions from '../../notifications/actions';
 import entity from './entity';
-import fetchBundle from './bundle-loader';
-import type { Module } from './modules/entity';
+import fetchBundle from './bundler';
 import moduleEntity from './modules/entity';
 import moduleActions from './modules/actions';
-import type { Directory } from './directories/entity';
 import directoryEntity from './directories/entity';
 import directoryActions from './directories/actions';
 import { singleSandboxSelector } from './selectors';
