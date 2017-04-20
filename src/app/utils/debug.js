@@ -4,9 +4,9 @@ const getDebugger = () => {
     return (key: string) => (message: string) => {
       if (typeof window.Raven === 'object') {
         try {
-          Raven.captureMessage(message, {
-            level: 'info',
-            logger: key,
+          Raven.captureBreadcrumb({
+            message: `${key} - ${message}`,
+            category: 'logging',
           });
         } catch (e) {
           console.error(e);
