@@ -51,7 +51,7 @@ export default function evaluateJS(
   modules,
   directories,
   manifest,
-  depth,
+  depth
 ) {
   try {
     const requires = [];
@@ -70,7 +70,7 @@ export default function evaluateJS(
           path,
           modules,
           directories,
-          mainModule.directoryShortid,
+          mainModule.directoryShortid
         );
         if (mainModule === module) {
           throw new Error(`${mainModule.title} is importing itself`);
@@ -78,7 +78,7 @@ export default function evaluateJS(
 
         if (!module) throw new Error(`Cannot find module in path: ${path}`);
 
-        requires.push(getId(sandboxId, module.id));
+        requires.push(getId(sandboxId, module));
         // Check if this module has been evaluated before, if so return that
         const cache = moduleCache.get(getId(sandboxId, module));
 
@@ -90,7 +90,7 @@ export default function evaluateJS(
               modules,
               directories,
               manifest,
-              depth + 1,
+              depth + 1
             );
       }
     };
