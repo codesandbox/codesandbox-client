@@ -23,6 +23,8 @@ import Preview from 'app/components/sandbox/Preview';
 import Header from './Header';
 
 type Props = {
+  workspaceHidden: boolean,
+  toggleWorkspace: () => void,
   sandbox: Sandbox,
   user: CurrentUser,
   preferences: Preferences,
@@ -98,6 +100,8 @@ class EditorPreview extends React.PureComponent {
       preferences,
       userActions,
       user,
+      workspaceHidden,
+      toggleWorkspace,
     } = this.props;
 
     const { modules, directories } = sandbox;
@@ -157,6 +161,8 @@ class EditorPreview extends React.PureComponent {
           sandboxActions={sandboxActions}
           userActions={userActions}
           user={user}
+          workspaceHidden={workspaceHidden}
+          toggleWorkspace={toggleWorkspace}
         />
         <SplitPane
           onDragStarted={this.startResizing}
@@ -165,6 +171,12 @@ class EditorPreview extends React.PureComponent {
           defaultSize="50%"
           minSize={360}
           paneStyle={{ height: '100%' }}
+          resizerStyle={{
+            visibility: (!sandbox.showPreview && sandbox.showEditor) ||
+              (sandbox.showPreview && !sandbox.showEditor)
+              ? 'hidden'
+              : 'visible',
+          }}
           pane1Style={{
             display: sandbox.showEditor ? 'block' : 'none',
             minWidth: !sandbox.showPreview && sandbox.showEditor
