@@ -171,6 +171,12 @@ class EditorPreview extends React.PureComponent {
           defaultSize="50%"
           minSize={360}
           paneStyle={{ height: '100%' }}
+          resizerStyle={{
+            visibility: (!sandbox.showPreview && sandbox.showEditor) ||
+              (sandbox.showPreview && !sandbox.showEditor)
+              ? 'hidden'
+              : 'visible',
+          }}
           pane1Style={{
             display: sandbox.showEditor ? 'block' : 'none',
             minWidth: !sandbox.showPreview && sandbox.showEditor
