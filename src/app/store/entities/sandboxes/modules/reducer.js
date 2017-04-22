@@ -19,7 +19,8 @@ function moduleReducer(module, action) {
     case SET_MODULE_SYNCED:
       return { ...module, isNotSynced: false };
     case SET_MODULE_ERROR:
-      return { ...module, error: action.error };
+      // Don't let errors overwrite eachother, because the first error is probably the cause for the second one'
+      return module.error ? module : { ...module, error: action.error };
     default:
       return module;
   }
