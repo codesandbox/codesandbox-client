@@ -5,6 +5,7 @@ import { transform } from 'babel-standalone';
 import asyncPlugin from 'babel-plugin-transform-async-to-generator';
 import restSpread from 'babel-plugin-transform-object-rest-spread';
 import classProperties from 'babel-plugin-transform-class-properties';
+import decoratorPlugin from 'babel-plugin-transform-decorators-legacy';
 
 import evalModule from './';
 import resolveModule from '../utils/resolve-module';
@@ -30,7 +31,7 @@ const compileCode = (code: string = '', moduleName: string = 'unknown') => {
   try {
     return transform(code, {
       presets: ['es2015', 'react', 'stage-0'],
-      plugins: [asyncPlugin, restSpread, classProperties],
+      plugins: [asyncPlugin, restSpread, classProperties, decoratorPlugin],
       retainLines: true,
     }).code;
   } catch (e) {
