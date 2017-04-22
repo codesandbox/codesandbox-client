@@ -20,7 +20,7 @@ import {
 
 const Container = styled.div`
   position: relative;
-  z-index: 2;
+  z-index: 200;
   height: 100%;
 `;
 
