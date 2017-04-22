@@ -119,7 +119,7 @@ export default class SandboxTitle extends React.PureComponent {
                   onKeyUp={this.handleKeyUp}
                   ref={this.select}
                   onChange={this.handleChange}
-                  onBlur={this.handleChange}
+                  onBlur={this.handleRename}
                   value={newTitle}
                 />
               </InputContainer>
