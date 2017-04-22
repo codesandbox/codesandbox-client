@@ -9,6 +9,7 @@ import {
   SET_EXTERNAL_RESOURCES,
   SET_CURRENT_MODULE,
   SET_BUNDLE,
+  CANCEL_BUNDLE,
   FETCH_BUNDLE_API_ACTIONS,
   SET_SANDBOX_INFO,
   SET_PROJECT_VIEW,
@@ -81,6 +82,13 @@ function singleSandboxReducer(sandbox, action: Action) {
         ...sandbox,
         dependencyBundle: action.bundle,
       };
+    case CANCEL_BUNDLE:
+      return {
+        ...sandbox,
+        dependencyBundle: {
+          error: true,
+        },
+      };
     case SET_SANDBOX_INFO:
       return {
         ...sandbox,
@@ -103,6 +111,7 @@ export default function reducer(state = initialState, action: Action) {
     case SET_CURRENT_MODULE:
     case FETCH_BUNDLE_API_ACTIONS.REQUEST:
     case SET_BUNDLE:
+    case CANCEL_BUNDLE:
     case SET_SANDBOX_INFO:
     case SET_PROJECT_VIEW:
     case SET_VIEW_MODE:

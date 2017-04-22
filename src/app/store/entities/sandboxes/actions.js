@@ -82,6 +82,7 @@ export const SET_NPM_DEPENDENCIES = 'SET_NPM_DEPENDENCIES';
 export const SET_EXTERNAL_RESOURCES = 'SET_EXTERNAL_RESOURCES';
 export const SET_CURRENT_MODULE = 'SET_CURRENT_MODULE';
 export const SET_BUNDLE = 'SET_BUNDLE';
+export const CANCEL_BUNDLE = 'CANCEL_BUNDLE';
 export const SET_PROJECT_VIEW = 'SET_PROJECT_VIEW';
 export const SET_VIEW_MODE = 'SET_VIEW_MODE';
 export const CREATE_ZIP = 'CREATE_ZIP';
@@ -608,6 +609,11 @@ export default {
           'error',
         ),
       );
+
+      dispatch({
+        type: CANCEL_BUNDLE,
+        id: sandboxId,
+      });
     }
   },
 
