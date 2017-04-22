@@ -58,7 +58,7 @@ export default function evaluateJS(
     const requires = [];
     require = function require(path: string) {
       // eslint-disable-line no-unused-vars
-      if (/^\w/.test(path)) {
+      if (/^(\w|@)/.test(path)) {
         // So it must be a dependency
         const dependencyModule = externals[path] || externals[`${path}.js`];
         if (dependencyModule) {
