@@ -123,9 +123,18 @@ const forkSandbox = (id: string) => async (
     data.currentModule = currentSandbox.currentModule;
   }
   data.forked = true;
+
+  // Save the unsaved modules
+  const oldModules = modulesSelector(getState());
   await dispatch(normalizeResult(entity, data));
 
   dispatch(push(sandboxUrl(data)));
+
+  // Set the code for the new modules from the old modules
+  currentSandbox.modules
+    .map(mid => oldModules[mid])
+    .filter(m => m.isNotSynced)
+    .forEach(m => dispatch(moduleActions.setCode(m.id, m.code)));
 
   dispatch(notificationActions.addNotification('Forked sandbox!', 'success'));
 
