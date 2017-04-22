@@ -2,20 +2,22 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-const getBackgroundColor = ({ theme, secondary, transparent, disabled }) => {
+import theme from 'common/theme';
+
+const getBackgroundColor = ({ secondary, transparent, disabled }) => {
   if (disabled) return theme.background2.darken(0.1)();
   if (transparent) return 'rgba(0,0,0,0.0)';
   if (secondary) return theme.primary.clearer(0.8)();
   return theme.secondary.clearer(0.4)();
 };
 
-const getBorder = ({ transparent, disabled, theme }) => {
+const getBorder = ({ transparent, disabled }) => {
   if (transparent) return `1px solid ${theme.secondary.clearer(0.5)()}`;
   if (disabled) return '1px solid transparent';
   return `1px solid ${theme.secondary()};`;
 };
 
-const getColor = ({ transparent, disabled, theme }) => {
+const getColor = ({ transparent, disabled }) => {
   if (disabled) return theme.background2.lighten(1.5)();
   if (transparent) return 'rgba(255,255,255,0.8)';
   return 'white';
@@ -47,8 +49,8 @@ const styles = props =>
   ${!props.disabled && `
       cursor: pointer;
       &:hover {
-        background-color: ${props.theme.primary.clearer(0.5)()};
-        border-color: ${props.theme.primary()};
+        background-color: ${theme.primary.clearer(0.5)()};
+        border-color: ${theme.primary()};
       }
   `}
 `;

@@ -120,9 +120,13 @@
     "lint": "eslint src"
   },
   "jest": {
+    "rootDir": "src",
     "moduleDirectories": [
       "node_modules",
       "src"
-    ]
+    ],
+    "moduleNameMapper": {
+      "\\.css$": "<rootDir>/__mocks__/styleMock.js"
+    }
   }
 }

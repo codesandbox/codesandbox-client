@@ -53,7 +53,7 @@ export type Sandbox = {
   externalResources: Array<string>,
   isInProjectView: ?boolean,
   dependencyBundle: ?{
-    manifest?: Object,
+    externals?: Object,
     hash?: string,
     url?: string,
     error?: string,

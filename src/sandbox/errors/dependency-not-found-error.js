@@ -10,9 +10,9 @@ export default class DependencyNotFoundError extends Error {
     super();
     this.payload = {
       dependency: parseDependencyName(dependencyName),
+      path: dependencyName,
     };
   }
   type = 'dependency-not-found';
   severity = 'error';
-  line = -1;
 }

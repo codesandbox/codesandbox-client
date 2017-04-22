@@ -41,9 +41,14 @@ const CodeContainer = styled.div`
   height: calc(100% - 6rem);
 `;
 
-const handleError = (cm, currentError, nextError, nextCode, nextId) => {
+const handleError = (cm, currentError, nextError, nextCode, prevId, nextId) => {
   if (currentError || nextError) {
-    if (currentError && nextError && currentError.line === nextError.line) {
+    if (
+      currentError &&
+      nextError &&
+      currentError.line === nextError.line &&
+      prevId === nextId
+    ) {
       return;
     }
 
@@ -111,8 +116,14 @@ export default class CodeEditor extends React.PureComponent {
     } = nextProps;
 
     if (cm) {
-      this.swapDocuments({ currentId, nextId, nextCode, nextTitle });
-      handleError(cm, currentError, nextError, nextCode, nextId);
+      this.swapDocuments({
+        currentId,
+        nextId,
+        nextCode,
+        nextTitle,
+      }).then(() => {
+        handleError(cm, currentError, nextError, nextCode, currentId, nextId);
+      });
     }
   }
 

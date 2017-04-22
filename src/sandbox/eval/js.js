@@ -50,8 +50,8 @@ export default function evaluateJS(
   sandboxId,
   modules,
   directories,
-  manifest,
-  depth
+  externals,
+  depth,
 ) {
   try {
     const requires = [];
@@ -59,18 +59,21 @@ export default function evaluateJS(
       // eslint-disable-line no-unused-vars
       if (/^\w/.test(path)) {
         // So it must be a dependency
-        const dependencyManifest = manifest[path] || manifest[`${path}.js`];
-        if (dependencyManifest) {
-          return window.dependencies(dependencyManifest.id);
-        } else {
-          throw new DependencyNotFoundError(path);
+        const dependencyModule = externals[path] || externals[`${path}.js`];
+        if (dependencyModule) {
+          const idMatch = dependencyModule.match(/dll_bundle\((\d+)\)/);
+          if (idMatch && idMatch[1]) {
+            return window.dll_bundle(idMatch[1]);
+          }
         }
+
+        throw new DependencyNotFoundError(path);
       } else {
         const module = resolveModule(
           path,
           modules,
           directories,
-          mainModule.directoryShortid
+          mainModule.directoryShortid,
         );
         if (mainModule === module) {
           throw new Error(`${mainModule.title} is importing itself`);
@@ -89,8 +92,8 @@ export default function evaluateJS(
               sandboxId,
               modules,
               directories,
-              manifest,
-              depth + 1
+              externals,
+              depth + 1,
             );
       }
     };

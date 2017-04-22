@@ -1,9 +1,11 @@
+import { mapValues } from 'lodash';
 import {
   RENAME_MODULE,
   MOVE_MODULE,
   SET_CODE,
   SET_MODULE_SYNCED,
   SET_MODULE_ERROR,
+  CLEAR_ERRORS,
 } from './actions';
 
 function moduleReducer(module, action) {
@@ -59,6 +61,12 @@ export default function reducer(state: {}, action) {
       }
       return state;
     }
+    case CLEAR_ERRORS:
+      // if there are errors
+      if (Object.keys(state).some(id => state[id].error)) {
+        return mapValues(state, m => ({ ...m, error: null }));
+      }
+      return state;
     default:
       return state;
   }

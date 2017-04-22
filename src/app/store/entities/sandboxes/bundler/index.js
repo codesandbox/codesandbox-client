@@ -1,13 +1,14 @@
 import _debug from 'app/utils/debug';
 
 import callApi from '../../../services/api';
-import delay from '../../../services/delay';
 
 import dependenciesToQuery from './dependencies-to-query';
 import { singleSandboxSelector } from '../selectors';
 import logError from '../../../../utils/error';
 
 const debug = _debug('cs:app:packager');
+
+export const PACKAGER_URL = 'https://cdn.jsdelivr.net/webpack/v1';
 
 /**
  * Request the packager, if retries > 4 it will throw if something goes wrong
@@ -21,10 +22,10 @@ async function requestPackager(query: string) {
   while (true) {
     debug(`Trying to call packager for ${retries} time`);
     try {
-      await callApi(
-        `https://cdn.jsdelivr.net/webpack/v1/${query}/manifest.json`,
-      );
-      return;
+      const url = `${PACKAGER_URL}/${query}`;
+      const result = await callApi(`${url}/manifest.json`);
+
+      return { ...result, url };
     } catch (e) {
       if (retries < 5) {
         retries += 1;
@@ -36,40 +37,25 @@ async function requestPackager(query: string) {
 }
 
 async function callNewPackager(dependencies: Object) {
-  // New Packager flow
-  try {
-    const dependencyUrl = dependenciesToQuery(dependencies);
+  const dependencyUrl = dependenciesToQuery(dependencies);
 
-    await requestPackager(dependencyUrl);
-  } catch (e) {
-    logError(e, { level: 'warning', service: 'packager' });
-  }
+  const result = await requestPackager(dependencyUrl);
+  return result;
 }
 
-export default function fetch(actions, id: string) {
+export default function fetch(actions, id: string, npmDependencies: Object) {
   return async (dispatch: Function, getState: Function) => {
-    const sandbox = singleSandboxSelector(getState(), { id });
-    if (sandbox) {
-      callNewPackager(sandbox.npmDependencies);
-    }
+    if (Object.keys(npmDependencies).length !== 0) {
+      dispatch({ type: actions.REQUEST, initial: true, id });
+      // New Packager flow
+      try {
+        const result = await callNewPackager(npmDependencies);
 
-    dispatch({ type: actions.REQUEST, initial: true, id });
-    const firstResult = await callApi('/bundler/bundle', null, {
-      method: 'POST',
-      body: { id },
-    });
-    dispatch({ type: actions.SUCCESS, result: firstResult });
-
-    if (firstResult.manifest) {
-      return firstResult;
-    }
-
-    while (true) {
-      await delay(1000);
-      const result = await callApi(`/bundler/bundle/${firstResult.hash}`);
-
-      if (result.manifest) {
+        dispatch({ type: actions.SUCCESS, id, result });
         return result;
+      } catch (e) {
+        logError(e, { level: 'error', service: 'packager' });
+        dispatch({ type: actions.FAILED, id });
       }
     }
   };

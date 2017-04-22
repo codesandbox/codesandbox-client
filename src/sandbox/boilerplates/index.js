@@ -12,7 +12,7 @@ export function evalBoilerplates(
   boilerplates: Array<any>,
   modules: Array<Module>,
   directories: Array<Directory>,
-  manifest: Object,
+  externals: Object,
 ) {
   cachedBoilerplates = boilerplates.map(boilerplate => {
     const fakeModule: Module = {
@@ -25,7 +25,7 @@ export function evalBoilerplates(
       type: '',
     };
 
-    const module = evalModule(fakeModule, '', modules, directories, manifest);
+    const module = evalModule(fakeModule, '', modules, directories, externals);
     return { ...boilerplate, module };
   });
 }

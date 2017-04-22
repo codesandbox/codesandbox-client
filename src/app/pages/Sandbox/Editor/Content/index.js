@@ -140,6 +140,7 @@ class EditorPreview extends React.PureComponent {
           modules={modules}
           directories={directories}
           setError={moduleActions.setError}
+          clearErrors={moduleActions.clearErrors}
           isInProjectView={sandbox.isInProjectView}
           externalResources={sandbox.externalResources}
           setProjectView={sandboxActions.setProjectView}

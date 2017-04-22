@@ -8,6 +8,8 @@ import type { Module } from 'common/types';
 import Button from 'app/components/buttons/Button';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 
+import theme from 'common/theme';
+
 import Editor from './Editor';
 
 const Container = styled.div`
@@ -16,13 +18,13 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   padding: 0.5rem;
-  background-color: ${({ color, theme }) => {
+  background-color: ${({ color }) => {
   if (color === 'error') {
     return theme.redBackground;
   }
   return theme.primary;
 }}
-  color: ${props => props.theme.red};
+  color: ${() => theme.red};
   height: 100%;
   width: 100%;
   padding: 1rem;
@@ -42,7 +44,12 @@ const Icon = styled.div`
 
 type Props = {
   sandboxId: string,
-  error: ?{ type: string, title: string, message: string },
+  error: ?{
+    severity: 'error' | 'warning',
+    type: string,
+    title: string,
+    message: string,
+  },
   message: ?string,
   sandboxActions: typeof sandboxActionCreators,
   modules: Array<Module>,
@@ -78,8 +85,14 @@ class Message extends React.PureComponent {
     if (error.type === 'dependency-not-found') {
       return (
         <div>
-          Could not find the dependency
-          <b> {"'"}{error.payload.dependency}{"'"}</b>.
+          Could not find
+          <b> {"'"}{error.payload.path}{"'"}</b>.
+          <div>
+            Did you add the dependency
+            {' '}
+            <b>{"'"}{error.payload.dependency}{"'"}</b>
+            ?
+          </div>
           <div style={{ marginTop: '1rem' }}>
             <Button
               onClick={this.addDependency(error.payload.dependency)}

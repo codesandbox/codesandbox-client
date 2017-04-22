@@ -12,7 +12,7 @@ import evalJson from './json';
 
 const MAX_DEPTH = 20;
 
-function doEval(mainModule, sandboxId, modules, directories, manifest, depth) {
+function doEval(mainModule, sandboxId, modules, directories, externals, depth) {
   const html = /\.html$/;
   const css = /\.css$/;
   const json = /\.json$/;
@@ -23,7 +23,7 @@ function doEval(mainModule, sandboxId, modules, directories, manifest, depth) {
       sandboxId,
       modules,
       directories,
-      manifest,
+      externals,
       depth,
     );
   }
@@ -34,7 +34,7 @@ function doEval(mainModule, sandboxId, modules, directories, manifest, depth) {
       sandboxId,
       modules,
       directories,
-      manifest,
+      externals,
       depth,
     );
   }
@@ -45,12 +45,12 @@ function doEval(mainModule, sandboxId, modules, directories, manifest, depth) {
       sandboxId,
       modules,
       directories,
-      manifest,
+      externals,
       depth,
     );
   }
 
-  return evalJS(mainModule, sandboxId, modules, directories, manifest, depth);
+  return evalJS(mainModule, sandboxId, modules, directories, externals, depth);
 }
 
 export function deleteCache(sandboxId, module: Module) {
@@ -64,14 +64,21 @@ const evalModule = (
   sandboxId: string,
   modules: Array<Module>,
   directories: Array<Directory>,
-  manifest: Object,
+  externals: Object,
   depth: number = 0,
 ) => {
   if (depth > MAX_DEPTH) {
     throw new Error(`Exceeded the maximum require depth of ${MAX_DEPTH}.`);
   }
   try {
-    return doEval(mainModule, sandboxId, modules, directories, manifest, depth);
+    return doEval(
+      mainModule,
+      sandboxId,
+      modules,
+      directories,
+      externals,
+      depth,
+    );
   } catch (e) {
     e.module = e.module || mainModule;
     throw e;

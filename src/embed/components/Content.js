@@ -7,7 +7,7 @@ import CodeEditor from 'app/components/sandbox/CodeEditor';
 import { getModulePath } from 'app/store/entities/sandboxes/modules/selectors';
 
 import type { Sandbox } from 'common/types';
-import fetchBundle from './bundle-fetcher';
+import fetchBundle from 'app/store/entities/sandboxes/bundler';
 
 const Container = styled.div`
   display: flex;
@@ -47,10 +47,11 @@ export default class Content extends React.Component {
   }
 
   fetchBundle = () => {
-    fetchBundle({ SUCCESS: 'SUCCESS' }, this.props.sandbox.id)(({
-      type,
-      result,
-    }) => {
+    fetchBundle(
+      { SUCCESS: 'SUCCESS' },
+      this.props.sandbox.id,
+      this.props.sandbox.npmDependencies,
+    )(({ type, result }) => {
       if (type === 'SUCCESS') {
         this.setState({ bundle: { ...result, processing: false } });
       }
@@ -104,8 +105,10 @@ export default class Content extends React.Component {
               module={mainModule}
               fetchBundle={this.fetchBundle}
               setError={() => {}}
+              clearErrors={() => {}}
               preferences={preferences}
               setProjectView={this.setProjectView}
+              noDelay
             />
           </Split>}
       </Container>

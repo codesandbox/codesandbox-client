@@ -37,7 +37,7 @@ export default class ContentSplit extends React.PureComponent {
         onDragFinished={this.stopResizing}
         resizerStyle={{ visibility: workspaceHidden ? 'hidden' : 'visible' }}
         pane1Style={{
-          visiblity: workspaceHidden ? 'hidden' : 'visible',
+          visibility: workspaceHidden ? 'hidden' : 'visible',
           maxWidth: workspaceHidden ? 0 : 'inherit',
         }}
       >

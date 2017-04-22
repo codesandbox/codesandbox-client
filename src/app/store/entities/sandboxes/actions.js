@@ -6,7 +6,7 @@ import { createAPIActions, doRequest } from '../../api/actions';
 import { normalizeResult } from '../actions';
 import notificationActions from '../../notifications/actions';
 import entity from './entity';
-import fetchBundle from './bundler';
+import fetchBundle, { PACKAGER_URL } from './bundler';
 import moduleEntity from './modules/entity';
 import moduleActions from './modules/actions';
 import directoryEntity from './directories/entity';
@@ -581,6 +581,7 @@ export default {
 
   fetchDependenciesBundle: (sandboxId: string) => async (
     dispatch: Function,
+    getState: Function,
   ) => {
     try {
       dispatch(
@@ -589,14 +590,25 @@ export default {
           'notice',
         ),
       );
+
+      const sandbox = singleSandboxSelector(getState(), { id: sandboxId });
       const result = await dispatch(
-        fetchBundle(FETCH_BUNDLE_API_ACTIONS, sandboxId),
+        fetchBundle(
+          FETCH_BUNDLE_API_ACTIONS,
+          sandboxId,
+          sandbox.npmDependencies,
+        ),
       );
+
+      const bundle = {
+        externals: result.externals,
+        url: result.url,
+      };
 
       dispatch({
         type: SET_BUNDLE,
         id: sandboxId,
-        bundle: result,
+        bundle,
       });
 
       dispatch(

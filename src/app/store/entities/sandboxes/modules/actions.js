@@ -4,6 +4,7 @@ export const RENAME_MODULE = 'RENAME_MODULE';
 export const MOVE_MODULE = 'MOVE_MODULE';
 export const SET_CODE = 'SET_CODE';
 export const SET_MODULE_ERROR = 'SET_MODULE_ERROR';
+export const CLEAR_ERRORS = 'CLEAR_ERRORS';
 export const SET_MODULE_SYNCED = 'SET_MODULE_SYNCED';
 
 export default {
@@ -31,5 +32,8 @@ export default {
     type: SET_MODULE_ERROR,
     id,
     error,
+  }),
+  clearErrors: () => ({
+    type: CLEAR_ERRORS,
   }),
 };

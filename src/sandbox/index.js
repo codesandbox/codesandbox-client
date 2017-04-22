@@ -20,13 +20,13 @@ let url = null;
 
 async function addDependencyBundle() {
   if (url !== '') {
-    window.dependencies = null;
+    window.dll_bundle = null;
     const script = document.createElement('script');
-    script.setAttribute('src', url);
+    script.setAttribute('src', `${url}/dll.js`);
     script.setAttribute('async', false);
     document.head.appendChild(script);
 
-    while (window.dependencies == null) {
+    while (window.dll_bundle == null) {
       await delay(100);
     }
   }
@@ -48,7 +48,7 @@ async function compile(message) {
     directories,
     boilerplates,
     module,
-    manifest,
+    externals,
     url: newUrl,
     changedModule,
     externalResources,
@@ -77,7 +77,7 @@ async function compile(message) {
       sandboxId,
       modules,
       directories,
-      manifest,
+      externals,
     );
     const domChanged = document.body.innerHTML !== html;
 
@@ -90,10 +90,10 @@ async function compile(message) {
         if (
           boilerplates.length !== 0 &&
           getBoilerplates().length === 0 &&
-          manifest != null
+          externals != null
         ) {
           try {
-            evalBoilerplates(boilerplates, modules, directories, manifest);
+            evalBoilerplates(boilerplates, modules, directories, externals);
           } catch (e) {
             console.log("Couldn't load all boilerplates");
           }

@@ -40,7 +40,9 @@ type Props = {
   setProjectView: (id: string, isInProjectView: boolean) => void,
   module: Module,
   setError: (id: string, error: ?{ message: string, line: number }) => void,
+  clearErrors: () => void,
   sandboxActions: typeof sandboxActionCreators,
+  noDelay: ?boolean,
 };
 
 type State = {
@@ -52,8 +54,8 @@ type State = {
 };
 
 export default class Preview extends React.PureComponent {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       frameInitialized: false,
@@ -63,7 +65,9 @@ export default class Preview extends React.PureComponent {
       url: null,
     };
 
-    this.executeCode = debounce(this.executeCode, 800);
+    if (!props.noDelay) {
+      this.executeCode = debounce(this.executeCode, 800);
+    }
   }
 
   fetchBundle = () => {
@@ -148,7 +152,7 @@ export default class Preview extends React.PureComponent {
         const { error } = e.data;
         this.setError(error);
       } else if (type === 'success') {
-        this.setError(null);
+        this.clearErrors();
       } else if (type === 'urlchange') {
         const url = e.data.url.replace('/', '');
         this.commitUrl(url);
@@ -177,7 +181,7 @@ export default class Preview extends React.PureComponent {
       externalResources,
     } = this.props;
 
-    if (bundle.manifest == null) {
+    if (bundle.externals == null) {
       if (!bundle.processing && !bundle.error) {
         this.fetchBundle();
       }
@@ -193,14 +197,26 @@ export default class Preview extends React.PureComponent {
       sandboxId,
       modules,
       directories,
-      manifest: bundle.manifest,
+      externals: bundle.externals,
       url: bundle.url,
       externalResources,
     });
   };
 
-  setError = (e: ?{ moduleId: string, message: string, line: number }) => {
-    this.props.setError(this.getRenderedModule().id, e);
+  setError = (e: { moduleId: string, message: string, line: number }) => {
+    const errorOriginModuleId = e.moduleId;
+    const currentModuleId = this.getRenderedModule().id;
+
+    // Throw the error twice, because both modules can't render because of this
+    // error
+    if (errorOriginModuleId) {
+      this.props.setError(errorOriginModuleId, e);
+    }
+    this.props.setError(currentModuleId, e);
+  };
+
+  clearErrors = () => {
+    this.props.clearErrors();
   };
 
   updateUrl = (url: string) => {
