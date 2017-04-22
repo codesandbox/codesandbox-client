@@ -31,7 +31,7 @@ const compileCode = (code: string = '', moduleName: string = 'unknown') => {
   try {
     return transform(code, {
       presets: ['es2015', 'react', 'stage-0'],
-      plugins: [asyncPlugin, restSpread, classProperties, decoratorPlugin],
+      plugins: [decoratorPlugin, asyncPlugin, restSpread, classProperties],
       retainLines: true,
     }).code;
   } catch (e) {
