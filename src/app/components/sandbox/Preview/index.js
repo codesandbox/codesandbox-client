@@ -6,7 +6,7 @@ import { debounce } from 'lodash';
 
 import type { Preferences } from 'app/store/preferences/reducer';
 
-import type { Module, Sandbox, Directory } from 'common/types';
+import type { Module, Sandbox, Directory, ModuleError } from 'common/types';
 import { frameUrl } from 'app/utils/url-generator';
 import { isMainModule } from 'app/store/entities/sandboxes/modules/validator';
 import defaultBoilerplates
@@ -39,10 +39,14 @@ type Props = {
   fetchBundle: (id: string) => Object,
   setProjectView: (id: string, isInProjectView: boolean) => void,
   module: Module,
-  setError: (id: string, error: ?{ message: string, line: number }) => void,
-  clearErrors: () => void,
+  addError: (
+    sandboxId: string,
+    error: ?{ message: string, line: number },
+  ) => void,
+  clearErrors: (sandboxId: string) => void,
   sandboxActions: typeof sandboxActionCreators,
   noDelay: ?boolean,
+  errors: ?Array<ModuleError>,
 };
 
 type State = {
@@ -148,7 +152,7 @@ export default class Preview extends React.PureComponent {
       const { type } = e.data;
       if (type === 'error') {
         const { error } = e.data;
-        this.setError(error);
+        this.addError(error);
       } else if (type === 'urlchange') {
         const url = e.data.url.replace('/', '');
         this.commitUrl(url);
@@ -199,20 +203,12 @@ export default class Preview extends React.PureComponent {
     });
   };
 
-  setError = (e: { moduleId: string, message: string, line: number }) => {
-    const errorOriginModuleId = e.moduleId;
-    const currentModuleId = this.getRenderedModule().id;
-
-    // Throw the error twice, because both modules can't render because of this
-    // error
-    if (errorOriginModuleId) {
-      this.props.setError(errorOriginModuleId, e);
-    }
-    this.props.setError(currentModuleId, e);
+  addError = (e: { moduleId: string, message: string, line: number }) => {
+    this.props.addError(this.props.sandboxId, e);
   };
 
   clearErrors = () => {
-    this.props.clearErrors();
+    this.props.clearErrors(this.props.sandboxId);
   };
 
   updateUrl = (url: string) => {
@@ -288,10 +284,9 @@ export default class Preview extends React.PureComponent {
       sandboxActions,
       isInProjectView,
       setProjectView,
+      errors,
     } = this.props;
     const { historyPosition, history, urlInAddressBar } = this.state;
-
-    const renderedModule = this.getRenderedModule();
 
     const url = urlInAddressBar || '';
 
@@ -309,11 +304,12 @@ export default class Preview extends React.PureComponent {
         />
 
         {!bundle.processing &&
-          renderedModule.error &&
+          errors &&
+          errors.length > 0 &&
           <Message
             modules={modules}
             sandboxActions={sandboxActions}
-            error={renderedModule.error}
+            error={errors[0]}
             sandboxId={sandboxId}
           />}
         {bundle.processing &&

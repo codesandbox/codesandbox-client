@@ -100,7 +100,7 @@ function singleSandboxReducer(sandbox, action: Action) {
       };
     case CLEAR_ERRORS:
     case ADD_ERROR:
-      return {...sandbox, errorReducer(sandbox.errors, action) }
+      return { ...sandbox, errors: errorReducer(sandbox.errors, action) };
     default:
       return sandbox;
   }

@@ -15,6 +15,7 @@ import { singleSandboxSelector } from './selectors';
 import { modulesSelector } from './modules/selectors';
 import { directoriesSelector } from './directories/selectors';
 import { sandboxUrl } from '../../../utils/url-generator';
+import errorActions from './errors/actions';
 
 export const FETCH_BUNDLE_API_ACTIONS = createAPIActions(
   'SANDBOX',
@@ -690,4 +691,6 @@ export default {
       sandbox.directories.map(x => directories[x]),
     );
   },
+
+  ...errorActions,
 };

@@ -57,6 +57,7 @@ class Files extends React.PureComponent {
         isInProjectView={sandbox.isInProjectView}
         currentModuleId={currentModule.id}
         renameSandbox={this.renameSandbox}
+        errors={sandbox.errors}
         id={null}
       />
     );

@@ -119,7 +119,7 @@ class EditorPreview extends React.PureComponent {
         <CodeEditor
           changeCode={moduleActions.setCode}
           id={currentModule.id}
-          error={currentModule.error}
+          errors={sandbox.errors}
           code={currentModule.code}
           title={currentModule.title}
           canSave={currentModule.isNotSynced}
@@ -139,8 +139,9 @@ class EditorPreview extends React.PureComponent {
           module={currentModule}
           modules={modules}
           directories={directories}
-          setError={moduleActions.setError}
-          clearErrors={moduleActions.clearErrors}
+          addError={sandboxActions.addError}
+          errors={sandbox.errors}
+          clearErrors={sandboxActions.clearErrors}
           isInProjectView={sandbox.isInProjectView}
           externalResources={sandbox.externalResources}
           setProjectView={sandboxActions.setProjectView}
