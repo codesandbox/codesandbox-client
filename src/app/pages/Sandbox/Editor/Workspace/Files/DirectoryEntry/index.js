@@ -50,7 +50,6 @@ type Props = {
   depth: ?number,
   openModuleTab: (id: string) => void,
   openMenu: (e: Event) => void,
-  renameSandbox: ?(title: string) => void,
   sandboxActions: typeof sandboxActionCreators,
   currentModuleId: ?string,
   isInProjectView: boolean,
@@ -137,8 +136,6 @@ class DirectoryEntry extends React.PureComponent {
     }
     return true;
   };
-
-  renameSandbox = (_, newTitle) => this.props.renameSandbox(newTitle);
 
   toggleOpen = () => this.setOpen(!this.state.open);
   closeTree = () => this.setOpen(false);

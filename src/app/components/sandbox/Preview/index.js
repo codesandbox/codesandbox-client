@@ -37,13 +37,13 @@ type Props = {
   externalResources: typeof Sandbox.externalResources,
   preferences: Preferences,
   fetchBundle: (id: string) => Object,
-  setProjectView: (id: string, isInProjectView: boolean) => void,
+  setProjectView: (id: string, isInProjectView: boolean) => any,
   module: Module,
   addError: (
     sandboxId: string,
     error: ?{ message: string, line: number },
-  ) => void,
-  clearErrors: (sandboxId: string) => void,
+  ) => any,
+  clearErrors: (sandboxId: string) => any,
   sandboxActions: typeof sandboxActionCreators,
   noDelay: ?boolean,
   errors: ?Array<ModuleError>,
@@ -112,7 +112,9 @@ export default class Preview extends React.PureComponent {
     }
 
     if (
-      prevProps.module.code !== this.props.module.code &&
+      (prevProps.module.code !== this.props.module.code ||
+        prevProps.modules !== this.props.modules ||
+        prevProps.directories !== this.props.directories) &&
       this.state.frameInitialized
     ) {
       if (this.props.preferences.livePreviewEnabled) {

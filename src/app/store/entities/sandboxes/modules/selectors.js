@@ -1,3 +1,5 @@
+import { createSelector } from 'reselect';
+
 export const modulesSelector = state => state.entities.modules;
 export const isMainModule = module =>
   module.title === 'index.js' && module.directoryShortid == null;
@@ -19,3 +21,14 @@ export const getModulePath = (modules, directories, id) => {
   }
   return path;
 };
+
+export const modulesFromSandboxSelector = createSelector(
+  modulesSelector,
+  (_, props) => props.sandbox.modules,
+  (modules, ids) => ids.map(id => modules[id]),
+);
+
+export const modulesFromSandboxNotSavedSelector = createSelector(
+  modulesFromSandboxSelector,
+  modules => modules.some(m => m.isNotSynced),
+);

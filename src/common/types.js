@@ -45,9 +45,9 @@ export type Sandbox = {
   title: ?string,
   description: string,
   viewCount: number,
-  modules: Array<Module>,
-  currentModule: ?Module,
-  directories: Array<Directory>,
+  modules: Array<string>,
+  currentModule: ?string,
+  directories: Array<string>,
   npmDependencies: {
     [dep: string]: string,
   },

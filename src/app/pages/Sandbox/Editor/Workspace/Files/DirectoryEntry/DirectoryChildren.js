@@ -16,13 +16,14 @@ type Props = {
   renameModule: (id: string, title: string) => boolean,
   directories: Array<Directory>,
   modules: Array<Module>,
-  openMenu: (event: Event) => void,
+  openMenu: (event: Event) => any,
   sandboxId: string,
-  deleteEntry: (id: string) => void,
-  setCurrentModule: (id: string) => void,
+  deleteEntry: (id: string) => any,
+  setCurrentModule: (id: string) => any,
   currentModuleId: ?string,
   parentId: string,
   errors: Array<ModuleError>,
+  isInProjectView: boolean,
 };
 
 export default class DirectoryChildren extends React.PureComponent {

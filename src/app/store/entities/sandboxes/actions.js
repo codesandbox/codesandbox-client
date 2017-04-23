@@ -6,7 +6,7 @@ import { createAPIActions, doRequest } from '../../api/actions';
 import { normalizeResult } from '../actions';
 import notificationActions from '../../notifications/actions';
 import entity from './entity';
-import fetchBundle, { PACKAGER_URL } from './bundler';
+import fetchBundle from './bundler';
 import moduleEntity from './modules/entity';
 import moduleActions from './modules/actions';
 import directoryEntity from './directories/entity';
