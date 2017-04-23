@@ -1,5 +1,3 @@
-// import { fix } from './eslint-lint';
-
 export default (async function prettify(code, eslintEnabled) {
   const prettier = await System.import('prettier');
   let newCode = prettier.format(code, {

@@ -2,7 +2,6 @@ import CodeMirror from 'codemirror';
 import 'codemirror/addon/lint/lint.css';
 import 'codemirror/addon/lint/lint';
 import fixer from 'eslint/lib/util/source-code-fixer';
-import error from '../error';
 import delay from '../../store/services/delay';
 
 const allRules = {
