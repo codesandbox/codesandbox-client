@@ -4,8 +4,9 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { DropTarget } from 'react-dnd';
 
+import type { Module, ModuleError } from 'common/types';
+
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
-import type { Module } from 'app/store/entities//sandboxes/modules/entity';
 import type {
   Directory,
 } from 'app/store/entities//sandboxes/directories/entity';
@@ -40,6 +41,7 @@ type Props = {
   sandboxId: string,
   root: ?boolean,
   title: string,
+  errors: Array<ModuleError>,
   modules: Array<Module>,
   directories: Array<Directory>,
   sandboxId: string,
@@ -48,7 +50,6 @@ type Props = {
   depth: ?number,
   openModuleTab: (id: string) => void,
   openMenu: (e: Event) => void,
-  renameSandbox: ?(title: string) => void,
   sandboxActions: typeof sandboxActionCreators,
   currentModuleId: ?string,
   isInProjectView: boolean,
@@ -136,8 +137,6 @@ class DirectoryEntry extends React.PureComponent {
     return true;
   };
 
-  renameSandbox = (_, newTitle) => this.props.renameSandbox(newTitle);
-
   toggleOpen = () => this.setOpen(!this.state.open);
   closeTree = () => this.setOpen(false);
   setOpen = open => this.setState({ open });
@@ -179,6 +178,7 @@ class DirectoryEntry extends React.PureComponent {
       currentModuleId,
       connectDropTarget,
       isOver,
+      errors,
       isInProjectView,
       depth = 0,
       root,
@@ -231,6 +231,7 @@ class DirectoryEntry extends React.PureComponent {
             setCurrentModule={this.setCurrentModule}
             currentModuleId={currentModuleId}
             isInProjectView={isInProjectView}
+            errors={errors}
           />
           {creating === 'module' &&
             <Entry

@@ -64,7 +64,13 @@ export default function evaluateJS(
         if (dependencyModule) {
           const idMatch = dependencyModule.match(/dll_bundle\((\d+)\)/);
           if (idMatch && idMatch[1]) {
-            return window.dll_bundle(idMatch[1]);
+            try {
+              return window.dll_bundle(idMatch[1]);
+            } catch (e) {
+              // Delete the cache of the throwing dependency
+              delete window.dll_bundle.c[idMatch[1]];
+              throw e;
+            }
           }
         }
 

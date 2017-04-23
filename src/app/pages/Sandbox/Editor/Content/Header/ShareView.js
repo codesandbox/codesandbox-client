@@ -1,8 +1,17 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { createSelector } from 'reselect';
 import styled from 'styled-components';
 import ShareIcon from 'react-icons/lib/md/share';
 import Files from 'embed/components/Files';
 import ModeIcons from 'app/components/sandbox/ModeIcons';
+import {
+  isMainModule,
+  modulesFromSandboxSelector,
+} from 'app/store/entities/sandboxes/modules/selectors';
+import {
+  directoriesFromSandboxSelector,
+} from 'app/store/entities/sandboxes/directories/selectors';
 import {
   optionsToParameterizedUrl,
   protocolAndHost,
@@ -10,13 +19,10 @@ import {
   embedUrl,
 } from 'app/utils/url-generator';
 
-import type { Sandbox } from 'common/types';
+import type { Sandbox, Directory, Module } from 'common/types';
 
 import HoverMenu from './HoverMenu';
 import Action from './Action';
-import {
-  isMainModule,
-} from '../../../../../store/entities/sandboxes/modules/selectors';
 
 const Container = styled.div`
   position: relative;
@@ -114,12 +120,19 @@ const ButtonName = styled.div`
 
 type Props = {
   sandbox: Sandbox,
+  modules: Array<Module>,
+  directories: Array<Directory>,
   sendMessage: (message: string) => void,
 };
 
 const BUTTON_URL = 'https://codesandbox.io/static/img/play-codesandbox.svg';
 
-export default class ShareView extends React.PureComponent {
+const mapStateToProps = createSelector(
+  modulesFromSandboxSelector,
+  directoriesFromSandboxSelector,
+  (modules, directories) => ({ modules, directories }),
+);
+class ShareView extends React.PureComponent {
   props: Props;
   state = {
     showEditor: true,
@@ -197,11 +210,11 @@ export default class ShareView extends React.PureComponent {
   };
 
   render() {
-    const { sandbox } = this.props;
+    const { sandbox, modules, directories } = this.props;
     const { showEditor, showPreview } = this.state;
 
     const defaultModule =
-      this.state.defaultModule || sandbox.modules.find(isMainModule).id;
+      this.state.defaultModule || modules.find(isMainModule).id;
 
     return (
       <Container>
@@ -241,8 +254,8 @@ export default class ShareView extends React.PureComponent {
                     <h4>Default module to show and preview</h4>
 
                     <Files
-                      modules={sandbox.modules}
-                      directories={sandbox.directories}
+                      modules={modules}
+                      directories={directories}
                       directoryId={null}
                       currentModule={defaultModule}
                       setCurrentModule={this.setDefaultModule}
@@ -256,8 +269,8 @@ export default class ShareView extends React.PureComponent {
                     <input onFocus={this.select} value={this.getEditorUrl()} />
                     <LinkName>Fullscreen url</LinkName>
                     <input onFocus={this.select} value={this.getEmbedUrl()} />
-                    {/*<LinkName>Embed url (Medium/Embedly)</LinkName>
-                  <input onFocus={this.select} value={this.getEmbedUrl()} />*/}
+                    <LinkName>Embed url (Medium/Embedly)</LinkName>
+                    <input onFocus={this.select} value={this.getEditorUrl()} />
                     <LinkName>iframe</LinkName>
                     <textarea
                       onFocus={this.select}
@@ -297,3 +310,5 @@ export default class ShareView extends React.PureComponent {
     );
   }
 }
+
+export default connect(mapStateToProps)(ShareView);

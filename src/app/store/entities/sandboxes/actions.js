@@ -6,7 +6,7 @@ import { createAPIActions, doRequest } from '../../api/actions';
 import { normalizeResult } from '../actions';
 import notificationActions from '../../notifications/actions';
 import entity from './entity';
-import fetchBundle, { PACKAGER_URL } from './bundler';
+import fetchBundle from './bundler';
 import moduleEntity from './modules/entity';
 import moduleActions from './modules/actions';
 import directoryEntity from './directories/entity';
@@ -15,6 +15,7 @@ import { singleSandboxSelector } from './selectors';
 import { modulesSelector } from './modules/selectors';
 import { directoriesSelector } from './directories/selectors';
 import { sandboxUrl } from '../../../utils/url-generator';
+import errorActions from './errors/actions';
 
 export const FETCH_BUNDLE_API_ACTIONS = createAPIActions(
   'SANDBOX',
@@ -690,4 +691,6 @@ export default {
       sandbox.directories.map(x => directories[x]),
     );
   },
+
+  ...errorActions,
 };

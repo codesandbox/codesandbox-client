@@ -16,6 +16,9 @@ import {
   SET_VIEW_MODE,
 } from './actions';
 
+import { CLEAR_ERRORS, ADD_ERROR } from './errors/actions';
+import errorReducer from './errors/reducer';
+
 import { SET_CURRENT_USER, SIGN_OUT } from '../../user/actions';
 
 const initialState = {};
@@ -95,6 +98,9 @@ function singleSandboxReducer(sandbox, action: Action) {
         title: action.title,
         description: action.description,
       };
+    case CLEAR_ERRORS:
+    case ADD_ERROR:
+      return { ...sandbox, errors: errorReducer(sandbox.errors, action) };
     default:
       return sandbox;
   }
@@ -115,6 +121,8 @@ export default function reducer(state = initialState, action: Action) {
     case SET_SANDBOX_INFO:
     case SET_PROJECT_VIEW:
     case SET_VIEW_MODE:
+    case CLEAR_ERRORS:
+    case ADD_ERROR:
       if (state[action.id]) {
         return {
           ...state,

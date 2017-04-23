@@ -1,9 +1,9 @@
 // @flow
 import { schema } from 'normalizr';
+import { getSandboxOptions } from 'common/url';
 import moduleEntity from './modules/entity';
 import directoryEntity from './directories/entity';
 import userEntity from './users/entity';
-import { getSandboxOptions } from 'common/url';
 
 export default new schema.Entity(
   'sandboxes',
@@ -26,6 +26,7 @@ export default new schema.Entity(
         showEditor: !isPreviewScreen,
         showPreview: !isEditorScreen,
         currentModule,
+        errors: [],
       };
     },
   },
