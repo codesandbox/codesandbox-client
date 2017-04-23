@@ -54,7 +54,7 @@ type State = {
 };
 
 export default class Preview extends React.PureComponent {
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
 
     this.state = {
@@ -108,9 +108,7 @@ export default class Preview extends React.PureComponent {
     }
 
     if (
-      (prevProps.module.code !== this.props.module.code ||
-        prevProps.modules !== this.props.modules ||
-        prevProps.directories !== this.props.directories) &&
+      prevProps.module.code !== this.props.module.code &&
       this.state.frameInitialized
     ) {
       if (this.props.preferences.livePreviewEnabled) {
@@ -151,8 +149,6 @@ export default class Preview extends React.PureComponent {
       if (type === 'error') {
         const { error } = e.data;
         this.setError(error);
-      } else if (type === 'success') {
-        this.clearErrors();
       } else if (type === 'urlchange') {
         const url = e.data.url.replace('/', '');
         this.commitUrl(url);
@@ -187,7 +183,7 @@ export default class Preview extends React.PureComponent {
       }
       return;
     }
-
+    this.clearErrors();
     const renderedModule = this.getRenderedModule();
     this.sendMessage({
       type: 'compile',

@@ -1,3 +1,14 @@
+export type ModuleError = {
+  message: string,
+  line: number,
+  column: number,
+  title: string,
+  moduleId: ?string,
+  severity: 'error' | 'warning',
+  type: 'compile' | 'dependency-not-found' | 'no-dom-change',
+  payload: Object,
+};
+
 export type Module = {
   id: string,
   title: string,
@@ -5,16 +16,6 @@ export type Module = {
   shortid: string,
   directoryShortid: ?string,
   isNotSynced: boolean,
-  error: ?{
-    message: string,
-    line: number,
-    column: number,
-    title: string,
-    moduleId: ?string,
-    severity: 'error' | 'warning',
-    type: 'compile' | 'dependency-not-found' | 'no-dom-change',
-    payload: Object,
-  },
 };
 
 export type Directory = {
