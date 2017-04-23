@@ -72,6 +72,7 @@ type Props = {
   sandboxActions: typeof sandboxActionCreators,
   userActions: typeof userActionCreators,
   user: CurrentUser,
+  canSave: boolean,
 };
 
 export default class Header extends React.PureComponent {
@@ -120,8 +121,9 @@ export default class Header extends React.PureComponent {
       user,
       toggleWorkspace,
       workspaceHidden,
+      canSave,
     } = this.props;
-    const canSave = sandbox.modules.some(m => m.isNotSynced);
+
     return (
       <Container>
         <Left>

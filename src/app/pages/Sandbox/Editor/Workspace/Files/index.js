@@ -1,28 +1,37 @@
+// @flow
 import React from 'react';
+import { createSelector } from 'reselect';
+import { connect } from 'react-redux';
 
 import { sortBy } from 'lodash';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { DragDropContext } from 'react-dnd';
+import {
+  modulesFromSandboxSelector,
+} from 'app/store/entities/sandboxes/modules/selectors';
+import {
+  directoriesFromSandboxSelector,
+} from 'app/store/entities/sandboxes/directories/selectors';
 
-import type { Sandbox } from 'common/types';
+import type { Sandbox, Module, Directory } from 'common/types';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 import { isMainModule } from 'app/store/entities/sandboxes/modules/validator';
 
 import DirectoryEntry from './DirectoryEntry/index';
 
 type Props = {
-  sandbox: ?Sandbox,
+  sandbox: Sandbox,
+  modules: Array<Module>,
+  directories: Array<Directory>,
   sandboxActions: typeof sandboxActionCreators,
 };
+const mapStateToProps = createSelector(
+  modulesFromSandboxSelector,
+  directoriesFromSandboxSelector,
+  (modules, directories) => ({ modules, directories }),
+);
 class Files extends React.PureComponent {
   props: Props;
-
-  renameSandbox = (title: string) => {
-    const { sandbox, sandboxActions } = this.props;
-    if (sandbox && sandbox.id) {
-      sandboxActions.renameSandbox(sandbox.id, title);
-    }
-  };
 
   deleteModule = id => {
     const { sandboxActions, sandbox } = this.props;
@@ -39,11 +48,11 @@ class Files extends React.PureComponent {
   };
 
   render() {
-    const { sandbox } = this.props;
+    const { sandbox, modules, directories } = this.props;
 
-    const mainModule = sandbox.modules.find(isMainModule);
+    const mainModule = modules.find(isMainModule);
 
-    const { currentModule = mainModule } = sandbox;
+    const { currentModule } = sandbox;
 
     if (sandbox == null) return null;
 
@@ -52,15 +61,16 @@ class Files extends React.PureComponent {
         root
         title={sandbox.title || 'Project'}
         sandboxId={sandbox.id}
-        modules={sortBy(sandbox.modules, 'title')}
-        directories={sortBy(sandbox.directories, 'title')}
+        modules={sortBy(modules, 'title')}
+        directories={sortBy(directories, 'title')}
         isInProjectView={sandbox.isInProjectView}
-        currentModuleId={currentModule.id}
-        renameSandbox={this.renameSandbox}
+        // $FlowIssue
+        currentModuleId={currentModule || mainModule.id}
+        errors={sandbox.errors}
         id={null}
       />
     );
   }
 }
 
-export default DragDropContext(HTML5Backend)(Files);
+export default DragDropContext(HTML5Backend)(connect(mapStateToProps)(Files));

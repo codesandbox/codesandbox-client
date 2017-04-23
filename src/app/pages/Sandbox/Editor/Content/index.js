@@ -1,11 +1,18 @@
 // @flow
 import React from 'react';
 import styled from 'styled-components';
+import { createSelector } from 'reselect';
 import { Prompt } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { preferencesSelector } from 'app/store/preferences/selectors';
-import type { Preferences, Sandbox, CurrentUser } from 'common/types';
+import type {
+  Preferences,
+  Sandbox,
+  CurrentUser,
+  Module,
+  Directory,
+} from 'common/types';
 import { userSelector } from 'app/store/user/selectors';
 import moduleActionCreators from 'app/store/entities/sandboxes/modules/actions';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
@@ -13,7 +20,11 @@ import userActionCreators from 'app/store/user/actions';
 import {
   isMainModule,
   getModulePath,
+  modulesFromSandboxSelector,
 } from 'app/store/entities/sandboxes/modules/selectors';
+import {
+  directoriesFromSandboxSelector,
+} from 'app/store/entities/sandboxes/directories/selectors';
 
 import SplitPane from 'react-split-pane';
 
@@ -28,6 +39,8 @@ type Props = {
   sandbox: Sandbox,
   user: CurrentUser,
   preferences: Preferences,
+  modules: Array<Module>,
+  directories: Array<Directory>,
   moduleActions: typeof moduleActionCreators,
   sandboxActions: typeof sandboxActionCreators,
   userActions: typeof userActionCreators,
@@ -43,10 +56,18 @@ const FullSize = styled.div`
   pointer-events: ${props => (props.inactive ? 'none' : 'all')};
 `;
 
-const mapStateToProps = state => ({
-  preferences: preferencesSelector(state),
-  user: userSelector(state),
-});
+const mapStateToProps = createSelector(
+  preferencesSelector,
+  userSelector,
+  modulesFromSandboxSelector,
+  directoriesFromSandboxSelector,
+  (preferences, user, modules, directories) => ({
+    preferences,
+    user,
+    modules,
+    directories,
+  }),
+);
 const mapDispatchToProps = dispatch => ({
   moduleActions: bindActionCreators(moduleActionCreators, dispatch),
   sandboxActions: bindActionCreators(sandboxActionCreators, dispatch),
@@ -62,8 +83,8 @@ class EditorPreview extends React.PureComponent {
 
   componentDidMount() {
     window.onbeforeunload = () => {
-      const { sandbox } = this.props;
-      const notSynced = sandbox.modules.some(m => m.isNotSynced);
+      const { modules } = this.props;
+      const notSynced = modules.some(m => m.isNotSynced);
 
       if (notSynced) {
         return 'You have not saved all your modules, are you sure you want to close this tab?';
@@ -77,12 +98,13 @@ class EditorPreview extends React.PureComponent {
   stopResizing = () => this.setState({ resizing: false });
 
   saveCode = () => {
-    const { sandbox, sandboxActions } = this.props;
+    const { sandbox, modules, sandboxActions } = this.props;
 
-    const mainModule = sandbox.modules.find(isMainModule);
-    const { currentModule = mainModule } = sandbox;
+    const mainModule = modules.find(isMainModule);
+    const { currentModule } = sandbox;
 
-    sandboxActions.saveModuleCode(sandbox.id, currentModule.id);
+    // $FlowIssue
+    sandboxActions.saveModuleCode(sandbox.id, currentModule || mainModule.id);
   };
 
   getDefaultSize = () => {
@@ -97,6 +119,8 @@ class EditorPreview extends React.PureComponent {
       moduleActions,
       sandboxActions,
       sandbox,
+      modules,
+      directories,
       preferences,
       userActions,
       user,
@@ -104,22 +128,22 @@ class EditorPreview extends React.PureComponent {
       toggleWorkspace,
     } = this.props;
 
-    const { modules, directories } = sandbox;
     const mainModule = modules.find(isMainModule);
-    const { currentModule = mainModule } = sandbox;
-
+    const { currentModule: currentModuleId } = sandbox;
+    const currentModule =
+      modules.find(m => m.id === currentModuleId) || mainModule;
     const modulePath = getModulePath(modules, directories, currentModule.id);
 
     if (currentModule == null) return null;
 
-    const notSynced = sandbox.modules.some(m => m.isNotSynced);
+    const notSynced = modules.some(m => m.isNotSynced);
 
     const EditorPane = (
       <FullSize>
         <CodeEditor
           changeCode={moduleActions.setCode}
           id={currentModule.id}
-          error={currentModule.error}
+          errors={sandbox.errors}
           code={currentModule.code}
           title={currentModule.title}
           canSave={currentModule.isNotSynced}
@@ -139,8 +163,9 @@ class EditorPreview extends React.PureComponent {
           module={currentModule}
           modules={modules}
           directories={directories}
-          setError={moduleActions.setError}
-          clearErrors={moduleActions.clearErrors}
+          addError={sandboxActions.addError}
+          errors={sandbox.errors}
+          clearErrors={sandboxActions.clearErrors}
           isInProjectView={sandbox.isInProjectView}
           externalResources={sandbox.externalResources}
           setProjectView={sandboxActions.setProjectView}
@@ -164,6 +189,7 @@ class EditorPreview extends React.PureComponent {
           user={user}
           workspaceHidden={workspaceHidden}
           toggleWorkspace={toggleWorkspace}
+          canSave={notSynced}
         />
         <SplitPane
           onDragStarted={this.startResizing}

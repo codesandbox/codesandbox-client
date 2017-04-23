@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import { createSelector } from 'reselect';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -7,6 +8,9 @@ import styled from 'styled-components';
 
 import type { Sandbox } from 'common/types';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
+import {
+  modulesFromSandboxNotSavedSelector,
+} from 'app/store/entities/sandboxes/modules/selectors';
 
 import Files from './Files';
 import Versions from './Versions';
@@ -27,12 +31,17 @@ const Container = styled.div`
 type Props = {
   sandbox: Sandbox,
   sandboxActions: typeof sandboxActionCreators,
+  preventTransition: boolean,
 };
 
 const mapDispatchToProps = dispatch => ({
   sandboxActions: bindActionCreators(sandboxActionCreators, dispatch),
 });
-const Workspace = ({ sandbox, sandboxActions }: Props) => (
+const mapStateToProps = createSelector(
+  modulesFromSandboxNotSavedSelector,
+  preventTransition => ({ preventTransition }),
+);
+const Workspace = ({ sandbox, preventTransition, sandboxActions }: Props) => (
   <Container>
     <SandboxDetails
       sandbox={sandbox}
@@ -46,7 +55,7 @@ const Workspace = ({ sandbox, sandboxActions }: Props) => (
         viewCount={sandbox.viewCount}
         description={sandbox.description}
         forkedSandbox={sandbox.forkedFromSandbox}
-        preventTransition={sandbox.modules.some(m => m.isNotSynced)}
+        preventTransition={preventTransition}
       />
     </WorkspaceItem>
 
@@ -78,4 +87,4 @@ const Workspace = ({ sandbox, sandboxActions }: Props) => (
     </WorkspaceItem>
   </Container>
 );
-export default connect(null, mapDispatchToProps)(Workspace);
+export default connect(mapStateToProps, mapDispatchToProps)(Workspace);

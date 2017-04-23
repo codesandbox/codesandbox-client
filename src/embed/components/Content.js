@@ -80,7 +80,6 @@ export default class Content extends React.Component {
           <Split editor show={showEditor} only={showEditor && !showPreview}>
             <CodeEditor
               code={mainModule.code}
-              error={null}
               id={mainModule.id}
               title={mainModule.title}
               modulePath={getModulePath(
@@ -104,7 +103,7 @@ export default class Content extends React.Component {
               externalResources={sandbox.externalResources}
               module={mainModule}
               fetchBundle={this.fetchBundle}
-              setError={() => {}}
+              addError={() => {}}
               clearErrors={() => {}}
               preferences={preferences}
               setProjectView={this.setProjectView}

@@ -27,6 +27,13 @@ export default function buildErrorMessage(e) {
     if (matched) {
       line = matched[1];
       column = matched[2];
+    } else {
+      // Maybe it's a babel transpiler error
+      const babelMatched = e.stack.match(/(\d+):(\d+)/);
+      if (babelMatched) {
+        line = babelMatched[1];
+        column = babelMatched[2];
+      }
     }
   }
   return {

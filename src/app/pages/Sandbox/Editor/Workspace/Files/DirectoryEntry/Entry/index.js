@@ -23,18 +23,18 @@ type Props = {
   active: boolean,
   isNotSynced: boolean,
   type: string,
-  onCreateModuleClick: ?() => void,
-  onCreateDirectoryClick: ?() => void,
+  onCreateModuleClick: ?() => any,
+  onCreateDirectoryClick: ?() => any,
   renameValidator: (id: string, title: string) => boolean,
-  rename: (id: string, title: string) => boolean,
-  deleteEntry: (id: string) => void,
-  onRenameCancel: () => void,
+  rename: ?(id: string, title: string) => boolean,
+  deleteEntry: ?(id: string) => any,
+  onRenameCancel: () => any,
   state: ?'' | 'editing' | 'creating',
   isOpen: ?boolean,
   onClick: Function,
   openMenu: Function,
   hasChildren: ?boolean,
-  setCurrentModule: (id: string) => void,
+  setCurrentModule: (id: string) => any,
   root: ?boolean,
   isMainModule: boolean,
   isInProjectView: boolean,
@@ -79,7 +79,7 @@ class Entry extends React.PureComponent {
   handleRename = (title: string, force: ?boolean) => {
     const { id } = this.props;
     const canRename = !this.handleValidateTitle(title);
-    if (canRename) {
+    if (canRename && this.props.rename) {
       this.props.rename(id, title);
       this.resetState();
     } else if (force) this.resetState();
@@ -87,7 +87,10 @@ class Entry extends React.PureComponent {
 
   delete = () => {
     const { id, deleteEntry } = this.props;
-    return deleteEntry(id);
+    if (deleteEntry) {
+      return deleteEntry(id);
+    }
+    return false;
   };
 
   rename = () => {
@@ -97,7 +100,6 @@ class Entry extends React.PureComponent {
 
   openContextMenu = (event: MouseEvent) => {
     const {
-      id,
       isMainModule,
       onCreateModuleClick,
       onCreateDirectoryClick,
@@ -167,13 +169,10 @@ class Entry extends React.PureComponent {
       rename,
       isNotSynced,
       isMainModule,
-      isInProjectView,
       moduleHasError,
       root,
     } = this.props;
     const { state, error, selected, hovering } = this.state;
-
-    const isCurrentlyViewing = isInProjectView ? isMainModule : active;
 
     return connectDragSource(
       <div>
