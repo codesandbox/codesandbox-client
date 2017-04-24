@@ -70,6 +70,11 @@ class Preferences extends React.PureComponent {
             onClick={preferencesActions.setLivePreview}
             tooltip="Only update on save"
           />
+          <Preference
+            title="Instant preview"
+            enabled={preferences.instantPreviewEnabled}
+            onClick={preferencesActions.setInstantPreview}
+          />
         </PreferenceContainer>
       </Container>
     );

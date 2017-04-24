@@ -1,3 +1,4 @@
+// @flow
 import { combineReducers } from 'redux';
 
 import * as entities from './';
@@ -21,7 +22,7 @@ const entityReducers = {
  * @param  {Entity} entity    Entity which should be handled
  * @return {state}            New state
  */
-const createEntityReducer = key => (state = {}, action) => {
+const createEntityReducer = (key: string) => (state = {}, action) => {
   const entityReducer = entityReducers[key];
   // If there is no reducer we should use a placeholder
   const reducer = entityReducer || ((_state = {} || {}) => _state);

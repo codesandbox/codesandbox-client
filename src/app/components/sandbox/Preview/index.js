@@ -69,7 +69,7 @@ export default class Preview extends React.PureComponent {
       url: null,
     };
 
-    if (!props.noDelay) {
+    if (!props.noDelay || !props.preferences.instantPreviewEnabled) {
       this.executeCode = debounce(this.executeCode, 800);
     }
   }
@@ -122,7 +122,11 @@ export default class Preview extends React.PureComponent {
           this.props.bundle === prevProps.bundle || // So we don't trigger after every dep change
           this.props.sandboxId !== prevProps.sandboxId
         ) {
-          this.executeCode();
+          if (this.props.preferences.instantPreviewEnabled) {
+            this.executeCodeImmediately();
+          } else {
+            this.executeCode();
+          }
         }
       }
     }

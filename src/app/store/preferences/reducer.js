@@ -9,6 +9,7 @@ import {
   SET_PREFERENCE_LIVE_PREVIEW,
   SET_PREFERENCE_PRETTIFY_ON_SAVE,
   SET_PREFERENCE_LINT,
+  SET_INSTANT_PREVIEW,
 } from './actions';
 import {
   AUTO_COMPLETE,
@@ -16,6 +17,7 @@ import {
   LIVE_PREVIEW,
   PRETTIFY_ON_SAVE,
   LINT_ENABLED,
+  INSTANT_PREVIEW,
 } from './keys';
 
 const getKey = (key, defaultVal) => {
@@ -34,9 +36,10 @@ const initialState: Preferences = {
   livePreviewEnabled: getKey(LIVE_PREVIEW, true),
   prettifyOnSaveEnabled: getKey(PRETTIFY_ON_SAVE, false),
   lintEnabled: getKey(LINT_ENABLED, false),
+  instantPreviewEneabled: getKey(INSTANT_PREVIEW, false),
 };
 
-export default (state: Preferences = initialState, action) => {
+export default (state: Preferences = initialState, action): Preferences => {
   switch (action.type) {
     case SET_PREFERENCE_AUTOCOMPLETE:
       return { ...state, autoCompleteEnabled: action.option };
@@ -48,6 +51,8 @@ export default (state: Preferences = initialState, action) => {
       return { ...state, prettifyOnSaveEnabled: action.option };
     case SET_PREFERENCE_LINT:
       return { ...state, lintEnabled: action.option };
+    case SET_INSTANT_PREVIEW:
+      return { ...state, instantPreviewEnabled: action.option };
     default: {
       return state;
     }

@@ -72,6 +72,7 @@ export type Preferences = {
   livePreviewEnabled: boolean,
   prettifyOnSaveEnabled: boolean,
   lintEnabled: boolean,
+  instantPreviewEnabled: boolean,
 };
 
 export type NotificationButton = {
