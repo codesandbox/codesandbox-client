@@ -36,7 +36,7 @@ const initialState: Preferences = {
   livePreviewEnabled: getKey(LIVE_PREVIEW, true),
   prettifyOnSaveEnabled: getKey(PRETTIFY_ON_SAVE, false),
   lintEnabled: getKey(LINT_ENABLED, false),
-  instantPreviewEneabled: getKey(INSTANT_PREVIEW, false),
+  instantPreviewEnabled: getKey(INSTANT_PREVIEW, false),
 };
 
 export default (state: Preferences = initialState, action): Preferences => {

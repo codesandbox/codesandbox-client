@@ -69,7 +69,7 @@ export default class Preview extends React.PureComponent {
       url: null,
     };
 
-    if (!props.noDelay || !props.preferences.instantPreviewEnabled) {
+    if (!props.noDelay) {
       this.executeCode = debounce(this.executeCode, 800);
     }
   }
