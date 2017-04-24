@@ -3,7 +3,6 @@ import { schema } from 'normalizr';
 import { getSandboxOptions } from 'common/url';
 import moduleEntity from './modules/entity';
 import directoryEntity from './directories/entity';
-import userEntity from './users/entity';
 
 export default new schema.Entity(
   'sandboxes',
@@ -11,7 +10,6 @@ export default new schema.Entity(
     modules: [moduleEntity],
     directories: [directoryEntity],
     currentModule: moduleEntity,
-    author: userEntity,
   },
   {
     processStrategy: sandbox => {
