@@ -10,7 +10,8 @@
         "babel-plugin-transform-object-rest-spread",
         "babel-plugin-transform-class-properties",
         "babel-plugin-transform-runtime",
-        "babel-plugin-lodash"
+        "babel-plugin-lodash",
+        "babel-plugin-system-import-transformer"
       ]
     }
   }
