@@ -7,7 +7,5 @@ it('creates a right query', () => {
     '@angular/core': '14.0.0',
   };
 
-  expect(dependenciesToQuery(packages)).toEqual(
-    '@angular/core@14.0.0+react@latest+react-dom@15.5.3'
-  );
+  expect(dependenciesToQuery(packages)).toMatchSnapshot();
 });
