@@ -37,7 +37,7 @@ type Props = {
   setCurrentModule: (id: string) => any,
   root: ?boolean,
   isMainModule: boolean,
-  isInProjectView: boolean,
+  isInProjectView: boolean, // eslint-disable-line
   moduleHasError: boolean,
 };
 
@@ -161,7 +161,7 @@ class Entry extends React.PureComponent {
       type,
       active,
       setCurrentModule,
-      connectDragSource,
+      connectDragSource, // eslint-disable-line
       onCreateModuleClick,
       onCreateDirectoryClick,
       deleteEntry,

@@ -12,6 +12,14 @@ import {
 // This route is supposed to be opened in a new window, after signing in with
 // Github. It should return a postMessage to the parent
 export default class SignIn extends React.PureComponent {
+  props: {
+    match: {
+      params: {
+        jwt: ?string,
+      },
+    },
+  };
+
   constructor(props) {
     super(props);
 
@@ -32,12 +40,11 @@ export default class SignIn extends React.PureComponent {
           );
         }
         return;
-      } else {
-        this.state = {
-          redirect: '/',
-        };
-        return;
       }
+      this.state = {
+        redirect: '/',
+      };
+      return;
     }
 
     this.state = {

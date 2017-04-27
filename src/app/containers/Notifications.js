@@ -20,6 +20,7 @@ type State = {
   hovering: boolean,
 };
 
+// eslint-disable-next-line
 injectGlobal`
   .notifications-leave {
     opacity: 1;

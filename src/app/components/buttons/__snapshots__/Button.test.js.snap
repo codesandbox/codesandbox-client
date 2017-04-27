@@ -1,0 +1,45 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Button renders 1`] = `
+<button
+  className="gSpDoI"
+>
+  Test
+</button>
+`;
+
+exports[`Button renders disabled 1`] = `
+<button
+  className="dEOCIp"
+  disabled={true}
+>
+  Test
+</button>
+`;
+
+exports[`Button renders hrefs 1`] = `
+<a
+  className="gSpDoI"
+  href="https://ivesvh.com"
+  onClick={[Function]}
+>
+  Test
+</a>
+`;
+
+exports[`Button renders onClick 1`] = `
+<button
+  className="gSpDoI"
+  onClick={[Function]}
+>
+  Test
+</button>
+`;
+
+exports[`Button renders properties 1`] = `
+<button
+  className="eDPTas"
+>
+  Test
+</button>
+`;

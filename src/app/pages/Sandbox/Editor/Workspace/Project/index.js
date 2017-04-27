@@ -1,6 +1,8 @@
+// @flow
 import React from 'react';
 import styled from 'styled-components';
 import ConfirmLink from 'app/components/ConfirmLink';
+import LinkButton from 'app/components/buttons/LinkButton';
 import WorkspaceSubtitle from '../WorkspaceSubtitle';
 import WorkspaceInputContainer from '../WorkspaceInputContainer';
 import { sandboxUrl } from '../../../../../utils/url-generator';
@@ -31,14 +33,20 @@ type Props = {
   description: string,
   viewCount: number,
   forkedSandbox: ?{ title: string, id: string },
-  updateSandboxInfo: (id: string, title: string, description: string) => void,
+  updateSandboxInfo: (id: string, title: string, description: string) => any,
+  deleteSandbox: (id: string) => any,
   preventTransition: boolean,
+  owned: boolean,
 };
 
 export default class Project extends React.PureComponent {
   props: Props;
+  state: {
+    title: ?string,
+    description: ?string,
+  };
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
 
     this.state = {
@@ -48,6 +56,7 @@ export default class Project extends React.PureComponent {
   }
 
   setValue = (field: string) => (e: Event) => {
+    // $FlowIssue
     this.setState({ [field]: e.target.value });
   };
 
@@ -56,7 +65,7 @@ export default class Project extends React.PureComponent {
     const { title, description } = this.state;
 
     if (title !== oldTitle || description !== oldDescription) {
-      this.props.updateSandboxInfo(id, title, description);
+      this.props.updateSandboxInfo(id, title || '', description || '');
     }
   };
 
@@ -67,7 +76,7 @@ export default class Project extends React.PureComponent {
     }
   };
 
-  componentWillReceiveProps = nextProps => {
+  componentWillReceiveProps = (nextProps: Props) => {
     if (nextProps.title !== this.props.title) {
       this.setState({ title: nextProps.title });
     }
@@ -76,8 +85,15 @@ export default class Project extends React.PureComponent {
     }
   };
 
+  handleDeleteSandbox = () => {
+    const really = confirm('Are you sure you want to delete this sandbox?');
+    if (really) {
+      this.props.deleteSandbox(this.props.id);
+    }
+  };
+
   render() {
-    const { forkedSandbox, viewCount, preventTransition } = this.props;
+    const { forkedSandbox, viewCount, owned, preventTransition } = this.props;
     const { title, description } = this.state;
     return (
       <div>
@@ -124,6 +140,15 @@ export default class Project extends React.PureComponent {
             {viewCount === 1 ? ' view' : ' views'}
           </ViewCountDescription>
         </ViewCountContainer>
+        {owned &&
+          <WorkspaceInputContainer>
+            <LinkButton
+              style={{ marginTop: '0.5rem', marginLeft: '-2px' }}
+              onClick={this.handleDeleteSandbox}
+            >
+              Delete Sandbox
+            </LinkButton>
+          </WorkspaceInputContainer>}
       </div>
     );
   }

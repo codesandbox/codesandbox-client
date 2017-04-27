@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import type { User } from 'app/store/user/reducer';
-import type { Sandbox } from 'app/store/entities/sandboxes/entity';
 import Tooltip from 'app/components/Tooltip';
 
 import DownIcon from 'react-icons/lib/go/chevron-down';
@@ -79,7 +78,6 @@ const Sandboxes = styled.div`
 
 type Props = {
   user: User,
-  sandbox: Sandbox,
   signOut: () => void,
   loadUserSandboxes: () => void,
 };

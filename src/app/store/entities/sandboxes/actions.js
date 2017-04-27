@@ -14,7 +14,7 @@ import directoryActions from './directories/actions';
 import { singleSandboxSelector } from './selectors';
 import { modulesSelector } from './modules/selectors';
 import { directoriesSelector } from './directories/selectors';
-import { sandboxUrl } from '../../../utils/url-generator';
+import { sandboxUrl, newSandboxUrl } from '../../../utils/url-generator';
 import errorActions from './errors/actions';
 
 export const FETCH_BUNDLE_API_ACTIONS = createAPIActions(
@@ -23,6 +23,7 @@ export const FETCH_BUNDLE_API_ACTIONS = createAPIActions(
 );
 export const SINGLE_SANDBOX_API_ACTIONS = createAPIActions('SANDBOX', 'SINGLE');
 export const CREATE_SANDBOX_API_ACTIONS = createAPIActions('SANDBOX', 'CREATE');
+export const DELETE_SANDBOX_API_ACTIONS = createAPIActions('SANDBOX', 'DELETE');
 export const UPDATE_SANDBOX_API_ACTIONS = createAPIActions('SANDBOX', 'UPDATE');
 export const FORK_SANDBOX_API_ACTIONS = createAPIActions('SANDBOX', 'FORK');
 export const CREATE_MODULE_API_ACTIONS = createAPIActions(
@@ -690,6 +691,20 @@ export default {
       sandbox.modules.map(x => modules[x]),
       sandbox.directories.map(x => directories[x]),
     );
+  },
+
+  deleteSandbox: (id: string) => async (dispatch: Function) => {
+    await dispatch(
+      doRequest(DELETE_SANDBOX_API_ACTIONS, `sandboxes/${id}`, {
+        method: 'DELETE',
+        body: {
+          id,
+        },
+      }),
+    );
+
+    dispatch(notificationActions.addNotification('Deleted Sandbox', 'success'));
+    dispatch(push(newSandboxUrl()));
   },
 
   ...errorActions,

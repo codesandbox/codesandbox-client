@@ -48,7 +48,6 @@ type Props = {
   root: ?boolean,
   siblings: Array<Module | Directory>,
   depth: ?number,
-  openModuleTab: (id: string) => void,
   openMenu: (e: Event) => void,
   sandboxActions: typeof sandboxActionCreators,
   currentModuleId: ?string,
@@ -176,8 +175,8 @@ class DirectoryEntry extends React.PureComponent {
       title,
       openMenu,
       currentModuleId,
-      connectDropTarget,
-      isOver,
+      connectDropTarget, // eslint-disable-line
+      isOver, // eslint-disable-line
       errors,
       isInProjectView,
       depth = 0,
@@ -283,11 +282,11 @@ const entryTarget = {
   },
 };
 
-function collectTarget(connect, monitor) {
+function collectTarget(connectMonitor, monitor) {
   return {
     // Call this function inside render()
     // to let React DnD handle the drag events:
-    connectDropTarget: connect.dropTarget(),
+    connectDropTarget: connectMonitor.dropTarget(),
     // You can ask the monitor about the current drag state:
     isOver: monitor.isOver({ shallow: true }),
     canDrop: monitor.canDrop(),

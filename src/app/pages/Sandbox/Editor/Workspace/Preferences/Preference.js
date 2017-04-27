@@ -16,6 +16,8 @@ type Props = {
   title: string,
   enabled: boolean,
   onClick: (on: boolean) => void,
+  tooltip: ?string,
+  offset: ?number,
 };
 
 export default class Preference extends React.Component {

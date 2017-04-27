@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`LinkButton renders 1`] = `
+<button
+  className="lnvNEu"
+>
+  Test
+</button>
+`;
+
+exports[`LinkButton renders onClick 1`] = `
+<button
+  className="lnvNEu"
+  onClick={[Function]}
+>
+  Test
+</button>
+`;

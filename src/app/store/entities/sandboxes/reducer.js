@@ -1,3 +1,4 @@
+import type { Sandbox } from 'common/types';
 import { mapValues } from 'lodash';
 
 import {
@@ -14,6 +15,7 @@ import {
   SET_SANDBOX_INFO,
   SET_PROJECT_VIEW,
   SET_VIEW_MODE,
+  DELETE_SANDBOX_API_ACTIONS,
 } from './actions';
 
 import { CLEAR_ERRORS, ADD_ERROR } from './errors/actions';
@@ -28,7 +30,7 @@ type Action = {
   type: string,
 };
 
-function singleSandboxReducer(sandbox, action: Action) {
+function singleSandboxReducer(sandbox: Sandbox, action: Action): Sandbox {
   switch (action.type) {
     case SET_VIEW_MODE:
       return {
@@ -106,7 +108,10 @@ function singleSandboxReducer(sandbox, action: Action) {
   }
 }
 
-export default function reducer(state = initialState, action: Action) {
+export default function reducer(
+  state = initialState,
+  action: Action,
+): { [id: string]: Sandbox } {
   switch (action.type) {
     case ADD_MODULE_TO_SANDBOX:
     case ADD_DIRECTORY_TO_SANDBOX:
@@ -143,6 +148,11 @@ export default function reducer(state = initialState, action: Action) {
         ...s,
         owned: false,
       }));
+    case DELETE_SANDBOX_API_ACTIONS.SUCCESS:
+      return {
+        ...state,
+        [action.meta.id]: null,
+      };
     default:
       return state;
   }

@@ -29,56 +29,50 @@ const mapDispatchToProps = dispatch => ({
 const mapStateToProps = state => ({
   preferences: preferencesSelector(state),
 });
-class Preferences extends React.PureComponent {
-  props: Props;
 
-  render() {
-    const { preferences, preferencesActions } = this.props;
-    return (
-      <Container>
-        <WorkspaceSubtitle>Code Editor</WorkspaceSubtitle>
-        <PreferenceContainer>
-          <Preference
-            title="Autocomplete"
-            enabled={preferences.autoCompleteEnabled}
-            onClick={preferencesActions.setAutoCompletePreference}
-          />
-          <Preference
-            title="Linter"
-            tooltip="Made possible by eslint"
-            offset={175}
-            enabled={preferences.lintEnabled}
-            onClick={preferencesActions.setLintPreference}
-          />
-          <Preference
-            title="Prettify on save"
-            tooltip="Made possible by Prettier"
-            enabled={preferences.prettifyOnSaveEnabled}
-            onClick={preferencesActions.setPrettifyOnSavePreference}
-          />
-          <Preference
-            title="VIM Mode"
-            enabled={preferences.vimMode}
-            onClick={preferencesActions.setVimPreference}
-          />
-        </PreferenceContainer>
-        <WorkspaceSubtitle>Preview</WorkspaceSubtitle>
-        <PreferenceContainer>
-          <Preference
-            title="Live Preview"
-            enabled={preferences.livePreviewEnabled}
-            onClick={preferencesActions.setLivePreview}
-            tooltip="Only update on save"
-          />
-          <Preference
-            title="Instant preview"
-            enabled={preferences.instantPreviewEnabled}
-            onClick={preferencesActions.setInstantPreview}
-          />
-        </PreferenceContainer>
-      </Container>
-    );
-  }
-}
+const Preferences = ({ preferences, preferencesActions }: Props) => (
+  <Container>
+    <WorkspaceSubtitle>Code Editor</WorkspaceSubtitle>
+    <PreferenceContainer>
+      <Preference
+        title="Autocomplete"
+        enabled={preferences.autoCompleteEnabled}
+        onClick={preferencesActions.setAutoCompletePreference}
+      />
+      <Preference
+        title="Linter"
+        tooltip="Made possible by eslint"
+        offset={175}
+        enabled={preferences.lintEnabled}
+        onClick={preferencesActions.setLintPreference}
+      />
+      <Preference
+        title="Prettify on save"
+        tooltip="Made possible by Prettier"
+        enabled={preferences.prettifyOnSaveEnabled}
+        onClick={preferencesActions.setPrettifyOnSavePreference}
+      />
+      <Preference
+        title="VIM Mode"
+        enabled={preferences.vimMode}
+        onClick={preferencesActions.setVimPreference}
+      />
+    </PreferenceContainer>
+    <WorkspaceSubtitle>Preview</WorkspaceSubtitle>
+    <PreferenceContainer>
+      <Preference
+        title="Live Preview"
+        enabled={preferences.livePreviewEnabled}
+        onClick={preferencesActions.setLivePreview}
+        tooltip="Only update on save"
+      />
+      <Preference
+        title="Instant preview"
+        enabled={preferences.instantPreviewEnabled}
+        onClick={preferencesActions.setInstantPreview}
+      />
+    </PreferenceContainer>
+  </Container>
+);
 
 export default connect(mapStateToProps, mapDispatchToProps)(Preferences);

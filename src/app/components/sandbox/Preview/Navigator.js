@@ -56,9 +56,9 @@ type Props = {
   url: string,
   onChange: (text: string) => void,
   onConfirm: () => void,
-  onBack?: () => void,
-  onForward?: () => void,
-  onRefresh?: () => void,
+  onBack: ?() => void,
+  onForward: ?() => void,
+  onRefresh: ?() => void,
   isProjectView: boolean,
   toggleProjectView: () => void,
 };
