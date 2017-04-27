@@ -143,7 +143,7 @@ export default class Project extends React.PureComponent {
         {owned &&
           <WorkspaceInputContainer>
             <LinkButton
-              style={{ marginTop: '0.5rem' }}
+              style={{ marginTop: '0.5rem', marginLeft: '-2px' }}
               onClick={this.handleDeleteSandbox}
             >
               Delete Sandbox
