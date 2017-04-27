@@ -119,7 +119,8 @@
     "build": "NODE_ENV=production node scripts/build.js && gulp",
     "test": "jest --env=jsdom",
     "test:watch": "jest --watch --env=jsdom",
-    "lint": "eslint src"
+    "lint:app": "eslint src/app",
+    "lint:embed": "eslint src/embed"
   },
   "jest": {
     "rootDir": "src",

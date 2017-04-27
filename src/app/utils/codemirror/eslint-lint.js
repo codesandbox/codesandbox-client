@@ -4,6 +4,7 @@ import 'codemirror/addon/lint/lint';
 import fixer from 'eslint/lib/util/source-code-fixer';
 import delay from '../../store/services/delay';
 
+/* eslint-disable global-require */
 const allRules = {
   'react/jsx-uses-react': require('eslint-plugin-react/lib/rules/jsx-uses-react'),
   'react/no-multi-comp': require('eslint-plugin-react/lib/rules/no-multi-comp'),
@@ -67,6 +68,7 @@ const allRules = {
   'react/wrap-multilines': require('eslint-plugin-react/lib/rules/wrap-multilines'),
   'react/jsx-tag-spacing': require('eslint-plugin-react/lib/rules/jsx-tag-spacing'),
 };
+/* eslint-enable global-require */
 
 const defaultConfig = {
   extends: ['prettier', 'prettier/react', 'prettier/flowtype'],
@@ -1588,7 +1590,7 @@ function eslintValidate(text) {
   return window.eslint.verify(text, defaultConfig);
 }
 
-export function validator(text, options) {
+export function validator(text: string) {
   return eslintValidate(text).map(error => ({
     message: `eslint: ${error.message} (${error.ruleId})`,
     severity: getSeverity(error),
@@ -1597,7 +1599,7 @@ export function validator(text, options) {
   }));
 }
 
-export function fix(source) {
+export function fix(source: string) {
   const errors = eslintValidate(source);
   return fixer.applyFixes(window.eslint.getSourceCode(), errors);
 }
@@ -1611,10 +1613,12 @@ export default (async function initialize() {
       : '/static/js/eslint.3.18.0.js';
     script.setAttribute('src', src);
     script.setAttribute('async', false);
-    document.head.appendChild(script);
+
+    if (document.head) document.head.appendChild(script);
   }
 
   while (!window.eslint) {
+    // eslint-disable-next-line
     await delay(100);
   }
 
