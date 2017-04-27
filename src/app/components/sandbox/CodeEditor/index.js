@@ -194,7 +194,7 @@ export default class CodeEditor extends React.PureComponent {
 
     const showAutoComplete = cm => {
       if (this.server) {
-        const filter = new RegExp('[\.a-z_$]', 'i');
+        const filter = new RegExp('[.a-z_$]', 'i');
         if (cm.display.input.textarea.value.slice(-1).match(filter)) {
           cm.showHint({ hint: this.server.getHint, completeSingle: false });
         }

@@ -3,6 +3,7 @@ import React from 'react';
 type Props = {
   HeaderComponent: React.Component<any, any>,
   headerProps: ?Object,
+  children: Function,
 };
 
 type State = {
@@ -23,7 +24,7 @@ export default class HoverMenu extends React.PureComponent {
     }
   };
 
-  handleViewClick = e => {
+  handleViewClick = () => {
     // Prevent element from closing itself when you click on it
     this.setState({ clicked: true });
 

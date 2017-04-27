@@ -65,6 +65,7 @@ function slugify(text) {
   const b = 'aaaaeeeeiiiioooouuuuncsyoarsnpwgnmuxzh------';
   const p = new RegExp(a.split('').join('|'), 'g');
 
+  /* eslint-disable */
   return text
     .toString()
     .toLowerCase()
@@ -75,6 +76,7 @@ function slugify(text) {
     .replace(/\-\-+/g, '-') // Replace multiple - with single -
     .replace(/^-+/, '') // Trim - from start of text
     .replace(/-+$/, ''); // Trim - from end of text
+  /* eslint-enable */
 }
 
 function createPackageJSON(sandbox: Sandbox) {

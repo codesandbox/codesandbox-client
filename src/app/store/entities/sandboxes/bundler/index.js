@@ -3,7 +3,6 @@ import _debug from 'app/utils/debug';
 import callApi from '../../../services/api';
 
 import dependenciesToQuery from './dependencies-to-query';
-import { singleSandboxSelector } from '../selectors';
 import logError from '../../../../utils/error';
 
 const debug = _debug('cs:app:packager');
@@ -23,7 +22,7 @@ async function requestPackager(query: string) {
     debug(`Trying to call packager for ${retries} time`);
     try {
       const url = `${PACKAGER_URL}/${query}`;
-      const result = await callApi(`${url}/manifest.json`);
+      const result = await callApi(`${url}/manifest.json`); // eslint-disable-line
 
       return { ...result, url };
     } catch (e) {
@@ -44,7 +43,7 @@ async function callNewPackager(dependencies: Object) {
 }
 
 export default function fetch(actions, id: string, npmDependencies: Object) {
-  return async (dispatch: Function, getState: Function) => {
+  return async (dispatch: Function) => {
     if (Object.keys(npmDependencies).length !== 0) {
       dispatch({ type: actions.REQUEST, initial: true, id });
       // New Packager flow
@@ -58,5 +57,6 @@ export default function fetch(actions, id: string, npmDependencies: Object) {
         dispatch({ type: actions.FAILED, id });
       }
     }
+    return false;
   };
 }

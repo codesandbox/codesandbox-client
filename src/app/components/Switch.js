@@ -28,6 +28,9 @@ const Container = styled.div`
   }
 `;
 
+const getSize = ({ small }) =>
+  (small ? 'calc(1.5rem + 2px)' : 'calc(2rem + 2px)');
+
 const Dot = styled.div`
   transition: inherit;
   position: absolute;
@@ -35,7 +38,7 @@ const Dot = styled.div`
   width: 1rem;
   left: 0.1rem;
   border-radius: 4px;
-  transform: translateX(${props => (props.right ? props.small ? 'calc(1.5rem + 2px)' : 'calc(2rem + 2px)' : '0')});
+  transform: translateX(${props => (props.right ? getSize(props) : '0')});
   top: ${({ small }) => (small ? `calc(0.1rem + 1px)` : `calc(0.1rem)`)};
   background-color: white;
   box-shadow: 0 0 4px rgba(0,0,0,0.2);

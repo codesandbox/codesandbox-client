@@ -1,11 +1,11 @@
-// @flow
+// @flow eslint-disable
 import React from 'react';
 import styled from 'styled-components';
 
 import WorkspaceInputContainer from '../WorkspaceInputContainer';
 import Button from '../../../../../components/buttons/Button';
 import Relative from '../../../../../components/Relative';
-import type { Version } from '../../../../../store/entities/versions/index';
+import type { Version } from '../../../../../store/entities/versions/index'; // eslint-disable-line
 
 const Inputs = styled.div`
   margin-bottom: 1rem;

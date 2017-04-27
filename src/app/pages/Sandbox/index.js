@@ -22,7 +22,7 @@ type Props = {
   sandboxActions: typeof sandboxActions,
   userActions: typeof userActionCreators,
   hasLogin: boolean,
-  match: { url: string, params: { id: ?string } },
+  match: { params: { id: ?string } },
 };
 type State = {
   notFound: boolean,
@@ -64,7 +64,7 @@ class SandboxPage extends React.PureComponent {
     const oldId = oldProps.match.params.id;
 
     if (newId != null && oldId !== newId) {
-      this.setState({ notFound: false });
+      this.setState({ notFound: false }); // eslint-disable-line
       if (!this.props.sandboxes[newId] || !this.props.sandboxes[newId].forked) {
         this.fetchSandbox();
       }

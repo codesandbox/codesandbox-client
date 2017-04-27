@@ -59,7 +59,13 @@ const LinkButton = styled(Link)`${styles}`;
 const AButton = styled.a`${styles}`;
 const Button = styled.button`${styles}`;
 
-export default props => {
+type Props = {
+  [key: any]: any,
+  to: ?string,
+  href: ?string,
+};
+
+export default (props: Props) => {
   // Link
   if (props.to) {
     return <LinkButton {...props} />;
