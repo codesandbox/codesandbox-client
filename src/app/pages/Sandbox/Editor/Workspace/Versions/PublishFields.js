@@ -1,11 +1,11 @@
-// @flow
+// @flow eslint-disable
 import React from 'react';
 import styled from 'styled-components';
 
 import WorkspaceInputContainer from '../WorkspaceInputContainer';
 import Button from '../../../../../components/buttons/Button';
 import Relative from '../../../../../components/Relative';
-import type { Version } from '../../../../../store/entities/versions/index';
+import type { Version } from '../../../../../store/entities/versions/index'; // eslint-disable-line
 
 const Inputs = styled.div`
   margin-bottom: 1rem;
@@ -44,7 +44,8 @@ type Props = {
   versions: Array<Version>,
 };
 
-const DUPLICATE_VERSION_INFO = 'You cannot publish a version that already exists.';
+const DUPLICATE_VERSION_INFO =
+  'You cannot publish a version that already exists.';
 
 export default class PublishFields extends React.PureComponent {
   props: Props;
@@ -60,7 +61,7 @@ export default class PublishFields extends React.PureComponent {
       major = this.state.major,
       minor = this.state.minor,
       patch = this.state.patch,
-    }: { major?: string, minor?: string, patch?: string } = {}
+    }: { major?: string, minor?: string, patch?: string } = {},
   ) => `${major}.${minor}.${patch}`;
 
   isDuplicateVersion = (version: string = this.getVersion()) =>
@@ -108,7 +109,7 @@ export default class PublishFields extends React.PureComponent {
   };
 
   setStatus = (
-    versionInfo: { major?: string, minor?: string, patch?: string }
+    versionInfo: { major?: string, minor?: string, patch?: string },
   ) => {
     if (this.isDuplicateVersion(this.getVersion(versionInfo))) {
       this.setState({ errorMessage: DUPLICATE_VERSION_INFO });

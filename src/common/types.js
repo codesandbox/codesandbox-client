@@ -1,3 +1,14 @@
+export type ModuleError = {
+  message: string,
+  line: number,
+  column: number,
+  title: string,
+  moduleId: ?string,
+  severity: 'error' | 'warning',
+  type: 'compile' | 'dependency-not-found' | 'no-dom-change',
+  payload: Object,
+};
+
 export type Module = {
   id: string,
   title: string,
@@ -5,16 +16,6 @@ export type Module = {
   shortid: string,
   directoryShortid: ?string,
   isNotSynced: boolean,
-  error: ?{
-    message: string,
-    line: number,
-    column: number,
-    title: string,
-    moduleId: ?string,
-    severity: 'error' | 'warning',
-    type: 'compile' | 'dependency-not-found' | 'no-dom-change',
-    payload: Object,
-  },
 };
 
 export type Directory = {
@@ -43,16 +44,17 @@ export type Sandbox = {
   id: string,
   title: ?string,
   description: string,
-  modules: Array<Module>,
-  currentModule: ?Module,
-  directories: Array<Directory>,
+  viewCount: number,
+  modules: Array<string>,
+  currentModule: ?string,
+  directories: Array<string>,
   npmDependencies: {
     [dep: string]: string,
   },
   externalResources: Array<string>,
   isInProjectView: ?boolean,
   dependencyBundle: ?{
-    manifest?: Object,
+    externals?: Object,
     hash?: string,
     url?: string,
     error?: string,
@@ -70,6 +72,7 @@ export type Preferences = {
   livePreviewEnabled: boolean,
   prettifyOnSaveEnabled: boolean,
   lintEnabled: boolean,
+  instantPreviewEnabled: boolean,
 };
 
 export type NotificationButton = {

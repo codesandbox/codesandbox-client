@@ -1,3 +1,4 @@
+import type { Sandbox } from 'common/types';
 import { mapValues } from 'lodash';
 
 import {
@@ -9,11 +10,16 @@ import {
   SET_EXTERNAL_RESOURCES,
   SET_CURRENT_MODULE,
   SET_BUNDLE,
+  CANCEL_BUNDLE,
   FETCH_BUNDLE_API_ACTIONS,
   SET_SANDBOX_INFO,
   SET_PROJECT_VIEW,
   SET_VIEW_MODE,
+  DELETE_SANDBOX_API_ACTIONS,
 } from './actions';
+
+import { CLEAR_ERRORS, ADD_ERROR } from './errors/actions';
+import errorReducer from './errors/reducer';
 
 import { SET_CURRENT_USER, SIGN_OUT } from '../../user/actions';
 
@@ -24,7 +30,7 @@ type Action = {
   type: string,
 };
 
-function singleSandboxReducer(sandbox, action: Action) {
+function singleSandboxReducer(sandbox: Sandbox, action: Action): Sandbox {
   switch (action.type) {
     case SET_VIEW_MODE:
       return {
@@ -57,7 +63,7 @@ function singleSandboxReducer(sandbox, action: Action) {
       return {
         ...sandbox,
         directories: sandbox.directories.filter(
-          d => d !== action.directoryShortid
+          d => d !== action.directoryShortid,
         ),
       };
     case SET_NPM_DEPENDENCIES:
@@ -81,18 +87,31 @@ function singleSandboxReducer(sandbox, action: Action) {
         ...sandbox,
         dependencyBundle: action.bundle,
       };
+    case CANCEL_BUNDLE:
+      return {
+        ...sandbox,
+        dependencyBundle: {
+          error: true,
+        },
+      };
     case SET_SANDBOX_INFO:
       return {
         ...sandbox,
         title: action.title,
         description: action.description,
       };
+    case CLEAR_ERRORS:
+    case ADD_ERROR:
+      return { ...sandbox, errors: errorReducer(sandbox.errors, action) };
     default:
       return sandbox;
   }
 }
 
-export default function reducer(state = initialState, action: Action) {
+export default function reducer(
+  state = initialState,
+  action: Action,
+): { [id: string]: Sandbox } {
   switch (action.type) {
     case ADD_MODULE_TO_SANDBOX:
     case ADD_DIRECTORY_TO_SANDBOX:
@@ -103,9 +122,12 @@ export default function reducer(state = initialState, action: Action) {
     case SET_CURRENT_MODULE:
     case FETCH_BUNDLE_API_ACTIONS.REQUEST:
     case SET_BUNDLE:
+    case CANCEL_BUNDLE:
     case SET_SANDBOX_INFO:
     case SET_PROJECT_VIEW:
     case SET_VIEW_MODE:
+    case CLEAR_ERRORS:
+    case ADD_ERROR:
       if (state[action.id]) {
         return {
           ...state,
@@ -126,6 +148,11 @@ export default function reducer(state = initialState, action: Action) {
         ...s,
         owned: false,
       }));
+    case DELETE_SANDBOX_API_ACTIONS.SUCCESS:
+      return {
+        ...state,
+        [action.meta.id]: null,
+      };
     default:
       return state;
   }

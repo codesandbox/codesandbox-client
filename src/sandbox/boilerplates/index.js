@@ -12,7 +12,7 @@ export function evalBoilerplates(
   boilerplates: Array<any>,
   modules: Array<Module>,
   directories: Array<Directory>,
-  manifest: Object
+  externals: Object,
 ) {
   cachedBoilerplates = boilerplates.map(boilerplate => {
     const fakeModule: Module = {
@@ -25,7 +25,7 @@ export function evalBoilerplates(
       type: '',
     };
 
-    const module = evalModule(fakeModule, '', modules, directories, manifest);
+    const module = evalModule(fakeModule, '', modules, directories, externals);
     return { ...boilerplate, module };
   });
 }
@@ -43,7 +43,7 @@ export function findBoilerplate(module: Module): any {
 
   if (boilerplate == null) {
     throw new Error(
-      `No boilerplate found for ${module.title}, you can create one in the future`
+      `No boilerplate found for ${module.title}, you can create one in the future`,
     );
   }
 

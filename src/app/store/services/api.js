@@ -2,7 +2,6 @@
 import { camelizeKeys, decamelizeKeys } from 'humps';
 import axios from 'axios';
 
-import getJwt from '../user/utils/jwt';
 import { optionsToParameterizedUrl } from '../../utils/url-generator';
 
 const API_ROOT = '/api/v1/';
@@ -14,24 +13,26 @@ export type BodyType = {
   jwt: ?string,
 };
 
+function getUrl(endpoint: string) {
+  if (endpoint.startsWith('http')) {
+    return endpoint;
+  }
+
+  return endpoint.split('')[0] === '/' ? endpoint : `${API_ROOT}${endpoint}`;
+}
+
 /**
  * Sends a request to the API and returns a promise with camelized response
  */
 export default (async function callApi(
   endpoint: string,
   jwt: ?string,
-  {
-    method = 'GET',
-    body = null,
-    shouldCamelize = true,
-  }: ?BodyType = {}
+  { method = 'GET', body = null, shouldCamelize = true }: ?BodyType = {},
 ) {
   if (!endpoint) throw new Error('No endpoint is given');
 
   // If it is an absolute url.
-  const url = endpoint.split('')[0] === '/'
-    ? endpoint
-    : `${API_ROOT}${endpoint}`;
+  const url = getUrl(endpoint);
 
   const options = { url, method };
 

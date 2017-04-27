@@ -1,6 +1,6 @@
 import { transform } from 'babel-standalone';
 
-self.addEventListener('message', (event) => {
+self.addEventListener('message', event => {
   const { code, moduleName = '' } = event.data;
   try {
     const newCode = transform(code, {

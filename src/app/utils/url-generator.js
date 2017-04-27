@@ -1,6 +1,8 @@
 // @flow
 export const host = () =>
-  process.env.NODE_ENV === 'production' ? 'codesandbox.io' : 'codesandbox.dev';
+  (process.env.NODE_ENV === 'production'
+    ? 'codesandbox.io'
+    : 'codesandbox.dev');
 
 export const protocolAndHost = () => `${location.protocol}//${host()}`;
 

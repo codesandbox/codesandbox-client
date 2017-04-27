@@ -9,7 +9,7 @@ import EntryContainer from '../EntryContainer';
 const Version = styled.div`
   transition: 0.3s ease all;
   position: absolute;
-  right: ${props => props.hovering ? 2.5 : 1}rem;
+  right: ${props => (props.hovering ? 2.5 : 1)}rem;
   color: ${props => props.theme.background.lighten(2).clearer(0.5)};
 `;
 

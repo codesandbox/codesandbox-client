@@ -9,5 +9,13 @@ export const getSandboxOptions = () => {
   result.isPreviewScreen = location.search.includes('view=preview');
   result.isEditorScreen = location.search.includes('view=editor');
 
+  // If there is no view specified and the width of the window is <800 we want
+  // to default to preview
+  if (!result.isPreviewScreen && !result.isEditorScreen) {
+    const windowWidth =
+      window.innerWidth || document.documentElement.clientWidth;
+    result.isPreviewScreen = windowWidth < 800;
+  }
+
   return result;
 };

@@ -71,6 +71,7 @@ const VersionDate = styled.div`
 
 // export default connect(mapStateToProps, mapDispatchToProps)(Versions);
 
+// eslint-disable-next-line
 export default class Versions extends React.PureComponent {
   props: Props;
 

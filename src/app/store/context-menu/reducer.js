@@ -26,7 +26,7 @@ const initialState: ContextMenuState = {
 
 export default function reducer(
   state: ContextMenuState = initialState,
-  action: Object
+  action: Object,
 ) {
   switch (action.type) {
     case actions.CLOSE_CONTEXT_MENU:

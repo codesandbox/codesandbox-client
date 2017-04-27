@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
+// eslint-disable-next-line
 const getDirectionTransforms = ({ offset = 0, left, right, bottom, top }) => {
   if (left) {
     return `
@@ -29,6 +30,7 @@ const getDirectionTransforms = ({ offset = 0, left, right, bottom, top }) => {
   `;
 };
 
+// eslint-disable-next-line
 const getDirectionArrow = ({ theme, left, right, bottom, top }) => {
   if (left) {
     return `
@@ -115,7 +117,7 @@ const Tooltip = styled.div`
 `;
 
 type Props = {
-  className: ?tring,
+  className: ?string,
   offset: ?number,
   children: React.CElement,
   message: string,
@@ -125,9 +127,16 @@ type Props = {
   bottom: ?boolean,
 };
 
-export default (
-  { className, offset = 0, children, message, left, right, bottom, top }: Props
-) => (
+export default ({
+  className,
+  offset = 0,
+  children,
+  message,
+  left,
+  right,
+  bottom,
+  top,
+}: Props) => (
   <Tooltip
     className={className}
     bottom={bottom}

@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`prettify should prettify code 1`] = `
+"const a = '32';
+"
+`;
+
+exports[`prettify should prettify static class props 1`] = `
+"class Ives extends React.Component {
+  property = {};
+}
+"
+`;
+
+exports[`prettify should prettify syntax errors 1`] = `
+"apofdawoifefjaweoifj;
+"
+`;

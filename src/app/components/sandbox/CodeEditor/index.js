@@ -2,7 +2,7 @@
 import React from 'react';
 import CodeMirror from 'codemirror';
 import styled from 'styled-components';
-import { debounce } from 'lodash';
+import type { Preferences, ModuleError } from 'common/types';
 
 import { getCodeMirror } from 'app/utils/codemirror';
 import prettify from 'app/utils/codemirror/prettify';
@@ -11,15 +11,13 @@ import 'codemirror/addon/dialog/dialog';
 import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/tern/tern';
 
-import type { Preferences } from 'common/types';
-
 import Header from './Header';
 
 const documentCache = {};
 
 type Props = {
   code: ?string,
-  error: ?Object,
+  errors: ?Array<ModuleError>,
   id: string,
   title: string,
   modulePath: string,
@@ -41,27 +39,32 @@ const CodeContainer = styled.div`
   height: calc(100% - 6rem);
 `;
 
-const handleError = (cm, currentError, nextError, nextCode, nextId) => {
-  if (currentError || nextError) {
-    if (currentError && nextError && currentError.line === nextError.line) {
-      return;
-    }
+const handleError = (
+  cm: typeof CodeMirror,
+  currentErrors: ?Array<ModuleError>,
+  nextErrors: ?Array<ModuleError>,
+  nextCode: ?string,
+  prevId: string,
+  nextId: string,
+) => {
+  if (currentErrors && currentErrors.length > 0) {
+    cm.getValue().split('\n').forEach((_, i) => {
+      cm.removeLineClass(i, 'background', 'cm-line-error');
+    });
+  }
 
-    if (currentError) {
-      cm.getValue().split('\n').forEach((_, i) => {
-        cm.removeLineClass(i, 'background', 'cm-line-error');
-      });
-    }
-
-    const code = nextCode || '';
-    if (
-      nextError &&
-      (nextError.moduleId == null || nextError.moduleId === nextId) &&
-      nextError.line !== 0 &&
-      nextError.line <= code.split('\n').length
-    ) {
-      cm.addLineClass(nextError.line - 1, 'background', 'cm-line-error');
-    }
+  if (nextErrors) {
+    nextErrors.forEach(error => {
+      const code = nextCode || '';
+      if (
+        error &&
+        (error.moduleId == null || error.moduleId === nextId) &&
+        error.line !== 0 &&
+        error.line <= code.split('\n').length
+      ) {
+        cm.addLineClass(error.line - 1, 'background', 'cm-line-error');
+      }
+    });
   }
 };
 
@@ -69,25 +72,25 @@ export default class CodeEditor extends React.PureComponent {
   props: Props;
 
   shouldComponentUpdate(nextProps: Props) {
-    return nextProps.id !== this.props.id ||
-      nextProps.error !== this.props.error ||
+    return (
+      nextProps.id !== this.props.id ||
+      nextProps.errors !== this.props.errors ||
       this.props.canSave !== nextProps.canSave ||
-      this.props.preferences !== nextProps.preferences;
+      this.props.preferences !== nextProps.preferences
+    );
   }
 
-  swapDocuments = async (
-    {
-      currentId,
-      nextId,
-      nextCode,
-      nextTitle,
-    }: {
-      currentId: string,
-      nextId: string,
-      nextCode: ?string,
-      nextTitle: string,
-    }
-  ) => {
+  swapDocuments = async ({
+    currentId,
+    nextId,
+    nextCode,
+    nextTitle,
+  }: {
+    currentId: string,
+    nextId: string,
+    nextCode: ?string,
+    nextTitle: string,
+  }) => {
     if (nextId !== currentId || nextCode !== this.getCode()) {
       if (!documentCache[nextId]) {
         const mode = await this.getMode(nextTitle);
@@ -100,19 +103,25 @@ export default class CodeEditor extends React.PureComponent {
     }
   };
 
-  componentWillReceiveProps(nextProps: Props) {
+  componentWillUpdate(nextProps: Props) {
     const cm = this.codemirror;
-    const { id: currentId, error: currentError } = this.props;
+    const { id: currentId, errors: currentErrors } = this.props;
     const {
       id: nextId,
       code: nextCode,
-      error: nextError,
+      errors: nextErrors,
       title: nextTitle,
     } = nextProps;
 
     if (cm) {
-      this.swapDocuments({ currentId, nextId, nextCode, nextTitle });
-      handleError(cm, currentError, nextError, nextCode, nextId);
+      this.swapDocuments({
+        currentId,
+        nextId,
+        nextCode,
+        nextTitle,
+      }).then(() => {
+        handleError(cm, currentErrors, nextErrors, nextCode, currentId, nextId);
+      });
     }
   }
 
@@ -170,10 +179,6 @@ export default class CodeEditor extends React.PureComponent {
     const { preferences } = this.props;
 
     const defaultKeys = {
-      Tab: cm => {
-        const spaces = Array(cm.getOption('indentUnit') + 1).join(' ');
-        cm.replaceSelection(spaces);
-      },
       'Cmd-/': cm => {
         cm.listSelections().forEach(() => {
           cm.toggleComment({ lineComment: '//' });
@@ -189,7 +194,7 @@ export default class CodeEditor extends React.PureComponent {
 
     const showAutoComplete = cm => {
       if (this.server) {
-        const filter = new RegExp('[\.a-z_$]', 'i');
+        const filter = new RegExp('[.a-z_$]', 'i');
         if (cm.display.input.textarea.value.slice(-1).match(filter)) {
           cm.showHint({ hint: this.server.getHint, completeSingle: false });
         }
@@ -200,14 +205,14 @@ export default class CodeEditor extends React.PureComponent {
       const tern = await System.import('tern');
       const defs = await System.import('tern/defs/ecmascript.json');
       window.tern = tern;
-      this.server = this.server ||
+      this.server =
+        this.server ||
         new CodeMirror.TernServer({
           defs: [defs],
         });
       this.codemirror.on('cursorActivity', updateArgHints);
       this.codemirror.on('inputRead', showAutoComplete);
       this.codemirror.setOption('extraKeys', {
-        ...defaultKeys,
         'Ctrl-Space': cm => {
           if (this.server) this.server.complete(cm);
         },
@@ -229,6 +234,7 @@ export default class CodeEditor extends React.PureComponent {
         'Ctrl-.': cm => {
           if (this.server) this.server.selectName(cm);
         },
+        ...defaultKeys,
       });
     } else {
       this.server = null;
@@ -245,9 +251,7 @@ export default class CodeEditor extends React.PureComponent {
 
     if (preferences.lintEnabled) {
       System.import('app/utils/codemirror/eslint-lint')
-        .then(initializer => {
-          return initializer.default();
-        })
+        .then(initializer => initializer.default())
         .then(() => {
           this.codemirror.setOption('lint', true);
         });

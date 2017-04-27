@@ -7,7 +7,7 @@ import CodeEditor from 'app/components/sandbox/CodeEditor';
 import { getModulePath } from 'app/store/entities/sandboxes/modules/selectors';
 
 import type { Sandbox } from 'common/types';
-import fetchBundle from './bundle-fetcher';
+import fetchBundle from 'app/store/entities/sandboxes/bundler';
 
 const Container = styled.div`
   display: flex;
@@ -18,10 +18,10 @@ const Container = styled.div`
 
 const Split = styled.div`
   position: relative;
-  width: ${props => props.show ? '50%' : '0px'};
-  max-width: ${props => props.only ? '100%' : '50%'};
-  min-width: ${props => props.only ? '100%' : '50%'};
-  height: ${props => props.editor ? 'calc(100% + 3rem)' : '100%'};
+  width: ${props => (props.show ? '50%' : '0px')};
+  max-width: ${props => (props.only ? '100%' : '50%')};
+  min-width: ${props => (props.only ? '100%' : '50%')};
+  height: ${props => (props.editor ? 'calc(100% + 3rem)' : '100%')};
 `;
 
 type Props = {
@@ -47,10 +47,11 @@ export default class Content extends React.Component {
   }
 
   fetchBundle = () => {
-    fetchBundle({ SUCCESS: 'SUCCESS' }, this.props.sandbox.id)(({
-      type,
-      result,
-    }) => {
+    fetchBundle(
+      { SUCCESS: 'SUCCESS' },
+      this.props.sandbox.id,
+      this.props.sandbox.npmDependencies,
+    )(({ type, result }) => {
       if (type === 'SUCCESS') {
         this.setState({ bundle: { ...result, processing: false } });
       }
@@ -67,9 +68,10 @@ export default class Content extends React.Component {
     const { sandbox, showEditor, showPreview, currentModule } = this.props;
 
     const preferences = { livePreviewEnabled: true };
-    const mainModule = sandbox.modules.find(m => m.id === currentModule) ||
+    const mainModule =
+      sandbox.modules.find(m => m.id === currentModule) ||
       sandbox.modules.find(
-        m => m.title === 'index.js' && m.directoryShortid == null
+        m => m.title === 'index.js' && m.directoryShortid == null,
       );
 
     return (
@@ -78,13 +80,12 @@ export default class Content extends React.Component {
           <Split editor show={showEditor} only={showEditor && !showPreview}>
             <CodeEditor
               code={mainModule.code}
-              error={null}
               id={mainModule.id}
               title={mainModule.title}
               modulePath={getModulePath(
                 sandbox.modules,
                 sandbox.directories,
-                mainModule.id
+                mainModule.id,
               )}
               preferences={preferences}
               onlyViewMode
@@ -102,9 +103,11 @@ export default class Content extends React.Component {
               externalResources={sandbox.externalResources}
               module={mainModule}
               fetchBundle={this.fetchBundle}
-              setError={() => {}}
+              addError={() => {}}
+              clearErrors={() => {}}
               preferences={preferences}
               setProjectView={this.setProjectView}
+              noDelay
             />
           </Split>}
       </Container>

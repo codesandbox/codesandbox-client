@@ -4,16 +4,13 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { createSelector } from 'reselect';
-import { denormalize } from 'normalizr';
-import sandboxEntity from 'app/store/entities/sandboxes/entity';
 
 import { sandboxesSelector } from 'app/store/entities/sandboxes/selectors';
-import { entitiesSelector } from 'app/store/entities/selectors';
 import sandboxActions from 'app/store/entities/sandboxes/actions';
 import userActionCreators from 'app/store/user/actions';
 import { jwtSelector } from 'app/store/user/selectors';
 
-import type { Sandbox } from 'app/store/entities/sandboxes/entity';
+import type { Sandbox } from 'common/types';
 import Title from 'app/components/text/Title';
 import Centered from 'app/components/flex/Centered';
 
@@ -25,7 +22,7 @@ type Props = {
   sandboxActions: typeof sandboxActions,
   userActions: typeof userActionCreators,
   hasLogin: boolean,
-  match: { url: string, params: { id: ?string } },
+  match: { params: { id: ?string } },
 };
 type State = {
   notFound: boolean,
@@ -33,18 +30,13 @@ type State = {
 
 const mapStateToProps = createSelector(
   sandboxesSelector,
-  entitiesSelector,
   (_, props) => props.match.params.id,
   jwtSelector,
-  (sandboxes, entities, id, jwt) => {
-    let sandbox = sandboxes[id];
-
-    if (sandbox) {
-      sandbox = denormalize(sandboxes[id], sandboxEntity, entities);
-    }
+  (sandboxes, id, jwt) => {
+    const sandbox = sandboxes[id];
 
     return { sandbox, sandboxes, hasLogin: !!jwt };
-  }
+  },
 );
 const mapDispatchToProps = dispatch => ({
   sandboxActions: bindActionCreators(sandboxActions, dispatch),
@@ -72,7 +64,7 @@ class SandboxPage extends React.PureComponent {
     const oldId = oldProps.match.params.id;
 
     if (newId != null && oldId !== newId) {
-      this.setState({ notFound: false });
+      this.setState({ notFound: false }); // eslint-disable-line
       if (!this.props.sandboxes[newId] || !this.props.sandboxes[newId].forked) {
         this.fetchSandbox();
       }

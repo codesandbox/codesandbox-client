@@ -5,11 +5,10 @@ const animation = keyframes`
   100% { opacity: 1; }
 `;
 
-export default delay => (
+export default delay =>
   `
     animation: ${animation} 0.3s;
     animation-delay: ${delay}s;
     animation-fill-mode: forwards;
     opacity: 0;
-  `
-);
+  `;

@@ -2,12 +2,12 @@
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 
-import type { Sandbox } from '../entity';
-import type { Module } from '../modules/entity';
-import type { Directory } from '../directories/entity';
+import type { Sandbox, Module, Directory } from 'common/types';
 
+// $FlowIssue
+import favicon from '!base64-loader!./favicon.ico'; // eslint-disable-line
+// $FlowIssue
 import README from './README.md';
-import favicon from '!base64-loader!./favicon.ico';
 
 const CSSTag = (resource: string) =>
   `<link rel="stylesheet" type="text/css" href="${resource}" media="all">`;
@@ -15,19 +15,18 @@ const JSTag = (resource: string) =>
   `<script src="${resource}" async="false"></script>`;
 
 function getResourceTag(resource: string) {
-  const kind = resource.match(/\.([^.]*)$/)[1];
+  const kind = resource.match(/\.([^.]*)$/);
 
-  if (kind === 'css') {
+  if (kind && kind[1] === 'css') {
     return CSSTag(resource);
-  } else if (kind === 'js') {
-    return JSTag(resource);
   }
-  return '';
+
+  return JSTag(resource);
 }
 
-function getIndexHtmlBody(modules) {
+function getIndexHtmlBody(modules: Array<Module>) {
   const indexHtmlModule = modules.find(
-    m => m.title === 'index.html' && m.directoryShortid == null
+    m => m.title === 'index.html' && m.directoryShortid == null,
   );
 
   if (indexHtmlModule) {
@@ -37,7 +36,8 @@ function getIndexHtmlBody(modules) {
   return `<div id="root"></div>`;
 }
 
-const getHTML = (modules, resources) => `<!doctype html>
+const getHTML = (modules, resources) =>
+  `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -65,6 +65,7 @@ function slugify(text) {
   const b = 'aaaaeeeeiiiioooouuuuncsyoarsnpwgnmuxzh------';
   const p = new RegExp(a.split('').join('|'), 'g');
 
+  /* eslint-disable */
   return text
     .toString()
     .toLowerCase()
@@ -75,6 +76,7 @@ function slugify(text) {
     .replace(/\-\-+/g, '-') // Replace multiple - with single -
     .replace(/^-+/, '') // Trim - from start of text
     .replace(/-+$/, ''); // Trim - from end of text
+  /* eslint-enable */
 }
 
 function createPackageJSON(sandbox: Sandbox) {
@@ -98,7 +100,7 @@ function createPackageJSON(sandbox: Sandbox) {
       },
     },
     null,
-    '  '
+    '  ',
   );
 }
 
@@ -106,7 +108,7 @@ function createDirectoryWithFiles(
   modules: Array<Module>,
   directories: Array<Directory>,
   directory: Directory,
-  zip
+  zip,
 ) {
   const newZip = zip.folder(directory.title);
 
@@ -122,7 +124,7 @@ function createDirectoryWithFiles(
 export default (async function createZip(
   sandbox: Sandbox,
   modules: Array<Module>,
-  directories: Array<Directory>
+  directories: Array<Directory>,
 ) {
   const zip = new JSZip();
 

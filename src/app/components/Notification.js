@@ -93,7 +93,7 @@ const CloseIconHandler = styled.div`
 
 type Props = {
   title: string,
-  body: string,
+  body: string, // eslint-disable-line
   type: string,
   buttons: Array<NotificationButton>,
   close: () => void,

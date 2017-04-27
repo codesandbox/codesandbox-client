@@ -27,14 +27,14 @@ const InputContainer = styled.div`
 `;
 
 type Props = {
-  title: string;
-  onCommit: (title: string, force: ?boolean) => void;
-  onCancel: () => void;
-  onChange: (name: string) => void;
-}
+  title: string,
+  onCommit: (title: string, force: ?boolean) => void,
+  onCancel: () => void,
+  onChange: (name: string) => void,
+};
 
 type State = {
-  currentValue: string;
+  currentValue: string,
 };
 
 function select(el) {
@@ -53,9 +53,11 @@ export default class EntryTitleInput extends React.PureComponent {
   props: Props;
   state: State;
 
-  handleChange = (el: Event) => {
-    this.props.onChange(el.target.value);
-    this.setState({ currentValue: el.target.value });
+  handleChange = (e: KeyboardEvent) => {
+    if (e.target) {
+      this.props.onChange(e.target.value);
+      this.setState({ currentValue: e.target.value });
+    }
   };
 
   handleKeyUp = (e: KeyboardEvent) => {

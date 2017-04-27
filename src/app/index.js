@@ -80,7 +80,7 @@ const renderApp = RootComponent => {
           </Provider>
         </ThemeProvider>
       </AppContainer>,
-      rootEl
+      rootEl,
     );
   } catch (e) {
     logError(e);

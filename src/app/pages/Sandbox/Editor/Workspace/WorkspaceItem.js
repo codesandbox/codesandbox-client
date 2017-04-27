@@ -9,8 +9,8 @@ const ChildContainer = styled.div`
   margin: 0;
   padding: 0;
   border-bottom: 1px solid ${props => props.theme.background2};
-  overflow: ${props => props.open ? 'inherit' : 'hidden'};
-  height: ${props => props.open ? '100%' : 0};
+  overflow: ${props => (props.open ? 'inherit' : 'hidden')};
+  height: ${props => (props.open ? '100%' : 0)};
 
   ${({ disabled }) => disabled && `
     pointer-events: none;
@@ -58,7 +58,7 @@ const ExpandIconContainer = styled(ExpandIcon)`
   right: 1rem;
   font-size: 1rem;
 
-  transform: rotateZ(${props => props.open ? 0 : 90}deg);
+  transform: rotateZ(${props => (props.open ? 0 : 90)}deg);
 `;
 
 type Props = {

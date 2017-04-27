@@ -6,6 +6,7 @@ export default function logError(err, { level = 'error', service = '' } = {}) {
       service,
     },
   });
+
   /* eslint no-console:0 */
-  window.console && console.error && console.error(err);
+  if (window.console && console.error) console.error(err);
 }

@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`it handles normal deps correctly 1`] = `
+Object {
+  "dependency": "redux-form",
+  "path": "redux-form",
+}
+`;
+
+exports[`it parses dependency names with multiple slashes correctly 1`] = `
+Object {
+  "dependency": "redux-form",
+  "path": "redux-form/immutable/koekjes",
+}
+`;
+
+exports[`it parses dependency names with slashes correctly 1`] = `
+Object {
+  "dependency": "redux-form",
+  "path": "redux-form/immutable",
+}
+`;

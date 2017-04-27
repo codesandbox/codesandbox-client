@@ -22,7 +22,9 @@ const fadeInAnimation = keyframes`
   100% { background-color: #561011; }
 `;
 
+// eslint-disable-next-line
 export const getCodeMirror = (el, doc) => {
+  // eslint-disable-next-line
   injectGlobal`
     .cm-s-oceanic.CodeMirror {
       font-family: 'Source Code Pro', monospace;

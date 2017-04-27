@@ -40,16 +40,14 @@ const handleClick = func => (e: Event) => {
   func();
 };
 
-export default (
-  {
-    className,
-    hovering,
-    onDelete,
-    onEdit,
-    onCreateFile,
-    onCreateDirectory,
-  }: Props
-) => (
+export default ({
+  className,
+  hovering,
+  onDelete,
+  onEdit,
+  onCreateFile,
+  onCreateDirectory,
+}: Props) => (
   <div className={className}>
     {hovering &&
       <Container>

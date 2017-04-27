@@ -6,7 +6,7 @@ import { debounce } from 'lodash';
 
 import type { Preferences } from 'app/store/preferences/reducer';
 
-import type { Module, Sandbox, Directory } from 'common/types';
+import type { Module, Sandbox, Directory, ModuleError } from 'common/types';
 import { frameUrl } from 'app/utils/url-generator';
 import { isMainModule } from 'app/store/entities/sandboxes/modules/validator';
 import defaultBoilerplates
@@ -37,10 +37,16 @@ type Props = {
   externalResources: typeof Sandbox.externalResources,
   preferences: Preferences,
   fetchBundle: (id: string) => Object,
-  setProjectView: (id: string, isInProjectView: boolean) => void,
+  setProjectView: (id: string, isInProjectView: boolean) => any,
   module: Module,
-  setError: (id: string, error: ?{ message: string, line: number }) => void,
+  addError: (
+    sandboxId: string,
+    error: ?{ message: string, line: number },
+  ) => any,
+  clearErrors: (sandboxId: string) => any,
   sandboxActions: typeof sandboxActionCreators,
+  noDelay: ?boolean,
+  errors: ?Array<ModuleError>,
 };
 
 type State = {
@@ -52,8 +58,8 @@ type State = {
 };
 
 export default class Preview extends React.PureComponent {
-  constructor() {
-    super();
+  constructor(props: Props) {
+    super(props);
 
     this.state = {
       frameInitialized: false,
@@ -63,7 +69,9 @@ export default class Preview extends React.PureComponent {
       url: null,
     };
 
-    this.executeCode = debounce(this.executeCode, 800);
+    if (!props.noDelay) {
+      this.executeCode = debounce(this.executeCode, 800);
+    }
   }
 
   fetchBundle = () => {
@@ -114,7 +122,11 @@ export default class Preview extends React.PureComponent {
           this.props.bundle === prevProps.bundle || // So we don't trigger after every dep change
           this.props.sandboxId !== prevProps.sandboxId
         ) {
-          this.executeCode();
+          if (this.props.preferences.instantPreviewEnabled) {
+            this.executeCodeImmediately();
+          } else {
+            this.executeCode();
+          }
         }
       }
     }
@@ -146,9 +158,7 @@ export default class Preview extends React.PureComponent {
       const { type } = e.data;
       if (type === 'error') {
         const { error } = e.data;
-        this.setError(error);
-      } else if (type === 'success') {
-        this.setError(null);
+        this.addError(error);
       } else if (type === 'urlchange') {
         const url = e.data.url.replace('/', '');
         this.commitUrl(url);
@@ -177,13 +187,13 @@ export default class Preview extends React.PureComponent {
       externalResources,
     } = this.props;
 
-    if (bundle.manifest == null) {
+    if (bundle.externals == null) {
       if (!bundle.processing && !bundle.error) {
         this.fetchBundle();
       }
       return;
     }
-
+    this.clearErrors();
     const renderedModule = this.getRenderedModule();
     this.sendMessage({
       type: 'compile',
@@ -193,14 +203,18 @@ export default class Preview extends React.PureComponent {
       sandboxId,
       modules,
       directories,
-      manifest: bundle.manifest,
+      externals: bundle.externals,
       url: bundle.url,
       externalResources,
     });
   };
 
-  setError = (e: ?{ moduleId: string, message: string, line: number }) => {
-    this.props.setError(this.getRenderedModule().id, e);
+  addError = (e: { moduleId: string, message: string, line: number }) => {
+    this.props.addError(this.props.sandboxId, e);
+  };
+
+  clearErrors = () => {
+    this.props.clearErrors(this.props.sandboxId);
   };
 
   updateUrl = (url: string) => {
@@ -276,14 +290,9 @@ export default class Preview extends React.PureComponent {
       sandboxActions,
       isInProjectView,
       setProjectView,
+      errors,
     } = this.props;
-    const {
-      historyPosition,
-      history,
-      urlInAddressBar,
-    } = this.state;
-
-    const renderedModule = this.getRenderedModule();
+    const { historyPosition, history, urlInAddressBar } = this.state;
 
     const url = urlInAddressBar || '';
 
@@ -301,11 +310,12 @@ export default class Preview extends React.PureComponent {
         />
 
         {!bundle.processing &&
-          renderedModule.error &&
+          errors &&
+          errors.length > 0 &&
           <Message
             modules={modules}
             sandboxActions={sandboxActions}
-            error={renderedModule.error}
+            error={errors[0]}
             sandboxId={sandboxId}
           />}
         {bundle.processing &&

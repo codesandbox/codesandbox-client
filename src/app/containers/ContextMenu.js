@@ -43,10 +43,9 @@ const Item = styled.div`
   }
 
   &:hover {
-    color: ${props => props.color ? props.color : theme.secondary()};
+    color: ${props => (props.color ? props.color : theme.secondary())};
     background-color: ${() => theme.background2.lighten(0.3)()};
-    border-left-color: ${props =>
-  props.color ? props.color : theme.secondary()};
+    border-left-color: ${props => (props.color ? props.color : theme.secondary())};
   }
 `;
 

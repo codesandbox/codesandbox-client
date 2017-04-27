@@ -15,8 +15,8 @@ export default styled.div`
     outline: none;
     border: none;
     border-radius: 2px;
-    background-color: ${props => props.errorMessage ? props.theme.redBackground.clearer(0.5) : 'rgba(0, 0, 0, 0.2)'};
-    color: ${props => props.errorMessage ? props.theme.red : props.theme.white};
+    background-color: ${props => (props.errorMessage ? props.theme.redBackground.clearer(0.5) : 'rgba(0, 0, 0, 0.2)')};
+    color: ${props => (props.errorMessage ? props.theme.red : props.theme.white)};
 
     &:focus {
       border: none;
