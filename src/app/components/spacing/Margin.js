@@ -1,5 +1,6 @@
 import styled from 'styled-components';
+import getSpacing from './get-spacing';
 
 export default styled.div`
-  margin: ${({ margin = 1 }) => margin}rem;
+  margin: ${getSpacing};
 `;
