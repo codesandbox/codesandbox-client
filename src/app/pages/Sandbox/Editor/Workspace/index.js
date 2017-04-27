@@ -56,6 +56,8 @@ const Workspace = ({ sandbox, preventTransition, sandboxActions }: Props) => (
         description={sandbox.description}
         forkedSandbox={sandbox.forkedFromSandbox}
         preventTransition={preventTransition}
+        owned={sandbox.owned}
+        deleteSandbox={sandboxActions.deleteSandbox}
       />
     </WorkspaceItem>
 

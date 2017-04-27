@@ -67,6 +67,7 @@ export function doRequest(
       dispatch({
         type: actions.SUCCESS,
         data,
+        meta: body ? body.body : null,
       });
 
       return data;
@@ -74,6 +75,7 @@ export function doRequest(
       dispatch({
         type: actions.FAILURE,
         error,
+        meta: body ? body.body : null,
       });
 
       dispatch(showError(error));
