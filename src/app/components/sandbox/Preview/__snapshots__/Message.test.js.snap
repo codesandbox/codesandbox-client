@@ -58,7 +58,7 @@ exports[`Message it renders a dependency not found error 1`] = `
         }
       >
         <button
-          className="eDPTas"
+          className="jVnpLw"
           onClick={[Function]}
         >
           ADD DEPENDENCY TO PROJECT
@@ -124,7 +124,7 @@ exports[`Message it renders a warning 1`] = `
         }
       >
         <button
-          className="eDPTas"
+          className="jVnpLw"
           onClick={[Function]}
         >
           OPEN MODULE
