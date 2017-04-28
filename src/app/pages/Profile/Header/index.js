@@ -37,7 +37,7 @@ export default class Header extends React.PureComponent {
           <FullWidthPadding horizontal={2} vertical={1.5}>
             <Location title="Profile Page" user={user} />
 
-            <FullWidthMargin top={3} bottom={1}>
+            <FullWidthMargin top={3} bottom={-5}>
               <UserInfo user={user} />
             </FullWidthMargin>
           </FullWidthPadding>

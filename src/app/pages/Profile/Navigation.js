@@ -9,12 +9,15 @@ const NavigationLink = styled(Link)`
 
   display: block;
   color: white;
-  margin: 1.5rem 4rem;
+  padding: 0rem 4rem;
+  margin: 1.5rem 0;
   font-size: 1.25rem;
   font-weight: 300;
   text-shadow: 0px 2px 3px rgba(0, 0, 0, 0.3);
   color: ${props => (props.active ? 'white' : 'rgba(255, 255, 255, 0.5)')};
   text-decoration: none;
+
+  ${({ border }) => border && `border-right: 1px solid rgba(255, 255, 255, 0.2)`};
 
   ${delayEffect(0.2)}
 
@@ -29,8 +32,7 @@ const CenteredRow = styled(Row)`
 
 export default () => (
   <CenteredRow alignItems="center" justifyContent="center">
-    <NavigationLink to="/u/CompuIves/timeline">TIMELINE</NavigationLink>
-    <NavigationLink to="/u/CompuIves" active>SHOWCASE</NavigationLink>
+    <NavigationLink to="/u/CompuIves" active border>SHOWCASE</NavigationLink>
     <NavigationLink to="/u/CompuIves/sandboxes">SANDBOXES</NavigationLink>
   </CenteredRow>
 );

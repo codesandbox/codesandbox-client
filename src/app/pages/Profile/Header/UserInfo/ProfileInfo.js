@@ -2,13 +2,14 @@ import React from 'react';
 import styled from 'styled-components';
 import Row from 'app/components/flex/Row';
 import Column from 'app/components/flex/Column';
-import DelayedAnimation from 'app/components/animation/DelayedAnimation';
-import Button from 'app/components/buttons/Button';
 import delayEffect from '../../../../utils/animation/delay-effect';
+import Margin from '../../../../components/spacing/Margin';
 
 const ProfileImage = styled.img`
-  border-radius: 4px;
+  border-radius: 2px;
   margin-right: 1.5rem;
+
+  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.5);
 
   ${delayEffect(0.05)};
 `;
@@ -37,18 +38,12 @@ type Props = {
 
 export default ({ username, name, avatarUrl }: Props) => (
   <Row>
-    <ProfileImage alt={username} height={160} width={160} src={avatarUrl} />
-    <Column justifyContent="space-between">
-      <Name>{name}</Name>
-      <Username>{username}</Username>
-
-      <Row>
-        <DelayedAnimation delay={0.3}>
-          <Button>
-            Follow
-          </Button>
-        </DelayedAnimation>
-      </Row>
-    </Column>
+    <ProfileImage alt={username} height={175} width={175} src={avatarUrl} />
+    <Margin bottom={3}>
+      <Column justifyContent="space-between">
+        <Name>{name}</Name>
+        <Username>{username}</Username>
+      </Column>
+    </Margin>
   </Row>
 );

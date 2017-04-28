@@ -17,13 +17,11 @@ const Container = styled(Fullscreen)`
 
   display: flex;
   flex-direction: column;
+  background-image: linear-gradient(-180deg, #282D2F 0%, #1D1F20 99%);
 `;
 
 const Content = styled(Fullscreen)`
   border-top: 1px solid ${props => props.theme.background3};
-  border-bottom: 1px solid ${props => props.theme.background3};
-  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.5);
-  background-color: #272C2E;
 `;
 
 export default class Profile extends React.PureComponent {
@@ -40,7 +38,7 @@ export default class Profile extends React.PureComponent {
             <Navigation />
           </MaxWidth>
         </Content>
-        <MaxWidth>
+        <MaxWidth width={1024}>
           <Margin horizontal={2}>
             <Showcase title="Redux Form - Simple Example" />
           </Margin>
