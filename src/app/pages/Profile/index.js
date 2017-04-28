@@ -6,6 +6,7 @@ import MaxWidth from './MaxWidth';
 import Header from './Header';
 import Navigation from './Navigation';
 import Showcase from './Showcase';
+import Margin from '../../components/spacing/Margin';
 
 type Props = {
   username: string,
@@ -29,6 +30,8 @@ export default class Profile extends React.PureComponent {
   props: Props;
 
   render() {
+    document.title = 'Ives van Hoorne - CodeSandbox';
+
     return (
       <Container>
         <Header />
@@ -38,7 +41,9 @@ export default class Profile extends React.PureComponent {
           </MaxWidth>
         </Content>
         <MaxWidth>
-          <Showcase title="React Router" />
+          <Margin horizontal={2}>
+            <Showcase title="Redux Form - Simple Example" />
+          </Margin>
         </MaxWidth>
       </Container>
     );

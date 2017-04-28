@@ -41,7 +41,9 @@ export default class Location extends React.PureComponent {
     return (
       <Row justifyContent="space-between">
         <Row>
-          <LogoWithBorder height={42} width={42} />
+          <a href="/">
+            <LogoWithBorder height={42} width={42} />
+          </a>
           <Border width={1} size={500} />
           <Title>{title}</Title>
         </Row>
