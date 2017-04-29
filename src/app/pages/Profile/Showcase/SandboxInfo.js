@@ -56,6 +56,8 @@ const PlayButtonContainer = styled.div`
   right: 0;
 
   cursor: pointer;
+
+  ${delayEffect(0.5)}
 `;
 
 const Stat = styled.div`
@@ -79,6 +81,7 @@ const Number = styled.div`
 
 const Property = styled.div`
   font-weight: 400;
+  font-size: .875rem;
   color: rgba(255, 255, 255, 0.5);
   text-transform: uppercase;
   margin-bottom: 0.4rem;
