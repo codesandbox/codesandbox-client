@@ -7,8 +7,7 @@ import logError from '../../../../utils/error';
 
 const debug = _debug('cs:app:packager');
 
-export const PACKAGER_URL = 'https://cdn.jsdelivr.net/webpack/v1';
-export const PACKAGER_V2_URL = 'https://cdn.jsdelivr.net/webpack/v2';
+export const PACKAGER_URL = 'https://cdn.jsdelivr.net/webpack/v2';
 
 /**
  * Request the packager, if retries > 4 it will throw if something goes wrong
@@ -18,9 +17,6 @@ export const PACKAGER_V2_URL = 'https://cdn.jsdelivr.net/webpack/v2';
  */
 async function requestPackager(query: string) {
   let retries = 0;
-
-  // Request packager v2 for cache warmup
-  callApi(`${PACKAGER_V2_URL}/${query}/manifest.json`);
 
   while (true) {
     debug(`Trying to call packager for ${retries} time`);
