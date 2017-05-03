@@ -45,6 +45,8 @@ export type Sandbox = {
   title: ?string,
   description: string,
   viewCount: number,
+  likeCount: number,
+  userLiked: boolean,
   modules: Array<string>,
   currentModule: ?string,
   directories: Array<string>,

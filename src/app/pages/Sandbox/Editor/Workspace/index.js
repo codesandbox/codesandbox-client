@@ -53,6 +53,8 @@ const Workspace = ({ sandbox, preventTransition, sandboxActions }: Props) => (
         id={sandbox.id}
         title={sandbox.title}
         viewCount={sandbox.viewCount}
+        likeCount={sandbox.likeCount}
+        userLiked={sandbox.userLiked}
         description={sandbox.description}
         forkedSandbox={sandbox.forkedFromSandbox}
         preventTransition={preventTransition}

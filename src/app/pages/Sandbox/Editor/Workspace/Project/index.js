@@ -37,6 +37,8 @@ type Props = {
   deleteSandbox: (id: string) => any,
   preventTransition: boolean,
   owned: boolean,
+  likeCount: number,
+  userLiked: boolean,
 };
 
 export default class Project extends React.PureComponent {
@@ -93,7 +95,14 @@ export default class Project extends React.PureComponent {
   };
 
   render() {
-    const { forkedSandbox, viewCount, owned, preventTransition } = this.props;
+    const {
+      forkedSandbox,
+      viewCount,
+      likeCount,
+      userLiked,
+      owned,
+      preventTransition,
+    } = this.props;
     const { title, description } = this.state;
     return (
       <div>
@@ -133,6 +142,12 @@ export default class Project extends React.PureComponent {
             </Item>
           </div>}
         <WorkspaceSubtitle>Statistics</WorkspaceSubtitle>
+        <ViewCountContainer>
+          <ViewCount>{likeCount}{' '}</ViewCount>
+          <ViewCountDescription>
+            {likeCount === 1 ? ' like' : ' likes'}
+          </ViewCountDescription>
+        </ViewCountContainer>
         <ViewCountContainer>
           <ViewCount>{viewCount}{' '}</ViewCount>
           <ViewCountDescription>
