@@ -60,12 +60,12 @@ async function compile(message) {
   if (url == null || url !== newUrl) {
     fetching = true;
     url = newUrl;
+    handleExternalResources(externalResources);
     await addDependencyBundle();
     fetching = false;
     window.parent.postMessage('Ready!', host);
     return;
   }
-  handleExternalResources(externalResources);
 
   try {
     const html = getIndexHtml(modules);

@@ -27,6 +27,7 @@ function addCSS(resource: string) {
 function addJS(resource: string) {
   const script = document.createElement('script');
   script.setAttribute('src', resource);
+  script.setAttribute('async', false);
   script.setAttribute('id', 'external-js');
   document.head.appendChild(script);
 }
