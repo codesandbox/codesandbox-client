@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
+import Navigation from 'app/containers/Navigation';
 import Padding from 'app/components/spacing/Padding';
 import Margin from 'app/components/spacing/Margin';
 
-import Location from './Location';
 import UserInfo from './UserInfo';
 import MaxWidth from '../MaxWidth';
 
@@ -35,7 +35,7 @@ export default class Header extends React.PureComponent {
       <Top>
         <MaxWidth>
           <FullWidthPadding horizontal={2} vertical={1.5}>
-            <Location title="Profile Page" user={user} />
+            <Navigation title="Profile Page" />
 
             <FullWidthMargin top={3} bottom={-5}>
               <UserInfo user={user} />

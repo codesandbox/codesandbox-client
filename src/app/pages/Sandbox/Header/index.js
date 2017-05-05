@@ -11,6 +11,7 @@ import ChevronLeft from 'react-icons/lib/go/chevron-left';
 import type { Sandbox, CurrentUser } from 'common/types';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 import userActionCreators from 'app/store/user/actions';
+import { newSandboxUrl } from 'app/utils/url-generator';
 
 import ModeIcons from 'app/components/sandbox/ModeIcons';
 
@@ -18,7 +19,6 @@ import Action from './Action';
 import UserView from './User';
 import FeedbackView from './FeedbackView';
 import ShareView from './ShareView';
-import { newSandboxUrl } from '../../../../../utils/url-generator';
 
 const Container = styled.div`
   display: flex;

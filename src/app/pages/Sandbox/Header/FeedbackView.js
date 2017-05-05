@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import FeedbackIcon from 'react-icons/lib/go/comment-discussion';
+import Button from 'app/components/buttons/Button';
 
 import HoverMenu from './HoverMenu';
 import Action from './Action';
-import Button from '../../../../../components/buttons/Button';
 
 const Container = styled.div`
   position: relative;

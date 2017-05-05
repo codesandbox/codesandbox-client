@@ -3,6 +3,7 @@ import React from 'react';
 import styled from 'styled-components';
 import ConfirmLink from 'app/components/ConfirmLink';
 import LinkButton from 'app/components/buttons/LinkButton';
+import type { User } from 'common/types';
 import WorkspaceSubtitle from '../WorkspaceSubtitle';
 import WorkspaceInputContainer from '../WorkspaceInputContainer';
 import { sandboxUrl } from '../../../../../utils/url-generator';
@@ -39,6 +40,7 @@ type Props = {
   owned: boolean,
   likeCount: number,
   userLiked: boolean,
+  author: ?User,
 };
 
 export default class Project extends React.PureComponent {
@@ -100,6 +102,7 @@ export default class Project extends React.PureComponent {
       viewCount,
       likeCount,
       userLiked,
+      author,
       owned,
       preventTransition,
     } = this.props;
@@ -139,6 +142,20 @@ export default class Project extends React.PureComponent {
               >
                 {forkedSandbox.title || forkedSandbox.id}
               </ConfirmLink>
+            </Item>
+          </div>}
+        {author &&
+          <div>
+            <WorkspaceSubtitle>Author</WorkspaceSubtitle>
+
+            <Item>
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href={`https://github.com/${author.username}`}
+              >
+                {author.username}
+              </a>
             </Item>
           </div>}
         <WorkspaceSubtitle>Statistics</WorkspaceSubtitle>

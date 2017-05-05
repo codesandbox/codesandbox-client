@@ -31,8 +31,6 @@ import SplitPane from 'react-split-pane';
 import CodeEditor from 'app/components/sandbox/CodeEditor';
 import Preview from 'app/components/sandbox/Preview';
 
-import Header from './Header';
-
 type Props = {
   workspaceHidden: boolean,
   toggleWorkspace: () => void,
@@ -181,15 +179,6 @@ class EditorPreview extends React.PureComponent {
           when={notSynced}
           message={() =>
             'You have not saved this sandbox, are you sure you want to navigate away?'}
-        />
-        <Header
-          sandbox={sandbox}
-          sandboxActions={sandboxActions}
-          userActions={userActions}
-          user={user}
-          workspaceHidden={workspaceHidden}
-          toggleWorkspace={toggleWorkspace}
-          canSave={notSynced}
         />
         <SplitPane
           onDragStarted={this.startResizing}

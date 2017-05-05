@@ -43,10 +43,6 @@ const mapStateToProps = createSelector(
 );
 const Workspace = ({ sandbox, preventTransition, sandboxActions }: Props) => (
   <Container>
-    <SandboxDetails
-      sandbox={sandbox}
-      updateSandboxInfo={sandboxActions.updateSandboxInfo}
-    />
     <WorkspaceItem defaultOpen title="Project">
       <Project
         updateSandboxInfo={sandboxActions.updateSandboxInfo}
@@ -59,6 +55,7 @@ const Workspace = ({ sandbox, preventTransition, sandboxActions }: Props) => (
         forkedSandbox={sandbox.forkedFromSandbox}
         preventTransition={preventTransition}
         owned={sandbox.owned}
+        author={sandbox.author}
         deleteSandbox={sandboxActions.deleteSandbox}
       />
     </WorkspaceItem>

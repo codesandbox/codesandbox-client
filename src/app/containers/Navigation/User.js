@@ -15,6 +15,7 @@ const ProfileInfo = styled.div`
 
 const Name = styled.div`
   padding-bottom: 0.2rem;
+  color: white;
 `;
 
 const Username = styled.div`
@@ -38,8 +39,8 @@ export default ({ user }: Props) => (
     </ProfileInfo>
     <ProfileImage
       alt={user.username}
-      width={48}
-      height={48}
+      width={40}
+      height={40}
       src={user.avatarUrl}
     />
   </Row>
