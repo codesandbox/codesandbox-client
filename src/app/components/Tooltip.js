@@ -136,6 +136,7 @@ export default ({
   right,
   bottom,
   top,
+  ...props
 }: Props) => (
   <Tooltip
     className={className}
@@ -144,6 +145,7 @@ export default ({
     right={right}
     top={top}
     offset={offset}
+    {...props}
   >
     {children}
     <span className="tooltip">{message}</span>

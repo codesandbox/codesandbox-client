@@ -74,6 +74,8 @@ export const DELETE_EXTERNAL_RESOURCE_ACTIONS = createAPIActions(
   'SANDBOX',
   'DELETE_EXTERNAL_RESOURCE',
 );
+export const LIKE_SANDBOX_ACTIONS = createAPIActions('SANDBOX', 'LIKE');
+export const UNLIKE_SANDBOX_ACTIONS = createAPIActions('SANDBOX', 'UNLIKE');
 
 export const REMOVE_MODULE_FROM_SANDBOX = 'REMOVE_MODULE_FROM_SANDBOX';
 export const SET_SANDBOX_INFO = 'SET_SANDBOX_INFO';
@@ -705,6 +707,28 @@ export default {
 
     dispatch(notificationActions.addNotification('Deleted Sandbox', 'success'));
     dispatch(push(newSandboxUrl()));
+  },
+
+  likeSandbox: (id: string) => async (dispatch: Function) => {
+    await dispatch(
+      doRequest(LIKE_SANDBOX_ACTIONS, `sandboxes/${id}/likes`, {
+        method: 'POST',
+        body: {
+          id,
+        },
+      }),
+    );
+  },
+
+  unLikeSandbox: (id: string) => async (dispatch: Function) => {
+    await dispatch(
+      doRequest(UNLIKE_SANDBOX_ACTIONS, `sandboxes/${id}/likes`, {
+        method: 'DELETE',
+        body: {
+          id,
+        },
+      }),
+    );
   },
 
   ...errorActions,

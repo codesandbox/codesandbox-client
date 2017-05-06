@@ -7,14 +7,14 @@ import Download from 'react-icons/lib/go/cloud-download';
 import PlusIcon from 'react-icons/lib/go/plus';
 import GithubIcon from 'react-icons/lib/go/mark-github';
 import ChevronLeft from 'react-icons/lib/go/chevron-left';
+import HeartIcon from 'react-icons/lib/fa/heart-o';
+import FullHeartIcon from 'react-icons/lib/fa/heart';
 
 import type { Sandbox, CurrentUser } from 'common/types';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 import userActionCreators from 'app/store/user/actions';
 import { newSandboxUrl } from 'app/utils/url-generator';
 import ModeIcons from 'app/components/sandbox/ModeIcons';
-
-import LogoIcon from 'app/components/Logo';
 
 import Action from './Action';
 import UserView from './User';
@@ -48,20 +48,6 @@ const Left = styled.div`
   height: 100%;
 `;
 
-const Title = styled.div`
-  font-weight: 300;
-  font-size: 1rem;
-`;
-
-const Logo = styled.a`
-  position: absolute;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: center;
-  margin: auto;
-`;
-
 const Chevron = styled(ChevronLeft)`
   transition: 0.3s ease all;
   font-size: 1.5rem;
@@ -70,6 +56,7 @@ const Chevron = styled(ChevronLeft)`
   justify-content: center;
   height: 100%;
   margin-left: 0.5rem;
+  margin-right: 0.5rem;
   z-index: 20;
 
   cursor: pointer;
@@ -130,6 +117,16 @@ export default class Header extends React.PureComponent {
     sandboxActions.setViewMode(sandbox.id, false, true);
   };
 
+  toggleLike = () => {
+    const { sandbox, sandboxActions } = this.props;
+
+    if (sandbox.userLiked) {
+      sandboxActions.unLikeSandbox(sandbox.id);
+    } else {
+      sandboxActions.likeSandbox(sandbox.id);
+    }
+  };
+
   render() {
     const {
       sandbox,
@@ -147,6 +144,17 @@ export default class Header extends React.PureComponent {
             workspaceHidden={workspaceHidden}
             onClick={toggleWorkspace}
           />
+          {user && sandbox.userLiked
+            ? <Action
+                tooltip="Undo like"
+                Icon={FullHeartIcon}
+                onClick={this.toggleLike}
+              />
+            : <Action
+                tooltip="Like"
+                Icon={HeartIcon}
+                onClick={this.toggleLike}
+              />}
           <Action onClick={this.forkSandbox} title="Fork" Icon={Fork} />
           <Action
             onClick={canSave && this.massUpdateModules}

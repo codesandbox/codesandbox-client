@@ -105,7 +105,7 @@ export default ({ title }: Props) => (
           <PlayButton />
         </PlayButtonContainer>
         <Stat>
-          <Property>loves</Property>
+          <Property>likes</Property>
           <Number>10</Number>
         </Stat>
         <Stat>

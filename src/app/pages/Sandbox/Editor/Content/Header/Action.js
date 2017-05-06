@@ -11,9 +11,9 @@ const styles = props =>
   flex-direction: row;
   align-items: center;
   vertical-align: middle;
-  font-size: 1rem;
+  font-size: .875rem;
   line-height: 1;
-  padding: 0 1rem;
+  padding: 0 .75rem;
   height: 100%;
   color: rgba(255,255,255,0.7);
   cursor: pointer;
@@ -39,7 +39,7 @@ const styles = props =>
 
 const Title = styled.span`
   padding-left: 0.5rem;
-  @media (max-width: 1100px) {
+  @media (max-width: 1300px) {
     display: none;
   }
 `;
@@ -55,12 +55,14 @@ const ActionLink = styled(Link)`
 
 const ActionTooltip = styled(Tooltip)`
   ${styles}
-  color: rgba(255,255,255,0.3);
-  cursor: default;
+  ${props => !props.onClick && `
+    color: rgba(255,255,255,0.3);
+    cursor: default;
 
-  &:hover {
-    color: rgba(255,255,255, 0.4);
-  }
+    &:hover {
+      color: rgba(255,255,255, 0.4);
+    }
+  `};
 `;
 
 const IconContainer = styled.div`
@@ -70,10 +72,11 @@ const IconContainer = styled.div`
 type Props = {
   onClick: ?Function,
   Icon: React.Component<any, any>,
-  title: string,
+  title: ?string,
   href: ?string,
   placeholder: ?boolean,
   highlight: ?boolean,
+  tooltip: ?string,
 };
 
 export default ({
@@ -81,12 +84,13 @@ export default ({
   href,
   Icon,
   title,
+  tooltip,
   highlight,
   placeholder,
 }: Props) => {
-  if (placeholder) {
+  if (placeholder || tooltip) {
     return (
-      <ActionTooltip message={placeholder}>
+      <ActionTooltip message={placeholder || tooltip} onClick={onClick}>
         <IconContainer>
           <Icon />
         </IconContainer> {title && <Title>{title}</Title>}

@@ -28,11 +28,17 @@ export default class Profile extends React.PureComponent {
   props: Props;
 
   render() {
-    document.title = 'Ives van Hoorne - CodeSandbox';
+    const user = {
+      name: 'Ives van Hoorne',
+      username: 'CompuIves',
+      avatarUrl: 'https://avatars0.githubusercontent.com/u/587016?v=3',
+    };
+
+    document.title = `${user.name} - CodeSandbox`;
 
     return (
       <Container>
-        <Header />
+        <Header user={user} />
         <Content>
           <MaxWidth>
             <Navigation />

@@ -17,7 +17,6 @@ export default class Showcase extends React.PureComponent {
       <Column alignItems="inherit" style={{ marginTop: '2rem' }}>
         <div style={{ flex: 2 }}><ShowcasePreview /></div>
         <div style={{ flex: 1 }}><SandboxInfo title={title} /></div>
-
       </Column>
     );
   }

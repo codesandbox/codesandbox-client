@@ -4,6 +4,8 @@ import Navigation from 'app/containers/Navigation';
 import Padding from 'app/components/spacing/Padding';
 import Margin from 'app/components/spacing/Margin';
 
+import type { User } from 'common/types';
+
 import UserInfo from './UserInfo';
 import MaxWidth from '../MaxWidth';
 
@@ -24,13 +26,15 @@ const FullWidthMargin = styled(Margin)`
   width: 100%;
 `;
 
+type Props = {
+  user: User,
+};
+
 export default class Header extends React.PureComponent {
+  props: Props;
+
   render() {
-    const user = {
-      name: 'Ives van Hoorne',
-      username: 'CompuIves',
-      avatarUrl: 'https://avatars0.githubusercontent.com/u/587016?v=3',
-    };
+    const { user } = this.props;
     return (
       <Top>
         <MaxWidth>

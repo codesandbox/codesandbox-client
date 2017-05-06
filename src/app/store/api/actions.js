@@ -59,6 +59,7 @@ export function doRequest(
       endpoint,
       body,
       jwt,
+      meta: body ? body.body : null,
     });
 
     try {
