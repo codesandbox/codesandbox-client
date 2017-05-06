@@ -35,8 +35,13 @@ const styles = props =>
       border-color: ${props.theme.secondary()}
     }
   `}
+`;
 
-
+const Title = styled.span`
+  padding-left: 0.5rem;
+  @media (max-width: 1100px) {
+    display: none;
+  }
 `;
 
 const Action = styled.div`
@@ -59,7 +64,6 @@ const ActionTooltip = styled(Tooltip)`
 `;
 
 const IconContainer = styled.div`
-  padding-right: 0.5rem;
   vertical-align: middle;
 `;
 
@@ -85,7 +89,7 @@ export default ({
       <ActionTooltip message={placeholder}>
         <IconContainer>
           <Icon />
-        </IconContainer> {title}
+        </IconContainer> {title && <Title>{title}</Title>}
       </ActionTooltip>
     );
   }
@@ -94,7 +98,7 @@ export default ({
       <Action highlight={highlight} onClick={onClick}>
         <IconContainer>
           <Icon />
-        </IconContainer> {title}
+        </IconContainer> {title && <Title>{title}</Title>}
       </Action>
     );
   }
@@ -103,7 +107,7 @@ export default ({
     <ActionLink to={href}>
       <IconContainer>
         <Icon />
-      </IconContainer> {title}
+      </IconContainer> {title && <Title>{title}</Title>}
     </ActionLink>
   );
 };

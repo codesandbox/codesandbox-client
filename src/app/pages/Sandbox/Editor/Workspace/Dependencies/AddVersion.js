@@ -83,7 +83,7 @@ export default class AddVersion extends React.PureComponent {
             small
             onClick={this.addDependency}
           >
-            {replacing ? 'replace' : 'add'} Package
+            {replacing ? 'Replace' : 'Add'} Package
           </Button>
         </ButtonContainer>
       </div>

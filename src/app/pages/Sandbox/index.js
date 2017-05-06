@@ -5,8 +5,6 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { createSelector } from 'reselect';
-import Fork from 'react-icons/lib/go/repo-forked';
-import Download from 'react-icons/lib/go/cloud-download';
 
 import type { Sandbox } from 'common/types';
 
@@ -17,10 +15,8 @@ import { jwtSelector } from 'app/store/user/selectors';
 
 import Title from 'app/components/text/Title';
 import Centered from 'app/components/flex/Centered';
-import Navigation from 'app/containers/Navigation';
 
 import Editor from './Editor';
-import Header from './Header';
 
 type Props = {
   sandbox: ?Sandbox,
@@ -38,12 +34,6 @@ const Container = styled.div`
   display: flex;
   width: 100%;
   flex-direction: column;
-`;
-
-const NavigationContainer = styled.div`
-  padding: 0.5rem 1rem;
-  background-color: #1C2022;
-  box-shadow: inset 0 1px 13px 0 rgba(0,0,0,0.50);
 `;
 
 const mapStateToProps = createSelector(
@@ -96,7 +86,7 @@ class SandboxPage extends React.PureComponent {
   state = { notFound: false };
 
   render() {
-    const { sandbox, match } = this.props;
+    const { sandbox, sandboxActions, userActions, user, match } = this.props;
     if (this.state.notFound) {
       return (
         <Centered horizontal vertical>
@@ -115,29 +105,9 @@ class SandboxPage extends React.PureComponent {
       ? `${sandbox.title} - CodeSandbox`
       : 'Editor - CodeSandbox';
 
-    //     <Header
-    //   sandbox={sandbox}
-    //   sandboxActions={sandboxActions}
-    //   userActions={userActions}
-    //   user={user}
-    //   workspaceHidden={workspaceHidden}
-    //   toggleWorkspace={toggleWorkspace}
-    //   canSave={notSynced}
-    // />
     return (
       <Container>
-        <NavigationContainer>
-          <Navigation
-            title="Editor"
-            actions={[
-              { name: 'Fork', Icon: Fork },
-              { name: 'Download', Icon: Download },
-            ]}
-          />
-        </NavigationContainer>
-        <div style={{ position: 'relative', height: '100%' }}>
-          <Editor match={match} sandbox={sandbox} />
-        </div>
+        <Editor match={match} sandbox={sandbox} />
       </Container>
     );
   }

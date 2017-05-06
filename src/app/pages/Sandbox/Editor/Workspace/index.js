@@ -17,7 +17,7 @@ import Versions from './Versions';
 import Dependencies from './Dependencies';
 import Project from './Project';
 import WorkspaceItem from './WorkspaceItem';
-import SandboxDetails from './SandboxDetails';
+import Logo from './Logo';
 import Preferences from './Preferences';
 
 const Container = styled.div`
@@ -43,6 +43,7 @@ const mapStateToProps = createSelector(
 );
 const Workspace = ({ sandbox, preventTransition, sandboxActions }: Props) => (
   <Container>
+    <Logo />
     <WorkspaceItem defaultOpen title="Project">
       <Project
         updateSandboxInfo={sandboxActions.updateSandboxInfo}

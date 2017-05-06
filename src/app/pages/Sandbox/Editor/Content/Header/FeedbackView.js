@@ -72,7 +72,6 @@ export default class FeedbackView extends React.PureComponent {
         <HoverMenu
           HeaderComponent={Action}
           headerProps={{
-            title: 'Feedback',
             Icon: FeedbackIcon,
           }}
         >

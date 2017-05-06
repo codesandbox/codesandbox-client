@@ -38,12 +38,11 @@ const styles = props =>
 
   border-radius: 4px;
 
-
   font-size: 1.125rem;
   text-align: center;
   color: ${getColor(props)};
   font-weight: 300;
-  ${!props.disabled && `box-shadow: 0 3px 3px rgba(0, 0, 0, 0.5);`}
+  ${!props.disabled && `box-shadow: 0 3px 3px rgba(0, 0, 0, 0.5);`};
   width: ${props.block ? '100%' : 'inherit'};
 
   ${(() => {

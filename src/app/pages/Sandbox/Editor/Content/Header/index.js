@@ -12,8 +12,9 @@ import type { Sandbox, CurrentUser } from 'common/types';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 import userActionCreators from 'app/store/user/actions';
 import { newSandboxUrl } from 'app/utils/url-generator';
-
 import ModeIcons from 'app/components/sandbox/ModeIcons';
+
+import LogoIcon from 'app/components/Logo';
 
 import Action from './Action';
 import UserView from './User';
@@ -24,6 +25,7 @@ const Container = styled.div`
   display: flex;
   position: relative;
   justify-content: space-between;
+  align-items: center;
   background-color: ${props => props.theme.background2};
   font-size: 1.2rem;
   color: rgba(255, 255, 255, 0.7);
@@ -44,6 +46,20 @@ const Right = styled.div`
 const Left = styled.div`
   display: flex;
   height: 100%;
+`;
+
+const Title = styled.div`
+  font-weight: 300;
+  font-size: 1rem;
+`;
+
+const Logo = styled.a`
+  position: absolute;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  margin: auto;
 `;
 
 const Chevron = styled(ChevronLeft)`
@@ -128,8 +144,8 @@ export default class Header extends React.PureComponent {
       <Container>
         <Left>
           <Chevron
-            onClick={toggleWorkspace}
             workspaceHidden={workspaceHidden}
+            onClick={toggleWorkspace}
           />
           <Action onClick={this.forkSandbox} title="Fork" Icon={Fork} />
           <Action
@@ -143,6 +159,7 @@ export default class Header extends React.PureComponent {
         </Left>
 
         <ModeIcons
+          small
           showEditor={sandbox.showEditor}
           showPreview={sandbox.showPreview}
           setMixedView={this.setMixedView}
@@ -155,7 +172,7 @@ export default class Header extends React.PureComponent {
             email={user.email}
             sendMessage={userActions.sendFeedback}
           />
-          <Action href={newSandboxUrl()} title="New" Icon={PlusIcon} />
+          <Action href={newSandboxUrl()} Icon={PlusIcon} />
           {user.jwt
             ? <UserView
                 signOut={userActions.signOut}
