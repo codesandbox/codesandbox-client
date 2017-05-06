@@ -21,7 +21,7 @@ const Split = styled.div`
   width: ${props => (props.show ? '50%' : '0px')};
   max-width: ${props => (props.only ? '100%' : '50%')};
   min-width: ${props => (props.only ? '100%' : '50%')};
-  height: ${props => (props.editor ? 'calc(100% + 3rem)' : '100%')};
+  height: calc(100% + 3rem);
 `;
 
 type Props = {
@@ -77,7 +77,7 @@ export default class Content extends React.Component {
     return (
       <Container>
         {showEditor &&
-          <Split editor show={showEditor} only={showEditor && !showPreview}>
+          <Split show={showEditor} only={showEditor && !showPreview}>
             <CodeEditor
               code={mainModule.code}
               id={mainModule.id}
