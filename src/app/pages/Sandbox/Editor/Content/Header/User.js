@@ -1,9 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import type { User } from 'app/store/user/reducer';
-import Tooltip from 'app/components/Tooltip';
-
+import { Link } from 'react-router-dom';
 import DownIcon from 'react-icons/lib/go/chevron-down';
+
+import type { User } from 'common/types';
+import { profileUrl } from 'app/utils/url-generator';
+
 import UserSandboxes from './UserSandboxes';
 
 const Container = styled.div`
@@ -52,19 +54,29 @@ const Menu = styled.div`
   border-radius: 2px;
 `;
 
-const Item = styled.div`
+const itemStyles = props => `
+  display: block;
   transition: 0.3s ease all;
   padding: 0 1rem;
-  cursor: ${props => (props.disabled ? 'default' : 'pointer')};
+  cursor: pointer;
   overflow: hidden;
   border-left: 2px solid transparent;
-  ${props => props.disabled && 'color: rgba(255, 255, 255, 0.3);'}
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
 
   &:hover {
-    color: ${props => (props.disabled ? 'inherit' : props.theme.secondary)};
-    border-color: ${props => props.theme.secondary};
+    color: ${props.theme.secondary()};
+    border-color: ${props.theme.secondary()};
     background-color: rgba(255, 255, 255, 0.1);
   }
+`;
+
+const ItemDiv = styled.div`
+  ${itemStyles}
+`;
+
+const ItemLink = styled(Link)`
+  ${itemStyles}
 `;
 
 const Sandboxes = styled.div`
@@ -84,6 +96,7 @@ type Props = {
 
 type State = {
   open: boolean,
+  sandboxesOpen: boolean,
 };
 
 export default class UserView extends React.PureComponent {
@@ -95,7 +108,7 @@ export default class UserView extends React.PureComponent {
   };
 
   toggleMenu = () =>
-    (this.state.open ? this.closeMenu() : this.setState({ open: true }));
+    this.state.open ? this.closeMenu() : this.setState({ open: true });
   closeMenu = () => this.setState({ open: false, sandboxesOpen: false });
 
   toggleSandboxesMenu = () => {
@@ -106,7 +119,7 @@ export default class UserView extends React.PureComponent {
     const { user, loadUserSandboxes } = this.props;
     return (
       <div style={{ position: 'relative' }}>
-        <Item onClick={this.toggleSandboxesMenu}>My sandboxes</Item>
+        <ItemDiv onClick={this.toggleSandboxesMenu}>My sandboxes</ItemDiv>
         {this.state.sandboxesOpen &&
           <Sandboxes>
             <UserSandboxes user={user} loadUserSandboxes={loadUserSandboxes} />
@@ -142,21 +155,20 @@ export default class UserView extends React.PureComponent {
     }
   };
 
-  menuView = () => (
+  menuView = user => (
     <Menu>
-      <Tooltip offset={-20} left message="Coming soon">
-        <Item disabled>Profile</Item>
-      </Tooltip>
+      <ItemLink to={profileUrl(user.username)}>My Profile</ItemLink>
       {this.sandboxesMenu()}
-      <Item onClick={this.signOut}>Sign out</Item>
+      <ItemDiv onClick={this.signOut}>Sign out</ItemDiv>
     </Menu>
   );
 
   render() {
+    const { user } = this.props;
     return (
       <Container>
         {this.profileView()}
-        {this.state.open && this.menuView()}
+        {this.state.open && this.menuView(user)}
       </Container>
     );
   }

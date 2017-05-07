@@ -8,6 +8,7 @@ import _debug from '../../utils/debug';
 import sandboxReducer from './sandboxes/reducer';
 import moduleReducer from './sandboxes/modules/reducer';
 import directoryReducer from './sandboxes/directories/reducer';
+import userReducer from './users/reducer';
 
 const d = _debug('cw:app:store:reducers:entities');
 
@@ -15,6 +16,7 @@ const entityReducers = {
   sandboxes: sandboxReducer,
   modules: moduleReducer,
   directories: directoryReducer,
+  users: userReducer,
 };
 
 /**

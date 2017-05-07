@@ -1,9 +1,10 @@
 // @flow
 import React from 'react';
 import styled from 'styled-components';
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Loadable from 'react-loadable';
-import { Route, Switch, Redirect } from 'react-router-dom';
+import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import { createSelector } from 'reselect';
 
 import _debug from 'app/utils/debug';
@@ -12,7 +13,6 @@ import ContextMenu from 'app/containers/ContextMenu';
 import Loading from 'app/components/Loading';
 import { jwtSelector } from 'app/store/user/selectors';
 import userActionCreators from 'app/store/user/actions';
-import { bindActionCreators } from 'redux';
 
 const routeDebugger = _debug('cs:app:router');
 
@@ -33,12 +33,12 @@ const SignIn = Loadable({
   loader: () => import('./SignIn'),
   LoadingComponent: Loading,
 });
-const Sandbox = Loadable({
-  loader: () => import('./Sandbox'),
-  LoadingComponent: Loading,
-});
 const NotFound = Loadable({
   loader: () => import('./NotFound'),
+  LoadingComponent: Loading,
+});
+const Sandbox = Loadable({
+  loader: () => import('./Sandbox'),
   LoadingComponent: Loading,
 });
 const Profile = Loadable({
@@ -51,9 +51,9 @@ type Props = {
   userActions: typeof userActionCreators,
 };
 
-const mapStateToProps = createSelector(jwtSelector, jwt => {
-  return { hasLogin: !!jwt };
-});
+const mapStateToProps = createSelector(jwtSelector, jwt => ({
+  hasLogin: !!jwt,
+}));
 const mapDispatchToProps = dispatch => ({
   userActions: bindActionCreators(userActionCreators, dispatch),
 });
@@ -98,4 +98,4 @@ class Routes extends React.PureComponent {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Routes);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Routes));

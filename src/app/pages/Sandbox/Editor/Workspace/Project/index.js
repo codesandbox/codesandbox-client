@@ -1,12 +1,13 @@
 // @flow
 import React from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 import ConfirmLink from 'app/components/ConfirmLink';
 import LinkButton from 'app/components/buttons/LinkButton';
 import type { User } from 'common/types';
 import WorkspaceSubtitle from '../WorkspaceSubtitle';
 import WorkspaceInputContainer from '../WorkspaceInputContainer';
-import { sandboxUrl } from '../../../../../utils/url-generator';
+import { sandboxUrl, profileUrl } from '../../../../../utils/url-generator';
 
 const Item = styled.div`
   margin: 1rem;
@@ -33,13 +34,13 @@ type Props = {
   title: string,
   description: string,
   viewCount: number,
+  likeCount: number,
+  forkCount: number,
   forkedSandbox: ?{ title: string, id: string },
   updateSandboxInfo: (id: string, title: string, description: string) => any,
   deleteSandbox: (id: string) => any,
   preventTransition: boolean,
   owned: boolean,
-  likeCount: number,
-  userLiked: boolean,
   author: ?User,
 };
 
@@ -101,7 +102,7 @@ export default class Project extends React.PureComponent {
       forkedSandbox,
       viewCount,
       likeCount,
-      userLiked,
+      forkCount,
       author,
       owned,
       preventTransition,
@@ -149,13 +150,9 @@ export default class Project extends React.PureComponent {
             <WorkspaceSubtitle>Author</WorkspaceSubtitle>
 
             <Item>
-              <a
-                target="_blank"
-                rel="noopener noreferrer"
-                href={`https://github.com/${author.username}`}
-              >
+              <Link to={profileUrl(author.username)}>
                 {author.username}
-              </a>
+              </Link>
             </Item>
           </div>}
         <WorkspaceSubtitle>Statistics</WorkspaceSubtitle>
@@ -163,6 +160,12 @@ export default class Project extends React.PureComponent {
           <ViewCount>{likeCount}{' '}</ViewCount>
           <ViewCountDescription>
             {likeCount === 1 ? ' like' : ' likes'}
+          </ViewCountDescription>
+        </ViewCountContainer>
+        <ViewCountContainer>
+          <ViewCount>{forkCount}{' '}</ViewCount>
+          <ViewCountDescription>
+            {forkCount === 1 ? ' fork' : ' forks'}
           </ViewCountDescription>
         </ViewCountContainer>
         <ViewCountContainer>

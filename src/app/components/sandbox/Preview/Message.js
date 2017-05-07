@@ -18,12 +18,14 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   padding: 0.5rem;
+  box-sizing: border-box;
+  position: absolute;
   background-color: ${({ color }) => {
-  if (color === 'error') {
-    return theme.redBackground;
-  }
-  return theme.primary;
-}}
+                      if (color === 'error') {
+                        return theme.redBackground;
+                      }
+                      return theme.primary;
+                    }}
   color: ${() => theme.red};
   height: 100%;
   width: 100%;
@@ -79,7 +81,7 @@ class Message extends React.PureComponent {
   };
 
   getMessage = () => {
-    const { error, modules } = this.props;
+    const { error, modules, sandboxActions } = this.props;
 
     const module = modules.find(m => m.id === error.moduleId) || {};
     if (error.type === 'dependency-not-found') {
@@ -93,14 +95,15 @@ class Message extends React.PureComponent {
             <b>{"'"}{error.payload.dependency}{"'"}</b>
             ?
           </div>
-          <div style={{ marginTop: '1rem' }}>
-            <Button
-              onClick={this.addDependency(error.payload.dependency)}
-              small
-            >
-              ADD DEPENDENCY TO PROJECT
-            </Button>
-          </div>
+          {sandboxActions &&
+            <div style={{ marginTop: '1rem' }}>
+              <Button
+                onClick={this.addDependency(error.payload.dependency)}
+                small
+              >
+                ADD DEPENDENCY TO PROJECT
+              </Button>
+            </div>}
         </div>
       );
     } else if (error.type === 'no-dom-change') {
@@ -129,6 +132,7 @@ class Message extends React.PureComponent {
         <div style={{ marginTop: '1rem' }}>{error.title}: {error.message}</div>
 
         {module &&
+          sandboxActions &&
           <div style={{ marginTop: '1rem' }}>
             <Button onClick={this.openModule} small>
               OPEN MODULE

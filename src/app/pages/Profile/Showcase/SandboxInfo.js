@@ -1,7 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import delayEffect from '../../../utils/animation/delay-effect';
-import Row from '../../../components/flex/Row';
+import { Link } from 'react-router-dom';
+import { sandboxUrl } from 'app/utils/url-generator';
+import delayEffect from 'app/utils/animation/delay-effect';
+import Row from 'app/components/flex/Row';
 
 import PlayButton from './PlayButton';
 
@@ -21,8 +23,6 @@ const Container = styled.div`
 
 const Title = styled.h1`
   font-weight: 400;
-  // background-image: linear-gradient(-45deg, #74BFF3 0%, #108EE7 100%);
-  // box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -47,7 +47,7 @@ const Stats = styled.div`
   flex: 4;
 `;
 
-const PlayButtonContainer = styled.div`
+const PlayButtonContainer = styled(Link)`
   position: absolute;
   display: flex;
   justify-content: center;
@@ -88,33 +88,45 @@ const Property = styled.div`
 `;
 
 type Props = {
+  id: string,
   title: string,
+  description: string,
+  likeCount: number,
+  viewCount: number,
+  forkCount: number,
 };
 
-export default ({ title }: Props) => (
+export default ({
+  id,
+  title,
+  description,
+  likeCount,
+  viewCount,
+  forkCount,
+}: Props) => (
   <Container>
     <Title>{title}</Title>
-    <Row>
+    <Row alignItems="flex-start">
       <div style={{ flex: 6 }}>
         <Description>
-          An example of React Router copied from https://reacttraining.com/react-router/web/guides/quick-start.
+          {description}
         </Description>
       </div>
       <Stats>
-        <PlayButtonContainer>
+        <PlayButtonContainer to={sandboxUrl({ id })}>
           <PlayButton />
         </PlayButtonContainer>
         <Stat>
           <Property>likes</Property>
-          <Number>10</Number>
+          <Number>{likeCount}</Number>
         </Stat>
         <Stat>
           <Property>views</Property>
-          <Number>10.219</Number>
+          <Number>{viewCount}</Number>
         </Stat>
         <Stat>
           <Property>forks</Property>
-          <Number>52</Number>
+          <Number>{forkCount}</Number>
         </Stat>
       </Stats>
     </Row>

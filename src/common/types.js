@@ -37,7 +37,9 @@ export type CurrentUser = {
 export type User = {
   id: string,
   username: string,
+  name: string,
   avatarUrl: ?string,
+  showcasedSandboxId: ?string,
 };
 
 export type Sandbox = {
@@ -46,6 +48,7 @@ export type Sandbox = {
   description: string,
   viewCount: number,
   likeCount: number,
+  forkCount: number,
   userLiked: boolean,
   modules: Array<string>,
   currentModule: ?string,
