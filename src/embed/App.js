@@ -47,6 +47,7 @@ type State = {
   sandbox: Sandbox,
   showEditor: boolean,
   showPreview: boolean,
+  isInProjectView: boolean,
   currentModule: ?string,
   sidebarOpen: boolean,
 };
@@ -68,6 +69,7 @@ export default class App extends React.PureComponent {
       sandbox: null,
       showEditor: !isPreviewScreen,
       showPreview: !isEditorScreen,
+      isInProjectView: !currentModule,
       currentModule,
       sidebarOpen: false,
     };
@@ -126,6 +128,9 @@ export default class App extends React.PureComponent {
 
   toggleSidebar = () => this.setState({ sidebarOpen: !this.state.sidebarOpen });
 
+  setProjectView = (sandboxId: string, isOpen: boolean) =>
+    this.setState({ isInProjectView: isOpen });
+
   content = () => {
     if (this.state.notFound) {
       return (
@@ -146,7 +151,7 @@ export default class App extends React.PureComponent {
       );
     }
 
-    const { showEditor, showPreview } = this.state;
+    const { showEditor, showPreview, isInProjectView } = this.state;
 
     return (
       <Container>
@@ -162,6 +167,8 @@ export default class App extends React.PureComponent {
         <Content
           showEditor={showEditor}
           showPreview={showPreview}
+          isInProjectView={isInProjectView}
+          setProjectView={this.setProjectView}
           sandbox={this.state.sandbox}
           currentModule={this.state.currentModule}
         />
