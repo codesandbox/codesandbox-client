@@ -237,6 +237,15 @@ export default class CodeEditor extends React.PureComponent {
         'Ctrl-.': cm => {
           if (this.server) this.server.selectName(cm);
         },
+        Tab: cm => {
+          // Indent, or place 2 spaces
+          if (cm.somethingSelected()) {
+            cm.indentSelection('add');
+          } else {
+            const spaces = Array(cm.getOption('indentUnit') + 1).join(' ');
+            cm.replaceSelection(spaces, 'end', '+input');
+          }
+        },
         ...defaultKeys,
       });
     } else {
