@@ -92,7 +92,7 @@ class Profile extends React.PureComponent {
         </Content>
         <MaxWidth width={1024}>
           <Margin horizontal={2}>
-            <Showcase id={user.showcasedSandboxId} />
+            <Showcase id={user.showcasedSandboxShortId} />
           </Margin>
         </MaxWidth>
       </Container>

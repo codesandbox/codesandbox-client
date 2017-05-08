@@ -39,7 +39,7 @@ export type User = {
   username: string,
   name: string,
   avatarUrl: ?string,
-  showcasedSandboxId: ?string,
+  showcasedSandboxShortId: ?string,
 };
 
 export type Sandbox = {
