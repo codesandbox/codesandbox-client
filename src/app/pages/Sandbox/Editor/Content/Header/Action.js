@@ -6,14 +6,13 @@ import Tooltip from 'app/components/Tooltip';
 
 const styles = props =>
   `
+  display: flex !important;
   transition: 0.3s ease all;
-  display: flex;
   flex-direction: row;
   align-items: center;
   vertical-align: middle;
   font-size: .875rem;
   line-height: 1;
-  padding: 0 .75rem;
   height: 100%;
   color: rgba(255,255,255,0.7);
   cursor: pointer;
@@ -55,7 +54,7 @@ const ActionLink = styled(Link)`
 
 const ActionTooltip = styled(Tooltip)`
   ${styles}
-  ${props => !props.onClick && `
+  ${props => props.disabledAction && `
     color: rgba(255,255,255,0.3);
     cursor: default;
 
@@ -66,7 +65,10 @@ const ActionTooltip = styled(Tooltip)`
 `;
 
 const IconContainer = styled.div`
-  vertical-align: middle;
+  display: flex;
+  alignItems: center;
+  height: 100%;
+  padding: 0 .75rem;;
 `;
 
 type Props = {
@@ -90,19 +92,25 @@ export default ({
 }: Props) => {
   if (placeholder || tooltip) {
     return (
-      <ActionTooltip message={placeholder || tooltip} onClick={onClick}>
-        <IconContainer>
+      <ActionTooltip
+        disabledAction={!onClick}
+        title={placeholder || tooltip}
+        hideOnClick={false}
+      >
+        <IconContainer onClick={onClick}>
           <Icon />
-        </IconContainer> {title && <Title>{title}</Title>}
+          {title && <Title>{title}</Title>}
+        </IconContainer>
       </ActionTooltip>
     );
   }
   if (onClick) {
     return (
-      <Action highlight={highlight} onClick={onClick}>
-        <IconContainer>
+      <Action disabledAction={!onClick} highlight={highlight}>
+        <IconContainer onClick={onClick}>
           <Icon />
-        </IconContainer> {title && <Title>{title}</Title>}
+          {title && <Title>{title}</Title>}
+        </IconContainer>
       </Action>
     );
   }
@@ -111,7 +119,8 @@ export default ({
     <ActionLink to={href}>
       <IconContainer>
         <Icon />
-      </IconContainer> {title && <Title>{title}</Title>}
+        {title && <Title>{title}</Title>}
+      </IconContainer>
     </ActionLink>
   );
 };

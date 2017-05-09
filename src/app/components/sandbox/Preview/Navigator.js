@@ -85,8 +85,8 @@ export default ({
     {toggleProjectView &&
       <SwitchContainer>
         <Tooltip
-          message={isProjectView ? `Project View` : 'Current module view'}
-          left
+          title={isProjectView ? 'Project View' : 'Current Module View'}
+          position="left"
         >
           <Switch right={isProjectView} onClick={toggleProjectView} />
         </Tooltip>

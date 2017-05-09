@@ -9,13 +9,13 @@ import GithubIcon from 'react-icons/lib/go/mark-github';
 import ChevronLeft from 'react-icons/lib/md/chevron-left';
 import HeartIcon from 'react-icons/lib/fa/heart-o';
 import FullHeartIcon from 'react-icons/lib/fa/heart';
+import { Tooltip } from 'react-tippy';
 
 import type { Sandbox, CurrentUser } from 'common/types';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 import userActionCreators from 'app/store/user/actions';
 import { newSandboxUrl } from 'app/utils/url-generator';
 import ModeIcons from 'app/components/sandbox/ModeIcons';
-import Tooltip from 'app/components/Tooltip';
 
 import Action from './Action';
 import UserView from './User';
@@ -140,11 +140,23 @@ export default class Header extends React.PureComponent {
 
     return (
       <Container>
+        <ModeIcons
+          small
+          showEditor={sandbox.showEditor}
+          showPreview={sandbox.showPreview}
+          setMixedView={this.setMixedView}
+          setEditorView={this.setEditorView}
+          setPreviewView={this.setPreviewView}
+        />
         <Left>
-          <Chevron
-            workspaceHidden={workspaceHidden}
-            onClick={toggleWorkspace}
-          />
+          <Tooltip
+            title={workspaceHidden ? 'Open sidebar' : 'Collapse sidebar'}
+          >
+            <Chevron
+              workspaceHidden={workspaceHidden}
+              onClick={toggleWorkspace}
+            />
+          </Tooltip>
           {user && sandbox.userLiked
             ? <Action
                 tooltip="Undo like"
@@ -166,15 +178,6 @@ export default class Header extends React.PureComponent {
           <Action title="Download" Icon={Download} onClick={this.zipSandbox} />
           <ShareView sandbox={sandbox} />
         </Left>
-
-        <ModeIcons
-          small
-          showEditor={sandbox.showEditor}
-          showPreview={sandbox.showPreview}
-          setMixedView={this.setMixedView}
-          setEditorView={this.setEditorView}
-          setPreviewView={this.setPreviewView}
-        />
 
         <Right>
           <FeedbackView

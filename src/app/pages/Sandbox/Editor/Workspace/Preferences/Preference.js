@@ -17,7 +17,6 @@ type Props = {
   enabled: boolean,
   onClick: (on: boolean) => void,
   tooltip: ?string,
-  offset: ?number,
 };
 
 export default class Preference extends React.Component {
@@ -29,10 +28,10 @@ export default class Preference extends React.Component {
   };
 
   render() {
-    const { title, enabled, tooltip, offset } = this.props;
+    const { title, enabled, tooltip } = this.props;
 
     const Title = tooltip
-      ? <Tooltip right message={tooltip} offset={offset || 50}>{title}</Tooltip>
+      ? <Tooltip position="right" title={tooltip}>{title}</Tooltip>
       : <span>{title}</span>;
 
     return (

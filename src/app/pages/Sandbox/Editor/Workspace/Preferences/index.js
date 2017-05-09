@@ -42,7 +42,6 @@ const Preferences = ({ preferences, preferencesActions }: Props) => (
       <Preference
         title="Linter"
         tooltip="Made possible by eslint"
-        offset={175}
         enabled={preferences.lintEnabled}
         onClick={preferencesActions.setLintPreference}
       />
