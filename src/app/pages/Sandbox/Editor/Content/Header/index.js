@@ -6,7 +6,7 @@ import Fork from 'react-icons/lib/go/repo-forked';
 import Download from 'react-icons/lib/go/cloud-download';
 import PlusIcon from 'react-icons/lib/go/plus';
 import GithubIcon from 'react-icons/lib/go/mark-github';
-import ChevronLeft from 'react-icons/lib/go/chevron-left';
+import ChevronLeft from 'react-icons/lib/md/chevron-left';
 import HeartIcon from 'react-icons/lib/fa/heart-o';
 import FullHeartIcon from 'react-icons/lib/fa/heart';
 
@@ -15,6 +15,7 @@ import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 import userActionCreators from 'app/store/user/actions';
 import { newSandboxUrl } from 'app/utils/url-generator';
 import ModeIcons from 'app/components/sandbox/ModeIcons';
+import Tooltip from 'app/components/Tooltip';
 
 import Action from './Action';
 import UserView from './User';
