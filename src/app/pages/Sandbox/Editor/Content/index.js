@@ -13,7 +13,7 @@ import type {
   Module,
   Directory,
 } from 'common/types';
-import { userSelector } from 'app/store/user/selectors';
+import { currentUserSelector } from 'app/store/user/selectors';
 import moduleActionCreators from 'app/store/entities/sandboxes/modules/actions';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 import userActionCreators from 'app/store/user/actions';
@@ -58,7 +58,7 @@ const FullSize = styled.div`
 
 const mapStateToProps = createSelector(
   preferencesSelector,
-  userSelector,
+  currentUserSelector,
   modulesFromSandboxSelector,
   directoriesFromSandboxSelector,
   (preferences, user, modules, directories) => ({

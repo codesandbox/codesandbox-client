@@ -103,6 +103,7 @@
     "react-frame-component": "^1.0.3",
     "react-icons": "^2.2.2",
     "react-loadable": "^3.3.1",
+    "react-modal": "^1.7.7",
     "react-motion": "^0.5.0",
     "react-proxy": "2",
     "react-redux": "^5.0.4",

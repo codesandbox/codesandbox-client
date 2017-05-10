@@ -1,3 +1,5 @@
+import React from 'react';
+
 export type ModuleError = {
   message: string,
   line: number,
@@ -91,4 +93,10 @@ export type Notification = {
   type: 'notice' | 'success' | 'warning' | 'error',
   number: Date,
   buttons: ?Array<NotificationButton>,
+};
+
+export type Modal = {
+  open: boolean,
+  title: ?string,
+  Body: ?React.Element<*>,
 };

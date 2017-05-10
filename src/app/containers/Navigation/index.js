@@ -8,7 +8,7 @@ import type { CurrentUser } from 'common/types';
 import Button from 'app/components/buttons/Button';
 import Logo from 'app/components/Logo';
 import Row from 'app/components/flex/Row';
-import { userSelector, jwtSelector } from 'app/store/user/selectors';
+import { currentUserSelector, jwtSelector } from 'app/store/user/selectors';
 import userActionCreators from 'app/store/user/actions';
 
 import User from './User';
@@ -66,7 +66,7 @@ type Props = {
 };
 
 const mapStateToProps = state => ({
-  user: userSelector(state),
+  user: currentUserSelector(state),
   hasLogin: !!jwtSelector(state),
 });
 const mapDispatchToProps = dispatch => ({

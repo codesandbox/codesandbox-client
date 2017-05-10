@@ -6,6 +6,7 @@ import { createSelector } from 'reselect';
 import styled from 'styled-components';
 import Fullscreen from 'app/components/flex/Fullscreen';
 import userActionCreators from 'app/store/entities/users/actions';
+import { currentUserSelector } from 'app/store/user/selectors';
 import type { User } from 'common/types';
 
 import MaxWidth from './MaxWidth';
@@ -20,6 +21,7 @@ type Props = {
   userActions: typeof userActionCreators,
   match: { params: { username: string } },
   user: User,
+  isCurrentUser: boolean,
 };
 
 const Container = styled(Fullscreen)`
@@ -38,13 +40,17 @@ const Content = styled(Fullscreen)`
 const mapStateToProps = createSelector(
   usersSelector,
   (_, props) => props.match.params.username,
-  (users, username) => {
+  currentUserSelector,
+  (users, username, currentUser) => {
     const userId = Object.keys(users).find(
       id => users[id].username === username,
     );
     const user = users[userId];
 
-    return { user };
+    const isCurrentUser =
+      currentUser && user && currentUser.username === user.username;
+
+    return { user, isCurrentUser };
   },
 );
 const mapDispatchToProps = (dispatch: Function) => ({
@@ -78,7 +84,7 @@ class Profile extends React.PureComponent {
       return <Container>User could not be found</Container>;
     }
 
-    const { user } = this.props;
+    const { user, isCurrentUser } = this.props;
     if (!user) return <div />;
 
     document.title = `${user.name} - CodeSandbox`;
@@ -92,7 +98,10 @@ class Profile extends React.PureComponent {
         </Content>
         <MaxWidth width={1024}>
           <Margin horizontal={2}>
-            <Showcase id={user.showcasedSandboxShortId} />
+            <Showcase
+              isCurrentUser={isCurrentUser}
+              id={user.showcasedSandboxShortid}
+            />
           </Margin>
         </MaxWidth>
       </Container>

@@ -10,6 +10,7 @@ import { createSelector } from 'reselect';
 import _debug from 'app/utils/debug';
 import Notifications from 'app/containers/Notifications';
 import ContextMenu from 'app/containers/ContextMenu';
+import Modal from 'app/containers/Modal';
 import Loading from 'app/components/Loading';
 import { jwtSelector } from 'app/store/user/selectors';
 import userActionCreators from 'app/store/user/actions';
@@ -82,6 +83,7 @@ class Routes extends React.PureComponent {
             return null;
           }}
         />
+        <Modal />
         <Notifications />
         <ContextMenu />
         <Content>
