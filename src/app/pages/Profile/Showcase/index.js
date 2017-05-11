@@ -39,27 +39,59 @@ const mapDispatchToProps = dispatch => ({
 class Showcase extends React.PureComponent {
   props: Props;
 
+  state = {
+    loading: false,
+  };
+
+  fetchSandbox(id: string) {
+    const { sandboxActions } = this.props;
+
+    if (!this.state.loading) {
+      this.setState({ loading: true }, () => {
+        sandboxActions
+          .getById(id)
+          .then(() => this.setState({ loading: false }));
+      });
+    }
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    const { id } = this.props;
+
+    if (prevProps.id !== id) {
+      this.fetchSandbox(id);
+    }
+  }
+
   componentDidMount() {
-    const { id, sandbox, sandboxActions } = this.props;
+    const { id, sandbox } = this.props;
 
     if (!sandbox && id) {
-      sandboxActions.getById(id);
+      this.fetchSandbox(id);
     }
   }
 
   openModal = () => {
     const { modalActions } = this.props;
-    modalActions.openModal({ title: 'Select Sandbox', Body: <SelectSandbox /> });
+    modalActions.openModal({
+      title: 'Select Showcase Sandbox',
+      width: 600,
+      Body: <SelectSandbox />,
+    });
   };
 
   render() {
     const { sandbox, id, isCurrentUser } = this.props;
 
-    if (!id) {
+    const { loading } = this.state;
+
+    if (!id || loading) {
       return (
         <Centered vertical horizontal>
           <Margin top={4}>
-            <ErrorTitle>This user doesn{"'"}t have a sandbox yet</ErrorTitle>
+            {!id &&
+              <ErrorTitle>This user doesn{"'"}t have a sandbox yet</ErrorTitle>}
+            {loading && <ErrorTitle>Loading...</ErrorTitle>}
           </Margin>
         </Centered>
       );

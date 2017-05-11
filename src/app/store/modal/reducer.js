@@ -6,6 +6,7 @@ const initialState: Modal = {
   open: false,
   title: null,
   Body: null,
+  width: null,
 };
 
 export default function(
@@ -18,10 +19,14 @@ export default function(
         open: true,
         title: action.title,
         Body: action.Body,
+        width: action.width,
       };
     case CLOSE_MODAL:
       return {
         ...state,
+        title: null,
+        Body: null,
+        width: null,
         open: false,
       };
     default:

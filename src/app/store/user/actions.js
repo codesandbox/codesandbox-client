@@ -15,6 +15,10 @@ export const SIGN_OUT = 'SIGN_OUT';
 export const SET_USER_SANDBOXES = 'SET_USER_SANDBOXES';
 
 export const GET_CURRENT_USER_API = createAPIActions('CURRENT_USER', 'FETCH');
+export const UPDATE_CURRENT_USER_API = createAPIActions(
+  'CURRENT_USER',
+  'UPDATE',
+);
 export const LOAD_USER_SANDBOXES = createAPIActions(
   'CURRENT_USER',
   'FETCH_SANDBOXES',
@@ -100,6 +104,22 @@ const sendFeedback = (message: string) => async (dispatch: Function) => {
     notifActions.addNotification('Thanks a lot for your feedback!', 'success'),
   );
 };
+
+// const updateCurrentUser = (user: Object) => async (dispatch: Function) => {
+//   await dispatch(
+//     doRequest(UPDATE_CURRENT_USER_API, `users/current/update`, {
+//       method: 'POST',
+//       body: {
+//         user,
+//       },
+//     }),
+//   );
+// };
+
+// const setShowcasedSandbox = (showcasedSandboxId: string) =>
+//   updateCurrentUser({
+//     showcasedSandboxShortid: showcasedSandboxId,
+//   });
 
 export default {
   signOut,

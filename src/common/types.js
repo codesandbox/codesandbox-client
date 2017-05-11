@@ -73,6 +73,13 @@ export type Sandbox = {
   forkedFromSandbox: ?{ title: string, id: string },
 };
 
+export type SmallSandbox = {
+  id: string,
+  title: ?string,
+  insertedAt: string,
+  updatedAt: string,
+};
+
 export type Preferences = {
   autoCompleteEnabled: boolean,
   vimMode: boolean,
