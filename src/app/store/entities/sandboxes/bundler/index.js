@@ -41,7 +41,7 @@ async function callNewPackager(query: string) {
     const url = `${NEW_PACKAGER_URL}/${query}`;
     await callApi(`${url}/manifest.json`); // eslint-disable-line
   } catch (e) {
-    logError(new Error('Packager timed out'), {
+    logError(e, {
       level: 'warning',
       service: 'packager',
     });
