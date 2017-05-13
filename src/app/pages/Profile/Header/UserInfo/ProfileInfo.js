@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import Row from 'app/components/flex/Row';
 import Column from 'app/components/flex/Column';
-import delayEffect from '../../../../utils/animation/delay-effect';
-import Margin from '../../../../components/spacing/Margin';
+import delayEffect from 'app/utils/animation/delay-effect';
+import Margin from 'app/components/spacing/Margin';
 
 const ProfileImage = styled.img`
   border-radius: 2px;
@@ -42,7 +42,9 @@ export default ({ username, name, avatarUrl }: Props) => (
     <Margin bottom={3}>
       <Column justifyContent="space-between">
         <Name>{name}</Name>
-        <Username>{username}</Username>
+        <Username>
+          {username}
+        </Username>
       </Column>
     </Margin>
   </Row>

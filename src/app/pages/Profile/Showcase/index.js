@@ -72,11 +72,11 @@ class Showcase extends React.PureComponent {
   }
 
   openModal = () => {
-    const { modalActions } = this.props;
+    const { modalActions, sandbox } = this.props;
     modalActions.openModal({
       title: 'Select Showcase Sandbox',
       width: 600,
-      Body: <SelectSandbox />,
+      Body: <SelectSandbox showcaseSandboxId={sandbox.id} />,
     });
   };
 
@@ -85,13 +85,12 @@ class Showcase extends React.PureComponent {
 
     const { loading } = this.state;
 
-    if (!id || loading) {
+    if (!id) {
       return (
         <Centered vertical horizontal>
           <Margin top={4}>
             {!id &&
               <ErrorTitle>This user doesn{"'"}t have a sandbox yet</ErrorTitle>}
-            {loading && <ErrorTitle>Loading...</ErrorTitle>}
           </Margin>
         </Centered>
       );
@@ -104,21 +103,24 @@ class Showcase extends React.PureComponent {
           {isCurrentUser &&
             <Button small onClick={this.openModal}>Change Sandbox</Button>}
         </Margin>
-        <Margin top={2} style={{ width: '100%' }}>
-          <Column alignItems="initial">
-            <div style={{ flex: 2 }}><ShowcasePreview sandbox={sandbox} /></div>
-            <div style={{ flex: 1 }}>
-              <SandboxInfo
-                title={sandbox.title || 'Untitled'}
-                description={sandbox.description}
-                likeCount={sandbox.likeCount}
-                viewCount={sandbox.viewCount}
-                forkCount={sandbox.forkCount}
-                id={id}
-              />
-            </div>
-          </Column>
-        </Margin>
+        {!loading &&
+          <Margin top={2} style={{ width: '100%' }}>
+            <Column alignItems="initial">
+              <div style={{ flex: 2 }}>
+                <ShowcasePreview sandbox={sandbox} />
+              </div>
+              <div style={{ flex: 1 }}>
+                <SandboxInfo
+                  title={sandbox.title || 'Untitled'}
+                  description={sandbox.description}
+                  likeCount={sandbox.likeCount}
+                  viewCount={sandbox.viewCount}
+                  forkCount={sandbox.forkCount}
+                  id={id}
+                />
+              </div>
+            </Column>
+          </Margin>}
       </Column>
     );
   }

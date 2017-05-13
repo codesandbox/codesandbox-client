@@ -12,19 +12,26 @@ const Button = styled.button`
   height: 100%;
   outline: none;
   border: none;
-  background-color: white;
+  background-color: ${props => (props.active ? '#eee' : 'white')};
   padding: 1rem;
+  color: rgba(0, 0, 0, 0.9);
   border-bottom: 1px solid #ddd;
   text-align: left;
-  cursor: pointer;
+  ${props => props.active && 'font-weight: 600'};
+  cursor: ${props => (props.active ? 'default' : 'pointer')};
 
   &:hover {
     background-color: #eee;
   }
 `;
 
+const Date = styled.div`
+  color: rgba(0, 0, 0, 0.6);
+`;
+
 type Props = {
   sandbox: SmallSandbox,
+  active: boolean,
   setShowcasedSandbox: (shortid: string) => any,
 };
 
@@ -36,11 +43,11 @@ export default class Sandbox extends React.PureComponent {
   };
 
   render() {
-    const { sandbox } = this.props;
+    const { sandbox, active } = this.props;
     return (
-      <Button onClick={this.setShowcase}>
-        {' '}<div>{sandbox.title || sandbox.id}</div>
-        <div>{moment(sandbox.insertedAt).format('ll')}</div>
+      <Button active={active} onClick={this.setShowcase}>
+        <div>{sandbox.title || sandbox.id}{active && ' (Selected)'}</div>
+        <Date>{moment(sandbox.insertedAt).format('ll')}</Date>
       </Button>
     );
   }

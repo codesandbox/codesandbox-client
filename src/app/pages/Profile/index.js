@@ -1,6 +1,7 @@
 // @flow
 import React from 'react';
 import { connect } from 'react-redux';
+import { Route } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { createSelector } from 'reselect';
 import styled from 'styled-components';
@@ -13,13 +14,14 @@ import MaxWidth from './MaxWidth';
 import Header from './Header';
 import Navigation from './Navigation';
 import Showcase from './Showcase';
+import Sandboxes from './Sandboxes';
 
 import Margin from '../../components/spacing/Margin';
 import { usersSelector } from '../../store/entities/users/selectors';
 
 type Props = {
   userActions: typeof userActionCreators,
-  match: { params: { username: string } },
+  match: { params: { username: string }, url: string },
   user: User,
   isCurrentUser: boolean,
 };
@@ -84,23 +86,38 @@ class Profile extends React.PureComponent {
       return <Container>User could not be found</Container>;
     }
 
-    const { user, isCurrentUser } = this.props;
+    const { user, match, isCurrentUser } = this.props;
     if (!user) return <div />;
-
+    console.log(user);
     document.title = `${user.name} - CodeSandbox`;
     return (
       <Container>
         <Header user={user} />
         <Content>
           <MaxWidth>
-            <Navigation />
+            <Navigation username={user.username} />
           </MaxWidth>
         </Content>
         <MaxWidth width={1024}>
           <Margin horizontal={2}>
-            <Showcase
-              isCurrentUser={isCurrentUser}
-              id={user.showcasedSandboxShortid}
+            <Route
+              path={match.url}
+              exact
+              render={() => (
+                <Showcase
+                  isCurrentUser={isCurrentUser}
+                  id={user.showcasedSandboxShortid}
+                />
+              )}
+            />
+            <Route
+              path={`${match.url}/sandboxes`}
+              render={() => (
+                <Sandboxes
+                  username={user.username}
+                  sandboxes={user.sandboxes}
+                />
+              )}
             />
           </Margin>
         </MaxWidth>

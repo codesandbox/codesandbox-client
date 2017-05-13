@@ -5,6 +5,10 @@ import { normalizeResult } from '../actions';
 import userEntity from './entity';
 
 export const FETCH_USER_ACTIONS = createAPIActions('USERS', 'FETCH');
+export const FETCH_USER_SANDBOXES_ACTIONS = createAPIActions(
+  'USERS_SANDBOXES',
+  'FETCH',
+);
 export const UPDATE_USER_ACTIONS = createAPIActions('USERS', 'UPDATE');
 
 const fetchUser = (username: string) => async (dispatch: Function) => {
@@ -30,11 +34,28 @@ const updateUser = (username: string, user: Object) => async (
   await dispatch(normalizeResult(userEntity, data));
 };
 
+const fetchAllSandboxes = (username: string, page: number = 1) => async (
+  dispatch: Function,
+) => {
+  await dispatch(
+    doRequest(
+      FETCH_USER_SANDBOXES_ACTIONS,
+      `users/${username}/sandboxes?page=${page}`,
+      {
+        body: {
+          username,
+        },
+      },
+    ),
+  );
+};
+
 const setShowcasedSandboxId = (username: string, showcasedSandboxId: string) =>
   updateUser(username, { showcasedSandboxShortid: showcasedSandboxId });
 
 export default {
   fetchUser,
   updateUser,
+  fetchAllSandboxes,
   setShowcasedSandboxId,
 };
