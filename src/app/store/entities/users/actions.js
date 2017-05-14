@@ -9,6 +9,10 @@ export const FETCH_USER_SANDBOXES_ACTIONS = createAPIActions(
   'USERS_SANDBOXES',
   'FETCH',
 );
+export const FETCH_USER_LIKED_SANDBOXES_ACTIONS = createAPIActions(
+  'USERS_LIKED_SANDBOXES',
+  'FETCH',
+);
 export const UPDATE_USER_ACTIONS = createAPIActions('USERS', 'UPDATE');
 
 const fetchUser = (username: string) => async (dispatch: Function) => {
@@ -38,12 +42,26 @@ const fetchAllSandboxes = (username: string, page: number = 1) => async (
   dispatch: Function,
 ) => {
   await dispatch(
+    doRequest(FETCH_USER_SANDBOXES_ACTIONS, `users/${username}/sandboxes`, {
+      body: {
+        username,
+        page,
+      },
+    }),
+  );
+};
+
+const fetchLikedSandboxes = (username: string, page: number = 1) => async (
+  dispatch: Function,
+) => {
+  await dispatch(
     doRequest(
-      FETCH_USER_SANDBOXES_ACTIONS,
-      `users/${username}/sandboxes?page=${page}`,
+      FETCH_USER_LIKED_SANDBOXES_ACTIONS,
+      `users/${username}/sandboxes/liked`,
       {
         body: {
           username,
+          page,
         },
       },
     ),
@@ -58,4 +76,5 @@ export default {
   updateUser,
   fetchAllSandboxes,
   setShowcasedSandboxId,
+  fetchLikedSandboxes,
 };

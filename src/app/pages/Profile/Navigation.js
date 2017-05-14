@@ -30,7 +30,15 @@ const CenteredRow = styled(Row)`
   width: 100%;
 `;
 
-export default ({ username }: { username: string }) => (
+export default ({
+  username,
+  sandboxCount,
+  likeCount,
+}: {
+  username: string,
+  sandboxCount: number,
+  likeCount: number,
+}) => (
   <CenteredRow alignItems="center" justifyContent="center">
     <NavigationLink
       to={`/u/${username}`}
@@ -47,9 +55,17 @@ export default ({ username }: { username: string }) => (
       activeStyle={{
         color: 'white',
       }}
-      exact
+      border
     >
-      SANDBOXES
+      SANDBOXES ({sandboxCount})
+    </NavigationLink>
+    <NavigationLink
+      to={`/u/${username}/likes`}
+      activeStyle={{
+        color: 'white',
+      }}
+    >
+      LIKES ({likeCount})
     </NavigationLink>
   </CenteredRow>
 );

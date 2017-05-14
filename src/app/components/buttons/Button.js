@@ -56,6 +56,7 @@ const styles = props =>
   })()}
 
   user-select: none;
+  text-decoration: none;
 
   ${!props.disabled && `
   cursor: pointer;

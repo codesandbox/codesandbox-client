@@ -42,6 +42,8 @@ export type User = {
   name: string,
   avatarUrl: ?string,
   showcasedSandboxShortId: ?string,
+  sandboxCount: number,
+  likeCount: number,
 };
 
 export type Sandbox = {
@@ -78,6 +80,9 @@ export type SmallSandbox = {
   title: ?string,
   insertedAt: string,
   updatedAt: string,
+  likeCount: number,
+  viewCount: number,
+  forkCount: number,
 };
 
 export type Preferences = {

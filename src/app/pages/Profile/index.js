@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import { connect } from 'react-redux';
-import { Route } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { createSelector } from 'reselect';
 import styled from 'styled-components';
@@ -9,15 +9,15 @@ import Fullscreen from 'app/components/flex/Fullscreen';
 import userActionCreators from 'app/store/entities/users/actions';
 import { currentUserSelector } from 'app/store/user/selectors';
 import type { User } from 'common/types';
+import Margin from 'app/components/spacing/Margin';
+import { usersSelector } from 'app/store/entities/users/selectors';
+import { profileSandboxesUrl, profileLikesUrl } from 'app/utils/url-generator';
 
 import MaxWidth from './MaxWidth';
 import Header from './Header';
 import Navigation from './Navigation';
 import Showcase from './Showcase';
-import Sandboxes from './Sandboxes';
-
-import Margin from '../../components/spacing/Margin';
-import { usersSelector } from '../../store/entities/users/selectors';
+import SandboxList from './SandboxList';
 
 type Props = {
   userActions: typeof userActionCreators,
@@ -86,39 +86,62 @@ class Profile extends React.PureComponent {
       return <Container>User could not be found</Container>;
     }
 
-    const { user, match, isCurrentUser } = this.props;
+    const { user, match, userActions, isCurrentUser } = this.props;
     if (!user) return <div />;
-    console.log(user);
+
     document.title = `${user.name} - CodeSandbox`;
     return (
       <Container>
         <Header user={user} />
         <Content>
           <MaxWidth>
-            <Navigation username={user.username} />
+            <Navigation
+              username={user.username}
+              sandboxCount={user.sandboxCount}
+              likeCount={user.likeCount}
+            />
           </MaxWidth>
         </Content>
         <MaxWidth width={1024}>
-          <Margin horizontal={2}>
-            <Route
-              path={match.url}
-              exact
-              render={() => (
-                <Showcase
-                  isCurrentUser={isCurrentUser}
-                  id={user.showcasedSandboxShortid}
-                />
-              )}
-            />
-            <Route
-              path={`${match.url}/sandboxes`}
-              render={() => (
-                <Sandboxes
-                  username={user.username}
-                  sandboxes={user.sandboxes}
-                />
-              )}
-            />
+          <Margin horizontal={2} style={{ minHeight: '60vh' }}>
+            <Switch>
+              <Route
+                path={match.url}
+                exact
+                render={() => (
+                  <Showcase
+                    isCurrentUser={isCurrentUser}
+                    id={user.showcasedSandboxShortid}
+                  />
+                )}
+              />
+              <Route
+                path={`${profileSandboxesUrl(user.username)}/:page?`}
+                children={({ match }) => (
+                  <SandboxList
+                    username={user.username}
+                    fetchSandboxes={userActions.fetchAllSandboxes}
+                    sandboxes={user.sandboxes}
+                    sandboxCount={user.sandboxCount}
+                    baseUrl={profileSandboxesUrl(user.username)}
+                    page={match.params.page && +match.params.page}
+                  />
+                )}
+              />
+              <Route
+                path={`${profileLikesUrl(user.username)}/:page?`}
+                children={({ match }) => (
+                  <SandboxList
+                    username={user.username}
+                    fetchSandboxes={userActions.fetchLikedSandboxes}
+                    sandboxes={user.likedSandboxes}
+                    sandboxCount={user.likeCount}
+                    baseUrl={profileLikesUrl(user.username)}
+                    page={match.params.page && +match.params.page}
+                  />
+                )}
+              />
+            </Switch>
           </Margin>
         </MaxWidth>
       </Container>
