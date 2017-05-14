@@ -7,8 +7,7 @@ import logError from '../../../../utils/error';
 
 const debug = _debug('cs:app:packager');
 
-export const PACKAGER_URL = 'https://cdn.jsdelivr.net/webpack/v2';
-export const NEW_PACKAGER_URL = 'https://cdn.jsdelivr.net/webpack/v3';
+export const PACKAGER_URL = 'https://cdn.jsdelivr.net/webpack/v3';
 
 /**
  * Request the packager, if retries > 4 it will throw if something goes wrong
@@ -36,22 +35,9 @@ async function requestPackager(query: string) {
   }
 }
 
-async function callNewPackager(query: string) {
-  try {
-    const url = `${NEW_PACKAGER_URL}/${query}`;
-    await callApi(`${url}/manifest.json`); // eslint-disable-line
-  } catch (e) {
-    logError(e, {
-      level: 'warning',
-      service: 'packager',
-    });
-  }
-}
-
 async function callPackager(dependencies: Object) {
   const dependencyUrl = dependenciesToQuery(dependencies);
 
-  callNewPackager(dependencyUrl);
   const result = await requestPackager(dependencyUrl);
   return result;
 }
