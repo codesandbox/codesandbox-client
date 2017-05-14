@@ -1,6 +1,7 @@
 // @flow
 import { push } from 'react-router-redux';
 import type { Module, Directory } from 'common/types';
+import { values } from 'lodash';
 
 import { createAPIActions, doRequest } from '../../api/actions';
 import { normalizeResult } from '../actions';
@@ -91,6 +92,40 @@ export const SET_PROJECT_VIEW = 'SET_PROJECT_VIEW';
 export const SET_VIEW_MODE = 'SET_VIEW_MODE';
 export const CREATE_ZIP = 'CREATE_ZIP';
 
+/**
+ * When you fork you get a 'copy' of the modules, these modules have the shortid
+ * in common, so if we want to get the module that is equivalent we want to use
+ * this
+ */
+const getEquivalentModule = (module, getState) => {
+  const modules = modulesSelector(getState());
+
+  const newModule = values(modules).find(
+    m => m.id !== module.id && m.shortid === module.shortid,
+  );
+
+  if (!newModule) return module;
+
+  return newModule;
+};
+
+/**
+ * When you fork you get a 'copy' of the directories, these directories have the shortid
+ * in common, so if we want to get the directory that is equivalent we want to use
+ * this
+ */
+const getEquivalentDirectory = (directory, getState) => {
+  const directories = directoriesSelector(getState());
+
+  const newDirectory = values(directories).find(
+    d => d.id !== directory.id && d.shortid === directory.shortid,
+  );
+
+  if (!newDirectory) return directory;
+
+  return newDirectory;
+};
+
 const addModuleToSandbox = (id, moduleId) => ({
   type: ADD_MODULE_TO_SANDBOX,
   id,
@@ -101,15 +136,15 @@ const removeModuleFromSandbox = (id, moduleId) => ({
   id,
   moduleId,
 });
-const addDirectoryToSandbox = (id, directoryShortid) => ({
+const addDirectoryToSandbox = (id, directoryId) => ({
   type: ADD_DIRECTORY_TO_SANDBOX,
   id,
-  directoryShortid,
+  directoryId,
 });
-const removeDirectoryFromSandbox = (id, directoryShortid) => ({
+const removeDirectoryFromSandbox = (id, directoryId) => ({
   type: REMOVE_DIRECTORY_FROM_SANDBOX,
   id,
-  directoryShortid,
+  directoryId,
 });
 
 const forkSandbox = (id: string) => async (
@@ -129,16 +164,18 @@ const forkSandbox = (id: string) => async (
   data.forked = true;
 
   // Save the unsaved modules
-  const oldModules = modulesSelector(getState());
+  const oldModules = currentSandbox.modules.map(
+    x => modulesSelector(getState())[x],
+  );
   await dispatch(normalizeResult(entity, data));
 
   dispatch(push(sandboxUrl(data)));
 
   // Set the code for the new modules from the old modules
-  currentSandbox.modules
-    .map(mid => oldModules[mid])
-    .filter(m => m.isNotSynced)
-    .forEach(m => dispatch(moduleActions.setCode(m.id, m.code)));
+  oldModules.filter(m => m.isNotSynced).forEach(m => {
+    const newModule = getEquivalentModule(m, getState);
+    dispatch(moduleActions.setCode(newModule.id, m.code));
+  });
 
   dispatch(notificationActions.addNotification('Forked sandbox!', 'success'));
 
@@ -155,6 +192,7 @@ const maybeForkSandbox = sandboxId => async (
 ) => {
   const sandbox = singleSandboxSelector(getState(), { id: sandboxId });
   if (sandbox.owned) {
+    // We own the sandbox, so return the id and don't fork
     return sandbox.id;
   }
 
@@ -284,12 +322,15 @@ export default {
   ) => {
     const module = modulesSelector(getState())[moduleId];
     const sandboxId = await dispatch(maybeForkSandbox(id));
-    dispatch(moduleActions.setCode(module.id, module.code));
+    const isForked = sandboxId !== id;
+
+    const newModule = isForked ? getEquivalentModule(module, getState) : module;
+    dispatch(moduleActions.setCode(newModule.id, module.code));
 
     await dispatch(
       doRequest(
         SAVE_MODULE_CODE_API_ACTIONS,
-        `sandboxes/${sandboxId}/modules/${moduleId}`,
+        `sandboxes/${sandboxId}/modules/${module.shortid}`,
         {
           method: 'PUT',
           body: { module: { code: module.code } },
@@ -297,23 +338,27 @@ export default {
       ),
     );
 
-    dispatch(moduleActions.setModuleSynced(moduleId));
+    dispatch(moduleActions.setModuleSynced(newModule.id));
   },
 
   renameModule: (id: string, moduleId: string, title: string) => async (
     dispatch: Function,
     getState: Function,
   ) => {
+    const module = modulesSelector(getState())[moduleId];
     const sandboxId = await dispatch(maybeForkSandbox(id));
+    const isForked = sandboxId !== id;
+
+    const newModule = isForked ? getEquivalentModule(module, getState) : module;
     // Eager rename, just undo it when something goes wrong
-    const oldTitle = modulesSelector(getState())[moduleId].title;
-    dispatch(moduleActions.renameModule(moduleId, title));
+    const oldTitle = module.title;
+    dispatch(moduleActions.renameModule(newModule.id, title));
 
     try {
       await dispatch(
         doRequest(
           UPDATE_MODULE_API_ACTIONS,
-          `sandboxes/${sandboxId}/modules/${moduleId}`,
+          `sandboxes/${sandboxId}/modules/${module.shortid}`,
           {
             method: 'PUT',
             body: { module: { title } },
@@ -321,7 +366,7 @@ export default {
         ),
       );
     } catch (e) {
-      dispatch(moduleActions.renameModule(moduleId, oldTitle));
+      dispatch(moduleActions.renameModule(newModule.id, oldTitle));
     }
   },
 
@@ -330,17 +375,20 @@ export default {
     moduleId: string,
     directoryShortid: string,
   ) => async (dispatch: Function, getState: Function) => {
+    const module = modulesSelector(getState())[moduleId];
     const sandboxId = await dispatch(maybeForkSandbox(id));
+    const isForked = sandboxId !== id;
+
+    const newModule = isForked ? getEquivalentModule(module, getState) : module;
     // Eager move it
-    const olddirectoryShortid = modulesSelector(getState())[moduleId]
-      .directoryShortid;
-    dispatch(moduleActions.moveModule(moduleId, directoryShortid));
+    const olddirectoryShortid = module.directoryShortid;
+    dispatch(moduleActions.moveModule(newModule.id, directoryShortid));
 
     try {
       await dispatch(
         doRequest(
           UPDATE_MODULE_API_ACTIONS,
-          `sandboxes/${sandboxId}/modules/${moduleId}`,
+          `sandboxes/${sandboxId}/modules/${newModule.shortid}`,
           {
             method: 'PUT',
             body: { module: { directoryShortid } },
@@ -348,22 +396,27 @@ export default {
         ),
       );
     } catch (e) {
-      dispatch(moduleActions.moveModule(moduleId, olddirectoryShortid));
+      dispatch(moduleActions.moveModule(newModule.id, olddirectoryShortid));
     }
   },
 
   deleteModule: (id: string, moduleId: string) => async (
     dispatch: Function,
+    getState: Function,
   ) => {
+    const module = modulesSelector(getState())[moduleId];
     const sandboxId = await dispatch(maybeForkSandbox(id));
+    const isForked = sandboxId !== id;
+
+    const newModule = isForked ? getEquivalentModule(module, getState) : module;
     // Eager remove it
-    dispatch(removeModuleFromSandbox(sandboxId, moduleId));
+    dispatch(removeModuleFromSandbox(sandboxId, newModule.id));
 
     try {
       await dispatch(
         doRequest(
           DELETE_MODULE_API_ACTIONS,
-          `sandboxes/${sandboxId}/modules/${moduleId}`,
+          `sandboxes/${sandboxId}/modules/${newModule.shortid}`,
           {
             method: 'DELETE',
           },
@@ -371,7 +424,7 @@ export default {
       );
     } catch (e) {
       // It failed, just add it back
-      dispatch(addModuleToSandbox(sandboxId, moduleId));
+      dispatch(addModuleToSandbox(sandboxId, newModule.id));
     }
   },
 
@@ -381,6 +434,7 @@ export default {
     directoryShortid: ?string,
   ) => async (dispatch: Function) => {
     const sandboxId = await dispatch(maybeForkSandbox(id));
+
     const { data } = await dispatch(
       doRequest(
         CREATE_DIRECTORY_API_ACTIONS,
@@ -396,21 +450,27 @@ export default {
     dispatch(addDirectoryToSandbox(sandboxId, data.id));
   },
 
-  renameDirectory: (
-    id: string,
-    directoryShortid: string,
-    title: string,
-  ) => async (dispatch: Function, getState: Function) => {
+  renameDirectory: (id: string, directoryId: string, title: string) => async (
+    dispatch: Function,
+    getState: Function,
+  ) => {
+    const directory = directoriesSelector(getState())[directoryId];
     const sandboxId = await dispatch(maybeForkSandbox(id));
+
+    const isForked = id !== sandboxId;
+
+    const newDirectory = isForked
+      ? getEquivalentDirectory(directory, getState)
+      : directory;
     // Eager rename, just undo it when something goes wrong
-    const oldTitle = directoriesSelector(getState())[directoryShortid].title;
-    dispatch(directoryActions.renameDirectory(directoryShortid, title));
+    const oldTitle = directory.title;
+    dispatch(directoryActions.renameDirectory(newDirectory.id, title));
 
     try {
       await dispatch(
         doRequest(
           UPDATE_DIRECTORY_API_ACTIONS,
-          `sandboxes/${sandboxId}/directories/${directoryShortid}`,
+          `sandboxes/${sandboxId}/directories/${newDirectory.shortid}`,
           {
             method: 'PUT',
             body: { directory: { title } },
@@ -418,27 +478,32 @@ export default {
         ),
       );
     } catch (e) {
-      dispatch(directoryActions.renameDirectory(directoryShortid, oldTitle));
+      dispatch(directoryActions.renameDirectory(newDirectory.id, oldTitle));
     }
   },
 
   moveDirectoryToDirectory: (
     id: string,
-    directoryShortid: string,
+    directoryId: string,
     parentId: string,
   ) => async (dispatch: Function, getState: Function) => {
+    const directory = directoriesSelector(getState())[directoryId];
     const sandboxId = await dispatch(maybeForkSandbox(id));
+
+    const isForked = id !== sandboxId;
+
+    const newDirectory = isForked
+      ? getEquivalentDirectory(directory, getState)
+      : directory;
     // Eager move it
-    const olddirectoryShortid = directoriesSelector(getState())[
-      directoryShortid
-    ].parentId;
-    dispatch(directoryActions.moveDirectory(directoryShortid, parentId));
+    const oldDirectoryShortid = directory.directoryShortid;
+    dispatch(directoryActions.moveDirectory(newDirectory.id, parentId));
 
     try {
       await dispatch(
         doRequest(
           UPDATE_DIRECTORY_API_ACTIONS,
-          `sandboxes/${sandboxId}/directories/${directoryShortid}`,
+          `sandboxes/${sandboxId}/directories/${newDirectory.shortid}`,
           {
             method: 'PUT',
             body: { directory: { directoryShortid: parentId } },
@@ -447,23 +512,31 @@ export default {
       );
     } catch (e) {
       dispatch(
-        directoryActions.moveDirectory(directoryShortid, olddirectoryShortid),
+        directoryActions.moveDirectory(newDirectory.id, oldDirectoryShortid),
       );
     }
   },
 
-  deleteDirectory: (id: string, directoryShortid: string) => async (
+  deleteDirectory: (id: string, directoryId: string) => async (
     dispatch: Function,
     getState: Function,
   ) => {
+    const directory = directoriesSelector(getState())[directoryId];
     const sandboxId = await dispatch(maybeForkSandbox(id));
-    dispatch(removeDirectoryFromSandbox(sandboxId, directoryShortid));
+
+    const isForked = id !== sandboxId;
+
+    const newDirectory = isForked
+      ? getEquivalentDirectory(directory, getState)
+      : directory;
+
+    dispatch(removeDirectoryFromSandbox(sandboxId, newDirectory.id));
 
     try {
       await dispatch(
         doRequest(
           DELETE_DIRECTORY_API_ACTIONS,
-          `sandboxes/${sandboxId}/directories/${directoryShortid}`,
+          `sandboxes/${sandboxId}/directories/${newDirectory.shortid}`,
           {
             method: 'DELETE',
           },
@@ -479,7 +552,7 @@ export default {
       // Recursively delete all children
       dispatch(
         removeChildrenOfDirectory(
-          directoryShortid,
+          newDirectory.id,
           sandboxId,
           modules,
           directories,
@@ -491,7 +564,7 @@ export default {
       );
     } catch (e) {
       // It failed, add it back
-      dispatch(addDirectoryToSandbox(sandboxId, directoryShortid));
+      dispatch(addDirectoryToSandbox(sandboxId, newDirectory.id));
     }
   },
 

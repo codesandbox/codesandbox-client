@@ -4,12 +4,9 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { DropTarget } from 'react-dnd';
 
-import type { Module, ModuleError } from 'common/types';
+import type { Module, Directory, ModuleError } from 'common/types';
 
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
-import type {
-  Directory,
-} from 'app/store/entities//sandboxes/directories/entity';
 import { validateTitle } from 'app/store/entities//sandboxes/modules/validator';
 import contextMenuActionCreators from 'app/store/context-menu/actions';
 
@@ -38,6 +35,7 @@ const mapDispatchToProps = dispatch => ({
 });
 type Props = {
   id: string,
+  shortid: string,
   sandboxId: string,
   root: ?boolean,
   title: string,
@@ -80,8 +78,8 @@ class DirectoryEntry extends React.PureComponent {
   };
 
   createModule = (_, title) => {
-    const { sandboxId, id, sandboxActions } = this.props;
-    sandboxActions.createModule(sandboxId, title, id);
+    const { sandboxId, shortid, sandboxActions } = this.props;
+    sandboxActions.createModule(sandboxId, title, shortid);
     this.resetState();
   };
 
@@ -113,8 +111,8 @@ class DirectoryEntry extends React.PureComponent {
   };
 
   createDirectory = (_: string, title: string) => {
-    const { sandboxId, id, sandboxActions } = this.props;
-    sandboxActions.createDirectory(sandboxId, title, id);
+    const { sandboxId, shortid, sandboxActions } = this.props;
+    sandboxActions.createDirectory(sandboxId, title, shortid);
     this.resetState();
   };
 
@@ -153,11 +151,11 @@ class DirectoryEntry extends React.PureComponent {
   };
 
   getChildren = () => {
-    const { modules, directories, id } = this.props;
+    const { modules, directories, shortid } = this.props;
 
     return [
-      ...modules.filter(m => m.directoryShortid === id),
-      ...directories.filter(d => d.directoryShortid === id),
+      ...modules.filter(m => m.directoryShortid === shortid),
+      ...directories.filter(d => d.directoryShortid === shortid),
     ];
   };
 
@@ -169,6 +167,7 @@ class DirectoryEntry extends React.PureComponent {
   render() {
     const {
       id,
+      shortid,
       sandboxId,
       modules,
       directories,
@@ -225,7 +224,7 @@ class DirectoryEntry extends React.PureComponent {
             renameModule={this.renameModule}
             openMenu={openMenu}
             sandboxId={sandboxId}
-            parentId={id}
+            parentShortid={shortid}
             deleteEntry={this.deleteModule}
             setCurrentModule={this.setCurrentModule}
             currentModuleId={currentModuleId}
@@ -261,13 +260,13 @@ const entryTarget = {
       props.sandboxActions.moveDirectoryToDirectory(
         props.sandboxId,
         sourceItem.id,
-        props.id,
+        props.shortid,
       );
     } else {
       props.sandboxActions.moveModuleToDirectory(
         props.sandboxId,
         sourceItem.id,
-        props.id,
+        props.shortid,
       );
     }
   },
