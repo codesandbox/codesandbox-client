@@ -29,17 +29,16 @@ type Props = {
   currentModule: string,
   showEditor: boolean,
   showPreview: boolean,
+  isInProjectView: boolean,
 };
 
 type State = {
   bundle: Object,
-  isInProjectView: boolean,
 };
 
 export default class Content extends React.Component {
-  state = {
+  state: State = {
     bundle: { processing: true },
-    isInProjectView: false,
   };
 
   componentDidMount() {
@@ -65,7 +64,13 @@ export default class Content extends React.Component {
   props: Props;
   state: State;
   render() {
-    const { sandbox, showEditor, showPreview, currentModule } = this.props;
+    const {
+      sandbox,
+      showEditor,
+      showPreview,
+      isInProjectView,
+      currentModule,
+    } = this.props;
 
     const preferences = { livePreviewEnabled: true };
     const mainModule =
@@ -96,7 +101,7 @@ export default class Content extends React.Component {
           <Split show={showPreview} only={showPreview && !showEditor}>
             <Preview
               sandboxId={sandbox.id}
-              isInProjectView={this.state.isInProjectView}
+              isInProjectView={isInProjectView}
               modules={sandbox.modules}
               directories={sandbox.directories}
               bundle={this.state.bundle}
@@ -106,7 +111,7 @@ export default class Content extends React.Component {
               addError={() => {}}
               clearErrors={() => {}}
               preferences={preferences}
-              setProjectView={this.setProjectView}
+              setProjectView={this.props.setProjectView}
               noDelay
             />
           </Split>}
