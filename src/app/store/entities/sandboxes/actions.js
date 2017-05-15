@@ -169,13 +169,16 @@ const forkSandbox = (id: string) => async (
   );
   await dispatch(normalizeResult(entity, data));
 
-  dispatch(push(sandboxUrl(data)));
-
   // Set the code for the new modules from the old modules
   oldModules.filter(m => m.isNotSynced).forEach(m => {
+    // Mark old modules as synced so there is no confirm when moving to new url
+    dispatch(moduleActions.setModuleSynced(m.id));
+
     const newModule = getEquivalentModule(m, getState);
     dispatch(moduleActions.setCode(newModule.id, m.code));
   });
+
+  dispatch(push(sandboxUrl(data)));
 
   dispatch(notificationActions.addNotification('Forked sandbox!', 'success'));
 

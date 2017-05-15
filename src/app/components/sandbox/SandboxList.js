@@ -41,7 +41,7 @@ const Body = styled.tbody`
   margin-top: 3rem;
   box-shadow: 0 3px 3px rgba(0, 0, 0, 0.5);
   color: rgba(255, 255, 255, 0.7);
-  background-image: linear-gradient(-180deg, #222526 0%, #282D2F 100%);
+  background: ${props => props.theme.background};
 
   td {
     border: none;
