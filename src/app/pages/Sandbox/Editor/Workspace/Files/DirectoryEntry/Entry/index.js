@@ -26,7 +26,7 @@ type Props = {
   onCreateModuleClick: ?() => any,
   onCreateDirectoryClick: ?() => any,
   renameValidator: (id: string, title: string) => boolean,
-  rename: ?(id: string, title: string) => boolean,
+  rename: ?(id: string, title: string) => any,
   deleteEntry: ?(id: string) => any,
   onRenameCancel: () => any,
   state: ?'' | 'editing' | 'creating',

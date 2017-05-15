@@ -68,6 +68,7 @@ class Files extends React.PureComponent {
         currentModuleId={currentModule || mainModule.id}
         errors={sandbox.errors}
         id={null}
+        shortid={null}
       />
     );
   }
