@@ -15,8 +15,10 @@ const Container = styled.div`
   ${delayEffect(0)}
 
   top: 40px;
-  left: 0;
+  left: -20%;
   right: 0;
+
+  min-width: 150px;
 
   z-index: 20;
 `;

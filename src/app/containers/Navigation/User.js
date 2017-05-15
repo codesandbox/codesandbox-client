@@ -30,15 +30,15 @@ const Name = styled.div`
 `;
 
 const Username = styled.div`
-  color: rgba(255, 255, 255, 0.6);
-  font-size: .875em;
+  color: ${props => props.main ? 'white' : 'rgba(255, 255, 255, 0.6)'};
+  font-size: ${props => props.main ? 1 : .875}em;
 `;
 
 type Props = {
   user: {
     username: string,
     avatarUrl: string,
-    name: string,
+    name: ?string,
   },
   small: boolean,
   signOut: Function,
@@ -67,8 +67,8 @@ export default class User extends React.PureComponent {
       <Relative>
         <ClickableContainer onClick={menuOpen ? this.closeMenu : this.openMenu}>
           <ProfileInfo>
-            <Name>{user.name}</Name>
-            <Username>{user.username}</Username>
+            {user.name && <Name>{user.name}</Name>}
+            <Username main={!user.name}>{user.username}</Username>
           </ProfileInfo>
 
           <Tooltip title="User Menu">

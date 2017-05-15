@@ -26,9 +26,9 @@ const Name = styled.div`
 const Username = styled.div`
   display: flex;
   align-items: center;
-  font-size: 1.25rem;
+  font-size: ${props => (props.main ? 1.5 : 1.25)}rem;
   font-weight: 200;
-  color: rgba(255, 255, 255, 0.6);
+  color: ${props => (props.main ? 'white' : 'rgba(255, 255, 255, 0.6)')};
   ${delayEffect(0.15)}
 
   margin-bottom: 1rem;
@@ -51,8 +51,8 @@ export default ({ username, name, avatarUrl }: Props) => (
     <ProfileImage alt={username} height={175} width={175} src={avatarUrl} />
     <Margin bottom={3}>
       <Column justifyContent="space-between">
-        <Name>{name}</Name>
-        <Username>
+        {name && <Name>{name}</Name>}
+        <Username main={!name}>
           {username}
           <a
             href={`https://github.com/${username}`}
