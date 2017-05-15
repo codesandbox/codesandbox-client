@@ -98,7 +98,7 @@ class Profile extends React.PureComponent {
             <Navigation
               username={user.username}
               sandboxCount={user.sandboxCount}
-              likeCount={user.likeCount}
+              likeCount={user.givenLikeCount}
             />
           </MaxWidth>
         </Content>
@@ -135,7 +135,7 @@ class Profile extends React.PureComponent {
                     username={user.username}
                     fetchSandboxes={userActions.fetchLikedSandboxes}
                     sandboxes={user.likedSandboxes}
-                    sandboxCount={user.likeCount}
+                    sandboxCount={user.givenLikeCount}
                     baseUrl={profileLikesUrl(user.username)}
                     page={match.params.page && +match.params.page}
                   />

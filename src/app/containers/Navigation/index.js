@@ -4,14 +4,19 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import type { CurrentUser } from 'common/types';
+import { Link } from 'react-router-dom';
+
+import GithubIcon from 'react-icons/lib/go/mark-github';
 
 import Button from 'app/components/buttons/Button';
 import Logo from 'app/components/Logo';
 import Row from 'app/components/flex/Row';
 import { currentUserSelector, jwtSelector } from 'app/store/user/selectors';
 import userActionCreators from 'app/store/user/actions';
+import Tooltip from 'app/components/Tooltip';
 
 import User from './User';
+import { newSandboxUrl } from '../../utils/url-generator';
 
 const LogoWithBorder = styled(Logo)`
   padding-right: 1rem;
@@ -31,15 +36,9 @@ const Title = styled.h1`
   font-weight: 300;
 `;
 
-const Actions = styled.div`
-  display: flex;
-  color: rgba(255, 255, 255, 0.7);
-  margin: 0 1.5rem;
-`;
-
 const Action = styled.div`
   transition: 0.3s ease all;
-  margin: 0 1rem;
+  margin: 0 2rem;
   cursor: pointer;
 
   &:hover {
@@ -47,10 +46,11 @@ const Action = styled.div`
   }
 `;
 
-const ActionIcon = styled.div`
-  display: inline-block;
-  font-size: 1.125rem;
-  padding-right: 0.5rem;
+const PlusIcon = styled(Link)`
+  color: inherit;
+  text-decoration: none;
+  font-size: 1.5rem;
+  font-weight: 300;
 `;
 
 type Props = {
@@ -58,11 +58,6 @@ type Props = {
   user: CurrentUser,
   hasLogin: boolean,
   userActions: typeof userActionCreators,
-  actions: Array<{
-    name: string,
-    action: Function,
-    Icon: React.Element,
-  }>,
 };
 
 const mapStateToProps = state => ({
@@ -75,7 +70,7 @@ const mapDispatchToProps = dispatch => ({
 class Navigation extends React.PureComponent {
   props: Props;
   render() {
-    const { title, hasLogin, user, userActions, actions = [] } = this.props;
+    const { title, hasLogin, user, userActions } = this.props;
 
     return (
       <Row justifyContent="space-between">
@@ -85,22 +80,21 @@ class Navigation extends React.PureComponent {
           </a>
           <Border width={1} size={500} />
           <Title>{title}</Title>
-
-          <Actions>
-            {actions.map(({ name, Icon }) => {
-              return (
-                <Action key={name}>
-                  <ActionIcon><Icon /></ActionIcon>{name}
-                </Action>
-              );
-            })}
-          </Actions>
         </Row>
         <Row>
+          <Action>
+            <Tooltip title="New Sandbox">
+              <PlusIcon to={newSandboxUrl()}>+</PlusIcon>
+            </Tooltip>
+          </Action>
           {hasLogin
-            ? <User user={user} />
+            ? <User signOut={userActions.signOut} user={user} />
             : <Button small onClick={userActions.signIn}>
-                Login with GitHub
+                <Row>
+                  <GithubIcon style={{ marginRight: '0.5rem' }} />
+                  {' '}
+                  Sign in with GitHub
+                </Row>
               </Button>}
         </Row>
       </Row>

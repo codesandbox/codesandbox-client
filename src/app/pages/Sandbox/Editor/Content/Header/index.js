@@ -17,6 +17,8 @@ import userActionCreators from 'app/store/user/actions';
 import { newSandboxUrl } from 'app/utils/url-generator';
 import ModeIcons from 'app/components/sandbox/ModeIcons';
 
+import User from 'app/containers/Navigation/User';
+
 import Action from './Action';
 import UserView from './User';
 import FeedbackView from './FeedbackView';
@@ -157,17 +159,20 @@ export default class Header extends React.PureComponent {
               onClick={toggleWorkspace}
             />
           </Tooltip>
-          {user && sandbox.userLiked
-            ? <Action
-                tooltip="Undo like"
-                Icon={FullHeartIcon}
-                onClick={this.toggleLike}
-              />
-            : <Action
-                tooltip="Like"
-                Icon={HeartIcon}
-                onClick={this.toggleLike}
-              />}
+          {user.jwt &&
+            (sandbox.userLiked
+              ? <Action
+                  tooltip="Undo like"
+                  title={sandbox.likeCount}
+                  Icon={FullHeartIcon}
+                  onClick={this.toggleLike}
+                />
+              : <Action
+                  tooltip="Like"
+                  title={sandbox.likeCount}
+                  Icon={HeartIcon}
+                  onClick={this.toggleLike}
+                />)}
           <Action onClick={this.forkSandbox} title="Fork" Icon={Fork} />
           <Action
             onClick={canSave && this.massUpdateModules}
@@ -184,14 +189,15 @@ export default class Header extends React.PureComponent {
             email={user.email}
             sendMessage={userActions.sendFeedback}
           />
-          <Action href={newSandboxUrl()} Icon={PlusIcon} />
+          <Action
+            href={newSandboxUrl()}
+            tooltip="New Sandbox"
+            Icon={PlusIcon}
+          />
           {user.jwt
-            ? <UserView
-                signOut={userActions.signOut}
-                sandbox={sandbox}
-                loadUserSandboxes={userActions.loadUserSandboxes}
-                user={user}
-              />
+            ? <div style={{ fontSize: '.875rem', margin: '6px 0.5rem' }}>
+                <User small user={user} signOut={userActions.signOut} />
+              </div>
             : <Action
                 onClick={userActions.signIn}
                 title="Sign in with Github"

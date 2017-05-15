@@ -5,6 +5,8 @@ import { sandboxUrl } from 'app/utils/url-generator';
 import delayEffect from 'app/utils/animation/delay-effect';
 import Row from 'app/components/flex/Row';
 
+import Stat from 'app/components/Stat';
+import LikeHeart from 'app/containers/LikeHeart';
 import PlayButton from './PlayButton';
 
 const Container = styled.div`
@@ -29,6 +31,11 @@ const Title = styled.h1`
   font-size: 1.25rem;
   font-weight: 300;
   z-index: 2;
+`;
+
+const Like = styled(LikeHeart)`
+  margin-left: 0.5rem;
+  transform: translateY(-3px);
 `;
 
 const Description = styled.p`
@@ -60,33 +67,6 @@ const PlayButtonContainer = styled(Link)`
   ${delayEffect(0.5)}
 `;
 
-const Stat = styled.div`
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 0;
-  margin: 1rem 0;
-  flex: 1;
-  border-right: 1px solid rgba(255, 255, 255, 0.15);
-
-  &:last-child {
-    border-right: none;
-  }
-`;
-
-const Number = styled.div`
-  font-weight: 400;
-  font-size: 1.125rem;
-`;
-
-const Property = styled.div`
-  font-weight: 400;
-  font-size: .875rem;
-  color: rgba(255, 255, 255, 0.5);
-  text-transform: uppercase;
-  margin-bottom: 0.4rem;
-`;
-
 type Props = {
   id: string,
   title: string,
@@ -105,7 +85,9 @@ export default ({
   forkCount,
 }: Props) => (
   <Container>
-    <Title>{title}</Title>
+    <Row alignItems="center">
+      <Title>{title} <Like sandboxId={id} /></Title>
+    </Row>
     <Row alignItems="flex-start">
       <div style={{ flex: 6 }}>
         <Description>
@@ -116,18 +98,9 @@ export default ({
         <PlayButtonContainer to={sandboxUrl({ id })}>
           <PlayButton />
         </PlayButtonContainer>
-        <Stat>
-          <Property>likes</Property>
-          <Number>{likeCount}</Number>
-        </Stat>
-        <Stat>
-          <Property>views</Property>
-          <Number>{viewCount}</Number>
-        </Stat>
-        <Stat>
-          <Property>forks</Property>
-          <Number>{forkCount}</Number>
-        </Stat>
+        <Stat name="likes" count={likeCount} />
+        <Stat name="views" count={viewCount} />
+        <Stat name="forks" count={forkCount} />
       </Stats>
     </Row>
   </Container>

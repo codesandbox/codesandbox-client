@@ -2,6 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
+import MoreInfoIcon from 'react-icons/lib/md/arrow-drop-down';
+
 import Tooltip from 'app/components/Tooltip';
 
 const styles = props =>
@@ -79,6 +81,7 @@ type Props = {
   placeholder: ?boolean,
   highlight: ?boolean,
   tooltip: ?string,
+  moreInfo: ?boolean,
 };
 
 export default ({
@@ -89,8 +92,9 @@ export default ({
   tooltip,
   highlight,
   placeholder,
+  moreInfo,
 }: Props) => {
-  if (placeholder || tooltip) {
+  if (!href && (placeholder || tooltip)) {
     return (
       <ActionTooltip
         disabledAction={!onClick}
@@ -99,7 +103,8 @@ export default ({
       >
         <IconContainer onClick={onClick}>
           <Icon />
-          {title && <Title>{title}</Title>}
+          {title !== undefined && <Title>{title}</Title>}
+          {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
         </IconContainer>
       </ActionTooltip>
     );
@@ -109,9 +114,24 @@ export default ({
       <Action disabledAction={!onClick} highlight={highlight}>
         <IconContainer onClick={onClick}>
           <Icon />
-          {title && <Title>{title}</Title>}
+          {title !== undefined && <Title>{title}</Title>}
+          {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
         </IconContainer>
       </Action>
+    );
+  }
+
+  if (href && (placeholder || tooltip)) {
+    return (
+      <ActionLink to={href}>
+        <Tooltip title={placeholder || tooltip}>
+          <IconContainer>
+            <Icon />
+            {title !== undefined && <Title>{title}</Title>}
+            {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
+          </IconContainer>
+        </Tooltip>
+      </ActionLink>
     );
   }
 
@@ -119,7 +139,8 @@ export default ({
     <ActionLink to={href}>
       <IconContainer>
         <Icon />
-        {title && <Title>{title}</Title>}
+        {title !== undefined && <Title>{title}</Title>}
+        {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
       </IconContainer>
     </ActionLink>
   );

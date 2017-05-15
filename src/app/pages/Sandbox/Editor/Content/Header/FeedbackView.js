@@ -58,7 +58,7 @@ export default class FeedbackView extends React.PureComponent {
 
   handleChange = e => this.setState({ message: e.target.value });
 
-  handleSend = toggle => () => {
+  handleSend = (toggle: Function) => () => {
     if (this.state.message !== '') {
       toggle();
       this.props.sendMessage(this.state.message);
@@ -73,6 +73,7 @@ export default class FeedbackView extends React.PureComponent {
           HeaderComponent={Action}
           headerProps={{
             Icon: FeedbackIcon,
+            moreInfo: true,
           }}
         >
           {toggle => (

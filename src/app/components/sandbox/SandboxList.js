@@ -53,7 +53,7 @@ const Body = styled.tbody`
 
 const SandboxRow = styled.tr`
   transition: 0.3s ease all;
-  ${props => delayEffect(0.25 + props.index * 0.05)};
+  ${props => delayEffect(0.25 + props.index * 0.05, false)};
   border: none;
   margin: 0;
 

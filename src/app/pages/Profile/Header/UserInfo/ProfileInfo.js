@@ -5,6 +5,8 @@ import Column from 'app/components/flex/Column';
 import delayEffect from 'app/utils/animation/delay-effect';
 import Margin from 'app/components/spacing/Margin';
 
+import GithubIcon from 'react-icons/lib/go/mark-github';
+
 const ProfileImage = styled.img`
   border-radius: 2px;
   margin-right: 1.5rem;
@@ -22,12 +24,20 @@ const Name = styled.div`
 `;
 
 const Username = styled.div`
+  display: flex;
+  align-items: center;
   font-size: 1.25rem;
   font-weight: 200;
   color: rgba(255, 255, 255, 0.6);
   ${delayEffect(0.15)}
 
   margin-bottom: 1rem;
+`;
+
+const IconWrapper = styled(GithubIcon)`
+  margin-left: 0.75rem;
+  font-size: 1.1rem;
+  color: white;
 `;
 
 type Props = {
@@ -37,13 +47,20 @@ type Props = {
 };
 
 export default ({ username, name, avatarUrl }: Props) => (
-  <Row>
+  <Row style={{ flex: 1 }}>
     <ProfileImage alt={username} height={175} width={175} src={avatarUrl} />
     <Margin bottom={3}>
       <Column justifyContent="space-between">
         <Name>{name}</Name>
         <Username>
           {username}
+          <a
+            href={`https://github.com/${username}`}
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <IconWrapper />
+          </a>
         </Username>
       </Column>
     </Margin>

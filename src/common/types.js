@@ -43,7 +43,7 @@ export type User = {
   avatarUrl: ?string,
   showcasedSandboxShortId: ?string,
   sandboxCount: number,
-  likeCount: number,
+  givenLikeCount: number,
 };
 
 export type Sandbox = {
