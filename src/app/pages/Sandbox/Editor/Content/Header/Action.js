@@ -40,9 +40,10 @@ const styles = props =>
 
 const Title = styled.span`
   padding-left: 0.5rem;
+  ${props => !props.unresponsive && `
   @media (max-width: 1300px) {
     display: none;
-  }
+  }`}
 `;
 
 const Action = styled.div`
@@ -82,6 +83,7 @@ type Props = {
   highlight: ?boolean,
   tooltip: ?string,
   moreInfo: ?boolean,
+  unresponsive: boolean,
 };
 
 export default ({
@@ -93,6 +95,7 @@ export default ({
   highlight,
   placeholder,
   moreInfo,
+  unresponsive,
 }: Props) => {
   if (!href && (placeholder || tooltip)) {
     return (
@@ -103,7 +106,8 @@ export default ({
       >
         <IconContainer onClick={onClick}>
           <Icon />
-          {title !== undefined && <Title>{title}</Title>}
+          {title !== undefined &&
+            <Title unresponsive={unresponsive}>{title}</Title>}
           {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
         </IconContainer>
       </ActionTooltip>
@@ -114,7 +118,8 @@ export default ({
       <Action disabledAction={!onClick} highlight={highlight}>
         <IconContainer onClick={onClick}>
           <Icon />
-          {title !== undefined && <Title>{title}</Title>}
+          {title !== undefined &&
+            <Title unresponsive={unresponsive}>{title}</Title>}
           {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
         </IconContainer>
       </Action>
@@ -127,7 +132,8 @@ export default ({
         <Tooltip title={placeholder || tooltip}>
           <IconContainer>
             <Icon />
-            {title !== undefined && <Title>{title}</Title>}
+            {title !== undefined &&
+              <Title unresponsive={unresponsive}>{title}</Title>}
             {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
           </IconContainer>
         </Tooltip>
@@ -139,7 +145,8 @@ export default ({
     <ActionLink to={href}>
       <IconContainer>
         <Icon />
-        {title !== undefined && <Title>{title}</Title>}
+        {title !== undefined &&
+          <Title unresponsive={unresponsive}>{title}</Title>}
         {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
       </IconContainer>
     </ActionLink>

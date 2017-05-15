@@ -1,10 +1,11 @@
 // @flow
 import React from 'react';
 import styled from 'styled-components';
-import delayEffect from 'app/utils/animation/delay-effect';
-
 import moment from 'moment';
 import { Link } from 'react-router-dom';
+
+import delayEffect from 'app/utils/animation/delay-effect';
+import Button from 'app/components/buttons/Button';
 import { sandboxUrl } from 'app/utils/url-generator';
 
 import type { SmallSandbox } from 'common/types';
@@ -41,7 +42,7 @@ const Body = styled.tbody`
   margin-top: 3rem;
   box-shadow: 0 3px 3px rgba(0, 0, 0, 0.5);
   color: rgba(255, 255, 255, 0.7);
-  background: ${props => props.theme.background};
+  background: ${props => props.theme.background2};
 
   td {
     border: none;
@@ -58,7 +59,7 @@ const SandboxRow = styled.tr`
   margin: 0;
 
   &:hover {
-    background-color: ${props => props.theme.background.lighten(0.2)};
+    background-color: ${props => props.theme.primary.clearer(0.9)};
     color: rgba(255, 255, 255, 0.9);
   }
 `;

@@ -58,7 +58,7 @@ const PlayButtonContainer = styled(Link)`
   position: absolute;
   display: flex;
   justify-content: center;
-  top: -145%;
+  top: -160%;
   left: 0;
   right: 0;
 

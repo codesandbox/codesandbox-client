@@ -10,7 +10,6 @@ import type { Sandbox } from 'common/types';
 
 import { sandboxesSelector } from 'app/store/entities/sandboxes/selectors';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
-import userActionCreators from 'app/store/user/actions';
 import { jwtSelector } from 'app/store/user/selectors';
 
 import Title from 'app/components/text/Title';
@@ -22,7 +21,6 @@ type Props = {
   sandbox: ?Sandbox,
   sandboxes: { [id: string]: Sandbox },
   sandboxActions: typeof sandboxActionCreators,
-  userActions: typeof userActionCreators,
   hasLogin: boolean,
   match: { params: { id: ?string } },
 };
@@ -48,7 +46,6 @@ const mapStateToProps = createSelector(
 );
 const mapDispatchToProps = dispatch => ({
   sandboxActions: bindActionCreators(sandboxActionCreators, dispatch),
-  userActions: bindActionCreators(userActionCreators, dispatch),
 });
 class SandboxPage extends React.PureComponent {
   componentDidMount() {
@@ -86,7 +83,7 @@ class SandboxPage extends React.PureComponent {
   state = { notFound: false };
 
   render() {
-    const { sandbox, sandboxActions, userActions, user, match } = this.props;
+    const { sandbox, match } = this.props;
     if (this.state.notFound) {
       return (
         <Centered horizontal vertical>

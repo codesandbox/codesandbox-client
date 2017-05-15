@@ -20,7 +20,6 @@ import ModeIcons from 'app/components/sandbox/ModeIcons';
 import User from 'app/containers/Navigation/User';
 
 import Action from './Action';
-import UserView from './User';
 import FeedbackView from './FeedbackView';
 import ShareView from './ShareView';
 
@@ -57,7 +56,7 @@ const Chevron = styled(ChevronLeft)`
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100%;
+  height: 3rem;
   margin-left: 0.5rem;
   margin-right: 0.5rem;
   z-index: 20;
@@ -203,6 +202,7 @@ export default class Header extends React.PureComponent {
                 title="Sign in with Github"
                 Icon={GithubIcon}
                 highlight
+                unresponsive
               />}
         </Right>
       </Container>

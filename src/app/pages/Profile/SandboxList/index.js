@@ -5,8 +5,6 @@ import Button from 'app/components/buttons/Button';
 
 import SandboxList from 'app/components/sandbox/SandboxList';
 
-import usersActionCreators from 'app/store/entities/users/actions';
-
 const PER_PAGE_COUNT = 15;
 
 const Navigation = styled.div`
