@@ -21,9 +21,10 @@ type Props = {
   deleteEntry: (id: string) => any,
   setCurrentModule: (id: string) => any,
   currentModuleId: ?string,
-  parentId: string,
+  parentShortid: string,
   errors: Array<ModuleError>,
   isInProjectView: boolean,
+  parentShortid: string,
 };
 
 export default class DirectoryChildren extends React.PureComponent {
@@ -41,7 +42,7 @@ export default class DirectoryChildren extends React.PureComponent {
       openMenu,
       setCurrentModule,
       directories,
-      parentId,
+      parentShortid,
       sandboxId,
       modules,
       deleteEntry,
@@ -53,13 +54,14 @@ export default class DirectoryChildren extends React.PureComponent {
     return (
       <div>
         {directories
-          .filter(x => x.directoryShortid === parentId)
+          .filter(x => x.directoryShortid === parentShortid)
           .map(dir => (
             <DirectoryEntry
               key={dir.id}
               siblings={[...directories, ...modules]}
               depth={depth + 1}
               id={dir.id}
+              shortid={dir.shortid}
               title={dir.title}
               sandboxId={sandboxId}
               modules={modules}
@@ -69,7 +71,7 @@ export default class DirectoryChildren extends React.PureComponent {
               errors={errors}
             />
           ))}
-        {modules.filter(x => x.directoryShortid === parentId).map(m => {
+        {modules.filter(x => x.directoryShortid === parentShortid).map(m => {
           const isActive = m.id === currentModuleId;
           const mainModule = isMainModule(m);
 
@@ -81,6 +83,7 @@ export default class DirectoryChildren extends React.PureComponent {
             <Entry
               key={m.id}
               id={m.id}
+              shortid={m.shortid}
               title={m.title}
               depth={depth + 1}
               active={isActive}

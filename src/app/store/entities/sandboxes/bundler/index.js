@@ -7,7 +7,7 @@ import logError from '../../../../utils/error';
 
 const debug = _debug('cs:app:packager');
 
-export const PACKAGER_URL = 'https://cdn.jsdelivr.net/webpack/v2';
+export const PACKAGER_URL = 'https://cdn.jsdelivr.net/webpack/v3';
 
 /**
  * Request the packager, if retries > 4 it will throw if something goes wrong
@@ -35,7 +35,7 @@ async function requestPackager(query: string) {
   }
 }
 
-async function callNewPackager(dependencies: Object) {
+async function callPackager(dependencies: Object) {
   const dependencyUrl = dependenciesToQuery(dependencies);
 
   const result = await requestPackager(dependencyUrl);
@@ -48,7 +48,7 @@ export default function fetch(actions, id: string, npmDependencies: Object) {
       dispatch({ type: actions.REQUEST, initial: true, id });
       // New Packager flow
       try {
-        const result = await callNewPackager(npmDependencies);
+        const result = await callPackager(npmDependencies);
 
         dispatch({ type: actions.SUCCESS, id, result });
         return result;

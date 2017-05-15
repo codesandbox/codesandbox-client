@@ -49,7 +49,7 @@ function singleSandboxReducer(sandbox: Sandbox, action: Action): Sandbox {
     case ADD_DIRECTORY_TO_SANDBOX:
       return {
         ...sandbox,
-        directories: [...sandbox.directories, action.directoryShortid],
+        directories: [...sandbox.directories, action.directoryId],
       };
     case REMOVE_MODULE_FROM_SANDBOX: {
       const currentModule = sandbox.currentModule;
@@ -64,9 +64,7 @@ function singleSandboxReducer(sandbox: Sandbox, action: Action): Sandbox {
     case REMOVE_DIRECTORY_FROM_SANDBOX:
       return {
         ...sandbox,
-        directories: sandbox.directories.filter(
-          d => d !== action.directoryShortid,
-        ),
+        directories: sandbox.directories.filter(d => d !== action.directoryId),
       };
     case SET_NPM_DEPENDENCIES:
       return {
