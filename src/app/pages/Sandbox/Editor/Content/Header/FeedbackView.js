@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import FeedbackIcon from 'react-icons/lib/go/comment-discussion';
+import Button from 'app/components/buttons/Button';
 
 import HoverMenu from './HoverMenu';
 import Action from './Action';
-import Button from '../../../../../components/buttons/Button';
 
 const Container = styled.div`
   position: relative;
@@ -58,7 +58,7 @@ export default class FeedbackView extends React.PureComponent {
 
   handleChange = e => this.setState({ message: e.target.value });
 
-  handleSend = toggle => () => {
+  handleSend = (toggle: Function) => () => {
     if (this.state.message !== '') {
       toggle();
       this.props.sendMessage(this.state.message);
@@ -72,8 +72,8 @@ export default class FeedbackView extends React.PureComponent {
         <HoverMenu
           HeaderComponent={Action}
           headerProps={{
-            title: 'Feedback',
             Icon: FeedbackIcon,
+            moreInfo: true,
           }}
         >
           {toggle => (

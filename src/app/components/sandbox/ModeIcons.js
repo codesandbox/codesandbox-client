@@ -72,18 +72,18 @@ export default function AllIcons({
 }: Props) {
   return (
     <Tooltips>
-      <Tooltip message="Editor view">
+      <Tooltip title="Editor view">
         <ViewIcon onClick={setEditorView} active={showEditor && !showPreview}>
           <EditorIcon />
         </ViewIcon>
       </Tooltip>
-      <Tooltip message="Split view">
+      <Tooltip title="Split view">
         <ViewIcon onClick={setMixedView} active={showEditor && showPreview}>
           <EditorIcon half />
           <PreviewIcon half />
         </ViewIcon>
       </Tooltip>
-      <Tooltip message="Preview view">
+      <Tooltip title="Preview view">
         <ViewIcon onClick={setPreviewView} active={!showEditor && showPreview}>
           <PreviewIcon />
         </ViewIcon>

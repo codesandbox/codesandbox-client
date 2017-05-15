@@ -1,16 +1,17 @@
-/* @flow */
+// @flow
 import React from 'react';
+import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { createSelector } from 'reselect';
 
+import type { Sandbox } from 'common/types';
+
 import { sandboxesSelector } from 'app/store/entities/sandboxes/selectors';
-import sandboxActions from 'app/store/entities/sandboxes/actions';
-import userActionCreators from 'app/store/user/actions';
+import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 import { jwtSelector } from 'app/store/user/selectors';
 
-import type { Sandbox } from 'common/types';
 import Title from 'app/components/text/Title';
 import Centered from 'app/components/flex/Centered';
 
@@ -19,14 +20,19 @@ import Editor from './Editor';
 type Props = {
   sandbox: ?Sandbox,
   sandboxes: { [id: string]: Sandbox },
-  sandboxActions: typeof sandboxActions,
-  userActions: typeof userActionCreators,
+  sandboxActions: typeof sandboxActionCreators,
   hasLogin: boolean,
   match: { params: { id: ?string } },
 };
 type State = {
   notFound: boolean,
 };
+
+const Container = styled.div`
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+`;
 
 const mapStateToProps = createSelector(
   sandboxesSelector,
@@ -39,16 +45,11 @@ const mapStateToProps = createSelector(
   },
 );
 const mapDispatchToProps = dispatch => ({
-  sandboxActions: bindActionCreators(sandboxActions, dispatch),
-  userActions: bindActionCreators(userActionCreators, dispatch),
+  sandboxActions: bindActionCreators(sandboxActionCreators, dispatch),
 });
 class SandboxPage extends React.PureComponent {
   componentDidMount() {
     this.fetchSandbox();
-
-    if (this.props.hasLogin) {
-      this.props.userActions.getCurrentUser();
-    }
   }
 
   fetchSandbox = () => {
@@ -102,9 +103,9 @@ class SandboxPage extends React.PureComponent {
       : 'Editor - CodeSandbox';
 
     return (
-      <Centered horizontal vertical>
+      <Container>
         <Editor match={match} sandbox={sandbox} />
-      </Centered>
+      </Container>
     );
   }
 }

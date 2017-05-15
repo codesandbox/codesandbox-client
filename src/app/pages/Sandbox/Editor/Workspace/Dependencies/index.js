@@ -3,7 +3,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import MarginBottom from 'app/components/spacing/MarginBottom';
+import Margin from 'app/components/spacing/Margin';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 
 import WorkspaceSubtitle from '../WorkspaceSubtitle';
@@ -122,7 +122,7 @@ export default class Dependencies extends React.PureComponent {
       <div>
         {processing &&
           <Overlay>We{"'"}re processing dependencies, please wait...</Overlay>}
-        <MarginBottom>
+        <Margin bottom={0}>
           <WorkspaceSubtitle>
             NPM Packages
           </WorkspaceSubtitle>
@@ -140,7 +140,7 @@ export default class Dependencies extends React.PureComponent {
             existingDependencies={Object.keys(npmDependencies)}
             addDependency={this.addDependency}
           />
-        </MarginBottom>
+        </Margin>
         <div>
           <WorkspaceSubtitle>
             External Resources

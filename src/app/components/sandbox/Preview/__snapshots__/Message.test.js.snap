@@ -2,7 +2,7 @@
 
 exports[`Message it renders a dependency not found error 1`] = `
 <div
-  className="RUzQh"
+  className="eToXWB"
   color="error"
 >
   <div
@@ -50,20 +50,6 @@ exports[`Message it renders a dependency not found error 1`] = `
         </b>
         ?
       </div>
-      <div
-        style={
-          Object {
-            "marginTop": "1rem",
-          }
-        }
-      >
-        <button
-          className="eDPTas"
-          onClick={[Function]}
-        >
-          ADD DEPENDENCY TO PROJECT
-        </button>
-      </div>
     </div>
   </div>
 </div>
@@ -71,7 +57,7 @@ exports[`Message it renders a dependency not found error 1`] = `
 
 exports[`Message it renders a warning 1`] = `
 <div
-  className="bWsCpD"
+  className="gzYKMb"
   color={false}
 >
   <div
@@ -115,20 +101,6 @@ exports[`Message it renders a warning 1`] = `
       >
         Loading dependencies
         : 
-      </div>
-      <div
-        style={
-          Object {
-            "marginTop": "1rem",
-          }
-        }
-      >
-        <button
-          className="eDPTas"
-          onClick={[Function]}
-        >
-          OPEN MODULE
-        </button>
       </div>
     </div>
   </div>

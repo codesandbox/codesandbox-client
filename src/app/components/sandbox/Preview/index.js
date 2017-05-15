@@ -85,6 +85,11 @@ export default class Preview extends React.PureComponent {
       return;
     }
 
+    if (prevProps.sandboxId !== this.props.sandboxId) {
+      this.executeCodeImmediately();
+      return;
+    }
+
     if (
       prevProps.bundle &&
       this.props.bundle &&

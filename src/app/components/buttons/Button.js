@@ -1,39 +1,50 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 import theme from 'common/theme';
 
-const getBackgroundColor = ({ secondary, transparent, disabled }) => {
-  if (disabled) return theme.background2.darken(0.1)();
-  if (transparent) return 'rgba(0,0,0,0.0)';
-  if (secondary) return theme.primary.clearer(0.8)();
-  return theme.secondary.clearer(0.4)();
+const getBackgroundColor = ({ disabled }) => {
+  if (disabled) return `background: ${theme.background2.darken(0.1)()}`;
+  return `background-image: linear-gradient(270deg, #fed29d, #A58B66, #7abae8, #56a0d6);`;
 };
 
-const getBorder = ({ transparent, disabled }) => {
-  if (transparent) return `1px solid ${theme.secondary.clearer(0.5)()}`;
-  if (disabled) return '1px solid transparent';
-  return `1px solid ${theme.secondary()};`;
-};
-
-const getColor = ({ transparent, disabled }) => {
+const getColor = ({ disabled }) => {
   if (disabled) return theme.background2.lighten(1.5)();
-  if (transparent) return 'rgba(255,255,255,0.8)';
   return 'white';
 };
+
+const forward = keyframes`
+  0%{background-position:0% 50%}
+  100%{background-position:100% 50%}
+`;
+
+const backward = keyframes`
+  0%{background-position:100% 0%}
+  100%{background-position:0% 50%}
+`;
 
 const styles = props =>
   `
   transition: 0.3s ease all;
-  text-transform: uppercase;
-  text-decoration: none;
-  line-height: 1;
-  font-weight: 300;
-  background-color: ${getBackgroundColor(props)};
-  border: ${getBorder(props)};
+  animation-name: ${backward};
+  animation-duration: 300ms;
+  animation-timing-function: ease;
+
+  border: none;
+  outline: none;
+  ${getBackgroundColor(props)};
+  background-size: 720%;
+
+  border-radius: 4px;
+
+  font-size: 1.125rem;
+  text-align: center;
   color: ${getColor(props)};
-  border-radius: 2px;
+  font-weight: 300;
+  ${!props.disabled && `box-shadow: 0 3px 3px rgba(0, 0, 0, 0.5);`};
+  width: ${props.block ? '100%' : 'inherit'};
+
   ${(() => {
     if (props.small) {
       return `
@@ -41,20 +52,30 @@ const styles = props =>
         font-size: 0.875rem;
       `;
     }
-    return 'padding: 0.75rem 1rem;';
+    return 'padding: 0.65rem 2.25rem;';
   })()}
-  outline: none;
-  width: ${props.block ? '100%' : 'inherit'};
+
+  user-select: none;
+  text-decoration: none;
 
   ${!props.disabled && `
-      cursor: pointer;
-      &:hover {
-        background-color: ${theme.primary.clearer(0.5)()};
-        border-color: ${theme.primary()};
-      }
-  `}
-`;
+  cursor: pointer;
+  &:hover {
+    animation-name: ${forward};
+    animation-duration: 300ms;
+    animation-timing-function: ease;
+    animation-direction: normal;
+    animation-fill-mode: forwards;
 
+    box-shadow: 0 7px 10px rgba(0, 0, 0, 0.5);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(1px);
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0.5);
+  }`}
+`;
 const LinkButton = styled(Link)`${styles}`;
 const AButton = styled.a`${styles}`;
 const Button = styled.button`${styles}`;

@@ -16,6 +16,14 @@ module.exports = {
     require.resolve('babel-plugin-transform-class-properties'),
     require.resolve('babel-plugin-transform-runtime'),
     require.resolve('babel-plugin-lodash'),
+    require.resolve('babel-plugin-syntax-dynamic-import'),
+    [
+      require.resolve('react-loadable/babel'),
+      {
+        server: true,
+        webpack: true,
+      },
+    ],
     require.resolve('react-hot-loader/babel'),
   ],
 };

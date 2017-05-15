@@ -31,31 +31,24 @@ export default ({
       <polyline
         fill="none"
         stroke="#FFFFFF"
-        strokeWidth="50"
+        strokeWidth="80"
         strokeMiterlimit="10"
         points="899,287.833 509,513 509,963"
       />
       <line
         fill="none"
         stroke="#FFFFFF"
-        strokeWidth="50"
+        strokeWidth="80"
         strokeMiterlimit="10"
         x1="122.167"
         y1="289"
         x2="511.5"
         y2="513"
       />
-      <path
-        fill="none"
-        stroke="#000000"
-        strokeWidth="4"
-        strokeMiterlimit="10"
-        d="M122.167,739"
-      />
       <polygon
         fill="none"
         stroke="#FFFFFF"
-        strokeWidth="50"
+        strokeWidth="80"
         strokeMiterlimit="10"
         points="121,739.083 510.917,963.042 901,738.333 901,288 511,62 121,289"
       />

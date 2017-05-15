@@ -6,18 +6,19 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
-import type { Sandbox } from 'common/types';
+import type { Sandbox, User } from 'common/types';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 import {
   modulesFromSandboxNotSavedSelector,
 } from 'app/store/entities/sandboxes/modules/selectors';
+import { usersSelector } from 'app/store/entities/users/selectors';
 
 import Files from './Files';
 import Versions from './Versions';
 import Dependencies from './Dependencies';
 import Project from './Project';
 import WorkspaceItem from './WorkspaceItem';
-import SandboxDetails from './SandboxDetails';
+import Logo from './Logo';
 import Preferences from './Preferences';
 
 const Container = styled.div`
@@ -32,6 +33,7 @@ type Props = {
   sandbox: Sandbox,
   sandboxActions: typeof sandboxActionCreators,
   preventTransition: boolean,
+  users: { [key: id]: User },
 };
 
 const mapDispatchToProps = dispatch => ({
@@ -39,24 +41,30 @@ const mapDispatchToProps = dispatch => ({
 });
 const mapStateToProps = createSelector(
   modulesFromSandboxNotSavedSelector,
-  preventTransition => ({ preventTransition }),
+  usersSelector,
+  (preventTransition, users) => ({ preventTransition, users }),
 );
-const Workspace = ({ sandbox, preventTransition, sandboxActions }: Props) => (
+const Workspace = ({
+  sandbox,
+  users,
+  preventTransition,
+  sandboxActions,
+}: Props) => (
   <Container>
-    <SandboxDetails
-      sandbox={sandbox}
-      updateSandboxInfo={sandboxActions.updateSandboxInfo}
-    />
+    <Logo />
     <WorkspaceItem defaultOpen title="Project">
       <Project
         updateSandboxInfo={sandboxActions.updateSandboxInfo}
         id={sandbox.id}
         title={sandbox.title}
         viewCount={sandbox.viewCount}
+        likeCount={sandbox.likeCount}
+        forkCount={sandbox.forkCount}
         description={sandbox.description}
         forkedSandbox={sandbox.forkedFromSandbox}
         preventTransition={preventTransition}
         owned={sandbox.owned}
+        author={users[sandbox.author]}
         deleteSandbox={sandboxActions.deleteSandbox}
       />
     </WorkspaceItem>

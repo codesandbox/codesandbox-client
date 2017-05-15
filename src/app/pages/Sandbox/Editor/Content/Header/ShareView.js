@@ -223,6 +223,7 @@ class ShareView extends React.PureComponent {
           headerProps={{
             title: 'Share',
             Icon: ShareIcon,
+            moreInfo: true,
           }}
         >
           {() => (

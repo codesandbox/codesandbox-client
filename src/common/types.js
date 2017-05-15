@@ -1,3 +1,5 @@
+import React from 'react';
+
 export type ModuleError = {
   message: string,
   line: number,
@@ -37,7 +39,11 @@ export type CurrentUser = {
 export type User = {
   id: string,
   username: string,
+  name: string,
   avatarUrl: ?string,
+  showcasedSandboxShortId: ?string,
+  sandboxCount: number,
+  givenLikeCount: number,
 };
 
 export type Sandbox = {
@@ -45,6 +51,9 @@ export type Sandbox = {
   title: ?string,
   description: string,
   viewCount: number,
+  likeCount: number,
+  forkCount: number,
+  userLiked: boolean,
   modules: Array<string>,
   currentModule: ?string,
   directories: Array<string>,
@@ -64,6 +73,16 @@ export type Sandbox = {
   showPreview: ?boolean,
   author: User,
   forkedFromSandbox: ?{ title: string, id: string },
+};
+
+export type SmallSandbox = {
+  id: string,
+  title: ?string,
+  insertedAt: string,
+  updatedAt: string,
+  likeCount: number,
+  viewCount: number,
+  forkCount: number,
 };
 
 export type Preferences = {
@@ -86,4 +105,10 @@ export type Notification = {
   type: 'notice' | 'success' | 'warning' | 'error',
   number: Date,
   buttons: ?Array<NotificationButton>,
+};
+
+export type Modal = {
+  open: boolean,
+  title: ?string,
+  Body: ?React.Element<*>,
 };

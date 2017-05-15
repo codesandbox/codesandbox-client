@@ -1,7 +1,6 @@
 // @flow
 import React from 'react';
 import styled from 'styled-components';
-import moment from 'moment';
 
 import WorkspaceSubtitle from '../WorkspaceSubtitle';
 import EntryContainer from '../EntryContainer';
@@ -90,7 +89,9 @@ export default class Versions extends React.PureComponent {
         {[].map(v => (
           <EntryContainer key={v.version}>
             <span>{v.version}</span>
-            <VersionDate>{moment(v.insertedAt).format('lll')}</VersionDate>
+            <VersionDate>
+              {/* moment(v.insertedAt).format('lll') */}
+            </VersionDate>
           </EntryContainer>
         ))}
 

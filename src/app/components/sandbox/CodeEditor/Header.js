@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import Tooltip from 'app/components/Tooltip';
 import Button from 'app/components/buttons/Button';
+import { Tooltip } from 'react-tippy';
 
 const Container = styled.div`
   display: flex;
@@ -46,7 +46,7 @@ export default ({ path, title, saveComponent, prettify }: Props) => (
     </div>
 
     <Buttons>
-      <Tooltip bottom offset={-25} message="Made possible by Prettier">
+      <Tooltip position="bottom" title="Made possible by Prettier">
         <Button disabled={!prettify} onClick={prettify} small>
           Prettify
         </Button>

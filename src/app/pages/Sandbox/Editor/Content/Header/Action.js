@@ -2,18 +2,19 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
+import MoreInfoIcon from 'react-icons/lib/md/arrow-drop-down';
+
 import Tooltip from 'app/components/Tooltip';
 
 const styles = props =>
   `
+  display: flex !important;
   transition: 0.3s ease all;
-  display: flex;
   flex-direction: row;
   align-items: center;
   vertical-align: middle;
-  font-size: 1rem;
+  font-size: .875rem;
   line-height: 1;
-  padding: 0 1rem;
   height: 100%;
   color: rgba(255,255,255,0.7);
   cursor: pointer;
@@ -35,8 +36,14 @@ const styles = props =>
       border-color: ${props.theme.secondary()}
     }
   `}
+`;
 
-
+const Title = styled.span`
+  padding-left: 0.5rem;
+  ${props => !props.unresponsive && `
+  @media (max-width: 1300px) {
+    display: none;
+  }`}
 `;
 
 const Action = styled.div`
@@ -50,26 +57,33 @@ const ActionLink = styled(Link)`
 
 const ActionTooltip = styled(Tooltip)`
   ${styles}
-  color: rgba(255,255,255,0.3);
-  cursor: default;
+  ${props => props.disabledAction && `
+    color: rgba(255,255,255,0.3);
+    cursor: default;
 
-  &:hover {
-    color: rgba(255,255,255, 0.4);
-  }
+    &:hover {
+      color: rgba(255,255,255, 0.4);
+    }
+  `};
 `;
 
 const IconContainer = styled.div`
-  padding-right: 0.5rem;
-  vertical-align: middle;
+  display: flex;
+  alignItems: center;
+  height: 100%;
+  padding: 0 .75rem;;
 `;
 
 type Props = {
   onClick: ?Function,
   Icon: React.Component<any, any>,
-  title: string,
+  title: ?string,
   href: ?string,
   placeholder: ?boolean,
   highlight: ?boolean,
+  tooltip: ?string,
+  moreInfo: ?boolean,
+  unresponsive: boolean,
 };
 
 export default ({
@@ -77,25 +91,53 @@ export default ({
   href,
   Icon,
   title,
+  tooltip,
   highlight,
   placeholder,
+  moreInfo,
+  unresponsive,
 }: Props) => {
-  if (placeholder) {
+  if (!href && (placeholder || tooltip)) {
     return (
-      <ActionTooltip message={placeholder}>
-        <IconContainer>
+      <ActionTooltip
+        disabledAction={!onClick}
+        title={placeholder || tooltip}
+        hideOnClick={false}
+      >
+        <IconContainer onClick={onClick}>
           <Icon />
-        </IconContainer> {title}
+          {title !== undefined &&
+            <Title unresponsive={unresponsive}>{title}</Title>}
+          {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
+        </IconContainer>
       </ActionTooltip>
     );
   }
   if (onClick) {
     return (
-      <Action highlight={highlight} onClick={onClick}>
-        <IconContainer>
+      <Action disabledAction={!onClick} highlight={highlight}>
+        <IconContainer onClick={onClick}>
           <Icon />
-        </IconContainer> {title}
+          {title !== undefined &&
+            <Title unresponsive={unresponsive}>{title}</Title>}
+          {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
+        </IconContainer>
       </Action>
+    );
+  }
+
+  if (href && (placeholder || tooltip)) {
+    return (
+      <ActionLink to={href}>
+        <Tooltip title={placeholder || tooltip}>
+          <IconContainer>
+            <Icon />
+            {title !== undefined &&
+              <Title unresponsive={unresponsive}>{title}</Title>}
+            {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
+          </IconContainer>
+        </Tooltip>
+      </ActionLink>
     );
   }
 
@@ -103,7 +145,10 @@ export default ({
     <ActionLink to={href}>
       <IconContainer>
         <Icon />
-      </IconContainer> {title}
+        {title !== undefined &&
+          <Title unresponsive={unresponsive}>{title}</Title>}
+        {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
+      </IconContainer>
     </ActionLink>
   );
 };

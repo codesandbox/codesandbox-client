@@ -10,6 +10,15 @@
         "babel-plugin-transform-object-rest-spread",
         "babel-plugin-transform-class-properties",
         "babel-plugin-transform-runtime",
+        "babel-plugin-syntax-dynamic-import",
+        "babel-plugin-lodash",
+        [
+          "react-loadable/babel",
+          {
+            "server": true,
+            "webpack": true
+          }
+        ],
         "babel-plugin-lodash",
         "babel-plugin-system-import-transformer"
       ]

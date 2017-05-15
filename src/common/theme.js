@@ -45,7 +45,7 @@ const createTheme = colors =>
   mapValues(colors, result => decorateSelector(() => result));
 
 const theme = createTheme({
-  background: '#272C2E',
+  background: '#24282A',
   background2: '#1C2022',
   background3: '#374140',
   primary: '#FFD399',

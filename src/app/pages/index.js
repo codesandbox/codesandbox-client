@@ -1,15 +1,19 @@
 // @flow
 import React from 'react';
 import styled from 'styled-components';
-import { Route, Switch, Redirect } from 'react-router-dom';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import Loadable from 'react-loadable';
+import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
+import { createSelector } from 'reselect';
 
 import _debug from 'app/utils/debug';
-
 import Notifications from 'app/containers/Notifications';
 import ContextMenu from 'app/containers/ContextMenu';
-import Sandbox from './Sandbox/';
-import SignIn from './SignIn';
-import NotFound from './NotFound';
+import Modal from 'app/containers/Modal';
+import Loading from 'app/components/Loading';
+import { jwtSelector } from 'app/store/user/selectors';
+import userActionCreators from 'app/store/user/actions';
 
 const routeDebugger = _debug('cs:app:router');
 
@@ -26,30 +30,74 @@ const Content = styled.div`
   background-color: ${props => props.theme.background2};
 `;
 
-export default () => (
-  <Container>
-    <Route
-      path="/"
-      render={({ location }) => {
-        routeDebugger(
-          `Sending '${location.pathname + location.search}' to ga.`,
-        );
-        if (typeof window.ga === 'function') {
-          window.ga('set', 'page', location.pathname + location.search);
-          window.ga('send', 'pageview');
-        }
-        return null;
-      }}
-    />
-    <Notifications />
-    <ContextMenu />
-    <Content>
-      <Switch>
-        <Route exact path="/" render={() => <Redirect to="/s/new" />} />
-        <Route path="/s/:id" component={Sandbox} />
-        <Route path="/signin/:jwt?" component={SignIn} />
-        <Route component={NotFound} />
-      </Switch>
-    </Content>
-  </Container>
-);
+const SignIn = Loadable({
+  loader: () => import('./SignIn'),
+  LoadingComponent: Loading,
+});
+const NotFound = Loadable({
+  loader: () => import('./NotFound'),
+  LoadingComponent: Loading,
+});
+const Sandbox = Loadable({
+  loader: () => import('./Sandbox'),
+  LoadingComponent: Loading,
+});
+const Profile = Loadable({
+  loader: () => import('./Profile'),
+  LoadingComponent: Loading,
+});
+
+type Props = {
+  hasLogin: boolean,
+  userActions: typeof userActionCreators,
+};
+
+const mapStateToProps = createSelector(jwtSelector, jwt => ({
+  hasLogin: !!jwt,
+}));
+const mapDispatchToProps = dispatch => ({
+  userActions: bindActionCreators(userActionCreators, dispatch),
+});
+class Routes extends React.PureComponent {
+  props: Props;
+
+  componentDidMount() {
+    if (this.props.hasLogin) {
+      this.props.userActions.getCurrentUser();
+    }
+  }
+
+  render() {
+    return (
+      <Container>
+        <Route
+          path="/"
+          render={({ location }) => {
+            routeDebugger(
+              `Sending '${location.pathname + location.search}' to ga.`,
+            );
+            if (typeof window.ga === 'function') {
+              window.ga('set', 'page', location.pathname + location.search);
+              window.ga('send', 'pageview');
+            }
+            return null;
+          }}
+        />
+        <Modal />
+        <Notifications />
+        <ContextMenu />
+        <Content>
+          <Switch>
+            <Route exact path="/" render={() => <Redirect to="/s/new" />} />
+            <Route path="/s/:id" component={Sandbox} />
+            <Route path="/signin/:jwt?" component={SignIn} />
+            <Route path="/u/:username" component={Profile} />
+            <Route component={NotFound} />
+          </Switch>
+        </Content>
+      </Container>
+    );
+  }
+}
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Routes));

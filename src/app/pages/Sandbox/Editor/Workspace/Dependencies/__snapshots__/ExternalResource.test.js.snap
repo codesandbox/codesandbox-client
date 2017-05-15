@@ -2,7 +2,7 @@
 
 exports[`ExternalResource renders file if there is an extension 1`] = `
 <span
-  className="dvmFoA"
+  className="btLHBo"
 >
   <a
     href="https://ivesvh.com/ives.js"
@@ -12,7 +12,7 @@ exports[`ExternalResource renders file if there is an extension 1`] = `
     ives.js
   </a>
   <div
-    className="bQGDfv"
+    className="flzNMt"
     onClick={[Function]}
   >
     <svg
@@ -40,7 +40,7 @@ exports[`ExternalResource renders file if there is an extension 1`] = `
 
 exports[`ExternalResource renders url if there is no extension 1`] = `
 <span
-  className="dvmFoA"
+  className="btLHBo"
 >
   <a
     href="https://ivesvh.com/"
@@ -50,7 +50,7 @@ exports[`ExternalResource renders url if there is no extension 1`] = `
     https://ivesvh.com/
   </a>
   <div
-    className="bQGDfv"
+    className="flzNMt"
     onClick={[Function]}
   >
     <svg
@@ -78,7 +78,7 @@ exports[`ExternalResource renders url if there is no extension 1`] = `
 
 exports[`ExternalResource renders url if there is no extension 2`] = `
 <span
-  className="dvmFoA"
+  className="btLHBo"
 >
   <a
     href="https://ivesvh.com"
@@ -88,7 +88,7 @@ exports[`ExternalResource renders url if there is no extension 2`] = `
     https://ivesvh.com/
   </a>
   <div
-    className="bQGDfv"
+    className="flzNMt"
     onClick={[Function]}
   >
     <svg

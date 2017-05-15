@@ -1,5 +1,7 @@
 import styled from 'styled-components';
+import getSpacing from './get-spacing';
 
 export default styled.div`
-  padding: ${({ padding = 1 }) => padding}rem;
+  padding: ${getSpacing};
+  box-sizing: border-box;
 `;

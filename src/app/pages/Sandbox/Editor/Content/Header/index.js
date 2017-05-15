@@ -6,24 +6,28 @@ import Fork from 'react-icons/lib/go/repo-forked';
 import Download from 'react-icons/lib/go/cloud-download';
 import PlusIcon from 'react-icons/lib/go/plus';
 import GithubIcon from 'react-icons/lib/go/mark-github';
-import ChevronLeft from 'react-icons/lib/go/chevron-left';
+import ChevronLeft from 'react-icons/lib/md/chevron-left';
+import HeartIcon from 'react-icons/lib/fa/heart-o';
+import FullHeartIcon from 'react-icons/lib/fa/heart';
+import { Tooltip } from 'react-tippy';
 
 import type { Sandbox, CurrentUser } from 'common/types';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 import userActionCreators from 'app/store/user/actions';
-
+import { newSandboxUrl } from 'app/utils/url-generator';
 import ModeIcons from 'app/components/sandbox/ModeIcons';
 
+import User from 'app/containers/Navigation/User';
+
 import Action from './Action';
-import UserView from './User';
 import FeedbackView from './FeedbackView';
 import ShareView from './ShareView';
-import { newSandboxUrl } from '../../../../../utils/url-generator';
 
 const Container = styled.div`
   display: flex;
   position: relative;
   justify-content: space-between;
+  align-items: center;
   background-color: ${props => props.theme.background2};
   font-size: 1.2rem;
   color: rgba(255, 255, 255, 0.7);
@@ -52,8 +56,9 @@ const Chevron = styled(ChevronLeft)`
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100%;
+  height: 3rem;
   margin-left: 0.5rem;
+  margin-right: 0.5rem;
   z-index: 20;
 
   cursor: pointer;
@@ -114,6 +119,16 @@ export default class Header extends React.PureComponent {
     sandboxActions.setViewMode(sandbox.id, false, true);
   };
 
+  toggleLike = () => {
+    const { sandbox, sandboxActions } = this.props;
+
+    if (sandbox.userLiked) {
+      sandboxActions.unLikeSandbox(sandbox.id);
+    } else {
+      sandboxActions.likeSandbox(sandbox.id);
+    }
+  };
+
   render() {
     const {
       sandbox,
@@ -126,11 +141,37 @@ export default class Header extends React.PureComponent {
 
     return (
       <Container>
+        <ModeIcons
+          small
+          showEditor={sandbox.showEditor}
+          showPreview={sandbox.showPreview}
+          setMixedView={this.setMixedView}
+          setEditorView={this.setEditorView}
+          setPreviewView={this.setPreviewView}
+        />
         <Left>
-          <Chevron
-            onClick={toggleWorkspace}
-            workspaceHidden={workspaceHidden}
-          />
+          <Tooltip
+            title={workspaceHidden ? 'Open sidebar' : 'Collapse sidebar'}
+          >
+            <Chevron
+              workspaceHidden={workspaceHidden}
+              onClick={toggleWorkspace}
+            />
+          </Tooltip>
+          {user.jwt &&
+            (sandbox.userLiked
+              ? <Action
+                  tooltip="Undo like"
+                  title={sandbox.likeCount}
+                  Icon={FullHeartIcon}
+                  onClick={this.toggleLike}
+                />
+              : <Action
+                  tooltip="Like"
+                  title={sandbox.likeCount}
+                  Icon={HeartIcon}
+                  onClick={this.toggleLike}
+                />)}
           <Action onClick={this.forkSandbox} title="Fork" Icon={Fork} />
           <Action
             onClick={canSave && this.massUpdateModules}
@@ -142,32 +183,26 @@ export default class Header extends React.PureComponent {
           <ShareView sandbox={sandbox} />
         </Left>
 
-        <ModeIcons
-          showEditor={sandbox.showEditor}
-          showPreview={sandbox.showPreview}
-          setMixedView={this.setMixedView}
-          setEditorView={this.setEditorView}
-          setPreviewView={this.setPreviewView}
-        />
-
         <Right>
           <FeedbackView
             email={user.email}
             sendMessage={userActions.sendFeedback}
           />
-          <Action href={newSandboxUrl()} title="New" Icon={PlusIcon} />
+          <Action
+            href={newSandboxUrl()}
+            tooltip="New Sandbox"
+            Icon={PlusIcon}
+          />
           {user.jwt
-            ? <UserView
-                signOut={userActions.signOut}
-                sandbox={sandbox}
-                loadUserSandboxes={userActions.loadUserSandboxes}
-                user={user}
-              />
+            ? <div style={{ fontSize: '.875rem', margin: '6px 0.5rem' }}>
+                <User small user={user} signOut={userActions.signOut} />
+              </div>
             : <Action
                 onClick={userActions.signIn}
                 title="Sign in with Github"
                 Icon={GithubIcon}
                 highlight
+                unresponsive
               />}
         </Right>
       </Container>
