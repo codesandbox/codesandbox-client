@@ -8,16 +8,20 @@ function findById(entities, id) {
   return entities.find(e => e.id === id);
 }
 
+function findByShortid(entities, shortid) {
+  return entities.find(e => e.shortid === shortid);
+}
+
 export const getModulePath = (modules, directories, id) => {
   const module = findById(modules, id);
 
   if (!module) return '';
 
-  let directory = findById(directories, module.directoryShortid);
+  let directory = findByShortid(directories, module.directoryShortid);
   let path = '/';
   while (directory != null) {
     path = `/${directory.title}${path}`;
-    directory = findById(directories, directory.directoryShortid);
+    directory = findByShortid(directories, directory.directoryShortid);
   }
   return path;
 };

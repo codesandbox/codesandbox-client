@@ -101,7 +101,7 @@ export default class App extends React.PureComponent {
         currentModule: this.state.currentModule ||
           response.data.modules.find(
             m => m.title === 'index.js' && m.directoryShortid == null,
-          ).id,
+          ).shortid,
       });
     } catch (e) {
       this.setState({ notFound: true });

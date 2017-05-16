@@ -74,7 +74,7 @@ export default class Content extends React.Component {
 
     const preferences = { livePreviewEnabled: true };
     const mainModule =
-      sandbox.modules.find(m => m.id === currentModule) ||
+      sandbox.modules.find(m => m.shortid === currentModule) ||
       sandbox.modules.find(
         m => m.title === 'index.js' && m.directoryShortid == null,
       );

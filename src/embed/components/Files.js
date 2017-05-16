@@ -39,9 +39,9 @@ const Files = ({
   return (
     <Container>
       {sortBy(childrenDirectories, d => d.title).map(d => (
-        <div key={d.id}>
+        <div key={d.shortid}>
           <File
-            id={d.id}
+            id={d.shortid}
             title={d.title}
             type="directory"
             depth={depth}
@@ -50,7 +50,7 @@ const Files = ({
           <Files
             modules={modules}
             directories={directories}
-            directoryId={d.id}
+            directoryId={d.shortid}
             depth={depth + 1}
             setCurrentModule={setCurrentModule}
             currentModule={currentModule}
@@ -59,13 +59,13 @@ const Files = ({
       ))}
       {sortBy(childrenModules, m => m.title).map(m => (
         <File
-          id={m.id}
+          id={m.shortid}
           title={m.title}
-          key={m.id}
+          key={m.shortid}
           type="module"
           depth={depth}
           setCurrentModule={setCurrentModule}
-          active={m.id === currentModule}
+          active={m.shortid === currentModule}
           alternative={m.title === 'index.js' && m.directoryShortid == null}
         />
       ))}
