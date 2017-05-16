@@ -12,6 +12,7 @@ const ProfileImage = styled.img`
   margin-right: 1.5rem;
 
   box-shadow: 0 3px 15px rgba(0, 0, 0, 0.5);
+  background-color: ${props => props.theme.background2};
 
   ${delayEffect(0.05)};
 `;
