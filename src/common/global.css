@@ -21,10 +21,18 @@ a {
   color: #6CAEDD;
 }
 
-body::-webkit-scrollbar {
+::-webkit-scrollbar {
   width: 0.5rem;
 }
 
-body::-webkit-scrollbar-thumb {
-  background-color: #1C2022;
+::-webkit-scrollbar-thumb {
+  transition: 0.3s ease all;
+  border-color: transparent;
+  background-color: rgba(255, 255, 255, 0.1);
+  z-index: 40;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  transition: 0.3s ease all;
+  background-color: rgba(255, 255, 255, 0.15);
 }

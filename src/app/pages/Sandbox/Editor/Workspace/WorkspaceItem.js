@@ -5,7 +5,6 @@ import ExpandIcon from 'react-icons/lib/md/keyboard-arrow-down';
 
 const ChildContainer = styled.div`
   position: relative;
-  background-color: ${props => props.theme.background};
   margin: 0;
   padding: 0;
   border-bottom: 1px solid ${props => props.theme.background2};
