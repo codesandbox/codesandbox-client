@@ -26,7 +26,7 @@ export default (
 
       if (pathPart === '..') {
         // Find the parent
-        const dir = directories.find(d => d.id === dirId);
+        const dir = directories.find(d => d.shortid === dirId);
         if (dir == null) throw new Error(`Cannot find module in ${path}`);
 
         return dir.directoryShortid;
