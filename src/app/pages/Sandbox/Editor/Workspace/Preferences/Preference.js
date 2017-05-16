@@ -1,8 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import Switch from 'app/components/Switch';
 import Tooltip from 'app/components/Tooltip';
+import PreferenceSwitch from './PreferenceSwitch';
+import PreferenceNumber from './PreferenceNumber';
 
 const Container = styled.div`
   display: flex;
@@ -14,21 +15,24 @@ const Container = styled.div`
 
 type Props = {
   title: string,
-  enabled: boolean,
-  onClick: (on: boolean) => void,
+  value: any,
+  setValue: (value: any) => any,
   tooltip: ?string,
 };
 
 export default class Preference extends React.Component {
   props: Props;
 
-  handleClick = () => {
-    const { enabled, onClick } = this.props;
-    onClick(!enabled);
+  getOptionComponent = (value: boolean | number) => {
+    if (typeof value === 'boolean') {
+      return <PreferenceSwitch setValue={this.props.setValue} value={value} />;
+    }
+
+    return <PreferenceNumber setValue={this.props.setValue} value={value} />;
   };
 
   render() {
-    const { title, enabled, tooltip } = this.props;
+    const { title, value, tooltip } = this.props;
 
     const Title = tooltip
       ? <Tooltip position="right" title={tooltip}>{title}</Tooltip>
@@ -37,13 +41,9 @@ export default class Preference extends React.Component {
     return (
       <Container>
         {Title}
-        <Switch
-          onClick={this.handleClick}
-          small
-          offMode
-          secondary
-          right={enabled}
-        />
+        <div style={{ width: 48 }}>
+          {this.getOptionComponent(value)}
+        </div>
       </Container>
     );
   }

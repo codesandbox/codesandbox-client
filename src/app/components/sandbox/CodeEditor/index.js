@@ -312,7 +312,13 @@ export default class CodeEditor extends React.PureComponent {
   server: typeof CodeMirror.TernServer;
 
   render() {
-    const { title, canSave, onlyViewMode, modulePath } = this.props;
+    const {
+      title,
+      canSave,
+      onlyViewMode,
+      modulePath,
+      preferences,
+    } = this.props;
 
     return (
       <Container>
@@ -323,7 +329,10 @@ export default class CodeEditor extends React.PureComponent {
           path={modulePath}
         />
         <CodeContainer>
-          <div style={{ height: '100%' }} ref={this.getCodeMirror} />
+          <div
+            style={{ height: '100%', fontSize: preferences.fontSize || 14 }}
+            ref={this.getCodeMirror}
+          />
         </CodeContainer>
       </Container>
     );

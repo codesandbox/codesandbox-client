@@ -10,6 +10,7 @@ import {
   SET_PREFERENCE_PRETTIFY_ON_SAVE,
   SET_PREFERENCE_LINT,
   SET_INSTANT_PREVIEW,
+  SET_PREFERENCE_FONT_SIZE,
 } from './actions';
 import {
   AUTO_COMPLETE,
@@ -18,12 +19,13 @@ import {
   PRETTIFY_ON_SAVE,
   LINT_ENABLED,
   INSTANT_PREVIEW,
+  FONT_SIZE,
 } from './keys';
 
 const getKey = (key, defaultVal) => {
   try {
     const result = store.get(key);
-    return result === undefined ? !!defaultVal : result;
+    return result === undefined ? defaultVal : result;
   } catch (e) {
     console.error(e);
     return undefined;
@@ -37,6 +39,7 @@ const initialState: Preferences = {
   prettifyOnSaveEnabled: getKey(PRETTIFY_ON_SAVE, false),
   lintEnabled: getKey(LINT_ENABLED, false),
   instantPreviewEnabled: getKey(INSTANT_PREVIEW, false),
+  fontSize: getKey(FONT_SIZE, 14),
 };
 
 export default (state: Preferences = initialState, action): Preferences => {
@@ -53,6 +56,8 @@ export default (state: Preferences = initialState, action): Preferences => {
       return { ...state, lintEnabled: action.option };
     case SET_INSTANT_PREVIEW:
       return { ...state, instantPreviewEnabled: action.option };
+    case SET_PREFERENCE_FONT_SIZE:
+      return { ...state, fontSize: action.option };
     default: {
       return state;
     }

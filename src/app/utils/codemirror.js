@@ -31,7 +31,6 @@ export const getCodeMirror = (el, doc) => {
       background: ${theme.background2()};
       color: #e0e0e0;
       height: 100%;
-      font-size: 14px;
       font-weight: 500;
     }
     .cm-s-oceanic div.CodeMirror-selected { background: #374140; }

@@ -7,10 +7,12 @@ import {
   PRETTIFY_ON_SAVE,
   LINT_ENABLED,
   INSTANT_PREVIEW,
+  FONT_SIZE,
 } from './keys';
 
 export const SET_PREFERENCE_AUTOCOMPLETE = 'SET_PREFERENCE_AUTOCOMPLETE';
 export const SET_PREFERENCE_VIM_MODE = 'SET_PREFERENCE_VIM_MODE';
+export const SET_PREFERENCE_FONT_SIZE = 'SET_PREFERENCE_FONT_SIZE';
 export const SET_PREFERENCE_LIVE_PREVIEW = 'SET_PREFERENCE_LIVE_PREVIEW';
 export const SET_PREFERENCE_PRETTIFY_ON_SAVE =
   'SET_PREFERENCE_PRETTIFY_ON_SAVE';
@@ -81,6 +83,15 @@ export default {
     dispatch({
       type: SET_INSTANT_PREVIEW,
       option: instantPreview,
+    });
+  },
+
+  setFontSizePreference: (fontSize: number) => (dispatch: Function) => {
+    setOption(FONT_SIZE, fontSize);
+
+    dispatch({
+      type: SET_PREFERENCE_FONT_SIZE,
+      option: fontSize,
     });
   },
 };

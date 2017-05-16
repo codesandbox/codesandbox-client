@@ -36,39 +36,44 @@ const Preferences = ({ preferences, preferencesActions }: Props) => (
     <PreferenceContainer>
       <Preference
         title="Autocomplete"
-        enabled={preferences.autoCompleteEnabled}
-        onClick={preferencesActions.setAutoCompletePreference}
+        value={preferences.autoCompleteEnabled}
+        setValue={preferencesActions.setAutoCompletePreference}
       />
       <Preference
         title="Linter"
         tooltip="Made possible by eslint"
-        enabled={preferences.lintEnabled}
-        onClick={preferencesActions.setLintPreference}
+        value={preferences.lintEnabled}
+        setValue={preferencesActions.setLintPreference}
       />
       <Preference
         title="Prettify on save"
         tooltip="Made possible by Prettier"
-        enabled={preferences.prettifyOnSaveEnabled}
-        onClick={preferencesActions.setPrettifyOnSavePreference}
+        value={preferences.prettifyOnSaveEnabled}
+        setValue={preferencesActions.setPrettifyOnSavePreference}
       />
       <Preference
         title="VIM Mode"
-        enabled={preferences.vimMode}
-        onClick={preferencesActions.setVimPreference}
+        value={preferences.vimMode}
+        setValue={preferencesActions.setVimPreference}
+      />
+      <Preference
+        title="Font size"
+        value={preferences.fontSize}
+        setValue={preferencesActions.setFontSizePreference}
       />
     </PreferenceContainer>
     <WorkspaceSubtitle>Preview</WorkspaceSubtitle>
     <PreferenceContainer>
       <Preference
         title="Live Preview"
-        enabled={preferences.livePreviewEnabled}
-        onClick={preferencesActions.setLivePreview}
+        value={preferences.livePreviewEnabled}
+        setValue={preferencesActions.setLivePreview}
         tooltip="Only update on save"
       />
       <Preference
         title="Instant preview"
-        enabled={preferences.instantPreviewEnabled}
-        onClick={preferencesActions.setInstantPreview}
+        value={preferences.instantPreviewEnabled}
+        setValue={preferencesActions.setInstantPreview}
       />
     </PreferenceContainer>
   </Container>
