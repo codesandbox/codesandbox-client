@@ -20,3 +20,11 @@ html, body {
 a {
   color: #6CAEDD;
 }
+
+body::-webkit-scrollbar {
+  width: 0.5rem;
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: #1C2022;
+}
