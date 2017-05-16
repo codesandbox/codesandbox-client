@@ -73,7 +73,7 @@ export default (
     // eslint-disable-next-line eqeqeq
     const indexModule = modules.find(
       m =>
-        m.directoryShortid == foundDirectory.id &&
+        m.directoryShortid == foundDirectory.shortid &&
         compareTitle(m.title, 'index'),
     );
     if (indexModule == null) throw new Error(`Cannot find module in ${path}`);
