@@ -133,11 +133,11 @@ function createDirectoryWithFiles(
   const newZip = zip.folder(directory.title);
 
   modules
-    .filter(x => x.directoryShortid === directory.id)
+    .filter(x => x.directoryShortid === directory.shortid)
     .forEach(x => newZip.file(x.title, x.code));
 
   directories
-    .filter(x => x.directoryShortid === directory.id)
+    .filter(x => x.directoryShortid === directory.shortid)
     .forEach(x => createDirectoryWithFiles(modules, directories, x, newZip));
 }
 
