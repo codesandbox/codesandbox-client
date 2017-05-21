@@ -101,6 +101,12 @@ export default class Preview extends React.PureComponent {
       return;
     }
 
+    if (prevProps.externalResources !== this.props.externalResources) {
+      // Changed external resources
+      this.executeCodeImmediately();
+      return;
+    }
+
     if (prevProps.module.id !== this.props.module.id) {
       if (prevProps.isInProjectView && this.props.isInProjectView) {
         // If user only navigated while watching project

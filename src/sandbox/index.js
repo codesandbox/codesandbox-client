@@ -57,10 +57,10 @@ async function compile(message) {
 
   if (fetching) return;
 
+  handleExternalResources(externalResources);
   if (url == null || url !== newUrl) {
     fetching = true;
     url = newUrl;
-    handleExternalResources(externalResources);
     await addDependencyBundle();
     fetching = false;
     window.parent.postMessage('Ready!', host);
