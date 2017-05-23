@@ -5,8 +5,7 @@ import styled, { injectGlobal } from 'styled-components';
 import { connect } from 'react-redux';
 import { spring, Motion } from 'react-motion';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-
-import type { Notification } from '../store/notifications/reducer';
+import type { Notification } from 'common/types';
 import notificationActionCreators from '../store/notifications/actions';
 import NotificationComponent from '../components/Notification';
 import Portal from '../components/Portal';

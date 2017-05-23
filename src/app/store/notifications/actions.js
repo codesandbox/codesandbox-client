@@ -11,7 +11,7 @@ export default {
     title: string,
     notificationType: 'notice' | 'warning' | 'error' | 'success' = 'notice',
     buttons: Array<NotificationButton> = [],
-    timeAlive: number = 5,
+    timeAlive: number = 2,
   ) => ({
     id: (lastId += 1),
     type: ADD_NOTIFICATION,
