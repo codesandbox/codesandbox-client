@@ -9,6 +9,7 @@ import GithubIcon from 'react-icons/lib/go/mark-github';
 import ChevronLeft from 'react-icons/lib/md/chevron-left';
 import HeartIcon from 'react-icons/lib/fa/heart-o';
 import FullHeartIcon from 'react-icons/lib/fa/heart';
+import TwitterIcon from 'react-icons/lib/fa/twitter';
 import { Tooltip } from 'react-tippy';
 
 import type { Sandbox, CurrentUser } from 'common/types';
@@ -184,6 +185,12 @@ export default class Header extends React.PureComponent {
         </Left>
 
         <Right>
+          <Action
+            href="https://twitter.com/ives13"
+            a
+            tooltip="Message me"
+            Icon={TwitterIcon}
+          />
           <FeedbackView
             email={user.email}
             sendMessage={userActions.sendFeedback}

@@ -55,6 +55,11 @@ const ActionLink = styled(Link)`
   text-decoration: none;
 `;
 
+const ActionA = styled.a`
+  ${styles}
+  text-decoration: none;
+`;
+
 const ActionTooltip = styled(Tooltip)`
   ${styles}
   ${props => props.disabledAction && `
@@ -71,7 +76,7 @@ const IconContainer = styled.div`
   display: flex;
   alignItems: center;
   height: 100%;
-  padding: 0 .75rem;;
+  padding: 0 .75rem;
 `;
 
 type Props = {
@@ -84,6 +89,7 @@ type Props = {
   tooltip: ?string,
   moreInfo: ?boolean,
   unresponsive: boolean,
+  a: ?boolean,
 };
 
 export default ({
@@ -96,6 +102,7 @@ export default ({
   placeholder,
   moreInfo,
   unresponsive,
+  a,
 }: Props) => {
   if (!href && (placeholder || tooltip)) {
     return (
@@ -123,6 +130,21 @@ export default ({
           {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
         </IconContainer>
       </Action>
+    );
+  }
+
+  if (href && a && (placeholder || tooltip)) {
+    return (
+      <ActionA href={href} target="_blank" rel="noopener noreferrer">
+        <Tooltip title={placeholder || tooltip}>
+          <IconContainer>
+            <Icon />
+            {title !== undefined &&
+              <Title unresponsive={unresponsive}>{title}</Title>}
+            {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
+          </IconContainer>
+        </Tooltip>
+      </ActionA>
     );
   }
 
