@@ -166,7 +166,7 @@ export default class Preview extends React.PureComponent {
   };
 
   handleMessage = (e: Object) => {
-    if (e.data.type === 'Ready!') {
+    if (e.data === 'Ready!') {
       this.setState({
         frameInitialized: true,
       });

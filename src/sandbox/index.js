@@ -45,7 +45,7 @@ function getIndexHtml(modules) {
 }
 
 function sendReady() {
-  window.parent.postMessage({ type: 'Ready!' }, host);
+  window.parent.postMessage('Ready!', host);
 }
 
 function initializeResizeListener() {
