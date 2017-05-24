@@ -37,7 +37,8 @@ describe('one directory deep', () => {
     const path = './Directory/Test';
     const directories = [
       {
-        id: '123123123',
+        id: '113',
+        shortid: '123123123',
         title: 'Directory',
         directoryShortid: null,
       },
@@ -47,7 +48,7 @@ describe('one directory deep', () => {
       {
         id: '123123',
         title: 'Test',
-        directoryShortid: directories[0].id,
+        directoryShortid: directories[0].shortid,
       },
     ];
 
@@ -58,7 +59,8 @@ describe('one directory deep', () => {
     const path = './Directory/';
     const directories = [
       {
-        id: '123123123',
+        id: '113',
+        shortid: '123123123',
         title: 'Directory',
         directoryShortid: null,
       },
@@ -68,7 +70,7 @@ describe('one directory deep', () => {
       {
         id: '123123',
         title: 'index',
-        directoryShortid: directories[0].id,
+        directoryShortid: directories[0].shortid,
       },
     ];
 
@@ -81,12 +83,14 @@ describe('two directories deep', () => {
     const path = './Directory/Directory2/Test';
     const directories = [
       {
-        id: '123123123',
+        id: '113',
+        shortid: '123123123',
         title: 'Directory',
         directoryShortid: null,
       },
       {
-        id: '1312423432',
+        id: '1312',
+        shortid: '1312423432',
         title: 'Directory2',
         directoryShortid: '123123123',
       },
@@ -107,12 +111,14 @@ describe('two directories deep', () => {
     const path = './Directory/Directory2/index';
     const directories = [
       {
-        id: '123123123',
+        id: '113',
+        shortid: '123123123',
         title: 'Directory',
         directoryShortid: null,
       },
       {
-        id: '1312423432',
+        id: '1312',
+        shortid: '1312423432',
         title: 'Directory2',
         directoryShortid: '123123123',
       },
@@ -135,12 +141,14 @@ describe('relative', () => {
     const path = './Directory2';
     const directories = [
       {
-        id: '123123123',
+        id: '113',
+        shortid: '123123123',
         title: 'Directory',
         directoryShortid: null,
       },
       {
-        id: '1312423432',
+        id: '1312',
+        shortid: '1312423432',
         title: 'Directory2',
         directoryShortid: '123123123',
       },
@@ -162,12 +170,14 @@ describe('relative', () => {
     const path = './';
     const directories = [
       {
-        id: '123123123',
+        id: '113',
+        shortid: '123123123',
         title: 'Directory',
         directoryShortid: null,
       },
       {
-        id: '1312423432',
+        id: '1312',
+        shortid: '1312423432',
         title: 'Directory2',
         directoryShortid: '123123123',
       },
@@ -189,12 +199,14 @@ describe('relative', () => {
     const path = '../Test';
     const directories = [
       {
-        id: '123123123',
+        id: '113',
+        shortid: '123123123',
         title: 'Directory',
         directoryShortid: null,
       },
       {
-        id: '1312423432',
+        id: '1312',
+        shortid: '1312423432',
         title: 'Directory2',
         directoryShortid: '123123123',
       },
@@ -221,12 +233,14 @@ describe('relative', () => {
     const path = '../../Test';
     const directories = [
       {
-        id: '123123123',
+        id: '113',
+        shortid: '123123123',
         title: 'Directory',
         directoryShortid: null,
       },
       {
-        id: '1312423432',
+        id: '1312',
+        shortid: '1312423432',
         title: 'Directory2',
         directoryShortid: '123123123',
       },
@@ -253,7 +267,8 @@ describe('relative', () => {
     const path = './Tes';
     const directories = [
       {
-        id: '123123123',
+        id: '12312',
+        shortid: '123123123',
         title: 'Test',
         directoryShortid: null,
       },
@@ -281,12 +296,14 @@ describe('preference', () => {
     const path = './Test';
     const directories = [
       {
-        id: '123123123',
+        id: '113',
+        shortid: '123123123',
         title: 'Directory',
         directoryShortid: null,
       },
       {
         id: '1312423432',
+        shortid: '1312423432',
         title: 'Test',
         directoryShortid: '123123123',
       },
