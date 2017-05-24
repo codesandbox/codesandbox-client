@@ -196,8 +196,11 @@ export default class Preview extends React.PureComponent {
       module,
       sandboxId,
       externalResources,
+      preferences,
     } = this.props;
-
+    if (preferences.clearConsoleEnabled) {
+      console.clear();
+    }
     if (bundle.externals == null) {
       if (!bundle.processing && !bundle.error) {
         this.fetchBundle();

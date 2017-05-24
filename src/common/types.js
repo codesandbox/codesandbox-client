@@ -92,6 +92,8 @@ export type Preferences = {
   prettifyOnSaveEnabled: boolean,
   lintEnabled: boolean,
   instantPreviewEnabled: boolean,
+  fontSize: number,
+  clearConsoleEnabled: boolean,
 };
 
 export type NotificationButton = {

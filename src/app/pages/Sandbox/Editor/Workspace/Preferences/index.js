@@ -71,6 +71,12 @@ const Preferences = ({ preferences, preferencesActions }: Props) => (
         tooltip="Only update on save"
       />
       <Preference
+        title="Clear console"
+        value={preferences.clearConsoleEnabled}
+        setValue={preferencesActions.setClearConsolePreference}
+        tooltip="Clear console when executing"
+      />
+      <Preference
         title="Instant preview"
         value={preferences.instantPreviewEnabled}
         setValue={preferencesActions.setInstantPreview}

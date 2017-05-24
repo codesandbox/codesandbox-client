@@ -5,3 +5,4 @@ export const INSTANT_PREVIEW = 'settings.instantpreview';
 export const PRETTIFY_ON_SAVE = 'settings.prettifyonsave';
 export const LINT_ENABLED = 'settings.lintenabled';
 export const FONT_SIZE = 'settings.fontsize';
+export const CLEAR_CONSOLE = 'settings.clearconsole';

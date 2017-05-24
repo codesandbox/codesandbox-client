@@ -8,6 +8,7 @@ import {
   LINT_ENABLED,
   INSTANT_PREVIEW,
   FONT_SIZE,
+  CLEAR_CONSOLE,
 } from './keys';
 
 export const SET_PREFERENCE_AUTOCOMPLETE = 'SET_PREFERENCE_AUTOCOMPLETE';
@@ -18,6 +19,7 @@ export const SET_PREFERENCE_PRETTIFY_ON_SAVE =
   'SET_PREFERENCE_PRETTIFY_ON_SAVE';
 export const SET_PREFERENCE_LINT = 'SET_PREFERENCE_LINT';
 export const SET_INSTANT_PREVIEW = 'SET_INSTANT_PREVIEW';
+export const SET_CLEAR_CONSOLE = 'SET_CLEAR_CONSOLE';
 
 const setOption = (key, val) => {
   try {
@@ -65,6 +67,17 @@ export default {
     dispatch({
       type: SET_PREFERENCE_PRETTIFY_ON_SAVE,
       option: prettify,
+    });
+  },
+
+  setClearConsolePreference: (clearConsole: boolean) => (
+    dispatch: Function,
+  ) => {
+    setOption(CLEAR_CONSOLE, clearConsole);
+
+    dispatch({
+      type: SET_CLEAR_CONSOLE,
+      option: clearConsole,
     });
   },
 
