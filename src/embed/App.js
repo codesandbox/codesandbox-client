@@ -20,6 +20,7 @@ const Container = styled.div`
   height: 100%;
   width: 100%;
   color: white;
+  overflow-y: hidden;
 `;
 
 const Fullscreen = styled.div`
@@ -50,6 +51,8 @@ type State = {
   isInProjectView: boolean,
   currentModule: ?string,
   sidebarOpen: boolean,
+  autoResize: boolean,
+  hideNavigation: boolean,
 };
 
 export default class App extends React.PureComponent {
@@ -62,6 +65,8 @@ export default class App extends React.PureComponent {
       currentModule,
       isPreviewScreen,
       isEditorScreen,
+      autoResize,
+      hideNavigation,
     } = getSandboxOptions();
 
     this.state = {
@@ -72,6 +77,8 @@ export default class App extends React.PureComponent {
       isInProjectView: !currentModule,
       currentModule,
       sidebarOpen: false,
+      autoResize,
+      hideNavigation,
     };
   }
 
@@ -84,9 +91,7 @@ export default class App extends React.PureComponent {
     return null;
   };
 
-  getAppOrigin = () => {
-    return location.origin.replace('embed.', '');
-  };
+  getAppOrigin = () => location.origin.replace('embed.', '');
 
   fetchSandbox = async (id: string) => {
     try {
@@ -171,6 +176,8 @@ export default class App extends React.PureComponent {
           setProjectView={this.setProjectView}
           sandbox={this.state.sandbox}
           currentModule={this.state.currentModule}
+          hideNavigation={this.state.hideNavigation}
+          autoResize={this.state.autoResize}
         />
       </Container>
     );

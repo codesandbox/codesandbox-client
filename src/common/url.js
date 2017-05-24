@@ -17,5 +17,8 @@ export const getSandboxOptions = () => {
     result.isPreviewScreen = windowWidth < 800;
   }
 
+  result.hideNavigation = location.search.includes('hidenavigation=1');
+  result.autoResize = location.search.includes('autoresize=1');
+
   return result;
 };

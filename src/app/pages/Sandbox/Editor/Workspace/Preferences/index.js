@@ -4,18 +4,27 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { preferencesSelector } from 'app/store/preferences/selectors';
 import preferencesActionCreators from 'app/store/preferences/actions';
+import Preference from 'app/components/Preference';
 
 import WorkspaceSubtitle from '../WorkspaceSubtitle';
-
-import Preference from './Preference';
 
 const Container = styled.div`
   color: ${props => props.theme.white};
   font-size: .875rem;
+
+  div {
+    &:first-child {
+      padding-top: 0;
+    }
+  }
 `;
 
 const PreferenceContainer = styled.div`
   padding-top: 0.5rem;
+`;
+
+const PaddedPreference = styled(Preference)`
+  padding: 0.5rem 1rem;
 `;
 
 type Props = {
@@ -34,29 +43,29 @@ const Preferences = ({ preferences, preferencesActions }: Props) => (
   <Container>
     <WorkspaceSubtitle>Code Editor</WorkspaceSubtitle>
     <PreferenceContainer>
-      <Preference
+      <PaddedPreference
         title="Autocomplete"
         value={preferences.autoCompleteEnabled}
         setValue={preferencesActions.setAutoCompletePreference}
       />
-      <Preference
+      <PaddedPreference
         title="Linter"
         tooltip="Made possible by eslint"
         value={preferences.lintEnabled}
         setValue={preferencesActions.setLintPreference}
       />
-      <Preference
+      <PaddedPreference
         title="Prettify on save"
         tooltip="Made possible by Prettier"
         value={preferences.prettifyOnSaveEnabled}
         setValue={preferencesActions.setPrettifyOnSavePreference}
       />
-      <Preference
+      <PaddedPreference
         title="VIM Mode"
         value={preferences.vimMode}
         setValue={preferencesActions.setVimPreference}
       />
-      <Preference
+      <PaddedPreference
         title="Font size"
         value={preferences.fontSize}
         setValue={preferencesActions.setFontSizePreference}
@@ -64,19 +73,19 @@ const Preferences = ({ preferences, preferencesActions }: Props) => (
     </PreferenceContainer>
     <WorkspaceSubtitle>Preview</WorkspaceSubtitle>
     <PreferenceContainer>
-      <Preference
+      <PaddedPreference
         title="Live Preview"
         value={preferences.livePreviewEnabled}
         setValue={preferencesActions.setLivePreview}
         tooltip="Only update on save"
       />
-      <Preference
+      <PaddedPreference
         title="Clear console"
         value={preferences.clearConsoleEnabled}
         setValue={preferencesActions.setClearConsolePreference}
         tooltip="Clear console when executing"
       />
-      <Preference
+      <PaddedPreference
         title="Instant preview"
         value={preferences.instantPreviewEnabled}
         setValue={preferencesActions.setInstantPreview}

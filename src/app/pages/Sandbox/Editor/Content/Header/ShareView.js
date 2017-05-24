@@ -21,6 +21,7 @@ import {
 
 import type { Sandbox, Directory, Module } from 'common/types';
 
+import Preference from 'app/components/Preference';
 import HoverMenu from './HoverMenu';
 import Action from './Action';
 
@@ -28,6 +29,15 @@ const Container = styled.div`
   position: relative;
   z-index: 200;
   height: 100%;
+`;
+
+const PaddedPreference = styled(Preference)`
+  color: rgba(255, 255, 255, 0.6);
+  padding-bottom: 1rem;
+
+  &:last-child {
+    padding-bottom: 0;
+  }
 `;
 
 const ShareOptions = styled.div`
@@ -46,7 +56,6 @@ const ShareOptions = styled.div`
   background-color: ${props => props.theme.background2};
 
   width: 900px;
-
 
   h3 {
     text-align: center;
@@ -138,6 +147,8 @@ class ShareView extends React.PureComponent {
     showEditor: true,
     showPreview: true,
     defaultModule: null,
+    autoResize: false,
+    hideNavigation: false,
   };
 
   handleChange = e => this.setState({ message: e.target.value });
@@ -158,7 +169,13 @@ class ShareView extends React.PureComponent {
   setDefaultModule = id => this.setState({ defaultModule: id });
 
   getOptionsUrl = () => {
-    const { defaultModule, showEditor, showPreview } = this.state;
+    const {
+      defaultModule,
+      showEditor,
+      showPreview,
+      autoResize,
+      hideNavigation,
+    } = this.state;
 
     const options = {};
 
@@ -172,6 +189,15 @@ class ShareView extends React.PureComponent {
     if (!showEditor && showPreview) {
       options.view = 'preview';
     }
+
+    if (autoResize) {
+      options.autoresize = 1;
+    }
+
+    if (hideNavigation) {
+      options.hidenavigation = 1;
+    }
+
     return optionsToParameterizedUrl(options);
   };
 
@@ -209,9 +235,17 @@ class ShareView extends React.PureComponent {
 `;
   };
 
+  setAutoResize = (autoResize: boolean) => {
+    this.setState({ autoResize });
+  };
+
+  setHideNavigation = (hideNavigation: boolean) => {
+    this.setState({ hideNavigation });
+  };
+
   render() {
     const { sandbox, modules, directories } = this.props;
-    const { showEditor, showPreview } = this.state;
+    const { showEditor, showPreview, autoResize, hideNavigation } = this.state;
 
     const defaultModule =
       this.state.defaultModule || modules.find(isMainModule).id;
@@ -232,6 +266,20 @@ class ShareView extends React.PureComponent {
               <Divider>
                 <Column>
                   <ButtonName>URL Options</ButtonName>
+                  <div>
+                    <h4>Embed specific options</h4>
+                    <PaddedPreference
+                      title="Auto resize"
+                      tooltip="Works only on Medium"
+                      value={autoResize}
+                      setValue={this.setAutoResize}
+                    />
+                    <PaddedPreference
+                      title="Hide navigation bar"
+                      value={hideNavigation}
+                      setValue={this.setHideNavigation}
+                    />
+                  </div>
                   <div>
                     <h4>Default view</h4>
                     <div

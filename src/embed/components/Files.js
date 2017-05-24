@@ -17,7 +17,7 @@ type Props = {
   directoryId: string,
   depth: number,
   currentModule: string,
-  setCurrentModule: (id: string) => void,
+  setCurrentModule: (id: string) => any,
 };
 
 const Files = ({

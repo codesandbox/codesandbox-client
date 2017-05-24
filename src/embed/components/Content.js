@@ -30,10 +30,13 @@ type Props = {
   showEditor: boolean,
   showPreview: boolean,
   isInProjectView: boolean,
+  hideNavigation: boolean,
+  autoResize: boolean,
 };
 
 type State = {
   bundle: Object,
+  isInProjectView: boolean,
 };
 
 export default class Content extends React.Component {
@@ -61,6 +64,19 @@ export default class Content extends React.Component {
     this.setState({ isInProjectView: view });
   };
 
+  handleResize = (height: number) => {
+    if (this.props.autoResize) {
+      window.parent.postMessage(
+        JSON.stringify({
+          src: window.location.toString(),
+          context: 'iframe.resize',
+          height: Math.min(height, 500), // pixels
+        }),
+        '*',
+      );
+    }
+  };
+
   props: Props;
   state: State;
   render() {
@@ -70,6 +86,7 @@ export default class Content extends React.Component {
       showPreview,
       isInProjectView,
       currentModule,
+      hideNavigation,
     } = this.props;
 
     const preferences = { livePreviewEnabled: true };
@@ -112,7 +129,9 @@ export default class Content extends React.Component {
               clearErrors={() => {}}
               preferences={preferences}
               setProjectView={this.props.setProjectView}
+              hideNavigation={hideNavigation}
               noDelay
+              setFrameHeight={this.handleResize}
             />
           </Split>}
       </Container>

@@ -4,6 +4,7 @@ import evalModule, { deleteCache } from './eval';
 import NoDomChangeError from './errors/no-dom-change-error';
 
 import handleExternalResources from './external-resources';
+import resizeEventListener from './resize-event-listener';
 
 import {
   getBoilerplates,
@@ -17,6 +18,7 @@ const host = process.env.NODE_ENV === 'development'
 
 let fetching = false;
 let url = null;
+let initializedResizeListener = false;
 
 async function addDependencyBundle() {
   if (url !== '') {
@@ -42,6 +44,26 @@ function getIndexHtml(modules) {
   return '<div id="root"></div>';
 }
 
+function sendReady() {
+  window.parent.postMessage({ type: 'Ready!' }, host);
+}
+
+function initializeResizeListener() {
+  const listener = resizeEventListener();
+  listener.addResizeListener(document.body, () => {
+    if (document.body) {
+      window.parent.postMessage(
+        {
+          type: 'resize',
+          height: document.body.getBoundingClientRect().height,
+        },
+        '*',
+      );
+    }
+  });
+  initializedResizeListener = true;
+}
+
 async function compile(message) {
   const {
     modules,
@@ -63,7 +85,7 @@ async function compile(message) {
     url = newUrl;
     await addDependencyBundle();
     fetching = false;
-    window.parent.postMessage('Ready!', host);
+    sendReady();
     return;
   }
 
@@ -112,6 +134,10 @@ async function compile(message) {
       }
     }
 
+    if (!initializedResizeListener) {
+      initializeResizeListener();
+    }
+
     window.parent.postMessage(
       {
         type: 'success',
@@ -144,7 +170,7 @@ window.addEventListener('message', async message => {
   }
 });
 
-window.parent.postMessage('Ready!', host);
+sendReady();
 
 function setupHistoryListeners() {
   const pushState = window.history.pushState;

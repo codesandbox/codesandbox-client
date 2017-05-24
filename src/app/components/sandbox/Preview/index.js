@@ -24,7 +24,7 @@ const Container = styled.div`
 
 const StyledFrame = styled.iframe`
   border-width: 0px;
-  height: calc(100% - 6rem);
+  height: calc(100% - ${props => (props.hideNavigation ? 3 : 6)}rem);
   width: 100%;
 `;
 
@@ -47,6 +47,8 @@ type Props = {
   sandboxActions: typeof sandboxActionCreators,
   noDelay: ?boolean,
   errors: ?Array<ModuleError>,
+  hideNavigation?: boolean,
+  setFrameHeight: ?(height: number) => any,
 };
 
 type State = {
@@ -73,6 +75,10 @@ export default class Preview extends React.PureComponent {
       this.executeCode = debounce(this.executeCode, 800);
     }
   }
+
+  static defaultProps = {
+    hideNavigation: false,
+  };
 
   fetchBundle = () => {
     const { sandboxId, fetchBundle } = this.props;
@@ -160,7 +166,7 @@ export default class Preview extends React.PureComponent {
   };
 
   handleMessage = (e: Object) => {
-    if (e.data === 'Ready!') {
+    if (e.data.type === 'Ready!') {
       this.setState({
         frameInitialized: true,
       });
@@ -173,6 +179,10 @@ export default class Preview extends React.PureComponent {
       } else if (type === 'urlchange') {
         const url = e.data.url.replace('/', '');
         this.commitUrl(url);
+      } else if (type === 'resize') {
+        if (this.props.setFrameHeight) {
+          this.props.setFrameHeight(e.data.height);
+        }
       }
     }
   };
@@ -305,6 +315,7 @@ export default class Preview extends React.PureComponent {
       isInProjectView,
       setProjectView,
       errors,
+      hideNavigation,
     } = this.props;
     const { historyPosition, history, urlInAddressBar } = this.state;
 
@@ -312,16 +323,19 @@ export default class Preview extends React.PureComponent {
 
     return (
       <Container>
-        <Navigator
-          url={decodeURIComponent(url)}
-          onChange={this.updateUrl}
-          onConfirm={this.sendUrl}
-          onBack={historyPosition > 0 && this.handleBack}
-          onForward={historyPosition < history.length - 1 && this.handleForward}
-          onRefresh={this.handleRefresh}
-          isProjectView={isInProjectView}
-          toggleProjectView={setProjectView && this.toggleProjectView}
-        />
+        {!hideNavigation &&
+          <Navigator
+            url={decodeURIComponent(url)}
+            onChange={this.updateUrl}
+            onConfirm={this.sendUrl}
+            onBack={historyPosition > 0 && this.handleBack}
+            onForward={
+              historyPosition < history.length - 1 && this.handleForward
+            }
+            onRefresh={this.handleRefresh}
+            isProjectView={isInProjectView}
+            toggleProjectView={setProjectView && this.toggleProjectView}
+          />}
 
         {!bundle.processing &&
           errors &&
@@ -342,6 +356,7 @@ export default class Preview extends React.PureComponent {
           sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups"
           src={frameUrl()}
           id="sandbox"
+          hideNavigation={hideNavigation}
         />
       </Container>
     );
