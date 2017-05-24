@@ -121,7 +121,7 @@ export default ({ sandbox, setCurrentModule, currentModule }: Props) => (
       ))}
     </Item>
     <Item hover>
-      <Padding>
+      <Padding margin={1}>
         <EditorLink id={sandbox.id} />
       </Padding>
     </Item>
