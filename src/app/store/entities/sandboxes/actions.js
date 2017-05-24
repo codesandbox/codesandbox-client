@@ -218,7 +218,7 @@ const removeChildrenOfDirectory = (
     .forEach(d => {
       dispatch(removeDirectoryFromSandbox(sandboxId, d.id));
       dispatch(
-        removeChildrenOfDirectory(d.id, sandboxId, modules, directories),
+        removeChildrenOfDirectory(d.shortid, sandboxId, modules, directories),
       );
     });
 };
@@ -555,7 +555,7 @@ export default {
       // Recursively delete all children
       dispatch(
         removeChildrenOfDirectory(
-          newDirectory.id,
+          newDirectory.shortid,
           sandboxId,
           modules,
           directories,
