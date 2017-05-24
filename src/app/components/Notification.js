@@ -21,13 +21,13 @@ const Container = styled.div`
 
   border-left: 2px solid transparent;
   border-color: ${props => {
-  if (props.type === 'error') return theme.red.darken(0.2)();
-  if (props.type === 'warning') return theme.primary.darken(0.2);
-  if (props.type === 'success') return theme.green();
-  return theme.secondary;
-}}
+                  if (props.type === 'error') return theme.red.darken(0.2)();
+                  if (props.type === 'warning') return theme.primary.darken(0.2);
+                  if (props.type === 'success') return theme.green();
+                  return theme.secondary;
+                }}
 
-  background-color: ${() => theme.background2.darken(0.2)()};
+  background-color: ${theme.background2.darken(0.2)()};
 `;
 
 const Content = styled.div`
@@ -67,19 +67,19 @@ const Button = styled.div`
   padding: 0.5rem;
   background-color:
     ${props => {
-  if (props.type === 'error') return theme.redBackground.lighten(0.2);
-  if (props.type === 'warning') return theme.primary.darken(0.5);
-  return theme.secondary.darken(0.1);
-}};
+      if (props.type === 'error') return theme.redBackground.lighten(0.2);
+      if (props.type === 'warning') return theme.primary.darken(0.5);
+      return theme.secondary.darken(0.1);
+    }};
   font-weight: 500;
 
   &:hover {
     background-color:
       ${props => {
-  if (props.type === 'error') return theme.redBackground.lighten(0.1);
-  if (props.type === 'warning') return theme.primary.darken(0.6);
-  return theme.secondary.darken(0.2);
-}};
+        if (props.type === 'error') return theme.redBackground.lighten(0.1);
+        if (props.type === 'warning') return theme.primary.darken(0.6);
+        return theme.secondary.darken(0.2);
+      }};
   }
 `;
 

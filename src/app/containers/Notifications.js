@@ -35,7 +35,7 @@ const NotificationContainer = styled.div`
   position: fixed;
   left: 24px;
   bottom: 0;
-  zIndex: 20;
+  zIndex: 41;
 `;
 
 const mapStateToProps = state => ({
