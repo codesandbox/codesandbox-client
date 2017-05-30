@@ -16,3 +16,4 @@ www
 npm-debug.log
 yarn-error.log
 .vscode
+jest
