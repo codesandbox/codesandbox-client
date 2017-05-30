@@ -33,8 +33,22 @@ export type CurrentUser = {
   email: ?string,
   name: ?string,
   username: ?string,
-  avatar_url: ?string,
+  avatarUrl: ?string,
   jwt: ?string,
+};
+
+export type SmallSandbox = {
+  id: string,
+  title: ?string,
+  insertedAt: string,
+  updatedAt: string,
+  likeCount: number,
+  viewCount: number,
+  forkCount: number,
+};
+
+export type PaginatedSandboxes = {
+  [page: number]: Array<SmallSandbox>,
 };
 
 export type User = {
@@ -45,6 +59,11 @@ export type User = {
   showcasedSandboxShortid: ?string,
   sandboxCount: number,
   givenLikeCount: number,
+  receivedLikeCount: number,
+  viewCount: number,
+  forkedCount: number,
+  sandboxes: PaginatedSandboxes,
+  likedSandboxes: PaginatedSandboxes,
 };
 
 export type Sandbox = {
@@ -75,16 +94,7 @@ export type Sandbox = {
   showPreview: ?boolean,
   author: ?User,
   forkedFromSandbox: ?{ title: string, id: string },
-};
-
-export type SmallSandbox = {
-  id: string,
-  title: ?string,
-  insertedAt: string,
-  updatedAt: string,
-  likeCount: number,
-  viewCount: number,
-  forkCount: number,
+  errors: Array<ModuleError>,
 };
 
 export type Preferences = {

@@ -20,10 +20,11 @@ import MaxWidth from './MaxWidth';
 import Header from './Header';
 import Navigation from './Navigation';
 import Showcase from './Showcase';
-import SandboxList from './SandboxList';
+import Sandboxes from './Sandboxes';
 
 type Props = {
   userActions: typeof userActionCreators,
+  // eslint-disable-next-line
   match: { params: { username: string }, url: string },
   user: User,
   isCurrentUser: boolean,
@@ -121,8 +122,9 @@ class Profile extends React.PureComponent {
               />
               <Route
                 path={`${profileSandboxesUrl(user.username)}/:page?`}
+                // eslint-disable-next-line
                 children={({ match }) => (
-                  <SandboxList
+                  <Sandboxes
                     username={user.username}
                     fetchSandboxes={userActions.fetchAllSandboxes}
                     sandboxes={user.sandboxes}
@@ -134,8 +136,9 @@ class Profile extends React.PureComponent {
               />
               <Route
                 path={`${profileLikesUrl(user.username)}/:page?`}
+                // eslint-disable-next-line
                 children={({ match }) => (
-                  <SandboxList
+                  <Sandboxes
                     username={user.username}
                     fetchSandboxes={userActions.fetchLikedSandboxes}
                     sandboxes={user.likedSandboxes}

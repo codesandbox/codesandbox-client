@@ -2,6 +2,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Button from 'app/components/buttons/Button';
+import type { PaginatedSandboxes } from 'common/types';
 
 import SandboxList from 'app/components/sandbox/SandboxList';
 
@@ -22,6 +23,7 @@ type Props = {
   baseUrl: string,
   username: string,
   fetchSandboxes: Function,
+  sandboxes: PaginatedSandboxes,
 };
 
 export default class Sandboxes extends React.PureComponent {

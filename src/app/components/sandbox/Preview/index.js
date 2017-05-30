@@ -8,7 +8,7 @@ import type { Preferences } from 'app/store/preferences/reducer';
 
 import type { Module, Sandbox, Directory, ModuleError } from 'common/types';
 import { frameUrl } from 'app/utils/url-generator';
-import { isMainModule } from 'app/store/entities/sandboxes/modules/validator';
+import { isMainModule } from 'app/store/entities/sandboxes/modules/selectors';
 import defaultBoilerplates
   from 'app/store/entities/sandboxes/boilerplates/default-boilerplates';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';

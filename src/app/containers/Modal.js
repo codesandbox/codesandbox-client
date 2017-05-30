@@ -13,6 +13,7 @@ Modal.setAppElement(appElement);
 
 const CLOSE_TIMEOUT_MS = 300;
 
+// eslint-disable-next-line
 injectGlobal`
   .ReactModal__Content {
     transition: all ${CLOSE_TIMEOUT_MS}ms ease;

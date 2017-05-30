@@ -3,10 +3,8 @@ import React from 'react';
 
 import type { Module, Directory, ModuleError } from 'common/types';
 
-import {
-  validateTitle,
-  isMainModule,
-} from 'app/store/entities/sandboxes/modules/validator';
+import { validateTitle } from 'app/store/entities/sandboxes/modules/validator';
+import { isMainModule } from 'app/store/entities/sandboxes/modules/selectors';
 
 import Entry from './Entry';
 import DirectoryEntry from './';
@@ -32,7 +30,7 @@ export default class DirectoryChildren extends React.PureComponent {
 
   validateTitle = (id: string, title: string) => {
     const { directories, modules } = this.props;
-    return validateTitle(id, title, [...directories, ...modules]);
+    return !!validateTitle(id, title, [...directories, ...modules]);
   };
 
   render() {
@@ -75,7 +73,7 @@ export default class DirectoryChildren extends React.PureComponent {
           const isActive = m.id === currentModuleId;
           const mainModule = isMainModule(m);
 
-          const hasError = errors.find(
+          const hasError = !!errors.find(
             e => e.severity === 'error' && e.moduleId === m.id,
           );
 
@@ -87,10 +85,10 @@ export default class DirectoryChildren extends React.PureComponent {
               title={m.title}
               depth={depth + 1}
               active={isActive}
-              type={m.type}
-              rename={!mainModule && renameModule}
+              type="code"
+              rename={!mainModule ? undefined : renameModule}
               openMenu={openMenu}
-              deleteEntry={!mainModule && deleteEntry}
+              deleteEntry={!mainModule ? undefined : deleteEntry}
               isNotSynced={m.isNotSynced}
               renameValidator={this.validateTitle}
               setCurrentModule={setCurrentModule}

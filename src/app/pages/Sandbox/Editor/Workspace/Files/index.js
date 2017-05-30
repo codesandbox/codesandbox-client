@@ -8,6 +8,7 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import { DragDropContext } from 'react-dnd';
 import {
   modulesFromSandboxSelector,
+  isMainModule,
 } from 'app/store/entities/sandboxes/modules/selectors';
 import {
   directoriesFromSandboxSelector,
@@ -15,7 +16,6 @@ import {
 
 import type { Sandbox, Module, Directory } from 'common/types';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
-import { isMainModule } from 'app/store/entities/sandboxes/modules/validator';
 
 import DirectoryEntry from './DirectoryEntry/index';
 

@@ -1,6 +1,7 @@
 // @flow
 import React from 'react';
 import styled from 'styled-components';
+import type { CurrentUser } from 'common/types';
 
 import Row from 'app/components/flex/Row';
 import HoverMenu from 'app/components/HoverMenu';
@@ -30,17 +31,13 @@ const Name = styled.div`
 `;
 
 const Username = styled.div`
-  color: ${props => props.main ? 'white' : 'rgba(255, 255, 255, 0.6)'};
-  font-size: ${props => props.main ? 1 : .875}em;
+  color: ${props => (props.main ? 'white' : 'rgba(255, 255, 255, 0.6)')};
+  font-size: ${props => (props.main ? 1 : 0.875)}em;
 `;
 
 type Props = {
-  user: {
-    username: string,
-    avatarUrl: string,
-    name: ?string,
-  },
-  small: boolean,
+  user: CurrentUser,
+  small?: boolean,
   signOut: Function,
 };
 
@@ -51,6 +48,10 @@ type State = {
 export default class User extends React.PureComponent {
   props: Props;
   state: State;
+
+  static defaultProps = {
+    small: false,
+  };
 
   state = {
     menuOpen: false,

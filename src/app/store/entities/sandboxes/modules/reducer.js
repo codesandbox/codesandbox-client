@@ -1,4 +1,6 @@
 // @flow
+import type { Module } from 'common/types';
+
 import {
   RENAME_MODULE,
   MOVE_MODULE,
@@ -6,7 +8,7 @@ import {
   SET_MODULE_SYNCED,
 } from './actions';
 
-function moduleReducer(module, action) {
+function moduleReducer(module: Module, action): Module {
   switch (action.type) {
     case RENAME_MODULE:
       return { ...module, title: action.title };
@@ -21,10 +23,14 @@ function moduleReducer(module, action) {
   }
 }
 
+type State = {
+  [id: string]: Module,
+};
+
 export default function reducer(
-  state: {},
+  state: State,
   action: { type: string, id: string, [key: string]: any },
-) {
+): State {
   switch (action.type) {
     case RENAME_MODULE:
     case MOVE_MODULE:

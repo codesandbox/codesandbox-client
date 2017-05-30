@@ -1,5 +1,5 @@
-// flow-typed signature: a7d253bb465906a2d746884b23c74257
-// flow-typed version: df11ef698b/lodash_v4.x.x/flow_>=v0.38.x
+// flow-typed signature: 04bf8715953ef97bd686bf49ded90cc8
+// flow-typed version: 69a0c85473/lodash_v4.x.x/flow_>=v0.47.x
 
 declare module 'lodash' {
   declare type TemplateSettings = {
@@ -383,7 +383,7 @@ declare module 'lodash' {
     forOwnRight(object?: ?Object, iteratee?: OIteratee<*>): Object;
     functions(object?: ?Object): Array<string>;
     functionsIn(object?: ?Object): Array<string>;
-    get(object?: ?Object, path?: ?Array<string>|string, defaultValue?: any): any;
+    get(object?: ?Object|?Array<any>, path?: ?Array<string>|string, defaultValue?: any): any;
     has(object?: ?Object, path?: ?Array<string>|string): bool;
     hasIn(object?: ?Object, path?: ?Array<string>|string): bool;
     invert(object?: ?Object, multiVal?: bool): Object;
@@ -479,7 +479,7 @@ declare module 'lodash' {
     methodOf(object?: ?Object, ...args?: Array<any>): Function;
     mixin<T: Function|Object>(object?: T, source: Object, options?: { chain: bool }): T;
     noConflict(): Lodash;
-    noop(): void;
+    noop(...args: Array<mixed>): void;
     nthArg(n?: number): Function;
     over(...iteratees: Array<Function>): Function;
     over(iteratees: Array<Function>): Function;

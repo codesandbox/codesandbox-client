@@ -39,6 +39,7 @@ type Props = {
   isMainModule: boolean,
   isInProjectView: boolean, // eslint-disable-line
   moduleHasError: boolean,
+  closeTree: ?() => void, // eslint-disable-line
 };
 
 type State = {
@@ -161,6 +162,7 @@ class Entry extends React.PureComponent {
       type,
       active,
       setCurrentModule,
+      // $FlowIssue
       connectDragSource, // eslint-disable-line
       onCreateModuleClick,
       onCreateDirectoryClick,
@@ -222,8 +224,8 @@ class Entry extends React.PureComponent {
 }
 
 const entrySource = {
-  canDrag: props => !!props.id && !props.isMainModule,
-  beginDrag: props => {
+  canDrag: (props: Props) => !!props.id && !props.isMainModule,
+  beginDrag: (props: Props) => {
     if (props.closeTree) props.closeTree();
     return { id: props.id, directory: props.type === 'directory' };
   },

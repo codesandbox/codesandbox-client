@@ -1,5 +1,6 @@
-import type { Module } from './entity';
-import type { Directory } from '../directories/entity';
+// @flow
+
+import type { Module, Directory } from 'common/types';
 
 export const validateTitle = (
   id: string,
@@ -18,6 +19,3 @@ export const validateTitle = (
 
   return null;
 };
-
-export const isMainModule = (module: Module) =>
-  module.directoryShortid == null && module.title === 'index.js';

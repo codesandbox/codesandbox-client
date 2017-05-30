@@ -1,0 +1,53 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`modulesReducer can change the code of a module 1`] = `
+Object {
+  "longid-module0": Object {
+    "code": "koekje",
+    "directoryShortid": null,
+    "id": "longid-module0",
+    "isNotSynced": true,
+    "shortid": "shortid-module0",
+    "title": "test-module0",
+  },
+}
+`;
+
+exports[`modulesReducer can move a module 1`] = `
+Object {
+  "longid-module0": Object {
+    "code": "import test from 'koekje'",
+    "directoryShortid": "218hj",
+    "id": "longid-module0",
+    "isNotSynced": false,
+    "shortid": "shortid-module0",
+    "title": "test-module0",
+  },
+}
+`;
+
+exports[`modulesReducer can rename a module 1`] = `
+Object {
+  "longid-module0": Object {
+    "code": "import test from 'koekje'",
+    "directoryShortid": null,
+    "id": "longid-module0",
+    "isNotSynced": false,
+    "shortid": "shortid-module0",
+    "title": "ttest2",
+  },
+}
+`;
+
+exports[`modulesReducer can set a module synced 1`] = `
+Object {
+  "longid-module0": Object {
+    "code": "koekje",
+    "directoryShortid": null,
+    "id": "longid-module0",
+    "isNotSynced": false,
+    "shortid": "shortid-module0",
+    "title": "test-module0",
+  },
+}
+`;

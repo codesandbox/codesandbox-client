@@ -48,7 +48,13 @@ const Icon = styled.span`
   margin-right: 0.75rem;
 `;
 
-export default ({ username, signOut }) => (
+export default ({
+  username,
+  signOut,
+}: {
+  username: string,
+  signOut: () => any,
+}) => (
   <Container>
     <Link style={{ textDecoration: 'none' }} to={profileUrl(username)}>
       <Item>

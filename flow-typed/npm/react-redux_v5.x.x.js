@@ -1,5 +1,5 @@
-// flow-typed signature: 0ed284c5a2e97a9e3c0e87af3dedc09d
-// flow-typed version: bdf1e66252/react-redux_v5.x.x/flow_>=v0.30.x
+// flow-typed signature: 8db7b853f57c51094bf0ab8b2650fd9c
+// flow-typed version: ab8db5f14d/react-redux_v5.x.x/flow_>=v0.30.x
 
 import type { Dispatch, Store } from 'redux'
 
@@ -21,7 +21,9 @@ declare module 'react-redux' {
 
   declare type MergeProps<SP, DP: Object, OP: Object, P: Object> = (stateProps: SP, dispatchProps: DP, ownProps: OP) => P;
 
-  declare type StatelessComponent<P> = (props: P) => ?React$Element<any>;
+  declare type Context = { store: Store<*, *> };
+
+  declare type StatelessComponent<P> = (props: P, context: Context) => ?React$Element<any>;
 
   declare class ConnectedComponent<OP, P, Def, St> extends React$Component<void, OP, void> {
     static WrappedComponent: Class<React$Component<Def, P, St>>;
@@ -78,6 +80,13 @@ declare module 'react-redux' {
     mergeProps: Null,
     options?: ConnectOptions
   ): Connector<OP, $Supertype<SP & DP & OP>>;
+
+  declare function connect<S, A, OP, SP, DP, P>(
+    mapStateToProps: MapStateToProps<S, OP, SP>,
+    mapDispatchToProps: Null,
+    mergeProps: MergeProps<SP, DP, OP, P>,
+    options?: ConnectOptions
+  ): Connector<OP, P>;
 
   declare function connect<S, A, OP, SP, DP, P>(
     mapStateToProps: MapStateToProps<S, OP, SP>,

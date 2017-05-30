@@ -1,8 +1,9 @@
 // @flow
 import _debug from 'app/utils/debug';
 
-import callApi from '../../../services/api';
+import { createAPIActions } from '../../../api/actions'; // eslint-disable-line
 
+import callApi from '../../../services/api';
 import dependenciesToQuery from './dependencies-to-query';
 import logError from '../../../../utils/error';
 
@@ -43,7 +44,15 @@ async function callPackager(dependencies: Object) {
   return result;
 }
 
-export default function fetch(actions, id: string, npmDependencies: Object) {
+// eslint-disable-next-line
+/*::
+  const _apiActions = createAPIActions('pref', 'act');
+*/
+export default function fetch(
+  actions: typeof _apiActions, // eslint-disable-line
+  id: string,
+  npmDependencies: Object,
+) {
   return async (dispatch: Function) => {
     if (Object.keys(npmDependencies).length !== 0) {
       dispatch({ type: actions.REQUEST, initial: true, id });
@@ -55,7 +64,7 @@ export default function fetch(actions, id: string, npmDependencies: Object) {
         return result;
       } catch (e) {
         logError(e, { level: 'error', service: 'packager' });
-        dispatch({ type: actions.FAILED, id });
+        dispatch({ type: actions.FAILURE, id });
       }
     }
     return false;

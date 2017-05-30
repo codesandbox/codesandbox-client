@@ -5,7 +5,6 @@ import moment from 'moment';
 import { Link } from 'react-router-dom';
 
 import delayEffect from 'app/utils/animation/delay-effect';
-import Button from 'app/components/buttons/Button';
 import { sandboxUrl } from 'app/utils/url-generator';
 
 import type { SmallSandbox } from 'common/types';

@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`directoriesReducer can move a directory 1`] = `
+Object {
+  "longid-dir0": Object {
+    "directoryShortid": "218hj",
+    "id": "longid-dir0",
+    "shortid": "shortid-dir0",
+    "title": "test-dir0",
+  },
+}
+`;
+
+exports[`directoriesReducer can rename a directory 1`] = `
+Object {
+  "longid-dir0": Object {
+    "directoryShortid": null,
+    "id": "longid-dir0",
+    "shortid": "shortid-dir0",
+    "title": "ttest2",
+  },
+}
+`;
