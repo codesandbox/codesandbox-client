@@ -8,8 +8,8 @@ import Entry from 'app/pages/Sandbox/Editor/Workspace/EntryContainer';
 
 type Props = {
   id: string,
-  title: 'module' | 'directory',
-  type: string,
+  title: string,
+  type: 'module' | 'directory',
   setCurrentModule: (id: string) => void,
   depth: number,
   active?: boolean,
@@ -21,6 +21,11 @@ const LeftOffset = styled.div`
 
 export default class File extends React.PureComponent {
   props: Props;
+
+  static defaultProps = {
+    active: false,
+    alternative: false,
+  };
 
   getIcon = () => {
     const { type } = this.props;

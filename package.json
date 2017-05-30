@@ -44,7 +44,7 @@
     "html-loader": "^0.4.4",
     "html-webpack-plugin": "^2.24.1",
     "http-proxy-middleware": "^0.17.3",
-    "jest": "^19.0.2",
+    "jest": "21",
     "json-loader": "0.5.4",
     "object-assign": "^4.1.1",
     "opn": "4.0.2",
@@ -123,7 +123,7 @@
     "build": "NODE_ENV=production node scripts/build.js && gulp",
     "test": "jest --env=jsdom",
     "test:watch": "jest --watch --env=jsdom",
-    "lint:app": "eslint src/app",
+    "lint:app": "eslint src/app && flow-bin",
     "lint:embed": "eslint src/embed"
   },
   "jest": {

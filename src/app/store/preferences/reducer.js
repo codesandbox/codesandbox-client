@@ -24,7 +24,7 @@ import {
   CLEAR_CONSOLE,
 } from './keys';
 
-const getKey = (key, defaultVal) => {
+function getKey<D: any>(key: string, defaultVal: D): ?D {
   try {
     const result = store.get(key);
     return result === undefined ? defaultVal : result;
@@ -32,7 +32,7 @@ const getKey = (key, defaultVal) => {
     console.error(e);
     return undefined;
   }
-};
+}
 
 const initialState: Preferences = {
   autoCompleteEnabled: getKey(AUTO_COMPLETE, true),

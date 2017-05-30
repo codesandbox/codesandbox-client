@@ -6,7 +6,7 @@ import Preview from 'app/components/sandbox/Preview';
 import CodeEditor from 'app/components/sandbox/CodeEditor';
 import { getModulePath } from 'app/store/entities/sandboxes/modules/selectors';
 
-import type { Sandbox } from 'common/types';
+import type { Sandbox, Module } from 'common/types';
 import fetchBundle from 'app/store/entities/sandboxes/bundler';
 
 const Container = styled.div`
@@ -60,7 +60,7 @@ export default class Content extends React.Component {
     });
   };
 
-  setProjectView = (id: string, view) => {
+  setProjectView = (id: string, view: boolean) => {
     this.setState({ isInProjectView: view });
   };
 
@@ -71,6 +71,15 @@ export default class Content extends React.Component {
           src: window.location.toString(),
           context: 'iframe.resize',
           height: Math.min(height, 500), // pixels
+        }),
+        '*',
+      );
+    } else {
+      window.parent.postMessage(
+        JSON.stringify({
+          src: window.location.toString(),
+          context: 'iframe.resize',
+          height: 500, // pixels
         }),
         '*',
       );
@@ -90,11 +99,14 @@ export default class Content extends React.Component {
     } = this.props;
 
     const preferences = { livePreviewEnabled: true };
-    const mainModule =
-      sandbox.modules.find(m => m.shortid === currentModule) ||
+    // $FlowIssue
+    const mainModule: Module =
+      sandbox.modules.find((m: Module) => m.shortid === currentModule) ||
       sandbox.modules.find(
-        m => m.title === 'index.js' && m.directoryShortid == null,
+        (m: Module) => m.title === 'index.js' && m.directoryShortid == null,
       );
+
+    if (!mainModule) throw new Error('Cannot find main module');
 
     return (
       <Container>

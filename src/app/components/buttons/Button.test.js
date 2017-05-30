@@ -12,12 +12,16 @@ describe('Button', () => {
     testRender(<Button onClick={() => {}}>Test</Button>);
   });
 
-  it('renders hrefs', () => {
+  it('renders to', () => {
     testRender(
       <MemoryRouter>
         <Button to="https://ivesvh.com">Test</Button>
       </MemoryRouter>,
     );
+  });
+
+  it('renders href', () => {
+    testRender(<Button href="https://ivesvh.com">Test</Button>);
   });
 
   it('renders properties', () => {

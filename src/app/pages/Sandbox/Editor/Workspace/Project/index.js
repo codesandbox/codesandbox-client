@@ -31,7 +31,7 @@ const ViewCountContainer = styled.div`
 
 type Props = {
   id: string,
-  title: string,
+  title: ?string,
   description: string,
   viewCount: number,
   likeCount: number,

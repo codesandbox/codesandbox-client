@@ -4,13 +4,13 @@ import { saveAs } from 'file-saver';
 
 import type { Sandbox, Module, Directory } from 'common/types';
 
-// $FlowIssue
-import favicon from '!base64-loader!./favicon.ico'; // eslint-disable-line
-import gitignore from '!raw-loader!./.gitignore';
-import manifest from '!raw-loader!./manifest.json';
-import serviceWorker from '!raw-loader!./createServiceWorker';
-// $FlowIssue
-import README from './README.md';
+/* eslint-disable */
+import favicon from '!base64-loader!./cra-files/favicon.ico'; // $FlowIssue
+import gitignore from '!raw-loader!./cra-files/.gitignore'; // $FlowIssue
+import manifest from '!raw-loader!./cra-files/manifest.json'; // $FlowIssue
+import serviceWorker from '!raw-loader!./cra-files/createServiceWorker'; // $FlowIssue
+import README from './cra-files/README.md'; // $FlowIssue
+/* eslint-enable */
 
 const CSSTag = (resource: string) =>
   `<link rel="stylesheet" type="text/css" href="${resource}" media="all">`;

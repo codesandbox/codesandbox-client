@@ -1,3 +1,4 @@
+// @flow
 import _debug from 'app/utils/debug';
 
 import callApi from '../../../services/api';

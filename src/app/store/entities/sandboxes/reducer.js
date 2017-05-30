@@ -1,11 +1,8 @@
+// @flow
 import type { Sandbox } from 'common/types';
 import { mapValues } from 'lodash';
 
 import {
-  ADD_MODULE_TO_SANDBOX,
-  ADD_DIRECTORY_TO_SANDBOX,
-  REMOVE_MODULE_FROM_SANDBOX,
-  REMOVE_DIRECTORY_FROM_SANDBOX,
   SET_NPM_DEPENDENCIES,
   SET_EXTERNAL_RESOURCES,
   SET_CURRENT_MODULE,
@@ -19,6 +16,13 @@ import {
   LIKE_SANDBOX_ACTIONS,
   UNLIKE_SANDBOX_ACTIONS,
 } from './actions';
+
+import {
+  ADD_MODULE_TO_SANDBOX,
+  ADD_DIRECTORY_TO_SANDBOX,
+  REMOVE_MODULE_FROM_SANDBOX,
+  REMOVE_DIRECTORY_FROM_SANDBOX,
+} from './actions/files';
 
 import { CLEAR_ERRORS, ADD_ERROR } from './errors/actions';
 import errorReducer from './errors/reducer';

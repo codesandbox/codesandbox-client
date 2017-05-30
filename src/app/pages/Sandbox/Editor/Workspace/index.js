@@ -34,7 +34,7 @@ type Props = {
   sandbox: Sandbox,
   sandboxActions: typeof sandboxActionCreators,
   preventTransition: boolean,
-  users: { [key: id]: User },
+  user: User,
 };
 
 const mapDispatchToProps = dispatch => ({
@@ -43,11 +43,15 @@ const mapDispatchToProps = dispatch => ({
 const mapStateToProps = createSelector(
   modulesFromSandboxNotSavedSelector,
   usersSelector,
-  (preventTransition, users) => ({ preventTransition, users }),
+  (_, props) => props.sandbox && props.sandbox.author,
+  (preventTransition, users, author) => ({
+    preventTransition,
+    user: users[author],
+  }),
 );
 const Workspace = ({
   sandbox,
-  users,
+  user,
   preventTransition,
   sandboxActions,
 }: Props) => (
@@ -65,7 +69,7 @@ const Workspace = ({
         forkedSandbox={sandbox.forkedFromSandbox}
         preventTransition={preventTransition}
         owned={sandbox.owned}
-        author={users[sandbox.author]}
+        author={user}
         deleteSandbox={sandboxActions.deleteSandbox}
       />
     </WorkspaceItem>

@@ -1,0 +1,145 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`File renders 1`] = `
+<div>
+  <span
+    className="btLHBo"
+    onClick={[Function]}
+  >
+    <div
+      className="bxmmlS"
+    >
+      <svg
+        className="fDDlDz"
+        fill="currentColor"
+        height="1em"
+        preserveAspectRatio="xMidYMid meet"
+        style={
+          Object {
+            "color": undefined,
+            "verticalAlign": "middle",
+          }
+        }
+        viewBox="0 0 40 40"
+        width="1em"
+      >
+        <g>
+          <path
+            d="m12.8 30.4l-1 1.1q-0.2 0.2-0.5 0.2t-0.5-0.2l-9.7-9.7q-0.2-0.2-0.2-0.5t0.2-0.4l9.7-9.7q0.2-0.2 0.5-0.2t0.5 0.2l1 1q0.2 0.2 0.2 0.5t-0.2 0.5l-8.1 8.1 8.1 8.2q0.2 0.2 0.2 0.5t-0.2 0.4z m12.3-22.1l-7.8 26.8q0 0.3-0.3 0.4t-0.5 0.1l-1.3-0.4q-0.2-0.1-0.4-0.3t0-0.5l7.7-26.8q0.1-0.3 0.4-0.4t0.4-0.1l1.3 0.4q0.3 0 0.4 0.3t0.1 0.5z m13.6 13.5l-9.7 9.7q-0.2 0.2-0.4 0.2t-0.5-0.2l-1-1.1q-0.3-0.2-0.3-0.4t0.3-0.5l8.1-8.2-8.1-8.1q-0.3-0.2-0.3-0.5t0.3-0.5l1-1q0.2-0.2 0.5-0.2t0.4 0.2l9.7 9.7q0.2 0.2 0.2 0.4t-0.2 0.5z"
+          />
+        </g>
+      </svg>
+       
+      Test
+    </div>
+  </span>
+</div>
+`;
+
+exports[`File renders alternative 1`] = `
+<div>
+  <span
+    className="hvbbIX"
+    onClick={[Function]}
+  >
+    <div
+      className="bxmmlS"
+    >
+      <svg
+        className="fDDlDz"
+        fill="currentColor"
+        height="1em"
+        preserveAspectRatio="xMidYMid meet"
+        style={
+          Object {
+            "color": undefined,
+            "verticalAlign": "middle",
+          }
+        }
+        viewBox="0 0 40 40"
+        width="1em"
+      >
+        <g>
+          <path
+            d="m35 7.5h-13.7s-1.3-0.6-1.3-1.2v-1.3s-1.2-2.5-2.5-2.5h-12.5s-2.5 1.3-2.5 2.5v27.5h35v-22.5s-1.2-2.5-2.5-2.5z m-17.5 0h-12.5v-1.2s0.6-1.3 1.3-1.3h10s1.2 0.6 1.2 1.3v1.2z"
+          />
+        </g>
+      </svg>
+       
+      Test
+    </div>
+  </span>
+</div>
+`;
+
+exports[`File renders as active 1`] = `
+<div>
+  <span
+    className="gfSaqs"
+    onClick={[Function]}
+  >
+    <div
+      className="bxmmlS"
+    >
+      <svg
+        className="fDDlDz"
+        fill="currentColor"
+        height="1em"
+        preserveAspectRatio="xMidYMid meet"
+        style={
+          Object {
+            "color": undefined,
+            "verticalAlign": "middle",
+          }
+        }
+        viewBox="0 0 40 40"
+        width="1em"
+      >
+        <g>
+          <path
+            d="m12.8 30.4l-1 1.1q-0.2 0.2-0.5 0.2t-0.5-0.2l-9.7-9.7q-0.2-0.2-0.2-0.5t0.2-0.4l9.7-9.7q0.2-0.2 0.5-0.2t0.5 0.2l1 1q0.2 0.2 0.2 0.5t-0.2 0.5l-8.1 8.1 8.1 8.2q0.2 0.2 0.2 0.5t-0.2 0.4z m12.3-22.1l-7.8 26.8q0 0.3-0.3 0.4t-0.5 0.1l-1.3-0.4q-0.2-0.1-0.4-0.3t0-0.5l7.7-26.8q0.1-0.3 0.4-0.4t0.4-0.1l1.3 0.4q0.3 0 0.4 0.3t0.1 0.5z m13.6 13.5l-9.7 9.7q-0.2 0.2-0.4 0.2t-0.5-0.2l-1-1.1q-0.3-0.2-0.3-0.4t0.3-0.5l8.1-8.2-8.1-8.1q-0.3-0.2-0.3-0.5t0.3-0.5l1-1q0.2-0.2 0.5-0.2t0.4 0.2l9.7 9.7q0.2 0.2 0.2 0.4t-0.2 0.5z"
+          />
+        </g>
+      </svg>
+       
+      Test
+    </div>
+  </span>
+</div>
+`;
+
+exports[`File renders directory 1`] = `
+<div>
+  <span
+    className="btLHBo"
+    onClick={[Function]}
+  >
+    <div
+      className="bxmmlS"
+    >
+      <svg
+        className="fDDlDz"
+        fill="currentColor"
+        height="1em"
+        preserveAspectRatio="xMidYMid meet"
+        style={
+          Object {
+            "color": undefined,
+            "verticalAlign": "middle",
+          }
+        }
+        viewBox="0 0 40 40"
+        width="1em"
+      >
+        <g>
+          <path
+            d="m35 7.5h-13.7s-1.3-0.6-1.3-1.2v-1.3s-1.2-2.5-2.5-2.5h-12.5s-2.5 1.3-2.5 2.5v27.5h35v-22.5s-1.2-2.5-2.5-2.5z m-17.5 0h-12.5v-1.2s0.6-1.3 1.3-1.3h10s1.2 0.6 1.2 1.3v1.2z"
+          />
+        </g>
+      </svg>
+       
+      Test
+    </div>
+  </span>
+</div>
+`;

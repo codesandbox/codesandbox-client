@@ -129,6 +129,8 @@ class EditorPreview extends React.PureComponent {
     } = this.props;
 
     const mainModule = modules.find(isMainModule);
+    if (!mainModule) throw new Error('Cannot find main module');
+
     const { currentModule: currentModuleId } = sandbox;
     const currentModule =
       modules.find(m => m.id === currentModuleId) || mainModule;
@@ -166,7 +168,7 @@ class EditorPreview extends React.PureComponent {
           addError={sandboxActions.addError}
           errors={sandbox.errors}
           clearErrors={sandboxActions.clearErrors}
-          isInProjectView={sandbox.isInProjectView}
+          isInProjectView={sandbox.isInProjectView || true}
           externalResources={sandbox.externalResources}
           setProjectView={sandboxActions.setProjectView}
           preferences={preferences}

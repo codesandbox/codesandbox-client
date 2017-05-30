@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import styled, { keyframes } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 
 import theme from 'common/theme';
 
@@ -24,8 +24,7 @@ const backward = keyframes`
   100%{background-position:0% 50%}
 `;
 
-const styles = props =>
-  `
+const styles = css`
   transition: 0.3s ease all;
   animation-name: ${backward};
   animation-duration: 300ms;
@@ -33,19 +32,19 @@ const styles = props =>
 
   border: none;
   outline: none;
-  ${getBackgroundColor(props)};
+  ${props => getBackgroundColor(props)};
   background-size: 720%;
 
   border-radius: 4px;
 
   font-size: 1.125rem;
   text-align: center;
-  color: ${getColor(props)};
+  color: ${props => getColor(props)};
   font-weight: 300;
-  ${!props.disabled && `box-shadow: 0 3px 3px rgba(0, 0, 0, 0.5);`};
-  width: ${props.block ? '100%' : 'inherit'};
+  ${props => !props.disabled && `box-shadow: 0 3px 3px rgba(0, 0, 0, 0.5);`};
+  width: ${props => (props.block ? '100%' : 'inherit')};
 
-  ${(() => {
+  ${props => () => {
     if (props.small) {
       return `
         padding: 0.5rem 0.75rem;
@@ -53,12 +52,12 @@ const styles = props =>
       `;
     }
     return 'padding: 0.65rem 2.25rem;';
-  })()}
+  }}
 
   user-select: none;
   text-decoration: none;
 
-  ${!props.disabled && `
+  ${props => !props.disabled && `
   cursor: pointer;
   &:hover {
     animation-name: ${forward};

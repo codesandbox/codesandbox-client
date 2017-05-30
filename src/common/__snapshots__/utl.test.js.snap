@@ -1,0 +1,75 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`url parameters can autoresize 1`] = `
+Object {
+  "autoResize": true,
+  "hideNavigation": false,
+  "isEditorScreen": false,
+  "isPreviewScreen": false,
+}
+`;
+
+exports[`url parameters can handle multiple options 1`] = `
+Object {
+  "autoResize": true,
+  "currentModule": "test",
+  "hideNavigation": true,
+  "isEditorScreen": true,
+  "isPreviewScreen": false,
+}
+`;
+
+exports[`url parameters can hide navigation 1`] = `
+Object {
+  "autoResize": false,
+  "hideNavigation": true,
+  "isEditorScreen": false,
+  "isPreviewScreen": false,
+}
+`;
+
+exports[`url parameters doesn't set unknown fields 1`] = `
+Object {
+  "autoResize": false,
+  "hideNavigation": false,
+  "isEditorScreen": false,
+  "isPreviewScreen": false,
+}
+`;
+
+exports[`url parameters keeps everything false on normal urls 1`] = `
+Object {
+  "autoResize": false,
+  "hideNavigation": false,
+  "isEditorScreen": false,
+  "isPreviewScreen": false,
+}
+`;
+
+exports[`url parameters sets current module if there is one 1`] = `
+Object {
+  "autoResize": false,
+  "currentModule": "test",
+  "hideNavigation": false,
+  "isEditorScreen": false,
+  "isPreviewScreen": false,
+}
+`;
+
+exports[`url parameters sets editor view 1`] = `
+Object {
+  "autoResize": false,
+  "hideNavigation": false,
+  "isEditorScreen": true,
+  "isPreviewScreen": false,
+}
+`;
+
+exports[`url parameters sets preview view 1`] = `
+Object {
+  "autoResize": false,
+  "hideNavigation": false,
+  "isEditorScreen": false,
+  "isPreviewScreen": true,
+}
+`;

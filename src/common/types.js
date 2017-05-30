@@ -1,3 +1,4 @@
+// @flow
 import React from 'react';
 
 export type ModuleError = {
@@ -41,7 +42,7 @@ export type User = {
   username: string,
   name: string,
   avatarUrl: ?string,
-  showcasedSandboxShortId: ?string,
+  showcasedSandboxShortid: ?string,
   sandboxCount: number,
   givenLikeCount: number,
 };
@@ -54,9 +55,10 @@ export type Sandbox = {
   likeCount: number,
   forkCount: number,
   userLiked: boolean,
-  modules: Array<string>,
+  modules: Array<string | Module>,
   currentModule: ?string,
-  directories: Array<string>,
+  directories: Array<string | Directory>,
+  owned: boolean,
   npmDependencies: {
     [dep: string]: string,
   },
@@ -71,7 +73,7 @@ export type Sandbox = {
   },
   showEditor: ?boolean,
   showPreview: ?boolean,
-  author: User,
+  author: ?User,
   forkedFromSandbox: ?{ title: string, id: string },
 };
 
@@ -86,14 +88,14 @@ export type SmallSandbox = {
 };
 
 export type Preferences = {
-  autoCompleteEnabled: boolean,
-  vimMode: boolean,
-  livePreviewEnabled: boolean,
-  prettifyOnSaveEnabled: boolean,
-  lintEnabled: boolean,
-  instantPreviewEnabled: boolean,
-  fontSize: number,
-  clearConsoleEnabled: boolean,
+  autoCompleteEnabled: ?boolean,
+  vimMode: ?boolean,
+  livePreviewEnabled: ?boolean,
+  prettifyOnSaveEnabled: ?boolean,
+  lintEnabled: ?boolean,
+  instantPreviewEnabled: ?boolean,
+  fontSize: ?number,
+  clearConsoleEnabled: ?boolean,
 };
 
 export type NotificationButton = {

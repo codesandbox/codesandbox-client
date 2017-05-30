@@ -10,7 +10,6 @@ import type { Sandbox } from 'common/types';
 
 import { sandboxesSelector } from 'app/store/entities/sandboxes/selectors';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
-import { jwtSelector } from 'app/store/user/selectors';
 
 import Title from 'app/components/text/Title';
 import Centered from 'app/components/flex/Centered';
@@ -21,7 +20,6 @@ type Props = {
   sandbox: ?Sandbox,
   sandboxes: { [id: string]: Sandbox },
   sandboxActions: typeof sandboxActionCreators,
-  hasLogin: boolean,
   match: { params: { id: ?string } },
 };
 type State = {
@@ -37,11 +35,10 @@ const Container = styled.div`
 const mapStateToProps = createSelector(
   sandboxesSelector,
   (_, props) => props.match.params.id,
-  jwtSelector,
-  (sandboxes, id, jwt) => {
+  (sandboxes, id) => {
     const sandbox = sandboxes[id];
 
-    return { sandbox, sandboxes, hasLogin: !!jwt };
+    return { sandbox, sandboxes };
   },
 );
 const mapDispatchToProps = dispatch => ({

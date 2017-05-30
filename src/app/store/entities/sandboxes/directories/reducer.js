@@ -1,3 +1,4 @@
+// @flow
 import { RENAME_DIRECTORY, MOVE_DIRECTORY } from './actions';
 
 function directoryReducer(directory, action) {
@@ -11,7 +12,10 @@ function directoryReducer(directory, action) {
   }
 }
 
-export default function reducer(state: {}, action) {
+export default function reducer(
+  state: {},
+  action: { type: string, [key: string]: any },
+) {
   switch (action.type) {
     case RENAME_DIRECTORY:
     case MOVE_DIRECTORY:

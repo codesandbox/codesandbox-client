@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`theme can adjust colors 1`] = `"rgb(19, 21, 22)"`;
+
+exports[`theme can chain color adjustments 1`] = `"rgb(24, 26, 27)"`;
+
+exports[`theme has a theme 1`] = `
+Object {
+  "background": [Function],
+  "background2": [Function],
+  "background3": [Function],
+  "black": [Function],
+  "gray": [Function],
+  "green": [Function],
+  "primary": [Function],
+  "primaryText": [Function],
+  "red": [Function],
+  "redBackground": [Function],
+  "secondary": [Function],
+  "white": [Function],
+}
+`;

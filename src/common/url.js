@@ -1,13 +1,13 @@
 // @flow
 
-export const getSandboxOptions = () => {
+export const getSandboxOptions = (url: string) => {
   const result = {};
-  const moduleMatch = location.search.match(/(\?|\&)(module)\=([^&]+)/);
+  const moduleMatch = url.match(/(\?|\&)(module)\=([^&]+)/);
   if (moduleMatch) {
     result.currentModule = moduleMatch[3];
   }
-  result.isPreviewScreen = location.search.includes('view=preview');
-  result.isEditorScreen = location.search.includes('view=editor');
+  result.isPreviewScreen = url.includes('view=preview');
+  result.isEditorScreen = url.includes('view=editor');
 
   // If there is no view specified and the width of the window is <800 we want
   // to default to preview
@@ -17,8 +17,8 @@ export const getSandboxOptions = () => {
     result.isPreviewScreen = windowWidth < 800;
   }
 
-  result.hideNavigation = location.search.includes('hidenavigation=1');
-  result.autoResize = location.search.includes('autoresize=1');
+  result.hideNavigation = url.includes('hidenavigation=1');
+  result.autoResize = url.includes('autoresize=1');
 
   return result;
 };

@@ -67,7 +67,7 @@ export default class App extends React.PureComponent {
       isEditorScreen,
       autoResize,
       hideNavigation,
-    } = getSandboxOptions();
+    } = getSandboxOptions(document.location.href);
 
     this.state = {
       notFound: false,

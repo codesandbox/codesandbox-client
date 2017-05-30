@@ -19,7 +19,7 @@ export default new schema.Entity(
         currentModule,
         isEditorScreen,
         isPreviewScreen,
-      } = getSandboxOptions();
+      } = getSandboxOptions(document.location.href);
       return {
         ...sandbox,
         isInProjectView: currentModule == null,

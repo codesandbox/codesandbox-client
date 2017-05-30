@@ -1,18 +1,24 @@
+// @flow
+import type { Directory, Module } from 'common/types';
 import { createSelector } from 'reselect';
 
 export const modulesSelector = state => state.entities.modules;
-export const isMainModule = module =>
+export const isMainModule = (module: Module) =>
   module.title === 'index.js' && module.directoryShortid == null;
 
-function findById(entities, id) {
+function findById(entities: Array<Module | Directory>, id: string) {
   return entities.find(e => e.id === id);
 }
 
-function findByShortid(entities, shortid) {
+function findByShortid(entities: Array<Module | Directory>, shortid: ?string) {
   return entities.find(e => e.shortid === shortid);
 }
 
-export const getModulePath = (modules, directories, id) => {
+export const getModulePath = (
+  modules: Array<Module>,
+  directories: Array<Directory>,
+  id: string,
+) => {
   const module = findById(modules, id);
 
   if (!module) return '';

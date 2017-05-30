@@ -1,3 +1,4 @@
+// @flow
 import {
   RENAME_MODULE,
   MOVE_MODULE,
@@ -20,7 +21,10 @@ function moduleReducer(module, action) {
   }
 }
 
-export default function reducer(state: {}, action) {
+export default function reducer(
+  state: {},
+  action: { type: string, id: string, [key: string]: any },
+) {
   switch (action.type) {
     case RENAME_MODULE:
     case MOVE_MODULE:
