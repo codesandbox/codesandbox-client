@@ -39,10 +39,7 @@ type Props = {
   fetchBundle: (id: string) => Object,
   setProjectView: (id: string, isInProjectView: boolean) => any,
   module: Module,
-  addError: (
-    sandboxId: string,
-    error: ?{ message: string, line: number },
-  ) => any,
+  addError: (sandboxId: string, error: ModuleError) => any,
   clearErrors: (sandboxId: string) => any,
   sandboxActions: typeof sandboxActionCreators,
   noDelay: ?boolean,
@@ -170,7 +167,7 @@ export default class Preview extends React.PureComponent {
       this.setState({
         frameInitialized: true,
       });
-      this.executeCode();
+      this.executeCodeImmediately();
     } else {
       const { type } = e.data;
       if (type === 'error') {
@@ -217,6 +214,7 @@ export default class Preview extends React.PureComponent {
       }
       return;
     }
+    // Do it here so we can see the dependency fetching screen if needed
     this.clearErrors();
     const renderedModule = this.getRenderedModule();
     this.sendMessage({

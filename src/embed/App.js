@@ -20,7 +20,6 @@ const Container = styled.div`
   height: 100%;
   width: 100%;
   color: white;
-  overflow-y: hidden;
 `;
 
 const Fullscreen = styled.div`
@@ -45,7 +44,7 @@ const Moving = styled.div`
 
 type State = {
   notFound: boolean,
-  sandbox: Sandbox,
+  sandbox: ?Sandbox,
   showEditor: boolean,
   showPreview: boolean,
   isInProjectView: boolean,

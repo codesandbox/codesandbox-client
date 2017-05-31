@@ -6,7 +6,7 @@ import Preview from 'app/components/sandbox/Preview';
 import CodeEditor from 'app/components/sandbox/CodeEditor';
 import { getModulePath } from 'app/store/entities/sandboxes/modules/selectors';
 
-import type { Sandbox, Module } from 'common/types';
+import type { Sandbox, Module, ModuleError } from 'common/types';
 import fetchBundle from 'app/store/entities/sandboxes/bundler';
 
 const Container = styled.div`
@@ -26,7 +26,7 @@ const Split = styled.div`
 
 type Props = {
   sandbox: Sandbox,
-  currentModule: string,
+  currentModule: ?string,
   showEditor: boolean,
   showPreview: boolean,
   isInProjectView: boolean,
@@ -37,11 +37,18 @@ type Props = {
 type State = {
   bundle: Object,
   isInProjectView: boolean,
+  codes: { [id: string]: string },
+  errors: Array<ModuleError>,
 };
 
-export default class Content extends React.Component {
+export default class Content extends React.PureComponent {
   state: State = {
-    bundle: { processing: true },
+    bundle: {
+      processing: true,
+    },
+    inInProjectView: false,
+    codes: {},
+    errors: [],
   };
 
   componentDidMount() {
@@ -86,6 +93,63 @@ export default class Content extends React.Component {
     }
   };
 
+  setCode = (moduleId: string, code: string) => {
+    this.setState({
+      ...this.state,
+      codes: {
+        ...this.state.codes,
+        [moduleId]: code,
+      },
+    });
+  };
+
+  addError = (moduleId: string, error: ModuleError) => {
+    if (!this.state.errors.find(e => e.moduleId === error.moduleId)) {
+      this.setState({
+        errors: [...this.state.errors, error],
+      });
+    }
+  };
+
+  clearErrors = () => {
+    if (this.state.errors.length > 0) {
+      this.setState({
+        errors: [],
+      });
+    }
+  };
+
+  lastCodes = {};
+  lastAlteredModules = [];
+  /**
+   * This is a bit of a hack, we utilize custom memoization so we don't return
+   * a new array of new modules on each render, because map creates a new array
+   */
+  getAlteredModules = () => {
+    const { sandbox } = this.props;
+    const { codes } = this.state;
+    const codeChanged = this.lastCodes !== codes;
+
+    if (!codeChanged) {
+      return this.lastAlteredModules;
+    }
+
+    this.lastCodes = codes;
+
+    // $FlowIssue
+    const alteredModules = sandbox.modules.map((m: Module) => ({
+      ...m,
+      code: codes[m.id] || m.code,
+    }));
+
+    this.lastAlteredModules = alteredModules;
+    return alteredModules;
+  };
+
+  preferences = {
+    livePreviewEnabled: true,
+  };
+
   props: Props;
   state: State;
   render() {
@@ -98,7 +162,10 @@ export default class Content extends React.Component {
       hideNavigation,
     } = this.props;
 
-    const preferences = { livePreviewEnabled: true };
+    const { errors } = this.state;
+
+    const alteredModules = this.getAlteredModules();
+
     // $FlowIssue
     const mainModule: Module =
       sandbox.modules.find((m: Module) => m.shortid === currentModule) ||
@@ -121,8 +188,8 @@ export default class Content extends React.Component {
                 sandbox.directories,
                 mainModule.id,
               )}
-              preferences={preferences}
-              onlyViewMode
+              changeCode={this.setCode}
+              preferences={this.preferences}
             />
           </Split>}
 
@@ -131,19 +198,19 @@ export default class Content extends React.Component {
             <Preview
               sandboxId={sandbox.id}
               isInProjectView={isInProjectView}
-              modules={sandbox.modules}
+              modules={alteredModules}
               directories={sandbox.directories}
               bundle={this.state.bundle}
               externalResources={sandbox.externalResources}
               module={mainModule}
               fetchBundle={this.fetchBundle}
-              addError={() => {}}
-              clearErrors={() => {}}
-              preferences={preferences}
+              addError={this.addError}
+              clearErrors={this.clearErrors}
+              preferences={this.preferences}
               setProjectView={this.props.setProjectView}
               hideNavigation={hideNavigation}
-              noDelay
               setFrameHeight={this.handleResize}
+              errors={errors}
             />
           </Split>}
       </Container>
