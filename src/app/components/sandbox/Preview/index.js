@@ -167,7 +167,7 @@ export default class Preview extends React.PureComponent {
       this.setState({
         frameInitialized: true,
       });
-      this.executeCode();
+      this.executeCodeImmediately();
     } else {
       const { type } = e.data;
       if (type === 'error') {

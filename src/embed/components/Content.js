@@ -26,7 +26,7 @@ const Split = styled.div`
 
 type Props = {
   sandbox: Sandbox,
-  currentModule: string,
+  currentModule: ?string,
   showEditor: boolean,
   showPreview: boolean,
   isInProjectView: boolean,
@@ -136,8 +136,8 @@ export default class Content extends React.PureComponent {
 
     this.lastCodes = codes;
 
+    // $FlowIssue
     const alteredModules = sandbox.modules.map((m: Module) => ({
-      // $FlowIssue
       ...m,
       code: codes[m.id] || m.code,
     }));
