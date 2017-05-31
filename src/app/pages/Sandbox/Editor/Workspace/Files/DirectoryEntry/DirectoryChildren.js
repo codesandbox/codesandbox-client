@@ -85,10 +85,10 @@ export default class DirectoryChildren extends React.PureComponent {
               title={m.title}
               depth={depth + 1}
               active={isActive}
-              type="code"
-              rename={!mainModule ? undefined : renameModule}
+              type="function"
+              rename={mainModule ? undefined : renameModule}
               openMenu={openMenu}
-              deleteEntry={!mainModule ? undefined : deleteEntry}
+              deleteEntry={mainModule ? undefined : deleteEntry}
               isNotSynced={m.isNotSynced}
               renameValidator={this.validateTitle}
               setCurrentModule={setCurrentModule}
