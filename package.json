@@ -121,7 +121,7 @@
   "scripts": {
     "start": "node scripts/start.js",
     "build": "NODE_ENV=production node scripts/build.js && gulp",
-    "test": "jest --env=jsdom && npm run lint",
+    "test": "jest --env=jsdom",
     "test:watch": "jest --watch --env=jsdom",
     "lint:app": "eslint src/app && npm run typecheck",
     "typecheck": "flow check",
