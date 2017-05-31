@@ -168,8 +168,8 @@ export default class Content extends React.PureComponent {
 
     // $FlowIssue
     const mainModule: Module =
-      sandbox.modules.find((m: Module) => m.shortid === currentModule) ||
-      sandbox.modules.find(
+      alteredModules.find((m: Module) => m.shortid === currentModule) ||
+      alteredModules.find(
         (m: Module) => m.title === 'index.js' && m.directoryShortid == null,
       );
 
@@ -184,7 +184,7 @@ export default class Content extends React.PureComponent {
               id={mainModule.id}
               title={mainModule.title}
               modulePath={getModulePath(
-                sandbox.modules,
+                alteredModules,
                 sandbox.directories,
                 mainModule.id,
               )}
