@@ -86,6 +86,14 @@ class Profile extends React.PureComponent {
     this.fetchUser(username);
   }
 
+  componentDidUpdate(prevProps: Props) {
+    const username = prevProps.match.params.username;
+
+    if (username !== this.props.match.params.username && !this.props.user) {
+      this.fetchUser(username);
+    }
+  }
+
   render() {
     if (this.state.notFound) {
       return <NotFound />;
