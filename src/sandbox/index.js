@@ -72,7 +72,6 @@ async function compile(message) {
     url: newUrl,
     changedModule,
     externalResources,
-    sandboxId,
   } = message.data;
 
   if (fetching) return;
@@ -90,11 +89,10 @@ async function compile(message) {
   try {
     const html = getIndexHtml(modules);
     document.body.innerHTML = html;
-    deleteCache(sandboxId, changedModule);
+    deleteCache(changedModule);
 
     const evalled = evalModule(
       module,
-      sandboxId,
       modules,
       directories,
       externals,

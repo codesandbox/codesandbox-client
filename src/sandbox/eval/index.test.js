@@ -9,8 +9,12 @@ describe('eval', () => {
         export default 3;
       `,
     };
+    const modules = [mainModule];
 
-    expect(evaller(mainModule)).toEqual({ __esModule: true, default: 3 });
+    expect(evaller(mainModule, modules, [], {})).toEqual({
+      __esModule: true,
+      default: 3,
+    });
   });
 
   test('css', () => {

@@ -26,7 +26,7 @@ function createStyleNode(id: string, content: string) {
 /**
  * Adds CSS to HEAD and creates a mapping of classname -> generatedClassname
  */
-export default (module, sandboxId) => {
+export default module => {
   const css = module.code;
 
   const classNameRegex = /\.(-?[_a-zA-Z]+[_a-zA-Z0-9-]*)/g;
@@ -35,7 +35,7 @@ export default (module, sandboxId) => {
   // const alteredClassNames = getGeneratedClassNames(module.id, classNames);
 
   // const newCode = getGeneratedClassNameCode(module.code, alteredClassNames);
-  createStyleNode(`${sandboxId}${module.id}`, css);
+  createStyleNode(module.id, css);
 
   return classNames;
 };
