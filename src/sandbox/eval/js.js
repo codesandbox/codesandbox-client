@@ -2,6 +2,8 @@
 
 import { transform } from 'babel-standalone';
 
+import type { Module, Directory } from 'common/types';
+
 import asyncPlugin from 'babel-plugin-transform-async-to-generator';
 import restSpread from 'babel-plugin-transform-object-rest-spread';
 import classProperties from 'babel-plugin-transform-class-properties';
@@ -18,7 +20,7 @@ const getId = (sandboxId, module) => `${sandboxId}${module.id}`;
 /**
  * Deletes the cache of all modules that use module and module itself
  */
-export function deleteCache(sandboxId, module) {
+export function deleteCache(sandboxId: string, module: Module) {
   moduleCache.forEach(value => {
     if (value.requires.includes(getId(sandboxId, module))) {
       deleteCache(sandboxId, value.module);
@@ -27,13 +29,45 @@ export function deleteCache(sandboxId, module) {
   moduleCache.delete(getId(sandboxId, module));
 }
 
-const compileCode = (code: string = '', moduleName: string = 'unknown') => {
+const getBabelConfig = (
+  currentModule: Module,
+  modules: Array<Module>,
+  directories: Array<Directory>,
+  sandboxId: string,
+  externals: Object,
+  depth: number,
+) => {
+  const babelConfigModule = modules.find(
+    m => m.title === 'babel.config.js' && !m.directoryShortid,
+  );
+
+  if (babelConfigModule && babelConfigModule !== currentModule) {
+    const config = evalModule(
+      babelConfigModule,
+      sandboxId,
+      modules,
+      directories,
+      externals,
+      depth,
+    );
+
+    return config.default;
+  }
+
+  return {
+    presets: ['es2015', 'react', 'stage-0'],
+    plugins: [decoratorPlugin, asyncPlugin, restSpread, classProperties],
+    retainLines: true,
+  };
+};
+
+const compileCode = (
+  code: string = '',
+  moduleName: string = 'unknown',
+  babelConfig: Object,
+) => {
   try {
-    return transform(code, {
-      presets: ['es2015', 'react', 'stage-0'],
-      plugins: [decoratorPlugin, asyncPlugin, restSpread, classProperties],
-      retainLines: true,
-    }).code;
+    return transform(code, babelConfig).code;
   } catch (e) {
     e.message = e.message.split('\n')[0].replace('unknown', moduleName);
     throw new Error(e);
@@ -47,12 +81,12 @@ function evaluate(code, require) {
 }
 
 export default function evaluateJS(
-  mainModule,
-  sandboxId,
-  modules,
-  directories,
-  externals,
-  depth,
+  mainModule: Module,
+  sandboxId: string,
+  modules: Array<Module>,
+  directories: Array<Directory>,
+  externals: { [path: string]: string },
+  depth: number,
 ) {
   try {
     const requires = [];
@@ -105,7 +139,19 @@ export default function evaluateJS(
       }
     };
 
-    const compiledCode = compileCode(mainModule.code, mainModule.title);
+    const babelConfig = getBabelConfig(
+      mainModule,
+      modules,
+      directories,
+      sandboxId,
+      externals,
+      depth,
+    );
+    const compiledCode = compileCode(
+      mainModule.code || '',
+      mainModule.title,
+      babelConfig,
+    );
 
     // don't use Function() here since it changes source locations
     const exports = evaluate(compiledCode, require);
