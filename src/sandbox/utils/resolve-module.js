@@ -8,6 +8,10 @@ const compareTitle = (original: string, test: string) => {
   return false;
 };
 
+const throwError = (path: string) => {
+  throw new Error(`Cannot find module in ${path}`);
+};
+
 /**
  * Convert the module path to a module
  */
@@ -19,7 +23,7 @@ export default (
 ) => {
   // Split path
   const splitPath = path.replace(/^.\//, '').split('/');
-  const founddirectoryShortid = splitPath.reduce(
+  const foundDirectoryShortid = splitPath.reduce(
     (dirId: ?string, pathPart: string, i: number) => {
       // Meaning this is the last argument, so the file
       if (i === splitPath.length - 1) return dirId;
@@ -27,22 +31,20 @@ export default (
       if (pathPart === '..') {
         // Find the parent
         const dir = directories.find(d => d.shortid === dirId);
-        if (dir == null) throw new Error(`Cannot find module in ${path}`);
+        if (dir == null) throwError(path);
 
         return dir.directoryShortid;
       }
 
-      // For == check on null
-      // eslint-disable-next-line eqeqeq
       const directoriesInDirectory = directories.filter(
+        // eslint-disable-next-line eqeqeq
         m => m.directoryShortid == dirId,
       );
       const nextDirectory = directoriesInDirectory.find(d =>
         compareTitle(d.title, pathPart),
       );
 
-      if (nextDirectory == null)
-        throw new Error(`Cannot find module in ${path}`);
+      if (nextDirectory == null) throwError(path);
 
       return nextDirectory.shortid;
     },
@@ -50,9 +52,9 @@ export default (
   );
 
   const lastPath = splitPath[splitPath.length - 1];
-  // eslint-disable-next-line eqeqeq
   const modulesInFoundDirectory = modules.filter(
-    m => m.directoryShortid == founddirectoryShortid,
+    // eslint-disable-next-line eqeqeq
+    m => m.directoryShortid == foundDirectoryShortid,
   );
 
   // Find module with same name
@@ -61,22 +63,25 @@ export default (
   );
   if (foundModule) return foundModule;
 
-  // eslint-disable-next-line eqeqeq
+  // Check all directories in said directory for same name
   const directoriesInFoundDirectory = directories.filter(
-    m => m.directoryShortid == founddirectoryShortid,
+    // eslint-disable-next-line eqeqeq
+    m => m.directoryShortid == foundDirectoryShortid,
   );
   const foundDirectory = directoriesInFoundDirectory.find(m =>
     compareTitle(m.title, lastPath),
   );
 
+  // If it refers to a directory
   if (foundDirectory) {
-    // eslint-disable-next-line eqeqeq
+    // Find module named index
     const indexModule = modules.find(
       m =>
+        // eslint-disable-next-line eqeqeq
         m.directoryShortid == foundDirectory.shortid &&
         compareTitle(m.title, 'index'),
     );
-    if (indexModule == null) throw new Error(`Cannot find module in ${path}`);
+    if (indexModule == null) throwError(path);
     return indexModule;
   }
 
@@ -87,5 +92,6 @@ export default (
     );
     if (indexModule) return indexModule;
   }
-  throw new Error(`Cannot find module in ${path}`);
+
+  throwError(path);
 };

@@ -5,10 +5,12 @@ import styled, { injectGlobal } from 'styled-components';
 import { connect } from 'react-redux';
 import { spring, Motion } from 'react-motion';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import notificationActionCreators from 'app/store/notifications/actions';
+import Portal from 'app/components/Portal';
+
 import type { Notification } from 'common/types';
-import notificationActionCreators from '../store/notifications/actions';
-import NotificationComponent from '../components/Notification';
-import Portal from '../components/Portal';
+
+import NotificationComponent from './Notification';
 
 type Props = {
   notifications: Array<Notification>,
