@@ -23,10 +23,10 @@ export function createAPIActions(prefix: string, suffix: string): APIActions {
   };
 }
 
-const getMessage = (error: Error) => {
+const getMessage = (error: Error & { response: ?Object }) => {
   const response = error.response;
 
-  if (response.status >= 500) {
+  if (!response || response.status >= 500) {
     sendError(error);
   }
 
@@ -40,6 +40,7 @@ const getMessage = (error: Error) => {
       return errors;
     }
   }
+
   return error.message;
 };
 
