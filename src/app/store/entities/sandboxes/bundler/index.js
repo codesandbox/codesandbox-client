@@ -32,8 +32,8 @@ async function requestPackager(query: string) {
     } catch (e) {
       const statusCode = e.response && e.response.status;
 
-      // 408 status code means the bundler is still bundling
-      if (retries < RETRY_COUNT && statusCode === 408) {
+      // 504 status code means the bundler is still bundling
+      if (retries < RETRY_COUNT && statusCode === 504) {
         retries += 1;
       } else {
         throw e;
