@@ -104,6 +104,7 @@ export default ({ sandbox, setCurrentModule, currentModule }: Props) => (
 
     <Item>
       <Title>Dependencies</Title>
+
       <Subtitle>NPM Dependencies</Subtitle>
       {Object.keys(sandbox.npmDependencies).map(dep => (
         <EntryContainer key={dep}>
@@ -111,6 +112,7 @@ export default ({ sandbox, setCurrentModule, currentModule }: Props) => (
           <Version>{sandbox.npmDependencies[dep]}</Version>
         </EntryContainer>
       ))}
+
       <Subtitle>External Resources</Subtitle>
       {sandbox.externalResources.map(dep => (
         <EntryContainer key={dep}>
@@ -120,6 +122,7 @@ export default ({ sandbox, setCurrentModule, currentModule }: Props) => (
         </EntryContainer>
       ))}
     </Item>
+
     <Item hover>
       <Padding margin={1}>
         <EditorLink id={sandbox.id} />

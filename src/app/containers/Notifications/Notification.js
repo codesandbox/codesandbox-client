@@ -5,9 +5,9 @@ import InfoIcon from 'react-icons/lib/md/info';
 import ErrorIcon from 'react-icons/lib/md/error';
 import WarningIcon from 'react-icons/lib/md/warning';
 
-import theme from '../../common/theme';
+import theme from 'common/theme';
 
-import type { NotificationButton } from '../store/notifications/reducer';
+import type { NotificationButton } from 'app/store/notifications/reducer';
 
 const Container = styled.div`
   position: relative;

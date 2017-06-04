@@ -2,19 +2,17 @@ import delay from './utils/delay';
 import buildError from './utils/error-message-builder';
 import evalModule, { deleteCache } from './eval';
 import NoDomChangeError from './errors/no-dom-change-error';
+import host from './utils/host';
 
 import handleExternalResources from './external-resources';
 import resizeEventListener from './resize-event-listener';
+import setupHistoryListeners from './url-listeners';
 
 import {
   getBoilerplates,
   evalBoilerplates,
   findBoilerplate,
 } from './boilerplates';
-
-const host = process.env.NODE_ENV === 'development'
-  ? 'http://codesandbox.dev'
-  : 'https://codesandbox.io';
 
 let fetching = false;
 let url = null;
@@ -171,51 +169,5 @@ window.addEventListener('message', async message => {
 });
 
 sendReady();
-
-function setupHistoryListeners() {
-  const pushState = window.history.pushState;
-  window.history.pushState = function(state) {
-    if (typeof history.onpushstate === 'function') {
-      window.history.onpushstate({ state });
-    }
-    // ... whatever else you want to do
-    // maybe call onhashchange e.handler
-    return pushState.apply(window.history, arguments);
-  };
-
-  const replaceState = window.history.replaceState;
-  window.history.replaceState = function(state) {
-    if (typeof history.onpushstate === 'function') {
-      window.history.onpushstate({ state });
-    }
-    // ... whatever else you want to do
-    // maybe call onhashchange e.handler
-    return replaceState.apply(window.history, arguments);
-  };
-
-  history.onpushstate = e => {
-    setTimeout(() => {
-      window.parent.postMessage(
-        {
-          type: 'urlchange',
-          url: document.location.pathname + location.search,
-        },
-        host,
-      );
-    });
-  };
-
-  history.onreplacestate = e => {
-    setTimeout(() => {
-      window.parent.postMessage(
-        {
-          type: 'urlchange',
-          url: document.location.pathname + location.search,
-        },
-        host,
-      );
-    });
-  };
-}
 
 setupHistoryListeners();
