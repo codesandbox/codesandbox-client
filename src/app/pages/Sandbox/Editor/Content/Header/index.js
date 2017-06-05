@@ -51,7 +51,8 @@ const Left = styled.div`
   height: 100%;
 `;
 
-const Chevron = styled(ChevronLeft)`
+const Chevron = styled.div`
+  svg {
   transition: 0.3s ease all;
   font-size: 1.5rem;
   display: flex;
@@ -69,6 +70,7 @@ const Chevron = styled(ChevronLeft)`
   }
 
   transform: rotateZ(${props => (props.workspaceHidden ? '180deg' : '0')});
+  }
 `;
 
 type Props = {
@@ -157,7 +159,9 @@ export default class Header extends React.PureComponent {
             <Chevron
               workspaceHidden={workspaceHidden}
               onClick={toggleWorkspace}
-            />
+            >
+              <ChevronLeft />
+            </Chevron>
           </Tooltip>
           {user.jwt &&
             (sandbox.userLiked

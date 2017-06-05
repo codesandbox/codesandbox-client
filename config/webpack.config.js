@@ -31,7 +31,7 @@ const getOutput = () =>
         path: paths.appBuild,
         pathinfo: true,
         filename: 'static/js/[name].js',
-        publicPath: '/',
+        publicPath: '/'
       }
     : {
         path: paths.appBuild,
@@ -39,7 +39,7 @@ const getOutput = () =>
         filename: 'static/js/[name].[hash:8].js',
         chunkFilename: 'static/js/[name].[hash:8].chunk.js',
         sourceMapFilename: '[file].map', // Default
-        publicPath: 'https://codesandbox.io/',
+        publicPath: 'https://codesandbox.io/'
       };
 
 const config = {
@@ -50,13 +50,13 @@ const config = {
     sandbox: [
       require.resolve('babel-polyfill'),
       require.resolve('./polyfills'),
-      path.join(paths.sandboxSrc, 'index.js'),
+      path.join(paths.sandboxSrc, 'index.js')
     ],
     embed: [
       require.resolve('./polyfills'),
-      path.join(paths.embedSrc, 'index.js'),
+      path.join(paths.embedSrc, 'index.js')
     ],
-    vendor: ['codemirror', 'react', 'react-dom', 'styled-components'],
+    vendor: ['codemirror', 'react', 'react-dom', 'styled-components']
   },
 
   target: 'web',
@@ -70,7 +70,7 @@ const config = {
         include: paths.src,
         exclude: [/eslint\.js$/],
         loader: 'babel-loader',
-        options: babelConfig,
+        options: babelConfig
       },
       // Used to remove strict mode from eval:
       {
@@ -81,16 +81,16 @@ const config = {
           const altererdConfig = Object.assign({}, babelConfig);
 
           altererdConfig.plugins.push(
-            require.resolve('babel-plugin-transform-remove-strict-mode'),
+            require.resolve('babel-plugin-transform-remove-strict-mode')
           );
           return altererdConfig;
-        })(),
+        })()
       },
       // JSON is not enabled by default in Webpack but both Node and Browserify
       // allow it implicitly so we also enable it.
       {
         test: /\.json$/,
-        loader: 'json-loader',
+        loader: 'json-loader'
       },
       // "postcss" loader applies autoprefixer to our CSS.
       // "css" loader resolves paths in CSS and adds assets as dependencies.
@@ -99,12 +99,12 @@ const config = {
       // in development "style" loader enables hot editing of CSS.
       {
         test: /\.css$/,
-        loaders: ['style-loader', 'css-loader'],
+        loaders: ['style-loader', 'css-loader']
       },
       // For importing README.md
       {
         test: /\.md$/,
-        loader: 'raw-loader',
+        loader: 'raw-loader'
       },
       // "file" loader makes sure those assets get served by WebpackDevServer.
       // When you `import` an asset, you get its (virtual) filename.
@@ -114,8 +114,8 @@ const config = {
         exclude: /\/favicon.ico$/,
         loader: 'file-loader',
         options: {
-          name: 'static/media/[name].[hash:8].[ext]',
-        },
+          name: 'static/media/[name].[hash:8].[ext]'
+        }
       },
       // A special case for favicon.ico to place it into build root directory.
       {
@@ -123,8 +123,8 @@ const config = {
         include: [paths.src],
         loader: 'file-loader',
         options: {
-          name: 'favicon.ico?[hash:8]',
-        },
+          name: 'favicon.ico?[hash:8]'
+        }
       },
       // "url" loader works just like "file" loader but it also embeds
       // assets smaller than specified size as data URLs to avoid requests.
@@ -133,8 +133,8 @@ const config = {
         loader: 'url-loader',
         options: {
           limit: 10000,
-          name: 'static/media/[name].[hash:8].[ext]',
-        },
+          name: 'static/media/[name].[hash:8].[ext]'
+        }
       },
       // "html" loader is used to process template page (index.html) to resolve
       // resources linked with <link href="./relative/path"> HTML tags.
@@ -142,10 +142,10 @@ const config = {
         test: /\.html$/,
         loader: 'html-loader',
         options: {
-          attrs: ['link:href'],
-        },
-      },
-    ],
+          attrs: ['link:href']
+        }
+      }
+    ]
   },
   resolve: {
     mainFields: ['browser', 'module', 'jsnext:main', 'main'],
@@ -154,8 +154,8 @@ const config = {
     extensions: ['.js', '.json'],
 
     alias: {
-      moment: 'moment/moment.js',
-    },
+      moment: 'moment/moment.js'
+    }
   },
 
   plugins: [
@@ -175,8 +175,8 @@ const config = {
         keepClosingSlash: true,
         minifyJS: true,
         minifyCSS: true,
-        minifyURLs: true,
-      },
+        minifyURLs: true
+      }
     }),
     new HtmlWebpackPlugin({
       inject: true,
@@ -193,8 +193,8 @@ const config = {
         keepClosingSlash: true,
         minifyJS: true,
         minifyCSS: true,
-        minifyURLs: true,
-      },
+        minifyURLs: true
+      }
     }),
     new HtmlWebpackPlugin({
       inject: true,
@@ -211,8 +211,8 @@ const config = {
         keepClosingSlash: true,
         minifyJS: true,
         minifyCSS: true,
-        minifyURLs: true,
-      },
+        minifyURLs: true
+      }
     }),
     // Makes some environment variables available to the JS code, for example:
     // if (process.env.NODE_ENV === 'development') { ... }. See `env.js`.
@@ -230,26 +230,26 @@ const config = {
     // Try to dedupe duplicated modules, if any:
     new webpack.optimize.CommonsChunkPlugin({
       name: 'common',
-      chunks: ['app', 'sandbox'],
+      chunks: ['app', 'sandbox']
     }),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
-      minChunks: Infinity,
+      minChunks: Infinity
     }),
     new webpack.optimize.CommonsChunkPlugin({
       async: true,
       children: true,
-      minChunks: 4,
+      minChunks: 4
     }),
-    new webpack.NamedModulesPlugin(),
-  ],
+    new webpack.NamedModulesPlugin()
+  ]
 };
 
 if (__DEV__) {
   const devEntries = [
     'react-hot-loader/patch',
     'webpack-dev-server/client?/',
-    'webpack/hot/only-dev-server',
+    'webpack/hot/only-dev-server'
   ];
 
   config.entry.app = [...devEntries, ...config.entry.app];
@@ -262,7 +262,7 @@ if (__PROD__) {
     // Minify the code.
     new webpack.LoaderOptionsPlugin({
       minimize: true,
-      debug: false,
+      debug: false
     }),
     // new BabiliPlugin(),
     new webpack.optimize.UglifyJsPlugin({
@@ -277,18 +277,18 @@ if (__PROD__) {
         dead_code: true,
         evaluate: true,
         if_return: true,
-        join_vars: true,
+        join_vars: true
       },
       output: {
-        comments: false,
+        comments: false
       },
-      sourceMap: true,
-    }),
+      sourceMap: true
+    })
   ];
 } else {
   config.plugins = [
     ...config.plugins,
-    new webpack.HotModuleReplacementPlugin(),
+    new webpack.HotModuleReplacementPlugin()
   ];
 }
 
