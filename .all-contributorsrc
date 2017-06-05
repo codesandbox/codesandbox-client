@@ -1,0 +1,30 @@
+{
+  "projectName": "CodeSandbox",
+  "projectOwner": "CompuIves",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": true,
+  "contributors": [
+    {
+      "login": "CompuIves",
+      "name": "Ives van Hoorne",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/587016?v=3",
+      "profile": "http://ivesvh.com",
+      "contributions": [
+        "question",
+        "blog",
+        "bug",
+        "code",
+        "design",
+        "doc",
+        "example",
+        "infra",
+        "review",
+        "test",
+        "tool"
+      ]
+    }
+  ]
+}
