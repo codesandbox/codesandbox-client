@@ -1,10 +1,7 @@
 // @flow
-import evalModule from '../eval';
+import type { Module, Directory } from 'common/types';
 
-import type { Module } from '../../app/store/entities/sandboxes/modules/entity';
-import type {
-  Directory,
-} from '../../app/store/entities/sandboxes/directories/entity';
+import evalModule from '../eval';
 
 let cachedBoilerplates = [];
 
@@ -17,6 +14,7 @@ export function evalBoilerplates(
   cachedBoilerplates = boilerplates.map(boilerplate => {
     const fakeModule: Module = {
       id: boilerplate.id,
+      shortid: boilerplate.id,
       title: `boilerplate-${boilerplate.condition}`,
       code: boilerplate.code,
       directoryShortid: null,
@@ -25,7 +23,7 @@ export function evalBoilerplates(
       type: '',
     };
 
-    const module = evalModule(fakeModule, '', modules, directories, externals);
+    const module = evalModule(fakeModule, modules, directories, externals);
     return { ...boilerplate, module };
   });
 }

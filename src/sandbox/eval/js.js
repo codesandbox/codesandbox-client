@@ -7,24 +7,24 @@ import restSpread from 'babel-plugin-transform-object-rest-spread';
 import classProperties from 'babel-plugin-transform-class-properties';
 import decoratorPlugin from 'babel-plugin-transform-decorators-legacy';
 
+import type { Module, Directory } from 'common/types';
+
 import evalModule from './';
 import resolveModule from '../utils/resolve-module';
 import DependencyNotFoundError from '../errors/dependency-not-found-error';
 
 const moduleCache = new Map();
 
-const getId = (sandboxId, module) => `${sandboxId}${module.id}`;
-
 /**
  * Deletes the cache of all modules that use module and module itself
  */
-export function deleteCache(sandboxId, module) {
+export function deleteCache(module: Module) {
   moduleCache.forEach(value => {
-    if (value.requires.includes(getId(sandboxId, module))) {
-      deleteCache(sandboxId, value.module);
+    if (value.requires.includes(module.id)) {
+      deleteCache(value.module);
     }
   });
-  moduleCache.delete(getId(sandboxId, module));
+  moduleCache.delete(module.id);
 }
 
 const compileCode = (code: string = '', moduleName: string = 'unknown') => {
@@ -47,12 +47,11 @@ function evaluate(code, require) {
 }
 
 export default function evaluateJS(
-  mainModule,
-  sandboxId,
-  modules,
-  directories,
-  externals,
-  depth,
+  mainModule: Module,
+  modules: Array<Module>,
+  directories: Array<Directory>,
+  externals: Object,
+  depth: number,
 ) {
   try {
     const requires = [];
@@ -88,30 +87,23 @@ export default function evaluateJS(
 
         if (!module) throw new Error(`Cannot find module in path: ${path}`);
 
-        requires.push(getId(sandboxId, module));
+        requires.push(module.id);
         // Check if this module has been evaluated before, if so return that
-        const cache = moduleCache.get(getId(sandboxId, module));
+        const cache = moduleCache.get(module.id);
 
         return cache
           ? cache.exports
-          : evalModule(
-              module,
-              sandboxId,
-              modules,
-              directories,
-              externals,
-              depth + 1,
-            );
+          : evalModule(module, modules, directories, externals, depth + 1);
       }
     };
 
-    const compiledCode = compileCode(mainModule.code, mainModule.title);
+    const compiledCode = compileCode(mainModule.code || '', mainModule.title);
 
     // don't use Function() here since it changes source locations
     const exports = evaluate(compiledCode, require);
 
     // Always set a (if no error) new cache for this module, because we know this changed
-    moduleCache.set(getId(sandboxId, mainModule), {
+    moduleCache.set(mainModule.id, {
       exports,
       requires,
       module: mainModule,
@@ -119,7 +111,7 @@ export default function evaluateJS(
     return exports;
   } catch (e) {
     // Remove cache
-    moduleCache.delete(getId(sandboxId, mainModule));
+    moduleCache.delete(mainModule.id);
     throw e;
   }
 }

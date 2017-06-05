@@ -1,9 +1,5 @@
 // @flow
-import type { Module } from 'app/store/entities/sandboxes/modules/entity';
-
-import type {
-  Directory,
-} from 'app/store/entities/sandboxes/directories/entity';
+import type { Module, Directory } from 'common/types';
 
 import evalJS, { deleteCache as deleteJSCache } from './js';
 import evalHTML from './html';
@@ -12,56 +8,34 @@ import evalJson from './json';
 
 const MAX_DEPTH = 20;
 
-function doEval(mainModule, sandboxId, modules, directories, externals, depth) {
+function doEval(mainModule, modules, directories, externals, depth) {
   const html = /\.html$/;
   const css = /\.css$/;
   const json = /\.json$/;
 
   if (html.test(mainModule.title)) {
-    return evalHTML(
-      mainModule,
-      sandboxId,
-      modules,
-      directories,
-      externals,
-      depth,
-    );
+    return evalHTML(mainModule, modules, directories, externals, depth);
   }
 
   if (css.test(mainModule.title)) {
-    return evalCSS(
-      mainModule,
-      sandboxId,
-      modules,
-      directories,
-      externals,
-      depth,
-    );
+    return evalCSS(mainModule, modules, directories, externals, depth);
   }
 
   if (json.test(mainModule.title)) {
-    return evalJson(
-      mainModule,
-      sandboxId,
-      modules,
-      directories,
-      externals,
-      depth,
-    );
+    return evalJson(mainModule, modules, directories, externals, depth);
   }
 
-  return evalJS(mainModule, sandboxId, modules, directories, externals, depth);
+  return evalJS(mainModule, modules, directories, externals, depth);
 }
 
-export function deleteCache(sandboxId, module: Module) {
+export function deleteCache(module: Module) {
   if (module.title.includes('.js')) {
-    deleteJSCache(sandboxId, module);
+    deleteJSCache(module);
   }
 }
 
 const evalModule = (
   mainModule: Module,
-  sandboxId: string,
   modules: Array<Module>,
   directories: Array<Directory>,
   externals: Object,
@@ -71,14 +45,7 @@ const evalModule = (
     throw new Error(`Exceeded the maximum require depth of ${MAX_DEPTH}.`);
   }
   try {
-    return doEval(
-      mainModule,
-      sandboxId,
-      modules,
-      directories,
-      externals,
-      depth,
-    );
+    return doEval(mainModule, modules, directories, externals, depth);
   } catch (e) {
     e.module = e.module || mainModule;
     throw e;

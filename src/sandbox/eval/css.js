@@ -1,14 +1,5 @@
 const getStyleId = id => id + '-css'; // eslint-disable-line
 
-function getGeneratedClassNameCode(code: string, alteredClassNames) {
-  let newCode = code;
-  Object.keys(alteredClassNames).forEach(cn => {
-    const regex = new RegExp(`.${cn} `);
-    newCode = newCode.replace(regex, `.${alteredClassNames[cn]} `);
-  });
-  return newCode;
-}
-
 function createStyleNode(id: string, content: string) {
   const styleNode =
     document.getElementById(getStyleId(id)) || document.createElement('style');
@@ -26,7 +17,7 @@ function createStyleNode(id: string, content: string) {
 /**
  * Adds CSS to HEAD and creates a mapping of classname -> generatedClassname
  */
-export default (module, sandboxId) => {
+export default module => {
   const css = module.code;
 
   const classNameRegex = /\.(-?[_a-zA-Z]+[_a-zA-Z0-9-]*)/g;
@@ -35,7 +26,7 @@ export default (module, sandboxId) => {
   // const alteredClassNames = getGeneratedClassNames(module.id, classNames);
 
   // const newCode = getGeneratedClassNameCode(module.code, alteredClassNames);
-  createStyleNode(`${sandboxId}${module.id}`, css);
+  createStyleNode(`${module.id}`, css);
 
   return classNames;
 };
