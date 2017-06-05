@@ -22,11 +22,11 @@ const Container = styled.div`
   position: absolute;
   background-color: ${({ color }) => {
                       if (color === 'error') {
-                        return theme.redBackground;
+                        return theme.redBackground();
                       }
-                      return theme.primary;
-                    }}
-  color: ${() => theme.red};
+                      return theme.primary();
+                    }};
+  color: ${() => theme.red()};
   height: 100%;
   width: 100%;
   padding: 1rem;

@@ -24,9 +24,9 @@ const Container = styled.div`
                   if (props.type === 'error') return theme.red.darken(0.2)();
                   if (props.type === 'warning') return theme.primary.darken(0.2);
                   if (props.type === 'success') return theme.green();
-                  return theme.secondary;
-                }}
-
+                  return theme.secondary();
+                }};
+                
   background-color: ${theme.background2.darken(0.2)()};
 `;
 
