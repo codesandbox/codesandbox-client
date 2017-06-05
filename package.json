@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
+    "all-contributors-cli": "^4.3.0",
     "autoprefixer": "^6.7.7",
     "babel-core": "^6.24.1",
     "babel-eslint": "^7.2.3",
@@ -124,7 +125,9 @@
     "test:watch": "jest --watch --env=jsdom",
     "lint:app": "eslint src/app && npm run typecheck",
     "typecheck": "flow check",
-    "lint:embed": "eslint src/embed"
+    "lint:embed": "eslint src/embed",
+    "add": "all-contributors add",
+    "generate": "all-contributors generate"
   },
   "jest": {
     "rootDir": "src",
