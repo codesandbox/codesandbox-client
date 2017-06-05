@@ -2,14 +2,14 @@
 
 exports[`Message it renders a dependency not found error 1`] = `
 <div
-  className="eToXWB"
+  className="sc-ifAKCX lgKBBW"
   color="error"
 >
   <div
-    className="bFGMEr"
+    className="sc-EHOje gTncrN"
   >
     <div
-      className="QIZdv"
+      className="sc-bZQynM kFeJzc"
     >
       <svg
         fill="currentColor"
@@ -57,14 +57,14 @@ exports[`Message it renders a dependency not found error 1`] = `
 
 exports[`Message it renders a warning 1`] = `
 <div
-  className="gzYKMb"
+  className="sc-ifAKCX kuSXCZ"
   color={false}
 >
   <div
-    className="bFGMEr"
+    className="sc-EHOje gTncrN"
   >
     <div
-      className="QIZdv"
+      className="sc-bZQynM kFeJzc"
     >
       <svg
         fill="currentColor"

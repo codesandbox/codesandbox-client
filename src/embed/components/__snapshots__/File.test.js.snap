@@ -3,14 +3,14 @@
 exports[`File renders 1`] = `
 <div>
   <span
-    className="btLHBo"
+    className="sc-bdVaJa jtVJZx"
     onClick={[Function]}
   >
     <div
-      className="bxmmlS"
+      className="sc-bwzfXH btYjYm"
     >
       <svg
-        className="fDDlDz"
+        className="sc-htpNat rPfta"
         fill="currentColor"
         height="1em"
         preserveAspectRatio="xMidYMid meet"
@@ -39,14 +39,14 @@ exports[`File renders 1`] = `
 exports[`File renders alternative 1`] = `
 <div>
   <span
-    className="hvbbIX"
+    className="sc-bdVaJa hvbiPL"
     onClick={[Function]}
   >
     <div
-      className="bxmmlS"
+      className="sc-bwzfXH btYjYm"
     >
       <svg
-        className="fDDlDz"
+        className="sc-EHOje fCuZCw"
         fill="currentColor"
         height="1em"
         preserveAspectRatio="xMidYMid meet"
@@ -75,14 +75,14 @@ exports[`File renders alternative 1`] = `
 exports[`File renders as active 1`] = `
 <div>
   <span
-    className="gfSaqs"
+    className="sc-bdVaJa jeFIAh"
     onClick={[Function]}
   >
     <div
-      className="bxmmlS"
+      className="sc-bwzfXH btYjYm"
     >
       <svg
-        className="fDDlDz"
+        className="sc-bxivhb hMuTnh"
         fill="currentColor"
         height="1em"
         preserveAspectRatio="xMidYMid meet"
@@ -111,14 +111,14 @@ exports[`File renders as active 1`] = `
 exports[`File renders directory 1`] = `
 <div>
   <span
-    className="btLHBo"
+    className="sc-bdVaJa jtVJZx"
     onClick={[Function]}
   >
     <div
-      className="bxmmlS"
+      className="sc-bwzfXH btYjYm"
     >
       <svg
-        className="fDDlDz"
+        className="sc-ifAKCX ioyOiT"
         fill="currentColor"
         height="1em"
         preserveAspectRatio="xMidYMid meet"

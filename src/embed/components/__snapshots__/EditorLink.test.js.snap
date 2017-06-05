@@ -2,13 +2,13 @@
 
 exports[`EditorLink renders 1`] = `
 <a
-  className="icqpQk"
+  className="sc-bdVaJa hEjRhj"
   href="/s/undefined"
   rel="noopener noreferrer"
   target="_blank"
 >
   <span
-    className="kBIwsG"
+    className="sc-bwzfXH gwJMOI"
   >
     Edit on CodeSandbox
   </span>

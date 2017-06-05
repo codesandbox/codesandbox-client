@@ -2,7 +2,7 @@
 
 exports[`LinkButton renders 1`] = `
 <button
-  className="lnvNEu"
+  className="sc-bdVaJa jcXfcN"
 >
   Test
 </button>
@@ -10,7 +10,7 @@ exports[`LinkButton renders 1`] = `
 
 exports[`LinkButton renders onClick 1`] = `
 <button
-  className="lnvNEu"
+  className="sc-bdVaJa jcXfcN"
   onClick={[Function]}
 >
   Test
