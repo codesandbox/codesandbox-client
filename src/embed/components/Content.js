@@ -77,7 +77,7 @@ export default class Content extends React.PureComponent {
         JSON.stringify({
           src: window.location.toString(),
           context: 'iframe.resize',
-          height: Math.max(height + 100, 500), // pixels
+          height: Math.max(height + 150, 500), // pixels
         }),
         '*',
       );
