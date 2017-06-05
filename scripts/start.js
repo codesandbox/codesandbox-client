@@ -12,7 +12,6 @@ var opn = require('opn');
 var http = require('http');
 var proxy = require('http-proxy-middleware');
 var httpProxy = require('http-proxy');
-var detect = require('detect-port');
 var prompt = require('./utils/prompt');
 var config = require('../config/webpack.config');
 var paths = require('../config/paths');
@@ -213,7 +212,8 @@ function runDevServer(port, protocol, index) {
     // Enable HTTPS if the HTTPS environment variable is set to 'true'
     https: protocol === 'https',
     // contentBase: paths.staticPath,
-    host: process.env.LOCAL_SERVER ? 'localhost' : 'codesandbox.dev'
+    host: process.env.LOCAL_SERVER ? 'localhost' : 'codesandbox.dev',
+    disableHostCheck: !process.env.LOCAL_SERVER
   });
 
   // Our custom middleware proxies requests to /index.html or a remote API.
@@ -253,22 +253,4 @@ function run(port) {
   }
 }
 
-// We attempt to use the default port but if it is busy, we offer the user to
-// run on a different port. `detect()` Promise resolves to the next free port.
-detect(DEFAULT_PORT).then(port => {
-  if (port === DEFAULT_PORT) {
-    run(port);
-    return;
-  }
-
-  clearConsole();
-  var question =
-    chalk.yellow('Something is already running on port ' + DEFAULT_PORT + '.') +
-    '\n\nWould you like to run the app on another port instead?';
-
-  prompt(question, true).then(shouldChangePort => {
-    if (shouldChangePort) {
-      run(port);
-    }
-  });
-});
+run(DEFAULT_PORT);
