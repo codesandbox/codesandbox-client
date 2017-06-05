@@ -14,6 +14,6 @@ module.exports = Object.keys(process.env)
     },
     {
       'process.env.NODE_ENV': NODE_ENV,
-      'process.env.LOCAL_SERVER': !!LOCAL_SERVER,
-    },
+      'process.env.LOCAL_SERVER': !!LOCAL_SERVER
+    }
   );
