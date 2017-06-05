@@ -113,7 +113,7 @@
     "redux": "^3.6.0",
     "reselect": "^3.0.0",
     "store": "^2.0.4",
-    "styled-components": "^1.4.6",
+    "styled-components": "^2.0.0",
     "tern": "^0.21.0"
   },
   "scripts": {
