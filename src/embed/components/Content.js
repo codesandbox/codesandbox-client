@@ -9,8 +9,6 @@ import { getModulePath } from 'app/store/entities/sandboxes/modules/selectors';
 import type { Sandbox, Module, ModuleError } from 'common/types';
 import fetchBundle from 'app/store/entities/sandboxes/bundler';
 
-const MIN_HEIGHT = 250;
-
 const Container = styled.div`
   display: flex;
   position: relative;
@@ -80,7 +78,7 @@ export default class Content extends React.PureComponent {
         JSON.stringify({
           src: window.location.toString(),
           context: 'iframe.resize',
-          height: Math.max(height + extraOffset, MIN_HEIGHT), // pixels
+          height: Math.max(height + extraOffset, 150), // pixels
         }),
         '*',
       );
@@ -89,7 +87,7 @@ export default class Content extends React.PureComponent {
         JSON.stringify({
           src: window.location.toString(),
           context: 'iframe.resize',
-          height: MIN_HEIGHT, // pixels
+          height: 500, // pixels
         }),
         '*',
       );
