@@ -8,7 +8,7 @@ The JavaScript community has sharing as its selling point. It has the biggest op
 
 CodeSandbox aims to solve this by allowing developers to simply go to a URL in their browser to start building. This not only makes it easier to get started, it also makes it easier to share. You can just share your created work by sharing the URL, others can then (without downloading) further develop on these sandboxes.
 
-## ⚠️ Warning ⚠️
+## ⚠️ Disclaimer ⚠️
 
 I built CodeSandbox as a fun project when I was bored during lectures, therefore the client code is a bit of a mess. I've done some refactoring after release, but we're not there yet. It's missing:
 
@@ -19,7 +19,9 @@ I built CodeSandbox as a fun project when I was bored during lectures, therefore
 - Some reusability between components
 - Some more things
 
-This means it's sometimes a bit hard to navigate through the code, but no worries! I'm here to help, just open an issue and I'll help you out + adjust the documentation.
+This means it's sometimes a bit hard to navigate through the code, but no worries! I'm here to help, just open an issue and I'll help you out and create some documentation. 
+
+Don't hesitate to help make this application beautiful!
 
 ## Organization
 
@@ -31,7 +33,7 @@ The CodeSandbox client is currently divided in to 5 parts.
 - `common`: The common parts between `sandbox`, `embed` and `app`
 - `homepage`: Homepage!
 
-This version of CodeSandbox is using the production server as source of truth, this is specified by the environment variable `LOCAL_SERVER`. It's not yet possible to sign in in this version, I haven't figured this out yet.
+This version of CodeSandbox is using the production server as source of truth, this is specified by the environment variable `LOCAL_SERVER`. It's not yet possible to sign in using this version, I haven't figured out how to handle this yet.
 
 ## Installation
 
