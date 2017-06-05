@@ -9,6 +9,8 @@ import { getModulePath } from 'app/store/entities/sandboxes/modules/selectors';
 import type { Sandbox, Module, ModuleError } from 'common/types';
 import fetchBundle from 'app/store/entities/sandboxes/bundler';
 
+const MIN_HEIGHT = 250;
+
 const Container = styled.div`
   display: flex;
   position: relative;
@@ -73,11 +75,12 @@ export default class Content extends React.PureComponent {
 
   handleResize = (height: number) => {
     if (this.props.autoResize) {
+      const extraOffset = this.props.hideNavigation ? 75 : 150;
       window.parent.postMessage(
         JSON.stringify({
           src: window.location.toString(),
           context: 'iframe.resize',
-          height: Math.max(height + 150, 500), // pixels
+          height: Math.max(height + extraOffset, MIN_HEIGHT), // pixels
         }),
         '*',
       );
@@ -86,7 +89,7 @@ export default class Content extends React.PureComponent {
         JSON.stringify({
           src: window.location.toString(),
           context: 'iframe.resize',
-          height: 500, // pixels
+          height: MIN_HEIGHT, // pixels
         }),
         '*',
       );
