@@ -1,4 +1,4 @@
 #!/bin/bash
 
 yarn
-yarn run start
+yarn run start:dev_api

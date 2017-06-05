@@ -3,7 +3,6 @@ const path = require('path');
 const paths = require('./paths');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
-const BabiliPlugin = require('babili-webpack-plugin');
 const childProcess = require('child_process');
 const WatchMissingNodeModulesPlugin = require('../scripts/utils/WatchMissingNodeModulesPlugin');
 const env = require('./env');
@@ -26,21 +25,22 @@ const COMMIT_HASH = childProcess
   .toString();
 const VERSION = `${COMMIT_COUNT}-${COMMIT_HASH}`;
 
-const getOutput = () => __DEV__
-  ? {
-      path: paths.appBuild,
-      pathinfo: true,
-      filename: 'static/js/[name].js',
-      publicPath: '/',
-    }
-  : {
-      path: paths.appBuild,
-      pathinfo: true,
-      filename: 'static/js/[name].[hash:8].js',
-      chunkFilename: 'static/js/[name].[hash:8].chunk.js',
-      sourceMapFilename: '[file].map', // Default
-      publicPath: 'https://codesandbox.io/',
-    };
+const getOutput = () =>
+  __DEV__
+    ? {
+        path: paths.appBuild,
+        pathinfo: true,
+        filename: 'static/js/[name].js',
+        publicPath: '/',
+      }
+    : {
+        path: paths.appBuild,
+        pathinfo: true,
+        filename: 'static/js/[name].[hash:8].js',
+        chunkFilename: 'static/js/[name].[hash:8].chunk.js',
+        sourceMapFilename: '[file].map', // Default
+        publicPath: 'https://codesandbox.io/',
+      };
 
 const config = {
   devtool: __DEV__ ? 'eval' : 'source-map',
@@ -81,7 +81,7 @@ const config = {
           const altererdConfig = Object.assign({}, babelConfig);
 
           altererdConfig.plugins.push(
-            require.resolve('babel-plugin-transform-remove-strict-mode')
+            require.resolve('babel-plugin-transform-remove-strict-mode'),
           );
           return altererdConfig;
         })(),

@@ -1,18 +1,22 @@
 /* eslint-disable */
 process.env.NODE_ENV = 'development';
 
+var express = require('express');
 var path = require('path');
 var chalk = require('chalk');
 var webpack = require('webpack');
 var WebpackDevServer = require('webpack-dev-server');
 var historyApiFallback = require('connect-history-api-fallback');
-var httpProxyMiddleware = require('http-proxy-middleware');
 var execSync = require('child_process').execSync;
 var opn = require('opn');
+var http = require('http');
+var proxy = require('http-proxy-middleware');
+var httpProxy = require('http-proxy');
 var detect = require('detect-port');
 var prompt = require('./utils/prompt');
 var config = require('../config/webpack.config');
 var paths = require('../config/paths');
+var env = require('../config/env');
 
 // Tools like Cloud9 rely on this.
 var DEFAULT_PORT = process.env.PORT || 3000;
@@ -27,22 +31,24 @@ function isLikelyASyntaxError(message) {
   return message.indexOf(friendlySyntaxErrorLabel) !== -1;
 }
 function formatMessage(message) {
-  return message
-    // Make some common errors shorter:
-    .replace(
-      // Babel syntax error
-      'Module build failed: SyntaxError:',
-      friendlySyntaxErrorLabel
-    )
-    .replace(
-      // Webpack file not found error
-      /Module not found: Error: Cannot resolve 'file' or 'directory'/,
-      'Module not found:'
-    )
-    // Internal stacks are generally useless so we strip them
-    .replace(/^\s*at\s.*:\d+:\d+[\s\)]*\n/gm, '') // at ... ...:x:y
-    // Webpack loader names obscure CSS filenames
-    .replace('./~/css-loader!./~/postcss-loader!', '');
+  return (
+    message
+      // Make some common errors shorter:
+      .replace(
+        // Babel syntax error
+        'Module build failed: SyntaxError:',
+        friendlySyntaxErrorLabel
+      )
+      .replace(
+        // Webpack file not found error
+        /Module not found: Error: Cannot resolve 'file' or 'directory'/,
+        'Module not found:'
+      )
+      // Internal stacks are generally useless so we strip them
+      .replace(/^\s*at\s.*:\d+:\d+[\s\)]*\n/gm, '') // at ... ...:x:y
+      // Webpack loader names obscure CSS filenames
+      .replace('./~/css-loader!./~/postcss-loader!', '')
+  );
 }
 
 function clearConsole() {
@@ -138,19 +144,16 @@ function setupCompiler(port, protocol) {
 }
 
 function openBrowser(port, protocol) {
+  const url = protocol + '://localhost:' + port + '/s/new';
   if (process.platform === 'darwin') {
     try {
       // Try our best to reuse existing tab
       // on OS X Google Chrome with AppleScript
       execSync('ps cax | grep "Google Chrome"');
-      execSync(
-        'osascript chrome.applescript ' +
-          protocol +
-          '://localhost:' +
-          port +
-          '/',
-        { cwd: path.join(__dirname, 'utils'), stdio: 'ignore' }
-      );
+      execSync('osascript chrome.applescript ' + url, {
+        cwd: path.join(__dirname, 'utils'),
+        stdio: 'ignore',
+      });
       return;
     } catch (err) {
       // Ignore errors.
@@ -158,37 +161,10 @@ function openBrowser(port, protocol) {
   }
   // Fallback to opn
   // (It will always open new tab)
-  opn(protocol + '://localhost:' + port + '/');
+  opn(url);
 }
 
-// We need to provide a custom onError function for httpProxyMiddleware.
-// It allows us to log custom error messages on the console.
-function onProxyError(proxy) {
-  return function(err, req, res) {
-    var host = req.headers && req.headers.host;
-    console.log(
-      chalk.red('Proxy error:') +
-        ' Could not proxy request ' +
-        chalk.cyan(req.url) +
-        ' from ' +
-        chalk.cyan(host) +
-        ' to ' +
-        chalk.cyan(proxy) +
-        '.'
-    );
-    console.log(
-      'See https://nodejs.org/api/errors.html#errors_common_system_errors for more information (' +
-        chalk.cyan(err.code) +
-        ').'
-    );
-    console.log();
-  };
-}
-
-function addMiddleware(devServer) {
-  // `proxy` lets you to specify a fallback server during development.
-  // Every unrecognized request will be forwarded to it.
-  var proxy = require(paths.appPackageJson).proxy;
+function addMiddleware(devServer, index) {
   devServer.use(
     historyApiFallback({
       // Allow paths with dots in them to be loaded, reference issue #387
@@ -200,44 +176,14 @@ function addMiddleware(devServer) {
       // Modern browsers include text/html into `accept` header when navigating.
       // However API calls like `fetch()` won’t generally won’t accept text/html.
       // If this heuristic doesn’t work well for you, don’t use `proxy`.
-      htmlAcceptHeaders: proxy ? ['text/html'] : ['text/html', '*/*'],
-      index: '/app.html',
+      htmlAcceptHeaders: ['text/html'],
+      index,
     })
   );
-  if (proxy) {
-    if (typeof proxy !== 'string') {
-      console.log(
-        chalk.red('When specified, "proxy" in package.json must be a string.')
-      );
-      console.log(
-        chalk.red('Instead, the type of "proxy" was "' + typeof proxy + '".')
-      );
-      console.log(
-        chalk.red(
-          'Either remove "proxy" from package.json, or make it a string.'
-        )
-      );
-      process.exit(1);
-    }
-
-    // Otherwise, if proxy is specified, we will let it handle any request.
-    // There are a few exceptions which we won't send to the proxy:
-    // - /index.html (served as HTML5 history API fallback)
-    // - /*.hot-update.json (WebpackDevServer uses this too for hot reloading)
-    // - /sockjs-node/* (WebpackDevServer uses this for hot reloading)
-    // Tip: use https://www.debuggex.com/ to visualize the regex
-    var mayProxy = /^(?!\/(index\.html$|.*\.hot-update\.json$|sockjs-node\/)).*$/;
+  if (process.env.LOCAL_SERVER) {
     devServer.use(
-      mayProxy,
-      // Pass the scope regex both to Express and to the middleware for proxying
-      // of both HTTP and WebSockets to work without false positives.
-      httpProxyMiddleware(pathname => mayProxy.test(pathname), {
-        target: proxy,
-        logLevel: 'silent',
-        onError: onProxyError(proxy),
-        secure: false,
-        changeOrigin: true,
-      })
+      '/api',
+      proxy({ target: 'https://codesandbox.io', changeOrigin: true })
     );
   }
   // Finally, by now we have certainly resolved the URL.
@@ -245,7 +191,7 @@ function addMiddleware(devServer) {
   devServer.use(devServer.middleware);
 }
 
-function runDevServer(port, protocol) {
+function runDevServer(port, protocol, index) {
   var devServer = new WebpackDevServer(compiler, {
     // Enable hot reloading server. It will provide /sockjs-node/ endpoint
     // for the WebpackDevServer client so it can learn when the files were
@@ -267,11 +213,11 @@ function runDevServer(port, protocol) {
     // Enable HTTPS if the HTTPS environment variable is set to 'true'
     https: protocol === 'https',
     // contentBase: paths.staticPath,
-    disableHostCheck: true,
+    host: process.env.LOCAL_SERVER ? 'localhost' : 'codesandbox.dev',
   });
 
   // Our custom middleware proxies requests to /index.html or a remote API.
-  addMiddleware(devServer);
+  addMiddleware(devServer, index);
 
   // Launch WebpackDevServer.
   devServer.listen(port, (err, result) => {
@@ -281,7 +227,6 @@ function runDevServer(port, protocol) {
 
     clearConsole();
     console.log(chalk.cyan('Starting the development server...'));
-    console.log();
     openBrowser(port, protocol);
   });
 }
@@ -289,7 +234,23 @@ function runDevServer(port, protocol) {
 function run(port) {
   var protocol = process.env.HTTPS === 'true' ? 'https' : 'http';
   setupCompiler(port, protocol);
-  runDevServer(port, protocol);
+  runDevServer(port, protocol, '/app.html');
+
+  if (process.env.LOCAL_SERVER) {
+    const proxy = httpProxy.createProxyServer({});
+    http
+      .createServer(function(req, res) {
+        if (req.url.includes('.js')) {
+          proxy.web(req, res, { target: 'http://localhost:3000' + req.url });
+        } else {
+          proxy.web(req, res, {
+            target: 'http://localhost:3000/frame.html',
+            ignorePath: true,
+          });
+        }
+      })
+      .listen(3001);
+  }
 }
 
 // We attempt to use the default port but if it is busy, we offer the user to
@@ -301,9 +262,9 @@ detect(DEFAULT_PORT).then(port => {
   }
 
   clearConsole();
-  var question = chalk.yellow(
-    'Something is already running on port ' + DEFAULT_PORT + '.'
-  ) + '\n\nWould you like to run the app on another port instead?';
+  var question =
+    chalk.yellow('Something is already running on port ' + DEFAULT_PORT + '.') +
+    '\n\nWould you like to run the app on another port instead?';
 
   prompt(question, true).then(shouldChangePort => {
     if (shouldChangePort) {
