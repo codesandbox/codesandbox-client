@@ -12,14 +12,7 @@ CodeSandbox aims to solve this by allowing developers to simply go to a URL in t
 
 ## ⚠️ Disclaimer ⚠️
 
-I built CodeSandbox as a fun project when I was bored during lectures, therefore the client code is a bit of a mess. I've done some refactoring after release, but we're not there yet. It's missing:
-
-- Tests
-- Flowtype compliance
-- Linting compliance
-- Documentation
-- Some reusability between components
-- Some more things
+I built CodeSandbox as a fun project when I was bored during lectures, therefore the client code is a bit of a mess. I've done some refactoring after release, but we're not there yet.
 
 This means it's sometimes a bit hard to navigate through the code, but no worries! I'm here to help, just open an issue and I'll help you out and create some documentation. 
 
