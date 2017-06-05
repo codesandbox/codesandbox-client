@@ -74,7 +74,7 @@ const ActionTooltip = styled(Tooltip)`
 
 const IconContainer = styled.div`
   display: flex;
-  alignItems: center;
+  align-items: center;
   height: 100%;
   padding: 0 .75rem;
 `;
