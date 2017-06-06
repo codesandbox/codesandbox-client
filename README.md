@@ -1,10 +1,9 @@
 # [CodeSandbox](https://codesandbox.io)
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors)
 
-This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
-
 An online code editor with a focus on React.
 
+This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
 The JavaScript community has sharing as its selling point. It has the biggest open source community and every day new ideas and proposals are shared on Twitter. This is great and a really strong point, but the side effect of this is that there are a lot of tools and configurations to consider before you can start building.
 
