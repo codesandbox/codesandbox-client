@@ -1,5 +1,6 @@
 # [CodeSandbox](https://codesandbox.io)
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors)
+[![Build Status](https://travis-ci.org/CompuIves/codesandbox-client.svg?branch=master)](https://travis-ci.org/CompuIves/codesandbox-client)
 
 An online code editor with a focus on React.
 
@@ -8,14 +9,6 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 The JavaScript community has sharing as its selling point. It has the biggest open source community and every day new ideas and proposals are shared on Twitter. This is great and a really strong point, but the side effect of this is that there are a lot of tools and configurations to consider before you can start building.
 
 CodeSandbox aims to solve this by allowing developers to simply go to a URL in their browser to start building. This not only makes it easier to get started, it also makes it easier to share. You can just share your created work by sharing the URL, others can then (without downloading) further develop on these sandboxes.
-
-## ⚠️ Disclaimer ⚠️
-
-I built CodeSandbox as a fun project when I was bored during lectures, therefore the client code is a bit of a mess. I've done some refactoring after release, but we're not there yet.
-
-This means it's sometimes a bit hard to navigate through the code, but no worries! I'm here to help, just open an issue and I'll help you out and create some documentation. 
-
-Don't hesitate to help make this application beautiful!
 
 ## Organization
 
