@@ -2,7 +2,7 @@
 
 exports[`Message it renders a dependency not found error 1`] = `
 <div
-  className="sc-ifAKCX lgKBBW"
+  className="sc-ifAKCX jHZoMf"
   color="error"
 >
   <div
@@ -57,7 +57,7 @@ exports[`Message it renders a dependency not found error 1`] = `
 
 exports[`Message it renders a warning 1`] = `
 <div
-  className="sc-ifAKCX kuSXCZ"
+  className="sc-ifAKCX fxFwBM"
   color={false}
 >
   <div
