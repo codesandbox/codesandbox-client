@@ -22,9 +22,7 @@ import {
   getModulePath,
   modulesFromSandboxSelector,
 } from 'app/store/entities/sandboxes/modules/selectors';
-import {
-  directoriesFromSandboxSelector,
-} from 'app/store/entities/sandboxes/directories/selectors';
+import { directoriesFromSandboxSelector } from 'app/store/entities/sandboxes/directories/selectors';
 
 import SplitPane from 'react-split-pane';
 
@@ -168,7 +166,7 @@ class EditorPreview extends React.PureComponent {
           addError={sandboxActions.addError}
           errors={sandbox.errors}
           clearErrors={sandboxActions.clearErrors}
-          isInProjectView={sandbox.isInProjectView || true}
+          isInProjectView={Boolean(sandbox.isInProjectView)}
           externalResources={sandbox.externalResources}
           setProjectView={sandboxActions.setProjectView}
           preferences={preferences}
