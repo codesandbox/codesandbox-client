@@ -5,9 +5,9 @@ import InfoIcon from 'react-icons/lib/md/info';
 import ErrorIcon from 'react-icons/lib/md/error';
 import WarningIcon from 'react-icons/lib/md/warning';
 
-import theme from '../../common/theme';
+import theme from 'common/theme';
 
-import type { NotificationButton } from '../store/notifications/reducer';
+import type { NotificationButton } from 'app/store/notifications/reducer';
 
 const Container = styled.div`
   position: relative;
@@ -24,9 +24,9 @@ const Container = styled.div`
                   if (props.type === 'error') return theme.red.darken(0.2)();
                   if (props.type === 'warning') return theme.primary.darken(0.2);
                   if (props.type === 'success') return theme.green();
-                  return theme.secondary;
-                }}
-
+                  return theme.secondary();
+                }};
+                
   background-color: ${theme.background2.darken(0.2)()};
 `;
 

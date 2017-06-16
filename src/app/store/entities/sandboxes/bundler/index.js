@@ -9,10 +9,12 @@ import logError from '../../../../utils/error';
 
 const debug = _debug('cs:app:packager');
 
-export const PACKAGER_URL = 'https://cdn.jsdelivr.net/webpack/v3';
+export const PACKAGER_URL = 'https://cdn.jsdelivr.net/webpack/v5';
+
+const RETRY_COUNT = 10;
 
 /**
- * Request the packager, if retries > 4 it will throw if something goes wrong
+ * Request the packager, if retries > RETRY_COUNT it will throw if something goes wrong
  * otherwise it will retry again with an incremented retry
  *
  * @param {string} query The dependencies to call
@@ -28,7 +30,10 @@ async function requestPackager(query: string) {
 
       return { ...result, url };
     } catch (e) {
-      if (retries < 5) {
+      const statusCode = e.response && e.response.status;
+
+      // 504 status code means the bundler is still bundling
+      if (retries < RETRY_COUNT && statusCode === 504) {
         retries += 1;
       } else {
         throw e;

@@ -1,14 +1,5 @@
 const getStyleId = id => id + '-css'; // eslint-disable-line
 
-function getGeneratedClassNameCode(code: string, alteredClassNames) {
-  let newCode = code;
-  Object.keys(alteredClassNames).forEach(cn => {
-    const regex = new RegExp(`.${cn} `);
-    newCode = newCode.replace(regex, `.${alteredClassNames[cn]} `);
-  });
-  return newCode;
-}
-
 function createStyleNode(id: string, content: string) {
   const styleNode =
     document.getElementById(getStyleId(id)) || document.createElement('style');

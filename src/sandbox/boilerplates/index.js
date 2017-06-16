@@ -1,5 +1,6 @@
 // @flow
 import type { Module, Directory } from 'common/types';
+
 import evalModule from '../eval';
 
 let cachedBoilerplates = [];

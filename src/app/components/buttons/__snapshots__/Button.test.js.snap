@@ -2,7 +2,7 @@
 
 exports[`Button renders 1`] = `
 <button
-  className="gdCKHU"
+  className="sc-htpNat hUeRGA"
 >
   Test
 </button>
@@ -10,7 +10,7 @@ exports[`Button renders 1`] = `
 
 exports[`Button renders disabled 1`] = `
 <button
-  className="kzKEne"
+  className="sc-htpNat izIXMc"
   disabled={true}
 >
   Test
@@ -19,7 +19,7 @@ exports[`Button renders disabled 1`] = `
 
 exports[`Button renders href 1`] = `
 <a
-  className="gdCKHU"
+  className="sc-bwzfXH cMAwix"
   href="https://ivesvh.com"
 >
   Test
@@ -28,7 +28,7 @@ exports[`Button renders href 1`] = `
 
 exports[`Button renders onClick 1`] = `
 <button
-  className="gdCKHU"
+  className="sc-htpNat hUeRGA"
   onClick={[Function]}
 >
   Test
@@ -37,7 +37,7 @@ exports[`Button renders onClick 1`] = `
 
 exports[`Button renders properties 1`] = `
 <button
-  className="hStGID"
+  className="sc-htpNat kgEmQI"
 >
   Test
 </button>
@@ -45,7 +45,7 @@ exports[`Button renders properties 1`] = `
 
 exports[`Button renders to 1`] = `
 <a
-  className="gdCKHU"
+  className="sc-bdVaJa kfQsdG"
   href="https://ivesvh.com"
   onClick={[Function]}
 >

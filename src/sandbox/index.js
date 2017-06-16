@@ -91,12 +91,7 @@ async function compile(message) {
     document.body.innerHTML = html;
     deleteCache(changedModule);
 
-    const evalled = evalModule(
-      module,
-      modules,
-      directories,
-      externals,
-    );
+    const evalled = evalModule(module, modules, directories, externals);
     const domChanged = document.body.innerHTML !== html;
 
     if (!domChanged && !module.title.endsWith('.html')) {

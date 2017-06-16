@@ -124,7 +124,7 @@ class ModalContainer extends React.PureComponent {
       <Modal
         isOpen={modal.open}
         onRequestClose={this.closeModal}
-        contentLabel={modal.title}
+        contentLabel={modal.title || 'Modal'}
         style={this.getStyles(modal.width, modal.top)}
         closeTimeoutMS={CLOSE_TIMEOUT_MS}
       >

@@ -5,8 +5,8 @@ import styled from 'styled-components';
 import { debounce } from 'lodash';
 
 import type { Preferences } from 'app/store/preferences/reducer';
-
 import type { Module, Sandbox, Directory, ModuleError } from 'common/types';
+
 import { frameUrl } from 'app/utils/url-generator';
 import { isMainModule } from 'app/store/entities/sandboxes/modules/selectors';
 import defaultBoilerplates
@@ -42,7 +42,7 @@ type Props = {
   addError: (sandboxId: string, error: ModuleError) => any,
   clearErrors: (sandboxId: string) => any,
   sandboxActions: typeof sandboxActionCreators,
-  noDelay: ?boolean,
+  noDelay?: boolean,
   errors: ?Array<ModuleError>,
   hideNavigation?: boolean,
   setFrameHeight: ?(height: number) => any,
@@ -75,6 +75,7 @@ export default class Preview extends React.PureComponent {
 
   static defaultProps = {
     hideNavigation: false,
+    noDelay: false,
   };
 
   fetchBundle = () => {

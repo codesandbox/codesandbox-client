@@ -63,9 +63,6 @@ const allRules = {
   'react/no-unused-prop-types': require('eslint-plugin-react/lib/rules/no-unused-prop-types'),
   'react/no-children-prop': require('eslint-plugin-react/lib/rules/no-children-prop'),
   'react/void-dom-elements-no-children': require('eslint-plugin-react/lib/rules/void-dom-elements-no-children'),
-  'react/no-comment-textnodes': require('eslint-plugin-react/lib/rules/no-comment-textnodes'),
-  'react/require-extension': require('eslint-plugin-react/lib/rules/require-extension'),
-  'react/wrap-multilines': require('eslint-plugin-react/lib/rules/wrap-multilines'),
   'react/jsx-tag-spacing': require('eslint-plugin-react/lib/rules/jsx-tag-spacing'),
 };
 /* eslint-enable global-require */

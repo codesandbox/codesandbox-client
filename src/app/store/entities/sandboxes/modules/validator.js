@@ -1,5 +1,4 @@
 // @flow
-
 import type { Module, Directory } from 'common/types';
 
 export const validateTitle = (
@@ -7,7 +6,7 @@ export const validateTitle = (
   title: string,
   siblings: Array<Module | Directory>, // eslint-disable-line
 ) => {
-  if (title.length === 0) return 'title cannot be empty';
+  if (title.length === 0) return 'Title cannot be empty';
   if (/^[09azAZ_.]+$/.test(title)) {
     // It has whitespaces
     return 'Title cannot have whitespaces or special characters';

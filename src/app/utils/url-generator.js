@@ -1,6 +1,9 @@
 // @flow
-export const host = () =>
-  process.env.NODE_ENV === 'production' ? 'codesandbox.io' : 'codesandbox.dev';
+export const host = () => {
+  return process.env.NODE_ENV === 'production'
+    ? 'codesandbox.io'
+    : 'codesandbox.dev';
+};
 
 export const protocolAndHost = () => `${location.protocol}//${host()}`;
 
@@ -8,8 +11,13 @@ export const sandboxUrl = (sandbox: { id: string }) => `/s/${sandbox.id}`;
 export const newSandboxUrl = () => `/s/new`;
 export const embedUrl = (sandbox: { id: string }) => `/embed/${sandbox.id}`;
 
-export const frameUrl = (append: string = '') =>
-  `${location.protocol}//sandbox.${host()}/${append}`;
+export const frameUrl = (append: string = '') => {
+  if (process.env.LOCAL_SERVER) {
+    return 'http://localhost:3001';
+  }
+
+  return `${location.protocol}//sandbox.${host()}/${append}`;
+};
 
 export const forkSandboxUrl = (sandbox: { id: string }) =>
   `${sandboxUrl(sandbox)}/fork`;

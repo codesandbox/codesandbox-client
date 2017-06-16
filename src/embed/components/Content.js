@@ -73,11 +73,12 @@ export default class Content extends React.PureComponent {
 
   handleResize = (height: number) => {
     if (this.props.autoResize) {
+      const extraOffset = this.props.hideNavigation ? 3 * 16 : 6 * 16;
       window.parent.postMessage(
         JSON.stringify({
           src: window.location.toString(),
           context: 'iframe.resize',
-          height: Math.min(height, 500), // pixels
+          height: Math.max(height + extraOffset, 50), // pixels
         }),
         '*',
       );

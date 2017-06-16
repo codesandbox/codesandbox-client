@@ -1,3 +1,4 @@
+// @flow
 import type { Module, Directory, Sandbox, User } from 'common/types';
 
 export function createModule(

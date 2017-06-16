@@ -9,6 +9,8 @@ import restSpread from 'babel-plugin-transform-object-rest-spread';
 import classProperties from 'babel-plugin-transform-class-properties';
 import decoratorPlugin from 'babel-plugin-transform-decorators-legacy';
 
+import type { Module, Directory } from 'common/types';
+
 import evalModule from './';
 import resolveModule from '../utils/resolve-module';
 import DependencyNotFoundError from '../errors/dependency-not-found-error';

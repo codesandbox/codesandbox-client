@@ -1,5 +1,11 @@
-const host = process.env.NODE_ENV === 'development'
-  ? 'http://codesandbox.dev'
-  : 'https://codesandbox.io';
+function getHost() {
+  if (process.env.LOCAL_SERVER) {
+    return 'http://localhost:3000';
+  }
 
-export default host;
+  return process.env.NODE_ENV === 'development'
+    ? 'http://codesandbox.dev'
+    : 'https://codesandbox.io';
+}
+
+export default getHost();
