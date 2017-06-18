@@ -12,28 +12,32 @@ exports[`ExternalResource renders file if there is an extension 1`] = `
     ives.js
   </a>
   <div
-    className="sc-bwzfXH gaVNMC"
-    onClick={[Function]}
+    className="sc-htpNat hFdhGH"
   >
-    <svg
-      fill="currentColor"
-      height="1em"
-      preserveAspectRatio="xMidYMid meet"
-      style={
-        Object {
-          "color": undefined,
-          "verticalAlign": "middle",
-        }
-      }
-      viewBox="0 0 40 40"
-      width="1em"
+    <div
+      className="sc-bwzfXH gUazxX"
+      onClick={[Function]}
     >
-      <g>
-        <path
-          d="m31.6 10.7l-9.3 9.3 9.3 9.3-2.3 2.3-9.3-9.3-9.3 9.3-2.3-2.3 9.3-9.3-9.3-9.3 2.3-2.3 9.3 9.3 9.3-9.3z"
-        />
-      </g>
-    </svg>
+      <svg
+        fill="currentColor"
+        height="1em"
+        preserveAspectRatio="xMidYMid meet"
+        style={
+          Object {
+            "color": undefined,
+            "verticalAlign": "middle",
+          }
+        }
+        viewBox="0 0 40 40"
+        width="1em"
+      >
+        <g>
+          <path
+            d="m31.6 10.7l-9.3 9.3 9.3 9.3-2.3 2.3-9.3-9.3-9.3 9.3-2.3-2.3 9.3-9.3-9.3-9.3 2.3-2.3 9.3 9.3 9.3-9.3z"
+          />
+        </g>
+      </svg>
+    </div>
   </div>
 </span>
 `;
@@ -50,28 +54,32 @@ exports[`ExternalResource renders url if there is no extension 1`] = `
     https://ivesvh.com/
   </a>
   <div
-    className="sc-bwzfXH gaVNMC"
-    onClick={[Function]}
+    className="sc-htpNat hFdhGH"
   >
-    <svg
-      fill="currentColor"
-      height="1em"
-      preserveAspectRatio="xMidYMid meet"
-      style={
-        Object {
-          "color": undefined,
-          "verticalAlign": "middle",
-        }
-      }
-      viewBox="0 0 40 40"
-      width="1em"
+    <div
+      className="sc-bwzfXH gUazxX"
+      onClick={[Function]}
     >
-      <g>
-        <path
-          d="m31.6 10.7l-9.3 9.3 9.3 9.3-2.3 2.3-9.3-9.3-9.3 9.3-2.3-2.3 9.3-9.3-9.3-9.3 2.3-2.3 9.3 9.3 9.3-9.3z"
-        />
-      </g>
-    </svg>
+      <svg
+        fill="currentColor"
+        height="1em"
+        preserveAspectRatio="xMidYMid meet"
+        style={
+          Object {
+            "color": undefined,
+            "verticalAlign": "middle",
+          }
+        }
+        viewBox="0 0 40 40"
+        width="1em"
+      >
+        <g>
+          <path
+            d="m31.6 10.7l-9.3 9.3 9.3 9.3-2.3 2.3-9.3-9.3-9.3 9.3-2.3-2.3 9.3-9.3-9.3-9.3 2.3-2.3 9.3 9.3 9.3-9.3z"
+          />
+        </g>
+      </svg>
+    </div>
   </div>
 </span>
 `;
@@ -88,28 +96,32 @@ exports[`ExternalResource renders url if there is no extension 2`] = `
     https://ivesvh.com/
   </a>
   <div
-    className="sc-bwzfXH gaVNMC"
-    onClick={[Function]}
+    className="sc-htpNat hFdhGH"
   >
-    <svg
-      fill="currentColor"
-      height="1em"
-      preserveAspectRatio="xMidYMid meet"
-      style={
-        Object {
-          "color": undefined,
-          "verticalAlign": "middle",
-        }
-      }
-      viewBox="0 0 40 40"
-      width="1em"
+    <div
+      className="sc-bwzfXH gUazxX"
+      onClick={[Function]}
     >
-      <g>
-        <path
-          d="m31.6 10.7l-9.3 9.3 9.3 9.3-2.3 2.3-9.3-9.3-9.3 9.3-2.3-2.3 9.3-9.3-9.3-9.3 2.3-2.3 9.3 9.3 9.3-9.3z"
-        />
-      </g>
-    </svg>
+      <svg
+        fill="currentColor"
+        height="1em"
+        preserveAspectRatio="xMidYMid meet"
+        style={
+          Object {
+            "color": undefined,
+            "verticalAlign": "middle",
+          }
+        }
+        viewBox="0 0 40 40"
+        width="1em"
+      >
+        <g>
+          <path
+            d="m31.6 10.7l-9.3 9.3 9.3 9.3-2.3 2.3-9.3-9.3-9.3 9.3-2.3-2.3 9.3-9.3-9.3-9.3 2.3-2.3 9.3 9.3 9.3-9.3z"
+          />
+        </g>
+      </svg>
+    </div>
   </div>
 </span>
 `;
