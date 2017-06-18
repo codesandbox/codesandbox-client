@@ -134,6 +134,7 @@ export default class Dependencies extends React.PureComponent {
                 dependencies={npmDependencies}
                 dependency={dep}
                 onRemove={this.removeDependency}
+                onRefresh={this.addDependency}
               />
             ))}
           <AddVersion

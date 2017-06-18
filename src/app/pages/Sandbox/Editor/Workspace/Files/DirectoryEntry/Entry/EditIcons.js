@@ -8,6 +8,8 @@ import AddDirectoryIcon from 'react-icons/lib/go/file-symlink-directory';
 
 import fadeIn from 'app/utils/animation/fade-in';
 
+import { Icon } from '../../../Icon';
+
 type Props = {
   className: ?string,
   hovering: boolean,
@@ -23,15 +25,6 @@ const Container = styled.div`
 
   vertical-align: middle;
   line-height: 1;
-`;
-
-const Icon = styled.div`
-  transition: 0.3s ease color;
-  color: ${props => props.theme.background2.lighten(3)};
-  padding-left: 0.25rem;
-  &:hover {
-    color: white;
-  }
 `;
 
 const handleClick = func => (e: Event) => {
