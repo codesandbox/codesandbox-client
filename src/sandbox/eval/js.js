@@ -42,6 +42,7 @@ const compileCode = (code: string = '', moduleName: string = 'unknown') => {
 
 function evaluate(code, require) {
   const exports = { __esModule: true };
+  const process = { env: { NODE_ENV: 'development' } }; // eslint-disable-line no-unused-vars
   eval(code); // eslint-disable-line no-eval
   return exports;
 }
