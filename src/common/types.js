@@ -95,6 +95,12 @@ export type Sandbox = {
   author: ?User,
   forkedFromSandbox: ?{ title: string, id: string },
   errors: Array<ModuleError>,
+  git: ?{
+    repo: string,
+    username: string,
+    path: string,
+    branch: string,
+  },
 };
 
 export type Preferences = {

@@ -17,13 +17,13 @@ import Centered from 'app/components/flex/Centered';
 import Editor from './Editor';
 
 type Props = {
-  sandbox: ?Sandbox,
   sandboxes: { [id: string]: Sandbox },
   sandboxActions: typeof sandboxActionCreators,
   match: { params: { id: ?string } },
 };
 type State = {
   notFound: boolean,
+  currentId: string,
 };
 
 const Container = styled.div`
@@ -32,39 +32,39 @@ const Container = styled.div`
   flex-direction: column;
 `;
 
-const mapStateToProps = createSelector(
-  sandboxesSelector,
-  (_, props) => props.match.params.id,
-  (sandboxes, id) => {
-    const sandbox = sandboxes[id];
-
-    return { sandbox, sandboxes };
-  },
-);
+const mapStateToProps = createSelector(sandboxesSelector, sandboxes => ({
+  sandboxes,
+}));
 const mapDispatchToProps = dispatch => ({
   sandboxActions: bindActionCreators(sandboxActionCreators, dispatch),
 });
 class SandboxPage extends React.PureComponent {
   componentDidMount() {
-    this.fetchSandbox();
+    this.fetchSandbox(this.props.match.params.id);
   }
 
-  fetchSandbox = () => {
-    const { id } = this.props.match.params;
+  fetchSandbox = (id: string) => {
+    console.log('aclled');
+    this.props.sandboxActions.getById(id).then(this.setId, this.handleNotFound);
+  };
 
-    if (id) {
-      this.props.sandboxActions.getById(id).then(null, this.handleNotFound);
-    }
+  setId = (sandbox: Sandbox) => {
+    console.log(sandbox);
+    this.setState({ currentId: sandbox.id });
   };
 
   componentDidUpdate(oldProps) {
     const newId = this.props.match.params.id;
     const oldId = oldProps.match.params.id;
 
-    if (newId != null && oldId !== newId) {
+    if (newId != null && oldId != null && oldId !== newId) {
+      const sandbox = this.props.sandboxes[newId];
       this.setState({ notFound: false }); // eslint-disable-line
-      if (!this.props.sandboxes[newId] || !this.props.sandboxes[newId].forked) {
-        this.fetchSandbox();
+      if (!sandbox || !sandbox.forked) {
+        this.fetchSandbox(this.props.match.params.id);
+      } else {
+        // Sandbox is already in state, so change currentId to this one
+        this.setId(sandbox);
       }
     }
   }
@@ -77,10 +77,12 @@ class SandboxPage extends React.PureComponent {
 
   props: Props;
   state: State;
-  state = { notFound: false };
+  state = { notFound: false, currentId: null };
 
   render() {
-    const { sandbox, match } = this.props;
+    const { sandboxes, match } = this.props;
+    const { currentId } = this.state;
+
     if (this.state.notFound) {
       return (
         <Centered horizontal vertical>
@@ -93,6 +95,8 @@ class SandboxPage extends React.PureComponent {
         </Centered>
       );
     }
+    if (!currentId) return <h1>Loading</h1>;
+    const sandbox = sandboxes[currentId];
     if (!sandbox) return null;
 
     document.title = sandbox.title
