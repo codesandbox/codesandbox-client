@@ -159,7 +159,6 @@ const config = {
   },
 
   plugins: [
-    new webpack.optimize.ModuleConcatenationPlugin(),
     // Generates an `index.html` file with the <script> injected.
     new HtmlWebpackPlugin({
       inject: true,
@@ -260,12 +259,12 @@ if (__DEV__) {
 if (__PROD__) {
   config.plugins = [
     ...config.plugins,
+    new webpack.optimize.ModuleConcatenationPlugin(),
     // Minify the code.
     new webpack.LoaderOptionsPlugin({
       minimize: true,
       debug: false
     }),
-    // new BabiliPlugin(),
     new webpack.optimize.UglifyJsPlugin({
       beautify: false,
       compress: {
