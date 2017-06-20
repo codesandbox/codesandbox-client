@@ -159,6 +159,7 @@ const config = {
   },
 
   plugins: [
+    new webpack.optimize.ModuleConcatenationPlugin(),
     // Generates an `index.html` file with the <script> injected.
     new HtmlWebpackPlugin({
       inject: true,
