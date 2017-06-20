@@ -80,6 +80,8 @@ export default function fetch(
       } catch (e) {
         logError(e, { level: 'error', service: 'packager' });
         dispatch({ type: actions.FAILURE, id });
+
+        throw e;
       }
     }
     return false;
