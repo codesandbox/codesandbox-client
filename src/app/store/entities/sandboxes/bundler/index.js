@@ -9,8 +9,7 @@ import logError from '../../../../utils/error';
 
 const debug = _debug('cs:app:packager');
 
-export const PACKAGER_URL = 'https://cdn.jsdelivr.net/webpack/v5';
-export const NEW_PACKAGER_URL = 'https://cdn.jsdelivr.net/webpack/v6';
+export const PACKAGER_URL = 'https://cdn.jsdelivr.net/webpack/v6';
 
 const RETRY_COUNT = 10;
 
@@ -21,15 +20,6 @@ const RETRY_COUNT = 10;
  * @param {string} query The dependencies to call
  */
 async function requestPackager(query: string) {
-  try {
-    // Call the new packager at the same time, so we can build up a cache
-    // before completely moving over
-    const url = `${NEW_PACKAGER_URL}/${query}`;
-    callApi(`${url}/manifest.json`);
-  } catch (e) {
-    logError(e);
-  }
-
   let retries = 0;
 
   while (true) {
