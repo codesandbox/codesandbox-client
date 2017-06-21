@@ -1,6 +1,6 @@
 import delay from './utils/delay';
 import buildError from './utils/error-message-builder';
-import evalModule, { deleteCache } from './eval';
+import evalModule from './eval';
 import NoDomChangeError from './errors/no-dom-change-error';
 import host from './utils/host';
 
@@ -13,6 +13,7 @@ import {
   evalBoilerplates,
   findBoilerplate,
 } from './boilerplates';
+import { deleteCache } from './eval/index';
 
 let fetching = false;
 let url = null;
@@ -115,8 +116,11 @@ async function compile(message) {
         const boilerplate = findBoilerplate(module);
         if (boilerplate) {
           try {
-            boilerplate.module.default(evalled);
+            console.log(boilerplate);
+            const re = boilerplate.module.default(evalled);
+            console.log(re);
           } catch (e) {
+            console.log(e);
             throw new NoDomChangeError(isReact, functionName);
           }
         }

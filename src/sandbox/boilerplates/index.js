@@ -15,7 +15,7 @@ export function evalBoilerplates(
     const fakeModule: Module = {
       id: boilerplate.id,
       shortid: boilerplate.id,
-      title: `boilerplate-${boilerplate.condition}`,
+      title: `boilerplate-${boilerplate.condition}${boilerplate.extension}`,
       code: boilerplate.code,
       directoryShortid: null,
       sourceId: boilerplate.sourceId,

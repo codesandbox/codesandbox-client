@@ -1,6 +1,7 @@
 export const JS = {
   id: 'js',
-  condition: '\.js$', // eslint-disable-line
+  extension: '.js',
+  condition: '.js$', // eslint-disable-line
   code: `
 import React from 'react';
 import { render } from 'react-dom';
@@ -14,7 +15,8 @@ export default function(module) {
 
 export const HTML = {
   id: 'html',
-  condition: '\.html$', // eslint-disable-line
+  extension: '.html',
+  condition: '.html$', // eslint-disable-line
   code: `
 export default function(module) {
   document.body.innerHTML = module

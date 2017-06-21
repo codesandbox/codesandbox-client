@@ -30,6 +30,18 @@ export const profileSandboxesUrl = (username: string, page?: number) =>
 export const profileLikesUrl = (username: string, page?: number) =>
   `${profileUrl(username)}/likes${page ? `/${page}` : ''}`;
 
+export const githubRepoUrl = ({
+  repo,
+  branch,
+  username,
+  path,
+}: {
+  repo: string,
+  branch: string,
+  username: string,
+  path: string,
+}) => `https://github.com/${username}/${repo}/tree/${branch}/${path}`;
+
 export const optionsToParameterizedUrl = (options: Object) => {
   const keyValues = Object.keys(options)
     .map(key => `${key}=${options[key]}`)

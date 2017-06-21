@@ -3,8 +3,12 @@ import type { Directory, Module } from 'common/types';
 import { createSelector } from 'reselect';
 
 export const modulesSelector = state => state.entities.modules;
+
 export const isMainModule = (module: Module) =>
   module.title === 'index.js' && module.directoryShortid == null;
+
+export const findMainModule = (modules: Module[]) =>
+  modules.find(isMainModule) || modules[0];
 
 function findById(entities: Array<Module | Directory>, id: string) {
   return entities.find(e => e.id === id);

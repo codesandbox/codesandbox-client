@@ -6,12 +6,10 @@ import ShareIcon from 'react-icons/lib/md/share';
 import Files from 'embed/components/Files';
 import ModeIcons from 'app/components/sandbox/ModeIcons';
 import {
-  isMainModule,
+  findMainModule,
   modulesFromSandboxSelector,
 } from 'app/store/entities/sandboxes/modules/selectors';
-import {
-  directoriesFromSandboxSelector,
-} from 'app/store/entities/sandboxes/directories/selectors';
+import { directoriesFromSandboxSelector } from 'app/store/entities/sandboxes/directories/selectors';
 import {
   optionsToParameterizedUrl,
   protocolAndHost,
@@ -223,7 +221,8 @@ class ShareView extends React.PureComponent {
   // eslint-disable-next-line
   getButtonMarkdown = () => {
     const { sandbox } = this.props;
-    return `[![Edit ${sandbox.title || sandbox.id}](${BUTTON_URL})](${this.getEditorUrl()})`;
+    return `[![Edit ${sandbox.title ||
+      sandbox.id}](${BUTTON_URL})](${this.getEditorUrl()})`;
   };
 
   // eslint-disable-next-line
@@ -248,7 +247,7 @@ class ShareView extends React.PureComponent {
     const { showEditor, showPreview, autoResize, hideNavigation } = this.state;
 
     const defaultModule =
-      this.state.defaultModule || modules.find(isMainModule).id;
+      this.state.defaultModule || findMainModule(modules).id;
 
     return (
       <Container>
@@ -260,7 +259,7 @@ class ShareView extends React.PureComponent {
             moreInfo: true,
           }}
         >
-          {() => (
+          {() =>
             <ShareOptions>
               <h3>Share options</h3>
               <Divider>
@@ -352,8 +351,7 @@ class ShareView extends React.PureComponent {
                   </Inputs>
                 </Column>
               </Divider>
-            </ShareOptions>
-          )}
+            </ShareOptions>}
         </HoverMenu>
       </Container>
     );
