@@ -11,9 +11,9 @@ export default (LoadingComponent, fields = []) => Component => props => {
 
   if (componentLoaded) {
     return createElement(Component, props);
-  } else {
-    return createElement(LoadingComponent, props);
   }
+
+  return createElement(LoadingComponent, props);
 };
 
 // AlternativeComponent(LoadingComponent, ['field'])(Component)
