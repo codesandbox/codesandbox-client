@@ -13,13 +13,9 @@ const LogoContainer = styled.div`
   animation-duration: 800ms;
 `;
 
-type Props = {
-  message: ?string,
-};
-
-export default ({ message }: Props) =>
+export default () =>
   <Centered vertical horizontal>
-    <LogoContainer hasMessage={Boolean(message)}>
+    <LogoContainer>
       <Logo width={490} height={490} />
     </LogoContainer>
   </Centered>;
