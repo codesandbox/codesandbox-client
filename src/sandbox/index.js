@@ -116,11 +116,8 @@ async function compile(message) {
         const boilerplate = findBoilerplate(module);
         if (boilerplate) {
           try {
-            console.log(boilerplate);
-            const re = boilerplate.module.default(evalled);
-            console.log(re);
+            boilerplate.module.default(evalled);
           } catch (e) {
-            console.log(e);
             throw new NoDomChangeError(isReact, functionName);
           }
         }
