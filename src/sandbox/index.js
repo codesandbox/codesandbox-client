@@ -1,6 +1,6 @@
 import delay from './utils/delay';
 import buildError from './utils/error-message-builder';
-import evalModule from './eval';
+import evalModule, { deleteCache } from './eval';
 import NoDomChangeError from './errors/no-dom-change-error';
 import host from './utils/host';
 
@@ -13,7 +13,6 @@ import {
   evalBoilerplates,
   findBoilerplate,
 } from './boilerplates';
-import { deleteCache } from './eval/index';
 
 let fetching = false;
 let url = null;
