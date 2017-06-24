@@ -102,10 +102,13 @@ const renameModule = (id: string, moduleId: string, title: string) => async (
   dispatch: Function,
   getState: Function,
 ) => {
-  const modules = modulesSelector(getState());
+  let modules = modulesSelector(getState());
   const module = modules[moduleId];
   const sandboxId = await dispatch(maybeForkSandbox(id));
   const isForked = sandboxId !== id;
+
+  // Modules have updated after fork
+  modules = modulesSelector(getState());
 
   const newModule = isForked
     ? getEquivalentModule(module, values(modules)) || module
@@ -135,11 +138,13 @@ const renameDirectory = (
   directoryId: string,
   title: string,
 ) => async (dispatch: Function, getState: Function) => {
-  const directories = directoriesSelector(getState());
+  let directories = directoriesSelector(getState());
   const directory = directories[directoryId];
   const sandboxId = await dispatch(maybeForkSandbox(id));
-
   const isForked = id !== sandboxId;
+
+  // Directories have updated after fork
+  directories = directoriesSelector(getState());
 
   const newDirectory = isForked
     ? getEquivalentDirectory(directory, values(directories)) || directory
@@ -169,10 +174,13 @@ const moveModuleToDirectory = (
   moduleId: string,
   directoryShortid: string,
 ) => async (dispatch: Function, getState: Function) => {
-  const modules = modulesSelector(getState());
+  let modules = modulesSelector(getState());
   const module = modules[moduleId];
   const sandboxId = await dispatch(maybeForkSandbox(id));
   const isForked = sandboxId !== id;
+
+  // Modules have updated after fork
+  modules = modulesSelector(getState());
 
   const newModule = isForked
     ? getEquivalentModule(module, values(modules)) || module
@@ -202,11 +210,13 @@ const moveDirectoryToDirectory = (
   directoryId: string,
   parentId: string,
 ) => async (dispatch: Function, getState: Function) => {
-  const directories = directoriesSelector(getState());
+  let directories = directoriesSelector(getState());
   const directory = directories[directoryId];
   const sandboxId = await dispatch(maybeForkSandbox(id));
-
   const isForked = id !== sandboxId;
+
+  // Directories have updated after fork
+  directories = directoriesSelector(getState());
 
   const newDirectory = isForked
     ? getEquivalentDirectory(directory, values(directories)) || directory
@@ -237,10 +247,13 @@ const deleteModule = (id: string, moduleId: string) => async (
   dispatch: Function,
   getState: Function,
 ) => {
-  const modules = modulesSelector(getState());
+  let modules = modulesSelector(getState());
   const module = modules[moduleId];
   const sandboxId = await dispatch(maybeForkSandbox(id));
   const isForked = sandboxId !== id;
+
+  // Modules have updated after fork
+  modules = modulesSelector(getState());
 
   const newModule = isForked
     ? getEquivalentModule(module, values(modules)) || module
@@ -268,11 +281,13 @@ const deleteDirectory = (id: string, directoryId: string) => async (
   dispatch: Function,
   getState: Function,
 ) => {
-  const directories = directoriesSelector(getState());
+  let directories = directoriesSelector(getState());
   const directory = directories[directoryId];
   const sandboxId = await dispatch(maybeForkSandbox(id));
-
   const isForked = id !== sandboxId;
+
+  // Directories have updated after fork
+  directories = directoriesSelector(getState());
 
   const newDirectory = isForked
     ? getEquivalentDirectory(directory, values(directories)) || directory
@@ -362,10 +377,13 @@ const saveModuleCode = (id: string, moduleId: string) => async (
   dispatch: Function,
   getState: Function,
 ) => {
-  const modules = modulesSelector(getState());
+  let modules = modulesSelector(getState());
   const module = modules[moduleId];
   const sandboxId = await dispatch(maybeForkSandbox(id));
   const isForked = sandboxId !== id;
+
+  // Modules have updated after fork
+  modules = modulesSelector(getState());
 
   const newModule = isForked
     ? getEquivalentModule(module, values(modules)) || module

@@ -10,6 +10,14 @@ describe('equivalent', () => {
     expect(getEquivalentModule(module, modules)).toEqual(eqModule);
   });
 
+  it('finds the equivalent module if order is the other way around', () => {
+    const module = createModule();
+    const eqModule = createModule(0, { ...module, id: 'newid' });
+    const modules = [eqModule, eqModule];
+
+    expect(getEquivalentModule(module, modules)).toEqual(eqModule);
+  });
+
   it('returns undefined when equivalent module not found', () => {
     const module = createModule();
 
