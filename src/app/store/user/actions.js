@@ -54,29 +54,33 @@ const getCurrentUser = () => async (dispatch: Function, getState: Function) => {
   }
 };
 
-const signIn = () => async (dispatch: Function) => {
-  dispatch({
-    type: SIGN_IN,
-  });
-  const popup = openPopup(signInUrl(), 'sign in');
+const signIn = () => (dispatch: Function) =>
+  new Promise((resolve, reject) => {
+    dispatch({
+      type: SIGN_IN,
+    });
+    const popup = openPopup(signInUrl(), 'sign in');
 
-  window.addEventListener('message', function(e) {
-    if (e.data.type === 'signin') {
-      const jwt = e.data.data.jwt;
-      window.removeEventListener('message', this);
-      popup.close();
+    window.addEventListener('message', function(e) {
+      if (e.data.type === 'signin') {
+        const jwt = e.data.data.jwt;
+        window.removeEventListener('message', this);
+        popup.close();
 
-      if (jwt) {
-        dispatch({
-          type: SIGN_IN_SUCCESFULL,
-          jwt,
-        });
+        if (jwt) {
+          dispatch({
+            type: SIGN_IN_SUCCESFULL,
+            jwt,
+          });
+          resolve();
 
-        dispatch(getCurrentUser());
+          dispatch(getCurrentUser());
+        }
+      } else {
+        reject();
       }
-    }
+    });
   });
-};
 
 const loadUserSandboxes = () => async (dispatch: Function) => {
   const { data } = await dispatch(doRequest(LOAD_USER_SANDBOXES, `sandboxes`));
@@ -104,22 +108,6 @@ const sendFeedback = (message: string) => async (dispatch: Function) => {
     notifActions.addNotification('Thanks a lot for your feedback!', 'success'),
   );
 };
-
-// const updateCurrentUser = (user: Object) => async (dispatch: Function) => {
-//   await dispatch(
-//     doRequest(UPDATE_CURRENT_USER_API, `users/current/update`, {
-//       method: 'POST',
-//       body: {
-//         user,
-//       },
-//     }),
-//   );
-// };
-
-// const setShowcasedSandbox = (showcasedSandboxId: string) =>
-//   updateCurrentUser({
-//     showcasedSandboxShortid: showcasedSandboxId,
-//   });
 
 export default {
   signOut,

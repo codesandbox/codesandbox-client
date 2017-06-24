@@ -10,4 +10,5 @@ export default styled.h2`
   font-weight: 300;
   margin-top: 0;
   margin-bottom: 1.5rem;
+  line-height: 1.4;
 `;
