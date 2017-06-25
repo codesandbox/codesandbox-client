@@ -70,7 +70,7 @@ class CLI extends React.PureComponent {
     return null;
   };
 
-  $authorizeCLI = () =>
+  $authorizeCLI = (user: CurrentUser) =>
     new Promise((resolve, reject) => {
       try {
         this.setState({ loading: true });
@@ -79,7 +79,7 @@ class CLI extends React.PureComponent {
 
         sock.onopen = () => {
           signedIn = true;
-          sock.send(JSON.stringify(this.props.user));
+          sock.send(JSON.stringify(user));
           resolve();
         };
 
@@ -103,11 +103,10 @@ class CLI extends React.PureComponent {
 
   authorize = async () => {
     try {
-      await this.$authorizeCLI();
+      await this.$authorizeCLI(this.props.user);
 
       // Close window after succesfull authorization
       window.close();
-
       this.setState({ success: true });
     } catch (e) {
       this.setState({ error: e.message });
@@ -117,11 +116,9 @@ class CLI extends React.PureComponent {
   signIn = async () => {
     try {
       await this.props.signIn();
-      await this.$authorizeCLI();
+      await this.authorize();
     } catch (e) {
-      this.setState({
-        error: e.message,
-      });
+      this.setState({ error: e.message });
     }
   };
 

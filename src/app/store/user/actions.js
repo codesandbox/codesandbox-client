@@ -48,6 +48,7 @@ const getCurrentUser = () => async (dispatch: Function, getState: Function) => {
       identify(data);
 
       dispatch({ type: SET_CURRENT_USER, data });
+      return data;
     } catch (e) {
       dispatch(signOut());
     }
@@ -72,12 +73,10 @@ const signIn = () => (dispatch: Function) =>
             type: SIGN_IN_SUCCESFULL,
             jwt,
           });
-          resolve();
-
-          dispatch(getCurrentUser());
+          resolve(dispatch(getCurrentUser()));
+        } else {
+          reject();
         }
-      } else {
-        reject();
       }
     });
   });
