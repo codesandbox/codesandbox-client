@@ -148,7 +148,7 @@ export default class Project extends React.PureComponent {
             </Item>
           </div>}
 
-        {githubUrl &&
+        {!!githubUrl &&
           <div>
             <WorkspaceSubtitle>Source Control</WorkspaceSubtitle>
             <Item>
