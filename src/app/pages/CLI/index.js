@@ -51,7 +51,7 @@ class CLI extends React.PureComponent {
     super(props);
 
     const port = this.getPort();
-    if (port == null) {
+    if (port === null) {
       document.location.href = '/';
       return;
     }
