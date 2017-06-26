@@ -1,4 +1,6 @@
 // @flow
+import type { Sandbox } from 'common/types';
+
 export const host = () => {
   return process.env.NODE_ENV === 'production'
     ? 'codesandbox.io'
@@ -7,9 +9,23 @@ export const host = () => {
 
 export const protocolAndHost = () => `${location.protocol}//${host()}`;
 
-export const sandboxUrl = (sandbox: { id: string }) => `/s/${sandbox.id}`;
+export const sandboxUrl = (sandbox: Sandbox) => {
+  if (sandbox.git) {
+    const { git } = sandbox;
+    return `/s/github/${git.username}/${git.repo}/tree/${git.branch}/${git.path}`;
+  }
+
+  return `/s/${sandbox.id}`;
+};
 export const newSandboxUrl = () => `/s/new`;
-export const embedUrl = (sandbox: { id: string }) => `/embed/${sandbox.id}`;
+export const embedUrl = (sandbox: Sandbox) => {
+  if (sandbox.git) {
+    const { git } = sandbox;
+    return `/embed/github/${git.username}/${git.repo}/tree/${git.branch}/${git.path}`;
+  }
+
+  return `/embed/${sandbox.id}`;
+};
 
 export const frameUrl = (append: string = '') => {
   if (process.env.LOCAL_SERVER) {
@@ -19,7 +35,7 @@ export const frameUrl = (append: string = '') => {
   return `${location.protocol}//sandbox.${host()}/${append}`;
 };
 
-export const forkSandboxUrl = (sandbox: { id: string }) =>
+export const forkSandboxUrl = (sandbox: Sandbox) =>
   `${sandboxUrl(sandbox)}/fork`;
 
 export const signInUrl = () => '/auth/github';

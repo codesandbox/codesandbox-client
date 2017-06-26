@@ -29,6 +29,11 @@ const Container = styled.div`
   height: 100%;
 `;
 
+const FilesContainer = styled.div`
+  max-height: 300px;
+  overflow: auto;
+`;
+
 const PaddedPreference = styled(Preference)`
   color: rgba(255, 255, 255, 0.6);
   padding-bottom: 1rem;
@@ -301,13 +306,15 @@ class ShareView extends React.PureComponent {
                   <div>
                     <h4>Default module to show and preview</h4>
 
-                    <Files
-                      modules={modules}
-                      directories={directories}
-                      directoryId={null}
-                      currentModule={defaultModule}
-                      setCurrentModule={this.setDefaultModule}
-                    />
+                    <FilesContainer>
+                      <Files
+                        modules={modules}
+                        directories={directories}
+                        directoryId={null}
+                        currentModule={defaultModule}
+                        setCurrentModule={this.setDefaultModule}
+                      />
+                    </FilesContainer>
                   </div>
                 </Column>
                 <Column>
