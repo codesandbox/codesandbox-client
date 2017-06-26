@@ -9,19 +9,35 @@ export const host = () => {
 
 export const protocolAndHost = () => `${location.protocol}//${host()}`;
 
+export const newSandboxUrl = () => `/s/new`;
+
+const sandboxGitUrl = (git: {
+  repo: string,
+  branch: string,
+  username: string,
+  path: string,
+}) =>
+  'github/' + // eslint-disable-line prefer-template
+  encodeURIComponent(git.username) +
+  '/' +
+  encodeURIComponent(git.repo) +
+  '/tree/' +
+  encodeURIComponent(git.branch) +
+  '/' +
+  encodeURIComponent(git.path);
+
 export const sandboxUrl = (sandbox: Sandbox) => {
   if (sandbox.git) {
     const { git } = sandbox;
-    return `/s/github/${git.username}/${git.repo}/tree/${git.branch}/${git.path}`;
+    return `/s/${sandboxGitUrl(git)}`;
   }
 
   return `/s/${sandbox.id}`;
 };
-export const newSandboxUrl = () => `/s/new`;
 export const embedUrl = (sandbox: Sandbox) => {
   if (sandbox.git) {
     const { git } = sandbox;
-    return `/embed/github/${git.username}/${git.repo}/tree/${git.branch}/${git.path}`;
+    return `/embed/${sandboxGitUrl(git)}`;
   }
 
   return `/embed/${sandbox.id}`;
@@ -60,9 +76,11 @@ export const githubRepoUrl = ({
 
 export const optionsToParameterizedUrl = (options: Object) => {
   const keyValues = Object.keys(options)
-    .map(key => `${key}=${options[key]}`)
+    .sort()
+    .map(
+      key => `${encodeURIComponent(key)}=${encodeURIComponent(options[key])}`,
+    )
     .join('&');
 
-  if (keyValues.length === 0) return '';
-  return `?${keyValues}`;
+  return keyValues ? `?${keyValues}` : '';
 };
