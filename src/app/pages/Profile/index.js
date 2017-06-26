@@ -90,7 +90,7 @@ class Profile extends React.PureComponent {
     const username = prevProps.match.params.username;
 
     if (username !== this.props.match.params.username && !this.props.user) {
-      this.fetchUser(username);
+      this.fetchUser(this.props.match.params.username);
     }
   }
 
@@ -121,17 +121,16 @@ class Profile extends React.PureComponent {
               <Route
                 path={match.url}
                 exact
-                render={() => (
+                render={() =>
                   <Showcase
                     isCurrentUser={isCurrentUser}
                     id={user.showcasedSandboxShortid}
-                  />
-                )}
+                  />}
               />
               <Route
                 path={`${profileSandboxesUrl(user.username)}/:page?`}
                 // eslint-disable-next-line
-                children={({ match }) => (
+                children={({ match }) =>
                   <Sandboxes
                     username={user.username}
                     fetchSandboxes={userActions.fetchAllSandboxes}
@@ -139,13 +138,12 @@ class Profile extends React.PureComponent {
                     sandboxCount={user.sandboxCount}
                     baseUrl={profileSandboxesUrl(user.username)}
                     page={match.params.page && +match.params.page}
-                  />
-                )}
+                  />}
               />
               <Route
                 path={`${profileLikesUrl(user.username)}/:page?`}
                 // eslint-disable-next-line
-                children={({ match }) => (
+                children={({ match }) =>
                   <Sandboxes
                     username={user.username}
                     fetchSandboxes={userActions.fetchLikedSandboxes}
@@ -153,8 +151,7 @@ class Profile extends React.PureComponent {
                     sandboxCount={user.givenLikeCount}
                     baseUrl={profileLikesUrl(user.username)}
                     page={match.params.page && +match.params.page}
-                  />
-                )}
+                  />}
               />
             </Switch>
           </Margin>
