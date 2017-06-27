@@ -42,7 +42,7 @@ const allRules = {
   'react/jsx-indent-props': require('eslint-plugin-react/lib/rules/jsx-indent-props'),
   'react/jsx-indent': require('eslint-plugin-react/lib/rules/jsx-indent'),
   'react/jsx-closing-bracket-location': require('eslint-plugin-react/lib/rules/jsx-closing-bracket-location'),
-  'react/jsx-space-before-closing': require('eslint-plugin-react/lib/rules/jsx-space-before-closing'),
+  'react/jsx-tag-spacing': require('eslint-plugin-react/lib/rules/jsx-tag-spacing'),
   'react/no-direct-mutation-state': require('eslint-plugin-react/lib/rules/no-direct-mutation-state'),
   'react/forbid-component-props': require('eslint-plugin-react/lib/rules/forbid-component-props'),
   'react/forbid-elements': require('eslint-plugin-react/lib/rules/forbid-elements'),
@@ -998,19 +998,23 @@ const defaultConfig = {
       'error',
       {
         selector: 'ForInStatement',
-        message: 'for..in loops iterate over the entire prototype chain, which is virtually never what you want. Use Object.{keys,values,entries}, and iterate over the resulting array.',
+        message:
+          'for..in loops iterate over the entire prototype chain, which is virtually never what you want. Use Object.{keys,values,entries}, and iterate over the resulting array.',
       },
       {
         selector: 'ForOfStatement',
-        message: 'iterators/generators require regenerator-runtime, which is too heavyweight for this guide to allow them. Separately, loops should be avoided in favor of array iterations.',
+        message:
+          'iterators/generators require regenerator-runtime, which is too heavyweight for this guide to allow them. Separately, loops should be avoided in favor of array iterations.',
       },
       {
         selector: 'LabeledStatement',
-        message: 'Labels are a form of GOTO; using them makes code confusing and hard to maintain and understand.',
+        message:
+          'Labels are a form of GOTO; using them makes code confusing and hard to maintain and understand.',
       },
       {
         selector: 'WithStatement',
-        message: '`with` is disallowed in strict mode because it makes code impossible to predict and optimize.',
+        message:
+          '`with` is disallowed in strict mode because it makes code impossible to predict and optimize.',
       },
     ],
 
@@ -1425,7 +1429,12 @@ const defaultConfig = {
 
     // Enforce spaces before the closing bracket of self-closing JSX elements
     // https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/jsx-space-before-closing.md
-    'react/jsx-space-before-closing': ['error', 'always'],
+    'react/jsx-tag-spacing': [
+      'error',
+      {
+        beforeSelfClosing: true,
+      },
+    ],
 
     // Enforce component methods order
     // https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/sort-comp.md
@@ -1443,18 +1452,6 @@ const defaultConfig = {
         ],
       },
     ],
-
-    // Prevent missing parentheses around multilines JSX
-    // https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/jsx-wrap-multilines.md
-    'react/jsx-wrap-multilines': [
-      'error',
-      {
-        declaration: true,
-        assignment: true,
-        return: true,
-      },
-    ],
-    'react/wrap-multilines': 'off', // deprecated version
 
     // Require that the first prop in a JSX element be on a new line when the element is multiline
     // https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/jsx-first-prop-new-line.md
@@ -1556,6 +1553,8 @@ const defaultConfig = {
   },
 };
 
+let linter = null;
+
 function getPos(error, from) {
   let line = error.line - 1;
   let ch = from ? error.column : error.column + 1;
@@ -1583,8 +1582,8 @@ function getSeverity(error) {
 }
 
 function eslintValidate(text) {
-  if (!window.eslint) return [];
-  return window.eslint.verify(text, defaultConfig);
+  if (!linter) return [];
+  return linter.verify(text, defaultConfig);
 }
 
 export function validator(text: string) {
@@ -1598,16 +1597,16 @@ export function validator(text: string) {
 
 export function fix(source: string) {
   const errors = eslintValidate(source);
-  return fixer.applyFixes(window.eslint.getSourceCode(), errors);
+  return fixer.applyFixes(linter.getSourceCode(), errors);
 }
 
 export default (async function initialize() {
-  if (!window.eslint) {
+  if (!window.eslint && linter === null) {
     // Add eslint as script
     const script = document.createElement('script');
     const src = process.env.NODE_ENV === 'development'
       ? 'http://eslint.org/js/app/eslint.js'
-      : '/static/js/eslint.3.18.0.js';
+      : '/static/js/eslint.4.0.0.js';
     script.setAttribute('src', src);
     script.setAttribute('async', false);
 
@@ -1619,6 +1618,7 @@ export default (async function initialize() {
     await delay(100);
   }
 
-  window.eslint.defineRules(allRules);
+  linter = new window.eslint();
+  linter.defineRules(allRules);
   CodeMirror.registerHelper('lint', 'javascript', validator);
 });

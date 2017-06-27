@@ -6,12 +6,10 @@ import ShareIcon from 'react-icons/lib/md/share';
 import Files from 'embed/components/Files';
 import ModeIcons from 'app/components/sandbox/ModeIcons';
 import {
-  isMainModule,
+  findMainModule,
   modulesFromSandboxSelector,
 } from 'app/store/entities/sandboxes/modules/selectors';
-import {
-  directoriesFromSandboxSelector,
-} from 'app/store/entities/sandboxes/directories/selectors';
+import { directoriesFromSandboxSelector } from 'app/store/entities/sandboxes/directories/selectors';
 import {
   optionsToParameterizedUrl,
   protocolAndHost,
@@ -29,6 +27,11 @@ const Container = styled.div`
   position: relative;
   z-index: 200;
   height: 100%;
+`;
+
+const FilesContainer = styled.div`
+  max-height: 300px;
+  overflow: auto;
 `;
 
 const PaddedPreference = styled(Preference)`
@@ -223,7 +226,8 @@ class ShareView extends React.PureComponent {
   // eslint-disable-next-line
   getButtonMarkdown = () => {
     const { sandbox } = this.props;
-    return `[![Edit ${sandbox.title || sandbox.id}](${BUTTON_URL})](${this.getEditorUrl()})`;
+    return `[![Edit ${sandbox.title ||
+      sandbox.id}](${BUTTON_URL})](${this.getEditorUrl()})`;
   };
 
   // eslint-disable-next-line
@@ -248,7 +252,7 @@ class ShareView extends React.PureComponent {
     const { showEditor, showPreview, autoResize, hideNavigation } = this.state;
 
     const defaultModule =
-      this.state.defaultModule || modules.find(isMainModule).id;
+      this.state.defaultModule || findMainModule(modules).id;
 
     return (
       <Container>
@@ -260,7 +264,7 @@ class ShareView extends React.PureComponent {
             moreInfo: true,
           }}
         >
-          {() => (
+          {() =>
             <ShareOptions>
               <h3>Share options</h3>
               <Divider>
@@ -302,13 +306,15 @@ class ShareView extends React.PureComponent {
                   <div>
                     <h4>Default module to show and preview</h4>
 
-                    <Files
-                      modules={modules}
-                      directories={directories}
-                      directoryId={null}
-                      currentModule={defaultModule}
-                      setCurrentModule={this.setDefaultModule}
-                    />
+                    <FilesContainer>
+                      <Files
+                        modules={modules}
+                        directories={directories}
+                        directoryId={null}
+                        currentModule={defaultModule}
+                        setCurrentModule={this.setDefaultModule}
+                      />
+                    </FilesContainer>
                   </div>
                 </Column>
                 <Column>
@@ -352,8 +358,7 @@ class ShareView extends React.PureComponent {
                   </Inputs>
                 </Column>
               </Divider>
-            </ShareOptions>
-          )}
+            </ShareOptions>}
         </HoverMenu>
       </Container>
     );

@@ -1,21 +1,9 @@
 import React from 'react';
-import styled from 'styled-components';
-import theme from 'common/theme';
 
 import CrossIcon from 'react-icons/lib/md/clear';
 
 import EntryContainer from '../EntryContainer';
-
-const Icon = styled.div`
-  transition: 0.3s ease color;
-  position: absolute;
-  right: 1rem;
-  line-height: 1;
-  color: ${() => theme.background.lighten(2).clearer(0.5)};
-  &:hover {
-    color: ${() => theme.red};
-  }
-`;
+import { IconArea, Icon } from '../Icon';
 
 const getNormalizedUrl = (url: string) => `${url.replace(/\/$/g, '')}/`;
 
@@ -49,7 +37,9 @@ export default class ExternalResource extends React.PureComponent {
         <a href={resource} rel="noopener noreferrer" target="_blank">
           {getName(resource)}
         </a>
-        <Icon onClick={this.removeResource}><CrossIcon /></Icon>
+        <IconArea>
+          <Icon onClick={this.removeResource}><CrossIcon /></Icon>
+        </IconArea>
       </EntryContainer>
     );
   }

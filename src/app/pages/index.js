@@ -46,6 +46,10 @@ const Profile = Loadable({
   loader: () => import('./Profile'),
   LoadingComponent: Loading,
 });
+const CLI = Loadable({
+  loader: () => import('./CLI'),
+  LoadingComponent: Loading,
+});
 
 type Props = {
   hasLogin: boolean,
@@ -89,9 +93,10 @@ class Routes extends React.PureComponent {
         <Content>
           <Switch>
             <Route exact path="/" render={() => <Redirect to="/s/new" />} />
-            <Route path="/s/:id" component={Sandbox} />
+            <Route path="/s/:id*" component={Sandbox} />
             <Route path="/signin/:jwt?" component={SignIn} />
             <Route path="/u/:username" component={Profile} />
+            <Route path="/cli/login" component={CLI} />
             <Route component={NotFound} />
           </Switch>
         </Content>

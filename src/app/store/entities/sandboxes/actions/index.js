@@ -114,6 +114,8 @@ export default {
     );
 
     dispatch(normalizeResult(entity, data));
+
+    return data;
   },
 
   createSandbox: () => async (dispatch: Function) => {

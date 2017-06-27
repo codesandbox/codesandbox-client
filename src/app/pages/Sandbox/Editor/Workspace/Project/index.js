@@ -5,27 +5,15 @@ import { Link } from 'react-router-dom';
 import ConfirmLink from 'app/components/ConfirmLink';
 import LinkButton from 'app/components/buttons/LinkButton';
 import type { User } from 'common/types';
-import WorkspaceSubtitle from '../WorkspaceSubtitle';
 import WorkspaceInputContainer from '../WorkspaceInputContainer';
+import WorkspaceSubtitle from '../WorkspaceSubtitle';
 import { sandboxUrl, profileUrl } from '../../../../../utils/url-generator';
+
+import Statistics from './Statistics';
 
 const Item = styled.div`
   margin: 1rem;
   margin-top: 0;
-  font-size: .875rem;
-`;
-
-const ViewCount = styled.span`
-  color: white;
-  font-weight: 500;
-`;
-
-const ViewCountDescription = styled.span`
-  color: rgba(255, 255, 255, 0.6);
-`;
-
-const ViewCountContainer = styled.div`
-  margin: .5rem 1rem;
   font-size: .875rem;
 `;
 
@@ -42,6 +30,8 @@ type Props = {
   preventTransition: boolean,
   owned: boolean,
   author: ?User,
+  githubUrl: ?string,
+  repoName: ?string,
 };
 
 export default class Project extends React.PureComponent {
@@ -105,6 +95,8 @@ export default class Project extends React.PureComponent {
       forkCount,
       author,
       owned,
+      githubUrl,
+      repoName,
       preventTransition,
     } = this.props;
     const { title, description } = this.state;
@@ -155,26 +147,23 @@ export default class Project extends React.PureComponent {
               </Link>
             </Item>
           </div>}
-        <WorkspaceSubtitle>Statistics</WorkspaceSubtitle>
-        <ViewCountContainer>
-          <ViewCount>{likeCount}{' '}</ViewCount>
-          <ViewCountDescription>
-            {likeCount === 1 ? ' like' : ' likes'}
-          </ViewCountDescription>
-        </ViewCountContainer>
-        <ViewCountContainer>
-          <ViewCount>{forkCount}{' '}</ViewCount>
-          <ViewCountDescription>
-            {forkCount === 1 ? ' fork' : ' forks'}
-          </ViewCountDescription>
-        </ViewCountContainer>
-        <ViewCountContainer>
-          <ViewCount>{viewCount}{' '}</ViewCount>
-          <ViewCountDescription>
-            unique
-            {viewCount === 1 ? ' view' : ' views'}
-          </ViewCountDescription>
-        </ViewCountContainer>
+
+        {!!githubUrl &&
+          <div>
+            <WorkspaceSubtitle>Source Control</WorkspaceSubtitle>
+            <Item>
+              <a href={githubUrl} rel="noopener noreferrer" target="_blank">
+                {repoName}
+              </a>
+            </Item>
+          </div>}
+
+        <Statistics
+          viewCount={viewCount}
+          likeCount={likeCount}
+          forkCount={forkCount}
+        />
+
         {owned &&
           <WorkspaceInputContainer>
             <LinkButton

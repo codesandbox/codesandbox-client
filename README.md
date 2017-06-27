@@ -1,5 +1,5 @@
 # [CodeSandbox](https://codesandbox.io)
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors)
 [![Build Status](https://travis-ci.org/CompuIves/codesandbox-client.svg?branch=master)](https://travis-ci.org/CompuIves/codesandbox-client)
 
 An online code editor with a focus on React.
@@ -36,8 +36,8 @@ yarn start
 Thanks goes to these wonderful people ([emoji key](https://github.com/kentcdodds/all-contributors#emoji-key)):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-| [<img src="https://avatars0.githubusercontent.com/u/587016?v=3" width="100px;"/><br /><sub>Ives van Hoorne</sub>](http://ivesvh.com)<br />[💬](#question-CompuIves "Answering Questions") [📝](#blog-CompuIves "Blogposts") [🐛](https://github.com/CompuIves/CodeSandbox/issues?q=author%3ACompuIves "Bug reports") [💻](https://github.com/CompuIves/CodeSandbox/commits?author=CompuIves "Code") [🎨](#design-CompuIves "Design") [📖](https://github.com/CompuIves/CodeSandbox/commits?author=CompuIves "Documentation") [💡](#example-CompuIves "Examples") [🚇](#infra-CompuIves "Infrastructure (Hosting, Build-Tools, etc)") [👀](#review-CompuIves "Reviewed Pull Requests") [⚠️](https://github.com/CompuIves/CodeSandbox/commits?author=CompuIves "Tests") [🔧](#tool-CompuIves "Tools") |
-| :---: |
+| [<img src="https://avatars0.githubusercontent.com/u/587016?v=3" width="100px;"/><br /><sub>Ives van Hoorne</sub>](http://ivesvh.com)<br />[💬](#question-CompuIves "Answering Questions") [📝](#blog-CompuIves "Blogposts") [🐛](https://github.com/CompuIves/CodeSandbox/issues?q=author%3ACompuIves "Bug reports") [💻](https://github.com/CompuIves/CodeSandbox/commits?author=CompuIves "Code") [🎨](#design-CompuIves "Design") [📖](https://github.com/CompuIves/CodeSandbox/commits?author=CompuIves "Documentation") [💡](#example-CompuIves "Examples") [🚇](#infra-CompuIves "Infrastructure (Hosting, Build-Tools, etc)") [👀](#review-CompuIves "Reviewed Pull Requests") [⚠️](https://github.com/CompuIves/CodeSandbox/commits?author=CompuIves "Tests") [🔧](#tool-CompuIves "Tools") | [<img src="https://avatars0.githubusercontent.com/u/887639?v=3" width="100px;"/><br /><sub>Donavon West</sub>](http://donavon.com)<br />[💻](https://github.com/CompuIves/CodeSandbox/commits?author=donavon "Code") |
+| :---: | :---: |
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/kentcdodds/all-contributors) specification. Contributions of any kind welcome!

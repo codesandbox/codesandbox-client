@@ -18,7 +18,7 @@ import moduleActionCreators from 'app/store/entities/sandboxes/modules/actions';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 import userActionCreators from 'app/store/user/actions';
 import {
-  isMainModule,
+  findMainModule,
   getModulePath,
   modulesFromSandboxSelector,
 } from 'app/store/entities/sandboxes/modules/selectors';
@@ -29,7 +29,11 @@ import SplitPane from 'react-split-pane';
 import CodeEditor from 'app/components/sandbox/CodeEditor';
 import Preview from 'app/components/sandbox/Preview';
 
+import showAlternativeComponent from 'app/hoc/show-alternative-component';
+import fadeIn from 'app/utils/animation/fade-in';
+
 import Header from './Header';
+import Skeleton from './Skeleton';
 
 type Props = {
   workspaceHidden: boolean,
@@ -52,6 +56,7 @@ const FullSize = styled.div`
   height: 100%;
   width: 100%;
   pointer-events: ${props => (props.inactive ? 'none' : 'all')};
+  ${fadeIn(0)}
 `;
 
 const mapStateToProps = createSelector(
@@ -98,7 +103,7 @@ class EditorPreview extends React.PureComponent {
   saveCode = () => {
     const { sandbox, modules, sandboxActions } = this.props;
 
-    const mainModule = modules.find(isMainModule);
+    const mainModule = findMainModule(modules);
     const { currentModule } = sandbox;
 
     // $FlowIssue
@@ -126,7 +131,7 @@ class EditorPreview extends React.PureComponent {
       toggleWorkspace,
     } = this.props;
 
-    const mainModule = modules.find(isMainModule);
+    const mainModule = findMainModule(modules);
     if (!mainModule) throw new Error('Cannot find main module');
 
     const { currentModule: currentModuleId } = sandbox;
@@ -225,4 +230,6 @@ class EditorPreview extends React.PureComponent {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditorPreview);
+export default showAlternativeComponent(Skeleton, ['sandbox'])(
+  connect(mapStateToProps, mapDispatchToProps)(EditorPreview),
+);

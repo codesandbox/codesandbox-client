@@ -9,18 +9,16 @@ import Preview from 'app/components/sandbox/Preview';
 import delayEffect from 'app/utils/animation/delay-effect';
 import {
   modulesFromSandboxSelector,
-  isMainModule,
+  findMainModule,
 } from 'app/store/entities/sandboxes/modules/selectors';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 
-import {
-  directoriesFromSandboxSelector,
-} from 'app/store/entities/sandboxes/directories/selectors';
+import { directoriesFromSandboxSelector } from 'app/store/entities/sandboxes/directories/selectors';
 import { preferencesSelector } from '../../../store/preferences/selectors';
 
 const Container = styled.div`
   position: relative;
-  ${delayEffect(0.40)}
+  ${delayEffect(0.4)}
   height: 500px;
   box-shadow: 0 3px 3px rgba(0, 0, 0, 0.5);
 
@@ -62,7 +60,7 @@ class ShowcasePreview extends React.PureComponent {
       directories,
     } = this.props;
 
-    const mainModule = modules.find(isMainModule);
+    const mainModule = findMainModule(modules);
 
     return (
       <Container>

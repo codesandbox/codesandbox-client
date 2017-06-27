@@ -9,7 +9,7 @@ import logError from '../../../../utils/error';
 
 const debug = _debug('cs:app:packager');
 
-export const PACKAGER_URL = 'https://cdn.jsdelivr.net/webpack/v5';
+export const PACKAGER_URL = 'https://cdn.jsdelivr.net/webpack/v6';
 
 const RETRY_COUNT = 10;
 
@@ -70,6 +70,8 @@ export default function fetch(
       } catch (e) {
         logError(e, { level: 'error', service: 'packager' });
         dispatch({ type: actions.FAILURE, id });
+
+        throw e;
       }
     }
     return false;

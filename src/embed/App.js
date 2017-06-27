@@ -82,7 +82,7 @@ export default class App extends React.PureComponent {
   }
 
   getId = () => {
-    const matches = location.pathname.match(/^\/embed\/(.*?)(\/|$)/);
+    const matches = location.pathname.match(/^\/embed\/(.*?)$/);
 
     if (matches && matches.length > 1) {
       return matches[1];
@@ -102,10 +102,11 @@ export default class App extends React.PureComponent {
 
       this.setState({
         sandbox: response.data,
-        currentModule: this.state.currentModule ||
-          response.data.modules.find(
-            m => m.title === 'index.js' && m.directoryShortid == null,
-          ).shortid,
+        currentModule:
+          this.state.currentModule ||
+            response.data.modules.find(
+              m => m.title === 'index.js' && m.directoryShortid == null,
+            ).shortid,
       });
     } catch (e) {
       this.setState({ notFound: true });

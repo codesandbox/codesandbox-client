@@ -66,6 +66,14 @@ export type User = {
   likedSandboxes: PaginatedSandboxes,
 };
 
+export type GitInfo = {
+  repo: string,
+  username: string,
+  path: string,
+  branch: string,
+  commitSha: string,
+};
+
 export type Sandbox = {
   id: string,
   title: ?string,
@@ -95,6 +103,7 @@ export type Sandbox = {
   author: ?User,
   forkedFromSandbox: ?{ title: string, id: string },
   errors: Array<ModuleError>,
+  git: ?GitInfo,
 };
 
 export type Preferences = {

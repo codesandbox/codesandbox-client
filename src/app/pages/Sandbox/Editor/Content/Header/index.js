@@ -65,7 +65,8 @@ const Chevron = styled.div`
 
   cursor: pointer;
   &:hover {
-    transform: rotateZ(${props => (props.workspaceHidden ? '135deg' : '45deg')});
+    transform: rotateZ(${props =>
+      props.workspaceHidden ? '135deg' : '45deg'});
     color: white;
   }
 
