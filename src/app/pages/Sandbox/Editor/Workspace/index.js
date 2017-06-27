@@ -8,10 +8,11 @@ import styled from 'styled-components';
 
 import type { Sandbox, User } from 'common/types';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
-import {
-  modulesFromSandboxNotSavedSelector,
-} from 'app/store/entities/sandboxes/modules/selectors';
+import { modulesFromSandboxNotSavedSelector } from 'app/store/entities/sandboxes/modules/selectors';
 import { usersSelector } from 'app/store/entities/users/selectors';
+
+import showAlternativeComponent from 'app/hoc/show-alternative-component';
+import fadeIn from 'app/utils/animation/fade-in';
 
 import Files from './Files';
 import Versions from './Versions';
@@ -20,6 +21,7 @@ import Project from './Project';
 import WorkspaceItem from './WorkspaceItem';
 import Logo from './Logo';
 import Preferences from './Preferences';
+import { githubRepoUrl } from '../../../../utils/url-generator';
 
 const Container = styled.div`
   position: absolute;
@@ -28,6 +30,10 @@ const Container = styled.div`
   width: 100%;
   overflow: auto;
   overflow-y: overlay;
+
+  > div {
+    ${fadeIn(0)}
+  }
 `;
 
 type Props = {
@@ -54,7 +60,7 @@ const Workspace = ({
   user,
   preventTransition,
   sandboxActions,
-}: Props) => (
+}: Props) =>
   <Container>
     <Logo />
     <WorkspaceItem defaultOpen title="Project">
@@ -65,6 +71,8 @@ const Workspace = ({
         viewCount={sandbox.viewCount}
         likeCount={sandbox.likeCount}
         forkCount={sandbox.forkCount}
+        githubUrl={sandbox.git && githubRepoUrl(sandbox.git)}
+        repoName={sandbox.git && `${sandbox.git.username}/${sandbox.git.repo}`}
         description={sandbox.description}
         forkedSandbox={sandbox.forkedFromSandbox}
         preventTransition={preventTransition}
@@ -100,6 +108,11 @@ const Workspace = ({
     <WorkspaceItem title="Preferences">
       <Preferences />
     </WorkspaceItem>
-  </Container>
+  </Container>;
+
+// The skeleton to show if sandbox doesn't exist
+const Skeleton = () => <Container />;
+
+export default showAlternativeComponent(Skeleton, ['sandbox'])(
+  connect(mapStateToProps, mapDispatchToProps)(Workspace),
 );
-export default connect(mapStateToProps, mapDispatchToProps)(Workspace);

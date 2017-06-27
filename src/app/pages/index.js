@@ -89,7 +89,7 @@ class Routes extends React.PureComponent {
         <Content>
           <Switch>
             <Route exact path="/" render={() => <Redirect to="/s/new" />} />
-            <Route path="/s/:id" component={Sandbox} />
+            <Route path="/s/:id*" component={Sandbox} />
             <Route path="/signin/:jwt?" component={SignIn} />
             <Route path="/u/:username" component={Profile} />
             <Route component={NotFound} />

@@ -1,4 +1,12 @@
 // @flow
+import type { Sandbox } from 'common/types';
+
+const buildEncodedUri = (strings: Array<string>, ...values: Array<string>) =>
+  strings[0] +
+  values
+    .map((value, i) => `${encodeURIComponent(value)}${strings[i + 1]}`)
+    .join('');
+
 export const host = () => {
   return process.env.NODE_ENV === 'production'
     ? 'codesandbox.io'
@@ -7,9 +15,33 @@ export const host = () => {
 
 export const protocolAndHost = () => `${location.protocol}//${host()}`;
 
-export const sandboxUrl = (sandbox: { id: string }) => `/s/${sandbox.id}`;
 export const newSandboxUrl = () => `/s/new`;
-export const embedUrl = (sandbox: { id: string }) => `/embed/${sandbox.id}`;
+
+const sandboxGitUrl = (git: {
+  repo: string,
+  branch: string,
+  username: string,
+  path: string,
+}) =>
+  buildEncodedUri`github/${git.username}/${git.repo}/tree/${git.branch}/` +
+  git.path;
+
+export const sandboxUrl = (sandbox: Sandbox) => {
+  if (sandbox.git) {
+    const { git } = sandbox;
+    return `/s/${sandboxGitUrl(git)}`;
+  }
+
+  return `/s/${sandbox.id}`;
+};
+export const embedUrl = (sandbox: Sandbox) => {
+  if (sandbox.git) {
+    const { git } = sandbox;
+    return `/embed/${sandboxGitUrl(git)}`;
+  }
+
+  return `/embed/${sandbox.id}`;
+};
 
 export const frameUrl = (append: string = '') => {
   if (process.env.LOCAL_SERVER) {
@@ -19,7 +51,7 @@ export const frameUrl = (append: string = '') => {
   return `${location.protocol}//sandbox.${host()}/${append}`;
 };
 
-export const forkSandboxUrl = (sandbox: { id: string }) =>
+export const forkSandboxUrl = (sandbox: Sandbox) =>
   `${sandboxUrl(sandbox)}/fork`;
 
 export const signInUrl = () => '/auth/github';
@@ -30,11 +62,27 @@ export const profileSandboxesUrl = (username: string, page?: number) =>
 export const profileLikesUrl = (username: string, page?: number) =>
   `${profileUrl(username)}/likes${page ? `/${page}` : ''}`;
 
+export const githubRepoUrl = ({
+  repo,
+  branch,
+  username,
+  path,
+}: {
+  repo: string,
+  branch: string,
+  username: string,
+  path: string,
+}) =>
+  buildEncodedUri`https://github.com/${username}/${repo}/tree/${branch}/` +
+  path;
+
 export const optionsToParameterizedUrl = (options: Object) => {
   const keyValues = Object.keys(options)
-    .map(key => `${key}=${options[key]}`)
+    .sort()
+    .map(
+      key => `${encodeURIComponent(key)}=${encodeURIComponent(options[key])}`,
+    )
     .join('&');
 
-  if (keyValues.length === 0) return '';
-  return `?${keyValues}`;
+  return keyValues ? `?${keyValues}` : '';
 };

@@ -2,7 +2,7 @@
 import type { Module, Directory } from 'common/types';
 
 import evalJS, { deleteCache as deleteJSCache } from './js';
-import evalHTML from './html';
+import evalRaw from './raw';
 import evalCSS from './css';
 import evalJson from './json';
 
@@ -12,9 +12,10 @@ function doEval(mainModule, modules, directories, externals, depth) {
   const html = /\.html$/;
   const css = /\.css$/;
   const json = /\.json$/;
+  const js = /\.js$/;
 
   if (html.test(mainModule.title)) {
-    return evalHTML(mainModule, modules, directories, externals, depth);
+    return evalRaw(mainModule, modules, directories, externals, depth);
   }
 
   if (css.test(mainModule.title)) {
@@ -25,13 +26,15 @@ function doEval(mainModule, modules, directories, externals, depth) {
     return evalJson(mainModule, modules, directories, externals, depth);
   }
 
-  return evalJS(mainModule, modules, directories, externals, depth);
+  if (js.test(mainModule.title)) {
+    return evalJS(mainModule, modules, directories, externals, depth);
+  }
+
+  return evalRaw(mainModule, modules, directories, externals, depth);
 }
 
 export function deleteCache(module: Module) {
-  if (module.title.includes('.js')) {
-    deleteJSCache(module);
-  }
+  deleteJSCache(module);
 }
 
 const evalModule = (

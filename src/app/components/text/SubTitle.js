@@ -8,5 +8,6 @@ export default styled.h2`
   font-size: 1.75rem;
   color: ${props => props.theme.background2.lighten(2)};
   font-weight: 300;
+  margin-top: 0;
   margin-bottom: 1.5rem;
 `;

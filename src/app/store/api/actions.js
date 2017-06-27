@@ -45,7 +45,9 @@ const getMessage = (error: Error & { response: ?Object }) => {
 };
 
 const showError = error => dispatch => {
-  dispatch(notificationActions.addNotification(getMessage(error), 'error'));
+  const errorMessage = getMessage(error);
+  dispatch(notificationActions.addNotification(errorMessage, 'error'));
+  error.apiMessage = errorMessage;
 };
 
 export function doRequest(

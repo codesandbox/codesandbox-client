@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`hoc show-alternative-component only renders app if all prop exists and is falsy 1`] = `
+<div>
+  Loading
+</div>
+`;
+
+exports[`hoc show-alternative-component only renders app if all prop exists and is falsy 2`] = `
+<div>
+  App
+</div>
+`;
+
+exports[`hoc show-alternative-component renders app if prop exists 1`] = `
+<div>
+  App
+</div>
+`;
+
+exports[`hoc show-alternative-component renders app if prop exists and is falsy 1`] = `
+<div>
+  App
+</div>
+`;
+
+exports[`hoc show-alternative-component renders loading component if prop doesn't exist 1`] = `
+<div>
+  Loading
+</div>
+`;

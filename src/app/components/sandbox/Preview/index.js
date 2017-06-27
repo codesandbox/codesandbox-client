@@ -8,9 +8,8 @@ import type { Preferences } from 'app/store/preferences/reducer';
 import type { Module, Sandbox, Directory, ModuleError } from 'common/types';
 
 import { frameUrl } from 'app/utils/url-generator';
-import { isMainModule } from 'app/store/entities/sandboxes/modules/selectors';
-import defaultBoilerplates
-  from 'app/store/entities/sandboxes/boilerplates/default-boilerplates';
+import { findMainModule } from 'app/store/entities/sandboxes/modules/selectors';
+import defaultBoilerplates from 'app/store/entities/sandboxes/boilerplates/default-boilerplates';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 
 import Navigator from './Navigator';
@@ -193,7 +192,7 @@ export default class Preview extends React.PureComponent {
 
   getRenderedModule = () => {
     const { modules, module, isInProjectView } = this.props;
-    return isInProjectView ? modules.find(isMainModule) : module;
+    return isInProjectView ? findMainModule(modules) : module;
   };
 
   executeCodeImmediately = () => {

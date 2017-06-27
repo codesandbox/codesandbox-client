@@ -8,11 +8,9 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import { DragDropContext } from 'react-dnd';
 import {
   modulesFromSandboxSelector,
-  isMainModule,
+  findMainModule,
 } from 'app/store/entities/sandboxes/modules/selectors';
-import {
-  directoriesFromSandboxSelector,
-} from 'app/store/entities/sandboxes/directories/selectors';
+import { directoriesFromSandboxSelector } from 'app/store/entities/sandboxes/directories/selectors';
 
 import type { Sandbox, Module, Directory } from 'common/types';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
@@ -50,7 +48,7 @@ class Files extends React.PureComponent {
   render() {
     const { sandbox, modules, directories } = this.props;
 
-    const mainModule = modules.find(isMainModule);
+    const mainModule = findMainModule(modules);
 
     const { currentModule } = sandbox;
 
