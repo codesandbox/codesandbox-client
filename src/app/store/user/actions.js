@@ -24,6 +24,7 @@ export const LOAD_USER_SANDBOXES = createAPIActions(
   'FETCH_SANDBOXES',
 );
 export const SEND_FEEDBACK_API = createAPIActions('FEEDBACK', 'SEND');
+export const GET_AUTH_TOKEN_API = createAPIActions('AUTH_TOKEN', 'FETCH');
 
 const deleteCookie = (name: string) => {
   document.cookie = `${name}=; Path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
@@ -81,6 +82,14 @@ const signIn = () => (dispatch: Function) =>
     });
   });
 
+const getAuthToken = () => async (dispatch: Function): string => {
+  const { data } = await dispatch(
+    doRequest(GET_AUTH_TOKEN_API, 'auth/auth-token'),
+  );
+
+  return data.token;
+};
+
 const loadUserSandboxes = () => async (dispatch: Function) => {
   const { data } = await dispatch(doRequest(LOAD_USER_SANDBOXES, `sandboxes`));
 
@@ -109,6 +118,7 @@ const sendFeedback = (message: string) => async (dispatch: Function) => {
 };
 
 export default {
+  getAuthToken,
   signOut,
   signIn,
   getCurrentUser,
