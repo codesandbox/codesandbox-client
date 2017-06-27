@@ -127,8 +127,7 @@
     "typecheck": "flow check",
     "lint:embed": "eslint src/embed",
     "add": "all-contributors add",
-    "generate": "all-contributors generate",
-    "postinstall": "rm ./node_modules/prettier/parser-typescript.js"
+    "generate": "all-contributors generate"
   },
   "jest": {
     "rootDir": "src",
