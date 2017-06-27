@@ -55,7 +55,7 @@ const ShareOptions = styled.div`
   color: rgba(255, 255, 255, 0.8);
   padding: 1rem;
 
-  box-shadow: -1px 4px 5px rgba(0,0,0,0.5);
+  box-shadow: -1px 4px 5px rgba(0, 0, 0, 0.5);
   background-color: ${props => props.theme.background2};
 
   width: 900px;
@@ -120,9 +120,7 @@ const Column = styled.div`
   }
 `;
 
-const ButtonContainer = styled.div`
-  margin-top: 0.25rem;
-`;
+const ButtonContainer = styled.div`margin-top: 0.25rem;`;
 
 const ButtonName = styled.div`
   margin: 0.5rem 0;
@@ -152,6 +150,7 @@ class ShareView extends React.PureComponent {
     defaultModule: null,
     autoResize: false,
     hideNavigation: false,
+    fontSize: 16,
   };
 
   handleChange = e => this.setState({ message: e.target.value });
@@ -178,6 +177,7 @@ class ShareView extends React.PureComponent {
       showPreview,
       autoResize,
       hideNavigation,
+      fontSize,
     } = this.state;
 
     const options = {};
@@ -199,6 +199,10 @@ class ShareView extends React.PureComponent {
 
     if (hideNavigation) {
       options.hidenavigation = 1;
+    }
+
+    if (fontSize !== 16) {
+      options.fontsize = fontSize;
     }
 
     return optionsToParameterizedUrl(options);
@@ -247,9 +251,17 @@ class ShareView extends React.PureComponent {
     this.setState({ hideNavigation });
   };
 
+  setFontSize = (fontSize: number) => [this.setState({ fontSize })];
+
   render() {
     const { sandbox, modules, directories } = this.props;
-    const { showEditor, showPreview, autoResize, hideNavigation } = this.state;
+    const {
+      showEditor,
+      showPreview,
+      autoResize,
+      hideNavigation,
+      fontSize,
+    } = this.state;
 
     const defaultModule =
       this.state.defaultModule || findMainModule(modules).id;
@@ -282,6 +294,11 @@ class ShareView extends React.PureComponent {
                       title="Hide navigation bar"
                       value={hideNavigation}
                       setValue={this.setHideNavigation}
+                    />
+                    <PaddedPreference
+                      title="Font size"
+                      value={fontSize}
+                      setValue={this.setFontSize}
                     />
                   </div>
                   <div>

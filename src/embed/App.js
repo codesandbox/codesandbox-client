@@ -52,6 +52,7 @@ type State = {
   sidebarOpen: boolean,
   autoResize: boolean,
   hideNavigation: boolean,
+  fontSize: number,
 };
 
 export default class App extends React.PureComponent {
@@ -66,11 +67,13 @@ export default class App extends React.PureComponent {
       isEditorScreen,
       autoResize,
       hideNavigation,
+      fontSize,
     } = getSandboxOptions(document.location.href);
 
     this.state = {
       notFound: false,
       sandbox: null,
+      fontSize: fontSize || 16,
       showEditor: !isPreviewScreen,
       showPreview: !isEditorScreen,
       isInProjectView: !currentModule,
@@ -104,9 +107,9 @@ export default class App extends React.PureComponent {
         sandbox: response.data,
         currentModule:
           this.state.currentModule ||
-            response.data.modules.find(
-              m => m.title === 'index.js' && m.directoryShortid == null,
-            ).shortid,
+          response.data.modules.find(
+            m => m.title === 'index.js' && m.directoryShortid == null,
+          ).shortid,
       });
     } catch (e) {
       this.setState({ notFound: true });
@@ -178,6 +181,7 @@ export default class App extends React.PureComponent {
           currentModule={this.state.currentModule}
           hideNavigation={this.state.hideNavigation}
           autoResize={this.state.autoResize}
+          fontSize={this.state.fontSize}
         />
       </Container>
     );

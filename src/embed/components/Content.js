@@ -32,6 +32,7 @@ type Props = {
   isInProjectView: boolean,
   hideNavigation: boolean,
   autoResize: boolean,
+  fontSize: number,
 };
 
 type State = {
@@ -151,6 +152,10 @@ export default class Content extends React.PureComponent {
     livePreviewEnabled: true,
   };
 
+  getPreferences = () => {
+    return { ...this.preferences, fontSize: this.props.fontSize };
+  };
+
   props: Props;
   state: State;
   render() {
@@ -161,6 +166,7 @@ export default class Content extends React.PureComponent {
       isInProjectView,
       currentModule,
       hideNavigation,
+      fontSize,
     } = this.props;
 
     const { errors } = this.state;
@@ -190,7 +196,7 @@ export default class Content extends React.PureComponent {
                 mainModule.id,
               )}
               changeCode={this.setCode}
-              preferences={this.preferences}
+              preferences={this.getPreferences()}
             />
           </Split>}
 
@@ -207,7 +213,7 @@ export default class Content extends React.PureComponent {
               fetchBundle={this.fetchBundle}
               addError={this.addError}
               clearErrors={this.clearErrors}
-              preferences={this.preferences}
+              preferences={this.getPreferences()}
               setProjectView={this.props.setProjectView}
               hideNavigation={hideNavigation}
               setFrameHeight={this.handleResize}
