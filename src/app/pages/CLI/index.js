@@ -74,7 +74,10 @@ class CLI extends React.PureComponent {
     new Promise((resolve, reject) => {
       try {
         this.setState({ loading: true });
-        const sock = new SockJS(`http://localhost:${this.port}/login`);
+
+        const sock = new SockJS(
+          `${location.protocol}//localhost:${this.port}/login`,
+        );
         let signedIn = false;
 
         sock.onopen = () => {
