@@ -113,7 +113,6 @@
     "redbox-react": "^1.4.2",
     "redux": "^3.7.0",
     "reselect": "^3.0.0",
-    "sockjs-client": "^1.1.4",
     "store": "^2.0.4",
     "styled-components": "^2.1.0",
     "tern": "^0.21.0"
