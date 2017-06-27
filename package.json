@@ -52,7 +52,7 @@
     "opn": "4.0.2",
     "path-exists": "3.0.0",
     "postcss-loader": "^1.2.1",
-    "prettier": "^1.4.4",
+    "prettier": "^1.5.0",
     "promise": "7.1.1",
     "raw-loader": "^0.5.1",
     "react-hot-loader": "^3.0.0-beta.6",
