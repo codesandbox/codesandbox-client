@@ -150,7 +150,7 @@ class ShareView extends React.PureComponent {
     defaultModule: null,
     autoResize: false,
     hideNavigation: false,
-    fontSize: 16,
+    fontSize: 14,
   };
 
   handleChange = e => this.setState({ message: e.target.value });
@@ -201,7 +201,7 @@ class ShareView extends React.PureComponent {
       options.hidenavigation = 1;
     }
 
-    if (fontSize !== 16) {
+    if (fontSize !== 14) {
       options.fontsize = fontSize;
     }
 
