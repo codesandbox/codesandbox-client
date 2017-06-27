@@ -1,6 +1,12 @@
 // @flow
 import type { Sandbox } from 'common/types';
 
+const buildEncodedUri = (strings: Array<string>, ...values: Array<string>) =>
+  strings[0] +
+  values
+    .map((value, i) => `${encodeURIComponent(value)}${strings[i + 1]}`)
+    .join('');
+
 export const host = () => {
   return process.env.NODE_ENV === 'production'
     ? 'codesandbox.io'
@@ -17,14 +23,8 @@ const sandboxGitUrl = (git: {
   username: string,
   path: string,
 }) =>
-  'github/' + // eslint-disable-line prefer-template
-  encodeURIComponent(git.username) +
-  '/' +
-  encodeURIComponent(git.repo) +
-  '/tree/' +
-  encodeURIComponent(git.branch) +
-  '/' +
-  encodeURIComponent(git.path);
+  buildEncodedUri`github/${git.username}/${git.repo}/tree/${git.branch}/` +
+  git.path;
 
 export const sandboxUrl = (sandbox: Sandbox) => {
   if (sandbox.git) {
@@ -72,7 +72,9 @@ export const githubRepoUrl = ({
   branch: string,
   username: string,
   path: string,
-}) => `https://github.com/${username}/${repo}/tree/${branch}/${path}`;
+}) =>
+  buildEncodedUri`https://github.com/${username}/${repo}/tree/${branch}/` +
+  path;
 
 export const optionsToParameterizedUrl = (options: Object) => {
   const keyValues = Object.keys(options)
