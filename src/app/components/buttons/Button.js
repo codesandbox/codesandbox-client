@@ -4,8 +4,10 @@ import styled, { css, keyframes } from 'styled-components';
 
 import theme from 'common/theme';
 
-const getBackgroundColor = ({ disabled }) => {
+const getBackgroundColor = ({ disabled, red }) => {
   if (disabled) return `background: ${theme.background2.darken(0.1)()}`;
+  if (red)
+    return `background-image: linear-gradient(270deg, #F27777, #400000);`;
   return `background-image: linear-gradient(270deg, #fed29d, #A58B66, #7abae8, #56a0d6);`;
 };
 
@@ -57,7 +59,9 @@ const styles = css`
   user-select: none;
   text-decoration: none;
 
-  ${props => !props.disabled && `
+  ${props =>
+    !props.disabled &&
+    `
   cursor: pointer;
   &:hover {
     animation-name: ${forward};
