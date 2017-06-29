@@ -2,6 +2,141 @@
 # yarn lockfile v1
 
 
+"@emmetio/abbreviation@^0.6.0", "@emmetio/abbreviation@^0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@emmetio/abbreviation/-/abbreviation-0.6.1.tgz#1255b3f468bc610dd6ea9dd2f70f3afa92027c26"
+  dependencies:
+    "@emmetio/node" "^0.1.2"
+    "@emmetio/stream-reader" "^2.0.0"
+    "@emmetio/stream-reader-utils" "^0.1.0"
+
+"@emmetio/codemirror-plugin@^0.3.5":
+  version "0.3.5"
+  resolved "https://registry.yarnpkg.com/@emmetio/codemirror-plugin/-/codemirror-plugin-0.3.5.tgz#579855769166292e1ad25485fe3c569150627efe"
+  dependencies:
+    "@emmetio/css-snippets-resolver" "^0.2.5"
+    "@emmetio/expand-abbreviation" "^0.5.7"
+    "@emmetio/extract-abbreviation" "^0.1.2"
+    "@emmetio/html-matcher" "^0.3.2"
+    "@emmetio/stream-reader" "^2.2.0"
+
+"@emmetio/css-abbreviation@^0.3.1":
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/@emmetio/css-abbreviation/-/css-abbreviation-0.3.1.tgz#c8ce56318bf5f8d5ab5e3d2760bd50bca2ca8888"
+  dependencies:
+    "@emmetio/node" "^0.1.0"
+    "@emmetio/stream-reader" "^2.0.0"
+    "@emmetio/stream-reader-utils" "^0.1.0"
+
+"@emmetio/css-snippets-resolver@^0.2.5":
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/@emmetio/css-snippets-resolver/-/css-snippets-resolver-0.2.5.tgz#e67b8278212b4621b2d3556922c46dad2f4f0c8d"
+
+"@emmetio/expand-abbreviation@^0.5.7":
+  version "0.5.8"
+  resolved "https://registry.yarnpkg.com/@emmetio/expand-abbreviation/-/expand-abbreviation-0.5.8.tgz#141348314b1f76c0932a41e0c9cc5f93647bea25"
+  dependencies:
+    "@emmetio/abbreviation" "^0.6.1"
+    "@emmetio/css-abbreviation" "^0.3.1"
+    "@emmetio/css-snippets-resolver" "^0.2.5"
+    "@emmetio/html-snippets-resolver" "^0.1.4"
+    "@emmetio/html-transform" "^0.3.2"
+    "@emmetio/lorem" "^1.0.1"
+    "@emmetio/markup-formatters" "^0.3.3"
+    "@emmetio/output-profile" "^0.1.5"
+    "@emmetio/snippets" "^0.2.3"
+    "@emmetio/snippets-registry" "^0.3.1"
+    "@emmetio/stylesheet-formatters" "^0.1.2"
+    "@emmetio/variable-resolver" "^0.2.1"
+
+"@emmetio/extract-abbreviation@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@emmetio/extract-abbreviation/-/extract-abbreviation-0.1.2.tgz#e1f1c06349f4b1a00241ba1ba8a719062f9194b0"
+
+"@emmetio/field-parser@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@emmetio/field-parser/-/field-parser-0.3.0.tgz#7a7cf51c399aea7bae455e0fcf3eb328f8c0c215"
+  dependencies:
+    "@emmetio/stream-reader" "^2.0.0"
+    "@emmetio/stream-reader-utils" "^0.1.0"
+
+"@emmetio/html-matcher@^0.3.2":
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/@emmetio/html-matcher/-/html-matcher-0.3.2.tgz#efe0023e97191de1639f01fdcf0a198b588d3624"
+  dependencies:
+    "@emmetio/stream-reader" "^2.0.0"
+    "@emmetio/stream-reader-utils" "^0.1.0"
+
+"@emmetio/html-snippets-resolver@^0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@emmetio/html-snippets-resolver/-/html-snippets-resolver-0.1.4.tgz#b33ad3fa78fd78d64b94bf88a9fb68b3ad8e8e7e"
+  dependencies:
+    "@emmetio/abbreviation" "^0.6.0"
+
+"@emmetio/html-transform@^0.3.2":
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/@emmetio/html-transform/-/html-transform-0.3.2.tgz#6c50100d687e1a4d9f1e50632fcf24f383b70075"
+  dependencies:
+    "@emmetio/implicit-tag" "^1.0.0"
+
+"@emmetio/implicit-tag@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@emmetio/implicit-tag/-/implicit-tag-1.0.0.tgz#f826d4e1fc51da39434c2326b6f6d0e2b2e7b419"
+
+"@emmetio/lorem@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@emmetio/lorem/-/lorem-1.0.1.tgz#4f5e0b43b9e01fe2a9e5cdc248700884a1cab95a"
+  dependencies:
+    "@emmetio/implicit-tag" "^1.0.0"
+
+"@emmetio/markup-formatters@^0.3.3":
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/@emmetio/markup-formatters/-/markup-formatters-0.3.3.tgz#b686c05a9786d4896be64764ff23a5e40daf63dc"
+  dependencies:
+    "@emmetio/field-parser" "^0.3.0"
+    "@emmetio/output-renderer" "^0.1.0"
+
+"@emmetio/node@^0.1.0", "@emmetio/node@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@emmetio/node/-/node-0.1.2.tgz#4231d538c45481a51835fc2aba3f5d9fc129634c"
+
+"@emmetio/output-profile@^0.1.5":
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@emmetio/output-profile/-/output-profile-0.1.5.tgz#52893a73c1924ee4b4154a9f8d9772b89c4f61dd"
+
+"@emmetio/output-renderer@^0.1.0", "@emmetio/output-renderer@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@emmetio/output-renderer/-/output-renderer-0.1.1.tgz#a4d58554a21200a9191dd799a73177879ca5d7d6"
+  dependencies:
+    "@emmetio/field-parser" "^0.3.0"
+
+"@emmetio/snippets-registry@^0.3.1":
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/@emmetio/snippets-registry/-/snippets-registry-0.3.1.tgz#ec0e8a122fe9683659ce69a22396f4136b940d20"
+
+"@emmetio/snippets@^0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@emmetio/snippets/-/snippets-0.2.3.tgz#73e209fc036dbb9f7c9aa1050038cc68ad082c1a"
+
+"@emmetio/stream-reader-utils@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@emmetio/stream-reader-utils/-/stream-reader-utils-0.1.0.tgz#244cb02c77ec2e74f78a9bd318218abc9c500a61"
+
+"@emmetio/stream-reader@^2.0.0", "@emmetio/stream-reader@^2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@emmetio/stream-reader/-/stream-reader-2.2.0.tgz#46cffea119a0a003312a21c2d9b5628cb5fcd442"
+
+"@emmetio/stylesheet-formatters@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@emmetio/stylesheet-formatters/-/stylesheet-formatters-0.1.2.tgz#3036ed6d8c1e40345e673044b75c3f14986022cf"
+  dependencies:
+    "@emmetio/field-parser" "^0.3.0"
+    "@emmetio/output-renderer" "^0.1.1"
+
+"@emmetio/variable-resolver@^0.2.1":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@emmetio/variable-resolver/-/variable-resolver-0.2.1.tgz#ce11b51584669a340986690cf0ec269e44c63fba"
+
 abab@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/abab/-/abab-1.0.3.tgz#b81de5f7274ec4e756d797cd834f303642724e5d"

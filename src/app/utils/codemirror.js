@@ -1,6 +1,7 @@
 import CodeMirror from 'codemirror';
 import { injectGlobal, keyframes } from 'styled-components';
 import theme from 'common/theme';
+import emmet from '@emmetio/codemirror-plugin';
 
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/addon/dialog/dialog.css';
@@ -69,6 +70,8 @@ export const getCodeMirror = (el, doc) => {
 
     .cm-s-oceanic div.cm-line-error.CodeMirror-linebackground { animation: ${fadeInAnimation} 0.3s; background-color: #561011; }
   `;
+
+  emmet(CodeMirror);
 
   const cm = new CodeMirror(el, {
     value: doc,
