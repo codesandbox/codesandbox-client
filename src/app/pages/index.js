@@ -50,6 +50,10 @@ const CLI = Loadable({
   loader: () => import('./CLI'),
   LoadingComponent: Loading,
 });
+const GitHub = Loadable({
+  loader: () => import('./GitHub'),
+  LoadingComponent: Loading,
+});
 
 type Props = {
   hasLogin: boolean,
@@ -93,6 +97,7 @@ class Routes extends React.PureComponent {
         <Content>
           <Switch>
             <Route exact path="/" render={() => <Redirect to="/s/new" />} />
+            <Route exact path="/s/github" component={GitHub} />
             <Route path="/s/:id*" component={Sandbox} />
             <Route path="/signin/:jwt?" component={SignIn} />
             <Route path="/u/:username" component={Profile} />
