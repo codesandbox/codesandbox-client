@@ -1,7 +1,7 @@
 import CodeMirror from 'codemirror';
+import emmet from '@emmetio/codemirror-plugin';
 import { injectGlobal, keyframes } from 'styled-components';
 import theme from 'common/theme';
-import emmet from '@emmetio/codemirror-plugin';
 
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/addon/dialog/dialog.css';
@@ -17,6 +17,8 @@ import 'codemirror/addon/selection/active-line';
 import 'codemirror/addon/fold/foldcode';
 import 'codemirror/addon/fold/foldgutter';
 import 'codemirror/addon/fold/brace-fold';
+
+emmet(CodeMirror);
 
 const fadeInAnimation = keyframes`
   0%   { background-color: #374140; }
@@ -70,8 +72,6 @@ export const getCodeMirror = (el, doc) => {
 
     .cm-s-oceanic div.cm-line-error.CodeMirror-linebackground { animation: ${fadeInAnimation} 0.3s; background-color: #561011; }
   `;
-
-  emmet(CodeMirror);
 
   const cm = new CodeMirror(el, {
     value: doc,

@@ -137,7 +137,7 @@ export default class CodeEditor extends React.PureComponent {
         this.setCodeMirrorPreferences();
       }
 
-      this.handleEmmet();
+      this.configureEmmet();
     }
   }
 
@@ -312,7 +312,7 @@ export default class CodeEditor extends React.PureComponent {
     saveCode();
   };
 
-  handleEmmet = async () => {
+  configureEmmet = async () => {
     const { title } = this.props;
     const mode = await this.getMode(title);
 
