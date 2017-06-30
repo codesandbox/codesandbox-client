@@ -136,6 +136,8 @@ export default class CodeEditor extends React.PureComponent {
       if (this.props.preferences !== prevProps.preferences) {
         this.setCodeMirrorPreferences();
       }
+
+      this.configureEmmet();
     }
   }
 
@@ -244,8 +246,10 @@ export default class CodeEditor extends React.PureComponent {
           } else {
             const spaces = Array(cm.getOption('indentUnit') + 1).join(' ');
             cm.replaceSelection(spaces, 'end', '+input');
+            cm.execCommand('emmetExpandAbbreviation');
           }
         },
+        Enter: 'emmetInsertLineBreak',
         ...defaultKeys,
       });
     } else {
@@ -307,6 +311,19 @@ export default class CodeEditor extends React.PureComponent {
     this.props.changeCode(id, this.getCode());
     saveCode();
   };
+
+  configureEmmet = async () => {
+    const { title } = this.props;
+    const mode = await this.getMode(title);
+
+    const newMode = mode === 'htmlmixed' ? 'html' : mode;
+    const addon = newMode === 'jsx' ? { jsx: true } : null;
+
+    this.codemirror.setOption('emmet', {
+      addons: addon,
+      syntax: newMode,
+    });
+  }
 
   codemirror: typeof CodeMirror;
   server: typeof CodeMirror.TernServer;
