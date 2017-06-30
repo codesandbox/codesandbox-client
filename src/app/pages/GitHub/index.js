@@ -52,11 +52,9 @@ const getFullGitHubUrl = url =>
 
 export default class GitHub extends React.PureComponent {
   state: State = {
-    url: 'https://github.com/reactjs/redux/tree/master/examples/counter',
+    url: '',
+    transformedUrl: '',
     error: null,
-    transformedUrl: getFullGitHubUrl(
-      'https://github.com/reactjs/redux/tree/master/examples/counter',
-    ),
   };
 
   updateUrl = e => {
@@ -91,14 +89,16 @@ export default class GitHub extends React.PureComponent {
             </SubTitle>
           </Description>
 
-          <Label htmlFor="githuburl">GitHub URL</Label>
-
+          <Label htmlFor="githuburl">
+            URL to GitHub Repository (supports branches and paths too)
+          </Label>
           <StyledInput
             name="githuburl"
             value={url}
             onChange={this.updateUrl}
-            placeholder="GitHub URL (can contain branch and path too)"
+            placeholder="Insert GitHub URL..."
           />
+
           {error !== null &&
             <ErrorMessage>
               {error}
@@ -111,7 +111,9 @@ export default class GitHub extends React.PureComponent {
             placeholder="The Sandbox URL"
           />
 
-          <Button to={gitHubToSandboxUrl(url)}>Open Sandbox</Button>
+          <Button disabled={!transformedUrl} to={gitHubToSandboxUrl(url)}>
+            Open Sandbox
+          </Button>
         </Content>
       </Container>
     );
