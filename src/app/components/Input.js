@@ -5,8 +5,9 @@ export default styled.input`
   border: none;
   outline: none;
   border-radius: 4px;
-  border: 1px solid rgba(0,0,0,.1);
+  border: 1px solid rgba(0, 0, 0, .1);
   color: white;
-  padding: 2px 0;
+  padding: 0.25em;
   width: inherit;
+  box-sizing: border-box;
 `;
