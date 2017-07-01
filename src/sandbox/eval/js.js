@@ -41,10 +41,13 @@ const compileCode = (code: string = '', moduleName: string = 'unknown') => {
 };
 
 function evaluate(code, require) {
-  const exports = { __esModule: true };
+  const module = { exports: {} };
+  const exports = {};
   const process = { env: { NODE_ENV: 'development' } }; // eslint-disable-line no-unused-vars
   eval(code); // eslint-disable-line no-eval
-  return exports;
+
+  // Choose either the export of __esModule or node
+  return Object.keys(exports).length > 0 ? exports : module.exports;
 }
 
 export default function evaluateJS(
