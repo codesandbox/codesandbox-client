@@ -15,7 +15,7 @@ import { Tooltip } from 'react-tippy';
 import type { Sandbox, CurrentUser } from 'common/types';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 import userActionCreators from 'app/store/user/actions';
-import { newSandboxUrl } from 'app/utils/url-generator';
+import { newSandboxUrl, importFromGitHubUrl } from 'app/utils/url-generator';
 import ModeIcons from 'app/components/sandbox/ModeIcons';
 
 import User from 'app/containers/Navigation/User';
@@ -53,24 +53,25 @@ const Left = styled.div`
 
 const Chevron = styled.div`
   svg {
-  transition: 0.3s ease all;
-  font-size: 1.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 3rem;
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
-  z-index: 20;
+    transition: 0.3s ease all;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 3rem;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    z-index: 20;
 
-  cursor: pointer;
-  &:hover {
-    transform: rotateZ(${props =>
-      props.workspaceHidden ? '135deg' : '45deg'});
-    color: white;
-  }
+    cursor: pointer;
+    &:hover {
+      transform: rotateZ(
+        ${props => (props.workspaceHidden ? '135deg' : '45deg')}
+      );
+      color: white;
+    }
 
-  transform: rotateZ(${props => (props.workspaceHidden ? '180deg' : '0')});
+    transform: rotateZ(${props => (props.workspaceHidden ? '180deg' : '0')});
   }
 `;
 
@@ -199,6 +200,11 @@ export default class Header extends React.PureComponent {
           <FeedbackView
             email={user.email}
             sendMessage={userActions.sendFeedback}
+          />
+          <Action
+            href={importFromGitHubUrl()}
+            tooltip="Import from GitHub"
+            Icon={GithubIcon}
           />
           <Action
             href={newSandboxUrl()}
