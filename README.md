@@ -1,4 +1,6 @@
 # [CodeSandbox](https://codesandbox.io)
+
+[![Join the chat at https://gitter.im/codesandbox-client/Lobby](https://badges.gitter.im/codesandbox-client/Lobby.svg)](https://gitter.im/codesandbox-client/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors)
 [![Build Status](https://travis-ci.org/CompuIves/codesandbox-client.svg?branch=master)](https://travis-ci.org/CompuIves/codesandbox-client)
 
