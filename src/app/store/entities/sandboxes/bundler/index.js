@@ -9,7 +9,7 @@ import logError from '../../../../utils/error';
 
 const debug = _debug('cs:app:packager');
 
-export const PACKAGER_URL = 'https://cdn.jsdelivr.net/webpack/v6';
+export const PACKAGER_URL = 'https://webpack-dll-prod.herokuapp.com/v6';
 
 const RETRY_COUNT = 10;
 
