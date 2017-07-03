@@ -33,6 +33,16 @@ yarn
 yarn start
 ```
 
+## Other CodeSandbox repositories
+
+CodeSandbox consists several separate servers, some of these are open sourced.
+
+- Client: the web application
+- Server: the Phoenix API server
+- Nginx: Nginx config files
+- [Git Extractor](https://github.com/CompuIves/codesandbox-git-extractor): responsible for extracting the source from a GitHub repository
+- [CLI](https://github.com/CompuIves/codesandbox-cli): the CLI to upload a CodeSandbox project from your command line
+
 ## Contributors
 
 Thanks goes to these wonderful people ([emoji key](https://github.com/kentcdodds/all-contributors#emoji-key)):
