@@ -259,7 +259,6 @@ if (__DEV__) {
 if (__PROD__) {
   config.plugins = [
     ...config.plugins,
-    new webpack.optimize.ModuleConcatenationPlugin(),
     // Minify the code.
     new webpack.LoaderOptionsPlugin({
       minimize: true,

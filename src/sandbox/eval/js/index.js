@@ -1,5 +1,4 @@
 // @flow
-
 import { transform } from 'babel-standalone';
 
 import type { Module, Directory } from 'common/types';
@@ -33,7 +32,7 @@ const compileCode = (
     return transform(code, babelConfig).code;
   } catch (e) {
     e.message = e.message.split('\n')[0].replace('unknown', moduleName);
-    throw new Error(e);
+    throw e;
   }
 };
 
