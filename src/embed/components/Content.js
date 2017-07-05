@@ -54,7 +54,7 @@ export default class Content extends React.PureComponent {
 
   componentDidMount() {
     this.fetchBundle();
-    setTimeout(this.handleResize);
+    setTimeout(() => this.handleResize());
   }
 
   fetchBundle = () => {
