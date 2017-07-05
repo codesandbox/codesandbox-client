@@ -2,16 +2,13 @@
 
 import { transform } from 'babel-standalone';
 
-import asyncPlugin from 'babel-plugin-transform-async-to-generator';
-import restSpread from 'babel-plugin-transform-object-rest-spread';
-import classProperties from 'babel-plugin-transform-class-properties';
-import decoratorPlugin from 'babel-plugin-transform-decorators-legacy';
-
 import type { Module, Directory } from 'common/types';
 
-import evalModule from './';
-import resolveModule from '../utils/resolve-module';
-import DependencyNotFoundError from '../errors/dependency-not-found-error';
+import evalModule from '../';
+import resolveModule from '../../utils/resolve-module';
+import DependencyNotFoundError from '../../errors/dependency-not-found-error';
+import resolveDependency from './dependency-resolver';
+import getBabelConfig from './babel-parser';
 
 const moduleCache = new Map();
 
@@ -27,13 +24,13 @@ export function deleteCache(module: Module) {
   moduleCache.delete(module.id);
 }
 
-const compileCode = (code: string = '', moduleName: string = 'unknown') => {
+const compileCode = (
+  code: string = '',
+  moduleName: string = 'unknown',
+  babelConfig: Object,
+) => {
   try {
-    return transform(code, {
-      presets: ['es2015', 'react', 'stage-0'],
-      plugins: [decoratorPlugin, asyncPlugin, restSpread, classProperties],
-      retainLines: true,
-    }).code;
+    return transform(code, babelConfig).code;
   } catch (e) {
     e.message = e.message.split('\n')[0].replace('unknown', moduleName);
     throw new Error(e);
@@ -54,7 +51,7 @@ export default function evaluateJS(
   mainModule: Module,
   modules: Array<Module>,
   directories: Array<Directory>,
-  externals: Object,
+  externals: { [path: string]: string },
   depth: number,
 ) {
   try {
@@ -63,19 +60,8 @@ export default function evaluateJS(
       // eslint-disable-line no-unused-vars
       if (/^(\w|@)/.test(path)) {
         // So it must be a dependency
-        const dependencyModule = externals[path] || externals[`${path}.js`];
-        if (dependencyModule) {
-          const idMatch = dependencyModule.match(/dll_bundle\((\d+)\)/);
-          if (idMatch && idMatch[1]) {
-            try {
-              return window.dll_bundle(idMatch[1]);
-            } catch (e) {
-              // Delete the cache of the throwing dependency
-              delete window.dll_bundle.c[idMatch[1]];
-              throw e;
-            }
-          }
-        }
+        const dependency = resolveDependency(path, externals);
+        if (dependency) return dependency;
 
         throw new DependencyNotFoundError(path);
       } else {
@@ -101,7 +87,18 @@ export default function evaluateJS(
       }
     };
 
-    const compiledCode = compileCode(mainModule.code || '', mainModule.title);
+    const babelConfig = getBabelConfig(
+      mainModule,
+      modules,
+      directories,
+      externals,
+      depth,
+    );
+    const compiledCode = compileCode(
+      mainModule.code || '',
+      mainModule.title,
+      babelConfig,
+    );
 
     // don't use Function() here since it changes source locations
     const exports = evaluate(compiledCode, require);

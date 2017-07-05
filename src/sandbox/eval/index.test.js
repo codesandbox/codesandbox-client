@@ -11,7 +11,7 @@ describe('eval', () => {
       `,
       };
 
-      expect(evaller(mainModule)).toEqual({ default: 3 });
+      expect(evaller(mainModule, [], [])).toEqual({ default: 3 });
     });
 
     test('multiple es exports', () => {
@@ -24,7 +24,11 @@ describe('eval', () => {
       `,
       };
 
-      expect(evaller(mainModule)).toEqual({ a: 'b', b: 'c', default: 3 });
+      expect(evaller(mainModule, [], [])).toEqual({
+        a: 'b',
+        b: 'c',
+        default: 3,
+      });
     });
 
     test('node exports', () => {
@@ -35,7 +39,7 @@ describe('eval', () => {
       `,
       };
 
-      expect(evaller(mainModule)).toEqual(3);
+      expect(evaller(mainModule, [], [])).toEqual(3);
     });
 
     test('imports', () => {
@@ -55,8 +59,103 @@ describe('eval', () => {
       `,
       };
 
-      expect(evaller(mainModule, [mainModule, secondModule])).toEqual({
+      expect(evaller(mainModule, [mainModule, secondModule], [])).toEqual({
         default: 3,
+      });
+    });
+
+    describe.skip('custom babel config', () => {
+      it('uses custom babel config', () => {
+        const mainModule = {
+          title: 'test.js',
+          shortid: '1',
+          code: `
+          const a = {b: 'a'};
+          const b = {a: 'b'};
+        export default {...a, ...b};
+      `,
+        };
+
+        const babelConfig = {
+          title: '.babelrc',
+          shortid: '2',
+          code: `
+        {
+          "presets": ["es2015", "react", "stage-0"]
+        }
+      `,
+        };
+
+        expect(evaller(mainModule, [mainModule, babelConfig], [])).toEqual({
+          default: { a: 'b', b: 'a' },
+        });
+
+        const emptyBabelConfig = {
+          title: '.babelrc',
+          shortid: '2',
+          code: `
+        {
+          "presets": []
+        }`,
+        };
+
+        expect(() =>
+          evaller(mainModule, [mainModule, emptyBabelConfig], []),
+        ).toThrow();
+      });
+
+      it('resolves to dependencies as plugins', () => {
+        const mainModule = {
+          title: 'test.js',
+          shortid: '1',
+          code: `
+          const a = {b: 'a'};
+          const b = {a: 'b'};
+        export default {...a, ...b};
+      `,
+        };
+
+        const babelConfig = {
+          title: '.babelrc',
+          shortid: '2',
+          code: `
+        {
+          "presets": ["es2015", "react", "stage-0"],
+          "plugins": ["emotion/babel"]
+        }
+      `,
+        };
+
+        expect(() =>
+          evaller(mainModule, [mainModule, babelConfig], [], {}),
+        ).toThrowError("Could not find dependency: 'emotion'");
+      });
+
+      it('can resolve plugins with options', () => {
+        const mainModule = {
+          title: 'test.js',
+          shortid: '1',
+          code: `
+          const a = {b: 'a'};
+          const b = {a: 'b'};
+        export default {...a, ...b};
+      `,
+        };
+
+        const babelConfig = {
+          title: '.babelrc',
+          shortid: '2',
+          code: `
+        {
+          "presets": ["es2015", "react", "stage-0"],
+          "plugins": [["emotion/babel", { "inline": true }]]
+        }
+      `,
+        };
+
+        expect(() =>
+          evaller(mainModule, [mainModule, babelConfig], [], {}),
+        ).toThrowError("Could not find dependency: 'emotion'");
       });
     });
   });

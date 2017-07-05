@@ -32,7 +32,7 @@ type Props = {
   isInProjectView: boolean,
   modules: Array<Module>,
   directories: Array<Directory>,
-  bundle: Sandbox.dependencyBundle,
+  bundle: typeof Sandbox.dependencyBundle,
   externalResources: typeof Sandbox.externalResources,
   preferences: Preferences,
   fetchBundle: (id: string) => Object,
@@ -201,7 +201,6 @@ export default class Preview extends React.PureComponent {
       directories,
       bundle = {},
       module,
-      sandboxId,
       externalResources,
       preferences,
     } = this.props;
@@ -222,7 +221,6 @@ export default class Preview extends React.PureComponent {
       boilerplates: defaultBoilerplates,
       module: renderedModule,
       changedModule: module,
-      sandboxId,
       modules,
       directories,
       externals: bundle.externals,
@@ -231,7 +229,7 @@ export default class Preview extends React.PureComponent {
     });
   };
 
-  addError = (e: { moduleId: string, message: string, line: number }) => {
+  addError = (e: ModuleError) => {
     this.props.addError(this.props.sandboxId, e);
   };
 

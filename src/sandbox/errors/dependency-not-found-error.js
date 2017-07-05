@@ -8,10 +8,13 @@ const parseDependencyName = (dependency: string) => {
 export default class DependencyNotFoundError extends Error {
   constructor(dependencyName: string) {
     super();
+
+    const parsedName = parseDependencyName(dependencyName);
     this.payload = {
-      dependency: parseDependencyName(dependencyName),
+      dependency: parsedName,
       path: dependencyName,
     };
+    this.message = `Could not find dependency: '${parsedName}'`;
   }
   type = 'dependency-not-found';
   severity = 'error';

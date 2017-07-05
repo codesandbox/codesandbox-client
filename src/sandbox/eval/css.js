@@ -26,7 +26,7 @@ export default module => {
   // const alteredClassNames = getGeneratedClassNames(module.id, classNames);
 
   // const newCode = getGeneratedClassNameCode(module.code, alteredClassNames);
-  createStyleNode(`${module.id}`, css);
+  createStyleNode(module.id, css);
 
   return classNames;
 };

@@ -8,7 +8,13 @@ import evalJson from './json';
 
 const MAX_DEPTH = 20;
 
-function doEval(mainModule, modules, directories, externals, depth) {
+function doEval(
+  mainModule: Module,
+  modules: Array<Module>,
+  directories: Array<Directory>,
+  externals: Object,
+  depth: ?number,
+) {
   const html = /\.html$/;
   const css = /\.css$/;
   const json = /\.json$/;
@@ -22,7 +28,7 @@ function doEval(mainModule, modules, directories, externals, depth) {
     return evalCSS(mainModule, modules, directories, externals, depth);
   }
 
-  if (json.test(mainModule.title)) {
+  if (json.test(mainModule.title) || mainModule.title === '.babelrc') {
     return evalJson(mainModule, modules, directories, externals, depth);
   }
 
