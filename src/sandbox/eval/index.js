@@ -28,7 +28,7 @@ function doEval(
     return evalCSS(mainModule, modules, directories, externals, depth);
   }
 
-  if (json.test(mainModule.title)) {
+  if (json.test(mainModule.title) || mainModule.title === '.babelrc') {
     return evalJson(mainModule, modules, directories, externals, depth);
   }
 

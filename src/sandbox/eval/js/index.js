@@ -4,14 +4,11 @@ import { transform } from 'babel-standalone';
 
 import type { Module, Directory } from 'common/types';
 
-import asyncPlugin from 'babel-plugin-transform-async-to-generator';
-import restSpread from 'babel-plugin-transform-object-rest-spread';
-import classProperties from 'babel-plugin-transform-class-properties';
-import decoratorPlugin from 'babel-plugin-transform-decorators-legacy';
-
-import evalModule from './';
-import resolveModule from '../utils/resolve-module';
-import DependencyNotFoundError from '../errors/dependency-not-found-error';
+import evalModule from '../';
+import resolveModule from '../../utils/resolve-module';
+import DependencyNotFoundError from '../../errors/dependency-not-found-error';
+import resolveDependency from './dependency-resolver';
+import getBabelConfig from './babel-parser';
 
 const moduleCache = new Map();
 
@@ -26,36 +23,6 @@ export function deleteCache(module: Module) {
   });
   moduleCache.delete(module.id);
 }
-
-const getBabelConfig = (
-  currentModule: Module,
-  modules: Array<Module>,
-  directories: Array<Directory>,
-  externals: Object,
-  depth: number,
-) => {
-  const babelConfigModule = modules.find(
-    m => m.title === 'babel.config.js' && !m.directoryShortid,
-  );
-
-  if (babelConfigModule && babelConfigModule !== currentModule) {
-    const config = evalModule(
-      babelConfigModule,
-      modules,
-      directories,
-      externals,
-      depth,
-    );
-
-    return config.default;
-  }
-
-  return {
-    presets: ['es2015', 'react', 'stage-0'],
-    plugins: [decoratorPlugin, asyncPlugin, restSpread, classProperties],
-    retainLines: true,
-  };
-};
 
 const compileCode = (
   code: string = '',
@@ -93,19 +60,8 @@ export default function evaluateJS(
       // eslint-disable-line no-unused-vars
       if (/^(\w|@)/.test(path)) {
         // So it must be a dependency
-        const dependencyModule = externals[path] || externals[`${path}.js`];
-        if (dependencyModule) {
-          const idMatch = dependencyModule.match(/dll_bundle\((\d+)\)/);
-          if (idMatch && idMatch[1]) {
-            try {
-              return window.dll_bundle(idMatch[1]);
-            } catch (e) {
-              // Delete the cache of the throwing dependency
-              delete window.dll_bundle.c[idMatch[1]];
-              throw e;
-            }
-          }
-        }
+        const dependency = resolveDependency(path, externals);
+        if (dependency) return dependency;
 
         throw new DependencyNotFoundError(path);
       } else {
