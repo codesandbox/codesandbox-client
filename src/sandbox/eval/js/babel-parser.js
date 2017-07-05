@@ -10,6 +10,12 @@ import evalModule from '../';
 import resolveDependency from './dependency-resolver';
 import DependencyNotFoundError from '../../errors/dependency-not-found-error';
 
+const DEFAULT_BABEL_CONFIG = {
+  presets: ['es2015', 'react', 'stage-0'],
+  plugins: [decoratorPlugin, asyncPlugin, restSpread, classProperties],
+  retainLines: true,
+};
+
 const resolvePlugin = (plugin: string, externals) => {
   const resolvedPlugin =
     resolveDependency(plugin, externals) ||
@@ -66,14 +72,11 @@ export default function getBabelConfig(
     const resolvedConfig = {
       ...config,
       plugins: rewritePlugins(config.plugins, externals),
+      retainLines: true,
     };
 
     return resolvedConfig;
   }
 
-  return {
-    presets: ['es2015', 'react', 'stage-0'],
-    plugins: [decoratorPlugin, asyncPlugin, restSpread, classProperties],
-    retainLines: true,
-  };
+  return DEFAULT_BABEL_CONFIG;
 }
