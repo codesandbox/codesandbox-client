@@ -1,10 +1,10 @@
 // @flow
 import type { Module, Directory } from 'common/types';
 
-import asyncPlugin from 'babel-plugin-transform-async-to-generator';
-import restSpread from 'babel-plugin-transform-object-rest-spread';
-import classProperties from 'babel-plugin-transform-class-properties';
-import decoratorPlugin from 'babel-plugin-transform-decorators-legacy';
+import 'babel-plugin-transform-async-to-generator';
+import 'babel-plugin-transform-object-rest-spread';
+import 'babel-plugin-transform-class-properties';
+import 'babel-plugin-transform-decorators-legacy';
 
 import evalModule from '../';
 import resolveDependency from './dependency-resolver';
@@ -12,7 +12,12 @@ import DependencyNotFoundError from '../../errors/dependency-not-found-error';
 
 const DEFAULT_BABEL_CONFIG = {
   presets: ['es2015', 'react', 'stage-0'],
-  plugins: [decoratorPlugin, asyncPlugin, restSpread, classProperties],
+  plugins: [
+    'transform-decorators-legacy',
+    'transform-async-to-generator',
+    'transform-object-rest-spread',
+    'transform-class-properties',
+  ],
   retainLines: true,
 };
 
