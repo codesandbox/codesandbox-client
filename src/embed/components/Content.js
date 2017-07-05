@@ -54,6 +54,7 @@ export default class Content extends React.PureComponent {
 
   componentDidMount() {
     this.fetchBundle();
+    setTimeout(this.handleResize);
   }
 
   fetchBundle = () => {
@@ -72,9 +73,9 @@ export default class Content extends React.PureComponent {
     this.setState({ isInProjectView: view });
   };
 
-  handleResize = (height: number) => {
+  handleResize = (height: number = 500) => {
+    const extraOffset = this.props.hideNavigation ? 3 * 16 : 6 * 16;
     if (this.props.autoResize) {
-      const extraOffset = this.props.hideNavigation ? 3 * 16 : 6 * 16;
       window.parent.postMessage(
         JSON.stringify({
           src: window.location.toString(),
@@ -83,12 +84,25 @@ export default class Content extends React.PureComponent {
         }),
         '*',
       );
+    } else if (this.props.showEditor && !this.props.showPreview) {
+      // If there is a focus on the editor, make it full height
+      const editor = document.getElementsByClassName('CodeMirror-sizer')[0];
+      const editorHeight = editor ? editor.getBoundingClientRect().height : 500;
+
+      window.parent.postMessage(
+        JSON.stringify({
+          src: window.location.toString(),
+          context: 'iframe.resize',
+          height: Math.max(editorHeight + extraOffset, 50), // pixels
+        }),
+        '*',
+      );
     } else {
       window.parent.postMessage(
         JSON.stringify({
           src: window.location.toString(),
           context: 'iframe.resize',
-          height: 500, // pixels
+          height, // pixels
         }),
         '*',
       );
@@ -166,7 +180,6 @@ export default class Content extends React.PureComponent {
       isInProjectView,
       currentModule,
       hideNavigation,
-      fontSize,
     } = this.props;
 
     const { errors } = this.state;
