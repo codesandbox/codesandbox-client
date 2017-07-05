@@ -1,4 +1,5 @@
 import CodeMirror from 'codemirror';
+import emmet from '@emmetio/codemirror-plugin';
 import { injectGlobal, keyframes } from 'styled-components';
 import theme from 'common/theme';
 
@@ -16,6 +17,8 @@ import 'codemirror/addon/selection/active-line';
 import 'codemirror/addon/fold/foldcode';
 import 'codemirror/addon/fold/foldgutter';
 import 'codemirror/addon/fold/brace-fold';
+
+emmet(CodeMirror);
 
 const fadeInAnimation = keyframes`
   0%   { background-color: #374140; }

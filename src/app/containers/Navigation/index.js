@@ -40,6 +40,7 @@ const Action = styled.div`
   transition: 0.3s ease all;
   margin: 0 2rem;
   cursor: pointer;
+  color: white;
 
   &:hover {
     color: white;
@@ -79,7 +80,9 @@ class Navigation extends React.PureComponent {
             <LogoWithBorder height={40} width={40} />
           </a>
           <Border width={1} size={500} />
-          <Title>{title}</Title>
+          <Title>
+            {title}
+          </Title>
         </Row>
         <Row>
           <Action>
@@ -91,9 +94,8 @@ class Navigation extends React.PureComponent {
             ? <User signOut={userActions.signOut} user={user} />
             : <Button small onClick={userActions.signIn}>
                 <Row>
-                  <GithubIcon style={{ marginRight: '0.5rem' }} />
-                  {' '}
-                  Sign in with GitHub
+                  <GithubIcon style={{ marginRight: '0.5rem' }} /> Sign in with
+                  GitHub
                 </Row>
               </Button>}
         </Row>

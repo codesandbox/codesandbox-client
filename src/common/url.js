@@ -2,10 +2,16 @@
 
 export const getSandboxOptions = (url: string) => {
   const result = {};
-  const moduleMatch = url.match(/(\?|\&)(module)\=([^&]+)/);
+  const moduleMatch = url.match(/(\?|&)(module)=([^&]+)/);
   if (moduleMatch) {
     result.currentModule = moduleMatch[3];
   }
+
+  const fontSizeMatch = url.match(/(\?|&)(fontsize)=([^&]+)/);
+  if (fontSizeMatch) {
+    result.fontSize = +fontSizeMatch[3];
+  }
+
   result.isPreviewScreen = url.includes('view=preview');
   result.isEditorScreen = url.includes('view=editor');
 

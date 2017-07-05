@@ -16,6 +16,7 @@ export const host = () => {
 export const protocolAndHost = () => `${location.protocol}//${host()}`;
 
 export const newSandboxUrl = () => `/s/new`;
+export const importFromGitHubUrl = () => `/s/github`;
 
 const sandboxGitUrl = (git: {
   repo: string,
@@ -86,3 +87,6 @@ export const optionsToParameterizedUrl = (options: Object) => {
 
   return keyValues ? `?${keyValues}` : '';
 };
+
+export const gitHubToSandboxUrl = (githubUrl: string) =>
+  githubUrl.replace('https://github.com', '/s/github');

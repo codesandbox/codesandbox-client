@@ -39,6 +39,7 @@ const styles = css`
 
   border-radius: 4px;
 
+  box-sizing: border-box;
   font-size: 1.125rem;
   text-align: center;
   color: ${props => getColor(props)};
@@ -80,8 +81,8 @@ const styles = css`
   }`}
 `;
 const LinkButton = styled(Link)`${styles}`;
-const AButton = styled.a`${styles}`;
-const Button = styled.button`${styles}`;
+const AButton = styled.a`${styles};`;
+const Button = styled.button`${styles};`;
 
 type Props = {
   [key: any]: any,
