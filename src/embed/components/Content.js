@@ -74,7 +74,7 @@ export default class Content extends React.PureComponent {
   };
 
   handleResize = (height: number = 500) => {
-    const extraOffset = this.props.hideNavigation ? 3 * 16 : 6 * 16;
+    const extraOffset = (this.props.hideNavigation ? 3 * 16 : 6 * 16) + 16;
     if (this.props.autoResize) {
       window.parent.postMessage(
         JSON.stringify({
