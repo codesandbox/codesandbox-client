@@ -10,6 +10,8 @@ import evalModule from '../';
 import resolveDependency from './dependency-resolver';
 import DependencyNotFoundError from '../../errors/dependency-not-found-error';
 
+const CUSTOM_BABEL_CONFIG_ENABLED = false;
+
 const DEFAULT_BABEL_CONFIG = {
   presets: ['es2015', 'react', 'stage-0'],
   plugins: [
@@ -65,7 +67,11 @@ export default function getBabelConfig(
     m => m.title === '.babelrc' && !m.directoryShortid,
   );
 
-  if (babelConfigModule && babelConfigModule !== currentModule) {
+  if (
+    babelConfigModule &&
+    babelConfigModule !== currentModule &&
+    CUSTOM_BABEL_CONFIG_ENABLED
+  ) {
     const config = evalModule(
       babelConfigModule,
       modules,

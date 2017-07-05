@@ -64,7 +64,7 @@ describe('eval', () => {
       });
     });
 
-    describe('custom babel config', () => {
+    describe.skip('custom babel config', () => {
       it('uses custom babel config', () => {
         const mainModule = {
           title: 'test.js',
