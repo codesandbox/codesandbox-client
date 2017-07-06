@@ -192,7 +192,7 @@ export default class Header extends React.PureComponent {
 
         <Right>
           <Action
-            href="https://twitter.com/ives13"
+            href="https://twitter.com/CompuIves"
             a
             tooltip="Message me"
             Icon={TwitterIcon}
