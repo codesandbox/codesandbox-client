@@ -30,7 +30,7 @@ export default class Search extends React.PureComponent {
     document.location.title = 'Search - CodeSandbox';
     return (
       <MaxWidth>
-        <Margin vertical={1}>
+        <Margin vertical={1} horizontal={1}>
           <Navigation title="Search" />
           <Content>
             <MaxWidth width={1024}>
