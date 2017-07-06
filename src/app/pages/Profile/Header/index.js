@@ -3,16 +3,16 @@ import styled from 'styled-components';
 import Navigation from 'app/containers/Navigation';
 import Padding from 'app/components/spacing/Padding';
 import Margin from 'app/components/spacing/Margin';
+import MaxWidth from 'app/components/flex/MaxWidth';
 
 import type { User } from 'common/types';
 
 import UserInfo from './UserInfo';
-import MaxWidth from '../MaxWidth';
 
 const Top = styled.div`
   display: flex;
-  background-image: linear-gradient(-180deg, #121415 0%, #1F2224 100%);
-  box-shadow: inset 0 -3px 4px 0 rgba(0,0,0,0.50);
+  background-image: linear-gradient(-180deg, #121415 0%, #1f2224 100%);
+  box-shadow: inset 0 -3px 4px 0 rgba(0, 0, 0, 0.50);
 
   width: 100%;
   justify-content: center;

@@ -1,0 +1,124 @@
+.ais-SearchBox__wrapper {
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+.ais-SearchBox__input {
+  position: relative;
+  background-color: rgba(0, 0, 0, 0.3);
+  border: none;
+  outline: none;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, .1);
+  color: white;
+  padding: 0.5em;
+  padding-left: 2em;
+  width: inherit;
+  box-sizing: border-box;
+  font-size: 1.125em;
+  font-weight: 300;
+
+  width: 100%;
+}
+
+.ais-SearchBox__submit {
+  position: absolute;
+  top: 0;
+  right: inherit;
+  left: 0;
+  margin: 0;
+  border: 0;
+  border-radius: 3px 0 0 3px;
+  background-color: rgba(255, 255, 255, 0);
+  padding: 0;
+  width: 32px;
+  height: 100%;
+  vertical-align: middle;
+  text-align: center;
+  font-size: inherit;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  padding-left: 4px;
+  padding-bottom: 2px;
+}
+.ais-SearchBox__submit::before {
+  display: inline-block;
+  margin-right: -4px;
+  height: 100%;
+  vertical-align: middle;
+  content: "" 2;
+}
+.ais-SearchBox__submit:hover,
+.ais-SearchBox__submit:active {
+  cursor: pointer;
+}
+.ais-SearchBox__submit:focus {
+  outline: 0;
+}
+.ais-SearchBox__submit svg {
+  margin: 6px;
+  width: 14px;
+  height: 14px;
+  vertical-align: middle;
+  fill: rgba(255, 255, 255, 0.5);
+}
+
+.ais-SearchBox__reset {
+  display: none;
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  margin: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+  font-size: inherit;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  fill: rgba(255, 255, 255, 0.5);
+}
+.ais-SearchBox__reset:focus {
+  outline: 0;
+}
+.ais-SearchBox__reset svg {
+  display: block;
+  margin: 6px;
+  width: 14px;
+  height: 14px;
+}
+
+.ais-SearchBox__input:valid ~ .ais-SearchBox__reset {
+  display: block;
+  -webkit-animation-name: sbx-reset-in;
+  animation-name: sbx-reset-in;
+  -webkit-animation-duration: 250ms;
+  animation-duration: 250ms;
+}
+
+@-webkit-keyframes sbx-reset-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes sbx-reset-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.ais-Highlight__highlighted {
+  color: #ffd399;
+  font-style: normal;
+}
