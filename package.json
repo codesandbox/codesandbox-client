@@ -104,7 +104,7 @@
     "react-dom": "^15.6.1",
     "react-icons": "^2.2.5",
     "react-loadable": "^3.3.1",
-    "react-modal": "^1.7.7",
+    "react-modal": "^2.2.1",
     "react-motion": "^0.5.0",
     "react-redux": "^5.0.5",
     "react-router-dom": "^4.1.1",
