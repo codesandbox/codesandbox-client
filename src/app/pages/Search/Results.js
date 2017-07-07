@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { Hits } from 'react-instantsearch/dom';
+import { Hits, Pagination } from 'react-instantsearch/dom';
+import Centered from 'app/components/flex/Centered';
 
 import ResultInfo from './ResultInfo';
 import SandboxCard from './SandboxCard';
@@ -19,4 +20,7 @@ export default () =>
   <Container>
     <ResultInfo />
     <Hits hitComponent={SandboxCard} />
+    <Centered horizontal>
+      <Pagination />
+    </Centered>
   </Container>;

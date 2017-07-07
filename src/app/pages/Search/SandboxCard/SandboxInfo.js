@@ -7,6 +7,8 @@ import FullHeartIcon from 'react-icons/lib/fa/heart';
 import EyeIcon from 'react-icons/lib/fa/eye';
 import ForkIcon from 'react-icons/lib/go/repo-forked';
 
+import GithubBadge from './GithubBadge';
+
 const CenteredText = styled.div`
   display: inline-flex;
   justify-content: center;
@@ -70,6 +72,7 @@ export default ({
   viewCount,
   forkCount,
   likeCount,
+  git,
 }: Props) =>
   <CenteredText>
     {author &&
@@ -84,6 +87,7 @@ export default ({
           {author.username}
         </AuthorName>
       </CenteredText>}
+    {git && <GithubBadge username={git.username} repo={git.repo} />}
 
     <UpdatedAt>
       {moment(updatedAt * 1000).fromNow()}

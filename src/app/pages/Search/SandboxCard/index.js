@@ -12,11 +12,14 @@ const Container = styled.div`
   position: relative;
   background-color: ${props => props.theme.background};
   padding: 1em;
+  padding-bottom: 0.9em; /* strange styling issue, need to compensate */
   width: 100%;
   margin-bottom: 1rem;
   box-shadow: 0 2px 14px 0 rgba(0, 0, 0, 0.24);
   border-radius: 2px;
   box-sizing: border-box;
+
+  border-left: 2px solid ${props => props.theme.secondary.clearer(0.3)};
 
   cursor: pointer;
 
@@ -83,6 +86,7 @@ export default ({ hit }: Props) =>
       </Description>
 
       <SandboxInfo
+        git={hit.git}
         author={hit.author}
         updatedAt={hit.updated_at}
         viewCount={hit.view_count}
