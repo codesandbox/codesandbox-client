@@ -5,7 +5,6 @@ import type { Module, Directory } from 'common/types';
 
 import evalModule from '../';
 import resolveModule from '../../utils/resolve-module';
-import DependencyNotFoundError from '../../errors/dependency-not-found-error';
 import resolveDependency from './dependency-resolver';
 import getBabelConfig from './babel-parser';
 
@@ -59,31 +58,28 @@ export default function evaluateJS(
       // eslint-disable-line no-unused-vars
       if (/^(\w|@)/.test(path)) {
         // So it must be a dependency
-        const dependency = resolveDependency(path, externals);
-        if (dependency) return dependency;
-
-        throw new DependencyNotFoundError(path);
-      } else {
-        const module = resolveModule(
-          path,
-          modules,
-          directories,
-          mainModule.directoryShortid,
-        );
-        if (mainModule === module) {
-          throw new Error(`${mainModule.title} is importing itself`);
-        }
-
-        if (!module) throw new Error(`Cannot find module in path: ${path}`);
-
-        requires.push(module.id);
-        // Check if this module has been evaluated before, if so return that
-        const cache = moduleCache.get(module.id);
-
-        return cache
-          ? cache.exports
-          : evalModule(module, modules, directories, externals, depth + 1);
+        return resolveDependency(path, externals);
       }
+
+      const module = resolveModule(
+        path,
+        modules,
+        directories,
+        mainModule.directoryShortid,
+      );
+      if (mainModule === module) {
+        throw new Error(`${mainModule.title} is importing itself`);
+      }
+
+      if (!module) throw new Error(`Cannot find module in path: ${path}`);
+
+      requires.push(module.id);
+      // Check if this module has been evaluated before, if so return that
+      const cache = moduleCache.get(module.id);
+
+      return cache
+        ? cache.exports
+        : evalModule(module, modules, directories, externals, depth + 1);
     };
 
     const babelConfig = getBabelConfig(

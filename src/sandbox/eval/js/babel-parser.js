@@ -8,7 +8,6 @@ import decoratorsPlugin from 'babel-plugin-transform-decorators-legacy';
 
 import evalModule from '../';
 import resolveDependency from './dependency-resolver';
-import DependencyNotFoundError from '../../errors/dependency-not-found-error';
 
 const CUSTOM_BABEL_CONFIG_ENABLED = false;
 
@@ -24,11 +23,11 @@ const DEFAULT_BABEL_CONFIG = {
 };
 
 const resolvePlugin = (plugin: string, externals) => {
-  const resolvedPlugin =
-    resolveDependency(plugin, externals) ||
-    resolveDependency(`babel-plugin-${plugin}`, externals);
-
-  if (!resolvedPlugin) throw new DependencyNotFoundError(plugin);
+  try {
+    return resolveDependency(plugin, externals)
+  } catch (e) {
+    return resolveDependency(`babel-plugin-${plugin}`, externals);
+  }
 };
 
 /**
