@@ -1,3 +1,5 @@
+import DependencyNotFoundError from '../../errors/dependency-not-found-error';
+
 /**
  * Converts a dependency string to an actual dependency, this can return null
  * if the dependency is not found.
@@ -24,6 +26,5 @@ export default function getDependency(
       }
     }
   }
-
-  return null;
+  throw new DependencyNotFoundError(dependencyPath);
 }

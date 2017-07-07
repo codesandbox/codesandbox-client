@@ -60,6 +60,10 @@ const config = {
   },
 
   target: 'web',
+  node: { 
+    fs: 'empty',
+    module: 'empty'
+  },
 
   output: getOutput(),
 
