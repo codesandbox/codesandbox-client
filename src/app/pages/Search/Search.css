@@ -4,9 +4,9 @@
 }
 
 .ais-SearchBox__input {
+  transition: 0.3s ease border-color;
   position: relative;
   background-color: rgba(0, 0, 0, 0.3);
-  border: none;
   outline: none;
   border-radius: 4px;
   border: 1px solid rgba(0, 0, 0, .1);
@@ -19,6 +19,10 @@
   font-weight: 300;
 
   width: 100%;
+}
+
+.ais-SearchBox__input:focus {
+  border-color: rgba(108, 174, 221, .5);
 }
 
 .ais-SearchBox__submit {

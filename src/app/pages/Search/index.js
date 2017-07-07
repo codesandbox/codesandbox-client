@@ -32,7 +32,7 @@ const StyledTitle = styled(Title)`
 
 export default class Search extends React.PureComponent {
   render() {
-    document.location.title = 'Search - CodeSandbox';
+    document.title = 'Search - CodeSandbox';
     return (
       <MaxWidth>
         <Margin vertical={1} horizontal={1}>
