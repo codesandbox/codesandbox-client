@@ -10,6 +10,7 @@ import ChevronLeft from 'react-icons/lib/md/chevron-left';
 import HeartIcon from 'react-icons/lib/fa/heart-o';
 import FullHeartIcon from 'react-icons/lib/fa/heart';
 import TwitterIcon from 'react-icons/lib/fa/twitter';
+import SearchIcon from 'react-icons/lib/go/search';
 import { Tooltip } from 'react-tippy';
 
 import type { Sandbox, CurrentUser } from 'common/types';
@@ -23,6 +24,7 @@ import User from 'app/containers/Navigation/User';
 import Action from './Action';
 import FeedbackView from './FeedbackView';
 import ShareView from './ShareView';
+import { searchUrl } from '../../../../../utils/url-generator';
 
 const Container = styled.div`
   display: flex;
@@ -206,6 +208,7 @@ export default class Header extends React.PureComponent {
             tooltip="Import from GitHub"
             Icon={GithubIcon}
           />
+          <Action href={searchUrl()} tooltip="Search" Icon={SearchIcon} />
           <Action
             href={newSandboxUrl()}
             tooltip="New Sandbox"
