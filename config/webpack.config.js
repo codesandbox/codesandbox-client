@@ -13,7 +13,6 @@ const babelProd = require('./babel.prod');
 const NODE_ENV = JSON.parse(env['process.env.NODE_ENV']);
 const __DEV__ = NODE_ENV === 'development'; // eslint-disable-line no-underscore-dangle
 const __PROD__ = NODE_ENV === 'production'; // eslint-disable-line no-underscore-dangle
-console.log(`Building ${__PROD__ ? 'production' : 'development'} build`);
 const babelConfig = __DEV__ ? babelDev : babelProd;
 
 const COMMIT_COUNT = childProcess
@@ -36,8 +35,8 @@ const getOutput = () =>
     : {
         path: paths.appBuild,
         pathinfo: true,
-        filename: 'static/js/[name].[hash:8].js',
-        chunkFilename: 'static/js/[name].[hash:8].chunk.js',
+        filename: 'static/js/[name].[chunkhash].js',
+        chunkFilename: 'static/js/[name].[chunkhash].chunk.js',
         sourceMapFilename: '[file].map', // Default
         publicPath: 'https://codesandbox.io/'
       };
