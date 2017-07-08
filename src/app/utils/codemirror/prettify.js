@@ -1,11 +1,19 @@
-export default (async function prettify(code, eslintEnabled) {
+function getParser(mode) {
+  if (mode === 'jsx') return 'babylon';
+  if (mode === 'css') return 'postcss';
+
+  return 'babylon';
+}
+
+export default (async function prettify(code, mode, eslintEnabled) {
   const prettier = await System.import('prettier');
   const prettifiedCode = prettier.format(code, {
     singleQuote: true,
+    parser: getParser(mode),
     trailingComma: 'all',
   });
 
-  if (eslintEnabled) {
+  if (eslintEnabled && mode === 'jsx') {
     const { fix } = await System.import('app/utils/codemirror/eslint-lint');
     try {
       const lintedCode = fix(prettifiedCode).output;

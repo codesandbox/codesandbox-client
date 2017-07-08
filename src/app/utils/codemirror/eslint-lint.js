@@ -1606,7 +1606,7 @@ export default (async function initialize() {
     const script = document.createElement('script');
     const src = process.env.NODE_ENV === 'development'
       ? 'http://eslint.org/js/app/eslint.js'
-      : '/static/js/eslint.4.0.0.js';
+      : '/static/js/eslint.4.1.0.js';
     script.setAttribute('src', src);
     script.setAttribute('async', false);
 
