@@ -13,7 +13,7 @@ const babelProd = require('./babel.prod');
 const NODE_ENV = JSON.parse(env['process.env.NODE_ENV']);
 const __DEV__ = NODE_ENV === 'development'; // eslint-disable-line no-underscore-dangle
 const __PROD__ = NODE_ENV === 'production'; // eslint-disable-line no-underscore-dangle
-
+console.log(`Building ${__PROD__ ? 'production' : 'development'} build`);
 const babelConfig = __DEV__ ? babelDev : babelProd;
 
 const COMMIT_COUNT = childProcess
@@ -60,10 +60,6 @@ const config = {
   },
 
   target: 'web',
-  node: { 
-    fs: 'empty',
-    module: 'empty'
-  },
 
   output: getOutput(),
 
