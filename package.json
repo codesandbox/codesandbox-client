@@ -111,6 +111,7 @@
     "react-router-dom": "^4.1.1",
     "react-router-redux": "next",
     "react-split-pane": "^0.1.63",
+    "react-stripe-elements": "^0.0.2",
     "react-tippy": "^0.14.0",
     "redbox-react": "^1.4.2",
     "redux": "^3.7.0",
