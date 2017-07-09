@@ -14,7 +14,7 @@ function doEval(
   directories: Array<Directory>,
   externals: Object,
   depth: ?number,
-  parentModule: ?Module,
+  parentModules: Array<Module>,
 ) {
   const html = /\.html$/;
   const css = /\.css$/;
@@ -28,7 +28,7 @@ function doEval(
       directories,
       externals,
       depth,
-      parentModule,
+      parentModules,
     );
   }
 
@@ -39,7 +39,7 @@ function doEval(
       directories,
       externals,
       depth,
-      parentModule,
+      parentModules,
     );
   }
 
@@ -50,7 +50,7 @@ function doEval(
       directories,
       externals,
       depth,
-      parentModule,
+      parentModules,
     );
   }
 
@@ -61,7 +61,7 @@ function doEval(
       directories,
       externals,
       depth,
-      parentModule,
+      parentModules,
     );
   }
 
@@ -71,7 +71,7 @@ function doEval(
     directories,
     externals,
     depth,
-    parentModule,
+    parentModules,
   );
 }
 
@@ -85,7 +85,7 @@ const evalModule = (
   directories: Array<Directory>,
   externals: Object,
   depth: number = 0,
-  parentModule: Array<Module> = [],
+  parentModules: Array<Module> = [],
 ) => {
   if (depth > MAX_DEPTH) {
     throw new Error(
@@ -99,7 +99,7 @@ const evalModule = (
       directories,
       externals,
       depth,
-      parentModule,
+      parentModules,
     );
   } catch (e) {
     e.module = e.module || mainModule;
