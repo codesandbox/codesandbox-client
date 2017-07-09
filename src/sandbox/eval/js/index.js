@@ -10,6 +10,10 @@ import getBabelConfig from './babel-parser';
 
 const moduleCache = new Map();
 
+export function clearCache() {
+  moduleCache.clear();
+}
+
 /**
  * Deletes the cache of all modules that use module and module itself
  */
