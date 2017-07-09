@@ -7,7 +7,8 @@ import LinkButton from 'app/components/buttons/LinkButton';
 import GithubBadge from 'app/components/sandbox/GithubBadge';
 import { sandboxUrl, githubRepoUrl, profileUrl } from 'app/utils/url-generator';
 import UserWithAvatar from 'app/components/user/UserWithAvatar';
-import type { User } from 'common/types';
+import Stats from 'app/components/sandbox/Stats';
+import type { User, GitInfo } from 'common/types';
 import WorkspaceInputContainer from '../WorkspaceInputContainer';
 import WorkspaceSubtitle from '../WorkspaceSubtitle';
 
@@ -30,15 +31,14 @@ const UserLink = styled(Link)`
   font-size: .875rem;
 `;
 
-// {owned &&
-//   <WorkspaceInputContainer>
-//     <LinkButton
-//       style={{ marginTop: '0.5rem', marginLeft: '-2px' }}
-//       onClick={this.handleDeleteSandbox}
-//     >
-//       Delete Sandbox
-//     </LinkButton>
-//   </WorkspaceInputContainer>}
+const StatsContainer = styled.div`
+  border-top: 1px solid ${props => props.theme.background2};
+  padding: 1rem;
+  font-size: .875rem;
+  box-sizing: border-box;
+  color: rgba(255, 255, 255, 0.8);
+`;
+
 type Props = {
   id: string,
   title: ?string,
@@ -48,11 +48,9 @@ type Props = {
   forkCount: number,
   forkedSandbox: ?{ title: string, id: string },
   updateSandboxInfo: (id: string, title: string, description: string) => any,
-  deleteSandbox: (id: string) => any,
   preventTransition: boolean,
   author: ?User,
-  githubUrl: ?string,
-  repoName: ?string,
+  git: ?GitInfo,
 };
 
 export default class Project extends React.PureComponent {
@@ -101,15 +99,9 @@ export default class Project extends React.PureComponent {
     }
   };
 
-  handleDeleteSandbox = () => {
-    const really = confirm('Are you sure you want to delete this sandbox?');
-    if (really) {
-      this.props.deleteSandbox(this.props.id);
-    }
-  };
-
   render() {
     const {
+      id,
       forkedSandbox,
       viewCount,
       likeCount,
@@ -142,6 +134,31 @@ export default class Project extends React.PureComponent {
             rows="5"
           />
         </WorkspaceInputContainer>
+        {!!author &&
+          <div>
+            <WorkspaceSubtitle>Author</WorkspaceSubtitle>
+            <Item>
+              <UserLink to={profileUrl(author.username)}>
+                <UserWithAvatar
+                  username={author.username}
+                  avatarUrl={author.avatarUrl}
+                />
+              </UserLink>
+            </Item>
+          </div>}
+
+        {!!git &&
+          <div>
+            <WorkspaceSubtitle>GitHub Repository</WorkspaceSubtitle>
+            <GitContainer>
+              <GithubBadge
+                url={githubRepoUrl(git)}
+                username={git.username}
+                repo={git.repo}
+              />
+            </GitContainer>
+          </div>}
+
         {forkedSandbox &&
           <div>
             <WorkspaceSubtitle>Forked from</WorkspaceSubtitle>
@@ -156,24 +173,14 @@ export default class Project extends React.PureComponent {
               </ConfirmLink>
             </Item>
           </div>}
-        {author &&
-          <Item>
-            <UserLink to={profileUrl(author.username)}>
-              <UserWithAvatar
-                username={author.username}
-                avatarUrl={author.avatarUrl}
-              />
-            </UserLink>
-          </Item>}
-
-        {!!git &&
-          <GitContainer>
-            <GithubBadge
-              url={githubRepoUrl(git)}
-              username={git.username}
-              repo={git.repo}
-            />
-          </GitContainer>}
+        <StatsContainer>
+          <Stats
+            sandboxId={id}
+            viewCount={viewCount}
+            likeCount={likeCount}
+            forkCount={forkCount}
+          />
+        </StatsContainer>
       </div>
     );
   }

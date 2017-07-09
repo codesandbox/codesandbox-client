@@ -8,7 +8,6 @@ import styled from 'styled-components';
 
 import type { Sandbox, User } from 'common/types';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
-import Stats from 'app/components/sandbox/Stats';
 import { modulesFromSandboxNotSavedSelector } from 'app/store/entities/sandboxes/modules/selectors';
 import { usersSelector } from 'app/store/entities/users/selectors';
 
@@ -16,10 +15,10 @@ import showAlternativeComponent from 'app/hoc/show-alternative-component';
 import fadeIn from 'app/utils/animation/fade-in';
 
 import Files from './Files';
-import Versions from './Versions';
 import Dependencies from './Dependencies';
 import Project from './Project';
 import WorkspaceItem from './WorkspaceItem';
+import SandboxActions from './SandboxActions';
 import Logo from './Logo';
 import Preferences from './Preferences';
 
@@ -34,14 +33,6 @@ const Container = styled.div`
   > div {
     ${fadeIn(0)};
   }
-`;
-
-const StatsContainer = styled.div`
-  border-bottom: 1px solid ${props => props.theme.background2};
-  padding: 1rem;
-  font-size: .875rem;
-  box-sizing: border-box;
-  color: rgba(255, 255, 255, 0.8);
 `;
 
 type Props = {
@@ -89,15 +80,6 @@ const Workspace = ({
       />
     </WorkspaceItem>
 
-    <StatsContainer>
-      <Stats
-        sandboxId={sandbox.id}
-        viewCount={sandbox.viewCount}
-        likeCount={sandbox.likeCount}
-        forkCount={sandbox.forkCount}
-      />
-    </StatsContainer>
-
     <WorkspaceItem defaultOpen title="Files">
       <Files sandbox={sandbox} sandboxActions={sandboxActions} />
     </WorkspaceItem>
@@ -114,12 +96,13 @@ const Workspace = ({
       />
     </WorkspaceItem>
 
-    <WorkspaceItem
-      disabled="It will be possible to publish sandboxes soon (tm)"
-      title="Publishing"
-    >
-      <Versions />
-    </WorkspaceItem>
+    {sandbox.owned &&
+      <WorkspaceItem title="Sandbox Actions">
+        <SandboxActions
+          id={sandbox.id}
+          deleteSandbox={sandboxActions.deleteSandbox}
+        />
+      </WorkspaceItem>}
 
     <WorkspaceItem title="Preferences">
       <Preferences />
