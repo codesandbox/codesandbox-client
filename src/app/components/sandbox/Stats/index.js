@@ -12,7 +12,6 @@ const Stats = styled.div`
   justify-content: center;
   align-items: center;
   flex-direction: row;
-  justify-content: space-around;
 `;
 
 type Props = {
