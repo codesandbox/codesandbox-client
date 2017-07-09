@@ -8,6 +8,7 @@ import styled from 'styled-components';
 
 import type { Sandbox, User } from 'common/types';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
+import Stats from 'app/components/sandbox/Stats';
 import { modulesFromSandboxNotSavedSelector } from 'app/store/entities/sandboxes/modules/selectors';
 import { usersSelector } from 'app/store/entities/users/selectors';
 
@@ -21,7 +22,6 @@ import Project from './Project';
 import WorkspaceItem from './WorkspaceItem';
 import Logo from './Logo';
 import Preferences from './Preferences';
-import { githubRepoUrl } from '../../../../utils/url-generator';
 
 const Container = styled.div`
   position: absolute;
@@ -32,8 +32,16 @@ const Container = styled.div`
   overflow-y: overlay;
 
   > div {
-    ${fadeIn(0)}
+    ${fadeIn(0)};
   }
+`;
+
+const StatsContainer = styled.div`
+  border-bottom: 1px solid ${props => props.theme.background2};
+  padding: 1rem;
+  font-size: .875rem;
+  box-sizing: border-box;
+  color: rgba(255, 255, 255, 0.8);
 `;
 
 type Props = {
@@ -71,8 +79,7 @@ const Workspace = ({
         viewCount={sandbox.viewCount}
         likeCount={sandbox.likeCount}
         forkCount={sandbox.forkCount}
-        githubUrl={sandbox.git && githubRepoUrl(sandbox.git)}
-        repoName={sandbox.git && `${sandbox.git.username}/${sandbox.git.repo}`}
+        git={sandbox.git}
         description={sandbox.description}
         forkedSandbox={sandbox.forkedFromSandbox}
         preventTransition={preventTransition}
@@ -81,6 +88,15 @@ const Workspace = ({
         deleteSandbox={sandboxActions.deleteSandbox}
       />
     </WorkspaceItem>
+
+    <StatsContainer>
+      <Stats
+        sandboxId={sandbox.id}
+        viewCount={sandbox.viewCount}
+        likeCount={sandbox.likeCount}
+        forkCount={sandbox.forkCount}
+      />
+    </StatsContainer>
 
     <WorkspaceItem defaultOpen title="Files">
       <Files sandbox={sandbox} sandboxActions={sandboxActions} />
