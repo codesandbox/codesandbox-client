@@ -5,6 +5,7 @@ import asyncPlugin from 'babel-plugin-transform-async-to-generator';
 import restSpreadPlugin from 'babel-plugin-transform-object-rest-spread';
 import classPropertiesPlugin from 'babel-plugin-transform-class-properties';
 import decoratorsPlugin from 'babel-plugin-transform-decorators-legacy';
+import dynamicImportPlugin from 'babel-plugin-dynamic-import-node';
 
 import evalModule from '../';
 import resolveDependency from './dependency-resolver';
@@ -18,13 +19,14 @@ const DEFAULT_BABEL_CONFIG = {
     asyncPlugin,
     restSpreadPlugin,
     classPropertiesPlugin,
+    dynamicImportPlugin,
   ],
   retainLines: true,
 };
 
 const resolvePlugin = (plugin: string, externals) => {
   try {
-    return resolveDependency(plugin, externals)
+    return resolveDependency(plugin, externals);
   } catch (e) {
     return resolveDependency(`babel-plugin-${plugin}`, externals);
   }

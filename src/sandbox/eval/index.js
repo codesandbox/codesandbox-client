@@ -51,7 +51,9 @@ const evalModule = (
   depth: number = 0,
 ) => {
   if (depth > MAX_DEPTH) {
-    throw new Error(`Exceeded the maximum require depth of ${MAX_DEPTH}.`);
+    throw new Error(
+      `Exceeded the maximum require depth of ${MAX_DEPTH}, there are probably two files depending on eachother.`,
+    );
   }
   try {
     return doEval(mainModule, modules, directories, externals, depth);
