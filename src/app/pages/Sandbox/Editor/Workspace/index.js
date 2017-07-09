@@ -15,13 +15,12 @@ import showAlternativeComponent from 'app/hoc/show-alternative-component';
 import fadeIn from 'app/utils/animation/fade-in';
 
 import Files from './Files';
-import Versions from './Versions';
 import Dependencies from './Dependencies';
 import Project from './Project';
 import WorkspaceItem from './WorkspaceItem';
+import SandboxActions from './SandboxActions';
 import Logo from './Logo';
 import Preferences from './Preferences';
-import { githubRepoUrl } from '../../../../utils/url-generator';
 
 const Container = styled.div`
   position: absolute;
@@ -32,7 +31,7 @@ const Container = styled.div`
   overflow-y: overlay;
 
   > div {
-    ${fadeIn(0)}
+    ${fadeIn(0)};
   }
 `;
 
@@ -71,8 +70,7 @@ const Workspace = ({
         viewCount={sandbox.viewCount}
         likeCount={sandbox.likeCount}
         forkCount={sandbox.forkCount}
-        githubUrl={sandbox.git && githubRepoUrl(sandbox.git)}
-        repoName={sandbox.git && `${sandbox.git.username}/${sandbox.git.repo}`}
+        git={sandbox.git}
         description={sandbox.description}
         forkedSandbox={sandbox.forkedFromSandbox}
         preventTransition={preventTransition}
@@ -98,12 +96,13 @@ const Workspace = ({
       />
     </WorkspaceItem>
 
-    <WorkspaceItem
-      disabled="It will be possible to publish sandboxes soon (tm)"
-      title="Publishing"
-    >
-      <Versions />
-    </WorkspaceItem>
+    {sandbox.owned &&
+      <WorkspaceItem title="Sandbox Actions">
+        <SandboxActions
+          id={sandbox.id}
+          deleteSandbox={sandboxActions.deleteSandbox}
+        />
+      </WorkspaceItem>}
 
     <WorkspaceItem title="Preferences">
       <Preferences />

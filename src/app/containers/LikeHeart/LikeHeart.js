@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import HeartIcon from 'react-icons/lib/fa/heart-o';
 import FullHeartIcon from 'react-icons/lib/fa/heart';
 
@@ -18,15 +18,19 @@ const Container = styled.div`
   display: inline-block;
   transition: 0.3s ease all;
 
-  cursor: pointer;
-
   transform: scale(1);
 
+  ${props =>
+    props.loggedIn &&
+    css`
+  cursor: pointer;
   &:hover {
     transform: scale(1.1);
-    color: #E01F4E;
-  }
+  }`};
 `;
+
+const MaybeTooltip = ({ loggedIn, ...props }) =>
+  loggedIn ? <Tooltip {...props} /> : <div {...props} />;
 
 export default class LikeHeart extends React.PureComponent {
   props: Props;
@@ -40,20 +44,21 @@ export default class LikeHeart extends React.PureComponent {
   };
 
   render() {
-    const { isLiked, loggedIn, className } = this.props;
-
-    if (!loggedIn) return null;
+    const { isLiked, colorless, loggedIn, className } = this.props;
 
     return (
-      <Container className={className}>
-        <Tooltip title={isLiked ? 'Undo like' : 'Like'}>
+      <Container loggedIn={loggedIn} className={className}>
+        <MaybeTooltip
+          loggedIn={loggedIn}
+          title={isLiked ? 'Undo like' : 'Like'}
+        >
           {isLiked
             ? <FullHeartIcon
-                style={{ color: '#E01F4E' }}
-                onClick={this.unlikeSandbox}
+                style={!colorless && { color: '#E01F4E' }}
+                onClick={loggedIn && this.unlikeSandbox}
               />
-            : <HeartIcon onClick={this.likeSandbox} />}
-        </Tooltip>
+            : <HeartIcon onClick={loggedIn && this.likeSandbox} />}
+        </MaybeTooltip>
       </Container>
     );
   }

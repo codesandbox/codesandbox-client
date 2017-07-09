@@ -153,6 +153,9 @@ export default class CodeEditor extends React.PureComponent {
       } else if (kind[1] === 'html') {
         await System.import('codemirror/mode/htmlmixed/htmlmixed');
         return 'htmlmixed';
+      } else if (kind[1] === 'md') {
+        await System.import('codemirror/mode/markdown/markdown');
+        return 'markdown';
       }
     }
 
