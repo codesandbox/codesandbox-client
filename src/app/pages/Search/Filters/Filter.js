@@ -4,12 +4,11 @@ import styled from 'styled-components';
 import { RefinementList } from 'react-instantsearch/dom';
 
 const Container = styled.div`
-  flex: 1;
-
   padding: 1rem;
   background-color: ${props => props.theme.background};
   box-shadow: 0 2px 14px 0 rgba(0, 0, 0, 0.24);
   border-radius: 2px;
+  margin-bottom: 1rem;
 
   .ais-SearchBox__wrapper {
     margin-bottom: .5rem;
@@ -31,13 +30,21 @@ const Title = styled.div`
   margin-bottom: 1rem;
 `;
 
-export default () =>
+type Props = {
+  title: string,
+  attributeName: string,
+  operator: string,
+};
+
+export default ({ title, attributeName, operator }: Props) =>
   <Container>
-    <Title>Dependencies</Title>
+    <Title>
+      {title}
+    </Title>
     <RefinementList
       withSearchBox
       showMore
-      operator="and"
-      attributeName="npm_dependencies.dependency"
+      operator={operator}
+      attributeName={attributeName}
     />
   </Container>;
