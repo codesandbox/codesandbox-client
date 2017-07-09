@@ -14,6 +14,7 @@ function doEval(
   directories: Array<Directory>,
   externals: Object,
   depth: ?number,
+  parentModule: ?Module,
 ) {
   const html = /\.html$/;
   const css = /\.css$/;
@@ -21,22 +22,57 @@ function doEval(
   const js = /\.js$/;
 
   if (html.test(mainModule.title)) {
-    return evalRaw(mainModule, modules, directories, externals, depth);
+    return evalRaw(
+      mainModule,
+      modules,
+      directories,
+      externals,
+      depth,
+      parentModule,
+    );
   }
 
   if (css.test(mainModule.title)) {
-    return evalCSS(mainModule, modules, directories, externals, depth);
+    return evalCSS(
+      mainModule,
+      modules,
+      directories,
+      externals,
+      depth,
+      parentModule,
+    );
   }
 
   if (json.test(mainModule.title) || mainModule.title === '.babelrc') {
-    return evalJson(mainModule, modules, directories, externals, depth);
+    return evalJson(
+      mainModule,
+      modules,
+      directories,
+      externals,
+      depth,
+      parentModule,
+    );
   }
 
   if (js.test(mainModule.title)) {
-    return evalJS(mainModule, modules, directories, externals, depth);
+    return evalJS(
+      mainModule,
+      modules,
+      directories,
+      externals,
+      depth,
+      parentModule,
+    );
   }
 
-  return evalRaw(mainModule, modules, directories, externals, depth);
+  return evalRaw(
+    mainModule,
+    modules,
+    directories,
+    externals,
+    depth,
+    parentModule,
+  );
 }
 
 export function deleteCache(module: Module) {
@@ -49,6 +85,7 @@ const evalModule = (
   directories: Array<Directory>,
   externals: Object,
   depth: number = 0,
+  parentModule: Array<Module> = [],
 ) => {
   if (depth > MAX_DEPTH) {
     throw new Error(
@@ -56,7 +93,14 @@ const evalModule = (
     );
   }
   try {
-    return doEval(mainModule, modules, directories, externals, depth);
+    return doEval(
+      mainModule,
+      modules,
+      directories,
+      externals,
+      depth,
+      parentModule,
+    );
   } catch (e) {
     e.module = e.module || mainModule;
     throw e;

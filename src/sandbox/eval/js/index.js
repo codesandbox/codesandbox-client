@@ -10,16 +10,22 @@ import getBabelConfig from './babel-parser';
 
 const moduleCache = new Map();
 
+export function clearCache() {
+  moduleCache.clear();
+}
+
 /**
  * Deletes the cache of all modules that use module and module itself
  */
 export function deleteCache(module: Module) {
+  // Delete own cache first, because with cyclic dependencies we could get a
+  // endless loop
+  moduleCache.delete(module.id);
   moduleCache.forEach(value => {
     if (value.requires.includes(module.id)) {
       deleteCache(value.module);
     }
   });
-  moduleCache.delete(module.id);
 }
 
 const compileCode = (
@@ -45,12 +51,24 @@ function evaluate(code, require) {
   return Object.keys(exports).length > 0 ? exports : module.exports;
 }
 
+/**
+ * Transpile & execute a JS file
+ * @param {*} mainModule The module to execute
+ * @param {*} modules All modules in the sandbox
+ * @param {*} directories All directories in the sandbox
+ * @param {*} externals A list of dependency with a mapping to dependencPath -> module id
+ * @param {*} depth The amount of requires we're deep in
+ * @param {*} parentModules If this is a module that's required, the parents that execute it
+ *                          are here (so if a requires b and b is executed, this will be [a]).
+ *                          This is required for cyclic dependency checks
+ */
 export default function evaluateJS(
   mainModule: Module,
   modules: Array<Module>,
   directories: Array<Directory>,
   externals: { [path: string]: string },
-  depth: number,
+  depth: ?number,
+  parentModules: Array<Module>,
 ) {
   try {
     const requires = [];
@@ -77,9 +95,18 @@ export default function evaluateJS(
       // Check if this module has been evaluated before, if so return that
       const cache = moduleCache.get(module.id);
 
+      // This is a cyclic dependency, we should return an empty object for first
+      // execution according to node spec
+      if (parentModules.includes(module) && !cache) {
+        return {};
+      }
+
       return cache
         ? cache.exports
-        : evalModule(module, modules, directories, externals, depth + 1);
+        : evalModule(module, modules, directories, externals, depth + 1, [
+            ...parentModules,
+            mainModule,
+          ]);
     };
 
     const babelConfig = getBabelConfig(

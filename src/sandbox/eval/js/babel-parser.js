@@ -62,7 +62,7 @@ export default function getBabelConfig(
   modules: Array<Module>,
   directories: Array<Directory>,
   externals: Object,
-  depth: number,
+  depth: ?number,
 ) {
   const babelConfigModule = modules.find(
     m => m.title === '.babelrc' && !m.directoryShortid,

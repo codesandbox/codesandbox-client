@@ -1,8 +1,13 @@
 import evaller from './';
+import { clearCache } from './js';
 
 describe('eval', () => {
   // just evaluate if the right evallers are called
   describe('js', () => {
+    beforeEach(() => {
+      clearCache();
+    });
+
     test('default es exports', () => {
       const mainModule = {
         title: 'test.js',
@@ -60,7 +65,66 @@ describe('eval', () => {
       };
 
       expect(evaller(mainModule, [mainModule, secondModule], [])).toEqual({
-        default: 3,
+        default: { default: 3 },
+      });
+    });
+
+    describe('cyclic dependencies', () => {
+      it('returns an object as cyclic dependency', () => {
+        const moduleA = {
+          title: 'a.js',
+          shortid: '1',
+          code: `
+        import b from './b';
+        export default b;
+      `,
+        };
+
+        const moduleB = {
+          title: 'b.js',
+          shortid: '2',
+          code: `
+        import a from './a';
+        export default a;
+      `,
+        };
+
+        expect(evaller(moduleA, [moduleA, moduleB], [])).toEqual({
+          default: {},
+        });
+      });
+
+      it('returns an object in deep cyclic dependency', () => {
+        const moduleA = {
+          title: 'a.js',
+          shortid: '1',
+          code: `
+        import b from './b';
+        export default b;
+      `,
+        };
+
+        const moduleB = {
+          title: 'b.js',
+          shortid: '2',
+          code: `
+        import c from './c';
+        export default c;
+      `,
+        };
+
+        const moduleC = {
+          title: 'c.js',
+          shortid: '3',
+          code: `
+        import a from './a';
+        export default a;
+      `,
+        };
+
+        expect(evaller(moduleA, [moduleA, moduleB, moduleC], [])).toEqual({
+          default: {},
+        });
       });
     });
 
