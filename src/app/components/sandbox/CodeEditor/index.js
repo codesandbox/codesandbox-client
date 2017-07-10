@@ -249,7 +249,12 @@ export default class CodeEditor extends React.PureComponent {
           } else {
             const spaces = Array(cm.getOption('indentUnit') + 1).join(' ');
             cm.replaceSelection(spaces, 'end', '+input');
-            cm.execCommand('emmetExpandAbbreviation');
+
+            try {
+              cm.execCommand('emmetExpandAbbreviation');
+            } catch (e) {
+              console.error(e);
+            }
           }
         },
         Enter: 'emmetInsertLineBreak',
