@@ -16,7 +16,11 @@ import { Tooltip } from 'react-tippy';
 import type { Sandbox, CurrentUser } from 'common/types';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 import userActionCreators from 'app/store/user/actions';
-import { newSandboxUrl, importFromGitHubUrl } from 'app/utils/url-generator';
+import {
+  searchUrl,
+  newSandboxUrl,
+  importFromGitHubUrl,
+} from 'app/utils/url-generator';
 import ModeIcons from 'app/components/sandbox/ModeIcons';
 
 import User from 'app/containers/Navigation/User';
@@ -24,7 +28,6 @@ import User from 'app/containers/Navigation/User';
 import Action from './Action';
 import FeedbackView from './FeedbackView';
 import ShareView from './ShareView';
-import { searchUrl } from '../../../../../utils/url-generator';
 
 const Container = styled.div`
   display: flex;

@@ -104,6 +104,7 @@ export type Sandbox = {
   forkedFromSandbox: ?{ title: string, id: string },
   errors: Array<ModuleError>,
   git: ?GitInfo,
+  tags: Array<string>,
 };
 
 export type Preferences = {

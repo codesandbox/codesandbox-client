@@ -18,6 +18,7 @@ import Files from './Files';
 import Versions from './Versions';
 import Dependencies from './Dependencies';
 import Project from './Project';
+import Tags from './Tags';
 import WorkspaceItem from './WorkspaceItem';
 import Logo from './Logo';
 import Preferences from './Preferences';
@@ -32,7 +33,7 @@ const Container = styled.div`
   overflow-y: overlay;
 
   > div {
-    ${fadeIn(0)}
+    ${fadeIn(0)};
   }
 `;
 
@@ -97,6 +98,17 @@ const Workspace = ({
         }
       />
     </WorkspaceItem>
+
+    {(sandbox.owned || sandbox.tags.length > 0) &&
+      <WorkspaceItem title="Tags">
+        <Tags
+          sandboxId={sandbox.id}
+          addTag={sandboxActions.addTag}
+          removeTag={sandboxActions.removeTag}
+          isOwner={sandbox.owned}
+          tags={sandbox.tags}
+        />
+      </WorkspaceItem>}
 
     <WorkspaceItem
       disabled="It will be possible to publish sandboxes soon (tm)"

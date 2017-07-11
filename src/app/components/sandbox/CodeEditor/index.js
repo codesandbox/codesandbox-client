@@ -288,9 +288,9 @@ export default class CodeEditor extends React.PureComponent {
     const { id, title, preferences } = this.props;
     const code = this.getCode();
     const mode = await this.getMode(title);
-    if (mode === 'jsx') {
+    if (mode === 'jsx' || mode === 'css') {
       try {
-        const newCode = await prettify(code, preferences.lintEnabled);
+        const newCode = await prettify(code, mode, preferences.lintEnabled);
 
         if (newCode !== code) {
           this.props.changeCode(id, newCode);
@@ -323,7 +323,7 @@ export default class CodeEditor extends React.PureComponent {
       addons: addon,
       syntax: newMode,
     });
-  }
+  };
 
   codemirror: typeof CodeMirror;
   server: typeof CodeMirror.TernServer;
