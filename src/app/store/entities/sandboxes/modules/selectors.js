@@ -10,6 +10,15 @@ export const isMainModule = (module: Module) =>
 export const findMainModule = (modules: Module[]) =>
   modules.find(isMainModule) || modules[0];
 
+export const findCurrentModule = (
+  modules: Module[],
+  currentModuleId: string,
+  mainModule: Module
+): Module =>
+  modules.find(m => m.id === currentModuleId) ||
+  modules.find(m => m.shortid === currentModuleId) || // deep-links requires this
+  mainModule;
+
 function findById(entities: Array<Module | Directory>, id: string) {
   return entities.find(e => e.id === id);
 }

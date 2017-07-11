@@ -29,6 +29,7 @@ const StyledFrame = styled.iframe`
 
 type Props = {
   sandboxId: string,
+  initialPath: ?string,
   isInProjectView: boolean,
   modules: Array<Module>,
   directories: Array<Directory>,
@@ -63,7 +64,7 @@ export default class Preview extends React.PureComponent {
       frameInitialized: false,
       history: [],
       historyPosition: 0,
-      urlInAddressBar: '',
+      urlInAddressBar: props.initialPath || '',
       url: null,
     };
 
@@ -174,6 +175,7 @@ export default class Preview extends React.PureComponent {
         const { error } = e.data;
         this.addError(error);
       } else if (type === 'urlchange') {
+        console.log('HANDLE MESSAGE', e.data)
         const url = e.data.url.replace('/', '');
         this.commitUrl(url);
       } else if (type === 'resize') {
@@ -252,6 +254,7 @@ export default class Preview extends React.PureComponent {
     const { history, historyPosition } = this.state;
 
     document.getElementById('sandbox').src = frameUrl(history[historyPosition]);
+
     this.setState({
       urlInAddressBar: history[historyPosition],
     });
@@ -350,7 +353,7 @@ export default class Preview extends React.PureComponent {
           />}
         <StyledFrame
           sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups allow-presentation"
-          src={frameUrl()}
+          src={frameUrl(url)}
           id="sandbox"
           hideNavigation={hideNavigation}
         />

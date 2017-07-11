@@ -19,6 +19,7 @@ import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 import userActionCreators from 'app/store/user/actions';
 import {
   findMainModule,
+  findCurrentModule,
   getModulePath,
   modulesFromSandboxSelector,
 } from 'app/store/entities/sandboxes/modules/selectors';
@@ -133,10 +134,10 @@ class EditorPreview extends React.PureComponent {
 
     const mainModule = findMainModule(modules);
     if (!mainModule) throw new Error('Cannot find main module');
-
+    
     const { currentModule: currentModuleId } = sandbox;
-    const currentModule =
-      modules.find(m => m.id === currentModuleId) || mainModule;
+    
+    const currentModule = findCurrentModule(modules, currentModuleId, mainModule);
     const modulePath = getModulePath(modules, directories, currentModule.id);
 
     if (currentModule == null) return null;
@@ -163,6 +164,7 @@ class EditorPreview extends React.PureComponent {
       <FullSize inactive={this.state.resizing}>
         <Preview
           sandboxId={sandbox.id}
+          initialPath={sandbox.initialPath}
           bundle={sandbox.dependencyBundle}
           fetchBundle={sandboxActions.fetchDependenciesBundle}
           module={currentModule}
