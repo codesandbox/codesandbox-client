@@ -36,15 +36,39 @@ const Currency = styled.span`
   color: rgba(255, 255, 255, 0.5);
 `;
 
-export default () =>
-  <Centered horizontal vertical={false}>
-    <Title>Pay what you want</Title>
+const RangeContainer = styled.div`
+  width: 60%;
+  margin-top: 1rem;
+`;
 
-    <Relative>
-      <Currency>$</Currency>
-      <PriceInput value="10" />
-      <div>
-        <Range />
-      </div>
-    </Relative>
-  </Centered>;
+export default class PricingChoice extends React.PureComponent {
+  state = {
+    value: 15,
+  };
+  handleChange = e => {
+    this.setState({ value: e.target.value });
+  };
+
+  render() {
+    const { value } = this.state;
+    return (
+      <Centered horizontal vertical={false}>
+        <Title>Pay what you want</Title>
+
+        <Relative>
+          <Currency>$</Currency>
+          <PriceInput onChange={this.handleChange} value={value} />
+        </Relative>
+        <RangeContainer>
+          <Range
+            onChange={this.handleChange}
+            min={7}
+            max={100}
+            step={1}
+            value={value}
+          />
+        </RangeContainer>
+      </Centered>
+    );
+  }
+}
