@@ -2,12 +2,14 @@ import React from 'react';
 import styled from 'styled-components';
 
 import Title from 'app/components/text/Title';
+import SubTitle from 'app/components/text/SubTitle';
 import MaxWidth from 'app/components/flex/MaxWidth';
 import Margin from 'app/components/spacing/Margin';
+import Centered from 'app/components/flex/Centered';
 
 import Navigation from 'app/containers/Navigation';
 
-import { StripeProvider, CardElement, Elements } from 'react-stripe-elements';
+import PricingModal from './PricingModal';
 
 const Content = styled.div`
   margin-top: 5%;
@@ -17,21 +19,22 @@ const Content = styled.div`
 
 export default class Support extends React.PureComponent {
   render() {
-    document.title = 'Support - CodeSandbox';
+    document.title = 'Supporter - CodeSandbox';
     return (
       <MaxWidth>
         <Margin vertical={1.5} horizontal={1.5}>
-          <Navigation title="Support" />
+          <Navigation title="Supporter" />
           <Content>
             <MaxWidth width={1024}>
-              <Title>Pricing</Title>
-              <StripeProvider apiKey="pk_test_0HgnQIkQJCECIFCQkafGQ5gA">
-                <div>
-                  <Elements>
-                    <CardElement />
-                  </Elements>
-                </div>
-              </StripeProvider>
+              <Title>Become a CodeSandbox Supporter!</Title>
+              <SubTitle>
+                Support CodeSandbox by paying a monthly amount that you can
+                choose
+              </SubTitle>
+
+              <Centered horizontal>
+                <PricingModal />
+              </Centered>
             </MaxWidth>
           </Content>
         </Margin>
