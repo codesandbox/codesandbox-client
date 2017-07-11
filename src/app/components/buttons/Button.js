@@ -43,7 +43,7 @@ const styles = css`
   font-size: 1.125rem;
   text-align: center;
   color: ${props => getColor(props)};
-  font-weight: 300;
+  font-weight: 400;
   ${props => !props.disabled && `box-shadow: 0 3px 3px rgba(0, 0, 0, 0.5);`};
   width: ${props => (props.block ? '100%' : 'inherit')};
 
@@ -55,9 +55,7 @@ const styles = css`
       `;
     }
     return 'padding: 0.65rem 2.25rem;';
-  }}
-
-  user-select: none;
+  }} user-select: none;
   text-decoration: none;
 
   ${props =>
@@ -78,7 +76,7 @@ const styles = css`
   &:active {
     transform: translateY(1px);
     box-shadow: 0 0 0 rgba(0, 0, 0, 0.5);
-  }`}
+  }`};
 `;
 const LinkButton = styled(Link)`${styles}`;
 const AButton = styled.a`${styles};`;

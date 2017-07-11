@@ -96,6 +96,7 @@
     "moment": "^2.18.1",
     "normalize.css": "^5.0.0",
     "normalizr": "^3.2.3",
+    "rc-slider": "^8.2.0",
     "react": "^15.6.1",
     "react-addons-css-transition-group": "^15.6.0",
     "react-deep-force-update": "^2.0.1",

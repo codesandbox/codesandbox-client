@@ -36,12 +36,12 @@ function formatMessage(message) {
       .replace(
         // Babel syntax error
         'Module build failed: SyntaxError:',
-        friendlySyntaxErrorLabel,
+        friendlySyntaxErrorLabel
       )
       .replace(
         // Webpack file not found error
         /Module not found: Error: Cannot resolve 'file' or 'directory'/,
-        'Module not found:',
+        'Module not found:'
       )
       // Internal stacks are generally useless so we strip them
       .replace(/^\s*at\s.*:\d+:\d+[\s\)]*\n/gm, '') // at ... ...:x:y
@@ -85,9 +85,7 @@ function setupCompiler(port, protocol) {
       console.log();
       console.log('Note that the development build is not optimized.');
       console.log(
-        'To create a production build, use ' +
-          chalk.cyan('npm run build') +
-          '.',
+        'To create a production build, use ' + chalk.cyan('npm run build') + '.'
       );
       console.log();
       return;
@@ -100,10 +98,10 @@ function setupCompiler(port, protocol) {
     // https://github.com/facebookincubator/create-react-app/issues/401#issuecomment-238291901
     var json = stats.toJson({}, true);
     var formattedErrors = json.errors.map(
-      message => 'Error in ' + formatMessage(message),
+      message => 'Error in ' + formatMessage(message)
     );
     var formattedWarnings = json.warnings.map(
-      message => 'Warning in ' + formatMessage(message),
+      message => 'Warning in ' + formatMessage(message)
     );
     if (hasErrors) {
       console.log(chalk.red('Failed to compile.'));
@@ -133,12 +131,12 @@ function setupCompiler(port, protocol) {
       console.log(
         'Use ' +
           chalk.yellow('// eslint-disable-next-line') +
-          ' to ignore the next line.',
+          ' to ignore the next line.'
       );
       console.log(
         'Use ' +
           chalk.yellow('/* eslint-disable */') +
-          ' to ignore all warnings in a file.',
+          ' to ignore all warnings in a file.'
       );
     }
   });
@@ -153,7 +151,7 @@ function openBrowser(port, protocol) {
       execSync('ps cax | grep "Google Chrome"');
       execSync('osascript chrome.applescript ' + url, {
         cwd: path.join(__dirname, 'utils'),
-        stdio: 'ignore',
+        stdio: 'ignore'
       });
       return;
     } catch (err) {
@@ -178,13 +176,13 @@ function addMiddleware(devServer, index) {
       // However API calls like `fetch()` won’t generally won’t accept text/html.
       // If this heuristic doesn’t work well for you, don’t use `proxy`.
       htmlAcceptHeaders: ['text/html'],
-      index,
-    }),
+      index
+    })
   );
   if (process.env.LOCAL_SERVER) {
     devServer.use(
       '/api',
-      proxy({ target: 'https://codesandbox.io', changeOrigin: true }),
+      proxy({ target: 'https://codesandbox.io', changeOrigin: true })
     );
   }
   // Finally, by now we have certainly resolved the URL.
@@ -209,13 +207,13 @@ function runDevServer(port, protocol, index) {
     // Reportedly, this avoids CPU overload on some systems.
     // https://github.com/facebookincubator/create-react-app/issues/293
     watchOptions: {
-      ignored: /node_modules/,
+      ignored: /node_modules/
     },
     // Enable HTTPS if the HTTPS environment variable is set to 'true'
     https: protocol === 'https',
     // contentBase: paths.staticPath,
     host: process.env.LOCAL_SERVER ? 'localhost' : 'codesandbox.dev',
-    disableHostCheck: !process.env.LOCAL_SERVER,
+    disableHostCheck: !process.env.LOCAL_SERVER
   });
 
   // Our custom middleware proxies requests to /index.html or a remote API.
@@ -247,7 +245,7 @@ function run(port) {
         } else {
           proxy.web(req, res, {
             target: 'http://localhost:3000/frame.html',
-            ignorePath: true,
+            ignorePath: true
           });
         }
       })
