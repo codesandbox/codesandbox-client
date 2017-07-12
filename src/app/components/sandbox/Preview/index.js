@@ -57,6 +57,8 @@ type State = {
 };
 
 export default class Preview extends React.PureComponent {
+  initialPath: string
+  
   constructor(props: Props) {
     super(props);
 
@@ -71,6 +73,11 @@ export default class Preview extends React.PureComponent {
     if (!props.noDelay) {
       this.executeCode = debounce(this.executeCode, 800);
     }
+
+    // we need a value that doesn't change when receiving `initialPath`
+    // from the query params, or the iframe will continue to be re-rendered
+    // when the user navigates the iframe app, which shows the loading screen
+    this.initialPath = this.state.urlInAddressBar
   }
 
   static defaultProps = {
@@ -159,7 +166,8 @@ export default class Preview extends React.PureComponent {
     const element = document.getElementById('sandbox');
 
     if (element) {
-      element.contentWindow.postMessage(message, frameUrl());
+      const { urlInAddressBar: url } = this.state
+      element.contentWindow.postMessage(message, frameUrl(url));
     }
   };
 
@@ -352,7 +360,7 @@ export default class Preview extends React.PureComponent {
           />}
         <StyledFrame
           sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups allow-presentation"
-          src={frameUrl(url)}
+          src={frameUrl(this.initialPath)}
           id="sandbox"
           hideNavigation={hideNavigation}
         />
