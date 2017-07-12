@@ -36,6 +36,7 @@ const mapDispatchToProps = dispatch => ({
 type Props = {
   id: string,
   shortid: string,
+  currentDirectoryShortid: string,
   sandboxId: string,
   root: ?boolean,
   title: string,
