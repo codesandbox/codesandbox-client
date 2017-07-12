@@ -1,27 +1,27 @@
-import rupee from './RupeeBadge.svg';
-import sapphire from './SapphireBadge.svg';
-import ruby from './RubyBadge.svg';
-import diamond from './RupeeBadge.svg';
+import Rupee from '-!svg-react-loader!./RupeeBadge.svg';
+import Sapphire from '-!svg-react-loader!./SapphireBadge.svg';
+import Ruby from '-!svg-react-loader!./RubyBadge.svg';
+import Diamond from '-!svg-react-loader!./DiamondBadge.svg';
 
 export default {
   ruby: {
-    svg: ruby,
+    Badge: Ruby,
     particleCount: 10,
-    color: '#FF0000',
+    color: '#D9411C',
   },
   sapphire: {
-    svg: sapphire,
+    Badge: Sapphire,
     particleCount: 15,
-    color: '#FF00C1',
+    color: '#BA11D6',
   },
   rupee: {
-    svg: rupee,
+    Badge: Rupee,
     particleCount: 25,
-    color: '#68EE55',
+    color: '#45CB3B',
   },
   diamond: {
-    svg: diamond,
+    Badge: Diamond,
     particleCount: 40,
-    color: '#00E1FF',
+    color: '#61B7E6',
   },
 };
