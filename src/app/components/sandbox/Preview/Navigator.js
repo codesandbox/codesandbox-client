@@ -58,7 +58,9 @@ type Props = {
   onConfirm: () => void,
   onBack: ?() => void,
   onForward: ?() => void,
-  onRefresh: ?() => void
+  onRefresh: ?() => void,
+  isProjectView: boolean,
+  toggleProjectView: () => void,
 };
 
 export default ({
@@ -67,7 +69,9 @@ export default ({
   onConfirm,
   onBack,
   onForward,
-  onRefresh
+  onRefresh,
+  isProjectView,
+  toggleProjectView,
 }: Props) => (
   <Container>
     <Icons>
@@ -78,5 +82,14 @@ export default ({
     <AddressBarContainer>
       <AddressBar url={url} onChange={onChange} onConfirm={onConfirm} />
     </AddressBarContainer>
+    {toggleProjectView &&
+      <SwitchContainer>
+        <Tooltip
+          title={isProjectView ? 'Project View' : 'Current Module View'}
+          position="left"
+        >
+          <Switch right={isProjectView} onClick={toggleProjectView} />
+        </Tooltip>
+      </SwitchContainer>}
   </Container>
 );
