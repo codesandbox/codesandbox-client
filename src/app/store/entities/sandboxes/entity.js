@@ -22,7 +22,7 @@ export default new schema.Entity(
         isEditorScreen,
         isPreviewScreen,
       } = getSandboxOptions(document.location.href);
-      console.log('HELP', document.location.href, isInProjectView)
+
       return {
         ...sandbox,
         isInProjectView,

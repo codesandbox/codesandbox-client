@@ -168,7 +168,7 @@ const FileEvalSwitch = ({
   isInProjectView: boolean,
   toggleFileEval: Function,
 }) =>
-  console.log('IS PROJ VIEW', isInProjectView) || <FileContainer>
+  <FileContainer>
     <Tooltip
       title="Eval mode allows you to re-evaluate each file as you click it. It's great for galleries."
       position="right"
