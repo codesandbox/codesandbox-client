@@ -30,6 +30,7 @@ export const getSandboxOptions = (url: string) => {
 
   result.hideNavigation = url.includes('hidenavigation=1');
   result.isInProjectView = !url.includes('isFileEval=1');
+  console.log('FOOO', url.includes('isFileEval=1'))
   result.autoResize = url.includes('autoresize=1');
 
   return result;

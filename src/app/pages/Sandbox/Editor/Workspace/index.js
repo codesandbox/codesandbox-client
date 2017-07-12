@@ -15,8 +15,6 @@ import showAlternativeComponent from 'app/hoc/show-alternative-component';
 import fadeIn from 'app/utils/animation/fade-in';
 
 import Tooltip from 'app/components/Tooltip';
-import Switch from 'app/components/Switch';
-import Preference from 'app/components/Preference'
 
 import Files from './Files';
 import Dependencies from './Dependencies';
@@ -170,7 +168,7 @@ const FileEvalSwitch = ({
   isInProjectView: boolean,
   toggleFileEval: Function,
 }) =>
-  <FileContainer>
+  console.log('IS PROJ VIEW', isInProjectView) || <FileContainer>
     <Tooltip
       title="Eval mode allows you to re-evaluate each file as you click it. It's great for galleries."
       position="right"
@@ -178,7 +176,7 @@ const FileEvalSwitch = ({
       <FileEvalCheckbox
         id='fileEval'
         type='checkbox'
-        value={isInProjectView}
+        checked={!isInProjectView}
         onClick={toggleFileEval}
       />
       <FileEvalLabel
