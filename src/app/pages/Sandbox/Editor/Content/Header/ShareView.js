@@ -170,9 +170,8 @@ class ShareView extends React.PureComponent {
 
   componentWillReceiveProps(nextProps) {
     const { sandbox: { isInProjectView } } = nextProps
-    console.log('receive')
+
     if (isInProjectView !== this.props.sandbox.isInProjectView) {
-      console.log('success', !isInProjectView)
       this.setState({ isFileEval: !isInProjectView })
     }
   }
