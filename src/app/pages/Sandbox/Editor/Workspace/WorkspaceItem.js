@@ -65,6 +65,7 @@ type Props = {
   children: React.Element,
   defaultOpen: ?boolean,
   disabled: ?string,
+  custom: ?React.Element
 };
 
 export default class WorkspaceItem extends React.PureComponent {
@@ -80,13 +81,14 @@ export default class WorkspaceItem extends React.PureComponent {
   toggleOpen = () => this.setState({ open: !this.state.open });
 
   render() {
-    const { children, title, disabled } = this.props;
+    const { children, title, disabled, custom } = this.props;
     const { open } = this.state;
 
     return (
       <div>
         <ItemHeader onClick={this.toggleOpen}>
           <Title>{title}</Title>
+          {open && custom}
           <ExpandIconContainer open={open} />
         </ItemHeader>
         <ChildContainer disabled={disabled} open={open}>

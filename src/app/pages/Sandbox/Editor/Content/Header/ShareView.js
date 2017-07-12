@@ -162,7 +162,7 @@ class ShareView extends React.PureComponent {
       defaultModule: null,
       autoResize: false,
       hideNavigation: false,
-      isInProjectView: props.sandbox.isInProjectView, // thats why i moved this to the constructor :)
+      isFileEval: !props.sandbox.isInProjectView, // thats why i moved this to the constructor :)
       fontSize: 14,
       initialPath: ''
     }
@@ -170,9 +170,10 @@ class ShareView extends React.PureComponent {
 
   componentWillReceiveProps(nextProps) {
     const { sandbox: { isInProjectView } } = nextProps
-
+    console.log('receive')
     if (isInProjectView !== this.props.sandbox.isInProjectView) {
-      this.setState({ isInProjectView })
+      console.log('success', !isInProjectView)
+      this.setState({ isFileEval: !isInProjectView })
     }
   }
 
@@ -202,7 +203,7 @@ class ShareView extends React.PureComponent {
       showPreview,
       autoResize,
       hideNavigation,
-      isInProjectView,
+      isFileEval,
       fontSize,
       initialPath
     } = this.state;
@@ -228,8 +229,8 @@ class ShareView extends React.PureComponent {
       options.hidenavigation = 1;
     }
 
-    if (isInProjectView) {
-      options.isInProjectView = 1;
+    if (isFileEval) {
+      options.isFileEval = 1;
     }
 
     if (fontSize !== 14) {
@@ -291,8 +292,8 @@ class ShareView extends React.PureComponent {
     this.setState({ hideNavigation });
   };
 
-  setIsInProjectView = (isInProjectView: boolean) => {
-    this.setState({ isInProjectView });
+  setIsFileEval = (isFileEval: boolean) => {
+    this.setState({ isFileEval });
   };
 
   setFontSize = (fontSize: number) => [this.setState({ fontSize })];
@@ -305,7 +306,7 @@ class ShareView extends React.PureComponent {
       showPreview,
       autoResize,
       hideNavigation,
-      isInProjectView,
+      isFileEval,
       fontSize,
       initialPath
     } = this.state;
@@ -343,9 +344,9 @@ class ShareView extends React.PureComponent {
                       setValue={this.setHideNavigation}
                     />
                     <PaddedPreference
-                      title="Single file entry script"
-                      value={isInProjectView}
-                      setValue={this.setIsInProjectView}
+                      title="File eval"
+                      value={isFileEval}
+                      setValue={this.setIsFileEval}
                     />
                     <PaddedPreference
                       title="Font size"

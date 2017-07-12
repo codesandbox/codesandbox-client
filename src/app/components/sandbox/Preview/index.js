@@ -175,7 +175,6 @@ export default class Preview extends React.PureComponent {
         const { error } = e.data;
         this.addError(error);
       } else if (type === 'urlchange') {
-        console.log('HANDLE MESSAGE', e.data)
         const url = e.data.url.replace('/', '');
         this.commitUrl(url);
       } else if (type === 'resize') {
