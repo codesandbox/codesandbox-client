@@ -66,7 +66,7 @@ export default class Particles extends React.PureComponent {
 
       requestAnimationFrame(() => {
         Array.forEach(particleSelector, showElement);
-      }, 10)
+      })
     }
     return false;
   }
