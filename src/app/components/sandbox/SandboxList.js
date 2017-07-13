@@ -13,6 +13,8 @@ import FullHeartIcon from 'react-icons/lib/fa/heart';
 import EyeIcon from 'react-icons/lib/fa/eye';
 import ForkIcon from 'react-icons/lib/go/repo-forked';
 
+import DeleteSandboxButton from './DeleteSandboxButton';
+
 const HeaderTitle = styled.th`
   font-weight: 400;
   text-align: left;
@@ -45,7 +47,7 @@ const Body = styled.tbody`
 
   td {
     border: none;
-    padding: 1rem 0.5rem;
+    padding: 0.55rem 0.5rem;
     margin: 0;
     border-bottom: 1px solid rgba(0, 0, 0, 0.2);
   }
@@ -63,7 +65,7 @@ const SandboxRow = styled.tr`
   }
 `;
 
-export default ({ sandboxes }: { sandboxes: Array<SmallSandbox> }) => (
+export default ({ sandboxes, onDelete }: { sandboxes: Array<SmallSandbox>, onDelete: Function }) => (
   <Table>
     <thead>
       <tr style={{ height: '3rem' }}>
@@ -73,6 +75,7 @@ export default ({ sandboxes }: { sandboxes: Array<SmallSandbox> }) => (
         <StatTitle><FullHeartIcon /></StatTitle>
         <StatTitle><EyeIcon /></StatTitle>
         <StatTitle><ForkIcon /></StatTitle>
+        <HeaderTitle />
       </tr>
     </thead>
     <Body>
@@ -84,6 +87,7 @@ export default ({ sandboxes }: { sandboxes: Array<SmallSandbox> }) => (
           <StatBody>{s.likeCount}</StatBody>
           <StatBody>{s.viewCount}</StatBody>
           <StatBody>{s.forkCount}</StatBody>
+          <StatBody><DeleteSandboxButton onClick={() => onDelete(s.id)} /></StatBody>
         </SandboxRow>
       ))}
     </Body>
