@@ -1,10 +1,14 @@
 // @flow
 import React from 'react';
 import styled from 'styled-components';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+
 import Button from 'app/components/buttons/Button';
 import type { PaginatedSandboxes } from 'common/types';
 
 import SandboxList from 'app/components/sandbox/SandboxList';
+import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 
 const PER_PAGE_COUNT = 15;
 
@@ -24,9 +28,10 @@ type Props = {
   username: string,
   fetchSandboxes: Function,
   sandboxes: PaginatedSandboxes,
+  sandboxActions: typeof sandboxActionCreators,
 };
 
-export default class Sandboxes extends React.PureComponent {
+class Sandboxes extends React.PureComponent {
   props: Props;
 
   static defaultProps = {
@@ -55,12 +60,19 @@ export default class Sandboxes extends React.PureComponent {
     return Math.ceil(sandboxCount / PER_PAGE_COUNT);
   };
 
+  deleteSandbox = async (id: string) => {
+    const really = confirm(`Are you sure you want to delete this sandbox?`); // TODO: confirm???
+    if (really) {
+      await this.props.sandboxActions.deleteSandbox(id);
+    }
+  };
+
   render() {
     const { sandboxes, page, baseUrl } = this.props;
     if (!sandboxes || !sandboxes[page]) return <div />;
     return (
       <div>
-        <SandboxList sandboxes={sandboxes[page]} />
+        <SandboxList sandboxes={sandboxes[page]} onDelete={this.deleteSandbox} />
         <Navigation>
           <div>
             {page > 1 &&
@@ -85,3 +97,14 @@ export default class Sandboxes extends React.PureComponent {
     );
   }
 }
+
+const mapStateToProps = () => ({});
+
+const mapDispatchToProps = dispatch => ({
+  sandboxActions: bindActionCreators(sandboxActionCreators, dispatch),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Sandboxes);
