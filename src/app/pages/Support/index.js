@@ -28,8 +28,7 @@ export default class Support extends React.PureComponent {
             <MaxWidth width={1024}>
               <Title>Become a CodeSandbox Supporter!</Title>
               <SubTitle>
-                Support CodeSandbox by paying a monthly amount that you can
-                choose
+                Support CodeSandbox by paying a monthly amount of your choice
               </SubTitle>
 
               <Centered horizontal>

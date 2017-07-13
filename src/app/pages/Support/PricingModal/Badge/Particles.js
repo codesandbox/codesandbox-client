@@ -1,5 +1,5 @@
 import React from 'react';
-import styled, {keyframes} from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 import badges from './badge-info';
 
@@ -26,9 +26,10 @@ const particleAnimation = (deg: number, i: number) => keyframes`
   }
 
   100% {
-    transform: rotate(${deg}deg) translateY(${200 + (i % 2) * 50}px) scale3d(0, 0, 0);
+    transform: rotate(${deg}deg) translateY(${200 +
+  i % 2 * 50}px) scale3d(0, 0, 0);
   }
-`
+`;
 
 const Particle = styled.div`
   animation: ${props => particleAnimation(props.deg, props.i)} 700ms ease;
@@ -45,39 +46,65 @@ const Particle = styled.div`
   box-shadow: 0 0 5px ${props => badges[props.badge].color};
 `;
 
-const createParticles = (amount: number, badge) => (
-  Array(amount).fill(0).map((_, i) =>
-    <Particle className={`${badge}-particle particle hide`} i={i} deg={180 + (Math.floor(amount / 2) + i) * (360 / amount)} badge={badge} />
-  )
-)
+const createParticles = (amount: number, badge) =>
+  Array(amount)
+    .fill(0)
+    .map((_, i) =>
+      <Particle
+        className={`${badge}-particle particle hide`}
+        i={i}
+        deg={180 + (Math.floor(amount / 2) + i) * (360 / amount)}
+        badge={badge}
+      />,
+    );
 
 type Props = {
+  makeItRain: boolean,
   badge: 'ruby' | 'sapphire' | 'rupee' | 'diamond',
 };
 
 export default class Particles extends React.PureComponent {
   props: Props;
 
+  makeItRain = () => {
+    const particleSelector = document.getElementsByClassName('particle');
+    Array.forEach(particleSelector, hideElement);
+
+    requestAnimationFrame(() => {
+      Array.forEach(particleSelector, showElement);
+    });
+  };
+
   shouldComponentUpdate(nextProps) {
     if (nextProps.badge !== this.props.badge) {
-      const particleSelector = document.getElementsByClassName(`${nextProps.badge}-particle`);
+      const particleSelector = document.getElementsByClassName(
+        `${nextProps.badge}-particle`,
+      );
 
       Array.forEach(particleSelector, hideElement);
 
       requestAnimationFrame(() => {
         Array.forEach(particleSelector, showElement);
-      })
+      });
     }
+
+    if (!this.props.makeItRain && nextProps.makeItRain) {
+      this.makeItRain();
+      setTimeout(this.makeItRain, 500);
+      setTimeout(this.makeItRain, 1000);
+      setTimeout(this.makeItRain, 1500);
+    }
+
     return false;
   }
 
   render() {
     return (
       <div>
-        {Object.keys(badges).map(badge => (
-          createParticles(badges[badge].particleCount, badge)
-        ))}
+        {Object.keys(badges).map(badge =>
+          createParticles(badges[badge].particleCount, badge),
+        )}
       </div>
-    )
+    );
   }
 }

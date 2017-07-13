@@ -6,6 +6,9 @@ import {
   SIGN_OUT,
   SET_CURRENT_USER,
   SET_USER_SANDBOXES,
+  CREATE_SUBSCRIPTION_API,
+  UPDATE_SUBSCRIPTION_API,
+  CANCEL_SUBSCRIPTION_API,
 } from './actions';
 
 const initialState: CurrentUser = {
@@ -39,6 +42,14 @@ export default (state: CurrentUser = initialState, action: Object) => {
         ...state,
         sandboxes: action.data,
       };
+    case CREATE_SUBSCRIPTION_API.SUCCESS:
+    case UPDATE_SUBSCRIPTION_API.SUCCESS:
+    case CANCEL_SUBSCRIPTION_API.SUCCESS: {
+      return {
+        ...state,
+        ...action.data.data,
+      };
+    }
     default: {
       return state;
     }

@@ -10,4 +10,8 @@ export default styled.input`
   padding: 0.25em;
   width: inherit;
   box-sizing: border-box;
+
+  border: 1px solid
+    ${props =>
+      props.error ? props.theme.red.clearer(0.5) : 'rgba(0,0,0 0.1)'};
 `;

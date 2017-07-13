@@ -17,13 +17,14 @@ const Container = styled.div`
 
 type Props = {
   name: ?string,
+  subscribe: (token: string) => void,
 };
 
-export default ({ name }: Props) =>
+export default ({ name, subscribe }: Props) =>
   <Container>
     <StripeProvider apiKey={STRIPE_API_KEY}>
       <Elements>
-        <CheckoutForm name={name} />
+        <CheckoutForm subscribe={subscribe} name={name} />
       </Elements>
     </StripeProvider>
   </Container>;

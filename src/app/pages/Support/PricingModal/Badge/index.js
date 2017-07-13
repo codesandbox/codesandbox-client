@@ -20,23 +20,22 @@ const BadgeContainer = styled.div`
 `;
 
 type Props = {
+  subscribed: boolean,
   badge: 'ruby' | 'sapphire' | 'rupee' | 'diamond',
 };
 
 const Badge = ({ badge }: Props) => {
   const BadgeComponent = badges[badge].Badge;
   return (
-  <BadgeContainer>
-    <BadgeComponent style={{zIndex: 20}} className={`badge ${badge}`} />
+    <BadgeContainer>
+      <BadgeComponent style={{ zIndex: 20 }} className={`badge ${badge}`} />
+    </BadgeContainer>
+  );
+};
 
-  </BadgeContainer>
-  )
-}
-
-export default ({ badge }: Props) => (
+export default ({ badge, subscribed }: Props) =>
   <Relative>
     {/* We prerender all particles, performance reasons */}
-    <Particles badge={badge} />
+    <Particles makeItRain={subscribed} badge={badge} />
     <Badge key={badge} id="badge" badge={badge} />
-  </Relative>
-)
+  </Relative>;

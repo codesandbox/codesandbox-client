@@ -1,19 +1,22 @@
 import React from 'react';
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
+
+import type { CurrentUser } from 'common/types';
 
 import Input from 'app/components/Input';
 import Centered from 'app/components/flex/Centered';
 import Relative from 'app/components/Relative';
 import SignInButton from 'app/containers/SignInButton';
 
-import {
-  currentUserSelector,
-  loggedInSelector,
-} from 'app/store/user/selectors';
+import { loggedInSelector } from 'app/store/user/selectors';
+import userActionCreators from 'app/store/user/actions';
 
 import Range from './Range';
 import SubscribeForm from './SubscribeForm';
+import ChangeSubscription from './ChangeSubscription';
+import ThankYou from './ThankYou';
 
 import Title from '../Title';
 import badges from '../Badge/badge-info';
@@ -63,11 +66,16 @@ type Props = {
   price: number,
   setPrice: (price: number) => void,
   badge: string,
+  userActions: typeof userActionCreators,
+  loggedIn: boolean,
+  user: CurrentUser,
 };
 
 const mapStateToProps = state => ({
-  user: currentUserSelector(state),
   loggedIn: loggedInSelector(state),
+});
+const mapDispatchToProps = dispatch => ({
+  userActions: bindActionCreators(userActionCreators, dispatch),
 });
 class PricingChoice extends React.PureComponent {
   props: Props;
@@ -80,14 +88,38 @@ class PricingChoice extends React.PureComponent {
     this.props.setPrice(value);
   };
 
+  subscribe = (token: string) =>
+    this.props.userActions.createSubscription(token, this.props.price);
+
+  updateSubscription = () =>
+    this.props.userActions.updateSubscription(this.props.price);
+
+  cancelSubscription = async () => {
+    const confirmed = confirm(
+      'Are you sure you want to cancel your subscription?',
+    );
+
+    if (confirmed) {
+      return this.props.userActions.cancelSubscription();
+    }
+
+    return false;
+  };
+
   render() {
     const { price, badge, loggedIn, user } = this.props;
+
+    const subscribed = Boolean(loggedIn && user.subscription);
 
     return (
       <Container>
         <Centered horizontal vertical={false}>
           <Title>Pay what you want</Title>
-
+          {subscribed &&
+            <ThankYou
+              price={user.subscription.amount}
+              color={badges[badge].color}
+            />}
           <Relative>
             <Currency>$</Currency>
             <PriceInput
@@ -107,8 +139,14 @@ class PricingChoice extends React.PureComponent {
               color={badges[badge].color}
             />
           </RangeContainer>
-          {loggedIn
-            ? <SubscribeForm name={user.name} />
+          {loggedIn // eslint-disable-line no-nested-ternary
+            ? user.subscription
+              ? <ChangeSubscription
+                  updateSubscription={this.updateSubscription}
+                  cancelSubscription={this.cancelSubscription}
+                  date={user.subscription.since}
+                />
+              : <SubscribeForm subscribe={this.subscribe} name={user.name} />
             : <StyledSignInButton />}
         </Centered>
       </Container>
@@ -116,4 +154,4 @@ class PricingChoice extends React.PureComponent {
   }
 }
 
-export default connect(mapStateToProps)(PricingChoice);
+export default connect(mapStateToProps, mapDispatchToProps)(PricingChoice);

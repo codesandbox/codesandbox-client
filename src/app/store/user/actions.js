@@ -26,6 +26,19 @@ export const LOAD_USER_SANDBOXES = createAPIActions(
 export const SEND_FEEDBACK_API = createAPIActions('FEEDBACK', 'SEND');
 export const GET_AUTH_TOKEN_API = createAPIActions('AUTH_TOKEN', 'FETCH');
 
+export const CREATE_SUBSCRIPTION_API = createAPIActions(
+  'SUBSCRIPTION',
+  'CREATE',
+);
+export const UPDATE_SUBSCRIPTION_API = createAPIActions(
+  'SUBSCRIPTION',
+  'UPDATE',
+);
+export const CANCEL_SUBSCRIPTION_API = createAPIActions(
+  'SUBSCRIPTION',
+  'CANCEL',
+);
+
 const deleteCookie = (name: string) => {
   document.cookie = `${name}=; Path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
 };
@@ -117,7 +130,58 @@ const sendFeedback = (message: string) => async (dispatch: Function) => {
   );
 };
 
+const createSubscription = (token: string, amount: number) => async (
+  dispatch: Function,
+) => {
+  await dispatch(
+    doRequest(CREATE_SUBSCRIPTION_API, 'users/current_user/subscription', {
+      method: 'POST',
+      body: {
+        subscription: {
+          amount,
+          token,
+        },
+      },
+    }),
+  );
+
+  dispatch(
+    notifActions.addNotification(
+      'Thank you very much for your support!',
+      'success',
+    ),
+  );
+};
+
+const updateSubscription = (amount: number) => async (dispatch: Function) => {
+  await dispatch(
+    doRequest(UPDATE_SUBSCRIPTION_API, 'users/current_user/subscription', {
+      method: 'PATCH',
+      body: {
+        subscription: {
+          amount,
+        },
+      },
+    }),
+  );
+
+  dispatch(
+    notifActions.addNotification('Succesfully updated subscription', 'success'),
+  );
+};
+
+const cancelSubscription = () => async (dispatch: Function) => {
+  await dispatch(
+    doRequest(CANCEL_SUBSCRIPTION_API, 'users/current_user/subscription', {
+      method: 'DELETE',
+    }),
+  );
+};
+
 export default {
+  createSubscription,
+  updateSubscription,
+  cancelSubscription,
   getAuthToken,
   signOut,
   signIn,

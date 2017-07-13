@@ -35,6 +35,10 @@ export type CurrentUser = {
   username: ?string,
   avatarUrl: ?string,
   jwt: ?string,
+  subscription: ?{
+    since: string,
+    amount: string,
+  },
 };
 
 export type SmallSandbox = {

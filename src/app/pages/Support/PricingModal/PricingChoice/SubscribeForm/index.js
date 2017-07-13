@@ -10,16 +10,17 @@ const Notice = styled.p`
   text-align: center;
   margin: 2rem;
   font-weight: 400;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.8);
 `;
 
 type Props = {
   name: ?string,
+  subscribe: (Promise<{ token: { id: string } }>) => void,
 };
 
-export default ({ name }: Props) =>
+export default ({ name, subscribe }: Props) =>
   <Centered horizontal>
-    <CardInfo name={name} />
+    <CardInfo subscribe={subscribe} name={name} />
     <Notice>
       You will be billed now and on the{' '}
       <strong style={{ color: 'white' }}>{moment().format('Do')}</strong> of

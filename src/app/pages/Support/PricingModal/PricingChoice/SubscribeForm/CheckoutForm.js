@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { CardElement } from 'react-stripe-elements';
+import { injectStripe, CardElement } from 'react-stripe-elements';
 
 import Input from 'app/components/Input';
 import Button from 'app/components/buttons/Button';
@@ -22,6 +22,12 @@ const NameInput = styled(Input)`
   height: 32.8px;
 `;
 
+const ErrorText = styled.div`
+  color: ${props => props.theme.red};
+  font-size: .875rem;
+  margin: 0.25rem 0;
+`;
+
 const Label = styled.label`
   color: rgba(255, 255, 255, 0.5);
   font-size: .875rem;
@@ -32,62 +38,113 @@ type Props = {
   stripe: {
     createToken: (params: ?Object) => Promise<{ token: string }>,
   },
+  subscribe: (Promise<{ token: { id: string } }>) => void,
 };
 
 type State = {
   name: string,
 };
 
-export default class CheckoutForm extends React.PureComponent {
+class CheckoutForm extends React.PureComponent {
   props: Props;
   state: State;
+
   constructor(props: Props) {
     super(props);
 
     this.state = {
+      errors: {},
       name: props.name || '',
     };
   }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.name !== this.props.name) {
+      this.setState({ errors: {}, name: nextProps.name });
+    }
+  }
+
   setName = e => {
     if (e) {
-      this.setState({ name: e.target.value });
+      this.setState({ errors: {}, name: e.target.value });
     }
   };
 
-  handleSubmit = e => {
-    e.preventDefault();
-    e.persist();
+  handleSubmit = async ev => {
+    ev.preventDefault();
+    if (!this.state.name) {
+      return this.setState({ errors: { name: 'Please provide a name ' } });
+    }
+
+    this.setState({ loading: true, errors: {} });
 
     // Within the context of `Elements`, this call to createToken knows which Element to
     // tokenize, since there's only one in this group.
-    this.props.stripe
-      .createToken({ name: this.props.name })
-      .then(({ token }) => {
-        console.log('Received Stripe token:', token);
+    const { token, error } = await this.props.stripe.createToken({
+      name: this.props.name,
+    });
+    if (error) {
+      return this.setState({
+        loading: false,
+        errors: {
+          stripe: error.message,
+        },
       });
+    }
+
+    try {
+      await this.props.subscribe(token.id);
+    } catch (e) {
+      return this.setState({
+        loading: false,
+        errors: {
+          stripe: e.message,
+        },
+      });
+    }
+
+    return this.setState({
+      loading: false,
+    });
   };
 
   render() {
+    const { errors, loading } = this.state;
     return (
       <form onSubmit={this.handleSubmit}>
         <Label>Full Name</Label>
+        {errors.name != null &&
+          <ErrorText>
+            {errors.name}
+          </ErrorText>}
         <div>
           <NameInput
-            value={this.props.name}
+            value={this.state.name}
             onChange={this.setName}
-            placeholder="Enter your name"
+            error={errors.name}
+            placeholder="Please enter your name"
           />
         </div>
 
         <Label>Card</Label>
+        {errors.stripe != null &&
+          <ErrorText>
+            {errors.stripe}
+          </ErrorText>}
         <CardContainer>
           <CardElement style={{ base: { color: 'white', fontWeight: 300 } }} />
         </CardContainer>
 
-        <Button type="submit" style={{ marginTop: '1rem', width: 300 }}>
-          Subscribe
+        <Button
+          type="submit"
+          disabled={loading}
+          style={{ marginTop: '1rem', width: 300 }}
+        >
+          {loading ? 'Creating Subscription...' : 'Subscribe'}
         </Button>
       </form>
     );
   }
 }
+
+export default injectStripe(CheckoutForm);
