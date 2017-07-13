@@ -1,16 +1,21 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
-import moment from 'moment';
 
 import Input from 'app/components/Input';
 import Centered from 'app/components/flex/Centered';
 import Relative from 'app/components/Relative';
-import Button from 'app/components/buttons/Button';
+import SignInButton from 'app/containers/SignInButton';
+
+import {
+  currentUserSelector,
+  loggedInSelector,
+} from 'app/store/user/selectors';
 
 import Range from './Range';
-import CardInfo from './CardInfo';
-import Title from '../Title';
+import SubscribeForm from './SubscribeForm';
 
+import Title from '../Title';
 import badges from '../Badge/badge-info';
 
 const Container = styled.div`padding: 1rem 0;`;
@@ -22,14 +27,6 @@ const PriceInput = styled(Input)`
   width: 6rem;
   margin-bottom: 1rem;
   text-align: center;
-`;
-
-const Notice = styled.p`
-  font-size: .875rem;
-  text-align: center;
-  margin: 2rem;
-  font-weight: 400;
-  color: rgba(255, 255, 255, 0.6);
 `;
 
 const Month = styled.span`
@@ -56,13 +53,23 @@ const Currency = styled.span`
 
 const RangeContainer = styled.div`width: 300px;`;
 
+const StyledSignInButton = styled(SignInButton)`
+  display: block;
+  margin-top: 2rem;
+  width: 300px;
+`;
+
 type Props = {
-  price: number;
-  setPrice: (price: number) => void;
-  badge: string;
+  price: number,
+  setPrice: (price: number) => void,
+  badge: string,
 };
 
-export default class PricingChoice extends React.PureComponent {
+const mapStateToProps = state => ({
+  user: currentUserSelector(state),
+  loggedIn: loggedInSelector(state),
+});
+class PricingChoice extends React.PureComponent {
   props: Props;
 
   handleEventChange = e => {
@@ -70,11 +77,11 @@ export default class PricingChoice extends React.PureComponent {
   };
 
   handleRangeChange = value => {
-    this.props.setPrice(value)
+    this.props.setPrice(value);
   };
 
   render() {
-    const { price, badge } = this.props;
+    const { price, badge, loggedIn, user } = this.props;
 
     return (
       <Container>
@@ -83,7 +90,11 @@ export default class PricingChoice extends React.PureComponent {
 
           <Relative>
             <Currency>$</Currency>
-            <PriceInput onChange={this.handleEventChange} value={price} type="number" />
+            <PriceInput
+              onChange={this.handleEventChange}
+              value={price}
+              type="number"
+            />
             <Month>/month</Month>
           </Relative>
           <RangeContainer>
@@ -96,18 +107,13 @@ export default class PricingChoice extends React.PureComponent {
               color={badges[badge].color}
             />
           </RangeContainer>
-          <CardInfo />
-          <Button style={{ marginTop: '1rem', width: 300 }}>Subscribe</Button>
-          <Notice>
-            You will be billed now and on the{' '}
-            <strong style={{ color: 'white' }}>
-              {moment().format('Do')}
-            </strong>{' '}
-            of each month thereafter. You can cancel or change your subscription
-            at any time.
-          </Notice>
+          {loggedIn
+            ? <SubscribeForm name={user.name} />
+            : <StyledSignInButton />}
         </Centered>
       </Container>
     );
   }
 }
+
+export default connect(mapStateToProps)(PricingChoice);

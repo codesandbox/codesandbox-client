@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
+
 import Row from '../../components/flex/Row';
 import delayEffect from '../../utils/animation/delay-effect';
 

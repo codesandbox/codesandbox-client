@@ -6,9 +6,9 @@ import { bindActionCreators } from 'redux';
 import type { CurrentUser } from 'common/types';
 import { Link } from 'react-router-dom';
 
-import GithubIcon from 'react-icons/lib/go/mark-github';
 import SearchIcon from 'react-icons/lib/md/search';
 
+import SignInButton from 'app/containers/SignInButton';
 import Button from 'app/components/buttons/Button';
 import Logo from 'app/components/Logo';
 import Row from 'app/components/flex/Row';
@@ -116,12 +116,7 @@ class Navigation extends React.PureComponent {
           </Actions>
           {hasLogin
             ? <User signOut={userActions.signOut} user={user} />
-            : <Button small onClick={userActions.signIn}>
-                <Row>
-                  <GithubIcon style={{ marginRight: '0.5rem' }} /> Sign in with
-                  GitHub
-                </Row>
-              </Button>}
+            : <SignInButton />}
         </Row>
       </Row>
     );
