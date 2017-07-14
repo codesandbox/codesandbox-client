@@ -29,6 +29,7 @@ type Props = {
   fetchSandboxes: Function,
   sandboxes: PaginatedSandboxes,
   sandboxActions: typeof sandboxActionCreators,
+  isCurrentUser: boolean;
 };
 
 class Sandboxes extends React.PureComponent {
@@ -38,10 +39,10 @@ class Sandboxes extends React.PureComponent {
     page: 1,
   };
 
-  fetch() {
+  fetch(force = false) {
     const { fetchSandboxes, username, page, sandboxes } = this.props;
 
-    if (!sandboxes || !sandboxes[page]) {
+    if (force || !sandboxes || !sandboxes[page]) {
       fetchSandboxes(username, page);
     }
   }
@@ -64,15 +65,20 @@ class Sandboxes extends React.PureComponent {
     const really = confirm(`Are you sure you want to delete this sandbox?`); // TODO: confirm???
     if (really) {
       await this.props.sandboxActions.deleteSandbox(id);
+      this.fetch(true);
     }
   };
 
   render() {
-    const { sandboxes, page, baseUrl } = this.props;
+    const { sandboxes, isCurrentUser, page, baseUrl } = this.props;
     if (!sandboxes || !sandboxes[page]) return <div />;
     return (
       <div>
-        <SandboxList sandboxes={sandboxes[page]} onDelete={this.deleteSandbox} />
+        <SandboxList
+          isCurrentUser={isCurrentUser}
+          sandboxes={sandboxes[page]}
+          onDelete={this.deleteSandbox}
+        />
         <Navigation>
           <div>
             {page > 1 &&
