@@ -1,7 +1,7 @@
 export const JS = {
   id: 'js',
   extension: '.js',
-  condition: '.js$',
+  condition: '.jsx?$',
   code: `
 import React from 'react';
 import { render } from 'react-dom';

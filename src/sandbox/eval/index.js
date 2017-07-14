@@ -14,29 +14,65 @@ function doEval(
   directories: Array<Directory>,
   externals: Object,
   depth: ?number,
+  parentModules: Array<Module>,
 ) {
   const html = /\.html$/;
   const css = /\.css$/;
   const json = /\.json$/;
-  const js = /\.js$/;
+  const js = /\.jsx?$/;
 
   if (html.test(mainModule.title)) {
-    return evalRaw(mainModule, modules, directories, externals, depth);
+    return evalRaw(
+      mainModule,
+      modules,
+      directories,
+      externals,
+      depth,
+      parentModules,
+    );
   }
 
   if (css.test(mainModule.title)) {
-    return evalCSS(mainModule, modules, directories, externals, depth);
+    return evalCSS(
+      mainModule,
+      modules,
+      directories,
+      externals,
+      depth,
+      parentModules,
+    );
   }
 
   if (json.test(mainModule.title) || mainModule.title === '.babelrc') {
-    return evalJson(mainModule, modules, directories, externals, depth);
+    return evalJson(
+      mainModule,
+      modules,
+      directories,
+      externals,
+      depth,
+      parentModules,
+    );
   }
 
   if (js.test(mainModule.title)) {
-    return evalJS(mainModule, modules, directories, externals, depth);
+    return evalJS(
+      mainModule,
+      modules,
+      directories,
+      externals,
+      depth,
+      parentModules,
+    );
   }
 
-  return evalRaw(mainModule, modules, directories, externals, depth);
+  return evalRaw(
+    mainModule,
+    modules,
+    directories,
+    externals,
+    depth,
+    parentModules,
+  );
 }
 
 export function deleteCache(module: Module) {
@@ -49,12 +85,22 @@ const evalModule = (
   directories: Array<Directory>,
   externals: Object,
   depth: number = 0,
+  parentModules: Array<Module> = [],
 ) => {
   if (depth > MAX_DEPTH) {
-    throw new Error(`Exceeded the maximum require depth of ${MAX_DEPTH}.`);
+    throw new Error(
+      `Exceeded the maximum require depth of ${MAX_DEPTH}, there are probably two files depending on eachother.`,
+    );
   }
   try {
-    return doEval(mainModule, modules, directories, externals, depth);
+    return doEval(
+      mainModule,
+      modules,
+      directories,
+      externals,
+      depth,
+      parentModules,
+    );
   } catch (e) {
     e.module = e.module || mainModule;
     throw e;
