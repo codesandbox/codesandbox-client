@@ -39,6 +39,7 @@ type Props = {
   user: CurrentUser,
   small?: boolean,
   signOut: Function,
+  openPreferences: Function,
 };
 
 type State = {
@@ -61,15 +62,20 @@ export default class User extends React.PureComponent {
   openMenu = () => this.setState({ menuOpen: true });
 
   render() {
-    const { user, small, signOut } = this.props;
+    const { user, small, openPreferences, signOut } = this.props;
     const { menuOpen } = this.state;
 
     return (
       <Relative>
         <ClickableContainer onClick={menuOpen ? this.closeMenu : this.openMenu}>
           <ProfileInfo>
-            {user.name && <Name>{user.name}</Name>}
-            <Username main={!user.name}>{user.username}</Username>
+            {user.name &&
+              <Name>
+                {user.name}
+              </Name>}
+            <Username main={!user.name}>
+              {user.username}
+            </Username>
           </ProfileInfo>
 
           <Tooltip title="User Menu">
@@ -80,11 +86,14 @@ export default class User extends React.PureComponent {
               src={user.avatarUrl}
             />
           </Tooltip>
-
         </ClickableContainer>
         {menuOpen &&
           <HoverMenu onClose={this.closeMenu}>
-            <UserMenu signOut={signOut} username={user.username} />
+            <UserMenu
+              openPreferences={openPreferences}
+              signOut={signOut}
+              username={user.username}
+            />
           </HoverMenu>}
       </Relative>
     );

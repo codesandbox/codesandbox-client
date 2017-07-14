@@ -92,3 +92,4 @@ export const gitHubToSandboxUrl = (githubUrl: string) =>
   githubUrl.replace('https://github.com', '/s/github');
 
 export const searchUrl = () => `/search`;
+export const patronUrl = () => `/patron`;

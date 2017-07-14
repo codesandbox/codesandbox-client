@@ -9,15 +9,18 @@ import { Link } from 'react-router-dom';
 import SearchIcon from 'react-icons/lib/md/search';
 
 import SignInButton from 'app/containers/SignInButton';
-import Button from 'app/components/buttons/Button';
+import Preferences from 'app/containers/Preferences';
+
 import Logo from 'app/components/Logo';
 import Row from 'app/components/flex/Row';
-import { currentUserSelector, jwtSelector } from 'app/store/user/selectors';
-import userActionCreators from 'app/store/user/actions';
 import Tooltip from 'app/components/Tooltip';
 
+import { currentUserSelector, jwtSelector } from 'app/store/user/selectors';
+import modalActionCreators from 'app/store/modal/actions';
+import userActionCreators from 'app/store/user/actions';
+import { newSandboxUrl, searchUrl } from 'app/utils/url-generator';
+
 import User from './User';
-import { newSandboxUrl, searchUrl } from '../../utils/url-generator';
 
 const LogoWithBorder = styled(Logo)`
   padding-right: 1rem;
@@ -74,6 +77,7 @@ type Props = {
   user: CurrentUser,
   hasLogin: boolean,
   userActions: typeof userActionCreators,
+  modalActions: typeof modalActionCreators,
 };
 
 const mapStateToProps = state => ({
@@ -82,9 +86,18 @@ const mapStateToProps = state => ({
 });
 const mapDispatchToProps = dispatch => ({
   userActions: bindActionCreators(userActionCreators, dispatch),
+  modalActions: bindActionCreators(modalActionCreators, dispatch),
 });
 class Navigation extends React.PureComponent {
   props: Props;
+
+  openPreferences = () => {
+    this.props.modalActions.openModal({
+      width: 900,
+      Body: <Preferences />,
+    });
+  };
+
   render() {
     const { title, hasLogin, user, userActions } = this.props;
 
@@ -115,7 +128,11 @@ class Navigation extends React.PureComponent {
             </Action>
           </Actions>
           {hasLogin
-            ? <User signOut={userActions.signOut} user={user} />
+            ? <User
+                openPreferences={this.openPreferences}
+                signOut={userActions.signOut}
+                user={user}
+              />
             : <SignInButton />}
         </Row>
       </Row>

@@ -11,18 +11,18 @@ type Props = {
   user: User,
 };
 
-export default ({ user }: Props) => (
+export default ({ user }: Props) =>
   <Row>
     <ProfileInfo
       username={user.username}
       name={user.name}
       avatarUrl={user.avatarUrl}
       badges={user.badges}
+      subscribedSince={user.subscribedSince}
     />
     <Stats
       likeCount={user.receivedLikeCount}
       viewCount={user.viewCount}
       forkCount={user.forkedCount}
     />
-  </Row>
-);
+  </Row>;

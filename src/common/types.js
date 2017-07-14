@@ -59,7 +59,7 @@ export type User = {
   id: string,
   username: string,
   name: string,
-  avatarUrl: ?string,
+  avatarUrl: string,
   showcasedSandboxShortid: ?string,
   sandboxCount: number,
   givenLikeCount: number,
@@ -72,6 +72,7 @@ export type User = {
     id: string,
     name: string,
   }>,
+  subscribedSince: string,
 };
 
 export type GitInfo = {

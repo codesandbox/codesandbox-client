@@ -1,12 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
+import moment from 'moment';
 import GithubIcon from 'react-icons/lib/go/mark-github';
+import { Link } from 'react-router-dom';
+import { patronUrl } from 'app/utils/url-generator';
 
 import Row from 'app/components/flex/Row';
 import Column from 'app/components/flex/Column';
 import delayEffect from 'app/utils/animation/delay-effect';
 import Margin from 'app/components/spacing/Margin';
-import Tooltip from 'app/components/Tooltip';
 import Badge from 'app/utils/badges/Badge';
 
 const ProfileImage = styled.img`
@@ -52,14 +54,23 @@ type Props = {
     id: string,
     name: string,
   }>,
+  subscribedSince: string,
 };
 
-const Badges = ({ badges }) =>
+const Badges = ({ badges }: { badges: Array<{ id: string, name: string }> }) =>
   <Margin left={0.5}>
-    {badges.map(badge => <Badge key={badge.id} badge={badge} size={40} />)}
+    <Link to={patronUrl()}>
+      {badges.map(badge => <Badge key={badge.id} badge={badge} size={40} />)}
+    </Link>
   </Margin>;
 
-export default ({ username, badges, name, avatarUrl }: Props) =>
+export default ({
+  username,
+  badges,
+  subscribedSince,
+  name,
+  avatarUrl,
+}: Props) =>
   <Row style={{ flex: 1 }}>
     <ProfileImage alt={username} height={175} width={175} src={avatarUrl} />
     <Margin bottom={3}>

@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 
 import UserIcon from 'react-icons/lib/ti/user';
 import ExitIcon from 'react-icons/lib/md/exit-to-app';
+import SettingsIcon from 'react-icons/lib/md/settings';
 import { profileUrl } from '../../utils/url-generator';
 
 const Container = styled.div`
@@ -12,9 +13,7 @@ const Container = styled.div`
   background-color: ${props => props.theme.background2.darken(0.5)};
   box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.75);
 
-  ${delayEffect(0)}
-
-  top: 40px;
+  ${delayEffect(0)} top: 40px;
   left: -20%;
   right: 0;
 
@@ -44,23 +43,31 @@ const Item = styled.div`
   }
 `;
 
-const Icon = styled.span`
-  margin-right: 0.75rem;
-`;
+const Icon = styled.span`margin-right: 0.75rem;`;
 
-export default ({
-  username,
-  signOut,
-}: {
+type Props = {
   username: string,
   signOut: () => any,
-}) => (
+  openPreferences: () => any,
+};
+
+export default ({ username, openPreferences, signOut }: Props) =>
   <Container>
     <Link style={{ textDecoration: 'none' }} to={profileUrl(username)}>
       <Item>
-        <Icon><UserIcon /></Icon>My Profile
+        <Icon>
+          <UserIcon />
+        </Icon>My Profile
       </Item>
     </Link>
-    <Item onClick={signOut}><Icon><ExitIcon /></Icon>Sign out</Item>
-  </Container>
-);
+    <Item onClick={openPreferences}>
+      <Icon>
+        <SettingsIcon />
+      </Icon>Preferences
+    </Item>
+    <Item onClick={signOut}>
+      <Icon>
+        <ExitIcon />
+      </Icon>Sign out
+    </Item>
+  </Container>;
