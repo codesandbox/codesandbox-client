@@ -25,10 +25,9 @@ type Props = {
   forkCount: number,
 };
 
-export default ({ viewCount, likeCount, forkCount }: Props) => (
+export default ({ viewCount, likeCount, forkCount }: Props) =>
   <Container>
     <Stat name="Likes" count={likeCount} />
     <Stat name="Views" count={viewCount} />
     <Stat name="Forked" count={forkCount} />
-  </Container>
-);
+  </Container>;

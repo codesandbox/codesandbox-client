@@ -4,17 +4,39 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import ConfirmLink from 'app/components/ConfirmLink';
 import LinkButton from 'app/components/buttons/LinkButton';
-import type { User } from 'common/types';
+import GithubBadge from 'app/components/sandbox/GithubBadge';
+import { sandboxUrl, githubRepoUrl, profileUrl } from 'app/utils/url-generator';
+import UserWithAvatar from 'app/components/user/UserWithAvatar';
+import Stats from 'app/components/sandbox/Stats';
+import type { User, GitInfo } from 'common/types';
 import WorkspaceInputContainer from '../WorkspaceInputContainer';
 import WorkspaceSubtitle from '../WorkspaceSubtitle';
-import { sandboxUrl, profileUrl } from '../../../../../utils/url-generator';
-
-import Statistics from './Statistics';
 
 const Item = styled.div`
   margin: 1rem;
   margin-top: 0;
   font-size: .875rem;
+`;
+
+const GitContainer = styled.div`
+  display: inline-block;
+  margin: 0 1rem;
+  margin-bottom: 1rem;
+`;
+
+const UserLink = styled(Link)`
+  display: block;
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: .875rem;
+`;
+
+const StatsContainer = styled.div`
+  border-top: 1px solid ${props => props.theme.background2};
+  padding: 1rem;
+  font-size: .875rem;
+  box-sizing: border-box;
+  color: rgba(255, 255, 255, 0.8);
 `;
 
 type Props = {
@@ -26,12 +48,9 @@ type Props = {
   forkCount: number,
   forkedSandbox: ?{ title: string, id: string },
   updateSandboxInfo: (id: string, title: string, description: string) => any,
-  deleteSandbox: (id: string) => any,
   preventTransition: boolean,
-  owned: boolean,
   author: ?User,
-  githubUrl: ?string,
-  repoName: ?string,
+  git: ?GitInfo,
 };
 
 export default class Project extends React.PureComponent {
@@ -80,23 +99,15 @@ export default class Project extends React.PureComponent {
     }
   };
 
-  handleDeleteSandbox = () => {
-    const really = confirm('Are you sure you want to delete this sandbox?');
-    if (really) {
-      this.props.deleteSandbox(this.props.id);
-    }
-  };
-
   render() {
     const {
+      id,
       forkedSandbox,
       viewCount,
       likeCount,
       forkCount,
       author,
-      owned,
-      githubUrl,
-      repoName,
+      git,
       preventTransition,
     } = this.props;
     const { title, description } = this.state;
@@ -123,6 +134,31 @@ export default class Project extends React.PureComponent {
             rows="5"
           />
         </WorkspaceInputContainer>
+        {!!author &&
+          <div>
+            <WorkspaceSubtitle>Author</WorkspaceSubtitle>
+            <Item>
+              <UserLink to={profileUrl(author.username)}>
+                <UserWithAvatar
+                  username={author.username}
+                  avatarUrl={author.avatarUrl}
+                />
+              </UserLink>
+            </Item>
+          </div>}
+
+        {!!git &&
+          <div>
+            <WorkspaceSubtitle>GitHub Repository</WorkspaceSubtitle>
+            <GitContainer>
+              <GithubBadge
+                url={githubRepoUrl(git)}
+                username={git.username}
+                repo={git.repo}
+              />
+            </GitContainer>
+          </div>}
+
         {forkedSandbox &&
           <div>
             <WorkspaceSubtitle>Forked from</WorkspaceSubtitle>
@@ -137,42 +173,14 @@ export default class Project extends React.PureComponent {
               </ConfirmLink>
             </Item>
           </div>}
-        {author &&
-          <div>
-            <WorkspaceSubtitle>Author</WorkspaceSubtitle>
-
-            <Item>
-              <Link to={profileUrl(author.username)}>
-                {author.username}
-              </Link>
-            </Item>
-          </div>}
-
-        {!!githubUrl &&
-          <div>
-            <WorkspaceSubtitle>Source Control</WorkspaceSubtitle>
-            <Item>
-              <a href={githubUrl} rel="noopener noreferrer" target="_blank">
-                {repoName}
-              </a>
-            </Item>
-          </div>}
-
-        <Statistics
-          viewCount={viewCount}
-          likeCount={likeCount}
-          forkCount={forkCount}
-        />
-
-        {owned &&
-          <WorkspaceInputContainer>
-            <LinkButton
-              style={{ marginTop: '0.5rem', marginLeft: '-2px' }}
-              onClick={this.handleDeleteSandbox}
-            >
-              Delete Sandbox
-            </LinkButton>
-          </WorkspaceInputContainer>}
+        <StatsContainer>
+          <Stats
+            sandboxId={id}
+            viewCount={viewCount}
+            likeCount={likeCount}
+            forkCount={forkCount}
+          />
+        </StatsContainer>
       </div>
     );
   }

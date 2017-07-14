@@ -153,6 +153,9 @@ export default class CodeEditor extends React.PureComponent {
       } else if (kind[1] === 'html') {
         await System.import('codemirror/mode/htmlmixed/htmlmixed');
         return 'htmlmixed';
+      } else if (kind[1] === 'md') {
+        await System.import('codemirror/mode/markdown/markdown');
+        return 'markdown';
       }
     }
 
@@ -246,7 +249,12 @@ export default class CodeEditor extends React.PureComponent {
           } else {
             const spaces = Array(cm.getOption('indentUnit') + 1).join(' ');
             cm.replaceSelection(spaces, 'end', '+input');
-            cm.execCommand('emmetExpandAbbreviation');
+
+            try {
+              cm.execCommand('emmetExpandAbbreviation');
+            } catch (e) {
+              console.error(e);
+            }
           }
         },
         Enter: 'emmetInsertLineBreak',
