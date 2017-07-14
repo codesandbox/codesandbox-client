@@ -21,7 +21,6 @@ import Tags from './Tags';
 import WorkspaceItem from './WorkspaceItem';
 import SandboxActions from './SandboxActions';
 import Logo from './Logo';
-import Preferences from './Preferences';
 
 const Container = styled.div`
   position: absolute;
@@ -115,10 +114,6 @@ const Workspace = ({
           deleteSandbox={sandboxActions.deleteSandbox}
         />
       </WorkspaceItem>}
-
-    <WorkspaceItem title="Preferences">
-      <Preferences />
-    </WorkspaceItem>
   </Container>;
 
 // The skeleton to show if sandbox doesn't exist

@@ -20,7 +20,7 @@ const Container = styled.div`
 
 const ContentContainer = styled.div`
   flex: 2;
-  padding: 2rem 1rem;
+  padding: 2rem;
 `;
 
 const MENU_ITEMS = [
