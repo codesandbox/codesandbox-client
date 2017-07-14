@@ -47,7 +47,7 @@ const Body = styled.tbody`
 
   td {
     border: none;
-    padding: 0.55rem 0.5rem;
+    padding: 1rem 0.5rem;
     margin: 0;
     border-bottom: 1px solid rgba(0, 0, 0, 0.2);
   }
@@ -65,7 +65,13 @@ const SandboxRow = styled.tr`
   }
 `;
 
-export default ({ sandboxes, onDelete }: { sandboxes: Array<SmallSandbox>, onDelete: Function }) => (
+type Props = {
+  isCurrentUser: boolean;
+  sandboxes: Array<SmallSandbox>;
+  onDelete: Function;
+};
+
+export default ({ sandboxes, isCurrentUser, onDelete }: Props) => (
   <Table>
     <thead>
       <tr style={{ height: '3rem' }}>
@@ -75,7 +81,7 @@ export default ({ sandboxes, onDelete }: { sandboxes: Array<SmallSandbox>, onDel
         <StatTitle><FullHeartIcon /></StatTitle>
         <StatTitle><EyeIcon /></StatTitle>
         <StatTitle><ForkIcon /></StatTitle>
-        <HeaderTitle />
+        {isCurrentUser && <HeaderTitle />}
       </tr>
     </thead>
     <Body>
@@ -87,7 +93,10 @@ export default ({ sandboxes, onDelete }: { sandboxes: Array<SmallSandbox>, onDel
           <StatBody>{s.likeCount}</StatBody>
           <StatBody>{s.viewCount}</StatBody>
           <StatBody>{s.forkCount}</StatBody>
-          <StatBody><DeleteSandboxButton onClick={() => onDelete(s.id)} /></StatBody>
+          {isCurrentUser &&
+            <StatBody style={{padding: '0.55rem 0.5rem', cursor: 'pointer'}}>
+              <DeleteSandboxButton id={s.id} onDelete={onDelete} />
+            </StatBody>}
         </SandboxRow>
       ))}
     </Body>
