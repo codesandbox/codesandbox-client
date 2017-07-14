@@ -89,4 +89,4 @@ export const optionsToParameterizedUrl = (options: Object) => {
 };
 
 export const gitHubToSandboxUrl = (githubUrl: string) =>
-  githubUrl.replace('https://github.com', '/s/github');
+  githubUrl.replace(/https?:\/\/(www.)?github.com/, '/s/github');
