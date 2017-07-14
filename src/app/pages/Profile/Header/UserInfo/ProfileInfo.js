@@ -1,11 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
+import GithubIcon from 'react-icons/lib/go/mark-github';
+
 import Row from 'app/components/flex/Row';
 import Column from 'app/components/flex/Column';
 import delayEffect from 'app/utils/animation/delay-effect';
 import Margin from 'app/components/spacing/Margin';
-
-import GithubIcon from 'react-icons/lib/go/mark-github';
+import Tooltip from 'app/components/Tooltip';
+import Badge from 'app/utils/badges/Badge';
 
 const ProfileImage = styled.img`
   border-radius: 2px;
@@ -18,20 +20,21 @@ const ProfileImage = styled.img`
 `;
 
 const Name = styled.div`
+  ${delayEffect(0.1)};
+  display: flex;
+  align-items: center;
   font-size: 2rem;
   font-weight: 300;
   margin-bottom: 0.25rem;
-  ${delayEffect(0.1)}
 `;
 
 const Username = styled.div`
+  ${delayEffect(0.15)};
   display: flex;
   align-items: center;
   font-size: ${props => (props.main ? 1.5 : 1.25)}rem;
   font-weight: 200;
   color: ${props => (props.main ? 'white' : 'rgba(255, 255, 255, 0.6)')};
-  ${delayEffect(0.15)}
-
   margin-bottom: 1rem;
 `;
 
@@ -45,14 +48,27 @@ type Props = {
   username: string,
   name: string,
   avatarUrl: string,
+  badges: Array<{
+    id: string,
+    name: string,
+  }>,
 };
 
-export default ({ username, name, avatarUrl }: Props) => (
+const Badges = ({ badges }) =>
+  <Margin left={0.5}>
+    {badges.map(badge => <Badge key={badge.id} badge={badge} size={40} />)}
+  </Margin>;
+
+export default ({ username, badges, name, avatarUrl }: Props) =>
   <Row style={{ flex: 1 }}>
     <ProfileImage alt={username} height={175} width={175} src={avatarUrl} />
     <Margin bottom={3}>
       <Column justifyContent="space-between">
-        {name && <Name>{name}</Name>}
+        {name &&
+          <Name>
+            {name}
+            <Badges badges={badges} />
+          </Name>}
         <Username main={!name}>
           {username}
           <a
@@ -62,8 +78,8 @@ export default ({ username, name, avatarUrl }: Props) => (
           >
             <IconWrapper />
           </a>
+          {!name && <Badges badges={badges} />}
         </Username>
       </Column>
     </Margin>
-  </Row>
-);
+  </Row>;

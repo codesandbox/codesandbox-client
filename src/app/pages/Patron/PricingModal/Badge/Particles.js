@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
 
-import badges from './badge-info';
+import badges from 'app/utils/badges/patron-info';
 
 const classNameRegex = /\shide/g;
 function showElement(el: HTMLElement) {

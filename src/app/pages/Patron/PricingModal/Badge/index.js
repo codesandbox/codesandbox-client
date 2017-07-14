@@ -2,9 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 
 import Relative from 'app/components/Relative';
+import badges from 'app/utils/badges/patron-info';
 
 import './animations.css';
-import badges from './badge-info';
 import Particles from './Particles';
 
 const BadgeContainer = styled.div`
@@ -28,7 +28,7 @@ const Badge = ({ badge }: Props) => {
   const BadgeComponent = badges[badge].Badge;
   return (
     <BadgeContainer>
-      <BadgeComponent style={{ zIndex: 20 }} className={`badge ${badge}`} />
+      <img src={BadgeComponent} className={`badge ${badge}`} alt={badge} />
     </BadgeContainer>
   );
 };

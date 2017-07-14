@@ -13,13 +13,14 @@ import SignInButton from 'app/containers/SignInButton';
 import { loggedInSelector } from 'app/store/user/selectors';
 import userActionCreators from 'app/store/user/actions';
 
+import badges from 'app/utils/badges/patron-info';
+
 import Range from './Range';
 import SubscribeForm from './SubscribeForm';
 import ChangeSubscription from './ChangeSubscription';
 import ThankYou from './ThankYou';
 
 import Title from '../Title';
-import badges from '../Badge/badge-info';
 
 const Container = styled.div`padding: 1rem 0;`;
 

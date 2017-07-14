@@ -68,6 +68,10 @@ export type User = {
   forkedCount: number,
   sandboxes: PaginatedSandboxes,
   likedSandboxes: PaginatedSandboxes,
+  badges: Array<{
+    id: string,
+    name: string,
+  }>,
 };
 
 export type GitInfo = {

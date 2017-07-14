@@ -1,9 +1,9 @@
-import Rupee from '-!svg-react-loader!./RupeeBadge.svg';
-import Sapphire from '-!svg-react-loader!./SapphireBadge.svg';
-import Ruby from '-!svg-react-loader!./RubyBadge.svg';
-import Diamond from '-!svg-react-loader!./DiamondBadge.svg';
+import Rupee from './svg/RupeeBadge.svg';
+import Sapphire from './svg/SapphireBadge.svg';
+import Ruby from './svg/RubyBadge.svg';
+import Diamond from './svg/DiamondBadge.svg';
 
-export default {
+const info = {
   ruby: {
     Badge: Ruby,
     particleCount: 10,
@@ -25,3 +25,10 @@ export default {
     color: '#61B7E6',
   },
 };
+
+// Preload the images
+Object.keys(info).forEach(badge => {
+  new Image().src = info[badge].Badge;
+});
+
+export default info;
