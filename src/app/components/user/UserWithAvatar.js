@@ -26,8 +26,8 @@ type Props = {
   username: string,
 };
 
-export default ({ avatarUrl, username }: Props) =>
-  <CenteredText>
+export default ({ avatarUrl, username, ...props }: Props) =>
+  <CenteredText {...props}>
     <Image src={avatarUrl} alt={username} />
     <AuthorName>
       {username}

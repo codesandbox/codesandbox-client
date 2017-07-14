@@ -7,7 +7,8 @@ import FullHeartIcon from 'react-icons/lib/fa/heart';
 import EyeIcon from 'react-icons/lib/fa/eye';
 import ForkIcon from 'react-icons/lib/go/repo-forked';
 
-import GithubBadge from './GithubBadge';
+import UserWithAvatar from 'app/components/user/UserWithAvatar';
+import GithubBadge from 'app/components/sandbox/GithubBadge';
 
 const CenteredText = styled.div`
   display: inline-flex;
@@ -15,16 +16,6 @@ const CenteredText = styled.div`
   align-items: center;
   flex-direction: row;
 `;
-
-const AuthorName = styled.span`
-  text-transform: uppercase;
-  margin: 0 0.5rem;
-  margin-right: 1rem;
-  font-size: .75rem;
-  font-weight: 400;
-`;
-
-const Image = styled.img`border-radius: 4px;`;
 
 const UpdatedAt = styled.em`font-size: .75rem;`;
 
@@ -41,6 +32,10 @@ const Stats = styled.div`
   flex-direction: row;
 `;
 
+const StyledUser = styled(UserWithAvatar)`
+  font-size: .75rem;
+`;
+
 type Props = {
   author: ?{
     avatarUrl: string,
@@ -50,6 +45,10 @@ type Props = {
   viewCount: number,
   forkCount: number,
   likeCount: number,
+  git: {
+    username: string,
+    repot: string,
+  },
 };
 
 const Stat = ({ Icon, count }) =>
@@ -76,17 +75,7 @@ export default ({
 }: Props) =>
   <CenteredText>
     {author &&
-      <CenteredText>
-        <Image
-          width={20}
-          height={20}
-          src={author.avatar_url}
-          alt={author.username}
-        />
-        <AuthorName>
-          {author.username}
-        </AuthorName>
-      </CenteredText>}
+      <StyledUser avatarUrl={author.avatar_url} username={author.username} />}
     {git && <GithubBadge username={git.username} repo={git.repo} />}
 
     <UpdatedAt>
