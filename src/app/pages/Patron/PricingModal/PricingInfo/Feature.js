@@ -6,6 +6,12 @@ const Container = styled.tr`
   font-size: 1.125rem;
   font-weight: 400;
   color: rgba(255, 255, 255, 0.8);
+
+  ${props =>
+    props.disabled &&
+    css`
+    opacity: 0.5;
+  `};
 `;
 
 const Feature = styled.td`
@@ -30,10 +36,11 @@ type Props = {
   feature: string,
   free: string,
   supporter: string,
+  disabled: boolean,
 };
 
-export default ({ feature, free, supporter }: Props) =>
-  <Container>
+export default ({ disabled, feature, free, supporter }: Props) =>
+  <Container disabled={disabled}>
     <Feature>
       {feature}
     </Feature>

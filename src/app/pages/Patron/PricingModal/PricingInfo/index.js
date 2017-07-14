@@ -27,14 +27,19 @@ export default () =>
         <tr>
           <th />
           <CenteredHeader>Free</CenteredHeader>
-          <CenteredHeader supporter>Supporter</CenteredHeader>
+          <CenteredHeader supporter>Patron</CenteredHeader>
         </tr>
       </thead>
       <tbody>
         <Feature feature="Sandbox Limit" free="50" supporter="Unlimited" />
         <Feature feature="Dependency Limit" free="20" supporter="40" />
         <Feature feature="Private Sandboxes" free="No" supporter="Yes" />
-        <Feature feature="Static File Hosting" free="10Mb" supporter="1Gb" />
+        <Feature
+          disabled
+          feature="Static File Hosting"
+          free="10Mb"
+          supporter="1Gb"
+        />
       </tbody>
     </table>
   </Container>;

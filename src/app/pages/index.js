@@ -58,8 +58,8 @@ const GitHub = Loadable({
   loader: () => import('./GitHub'),
   LoadingComponent: Loading,
 });
-const Support = Loadable({
-  loader: () => import('./Support'),
+const Patron = Loadable({
+  loader: () => import('./Patron'),
   LoadingComponent: Loading,
 });
 
@@ -110,7 +110,7 @@ class Routes extends React.PureComponent {
             <Route path="/signin/:jwt?" component={SignIn} />
             <Route path="/u/:username" component={Profile} />
             <Route path="/search" component={Search} />
-            <Route path="/support" component={Support} />
+            <Route path="/patron" component={Patron} />
             <Route path="/cli/login" component={CLI} />
             <Route component={NotFound} />
           </Switch>

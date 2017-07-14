@@ -90,9 +90,6 @@ export default class Particles extends React.PureComponent {
 
     if (!this.props.makeItRain && nextProps.makeItRain) {
       this.makeItRain();
-      setTimeout(this.makeItRain, 500);
-      setTimeout(this.makeItRain, 1000);
-      setTimeout(this.makeItRain, 1500);
     }
 
     return false;

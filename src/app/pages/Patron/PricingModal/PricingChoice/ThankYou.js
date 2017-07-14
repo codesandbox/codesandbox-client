@@ -2,9 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 
 import Margin from 'app/components/spacing/Margin';
+import delay from 'app/utils/animation/delay-effect';
 
 const Title = styled.div`
-  transition: 0.3s ease all;
+  ${delay(0)} transition: 0.3s ease all;
   text-align: center;
   font-size: 2rem;
   font-weight: 300;
@@ -12,7 +13,7 @@ const Title = styled.div`
 `;
 
 const SubTitle = styled.div`
-  font-size: 1.25rem;
+  ${delay(0.1)} font-size: 1.25rem;
   font-weight: 300;
   margin: 1rem;
   margin-bottom: 0rem;

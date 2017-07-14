@@ -19,14 +19,14 @@ const Content = styled.div`
 
 export default class Support extends React.PureComponent {
   render() {
-    document.title = 'Supporter - CodeSandbox';
+    document.title = 'Patron - CodeSandbox';
     return (
       <MaxWidth>
         <Margin vertical={1.5} horizontal={1.5}>
-          <Navigation title="Supporter" />
+          <Navigation title="Become a Patron" />
           <Content>
             <MaxWidth width={1024}>
-              <Title>Become a CodeSandbox Supporter!</Title>
+              <Title>Become a CodeSandbox Patron!</Title>
               <SubTitle>
                 Support CodeSandbox by paying a monthly amount of your choice
               </SubTitle>
