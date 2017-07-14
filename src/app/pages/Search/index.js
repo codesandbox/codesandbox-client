@@ -30,32 +30,45 @@ const StyledTitle = styled(Title)`
   font-size: 2rem;
 `;
 
-export default class Search extends React.PureComponent {
-  render() {
-    document.title = 'Search - CodeSandbox';
-    return (
-      <MaxWidth>
-        <Margin vertical={1.5} horizontal={1.5}>
-          <Navigation title="Search" />
-          <Content>
-            <MaxWidth width={1024}>
-              <InstantSearch
-                appId={ALGOLIA_APPLICATION_ID}
-                apiKey={ALGOLIA_API_KEY}
-                indexName={ALGOLIA_DEFAULT_INDEX}
-              >
-                <StyledTitle>Search for a sandbox</StyledTitle>
-                <PoweredBy />
-                <SearchBox />
-                <Row alignItems="flex-start">
-                  <Results />
-                  <Filters />
-                </Row>
-              </InstantSearch>
-            </MaxWidth>
-          </Content>
-        </Margin>
-      </MaxWidth>
-    );
-  }
-}
+const SEARCHABLE_THINGS = [
+  'dependency',
+  'user',
+  'sandbox title',
+  'sandbox tag',
+  'github repository',
+];
+
+const getRandomSearch = () =>
+  SEARCHABLE_THINGS[Math.floor(Math.random() * SEARCHABLE_THINGS.length)];
+
+export default () => {
+  document.title = 'Search - CodeSandbox';
+  return (
+    <MaxWidth>
+      <Margin vertical={1.5} horizontal={1.5}>
+        <Navigation title="Search" />
+        <Content>
+          <MaxWidth width={1024}>
+            <InstantSearch
+              appId={ALGOLIA_APPLICATION_ID}
+              apiKey={ALGOLIA_API_KEY}
+              indexName={ALGOLIA_DEFAULT_INDEX}
+            >
+              <StyledTitle>Sandbox Search</StyledTitle>
+              <PoweredBy />
+              <SearchBox
+                translations={{
+                  placeholder: `Search for a ${getRandomSearch()}...`,
+                }}
+              />
+              <Row alignItems="flex-start">
+                <Results />
+                <Filters />
+              </Row>
+            </InstantSearch>
+          </MaxWidth>
+        </Content>
+      </Margin>
+    </MaxWidth>
+  );
+};
