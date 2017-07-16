@@ -10,6 +10,15 @@ export const isMainModule = (module: Module) =>
 export const findMainModule = (modules: Module[]) =>
   modules.find(isMainModule) || modules[0];
 
+export const findCurrentModule = (
+  modules: Module[],
+  currentModuleId: string,
+  mainModule: Module,
+): Module =>
+  modules.find(m => m.id === currentModuleId) ||
+  modules.find(m => m.shortid === currentModuleId) || // deep-links requires this
+  mainModule;
+
 function findById(entities: Array<Module | Directory>, id: string) {
   return entities.find(e => e.id === id);
 }
@@ -34,6 +43,28 @@ export const getModulePath = (
     directory = findByShortid(directories, directory.directoryShortid);
   }
   return path;
+};
+
+/**
+ * Return an array of the ids of the directories that are the parents of the given module
+ */
+export const getModuleParents = (
+  modules: Array<Module>,
+  directories: Array<Directory>,
+  id: string,
+) => {
+  const module = findById(modules, id);
+
+  if (!module) return [];
+
+  let directory = findByShortid(directories, module.directoryShortid);
+  let directoryIds = [];
+  while (directory != null) {
+    directoryIds = [...directoryIds, directory.id];
+    directory = findByShortid(directories, directory.directoryShortid);
+  }
+
+  return directoryIds;
 };
 
 export const modulesFromSandboxSelector = createSelector(

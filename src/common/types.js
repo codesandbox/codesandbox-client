@@ -84,6 +84,8 @@ export type Sandbox = {
   userLiked: boolean,
   modules: Array<string | Module>,
   currentModule: ?string,
+  isInProjectView: ?boolean,
+  initialPath?: string,
   directories: Array<string | Directory>,
   owned: boolean,
   npmDependencies: {

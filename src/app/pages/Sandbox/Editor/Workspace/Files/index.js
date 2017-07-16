@@ -9,6 +9,7 @@ import { DragDropContext } from 'react-dnd';
 import {
   modulesFromSandboxSelector,
   findMainModule,
+  findCurrentModule,
 } from 'app/store/entities/sandboxes/modules/selectors';
 import { directoriesFromSandboxSelector } from 'app/store/entities/sandboxes/directories/selectors';
 
@@ -47,12 +48,15 @@ class Files extends React.PureComponent {
 
   render() {
     const { sandbox, modules, directories } = this.props;
+    if (sandbox == null) return null;
 
     const mainModule = findMainModule(modules);
-
-    const { currentModule } = sandbox;
-
-    if (sandbox == null) return null;
+    const { currentModule: currentModuleId } = sandbox;
+    const currentModule = findCurrentModule(
+      modules,
+      currentModuleId,
+      mainModule,
+    );
 
     return (
       <DirectoryEntry
@@ -62,8 +66,7 @@ class Files extends React.PureComponent {
         modules={sortBy(modules, 'title')}
         directories={sortBy(directories, 'title')}
         isInProjectView={sandbox.isInProjectView}
-        // $FlowIssue
-        currentModuleId={currentModule || mainModule.id}
+        currentModuleId={currentModule.id}
         errors={sandbox.errors}
         id={null}
         shortid={null}

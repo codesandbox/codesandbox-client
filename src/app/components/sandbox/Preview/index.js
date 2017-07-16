@@ -29,6 +29,7 @@ const StyledFrame = styled.iframe`
 
 type Props = {
   sandboxId: string,
+  initialPath: ?string,
   isInProjectView: boolean,
   modules: Array<Module>,
   directories: Array<Directory>,
@@ -56,6 +57,8 @@ type State = {
 };
 
 export default class Preview extends React.PureComponent {
+  initialPath: string;
+
   constructor(props: Props) {
     super(props);
 
@@ -63,13 +66,18 @@ export default class Preview extends React.PureComponent {
       frameInitialized: false,
       history: [],
       historyPosition: 0,
-      urlInAddressBar: '',
+      urlInAddressBar: props.initialPath || '',
       url: null,
     };
 
     if (!props.noDelay) {
       this.executeCode = debounce(this.executeCode, 800);
     }
+
+    // we need a value that doesn't change when receiving `initialPath`
+    // from the query params, or the iframe will continue to be re-rendered
+    // when the user navigates the iframe app, which shows the loading screen
+    this.initialPath = this.state.urlInAddressBar;
   }
 
   static defaultProps = {
@@ -252,6 +260,7 @@ export default class Preview extends React.PureComponent {
     const { history, historyPosition } = this.state;
 
     document.getElementById('sandbox').src = frameUrl(history[historyPosition]);
+
     this.setState({
       urlInAddressBar: history[historyPosition],
     });
@@ -350,7 +359,7 @@ export default class Preview extends React.PureComponent {
           />}
         <StyledFrame
           sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups allow-presentation"
-          src={frameUrl()}
+          src={frameUrl(this.initialPath)}
           id="sandbox"
           hideNavigation={hideNavigation}
         />

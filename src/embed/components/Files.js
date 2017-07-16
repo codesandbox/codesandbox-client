@@ -7,9 +7,7 @@ import type { Module, Directory } from 'common/types';
 
 import File from './File';
 
-const Container = styled.div`
-  line-height: 1;
-`;
+const Container = styled.div`line-height: 1;`;
 
 type Props = {
   modules: Array<Module>,
@@ -38,7 +36,7 @@ const Files = ({
 
   return (
     <Container>
-      {sortBy(childrenDirectories, d => d.title).map(d => (
+      {sortBy(childrenDirectories, d => d.title).map(d =>
         <div key={d.shortid}>
           <File
             id={d.shortid}
@@ -55,9 +53,9 @@ const Files = ({
             setCurrentModule={setCurrentModule}
             currentModule={currentModule}
           />
-        </div>
-      ))}
-      {sortBy(childrenModules, m => m.title).map(m => (
+        </div>,
+      )}
+      {sortBy(childrenModules, m => m.title).map(m =>
         <File
           id={m.shortid}
           title={m.title}
@@ -67,8 +65,8 @@ const Files = ({
           setCurrentModule={setCurrentModule}
           active={m.shortid === currentModule}
           alternative={m.title === 'index.js' && m.directoryShortid == null}
-        />
-      ))}
+        />,
+      )}
     </Container>
   );
 };
