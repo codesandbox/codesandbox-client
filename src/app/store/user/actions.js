@@ -1,9 +1,13 @@
 // @flow
+import React from 'react';
 import { signInUrl } from 'app/utils/url-generator';
 import { identify } from 'app/utils/analytics';
 
+import SignOutNotice from 'app/containers/modals/SignOutNotice';
+
 import { createAPIActions, doRequest } from '../api/actions';
 import notifActions from '../notifications/actions';
+import modalActions from '../modal/actions';
 
 import openPopup from './utils/popup';
 import { resetJwt, setJwt } from './utils/jwt';
@@ -28,12 +32,14 @@ export const LOAD_USER_SANDBOXES = createAPIActions(
 export const SEND_FEEDBACK_API = createAPIActions('FEEDBACK', 'SEND');
 export const GET_AUTH_TOKEN_API = createAPIActions('AUTH_TOKEN', 'FETCH');
 
-const signOut = () => async (dispatch: Function) => {
-  await dispatch(
-    doRequest(SIGN_OUT_API, 'users/signout', {
-      method: 'DELETE',
-    }),
-  );
+const signOut = (apiRequest = true) => async (dispatch: Function) => {
+  if (apiRequest) {
+    await dispatch(
+      doRequest(SIGN_OUT_API, 'users/signout', {
+        method: 'DELETE',
+      }),
+    );
+  }
 
   await resetJwt();
 
@@ -55,7 +61,13 @@ const getCurrentUser = () => async (dispatch: Function, getState: Function) => {
       dispatch({ type: SET_CURRENT_USER, data });
       return data;
     } catch (e) {
-      await resetJwt();
+      if (e.response.status === 401) {
+        dispatch(
+          modalActions.openModal({ Body: <SignOutNotice />, width: 500 }),
+        );
+        await dispatch(signOut(false));
+      }
+      return null;
     }
   }
 };
