@@ -7,15 +7,17 @@ import WorkspaceInputContainer from '../WorkspaceInputContainer';
 type Props = {
   id: string,
   deleteSandbox: (id: string) => void,
+  newSandboxUrl: () => void,
 };
 
 export default class SandboxSettings extends React.PureComponent {
   props: Props;
 
-  handleDeleteSandbox = () => {
-    const really = confirm('Are you sure you want to delete this sandbox?');
+  handleDeleteSandbox = async () => {
+    const really = confirm('Are you sure you want to delete this sandbox?'); // TODO: confirm???
     if (really) {
-      this.props.deleteSandbox(this.props.id);
+      await this.props.deleteSandbox(this.props.id);
+      await this.props.newSandboxUrl();
     }
   };
 

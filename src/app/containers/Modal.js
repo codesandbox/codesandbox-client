@@ -74,7 +74,7 @@ const ModalTitle = styled.h1`
   margin: 0;
   font-size: 1.25rem;
   text-align: center;
-  background-image: linear-gradient(-225deg, #31B0FF 0%, #47A8E5 100%);
+  background-image: linear-gradient(-225deg, #31b0ff 0%, #47a8e5 100%);
 `;
 
 const ModalBody = styled.div`
@@ -130,9 +130,10 @@ class ModalContainer extends React.PureComponent {
       >
         {modal.open &&
           <BaseModal>
-            <ModalTitle>
-              {modal.title}
-            </ModalTitle>
+            {modal.title &&
+              <ModalTitle>
+                {modal.title}
+              </ModalTitle>}
             <ModalBody>
               {modal.Body}
             </ModalBody>
