@@ -7,7 +7,7 @@ export const getSandboxOptions = (url: string) => {
     result.currentModule = moduleMatch[3];
   }
 
-  const initialPathMatch = url.match(/(\?|&)(initialPath)=([^&]+)/);
+  const initialPathMatch = url.match(/(\?|&)(initialpath)=([^&]+)/);
   if (initialPathMatch) {
     result.initialPath = decodeURIComponent(initialPathMatch[3]);
   }
@@ -19,7 +19,7 @@ export const getSandboxOptions = (url: string) => {
 
   result.isPreviewScreen = url.includes('view=preview');
   result.isEditorScreen = url.includes('view=editor');
-  
+
   // If there is no view specified and the width of the window is <800 we want
   // to default to preview
   if (!result.isPreviewScreen && !result.isEditorScreen) {
@@ -29,7 +29,7 @@ export const getSandboxOptions = (url: string) => {
   }
 
   result.hideNavigation = url.includes('hidenavigation=1');
-  result.isInProjectView = !url.includes('isFileEval=1');
+  result.isInProjectView = !url.includes('moduleview=1');
   result.autoResize = url.includes('autoresize=1');
 
   return result;

@@ -35,7 +35,7 @@ const CancelDefaultModule = styled.div`
   position: relative;
   top: -10px;
   cursor: pointer;
-`
+`;
 
 const FilesContainer = styled.div`
   max-height: 300px;
@@ -153,30 +153,17 @@ const mapStateToProps = createSelector(
 class ShareView extends React.PureComponent {
   props: Props;
 
-  constructor(props, context) {
-    super(props, context);
+  state = {
+    showEditor: true,
+    showPreview: true,
+    defaultModule: null,
+    autoResize: false,
+    hideNavigation: false,
+    isCurrentModuleView: false,
+    fontSize: 14,
+    initialPath: '',
+  };
 
-    this.state = {
-      showEditor: true,
-      showPreview: true,
-      defaultModule: null,
-      autoResize: false,
-      hideNavigation: false,
-      isFileEval: !props.sandbox.isInProjectView, // thats why i moved this to the constructor :)
-      fontSize: 14,
-      initialPath: ''
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const { sandbox: { isInProjectView } } = nextProps
-
-    if (isInProjectView !== this.props.sandbox.isInProjectView) {
-      this.setState({ isFileEval: !isInProjectView })
-    }
-  }
-
-  
   handleChange = e => this.setState({ message: e.target.value });
 
   handleSend = () => {
@@ -202,9 +189,9 @@ class ShareView extends React.PureComponent {
       showPreview,
       autoResize,
       hideNavigation,
-      isFileEval,
+      isCurrentModuleView,
       fontSize,
-      initialPath
+      initialPath,
     } = this.state;
 
     const options = {};
@@ -228,8 +215,8 @@ class ShareView extends React.PureComponent {
       options.hidenavigation = 1;
     }
 
-    if (isFileEval) {
-      options.isFileEval = 1;
+    if (isCurrentModuleView) {
+      options.moduleview = 1;
     }
 
     if (fontSize !== 14) {
@@ -237,7 +224,7 @@ class ShareView extends React.PureComponent {
     }
 
     if (initialPath) {
-      options.initialPath = initialPath;
+      options.initialpath = initialPath;
     }
 
     return optionsToParameterizedUrl(options);
@@ -254,10 +241,10 @@ class ShareView extends React.PureComponent {
 
     return protocolAndHost() + embedUrl(sandbox) + this.getOptionsUrl();
   };
-  
+
   setInitialPath = ({ target }) => {
-    const initialPath = target.value
-    this.setState({ initialPath })
+    const initialPath = target.value;
+    this.setState({ initialPath });
   };
 
   getIframeScript = () =>
@@ -291,8 +278,8 @@ class ShareView extends React.PureComponent {
     this.setState({ hideNavigation });
   };
 
-  setIsFileEval = (isFileEval: boolean) => {
-    this.setState({ isFileEval });
+  setIsCurrentModuleView = (isCurrentModuleView: boolean) => {
+    this.setState({ isCurrentModuleView });
   };
 
   setFontSize = (fontSize: number) => [this.setState({ fontSize })];
@@ -305,9 +292,9 @@ class ShareView extends React.PureComponent {
       showPreview,
       autoResize,
       hideNavigation,
-      isFileEval,
+      isCurrentModuleView,
       fontSize,
-      initialPath
+      initialPath,
     } = this.state;
 
     const defaultModule =
@@ -343,9 +330,10 @@ class ShareView extends React.PureComponent {
                       setValue={this.setHideNavigation}
                     />
                     <PaddedPreference
-                      title="File eval"
-                      value={isFileEval}
-                      setValue={this.setIsFileEval}
+                      title="Current Module View"
+                      tooltip="Only show the module that's currently open"
+                      value={isCurrentModuleView}
+                      setValue={this.setIsCurrentModuleView}
                     />
                     <PaddedPreference
                       title="Font size"
@@ -357,9 +345,9 @@ class ShareView extends React.PureComponent {
                     <LinkName>Project Initial Path</LinkName>
                     <input
                       onFocus={this.select}
-                      placeholder='e.g: /home'
+                      placeholder="e.g: /home"
                       value={initialPath}
-                      onChange={this.setInitialPath} 
+                      onChange={this.setInitialPath}
                     />
                   </Inputs>
                   <div>
@@ -383,11 +371,10 @@ class ShareView extends React.PureComponent {
                   </div>
                   <div>
                     <h4>Default module to show</h4>
-                    {this.state.defaultModule  &&
+                    {this.state.defaultModule &&
                       <CancelDefaultModule onClick={this.clearDefaultModule}>
                         cancel
-                      </CancelDefaultModule>
-                    }
+                      </CancelDefaultModule>}
 
                     <FilesContainer>
                       <Files
