@@ -63,6 +63,8 @@ export default class App extends React.PureComponent {
 
     const {
       currentModule,
+      initialPath,
+      isInProjectView,
       isPreviewScreen,
       isEditorScreen,
       autoResize,
@@ -76,8 +78,9 @@ export default class App extends React.PureComponent {
       fontSize: fontSize || 16,
       showEditor: !isPreviewScreen,
       showPreview: !isEditorScreen,
-      isInProjectView: !currentModule,
+      isInProjectView,
       currentModule,
+      initialPath,
       sidebarOpen: false,
       autoResize,
       hideNavigation,
@@ -103,14 +106,13 @@ export default class App extends React.PureComponent {
         .then(res => res.json())
         .then(camelizeKeys);
 
-      this.setState({
-        sandbox: response.data,
-        currentModule:
-          this.state.currentModule ||
-          response.data.modules.find(
-            m => m.title === 'index.js' && m.directoryShortid == null,
-          ).shortid,
-      });
+      const currentModule =
+        this.state.currentModule ||
+        response.data.modules.find(
+          m => m.title === 'index.js' && m.directoryShortid == null,
+        ).shortid;
+
+      this.setState({ sandbox: response.data, currentModule });
     } catch (e) {
       this.setState({ notFound: true });
     }
@@ -182,6 +184,7 @@ export default class App extends React.PureComponent {
           hideNavigation={this.state.hideNavigation}
           autoResize={this.state.autoResize}
           fontSize={this.state.fontSize}
+          initialPath={this.state.initialPath}
         />
       </Container>
     );

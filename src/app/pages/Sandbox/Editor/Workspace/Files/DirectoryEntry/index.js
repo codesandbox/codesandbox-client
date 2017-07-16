@@ -9,17 +9,19 @@ import type { Module, Directory, ModuleError } from 'common/types';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 import { validateTitle } from 'app/store/entities//sandboxes/modules/validator';
 import contextMenuActionCreators from 'app/store/context-menu/actions';
+import { getModuleParents } from 'app/store/entities/sandboxes/modules/selectors';
 
 import Entry from './Entry';
 import DirectoryChildren from './DirectoryChildren';
 
-const EntryContainer = styled.div`
-  position: relative;
-`;
+const EntryContainer = styled.div`position: relative;`;
 
 const Overlay = styled.div`
   position: absolute;
-  top: 0; bottom: 0; left: 0; right: 0;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
   background-color: rgba(0, 0, 0, 0.3);
   display: ${props => (props.isOver ? 'block' : 'none')};
 `;
@@ -61,9 +63,18 @@ class DirectoryEntry extends React.PureComponent {
   constructor(props) {
     super(props);
 
+    const { id, modules, directories, currentModuleId } = this.props;
+    const currentModuleParents = getModuleParents(
+      modules,
+      directories,
+      currentModuleId,
+    );
+
+    const isParentOfModule = currentModuleParents.includes(id);
+
     this.state = {
       creating: '',
-      open: props.root,
+      open: props.root || isParentOfModule,
     };
   }
 

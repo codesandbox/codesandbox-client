@@ -11,7 +11,9 @@ const ChildContainer = styled.div`
   overflow: ${props => (props.open ? 'inherit' : 'hidden')};
   height: ${props => (props.open ? '100%' : 0)};
 
-  ${({ disabled }) => disabled && `
+  ${({ disabled }) =>
+    disabled &&
+    `
     pointer-events: none;
 
     &:after {
@@ -29,7 +31,7 @@ const ChildContainer = styled.div`
       right: 0;
       background-color: rgba(0, 0, 0, 0.4);
     }
-  `}
+  `};
 `;
 
 const ItemHeader = styled.div`
@@ -86,7 +88,9 @@ export default class WorkspaceItem extends React.PureComponent {
     return (
       <div>
         <ItemHeader onClick={this.toggleOpen}>
-          <Title>{title}</Title>
+          <Title>
+            {title}
+          </Title>
           <ExpandIconContainer open={open} />
         </ItemHeader>
         <ChildContainer disabled={disabled} open={open}>

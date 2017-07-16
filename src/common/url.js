@@ -7,6 +7,11 @@ export const getSandboxOptions = (url: string) => {
     result.currentModule = moduleMatch[3];
   }
 
+  const initialPathMatch = url.match(/(\?|&)(initialpath)=([^&]+)/);
+  if (initialPathMatch) {
+    result.initialPath = decodeURIComponent(initialPathMatch[3]);
+  }
+
   const fontSizeMatch = url.match(/(\?|&)(fontsize)=([^&]+)/);
   if (fontSizeMatch) {
     result.fontSize = +fontSizeMatch[3];
@@ -24,6 +29,7 @@ export const getSandboxOptions = (url: string) => {
   }
 
   result.hideNavigation = url.includes('hidenavigation=1');
+  result.isInProjectView = !url.includes('moduleview=1');
   result.autoResize = url.includes('autoresize=1');
 
   return result;

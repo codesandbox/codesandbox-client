@@ -144,13 +144,16 @@ const mapStateToProps = createSelector(
 );
 class ShareView extends React.PureComponent {
   props: Props;
+
   state = {
     showEditor: true,
     showPreview: true,
     defaultModule: null,
     autoResize: false,
     hideNavigation: false,
+    isCurrentModuleView: false,
     fontSize: 14,
+    initialPath: '',
   };
 
   handleChange = e => this.setState({ message: e.target.value });
@@ -169,6 +172,7 @@ class ShareView extends React.PureComponent {
   setMixedView = () => this.setState({ showEditor: true, showPreview: true });
 
   setDefaultModule = id => this.setState({ defaultModule: id });
+  clearDefaultModule = () => this.setState({ defaultModule: null });
 
   getOptionsUrl = () => {
     const {
@@ -177,12 +181,15 @@ class ShareView extends React.PureComponent {
       showPreview,
       autoResize,
       hideNavigation,
+      isCurrentModuleView,
       fontSize,
+      initialPath,
     } = this.state;
 
     const options = {};
 
-    if (defaultModule) {
+    const mainModuleShortid = findMainModule(this.props.modules).shortid;
+    if (defaultModule && defaultModule !== mainModuleShortid) {
       options.module = defaultModule;
     }
 
@@ -201,8 +208,16 @@ class ShareView extends React.PureComponent {
       options.hidenavigation = 1;
     }
 
+    if (isCurrentModuleView) {
+      options.moduleview = 1;
+    }
+
     if (fontSize !== 14) {
       options.fontsize = fontSize;
+    }
+
+    if (initialPath) {
+      options.initialpath = initialPath;
     }
 
     return optionsToParameterizedUrl(options);
@@ -218,6 +233,11 @@ class ShareView extends React.PureComponent {
     const { sandbox } = this.props;
 
     return protocolAndHost() + embedUrl(sandbox) + this.getOptionsUrl();
+  };
+
+  setInitialPath = ({ target }) => {
+    const initialPath = target.value;
+    this.setState({ initialPath });
   };
 
   getIframeScript = () =>
@@ -251,20 +271,27 @@ class ShareView extends React.PureComponent {
     this.setState({ hideNavigation });
   };
 
+  setIsCurrentModuleView = (isCurrentModuleView: boolean) => {
+    this.setState({ isCurrentModuleView });
+  };
+
   setFontSize = (fontSize: number) => [this.setState({ fontSize })];
 
   render() {
     const { sandbox, modules, directories } = this.props;
+
     const {
       showEditor,
       showPreview,
       autoResize,
       hideNavigation,
+      isCurrentModuleView,
       fontSize,
+      initialPath,
     } = this.state;
 
     const defaultModule =
-      this.state.defaultModule || findMainModule(modules).id;
+      this.state.defaultModule || findMainModule(modules).shortid;
 
     return (
       <Container>
@@ -296,11 +323,26 @@ class ShareView extends React.PureComponent {
                       setValue={this.setHideNavigation}
                     />
                     <PaddedPreference
+                      title="Show current module view"
+                      tooltip="Only show the module that's currently open"
+                      value={isCurrentModuleView}
+                      setValue={this.setIsCurrentModuleView}
+                    />
+                    <PaddedPreference
                       title="Font size"
                       value={fontSize}
                       setValue={this.setFontSize}
                     />
                   </div>
+                  <Inputs>
+                    <LinkName>Project Initial Path</LinkName>
+                    <input
+                      onFocus={this.select}
+                      placeholder="e.g: /home"
+                      value={initialPath}
+                      onChange={this.setInitialPath}
+                    />
+                  </Inputs>
                   <div>
                     <h4>Default view</h4>
                     <div
@@ -321,13 +363,13 @@ class ShareView extends React.PureComponent {
                     </div>
                   </div>
                   <div>
-                    <h4>Default module to show and preview</h4>
+                    <h4>Default module to show</h4>
 
                     <FilesContainer>
                       <Files
                         modules={modules}
-                        directories={directories}
                         directoryId={null}
+                        directories={directories}
                         currentModule={defaultModule}
                         setCurrentModule={this.setDefaultModule}
                       />

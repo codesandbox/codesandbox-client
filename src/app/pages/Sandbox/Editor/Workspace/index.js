@@ -43,9 +43,6 @@ type Props = {
   user: User,
 };
 
-const mapDispatchToProps = dispatch => ({
-  sandboxActions: bindActionCreators(sandboxActionCreators, dispatch),
-});
 const mapStateToProps = createSelector(
   modulesFromSandboxNotSavedSelector,
   usersSelector,
@@ -55,6 +52,11 @@ const mapStateToProps = createSelector(
     user: users[author],
   }),
 );
+
+const mapDispatchToProps = dispatch => ({
+  sandboxActions: bindActionCreators(sandboxActionCreators, dispatch),
+});
+
 const Workspace = ({
   sandbox,
   user,

@@ -17,15 +17,19 @@ export default new schema.Entity(
     processStrategy: sandbox => {
       const {
         currentModule,
+        initialPath,
+        isInProjectView,
         isEditorScreen,
         isPreviewScreen,
       } = getSandboxOptions(document.location.href);
+
       return {
         ...sandbox,
-        isInProjectView: currentModule == null,
+        isInProjectView,
         showEditor: !isPreviewScreen,
         showPreview: !isEditorScreen,
         currentModule,
+        initialPath,
         errors: [],
       };
     },
