@@ -9,6 +9,7 @@ import type { Module, Directory, ModuleError } from 'common/types';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 import { validateTitle } from 'app/store/entities//sandboxes/modules/validator';
 import contextMenuActionCreators from 'app/store/context-menu/actions';
+import { getModuleParents } from 'app/store/entities/sandboxes/modules/selectors';
 
 import Entry from './Entry';
 import DirectoryChildren from './DirectoryChildren';
@@ -62,9 +63,18 @@ class DirectoryEntry extends React.PureComponent {
   constructor(props) {
     super(props);
 
+    const { id, modules, directories, currentModuleId } = this.props;
+    const currentModuleParents = getModuleParents(
+      modules,
+      directories,
+      currentModuleId,
+    );
+
+    const isParentOfModule = currentModuleParents.includes(id);
+
     this.state = {
       creating: '',
-      open: props.root,
+      open: props.root || isParentOfModule,
     };
   }
 
