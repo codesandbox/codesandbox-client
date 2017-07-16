@@ -6,6 +6,7 @@ import { createAPIActions, doRequest } from '../api/actions';
 import notifActions from '../notifications/actions';
 
 import openPopup from './utils/popup';
+import { resetJwt, setJwt } from './utils/jwt';
 import { jwtSelector } from './selectors';
 
 export const SIGN_IN = 'SIGN_IN';
@@ -26,12 +27,8 @@ export const LOAD_USER_SANDBOXES = createAPIActions(
 export const SEND_FEEDBACK_API = createAPIActions('FEEDBACK', 'SEND');
 export const GET_AUTH_TOKEN_API = createAPIActions('AUTH_TOKEN', 'FETCH');
 
-const deleteCookie = (name: string) => {
-  document.cookie = `${name}=; Path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
-};
-
 const signOut = () => async (dispatch: Function) => {
-  deleteCookie('jwt');
+  resetJwt();
 
   dispatch({
     type: SIGN_OUT,
@@ -66,6 +63,7 @@ const signIn = () => (dispatch: Function) =>
     window.addEventListener('message', function(e) {
       if (e.data.type === 'signin') {
         const jwt = e.data.data.jwt;
+        setJwt(jwt);
         window.removeEventListener('message', this);
         popup.close();
 

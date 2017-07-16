@@ -15,6 +15,7 @@ const initialState: CurrentUser = {
   username: null,
   avatarUrl: null,
   jwt: getJwt(),
+  subscription: null,
 };
 
 export default (state: CurrentUser = initialState, action: Object) => {
