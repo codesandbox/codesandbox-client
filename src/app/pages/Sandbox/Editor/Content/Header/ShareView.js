@@ -379,8 +379,8 @@ class ShareView extends React.PureComponent {
                     <FilesContainer>
                       <Files
                         modules={modules}
-                        directories={directories}
                         directoryId={null}
+                        directories={directories}
                         currentModule={defaultModule}
                         setCurrentModule={this.setDefaultModule}
                       />

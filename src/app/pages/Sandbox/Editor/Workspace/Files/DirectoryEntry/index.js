@@ -13,13 +13,14 @@ import contextMenuActionCreators from 'app/store/context-menu/actions';
 import Entry from './Entry';
 import DirectoryChildren from './DirectoryChildren';
 
-const EntryContainer = styled.div`
-  position: relative;
-`;
+const EntryContainer = styled.div`position: relative;`;
 
 const Overlay = styled.div`
   position: absolute;
-  top: 0; bottom: 0; left: 0; right: 0;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
   background-color: rgba(0, 0, 0, 0.3);
   display: ${props => (props.isOver ? 'block' : 'none')};
 `;
@@ -36,7 +37,6 @@ const mapDispatchToProps = dispatch => ({
 type Props = {
   id: string,
   shortid: string,
-  currentDirectoryShortid: string,
   sandboxId: string,
   root: ?boolean,
   title: string,

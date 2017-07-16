@@ -52,7 +52,11 @@ class Files extends React.PureComponent {
 
     const mainModule = findMainModule(modules);
     const { currentModule: currentModuleId } = sandbox;
-    const currentModule = findCurrentModule(modules, currentModuleId, mainModule);
+    const currentModule = findCurrentModule(
+      modules,
+      currentModuleId,
+      mainModule,
+    );
 
     return (
       <DirectoryEntry
@@ -63,7 +67,6 @@ class Files extends React.PureComponent {
         directories={sortBy(directories, 'title')}
         isInProjectView={sandbox.isInProjectView}
         currentModuleId={currentModule.id}
-        currentDirectoryShortid={currentModule.directoryShortid}
         errors={sandbox.errors}
         id={null}
         shortid={null}
