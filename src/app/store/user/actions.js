@@ -38,6 +38,10 @@ export const CANCEL_SUBSCRIPTION_API = createAPIActions(
   'SUBSCRIPTION',
   'CANCEL',
 );
+export const FETCH_PAYMENT_DETAILS = createAPIActions(
+  'PAYMENT_DETAILS',
+  'FETCH',
+);
 
 const deleteCookie = (name: string) => {
   document.cookie = `${name}=; Path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
@@ -178,10 +182,16 @@ const cancelSubscription = () => async (dispatch: Function) => {
   );
 };
 
+const getPaymentDetails = () => async (dispatch: Function) =>
+  await dispatch(
+    doRequest(FETCH_PAYMENT_DETAILS, 'users/current_user/payment_details'),
+  );
+
 export default {
   createSubscription,
   updateSubscription,
   cancelSubscription,
+  getPaymentDetails,
   getAuthToken,
   signOut,
   signIn,

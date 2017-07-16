@@ -1,6 +1,7 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import styled from 'styled-components';
 
 import type { CurrentUser } from 'common/types';
@@ -8,6 +9,7 @@ import type { CurrentUser } from 'common/types';
 import Input from 'app/components/Input';
 import Centered from 'app/components/flex/Centered';
 import Relative from 'app/components/Relative';
+import SubscribeForm from 'app/components/user/SubscribeForm';
 import SignInButton from 'app/containers/SignInButton';
 
 import { loggedInSelector } from 'app/store/user/selectors';
@@ -16,7 +18,6 @@ import userActionCreators from 'app/store/user/actions';
 import badges from 'app/utils/badges/patron-info';
 
 import Range from './Range';
-import SubscribeForm from './SubscribeForm';
 import ChangeSubscription from './ChangeSubscription';
 import ThankYou from './ThankYou';
 
@@ -28,7 +29,7 @@ const PriceInput = styled(Input)`
   font-size: 1.5rem;
   padding-left: 2rem;
   padding-right: 1rem;
-  width: 6rem;
+  width: 7rem;
   margin-bottom: 1rem;
   text-align: center;
 `;
@@ -53,6 +54,14 @@ const Currency = styled.span`
   font-weight: 300;
   padding-top: 8px;
   color: rgba(255, 255, 255, 0.5);
+`;
+
+const Notice = styled.p`
+  font-size: .875rem;
+  text-align: center;
+  margin: 2rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.8);
 `;
 
 const RangeContainer = styled.div`width: 300px;`;
@@ -147,7 +156,17 @@ class PricingChoice extends React.PureComponent {
                   cancelSubscription={this.cancelSubscription}
                   date={user.subscription.since}
                 />
-              : <SubscribeForm subscribe={this.subscribe} name={user.name} />
+              : <Centered style={{ marginTop: '2rem' }} horizontal>
+                  <SubscribeForm subscribe={this.subscribe} name={user.name} />
+                  <Notice>
+                    You will be billed now and on the{' '}
+                    <strong style={{ color: 'white' }}>
+                      {moment().format('Do')}
+                    </strong>{' '}
+                    of each month thereafter. You can cancel or change your
+                    subscription at any time.
+                  </Notice>
+                </Centered>
             : <StyledSignInButton />}
         </Centered>
       </Container>

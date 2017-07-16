@@ -1,15 +1,19 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
 
-import UserIcon from 'react-icons/lib/ti/user';
+import { currentUserSelector } from 'app/store/user/selectors';
+import type { CurrentUser } from 'common/types';
+
 import CodeIcon from 'react-icons/lib/md/code';
 import CreditCardIcon from 'react-icons/lib/md/credit-card';
+import BrowserIcon from 'react-icons/lib/go/browser';
 
 import SideNavigation from './SideNavigation';
 
-import EditorSettings from './EditorSettings';
+import EditorSettings from './EditorPageSettings/EditorSettings';
+import PreviewSettings from './EditorPageSettings/PreviewSettings';
 import PaymentInfo from './PaymentInfo';
-import UserSettings from './UserSettings';
 
 const Container = styled.div`
   display: flex;
@@ -23,25 +27,14 @@ const ContentContainer = styled.div`
   padding: 2rem;
 `;
 
-const MENU_ITEMS = [
-  {
-    title: 'My Account',
-    icon: <UserIcon />,
-    content: <UserSettings />,
-  },
-  {
-    title: 'Editor',
-    icon: <CodeIcon />,
-    content: <EditorSettings />,
-  },
-  {
-    title: 'Payment Info',
-    icon: <CreditCardIcon />,
-    content: <PaymentInfo />,
-  },
-];
+type Props = {
+  user: CurrentUser,
+};
 
-export default class Preferences extends React.PureComponent {
+const mapStateToProps = state => ({
+  user: currentUserSelector(state),
+});
+class Preferences extends React.PureComponent {
   state = {
     itemIndex: 0,
   };
@@ -50,18 +43,40 @@ export default class Preferences extends React.PureComponent {
     this.setState({ itemIndex: index });
   };
 
+  getItems = () => {
+    return [
+      {
+        title: 'Editor',
+        icon: <CodeIcon />,
+        content: <EditorSettings />,
+      },
+      {
+        title: 'Preview',
+        icon: <BrowserIcon />,
+        content: <PreviewSettings />,
+      },
+      {
+        title: 'Payment Info',
+        icon: <CreditCardIcon />,
+        content: <PaymentInfo />,
+      },
+    ];
+  };
+
   render() {
     return (
       <Container>
         <SideNavigation
           itemIndex={this.state.itemIndex}
-          menuItems={MENU_ITEMS}
+          menuItems={this.getItems()}
           setItem={this.setItem}
         />
         <ContentContainer>
-          {MENU_ITEMS[this.state.itemIndex].content}
+          {this.getItems()[this.state.itemIndex].content}
         </ContentContainer>
       </Container>
     );
   }
 }
+
+export default connect(mapStateToProps)(Preferences);

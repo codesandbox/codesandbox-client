@@ -6,14 +6,17 @@ import { Link } from 'react-router-dom';
 import UserIcon from 'react-icons/lib/ti/user';
 import ExitIcon from 'react-icons/lib/md/exit-to-app';
 import SettingsIcon from 'react-icons/lib/md/settings';
-import { profileUrl } from '../../utils/url-generator';
+import StarIcon from 'react-icons/lib/go/star';
+
+import { profileUrl, patronUrl } from 'app/utils/url-generator';
 
 const Container = styled.div`
   position: absolute;
   background-color: ${props => props.theme.background2.darken(0.5)};
   box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.75);
 
-  ${delayEffect(0)} top: 40px;
+  ${delayEffect(0)};
+  top: 40px;
   left: -20%;
   right: 0;
 
@@ -65,6 +68,13 @@ export default ({ username, openPreferences, signOut }: Props) =>
         <SettingsIcon />
       </Icon>Preferences
     </Item>
+    <Link style={{ textDecoration: 'none' }} to={patronUrl()}>
+      <Item>
+        <Icon>
+          <StarIcon />
+        </Icon>Become a Patron
+      </Item>
+    </Link>
     <Item onClick={signOut}>
       <Icon>
         <ExitIcon />

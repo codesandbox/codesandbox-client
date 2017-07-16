@@ -10,7 +10,7 @@ const Container = styled.div`
   flex: 1;
   background-color: ${props => props.theme.background2};
   width: 100%;
-  padding-bottom: 1rem;
+  padding-bottom: 5rem;
 `;
 
 const Title = styled.h2`
@@ -19,6 +19,7 @@ const Title = styled.h2`
   margin-top: 0 !important;
   font-size: 1.125rem;
   margin: 0;
+  text-transform: uppercase;
 `;
 
 const ITEM_HEIGHT = 36;
@@ -51,18 +52,23 @@ const Item = styled.div`
 `;
 
 const Selector = styled.div`
-  transition: 0.3s ease all;
+  transition: 0.2s ease all;
   position: absolute;
-  top: ${props => props.offset + 1}px;
+  top: 0px;
   left: 1rem;
   right: 1rem;
   height: ${ITEM_HEIGHT - 2}px;
   border-radius: 4px;
   z-index: 0;
   background-color: ${props => props.theme.secondary};
+  box-shadow: 0 4px 6px rgba(0, 0, 0, .5);
+
+  transform: translateY(${props => props.offset + 1}px);
 `;
 
 const SocialIcons = styled.div`
+  position: absolute;
+  bottom: 2rem;
   margin-top: 2rem;
   margin-left: 2rem;
 `;

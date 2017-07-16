@@ -9,7 +9,6 @@ import CheckoutForm from './CheckoutForm';
 
 const Container = styled.div`
   width: 300px;
-  margin-top: 2rem;
   border-radius: 3px;
   box-sizing: border-box;
   color: rgba(255, 255, 255, 0.8);
@@ -18,13 +17,25 @@ const Container = styled.div`
 type Props = {
   name: ?string,
   subscribe: (token: string) => void,
+  buttonName: string,
+  loadingText: string,
 };
 
-export default ({ name, subscribe }: Props) =>
+export default ({
+  name,
+  subscribe,
+  loadingText = 'Creating Subscription...',
+  buttonName = 'Subscribe',
+}: Props) =>
   <Container>
     <StripeProvider apiKey={STRIPE_API_KEY}>
       <Elements>
-        <CheckoutForm subscribe={subscribe} name={name} />
+        <CheckoutForm
+          buttonName={buttonName}
+          loadingText={loadingText}
+          subscribe={subscribe}
+          name={name}
+        />
       </Elements>
     </StripeProvider>
   </Container>;

@@ -1,31 +1,15 @@
 import React from 'react';
-import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { preferencesSelector } from 'app/store/preferences/selectors';
 import preferencesActionCreators from 'app/store/preferences/actions';
-import Preference from 'app/components/Preference';
-
-import WorkspaceSubtitle from '../WorkspaceSubtitle';
-
-const Container = styled.div`
-  color: ${props => props.theme.white};
-  font-size: .875rem;
-
-  div {
-    &:first-child {
-      padding-top: 0;
-    }
-  }
-`;
-
-const PreferenceContainer = styled.div`
-  padding-top: 0.5rem;
-`;
-
-const PaddedPreference = styled(Preference)`
-  padding: 0.5rem 1rem;
-`;
+import {
+  Container,
+  PreferenceContainer,
+  PaddedPreference,
+  Description,
+  Rule,
+} from '../styles';
 
 type Props = {
   preferencesActions: typeof preferencesActionCreators,
@@ -39,59 +23,44 @@ const mapStateToProps = state => ({
   preferences: preferencesSelector(state),
 });
 
-const Preferences = ({ preferences, preferencesActions }: Props) => (
+const Preferences = ({ preferences, preferencesActions }: Props) =>
   <Container>
-    <WorkspaceSubtitle>Code Editor</WorkspaceSubtitle>
     <PreferenceContainer>
       <PaddedPreference
         title="Autocomplete"
         value={preferences.autoCompleteEnabled}
         setValue={preferencesActions.setAutoCompletePreference}
       />
+      <Description>Show autocompletions while you type.</Description>
+      <Rule />
       <PaddedPreference
-        title="Linter"
+        title="Enable linter"
         tooltip="Made possible by eslint"
         value={preferences.lintEnabled}
         setValue={preferencesActions.setLintPreference}
       />
+      <Description>Use eslint to find syntax and style errors.</Description>
+      <Rule />
       <PaddedPreference
         title="Prettify on save"
         tooltip="Made possible by Prettier"
         value={preferences.prettifyOnSaveEnabled}
         setValue={preferencesActions.setPrettifyOnSavePreference}
       />
+      <Description>Format all code on save with prettier.</Description>
+      <Rule />
       <PaddedPreference
-        title="VIM Mode"
+        title="VIM mode"
         value={preferences.vimMode}
         setValue={preferencesActions.setVimPreference}
       />
+      <Rule />
       <PaddedPreference
-        title="Font size"
+        title="Editor font size"
         value={preferences.fontSize}
         setValue={preferencesActions.setFontSizePreference}
       />
     </PreferenceContainer>
-    <WorkspaceSubtitle>Preview</WorkspaceSubtitle>
-    <PreferenceContainer>
-      <PaddedPreference
-        title="Live Preview"
-        value={preferences.livePreviewEnabled}
-        setValue={preferencesActions.setLivePreview}
-        tooltip="Only update on save"
-      />
-      <PaddedPreference
-        title="Clear console"
-        value={preferences.clearConsoleEnabled}
-        setValue={preferencesActions.setClearConsolePreference}
-        tooltip="Clear console when executing"
-      />
-      <PaddedPreference
-        title="Instant preview"
-        value={preferences.instantPreviewEnabled}
-        setValue={preferencesActions.setInstantPreview}
-      />
-    </PreferenceContainer>
-  </Container>
-);
+  </Container>;
 
 export default connect(mapStateToProps, mapDispatchToProps)(Preferences);

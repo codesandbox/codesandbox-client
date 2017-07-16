@@ -2,25 +2,20 @@
 import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import type { CurrentUser } from 'common/types';
 import { Link } from 'react-router-dom';
 
 import SearchIcon from 'react-icons/lib/md/search';
 
 import SignInButton from 'app/containers/SignInButton';
-import Preferences from 'app/containers/Preferences';
 
 import Logo from 'app/components/Logo';
 import Row from 'app/components/flex/Row';
 import Tooltip from 'app/components/Tooltip';
 
-import { currentUserSelector, jwtSelector } from 'app/store/user/selectors';
-import modalActionCreators from 'app/store/modal/actions';
-import userActionCreators from 'app/store/user/actions';
+import { jwtSelector } from 'app/store/user/selectors';
 import { newSandboxUrl, searchUrl } from 'app/utils/url-generator';
 
-import User from './User';
+import UserMenu from '../UserMenu';
 
 const LogoWithBorder = styled(Logo)`
   padding-right: 1rem;
@@ -74,32 +69,17 @@ const PlusIcon = styled(Link)`
 
 type Props = {
   title: string,
-  user: CurrentUser,
   hasLogin: boolean,
-  userActions: typeof userActionCreators,
-  modalActions: typeof modalActionCreators,
 };
 
 const mapStateToProps = state => ({
-  user: currentUserSelector(state),
   hasLogin: !!jwtSelector(state),
-});
-const mapDispatchToProps = dispatch => ({
-  userActions: bindActionCreators(userActionCreators, dispatch),
-  modalActions: bindActionCreators(modalActionCreators, dispatch),
 });
 class Navigation extends React.PureComponent {
   props: Props;
 
-  openPreferences = () => {
-    this.props.modalActions.openModal({
-      width: 900,
-      Body: <Preferences />,
-    });
-  };
-
   render() {
-    const { title, hasLogin, user, userActions } = this.props;
+    const { title, hasLogin } = this.props;
 
     return (
       <Row justifyContent="space-between">
@@ -127,17 +107,11 @@ class Navigation extends React.PureComponent {
               </Tooltip>
             </Action>
           </Actions>
-          {hasLogin
-            ? <User
-                openPreferences={this.openPreferences}
-                signOut={userActions.signOut}
-                user={user}
-              />
-            : <SignInButton />}
+          {hasLogin ? <UserMenu /> : <SignInButton />}
         </Row>
       </Row>
     );
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Navigation);
+export default connect(mapStateToProps)(Navigation);

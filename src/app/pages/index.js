@@ -12,7 +12,7 @@ import Notifications from 'app/containers/Notifications';
 import ContextMenu from 'app/containers/ContextMenu';
 import Modal from 'app/containers/Modal';
 import Loading from 'app/components/Loading';
-import { jwtSelector } from 'app/store/user/selectors';
+import { loggedInSelector } from 'app/store/user/selectors';
 import userActionCreators from 'app/store/user/actions';
 
 const routeDebugger = _debug('cs:app:router');
@@ -68,8 +68,8 @@ type Props = {
   userActions: typeof userActionCreators,
 };
 
-const mapStateToProps = createSelector(jwtSelector, jwt => ({
-  hasLogin: !!jwt,
+const mapStateToProps = createSelector(loggedInSelector, loggedIn => ({
+  hasLogin: loggedIn,
 }));
 const mapDispatchToProps = dispatch => ({
   userActions: bindActionCreators(userActionCreators, dispatch),

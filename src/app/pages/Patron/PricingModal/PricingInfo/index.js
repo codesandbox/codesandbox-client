@@ -31,9 +31,9 @@ export default () =>
         </tr>
       </thead>
       <tbody>
+        <Feature feature="Private Sandboxes" free="No" supporter="Yes" />
         <Feature feature="Sandbox Limit" free="50" supporter="Unlimited" />
         <Feature feature="Dependency Limit" free="20" supporter="40" />
-        <Feature feature="Private Sandboxes" free="No" supporter="Yes" />
         <Feature
           disabled
           feature="Static File Hosting"

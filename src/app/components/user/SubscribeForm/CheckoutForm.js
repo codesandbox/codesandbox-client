@@ -35,6 +35,8 @@ const Label = styled.label`
 
 type Props = {
   name: ?string,
+  buttonName: string,
+  loadingText: string,
   stripe: {
     createToken: (params: ?Object) => Promise<{ token: string }>,
   },
@@ -43,6 +45,7 @@ type Props = {
 
 type State = {
   name: string,
+  buttonName: string,
 };
 
 class CheckoutForm extends React.PureComponent {
@@ -109,10 +112,12 @@ class CheckoutForm extends React.PureComponent {
   };
 
   render() {
+    const { buttonName, loadingText } = this.props;
     const { errors, loading } = this.state;
+
     return (
       <form onSubmit={this.handleSubmit}>
-        <Label>Full Name</Label>
+        <Label>Cardholder Name</Label>
         {errors.name != null &&
           <ErrorText>
             {errors.name}
@@ -140,7 +145,7 @@ class CheckoutForm extends React.PureComponent {
           disabled={loading}
           style={{ marginTop: '1rem', width: 300 }}
         >
-          {loading ? 'Creating Subscription...' : 'Subscribe'}
+          {loading ? loadingText : buttonName}
         </Button>
       </form>
     );

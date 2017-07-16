@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="182px" height="163px" viewBox="0 0 182 163" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 45.2 (43514) - http://www.bohemiancoding.com/sketch -->
+<svg width="148px" height="163px" viewBox="0 0 148 163" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 45.1 (43504) - http://www.bohemiancoding.com/sketch -->
     <title>Logo v2 (1) Copy 3</title>
     <desc>Created with Sketch.</desc>
     <defs>
-        <filter x="-4.0%" y="-3.2%" width="108.0%" height="109.0%" filterUnits="objectBoundingBox" id="filter-1">
+        <filter x="-5.0%" y="-3.2%" width="110.0%" height="109.0%" filterUnits="objectBoundingBox" id="filter-1">
             <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
             <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
             <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.828917572 0" type="matrix" in="shadowBlurOuter1" result="shadowMatrixOuter1"></feColorMatrix>
@@ -25,12 +25,12 @@
             <stop stop-color="#ACDCFF" offset="0%"></stop>
             <stop stop-color="#51AFE1" offset="100%"></stop>
         </linearGradient>
-        <polygon id="path-5" points="23 113.188341 86.5884271 148.312298 150.203926 113.070717 150.203926 42.4440519 86.6019629 7 23 42.600884"></polygon>
+        <polygon id="path-5" points="6 113.188341 69.5884271 148.312298 133.203926 113.070717 133.203926 42.4440519 69.6019629 7 6 42.600884"></polygon>
         <radialGradient cx="50%" cy="53.2635492%" fx="50%" fy="53.2635492%" r="61.1380286%" gradientTransform="translate(0.500000,0.532635),scale(1.000000,0.900162),rotate(90.000000),translate(-0.500000,-0.532635)" id="radialGradient-6">
             <stop stop-color="#51AFE1" offset="0%"></stop>
             <stop stop-color="#15435B" offset="97.6203763%"></stop>
         </radialGradient>
-        <polygon id="path-7" points="29 110.249854 86.6369948 142.086455 144.298528 110.143239 144.298528 46.1267364 86.6492638 14 29 46.2688901"></polygon>
+        <polygon id="path-7" points="12 110.249854 69.6369948 142.086455 127.298528 110.143239 127.298528 46.1267364 69.6492638 14 12 46.2688901"></polygon>
         <filter x="-3.5%" y="-3.1%" width="106.9%" height="106.2%" filterUnits="objectBoundingBox" id="filter-8">
             <feGaussianBlur stdDeviation="4" in="SourceAlpha" result="shadowBlurInner1"></feGaussianBlur>
             <feOffset dx="0" dy="0" in="shadowBlurInner1" result="shadowOffsetInner1"></feOffset>
@@ -43,42 +43,31 @@
         </linearGradient>
     </defs>
     <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Logo-v2-(1)-Copy-3" filter="url(#filter-1)" transform="translate(4.000000, 2.000000)">
-            <polygon id="Rectangle-2" fill="#EEC58E" points="0 73 22 73 22 114.788071 0 114.788071 7.1859186 95.4043501"></polygon>
-            <polygon id="Rectangle-2-Copy" fill="#EEC58E" transform="translate(163.000000, 93.894035) scale(-1, 1) translate(-163.000000, -93.894035) " points="152 73 174 73 174 114.788071 152 114.788071 159.185919 95.4043501"></polygon>
-            <polygon id="Shape" fill="url(#linearGradient-2)" points="17 116.646289 86.850927 155.229426 156.731592 116.517081 156.731592 38.9347558 86.8657959 0 17 39.1070335"></polygon>
-            <g id="Shape">
-                <use fill="url(#linearGradient-3)" xlink:href="#path-5"></use>
-                <use fill="url(#linearGradient-4)" xlink:href="#path-5"></use>
+        <g id="Desktop-HD" transform="translate(-911.000000, -279.000000)">
+            <g id="Group-5" transform="translate(256.000000, 281.000000)">
+                <g id="Logo-v2-(1)-Copy-3" filter="url(#filter-1)" transform="translate(659.000000, 0.000000)">
+                    <polygon id="Shape" fill="url(#linearGradient-2)" points="0 116.646289 69.850927 155.229426 139.731592 116.517081 139.731592 38.9347558 69.8657959 0 0 39.1070335"></polygon>
+                    <g id="Shape">
+                        <use fill="url(#linearGradient-3)" xlink:href="#path-5"></use>
+                        <use fill="url(#linearGradient-4)" xlink:href="#path-5"></use>
+                    </g>
+                    <g id="Shape-Copy">
+                        <use fill="url(#radialGradient-6)" fill-rule="evenodd" xlink:href="#path-7"></use>
+                        <use fill-opacity="0.680932971" fill="#1C2022" fill-rule="evenodd" xlink:href="#path-7"></use>
+                        <use fill="black" fill-opacity="1" filter="url(#filter-8)" xlink:href="#path-7"></use>
+                    </g>
+                    <g id="Group-8" transform="translate(29.000000, 49.000000)" fill-rule="nonzero">
+                        <polygon id="Shape" fill="#B0DAFA" points="0 23.769989 13.6044838 1 18.0154661 23.769989"></polygon>
+                        <polygon id="Shape" fill="url(#linearGradient-9)" points="18.1759965 23.6741397 40.8134514 1 63.3468444 23.6741397"></polygon>
+                        <polygon id="Shape" fill="#56A1D8" points="63.2154913 23.6741397 67.9630655 0.990830449 81.6269028 23.6741397"></polygon>
+                        <polygon id="Shape" fill="#71B4E5" points="68.022419 1 63.3244867 23.7031277 40.6641417 1"></polygon>
+                        <polygon id="Shape" fill="#7BBBE9" points="40.8725619 1 18.0144932 23.949672 13.5698196 1"></polygon>
+                        <polygon id="Shape" fill="#63A6D8" points="17.9630134 23.6741397 40.8134514 65.0265939 63.3710661 23.6741397"></polygon>
+                        <polygon id="Shape" fill="#2A6FA2" points="63.3423945 23.6741397 40.8134514 65.0265939 81.6269028 23.6741397"></polygon>
+                        <polygon id="Shape" fill="#7BBBE9" points="0 23.6741397 18.0334642 23.6741397 40.8134514 65.0265939"></polygon>
+                    </g>
+                </g>
             </g>
-            <g id="Shape-Copy">
-                <use fill="url(#radialGradient-6)" fill-rule="evenodd" xlink:href="#path-7"></use>
-                <use fill-opacity="0.680932971" fill="#1C2022" fill-rule="evenodd" xlink:href="#path-7"></use>
-                <use fill="black" fill-opacity="1" filter="url(#filter-8)" xlink:href="#path-7"></use>
-            </g>
-            <g id="Group-8" transform="translate(61.000000, 30.000000)" fill-rule="nonzero">
-                <polygon id="Shape" fill="#B0DAFA" points="0 14.7575771 8.44633198 0.620849134 11.1848865 14.7575771"></polygon>
-                <polygon id="Shape" fill="url(#linearGradient-9)" points="11.2845517 14.6980691 25.3389959 0.620849134 39.3288335 14.6980691"></polygon>
-                <polygon id="Shape" fill="#56A1D8" points="39.247283 14.6980691 42.1948103 0.615156226 50.6779919 14.6980691"></polygon>
-                <polygon id="Shape" fill="#71B4E5" points="42.2316599 0.620849134 39.3149527 14.7160663 25.2462971 0.620849134"></polygon>
-                <polygon id="Shape" fill="#7BBBE9" points="25.3756947 0.620849134 11.1842825 14.8691331 8.42481075 0.620849134"></polygon>
-                <polygon id="Shape" fill="#63A6D8" points="11.1523213 14.6980691 25.3389959 40.3717045 39.3438715 14.6980691"></polygon>
-                <polygon id="Shape" fill="#2A6FA2" points="39.3260708 14.6980691 25.3389959 40.3717045 50.6779919 14.6980691"></polygon>
-                <polygon id="Shape" fill="#7BBBE9" points="0 14.6980691 11.1960607 14.6980691 25.3389959 40.3717045"></polygon>
-            </g>
-            <path d="M17,71.9967168 C17.3638566,71.9549949 64.5988649,68 88.1402993,68 C103.439589,68 126.392823,69.3322389 157,71.9967168 C157,79.5181756 157,86.3771961 157,92.5737784 C157,98.7703607 157,105.89112 157,113.936057 C126.025365,110.146259 103.072132,108.25136 88.1402993,108.25136 C65.5135931,108.25136 39.618208,111.506334 17,113.936057 C16.8900569,113.947868 17.2998029,106.509192 17,92.5737784 C16.9180264,88.7634862 16.9180264,81.9044657 17,71.9967168 Z" id="Rectangle" fill="#FBD6A5"></path>
-            <text id="" font-family="FontAwesome" font-size="20" font-weight="normal" fill="#885B1E">
-                <tspan x="62" y="95"></tspan>
-            </text>
-            <text id="-copy-2" font-family="FontAwesome" font-size="20" font-weight="normal" fill="#885B1E">
-                <tspan x="35" y="96"></tspan>
-            </text>
-            <text id="" font-family="FontAwesome" font-size="20" font-weight="normal" fill="#885B1E">
-                <tspan x="116" y="96"></tspan>
-            </text>
-            <text id="star---FontAwesome-Copy" font-family="FontAwesome" font-size="20" font-weight="normal" fill="#885B1E">
-                <tspan x="89" y="95"></tspan>
-            </text>
         </g>
     </g>
 </svg>

@@ -1,11 +1,11 @@
 import React from 'react';
 
 import Preferences from './Preferences';
-import Title from '../MenuTitle';
+import Title from '../../MenuTitle';
 
 export default () =>
   <div>
-    <Title>Editor Preferences</Title>
+    <Title>Editor</Title>
 
     <Preferences />
   </div>;
