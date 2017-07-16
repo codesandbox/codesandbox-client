@@ -19,7 +19,7 @@ function doEval(
   const html = /\.html$/;
   const css = /\.css$/;
   const json = /\.json$/;
-  const js = /\.js$/;
+  const js = /\.jsx?$/;
 
   if (html.test(mainModule.title)) {
     return evalRaw(

@@ -135,6 +135,7 @@ class Profile extends React.PureComponent {
                     username={user.username}
                     fetchSandboxes={userActions.fetchAllSandboxes}
                     sandboxes={user.sandboxes}
+                    isCurrentUser={isCurrentUser}
                     sandboxCount={user.sandboxCount}
                     baseUrl={profileSandboxesUrl(user.username)}
                     page={match.params.page && +match.params.page}

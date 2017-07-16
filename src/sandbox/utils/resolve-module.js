@@ -3,7 +3,7 @@ import type { Module, Directory } from 'common/types';
 
 const compareTitle = (original: string, test: string) => {
   if (original === test) return true;
-  if (original === `${test}.js`) return true;
+  if (original === `${test}.js` || original === `${test}.jsx`) return true;
 
   return false;
 };
