@@ -142,6 +142,8 @@ export default class Project extends React.PureComponent {
                 <UserWithAvatar
                   username={author.username}
                   avatarUrl={author.avatarUrl}
+                  subscriptionSince={author.subscriptionSince}
+                  badge={author.badges[0]}
                 />
               </UserLink>
             </Item>

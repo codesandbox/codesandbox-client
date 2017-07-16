@@ -48,6 +48,10 @@ export const FETCH_PAYMENT_DETAILS = createAPIActions(
   'PAYMENT_DETAILS',
   'FETCH',
 );
+export const UPDATE_PAYMENT_DETAILS = createAPIActions(
+  'PAYMENT_DETAILS',
+  'UPDATE',
+);
 
 const signOut = (apiRequest = true) => async (dispatch: Function) => {
   if (apiRequest) {
@@ -200,8 +204,20 @@ const cancelSubscription = () => async (dispatch: Function) => {
 };
 
 const getPaymentDetails = () => async (dispatch: Function) =>
-  await dispatch(
+  dispatch(
     doRequest(FETCH_PAYMENT_DETAILS, 'users/current_user/payment_details'),
+  );
+
+const updatePaymentDetails = (token: string) => async (dispatch: Function) =>
+  dispatch(
+    doRequest(UPDATE_PAYMENT_DETAILS, 'users/current_user/payment_details', {
+      method: 'PATCH',
+      body: {
+        paymentDetails: {
+          token,
+        },
+      },
+    }),
   );
 
 export default {
@@ -209,6 +225,7 @@ export default {
   updateSubscription,
   cancelSubscription,
   getPaymentDetails,
+  updatePaymentDetails,
   getAuthToken,
   signOut,
   signIn,

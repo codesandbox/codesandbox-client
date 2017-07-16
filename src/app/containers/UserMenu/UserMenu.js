@@ -6,9 +6,9 @@ import { Link } from 'react-router-dom';
 import UserIcon from 'react-icons/lib/ti/user';
 import ExitIcon from 'react-icons/lib/md/exit-to-app';
 import SettingsIcon from 'react-icons/lib/md/settings';
-import StarIcon from 'react-icons/lib/go/star';
 
 import { profileUrl, patronUrl } from 'app/utils/url-generator';
+import PatronBadge from '../../utils/badges/PatronBadge';
 
 const Container = styled.div`
   position: absolute;
@@ -71,7 +71,7 @@ export default ({ username, openPreferences, signOut }: Props) =>
     <Link style={{ textDecoration: 'none' }} to={patronUrl()}>
       <Item>
         <Icon>
-          <StarIcon />
+          <PatronBadge style={{ width: 14 }} size={14} />
         </Icon>Become a Patron
       </Item>
     </Link>

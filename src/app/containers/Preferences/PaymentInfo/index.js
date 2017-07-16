@@ -48,6 +48,11 @@ class PaymentInfo extends React.PureComponent {
     }
   };
 
+  updatePaymentDetails = async (token: string) => {
+    const data = await this.props.userActions.updatePaymentDetails(token);
+    this.setState({ loading: false, data });
+  };
+
   paymentDetails = () => {
     if (this.state.error)
       return (
@@ -67,6 +72,7 @@ class PaymentInfo extends React.PureComponent {
           buttonName="Update"
           loadingText="Updating Card Info..."
           name={data.name}
+          subscribe={this.updatePaymentDetails}
         />
       </div>
     );

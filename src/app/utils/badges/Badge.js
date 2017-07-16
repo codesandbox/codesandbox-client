@@ -15,7 +15,7 @@ export default ({ badge, size }: Props) =>
   <Tooltip title={badge.name}>
     {/* Margin Bottom to compensate for the tooltip */}
     <img
-      style={{ marginBottom: -7 }}
+      style={{ marginBottom: '-0.3em' }}
       width={size}
       src={getBadge(badge.id)}
       alt={badge.name}

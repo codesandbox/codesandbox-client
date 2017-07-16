@@ -72,7 +72,7 @@ export type User = {
     id: string,
     name: string,
   }>,
-  subscribedSince: string,
+  subscriptionSince: string,
 };
 
 export type GitInfo = {

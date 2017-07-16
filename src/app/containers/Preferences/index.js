@@ -35,6 +35,8 @@ const mapStateToProps = state => ({
   user: currentUserSelector(state),
 });
 class Preferences extends React.PureComponent {
+  props: Props;
+
   state = {
     itemIndex: 0,
   };
@@ -44,6 +46,7 @@ class Preferences extends React.PureComponent {
   };
 
   getItems = () => {
+    const hasSubscription = Boolean(this.props.user.subscription);
     return [
       {
         title: 'Editor',
@@ -55,12 +58,12 @@ class Preferences extends React.PureComponent {
         icon: <BrowserIcon />,
         content: <PreviewSettings />,
       },
-      {
+      hasSubscription && {
         title: 'Payment Info',
         icon: <CreditCardIcon />,
         content: <PaymentInfo />,
       },
-    ];
+    ].filter(x => x);
   };
 
   render() {
