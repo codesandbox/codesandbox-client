@@ -29,14 +29,6 @@ const Container = styled.div`
   height: 100%;
 `;
 
-const CancelDefaultModule = styled.div`
-  text-decoration: underline;
-  color: rgb(82, 174, 217);
-  position: relative;
-  top: -10px;
-  cursor: pointer;
-`;
-
 const FilesContainer = styled.div`
   max-height: 300px;
   overflow: auto;
@@ -196,7 +188,8 @@ class ShareView extends React.PureComponent {
 
     const options = {};
 
-    if (defaultModule) {
+    const mainModuleShortid = findMainModule(this.props.modules).shortid;
+    if (defaultModule && defaultModule !== mainModuleShortid) {
       options.module = defaultModule;
     }
 
@@ -298,7 +291,7 @@ class ShareView extends React.PureComponent {
     } = this.state;
 
     const defaultModule =
-      this.state.defaultModule || findMainModule(modules).id;
+      this.state.defaultModule || findMainModule(modules).shortid;
 
     return (
       <Container>
@@ -371,10 +364,6 @@ class ShareView extends React.PureComponent {
                   </div>
                   <div>
                     <h4>Default module to show</h4>
-                    {this.state.defaultModule &&
-                      <CancelDefaultModule onClick={this.clearDefaultModule}>
-                        cancel
-                      </CancelDefaultModule>}
 
                     <FilesContainer>
                       <Files
