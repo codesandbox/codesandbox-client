@@ -45,11 +45,13 @@ export const embedUrl = (sandbox: Sandbox) => {
 };
 
 export const frameUrl = (append: string = '') => {
+  const path = append.indexOf('/') === 0 ? append.substr(1) : append;
+
   if (process.env.LOCAL_SERVER) {
-    return 'http://localhost:3001';
+    return `http://localhost:3001/${path}`;
   }
 
-  return `${location.protocol}//sandbox.${host()}/${append}`;
+  return `${location.protocol}//sandbox.${host()}/${path}`;
 };
 
 export const forkSandboxUrl = (sandbox: Sandbox) =>

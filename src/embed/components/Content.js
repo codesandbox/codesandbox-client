@@ -33,6 +33,7 @@ type Props = {
   hideNavigation: boolean,
   autoResize: boolean,
   fontSize: number,
+  initialPath: ?string,
 };
 
 type State = {
@@ -230,6 +231,7 @@ export default class Content extends React.PureComponent {
               setProjectView={this.props.setProjectView}
               hideNavigation={hideNavigation}
               setFrameHeight={this.handleResize}
+              initialPath={this.props.initialPath}
               errors={errors}
             />
           </Split>}

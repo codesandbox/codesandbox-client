@@ -52,6 +52,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "faceyspacey",
+      "name": "James Gillmore",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/154732?v=3",
+      "profile": "http://twitter.com/faceyspacey",
+      "contributions": [
+        "code",
+        "bug"
+      ]
     }
   ]
 }

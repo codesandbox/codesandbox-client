@@ -5,6 +5,7 @@ Object {
   "autoResize": true,
   "hideNavigation": false,
   "isEditorScreen": false,
+  "isInProjectView": true,
   "isPreviewScreen": false,
 }
 `;
@@ -15,6 +16,7 @@ Object {
   "currentModule": "test",
   "hideNavigation": true,
   "isEditorScreen": true,
+  "isInProjectView": true,
   "isPreviewScreen": false,
 }
 `;
@@ -24,6 +26,7 @@ Object {
   "autoResize": false,
   "hideNavigation": true,
   "isEditorScreen": false,
+  "isInProjectView": true,
   "isPreviewScreen": false,
 }
 `;
@@ -33,6 +36,7 @@ Object {
   "autoResize": false,
   "hideNavigation": false,
   "isEditorScreen": false,
+  "isInProjectView": true,
   "isPreviewScreen": false,
 }
 `;
@@ -42,6 +46,7 @@ Object {
   "autoResize": false,
   "hideNavigation": false,
   "isEditorScreen": false,
+  "isInProjectView": true,
   "isPreviewScreen": false,
 }
 `;
@@ -52,6 +57,7 @@ Object {
   "currentModule": "test",
   "hideNavigation": false,
   "isEditorScreen": false,
+  "isInProjectView": true,
   "isPreviewScreen": false,
 }
 `;
@@ -61,6 +67,7 @@ Object {
   "autoResize": false,
   "hideNavigation": false,
   "isEditorScreen": true,
+  "isInProjectView": true,
   "isPreviewScreen": false,
 }
 `;
@@ -70,6 +77,7 @@ Object {
   "autoResize": false,
   "hideNavigation": false,
   "isEditorScreen": false,
+  "isInProjectView": true,
   "isPreviewScreen": true,
 }
 `;
