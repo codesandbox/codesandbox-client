@@ -46,8 +46,10 @@
     "html-loader": "^0.4.4",
     "html-webpack-plugin": "^2.24.1",
     "http-proxy-middleware": "^0.17.3",
+    "husky": "^0.14.3",
     "jest": "^20.0.0",
     "json-loader": "0.5.4",
+    "lint-staged": "^4.0.1",
     "object-assign": "^4.1.1",
     "opn": "4.0.2",
     "path-exists": "3.0.0",
@@ -129,14 +131,23 @@
     "typecheck": "flow check",
     "lint:embed": "eslint src/embed",
     "add": "all-contributors add",
-    "generate": "all-contributors generate"
+    "generate": "all-contributors generate",
+    "precommit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.js": ["prettier --write --single-quote --trailing-comma all", "git add"],
+    "*.css": [
+      "prettier --write --single-quote --trailing-comma all",
+      "git add"
+    ],
+    "*.json": [
+      "prettier --write --single-quote --trailing-comma all",
+      "git add"
+    ]
   },
   "jest": {
     "rootDir": "src",
-    "moduleDirectories": [
-      "node_modules",
-      "src"
-    ],
+    "moduleDirectories": ["node_modules", "src"],
     "moduleNameMapper": {
       "\\.css$": "<rootDir>/__mocks__/styleMock.js"
     }
