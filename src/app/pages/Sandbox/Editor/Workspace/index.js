@@ -76,7 +76,6 @@ const Workspace = ({
         preventTransition={preventTransition}
         owned={sandbox.owned}
         author={user}
-        deleteSandbox={sandboxActions.deleteSandbox}
       />
     </WorkspaceItem>
 
@@ -101,6 +100,7 @@ const Workspace = ({
         <SandboxActions
           id={sandbox.id}
           deleteSandbox={sandboxActions.deleteSandbox}
+          newSandboxUrl={sandboxActions.newSandboxUrl}
         />
       </WorkspaceItem>}
 

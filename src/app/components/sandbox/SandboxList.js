@@ -13,6 +13,8 @@ import FullHeartIcon from 'react-icons/lib/fa/heart';
 import EyeIcon from 'react-icons/lib/fa/eye';
 import ForkIcon from 'react-icons/lib/go/repo-forked';
 
+import DeleteSandboxButton from './DeleteSandboxButton';
+
 const HeaderTitle = styled.th`
   font-weight: 400;
   text-align: left;
@@ -63,7 +65,13 @@ const SandboxRow = styled.tr`
   }
 `;
 
-export default ({ sandboxes }: { sandboxes: Array<SmallSandbox> }) => (
+type Props = {
+  isCurrentUser: boolean;
+  sandboxes: Array<SmallSandbox>;
+  onDelete: Function;
+};
+
+export default ({ sandboxes, isCurrentUser, onDelete }: Props) => (
   <Table>
     <thead>
       <tr style={{ height: '3rem' }}>
@@ -73,6 +81,7 @@ export default ({ sandboxes }: { sandboxes: Array<SmallSandbox> }) => (
         <StatTitle><FullHeartIcon /></StatTitle>
         <StatTitle><EyeIcon /></StatTitle>
         <StatTitle><ForkIcon /></StatTitle>
+        {isCurrentUser && <HeaderTitle />}
       </tr>
     </thead>
     <Body>
@@ -84,6 +93,10 @@ export default ({ sandboxes }: { sandboxes: Array<SmallSandbox> }) => (
           <StatBody>{s.likeCount}</StatBody>
           <StatBody>{s.viewCount}</StatBody>
           <StatBody>{s.forkCount}</StatBody>
+          {isCurrentUser &&
+            <StatBody style={{padding: '0.55rem 0.5rem', cursor: 'pointer'}}>
+              <DeleteSandboxButton id={s.id} onDelete={onDelete} />
+            </StatBody>}
         </SandboxRow>
       ))}
     </Body>
