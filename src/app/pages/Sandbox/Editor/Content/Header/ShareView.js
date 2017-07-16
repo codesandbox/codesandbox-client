@@ -323,7 +323,7 @@ class ShareView extends React.PureComponent {
                       setValue={this.setHideNavigation}
                     />
                     <PaddedPreference
-                      title="Current Module View"
+                      title="Show current module view"
                       tooltip="Only show the module that's currently open"
                       value={isCurrentModuleView}
                       setValue={this.setIsCurrentModuleView}
