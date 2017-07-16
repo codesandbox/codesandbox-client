@@ -387,6 +387,9 @@ export default {
     );
 
     dispatch(notificationActions.addNotification('Deleted Sandbox', 'success'));
+  },
+
+  newSandboxUrl: () => async (dispatch: Function) => {
     dispatch(push(newSandboxUrl()));
   },
 

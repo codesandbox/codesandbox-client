@@ -1,11 +1,16 @@
 // @flow
+import React from 'react';
 import { signInUrl } from 'app/utils/url-generator';
 import { identify } from 'app/utils/analytics';
 
+import SignOutNotice from 'app/containers/modals/SignOutNotice';
+
 import { createAPIActions, doRequest } from '../api/actions';
 import notifActions from '../notifications/actions';
+import modalActions from '../modal/actions';
 
 import openPopup from './utils/popup';
+import { resetJwt, setJwt } from './utils/jwt';
 import { jwtSelector } from './selectors';
 
 export const SIGN_IN = 'SIGN_IN';
@@ -14,6 +19,7 @@ export const SET_CURRENT_USER = 'SET_CURRENT_USER';
 export const SIGN_OUT = 'SIGN_OUT';
 export const SET_USER_SANDBOXES = 'SET_USER_SANDBOXES';
 
+export const SIGN_OUT_API = createAPIActions('SIGN_OUT_API', 'DELETE');
 export const GET_CURRENT_USER_API = createAPIActions('CURRENT_USER', 'FETCH');
 export const UPDATE_CURRENT_USER_API = createAPIActions(
   'CURRENT_USER',
@@ -43,12 +49,16 @@ export const FETCH_PAYMENT_DETAILS = createAPIActions(
   'FETCH',
 );
 
-const deleteCookie = (name: string) => {
-  document.cookie = `${name}=; Path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
-};
+const signOut = (apiRequest = true) => async (dispatch: Function) => {
+  if (apiRequest) {
+    await dispatch(
+      doRequest(SIGN_OUT_API, 'users/signout', {
+        method: 'DELETE',
+      }),
+    );
+  }
 
-const signOut = () => async (dispatch: Function) => {
-  deleteCookie('jwt');
+  await resetJwt();
 
   dispatch({
     type: SIGN_OUT,
@@ -68,7 +78,13 @@ const getCurrentUser = () => async (dispatch: Function, getState: Function) => {
       dispatch({ type: SET_CURRENT_USER, data });
       return data;
     } catch (e) {
-      dispatch(signOut());
+      if (e.response.status === 401) {
+        dispatch(
+          modalActions.openModal({ Body: <SignOutNotice />, width: 500 }),
+        );
+        await dispatch(signOut(false));
+      }
+      return null;
     }
   }
 };
@@ -83,6 +99,7 @@ const signIn = () => (dispatch: Function) =>
     window.addEventListener('message', function(e) {
       if (e.data.type === 'signin') {
         const jwt = e.data.data.jwt;
+        setJwt(jwt);
         window.removeEventListener('message', this);
         popup.close();
 
