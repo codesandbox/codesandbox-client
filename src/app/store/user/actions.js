@@ -15,6 +15,7 @@ export const SET_CURRENT_USER = 'SET_CURRENT_USER';
 export const SIGN_OUT = 'SIGN_OUT';
 export const SET_USER_SANDBOXES = 'SET_USER_SANDBOXES';
 
+export const SIGN_OUT_API = createAPIActions('SIGN_OUT_API', 'DELETE');
 export const GET_CURRENT_USER_API = createAPIActions('CURRENT_USER', 'FETCH');
 export const UPDATE_CURRENT_USER_API = createAPIActions(
   'CURRENT_USER',
@@ -28,7 +29,13 @@ export const SEND_FEEDBACK_API = createAPIActions('FEEDBACK', 'SEND');
 export const GET_AUTH_TOKEN_API = createAPIActions('AUTH_TOKEN', 'FETCH');
 
 const signOut = () => async (dispatch: Function) => {
-  resetJwt();
+  await dispatch(
+    doRequest(SIGN_OUT_API, 'users/signout', {
+      method: 'DELETE',
+    }),
+  );
+
+  await resetJwt();
 
   dispatch({
     type: SIGN_OUT,
@@ -48,7 +55,7 @@ const getCurrentUser = () => async (dispatch: Function, getState: Function) => {
       dispatch({ type: SET_CURRENT_USER, data });
       return data;
     } catch (e) {
-      dispatch(signOut());
+      await resetJwt();
     }
   }
 };
