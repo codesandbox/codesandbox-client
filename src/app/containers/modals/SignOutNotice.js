@@ -39,7 +39,7 @@ const SignOutNotice = ({
       CodeSandbox has migrated to a system where authorization tokens can be
       managed and revoked, and we had to sign everyone out for this.
       <br />
-      <br />But don{"'"}t worry, you can sign in right again.
+      <br />But don{"'"}t worry, you can sign in right again!
     </Explanation>
 
     <Row justifyContent="space-around">
