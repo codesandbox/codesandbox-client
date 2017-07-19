@@ -9,7 +9,7 @@ const Container = styled.span`
   background-color: ${props => props.theme.secondary};
   padding: .3em .5em;
   border-radius: 4px;
-  font-weight: 400;
+  font-weight: 500;
 
   ${props => props.canRemove && css`padding-right: 1.5rem;`};
 `;
