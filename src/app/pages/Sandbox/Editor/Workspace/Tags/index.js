@@ -81,7 +81,12 @@ export default class Tags extends React.PureComponent {
               />
             </WorkspaceInputContainer>
             <Margin horizontal={1} vertical={0.5}>
-              <Button onClick={this.addTag} block small>
+              <Button
+                onClick={this.addTag}
+                disabled={tags.length >= 5}
+                block
+                small
+              >
                 Add Tag
               </Button>
             </Margin>

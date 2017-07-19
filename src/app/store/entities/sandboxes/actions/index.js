@@ -41,6 +41,10 @@ export const DELETE_EXTERNAL_RESOURCE_ACTIONS = createAPIActions(
   'SANDBOX',
   'DELETE_EXTERNAL_RESOURCE',
 );
+export const SET_SANDBOX_PRIVACY_ACTIONS = createAPIActions(
+  'SANDBOX',
+  'PRIVACY',
+);
 export const ADD_TAG_ACTIONS = createAPIActions('SANDBOX', 'ADD_TAG');
 export const REMOVE_TAG_ACTIONS = createAPIActions('SANDBOX', 'REMOVE_TAG');
 export const LIKE_SANDBOX_ACTIONS = createAPIActions('SANDBOX', 'LIKE');
@@ -55,6 +59,7 @@ export const CANCEL_BUNDLE = 'CANCEL_BUNDLE';
 export const SET_PROJECT_VIEW = 'SET_PROJECT_VIEW';
 export const SET_VIEW_MODE = 'SET_VIEW_MODE';
 export const CREATE_ZIP = 'CREATE_ZIP';
+export const SET_SANDBOX_PRIVACY = 'SET_SANDBOX_PRIVACY';
 
 export default {
   updateSandboxInfo: (id: string, title: string, description: string) => async (
@@ -413,6 +418,36 @@ export default {
         },
       }),
     );
+  },
+
+  setSandboxPrivacy: (id: string, privacy: number) => async (
+    dispatch: Function,
+    getState: Function,
+  ) => {
+    const oldPrivacy = singleSandboxSelector(getState(), { id });
+    dispatch({
+      type: SET_SANDBOX_PRIVACY,
+      id,
+      privacy,
+    });
+
+    try {
+      const result = await dispatch(
+        doRequest(SET_SANDBOX_PRIVACY_ACTIONS, `sandboxes/${id}/privacy`, {
+          method: 'PATCH',
+          body: {
+            sandbox: {
+              privacy,
+            },
+          },
+        }),
+      );
+      return result;
+    } catch (e) {
+      dispatch({ type: SET_SANDBOX_PRIVACY, id, privacy: oldPrivacy });
+
+      throw e;
+    }
   },
 
   ...errorActions,

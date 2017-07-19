@@ -10,7 +10,7 @@ import type { Sandbox, User } from 'common/types';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 import { modulesFromSandboxNotSavedSelector } from 'app/store/entities/sandboxes/modules/selectors';
 import { usersSelector } from 'app/store/entities/users/selectors';
-import { isPatron } from 'app/store/user/selectors';
+import { isPatronSelector } from 'app/store/user/selectors';
 
 import showAlternativeComponent from 'app/hoc/show-alternative-component';
 import fadeIn from 'app/utils/animation/fade-in';
@@ -48,7 +48,7 @@ const mapStateToProps = createSelector(
   modulesFromSandboxNotSavedSelector,
   usersSelector,
   (_, props) => props.sandbox && props.sandbox.author,
-  isPatron,
+  isPatronSelector,
   (preventTransition, users, author, isPatron) => ({
     preventTransition,
     user: users[author],
@@ -83,6 +83,7 @@ const Workspace = ({
         preventTransition={preventTransition}
         owned={sandbox.owned}
         author={user}
+        privacy={sandbox.privacy}
       />
     </WorkspaceItem>
 
@@ -119,6 +120,7 @@ const Workspace = ({
           id={sandbox.id}
           deleteSandbox={sandboxActions.deleteSandbox}
           newSandboxUrl={sandboxActions.newSandboxUrl}
+          setSandboxPrivacy={sandboxActions.setSandboxPrivacy}
           isPatron={isPatron}
           privacy={sandbox.privacy}
         />

@@ -11,6 +11,7 @@ type Props = {
   id: string,
   deleteSandbox: (id: string) => void,
   newSandboxUrl: () => void,
+  setSandboxPrivacy: (id: string, privacy: number) => void,
   isPatron: boolean,
   privacy: 0 | 1 | 2,
 };
@@ -29,6 +30,9 @@ const PrivacySelect = styled.select`
 
 export default class SandboxSettings extends React.PureComponent {
   props: Props;
+  state = {
+    loading: false,
+  };
 
   handleDeleteSandbox = async () => {
     const really = confirm('Are you sure you want to delete this sandbox?'); // TODO: confirm???
@@ -36,6 +40,22 @@ export default class SandboxSettings extends React.PureComponent {
       await this.props.deleteSandbox(this.props.id);
       await this.props.newSandboxUrl();
     }
+  };
+
+  updateSandboxPrivacy = async e => {
+    this.setState({ loading: true });
+
+    try {
+      const privacy = +e.target.value;
+
+      if (!Number.isNaN(privacy)) {
+        await this.props.setSandboxPrivacy(this.props.id, privacy);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+
+    this.setState({ loading: false });
   };
 
   render() {
@@ -46,7 +66,10 @@ export default class SandboxSettings extends React.PureComponent {
           <div>
             <WorkspaceSubtitle>Sandbox Privacy</WorkspaceSubtitle>
             <WorkspaceInputContainer>
-              <PrivacySelect value={privacy}>
+              <PrivacySelect
+                value={privacy}
+                onChange={this.updateSandboxPrivacy}
+              >
                 <option value={0}>Public</option>
                 <option value={1}>Unlisted (only findable with url)</option>
                 <option value={2}>Private</option>

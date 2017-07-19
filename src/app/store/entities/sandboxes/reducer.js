@@ -16,6 +16,7 @@ import {
   LIKE_SANDBOX_ACTIONS,
   UNLIKE_SANDBOX_ACTIONS,
   SET_TAGS,
+  SET_SANDBOX_PRIVACY,
 } from './actions';
 
 import {
@@ -149,6 +150,11 @@ function singleSandboxReducer(sandbox: Sandbox, action: Action): Sandbox {
         ...sandbox,
         tags: action.tags,
       };
+    case SET_SANDBOX_PRIVACY:
+      return {
+        ...sandbox,
+        privacy: action.privacy,
+      };
     case CLEAR_ERRORS:
     case ADD_ERROR:
       return { ...sandbox, errors: errorReducer(sandbox.errors, action) };
@@ -183,7 +189,8 @@ export default function reducer(
     case LIKE_SANDBOX_ACTIONS.FAILURE:
     case UNLIKE_SANDBOX_ACTIONS.REQUEST:
     case UNLIKE_SANDBOX_ACTIONS.FAILURE:
-    case UNLIKE_SANDBOX_ACTIONS.SUCCESS: {
+    case UNLIKE_SANDBOX_ACTIONS.SUCCESS:
+    case SET_SANDBOX_PRIVACY: {
       const id = action.id || (action.meta ? action.meta.id : undefined);
       if (state[id]) {
         return {

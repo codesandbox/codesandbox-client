@@ -39,6 +39,10 @@ const getMessage = (error: Error & { response: ?Object }) => {
     } else {
       error.message = errors; // eslint-disable-line no-param-reassign
     }
+
+    if (response.data.error) {
+      error.message = response.data.error; // eslint-disable-line no-param-reassign
+    }
   }
 
   return error.message;
