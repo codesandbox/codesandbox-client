@@ -21,6 +21,13 @@ const Navigation = styled.div`
   padding-bottom: 2rem;
 `;
 
+const Notice = styled.div`
+  text-align: center;
+  color: rgba(255, 255, 255, 0.5);
+  padding: 2rem 0;
+  padding-bottom: 0;
+`;
+
 type Props = {
   page: number,
   sandboxCount: number,
@@ -74,6 +81,11 @@ class Sandboxes extends React.PureComponent {
     if (!sandboxes || !sandboxes[page]) return <div />;
     return (
       <div>
+        {isCurrentUser &&
+          <Notice>
+            You{"'"}re viewing your own profile, so you can see your private and
+            unlisted sandboxes. Others can{"'"}t.
+          </Notice>}
         <SandboxList
           isCurrentUser={isCurrentUser}
           sandboxes={sandboxes[page]}
