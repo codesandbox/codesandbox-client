@@ -1,19 +1,10 @@
 import React from 'react';
-import styled from 'styled-components';
 import Margin from 'app/components/spacing/Margin';
 import Button from 'app/components/buttons/Button';
+import Tags from 'app/components/sandbox/Tags';
 
 import WorkspaceSubtitle from '../WorkspaceSubtitle';
 import WorkspaceInputContainer from '../WorkspaceInputContainer';
-
-import Tag from './Tag';
-
-const TagContainer = styled.div`
-  margin: .75rem;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-`;
 
 type Props = {
   sandboxId: string,
@@ -22,7 +13,7 @@ type Props = {
   addTag: (tag: string) => void,
 };
 
-export default class Tags extends React.PureComponent {
+export default class TagsWorkspace extends React.PureComponent {
   props: Props;
   state = {
     tagName: '',
@@ -60,13 +51,9 @@ export default class Tags extends React.PureComponent {
         {tags.length > 0 &&
           <div>
             <WorkspaceSubtitle>Tags</WorkspaceSubtitle>
-            <TagContainer>
-              {tags.sort().map(tag =>
-                <Margin key={tag} vertical={0.5} horizontal={0.25}>
-                  <Tag removeTag={isOwner && this.removeTag} tag={tag} />
-                </Margin>,
-              )}
-            </TagContainer>
+            <div style={{ fontSize: '.875rem' }}>
+              <Tags tags={tags} removeTag={isOwner && this.removeTag} />
+            </div>
           </div>}
 
         {isOwner &&

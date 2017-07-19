@@ -6,7 +6,6 @@ import CrossIcon from 'react-icons/lib/md/clear';
 const Container = styled.span`
   position: relative;
   color: white;
-  font-size: .875rem;
   background-color: ${props => props.theme.secondary};
   padding: .3em .5em;
   border-radius: 4px;
