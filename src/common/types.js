@@ -109,6 +109,7 @@ export type Sandbox = {
     error?: string,
     processing?: boolean,
   },
+  privacy: 0 | 1 | 2,
   showEditor: ?boolean,
   showPreview: ?boolean,
   author: ?User,

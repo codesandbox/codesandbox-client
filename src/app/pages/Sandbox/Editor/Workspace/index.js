@@ -10,6 +10,7 @@ import type { Sandbox, User } from 'common/types';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 import { modulesFromSandboxNotSavedSelector } from 'app/store/entities/sandboxes/modules/selectors';
 import { usersSelector } from 'app/store/entities/users/selectors';
+import { isPatron } from 'app/store/user/selectors';
 
 import showAlternativeComponent from 'app/hoc/show-alternative-component';
 import fadeIn from 'app/utils/animation/fade-in';
@@ -40,15 +41,18 @@ type Props = {
   sandboxActions: typeof sandboxActionCreators,
   preventTransition: boolean,
   user: User,
+  isPatron: boolean,
 };
 
 const mapStateToProps = createSelector(
   modulesFromSandboxNotSavedSelector,
   usersSelector,
   (_, props) => props.sandbox && props.sandbox.author,
-  (preventTransition, users, author) => ({
+  isPatron,
+  (preventTransition, users, author, isPatron) => ({
     preventTransition,
     user: users[author],
+    isPatron,
   }),
 );
 
@@ -61,6 +65,7 @@ const Workspace = ({
   user,
   preventTransition,
   sandboxActions,
+  isPatron,
 }: Props) =>
   <Container>
     <Logo />
@@ -114,6 +119,8 @@ const Workspace = ({
           id={sandbox.id}
           deleteSandbox={sandboxActions.deleteSandbox}
           newSandboxUrl={sandboxActions.newSandboxUrl}
+          isPatron={isPatron}
+          privacy={sandbox.privacy}
         />
       </WorkspaceItem>}
   </Container>;
