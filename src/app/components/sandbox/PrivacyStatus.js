@@ -1,22 +1,54 @@
 import React from 'react';
+import styled, { css } from 'styled-components';
+import Question from 'react-icons/lib/go/question';
+
+import Unlisted from 'react-icons/lib/go/link';
+import Private from 'react-icons/lib/go/lock';
+
 import Tooltip from '../Tooltip';
 
-export default ({ privacy }: { privacy: number }) => {
-  if (privacy === 0) {
-    return <Tooltip title="Everyone can see the sandbox">Public</Tooltip>;
-  }
+const iconStyles = css`
+  opacity: 0.5;
+  margin-left: 0.5em;
+  margin-bottom: 0.2rem;
+`;
 
-  if (privacy === 1) {
+const StyledUnlisted = styled(Unlisted)(iconStyles);
+const StyledPrivate = styled(Private)(iconStyles);
+
+const PRIVACY_MESSAGES = {
+  0: {
+    title: 'Public',
+    tooltip: 'Everyone can see the sandbox',
+    icon: null,
+  },
+  1: {
+    title: 'Unlisted',
+    tooltip: 'Only users with the url can see the sandbox',
+    icon: <StyledUnlisted />,
+  },
+  2: {
+    title: 'Private',
+    tooltip: 'Only you can see the sandbox',
+    icon: <StyledPrivate />,
+  },
+};
+
+const Icon = styled(Question)(iconStyles);
+
+export default ({ privacy, asIcon }: { privacy: number, asIcon: boolean }) => {
+  if (asIcon) {
     return (
-      <Tooltip title="Only users with the url can see the sandbox">
-        Unlisted
+      <Tooltip title={PRIVACY_MESSAGES[privacy].tooltip}>
+        {PRIVACY_MESSAGES[privacy].icon}
       </Tooltip>
     );
   }
 
-  if (privacy === 2) {
-    return <Tooltip title="Only you can see the sandbox">Private</Tooltip>;
-  }
-
-  return null;
+  return (
+    <Tooltip title={PRIVACY_MESSAGES[privacy].tooltip}>
+      {PRIVACY_MESSAGES[privacy].title}
+      <Icon />
+    </Tooltip>
+  );
 };

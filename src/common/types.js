@@ -49,6 +49,7 @@ export type SmallSandbox = {
   likeCount: number,
   viewCount: number,
   forkCount: number,
+  privacy: 0 | 1 | 2,
 };
 
 export type PaginatedSandboxes = {

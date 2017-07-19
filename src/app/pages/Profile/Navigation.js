@@ -18,7 +18,8 @@ const NavigationLink = styled(NavLink)`
   color: rgba(255, 255, 255, 0.5);
   text-decoration: none;
 
-  ${({ border }) => border && `border-right: 1px solid rgba(255, 255, 255, 0.2)`};
+  ${({ border }) =>
+    border && `border-right: 1px solid rgba(255, 255, 255, 0.2)`};
 
   ${delayEffect(0.2)}
 
@@ -39,7 +40,7 @@ export default ({
   username: string,
   sandboxCount: number,
   likeCount: number,
-}) => (
+}) =>
   <CenteredRow alignItems="center" justifyContent="center">
     <NavigationLink
       to={`/u/${username}`}
@@ -68,5 +69,4 @@ export default ({
     >
       LIKES ({likeCount})
     </NavigationLink>
-  </CenteredRow>
-);
+  </CenteredRow>;
