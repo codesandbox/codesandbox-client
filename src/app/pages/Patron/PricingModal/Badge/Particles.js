@@ -75,6 +75,8 @@ export default class Particles extends React.PureComponent {
     });
   };
 
+  timeout: ?number;
+
   shouldComponentUpdate(nextProps) {
     if (nextProps.badge !== this.props.badge) {
       const particleSelector = document.getElementsByClassName(
@@ -86,6 +88,15 @@ export default class Particles extends React.PureComponent {
       requestAnimationFrame(() => {
         Array.forEach(particleSelector, showElement);
       });
+
+      if (this.timeout) {
+        clearTimeout(this.timeout);
+      }
+
+      this.timeout = setTimeout(() => {
+        const allParticleSelector = document.getElementsByClassName('particle');
+        Array.forEach(allParticleSelector, hideElement);
+      }, 700);
     }
 
     if (!this.props.makeItRain && nextProps.makeItRain) {

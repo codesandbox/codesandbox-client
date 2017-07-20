@@ -62,6 +62,10 @@ const Patron = Loadable({
   loader: () => import('./Patron'),
   LoadingComponent: Loading,
 });
+const Terms = Loadable({
+  loader: () => import('./Terms'),
+  LoadingComponent: Loading,
+});
 
 type Props = {
   hasLogin: boolean,
@@ -112,6 +116,7 @@ class Routes extends React.PureComponent {
             <Route path="/search" component={Search} />
             <Route path="/patron" component={Patron} />
             <Route path="/cli/login" component={CLI} />
+            <Route path="/legal" component={Terms} />
             <Route component={NotFound} />
           </Switch>
         </Content>

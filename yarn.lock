@@ -2253,8 +2253,8 @@ currently-unhandled@^0.4.1:
     array-find-index "^1.0.1"
 
 custom-prettier-codesandbox@CompuIves/custom-prettier-codesandbox:
-  version "1.5.2"
-  resolved "https://codeload.github.com/CompuIves/custom-prettier-codesandbox/tar.gz/ab9e011b4b7634b06e21d4d05ab55952eb7b4f0e"
+  version "1.5.3"
+  resolved "https://codeload.github.com/CompuIves/custom-prettier-codesandbox/tar.gz/c3e8bc422c1f3a15d6bbf76fdf525085441c484c"
 
 d@1:
   version "1.0.0"
