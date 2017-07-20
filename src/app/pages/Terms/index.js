@@ -7,6 +7,7 @@ import Navigation from 'app/containers/Navigation';
 import Margin from 'app/components/spacing/Margin';
 import MaxWidth from 'app/components/flex/MaxWidth';
 import Centered from 'app/components/flex/Centered';
+import { tosUrl, privacyUrl } from 'app/utils/url-generator';
 
 import TOS from './TOS';
 import PrivacyPolicy from './PrivacyPolicy';
@@ -61,7 +62,7 @@ export default () =>
           <MaxWidth width={1024}>
             <LegalNavigtion>
               <NavigationLink
-                to={`/legal/terms`}
+                to={tosUrl()}
                 activeStyle={{
                   color: 'white',
                 }}
@@ -70,7 +71,7 @@ export default () =>
               </NavigationLink>
 
               <NavigationLink
-                to={`/legal/privacy`}
+                to={privacyUrl()}
                 activeStyle={{
                   color: 'white',
                 }}

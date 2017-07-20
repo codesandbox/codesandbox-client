@@ -35,7 +35,7 @@ injectGlobal`
 
 const NotificationContainer = styled.div`
   position: fixed;
-  left: 24px;
+  right: 24px;
   bottom: 0;
   z-index: 41;
 `;
@@ -104,13 +104,13 @@ class Notifications extends React.PureComponent {
             transitionEnterTimeout={500}
             transitionLeaveTimeout={300}
           >
-            {notifications.map((n: Notification, i: number) => (
+            {notifications.map((n: Notification, i: number) =>
               <Motion
                 key={n.id}
                 defaultStyle={{ y: -150 }}
                 style={{ y: spring(24 + 60 * (notifications.length - 1 - i)) }}
               >
-                {({ y }) => (
+                {({ y }) =>
                   <NotificationContainer key={n.id} style={{ bottom: y }}>
                     <NotificationComponent
                       title={n.title}
@@ -118,10 +118,9 @@ class Notifications extends React.PureComponent {
                       buttons={n.buttons}
                       close={() => this.closeNotification(n.id)}
                     />
-                  </NotificationContainer>
-                )}
-              </Motion>
-            ))}
+                  </NotificationContainer>}
+              </Motion>,
+            )}
           </ReactCSSTransitionGroup>
         </div>
       </Portal>
