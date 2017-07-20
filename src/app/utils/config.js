@@ -6,4 +6,4 @@ export const ALGOLIA_DEFAULT_INDEX =
 export const STRIPE_API_KEY =
   process.env.NODE_ENV === 'development'
     ? 'pk_test_0HgnQIkQJCECIFCQkafGQ5gA'
-    : 'pk_test_0HgnQIkQJCECIFCQkafGQ5gA';
+    : 'pk_live_KeUgofl1VrjTtbrhhN7gGI9W';
