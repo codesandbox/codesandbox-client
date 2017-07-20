@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import moment from 'moment';
 import GithubIcon from 'react-icons/lib/go/mark-github';
 import { Link } from 'react-router-dom';
 import { patronUrl } from 'app/utils/url-generator';
@@ -60,7 +59,7 @@ type Props = {
 const Badges = ({ badges }: { badges: Array<{ id: string, name: string }> }) =>
   <Margin left={0.5}>
     <Link to={patronUrl()}>
-      {badges.map(badge => <Badge key={badge.id} badge={badge} size={40} />)}
+      {badges.map(badge => <Badge key={badge.id} badge={badge} size={50} />)}
     </Link>
   </Margin>;
 

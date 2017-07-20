@@ -61,7 +61,7 @@ const Selector = styled.div`
   border-radius: 4px;
   z-index: 0;
   background-color: ${props => props.theme.secondary};
-  box-shadow: 0 4px 6px rgba(0, 0, 0, .5);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, .25);
 
   transform: translateY(${props => props.offset + 1}px);
 `;

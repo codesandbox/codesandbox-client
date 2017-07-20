@@ -1,5 +1,5 @@
 import React from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 
 import badges from 'app/utils/badges/patron-info';
 
@@ -27,7 +27,7 @@ const particleAnimation = (deg: number, i: number) => keyframes`
 
   100% {
     transform: rotate(${deg}deg) translateY(${200 +
-  i % 2 * 50}px) scale3d(0, 0, 0);
+  Math.random() * 100}px) scale3d(0, 0, 0);
   }
 `;
 
@@ -42,8 +42,15 @@ const Particle = styled.div`
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background-color: ${props => badges[props.badge].color};
-  box-shadow: 0 0 5px ${props => badges[props.badge].color};
+  ${props => {
+    const color =
+      badges[props.badge].colors[props.i % badges[props.badge].colors.length];
+
+    return css`
+    background-color: ${color};
+    box-shadow: 0 0 5px ${color};
+    `;
+  }};
 `;
 
 const createParticles = (amount: number, badge) =>
@@ -60,7 +67,7 @@ const createParticles = (amount: number, badge) =>
 
 type Props = {
   makeItRain: boolean,
-  badge: 'ruby' | 'sapphire' | 'rupee' | 'diamond',
+  badge: 'patron-1' | 'patron-2' | 'patron-3' | 'patron-4',
 };
 
 export default class Particles extends React.PureComponent {

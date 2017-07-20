@@ -67,19 +67,20 @@ class PricingModal extends React.PureComponent {
     this.setState({ price });
   };
 
-  getBadge = () => {
+  getPatronTier = () => {
     const { price } = this.state;
 
-    if (price >= 30) return 'diamond';
-    if (price >= 20) return 'rupee';
-    if (price >= 10) return 'sapphire';
-    return 'ruby';
+    if (price >= 35) return 4;
+    if (price >= 25) return 3;
+    if (price >= 15) return 2;
+    return 1;
   };
 
   render() {
     const { user } = this.props;
     const { price } = this.state;
-    const badge = this.getBadge();
+    const tier = this.getPatronTier();
+    const badge = `patron-${tier}`;
     const subscribed = Boolean(user && user.subscription);
 
     return (

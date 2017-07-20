@@ -41,5 +41,5 @@ export default ({
     <AuthorName>
       {username}
     </AuthorName>
-    {subscriptionSince && badge && <Badge badge={badge} size={20} />}
+    {subscriptionSince && badge && <Badge badge={badge} size={28} />}
   </CenteredText>;

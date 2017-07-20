@@ -16,12 +16,12 @@ const BadgeContainer = styled.div`
   margin: 0 auto;
   width: 162px;
   height: 178px;
-  top: -90px;
+  top: -110px;
 `;
 
 type Props = {
   subscribed: boolean,
-  badge: 'ruby' | 'sapphire' | 'rupee' | 'diamond',
+  badge: 'patron-1' | 'patron-2' | 'patron-3' | 'patron-4',
 };
 
 const Badge = ({ badge }: Props) => {

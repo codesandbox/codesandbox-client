@@ -7,6 +7,7 @@ import GithubBadge from 'app/components/sandbox/GithubBadge';
 import { sandboxUrl, githubRepoUrl, profileUrl } from 'app/utils/url-generator';
 import UserWithAvatar from 'app/components/user/UserWithAvatar';
 import Stats from 'app/components/sandbox/Stats';
+import { findPatronBadge } from 'app/utils/badges';
 import PrivacyStatus from 'app/components/sandbox/PrivacyStatus';
 
 import type { User, GitInfo } from 'common/types';
@@ -153,7 +154,7 @@ export default class Project extends React.PureComponent {
                   username={author.username}
                   avatarUrl={author.avatarUrl}
                   subscriptionSince={author.subscriptionSince}
-                  badge={author.badges[0]}
+                  badge={findPatronBadge(author.badges)}
                 />
               </UserLink>
             </Item>

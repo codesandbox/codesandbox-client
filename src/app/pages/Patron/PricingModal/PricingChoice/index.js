@@ -128,7 +128,7 @@ class PricingChoice extends React.PureComponent {
           {subscribed &&
             <ThankYou
               price={user.subscription.amount}
-              color={badges[badge].color}
+              color={badges[badge].colors[0]}
             />}
           <Relative>
             <Currency>$</Currency>
@@ -146,7 +146,7 @@ class PricingChoice extends React.PureComponent {
               max={50}
               step={1}
               value={price}
-              color={badges[badge].color}
+              color={badges[badge].colors[0]}
             />
           </RangeContainer>
           {loggedIn // eslint-disable-line no-nested-ternary

@@ -1,28 +1,28 @@
-import Rupee from './svg/RupeeBadge.svg';
-import Sapphire from './svg/SapphireBadge.svg';
-import Ruby from './svg/RubyBadge.svg';
-import Diamond from './svg/DiamondBadge.svg';
+import Patron1 from './svg/patron-1.svg';
+import Patron2 from './svg/patron-2.svg';
+import Patron3 from './svg/patron-3.svg';
+import Patron4 from './svg/patron-4.svg';
 
 const info = {
-  ruby: {
-    Badge: Ruby,
+  'patron-1': {
+    Badge: Patron1,
     particleCount: 10,
-    color: '#D9411C',
+    colors: ['#1BB978'],
   },
-  sapphire: {
-    Badge: Sapphire,
-    particleCount: 15,
-    color: '#BA11D6',
+  'patron-2': {
+    Badge: Patron2,
+    particleCount: 20,
+    colors: ['#B53D3D', '#1BB978'],
   },
-  rupee: {
-    Badge: Rupee,
-    particleCount: 25,
-    color: '#45CB3B',
+  'patron-3': {
+    Badge: Patron3,
+    particleCount: 35,
+    colors: ['#609AC3', '#1BB978', '#B53D3D'],
   },
-  diamond: {
-    Badge: Diamond,
-    particleCount: 40,
-    color: '#61B7E6',
+  'patron-4': {
+    Badge: Patron4,
+    particleCount: 100,
+    colors: ['#D0AF72', '#1BB978', '#B53D3D', '#609AC3'],
   },
 };
 
