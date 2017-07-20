@@ -15,6 +15,8 @@ import Loading from 'app/components/Loading';
 import { loggedInSelector } from 'app/store/user/selectors';
 import userActionCreators from 'app/store/user/actions';
 
+import Sandbox from './Sandbox';
+
 const routeDebugger = _debug('cs:app:router');
 
 const Container = styled.div`
@@ -36,10 +38,6 @@ const SignIn = Loadable({
 });
 const NotFound = Loadable({
   loader: () => import('./NotFound'),
-  LoadingComponent: Loading,
-});
-const Sandbox = Loadable({
-  loader: () => import('./Sandbox'),
   LoadingComponent: Loading,
 });
 const Profile = Loadable({
