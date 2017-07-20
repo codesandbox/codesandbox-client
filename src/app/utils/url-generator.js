@@ -95,3 +95,5 @@ export const gitHubToSandboxUrl = (githubUrl: string) =>
 
 export const searchUrl = () => `/search`;
 export const patronUrl = () => `/patron`;
+export const tosUrl = () => `/legal/terms`;
+export const privacyUrl = () => `/legal/privacy`;
