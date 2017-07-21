@@ -4,6 +4,6 @@ import EditorLink from './EditorLink';
 
 describe('EditorLink', () => {
   it('renders', () => {
-    testRender(<EditorLink />);
+    testRender(<EditorLink sandbox={{}} />);
   });
 });

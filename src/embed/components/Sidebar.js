@@ -5,8 +5,7 @@ import type { Sandbox } from 'common/types';
 
 import EditorLink from './EditorLink';
 import Files from './Files';
-import EntryContainer
-  from '../../app/pages/Sandbox/Editor/Workspace/EntryContainer';
+import EntryContainer from '../../app/pages/Sandbox/Editor/Workspace/EntryContainer';
 import Padding from '../../app/components/spacing/Padding';
 
 const Container = styled.div`
@@ -44,7 +43,8 @@ const Description = styled.p`
 
 const Item = styled.div`
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-  ${({ hover, theme }) => hover && `&:hover { background-color: ${theme.background.darken(0.3)()};}`}
+  ${({ hover, theme }) =>
+    hover && `&:hover { background-color: ${theme.background.darken(0.3)()};}`};
 `;
 
 const Version = styled.div`
@@ -82,13 +82,20 @@ type Props = {
   currentModule: string,
 };
 
-export default ({ sandbox, setCurrentModule, currentModule }: Props) => (
+export default ({ sandbox, setCurrentModule, currentModule }: Props) =>
   <Container>
     <Item>
-      <Title>{sandbox.title || sandbox.id}</Title>
+      <Title>
+        {sandbox.title || sandbox.id}
+      </Title>
       {sandbox.author &&
-        <Author>Made by <strong>{sandbox.author.username}</strong></Author>}
-      {sandbox.description && <Description>{sandbox.description}</Description>}
+        <Author>
+          Made by <strong>{sandbox.author.username}</strong>
+        </Author>}
+      {sandbox.description &&
+        <Description>
+          {sandbox.description}
+        </Description>}
     </Item>
 
     <Item>
@@ -106,27 +113,28 @@ export default ({ sandbox, setCurrentModule, currentModule }: Props) => (
       <Title>Dependencies</Title>
 
       <Subtitle>NPM Dependencies</Subtitle>
-      {Object.keys(sandbox.npmDependencies).map(dep => (
+      {Object.keys(sandbox.npmDependencies).map(dep =>
         <EntryContainer key={dep}>
           {dep}
-          <Version>{sandbox.npmDependencies[dep]}</Version>
-        </EntryContainer>
-      ))}
+          <Version>
+            {sandbox.npmDependencies[dep]}
+          </Version>
+        </EntryContainer>,
+      )}
 
       <Subtitle>External Resources</Subtitle>
-      {sandbox.externalResources.map(dep => (
+      {sandbox.externalResources.map(dep =>
         <EntryContainer key={dep}>
           <a href={dep} rel="nofollow noopener noreferrer" target="_blank">
             {getName(dep)}
           </a>
-        </EntryContainer>
-      ))}
+        </EntryContainer>,
+      )}
     </Item>
 
     <Item hover>
       <Padding margin={1}>
-        <EditorLink id={sandbox.id} />
+        <EditorLink sandbox={sandbox} />
       </Padding>
     </Item>
-  </Container>
-);
+  </Container>;

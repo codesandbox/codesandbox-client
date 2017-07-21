@@ -2,6 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import Logo from 'app/components/Logo';
 
+import { sandboxUrl } from 'app/utils/url-generator';
+
 type Props = {
   id: string,
   small: boolean,
@@ -24,16 +26,13 @@ const Text = styled.span`
   }
 `;
 
-export default ({ id, small }: Props) => (
+export default ({ sandbox, small }: Props) =>
   <EditText
     small={small}
     target="_blank"
     rel="noopener noreferrer"
-    href={`/s/${id}`}
+    href={sandboxUrl(sandbox) + document.location.search}
   >
-    <Text small={small}>
-      Edit on CodeSandbox
-    </Text>
+    <Text small={small}>Edit on CodeSandbox</Text>
     <Logo />
-  </EditText>
-);
+  </EditText>;

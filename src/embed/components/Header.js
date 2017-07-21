@@ -37,11 +37,7 @@ const RightAligned = styled.div`
   justify-content: center;
 `;
 
-const Title = styled.div`
-  @media (max-width: 450px) {
-    display: none;
-  }
-`;
+const Title = styled.div`@media (max-width: 450px) {display: none;}`;
 
 type Props = {
   sandbox: Sandbox,
@@ -69,7 +65,9 @@ export default class Header extends React.PureComponent {
     return (
       <Container>
         <MenuIcon onClick={toggleSidebar} />
-        <Title>{sandbox.title || sandbox.id}</Title>
+        <Title>
+          {sandbox.title || sandbox.id}
+        </Title>
         <ModeIcons
           showEditor={showEditor}
           showPreview={showPreview}
@@ -78,7 +76,7 @@ export default class Header extends React.PureComponent {
           setMixedView={setMixedView}
         />
         <RightAligned>
-          <EditorLink small id={sandbox.id} />
+          <EditorLink small sandbox={sandbox} />
         </RightAligned>
       </Container>
     );
