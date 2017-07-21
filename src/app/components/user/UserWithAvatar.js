@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import Badge from 'app/utils/badges/Badge';
+import PatronStar from './PatronStar';
 
 const CenteredText = styled.div`
   display: inline-flex;
@@ -11,9 +11,12 @@ const CenteredText = styled.div`
 `;
 
 const AuthorName = styled.span`
+  display: inline-flex;
+  align-items: center;
   text-transform: uppercase;
   margin: 0 0.5em;
   font-weight: 400;
+  ${props => props.subscribed && `color: ${props.theme.primary()};`};
 `;
 
 const Image = styled.img`
@@ -29,17 +32,15 @@ type Props = {
   badge: ?Object,
 };
 
-export default ({
-  avatarUrl,
-  username,
-  subscriptionSince,
-  badge,
-  ...props
-}: Props) =>
+export default ({ avatarUrl, username, subscriptionSince, ...props }: Props) =>
   <CenteredText {...props}>
     <Image src={avatarUrl} alt={username} />
-    <AuthorName>
+    <AuthorName subscribed={Boolean(subscriptionSince)}>
       {username}
+      {subscriptionSince &&
+        <PatronStar
+          style={{ fontSize: '1.125em', marginBottom: '0.1em' }}
+          subscriptionSince={subscriptionSince}
+        />}
     </AuthorName>
-    {subscriptionSince && badge && <Badge badge={badge} size={28} />}
   </CenteredText>;

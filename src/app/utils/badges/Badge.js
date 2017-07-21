@@ -11,7 +11,7 @@ const NameContainer = styled.div`
 
 const Image = styled.img`
   transition: 0.3s ease all;
-  margin-bottom: -0.2em;
+  margin-bottom: -0.4em;
 
   opacity: ${props => (props.visible ? 1 : 0.5)};
   cursor: pointer;

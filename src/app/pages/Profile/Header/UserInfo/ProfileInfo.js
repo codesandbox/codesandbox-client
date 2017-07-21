@@ -1,14 +1,18 @@
 import React from 'react';
 import styled from 'styled-components';
+import moment from 'moment';
 import GithubIcon from 'react-icons/lib/go/mark-github';
+import StarIcon from 'react-icons/lib/go/star';
 import { Link } from 'react-router-dom';
 import { patronUrl } from 'app/utils/url-generator';
 
 import Row from 'app/components/flex/Row';
+import Tooltip from 'app/components/Tooltip';
 import Column from 'app/components/flex/Column';
 import delayEffect from 'app/utils/animation/delay-effect';
 import Margin from 'app/components/spacing/Margin';
 import Badge from 'app/utils/badges/Badge';
+import PatronStar from 'app/components/user/PatronStar';
 
 const ProfileImage = styled.img`
   border-radius: 2px;
@@ -79,6 +83,8 @@ export default ({
         {name &&
           <Name subscribed={Boolean(subscriptionSince)}>
             {name}
+            {subscriptionSince &&
+              <PatronStar subscriptionSince={subscriptionSince} />}
             <Badges badges={badges} />
           </Name>}
         <Username main={!name}>

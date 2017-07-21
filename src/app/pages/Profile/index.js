@@ -81,7 +81,6 @@ class Profile extends React.PureComponent {
   };
 
   componentDidMount() {
-    console.log('do you even try?');
     const { username } = this.props.match.params;
 
     this.fetchUser(username);
