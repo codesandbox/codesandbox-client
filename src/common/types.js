@@ -28,6 +28,12 @@ export type Directory = {
   shortid: string,
 };
 
+export type Badge = {
+  id: string,
+  name: string,
+  visible: boolean,
+};
+
 export type CurrentUser = {
   id: ?string,
   email: ?string,
@@ -35,6 +41,11 @@ export type CurrentUser = {
   username: ?string,
   avatarUrl: ?string,
   jwt: ?string,
+  subscription: ?{
+    since: string,
+    amount: string,
+  },
+  badges: Array<Badge>,
 };
 
 export type SmallSandbox = {
@@ -45,6 +56,7 @@ export type SmallSandbox = {
   likeCount: number,
   viewCount: number,
   forkCount: number,
+  privacy: 0 | 1 | 2,
 };
 
 export type PaginatedSandboxes = {
@@ -55,7 +67,7 @@ export type User = {
   id: string,
   username: string,
   name: string,
-  avatarUrl: ?string,
+  avatarUrl: string,
   showcasedSandboxShortid: ?string,
   sandboxCount: number,
   givenLikeCount: number,
@@ -64,6 +76,8 @@ export type User = {
   forkedCount: number,
   sandboxes: PaginatedSandboxes,
   likedSandboxes: PaginatedSandboxes,
+  badges: Array<Badge>,
+  subscriptionSince: string,
 };
 
 export type GitInfo = {
@@ -100,12 +114,14 @@ export type Sandbox = {
     error?: string,
     processing?: boolean,
   },
+  privacy: 0 | 1 | 2,
   showEditor: ?boolean,
   showPreview: ?boolean,
   author: ?User,
   forkedFromSandbox: ?{ title: string, id: string },
   errors: Array<ModuleError>,
   git: ?GitInfo,
+  tags: Array<string>,
 };
 
 export type Preferences = {

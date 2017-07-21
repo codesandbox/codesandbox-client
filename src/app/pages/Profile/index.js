@@ -1,4 +1,4 @@
-// @flow
+/* @flow */
 import React from 'react';
 import { connect } from 'react-redux';
 import { Route, Switch } from 'react-router-dom';
@@ -6,6 +6,7 @@ import { bindActionCreators } from 'redux';
 import { createSelector } from 'reselect';
 import styled from 'styled-components';
 
+import MaxWidth from 'app/components/flex/MaxWidth';
 import Fullscreen from 'app/components/flex/Fullscreen';
 import userActionCreators from 'app/store/entities/users/actions';
 import { currentUserSelector } from 'app/store/user/selectors';
@@ -16,7 +17,6 @@ import { profileSandboxesUrl, profileLikesUrl } from 'app/utils/url-generator';
 
 import NotFound from 'app/pages/NotFound';
 
-import MaxWidth from './MaxWidth';
 import Header from './Header';
 import Navigation from './Navigation';
 import Showcase from './Showcase';
@@ -102,7 +102,7 @@ class Profile extends React.PureComponent {
     const { user, match, userActions, isCurrentUser } = this.props;
     if (!user) return <div />;
 
-    document.title = `${user.name} - CodeSandbox`;
+    document.title = `${user.name || user.username} - CodeSandbox`;
     return (
       <Container>
         <Header user={user} />

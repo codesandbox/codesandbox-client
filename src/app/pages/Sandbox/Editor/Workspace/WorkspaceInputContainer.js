@@ -6,8 +6,9 @@ export default styled.div`
   overflow: visible;
   font-size: .875rem;
   margin: 0.5rem 0.75rem;
-  input, textarea {
-    transition: 0.3s ease background-color;
+  input,
+  textarea {
+    transition: 0.3s ease background-color, 0.3s ease border-color;
     font-family: inherit;
     margin: 0 0.25rem;
     padding: 0.25rem;
@@ -15,12 +16,16 @@ export default styled.div`
     outline: none;
     border: none;
     border-radius: 2px;
-    background-color: ${props => (props.errorMessage ? props.theme.redBackground.clearer(0.5) : 'rgba(0, 0, 0, 0.2)')};
-    color: ${props => (props.errorMessage ? props.theme.red : props.theme.white)};
+    background-color: ${props =>
+      props.errorMessage
+        ? props.theme.redBackground.clearer(0.5)
+        : 'rgba(0, 0, 0, 0.2)'};
+    color: ${props =>
+      props.errorMessage ? props.theme.red : props.theme.white};
 
+    border: 1px solid transparent;
     &:focus {
-      border: none;
-      outline: none;
+      border-color: ${props => props.theme.secondary.clearer(0.5)};
     }
   }
 

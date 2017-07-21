@@ -1,12 +1,20 @@
 // @flow
 import React from 'react';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import type { CurrentUser } from 'common/types';
+
+import { currentUserSelector, jwtSelector } from 'app/store/user/selectors';
+import modalActionCreators from 'app/store/modal/actions';
+import userActionCreators from 'app/store/user/actions';
 
 import Row from 'app/components/flex/Row';
 import HoverMenu from 'app/components/HoverMenu';
 import Relative from 'app/components/Relative';
 import Tooltip from 'app/components/Tooltip';
+
+import Preferences from 'app/containers/Preferences';
 
 import UserMenu from './UserMenu';
 
@@ -38,14 +46,23 @@ const Username = styled.div`
 type Props = {
   user: CurrentUser,
   small?: boolean,
-  signOut: Function,
+  modalActions: typeof modalActionCreators,
+  userActions: typeof userActionCreators,
 };
 
 type State = {
   menuOpen: boolean,
 };
 
-export default class User extends React.PureComponent {
+const mapStateToProps = state => ({
+  user: currentUserSelector(state),
+  hasLogin: !!jwtSelector(state),
+});
+const mapDispatchToProps = dispatch => ({
+  userActions: bindActionCreators(userActionCreators, dispatch),
+  modalActions: bindActionCreators(modalActionCreators, dispatch),
+});
+class User extends React.PureComponent {
   props: Props;
   state: State;
 
@@ -60,16 +77,28 @@ export default class User extends React.PureComponent {
   closeMenu = () => this.setState({ menuOpen: false });
   openMenu = () => this.setState({ menuOpen: true });
 
+  openPreferences = () => {
+    this.props.modalActions.openModal({
+      width: 900,
+      Body: <Preferences />,
+    });
+  };
+
   render() {
-    const { user, small, signOut } = this.props;
+    const { user, small, userActions } = this.props;
     const { menuOpen } = this.state;
 
     return (
       <Relative>
         <ClickableContainer onClick={menuOpen ? this.closeMenu : this.openMenu}>
           <ProfileInfo>
-            {user.name && <Name>{user.name}</Name>}
-            <Username main={!user.name}>{user.username}</Username>
+            {user.name &&
+              <Name>
+                {user.name}
+              </Name>}
+            <Username main={!user.name}>
+              {user.username}
+            </Username>
           </ProfileInfo>
 
           <Tooltip title="User Menu">
@@ -80,13 +109,18 @@ export default class User extends React.PureComponent {
               src={user.avatarUrl}
             />
           </Tooltip>
-
         </ClickableContainer>
         {menuOpen &&
           <HoverMenu onClose={this.closeMenu}>
-            <UserMenu signOut={signOut} username={user.username} />
+            <UserMenu
+              openPreferences={this.openPreferences}
+              signOut={userActions.signOut}
+              username={user.username}
+            />
           </HoverMenu>}
       </Relative>
     );
   }
 }
+
+export default connect(mapStateToProps, mapDispatchToProps)(User);

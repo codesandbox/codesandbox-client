@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 
+import PrivacyStatus from 'app/components/sandbox/PrivacyStatus';
 import delayEffect from 'app/utils/animation/delay-effect';
 import { sandboxUrl } from 'app/utils/url-generator';
 
@@ -66,39 +67,59 @@ const SandboxRow = styled.tr`
 `;
 
 type Props = {
-  isCurrentUser: boolean;
-  sandboxes: Array<SmallSandbox>;
-  onDelete: Function;
+  isCurrentUser: boolean,
+  sandboxes: Array<SmallSandbox>,
+  onDelete: Function,
 };
 
-export default ({ sandboxes, isCurrentUser, onDelete }: Props) => (
+export default ({ sandboxes, isCurrentUser, onDelete }: Props) =>
   <Table>
     <thead>
       <tr style={{ height: '3rem' }}>
         <HeaderTitle>Title</HeaderTitle>
         <HeaderTitle>Created</HeaderTitle>
         <HeaderTitle>Updated</HeaderTitle>
-        <StatTitle><FullHeartIcon /></StatTitle>
-        <StatTitle><EyeIcon /></StatTitle>
-        <StatTitle><ForkIcon /></StatTitle>
+        <StatTitle>
+          <FullHeartIcon />
+        </StatTitle>
+        <StatTitle>
+          <EyeIcon />
+        </StatTitle>
+        <StatTitle>
+          <ForkIcon />
+        </StatTitle>
         {isCurrentUser && <HeaderTitle />}
       </tr>
     </thead>
     <Body>
-      {sandboxes.map((s, i) => (
+      {sandboxes.map((s, i) =>
         <SandboxRow index={i} key={s.id}>
-          <td><Link to={sandboxUrl(s)}>{s.title || s.id}</Link></td>
-          <td>{moment(s.insertedAt).format('ll')}</td>
-          <td>{moment(s.updatedAt).format('ll')}</td>
-          <StatBody>{s.likeCount}</StatBody>
-          <StatBody>{s.viewCount}</StatBody>
-          <StatBody>{s.forkCount}</StatBody>
+          <td>
+            <Link to={sandboxUrl(s)}>
+              {s.title || s.id}
+            </Link>
+            <PrivacyStatus privacy={s.privacy} asIcon />
+          </td>
+          <td>
+            {moment(s.insertedAt).format('ll')}
+          </td>
+          <td>
+            {moment(s.updatedAt).format('ll')}
+          </td>
+          <StatBody>
+            {s.likeCount}
+          </StatBody>
+          <StatBody>
+            {s.viewCount}
+          </StatBody>
+          <StatBody>
+            {s.forkCount}
+          </StatBody>
           {isCurrentUser &&
-            <StatBody style={{padding: '0.55rem 0.5rem', cursor: 'pointer'}}>
+            <StatBody style={{ padding: '0.55rem 0.5rem', cursor: 'pointer' }}>
               <DeleteSandboxButton id={s.id} onDelete={onDelete} />
             </StatBody>}
-        </SandboxRow>
-      ))}
+        </SandboxRow>,
+      )}
     </Body>
-  </Table>
-);
+  </Table>;

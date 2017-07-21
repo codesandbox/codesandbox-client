@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import PatronStar from './PatronStar';
+
 const CenteredText = styled.div`
   display: inline-flex;
   justify-content: center;
@@ -9,9 +11,10 @@ const CenteredText = styled.div`
 `;
 
 const AuthorName = styled.span`
+  display: inline-flex;
+  align-items: center;
   text-transform: uppercase;
   margin: 0 0.5em;
-  margin-right: 1em;
   font-weight: 400;
 `;
 
@@ -24,12 +27,19 @@ const Image = styled.img`
 type Props = {
   avatarUrl: string,
   username: string,
+  subscriptionSince: ?string,
+  badge: ?Object,
 };
 
-export default ({ avatarUrl, username }: Props) =>
-  <CenteredText>
+export default ({ avatarUrl, username, subscriptionSince, ...props }: Props) =>
+  <CenteredText {...props}>
     <Image src={avatarUrl} alt={username} />
     <AuthorName>
       {username}
+      {subscriptionSince &&
+        <PatronStar
+          style={{ fontSize: '1.125em', marginBottom: '0.1em' }}
+          subscriptionSince={subscriptionSince}
+        />}
     </AuthorName>
   </CenteredText>;

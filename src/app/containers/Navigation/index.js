@@ -2,21 +2,20 @@
 import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import type { CurrentUser } from 'common/types';
 import { Link } from 'react-router-dom';
 
-import GithubIcon from 'react-icons/lib/go/mark-github';
+import SearchIcon from 'react-icons/lib/md/search';
 
-import Button from 'app/components/buttons/Button';
+import SignInButton from 'app/containers/SignInButton';
+
 import Logo from 'app/components/Logo';
 import Row from 'app/components/flex/Row';
-import { currentUserSelector, jwtSelector } from 'app/store/user/selectors';
-import userActionCreators from 'app/store/user/actions';
 import Tooltip from 'app/components/Tooltip';
 
-import User from './User';
-import { newSandboxUrl } from '../../utils/url-generator';
+import { jwtSelector } from 'app/store/user/selectors';
+import { newSandboxUrl, searchUrl } from 'app/utils/url-generator';
+
+import UserMenu from '../UserMenu';
 
 const LogoWithBorder = styled(Logo)`
   padding-right: 1rem;
@@ -36,15 +35,29 @@ const Title = styled.h1`
   font-weight: 300;
 `;
 
+const Actions = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 1rem;
+`;
+
 const Action = styled.div`
   transition: 0.3s ease all;
-  margin: 0 2rem;
+  margin: 0 1rem;
   cursor: pointer;
   color: white;
 
   &:hover {
     color: white;
   }
+`;
+
+const Icon = styled(Link)`
+  color: inherit;
+  text-decoration: none;
+  font-size: 1.25rem;
+  font-weight: 300;
 `;
 
 const PlusIcon = styled(Link)`
@@ -56,22 +69,17 @@ const PlusIcon = styled(Link)`
 
 type Props = {
   title: string,
-  user: CurrentUser,
   hasLogin: boolean,
-  userActions: typeof userActionCreators,
 };
 
 const mapStateToProps = state => ({
-  user: currentUserSelector(state),
   hasLogin: !!jwtSelector(state),
-});
-const mapDispatchToProps = dispatch => ({
-  userActions: bindActionCreators(userActionCreators, dispatch),
 });
 class Navigation extends React.PureComponent {
   props: Props;
+
   render() {
-    const { title, hasLogin, user, userActions } = this.props;
+    const { title, hasLogin } = this.props;
 
     return (
       <Row justifyContent="space-between">
@@ -85,23 +93,25 @@ class Navigation extends React.PureComponent {
           </Title>
         </Row>
         <Row>
-          <Action>
-            <Tooltip title="New Sandbox">
-              <PlusIcon to={newSandboxUrl()}>+</PlusIcon>
-            </Tooltip>
-          </Action>
-          {hasLogin
-            ? <User signOut={userActions.signOut} user={user} />
-            : <Button small onClick={userActions.signIn}>
-                <Row>
-                  <GithubIcon style={{ marginRight: '0.5rem' }} /> Sign in with
-                  GitHub
-                </Row>
-              </Button>}
+          <Actions>
+            <Action>
+              <Tooltip title="Search">
+                <Icon to={searchUrl()}>
+                  <SearchIcon />
+                </Icon>
+              </Tooltip>
+            </Action>
+            <Action>
+              <Tooltip title="New Sandbox">
+                <PlusIcon to={newSandboxUrl()}>+</PlusIcon>
+              </Tooltip>
+            </Action>
+          </Actions>
+          {hasLogin ? <UserMenu /> : <SignInButton />}
         </Row>
       </Row>
     );
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Navigation);
+export default connect(mapStateToProps)(Navigation);

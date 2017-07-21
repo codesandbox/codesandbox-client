@@ -41,17 +41,25 @@ export const DELETE_EXTERNAL_RESOURCE_ACTIONS = createAPIActions(
   'SANDBOX',
   'DELETE_EXTERNAL_RESOURCE',
 );
+export const SET_SANDBOX_PRIVACY_ACTIONS = createAPIActions(
+  'SANDBOX',
+  'PRIVACY',
+);
+export const ADD_TAG_ACTIONS = createAPIActions('SANDBOX', 'ADD_TAG');
+export const REMOVE_TAG_ACTIONS = createAPIActions('SANDBOX', 'REMOVE_TAG');
 export const LIKE_SANDBOX_ACTIONS = createAPIActions('SANDBOX', 'LIKE');
 export const UNLIKE_SANDBOX_ACTIONS = createAPIActions('SANDBOX', 'UNLIKE');
 export const SET_SANDBOX_INFO = 'SET_SANDBOX_INFO';
 export const SET_NPM_DEPENDENCIES = 'SET_NPM_DEPENDENCIES';
 export const SET_EXTERNAL_RESOURCES = 'SET_EXTERNAL_RESOURCES';
+export const SET_TAGS = 'SET_TAGS';
 export const SET_CURRENT_MODULE = 'SET_CURRENT_MODULE';
 export const SET_BUNDLE = 'SET_BUNDLE';
 export const CANCEL_BUNDLE = 'CANCEL_BUNDLE';
 export const SET_PROJECT_VIEW = 'SET_PROJECT_VIEW';
 export const SET_VIEW_MODE = 'SET_VIEW_MODE';
 export const CREATE_ZIP = 'CREATE_ZIP';
+export const SET_SANDBOX_PRIVACY = 'SET_SANDBOX_PRIVACY';
 
 export default {
   updateSandboxInfo: (id: string, title: string, description: string) => async (
@@ -132,6 +140,81 @@ export default {
   },
 
   forkSandbox,
+
+  addTag: (id: string, tag: string) => async (
+    dispatch: Function,
+    getState: Function,
+  ) => {
+    const sandboxId = await dispatch(maybeForkSandbox(id));
+
+    const sandbox = singleSandboxSelector(getState(), { id: sandboxId });
+
+    // Already do change
+    dispatch({
+      type: SET_TAGS,
+      id: sandboxId,
+      tags: [...sandbox.tags, tag],
+    });
+
+    try {
+      const result = await dispatch(
+        doRequest(ADD_TAG_ACTIONS, `sandboxes/${sandboxId}/tags`, {
+          method: 'POST',
+          body: {
+            tag,
+          },
+        }),
+      );
+      dispatch({
+        type: SET_TAGS,
+        id: sandboxId,
+        tags: result.data,
+      });
+    } catch (e) {
+      dispatch({
+        type: SET_TAGS,
+        id: sandboxId,
+        tags: sandbox.tags,
+      });
+      throw e;
+    }
+  },
+
+  removeTag: (id: string, tag: string) => async (
+    dispatch: Function,
+    getState: Function,
+  ) => {
+    const sandboxId = await dispatch(maybeForkSandbox(id));
+
+    const sandbox = singleSandboxSelector(getState(), { id: sandboxId });
+
+    // Already do change
+    dispatch({
+      type: SET_TAGS,
+      id: sandboxId,
+      tags: sandbox.tags.filter(t => t !== tag),
+    });
+
+    try {
+      const result = await dispatch(
+        doRequest(REMOVE_TAG_ACTIONS, `sandboxes/${sandboxId}/tags/${tag}`, {
+          method: 'DELETE',
+        }),
+      );
+      dispatch({
+        type: SET_TAGS,
+        id: sandboxId,
+        tags: result.data,
+      });
+    } catch (e) {
+      dispatch({
+        type: SET_TAGS,
+        id: sandboxId,
+        tags: sandbox.tags,
+      });
+      throw e;
+    }
+  },
 
   addNPMDependency: (id: string, dependency: string, version: string) => async (
     dispatch: Function,
@@ -335,6 +418,36 @@ export default {
         },
       }),
     );
+  },
+
+  setSandboxPrivacy: (id: string, privacy: number) => async (
+    dispatch: Function,
+    getState: Function,
+  ) => {
+    const oldPrivacy = singleSandboxSelector(getState(), { id });
+    dispatch({
+      type: SET_SANDBOX_PRIVACY,
+      id,
+      privacy,
+    });
+
+    try {
+      const result = await dispatch(
+        doRequest(SET_SANDBOX_PRIVACY_ACTIONS, `sandboxes/${id}/privacy`, {
+          method: 'PATCH',
+          body: {
+            sandbox: {
+              privacy,
+            },
+          },
+        }),
+      );
+      return result;
+    } catch (e) {
+      dispatch({ type: SET_SANDBOX_PRIVACY, id, privacy: oldPrivacy });
+
+      throw e;
+    }
   },
 
   ...errorActions,

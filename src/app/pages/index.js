@@ -12,8 +12,10 @@ import Notifications from 'app/containers/Notifications';
 import ContextMenu from 'app/containers/ContextMenu';
 import Modal from 'app/containers/Modal';
 import Loading from 'app/components/Loading';
-import { jwtSelector } from 'app/store/user/selectors';
+import { loggedInSelector } from 'app/store/user/selectors';
 import userActionCreators from 'app/store/user/actions';
+
+import Sandbox from './Sandbox';
 
 const routeDebugger = _debug('cs:app:router');
 
@@ -38,12 +40,12 @@ const NotFound = Loadable({
   loader: () => import('./NotFound'),
   LoadingComponent: Loading,
 });
-const Sandbox = Loadable({
-  loader: () => import('./Sandbox'),
-  LoadingComponent: Loading,
-});
 const Profile = Loadable({
   loader: () => import('./Profile'),
+  LoadingComponent: Loading,
+});
+const Search = Loadable({
+  loader: () => import('./Search'),
   LoadingComponent: Loading,
 });
 const CLI = Loadable({
@@ -54,14 +56,22 @@ const GitHub = Loadable({
   loader: () => import('./GitHub'),
   LoadingComponent: Loading,
 });
+const Patron = Loadable({
+  loader: () => import('./Patron'),
+  LoadingComponent: Loading,
+});
+const Terms = Loadable({
+  loader: () => import('./Terms'),
+  LoadingComponent: Loading,
+});
 
 type Props = {
   hasLogin: boolean,
   userActions: typeof userActionCreators,
 };
 
-const mapStateToProps = createSelector(jwtSelector, jwt => ({
-  hasLogin: !!jwt,
+const mapStateToProps = createSelector(loggedInSelector, loggedIn => ({
+  hasLogin: loggedIn,
 }));
 const mapDispatchToProps = dispatch => ({
   userActions: bindActionCreators(userActionCreators, dispatch),
@@ -101,7 +111,10 @@ class Routes extends React.PureComponent {
             <Route path="/s/:id*" component={Sandbox} />
             <Route path="/signin/:jwt?" component={SignIn} />
             <Route path="/u/:username" component={Profile} />
+            <Route path="/search" component={Search} />
+            <Route path="/patron" component={Patron} />
             <Route path="/cli/login" component={CLI} />
+            <Route path="/legal" component={Terms} />
             <Route component={NotFound} />
           </Switch>
         </Content>
