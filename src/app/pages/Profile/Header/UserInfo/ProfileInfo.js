@@ -63,7 +63,7 @@ type Props = {
 const Badges = ({ badges }: { badges: Array<{ id: string, name: string }> }) =>
   <Margin left={1}>
     <Link to={patronUrl()}>
-      {badges.map(badge => <Badge key={badge.id} badge={badge} size={64} />)}
+      {badges.map(badge => <Badge key={badge.id} badge={badge} size={48} />)}
     </Link>
   </Margin>;
 
