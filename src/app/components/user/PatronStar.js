@@ -6,6 +6,7 @@ import StarIcon from 'react-icons/lib/go/star';
 
 const Container = styled(Tooltip)`
   margin-left: 0.25rem;
+  color: ${props => props.theme.primary()}
 `;
 
 export default ({

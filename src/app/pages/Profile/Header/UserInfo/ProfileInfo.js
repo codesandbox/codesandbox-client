@@ -31,8 +31,6 @@ const Name = styled.div`
   font-size: 2rem;
   font-weight: 300;
   margin-bottom: 0.25rem;
-
-  ${props => props.subscribed && `color: ${props.theme.primary()};`};
 `;
 
 const Username = styled.div`
@@ -63,9 +61,9 @@ type Props = {
 };
 
 const Badges = ({ badges }: { badges: Array<{ id: string, name: string }> }) =>
-  <Margin left={0.5}>
+  <Margin left={1}>
     <Link to={patronUrl()}>
-      {badges.map(badge => <Badge key={badge.id} badge={badge} size={50} />)}
+      {badges.map(badge => <Badge key={badge.id} badge={badge} size={64} />)}
     </Link>
   </Margin>;
 
@@ -81,7 +79,7 @@ export default ({
     <Margin bottom={3}>
       <Column justifyContent="space-between">
         {name &&
-          <Name subscribed={Boolean(subscriptionSince)}>
+          <Name>
             {name}
             {subscriptionSince &&
               <PatronStar subscriptionSince={subscriptionSince} />}

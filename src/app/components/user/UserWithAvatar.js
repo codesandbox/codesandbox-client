@@ -16,7 +16,6 @@ const AuthorName = styled.span`
   text-transform: uppercase;
   margin: 0 0.5em;
   font-weight: 400;
-  ${props => props.subscribed && `color: ${props.theme.primary()};`};
 `;
 
 const Image = styled.img`
@@ -35,7 +34,7 @@ type Props = {
 export default ({ avatarUrl, username, subscriptionSince, ...props }: Props) =>
   <CenteredText {...props}>
     <Image src={avatarUrl} alt={username} />
-    <AuthorName subscribed={Boolean(subscriptionSince)}>
+    <AuthorName>
       {username}
       {subscriptionSince &&
         <PatronStar
