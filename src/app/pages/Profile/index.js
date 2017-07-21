@@ -102,7 +102,7 @@ class Profile extends React.PureComponent {
     const { user, match, userActions, isCurrentUser } = this.props;
     if (!user) return <div />;
 
-    document.title = `${user.name} - CodeSandbox`;
+    document.title = `${user.name || user.username} - CodeSandbox`;
     return (
       <Container>
         <Header user={user} />
