@@ -35,7 +35,7 @@ const Particle = styled.div`
   animation: ${props => particleAnimation(props.deg, props.i)} 700ms ease;
   position: absolute;
   top: 0;
-  bottom: 0;
+  bottom: 20px;
   left: 0;
   right: 0;
   margin: auto;

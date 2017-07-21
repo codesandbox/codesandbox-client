@@ -4,6 +4,6 @@ export const ALGOLIA_DEFAULT_INDEX =
   process.env.NODE_ENV === 'production' ? 'prod_sandboxes' : 'dev_sandboxes';
 
 export const STRIPE_API_KEY =
-  process.env.NODE_ENV === 'development'
-    ? 'pk_test_0HgnQIkQJCECIFCQkafGQ5gA'
-    : 'pk_live_KeUgofl1VrjTtbrhhN7gGI9W';
+  process.env.NODE_ENV === 'production'
+    ? 'pk_live_KeUgofl1VrjTtbrhhN7gGI9W'
+    : 'pk_test_0HgnQIkQJCECIFCQkafGQ5gA';
