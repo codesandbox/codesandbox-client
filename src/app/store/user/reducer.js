@@ -9,6 +9,7 @@ import {
   CREATE_SUBSCRIPTION_API,
   UPDATE_SUBSCRIPTION_API,
   CANCEL_SUBSCRIPTION_API,
+  SET_BADGE_VISIBILITY,
 } from './actions';
 
 const initialState: CurrentUser = {
@@ -19,6 +20,7 @@ const initialState: CurrentUser = {
   avatarUrl: null,
   jwt: getJwt(),
   subscription: null,
+  badges: [],
 };
 
 export default (state: CurrentUser = initialState, action: Object) => {
@@ -42,6 +44,14 @@ export default (state: CurrentUser = initialState, action: Object) => {
       return {
         ...state,
         sandboxes: action.data,
+      };
+    case SET_BADGE_VISIBILITY:
+      return {
+        ...state,
+        badges: state.badges.map(b => ({
+          ...b,
+          visible: b.id === action.id ? action.visible : b.visible,
+        })),
       };
     case CREATE_SUBSCRIPTION_API.SUCCESS:
     case UPDATE_SUBSCRIPTION_API.SUCCESS:

@@ -27,6 +27,8 @@ const Name = styled.div`
   font-size: 2rem;
   font-weight: 300;
   margin-bottom: 0.25rem;
+
+  ${props => props.subscribed && `color: ${props.theme.primary()};`};
 `;
 
 const Username = styled.div`
@@ -53,7 +55,7 @@ type Props = {
     id: string,
     name: string,
   }>,
-  subscribedSince: string,
+  subscriptionSince: ?string,
 };
 
 const Badges = ({ badges }: { badges: Array<{ id: string, name: string }> }) =>
@@ -66,7 +68,7 @@ const Badges = ({ badges }: { badges: Array<{ id: string, name: string }> }) =>
 export default ({
   username,
   badges,
-  subscribedSince,
+  subscriptionSince,
   name,
   avatarUrl,
 }: Props) =>
@@ -75,7 +77,7 @@ export default ({
     <Margin bottom={3}>
       <Column justifyContent="space-between">
         {name &&
-          <Name>
+          <Name subscribed={Boolean(subscriptionSince)}>
             {name}
             <Badges badges={badges} />
           </Name>}

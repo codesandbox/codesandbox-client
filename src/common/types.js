@@ -28,6 +28,12 @@ export type Directory = {
   shortid: string,
 };
 
+export type Badge = {
+  id: string,
+  name: string,
+  visible: boolean,
+};
+
 export type CurrentUser = {
   id: ?string,
   email: ?string,
@@ -39,6 +45,7 @@ export type CurrentUser = {
     since: string,
     amount: string,
   },
+  badges: Array<Badge>,
 };
 
 export type SmallSandbox = {
@@ -69,10 +76,7 @@ export type User = {
   forkedCount: number,
   sandboxes: PaginatedSandboxes,
   likedSandboxes: PaginatedSandboxes,
-  badges: Array<{
-    id: string,
-    name: string,
-  }>,
+  badges: Array<Badge>,
   subscriptionSince: string,
 };
 

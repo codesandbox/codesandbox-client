@@ -18,7 +18,7 @@ export default ({ user }: Props) =>
       name={user.name}
       avatarUrl={user.avatarUrl}
       badges={user.badges}
-      subscribedSince={user.subscribedSince}
+      subscriptionSince={user.subscriptionSince}
     />
     <Stats
       likeCount={user.receivedLikeCount}

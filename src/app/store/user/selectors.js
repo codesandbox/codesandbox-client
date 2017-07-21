@@ -8,3 +8,7 @@ export const isPatronSelector = createSelector(
   currentUserSelector,
   user => user.subscription && user.subscription.since,
 );
+export const badgesSelector = createSelector(
+  currentUserSelector,
+  user => user.badges,
+);

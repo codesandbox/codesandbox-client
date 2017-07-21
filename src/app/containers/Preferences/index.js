@@ -8,12 +8,14 @@ import type { CurrentUser } from 'common/types';
 import CodeIcon from 'react-icons/lib/md/code';
 import CreditCardIcon from 'react-icons/lib/md/credit-card';
 import BrowserIcon from 'react-icons/lib/go/browser';
+import StarIcon from 'react-icons/lib/go/star';
 
 import SideNavigation from './SideNavigation';
 
 import EditorSettings from './EditorPageSettings/EditorSettings';
 import PreviewSettings from './EditorPageSettings/PreviewSettings';
 import PaymentInfo from './PaymentInfo';
+import Badges from './Badges';
 
 const Container = styled.div`
   display: flex;
@@ -62,6 +64,11 @@ class Preferences extends React.PureComponent {
         title: 'Payment Info',
         icon: <CreditCardIcon />,
         content: <PaymentInfo />,
+      },
+      hasSubscription && {
+        title: 'Badges',
+        icon: <StarIcon />,
+        content: <Badges />,
       },
     ].filter(x => x);
   };

@@ -11,13 +11,14 @@ import modalActions from '../modal/actions';
 
 import openPopup from './utils/popup';
 import { resetJwt, setJwt } from './utils/jwt';
-import { jwtSelector } from './selectors';
+import { jwtSelector, badgesSelector } from './selectors';
 
 export const SIGN_IN = 'SIGN_IN';
 export const SIGN_IN_SUCCESFULL = 'SIGN_IN_SUCCESFULL';
 export const SET_CURRENT_USER = 'SET_CURRENT_USER';
 export const SIGN_OUT = 'SIGN_OUT';
 export const SET_USER_SANDBOXES = 'SET_USER_SANDBOXES';
+export const SET_BADGE_VISIBILITY = 'SET_BADGE_VISIBILITY';
 
 export const SIGN_OUT_API = createAPIActions('SIGN_OUT_API', 'DELETE');
 export const GET_CURRENT_USER_API = createAPIActions('CURRENT_USER', 'FETCH');
@@ -52,6 +53,7 @@ export const UPDATE_PAYMENT_DETAILS = createAPIActions(
   'PAYMENT_DETAILS',
   'UPDATE',
 );
+export const UPDATE_BADGE_INFO = createAPIActions('BADGE', 'UPDATE');
 
 const signOut = (apiRequest = true) => async (dispatch: Function) => {
   if (apiRequest) {
@@ -220,6 +222,40 @@ const updatePaymentDetails = (token: string) => async (dispatch: Function) =>
     }),
   );
 
+const setBadgeVisibility = (badgeId: string, visible: boolean) => async (
+  dispatch: Function,
+  getState: Function,
+) => {
+  const oldVisibility = badgesSelector(getState()).find(b => b.id === badgeId)
+    .visible;
+  dispatch({
+    type: SET_BADGE_VISIBILITY,
+    id: badgeId,
+    visible,
+  });
+  try {
+    const result = await dispatch(
+      doRequest(UPDATE_BADGE_INFO, `users/current_user/badges/${badgeId}`, {
+        method: 'PATCH',
+        body: {
+          badge: {
+            visible,
+          },
+        },
+      }),
+    );
+    return result;
+  } catch (e) {
+    console.error(e);
+    dispatch({
+      type: SET_BADGE_VISIBILITY,
+      id: badgeId,
+      visibility: oldVisibility,
+    });
+    return null;
+  }
+};
+
 export default {
   createSubscription,
   updateSubscription,
@@ -232,4 +268,5 @@ export default {
   getCurrentUser,
   loadUserSandboxes,
   sendFeedback,
+  setBadgeVisibility,
 };
