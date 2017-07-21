@@ -11,7 +11,6 @@ import Tooltip from 'app/components/Tooltip';
 import Column from 'app/components/flex/Column';
 import delayEffect from 'app/utils/animation/delay-effect';
 import Margin from 'app/components/spacing/Margin';
-import Badge from 'app/utils/badges/Badge';
 import PatronStar from 'app/components/user/PatronStar';
 
 const ProfileImage = styled.img`
@@ -53,27 +52,10 @@ type Props = {
   username: string,
   name: string,
   avatarUrl: string,
-  badges: Array<{
-    id: string,
-    name: string,
-  }>,
   subscriptionSince: ?string,
 };
 
-const Badges = ({ badges }: { badges: Array<{ id: string, name: string }> }) =>
-  <Margin left={1}>
-    <Link to={patronUrl()}>
-      {badges.map(badge => <Badge key={badge.id} badge={badge} size={48} />)}
-    </Link>
-  </Margin>;
-
-export default ({
-  username,
-  badges,
-  subscriptionSince,
-  name,
-  avatarUrl,
-}: Props) =>
+export default ({ username, subscriptionSince, name, avatarUrl }: Props) =>
   <Row style={{ flex: 1 }}>
     <ProfileImage alt={username} height={175} width={175} src={avatarUrl} />
     <Margin bottom={3}>
@@ -83,7 +65,6 @@ export default ({
             {name}
             {subscriptionSince &&
               <PatronStar subscriptionSince={subscriptionSince} />}
-            <Badges badges={badges} />
           </Name>}
         <Username main={!name}>
           {username}
@@ -94,7 +75,6 @@ export default ({
           >
             <IconWrapper />
           </a>
-          {!name && <Badges badges={badges} />}
         </Username>
       </Column>
     </Margin>

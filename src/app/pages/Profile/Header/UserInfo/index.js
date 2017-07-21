@@ -17,12 +17,12 @@ export default ({ user }: Props) =>
       username={user.username}
       name={user.name}
       avatarUrl={user.avatarUrl}
-      badges={user.badges}
       subscriptionSince={user.subscriptionSince}
     />
     <Stats
       likeCount={user.receivedLikeCount}
       viewCount={user.viewCount}
       forkCount={user.forkedCount}
+      badges={user.badges}
     />
   </Row>;

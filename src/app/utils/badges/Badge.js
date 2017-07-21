@@ -55,7 +55,7 @@ export default class Badge extends React.PureComponent {
     );
     if (tooltip !== false) {
       return (
-        <Tooltip title={tooltip || badge.name}>
+        <Tooltip style={{ display: 'block' }} title={tooltip || badge.name}>
           {/* Margin Bottom to compensate for the tooltip */}
           {innerContent}
         </Tooltip>
