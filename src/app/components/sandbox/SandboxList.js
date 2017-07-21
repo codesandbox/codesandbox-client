@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 
+import PrivacyStatus from 'app/components/sandbox/PrivacyStatus';
 import delayEffect from 'app/utils/animation/delay-effect';
 import { sandboxUrl } from 'app/utils/url-generator';
 
@@ -97,6 +98,7 @@ export default ({ sandboxes, isCurrentUser, onDelete }: Props) =>
             <Link to={sandboxUrl(s)}>
               {s.title || s.id}
             </Link>
+            <PrivacyStatus privacy={s.privacy} asIcon />
           </td>
           <td>
             {moment(s.insertedAt).format('ll')}

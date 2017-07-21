@@ -6,7 +6,7 @@ function getParser(mode) {
 }
 
 export default (async function prettify(code, mode, eslintEnabled) {
-  const prettier = await System.import('prettier');
+  const prettier = await System.import('custom-prettier-codesandbox');
   const prettifiedCode = prettier.format(code, {
     singleQuote: true,
     parser: getParser(mode),

@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { Highlight } from 'react-instantsearch/dom';
 
+import Tags from 'app/components/sandbox/Tags';
+
 import SandboxInfo from './SandboxInfo';
 import { sandboxUrl } from '../../../utils/url-generator';
 
@@ -50,6 +52,13 @@ const Description = styled.p`
   margin-bottom: 1.5rem;
 `;
 
+const TagContainer = styled.div`
+  position: absolute;
+  font-size: .75rem;
+  right: 0;
+  top: 0.25rem;
+`;
+
 type Props = {
   hit: {
     'view_count': number,
@@ -73,6 +82,31 @@ type Props = {
   },
 };
 
+/**
+ * A scientific method to determine how many tags to show
+ */
+const getTagCount = (title, tags) => {
+  const textCount = title.length * 1.5 + tags.join('').length;
+
+  if (textCount > 130) {
+    return 0;
+  }
+  if (textCount > 120) {
+    return 1;
+  }
+  if (textCount > 110) {
+    return 2;
+  }
+  if (textCount > 100) {
+    return 3;
+  }
+  if (textCount > 90) {
+    return 4;
+  }
+
+  return 5;
+};
+
 export default ({ hit }: Props) =>
   <StyledLink to={sandboxUrl({ id: hit.objectID, git: hit.git })}>
     <Container>
@@ -81,6 +115,12 @@ export default ({ hit }: Props) =>
           ? <Highlight attributeName="title" hit={hit} />
           : hit.objectID}
       </Title>
+      <TagContainer>
+        <Tags
+          tags={(hit.tags || [])
+            .splice(0, getTagCount(hit.title || '', hit.tags || []))}
+        />
+      </TagContainer>
       <Description>
         <Highlight attributeName="description" hit={hit} />
       </Description>

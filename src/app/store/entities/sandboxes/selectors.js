@@ -7,3 +7,7 @@ export const singleSandboxSelector = createSelector(
   (_, { id }) => id,
   (sandboxes, id) => sandboxes[id],
 );
+
+const PRIVACY_NAMES = ['Public', 'Unlisted', 'Private'];
+
+export const privacyNameSelector = privacy => PRIVACY_NAMES[+privacy];

@@ -3,11 +3,12 @@ import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import ConfirmLink from 'app/components/ConfirmLink';
-import LinkButton from 'app/components/buttons/LinkButton';
 import GithubBadge from 'app/components/sandbox/GithubBadge';
 import { sandboxUrl, githubRepoUrl, profileUrl } from 'app/utils/url-generator';
 import UserWithAvatar from 'app/components/user/UserWithAvatar';
 import Stats from 'app/components/sandbox/Stats';
+import PrivacyStatus from 'app/components/sandbox/PrivacyStatus';
+
 import type { User, GitInfo } from 'common/types';
 import WorkspaceInputContainer from '../WorkspaceInputContainer';
 import WorkspaceSubtitle from '../WorkspaceSubtitle';
@@ -39,6 +40,13 @@ const StatsContainer = styled.div`
   color: rgba(255, 255, 255, 0.8);
 `;
 
+const PrivacyContainer = styled.div`
+  margin: 0 1rem;
+  font-size: .875rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 1rem;
+`;
+
 type Props = {
   id: string,
   title: ?string,
@@ -51,6 +59,7 @@ type Props = {
   preventTransition: boolean,
   author: ?User,
   git: ?GitInfo,
+  privacy: number,
 };
 
 export default class Project extends React.PureComponent {
@@ -109,6 +118,7 @@ export default class Project extends React.PureComponent {
       author,
       git,
       preventTransition,
+      privacy,
     } = this.props;
     const { title, description } = this.state;
     return (
@@ -142,6 +152,7 @@ export default class Project extends React.PureComponent {
                 <UserWithAvatar
                   username={author.username}
                   avatarUrl={author.avatarUrl}
+                  subscriptionSince={author.subscriptionSince}
                 />
               </UserLink>
             </Item>
@@ -172,6 +183,14 @@ export default class Project extends React.PureComponent {
                 {forkedSandbox.title || forkedSandbox.id}
               </ConfirmLink>
             </Item>
+          </div>}
+
+        {privacy > 0 &&
+          <div>
+            <WorkspaceSubtitle>Privacy Status</WorkspaceSubtitle>
+            <PrivacyContainer>
+              <PrivacyStatus privacy={privacy} />
+            </PrivacyContainer>
           </div>}
         <StatsContainer>
           <Stats

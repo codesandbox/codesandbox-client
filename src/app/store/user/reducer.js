@@ -6,6 +6,10 @@ import {
   SIGN_OUT,
   SET_CURRENT_USER,
   SET_USER_SANDBOXES,
+  CREATE_SUBSCRIPTION_API,
+  UPDATE_SUBSCRIPTION_API,
+  CANCEL_SUBSCRIPTION_API,
+  SET_BADGE_VISIBILITY,
 } from './actions';
 
 const initialState: CurrentUser = {
@@ -15,6 +19,8 @@ const initialState: CurrentUser = {
   username: null,
   avatarUrl: null,
   jwt: getJwt(),
+  subscription: null,
+  badges: [],
 };
 
 export default (state: CurrentUser = initialState, action: Object) => {
@@ -39,6 +45,22 @@ export default (state: CurrentUser = initialState, action: Object) => {
         ...state,
         sandboxes: action.data,
       };
+    case SET_BADGE_VISIBILITY:
+      return {
+        ...state,
+        badges: state.badges.map(b => ({
+          ...b,
+          visible: b.id === action.id ? action.visible : b.visible,
+        })),
+      };
+    case CREATE_SUBSCRIPTION_API.SUCCESS:
+    case UPDATE_SUBSCRIPTION_API.SUCCESS:
+    case CANCEL_SUBSCRIPTION_API.SUCCESS: {
+      return {
+        ...state,
+        ...action.data.data,
+      };
+    }
     default: {
       return state;
     }

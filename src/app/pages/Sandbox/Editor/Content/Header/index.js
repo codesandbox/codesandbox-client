@@ -23,7 +23,7 @@ import {
 } from 'app/utils/url-generator';
 import ModeIcons from 'app/components/sandbox/ModeIcons';
 
-import User from 'app/containers/Navigation/User';
+import UserMenu from 'app/containers/UserMenu';
 
 import Action from './Action';
 import FeedbackView from './FeedbackView';
@@ -219,7 +219,7 @@ export default class Header extends React.PureComponent {
           />
           {user.jwt
             ? <div style={{ fontSize: '.875rem', margin: '6px 0.5rem' }}>
-                <User small user={user} signOut={userActions.signOut} />
+                <UserMenu small />
               </div>
             : <Action
                 onClick={userActions.signIn}

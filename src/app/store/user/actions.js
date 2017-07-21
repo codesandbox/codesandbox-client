@@ -11,13 +11,14 @@ import modalActions from '../modal/actions';
 
 import openPopup from './utils/popup';
 import { resetJwt, setJwt } from './utils/jwt';
-import { jwtSelector } from './selectors';
+import { jwtSelector, badgesSelector } from './selectors';
 
 export const SIGN_IN = 'SIGN_IN';
 export const SIGN_IN_SUCCESFULL = 'SIGN_IN_SUCCESFULL';
 export const SET_CURRENT_USER = 'SET_CURRENT_USER';
 export const SIGN_OUT = 'SIGN_OUT';
 export const SET_USER_SANDBOXES = 'SET_USER_SANDBOXES';
+export const SET_BADGE_VISIBILITY = 'SET_BADGE_VISIBILITY';
 
 export const SIGN_OUT_API = createAPIActions('SIGN_OUT_API', 'DELETE');
 export const GET_CURRENT_USER_API = createAPIActions('CURRENT_USER', 'FETCH');
@@ -31,6 +32,28 @@ export const LOAD_USER_SANDBOXES = createAPIActions(
 );
 export const SEND_FEEDBACK_API = createAPIActions('FEEDBACK', 'SEND');
 export const GET_AUTH_TOKEN_API = createAPIActions('AUTH_TOKEN', 'FETCH');
+
+export const CREATE_SUBSCRIPTION_API = createAPIActions(
+  'SUBSCRIPTION',
+  'CREATE',
+);
+export const UPDATE_SUBSCRIPTION_API = createAPIActions(
+  'SUBSCRIPTION',
+  'UPDATE',
+);
+export const CANCEL_SUBSCRIPTION_API = createAPIActions(
+  'SUBSCRIPTION',
+  'CANCEL',
+);
+export const FETCH_PAYMENT_DETAILS = createAPIActions(
+  'PAYMENT_DETAILS',
+  'FETCH',
+);
+export const UPDATE_PAYMENT_DETAILS = createAPIActions(
+  'PAYMENT_DETAILS',
+  'UPDATE',
+);
+export const UPDATE_BADGE_INFO = createAPIActions('BADGE', 'UPDATE');
 
 const signOut = (apiRequest = true) => async (dispatch: Function) => {
   if (apiRequest) {
@@ -134,11 +157,116 @@ const sendFeedback = (message: string) => async (dispatch: Function) => {
   );
 };
 
+const createSubscription = (token: string, amount: number) => async (
+  dispatch: Function,
+) => {
+  await dispatch(
+    doRequest(CREATE_SUBSCRIPTION_API, 'users/current_user/subscription', {
+      method: 'POST',
+      body: {
+        subscription: {
+          amount,
+          token,
+        },
+      },
+    }),
+  );
+
+  dispatch(
+    notifActions.addNotification(
+      'Thank you very much for your support!',
+      'success',
+    ),
+  );
+};
+
+const updateSubscription = (amount: number) => async (dispatch: Function) => {
+  await dispatch(
+    doRequest(UPDATE_SUBSCRIPTION_API, 'users/current_user/subscription', {
+      method: 'PATCH',
+      body: {
+        subscription: {
+          amount,
+        },
+      },
+    }),
+  );
+
+  dispatch(
+    notifActions.addNotification('Succesfully updated subscription', 'success'),
+  );
+};
+
+const cancelSubscription = () => async (dispatch: Function) => {
+  await dispatch(
+    doRequest(CANCEL_SUBSCRIPTION_API, 'users/current_user/subscription', {
+      method: 'DELETE',
+    }),
+  );
+};
+
+const getPaymentDetails = () => async (dispatch: Function) =>
+  dispatch(
+    doRequest(FETCH_PAYMENT_DETAILS, 'users/current_user/payment_details'),
+  );
+
+const updatePaymentDetails = (token: string) => async (dispatch: Function) =>
+  dispatch(
+    doRequest(UPDATE_PAYMENT_DETAILS, 'users/current_user/payment_details', {
+      method: 'PATCH',
+      body: {
+        paymentDetails: {
+          token,
+        },
+      },
+    }),
+  );
+
+const setBadgeVisibility = (badgeId: string, visible: boolean) => async (
+  dispatch: Function,
+  getState: Function,
+) => {
+  const oldVisibility = badgesSelector(getState()).find(b => b.id === badgeId)
+    .visible;
+  dispatch({
+    type: SET_BADGE_VISIBILITY,
+    id: badgeId,
+    visible,
+  });
+  try {
+    const result = await dispatch(
+      doRequest(UPDATE_BADGE_INFO, `users/current_user/badges/${badgeId}`, {
+        method: 'PATCH',
+        body: {
+          badge: {
+            visible,
+          },
+        },
+      }),
+    );
+    return result;
+  } catch (e) {
+    console.error(e);
+    dispatch({
+      type: SET_BADGE_VISIBILITY,
+      id: badgeId,
+      visibility: oldVisibility,
+    });
+    return null;
+  }
+};
+
 export default {
+  createSubscription,
+  updateSubscription,
+  cancelSubscription,
+  getPaymentDetails,
+  updatePaymentDetails,
   getAuthToken,
   signOut,
   signIn,
   getCurrentUser,
   loadUserSandboxes,
   sendFeedback,
+  setBadgeVisibility,
 };
