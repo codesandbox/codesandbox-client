@@ -15,6 +15,7 @@ import {
   DELETE_SANDBOX_API_ACTIONS,
   LIKE_SANDBOX_ACTIONS,
   UNLIKE_SANDBOX_ACTIONS,
+  SET_TAGS,
 } from './actions';
 
 import {
@@ -143,6 +144,11 @@ function singleSandboxReducer(sandbox: Sandbox, action: Action): Sandbox {
         userLiked: false,
         likeCount: sandbox.likeCount - 1,
       };
+    case SET_TAGS:
+      return {
+        ...sandbox,
+        tags: action.tags,
+      };
     case CLEAR_ERRORS:
     case ADD_ERROR:
       return { ...sandbox, errors: errorReducer(sandbox.errors, action) };
@@ -171,6 +177,7 @@ export default function reducer(
     case SET_VIEW_MODE:
     case CLEAR_ERRORS:
     case ADD_ERROR:
+    case SET_TAGS:
     case LIKE_SANDBOX_ACTIONS.REQUEST:
     case LIKE_SANDBOX_ACTIONS.SUCCESS:
     case LIKE_SANDBOX_ACTIONS.FAILURE:

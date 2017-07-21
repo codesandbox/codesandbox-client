@@ -106,6 +106,7 @@
     "react-dnd-html5-backend": "^2.4.1",
     "react-dom": "^15.6.1",
     "react-icons": "^2.2.5",
+    "react-instantsearch": "^4.0.6",
     "react-loadable": "^3.3.1",
     "react-modal": "^2.2.1",
     "react-motion": "^0.5.0",

@@ -17,6 +17,7 @@ import fadeIn from 'app/utils/animation/fade-in';
 import Files from './Files';
 import Dependencies from './Dependencies';
 import Project from './Project';
+import Tags from './Tags';
 import WorkspaceItem from './WorkspaceItem';
 import SandboxActions from './SandboxActions';
 import Logo from './Logo';
@@ -96,6 +97,17 @@ const Workspace = ({
         }
       />
     </WorkspaceItem>
+
+    {(sandbox.owned || sandbox.tags.length > 0) &&
+      <WorkspaceItem title="Tags">
+        <Tags
+          sandboxId={sandbox.id}
+          addTag={sandboxActions.addTag}
+          removeTag={sandboxActions.removeTag}
+          isOwner={sandbox.owned}
+          tags={sandbox.tags}
+        />
+      </WorkspaceItem>}
 
     {sandbox.owned &&
       <WorkspaceItem title="Sandbox Actions">

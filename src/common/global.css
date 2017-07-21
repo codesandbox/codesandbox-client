@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
   font-family: 'Roboto', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-font-smoothing: antialiased;
@@ -11,6 +12,7 @@ html, body {
   min-height: 100%;
   -webkit-text-size-adjust: 100%;
   height: 100%;
+  background: #1c2022;
 }
 
 #root {
@@ -18,7 +20,7 @@ html, body {
 }
 
 a {
-  color: #6CAEDD;
+  color: #6caedd;
 }
 
 ::-webkit-scrollbar {

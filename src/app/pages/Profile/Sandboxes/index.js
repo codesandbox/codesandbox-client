@@ -29,7 +29,7 @@ type Props = {
   fetchSandboxes: Function,
   sandboxes: PaginatedSandboxes,
   sandboxActions: typeof sandboxActionCreators,
-  isCurrentUser: boolean;
+  isCurrentUser: boolean,
 };
 
 class Sandboxes extends React.PureComponent {
@@ -110,7 +110,4 @@ const mapDispatchToProps = dispatch => ({
   sandboxActions: bindActionCreators(sandboxActionCreators, dispatch),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Sandboxes);
+export default connect(mapStateToProps, mapDispatchToProps)(Sandboxes);

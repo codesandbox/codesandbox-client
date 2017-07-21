@@ -6,6 +6,7 @@ import { bindActionCreators } from 'redux';
 import { createSelector } from 'reselect';
 import styled from 'styled-components';
 
+import MaxWidth from 'app/components/flex/MaxWidth';
 import Fullscreen from 'app/components/flex/Fullscreen';
 import userActionCreators from 'app/store/entities/users/actions';
 import { currentUserSelector } from 'app/store/user/selectors';
@@ -16,7 +17,6 @@ import { profileSandboxesUrl, profileLikesUrl } from 'app/utils/url-generator';
 
 import NotFound from 'app/pages/NotFound';
 
-import MaxWidth from './MaxWidth';
 import Header from './Header';
 import Navigation from './Navigation';
 import Showcase from './Showcase';

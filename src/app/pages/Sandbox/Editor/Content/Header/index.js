@@ -10,12 +10,17 @@ import ChevronLeft from 'react-icons/lib/md/chevron-left';
 import HeartIcon from 'react-icons/lib/fa/heart-o';
 import FullHeartIcon from 'react-icons/lib/fa/heart';
 import TwitterIcon from 'react-icons/lib/fa/twitter';
+import SearchIcon from 'react-icons/lib/go/search';
 import { Tooltip } from 'react-tippy';
 
 import type { Sandbox, CurrentUser } from 'common/types';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 import userActionCreators from 'app/store/user/actions';
-import { newSandboxUrl, importFromGitHubUrl } from 'app/utils/url-generator';
+import {
+  searchUrl,
+  newSandboxUrl,
+  importFromGitHubUrl,
+} from 'app/utils/url-generator';
 import ModeIcons from 'app/components/sandbox/ModeIcons';
 
 import User from 'app/containers/Navigation/User';
@@ -206,6 +211,7 @@ export default class Header extends React.PureComponent {
             tooltip="Import from GitHub"
             Icon={GithubIcon}
           />
+          <Action href={searchUrl()} tooltip="Search" Icon={SearchIcon} />
           <Action
             href={newSandboxUrl()}
             tooltip="New Sandbox"

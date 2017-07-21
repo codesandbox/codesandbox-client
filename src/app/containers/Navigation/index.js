@@ -7,6 +7,7 @@ import type { CurrentUser } from 'common/types';
 import { Link } from 'react-router-dom';
 
 import GithubIcon from 'react-icons/lib/go/mark-github';
+import SearchIcon from 'react-icons/lib/md/search';
 
 import Button from 'app/components/buttons/Button';
 import Logo from 'app/components/Logo';
@@ -16,7 +17,7 @@ import userActionCreators from 'app/store/user/actions';
 import Tooltip from 'app/components/Tooltip';
 
 import User from './User';
-import { newSandboxUrl } from '../../utils/url-generator';
+import { newSandboxUrl, searchUrl } from '../../utils/url-generator';
 
 const LogoWithBorder = styled(Logo)`
   padding-right: 1rem;
@@ -36,15 +37,29 @@ const Title = styled.h1`
   font-weight: 300;
 `;
 
+const Actions = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 1rem;
+`;
+
 const Action = styled.div`
   transition: 0.3s ease all;
-  margin: 0 2rem;
+  margin: 0 1rem;
   cursor: pointer;
   color: white;
 
   &:hover {
     color: white;
   }
+`;
+
+const Icon = styled(Link)`
+  color: inherit;
+  text-decoration: none;
+  font-size: 1.25rem;
+  font-weight: 300;
 `;
 
 const PlusIcon = styled(Link)`
@@ -85,11 +100,20 @@ class Navigation extends React.PureComponent {
           </Title>
         </Row>
         <Row>
-          <Action>
-            <Tooltip title="New Sandbox">
-              <PlusIcon to={newSandboxUrl()}>+</PlusIcon>
-            </Tooltip>
-          </Action>
+          <Actions>
+            <Action>
+              <Tooltip title="Search">
+                <Icon to={searchUrl()}>
+                  <SearchIcon />
+                </Icon>
+              </Tooltip>
+            </Action>
+            <Action>
+              <Tooltip title="New Sandbox">
+                <PlusIcon to={newSandboxUrl()}>+</PlusIcon>
+              </Tooltip>
+            </Action>
+          </Actions>
           {hasLogin
             ? <User signOut={userActions.signOut} user={user} />
             : <Button small onClick={userActions.signIn}>
