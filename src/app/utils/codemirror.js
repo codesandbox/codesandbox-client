@@ -30,11 +30,13 @@ const fadeInAnimation = keyframes`
 `;
 
 // eslint-disable-next-line
-export const getCodeMirror = (el, doc) => {
+export const getCodeMirror = (el, doc, { fontFamily }) => {
   // eslint-disable-next-line
   injectGlobal`
     .cm-s-oceanic.CodeMirror {
-      font-family: 'Source Code Pro', monospace;
+      font-family: ${fontFamily
+        ? JSON.stringify(fontFamily) + ', '
+        : ''}'Source Code Pro', monospace;
       background: ${theme.background2()};
       color: #e0e0e0;
       height: 100%;

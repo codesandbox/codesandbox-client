@@ -60,6 +60,12 @@ const Preferences = ({ preferences, preferencesActions }: Props) =>
         value={preferences.fontSize}
         setValue={preferencesActions.setFontSizePreference}
       />
+      <Rule />
+      <PaddedPreference
+        title="Editor font family"
+        value={preferences.fontFamily}
+        setValue={preferencesActions.setFontFamilyPreference}
+      />
     </PreferenceContainer>
   </Container>;
 

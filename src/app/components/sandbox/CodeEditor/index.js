@@ -163,14 +163,16 @@ export default class CodeEditor extends React.PureComponent {
   };
 
   getCodeMirror = async (el: Element) => {
-    const { code, id, title } = this.props;
+    const { code, id, title, preferences } = this.props;
     if (!this.props.onlyViewMode) {
       CodeMirror.commands.save = this.handleSaveCode;
     }
     const mode = await this.getMode(title);
     documentCache[id] = new CodeMirror.Doc(code || '', mode);
 
-    this.codemirror = getCodeMirror(el, documentCache[id]);
+    this.codemirror = getCodeMirror(el, documentCache[id], {
+      fontFamily: preferences.fontFamily,
+    });
 
     if (!this.props.onlyViewMode) {
       this.codemirror.on('change', this.handleChange);
