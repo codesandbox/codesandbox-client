@@ -9,7 +9,12 @@ import resolveDependency from './dependency-resolver';
 import getBabelConfig from './babel-parser';
 import transformError from './error-transformer';
 
-const moduleCache = new Map();
+export type ModuleCacheModule = {
+  requires: Array<string>,
+  module: Module,
+  exports: Object,
+};
+const moduleCache: Map<string, ModuleCacheModule> = new Map();
 
 export function clearCache() {
   moduleCache.clear();
@@ -145,7 +150,13 @@ export default function evaluateJS(
 
     e.module = e.module || mainModule;
 
-    const newError = transformError(e, e.module, modules, requires);
+    const newError = transformError(
+      e,
+      e.module,
+      modules,
+      moduleCache,
+      requires,
+    );
     throw newError;
   }
 }

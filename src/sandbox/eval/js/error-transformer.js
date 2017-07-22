@@ -1,16 +1,13 @@
 /* @flow */
 import type { Module } from 'common/types';
-import RawReactComponentError from '../../errors/raw-react-component-error';
-
+import type { ModuleCacheModule } from './';
 import {
   hasReact,
   getMode,
 } from 'app/store/entities/sandboxes/modules/utils/get-type';
 
-const getModule = (modules: Array<Module>, id: string): ?Module =>
-  modules.find(m => m.id === id);
+import RawReactComponentError from '../../errors/raw-react-component-error';
 
-const reactRegex = /import.*from\s['|"]react['|"]/;
 /**
  * This error happens when a user tries to use a React component that's imported
  * from a raw file. In that case the React component will be a string and thus
@@ -20,17 +17,39 @@ function buildRawReactComponentError(
   error: Error,
   module: Module,
   modules: Array<Module>,
+  moduleCache: Map<string, ModuleCacheModule>,
   requires: Array<string>,
 ) {
-  const rawModuleUsingReact = requires
-    .map(id => getModule(modules, id))
-    .filter(x => x)
-    .filter(m => hasReact(m.code || ''))
-    .find(m => getMode(m) === 'raw');
+  const requiredModules = requires
+    .map(id => modules.find(m => m.id === id))
+    .filter(x => x != null)
+    .filter(m => hasReact(m.code || ''));
 
-  if (!rawModuleUsingReact) return error;
+  const rawModuleUsingReact = requiredModules.find(m => getMode(m) === 'raw');
 
-  return new RawReactComponentError(rawModuleUsingReact);
+  // Cannot find a raw module, but a child react component could render a raw
+  // component, let's find out!
+  if (!rawModuleUsingReact) {
+    const childRawModuleError = requiredModules
+      .map(m => moduleCache.get(m.id))
+      .filter(x => x != null)
+      .map(
+        m =>
+          m &&
+          buildRawReactComponentError(
+            error,
+            m.module,
+            modules,
+            moduleCache,
+            m.requires,
+          ),
+      )
+      .find(m => m);
+
+    if (childRawModuleError) return childRawModuleError;
+  } else {
+    return new RawReactComponentError(module, rawModuleUsingReact);
+  }
 }
 
 /**
@@ -44,15 +63,18 @@ export default function transformError(
   error: Error,
   module: Module,
   modules: Array<Module>,
+  moduleCache: Map<string, ModuleCacheModule>,
   requires: Array<string>,
 ) {
   if (error.message.startsWith('Invalid tag: import React')) {
-    const newError = buildRawReactComponentError(
-      error,
-      module,
-      modules,
-      requires,
-    );
+    const newError =
+      buildRawReactComponentError(
+        error,
+        module,
+        modules,
+        moduleCache,
+        requires,
+      ) || error;
     newError.message = error.message;
     return newError;
   }

@@ -1,10 +1,11 @@
 export default class RawReactComponentError extends Error {
-  constructor(importedModule) {
+  constructor(mainModule, importedModule) {
     super();
 
     this.payload = {
       importedModuleId: importedModule.id,
     };
+    this.module = mainModule;
   }
 
   type = 'raw-react-component-import';
