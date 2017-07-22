@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { InstantSearch, SearchBox, PoweredBy } from 'react-instantsearch/dom';
+import qs from 'qs';
 
 import Title from 'app/components/text/Title';
 import MaxWidth from 'app/components/flex/MaxWidth';
@@ -38,37 +39,65 @@ const SEARCHABLE_THINGS = [
   'github repository',
 ];
 
+const updateAfter = 700;
+
 const getRandomSearch = () =>
   SEARCHABLE_THINGS[Math.floor(Math.random() * SEARCHABLE_THINGS.length)];
 
-export default () => {
-  document.title = 'Search - CodeSandbox';
-  return (
-    <MaxWidth>
-      <Margin vertical={1.5} horizontal={1.5}>
-        <Navigation title="Search" />
-        <Content>
-          <MaxWidth width={1024}>
-            <InstantSearch
-              appId={ALGOLIA_APPLICATION_ID}
-              apiKey={ALGOLIA_API_KEY}
-              indexName={ALGOLIA_DEFAULT_INDEX}
-            >
-              <StyledTitle>Sandbox Search</StyledTitle>
-              <PoweredBy />
-              <SearchBox
-                translations={{
-                  placeholder: `Search for a ${getRandomSearch()}...`,
-                }}
-              />
-              <Row alignItems="flex-start">
-                <Results />
-                <Filters />
-              </Row>
-            </InstantSearch>
-          </MaxWidth>
-        </Content>
-      </Margin>
-    </MaxWidth>
-  );
-};
+const createURL = state => `?${qs.stringify(state)}`;
+
+const searchStateToUrl = (props, searchState) =>
+  searchState ? `${props.location.pathname}${createURL(searchState)}` : '';
+
+export default class Search extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = { searchState: qs.parse(props.location.search.slice(1)) };
+  }
+
+  onSearchStateChange = searchState => {
+    clearTimeout(this.debouncedSetState);
+    this.debouncedSetState = setTimeout(() => {
+      this.props.history.push(
+        searchStateToUrl(this.props, searchState),
+        searchState,
+      );
+    }, updateAfter);
+    this.setState({ searchState });
+  };
+
+  render() {
+    document.title = 'Search - CodeSandbox';
+    return (
+      <MaxWidth>
+        <Margin vertical={1.5} horizontal={1.5}>
+          <Navigation title="Search" />
+          <Content>
+            <MaxWidth width={1024}>
+              <InstantSearch
+                appId={ALGOLIA_APPLICATION_ID}
+                apiKey={ALGOLIA_API_KEY}
+                indexName={ALGOLIA_DEFAULT_INDEX}
+                searchState={this.state.searchState}
+                onSearchStateChange={this.onSearchStateChange.bind(this)}
+                createURL={createURL}
+              >
+                <StyledTitle>Sandbox Search</StyledTitle>
+                <PoweredBy />
+                <SearchBox
+                  translations={{
+                    placeholder: `Search for a ${getRandomSearch()}...`,
+                  }}
+                />
+                <Row alignItems="flex-start">
+                  <Results />
+                  <Filters />
+                </Row>
+              </InstantSearch>
+            </MaxWidth>
+          </Content>
+        </Margin>
+      </MaxWidth>
+    );
+  }
+}
