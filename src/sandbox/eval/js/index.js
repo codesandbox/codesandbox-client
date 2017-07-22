@@ -157,6 +157,11 @@ export default function evaluateJS(
       moduleCache,
       requires,
     );
+
+    if (newError.module && newError.module !== e.module) {
+      deleteCache(newError.module);
+    }
+
     throw newError;
   }
 }
