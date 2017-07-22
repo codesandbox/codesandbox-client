@@ -9,6 +9,7 @@ import NotSyncedIcon from 'react-icons/lib/go/primitive-dot';
 import CSSIcon from 'react-icons/lib/fa/css3';
 import HTMLIcon from 'react-icons/lib/fa/html5';
 import ErrorIcon from 'react-icons/lib/md/error';
+import RawIcon from 'react-icons/lib/go/file-text';
 import ReactIcon from 'app/components/ReactIcon';
 
 const NotSyncedIconWithMargin = styled(NotSyncedIcon)`
@@ -44,6 +45,8 @@ const getIcon = (type, error, root) => {
   switch (type) {
     case 'react':
       return <ReactIcon />;
+    case 'js':
+    case 'json':
     case 'function':
       return <FunctionIcon />;
     case 'directory':
@@ -53,7 +56,7 @@ const getIcon = (type, error, root) => {
     case 'html':
       return <HTMLIcon />;
     default:
-      return <FunctionIcon />;
+      return <RawIcon />;
   }
 };
 

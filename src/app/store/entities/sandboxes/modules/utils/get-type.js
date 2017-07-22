@@ -14,6 +14,7 @@ function getMode(module: Module) {
   if (cssRegex.test(module.title)) return 'css';
   if (jsonRegex.test(module.title)) return 'json';
   if (htmlRegex.test(module.title)) return 'html';
+  if (!module.title.includes('.')) return 'raw';
 
   return '';
 }
