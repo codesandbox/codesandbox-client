@@ -27,7 +27,7 @@ describe('modules', () => {
           title: 'test',
         };
 
-        expect(getType(testModule)).toBe('');
+        expect(getType(testModule)).toBe('raw');
       });
 
       it('detects javascript with js', () => {
@@ -81,7 +81,7 @@ describe('modules', () => {
           title: 'test',
         };
 
-        expect(getType(testModule)).toBe('');
+        expect(getType(testModule)).toBe('raw');
       });
     });
   });
