@@ -291,13 +291,16 @@ export default class Preview extends React.PureComponent {
   };
 
   commitUrl = (url: string) => {
-    const { history, historyPosition } = this.state;
-    history.length = historyPosition + 1;
-    this.setState({
-      history: [...history, url],
-      historyPosition: historyPosition + 1,
-      urlInAddressBar: url,
-    });
+    const { history, historyPosition, urlInAddressBar = '' } = this.state;
+
+    if (urlInAddressBar !== url) {
+      history.length = historyPosition + 1;
+      this.setState({
+        history: [...history, url],
+        historyPosition: historyPosition + 1,
+        urlInAddressBar: url,
+      });
+    }
   };
 
   toggleProjectView = () => {
