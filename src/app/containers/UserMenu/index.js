@@ -22,14 +22,16 @@ const ClickableContainer = styled(Row)`
   cursor: pointer;
 `;
 
-const ProfileImage = styled.img`
-  border-radius: 2px;
-  margin-left: 1em;
-`;
+const ProfileImage = styled.img`border-radius: 2px;`;
 
 const ProfileInfo = styled.div`
   font-weight: 400;
   text-align: right;
+  margin-right: 1em;
+
+  @media (max-width: 1300px) {
+    display: none;
+  }
 `;
 
 const Name = styled.div`
