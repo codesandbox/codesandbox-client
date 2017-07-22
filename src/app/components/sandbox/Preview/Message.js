@@ -21,11 +21,11 @@ const Container = styled.div`
   box-sizing: border-box;
   position: absolute;
   background-color: ${({ color }) => {
-                      if (color === 'error') {
-                        return theme.redBackground();
-                      }
-                      return theme.primary();
-                    }};
+    if (color === 'error') {
+      return theme.redBackground();
+    }
+    return theme.primary();
+  }};
   color: ${() => theme.red()};
   height: 100%;
   width: 100%;
@@ -35,9 +35,7 @@ const Container = styled.div`
   text-align: center;
 `;
 
-const Content = styled.div`
-  width: 70%;
-`;
+const Content = styled.div`width: 70%;`;
 
 const Icon = styled.div`
   margin: 1rem;
@@ -63,10 +61,24 @@ class Message extends React.PureComponent {
   getIcon = () => {
     const { error, message } = this.props;
 
-    if (message) return <Icon><InfoIcon /></Icon>;
-    if (error.severity === 'warning') return <Icon><WarningIcon /></Icon>;
+    if (message)
+      return (
+        <Icon>
+          <InfoIcon />
+        </Icon>
+      );
+    if (error.severity === 'warning')
+      return (
+        <Icon>
+          <WarningIcon />
+        </Icon>
+      );
 
-    return <Icon><ErrorIcon /></Icon>;
+    return (
+      <Icon>
+        <ErrorIcon />
+      </Icon>
+    );
   };
 
   addDependency = name => async () => {
@@ -80,19 +92,39 @@ class Message extends React.PureComponent {
     sandboxActions.setCurrentModule(sandboxId, error.moduleId);
   };
 
+  renameModuleToJS = () => {
+    const { error, sandboxId, modules, sandboxActions } = this.props;
+    const importedModule = modules.find(
+      m => m.id === error.payload.importedModuleId,
+    );
+
+    sandboxActions.renameModule(
+      sandboxId,
+      error.payload.importedModuleId,
+      `${importedModule.title}.js`,
+    );
+  };
+
   getMessage = () => {
-    const { error, modules, sandboxActions } = this.props;
+    const { error, modules, sandboxId, sandboxActions } = this.props;
 
     const module = modules.find(m => m.id === error.moduleId) || {};
     if (error.type === 'dependency-not-found') {
       return (
         <div>
           Could not find
-          <b> {"'"}{error.payload.path}{"'"}</b>.
+          <b>
+            {' '}{"'"}
+            {error.payload.path}
+            {"'"}
+          </b>.
           <div>
-            Did you add the dependency
-            {' '}
-            <b>{"'"}{error.payload.dependency}{"'"}</b>
+            Did you add the dependency{' '}
+            <b>
+              {"'"}
+              {error.payload.dependency}
+              {"'"}
+            </b>
             ?
           </div>
           {sandboxActions &&
@@ -113,13 +145,40 @@ class Message extends React.PureComponent {
           <div style={{ marginTop: '1rem' }}>
             We
             {"'"}
-            re adding support for viewing generated documentation in the near future.
+            re adding support for viewing generated documentation in the near
+            future.
             {error.payload.react &&
               <div>
-                For now we recommend adding
-                {' '}
+                For now we recommend adding{' '}
                 <Editor readOnly name={error.payload.componentName} />
                 to view this component.
+              </div>}
+          </div>
+        </div>
+      );
+    } else if (error.type === 'raw-react-component-import') {
+      const importedModule = modules.find(
+        m => m.id === error.payload.importedModuleId,
+      );
+      return (
+        <div>
+          It seems like you're trying to render a React component from{' '}
+          <b>{`'${importedModule.title}'`}</b> in <b>{`'${module.title}'`}</b>,
+          but <b>{`'${importedModule.title}'`}</b> has no file extension. This
+          means that it returns a string instead of a component.
+          <p>
+            <b>Original error:</b>
+            <br />
+
+            {error.message}
+          </p>
+          <div style={{ marginTop: '1rem' }}>
+            {sandboxActions &&
+              <div style={{ marginTop: '1rem' }}>
+                <Button onClick={this.renameModuleToJS} small>
+                  Rename <b>{`'${importedModule.title}'`}</b> to{' '}
+                  <b>{`'${importedModule.title}.js'`}</b>
+                </Button>
               </div>}
           </div>
         </div>
@@ -128,8 +187,13 @@ class Message extends React.PureComponent {
 
     return (
       <div>
-        {module && <div>Error in <b>{module.title}</b>:</div>}
-        <div style={{ marginTop: '1rem' }}>{error.title}: {error.message}</div>
+        {module &&
+          <div>
+            Error in <b>{module.title}</b>:
+          </div>}
+        <div style={{ marginTop: '1rem' }}>
+          {error.title}: {error.message}
+        </div>
 
         {module &&
           sandboxActions &&
@@ -149,7 +213,11 @@ class Message extends React.PureComponent {
       <Container color={error && error.severity === 'error' && 'error'}>
         <Content>
           {this.getIcon()}
-          {message ? <div>{message}</div> : this.getMessage()}
+          {message
+            ? <div>
+                {message}
+              </div>
+            : this.getMessage()}
         </Content>
       </Container>
     );

@@ -6,7 +6,7 @@ exports[`Message it renders a dependency not found error 1`] = `
   color="error"
 >
   <div
-    className="sc-EHOje gTncrN"
+    className="sc-EHOje iBAqQB"
   >
     <div
       className="sc-bZQynM kFeJzc"
@@ -61,7 +61,7 @@ exports[`Message it renders a warning 1`] = `
   color={false}
 >
   <div
-    className="sc-EHOje gTncrN"
+    className="sc-EHOje iBAqQB"
   >
     <div
       className="sc-bZQynM kFeJzc"

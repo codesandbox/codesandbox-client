@@ -2,7 +2,7 @@
 import type { Module } from 'common/types';
 
 const reactRegex = /import.*from\s['|"]react['|"]/;
-function hasReact(code: string) {
+export function hasReact(code: string) {
   return reactRegex.test(code);
 }
 
@@ -10,7 +10,7 @@ const cssRegex = /\.css$/;
 const jsonRegex = /\.json$/;
 const htmlRegex = /\.html$/;
 
-function getMode(module: Module) {
+export function getMode(module: Module) {
   if (cssRegex.test(module.title)) return 'css';
   if (jsonRegex.test(module.title)) return 'json';
   if (htmlRegex.test(module.title)) return 'html';

@@ -10,5 +10,5 @@ export default class NoDomChangeError extends Error {
 
   type = 'no-dom-change';
   severity = 'warning';
-  line = -1;
+  hideLine: true;
 }

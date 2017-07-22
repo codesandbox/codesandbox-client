@@ -12,30 +12,32 @@ export default function buildErrorMessage(e) {
   const message = getMessage(e);
   let line = null;
   let column = null;
+  if (!e.hideLine) {
+    // Safari
+    if (e.line != null) {
+      line = e.line;
 
-  // Safari
-  if (e.line != null) {
-    line = e.line;
+      // FF
+    } else if (e.lineNumber != null) {
+      line = e.lineNumber;
 
-    // FF
-  } else if (e.lineNumber != null) {
-    line = e.lineNumber;
-
-    // Chrome
-  } else if (e.stack) {
-    const matched = e.stack.match(/<anonymous>:(\d+):(\d+)/);
-    if (matched) {
-      line = matched[1];
-      column = matched[2];
-    } else {
-      // Maybe it's a babel transpiler error
-      const babelMatched = e.stack.match(/(\d+):(\d+)/);
-      if (babelMatched) {
-        line = babelMatched[1];
-        column = babelMatched[2];
+      // Chrome
+    } else if (e.stack) {
+      const matched = e.stack.match(/<anonymous>:(\d+):(\d+)/);
+      if (matched) {
+        line = matched[1];
+        column = matched[2];
+      } else {
+        // Maybe it's a babel transpiler error
+        const babelMatched = e.stack.match(/(\d+):(\d+)/);
+        if (babelMatched) {
+          line = babelMatched[1];
+          column = babelMatched[2];
+        }
       }
     }
   }
+
   return {
     moduleId: e.module ? e.module.id : e.moduleId,
     type,

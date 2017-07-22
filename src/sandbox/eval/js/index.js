@@ -7,6 +7,7 @@ import evalModule from '../';
 import resolveModule from '../../utils/resolve-module';
 import resolveDependency from './dependency-resolver';
 import getBabelConfig from './babel-parser';
+import transformError from './error-transformer';
 
 const moduleCache = new Map();
 
@@ -45,10 +46,16 @@ function evaluate(code, require) {
   const module = { exports: {} };
   const exports = {};
   const process = { env: { NODE_ENV: 'development' } }; // eslint-disable-line no-unused-vars
-  eval(code); // eslint-disable-line no-eval
+  try {
+    eval(code); // eslint-disable-line no-eval
 
-  // Choose either the export of __esModule or node
-  return Object.keys(exports).length > 0 ? exports : module.exports;
+    // Choose either the export of __esModule or node
+    return Object.keys(exports).length > 0 ? exports : module.exports;
+  } catch (e) {
+    e.isEvalError = true;
+
+    throw e;
+  }
 }
 
 /**
@@ -70,8 +77,8 @@ export default function evaluateJS(
   depth: ?number,
   parentModules: Array<Module>,
 ) {
+  const requires = [];
   try {
-    const requires = [];
     require = function require(path: string) {
       // eslint-disable-line no-unused-vars
       if (/^(\w|@)/.test(path)) {
@@ -135,6 +142,10 @@ export default function evaluateJS(
   } catch (e) {
     // Remove cache
     moduleCache.delete(mainModule.id);
-    throw e;
+
+    e.module = e.module || mainModule;
+
+    const newError = transformError(e, e.module, modules, requires);
+    throw newError;
   }
 }
