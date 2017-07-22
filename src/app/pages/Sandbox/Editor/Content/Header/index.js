@@ -23,6 +23,7 @@ import {
 } from 'app/utils/url-generator';
 import ModeIcons from 'app/components/sandbox/ModeIcons';
 
+import Margin from 'app/components/spacing/Margin';
 import UserMenu from 'app/containers/UserMenu';
 
 import Action from './Action';
@@ -199,7 +200,7 @@ export default class Header extends React.PureComponent {
           <Action
             href="https://twitter.com/CompuIves"
             a
-            tooltip="Message me"
+            tooltip="Contact"
             Icon={TwitterIcon}
           />
           <FeedbackView
@@ -211,23 +212,25 @@ export default class Header extends React.PureComponent {
             tooltip="Import from GitHub"
             Icon={GithubIcon}
           />
-          <Action href={searchUrl()} tooltip="Search" Icon={SearchIcon} />
+          <Action href={searchUrl()} Icon={SearchIcon} tooltip="Search" />
           <Action
             href={newSandboxUrl()}
             tooltip="New Sandbox"
             Icon={PlusIcon}
           />
-          {user.jwt
-            ? <div style={{ fontSize: '.875rem', margin: '6px 0.5rem' }}>
-                <UserMenu small />
-              </div>
-            : <Action
-                onClick={userActions.signIn}
-                title="Sign in with Github"
-                Icon={GithubIcon}
-                highlight
-                unresponsive
-              />}
+          <Margin left={1}>
+            {user.jwt
+              ? <div style={{ fontSize: '.875rem', margin: '6px 0.5rem' }}>
+                  <UserMenu small />
+                </div>
+              : <Action
+                  onClick={userActions.signIn}
+                  title="Sign in with Github"
+                  Icon={GithubIcon}
+                  highlight
+                  unresponsive
+                />}
+          </Margin>
         </Right>
       </Container>
     );

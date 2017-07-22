@@ -5,6 +5,7 @@ import type { Module, Directory, ModuleError } from 'common/types';
 
 import { validateTitle } from 'app/store/entities/sandboxes/modules/validator';
 import { isMainModule } from 'app/store/entities/sandboxes/modules/selectors';
+import getType from 'app/store/entities/sandboxes/modules/utils/get-type';
 
 import Entry from './Entry';
 import DirectoryEntry from './';
@@ -53,7 +54,7 @@ export default class DirectoryChildren extends React.PureComponent {
       <div>
         {directories
           .filter(x => x.directoryShortid === parentShortid)
-          .map(dir => (
+          .map(dir =>
             <DirectoryEntry
               key={dir.id}
               siblings={[...directories, ...modules]}
@@ -67,11 +68,12 @@ export default class DirectoryChildren extends React.PureComponent {
               currentModuleId={currentModuleId}
               isInProjectView={isInProjectView}
               errors={errors}
-            />
-          ))}
+            />,
+          )}
         {modules.filter(x => x.directoryShortid === parentShortid).map(m => {
           const isActive = m.id === currentModuleId;
           const mainModule = isMainModule(m);
+          const type = getType(m);
 
           const hasError = !!errors.find(
             e => e.severity === 'error' && e.moduleId === m.id,
@@ -85,7 +87,7 @@ export default class DirectoryChildren extends React.PureComponent {
               title={m.title}
               depth={depth + 1}
               active={isActive}
-              type="function"
+              type={type || 'function'}
               rename={mainModule ? undefined : renameModule}
               openMenu={openMenu}
               deleteEntry={mainModule ? undefined : deleteEntry}

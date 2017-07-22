@@ -16,7 +16,7 @@ export default ({
   subscriptionSince: string,
 }) =>
   <Container
-    title={`Patron since ${moment(subscriptionSince).format('MMM YY')}!`}
+    title={`Patron since ${moment(subscriptionSince).format('MMM Y')}`}
   >
     <StarIcon {...props} />
   </Container>;

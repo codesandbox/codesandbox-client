@@ -101,9 +101,7 @@ class SandboxPage extends React.PureComponent {
     if (this.state.error) {
       return (
         <Centered horizontal vertical>
-          <Title>
-            An error occured when fetching the sandbox:
-          </Title>
+          <Title>An error occured when fetching the sandbox:</Title>
           <SubTitle>
             {this.state.error}
           </SubTitle>

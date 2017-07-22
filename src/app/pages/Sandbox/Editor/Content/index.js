@@ -57,7 +57,7 @@ const FullSize = styled.div`
   height: 100%;
   width: 100%;
   pointer-events: ${props => (props.inactive ? 'none' : 'all')};
-  ${fadeIn(0)}
+  ${fadeIn(0)};
 `;
 
 const mapStateToProps = createSelector(
@@ -134,10 +134,14 @@ class EditorPreview extends React.PureComponent {
 
     const mainModule = findMainModule(modules);
     if (!mainModule) throw new Error('Cannot find main module');
-    
+
     const { currentModule: currentModuleId } = sandbox;
-    
-    const currentModule = findCurrentModule(modules, currentModuleId, mainModule);
+
+    const currentModule = findCurrentModule(
+      modules,
+      currentModuleId,
+      mainModule,
+    );
     const modulePath = getModulePath(modules, directories, currentModule.id);
 
     if (currentModule == null) return null;
@@ -206,22 +210,21 @@ class EditorPreview extends React.PureComponent {
           minSize={360}
           paneStyle={{ height: '100%' }}
           resizerStyle={{
-            visibility: (!sandbox.showPreview && sandbox.showEditor) ||
+            visibility:
+              (!sandbox.showPreview && sandbox.showEditor) ||
               (sandbox.showPreview && !sandbox.showEditor)
-              ? 'hidden'
-              : 'visible',
+                ? 'hidden'
+                : 'visible',
           }}
           pane1Style={{
             display: sandbox.showEditor ? 'block' : 'none',
-            minWidth: !sandbox.showPreview && sandbox.showEditor
-              ? '100%'
-              : 'inherit',
+            minWidth:
+              !sandbox.showPreview && sandbox.showEditor ? '100%' : 'inherit',
           }}
           pane2Style={{
             display: sandbox.showPreview ? 'block' : 'none',
-            minWidth: sandbox.showPreview && !sandbox.showEditor
-              ? '100%'
-              : 'inherit',
+            minWidth:
+              sandbox.showPreview && !sandbox.showEditor ? '100%' : 'inherit',
           }}
         >
           {sandbox.showEditor && EditorPane}

@@ -3,6 +3,8 @@ import React from 'react';
 import SplitPane from 'react-split-pane';
 import type { Sandbox } from 'common/types';
 
+import Fullscreen from 'app/components/flex/Fullscreen';
+
 import Workspace from './Workspace';
 
 import Content from './Content';
@@ -29,27 +31,29 @@ export default class ContentSplit extends React.PureComponent {
     const { sandbox, match } = this.props;
     const { resizing, workspaceHidden } = this.state;
     return (
-      <SplitPane
-        split="vertical"
-        defaultSize={16 * 16}
-        style={{ top: 0 }}
-        onDragStarted={this.startResizing}
-        onDragFinished={this.stopResizing}
-        resizerStyle={{ visibility: workspaceHidden ? 'hidden' : 'visible' }}
-        pane1Style={{
-          visibility: workspaceHidden ? 'hidden' : 'visible',
-          maxWidth: workspaceHidden ? 0 : 'inherit',
-        }}
-      >
-        {!workspaceHidden && <Workspace sandbox={sandbox} />}
-        <Content
-          workspaceHidden={workspaceHidden}
-          toggleWorkspace={this.toggleWorkspace}
-          sandbox={sandbox}
-          resizing={resizing}
-          match={match}
-        />
-      </SplitPane>
+      <Fullscreen style={{ position: 'relative' }}>
+        <SplitPane
+          split="vertical"
+          defaultSize={16 * 16}
+          style={{ top: 0 }}
+          onDragStarted={this.startResizing}
+          onDragFinished={this.stopResizing}
+          resizerStyle={{ visibility: workspaceHidden ? 'hidden' : 'visible' }}
+          pane1Style={{
+            visibility: workspaceHidden ? 'hidden' : 'visible',
+            maxWidth: workspaceHidden ? 0 : 'inherit',
+          }}
+        >
+          {!workspaceHidden && <Workspace sandbox={sandbox} />}
+          <Content
+            workspaceHidden={workspaceHidden}
+            toggleWorkspace={this.toggleWorkspace}
+            sandbox={sandbox}
+            resizing={resizing}
+            match={match}
+          />
+        </SplitPane>
+      </Fullscreen>
     );
   }
 }

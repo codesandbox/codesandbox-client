@@ -18,7 +18,11 @@ import 'codemirror/addon/fold/foldcode';
 import 'codemirror/addon/fold/foldgutter';
 import 'codemirror/addon/fold/brace-fold';
 
-emmet(CodeMirror);
+try {
+  emmet(CodeMirror);
+} catch (e) {
+  console.error(e);
+}
 
 const fadeInAnimation = keyframes`
   0%   { background-color: #374140; }

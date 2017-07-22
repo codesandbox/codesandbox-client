@@ -2,7 +2,11 @@
 import React from 'react';
 import styled, { injectGlobal } from 'styled-components';
 
+import GithubIcon from 'react-icons/lib/go/mark-github';
+
+import Relative from 'app/components/Relative';
 import LogoIcon from 'app/components/Logo';
+import Tooltip from 'app/components/Tooltip';
 import theme from 'common/theme';
 
 const Container = styled.a`
@@ -25,6 +29,17 @@ const Title = styled.h1`
   margin: 0;
   margin-left: 1rem;
   color: white;
+`;
+
+const GithubContainer = styled.a`
+  position: absolute;
+  right: 1rem;
+  top: 0;
+  line-height: 3rem;
+  vertical-align: middle;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
 `;
 
 export default class Logo extends React.PureComponent {
@@ -50,12 +65,24 @@ export default class Logo extends React.PureComponent {
 
   render() {
     return (
-      <Container id="release" ref={this.setupHeadway} href="/">
-        <div style={{ position: 'relative', display: 'flex' }}>
-          <LogoIcon width={30} height={30} />
-        </div>
-        <Title>CodeSandbox</Title>
-      </Container>
+      <Relative>
+        <Container id="release" ref={this.setupHeadway} href="/">
+          <div style={{ position: 'relative', display: 'flex' }}>
+            <LogoIcon width={30} height={30} />
+          </div>
+          <Title>CodeSandbox</Title>
+        </Container>
+
+        <GithubContainer
+          href="https://github.com/CompuIves/codesandbox-client"
+          target="_blank"
+          rel="noreferrer noopener"
+        >
+          <Tooltip title="View source">
+            <GithubIcon />
+          </Tooltip>
+        </GithubContainer>
+      </Relative>
     );
   }
 }

@@ -6,6 +6,8 @@ import FunctionIcon from 'react-icons/lib/fa/code';
 import FolderIcon from 'react-icons/lib/md/keyboard-arrow-down';
 import DirectoryIcon from 'react-icons/lib/go/file-directory';
 import NotSyncedIcon from 'react-icons/lib/go/primitive-dot';
+import CSSIcon from 'react-icons/lib/fa/css3';
+import HTMLIcon from 'react-icons/lib/fa/html5';
 import ErrorIcon from 'react-icons/lib/md/error';
 import ReactIcon from 'app/components/ReactIcon';
 
@@ -15,9 +17,7 @@ const NotSyncedIconWithMargin = styled(NotSyncedIcon)`
   color: ${props => props.theme.secondary};
 `;
 
-const RedIcon = styled.span`
-  color: ${props => props.theme.red};
-`;
+const RedIcon = styled.span`color: ${props => props.theme.red};`;
 
 const StyledFolderIcon = styled.span`
   svg {
@@ -34,18 +34,27 @@ const getIcon = (type, error, root) => {
     return <ProjectIcon />;
   }
   if (error) {
-    return <RedIcon><ErrorIcon /></RedIcon>;
+    return (
+      <RedIcon>
+        <ErrorIcon />
+      </RedIcon>
+    );
   }
-  if (type === 'react') {
-    return <ReactIcon />;
+
+  switch (type) {
+    case 'react':
+      return <ReactIcon />;
+    case 'function':
+      return <FunctionIcon />;
+    case 'directory':
+      return <DirectoryIcon />;
+    case 'css':
+      return <CSSIcon />;
+    case 'html':
+      return <HTMLIcon />;
+    default:
+      return <FunctionIcon />;
   }
-  if (type === 'function') {
-    return <FunctionIcon />;
-  }
-  if (type === 'directory') {
-    return <DirectoryIcon />;
-  }
-  return <FunctionIcon />;
 };
 
 type Props = {
@@ -65,7 +74,7 @@ export default ({
   isNotSynced,
   isOpen,
   onOpen,
-}: Props) => (
+}: Props) =>
   <div style={{ display: 'inline-block', verticalAlign: 'middle' }}>
     {isNotSynced && <NotSyncedIconWithMargin />}
     {type === 'directory' &&
@@ -74,5 +83,4 @@ export default ({
         <FolderIcon />
       </StyledFolderIcon>}
     {getIcon(type, error, root)}
-  </div>
-);
+  </div>;
