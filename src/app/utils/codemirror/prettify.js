@@ -5,12 +5,28 @@ function getParser(mode) {
   return 'babylon';
 }
 
-export default (async function prettify(code, mode, eslintEnabled) {
+export const DEFAULT_PRETTIER_CONFIG = {
+  printWidth: 80,
+  tabWidth: 2,
+  useTabs: false,
+  semi: true,
+  singleQuote: false,
+  trailingComma: 'none',
+  bracketSpacing: true,
+  jsxBracketSameLine: false,
+};
+
+export default (async function prettify(
+  code,
+  mode,
+  eslintEnabled,
+  prettierConfig = DEFAULT_PRETTIER_CONFIG,
+) {
   const prettier = await System.import('custom-prettier-codesandbox');
   const prettifiedCode = prettier.format(code, {
-    singleQuote: true,
+    ...DEFAULT_PRETTIER_CONFIG,
+    ...prettierConfig,
     parser: getParser(mode),
-    trailingComma: 'all',
   });
 
   if (eslintEnabled && mode === 'jsx') {

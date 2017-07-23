@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`prettify should prettify code 1`] = `
-"const a = '32';
+"const a = \\"32\\";
 "
 `;
 

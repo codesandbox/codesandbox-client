@@ -23,85 +23,113 @@ const mapDispatchToProps = dispatch => ({
 const mapStateToProps = state => ({
   preferences: preferencesSelector(state),
 });
+class Prettier extends React.PureComponent {
+  props: Props;
 
-const Preferences = ({ preferences, preferencesActions }: Props) =>
-  <Container>
-    <Subheading>Prettier</Subheading>
-    <PreferenceContainer>
-      <PaddedPreference
-        title="Print width"
-        value={preferences.autoCompleteEnabled}
-        setValue={preferencesActions.setAutoCompletePreference}
-      />
-      <Description>
-        Specify the line length that the printer will wrap on.
-      </Description>
-      <Rule />
+  constructor(props) {
+    super(props);
 
-      <PaddedPreference
-        title="Tab width"
-        value={preferences.lintEnabled}
-        setValue={preferencesActions.setLintPreference}
-      />
-      <Description>
-        Specify the number of spaces per indentation-level.
-      </Description>
-      <Rule />
+    this.state = props.preferences.prettierConfig;
+  }
 
-      <PaddedPreference
-        title="Use tabs"
-        value={preferences.prettifyOnSaveEnabled}
-        setValue={preferencesActions.setPrettifyOnSavePreference}
-      />
-      <Description>Indent lines with tabs instead of spaces.</Description>
-      <Rule />
+  setPrettierOption = key => val => {
+    this.setState({ [key]: val }, () => {
+      this.props.preferencesActions.setPrettierConfig(this.state);
+    });
+  };
 
-      <PaddedPreference
-        title="Semicolons"
-        value={preferences.vimMode}
-        setValue={preferencesActions.setVimPreference}
-      />
-      <Description>Print semicolons at the ends of statements.</Description>
-      <Rule />
+  render() {
+    const state = this.state;
+    return (
+      <Container>
+        <Subheading>Prettier</Subheading>
+        <PreferenceContainer>
+          <PaddedPreference
+            title="Print width"
+            type="number"
+            value={state.printWidth}
+            setValue={this.setPrettierOption('printWidth')}
+          />
+          <Description>
+            Specify the line length that the printer will wrap on.
+          </Description>
+          <Rule />
 
-      <PaddedPreference
-        title="Use single quotes"
-        value={preferences.fontSize}
-        setValue={preferencesActions.setFontSizePreference}
-      />
-      <Description>
-        Use {"'"}single{"'"} quotes instead of {'"'}double{'"'} quotes.
-      </Description>
-      <Rule />
+          <PaddedPreference
+            title="Tab width"
+            type="number"
+            value={state.tabWidth}
+            setValue={this.setPrettierOption('tabWidth')}
+          />
+          <Description>
+            Specify the number of spaces per indentation-level.
+          </Description>
+          <Rule />
 
-      <PaddedPreference
-        title="Trailing commas"
-        value={preferences.fontSize}
-        setValue={preferencesActions.setFontSizePreference}
-      />
-      <Description>Print trailing commas wherever possible.</Description>
-      <Rule />
+          <PaddedPreference
+            title="Use tabs"
+            type="boolean"
+            value={state.useTabs}
+            setValue={this.setPrettierOption('useTabs')}
+          />
+          <Description>Indent lines with tabs instead of spaces.</Description>
+          <Rule />
 
-      <PaddedPreference
-        title="Bracket spacing"
-        value={preferences.fontSize}
-        setValue={preferencesActions.setFontSizePreference}
-      />
-      <Description>
-        Print spaces between brackets in object literals.
-      </Description>
-      <Rule />
+          <PaddedPreference
+            title="Semicolons"
+            type="boolean"
+            value={state.semi}
+            setValue={this.setPrettierOption('semi')}
+          />
+          <Description>Print semicolons at the ends of statements.</Description>
+          <Rule />
 
-      <PaddedPreference
-        title="JSX Brackets"
-        value={preferences.fontSize}
-        setValue={preferencesActions.setFontSizePreference}
-      />
-      <Description>
-        Put the `>` of a multi-line JSX element at the end of the last line
-        instead of being alone on the next line.
-      </Description>
-    </PreferenceContainer>
-  </Container>;
+          <PaddedPreference
+            title="Use single quotes"
+            type="boolean"
+            value={state.singleQuote}
+            setValue={this.setPrettierOption('singleQuote')}
+          />
+          <Description>
+            Use {"'"}single{"'"} quotes instead of {'"'}double{'"'} quotes.
+          </Description>
+          <Rule />
 
-export default connect(mapStateToProps, mapDispatchToProps)(Preferences);
+          <PaddedPreference
+            title="Trailing commas"
+            type="dropdown"
+            options={['none', 'es5', 'all']}
+            value={state.trailingComma}
+            setValue={this.setPrettierOption('trailingComma')}
+          />
+          <Description>Print trailing commas wherever possible.</Description>
+          <Rule />
+
+          <PaddedPreference
+            title="Bracket spacing"
+            type="boolean"
+            value={state.bracketSpacing}
+            setValue={this.setPrettierOption('bracketSpacing')}
+          />
+          <Description>
+            Print spaces between brackets in object literals.
+          </Description>
+          <Rule />
+
+          <PaddedPreference
+            title="JSX Brackets"
+            type="boolean"
+            value={state.jsxBracketSameLine}
+            setValue={this.setPrettierOption('jsxBracketSameLine')}
+          />
+          <Description>
+            Put the `>` of a multi-line JSX element at the end of the last line
+            instead of being alone on the next line.
+          </Description>
+        </PreferenceContainer>
+      </Container>
+    );
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Prettier);
