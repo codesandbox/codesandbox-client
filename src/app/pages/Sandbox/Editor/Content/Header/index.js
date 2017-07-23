@@ -1,6 +1,8 @@
 // @flow
 import React from 'react';
 import styled from 'styled-components';
+import Media from 'react-media';
+
 import Save from 'react-icons/lib/md/save';
 import Fork from 'react-icons/lib/go/repo-forked';
 import Download from 'react-icons/lib/go/cloud-download';
@@ -24,6 +26,7 @@ import {
 import ModeIcons from 'app/components/sandbox/ModeIcons';
 
 import Margin from 'app/components/spacing/Margin';
+import HeaderSearchBar from 'app/components/HeaderSearchBar';
 import UserMenu from 'app/containers/UserMenu';
 
 import Action from './Action';
@@ -49,6 +52,7 @@ const Container = styled.div`
 
 const Right = styled.div`
   display: flex;
+  align-items: center;
   height: 100%;
 `;
 
@@ -197,6 +201,19 @@ export default class Header extends React.PureComponent {
         </Left>
 
         <Right>
+          <Media query="(max-width: 1450px)">
+            {matches =>
+              matches
+                ? <Action
+                    href={searchUrl()}
+                    Icon={SearchIcon}
+                    tooltip="Search"
+                  />
+                : <div style={{ marginRight: '0.5rem', fontSize: '.875rem' }}>
+                    <HeaderSearchBar />
+                  </div>}
+          </Media>
+
           <Action
             href="https://twitter.com/CompuIves"
             a
@@ -212,7 +229,7 @@ export default class Header extends React.PureComponent {
             tooltip="Import from GitHub"
             Icon={GithubIcon}
           />
-          <Action href={searchUrl()} Icon={SearchIcon} tooltip="Search" />
+
           <Action
             href={newSandboxUrl()}
             tooltip="New Sandbox"

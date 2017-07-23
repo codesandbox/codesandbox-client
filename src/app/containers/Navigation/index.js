@@ -11,6 +11,7 @@ import SignInButton from 'app/containers/SignInButton';
 import Logo from 'app/components/Logo';
 import Row from 'app/components/flex/Row';
 import Tooltip from 'app/components/Tooltip';
+import HeaderSearchBar from 'app/components/HeaderSearchBar';
 
 import { jwtSelector } from 'app/store/user/selectors';
 import { newSandboxUrl, searchUrl } from 'app/utils/url-generator';
@@ -95,11 +96,7 @@ class Navigation extends React.PureComponent {
         <Row>
           <Actions>
             <Action>
-              <Tooltip title="Search">
-                <Icon to={searchUrl()}>
-                  <SearchIcon />
-                </Icon>
-              </Tooltip>
+              <HeaderSearchBar />
             </Action>
             <Action>
               <Tooltip title="New Sandbox">

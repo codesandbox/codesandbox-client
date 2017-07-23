@@ -3,7 +3,6 @@ import { AppContainer } from 'react-hot-loader';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import { ThemeProvider } from 'styled-components';
-import createHistory from 'history/createBrowserHistory';
 import { ConnectedRouter } from 'react-router-redux';
 import 'normalize.css';
 
@@ -13,6 +12,7 @@ import './split-pane.css';
 import createStore from './store';
 import theme from '../common/theme';
 import logError from './utils/error';
+import history from './utils/history';
 
 if (process.env.NODE_ENV === 'production') {
   try {
@@ -64,8 +64,6 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 const rootEl = document.getElementById('root');
-
-const history = createHistory();
 
 const store = createStore(history);
 const renderApp = RootComponent => {

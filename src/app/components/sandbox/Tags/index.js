@@ -18,8 +18,8 @@ type Props = {
   removeTag: ?(id: string, tag: string) => void,
 };
 
-export default ({ tags, removeTag }: Props) =>
-  <TagContainer>
+export default ({ tags, removeTag, ...props }: Props) =>
+  <TagContainer {...props}>
     {tags.sort().map(tag =>
       <Margin key={tag} vertical={0.5} horizontal={0.25}>
         <Tag removeTag={removeTag} tag={tag} />

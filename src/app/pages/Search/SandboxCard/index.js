@@ -7,6 +7,7 @@ import Tags from 'app/components/sandbox/Tags';
 
 import SandboxInfo from './SandboxInfo';
 import { sandboxUrl } from '../../../utils/url-generator';
+import Row from '../../../components/flex/Row';
 
 const Container = styled.div`
   transition: 0.3s ease all;
@@ -43,6 +44,7 @@ const Title = styled.h2`
   font-size: 1.25em;
   margin: 0;
   margin-bottom: 1rem;
+  width: 70%;
   color: white;
 `;
 
@@ -53,10 +55,8 @@ const Description = styled.p`
 `;
 
 const TagContainer = styled.div`
-  position: absolute;
   font-size: .75rem;
-  right: 0;
-  top: 0.25rem;
+  max-width: 30%;
 `;
 
 type Props = {
@@ -82,45 +82,22 @@ type Props = {
   },
 };
 
-/**
- * A scientific method to determine how many tags to show
- */
-const getTagCount = (title, tags) => {
-  const textCount = title.length * 1.5 + tags.join('').length;
-
-  if (textCount > 130) {
-    return 0;
-  }
-  if (textCount > 120) {
-    return 1;
-  }
-  if (textCount > 110) {
-    return 2;
-  }
-  if (textCount > 100) {
-    return 3;
-  }
-  if (textCount > 90) {
-    return 4;
-  }
-
-  return 5;
-};
-
 export default ({ hit }: Props) =>
   <StyledLink to={sandboxUrl({ id: hit.objectID, git: hit.git })}>
     <Container>
-      <Title>
-        {hit.title
-          ? <Highlight attributeName="title" hit={hit} />
-          : hit.objectID}
-      </Title>
-      <TagContainer>
-        <Tags
-          tags={(hit.tags || [])
-            .splice(0, getTagCount(hit.title || '', hit.tags || []))}
-        />
-      </TagContainer>
+      <Row alignItems="flex-start">
+        <Title>
+          {hit.title
+            ? <Highlight attributeName="title" hit={hit} />
+            : hit.objectID}
+        </Title>
+        <TagContainer>
+          <Tags
+            style={{ margin: 0, marginTop: -2 }}
+            tags={(hit.tags || []).filter(tag => tag.length < 20)}
+          />
+        </TagContainer>
+      </Row>
       <Description>
         <Highlight attributeName="description" hit={hit} />
       </Description>

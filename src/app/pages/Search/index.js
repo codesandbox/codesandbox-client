@@ -53,6 +53,18 @@ export default class Search extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = { searchState: qs.parse(props.location.search.slice(1)) };
+
+    this.unlisten = this.props.history.listen((location, action) => {
+      if (action === 'PUSH') {
+        this.setState({
+          searchState: qs.parse(location.search.slice(1)),
+        });
+      }
+    });
+  }
+
+  componentWillUnmount() {
+    this.unlisten();
   }
 
   onSearchStateChange = searchState => {
