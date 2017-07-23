@@ -58,7 +58,7 @@ class Preferences extends React.PureComponent {
         content: <EditorSettings />,
       },
       {
-        title: 'Code Formatting',
+        title: 'Prettier Settings',
         icon: <CodeFormatIcon />,
         content: <CodeFormatting />,
       },

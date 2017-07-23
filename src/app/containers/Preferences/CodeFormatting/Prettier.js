@@ -9,7 +9,6 @@ import {
   PaddedPreference,
   Description,
   Rule,
-  Subheading,
 } from '../styles';
 
 type Props = {
@@ -42,7 +41,6 @@ class Prettier extends React.PureComponent {
     const state = this.state;
     return (
       <Container>
-        <Subheading>Prettier</Subheading>
         <PreferenceContainer>
           <PaddedPreference
             title="Print width"
