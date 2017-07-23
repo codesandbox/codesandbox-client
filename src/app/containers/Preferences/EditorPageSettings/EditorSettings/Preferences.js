@@ -27,7 +27,7 @@ const mapStateToProps = state => ({
 const Preferences = ({ preferences, preferencesActions }: Props) => {
   const bindValue = name => ({
     value: preferences[name],
-    setValue: name => value =>
+    setValue: value =>
       preferencesActions.setPreference({
         [name]: value,
       }),
