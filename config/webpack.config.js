@@ -1,4 +1,3 @@
-// prettier-ignore
 const webpack = require('webpack');
 const path = require('path');
 const paths = require('./paths');
