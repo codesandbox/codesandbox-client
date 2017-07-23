@@ -11,6 +11,7 @@ import {
   SET_PREFERENCE_LINT,
   SET_INSTANT_PREVIEW,
   SET_PREFERENCE_FONT_SIZE,
+  SET_PREFERENCE_FONT_FAMILY,
   SET_CLEAR_CONSOLE,
 } from './actions';
 import {
@@ -21,6 +22,7 @@ import {
   LINT_ENABLED,
   INSTANT_PREVIEW,
   FONT_SIZE,
+  FONT_FAMILY,
   CLEAR_CONSOLE,
 } from './keys';
 
@@ -42,6 +44,7 @@ const initialState: Preferences = {
   lintEnabled: getKey(LINT_ENABLED, false),
   instantPreviewEnabled: getKey(INSTANT_PREVIEW, false),
   fontSize: getKey(FONT_SIZE, 14),
+  fontFamily: getKey(FONT_FAMILY, ''),
   clearConsoleEnabled: getKey(CLEAR_CONSOLE, false),
 };
 
@@ -61,6 +64,8 @@ export default (state: Preferences = initialState, action): Preferences => {
       return { ...state, instantPreviewEnabled: action.option };
     case SET_PREFERENCE_FONT_SIZE:
       return { ...state, fontSize: action.option };
+    case SET_PREFERENCE_FONT_FAMILY:
+      return { ...state, fontFamily: action.option };
     case SET_CLEAR_CONSOLE:
       return { ...state, clearConsoleEnabled: action.option };
     default: {

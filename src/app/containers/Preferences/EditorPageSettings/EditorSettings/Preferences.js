@@ -28,6 +28,7 @@ const Preferences = ({ preferences, preferencesActions }: Props) =>
     <PreferenceContainer>
       <PaddedPreference
         title="Autocomplete"
+        type="boolean"
         value={preferences.autoCompleteEnabled}
         setValue={preferencesActions.setAutoCompletePreference}
       />
@@ -35,6 +36,7 @@ const Preferences = ({ preferences, preferencesActions }: Props) =>
       <Rule />
       <PaddedPreference
         title="Enable linter"
+        type="boolean"
         tooltip="Made possible by eslint"
         value={preferences.lintEnabled}
         setValue={preferencesActions.setLintPreference}
@@ -43,6 +45,7 @@ const Preferences = ({ preferences, preferencesActions }: Props) =>
       <Rule />
       <PaddedPreference
         title="Prettify on save"
+        type="boolean"
         tooltip="Made possible by Prettier"
         value={preferences.prettifyOnSaveEnabled}
         setValue={preferencesActions.setPrettifyOnSavePreference}
@@ -51,14 +54,24 @@ const Preferences = ({ preferences, preferencesActions }: Props) =>
       <Rule />
       <PaddedPreference
         title="VIM mode"
+        type="boolean"
         value={preferences.vimMode}
         setValue={preferencesActions.setVimPreference}
       />
       <Rule />
       <PaddedPreference
         title="Editor font size"
+        type="number"
         value={preferences.fontSize}
         setValue={preferencesActions.setFontSizePreference}
+      />
+      <Rule />
+      <PaddedPreference
+        title="Editor font family"
+        type="string"
+        placeholder="Source Code Pro"
+        value={preferences.fontFamily}
+        setValue={preferencesActions.setFontFamilyPreference}
       />
     </PreferenceContainer>
   </Container>;
