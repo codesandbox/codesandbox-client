@@ -89,6 +89,7 @@
     "cssnano": "^3.10.0",
     "custom-prettier-codesandbox": "CompuIves/custom-prettier-codesandbox",
     "debug": "^2.6.8",
+    "eslint-config-react-app": "^1.0.5",
     "file-saver": "^1.3.3",
     "glamor": "^2.20.25",
     "gulp": "^3.9.1",

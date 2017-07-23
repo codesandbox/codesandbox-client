@@ -8,17 +8,11 @@ import SubscribeForm from 'app/components/user/SubscribeForm';
 
 import Card from './Card';
 import Title from '../MenuTitle';
+import { Subheading } from '../styles';
 
 const Container = styled.div`
   font-weight: 400;
   color: rgba(255, 255, 255, 0.6);
-`;
-
-const Subheading = styled.div`
-  color: rgba(255, 255, 255, 0.8);
-  font-weight: 500;
-  margin: 1rem 0;
-  text-transform: uppercase;
 `;
 
 type Props = {

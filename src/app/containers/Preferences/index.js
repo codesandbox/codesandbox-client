@@ -5,15 +5,17 @@ import styled from 'styled-components';
 import { currentUserSelector } from 'app/store/user/selectors';
 import type { CurrentUser } from 'common/types';
 
-import CodeIcon from 'react-icons/lib/md/code';
+import CodeIcon from 'react-icons/lib/fa/code';
 import CreditCardIcon from 'react-icons/lib/md/credit-card';
 import BrowserIcon from 'react-icons/lib/go/browser';
 import StarIcon from 'react-icons/lib/go/star';
+import CodeFormatIcon from 'react-icons/lib/fa/dedent';
 
 import SideNavigation from './SideNavigation';
 
 import EditorSettings from './EditorPageSettings/EditorSettings';
 import PreviewSettings from './EditorPageSettings/PreviewSettings';
+import CodeFormatting from './CodeFormatting';
 import PaymentInfo from './PaymentInfo';
 import Badges from './Badges';
 
@@ -54,6 +56,11 @@ class Preferences extends React.PureComponent {
         title: 'Editor',
         icon: <CodeIcon />,
         content: <EditorSettings />,
+      },
+      {
+        title: 'Code Formatting',
+        icon: <CodeFormatIcon />,
+        content: <CodeFormatting />,
       },
       {
         title: 'Preview',

@@ -415,7 +415,12 @@ export default class CodeEditor extends React.PureComponent {
     const mode = await this.getMode(title);
     if (mode === 'jsx' || mode === 'css') {
       try {
-        const newCode = await prettify(code, mode, preferences.lintEnabled);
+        const newCode = await prettify(
+          code,
+          mode,
+          preferences.lintEnabled,
+          preferences.prettierConfig,
+        );
 
         if (newCode !== code) {
           this.props.changeCode(id, newCode);

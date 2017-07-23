@@ -11,7 +11,7 @@ import {
   PaddedPreference,
   Description,
   Rule,
-} from '../styles';
+} from '../../styles';
 
 type Props = {
   preferencesActions: typeof preferencesActionCreators,

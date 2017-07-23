@@ -132,7 +132,9 @@ export type Preferences = {
   lintEnabled: ?boolean,
   instantPreviewEnabled: ?boolean,
   fontSize: ?number,
+  fontFamily: ?string,
   clearConsoleEnabled: ?boolean,
+  prettierConfig: Object,
 };
 
 export type NotificationButton = {

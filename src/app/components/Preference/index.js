@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import Tooltip from 'app/components/Tooltip';
 
 import PreferenceSwitch from './PreferenceSwitch';
+import PreferenceDropdown from './PreferenceDropdown';
 import PreferenceNumber from './PreferenceNumber';
 import PreferenceText from './PreferenceText';
 
@@ -19,6 +20,7 @@ type Props = {
   setValue: (value: any) => any,
   tooltip: ?string,
   type: 'boolean' | 'number' | 'string',
+  options: ?Array<string>,
 };
 
 export default class Preference extends React.Component {
@@ -40,6 +42,17 @@ export default class Preference extends React.Component {
       return (
         <PreferenceText
           {...this.props}
+          setValue={this.props.setValue}
+          value={value}
+        />
+      );
+    }
+
+    if (type === 'dropdown') {
+      return (
+        <PreferenceDropdown
+          {...this.props}
+          options={this.props.options}
           setValue={this.props.setValue}
           value={value}
         />

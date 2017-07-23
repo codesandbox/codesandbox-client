@@ -10,6 +10,7 @@ import {
   FONT_SIZE,
   FONT_FAMILY,
   CLEAR_CONSOLE,
+  PRETTIER_CONFIG,
 } from './keys';
 
 export const SET_PREFERENCE_AUTOCOMPLETE = 'SET_PREFERENCE_AUTOCOMPLETE';
@@ -22,6 +23,7 @@ export const SET_PREFERENCE_PRETTIFY_ON_SAVE =
 export const SET_PREFERENCE_LINT = 'SET_PREFERENCE_LINT';
 export const SET_INSTANT_PREVIEW = 'SET_INSTANT_PREVIEW';
 export const SET_CLEAR_CONSOLE = 'SET_CLEAR_CONSOLE';
+export const SET_PRETTIER_CONFIG = 'SET_PRETTIER_CONFIG';
 
 const setOption = (key, val) => {
   try {
@@ -116,6 +118,15 @@ export default {
     dispatch({
       type: SET_PREFERENCE_FONT_FAMILY,
       option: fontFamily,
+    });
+  },
+
+  setPrettierConfig: (config: Object) => (dispatch: Function) => {
+    setOption(PRETTIER_CONFIG, config);
+
+    dispatch({
+      type: SET_PRETTIER_CONFIG,
+      option: config,
     });
   },
 };

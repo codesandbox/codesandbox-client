@@ -13,6 +13,13 @@ export const Container = styled.div`
   }
 `;
 
+export const Subheading = styled.div`
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+  margin: 1rem 0;
+  text-transform: uppercase;
+`;
+
 export const PreferenceContainer = styled.div`padding-top: 0.5rem;`;
 
 export const PaddedPreference = styled(Preference)`

@@ -13,6 +13,7 @@ import {
   SET_PREFERENCE_FONT_SIZE,
   SET_PREFERENCE_FONT_FAMILY,
   SET_CLEAR_CONSOLE,
+  SET_PRETTIER_CONFIG,
 } from './actions';
 import {
   AUTO_COMPLETE,
@@ -24,7 +25,10 @@ import {
   FONT_SIZE,
   FONT_FAMILY,
   CLEAR_CONSOLE,
+  PRETTIER_CONFIG,
 } from './keys';
+
+import { DEFAULT_PRETTIER_CONFIG } from '../../utils/codemirror/prettify';
 
 function getKey<D: any>(key: string, defaultVal: D): ?D {
   try {
@@ -46,6 +50,7 @@ const initialState: Preferences = {
   fontSize: getKey(FONT_SIZE, 14),
   fontFamily: getKey(FONT_FAMILY, ''),
   clearConsoleEnabled: getKey(CLEAR_CONSOLE, false),
+  prettierConfig: getKey(PRETTIER_CONFIG, DEFAULT_PRETTIER_CONFIG),
 };
 
 export default (state: Preferences = initialState, action): Preferences => {
@@ -68,6 +73,8 @@ export default (state: Preferences = initialState, action): Preferences => {
       return { ...state, fontFamily: action.option };
     case SET_CLEAR_CONSOLE:
       return { ...state, clearConsoleEnabled: action.option };
+    case SET_PRETTIER_CONFIG:
+      return { ...state, prettierConfig: action.option };
     default: {
       return state;
     }
