@@ -44,7 +44,7 @@ const initialState: Preferences = {
   lintEnabled: getKey(LINT_ENABLED, false),
   instantPreviewEnabled: getKey(INSTANT_PREVIEW, false),
   fontSize: getKey(FONT_SIZE, 14),
-  fontFamily: getKey(FONT_FAMILY, false),
+  fontFamily: getKey(FONT_FAMILY, ''),
   clearConsoleEnabled: getKey(CLEAR_CONSOLE, false),
 };
 
