@@ -11,15 +11,17 @@ const TagContainer = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  ${props => props.align === 'right' && `justify-content: flex-end;`};
 `;
 
 type Props = {
+  align: 'right' | 'left',
   tags: Array<string>,
   removeTag: ?(id: string, tag: string) => void,
 };
 
-export default ({ tags, removeTag, ...props }: Props) =>
-  <TagContainer {...props}>
+export default ({ tags, removeTag, align, ...props }: Props) =>
+  <TagContainer align={align || 'left'} {...props}>
     {tags.sort().map(tag =>
       <Margin key={tag} vertical={0.5} horizontal={0.25}>
         <Tag removeTag={removeTag} tag={tag} />

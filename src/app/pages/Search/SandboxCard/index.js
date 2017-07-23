@@ -56,7 +56,7 @@ const Description = styled.p`
 
 const TagContainer = styled.div`
   font-size: .75rem;
-  max-width: 30%;
+  width: 30%;
 `;
 
 type Props = {
@@ -93,6 +93,7 @@ export default ({ hit }: Props) =>
         </Title>
         <TagContainer>
           <Tags
+            align="right"
             style={{ margin: 0, marginTop: -2 }}
             tags={(hit.tags || []).filter(tag => tag.length < 20)}
           />
