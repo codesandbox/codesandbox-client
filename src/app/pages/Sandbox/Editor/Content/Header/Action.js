@@ -21,7 +21,8 @@ const styles = props =>
   box-sizing: inherit;
   border-bottom: 2px solid transparent;
   z-index: 1;
-  ${props.highlight ? `
+  ${props.highlight
+    ? `
       background-color: ${props.theme.secondary.darken(0.1)()};
       color: white;
       border-bottom: 1px solid ${props.theme.secondary.darken(0.1)()};
@@ -29,7 +30,8 @@ const styles = props =>
       &:hover {
         background-color: ${props.theme.secondary.darken(0.2)()};
       }
-  ` : `
+  `
+    : `
 
     &:hover {
       color: rgba(255,255,255, 1);
@@ -40,29 +42,28 @@ const styles = props =>
 
 const Title = styled.span`
   padding-left: 0.5rem;
-  ${props => !props.unresponsive && `
+  ${props =>
+    !props.unresponsive &&
+    `
   @media (max-width: 1300px) {
     display: none;
-  }`}
+  }`};
 `;
 
-const Action = styled.div`
-  ${styles}
-`;
+const Action = styled.div`${styles};`;
 
 const ActionLink = styled(Link)`
   ${styles}
   text-decoration: none;
 `;
 
-const ActionA = styled.a`
-  ${styles}
-  text-decoration: none;
-`;
+const ActionA = styled.a`${styles} text-decoration: none;`;
 
 const ActionTooltip = styled(Tooltip)`
   ${styles}
-  ${props => props.disabledAction && `
+  ${props =>
+    props.disabledAction &&
+    `
     color: rgba(255,255,255,0.3);
     cursor: default;
 
@@ -114,7 +115,9 @@ export default ({
         <IconContainer onClick={onClick}>
           <Icon />
           {title !== undefined &&
-            <Title unresponsive={unresponsive}>{title}</Title>}
+            <Title unresponsive={unresponsive}>
+              {title}
+            </Title>}
           {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
         </IconContainer>
       </ActionTooltip>
@@ -126,7 +129,9 @@ export default ({
         <IconContainer onClick={onClick}>
           <Icon />
           {title !== undefined &&
-            <Title unresponsive={unresponsive}>{title}</Title>}
+            <Title unresponsive={unresponsive}>
+              {title}
+            </Title>}
           {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
         </IconContainer>
       </Action>
@@ -140,7 +145,9 @@ export default ({
           <IconContainer>
             <Icon />
             {title !== undefined &&
-              <Title unresponsive={unresponsive}>{title}</Title>}
+              <Title unresponsive={unresponsive}>
+                {title}
+              </Title>}
             {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
           </IconContainer>
         </Tooltip>
@@ -155,7 +162,9 @@ export default ({
           <IconContainer>
             <Icon />
             {title !== undefined &&
-              <Title unresponsive={unresponsive}>{title}</Title>}
+              <Title unresponsive={unresponsive}>
+                {title}
+              </Title>}
             {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
           </IconContainer>
         </Tooltip>
@@ -168,7 +177,9 @@ export default ({
       <IconContainer>
         <Icon />
         {title !== undefined &&
-          <Title unresponsive={unresponsive}>{title}</Title>}
+          <Title unresponsive={unresponsive}>
+            {title}
+          </Title>}
         {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
       </IconContainer>
     </ActionLink>

@@ -235,7 +235,13 @@ export default class Header extends React.PureComponent {
             tooltip="New Sandbox"
             Icon={PlusIcon}
           />
-          <Margin left={1}>
+          <Margin
+            style={{
+              zIndex: 20,
+              height: '100%',
+            }}
+            left={1}
+          >
             {user.jwt
               ? <div style={{ fontSize: '.875rem', margin: '6px 0.5rem' }}>
                   <UserMenu small />

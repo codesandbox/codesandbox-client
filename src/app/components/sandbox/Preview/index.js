@@ -291,9 +291,10 @@ export default class Preview extends React.PureComponent {
   };
 
   commitUrl = (url: string) => {
-    const { history, historyPosition, urlInAddressBar = '' } = this.state;
+    const { history, historyPosition } = this.state;
 
-    if (urlInAddressBar !== url) {
+    const currentHistory = history[historyPosition] || '';
+    if (currentHistory !== url) {
       history.length = historyPosition + 1;
       this.setState({
         history: [...history, url],
