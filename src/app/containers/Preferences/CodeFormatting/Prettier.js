@@ -33,7 +33,9 @@ class Prettier extends React.PureComponent {
 
   setPrettierOption = key => val => {
     this.setState({ [key]: val }, () => {
-      this.props.preferencesActions.setPrettierConfig(this.state);
+      this.props.preferencesActions.setPreference({
+        prettierConfig: this.state,
+      });
     });
   };
 

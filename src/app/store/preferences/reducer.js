@@ -3,30 +3,8 @@
 import type { Preferences } from 'common/types';
 import store from 'store/dist/store.modern';
 
-import {
-  SET_PREFERENCE_AUTOCOMPLETE,
-  SET_PREFERENCE_VIM_MODE,
-  SET_PREFERENCE_LIVE_PREVIEW,
-  SET_PREFERENCE_PRETTIFY_ON_SAVE,
-  SET_PREFERENCE_LINT,
-  SET_INSTANT_PREVIEW,
-  SET_PREFERENCE_FONT_SIZE,
-  SET_PREFERENCE_FONT_FAMILY,
-  SET_CLEAR_CONSOLE,
-  SET_PRETTIER_CONFIG,
-} from './actions';
-import {
-  AUTO_COMPLETE,
-  VIM_MODE,
-  LIVE_PREVIEW,
-  PRETTIFY_ON_SAVE,
-  LINT_ENABLED,
-  INSTANT_PREVIEW,
-  FONT_SIZE,
-  FONT_FAMILY,
-  CLEAR_CONSOLE,
-  PRETTIER_CONFIG,
-} from './keys';
+import { SET_PREFERENCES } from './actions';
+import * as keys from './keys';
 
 import { DEFAULT_PRETTIER_CONFIG } from '../../utils/codemirror/prettify';
 
@@ -40,41 +18,30 @@ function getKey<D: any>(key: string, defaultVal: D): ?D {
   }
 }
 
-const initialState: Preferences = {
-  autoCompleteEnabled: getKey(AUTO_COMPLETE, true),
-  vimMode: getKey(VIM_MODE, false),
-  livePreviewEnabled: getKey(LIVE_PREVIEW, true),
-  prettifyOnSaveEnabled: getKey(PRETTIFY_ON_SAVE, false),
-  lintEnabled: getKey(LINT_ENABLED, false),
-  instantPreviewEnabled: getKey(INSTANT_PREVIEW, false),
-  fontSize: getKey(FONT_SIZE, 14),
-  fontFamily: getKey(FONT_FAMILY, ''),
-  clearConsoleEnabled: getKey(CLEAR_CONSOLE, false),
-  prettierConfig: getKey(PRETTIER_CONFIG, DEFAULT_PRETTIER_CONFIG),
-};
+const initialState: Preferences = Object.keys(keys).reduce(
+  (res, key) =>
+    Object.assign(res, {
+      [key]: getKey(keys[key], res[key]),
+    }),
+  {
+    livePreviewEnabled: true,
+    prettifyOnSaveEnabled: false,
+    lintEnabled: false,
+    instantPreviewEnabled: false,
+    fontSize: 14,
+    fontFamily: '',
+    clearConsoleEnabled: false,
+    prettierConfig: DEFAULT_PRETTIER_CONFIG,
+  },
+);
 
 export default (state: Preferences = initialState, action): Preferences => {
   switch (action.type) {
-    case SET_PREFERENCE_AUTOCOMPLETE:
-      return { ...state, autoCompleteEnabled: action.option };
-    case SET_PREFERENCE_VIM_MODE:
-      return { ...state, vimMode: action.option };
-    case SET_PREFERENCE_LIVE_PREVIEW:
-      return { ...state, livePreviewEnabled: action.option };
-    case SET_PREFERENCE_PRETTIFY_ON_SAVE:
-      return { ...state, prettifyOnSaveEnabled: action.option };
-    case SET_PREFERENCE_LINT:
-      return { ...state, lintEnabled: action.option };
-    case SET_INSTANT_PREVIEW:
-      return { ...state, instantPreviewEnabled: action.option };
-    case SET_PREFERENCE_FONT_SIZE:
-      return { ...state, fontSize: action.option };
-    case SET_PREFERENCE_FONT_FAMILY:
-      return { ...state, fontFamily: action.option };
-    case SET_CLEAR_CONSOLE:
-      return { ...state, clearConsoleEnabled: action.option };
-    case SET_PRETTIER_CONFIG:
-      return { ...state, prettierConfig: action.option };
+    case SET_PREFERENCES:
+      return {
+        ...state,
+        ...action.preferences,
+      };
     default: {
       return state;
     }

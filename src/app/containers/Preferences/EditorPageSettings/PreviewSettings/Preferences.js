@@ -24,37 +24,44 @@ const mapDispatchToProps = dispatch => ({
 const mapStateToProps = state => ({
   preferences: preferencesSelector(state),
 });
-const Preferences = ({ preferences, preferencesActions }: Props) =>
-  <Container>
-    <PreferenceContainer>
-      <PaddedPreference
-        title="Preview on edit"
-        type="boolean"
-        value={preferences.livePreviewEnabled}
-        setValue={preferencesActions.setLivePreview}
-        tooltip="Only update on save"
-      />
-      <Description>Preview the latest code without saving.</Description>
-      <Rule />
-      <PaddedPreference
-        title="Clear console"
-        type="boolean"
-        value={preferences.clearConsoleEnabled}
-        setValue={preferencesActions.setClearConsolePreference}
-        tooltip="Clear console when executing"
-      />
-      <Description>
-        Clear your developer console between every execution.
-      </Description>
-      <Rule />
-      <PaddedPreference
-        title="Instant preview"
-        type="boolean"
-        value={preferences.instantPreviewEnabled}
-        setValue={preferencesActions.setInstantPreview}
-      />
-      <Description>Show preview on every keypress.</Description>
-    </PreferenceContainer>
-  </Container>;
+const Preferences = ({ preferences, preferencesActions }: Props) => {
+  const bindValue = name => ({
+    value: preferences[name],
+    setValue: value =>
+      preferencesActions.setPreference({
+        [name]: value,
+      }),
+  });
+  return (
+    <Container>
+      <PreferenceContainer>
+        <PaddedPreference
+          title="Preview on edit"
+          type="boolean"
+          {...bindValue('livePreviewEnabled')}
+          tooltip="Only update on save"
+        />
+        <Description>Preview the latest code without saving.</Description>
+        <Rule />
+        <PaddedPreference
+          title="Clear console"
+          type="boolean"
+          {...bindValue('clearConsoleEnabled')}
+          tooltip="Clear console when executing"
+        />
+        <Description>
+          Clear your developer console between every execution.
+        </Description>
+        <Rule />
+        <PaddedPreference
+          title="Instant preview"
+          type="boolean"
+          {...bindValue('instantPreviewEnabled')}
+        />
+        <Description>Show preview on every keypress.</Description>
+      </PreferenceContainer>
+    </Container>
+  );
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Preferences);
