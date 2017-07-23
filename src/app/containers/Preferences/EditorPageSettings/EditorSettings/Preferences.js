@@ -72,6 +72,7 @@ const Preferences = ({ preferences, preferencesActions }: Props) =>
         value={preferences.fontFamily}
         setValue={preferencesActions.setFontFamilyPreference}
       />
+      <Description>Set editor font family.</Description>
     </PreferenceContainer>
   </Container>;
 
