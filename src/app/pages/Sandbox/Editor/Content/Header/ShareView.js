@@ -313,23 +313,27 @@ class ShareView extends React.PureComponent {
                     <h4>Embed specific options</h4>
                     <PaddedPreference
                       title="Auto resize"
+                      type="boolean"
                       tooltip="Works only on Medium"
                       value={autoResize}
                       setValue={this.setAutoResize}
                     />
                     <PaddedPreference
                       title="Hide navigation bar"
+                      type="boolean"
                       value={hideNavigation}
                       setValue={this.setHideNavigation}
                     />
                     <PaddedPreference
                       title="Show current module view"
+                      type="boolean"
                       tooltip="Only show the module that's currently open"
                       value={isCurrentModuleView}
                       setValue={this.setIsCurrentModuleView}
                     />
                     <PaddedPreference
                       title="Font size"
+                      type="number"
                       value={fontSize}
                       setValue={this.setFontSize}
                     />

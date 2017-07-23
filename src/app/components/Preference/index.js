@@ -4,6 +4,7 @@ import Tooltip from 'app/components/Tooltip';
 
 import PreferenceSwitch from './PreferenceSwitch';
 import PreferenceNumber from './PreferenceNumber';
+import PreferenceText from './PreferenceText';
 
 const Container = styled.div`
   display: flex;
@@ -17,14 +18,20 @@ type Props = {
   value: any,
   setValue: (value: any) => any,
   tooltip: ?string,
+  type: 'boolean' | 'number' | 'string',
 };
 
 export default class Preference extends React.Component {
   props: Props;
 
-  getOptionComponent = (value: boolean | number) => {
-    if (typeof value === 'boolean') {
+  getOptionComponent = (value: boolean | number | string) => {
+    const { type } = this.props;
+    if (type === 'boolean') {
       return <PreferenceSwitch setValue={this.props.setValue} value={value} />;
+    }
+
+    if (type === 'string') {
+      return <PreferenceText setValue={this.props.setValue} value={value} />;
     }
 
     return <PreferenceNumber setValue={this.props.setValue} value={value} />;
@@ -34,13 +41,17 @@ export default class Preference extends React.Component {
     const { title, className, value, tooltip } = this.props;
 
     const Title = tooltip
-      ? <Tooltip position="right" title={tooltip}>{title}</Tooltip>
-      : <span>{title}</span>;
+      ? <Tooltip position="right" title={tooltip}>
+          {title}
+        </Tooltip>
+      : <span>
+          {title}
+        </span>;
 
     return (
       <Container className={className}>
         {Title}
-        <div style={{ width: 48 }}>
+        <div>
           {this.getOptionComponent(value)}
         </div>
       </Container>

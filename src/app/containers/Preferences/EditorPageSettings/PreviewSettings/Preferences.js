@@ -29,6 +29,7 @@ const Preferences = ({ preferences, preferencesActions }: Props) =>
     <PreferenceContainer>
       <PaddedPreference
         title="Preview on edit"
+        type="boolean"
         value={preferences.livePreviewEnabled}
         setValue={preferencesActions.setLivePreview}
         tooltip="Only update on save"
@@ -37,6 +38,7 @@ const Preferences = ({ preferences, preferencesActions }: Props) =>
       <Rule />
       <PaddedPreference
         title="Clear console"
+        type="boolean"
         value={preferences.clearConsoleEnabled}
         setValue={preferencesActions.setClearConsolePreference}
         tooltip="Clear console when executing"
@@ -47,6 +49,7 @@ const Preferences = ({ preferences, preferencesActions }: Props) =>
       <Rule />
       <PaddedPreference
         title="Instant preview"
+        type="boolean"
         value={preferences.instantPreviewEnabled}
         setValue={preferencesActions.setInstantPreview}
       />

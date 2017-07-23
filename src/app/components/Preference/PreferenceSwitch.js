@@ -18,6 +18,7 @@ export default class PreferenceSwitch extends React.PureComponent {
       <Switch
         onClick={this.handleClick}
         small
+        style={{ width: '3rem' }}
         offMode
         secondary
         right={value}
