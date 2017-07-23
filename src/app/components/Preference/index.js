@@ -27,14 +27,32 @@ export default class Preference extends React.Component {
   getOptionComponent = (value: boolean | number | string) => {
     const { type } = this.props;
     if (type === 'boolean') {
-      return <PreferenceSwitch setValue={this.props.setValue} value={value} />;
+      return (
+        <PreferenceSwitch
+          {...this.props}
+          setValue={this.props.setValue}
+          value={value}
+        />
+      );
     }
 
     if (type === 'string') {
-      return <PreferenceText setValue={this.props.setValue} value={value} />;
+      return (
+        <PreferenceText
+          {...this.props}
+          setValue={this.props.setValue}
+          value={value}
+        />
+      );
     }
 
-    return <PreferenceNumber setValue={this.props.setValue} value={value} />;
+    return (
+      <PreferenceNumber
+        {...this.props}
+        setValue={this.props.setValue}
+        value={value}
+      />
+    );
   };
 
   render() {

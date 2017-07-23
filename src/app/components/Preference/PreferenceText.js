@@ -17,11 +17,12 @@ export default class PreferenceText extends React.PureComponent {
   };
 
   render() {
-    const { value } = this.props;
+    const { value, placeholder } = this.props;
     return (
       <Input
         style={{ width: '9rem' }}
         value={value}
+        placeholder={placeholder}
         onChange={this.handleChange}
       />
     );

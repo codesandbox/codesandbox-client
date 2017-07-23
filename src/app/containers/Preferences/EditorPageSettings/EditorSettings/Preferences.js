@@ -69,10 +69,10 @@ const Preferences = ({ preferences, preferencesActions }: Props) =>
       <PaddedPreference
         title="Editor font family"
         type="string"
+        placeholder="Source Code Pro"
         value={preferences.fontFamily}
         setValue={preferencesActions.setFontFamilyPreference}
       />
-      <Description>Set editor font family.</Description>
     </PreferenceContainer>
   </Container>;
 
