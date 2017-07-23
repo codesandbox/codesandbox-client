@@ -112,6 +112,9 @@ export default class App extends React.PureComponent {
           m => m.title === 'index.js' && m.directoryShortid == null,
         ).shortid;
 
+      document.title = response.data.title
+        ? `${response.data.title} - CodeSandbox`
+        : 'Embed - CodeSandbox';
       this.setState({ sandbox: response.data, currentModule });
     } catch (e) {
       this.setState({ notFound: true });

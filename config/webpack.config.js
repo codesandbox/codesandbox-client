@@ -85,8 +85,9 @@ const config = {
         options: (() => {
           const altererdConfig = Object.assign({}, babelConfig);
 
+          // prettier-ignore
           altererdConfig.plugins.push(
-            require.resolve('babel-plugin-transform-remove-strict-mode'),
+            require.resolve('babel-plugin-transform-remove-strict-mode')
           );
           return altererdConfig;
         })(),
