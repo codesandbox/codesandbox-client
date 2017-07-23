@@ -9,7 +9,8 @@ import {
   PaddedPreference,
   Description,
   Rule,
-} from '../../styles';
+  Subheading,
+} from '../styles';
 
 type Props = {
   preferencesActions: typeof preferencesActionCreators,
@@ -25,54 +26,81 @@ const mapStateToProps = state => ({
 
 const Preferences = ({ preferences, preferencesActions }: Props) =>
   <Container>
+    <Subheading>Prettier</Subheading>
     <PreferenceContainer>
       <PaddedPreference
-        title="Autocomplete"
-        type="boolean"
+        title="Print width"
         value={preferences.autoCompleteEnabled}
         setValue={preferencesActions.setAutoCompletePreference}
       />
-      <Description>Show autocompletions while you type.</Description>
+      <Description>
+        Specify the line length that the printer will wrap on.
+      </Description>
       <Rule />
+
       <PaddedPreference
-        title="Enable linter"
-        type="boolean"
-        tooltip="Made possible by eslint"
+        title="Tab width"
         value={preferences.lintEnabled}
         setValue={preferencesActions.setLintPreference}
       />
-      <Description>Use eslint to find syntax and style errors.</Description>
+      <Description>
+        Specify the number of spaces per indentation-level.
+      </Description>
       <Rule />
+
       <PaddedPreference
-        title="Prettify on save"
-        type="boolean"
-        tooltip="Made possible by Prettier"
+        title="Use tabs"
         value={preferences.prettifyOnSaveEnabled}
         setValue={preferencesActions.setPrettifyOnSavePreference}
       />
-      <Description>Format all code on save with prettier.</Description>
+      <Description>Indent lines with tabs instead of spaces.</Description>
       <Rule />
+
       <PaddedPreference
-        title="VIM mode"
-        type="boolean"
+        title="Semicolons"
         value={preferences.vimMode}
         setValue={preferencesActions.setVimPreference}
       />
+      <Description>Print semicolons at the ends of statements.</Description>
       <Rule />
+
       <PaddedPreference
-        title="Editor font size"
-        type="number"
+        title="Use single quotes"
         value={preferences.fontSize}
         setValue={preferencesActions.setFontSizePreference}
       />
+      <Description>
+        Use {"'"}single{"'"} quotes instead of {'"'}double{'"'} quotes.
+      </Description>
       <Rule />
+
       <PaddedPreference
-        title="Editor font family"
-        type="string"
-        placeholder="Source Code Pro"
-        value={preferences.fontFamily}
-        setValue={preferencesActions.setFontFamilyPreference}
+        title="Trailing commas"
+        value={preferences.fontSize}
+        setValue={preferencesActions.setFontSizePreference}
       />
+      <Description>Print trailing commas wherever possible.</Description>
+      <Rule />
+
+      <PaddedPreference
+        title="Bracket spacing"
+        value={preferences.fontSize}
+        setValue={preferencesActions.setFontSizePreference}
+      />
+      <Description>
+        Print spaces between brackets in object literals.
+      </Description>
+      <Rule />
+
+      <PaddedPreference
+        title="JSX Brackets"
+        value={preferences.fontSize}
+        setValue={preferencesActions.setFontSizePreference}
+      />
+      <Description>
+        Put the `>` of a multi-line JSX element at the end of the last line
+        instead of being alone on the next line.
+      </Description>
     </PreferenceContainer>
   </Container>;
 
