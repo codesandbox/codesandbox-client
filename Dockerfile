@@ -1,4 +1,4 @@
-FROM node:7.6
+FROM node:8.2.1
 MAINTAINER Ives van Hoorne
 
 RUN mkdir /usr/src/app
