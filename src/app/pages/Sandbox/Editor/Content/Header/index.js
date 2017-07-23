@@ -22,9 +22,12 @@ import {
   searchUrl,
   newSandboxUrl,
   importFromGitHubUrl,
+  patronUrl,
 } from 'app/utils/url-generator';
 import ModeIcons from 'app/components/sandbox/ModeIcons';
 
+// $FlowIssue
+import PatronBadge from '-!svg-react-loader!app/utils/badges/svg/patron-2.svg'; // eslint-disable-line import/no-webpack-loader-syntax
 import Margin from 'app/components/spacing/Margin';
 import HeaderSearchBar from 'app/components/HeaderSearchBar';
 import UserMenu from 'app/containers/UserMenu';
@@ -201,7 +204,7 @@ export default class Header extends React.PureComponent {
         </Left>
 
         <Right>
-          <Media query="(max-width: 1450px)">
+          <Media query="(max-width: 1560px)">
             {matches =>
               matches
                 ? <Action
@@ -214,6 +217,18 @@ export default class Header extends React.PureComponent {
                   </div>}
           </Media>
 
+          {!user ||
+            (!user.subscription &&
+              <Action
+                href={patronUrl()}
+                tooltip="Become a Patron"
+                Icon={PatronBadge}
+                iconProps={{
+                  width: 16,
+                  height: 32,
+                  transform: 'scale(1.5, 1.5)',
+                }}
+              />)}
           <Action
             href="https://twitter.com/CompuIves"
             a
@@ -229,7 +244,6 @@ export default class Header extends React.PureComponent {
             tooltip="Import from GitHub"
             Icon={GithubIcon}
           />
-
           <Action
             href={newSandboxUrl()}
             tooltip="New Sandbox"

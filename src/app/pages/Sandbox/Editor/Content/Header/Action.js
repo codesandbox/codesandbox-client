@@ -91,6 +91,8 @@ type Props = {
   moreInfo: ?boolean,
   unresponsive: boolean,
   a: ?boolean,
+  iconProps: Object,
+  iconContainerProps: Object,
 };
 
 export default ({
@@ -104,6 +106,9 @@ export default ({
   moreInfo,
   unresponsive,
   a,
+  iconProps = {},
+  iconContainerProps = {},
+  ...props
 }: Props) => {
   if (!href && (placeholder || tooltip)) {
     return (
@@ -111,9 +116,10 @@ export default ({
         disabledAction={!onClick}
         title={placeholder || tooltip}
         hideOnClick={false}
+        {...props}
       >
-        <IconContainer onClick={onClick}>
-          <Icon />
+        <IconContainer onClick={onClick} {...iconContainerProps}>
+          <Icon {...iconProps} />
           {title !== undefined &&
             <Title unresponsive={unresponsive}>
               {title}
@@ -125,9 +131,9 @@ export default ({
   }
   if (onClick) {
     return (
-      <Action disabledAction={!onClick} highlight={highlight}>
-        <IconContainer onClick={onClick}>
-          <Icon />
+      <Action disabledAction={!onClick} highlight={highlight} {...props}>
+        <IconContainer onClick={onClick} {...iconContainerProps}>
+          <Icon {...iconProps} />
           {title !== undefined &&
             <Title unresponsive={unresponsive}>
               {title}
@@ -142,8 +148,8 @@ export default ({
     return (
       <ActionA href={href} target="_blank" rel="noopener noreferrer">
         <Tooltip title={placeholder || tooltip}>
-          <IconContainer>
-            <Icon />
+          <IconContainer {...iconContainerProps}>
+            <Icon {...iconProps} />
             {title !== undefined &&
               <Title unresponsive={unresponsive}>
                 {title}
@@ -157,10 +163,10 @@ export default ({
 
   if (href && (placeholder || tooltip)) {
     return (
-      <ActionLink to={href}>
+      <ActionLink to={href} {...props}>
         <Tooltip title={placeholder || tooltip}>
           <IconContainer>
-            <Icon />
+            <Icon {...iconProps} />
             {title !== undefined &&
               <Title unresponsive={unresponsive}>
                 {title}
@@ -173,9 +179,9 @@ export default ({
   }
 
   return (
-    <ActionLink to={href}>
-      <IconContainer>
-        <Icon />
+    <ActionLink to={href} {...props}>
+      <IconContainer {...iconContainerProps}>
+        <Icon {...iconProps} />
         {title !== undefined &&
           <Title unresponsive={unresponsive}>
             {title}

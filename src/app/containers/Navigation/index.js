@@ -4,8 +4,6 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import SearchIcon from 'react-icons/lib/md/search';
-
 import SignInButton from 'app/containers/SignInButton';
 
 import Logo from 'app/components/Logo';
@@ -13,8 +11,10 @@ import Row from 'app/components/flex/Row';
 import Tooltip from 'app/components/Tooltip';
 import HeaderSearchBar from 'app/components/HeaderSearchBar';
 
-import { jwtSelector } from 'app/store/user/selectors';
-import { newSandboxUrl, searchUrl } from 'app/utils/url-generator';
+import { jwtSelector, isPatronSelector } from 'app/store/user/selectors';
+import { newSandboxUrl, patronUrl } from 'app/utils/url-generator';
+// $FlowIssue
+import PatronBadge from '-!svg-react-loader!app/utils/badges/svg/patron-4.svg'; // eslint-disable-line import/no-webpack-loader-syntax
 
 import UserMenu from '../UserMenu';
 
@@ -71,16 +71,18 @@ const PlusIcon = styled(Link)`
 type Props = {
   title: string,
   hasLogin: boolean,
+  isPatron: boolean,
 };
 
 const mapStateToProps = state => ({
   hasLogin: !!jwtSelector(state),
+  isPatron: isPatronSelector(state),
 });
 class Navigation extends React.PureComponent {
   props: Props;
 
   render() {
-    const { title, hasLogin } = this.props;
+    const { title, hasLogin, isPatron } = this.props;
 
     return (
       <Row justifyContent="space-between">
@@ -98,6 +100,14 @@ class Navigation extends React.PureComponent {
             <Action>
               <HeaderSearchBar />
             </Action>
+            {!isPatron &&
+              <Action>
+                <Tooltip position="bottom" title="Become a Patron">
+                  <Link to={patronUrl()}>
+                    <PatronBadge width={40} height={40} />
+                  </Link>
+                </Tooltip>
+              </Action>}
             <Action>
               <Tooltip title="New Sandbox">
                 <PlusIcon to={newSandboxUrl()}>+</PlusIcon>
