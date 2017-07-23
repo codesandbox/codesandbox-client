@@ -221,7 +221,7 @@ export default class Header extends React.PureComponent {
             (!user.subscription &&
               <Action
                 href={patronUrl()}
-                tooltip="Become a Patron"
+                tooltip="Support CodeSandbox"
                 Icon={PatronBadge}
                 iconProps={{
                   width: 16,

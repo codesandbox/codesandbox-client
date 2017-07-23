@@ -102,7 +102,7 @@ class Navigation extends React.PureComponent {
             </Action>
             {!isPatron &&
               <Action>
-                <Tooltip position="bottom" title="Become a Patron">
+                <Tooltip position="bottom" title="Support CodeSandbox">
                   <Link to={patronUrl()}>
                     <PatronBadge width={40} height={40} />
                   </Link>
