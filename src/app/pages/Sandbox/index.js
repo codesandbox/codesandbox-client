@@ -3,6 +3,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { translate } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { createSelector } from 'reselect';
 
@@ -21,6 +22,7 @@ type Props = {
   sandboxes: { [id: string]: Sandbox },
   sandboxActions: typeof sandboxActionCreators,
   match: { params: { id: string } },
+  t: Function,
 };
 type State = {
   notFound: boolean,
@@ -40,6 +42,7 @@ const mapStateToProps = createSelector(sandboxesSelector, sandboxes => ({
 const mapDispatchToProps = dispatch => ({
   sandboxActions: bindActionCreators(sandboxActionCreators, dispatch),
 });
+
 class SandboxPage extends React.PureComponent {
   componentDidMount() {
     this.fetchSandbox(this.props.match.params.id);
@@ -82,7 +85,7 @@ class SandboxPage extends React.PureComponent {
   state = { notFound: false, currentId: null };
 
   render() {
-    const { sandboxes, match } = this.props;
+    const { sandboxes, match, t } = this.props;
     const { currentId } = this.state;
 
     if (this.state.notFound) {
@@ -116,8 +119,8 @@ class SandboxPage extends React.PureComponent {
 
     if (sandbox) {
       document.title = sandbox.title
-        ? `${sandbox.title} - CodeSandbox`
-        : 'Editor - CodeSandbox';
+        ? t('sandbox:meta.sandboxPageTitle', { title: sandbox.title })
+        : t('sandbox:meta.editorPageTitle');
     }
 
     return (
@@ -127,4 +130,6 @@ class SandboxPage extends React.PureComponent {
     );
   }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(SandboxPage);
+export default connect(mapStateToProps, mapDispatchToProps)(
+  translate()(SandboxPage),
+);

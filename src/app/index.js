@@ -4,6 +4,7 @@ import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import { ThemeProvider } from 'styled-components';
 import { ConnectedRouter } from 'react-router-redux';
+import { I18nextProvider } from 'react-i18next';
 import 'normalize.css';
 
 import App from './pages/index';
@@ -13,6 +14,7 @@ import createStore from './store';
 import theme from '../common/theme';
 import logError from './utils/error';
 import history from './utils/history';
+import i18n from '../common/i18n';
 
 if (process.env.NODE_ENV === 'production') {
   try {
@@ -73,7 +75,9 @@ const renderApp = RootComponent => {
         <ThemeProvider theme={theme}>
           <Provider store={store}>
             <ConnectedRouter history={history}>
-              <RootComponent store={store} />
+              <I18nextProvider i18n={i18n}>
+                <RootComponent store={store} />
+              </I18nextProvider>
             </ConnectedRouter>
           </Provider>
         </ThemeProvider>
