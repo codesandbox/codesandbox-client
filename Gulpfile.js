@@ -18,6 +18,12 @@ gulp.task('css', function() {
     .pipe(gulp.dest(`${config.appBuild}/`));
 });
 
+gulp.task('i18n', function() {
+  return gulp
+    .src(`${config.i18nPath}/**/*.json`)
+    .pipe(gulp.dest(`${config.appBuild}/locales`));
+});
+
 gulp.task('javascript', function() {
   return gulp
     .src('src/homepage/**/*.js')
@@ -40,7 +46,7 @@ gulp.task('static', function() {
 });
 
 gulp.task('build', function(cb) {
-  return runSequence(['css', 'javascript', 'static'], 'html', cb);
+  return runSequence(['css', 'javascript', 'static', 'i18n'], 'html', cb);
 });
 
 gulp.task('default', ['build']);
