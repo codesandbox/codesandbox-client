@@ -76,6 +76,13 @@ const Preferences = ({ preferences, preferencesActions }: Props) => {
           placeholder="Source Code Pro"
           {...bindValue('fontFamily')}
         />
+        <Rule />
+        <PaddedPreference
+          title="Editor line height"
+          type="number"
+          placeholder="1.15"
+          {...bindValue('lineHeight')}
+        />
       </PreferenceContainer>
     </Container>
   );
