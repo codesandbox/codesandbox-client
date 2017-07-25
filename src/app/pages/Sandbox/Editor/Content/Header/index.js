@@ -35,6 +35,7 @@ import UserMenu from 'app/containers/UserMenu';
 import Action from './Action';
 import FeedbackView from './FeedbackView';
 import ShareView from './ShareView';
+import LanguageView from './LanguageView';
 
 const Container = styled.div`
   display: flex;
@@ -229,6 +230,7 @@ export default class Header extends React.PureComponent {
                   transform: 'scale(1.5, 1.5)',
                 }}
               />)}
+          <LanguageView />
           <Action
             href="https://twitter.com/CompuIves"
             a
