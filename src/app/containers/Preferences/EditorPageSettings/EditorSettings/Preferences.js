@@ -81,6 +81,8 @@ const Preferences = ({ preferences, preferencesActions }: Props) => {
           title="Editor line height"
           type="number"
           placeholder="1.15"
+          step="0.05"
+          style={{ width: '4rem' }}
           {...bindValue('lineHeight')}
         />
       </PreferenceContainer>
