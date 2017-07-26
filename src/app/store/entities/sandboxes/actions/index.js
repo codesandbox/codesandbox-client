@@ -351,7 +351,7 @@ export default {
     } catch (e) {
       dispatch(
         notificationActions.addNotification(
-          'Could not fetch dependencies',
+          `Could not fetch dependencies: ${e.message}`,
           'error',
         ),
       );

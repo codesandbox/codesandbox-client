@@ -390,18 +390,26 @@ const saveModuleCode = (id: string, moduleId: string) => async (
     : module;
   dispatch(moduleActions.setCode(newModule.id, module.code));
 
-  await dispatch(
-    doRequest(
-      SAVE_MODULE_CODE_API_ACTIONS,
-      `sandboxes/${sandboxId}/modules/${module.shortid}`,
-      {
-        method: 'PUT',
-        body: { module: { code: module.code } },
-      },
-    ),
-  );
-
-  dispatch(moduleActions.setModuleSynced(newModule.id));
+  try {
+    await dispatch(
+      doRequest(
+        SAVE_MODULE_CODE_API_ACTIONS,
+        `sandboxes/${sandboxId}/modules/${module.shortid}`,
+        {
+          method: 'PUT',
+          body: { module: { code: module.code } },
+        },
+      ),
+    );
+    dispatch(moduleActions.setModuleSynced(newModule.id));
+  } catch (e) {
+    dispatch(
+      notificationActions.addNotification(
+        'Could not save the module, please try again.',
+        'error',
+      ),
+    );
+  }
 };
 /**
    * Updates all modules in a sandbox at once (only the code)
@@ -418,22 +426,31 @@ const massUpdateModules = (id: string) => async (
   const modulesInSandbox = sandbox.modules.map(mid => modules[mid]);
   const modulesNotInSyncInSandbox = modulesInSandbox.filter(m => m.isNotSynced);
 
-  await dispatch(
-    doRequest(
-      MASS_UPDATE_MODULE_API_ACTIONS,
-      `sandboxes/${sandboxId}/modules/mupdate`,
-      {
-        method: 'PUT',
-        body: {
-          modules: modulesNotInSyncInSandbox,
+  try {
+    await dispatch(
+      doRequest(
+        MASS_UPDATE_MODULE_API_ACTIONS,
+        `sandboxes/${sandboxId}/modules/mupdate`,
+        {
+          method: 'PUT',
+          body: {
+            modules: modulesNotInSyncInSandbox,
+          },
         },
-      },
-    ),
-  );
+      ),
+    );
 
-  modulesNotInSyncInSandbox.forEach(m =>
-    dispatch(moduleActions.setModuleSynced(m.id)),
-  );
+    modulesNotInSyncInSandbox.forEach(m =>
+      dispatch(moduleActions.setModuleSynced(m.id)),
+    );
+  } catch (e) {
+    dispatch(
+      notificationActions.addNotification(
+        'Could not save the modules, please try again.',
+        'error',
+      ),
+    );
+  }
 };
 
 export default {
