@@ -30,6 +30,7 @@ const initialState: Preferences = Object.keys(keys).reduce(
     instantPreviewEnabled: false,
     fontSize: 14,
     fontFamily: '',
+    lineHeight: 1.15,
     clearConsoleEnabled: false,
     prettierConfig: DEFAULT_PRETTIER_CONFIG,
   },

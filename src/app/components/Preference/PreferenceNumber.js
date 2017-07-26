@@ -24,10 +24,11 @@ export default class PreferenceInput extends React.PureComponent {
   };
 
   render() {
-    const { value } = this.props;
+    const { value, style, step } = this.props;
     return (
       <StyledInput
-        style={{ width: '3rem' }}
+        step={step}
+        style={{ width: '3rem', ...style }}
         type="number"
         value={value}
         onChange={this.handleChange}

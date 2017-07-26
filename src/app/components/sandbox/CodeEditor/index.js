@@ -54,6 +54,7 @@ const CodeContainer = styled.div`
   .CodeMirror {
     font-family: ${props =>
       fontFamilies(props.fontFamily, 'Source Code Pro', 'monospace')};
+    line-height: ${props => props.lineHeight};
     background: ${theme.background2()};
     color: #e0e0e0;
     height: 100%;
@@ -475,7 +476,10 @@ export default class CodeEditor extends React.PureComponent {
           title={title}
           path={modulePath}
         />
-        <CodeContainer fontFamily={preferences.fontFamily}>
+        <CodeContainer
+          fontFamily={preferences.fontFamily}
+          lineHeight={preferences.lineHeight}
+        >
           <div
             style={{ height: '100%', fontSize: preferences.fontSize || 14 }}
             ref={this.getCodeMirror}

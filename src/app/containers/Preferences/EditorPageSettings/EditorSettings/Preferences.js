@@ -65,16 +65,25 @@ const Preferences = ({ preferences, preferencesActions }: Props) => {
         />
         <Rule />
         <PaddedPreference
-          title="Editor font size"
+          title="Font size"
           type="number"
           {...bindValue('fontSize')}
         />
         <Rule />
         <PaddedPreference
-          title="Editor font family"
+          title="Font family"
           type="string"
           placeholder="Source Code Pro"
           {...bindValue('fontFamily')}
+        />
+        <Rule />
+        <PaddedPreference
+          title="Line height"
+          type="number"
+          placeholder="1.15"
+          step="0.05"
+          style={{ width: '4rem' }}
+          {...bindValue('lineHeight')}
         />
       </PreferenceContainer>
     </Container>
