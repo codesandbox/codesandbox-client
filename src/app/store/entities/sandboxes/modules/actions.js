@@ -16,11 +16,11 @@ export default {
     id,
     directoryShortid,
   }),
-  setCode: (id: string, code: string) => ({
+  setCode: (id: string, code: string, isNotSynced = true) => ({
     type: SET_CODE,
     id,
     code,
-    isNotSynced: true,
+    isNotSynced,
   }),
   setModuleSynced: (id: string) => ({
     type: SET_MODULE_SYNCED,

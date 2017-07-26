@@ -2,6 +2,7 @@
 import { values } from 'lodash';
 
 import type { Module, Directory } from 'common/types';
+import logError from 'app/utils/error';
 
 import { createAPIActions, doRequest } from '../../../api/actions';
 import moduleEntity from '../modules/entity';
@@ -391,7 +392,7 @@ const saveModuleCode = (id: string, moduleId: string) => async (
   dispatch(moduleActions.setCode(newModule.id, module.code));
 
   try {
-    await dispatch(
+    const { data } = await dispatch(
       doRequest(
         SAVE_MODULE_CODE_API_ACTIONS,
         `sandboxes/${sandboxId}/modules/${module.shortid}`,
@@ -401,7 +402,24 @@ const saveModuleCode = (id: string, moduleId: string) => async (
         },
       ),
     );
-    dispatch(moduleActions.setModuleSynced(newModule.id));
+
+    if (data.code !== newModule.code) {
+      dispatch(
+        notificationActions.addNotification(
+          'Something went wrong while saving the module, please try again.',
+          'error',
+        ),
+      );
+
+      logError(
+        new Error(
+          `Saving module went wrong, mismatch:\n\n${data.code}\n\nvs\n\n ${newModule.code}`,
+        ),
+      );
+    } else {
+      dispatch(moduleActions.setModuleSynced(newModule.id));
+    }
+    return data;
   } catch (e) {
     dispatch(
       notificationActions.addNotification(
@@ -409,6 +427,8 @@ const saveModuleCode = (id: string, moduleId: string) => async (
         'error',
       ),
     );
+    e.message = `Could not save module: ${e.message}`;
+    logError(e);
   }
 };
 /**
@@ -439,7 +459,7 @@ const massUpdateModules = (id: string) => async (
         },
       ),
     );
-
+    // TODO validate return values from server
     modulesNotInSyncInSandbox.forEach(m =>
       dispatch(moduleActions.setModuleSynced(m.id)),
     );
