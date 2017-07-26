@@ -119,8 +119,8 @@ class SandboxPage extends React.PureComponent {
 
     if (sandbox) {
       document.title = sandbox.title
-        ? t('sandbox:meta.sandboxPageTitle', { title: sandbox.title })
-        : t('sandbox:meta.editorPageTitle');
+        ? t('editor:meta.sandboxPageTitle', { title: sandbox.title })
+        : t('editor:meta.editorPageTitle');
     }
 
     return (
@@ -131,5 +131,5 @@ class SandboxPage extends React.PureComponent {
   }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(
-  translate()(SandboxPage),
+  translate('editor')(SandboxPage),
 );
