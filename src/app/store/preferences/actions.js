@@ -1,5 +1,7 @@
 import store from 'store/dist/store.modern';
 
+import * as keys from './keys';
+
 export const SET_PREFERENCES = 'SET_PREFERENCES';
 
 const setOption = (key, val) => {
@@ -14,7 +16,9 @@ const setOption = (key, val) => {
 
 export default {
   setPreference: (preferences: Object) => (dispatch: Function) => {
-    Object.keys(preferences).forEach(key => setOption(key, preferences[key]));
+    Object.keys(preferences).forEach(key =>
+      setOption(keys[key], preferences[key]),
+    );
     dispatch({
       type: SET_PREFERENCES,
       preferences,
