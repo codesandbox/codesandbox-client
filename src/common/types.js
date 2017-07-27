@@ -19,6 +19,7 @@ export type Module = {
   shortid: string,
   directoryShortid: ?string,
   isNotSynced: boolean,
+  sourceId: string,
 };
 
 export type Directory = {
@@ -26,6 +27,7 @@ export type Directory = {
   title: string,
   directoryShortid: ?string,
   shortid: string,
+  sourceId: string,
 };
 
 export type Badge = {
@@ -122,6 +124,7 @@ export type Sandbox = {
   errors: Array<ModuleError>,
   git: ?GitInfo,
   tags: Array<string>,
+  sourceId: string, // This is the source it's assigned to, a source contains all dependencies, modules and directories
 };
 
 export type Preferences = {

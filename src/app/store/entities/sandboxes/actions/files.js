@@ -1,6 +1,4 @@
 // @flow
-import { values } from 'lodash';
-
 import type { Module, Directory } from 'common/types';
 import logError from 'app/utils/error';
 
@@ -8,18 +6,17 @@ import { createAPIActions, doRequest } from '../../../api/actions';
 import moduleEntity from '../modules/entity';
 import directoryEntity from '../directories/entity';
 import directoryActions from '../directories/actions';
-import { modulesSelector } from '../modules/selectors';
-import { directoriesSelector } from '../directories/selectors';
+import { modulesSelector, singleModuleSelector } from '../modules/selectors';
+import {
+  directoriesSelector,
+  singleDirectorySelector,
+} from '../directories/selectors';
 import moduleActions from '../modules/actions';
 import { singleSandboxSelector } from '../selectors';
 import { normalizeResult } from '../../actions';
 import notificationActions from '../../../notifications/actions';
 
-import {
-  getEquivalentModule,
-  getEquivalentDirectory,
-  maybeForkSandbox,
-} from './fork';
+import { maybeForkSandbox } from './fork';
 
 export const CREATE_MODULE_API_ACTIONS = createAPIActions(
   'SANDBOX',
@@ -103,17 +100,17 @@ const renameModule = (id: string, moduleId: string, title: string) => async (
   dispatch: Function,
   getState: Function,
 ) => {
-  let modules = modulesSelector(getState());
-  const module = modules[moduleId];
+  const module = singleModuleSelector(getState(), { id: moduleId });
   const sandboxId = await dispatch(maybeForkSandbox(id));
-  const isForked = sandboxId !== id;
 
-  // Modules have updated after fork
-  modules = modulesSelector(getState());
+  // Get eventual new source id from forked sandbox
+  const { sourceId } = singleSandboxSelector(getState(), { id: sandboxId });
 
-  const newModule = isForked
-    ? getEquivalentModule(module, values(modules)) || module
-    : module;
+  // Maybe get new module of forked sandbox
+  const newModule = singleModuleSelector(getState(), {
+    sourceId,
+    shortid: module.shortid,
+  });
   // Eager rename, just undo it when something goes wrong
   const oldTitle = module.title;
   dispatch(moduleActions.renameModule(newModule.id, title));
@@ -139,17 +136,15 @@ const renameDirectory = (
   directoryId: string,
   title: string,
 ) => async (dispatch: Function, getState: Function) => {
-  let directories = directoriesSelector(getState());
-  const directory = directories[directoryId];
+  const directory = singleDirectorySelector(getState(), { id: directoryId });
   const sandboxId = await dispatch(maybeForkSandbox(id));
-  const isForked = id !== sandboxId;
 
-  // Directories have updated after fork
-  directories = directoriesSelector(getState());
-
-  const newDirectory = isForked
-    ? getEquivalentDirectory(directory, values(directories)) || directory
-    : directory;
+  const { sourceId } = singleSandboxSelector(getState(), { id: sandboxId });
+  // Get the new directory in case sandbox is forked
+  const newDirectory = singleDirectorySelector(getState(), {
+    sourceId,
+    shortid: directory.shortid,
+  });
   // Eager rename, just undo it when something goes wrong
   const oldTitle = directory.title;
   dispatch(directoryActions.renameDirectory(newDirectory.id, title));
@@ -175,17 +170,17 @@ const moveModuleToDirectory = (
   moduleId: string,
   directoryShortid: string,
 ) => async (dispatch: Function, getState: Function) => {
-  let modules = modulesSelector(getState());
-  const module = modules[moduleId];
+  const module = singleModuleSelector(getState(), { id: moduleId });
   const sandboxId = await dispatch(maybeForkSandbox(id));
-  const isForked = sandboxId !== id;
 
-  // Modules have updated after fork
-  modules = modulesSelector(getState());
+  // Get eventual new source id from forked sandbox
+  const { sourceId } = singleSandboxSelector(getState(), { id: sandboxId });
 
-  const newModule = isForked
-    ? getEquivalentModule(module, values(modules)) || module
-    : module;
+  // Maybe get new module of forked sandbox
+  const newModule = singleModuleSelector(getState(), {
+    sourceId,
+    shortid: module.shortid,
+  });
   // Eager move it
   const olddirectoryShortid = module.directoryShortid;
   dispatch(moduleActions.moveModule(newModule.id, directoryShortid));
@@ -211,17 +206,15 @@ const moveDirectoryToDirectory = (
   directoryId: string,
   parentId: string,
 ) => async (dispatch: Function, getState: Function) => {
-  let directories = directoriesSelector(getState());
-  const directory = directories[directoryId];
+  const directory = singleDirectorySelector(getState(), { id: directoryId });
   const sandboxId = await dispatch(maybeForkSandbox(id));
-  const isForked = id !== sandboxId;
 
-  // Directories have updated after fork
-  directories = directoriesSelector(getState());
-
-  const newDirectory = isForked
-    ? getEquivalentDirectory(directory, values(directories)) || directory
-    : directory;
+  const { sourceId } = singleSandboxSelector(getState(), { id: sandboxId });
+  // Get the new directory in case sandbox is forked
+  const newDirectory = singleDirectorySelector(getState(), {
+    sourceId,
+    shortid: directory.shortid,
+  });
   // Eager move it
   const oldDirectoryShortid = directory.directoryShortid;
   dispatch(directoryActions.moveDirectory(newDirectory.id, parentId));
@@ -248,17 +241,17 @@ const deleteModule = (id: string, moduleId: string) => async (
   dispatch: Function,
   getState: Function,
 ) => {
-  let modules = modulesSelector(getState());
-  const module = modules[moduleId];
+  const module = singleModuleSelector(getState(), { id: moduleId });
   const sandboxId = await dispatch(maybeForkSandbox(id));
-  const isForked = sandboxId !== id;
 
-  // Modules have updated after fork
-  modules = modulesSelector(getState());
+  // Get eventual new source id from forked sandbox
+  const { sourceId } = singleSandboxSelector(getState(), { id: sandboxId });
 
-  const newModule = isForked
-    ? getEquivalentModule(module, values(modules)) || module
-    : module;
+  // Maybe get new module of forked sandbox
+  const newModule = singleModuleSelector(getState(), {
+    sourceId,
+    shortid: module.shortid,
+  });
   // Eager remove it
   dispatch(removeModuleFromSandbox(sandboxId, newModule.id));
 
@@ -282,17 +275,15 @@ const deleteDirectory = (id: string, directoryId: string) => async (
   dispatch: Function,
   getState: Function,
 ) => {
-  let directories = directoriesSelector(getState());
-  const directory = directories[directoryId];
+  const directory = singleDirectorySelector(getState(), { id: directoryId });
   const sandboxId = await dispatch(maybeForkSandbox(id));
-  const isForked = id !== sandboxId;
 
-  // Directories have updated after fork
-  directories = directoriesSelector(getState());
-
-  const newDirectory = isForked
-    ? getEquivalentDirectory(directory, values(directories)) || directory
-    : directory;
+  const { sourceId } = singleSandboxSelector(getState(), { id: sandboxId });
+  // Get the new directory in case sandbox is forked
+  const newDirectory = singleDirectorySelector(getState(), {
+    sourceId,
+    shortid: directory.shortid,
+  });
 
   dispatch(removeDirectoryFromSandbox(sandboxId, newDirectory.id));
 
@@ -378,17 +369,17 @@ const saveModuleCode = (id: string, moduleId: string) => async (
   dispatch: Function,
   getState: Function,
 ) => {
-  let modules = modulesSelector(getState());
-  const module = modules[moduleId];
+  const module = singleModuleSelector(getState(), { id: moduleId });
   const sandboxId = await dispatch(maybeForkSandbox(id));
-  const isForked = sandboxId !== id;
 
-  // Modules have updated after fork
-  modules = modulesSelector(getState());
+  // Get eventual new source id from forked sandbox
+  const { sourceId } = singleSandboxSelector(getState(), { id: sandboxId });
 
-  const newModule = isForked
-    ? getEquivalentModule(module, values(modules)) || module
-    : module;
+  // Maybe get new module of forked sandbox
+  const newModule = singleModuleSelector(getState(), {
+    sourceId,
+    shortid: module.shortid,
+  });
   dispatch(moduleActions.setCode(newModule.id, module.code));
 
   try {
@@ -430,6 +421,7 @@ const saveModuleCode = (id: string, moduleId: string) => async (
     e.message = `Could not save module: ${e.message}`;
     logError(e);
   }
+  return false;
 };
 /**
    * Updates all modules in a sandbox at once (only the code)
@@ -438,13 +430,17 @@ const massUpdateModules = (id: string) => async (
   dispatch: Function,
   getState: Function,
 ) => {
-  const sandboxId = await dispatch(maybeForkSandbox(id));
-
-  const sandbox = singleSandboxSelector(getState(), { id: sandboxId });
+  // First get the modules that changed, that way we make sure that we don't get
+  // the non-updated modules from the forked sandbox to send. The server handles
+  // everything by shortid, which means that we can send the old modules to the
+  // server since shortids are preserved between forks
   const modules = modulesSelector(getState());
+  const sandbox = singleSandboxSelector(getState(), { id });
 
   const modulesInSandbox = sandbox.modules.map(mid => modules[mid]);
   const modulesNotInSyncInSandbox = modulesInSandbox.filter(m => m.isNotSynced);
+
+  const sandboxId = await dispatch(maybeForkSandbox(id));
 
   try {
     await dispatch(
@@ -459,10 +455,15 @@ const massUpdateModules = (id: string) => async (
         },
       ),
     );
-    // TODO validate return values from server
-    modulesNotInSyncInSandbox.forEach(m =>
-      dispatch(moduleActions.setModuleSynced(m.id)),
-    );
+    const newSandbox = singleSandboxSelector(getState(), { id: sandboxId });
+    modulesNotInSyncInSandbox.forEach(m => {
+      const newModule = singleModuleSelector(getState(), {
+        shortid: m.shortid,
+        sourceId: newSandbox.sourceId,
+      });
+      // Now we get the equivalent modules of the forked sandbox, if the sandbox is forked
+      dispatch(moduleActions.setModuleSynced(newModule.id));
+    });
   } catch (e) {
     dispatch(
       notificationActions.addNotification(

@@ -1,6 +1,7 @@
 // @flow
 import type { Directory, Module } from 'common/types';
 import { createSelector } from 'reselect';
+import { values } from 'lodash';
 
 export const modulesSelector = state => state.entities.modules;
 
@@ -76,4 +77,13 @@ export const modulesFromSandboxSelector = createSelector(
 export const modulesFromSandboxNotSavedSelector = createSelector(
   modulesFromSandboxSelector,
   modules => modules.some(m => m.isNotSynced),
+);
+
+export const singleModuleSelector = createSelector(
+  modulesSelector,
+  (_, { sourceId, shortid, id }) => ({ id, sourceId, shortid }),
+  (modules, { sourceId, id, shortid }) =>
+    values(modules).find(
+      m => m.id === id || (m.sourceId === sourceId && m.shortid === shortid),
+    ),
 );
