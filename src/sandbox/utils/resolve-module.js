@@ -16,11 +16,12 @@ const throwError = (path: string) => {
  * Convert the module path to a module
  */
 export default (
-  path: string,
+  path: ?string,
   modules: Array<Module>,
   directories: Array<Directory>,
   startdirectoryShortid: ?string = undefined,
 ) => {
+  if (!path) return null;
   // Split path
   const splitPath = path.replace(/^.\//, '').split('/');
   const foundDirectoryShortid = splitPath.reduce(

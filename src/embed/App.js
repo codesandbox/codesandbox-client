@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { camelizeKeys } from 'humps';
 import 'whatwg-fetch';
 
-import type { Sandbox } from 'common/types';
+import type { Sandbox, Module } from 'common/types';
 import Centered from 'app/components/flex/Centered';
 import Title from 'app/components/text/Title';
 import SubTitle from 'app/components/text/SubTitle';
@@ -13,6 +13,10 @@ import Header from './components/Header';
 import Content from './components/Content';
 import Sidebar from './components/Sidebar';
 import { getSandboxOptions } from '../common/url';
+import {
+  findCurrentModule,
+  findMainModule,
+} from 'app/store/entities/sandboxes/modules/selectors';
 
 const Container = styled.div`
   display: flex;
@@ -106,16 +110,10 @@ export default class App extends React.PureComponent {
         .then(res => res.json())
         .then(camelizeKeys);
 
-      const currentModule =
-        this.state.currentModule ||
-        response.data.modules.find(
-          m => m.title === 'index.js' && m.directoryShortid == null,
-        ).shortid;
-
       document.title = response.data.title
         ? `${response.data.title} - CodeSandbox`
         : 'Embed - CodeSandbox';
-      this.setState({ sandbox: response.data, currentModule });
+      this.setState({ sandbox: response.data });
     } catch (e) {
       this.setState({ notFound: true });
     }
@@ -143,6 +141,18 @@ export default class App extends React.PureComponent {
 
   setProjectView = (sandboxId: string, isOpen: boolean) =>
     this.setState({ isInProjectView: isOpen });
+
+  getCurrentModuleFromPath = () => {
+    const { sandbox, currentModule: currentModulePath } = this.state;
+    if (!sandbox) return null;
+
+    return findCurrentModule(
+      sandbox.modules,
+      sandbox.directories,
+      currentModulePath,
+      findMainModule(sandbox.modules),
+    );
+  };
 
   content = () => {
     if (this.state.notFound) {
@@ -183,7 +193,7 @@ export default class App extends React.PureComponent {
           isInProjectView={isInProjectView}
           setProjectView={this.setProjectView}
           sandbox={this.state.sandbox}
-          currentModule={this.state.currentModule}
+          currentModule={this.getCurrentModuleFromPath().id}
           hideNavigation={this.state.hideNavigation}
           autoResize={this.state.autoResize}
           fontSize={this.state.fontSize}
@@ -199,7 +209,7 @@ export default class App extends React.PureComponent {
         {this.state.sandbox &&
           <Sidebar
             setCurrentModule={this.setCurrentModule}
-            currentModule={this.state.currentModule}
+            currentModule={this.getCurrentModuleFromPath().id}
             sandbox={this.state.sandbox}
           />}
         <Moving sidebarOpen={this.state.sidebarOpen}>

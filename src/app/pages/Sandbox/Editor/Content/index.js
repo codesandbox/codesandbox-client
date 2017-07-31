@@ -139,6 +139,7 @@ class EditorPreview extends React.PureComponent {
 
     const currentModule = findCurrentModule(
       modules,
+      directories,
       currentModuleId,
       mainModule,
     );

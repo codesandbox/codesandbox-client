@@ -8,16 +8,15 @@ import Entry from 'app/pages/Sandbox/Editor/Workspace/EntryContainer';
 
 type Props = {
   id: string,
+  shortid: string,
   title: string,
   type: 'module' | 'directory',
-  setCurrentModule: (id: string) => void,
+  setCurrentModule: (shortid: string, id: string) => void,
   depth: number,
   active?: boolean,
   alternative?: boolean,
 };
-const LeftOffset = styled.div`
-  padding-left: ${props => props.depth}rem;
-`;
+const LeftOffset = styled.div`padding-left: ${props => props.depth}rem;`;
 
 export default class File extends React.PureComponent {
   props: Props;
@@ -40,9 +39,9 @@ export default class File extends React.PureComponent {
   };
 
   setCurrentModule = () => {
-    const { id, setCurrentModule } = this.props;
+    const { id, shortid, setCurrentModule } = this.props;
 
-    setCurrentModule(id);
+    setCurrentModule(id, shortid);
   };
 
   render() {
@@ -54,7 +53,9 @@ export default class File extends React.PureComponent {
           active={active}
           onClick={this.setCurrentModule}
         >
-          <LeftOffset depth={depth}>{this.getIcon()} {title}</LeftOffset>
+          <LeftOffset depth={depth}>
+            {this.getIcon()} {title}
+          </LeftOffset>
         </Entry>
       </div>
     );

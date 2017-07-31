@@ -2,6 +2,7 @@
 import type { Directory, Module } from 'common/types';
 import { createSelector } from 'reselect';
 import { values } from 'lodash';
+import resolveModule from 'sandbox/utils/resolve-module';
 
 export const modulesSelector = state => state.entities.modules;
 
@@ -13,13 +14,26 @@ export const findMainModule = (modules: Module[]) =>
 
 export const findCurrentModule = (
   modules: Module[],
-  currentModuleId: string,
+  directories: Directory[],
+  modulePath: string,
   mainModule: Module,
-): Module =>
-  modules.find(m => m.id === currentModuleId) ||
-  modules.find(m => m.shortid === currentModuleId) || // deep-links requires this
-  mainModule;
+): Module => {
+  // cleanPath, encode and replace first /
+  const cleanPath = decodeURIComponent(modulePath).replace('/', '');
+  let foundModule = null;
+  try {
+    foundModule = resolveModule(cleanPath, modules, directories);
+  } catch (e) {
+    /* leave empty */
+  }
 
+  return (
+    foundModule ||
+    modules.find(m => m.id === modulePath) ||
+    modules.find(m => m.shortid === modulePath) || // deep-links requires this
+    mainModule
+  );
+};
 function findById(entities: Array<Module | Directory>, id: string) {
   return entities.find(e => e.id === id);
 }
@@ -43,7 +57,7 @@ export const getModulePath = (
     path = `/${directory.title}${path}`;
     directory = findByShortid(directories, directory.directoryShortid);
   }
-  return path;
+  return `${path}${module.title}`;
 };
 
 /**

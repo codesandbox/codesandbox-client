@@ -8,6 +8,7 @@ import ModeIcons from 'app/components/sandbox/ModeIcons';
 import {
   findMainModule,
   modulesFromSandboxSelector,
+  getModulePath,
 } from 'app/store/entities/sandboxes/modules/selectors';
 import { directoriesFromSandboxSelector } from 'app/store/entities/sandboxes/directories/selectors';
 import {
@@ -172,9 +173,11 @@ class ShareView extends React.PureComponent {
   setMixedView = () => this.setState({ showEditor: true, showPreview: true });
 
   setDefaultModule = id => this.setState({ defaultModule: id });
+
   clearDefaultModule = () => this.setState({ defaultModule: null });
 
   getOptionsUrl = () => {
+    const { modules, directories } = this.props;
     const {
       defaultModule,
       showEditor,
@@ -188,9 +191,10 @@ class ShareView extends React.PureComponent {
 
     const options = {};
 
-    const mainModuleShortid = findMainModule(this.props.modules).shortid;
-    if (defaultModule && defaultModule !== mainModuleShortid) {
-      options.module = defaultModule;
+    const mainModuleId = findMainModule(modules).id;
+    if (defaultModule && defaultModule !== mainModuleId) {
+      const modulePath = getModulePath(modules, directories, defaultModule);
+      options.module = modulePath;
     }
 
     if (showEditor && !showPreview) {
@@ -291,7 +295,7 @@ class ShareView extends React.PureComponent {
     } = this.state;
 
     const defaultModule =
-      this.state.defaultModule || findMainModule(modules).shortid;
+      this.state.defaultModule || findMainModule(modules).id;
 
     return (
       <Container>
