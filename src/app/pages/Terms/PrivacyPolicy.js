@@ -279,10 +279,6 @@ export default () =>
       <div className="innerText">
         We do not specifically market to children under the age of 13 years old.
       </div>
-      <div className="innerText">
-        Do we let third-parties, including ad networks or plug-ins collect PII
-        from children under 13?
-      </div>
 
       <div className="blueText">
         <h2>Fair Information Practices</h2>
