@@ -10,7 +10,9 @@ export const getContainerStyles = props => {
     display: flex;
     font-size: 14px;
     padding: 0.6rem;
-    padding-left: ${props.depth != null ? `${props.depth + 1.5}rem` : 'calc(1rem - 2px)'};
+    padding-left: ${props.depth != null
+      ? `${props.depth + 1.5}rem`
+      : 'calc(1rem - 2px)'};
     color: ${theme.background.lighten(2)()};
     text-decoration: none;
     font-weight: 400;
@@ -20,14 +22,16 @@ export const getContainerStyles = props => {
     user-select: none;
 
     &:hover {
-      ${props.active || props.editing ? '' : `
+      ${props.active || props.editing
+        ? ''
+        : `
         background-color: ${color.clearer(0.9)()};
         color: ${theme.background.lighten(5)()};
         border-color: ${color.darken(0.4)()};
       `}
 
       > div {
-        opacity: 1; !important
+        opacity: 1 !important;
       }
     }
   `;
@@ -58,5 +62,5 @@ export const getContainerStyles = props => {
 };
 
 export default styled.span`
-  ${props => getContainerStyles(props)}
+  ${props => getContainerStyles(props)};
 `;

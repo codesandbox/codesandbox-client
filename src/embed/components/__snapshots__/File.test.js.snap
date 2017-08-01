@@ -1,16 +1,58 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`File renders 1`] = `
+.c0 {
+  -webkit-transition: 0.3s ease all;
+  transition: 0.3s ease all;
+  position: relative;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  font-size: 14px;
+  padding: 0.6rem;
+  padding-left: calc(1rem - 2px);
+  color: rgb(106, 118, 124);
+  text-decoration: none;
+  font-weight: 400;
+  min-width: 100px;
+  border-left: 2px solid transparent;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.c0:hover {
+  background-color: rgba(108, 174, 221, 0.09999999999999998);
+  color: rgb(227, 230, 232);
+  border-color: rgb(38, 110, 161);
+}
+
+.c0:hover > div {
+  opacity: 1 !important;
+}
+
+.c1 {
+  padding-left: rem;
+}
+
+.c2 {
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
+
 <div>
   <span
-    className="sc-bdVaJa jtVJZx"
+    className="c0"
     onClick={[Function]}
   >
     <div
-      className="sc-bwzfXH btYjYm"
+      className="c1"
     >
       <svg
-        className="sc-htpNat rPfta"
+        className="c2"
         fill="currentColor"
         height="1em"
         preserveAspectRatio="xMidYMid meet"
@@ -37,16 +79,58 @@ exports[`File renders 1`] = `
 `;
 
 exports[`File renders alternative 1`] = `
+.c0 {
+  -webkit-transition: 0.3s ease all;
+  transition: 0.3s ease all;
+  position: relative;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  font-size: 14px;
+  padding: 0.6rem;
+  padding-left: calc(1rem - 2px);
+  color: rgb(106, 118, 124);
+  text-decoration: none;
+  font-weight: 400;
+  min-width: 100px;
+  border-left: 2px solid transparent;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.c0:hover {
+  background-color: rgba(255, 211, 153, 0.09999999999999998);
+  color: rgb(227, 230, 232);
+  border-color: rgb(245, 139, 0);
+}
+
+.c0:hover > div {
+  opacity: 1 !important;
+}
+
+.c1 {
+  padding-left: rem;
+}
+
+.c2 {
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
+
 <div>
   <span
-    className="sc-bdVaJa hvbiPL"
+    className="c0"
     onClick={[Function]}
   >
     <div
-      className="sc-bwzfXH btYjYm"
+      className="c1"
     >
       <svg
-        className="sc-EHOje fCuZCw"
+        className="c2"
         fill="currentColor"
         height="1em"
         preserveAspectRatio="xMidYMid meet"
@@ -73,16 +157,55 @@ exports[`File renders alternative 1`] = `
 `;
 
 exports[`File renders as active 1`] = `
+.c0 {
+  -webkit-transition: 0.3s ease all;
+  transition: 0.3s ease all;
+  position: relative;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  font-size: 14px;
+  padding: 0.6rem;
+  padding-left: calc(1rem - 2px);
+  color: rgb(106, 118, 124);
+  text-decoration: none;
+  font-weight: 400;
+  min-width: 100px;
+  border-left: 2px solid transparent;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  color: #E0E0E0 !important;
+  border-color: #6CAEDD !important;
+  background-color: rgba(139, 191, 228, 0.19999999999999996) !important;
+}
+
+.c0:hover > div {
+  opacity: 1 !important;
+}
+
+.c1 {
+  padding-left: rem;
+}
+
+.c2 {
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
+
 <div>
   <span
-    className="sc-bdVaJa jeFIAh"
+    className="c0"
     onClick={[Function]}
   >
     <div
-      className="sc-bwzfXH btYjYm"
+      className="c1"
     >
       <svg
-        className="sc-bxivhb hMuTnh"
+        className="c2"
         fill="currentColor"
         height="1em"
         preserveAspectRatio="xMidYMid meet"
@@ -109,16 +232,58 @@ exports[`File renders as active 1`] = `
 `;
 
 exports[`File renders directory 1`] = `
+.c0 {
+  -webkit-transition: 0.3s ease all;
+  transition: 0.3s ease all;
+  position: relative;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  font-size: 14px;
+  padding: 0.6rem;
+  padding-left: calc(1rem - 2px);
+  color: rgb(106, 118, 124);
+  text-decoration: none;
+  font-weight: 400;
+  min-width: 100px;
+  border-left: 2px solid transparent;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.c0:hover {
+  background-color: rgba(108, 174, 221, 0.09999999999999998);
+  color: rgb(227, 230, 232);
+  border-color: rgb(38, 110, 161);
+}
+
+.c0:hover > div {
+  opacity: 1 !important;
+}
+
+.c1 {
+  padding-left: rem;
+}
+
+.c2 {
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
+
 <div>
   <span
-    className="sc-bdVaJa jtVJZx"
+    className="c0"
     onClick={[Function]}
   >
     <div
-      className="sc-bwzfXH btYjYm"
+      className="c1"
     >
       <svg
-        className="sc-ifAKCX ioyOiT"
+        className="c2"
         fill="currentColor"
         height="1em"
         preserveAspectRatio="xMidYMid meet"

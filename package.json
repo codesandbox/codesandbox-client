@@ -49,6 +49,7 @@
     "http-proxy-middleware": "^0.17.3",
     "husky": "^0.14.3",
     "jest": "^20.0.0",
+    "jest-styled-components": "^4.3.0",
     "json-loader": "0.5.4",
     "lint-staged": "^4.0.1",
     "object-assign": "^4.1.1",

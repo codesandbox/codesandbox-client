@@ -1,14 +1,35 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`EditorLink renders 1`] = `
+.c1 {
+  color: white;
+}
+
+.c0 {
+  text-decoration: none;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  color: white;
+}
+
+.c0 svg {
+  margin-left: 0.5rem;
+}
+
 <a
-  className="sc-bdVaJa hEjRhj"
+  className="c0"
   href="/s/undefined"
   rel="noopener noreferrer"
   target="_blank"
 >
   <span
-    className="sc-bwzfXH gwJMOI"
+    className="c1"
   >
     Edit on CodeSandbox
   </span>

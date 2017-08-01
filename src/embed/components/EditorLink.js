@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import Logo from 'app/components/Logo';
 
 import { sandboxUrl } from 'app/utils/url-generator';
@@ -9,6 +9,17 @@ type Props = {
   small: boolean,
 };
 
+const Text = styled.span`
+  color: white;
+  ${({ small }) =>
+    small &&
+    css`
+  @media (max-width: 620px) {
+    display: none;
+  }
+  `};
+`;
+
 const EditText = styled.a`
   text-decoration: none;
   display: flex;
@@ -17,12 +28,6 @@ const EditText = styled.a`
 
   svg {
     margin-left: 0.5rem;
-  }
-`;
-
-const Text = styled.span`
-  @media (max-width: 620px) {
-    ${props => (props.small ? 'display: none;' : '')};
   }
 `;
 

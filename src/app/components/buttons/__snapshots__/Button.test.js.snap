@@ -1,16 +1,98 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Button renders 1`] = `
+.c0 {
+  -webkit-transition: 0.3s ease all;
+  transition: 0.3s ease all;
+  -webkit-animation-name: cUPaoU;
+  animation-name: cUPaoU;
+  -webkit-animation-duration: 300ms;
+  animation-duration: 300ms;
+  -webkit-animation-timing-function: ease;
+  animation-timing-function: ease;
+  border: none;
+  outline: none;
+  background-image: linear-gradient(270deg, #fed29d, #A58B66, #7abae8, #56a0d6);
+  background-size: 720%;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 1.125rem;
+  text-align: center;
+  color: white;
+  font-weight: 400;
+  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.5);
+  width: inherit;
+  padding: 0.65rem 2.25rem;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.c0:hover {
+  -webkit-animation-name: eEnBCQ;
+  animation-name: eEnBCQ;
+  -webkit-animation-duration: 300ms;
+  animation-duration: 300ms;
+  -webkit-animation-timing-function: ease;
+  animation-timing-function: ease;
+  -webkit-animation-direction: normal;
+  animation-direction: normal;
+  -webkit-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
+  box-shadow: 0 7px 10px rgba(0, 0, 0, 0.5);
+  -webkit-transform: translateY(-1px);
+  -ms-transform: translateY(-1px);
+  transform: translateY(-1px);
+}
+
+.c0:active {
+  -webkit-transform: translateY(1px);
+  -ms-transform: translateY(1px);
+  transform: translateY(1px);
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0.5);
+}
+
 <button
-  className="sc-htpNat hCsYOm"
+  className="c0"
 >
   Test
 </button>
 `;
 
 exports[`Button renders disabled 1`] = `
+.c0 {
+  -webkit-transition: 0.3s ease all;
+  transition: 0.3s ease all;
+  -webkit-animation-name: cUPaoU;
+  animation-name: cUPaoU;
+  -webkit-animation-duration: 300ms;
+  animation-duration: 300ms;
+  -webkit-animation-timing-function: ease;
+  animation-timing-function: ease;
+  border: none;
+  outline: none;
+  background: rgb(25, 29, 31);
+  background-size: 720%;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 1.125rem;
+  text-align: center;
+  color: rgb(69, 79, 84);
+  font-weight: 400;
+  width: inherit;
+  padding: 0.65rem 2.25rem;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  text-decoration: none;
+}
+
 <button
-  className="sc-htpNat hsOzQt"
+  className="c0"
   disabled={true}
 >
   Test
@@ -18,8 +100,62 @@ exports[`Button renders disabled 1`] = `
 `;
 
 exports[`Button renders href 1`] = `
+.c0 {
+  -webkit-transition: 0.3s ease all;
+  transition: 0.3s ease all;
+  -webkit-animation-name: cUPaoU;
+  animation-name: cUPaoU;
+  -webkit-animation-duration: 300ms;
+  animation-duration: 300ms;
+  -webkit-animation-timing-function: ease;
+  animation-timing-function: ease;
+  border: none;
+  outline: none;
+  background-image: linear-gradient(270deg, #fed29d, #A58B66, #7abae8, #56a0d6);
+  background-size: 720%;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 1.125rem;
+  text-align: center;
+  color: white;
+  font-weight: 400;
+  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.5);
+  width: inherit;
+  padding: 0.65rem 2.25rem;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.c0:hover {
+  -webkit-animation-name: eEnBCQ;
+  animation-name: eEnBCQ;
+  -webkit-animation-duration: 300ms;
+  animation-duration: 300ms;
+  -webkit-animation-timing-function: ease;
+  animation-timing-function: ease;
+  -webkit-animation-direction: normal;
+  animation-direction: normal;
+  -webkit-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
+  box-shadow: 0 7px 10px rgba(0, 0, 0, 0.5);
+  -webkit-transform: translateY(-1px);
+  -ms-transform: translateY(-1px);
+  transform: translateY(-1px);
+}
+
+.c0:active {
+  -webkit-transform: translateY(1px);
+  -ms-transform: translateY(1px);
+  transform: translateY(1px);
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0.5);
+}
+
 <a
-  className="sc-bwzfXH djbEWS"
+  className="c0"
   href="https://ivesvh.com"
 >
   Test
@@ -27,8 +163,62 @@ exports[`Button renders href 1`] = `
 `;
 
 exports[`Button renders onClick 1`] = `
+.c0 {
+  -webkit-transition: 0.3s ease all;
+  transition: 0.3s ease all;
+  -webkit-animation-name: cUPaoU;
+  animation-name: cUPaoU;
+  -webkit-animation-duration: 300ms;
+  animation-duration: 300ms;
+  -webkit-animation-timing-function: ease;
+  animation-timing-function: ease;
+  border: none;
+  outline: none;
+  background-image: linear-gradient(270deg, #fed29d, #A58B66, #7abae8, #56a0d6);
+  background-size: 720%;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 1.125rem;
+  text-align: center;
+  color: white;
+  font-weight: 400;
+  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.5);
+  width: inherit;
+  padding: 0.65rem 2.25rem;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.c0:hover {
+  -webkit-animation-name: eEnBCQ;
+  animation-name: eEnBCQ;
+  -webkit-animation-duration: 300ms;
+  animation-duration: 300ms;
+  -webkit-animation-timing-function: ease;
+  animation-timing-function: ease;
+  -webkit-animation-direction: normal;
+  animation-direction: normal;
+  -webkit-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
+  box-shadow: 0 7px 10px rgba(0, 0, 0, 0.5);
+  -webkit-transform: translateY(-1px);
+  -ms-transform: translateY(-1px);
+  transform: translateY(-1px);
+}
+
+.c0:active {
+  -webkit-transform: translateY(1px);
+  -ms-transform: translateY(1px);
+  transform: translateY(1px);
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0.5);
+}
+
 <button
-  className="sc-htpNat hCsYOm"
+  className="c0"
   onClick={[Function]}
 >
   Test
@@ -36,16 +226,125 @@ exports[`Button renders onClick 1`] = `
 `;
 
 exports[`Button renders properties 1`] = `
+.c0 {
+  -webkit-transition: 0.3s ease all;
+  transition: 0.3s ease all;
+  -webkit-animation-name: cUPaoU;
+  animation-name: cUPaoU;
+  -webkit-animation-duration: 300ms;
+  animation-duration: 300ms;
+  -webkit-animation-timing-function: ease;
+  animation-timing-function: ease;
+  border: none;
+  outline: none;
+  background-image: linear-gradient(270deg, #fed29d, #A58B66, #7abae8, #56a0d6);
+  background-size: 720%;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 1.125rem;
+  text-align: center;
+  color: white;
+  font-weight: 400;
+  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.5);
+  width: inherit;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.c0:hover {
+  -webkit-animation-name: eEnBCQ;
+  animation-name: eEnBCQ;
+  -webkit-animation-duration: 300ms;
+  animation-duration: 300ms;
+  -webkit-animation-timing-function: ease;
+  animation-timing-function: ease;
+  -webkit-animation-direction: normal;
+  animation-direction: normal;
+  -webkit-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
+  box-shadow: 0 7px 10px rgba(0, 0, 0, 0.5);
+  -webkit-transform: translateY(-1px);
+  -ms-transform: translateY(-1px);
+  transform: translateY(-1px);
+}
+
+.c0:active {
+  -webkit-transform: translateY(1px);
+  -ms-transform: translateY(1px);
+  transform: translateY(1px);
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0.5);
+}
+
 <button
-  className="sc-htpNat cGrUyB"
+  className="c0"
 >
   Test
 </button>
 `;
 
 exports[`Button renders to 1`] = `
+.c0 {
+  -webkit-transition: 0.3s ease all;
+  transition: 0.3s ease all;
+  -webkit-animation-name: cUPaoU;
+  animation-name: cUPaoU;
+  -webkit-animation-duration: 300ms;
+  animation-duration: 300ms;
+  -webkit-animation-timing-function: ease;
+  animation-timing-function: ease;
+  border: none;
+  outline: none;
+  background-image: linear-gradient(270deg, #fed29d, #A58B66, #7abae8, #56a0d6);
+  background-size: 720%;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 1.125rem;
+  text-align: center;
+  color: white;
+  font-weight: 400;
+  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.5);
+  width: inherit;
+  padding: 0.65rem 2.25rem;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.c0:hover {
+  -webkit-animation-name: eEnBCQ;
+  animation-name: eEnBCQ;
+  -webkit-animation-duration: 300ms;
+  animation-duration: 300ms;
+  -webkit-animation-timing-function: ease;
+  animation-timing-function: ease;
+  -webkit-animation-direction: normal;
+  animation-direction: normal;
+  -webkit-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
+  box-shadow: 0 7px 10px rgba(0, 0, 0, 0.5);
+  -webkit-transform: translateY(-1px);
+  -ms-transform: translateY(-1px);
+  transform: translateY(-1px);
+}
+
+.c0:active {
+  -webkit-transform: translateY(1px);
+  -ms-transform: translateY(1px);
+  transform: translateY(1px);
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0.5);
+}
+
 <a
-  className="sc-bdVaJa dRYfIP"
+  className="c0"
   href="https://ivesvh.com"
   onClick={[Function]}
 >
