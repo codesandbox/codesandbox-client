@@ -8,6 +8,10 @@ import { getModulePath } from 'app/store/entities/sandboxes/modules/selectors';
 
 import type { Sandbox, Module, ModuleError } from 'common/types';
 import fetchBundle from 'app/store/entities/sandboxes/bundler';
+import {
+  findCurrentModule,
+  findMainModule,
+} from '../../app/store/entities/sandboxes/modules/selectors';
 
 const Container = styled.div`
   display: flex;
@@ -178,6 +182,7 @@ export default class Content extends React.PureComponent {
       sandbox,
       showEditor,
       showPreview,
+
       isInProjectView,
       currentModule,
       hideNavigation,
@@ -188,11 +193,12 @@ export default class Content extends React.PureComponent {
     const alteredModules = this.getAlteredModules();
 
     // $FlowIssue
-    const mainModule: Module =
-      alteredModules.find((m: Module) => m.shortid === currentModule) ||
-      alteredModules.find(
-        (m: Module) => m.title === 'index.js' && m.directoryShortid == null,
-      );
+    const mainModule: Module = findCurrentModule(
+      sandbox.modules,
+      sandbox.directories,
+      currentModule,
+      findMainModule(sandbox.modules),
+    );
 
     if (!mainModule) throw new Error('Cannot find main module');
 

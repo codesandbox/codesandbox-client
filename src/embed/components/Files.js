@@ -15,7 +15,7 @@ type Props = {
   directoryId: string,
   depth: number,
   currentModule: string,
-  setCurrentModule: (id: string) => any,
+  setCurrentModule: (id: string, shortid: string) => any,
 };
 
 const Files = ({
@@ -39,7 +39,8 @@ const Files = ({
       {sortBy(childrenDirectories, d => d.title).map(d =>
         <div key={d.shortid}>
           <File
-            id={d.shortid}
+            id={d.id}
+            shortid={d.shortid}
             title={d.title}
             type="directory"
             depth={depth}
@@ -57,13 +58,14 @@ const Files = ({
       )}
       {sortBy(childrenModules, m => m.title).map(m =>
         <File
-          id={m.shortid}
+          id={m.id}
+          shortid={m.shortid}
           title={m.title}
           key={m.shortid}
           type="module"
           depth={depth}
           setCurrentModule={setCurrentModule}
-          active={m.shortid === currentModule}
+          active={m.id === currentModule}
           alternative={m.title === 'index.js' && m.directoryShortid == null}
         />,
       )}

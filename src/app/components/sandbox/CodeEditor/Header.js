@@ -32,28 +32,34 @@ const Buttons = styled.div`
 `;
 
 type Props = {
-  title: string,
   path: string,
   saveComponent: ?() => void,
   prettify: ?Function,
 };
 
-export default ({ path, title, saveComponent, prettify }: Props) => (
-  <Container>
-    <div>
-      <Path>{path}</Path>
-      {title}
-    </div>
+export default ({ path, saveComponent, prettify }: Props) => {
+  const pathParts = path.split('/');
+  const fileName = pathParts[pathParts.length - 1];
+  const pathName = pathParts.slice(0, pathParts.length - 1).join('/');
+  return (
+    <Container>
+      <div>
+        <Path>
+          {pathName}/
+        </Path>
+        {fileName}
+      </div>
 
-    <Buttons>
-      <Tooltip position="bottom" title="Made possible by Prettier">
-        <Button disabled={!prettify} onClick={prettify} small>
-          Prettify
+      <Buttons>
+        <Tooltip position="bottom" title="Made possible by Prettier">
+          <Button disabled={!prettify} onClick={prettify} small>
+            Prettify
+          </Button>
+        </Tooltip>
+        <Button disabled={!saveComponent} onClick={saveComponent} small>
+          Save
         </Button>
-      </Tooltip>
-      <Button disabled={!saveComponent} onClick={saveComponent} small>
-        Save
-      </Button>
-    </Buttons>
-  </Container>
-);
+      </Buttons>
+    </Container>
+  );
+};

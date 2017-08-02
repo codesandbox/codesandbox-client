@@ -460,20 +460,13 @@ export default class CodeEditor extends React.PureComponent {
   server: typeof CodeMirror.TernServer;
 
   render() {
-    const {
-      title,
-      canSave,
-      onlyViewMode,
-      modulePath,
-      preferences,
-    } = this.props;
+    const { canSave, onlyViewMode, modulePath, preferences } = this.props;
 
     return (
       <Container>
         <Header
           saveComponent={canSave && !onlyViewMode && this.handleSaveCode}
           prettify={!onlyViewMode && this.prettify}
-          title={title}
           path={modulePath}
         />
         <CodeContainer

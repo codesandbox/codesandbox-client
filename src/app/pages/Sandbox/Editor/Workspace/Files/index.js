@@ -54,6 +54,7 @@ class Files extends React.PureComponent {
     const { currentModule: currentModuleId } = sandbox;
     const currentModule = findCurrentModule(
       modules,
+      directories,
       currentModuleId,
       mainModule,
     );
