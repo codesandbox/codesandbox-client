@@ -1,6 +1,7 @@
 // @flow
 import React from 'react';
 import CodeMirror from 'codemirror';
+import MonacoEditor from 'react-monaco-editor';
 import styled, { keyframes } from 'styled-components';
 import type { Preferences, ModuleError } from 'common/types';
 
@@ -402,11 +403,56 @@ export default class CodeEditor extends React.PureComponent {
     }
   };
 
-  handleChange = (cm: any, change: any) => {
-    if (change.origin !== 'setValue') {
-      this.props.changeCode(this.props.id, cm.getValue());
-    }
+  // handleChange = (cm: any, change: any) => {
+  //   if (change.origin !== 'setValue') {
+  //     this.props.changeCode(this.props.id, cm.getValue());
+  //   }
+  // };
+
+  // NEW
+
+  handleChange = newCode => {
+    this.props.changeCode(this.props.id, newCode);
   };
+
+  configureEditor = (editor, monaco) => {
+    this.editor = editor;
+    this.monaco = monaco;
+    console.log(this);
+
+    console.log(monaco.languages.typescript.ModuleResolutionKind.NodeJs);
+
+    monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
+      target: monaco.languages.typescript.ScriptTarget.ES2016,
+      allowNonTsExtensions: true,
+      moduleResolution:
+        monaco.languages.typescript.ModuleResolutionKind.Classic,
+      module: monaco.languages.typescript.ModuleKind.CommonJS,
+      noEmit: true,
+      jsx: 'preserve',
+      typeRoots: ['node_modules/@types'],
+    });
+
+    // extra libraries
+    monaco.languages.typescript.typescriptDefaults.addExtraLib(
+      `export declare function next() : string`,
+      'node_modules/@types/external/index.d.ts',
+    );
+
+    monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
+      noSemanticValidation: false,
+      noSyntaxValidation: false,
+    });
+    console.log(this.props.title);
+    const model = monaco.editor.createModel(
+      this.props.code,
+      'typescript',
+      new monaco.Uri.file(`./test.tsx`),
+    );
+    this.editor.setModel(model);
+  };
+
+  // OLD
 
   getCode = () => this.codemirror.getValue();
 
@@ -460,7 +506,18 @@ export default class CodeEditor extends React.PureComponent {
   server: typeof CodeMirror.TernServer;
 
   render() {
-    const { canSave, onlyViewMode, modulePath, preferences } = this.props;
+    const { canSave, code, onlyViewMode, modulePath, preferences } = this.props;
+
+    const options = {
+      selectOnLineNumbers: true,
+    };
+
+    const requireConfig = {
+      url: '/public/vs/loader.js',
+      paths: {
+        vs: '/public/vs',
+      },
+    };
 
     return (
       <Container>
@@ -473,9 +530,15 @@ export default class CodeEditor extends React.PureComponent {
           fontFamily={preferences.fontFamily}
           lineHeight={preferences.lineHeight}
         >
-          <div
-            style={{ height: '100%', fontSize: preferences.fontSize || 14 }}
-            ref={this.getCodeMirror}
+          <MonacoEditor
+            width="100%"
+            height="100%"
+            language="javascript"
+            theme="vs-dark"
+            options={{}}
+            requireConfig={requireConfig}
+            editorDidMount={this.configureEditor}
+            onChange={this.handleChange}
           />
         </CodeContainer>
       </Container>
