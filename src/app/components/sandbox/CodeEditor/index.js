@@ -3,7 +3,7 @@ import React from 'react';
 import CodeMirror from 'codemirror';
 import MonacoEditor from 'react-monaco-editor';
 import styled, { keyframes } from 'styled-components';
-import type { Preferences, ModuleError } from 'common/types';
+import type { Preferences, ModuleError, Module, Directory } from 'common/types';
 
 import { getCodeMirror } from 'app/utils/codemirror';
 import prettify from 'app/utils/codemirror/prettify';
@@ -14,6 +14,7 @@ import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/tern/tern';
 
 import Header from './Header';
+import { getModulePath } from '../../../store/entities/sandboxes/modules/selectors';
 
 const documentCache = {};
 
@@ -28,11 +29,15 @@ type Props = {
   canSave: boolean,
   preferences: Preferences,
   onlyViewMode: boolean,
+  modules: Array<Module>,
+  directories: Array<Directory>,
 };
 
 const Container = styled.div`
   width: 100%;
   height: 100%;
+  overflow: hidden;
+  z-index: 30;
 `;
 
 const fadeInAnimation = keyframes`
@@ -156,6 +161,40 @@ const CodeContainer = styled.div`
     animation: ${fadeInAnimation} 0.3s;
     background-color: #561011;
   }
+  .monaco-editor.vs-dark .monaco-editor-background {
+    background: ${theme.background2()};
+  }
+
+  .mtk5 {
+    color: #99c794 !important;
+  }
+  .mtk12.Identifier.JsxOpeningElement {
+    color: #ec5f67;
+  }
+  .mtk12.Identifier.JsxExpression.JsxClosingElement {
+    color: #ec5f67;
+  }
+  .mtk12.Identifier.JsxClosingElement {
+    color: #ec5f67;
+  }
+  .mtk12.Identifier.JsxSelfClosingElement {
+    color: #ec5f67;
+  }
+  .mtk12.Identifier.VariableStatement.JsxClosingElement {
+    color: #ec5f67;
+  }
+  .mtk12.Identifier.JsxAttribute.VariableDeclaration {
+    color: #aa759f;
+  }
+  .mtk12.JsxExpression.VariableStatement {
+    color: #fac863;
+  }
+  .mtk12.VariableStatement.JsxClosingElement {
+    color: white;
+  }
+  .mtk12.JsxElement.JsxText {
+    color: white;
+  }
 `;
 
 const handleError = (
@@ -211,19 +250,11 @@ export default class CodeEditor extends React.PureComponent {
     nextTitle: string,
   }) => {
     if (nextId !== currentId || nextCode !== this.getCode()) {
-      if (!documentCache[nextId]) {
-        const mode = await this.getMode(nextTitle);
-
-        documentCache[nextId] = new CodeMirror.Doc(nextCode || '', mode);
-      }
-      documentCache[currentId] = this.codemirror.swapDoc(documentCache[nextId]);
-
-      this.updateCodeMirrorCode(nextCode || '');
+      this.openNewModel(nextId);
     }
   };
 
   componentWillUpdate(nextProps: Props) {
-    const cm = this.codemirror;
     const { id: currentId, errors: currentErrors } = this.props;
     const {
       id: nextId,
@@ -232,16 +263,31 @@ export default class CodeEditor extends React.PureComponent {
       title: nextTitle,
     } = nextProps;
 
-    if (cm) {
-      this.swapDocuments({
-        currentId,
-        nextId,
-        nextCode,
-        nextTitle,
-      }).then(() => {
-        handleError(cm, currentErrors, nextErrors, nextCode, currentId, nextId);
-      });
-    }
+    this.swapDocuments({
+      currentId,
+      nextId,
+      nextCode,
+      nextTitle,
+    });
+  }
+
+  updateCode(code: string = '') {
+    const pos = this.editor.getPosition();
+    const lines = this.editor.getModel().getLinesContent();
+    const lastLine = lines.length;
+    const lastLineColumn = lines[lines.length - 1].length;
+    const editOperation = {
+      identifier: {
+        major: 0,
+        minor: 0,
+      },
+      text: code,
+      range: new this.monaco.Range(0, 0, lastLine, lastLineColumn),
+      forceMoveMarkers: false,
+    };
+
+    this.editor.getModel().pushEditOperations([], [editOperation], null);
+    this.editor.setPosition(pos);
   }
 
   updateCodeMirrorCode(code: string = '') {
@@ -411,26 +457,58 @@ export default class CodeEditor extends React.PureComponent {
 
   // NEW
 
-  handleChange = newCode => {
+  handleChange = (newCode: string) => {
     this.props.changeCode(this.props.id, newCode);
+  };
+
+  editorWillMount = monaco => {
+    monaco.editor.defineTheme('CodeSandbox', {
+      base: 'vs-dark', // can also be vs-dark or hc-black
+      inherit: true, // can also be false to completely replace the builtin rules
+      rules: [
+        { token: 'comment', foreground: '99c794' },
+        { token: 'keyword', foreground: '6CAEDD' },
+        { token: 'identifier', foreground: 'fac863' },
+      ],
+    });
   };
 
   configureEditor = (editor, monaco) => {
     this.editor = editor;
     this.monaco = monaco;
-    console.log(this);
 
-    console.log(monaco.languages.typescript.ModuleResolutionKind.NodeJs);
+    console.log(editor);
+    console.log(monaco);
 
-    monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
-      target: monaco.languages.typescript.ScriptTarget.ES2016,
+    const compilerDefaults = {
+      jsxFactory: 'React.createElement',
+      reactNamespace: 'React',
+      jsx: monaco.languages.typescript.JsxEmit.React,
+      target: monaco.languages.typescript.ScriptTarget.ES2015,
       allowNonTsExtensions: true,
-      moduleResolution:
-        monaco.languages.typescript.ModuleResolutionKind.Classic,
-      module: monaco.languages.typescript.ModuleKind.CommonJS,
+      moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
+      module: monaco.languages.typescript.ModuleKind.System,
+      experimentalDecorators: true,
+      allowJs: true,
       noEmit: true,
-      jsx: 'preserve',
-      typeRoots: ['node_modules/@types'],
+    };
+
+    monaco.languages.typescript.typescriptDefaults.setMaximunWorkerIdleTime(-1);
+    monaco.languages.typescript.javascriptDefaults.setMaximunWorkerIdleTime(-1);
+    monaco.languages.typescript.typescriptDefaults.setCompilerOptions(
+      compilerDefaults,
+    );
+    monaco.languages.typescript.javascriptDefaults.setCompilerOptions(
+      compilerDefaults,
+    );
+    monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
+      noSemanticValidation: true,
+      noSyntaxValidation: true,
+    });
+
+    const { modules } = this.props;
+    modules.forEach(module => {
+      this.createModel(module);
     });
 
     // extra libraries
@@ -439,22 +517,100 @@ export default class CodeEditor extends React.PureComponent {
       'node_modules/@types/external/index.d.ts',
     );
 
-    monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
-      noSemanticValidation: false,
-      noSyntaxValidation: false,
-    });
-    console.log(this.props.title);
-    const model = monaco.editor.createModel(
-      this.props.code,
-      'typescript',
-      new monaco.Uri.file(`./test.tsx`),
-    );
-    this.editor.setModel(model);
+    this.openNewModel(this.props.id);
+
+    setTimeout(() => {
+      const classifications = [];
+      const source = editor.getModel().getValue();
+      const sourceFile = ts.createSourceFile(
+        this.props.title,
+        source,
+        ts.ScriptTarget.ES6,
+        true,
+      );
+      const lines = source.split('\n').map(line => line.length);
+
+      function getLineNumberAndOffset(start) {
+        let line = 0;
+        let offset = 0;
+        while (offset + lines[line] <= start) {
+          offset += lines[line] + 1;
+          line += 1;
+        }
+
+        console.log(line, offset, start, lines[line]);
+        return { line: line + 1, offset };
+      }
+
+      function addChildNodes(node) {
+        ts.forEachChild(node, id => {
+          const { offset, line: startLine } = getLineNumberAndOffset(
+            id.getStart(),
+          );
+          const { line: endLine } = getLineNumberAndOffset(id.getEnd());
+          classifications.push({
+            start: id.getStart() + 1 - offset,
+            end: id.getEnd() + 1 - offset,
+            kind: ts.SyntaxKind[id.kind],
+            node: id,
+            startLine,
+            endLine,
+          });
+
+          addChildNodes(id);
+        });
+      }
+
+      addChildNodes(sourceFile);
+
+      console.log(classifications);
+
+      const decorations = classifications.map(classification => ({
+        range: new monaco.Range(
+          classification.startLine,
+          classification.start,
+          classification.endLine,
+          classification.end,
+        ),
+        options: {
+          inlineClassName: classification.kind,
+        },
+      }));
+
+      console.log(decorations);
+      console.log(editor.deltaDecorations([], decorations));
+    }, 2000);
   };
 
-  // OLD
+  createModel = (module: Module) => {
+    const { modules, directories } = this.props;
+    const path = '.' + getModulePath(modules, directories, module.id);
+    monaco.languages.typescript.typescriptDefaults.addExtraLib(
+      module.code,
+      path,
+    );
+    const model = monaco.editor.createModel(
+      module.code,
+      'typescript',
+      new monaco.Uri().with({ path }),
+    );
+    documentCache[module.id] = model;
+  };
 
-  getCode = () => this.codemirror.getValue();
+  openNewModel = (id: string) => {
+    const { modules } = this.props;
+    if (!documentCache[id]) {
+      const module = modules.find(m => m.id === id);
+
+      this.createModel(module);
+    }
+
+    this.editor.setModel(documentCache[id]);
+  };
+
+  getCode = () => this.editor.getValue();
+
+  // OLD
 
   prettify = async () => {
     const { id, title, preferences } = this.props;
@@ -471,7 +627,7 @@ export default class CodeEditor extends React.PureComponent {
 
         if (newCode !== code) {
           this.props.changeCode(id, newCode);
-          this.updateCodeMirrorCode(newCode);
+          this.updateCode(newCode);
         }
       } catch (e) {
         console.error(e);
@@ -534,10 +690,11 @@ export default class CodeEditor extends React.PureComponent {
             width="100%"
             height="100%"
             language="javascript"
-            theme="vs-dark"
+            theme="CodeSandbox"
             options={{}}
             requireConfig={requireConfig}
             editorDidMount={this.configureEditor}
+            editorWillMount={this.editorWillMount}
             onChange={this.handleChange}
           />
         </CodeContainer>

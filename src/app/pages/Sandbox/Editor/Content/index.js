@@ -161,6 +161,8 @@ class EditorPreview extends React.PureComponent {
           saveCode={this.saveCode}
           modulePath={modulePath}
           preferences={preferences}
+          modules={modules}
+          directories={directories}
         />
       </FullSize>
     );
