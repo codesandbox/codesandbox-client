@@ -1,0 +1,16 @@
+{
+  "short_name": "CodeSandbox",
+  "name": "CodeSandbox",
+  "description": "An online editor tailored for web applications",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/s/new?utm_source=homescreen",
+  "display": "standalone",
+  "theme_color": "#6CAEDD",
+  "background_color": "#1C2022"
+}

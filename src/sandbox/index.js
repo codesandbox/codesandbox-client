@@ -1,3 +1,4 @@
+import registerServiceWorker from 'common/registerServiceWorker';
 import delay from './utils/delay';
 import buildError from './utils/error-message-builder';
 import evalModule, { deleteCache } from './eval';
@@ -8,6 +9,8 @@ import handleExternalResources from './external-resources';
 import resizeEventListener from './resize-event-listener';
 import setupHistoryListeners from './url-listeners';
 import resolveDependency from './eval/js/dependency-resolver';
+
+registerServiceWorker('/sandbox-service-worker.js');
 
 import {
   getBoilerplates,

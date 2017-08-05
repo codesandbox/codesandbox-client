@@ -5,7 +5,7 @@ function getHost() {
 
   return process.env.NODE_ENV === 'development'
     ? 'http://codesandbox.dev'
-    : 'https://codesandbox.io';
+    : 'https://codesandbox.dev';
 }
 
 export default getHost();

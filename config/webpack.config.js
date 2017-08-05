@@ -4,6 +4,7 @@ const paths = require('./paths');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const childProcess = require('child_process');
+const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const WatchMissingNodeModulesPlugin = require('../scripts/utils/WatchMissingNodeModulesPlugin');
 const env = require('./env');
 
@@ -24,13 +25,15 @@ const COMMIT_HASH = childProcess
   .toString();
 const VERSION = `${COMMIT_COUNT}-${COMMIT_HASH}`;
 
+const publicPath = __PROD__ ? 'https://codesandbox.dev/' : '/';
+
 const getOutput = () =>
   __DEV__
     ? {
         path: paths.appBuild,
         pathinfo: true,
         filename: 'static/js/[name].js',
-        publicPath: '/',
+        publicPath,
       }
     : {
         path: paths.appBuild,
@@ -38,7 +41,7 @@ const getOutput = () =>
         filename: 'static/js/[name].[chunkhash].js',
         chunkFilename: 'static/js/[name].[chunkhash].chunk.js',
         sourceMapFilename: '[file].map', // Default
-        publicPath: 'https://codesandbox.io/',
+        publicPath,
       };
 
 const config = {
@@ -290,6 +293,125 @@ if (__PROD__) {
       },
       sourceMap: true,
     }),
+    // Generate a service worker script that will precache, and keep up to date,
+    // the HTML & assets that are part of the Webpack build.
+    new SWPrecacheWebpackPlugin({
+      // By default, a cache-busting query parameter is appended to requests
+      // used to populate the caches, to ensure the responses are fresh.
+      // If a URL is already hashed by Webpack, then there is no concern
+      // about it being stale, and the cache-busting can be skipped.
+      dontCacheBustUrlsMatching: /\.\w{8}\./,
+      filename: 'service-worker.js',
+      logger(message) {
+        if (message.indexOf('Total precache size is') === 0) {
+          // This message occurs for every build and is a bit too noisy.
+          return;
+        }
+        if (message.indexOf('Skipping static resource') === 0) {
+          // This message obscures real errors so we ignore it.
+          // https://github.com/facebookincubator/create-react-app/issues/2612
+          return;
+        }
+        console.log(message);
+      },
+      minify: true,
+      // For unknown URLs, fallback to the index page
+      navigateFallback: publicPath + 'app.html',
+      // Ignores URLs starting from /__ (useful for Firebase):
+      // https://github.com/facebookincubator/create-react-app/issues/2237#issuecomment-302693219
+      navigateFallbackWhitelist: [/^(?!\/__).*/],
+      // Don't precache sourcemaps (they're large) and build asset manifest:
+      staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
+      maximumFileSizeToCacheInBytes: 5242880,
+      runtimeCaching: [
+        {
+          urlPattern: /api\/v1\/sandboxes/,
+          handler: 'networkFirst',
+          options: {
+            cache: {
+              maxEntries: 50,
+              name: 'sandboxes-cache',
+            },
+          },
+        },
+        {
+          urlPattern: /^https:\/\/webpack-dll-prod.herokuapp.com\//,
+          handler: 'fastest',
+          options: {
+            cache: {
+              maxEntries: 100,
+              name: 'dependency-cache',
+            },
+          },
+        },
+      ],
+    }),
+    // Generate a service worker script that will precache, and keep up to date,
+    // the HTML & assets that are part of the Webpack build.
+    new SWPrecacheWebpackPlugin({
+      // By default, a cache-busting query parameter is appended to requests
+      // used to populate the caches, to ensure the responses are fresh.
+      // If a URL is already hashed by Webpack, then there is no concern
+      // about it being stale, and the cache-busting can be skipped.
+      dontCacheBustUrlsMatching: /\.\w{8}\./,
+      filename: 'sandbox-service-worker.js',
+      logger(message) {
+        if (message.indexOf('Total precache size is') === 0) {
+          // This message occurs for every build and is a bit too noisy.
+          return;
+        }
+        if (message.indexOf('Skipping static resource') === 0) {
+          // This message obscures real errors so we ignore it.
+          // https://github.com/facebookincubator/create-react-app/issues/2612
+          return;
+        }
+        console.log(message);
+      },
+      minify: true,
+      // For unknown URLs, fallback to the index page
+      navigateFallback: 'https://sandbox.codesandbox.dev/frame.html',
+      staticFileGlobs: [
+        'www/static/js/common.*.js',
+        'www/static/js/vendor.*.js',
+        'www/static/js/sandbox.*.js',
+        'www/frame.html',
+      ],
+      stripPrefix: 'www/',
+      // Ignores URLs starting from /__ (useful for Firebase):
+      // https://github.com/facebookincubator/create-react-app/issues/2237#issuecomment-302693219
+      navigateFallbackWhitelist: [/^(?!\/__).*/],
+      // Don't precache sourcemaps (they're large) and build asset manifest:
+      staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
+      maximumFileSizeToCacheInBytes: 5242880,
+      runtimeCaching: [
+        {
+          urlPattern: /api\/v1\/sandboxes/,
+          handler: 'networkFirst',
+          options: {
+            cache: {
+              maxEntries: 50,
+              name: 'sandboxes-cache',
+            },
+          },
+        },
+        {
+          urlPattern: /^https:\/\/webpack-dll-prod.herokuapp.com\//,
+          handler: 'fastest',
+          options: {
+            cache: {
+              maxEntries: 100,
+              name: 'dependency-cache',
+            },
+          },
+        },
+      ],
+    }),
+    // Moment.js is an extremely popular library that bundles large locale files
+    // by default due to how Webpack interprets its code. This is a practical
+    // solution that requires the user to opt into importing specific locales.
+    // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
+    // You can remove this if you don't use Moment.js:
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
   ];
 } else {
   config.plugins = [
