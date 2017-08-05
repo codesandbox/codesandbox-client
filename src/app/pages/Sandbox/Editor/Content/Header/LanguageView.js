@@ -4,6 +4,7 @@ import GlobeIcon from 'react-icons/lib/fa/globe';
 import Button from 'app/components/buttons/Button';
 import theme from 'common/theme';
 import i18n, { languageList } from 'common/i18n';
+import { translate } from 'react-i18next';
 
 import HoverMenu from './HoverMenu';
 import Action from './Action';
@@ -63,13 +64,17 @@ const changeLanguage = (code: string) => () => {
   i18n.changeLanguage(code);
 };
 
-export default () =>
+type Props = {
+  t: Function,
+};
+
+export default translate('editor')(({ t }: Props) =>
   <Container>
     <HoverMenu
       HeaderComponent={Action}
       headerProps={{
         Icon: GlobeIcon,
-        tooltip: 'Change Language',
+        tooltip: t('tooltip.language'),
       }}
     >
       {() =>
@@ -85,4 +90,5 @@ export default () =>
           )}
         </ListView>}
     </HoverMenu>
-  </Container>;
+  </Container>,
+);

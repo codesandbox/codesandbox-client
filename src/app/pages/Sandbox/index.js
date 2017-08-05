@@ -92,10 +92,12 @@ class SandboxPage extends React.PureComponent {
       return (
         <Centered horizontal vertical>
           <Title>
-            We could not find the Sandbox you{"'"}re looking for...
+            {t('error.sandboxNotFound')}
             <br />
             <br />
-            <Link to="/s/new">Create Sandbox</Link>
+            <Link to="/s/new">
+              {t('createSandboxLink')}
+            </Link>
           </Title>
         </Centered>
       );
@@ -104,13 +106,17 @@ class SandboxPage extends React.PureComponent {
     if (this.state.error) {
       return (
         <Centered horizontal vertical>
-          <Title>An error occured when fetching the sandbox:</Title>
+          <Title>
+            {t('error.sandboxFetch')}
+          </Title>
           <SubTitle>
             {this.state.error}
           </SubTitle>
           <br />
           <br />
-          <Link to="/s/new">Create Sandbox</Link>
+          <Link to="/s/new">
+            {t('createSandboxLink')}
+          </Link>
         </Centered>
       );
     }
@@ -119,8 +125,8 @@ class SandboxPage extends React.PureComponent {
 
     if (sandbox) {
       document.title = sandbox.title
-        ? t('editor:meta.sandboxPageTitle', { title: sandbox.title })
-        : t('editor:meta.editorPageTitle');
+        ? t('meta.sandboxPageTitle', { title: sandbox.title })
+        : t('meta.editorPageTitle');
     }
 
     return (

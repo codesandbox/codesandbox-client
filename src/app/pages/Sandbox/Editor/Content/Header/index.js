@@ -2,6 +2,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Media from 'react-media';
+import { translate } from 'react-i18next';
 
 import Save from 'react-icons/lib/md/save';
 import Fork from 'react-icons/lib/go/repo-forked';
@@ -97,9 +98,10 @@ type Props = {
   userActions: typeof userActionCreators,
   user: CurrentUser,
   canSave: boolean,
+  t: Function,
 };
 
-export default class Header extends React.PureComponent {
+class Header extends React.PureComponent {
   props: Props;
 
   massUpdateModules = () => {
@@ -113,10 +115,10 @@ export default class Header extends React.PureComponent {
   };
 
   forkSandbox = () => {
-    const { sandbox, sandboxActions } = this.props;
+    const { sandbox, sandboxActions, t } = this.props;
 
     const shouldFork = sandbox.owned
-      ? confirm('Do you want to fork your own sandbox?')
+      ? confirm(t('forkOwnSandboxConfirm'))
       : true;
     if (shouldFork) {
       sandboxActions.forkSandbox(sandbox.id);
@@ -156,6 +158,7 @@ export default class Header extends React.PureComponent {
       toggleWorkspace,
       workspaceHidden,
       canSave,
+      t,
     } = this.props;
 
     return (
@@ -170,7 +173,11 @@ export default class Header extends React.PureComponent {
         />
         <Left>
           <Tooltip
-            title={workspaceHidden ? 'Open sidebar' : 'Collapse sidebar'}
+            title={
+              workspaceHidden
+                ? t('tooltip.sidebar.open')
+                : t('tooltip.sidebar.collapse')
+            }
           >
             <Chevron
               workspaceHidden={workspaceHidden}
@@ -182,25 +189,33 @@ export default class Header extends React.PureComponent {
           {user.jwt &&
             (sandbox.userLiked
               ? <Action
-                  tooltip="Undo like"
+                  tooltip={t('tooltip.undoLike')}
                   title={sandbox.likeCount}
                   Icon={FullHeartIcon}
                   onClick={this.toggleLike}
                 />
               : <Action
-                  tooltip="Like"
+                  tooltip={t('tooltip.like')}
                   title={sandbox.likeCount}
                   Icon={HeartIcon}
                   onClick={this.toggleLike}
                 />)}
-          <Action onClick={this.forkSandbox} title="Fork" Icon={Fork} />
+          <Action
+            onClick={this.forkSandbox}
+            title={t('headerTitle.fork')}
+            Icon={Fork}
+          />
           <Action
             onClick={canSave && this.massUpdateModules}
-            placeholder={canSave ? false : 'All modules are saved'}
-            title="Save"
+            placeholder={canSave ? false : t('tooltip.modulesSaved')}
+            title={t('headerTitle.save')}
             Icon={Save}
           />
-          <Action title="Download" Icon={Download} onClick={this.zipSandbox} />
+          <Action
+            title={t('headerTitle.download')}
+            Icon={Download}
+            onClick={this.zipSandbox}
+          />
           <ShareView sandbox={sandbox} />
         </Left>
 
@@ -211,7 +226,7 @@ export default class Header extends React.PureComponent {
                 ? <Action
                     href={searchUrl()}
                     Icon={SearchIcon}
-                    tooltip="Search"
+                    tooltip={t('tooltip.search')}
                   />
                 : <div style={{ marginRight: '0.5rem', fontSize: '.875rem' }}>
                     <HeaderSearchBar />
@@ -222,7 +237,7 @@ export default class Header extends React.PureComponent {
             (!user.subscription &&
               <Action
                 href={patronUrl()}
-                tooltip="Support CodeSandbox"
+                tooltip={t('tooltip.patron')}
                 Icon={PatronBadge}
                 iconProps={{
                   width: 16,
@@ -234,7 +249,7 @@ export default class Header extends React.PureComponent {
           <Action
             href="https://twitter.com/CompuIves"
             a
-            tooltip="Contact"
+            tooltip={t('tooltip.twitter')}
             Icon={TwitterIcon}
           />
           <FeedbackView
@@ -243,12 +258,12 @@ export default class Header extends React.PureComponent {
           />
           <Action
             href={importFromGitHubUrl()}
-            tooltip="Import from GitHub"
+            tooltip={t('tooltip.importGithub')}
             Icon={GithubIcon}
           />
           <Action
             href={newSandboxUrl()}
-            tooltip="New Sandbox"
+            tooltip={t('tooltip.newSandbox')}
             Icon={PlusIcon}
           />
           <Margin
@@ -264,7 +279,7 @@ export default class Header extends React.PureComponent {
                 </div>
               : <Action
                   onClick={userActions.signIn}
-                  title="Sign in with Github"
+                  title={t('button.signInGithub')}
                   Icon={GithubIcon}
                   highlight
                   unresponsive
@@ -275,3 +290,5 @@ export default class Header extends React.PureComponent {
     );
   }
 }
+
+export default translate('editor')(Header);

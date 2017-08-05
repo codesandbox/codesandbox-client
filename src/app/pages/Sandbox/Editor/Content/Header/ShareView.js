@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { translate } from 'react-i18next';
 import { createSelector } from 'reselect';
 import styled from 'styled-components';
 import ShareIcon from 'react-icons/lib/md/share';
@@ -134,6 +135,7 @@ type Props = {
   modules: Array<Module>,
   directories: Array<Directory>,
   sendMessage: (message: string) => void,
+  t: Function,
 };
 
 const BUTTON_URL = 'https://codesandbox.io/static/img/play-codesandbox.svg';
@@ -253,18 +255,22 @@ class ShareView extends React.PureComponent {
 
   // eslint-disable-next-line
   getButtonMarkdown = () => {
-    const { sandbox } = this.props;
-    return `[![Edit ${sandbox.title ||
-      sandbox.id}](${BUTTON_URL})](${this.getEditorUrl()})`;
+    const { sandbox, t } = this.props;
+    return t('shareView.button.markdown', {
+      title: sandbox.title || sandbox.id,
+      btnUrl: BUTTON_URL,
+      editorUrl: this.getEditorUrl(),
+    });
   };
 
   // eslint-disable-next-line
   getButtonHTML = () => {
-    const { sandbox } = this.props;
-    return `<a href="${this.getEditorUrl()}">
-  <img alt="Edit ${sandbox.title || sandbox.id}" src="${BUTTON_URL}">
-</a>
-`;
+    const { sandbox, t } = this.props;
+    return t('shareView.button.html', {
+      title: sandbox.title || sandbox.id,
+      btnUrl: BUTTON_URL,
+      editorUrl: this.getEditorUrl(),
+    });
   };
 
   setAutoResize = (autoResize: boolean) => {
@@ -282,7 +288,7 @@ class ShareView extends React.PureComponent {
   setFontSize = (fontSize: number) => [this.setState({ fontSize })];
 
   render() {
-    const { sandbox, modules, directories } = this.props;
+    const { sandbox, modules, directories, t } = this.props;
 
     const {
       showEditor,
@@ -302,57 +308,69 @@ class ShareView extends React.PureComponent {
         <HoverMenu
           HeaderComponent={Action}
           headerProps={{
-            title: 'Share',
+            title: t('headerTitle.share'),
             Icon: ShareIcon,
             moreInfo: true,
           }}
         >
           {() =>
             <ShareOptions>
-              <h3>Share options</h3>
+              <h3>
+                {t('shareView.title.shareOptions')}
+              </h3>
               <Divider>
                 <Column>
-                  <ButtonName>URL Options</ButtonName>
+                  <ButtonName>
+                    {t('shareView.title.urlOptions')}
+                  </ButtonName>
                   <div>
-                    <h4>Embed specific options</h4>
+                    <h4>
+                      {t('shareView.title.embedOptions')}
+                    </h4>
                     <PaddedPreference
-                      title="Auto resize"
+                      title={t('shareView.embedOptions.autoResize.title')}
                       type="boolean"
-                      tooltip="Works only on Medium"
+                      tooltip={t('shareView.embedOptions.autoResize.tooltip')}
                       value={autoResize}
                       setValue={this.setAutoResize}
                     />
                     <PaddedPreference
-                      title="Hide navigation bar"
+                      title={t('shareView.embedOptions.hideNavigationBar')}
                       type="boolean"
                       value={hideNavigation}
                       setValue={this.setHideNavigation}
                     />
                     <PaddedPreference
-                      title="Show current module view"
+                      title={t('shareView.embedOptions.showCurrModule.title')}
                       type="boolean"
-                      tooltip="Only show the module that's currently open"
+                      tooltip={t(
+                        'shareView.embedOptions.showCurrModule.tooltip',
+                      )}
                       value={isCurrentModuleView}
                       setValue={this.setIsCurrentModuleView}
                     />
                     <PaddedPreference
-                      title="Font size"
+                      title={t('shareView.embedOptions.fontSize')}
                       type="number"
                       value={fontSize}
                       setValue={this.setFontSize}
                     />
                   </div>
                   <Inputs>
-                    <LinkName>Project Initial Path</LinkName>
+                    <LinkName>
+                      {t('shareView.title.projectPath')}
+                    </LinkName>
                     <input
                       onFocus={this.select}
-                      placeholder="e.g: /home"
+                      placeholder={t('shareView.projectPathPlaceholder')}
                       value={initialPath}
                       onChange={this.setInitialPath}
                     />
                   </Inputs>
                   <div>
-                    <h4>Default view</h4>
+                    <h4>
+                      {t('shareView.title.defaultView')}
+                    </h4>
                     <div
                       style={{
                         position: 'relative',
@@ -371,7 +389,9 @@ class ShareView extends React.PureComponent {
                     </div>
                   </div>
                   <div>
-                    <h4>Default module to show</h4>
+                    <h4>
+                      {t('shareView.title.defaultModule')}
+                    </h4>
 
                     <FilesContainer>
                       <Files
@@ -385,15 +405,25 @@ class ShareView extends React.PureComponent {
                   </div>
                 </Column>
                 <Column>
-                  <ButtonName>Links</ButtonName>
+                  <ButtonName>
+                    {t('shareView.title.links')}
+                  </ButtonName>
                   <Inputs>
-                    <LinkName>Editor url</LinkName>
+                    <LinkName>
+                      {t('shareView.linkTitle.editor')}
+                    </LinkName>
                     <input onFocus={this.select} value={this.getEditorUrl()} />
-                    <LinkName>Fullscreen url</LinkName>
+                    <LinkName>
+                      {t('shareView.linkTitle.fullscreen')}
+                    </LinkName>
                     <input onFocus={this.select} value={this.getEmbedUrl()} />
-                    <LinkName>Embed url (Medium/Embedly)</LinkName>
+                    <LinkName>
+                      {t('shareView.linkTitle.embed')}
+                    </LinkName>
                     <input onFocus={this.select} value={this.getEditorUrl()} />
-                    <LinkName>iframe</LinkName>
+                    <LinkName>
+                      {t('shareView.linkTitle.iframe')}
+                    </LinkName>
                     <textarea
                       onFocus={this.select}
                       value={this.getIframeScript()}
@@ -401,23 +431,29 @@ class ShareView extends React.PureComponent {
                   </Inputs>
                 </Column>
                 <Column>
-                  <ButtonName>Button</ButtonName>
+                  <ButtonName>
+                    {t('shareView.title.button')}
+                  </ButtonName>
                   <Inputs>
                     <ButtonContainer>
                       <a href={sandboxUrl(sandbox)}>
                         <img
-                          alt={sandbox.title || 'Untitled'}
+                          alt={sandbox.title || t('common:untitled')}
                           src={BUTTON_URL}
                         />
                       </a>
                     </ButtonContainer>
-                    <LinkName>Markdown</LinkName>
+                    <LinkName>
+                      {t('shareView.linkTitle.markdown')}
+                    </LinkName>
                     <textarea
                       onFocus={this.select}
                       value={this.getButtonMarkdown()}
                     />
 
-                    <LinkName>HTML</LinkName>
+                    <LinkName>
+                      {t('shareView.linkTitle.html')}
+                    </LinkName>
                     <textarea
                       onFocus={this.select}
                       value={this.getButtonHTML()}
@@ -432,4 +468,4 @@ class ShareView extends React.PureComponent {
   }
 }
 
-export default connect(mapStateToProps)(ShareView);
+export default connect(mapStateToProps)(translate('editor')(ShareView));
