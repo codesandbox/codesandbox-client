@@ -50,6 +50,7 @@ const compileCode = (
 function evaluate(code, require) {
   const module = { exports: {} };
   const exports = {};
+  const global = window;
   const process = { env: { NODE_ENV: 'development' } }; // eslint-disable-line no-unused-vars
   try {
     eval(code); // eslint-disable-line no-eval
