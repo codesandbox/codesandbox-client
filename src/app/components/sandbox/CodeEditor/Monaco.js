@@ -5,8 +5,6 @@ import MonacoEditor from 'react-monaco-editor';
 import styled, { keyframes } from 'styled-components';
 import type { Preferences, ModuleError, Module, Directory } from 'common/types';
 
-import { getCodeMirror } from 'app/utils/codemirror';
-import prettify from 'app/utils/codemirror/prettify';
 import theme from 'common/theme';
 
 import 'codemirror/addon/dialog/dialog';
@@ -18,12 +16,13 @@ import SyntaxHighlightWorker from 'worker-loader!./monaco/syntax-highlighter.js'
 import Header from './Header';
 import { getModulePath } from '../../../store/entities/sandboxes/modules/selectors';
 
-const modelCache = {};
+let modelCache = {};
 
 type Props = {
   code: ?string,
   errors: ?Array<ModuleError>,
   id: string,
+  sandboxId: string,
   title: string,
   modulePath: string,
   changeCode: (id: string, code: string) => Object,
@@ -44,7 +43,7 @@ const Container = styled.div`
 
 const fadeInAnimation = keyframes`
   0%   { background-color: #374140; }
-  100% { background-color: #561011; }
+  100% { background-color: ${theme.redBackground()};; }
 `;
 
 const fontFamilies = (...families) =>
@@ -61,110 +60,16 @@ const CodeContainer = styled.div`
   width: 100%;
   height: 100%;
   z-index: 30;
-  .CodeMirror {
-    font-family: ${props =>
-      fontFamilies(props.fontFamily, 'Source Code Pro', 'monospace')};
-    line-height: ${props => props.lineHeight};
-    background: ${theme.background2()};
-    color: #e0e0e0;
-    height: 100%;
-    font-weight: 500;
-  }
-  div.CodeMirror-selected {
-    background: #374140;
-  }
-  .CodeMirror-line::selection,
-  .CodeMirror-line > span::selection,
-  .CodeMirror-line > span > span::selection {
-    background: #65737e;
-  }
-  .CodeMirror-line::-moz-selection,
-  .CodeMirror-line > span::-moz-selection,
-  .CodeMirror-line > span > span::-moz-selection {
-    background: #65737e;
-  }
-  .CodeMirror-gutters {
-    background: ${theme.background2()};
-    border-right: 0px;
-  }
-  .CodeMirror-guttermarker {
-    color: #ac4142;
-  }
-  .CodeMirror-guttermarker-subtle {
-    color: #505050;
-  }
-  .CodeMirror-linenumber {
-    color: #505050;
-  }
-  .CodeMirror-cursor {
-    border-left: 1px solid #b0b0b0;
-  }
 
-  span.cm-comment {
-    color: #626466;
-  }
-  span.cm-atom {
-    color: #aa759f;
-  }
-  span.cm-number {
-    color: #aa759f;
-  }
-
-  span.cm-property,
-  span.cm-attribute {
-    color: #aa759f;
-  }
-  span.cm-keyword {
-    color: ${theme.secondary()};
-  }
-  span.cm-string {
-    color: #99c794;
-  }
-
-  span.cm-variable {
-    color: ${theme.primary.darken(0.1)()};
-  }
-  span.cm-variable-2 {
-    color: ${theme.secondary()};
-  }
-  span.cm-def {
-    color: #fac863;
-  }
-  span.cm-bracket {
-    color: #e0e0e0;
-  }
-  span.cm-tag {
-    color: #ec5f67;
-  }
-  span.cm-link {
-    color: #aa759f;
-  }
-  span.cm-error {
-    background: #ac4142;
-    color: #b0b0b0;
-  }
-
-  .CodeMirror-activeline-background {
-    background: #374140;
-  }
-  .CodeMirror-matchingbracket {
-    text-decoration: underline;
-    color: white !important;
-  }
-  span.CodeMirror-matchingtag {
-    background-color: inherit;
-  }
-  span.cm-tag.CodeMirror-matchingtag {
-    text-decoration: underline;
-  }
-  span.cm-tag.cm-bracket.CodeMirror-matchingtag {
-    text-decoration: none;
-  }
-
-  div.cm-line-error.CodeMirror-linebackground {
+  .errorDecoration {
     animation: ${fadeInAnimation} 0.3s;
-    background-color: #561011;
+    background-color: ${theme.redBackground()};
   }
+
+  .margin-view-overlays {
+    background: ${theme.background2()};
+  }
+
   .monaco-editor.vs-dark .monaco-editor-background {
     background: ${theme.background2()};
   }
@@ -185,7 +90,7 @@ const CodeContainer = styled.div`
     color: #ec5f67;
   }
   .mtk12.Identifier.JsxClosingElement {
-    color: #ec5f67;
+    color: #ec5f67 !important;
   }
   .mtk12.Identifier.JsxSelfClosingElement {
     color: #ec5f67;
@@ -211,10 +116,8 @@ const CodeContainer = styled.div`
   .mtk12.JsxElement.JsxText {
     color: white;
   }
-  .Identifier.CallExpression ~ .CallExpression + .Identifier.CallExpression,
-  .Identifier.MethodDeclaration,
-  .Identifier.PropertyAssignment.CallExpression {
-    color: #6caedd;
+  .JsxText {
+    color: white;
   }
 
   .Identifier.CallExpression
@@ -225,20 +128,15 @@ const CodeContainer = styled.div`
 `;
 
 const handleError = (
-  cm: typeof CodeMirror,
+  monaco,
+  editor,
   currentErrors: ?Array<ModuleError>,
   nextErrors: ?Array<ModuleError>,
   nextCode: ?string,
   prevId: string,
   nextId: string,
 ) => {
-  if (currentErrors && currentErrors.length > 0) {
-    cm.getValue().split('\n').forEach((_, i) => {
-      cm.removeLineClass(i, 'background', 'cm-line-error');
-    });
-  }
-
-  if (nextErrors) {
+  if (nextErrors && nextErrors.length > 0) {
     nextErrors.forEach(error => {
       const code = nextCode || '';
       if (
@@ -247,9 +145,21 @@ const handleError = (
         error.line !== 0 &&
         error.line <= code.split('\n').length
       ) {
-        cm.addLineClass(error.line - 1, 'background', 'cm-line-error');
+        monaco.editor.setModelMarkers(editor.getModel(), 'error', [
+          {
+            severity: monaco.Severity.Error,
+            startColumn: 1,
+            startLineNumber: error.line,
+            endColumn: error.column,
+            endLineNumber: error.line + 1,
+            message: error.message,
+          },
+        ]);
       }
     });
+  } else {
+    console.log('executing');
+    monaco.editor.setModelMarkers(editor.getModel(), 'error', []);
   }
 };
 
@@ -270,7 +180,7 @@ export default class CodeEditor extends React.PureComponent {
     });
   }
 
-  updateDecorations = classifications => {
+  updateDecorations = (classifications: Array<Object>) => {
     const decorations = classifications.map(classification => ({
       range: new this.monaco.Range(
         classification.startLine,
@@ -292,7 +202,56 @@ export default class CodeEditor extends React.PureComponent {
   };
 
   shouldComponentUpdate(nextProps: Props) {
+    if (nextProps.modules !== this.props.modules) {
+      // First check for path updates;
+      nextProps.modules.forEach(module => {
+        if (modelCache[module.id] && modelCache[module.id].model) {
+          const { modules, directories } = nextProps;
+          const path = '.' + getModulePath(modules, directories, module.id);
+
+          // Check for changed path, if that's
+          // the case create a new model with corresponding tag, ditch the other model
+          if (path !== modelCache[module.id].model.uri.path) {
+            const isCurrentlyOpened =
+              this.editor.getModel() === modelCache[module.id].model;
+
+            if (isCurrentlyOpened) {
+              // Unload model, we're going to dispose it
+              this.editor.setModel(null);
+            }
+
+            modelCache[module.id].model.dispose();
+            delete modelCache[module.id];
+
+            const newModel = this.createModel(
+              module,
+              nextProps.modules,
+              nextProps.directories,
+            );
+
+            if (isCurrentlyOpened) {
+              // Open it again if it was open
+              this.editor.setModel(newModel);
+            }
+          }
+        } else {
+          // Model doesn't exist!!
+          this.createModel(module, nextProps.modules, nextProps.directories);
+        }
+      });
+
+      // Also check for deleted modules
+      Object.keys(modelCache).forEach(moduleId => {
+        // This module got deleted, dispose it
+        if (!nextProps.modules.find(m => m.id === moduleId)) {
+          modelCache[moduleId].model.dispose();
+          delete modelCache[moduleId];
+        }
+      });
+    }
+
     return (
+      nextProps.sandboxId !== this.props.sandboxId ||
       nextProps.id !== this.props.id ||
       nextProps.errors !== this.props.errors ||
       this.props.canSave !== nextProps.canSave ||
@@ -311,26 +270,53 @@ export default class CodeEditor extends React.PureComponent {
     nextCode: ?string,
     nextTitle: string,
   }) => {
-    if (nextId !== currentId || nextCode !== this.getCode()) {
+    if (nextId !== currentId) {
       this.openNewModel(nextId, nextTitle);
     }
   };
 
   componentWillUpdate(nextProps: Props) {
-    const { id: currentId, errors: currentErrors } = this.props;
+    const {
+      id: currentId,
+      sandboxId: currentSandboxId,
+      errors: currentErrors,
+    } = this.props;
+
     const {
       id: nextId,
       code: nextCode,
       errors: nextErrors,
       title: nextTitle,
+      sandboxId: nextSandboxId,
     } = nextProps;
 
-    this.swapDocuments({
-      currentId,
-      nextId,
-      nextCode,
-      nextTitle,
-    });
+    if (nextSandboxId !== currentSandboxId) {
+      // Reset models, dispose old ones
+      this.disposeModules();
+
+      // Do in a timeout, since disposing is async
+      setTimeout(() => {
+        // Initialize new models
+        this.initializeModules(nextProps.modules);
+      });
+    } else {
+      this.swapDocuments({
+        currentId,
+        nextId,
+        nextCode,
+        nextTitle,
+      }).then(() => {
+        handleError(
+          this.monaco,
+          this.editor,
+          currentErrors,
+          nextErrors,
+          nextCode,
+          currentId,
+          nextId,
+        );
+      });
+    }
   }
 
   updateCode(code: string = '') {
@@ -370,14 +356,6 @@ export default class CodeEditor extends React.PureComponent {
     return 'typescript';
   };
 
-  // handleChange = (cm: any, change: any) => {
-  //   if (change.origin !== 'setValue') {
-  //     this.props.changeCode(this.props.id, cm.getValue());
-  //   }
-  // };
-
-  // NEW
-
   handleChange = (newCode: string) => {
     this.props.changeCode(this.props.id, newCode);
 
@@ -404,8 +382,8 @@ export default class CodeEditor extends React.PureComponent {
     this.editor = editor;
     this.monaco = monaco;
 
-    console.log(editor);
-    console.log(monaco);
+    console.log(this.editor);
+    console.log(this.monaco);
 
     const compilerDefaults = {
       jsxFactory: 'React.createElement',
@@ -433,20 +411,26 @@ export default class CodeEditor extends React.PureComponent {
       noSyntaxValidation: true,
     });
 
-    const { modules } = this.props;
-    modules.forEach(module => {
-      this.createModel(module);
-    });
-
-    // extra libraries
-    monaco.languages.typescript.typescriptDefaults.addExtraLib(
-      `export declare function next() : string`,
-      'node_modules/@types/external/index.d.ts',
-    );
-
+    this.initializeModules();
     this.openNewModel(this.props.id, this.props.title);
 
     window.addEventListener('resize', this.resizeEditor);
+  };
+
+  disposeModules = () => {
+    this.editor.setModel(null);
+
+    this.monaco.editor.getModels().forEach(model => {
+      model.dispose();
+    });
+
+    modelCache = {};
+  };
+
+  initializeModules = (modules = this.props.modules) => {
+    modules.forEach(module => {
+      this.createModel(module);
+    });
   };
 
   resizeEditor = () => {
@@ -457,13 +441,13 @@ export default class CodeEditor extends React.PureComponent {
     window.removeEventListener('resize', this.resizeEditor);
   }
 
-  createModel = (module: Module) => {
-    const { modules, directories } = this.props;
+  createModel = (
+    module: Module,
+    modules: Array<Module> = this.props.modules,
+    directories: Array<Directory> = this.props.directories,
+  ) => {
     const path = '.' + getModulePath(modules, directories, module.id);
-    this.monaco.languages.typescript.typescriptDefaults.addExtraLib(
-      module.code,
-      path,
-    );
+
     const model = this.monaco.editor.createModel(
       module.code,
       this.getMode(module.title),
@@ -476,6 +460,8 @@ export default class CodeEditor extends React.PureComponent {
       cursorPos: null,
     };
     modelCache[module.id].model = model;
+
+    return model;
   };
 
   getModelById = (id: string) => {
@@ -492,7 +478,6 @@ export default class CodeEditor extends React.PureComponent {
   openNewModel = (id: string, title: string) => {
     const modelInfo = this.getModelById(id);
     this.editor.setModel(modelInfo.model);
-    // this.editor.deltaDecorations([], modelInfo.decorations || []);
 
     if (this.getMode(title) === 'typescript') {
       this.syntaxWorker.postMessage({
@@ -505,17 +490,17 @@ export default class CodeEditor extends React.PureComponent {
 
   getCode = () => this.editor.getValue();
 
-  // OLD
-
   prettify = async () => {
     const { id, title, preferences } = this.props;
     const code = this.getCode();
-    const mode = await this.getMode(title);
+    const mode = this.getMode(title);
+
     if (mode === 'typescript' || mode === 'css') {
       try {
-        const newCode = await prettify(
+        const prettify = await import('app/utils/codemirror/prettify');
+        const newCode = await prettify.default(
           code,
-          mode,
+          mode === 'typescript' ? 'jsx' : mode,
           preferences.lintEnabled,
           preferences.prettierConfig,
         );
@@ -540,7 +525,6 @@ export default class CodeEditor extends React.PureComponent {
     saveCode();
   };
 
-  codemirror: typeof CodeMirror;
   server: typeof CodeMirror.TernServer;
 
   render() {

@@ -1,8 +1,12 @@
-function getParser(mode) {
-  if (mode === 'jsx') return 'babylon';
-  if (mode === 'css') return 'postcss';
+import prettier from 'custom-prettier-codesandbox';
+import babylonParser from 'custom-prettier-codesandbox/parser-babylon';
+import cssParser from 'custom-prettier-codesandbox/parser-postcss';
 
-  return 'babylon';
+function getParser(mode) {
+  if (mode === 'jsx') return babylonParser;
+  if (mode === 'css') return cssParser;
+
+  return babylonParser;
 }
 
 export const DEFAULT_PRETTIER_CONFIG = {
@@ -22,7 +26,6 @@ export default (async function prettify(
   eslintEnabled,
   prettierConfig = DEFAULT_PRETTIER_CONFIG,
 ) {
-  const prettier = await System.import('custom-prettier-codesandbox');
   const prettifiedCode = prettier.format(code, {
     ...DEFAULT_PRETTIER_CONFIG,
     ...prettierConfig,

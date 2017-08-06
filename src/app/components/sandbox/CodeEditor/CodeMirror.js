@@ -5,7 +5,6 @@ import styled, { keyframes } from 'styled-components';
 import type { Preferences, ModuleError } from 'common/types';
 
 import { getCodeMirror } from 'app/utils/codemirror';
-import prettify from 'app/utils/codemirror/prettify';
 import theme from 'common/theme';
 
 import 'codemirror/addon/dialog/dialog';
@@ -416,7 +415,8 @@ export default class CodeEditor extends React.PureComponent {
     const mode = await this.getMode(title);
     if (mode === 'jsx' || mode === 'css') {
       try {
-        const newCode = await prettify(
+        const prettify = await import('app/utils/codemirror/prettify');
+        const newCode = await prettify.default(
           code,
           mode,
           preferences.lintEnabled,

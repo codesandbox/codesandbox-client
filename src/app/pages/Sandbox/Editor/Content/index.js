@@ -163,6 +163,7 @@ class EditorPreview extends React.PureComponent {
           preferences={preferences}
           modules={modules}
           directories={directories}
+          sandboxId={sandbox.id}
         />
       </FullSize>
     );
