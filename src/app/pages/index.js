@@ -14,6 +14,7 @@ import Modal from 'app/containers/Modal';
 import Loading from 'app/components/Loading';
 import { loggedInSelector } from 'app/store/user/selectors';
 import userActionCreators from 'app/store/user/actions';
+import initializeConnectionManager from 'app/store/connection/actions';
 
 import Sandbox from './Sandbox';
 
@@ -68,6 +69,7 @@ const Terms = Loadable({
 type Props = {
   hasLogin: boolean,
   userActions: typeof userActionCreators,
+  initializeConnectionManager: typeof initializeConnectionManager,
 };
 
 const mapStateToProps = createSelector(loggedInSelector, loggedIn => ({
@@ -75,14 +77,25 @@ const mapStateToProps = createSelector(loggedInSelector, loggedIn => ({
 }));
 const mapDispatchToProps = dispatch => ({
   userActions: bindActionCreators(userActionCreators, dispatch),
+  initializeConnectionManager: bindActionCreators(
+    initializeConnectionManager,
+    dispatch,
+  ),
 });
 class Routes extends React.PureComponent {
   props: Props;
+  unlisten: () => void;
 
   componentDidMount() {
+    this.unlisten = this.props.initializeConnectionManager();
+
     if (this.props.hasLogin) {
       this.props.userActions.getCurrentUser();
     }
+  }
+
+  componentWillUnmount() {
+    if (this.unlisten) this.unlisten();
   }
 
   render() {
