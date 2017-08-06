@@ -13,6 +13,7 @@ import SyntaxHighlightWorker from 'worker-loader!./monaco/syntax-highlighter.js'
 import LinterWorker from 'worker-loader!./monaco/linter';
 
 import enableEmmet from './monaco/enable-emmet';
+import fetchDependencyTypings from './monaco/fetch-dependency-typings';
 import Header from './Header';
 
 let modelCache = {};
@@ -31,6 +32,7 @@ type Props = {
   onlyViewMode: boolean,
   modules: Array<Module>,
   directories: Array<Directory>,
+  dependencies: ?Object,
 };
 
 const Container = styled.div`
@@ -269,6 +271,19 @@ export default class CodeEditor extends React.PureComponent {
       this.editor.updateOptions(this.getEditorOptions());
     }
 
+    const { dependencies } = this.props;
+    const { dependencies: nextDependencies } = nextProps;
+
+    // Fetch new dependencies if added
+    if (
+      nextDependencies != null &&
+      dependencies != null &&
+      Object.keys(dependencies).join('') !==
+        Object.keys(nextDependencies).join('')
+    ) {
+      fetchDependencyTypings(nextDependencies, this.monaco);
+    }
+
     return (
       nextProps.sandboxId !== this.props.sandboxId ||
       nextProps.id !== this.props.id ||
@@ -456,12 +471,18 @@ export default class CodeEditor extends React.PureComponent {
 
     window.addEventListener('resize', this.resizeEditor);
     this.sizeProbeInterval = setInterval(this.resizeEditor.bind(this), 3000);
+
+    if (this.props.dependencies) {
+      fetchDependencyTypings(this.props.dependencies, monaco);
+    }
   };
 
   addKeyCommands = () => {
     this.editor.addCommand(
       this.monaco.KeyMod.CtrlCmd | this.monaco.KeyCode.KEY_S,
-      this.handleSaveCode,
+      () => {
+        this.handleSaveCode();
+      },
     );
   };
 
