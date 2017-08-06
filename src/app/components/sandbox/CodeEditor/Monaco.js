@@ -5,18 +5,15 @@ import MonacoEditor from 'react-monaco-editor';
 import styled from 'styled-components';
 import { debounce } from 'lodash';
 import type { Preferences, ModuleError, Module, Directory } from 'common/types';
+import { getModulePath } from 'app/store/entities/sandboxes/modules/selectors';
 
 import theme from 'common/theme';
-
-import 'codemirror/addon/dialog/dialog';
-import 'codemirror/addon/hint/show-hint';
-import 'codemirror/addon/tern/tern';
 
 import SyntaxHighlightWorker from 'worker-loader!./monaco/syntax-highlighter.js';
 import LinterWorker from 'worker-loader!./monaco/linter';
 
+import enableEmmet from './monaco/enable-emmet';
 import Header from './Header';
-import { getModulePath } from '../../../store/entities/sandboxes/modules/selectors';
 
 let modelCache = {};
 
@@ -446,6 +443,7 @@ export default class CodeEditor extends React.PureComponent {
     this.openNewModel(this.props.id, this.props.title);
 
     this.addKeyCommands();
+    enableEmmet(editor, monaco, {});
 
     window.addEventListener('resize', this.resizeEditor);
   };
@@ -453,10 +451,7 @@ export default class CodeEditor extends React.PureComponent {
   addKeyCommands = () => {
     this.editor.addCommand(
       this.monaco.KeyMod.CtrlCmd | this.monaco.KeyCode.KEY_S,
-      () => {
-        // services available in `ctx`
-        this.handleSaveCode();
-      },
+      this.handleSaveCode,
     );
   };
 
