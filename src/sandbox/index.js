@@ -7,6 +7,7 @@ import host from './utils/host';
 import handleExternalResources from './external-resources';
 import resizeEventListener from './resize-event-listener';
 import setupHistoryListeners from './url-listeners';
+import resolveDependency from './eval/js/dependency-resolver';
 
 import {
   getBoilerplates,
@@ -84,6 +85,25 @@ async function compile(message) {
     fetching = false;
     sendReady();
     return;
+  }
+
+  // Do unmounting
+  try {
+    if (externals['react-dom']) {
+      const reactDOM = resolveDependency('react-dom', externals);
+      reactDOM.unmountComponentAtNode(document.body);
+      const children = document.body.children;
+      for (const child in children) {
+        if (
+          children.hasOwnProperty(child) &&
+          children[child].tagName === 'DIV'
+        ) {
+          reactDOM.unmountComponentAtNode(children[child]);
+        }
+      }
+    }
+  } catch (e) {
+    console.error(e);
   }
 
   try {
