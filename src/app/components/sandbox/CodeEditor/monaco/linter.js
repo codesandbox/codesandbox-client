@@ -1,4 +1,6 @@
-self.importScripts(['/static/js/eslint.4.1.0.js']);
+if (!self.eslint) {
+  self.importScripts(['/static/js/eslint.4.1.0.js']);
+}
 
 /* eslint-disable global-require */
 const allRules = {

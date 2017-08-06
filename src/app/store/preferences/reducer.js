@@ -24,9 +24,10 @@ const initialState: Preferences = Object.keys(keys).reduce(
       [key]: getKey(keys[key], res[key]),
     }),
   {
+    autoCompleteEnabled: true,
     livePreviewEnabled: true,
     prettifyOnSaveEnabled: false,
-    lintEnabled: false,
+    lintEnabled: true,
     instantPreviewEnabled: false,
     fontSize: 14,
     fontFamily: '',

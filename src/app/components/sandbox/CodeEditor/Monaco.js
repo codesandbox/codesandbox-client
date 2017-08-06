@@ -125,6 +125,7 @@ const handleError = (
   prevId: string,
   nextId: string,
 ) => {
+  if (!monaco) return;
   if (nextErrors && nextErrors.length > 0) {
     nextErrors.forEach(error => {
       const code = nextCode || '';
@@ -154,7 +155,7 @@ const handleError = (
 export default class CodeEditor extends React.PureComponent {
   props: Props;
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
 
     this.syntaxWorker = new SyntaxHighlightWorker();
@@ -255,6 +256,17 @@ export default class CodeEditor extends React.PureComponent {
           delete modelCache[moduleId];
         }
       });
+    }
+
+    const { preferences } = this.props;
+    const { preferences: nextPref } = nextProps;
+
+    if (
+      preferences.fontFamily !== nextPref.fontFamily ||
+      preferences.fontSize !== nextPref.fontSize ||
+      preferences.lineHeight !== nextPref.lineHeight
+    ) {
+      this.editor.updateOptions(this.getEditorOptions());
     }
 
     return (
@@ -410,9 +422,6 @@ export default class CodeEditor extends React.PureComponent {
     this.editor = editor;
     this.monaco = monaco;
 
-    console.log(this.editor);
-    console.log(this.monaco);
-
     const compilerDefaults = {
       jsxFactory: 'React.createElement',
       reactNamespace: 'React',
@@ -446,6 +455,7 @@ export default class CodeEditor extends React.PureComponent {
     enableEmmet(editor, monaco, {});
 
     window.addEventListener('resize', this.resizeEditor);
+    this.sizeProbeInterval = setInterval(this.resizeEditor.bind(this), 3000);
   };
 
   addKeyCommands = () => {
@@ -477,6 +487,11 @@ export default class CodeEditor extends React.PureComponent {
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.resizeEditor);
+    this.disposeModules();
+    this.editor.dispose();
+    this.syntaxWorker.terminate();
+    this.lintWorker.terminate();
+    clearTimeout(this.sizeProbeInterval);
   }
 
   createModel = (
@@ -566,12 +581,9 @@ export default class CodeEditor extends React.PureComponent {
     saveCode();
   };
 
-  server: typeof CodeMirror.TernServer;
-
-  render() {
-    const { canSave, onlyViewMode, modulePath, preferences } = this.props;
-
-    const options = {
+  getEditorOptions = () => {
+    const { preferences } = this.props;
+    return {
       selectOnLineNumbers: true,
       fontSize: preferences.fontSize,
       fontFamily: fontFamilies(
@@ -581,6 +593,12 @@ export default class CodeEditor extends React.PureComponent {
       ),
       lineHeight: (preferences.lineHeight || 1.15) * preferences.fontSize,
     };
+  };
+
+  render() {
+    const { canSave, onlyViewMode, modulePath } = this.props;
+
+    const options = this.getEditorOptions();
 
     const requireConfig = {
       url: '/public/vs/loader.js',
@@ -596,10 +614,7 @@ export default class CodeEditor extends React.PureComponent {
           prettify={!onlyViewMode && this.prettify}
           path={modulePath}
         />
-        <CodeContainer
-          fontFamily={preferences.fontFamily}
-          lineHeight={preferences.lineHeight}
-        >
+        <CodeContainer>
           <MonacoEditor
             width="100%"
             height="100%"

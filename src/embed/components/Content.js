@@ -182,7 +182,6 @@ export default class Content extends React.PureComponent {
       sandbox,
       showEditor,
       showPreview,
-
       isInProjectView,
       currentModule,
       hideNavigation,
@@ -217,6 +216,9 @@ export default class Content extends React.PureComponent {
               )}
               changeCode={this.setCode}
               preferences={this.getPreferences()}
+              modules={sandbox.modules}
+              directories={sandbox.directories}
+              sandboxId={sandbox.id}
             />
           </Split>}
 

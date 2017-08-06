@@ -280,7 +280,7 @@ export default class CodeEditor extends React.PureComponent {
   };
 
   getCodeMirror = async (el: Element) => {
-    const { code, id, title, preferences } = this.props;
+    const { code, id, title } = this.props;
     if (!this.props.onlyViewMode) {
       CodeMirror.commands.save = this.handleSaveCode;
     }
