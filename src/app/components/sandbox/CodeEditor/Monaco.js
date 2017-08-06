@@ -13,6 +13,8 @@ import 'codemirror/addon/dialog/dialog';
 import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/tern/tern';
 
+import SyntaxHighlightWorker from 'worker-loader!./monaco/syntax-highlighter.js';
+
 import Header from './Header';
 import { getModulePath } from '../../../store/entities/sandboxes/modules/selectors';
 
@@ -236,6 +238,39 @@ const handleError = (
 
 export default class CodeEditor extends React.PureComponent {
   props: Props;
+
+  constructor(props) {
+    super(props);
+
+    this.syntaxWorker = new SyntaxHighlightWorker();
+
+    this.syntaxWorker.addEventListener('message', event => {
+      const { classifications, version } = event.data;
+
+      if (version === this.editor.getModel().getVersionId()) {
+        this.updateDecorations(classifications);
+      }
+    });
+  }
+
+  updateDecorations = classifications => {
+    const decorations = classifications.map(classification => ({
+      range: new this.monaco.Range(
+        classification.startLine,
+        classification.start,
+        classification.endLine,
+        classification.end,
+      ),
+      options: {
+        inlineClassName: classification.kind,
+      },
+    }));
+
+    this.decorations = this.editor.deltaDecorations(
+      this.decorations || [],
+      decorations,
+    );
+  };
 
   shouldComponentUpdate(nextProps: Props) {
     return (
@@ -467,6 +502,12 @@ export default class CodeEditor extends React.PureComponent {
 
   handleChange = (newCode: string) => {
     this.props.changeCode(this.props.id, newCode);
+
+    this.syntaxWorker.postMessage({
+      code: newCode,
+      title: this.props.title,
+      version: this.editor.getModel().getVersionId(),
+    });
   };
 
   editorWillMount = monaco => {
@@ -541,14 +582,14 @@ export default class CodeEditor extends React.PureComponent {
   createModel = (module: Module) => {
     const { modules, directories } = this.props;
     const path = '.' + getModulePath(modules, directories, module.id);
-    monaco.languages.typescript.typescriptDefaults.addExtraLib(
+    this.monaco.languages.typescript.typescriptDefaults.addExtraLib(
       module.code,
       path,
     );
-    const model = monaco.editor.createModel(
+    const model = this.monaco.editor.createModel(
       module.code,
       'typescript',
-      new monaco.Uri().with({ path }),
+      new this.monaco.Uri().with({ path }),
     );
     documentCache[module.id] = model;
   };
@@ -562,71 +603,11 @@ export default class CodeEditor extends React.PureComponent {
     }
 
     this.editor.setModel(documentCache[id]);
-
-    setTimeout(() => {
-      const a = Date.now();
-      const classifications = [];
-      const source = this.editor.getModel().getValue();
-      const sourceFile = ts.createSourceFile(
-        this.props.title,
-        source,
-        ts.ScriptTarget.ES6,
-        true,
-      );
-      const lines = source.split('\n').map(line => line.length);
-
-      function getLineNumberAndOffset(start) {
-        let line = 0;
-        let offset = 0;
-        while (offset + lines[line] <= start) {
-          offset += lines[line] + 1;
-          line += 1;
-        }
-
-        console.log(line, offset, start, lines[line]);
-        return { line: line + 1, offset };
-      }
-
-      function addChildNodes(node) {
-        ts.forEachChild(node, id => {
-          const { offset, line: startLine } = getLineNumberAndOffset(
-            id.getStart(),
-          );
-          const { line: endLine } = getLineNumberAndOffset(id.getEnd());
-          classifications.push({
-            start: id.getStart() + 1 - offset,
-            end: id.getEnd() + 1 - offset,
-            kind: ts.SyntaxKind[id.kind],
-            node: id,
-            startLine,
-            endLine,
-          });
-
-          addChildNodes(id);
-        });
-      }
-
-      addChildNodes(sourceFile);
-
-      console.log(classifications);
-
-      const decorations = classifications.map(classification => ({
-        range: new monaco.Range(
-          classification.startLine,
-          classification.start,
-          classification.endLine,
-          classification.end,
-        ),
-        options: {
-          inlineClassName: classification.kind,
-        },
-      }));
-
-      console.log(decorations);
-      console.log(this.editor.deltaDecorations([], decorations));
-
-      console.log(Date.now() - a);
-    }, 2000);
+    this.syntaxWorker.postMessage({
+      code: documentCache[id].getValue(),
+      title: this.props.title,
+      version: documentCache[id].getVersionId(),
+    });
   };
 
   getCode = () => this.editor.getValue();
