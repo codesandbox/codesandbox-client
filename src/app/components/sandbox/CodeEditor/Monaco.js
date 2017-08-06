@@ -18,7 +18,7 @@ import SyntaxHighlightWorker from 'worker-loader!./monaco/syntax-highlighter.js'
 import Header from './Header';
 import { getModulePath } from '../../../store/entities/sandboxes/modules/selectors';
 
-const documentCache = {};
+const modelCache = {};
 
 type Props = {
   code: ?string,
@@ -191,6 +191,9 @@ const CodeContainer = styled.div`
     color: #ec5f67;
   }
   .mtk12.Identifier.VariableStatement.JsxClosingElement {
+    color: #ec5f67 !important;
+  }
+  .mtk12.VariableStatement.JsxSelfClosingElement.Identifier {
     color: #ec5f67;
   }
   .mtk12.Identifier.JsxAttribute.VariableDeclaration {
@@ -199,11 +202,25 @@ const CodeContainer = styled.div`
   .mtk12.JsxExpression.VariableStatement {
     color: #fac863;
   }
+  .mtk12.VariableStatement.JsxSelfClosingElement {
+    color: white;
+  }
   .mtk12.VariableStatement.JsxClosingElement {
     color: white;
   }
   .mtk12.JsxElement.JsxText {
     color: white;
+  }
+  .Identifier.CallExpression ~ .CallExpression + .Identifier.CallExpression,
+  .Identifier.MethodDeclaration,
+  .Identifier.PropertyAssignment.CallExpression {
+    color: #6caedd;
+  }
+
+  .Identifier.CallExpression
+    + .OpenParenToken.CallExpression
+    + .Identifier.CallExpression {
+    color: #fac863 !important;
   }
 `;
 
@@ -266,8 +283,10 @@ export default class CodeEditor extends React.PureComponent {
       },
     }));
 
-    this.decorations = this.editor.deltaDecorations(
-      this.decorations || [],
+    const modelInfo = this.getModelById(this.props.id);
+
+    modelInfo.decorations = this.editor.deltaDecorations(
+      modelInfo.decorations || [],
       decorations,
     );
   };
@@ -293,7 +312,7 @@ export default class CodeEditor extends React.PureComponent {
     nextTitle: string,
   }) => {
     if (nextId !== currentId || nextCode !== this.getCode()) {
-      this.openNewModel(nextId);
+      this.openNewModel(nextId, nextTitle);
     }
   };
 
@@ -333,163 +352,22 @@ export default class CodeEditor extends React.PureComponent {
     this.editor.setPosition(pos);
   }
 
-  updateCodeMirrorCode(code: string = '') {
-    const pos = this.codemirror.getCursor();
-    this.codemirror.setValue(code);
-    this.codemirror.setCursor(pos);
-  }
-
-  componentDidUpdate(prevProps: Props) {
-    if (this.codemirror) {
-      if (this.props.preferences !== prevProps.preferences) {
-        this.setCodeMirrorPreferences();
-      }
-
-      this.configureEmmet();
-    }
-  }
-
-  getMode = async (title: string) => {
-    if (title == null) return 'jsx';
+  getMode = (title: string) => {
+    if (title == null) return 'typescript';
 
     const kind = title.match(/\.([^.]*)$/);
 
     if (kind) {
       if (kind[1] === 'css') {
-        await System.import('codemirror/mode/css/css');
         return 'css';
       } else if (kind[1] === 'html') {
-        await System.import('codemirror/mode/htmlmixed/htmlmixed');
-        return 'htmlmixed';
+        return 'html';
       } else if (kind[1] === 'md') {
-        await System.import('codemirror/mode/markdown/markdown');
         return 'markdown';
       }
     }
 
-    return 'jsx';
-  };
-
-  getCodeMirror = async (el: Element) => {
-    const { code, id, title, preferences } = this.props;
-    if (!this.props.onlyViewMode) {
-      CodeMirror.commands.save = this.handleSaveCode;
-    }
-    const mode = await this.getMode(title);
-    documentCache[id] = new CodeMirror.Doc(code || '', mode);
-
-    this.codemirror = getCodeMirror(el, documentCache[id]);
-
-    if (!this.props.onlyViewMode) {
-      this.codemirror.on('change', this.handleChange);
-      this.setCodeMirrorPreferences();
-    } else {
-      this.codemirror.setOption('readOnly', true);
-    }
-  };
-
-  setCodeMirrorPreferences = async () => {
-    const { preferences } = this.props;
-
-    const defaultKeys = {
-      'Cmd-/': cm => {
-        cm.listSelections().forEach(() => {
-          cm.toggleComment({ lineComment: '//' });
-        });
-      },
-    };
-
-    const updateArgHints = cm => {
-      if (this.server) {
-        this.server.updateArgHints(cm);
-      }
-    };
-
-    const showAutoComplete = cm => {
-      if (this.server) {
-        const filter = new RegExp('[.a-z_$]', 'i');
-        if (
-          cm.display.input.textarea.value &&
-          cm.display.input.textarea.value.slice(-1).match(filter)
-        ) {
-          cm.showHint({ hint: this.server.getHint, completeSingle: false });
-        }
-      }
-    };
-
-    if (preferences.autoCompleteEnabled) {
-      const tern = await System.import('tern');
-      const defs = await System.import('tern/defs/ecmascript.json');
-      window.tern = tern;
-      this.server =
-        this.server ||
-        new CodeMirror.TernServer({
-          defs: [defs],
-        });
-      this.codemirror.on('cursorActivity', updateArgHints);
-      this.codemirror.on('inputRead', showAutoComplete);
-      this.codemirror.setOption('extraKeys', {
-        'Ctrl-Space': cm => {
-          if (this.server) this.server.complete(cm);
-        },
-        'Ctrl-I': cm => {
-          if (this.server) this.server.showType(cm);
-        },
-        'Ctrl-O': cm => {
-          if (this.server) this.server.showDocs(cm);
-        },
-        'Alt-.': cm => {
-          if (this.server) this.server.jumpToDef(cm);
-        },
-        'Alt-,': cm => {
-          if (this.server) this.server.jumpBack(cm);
-        },
-        'Ctrl-Q': cm => {
-          if (this.server) this.server.rename(cm);
-        },
-        'Ctrl-.': cm => {
-          if (this.server) this.server.selectName(cm);
-        },
-        Tab: cm => {
-          // Indent, or place 2 spaces
-          if (cm.somethingSelected()) {
-            cm.indentSelection('add');
-          } else {
-            const spaces = Array(cm.getOption('indentUnit') + 1).join(' ');
-            cm.replaceSelection(spaces, 'end', '+input');
-
-            try {
-              cm.execCommand('emmetExpandAbbreviation');
-            } catch (e) {
-              console.error(e);
-            }
-          }
-        },
-        Enter: 'emmetInsertLineBreak',
-        ...defaultKeys,
-      });
-    } else {
-      this.server = null;
-      this.codemirror.off('cursorActivity', updateArgHints);
-      this.codemirror.off('inputRead', showAutoComplete);
-    }
-
-    if (preferences.vimMode) {
-      await System.import('codemirror/keymap/vim');
-      this.codemirror.setOption('keyMap', 'vim');
-    } else {
-      this.codemirror.setOption('keyMap', 'sublime');
-    }
-
-    if (preferences.lintEnabled) {
-      System.import('app/utils/codemirror/eslint-lint')
-        .then(initializer => initializer.default())
-        .then(() => {
-          this.codemirror.setOption('lint', true);
-        });
-    } else {
-      this.codemirror.setOption('lint', false);
-    }
+    return 'typescript';
   };
 
   // handleChange = (cm: any, change: any) => {
@@ -566,7 +444,7 @@ export default class CodeEditor extends React.PureComponent {
       'node_modules/@types/external/index.d.ts',
     );
 
-    this.openNewModel(this.props.id);
+    this.openNewModel(this.props.id, this.props.title);
 
     window.addEventListener('resize', this.resizeEditor);
   };
@@ -588,26 +466,41 @@ export default class CodeEditor extends React.PureComponent {
     );
     const model = this.monaco.editor.createModel(
       module.code,
-      'typescript',
+      this.getMode(module.title),
       new this.monaco.Uri().with({ path }),
     );
-    documentCache[module.id] = model;
+
+    modelCache[module.id] = modelCache[module.id] || {
+      model: null,
+      decorations: [],
+      cursorPos: null,
+    };
+    modelCache[module.id].model = model;
   };
 
-  openNewModel = (id: string) => {
+  getModelById = (id: string) => {
     const { modules } = this.props;
-    if (!documentCache[id]) {
+    if (!modelCache[id]) {
       const module = modules.find(m => m.id === id);
 
       this.createModel(module);
     }
 
-    this.editor.setModel(documentCache[id]);
-    this.syntaxWorker.postMessage({
-      code: documentCache[id].getValue(),
-      title: this.props.title,
-      version: documentCache[id].getVersionId(),
-    });
+    return modelCache[id];
+  };
+
+  openNewModel = (id: string, title: string) => {
+    const modelInfo = this.getModelById(id);
+    this.editor.setModel(modelInfo.model);
+    // this.editor.deltaDecorations([], modelInfo.decorations || []);
+
+    if (this.getMode(title) === 'typescript') {
+      this.syntaxWorker.postMessage({
+        code: modelInfo.model.getValue(),
+        title,
+        version: modelInfo.model.getVersionId(),
+      });
+    }
   };
 
   getCode = () => this.editor.getValue();
@@ -618,7 +511,7 @@ export default class CodeEditor extends React.PureComponent {
     const { id, title, preferences } = this.props;
     const code = this.getCode();
     const mode = await this.getMode(title);
-    if (mode === 'jsx' || mode === 'css') {
+    if (mode === 'typescript' || mode === 'css') {
       try {
         const newCode = await prettify(
           code,
@@ -647,27 +540,21 @@ export default class CodeEditor extends React.PureComponent {
     saveCode();
   };
 
-  configureEmmet = async () => {
-    const { title } = this.props;
-    const mode = await this.getMode(title);
-
-    const newMode = mode === 'htmlmixed' ? 'html' : mode;
-    const addon = newMode === 'jsx' ? { jsx: true } : null;
-
-    this.codemirror.setOption('emmet', {
-      addons: addon,
-      syntax: newMode,
-    });
-  };
-
   codemirror: typeof CodeMirror;
   server: typeof CodeMirror.TernServer;
 
   render() {
-    const { canSave, code, onlyViewMode, modulePath, preferences } = this.props;
+    const { canSave, onlyViewMode, modulePath, preferences } = this.props;
 
     const options = {
       selectOnLineNumbers: true,
+      fontSize: preferences.fontSize,
+      fontFamily: fontFamilies(
+        preferences.fontFamily,
+        'Source Code Pro',
+        'monospace',
+      ),
+      lineHeight: (preferences.lineHeight || 1.15) * preferences.fontSize,
     };
 
     const requireConfig = {
@@ -693,7 +580,7 @@ export default class CodeEditor extends React.PureComponent {
             height="100%"
             language="javascript"
             theme="CodeSandbox"
-            options={{}}
+            options={options}
             requireConfig={requireConfig}
             editorDidMount={this.configureEditor}
             editorWillMount={this.editorWillMount}
