@@ -2,7 +2,8 @@
 import React from 'react';
 import CodeMirror from 'codemirror';
 import MonacoEditor from 'react-monaco-editor';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
+import { debounce } from 'lodash';
 import type { Preferences, ModuleError, Module, Directory } from 'common/types';
 
 import theme from 'common/theme';
@@ -12,6 +13,7 @@ import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/tern/tern';
 
 import SyntaxHighlightWorker from 'worker-loader!./monaco/syntax-highlighter.js';
+import LinterWorker from 'worker-loader!./monaco/linter';
 
 import Header from './Header';
 import { getModulePath } from '../../../store/entities/sandboxes/modules/selectors';
@@ -41,11 +43,6 @@ const Container = styled.div`
   z-index: 30;
 `;
 
-const fadeInAnimation = keyframes`
-  0%   { background-color: #374140; }
-  100% { background-color: ${theme.redBackground()};; }
-`;
-
 const fontFamilies = (...families) =>
   families
     .filter(Boolean)
@@ -60,11 +57,6 @@ const CodeContainer = styled.div`
   width: 100%;
   height: 100%;
   z-index: 30;
-
-  .errorDecoration {
-    animation: ${fadeInAnimation} 0.3s;
-    background-color: ${theme.redBackground()};
-  }
 
   .margin-view-overlays {
     background: ${theme.background2()};
@@ -108,16 +100,16 @@ const CodeContainer = styled.div`
     color: #fac863;
   }
   .mtk12.VariableStatement.JsxSelfClosingElement {
-    color: white;
+    color: #e0e0e0;
   }
   .mtk12.VariableStatement.JsxClosingElement {
-    color: white;
+    color: #e0e0e0;
   }
   .mtk12.JsxElement.JsxText {
-    color: white;
+    color: #e0e0e0;
   }
   .JsxText {
-    color: white;
+    color: #e0e0e0;
   }
 
   .Identifier.CallExpression
@@ -158,7 +150,6 @@ const handleError = (
       }
     });
   } else {
-    console.log('executing');
     monaco.editor.setModelMarkers(editor.getModel(), 'error', []);
   }
 };
@@ -170,12 +161,23 @@ export default class CodeEditor extends React.PureComponent {
     super(props);
 
     this.syntaxWorker = new SyntaxHighlightWorker();
+    this.lintWorker = new LinterWorker();
+
+    this.lint = debounce(this.lint, 400);
 
     this.syntaxWorker.addEventListener('message', event => {
       const { classifications, version } = event.data;
 
       if (version === this.editor.getModel().getVersionId()) {
         this.updateDecorations(classifications);
+      }
+    });
+
+    this.lintWorker.addEventListener('message', event => {
+      const { markers, version } = event.data;
+
+      if (version === this.editor.getModel().getVersionId()) {
+        this.updateLintWarnings(markers);
       }
     });
   }
@@ -198,6 +200,14 @@ export default class CodeEditor extends React.PureComponent {
     modelInfo.decorations = this.editor.deltaDecorations(
       modelInfo.decorations || [],
       decorations,
+    );
+  };
+
+  updateLintWarnings = (markers: Array<Object>) => {
+    this.monaco.editor.setModelMarkers(
+      this.editor.getModel(),
+      'eslint',
+      markers,
     );
   };
 
@@ -356,14 +366,35 @@ export default class CodeEditor extends React.PureComponent {
     return 'typescript';
   };
 
+  syntaxHighlight = (code: string, title: string, version: string) => {
+    if (this.getMode(title) === 'typescript') {
+      this.syntaxWorker.postMessage({
+        code,
+        title,
+        version,
+      });
+    }
+  };
+
+  lint = (code: string, title: string, version: string) => {
+    if (this.getMode(title) === 'typescript') {
+      this.lintWorker.postMessage({
+        code,
+        title,
+        version,
+      });
+    }
+  };
+
   handleChange = (newCode: string) => {
     this.props.changeCode(this.props.id, newCode);
 
-    this.syntaxWorker.postMessage({
-      code: newCode,
-      title: this.props.title,
-      version: this.editor.getModel().getVersionId(),
-    });
+    this.syntaxHighlight(
+      newCode,
+      this.props.title,
+      this.editor.getModel().getVersionId(),
+    );
+    this.lint(newCode, this.props.title, this.editor.getModel().getVersionId());
   };
 
   editorWillMount = monaco => {
@@ -414,7 +445,19 @@ export default class CodeEditor extends React.PureComponent {
     this.initializeModules();
     this.openNewModel(this.props.id, this.props.title);
 
+    this.addKeyCommands();
+
     window.addEventListener('resize', this.resizeEditor);
+  };
+
+  addKeyCommands = () => {
+    this.editor.addCommand(
+      this.monaco.KeyMod.CtrlCmd | this.monaco.KeyCode.KEY_S,
+      () => {
+        // services available in `ctx`
+        this.handleSaveCode();
+      },
+    );
   };
 
   disposeModules = () => {
@@ -479,13 +522,16 @@ export default class CodeEditor extends React.PureComponent {
     const modelInfo = this.getModelById(id);
     this.editor.setModel(modelInfo.model);
 
-    if (this.getMode(title) === 'typescript') {
-      this.syntaxWorker.postMessage({
-        code: modelInfo.model.getValue(),
-        title,
-        version: modelInfo.model.getVersionId(),
-      });
-    }
+    this.syntaxHighlight(
+      modelInfo.model.getValue(),
+      title,
+      modelInfo.model.getVersionId(),
+    );
+    this.lint(
+      modelInfo.model.getValue(),
+      title,
+      modelInfo.model.getVersionId(),
+    );
   };
 
   getCode = () => this.editor.getValue();

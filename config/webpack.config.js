@@ -241,6 +241,10 @@ const config = {
         from: 'node_modules/monaco-editor/min/vs',
         to: 'public/vs',
       },
+      {
+        from: 'src/homepage/static',
+        to: 'static',
+      },
     ]),
     // Try to dedupe duplicated modules, if any:
     new webpack.optimize.CommonsChunkPlugin({
