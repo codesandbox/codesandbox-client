@@ -56,7 +56,7 @@ const config = {
       require.resolve('./polyfills'),
       path.join(paths.embedSrc, 'index.js'),
     ],
-    vendor: ['codemirror', 'react', 'react-dom', 'styled-components'],
+    vendor: ['react', 'react-dom', 'styled-components'],
   },
 
   target: 'web',
