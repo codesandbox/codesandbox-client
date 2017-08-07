@@ -2,23 +2,14 @@ import prettier from 'custom-prettier-codesandbox';
 import babylonParser from 'custom-prettier-codesandbox/parser-babylon';
 import cssParser from 'custom-prettier-codesandbox/parser-postcss';
 
+import { DEFAULT_PRETTIER_CONFIG } from 'app/store/preferences/reducer';
+
 function getParser(mode) {
   if (mode === 'jsx') return babylonParser;
   if (mode === 'css') return cssParser;
 
   return babylonParser;
 }
-
-export const DEFAULT_PRETTIER_CONFIG = {
-  printWidth: 80,
-  tabWidth: 2,
-  useTabs: false,
-  semi: true,
-  singleQuote: false,
-  trailingComma: 'none',
-  bracketSpacing: true,
-  jsxBracketSameLine: false,
-};
 
 export default (async function prettify(
   code,

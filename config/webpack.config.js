@@ -1,4 +1,5 @@
 const webpack = require('webpack');
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const path = require('path');
 const paths = require('./paths');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -288,24 +289,21 @@ if (__PROD__) {
       minimize: true,
       debug: false,
     }),
-    new webpack.optimize.UglifyJsPlugin({
-      beautify: false,
-      compress: {
+    new UglifyJSPlugin({
+      uglifyOptions: {
+        ie8: false,
         warnings: true,
-        screw_ie8: true,
-        conditionals: true,
-        unused: true,
-        comparisons: true,
-        sequences: true,
-        dead_code: true,
-        evaluate: true,
-        if_return: true,
-        join_vars: true,
-      },
-      output: {
-        comments: false,
+        ecma: 8,
       },
       sourceMap: true,
+      parallel: true,
+      exclude: [
+        /eslint\.4\.1\.0\.js$/,
+        /eslint\.4\.0\.0\.js$/,
+        /eslint\.3\.18\.0\.js$/,
+        /editor\..*\.js$/,
+        /typescriptServices\.js$/,
+      ],
     }),
   ];
 } else {

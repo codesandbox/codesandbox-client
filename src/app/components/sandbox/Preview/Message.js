@@ -10,8 +10,6 @@ import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 
 import theme from 'common/theme';
 
-import Editor from './Editor';
-
 const Container = styled.div`
   font-family: 'Source Code Pro', monospace;
   font-weight: 400;
@@ -147,12 +145,6 @@ class Message extends React.PureComponent {
             {"'"}
             re adding support for viewing generated documentation in the near
             future.
-            {error.payload.react &&
-              <div>
-                For now we recommend adding{' '}
-                <Editor readOnly name={error.payload.componentName} />
-                to view this component.
-              </div>}
           </div>
         </div>
       );
