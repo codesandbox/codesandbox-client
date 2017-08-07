@@ -1,6 +1,5 @@
-// @flow
+/* @flow */
 import React from 'react';
-import CodeMirror from 'codemirror';
 import MonacoEditor from 'react-monaco-editor';
 import styled from 'styled-components';
 import { debounce } from 'lodash';
@@ -9,11 +8,11 @@ import { getModulePath } from 'app/store/entities/sandboxes/modules/selectors';
 
 import theme from 'common/theme';
 
-import SyntaxHighlightWorker from 'worker-loader!./monaco/syntax-highlighter.js';
-import LinterWorker from 'worker-loader!./monaco/linter';
+import SyntaxHighlightWorker from 'worker-loader!./monaco/workers/syntax-highlighter';
+import LinterWorker from 'worker-loader!./monaco/workers/linter';
+import TypingsFetcherWorker from 'worker-loader!./monaco/workers/fetch-dependency-typings';
 
 import enableEmmet from './monaco/enable-emmet';
-import fetchDependencyTypings from './monaco/fetch-dependency-typings';
 import Header from './Header';
 
 let modelCache = {};
@@ -157,11 +156,16 @@ const handleError = (
 export default class CodeEditor extends React.PureComponent {
   props: Props;
 
+  syntaxWorker: ServiceWorker;
+  lintWorker: ServiceWorker;
+  typingsFetcherWorker: ServiceWorker;
+
   constructor(props: Props) {
     super(props);
 
     this.syntaxWorker = new SyntaxHighlightWorker();
     this.lintWorker = new LinterWorker();
+    this.typingsFetcherWorker = new TypingsFetcherWorker();
 
     this.lint = debounce(this.lint, 400);
 
@@ -178,6 +182,21 @@ export default class CodeEditor extends React.PureComponent {
 
       if (version === this.editor.getModel().getVersionId()) {
         this.updateLintWarnings(markers);
+      }
+    });
+
+    this.typingsFetcherWorker.addEventListener('message', event => {
+      const { path, typings } = event.data;
+
+      if (
+        !this.monaco.languages.typescript.typescriptDefaults.getExtraLibs()[
+          path
+        ]
+      ) {
+        this.monaco.languages.typescript.typescriptDefaults.addExtraLib(
+          typings,
+          path,
+        );
       }
     });
   }
@@ -212,7 +231,11 @@ export default class CodeEditor extends React.PureComponent {
   };
 
   shouldComponentUpdate(nextProps: Props) {
-    if (nextProps.modules !== this.props.modules) {
+    // Don't update with sandbox id, this will duplicate all modules otherwise
+    if (
+      nextProps.sandboxId === this.props.sandboxId &&
+      nextProps.modules !== this.props.modules
+    ) {
       // First check for path updates;
       nextProps.modules.forEach(module => {
         if (modelCache[module.id] && modelCache[module.id].model) {
@@ -281,7 +304,7 @@ export default class CodeEditor extends React.PureComponent {
       Object.keys(dependencies).join('') !==
         Object.keys(nextDependencies).join('')
     ) {
-      fetchDependencyTypings(nextDependencies, this.monaco);
+      this.fetchDependencyTypings(nextDependencies);
     }
 
     return (
@@ -332,6 +355,7 @@ export default class CodeEditor extends React.PureComponent {
       setTimeout(() => {
         // Initialize new models
         this.initializeModules(nextProps.modules);
+        this.openNewModel(nextId, nextTitle);
       });
     } else {
       this.swapDocuments({
@@ -473,8 +497,12 @@ export default class CodeEditor extends React.PureComponent {
     this.sizeProbeInterval = setInterval(this.resizeEditor.bind(this), 3000);
 
     if (this.props.dependencies) {
-      fetchDependencyTypings(this.props.dependencies, monaco);
+      this.fetchDependencyTypings(this.props.dependencies, monaco);
     }
+  };
+
+  fetchDependencyTypings = (dependencies: Object) => {
+    this.typingsFetcherWorker.postMessage({ dependencies });
   };
 
   addKeyCommands = () => {
@@ -512,6 +540,7 @@ export default class CodeEditor extends React.PureComponent {
     this.editor.dispose();
     this.syntaxWorker.terminate();
     this.lintWorker.terminate();
+    this.typingsFetcherWorker.terminate();
     clearTimeout(this.sizeProbeInterval);
   }
 
@@ -578,7 +607,7 @@ export default class CodeEditor extends React.PureComponent {
         const newCode = await prettify.default(
           code,
           mode === 'typescript' ? 'jsx' : mode,
-          preferences.lintEnabled,
+          false, // Force false for eslint, since we would otherwise include 2 eslint bundles
           preferences.prettierConfig,
         );
 
