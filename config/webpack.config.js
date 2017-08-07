@@ -74,8 +74,13 @@ const config = {
       {
         test: /\.js$/,
         include: paths.src,
-        exclude: [/eslint\.js$/],
-        loader: 'babel-loader',
+        exclude: [
+          /eslint\.4\.1\.0\.js$/,
+          /eslint\.4\.0\.0\.js$/,
+          /eslint\.3\.18\.0\.js$/,
+          /typescriptServices\.js$/,
+        ],
+        loader: 'babel-loader?cacheDirectory',
         options: babelConfig,
       },
       // Used to remove strict mode from eval:
