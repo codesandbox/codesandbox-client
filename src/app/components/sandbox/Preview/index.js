@@ -58,6 +58,7 @@ type State = {
 
 export default class Preview extends React.PureComponent {
   initialPath: string;
+  frames: Array<HTMLFrameElement>;
 
   constructor(props: Props) {
     super(props);
@@ -78,6 +79,7 @@ export default class Preview extends React.PureComponent {
     // from the query params, or the iframe will continue to be re-rendered
     // when the user navigates the iframe app, which shows the loading screen
     this.initialPath = this.state.urlInAddressBar;
+    this.frames = [];
   }
 
   static defaultProps = {
@@ -162,16 +164,26 @@ export default class Preview extends React.PureComponent {
     window.removeEventListener('message', this.handleMessage);
   }
 
-  sendMessage = (message: Object) => {
-    const element = document.getElementById('sandbox');
-
-    if (element) {
-      element.contentWindow.postMessage(message, frameUrl());
-    }
+  openNewWindow = () => {
+    const strWindowFeatures =
+      'menubar=yes,location=yes,resizable=yes,scrollbars=yes,status=yes';
+    window.open(
+      'https://sandbox.codesandbox.dev',
+      'sandbox preview',
+      strWindowFeatures,
+      `width=${window.innerWidth - 20},height=${window.innerHeight - 20}`,
+    );
   };
 
-  handleMessage = (e: Object) => {
+  sendMessage = (message: Object) => {
+    this.frames.forEach(frame => {
+      frame.postMessage(message, frameUrl());
+    });
+  };
+
+  handleMessage = (e: MessageEvent) => {
     if (e.data === 'Ready!') {
+      this.frames.push(e.source);
       this.setState({
         frameInitialized: true,
       });
@@ -344,6 +356,7 @@ export default class Preview extends React.PureComponent {
             onRefresh={this.handleRefresh}
             isProjectView={isInProjectView}
             toggleProjectView={setProjectView && this.toggleProjectView}
+            openNewWindow={this.openNewWindow}
           />}
 
         {!bundle.processing &&

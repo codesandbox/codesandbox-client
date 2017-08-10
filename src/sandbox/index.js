@@ -43,21 +43,26 @@ function getIndexHtml(modules) {
   return '<div id="root"></div>';
 }
 
+function sendMessage(message: any) {
+  if (window.opener) {
+    window.opener.postMessage(message, host);
+  } else {
+    window.parent.postMessage(message, host);
+  }
+}
+
 function sendReady() {
-  window.parent.postMessage('Ready!', host);
+  sendMessage('Ready!');
 }
 
 function initializeResizeListener() {
   const listener = resizeEventListener();
   listener.addResizeListener(document.body, () => {
     if (document.body) {
-      window.parent.postMessage(
-        {
-          type: 'resize',
-          height: document.body.getBoundingClientRect().height,
-        },
-        '*',
-      );
+      sendMessage({
+        type: 'resize',
+        height: document.body.getBoundingClientRect().height,
+      });
     }
   });
   initializedResizeListener = true;
@@ -149,7 +154,7 @@ async function compile(message) {
       initializeResizeListener();
     }
 
-    window.parent.postMessage(
+    sendMessage(
       {
         type: 'success',
       },
@@ -161,7 +166,7 @@ async function compile(message) {
 
     e.module = e.module || changedModule;
 
-    window.parent.postMessage(
+    sendMessage(
       {
         type: 'error',
         error: buildError(e),
