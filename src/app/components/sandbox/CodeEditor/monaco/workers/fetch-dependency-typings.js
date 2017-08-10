@@ -198,7 +198,6 @@ function fetchAndAddDependencies(dependencies) {
 
 self.addEventListener('message', event => {
   const { dependencies } = event.data;
-  console.log('master calls me');
 
   fetchAndAddDependencies(dependencies);
 });

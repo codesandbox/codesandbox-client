@@ -78,6 +78,25 @@ class DirectoryEntry extends React.PureComponent {
     };
   }
 
+  componentWillReceiveProps(nextProps, nextState) {
+    if (
+      !nextState.open &&
+      this.props.currentModuleId !== nextProps.currentModuleId
+    ) {
+      const { id, modules, directories, currentModuleId } = nextProps;
+      const currentModuleParents = getModuleParents(
+        modules,
+        directories,
+        currentModuleId,
+      );
+
+      const isParentOfModule = currentModuleParents.includes(id);
+      if (isParentOfModule) {
+        this.setState({ open: isParentOfModule });
+      }
+    }
+  }
+
   resetState = () => this.setState({ creating: '' });
 
   onCreateModuleClick = () => {

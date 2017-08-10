@@ -244,7 +244,9 @@ const config = {
     // Make the monaco editor work
     new CopyWebpackPlugin([
       {
-        from: 'node_modules/monaco-editor/min/vs',
+        from: __DEV__
+          ? 'node_modules/monaco-editor/dev/vs'
+          : 'node_modules/monaco-editor/min/vs',
         to: 'public/vs',
       },
       {

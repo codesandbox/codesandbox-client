@@ -1,6 +1,6 @@
 /* @flow */
 import React from 'react';
-import MonacoEditor from 'react-monaco-editor';
+import MonacoEditor from './monaco/MonacoReactComponent';
 import styled from 'styled-components';
 import { debounce } from 'lodash';
 import type { Preferences, ModuleError, Module, Directory } from 'common/types';
@@ -32,6 +32,7 @@ type Props = {
   modules: Array<Module>,
   directories: Array<Directory>,
   dependencies: ?Object,
+  setCurrentModule: ?(sandboxId: string, moduleId: string) => void,
 };
 
 const Container = styled.div`
@@ -51,7 +52,6 @@ const fontFamilies = (...families) =>
 
 const CodeContainer = styled.div`
   position: relative;
-  overflow: hidden;
   width: 100%;
   height: 100%;
   z-index: 30;
@@ -160,9 +160,7 @@ export default class CodeEditor extends React.PureComponent {
   lintWorker: ServiceWorker;
   typingsFetcherWorker: ServiceWorker;
 
-  constructor(props: Props) {
-    super(props);
-
+  setupWorkers = () => {
     this.syntaxWorker = new SyntaxHighlightWorker();
     this.lintWorker = new LinterWorker();
     this.typingsFetcherWorker = new TypingsFetcherWorker();
@@ -199,7 +197,7 @@ export default class CodeEditor extends React.PureComponent {
         );
       }
     });
-  }
+  };
 
   updateDecorations = (classifications: Array<Object>) => {
     const decorations = classifications.map(classification => ({
@@ -240,7 +238,7 @@ export default class CodeEditor extends React.PureComponent {
       nextProps.modules.forEach(module => {
         if (modelCache[module.id] && modelCache[module.id].model) {
           const { modules, directories } = nextProps;
-          const path = '.' + getModulePath(modules, directories, module.id);
+          const path = getModulePath(modules, directories, module.id);
 
           // Check for changed path, if that's
           // the case create a new model with corresponding tag, ditch the other model
@@ -328,6 +326,8 @@ export default class CodeEditor extends React.PureComponent {
     nextTitle: string,
   }) => {
     if (nextId !== currentId) {
+      const pos = this.editor.getPosition();
+      modelCache[currentId].cursorPos = pos;
       this.openNewModel(nextId, nextTitle);
     }
   };
@@ -351,7 +351,7 @@ export default class CodeEditor extends React.PureComponent {
       // Reset models, dispose old ones
       this.disposeModules();
 
-      // Do in a timeout, since disposing is async
+      // Do in setTimeout, since disposeModules is async
       setTimeout(() => {
         // Initialize new models
         this.initializeModules(nextProps.modules);
@@ -384,11 +384,11 @@ export default class CodeEditor extends React.PureComponent {
     const lastLineColumn = lines[lines.length - 1].length;
     const editOperation = {
       identifier: {
-        major: 0,
-        minor: 0,
+        major: 1,
+        minor: 1,
       },
       text: code,
-      range: new this.monaco.Range(0, 0, lastLine, lastLineColumn),
+      range: new this.monaco.Range(0, 0, lastLine + 1, lastLineColumn),
       forceMoveMarkers: false,
     };
 
@@ -461,6 +461,11 @@ export default class CodeEditor extends React.PureComponent {
     this.editor = editor;
     this.monaco = monaco;
 
+    console.log(this.editor);
+    console.log(this.monaco);
+
+    this.setupWorkers();
+
     const compilerDefaults = {
       jsxFactory: 'React.createElement',
       reactNamespace: 'React',
@@ -526,7 +531,7 @@ export default class CodeEditor extends React.PureComponent {
 
   initializeModules = (modules = this.props.modules) => {
     modules.forEach(module => {
-      this.createModel(module);
+      this.createModel(module, modules);
     });
   };
 
@@ -549,12 +554,15 @@ export default class CodeEditor extends React.PureComponent {
     modules: Array<Module> = this.props.modules,
     directories: Array<Directory> = this.props.directories,
   ) => {
-    const path = '.' + getModulePath(modules, directories, module.id);
+    const path = getModulePath(modules, directories, module.id).replace(
+      '/',
+      '',
+    );
 
     const model = this.monaco.editor.createModel(
       module.code,
       this.getMode(module.title),
-      new this.monaco.Uri().with({ path }),
+      this.monaco.Uri.file(path),
     );
 
     modelCache[module.id] = modelCache[module.id] || {
@@ -582,16 +590,52 @@ export default class CodeEditor extends React.PureComponent {
     const modelInfo = this.getModelById(id);
     this.editor.setModel(modelInfo.model);
 
-    this.syntaxHighlight(
-      modelInfo.model.getValue(),
-      title,
-      modelInfo.model.getVersionId(),
+    if (modelInfo.cursorPos) {
+      this.editor.setPosition(modelInfo.cursorPos);
+    }
+
+    requestAnimationFrame(() => {
+      this.syntaxHighlight(
+        modelInfo.model.getValue(),
+        title,
+        modelInfo.model.getVersionId(),
+      );
+      this.lint(
+        modelInfo.model.getValue(),
+        title,
+        modelInfo.model.getVersionId(),
+      );
+    });
+  };
+
+  openReference = data => {
+    const foundModuleId = Object.keys(modelCache).find(
+      mId => modelCache[mId].model.uri.path === data.resource.path,
     );
-    this.lint(
-      modelInfo.model.getValue(),
-      title,
-      modelInfo.model.getVersionId(),
-    );
+
+    if (foundModuleId && this.props.setCurrentModule) {
+      this.props.setCurrentModule(this.props.sandboxId, foundModuleId);
+    }
+
+    const selection = data.options.selection;
+    if (selection) {
+      if (
+        typeof selection.endLineNumber === 'number' &&
+        typeof selection.endColumn === 'number'
+      ) {
+        this.editor.setSelection(selection);
+        this.editor.revealRangeInCenter(selection);
+      } else {
+        const pos = {
+          lineNumber: selection.startLineNumber,
+          column: selection.startColumn,
+        };
+        this.editor.setPosition(pos);
+        this.editor.revealPositionInCenter(pos);
+      }
+    }
+
+    return Promise.resolve(this.editor);
   };
 
   getCode = () => this.editor.getValue();
@@ -632,7 +676,7 @@ export default class CodeEditor extends React.PureComponent {
   };
 
   getEditorOptions = () => {
-    const { preferences } = this.props;
+    const { preferences, title } = this.props;
     return {
       selectOnLineNumbers: true,
       fontSize: preferences.fontSize,
@@ -641,6 +685,8 @@ export default class CodeEditor extends React.PureComponent {
         'Source Code Pro',
         'monospace',
       ),
+      ariaLabel: title,
+      formatOnPaste: true,
       lineHeight: (preferences.lineHeight || 1.15) * preferences.fontSize,
     };
   };
@@ -656,7 +702,6 @@ export default class CodeEditor extends React.PureComponent {
         vs: '/public/vs',
       },
     };
-
     return (
       <Container>
         <Header
@@ -668,13 +713,14 @@ export default class CodeEditor extends React.PureComponent {
           <MonacoEditor
             width="100%"
             height="100%"
-            language="javascript"
+            language="typescript"
             theme="CodeSandbox"
             options={options}
             requireConfig={requireConfig}
             editorDidMount={this.configureEditor}
             editorWillMount={this.editorWillMount}
             onChange={this.handleChange}
+            openReference={this.openReference}
           />
         </CodeContainer>
       </Container>

@@ -165,6 +165,7 @@ class EditorPreview extends React.PureComponent {
           directories={directories}
           sandboxId={sandbox.id}
           dependencies={sandbox.npmDependencies}
+          setCurrentModule={sandboxActions.setCurrentModule}
         />
       </FullSize>
     );
