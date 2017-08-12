@@ -170,9 +170,11 @@ export default class CodeEditor extends React.PureComponent {
     this.syntaxWorker.addEventListener('message', event => {
       const { classifications, version } = event.data;
 
-      if (version === this.editor.getModel().getVersionId()) {
-        this.updateDecorations(classifications);
-      }
+      requestAnimationFrame(() => {
+        if (version === this.editor.getModel().getVersionId()) {
+          this.updateDecorations(classifications);
+        }
+      });
     });
 
     this.lintWorker.addEventListener('message', event => {

@@ -16,6 +16,7 @@ import {
 } from './boilerplates';
 
 let initializedResizeListener = false;
+let loadingDependencies = false;
 
 function getIndexHtml(modules) {
   const module = modules.find(
@@ -59,7 +60,21 @@ async function compile(message) {
   } = message.data;
 
   handleExternalResources(externalResources);
-  const { externals } = await loadDependencies(dependencies);
+
+  if (loadingDependencies) return;
+
+  loadingDependencies = true;
+  const { manifest, isNewCombination } = await loadDependencies(dependencies);
+  loadingDependencies = false;
+
+  if (isNewCombination) {
+    // If we just loaded new depdendencies, we want to get the latest changes,
+    // since we might have missed them
+    sendReady();
+    return;
+  }
+
+  const { externals } = manifest;
 
   // Do unmounting
   try {

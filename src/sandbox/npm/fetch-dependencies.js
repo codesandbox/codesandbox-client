@@ -8,7 +8,7 @@ type Dependencies = {
   [dependency: string]: string,
 };
 
-const RETRY_COUNT = 20;
+const RETRY_COUNT = 60;
 const debug = _debug('cs:sandbox:packager');
 
 function callApi(url: string) {
@@ -46,6 +46,7 @@ async function requestManifest(url) {
       // 403 status code means the bundler is still bundling
       if (retries < RETRY_COUNT && statusCode === 403) {
         retries += 1;
+        await delay(1000 * 2); // eslint-disable-line no-await-in-loop
       } else if (retries < RETRY_COUNT && statusCode === 500) {
         dispatch(
           actions.notifications.showNotification(
@@ -54,7 +55,7 @@ async function requestManifest(url) {
           ),
         );
 
-        await delay(1000 * 10); // eslint-disable-line no-await-in-loop
+        await delay(1000 * 2); // eslint-disable-line no-await-in-loop
         retries += 1;
       } else {
         throw e;
@@ -68,7 +69,7 @@ async function callPackager(dependencies: Object) {
 
   const result = await callApi(`${PACKAGER_URL}/${dependencyUrl}`);
 
-  const dataUrl = result.data.url;
+  const dataUrl = result.url;
   const manifest = await requestManifest(`${dataUrl}/manifest.json`);
 
   return { url: dataUrl, manifest };

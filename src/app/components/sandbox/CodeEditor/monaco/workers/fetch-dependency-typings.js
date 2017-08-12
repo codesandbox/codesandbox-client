@@ -1,4 +1,5 @@
 import path from 'path';
+import ts from 'monaco-editor/min/vs/language/typescript/lib/typescriptServices';
 
 self.importScripts([
   'https://cdnjs.cloudflare.com/ajax/libs/typescript/2.4.2/typescript.min.js',
@@ -134,7 +135,7 @@ const getFileTypes = (
   fetchedPaths: Array<string>,
   fileMetaData,
 ) => {
-  const virtualPath = `node_modules/${dependency}/${depPath}`;
+  const virtualPath = path.join('node_modules', dependency, depPath);
 
   if (fetchedPaths.includes(virtualPath)) return null;
 
