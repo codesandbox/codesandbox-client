@@ -1,6 +1,5 @@
 /* @flow */
 import React from 'react';
-import MonacoEditor from './monaco/MonacoReactComponent';
 import styled from 'styled-components';
 import { debounce } from 'lodash';
 import type { Preferences, ModuleError, Module, Directory } from 'common/types';
@@ -14,6 +13,7 @@ import TypingsFetcherWorker from 'worker-loader!./monaco/workers/fetch-dependenc
 
 import enableEmmet from './monaco/enable-emmet';
 import Header from './Header';
+import MonacoEditor from './monaco/MonacoReactComponent';
 
 let modelCache = {};
 
@@ -38,7 +38,6 @@ type Props = {
 const Container = styled.div`
   width: 100%;
   height: 100%;
-  overflow: hidden;
   z-index: 30;
 `;
 
@@ -159,6 +158,7 @@ export default class CodeEditor extends React.PureComponent {
   syntaxWorker: ServiceWorker;
   lintWorker: ServiceWorker;
   typingsFetcherWorker: ServiceWorker;
+  sizeProbeInterval: number;
 
   setupWorkers = () => {
     this.syntaxWorker = new SyntaxHighlightWorker();
@@ -265,9 +265,6 @@ export default class CodeEditor extends React.PureComponent {
               this.editor.setModel(newModel);
             }
           }
-        } else {
-          // Model doesn't exist!!
-          this.createModel(module, nextProps.modules, nextProps.directories);
         }
       });
 
@@ -487,10 +484,6 @@ export default class CodeEditor extends React.PureComponent {
     monaco.languages.typescript.javascriptDefaults.setCompilerOptions(
       compilerDefaults,
     );
-    monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
-      noSemanticValidation: true,
-      noSyntaxValidation: true,
-    });
 
     this.initializeModules();
     this.openNewModel(this.props.id, this.props.title);
@@ -554,6 +547,7 @@ export default class CodeEditor extends React.PureComponent {
     modules: Array<Module> = this.props.modules,
     directories: Array<Directory> = this.props.directories,
   ) => {
+    // Remove the first slash, as this will otherwise create errors in monaco
     const path = getModulePath(modules, directories, module.id).replace(
       '/',
       '',

@@ -18,8 +18,7 @@ import { preferencesSelector } from '../../../store/preferences/selectors';
 
 const Container = styled.div`
   position: relative;
-  ${delayEffect(0.4)}
-  height: 500px;
+  ${delayEffect(0.4)} height: 500px;
   box-shadow: 0 3px 3px rgba(0, 0, 0, 0.5);
 
   iframe {
@@ -69,7 +68,6 @@ class ShowcasePreview extends React.PureComponent {
           isInProjectView
           modules={modules}
           directories={directories}
-          bundle={sandbox.dependencyBundle}
           externalResources={sandbox.externalResources}
           module={mainModule}
           fetchBundle={this.fetchBundle}
@@ -77,6 +75,7 @@ class ShowcasePreview extends React.PureComponent {
           errors={sandbox.errors}
           clearErrors={sandboxActions.clearErrors}
           preferences={preferences}
+          dependencies={sandbox.npmDependencies}
           noDelay
         />
       </Container>

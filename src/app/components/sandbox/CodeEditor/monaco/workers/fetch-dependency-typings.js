@@ -1,6 +1,8 @@
 import path from 'path';
-import ts from 'monaco-editor/min/vs/language/typescript/lib/typescriptServices';
 
+self.importScripts([
+  'https://cdnjs.cloudflare.com/ajax/libs/typescript/2.4.2/typescript.min.js',
+]);
 const ROOT_URL = `https://unpkg.com/`;
 
 const loadedTypings = [];
@@ -36,10 +38,10 @@ const fetchCache = {};
 
 const doFetch = url => {
   if (fetchCache[url]) {
-    return Promise.resolve(fetchCache[url]);
+    return fetchCache[url];
   }
 
-  return fetch(url)
+  const promise = fetch(url)
     .then(response => {
       if (response.status >= 200 && response.status < 300) {
         return Promise.resolve(response);
@@ -49,11 +51,10 @@ const doFetch = url => {
       error.response = response;
       return Promise.reject(error);
     })
-    .then(response => response.text())
-    .then(response => {
-      fetchCache[url] = response;
-      return response;
-    });
+    .then(response => response.text());
+
+  fetchCache[url] = promise;
+  return promise;
 };
 
 const fetchFromDefinitelyTyped = (dependency, version, fetchedPaths) =>
@@ -71,14 +72,22 @@ const getRequireStatements = (title: string, code: string) => {
   const sourceFile = ts.createSourceFile(
     title,
     code,
-    ts.ScriptTarget.ES6,
+    ts.ScriptTarget.Latest,
     true,
+    ts.ScriptKind.TS,
   );
 
   ts.forEachChild(sourceFile, node => {
     switch (node.kind) {
       case ts.SyntaxKind.ImportDeclaration: {
         requires.push(node.moduleSpecifier.text);
+        break;
+      }
+      case ts.SyntaxKind.ExportDeclaration: {
+        // For syntax 'export ... from '...'''
+        if (node.moduleSpecifier) {
+          requires.push(node.moduleSpecifier.text);
+        }
         break;
       }
       default: {
@@ -106,6 +115,18 @@ const getFileMetaData = (depUrl, depPath) =>
     .then(response => JSON.parse(response))
     .then(transformFiles);
 
+const resolveAppropiateFile = (fileMetaData, relativePath) => {
+  const absolutePath = `/${relativePath}`;
+
+  if (fileMetaData[`${absolutePath}.d.ts`]) return `${relativePath}.d.ts`;
+  if (fileMetaData[`${absolutePath}.ts`]) return `${relativePath}.ts`;
+  if (fileMetaData[absolutePath]) return relativePath;
+  if (fileMetaData[`${absolutePath}/index.d.ts`])
+    return `${relativePath}/index.d.ts`;
+
+  return relativePath;
+};
+
 const getFileTypes = (
   depUrl,
   dependency,
@@ -129,14 +150,7 @@ const getFileTypes = (
         dep => dep.startsWith('.'),
       )
       .map(relativePath => path.join(path.dirname(depPath), relativePath))
-      .map(relativePath => {
-        const absolutePath = `/${relativePath}`;
-        if (fileMetaData[absolutePath]) return relativePath;
-        if (fileMetaData[`${absolutePath}.ts`]) return `${relativePath}.ts`;
-        if (fileMetaData[`${absolutePath}.d.ts`]) return `${relativePath}.d.ts`;
-
-        return relativePath;
-      })
+      .map(relativePath => resolveAppropiateFile(fileMetaData, relativePath))
       .forEach(nextDepPath =>
         getFileTypes(
           depUrl,
@@ -180,7 +194,7 @@ function fetchAndAddDependencies(dependencies) {
                   getFileTypes(
                     depUrl,
                     dep,
-                    packageJSON.typings,
+                    resolveAppropiateFile(fileData, packageJSON.typings),
                     fetchedPaths,
                     fileData,
                   );

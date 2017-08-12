@@ -1,8 +1,8 @@
-import delay from './utils/delay';
 import buildError from './utils/error-message-builder';
 import evalModule, { deleteCache } from './eval';
 import NoDomChangeError from './errors/no-dom-change-error';
-import host from './utils/host';
+import loadDependencies from './npm';
+import sendMessage from './utils/send-message';
 
 import handleExternalResources from './external-resources';
 import resizeEventListener from './resize-event-listener';
@@ -15,23 +15,7 @@ import {
   findBoilerplate,
 } from './boilerplates';
 
-let fetching = false;
-let url = null;
 let initializedResizeListener = false;
-
-async function addDependencyBundle() {
-  if (url !== '') {
-    window.dll_bundle = null;
-    const script = document.createElement('script');
-    script.setAttribute('src', `${url}/dll.js`);
-    script.setAttribute('async', false);
-    document.head.appendChild(script);
-
-    while (window.dll_bundle == null) {
-      await delay(100);
-    }
-  }
-}
 
 function getIndexHtml(modules) {
   const module = modules.find(
@@ -43,14 +27,6 @@ function getIndexHtml(modules) {
   return '<div id="root"></div>';
 }
 
-function sendMessage(message: any) {
-  if (window.opener) {
-    window.opener.postMessage(message, host);
-  } else {
-    window.parent.postMessage(message, host);
-  }
-}
-
 function sendReady() {
   sendMessage('Ready!');
 }
@@ -59,10 +35,13 @@ function initializeResizeListener() {
   const listener = resizeEventListener();
   listener.addResizeListener(document.body, () => {
     if (document.body) {
-      sendMessage({
-        type: 'resize',
-        height: document.body.getBoundingClientRect().height,
-      });
+      sendMessage(
+        {
+          type: 'resize',
+          height: document.body.getBoundingClientRect().height,
+        },
+        '*',
+      );
     }
   });
   initializedResizeListener = true;
@@ -74,23 +53,13 @@ async function compile(message) {
     directories,
     boilerplates,
     module,
-    externals,
-    url: newUrl,
     changedModule,
     externalResources,
+    dependencies,
   } = message.data;
 
-  if (fetching) return;
-
   handleExternalResources(externalResources);
-  if (url == null || url !== newUrl) {
-    fetching = true;
-    url = newUrl;
-    await addDependencyBundle();
-    fetching = false;
-    sendReady();
-    return;
-  }
+  const { externals } = await loadDependencies(dependencies);
 
   // Do unmounting
   try {
@@ -154,25 +123,19 @@ async function compile(message) {
       initializeResizeListener();
     }
 
-    sendMessage(
-      {
-        type: 'success',
-      },
-      host,
-    );
+    sendMessage({
+      type: 'success',
+    });
   } catch (e) {
     console.log('Error in sandbox:');
     console.error(e);
 
     e.module = e.module || changedModule;
 
-    sendMessage(
-      {
-        type: 'error',
-        error: buildError(e),
-      },
-      host,
-    );
+    sendMessage({
+      type: 'error',
+      error: buildError(e),
+    });
   }
 }
 

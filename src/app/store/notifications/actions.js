@@ -10,8 +10,8 @@ export default {
   addNotification: (
     title: string,
     notificationType: 'notice' | 'warning' | 'error' | 'success' = 'notice',
-    buttons: Array<NotificationButton> = [],
     timeAlive: number = 2,
+    buttons: Array<NotificationButton> = [],
   ) => ({
     id: (lastId += 1),
     type: ADD_NOTIFICATION,

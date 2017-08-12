@@ -5354,7 +5354,7 @@ moment@^2.18.1:
 
 monaco-editor@CompuIves/codesandbox-monaco-editor:
   version "0.9.0"
-  resolved "https://codeload.github.com/CompuIves/codesandbox-monaco-editor/tar.gz/39b2696409b6d808e1ef1917af25c0ab0bb16e34"
+  resolved "https://codeload.github.com/CompuIves/codesandbox-monaco-editor/tar.gz/e15255562ae8c0eb79b59fbe06b80d9d03992fc9"
 
 ms@0.7.1:
   version "0.7.1"

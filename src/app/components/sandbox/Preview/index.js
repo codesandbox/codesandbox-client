@@ -33,10 +33,8 @@ type Props = {
   isInProjectView: boolean,
   modules: Array<Module>,
   directories: Array<Directory>,
-  bundle: typeof Sandbox.dependencyBundle,
   externalResources: typeof Sandbox.externalResources,
   preferences: Preferences,
-  fetchBundle: (id: string) => Object,
   setProjectView: (id: string, isInProjectView: boolean) => any,
   module: Module,
   addError: (sandboxId: string, error: ModuleError) => any,
@@ -46,6 +44,8 @@ type Props = {
   errors: ?Array<ModuleError>,
   hideNavigation?: boolean,
   setFrameHeight: ?(height: number) => any,
+  dependencies: Object,
+  runActionFromPreview: (arg: Object) => any,
 };
 
 type State = {
@@ -87,11 +87,6 @@ export default class Preview extends React.PureComponent {
     noDelay: false,
   };
 
-  fetchBundle = () => {
-    const { sandboxId, fetchBundle } = this.props;
-    fetchBundle(sandboxId);
-  };
-
   componentDidUpdate(prevProps: Props) {
     if (prevProps.isInProjectView !== this.props.isInProjectView) {
       this.executeCodeImmediately();
@@ -99,17 +94,6 @@ export default class Preview extends React.PureComponent {
     }
 
     if (prevProps.sandboxId !== this.props.sandboxId) {
-      this.executeCodeImmediately();
-      return;
-    }
-
-    if (
-      prevProps.bundle &&
-      this.props.bundle &&
-      prevProps.bundle.processing &&
-      !this.props.bundle.processing
-    ) {
-      // Just got the deps! Update immediately
       this.executeCodeImmediately();
       return;
     }
@@ -142,15 +126,10 @@ export default class Preview extends React.PureComponent {
       this.state.frameInitialized
     ) {
       if (this.props.preferences.livePreviewEnabled) {
-        if (
-          this.props.bundle === prevProps.bundle || // So we don't trigger after every dep change
-          this.props.sandboxId !== prevProps.sandboxId
-        ) {
-          if (this.props.preferences.instantPreviewEnabled) {
-            this.executeCodeImmediately();
-          } else {
-            this.executeCode();
-          }
+        if (this.props.preferences.instantPreviewEnabled) {
+          this.executeCodeImmediately();
+        } else {
+          this.executeCode();
         }
       }
     }
@@ -165,14 +144,9 @@ export default class Preview extends React.PureComponent {
   }
 
   openNewWindow = () => {
-    const strWindowFeatures =
-      'menubar=yes,location=yes,resizable=yes,scrollbars=yes,status=yes';
-    window.open(
-      'https://sandbox.codesandbox.dev',
-      'sandbox preview',
-      strWindowFeatures,
-      `width=${window.innerWidth - 20},height=${window.innerHeight - 20}`,
-    );
+    const strWindowFeatures = `width=${window.innerWidth -
+      20},height=${window.innerHeight - 20}`;
+    window.open('https://sandbox.codesandbox.dev', '_blank', strWindowFeatures);
   };
 
   sendMessage = (message: Object) => {
@@ -181,7 +155,7 @@ export default class Preview extends React.PureComponent {
     });
   };
 
-  handleMessage = (e: MessageEvent) => {
+  handleMessage = (e: MessageEvent | { data: Object | string }) => {
     if (e.data === 'Ready!') {
       this.frames.push(e.source);
       this.setState({
@@ -190,15 +164,32 @@ export default class Preview extends React.PureComponent {
       this.executeCodeImmediately();
     } else {
       const { type } = e.data;
-      if (type === 'error') {
-        const { error } = e.data;
-        this.addError(error);
-      } else if (type === 'urlchange') {
-        const url = e.data.url.replace('/', '');
-        this.commitUrl(url);
-      } else if (type === 'resize') {
-        if (this.props.setFrameHeight) {
-          this.props.setFrameHeight(e.data.height);
+
+      switch (type) {
+        case 'error': {
+          const { error } = e.data;
+          this.addError(error);
+          break;
+        }
+        case 'urlchange': {
+          const url = e.data.url.replace('/', '');
+          this.commitUrl(url);
+          break;
+        }
+        case 'resize': {
+          if (this.props.setFrameHeight) {
+            this.props.setFrameHeight(e.data.height);
+          }
+          break;
+        }
+        case 'action': {
+          if (this.props.runActionFromPreview) {
+            this.props.runActionFromPreview(e.data);
+          }
+          break;
+        }
+        default: {
+          break;
         }
       }
     }
@@ -219,20 +210,15 @@ export default class Preview extends React.PureComponent {
     const {
       modules,
       directories,
-      bundle = {},
       module,
       externalResources,
       preferences,
+      dependencies,
     } = this.props;
     if (preferences.clearConsoleEnabled) {
       console.clear();
     }
-    if (bundle.externals == null) {
-      if (!bundle.processing && !bundle.error) {
-        this.fetchBundle();
-      }
-      return;
-    }
+
     // Do it here so we can see the dependency fetching screen if needed
     this.clearErrors();
     const renderedModule = this.getRenderedModule();
@@ -241,10 +227,9 @@ export default class Preview extends React.PureComponent {
       boilerplates: defaultBoilerplates,
       module: renderedModule,
       changedModule: module,
+      dependencies,
       modules,
       directories,
-      externals: bundle.externals,
-      url: bundle.url,
       externalResources,
     });
   };
@@ -330,7 +315,6 @@ export default class Preview extends React.PureComponent {
   render() {
     const {
       sandboxId,
-      bundle = {},
       modules,
       sandboxActions,
       isInProjectView,
@@ -359,21 +343,6 @@ export default class Preview extends React.PureComponent {
             openNewWindow={this.openNewWindow}
           />}
 
-        {!bundle.processing &&
-          errors &&
-          errors.length > 0 &&
-          <Message
-            modules={modules}
-            sandboxActions={sandboxActions}
-            error={errors[0]}
-            sandboxId={sandboxId}
-          />}
-        {bundle.processing &&
-          <Message
-            modules={modules}
-            sandboxActions={sandboxActions}
-            message="Loading the dependencies..."
-          />}
         <StyledFrame
           sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups allow-presentation"
           src={frameUrl(this.initialPath)}
