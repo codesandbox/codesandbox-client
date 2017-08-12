@@ -8,13 +8,14 @@ type NPMDependencies = {
   [dependency: string]: string,
 };
 
-export const PACKAGER_URL = 'https://webpack-dll-prod.herokuapp.com/v6';
+export const PACKAGER_URL =
+  'https://42qpdtykai.execute-api.eu-west-1.amazonaws.com/prod/package';
 
 function addDependencyBundle(url) {
   return new Promise(resolve => {
     window.dll_bundle = null;
     const script = document.createElement('script');
-    script.setAttribute('src', `${PACKAGER_URL}/${url}/dll.js`);
+    script.setAttribute('src', `${url}/dll.js`);
     script.setAttribute('async', false);
     script.addEventListener('load', resolve);
 
@@ -28,15 +29,17 @@ function addDependencyBundle(url) {
  */
 export default async function loadDependencies(dependencies: NPMDependencies) {
   if (Object.keys(dependencies).length !== 0) {
-    const url = dependenciesToQuery(dependencies);
+    const depQuery = dependenciesToQuery(dependencies);
 
-    if (loadedDependencyCombination !== url) {
+    if (loadedDependencyCombination !== depQuery) {
       // Mark that the last requested url is this
-      loadedDependencyCombination = url;
+      loadedDependencyCombination = depQuery;
 
-      manifest = await fetchDependencies(dependencies);
+      const data = await fetchDependencies(dependencies);
 
-      await addDependencyBundle(url);
+      manifest = data.manifest;
+
+      await addDependencyBundle(data.url);
     }
 
     return manifest;

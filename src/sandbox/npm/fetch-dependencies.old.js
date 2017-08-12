@@ -31,20 +31,21 @@ function callApi(url: string) {
  *
  * @param {string} query The dependencies to call
  */
-async function requestManifest(url) {
+async function requestPackager(query: string) {
   let retries = 0;
 
   while (true) {
     debug(`Trying to call packager for ${retries} time`);
     try {
-      const manifest = await callApi(url); // eslint-disable-line no-await-in-loop
+      const url = `${PACKAGER_URL}/${query}`;
+      const manifest = await callApi(`${url}/manifest.json`); // eslint-disable-line no-await-in-loop
 
       return manifest;
     } catch (e) {
       const statusCode = e.response && e.response.status;
 
-      // 403 status code means the bundler is still bundling
-      if (retries < RETRY_COUNT && statusCode === 403) {
+      // 504 status code means the bundler is still bundling
+      if (retries < RETRY_COUNT && statusCode === 504) {
         retries += 1;
       } else if (retries < RETRY_COUNT && statusCode === 500) {
         dispatch(
@@ -66,12 +67,8 @@ async function requestManifest(url) {
 async function callPackager(dependencies: Object) {
   const dependencyUrl = dependenciesToQuery(dependencies);
 
-  const result = await callApi(`${PACKAGER_URL}/${dependencyUrl}`);
-
-  const dataUrl = result.data.url;
-  const manifest = await requestManifest(`${dataUrl}/manifest.json`);
-
-  return { url: dataUrl, manifest };
+  const result = await requestPackager(dependencyUrl);
+  return result;
 }
 
 export default async function fetchDependencies(npmDependencies: Dependencies) {

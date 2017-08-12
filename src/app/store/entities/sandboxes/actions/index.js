@@ -7,7 +7,6 @@ import { createAPIActions, doRequest } from '../../../api/actions';
 import { normalizeResult } from '../../actions';
 import notificationActions from '../../../notifications/actions';
 import entity from '../entity';
-import fetchBundle from '../bundler';
 import { singleSandboxSelector } from '../selectors';
 import { modulesSelector } from '../modules/selectors';
 import { directoriesSelector } from '../directories/selectors';
@@ -311,56 +310,6 @@ export default {
       id: sandboxId,
       externalResources: result.data,
     });
-  },
-
-  fetchDependenciesBundle: (sandboxId: string) => async (
-    dispatch: Function,
-    getState: Function,
-  ) => {
-    try {
-      dispatch(
-        notificationActions.addNotification(
-          'Fetching dependencies...',
-          'notice',
-        ),
-      );
-
-      const sandbox = singleSandboxSelector(getState(), { id: sandboxId });
-      const result = await dispatch(
-        fetchBundle(
-          FETCH_BUNDLE_API_ACTIONS,
-          sandboxId,
-          sandbox.npmDependencies,
-        ),
-      );
-
-      const bundle = {
-        externals: result.externals,
-        url: result.url,
-      };
-
-      dispatch({
-        type: SET_BUNDLE,
-        id: sandboxId,
-        bundle,
-      });
-
-      dispatch(
-        notificationActions.addNotification('Dependencies loaded!', 'success'),
-      );
-    } catch (e) {
-      dispatch(
-        notificationActions.addNotification(
-          `Could not fetch dependencies: ${e.message}`,
-          'error',
-        ),
-      );
-
-      dispatch({
-        type: CANCEL_BUNDLE,
-        id: sandboxId,
-      });
-    }
   },
 
   createZip: (id: string) => async (dispatch: Function, getState: Function) => {

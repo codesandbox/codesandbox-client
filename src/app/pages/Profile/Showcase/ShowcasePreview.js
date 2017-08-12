@@ -45,11 +45,6 @@ const mapStateToProps = (state, props) => ({
 class ShowcasePreview extends React.PureComponent {
   props: Props;
 
-  fetchBundle = () => {
-    const { sandbox, sandboxActions } = this.props;
-    sandboxActions.fetchDependenciesBundle(sandbox.id);
-  };
-
   render() {
     const {
       sandbox,
@@ -70,7 +65,6 @@ class ShowcasePreview extends React.PureComponent {
           directories={directories}
           externalResources={sandbox.externalResources}
           module={mainModule}
-          fetchBundle={this.fetchBundle}
           addError={sandboxActions.addError}
           errors={sandbox.errors}
           clearErrors={sandboxActions.clearErrors}
