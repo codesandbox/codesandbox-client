@@ -20,3 +20,10 @@ Object {
   "path": "redux-form/immutable",
 }
 `;
+
+exports[`it parses scoped packages 1`] = `
+Object {
+  "dependency": "@vx/group",
+  "path": "@vx/group",
+}
+`;

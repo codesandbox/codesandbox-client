@@ -1,20 +1,18 @@
-const parseDependencyName = (dependency: string) => {
-  const match = dependency.match(/(.*?)\//);
-
-  if (match) return match[1];
-  return dependency;
-};
-
 export default class DependencyNotFoundError extends Error {
   constructor(dependencyName: string) {
     super();
 
-    const parsedName = parseDependencyName(dependencyName);
+    const [root, second] = dependencyName.split('/');
+
+    // If the package starts with a @ it's scoped, we should add the second
+    // part of the name in that case
+    const parsedName = root.startsWith('@') ? `${root}/${second}` : root;
+
     this.payload = {
       dependency: parsedName,
       path: dependencyName,
     };
-    this.message = `Could not find dependency: '${parsedName}'`;
+    this.message = `Could not find dependency: '${dependencyName}'`;
   }
   type = 'dependency-not-found';
   severity = 'error';
