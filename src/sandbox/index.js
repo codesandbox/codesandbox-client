@@ -69,7 +69,7 @@ async function compile(message) {
     directories,
     boilerplates,
     module,
-    externals,
+    externals = {},
     url: newUrl,
     changedModule,
     externalResources,
@@ -140,8 +140,6 @@ async function compile(message) {
             throw new NoDomChangeError(isReact, functionName);
           }
         }
-      } else {
-        throw new NoDomChangeError(isReact, functionName);
       }
     }
 
