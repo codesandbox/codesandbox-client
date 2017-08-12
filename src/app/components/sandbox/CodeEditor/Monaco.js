@@ -195,7 +195,7 @@ export default class CodeEditor extends React.PureComponent {
       ) {
         this.monaco.languages.typescript.typescriptDefaults.addExtraLib(
           typings,
-          path,
+          `file:///${path}`,
         );
       }
     });
@@ -469,13 +469,14 @@ export default class CodeEditor extends React.PureComponent {
       jsxFactory: 'React.createElement',
       reactNamespace: 'React',
       jsx: monaco.languages.typescript.JsxEmit.React,
-      target: monaco.languages.typescript.ScriptTarget.ES2015,
+      target: monaco.languages.typescript.ScriptTarget.ES2016,
       allowNonTsExtensions: true,
       moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
-      module: monaco.languages.typescript.ModuleKind.System,
+      module: monaco.languages.typescript.ModuleKind.CommonJS,
       experimentalDecorators: true,
-      allowJs: true,
       noEmit: true,
+      allowJs: true,
+      typeRoots: ['node_modules/@types'],
     };
 
     monaco.languages.typescript.typescriptDefaults.setMaximunWorkerIdleTime(-1);
@@ -550,15 +551,14 @@ export default class CodeEditor extends React.PureComponent {
     directories: Array<Directory> = this.props.directories,
   ) => {
     // Remove the first slash, as this will otherwise create errors in monaco
-    const path = getModulePath(modules, directories, module.id).replace(
-      '/',
-      '',
-    );
+    const path = getModulePath(modules, directories, module.id);
 
+    console.log(getModulePath(modules, directories, module.id));
+    console.log(`file://${path}`);
     const model = this.monaco.editor.createModel(
       module.code,
       this.getMode(module.title),
-      this.monaco.Uri.file(path),
+      new this.monaco.Uri().with({ path, scheme: 'file' }),
     );
 
     modelCache[module.id] = modelCache[module.id] || {
@@ -605,6 +605,7 @@ export default class CodeEditor extends React.PureComponent {
   };
 
   openReference = data => {
+    console.log(data);
     const foundModuleId = Object.keys(modelCache).find(
       mId => modelCache[mId].model.uri.path === data.resource.path,
     );

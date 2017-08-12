@@ -5354,7 +5354,13 @@ moment@^2.18.1:
 
 monaco-editor@CompuIves/codesandbox-monaco-editor:
   version "0.9.0"
-  resolved "https://codeload.github.com/CompuIves/codesandbox-monaco-editor/tar.gz/e15255562ae8c0eb79b59fbe06b80d9d03992fc9"
+  resolved "https://codeload.github.com/CompuIves/codesandbox-monaco-editor/tar.gz/e4e1efb582934ffd8fb135b1cfa1af82cdbc85e3"
+  dependencies:
+    monaco-typescript CompuIves/monaco-typescript
+
+monaco-typescript@CompuIves/monaco-typescript:
+  version "2.2.0"
+  resolved "https://codeload.github.com/CompuIves/monaco-typescript/tar.gz/eff3dd58fe3a6b15944838842aaf734910baa1d4"
 
 ms@0.7.1:
   version "0.7.1"
