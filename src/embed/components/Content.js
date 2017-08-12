@@ -202,18 +202,24 @@ export default class Content extends React.PureComponent {
 
     if (!mainModule) throw new Error('Cannot find main module');
 
+    // The altered module is the same module, but with updated code (based on)
+    // changes by the user. We need to use this to reflect changes
+    const alteredMainModule = alteredModules.find(m => m.id === mainModule.id);
+
+    if (!alteredMainModule) throw new Error('Cannot find main module');
+
     return (
       <Container>
         {showEditor &&
           <Split show={showEditor} only={showEditor && !showPreview}>
             <CodeEditor
-              code={mainModule.code}
-              id={mainModule.id}
-              title={mainModule.title}
+              code={alteredMainModule.code}
+              id={alteredMainModule.id}
+              title={alteredMainModule.title}
               modulePath={getModulePath(
                 alteredModules,
                 sandbox.directories,
-                mainModule.id,
+                alteredMainModule.id,
               )}
               changeCode={this.setCode}
               preferences={this.getPreferences()}
@@ -229,7 +235,7 @@ export default class Content extends React.PureComponent {
               directories={sandbox.directories}
               bundle={this.state.bundle}
               externalResources={sandbox.externalResources}
-              module={mainModule}
+              module={alteredMainModule}
               fetchBundle={this.fetchBundle}
               addError={this.addError}
               clearErrors={this.clearErrors}
