@@ -78,7 +78,7 @@ async function compile(message) {
   if (fetching) return;
 
   handleExternalResources(externalResources);
-  if (url == null || url !== newUrl) {
+  if ((url == null || url !== newUrl) && newUrl != null) {
     fetching = true;
     url = newUrl;
     await addDependencyBundle();

@@ -183,6 +183,7 @@ class EditorPreview extends React.PureComponent {
           setProjectView={sandboxActions.setProjectView}
           preferences={preferences}
           sandboxActions={sandboxActions}
+          dependencies={sandbox.npmDependencies}
         />
       </FullSize>
     );

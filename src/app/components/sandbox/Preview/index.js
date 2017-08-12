@@ -46,6 +46,7 @@ type Props = {
   errors: ?Array<ModuleError>,
   hideNavigation?: boolean,
   setFrameHeight: ?(height: number) => any,
+  dependencies: Object,
 };
 
 type State = {
@@ -211,15 +212,19 @@ export default class Preview extends React.PureComponent {
       module,
       externalResources,
       preferences,
+      dependencies,
     } = this.props;
     if (preferences.clearConsoleEnabled) {
       console.clear();
     }
-    if (bundle.externals == null) {
-      if (!bundle.processing && !bundle.error) {
-        this.fetchBundle();
+
+    if (Object.keys(dependencies).length > 0) {
+      if (bundle.externals == null) {
+        if (!bundle.processing && !bundle.error) {
+          this.fetchBundle();
+        }
+        return;
       }
-      return;
     }
     // Do it here so we can see the dependency fetching screen if needed
     this.clearErrors();
