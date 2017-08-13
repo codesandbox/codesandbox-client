@@ -68,7 +68,7 @@ type Props = {
   t: Function,
 };
 
-export default translate('editor')(({ t }: Props) =>
+export default translate('header')(({ t }: Props) =>
   <Container>
     <HoverMenu
       HeaderComponent={Action}
