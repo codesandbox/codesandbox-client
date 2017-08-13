@@ -1,9 +1,9 @@
 import path from 'path';
-import ts from 'monaco-editor/min/vs/language/typescript/lib/typescriptServices';
 
 self.importScripts([
   'https://cdnjs.cloudflare.com/ajax/libs/typescript/2.4.2/typescript.min.js',
 ]);
+
 const ROOT_URL = `https://unpkg.com/`;
 
 const loadedTypings = [];
@@ -70,21 +70,21 @@ const fetchFromDefinitelyTyped = (dependency, version, fetchedPaths) =>
 const getRequireStatements = (title: string, code: string) => {
   const requires = [];
 
-  const sourceFile = ts.createSourceFile(
+  const sourceFile = self.ts.createSourceFile(
     title,
     code,
-    ts.ScriptTarget.Latest,
+    self.ts.ScriptTarget.Latest,
     true,
-    ts.ScriptKind.TS,
+    self.ts.ScriptKind.TS,
   );
 
-  ts.forEachChild(sourceFile, node => {
+  self.ts.forEachChild(sourceFile, node => {
     switch (node.kind) {
-      case ts.SyntaxKind.ImportDeclaration: {
+      case self.ts.SyntaxKind.ImportDeclaration: {
         requires.push(node.moduleSpecifier.text);
         break;
       }
-      case ts.SyntaxKind.ExportDeclaration: {
+      case self.ts.SyntaxKind.ExportDeclaration: {
         // For syntax 'export ... from '...'''
         if (node.moduleSpecifier) {
           requires.push(node.moduleSpecifier.text);

@@ -1,5 +1,5 @@
 import buildError from './utils/error-message-builder';
-import evalModule, { deleteCache } from './eval';
+import evalModule, { deleteCache, clearCache } from './eval';
 import NoDomChangeError from './errors/no-dom-change-error';
 import loadDependencies from './npm';
 import sendMessage from './utils/send-message';
@@ -8,7 +8,7 @@ import handleExternalResources from './external-resources';
 import resizeEventListener from './resize-event-listener';
 import setupHistoryListeners from './url-listeners';
 import resolveDependency from './eval/js/dependency-resolver';
-import setScreen, { resetScreen } from './status-screen';
+import { openErrorScreen, resetScreen } from './status-screen';
 
 import {
   getBoilerplates,
@@ -18,8 +18,6 @@ import {
 
 let initializedResizeListener = false;
 let loadingDependencies = false;
-
-setScreen({ type: 'loading', stage: 0 });
 
 function getIndexHtml(modules) {
   const module = modules.find(
@@ -68,18 +66,18 @@ async function compile(message) {
   if (loadingDependencies) return;
 
   loadingDependencies = true;
-  setScreen({ type: 'loading', stage: 1 });
   const { manifest, isNewCombination } = await loadDependencies(dependencies);
-  resetScreen();
   loadingDependencies = false;
 
   if (isNewCombination) {
+    clearCache();
     // If we just loaded new depdendencies, we want to get the latest changes,
     // since we might have missed them
     requestRender();
     return;
   }
 
+  resetScreen();
   const { externals } = manifest;
 
   // Do unmounting
@@ -152,6 +150,8 @@ async function compile(message) {
     console.error(e);
 
     e.module = e.module || changedModule;
+
+    openErrorScreen(e);
 
     sendMessage({
       type: 'error',

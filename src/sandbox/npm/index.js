@@ -1,6 +1,8 @@
 import fetchDependencies from './fetch-dependencies';
 import dependenciesToQuery from './dependencies-to-query';
 
+import setScreen from '../status-screen';
+
 let loadedDependencyCombination: ?string = null;
 let manifest = null;
 
@@ -37,9 +39,13 @@ export default async function loadDependencies(dependencies: NPMDependencies) {
       // Mark that the last requested url is this
       loadedDependencyCombination = depQuery;
 
+      setScreen({ type: 'loading', text: 'Bundling Dependencies...' });
+
       const data = await fetchDependencies(dependencies);
 
       manifest = data.manifest;
+
+      setScreen({ type: 'loading', text: 'Downloading Dependencies...' });
 
       await addDependencyBundle(data.url);
     }

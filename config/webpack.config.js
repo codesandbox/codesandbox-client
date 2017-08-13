@@ -173,6 +173,7 @@ const config = {
   },
 
   plugins: [
+    new webpack.optimize.ModuleConcatenationPlugin(),
     // Generates an `index.html` file with the <script> injected.
     new HtmlWebpackPlugin({
       inject: true,
@@ -266,7 +267,7 @@ const config = {
     new webpack.optimize.CommonsChunkPlugin({
       async: true,
       children: true,
-      minChunks: 4,
+      minChunks: 2,
     }),
     new webpack.NamedModulesPlugin(),
   ],

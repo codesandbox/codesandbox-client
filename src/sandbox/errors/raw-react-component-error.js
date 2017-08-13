@@ -1,5 +1,10 @@
-export default class RawReactComponentError extends Error {
-  constructor(mainModule, importedModule) {
+// @flow
+import type { Module } from 'common/types';
+
+import SandboxError from './sandbox-error';
+
+export default class RawReactComponentError extends SandboxError {
+  constructor(mainModule: Module, importedModule: Module) {
     super();
 
     this.payload = {

@@ -1,3 +1,6 @@
+// @flow
+import SandboxError from './sandbox-error';
+
 const parseDependencyName = (dependency: string) => {
   const match = dependency.match(/(.*?)\//);
 
@@ -5,7 +8,7 @@ const parseDependencyName = (dependency: string) => {
   return dependency;
 };
 
-export default class DependencyNotFoundError extends Error {
+export default class DependencyNotFoundError extends SandboxError {
   constructor(dependencyName: string) {
     super();
 
