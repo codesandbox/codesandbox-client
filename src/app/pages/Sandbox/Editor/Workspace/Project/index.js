@@ -8,6 +8,7 @@ import { sandboxUrl, githubRepoUrl, profileUrl } from 'app/utils/url-generator';
 import UserWithAvatar from 'app/components/user/UserWithAvatar';
 import Stats from 'app/components/sandbox/Stats';
 import PrivacyStatus from 'app/components/sandbox/PrivacyStatus';
+import { translate } from 'react-i18next';
 
 import type { User, GitInfo } from 'common/types';
 import WorkspaceInputContainer from '../WorkspaceInputContainer';
@@ -60,9 +61,10 @@ type Props = {
   author: ?User,
   git: ?GitInfo,
   privacy: number,
+  t: Function,
 };
 
-export default class Project extends React.PureComponent {
+class Project extends React.PureComponent {
   props: Props;
   state: {
     title: ?string,
@@ -119,11 +121,14 @@ export default class Project extends React.PureComponent {
       git,
       preventTransition,
       privacy,
+      t,
     } = this.props;
     const { title, description } = this.state;
     return (
       <div>
-        <WorkspaceSubtitle>Title</WorkspaceSubtitle>
+        <WorkspaceSubtitle>
+          {t('project.title')}
+        </WorkspaceSubtitle>
         <WorkspaceInputContainer>
           <input
             value={title || ''}
@@ -133,7 +138,9 @@ export default class Project extends React.PureComponent {
             onKeyUp={this.handleKeyUp}
           />
         </WorkspaceInputContainer>
-        <WorkspaceSubtitle>Description</WorkspaceSubtitle>
+        <WorkspaceSubtitle>
+          {t('project.description')}
+        </WorkspaceSubtitle>
         <WorkspaceInputContainer>
           <textarea
             value={description || ''}
@@ -146,7 +153,9 @@ export default class Project extends React.PureComponent {
         </WorkspaceInputContainer>
         {!!author &&
           <div>
-            <WorkspaceSubtitle>Author</WorkspaceSubtitle>
+            <WorkspaceSubtitle>
+              {t('project.author')}
+            </WorkspaceSubtitle>
             <Item>
               <UserLink to={profileUrl(author.username)}>
                 <UserWithAvatar
@@ -160,7 +169,9 @@ export default class Project extends React.PureComponent {
 
         {!!git &&
           <div>
-            <WorkspaceSubtitle>GitHub Repository</WorkspaceSubtitle>
+            <WorkspaceSubtitle>
+              {t('project.github')}
+            </WorkspaceSubtitle>
             <GitContainer>
               <GithubBadge
                 url={githubRepoUrl(git)}
@@ -172,12 +183,14 @@ export default class Project extends React.PureComponent {
 
         {forkedSandbox &&
           <div>
-            <WorkspaceSubtitle>Forked from</WorkspaceSubtitle>
+            <WorkspaceSubtitle>
+              {t('project.forked')}
+            </WorkspaceSubtitle>
 
             <Item>
               <ConfirmLink
                 enabled={preventTransition}
-                message="You have unsaved changes. Are you sure you want to navigate away?"
+                message={t('project.forkedNavigationConfirm')}
                 to={sandboxUrl(forkedSandbox)}
               >
                 {forkedSandbox.title || forkedSandbox.id}
@@ -187,7 +200,9 @@ export default class Project extends React.PureComponent {
 
         {privacy > 0 &&
           <div>
-            <WorkspaceSubtitle>Privacy Status</WorkspaceSubtitle>
+            <WorkspaceSubtitle>
+              {t('project.privacy')}
+            </WorkspaceSubtitle>
             <PrivacyContainer>
               <PrivacyStatus privacy={privacy} />
             </PrivacyContainer>
@@ -204,3 +219,5 @@ export default class Project extends React.PureComponent {
     );
   }
 }
+
+export default translate('workspace')(Project);

@@ -1,12 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
+import { translate } from 'react-i18next';
 
 import Button from 'app/components/buttons/Button';
 import WorkspaceInputContainer from '../WorkspaceInputContainer';
 
-const ButtonContainer = styled.div`
-  margin: 0.5rem 1rem;
-`;
+const ButtonContainer = styled.div`margin: 0.5rem 1rem;`;
 
 type State = {
   name: string,
@@ -14,13 +13,14 @@ type State = {
 
 type Props = {
   addResource: (resource: string) => Promise<boolean>,
+  t: Function,
 };
 
 const initialState = {
   name: '',
 };
 
-export default class AddVersion extends React.PureComponent {
+class AddVersion extends React.PureComponent {
   state = initialState;
 
   state: State;
@@ -46,6 +46,7 @@ export default class AddVersion extends React.PureComponent {
   };
 
   render() {
+    const { t } = this.props;
     const { name } = this.state;
     const isValid = name !== '';
     return (
@@ -60,10 +61,12 @@ export default class AddVersion extends React.PureComponent {
         </WorkspaceInputContainer>
         <ButtonContainer>
           <Button disabled={!isValid} block small onClick={this.addResource}>
-            Add Resource
+            {t('dependencies.button.addResource')}
           </Button>
         </ButtonContainer>
       </div>
     );
   }
 }
+
+export default translate('workspace')(AddVersion);

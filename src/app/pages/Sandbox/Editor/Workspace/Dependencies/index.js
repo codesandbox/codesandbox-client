@@ -2,6 +2,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
+import { translate } from 'react-i18next';
 
 import Margin from 'app/components/spacing/Margin';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
@@ -19,6 +20,7 @@ type Props = {
   externalResources: Array<string>,
   sandboxActions: typeof sandboxActionCreators,
   processing: boolean,
+  t: Function,
 };
 
 type State = {
@@ -40,7 +42,7 @@ const Overlay = styled.div`
   user-select: none;
 `;
 
-export default class Dependencies extends React.PureComponent {
+class Dependencies extends React.PureComponent {
   state = {
     processing: false,
   };
@@ -115,28 +117,31 @@ export default class Dependencies extends React.PureComponent {
       npmDependencies = {},
       externalResources = [],
       processing: fetchingDependencies,
+      t,
     } = this.props;
     const processing = fetchingDependencies || this.state.processing;
 
     return (
       <div>
         {processing &&
-          <Overlay>We{"'"}re processing dependencies, please wait...</Overlay>}
+          <Overlay>
+            {t('dependencies.processingOverlay')}
+          </Overlay>}
         <Margin bottom={0}>
           <WorkspaceSubtitle>
-            NPM Packages
+            {t('dependencies.title.npm')}
           </WorkspaceSubtitle>
           {(Object.keys(npmDependencies) || [])
             .sort()
-            .map(dep => (
+            .map(dep =>
               <VersionEntry
                 key={dep}
                 dependencies={npmDependencies}
                 dependency={dep}
                 onRemove={this.removeDependency}
                 onRefresh={this.addDependency}
-              />
-            ))}
+              />,
+            )}
           <AddVersion
             existingDependencies={Object.keys(npmDependencies)}
             addDependency={this.addDependency}
@@ -144,20 +149,22 @@ export default class Dependencies extends React.PureComponent {
         </Margin>
         <div>
           <WorkspaceSubtitle>
-            External Resources
+            {t('dependencies.title.external')}
           </WorkspaceSubtitle>
           {(externalResources || [])
             .sort()
-            .map(resource => (
+            .map(resource =>
               <ExternalResource
                 key={resource}
                 resource={resource}
                 removeResource={this.removeResource}
-              />
-            ))}
+              />,
+            )}
           <AddResource addResource={this.addResource} />
         </div>
       </div>
     );
   }
 }
+
+export default translate('workspace')(Dependencies);

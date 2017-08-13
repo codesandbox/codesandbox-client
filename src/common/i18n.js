@@ -7,7 +7,7 @@ export const nsList = [
   'common',
   'editor',
   'header',
-  'patron',
+  'workspace',
   'profile',
   'terms',
 ];

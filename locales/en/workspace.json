@@ -1,0 +1,68 @@
+{
+  "tooltip": {
+    "viewSource": "View Source"
+  },
+  "title": {
+    "project": "Project",
+    "files": "Files",
+    "dependencies": "Dependencies",
+    "tags": "Tags",
+    "actions": "Sandbox Actions"
+  },
+  "project": {
+    "title": "Title",
+    "description": "Description",
+    "author": "Author",
+    "github": "Github Repository",
+    "forked": "Forked from",
+    "forkedNavigationConfirm": "You have unsaved changes. Are you sure you want to navigate away?",
+    "privacy": "Privacy Status"
+  },
+  "files": {
+    "defaultRootName": "Project",
+    "confirm": {
+      "deleteDirectory": "Are you sure you want to delete {{title}} and all its children?",
+      "deleteModule": "Are you sure you want to delete {{module}}"
+    },
+    "actions": {
+      "newModule": "New Module",
+      "newDirectory": "New Directory",
+      "rename": "Rename",
+      "delete": "Delete"
+    }
+  },
+  "dependencies": {
+    "title": {
+      "npm": "NPM Packages",
+      "external": "External Resources"
+    },
+    "button": {
+      "addResource": "Add Resource",
+      "addPackage": "Add Package",
+      "replacePackage": "Replace Package"
+    },
+    "placeholder": {
+      "package": "package name",
+      "version": "version"
+    },
+    "processingOverlay": "We're processing dependencies, please wait..."
+  },
+  "tags": {
+    "addTagButton": "Add Tag",
+    "title": "Add up to 5 tags",
+    "addTagPlaceholder": "Add a tag"
+  },
+  "actions": {
+    "title": {
+      "privacy": "Sandbox Privacy",
+      "delete": "Delete Sandbox"
+    },
+    "privacyLevel": {
+      "public": "Public",
+      "unlisted": "Unlisted (only findable with url)",
+      "private": "Private"
+    },
+    "deleteSandboxConfirm": "Are you sure you want to delete this sandbox?"
+  },
+  "terms": "By using CodeSandbox you agree to our <2>Terms and Conditions</2> and <5>Privacy Policy</5>."
+}

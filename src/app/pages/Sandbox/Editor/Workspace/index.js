@@ -1,6 +1,7 @@
 // @flow
 import React from 'react';
 import { createSelector } from 'reselect';
+import { translate, Trans } from 'react-i18next';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -54,6 +55,7 @@ type Props = {
   preventTransition: boolean,
   user: User,
   isPatron: boolean,
+  t: Function,
 };
 
 const mapStateToProps = createSelector(
@@ -78,11 +80,12 @@ const Workspace = ({
   preventTransition,
   sandboxActions,
   isPatron,
+  t,
 }: Props) =>
   <Container>
     <div>
       <Logo />
-      <WorkspaceItem defaultOpen title="Project">
+      <WorkspaceItem defaultOpen title={t('title.project')}>
         <Project
           updateSandboxInfo={sandboxActions.updateSandboxInfo}
           id={sandbox.id}
@@ -100,11 +103,11 @@ const Workspace = ({
         />
       </WorkspaceItem>
 
-      <WorkspaceItem defaultOpen title="Files">
+      <WorkspaceItem defaultOpen title={t('title.files')}>
         <Files sandbox={sandbox} sandboxActions={sandboxActions} />
       </WorkspaceItem>
 
-      <WorkspaceItem title="Dependencies">
+      <WorkspaceItem title={t('title.dependencies')}>
         <Dependencies
           sandboxId={sandbox.id}
           npmDependencies={sandbox.npmDependencies}
@@ -117,7 +120,7 @@ const Workspace = ({
       </WorkspaceItem>
 
       {(sandbox.owned || sandbox.tags.length > 0) &&
-        <WorkspaceItem title="Tags">
+        <WorkspaceItem title={t('title.tags')}>
           <Tags
             sandboxId={sandbox.id}
             addTag={sandboxActions.addTag}
@@ -128,7 +131,7 @@ const Workspace = ({
         </WorkspaceItem>}
 
       {sandbox.owned &&
-        <WorkspaceItem title="Sandbox Actions">
+        <WorkspaceItem title={t('title.actions')}>
           <SandboxActions
             id={sandbox.id}
             deleteSandbox={sandboxActions.deleteSandbox}
@@ -141,9 +144,11 @@ const Workspace = ({
     </div>
 
     <TermsContainer>
-      By using CodeSandbox you agree to our{' '}
-      <Link to={tosUrl()}>Terms and Conditions</Link> and{' '}
-      <Link to={privacyUrl()}>Privacy Policy</Link>.
+      <Trans i18nKey="terms">
+        By using CodeSandbox you agree to our{' '}
+        <Link to={tosUrl()}>Terms and Conditions</Link> and{' '}
+        <Link to={privacyUrl()}>Privacy Policy</Link>.
+      </Trans>
     </TermsContainer>
   </Container>;
 
@@ -151,5 +156,7 @@ const Workspace = ({
 const Skeleton = () => <Container />;
 
 export default showAlternativeComponent(Skeleton, ['sandbox'])(
-  connect(mapStateToProps, mapDispatchToProps)(Workspace),
+  connect(mapStateToProps, mapDispatchToProps)(
+    translate('workspace')(Workspace),
+  ),
 );
