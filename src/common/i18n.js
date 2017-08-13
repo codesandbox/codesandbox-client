@@ -6,7 +6,7 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 export const nsList = [
   'common',
   'editor',
-  'github',
+  'header',
   'patron',
   'profile',
   'terms',

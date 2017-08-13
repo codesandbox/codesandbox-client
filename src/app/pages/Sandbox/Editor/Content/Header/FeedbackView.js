@@ -82,7 +82,7 @@ class FeedbackView extends React.PureComponent {
           {toggle =>
             <MessageView>
               <h3>
-                {t('headerTitle.feedback')}
+                {t('title.feedback')}
               </h3>
               <textarea
                 rows="5"
@@ -98,4 +98,4 @@ class FeedbackView extends React.PureComponent {
   }
 }
 
-export default translate('editor')(FeedbackView);
+export default translate('header')(FeedbackView);

@@ -308,7 +308,7 @@ class ShareView extends React.PureComponent {
         <HoverMenu
           HeaderComponent={Action}
           headerProps={{
-            title: t('headerTitle.share'),
+            title: t('title.share'),
             Icon: ShareIcon,
             moreInfo: true,
           }}
@@ -468,4 +468,4 @@ class ShareView extends React.PureComponent {
   }
 }
 
-export default connect(mapStateToProps)(translate('editor')(ShareView));
+export default connect(mapStateToProps)(translate('header')(ShareView));

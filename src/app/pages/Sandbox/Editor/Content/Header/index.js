@@ -202,17 +202,17 @@ class Header extends React.PureComponent {
                 />)}
           <Action
             onClick={this.forkSandbox}
-            title={t('headerTitle.fork')}
+            title={t('title.fork')}
             Icon={Fork}
           />
           <Action
             onClick={canSave && this.massUpdateModules}
             placeholder={canSave ? false : t('tooltip.modulesSaved')}
-            title={t('headerTitle.save')}
+            title={t('title.save')}
             Icon={Save}
           />
           <Action
-            title={t('headerTitle.download')}
+            title={t('title.download')}
             Icon={Download}
             onClick={this.zipSandbox}
           />
@@ -291,4 +291,4 @@ class Header extends React.PureComponent {
   }
 }
 
-export default translate('editor')(Header);
+export default translate('header')(Header);
