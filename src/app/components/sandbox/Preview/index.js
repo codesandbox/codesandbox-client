@@ -1,7 +1,7 @@
 /* @flow */
 import React from 'react';
 import styled from 'styled-components';
-
+import { translate } from 'react-i18next';
 import { debounce } from 'lodash';
 
 import type { Preferences } from 'app/store/preferences/reducer';
@@ -47,6 +47,7 @@ type Props = {
   hideNavigation?: boolean,
   setFrameHeight: ?(height: number) => any,
   dependencies: Object,
+  t: Function,
 };
 
 type State = {
@@ -55,9 +56,10 @@ type State = {
   history: Array<string>,
   historyPosition: number,
   urlInAddressBar: string,
+  t: Function,
 };
 
-export default class Preview extends React.PureComponent {
+class Preview extends React.PureComponent {
   initialPath: string;
 
   constructor(props: Props) {
@@ -364,7 +366,7 @@ export default class Preview extends React.PureComponent {
           <Message
             modules={modules}
             sandboxActions={sandboxActions}
-            message="Loading the dependencies..."
+            message={t('loading.dependencies')}
           />}
         <StyledFrame
           sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups allow-presentation"
@@ -376,3 +378,5 @@ export default class Preview extends React.PureComponent {
     );
   }
 }
+
+export default translate('workspace')(Preview);

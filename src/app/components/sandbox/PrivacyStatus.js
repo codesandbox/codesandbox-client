@@ -1,6 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import Question from 'react-icons/lib/go/question';
+import i18n from 'common/i18n';
 
 import Unlisted from 'react-icons/lib/go/link';
 import Private from 'react-icons/lib/go/lock';
@@ -18,18 +19,18 @@ const StyledPrivate = styled(Private)(iconStyles);
 
 const PRIVACY_MESSAGES = {
   0: {
-    title: 'Public',
-    tooltip: 'Everyone can see the sandbox',
+    title: i18n.t('workspace:actions.privacyLevel.public'),
+    tooltip: i18n.t('workspace:actions.privacyTooltip.public'),
     icon: null,
   },
   1: {
-    title: 'Unlisted',
-    tooltip: 'Only users with the url can see the sandbox',
+    title: i18n.t('workspace:actions.privacyLevel.unlisted'),
+    tooltip: i18n.t('workspace:actions.privacyTooltip.unlisted'),
     icon: <StyledUnlisted />,
   },
   2: {
-    title: 'Private',
-    tooltip: 'Only you can see the sandbox',
+    title: i18n.t('workspace:actions.privacyLevel.private'),
+    tooltip: i18n.t('workspace:actions.privacyTooltip.private'),
     icon: <StyledPrivate />,
   },
 };

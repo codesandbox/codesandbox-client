@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { translate } from 'react-i18next';
 
 import LeftIcon from 'react-icons/lib/fa/angle-left';
 import RightIcon from 'react-icons/lib/fa/angle-right';
@@ -22,24 +23,25 @@ const Container = styled.div`
   box-sizing: border-box;
 `;
 
-const Icons = styled.div`
-  display: flex;
-`;
+const Icons = styled.div`display: flex;`;
 
 const Icon = styled.div`
   display: inline-block;
-  color: ${props => (props.disabled ? props.theme.gray : props.theme.gray.darken(0.3))};
+  color: ${props =>
+    props.disabled ? props.theme.gray : props.theme.gray.darken(0.3)};
   font-size: 1.5rem;
   line-height: 0.5;
   margin: 0 0.1rem;
   vertical-align: middle;
   text-align: center;
 
-  ${props => !props.disabled && `
+  ${props =>
+    !props.disabled &&
+    `
     &:hover {
       background-color: #e2e2e2;
       cursor: pointer;
-    }`}
+    }`};
 `;
 
 const AddressBarContainer = styled.div`
@@ -48,9 +50,7 @@ const AddressBarContainer = styled.div`
   margin: 0 0.5rem;
 `;
 
-const SwitchContainer = styled.div`
-  flex: 0 0 3.5rem;
-`;
+const SwitchContainer = styled.div`flex: 0 0 3.5rem;`;
 
 type Props = {
   url: string,
@@ -61,35 +61,50 @@ type Props = {
   onRefresh: ?() => void,
   isProjectView: boolean,
   toggleProjectView: () => void,
+  t: Function,
 };
 
-export default ({
-  url,
-  onChange,
-  onConfirm,
-  onBack,
-  onForward,
-  onRefresh,
-  isProjectView,
-  toggleProjectView,
-}: Props) => (
-  <Container>
-    <Icons>
-      <Icon disabled={!onBack} onClick={onBack}><LeftIcon /></Icon>
-      <Icon disabled={!onForward} onClick={onForward}><RightIcon /></Icon>
-      <Icon onClick={onRefresh}><RefreshIcon /></Icon>
-    </Icons>
-    <AddressBarContainer>
-      <AddressBar url={url} onChange={onChange} onConfirm={onConfirm} />
-    </AddressBarContainer>
-    {toggleProjectView &&
-      <SwitchContainer>
-        <Tooltip
-          title={isProjectView ? 'Project View' : 'Current Module View'}
-          position="left"
-        >
-          <Switch right={isProjectView} onClick={toggleProjectView} />
-        </Tooltip>
-      </SwitchContainer>}
-  </Container>
+export default translate(
+  'editor',
+)(
+  ({
+    url,
+    onChange,
+    onConfirm,
+    onBack,
+    onForward,
+    onRefresh,
+    isProjectView,
+    toggleProjectView,
+    t,
+  }: Props) =>
+    <Container>
+      <Icons>
+        <Icon disabled={!onBack} onClick={onBack}>
+          <LeftIcon />
+        </Icon>
+        <Icon disabled={!onForward} onClick={onForward}>
+          <RightIcon />
+        </Icon>
+        <Icon onClick={onRefresh}>
+          <RefreshIcon />
+        </Icon>
+      </Icons>
+      <AddressBarContainer>
+        <AddressBar url={url} onChange={onChange} onConfirm={onConfirm} />
+      </AddressBarContainer>
+      {toggleProjectView &&
+        <SwitchContainer>
+          <Tooltip
+            title={
+              isProjectView
+                ? t('navigator.projectView')
+                : t('navigator.moduleView')
+            }
+            position="left"
+          >
+            <Switch right={isProjectView} onClick={toggleProjectView} />
+          </Tooltip>
+        </SwitchContainer>}
+    </Container>,
 );

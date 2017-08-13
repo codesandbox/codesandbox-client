@@ -59,8 +59,13 @@
     },
     "privacyLevel": {
       "public": "Public",
-      "unlisted": "Unlisted (only findable with url)",
+      "unlisted": "Unlisted",
       "private": "Private"
+    },
+    "privacyTooltip": {
+      "public": "Everyone can see the sandbox",
+      "unlisted": "Only users with the url can see the sandbox",
+      "private": "Only you can see the sandbox"
     },
     "deleteSandboxConfirm": "Are you sure you want to delete this sandbox?"
   },
