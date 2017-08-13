@@ -488,6 +488,11 @@ export default class CodeEditor extends React.PureComponent {
       compilerDefaults,
     );
 
+    monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
+      noSemanticValidation: false,
+      noSyntaxValidation: true,
+    });
+
     this.initializeModules();
     this.openNewModel(this.props.id, this.props.title);
 
@@ -553,8 +558,6 @@ export default class CodeEditor extends React.PureComponent {
     // Remove the first slash, as this will otherwise create errors in monaco
     const path = getModulePath(modules, directories, module.id);
 
-    console.log(getModulePath(modules, directories, module.id));
-    console.log(`file://${path}`);
     const model = this.monaco.editor.createModel(
       module.code,
       this.getMode(module.title),
@@ -605,7 +608,6 @@ export default class CodeEditor extends React.PureComponent {
   };
 
   openReference = data => {
-    console.log(data);
     const foundModuleId = Object.keys(modelCache).find(
       mId => modelCache[mId].model.uri.path === data.resource.path,
     );

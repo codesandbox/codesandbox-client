@@ -13,7 +13,6 @@ import defaultBoilerplates from 'app/store/entities/sandboxes/boilerplates/defau
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 
 import Navigator from './Navigator';
-import Message from './Message';
 
 const Container = styled.div`
   height: 100%;
@@ -171,6 +170,10 @@ export default class Preview extends React.PureComponent {
           this.addError(error);
           break;
         }
+        case 'render': {
+          this.executeCodeImmediately();
+          break;
+        }
         case 'urlchange': {
           const url = e.data.url.replace('/', '');
           this.commitUrl(url);
@@ -218,6 +221,8 @@ export default class Preview extends React.PureComponent {
     if (preferences.clearConsoleEnabled) {
       console.clear();
     }
+
+    console.log(this.frames);
 
     // Do it here so we can see the dependency fetching screen if needed
     this.clearErrors();

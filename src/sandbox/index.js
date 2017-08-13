@@ -8,6 +8,7 @@ import handleExternalResources from './external-resources';
 import resizeEventListener from './resize-event-listener';
 import setupHistoryListeners from './url-listeners';
 import resolveDependency from './eval/js/dependency-resolver';
+import setScreen, { resetScreen } from './status-screen';
 
 import {
   getBoilerplates,
@@ -17,6 +18,8 @@ import {
 
 let initializedResizeListener = false;
 let loadingDependencies = false;
+
+setScreen({ type: 'loading', stage: 0 });
 
 function getIndexHtml(modules) {
   const module = modules.find(
@@ -32,17 +35,18 @@ function sendReady() {
   sendMessage('Ready!');
 }
 
+function requestRender() {
+  sendMessage({ type: 'render' });
+}
+
 function initializeResizeListener() {
   const listener = resizeEventListener();
   listener.addResizeListener(document.body, () => {
     if (document.body) {
-      sendMessage(
-        {
-          type: 'resize',
-          height: document.body.getBoundingClientRect().height,
-        },
-        '*',
-      );
+      sendMessage({
+        type: 'resize',
+        height: document.body.getBoundingClientRect().height,
+      });
     }
   });
   initializedResizeListener = true;
@@ -64,13 +68,15 @@ async function compile(message) {
   if (loadingDependencies) return;
 
   loadingDependencies = true;
+  setScreen({ type: 'loading', stage: 1 });
   const { manifest, isNewCombination } = await loadDependencies(dependencies);
+  resetScreen();
   loadingDependencies = false;
 
   if (isNewCombination) {
     // If we just loaded new depdendencies, we want to get the latest changes,
     // since we might have missed them
-    sendReady();
+    requestRender();
     return;
   }
 
