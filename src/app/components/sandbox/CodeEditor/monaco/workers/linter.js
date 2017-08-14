@@ -1,5 +1,5 @@
 if (!self.eslint) {
-  self.importScripts(['/static/js/eslint.4.1.0.js']);
+  self.importScripts(['/static/js/eslint.4.1.0.min.js']);
 }
 
 /* eslint-disable global-require */

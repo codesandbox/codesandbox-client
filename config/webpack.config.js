@@ -27,7 +27,7 @@ const COMMIT_HASH = childProcess
   .toString();
 const VERSION = `${COMMIT_COUNT}-${COMMIT_HASH}`;
 
-const publicPath = __PROD__ ? 'https://codesandbox.dev/' : '/';
+const publicPath = __PROD__ ? '/' : '/';
 
 const getOutput = () =>
   __DEV__
@@ -79,10 +79,9 @@ const config = {
         test: /\.js$/,
         include: paths.src,
         exclude: [
-          /eslint\.4\.1\.0\.js$/,
-          /eslint\.4\.0\.0\.js$/,
-          /eslint\.3\.18\.0\.js$/,
+          /eslint\.4\.1\.0\.min\.js$/,
           /typescriptServices\.js$/,
+          /\.min\.js$/,
         ],
         loader: 'babel-loader?cacheDirectory',
         options: babelConfig,
@@ -247,9 +246,7 @@ const config = {
     // Make the monaco editor work
     new CopyWebpackPlugin([
       {
-        from: __DEV__
-          ? 'node_modules/monaco-editor/dev/vs'
-          : 'node_modules/monaco-editor/min/vs',
+        from: 'node_modules/monaco-editor/min/vs',
         to: 'public/vs',
       },
       {
@@ -303,11 +300,10 @@ if (__PROD__) {
       sourceMap: true,
       parallel: true,
       exclude: [
-        /eslint\.4\.1\.0\.js$/,
-        /eslint\.4\.0\.0\.js$/,
-        /eslint\.3\.18\.0\.js$/,
         /editor\..*\.js$/,
+        /\.min\.js$/,
         /typescriptServices\.js$/,
+        /public\/vs/,
       ],
     }),
     // Generate a service worker script that will precache, and keep up to date,
@@ -402,7 +398,7 @@ if (__PROD__) {
           },
         },
         {
-          urlPattern: /\.amazonaws\.com\/prod\/package\//,
+          urlPattern: /\.amazonaws\.com\/prod\/package/,
           handler: 'fastest',
           options: {
             cache: {
