@@ -24,6 +24,7 @@ import Tags from './Tags';
 import WorkspaceItem from './WorkspaceItem';
 import SandboxActions from './SandboxActions';
 import Logo from './Logo';
+import ConnectionNotice from './ConnectionNotice';
 
 const Container = styled.div`
   position: absolute;
@@ -45,7 +46,7 @@ const TermsContainer = styled.div`
   border-top: 1px solid rgba(0, 0, 0, 0.3);
   padding: 1rem;
   color: rgba(255, 255, 255, 0.6);
-  font-size: .875rem;
+  font-size: .75rem;
 `;
 
 type Props = {
@@ -140,11 +141,14 @@ const Workspace = ({
         </WorkspaceItem>}
     </div>
 
-    <TermsContainer>
-      By using CodeSandbox you agree to our{' '}
-      <Link to={tosUrl()}>Terms and Conditions</Link> and{' '}
-      <Link to={privacyUrl()}>Privacy Policy</Link>.
-    </TermsContainer>
+    <div>
+      <ConnectionNotice />
+      <TermsContainer>
+        By using CodeSandbox you agree to our{' '}
+        <Link to={tosUrl()}>Terms and Conditions</Link> and{' '}
+        <Link to={privacyUrl()}>Privacy Policy</Link>.
+      </TermsContainer>
+    </div>
   </Container>;
 
 // The skeleton to show if sandbox doesn't exist

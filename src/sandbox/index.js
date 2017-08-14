@@ -1,3 +1,4 @@
+import registerServiceWorker from 'common/registerServiceWorker';
 import evalModule, { deleteCache, clearCache } from './eval';
 import NoDomChangeError from './errors/no-dom-change-error';
 import loadDependencies from './npm';
@@ -10,6 +11,8 @@ import resolveDependency from './eval/js/dependency-resolver';
 import { resetScreen } from './status-screen';
 
 import { inject, uninject } from './react-error-overlay/overlay';
+
+registerServiceWorker('/sandbox-service-worker.js');
 
 import {
   getBoilerplates,
