@@ -103,10 +103,11 @@ export default {
     isInProjectView,
   }),
 
-  setCurrentModule: (id: string, moduleId: string) => ({
+  setCurrentModule: (id: string, moduleId: string, lineNumber?: number) => ({
     type: SET_CURRENT_MODULE,
     id,
     moduleId,
+    lineNumber,
   }),
 
   getById: (id: string) => async (dispatch: Function) => {

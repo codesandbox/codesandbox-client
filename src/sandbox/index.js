@@ -1,4 +1,6 @@
 import registerServiceWorker from 'common/registerServiceWorker';
+import { getModulePath } from 'app/store/entities/sandboxes/modules/selectors';
+
 import evalModule, { deleteCache, clearCache } from './eval';
 import NoDomChangeError from './errors/no-dom-change-error';
 import loadDependencies from './npm';
@@ -19,7 +21,6 @@ import {
   evalBoilerplates,
   findBoilerplate,
 } from './boilerplates';
-import { getModulePath } from '../app/store/entities/sandboxes/modules/selectors';
 
 let initializedResizeListener = false;
 let loadingDependencies = false;
@@ -55,6 +56,12 @@ function initializeResizeListener() {
   initializedResizeListener = true;
 }
 
+let actionsEnabled = false;
+
+export function areActionsEnabled() {
+  return actionsEnabled;
+}
+
 async function compile(message) {
   const {
     modules,
@@ -64,9 +71,12 @@ async function compile(message) {
     changedModule,
     externalResources,
     dependencies,
+    hasActions,
   } = message.data;
   uninject();
   inject();
+
+  actionsEnabled = hasActions;
 
   handleExternalResources(externalResources);
 

@@ -231,6 +231,7 @@ export default class Preview extends React.PureComponent {
       externalResources,
       preferences,
       dependencies,
+      runActionFromPreview,
     } = this.props;
     if (preferences.clearConsoleEnabled) {
       console.clear();
@@ -248,6 +249,7 @@ export default class Preview extends React.PureComponent {
       modules,
       directories,
       externalResources,
+      hasActions: !!runActionFromPreview,
     });
   };
 

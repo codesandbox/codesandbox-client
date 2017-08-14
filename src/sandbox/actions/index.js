@@ -4,6 +4,7 @@
 // a module. This will allow plugins to alter project content in the future
 
 import * as notifications from './notifications';
+import * as editor from './/editor';
 import * as module from './source/module';
 import * as dependencies from './source/dependencies';
 
@@ -11,6 +12,7 @@ import sendMessage from '../utils/send-message';
 
 const actions = {
   notifications,
+  editor,
   source: {
     module,
     dependencies,

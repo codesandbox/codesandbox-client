@@ -27,6 +27,11 @@ export default {
         await dispatch(sandboxActions.addNPMDependency(sandboxId, dependency));
         return dispatch(sandboxActions.forceRender(sandboxId));
       }
+      case 'editor.open-module': {
+        const { moduleId, sandboxId, lineNumber } = action;
+        // TODO functionality to open specific lineNumber
+        return dispatch(sandboxActions.setCurrentModule(sandboxId, moduleId));
+      }
       default:
         return null;
     }

@@ -25,6 +25,8 @@ import type { FrameSetting } from './frames';
 import type { SwitchCallback } from './additional';
 import { createSuggestions } from './suggestions';
 
+import { areActionsEnabled } from '../../';
+
 function createOverlay(
   document: Document,
   error: Error,
@@ -91,7 +93,11 @@ function createOverlay(
   container.appendChild(header);
   container.appendChild(messageHeader);
 
-  if (error.suggestions && error.suggestions.length > 0) {
+  if (
+    areActionsEnabled() &&
+    error.suggestions &&
+    error.suggestions.length > 0
+  ) {
     container.appendChild(createSuggestions(error));
   }
 

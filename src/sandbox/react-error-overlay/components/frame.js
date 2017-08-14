@@ -23,6 +23,8 @@ import {
   anchorStyle,
   hiddenStyle,
 } from '../styles';
+import { getCompiledModuleByPath } from '../../eval/js/index';
+import actions, { dispatch } from '../../actions';
 
 function getGroupToggle(
   document: Document,
@@ -285,13 +287,15 @@ function createFrame(
       sourceFileName.trim().indexOf(' ') !== -1;
     if (!isInternalWebpackBootstrapCode) {
       onSourceClick = () => {
-        // Keep this in sync with react-error-overlay/middleware.js
-        fetch(
-          '/__open-stack-frame-in-editor?fileName=' +
-            window.encodeURIComponent(sourceFileName) +
-            '&lineNumber=' +
+        // OKAY IK BEN EEN KOEKE
+        const module = getCompiledModuleByPath(sourceFileName);
+
+        dispatch(
+          actions.editor.openModule(
+            module.id,
             window.encodeURIComponent(sourceLineNumber || 1),
-        ).then(() => {}, () => {});
+          ),
+        );
       };
     }
   }
