@@ -193,6 +193,7 @@ class EditorPreview extends React.PureComponent {
           sandboxActions={sandboxActions}
           dependencies={sandbox.npmDependencies}
           runActionFromPreview={previewApiActions.executeAction}
+          forcedRenders={sandbox.forcedRenders}
         />
       </FullSize>
     );

@@ -1,7 +1,6 @@
 // @flow
 import SandboxError from './sandbox-error';
 import actions, { dispatch } from '../actions';
-import { sendReady } from '../';
 
 export default class DependencyNotFoundError extends SandboxError {
   constructor(dependencyName: string) {
@@ -25,9 +24,6 @@ export default class DependencyNotFoundError extends SandboxError {
         title: `Add ${parsedName} as dependency`,
         action: () => {
           dispatch(actions.source.dependencies.add(parsedName));
-          setTimeout(() => {
-            sendReady();
-          }, 0);
         },
       },
     ];

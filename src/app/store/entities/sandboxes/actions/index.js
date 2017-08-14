@@ -52,6 +52,7 @@ export const SET_PROJECT_VIEW = 'SET_PROJECT_VIEW';
 export const SET_VIEW_MODE = 'SET_VIEW_MODE';
 export const CREATE_ZIP = 'CREATE_ZIP';
 export const SET_SANDBOX_PRIVACY = 'SET_SANDBOX_PRIVACY';
+export const FORCE_RENDER = 'FORCE_RENDER';
 
 export default {
   updateSandboxInfo: (id: string, title: string, description: string) => async (
@@ -391,6 +392,11 @@ export default {
       throw e;
     }
   },
+
+  forceRender: (id: string) => ({
+    type: FORCE_RENDER,
+    id,
+  }),
 
   ...fileActions,
 };

@@ -45,6 +45,7 @@ type Props = {
   setFrameHeight: ?(height: number) => any,
   dependencies: Object,
   runActionFromPreview: (arg: Object) => any,
+  forcedRenders: ?number,
 };
 
 type State = {
@@ -93,6 +94,9 @@ export default class Preview extends React.PureComponent {
     }
 
     if (prevProps.sandboxId !== this.props.sandboxId) {
+      this.executeCodeImmediately();
+      return;
+    } else if (prevProps.forcedRenders !== this.props.forcedRenders) {
       this.executeCodeImmediately();
       return;
     }
@@ -330,8 +334,6 @@ export default class Preview extends React.PureComponent {
   render() {
     const {
       sandboxId,
-      modules,
-      sandboxActions,
       isInProjectView,
       setProjectView,
       hideNavigation,

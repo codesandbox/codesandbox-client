@@ -24,7 +24,8 @@ export default {
       }
       case 'source.dependencies.add': {
         const { sandboxId, dependency } = action;
-        return dispatch(sandboxActions.addNPMDependency(sandboxId, dependency));
+        await dispatch(sandboxActions.addNPMDependency(sandboxId, dependency));
+        return dispatch(sandboxActions.forceRender(sandboxId));
       }
       default:
         return null;

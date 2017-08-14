@@ -125,6 +125,7 @@ export type Sandbox = {
   git: ?GitInfo,
   tags: Array<string>,
   sourceId: string, // This is the source it's assigned to, a source contains all dependencies, modules and directories
+  forcedRenders: number,
 };
 
 export type Preferences = {

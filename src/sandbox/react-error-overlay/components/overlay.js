@@ -25,8 +25,6 @@ import type { FrameSetting } from './frames';
 import type { SwitchCallback } from './additional';
 import { createSuggestions } from './suggestions';
 
-import SandboxError from '../../errors/sandbox-error';
-
 function createOverlay(
   document: Document,
   error: Error,

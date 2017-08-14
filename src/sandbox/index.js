@@ -19,6 +19,7 @@ import {
   evalBoilerplates,
   findBoilerplate,
 } from './boilerplates';
+import { getModulePath } from '../app/store/entities/sandboxes/modules/selectors';
 
 let initializedResizeListener = false;
 let loadingDependencies = false;
@@ -154,9 +155,11 @@ async function compile(message) {
     console.error(e);
 
     e.module = e.module || changedModule;
+    e.fileName = e.fileName || getModulePath(modules, directories, e.module);
 
     const event = new Event('error');
     event.error = e;
+
     window.dispatchEvent(event);
   }
 }

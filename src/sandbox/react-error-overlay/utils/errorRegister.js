@@ -42,13 +42,14 @@ function consume(
     enhancedFramesPromise = map(parsedFrames, contextSize);
   }
   return enhancedFramesPromise.then(enhancedFrames => {
-    if (
-      enhancedFrames
-        .map(f => f._originalFileName)
-        .filter(f => f != null && f.indexOf('node_modules') === -1).length === 0
-    ) {
-      return null;
-    }
+    // // We comment this out, because we always want to show errors
+    // if (
+    //   enhancedFrames
+    //     .map(f => f._originalFileName)
+    //     .filter(f => f != null && f.indexOf('node_modules') === -1).length === 0
+    // ) {
+    //   return null;
+    // }
     enhancedFrames = enhancedFrames.filter(
       ({ functionName }) =>
         functionName == null ||

@@ -14,6 +14,7 @@ import {
   UNLIKE_SANDBOX_ACTIONS,
   SET_TAGS,
   SET_SANDBOX_PRIVACY,
+  FORCE_RENDER,
 } from './actions';
 
 import {
@@ -132,6 +133,11 @@ function singleSandboxReducer(sandbox: Sandbox, action: Action): Sandbox {
         ...sandbox,
         privacy: action.privacy,
       };
+    case FORCE_RENDER:
+      return {
+        ...sandbox,
+        forcedRenders: sandbox.forcedRenders + 1,
+      };
     default:
       return sandbox;
   }
@@ -159,7 +165,8 @@ export default function reducer(
     case UNLIKE_SANDBOX_ACTIONS.REQUEST:
     case UNLIKE_SANDBOX_ACTIONS.FAILURE:
     case UNLIKE_SANDBOX_ACTIONS.SUCCESS:
-    case SET_SANDBOX_PRIVACY: {
+    case SET_SANDBOX_PRIVACY:
+    case FORCE_RENDER: {
       const id = action.id || (action.meta ? action.meta.id : undefined);
       if (state[id]) {
         return {
