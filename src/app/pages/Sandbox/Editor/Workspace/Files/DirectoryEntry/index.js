@@ -10,6 +10,7 @@ import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 import { validateTitle } from 'app/store/entities//sandboxes/modules/validator';
 import contextMenuActionCreators from 'app/store/context-menu/actions';
 import { getModuleParents } from 'app/store/entities/sandboxes/modules/selectors';
+import { translate } from 'react-i18next';
 
 import Entry from './Entry';
 import DirectoryChildren from './DirectoryChildren';
@@ -52,6 +53,7 @@ type Props = {
   sandboxActions: typeof sandboxActionCreators,
   currentModuleId: ?string,
   isInProjectView: boolean,
+  t: Function,
 };
 type State = {
   creating: '' | 'module' | 'directory',
@@ -100,11 +102,13 @@ class DirectoryEntry extends React.PureComponent {
   };
 
   deleteModule = (id: string) => {
-    const { sandboxId, modules, sandboxActions } = this.props;
+    const { sandboxId, modules, sandboxActions, t } = this.props;
     const module = modules.find(m => m.id === id);
 
     const confirmed = confirm(
-      `Are you sure you want to delete ${module.title}?`,
+      t('files.confirm.deleteModule', {
+        module: module.title,
+      }),
     );
 
     if (confirmed) {
@@ -133,10 +137,12 @@ class DirectoryEntry extends React.PureComponent {
   };
 
   deleteDirectory = () => {
-    const { id, title, sandboxId, sandboxActions } = this.props;
+    const { id, title, sandboxId, sandboxActions, t } = this.props;
 
     const confirmed = confirm(
-      `Are you sure you want to delete ${title} and all its children?`,
+      t('files.confirm.deleteDirectory', {
+        title,
+      }),
     );
 
     if (confirmed) {
@@ -305,5 +311,7 @@ function collectTarget(connectMonitor, monitor) {
 }
 
 export default connect(null, mapDispatchToProps)(
-  DropTarget('ENTRY', entryTarget, collectTarget)(DirectoryEntry),
+  DropTarget('ENTRY', entryTarget, collectTarget)(
+    translate('workspace')(DirectoryEntry),
+  ),
 );

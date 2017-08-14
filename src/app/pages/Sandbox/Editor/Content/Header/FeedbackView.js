@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import FeedbackIcon from 'react-icons/lib/go/comment-discussion';
 import Button from 'app/components/buttons/Button';
+import { translate } from 'react-i18next';
 
 import HoverMenu from './HoverMenu';
 import Action from './Action';
@@ -47,9 +48,10 @@ const MessageView = styled.div`
 
 type Props = {
   sendMessage: (message: string) => void,
+  t: Function,
 };
 
-export default class FeedbackView extends React.PureComponent {
+class FeedbackView extends React.PureComponent {
   props: Props;
   state = {
     message: '',
@@ -66,22 +68,26 @@ export default class FeedbackView extends React.PureComponent {
   };
 
   render() {
+    const { t } = this.props;
+
     return (
       <Container>
         <HoverMenu
           HeaderComponent={Action}
           headerProps={{
             Icon: FeedbackIcon,
-            tooltip: 'Give feedback',
+            tooltip: t('tooltip.feedback'),
           }}
         >
           {toggle =>
             <MessageView>
-              <h3>Send feedback</h3>
+              <h3>
+                {t('title.feedback')}
+              </h3>
               <textarea
                 rows="5"
                 value={this.state.message}
-                placeholder="Ideas? Feedback? Thoughts? We'd love to hear them all!"
+                placeholder={t('feedbackPlaceholder')}
                 onChange={this.handleChange}
               />
               <Button onClick={this.handleSend(toggle)}>Send</Button>
@@ -91,3 +97,5 @@ export default class FeedbackView extends React.PureComponent {
     );
   }
 }
+
+export default translate('header')(FeedbackView);

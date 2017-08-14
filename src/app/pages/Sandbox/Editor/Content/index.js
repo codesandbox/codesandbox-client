@@ -1,6 +1,7 @@
 // @flow
 import React from 'react';
 import styled from 'styled-components';
+import { translate } from 'react-i18next';
 import { createSelector } from 'reselect';
 import { Prompt } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
@@ -47,6 +48,7 @@ type Props = {
   moduleActions: typeof moduleActionCreators,
   sandboxActions: typeof sandboxActionCreators,
   userActions: typeof userActionCreators,
+  t: Function,
 };
 
 type State = {
@@ -87,11 +89,11 @@ class EditorPreview extends React.PureComponent {
 
   componentDidMount() {
     window.onbeforeunload = () => {
-      const { modules } = this.props;
+      const { modules, t } = this.props;
       const notSynced = modules.some(m => m.isNotSynced);
 
       if (notSynced) {
-        return 'You have not saved all your modules, are you sure you want to close this tab?';
+        return t('confirm.unsavedClose');
       }
 
       return null;
@@ -130,10 +132,11 @@ class EditorPreview extends React.PureComponent {
       user,
       workspaceHidden,
       toggleWorkspace,
+      t,
     } = this.props;
 
     const mainModule = findMainModule(modules);
-    if (!mainModule) throw new Error('Cannot find main module');
+    if (!mainModule) throw new Error(t('error.mainModuleNotFound'));
 
     const { currentModule: currentModuleId } = sandbox;
 
@@ -192,8 +195,7 @@ class EditorPreview extends React.PureComponent {
       <FullSize>
         <Prompt
           when={notSynced}
-          message={() =>
-            'You have not saved this sandbox, are you sure you want to navigate away?'}
+          message={() => t('confirm.unsavedNavigation')}
         />
         <Header
           sandbox={sandbox}
@@ -238,5 +240,7 @@ class EditorPreview extends React.PureComponent {
 }
 
 export default showAlternativeComponent(Skeleton, ['sandbox'])(
-  connect(mapStateToProps, mapDispatchToProps)(EditorPreview),
+  connect(mapStateToProps, mapDispatchToProps)(
+    translate('workspace')(EditorPreview),
+  ),
 );

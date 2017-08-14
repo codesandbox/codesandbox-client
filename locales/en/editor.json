@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "editorPageTitle": "Editor - CodeSandbox",
+    "sandboxPageTitle": "{{title}} - CodeSandbox"
+  },
+  "error": {
+    "sandboxNotFound": "We could not find the Sandbox you're looking for...",
+    "sandboxFetch": "An error occurred when fetching the sandbox:",
+    "mainModuleNotFound": "Cannot find main module"
+  },
+  "confirm": {
+    "unsavedNavigation": "You have not saved this sandbox, are you sure you want to navigate away?",
+    "unsavedClose": "You have not saved all your modules, are you sure you want to close this tab?"
+  },
+  "tooltip": {
+    "prettier": "Made possible by Prettier"
+  },
+  "button": {
+    "prettify": "Prettify",
+    "save": "Save"
+  },
+  "loading": {
+    "dependencies": "Loading the dependencies..."
+  },
+  "navigator": {
+    "projectView": "Project View",
+    "moduleView": "Current Module View"
+  }
+}

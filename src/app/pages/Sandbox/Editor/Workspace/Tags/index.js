@@ -2,6 +2,7 @@ import React from 'react';
 import Margin from 'app/components/spacing/Margin';
 import Button from 'app/components/buttons/Button';
 import Tags from 'app/components/sandbox/Tags';
+import { translate } from 'react-i18next';
 
 import WorkspaceSubtitle from '../WorkspaceSubtitle';
 import WorkspaceInputContainer from '../WorkspaceInputContainer';
@@ -11,9 +12,10 @@ type Props = {
   tags: Array<string>,
   isOwner: boolean,
   addTag: (tag: string) => void,
+  t: Function,
 };
 
-export default class TagsWorkspace extends React.PureComponent {
+class TagsWorkspace extends React.PureComponent {
   props: Props;
   state = {
     tagName: '',
@@ -45,12 +47,14 @@ export default class TagsWorkspace extends React.PureComponent {
   };
 
   render() {
-    const { tags, isOwner } = this.props;
+    const { tags, isOwner, t } = this.props;
     return (
       <div>
         {tags.length > 0 &&
           <div>
-            <WorkspaceSubtitle>Tags</WorkspaceSubtitle>
+            <WorkspaceSubtitle>
+              {t('title.tags')}
+            </WorkspaceSubtitle>
             <div style={{ fontSize: '.875rem' }}>
               <Tags tags={tags} removeTag={isOwner && this.removeTag} />
             </div>
@@ -58,13 +62,15 @@ export default class TagsWorkspace extends React.PureComponent {
 
         {isOwner &&
           <div>
-            <WorkspaceSubtitle>Add up to 5 tags</WorkspaceSubtitle>
+            <WorkspaceSubtitle>
+              {t('tags.title')}
+            </WorkspaceSubtitle>
             <WorkspaceInputContainer>
               <input
                 onChange={this.onChange}
                 value={this.state.tagName}
                 onKeyUp={this.handleKeyUp}
-                placeholder="Add a tag"
+                placeholder={t('tags.addTagPlaceholder')}
               />
             </WorkspaceInputContainer>
             <Margin horizontal={1} vertical={0.5}>
@@ -74,7 +80,7 @@ export default class TagsWorkspace extends React.PureComponent {
                 block
                 small
               >
-                Add Tag
+                {t('tags.addTagButton')}
               </Button>
             </Margin>
           </div>}
@@ -82,3 +88,5 @@ export default class TagsWorkspace extends React.PureComponent {
     );
   }
 }
+
+export default translate('workspace')(TagsWorkspace);

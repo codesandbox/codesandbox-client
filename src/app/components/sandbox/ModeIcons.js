@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import theme from 'common/theme';
-
+import { translate } from 'react-i18next';
 import Tooltip from 'app/components/Tooltip';
 
 const Tooltips = styled.div`
@@ -29,8 +29,11 @@ const ViewIcon = styled.div`
     transition: 0.3s ease all;
     content: "";
     position: absolute;
-    left: 0; right: 0; bottom: 0; top: 0;
-    background-color: rgba(0,0,0,0.6);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    background-color: rgba(0, 0, 0, 0.6);
     opacity: ${props => (props.active ? 0 : 1)};
     border-radius: 2px;
     overflow: hidden;
@@ -43,7 +46,7 @@ const ViewIcon = styled.div`
 const Icon = styled.div`
   display: inline-block;
   width: ${props => props.size || (props.half ? 1.5 : 3)}rem;
-  border: 1px solid rgba(0,0,0,0.1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
   height: 100%;
 `;
 
@@ -61,33 +64,36 @@ type Props = {
   setEditorView: () => void,
   setPreviewView: () => void,
   setMixedView: () => void,
+  t: Function,
 };
 
-export default function AllIcons({
-  showEditor,
-  showPreview,
-  setEditorView,
-  setMixedView,
-  setPreviewView,
-}: Props) {
-  return (
+export default translate(
+  'header',
+)(
+  ({
+    showEditor,
+    showPreview,
+    setEditorView,
+    setMixedView,
+    setPreviewView,
+    t,
+  }: Props) =>
     <Tooltips>
-      <Tooltip title="Editor view">
+      <Tooltip title={t('tooltip.editorView')}>
         <ViewIcon onClick={setEditorView} active={showEditor && !showPreview}>
           <EditorIcon />
         </ViewIcon>
       </Tooltip>
-      <Tooltip title="Split view">
+      <Tooltip title={t('tooltip.splitView')}>
         <ViewIcon onClick={setMixedView} active={showEditor && showPreview}>
           <EditorIcon half />
           <PreviewIcon half />
         </ViewIcon>
       </Tooltip>
-      <Tooltip title="Preview view">
+      <Tooltip title={t('tooltip.previewView')}>
         <ViewIcon onClick={setPreviewView} active={!showEditor && showPreview}>
           <PreviewIcon />
         </ViewIcon>
       </Tooltip>
-    </Tooltips>
-  );
-}
+    </Tooltips>,
+);

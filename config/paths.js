@@ -32,6 +32,7 @@ module.exports = {
   sandboxHtml: path.join(sandboxSrc, 'index.html'),
   appPackageJson: resolveApp('package.json'),
   staticPath: resolveApp('public'),
+  i18nPath: resolveApp('locales'),
   src,
   appSrc,
   sandboxSrc,

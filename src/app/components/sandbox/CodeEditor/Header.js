@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { translate } from 'react-i18next';
 
 import Button from 'app/components/buttons/Button';
 import { Tooltip } from 'react-tippy';
@@ -35,9 +36,12 @@ type Props = {
   path: string,
   saveComponent: ?() => void,
   prettify: ?Function,
+  t: Function,
 };
 
-export default ({ path, saveComponent, prettify }: Props) => {
+export default translate(
+  'editor',
+)(({ path, saveComponent, prettify, t }: Props) => {
   const pathParts = path.split('/');
   const fileName = pathParts[pathParts.length - 1];
   const pathName = pathParts.slice(0, pathParts.length - 1).join('/');
@@ -51,15 +55,15 @@ export default ({ path, saveComponent, prettify }: Props) => {
       </div>
 
       <Buttons>
-        <Tooltip position="bottom" title="Made possible by Prettier">
+        <Tooltip position="bottom" title={t('tooltip.prettier')}>
           <Button disabled={!prettify} onClick={prettify} small>
-            Prettify
+            {t('button.prettify')}
           </Button>
         </Tooltip>
         <Button disabled={!saveComponent} onClick={saveComponent} small>
-          Save
+          {t('button.save')}
         </Button>
       </Buttons>
     </Container>
   );
-};
+});

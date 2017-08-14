@@ -8,6 +8,7 @@ import Relative from 'app/components/Relative';
 import LogoIcon from 'app/components/Logo';
 import Tooltip from 'app/components/Tooltip';
 import theme from 'common/theme';
+import { translate } from 'react-i18next';
 
 const Container = styled.a`
   display: flex;
@@ -42,7 +43,13 @@ const GithubContainer = styled.a`
   text-decoration: none;
 `;
 
-export default class Logo extends React.PureComponent {
+type Props = {
+  t: Function,
+};
+
+class Logo extends React.PureComponent {
+  props: Props;
+
   setupHeadway = el => {
     if (el && window.Headway) {
       const config = {
@@ -64,13 +71,17 @@ export default class Logo extends React.PureComponent {
   };
 
   render() {
+    const { t } = this.props;
+
     return (
       <Relative>
         <Container id="release" ref={this.setupHeadway} href="/">
           <div style={{ position: 'relative', display: 'flex' }}>
             <LogoIcon width={30} height={30} />
           </div>
-          <Title>CodeSandbox</Title>
+          <Title>
+            {t('title.platform')}
+          </Title>
         </Container>
 
         <GithubContainer
@@ -78,7 +89,7 @@ export default class Logo extends React.PureComponent {
           target="_blank"
           rel="noreferrer noopener"
         >
-          <Tooltip title="View source">
+          <Tooltip title={t('workspace:tooltip.viewSource')}>
             <GithubIcon />
           </Tooltip>
         </GithubContainer>
@@ -86,3 +97,5 @@ export default class Logo extends React.PureComponent {
     );
   }
 }
+
+export default translate(['common', 'workspace'])(Logo);

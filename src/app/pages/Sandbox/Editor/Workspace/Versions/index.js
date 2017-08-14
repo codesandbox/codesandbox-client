@@ -79,22 +79,23 @@ export default class Versions extends React.PureComponent {
     return (
       <div>
         <Description>
-          You can publish versions of your sandbox to make your sandbox available
-          for others to use as a dependency.
+          You can publish versions of your sandbox to make your sandbox
+          available for others to use as a dependency.
         </Description>
 
         <PublishFields />
 
         <WorkspaceSubtitle>Published versions</WorkspaceSubtitle>
-        {[].map(v => (
+        {[].map(v =>
           <EntryContainer key={v.version}>
-            <span>{v.version}</span>
+            <span>
+              {v.version}
+            </span>
             <VersionDate>
               {/* moment(v.insertedAt).format('lll') */}
             </VersionDate>
-          </EntryContainer>
-        ))}
-
+          </EntryContainer>,
+        )}
       </div>
     );
   }

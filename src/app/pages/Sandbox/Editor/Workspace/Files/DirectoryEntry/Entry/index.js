@@ -2,6 +2,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { DragSource } from 'react-dnd';
+import { translate } from 'react-i18next';
 
 import FileIcon from 'react-icons/lib/fa/file';
 import FolderIcon from 'react-icons/lib/fa/folder';
@@ -40,6 +41,7 @@ type Props = {
   isInProjectView: boolean, // eslint-disable-line
   moduleHasError: boolean,
   closeTree: ?() => void, // eslint-disable-line
+  t: Function,
 };
 
 type State = {
@@ -106,6 +108,7 @@ class Entry extends React.PureComponent {
       onCreateDirectoryClick,
       rename,
       deleteEntry,
+      t,
     } = this.props;
 
     if (isMainModule) {
@@ -119,22 +122,22 @@ class Entry extends React.PureComponent {
 
     const items = [
       onCreateModuleClick && {
-        title: 'New Module',
+        title: t('files.actions.newModule'),
         action: onCreateModuleClick,
         icon: FileIcon,
       },
       onCreateDirectoryClick && {
-        title: 'New Directory',
+        title: t('files.actions.newDirectory'),
         action: onCreateDirectoryClick,
         icon: FolderIcon,
       },
       rename && {
-        title: 'Rename',
+        title: t('files.actions.rename'),
         action: this.rename,
         icon: EditIcon,
       },
       deleteEntry && {
-        title: 'Delete',
+        title: t('files.actions.delete'),
         action: this.delete,
         color: theme.red.darken(0.2)(),
         icon: DeleteIcon,
@@ -236,4 +239,6 @@ const collectSource = (connect, monitor) => ({
   isDragging: monitor.isDragging(),
 });
 
-export default DragSource('ENTRY', entrySource, collectSource)(Entry);
+export default DragSource('ENTRY', entrySource, collectSource)(
+  translate('workspace')(Entry),
+);

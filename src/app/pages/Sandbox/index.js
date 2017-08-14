@@ -3,6 +3,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { translate } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { createSelector } from 'reselect';
 
@@ -21,6 +22,7 @@ type Props = {
   sandboxes: { [id: string]: Sandbox },
   sandboxActions: typeof sandboxActionCreators,
   match: { params: { id: string } },
+  t: Function,
 };
 type State = {
   notFound: boolean,
@@ -40,6 +42,7 @@ const mapStateToProps = createSelector(sandboxesSelector, sandboxes => ({
 const mapDispatchToProps = dispatch => ({
   sandboxActions: bindActionCreators(sandboxActionCreators, dispatch),
 });
+
 class SandboxPage extends React.PureComponent {
   componentDidMount() {
     this.fetchSandbox(this.props.match.params.id);
@@ -82,17 +85,19 @@ class SandboxPage extends React.PureComponent {
   state = { notFound: false, currentId: null };
 
   render() {
-    const { sandboxes, match } = this.props;
+    const { sandboxes, match, t } = this.props;
     const { currentId } = this.state;
 
     if (this.state.notFound) {
       return (
         <Centered horizontal vertical>
           <Title>
-            We could not find the Sandbox you{"'"}re looking for...
+            {t('error.sandboxNotFound')}
             <br />
             <br />
-            <Link to="/s/new">Create Sandbox</Link>
+            <Link to="/s/new">
+              {t('createSandboxLink')}
+            </Link>
           </Title>
         </Centered>
       );
@@ -101,13 +106,17 @@ class SandboxPage extends React.PureComponent {
     if (this.state.error) {
       return (
         <Centered horizontal vertical>
-          <Title>An error occured when fetching the sandbox:</Title>
+          <Title>
+            {t('error.sandboxFetch')}
+          </Title>
           <SubTitle>
             {this.state.error}
           </SubTitle>
           <br />
           <br />
-          <Link to="/s/new">Create Sandbox</Link>
+          <Link to="/s/new">
+            {t('createSandboxLink')}
+          </Link>
         </Centered>
       );
     }
@@ -116,8 +125,8 @@ class SandboxPage extends React.PureComponent {
 
     if (sandbox) {
       document.title = sandbox.title
-        ? `${sandbox.title} - CodeSandbox`
-        : 'Editor - CodeSandbox';
+        ? t('meta.sandboxPageTitle', { title: sandbox.title })
+        : t('meta.editorPageTitle');
     }
 
     return (
@@ -127,4 +136,6 @@ class SandboxPage extends React.PureComponent {
     );
   }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(SandboxPage);
+export default connect(mapStateToProps, mapDispatchToProps)(
+  translate('editor')(SandboxPage),
+);

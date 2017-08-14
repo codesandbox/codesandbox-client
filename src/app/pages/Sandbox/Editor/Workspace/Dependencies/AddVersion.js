@@ -1,12 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
+import { translate } from 'react-i18next';
 
 import Button from 'app/components/buttons/Button';
 import WorkspaceInputContainer from '../WorkspaceInputContainer';
 
-const ButtonContainer = styled.div`
-  margin: 0.5rem 1rem;
-`;
+const ButtonContainer = styled.div`margin: 0.5rem 1rem;`;
 
 type State = {
   name: string,
@@ -17,6 +16,7 @@ type Props = {
   addDependency: (dependency: string, version: string) => Promise<boolean>,
   existingDependencies: Array<string>,
   processing: boolean,
+  t: Function,
 };
 
 const initialState = {
@@ -24,7 +24,7 @@ const initialState = {
   version: '',
 };
 
-export default class AddVersion extends React.PureComponent {
+class AddVersion extends React.PureComponent {
   state = initialState;
 
   state: State;
@@ -56,21 +56,21 @@ export default class AddVersion extends React.PureComponent {
 
   render() {
     const { name, version, replacing } = this.state;
-    const { processing } = this.props;
+    const { processing, t } = this.props;
     const isValid = name !== '';
     return (
       <div style={{ position: 'relative' }}>
         <WorkspaceInputContainer>
           <input
             style={{ flex: 3 }}
-            placeholder="package name"
+            placeholder={t('dependencies.placeholder.package')}
             value={name}
             onChange={this.setName}
             onKeyUp={this.handleKeyUp}
           />
           <input
             style={{ flex: 1 }}
-            placeholder="version"
+            placeholder={t('dependencies.placeholder.version')}
             value={version}
             onChange={this.setVersion}
             onKeyUp={this.handleKeyUp}
@@ -83,10 +83,14 @@ export default class AddVersion extends React.PureComponent {
             small
             onClick={this.addDependency}
           >
-            {replacing ? 'Replace' : 'Add'} Package
+            {replacing
+              ? t('dependencies.button.replacePackage')
+              : t('dependencies.button.addPackage')}
           </Button>
         </ButtonContainer>
       </div>
     );
   }
 }
+
+export default translate('workspace')(AddVersion);

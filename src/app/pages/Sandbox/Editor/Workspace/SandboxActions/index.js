@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-
+import { translate } from 'react-i18next';
 import Button from 'app/components/buttons/Button';
 
 import WorkspaceInputContainer from '../WorkspaceInputContainer';
@@ -14,6 +14,7 @@ type Props = {
   setSandboxPrivacy: (id: string, privacy: number) => void,
   isPatron: boolean,
   privacy: 0 | 1 | 2,
+  t: Function,
 };
 
 const PrivacySelect = styled.select`
@@ -28,14 +29,15 @@ const PrivacySelect = styled.select`
   box-sizing: border-box;
 `;
 
-export default class SandboxSettings extends React.PureComponent {
+class SandboxSettings extends React.PureComponent {
   props: Props;
   state = {
     loading: false,
   };
 
   handleDeleteSandbox = async () => {
-    const really = confirm('Are you sure you want to delete this sandbox?'); // TODO: confirm???
+    const { t } = this.props;
+    const really = confirm(t('actions.deleteSandboxConfirm')); // TODO: confirm???
     if (really) {
       await this.props.deleteSandbox(this.props.id);
       await this.props.newSandboxUrl();
@@ -59,24 +61,34 @@ export default class SandboxSettings extends React.PureComponent {
   };
 
   render() {
-    const { isPatron, privacy } = this.props;
+    const { isPatron, privacy, t } = this.props;
     return (
       <div>
         {isPatron &&
           <div>
-            <WorkspaceSubtitle>Sandbox Privacy</WorkspaceSubtitle>
+            <WorkspaceSubtitle>
+              {t('actions.title.privacy')}
+            </WorkspaceSubtitle>
             <WorkspaceInputContainer>
               <PrivacySelect
                 value={privacy}
                 onChange={this.updateSandboxPrivacy}
               >
-                <option value={0}>Public</option>
-                <option value={1}>Unlisted (only findable with url)</option>
-                <option value={2}>Private</option>
+                <option value={0}>
+                  {t('actions.privacyLevel.public')}
+                </option>
+                <option value={1}>
+                  {t('actions.privacyLevel.unlisted')}
+                </option>
+                <option value={2}>
+                  {t('actions.privacyLevel.private')}
+                </option>
               </PrivacySelect>
             </WorkspaceInputContainer>
           </div>}
-        <WorkspaceSubtitle>Delete Sandbox</WorkspaceSubtitle>
+        <WorkspaceSubtitle>
+          {t('actions.title.delete')}
+        </WorkspaceSubtitle>
         <WorkspaceInputContainer>
           <Button
             small
@@ -87,10 +99,12 @@ export default class SandboxSettings extends React.PureComponent {
             }}
             onClick={this.handleDeleteSandbox}
           >
-            Delete Sandbox
+            {t('actions.title.delete')}
           </Button>
         </WorkspaceInputContainer>
       </div>
     );
   }
 }
+
+export default translate('workspace')(SandboxSettings);

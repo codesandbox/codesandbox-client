@@ -15,6 +15,7 @@ import { directoriesFromSandboxSelector } from 'app/store/entities/sandboxes/dir
 
 import type { Sandbox, Module, Directory } from 'common/types';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
+import { translate } from 'react-i18next';
 
 import DirectoryEntry from './DirectoryEntry/index';
 
@@ -23,6 +24,7 @@ type Props = {
   modules: Array<Module>,
   directories: Array<Directory>,
   sandboxActions: typeof sandboxActionCreators,
+  t: Function,
 };
 const mapStateToProps = createSelector(
   modulesFromSandboxSelector,
@@ -47,7 +49,7 @@ class Files extends React.PureComponent {
   };
 
   render() {
-    const { sandbox, modules, directories } = this.props;
+    const { sandbox, modules, directories, t } = this.props;
     if (sandbox == null) return null;
 
     const mainModule = findMainModule(modules);
@@ -62,7 +64,7 @@ class Files extends React.PureComponent {
     return (
       <DirectoryEntry
         root
-        title={sandbox.title || 'Project'}
+        title={sandbox.title || t('files.defaultRootName')}
         sandboxId={sandbox.id}
         modules={sortBy(modules, 'title')}
         directories={sortBy(directories, 'title')}
@@ -76,4 +78,6 @@ class Files extends React.PureComponent {
   }
 }
 
-export default DragDropContext(HTML5Backend)(connect(mapStateToProps)(Files));
+export default DragDropContext(HTML5Backend)(
+  connect(mapStateToProps)(translate('workspace')(Files)),
+);
