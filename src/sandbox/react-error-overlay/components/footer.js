@@ -25,6 +25,7 @@ function createFooter(document: Document) {
       'Open your browser’s developer console to further inspect this error.',
     ),
   );
+  div.appendChild(document.createElement('br'));
   div.appendChild(
     document.createTextNode(
       'This error overlay is powered by `react-error-overlay` used in `create-react-app`.',
