@@ -25,6 +25,7 @@ const StyledFrame = styled.iframe`
   border-width: 0px;
   height: calc(100% - ${props => (props.hideNavigation ? 3 : 6)}rem);
   width: 100%;
+  overflow: auto;
 `;
 
 type Props = {

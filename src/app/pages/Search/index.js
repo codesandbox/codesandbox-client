@@ -91,12 +91,13 @@ export default class Search extends React.PureComponent {
                 apiKey={ALGOLIA_API_KEY}
                 indexName={ALGOLIA_DEFAULT_INDEX}
                 searchState={this.state.searchState}
-                onSearchStateChange={this.onSearchStateChange.bind(this)}
+                onSearchStateChange={this.onSearchStateChange}
                 createURL={createURL}
               >
                 <StyledTitle>Sandbox Search</StyledTitle>
                 <PoweredBy />
                 <SearchBox
+                  autoFocus
                   translations={{
                     placeholder: `Search for a ${getRandomSearch()}...`,
                   }}

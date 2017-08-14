@@ -17,3 +17,9 @@ test('it parses dependency names with multiple slashes correctly', () => {
 
   expect(error.payload).toMatchSnapshot();
 });
+
+test('it parses scoped packages', () => {
+  const error = new DependencyError('@vx/group');
+
+  expect(error.payload).toMatchSnapshot();
+});

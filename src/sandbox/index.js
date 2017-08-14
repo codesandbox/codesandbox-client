@@ -136,8 +136,6 @@ async function compile(message) {
             throw new NoDomChangeError(isReact, functionName);
           }
         }
-      } else {
-        throw new NoDomChangeError(isReact, functionName);
       }
     }
 
