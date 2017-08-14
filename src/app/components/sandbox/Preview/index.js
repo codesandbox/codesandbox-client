@@ -155,12 +155,9 @@ export default class Preview extends React.PureComponent {
   }
 
   openNewWindow = () => {
-    const strWindowFeatures = `width=${window.innerWidth -
-      20},height=${window.innerHeight - 20}`;
     window.open(
       frameUrl(this.props.sandboxId, this.state.urlInAddressBar),
       '_blank',
-      strWindowFeatures,
     );
   };
 

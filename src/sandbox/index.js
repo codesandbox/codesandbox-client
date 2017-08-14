@@ -1,10 +1,16 @@
+import { camelizeKeys } from 'humps';
+
 import registerServiceWorker from 'common/registerServiceWorker';
-import { getModulePath } from 'app/store/entities/sandboxes/modules/selectors';
+import {
+  getModulePath,
+  findMainModule,
+} from 'app/store/entities/sandboxes/modules/selectors';
 
 import evalModule, { deleteCache, clearCache } from './eval';
 import NoDomChangeError from './errors/no-dom-change-error';
 import loadDependencies from './npm';
 import sendMessage from './utils/send-message';
+import host from './utils/host';
 
 import handleExternalResources from './external-resources';
 import resizeEventListener from './resize-event-listener';
@@ -57,6 +63,8 @@ function initializeResizeListener() {
 }
 
 let actionsEnabled = false;
+// Whether the tab has a connection with the editor
+const isStandalone = !window.opener && window.parent === window;
 
 export function areActionsEnabled() {
   return actionsEnabled;
@@ -66,7 +74,7 @@ async function compile(message) {
   const {
     modules,
     directories,
-    boilerplates,
+    boilerplates = [],
     module,
     changedModule,
     externalResources,
@@ -80,13 +88,13 @@ async function compile(message) {
 
   handleExternalResources(externalResources);
 
-  if (loadingDependencies) return;
+  if (loadingDependencies && !isStandalone) return;
 
   loadingDependencies = true;
   const { manifest, isNewCombination } = await loadDependencies(dependencies);
   loadingDependencies = false;
 
-  if (isNewCombination) {
+  if (isNewCombination && !isStandalone) {
     clearCache();
     // If we just loaded new depdendencies, we want to get the latest changes,
     // since we might have missed them
@@ -187,3 +195,29 @@ window.addEventListener('message', async message => {
 sendReady();
 
 setupHistoryListeners();
+
+if (isStandalone) {
+  // We need to fetch the sandbox ourselves...
+  const id = document.location.host.match(/(.*)\.codesandbox/)[1];
+  window
+    .fetch(`${host}/api/v1/sandboxes/${id}`)
+    .then(res => res.json())
+    .then(res => camelizeKeys(res))
+    .then(x => {
+      const mainModule = findMainModule(x.data.modules);
+
+      const message = {
+        data: {
+          modules: x.data.modules,
+          directories: x.data.directories,
+          module: mainModule,
+          changedModule: mainModule,
+          externalResources: x.data.externalResources,
+          dependencies: x.data.npmDependencies,
+          hasActions: false,
+        },
+      };
+
+      compile(message);
+    });
+}

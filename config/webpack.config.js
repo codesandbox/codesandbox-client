@@ -351,16 +351,6 @@ if (__PROD__) {
             },
           },
         },
-        {
-          urlPattern: /^https:\/\/webpack-dll-prod.herokuapp.com\//,
-          handler: 'fastest',
-          options: {
-            cache: {
-              maxEntries: 100,
-              name: 'dependency-cache',
-            },
-          },
-        },
       ],
     }),
     // Generate a service worker script that will precache, and keep up to date,
@@ -399,7 +389,7 @@ if (__PROD__) {
       navigateFallbackWhitelist: [/^(?!\/__).*/],
       // Don't precache sourcemaps (they're large) and build asset manifest:
       staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
-      maximumFileSizeToCacheInBytes: 5242880,
+      maximumFileSizeToCacheInBytes: 10485760,
       runtimeCaching: [
         {
           urlPattern: /api\/v1\/sandboxes/,
@@ -412,12 +402,33 @@ if (__PROD__) {
           },
         },
         {
-          urlPattern: /^https:\/\/webpack-dll-prod.herokuapp.com\//,
+          urlPattern: /\.amazonaws\.com\/prod\/package\//,
           handler: 'fastest',
           options: {
             cache: {
-              maxEntries: 100,
-              name: 'dependency-cache',
+              // a week
+              maxAgeSeconds: 60 * 60 * 24 * 7,
+              name: 'dependency-url-generator-cache',
+            },
+          },
+        },
+        {
+          urlPattern: /https:\/\/d3i2v4dxqvxaq9\.cloudfront\.net/,
+          handler: 'fastest',
+          options: {
+            cache: {
+              maxEntries: 200,
+              name: 'dependency-files-cache',
+            },
+          },
+        },
+        {
+          urlPattern: /^https:\/\/unpkg\.com/,
+          handler: 'cacheFirst',
+          options: {
+            cache: {
+              maxEntries: 300,
+              name: 'unpkg-cache',
             },
           },
         },
