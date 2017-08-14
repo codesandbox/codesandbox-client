@@ -38,7 +38,7 @@ type Props = {
   preferences: Preferences,
   setProjectView: (id: string, isInProjectView: boolean) => any,
   module: Module,
-  clearErrors: (sandboxId: string) => any,
+  clearErrors: ?(sandboxId: string) => any,
   sandboxActions: typeof sandboxActionCreators,
   noDelay?: boolean,
   hideNavigation?: boolean,
@@ -254,7 +254,9 @@ export default class Preview extends React.PureComponent {
   };
 
   clearErrors = () => {
-    this.props.clearErrors(this.props.sandboxId);
+    if (this.props.clearErrors) {
+      this.props.clearErrors(this.props.sandboxId);
+    }
   };
 
   updateUrl = (url: string) => {
