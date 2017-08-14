@@ -10,7 +10,6 @@ import entity from '../entity';
 import { singleSandboxSelector } from '../selectors';
 import { modulesSelector } from '../modules/selectors';
 import { directoriesSelector } from '../directories/selectors';
-import errorActions from '../errors/actions';
 
 import { maybeForkSandbox, forkSandbox } from './fork';
 import fileActions from './files';
@@ -399,6 +398,5 @@ export default {
     }
   },
 
-  ...errorActions,
   ...fileActions,
 };

@@ -68,7 +68,6 @@ class Files extends React.PureComponent {
         directories={sortBy(directories, 'title')}
         isInProjectView={sandbox.isInProjectView}
         currentModuleId={currentModule.id}
-        errors={sandbox.errors}
         id={null}
         shortid={null}
       />

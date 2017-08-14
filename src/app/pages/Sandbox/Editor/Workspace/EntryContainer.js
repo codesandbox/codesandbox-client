@@ -5,7 +5,7 @@ import theme from 'common/theme';
 export const getContainerStyles = props => {
   const color = props.alternative ? theme.primary : theme.secondary;
   let styles = `
-    transition: 0.3s ease all;
+    ${props => props.noTransition || 'transition: 0.3s ease all;'}
     position: relative;
     display: flex;
     font-size: 14px;

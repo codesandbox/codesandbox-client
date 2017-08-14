@@ -12,6 +12,7 @@ import type {
   CurrentUser,
   Module,
   Directory,
+  ModuleError,
 } from 'common/types';
 import { currentUserSelector } from 'app/store/user/selectors';
 import moduleActionCreators from 'app/store/entities/sandboxes/modules/actions';
@@ -134,6 +135,7 @@ class EditorPreview extends React.PureComponent {
       workspaceHidden,
       toggleWorkspace,
       previewApiActions,
+      errors,
     } = this.props;
 
     const mainModule = findMainModule(modules);
@@ -158,7 +160,7 @@ class EditorPreview extends React.PureComponent {
         <CodeEditor
           changeCode={moduleActions.setCode}
           id={currentModule.id}
-          errors={sandbox.errors}
+          errors={currentModule.errors}
           code={currentModule.code}
           title={currentModule.title}
           canSave={currentModule.isNotSynced}
@@ -183,8 +185,7 @@ class EditorPreview extends React.PureComponent {
           modules={modules}
           directories={directories}
           addError={sandboxActions.addError}
-          errors={sandbox.errors}
-          clearErrors={sandboxActions.clearErrors}
+          clearErrors={moduleActions.clearErrors}
           isInProjectView={Boolean(sandbox.isInProjectView)}
           externalResources={sandbox.externalResources}
           setProjectView={sandboxActions.setProjectView}

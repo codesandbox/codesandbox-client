@@ -5,12 +5,13 @@ import styled from 'styled-components';
 import { debounce } from 'lodash';
 
 import type { Preferences } from 'app/store/preferences/reducer';
-import type { Module, Sandbox, Directory, ModuleError } from 'common/types';
+import type { Module, Sandbox, Directory } from 'common/types';
 
 import { frameUrl } from 'app/utils/url-generator';
 import { findMainModule } from 'app/store/entities/sandboxes/modules/selectors';
 import defaultBoilerplates from 'app/store/entities/sandboxes/boilerplates/default-boilerplates';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
+import shouldUpdate from './utils/should-update';
 
 import Navigator from './Navigator';
 
@@ -36,11 +37,9 @@ type Props = {
   preferences: Preferences,
   setProjectView: (id: string, isInProjectView: boolean) => any,
   module: Module,
-  addError: (sandboxId: string, error: ModuleError) => any,
   clearErrors: (sandboxId: string) => any,
   sandboxActions: typeof sandboxActionCreators,
   noDelay?: boolean,
-  errors: ?Array<ModuleError>,
   hideNavigation?: boolean,
   setFrameHeight: ?(height: number) => any,
   dependencies: Object,
@@ -118,14 +117,22 @@ export default class Preview extends React.PureComponent {
       return;
     }
 
+    // If the strucutre (filenames etc) changed
+    const structureChanged = shouldUpdate(
+      prevProps.modules,
+      prevProps.directories,
+      this.props.modules,
+      this.props.directories,
+    );
     if (
-      (prevProps.module.code !== this.props.module.code ||
-        prevProps.modules !== this.props.modules ||
-        prevProps.directories !== this.props.directories) &&
+      (prevProps.module.code !== this.props.module.code || structureChanged) &&
       this.state.frameInitialized
     ) {
       if (this.props.preferences.livePreviewEnabled) {
-        if (this.props.preferences.instantPreviewEnabled) {
+        if (
+          this.props.preferences.instantPreviewEnabled ||
+          prevProps.module.code === this.props.module.code
+        ) {
           this.executeCodeImmediately();
         } else {
           this.executeCode();
@@ -145,12 +152,16 @@ export default class Preview extends React.PureComponent {
   openNewWindow = () => {
     const strWindowFeatures = `width=${window.innerWidth -
       20},height=${window.innerHeight - 20}`;
-    window.open('https://sandbox.codesandbox.dev', '_blank', strWindowFeatures);
+    window.open(
+      frameUrl(this.props.sandboxId, this.state.urlInAddressBar),
+      '_blank',
+      strWindowFeatures,
+    );
   };
 
   sendMessage = (message: Object) => {
     this.frames.forEach(frame => {
-      frame.postMessage(message, frameUrl());
+      frame.postMessage(message, frameUrl(this.props.sandboxId));
     });
   };
 
@@ -165,11 +176,6 @@ export default class Preview extends React.PureComponent {
       const { type } = e.data;
 
       switch (type) {
-        case 'error': {
-          const { error } = e.data;
-          this.addError(error);
-          break;
-        }
         case 'render': {
           this.executeCodeImmediately();
           break;
@@ -187,7 +193,10 @@ export default class Preview extends React.PureComponent {
         }
         case 'action': {
           if (this.props.runActionFromPreview) {
-            this.props.runActionFromPreview(e.data);
+            this.props.runActionFromPreview({
+              ...e.data,
+              sandboxId: this.props.sandboxId,
+            });
           }
           break;
         }
@@ -222,8 +231,6 @@ export default class Preview extends React.PureComponent {
       console.clear();
     }
 
-    console.log(this.frames);
-
     // Do it here so we can see the dependency fetching screen if needed
     this.clearErrors();
     const renderedModule = this.getRenderedModule();
@@ -239,10 +246,6 @@ export default class Preview extends React.PureComponent {
     });
   };
 
-  addError = (e: ModuleError) => {
-    this.props.addError(this.props.sandboxId, e);
-  };
-
   clearErrors = () => {
     this.props.clearErrors(this.props.sandboxId);
   };
@@ -254,14 +257,20 @@ export default class Preview extends React.PureComponent {
   sendUrl = () => {
     const { urlInAddressBar } = this.state;
 
-    document.getElementById('sandbox').src = frameUrl(urlInAddressBar);
+    document.getElementById('sandbox').src = frameUrl(
+      this.props.sandboxId,
+      urlInAddressBar,
+    );
     this.commitUrl(urlInAddressBar);
   };
 
   handleRefresh = () => {
     const { history, historyPosition } = this.state;
 
-    document.getElementById('sandbox').src = frameUrl(history[historyPosition]);
+    document.getElementById('sandbox').src = frameUrl(
+      this.props.sandboxId,
+      history[historyPosition],
+    );
 
     this.setState({
       urlInAddressBar: history[historyPosition],
@@ -324,7 +333,6 @@ export default class Preview extends React.PureComponent {
       sandboxActions,
       isInProjectView,
       setProjectView,
-      errors,
       hideNavigation,
     } = this.props;
     const { historyPosition, history, urlInAddressBar } = this.state;
@@ -350,7 +358,7 @@ export default class Preview extends React.PureComponent {
 
         <StyledFrame
           sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups allow-presentation"
-          src={frameUrl(this.initialPath)}
+          src={frameUrl(sandboxId, this.initialPath)}
           id="sandbox"
           hideNavigation={hideNavigation}
         />

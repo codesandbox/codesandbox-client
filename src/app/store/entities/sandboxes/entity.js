@@ -30,7 +30,6 @@ export default new schema.Entity(
         showPreview: !isEditorScreen,
         currentModule,
         initialPath,
-        errors: [],
       };
     },
   },

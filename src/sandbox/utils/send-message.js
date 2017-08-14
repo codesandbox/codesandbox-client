@@ -4,6 +4,8 @@ import host from './host';
 const debug = _debug('cs:sandbox:messager');
 
 export default function sendMessage(message: any) {
+  if (!message) return;
+
   debug('Sending message', message);
   if (window.opener) {
     window.opener.postMessage(message, host);

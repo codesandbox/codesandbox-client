@@ -1,4 +1,3 @@
-import buildError from './utils/error-message-builder';
 import evalModule, { deleteCache, clearCache } from './eval';
 import NoDomChangeError from './errors/no-dom-change-error';
 import loadDependencies from './npm';
@@ -8,7 +7,9 @@ import handleExternalResources from './external-resources';
 import resizeEventListener from './resize-event-listener';
 import setupHistoryListeners from './url-listeners';
 import resolveDependency from './eval/js/dependency-resolver';
-import { openErrorScreen, resetScreen } from './status-screen';
+import { resetScreen } from './status-screen';
+
+import { inject, uninject } from './react-error-overlay/overlay';
 
 import {
   getBoilerplates,
@@ -29,7 +30,7 @@ function getIndexHtml(modules) {
   return '<div id="root"></div>';
 }
 
-function sendReady() {
+export function sendReady() {
   sendMessage('Ready!');
 }
 
@@ -60,6 +61,8 @@ async function compile(message) {
     externalResources,
     dependencies,
   } = message.data;
+  uninject();
+  inject();
 
   handleExternalResources(externalResources);
 
@@ -104,7 +107,7 @@ async function compile(message) {
     document.body.innerHTML = html;
     deleteCache(changedModule);
 
-    const evalled = evalModule(module, modules, directories, externals);
+    const evalled = await evalModule(module, modules, directories, externals);
     const domChanged = document.body.innerHTML !== html;
 
     if (!domChanged && !module.title.endsWith('.html')) {
@@ -151,12 +154,9 @@ async function compile(message) {
 
     e.module = e.module || changedModule;
 
-    openErrorScreen(e);
-
-    sendMessage({
-      type: 'error',
-      error: buildError(e),
-    });
+    const event = new Event('error');
+    event.error = e;
+    window.dispatchEvent(event);
   }
 }
 

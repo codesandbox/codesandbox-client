@@ -188,6 +188,7 @@ class Entry extends React.PureComponent {
           onMouseEnter={this.onMouseEnter}
           onMouseLeave={this.onMouseLeave}
           alternative={isMainModule}
+          noTransition
         >
           <EntryIcons
             isNotSynced={isNotSynced}

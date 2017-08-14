@@ -127,26 +127,24 @@ const handleError = (
 ) => {
   if (!monaco) return;
   if (nextErrors && nextErrors.length > 0) {
-    nextErrors.forEach(error => {
-      const code = nextCode || '';
-      if (
-        error &&
-        (error.moduleId == null || error.moduleId === nextId) &&
-        error.line !== 0 &&
-        error.line <= code.split('\n').length
-      ) {
-        monaco.editor.setModelMarkers(editor.getModel(), 'error', [
-          {
+    const markers = nextErrors
+      .map(error => {
+        if (error) {
+          return {
             severity: monaco.Severity.Error,
             startColumn: 1,
             startLineNumber: error.line,
             endColumn: error.column,
             endLineNumber: error.line + 1,
             message: error.message,
-          },
-        ]);
-      }
-    });
+          };
+        }
+
+        return null;
+      })
+      .filter(x => x);
+
+    monaco.editor.setModelMarkers(editor.getModel(), 'error', markers);
   } else {
     monaco.editor.setModelMarkers(editor.getModel(), 'error', []);
   }
@@ -326,7 +324,9 @@ export default class CodeEditor extends React.PureComponent {
   }) => {
     if (nextId !== currentId) {
       const pos = this.editor.getPosition();
-      modelCache[currentId].cursorPos = pos;
+      if (modelCache[currentId]) {
+        modelCache[currentId].cursorPos = pos;
+      }
       this.openNewModel(nextId, nextTitle);
     }
   };
