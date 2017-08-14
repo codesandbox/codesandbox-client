@@ -39,7 +39,7 @@ export default async function loadDependencies(dependencies: NPMDependencies) {
       // Mark that the last requested url is this
       loadedDependencyCombination = depQuery;
 
-      setScreen({ type: 'loading', text: 'Bundling Dependencies...' });
+      setScreen({ type: 'loading', text: 'Fetching Dependency Versions...' });
 
       const data = await fetchDependencies(dependencies);
 

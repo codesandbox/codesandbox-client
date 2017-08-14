@@ -2,7 +2,7 @@
 
 exports[`ExternalResource renders file if there is an extension 1`] = `
 <span
-  className="sc-bdVaJa eRfmEi"
+  className="sc-bdVaJa lmpDbu"
 >
   <a
     href="https://ivesvh.com/ives.js"
@@ -44,7 +44,7 @@ exports[`ExternalResource renders file if there is an extension 1`] = `
 
 exports[`ExternalResource renders url if there is no extension 1`] = `
 <span
-  className="sc-bdVaJa eRfmEi"
+  className="sc-bdVaJa lmpDbu"
 >
   <a
     href="https://ivesvh.com/"
@@ -86,7 +86,7 @@ exports[`ExternalResource renders url if there is no extension 1`] = `
 
 exports[`ExternalResource renders url if there is no extension 2`] = `
 <span
-  className="sc-bdVaJa eRfmEi"
+  className="sc-bdVaJa lmpDbu"
 >
   <a
     href="https://ivesvh.com"

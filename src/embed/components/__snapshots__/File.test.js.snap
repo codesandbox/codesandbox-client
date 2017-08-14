@@ -2,8 +2,6 @@
 
 exports[`File renders 1`] = `
 .c0 {
-  -webkit-transition: 0.3s ease all;
-  transition: 0.3s ease all;
   position: relative;
   display: -webkit-box;
   display: -webkit-flex;
@@ -22,6 +20,10 @@ exports[`File renders 1`] = `
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+
+.c0 function (props) {
+  return: props.noTransition || 'transition: 0.3s ease all;';
 }
 
 .c0:hover {
@@ -80,8 +82,6 @@ exports[`File renders 1`] = `
 
 exports[`File renders alternative 1`] = `
 .c0 {
-  -webkit-transition: 0.3s ease all;
-  transition: 0.3s ease all;
   position: relative;
   display: -webkit-box;
   display: -webkit-flex;
@@ -100,6 +100,10 @@ exports[`File renders alternative 1`] = `
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+
+.c0 function (props) {
+  return: props.noTransition || 'transition: 0.3s ease all;';
 }
 
 .c0:hover {
@@ -158,8 +162,6 @@ exports[`File renders alternative 1`] = `
 
 exports[`File renders as active 1`] = `
 .c0 {
-  -webkit-transition: 0.3s ease all;
-  transition: 0.3s ease all;
   position: relative;
   display: -webkit-box;
   display: -webkit-flex;
@@ -181,6 +183,10 @@ exports[`File renders as active 1`] = `
   color: #E0E0E0 !important;
   border-color: #6CAEDD !important;
   background-color: rgba(139, 191, 228, 0.19999999999999996) !important;
+}
+
+.c0 function (props) {
+  return: props.noTransition || 'transition: 0.3s ease all;';
 }
 
 .c0:hover > div {
@@ -233,8 +239,6 @@ exports[`File renders as active 1`] = `
 
 exports[`File renders directory 1`] = `
 .c0 {
-  -webkit-transition: 0.3s ease all;
-  transition: 0.3s ease all;
   position: relative;
   display: -webkit-box;
   display: -webkit-flex;
@@ -253,6 +257,10 @@ exports[`File renders directory 1`] = `
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+
+.c0 function (props) {
+  return: props.noTransition || 'transition: 0.3s ease all;';
 }
 
 .c0:hover {

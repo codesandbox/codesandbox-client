@@ -12,12 +12,10 @@ describe('eval', () => {
       test('default es exports', () => {
         const mainModule = {
           title: `test.${jsExtension}`,
-          code: `
-          export default 3;
-        `,
+          code: `export default 3;`,
         };
 
-        expect(evaller(mainModule, [], [])).toEqual({ default: 3 });
+        expect(evaller(mainModule, [mainModule], [])).toEqual({ default: 3 });
       });
 
       test('multiple es exports', () => {
@@ -30,7 +28,7 @@ describe('eval', () => {
         `,
         };
 
-        expect(evaller(mainModule, [], [])).toEqual({
+        expect(evaller(mainModule, [mainModule], [])).toEqual({
           a: 'b',
           b: 'c',
           default: 3,
@@ -45,7 +43,7 @@ describe('eval', () => {
         `,
         };
 
-        expect(evaller(mainModule, [], [])).toEqual(3);
+        expect(evaller(mainModule, [mainModule], [])).toEqual(3);
       });
 
       test('imports', () => {
@@ -236,7 +234,7 @@ describe('eval', () => {
       `,
     };
 
-    expect(evaller(mainModule)).toEqual(['.test']);
+    expect(evaller(mainModule, [mainModule], [])).toEqual(['.test']);
   });
 
   test('html', () => {

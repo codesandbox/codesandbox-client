@@ -3,6 +3,7 @@ import dependenciesToQuery from './dependencies-to-query';
 import { PACKAGER_URL } from './';
 import delay from '../utils/delay';
 import actions, { dispatch } from '../actions';
+import setScreen from '../status-screen';
 
 type Dependencies = {
   [dependency: string]: string,
@@ -42,6 +43,8 @@ async function requestManifest(url) {
       return manifest;
     } catch (e) {
       const statusCode = e.response && e.response.status;
+
+      setScreen({ type: 'loading', text: 'Bundling Dependencies...' });
 
       // 403 status code means the bundler is still bundling
       if (retries < RETRY_COUNT && statusCode === 403) {

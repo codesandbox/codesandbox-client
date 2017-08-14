@@ -164,7 +164,8 @@
     "rootDir": "src",
     "moduleDirectories": ["node_modules", "src"],
     "moduleNameMapper": {
-      "\\.css$": "<rootDir>/__mocks__/styleMock.js"
+      "\\.css$": "<rootDir>/__mocks__/styleMock.js",
+      "\\.html$": "<rootDir>/__mocks__/styleMock.js"
     }
   }
 }

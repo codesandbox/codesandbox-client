@@ -14,10 +14,6 @@ import { directoriesSelector } from '../directories/selectors';
 import { maybeForkSandbox, forkSandbox } from './fork';
 import fileActions from './files';
 
-export const FETCH_BUNDLE_API_ACTIONS = createAPIActions(
-  'SANDBOX',
-  'FETCH_BUNDLE',
-);
 export const SINGLE_SANDBOX_API_ACTIONS = createAPIActions('SANDBOX', 'SINGLE');
 export const CREATE_SANDBOX_API_ACTIONS = createAPIActions('SANDBOX', 'CREATE');
 export const DELETE_SANDBOX_API_ACTIONS = createAPIActions('SANDBOX', 'DELETE');
@@ -52,8 +48,6 @@ export const SET_NPM_DEPENDENCIES = 'SET_NPM_DEPENDENCIES';
 export const SET_EXTERNAL_RESOURCES = 'SET_EXTERNAL_RESOURCES';
 export const SET_TAGS = 'SET_TAGS';
 export const SET_CURRENT_MODULE = 'SET_CURRENT_MODULE';
-export const SET_BUNDLE = 'SET_BUNDLE';
-export const CANCEL_BUNDLE = 'CANCEL_BUNDLE';
 export const SET_PROJECT_VIEW = 'SET_PROJECT_VIEW';
 export const SET_VIEW_MODE = 'SET_VIEW_MODE';
 export const CREATE_ZIP = 'CREATE_ZIP';
