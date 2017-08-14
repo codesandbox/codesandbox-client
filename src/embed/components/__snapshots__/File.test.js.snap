@@ -10,7 +10,7 @@ exports[`File renders 1`] = `
   font-size: 14px;
   padding: 0.6rem;
   padding-left: calc(1rem - 2px);
-  color: rgb(106, 118, 124);
+  color: rgb(106,118,124);
   text-decoration: none;
   font-weight: 400;
   min-width: 100px;
@@ -27,9 +27,9 @@ exports[`File renders 1`] = `
 }
 
 .c0:hover {
-  background-color: rgba(108, 174, 221, 0.09999999999999998);
-  color: rgb(227, 230, 232);
-  border-color: rgb(38, 110, 161);
+  background-color: rgba(108,174,221,0.09999999999999998);
+  color: rgb(227,230,232);
+  border-color: rgb(38,110,161);
 }
 
 .c0:hover > div {
@@ -90,7 +90,7 @@ exports[`File renders alternative 1`] = `
   font-size: 14px;
   padding: 0.6rem;
   padding-left: calc(1rem - 2px);
-  color: rgb(106, 118, 124);
+  color: rgb(106,118,124);
   text-decoration: none;
   font-weight: 400;
   min-width: 100px;
@@ -107,9 +107,9 @@ exports[`File renders alternative 1`] = `
 }
 
 .c0:hover {
-  background-color: rgba(255, 211, 153, 0.09999999999999998);
-  color: rgb(227, 230, 232);
-  border-color: rgb(245, 139, 0);
+  background-color: rgba(255,211,153,0.09999999999999998);
+  color: rgb(227,230,232);
+  border-color: rgb(245,139,0);
 }
 
 .c0:hover > div {
@@ -170,7 +170,7 @@ exports[`File renders as active 1`] = `
   font-size: 14px;
   padding: 0.6rem;
   padding-left: calc(1rem - 2px);
-  color: rgb(106, 118, 124);
+  color: rgb(106,118,124);
   text-decoration: none;
   font-weight: 400;
   min-width: 100px;
@@ -182,7 +182,7 @@ exports[`File renders as active 1`] = `
   user-select: none;
   color: #E0E0E0 !important;
   border-color: #6CAEDD !important;
-  background-color: rgba(139, 191, 228, 0.19999999999999996) !important;
+  background-color: rgba(139,191,228,0.19999999999999996) !important;
 }
 
 .c0 function (props) {
@@ -247,7 +247,7 @@ exports[`File renders directory 1`] = `
   font-size: 14px;
   padding: 0.6rem;
   padding-left: calc(1rem - 2px);
-  color: rgb(106, 118, 124);
+  color: rgb(106,118,124);
   text-decoration: none;
   font-weight: 400;
   min-width: 100px;
@@ -264,9 +264,9 @@ exports[`File renders directory 1`] = `
 }
 
 .c0:hover {
-  background-color: rgba(108, 174, 221, 0.09999999999999998);
-  color: rgb(227, 230, 232);
-  border-color: rgb(38, 110, 161);
+  background-color: rgba(108,174,221,0.09999999999999998);
+  color: rgb(227,230,232);
+  border-color: rgb(38,110,161);
 }
 
 .c0:hover > div {
