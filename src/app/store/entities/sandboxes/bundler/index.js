@@ -12,6 +12,8 @@ import delay from '../../../services/delay';
 const debug = _debug('cs:app:packager');
 
 export const PACKAGER_URL = 'https://webpack-dll-prod.herokuapp.com/v6';
+export const NEW_PACKAGER_URL =
+  'https://42qpdtykai.execute-api.eu-west-1.amazonaws.com/prod/package';
 
 const RETRY_COUNT = 20;
 
@@ -57,6 +59,12 @@ async function requestPackager(query: string, dispatch: ?Function) {
 
 async function callPackager(dependencies: Object, dispatch: Function) {
   const dependencyUrl = dependenciesToQuery(dependencies);
+
+  try {
+    window.fetch(`${NEW_PACKAGER_URL}/${dependencyUrl}`);
+  } catch (e) {
+    console.error(e);
+  }
 
   const result = await requestPackager(dependencyUrl, dispatch);
   return result;
