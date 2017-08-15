@@ -27,9 +27,7 @@ const COMMIT_HASH = childProcess
   .toString();
 const VERSION = `${COMMIT_COUNT}-${COMMIT_HASH}`;
 
-const publicPath = __PROD__
-  ? 'https://codesandbox.io/'
-  : 'https://codesandbox.dev/';
+const publicPath = __PROD__ ? 'https://codesandbox.io/' : '/';
 
 const getOutput = () =>
   __DEV__
@@ -439,6 +437,16 @@ if (__PROD__) {
               // a week
               maxAgeSeconds: 60 * 60 * 24 * 7,
               name: 'dependency-url-generator-cache',
+            },
+          },
+        },
+        {
+          urlPattern: /webpack-dll-prod\.herokuapp\.com/,
+          handler: 'fastest',
+          options: {
+            cache: {
+              maxEntries: 100,
+              name: 'packager-cache',
             },
           },
         },
