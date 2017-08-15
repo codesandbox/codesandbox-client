@@ -9,7 +9,7 @@ const buildEncodedUri = (strings: Array<string>, ...values: Array<string>) =>
 
 export const host = () => {
   return process.env.NODE_ENV === 'production'
-    ? 'codesandbox.dev'
+    ? 'codesandbox.io'
     : process.env.LOCAL_SERVER ? 'localhost:3000' : 'codesandbox.dev';
 };
 
