@@ -9,7 +9,7 @@ import {
 import evalModule, { deleteCache, clearCache } from './eval';
 import NoDomChangeError from './errors/no-dom-change-error';
 import loadDependencies from './npm';
-import sendMessage from './utils/send-message';
+import sendMessage, { isStandalone } from './utils/send-message';
 import host from './utils/host';
 
 import handleExternalResources from './external-resources';
@@ -63,8 +63,6 @@ function initializeResizeListener() {
 }
 
 let actionsEnabled = false;
-// Whether the tab has a connection with the editor
-export const isStandalone = !window.opener && window.parent === window;
 
 export function areActionsEnabled() {
   return actionsEnabled;
