@@ -67,7 +67,7 @@ export default class Preview extends React.PureComponent {
       frameInitialized: false,
       history: [],
       historyPosition: 0,
-      urlInAddressBar: props.initialPath || '',
+      urlInAddressBar: frameUrl(props.sandboxId, props.initialPath || ''),
       url: null,
     };
 
@@ -78,7 +78,7 @@ export default class Preview extends React.PureComponent {
     // we need a value that doesn't change when receiving `initialPath`
     // from the query params, or the iframe will continue to be re-rendered
     // when the user navigates the iframe app, which shows the loading screen
-    this.initialPath = this.state.urlInAddressBar;
+    this.initialPath = props.initialPath;
     this.frames = [];
   }
 
@@ -183,8 +183,7 @@ export default class Preview extends React.PureComponent {
           break;
         }
         case 'urlchange': {
-          const url = e.data.url.replace('/', '');
-          this.commitUrl(url);
+          this.commitUrl(e.data.url);
           break;
         }
         case 'resize': {
@@ -263,20 +262,15 @@ export default class Preview extends React.PureComponent {
   sendUrl = () => {
     const { urlInAddressBar } = this.state;
 
-    document.getElementById('sandbox').src = frameUrl(
-      this.props.sandboxId,
-      urlInAddressBar,
-    );
+    document.getElementById('sandbox').src = urlInAddressBar;
+
     this.commitUrl(urlInAddressBar);
   };
 
   handleRefresh = () => {
     const { history, historyPosition } = this.state;
 
-    document.getElementById('sandbox').src = frameUrl(
-      this.props.sandboxId,
-      history[historyPosition],
-    );
+    document.getElementById('sandbox').src = history[historyPosition];
 
     this.setState({
       urlInAddressBar: history[historyPosition],
@@ -341,7 +335,7 @@ export default class Preview extends React.PureComponent {
     } = this.props;
     const { historyPosition, history, urlInAddressBar } = this.state;
 
-    const url = urlInAddressBar || '';
+    const url = urlInAddressBar || frameUrl(sandboxId);
 
     return (
       <Container>

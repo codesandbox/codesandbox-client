@@ -12,21 +12,12 @@ const InputContainer = styled.div`
     border-radius: 4px;
     outline: none;
     border: 1px solid #ccc;
-    padding: 0.2rem 1rem;
+    padding: 0.2rem .5rem;
     color: black;
     width: 100%;
+    color: rgba(0, 0, 0, 0.8);
     box-sizing: border-box;
   }
-`;
-
-const Slash = styled.span`
-  position: absolute;
-  padding: 0.3rem 0.75rem;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  vertical-align: middle;
-  line-height: 1.15;
 `;
 
 type Props = {
@@ -63,7 +54,6 @@ export default class extends React.PureComponent {
     const { url = '' } = this.props;
     return (
       <Container onClick={this.focus}>
-        <Slash>/</Slash>
         <InputContainer>
           <input
             ref={e => {

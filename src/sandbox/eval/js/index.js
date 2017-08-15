@@ -4,7 +4,7 @@ import { transform } from 'babel-standalone';
 import type { Module, Directory } from 'common/types';
 import { getModulePath } from 'app/store/entities/sandboxes/modules/selectors';
 
-import type { SourceMap } from '../../react-error-overlay/src/utils/getSourceMap';
+import type { SourceMap } from '../../react-error-overlay/utils/getSourceMap';
 import evalModule from '../';
 import resolveModule from '../../utils/resolve-module';
 import resolveDependency from './dependency-resolver';

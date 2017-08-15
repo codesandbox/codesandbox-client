@@ -78,28 +78,9 @@ const config = {
       {
         test: /\.js$/,
         include: paths.src,
-        exclude: [
-          /eslint\.4\.1\.0\.min\.js$/,
-          /typescriptServices\.js$/,
-          /\.min\.js$/,
-        ],
+        exclude: [/eslint\.4\.1\.0\.min\.js$/, /typescriptServices\.js$/],
         loader: 'babel-loader?cacheDirectory',
         options: babelConfig,
-      },
-      // Used to remove strict mode from eval:
-      {
-        test: /eval\/js\.js$/,
-        include: paths.src,
-        loader: 'babel-loader?cacheDirectory',
-        options: (() => {
-          const altererdConfig = Object.assign({}, babelConfig);
-
-          // prettier-ignore
-          altererdConfig.plugins.push(
-            require.resolve('babel-plugin-transform-remove-strict-mode')
-          );
-          return altererdConfig;
-        })(),
       },
       // JSON is not enabled by default in Webpack but both Node and Browserify
       // allow it implicitly so we also enable it.
@@ -161,6 +142,8 @@ const config = {
         },
       },
     ],
+
+    noParse: [/eslint\.4\.1\.0\.min\.js$/, /typescriptServices\.js$/],
   },
 
   resolve: {
@@ -246,7 +229,9 @@ const config = {
     // Make the monaco editor work
     new CopyWebpackPlugin([
       {
-        from: 'node_modules/monaco-editor/min/vs',
+        from: __DEV__
+          ? 'node_modules/monaco-editor/dev/vs'
+          : 'node_modules/monaco-editor/min/vs',
         to: 'public/vs',
       },
       {
