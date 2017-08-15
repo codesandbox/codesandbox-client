@@ -1,7 +1,5 @@
-FROM node:7.3.0
+FROM node:8.2.1
 MAINTAINER Ives van Hoorne
-
-RUN npm install -g yarn
 
 ADD package.json /app/package.json
 ADD yarn.lock /app/yarn.lock
