@@ -155,10 +155,7 @@ export default class Preview extends React.PureComponent {
   }
 
   openNewWindow = () => {
-    window.open(
-      frameUrl(this.props.sandboxId, this.state.urlInAddressBar),
-      '_blank',
-    );
+    window.open(this.state.urlInAddressBar, '_blank');
   };
 
   sendMessage = (message: Object) => {

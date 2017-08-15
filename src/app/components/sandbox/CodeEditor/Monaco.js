@@ -503,7 +503,9 @@ export default class CodeEditor extends React.PureComponent {
     this.sizeProbeInterval = setInterval(this.resizeEditor.bind(this), 3000);
 
     if (this.props.dependencies) {
-      this.fetchDependencyTypings(this.props.dependencies, monaco);
+      setTimeout(() => {
+        this.fetchDependencyTypings(this.props.dependencies, monaco);
+      }, 2000);
     }
   };
 

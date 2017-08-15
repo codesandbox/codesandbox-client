@@ -1,5 +1,4 @@
 const webpack = require('webpack');
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const path = require('path');
 const paths = require('./paths');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -60,7 +59,7 @@ const config = {
       require.resolve('./polyfills'),
       path.join(paths.embedSrc, 'index.js'),
     ],
-    vendor: ['react', 'react-dom', 'styled-components'],
+    vendor: ['react', 'react-dom', 'styled-components', 'babel-standalone'],
   },
 
   target: 'web',
@@ -276,20 +275,24 @@ if (__PROD__) {
       minimize: true,
       debug: false,
     }),
-    new UglifyJSPlugin({
-      uglifyOptions: {
-        ie8: false,
+    new webpack.optimize.UglifyJsPlugin({
+      beautify: false,
+      compress: {
         warnings: true,
-        ecma: 8,
+        screw_ie8: true,
+        conditionals: true,
+        unused: true,
+        comparisons: true,
+        sequences: true,
+        dead_code: true,
+        evaluate: true,
+        if_return: true,
+        join_vars: true,
+      },
+      output: {
+        comments: false,
       },
       sourceMap: true,
-      parallel: true,
-      exclude: [
-        /editor\..*\.js$/,
-        /\.min\.js$/,
-        /typescriptServices\.js$/,
-        /public\/vs/,
-      ],
     }),
     // Generate a service worker script that will precache, and keep up to date,
     // the HTML & assets that are part of the Webpack build.
@@ -300,6 +303,7 @@ if (__PROD__) {
       // about it being stale, and the cache-busting can be skipped.
       dontCacheBustUrlsMatching: /\.\w{8}\./,
       filename: 'service-worker.js',
+      cacheId: 'code-sandbox',
       logger(message) {
         if (message.indexOf('Total precache size is') === 0) {
           // This message occurs for every build and is a bit too noisy.
@@ -357,7 +361,7 @@ if (__PROD__) {
       },
       minify: true,
       // For unknown URLs, fallback to the index page
-      navigateFallback: 'https://sandbox.codesandbox.dev/frame.html',
+      navigateFallback: 'https://new.codesandbox.dev/frame.html',
       staticFileGlobs: [
         'www/static/js/common.*.js',
         'www/static/js/vendor.*.js',
@@ -365,6 +369,7 @@ if (__PROD__) {
         'www/frame.html',
       ],
       stripPrefix: 'www/',
+      cacheId: 'code-sandbox-sandbox',
       // Ignores URLs starting from /__ (useful for Firebase):
       // https://github.com/facebookincubator/create-react-app/issues/2237#issuecomment-302693219
       navigateFallbackWhitelist: [/^(?!\/__).*/],
@@ -413,6 +418,16 @@ if (__PROD__) {
             },
           },
         },
+        {
+          urlPattern: /cloudflare\.com/,
+          handler: 'cacheFirst',
+          options: {
+            cache: {
+              maxEntries: 20,
+              name: 'cloudflare-cache',
+            },
+          },
+        },
       ],
     }),
     // Moment.js is an extremely popular library that bundles large locale files
@@ -421,6 +436,7 @@ if (__PROD__) {
     // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
     // You can remove this if you don't use Moment.js:
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+    new webpack.optimize.ModuleConcatenationPlugin(),
   ];
 } else {
   config.plugins = [
