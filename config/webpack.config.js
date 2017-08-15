@@ -389,7 +389,7 @@ if (__PROD__) {
       },
       minify: true,
       // For unknown URLs, fallback to the index page
-      navigateFallback: 'https://new.codesandbox.dev/frame.html',
+      navigateFallback: 'https://new.codesandbox.io/frame.html',
       staticFileGlobs: [
         'www/static/js/common.*.js',
         'www/static/js/vendor.*.js',
