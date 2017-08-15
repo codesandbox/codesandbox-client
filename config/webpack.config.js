@@ -329,7 +329,7 @@ if (__PROD__) {
       minify: true,
       // For unknown URLs, fallback to the index page
       navigateFallback: publicPath + 'app.html',
-      navigateFallbackWhitelist: [/^\/s\//],
+      navigateFallbackWhitelist: [/\/s\//],
       // Don't precache sourcemaps (they're large) and build asset manifest:
       staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
       maximumFileSizeToCacheInBytes: 5242880,

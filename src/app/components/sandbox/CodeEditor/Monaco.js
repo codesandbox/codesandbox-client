@@ -190,7 +190,7 @@ export default class CodeEditor extends React.PureComponent {
 
       if (
         !this.monaco.languages.typescript.typescriptDefaults.getExtraLibs()[
-          path
+          `file:///${path}`
         ]
       ) {
         requestAnimationFrame(() => {
