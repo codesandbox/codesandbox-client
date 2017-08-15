@@ -64,7 +64,7 @@ function initializeResizeListener() {
 
 let actionsEnabled = false;
 // Whether the tab has a connection with the editor
-const isStandalone = !window.opener && window.parent === window;
+export const isStandalone = !window.opener && window.parent === window;
 
 export function areActionsEnabled() {
   return actionsEnabled;

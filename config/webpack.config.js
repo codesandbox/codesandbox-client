@@ -27,7 +27,9 @@ const COMMIT_HASH = childProcess
   .toString();
 const VERSION = `${COMMIT_COUNT}-${COMMIT_HASH}`;
 
-const publicPath = __PROD__ ? 'https://codesandbox.io/' : '/';
+const publicPath = __PROD__
+  ? 'https://codesandbox.io/'
+  : 'https://codesandbox.dev/';
 
 const getOutput = () =>
   __DEV__
@@ -390,12 +392,7 @@ if (__PROD__) {
       minify: true,
       // For unknown URLs, fallback to the index page
       navigateFallback: 'https://new.codesandbox.io/frame.html',
-      staticFileGlobs: [
-        'www/static/js/common.*.js',
-        'www/static/js/vendor.*.js',
-        'www/static/js/sandbox.*.js',
-        'www/frame.html',
-      ],
+      staticFileGlobs: ['www/frame.html'],
       stripPrefix: 'www/',
       cacheId: 'code-sandbox-sandbox',
       // Ignores URLs starting from /__ (useful for Firebase):
@@ -405,6 +402,27 @@ if (__PROD__) {
       staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
       maximumFileSizeToCacheInBytes: 10485760,
       runtimeCaching: [
+        {
+          urlPattern: /api\/v1\/sandboxes/,
+          handler: 'networkFirst',
+          options: {
+            cache: {
+              maxEntries: 50,
+              name: 'sandboxes-cache',
+            },
+          },
+        },
+        {
+          // These should be dynamic, since it's not loaded from this domain
+          // But from the root domain
+          urlPattern: /codesandbox\.io\/static\/js\/(vendor|common|sandbox)/,
+          handler: 'networkFirst',
+          options: {
+            cache: {
+              name: 'static-root-cache',
+            },
+          },
+        },
         {
           urlPattern: /api\/v1\/sandboxes/,
           handler: 'networkFirst',
