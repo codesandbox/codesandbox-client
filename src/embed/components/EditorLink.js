@@ -36,7 +36,7 @@ export default ({ sandbox, small }: Props) =>
     small={small}
     target="_blank"
     rel="noopener noreferrer"
-    href={sandboxUrl(sandbox) + document.location.search}
+    href={sandboxUrl(sandbox) + '?from-embed'}
   >
     <Text small={small}>Edit on CodeSandbox</Text>
     <Logo />

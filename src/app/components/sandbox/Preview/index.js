@@ -155,6 +155,9 @@ export default class Preview extends React.PureComponent {
   }
 
   openNewWindow = () => {
+    if (this.props.sandboxActions) {
+      this.props.sandboxActions.setViewMode(this.props.sandboxId, true, false);
+    }
     window.open(this.state.urlInAddressBar, '_blank');
   };
 

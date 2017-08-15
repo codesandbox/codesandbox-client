@@ -5,9 +5,10 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const childProcess = require('child_process');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const HappyPack = require('happypack');
 const WatchMissingNodeModulesPlugin = require('../scripts/utils/WatchMissingNodeModulesPlugin');
 const env = require('./env');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const babelDev = require('./babel.dev');
 const babelProd = require('./babel.prod');
@@ -78,8 +79,7 @@ const config = {
         test: /\.js$/,
         include: paths.src,
         exclude: [/eslint\.4\.1\.0\.min\.js$/, /typescriptServices\.js$/],
-        loader: 'babel-loader?cacheDirectory',
-        options: babelConfig,
+        loader: 'happypack/loader',
       },
       // JSON is not enabled by default in Webpack but both Node and Browserify
       // allow it implicitly so we also enable it.
@@ -157,6 +157,14 @@ const config = {
   },
 
   plugins: [
+    new HappyPack({
+      loaders: [
+        {
+          path: 'babel-loader',
+          query: babelConfig,
+        },
+      ],
+    }),
     // Generates an `index.html` file with the <script> injected.
     new HtmlWebpackPlugin({
       inject: true,
@@ -336,6 +344,26 @@ if (__PROD__) {
             },
           },
         },
+        {
+          urlPattern: /^https:\/\/unpkg\.com/,
+          handler: 'cacheFirst',
+          options: {
+            cache: {
+              maxEntries: 300,
+              name: 'unpkg-cache',
+            },
+          },
+        },
+        {
+          urlPattern: /cloudflare\.com/,
+          handler: 'cacheFirst',
+          options: {
+            cache: {
+              maxEntries: 20,
+              name: 'cloudflare-cache',
+            },
+          },
+        },
       ],
     }),
     // Generate a service worker script that will precache, and keep up to date,
@@ -405,26 +433,6 @@ if (__PROD__) {
             cache: {
               maxEntries: 200,
               name: 'dependency-files-cache',
-            },
-          },
-        },
-        {
-          urlPattern: /^https:\/\/unpkg\.com/,
-          handler: 'cacheFirst',
-          options: {
-            cache: {
-              maxEntries: 300,
-              name: 'unpkg-cache',
-            },
-          },
-        },
-        {
-          urlPattern: /cloudflare\.com/,
-          handler: 'cacheFirst',
-          options: {
-            cache: {
-              maxEntries: 20,
-              name: 'cloudflare-cache',
             },
           },
         },

@@ -178,9 +178,11 @@ export default class CodeEditor extends React.PureComponent {
     this.lintWorker.addEventListener('message', event => {
       const { markers, version } = event.data;
 
-      if (version === this.editor.getModel().getVersionId()) {
-        this.updateLintWarnings(markers);
-      }
+      requestAnimationFrame(() => {
+        if (version === this.editor.getModel().getVersionId()) {
+          this.updateLintWarnings(markers);
+        }
+      });
     });
 
     this.typingsFetcherWorker.addEventListener('message', event => {
@@ -191,10 +193,12 @@ export default class CodeEditor extends React.PureComponent {
           path
         ]
       ) {
-        this.monaco.languages.typescript.typescriptDefaults.addExtraLib(
-          typings,
-          `file:///${path}`,
-        );
+        requestAnimationFrame(() => {
+          this.monaco.languages.typescript.typescriptDefaults.addExtraLib(
+            typings,
+            `file:///${path}`,
+          );
+        });
       }
     });
   };
@@ -503,9 +507,7 @@ export default class CodeEditor extends React.PureComponent {
     this.sizeProbeInterval = setInterval(this.resizeEditor.bind(this), 3000);
 
     if (this.props.dependencies) {
-      setTimeout(() => {
-        this.fetchDependencyTypings(this.props.dependencies, monaco);
-      }, 2000);
+      this.fetchDependencyTypings(this.props.dependencies, monaco);
     }
   };
 
@@ -565,6 +567,8 @@ export default class CodeEditor extends React.PureComponent {
       this.getMode(module.title),
       new this.monaco.Uri().with({ path, scheme: 'file' }),
     );
+
+    model.updateOptions({ tabSize: 2 });
 
     modelCache[module.id] = modelCache[module.id] || {
       model: null,
