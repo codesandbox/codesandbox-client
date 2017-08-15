@@ -1,5 +1,6 @@
 import _debug from 'app/utils/debug';
 import dependenciesToQuery from './dependencies-to-query';
+import { PACKAGER_URL } from './';
 import delay from '../utils/delay';
 import actions, { dispatch } from '../actions';
 import setScreen from '../status-screen';
@@ -8,6 +9,7 @@ type Dependencies = {
   [dependency: string]: string,
 };
 
+const RETRY_COUNT = 60;
 const debug = _debug('cs:sandbox:packager');
 
 function callApi(url: string) {
@@ -24,44 +26,39 @@ function callApi(url: string) {
     .then(response => response.json());
 }
 
-export const PACKAGER_URL = 'https://webpack-dll-prod.herokuapp.com/v6';
-export const NEW_PACKAGER_URL =
-  'https://42qpdtykai.execute-api.eu-west-1.amazonaws.com/prod/package';
-
-const RETRY_COUNT = 20;
-
 /**
  * Request the packager, if retries > RETRY_COUNT it will throw if something goes wrong
  * otherwise it will retry again with an incremented retry
  *
  * @param {string} query The dependencies to call
  */
-async function requestPackager(query: string) {
+async function requestManifest(url) {
   let retries = 0;
 
   while (true) {
     debug(`Trying to call packager for ${retries} time`);
     try {
-      const url = `${PACKAGER_URL}/${query}`;
-      const result = await callApi(`${url}/manifest.json`); // eslint-disable-line no-await-in-loop
+      const manifest = await callApi(url); // eslint-disable-line no-await-in-loop
 
-      return { ...result, url };
+      return manifest;
     } catch (e) {
       const statusCode = e.response && e.response.status;
 
-      // 504 status code means the bundler is still bundling
-      if (retries < RETRY_COUNT && statusCode === 504) {
+      setScreen({ type: 'loading', text: 'Bundling Dependencies...' });
+
+      // 403 status code means the bundler is still bundling
+      if (retries < RETRY_COUNT && statusCode === 403) {
         retries += 1;
+        await delay(1000 * 2); // eslint-disable-line no-await-in-loop
       } else if (retries < RETRY_COUNT && statusCode === 500) {
-        if (dispatch) {
-          dispatch(
-            actions.notifications.showNotification(
-              'It seems like all packagers are busy, retrying in 10 seconds...',
-              'warning',
-            ),
-          );
-        }
-        await delay(1000 * 10); // eslint-disable-line no-await-in-loop
+        dispatch(
+          actions.notifications.showNotification(
+            'It seems like all packagers are busy, retrying in 10 seconds...',
+            'warning',
+          ),
+        );
+
+        await delay(1000 * 2); // eslint-disable-line no-await-in-loop
         retries += 1;
       } else {
         throw e;
@@ -73,26 +70,19 @@ async function requestPackager(query: string) {
 async function callPackager(dependencies: Object) {
   const dependencyUrl = dependenciesToQuery(dependencies);
 
-  try {
-    // Warmup cache
-    window.fetch(`${NEW_PACKAGER_URL}/${dependencyUrl}`);
-  } catch (e) {
-    console.error(e);
-  }
+  const result = await callApi(`${PACKAGER_URL}/${dependencyUrl}`);
 
-  const manifest = await requestPackager(dependencyUrl);
-  return manifest;
+  const dataUrl = result.url;
+  const manifest = await requestManifest(`${dataUrl}/manifest.json`);
+
+  return { url: dataUrl, manifest };
 }
 
-// eslint-disable-next-line
-/*::
-  const _apiActions = createAPIActions('pref', 'act');
-*/
 export default async function fetchDependencies(npmDependencies: Dependencies) {
   if (Object.keys(npmDependencies).length !== 0) {
     // New Packager flow
     try {
-      const result = await callPackager(npmDependencies, dispatch);
+      const result = await callPackager(npmDependencies);
 
       return result;
     } catch (e) {

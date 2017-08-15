@@ -39,11 +39,11 @@ export default async function loadDependencies(dependencies: NPMDependencies) {
       // Mark that the last requested url is this
       loadedDependencyCombination = depQuery;
 
-      setScreen({ type: 'loading', text: 'Fetching Dependency Versions...' });
+      setScreen({ type: 'loading', text: 'Bundling Dependencies...' });
 
       const data = await fetchDependencies(dependencies);
 
-      manifest = data.manifest;
+      manifest = data;
 
       setScreen({ type: 'loading', text: 'Downloading Dependencies...' });
 
