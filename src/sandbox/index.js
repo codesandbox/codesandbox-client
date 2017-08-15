@@ -20,13 +20,13 @@ import { resetScreen } from './status-screen';
 
 import { inject, uninject } from './react-error-overlay/overlay';
 
-registerServiceWorker('/sandbox-service-worker.js');
-
 import {
   getBoilerplates,
   evalBoilerplates,
   findBoilerplate,
 } from './boilerplates';
+
+registerServiceWorker('/sandbox-service-worker.js');
 
 let initializedResizeListener = false;
 let loadingDependencies = false;
