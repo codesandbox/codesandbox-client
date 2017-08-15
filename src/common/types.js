@@ -20,6 +20,7 @@ export type Module = {
   directoryShortid: ?string,
   isNotSynced: boolean,
   sourceId: string,
+  errors: ?Array<ModuleError>,
 };
 
 export type Directory = {
@@ -121,10 +122,10 @@ export type Sandbox = {
   showPreview: ?boolean,
   author: ?User,
   forkedFromSandbox: ?{ title: string, id: string },
-  errors: Array<ModuleError>,
   git: ?GitInfo,
   tags: Array<string>,
   sourceId: string, // This is the source it's assigned to, a source contains all dependencies, modules and directories
+  forcedRenders: number,
 };
 
 export type Preferences = {

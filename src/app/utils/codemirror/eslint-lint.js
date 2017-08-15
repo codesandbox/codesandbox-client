@@ -357,10 +357,7 @@ export default (async function initialize() {
   if (!window.eslint && linter === null) {
     // Add eslint as script
     const script = document.createElement('script');
-    const src =
-      process.env.NODE_ENV === 'development'
-        ? 'http://eslint.org/js/app/eslint.js'
-        : '/static/js/eslint.4.1.0.js';
+    const src = '/static/js/eslint.4.1.0.min.js';
     script.setAttribute('src', src);
     script.setAttribute('async', false);
 

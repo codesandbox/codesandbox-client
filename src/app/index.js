@@ -4,6 +4,7 @@ import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import { ThemeProvider } from 'styled-components';
 import { ConnectedRouter } from 'react-router-redux';
+import registerServiceWorker from 'common/registerServiceWorker';
 import 'normalize.css';
 
 import App from './pages/index';
@@ -13,6 +14,8 @@ import createStore from './store';
 import theme from '../common/theme';
 import logError from './utils/error';
 import history from './utils/history';
+
+registerServiceWorker('/service-worker.js');
 
 if (process.env.NODE_ENV === 'production') {
   try {

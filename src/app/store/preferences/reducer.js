@@ -6,7 +6,16 @@ import store from 'store/dist/store.modern';
 import { SET_PREFERENCES } from './actions';
 import * as keys from './keys';
 
-import { DEFAULT_PRETTIER_CONFIG } from '../../utils/codemirror/prettify';
+export const DEFAULT_PRETTIER_CONFIG = {
+  printWidth: 80,
+  tabWidth: 2,
+  useTabs: false,
+  semi: true,
+  singleQuote: false,
+  trailingComma: 'none',
+  bracketSpacing: true,
+  jsxBracketSameLine: false,
+};
 
 function getKey<D: any>(key: string, defaultVal: D): ?D {
   try {
@@ -24,9 +33,10 @@ const initialState: Preferences = Object.keys(keys).reduce(
       [key]: getKey(keys[key], res[key]),
     }),
   {
+    autoCompleteEnabled: true,
     livePreviewEnabled: true,
     prettifyOnSaveEnabled: false,
-    lintEnabled: false,
+    lintEnabled: true,
     instantPreviewEnabled: false,
     fontSize: 14,
     fontFamily: '',

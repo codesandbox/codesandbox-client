@@ -2,7 +2,9 @@
 import { transform } from 'babel-standalone';
 
 import type { Module, Directory } from 'common/types';
+import { getModulePath } from 'app/store/entities/sandboxes/modules/selectors';
 
+import type { SourceMap } from '../../react-error-overlay/utils/getSourceMap';
 import evalModule from '../';
 import resolveModule from '../../utils/resolve-module';
 import resolveDependency from './dependency-resolver';
@@ -14,7 +16,28 @@ export type ModuleCacheModule = {
   module: Module,
   exports: Object,
 };
+export type CompiledModuleInfo = {
+  id: string,
+  path: string,
+  compiledCode: string,
+  module: Module,
+  sourceMap?: SourceMap,
+};
 const moduleCache: Map<string, ModuleCacheModule> = new Map();
+const compiledModules: Map<string, CompiledModuleInfo> = new Map();
+
+export function getCompiledModuleByPath(path: ?string) {
+  if (!path) return null;
+
+  return Array.from(compiledModules.values()).find(m => m.path === path);
+}
+
+export function setSourceMap(id: string, sourceMap: SourceMap) {
+  compiledModules.set(id, {
+    ...compiledModules.get(id),
+    sourceMap,
+  });
+}
 
 export function clearCache() {
   moduleCache.clear();
@@ -37,17 +60,23 @@ export function deleteCache(module: Module) {
 const compileCode = (
   code: string = '',
   moduleName: string = 'unknown',
+  path: string,
   babelConfig: Object,
 ) => {
   try {
-    return transform(code, babelConfig).code;
+    const compiledCode = transform(code, babelConfig).code;
+
+    const alteredCode = `${compiledCode}
+    //# sourceURL=${path}`;
+
+    return alteredCode;
   } catch (e) {
     e.message = e.message.split('\n')[0].replace('unknown', moduleName);
     throw e;
   }
 };
 
-function evaluate(code, require) {
+function evaluate(code, path, require) {
   const module = { exports: {} };
   const exports = {};
   const global = window;
@@ -129,14 +158,27 @@ export default function evaluateJS(
       externals,
       depth,
     );
+
+    const path = getModulePath(modules, directories, mainModule.id).replace(
+      '/',
+      '',
+    );
     const compiledCode = compileCode(
       mainModule.code || '',
       mainModule.title,
+      path,
       babelConfig,
     );
 
+    compiledModules.set(mainModule.id, {
+      id: mainModule.id,
+      module: mainModule,
+      path,
+      compiledCode,
+    });
+
     // don't use Function() here since it changes source locations
-    const exports = evaluate(compiledCode, require);
+    const exports = evaluate(compiledCode, path, require);
 
     // Always set a (if no error) new cache for this module, because we know this changed
     moduleCache.set(mainModule.id, {
@@ -149,7 +191,7 @@ export default function evaluateJS(
     // Remove cache
     moduleCache.delete(mainModule.id);
 
-    e.module = e.module || mainModule;
+    e.module = getCompiledModuleByPath(e.fileName) || e.module || mainModule;
 
     const newError = transformError(
       e,
@@ -159,7 +201,7 @@ export default function evaluateJS(
       requires,
     );
 
-    if (newError.module && newError.module !== e.module) {
+    if (newError.module && newError.module !== mainModule) {
       deleteCache(newError.module);
     }
 

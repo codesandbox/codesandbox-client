@@ -36,21 +36,6 @@ const Preferences = ({ preferences, preferencesActions }: Props) => {
     <Container>
       <PreferenceContainer>
         <PaddedPreference
-          title="Autocomplete"
-          type="boolean"
-          {...bindValue('autoCompleteEnabled')}
-        />
-        <Description>Show autocompletions while you type.</Description>
-        <Rule />
-        <PaddedPreference
-          title="Enable linter"
-          type="boolean"
-          tooltip="Made possible by eslint"
-          {...bindValue('lintEnabled')}
-        />
-        <Description>Use eslint to find syntax and style errors.</Description>
-        <Rule />
-        <PaddedPreference
           title="Prettify on save"
           type="boolean"
           tooltip="Made possible by Prettier"

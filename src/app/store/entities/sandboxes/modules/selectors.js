@@ -15,7 +15,7 @@ export const findMainModule = (modules: Module[]) =>
 export const findCurrentModule = (
   modules: Module[],
   directories: Directory[],
-  modulePath: string,
+  modulePath: ?string = '',
   mainModule: Module,
 ): Module => {
   // cleanPath, encode and replace first /
@@ -99,5 +99,14 @@ export const singleModuleSelector = createSelector(
   (modules, { sourceId, id, shortid }) =>
     values(modules).find(
       m => m.id === id || (m.sourceId === sourceId && m.shortid === shortid),
+    ),
+);
+
+export const moduleErrorsFromSandboxSelector = createSelector(
+  modulesFromSandboxSelector,
+  modules =>
+    modules.reduce(
+      (total, module) => (module.errors ? [...total, ...module.errors] : total),
+      [],
     ),
 );

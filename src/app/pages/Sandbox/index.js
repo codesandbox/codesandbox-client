@@ -16,6 +16,7 @@ import SubTitle from 'app/components/text/SubTitle';
 import Centered from 'app/components/flex/Centered';
 
 import Editor from './Editor';
+import { embedUrl } from '../../utils/url-generator';
 
 type Props = {
   sandboxes: { [id: string]: Sandbox },
@@ -42,7 +43,14 @@ const mapDispatchToProps = dispatch => ({
 });
 class SandboxPage extends React.PureComponent {
   componentDidMount() {
-    this.fetchSandbox(this.props.match.params.id);
+    if (
+      window.screen.availWidth < 800 &&
+      !document.location.search.includes('from-embed')
+    ) {
+      document.location.href = document.location.href.replace('/s/', '/embed/');
+    } else {
+      this.fetchSandbox(this.props.match.params.id);
+    }
   }
 
   fetchSandbox = (id: string) => {

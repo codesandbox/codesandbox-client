@@ -10,9 +10,9 @@
  * 4) Add nonce for style element.
  **/
 
-export default function createDetectElementResize(nonce) {
+export default function createDetectElementResize(nonce?: string) {
   // Check `document` and `window` in case of server-side rendering
-  var _window;
+  let _window: Window;
   if (typeof window !== 'undefined') {
     _window = window;
   } else if (typeof self !== 'undefined') {
@@ -136,11 +136,11 @@ export default function createDetectElementResize(nonce) {
     if (!document.getElementById('detectElementResize')) {
       //opacity:0 works around a chrome bug https://code.google.com/p/chromium/issues/detail?id=286360
       var css =
-        (animationKeyframes ? animationKeyframes : '') +
-        '.resize-triggers { ' +
-        (animationStyle ? animationStyle : '') +
-        'visibility: hidden; opacity: 0; } ' +
-        '.resize-triggers, .resize-triggers > div, .contract-trigger:before { content: " "; display: block; position: absolute; top: 0; left: 0; height: 100%; width: 100%; overflow: hidden; z-index: -1; } .resize-triggers > div { background: #eee; overflow: auto; } .contract-trigger:before { width: 200%; height: 200%; }',
+          (animationKeyframes ? animationKeyframes : '') +
+          '.resize-triggers { ' +
+          (animationStyle ? animationStyle : '') +
+          'visibility: hidden; opacity: 0; } ' +
+          '.resize-triggers, .resize-triggers > div, .contract-trigger:before { content: " "; display: block; position: absolute; top: 0; left: 0; height: 100%; width: 100%; overflow: hidden; z-index: -1; } .resize-triggers > div { background: #eee; overflow: auto; } .contract-trigger:before { width: 200%; height: 200%; }',
         head = document.head || document.getElementsByTagName('head')[0],
         style = document.createElement('style');
 

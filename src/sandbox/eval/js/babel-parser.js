@@ -7,6 +7,8 @@ import classPropertiesPlugin from 'babel-plugin-transform-class-properties';
 import decoratorsPlugin from 'babel-plugin-transform-decorators-legacy';
 import dynamicImportPlugin from 'babel-plugin-dynamic-import-node';
 
+import { getModulePath } from 'app/store/entities/sandboxes/modules/selectors';
+
 import evalModule from '../';
 import resolveDependency from './dependency-resolver';
 
@@ -21,7 +23,6 @@ const DEFAULT_BABEL_CONFIG = {
     classPropertiesPlugin,
     dynamicImportPlugin,
   ],
-  retainLines: true,
 };
 
 const resolvePlugin = (plugin: string, externals) => {
@@ -68,6 +69,8 @@ export default function getBabelConfig(
     m => m.title === '.babelrc' && !m.directoryShortid,
   );
 
+  let resolvedConfig = DEFAULT_BABEL_CONFIG;
+
   if (
     babelConfigModule &&
     babelConfigModule !== currentModule &&
@@ -81,14 +84,22 @@ export default function getBabelConfig(
       depth,
     );
 
-    const resolvedConfig = {
+    resolvedConfig = {
       ...config,
       plugins: rewritePlugins(config.plugins, externals),
-      retainLines: true,
     };
-
-    return resolvedConfig;
   }
 
-  return DEFAULT_BABEL_CONFIG;
+  const path = getModulePath(modules, directories, currentModule.id).replace(
+    '/',
+    '',
+  );
+  resolvedConfig = {
+    ...resolvedConfig,
+    sourceMaps: 'inline',
+    sourceFileName: path,
+    sourceMapTarget: `${path}:transpiled`,
+  };
+
+  return resolvedConfig;
 }

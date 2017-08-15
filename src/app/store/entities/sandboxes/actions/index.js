@@ -7,19 +7,13 @@ import { createAPIActions, doRequest } from '../../../api/actions';
 import { normalizeResult } from '../../actions';
 import notificationActions from '../../../notifications/actions';
 import entity from '../entity';
-import fetchBundle from '../bundler';
 import { singleSandboxSelector } from '../selectors';
 import { modulesSelector } from '../modules/selectors';
 import { directoriesSelector } from '../directories/selectors';
-import errorActions from '../errors/actions';
 
 import { maybeForkSandbox, forkSandbox } from './fork';
 import fileActions from './files';
 
-export const FETCH_BUNDLE_API_ACTIONS = createAPIActions(
-  'SANDBOX',
-  'FETCH_BUNDLE',
-);
 export const SINGLE_SANDBOX_API_ACTIONS = createAPIActions('SANDBOX', 'SINGLE');
 export const CREATE_SANDBOX_API_ACTIONS = createAPIActions('SANDBOX', 'CREATE');
 export const DELETE_SANDBOX_API_ACTIONS = createAPIActions('SANDBOX', 'DELETE');
@@ -54,12 +48,11 @@ export const SET_NPM_DEPENDENCIES = 'SET_NPM_DEPENDENCIES';
 export const SET_EXTERNAL_RESOURCES = 'SET_EXTERNAL_RESOURCES';
 export const SET_TAGS = 'SET_TAGS';
 export const SET_CURRENT_MODULE = 'SET_CURRENT_MODULE';
-export const SET_BUNDLE = 'SET_BUNDLE';
-export const CANCEL_BUNDLE = 'CANCEL_BUNDLE';
 export const SET_PROJECT_VIEW = 'SET_PROJECT_VIEW';
 export const SET_VIEW_MODE = 'SET_VIEW_MODE';
 export const CREATE_ZIP = 'CREATE_ZIP';
 export const SET_SANDBOX_PRIVACY = 'SET_SANDBOX_PRIVACY';
+export const FORCE_RENDER = 'FORCE_RENDER';
 
 export default {
   updateSandboxInfo: (id: string, title: string, description: string) => async (
@@ -110,10 +103,11 @@ export default {
     isInProjectView,
   }),
 
-  setCurrentModule: (id: string, moduleId: string) => ({
+  setCurrentModule: (id: string, moduleId: string, lineNumber?: number) => ({
     type: SET_CURRENT_MODULE,
     id,
     moduleId,
+    lineNumber,
   }),
 
   getById: (id: string) => async (dispatch: Function) => {
@@ -313,56 +307,6 @@ export default {
     });
   },
 
-  fetchDependenciesBundle: (sandboxId: string) => async (
-    dispatch: Function,
-    getState: Function,
-  ) => {
-    try {
-      dispatch(
-        notificationActions.addNotification(
-          'Fetching dependencies...',
-          'notice',
-        ),
-      );
-
-      const sandbox = singleSandboxSelector(getState(), { id: sandboxId });
-      const result = await dispatch(
-        fetchBundle(
-          FETCH_BUNDLE_API_ACTIONS,
-          sandboxId,
-          sandbox.npmDependencies,
-        ),
-      );
-
-      const bundle = {
-        externals: result.externals,
-        url: result.url,
-      };
-
-      dispatch({
-        type: SET_BUNDLE,
-        id: sandboxId,
-        bundle,
-      });
-
-      dispatch(
-        notificationActions.addNotification('Dependencies loaded!', 'success'),
-      );
-    } catch (e) {
-      dispatch(
-        notificationActions.addNotification(
-          `Could not fetch dependencies: ${e.message}`,
-          'error',
-        ),
-      );
-
-      dispatch({
-        type: CANCEL_BUNDLE,
-        id: sandboxId,
-      });
-    }
-  },
-
   createZip: (id: string) => async (dispatch: Function, getState: Function) => {
     dispatch({
       type: CREATE_ZIP,
@@ -450,6 +394,10 @@ export default {
     }
   },
 
-  ...errorActions,
+  forceRender: (id: string) => ({
+    type: FORCE_RENDER,
+    id,
+  }),
+
   ...fileActions,
 };

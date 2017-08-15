@@ -1,13 +1,26 @@
-import delay from './utils/delay';
-import buildError from './utils/error-message-builder';
-import evalModule, { deleteCache } from './eval';
+import { camelizeKeys } from 'humps';
+
+import registerServiceWorker from 'common/registerServiceWorker';
+import {
+  getModulePath,
+  findMainModule,
+} from 'app/store/entities/sandboxes/modules/selectors';
+
+import evalModule, { deleteCache, clearCache } from './eval';
 import NoDomChangeError from './errors/no-dom-change-error';
+import loadDependencies from './npm';
+import sendMessage, { isStandalone } from './utils/send-message';
 import host from './utils/host';
 
 import handleExternalResources from './external-resources';
 import resizeEventListener from './resize-event-listener';
 import setupHistoryListeners from './url-listeners';
 import resolveDependency from './eval/js/dependency-resolver';
+import { resetScreen } from './status-screen';
+
+import { inject, uninject } from './react-error-overlay/overlay';
+
+registerServiceWorker('/sandbox-service-worker.js');
 
 import {
   getBoilerplates,
@@ -15,23 +28,8 @@ import {
   findBoilerplate,
 } from './boilerplates';
 
-let fetching = false;
-let url = null;
 let initializedResizeListener = false;
-
-async function addDependencyBundle() {
-  if (url !== '') {
-    window.dll_bundle = null;
-    const script = document.createElement('script');
-    script.setAttribute('src', `${url}/dll.js`);
-    script.setAttribute('async', false);
-    document.head.appendChild(script);
-
-    while (window.dll_bundle == null) {
-      await delay(100);
-    }
-  }
-}
+let loadingDependencies = false;
 
 function getIndexHtml(modules) {
   const module = modules.find(
@@ -43,49 +41,67 @@ function getIndexHtml(modules) {
   return '<div id="root"></div>';
 }
 
-function sendReady() {
-  window.parent.postMessage('Ready!', host);
+export function sendReady() {
+  sendMessage('Ready!');
+}
+
+function requestRender() {
+  sendMessage({ type: 'render' });
 }
 
 function initializeResizeListener() {
   const listener = resizeEventListener();
   listener.addResizeListener(document.body, () => {
     if (document.body) {
-      window.parent.postMessage(
-        {
-          type: 'resize',
-          height: document.body.getBoundingClientRect().height,
-        },
-        '*',
-      );
+      sendMessage({
+        type: 'resize',
+        height: document.body.getBoundingClientRect().height,
+      });
     }
   });
   initializedResizeListener = true;
+}
+
+let actionsEnabled = false;
+
+export function areActionsEnabled() {
+  return actionsEnabled;
 }
 
 async function compile(message) {
   const {
     modules,
     directories,
-    boilerplates,
+    boilerplates = [],
     module,
-    externals = {},
-    url: newUrl,
     changedModule,
     externalResources,
+    dependencies,
+    hasActions,
   } = message.data;
+  uninject();
+  inject();
 
-  if (fetching) return;
+  actionsEnabled = hasActions;
 
   handleExternalResources(externalResources);
-  if ((url == null || url !== newUrl) && newUrl != null) {
-    fetching = true;
-    url = newUrl;
-    await addDependencyBundle();
-    fetching = false;
-    sendReady();
+
+  if (loadingDependencies && !isStandalone) return;
+
+  loadingDependencies = true;
+  const { manifest, isNewCombination } = await loadDependencies(dependencies);
+  loadingDependencies = false;
+
+  if (isNewCombination && !isStandalone) {
+    clearCache();
+    // If we just loaded new depdendencies, we want to get the latest changes,
+    // since we might have missed them
+    requestRender();
     return;
   }
+
+  resetScreen();
+  const { externals } = manifest;
 
   // Do unmounting
   try {
@@ -111,7 +127,7 @@ async function compile(message) {
     document.body.innerHTML = html;
     deleteCache(changedModule);
 
-    const evalled = evalModule(module, modules, directories, externals);
+    const evalled = await evalModule(module, modules, directories, externals);
     const domChanged = document.body.innerHTML !== html;
 
     if (!domChanged && !module.title.endsWith('.html')) {
@@ -147,25 +163,20 @@ async function compile(message) {
       initializeResizeListener();
     }
 
-    window.parent.postMessage(
-      {
-        type: 'success',
-      },
-      host,
-    );
+    sendMessage({
+      type: 'success',
+    });
   } catch (e) {
     console.log('Error in sandbox:');
     console.error(e);
 
     e.module = e.module || changedModule;
+    e.fileName = e.fileName || getModulePath(modules, directories, e.module);
 
-    window.parent.postMessage(
-      {
-        type: 'error',
-        error: buildError(e),
-      },
-      host,
-    );
+    const event = new Event('error');
+    event.error = e;
+
+    window.dispatchEvent(event);
   }
 }
 
@@ -182,3 +193,29 @@ window.addEventListener('message', async message => {
 sendReady();
 
 setupHistoryListeners();
+
+if (isStandalone) {
+  // We need to fetch the sandbox ourselves...
+  const id = document.location.host.match(/(.*)\.codesandbox/)[1];
+  window
+    .fetch(`${host}/api/v1/sandboxes/${id}`)
+    .then(res => res.json())
+    .then(res => camelizeKeys(res))
+    .then(x => {
+      const mainModule = findMainModule(x.data.modules);
+
+      const message = {
+        data: {
+          modules: x.data.modules,
+          directories: x.data.directories,
+          module: mainModule,
+          changedModule: mainModule,
+          externalResources: x.data.externalResources,
+          dependencies: x.data.npmDependencies,
+          hasActions: false,
+        },
+      };
+
+      compile(message);
+    });
+}

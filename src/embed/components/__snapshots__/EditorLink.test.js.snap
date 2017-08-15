@@ -24,7 +24,7 @@ exports[`EditorLink renders 1`] = `
 
 <a
   className="c0"
-  href="/s/undefined"
+  href="/s/undefined?from-embed"
   rel="noopener noreferrer"
   target="_blank"
 >

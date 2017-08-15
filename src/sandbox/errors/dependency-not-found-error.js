@@ -1,4 +1,8 @@
-export default class DependencyNotFoundError extends Error {
+// @flow
+import SandboxError from './sandbox-error';
+import actions, { dispatch } from '../actions';
+
+export default class DependencyNotFoundError extends SandboxError {
   constructor(dependencyName: string) {
     super();
 
@@ -12,7 +16,17 @@ export default class DependencyNotFoundError extends Error {
       dependency: parsedName,
       path: dependencyName,
     };
-    this.message = `Could not find dependency: '${dependencyName}'`;
+    this.name = 'DependencyNotFoundError';
+    this.message = `Could not find dependency: '${parsedName}'`;
+
+    this.suggestions = [
+      {
+        title: `Add ${parsedName} as dependency`,
+        action: () => {
+          dispatch(actions.source.dependencies.add(parsedName));
+        },
+      },
+    ];
   }
   type = 'dependency-not-found';
   severity = 'error';

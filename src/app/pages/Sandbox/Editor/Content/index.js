@@ -12,10 +12,12 @@ import type {
   CurrentUser,
   Module,
   Directory,
+  ModuleError,
 } from 'common/types';
 import { currentUserSelector } from 'app/store/user/selectors';
 import moduleActionCreators from 'app/store/entities/sandboxes/modules/actions';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
+import previewApiActionCreators from 'app/store/preview-actions-api/actions';
 import userActionCreators from 'app/store/user/actions';
 import {
   findMainModule,
@@ -47,6 +49,7 @@ type Props = {
   moduleActions: typeof moduleActionCreators,
   sandboxActions: typeof sandboxActionCreators,
   userActions: typeof userActionCreators,
+  previewApiActions: typeof previewApiActionCreators,
 };
 
 type State = {
@@ -76,6 +79,7 @@ const mapDispatchToProps = dispatch => ({
   moduleActions: bindActionCreators(moduleActionCreators, dispatch),
   sandboxActions: bindActionCreators(sandboxActionCreators, dispatch),
   userActions: bindActionCreators(userActionCreators, dispatch),
+  previewApiActions: bindActionCreators(previewApiActionCreators, dispatch),
 });
 class EditorPreview extends React.PureComponent {
   props: Props;
@@ -130,6 +134,8 @@ class EditorPreview extends React.PureComponent {
       user,
       workspaceHidden,
       toggleWorkspace,
+      previewApiActions,
+      errors,
     } = this.props;
 
     const mainModule = findMainModule(modules);
@@ -154,13 +160,18 @@ class EditorPreview extends React.PureComponent {
         <CodeEditor
           changeCode={moduleActions.setCode}
           id={currentModule.id}
-          errors={sandbox.errors}
+          errors={currentModule.errors}
           code={currentModule.code}
           title={currentModule.title}
           canSave={currentModule.isNotSynced}
           saveCode={this.saveCode}
           modulePath={modulePath}
           preferences={preferences}
+          modules={modules}
+          directories={directories}
+          sandboxId={sandbox.id}
+          dependencies={sandbox.npmDependencies}
+          setCurrentModule={sandboxActions.setCurrentModule}
         />
       </FullSize>
     );
@@ -170,20 +181,19 @@ class EditorPreview extends React.PureComponent {
         <Preview
           sandboxId={sandbox.id}
           initialPath={sandbox.initialPath}
-          bundle={sandbox.dependencyBundle}
-          fetchBundle={sandboxActions.fetchDependenciesBundle}
           module={currentModule}
           modules={modules}
           directories={directories}
           addError={sandboxActions.addError}
-          errors={sandbox.errors}
-          clearErrors={sandboxActions.clearErrors}
+          clearErrors={moduleActions.clearErrors}
           isInProjectView={Boolean(sandbox.isInProjectView)}
           externalResources={sandbox.externalResources}
           setProjectView={sandboxActions.setProjectView}
           preferences={preferences}
           sandboxActions={sandboxActions}
           dependencies={sandbox.npmDependencies}
+          runActionFromPreview={previewApiActions.executeAction}
+          forcedRenders={sandbox.forcedRenders}
         />
       </FullSize>
     );

@@ -33,17 +33,17 @@ export default function setupHistoryListeners() {
 
   history.onpushstate = e => {
     setTimeout(() => {
-      sendUrlChange(document.location.pathname + location.search);
+      sendUrlChange(document.location.href);
     });
   };
 
   history.onreplacestate = e => {
     setTimeout(() => {
-      sendUrlChange(document.location.pathname + location.search);
+      sendUrlChange(document.location.href);
     });
   };
 
   setTimeout(() => {
-    sendUrlChange(document.location.pathname + location.search);
+    sendUrlChange(document.location.href);
   });
 }

@@ -4,6 +4,9 @@ const paths = require('./paths');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const childProcess = require('child_process');
+const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const HappyPack = require('happypack');
 const WatchMissingNodeModulesPlugin = require('../scripts/utils/WatchMissingNodeModulesPlugin');
 const env = require('./env');
 
@@ -24,13 +27,17 @@ const COMMIT_HASH = childProcess
   .toString();
 const VERSION = `${COMMIT_COUNT}-${COMMIT_HASH}`;
 
+const publicPath = __PROD__
+  ? 'https://codesandbox.io/'
+  : 'https://codesandbox.dev/';
+
 const getOutput = () =>
   __DEV__
     ? {
         path: paths.appBuild,
         pathinfo: true,
         filename: 'static/js/[name].js',
-        publicPath: '/',
+        publicPath,
       }
     : {
         path: paths.appBuild,
@@ -38,7 +45,7 @@ const getOutput = () =>
         filename: 'static/js/[name].[chunkhash].js',
         chunkFilename: 'static/js/[name].[chunkhash].chunk.js',
         sourceMapFilename: '[file].map', // Default
-        publicPath: 'https://codesandbox.io/',
+        publicPath,
       };
 
 const config = {
@@ -55,7 +62,7 @@ const config = {
       require.resolve('./polyfills'),
       path.join(paths.embedSrc, 'index.js'),
     ],
-    vendor: ['codemirror', 'react', 'react-dom', 'styled-components'],
+    vendor: ['react', 'react-dom', 'styled-components', 'babel-standalone'],
   },
 
   target: 'web',
@@ -73,24 +80,8 @@ const config = {
       {
         test: /\.js$/,
         include: paths.src,
-        exclude: [/eslint\.js$/],
-        loader: 'babel-loader',
-        options: babelConfig,
-      },
-      // Used to remove strict mode from eval:
-      {
-        test: /eval\/js\.js$/,
-        include: paths.src,
-        loader: 'babel-loader?cacheDirectory',
-        options: (() => {
-          const altererdConfig = Object.assign({}, babelConfig);
-
-          // prettier-ignore
-          altererdConfig.plugins.push(
-            require.resolve('babel-plugin-transform-remove-strict-mode')
-          );
-          return altererdConfig;
-        })(),
+        exclude: [/eslint\.4\.1\.0\.min\.js$/, /typescriptServices\.js$/],
+        loader: 'happypack/loader',
       },
       // JSON is not enabled by default in Webpack but both Node and Browserify
       // allow it implicitly so we also enable it.
@@ -152,6 +143,8 @@ const config = {
         },
       },
     ],
+
+    noParse: [/eslint\.4\.1\.0\.min\.js$/, /typescriptServices\.js$/],
   },
 
   resolve: {
@@ -166,6 +159,14 @@ const config = {
   },
 
   plugins: [
+    new HappyPack({
+      loaders: [
+        {
+          path: 'babel-loader',
+          query: babelConfig,
+        },
+      ],
+    }),
     // Generates an `index.html` file with the <script> injected.
     new HtmlWebpackPlugin({
       inject: true,
@@ -234,6 +235,19 @@ const config = {
     // makes the discovery automatic so you don't have to restart.
     // See https://github.com/facebookincubator/create-react-app/issues/186
     new WatchMissingNodeModulesPlugin(paths.appNodeModules),
+    // Make the monaco editor work
+    new CopyWebpackPlugin([
+      {
+        from: __DEV__
+          ? 'node_modules/monaco-editor/dev/vs'
+          : 'node_modules/monaco-editor/min/vs',
+        to: 'public/vs',
+      },
+      {
+        from: 'src/homepage/static',
+        to: 'static',
+      },
+    ]),
     // Try to dedupe duplicated modules, if any:
     new webpack.optimize.CommonsChunkPlugin({
       name: 'common',
@@ -246,7 +260,7 @@ const config = {
     new webpack.optimize.CommonsChunkPlugin({
       async: true,
       children: true,
-      minChunks: 4,
+      minChunks: 2,
     }),
     new webpack.NamedModulesPlugin(),
   ],
@@ -290,6 +304,165 @@ if (__PROD__) {
       },
       sourceMap: true,
     }),
+    // Generate a service worker script that will precache, and keep up to date,
+    // the HTML & assets that are part of the Webpack build.
+    new SWPrecacheWebpackPlugin({
+      // By default, a cache-busting query parameter is appended to requests
+      // used to populate the caches, to ensure the responses are fresh.
+      // If a URL is already hashed by Webpack, then there is no concern
+      // about it being stale, and the cache-busting can be skipped.
+      dontCacheBustUrlsMatching: /\.\w{8}\./,
+      filename: 'service-worker.js',
+      cacheId: 'code-sandbox',
+      logger(message) {
+        if (message.indexOf('Total precache size is') === 0) {
+          // This message occurs for every build and is a bit too noisy.
+          return;
+        }
+        if (message.indexOf('Skipping static resource') === 0) {
+          // This message obscures real errors so we ignore it.
+          // https://github.com/facebookincubator/create-react-app/issues/2612
+          return;
+        }
+        console.log(message);
+      },
+      minify: true,
+      // For unknown URLs, fallback to the index page
+      navigateFallback: publicPath + 'app.html',
+      // Ignores URLs starting from /__ (useful for Firebase):
+      // https://github.com/facebookincubator/create-react-app/issues/2237#issuecomment-302693219
+      navigateFallbackWhitelist: [/^(?!\/__).*/],
+      // Don't precache sourcemaps (they're large) and build asset manifest:
+      staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
+      maximumFileSizeToCacheInBytes: 5242880,
+      runtimeCaching: [
+        {
+          urlPattern: /api\/v1\/sandboxes/,
+          handler: 'networkFirst',
+          options: {
+            cache: {
+              maxEntries: 50,
+              name: 'sandboxes-cache',
+            },
+          },
+        },
+        {
+          urlPattern: /^https:\/\/unpkg\.com/,
+          handler: 'cacheFirst',
+          options: {
+            cache: {
+              maxEntries: 300,
+              name: 'unpkg-cache',
+            },
+          },
+        },
+        {
+          urlPattern: /cloudflare\.com/,
+          handler: 'cacheFirst',
+          options: {
+            cache: {
+              maxEntries: 20,
+              name: 'cloudflare-cache',
+            },
+          },
+        },
+      ],
+    }),
+    // Generate a service worker script that will precache, and keep up to date,
+    // the HTML & assets that are part of the Webpack build.
+    new SWPrecacheWebpackPlugin({
+      // By default, a cache-busting query parameter is appended to requests
+      // used to populate the caches, to ensure the responses are fresh.
+      // If a URL is already hashed by Webpack, then there is no concern
+      // about it being stale, and the cache-busting can be skipped.
+      dontCacheBustUrlsMatching: /\.\w{8}\./,
+      filename: 'sandbox-service-worker.js',
+      logger(message) {
+        if (message.indexOf('Total precache size is') === 0) {
+          // This message occurs for every build and is a bit too noisy.
+          return;
+        }
+        if (message.indexOf('Skipping static resource') === 0) {
+          // This message obscures real errors so we ignore it.
+          // https://github.com/facebookincubator/create-react-app/issues/2612
+          return;
+        }
+        console.log(message);
+      },
+      minify: true,
+      // For unknown URLs, fallback to the index page
+      navigateFallback: 'https://new.codesandbox.io/frame.html',
+      staticFileGlobs: ['www/frame.html'],
+      stripPrefix: 'www/',
+      cacheId: 'code-sandbox-sandbox',
+      // Ignores URLs starting from /__ (useful for Firebase):
+      // https://github.com/facebookincubator/create-react-app/issues/2237#issuecomment-302693219
+      navigateFallbackWhitelist: [/^(?!\/__).*/],
+      // Don't precache sourcemaps (they're large) and build asset manifest:
+      staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
+      maximumFileSizeToCacheInBytes: 10485760,
+      runtimeCaching: [
+        {
+          urlPattern: /api\/v1\/sandboxes/,
+          handler: 'networkFirst',
+          options: {
+            cache: {
+              maxEntries: 50,
+              name: 'sandboxes-cache',
+            },
+          },
+        },
+        {
+          // These should be dynamic, since it's not loaded from this domain
+          // But from the root domain
+          urlPattern: /codesandbox\.io\/static\/js\/(vendor|common|sandbox)/,
+          handler: 'networkFirst',
+          options: {
+            cache: {
+              name: 'static-root-cache',
+            },
+          },
+        },
+        {
+          urlPattern: /api\/v1\/sandboxes/,
+          handler: 'networkFirst',
+          options: {
+            cache: {
+              maxEntries: 50,
+              name: 'sandboxes-cache',
+            },
+          },
+        },
+        {
+          urlPattern: /\.amazonaws\.com\/prod\/package/,
+          handler: 'fastest',
+          options: {
+            cache: {
+              // a week
+              maxAgeSeconds: 60 * 60 * 24 * 7,
+              name: 'dependency-url-generator-cache',
+            },
+          },
+        },
+        {
+          urlPattern: /https:\/\/d3i2v4dxqvxaq9\.cloudfront\.net/,
+          handler: 'fastest',
+          options: {
+            cache: {
+              maxEntries: 200,
+              name: 'dependency-files-cache',
+            },
+          },
+        },
+      ],
+    }),
+    // Moment.js is an extremely popular library that bundles large locale files
+    // by default due to how Webpack interprets its code. This is a practical
+    // solution that requires the user to opt into importing specific locales.
+    // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
+    // You can remove this if you don't use Moment.js:
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+    new webpack.optimize.ModuleConcatenationPlugin(),
   ];
 } else {
   config.plugins = [

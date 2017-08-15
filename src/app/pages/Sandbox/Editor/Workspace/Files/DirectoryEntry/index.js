@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { DropTarget } from 'react-dnd';
 
-import type { Module, Directory, ModuleError } from 'common/types';
+import type { Module, Directory } from 'common/types';
 
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 import { validateTitle } from 'app/store/entities//sandboxes/modules/validator';
@@ -41,7 +41,6 @@ type Props = {
   sandboxId: string,
   root: ?boolean,
   title: string,
-  errors: Array<ModuleError>,
   modules: Array<Module>,
   directories: Array<Directory>,
   sandboxId: string,
@@ -76,6 +75,25 @@ class DirectoryEntry extends React.PureComponent {
       creating: '',
       open: props.root || isParentOfModule,
     };
+  }
+
+  componentWillReceiveProps(nextProps, nextState) {
+    if (
+      !nextState.open &&
+      this.props.currentModuleId !== nextProps.currentModuleId
+    ) {
+      const { id, modules, directories, currentModuleId } = nextProps;
+      const currentModuleParents = getModuleParents(
+        modules,
+        directories,
+        currentModuleId,
+      );
+
+      const isParentOfModule = currentModuleParents.includes(id);
+      if (isParentOfModule) {
+        this.setState({ open: isParentOfModule });
+      }
+    }
   }
 
   resetState = () => this.setState({ creating: '' });
@@ -187,7 +205,6 @@ class DirectoryEntry extends React.PureComponent {
       currentModuleId,
       connectDropTarget, // eslint-disable-line
       isOver, // eslint-disable-line
-      errors,
       isInProjectView,
       depth = 0,
       root,
@@ -240,7 +257,6 @@ class DirectoryEntry extends React.PureComponent {
             setCurrentModule={this.setCurrentModule}
             currentModuleId={currentModuleId}
             isInProjectView={isInProjectView}
-            errors={errors}
           />
           {creating === 'module' &&
             <Entry

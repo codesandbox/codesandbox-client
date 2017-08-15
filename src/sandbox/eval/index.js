@@ -1,7 +1,10 @@
 // @flow
 import type { Module, Directory } from 'common/types';
 
-import evalJS, { deleteCache as deleteJSCache } from './js';
+import evalJS, {
+  clearCache as clearJSCache,
+  deleteCache as deleteJSCache,
+} from './js';
 import evalRaw from './raw';
 import evalCSS from './css';
 import evalJson from './json';
@@ -77,6 +80,10 @@ function doEval(
 
 export function deleteCache(module: Module) {
   deleteJSCache(module);
+}
+
+export function clearCache() {
+  clearJSCache();
 }
 
 const evalModule = (

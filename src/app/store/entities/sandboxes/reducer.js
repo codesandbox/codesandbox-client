@@ -6,9 +6,6 @@ import {
   SET_NPM_DEPENDENCIES,
   SET_EXTERNAL_RESOURCES,
   SET_CURRENT_MODULE,
-  SET_BUNDLE,
-  CANCEL_BUNDLE,
-  FETCH_BUNDLE_API_ACTIONS,
   SET_SANDBOX_INFO,
   SET_PROJECT_VIEW,
   SET_VIEW_MODE,
@@ -17,6 +14,7 @@ import {
   UNLIKE_SANDBOX_ACTIONS,
   SET_TAGS,
   SET_SANDBOX_PRIVACY,
+  FORCE_RENDER,
 } from './actions';
 
 import {
@@ -25,9 +23,6 @@ import {
   REMOVE_MODULE_FROM_SANDBOX,
   REMOVE_DIRECTORY_FROM_SANDBOX,
 } from './actions/files';
-
-import { CLEAR_ERRORS, ADD_ERROR } from './errors/actions';
-import errorReducer from './errors/reducer';
 
 import { SET_CURRENT_USER, SIGN_OUT } from '../../user/actions';
 
@@ -82,23 +77,6 @@ function singleSandboxReducer(sandbox: Sandbox, action: Action): Sandbox {
       return {
         ...sandbox,
         externalResources: action.externalResources,
-      };
-    case FETCH_BUNDLE_API_ACTIONS.REQUEST:
-      return {
-        ...sandbox,
-        dependencyBundle: { processing: true },
-      };
-    case SET_BUNDLE:
-      return {
-        ...sandbox,
-        dependencyBundle: action.bundle,
-      };
-    case CANCEL_BUNDLE:
-      return {
-        ...sandbox,
-        dependencyBundle: {
-          error: true,
-        },
       };
     case SET_SANDBOX_INFO:
       return {
@@ -155,9 +133,11 @@ function singleSandboxReducer(sandbox: Sandbox, action: Action): Sandbox {
         ...sandbox,
         privacy: action.privacy,
       };
-    case CLEAR_ERRORS:
-    case ADD_ERROR:
-      return { ...sandbox, errors: errorReducer(sandbox.errors, action) };
+    case FORCE_RENDER:
+      return {
+        ...sandbox,
+        forcedRenders: sandbox.forcedRenders + 1,
+      };
     default:
       return sandbox;
   }
@@ -175,14 +155,9 @@ export default function reducer(
     case SET_NPM_DEPENDENCIES:
     case SET_EXTERNAL_RESOURCES:
     case SET_CURRENT_MODULE:
-    case FETCH_BUNDLE_API_ACTIONS.REQUEST:
-    case SET_BUNDLE:
-    case CANCEL_BUNDLE:
     case SET_SANDBOX_INFO:
     case SET_PROJECT_VIEW:
     case SET_VIEW_MODE:
-    case CLEAR_ERRORS:
-    case ADD_ERROR:
     case SET_TAGS:
     case LIKE_SANDBOX_ACTIONS.REQUEST:
     case LIKE_SANDBOX_ACTIONS.SUCCESS:
@@ -190,7 +165,8 @@ export default function reducer(
     case UNLIKE_SANDBOX_ACTIONS.REQUEST:
     case UNLIKE_SANDBOX_ACTIONS.FAILURE:
     case UNLIKE_SANDBOX_ACTIONS.SUCCESS:
-    case SET_SANDBOX_PRIVACY: {
+    case SET_SANDBOX_PRIVACY:
+    case FORCE_RENDER: {
       const id = action.id || (action.meta ? action.meta.id : undefined);
       if (state[id]) {
         return {

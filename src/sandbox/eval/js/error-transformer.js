@@ -48,7 +48,7 @@ function buildRawReactComponentError(
 
     if (childRawModuleError) return childRawModuleError;
   } else {
-    return new RawReactComponentError(module, rawModuleUsingReact);
+    return new RawReactComponentError(error, module, rawModuleUsingReact);
   }
 }
 

@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 
-import type { Module, Directory, ModuleError } from 'common/types';
+import type { Module, Directory } from 'common/types';
 
 import { validateTitle } from 'app/store/entities/sandboxes/modules/validator';
 import { isMainModule } from 'app/store/entities/sandboxes/modules/selectors';
@@ -21,7 +21,6 @@ type Props = {
   setCurrentModule: (id: string) => any,
   currentModuleId: ?string,
   parentShortid: string,
-  errors: Array<ModuleError>,
   isInProjectView: boolean,
   parentShortid: string,
 };
@@ -47,7 +46,6 @@ export default class DirectoryChildren extends React.PureComponent {
       deleteEntry,
       currentModuleId,
       isInProjectView,
-      errors,
     } = this.props;
 
     return (
@@ -67,7 +65,6 @@ export default class DirectoryChildren extends React.PureComponent {
               directories={directories}
               currentModuleId={currentModuleId}
               isInProjectView={isInProjectView}
-              errors={errors}
             />,
           )}
         {modules.filter(x => x.directoryShortid === parentShortid).map(m => {
@@ -75,9 +72,7 @@ export default class DirectoryChildren extends React.PureComponent {
           const mainModule = isMainModule(m);
           const type = getType(m);
 
-          const hasError = !!errors.find(
-            e => e.severity === 'error' && e.moduleId === m.id,
-          );
+          const hasError = m && m.errors.length;
 
           return (
             <Entry

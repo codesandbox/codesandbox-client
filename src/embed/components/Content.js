@@ -4,14 +4,13 @@ import React from 'react';
 import styled from 'styled-components';
 import Preview from 'app/components/sandbox/Preview';
 import CodeEditor from 'app/components/sandbox/CodeEditor';
-import { getModulePath } from 'app/store/entities/sandboxes/modules/selectors';
-
-import type { Sandbox, Module, ModuleError } from 'common/types';
-import fetchBundle from 'app/store/entities/sandboxes/bundler';
 import {
   findCurrentModule,
   findMainModule,
-} from '../../app/store/entities/sandboxes/modules/selectors';
+  getModulePath,
+} from 'app/store/entities/sandboxes/modules/selectors';
+
+import type { Sandbox, Module, ModuleError } from 'common/types';
 
 const Container = styled.div`
   display: flex;
@@ -41,7 +40,6 @@ type Props = {
 };
 
 type State = {
-  bundle: Object,
   isInProjectView: boolean,
   codes: { [id: string]: string },
   errors: Array<ModuleError>,
@@ -49,30 +47,14 @@ type State = {
 
 export default class Content extends React.PureComponent {
   state: State = {
-    bundle: {
-      processing: true,
-    },
     inInProjectView: false,
     codes: {},
     errors: [],
   };
 
   componentDidMount() {
-    this.fetchBundle();
     setTimeout(() => this.handleResize());
   }
-
-  fetchBundle = () => {
-    fetchBundle(
-      { SUCCESS: 'SUCCESS' },
-      this.props.sandbox.id,
-      this.props.sandbox.npmDependencies,
-    )(({ type, result }) => {
-      if (type === 'SUCCESS') {
-        this.setState({ bundle: { ...result, processing: false } });
-      }
-    });
-  };
 
   setProjectView = (id: string, view: boolean) => {
     this.setState({ isInProjectView: view });
@@ -182,7 +164,6 @@ export default class Content extends React.PureComponent {
       sandbox,
       showEditor,
       showPreview,
-
       isInProjectView,
       currentModule,
       hideNavigation,
@@ -223,6 +204,9 @@ export default class Content extends React.PureComponent {
               )}
               changeCode={this.setCode}
               preferences={this.getPreferences()}
+              modules={sandbox.modules}
+              directories={sandbox.directories}
+              sandboxId={sandbox.id}
             />
           </Split>}
 
@@ -233,10 +217,8 @@ export default class Content extends React.PureComponent {
               isInProjectView={isInProjectView}
               modules={alteredModules}
               directories={sandbox.directories}
-              bundle={this.state.bundle}
               externalResources={sandbox.externalResources}
-              module={alteredMainModule}
-              fetchBundle={this.fetchBundle}
+              module={mainModule}
               addError={this.addError}
               clearErrors={this.clearErrors}
               preferences={this.getPreferences()}

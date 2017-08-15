@@ -30,7 +30,7 @@ export default new schema.Entity(
         showPreview: !isEditorScreen,
         currentModule,
         initialPath,
-        errors: [],
+        forcedRenders: 0, // used to force renders
       };
     },
   },
