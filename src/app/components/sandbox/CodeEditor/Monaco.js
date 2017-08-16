@@ -685,11 +685,13 @@ export default class CodeEditor extends React.PureComponent {
     return {
       selectOnLineNumbers: true,
       fontSize: preferences.fontSize,
-      fontFamily: fontFamilies(
-        preferences.fontFamily,
-        'Source Code Pro',
-        'monospace',
-      ),
+      // Disable this because of a current issue in Windows:
+      // https://github.com/Microsoft/monaco-editor/issues/392
+      // fontFamily: fontFamilies(
+      //   preferences.fontFamily,
+      //   'Source Code Pro',
+      //   'monospace',
+      // ),
       minimap: {
         enabled: false,
       },
