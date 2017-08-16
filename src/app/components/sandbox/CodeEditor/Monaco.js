@@ -476,8 +476,10 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     this.editor = editor;
     this.monaco = monaco;
 
-    console.log(this.editor);
-    console.log(this.monaco);
+    window._cs = {
+      editor: this.editor,
+      monaco: this.monaco,
+    };
 
     this.setupWorkers();
 
