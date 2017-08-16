@@ -545,14 +545,9 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
       // Method that will be executed when the action is triggered.
       // @param editor The editor instance is passed in as a convinience
       run: ed => {
-        this.setState(
-          {
-            fuzzySearchEnabled: true,
-          },
-          () => {
-            console.log('jah');
-          },
-        );
+        this.setState({
+          fuzzySearchEnabled: true,
+        });
       },
     });
   };
