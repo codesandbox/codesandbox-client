@@ -23,7 +23,12 @@ export function evalBoilerplates(
       type: '',
     };
 
-    const module = evalModule(fakeModule, modules, directories, externals);
+    const module = evalModule(
+      fakeModule,
+      [fakeModule, ...modules],
+      directories,
+      externals,
+    );
     return { ...boilerplate, module };
   });
 }

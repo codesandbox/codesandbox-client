@@ -7,7 +7,6 @@ import {
 } from 'app/store/entities/sandboxes/modules/selectors';
 
 import evalModule, { deleteCache, clearCache } from './eval';
-import NoDomChangeError from './errors/no-dom-change-error';
 import loadDependencies from './npm';
 import sendMessage, { isStandalone } from './utils/send-message';
 import host from './utils/host';
@@ -20,6 +19,7 @@ import { resetScreen } from './status-screen';
 
 import { inject, uninject } from './react-error-overlay/overlay';
 
+import defaultBoilerplates from './boilerplates/default-boilerplates';
 import {
   getBoilerplates,
   evalBoilerplates,
@@ -72,12 +72,12 @@ async function compile(message) {
   const {
     modules,
     directories,
-    boilerplates = [],
     module,
     changedModule,
     externalResources,
     dependencies,
     hasActions,
+    isModuleView = false,
   } = message.data;
   uninject();
   inject();
@@ -130,19 +130,19 @@ async function compile(message) {
     const evalled = await evalModule(module, modules, directories, externals);
     const domChanged = document.body.innerHTML !== html;
 
-    if (!domChanged && !module.title.endsWith('.html')) {
+    if (isModuleView && !domChanged && !module.title.endsWith('.html')) {
       const isReact = module.code && module.code.includes('React');
-      const functionName = evalled.default ? evalled.default.name : '';
 
       if (isReact) {
         // initiate boilerplates
-        if (
-          boilerplates.length !== 0 &&
-          getBoilerplates().length === 0 &&
-          externals != null
-        ) {
+        if (getBoilerplates().length === 0 && externals != null) {
           try {
-            evalBoilerplates(boilerplates, modules, directories, externals);
+            evalBoilerplates(
+              defaultBoilerplates,
+              modules,
+              directories,
+              externals,
+            );
           } catch (e) {
             console.log("Couldn't load all boilerplates");
           }
@@ -153,7 +153,7 @@ async function compile(message) {
           try {
             boilerplate.module.default(evalled);
           } catch (e) {
-            throw new NoDomChangeError(isReact, functionName);
+            console.error(e);
           }
         }
       }

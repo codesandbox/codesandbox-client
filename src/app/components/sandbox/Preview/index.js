@@ -9,7 +9,6 @@ import type { Module, Sandbox, Directory } from 'common/types';
 
 import { frameUrl } from 'app/utils/url-generator';
 import { findMainModule } from 'app/store/entities/sandboxes/modules/selectors';
-import defaultBoilerplates from 'app/store/entities/sandboxes/boilerplates/default-boilerplates';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 import shouldUpdate from './utils/should-update';
 
@@ -227,6 +226,7 @@ export default class Preview extends React.PureComponent {
       externalResources,
       preferences,
       dependencies,
+      isInProjectView,
       runActionFromPreview,
     } = this.props;
     if (preferences.clearConsoleEnabled) {
@@ -238,7 +238,6 @@ export default class Preview extends React.PureComponent {
     const renderedModule = this.getRenderedModule();
     this.sendMessage({
       type: 'compile',
-      boilerplates: defaultBoilerplates,
       module: renderedModule,
       changedModule: module,
       dependencies,
@@ -246,6 +245,7 @@ export default class Preview extends React.PureComponent {
       directories,
       externalResources,
       hasActions: !!runActionFromPreview,
+      isModuleView: !isInProjectView,
     });
   };
 
