@@ -37,6 +37,7 @@ type Props = {
   autoResize: boolean,
   fontSize: number,
   initialPath: ?string,
+  setCurrentModule: id => void,
 };
 
 type State = {
@@ -46,7 +47,7 @@ type State = {
 };
 
 export default class Content extends React.PureComponent<Props, State> {
-  state: State = {
+  state = {
     inInProjectView: false,
     codes: {},
     errors: [],
@@ -157,6 +158,10 @@ export default class Content extends React.PureComponent<Props, State> {
     return { ...this.preferences, fontSize: this.props.fontSize };
   };
 
+  setCurrentModule = (_, id) => {
+    this.props.setCurrentModule(id);
+  };
+
   render() {
     const {
       sandbox,
@@ -205,6 +210,7 @@ export default class Content extends React.PureComponent<Props, State> {
               modules={sandbox.modules}
               directories={sandbox.directories}
               sandboxId={sandbox.id}
+              setCurrentModule={this.setCurrentModule}
             />
           </Split>}
 

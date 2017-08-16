@@ -14,8 +14,13 @@ import TypingsFetcherWorker from 'worker-loader!./monaco/workers/fetch-dependenc
 import enableEmmet from './monaco/enable-emmet';
 import Header from './Header';
 import MonacoEditor from './monaco/MonacoReactComponent';
+import FuzzySearch from './FuzzySearch/index';
 
 let modelCache = {};
+
+type State = {
+  fuzzySearchEnabled: boolean,
+};
 
 type Props = {
   code: ?string,
@@ -150,7 +155,11 @@ const handleError = (
   }
 };
 
-export default class CodeEditor extends React.PureComponent<Props> {
+export default class CodeEditor extends React.PureComponent<Props, State> {
+  state = {
+    fuzzySearchEnabled: false,
+  };
+
   syntaxWorker: ServiceWorker;
   lintWorker: ServiceWorker;
   typingsFetcherWorker: ServiceWorker;
@@ -230,7 +239,11 @@ export default class CodeEditor extends React.PureComponent<Props> {
     );
   };
 
-  shouldComponentUpdate(nextProps: Props) {
+  shouldComponentUpdate(nextProps: Props, nextState: State) {
+    if (nextState.fuzzySearchEnabled !== this.state.fuzzySearchEnabled) {
+      return true;
+    }
+
     // Don't update with sandbox id, this will duplicate all modules otherwise
     if (
       nextProps.sandboxId === this.props.sandboxId &&
@@ -330,6 +343,7 @@ export default class CodeEditor extends React.PureComponent<Props> {
         modelCache[currentId].cursorPos = pos;
       }
       this.openNewModel(nextId, nextTitle);
+      this.editor.focus();
     }
   };
 
@@ -462,8 +476,10 @@ export default class CodeEditor extends React.PureComponent<Props> {
     this.editor = editor;
     this.monaco = monaco;
 
-    console.log(this.editor);
-    console.log(this.monaco);
+    window._cs = {
+      editor: this.editor,
+      monaco: this.monaco,
+    };
 
     this.setupWorkers();
 
@@ -507,6 +523,40 @@ export default class CodeEditor extends React.PureComponent<Props> {
     if (this.props.dependencies) {
       this.fetchDependencyTypings(this.props.dependencies, monaco);
     }
+
+    editor.addAction({
+      // An unique identifier of the contributed action.
+      id: 'fuzzy-search',
+
+      // A label of the action that will be presented to the user.
+      label: 'Open Module',
+
+      // An optional array of keybindings for the action.
+      keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_P],
+
+      // A precondition for this action.
+      precondition: null,
+
+      // A rule to evaluate on top of the precondition in order to dispatch the keybindings.
+      keybindingContext: null,
+
+      contextMenuGroupId: 'navigation',
+
+      contextMenuOrder: 1.5,
+
+      // Method that will be executed when the action is triggered.
+      // @param editor The editor instance is passed in as a convinience
+      run: ed => {
+        this.setState({
+          fuzzySearchEnabled: true,
+        });
+      },
+    });
+  };
+
+  closeFuzzySearch = () => {
+    this.setState({ fuzzySearchEnabled: false });
+    this.editor.focus();
   };
 
   fetchDependencyTypings = (dependencies: Object) => {
@@ -611,13 +661,20 @@ export default class CodeEditor extends React.PureComponent<Props> {
     });
   };
 
+  setCurrentModule = moduleId => {
+    this.closeFuzzySearch();
+    if (this.props.setCurrentModule) {
+      this.props.setCurrentModule(this.props.sandboxId, moduleId);
+    }
+  };
+
   openReference = data => {
     const foundModuleId = Object.keys(modelCache).find(
       mId => modelCache[mId].model.uri.path === data.resource.path,
     );
 
-    if (foundModuleId && this.props.setCurrentModule) {
-      this.props.setCurrentModule(this.props.sandboxId, foundModuleId);
+    if (foundModuleId) {
+      this.props.setCurrentModule(foundModuleId);
     }
 
     const selection = data.options.selection;
@@ -700,7 +757,13 @@ export default class CodeEditor extends React.PureComponent<Props> {
   };
 
   render() {
-    const { canSave, onlyViewMode, modulePath } = this.props;
+    const {
+      canSave,
+      modules,
+      directories,
+      onlyViewMode,
+      modulePath,
+    } = this.props;
 
     const options = this.getEditorOptions();
 
@@ -718,6 +781,14 @@ export default class CodeEditor extends React.PureComponent<Props> {
           path={modulePath}
         />
         <CodeContainer>
+          {this.state.fuzzySearchEnabled &&
+            <FuzzySearch
+              closeFuzzySearch={this.closeFuzzySearch}
+              setCurrentModule={this.setCurrentModule}
+              modules={modules}
+              directories={directories}
+              currentModuleId={this.props.id}
+            />}
           <MonacoEditor
             width="100%"
             height="100%"
