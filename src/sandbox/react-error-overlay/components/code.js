@@ -10,7 +10,6 @@
 /* @flow */
 import type { ScriptLine } from '../utils/stack-frame';
 import { applyStyles } from '../utils/dom/css';
-import { absolutifyCaret } from '../utils/dom/absolutifyCaret';
 import {
   codeStyle,
   primaryErrorStyle,
@@ -68,7 +67,6 @@ function createCode(
   const htmlHighlight = generateAnsiHtml(ansiHighlight);
   const code = document.createElement('code');
   code.innerHTML = htmlHighlight;
-  absolutifyCaret(code);
   applyStyles(code, codeStyle);
 
   const ccn = code.childNodes;
