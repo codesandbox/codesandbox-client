@@ -12,6 +12,7 @@ import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/tern/tern';
 
 import Header from './Header';
+import FuzzySearch from './FuzzySearch';
 
 const documentCache = {};
 
@@ -26,6 +27,7 @@ type Props = {
   canSave: boolean,
   preferences: Preferences,
   onlyViewMode: boolean,
+  setCurrentModule: ?(sandboxId: string, moduleId: string) => void,
 };
 
 const Container = styled.div`
@@ -47,6 +49,7 @@ const fontFamilies = (...families) =>
     .join(', ');
 
 const CodeContainer = styled.div`
+  position: relative;
   overflow: auto;
   width: 100%;
   height: calc(100% - 6rem);
@@ -185,10 +188,21 @@ const handleError = (
   }
 };
 
-export default class CodeEditor extends React.PureComponent {
-  props: Props;
+type State = {
+  fuzzySearchEnabled: boolean,
+};
 
-  shouldComponentUpdate(nextProps: Props) {
+export default class CodeEditor extends React.PureComponent<Props, State> {
+  props: Props;
+  state = {
+    fuzzySearchEnabled: false,
+  };
+
+  shouldComponentUpdate(nextProps: Props, nextState: State) {
+    if (nextState.fuzzySearchEnabled !== this.state.fuzzySearchEnabled) {
+      return true;
+    }
+
     return (
       nextProps.id !== this.props.id ||
       nextProps.errors !== this.props.errors ||
@@ -305,6 +319,9 @@ export default class CodeEditor extends React.PureComponent {
         cm.listSelections().forEach(() => {
           cm.toggleComment({ lineComment: '//' });
         });
+      },
+      'Cmd-P': cm => {
+        this.setState({ fuzzySearchEnabled: true });
       },
     };
 
@@ -456,11 +473,30 @@ export default class CodeEditor extends React.PureComponent {
     });
   };
 
+  closeFuzzySearch = () => {
+    this.setState({ fuzzySearchEnabled: false });
+  };
+
+  setCurrentModule = moduleId => {
+    this.closeFuzzySearch();
+    if (this.props.setCurrentModule) {
+      this.props.setCurrentModule(this.props.sandboxId, moduleId);
+    }
+  };
+
   codemirror: typeof CodeMirror;
   server: typeof CodeMirror.TernServer;
 
   render() {
-    const { canSave, onlyViewMode, modulePath, preferences } = this.props;
+    const {
+      canSave,
+      onlyViewMode,
+      modulePath,
+      preferences,
+      modules,
+      directories,
+      id,
+    } = this.props;
 
     return (
       <Container>
@@ -473,6 +509,14 @@ export default class CodeEditor extends React.PureComponent {
           fontFamily={preferences.fontFamily}
           lineHeight={preferences.lineHeight}
         >
+          {this.state.fuzzySearchEnabled &&
+            <FuzzySearch
+              closeFuzzySearch={this.closeFuzzySearch}
+              setCurrentModule={this.setCurrentModule}
+              modules={modules}
+              directories={directories}
+              currentModuleId={id}
+            />}
           <div
             style={{ height: '100%', fontSize: preferences.fontSize || 14 }}
             ref={this.getCodeMirror}
