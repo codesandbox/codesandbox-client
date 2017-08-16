@@ -127,7 +127,7 @@ const getCurrentMode = ({
   if (showEditor && !showPreview)
     return { currentMode: editor, otherModes: [both, preview] };
   if (!showEditor && showPreview)
-    return { currentMode: preview, otherModes: [both, editor] };
+    return { currentMode: preview, otherModes: [editor, both] };
 
   return { currentMode: both, otherModes: [editor, preview] };
 };
