@@ -170,6 +170,7 @@ export default class Header extends React.PureComponent<Props> {
       <Container>
         <ModeIcons
           small
+          dropdown
           showEditor={sandbox.showEditor}
           showPreview={sandbox.showPreview}
           setMixedView={this.setMixedView}
