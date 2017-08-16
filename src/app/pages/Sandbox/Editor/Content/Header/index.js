@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
 import Media from 'react-media';
 
@@ -102,9 +102,7 @@ type Props = {
   canSave: boolean,
 };
 
-export default class Header extends React.PureComponent {
-  props: Props;
-
+export default class Header extends React.PureComponent<Props> {
   massUpdateModules = () => {
     const { sandbox, sandboxActions } = this.props;
     sandboxActions.massUpdateModules(sandbox.id);

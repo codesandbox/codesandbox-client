@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import styled, { injectGlobal } from 'styled-components';
 import { connect } from 'react-redux';
@@ -46,7 +46,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   notificationActions: bindActionCreators(notificationActionCreators, dispatch),
 });
-class Notifications extends React.PureComponent {
+class Notifications extends React.PureComponent<Props, State> {
   constructor() {
     super();
 
@@ -91,8 +91,6 @@ class Notifications extends React.PureComponent {
   };
 
   interval: number;
-  props: Props;
-  state: State;
 
   render() {
     const { notifications } = this.props;

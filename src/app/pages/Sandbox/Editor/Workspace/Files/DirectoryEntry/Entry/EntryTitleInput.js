@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
 
 const InputContainer = styled.div`
@@ -13,11 +13,15 @@ const InputContainer = styled.div`
     bottom: 0.1rem;
     border: 1px solid ${props => props.theme.primary};
     outline: none;
-    background-color: ${props => (props.errorMessage ? props.theme.redBackground.clearer(0.5) : 'rgba(0, 0, 0, 0.2)')};
+    background-color: ${props =>
+      props.errorMessage
+        ? props.theme.redBackground.clearer(0.5)
+        : 'rgba(0, 0, 0, 0.2)'};
     margin: 0.2rem;
     padding-left: 0.25rem;
     margin-left: 0.25rem;
-    color: ${props => (props.errorMessage ? props.theme.red : props.theme.white)};
+    color: ${props =>
+      props.errorMessage ? props.theme.red : props.theme.white};
 
     &:focus {
       border: none;
@@ -41,7 +45,7 @@ function select(el) {
   if (el) el.select();
 }
 
-export default class EntryTitleInput extends React.PureComponent {
+export default class EntryTitleInput extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
 
@@ -49,9 +53,6 @@ export default class EntryTitleInput extends React.PureComponent {
       currentValue: props.title,
     };
   }
-
-  props: Props;
-  state: State;
 
   handleChange = (e: KeyboardEvent) => {
     if (e.target) {

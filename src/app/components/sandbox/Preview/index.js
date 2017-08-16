@@ -1,5 +1,5 @@
 /* @flow */
-import React from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
 
 import { debounce } from 'lodash';
@@ -55,7 +55,7 @@ type State = {
   urlInAddressBar: string,
 };
 
-export default class Preview extends React.PureComponent {
+export default class Preview extends React.PureComponent<Props, State> {
   initialPath: string;
   frames: Array<HTMLFrameElement>;
 
@@ -320,8 +320,6 @@ export default class Preview extends React.PureComponent {
     setProjectView(sandboxId, !isInProjectView);
   };
 
-  props: Props;
-  state: State;
   element: ?Element;
   proxy: ?Object;
   rootInstance: ?Object;

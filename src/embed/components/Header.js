@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
 import MenuIconSVG from 'react-icons/lib/md/menu';
 
@@ -49,9 +49,7 @@ type Props = {
   toggleSidebar: () => void,
 };
 
-export default class Header extends React.PureComponent {
-  props: Props;
-
+export default class Header extends React.PureComponent<Props> {
   render() {
     const {
       sandbox,

@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -41,7 +41,7 @@ const mapStateToProps = createSelector(sandboxesSelector, sandboxes => ({
 const mapDispatchToProps = dispatch => ({
   sandboxActions: bindActionCreators(sandboxActionCreators, dispatch),
 });
-class SandboxPage extends React.PureComponent {
+class SandboxPage extends React.PureComponent<Props, $FlowFixMeState> {
   componentDidMount() {
     if (
       window.screen.availWidth < 800 &&
@@ -85,8 +85,6 @@ class SandboxPage extends React.PureComponent {
     }
   };
 
-  props: Props;
-  state: State;
   state = { notFound: false, currentId: null };
 
   render() {

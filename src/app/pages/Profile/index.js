@@ -1,5 +1,5 @@
 /* @flow */
-import React from 'react';
+import * as React from 'react';
 import { connect } from 'react-redux';
 import { Route, Switch } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
@@ -63,8 +63,12 @@ const mapStateToProps = createSelector(
 const mapDispatchToProps = (dispatch: Function) => ({
   userActions: bindActionCreators(userActionCreators, dispatch),
 });
-class Profile extends React.PureComponent {
-  props: Props;
+class Profile extends React.PureComponent<
+  Props,
+  {
+    notFound: boolean,
+  },
+> {
   state: {
     notFound: boolean,
   } = {

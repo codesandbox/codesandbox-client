@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
@@ -36,9 +36,7 @@ const mapDispatchToProps = dispatch => ({
   sandboxActions: bindActionCreators(sandboxActionCreators, dispatch),
   modalActions: bindActionCreators(modalActionCreators, dispatch),
 });
-class Showcase extends React.PureComponent {
-  props: Props;
-
+class Showcase extends React.PureComponent<Props, $FlowFixMeState> {
   state = {
     loading: false,
   };
@@ -90,7 +88,9 @@ class Showcase extends React.PureComponent {
         <Centered vertical horizontal>
           <Margin top={4}>
             {!id &&
-              <ErrorTitle>This user doesn{"'"}t have a sandbox yet</ErrorTitle>}
+              <ErrorTitle>
+                This user doesn{"'"}t have a sandbox yet
+              </ErrorTitle>}
           </Margin>
         </Centered>
       );
@@ -101,7 +101,9 @@ class Showcase extends React.PureComponent {
       <Column alignItems="center">
         <Margin top={1}>
           {isCurrentUser &&
-            <Button small onClick={this.openModal}>Change Sandbox</Button>}
+            <Button small onClick={this.openModal}>
+              Change Sandbox
+            </Button>}
         </Margin>
         {!loading &&
           <Margin top={2} style={{ width: '100%' }}>

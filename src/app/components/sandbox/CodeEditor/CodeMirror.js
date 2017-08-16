@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import * as React from 'react';
 import CodeMirror from 'codemirror';
 import styled, { keyframes } from 'styled-components';
 import type { Preferences, ModuleError } from 'common/types';
@@ -185,9 +185,7 @@ const handleError = (
   }
 };
 
-export default class CodeEditor extends React.PureComponent {
-  props: Props;
-
+export default class CodeEditor extends React.PureComponent<Props> {
   shouldComponentUpdate(nextProps: Props) {
     return (
       nextProps.id !== this.props.id ||

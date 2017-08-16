@@ -1,5 +1,5 @@
 /* @flow */
-import React from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
 import { debounce } from 'lodash';
 import type { Preferences, ModuleError, Module, Directory } from 'common/types';
@@ -150,9 +150,7 @@ const handleError = (
   }
 };
 
-export default class CodeEditor extends React.PureComponent {
-  props: Props;
-
+export default class CodeEditor extends React.PureComponent<Props> {
   syntaxWorker: ServiceWorker;
   lintWorker: ServiceWorker;
   typingsFetcherWorker: ServiceWorker;

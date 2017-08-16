@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import * as React from 'react';
 
 export const OPEN_MODAL = 'OPEN_MODAL';
 export const CLOSE_MODAL = 'CLOSE_MODAL';
@@ -9,7 +9,7 @@ const openModal = ({
   title,
   width,
 }: {
-  Body: React.Element<*>,
+  Body: React.Element<any>,
   title: ?string,
   width?: number,
 }) => ({

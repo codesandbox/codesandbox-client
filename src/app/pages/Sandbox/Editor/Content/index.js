@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
 import { createSelector } from 'reselect';
 import { Prompt } from 'react-router-dom';
@@ -84,10 +84,7 @@ const mapDispatchToProps = dispatch => ({
   modalActions: bindActionCreators(modalActionCreators, dispatch),
   previewApiActions: bindActionCreators(previewApiActionCreators, dispatch),
 });
-class EditorPreview extends React.PureComponent {
-  props: Props;
-  state: State;
-
+class EditorPreview extends React.PureComponent<Props, $FlowFixMeState> {
   state = {
     resizing: false,
   };

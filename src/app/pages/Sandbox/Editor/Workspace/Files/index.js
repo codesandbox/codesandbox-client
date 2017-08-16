@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import * as React from 'react';
 import { createSelector } from 'reselect';
 import { connect } from 'react-redux';
 
@@ -29,9 +29,7 @@ const mapStateToProps = createSelector(
   directoriesFromSandboxSelector,
   (modules, directories) => ({ modules, directories }),
 );
-class Files extends React.PureComponent {
-  props: Props;
-
+class Files extends React.PureComponent<Props> {
   deleteModule = id => {
     const { sandboxActions, sandbox } = this.props;
     if (sandbox) {

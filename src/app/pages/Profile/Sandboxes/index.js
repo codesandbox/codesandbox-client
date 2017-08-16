@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -39,9 +39,7 @@ type Props = {
   isCurrentUser: boolean,
 };
 
-class Sandboxes extends React.PureComponent {
-  props: Props;
-
+class Sandboxes extends React.PureComponent<Props> {
   static defaultProps = {
     page: 1,
   };

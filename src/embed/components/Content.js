@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
 import Preview from 'app/components/sandbox/Preview';
 import CodeEditor from 'app/components/sandbox/CodeEditor';
@@ -45,7 +45,7 @@ type State = {
   errors: Array<ModuleError>,
 };
 
-export default class Content extends React.PureComponent {
+export default class Content extends React.PureComponent<Props, State> {
   state: State = {
     inInProjectView: false,
     codes: {},
@@ -157,8 +157,6 @@ export default class Content extends React.PureComponent {
     return { ...this.preferences, fontSize: this.props.fontSize };
   };
 
-  props: Props;
-  state: State;
   render() {
     const {
       sandbox,

@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
 
 const TitleContainer = styled.span`
@@ -11,8 +11,7 @@ const TitleContainer = styled.span`
   vertical-align: middle;
 `;
 
-export default ({ title }: { title: string }) => (
+export default ({ title }: { title: string }) =>
   <TitleContainer title={title}>
     {title}
-  </TitleContainer>
-);
+  </TitleContainer>;

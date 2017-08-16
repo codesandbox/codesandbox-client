@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import * as React from 'react';
 import type { User } from 'common/types';
 
 import Row from 'app/components/flex/Row';
