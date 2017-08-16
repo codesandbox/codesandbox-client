@@ -1,11 +1,11 @@
 // @flow
-import React from 'react';
+import * as React from 'react';
 import * as actions from './actions';
 
 export type ContextMenuItem = {
   title: string,
   action: Function,
-  icon?: React.Component<any, any, any>,
+  icon?: React.Component<any, any>,
   color: ?string,
 };
 

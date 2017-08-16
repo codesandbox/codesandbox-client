@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
 import Media from 'react-media';
 
@@ -13,11 +13,13 @@ import HeartIcon from 'react-icons/lib/fa/heart-o';
 import FullHeartIcon from 'react-icons/lib/fa/heart';
 import TwitterIcon from 'react-icons/lib/fa/twitter';
 import SearchIcon from 'react-icons/lib/go/search';
+import SettingsIcon from 'react-icons/lib/md/settings';
 import { Tooltip } from 'react-tippy';
 
 import type { Sandbox, CurrentUser } from 'common/types';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 import userActionCreators from 'app/store/user/actions';
+import modalActionCreators from 'app/store/modal/actions';
 import {
   searchUrl,
   newSandboxUrl,
@@ -31,6 +33,7 @@ import PatronBadge from '-!svg-react-loader!app/utils/badges/svg/patron-4.svg'; 
 import Margin from 'app/components/spacing/Margin';
 import HeaderSearchBar from 'app/components/HeaderSearchBar';
 import UserMenu from 'app/containers/UserMenu';
+import Preferences from 'app/containers/Preferences';
 
 import Action from './Action';
 import FeedbackView from './FeedbackView';
@@ -94,13 +97,12 @@ type Props = {
   sandbox: Sandbox,
   sandboxActions: typeof sandboxActionCreators,
   userActions: typeof userActionCreators,
+  modalActions: typeof modalActionCreators,
   user: CurrentUser,
   canSave: boolean,
 };
 
-export default class Header extends React.PureComponent {
-  props: Props;
-
+export default class Header extends React.PureComponent<Props> {
   massUpdateModules = () => {
     const { sandbox, sandboxActions } = this.props;
     sandboxActions.massUpdateModules(sandbox.id);
@@ -147,6 +149,13 @@ export default class Header extends React.PureComponent {
     }
   };
 
+  openPreferences = () => {
+    this.props.modalActions.openModal({
+      width: 900,
+      Body: <Preferences />,
+    });
+  };
+
   render() {
     const {
       sandbox,
@@ -161,6 +170,7 @@ export default class Header extends React.PureComponent {
       <Container>
         <ModeIcons
           small
+          dropdown
           showEditor={sandbox.showEditor}
           showPreview={sandbox.showPreview}
           setMixedView={this.setMixedView}
@@ -248,6 +258,11 @@ export default class Header extends React.PureComponent {
             href={newSandboxUrl()}
             tooltip="New Sandbox"
             Icon={PlusIcon}
+          />
+          <Action
+            onClick={this.openPreferences}
+            tooltip="Preferences"
+            Icon={SettingsIcon}
           />
           <Margin
             style={{

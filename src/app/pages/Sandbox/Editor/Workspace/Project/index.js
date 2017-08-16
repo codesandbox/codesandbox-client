@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import ConfirmLink from 'app/components/ConfirmLink';
@@ -62,13 +62,13 @@ type Props = {
   privacy: number,
 };
 
-export default class Project extends React.PureComponent {
-  props: Props;
-  state: {
+export default class Project extends React.PureComponent<
+  Props,
+  {
     title: ?string,
     description: ?string,
-  };
-
+  },
+> {
   constructor(props: Props) {
     super(props);
 

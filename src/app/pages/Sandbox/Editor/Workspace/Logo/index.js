@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import * as React from 'react';
 import styled, { injectGlobal } from 'styled-components';
 
 import GithubIcon from 'react-icons/lib/go/mark-github';
@@ -42,7 +42,7 @@ const GithubContainer = styled.a`
   text-decoration: none;
 `;
 
-export default class Logo extends React.PureComponent {
+export default class Logo extends React.PureComponent<{}> {
   setupHeadway = el => {
     if (el && window.Headway) {
       const config = {

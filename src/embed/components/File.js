@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
 import FunctionIconSvg from 'react-icons/lib/fa/code';
 import DirectoryIconSvg from 'react-icons/lib/go/file-directory';
@@ -18,9 +18,7 @@ type Props = {
 };
 const LeftOffset = styled.div`padding-left: ${props => props.depth}rem;`;
 
-export default class File extends React.PureComponent {
-  props: Props;
-
+export default class File extends React.PureComponent<Props> {
   static defaultProps = {
     active: false,
     alternative: false,

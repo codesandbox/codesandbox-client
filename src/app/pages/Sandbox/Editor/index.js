@@ -1,5 +1,5 @@
 /* @flow */
-import React from 'react';
+import * as React from 'react';
 import SplitPane from 'react-split-pane';
 import type { Sandbox } from 'common/types';
 
@@ -14,8 +14,10 @@ type Props = {
   match: Object,
 };
 
-export default class ContentSplit extends React.PureComponent {
-  props: Props;
+export default class ContentSplit extends React.PureComponent<
+  Props,
+  $FlowFixMeState,
+> {
   state = {
     resizing: false,
     workspaceHidden: false,

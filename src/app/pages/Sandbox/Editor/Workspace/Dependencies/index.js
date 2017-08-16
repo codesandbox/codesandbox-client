@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
 
 import Margin from 'app/components/spacing/Margin';
@@ -40,7 +40,7 @@ const Overlay = styled.div`
   user-select: none;
 `;
 
-export default class Dependencies extends React.PureComponent {
+export default class Dependencies extends React.PureComponent<Props, State> {
   state = {
     processing: false,
   };
@@ -107,9 +107,6 @@ export default class Dependencies extends React.PureComponent {
     });
   };
 
-  props: Props;
-  state: State;
-
   render() {
     const {
       npmDependencies = {},
@@ -121,40 +118,38 @@ export default class Dependencies extends React.PureComponent {
     return (
       <div>
         {processing &&
-          <Overlay>We{"'"}re processing dependencies, please wait...</Overlay>}
+          <Overlay>
+            We{"'"}re processing dependencies, please wait...
+          </Overlay>}
         <Margin bottom={0}>
-          <WorkspaceSubtitle>
-            NPM Packages
-          </WorkspaceSubtitle>
+          <WorkspaceSubtitle>NPM Packages</WorkspaceSubtitle>
           {(Object.keys(npmDependencies) || [])
             .sort()
-            .map(dep => (
+            .map(dep =>
               <VersionEntry
                 key={dep}
                 dependencies={npmDependencies}
                 dependency={dep}
                 onRemove={this.removeDependency}
                 onRefresh={this.addDependency}
-              />
-            ))}
+              />,
+            )}
           <AddVersion
             existingDependencies={Object.keys(npmDependencies)}
             addDependency={this.addDependency}
           />
         </Margin>
         <div>
-          <WorkspaceSubtitle>
-            External Resources
-          </WorkspaceSubtitle>
+          <WorkspaceSubtitle>External Resources</WorkspaceSubtitle>
           {(externalResources || [])
             .sort()
-            .map(resource => (
+            .map(resource =>
               <ExternalResource
                 key={resource}
                 resource={resource}
                 removeResource={this.removeResource}
-              />
-            ))}
+              />,
+            )}
           <AddResource addResource={this.addResource} />
         </div>
       </div>

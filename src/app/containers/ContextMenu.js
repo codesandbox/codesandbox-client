@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { spring, Motion } from 'react-motion';
 import styled from 'styled-components';
@@ -45,7 +45,8 @@ const Item = styled.div`
   &:hover {
     color: ${props => (props.color ? props.color : theme.secondary())};
     background-color: ${() => theme.background2.lighten(0.3)()};
-    border-left-color: ${props => (props.color ? props.color : theme.secondary())};
+    border-left-color: ${props =>
+      props.color ? props.color : theme.secondary()};
   }
 `;
 
@@ -60,9 +61,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   contextMenuActions: bindActionCreators(contextMenuActionCreators, dispatch),
 });
-class ContextMenu extends React.PureComponent {
+class ContextMenu extends React.PureComponent<Props> {
   interval: number;
-  props: Props;
 
   setup = el => {
     this.mousedown = window.addEventListener('mousedown', event => {
@@ -111,7 +111,7 @@ class ContextMenu extends React.PureComponent {
                 opacity: spring(1),
               }}
             >
-              {({ size, opacity }) => (
+              {({ size, opacity }) =>
                 <Container
                   style={{
                     left: contextMenu.x + 10,
@@ -121,7 +121,7 @@ class ContextMenu extends React.PureComponent {
                   }}
                 >
                   <div>
-                    {contextMenu.items.map(item => (
+                    {contextMenu.items.map(item =>
                       <Item
                         key={item.title}
                         color={item.color}
@@ -129,11 +129,10 @@ class ContextMenu extends React.PureComponent {
                       >
                         {item.icon && <item.icon />}
                         {item.title}
-                      </Item>
-                    ))}
+                      </Item>,
+                    )}
                   </div>
-                </Container>
-              )}
+                </Container>}
             </Motion>}
         </div>
       </Portal>

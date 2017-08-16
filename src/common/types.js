@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import * as React from 'react';
 
 export type ModuleError = {
   message: string,
@@ -157,5 +157,5 @@ export type Notification = {
 export type Modal = {
   open: boolean,
   title: ?string,
-  Body: ?React.Element<*>,
+  Body: ?React.Element<any>,
 };

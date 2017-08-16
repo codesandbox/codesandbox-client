@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import * as React from 'react';
 import CodeMirror from 'codemirror';
 import styled, { keyframes } from 'styled-components';
 import type { Preferences, ModuleError } from 'common/types';
@@ -188,17 +188,12 @@ const handleError = (
   }
 };
 
-type State = {
-  fuzzySearchEnabled: boolean,
-};
-
 export default class CodeEditor extends React.PureComponent<Props, State> {
-  props: Props;
   state = {
     fuzzySearchEnabled: false,
   };
 
-  shouldComponentUpdate(nextProps: Props, nextState: State) {
+  shouldComponentUpdate(nextProps: Props) {
     if (nextState.fuzzySearchEnabled !== this.state.fuzzySearchEnabled) {
       return true;
     }

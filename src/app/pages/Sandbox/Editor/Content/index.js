@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
 import { createSelector } from 'reselect';
 import { Prompt } from 'react-router-dom';
@@ -17,6 +17,7 @@ import type {
 import { currentUserSelector } from 'app/store/user/selectors';
 import moduleActionCreators from 'app/store/entities/sandboxes/modules/actions';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
+import modalActionCreators from 'app/store/modal/actions';
 import previewApiActionCreators from 'app/store/preview-actions-api/actions';
 import userActionCreators from 'app/store/user/actions';
 import {
@@ -49,6 +50,7 @@ type Props = {
   moduleActions: typeof moduleActionCreators,
   sandboxActions: typeof sandboxActionCreators,
   userActions: typeof userActionCreators,
+  modalActions: typeof modalActionCreators,
   previewApiActions: typeof previewApiActionCreators,
 };
 
@@ -79,12 +81,10 @@ const mapDispatchToProps = dispatch => ({
   moduleActions: bindActionCreators(moduleActionCreators, dispatch),
   sandboxActions: bindActionCreators(sandboxActionCreators, dispatch),
   userActions: bindActionCreators(userActionCreators, dispatch),
+  modalActions: bindActionCreators(modalActionCreators, dispatch),
   previewApiActions: bindActionCreators(previewApiActionCreators, dispatch),
 });
-class EditorPreview extends React.PureComponent {
-  props: Props;
-  state: State;
-
+class EditorPreview extends React.PureComponent<Props, $FlowFixMeState> {
   state = {
     resizing: false,
   };
@@ -131,6 +131,7 @@ class EditorPreview extends React.PureComponent {
       directories,
       preferences,
       userActions,
+      modalActions,
       user,
       workspaceHidden,
       toggleWorkspace,
@@ -209,6 +210,7 @@ class EditorPreview extends React.PureComponent {
           sandbox={sandbox}
           sandboxActions={sandboxActions}
           userActions={userActions}
+          modalActions={modalActions}
           user={user}
           workspaceHidden={workspaceHidden}
           toggleWorkspace={toggleWorkspace}

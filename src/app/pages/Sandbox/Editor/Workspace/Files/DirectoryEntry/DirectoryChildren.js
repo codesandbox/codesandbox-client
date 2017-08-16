@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import * as React from 'react';
 
 import type { Module, Directory } from 'common/types';
 
@@ -25,9 +25,7 @@ type Props = {
   parentShortid: string,
 };
 
-export default class DirectoryChildren extends React.PureComponent {
-  props: Props;
-
+export default class DirectoryChildren extends React.PureComponent<Props> {
   validateTitle = (id: string, title: string) => {
     const { directories, modules } = this.props;
     return !!validateTitle(id, title, [...directories, ...modules]);

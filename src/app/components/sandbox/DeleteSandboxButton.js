@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
 import DeleteIcon from 'react-icons/lib/md/delete';
 import Tooltip from 'app/components/Tooltip';
@@ -27,9 +27,9 @@ type Props = {
   id: string,
 };
 
-export default class DeleteSandboxButtonContainer extends React.PureComponent {
-  props: Props;
-
+export default class DeleteSandboxButtonContainer extends React.PureComponent<
+  Props,
+> {
   deleteSandbox = () => {
     this.props.onDelete(this.props.id);
   };

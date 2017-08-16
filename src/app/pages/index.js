@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -82,8 +82,7 @@ const mapDispatchToProps = dispatch => ({
     dispatch,
   ),
 });
-class Routes extends React.PureComponent {
-  props: Props;
+class Routes extends React.PureComponent<Props> {
   unlisten: () => void;
 
   componentDidMount() {

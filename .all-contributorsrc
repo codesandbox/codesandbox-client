@@ -71,6 +71,25 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "Tushkiz",
+      "name": "Tushar Sonawane",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/1854763?v=4",
+      "profile": "https://twitter.com/tushkiz",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "johann-sonntagbauer",
+      "name": "Johann Hubert Sonntagbauer",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/1239401?v=4",
+      "profile": "https://github.com/johann-sonntagbauer",
+      "contributions": [
+        "bug",
+        "code"
+      ]
     }
   ]
 }

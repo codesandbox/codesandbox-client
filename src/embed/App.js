@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
 import { camelizeKeys } from 'humps';
 import 'whatwg-fetch';
@@ -59,9 +59,7 @@ type State = {
   fontSize: number,
 };
 
-export default class App extends React.PureComponent {
-  state: State;
-
+export default class App extends React.PureComponent<{}, State> {
   constructor() {
     super();
 

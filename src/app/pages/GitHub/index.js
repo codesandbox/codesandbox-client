@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
 
 import Navigation from 'app/containers/Navigation';
@@ -50,7 +50,7 @@ type State = {
 const getFullGitHubUrl = url =>
   `${protocolAndHost()}${gitHubToSandboxUrl(url)}`;
 
-export default class GitHub extends React.PureComponent {
+export default class GitHub extends React.PureComponent<{}, State> {
   state: State = {
     url: '',
     transformedUrl: '',

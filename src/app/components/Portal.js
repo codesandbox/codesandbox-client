@@ -1,13 +1,12 @@
 // @flow
-import React from 'react';
+import * as React from 'react';
 import ReactDOM from 'react-dom';
 
 type Props = {
-  children: React.Element<*>,
+  children: React.Element<any>,
 };
 
-export default class Portal extends React.Component {
-  props: Props;
+export default class Portal extends React.Component<Props> {
   popup: Element;
 
   componentDidMount() {

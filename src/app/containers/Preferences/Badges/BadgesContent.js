@@ -1,5 +1,5 @@
 /* @flow */
-import React from 'react';
+import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -17,12 +17,10 @@ const mapDispatchToProps = dispatch => ({
 const mapStateToProps = state => ({
   user: currentUserSelector(state),
 });
-class BadgesContent extends React.PureComponent {
-  props: {
-    user: CurrentUser,
-    userActions: typeof userActionCreators,
-  };
-
+class BadgesContent extends React.PureComponent<{
+  user: CurrentUser,
+  userActions: typeof userActionCreators,
+}> {
   toggleVisibility = (badge: BadgeT) => {
     this.props.userActions.setBadgeVisibility(badge.id, !badge.visible);
   };

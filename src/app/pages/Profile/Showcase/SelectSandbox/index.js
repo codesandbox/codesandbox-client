@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
@@ -33,9 +33,7 @@ const mapDispatchToProps = dispatch => ({
   currentUserActions: bindActionCreators(currentUserActionCreators, dispatch),
   modalActions: bindActionCreators(modalActionCreators, dispatch),
 });
-class SelectSandbox extends React.PureComponent {
-  props: Props;
-
+class SelectSandbox extends React.PureComponent<Props> {
   componentDidMount() {
     this.props.currentUserActions.loadUserSandboxes();
   }
@@ -56,14 +54,14 @@ class SelectSandbox extends React.PureComponent {
       <div>
         {user.sandboxes
           .filter(x => x)
-          .map(sandbox => (
+          .map(sandbox =>
             <Sandbox
               active={sandbox.id === showcaseSandboxId}
               key={sandbox.id}
               sandbox={sandbox}
               setShowcasedSandbox={this.setShowcasedSandbox}
-            />
-          ))}
+            />,
+          )}
       </div>
     );
   }

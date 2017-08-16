@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
 import { DragSource } from 'react-dnd';
 
@@ -54,7 +54,7 @@ const Right = styled.div`
   right: 1rem;
 `;
 
-class Entry extends React.PureComponent {
+class Entry extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -149,9 +149,6 @@ class Entry extends React.PureComponent {
 
   onMouseEnter = () => this.setState({ hovering: true });
   onMouseLeave = () => this.setState({ hovering: false });
-
-  props: Props;
-  state: State;
 
   render() {
     const {

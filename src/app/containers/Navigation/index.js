@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -78,9 +78,7 @@ const mapStateToProps = state => ({
   hasLogin: !!jwtSelector(state),
   isPatron: isPatronSelector(state),
 });
-class Navigation extends React.PureComponent {
-  props: Props;
-
+class Navigation extends React.PureComponent<Props> {
   render() {
     const { title, hasLogin, isPatron } = this.props;
 

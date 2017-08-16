@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -64,10 +64,7 @@ const mapDispatchToProps = dispatch => ({
   userActions: bindActionCreators(userActionCreators, dispatch),
   modalActions: bindActionCreators(modalActionCreators, dispatch),
 });
-class User extends React.PureComponent {
-  props: Props;
-  state: State;
-
+class User extends React.PureComponent<Props, $FlowFixMeState> {
   static defaultProps = {
     small: false,
   };

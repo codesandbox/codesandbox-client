@@ -1,5 +1,5 @@
 // @flow eslint-disable
-import React from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
 
 import WorkspaceInputContainer from '../WorkspaceInputContainer';
@@ -47,9 +47,10 @@ type Props = {
 const DUPLICATE_VERSION_INFO =
   'You cannot publish a version that already exists.';
 
-export default class PublishFields extends React.PureComponent {
-  props: Props;
-
+export default class PublishFields extends React.PureComponent<
+  Props,
+  $FlowFixMeState,
+> {
   state = initialState;
 
   major: ?HTMLInputElement;
@@ -108,9 +109,11 @@ export default class PublishFields extends React.PureComponent {
     this.setState(initialState);
   };
 
-  setStatus = (
-    versionInfo: { major?: string, minor?: string, patch?: string },
-  ) => {
+  setStatus = (versionInfo: {
+    major?: string,
+    minor?: string,
+    patch?: string,
+  }) => {
     if (this.isDuplicateVersion(this.getVersion(versionInfo))) {
       this.setState({ errorMessage: DUPLICATE_VERSION_INFO });
     } else {
@@ -191,7 +194,9 @@ export default class PublishFields extends React.PureComponent {
             Publish
           </Button>
         </WorkspaceInputContainer>
-        <ErrorMessage>{this.state.errorMessage}</ErrorMessage>
+        <ErrorMessage>
+          {this.state.errorMessage}
+        </ErrorMessage>
       </Inputs>
     );
   }

@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -38,8 +38,7 @@ const mapDispatchToProps = dispatch => ({
   signIn: bindActionCreators(userActionCreators.signIn, dispatch),
   getAuthToken: bindActionCreators(userActionCreators.getAuthToken, dispatch),
 });
-class CLI extends React.PureComponent {
-  props: Props;
+class CLI extends React.PureComponent<Props, State> {
   state: State = {
     loading: true,
     token: '',

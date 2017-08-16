@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import * as React from 'react';
 import { Link } from 'react-router-dom';
 
 type Props = {
@@ -7,8 +7,7 @@ type Props = {
   message: string,
 };
 
-export default class ConfirmLink extends React.PureComponent {
-  props: Props;
+export default class ConfirmLink extends React.PureComponent<Props> {
   confirm = (e: Event) => {
     const { enabled, message } = this.props;
 
