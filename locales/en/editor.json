@@ -19,8 +19,18 @@
     "prettify": "Prettify",
     "save": "Save"
   },
-  "loading": {
-    "dependencies": "Loading the dependencies..."
+  "message": {
+    "loadingDependencies": "Loading the dependencies..."
+  },
+  "notif": {
+    "fetchingDependencies": "Fetching dependencies...",
+    "loadedDependencies": "Dependencies loaded!",
+    "fetchDependencyError": "Could not fetch dependencies: {{message}}",
+    "deletedSandbox": "Deleted Sandbox",
+    "deletedDirectory": "Deleted directory",
+    "saveModuleError": "Could not save the module, please try again.",
+    "saveModulesError": "Could not save the modules, please try again.",
+    "forkedSandbox": "Forked sandbox!"
   },
   "navigator": {
     "projectView": "Project View",

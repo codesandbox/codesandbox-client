@@ -12,6 +12,7 @@ import { singleSandboxSelector } from '../selectors';
 import { modulesSelector } from '../modules/selectors';
 import { directoriesSelector } from '../directories/selectors';
 import errorActions from '../errors/actions';
+import i18n from 'common/i18n';
 
 import { maybeForkSandbox, forkSandbox } from './fork';
 import fileActions from './files';
@@ -320,7 +321,7 @@ export default {
     try {
       dispatch(
         notificationActions.addNotification(
-          'Fetching dependencies...',
+          i18n.t('editor:notif.fetchingDependencies'),
           'notice',
         ),
       );
@@ -346,12 +347,15 @@ export default {
       });
 
       dispatch(
-        notificationActions.addNotification('Dependencies loaded!', 'success'),
+        notificationActions.addNotification(
+          i18n.t('editor:notif.loadedDependencies'),
+          'success',
+        ),
       );
     } catch (e) {
       dispatch(
         notificationActions.addNotification(
-          `Could not fetch dependencies: ${e.message}`,
+          i18n.t('editor:notif.fetchDependencyError', { message: e.message }),
           'error',
         ),
       );
@@ -391,7 +395,12 @@ export default {
       }),
     );
 
-    dispatch(notificationActions.addNotification('Deleted Sandbox', 'success'));
+    dispatch(
+      notificationActions.addNotification(
+        i18n.t('editor:notif.deletedSandbox'),
+        'success',
+      ),
+    );
   },
 
   newSandboxUrl: () => async (dispatch: Function) => {

@@ -367,7 +367,7 @@ class Preview extends React.PureComponent {
           <Message
             modules={modules}
             sandboxActions={sandboxActions}
-            message={t('loading.dependencies')}
+            message={t('message.loadingDependencies')}
           />}
         <StyledFrame
           sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups allow-presentation"
@@ -380,4 +380,4 @@ class Preview extends React.PureComponent {
   }
 }
 
-export default translate('workspace')(Preview);
+export default translate('editor')(Preview);

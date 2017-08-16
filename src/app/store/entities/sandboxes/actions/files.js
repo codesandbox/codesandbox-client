@@ -1,6 +1,7 @@
 // @flow
 import type { Module, Directory } from 'common/types';
 import logError from 'app/utils/error';
+import i18n from 'common/i18n';
 
 import { createAPIActions, doRequest } from '../../../api/actions';
 import moduleEntity from '../modules/entity';
@@ -317,7 +318,10 @@ const deleteDirectory = (id: string, directoryId: string) => async (
     );
 
     dispatch(
-      notificationActions.addNotification('Deleted directory', 'success'),
+      notificationActions.addNotification(
+        i18n.t('editor:notif.deletedDirectory'),
+        'success',
+      ),
     );
   } catch (e) {
     // It failed, add it back
@@ -397,7 +401,7 @@ const saveModuleCode = (id: string, moduleId: string) => async (
     if (data.code !== newModule.code) {
       dispatch(
         notificationActions.addNotification(
-          'Something went wrong while saving the module, please try again.',
+          i18n.t('editor:notif.saveModuleError'),
           'error',
         ),
       );
@@ -414,7 +418,7 @@ const saveModuleCode = (id: string, moduleId: string) => async (
   } catch (e) {
     dispatch(
       notificationActions.addNotification(
-        'Could not save the module, please try again.',
+        i18n.t('editor:notif.saveModuleError'),
         'error',
       ),
     );
@@ -467,7 +471,7 @@ const massUpdateModules = (id: string) => async (
   } catch (e) {
     dispatch(
       notificationActions.addNotification(
-        'Could not save the modules, please try again.',
+        i18n.t('editor:notif.saveModulesError'),
         'error',
       ),
     );

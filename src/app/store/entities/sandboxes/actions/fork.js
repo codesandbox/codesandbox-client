@@ -2,6 +2,7 @@
 import { values } from 'lodash';
 
 import { push } from 'react-router-redux';
+import i18n from 'common/i18n';
 
 import type { Module, Directory } from 'common/types';
 import { sandboxUrl } from 'app/utils/url-generator';
@@ -79,7 +80,12 @@ export const forkSandbox = (id: string) => async (
 
   dispatch(push(sandboxUrl(data)));
 
-  dispatch(notificationActions.addNotification('Forked sandbox!', 'success'));
+  dispatch(
+    notificationActions.addNotification(
+      i18n.t('editor:notif.forkedSandbox'),
+      'success',
+    ),
+  );
 
   return data;
 };
