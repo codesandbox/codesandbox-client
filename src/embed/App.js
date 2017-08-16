@@ -196,6 +196,7 @@ export default class App extends React.PureComponent<{}, State> {
           autoResize={this.state.autoResize}
           fontSize={this.state.fontSize}
           initialPath={this.state.initialPath}
+          setCurrentModule={this.setCurrentModule}
         />
       </Container>
     );
