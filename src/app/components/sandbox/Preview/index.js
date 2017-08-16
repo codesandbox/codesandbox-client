@@ -332,6 +332,7 @@ class Preview extends React.PureComponent {
       setProjectView,
       errors,
       hideNavigation,
+      t,
     } = this.props;
     const { historyPosition, history, urlInAddressBar } = this.state;
 
