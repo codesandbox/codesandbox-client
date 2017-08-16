@@ -690,6 +690,9 @@ export default class CodeEditor extends React.PureComponent {
         'Source Code Pro',
         'monospace',
       ),
+      minimap: {
+        enabled: false,
+      },
       ariaLabel: title,
       formatOnPaste: true,
       lineHeight: (preferences.lineHeight || 1.15) * preferences.fontSize,
