@@ -52,7 +52,7 @@ const fontFamilies = (...families) =>
 const CodeContainer = styled.div`
   position: relative;
   width: 100%;
-  height: 100%;
+  height: calc(100% - 6rem);
   z-index: 30;
 
   .margin-view-overlays {
