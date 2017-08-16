@@ -258,12 +258,11 @@ export default class Header extends React.PureComponent<Props> {
             tooltip="New Sandbox"
             Icon={PlusIcon}
           />
-          {user.jwt &&
-            <Action
-              onClick={this.openPreferences}
-              tooltip="Preferences"
-              Icon={SettingsIcon}
-            />}
+          <Action
+            onClick={this.openPreferences}
+            tooltip="Preferences"
+            Icon={SettingsIcon}
+          />
           <Margin
             style={{
               zIndex: 20,
