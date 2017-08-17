@@ -674,7 +674,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     );
 
     if (foundModuleId) {
-      this.props.setCurrentModule(foundModuleId);
+      this.setCurrentModule(foundModuleId);
     }
 
     const selection = data.options.selection;
