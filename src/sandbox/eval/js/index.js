@@ -6,7 +6,7 @@ import { getModulePath } from 'app/store/entities/sandboxes/modules/selectors';
 
 import type { SourceMap } from '../../react-error-overlay/utils/getSourceMap';
 import evalModule from '../';
-import resolveModule from '../../utils/resolve-module';
+import resolveModule from 'common/sandbox/resolve-module';
 import resolveDependency from './dependency-resolver';
 import getBabelConfig from './babel-parser';
 import transformError from './error-transformer';

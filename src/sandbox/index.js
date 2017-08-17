@@ -1,4 +1,5 @@
 import { camelizeKeys } from 'humps';
+import { dispatch, isStandalone } from 'codesandbox';
 
 import registerServiceWorker from 'common/registerServiceWorker';
 import {
@@ -8,7 +9,6 @@ import {
 
 import evalModule, { deleteCache, clearCache } from './eval';
 import loadDependencies from './npm';
-import sendMessage, { isStandalone } from './utils/send-message';
 import host from './utils/host';
 
 import handleExternalResources from './external-resources';
@@ -42,18 +42,18 @@ function getIndexHtml(modules) {
 }
 
 export function sendReady() {
-  sendMessage('Ready!');
+  dispatch('Ready!');
 }
 
 function requestRender() {
-  sendMessage({ type: 'render' });
+  dispatch({ type: 'render' });
 }
 
 function initializeResizeListener() {
   const listener = resizeEventListener();
   listener.addResizeListener(document.body, () => {
     if (document.body) {
-      sendMessage({
+      dispatch({
         type: 'resize',
         height: document.body.getBoundingClientRect().height,
       });
@@ -163,7 +163,7 @@ async function compile(message) {
       initializeResizeListener();
     }
 
-    sendMessage({
+    dispatch({
       type: 'success',
     });
   } catch (e) {

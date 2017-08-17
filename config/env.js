@@ -5,6 +5,16 @@ const REACT_APP = /^REACT_APP_/i;
 const NODE_ENV = JSON.stringify(process.env.NODE_ENV || 'development');
 const LOCAL_SERVER = !!JSON.stringify(process.env.LOCAL_SERVER);
 
+const getHost = () => {
+  if (LOCAL_SERVER) {
+    return 'http://localhost:3000';
+  }
+
+  return process.env.NODE_ENV === 'development'
+    ? '*'
+    : 'https://codesandbox.io';
+};
+
 module.exports = Object.keys(process.env)
   .filter(key => REACT_APP.test(key))
   .reduce(
@@ -14,6 +24,7 @@ module.exports = Object.keys(process.env)
     },
     {
       'process.env.NODE_ENV': NODE_ENV,
-      'process.env.LOCAL_SERVER': !!LOCAL_SERVER
-    }
+      'process.env.CODESANDBOX_HOST': JSON.stringify(getHost()),
+      'process.env.LOCAL_SERVER': !!LOCAL_SERVER,
+    },
   );

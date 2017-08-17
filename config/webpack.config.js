@@ -78,7 +78,12 @@ const config = {
       {
         test: /\.js$/,
         include: paths.src,
-        exclude: [/eslint\.4\.1\.0\.min\.js$/, /typescriptServices\.js$/],
+        exclude: [
+          /eslint\.4\.1\.0\.min\.js$/,
+          /typescriptServices\.js$/,
+          // Don't do the node modules of the codesandbox module itself
+          /codesandbox\/node_modules/,
+        ],
         loader: 'happypack/loader',
       },
       // JSON is not enabled by default in Webpack but both Node and Browserify

@@ -8,6 +8,7 @@
  */
 
 /* @flow */
+import { actions, dispatch } from 'codesandbox';
 import { enableTabClick } from '../utils/dom/enableTabClick';
 import { createCode } from './code';
 import { isInternalFile } from '../utils/isInternalFile';
@@ -24,7 +25,6 @@ import {
   hiddenStyle,
 } from '../styles';
 import { getCompiledModuleByPath } from '../../eval/js/index';
-import actions, { dispatch } from '../../actions';
 
 function getGroupToggle(
   document: Document,

@@ -1,4 +1,6 @@
 // @flow
+import { dispatch, actions } from 'codesandbox';
+
 import type { ErrorRecord } from '../react-error-overlay/utils/errorRegister';
 import { getCompiledModuleByPath } from '../eval/js';
 
@@ -44,8 +46,7 @@ function buildErrorMessage(e) {
   };
 }
 
-/* eslint-disable no-underscore-dangle */
-export function showError(ref: ErrorRecord) {
+function buildDynamicError(ref: ErrorRecord) {
   const relevantFrame = ref.enhancedFrames.find(
     r => !!getCompiledModuleByPath(r._originalFileName || r.fileName),
   );
@@ -72,13 +73,30 @@ export function showError(ref: ErrorRecord) {
     const module = error.module;
 
     if (module) {
-      return {
+      const newError = {
         ...buildErrorMessage(error),
         type: 'action',
         action: 'show-error',
       };
+
+      return newError;
     }
   }
 
   return null;
+}
+
+/* eslint-disable no-underscore-dangle */
+export default function showError(ref: ErrorRecord) {
+  const errorToSend = buildDynamicError(ref);
+  if (errorToSend) {
+    dispatch(
+      actions.error.show(errorToSend.title, errorToSend.message, {
+        line: errorToSend.line,
+        column: errorToSend.column,
+        moduleId: errorToSend.moduleId,
+        payload: errorToSend.payload,
+      }),
+    );
+  }
 }
