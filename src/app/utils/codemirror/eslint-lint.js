@@ -375,8 +375,9 @@ export default (async function initialize() {
   while (!window.eslint) {
     // eslint-disable-next-line
     await delay(100);
-    window.require = origRequire;
   }
+
+  window.require = origRequire;
 
   linter = new window.eslint();
   linter.defineRules(allRules);
