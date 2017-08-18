@@ -13,7 +13,6 @@ const CenteredText = styled.div`
 const AuthorName = styled.span`
   display: inline-flex;
   align-items: center;
-  text-transform: uppercase;
   margin: 0 0.5em;
   font-weight: 400;
 `;
