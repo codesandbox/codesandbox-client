@@ -1,5 +1,5 @@
 import React from 'react';
-import testRemder from 'app/utils/test/render';
+import testRender from 'app/utils/test/render';
 
 import showAlternativeComponent from './show-alternative-component';
 
@@ -12,7 +12,7 @@ describe('hoc', () => {
         'field',
       ])(AppComponent);
 
-      testRemder(<ComposedComponent />);
+      testRender(<ComposedComponent />);
     });
 
     it('renders app if prop exists', () => {
@@ -20,7 +20,7 @@ describe('hoc', () => {
         'field',
       ])(AppComponent);
 
-      testRemder(<ComposedComponent field="test" />);
+      testRender(<ComposedComponent field="test" />);
     });
 
     it('renders app if prop exists and is falsy', () => {
@@ -28,7 +28,7 @@ describe('hoc', () => {
         'field',
       ])(AppComponent);
 
-      testRemder(<ComposedComponent field={false} />);
+      testRender(<ComposedComponent field={false} />);
     });
 
     it('only renders app if all prop exists and is falsy', () => {
@@ -37,8 +37,8 @@ describe('hoc', () => {
         'field2',
       ])(AppComponent);
 
-      testRemder(<ComposedComponent field={false} />);
-      testRemder(<ComposedComponent field={false} field2={false} />);
+      testRender(<ComposedComponent field={false} />);
+      testRender(<ComposedComponent field={false} field2={false} />);
     });
   });
 });
