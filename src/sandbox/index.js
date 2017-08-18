@@ -26,6 +26,8 @@ import {
   findBoilerplate,
 } from './boilerplates';
 
+import './eval2';
+
 registerServiceWorker('/sandbox-service-worker.js');
 
 let initializedResizeListener = false;

@@ -34,6 +34,7 @@ export const findCurrentModule = (
     mainModule
   );
 };
+
 function findById(entities: Array<Module | Directory>, id: string) {
   return entities.find(e => e.id === id);
 }
