@@ -354,7 +354,15 @@ export function fix(source: string) {
 }
 
 export default (async function initialize() {
-  if (!window.eslint && linter === null) {
+  // ugly hack to work around eslint dependency which redefines the require instance on window
+  // this breaks the monaco loader.js
+  // the following workaround can be removed after migration to monaco (vim mode) is done
+  const origRequire = window.require;
+  if (
+    !window.eslint &&
+    linter === null &&
+    !document.querySelector("script[src='/static/js/eslint.4.1.0.min.js']")
+  ) {
     // Add eslint as script
     const script = document.createElement('script');
     const src = '/static/js/eslint.4.1.0.min.js';
@@ -368,6 +376,8 @@ export default (async function initialize() {
     // eslint-disable-next-line
     await delay(100);
   }
+
+  window.require = origRequire;
 
   linter = new window.eslint();
   linter.defineRules(allRules);
