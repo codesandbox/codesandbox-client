@@ -31,6 +31,7 @@ self.addEventListener('message', event => {
       newLine: ts.NewLineKind.LineFeed,
       noImplicitUseStrict: false,
       inlineSourceMap: true,
+      experimentalDecorators: true,
     },
   };
 

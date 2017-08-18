@@ -2,6 +2,7 @@
 
 import type { Sandbox } from 'common/types';
 import type { TranspiledModule } from '../presets';
+import LoaderManager from '../presets';
 
 import Loader from './';
 
@@ -28,5 +29,9 @@ const evaluate = (code: string, require: Function) => {
 export default class JavaScriptLoader extends Loader {
   specifity = 1;
 
-  evaluate = (sandbox: Sandbox, module: TranspiledModule) => {};
+  evaluate = (
+    sandbox: Sandbox,
+    module: TranspiledModule,
+    manager: LoaderManager,
+  ) => {};
 }

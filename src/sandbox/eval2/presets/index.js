@@ -2,6 +2,7 @@
 
 import { sortBy } from 'lodash';
 import type { Sandbox, Module } from 'common/types';
+
 import Transpiler from '../transpilers';
 
 export type Loader = {
@@ -29,7 +30,10 @@ export default class LoaderManager {
   loaders: {
     [loaderName: string]: Loader,
   };
-  transpilers: Array<Transpiler>;
+  transpilers: Array<{
+    test: (module: Module) => boolean,
+    transpiler: Transpiler,
+  }>;
   name: string;
 
   constructor(name: string) {
@@ -46,25 +50,21 @@ export default class LoaderManager {
     this.loaders[name] = loader;
   }
 
-  registerTranspiler(transpiler: Transpiler) {
-    this.transpilers.push(transpiler);
+  registerTranspiler(
+    test: (module: Module) => boolean,
+    transpiler: Transpiler,
+  ) {
+    this.transpilers.push({
+      test,
+      transpiler,
+    });
   }
 
-  transpileModule(sandbox: Sandbox, module: Module): Promise<TranspiledModule> {
-    return new Promise(() => {
-      const transpiler = this.transpilers.find(t => t.test(module));
+  getTranspilers(module: Module) {
+    const transpiler = this.transpilers.find(t => t.test(module));
 
-      if (transpiler) {
-        return transpiler
-          .transpile(sandbox, module)
-          .then(({ transpiledCode }) => ({
-            ...module,
-            transpiledCode,
-          }));
-      }
-
-      return { ...module, transpiledCode: module.code };
-    });
+    // Force 1 transpiler for now
+    return [transpiler.transpiler];
   }
 
   evaluateModule(sandbox: Sandbox, module: Module) {
@@ -83,6 +83,6 @@ export default class LoaderManager {
       throw new Error(`No loader found for ${module.title}`);
     }
 
-    return loader.evaluate(sandbox, module);
+    return loader.evaluate(sandbox, module, this);
   }
 }

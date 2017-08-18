@@ -2,9 +2,9 @@
 import type { Module, Sandbox } from 'common/types';
 
 import TypeScriptWorker from 'worker-loader!./typescript-worker.js';
-import getModulePath from 'common/sandbox/get-module-path';
 
 import WorkerTranspiler from '../worker-transpiler';
+import TranspileModule, { type LoaderContext } from '../../TranspileModule';
 
 class TypeScriptTranspiler extends WorkerTranspiler {
   worker: Worker;
@@ -13,19 +13,17 @@ class TypeScriptTranspiler extends WorkerTranspiler {
     super(TypeScriptWorker);
   }
 
-  test = (module: Module) => /\.tsx?/.test(module.title);
-
-  doTranspilation(sandbox: Sandbox, module: Module) {
+  doTranspilation(
+    sandbox: Sandbox,
+    module: TranspileModule,
+    loaderContext: LoaderContext,
+  ) {
     return new Promise((resolve, reject) => {
-      const path = getModulePath(
-        sandbox.modules,
-        sandbox.directories,
-        module.id,
-      ).replace('/', '');
+      const path = loaderContext.path;
 
       this.executeTask(
         {
-          code: module.code,
+          code: module.module.code,
           path,
         },
         (err, data) => {
