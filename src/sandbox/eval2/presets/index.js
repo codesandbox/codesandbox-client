@@ -10,8 +10,8 @@ export type Loader = {
   specifity: 0 | 1 | 2,
 };
 
-type CompiledModule = Module & {
-  compiledCode: string,
+export type TranspiledModule = Module & {
+  transpiledCode: string,
 };
 
 /**
@@ -50,20 +50,20 @@ export default class LoaderManager {
     this.transpilers.push(transpiler);
   }
 
-  transpileModule(sandbox: Sandbox, module: Module): Promise<CompiledModule> {
+  transpileModule(sandbox: Sandbox, module: Module): Promise<TranspiledModule> {
     return new Promise(() => {
       const transpiler = this.transpilers.find(t => t.test(module));
 
       if (transpiler) {
         return transpiler
           .transpile(sandbox, module)
-          .then(({ compiledCode }) => ({
+          .then(({ transpiledCode }) => ({
             ...module,
-            compiledCode,
+            transpiledCode,
           }));
       }
 
-      return { ...module, compiledCode: module.code };
+      return { ...module, transpiledCode: module.code };
     });
   }
 

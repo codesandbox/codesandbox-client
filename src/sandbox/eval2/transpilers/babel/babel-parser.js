@@ -25,7 +25,7 @@ const resolvePlugin = (plugin: string) => {
 /**
  * Rewrite the plugin strings to actual dependencies of a babel config
  */
-function rewritePlugins(plugins: ?Array<string>) {
+function rewritePlugins(plugins: ?Array<string | Array<string>>) {
   if (plugins == null) return [];
 
   return plugins.map(dependency => {

@@ -77,7 +77,7 @@ export default class WorkerTranspiler extends Transpiler {
     }
   }
 
-  executeTask(message, callback) {
+  executeTask(message: any, callback: (err: Error, message: Object) => void) {
     const id = (Date.now() + Math.floor(Math.random() * 20)).toString();
 
     this.runningTasks[id] = callback;

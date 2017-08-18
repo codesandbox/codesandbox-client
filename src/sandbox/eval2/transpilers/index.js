@@ -5,7 +5,7 @@ import type { SourceMap } from './utils/get-source-map';
 
 type TranspilerResult = {
   code: string,
-  compiledCode: string,
+  transpiledCode: string,
   ast?: Object,
   sourceMap?: SourceMap,
 };
