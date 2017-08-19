@@ -43,17 +43,14 @@ export type LoaderContext = {
   path: string,
   getModules: () => Array<Module>,
   resolvePath: (module: Module) => string,
+  addDependency: (depPath: string) => void,
   _module: TranspiledModule, // eslint-disable-line no-use-before-define
 };
 
 class Compilation {
-  dependencies: Set<TranspiledModule>; // eslint-disable-line no-use-before-define
-  initiators: Set<TranspiledModule>; // eslint-disable-line no-use-before-define
   exports: any;
 
   constructor() {
-    this.dependencies = new Set();
-    this.initiators = new Set();
     this.exports = null;
   }
 }
@@ -73,6 +70,8 @@ export default class TranspiledModule {
    */
   emittedAssets: Array<ModuleSource>;
   compilation: ?Compilation;
+  initiators: Set<TranspiledModule>; // eslint-disable-line no-use-before-define
+  dependencies: Set<TranspiledModule>; // eslint-disable-line no-use-before-define
 
   constructor(module: Module) {
     this.module = module;
@@ -80,6 +79,8 @@ export default class TranspiledModule {
     this.warnings = [];
     this.cacheable = true;
     this.childModules = [];
+    this.dependencies = new Set();
+    this.initiators = new Set();
   }
 
   dispose() {
@@ -100,12 +101,12 @@ export default class TranspiledModule {
   }
 
   resetCompilation() {
-    if (this.compilation != null) {
-      this.compilation.initiators.forEach(dep => {
-        dep.resetCompilation();
-      });
-      this.compilation = null;
-    }
+    this.initiators.forEach(dep => {
+      dep.resetCompilation();
+    });
+    this.compilation = null;
+    this.dependencies = new Set();
+    this.initiators = new Set();
   }
 
   update(module: Module): TranspiledModule {
@@ -154,6 +155,11 @@ export default class TranspiledModule {
       emitFile: (name: string, content: string, sourceMap: SourceMap) => {
         this.assets[name] = this.createSourceForAsset(name, content, sourceMap);
       },
+      addDependency: (depPath: string) => {
+        const tModule = manager.resolveTranspiledModule(depPath);
+        this.dependencies.add(tModule);
+        tModule.initiators.add(this);
+      },
       getModules: (): Array<Module> => manager.getModules(),
       resolvePath: (module: Module) =>
         getModulePath(
@@ -176,8 +182,13 @@ export default class TranspiledModule {
   }
 
   async transpile(manager: Manager) {
-    // For now we only support one transpiler per module
     const transpilers = manager.preset.getTranspilers(this.module);
+    const cacheable = transpilers.every(t => t.cacheable);
+
+    if (this.source && cacheable) {
+      return this;
+    }
+
     const loaderContext = this.getLoaderContext(manager);
 
     let code = this.module.code || '';
@@ -198,6 +209,10 @@ export default class TranspiledModule {
       }
     }
 
+    // Add the source of the file by default, this is important for source mapping
+    // errors back to their origin
+    code = `${code}\n//# sourceURL=${loaderContext.path}`;
+
     this.source = new ModuleSource(this.module.title, code, finalSourceMap);
     return this;
   }
@@ -216,7 +231,7 @@ export default class TranspiledModule {
     const module = this.module;
     const transpiledModule = this;
     const compilation = new Compilation();
-    compilation.initiators = new Set(parentModules);
+    this.initiators = new Set(parentModules);
     try {
       function require(path: string) {
         // eslint-disable-line no-unused-vars
@@ -237,15 +252,12 @@ export default class TranspiledModule {
           throw new Error(`${module.title} is importing itself`);
         }
 
-        compilation.dependencies.add(requiredTranspiledModule);
+        transpiledModule.dependencies.add(requiredTranspiledModule);
 
         // Check if this module has been evaluated before, if so return the exports
         // of that compilation
         const cache = requiredTranspiledModule.compilation;
-
-        if (cache != null) {
-          cache.initiators.add(transpiledModule);
-        }
+        requiredTranspiledModule.initiators.add(transpiledModule);
 
         // This is a cyclic dependency, we should return undefined for first
         // execution according to ES module spec

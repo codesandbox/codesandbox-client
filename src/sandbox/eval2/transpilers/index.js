@@ -1,7 +1,7 @@
 // @flow
 
 import type { SourceMap } from './utils/get-source-map';
-import TranspiledModule, { type LoaderContext } from '../TranspiledModule';
+import { type LoaderContext } from '../TranspiledModule';
 
 type TranspilerResult = {
   transpiledCode: string,
@@ -13,9 +13,11 @@ export default class Transpiler {
   cachedResults: {
     [id: string]: TranspilerResult,
   };
+  cacheable: boolean;
 
   constructor() {
     this.cachedResults = {};
+    this.cacheable = true;
   }
 
   /* eslint-disable */
@@ -35,17 +37,11 @@ export default class Transpiler {
     code: string,
     loaderContext: LoaderContext,
   ): Promise<TranspilerResult> {
-    if (this.cachedResults[code]) {
+    if (this.cacheable && this.cachedResults[code]) {
       return Promise.resolve(this.cachedResults[code]);
     }
 
     return this.doTranspilation(code, loaderContext).then(result => {
-      // Add the source of the file by default, this is important for source mapping
-      // errors back to their origin
-
-      // eslint-disable-next-line no-param-reassign
-      result.transpiledCode = `${result.transpiledCode}\n//# sourceURL=${loaderContext.path}`;
-
       this.cachedResults[code] = result;
       return result;
     });

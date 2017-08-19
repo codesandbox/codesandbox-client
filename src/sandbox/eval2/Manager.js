@@ -118,15 +118,13 @@ export default class Manager {
   resolveTranspiledModule(
     path: string,
     startdirectoryShortid: ?string,
-  ): ?TranspiledModule {
+  ): TranspiledModule {
     const module = resolveModule(
       path,
       this.getModules(),
       this.getDirectories(),
       startdirectoryShortid,
     );
-
-    if (!module) return null;
 
     return this.getTranspiledModule(module);
   }
@@ -174,10 +172,8 @@ export default class Manager {
     this.modules = modules;
     this.directories = directories;
 
-    const addedTranspiledModules = addedModules.map(m => this.addModule(m));
-    const updatedTranspiledModules = updatedModules.map(m =>
-      this.getTranspiledModule(m).update(m),
-    );
+    addedModules.forEach(m => this.addModule(m));
+    updatedModules.forEach(m => this.getTranspiledModule(m).update(m));
 
     deletedModules.forEach(m => {
       const transpiledModule = this.getTranspiledModule(m);
@@ -186,10 +182,6 @@ export default class Manager {
       delete this.transpiledModules[m.id];
     });
 
-    return Promise.all(
-      [...addedTranspiledModules, ...updatedTranspiledModules].map(m =>
-        m.transpile(this),
-      ),
-    );
+    return this.transpileAllModules();
   }
 }

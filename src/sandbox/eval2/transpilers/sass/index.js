@@ -8,13 +8,15 @@ class SassTranspiler extends WorkerTranspiler {
   worker: Worker;
 
   constructor() {
-    super(SassWorker, 2);
+    super(SassWorker, 1);
+
+    this.cacheable = false;
   }
 
   doTranspilation(code: string, loaderContext: LoaderContext) {
     const modules = loaderContext.getModules();
 
-    const sassModules = modules.filter(m => m.title.endsWith('scss'));
+    const sassModules = modules.filter(m => /\.s?[a|c]ss$/.test(m.title));
     const files = sassModules.reduce(
       (interMediateFiles, module) => ({
         ...interMediateFiles,
@@ -38,7 +40,11 @@ class SassTranspiler extends WorkerTranspiler {
             return reject(err);
           }
 
-          return resolve(data);
+          if (data.type === 'add-dependency') {
+            loaderContext.addDependency(data.path);
+          } else {
+            return resolve(data);
+          }
         },
       );
     });

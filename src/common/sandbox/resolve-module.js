@@ -20,7 +20,7 @@ export default (
   modules: Array<Module>,
   directories: Array<Directory>,
   startdirectoryShortid: ?string = undefined,
-) => {
+): Module => {
   if (!path) return null;
   // Split path
   const splitPath = path.replace(/^.\//, '').split('/');

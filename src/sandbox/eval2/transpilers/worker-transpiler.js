@@ -70,11 +70,14 @@ export default class WorkerTranspiler extends Transpiler {
         }
 
         callback(null, data);
+
+        // Means the transpile task has been completed
+        if (data.type === 'compiled' || data.type === 'error') {
+          this.idleWorkers.push(worker);
+
+          this.executeRemainingTasks();
+        }
       }
-
-      this.idleWorkers.push(worker);
-
-      this.executeRemainingTasks();
     };
     worker.postMessage(message);
   }

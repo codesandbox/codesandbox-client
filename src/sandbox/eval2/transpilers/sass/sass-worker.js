@@ -1,5 +1,3 @@
-import { buildWorkerError } from '../utils/worker-error-handler';
-
 self.importScripts([
   'https://cdnjs.cloudflare.com/ajax/libs/sass.js/0.10.6/sass.sync.min.js',
 ]);
@@ -13,25 +11,43 @@ declare var Sass: {
   registerPlugin: (name: string, plugin: Function) => void,
 };
 
-Sass.options({
-  sourceMapEmbed: true,
-});
-
 self.addEventListener('message', event => {
   const { files, path } = event.data;
 
-  Sass.writeFile(files, () => {
-    try {
-      const code = Sass.compileFile(path);
+  // register a custom importer callback
+  Sass.importer((request, done) => {
+    // We use this to mark dependencies of this file
+    if (request.path) {
       self.postMessage({
-        type: 'compiled',
-        transpiledCode: code,
-      });
-    } catch (e) {
-      self.postMessage({
-        type: 'error',
-        error: buildWorkerError(e),
+        type: 'add-dependency',
+        path: request.path.replace('/sass/', ''),
       });
     }
+    done();
+  });
+
+  Sass.clearFiles(() => {
+    Sass.options({ sourceMapEmbed: true }, () => {
+      Sass.writeFile(files, () => {
+        Sass.compileFile(path, result => {
+          console.log(result);
+          if (result.status === 0) {
+            self.postMessage({
+              type: 'compiled',
+              transpiledCode: result.text,
+            });
+          } else {
+            self.postMessage({
+              type: 'error',
+              error: {
+                name: 'CompileError',
+                message: result.formatted,
+                fileName: result.file.replace('/sass/', ''),
+              },
+            });
+          }
+        });
+      });
+    });
   });
 });

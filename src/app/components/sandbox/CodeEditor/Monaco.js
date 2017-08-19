@@ -419,6 +419,9 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     if (kind) {
       if (kind[1] === 'css') {
         return 'css';
+      }
+      if (kind[1] === 'scss') {
+        return 'scss';
       } else if (kind[1] === 'html') {
         return 'html';
       } else if (kind[1] === 'md') {
