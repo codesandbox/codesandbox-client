@@ -247,6 +247,10 @@ const config = {
         to: 'public/vs',
       },
       {
+        from: 'static',
+        to: 'static',
+      },
+      {
         from: 'src/homepage/static',
         to: 'static',
       },

@@ -6,6 +6,7 @@ import jsonTranspiler from './transpilers/json';
 import globalCSSTranspiler from './transpilers/global-css';
 import sassTranspiler from './transpilers/sass';
 import rawTranspiler from './transpilers/raw';
+import stylusTranspiler from './transpilers/stylus';
 
 import PresetManager from './presets';
 
@@ -34,6 +35,10 @@ createReactAppPreset.registerTranspiler(
   module => /\.scss$/.test(module.title),
   [sassTranspiler, globalCSSTranspiler],
 );
+createReactAppPreset.registerTranspiler(module => /\.css$/.test(module.title), [
+  stylusTranspiler,
+  globalCSSTranspiler,
+]);
 createReactAppPreset.registerTranspiler(module => /\.css$/.test(module.title), [
   globalCSSTranspiler,
 ]);
