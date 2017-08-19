@@ -1,11 +1,10 @@
 // @flow
 import Transpiler from '../';
-import TranspiledModule, { type LoaderContext } from '../../TranspiledModule';
 
 class JSONTranspiler extends Transpiler {
-  doTranspilation(module: TranspiledModule, loaderContext: LoaderContext) {
+  doTranspilation(code: string) {
     const result = `
-      export default JSON.parse(${module.module.code || ''})
+      export default JSON.parse(${code || ''})
     `;
     return Promise.resolve({
       transpiledCode: result,

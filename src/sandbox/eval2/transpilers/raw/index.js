@@ -1,11 +1,10 @@
 // @flow
 import Transpiler from '../';
-import TranspiledModule, { type LoaderContext } from '../../TranspiledModule';
 
 class RawTranspiler extends Transpiler {
-  doTranspilation(module: TranspiledModule, loaderContext: LoaderContext) {
+  doTranspilation(code: string) {
     return Promise.resolve({
-      transpiledCode: module.module.code || '',
+      transpiledCode: code || '',
     });
   }
 }

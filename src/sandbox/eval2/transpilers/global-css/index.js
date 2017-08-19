@@ -32,8 +32,8 @@ createStyleNode(
 `;
 
 class GlobalCSSTranspiler extends Transpiler {
-  doTranspilation(module: TranspiledModule, loaderContext: LoaderContext) {
-    const result = wrapper(module.module.id, module.module.code || '');
+  doTranspilation(code: string, loaderContext: LoaderContext) {
+    const result = wrapper(loaderContext._module.module.id, code || '');
     return Promise.resolve({
       transpiledCode: result,
     });

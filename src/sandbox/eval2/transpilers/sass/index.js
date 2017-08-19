@@ -1,31 +1,34 @@
 // @flow
-import BabelWorker from 'worker-loader!./babel-worker.js';
+import SassWorker from 'worker-loader!./sass-worker.js';
 
-import getBabelConfig from './babel-parser';
 import WorkerTranspiler from '../worker-transpiler';
 import { type LoaderContext } from '../../TranspiledModule';
 
-// Right now this is in a worker, but when we're going to allow custom plugins
-// we need to move this out of the worker again, because the config needs
-// to support custom plugins
-class BabelTranspiler extends WorkerTranspiler {
+class SassTranspiler extends WorkerTranspiler {
   worker: Worker;
 
   constructor() {
-    super(BabelWorker, 2);
+    super(SassWorker, 2);
   }
 
   doTranspilation(code: string, loaderContext: LoaderContext) {
+    const modules = loaderContext.getModules();
+
+    const sassModules = modules.filter(m => m.title.endsWith('scss'));
+    const files = sassModules.reduce(
+      (interMediateFiles, module) => ({
+        ...interMediateFiles,
+        [loaderContext.resolvePath(module)]: module.code,
+      }),
+      {},
+    );
+
     return new Promise((resolve, reject) => {
       const path = loaderContext.path;
 
-      // TODO get custom babel config back in
-      const babelConfig = getBabelConfig({}, path);
-
       this.queueTask(
         {
-          code,
-          config: babelConfig,
+          files,
           path,
         },
         (err, data) => {
@@ -42,8 +45,8 @@ class BabelTranspiler extends WorkerTranspiler {
   }
 }
 
-const transpiler = new BabelTranspiler();
+const transpiler = new SassTranspiler();
 
-export { BabelTranspiler };
+export { SassTranspiler };
 
 export default transpiler;

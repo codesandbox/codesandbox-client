@@ -32,7 +32,7 @@ export default class LoaderManager {
   };
   transpilers: Array<{
     test: (module: Module) => boolean,
-    transpiler: Transpiler,
+    transpilers: Array<Transpiler>,
   }>;
   name: string;
 
@@ -52,21 +52,24 @@ export default class LoaderManager {
 
   registerTranspiler(
     test: (module: Module) => boolean,
-    transpiler: Transpiler,
+    transpilers: Array<Transpiler>,
   ) {
     this.transpilers.push({
       test,
-      transpiler,
+      transpilers,
     });
 
-    return transpiler;
+    return transpilers;
   }
 
   getTranspilers(module: Module) {
     const transpiler = this.transpilers.find(t => t.test(module));
 
-    // Force 1 transpiler for now
-    return [transpiler.transpiler];
+    if (transpiler == null) {
+      throw new Error(`No transpiler found for ${module.title}`);
+    }
+
+    return transpiler.transpilers;
   }
 
   evaluateModule(sandbox: Sandbox, module: Module) {

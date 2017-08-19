@@ -3,8 +3,9 @@
 import babelTranspiler from './transpilers/babel';
 import typescriptTranspiler from './transpilers/typescript';
 import jsonTranspiler from './transpilers/json';
-import rawTranspiler from './transpilers/raw';
 import globalCSSTranspiler from './transpilers/global-css';
+import sassTranspiler from './transpilers/sass';
+import rawTranspiler from './transpilers/raw';
 
 import PresetManager from './presets';
 
@@ -19,20 +20,23 @@ const createReactAppPreset = new PresetManager('create-react-app');
 
 createReactAppPreset.registerTranspiler(
   module => /\.jsx?$/.test(module.title),
-  babelTranspiler,
+  [babelTranspiler],
 );
 createReactAppPreset.registerTranspiler(
   module => /\.tsx?$/.test(module.title),
-  typescriptTranspiler,
+  [typescriptTranspiler],
 );
 createReactAppPreset.registerTranspiler(
   module => /\.json$/.test(module.title),
-  jsonTranspiler,
+  [jsonTranspiler],
 );
 createReactAppPreset.registerTranspiler(
-  module => /\.css$/.test(module.title),
-  globalCSSTranspiler,
+  module => /\.scss$/.test(module.title),
+  [sassTranspiler, globalCSSTranspiler],
 );
+createReactAppPreset.registerTranspiler(module => /\.css$/.test(module.title), [
+  globalCSSTranspiler,
+]);
 createReactAppPreset.registerTranspiler(() => true, rawTranspiler);
 
 export default createReactAppPreset;

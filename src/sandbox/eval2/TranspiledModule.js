@@ -41,6 +41,8 @@ export type LoaderContext = {
   sourceMap: boolean,
   target: string,
   path: string,
+  getModules: () => Array<Module>,
+  resolvePath: (module: Module) => string,
   _module: TranspiledModule, // eslint-disable-line no-use-before-define
 };
 
@@ -152,6 +154,13 @@ export default class TranspiledModule {
       emitFile: (name: string, content: string, sourceMap: SourceMap) => {
         this.assets[name] = this.createSourceForAsset(name, content, sourceMap);
       },
+      getModules: (): Array<Module> => manager.getModules(),
+      resolvePath: (module: Module) =>
+        getModulePath(
+          manager.getModules(),
+          manager.getDirectories(),
+          module.id,
+        ).replace('/', ''),
       options: {
         context: '/',
       },
@@ -166,25 +175,31 @@ export default class TranspiledModule {
     };
   }
 
-  transpile(manager: Manager) {
+  async transpile(manager: Manager) {
     // For now we only support one transpiler per module
-    const [transpiler] = manager.preset.getTranspilers(this.module);
+    const transpilers = manager.preset.getTranspilers(this.module);
     const loaderContext = this.getLoaderContext(manager);
-    return transpiler
-      .transpile(this, loaderContext)
-      .then(({ transpiledCode, sourceMap }) => {
-        this.source = new ModuleSource(
-          this.module.title,
-          transpiledCode,
-          sourceMap,
+
+    let code = this.module.code || '';
+    let finalSourceMap = null;
+    for (let i = 0; i < transpilers.length; i += 1) {
+      try {
+        // eslint-disable-next-line no-await-in-loop
+        const { transpiledCode, sourceMap } = await transpilers[i].transpile(
+          code,
+          loaderContext,
         );
-        return this;
-      })
-      .catch(e => {
+        code = transpiledCode;
+        finalSourceMap = sourceMap;
+      } catch (e) {
         e.fileName = loaderContext.path;
         e.module = this.module;
-        return Promise.reject(e);
-      });
+        throw e;
+      }
+    }
+
+    this.source = new ModuleSource(this.module.title, code, finalSourceMap);
+    return this;
   }
 
   getChildModules(): Array<Module> {

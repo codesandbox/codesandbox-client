@@ -2,7 +2,7 @@
 import TypeScriptWorker from 'worker-loader!./typescript-worker.js';
 
 import WorkerTranspiler from '../worker-transpiler';
-import TranspiledModule, { type LoaderContext } from '../../TranspiledModule';
+import { type LoaderContext } from '../../TranspiledModule';
 
 class TypeScriptTranspiler extends WorkerTranspiler {
   worker: Worker;
@@ -11,13 +11,13 @@ class TypeScriptTranspiler extends WorkerTranspiler {
     super(TypeScriptWorker, 2);
   }
 
-  doTranspilation(module: TranspiledModule, loaderContext: LoaderContext) {
+  doTranspilation(code: string, loaderContext: LoaderContext) {
     return new Promise((resolve, reject) => {
       const path = loaderContext.path;
 
       this.queueTask(
         {
-          code: module.module.code,
+          code,
           path,
         },
         (err, data) => {
