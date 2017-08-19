@@ -2,7 +2,7 @@
 
 import dynamicImportPlugin from 'babel-plugin-dynamic-import-node';
 
-import { buildWorkerError } from '../worker-transpiler';
+import { buildWorkerError } from '../utils/worker-error-handler';
 
 self.importScripts([
   'https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js',
@@ -24,7 +24,7 @@ declare var Babel: {
 Babel.registerPlugin('dynamic-import-node', dynamicImportPlugin);
 
 self.addEventListener('message', event => {
-  const { code, config } = event.data;
+  const { code, path, config } = event.data;
 
   try {
     const { code: compiledCode } = Babel.transform(code, config);
@@ -34,6 +34,7 @@ self.addEventListener('message', event => {
       transpiledCode: compiledCode,
     });
   } catch (e) {
+    e.message = e.message.replace('unknown', path);
     self.postMessage({
       type: 'error',
       error: buildWorkerError(e),

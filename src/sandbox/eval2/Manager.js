@@ -88,6 +88,10 @@ export default class Manager {
     return Promise.all(promises);
   }
 
+  clearCompiledCache() {
+    this.getTranspiledModules().map(tModule => tModule.resetCompilation());
+  }
+
   getModules(): Array<Module> {
     const sandboxModules = this.modules.reduce(
       (prev, next) => ({
@@ -99,7 +103,7 @@ export default class Manager {
     const transpiledModules = this.getTranspiledModules().reduce(
       (prev, next) => ({
         ...prev,
-        [next.id]: next,
+        [next.module.id]: next.module,
       }),
       {},
     );

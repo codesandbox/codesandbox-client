@@ -24,7 +24,7 @@ import {
   anchorStyle,
   hiddenStyle,
 } from '../styles';
-import { getCompiledModuleByPath } from '../../eval/js/index';
+import { getCurrentManager } from '../../';
 
 function getGroupToggle(
   document: Document,
@@ -287,15 +287,17 @@ function createFrame(
       sourceFileName.trim().indexOf(' ') !== -1;
     if (!isInternalWebpackBootstrapCode) {
       onSourceClick = () => {
-        // OKAY IK BEN EEN KOEKE
-        const module = getCompiledModuleByPath(sourceFileName);
+        const manager = getCurrentManager();
+        if (manager) {
+          const tModule = manager.resolveTranspiledModule(sourceFileName);
 
-        dispatch(
-          actions.editor.openModule(
-            module.id,
-            window.encodeURIComponent(sourceLineNumber || 1),
-          ),
-        );
+          dispatch(
+            actions.editor.openModule(
+              tModule.module.id,
+              window.encodeURIComponent(sourceLineNumber || 1),
+            ),
+          );
+        }
       };
     }
   }

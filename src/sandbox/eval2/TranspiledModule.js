@@ -31,7 +31,7 @@ class ModuleSource {
 export type LoaderContext = {
   version: number,
   emitWarning: (warning: string) => void,
-  emitError: (error: string) => void,
+  emitError: (error: Error) => void,
   emitModule: (append: string, code: string) => void,
   emitFile: (name: string, content: string, sourceMap: SourceMap) => void,
   options: {
@@ -124,7 +124,7 @@ export default class TranspiledModule {
       manager.getModules(),
       manager.getDirectories(),
       this.module.id,
-    );
+    ).replace('/', '');
 
     return {
       version: 2,
@@ -169,9 +169,9 @@ export default class TranspiledModule {
   transpile(manager: Manager) {
     // For now we only support one transpiler per module
     const [transpiler] = manager.preset.getTranspilers(this.module);
-
+    const loaderContext = this.getLoaderContext(manager);
     return transpiler
-      .transpile(this, this.getLoaderContext(manager))
+      .transpile(this, loaderContext)
       .then(({ transpiledCode, sourceMap }) => {
         this.source = new ModuleSource(
           this.module.title,
@@ -179,6 +179,11 @@ export default class TranspiledModule {
           sourceMap,
         );
         return this;
+      })
+      .catch(e => {
+        e.fileName = loaderContext.path;
+        e.module = this.module;
+        return Promise.reject(e);
       });
   }
 
@@ -197,54 +202,58 @@ export default class TranspiledModule {
     const transpiledModule = this;
     const compilation = new Compilation();
     compilation.initiators = new Set(parentModules);
+    try {
+      function require(path: string) {
+        // eslint-disable-line no-unused-vars
+        if (/^(\w|@)/.test(path)) {
+          // So it must be a dependency
+          return resolveDependency(path, manager.externals);
+        }
 
-    function require(path: string) {
-      // eslint-disable-line no-unused-vars
-      if (/^(\w|@)/.test(path)) {
-        // So it must be a dependency
-        return resolveDependency(path, manager.externals);
+        const requiredTranspiledModule = manager.resolveTranspiledModule(
+          path,
+          module.directoryShortid,
+        );
+
+        if (requiredTranspiledModule == null)
+          throw new Error(`Cannot find module in path: ${path}`);
+
+        if (module === requiredTranspiledModule.module) {
+          throw new Error(`${module.title} is importing itself`);
+        }
+
+        compilation.dependencies.add(requiredTranspiledModule);
+
+        // Check if this module has been evaluated before, if so return the exports
+        // of that compilation
+        const cache = requiredTranspiledModule.compilation;
+
+        if (cache != null) {
+          cache.initiators.add(transpiledModule);
+        }
+
+        // This is a cyclic dependency, we should return undefined for first
+        // execution according to ES module spec
+        if (parentModules.includes(requiredTranspiledModule) && !cache) {
+          return undefined;
+        }
+
+        return cache
+          ? cache.exports
+          : manager.evaluateModule(requiredTranspiledModule.module, [
+              ...parentModules,
+              transpiledModule,
+            ]);
       }
 
-      const requiredTranspiledModule = manager.resolveTranspiledModule(
-        path,
-        module.directoryShortid,
-      );
+      const exports = evaluate(this.source.compiledCode, require);
 
-      if (requiredTranspiledModule == null)
-        throw new Error(`Cannot find module in path: ${path}`);
-
-      if (module === requiredTranspiledModule.module) {
-        throw new Error(`${module.title} is importing itself`);
-      }
-
-      compilation.dependencies.add(requiredTranspiledModule);
-
-      // Check if this module has been evaluated before, if so return the exports
-      // of that compilation
-      const cache = requiredTranspiledModule.compilation;
-
-      if (cache != null) {
-        cache.initiators.add(transpiledModule);
-      }
-
-      // This is a cyclic dependency, we should return undefined for first
-      // execution according to ES module spec
-      if (parentModules.includes(requiredTranspiledModule) && !cache) {
-        return undefined;
-      }
-
-      return cache
-        ? cache.exports
-        : manager.evaluateModule(requiredTranspiledModule.module, [
-            ...parentModules,
-            transpiledModule,
-          ]);
+      compilation.exports = exports;
+      this.compilation = compilation;
+      return exports;
+    } catch (e) {
+      e.module = module;
+      throw e;
     }
-
-    const exports = evaluate(this.source.compiledCode, require);
-
-    compilation.exports = exports;
-    this.compilation = compilation;
-    return exports;
   }
 }

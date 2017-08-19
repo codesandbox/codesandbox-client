@@ -394,7 +394,7 @@ const saveModuleCode = (id: string, moduleId: string) => async (
       ),
     );
 
-    if (data.code !== newModule.code) {
+    if ((data.code || '') !== (newModule.code || '')) {
       dispatch(
         notificationActions.addNotification(
           'Something went wrong while saving the module, please try again.',

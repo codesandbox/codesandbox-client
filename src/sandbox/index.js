@@ -7,7 +7,6 @@ import {
   findMainModule,
 } from 'app/store/entities/sandboxes/modules/selectors';
 
-import evalModule, { deleteCache, clearCache } from './eval';
 import loadDependencies from './npm';
 import host from './utils/host';
 
@@ -45,6 +44,10 @@ function getIndexHtml(modules) {
   return '<div id="root"></div>';
 }
 
+export function getCurrentManager(): ?Manager {
+  return manager;
+}
+
 export function sendReady() {
   dispatch('Ready!');
 }
@@ -75,10 +78,10 @@ export function areActionsEnabled() {
 function updateManager(sandboxId, modules, directories) {
   if (!manager || manager.id !== sandboxId) {
     manager = new Manager(sandboxId, modules, directories, reactPreset);
-    return manager.initialize();
-  } else {
-    return manager.updateData(modules, directories);
+    return manager.initialize().catch(e => ({ error: e }));
   }
+
+  return manager.updateData(modules, directories).catch(e => ({ error: e }));
 }
 
 async function compile(message) {
@@ -100,30 +103,37 @@ async function compile(message) {
 
   handleExternalResources(externalResources);
 
-  if (loadingDependencies && !isStandalone) return;
-
-  loadingDependencies = true;
-  const [{ manifest, isNewCombination }] = await Promise.all([
-    loadDependencies(dependencies),
-    updateManager(sandboxId, modules, directories),
-  ]);
-  loadingDependencies = false;
-
-  if (isNewCombination && !isStandalone) {
-    clearCache();
-    // If we just loaded new depdendencies, we want to get the latest changes,
-    // since we might have missed them
-    requestRender();
-    return;
-  }
-
-  resetScreen();
-  const { externals } = manifest;
-
-  manager.setExternals(externals);
-
-  // Do unmounting
   try {
+    if (loadingDependencies && !isStandalone) return;
+
+    loadingDependencies = true;
+    const [
+      { manifest, isNewCombination },
+      { error: managerError },
+    ] = await Promise.all([
+      loadDependencies(dependencies),
+      updateManager(sandboxId, modules, directories),
+    ]);
+    loadingDependencies = false;
+
+    const { externals } = manifest;
+    manager.setExternals(externals);
+
+    if (managerError) {
+      throw managerError;
+    }
+
+    if (isNewCombination && !isStandalone) {
+      manager.clearCompiledCache();
+      // If we just loaded new depdendencies, we want to get the latest changes,
+      // since we might have missed them
+      requestRender();
+      return;
+    }
+
+    resetScreen();
+
+    // Do unmounting
     if (externals['react-dom']) {
       const reactDOM = resolveDependency('react-dom', externals);
       reactDOM.unmountComponentAtNode(document.body);
@@ -137,18 +147,10 @@ async function compile(message) {
         }
       }
     }
-  } catch (e) {
-    console.error(e);
-  }
 
-  try {
     const html = getIndexHtml(modules);
     document.body.innerHTML = html;
-    deleteCache(changedModule);
 
-    // const evalled = evalModule(module, modules, directories, externals);
-
-    // console.log(manager);
     const evalled = manager.evaluateModule(module);
 
     const domChanged = document.body.innerHTML !== html;

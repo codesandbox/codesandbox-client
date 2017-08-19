@@ -1,32 +1,5 @@
 import Transpiler from './';
-
-type WorkerError = {
-  name: string,
-  message: string,
-  fileName: ?string,
-  lineNumber: ?number,
-  columnNumber: ?number,
-};
-
-export function buildWorkerError(error: Error): WorkerError {
-  return {
-    name: error.name,
-    message: error.message,
-    fileName: error.fileName,
-    lineNumber: error.lineNumber,
-    columnNumber: error.columnNumber,
-  };
-}
-
-export function parseWorkerError(error: WorkerError) {
-  const reconstructedError = new Error(error.message);
-  reconstructedError.name = error.name;
-  reconstructedError.columnNumber = error.columnNumber;
-  reconstructedError.fileName = error.columnNumber;
-  reconstructedError.lineNumber = error.lineNumber;
-
-  return reconstructedError;
-}
+import { parseWorkerError } from './utils/worker-error-handler';
 
 /**
  * A transpiler that handles worker messaging for you! Magic
@@ -91,7 +64,7 @@ export default class WorkerTranspiler extends Transpiler {
 
       if (data) {
         if (data.type === 'error') {
-          const reconstructedError = parseWorkerError(data);
+          const reconstructedError = parseWorkerError(data.error);
 
           callback(reconstructedError);
         }

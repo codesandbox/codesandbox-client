@@ -72,8 +72,7 @@ function createOverlay(
   applyStyles(messageHeader, messageHeaderStyle);
 
   // Make message prettier
-  let finalMessage =
-    message.match(/^\w*:/) || !name ? message : name + ': ' + message;
+  let finalMessage = message;
 
   finalMessage = finalMessage
     // TODO: maybe remove this prefix from fbjs?
@@ -88,7 +87,7 @@ function createOverlay(
 
   // Put it in the DOM
   header.appendChild(document.createTextNode(name || ''));
-  messageHeader.appendChild(document.createTextNode(message));
+  messageHeader.appendChild(document.createTextNode(finalMessage));
 
   container.appendChild(header);
   container.appendChild(messageHeader);
@@ -100,7 +99,7 @@ function createOverlay(
   ) {
     container.appendChild(createSuggestions(error));
   }
-
+  console.log(frames, frameSettings);
   // Create trace
   container.appendChild(
     createFrames(document, frames, frameSettings, contextSize, name),

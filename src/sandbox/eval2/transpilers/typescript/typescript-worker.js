@@ -1,4 +1,4 @@
-import { buildWorkerError } from '../worker-transpiler';
+import { buildWorkerError } from '../utils/worker-error-handler';
 
 self.importScripts([
   'https://cdnjs.cloudflare.com/ajax/libs/typescript/2.5.0/typescript.min.js',
@@ -30,9 +30,9 @@ self.addEventListener('message', event => {
       allowJs: true,
       alwaysStrict: true,
       downlevelIteration: true,
-      newLine: ts.NewLineKind.LineFeed,
       noImplicitUseStrict: false,
       inlineSourceMap: true,
+      inlineSources: true,
       experimentalDecorators: true,
       jsx: ts.JsxEmit.React,
     },

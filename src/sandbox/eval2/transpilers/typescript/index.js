@@ -22,7 +22,8 @@ class TypeScriptTranspiler extends WorkerTranspiler {
         },
         (err, data) => {
           if (err) {
-            console.error('There was an error we still need to handle', err);
+            loaderContext.emitError(err);
+
             return reject(err);
           }
 

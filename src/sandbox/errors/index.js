@@ -2,7 +2,7 @@
 import { dispatch, actions } from 'codesandbox';
 
 import type { ErrorRecord } from '../react-error-overlay/utils/errorRegister';
-import { getCompiledModuleByPath } from '../eval/js';
+import { getCurrentManager } from '../';
 
 function buildErrorMessage(e) {
   const title = e.name;
@@ -47,15 +47,27 @@ function buildErrorMessage(e) {
 }
 
 function buildDynamicError(ref: ErrorRecord) {
-  const relevantFrame = ref.enhancedFrames.find(
-    r => !!getCompiledModuleByPath(r._originalFileName || r.fileName),
-  );
+  const manager = getCurrentManager();
 
-  if (relevantFrame) {
+  const relevantFrame = ref.enhancedFrames.find(r => {
+    try {
+      return (
+        manager &&
+        !!manager.resolveTranspiledModule(r._originalFileName || r.fileName)
+      );
+    } catch (e) {
+      /* don't do anything */
+      return false;
+    }
+  });
+  console.log(ref);
+
+  if (relevantFrame && manager) {
     const fileName = relevantFrame._originalFileName || relevantFrame.fileName;
-    const module = getCompiledModuleByPath(fileName);
+    const tModule = manager.resolveTranspiledModule(fileName);
 
-    if (module) {
+    if (tModule) {
+      const module = tModule.module;
       return {
         type: 'action',
         action: 'show-error',
