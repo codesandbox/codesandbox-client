@@ -1,11 +1,9 @@
 // @flow
-import type { Module, Sandbox } from 'common/types';
-
 import BabelWorker from 'worker-loader!./babel-worker.js';
 
 import getBabelConfig from './babel-parser';
 import WorkerTranspiler from '../worker-transpiler';
-import TranspileModule, { type LoaderContext } from '../../TranspileModule';
+import TranspiledModule, { type LoaderContext } from '../../TranspiledModule';
 
 // Right now this is in a worker, but when we're going to allow custom plugins
 // we need to move this out of the worker again, because the config needs
@@ -14,21 +12,17 @@ class BabelTranspiler extends WorkerTranspiler {
   worker: Worker;
 
   constructor() {
-    super(BabelWorker);
+    super(BabelWorker, 2);
   }
 
-  doTranspilation(
-    sandbox: Sandbox,
-    module: TranspileModule,
-    loaderContext: LoaderContext,
-  ) {
+  doTranspilation(module: TranspiledModule, loaderContext: LoaderContext) {
     return new Promise((resolve, reject) => {
       const path = loaderContext.path;
 
       // TODO get custom babel config back in
       const babelConfig = getBabelConfig({}, path);
 
-      this.executeTask(
+      this.queueTask(
         {
           code: module.module.code,
           config: babelConfig,

@@ -1,10 +1,10 @@
 // @flow
-import type { Sandbox, Module } from 'common/types';
-import resolveModule from 'common/sandbox/resolve-module';
 
 import babelTranspiler from './transpilers/babel';
 import typescriptTranspiler from './transpilers/typescript';
-import getDependency from './loaders/dependency-resolver';
+import jsonTranspiler from './transpilers/json';
+import rawTranspiler from './transpilers/raw';
+import globalCSSTranspiler from './transpilers/global-css';
 
 import PresetManager from './presets';
 
@@ -18,63 +18,21 @@ import PresetManager from './presets';
 const createReactAppPreset = new PresetManager('create-react-app');
 
 createReactAppPreset.registerTranspiler(
-  module => /\.jsx?/.test(module.title),
+  module => /\.jsx?$/.test(module.title),
   babelTranspiler,
 );
 createReactAppPreset.registerTranspiler(
-  module => /\.tsx?/.test(module.title),
+  module => /\.tsx?$/.test(module.title),
   typescriptTranspiler,
 );
+createReactAppPreset.registerTranspiler(
+  module => /\.json$/.test(module.title),
+  jsonTranspiler,
+);
+createReactAppPreset.registerTranspiler(
+  module => /\.css$/.test(module.title),
+  globalCSSTranspiler,
+);
+createReactAppPreset.registerTranspiler(() => true, rawTranspiler);
 
-function evaluatePath(
-  presetManager: PresetManager,
-  sandbox: Sandbox,
-  externals: Array<string>,
-  path: string,
-  currentDirectoryShortid: ?string = null,
-  parentModules: Array<Module> = [],
-) {
-  if (/^(\w|@)/.test(path)) {
-    return getDependency(path);
-  }
-
-  const module = resolveModule(
-    path,
-    sandbox.modules,
-    sandbox.directories,
-    currentDirectoryShortid,
-  );
-
-  if (!module) {
-    throw new Error(`Module '${path}' not found.`);
-  }
-
-  function require(requirePath: string) {
-    return evaluatePath(
-      presetManager,
-      sandbox,
-      externals,
-      requirePath,
-      currentDirectoryShortid,
-      [...parentModules, module],
-    );
-  }
-
-  return presetManager.evaluateModule(sandbox, module);
-}
-
-export default function evaluate(
-  template: string,
-  sandbox: Sandbox,
-  externals: Array<string>,
-  path: string,
-  currentDirectoryShortid: ?string = null,
-) {
-  evaluatePath(
-    createReactAppPreset,
-    sandbox,
-    externals,
-    path,
-    currentDirectoryShortid,
-  );
-}
+export default createReactAppPreset;

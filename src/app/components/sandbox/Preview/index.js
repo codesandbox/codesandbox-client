@@ -226,6 +226,7 @@ export default class Preview extends React.PureComponent<Props, State> {
       externalResources,
       preferences,
       dependencies,
+      sandboxId,
       isInProjectView,
       runActionFromPreview,
     } = this.props;
@@ -243,6 +244,7 @@ export default class Preview extends React.PureComponent<Props, State> {
       dependencies,
       modules,
       directories,
+      sandboxId,
       externalResources,
       hasActions: !!runActionFromPreview,
       isModuleView: !isInProjectView,

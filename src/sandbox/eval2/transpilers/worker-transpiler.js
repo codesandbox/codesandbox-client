@@ -33,56 +33,85 @@ export function parseWorkerError(error: WorkerError) {
  */
 export default class WorkerTranspiler extends Transpiler {
   Worker: Worker;
-  worker: Worker;
+  workers: Array<Worker>;
+  idleWorkers: Array<Worker>;
+  workerCount: number;
+  tasks: Array<any>;
+  initialized: boolean;
 
   runningTasks: {
     [id: string]: (error: Error, message: Object) => void,
   };
-  runningTasks = {};
 
-  constructor(Worker: Worker) {
+  constructor(Worker: Worker, workerCount = navigator.hardwareConcurrency) {
     super();
 
+    this.workerCount = workerCount;
     this.Worker = Worker;
+    this.workers = [];
+    this.idleWorkers = [];
+    this.tasks = [];
+    this.initialized = false;
   }
 
   initialize() {
-    if (!this.worker) {
-      this.worker = new this.Worker();
+    if (this.workers.length === 0) {
+      for (let i = 0; i < this.workerCount; i += 1) {
+        const worker = new this.Worker();
 
-      this.worker.addEventListener('message', this.handleEvent.bind(this));
-    }
-  }
+        worker.onmessage = message => {
+          if (message && message.data === 'ready') {
+            this.idleWorkers.push(worker);
 
-  dispose() {
-    if (this.worker) this.worker.terminate();
-  }
+            this.executeRemainingTasks();
+          }
+        };
 
-  handleEvent(event) {
-    const message = event.data;
-
-    if (message) {
-      const callback = this.runningTasks[message.id];
-      if (callback) {
-        if (message.type === 'error') {
-          const reconstructedError = parseWorkerError(message);
-
-          callback(reconstructedError);
-        }
-
-        callback(null, message);
-
-        delete this.runningTasks[message.id];
+        this.workers.push(worker);
       }
     }
   }
 
-  executeTask(message: any, callback: (err: Error, message: Object) => void) {
-    const id = (Date.now() + Math.floor(Math.random() * 20)).toString();
+  dispose() {
+    this.workers.forEach(w => w.terminate());
+    this.idleWorkers.length = 0;
+  }
 
-    this.runningTasks[id] = callback;
+  executeRemainingTasks() {
+    while (this.idleWorkers.length && this.tasks.length) {
+      const task = this.tasks.shift();
+      const worker = this.idleWorkers.shift();
+      this.executeTask(task, worker);
+    }
+  }
 
-    const finalMessage = { id, ...message };
-    this.worker.postMessage(finalMessage);
+  executeTask({ message, callback }, worker: Worker) {
+    worker.onmessage = newMessage => {
+      const { data } = newMessage;
+
+      if (data) {
+        if (data.type === 'error') {
+          const reconstructedError = parseWorkerError(data);
+
+          callback(reconstructedError);
+        }
+
+        callback(null, data);
+      }
+
+      this.idleWorkers.push(worker);
+
+      this.executeRemainingTasks();
+    };
+    worker.postMessage(message);
+  }
+
+  queueTask(message: any, callback: (err: Error, message: Object) => void) {
+    if (!this.initialized) {
+      this.initialize();
+    }
+    this.tasks.push({ message, callback });
+
+    this.executeRemainingTasks();
   }
 }

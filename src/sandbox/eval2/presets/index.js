@@ -58,6 +58,8 @@ export default class LoaderManager {
       test,
       transpiler,
     });
+
+    return transpiler;
   }
 
   getTranspilers(module: Module) {

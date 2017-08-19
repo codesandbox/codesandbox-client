@@ -1,11 +1,9 @@
 // @flow
 
-import type { Sandbox, Module } from 'common/types';
 import type { SourceMap } from './utils/get-source-map';
-import TranspileModule, { type LoaderContext } from '../TranspileModule';
+import TranspiledModule, { type LoaderContext } from '../TranspiledModule';
 
 type TranspilerResult = {
-  code: string,
   transpiledCode: string,
   ast?: Object,
   sourceMap?: SourceMap,
@@ -26,8 +24,7 @@ export default class Transpiler {
   dispose() {}
 
   doTranspilation(
-    sandbox: Sandbox,
-    module: TranspileModule,
+    module: TranspiledModule,
     loaderContext: LoaderContext,
   ): Promise<TranspilerResult> {
     throw new Error('This is an abstract function, please override it!');
@@ -35,19 +32,24 @@ export default class Transpiler {
   /* eslint-enable */
 
   transpile(
-    sandbox: Sandbox,
-    module: TranspileModule,
+    module: TranspiledModule,
     loaderContext: LoaderContext,
   ): Promise<TranspilerResult> {
     if (
-      this.cachedResults[module.id] &&
-      this.cachedResults[module.id].code === module.code
+      this.cachedResults[module.module.id] &&
+      this.cachedResults[module.module.id].code === module.module.code
     ) {
-      return Promise.resolve(this.cachedResults[module.id]);
+      return Promise.resolve(this.cachedResults[module.module.id]);
     }
 
-    return this.doTranspilation(sandbox, module, loaderContext).then(result => {
-      this.cachedResults[module.id] = result;
+    return this.doTranspilation(module, loaderContext).then(result => {
+      // Add the source of the file by default, this is important for source mapping
+      // errors back to their origin
+
+      // eslint-disable-next-line no-param-reassign
+      result.transpiledCode = `${result.transpiledCode}\n//# sourceURL=${loaderContext.path}`;
+
+      this.cachedResults[module.module.id] = result;
       return result;
     });
   }

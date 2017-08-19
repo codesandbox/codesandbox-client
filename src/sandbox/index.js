@@ -26,12 +26,14 @@ import {
   findBoilerplate,
 } from './boilerplates';
 
-import './eval2';
+import Manager from './eval2/Manager';
+import reactPreset from './eval2';
 
 registerServiceWorker('/sandbox-service-worker.js');
 
 let initializedResizeListener = false;
 let loadingDependencies = false;
+let manager: ?Manager = null;
 
 function getIndexHtml(modules) {
   const module = modules.find(
@@ -70,8 +72,18 @@ export function areActionsEnabled() {
   return actionsEnabled;
 }
 
+function updateManager(sandboxId, modules, directories) {
+  if (!manager || manager.id !== sandboxId) {
+    manager = new Manager(sandboxId, modules, directories, reactPreset);
+    return manager.initialize();
+  } else {
+    return manager.updateData(modules, directories);
+  }
+}
+
 async function compile(message) {
   const {
+    sandboxId,
     modules,
     directories,
     module,
@@ -91,7 +103,10 @@ async function compile(message) {
   if (loadingDependencies && !isStandalone) return;
 
   loadingDependencies = true;
-  const { manifest, isNewCombination } = await loadDependencies(dependencies);
+  const [{ manifest, isNewCombination }] = await Promise.all([
+    loadDependencies(dependencies),
+    updateManager(sandboxId, modules, directories),
+  ]);
   loadingDependencies = false;
 
   if (isNewCombination && !isStandalone) {
@@ -104,6 +119,8 @@ async function compile(message) {
 
   resetScreen();
   const { externals } = manifest;
+
+  manager.setExternals(externals);
 
   // Do unmounting
   try {
@@ -129,7 +146,11 @@ async function compile(message) {
     document.body.innerHTML = html;
     deleteCache(changedModule);
 
-    const evalled = await evalModule(module, modules, directories, externals);
+    // const evalled = evalModule(module, modules, directories, externals);
+
+    // console.log(manager);
+    const evalled = manager.evaluateModule(module);
+
     const domChanged = document.body.innerHTML !== html;
 
     if (isModuleView && !domChanged && !module.title.endsWith('.html')) {
@@ -208,6 +229,7 @@ if (isStandalone) {
 
       const message = {
         data: {
+          sandboxId: id,
           modules: x.data.modules,
           directories: x.data.directories,
           module: mainModule,

@@ -4,6 +4,8 @@ self.importScripts([
   'https://cdnjs.cloudflare.com/ajax/libs/typescript/2.5.0/typescript.min.js',
 ]);
 
+self.postMessage('ready');
+
 declare var ts: {
   transpileModule: (
     code: string,
@@ -17,7 +19,7 @@ declare var ts: {
 };
 
 self.addEventListener('message', event => {
-  const { code, path, id } = event.data;
+  const { code, path } = event.data;
 
   const config = {
     fileName: path,
@@ -32,6 +34,7 @@ self.addEventListener('message', event => {
       noImplicitUseStrict: false,
       inlineSourceMap: true,
       experimentalDecorators: true,
+      jsx: ts.JsxEmit.React,
     },
   };
 
@@ -40,14 +43,12 @@ self.addEventListener('message', event => {
 
     self.postMessage({
       type: 'compiled',
-      code: compiledCode,
-      id,
+      transpiledCode: compiledCode,
     });
   } catch (e) {
     self.postMessage({
       type: 'error',
       error: buildWorkerError(e),
-      id,
     });
   }
 });
