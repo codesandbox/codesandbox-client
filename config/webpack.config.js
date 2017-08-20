@@ -27,7 +27,7 @@ const COMMIT_HASH = childProcess
   .toString();
 const VERSION = `${COMMIT_COUNT}-${COMMIT_HASH}`;
 
-const publicPath = __PROD__ ? 'https://codesandbox.io/' : '/';
+const publicPath = __PROD__ ? '/' : '/';
 
 const getOutput = () =>
   __DEV__
