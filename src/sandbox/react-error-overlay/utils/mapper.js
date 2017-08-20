@@ -12,7 +12,6 @@ import StackFrame from './stack-frame';
 import { getSourceMap } from './getSourceMap';
 import { getCurrentManager } from '../../';
 import { getLinesAround } from './getLinesAround';
-import { setSourceMap, getCompiledModuleByPath } from '../../eval/js';
 import { settle } from 'settle-promise';
 
 /**

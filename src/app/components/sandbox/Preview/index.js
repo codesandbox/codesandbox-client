@@ -272,7 +272,11 @@ export default class Preview extends React.PureComponent<Props, State> {
   handleRefresh = () => {
     const { history, historyPosition } = this.state;
 
-    document.getElementById('sandbox').src = history[historyPosition];
+    document.getElementById('sandbox').src = '';
+
+    setTimeout(() => {
+      document.getElementById('sandbox').src = history[historyPosition];
+    }, 100);
 
     this.setState({
       urlInAddressBar: history[historyPosition],

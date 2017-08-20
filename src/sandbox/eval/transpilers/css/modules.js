@@ -32,8 +32,6 @@ class CSSModulesTranspiler extends Transpiler {
       })
       .then(({ injectableSource, exportTokens }) => {
         const insertCssFunctions = insertCss(id, injectableSource);
-        console.log(injectableSource);
-        console.log(exportTokens);
         const cssWithExports = `${insertCssFunctions}\exports = ${JSON.stringify(
           exportTokens,
         )};`;

@@ -48,7 +48,12 @@ export default class Manager {
   evaluateModule(module: Module, moduleChain: Array<TranspiledModule> = []) {
     const transpiledModule = this.getTranspiledModule(module);
 
-    return transpiledModule.evaluate(this, moduleChain);
+    const exports = transpiledModule.evaluate(this, moduleChain);
+
+    // Run post evaluate first
+    this.getTranspiledModules().forEach(t => t.postEvaluate(this));
+
+    return exports;
   }
 
   addModule(module: Module): TranspiledModule {

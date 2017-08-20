@@ -109,8 +109,6 @@ export default class TranspiledModule {
         dep.resetCompilation();
       });
       this.compilation = null;
-      this.dependencies.clear();
-      this.initiators.clear();
     } catch (e) {
       console.error(e);
     }
@@ -264,11 +262,18 @@ export default class TranspiledModule {
     const module = this.module;
 
     const transpilers = manager.preset.getTranspilers(module);
-
     const cacheable = transpilers.every(t => t.cacheable);
 
     const transpiledModule = this;
     const compilation = new Compilation();
+
+    // Remove this module from the initiators of old deps, so we can populate a
+    // fresh cache
+    this.dependencies.forEach(tModule => {
+      tModule.initiators.delete(transpiledModule);
+    });
+
+    this.dependencies.clear();
     this.initiators = new Set(parentModules);
     try {
       function require(path: string) {
@@ -322,6 +327,18 @@ export default class TranspiledModule {
     } catch (e) {
       e.module = e.module || module;
       throw e;
+    }
+  }
+
+  postEvaluate(manager: Manager) {
+    // There are no other modules calling this module, so we run a function on
+    // all transpilers that clears side effects if there are any. Example:
+    // Remove CSS styles from the dom.
+
+    if (this.initiators.size === 0) {
+      manager.preset
+        .getTranspilers(this.module)
+        .forEach(t => t.cleanModule(this.getLoaderContext(manager)));
     }
   }
 }

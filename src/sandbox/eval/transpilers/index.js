@@ -1,7 +1,7 @@
 // @flow
 
 import type { SourceMap } from './utils/get-source-map';
-import TranspiledModule, { type LoaderContext } from '../transpiled-module';
+import { type LoaderContext } from '../transpiled-module';
 
 type TranspilerResult = {
   transpiledCode: string,
@@ -23,7 +23,7 @@ export default class Transpiler {
   /* eslint-disable */
   initialize() {}
 
-  dispose() {}
+  cleanModule(loaderContext: LoaderContext) {}
 
   doTranspilation(
     code: string,

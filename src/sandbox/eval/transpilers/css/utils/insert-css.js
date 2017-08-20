@@ -26,11 +26,6 @@ createStyleNode(
 `;
 
 export default function(id, css) {
-  const element = document.getElementById(id);
-  if (element != null && element.parentNode != null) {
-    element.parentNode.removeChild(element);
-  }
-
   const result = wrapper(id, css || '');
   return result;
 }

@@ -20,3 +20,5 @@ preset.registerTranspiler(module => /\.json$/.test(module.title), [
 ]);
 
 preset.registerTranspiler(() => true, [rawTranspiler]);
+
+export default preset;
