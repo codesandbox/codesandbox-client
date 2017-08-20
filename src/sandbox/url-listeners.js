@@ -1,4 +1,4 @@
-import { dispatch } from 'codesandbox';
+import { dispatch } from 'codesandbox-api';
 
 function sendUrlChange(url: string) {
   dispatch({

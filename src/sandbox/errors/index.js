@@ -1,5 +1,5 @@
 // @flow
-import { dispatch, actions } from 'codesandbox';
+import { dispatch, actions } from 'codesandbox-api';
 
 import type { ErrorRecord } from '../react-error-overlay/utils/errorRegister';
 import { getCurrentManager } from '../';

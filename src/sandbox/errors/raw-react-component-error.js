@@ -1,5 +1,5 @@
 // @flow
-import { actions, dispatch } from 'codesandbox';
+import { actions, dispatch } from 'codesandbox-api';
 import type { Module } from 'common/types';
 
 import SandboxError from './sandbox-error';

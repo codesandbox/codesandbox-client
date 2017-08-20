@@ -8,7 +8,7 @@
  */
 
 /* @flow */
-import { actions, dispatch } from 'codesandbox';
+import { actions, dispatch } from 'codesandbox-api';
 import { enableTabClick } from '../utils/dom/enableTabClick';
 import { createCode } from './code';
 import { isInternalFile } from '../utils/isInternalFile';

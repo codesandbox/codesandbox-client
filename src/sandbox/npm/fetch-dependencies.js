@@ -1,4 +1,4 @@
-import { actions, dispatch } from 'codesandbox';
+import { actions, dispatch } from 'codesandbox-api';
 import _debug from 'app/utils/debug';
 import dependenciesToQuery from './dependencies-to-query';
 import delay from '../utils/delay';

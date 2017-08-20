@@ -1,5 +1,5 @@
 import { camelizeKeys } from 'humps';
-import { dispatch, isStandalone } from 'codesandbox';
+import { dispatch, isStandalone } from 'codesandbox-api';
 
 import registerServiceWorker from 'common/registerServiceWorker';
 import {
