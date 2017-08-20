@@ -131,7 +131,7 @@ class SandboxPage extends React.PureComponent<Props, $FlowFixMeState> {
       <Container>
         <ThemeProvider
           theme={{
-            templateColor: getTemplateDefinition('vue').color,
+            templateColor: getTemplateDefinition(sandbox.template).color,
           }}
         >
           <Editor match={match} sandbox={sandbox} />
