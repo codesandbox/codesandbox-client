@@ -1,6 +1,5 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
-import theme from 'common/theme';
 
 import Tooltip from 'app/components/Tooltip';
 
@@ -82,11 +81,11 @@ const Icon = styled.div`
 `;
 
 export const EditorIcon = styled(Icon)`
-  background-color: ${() => theme.secondary};
+  background-color: ${({ theme }) => theme.templateColor || theme.secondary};
 `;
 
 export const PreviewIcon = styled(Icon)`
-  background-color: ${() => theme.primary};
+  background-color: ${({ theme }) => theme.primary};
 `;
 
 type Props = {

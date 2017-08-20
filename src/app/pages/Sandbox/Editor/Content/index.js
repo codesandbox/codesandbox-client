@@ -181,6 +181,7 @@ class EditorPreview extends React.PureComponent<Props, $FlowFixMeState> {
       <FullSize inactive={this.state.resizing}>
         <Preview
           sandboxId={sandbox.id}
+          template={sandbox.template}
           initialPath={sandbox.initialPath}
           module={currentModule}
           modules={modules}

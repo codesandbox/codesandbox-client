@@ -32,7 +32,7 @@ const addModifier = (fn, method, ...modifierArgs) => (...args) =>
  * Add useful methods directly to selector function, as well as put an rgbString() call at the end
  * @param selector
  */
-const decorateSelector = selector => {
+export const decorateSelector = selector => {
   // add member functions to our selector
   colorMethods.forEach(method => {
     selector[method] = (...args) =>

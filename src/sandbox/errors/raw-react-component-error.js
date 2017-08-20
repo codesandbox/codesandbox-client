@@ -1,7 +1,6 @@
 // @flow
+import { actions, dispatch } from 'codesandbox-api';
 import type { Module } from 'common/types';
-
-import actions, { dispatch } from '../actions';
 
 import SandboxError from './sandbox-error';
 
@@ -20,7 +19,7 @@ export default class RawReactComponentError extends SandboxError {
         title: `Rename ${importedModule.title} to ${importedModule.title}.js`,
         action: () => {
           dispatch(
-            actions.source.module.rename(
+            actions.source.modules.rename(
               importedModule.id,
               `${importedModule.title}.js`,
             ),

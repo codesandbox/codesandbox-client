@@ -1,4 +1,5 @@
 import { camelizeKeys } from 'humps';
+import { dispatch, isStandalone } from 'codesandbox-api';
 
 import registerServiceWorker from 'common/registerServiceWorker';
 import {
@@ -6,15 +7,13 @@ import {
   findMainModule,
 } from 'app/store/entities/sandboxes/modules/selectors';
 
-import evalModule, { deleteCache, clearCache } from './eval';
 import loadDependencies from './npm';
-import sendMessage, { isStandalone } from './utils/send-message';
 import host from './utils/host';
 
 import handleExternalResources from './external-resources';
 import resizeEventListener from './resize-event-listener';
 import setupHistoryListeners from './url-listeners';
-import resolveDependency from './eval/js/dependency-resolver';
+import resolveDependency from './eval/loaders/dependency-resolver';
 import { resetScreen } from './status-screen';
 
 import { inject, uninject } from './react-error-overlay/overlay';
@@ -26,10 +25,14 @@ import {
   findBoilerplate,
 } from './boilerplates';
 
+import Manager from './eval/manager';
+import getPreset from './eval';
+
 registerServiceWorker('/sandbox-service-worker.js');
 
 let initializedResizeListener = false;
 let loadingDependencies = false;
+let manager: ?Manager = null;
 
 function getIndexHtml(modules) {
   const module = modules.find(
@@ -41,19 +44,23 @@ function getIndexHtml(modules) {
   return '<div id="root"></div>';
 }
 
+export function getCurrentManager(): ?Manager {
+  return manager;
+}
+
 export function sendReady() {
-  sendMessage('Ready!');
+  dispatch('Ready!');
 }
 
 function requestRender() {
-  sendMessage({ type: 'render' });
+  dispatch({ type: 'render' });
 }
 
 function initializeResizeListener() {
   const listener = resizeEventListener();
   listener.addResizeListener(document.body, () => {
     if (document.body) {
-      sendMessage({
+      dispatch({
         type: 'resize',
         height: document.body.getBoundingClientRect().height,
       });
@@ -68,8 +75,18 @@ export function areActionsEnabled() {
   return actionsEnabled;
 }
 
+function updateManager(sandboxId, template, modules, directories) {
+  if (!manager || manager.id !== sandboxId) {
+    manager = new Manager(sandboxId, modules, directories, getPreset(template));
+    return manager.initialize().catch(e => ({ error: e }));
+  }
+
+  return manager.updateData(modules, directories).catch(e => ({ error: e }));
+}
+
 async function compile(message) {
   const {
+    sandboxId,
     modules,
     directories,
     module,
@@ -78,6 +95,7 @@ async function compile(message) {
     dependencies,
     hasActions,
     isModuleView = false,
+    template,
   } = message.data;
   uninject();
   inject();
@@ -86,25 +104,37 @@ async function compile(message) {
 
   handleExternalResources(externalResources);
 
-  if (loadingDependencies && !isStandalone) return;
-
-  loadingDependencies = true;
-  const { manifest, isNewCombination } = await loadDependencies(dependencies);
-  loadingDependencies = false;
-
-  if (isNewCombination && !isStandalone) {
-    clearCache();
-    // If we just loaded new depdendencies, we want to get the latest changes,
-    // since we might have missed them
-    requestRender();
-    return;
-  }
-
-  resetScreen();
-  const { externals } = manifest;
-
-  // Do unmounting
   try {
+    if (loadingDependencies && !isStandalone) return;
+
+    loadingDependencies = true;
+    const [
+      { manifest, isNewCombination },
+      { error: managerError },
+    ] = await Promise.all([
+      loadDependencies(dependencies),
+      updateManager(sandboxId, template, modules, directories),
+    ]);
+    loadingDependencies = false;
+
+    const { externals } = manifest;
+    manager.setExternals(externals);
+
+    if (managerError) {
+      throw managerError;
+    }
+
+    if (isNewCombination && !isStandalone) {
+      manager.clearCompiledCache();
+      // If we just loaded new depdendencies, we want to get the latest changes,
+      // since we might have missed them
+      requestRender();
+      return;
+    }
+
+    resetScreen();
+
+    // Do unmounting
     if (externals['react-dom']) {
       const reactDOM = resolveDependency('react-dom', externals);
       reactDOM.unmountComponentAtNode(document.body);
@@ -118,16 +148,12 @@ async function compile(message) {
         }
       }
     }
-  } catch (e) {
-    console.error(e);
-  }
 
-  try {
     const html = getIndexHtml(modules);
     document.body.innerHTML = html;
-    deleteCache(changedModule);
 
-    const evalled = await evalModule(module, modules, directories, externals);
+    const evalled = manager.evaluateModule(module);
+
     const domChanged = document.body.innerHTML !== html;
 
     if (isModuleView && !domChanged && !module.title.endsWith('.html')) {
@@ -163,7 +189,7 @@ async function compile(message) {
       initializeResizeListener();
     }
 
-    sendMessage({
+    dispatch({
       type: 'success',
     });
   } catch (e) {
@@ -206,6 +232,7 @@ if (isStandalone) {
 
       const message = {
         data: {
+          sandboxId: id,
           modules: x.data.modules,
           directories: x.data.directories,
           module: mainModule,
@@ -213,6 +240,7 @@ if (isStandalone) {
           externalResources: x.data.externalResources,
           dependencies: x.data.npmDependencies,
           hasActions: false,
+          template: x.data.template,
         },
       };
 

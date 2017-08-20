@@ -60,6 +60,7 @@ class ShowcasePreview extends React.PureComponent {
       <Container>
         <Preview
           sandboxId={sandbox.id}
+          template={sandbox.template}
           isInProjectView
           modules={modules}
           directories={directories}

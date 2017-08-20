@@ -1,13 +1,10 @@
-import host from './utils/host';
+import { dispatch } from 'codesandbox-api';
 
 function sendUrlChange(url: string) {
-  window.parent.postMessage(
-    {
-      type: 'urlchange',
-      url,
-    },
-    host,
-  );
+  dispatch({
+    type: 'urlchange',
+    url,
+  });
 }
 
 export default function setupHistoryListeners() {

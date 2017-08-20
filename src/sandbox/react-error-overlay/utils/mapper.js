@@ -10,8 +10,8 @@
 // @flow
 import StackFrame from './stack-frame';
 import { getSourceMap } from './getSourceMap';
+import { getCurrentManager } from '../../';
 import { getLinesAround } from './getLinesAround';
-import { setSourceMap, getCompiledModuleByPath } from '../../eval/js';
 import { settle } from 'settle-promise';
 
 /**
@@ -37,15 +37,21 @@ async function map(
   });
   await settle(
     files.map(async fileName => {
-      const cachedModule = getCompiledModuleByPath(fileName);
-      if (cachedModule) {
-        const fileSource = cachedModule.compiledCode;
+      const manager = getCurrentManager();
+      if (manager != null) {
+        const transpiledModule = manager.resolveTranspiledModule(
+          `./${fileName}`,
+        );
 
-        const map = await getSourceMap(fileName, fileSource);
+        if (transpiledModule) {
+          const fileSource =
+            transpiledModule.source && transpiledModule.source.compiledCode;
 
-        setSourceMap(cachedModule.id, map);
+          const map = await getSourceMap(fileName, fileSource);
 
-        cache[fileName] = { fileSource, map };
+          setSourceMap(transpiledModule.module.id, map);
+          cache[fileName] = { fileSource, map };
+        }
       }
     }),
   );

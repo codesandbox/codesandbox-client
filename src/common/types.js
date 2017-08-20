@@ -59,6 +59,7 @@ export type SmallSandbox = {
   likeCount: number,
   viewCount: number,
   forkCount: number,
+  template: string,
   privacy: 0 | 1 | 2,
 };
 
@@ -126,6 +127,7 @@ export type Sandbox = {
   tags: Array<string>,
   sourceId: string, // This is the source it's assigned to, a source contains all dependencies, modules and directories
   forcedRenders: number,
+  template: render,
 };
 
 export type Preferences = {

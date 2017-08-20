@@ -1,10 +1,12 @@
 // @flow
 import * as React from 'react';
-import styled from 'styled-components';
+import styled, { ThemeProvider } from 'styled-components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { createSelector } from 'reselect';
+
+import getTemplateDefinition from 'common/templates';
 
 import type { Sandbox } from 'common/types';
 
@@ -16,7 +18,6 @@ import SubTitle from 'app/components/text/SubTitle';
 import Centered from 'app/components/flex/Centered';
 
 import Editor from './Editor';
-import { embedUrl } from '../../utils/url-generator';
 
 type Props = {
   sandboxes: { [id: string]: Sandbox },
@@ -128,7 +129,13 @@ class SandboxPage extends React.PureComponent<Props, $FlowFixMeState> {
 
     return (
       <Container>
-        <Editor match={match} sandbox={sandbox} />
+        <ThemeProvider
+          theme={{
+            templateColor: getTemplateDefinition('vue').color,
+          }}
+        >
+          <Editor match={match} sandbox={sandbox} />
+        </ThemeProvider>
       </Container>
     );
   }

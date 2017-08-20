@@ -112,7 +112,7 @@ const transformFiles = dir =>
     : {};
 
 const getFileMetaData = (depUrl, depPath) =>
-  doFetch(`${depUrl}/${path.dirname(depPath)}?json`)
+  doFetch(`${depUrl}/${path.dirname(depPath)}?meta`)
     .then(response => JSON.parse(response))
     .then(transformFiles);
 
