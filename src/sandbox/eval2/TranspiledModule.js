@@ -220,7 +220,7 @@ export default class TranspiledModule {
     code = `${code}\n//# sourceURL=${loaderContext.path}`;
 
     for (let i = 0; i < this.childModules.length; i += 1) {
-      this.childModules[i].transpile(manager);
+      await this.childModules[i].transpile(manager); // eslint-disable-line no-await-in-loop
     }
 
     this.source = new ModuleSource(this.module.title, code, finalSourceMap);

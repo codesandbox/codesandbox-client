@@ -37,9 +37,9 @@ export default class Transpiler {
     code: string,
     loaderContext: LoaderContext,
   ): Promise<TranspilerResult> {
-    if (this.cacheable && this.cachedResults[code]) {
-      return Promise.resolve(this.cachedResults[code]);
-    }
+    // if (this.cacheable && this.cachedResults[code]) {
+    //   return Promise.resolve(this.cachedResults[code]);
+    // }
 
     return this.doTranspilation(code, loaderContext).then(result => {
       this.cachedResults[code] = result;
