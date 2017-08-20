@@ -742,11 +742,11 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
       fontSize: preferences.fontSize,
       // Disable this because of a current issue in Windows:
       // https://github.com/Microsoft/monaco-editor/issues/392
-      // fontFamily: fontFamilies(
-      //   preferences.fontFamily,
-      //   'Source Code Pro',
-      //   'monospace',
-      // ),
+      fontFamily: fontFamilies(
+        preferences.fontFamily,
+        'Source Code Pro',
+        'monospace',
+      ),
       minimap: {
         enabled: false,
       },
