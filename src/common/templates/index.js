@@ -11,6 +11,10 @@ export const vue = {
 };
 
 export default function getDefinition(theme: 'create-react-app' | 'vue-cli') {
+  if (!theme) {
+    return react;
+  }
+
   if (theme === react.name) {
     return react;
   } else if (theme === vue.name) {

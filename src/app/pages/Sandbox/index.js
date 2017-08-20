@@ -131,7 +131,8 @@ class SandboxPage extends React.PureComponent<Props, $FlowFixMeState> {
       <Container>
         <ThemeProvider
           theme={{
-            templateColor: getTemplateDefinition(sandbox.template).color,
+            templateColor: getTemplateDefinition(sandbox && sandbox.template)
+              .color,
           }}
         >
           <Editor match={match} sandbox={sandbox} />
