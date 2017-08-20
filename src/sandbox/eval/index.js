@@ -1,117 +1,90 @@
 // @flow
-import type { Module, Directory } from 'common/types';
 
-import evalJS, {
-  clearCache as clearJSCache,
-  deleteCache as deleteJSCache,
-} from './js';
-import evalRaw from './raw';
-import evalCSS from './css';
-import evalJson from './json';
+import babelTranspiler from './transpilers/babel';
+import typescriptTranspiler from './transpilers/typescript';
+import jsonTranspiler from './transpilers/json';
+import globalCSSTranspiler from './transpilers/css/global';
+import modulesCSSTranspiler from './transpilers/css/modules';
+import sassTranspiler from './transpilers/sass';
+import rawTranspiler from './transpilers/raw';
+import stylusTranspiler from './transpilers/stylus';
+import noopTranspiler from './transpilers/noop';
+import binaryTranspiler from './transpilers/binary';
+import vueTranspiler from './transpilers/vue';
+import vueTemplateTranspiler from './transpilers/vue/template-compiler';
+import vueStyleTranspiler from './transpilers/vue/style-compiler';
+import base64Transpiler from './transpilers/base64';
 
-const MAX_DEPTH = 20;
+import PresetManager from './presets';
 
-function doEval(
-  mainModule: Module,
-  modules: Array<Module>,
-  directories: Array<Directory>,
-  externals: Object,
-  depth: ?number,
-  parentModules: Array<Module>,
-) {
-  const html = /\.html$/;
-  const css = /\.css$/;
-  const json = /\.json$/;
-  const js = /\.jsx?$/;
+import reactPreset from './presets/create-react-app';
 
-  if (html.test(mainModule.title)) {
-    return evalRaw(
-      mainModule,
-      modules,
-      directories,
-      externals,
-      depth,
-      parentModules,
-    );
+// Create React App loader
+// CSS -> PostCSS => CSS Loader
+// JS -> Babel Loader
+// HTML -> Raw loader
+// Images -> URL loader
+// Other -> File loader (for us raw loader for now)
+
+const createReactAppPreset = new PresetManager('create-react-app');
+
+createReactAppPreset.registerTranspiler(
+  module => /\.jsx?$/.test(module.title),
+  [babelTranspiler],
+);
+createReactAppPreset.registerTranspiler(
+  module => /\.tsx?$/.test(module.title),
+  [typescriptTranspiler],
+);
+createReactAppPreset.registerTranspiler(
+  module => /\.json$/.test(module.title),
+  [jsonTranspiler],
+);
+createReactAppPreset.registerTranspiler(
+  module => /\.scss$/.test(module.title),
+  [sassTranspiler, globalCSSTranspiler],
+);
+createReactAppPreset.registerTranspiler(module => /\.vue$/.test(module.title), [
+  vueTranspiler,
+]);
+createReactAppPreset.registerTranspiler(
+  module => /\.vue\.html/.test(module.title),
+  [vueTemplateTranspiler],
+);
+createReactAppPreset.registerTranspiler(
+  module => /\.vue\.css/.test(module.title),
+  [vueStyleTranspiler, globalCSSTranspiler],
+);
+createReactAppPreset.registerTranspiler(
+  module => /\.vue\.module\.css/.test(module.title),
+  [vueStyleTranspiler, modulesCSSTranspiler],
+);
+createReactAppPreset.registerTranspiler(
+  module => /\.vue\.s[c|a]ss/.test(module.title),
+  [sassTranspiler, vueStyleTranspiler, globalCSSTranspiler],
+);
+createReactAppPreset.registerTranspiler(
+  module => /\.vue\.module\.s[c|a]ss/.test(module.title),
+  [sassTranspiler, vueStyleTranspiler, modulesCSSTranspiler],
+);
+createReactAppPreset.registerTranspiler(
+  module => /\.vue\.styl$/.test(module.title),
+  [stylusTranspiler, vueStyleTranspiler, globalCSSTranspiler],
+);
+createReactAppPreset.registerTranspiler(module => /\.png$/.test(module.title), [
+  binaryTranspiler,
+  base64Transpiler,
+]);
+createReactAppPreset.registerTranspiler(module => /\.css$/.test(module.title), [
+  globalCSSTranspiler,
+]);
+createReactAppPreset.registerTranspiler(module => /!noop/.test(module.title), [
+  noopTranspiler,
+]);
+createReactAppPreset.registerTranspiler(() => true, [rawTranspiler]);
+
+export default function getPreset(template: 'react') {
+  if (template === 'react') {
+    return reactPreset;
   }
-
-  if (css.test(mainModule.title)) {
-    return evalCSS(
-      mainModule,
-      modules,
-      directories,
-      externals,
-      depth,
-      parentModules,
-    );
-  }
-
-  if (json.test(mainModule.title) || mainModule.title === '.babelrc') {
-    return evalJson(
-      mainModule,
-      modules,
-      directories,
-      externals,
-      depth,
-      parentModules,
-    );
-  }
-
-  if (js.test(mainModule.title)) {
-    return evalJS(
-      mainModule,
-      modules,
-      directories,
-      externals,
-      depth,
-      parentModules,
-    );
-  }
-
-  return evalRaw(
-    mainModule,
-    modules,
-    directories,
-    externals,
-    depth,
-    parentModules,
-  );
 }
-
-export function deleteCache(module: Module) {
-  deleteJSCache(module);
-}
-
-export function clearCache() {
-  clearJSCache();
-}
-
-const evalModule = (
-  mainModule: Module,
-  modules: Array<Module>,
-  directories: Array<Directory>,
-  externals: Object,
-  depth: number = 0,
-  parentModules: Array<Module> = [],
-) => {
-  if (depth > MAX_DEPTH) {
-    throw new Error(
-      `Exceeded the maximum require depth of ${MAX_DEPTH}, there are probably two files depending on eachother.`,
-    );
-  }
-  try {
-    return doEval(
-      mainModule,
-      modules,
-      directories,
-      externals,
-      depth,
-      parentModules,
-    );
-  } catch (e) {
-    e.module = e.module || mainModule;
-    throw e;
-  }
-};
-
-export default evalModule;

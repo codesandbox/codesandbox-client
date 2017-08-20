@@ -13,7 +13,7 @@ import host from './utils/host';
 import handleExternalResources from './external-resources';
 import resizeEventListener from './resize-event-listener';
 import setupHistoryListeners from './url-listeners';
-import resolveDependency from './eval/js/dependency-resolver';
+import resolveDependency from './eval/loaders/dependency-resolver';
 import { resetScreen } from './status-screen';
 
 import { inject, uninject } from './react-error-overlay/overlay';
@@ -25,8 +25,8 @@ import {
   findBoilerplate,
 } from './boilerplates';
 
-import Manager from './eval2/Manager';
-import reactPreset from './eval2';
+import Manager from './eval/manager';
+import getPreset from './eval';
 
 registerServiceWorker('/sandbox-service-worker.js');
 
@@ -77,7 +77,7 @@ export function areActionsEnabled() {
 
 function updateManager(sandboxId, modules, directories) {
   if (!manager || manager.id !== sandboxId) {
-    manager = new Manager(sandboxId, modules, directories, reactPreset);
+    manager = new Manager(sandboxId, modules, directories, getPreset('react'));
     return manager.initialize().catch(e => ({ error: e }));
   }
 
