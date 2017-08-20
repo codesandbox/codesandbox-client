@@ -219,6 +219,9 @@ export default class TranspiledModule {
           code,
           loaderContext,
         );
+        if (this.errors.length) {
+          throw this.errors[0];
+        }
         code = transpiledCode;
         finalSourceMap = sourceMap;
       } catch (e) {
@@ -226,10 +229,6 @@ export default class TranspiledModule {
         e.module = this.module;
         throw e;
       }
-    }
-
-    if (this.errors.length) {
-      throw this.errors[0];
     }
 
     // Add the source of the file by default, this is important for source mapping

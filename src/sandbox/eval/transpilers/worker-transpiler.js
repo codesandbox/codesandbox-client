@@ -69,7 +69,7 @@ export default class WorkerTranspiler extends Transpiler {
           callback(reconstructedError);
         }
 
-        callback(null, data);
+        callback.bind(worker)(null, data);
 
         // Means the transpile task has been completed
         if (data.type === 'compiled' || data.type === 'error') {

@@ -1,4 +1,5 @@
 import { buildWorkerError } from '../utils/worker-error-handler';
+
 self.importScripts(['/static/js/stylus.min.js']);
 
 self.postMessage('ready');
