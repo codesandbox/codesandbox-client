@@ -3,9 +3,7 @@ import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 
 import type { Sandbox, Module, Directory } from 'common/types';
-
-import generateReact from './create-react-app';
-import generateVue from './vue-cli';
+import { react, vue } from 'common/templates/index';
 
 const CSSTag = (resource: string) =>
   `<link rel="stylesheet" type="text/css" href="${resource}" media="all">`;
@@ -102,7 +100,15 @@ export default (async function createZip(
 ) {
   const zip = new JSZip();
 
-  generateVue(zip, sandbox, modules, directories);
+  if (sandbox.template === react.name) {
+    import('./create-react-app').then(generator => {
+      generator.default(zip, sandbox, modules, directories);
+    });
+  } else if (sandbox.template === vue.name) {
+    import('./vue-cli').then(generator => {
+      generator.default(zip, sandbox, modules, directories);
+    });
+  }
 
   const file = await zip.generateAsync({ type: 'blob' });
 
