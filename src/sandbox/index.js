@@ -75,9 +75,9 @@ export function areActionsEnabled() {
   return actionsEnabled;
 }
 
-function updateManager(sandboxId, modules, directories) {
+function updateManager(sandboxId, template, modules, directories) {
   if (!manager || manager.id !== sandboxId) {
-    manager = new Manager(sandboxId, modules, directories, getPreset('vue'));
+    manager = new Manager(sandboxId, modules, directories, getPreset(template));
     return manager.initialize().catch(e => ({ error: e }));
   }
 
@@ -95,6 +95,7 @@ async function compile(message) {
     dependencies,
     hasActions,
     isModuleView = false,
+    template,
   } = message.data;
   uninject();
   inject();
@@ -112,7 +113,7 @@ async function compile(message) {
       { error: managerError },
     ] = await Promise.all([
       loadDependencies(dependencies),
-      updateManager(sandboxId, modules, directories),
+      updateManager(sandboxId, template, modules, directories),
     ]);
     loadingDependencies = false;
 
@@ -239,6 +240,7 @@ if (isStandalone) {
           externalResources: x.data.externalResources,
           dependencies: x.data.npmDependencies,
           hasActions: false,
+          template: x.data.template,
         },
       };
 
