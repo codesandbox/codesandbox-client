@@ -4,6 +4,7 @@ import babelTranspiler from './transpilers/babel';
 import typescriptTranspiler from './transpilers/typescript';
 import jsonTranspiler from './transpilers/json';
 import globalCSSTranspiler from './transpilers/css/global';
+import modulesCSSTranspiler from './transpilers/css/modules';
 import sassTranspiler from './transpilers/sass';
 import rawTranspiler from './transpilers/raw';
 import stylusTranspiler from './transpilers/stylus';
@@ -53,12 +54,20 @@ createReactAppPreset.registerTranspiler(
   [vueStyleTranspiler, globalCSSTranspiler],
 );
 createReactAppPreset.registerTranspiler(
+  module => /\.vue\.module\.css/.test(module.title),
+  [vueStyleTranspiler, modulesCSSTranspiler],
+);
+createReactAppPreset.registerTranspiler(
   module => /\.vue\.s[c|a]ss/.test(module.title),
   [sassTranspiler, vueStyleTranspiler, globalCSSTranspiler],
 );
 createReactAppPreset.registerTranspiler(
-  module => /\.styl$/.test(module.title),
-  [stylusTranspiler, globalCSSTranspiler],
+  module => /\.vue\.module\.s[c|a]ss/.test(module.title),
+  [sassTranspiler, vueStyleTranspiler, modulesCSSTranspiler],
+);
+createReactAppPreset.registerTranspiler(
+  module => /\.vue\.styl$/.test(module.title),
+  [stylusTranspiler, vueStyleTranspiler, globalCSSTranspiler],
 );
 createReactAppPreset.registerTranspiler(module => /\.png$/.test(module.title), [
   binaryTranspiler,

@@ -469,6 +469,15 @@ if (__PROD__) {
             },
           },
         },
+        {
+          urlPattern: /cloudflare\.com/,
+          handler: 'cacheFirst',
+          options: {
+            cache: {
+              name: 'cloudflare-cache',
+            },
+          },
+        },
       ],
     }),
     // Moment.js is an extremely popular library that bundles large locale files

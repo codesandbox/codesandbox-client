@@ -43,7 +43,10 @@ export type LoaderContext = {
   path: string,
   getModules: () => Array<Module>,
   resolvePath: (module: Module) => string,
-  addDependency: (depPath: string, directoryShortid?: ?string) => void,
+  addDependency: (
+    depPath: string,
+    directoryShortid?: ?string,
+  ) => TranspiledModule,
   _module: TranspiledModule, // eslint-disable-line no-use-before-define
 };
 
@@ -167,6 +170,8 @@ export default class TranspiledModule {
         );
         this.dependencies.add(tModule);
         tModule.initiators.add(this);
+
+        return tModule;
       },
       getModules: (): Array<Module> => manager.getModules(),
       resolvePath: (module: Module) => {

@@ -7,12 +7,14 @@ import parse from './parser';
 import componentNormalizerRaw from '!raw-loader!./component-normalizer';
 
 const getStyleFileName = attrs => {
-  if (attrs.lang === 'scss') return 'scss';
-  if (attrs.lang === 'sass') return 'sass';
-  if (attrs.lang === 'styl') return 'styl';
-  if (attrs.lang === 'less') return 'less';
+  let extension = 'css';
 
-  return 'css';
+  if (attrs.lang === 'scss') extension = 'scss';
+  if (attrs.lang === 'sass') extension = 'sass';
+  if (attrs.lang === 'styl') extension = 'styl';
+  if (attrs.lang === 'less') extension = 'less';
+
+  return attrs.module ? `module.${extension}` : extension;
 };
 
 const getScriptFileName = attrs => {

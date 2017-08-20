@@ -1,11 +1,3 @@
-// @flow
-import Transpiler from '../';
-import TranspiledModule, { type LoaderContext } from '../../TranspiledModule';
-
-import insertCss from './utils/insert-css';
-
-const getStyleId = id => id + '-css'; // eslint-disable-line
-
 const wrapper = (id, css) => `
 function createStyleNode(id, content) {
   var styleNode =
@@ -33,21 +25,12 @@ createStyleNode(
 );
 `;
 
-class GlobalCSSTranspiler extends Transpiler {
-  constructor() {
-    super();
-    this.cacheable = false;
+export default function(id, css) {
+  const element = document.getElementById(id);
+  if (element != null && element.parentNode != null) {
+    element.parentNode.removeChild(element);
   }
 
-  doTranspilation(code: string, loaderContext: LoaderContext) {
-    const id = getStyleId(loaderContext.path);
-    const result = insertCss(id, code);
-    return Promise.resolve({ transpiledCode: result });
-  }
+  const result = wrapper(id, css || '');
+  return result;
 }
-
-const transpiler = new GlobalCSSTranspiler();
-
-export { GlobalCSSTranspiler };
-
-export default transpiler;
