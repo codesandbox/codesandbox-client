@@ -10,7 +10,6 @@ const DEFAULT_BABEL_CONFIG = {
     'transform-object-rest-spread',
     'transform-class-properties',
     'transform-decorators-legacy',
-    'dynamic-import-node',
   ],
 };
 

@@ -99,7 +99,7 @@ function createOverlay(
   ) {
     container.appendChild(createSuggestions(error));
   }
-  console.log(frames, frameSettings);
+
   // Create trace
   container.appendChild(
     createFrames(document, frames, frameSettings, contextSize, name),

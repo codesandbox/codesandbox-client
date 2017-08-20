@@ -30,7 +30,6 @@ self.addEventListener('message', event => {
     Sass.options({ sourceMapEmbed: true }, () => {
       Sass.writeFile(files, () => {
         Sass.compileFile(path, result => {
-          console.log(result);
           if (result.status === 0) {
             self.postMessage({
               type: 'compiled',
@@ -42,7 +41,7 @@ self.addEventListener('message', event => {
               error: {
                 name: 'CompileError',
                 message: result.formatted,
-                fileName: result.file.replace('/sass/', ''),
+                fileName: result.file && result.file.replace('/sass/', ''),
               },
             });
           }

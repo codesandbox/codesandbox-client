@@ -16,7 +16,7 @@ class SassTranspiler extends WorkerTranspiler {
   doTranspilation(code: string, loaderContext: LoaderContext) {
     const modules = loaderContext.getModules();
 
-    const sassModules = modules.filter(m => /\.s?[a|c]ss$/.test(m.title));
+    const sassModules = modules.filter(m => /\.s?[a|c]ss/.test(m.title));
     const files = sassModules.reduce(
       (interMediateFiles, module) => ({
         ...interMediateFiles,

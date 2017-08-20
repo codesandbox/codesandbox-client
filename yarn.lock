@@ -772,6 +772,10 @@ babel-plugin-check-es2015-constants@^6.22.0:
   dependencies:
     babel-runtime "^6.22.0"
 
+babel-plugin-detective@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/babel-plugin-detective/-/babel-plugin-detective-2.0.0.tgz#6e642e83c22a335279754ebe2d754d2635f49f13"
+
 babel-plugin-dynamic-import-node@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/babel-plugin-dynamic-import-node/-/babel-plugin-dynamic-import-node-1.0.2.tgz#adb5bc8f48a89311540395ae9f0cc3ed4b10bb2e"
@@ -6532,7 +6536,7 @@ postcss-reduce-transforms@^1.0.3:
     postcss "^5.0.8"
     postcss-value-parser "^3.0.1"
 
-postcss-selector-parser@^2.0.0, postcss-selector-parser@^2.2.2:
+postcss-selector-parser@^2.0.0, postcss-selector-parser@^2.2.2, postcss-selector-parser@^2.2.3:
   version "2.2.3"
   resolved "https://registry.yarnpkg.com/postcss-selector-parser/-/postcss-selector-parser-2.2.3.tgz#f9437788606c3c9acee16ffe8d8b16297f27bb90"
   dependencies:
@@ -6578,7 +6582,7 @@ postcss@^5.0.10, postcss@^5.0.11, postcss@^5.0.12, postcss@^5.0.13, postcss@^5.0
     source-map "^0.5.6"
     supports-color "^3.2.3"
 
-postcss@^6.0.1:
+postcss@^6.0.1, postcss@^6.0.9:
   version "6.0.9"
   resolved "https://registry.yarnpkg.com/postcss/-/postcss-6.0.9.tgz#54819766784a51c65b1ec4d54c2f93765438c35a"
   dependencies:

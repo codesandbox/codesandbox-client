@@ -60,7 +60,6 @@ function buildDynamicError(ref: ErrorRecord) {
       return false;
     }
   });
-  console.log(ref);
 
   if (relevantFrame && manager) {
     const fileName = relevantFrame._originalFileName || relevantFrame.fileName;

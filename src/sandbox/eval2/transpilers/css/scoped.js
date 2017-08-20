@@ -2,14 +2,14 @@
 import Transpiler from '../';
 import TranspiledModule, { type LoaderContext } from '../../TranspiledModule';
 
-const wrapper = (id, css) => `
 const getStyleId = id => id + '-css'; // eslint-disable-line
 
+const wrapper = (id, css) => `
 function createStyleNode(id, content) {
   var styleNode =
-    document.getElementById(getStyleId(id)) || document.createElement('style');
+    document.getElementById(id) || document.createElement('style');
 
-  styleNode.setAttribute('id', getStyleId(id));
+  styleNode.setAttribute('id', id);
   styleNode.type = 'text/css';
   if (styleNode.styleSheet) {
     styleNode.styleSheet.cssText = content;
@@ -31,17 +31,29 @@ createStyleNode(
 );
 `;
 
-class GlobalCSSTranspiler extends Transpiler {
+class ScopedCSSTranspiler extends Transpiler {
+  constructor() {
+    super();
+    this.cacheable = false;
+  }
+
   doTranspilation(code: string, loaderContext: LoaderContext) {
-    const result = wrapper(loaderContext._module.module.id, code || '');
+    const id = getStyleId(loaderContext._module.module.id);
+    // Delete existing styles
+    const element = document.getElementById(id);
+    if (element != null && element.parentNode != null) {
+      element.parentNode.removeChild(element);
+    }
+
+    const result = wrapper(id, code || '');
     return Promise.resolve({
       transpiledCode: result,
     });
   }
 }
 
-const transpiler = new GlobalCSSTranspiler();
+const transpiler = new ScopedCSSTranspiler();
 
-export { GlobalCSSTranspiler };
+export { ScopedCSSTranspiler };
 
 export default transpiler;

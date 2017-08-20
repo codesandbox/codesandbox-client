@@ -129,6 +129,8 @@ export default class TranspiledModule {
       this.module.id,
     ).replace('/', '');
 
+    const [realPath, optionString] = path.split('?');
+
     return {
       version: 2,
       emitWarning: warning => {
@@ -167,23 +169,27 @@ export default class TranspiledModule {
         tModule.initiators.add(this);
       },
       getModules: (): Array<Module> => manager.getModules(),
-      resolvePath: (module: Module) =>
-        getModulePath(
+      resolvePath: (module: Module) => {
+        // We have to split the options off
+        const [name] = getModulePath(
           manager.getModules(),
           manager.getDirectories(),
           module.id,
-        ).replace('/', ''),
+        )
+          .replace('/', '')
+          .split('?');
+
+        return name;
+      },
       options: {
         context: '/',
+        ...(optionString ? JSON.parse(optionString) : {}),
       },
       webpack: true,
       sourceMap: true,
       target: 'web',
       _module: this,
-      path,
-      fs: () => {
-        console.log('fs has been used');
-      },
+      path: realPath,
     };
   }
 
@@ -215,13 +221,15 @@ export default class TranspiledModule {
       }
     }
 
+    if (this.errors.length) {
+      throw this.errors[0];
+    }
+
     // Add the source of the file by default, this is important for source mapping
     // errors back to their origin
     code = `${code}\n//# sourceURL=${loaderContext.path}`;
 
-    for (let i = 0; i < this.childModules.length; i += 1) {
-      await this.childModules[i].transpile(manager); // eslint-disable-line no-await-in-loop
-    }
+    await Promise.all(this.childModules.map(t => t.transpile(manager)));
 
     this.source = new ModuleSource(this.module.title, code, finalSourceMap);
     return this;
@@ -245,6 +253,11 @@ export default class TranspiledModule {
     }
 
     const module = this.module;
+
+    const transpilers = manager.preset.getTranspilers(module);
+
+    const cacheable = transpilers.every(t => t.cacheable);
+
     const transpiledModule = this;
     const compilation = new Compilation();
     this.initiators = new Set(parentModules);
@@ -292,10 +305,13 @@ export default class TranspiledModule {
       const exports = evaluate(this.source.compiledCode, require);
 
       compilation.exports = exports;
-      this.compilation = compilation;
+
+      if (cacheable) {
+        this.compilation = compilation;
+      }
       return exports;
     } catch (e) {
-      e.module = module;
+      e.module = e.module || module;
       throw e;
     }
   }

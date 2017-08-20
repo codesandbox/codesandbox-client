@@ -26,12 +26,16 @@ Babel.registerPlugin('dynamic-import-node', dynamicImportPlugin);
 self.addEventListener('message', event => {
   const { code, path, config } = event.data;
 
-  try {
-    const { code: compiledCode } = Babel.transform(code, config);
+  const customConfig = {
+    ...config,
+    plugins: [...config.plugins, 'dynamic-import-node'],
+  };
 
+  try {
+    const result = Babel.transform(code, customConfig);
     self.postMessage({
       type: 'compiled',
-      transpiledCode: compiledCode,
+      transpiledCode: result.code,
     });
   } catch (e) {
     e.message = e.message.replace('unknown', path);

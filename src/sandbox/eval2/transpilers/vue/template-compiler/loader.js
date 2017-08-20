@@ -6,8 +6,7 @@ import { type LoaderContext } from '../../../TranspiledModule';
 import transformRequire from './modules/transform-require';
 
 export default function(code: string, loaderContext: LoaderContext) {
-  const [_, optionParams] = loaderContext._module.module.title.split('?');
-  var options = JSON.parse(optionParams);
+  var options = loaderContext.options;
 
   var defaultModules = [transformRequire(options.transformToRequire)];
 
@@ -16,7 +15,7 @@ export default function(code: string, loaderContext: LoaderContext) {
     modules: defaultModules,
     scopeId: options.hasScoped ? options.id : null,
   };
-  console.log(compiler);
+
   var compiled = compiler.compile(code, compilerOptions);
 
   // tips

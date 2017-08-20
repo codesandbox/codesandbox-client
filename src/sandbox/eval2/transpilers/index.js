@@ -1,7 +1,7 @@
 // @flow
 
 import type { SourceMap } from './utils/get-source-map';
-import { type LoaderContext } from '../TranspiledModule';
+import TranspiledModule, { type LoaderContext } from '../TranspiledModule';
 
 type TranspilerResult = {
   transpiledCode: string,

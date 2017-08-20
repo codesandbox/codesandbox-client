@@ -30,25 +30,6 @@ const getTemplateFileName = attrs => {
 };
 
 export default function(code: string, loaderContext: LoaderContext) {
-  function getRequire(type, impt, i = 0, scoped) {
-    if (type === 'style') {
-      const requireString = loaderContext.emitModule(
-        `style-${i}.${getStyleFileName(impt.attrs)}`,
-        impt.content,
-      );
-
-      return `./${requireString}`;
-    } else if (type === 'script') {
-      const requireString = loaderContext.emitModule(
-        `script.${getScriptFileName(impt.attrs)}`,
-        impt.content,
-      );
-
-      return `./${requireString}`;
-    }
-    return '';
-  }
-
   function getTemplateRequire(templateCompilerOptions, impt) {
     const requireString = loaderContext.emitModule(
       `template.vue.${getTemplateFileName(
@@ -97,7 +78,14 @@ export default function(code: string, loaderContext: LoaderContext) {
         : getRequire('style', style, i, style.scoped);
 
       if (style.src) {
-        loaderContext.addDependency(style.src, _module.module.directoryShortid);
+        try {
+          loaderContext.addDependency(
+            style.src,
+            _module.module.directoryShortid,
+          );
+        } catch (e) {
+          loaderContext.emitError(e);
+        }
       }
 
       const requireString = `require('${requireLocation}')`;
@@ -129,7 +117,7 @@ export default function(code: string, loaderContext: LoaderContext) {
   }
 
   const requireStatement = loaderContext.emitModule(
-    // No extension, so no transpilation
+    // No extension, so no transpilation !noop
     'component-normalizer!noop',
     componentNormalizerRaw,
   );
@@ -142,7 +130,14 @@ export default function(code: string, loaderContext: LoaderContext) {
     const file = script.src ? script.src : getRequire('script', script);
 
     if (script.src) {
-      loaderContext.addDependency(script.src, _module.module.directoryShortid);
+      try {
+        loaderContext.addDependency(
+          script.src,
+          _module.module.directoryShortid,
+        );
+      } catch (e) {
+        loaderContext.emitError(e);
+      }
     }
     output += `require('${file}')`;
   } else {
@@ -159,10 +154,14 @@ export default function(code: string, loaderContext: LoaderContext) {
       : getTemplateRequire(templateCompilerOptions, template);
 
     if (template.src) {
-      loaderContext.addDependency(
-        template.src,
-        _module.module.directoryShortid,
-      );
+      try {
+        loaderContext.addDependency(
+          template.src,
+          _module.module.directoryShortid,
+        );
+      } catch (e) {
+        loaderContext.emitError(e);
+      }
     }
     output += `require('${file}')`;
   } else {
@@ -238,4 +237,31 @@ export default function(code: string, loaderContext: LoaderContext) {
   // }
 
   return output;
+
+  function getRequire(type, impt, i = 0, scoped) {
+    if (type === 'style') {
+      var styleCompiler =
+        `style-${i}.vue.${getStyleFileName(impt.attrs)}` +
+        '?' +
+        JSON.stringify({
+          id: moduleId,
+          scoped: !!scoped,
+        });
+
+      const requireString = loaderContext.emitModule(
+        styleCompiler,
+        impt.content,
+      );
+
+      return `./${requireString}`;
+    } else if (type === 'script') {
+      const requireString = loaderContext.emitModule(
+        `script.${getScriptFileName(impt.attrs)}`,
+        impt.content,
+      );
+
+      return `./${requireString}`;
+    }
+    return '';
+  }
 }
