@@ -21,7 +21,7 @@ class ModuleSource {
   compiledCode: string;
   sourceMap: ?SourceMap;
 
-  constructor(fileName: string, compiledCode: string, sourceMap?: SourceMap) {
+  constructor(fileName: string, compiledCode: string, sourceMap: ?SourceMap) {
     this.fileName = fileName;
     this.compiledCode = compiledCode;
     this.sourceMap = sourceMap;
@@ -32,7 +32,7 @@ export type LoaderContext = {
   version: number,
   emitWarning: (warning: string) => void,
   emitError: (error: Error) => void,
-  emitModule: (append: string, code: string) => void,
+  emitModule: (append: string, code: string) => string,
   emitFile: (name: string, content: string, sourceMap: SourceMap) => void,
   options: {
     context: '/',
@@ -43,7 +43,7 @@ export type LoaderContext = {
   path: string,
   getModules: () => Array<Module>,
   resolvePath: (module: Module) => string,
-  addDependency: (depPath: string) => void,
+  addDependency: (depPath: string, directoryShortid?: ?string) => void,
   _module: TranspiledModule, // eslint-disable-line no-use-before-define
 };
 
@@ -138,12 +138,13 @@ export default class TranspiledModule {
         this.errors.push(new ModuleError(this, error));
       },
       emitModule: (append: string, code: string) => {
+        const title = `${this.module.title}:${append}`;
         // Copy the module info, with new name
         const moduleCopy: ChildModule = {
           ...this.module,
           id: `${this.module.id}:${append}`,
           shortid: `${this.module.shortid}:${append}`,
-          title: `${this.module.title}:${append}`,
+          title,
           parent: this.module,
           code,
         };
@@ -151,12 +152,17 @@ export default class TranspiledModule {
         const transpiledModule = manager.addModule(moduleCopy);
         transpiledModule.transpile(manager);
         this.childModules.push(transpiledModule);
+
+        return title;
       },
       emitFile: (name: string, content: string, sourceMap: SourceMap) => {
         this.assets[name] = this.createSourceForAsset(name, content, sourceMap);
       },
-      addDependency: (depPath: string) => {
-        const tModule = manager.resolveTranspiledModule(depPath);
+      addDependency: (depPath: string, directoryShortid) => {
+        const tModule = manager.resolveTranspiledModule(
+          depPath,
+          directoryShortid,
+        );
         this.dependencies.add(tModule);
         tModule.initiators.add(this);
       },
@@ -213,8 +219,18 @@ export default class TranspiledModule {
     // errors back to their origin
     code = `${code}\n//# sourceURL=${loaderContext.path}`;
 
+    for (let i = 0; i < this.childModules.length; i += 1) {
+      this.childModules[i].transpile(manager);
+    }
+
     this.source = new ModuleSource(this.module.title, code, finalSourceMap);
     return this;
+  }
+
+  getChildTranspiledModules(): Array<TranspiledModule> {
+    return flatten(
+      this.childModules.map(m => [m, ...m.getChildTranspiledModules()]),
+    );
   }
 
   getChildModules(): Array<Module> {

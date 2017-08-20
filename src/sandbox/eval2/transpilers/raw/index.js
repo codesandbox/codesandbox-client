@@ -4,7 +4,9 @@ import Transpiler from '../';
 class RawTranspiler extends Transpiler {
   doTranspilation(code: string) {
     return Promise.resolve({
-      transpiledCode: code || '',
+      transpiledCode: `
+      exports.__esModule = true;
+      exports.default = \`${code || ''}\`;`,
     });
   }
 }

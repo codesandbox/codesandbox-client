@@ -7,6 +7,11 @@ import globalCSSTranspiler from './transpilers/global-css';
 import sassTranspiler from './transpilers/sass';
 import rawTranspiler from './transpilers/raw';
 import stylusTranspiler from './transpilers/stylus';
+import vueTranspiler from './transpilers/vue';
+import noopTranspiler from './transpilers/noop';
+import binaryTranspiler from './transpilers/binary';
+import vueTemplateTranspiler from './transpilers/vue/template-compiler';
+import base64Transpiler from './transpilers/base64';
 
 import PresetManager from './presets';
 
@@ -35,13 +40,27 @@ createReactAppPreset.registerTranspiler(
   module => /\.scss$/.test(module.title),
   [sassTranspiler, globalCSSTranspiler],
 );
-createReactAppPreset.registerTranspiler(module => /\.css$/.test(module.title), [
-  stylusTranspiler,
-  globalCSSTranspiler,
+createReactAppPreset.registerTranspiler(module => /\.vue$/.test(module.title), [
+  vueTranspiler,
+]);
+createReactAppPreset.registerTranspiler(
+  module => /\.vue\.html/.test(module.title),
+  [vueTemplateTranspiler],
+);
+createReactAppPreset.registerTranspiler(
+  module => /\.styl$/.test(module.title),
+  [stylusTranspiler, globalCSSTranspiler],
+);
+createReactAppPreset.registerTranspiler(module => /\.png$/.test(module.title), [
+  binaryTranspiler,
+  base64Transpiler,
 ]);
 createReactAppPreset.registerTranspiler(module => /\.css$/.test(module.title), [
   globalCSSTranspiler,
 ]);
-createReactAppPreset.registerTranspiler(() => true, rawTranspiler);
+createReactAppPreset.registerTranspiler(module => /!noop/.test(module.title), [
+  noopTranspiler,
+]);
+createReactAppPreset.registerTranspiler(() => true, [rawTranspiler]);
 
 export default createReactAppPreset;

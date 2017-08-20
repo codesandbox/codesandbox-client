@@ -424,6 +424,8 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
         return 'scss';
       } else if (kind[1] === 'html') {
         return 'html';
+      } else if (kind[1] === 'vue') {
+        return 'html';
       } else if (kind[1] === 'md') {
         return 'markdown';
       } else if (/jsx?$/.test(kind[1])) {

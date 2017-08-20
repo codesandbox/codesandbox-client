@@ -75,7 +75,7 @@ export default class Manager {
 
     return flatten([
       transpileModuleValues,
-      ...transpileModuleValues.map(m => m.getChildModules()),
+      ...transpileModuleValues.map(m => m.getChildTranspiledModules()),
     ]);
   }
 
