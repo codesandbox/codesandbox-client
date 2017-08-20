@@ -2,9 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 
 const getColor = ({ right, offMode, secondary, theme }) => {
-  if (right) return secondary ? theme.secondary : theme.primary;
+  if (right) {
+    return secondary ? theme.templateColor || theme.secondary : theme.primary;
+  }
   if (offMode) return `rgba(0, 0, 0, 0.3)`;
-  return secondary ? theme.primary : theme.secondary;
+  return secondary ? theme.primary : theme.templateColor || theme.secondary;
 };
 
 const Container = styled.div`

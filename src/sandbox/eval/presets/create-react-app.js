@@ -3,7 +3,6 @@ import Preset from './';
 import globalCSSTranspiler from '../transpilers/css/global';
 import babelTranspiler from '../transpilers/babel';
 import jsonTranspiler from '../transpilers/json';
-import lessTranspiler from '../transpilers/less';
 import rawTranspiler from '../transpilers/raw';
 
 const preset = new Preset('create-react-app');
@@ -18,11 +17,6 @@ preset.registerTranspiler(module => /\.jsx?$/.test(module.title), [
 
 preset.registerTranspiler(module => /\.json$/.test(module.title), [
   jsonTranspiler,
-]);
-
-preset.registerTranspiler(module => /\.less$/.test(module.title), [
-  lessTranspiler,
-  globalCSSTranspiler,
 ]);
 
 preset.registerTranspiler(() => true, [rawTranspiler]);

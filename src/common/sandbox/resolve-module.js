@@ -1,11 +1,14 @@
 // @flow
 import type { Module, Directory } from 'common/types';
 
-const compareTitle = (original: string, test: string) => {
+const compareTitle = (
+  original: string,
+  test: string,
+  ignoredExtensions: Array<string>,
+) => {
   if (original === test) return true;
-  if (original === `${test}.js` || original === `${test}.jsx`) return true;
 
-  return false;
+  return ignoredExtensions.some(ext => original === `${test}.${ext}`);
 };
 
 const throwError = (path: string) => {
@@ -20,6 +23,7 @@ export default (
   modules: Array<Module>,
   directories: Array<Directory>,
   startdirectoryShortid: ?string = undefined,
+  ignoredExtensions: Array<string> = ['js', 'jsx', 'json'],
 ): Module => {
   if (!path) return null;
   // Split path
@@ -42,7 +46,7 @@ export default (
         m => m.directoryShortid == dirId,
       );
       const nextDirectory = directoriesInDirectory.find(d =>
-        compareTitle(d.title, pathPart),
+        compareTitle(d.title, pathPart, ignoredExtensions),
       );
 
       if (nextDirectory == null) throwError(path);
@@ -60,7 +64,7 @@ export default (
 
   // Find module with same name
   const foundModule = modulesInFoundDirectory.find(m =>
-    compareTitle(m.title, lastPath),
+    compareTitle(m.title, lastPath, ignoredExtensions),
   );
   if (foundModule) return foundModule;
 
@@ -70,7 +74,7 @@ export default (
     m => m.directoryShortid == foundDirectoryShortid,
   );
   const foundDirectory = directoriesInFoundDirectory.find(m =>
-    compareTitle(m.title, lastPath),
+    compareTitle(m.title, lastPath, ignoredExtensions),
   );
 
   // If it refers to a directory
@@ -80,7 +84,7 @@ export default (
       m =>
         // eslint-disable-next-line eqeqeq
         m.directoryShortid == foundDirectory.shortid &&
-        compareTitle(m.title, 'index'),
+        compareTitle(m.title, 'index', ignoredExtensions),
     );
     if (indexModule == null) throwError(path);
     return indexModule;
@@ -89,7 +93,7 @@ export default (
   if (splitPath[splitPath.length - 1] === '') {
     // Last resort, check if there is something in the same folder called index
     const indexModule = modulesInFoundDirectory.find(m =>
-      compareTitle(m.title, 'index'),
+      compareTitle(m.title, 'index', ignoredExtensions),
     );
     if (indexModule) return indexModule;
   }

@@ -77,7 +77,7 @@ export function areActionsEnabled() {
 
 function updateManager(sandboxId, modules, directories) {
   if (!manager || manager.id !== sandboxId) {
-    manager = new Manager(sandboxId, modules, directories, getPreset('react'));
+    manager = new Manager(sandboxId, modules, directories, getPreset('vue'));
     return manager.initialize().catch(e => ({ error: e }));
   }
 

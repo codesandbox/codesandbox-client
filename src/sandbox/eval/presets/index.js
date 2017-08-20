@@ -24,11 +24,14 @@ export default class Preset {
     transpilers: Array<Transpiler>,
   }>;
   name: string;
+  ignoredExtensions: Array<string>;
 
-  constructor(name: string) {
+  constructor(name: string, ignoredExtensions: ?Array<string>) {
     this.loaders = {};
     this.transpilers = [];
     this.name = name;
+
+    this.ignoredExtensions = ignoredExtensions || ['js', 'jsx', 'json'];
   }
 
   registerTranspiler(

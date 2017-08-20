@@ -1,9 +1,10 @@
 import styled from 'styled-components';
 
-import theme from 'common/theme';
-
 export const getContainerStyles = props => {
-  const color = props.alternative ? theme.primary : theme.secondary;
+  const { theme } = props;
+  const color = props.alternative
+    ? theme.primary
+    : theme.templateColor || theme.secondary;
   let styles = `
     ${props => props.noTransition || 'transition: 0.3s ease all;'}
     position: relative;

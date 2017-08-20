@@ -128,6 +128,7 @@ export default class Manager {
       this.getModules(),
       this.getDirectories(),
       startdirectoryShortid,
+      this.preset.ignoredExtensions,
     );
 
     return this.getTranspiledModule(module);
