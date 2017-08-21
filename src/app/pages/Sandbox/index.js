@@ -1,12 +1,10 @@
 // @flow
 import * as React from 'react';
-import styled, { ThemeProvider } from 'styled-components';
+import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { createSelector } from 'reselect';
-
-import getTemplateDefinition from 'common/templates';
 
 import type { Sandbox } from 'common/types';
 
@@ -129,14 +127,7 @@ class SandboxPage extends React.PureComponent<Props, $FlowFixMeState> {
 
     return (
       <Container>
-        <ThemeProvider
-          theme={{
-            templateColor: getTemplateDefinition(sandbox && sandbox.template)
-              .color,
-          }}
-        >
-          <Editor match={match} sandbox={sandbox} />
-        </ThemeProvider>
+        <Editor match={match} sandbox={sandbox} />
       </Container>
     );
   }

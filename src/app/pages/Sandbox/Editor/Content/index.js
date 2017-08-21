@@ -1,6 +1,6 @@
 // @flow
 import * as React from 'react';
-import styled from 'styled-components';
+import styled, { ThemeProvider } from 'styled-components';
 import { createSelector } from 'reselect';
 import { Prompt } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
@@ -12,7 +12,6 @@ import type {
   CurrentUser,
   Module,
   Directory,
-  ModuleError,
 } from 'common/types';
 import { currentUserSelector } from 'app/store/user/selectors';
 import moduleActionCreators from 'app/store/entities/sandboxes/modules/actions';
@@ -27,6 +26,8 @@ import {
   modulesFromSandboxSelector,
 } from 'app/store/entities/sandboxes/modules/selectors';
 import { directoriesFromSandboxSelector } from 'app/store/entities/sandboxes/directories/selectors';
+
+import getTemplateDefinition from 'common/templates';
 
 import SplitPane from 'react-split-pane';
 
@@ -201,51 +202,57 @@ class EditorPreview extends React.PureComponent<Props, $FlowFixMeState> {
     );
 
     return (
-      <FullSize>
-        <Prompt
-          when={notSynced}
-          message={() =>
-            'You have not saved this sandbox, are you sure you want to navigate away?'}
-        />
-        <Header
-          sandbox={sandbox}
-          sandboxActions={sandboxActions}
-          userActions={userActions}
-          modalActions={modalActions}
-          user={user}
-          workspaceHidden={workspaceHidden}
-          toggleWorkspace={toggleWorkspace}
-          canSave={notSynced}
-        />
-        <SplitPane
-          onDragStarted={this.startResizing}
-          onDragFinished={this.stopResizing}
-          split="vertical"
-          defaultSize="50%"
-          minSize={360}
-          paneStyle={{ height: '100%' }}
-          resizerStyle={{
-            visibility:
-              (!sandbox.showPreview && sandbox.showEditor) ||
-              (sandbox.showPreview && !sandbox.showEditor)
-                ? 'hidden'
-                : 'visible',
-          }}
-          pane1Style={{
-            display: sandbox.showEditor ? 'block' : 'none',
-            minWidth:
-              !sandbox.showPreview && sandbox.showEditor ? '100%' : 'inherit',
-          }}
-          pane2Style={{
-            display: sandbox.showPreview ? 'block' : 'none',
-            minWidth:
-              sandbox.showPreview && !sandbox.showEditor ? '100%' : 'inherit',
-          }}
-        >
-          {sandbox.showEditor && EditorPane}
-          {PreviewPane}
-        </SplitPane>
-      </FullSize>
+      <ThemeProvider
+        theme={{
+          templateColor: getTemplateDefinition(sandbox.template).color,
+        }}
+      >
+        <FullSize>
+          <Prompt
+            when={notSynced}
+            message={() =>
+              'You have not saved this sandbox, are you sure you want to navigate away?'}
+          />
+          <Header
+            sandbox={sandbox}
+            sandboxActions={sandboxActions}
+            userActions={userActions}
+            modalActions={modalActions}
+            user={user}
+            workspaceHidden={workspaceHidden}
+            toggleWorkspace={toggleWorkspace}
+            canSave={notSynced}
+          />
+          <SplitPane
+            onDragStarted={this.startResizing}
+            onDragFinished={this.stopResizing}
+            split="vertical"
+            defaultSize="50%"
+            minSize={360}
+            paneStyle={{ height: '100%' }}
+            resizerStyle={{
+              visibility:
+                (!sandbox.showPreview && sandbox.showEditor) ||
+                (sandbox.showPreview && !sandbox.showEditor)
+                  ? 'hidden'
+                  : 'visible',
+            }}
+            pane1Style={{
+              display: sandbox.showEditor ? 'block' : 'none',
+              minWidth:
+                !sandbox.showPreview && sandbox.showEditor ? '100%' : 'inherit',
+            }}
+            pane2Style={{
+              display: sandbox.showPreview ? 'block' : 'none',
+              minWidth:
+                sandbox.showPreview && !sandbox.showEditor ? '100%' : 'inherit',
+            }}
+          >
+            {sandbox.showEditor && EditorPane}
+            {PreviewPane}
+          </SplitPane>
+        </FullSize>
+      </ThemeProvider>
     );
   }
 }

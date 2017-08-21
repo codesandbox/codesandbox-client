@@ -14,10 +14,12 @@ type Props = {
   match: Object,
 };
 
-export default class ContentSplit extends React.PureComponent<
-  Props,
-  $FlowFixMeState,
-> {
+type State = {
+  resizing: boolean,
+  workspaceHidden: boolean,
+};
+
+export default class ContentSplit extends React.PureComponent<Props, State> {
   state = {
     resizing: false,
     workspaceHidden: false,

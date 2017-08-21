@@ -5,13 +5,14 @@ import { createSelector } from 'reselect';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { ThemeProvider } from 'styled-components';
 
 import type { Sandbox, User } from 'common/types';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 import { modulesFromSandboxNotSavedSelector } from 'app/store/entities/sandboxes/modules/selectors';
 import { usersSelector } from 'app/store/entities/users/selectors';
 import { isPatronSelector } from 'app/store/user/selectors';
+import getTemplateDefinition from 'common/templates';
 
 import showAlternativeComponent from 'app/hoc/show-alternative-component';
 import fadeIn from 'app/utils/animation/fade-in';
@@ -80,76 +81,85 @@ const Workspace = ({
   sandboxActions,
   isPatron,
 }: Props) =>
-  <Container>
-    <div>
-      <Logo />
-      <WorkspaceItem defaultOpen title="Project">
-        <Project
-          updateSandboxInfo={sandboxActions.updateSandboxInfo}
-          id={sandbox.id}
-          title={sandbox.title}
-          viewCount={sandbox.viewCount}
-          likeCount={sandbox.likeCount}
-          forkCount={sandbox.forkCount}
-          git={sandbox.git}
-          description={sandbox.description}
-          forkedSandbox={sandbox.forkedFromSandbox}
-          preventTransition={preventTransition}
-          owned={sandbox.owned}
-          author={user}
-          privacy={sandbox.privacy}
-        />
-      </WorkspaceItem>
-
-      <WorkspaceItem defaultOpen title="Files">
-        <Files sandbox={sandbox} sandboxActions={sandboxActions} />
-      </WorkspaceItem>
-
-      <WorkspaceItem title="Dependencies">
-        <Dependencies
-          sandboxId={sandbox.id}
-          npmDependencies={sandbox.npmDependencies}
-          externalResources={sandbox.externalResources}
-          sandboxActions={sandboxActions}
-          processing={
-            !!(sandbox.dependencyBundle && sandbox.dependencyBundle.processing)
-          }
-        />
-      </WorkspaceItem>
-
-      {(sandbox.owned || sandbox.tags.length > 0) &&
-        <WorkspaceItem title="Tags">
-          <Tags
-            sandboxId={sandbox.id}
-            addTag={sandboxActions.addTag}
-            removeTag={sandboxActions.removeTag}
-            isOwner={sandbox.owned}
-            tags={sandbox.tags}
-          />
-        </WorkspaceItem>}
-
-      {sandbox.owned &&
-        <WorkspaceItem title="Sandbox Actions">
-          <SandboxActions
+  console.log(getTemplateDefinition(sandbox.template).color) ||
+  <ThemeProvider
+    theme={{
+      templateColor: getTemplateDefinition(sandbox.template).color,
+    }}
+  >
+    <Container>
+      <div>
+        <Logo />
+        <WorkspaceItem defaultOpen title="Project">
+          <Project
+            updateSandboxInfo={sandboxActions.updateSandboxInfo}
             id={sandbox.id}
-            deleteSandbox={sandboxActions.deleteSandbox}
-            newSandboxUrl={sandboxActions.newSandboxUrl}
-            setSandboxPrivacy={sandboxActions.setSandboxPrivacy}
-            isPatron={isPatron}
+            title={sandbox.title}
+            viewCount={sandbox.viewCount}
+            likeCount={sandbox.likeCount}
+            forkCount={sandbox.forkCount}
+            git={sandbox.git}
+            description={sandbox.description}
+            forkedSandbox={sandbox.forkedFromSandbox}
+            preventTransition={preventTransition}
+            owned={sandbox.owned}
+            author={user}
             privacy={sandbox.privacy}
           />
-        </WorkspaceItem>}
-    </div>
+        </WorkspaceItem>
 
-    <div>
-      <ConnectionNotice />
-      <TermsContainer>
-        By using CodeSandbox you agree to our{' '}
-        <Link to={tosUrl()}>Terms and Conditions</Link> and{' '}
-        <Link to={privacyUrl()}>Privacy Policy</Link>.
-      </TermsContainer>
-    </div>
-  </Container>;
+        <WorkspaceItem defaultOpen title="Files">
+          <Files sandbox={sandbox} sandboxActions={sandboxActions} />
+        </WorkspaceItem>
+
+        <WorkspaceItem title="Dependencies">
+          <Dependencies
+            sandboxId={sandbox.id}
+            npmDependencies={sandbox.npmDependencies}
+            externalResources={sandbox.externalResources}
+            sandboxActions={sandboxActions}
+            processing={
+              !!(
+                sandbox.dependencyBundle && sandbox.dependencyBundle.processing
+              )
+            }
+          />
+        </WorkspaceItem>
+
+        {(sandbox.owned || sandbox.tags.length > 0) &&
+          <WorkspaceItem title="Tags">
+            <Tags
+              sandboxId={sandbox.id}
+              addTag={sandboxActions.addTag}
+              removeTag={sandboxActions.removeTag}
+              isOwner={sandbox.owned}
+              tags={sandbox.tags}
+            />
+          </WorkspaceItem>}
+
+        {sandbox.owned &&
+          <WorkspaceItem title="Sandbox Actions">
+            <SandboxActions
+              id={sandbox.id}
+              deleteSandbox={sandboxActions.deleteSandbox}
+              newSandboxUrl={sandboxActions.newSandboxUrl}
+              setSandboxPrivacy={sandboxActions.setSandboxPrivacy}
+              isPatron={isPatron}
+              privacy={sandbox.privacy}
+            />
+          </WorkspaceItem>}
+      </div>
+
+      <div>
+        <ConnectionNotice />
+        <TermsContainer>
+          By using CodeSandbox you agree to our{' '}
+          <Link to={tosUrl()}>Terms and Conditions</Link> and{' '}
+          <Link to={privacyUrl()}>Privacy Policy</Link>.
+        </TermsContainer>
+      </div>
+    </Container>
+  </ThemeProvider>;
 
 // The skeleton to show if sandbox doesn't exist
 const Skeleton = () => <Container />;
