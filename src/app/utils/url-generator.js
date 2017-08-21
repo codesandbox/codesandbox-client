@@ -16,6 +16,7 @@ export const host = () => {
 export const protocolAndHost = () => `${location.protocol}//${host()}`;
 
 export const newSandboxUrl = () => `/s/new`;
+export const newVueSandboxUrl = () => `/s/vue`;
 export const importFromGitHubUrl = () => `/s/github`;
 export const uploadFromCliUrl = () => `/s/cli`;
 

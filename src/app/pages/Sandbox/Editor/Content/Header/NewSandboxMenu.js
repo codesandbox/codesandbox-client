@@ -7,6 +7,7 @@ import MenuItem from 'app/components/MenuItem';
 
 import {
   newSandboxUrl,
+  newVueSandboxUrl,
   importFromGitHubUrl,
   uploadFromCliUrl,
 } from 'app/utils/url-generator';
@@ -28,7 +29,10 @@ const Container = styled.div`
 export default () =>
   <Container>
     <Link style={{ textDecoration: 'none' }} to={newSandboxUrl()}>
-      <MenuItem>New Sandbox</MenuItem>
+      <MenuItem>New React Sandbox</MenuItem>
+    </Link>
+    <Link style={{ textDecoration: 'none' }} to={newVueSandboxUrl()}>
+      <MenuItem>New Vue Sandbox</MenuItem>
     </Link>
     <Link style={{ textDecoration: 'none' }} to={importFromGitHubUrl()}>
       <MenuItem>Import from Github</MenuItem>
