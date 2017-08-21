@@ -49,7 +49,6 @@ async function map(
 
           const map = await getSourceMap(fileName, fileSource);
 
-          setSourceMap(transpiledModule.module.id, map);
           cache[fileName] = { fileSource, map };
         }
       }
