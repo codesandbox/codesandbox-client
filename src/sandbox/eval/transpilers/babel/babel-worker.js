@@ -1,6 +1,7 @@
 // @flow
 
 import dynamicImportPlugin from 'babel-plugin-dynamic-import-node';
+import vuePlugin from 'babel-plugin-transform-vue-jsx';
 
 import { buildWorkerError } from '../utils/worker-error-handler';
 
@@ -22,13 +23,20 @@ declare var Babel: {
 };
 
 Babel.registerPlugin('dynamic-import-node', dynamicImportPlugin);
+Babel.registerPlugin('transform-vue-jsx', vuePlugin);
 
 self.addEventListener('message', event => {
   const { code, path, config } = event.data;
 
+  const plugins = [...config.plugins, 'dynamic-import-node'];
+
+  if (path.includes('.vue')) {
+    plugins.push('transform-vue-jsx');
+  }
+
   const customConfig = {
     ...config,
-    plugins: [...config.plugins, 'dynamic-import-node'],
+    plugins,
   };
 
   try {
