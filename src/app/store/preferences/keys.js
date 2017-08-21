@@ -9,3 +9,4 @@ export const fontSize = 'settings.fontsize';
 export const fontFamily = 'settings.fontfamily';
 export const clearConsoleEnabled = 'settings.clearconsole';
 export const codeMirror = 'settings.codemirror';
+export const autoDownloadTypes = 'settings.autoDownloadTypes';

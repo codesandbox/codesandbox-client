@@ -572,7 +572,9 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
   };
 
   fetchDependencyTypings = (dependencies: Object) => {
-    this.typingsFetcherWorker.postMessage({ dependencies });
+    if (this.props.preferences.autoDownloadTypes) {
+      this.typingsFetcherWorker.postMessage({ dependencies });
+    }
   };
 
   addKeyCommands = () => {

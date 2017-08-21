@@ -43,6 +43,15 @@ const Preferences = ({ preferences, preferencesActions }: Props) => {
         <Description>Use CodeMirror instead of Monaco editor.</Description>
         <Rule />
         <PaddedPreference
+          title="Automatic Type Acquisition"
+          type="boolean"
+          {...bindValue('autoDownloadTypes')}
+        />
+        <Description>
+          Automatically download type definitions for dependencies.
+        </Description>
+        <Rule />
+        <PaddedPreference
           title="Prettify on save"
           type="boolean"
           tooltip="Made possible by Prettier"

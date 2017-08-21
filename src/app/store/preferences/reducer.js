@@ -44,6 +44,7 @@ const initialState: Preferences = Object.keys(keys).reduce(
     clearConsoleEnabled: false,
     prettierConfig: DEFAULT_PRETTIER_CONFIG,
     codeMirror: false,
+    autoDownloadTypes: true,
   },
 );
 
