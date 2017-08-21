@@ -60,7 +60,7 @@ const config = {
       require.resolve('./polyfills'),
       path.join(paths.embedSrc, 'index.js')
     ],
-    vendor: ['react', 'react-dom', 'styled-components', 'babel-standalone']
+    vendor: ['react', 'react-dom', 'styled-components']
   },
 
   target: 'web',
