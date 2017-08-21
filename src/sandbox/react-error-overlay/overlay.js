@@ -48,8 +48,7 @@ import { applyStyles } from './utils/dom/css';
 import { createOverlay } from './components/overlay';
 import { updateAdditional } from './components/additional';
 
-import { showError } from '../actions/error';
-import { dispatch } from '../actions';
+import buildError from '../errors';
 
 const CONTEXT_SIZE: number = 3;
 let iframeReference: HTMLIFrameElement | null = null;
@@ -164,7 +163,7 @@ function sendErrorsToEditor() {
   errorReferences.forEach(ref => {
     const error = getErrorRecord(ref);
 
-    dispatch(showError(error));
+    buildError(error);
   });
 }
 
@@ -239,7 +238,6 @@ function inject() {
       {
         message: data.message,
         stack: data.stack,
-        __unmap_source: '/static/js/bundle.js',
       },
       false,
     );

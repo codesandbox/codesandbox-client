@@ -29,6 +29,7 @@ const StyledFrame = styled.iframe`
 
 type Props = {
   sandboxId: string,
+  template: string,
   initialPath: ?string,
   isInProjectView: boolean,
   modules: Array<Module>,
@@ -226,8 +227,10 @@ export default class Preview extends React.PureComponent<Props, State> {
       externalResources,
       preferences,
       dependencies,
+      sandboxId,
       isInProjectView,
       runActionFromPreview,
+      template,
     } = this.props;
     if (preferences.clearConsoleEnabled) {
       console.clear();
@@ -243,7 +246,9 @@ export default class Preview extends React.PureComponent<Props, State> {
       dependencies,
       modules,
       directories,
+      sandboxId,
       externalResources,
+      template,
       hasActions: !!runActionFromPreview,
       isModuleView: !isInProjectView,
     });
@@ -270,7 +275,11 @@ export default class Preview extends React.PureComponent<Props, State> {
   handleRefresh = () => {
     const { history, historyPosition } = this.state;
 
-    document.getElementById('sandbox').src = history[historyPosition];
+    document.getElementById('sandbox').src = '';
+
+    setTimeout(() => {
+      document.getElementById('sandbox').src = history[historyPosition];
+    }, 100);
 
     this.setState({
       urlInAddressBar: history[historyPosition],

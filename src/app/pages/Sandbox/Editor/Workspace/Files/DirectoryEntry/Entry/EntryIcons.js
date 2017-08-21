@@ -15,7 +15,7 @@ import ReactIcon from 'app/components/ReactIcon';
 const NotSyncedIconWithMargin = styled(NotSyncedIcon)`
   margin-left: -20px;
   margin-right: 6px;
-  color: ${props => props.theme.secondary};
+  color: ${props => props.theme.templateColor || props.theme.secondary};
 `;
 
 const RedIcon = styled.span`color: ${props => props.theme.red};`;

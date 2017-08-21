@@ -8,6 +8,7 @@ import { sandboxUrl, githubRepoUrl, profileUrl } from 'app/utils/url-generator';
 import UserWithAvatar from 'app/components/user/UserWithAvatar';
 import Stats from 'app/components/sandbox/Stats';
 import PrivacyStatus from 'app/components/sandbox/PrivacyStatus';
+import getTemplateDefinition from 'common/templates';
 
 import type { User, GitInfo } from 'common/types';
 import WorkspaceInputContainer from '../WorkspaceInputContainer';
@@ -117,6 +118,7 @@ export default class Project extends React.PureComponent<
       forkCount,
       author,
       git,
+      template,
       preventTransition,
       privacy,
     } = this.props;
@@ -192,6 +194,20 @@ export default class Project extends React.PureComponent<
               <PrivacyStatus privacy={privacy} />
             </PrivacyContainer>
           </div>}
+
+        <div>
+          <WorkspaceSubtitle>Template</WorkspaceSubtitle>
+          <Item>
+            <a
+              href={getTemplateDefinition(template).url}
+              target="_blank"
+              rel="noreferrer noopener"
+              style={{ color: getTemplateDefinition(template).color() }}
+            >
+              {template}
+            </a>
+          </Item>
+        </div>
         <StatsContainer>
           <Stats
             sandboxId={id}

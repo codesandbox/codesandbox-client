@@ -218,6 +218,7 @@ export default class Content extends React.PureComponent<Props, State> {
           <Split show={showPreview} only={showPreview && !showEditor}>
             <Preview
               sandboxId={sandbox.id}
+              template={sandbox.template}
               isInProjectView={isInProjectView}
               modules={alteredModules}
               directories={sandbox.directories}

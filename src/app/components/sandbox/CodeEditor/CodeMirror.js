@@ -188,12 +188,16 @@ const handleError = (
   }
 };
 
+type State = {
+  fuzzySearchEnabled: boolean,
+};
+
 export default class CodeEditor extends React.PureComponent<Props, State> {
   state = {
     fuzzySearchEnabled: false,
   };
 
-  shouldComponentUpdate(nextProps: Props) {
+  shouldComponentUpdate(nextProps: Props, nextState: State) {
     if (nextState.fuzzySearchEnabled !== this.state.fuzzySearchEnabled) {
       return true;
     }

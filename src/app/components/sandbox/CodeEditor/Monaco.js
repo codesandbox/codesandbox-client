@@ -160,9 +160,9 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     fuzzySearchEnabled: false,
   };
 
-  syntaxWorker: ServiceWorker;
-  lintWorker: ServiceWorker;
-  typingsFetcherWorker: ServiceWorker;
+  syntaxWorker: Worker;
+  lintWorker: Worker;
+  typingsFetcherWorker: Worker;
   sizeProbeInterval: number;
 
   setupWorkers = () => {
@@ -412,17 +412,28 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
   }
 
   getMode = (title: string) => {
-    if (title == null) return 'typescript';
+    if (title == null) return 'javascript';
 
     const kind = title.match(/\.([^.]*)$/);
 
     if (kind) {
       if (kind[1] === 'css') {
         return 'css';
+      }
+      if (kind[1] === 'scss') {
+        return 'scss';
       } else if (kind[1] === 'html') {
         return 'html';
+      } else if (kind[1] === 'vue') {
+        return 'html';
+      } else if (kind[1] === 'less') {
+        return 'less';
       } else if (kind[1] === 'md') {
         return 'markdown';
+      } else if (/jsx?$/.test(kind[1])) {
+        return 'javascript';
+      } else if (/tsx?$/.test(kind[1])) {
+        return 'typescript';
       }
     }
 
@@ -430,7 +441,8 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
   };
 
   syntaxHighlight = (code: string, title: string, version: string) => {
-    if (this.getMode(title) === 'typescript') {
+    const mode = this.getMode(title);
+    if (mode === 'typescript' || mode === 'javascript') {
       this.syntaxWorker.postMessage({
         code,
         title,
@@ -440,7 +452,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
   };
 
   lint = (code: string, title: string, version: string) => {
-    if (this.getMode(title) === 'typescript') {
+    if (this.getMode(title) === 'javascript') {
       this.lintWorker.postMessage({
         code,
         title,
@@ -610,9 +622,10 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     // Remove the first slash, as this will otherwise create errors in monaco
     const path = getModulePath(modules, directories, module.id);
 
+    const mode = this.getMode(module.title);
     const model = this.monaco.editor.createModel(
       module.code,
-      this.getMode(module.title),
+      mode === 'javascript' ? 'typescript' : mode,
       new this.monaco.Uri().with({ path, scheme: 'file' }),
     );
 
@@ -705,12 +718,12 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     const code = this.getCode();
     const mode = this.getMode(title);
 
-    if (mode === 'typescript' || mode === 'css') {
+    if (mode === 'javascript' || mode === 'css') {
       try {
         const prettify = await import('app/utils/codemirror/prettify');
         const newCode = await prettify.default(
           code,
-          mode === 'typescript' ? 'jsx' : mode,
+          mode === 'javascript' ? 'jsx' : mode,
           false, // Force false for eslint, since we would otherwise include 2 eslint bundles
           preferences.prettierConfig,
         );

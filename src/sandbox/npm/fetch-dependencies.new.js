@@ -1,8 +1,8 @@
+import { actions, dispatch } from 'codesandbox-api';
 import _debug from 'app/utils/debug';
 import dependenciesToQuery from './dependencies-to-query';
 import { PACKAGER_URL } from './';
 import delay from '../utils/delay';
-import actions, { dispatch } from '../actions';
 import setScreen from '../status-screen';
 
 type Dependencies = {
@@ -52,7 +52,7 @@ async function requestManifest(url) {
         await delay(1000 * 2); // eslint-disable-line no-await-in-loop
       } else if (retries < RETRY_COUNT && statusCode === 500) {
         dispatch(
-          actions.notifications.showNotification(
+          actions.notifications.show(
             'It seems like all packagers are busy, retrying in 10 seconds...',
             'warning',
           ),
@@ -87,7 +87,7 @@ export default async function fetchDependencies(npmDependencies: Dependencies) {
       return result;
     } catch (e) {
       e.message = `Could not fetch dependencies: ${e.message}`;
-      dispatch(actions.notifications.showNotification(e.message, 'error'));
+      dispatch(actions.notifications.show(e.message, 'error'));
 
       throw e;
     }

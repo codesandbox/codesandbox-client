@@ -147,7 +147,7 @@ export default ({
   if (href && a && (placeholder || tooltip)) {
     return (
       <ActionA href={href} target="_blank" rel="noopener noreferrer">
-        <Tooltip title={placeholder || tooltip}>
+        <ActionTooltip title={placeholder || tooltip}>
           <IconContainer {...iconContainerProps}>
             <Icon {...iconProps} />
             {title !== undefined &&
@@ -156,7 +156,7 @@ export default ({
               </Title>}
             {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
           </IconContainer>
-        </Tooltip>
+        </ActionTooltip>
       </ActionA>
     );
   }
@@ -164,7 +164,7 @@ export default ({
   if (href && (placeholder || tooltip)) {
     return (
       <ActionLink to={href} {...props}>
-        <Tooltip title={placeholder || tooltip}>
+        <ActionTooltip title={placeholder || tooltip}>
           <IconContainer>
             <Icon {...iconProps} />
             {title !== undefined &&
@@ -173,7 +173,7 @@ export default ({
               </Title>}
             {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
           </IconContainer>
-        </Tooltip>
+        </ActionTooltip>
       </ActionLink>
     );
   }

@@ -16,7 +16,6 @@ import SubTitle from 'app/components/text/SubTitle';
 import Centered from 'app/components/flex/Centered';
 
 import Editor from './Editor';
-import { embedUrl } from '../../utils/url-generator';
 
 type Props = {
   sandboxes: { [id: string]: Sandbox },

@@ -2,7 +2,7 @@
 import type { Directory, Module } from 'common/types';
 import { createSelector } from 'reselect';
 import { values } from 'lodash';
-import resolveModule from 'sandbox/utils/resolve-module';
+import resolveModule from 'common/sandbox/resolve-module';
 
 export const modulesSelector = state => state.entities.modules;
 
@@ -34,6 +34,7 @@ export const findCurrentModule = (
     mainModule
   );
 };
+
 function findById(entities: Array<Module | Directory>, id: string) {
   return entities.find(e => e.id === id);
 }

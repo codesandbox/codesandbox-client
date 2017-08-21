@@ -1,6 +1,6 @@
 // @flow
+import { actions, dispatch } from 'codesandbox-api';
 import SandboxError from './sandbox-error';
-import actions, { dispatch } from '../actions';
 
 export default class DependencyNotFoundError extends SandboxError {
   constructor(dependencyName: string) {
