@@ -105,6 +105,7 @@ const Workspace = ({
             owned={sandbox.owned}
             author={user}
             privacy={sandbox.privacy}
+            template={sandbox.template}
           />
         </WorkspaceItem>
 

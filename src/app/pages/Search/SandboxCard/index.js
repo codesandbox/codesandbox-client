@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { Highlight } from 'react-instantsearch/dom';
 
+import getTemplateDefinition from 'common/templates';
+
 import Tags from 'app/components/sandbox/Tags';
 
 import SandboxInfo from './SandboxInfo';
@@ -22,7 +24,8 @@ const Container = styled.div`
   border-radius: 2px;
   box-sizing: border-box;
 
-  border-left: 2px solid ${props => props.theme.secondary.clearer(0.3)};
+  border-left: 2px solid
+    ${props => getTemplateDefinition(props.template).color.clearer(0.3)};
 
   cursor: pointer;
 
@@ -79,12 +82,13 @@ type Props = {
     'description': ?string,
     'author': ?{ username: string, avatarUrl: string },
     'objectID': string,
+    'template': string,
   },
 };
 
 export default ({ hit }: Props) =>
   <StyledLink to={sandboxUrl({ id: hit.objectID, git: hit.git })}>
-    <Container>
+    <Container template={hit.template}>
       <Row alignItems="flex-start">
         <Title>
           {hit.title

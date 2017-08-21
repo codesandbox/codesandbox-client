@@ -2,11 +2,13 @@ import { decorateSelector } from '../theme';
 
 export const react = {
   name: 'create-react-app',
+  url: 'https://github.com/facebookincubator/create-react-app',
   color: decorateSelector(() => '#6CAEDD'),
 };
 
 export const vue = {
   name: 'vue-cli',
+  url: 'https://github.com/vuejs/vue-cli',
   color: decorateSelector(() => '#41B883'),
 };
 

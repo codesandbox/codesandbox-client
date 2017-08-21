@@ -10,4 +10,6 @@ export default function getPreset(template: 'create-react-app' | 'vue-cli') {
   } else if (template === vue.name) {
     return vuePreset;
   }
+
+  return reactPreset;
 }

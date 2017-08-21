@@ -34,16 +34,17 @@ type Props = {
   title: string,
   attributeName: string,
   operator: string,
+  noSearch: ?boolean,
 };
 
-export default ({ title, attributeName, operator }: Props) =>
+export default ({ title, attributeName, operator, noSearch }: Props) =>
   <Container>
     <Title>
       {title}
     </Title>
     <RefinementList
-      withSearchBox
-      showMore
+      withSearchBox={!noSearch}
+      showMore={!noSearch}
       operator={operator}
       attributeName={attributeName}
     />
