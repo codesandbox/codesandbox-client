@@ -43,6 +43,7 @@ const initialState: Preferences = Object.keys(keys).reduce(
     lineHeight: 1.15,
     clearConsoleEnabled: false,
     prettierConfig: DEFAULT_PRETTIER_CONFIG,
+    codeMirror: false,
   },
 );
 

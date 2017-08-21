@@ -36,6 +36,13 @@ const Preferences = ({ preferences, preferencesActions }: Props) => {
     <Container>
       <PreferenceContainer>
         <PaddedPreference
+          title="Use CodeMirror"
+          type="boolean"
+          {...bindValue('codeMirror')}
+        />
+        <Description>Use CodeMirror instead of Monaco editor.</Description>
+        <Rule />
+        <PaddedPreference
           title="Prettify on save"
           type="boolean"
           tooltip="Made possible by Prettier"
