@@ -238,7 +238,6 @@ function inject() {
       {
         message: data.message,
         stack: data.stack,
-        __unmap_source: '/static/js/bundle.js',
       },
       false,
     );

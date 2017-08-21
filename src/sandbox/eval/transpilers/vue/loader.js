@@ -79,17 +79,6 @@ export default function(code: string, loaderContext: LoaderContext) {
         ? style.src
         : getRequire('style', style, i, style.scoped);
 
-      if (style.src) {
-        try {
-          loaderContext.addDependency(
-            style.src,
-            _module.module.directoryShortid,
-          );
-        } catch (e) {
-          loaderContext.emitError(e);
-        }
-      }
-
       const requireString = `require('${requireLocation}')`;
 
       const invokeStyle = c => `  ${c}\n`;
@@ -131,16 +120,6 @@ export default function(code: string, loaderContext: LoaderContext) {
   if (script) {
     const file = script.src ? script.src : getRequire('script', script);
 
-    if (script.src) {
-      try {
-        loaderContext.addDependency(
-          script.src,
-          _module.module.directoryShortid,
-        );
-      } catch (e) {
-        loaderContext.emitError(e);
-      }
-    }
     output += `require('${file}')`;
   } else {
     output += 'null';
@@ -155,16 +134,6 @@ export default function(code: string, loaderContext: LoaderContext) {
       ? template.src
       : getTemplateRequire(templateCompilerOptions, template);
 
-    if (template.src) {
-      try {
-        loaderContext.addDependency(
-          template.src,
-          _module.module.directoryShortid,
-        );
-      } catch (e) {
-        loaderContext.emitError(e);
-      }
-    }
     output += `require('${file}')`;
   } else {
     output += 'null';

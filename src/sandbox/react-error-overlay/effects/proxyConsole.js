@@ -54,8 +54,10 @@ const permanentRegister = function proxyConsole(
       console[type] = function __stack_frame_overlay_proxy_console__() {
         try {
           const message = arguments[0];
-          if (typeof message === 'string' && reactFrameStack.length > 0) {
-            callback(message, reactFrameStack[reactFrameStack.length - 1]);
+          if (typeof message === 'string') {
+            if (reactFrameStack.length > 0) {
+              callback(message, reactFrameStack[reactFrameStack.length - 1]);
+            }
           }
         } catch (err) {
           // Warnings must never crash. Rethrow with a clean stack.

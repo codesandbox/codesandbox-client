@@ -81,7 +81,6 @@ const Workspace = ({
   sandboxActions,
   isPatron,
 }: Props) =>
-  console.log(getTemplateDefinition(sandbox.template).color) ||
   <ThemeProvider
     theme={{
       templateColor: getTemplateDefinition(sandbox.template).color,
