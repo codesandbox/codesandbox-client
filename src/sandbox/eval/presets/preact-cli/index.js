@@ -1,17 +1,10 @@
 import babelTranspiler from '../../transpilers/babel';
-import typescriptTranspiler from '../../transpilers/typescript';
 import jsonTranspiler from '../../transpilers/json';
 import stylesTranspiler from '../../transpilers/css';
 import sassTranspiler from '../../transpilers/sass';
 import rawTranspiler from '../../transpilers/raw';
 import stylusTranspiler from '../../transpilers/stylus';
 import lessTranspiler from '../../transpilers/less';
-import noopTranspiler from '../../transpilers/noop';
-import binaryTranspiler from '../../transpilers/binary';
-import vueTranspiler from '../../transpilers/vue';
-import vueTemplateTranspiler from '../../transpilers/vue/template-compiler';
-import vueStyleTranspiler from '../../transpilers/vue/style-compiler';
-import base64Transpiler from '../../transpilers/base64';
 
 import asyncTranspiler from './transpilers/async';
 
@@ -65,6 +58,10 @@ preactPreset.registerTranspiler(module => /\.s[a|c]ss/.test(module.title), [
 preactPreset.registerTranspiler(module => /\.less/.test(module.title), [
   { transpiler: lessTranspiler },
   { transpiler: stylesTranspiler },
+]);
+
+preactPreset.registerTranspiler(module => /\.json/.test(module.title), [
+  { transpiler: jsonTranspiler },
 ]);
 
 preactPreset.registerTranspiler(module => /\.styl/.test(module.title), [
