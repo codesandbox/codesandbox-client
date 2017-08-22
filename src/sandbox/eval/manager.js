@@ -106,6 +106,10 @@ export default class Manager {
     ]);
   }
 
+  removeTranspiledModule(tModule: TranspiledModule) {
+    delete this.transpiledModules[tModule.getId()];
+  }
+
   /**
    * Will transpile this module and all eventual children (requires) that go with it
    * @param {*} entry
@@ -113,6 +117,7 @@ export default class Manager {
   transpileModules(entry: Module): Promise<TranspiledModule> {
     const transpiledModule = this.getTranspiledModule(entry);
 
+    transpiledModule.setIsEntry(true);
     return transpiledModule.transpile(this);
   }
 

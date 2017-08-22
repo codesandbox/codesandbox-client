@@ -77,6 +77,7 @@ export default class TranspiledModule {
   assets: {
     [name: string]: ModuleSource,
   };
+  isEntry: boolean;
   childModules: Array<TranspiledModule>;
   errors: Array<ModuleError>;
   warnings: Array<ModuleWarning>;
@@ -109,6 +110,7 @@ export default class TranspiledModule {
     this.dependencies = new Set();
     this.transpilationInitiators = new Set();
     this.initiators = new Set();
+    this.isEntry = false;
   }
 
   getId() {
@@ -124,6 +126,7 @@ export default class TranspiledModule {
     this.errors = [];
     this.warnings = [];
     this.emittedAssets = [];
+    this.setIsEntry(false);
     this.resetCompilation();
     this.resetTranspilation();
   }
@@ -163,14 +166,15 @@ export default class TranspiledModule {
     sourceMap: SourceMap,
   ) => new ModuleSource(name, content, sourceMap);
 
-  getLoaderContext(manager: Manager): LoaderContext {
+  getLoaderContext(
+    manager: Manager,
+    transpilerOptions: Object = {},
+  ): LoaderContext {
     const path = getModulePath(
       manager.getModules(),
       manager.getDirectories(),
       this.module.id,
     ).replace('/', '');
-
-    const [realPath, optionString] = path.split('?');
 
     return {
       emitWarning: warning => {
@@ -266,14 +270,23 @@ export default class TranspiledModule {
       },
       options: {
         context: '/',
-        ...(optionString ? JSON.parse(optionString) : {}),
+        ...transpilerOptions,
       },
       webpack: true,
       sourceMap: true,
       target: 'web',
       _module: this,
-      path: realPath,
+      path,
     };
+  }
+
+  /**
+   * Mark the transpiled module as entry (or not), this is needed to let the
+   * cleanup know that this module can have no initiators, but is still required.
+   * @param {*} isEntry
+   */
+  setIsEntry(isEntry) {
+    this.isEntry = isEntry;
   }
 
   async transpile(manager: Manager) {
@@ -292,17 +305,20 @@ export default class TranspiledModule {
     this.errors = [];
     this.warnings = [];
 
-    const loaderContext = this.getLoaderContext(manager);
-
     let code = this.module.code || '';
     let finalSourceMap = null;
     for (let i = 0; i < transpilers.length; i += 1) {
+      const transpilerConfig = transpilers[i];
+      const loaderContext = this.getLoaderContext(
+        manager,
+        transpilerConfig.options || {},
+      );
       try {
-        // eslint-disable-next-line no-await-in-loop
-        const { transpiledCode, sourceMap } = await transpilers[i].transpile(
-          code,
-          loaderContext,
-        );
+        const {
+          transpiledCode,
+          sourceMap,
+        } = await transpilerConfig.transpiler.transpile(code, loaderContext); // eslint-disable-line no-await-in-loop
+
         if (this.errors.length) {
           throw this.errors[0];
         }
@@ -315,9 +331,14 @@ export default class TranspiledModule {
       }
     }
 
+    const path = getModulePath(
+      manager.getModules(),
+      manager.getDirectories(),
+      this.module.id,
+    ).replace('/', '');
     // Add the source of the file by default, this is important for source mapping
     // errors back to their origin
-    code = `${code}\n//# sourceURL=${loaderContext.path}`;
+    code = `${code}\n//# sourceURL=${path}`;
 
     this.source = new ModuleSource(this.module.title, code, finalSourceMap);
     await Promise.all([
@@ -351,10 +372,9 @@ export default class TranspiledModule {
     const module = this.module;
 
     const transpilers = manager.preset.getLoaders(module, this.query);
-    const cacheable = transpilers.every(t => t.cacheable);
+    const cacheable = transpilers.every(t => t.transpiler.cacheable);
 
     const compilation = new Compilation();
-    const initiators = this.initiators;
     const transpiledModule = this;
 
     try {
@@ -411,10 +431,11 @@ export default class TranspiledModule {
     // all transpilers that clears side effects if there are any. Example:
     // Remove CSS styles from the dom.
 
-    if (this.initiators.size === 0) {
-      manager.preset
-        .getLoaders(this.module, this.query)
-        .forEach(t => t.cleanModule(this.getLoaderContext(manager)));
+    if (this.initiators.size === 0 && !this.isEntry) {
+      manager.preset.getLoaders(this.module, this.query).forEach(t => {
+        t.transpiler.cleanModule(this.getLoaderContext(manager, t.options));
+        manager.removeTranspiledModule(this);
+      });
     }
   }
 }

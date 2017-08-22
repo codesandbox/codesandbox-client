@@ -4,7 +4,7 @@ import { type LoaderContext } from '../../../transpiled-module';
 
 class VueTemplateTranspiler extends Transpiler {
   constructor() {
-    super('vue-template-loader');
+    super('vue-template-compiler');
   }
 
   doTranspilation(code: string, loaderContext: LoaderContext) {

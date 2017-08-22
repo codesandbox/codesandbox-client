@@ -18,6 +18,21 @@ import Preset from './';
 
 const vuePreset = new Preset('vue-cli', ['vue', 'json', 'js']);
 
+const sassWithConfig = {
+  transpiler: sassTranspiler,
+  config: {},
+};
+
+const lessWithConfig = {
+  transpiler: lessTranspiler,
+  config: {},
+};
+
+const stylusWithConfig = {
+  transpiler: stylusTranspiler,
+  config: {},
+};
+
 /**
  * Registers transpilers for all different combinations
  *
@@ -26,55 +41,63 @@ const vuePreset = new Preset('vue-cli', ['vue', 'json', 'js']);
 function registerStyleTranspilers() {
   const styles = {
     css: [],
-    scss: [sassTranspiler],
-    sass: [sassTranspiler],
-    less: [lessTranspiler],
-    styl: [stylusTranspiler],
+    scss: [sassWithConfig],
+    sass: [sassWithConfig],
+    less: [lessWithConfig],
+    styl: [stylusWithConfig],
   };
 
   return Object.keys(styles).forEach(type => {
     vuePreset.registerTranspiler(
       module => new RegExp(`\\.vue\\.module\\.${type}`).test(module.title),
-      [...styles[type], vueStyleTranspiler, modulesCSSTranspiler],
+      [
+        ...styles[type],
+        { transpiler: vueStyleTranspiler },
+        { transpiler: modulesCSSTranspiler },
+      ],
     );
 
     vuePreset.registerTranspiler(
       module => new RegExp(`\\.vue\\.${type}`).test(module.title),
-      [...styles[type], vueStyleTranspiler, globalCSSTranspiler],
+      [
+        ...styles[type],
+        { transpiler: vueStyleTranspiler },
+        { transpiler: globalCSSTranspiler },
+      ],
     );
 
     vuePreset.registerTranspiler(
       module => new RegExp(`\\.${type}`).test(module.title),
-      [...styles[type], globalCSSTranspiler],
+      [...styles[type], { transpiler: globalCSSTranspiler }],
     );
   });
 }
 
 vuePreset.registerTranspiler(module => /\.jsx?$/.test(module.title), [
-  babelTranspiler,
+  { transpiler: babelTranspiler },
 ]);
 vuePreset.registerTranspiler(module => /\.tsx?$/.test(module.title), [
-  typescriptTranspiler,
+  { transpiler: typescriptTranspiler },
 ]);
 vuePreset.registerTranspiler(module => /\.json$/.test(module.title), [
-  jsonTranspiler,
+  { transpiler: jsonTranspiler },
 ]);
 vuePreset.registerTranspiler(module => /\.vue$/.test(module.title), [
-  vueTranspiler,
+  { transpiler: vueTranspiler },
 ]);
 
 registerStyleTranspilers();
 
-vuePreset.registerTranspiler(module => /\.vue\.html/.test(module.title), [
-  vueTemplateTranspiler,
+vuePreset.registerTranspiler(module => false, [
+  { transpiler: vueTemplateTranspiler },
 ]);
 vuePreset.registerTranspiler(module => /\.png$/.test(module.title), [
-  binaryTranspiler,
-  base64Transpiler,
+  { transpiler: binaryTranspiler },
+  { transpiler: base64Transpiler },
 ]);
 vuePreset.registerTranspiler(module => /!noop/.test(module.title), [
-  noopTranspiler,
+  { transpiler: noopTranspiler },
 ]);
-vuePreset.registerTranspiler(() => true, [rawTranspiler]);
+vuePreset.registerTranspiler(() => true, [{ transpiler: rawTranspiler }]);
 
 export default vuePreset;

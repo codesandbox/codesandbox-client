@@ -4,7 +4,7 @@ import { type LoaderContext } from '../../../transpiled-module';
 
 class VueStyleCompiler extends Transpiler {
   constructor() {
-    super('vue-style-loader');
+    super('vue-style-compiler');
   }
 
   doTranspilation(code: string, loaderContext: LoaderContext) {

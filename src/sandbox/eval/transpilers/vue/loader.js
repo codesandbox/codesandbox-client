@@ -17,6 +17,20 @@ const getStyleFileName = attrs => {
   return attrs.module ? `module.${extension}` : extension;
 };
 
+const getStyleLoaders = attrs => {
+  let loader = '!style-loader';
+  if (attrs.module) {
+    loader += '?{"modules": true}';
+  }
+
+  if (attrs.lang === 'scss') loader += '!sass-loader';
+  if (attrs.lang === 'sass') loader += '!sass-loader';
+  if (attrs.lang === 'styl') loader += '!stylus-loader';
+  if (attrs.lang === 'less') loader += '!less-loader';
+
+  return loader;
+};
+
 const getScriptFileName = attrs => {
   if (attrs.lang === 'js') return 'js';
   if (attrs.lang === 'typescript') return 'ts';
@@ -33,7 +47,7 @@ const getTemplateFileName = attrs => {
 
 export default function(code: string, loaderContext: LoaderContext) {
   const { path, options, _module } = loaderContext;
-  const moduleTitle = _module.title;
+  const moduleTitle = _module.module.title;
 
   let output = '';
   const moduleId = 'data-v-' + genId(path, options.context, options.hashKey);
@@ -164,7 +178,7 @@ export default function(code: string, loaderContext: LoaderContext) {
       '")}\n';
   }
 
-  output += `exports = Component.esModule;\n`;
+  output += `module.exports = Component.esModule;\n`;
 
   // IVES: Implement custom blocks later?
 
@@ -202,28 +216,27 @@ export default function(code: string, loaderContext: LoaderContext) {
 
   function getTemplateRequire(templateCompilerOptions, impt) {
     const tModule = loaderContext.emitModule(
-      `!vue-template-loader${templateCompilerOptions}!${moduleTitle}:template.vue.${getTemplateFileName(
+      `!vue-template-compiler${templateCompilerOptions}!${moduleTitle}:template.vue.${getTemplateFileName(
         impt.attrs,
       )}`,
       impt.content,
     );
 
-    return `${tModule.query}./${tModule.module.title}`;
+    return `${tModule.query}!./${tModule.module.title}`;
   }
 
   function getRequire(type, impt, i = 0, scoped) {
     if (type === 'style') {
-      var styleCompiler =
-        `${moduleTitle}:style-${i}.vue.${getStyleFileName(impt.attrs)}` +
-        '?' +
-        JSON.stringify({
-          id: moduleId,
-          scoped: !!scoped,
-        });
+      var styleCompiler = `${getStyleLoaders(
+        impt.attrs,
+      )}!vue-style-compiler?${JSON.stringify({
+        id: moduleId,
+        scoped: !!scoped,
+      })}!${moduleTitle}:style-${i}.vue.${getStyleFileName(impt.attrs)}`;
 
       const tModule = loaderContext.emitModule(styleCompiler, impt.content);
 
-      return `${tModule.query}./${tModule.module.title}`;
+      return `${tModule.query}!./${tModule.module.title}`;
     } else if (type === 'script') {
       const tModule = loaderContext.emitModule(
         `${moduleTitle}:script.${getScriptFileName(impt.attrs)}`,

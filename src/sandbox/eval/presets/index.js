@@ -7,6 +7,11 @@ export type TranspiledModule = Module & {
   transpiledCode: string,
 };
 
+type TranspilerDefinition = {
+  transpiler: Transpiler,
+  config?: Object,
+};
+
 /**
  * This is essentially where it all comes together. The manager is responsible for
  * doing evaluation and transpilation using the Transpiler and Loader classes.
@@ -21,10 +26,7 @@ export type TranspiledModule = Module & {
 export default class Preset {
   loaders: Array<{
     test: (module: Module) => boolean,
-    transpilers: Array<{
-      transpiler: Transpiler,
-      options: Object,
-    }>,
+    transpilers: Array<TranspilerDefinition>,
   }>;
   transpilers: Set<Transpiler>;
   name: string;
@@ -40,14 +42,14 @@ export default class Preset {
 
   registerTranspiler(
     test: (module: Module) => boolean,
-    transpilers: Array<Transpiler>,
+    transpilers: Array<TranspilerDefinition>,
   ) {
     this.loaders.push({
       test,
       transpilers,
     });
 
-    transpilers.forEach(t => this.transpilers.add(t));
+    transpilers.forEach(t => this.transpilers.add(t.transpiler));
 
     return this.loaders;
   }

@@ -8,12 +8,12 @@ const getStyleId = id => id + '-css'; // eslint-disable-line
 
 class GlobalCSSTranspiler extends Transpiler {
   constructor() {
-    super();
+    super('style-loader');
     this.cacheable = false;
   }
 
   cleanModule(loaderContext: LoaderContext) {
-    const id = getStyleId(loaderContext.path);
+    const id = getStyleId(loaderContext._module.getId());
     const element = document.getElementById(id);
 
     if (element != null && element.parentNode != null) {
@@ -22,13 +22,13 @@ class GlobalCSSTranspiler extends Transpiler {
   }
 
   doTranspilation(code: string, loaderContext: LoaderContext) {
-    const id = getStyleId(loaderContext.path);
+    const id = getStyleId(loaderContext._module.getId());
     const result = insertCss(id, code);
     return Promise.resolve({ transpiledCode: result });
   }
 }
 
-const transpiler = new GlobalCSSTranspiler('style-loader');
+const transpiler = new GlobalCSSTranspiler();
 
 export { GlobalCSSTranspiler };
 
