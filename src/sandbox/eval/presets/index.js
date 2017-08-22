@@ -59,7 +59,7 @@ export default class Preset {
     const orderedAliases = orderBy(matchingAliases, alias => alias.length, [
       'desc',
     ]);
-    console.log(orderedAliases);
+
     const foundAlias = orderedAliases[0];
 
     if (foundAlias) {

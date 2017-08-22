@@ -148,19 +148,29 @@ async function compile(message) {
 
     resetScreen();
 
-    // Do unmounting
-    if (externals['react-dom']) {
-      const reactDOM = resolveDependency('react-dom', externals);
-      reactDOM.unmountComponentAtNode(document.body);
+    try {
       const children = document.body.children;
-      for (const child in children) {
-        if (
-          children.hasOwnProperty(child) &&
-          children[child].tagName === 'DIV'
-        ) {
-          reactDOM.unmountComponentAtNode(children[child]);
+      // Do unmounting for react
+      if (externals['react-dom']) {
+        const reactDOM = resolveDependency('react-dom', externals);
+        reactDOM.unmountComponentAtNode(document.body);
+        for (const child in children) {
+          if (
+            children.hasOwnProperty(child) &&
+            children[child].tagName === 'DIV'
+          ) {
+            reactDOM.unmountComponentAtNode(children[child]);
+          }
         }
       }
+
+      // Do unmounting for preact
+      // if (externals['preact']) {
+      //   const preact = resolveDependency('preact', externals);
+      //   preact.render('', parent, document.body);
+      // }
+    } catch (e) {
+      /* don't do anything with this error */
     }
 
     const html = getIndexHtml(modules);
@@ -207,6 +217,9 @@ async function compile(message) {
       type: 'success',
     });
   } catch (e) {
+    if (manager) {
+      manager.clearCompiledCache();
+    }
     console.log('Error in sandbox:');
     console.error(e);
 
