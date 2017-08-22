@@ -35,7 +35,7 @@ const getOutput = () =>
         path: paths.appBuild,
         pathinfo: true,
         filename: 'static/js/[name].js',
-        publicPath,
+        publicPath
       }
     : {
         path: paths.appBuild,
@@ -43,7 +43,7 @@ const getOutput = () =>
         filename: 'static/js/[name].[chunkhash].js',
         chunkFilename: 'static/js/[name].[chunkhash].chunk.js',
         sourceMapFilename: '[file].map', // Default
-        publicPath,
+        publicPath
       };
 
 const config = {
@@ -54,13 +54,13 @@ const config = {
     sandbox: [
       require.resolve('babel-polyfill'),
       require.resolve('./polyfills'),
-      path.join(paths.sandboxSrc, 'index.js'),
+      path.join(paths.sandboxSrc, 'index.js')
     ],
     embed: [
       require.resolve('./polyfills'),
-      path.join(paths.embedSrc, 'index.js'),
+      path.join(paths.embedSrc, 'index.js')
     ],
-    vendor: ['react', 'react-dom', 'styled-components', 'babel-standalone'],
+    vendor: ['react', 'react-dom', 'styled-components', 'babel-standalone']
   },
 
   target: 'web',
@@ -68,7 +68,7 @@ const config = {
   node: {
     fs: 'empty',
     module: 'empty',
-    child_process: 'empty',
+    child_process: 'empty'
   },
 
   output: getOutput(),
@@ -77,12 +77,12 @@ const config = {
     rules: [
       {
         test: /create-zip\/.*\/files\/.*\.ico$/,
-        loader: 'base64-loader',
+        loader: 'base64-loader'
       },
       {
         test: /create-zip\/.*\/files\/.*$/,
         exclude: [/create-zip\/.*\/files\/.*\.ico$/],
-        loader: 'raw-loader',
+        loader: 'raw-loader'
       },
       {
         test: /\.js$/,
@@ -92,16 +92,16 @@ const config = {
           /typescriptServices\.js$/,
           // Don't do the node modules of the codesandbox module itself
           /codesandbox\/node_modules/,
-          /create-zip\/.*\/files\/.*$/,
+          /create-zip\/.*\/files\/.*$/
         ],
-        loader: 'happypack/loader',
+        loader: 'happypack/loader'
       },
       // JSON is not enabled by default in Webpack but both Node and Browserify
       // allow it implicitly so we also enable it.
       {
         test: /\.json$/,
         loader: 'json-loader',
-        exclude: [/create-zip\/.*\/files\/.*$/],
+        exclude: [/create-zip\/.*\/files\/.*$/]
       },
       // "postcss" loader applies autoprefixer to our CSS.
       // "css" loader resolves paths in CSS and adds assets as dependencies.
@@ -111,13 +111,13 @@ const config = {
       {
         test: /\.css$/,
         loaders: ['style-loader', 'css-loader'],
-        exclude: [/create-zip\/.*\/files\/.*$/],
+        exclude: [/create-zip\/.*\/files\/.*$/]
       },
       // For importing README.md
       {
         test: /\.md$/,
         loader: 'raw-loader',
-        exclude: [/create-zip\/.*\/files\/.*$/],
+        exclude: [/create-zip\/.*\/files\/.*$/]
       },
       // "file" loader makes sure those assets get served by WebpackDevServer.
       // When you `import` an asset, you get its (virtual) filename.
@@ -127,8 +127,8 @@ const config = {
         exclude: [/\/favicon.ico$/, /create-zip\/.*\/files\/.*$/],
         loader: 'file-loader',
         options: {
-          name: 'static/media/[name].[hash:8].[ext]',
-        },
+          name: 'static/media/[name].[hash:8].[ext]'
+        }
       },
       // A special case for favicon.ico to place it into build root directory.
       {
@@ -137,8 +137,8 @@ const config = {
         exclude: [/create-zip\/.*\/files\/.*$/],
         loader: 'file-loader',
         options: {
-          name: 'favicon.ico?[hash:8]',
-        },
+          name: 'favicon.ico?[hash:8]'
+        }
       },
       // "url" loader works just like "file" loader but it also embeds
       // assets smaller than specified size as data URLs to avoid requests.
@@ -148,8 +148,8 @@ const config = {
         exclude: [/create-zip\/.*\/files\/.*$/],
         options: {
           limit: 10000,
-          name: 'static/media/[name].[hash:8].[ext]',
-        },
+          name: 'static/media/[name].[hash:8].[ext]'
+        }
       },
       // "html" loader is used to process template page (index.html) to resolve
       // resources linked with <link href="./relative/path"> HTML tags.
@@ -158,12 +158,12 @@ const config = {
         loader: 'html-loader',
         exclude: [/create-zip\/.*\/files\/.*$/],
         options: {
-          attrs: ['link:href'],
-        },
-      },
+          attrs: ['link:href']
+        }
+      }
     ],
 
-    noParse: [/eslint\.4\.1\.0\.min\.js$/, /typescriptServices\.js$/],
+    noParse: [/eslint\.4\.1\.0\.min\.js$/, /typescriptServices\.js$/]
   },
 
   resolve: {
@@ -173,8 +173,8 @@ const config = {
     extensions: ['.js', '.json'],
 
     alias: {
-      moment: 'moment/moment.js',
-    },
+      moment: 'moment/moment.js'
+    }
   },
 
   plugins: [
@@ -182,9 +182,9 @@ const config = {
       loaders: [
         {
           path: 'babel-loader',
-          query: babelConfig,
-        },
-      ],
+          query: babelConfig
+        }
+      ]
     }),
     // Generates an `index.html` file with the <script> injected.
     new HtmlWebpackPlugin({
@@ -202,8 +202,8 @@ const config = {
         keepClosingSlash: true,
         minifyJS: true,
         minifyCSS: true,
-        minifyURLs: true,
-      },
+        minifyURLs: true
+      }
     }),
     new HtmlWebpackPlugin({
       inject: true,
@@ -220,8 +220,8 @@ const config = {
         keepClosingSlash: true,
         minifyJS: true,
         minifyCSS: true,
-        minifyURLs: true,
-      },
+        minifyURLs: true
+      }
     }),
     new HtmlWebpackPlugin({
       inject: true,
@@ -238,8 +238,8 @@ const config = {
         keepClosingSlash: true,
         minifyJS: true,
         minifyCSS: true,
-        minifyURLs: true,
-      },
+        minifyURLs: true
+      }
     }),
     // Makes some environment variables available to the JS code, for example:
     // if (process.env.NODE_ENV === 'development') { ... }. See `env.js`.
@@ -260,40 +260,40 @@ const config = {
         from: __DEV__
           ? 'node_modules/monaco-editor/dev/vs'
           : 'node_modules/monaco-editor/min/vs',
-        to: 'public/vs',
+        to: 'public/vs'
       },
       {
         from: 'static',
-        to: 'static',
+        to: 'static'
       },
       {
         from: 'src/homepage/static',
-        to: 'static',
-      },
+        to: 'static'
+      }
     ]),
     // Try to dedupe duplicated modules, if any:
     new webpack.optimize.CommonsChunkPlugin({
       name: 'common',
-      chunks: ['app', 'sandbox'],
+      chunks: ['app', 'sandbox']
     }),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
-      minChunks: Infinity,
+      minChunks: Infinity
     }),
     new webpack.optimize.CommonsChunkPlugin({
       async: true,
       children: true,
-      minChunks: 2,
+      minChunks: 2
     }),
-    new webpack.NamedModulesPlugin(),
-  ],
+    new webpack.NamedModulesPlugin()
+  ]
 };
 
 if (__DEV__) {
   const devEntries = [
     'react-hot-loader/patch',
     'webpack-dev-server/client?/',
-    'webpack/hot/only-dev-server',
+    'webpack/hot/only-dev-server'
   ];
 
   config.entry.app = [...devEntries, ...config.entry.app];
@@ -306,7 +306,7 @@ if (__PROD__) {
     // Minify the code.
     new webpack.LoaderOptionsPlugin({
       minimize: true,
-      debug: false,
+      debug: false
     }),
     new webpack.optimize.UglifyJsPlugin({
       beautify: false,
@@ -320,12 +320,12 @@ if (__PROD__) {
         dead_code: true,
         evaluate: true,
         if_return: true,
-        join_vars: true,
+        join_vars: true
       },
       output: {
-        comments: false,
+        comments: false
       },
-      sourceMap: true,
+      sourceMap: true
     }),
     // Generate a service worker script that will precache, and keep up to date,
     // the HTML & assets that are part of the Webpack build.
@@ -363,9 +363,9 @@ if (__PROD__) {
           options: {
             cache: {
               maxEntries: 50,
-              name: 'sandboxes-cache',
-            },
-          },
+              name: 'sandboxes-cache'
+            }
+          }
         },
         {
           urlPattern: /^https:\/\/unpkg\.com/,
@@ -373,9 +373,9 @@ if (__PROD__) {
           options: {
             cache: {
               maxEntries: 300,
-              name: 'unpkg-cache',
-            },
-          },
+              name: 'unpkg-cache'
+            }
+          }
         },
         {
           urlPattern: /cloudflare\.com/,
@@ -383,11 +383,11 @@ if (__PROD__) {
           options: {
             cache: {
               maxEntries: 20,
-              name: 'cloudflare-cache',
-            },
-          },
-        },
-      ],
+              name: 'cloudflare-cache'
+            }
+          }
+        }
+      ]
     }),
     // Generate a service worker script that will precache, and keep up to date,
     // the HTML & assets that are part of the Webpack build.
@@ -429,9 +429,9 @@ if (__PROD__) {
           options: {
             cache: {
               maxEntries: 50,
-              name: 'sandboxes-cache',
-            },
-          },
+              name: 'sandboxes-cache'
+            }
+          }
         },
         {
           // These should be dynamic, since it's not loaded from this domain
@@ -440,9 +440,9 @@ if (__PROD__) {
           handler: 'networkFirst',
           options: {
             cache: {
-              name: 'static-root-cache',
-            },
-          },
+              name: 'static-root-cache'
+            }
+          }
         },
         {
           urlPattern: /api\/v1\/sandboxes/,
@@ -450,9 +450,9 @@ if (__PROD__) {
           options: {
             cache: {
               maxEntries: 50,
-              name: 'sandboxes-cache',
-            },
-          },
+              name: 'sandboxes-cache'
+            }
+          }
         },
         {
           urlPattern: /\.amazonaws\.com\/prod\/package/,
@@ -461,9 +461,9 @@ if (__PROD__) {
             cache: {
               // a week
               maxAgeSeconds: 60 * 60 * 24 * 7,
-              name: 'dependency-url-generator-cache',
-            },
-          },
+              name: 'dependency-url-generator-cache'
+            }
+          }
         },
         {
           urlPattern: /webpack-dll-prod\.herokuapp\.com/,
@@ -471,9 +471,9 @@ if (__PROD__) {
           options: {
             cache: {
               maxEntries: 100,
-              name: 'packager-cache',
-            },
-          },
+              name: 'packager-cache'
+            }
+          }
         },
         {
           urlPattern: /https:\/\/d3i2v4dxqvxaq9\.cloudfront\.net/,
@@ -481,20 +481,20 @@ if (__PROD__) {
           options: {
             cache: {
               maxEntries: 200,
-              name: 'dependency-files-cache',
-            },
-          },
+              name: 'dependency-files-cache'
+            }
+          }
         },
         {
           urlPattern: /cloudflare\.com/,
           handler: 'cacheFirst',
           options: {
             cache: {
-              name: 'cloudflare-cache',
-            },
-          },
-        },
-      ],
+              name: 'cloudflare-cache'
+            }
+          }
+        }
+      ]
     }),
     // Moment.js is an extremely popular library that bundles large locale files
     // by default due to how Webpack interprets its code. This is a practical
@@ -502,12 +502,12 @@ if (__PROD__) {
     // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
     // You can remove this if you don't use Moment.js:
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-    new webpack.optimize.ModuleConcatenationPlugin(),
+    new webpack.optimize.ModuleConcatenationPlugin()
   ];
 } else {
   config.plugins = [
     ...config.plugins,
-    new webpack.HotModuleReplacementPlugin(),
+    new webpack.HotModuleReplacementPlugin()
   ];
 }
 
