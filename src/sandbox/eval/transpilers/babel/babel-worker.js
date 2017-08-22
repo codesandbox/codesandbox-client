@@ -4,6 +4,7 @@ import dynamicImportPlugin from 'babel-plugin-dynamic-import-node';
 import vuePlugin from 'babel-plugin-transform-vue-jsx';
 
 import { buildWorkerError } from '../utils/worker-error-handler';
+import getDependendencies from './get-require-statements';
 
 self.importScripts([
   'https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js',
@@ -41,6 +42,22 @@ self.addEventListener('message', event => {
 
   try {
     const result = Babel.transform(code, customConfig);
+
+    const dependencies = getDependendencies(result.ast);
+
+    dependencies.forEach(dependency => {
+      if (/^(\w|@)/.test(dependency.path) && !dependency.path.includes('!')) {
+        // Don't push dependencies
+        return;
+      }
+
+      self.postMessage({
+        type: 'add-dependency',
+        path: dependency.path,
+        isGlob: dependency.type === 'glob',
+      });
+    });
+
     self.postMessage({
       type: 'compiled',
       transpiledCode: result.code,

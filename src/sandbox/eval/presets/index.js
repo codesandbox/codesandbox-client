@@ -19,16 +19,20 @@ export type TranspiledModule = Module & {
  * and loaders.
  */
 export default class Preset {
-  transpilers: Array<{
+  loaders: Array<{
     test: (module: Module) => boolean,
-    transpilers: Array<Transpiler>,
+    transpilers: Array<{
+      transpiler: Transpiler,
+      options: Object,
+    }>,
   }>;
+  transpilers: Set<Transpiler>;
   name: string;
   ignoredExtensions: Array<string>;
 
   constructor(name: string, ignoredExtensions: ?Array<string>) {
-    this.loaders = {};
-    this.transpilers = [];
+    this.loaders = [];
+    this.transpilers = new Set();
     this.name = name;
 
     this.ignoredExtensions = ignoredExtensions || ['js', 'jsx', 'json'];
@@ -38,21 +42,55 @@ export default class Preset {
     test: (module: Module) => boolean,
     transpilers: Array<Transpiler>,
   ) {
-    this.transpilers.push({
+    this.loaders.push({
       test,
       transpilers,
     });
 
-    return transpilers;
+    transpilers.forEach(t => this.transpilers.add(t));
+
+    return this.loaders;
   }
 
-  getTranspilers(module: Module) {
-    const transpiler = this.transpilers.find(t => t.test(module));
+  /**
+   * Get transpilers from the given query, the query is webpack like:
+   * eg. !babel-loader!./test.js
+   */
+  getLoaders(module: Module, query: string = '') {
+    const loader = this.loaders.find(t => t.test(module));
 
-    if (transpiler == null) {
-      throw new Error(`No transpiler found for ${module.title}`);
+    // Starting !, drop all transpilers
+    const transpilers = query.startsWith('!') // eslint-disable-line no-nested-ternary
+      ? []
+      : loader ? loader.transpilers : [];
+
+    // Remove "" values
+    const transpilerNames = query.split('!').filter(x => x);
+
+    const extraTranspilers = transpilerNames
+      .map(loaderName => {
+        const [name, options] = loaderName.split('?');
+
+        const transpiler = Array.from(this.transpilers).find(
+          t => t.name === name,
+        );
+
+        if (!transpiler) {
+          throw new Error(`Loader '${name}' could not be found.`);
+        }
+
+        const parsedOptions = options ? JSON.parse(options) : {};
+
+        return { transpiler, options: parsedOptions };
+      })
+      .reverse(); // Reverse, because webpack is also in reverse order
+
+    const finalTranspilers = [...transpilers, ...extraTranspilers];
+
+    if (finalTranspilers.length === 0) {
+      throw new Error(`No transpilers found for ${module.title}`);
     }
 
-    return transpiler.transpilers;
+    return finalTranspilers;
   }
 }

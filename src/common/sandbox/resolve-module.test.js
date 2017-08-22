@@ -1,4 +1,4 @@
-import resolveModule from './resolve-module';
+import resolveModule, { getModulesInDirectory } from './resolve-module';
 
 describe('root', () => {
   test('it resolves root path', () => {
@@ -341,5 +341,56 @@ describe('preference', () => {
       },
     ];
     expect(resolveModule(path, modules, directories)).toBe(modules[1]);
+  });
+
+  describe('getModulesInDirectory', () => {
+    it('lists all files in directory', () => {
+      const path = './';
+      const directories = [];
+
+      const modules = [
+        {
+          id: '123123',
+          title: 'index',
+          directoryShortid: null,
+        },
+        {
+          id: '12666',
+          title: 'Test',
+          directoryShortid: null,
+        },
+      ];
+      expect(getModulesInDirectory(path, modules, directories).modules).toEqual(
+        modules,
+      );
+    });
+
+    it('lists all files in subdirectory', () => {
+      const path = './test/';
+      const directories = [
+        {
+          id: '113',
+          shortid: '123123123',
+          title: 'test',
+          directoryShortid: null,
+        },
+      ];
+
+      const modules = [
+        {
+          id: '123123',
+          title: 'index',
+          directoryShortid: '123123123',
+        },
+        {
+          id: '12666',
+          title: 'Test',
+          directoryShortid: '123123123',
+        },
+      ];
+      expect(getModulesInDirectory(path, modules, directories).modules).toEqual(
+        modules,
+      );
+    });
   });
 });

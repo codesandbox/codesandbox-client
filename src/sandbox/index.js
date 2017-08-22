@@ -70,18 +70,26 @@ function initializeResizeListener() {
 }
 
 let actionsEnabled = false;
+let updateDuringDependencyFetch = false;
 
 export function areActionsEnabled() {
   return actionsEnabled;
 }
 
-function updateManager(sandboxId, template, modules, directories) {
+function updateManager(sandboxId, template, module, modules, directories) {
   if (!manager || manager.id !== sandboxId) {
     manager = new Manager(sandboxId, modules, directories, getPreset(template));
-    return manager.initialize().catch(e => ({ error: e }));
+    return manager.transpileModules(module).catch(e => ({ error: e }));
   }
 
   return manager.updateData(modules, directories).catch(e => ({ error: e }));
+}
+
+async function loadDependenciesAndSetWrapper(dependencies) {
+  loadingDependencies = true;
+  const result = await loadDependencies(dependencies);
+  loadingDependencies = false;
+  return result;
 }
 
 async function compile(message) {
@@ -105,17 +113,18 @@ async function compile(message) {
   handleExternalResources(externalResources);
 
   try {
-    if (loadingDependencies && !isStandalone) return;
+    if (loadingDependencies && !isStandalone) {
+      updateDuringDependencyFetch = true;
+      return;
+    }
 
-    loadingDependencies = true;
     const [
       { manifest, isNewCombination },
       { error: managerError },
     ] = await Promise.all([
-      loadDependencies(dependencies),
-      updateManager(sandboxId, template, modules, directories),
+      loadDependenciesAndSetWrapper(dependencies),
+      updateManager(sandboxId, template, module, modules, directories),
     ]);
-    loadingDependencies = false;
 
     const { externals } = manifest;
     manager.setExternals(externals);
@@ -124,11 +133,12 @@ async function compile(message) {
       throw managerError;
     }
 
-    if (isNewCombination && !isStandalone) {
+    if (isNewCombination && updateDuringDependencyFetch && !isStandalone) {
       manager.clearCompiledCache();
       // If we just loaded new depdendencies, we want to get the latest changes,
       // since we might have missed them
       requestRender();
+      updateDuringDependencyFetch = false;
       return;
     }
 

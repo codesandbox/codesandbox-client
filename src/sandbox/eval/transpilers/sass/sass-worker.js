@@ -19,8 +19,9 @@ self.addEventListener('message', event => {
     // We use this to mark dependencies of this file
     if (request.path) {
       self.postMessage({
-        type: 'add-dependency',
-        path: request.path.replace('/sass/', ''),
+        type: 'add-transpilation-dependency',
+        path: request.path.replace('/sass/', './'),
+        isAbsolute: true,
       });
     }
     done();

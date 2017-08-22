@@ -12,7 +12,7 @@ class BabelTranspiler extends WorkerTranspiler {
   worker: Worker;
 
   constructor() {
-    super(BabelWorker, 2);
+    super('babel-loader', BabelWorker, 2);
   }
 
   doTranspilation(code: string, loaderContext: LoaderContext) {
@@ -28,6 +28,7 @@ class BabelTranspiler extends WorkerTranspiler {
           config: babelConfig,
           path,
         },
+        loaderContext,
         (err, data) => {
           if (err) {
             loaderContext.emitError(err);

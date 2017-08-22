@@ -16,7 +16,11 @@ function getMime(path) {
 }
 
 class Base64Transpiler extends Transpiler {
-  doTranspilation(code: string, loaderContext: LoaderContext) {
+  constructor() {
+    super('base64-loader');
+  }
+
+  doTranspilation(code: string) {
     return new Promise(resolve => {
       const reader = new FileReader();
       reader.readAsDataURL(code);

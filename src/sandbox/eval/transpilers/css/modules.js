@@ -12,7 +12,7 @@ const core = new Core();
 
 class CSSModulesTranspiler extends Transpiler {
   constructor() {
-    super();
+    super('css-modules');
     this.cacheable = false;
   }
 
@@ -21,10 +21,7 @@ class CSSModulesTranspiler extends Transpiler {
 
     return core
       .load(code, loaderContext.path, (dependencyPath: string) => {
-        const tModule = loaderContext.addDependency(
-          dependencyPath,
-          loaderContext._module.module.directoryShortid,
-        );
+        const tModule = loaderContext.addDependency(dependencyPath);
 
         return tModule.source
           ? tModule.source.compiledCode

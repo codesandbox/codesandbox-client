@@ -28,7 +28,7 @@ class GlobalCSSTranspiler extends Transpiler {
   }
 }
 
-const transpiler = new GlobalCSSTranspiler();
+const transpiler = new GlobalCSSTranspiler('style-loader');
 
 export { GlobalCSSTranspiler };
 
