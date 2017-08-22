@@ -166,13 +166,16 @@
     "precommit": "lint-staged"
   },
   "lint-staged": {
-    "*.js": ["prettier --write --single-quote --trailing-comma all", "git add"],
+    "*.js": [
+      "prettier --write --single-quote --trailing-comma none",
+      "git add"
+    ],
     "*.css": [
-      "prettier --write --single-quote --trailing-comma all",
+      "prettier --write --single-quote --trailing-comma none",
       "git add"
     ],
     "*.json": [
-      "prettier --write --single-quote --trailing-comma all",
+      "prettier --write --single-quote --trailing-comma none",
       "git add"
     ]
   },
