@@ -105,7 +105,11 @@ async function compile(message) {
     isModuleView = false,
     template,
   } = message.data;
-  uninject();
+  try {
+    uninject();
+  } catch (e) {
+    console.error(e);
+  }
   inject();
 
   actionsEnabled = hasActions;

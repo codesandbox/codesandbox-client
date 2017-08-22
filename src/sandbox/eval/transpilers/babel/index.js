@@ -20,7 +20,7 @@ class BabelTranspiler extends WorkerTranspiler {
       const path = loaderContext.path;
 
       // TODO get custom babel config back in
-      const babelConfig = getBabelConfig({}, path);
+      const babelConfig = getBabelConfig(loaderContext.options, path);
 
       this.queueTask(
         {

@@ -46,7 +46,7 @@ const DEFAULT_BABEL_CONFIG = {
 /**
  * Parses the .babelrc if it exists, if it doesn't it will return a default config
  */
-export default function getBabelConfig(config: Object, path: string) {
+export default function getBabelConfig(config: Object = {}, path: string) {
   let resolvedConfig = DEFAULT_BABEL_CONFIG;
 
   // if (config && CUSTOM_BABEL_CONFIG_ENABLED) {
@@ -58,6 +58,8 @@ export default function getBabelConfig(config: Object, path: string) {
 
   resolvedConfig = {
     ...resolvedConfig,
+    plugins: [...resolvedConfig.plugins, ...(config.plugins || [])],
+    presets: [...resolvedConfig.presets, ...(config.presets || [])],
     sourceMaps: 'inline',
     sourceFileName: path,
     sourceMapTarget: `${path}:transpiled`,

@@ -285,10 +285,17 @@ export default class TranspiledModule {
    * cleanup know that this module can have no initiators, but is still required.
    * @param {*} isEntry
    */
-  setIsEntry(isEntry) {
+  setIsEntry(isEntry: boolean) {
     this.isEntry = isEntry;
   }
 
+  /**
+   * Transpile the module, it takes in all loaders from the default loaders +
+   * query string and passes the result from loader to loader. During transpilation
+   * dependencies can be added, these dependencies will be transpiled concurrently
+   * after the initial transpilation finished.
+   * @param {*} manager
+   */
   async transpile(manager: Manager) {
     if (this.source) {
       return this;
@@ -434,7 +441,6 @@ export default class TranspiledModule {
     if (this.initiators.size === 0 && !this.isEntry) {
       manager.preset.getLoaders(this.module, this.query).forEach(t => {
         t.transpiler.cleanModule(this.getLoaderContext(manager, t.options));
-        manager.removeTranspiledModule(this);
       });
     }
   }

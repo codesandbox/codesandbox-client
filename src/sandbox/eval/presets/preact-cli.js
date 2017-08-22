@@ -1,8 +1,7 @@
 import babelTranspiler from '../transpilers/babel';
 import typescriptTranspiler from '../transpilers/typescript';
 import jsonTranspiler from '../transpilers/json';
-import globalCSSTranspiler from '../transpilers/css/global';
-import modulesCSSTranspiler from '../transpilers/css/modules';
+import stylesTranspiler from '../transpilers/css';
 import sassTranspiler from '../transpilers/sass';
 import rawTranspiler from '../transpilers/raw';
 import stylusTranspiler from '../transpilers/stylus';
@@ -40,12 +39,12 @@ function registerStyleTranspilers() {
 
     preactPreset.registerTranspiler(
       module => new RegExp(`\\.vue\\.${type}`).test(module.title),
-      [...styles[type], vueStyleTranspiler, globalCSSTranspiler],
+      [...styles[type], vueStyleTranspiler, stylesTranspiler],
     );
 
     preactPreset.registerTranspiler(
       module => new RegExp(`\\.${type}`).test(module.title),
-      [...styles[type], globalCSSTranspiler],
+      [...styles[type], stylesTranspiler],
     );
   });
 }

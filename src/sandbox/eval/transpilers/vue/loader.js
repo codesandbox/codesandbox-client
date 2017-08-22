@@ -20,7 +20,7 @@ const getStyleFileName = attrs => {
 const getStyleLoaders = attrs => {
   let loader = '!style-loader';
   if (attrs.module) {
-    loader += '?{"modules": true}';
+    loader += `?${JSON.stringify({ module: true })}`;
   }
 
   if (attrs.lang === 'scss') loader += '!sass-loader';
@@ -243,7 +243,7 @@ export default function(code: string, loaderContext: LoaderContext) {
         impt.content,
       );
 
-      return `${tModule.query}./${tModule.module.title}`;
+      return `./${tModule.module.title}`;
     }
     return '';
   }

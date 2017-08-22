@@ -1,8 +1,7 @@
 import babelTranspiler from '../transpilers/babel';
 import typescriptTranspiler from '../transpilers/typescript';
 import jsonTranspiler from '../transpilers/json';
-import globalCSSTranspiler from '../transpilers/css/global';
-import modulesCSSTranspiler from '../transpilers/css/modules';
+import stylesTranspiler from '../transpilers/css';
 import sassTranspiler from '../transpilers/sass';
 import rawTranspiler from '../transpilers/raw';
 import stylusTranspiler from '../transpilers/stylus';
@@ -49,32 +48,14 @@ function registerStyleTranspilers() {
 
   return Object.keys(styles).forEach(type => {
     vuePreset.registerTranspiler(
-      module => new RegExp(`\\.vue\\.module\\.${type}`).test(module.title),
-      [
-        ...styles[type],
-        { transpiler: vueStyleTranspiler },
-        { transpiler: modulesCSSTranspiler },
-      ],
-    );
-
-    vuePreset.registerTranspiler(
-      module => new RegExp(`\\.vue\\.${type}`).test(module.title),
-      [
-        ...styles[type],
-        { transpiler: vueStyleTranspiler },
-        { transpiler: globalCSSTranspiler },
-      ],
-    );
-
-    vuePreset.registerTranspiler(
       module => new RegExp(`\\.${type}`).test(module.title),
-      [...styles[type], { transpiler: globalCSSTranspiler }],
+      [...styles[type], { transpiler: stylesTranspiler }],
     );
   });
 }
 
 vuePreset.registerTranspiler(module => /\.jsx?$/.test(module.title), [
-  { transpiler: babelTranspiler },
+  { transpiler: babelTranspiler, options: { plugins: ['transform-vue-jsx'] } },
 ]);
 vuePreset.registerTranspiler(module => /\.tsx?$/.test(module.title), [
   { transpiler: typescriptTranspiler },
@@ -88,9 +69,11 @@ vuePreset.registerTranspiler(module => /\.vue$/.test(module.title), [
 
 registerStyleTranspilers();
 
-vuePreset.registerTranspiler(module => false, [
+vuePreset.registerTranspiler(() => false, [
   { transpiler: vueTemplateTranspiler },
 ]);
+vuePreset.registerTranspiler(() => false, [{ transpiler: vueStyleTranspiler }]);
+
 vuePreset.registerTranspiler(module => /\.png$/.test(module.title), [
   { transpiler: binaryTranspiler },
   { transpiler: base64Transpiler },

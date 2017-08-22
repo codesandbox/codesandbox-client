@@ -100,17 +100,19 @@ export default (async function createZip(
 ) {
   const zip = new JSZip();
 
+  let promise = null;
   if (sandbox.template === react.name) {
-    import('./create-react-app').then(generator => {
-      generator.default(zip, sandbox, modules, directories);
-    });
+    promise = import('./create-react-app').then(generator =>
+      generator.default(zip, sandbox, modules, directories),
+    );
   } else if (sandbox.template === vue.name) {
-    import('./vue-cli').then(generator => {
-      generator.default(zip, sandbox, modules, directories);
-    });
+    promise = import('./vue-cli').then(generator =>
+      generator.default(zip, sandbox, modules, directories),
+    );
   }
-
-  const file = await zip.generateAsync({ type: 'blob' });
-
-  saveAs(file, `${slugify(sandbox.title || sandbox.id)}.zip`);
+  if (promise) {
+    await promise;
+    const file = await zip.generateAsync({ type: 'blob' });
+    saveAs(file, `${slugify(sandbox.title || sandbox.id)}.zip`);
+  }
 });

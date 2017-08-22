@@ -31,10 +31,6 @@ self.addEventListener('message', event => {
 
   const plugins = [...config.plugins, 'dynamic-import-node'];
 
-  if (path.includes('.vue')) {
-    plugins.push('transform-vue-jsx');
-  }
-
   const customConfig = {
     ...config,
     plugins,
