@@ -164,7 +164,7 @@ export default class Manager {
     const modulePath = queryPath.pop();
 
     const module = resolveModule(
-      modulePath,
+      this.preset.getAliasedPath(modulePath),
       this.getModules(),
       this.getDirectories(),
       startdirectoryShortid,

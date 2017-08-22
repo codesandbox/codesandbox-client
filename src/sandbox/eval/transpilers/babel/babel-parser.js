@@ -58,8 +58,8 @@ export default function getBabelConfig(config: Object = {}, path: string) {
 
   resolvedConfig = {
     ...resolvedConfig,
-    plugins: [...resolvedConfig.plugins, ...(config.plugins || [])],
-    presets: [...resolvedConfig.presets, ...(config.presets || [])],
+    plugins: config.plugins ? config.plugins : resolvedConfig.plugins,
+    presets: config.presets ? config.presets : resolvedConfig.presets,
     sourceMaps: 'inline',
     sourceFileName: path,
     sourceMapTarget: `${path}:transpiled`,

@@ -1,13 +1,12 @@
 import type { Sandbox, Module, Directory } from 'common/types';
 
+import files from 'buffer-loader!./files.zip';
 import {
   getResourceTag,
   getIndexHtmlBody,
   createPackageJSON,
   createDirectoryWithFiles,
 } from '../';
-
-import files from 'buffer-loader!./files.zip';
 
 const getHTML = (modules, resources) =>
   `<!DOCTYPE html>
@@ -55,40 +54,6 @@ npm test
 
 For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
 `;
-
-function importAll(r) {
-  return r.keys().reduce(
-    (result, key) => ({
-      ...result,
-      [key]: r(key),
-    }),
-    {},
-  );
-}
-
-const addStaticFilesInDir = (
-  zip,
-  files,
-  folder,
-  check = f => f.endsWith('.js') || f.endsWith('.eslintrc'),
-  prepend = '',
-) => {
-  const build = folder ? zip.folder(folder) : zip;
-  Object.keys(files)
-    .filter(f => f.startsWith('./'))
-    .filter(f => !f.endsWith('/'))
-    .filter(check)
-    .forEach(path => {
-      if (path.replace(`./${folder}`, '')) {
-        build.file(
-          path.replace(`./${folder}`, prepend ? prepend : `./${folder}`),
-          files[path],
-        );
-      }
-    });
-
-  return build;
-};
 
 export default function createZip(
   zip,

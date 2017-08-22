@@ -1,7 +1,7 @@
 // @flow
 
+import flatten from 'lodash/flatten';
 import dynamicImportPlugin from 'babel-plugin-dynamic-import-node';
-import vuePlugin from 'babel-plugin-transform-vue-jsx';
 
 import { buildWorkerError } from '../utils/worker-error-handler';
 import getDependendencies from './get-require-statements';
@@ -24,10 +24,25 @@ declare var Babel: {
 };
 
 Babel.registerPlugin('dynamic-import-node', dynamicImportPlugin);
-Babel.registerPlugin('transform-vue-jsx', vuePlugin);
 
-self.addEventListener('message', event => {
+self.addEventListener('message', async event => {
   const { code, path, config } = event.data;
+
+  if (
+    flatten(config.plugins).includes('transform-vue-jsx') &&
+    !Object.keys(Babel.availablePlugins).includes('transform-vue-jsx')
+  ) {
+    const vuePlugin = await import('babel-plugin-transform-vue-jsx');
+    Babel.registerPlugin('transform-vue-jsx', vuePlugin);
+  }
+
+  if (
+    flatten(config.plugins).includes('jsx-pragmatic') &&
+    !Object.keys(Babel.availablePlugins).includes('jsx-pragmatic')
+  ) {
+    const pragmaticPlugin = await import('babel-plugin-jsx-pragmatic');
+    Babel.registerPlugin('jsx-pragmatic', pragmaticPlugin);
+  }
 
   const plugins = [...config.plugins, 'dynamic-import-node'];
 

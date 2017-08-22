@@ -1,4 +1,5 @@
 // @flow
+import { orderBy } from 'lodash';
 import type { Module } from 'common/types';
 
 import Transpiler from '../transpilers';
@@ -31,13 +32,42 @@ export default class Preset {
   transpilers: Set<Transpiler>;
   name: string;
   ignoredExtensions: Array<string>;
+  alias: { [path: string]: string };
 
-  constructor(name: string, ignoredExtensions: ?Array<string>) {
+  constructor(
+    name: string,
+    ignoredExtensions: ?Array<string>,
+    alias: { [path: string]: string },
+  ) {
     this.loaders = [];
     this.transpilers = new Set();
     this.name = name;
 
+    this.alias = alias || {};
     this.ignoredExtensions = ignoredExtensions || ['js', 'jsx', 'json'];
+  }
+
+  /**
+   * Checks if there is an alias given for the path, if there is it will return
+   * the altered path, otherwise it will just return the known path.
+   */
+  getAliasedPath(path: string): string {
+    const aliases = Object.keys(this.alias);
+
+    // Find matching aliases
+    const matchingAliases = aliases.filter(a => path.startsWith(a));
+    const orderedAliases = orderBy(matchingAliases, alias => alias.length, [
+      'desc',
+    ]);
+    console.log(orderedAliases);
+    const foundAlias = orderedAliases[0];
+
+    if (foundAlias) {
+      // if an alias is found we will replace the path with the alias
+      return path.replace(foundAlias, this.alias[foundAlias]);
+    }
+
+    return path;
   }
 
   registerTranspiler(

@@ -12,16 +12,27 @@ export const vue = {
   color: decorateSelector(() => '#41B883'),
 };
 
-export default function getDefinition(theme: 'create-react-app' | 'vue-cli') {
+export const preact = {
+  name: 'preact-cli',
+  url: 'https://github.com/developit/preact-cli',
+  color: decorateSelector(() => '#AD78DC'),
+};
+
+export default function getDefinition(
+  theme: 'create-react-app' | 'vue-cli' | 'preact-cli',
+) {
   if (!theme) {
     return react;
   }
 
-  if (theme === react.name) {
-    return react;
-  } else if (theme === vue.name) {
-    return vue;
+  switch (theme) {
+    case react.name:
+      return react;
+    case vue.name:
+      return vue;
+    case preact.name:
+      return preact;
+    default:
+      return react;
   }
-
-  return react;
 }

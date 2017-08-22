@@ -386,14 +386,19 @@ export default class TranspiledModule {
 
     try {
       function require(path: string) {
+        // First check if there is an alias for the path, in that case
+        // we must alter the path to it
+        const aliasedPath = manager.preset.getAliasedPath(path);
+
         // eslint-disable-line no-unused-vars
-        if (/^(\w|@)/.test(path) && !path.includes('!')) {
+        if (/^(\w|@)/.test(aliasedPath) && !aliasedPath.includes('!')) {
           // So it must be a dependency
-          return resolveDependency(path, manager.externals);
+
+          return resolveDependency(aliasedPath, manager.externals);
         }
 
         const requiredTranspiledModule = manager.resolveTranspiledModule(
-          path,
+          aliasedPath,
           module.directoryShortid,
         );
 
