@@ -71,13 +71,13 @@ function printFileSizes(stats, previousSizeMap) {
         folder: path.join('build', path.dirname(asset.name)),
         name: path.basename(asset.name),
         size,
-        sizeLabel: filesize(size) + (difference ? ` (${difference})` : ''),
+        sizeLabel: filesize(size) + (difference ? ` (${difference})` : '')
       };
     });
   assets.sort((a, b) => b.size - a.size);
   let longestSizeLabelLength = Math.max.apply(
     null,
-    assets.map(a => stripAnsi(a.sizeLabel).length),
+    assets.map(a => stripAnsi(a.sizeLabel).length)
   );
   assets.forEach(asset => {
     let sizeLabel = asset.sizeLabel;
@@ -88,8 +88,8 @@ function printFileSizes(stats, previousSizeMap) {
     }
     console.log(
       `  ${sizeLabel}  ${chalk.dim(asset.folder + path.sep)}${chalk.cyan(
-        asset.name,
-      )}`,
+        asset.name
+      )}`
     );
   });
 }
@@ -99,7 +99,7 @@ function build(previousSizeMap) {
   console.log(
     `Creating a ${process.env.NODE_ENV === 'production'
       ? 'production'
-      : 'development'} build...`,
+      : 'development'} build...`
   );
   webpack(config).run((err, stats) => {
     if (err) {
@@ -116,7 +116,7 @@ function build(previousSizeMap) {
     printFileSizes(stats, previousSizeMap);
     fs.writeFile(
       paths.appBuild + '/stats.json',
-      JSON.stringify(stats.toJson()),
+      JSON.stringify(stats.toJson())
     );
     console.log();
 
@@ -127,13 +127,13 @@ function build(previousSizeMap) {
       // "homepage": "http://user.github.io/project"
       console.log(
         `The project was built assuming it is hosted at ${chalk.green(
-          publicPath,
-        )}.`,
+          publicPath
+        )}.`
       );
       console.log(
         `You can control this with the ${chalk.green(
-          'homepage',
-        )} field in your ${chalk.cyan('package.json')}.`,
+          'homepage'
+        )} field in your ${chalk.cyan('package.json')}.`
       );
       console.log();
       console.log(`The ${chalk.cyan('build')} folder is ready to be deployed.`);
@@ -141,20 +141,18 @@ function build(previousSizeMap) {
       console.log();
       console.log(
         `  ${chalk.cyan('git')} commit -am ${chalk.yellow(
-          '"Save local changes"',
-        )}`,
+          '"Save local changes"'
+        )}`
       );
       console.log(`  ${chalk.cyan('git')} checkout -B gh-pages`);
       console.log(`  ${chalk.cyan('git')} add -f build`);
       console.log(
-        `  ${chalk.cyan('git')} commit -am ${chalk.yellow(
-          '"Rebuild website"',
-        )}`,
+        `  ${chalk.cyan('git')} commit -am ${chalk.yellow('"Rebuild website"')}`
       );
       console.log(
         `  ${chalk.cyan(
-          'git',
-        )} filter-branch -f --prune-empty --subdirectory-filter build`,
+          'git'
+        )} filter-branch -f --prune-empty --subdirectory-filter build`
       );
       console.log(`  ${chalk.cyan('git')} push -f origin gh-pages`);
       console.log(`  ${chalk.cyan('git')} checkout -`);
@@ -163,13 +161,13 @@ function build(previousSizeMap) {
       // "homepage": "http://mywebsite.com/project"
       console.log(
         `The project was built assuming it is hosted at ${chalk.green(
-          publicPath,
-        )}.`,
+          publicPath
+        )}.`
       );
       console.log(
         `You can control this with the ${chalk.green(
-          'homepage',
-        )} field in your ${chalk.cyan('package.json')}.`,
+          'homepage'
+        )} field in your ${chalk.cyan('package.json')}.`
       );
       console.log();
       console.log(`The ${chalk.cyan('build')} folder is ready to be deployed.`);
@@ -177,29 +175,29 @@ function build(previousSizeMap) {
     } else {
       // no homepage or "homepage": "http://mywebsite.com"
       console.log(
-        'The project was built assuming it is hosted at the server root.',
+        'The project was built assuming it is hosted at the server root.'
       );
       if (homepagePath) {
         // "homepage": "http://mywebsite.com"
         console.log(
           `You can control this with the ${chalk.green(
-            'homepage',
-          )} field in your ${chalk.cyan('package.json')}.`,
+            'homepage'
+          )} field in your ${chalk.cyan('package.json')}.`
         );
         console.log();
       } else {
         // no homepage
         console.log(
           `To override this, specify the ${chalk.green(
-            'homepage',
-          )} in your ${chalk.cyan('package.json')}.`,
+            'homepage'
+          )} in your ${chalk.cyan('package.json')}.`
         );
         console.log('For example, add this to build it for GitHub Pages:');
         console.log();
         console.log(
           `  ${chalk.green('"homepage"')}${chalk.cyan(': ')}${chalk.green(
-            '"http://myname.github.io/myapp"',
-          )}${chalk.cyan(',')}`,
+            '"http://myname.github.io/myapp"'
+          )}${chalk.cyan(',')}`
         );
         console.log();
       }

@@ -6,7 +6,7 @@ function WatchMissingNodeModulesPlugin(nodeModulesPath) {
   this.nodeModulesPath = nodeModulesPath;
 }
 
-WatchMissingNodeModulesPlugin.prototype.apply = function (compiler) {
+WatchMissingNodeModulesPlugin.prototype.apply = function(compiler) {
   compiler.plugin('emit', (compilation, callback) => {
     var missingDeps = compilation.missingDependencies;
     var nodeModulesPath = this.nodeModulesPath;
@@ -19,6 +19,6 @@ WatchMissingNodeModulesPlugin.prototype.apply = function (compiler) {
 
     callback();
   });
-}
+};
 
 module.exports = WatchMissingNodeModulesPlugin;
