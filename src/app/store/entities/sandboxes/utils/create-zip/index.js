@@ -3,7 +3,7 @@ import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 
 import type { Sandbox, Module, Directory } from 'common/types';
-import { react, vue } from 'common/templates/index';
+import { react, vue, preact } from 'common/templates/index';
 
 const CSSTag = (resource: string) =>
   `<link rel="stylesheet" type="text/css" href="${resource}" media="all">`;
@@ -22,7 +22,7 @@ export function getResourceTag(resource: string) {
 
 export function getIndexHtmlBody(modules: Array<Module>) {
   const indexHtmlModule = modules.find(
-    m => m.title === 'index.html' && m.directoryShortid == null,
+    m => m.title === 'index.html' && m.directoryShortid == null
   );
 
   if (indexHtmlModule) {
@@ -56,7 +56,7 @@ export function createPackageJSON(
   dependencies,
   devDependencies,
   scripts,
-  extra: Object,
+  extra: Object
 ) {
   const name = slugify(sandbox.title || sandbox.id);
   const version = `0.0.${sandbox.version}`;
@@ -69,10 +69,10 @@ export function createPackageJSON(
       dependencies: { ...sandbox.npmDependencies, ...dependencies },
       devDependencies,
       scripts,
-      ...(extra || {}),
+      ...(extra || {})
     },
     null,
-    '  ',
+    '  '
   );
 }
 
@@ -80,7 +80,7 @@ export function createDirectoryWithFiles(
   modules: Array<Module>,
   directories: Array<Directory>,
   directory: Directory,
-  zip,
+  zip
 ) {
   const newZip = zip.folder(directory.title);
 
@@ -96,21 +96,27 @@ export function createDirectoryWithFiles(
 export default (async function createZip(
   sandbox: Sandbox,
   modules: Array<Module>,
-  directories: Array<Directory>,
+  directories: Array<Directory>
 ) {
   const zip = new JSZip();
 
+  let promise = null;
   if (sandbox.template === react.name) {
-    import('./create-react-app').then(generator => {
-      generator.default(zip, sandbox, modules, directories);
-    });
+    promise = import('./create-react-app').then(generator =>
+      generator.default(zip, sandbox, modules, directories)
+    );
   } else if (sandbox.template === vue.name) {
-    import('./vue-cli').then(generator => {
-      generator.default(zip, sandbox, modules, directories);
-    });
+    promise = import('./vue-cli').then(generator =>
+      generator.default(zip, sandbox, modules, directories)
+    );
+  } else if (sandbox.template === preact.name) {
+    promise = import('./preact-cli').then(generator =>
+      generator.default(zip, sandbox, modules, directories)
+    );
   }
-
-  const file = await zip.generateAsync({ type: 'blob' });
-
-  saveAs(file, `${slugify(sandbox.title || sandbox.id)}.zip`);
+  if (promise) {
+    await promise;
+    const file = await zip.generateAsync({ type: 'blob' });
+    saveAs(file, `${slugify(sandbox.title || sandbox.id)}.zip`);
+  }
 });

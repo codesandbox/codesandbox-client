@@ -11,7 +11,7 @@ export default function(code: string, require: Function) {
     eval(code); // eslint-disable-line no-eval
 
     // Choose either the export of __esModule or node
-    return Object.keys(exports).length > 0 ? exports : module.exports;
+    return Object.keys(exports || {}).length > 0 ? exports : module.exports;
   } catch (e) {
     e.isEvalError = true;
 

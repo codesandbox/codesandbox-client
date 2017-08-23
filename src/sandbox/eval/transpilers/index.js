@@ -14,10 +14,12 @@ export default class Transpiler {
     [id: string]: TranspilerResult,
   };
   cacheable: boolean;
+  name: string;
 
-  constructor() {
+  constructor(name: string) {
     this.cachedResults = {};
     this.cacheable = true;
+    this.name = name;
   }
 
   /* eslint-disable */

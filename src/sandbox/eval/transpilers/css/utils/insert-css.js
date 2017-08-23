@@ -20,8 +20,8 @@ function createStyleNode(id, content) {
 // const alteredClassNames = getGeneratedClassNames(module.id, classNames);
 // const newCode = getGeneratedClassNameCode(module.code, alteredClassNames);
 createStyleNode(
-  "${id}",
-  \`${css}\`
+  ${JSON.stringify(id)},
+  ${JSON.stringify(css)}
 );
 `;
 

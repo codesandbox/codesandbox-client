@@ -5,10 +5,12 @@ import { type LoaderContext } from '../../../transpiled-module';
 
 import transformRequire from './modules/transform-require';
 
-export default function(code: string, loaderContext: LoaderContext) {
+export default function(html: string, loaderContext: LoaderContext) {
   var options = loaderContext.options;
 
-  var defaultModules = [transformRequire(options.transformToRequire)];
+  var defaultModules = [
+    transformRequire(options.transformToRequire, loaderContext),
+  ];
 
   var compilerOptions = {
     preserveWhitespace: options.preserveWhitespace,
@@ -16,7 +18,7 @@ export default function(code: string, loaderContext: LoaderContext) {
     scopeId: options.hasScoped ? options.id : null,
   };
 
-  var compiled = compiler.compile(code, compilerOptions);
+  var compiled = compiler.compile(html, compilerOptions);
 
   // tips
   if (compiled.tips && compiled.tips.length) {

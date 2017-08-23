@@ -1,3 +1,4 @@
+import { type LoaderContext } from '../../../../transpiled-module';
 // vue compiler module for transforming `<tag>:<attribute>` to `require`
 
 var defaultOptions = {
@@ -5,34 +6,34 @@ var defaultOptions = {
   image: 'xlink:href',
 };
 
-export default userOptions => {
+export default (userOptions, loaderContext: LoaderContext) => {
   var options = userOptions
     ? Object.assign({}, defaultOptions, userOptions)
     : defaultOptions;
 
   return {
     postTransformNode: node => {
-      transform(node, options);
+      transform(node, options, loaderContext);
     },
   };
 };
 
-function transform(node, options) {
+function transform(node, options, loaderContext: LoaderContext) {
   for (var tag in options) {
     if (node.tag === tag && node.attrs) {
       var attributes = options[tag];
       if (typeof attributes === 'string') {
-        node.attrs.some(attr => rewrite(attr, attributes));
+        node.attrs.some(attr => rewrite(attr, attributes, loaderContext));
       } else if (Array.isArray(attributes)) {
         attributes.forEach(item =>
-          node.attrs.some(attr => rewrite(attr, item)),
+          node.attrs.some(attr => rewrite(attr, item, loaderContext)),
         );
       }
     }
   }
 }
 
-function rewrite(attr, name) {
+function rewrite(attr, name, loaderContext: LoaderContext) {
   if (attr.name === name) {
     var value = attr.value;
     var isStatic =
@@ -45,7 +46,11 @@ function rewrite(attr, name) {
       if (firstChar === '~') {
         value = '"' + value.slice(2);
       }
+      // get dependency the quotes
       attr.value = `require(${value})`;
+
+      const rawDependency = value.slice(1).slice(0, -1);
+      loaderContext.addDependency(rawDependency);
     }
     return true;
   }

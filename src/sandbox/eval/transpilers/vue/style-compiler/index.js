@@ -3,6 +3,10 @@ import Transpiler from '../../';
 import { type LoaderContext } from '../../../transpiled-module';
 
 class VueStyleCompiler extends Transpiler {
+  constructor() {
+    super('vue-style-compiler');
+  }
+
   doTranspilation(code: string, loaderContext: LoaderContext) {
     return import('./loader').then(loader =>
       loader.default(code, loaderContext),

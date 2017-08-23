@@ -8,7 +8,7 @@ class TypeScriptTranspiler extends WorkerTranspiler {
   worker: Worker;
 
   constructor() {
-    super(TypeScriptWorker, 2);
+    super('ts-loader', TypeScriptWorker, 2);
   }
 
   doTranspilation(code: string, loaderContext: LoaderContext) {
@@ -20,6 +20,7 @@ class TypeScriptTranspiler extends WorkerTranspiler {
           code,
           path,
         },
+        loaderContext,
         (err, data) => {
           if (err) {
             loaderContext.emitError(err);

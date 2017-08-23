@@ -12,7 +12,7 @@ class BabelTranspiler extends WorkerTranspiler {
   worker: Worker;
 
   constructor() {
-    super(BabelWorker, 2);
+    super('babel-loader', BabelWorker, 2);
   }
 
   doTranspilation(code: string, loaderContext: LoaderContext) {
@@ -20,7 +20,7 @@ class BabelTranspiler extends WorkerTranspiler {
       const path = loaderContext.path;
 
       // TODO get custom babel config back in
-      const babelConfig = getBabelConfig({}, path);
+      const babelConfig = getBabelConfig(loaderContext.options, path);
 
       this.queueTask(
         {
@@ -28,6 +28,7 @@ class BabelTranspiler extends WorkerTranspiler {
           config: babelConfig,
           path,
         },
+        loaderContext,
         (err, data) => {
           if (err) {
             loaderContext.emitError(err);

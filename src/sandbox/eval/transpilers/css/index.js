@@ -3,17 +3,18 @@ import Transpiler from '../';
 import { type LoaderContext } from '../../transpiled-module';
 
 import insertCss from './utils/insert-css';
+import getModules from './get-modules';
 
 const getStyleId = id => id + '-css'; // eslint-disable-line
 
-class GlobalCSSTranspiler extends Transpiler {
+class StyleTranspiler extends Transpiler {
   constructor() {
-    super();
+    super('style-loader');
     this.cacheable = false;
   }
 
   cleanModule(loaderContext: LoaderContext) {
-    const id = getStyleId(loaderContext.path);
+    const id = getStyleId(loaderContext._module.getId());
     const element = document.getElementById(id);
 
     if (element != null && element.parentNode != null) {
@@ -22,14 +23,24 @@ class GlobalCSSTranspiler extends Transpiler {
   }
 
   doTranspilation(code: string, loaderContext: LoaderContext) {
-    const id = getStyleId(loaderContext.path);
+    const id = getStyleId(loaderContext._module.getId());
+
+    if (loaderContext.options.module) {
+      return getModules(code, loaderContext).then(({ css, exportTokens }) => {
+        let result = insertCss(id, css);
+        result += `\nexports=${JSON.stringify(exportTokens)};`;
+
+        return Promise.resolve({ transpiledCode: result });
+      });
+    }
+
     const result = insertCss(id, code);
     return Promise.resolve({ transpiledCode: result });
   }
 }
 
-const transpiler = new GlobalCSSTranspiler();
+const transpiler = new StyleTranspiler();
 
-export { GlobalCSSTranspiler };
+export { StyleTranspiler };
 
 export default transpiler;

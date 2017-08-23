@@ -15,17 +15,14 @@ const throwError = (path: string) => {
   throw new Error(`Cannot find module in ${path}`);
 };
 
-/**
- * Convert the module path to a module
- */
-export default (
+export function getModulesInDirectory(
   path: ?string,
   modules: Array<Module>,
   directories: Array<Directory>,
   startdirectoryShortid: ?string = undefined,
-  ignoredExtensions: Array<string> = ['js', 'jsx', 'json'],
-): Module => {
-  if (!path) return null;
+) {
+  if (!path) return throwError('');
+
   // Split path
   const splitPath = path.replace(/^.\//, '').split('/');
   const foundDirectoryShortid = splitPath.reduce(
@@ -46,7 +43,7 @@ export default (
         m => m.directoryShortid == dirId,
       );
       const nextDirectory = directoriesInDirectory.find(d =>
-        compareTitle(d.title, pathPart, ignoredExtensions),
+        compareTitle(d.title, pathPart, []),
       );
 
       if (nextDirectory == null) throwError(path);
@@ -61,6 +58,31 @@ export default (
     // eslint-disable-next-line eqeqeq
     m => m.directoryShortid == foundDirectoryShortid,
   );
+
+  return {
+    modules: modulesInFoundDirectory,
+    foundDirectoryShortid,
+    lastPath,
+    splitPath,
+  };
+}
+
+/**
+ * Convert the module path to a module
+ */
+export default (
+  path: ?string,
+  modules: Array<Module>,
+  directories: Array<Directory>,
+  startdirectoryShortid: ?string = undefined,
+  ignoredExtensions: Array<string> = ['js', 'jsx', 'json'],
+): Module => {
+  const {
+    modules: modulesInFoundDirectory,
+    lastPath,
+    splitPath,
+    foundDirectoryShortid,
+  } = getModulesInDirectory(path, modules, directories, startdirectoryShortid);
 
   // Find module with same name
   const foundModule = modulesInFoundDirectory.find(m =>

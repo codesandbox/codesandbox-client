@@ -40,7 +40,7 @@ const mapStateToProps = createSelector(sandboxesSelector, sandboxes => ({
 const mapDispatchToProps = dispatch => ({
   sandboxActions: bindActionCreators(sandboxActionCreators, dispatch),
 });
-class SandboxPage extends React.PureComponent<Props, $FlowFixMeState> {
+class SandboxPage extends React.PureComponent<Props, State> {
   componentDidMount() {
     if (
       window.screen.availWidth < 800 &&

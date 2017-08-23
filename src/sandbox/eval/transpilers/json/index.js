@@ -13,7 +13,7 @@ class JSONTranspiler extends Transpiler {
   }
 }
 
-const transpiler = new JSONTranspiler();
+const transpiler = new JSONTranspiler('json-loader');
 
 export { JSONTranspiler };
 

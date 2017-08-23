@@ -1,15 +1,19 @@
 // @flow
-import { react, vue } from 'common/templates';
+import { react, vue, preact } from 'common/templates';
 
 import reactPreset from './presets/create-react-app';
 import vuePreset from './presets/vue-cli';
+import preactPreset from './presets/preact-cli';
 
-export default function getPreset(template: 'create-react-app' | 'vue-cli') {
-  if (template === react.name) {
-    return reactPreset;
-  } else if (template === vue.name) {
-    return vuePreset;
+export default function getPreset(template: string) {
+  switch (template) {
+    case react.name:
+      return reactPreset;
+    case vue.name:
+      return vuePreset;
+    case preact.name:
+      return preactPreset;
+    default:
+      return reactPreset;
   }
-
-  return reactPreset;
 }
