@@ -13,7 +13,7 @@ var http = require('http');
 var proxy = require('http-proxy-middleware');
 var httpProxy = require('http-proxy');
 var prompt = require('./utils/prompt');
-var config = require('../config/webpack.config');
+var config = require('../config/webpack.dev');
 var paths = require('../config/paths');
 var env = require('../config/env');
 
