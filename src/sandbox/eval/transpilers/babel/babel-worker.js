@@ -4,7 +4,7 @@ import flatten from 'lodash/flatten';
 import dynamicImportPlugin from 'babel-plugin-dynamic-import-node';
 
 import { buildWorkerError } from '../utils/worker-error-handler';
-import getDependendencies from './get-require-statements';
+import getDependencies from './get-require-statements';
 
 self.importScripts([
   'https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js',
@@ -20,6 +20,7 @@ declare var Babel: {
     ast: Object,
     code: string,
   },
+  availablePlugins: { [key: string]: Function },
   registerPlugin: (name: string, plugin: Function) => void,
 };
 
@@ -54,7 +55,7 @@ self.addEventListener('message', async event => {
   try {
     const result = Babel.transform(code, customConfig);
 
-    const dependencies = getDependendencies(result.ast);
+    const dependencies = getDependencies(result.ast);
 
     dependencies.forEach(dependency => {
       if (/^(\w|@)/.test(dependency.path) && !dependency.path.includes('!')) {

@@ -69,6 +69,7 @@ preactPreset.registerTranspiler(module => /\.styl/.test(module.title), [
   { transpiler: stylesTranspiler },
 ]);
 
+// Support for !async statements
 preactPreset.registerTranspiler(
   () => false /* never load without explicit statement */,
   [{ transpiler: asyncTranspiler }],
