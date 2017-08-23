@@ -13,7 +13,7 @@ import evaluate from './loaders/eval';
 import Manager from './manager';
 
 type ChildModule = Module & {
-  parent: Module,
+  parent: Module
 };
 
 class ModuleSource {
@@ -34,11 +34,11 @@ export type LoaderContext = {
   emitModule: (
     title: string,
     code: string,
-    directoryShortid: ?string,
+    directoryShortid: ?string
   ) => TranspiledModule,
   emitFile: (name: string, content: string, sourceMap: SourceMap) => void,
   options: {
-    context: '/',
+    context: '/'
   },
   webpack: boolean,
   sourceMap: boolean,
@@ -49,16 +49,16 @@ export type LoaderContext = {
   addDependency: (
     depPath: string,
     options: ?{
-      isAbsolute: boolean,
-    },
+      isAbsolute: boolean
+    }
   ) => TranspiledModule,
   addDependenciesInDirectory: (
     depPath: string,
     options: {
-      isAbsolute: boolean,
-    },
+      isAbsolute: boolean
+    }
   ) => Array<TranspiledModule>,
-  _module: TranspiledModule, // eslint-disable-line no-use-before-define
+  _module: TranspiledModule // eslint-disable-line no-use-before-define
 };
 
 class Compilation {
@@ -75,7 +75,7 @@ export default class TranspiledModule {
   source: ?ModuleSource;
   cacheable: boolean;
   assets: {
-    [name: string]: ModuleSource,
+    [name: string]: ModuleSource
   };
   isEntry: boolean;
   childModules: Array<TranspiledModule>;
@@ -163,17 +163,17 @@ export default class TranspiledModule {
   createSourceForAsset = (
     name: string,
     content: string,
-    sourceMap: SourceMap,
+    sourceMap: SourceMap
   ) => new ModuleSource(name, content, sourceMap);
 
   getLoaderContext(
     manager: Manager,
-    transpilerOptions: Object = {},
+    transpilerOptions: Object = {}
   ): LoaderContext {
     const path = getModulePath(
       manager.getModules(),
       manager.getDirectories(),
-      this.module.id,
+      this.module.id
     ).replace('/', '');
 
     return {
@@ -186,7 +186,7 @@ export default class TranspiledModule {
       emitModule: (
         title: string,
         code: string,
-        directoryShortid = this.module.directoryShortid,
+        directoryShortid = this.module.directoryShortid
       ) => {
         const queryPath = title.split('!');
         // pop() mutates queryPath, queryPath is now just the loaders
@@ -200,12 +200,12 @@ export default class TranspiledModule {
           directoryShortid,
           title: moduleName,
           parent: this.module,
-          code,
+          code
         };
 
         const transpiledModule = manager.addModule(
           moduleCopy,
-          queryPath.join('!'),
+          queryPath.join('!')
         );
         this.childModules.push(transpiledModule);
 
@@ -223,7 +223,7 @@ export default class TranspiledModule {
       addTranspilationDependency: (depPath: string, options) => {
         const tModule = manager.resolveTranspiledModule(
           depPath,
-          options && options.isAbsolute ? null : this.module.directoryShortid,
+          options && options.isAbsolute ? null : this.module.directoryShortid
         );
 
         this.transpilationDependencies.add(tModule);
@@ -234,7 +234,7 @@ export default class TranspiledModule {
       addDependency: (depPath: string, options) => {
         const tModule = manager.resolveTranspiledModule(
           depPath,
-          options && options.isAbsolute ? null : this.module.directoryShortid,
+          options && options.isAbsolute ? null : this.module.directoryShortid
         );
 
         this.dependencies.add(tModule);
@@ -245,7 +245,7 @@ export default class TranspiledModule {
       addDependenciesInDirectory: (folderPath: string, { isAbsolute } = {}) => {
         const tModules = manager.resolveTranspiledModulesInDirectory(
           folderPath,
-          isAbsolute ? null : this.module.directoryShortid,
+          isAbsolute ? null : this.module.directoryShortid
         );
 
         tModules.forEach(tModule => {
@@ -261,7 +261,7 @@ export default class TranspiledModule {
         const [name] = getModulePath(
           manager.getModules(),
           manager.getDirectories(),
-          module.id,
+          module.id
         )
           .replace('/', '')
           .split('?');
@@ -270,13 +270,13 @@ export default class TranspiledModule {
       },
       options: {
         context: '/',
-        ...transpilerOptions,
+        ...transpilerOptions
       },
       webpack: true,
       sourceMap: true,
       target: 'web',
       _module: this,
-      path,
+      path
     };
   }
 
@@ -318,12 +318,12 @@ export default class TranspiledModule {
       const transpilerConfig = transpilers[i];
       const loaderContext = this.getLoaderContext(
         manager,
-        transpilerConfig.options || {},
+        transpilerConfig.options || {}
       );
       try {
         const {
           transpiledCode,
-          sourceMap,
+          sourceMap
         } = await transpilerConfig.transpiler.transpile(code, loaderContext); // eslint-disable-line no-await-in-loop
 
         if (this.errors.length) {
@@ -341,33 +341,35 @@ export default class TranspiledModule {
     const path = getModulePath(
       manager.getModules(),
       manager.getDirectories(),
-      this.module.id,
+      this.module.id
     ).replace('/', '');
     // Add the source of the file by default, this is important for source mapping
     // errors back to their origin
     code = `${code}\n//# sourceURL=${path}`;
 
     this.source = new ModuleSource(this.module.title, code, finalSourceMap);
-    await Promise.all([
-      ...Array.from(this.transpilationInitiators).map(t =>
-        t.transpile(manager),
-      ),
-      ...Array.from(this.dependencies).map(t => t.transpile(manager)),
-      ...this.childModules.map(t => t.transpile(manager)),
-    ]);
+    await Promise.all(
+      flattenDeep([
+        ...Array.from(this.transpilationInitiators).map(t =>
+          t.transpile(manager)
+        ),
+        ...Array.from(this.dependencies).map(t => t.transpile(manager)),
+        ...this.childModules.map(t => t.transpile(manager))
+      ])
+    );
 
     return this;
   }
 
   getChildTranspiledModules(): Array<TranspiledModule> {
     return flattenDeep(
-      this.childModules.map(m => [m, ...m.getChildTranspiledModules()]),
+      this.childModules.map(m => [m, ...m.getChildTranspiledModules()])
     );
   }
 
   getChildModules(): Array<Module> {
     return flattenDeep(
-      this.childModules.map(m => [m.module, ...m.getChildModules()]),
+      this.childModules.map(m => [m.module, ...m.getChildModules()])
     );
   }
 
@@ -399,7 +401,7 @@ export default class TranspiledModule {
 
         const requiredTranspiledModule = manager.resolveTranspiledModule(
           aliasedPath,
-          module.directoryShortid,
+          module.directoryShortid
         );
 
         if (module === requiredTranspiledModule.module) {
@@ -420,7 +422,7 @@ export default class TranspiledModule {
           ? cache.exports
           : manager.evaluateTranspiledModule(requiredTranspiledModule, [
               ...parentModules,
-              transpiledModule,
+              transpiledModule
             ]);
       }
 
