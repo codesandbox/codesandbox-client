@@ -10,6 +10,7 @@ import Logo from 'app/components/Logo';
 import Row from 'app/components/flex/Row';
 import Tooltip from 'app/components/Tooltip';
 import HeaderSearchBar from 'app/components/HeaderSearchBar';
+import NewSandboxAction from '../../pages/Sandbox/Editor/Content/Header/NewSandboxAction';
 
 import { jwtSelector, isPatronSelector } from 'app/store/user/selectors';
 import { newSandboxUrl, patronUrl } from 'app/utils/url-generator';
@@ -106,11 +107,7 @@ class Navigation extends React.PureComponent<Props> {
                   </Link>
                 </Tooltip>
               </Action>}
-            <Action>
-              <Tooltip title="New Sandbox">
-                <PlusIcon to={newSandboxUrl()}>+</PlusIcon>
-              </Tooltip>
-            </Action>
+            <NewSandboxAction />
           </Actions>
           {hasLogin ? <UserMenu /> : <SignInButton />}
         </Row>
