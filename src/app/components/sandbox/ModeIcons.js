@@ -157,9 +157,18 @@ const getCurrentMode = ({
 };
 
 export default class ModeIcons extends React.PureComponent<Props> {
-  state = {
-    hovering: false
-  };
+  constructor(props) {
+    super(props);
+
+    const { currentMode, otherModes } = getCurrentMode(this.props);
+
+    this.state = {
+      hovering: false,
+      showSubmodes: false,
+      currentMode,
+      otherModes
+    };
+  }
 
   onMouseEnter = () => {
     this.setState({
@@ -175,12 +184,31 @@ export default class ModeIcons extends React.PureComponent<Props> {
   };
 
   onAnimationEnd = () => {
+    const { currentMode, otherModes } = getCurrentMode(this.props);
+
     if (!this.state.hovering) {
       this.setState({
-        showSubmodes: false
+        showSubmodes: false,
+        currentMode,
+        otherModes
       });
     }
   };
+
+  componentWillReceiveProps(nextProps) {
+    const { currentMode, otherModes } = getCurrentMode(nextProps);
+
+    if (!this.state.hovering) {
+      this.setState({
+        currentMode,
+        otherModes
+      });
+    } else {
+      this.setState({
+        currentMode
+      });
+    }
+  }
 
   render() {
     const {
@@ -192,17 +220,17 @@ export default class ModeIcons extends React.PureComponent<Props> {
       dropdown
     } = this.props;
 
-    if (dropdown) {
-      const { currentMode, otherModes } = getCurrentMode(this.props);
+    const { hovering, showSubmodes, currentMode, otherModes } = this.state;
 
+    if (dropdown) {
       return (
         <Tooltips>
           <Hover onMouseLeave={this.onMouseLeave}>
-            {this.state.showSubmodes &&
+            {showSubmodes &&
               <SubMode
                 onClick={this.onMouseLeave}
                 onAnimationEnd={this.onAnimationEnd}
-                hovering={this.state.hovering}
+                hovering={hovering}
                 i={0}
               >
                 {otherModes[0]}
@@ -210,11 +238,11 @@ export default class ModeIcons extends React.PureComponent<Props> {
             <div onMouseEnter={this.onMouseEnter}>
               {currentMode}
             </div>
-            {this.state.showSubmodes &&
+            {showSubmodes &&
               <SubMode
                 onClick={this.onMouseLeave}
                 onAnimationEnd={this.onAnimationEnd}
-                hovering={this.state.hovering}
+                hovering={hovering}
                 i={1}
               >
                 {otherModes[1]}
