@@ -5,7 +5,7 @@ import delay from '../utils/delay';
 import setScreen from '../status-screen';
 
 type Dependencies = {
-  [dependency: string]: string,
+  [dependency: string]: string
 };
 
 const debug = _debug('cs:sandbox:packager');
@@ -57,8 +57,8 @@ async function requestPackager(query: string) {
           dispatch(
             actions.notifications.show(
               'It seems like all packagers are busy, retrying in 10 seconds...',
-              'warning',
-            ),
+              'warning'
+            )
           );
         }
         await delay(1000 * 10); // eslint-disable-line no-await-in-loop
@@ -73,12 +73,12 @@ async function requestPackager(query: string) {
 async function callPackager(dependencies: Object) {
   const dependencyUrl = dependenciesToQuery(dependencies);
 
-  try {
-    // Warmup cache
-    window.fetch(`${NEW_PACKAGER_URL}/${dependencyUrl}`);
-  } catch (e) {
-    console.error(e);
-  }
+  // try {
+  //   // Warmup cache
+  //   window.fetch(`${NEW_PACKAGER_URL}/${dependencyUrl}`);
+  // } catch (e) {
+  //   console.error(e);
+  // }
 
   const manifest = await requestPackager(dependencyUrl);
   return manifest;
