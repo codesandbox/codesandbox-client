@@ -7,9 +7,10 @@ import MenuItem from 'app/components/MenuItem';
 
 import {
   newSandboxUrl,
+  newPreactSandboxUrl,
   newVueSandboxUrl,
   importFromGitHubUrl,
-  uploadFromCliUrl,
+  uploadFromCliUrl
 } from 'app/utils/url-generator';
 
 const Container = styled.div`
@@ -30,6 +31,9 @@ export default () =>
   <Container>
     <Link style={{ textDecoration: 'none' }} to={newSandboxUrl()}>
       <MenuItem>New React Sandbox</MenuItem>
+    </Link>
+    <Link style={{ textDecoration: 'none' }} to={newPreactSandboxUrl()}>
+      <MenuItem>New Preact Sandbox</MenuItem>
     </Link>
     <Link style={{ textDecoration: 'none' }} to={newVueSandboxUrl()}>
       <MenuItem>New Vue Sandbox</MenuItem>

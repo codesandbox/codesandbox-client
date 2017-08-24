@@ -16,6 +16,7 @@ export const host = () => {
 export const protocolAndHost = () => `${location.protocol}//${host()}`;
 
 export const newSandboxUrl = () => `/s/new`;
+export const newPreactSandboxUrl = () => `/s/preact`;
 export const newVueSandboxUrl = () => `/s/vue`;
 export const importFromGitHubUrl = () => `/s/github`;
 export const uploadFromCliUrl = () => `/s/cli`;
@@ -24,7 +25,7 @@ const sandboxGitUrl = (git: {
   repo: string,
   branch: string,
   username: string,
-  path: string,
+  path: string
 }) =>
   buildEncodedUri`github/${git.username}/${git.repo}/tree/${git.branch}/` +
   git.path;
@@ -71,12 +72,12 @@ export const githubRepoUrl = ({
   repo,
   branch,
   username,
-  path,
+  path
 }: {
   repo: string,
   branch: string,
   username: string,
-  path: string,
+  path: string
 }) =>
   buildEncodedUri`https://github.com/${username}/${repo}/tree/${branch}/` +
   path;
@@ -85,7 +86,7 @@ export const optionsToParameterizedUrl = (options: Object) => {
   const keyValues = Object.keys(options)
     .sort()
     .map(
-      key => `${encodeURIComponent(key)}=${encodeURIComponent(options[key])}`,
+      key => `${encodeURIComponent(key)}=${encodeURIComponent(options[key])}`
     )
     .join('&');
 
