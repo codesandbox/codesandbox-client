@@ -8,7 +8,7 @@ class LessTranspiler extends WorkerTranspiler {
   worker: Worker;
 
   constructor() {
-    super(LessWorker, 1);
+    super('less-loader', LessWorker, 1);
 
     this.cacheable = false;
   }
@@ -34,6 +34,7 @@ class LessTranspiler extends WorkerTranspiler {
           files,
           path,
         },
+        loaderContext,
         (err, data) => {
           if (err) {
             loaderContext.emitError(err);
@@ -41,18 +42,7 @@ class LessTranspiler extends WorkerTranspiler {
             return reject(err);
           }
 
-          if (data.type === 'add-dependency') {
-            try {
-              loaderContext.addDependency(
-                data.path,
-                loaderContext._module.module.directoryShortid,
-              );
-            } catch (e) {
-              return reject(e);
-            }
-          } else {
-            return resolve(data);
-          }
+          return resolve(data);
         },
       );
     });

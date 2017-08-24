@@ -17,6 +17,20 @@ const getStyleFileName = attrs => {
   return attrs.module ? `module.${extension}` : extension;
 };
 
+const getStyleLoaders = attrs => {
+  let loader = '!style-loader';
+  if (attrs.module) {
+    loader += `?${JSON.stringify({ module: true })}`;
+  }
+
+  if (attrs.lang === 'scss') loader += '!sass-loader';
+  if (attrs.lang === 'sass') loader += '!sass-loader';
+  if (attrs.lang === 'styl') loader += '!stylus-loader';
+  if (attrs.lang === 'less') loader += '!less-loader';
+
+  return loader;
+};
+
 const getScriptFileName = attrs => {
   if (attrs.lang === 'js') return 'js';
   if (attrs.lang === 'typescript') return 'ts';
@@ -32,25 +46,15 @@ const getTemplateFileName = attrs => {
 };
 
 export default function(code: string, loaderContext: LoaderContext) {
-  function getTemplateRequire(templateCompilerOptions, impt) {
-    const requireString = loaderContext.emitModule(
-      `template.vue.${getTemplateFileName(
-        impt.attrs,
-      )}${templateCompilerOptions}`,
-      impt.content,
-    );
-
-    return `./${requireString}`;
-  }
-
   const { path, options, _module } = loaderContext;
+  const moduleTitle = _module.module.title;
 
   let output = '';
   const moduleId = 'data-v-' + genId(path, options.context, options.hashKey);
   const parts = parse(code, _module.module.title, false);
   const hasScoped = parts.styles.some(s => s.scoped);
 
-  var templateCompilerOptions =
+  var templateOptions =
     '?' +
     JSON.stringify({
       id: moduleId,
@@ -107,13 +111,14 @@ export default function(code: string, loaderContext: LoaderContext) {
     output += styleInjectionCode;
   }
 
-  const requireStatement = loaderContext.emitModule(
+  loaderContext.emitModule(
     // No extension, so no transpilation !noop
-    'component-normalizer!noop',
+    '!noop-loader!component-normalizer.js',
     componentNormalizerRaw,
   );
 
-  output += "var Component = require('./" + requireStatement + "')(\n";
+  output +=
+    "var Component = require('!noop-loader!component-normalizer.js')(\n";
   // <script>
   output += '  /* script */\n  ';
   var script = parts.script;
@@ -132,7 +137,7 @@ export default function(code: string, loaderContext: LoaderContext) {
   if (template) {
     const file = template.src
       ? template.src
-      : getTemplateRequire(templateCompilerOptions, template);
+      : getTemplateRequire(templateOptions, template);
 
     output += `require('${file}')`;
   } else {
@@ -173,7 +178,7 @@ export default function(code: string, loaderContext: LoaderContext) {
       '")}\n';
   }
 
-  output += `exports = Component.esModule;\n`;
+  output += `module.exports = Component.esModule;\n`;
 
   // IVES: Implement custom blocks later?
 
@@ -209,29 +214,36 @@ export default function(code: string, loaderContext: LoaderContext) {
 
   return output;
 
+  function getTemplateRequire(templateCompilerOptions, impt) {
+    const tModule = loaderContext.emitModule(
+      `!vue-template-compiler${templateCompilerOptions}!${moduleTitle}:template.vue.${getTemplateFileName(
+        impt.attrs,
+      )}`,
+      impt.content,
+    );
+
+    return `${tModule.query}!./${tModule.module.title}`;
+  }
+
   function getRequire(type, impt, i = 0, scoped) {
     if (type === 'style') {
-      var styleCompiler =
-        `style-${i}.vue.${getStyleFileName(impt.attrs)}` +
-        '?' +
-        JSON.stringify({
-          id: moduleId,
-          scoped: !!scoped,
-        });
+      var styleCompiler = `${getStyleLoaders(
+        impt.attrs,
+      )}!vue-style-compiler?${JSON.stringify({
+        id: moduleId,
+        scoped: !!scoped,
+      })}!${moduleTitle}:style-${i}.vue.${getStyleFileName(impt.attrs)}`;
 
-      const requireString = loaderContext.emitModule(
-        styleCompiler,
-        impt.content,
-      );
+      const tModule = loaderContext.emitModule(styleCompiler, impt.content);
 
-      return `./${requireString}`;
+      return `${tModule.query}!./${tModule.module.title}`;
     } else if (type === 'script') {
-      const requireString = loaderContext.emitModule(
-        `script.${getScriptFileName(impt.attrs)}`,
+      const tModule = loaderContext.emitModule(
+        `${moduleTitle}:script.${getScriptFileName(impt.attrs)}`,
         impt.content,
       );
 
-      return `./${requireString}`;
+      return `./${tModule.module.title}`;
     }
     return '';
   }

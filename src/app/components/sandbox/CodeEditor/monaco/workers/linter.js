@@ -258,7 +258,7 @@ const defaultConfig = {
     // https://github.com/benmosher/eslint-plugin-import/tree/master/docs/rules
     'import/first': 'error',
     'import/no-amd': 'error',
-    'import/no-webpack-loader-syntax': 'error',
+    'import/no-webpack-loader-syntax': 'warn',
 
     // https://github.com/yannickcr/eslint-plugin-react/tree/master/docs/rules
     'react/jsx-no-comment-textnodes': 'warn',
@@ -278,7 +278,7 @@ const defaultConfig = {
     'react/no-deprecated': 'warn',
     'react/no-direct-mutation-state': 'warn',
     'react/no-is-mounted': 'warn',
-    'react/react-in-jsx-scope': 'error',
+    // 'react/react-in-jsx-scope': 'error',
     'react/require-render-return': 'error',
     'react/style-prop-object': 'warn',
 

@@ -1,4 +1,5 @@
 import { buildWorkerError } from '../utils/worker-error-handler';
+import getDependencies from './get-require-statements';
 
 self.importScripts([
   'https://cdnjs.cloudflare.com/ajax/libs/typescript/2.5.0/typescript.min.js',
@@ -39,7 +40,22 @@ self.addEventListener('message', event => {
   };
 
   try {
-    const { outputText: compiledCode } = ts.transpileModule(code, config);
+    const { outputText: compiledCode, ast } = ts.transpileModule(code, config);
+
+    const dependencies = getDependencies(ast, self.ts);
+
+    dependencies.forEach(dependency => {
+      if (/^(\w|@)/.test(dependency.path) && !dependency.path.includes('!')) {
+        // Don't push dependencies
+        return;
+      }
+
+      self.postMessage({
+        type: 'add-dependency',
+        path: dependency.path,
+        isGlob: dependency.type === 'glob',
+      });
+    });
 
     self.postMessage({
       type: 'compiled',

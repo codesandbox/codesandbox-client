@@ -9,6 +9,10 @@ import { type LoaderContext } from '../../transpiled-module';
  * @extends {Transpiler}
  */
 class BinaryTranspiler extends Transpiler {
+  constructor() {
+    super('binary-loader');
+  }
+
   doTranspilation(code: string, loaderContext: LoaderContext) {
     return fetch(code)
       .then(res => res.blob())

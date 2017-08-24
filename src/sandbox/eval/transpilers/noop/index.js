@@ -2,6 +2,10 @@
 import Transpiler from '../';
 
 class NoopTranspiler extends Transpiler {
+  constructor() {
+    super('noop-loader');
+  }
+
   doTranspilation(code: string) {
     return Promise.resolve({
       transpiledCode: code || '',

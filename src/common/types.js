@@ -141,6 +141,7 @@ export type Preferences = {
   fontFamily: ?string,
   clearConsoleEnabled: ?boolean,
   prettierConfig: Object,
+  autoDownloadTypes: ?boolean,
 };
 
 export type NotificationButton = {

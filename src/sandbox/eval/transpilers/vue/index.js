@@ -6,6 +6,9 @@ import { type LoaderContext } from '../../transpiled-module';
 // but will eventually move to async.
 
 class VueTranspiler extends Transpiler {
+  constructor() {
+    super('vue-loader');
+  }
   doTranspilation(code: string, loaderContext: LoaderContext) {
     return import('./loader').then(loader => {
       const transpiledCode = loader.default(code, loaderContext);

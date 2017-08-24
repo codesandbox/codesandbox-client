@@ -2,10 +2,14 @@
 import Transpiler from '../';
 
 class RawTranspiler extends Transpiler {
+  constructor() {
+    super('raw-loader');
+  }
+
   doTranspilation(code: string) {
     return Promise.resolve({
       transpiledCode: `
-      exports = \`${code || ''}\`;`,
+      exports = ${JSON.stringify(code)};`,
     });
   }
 }

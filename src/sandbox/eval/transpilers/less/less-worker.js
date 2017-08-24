@@ -30,7 +30,7 @@ self.addEventListener('message', event => {
 
   const context = {
     addDependency: depPath => {
-      self.postMessage({ type: 'add-dependency', path: depPath });
+      self.postMessage({ type: 'add-transpilation-dependency', path: depPath });
     },
   };
 

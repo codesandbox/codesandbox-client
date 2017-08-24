@@ -60,7 +60,7 @@ const config = {
       require.resolve('./polyfills'),
       path.join(paths.embedSrc, 'index.js'),
     ],
-    vendor: ['react', 'react-dom', 'styled-components', 'babel-standalone'],
+    vendor: ['react', 'react-dom', 'styled-components'],
   },
 
   target: 'web',
@@ -337,24 +337,16 @@ if (__PROD__) {
       dontCacheBustUrlsMatching: /\.\w{8}\./,
       filename: 'service-worker.js',
       cacheId: 'code-sandbox',
-      logger(message) {
-        if (message.indexOf('Total precache size is') === 0) {
-          // This message occurs for every build and is a bit too noisy.
-          return;
-        }
-        if (message.indexOf('Skipping static resource') === 0) {
-          // This message obscures real errors so we ignore it.
-          // https://github.com/facebookincubator/create-react-app/issues/2612
-          return;
-        }
-        console.log(message);
-      },
       minify: true,
       // For unknown URLs, fallback to the index page
       navigateFallback: publicPath + 'app.html',
       navigateFallbackWhitelist: [/\/s\//],
       // Don't precache sourcemaps (they're large) and build asset manifest:
-      staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
+      staticFileGlobsIgnorePatterns: [
+        /\.map$/,
+        /stats\.json$/,
+        /asset-manifest\.json$/,
+      ],
       maximumFileSizeToCacheInBytes: 5242880,
       runtimeCaching: [
         {
@@ -398,29 +390,21 @@ if (__PROD__) {
       // about it being stale, and the cache-busting can be skipped.
       dontCacheBustUrlsMatching: /\.\w{8}\./,
       filename: 'sandbox-service-worker.js',
-      logger(message) {
-        if (message.indexOf('Total precache size is') === 0) {
-          // This message occurs for every build and is a bit too noisy.
-          return;
-        }
-        if (message.indexOf('Skipping static resource') === 0) {
-          // This message obscures real errors so we ignore it.
-          // https://github.com/facebookincubator/create-react-app/issues/2612
-          return;
-        }
-        console.log(message);
-      },
       minify: true,
       // For unknown URLs, fallback to the index page
       navigateFallback: 'https://new.codesandbox.io/frame.html',
-      staticFileGlobs: ['www/frame.html'],
+      staticFileGlobs: ['www/frame.html', 'www/*.worker.js'],
       stripPrefix: 'www/',
       cacheId: 'code-sandbox-sandbox',
       // Ignores URLs starting from /__ (useful for Firebase):
       // https://github.com/facebookincubator/create-react-app/issues/2237#issuecomment-302693219
       navigateFallbackWhitelist: [/^(?!\/__).*/],
       // Don't precache sourcemaps (they're large) and build asset manifest:
-      staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
+      staticFileGlobsIgnorePatterns: [
+        /\.map$/,
+        /stats\.json$/,
+        /asset-manifest\.json$/,
+      ],
       maximumFileSizeToCacheInBytes: 10485760,
       runtimeCaching: [
         {

@@ -1,8 +1,7 @@
 import DependencyNotFoundError from '../../errors/dependency-not-found-error';
 
 /**
- * Converts a dependency string to an actual dependency, this can return null
- * if the dependency is not found.
+ * Converts a dependency string to an actual dependency
  *
  * @param {string} dependencyPath
  * @param {Object} externals

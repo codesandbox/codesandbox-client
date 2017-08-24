@@ -1,5 +1,12 @@
 import Transpiler from './';
 import { parseWorkerError } from './utils/worker-error-handler';
+import { type LoaderContext } from '../transpiled-module';
+
+type Task = {
+  message: any,
+  callback: (err: ?any, data: ?any) => void,
+  loaderContext: LoaderContext,
+};
 
 /**
  * A transpiler that handles worker messaging for you! Magic
@@ -9,15 +16,19 @@ export default class WorkerTranspiler extends Transpiler {
   workers: Array<Worker>;
   idleWorkers: Array<Worker>;
   workerCount: number;
-  tasks: Array<any>;
+  tasks: Array<Task>;
   initialized: boolean;
 
   runningTasks: {
     [id: string]: (error: Error, message: Object) => void,
   };
 
-  constructor(Worker: Worker, workerCount = navigator.hardwareConcurrency) {
-    super();
+  constructor(
+    name: string,
+    Worker: Worker,
+    workerCount = navigator.hardwareConcurrency,
+  ) {
+    super(name);
 
     this.workerCount = workerCount;
     this.Worker = Worker;
@@ -58,7 +69,7 @@ export default class WorkerTranspiler extends Transpiler {
     }
   }
 
-  executeTask({ message, callback }, worker: Worker) {
+  executeTask({ message, loaderContext, callback }: Task, worker: Worker) {
     worker.onmessage = newMessage => {
       const { data } = newMessage;
 
@@ -69,12 +80,34 @@ export default class WorkerTranspiler extends Transpiler {
           callback(reconstructedError);
         }
 
-        callback.bind(worker)(null, data);
+        if (data.type === 'add-dependency') {
+          // Dynamic import
+          if (data.isGlob) {
+            loaderContext.addDependenciesInDirectory(data.path, {
+              isAbsolute: data.isAbsolute,
+            });
+          } else {
+            loaderContext.addDependency(data.path, {
+              isAbsolute: data.isAbsolute,
+            });
+          }
+          return;
+        }
+
+        if (data.type === 'add-transpilation-dependency') {
+          loaderContext.addTranspilationDependency(data.path, {
+            isAbsolute: data.isAbsolute,
+          });
+          return;
+        }
 
         // Means the transpile task has been completed
-        if (data.type === 'compiled' || data.type === 'error') {
-          this.idleWorkers.push(worker);
+        if (data.type === 'compiled') {
+          callback(null, data);
+        }
 
+        if (data.type === 'error' || data.type === 'compiled') {
+          this.idleWorkers.push(worker);
           this.executeRemainingTasks();
         }
       }
@@ -82,11 +115,15 @@ export default class WorkerTranspiler extends Transpiler {
     worker.postMessage(message);
   }
 
-  queueTask(message: any, callback: (err: Error, message: Object) => void) {
+  queueTask(
+    message: any,
+    loaderContext: LoaderContext,
+    callback: (err: Error, message: Object) => void,
+  ) {
     if (!this.initialized) {
       this.initialize();
     }
-    this.tasks.push({ message, callback });
+    this.tasks.push({ message, loaderContext, callback });
 
     this.executeRemainingTasks();
   }

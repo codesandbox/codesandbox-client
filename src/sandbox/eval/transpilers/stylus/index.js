@@ -8,7 +8,7 @@ class StylusTranspiler extends WorkerTranspiler {
   worker: Worker;
 
   constructor() {
-    super(StylusWorker, 1);
+    super('stylus-loader', StylusWorker, 1);
 
     this.cacheable = false;
   }
@@ -22,6 +22,7 @@ class StylusTranspiler extends WorkerTranspiler {
           code,
           path,
         },
+        loaderContext,
         (err, data) => {
           if (err) {
             loaderContext.emitError(err);

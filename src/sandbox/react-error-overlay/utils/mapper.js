@@ -38,7 +38,7 @@ async function map(
   await settle(
     files.map(async fileName => {
       const manager = getCurrentManager();
-      if (manager != null) {
+      if (manager != null && !fileName.startsWith('webpack')) {
         const transpiledModule = manager.resolveTranspiledModule(
           `./${fileName}`,
         );

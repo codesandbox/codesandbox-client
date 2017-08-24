@@ -8,7 +8,7 @@ class SassTranspiler extends WorkerTranspiler {
   worker: Worker;
 
   constructor() {
-    super(SassWorker, 1);
+    super('sass-loader', SassWorker, 1);
 
     this.cacheable = false;
   }
@@ -33,6 +33,7 @@ class SassTranspiler extends WorkerTranspiler {
           files,
           path,
         },
+        loaderContext,
         (err, data) => {
           if (err) {
             loaderContext.emitError(err);
@@ -40,11 +41,7 @@ class SassTranspiler extends WorkerTranspiler {
             return reject(err);
           }
 
-          if (data.type === 'add-dependency') {
-            loaderContext.addDependency(data.path);
-          } else {
-            return resolve(data);
-          }
+          return resolve(data);
         },
       );
     });

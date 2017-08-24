@@ -3,6 +3,10 @@ import Transpiler from '../../';
 import { type LoaderContext } from '../../../transpiled-module';
 
 class VueTemplateTranspiler extends Transpiler {
+  constructor() {
+    super('vue-template-compiler');
+  }
+
   doTranspilation(code: string, loaderContext: LoaderContext) {
     return import('./loader').then(loader => {
       const transpiledCode = loader.default(code, loaderContext);

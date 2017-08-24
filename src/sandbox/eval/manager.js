@@ -1,10 +1,12 @@
 // @flow
 import type { Module, Directory } from 'common/types';
-import { flatten, values } from 'lodash';
+import { flattenDeep, uniq, values } from 'lodash';
 
 import TranspiledModule from './transpiled-module';
 import Preset from './presets';
-import resolveModule from '../../common/sandbox/resolve-module';
+import resolveModule, {
+  getModulesInDirectory,
+} from '../../common/sandbox/resolve-module';
 
 type Externals = {
   [name: string]: string,
@@ -32,64 +34,91 @@ export default class Manager {
     this.preset = preset;
     this.transpiledModules = {};
 
-    this.modules.forEach(module => {
-      this.addModule(module);
-    });
+    console.log(this);
   }
 
   setExternals(externals: Externals) {
     this.externals = externals;
   }
 
-  initialize() {
-    return this.transpileAllModules();
-  }
+  initialize() {}
 
-  evaluateModule(module: Module, moduleChain: Array<TranspiledModule> = []) {
+  evaluateModule(module: Module) {
     const transpiledModule = this.getTranspiledModule(module);
 
-    const exports = transpiledModule.evaluate(this, moduleChain);
-
     // Run post evaluate first
+    const exports = this.evaluateTranspiledModule(transpiledModule, []);
+
     this.getTranspiledModules().forEach(t => t.postEvaluate(this));
 
     return exports;
   }
 
-  addModule(module: Module): TranspiledModule {
-    const transpiledModule = new TranspiledModule(module);
+  evaluateTranspiledModule(
+    transpiledModule: TranspiledModule,
+    parentModules: Array<TranspiledModule>,
+  ) {
+    return transpiledModule.evaluate(this, parentModules);
+  }
 
-    this.transpiledModules[module.id] = transpiledModule;
+  addModule(module: Module, query: string = ''): TranspiledModule {
+    const transpiledModule = new TranspiledModule(module, query);
+
+    this.transpiledModules[transpiledModule.getId()] = transpiledModule;
     return transpiledModule;
   }
 
-  getTranspiledModule(module: Module): TranspiledModule {
-    let transpileModule = this.transpiledModules[module.id];
+  /**
+   * Get Transpiled Module from the registry, if there is no transpiled module
+   * in the registry it will create a new one
+   * @param {*} module
+   * @param {*} query A webpack like syntax (!url-loader)
+   * @param {*} string
+   */
+  getTranspiledModule(module: Module, query: string = ''): TranspiledModule {
+    let transpiledModule = this.transpiledModules[`${module.id}:${query}`];
 
-    if (!transpileModule) {
-      transpileModule = new TranspiledModule(module);
-      this.transpiledModules[module.id] = transpileModule;
+    if (!transpiledModule) {
+      transpiledModule = this.addModule(module, query);
     }
 
-    return transpileModule;
+    return transpiledModule;
+  }
+
+  /**
+   * One module can have multiple transpiled modules, because modules can be
+   * required in different ways. For example, require(`babel-loader!./Test.vue`) isn't
+   * the same as require(`./Test.vue`).
+   *
+   * This will return all transpiled modules, with different configurations associated one module.
+   * @param {*} module
+   */
+  getTranspiledModulesByModule(module: Module): Array<TranspiledModule> {
+    return this.getTranspiledModules().filter(t => t.module.id === module.id);
   }
 
   getTranspiledModules() {
-    const transpileModuleValues = values(this.transpiledModules);
+    const transpiledModuleValues = values(this.transpiledModules);
 
-    return flatten([
-      transpileModuleValues,
-      ...transpileModuleValues.map(m => m.getChildTranspiledModules()),
+    return flattenDeep([
+      transpiledModuleValues,
+      ...transpiledModuleValues.map(m => m.getChildTranspiledModules()),
     ]);
   }
 
-  transpileModule(module: Module): Promise<TranspiledModule> {
-    return this.getTranspiledModule(module).transpile(this);
+  removeTranspiledModule(tModule: TranspiledModule) {
+    delete this.transpiledModules[tModule.getId()];
   }
 
-  transpileAllModules(): Promise<Array<TranspiledModule>> {
-    const promises = this.modules.map(module => this.transpileModule(module));
-    return Promise.all(promises);
+  /**
+   * Will transpile this module and all eventual children (requires) that go with it
+   * @param {*} entry
+   */
+  transpileModules(entry: Module): Promise<TranspiledModule> {
+    const transpiledModule = this.getTranspiledModule(entry);
+
+    transpiledModule.setIsEntry(true);
+    return transpiledModule.transpile(this);
   }
 
   clearCompiledCache() {
@@ -119,19 +148,50 @@ export default class Manager {
     return this.directories;
   }
 
+  /**
+   * Resolve the transpiled module from the path, note that the path can actually
+   * include loaders. That's why we're focussing on first extracting this query
+   * @param {*} path
+   * @param {*} startdirectoryShortid
+   * @param {*} string
+   */
   resolveTranspiledModule(
     path: string,
     startdirectoryShortid: ?string,
   ): TranspiledModule {
+    const queryPath = path.split('!');
+    // pop() mutates queryPath, queryPath is now just the loaders
+    const modulePath = queryPath.pop();
+
     const module = resolveModule(
-      path,
+      this.preset.getAliasedPath(modulePath),
       this.getModules(),
       this.getDirectories(),
       startdirectoryShortid,
       this.preset.ignoredExtensions,
     );
 
-    return this.getTranspiledModule(module);
+    return this.getTranspiledModule(module, queryPath.join('!'));
+  }
+
+  resolveTranspiledModulesInDirectory(
+    path: string,
+    startdirectoryShortid: ?string,
+  ): Array<TranspiledModule> {
+    const queryPath = path.split('!');
+    // pop() mutates queryPath, queryPath is now just the loaders
+    const modulesPath = queryPath.pop();
+
+    const { modules } = getModulesInDirectory(
+      modulesPath,
+      this.getModules(),
+      this.getDirectories(),
+      startdirectoryShortid,
+    );
+
+    return modules.map(module =>
+      this.getTranspiledModule(module, queryPath.join('!')),
+    );
   }
 
   /**
@@ -177,16 +237,33 @@ export default class Manager {
     this.modules = modules;
     this.directories = directories;
 
-    addedModules.forEach(m => this.addModule(m));
-    updatedModules.forEach(m => this.getTranspiledModule(m).update(m));
-
     deletedModules.forEach(m => {
-      const transpiledModule = this.getTranspiledModule(m);
+      const transpiledModules = this.getTranspiledModulesByModule(m);
 
-      transpiledModule.dispose();
-      delete this.transpiledModules[m.id];
+      transpiledModules.forEach(tModule => {
+        tModule.dispose();
+        delete this.transpiledModules[tModule.getId()];
+      });
     });
 
-    return this.transpileAllModules();
+    const modulesToUpdate = uniq([...addedModules, ...updatedModules]);
+
+    modulesToUpdate.forEach(m => {
+      this.getTranspiledModulesByModule(m).forEach(tModule => {
+        tModule.update(m);
+      });
+    });
+
+    const transpiledModulesToUpdate = uniq(
+      flattenDeep([
+        modulesToUpdate.map(m => this.getTranspiledModulesByModule(m)),
+        // All modules with errors
+        this.getTranspiledModules().filter(t => t.errors.length > 0),
+      ]),
+    );
+
+    return Promise.all(
+      transpiledModulesToUpdate.map(tModule => tModule.transpile(this)),
+    );
   }
 }
