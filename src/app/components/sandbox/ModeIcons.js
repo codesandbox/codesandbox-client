@@ -3,22 +3,44 @@ import styled, { keyframes } from 'styled-components';
 
 import Tooltip from 'app/components/Tooltip';
 
-const animation = keyframes`
+const showAnimationKeyframes = keyframes`
   0%   { opacity: 0; transform: translateX(10px); }
   100% { opacity: 1; transform: translateX(0px); }
 `;
 
-const reverseAnimation = keyframes`
+const reverseShowAnimationKeyframes = keyframes`
   0%   { opacity: 0; transform: translateX(-10px); }
   100% { opacity: 1; transform: translateX(0px); }
 `;
 
-const delayAnimation = (delay: number = 0, reverse: boolean = true) =>
+const showAnimation = (delay: number = 0, reverse: boolean = true) =>
   `
-    animation: ${reverse ? reverseAnimation : animation} 0.3s;
+    animation: ${reverse
+      ? reverseShowAnimationKeyframes
+      : showAnimationKeyframes} 0.3s;
     animation-delay: ${delay}s;
     animation-fill-mode: forwards;
     opacity: 0;
+  `;
+
+const hideAnimationKeyframes = keyframes`
+  0%   { opacity: 1; transform: translateX(0px); }
+  100% { opacity: 0; transform: translateX(10px); }
+`;
+
+const reverseHideAnimationKeyframes = keyframes`
+  0%   { opacity: 1; transform: translateX(0px); }
+  100% { opacity: 0; transform: translateX(-10px); }
+`;
+
+const hideAnimation = (delay: number = 0, reverse: boolean = true) =>
+  `
+    animation: ${reverse
+      ? reverseHideAnimationKeyframes
+      : hideAnimationKeyframes} 0.3s;
+    animation-delay: ${delay}s;
+    animation-fill-mode: forwards;
+    opacity: 1;
   `;
 
 const Tooltips = styled.div`
@@ -69,7 +91,10 @@ const Hover = styled.div`
 `;
 
 const SubMode = styled.div`
-  ${props => delayAnimation(props.i * 0.05, props.i === 1)};
+  ${props =>
+    props.hovering
+      ? showAnimation(props.i * 0.05, props.i === 1)
+      : hideAnimation(props.i * 0.05, props.i === 1)};
 `;
 
 const Icon = styled.div`
@@ -94,7 +119,7 @@ type Props = {
   setEditorView: () => void,
   setPreviewView: () => void,
   setMixedView: () => void,
-  noPreview: ?boolean,
+  noPreview: ?boolean
 };
 
 const getCurrentMode = ({
@@ -102,7 +127,7 @@ const getCurrentMode = ({
   showPreview,
   setMixedView,
   setEditorView,
-  setPreviewView,
+  setPreviewView
 }: Props) => {
   const both = (
     <ViewIcon onClick={setMixedView} active={showEditor && showPreview}>
@@ -133,19 +158,28 @@ const getCurrentMode = ({
 
 export default class ModeIcons extends React.PureComponent<Props> {
   state = {
-    hovering: false,
+    hovering: false
   };
 
   onMouseEnter = () => {
     this.setState({
-      hovering: true,
+      showSubmodes: true,
+      hovering: true
     });
   };
 
   onMouseLeave = () => {
     this.setState({
-      hovering: false,
+      hovering: false
     });
+  };
+
+  onAnimationEnd = () => {
+    if (!this.state.hovering) {
+      this.setState({
+        showSubmodes: false
+      });
+    }
   };
 
   render() {
@@ -155,7 +189,7 @@ export default class ModeIcons extends React.PureComponent<Props> {
       setEditorView,
       setMixedView,
       setPreviewView,
-      dropdown,
+      dropdown
     } = this.props;
 
     if (dropdown) {
@@ -164,9 +198,10 @@ export default class ModeIcons extends React.PureComponent<Props> {
       return (
         <Tooltips>
           <Hover onMouseLeave={this.onMouseLeave}>
-            {this.state.hovering &&
+            {this.state.showSubmodes &&
               <SubMode
                 onClick={this.onMouseLeave}
+                onAnimationEnd={this.onAnimationEnd}
                 hovering={this.state.hovering}
                 i={0}
               >
@@ -175,9 +210,10 @@ export default class ModeIcons extends React.PureComponent<Props> {
             <div onMouseEnter={this.onMouseEnter}>
               {currentMode}
             </div>
-            {this.state.hovering &&
+            {this.state.showSubmodes &&
               <SubMode
                 onClick={this.onMouseLeave}
+                onAnimationEnd={this.onAnimationEnd}
                 hovering={this.state.hovering}
                 i={1}
               >
