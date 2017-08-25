@@ -76,6 +76,7 @@
     "webpack": "^3.5.4",
     "webpack-dev-middleware": "^1.11.0",
     "webpack-dev-server": "^2.5.1",
+    "webpack-merge": "^4.1.0",
     "whatwg-fetch": "^2.0.3",
     "worker-loader": "^0.8.1"
   },
