@@ -5824,6 +5824,10 @@ monaco-editor@CompuIves/codesandbox-monaco-editor:
   dependencies:
     monaco-typescript CompuIves/monaco-typescript
 
+monaco-typescript@CompuIves/monaco-typescript:
+  version "2.2.0"
+  resolved "https://codeload.github.com/CompuIves/monaco-typescript/tar.gz/eff3dd58fe3a6b15944838842aaf734910baa1d4"
+
 ms@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.0.0.tgz#5608aeadfc00be6c2901df5f9861788de0d597c8"

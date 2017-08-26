@@ -1,10 +1,11 @@
 // @flow
 import * as React from 'react';
-import styled from 'styled-components';
+import styled, { ThemeProvider } from 'styled-components';
 import { camelizeKeys } from 'humps';
 import 'whatwg-fetch';
 
 import type { Sandbox, Module } from 'common/types';
+import getTemplateDefinition from 'common/templates';
 import Centered from 'app/components/flex/Centered';
 import Title from 'app/components/text/Title';
 import SubTitle from 'app/components/text/SubTitle';
@@ -15,7 +16,7 @@ import Sidebar from './components/Sidebar';
 import { getSandboxOptions } from '../common/url';
 import {
   findCurrentModule,
-  findMainModule,
+  findMainModule
 } from 'app/store/entities/sandboxes/modules/selectors';
 
 const Container = styled.div`
@@ -56,7 +57,7 @@ type State = {
   sidebarOpen: boolean,
   autoResize: boolean,
   hideNavigation: boolean,
-  fontSize: number,
+  fontSize: number
 };
 
 export default class App extends React.PureComponent<{}, State> {
@@ -71,7 +72,7 @@ export default class App extends React.PureComponent<{}, State> {
       isEditorScreen,
       autoResize,
       hideNavigation,
-      fontSize,
+      fontSize
     } = getSandboxOptions(document.location.href);
 
     this.state = {
@@ -85,7 +86,7 @@ export default class App extends React.PureComponent<{}, State> {
       initialPath,
       sidebarOpen: false,
       autoResize,
-      hideNavigation,
+      hideNavigation
     };
   }
 
@@ -103,7 +104,7 @@ export default class App extends React.PureComponent<{}, State> {
   fetchSandbox = async (id: string) => {
     try {
       const response = await fetch(
-        `${this.getAppOrigin()}/api/v1/sandboxes/${id}`,
+        `${this.getAppOrigin()}/api/v1/sandboxes/${id}`
       )
         .then(res => res.json())
         .then(camelizeKeys);
@@ -148,7 +149,7 @@ export default class App extends React.PureComponent<{}, State> {
       sandbox.modules,
       sandbox.directories,
       currentModulePath,
-      findMainModule(sandbox.modules),
+      findMainModule(sandbox.modules)
     );
   };
 
@@ -175,30 +176,37 @@ export default class App extends React.PureComponent<{}, State> {
     const { showEditor, showPreview, isInProjectView } = this.state;
 
     return (
-      <Container>
-        <Header
-          showEditor={showEditor}
-          showPreview={showPreview}
-          setEditorView={this.setEditorView}
-          setPreviewView={this.setPreviewView}
-          setMixedView={this.setMixedView}
-          sandbox={this.state.sandbox}
-          toggleSidebar={this.toggleSidebar}
-        />
-        <Content
-          showEditor={showEditor}
-          showPreview={showPreview}
-          isInProjectView={isInProjectView}
-          setProjectView={this.setProjectView}
-          sandbox={this.state.sandbox}
-          currentModule={this.getCurrentModuleFromPath().id}
-          hideNavigation={this.state.hideNavigation}
-          autoResize={this.state.autoResize}
-          fontSize={this.state.fontSize}
-          initialPath={this.state.initialPath}
-          setCurrentModule={this.setCurrentModule}
-        />
-      </Container>
+      <ThemeProvider
+        theme={{
+          templateColor: getTemplateDefinition(this.state.sandbox.template)
+            .color
+        }}
+      >
+        <Container>
+          <Header
+            showEditor={showEditor}
+            showPreview={showPreview}
+            setEditorView={this.setEditorView}
+            setPreviewView={this.setPreviewView}
+            setMixedView={this.setMixedView}
+            sandbox={this.state.sandbox}
+            toggleSidebar={this.toggleSidebar}
+          />
+          <Content
+            showEditor={showEditor}
+            showPreview={showPreview}
+            isInProjectView={isInProjectView}
+            setProjectView={this.setProjectView}
+            sandbox={this.state.sandbox}
+            currentModule={this.getCurrentModuleFromPath().id}
+            hideNavigation={this.state.hideNavigation}
+            autoResize={this.state.autoResize}
+            fontSize={this.state.fontSize}
+            initialPath={this.state.initialPath}
+            setCurrentModule={this.setCurrentModule}
+          />
+        </Container>
+      </ThemeProvider>
     );
   };
 
