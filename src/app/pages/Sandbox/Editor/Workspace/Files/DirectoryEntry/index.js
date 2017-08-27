@@ -10,9 +10,11 @@ import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 import { validateTitle } from 'app/store/entities//sandboxes/modules/validator';
 import contextMenuActionCreators from 'app/store/context-menu/actions';
 import { getModuleParents } from 'app/store/entities/sandboxes/modules/selectors';
+import modalActionCreators from 'app/store/modal/actions';
 
 import Entry from './Entry';
 import DirectoryChildren from './DirectoryChildren';
+import DeleteFile from './DeleteFile';
 
 const EntryContainer = styled.div`position: relative;`;
 
@@ -34,6 +36,7 @@ const Opener = styled.div`
 const mapDispatchToProps = dispatch => ({
   sandboxActions: bindActionCreators(sandboxActionCreators, dispatch),
   openMenu: bindActionCreators(contextMenuActionCreators, dispatch).openMenu,
+  modalActions: bindActionCreators(modalActionCreators, dispatch)
 });
 type Props = {
   id: string,
@@ -49,11 +52,12 @@ type Props = {
   depth: ?number,
   openMenu: (e: Event) => void,
   sandboxActions: typeof sandboxActionCreators,
+  modalActions: typeof modalActionCreators,
   currentModuleId: ?string,
-  isInProjectView: boolean,
+  isInProjectView: boolean
 };
 type State = {
-  creating: '' | 'module' | 'directory',
+  creating: '' | 'module' | 'directory'
 };
 class DirectoryEntry extends React.PureComponent {
   props: Props;
@@ -73,7 +77,7 @@ class DirectoryEntry extends React.PureComponent {
 
     this.state = {
       creating: '',
-      open: props.root || isParentOfModule,
+      open: props.root || isParentOfModule
     };
   }
 
@@ -101,7 +105,7 @@ class DirectoryEntry extends React.PureComponent {
   onCreateModuleClick = () => {
     this.setState({
       creating: 'module',
-      open: true,
+      open: true
     });
     return true;
   };
@@ -118,23 +122,27 @@ class DirectoryEntry extends React.PureComponent {
   };
 
   deleteModule = (id: string) => {
-    const { sandboxId, modules, sandboxActions } = this.props;
+    const { sandboxId, modules, sandboxActions, modalActions } = this.props;
     const module = modules.find(m => m.id === id);
 
-    const confirmed = confirm(
-      `Are you sure you want to delete ${module.title}?`
-    );
-
-    if (confirmed) {
-      sandboxActions.deleteModule(sandboxId, id);
-    }
-    return true;
+    modalActions.openModal({
+      Body: (
+        <DeleteFile
+          filename={module.title}
+          onCancel={modalActions.closeModal}
+          onDelete={() => {
+            modalActions.closeModal();
+            sandboxActions.deleteModule(sandboxId, id);
+          }}
+        />
+      )
+    });
   };
 
   onCreateDirectoryClick = () => {
     this.setState({
       creating: 'directory',
-      open: true,
+      open: true
     });
     return true;
   };
@@ -184,7 +192,7 @@ class DirectoryEntry extends React.PureComponent {
 
     return [
       ...modules.filter(m => m.directoryShortid === shortid),
-      ...directories.filter(d => d.directoryShortid === shortid),
+      ...directories.filter(d => d.directoryShortid === shortid)
     ];
   };
 
@@ -207,7 +215,7 @@ class DirectoryEntry extends React.PureComponent {
       isOver, // eslint-disable-line
       isInProjectView,
       depth = 0,
-      root,
+      root
     } = this.props;
     const { creating, open } = this.state;
 
@@ -307,7 +315,7 @@ const entryTarget = {
 
     if (source.id === props.id) return false;
     return true;
-  },
+  }
 };
 
 function collectTarget(connectMonitor, monitor) {
@@ -318,7 +326,7 @@ function collectTarget(connectMonitor, monitor) {
     // You can ask the monitor about the current drag state:
     isOver: monitor.isOver({ shallow: true }),
     canDrop: monitor.canDrop(),
-    itemType: monitor.getItemType(),
+    itemType: monitor.getItemType()
   };
 }
 
