@@ -3,7 +3,7 @@ import { dispatch } from 'codesandbox-api';
 function sendUrlChange(url: string) {
   dispatch({
     type: 'urlchange',
-    url,
+    url
   });
 }
 
@@ -39,6 +39,10 @@ export default function setupHistoryListeners() {
       sendUrlChange(document.location.href);
     });
   };
+
+  window.addEventListener('hashchange', function(event) {
+    sendUrlChange(document.location.href);
+  });
 
   setTimeout(() => {
     sendUrlChange(document.location.href);
