@@ -19,7 +19,7 @@ import FuzzySearch from './FuzzySearch/index';
 let modelCache = {};
 
 type State = {
-  fuzzySearchEnabled: boolean,
+  fuzzySearchEnabled: boolean
 };
 
 type Props = {
@@ -37,7 +37,7 @@ type Props = {
   modules: Array<Module>,
   directories: Array<Directory>,
   dependencies: ?Object,
-  setCurrentModule: ?(sandboxId: string, moduleId: string) => void,
+  setCurrentModule: ?(sandboxId: string, moduleId: string) => void
 };
 
 const Container = styled.div`
@@ -50,7 +50,7 @@ const fontFamilies = (...families) =>
   families
     .filter(Boolean)
     .map(
-      family => (family.indexOf(' ') !== -1 ? JSON.stringify(family) : family),
+      family => (family.indexOf(' ') !== -1 ? JSON.stringify(family) : family)
     )
     .join(', ');
 
@@ -128,7 +128,7 @@ const handleError = (
   nextErrors: ?Array<ModuleError>,
   nextCode: ?string,
   prevId: string,
-  nextId: string,
+  nextId: string
 ) => {
   if (!monaco) return;
   if (nextErrors && nextErrors.length > 0) {
@@ -141,7 +141,7 @@ const handleError = (
             startLineNumber: error.line,
             endColumn: error.column,
             endLineNumber: error.line + 1,
-            message: error.message,
+            message: error.message
           };
         }
 
@@ -157,7 +157,7 @@ const handleError = (
 
 export default class CodeEditor extends React.PureComponent<Props, State> {
   state = {
-    fuzzySearchEnabled: false,
+    fuzzySearchEnabled: false
   };
 
   syntaxWorker: Worker;
@@ -203,7 +203,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
         requestAnimationFrame(() => {
           this.monaco.languages.typescript.typescriptDefaults.addExtraLib(
             typings,
-            `file:///${path}`,
+            `file:///${path}`
           );
         });
       }
@@ -216,18 +216,18 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
         classification.startLine,
         classification.start,
         classification.endLine,
-        classification.end,
+        classification.end
       ),
       options: {
-        inlineClassName: classification.kind,
-      },
+        inlineClassName: classification.kind
+      }
     }));
 
     const modelInfo = this.getModelById(this.props.id);
 
     modelInfo.decorations = this.editor.deltaDecorations(
       modelInfo.decorations || [],
-      decorations,
+      decorations
     );
   };
 
@@ -235,7 +235,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     this.monaco.editor.setModelMarkers(
       this.editor.getModel(),
       'eslint',
-      markers,
+      markers
     );
   };
 
@@ -272,7 +272,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
             const newModel = this.createModel(
               module,
               nextProps.modules,
-              nextProps.directories,
+              nextProps.directories
             );
 
             if (isCurrentlyOpened) {
@@ -330,12 +330,12 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     currentId,
     nextId,
     nextCode,
-    nextTitle,
+    nextTitle
   }: {
     currentId: string,
     nextId: string,
     nextCode: ?string,
-    nextTitle: string,
+    nextTitle: string
   }) => {
     if (nextId !== currentId) {
       const pos = this.editor.getPosition();
@@ -351,7 +351,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     const {
       id: currentId,
       sandboxId: currentSandboxId,
-      errors: currentErrors,
+      errors: currentErrors
     } = this.props;
 
     const {
@@ -359,7 +359,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
       code: nextCode,
       errors: nextErrors,
       title: nextTitle,
-      sandboxId: nextSandboxId,
+      sandboxId: nextSandboxId
     } = nextProps;
 
     if (nextSandboxId !== currentSandboxId) {
@@ -377,7 +377,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
         currentId,
         nextId,
         nextCode,
-        nextTitle,
+        nextTitle
       }).then(() => {
         handleError(
           this.monaco,
@@ -386,7 +386,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
           nextErrors,
           nextCode,
           currentId,
-          nextId,
+          nextId
         );
       });
     }
@@ -400,11 +400,11 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     const editOperation = {
       identifier: {
         major: 1,
-        minor: 1,
+        minor: 1
       },
       text: code,
       range: new this.monaco.Range(0, 0, lastLine + 1, lastLineColumn),
-      forceMoveMarkers: false,
+      forceMoveMarkers: false
     };
 
     this.editor.getModel().pushEditOperations([], [editOperation], null);
@@ -446,7 +446,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
       this.syntaxWorker.postMessage({
         code,
         title,
-        version,
+        version
       });
     }
   };
@@ -456,7 +456,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
       this.lintWorker.postMessage({
         code,
         title,
-        version,
+        version
       });
     }
   };
@@ -467,7 +467,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     this.syntaxHighlight(
       newCode,
       this.props.title,
-      this.editor.getModel().getVersionId(),
+      this.editor.getModel().getVersionId()
     );
     this.lint(newCode, this.props.title, this.editor.getModel().getVersionId());
   };
@@ -479,8 +479,8 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
       rules: [
         { token: 'comment', foreground: '626466' },
         { token: 'keyword', foreground: '6CAEDD' },
-        { token: 'identifier', foreground: 'fac863' },
-      ],
+        { token: 'identifier', foreground: 'fac863' }
+      ]
     });
   };
 
@@ -490,7 +490,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
 
     window._cs = {
       editor: this.editor,
-      monaco: this.monaco,
+      monaco: this.monaco
     };
 
     this.setupWorkers();
@@ -506,21 +506,21 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
       experimentalDecorators: true,
       noEmit: true,
       allowJs: true,
-      typeRoots: ['node_modules/@types'],
+      typeRoots: ['node_modules/@types']
     };
 
     monaco.languages.typescript.typescriptDefaults.setMaximunWorkerIdleTime(-1);
     monaco.languages.typescript.javascriptDefaults.setMaximunWorkerIdleTime(-1);
     monaco.languages.typescript.typescriptDefaults.setCompilerOptions(
-      compilerDefaults,
+      compilerDefaults
     );
     monaco.languages.typescript.javascriptDefaults.setCompilerOptions(
-      compilerDefaults,
+      compilerDefaults
     );
 
     monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
       noSemanticValidation: false,
-      noSyntaxValidation: true,
+      noSyntaxValidation: true
     });
 
     this.initializeModules();
@@ -560,9 +560,9 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
       // @param editor The editor instance is passed in as a convinience
       run: ed => {
         this.setState({
-          fuzzySearchEnabled: true,
+          fuzzySearchEnabled: true
         });
-      },
+      }
     });
   };
 
@@ -582,16 +582,20 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
       this.monaco.KeyMod.CtrlCmd | this.monaco.KeyCode.KEY_S,
       () => {
         this.handleSaveCode();
-      },
+      }
     );
   };
 
   disposeModules = () => {
-    this.editor.setModel(null);
+    if (this.editor) {
+      this.editor.setModel(null);
+    }
 
-    this.monaco.editor.getModels().forEach(model => {
-      model.dispose();
-    });
+    if (this.monaco) {
+      this.monaco.editor.getModels().forEach(model => {
+        model.dispose();
+      });
+    }
 
     modelCache = {};
   };
@@ -619,7 +623,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
   createModel = (
     module: Module,
     modules: Array<Module> = this.props.modules,
-    directories: Array<Directory> = this.props.directories,
+    directories: Array<Directory> = this.props.directories
   ) => {
     // Remove the first slash, as this will otherwise create errors in monaco
     const path = getModulePath(modules, directories, module.id);
@@ -628,7 +632,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     const model = this.monaco.editor.createModel(
       module.code,
       mode === 'javascript' ? 'typescript' : mode,
-      new this.monaco.Uri().with({ path, scheme: 'file' }),
+      new this.monaco.Uri().with({ path, scheme: 'file' })
     );
 
     model.updateOptions({ tabSize: 2 });
@@ -636,7 +640,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     modelCache[module.id] = modelCache[module.id] || {
       model: null,
       decorations: [],
-      cursorPos: null,
+      cursorPos: null
     };
     modelCache[module.id].model = model;
 
@@ -666,12 +670,12 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
       this.syntaxHighlight(
         modelInfo.model.getValue(),
         title,
-        modelInfo.model.getVersionId(),
+        modelInfo.model.getVersionId()
       );
       this.lint(
         modelInfo.model.getValue(),
         title,
-        modelInfo.model.getVersionId(),
+        modelInfo.model.getVersionId()
       );
     });
   };
@@ -685,7 +689,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
 
   openReference = data => {
     const foundModuleId = Object.keys(modelCache).find(
-      mId => modelCache[mId].model.uri.path === data.resource.path,
+      mId => modelCache[mId].model.uri.path === data.resource.path
     );
 
     if (foundModuleId) {
@@ -703,7 +707,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
       } else {
         const pos = {
           lineNumber: selection.startLineNumber,
-          column: selection.startColumn,
+          column: selection.startColumn
         };
         this.editor.setPosition(pos);
         this.editor.revealPositionInCenter(pos);
@@ -727,7 +731,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
           code,
           mode === 'javascript' ? 'jsx' : mode,
           false, // Force false for eslint, since we would otherwise include 2 eslint bundles
-          preferences.prettierConfig,
+          preferences.prettierConfig
         );
 
         if (newCode !== code) {
@@ -763,11 +767,11 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
       //   'monospace',
       // ),
       minimap: {
-        enabled: false,
+        enabled: false
       },
       ariaLabel: title,
       formatOnPaste: true,
-      lineHeight: (preferences.lineHeight || 1.15) * preferences.fontSize,
+      lineHeight: (preferences.lineHeight || 1.15) * preferences.fontSize
     };
   };
 
@@ -777,7 +781,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
       modules,
       directories,
       onlyViewMode,
-      modulePath,
+      modulePath
     } = this.props;
 
     const options = this.getEditorOptions();
@@ -785,8 +789,8 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     const requireConfig = {
       url: '/public/vs/loader.js',
       paths: {
-        vs: '/public/vs',
-      },
+        vs: '/public/vs'
+      }
     };
     return (
       <Container>

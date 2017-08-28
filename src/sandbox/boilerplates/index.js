@@ -1,36 +1,32 @@
 // @flow
 import type { Module, Directory } from 'common/types';
 
-import evalModule from '../eval';
+import { getCurrentManager } from '../';
 
 let cachedBoilerplates = [];
 
-export function evalBoilerplates(
-  boilerplates: Array<any>,
-  modules: Array<Module>,
-  directories: Array<Directory>,
-  externals: Object,
-) {
-  cachedBoilerplates = boilerplates.map(boilerplate => {
-    const fakeModule: Module = {
-      id: boilerplate.id,
-      shortid: boilerplate.id,
-      title: `boilerplate-${boilerplate.condition}${boilerplate.extension}`,
-      code: boilerplate.code,
-      directoryShortid: null,
-      sourceId: boilerplate.sourceId,
-      isNotSynced: false,
-      type: '',
-    };
+export async function evalBoilerplates(boilerplates: Array<any>) {
+  cachedBoilerplates = await Promise.all(
+    boilerplates.map(async boilerplate => {
+      const fakeModule: Module = {
+        id: boilerplate.id,
+        shortid: boilerplate.id,
+        title: `boilerplate-${boilerplate.condition}${boilerplate.extension}`,
+        code: boilerplate.code,
+        directoryShortid: null,
+        sourceId: boilerplate.sourceId,
+        isNotSynced: false,
+        type: ''
+      };
 
-    const module = evalModule(
-      fakeModule,
-      [fakeModule, ...modules],
-      directories,
-      externals,
-    );
-    return { ...boilerplate, module };
-  });
+      const manager = getCurrentManager();
+
+      await manager.transpileModules(fakeModule);
+      const module = manager.evaluateModule(fakeModule);
+
+      return { ...boilerplate, module };
+    })
+  );
 }
 
 export function getBoilerplates(): Array<any> {
@@ -46,7 +42,7 @@ export function findBoilerplate(module: Module): any {
 
   if (boilerplate == null) {
     throw new Error(
-      `No boilerplate found for ${module.title}, you can create one in the future`,
+      `No boilerplate found for ${module.title}, you can create one in the future`
     );
   }
 
