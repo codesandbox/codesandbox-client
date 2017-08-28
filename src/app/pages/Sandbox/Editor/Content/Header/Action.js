@@ -19,23 +19,19 @@ const styles = props =>
   color: rgba(255,255,255,0.7);
   cursor: pointer;
   box-sizing: inherit;
-  border-bottom: 2px solid transparent;
   z-index: 1;
   ${props.highlight
     ? `
       background-color: ${props.theme.secondary.darken(0.1)()};
       color: white;
-      border-bottom: 1px solid ${props.theme.secondary.darken(0.1)()};
 
       &:hover {
         background-color: ${props.theme.secondary.darken(0.2)()};
       }
   `
     : `
-
     &:hover {
       color: rgba(255,255,255, 1);
-      border-color: ${props.theme.secondary()}
     }
   `}
 `;
@@ -92,7 +88,7 @@ type Props = {
   unresponsive: boolean,
   a: ?boolean,
   iconProps: Object,
-  iconContainerProps: Object,
+  iconContainerProps: Object
 };
 
 export default ({
