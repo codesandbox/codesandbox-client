@@ -10,11 +10,13 @@ import CreditCardIcon from 'react-icons/lib/md/credit-card';
 import BrowserIcon from 'react-icons/lib/go/browser';
 import StarIcon from 'react-icons/lib/go/star';
 import CodeFormatIcon from 'react-icons/lib/fa/dedent';
+import CogIcon from 'react-icons/lib/fa/cog';
 
 import SideNavigation from './SideNavigation';
 
 import EditorSettings from './EditorPageSettings/EditorSettings';
 import PreviewSettings from './EditorPageSettings/PreviewSettings';
+import EslintSettings from './EditorPageSettings/EslintSettings';
 import CodeFormatting from './CodeFormatting';
 import PaymentInfo from './PaymentInfo';
 import Badges from './Badges';
@@ -32,17 +34,17 @@ const ContentContainer = styled.div`
 `;
 
 type Props = {
-  user: CurrentUser,
+  user: CurrentUser
 };
 
 const mapStateToProps = state => ({
-  user: currentUserSelector(state),
+  user: currentUserSelector(state)
 });
 class Preferences extends React.PureComponent {
   props: Props;
 
   state = {
-    itemIndex: 0,
+    itemIndex: 0
   };
 
   setItem = (index: number) => {
@@ -55,28 +57,33 @@ class Preferences extends React.PureComponent {
       {
         title: 'Editor',
         icon: <CodeIcon />,
-        content: <EditorSettings />,
+        content: <EditorSettings />
       },
       {
         title: 'Prettier Settings',
         icon: <CodeFormatIcon />,
-        content: <CodeFormatting />,
+        content: <CodeFormatting />
       },
       {
         title: 'Preview',
         icon: <BrowserIcon />,
-        content: <PreviewSettings />,
+        content: <PreviewSettings />
+      },
+      {
+        title: 'EsLint Settings',
+        icon: <CogIcon />,
+        content: <EslintSettings />
       },
       hasSubscription && {
         title: 'Payment Info',
         icon: <CreditCardIcon />,
-        content: <PaymentInfo />,
+        content: <PaymentInfo />
       },
       hasSubscription && {
         title: 'Badges',
         icon: <StarIcon />,
-        content: <Badges />,
-      },
+        content: <Badges />
+      }
     ].filter(x => x);
   };
 
