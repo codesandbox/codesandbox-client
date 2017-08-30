@@ -108,6 +108,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "robbyoconnor",
+      "name": "Robert (Robby) O'Connor",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/23088?v=4",
+      "profile": "http://robby.oconnor.ninja",
+      "contributions": [
+        "infra"
+      ]
     }
   ]
 }
