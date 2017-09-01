@@ -613,7 +613,9 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
   componentWillUnmount() {
     window.removeEventListener('resize', this.resizeEditor);
     this.disposeModules();
-    this.editor.dispose();
+    if (this.editor) {
+      this.editor.dispose();
+    }
     this.syntaxWorker.terminate();
     this.lintWorker.terminate();
     this.typingsFetcherWorker.terminate();
