@@ -5,12 +5,12 @@ import type { Module } from 'common/types';
 import Transpiler from '../transpilers';
 
 export type TranspiledModule = Module & {
-  transpiledCode: string,
+  transpiledCode: string
 };
 
 type TranspilerDefinition = {
   transpiler: Transpiler,
-  config?: Object,
+  options: ?Object
 };
 
 /**
@@ -27,7 +27,7 @@ type TranspilerDefinition = {
 export default class Preset {
   loaders: Array<{
     test: (module: Module) => boolean,
-    transpilers: Array<TranspilerDefinition>,
+    transpilers: Array<TranspilerDefinition>
   }>;
   transpilers: Set<Transpiler>;
   name: string;
@@ -37,7 +37,7 @@ export default class Preset {
   constructor(
     name: string,
     ignoredExtensions: ?Array<string>,
-    alias: { [path: string]: string },
+    alias: { [path: string]: string }
   ) {
     this.loaders = [];
     this.transpilers = new Set();
@@ -57,7 +57,7 @@ export default class Preset {
     // Find matching aliases
     const matchingAliases = aliases.filter(a => path.startsWith(a));
     const orderedAliases = orderBy(matchingAliases, alias => alias.length, [
-      'desc',
+      'desc'
     ]);
 
     const foundAlias = orderedAliases[0];
@@ -72,11 +72,11 @@ export default class Preset {
 
   registerTranspiler(
     test: (module: Module) => boolean,
-    transpilers: Array<TranspilerDefinition>,
+    transpilers: Array<TranspilerDefinition>
   ) {
     this.loaders.push({
       test,
-      transpilers,
+      transpilers
     });
 
     transpilers.forEach(t => this.transpilers.add(t.transpiler));
@@ -104,7 +104,7 @@ export default class Preset {
         const [name, options] = loaderName.split('?');
 
         const transpiler = Array.from(this.transpilers).find(
-          t => t.name === name,
+          t => t.name === name
         );
 
         if (!transpiler) {

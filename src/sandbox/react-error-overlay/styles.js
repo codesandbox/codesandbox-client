@@ -24,7 +24,7 @@ const iframeStyle = {
   width: '100%',
   height: '100%',
   border: 'none',
-  'z-index': 2147483647 - 1, // below the compile error overlay
+  'z-index': 2147483647 - 1 // below the compile error overlay
 };
 
 const overlayStyle = {
@@ -40,7 +40,7 @@ const overlayStyle = {
   'text-rendering': 'optimizeLegibility',
   'font-smooth': 'always',
   '-webkit-tap-highlight-color': 'transparent',
-  '-webkit-touch-callout': 'none',
+  '-webkit-touch-callout': 'none'
 };
 
 const containerStyle = {
@@ -60,16 +60,16 @@ const containerStyle = {
   'white-space': 'pre-wrap',
   'word-break': 'break-word',
   'line-height': 1.5,
-  color: black,
+  color: black
 };
 
 const hintsStyle = {
-  color: darkGray,
+  color: darkGray
 };
 
 const hintStyle = {
   padding: '0.5em 1em',
-  cursor: 'pointer',
+  cursor: 'pointer'
 };
 
 const closeButtonStyle = {
@@ -80,11 +80,11 @@ const closeButtonStyle = {
   cursor: 'pointer',
   position: 'absolute',
   right: 0,
-  top: 0,
+  top: 0
 };
 
 const additionalChildStyle = {
-  'margin-bottom': '0.5rem',
+  'margin-bottom': '0.5rem'
 };
 
 const headerStyle = {
@@ -98,29 +98,30 @@ const headerStyle = {
   flex: '0 0 auto',
   'max-height': '50%',
   overflow: 'auto',
-  'font-weight': '400',
+  'font-weight': '400'
 };
 
 const messageHeaderStyle = {
   ...headerStyle,
   color: 'black',
   'font-weight': '300',
-  'font-size': '1.75em',
+  'font-size': '1.5em',
+  'font-family': 'Consolas, Menlo, monospace',
   margin: 0,
   'padding-bottom': '1rem',
-  'border-bottom': '1px solid #ddd',
+  'border-bottom': '1px solid #ddd'
 };
 
 const functionNameStyle = {};
 
 const linkStyle = {
   'font-size': '0.9em',
-  'margin-bottom': '0.9em',
+  'margin-bottom': '0.9em'
 };
 
 const anchorStyle = {
   'text-decoration': 'none',
-  color: darkGray,
+  color: darkGray
 };
 
 const traceStyle = {
@@ -128,29 +129,29 @@ const traceStyle = {
   flex: '0 1 auto',
   'min-height': '0px',
   overflow: 'auto',
-  'padding-top': '1rem',
+  'padding-top': '1rem'
 };
 
 const depStyle = {};
 
 const primaryErrorStyle = {
-  'background-color': lightRed,
+  'background-color': lightRed
 };
 
 const secondaryErrorStyle = {
-  'background-color': yellow,
+  'background-color': yellow
 };
 
 const omittedFramesCollapsedStyle = {
   color: black,
   cursor: 'pointer',
-  'margin-bottom': '1.5em',
+  'margin-bottom': '1.5em'
 };
 
 const omittedFramesExpandedStyle = {
   color: black,
   cursor: 'pointer',
-  'margin-bottom': '0.6em',
+  'margin-bottom': '0.6em'
 };
 
 const _preStyle = {
@@ -160,31 +161,31 @@ const _preStyle = {
   'margin-bottom': '0.5em',
   'overflow-x': 'auto',
   'white-space': 'pre-wrap',
-  'border-radius': '0.25rem',
+  'border-radius': '0.25rem'
 };
 const primaryPreStyle = Object.assign({}, _preStyle, {
-  'background-color': redTransparent,
+  'background-color': redTransparent
 });
 const secondaryPreStyle = Object.assign({}, _preStyle, {
-  'background-color': yellowTransparent,
+  'background-color': yellowTransparent
 });
 
 const toggleStyle = {
   'margin-bottom': '1.5em',
   color: darkGray,
-  cursor: 'pointer',
+  cursor: 'pointer'
 };
 
 const codeStyle = {
-  'font-family': 'Consolas, Menlo, monospace',
+  'font-family': 'Consolas, Menlo, monospace'
 };
 
 const hiddenStyle = {
-  display: 'none',
+  display: 'none'
 };
 
 const groupStyle = {
-  'margin-right': '1em',
+  'margin-right': '1em'
 };
 
 const _groupElemStyle = {
@@ -193,35 +194,35 @@ const _groupElemStyle = {
   border: 'none',
   'border-radius': '4px',
   padding: '3px 6px',
-  cursor: 'pointer',
+  cursor: 'pointer'
 };
 
 const groupElemLeft = Object.assign({}, _groupElemStyle, {
   'border-top-right-radius': '0px',
   'border-bottom-right-radius': '0px',
-  'margin-right': '1px',
+  'margin-right': '1px'
 });
 
 const groupElemRight = Object.assign({}, _groupElemStyle, {
   'border-top-left-radius': '0px',
-  'border-bottom-left-radius': '0px',
+  'border-bottom-left-radius': '0px'
 });
 
 const footerStyle = {
   'font-family': 'sans-serif',
   color: darkGray,
   'margin-top': '0.5rem',
-  flex: '0 0 auto',
+  flex: '0 0 auto'
 };
 
 const suggestionsContainerStyle = {
   'font-family': 'Roboto, sans-serif',
-  'padding-top': '1rem',
+  'padding-top': '1rem'
 };
 
 const suggestionsTitleStyle = {
   'font-size': '1rem',
-  'font-weight': '300',
+  'font-weight': '300'
 };
 
 const suggestionsButtonStyle = {
@@ -234,7 +235,7 @@ const suggestionsButtonStyle = {
   'font-size': '.75rem',
   'border-radius': '4px',
   border: '1px solid #6CAEDD',
-  cursor: 'pointer',
+  cursor: 'pointer'
 };
 
 export {
@@ -267,5 +268,5 @@ export {
   footerStyle,
   suggestionsContainerStyle,
   suggestionsTitleStyle,
-  suggestionsButtonStyle,
+  suggestionsButtonStyle
 };

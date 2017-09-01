@@ -1,6 +1,7 @@
 // @flow
-import type { Module } from 'common/types';
 import { flattenDeep } from 'lodash';
+
+import type { Module } from 'common/types';
 import getModulePath from 'common/sandbox/get-module-path';
 
 import type { SourceMap } from './transpilers/utils/get-source-map';
@@ -35,7 +36,7 @@ export type LoaderContext = {
     title: string,
     code: string,
     directoryShortid: ?string
-  ) => TranspiledModule,
+  ) => TranspiledModule, // eslint-disable-line no-use-before-define
   emitFile: (name: string, content: string, sourceMap: SourceMap) => void,
   options: {
     context: '/'
@@ -51,13 +52,13 @@ export type LoaderContext = {
     options: ?{
       isAbsolute: boolean
     }
-  ) => TranspiledModule,
+  ) => TranspiledModule, // eslint-disable-line no-use-before-define
   addDependenciesInDirectory: (
     depPath: string,
     options: {
       isAbsolute: boolean
     }
-  ) => Array<TranspiledModule>,
+  ) => Array<TranspiledModule>, // eslint-disable-line no-use-before-define
   _module: TranspiledModule // eslint-disable-line no-use-before-define
 };
 
@@ -168,7 +169,7 @@ export default class TranspiledModule {
 
   getLoaderContext(
     manager: Manager,
-    transpilerOptions: Object = {}
+    transpilerOptions: ?Object = {}
   ): LoaderContext {
     const path = getModulePath(
       manager.getModules(),
@@ -329,6 +330,7 @@ export default class TranspiledModule {
         if (this.errors.length) {
           throw this.errors[0];
         }
+
         code = transpiledCode;
         finalSourceMap = sourceMap;
       } catch (e) {
@@ -348,7 +350,8 @@ export default class TranspiledModule {
     code = `${code}\n//# sourceURL=${path}`;
 
     this.source = new ModuleSource(this.module.title, code, finalSourceMap);
-    await Promise.all(
+
+    return Promise.all(
       flattenDeep([
         ...Array.from(this.transpilationInitiators).map(t =>
           t.transpile(manager)
@@ -357,8 +360,6 @@ export default class TranspiledModule {
         ...this.childModules.map(t => t.transpile(manager))
       ])
     );
-
-    return this;
   }
 
   getChildTranspiledModules(): Array<TranspiledModule> {
