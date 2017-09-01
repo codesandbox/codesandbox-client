@@ -26,7 +26,7 @@ export default class Manager {
     id: string,
     modules: Array<Module>,
     directories: Array<Directory>,
-    preset: Preset,
+    preset: Preset
   ) {
     this.id = id;
     this.modules = modules;
@@ -41,8 +41,6 @@ export default class Manager {
     this.externals = externals;
   }
 
-  initialize() {}
-
   evaluateModule(module: Module) {
     const transpiledModule = this.getTranspiledModule(module);
 
@@ -56,7 +54,7 @@ export default class Manager {
 
   evaluateTranspiledModule(
     transpiledModule: TranspiledModule,
-    parentModules: Array<TranspiledModule>,
+    parentModules: Array<TranspiledModule>
   ) {
     return transpiledModule.evaluate(this, parentModules);
   }
@@ -114,7 +112,7 @@ export default class Manager {
    * Will transpile this module and all eventual children (requires) that go with it
    * @param {*} entry
    */
-  transpileModules(entry: Module): Promise<TranspiledModule> {
+  transpileModules(entry: Module) {
     const transpiledModule = this.getTranspiledModule(entry);
 
     transpiledModule.setIsEntry(true);
@@ -131,14 +129,14 @@ export default class Manager {
         ...prev,
         [next.id]: next,
       }),
-      {},
+      {}
     );
     const transpiledModules = this.getTranspiledModules().reduce(
       (prev, next) => ({
         ...prev,
         [next.module.id]: next.module,
       }),
-      {},
+      {}
     );
 
     return values({ ...sandboxModules, ...transpiledModules });
@@ -157,7 +155,7 @@ export default class Manager {
    */
   resolveTranspiledModule(
     path: string,
-    startdirectoryShortid: ?string,
+    startdirectoryShortid: ?string
   ): TranspiledModule {
     const queryPath = path.split('!');
     // pop() mutates queryPath, queryPath is now just the loaders
@@ -168,7 +166,7 @@ export default class Manager {
       this.getModules(),
       this.getDirectories(),
       startdirectoryShortid,
-      this.preset.ignoredExtensions,
+      this.preset.ignoredExtensions
     );
 
     return this.getTranspiledModule(module, queryPath.join('!'));
@@ -176,7 +174,7 @@ export default class Manager {
 
   resolveTranspiledModulesInDirectory(
     path: string,
-    startdirectoryShortid: ?string,
+    startdirectoryShortid: ?string
   ): Array<TranspiledModule> {
     const queryPath = path.split('!');
     // pop() mutates queryPath, queryPath is now just the loaders
@@ -186,11 +184,11 @@ export default class Manager {
       modulesPath,
       this.getModules(),
       this.getDirectories(),
-      startdirectoryShortid,
+      startdirectoryShortid
     );
 
     return modules.map(module =>
-      this.getTranspiledModule(module, queryPath.join('!')),
+      this.getTranspiledModule(module, queryPath.join('!'))
     );
   }
 
@@ -205,7 +203,7 @@ export default class Manager {
         ...prev,
         [next.id]: next,
       }),
-      {},
+      {}
     );
 
     const addedModules = [];
@@ -234,9 +232,6 @@ export default class Manager {
       }
     });
 
-    this.modules = modules;
-    this.directories = directories;
-
     deletedModules.forEach(m => {
       const transpiledModules = this.getTranspiledModulesByModule(m);
 
@@ -259,11 +254,16 @@ export default class Manager {
         modulesToUpdate.map(m => this.getTranspiledModulesByModule(m)),
         // All modules with errors
         this.getTranspiledModules().filter(t => t.errors.length > 0),
-      ]),
+      ])
     );
 
     return Promise.all(
-      transpiledModulesToUpdate.map(tModule => tModule.transpile(this)),
-    );
+      transpiledModulesToUpdate.map(tModule => tModule.transpile(this))
+    ).then(x => {
+      this.modules = modules;
+      this.directories = directories;
+
+      return x;
+    });
   }
 }

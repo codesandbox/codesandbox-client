@@ -19,7 +19,7 @@ import FuzzySearch from './FuzzySearch/index';
 let modelCache = {};
 
 type State = {
-  fuzzySearchEnabled: boolean
+  fuzzySearchEnabled: boolean,
 };
 
 type Props = {
@@ -37,7 +37,7 @@ type Props = {
   modules: Array<Module>,
   directories: Array<Directory>,
   dependencies: ?Object,
-  setCurrentModule: ?(sandboxId: string, moduleId: string) => void
+  setCurrentModule: ?(sandboxId: string, moduleId: string) => void,
 };
 
 const Container = styled.div`
@@ -141,7 +141,7 @@ const handleError = (
             startLineNumber: error.line,
             endColumn: error.column,
             endLineNumber: error.line + 1,
-            message: error.message
+            message: error.message,
           };
         }
 
@@ -157,7 +157,7 @@ const handleError = (
 
 export default class CodeEditor extends React.PureComponent<Props, State> {
   state = {
-    fuzzySearchEnabled: false
+    fuzzySearchEnabled: false,
   };
 
   syntaxWorker: Worker;
@@ -219,8 +219,8 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
         classification.end
       ),
       options: {
-        inlineClassName: classification.kind
-      }
+        inlineClassName: classification.kind,
+      },
     }));
 
     const modelInfo = this.getModelById(this.props.id);
@@ -330,12 +330,12 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     currentId,
     nextId,
     nextCode,
-    nextTitle
+    nextTitle,
   }: {
     currentId: string,
     nextId: string,
     nextCode: ?string,
-    nextTitle: string
+    nextTitle: string,
   }) => {
     if (nextId !== currentId) {
       const pos = this.editor.getPosition();
@@ -351,7 +351,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     const {
       id: currentId,
       sandboxId: currentSandboxId,
-      errors: currentErrors
+      errors: currentErrors,
     } = this.props;
 
     const {
@@ -359,7 +359,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
       code: nextCode,
       errors: nextErrors,
       title: nextTitle,
-      sandboxId: nextSandboxId
+      sandboxId: nextSandboxId,
     } = nextProps;
 
     if (nextSandboxId !== currentSandboxId) {
@@ -377,7 +377,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
         currentId,
         nextId,
         nextCode,
-        nextTitle
+        nextTitle,
       }).then(() => {
         handleError(
           this.monaco,
@@ -400,11 +400,11 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     const editOperation = {
       identifier: {
         major: 1,
-        minor: 1
+        minor: 1,
       },
       text: code,
       range: new this.monaco.Range(0, 0, lastLine + 1, lastLineColumn),
-      forceMoveMarkers: false
+      forceMoveMarkers: false,
     };
 
     this.editor.getModel().pushEditOperations([], [editOperation], null);
@@ -446,7 +446,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
       this.syntaxWorker.postMessage({
         code,
         title,
-        version
+        version,
       });
     }
   };
@@ -456,7 +456,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
       this.lintWorker.postMessage({
         code,
         title,
-        version
+        version,
       });
     }
   };
@@ -479,8 +479,8 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
       rules: [
         { token: 'comment', foreground: '626466' },
         { token: 'keyword', foreground: '6CAEDD' },
-        { token: 'identifier', foreground: 'fac863' }
-      ]
+        { token: 'identifier', foreground: 'fac863' },
+      ],
     });
   };
 
@@ -490,7 +490,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
 
     window._cs = {
       editor: this.editor,
-      monaco: this.monaco
+      monaco: this.monaco,
     };
 
     this.setupWorkers();
@@ -506,7 +506,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
       experimentalDecorators: true,
       noEmit: true,
       allowJs: true,
-      typeRoots: ['node_modules/@types']
+      typeRoots: ['node_modules/@types'],
     };
 
     monaco.languages.typescript.typescriptDefaults.setMaximunWorkerIdleTime(-1);
@@ -520,7 +520,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
 
     monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
       noSemanticValidation: false,
-      noSyntaxValidation: true
+      noSyntaxValidation: true,
     });
 
     this.initializeModules();
@@ -560,9 +560,9 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
       // @param editor The editor instance is passed in as a convinience
       run: ed => {
         this.setState({
-          fuzzySearchEnabled: true
+          fuzzySearchEnabled: true,
         });
-      }
+      },
     });
   };
 
@@ -640,7 +640,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     modelCache[module.id] = modelCache[module.id] || {
       model: null,
       decorations: [],
-      cursorPos: null
+      cursorPos: null,
     };
     modelCache[module.id].model = model;
 
@@ -707,7 +707,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
       } else {
         const pos = {
           lineNumber: selection.startLineNumber,
-          column: selection.startColumn
+          column: selection.startColumn,
         };
         this.editor.setPosition(pos);
         this.editor.revealPositionInCenter(pos);
@@ -767,11 +767,11 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
       //   'monospace',
       // ),
       minimap: {
-        enabled: false
+        enabled: false,
       },
       ariaLabel: title,
       formatOnPaste: true,
-      lineHeight: (preferences.lineHeight || 1.15) * preferences.fontSize
+      lineHeight: (preferences.lineHeight || 1.15) * preferences.fontSize,
     };
   };
 
@@ -781,7 +781,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
       modules,
       directories,
       onlyViewMode,
-      modulePath
+      modulePath,
     } = this.props;
 
     const options = this.getEditorOptions();
@@ -789,8 +789,8 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     const requireConfig = {
       url: '/public/vs/loader.js',
       paths: {
-        vs: '/public/vs'
-      }
+        vs: '/public/vs',
+      },
     };
     return (
       <Container>
@@ -800,14 +800,15 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
           path={modulePath}
         />
         <CodeContainer>
-          {this.state.fuzzySearchEnabled &&
+          {this.state.fuzzySearchEnabled && (
             <FuzzySearch
               closeFuzzySearch={this.closeFuzzySearch}
               setCurrentModule={this.setCurrentModule}
               modules={modules}
               directories={directories}
               currentModuleId={this.props.id}
-            />}
+            />
+          )}
           <MonacoEditor
             width="100%"
             height="100%"
