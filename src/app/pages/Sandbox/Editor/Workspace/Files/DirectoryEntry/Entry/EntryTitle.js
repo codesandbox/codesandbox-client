@@ -11,7 +11,6 @@ const TitleContainer = styled.span`
   vertical-align: middle;
 `;
 
-export default ({ title }: { title: string }) =>
-  <TitleContainer title={title}>
-    {title}
-  </TitleContainer>;
+export default ({ title }: { title: string }) => (
+  <TitleContainer title={title}>{title}</TitleContainer>
+);

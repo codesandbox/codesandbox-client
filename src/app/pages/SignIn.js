@@ -36,7 +36,7 @@ export default class SignIn extends React.PureComponent {
                 jwt: props.match.params.jwt,
               },
             },
-            protocolAndHost(),
+            protocolAndHost()
           );
         }
         return;

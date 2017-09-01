@@ -23,7 +23,7 @@ class LessTranspiler extends WorkerTranspiler {
           ...interMediateFiles,
           [loaderContext.resolvePath(module)]: module.code,
         }),
-        {},
+        {}
       );
 
       const path = loaderContext.path;
@@ -43,7 +43,7 @@ class LessTranspiler extends WorkerTranspiler {
           }
 
           return resolve(data);
-        },
+        }
       );
     });
   }

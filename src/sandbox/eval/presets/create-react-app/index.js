@@ -8,15 +8,15 @@ import rawTranspiler from '../../transpilers/raw';
 const preset = new Preset('create-react-app');
 
 preset.registerTranspiler(module => /\.css$/.test(module.title), [
-  { transpiler: stylesTranspiler }
+  { transpiler: stylesTranspiler },
 ]);
 
 preset.registerTranspiler(module => /\.jsx?$/.test(module.title), [
-  { transpiler: babelTranspiler }
+  { transpiler: babelTranspiler },
 ]);
 
 preset.registerTranspiler(module => /\.json$/.test(module.title), [
-  { transpiler: jsonTranspiler }
+  { transpiler: jsonTranspiler },
 ]);
 
 preset.registerTranspiler(() => true, [{ transpiler: rawTranspiler }]);

@@ -63,7 +63,7 @@ const fetchFromDefinitelyTyped = (dependency, version, fetchedPaths) =>
     addLib(
       `node_modules/@types/${dependency}/index.d.ts`,
       typings,
-      fetchedPaths,
+      fetchedPaths
     );
   });
 
@@ -75,7 +75,7 @@ const getRequireStatements = (title: string, code: string) => {
     code,
     self.ts.ScriptTarget.Latest,
     true,
-    self.ts.ScriptKind.TS,
+    self.ts.ScriptKind.TS
   );
 
   self.ts.forEachChild(sourceFile, node => {
@@ -133,7 +133,7 @@ const getFileTypes = (
   dependency,
   depPath,
   fetchedPaths: Array<string>,
-  fileMetaData,
+  fileMetaData
 ) => {
   const virtualPath = path.join('node_modules', dependency, depPath);
 
@@ -148,7 +148,7 @@ const getFileTypes = (
     return getRequireStatements(depPath, typings)
       .filter(
         // Don't add global deps
-        dep => dep.startsWith('.'),
+        dep => dep.startsWith('.')
       )
       .map(relativePath => path.join(path.dirname(depPath), relativePath))
       .map(relativePath => resolveAppropiateFile(fileMetaData, relativePath))
@@ -158,8 +158,8 @@ const getFileTypes = (
           dependency,
           nextDepPath,
           fetchedPaths,
-          fileMetaData,
-        ),
+          fileMetaData
+        )
       );
   });
 };
@@ -174,7 +174,7 @@ function fetchAndAddDependencies(dependencies) {
         fetchFromDefinitelyTyped(
           dep,
           dependencies[dep],
-          fetchedPaths,
+          fetchedPaths
         ).catch(() => {
           // Not available as @types, try checking in package.json
 
@@ -187,7 +187,7 @@ function fetchAndAddDependencies(dependencies) {
                 addLib(
                   `node_modules/${dep}/package.json`,
                   JSON.stringify(packageJSON),
-                  fetchedPaths,
+                  fetchedPaths
                 );
 
                 // get all files in the specified directory
@@ -197,7 +197,7 @@ function fetchAndAddDependencies(dependencies) {
                     dep,
                     resolveAppropiateFile(fileData, packageJSON.typings),
                     fetchedPaths,
-                    fileData,
+                    fileData
                   );
                 });
               }

@@ -44,7 +44,7 @@ const fontFamilies = (...families) =>
   families
     .filter(Boolean)
     .map(
-      family => (family.indexOf(' ') !== -1 ? JSON.stringify(family) : family),
+      family => (family.indexOf(' ') !== -1 ? JSON.stringify(family) : family)
     )
     .join(', ');
 
@@ -165,12 +165,15 @@ const handleError = (
   nextErrors: ?Array<ModuleError>,
   nextCode: ?string,
   prevId: string,
-  nextId: string,
+  nextId: string
 ) => {
   if (currentErrors && currentErrors.length > 0) {
-    cm.getValue().split('\n').forEach((_, i) => {
-      cm.removeLineClass(i, 'background', 'cm-line-error');
-    });
+    cm
+      .getValue()
+      .split('\n')
+      .forEach((_, i) => {
+        cm.removeLineClass(i, 'background', 'cm-line-error');
+      });
   }
 
   if (nextErrors) {
@@ -436,7 +439,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
           code,
           mode,
           preferences.lintEnabled,
-          preferences.prettierConfig,
+          preferences.prettierConfig
         );
 
         if (newCode !== code) {
@@ -508,14 +511,15 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
           fontFamily={preferences.fontFamily}
           lineHeight={preferences.lineHeight}
         >
-          {this.state.fuzzySearchEnabled &&
+          {this.state.fuzzySearchEnabled && (
             <FuzzySearch
               closeFuzzySearch={this.closeFuzzySearch}
               setCurrentModule={this.setCurrentModule}
               modules={modules}
               directories={directories}
               currentModuleId={id}
-            />}
+            />
+          )}
           <div
             style={{ height: '100%', fontSize: preferences.fontSize || 14 }}
             ref={this.getCodeMirror}

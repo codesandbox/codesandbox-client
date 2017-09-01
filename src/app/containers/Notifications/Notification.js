@@ -103,7 +103,7 @@ const getIcon = type => {
   return <InfoIcon />;
 };
 
-export default ({ title, type, buttons = [], close }: Props) =>
+export default ({ title, type, buttons = [], close }: Props) => (
   <Container type={type}>
     <CloseIconHandler>
       <CloseIcon onClick={close} />
@@ -113,10 +113,11 @@ export default ({ title, type, buttons = [], close }: Props) =>
       <Title>{title}</Title>
     </Content>
     <Buttons>
-      {buttons.map((button: NotificationButton) =>
+      {buttons.map((button: NotificationButton) => (
         <Button key={button.title} type={type} onClick={button.action}>
           {button.title}
-        </Button>,
-      )}
+        </Button>
+      ))}
     </Buttons>
-  </Container>;
+  </Container>
+);

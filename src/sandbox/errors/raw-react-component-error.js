@@ -21,8 +21,8 @@ export default class RawReactComponentError extends SandboxError {
           dispatch(
             actions.source.modules.rename(
               importedModule.id,
-              `${importedModule.title}.js`,
-            ),
+              `${importedModule.title}.js`
+            )
           );
         },
       },

@@ -52,10 +52,6 @@ export default class HoverMenu extends React.PureComponent {
 
   render() {
     const { children } = this.props;
-    return (
-      <div ref={this.setOnclickListener}>
-        {children}
-      </div>
-    );
+    return <div ref={this.setOnclickListener}>{children}</div>;
   }
 }

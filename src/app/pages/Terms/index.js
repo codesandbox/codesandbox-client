@@ -53,7 +53,7 @@ const LegalNavigtion = styled.div`
   margin-bottom: 3rem;
 `;
 
-export default () =>
+export default () => (
   <MaxWidth>
     <Margin margin={1.5}>
       <Navigation title="Legal" />
@@ -89,4 +89,5 @@ export default () =>
         </Centered>
       </Content>
     </Margin>
-  </MaxWidth>;
+  </MaxWidth>
+);

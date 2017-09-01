@@ -56,7 +56,7 @@ const enableEmmet = (editor, monaco) => {
             pos.lineNumber,
             pos.column - word.abbreviation.length,
             pos.lineNumber,
-            pos.column,
+            pos.column
           );
           const id = { major: 1, minor: 1 };
           const op = {

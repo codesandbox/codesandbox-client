@@ -5,7 +5,7 @@ import delay from '../utils/delay';
 import setScreen from '../status-screen';
 
 type Dependencies = {
-  [dependency: string]: string
+  [dependency: string]: string,
 };
 
 const debug = _debug('cs:sandbox:packager');

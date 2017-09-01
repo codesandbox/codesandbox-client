@@ -162,7 +162,7 @@ describe('relative', () => {
       },
     ];
     expect(resolveModule(path, modules, directories, '123123123')).toBe(
-      modules[0],
+      modules[0]
     );
   });
 
@@ -191,7 +191,7 @@ describe('relative', () => {
       },
     ];
     expect(resolveModule(path, modules, directories, '1312423432')).toBe(
-      modules[0],
+      modules[0]
     );
   });
 
@@ -225,7 +225,7 @@ describe('relative', () => {
       },
     ];
     expect(resolveModule(path, modules, directories, '123123123')).toBe(
-      modules[0],
+      modules[0]
     );
   });
 
@@ -259,7 +259,7 @@ describe('relative', () => {
       },
     ];
     expect(resolveModule(path, modules, directories, '1312423432')).toBe(
-      modules[0],
+      modules[0]
     );
   });
 
@@ -361,7 +361,7 @@ describe('preference', () => {
         },
       ];
       expect(getModulesInDirectory(path, modules, directories).modules).toEqual(
-        modules,
+        modules
       );
     });
 
@@ -389,7 +389,7 @@ describe('preference', () => {
         },
       ];
       expect(getModulesInDirectory(path, modules, directories).modules).toEqual(
-        modules,
+        modules
       );
     });
   });

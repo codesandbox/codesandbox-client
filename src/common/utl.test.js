@@ -35,7 +35,7 @@ describe('url parameters', () => {
 
   it('can handle multiple options', () => {
     testSandboxOptions(
-      'https://codesandbox.io/s/new?autoresize=1&view=editor&module=test&hidenavigation=1',
+      'https://codesandbox.io/s/new?autoresize=1&view=editor&module=test&hidenavigation=1'
     );
   });
 });

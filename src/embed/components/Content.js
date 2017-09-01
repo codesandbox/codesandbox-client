@@ -70,7 +70,7 @@ export default class Content extends React.PureComponent<Props, State> {
           context: 'iframe.resize',
           height: Math.max(height + extraOffset, 50), // pixels
         }),
-        '*',
+        '*'
       );
     } else if (this.props.showEditor && !this.props.showPreview) {
       // If there is a focus on the editor, make it full height
@@ -83,7 +83,7 @@ export default class Content extends React.PureComponent<Props, State> {
           context: 'iframe.resize',
           height: Math.max(editorHeight + extraOffset, 50), // pixels
         }),
-        '*',
+        '*'
       );
     } else {
       window.parent.postMessage(
@@ -92,7 +92,7 @@ export default class Content extends React.PureComponent<Props, State> {
           context: 'iframe.resize',
           height: 500, // pixels
         }),
-        '*',
+        '*'
       );
     }
   };
@@ -181,7 +181,7 @@ export default class Content extends React.PureComponent<Props, State> {
       sandbox.modules,
       sandbox.directories,
       currentModule,
-      findMainModule(sandbox.modules),
+      findMainModule(sandbox.modules)
     );
 
     if (!mainModule) throw new Error('Cannot find main module');
@@ -194,7 +194,7 @@ export default class Content extends React.PureComponent<Props, State> {
 
     return (
       <Container>
-        {showEditor &&
+        {showEditor && (
           <Split show={showEditor} only={showEditor && !showPreview}>
             <CodeEditor
               code={alteredMainModule.code}
@@ -203,7 +203,7 @@ export default class Content extends React.PureComponent<Props, State> {
               modulePath={getModulePath(
                 alteredModules,
                 sandbox.directories,
-                alteredMainModule.id,
+                alteredMainModule.id
               )}
               changeCode={this.setCode}
               preferences={this.getPreferences()}
@@ -212,9 +212,10 @@ export default class Content extends React.PureComponent<Props, State> {
               sandboxId={sandbox.id}
               setCurrentModule={this.setCurrentModule}
             />
-          </Split>}
+          </Split>
+        )}
 
-        {showPreview &&
+        {showPreview && (
           <Split show={showPreview} only={showPreview && !showEditor}>
             <Preview
               sandboxId={sandbox.id}
@@ -234,7 +235,8 @@ export default class Content extends React.PureComponent<Props, State> {
               errors={errors}
               dependencies={sandbox.npmDependencies}
             />
-          </Split>}
+          </Split>
+        )}
       </Container>
     );
   }

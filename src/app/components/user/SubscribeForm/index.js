@@ -26,7 +26,7 @@ export default ({
   subscribe,
   loadingText = 'Creating Subscription...',
   buttonName = 'Subscribe',
-}: Props) =>
+}: Props) => (
   <Container>
     <StripeProvider apiKey={STRIPE_API_KEY}>
       <Elements>
@@ -38,4 +38,5 @@ export default ({
         />
       </Elements>
     </StripeProvider>
-  </Container>;
+  </Container>
+);

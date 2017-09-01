@@ -23,10 +23,11 @@ const Container = styled.div`
   ${props =>
     props.loggedIn &&
     css`
-  cursor: pointer;
-  &:hover {
-    transform: scale(1.1);
-  }`};
+      cursor: pointer;
+      &:hover {
+        transform: scale(1.1);
+      }
+    `};
 `;
 
 const MaybeTooltip = ({ loggedIn, ...props }) =>
@@ -52,12 +53,14 @@ export default class LikeHeart extends React.PureComponent {
           loggedIn={loggedIn}
           title={isLiked ? 'Undo like' : 'Like'}
         >
-          {isLiked
-            ? <FullHeartIcon
-                style={!colorless && { color: '#E01F4E' }}
-                onClick={loggedIn && this.unlikeSandbox}
-              />
-            : <HeartIcon onClick={loggedIn && this.likeSandbox} />}
+          {isLiked ? (
+            <FullHeartIcon
+              style={!colorless && { color: '#E01F4E' }}
+              onClick={loggedIn && this.unlikeSandbox}
+            />
+          ) : (
+            <HeartIcon onClick={loggedIn && this.likeSandbox} />
+          )}
         </MaybeTooltip>
       </Container>
     );

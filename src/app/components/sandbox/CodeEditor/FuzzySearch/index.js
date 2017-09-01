@@ -48,21 +48,18 @@ const Entry = styled.div`
   position: relative;
   display: flex;
   align-items: center;
-  font-size: .875rem;
+  font-size: 0.875rem;
   padding: 0.25rem 0.75rem;
   cursor: pointer;
 
   ${({ isNotSynced }) =>
-    isNotSynced &&
-    css`
-    padding-left: 2rem;
-  `} color: rgba(255, 255, 255, 0.8);
+    isNotSynced && css`padding-left: 2rem;`} color: rgba(255, 255, 255, 0.8);
 
   ${({ isActive }) =>
     isActive &&
     css`
-    background-color: ${props => props.theme.secondary.clearer(0.7)}
-  `};
+      background-color: ${props => props.theme.secondary.clearer(0.7)};
+    `};
 `;
 
 const CurrentModuleText = styled.div`
@@ -105,7 +102,7 @@ export default class FuzzySearch extends React.PureComponent<Props> {
 
     const groupedPaths = groupBy(modulePathData, n => n.depth);
     const sortedPaths = Object.values(groupedPaths).map(group =>
-      sortBy(group, n => n.path),
+      sortBy(group, n => n.path)
     );
     const flattenedPaths = flatten(sortedPaths);
 
@@ -114,7 +111,7 @@ export default class FuzzySearch extends React.PureComponent<Props> {
         ...paths,
         [m.id]: { path: path.replace('/', ''), m },
       }),
-      {},
+      {}
     );
   }
 
@@ -152,7 +149,7 @@ export default class FuzzySearch extends React.PureComponent<Props> {
             selectedItem,
             inputValue,
             highlightedIndex,
-          }) =>
+          }) => (
             <div style={{ width: '100%' }}>
               <InputContainer>
                 <Input
@@ -165,7 +162,7 @@ export default class FuzzySearch extends React.PureComponent<Props> {
                 />
               </InputContainer>
               <Items>
-                {this.getItems(inputValue).map((item, index) =>
+                {this.getItems(inputValue).map((item, index) => (
                   <Entry
                     {...getItemProps({
                       item,
@@ -181,19 +178,18 @@ export default class FuzzySearch extends React.PureComponent<Props> {
                       type={getType(item.m)}
                       error={item.m.errors && item.m.errors.length > 0}
                     />
-                    <Name>
-                      {item.m.title}
-                    </Name>
-                    {item.m.title !== this.itemToString(item) &&
-                      <Path>
-                        {this.itemToString(item)}
-                      </Path>}
-                    {item.m.id === currentModuleId &&
-                      <CurrentModuleText>currently opened</CurrentModuleText>}
-                  </Entry>,
-                )}
+                    <Name>{item.m.title}</Name>
+                    {item.m.title !== this.itemToString(item) && (
+                      <Path>{this.itemToString(item)}</Path>
+                    )}
+                    {item.m.id === currentModuleId && (
+                      <CurrentModuleText>currently opened</CurrentModuleText>
+                    )}
+                  </Entry>
+                ))}
               </Items>
-            </div>}
+            </div>
+          )}
         </Downshift>
       </Container>
     );

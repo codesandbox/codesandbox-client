@@ -9,5 +9,5 @@ export default new schema.Entity(
       ...module,
       errors: [],
     }),
-  },
+  }
 );

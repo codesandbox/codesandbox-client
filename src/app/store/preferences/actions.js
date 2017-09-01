@@ -17,7 +17,7 @@ const setOption = (key, val) => {
 export default {
   setPreference: (preferences: Object) => (dispatch: Function) => {
     Object.keys(preferences).forEach(key =>
-      setOption(keys[key], preferences[key]),
+      setOption(keys[key], preferences[key])
     );
     dispatch({
       type: SET_PREFERENCES,

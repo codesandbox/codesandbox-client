@@ -41,7 +41,7 @@ export default class Editor extends React.PureComponent {
     const { name, readOnly } = this.props;
     const doc = new CodeMirror.Doc(
       `ReactDOM.render(<${name || 'Component'} />, document.body);`,
-      'jsx',
+      'jsx'
     );
     this.codemirror = getCodeMirror(el, doc);
     this.codemirror.setOption('lineNumbers', false);

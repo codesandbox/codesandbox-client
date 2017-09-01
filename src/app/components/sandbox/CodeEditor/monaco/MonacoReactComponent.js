@@ -46,7 +46,7 @@ function _classCallCheck(instance, Constructor) {
 function _possibleConstructorReturn(self, call) {
   if (!self) {
     throw new ReferenceError(
-      "this hasn't been initialised - super() hasn't been called",
+      "this hasn't been initialised - super() hasn't been called"
     );
   }
   return call && (typeof call === 'object' || typeof call === 'function')
@@ -58,7 +58,7 @@ function _inherits(subClass, superClass) {
   if (typeof superClass !== 'function' && superClass !== null) {
     throw new TypeError(
       'Super expression must either be null or a function, not ' +
-        typeof superClass,
+        typeof superClass
     );
   }
   subClass.prototype = Object.create(superClass && superClass.prototype, {
@@ -86,7 +86,7 @@ var MonacoEditor = (function(_React$Component) {
     var _this = _possibleConstructorReturn(
       this,
       (MonacoEditor.__proto__ || Object.getPrototypeOf(MonacoEditor))
-        .call(this, props),
+        .call(this, props)
     );
 
     _this.__current_value = props.value;
@@ -123,7 +123,7 @@ var MonacoEditor = (function(_React$Component) {
         if (prevProps.language !== this.props.language) {
           context.monaco.editor.setModelLanguage(
             this.editor.getModel(),
-            this.props.language,
+            this.props.language
           );
         }
       },
@@ -251,9 +251,9 @@ var MonacoEditor = (function(_React$Component) {
                 language: language,
                 theme: theme,
               },
-              options,
+              options
             ),
-            { editorService },
+            { editorService }
           );
           // After initializing monaco editor
           this.editorDidMount(this.editor, context.monaco);

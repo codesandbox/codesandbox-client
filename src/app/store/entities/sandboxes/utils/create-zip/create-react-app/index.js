@@ -65,7 +65,7 @@ export default function createZip(
   zip,
   sandbox: Sandbox,
   modules: Array<Module>,
-  directories: Array<Directory>,
+  directories: Array<Directory>
 ) {
   importAll(require.context('./files', true, /.*/));
 
@@ -107,8 +107,8 @@ export default function createZip(
         build: 'react-scripts build',
         test: 'react-scripts test --env=jsdom',
         eject: 'react-scripts eject',
-      },
-    ),
+      }
+    )
   );
   zip.file('.gitignore', files['./gitignore']);
 }

@@ -37,7 +37,7 @@ describe('modulesReducer', () => {
     const newState = reducer(state, actions.setCode(module.id, 'koekje'));
     const finalState = reducer(
       newState,
-      actions.setModuleSynced(module.id, true),
+      actions.setModuleSynced(module.id, true)
     );
 
     expect(finalState).toMatchSnapshot();

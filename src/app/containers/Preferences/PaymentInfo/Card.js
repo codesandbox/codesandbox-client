@@ -16,14 +16,13 @@ type Props = {
   name: string,
 };
 
-export default ({ brand, last4, name }: Props) =>
+export default ({ brand, last4, name }: Props) => (
   <Container>
     <div>
       <Highlight>{brand}</Highlight> ending in ****<Highlight>{last4}</Highlight>
     </div>
     <div>
-      <Highlight>
-        {name}
-      </Highlight>
+      <Highlight>{name}</Highlight>
     </div>
-  </Container>;
+  </Container>
+);

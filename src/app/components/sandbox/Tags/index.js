@@ -7,7 +7,7 @@ import Margin from 'app/components/spacing/Margin';
 import Tag from './Tag';
 
 const TagContainer = styled.div`
-  margin: .75em;
+  margin: 0.75em;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -20,11 +20,12 @@ type Props = {
   removeTag: ?(id: string, tag: string) => void,
 };
 
-export default ({ tags, removeTag, align, ...props }: Props) =>
+export default ({ tags, removeTag, align, ...props }: Props) => (
   <TagContainer align={align || 'left'} {...props}>
-    {tags.sort().map(tag =>
+    {tags.sort().map(tag => (
       <Margin key={tag} vertical={0.5} horizontal={0.25}>
         <Tag removeTag={removeTag} tag={tag} />
-      </Margin>,
-    )}
-  </TagContainer>;
+      </Margin>
+    ))}
+  </TagContainer>
+);

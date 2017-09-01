@@ -36,7 +36,7 @@ const Container = styled(Fullscreen)`
   display: flex;
   flex-direction: column;
   height: 100%;
-  background-image: linear-gradient(-180deg, #282D2F 0%, #1D1F20 100%);
+  background-image: linear-gradient(-180deg, #282d2f 0%, #1d1f20 100%);
 `;
 
 const Content = styled(Fullscreen)`
@@ -50,7 +50,7 @@ const mapStateToProps = createSelector(
   currentUserSelector,
   (users, username, currentUser) => {
     const userId = Object.keys(users).find(
-      id => users[id].username === username,
+      id => users[id].username === username
     );
     const user = users[userId];
 
@@ -58,7 +58,7 @@ const mapStateToProps = createSelector(
       currentUser && user && currentUser.username === user.username;
 
     return { user, isCurrentUser };
-  },
+  }
 );
 const mapDispatchToProps = (dispatch: Function) => ({
   userActions: bindActionCreators(userActionCreators, dispatch),
@@ -67,7 +67,7 @@ class Profile extends React.PureComponent<
   Props,
   {
     notFound: boolean,
-  },
+  }
 > {
   state: {
     notFound: boolean,
@@ -125,16 +125,17 @@ class Profile extends React.PureComponent<
               <Route
                 path={match.url}
                 exact
-                render={() =>
+                render={() => (
                   <Showcase
                     isCurrentUser={isCurrentUser}
                     id={user.showcasedSandboxShortid}
-                  />}
+                  />
+                )}
               />
               <Route
                 path={`${profileSandboxesUrl(user.username)}/:page?`}
                 // eslint-disable-next-line
-                children={({ match }) =>
+                children={({ match }) => (
                   <Sandboxes
                     username={user.username}
                     fetchSandboxes={userActions.fetchAllSandboxes}
@@ -143,12 +144,13 @@ class Profile extends React.PureComponent<
                     sandboxCount={user.sandboxCount}
                     baseUrl={profileSandboxesUrl(user.username)}
                     page={match.params.page && +match.params.page}
-                  />}
+                  />
+                )}
               />
               <Route
                 path={`${profileLikesUrl(user.username)}/:page?`}
                 // eslint-disable-next-line
-                children={({ match }) =>
+                children={({ match }) => (
                   <Sandboxes
                     username={user.username}
                     fetchSandboxes={userActions.fetchLikedSandboxes}
@@ -156,7 +158,8 @@ class Profile extends React.PureComponent<
                     sandboxCount={user.givenLikeCount}
                     baseUrl={profileLikesUrl(user.username)}
                     page={match.params.page && +match.params.page}
-                  />}
+                  />
+                )}
               />
             </Switch>
           </Margin>

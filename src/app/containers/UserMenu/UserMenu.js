@@ -29,7 +29,7 @@ const Item = styled.div`
   transition: 0.3s ease all;
   display: flex;
   align-items: center;
-  font-size: .875rem;
+  font-size: 0.875rem;
   padding: 0.75rem 1rem;
 
   text-decoration: none;
@@ -54,7 +54,7 @@ type Props = {
   openPreferences: () => any,
 };
 
-export default ({ username, openPreferences, signOut }: Props) =>
+export default ({ username, openPreferences, signOut }: Props) => (
   <Container>
     <Link style={{ textDecoration: 'none' }} to={profileUrl(username)}>
       <Item>
@@ -80,4 +80,5 @@ export default ({ username, openPreferences, signOut }: Props) =>
         <ExitIcon />
       </Icon>Sign out
     </Item>
-  </Container>;
+  </Container>
+);

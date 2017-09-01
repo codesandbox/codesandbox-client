@@ -69,7 +69,7 @@ export function createPackageJSON(
       dependencies: { ...sandbox.npmDependencies, ...dependencies },
       devDependencies,
       scripts,
-      ...(extra || {})
+      ...(extra || {}),
     },
     null,
     '  '

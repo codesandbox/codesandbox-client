@@ -4,9 +4,7 @@ import styled from 'styled-components';
 import Button from 'app/components/buttons/Button';
 import WorkspaceInputContainer from '../WorkspaceInputContainer';
 
-const ButtonContainer = styled.div`
-  margin: 0.5rem 1rem;
-`;
+const ButtonContainer = styled.div`margin: 0.5rem 1rem;`;
 
 type State = {
   name: string,

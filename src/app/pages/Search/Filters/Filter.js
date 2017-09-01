@@ -11,7 +11,7 @@ const Container = styled.div`
   margin-bottom: 1rem;
 
   .ais-SearchBox__wrapper {
-    margin-bottom: .5rem;
+    margin-bottom: 0.5rem;
   }
 
   .ais-SearchBox__reset {
@@ -19,7 +19,7 @@ const Container = styled.div`
   }
 
   .ais-SearchBox__input {
-    font-size: .875rem;
+    font-size: 0.875rem;
     padding-left: 2.5em;
   }
 `;
@@ -37,15 +37,14 @@ type Props = {
   noSearch: ?boolean,
 };
 
-export default ({ title, attributeName, operator, noSearch }: Props) =>
+export default ({ title, attributeName, operator, noSearch }: Props) => (
   <Container>
-    <Title>
-      {title}
-    </Title>
+    <Title>{title}</Title>
     <RefinementList
       withSearchBox={!noSearch}
       showMore={!noSearch}
       operator={operator}
       attributeName={attributeName}
     />
-  </Container>;
+  </Container>
+);

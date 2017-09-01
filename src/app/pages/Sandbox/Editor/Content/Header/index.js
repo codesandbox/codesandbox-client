@@ -189,19 +189,21 @@ export default class Header extends React.PureComponent<Props> {
             </Chevron>
           </Tooltip>
           {user.jwt &&
-            (sandbox.userLiked
-              ? <Action
-                  tooltip="Undo like"
-                  title={sandbox.likeCount}
-                  Icon={FullHeartIcon}
-                  onClick={this.toggleLike}
-                />
-              : <Action
-                  tooltip="Like"
-                  title={sandbox.likeCount}
-                  Icon={HeartIcon}
-                  onClick={this.toggleLike}
-                />)}
+            (sandbox.userLiked ? (
+              <Action
+                tooltip="Undo like"
+                title={sandbox.likeCount}
+                Icon={FullHeartIcon}
+                onClick={this.toggleLike}
+              />
+            ) : (
+              <Action
+                tooltip="Like"
+                title={sandbox.likeCount}
+                Icon={HeartIcon}
+                onClick={this.toggleLike}
+              />
+            ))}
           <Action onClick={this.forkSandbox} title="Fork" Icon={Fork} />
           <Action
             onClick={canSave && this.massUpdateModules}
@@ -216,19 +218,17 @@ export default class Header extends React.PureComponent<Props> {
         <Right>
           <Media query="(max-width: 1560px)">
             {matches =>
-              matches
-                ? <Action
-                    href={searchUrl()}
-                    Icon={SearchIcon}
-                    tooltip="Search"
-                  />
-                : <div style={{ marginRight: '0.5rem', fontSize: '.875rem' }}>
-                    <HeaderSearchBar />
-                  </div>}
+              matches ? (
+                <Action href={searchUrl()} Icon={SearchIcon} tooltip="Search" />
+              ) : (
+                <div style={{ marginRight: '0.5rem', fontSize: '.875rem' }}>
+                  <HeaderSearchBar />
+                </div>
+              )}
           </Media>
 
           {!user ||
-            (!user.subscription &&
+            (!user.subscription && (
               <Action
                 href={patronUrl()}
                 tooltip="Support CodeSandbox"
@@ -238,7 +238,8 @@ export default class Header extends React.PureComponent<Props> {
                   height: 32,
                   transform: 'scale(1.5, 1.5)',
                 }}
-              />)}
+              />
+            ))}
           <Action
             href="https://twitter.com/CompuIves"
             a
@@ -271,17 +272,19 @@ export default class Header extends React.PureComponent<Props> {
             }}
             left={1}
           >
-            {user.jwt
-              ? <div style={{ fontSize: '.875rem', margin: '6px 0.5rem' }}>
-                  <UserMenu small />
-                </div>
-              : <Action
-                  onClick={userActions.signIn}
-                  title="Sign in with Github"
-                  Icon={GithubIcon}
-                  highlight
-                  unresponsive
-                />}
+            {user.jwt ? (
+              <div style={{ fontSize: '.875rem', margin: '6px 0.5rem' }}>
+                <UserMenu small />
+              </div>
+            ) : (
+              <Action
+                onClick={userActions.signIn}
+                title="Sign in with Github"
+                Icon={GithubIcon}
+                highlight
+                unresponsive
+              />
+            )}
           </Margin>
         </Right>
       </Container>

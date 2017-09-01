@@ -98,7 +98,7 @@ export default function createDetectElementResize(nonce?: string) {
       animationstartevent = 'animationstart',
       domPrefixes = 'Webkit Moz O ms'.split(' '),
       startEvents = 'webkitAnimationStart animationstart oAnimationStart MSAnimationStart'.split(
-        ' ',
+        ' '
       ),
       pfx = '';
     {
@@ -184,13 +184,13 @@ export default function createDetectElementResize(nonce?: string) {
         /* Listen for a css animation to detect element display/re-attach */
         if (animationstartevent) {
           element.__resizeTriggers__.__animationListener__ = function animationListener(
-            e,
+            e
           ) {
             if (e.animationName == animationName) resetTriggers(element);
           };
           element.__resizeTriggers__.addEventListener(
             animationstartevent,
-            element.__resizeTriggers__.__animationListener__,
+            element.__resizeTriggers__.__animationListener__
           );
         }
       }
@@ -203,20 +203,20 @@ export default function createDetectElementResize(nonce?: string) {
     else {
       element.__resizeListeners__.splice(
         element.__resizeListeners__.indexOf(fn),
-        1,
+        1
       );
       if (!element.__resizeListeners__.length) {
         element.removeEventListener('scroll', scrollListener, true);
         if (element.__resizeTriggers__.__animationListener__) {
           element.__resizeTriggers__.removeEventListener(
             animationstartevent,
-            element.__resizeTriggers__.__animationListener__,
+            element.__resizeTriggers__.__animationListener__
           );
           element.__resizeTriggers__.__animationListener__ = null;
         }
         try {
           element.__resizeTriggers__ = !element.removeChild(
-            element.__resizeTriggers__,
+            element.__resizeTriggers__
           );
         } catch (e) {
           // Preact compat; see developit/preact-compat/issues/228

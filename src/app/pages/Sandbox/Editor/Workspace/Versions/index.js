@@ -17,7 +17,7 @@ const Description = styled.p`
   margin-top: 0;
   padding: 0 1rem;
   line-height: 1.2;
-  font-size: .875rem;
+  font-size: 0.875rem;
 `;
 
 const VersionDate = styled.div`
@@ -84,16 +84,14 @@ export default class Versions extends React.PureComponent<Props> {
         <PublishFields />
 
         <WorkspaceSubtitle>Published versions</WorkspaceSubtitle>
-        {[].map(v =>
+        {[].map(v => (
           <EntryContainer key={v.version}>
-            <span>
-              {v.version}
-            </span>
+            <span>{v.version}</span>
             <VersionDate>
               {/* moment(v.insertedAt).format('lll') */}
             </VersionDate>
-          </EntryContainer>,
-        )}
+          </EntryContainer>
+        ))}
       </div>
     );
   }

@@ -79,11 +79,12 @@ class Sandboxes extends React.PureComponent<Props> {
     if (!sandboxes || !sandboxes[page]) return <div />;
     return (
       <div>
-        {isCurrentUser &&
+        {isCurrentUser && (
           <Notice>
             You{"'"}re viewing your own profile, so you can see your private and
             unlisted sandboxes. Others can{"'"}t.
-          </Notice>}
+          </Notice>
+        )}
         <SandboxList
           isCurrentUser={isCurrentUser}
           sandboxes={sandboxes[page]}
@@ -91,22 +92,24 @@ class Sandboxes extends React.PureComponent<Props> {
         />
         <Navigation>
           <div>
-            {page > 1 &&
+            {page > 1 && (
               <Button
                 style={{ margin: '0 0.5rem' }}
                 small
                 to={`${baseUrl}/${page - 1}`}
               >
                 {'<'}
-              </Button>}
-            {this.getLastPage() !== page &&
+              </Button>
+            )}
+            {this.getLastPage() !== page && (
               <Button
                 style={{ margin: '0 0.5rem' }}
                 small
                 to={`${baseUrl}/${page + 1}`}
               >
                 {'>'}
-              </Button>}
+              </Button>
+            )}
           </div>
         </Navigation>
       </div>

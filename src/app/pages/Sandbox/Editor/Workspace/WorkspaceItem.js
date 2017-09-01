@@ -88,9 +88,7 @@ export default class WorkspaceItem extends React.PureComponent {
     return (
       <div>
         <ItemHeader onClick={this.toggleOpen}>
-          <Title>
-            {title}
-          </Title>
+          <Title>{title}</Title>
           <ExpandIconContainer open={open} />
         </ItemHeader>
         <ChildContainer disabled={disabled} open={open}>

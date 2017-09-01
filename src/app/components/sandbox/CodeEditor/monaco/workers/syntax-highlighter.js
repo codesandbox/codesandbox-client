@@ -17,7 +17,7 @@ function addChildNodes(node, lines, classifications) {
   self.ts.forEachChild(node, id => {
     const { offset, line: startLine } = getLineNumberAndOffset(
       id.getStart(),
-      lines,
+      lines
     );
     const { line: endLine } = getLineNumberAndOffset(id.getEnd(), lines);
     classifications.push({
@@ -42,7 +42,7 @@ self.addEventListener('message', event => {
       title,
       code,
       self.ts.ScriptTarget.ES6,
-      true,
+      true
     );
     const lines = code.split('\n').map(line => line.length);
 

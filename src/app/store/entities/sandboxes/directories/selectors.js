@@ -6,7 +6,7 @@ export const directoriesSelector = state => state.entities.directories;
 export const directoriesFromSandboxSelector = createSelector(
   directoriesSelector,
   (_, props) => props.sandbox.directories,
-  (directories, ids) => ids.map(id => directories[id]),
+  (directories, ids) => ids.map(id => directories[id])
 );
 
 export const singleDirectorySelector = createSelector(
@@ -14,6 +14,6 @@ export const singleDirectorySelector = createSelector(
   (_, { sourceId, shortid, id }) => ({ id, sourceId, shortid }),
   (directories, { sourceId, id, shortid }) =>
     values(directories).find(
-      d => d.id === id || (d.sourceId === sourceId && d.shortid === shortid),
-    ),
+      d => d.id === id || (d.sourceId === sourceId && d.shortid === shortid)
+    )
 );

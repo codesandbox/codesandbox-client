@@ -38,7 +38,7 @@ export default {
       message,
       line,
       column,
-    }: { title: string, message: string, line: ?number, column: ?number },
+    }: { title: string, message: string, line: ?number, column: ?number }
   ) => ({
     id,
     type: SET_MODULE_ERROR,

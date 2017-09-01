@@ -13,9 +13,10 @@ const LogoContainer = styled.div`
   animation-duration: 800ms;
 `;
 
-export default () =>
+export default () => (
   <Centered vertical horizontal>
     <LogoContainer>
       <Logo width={490} height={490} />
     </LogoContainer>
-  </Centered>;
+  </Centered>
+);

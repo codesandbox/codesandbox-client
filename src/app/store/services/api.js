@@ -27,7 +27,7 @@ function getUrl(endpoint: string) {
 export default (async function callApi(
   endpoint: string,
   jwt: ?string,
-  { method = 'GET', body = null, shouldCamelize = true }: ?BodyType = {},
+  { method = 'GET', body = null, shouldCamelize = true }: ?BodyType = {}
 ) {
   if (!endpoint) throw new Error('No endpoint is given');
 

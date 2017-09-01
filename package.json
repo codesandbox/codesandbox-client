@@ -170,18 +170,9 @@
     "precommit": "lint-staged"
   },
   "lint-staged": {
-    "*.js": [
-      "prettier --write --single-quote --trailing-comma none",
-      "git add"
-    ],
-    "*.css": [
-      "prettier --write --single-quote --trailing-comma none",
-      "git add"
-    ],
-    "*.json": [
-      "prettier --write --single-quote --trailing-comma none",
-      "git add"
-    ]
+    "*.js": ["prettier --write", "git add"],
+    "*.css": ["prettier --write", "git add"],
+    "*.json": ["prettier --write", "git add"]
   },
   "jest": {
     "rootDir": "src",

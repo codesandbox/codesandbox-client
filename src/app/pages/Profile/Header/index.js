@@ -12,19 +12,15 @@ import UserInfo from './UserInfo';
 const Top = styled.div`
   display: flex;
   background-image: linear-gradient(-180deg, #121415 0%, #1f2224 100%);
-  box-shadow: inset 0 -3px 4px 0 rgba(0, 0, 0, 0.50);
+  box-shadow: inset 0 -3px 4px 0 rgba(0, 0, 0, 0.5);
 
   width: 100%;
   justify-content: center;
 `;
 
-const FullWidthPadding = styled(Padding)`
-  width: 100%;
-`;
+const FullWidthPadding = styled(Padding)`width: 100%;`;
 
-const FullWidthMargin = styled(Margin)`
-  width: 100%;
-`;
+const FullWidthMargin = styled(Margin)`width: 100%;`;
 
 type Props = {
   user: User,

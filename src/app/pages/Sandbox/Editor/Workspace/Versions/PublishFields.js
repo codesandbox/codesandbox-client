@@ -28,7 +28,7 @@ const Dot = styled.div`
 
 const ErrorMessage = styled.div`
   margin: 1rem;
-  font-size: .875rem;
+  font-size: 0.875rem;
   color: ${props => props.theme.red};
 `;
 
@@ -49,7 +49,7 @@ const DUPLICATE_VERSION_INFO =
 
 export default class PublishFields extends React.PureComponent<
   Props,
-  $FlowFixMeState,
+  $FlowFixMeState
 > {
   state = initialState;
 
@@ -62,7 +62,7 @@ export default class PublishFields extends React.PureComponent<
       major = this.state.major,
       minor = this.state.minor,
       patch = this.state.patch,
-    }: { major?: string, minor?: string, patch?: string } = {},
+    }: { major?: string, minor?: string, patch?: string } = {}
   ) => `${major}.${minor}.${patch}`;
 
   isDuplicateVersion = (version: string = this.getVersion()) =>
@@ -194,9 +194,7 @@ export default class PublishFields extends React.PureComponent<
             Publish
           </Button>
         </WorkspaceInputContainer>
-        <ErrorMessage>
-          {this.state.errorMessage}
-        </ErrorMessage>
+        <ErrorMessage>{this.state.errorMessage}</ErrorMessage>
       </Inputs>
     );
   }

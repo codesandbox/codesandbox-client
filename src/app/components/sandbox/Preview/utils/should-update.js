@@ -41,7 +41,7 @@ export default function shouldUpdate(
   prevModules: Array<Module>,
   prevDirectories: Array<Directory>,
   nextModules: Array<Module>,
-  nextDirectories: Array<Directory>,
+  nextDirectories: Array<Directory>
 ) {
   if (prevModules.length !== nextModules.length) return true;
   if (prevDirectories.length !== nextDirectories.length) return true;

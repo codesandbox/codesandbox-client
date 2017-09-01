@@ -16,11 +16,12 @@ type Props = {
 const mapDispatchToProps = dispatch => ({
   userActions: bindActionCreators(userActionCreators, dispatch),
 });
-const SignInButton = ({ userActions, ...props }: Props) =>
+const SignInButton = ({ userActions, ...props }: Props) => (
   <Button small onClick={userActions.signIn} {...props}>
     <Row>
       <GithubIcon style={{ marginRight: '0.5rem' }} /> Sign in with GitHub
     </Row>
-  </Button>;
+  </Button>
+);
 
 export default connect(null, mapDispatchToProps)(SignInButton);

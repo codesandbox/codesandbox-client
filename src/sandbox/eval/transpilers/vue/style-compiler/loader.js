@@ -15,7 +15,7 @@ export default function(code: string, loaderContext: LoaderContext) {
       vueOptions = Object.assign(
         {},
         loaderContext.options.vue,
-        loaderContext.vue,
+        loaderContext.vue
       );
     }
 
@@ -46,19 +46,21 @@ export default function(code: string, loaderContext: LoaderContext) {
       };
     }
 
-    return postcss(plugins).process(code, options).then(result => {
-      if (result.messages) {
-        result.messages.forEach(m => {
-          if (m.type === 'dependency') {
-            loaderContext.addDependency(m.file);
-          }
-        });
-      }
+    return postcss(plugins)
+      .process(code, options)
+      .then(result => {
+        if (result.messages) {
+          result.messages.forEach(m => {
+            if (m.type === 'dependency') {
+              loaderContext.addDependency(m.file);
+            }
+          });
+        }
 
-      const map = result.map && result.map.toJSON();
-      resolve({ transpiledCode: result.css, sourceMap: map });
+        const map = result.map && result.map.toJSON();
+        resolve({ transpiledCode: result.css, sourceMap: map });
 
-      return null; // silence bluebird warning
-    });
+        return null; // silence bluebird warning
+      });
   });
 }

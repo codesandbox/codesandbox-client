@@ -24,7 +24,7 @@ function updateAdditional(
   additionalReference: HTMLDivElement,
   currentError: number,
   totalErrors: number,
-  switchCallback: SwitchCallback,
+  switchCallback: SwitchCallback
 ) {
   if (additionalReference.lastChild) {
     additionalReference.removeChild(additionalReference.lastChild);

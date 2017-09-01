@@ -4,10 +4,11 @@ import { Stats, ClearAll } from 'react-instantsearch/dom';
 
 const ClearAllContainer = styled.div`float: right;`;
 
-export default () =>
+export default () => (
   <div style={{ marginBottom: '1rem', fontSize: '.875rem' }}>
     <Stats />
     <ClearAllContainer>
       <ClearAll />
     </ClearAllContainer>
-  </div>;
+  </div>
+);

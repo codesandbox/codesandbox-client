@@ -72,7 +72,7 @@ type Props = {
   onDelete: Function,
 };
 
-export default ({ sandboxes, isCurrentUser, onDelete }: Props) =>
+export default ({ sandboxes, isCurrentUser, onDelete }: Props) => (
   <Table>
     <thead>
       <tr style={{ height: '3rem' }}>
@@ -92,34 +92,24 @@ export default ({ sandboxes, isCurrentUser, onDelete }: Props) =>
       </tr>
     </thead>
     <Body>
-      {sandboxes.map((s, i) =>
+      {sandboxes.map((s, i) => (
         <SandboxRow index={i} key={s.id}>
           <td>
-            <Link to={sandboxUrl(s)}>
-              {s.title || s.id}
-            </Link>
+            <Link to={sandboxUrl(s)}>{s.title || s.id}</Link>
             <PrivacyStatus privacy={s.privacy} asIcon />
           </td>
-          <td>
-            {moment(s.insertedAt).format('ll')}
-          </td>
-          <td>
-            {moment(s.updatedAt).format('ll')}
-          </td>
-          <StatBody>
-            {s.likeCount}
-          </StatBody>
-          <StatBody>
-            {s.viewCount}
-          </StatBody>
-          <StatBody>
-            {s.forkCount}
-          </StatBody>
-          {isCurrentUser &&
+          <td>{moment(s.insertedAt).format('ll')}</td>
+          <td>{moment(s.updatedAt).format('ll')}</td>
+          <StatBody>{s.likeCount}</StatBody>
+          <StatBody>{s.viewCount}</StatBody>
+          <StatBody>{s.forkCount}</StatBody>
+          {isCurrentUser && (
             <StatBody style={{ padding: '0.55rem 0.5rem', cursor: 'pointer' }}>
               <DeleteSandboxButton id={s.id} onDelete={onDelete} />
-            </StatBody>}
-        </SandboxRow>,
-      )}
+            </StatBody>
+          )}
+        </SandboxRow>
+      ))}
     </Body>
-  </Table>;
+  </Table>
+);

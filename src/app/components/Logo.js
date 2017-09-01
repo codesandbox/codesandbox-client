@@ -4,7 +4,11 @@ export default ({
   width = 35,
   height = 35,
   className,
-}: { width: number, height: number, className: ?string }) => (
+}: {
+  width: number,
+  height: number,
+  className: ?string,
+}) => (
   <svg
     x="0px"
     y="0px"

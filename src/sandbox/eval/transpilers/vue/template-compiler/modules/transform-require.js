@@ -26,7 +26,7 @@ function transform(node, options, loaderContext: LoaderContext) {
         node.attrs.some(attr => rewrite(attr, attributes, loaderContext));
       } else if (Array.isArray(attributes)) {
         attributes.forEach(item =>
-          node.attrs.some(attr => rewrite(attr, item, loaderContext)),
+          node.attrs.some(attr => rewrite(attr, item, loaderContext))
         );
       }
     }

@@ -77,13 +77,15 @@ export default ({
   isNotSynced,
   isOpen,
   onOpen,
-}: Props) =>
+}: Props) => (
   <div style={{ display: 'inline-block', verticalAlign: 'middle' }}>
     {isNotSynced && <NotSyncedIconWithMargin />}
     {type === 'directory' &&
-      hasChildren &&
+    hasChildren && (
       <StyledFolderIcon isOpen={isOpen} onClick={onOpen}>
         <FolderIcon />
-      </StyledFolderIcon>}
+      </StyledFolderIcon>
+    )}
     {getIcon(type, error, root)}
-  </div>;
+  </div>
+);

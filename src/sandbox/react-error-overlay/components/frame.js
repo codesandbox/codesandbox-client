@@ -29,12 +29,12 @@ import { getCurrentManager } from '../../';
 function getGroupToggle(
   document: Document,
   omitsCount: number,
-  omitBundle: number,
+  omitBundle: number
 ) {
   const omittedFrames = document.createElement('div');
   enableTabClick(omittedFrames);
   const text1 = document.createTextNode(
-    '\u25B6 ' + omitsCount + ' stack frames were collapsed.',
+    '\u25B6 ' + omitsCount + ' stack frames were collapsed.'
   );
   omittedFrames.appendChild(text1);
   omittedFrames.addEventListener('click', function() {
@@ -67,7 +67,7 @@ function insertBeforeBundle(
   parent: Node,
   omitsCount: number,
   omitBundle: number,
-  actionElement,
+  actionElement
 ) {
   const children = document.getElementsByName('bundle-' + omitBundle);
   if (children.length < 1) {
@@ -81,7 +81,7 @@ function insertBeforeBundle(
   enableTabClick(div);
   div.setAttribute('name', 'bundle-' + omitBundle);
   const text = document.createTextNode(
-    '\u25BC ' + omitsCount + ' stack frames were expanded.',
+    '\u25BC ' + omitsCount + ' stack frames were expanded.'
   );
   div.appendChild(text);
   div.addEventListener('click', function() {
@@ -98,7 +98,7 @@ function frameDiv(
   functionName,
   url,
   internalUrl,
-  onSourceClick: ?Function,
+  onSourceClick: ?Function
 ) {
   const frame = document.createElement('div');
   const frameFunctionName = document.createElement('div');
@@ -115,7 +115,7 @@ function frameDiv(
   if (internalUrl) {
     applyStyles(
       frameFunctionName,
-      Object.assign({}, functionNameStyle, depStyle),
+      Object.assign({}, functionNameStyle, depStyle)
     );
   } else {
     applyStyles(frameFunctionName, functionNameStyle);
@@ -166,13 +166,13 @@ function getPrettyURL(
   fileName: ?string,
   lineNumber: ?number,
   columnNumber: ?number,
-  compiled: boolean,
+  compiled: boolean
 ): string {
   let prettyURL;
   if (!compiled && sourceFileName && typeof sourceLineNumber === 'number') {
     // Remove everything up to the first /src/ or /node_modules/
     const trimMatch = /^[/|\\].*?[/|\\]((src|node_modules)[/|\\].*)/.exec(
-      sourceFileName,
+      sourceFileName
     );
     if (trimMatch && trimMatch[1]) {
       prettyURL = trimMatch[1];
@@ -206,7 +206,7 @@ function createFrame(
   omitBundle: number,
   parentContainer: HTMLDivElement,
   lastElement: boolean,
-  errorName: ?string,
+  errorName: ?string
 ) {
   const { compiled } = frameSetting;
   let { functionName, _originalFileName: sourceFileName } = frame;
@@ -238,7 +238,7 @@ function createFrame(
     fileName,
     lineNumber,
     columnNumber,
-    compiled,
+    compiled
   );
 
   let needsHidden = false;
@@ -267,7 +267,7 @@ function createFrame(
           parentContainer,
           capV,
           omitBundle,
-          omittedFrames,
+          omittedFrames
         );
       });
       if (lastElement && shouldCollapse) {
@@ -298,8 +298,8 @@ function createFrame(
               tModule.module.parent
                 ? tModule.module.parent.id
                 : tModule.module.id,
-              window.encodeURIComponent(sourceLineNumber || 1),
-            ),
+              window.encodeURIComponent(sourceLineNumber || 1)
+            )
           );
         }
       };
@@ -311,7 +311,7 @@ function createFrame(
     functionName,
     prettyURL,
     shouldCollapse,
-    onSourceClick,
+    onSourceClick
   );
   if (needsHidden) {
     applyStyles(elem, hiddenStyle);
@@ -334,8 +334,8 @@ function createFrame(
           columnNumber,
           contextSize,
           critical,
-          onSourceClick,
-        ),
+          onSourceClick
+        )
       );
       hasSource = true;
     } else if (
@@ -352,8 +352,8 @@ function createFrame(
           sourceColumnNumber,
           contextSize,
           critical,
-          onSourceClick,
-        ),
+          onSourceClick
+        )
       );
       hasSource = true;
     }

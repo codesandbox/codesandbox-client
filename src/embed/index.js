@@ -13,7 +13,7 @@ function renderApp(Component) {
     <ThemeProvider theme={theme}>
       <Component />
     </ThemeProvider>,
-    document.getElementById('root'),
+    document.getElementById('root')
   );
 }
 

@@ -6,5 +6,5 @@ export default new schema.Entity(
   {},
   {
     idAttribute: u => u.username,
-  },
+  }
 );

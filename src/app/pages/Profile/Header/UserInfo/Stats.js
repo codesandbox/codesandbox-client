@@ -38,14 +38,19 @@ type Props = {
   badges: Array<BadgeT>,
 };
 
-const Badges = ({ badges }: { badges: Array<{ id: string, name: string }> }) =>
+const Badges = ({
+  badges,
+}: {
+  badges: Array<{ id: string, name: string }>,
+}) => (
   <Margin right={2}>
     <Link to={patronUrl()}>
       {badges.map(badge => <Badge key={badge.id} badge={badge} size={64} />)}
     </Link>
-  </Margin>;
+  </Margin>
+);
 
-export default ({ viewCount, likeCount, forkCount, badges }: Props) =>
+export default ({ viewCount, likeCount, forkCount, badges }: Props) => (
   <Container>
     <Badges badges={badges} />
 
@@ -54,4 +59,5 @@ export default ({ viewCount, likeCount, forkCount, badges }: Props) =>
       <Stat name="Views" count={viewCount} />
       <Stat name="Forked" count={forkCount} />
     </Stats>
-  </Container>;
+  </Container>
+);

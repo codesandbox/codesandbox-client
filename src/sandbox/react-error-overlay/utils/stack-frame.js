@@ -52,7 +52,7 @@ class StackFrame {
     sourceFileName: string | null = null,
     sourceLineNumber: number | null = null,
     sourceColumnNumber: number | null = null,
-    sourceScriptCode: ScriptLine[] | null = null,
+    sourceScriptCode: ScriptLine[] | null = null
   ) {
     this.functionName = functionName;
 

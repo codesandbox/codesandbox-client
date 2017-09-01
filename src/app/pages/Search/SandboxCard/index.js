@@ -52,48 +52,50 @@ const Title = styled.h2`
 `;
 
 const Description = styled.p`
-  font-size: .875rem;
+  font-size: 0.875rem;
   color: rgba(255, 255, 255, 0.8);
   margin-bottom: 1.5rem;
 `;
 
 const TagContainer = styled.div`
-  font-size: .75rem;
+  font-size: 0.75rem;
   width: 30%;
 `;
 
 type Props = {
   hit: {
-    'view_count': number,
-    'title': ?string,
-    'npm_dependencies': Array<{ version: string, dependency: string }>,
-    'like_count': number,
-    'inserted_at': number,
-    'updated_at': number,
-    'git': ?{
+    view_count: number,
+    title: ?string,
+    npm_dependencies: Array<{ version: string, dependency: string }>,
+    like_count: number,
+    inserted_at: number,
+    updated_at: number,
+    git: ?{
       username: string,
       repo: string,
       commitSha: string,
       path: string,
     },
-    'forked_sandbox': string,
-    'fork_count': number,
-    'external_resources': Array<string>,
-    'description': ?string,
-    'author': ?{ username: string, avatarUrl: string },
-    'objectID': string,
-    'template': string,
+    forked_sandbox: string,
+    fork_count: number,
+    external_resources: Array<string>,
+    description: ?string,
+    author: ?{ username: string, avatarUrl: string },
+    objectID: string,
+    template: string,
   },
 };
 
-export default ({ hit }: Props) =>
+export default ({ hit }: Props) => (
   <StyledLink to={sandboxUrl({ id: hit.objectID, git: hit.git })}>
     <Container template={hit.template}>
       <Row alignItems="flex-start">
         <Title>
-          {hit.title
-            ? <Highlight attributeName="title" hit={hit} />
-            : hit.objectID}
+          {hit.title ? (
+            <Highlight attributeName="title" hit={hit} />
+          ) : (
+            hit.objectID
+          )}
         </Title>
         <TagContainer>
           <Tags
@@ -116,4 +118,5 @@ export default ({ hit }: Props) =>
         likeCount={hit.like_count}
       />
     </Container>
-  </StyledLink>;
+  </StyledLink>
+);

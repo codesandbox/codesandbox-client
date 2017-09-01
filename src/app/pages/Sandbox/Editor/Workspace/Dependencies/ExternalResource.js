@@ -38,7 +38,9 @@ export default class ExternalResource extends React.PureComponent {
           {getName(resource)}
         </a>
         <IconArea>
-          <Icon onClick={this.removeResource}><CrossIcon /></Icon>
+          <Icon onClick={this.removeResource}>
+            <CrossIcon />
+          </Icon>
         </IconArea>
       </EntryContainer>
     );

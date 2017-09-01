@@ -29,7 +29,7 @@ export default class Transpiler {
 
   doTranspilation(
     code: string,
-    loaderContext: LoaderContext,
+    loaderContext: LoaderContext
   ): Promise<TranspilerResult> {
     throw new Error('This is an abstract function, please override it!');
   }
@@ -37,7 +37,7 @@ export default class Transpiler {
 
   transpile(
     code: string,
-    loaderContext: LoaderContext,
+    loaderContext: LoaderContext
   ): Promise<TranspilerResult> {
     // if (this.cacheable && this.cachedResults[code]) {
     //   return Promise.resolve(this.cachedResults[code]);

@@ -2,7 +2,7 @@ import React from 'react';
 
 import Filter from './Filter';
 
-export default () =>
+export default () => (
   <div style={{ flex: 1 }}>
     <Filter title="Templates" operator="or" attributeName="template" noSearch />
     <Filter
@@ -11,4 +11,5 @@ export default () =>
       attributeName="npm_dependencies.dependency"
     />
     <Filter title="Tags" operator="or" attributeName="tags" />
-  </div>;
+  </div>
+);

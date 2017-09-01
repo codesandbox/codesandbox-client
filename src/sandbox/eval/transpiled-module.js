@@ -14,7 +14,7 @@ import evaluate from './loaders/eval';
 import Manager from './manager';
 
 type ChildModule = Module & {
-  parent: Module
+  parent: Module,
 };
 
 class ModuleSource {
@@ -39,7 +39,7 @@ export type LoaderContext = {
   ) => TranspiledModule, // eslint-disable-line no-use-before-define
   emitFile: (name: string, content: string, sourceMap: SourceMap) => void,
   options: {
-    context: '/'
+    context: '/',
   },
   webpack: boolean,
   sourceMap: boolean,
@@ -50,16 +50,16 @@ export type LoaderContext = {
   addDependency: (
     depPath: string,
     options: ?{
-      isAbsolute: boolean
+      isAbsolute: boolean,
     }
   ) => TranspiledModule, // eslint-disable-line no-use-before-define
   addDependenciesInDirectory: (
     depPath: string,
     options: {
-      isAbsolute: boolean
+      isAbsolute: boolean,
     }
   ) => Array<TranspiledModule>, // eslint-disable-line no-use-before-define
-  _module: TranspiledModule // eslint-disable-line no-use-before-define
+  _module: TranspiledModule, // eslint-disable-line no-use-before-define
 };
 
 class Compilation {
@@ -76,7 +76,7 @@ export default class TranspiledModule {
   source: ?ModuleSource;
   cacheable: boolean;
   assets: {
-    [name: string]: ModuleSource
+    [name: string]: ModuleSource,
   };
   isEntry: boolean;
   childModules: Array<TranspiledModule>;
@@ -145,9 +145,11 @@ export default class TranspiledModule {
     if (this.compilation) {
       try {
         this.compilation = null;
-        Array.from(this.initiators).filter(t => t.compilation).forEach(dep => {
-          dep.resetCompilation();
-        });
+        Array.from(this.initiators)
+          .filter(t => t.compilation)
+          .forEach(dep => {
+            dep.resetCompilation();
+          });
       } catch (e) {
         console.error(e);
       }
@@ -201,7 +203,7 @@ export default class TranspiledModule {
           directoryShortid,
           title: moduleName,
           parent: this.module,
-          code
+          code,
         };
 
         const transpiledModule = manager.addModule(
@@ -271,13 +273,13 @@ export default class TranspiledModule {
       },
       options: {
         context: '/',
-        ...transpilerOptions
+        ...transpilerOptions,
       },
       webpack: true,
       sourceMap: true,
       target: 'web',
       _module: this,
-      path
+      path,
     };
   }
 
@@ -324,7 +326,7 @@ export default class TranspiledModule {
       try {
         const {
           transpiledCode,
-          sourceMap
+          sourceMap,
         } = await transpilerConfig.transpiler.transpile(code, loaderContext); // eslint-disable-line no-await-in-loop
 
         if (this.errors.length) {
@@ -357,7 +359,7 @@ export default class TranspiledModule {
           t.transpile(manager)
         ),
         ...Array.from(this.dependencies).map(t => t.transpile(manager)),
-        ...this.childModules.map(t => t.transpile(manager))
+        ...this.childModules.map(t => t.transpile(manager)),
       ])
     );
   }
@@ -423,7 +425,7 @@ export default class TranspiledModule {
           ? cache.exports
           : manager.evaluateTranspiledModule(requiredTranspiledModule, [
               ...parentModules,
-              transpiledModule
+              transpiledModule,
             ]);
       }
 

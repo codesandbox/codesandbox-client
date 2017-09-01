@@ -8,7 +8,7 @@ const openMenu = (
   items: Array<ContextMenuItem>,
   x: number,
   y: number,
-  onClose: ?() => void,
+  onClose: ?() => void
 ) => ({
   type: OPEN_CONTEXT_MENU,
   items,

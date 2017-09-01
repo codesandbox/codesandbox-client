@@ -54,8 +54,8 @@ async function requestManifest(url) {
         dispatch(
           actions.notifications.show(
             'It seems like all packagers are busy, retrying in 10 seconds...',
-            'warning',
-          ),
+            'warning'
+          )
         );
 
         await delay(1000 * 2); // eslint-disable-line no-await-in-loop

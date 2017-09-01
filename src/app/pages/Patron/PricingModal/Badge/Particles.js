@@ -47,8 +47,8 @@ const Particle = styled.div`
       badges[props.badge].colors[props.i % badges[props.badge].colors.length];
 
     return css`
-    background-color: ${color};
-    box-shadow: 0 0 5px ${color};
+      background-color: ${color};
+      box-shadow: 0 0 5px ${color};
     `;
   }};
 `;
@@ -56,14 +56,14 @@ const Particle = styled.div`
 const createParticles = (amount: number, badge) =>
   Array(amount)
     .fill(0)
-    .map((_, i) =>
+    .map((_, i) => (
       <Particle
         className={`${badge}-particle particle hide`}
         i={i}
         deg={180 + (Math.floor(amount / 2) + i) * (360 / amount)}
         badge={badge}
-      />,
-    );
+      />
+    ));
 
 type Props = {
   makeItRain: boolean,
@@ -87,7 +87,7 @@ export default class Particles extends React.PureComponent {
   shouldComponentUpdate(nextProps) {
     if (nextProps.badge !== this.props.badge) {
       const particleSelector = document.getElementsByClassName(
-        `${nextProps.badge}-particle`,
+        `${nextProps.badge}-particle`
       );
 
       Array.forEach(particleSelector, hideElement);
@@ -117,7 +117,7 @@ export default class Particles extends React.PureComponent {
     return (
       <div>
         {Object.keys(badges).map(badge =>
-          createParticles(badges[badge].particleCount, badge),
+          createParticles(badges[badge].particleCount, badge)
         )}
       </div>
     );

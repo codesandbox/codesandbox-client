@@ -10,7 +10,7 @@ export default {
       case 'notification': {
         const { title, timeAlive, notificationType } = action;
         return dispatch(
-          notifActions.addNotification(title, notificationType, timeAlive),
+          notifActions.addNotification(title, notificationType, timeAlive)
         );
       }
       case 'show-error': {
@@ -19,7 +19,7 @@ export default {
       case 'source.module.rename': {
         const { sandboxId, moduleId, title } = action;
         return dispatch(
-          sandboxActions.renameModule(sandboxId, moduleId, title),
+          sandboxActions.renameModule(sandboxId, moduleId, title)
         );
       }
       case 'source.dependencies.add': {

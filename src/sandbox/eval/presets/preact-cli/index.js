@@ -19,7 +19,7 @@ const preactPreset = new Preset(
     react: 'preact-compat',
     'react-dom': 'preact-compat',
     'create-react-class': 'preact-compat/lib/create-react-class',
-    'react-addons-css-transition-group': 'preact-css-transition-group'
+    'react-addons-css-transition-group': 'preact-css-transition-group',
   }
 );
 
@@ -31,7 +31,7 @@ preactPreset.registerTranspiler(module => /\.jsx?$/.test(module.title), [
         // babel preset env starts with latest, then drops rules.
         // We don't have env, so we just support latest
         'latest',
-        'stage-1'
+        'stage-1',
       ],
       plugins: [
         'transform-object-assign',
@@ -42,31 +42,31 @@ preactPreset.registerTranspiler(module => /\.jsx?$/.test(module.title), [
           {
             module: 'preact',
             export: 'h',
-            import: 'h'
-          }
-        ]
-      ]
-    }
-  }
+            import: 'h',
+          },
+        ],
+      ],
+    },
+  },
 ]);
 
 preactPreset.registerTranspiler(module => /\.s[a|c]ss/.test(module.title), [
   { transpiler: sassTranspiler },
-  { transpiler: stylesTranspiler }
+  { transpiler: stylesTranspiler },
 ]);
 
 preactPreset.registerTranspiler(module => /\.less/.test(module.title), [
   { transpiler: lessTranspiler },
-  { transpiler: stylesTranspiler }
+  { transpiler: stylesTranspiler },
 ]);
 
 preactPreset.registerTranspiler(module => /\.json/.test(module.title), [
-  { transpiler: jsonTranspiler }
+  { transpiler: jsonTranspiler },
 ]);
 
 preactPreset.registerTranspiler(module => /\.styl/.test(module.title), [
   { transpiler: stylusTranspiler },
-  { transpiler: stylesTranspiler }
+  { transpiler: stylesTranspiler },
 ]);
 
 // Support for !async statements

@@ -6,7 +6,7 @@ import { createElement } from 'react';
  */
 export default (LoadingComponent, fields = []) => Component => props => {
   const componentLoaded = fields.every(
-    field => typeof props[field] !== 'undefined' && props[field] !== null,
+    field => typeof props[field] !== 'undefined' && props[field] !== null
   );
 
   if (componentLoaded) {

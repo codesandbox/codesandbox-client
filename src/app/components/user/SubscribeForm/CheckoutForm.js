@@ -15,22 +15,22 @@ const CardContainer = styled.div`
 
 const NameInput = styled(Input)`
   width: 100%;
-  font-size: .875rem;
-  padding: .5rem;
+  font-size: 0.875rem;
+  padding: 0.5rem;
   margin-top: 0.25rem;
-  margin-bottom: .5rem;
+  margin-bottom: 0.5rem;
   height: 32.8px;
 `;
 
 const ErrorText = styled.div`
   color: ${props => props.theme.red};
-  font-size: .875rem;
+  font-size: 0.875rem;
   margin: 0.25rem 0;
 `;
 
 const Label = styled.label`
   color: rgba(255, 255, 255, 0.5);
-  font-size: .875rem;
+  font-size: 0.875rem;
 `;
 
 type Props = {
@@ -118,10 +118,7 @@ class CheckoutForm extends React.PureComponent {
     return (
       <form onSubmit={this.handleSubmit}>
         <Label>Cardholder Name</Label>
-        {errors.name != null &&
-          <ErrorText>
-            {errors.name}
-          </ErrorText>}
+        {errors.name != null && <ErrorText>{errors.name}</ErrorText>}
         <div>
           <NameInput
             value={this.state.name}
@@ -132,10 +129,7 @@ class CheckoutForm extends React.PureComponent {
         </div>
 
         <Label>Card</Label>
-        {errors.stripe != null &&
-          <ErrorText>
-            {errors.stripe}
-          </ErrorText>}
+        {errors.stripe != null && <ErrorText>{errors.stripe}</ErrorText>}
         <CardContainer>
           <CardElement style={{ base: { color: 'white', fontWeight: 300 } }} />
         </CardContainer>

@@ -44,9 +44,7 @@ export default ({ path, saveComponent, prettify }: Props) => {
   return (
     <Container>
       <div>
-        <Path>
-          {pathName}/
-        </Path>
+        <Path>{pathName}/</Path>
         {fileName}
       </div>
 

@@ -33,9 +33,10 @@ const Badge = ({ badge }: Props) => {
   );
 };
 
-export default ({ badge, subscribed }: Props) =>
+export default ({ badge, subscribed }: Props) => (
   <Relative>
     {/* We prerender all particles, performance reasons */}
     <Particles makeItRain={subscribed} badge={badge} />
     <Badge key={badge} id="badge" badge={badge} />
-  </Relative>;
+  </Relative>
+);

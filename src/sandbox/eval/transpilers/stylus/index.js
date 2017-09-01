@@ -31,7 +31,7 @@ class StylusTranspiler extends WorkerTranspiler {
           }
 
           return resolve(data);
-        },
+        }
       );
     });
   }

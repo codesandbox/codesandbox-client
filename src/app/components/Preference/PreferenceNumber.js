@@ -3,9 +3,7 @@ import styled from 'styled-components';
 
 import Input from 'app/components/Input';
 
-const StyledInput = styled(Input)`
-  text-align: center;
-`;
+const StyledInput = styled(Input)`text-align: center;`;
 
 type Props = {
   value: boolean,

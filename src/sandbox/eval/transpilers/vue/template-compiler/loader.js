@@ -33,8 +33,8 @@ export default function(html: string, loaderContext: LoaderContext) {
       new Error(
         `\n  Error compiling template:\n${pad(html)}\n` +
           compiled.errors.map(e => `  - ${e}`).join('\n') +
-          '\n',
-      ),
+          '\n'
+      )
     );
     code = 'module.exports={render:function(){},staticRenderFns:[]}';
   } else {
@@ -48,7 +48,7 @@ export default function(html: string, loaderContext: LoaderContext) {
         compiled.staticRenderFns.map(toFunction).join(',') +
         ']' +
         '}',
-      bubleOptions,
+      bubleOptions
     );
     // mark with stripped (this enables Vue to use correct runtime proxy detection)
     if (
@@ -82,5 +82,8 @@ function toFunction(code) {
 }
 
 function pad(html) {
-  return html.split(/\r?\n/).map(line => `  ${line}`).join('\n');
+  return html
+    .split(/\r?\n/)
+    .map(line => `  ${line}`)
+    .join('\n');
 }

@@ -45,7 +45,7 @@ const initialState: Preferences = Object.keys(keys).reduce(
     prettierConfig: DEFAULT_PRETTIER_CONFIG,
     codeMirror: false,
     autoDownloadTypes: true,
-  },
+  }
 );
 
 export default (state: Preferences = initialState, action): Preferences => {

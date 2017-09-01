@@ -37,7 +37,7 @@ function createOverlay(
   currentError: number,
   totalErrors: number,
   switchCallback: SwitchCallback,
-  closeCallback: CloseCallback,
+  closeCallback: CloseCallback
 ): {
   overlay: HTMLDivElement,
   additional: HTMLDivElement,
@@ -60,7 +60,7 @@ function createOverlay(
     additional,
     currentError,
     totalErrors,
-    switchCallback,
+    switchCallback
   );
   container.appendChild(additional);
 
@@ -102,7 +102,7 @@ function createOverlay(
 
   // Create trace
   container.appendChild(
-    createFrames(document, frames, frameSettings, contextSize, name),
+    createFrames(document, frames, frameSettings, contextSize, name)
   );
 
   // Show message

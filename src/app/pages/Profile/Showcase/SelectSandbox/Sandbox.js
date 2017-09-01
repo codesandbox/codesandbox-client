@@ -25,9 +25,7 @@ const Button = styled.button`
   }
 `;
 
-const Date = styled.div`
-  color: rgba(0, 0, 0, 0.6);
-`;
+const Date = styled.div`color: rgba(0, 0, 0, 0.6);`;
 
 type Props = {
   sandbox: SmallSandbox,
@@ -46,7 +44,10 @@ export default class Sandbox extends React.PureComponent {
     const { sandbox, active } = this.props;
     return (
       <Button active={active} onClick={this.setShowcase}>
-        <div>{sandbox.title || sandbox.id}{active && ' (Selected)'}</div>
+        <div>
+          {sandbox.title || sandbox.id}
+          {active && ' (Selected)'}
+        </div>
         <Date>{moment(sandbox.insertedAt).format('ll')}</Date>
       </Button>
     );

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-export default () =>
+export default () => (
   <div>
     <h1>Terms and Conditions</h1>
 
@@ -255,4 +255,5 @@ export default () =>
     <h2>Contact Us</h2>
 
     <p>If you have any questions about these Terms, please contact us.</p>
-  </div>;
+  </div>
+);

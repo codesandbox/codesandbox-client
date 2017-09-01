@@ -127,7 +127,7 @@ export default class Preview extends React.PureComponent<Props, State> {
       prevProps.modules,
       prevProps.directories,
       this.props.modules,
-      this.props.directories,
+      this.props.directories
     );
     if (
       (prevProps.module.code !== this.props.module.code || structureChanged) &&
@@ -346,7 +346,7 @@ export default class Preview extends React.PureComponent<Props, State> {
 
     return (
       <Container>
-        {!hideNavigation &&
+        {!hideNavigation && (
           <Navigator
             url={decodeURIComponent(url)}
             onChange={this.updateUrl}
@@ -359,7 +359,8 @@ export default class Preview extends React.PureComponent<Props, State> {
             isProjectView={isInProjectView}
             toggleProjectView={setProjectView && this.toggleProjectView}
             openNewWindow={this.openNewWindow}
-          />}
+          />
+        )}
 
         <StyledFrame
           sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups allow-presentation"

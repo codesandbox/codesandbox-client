@@ -16,11 +16,12 @@ const Container = styled.div`
   color: rgba(255, 255, 255, 0.6);
 `;
 
-export default () =>
+export default () => (
   <Container>
     <ResultInfo />
     <Hits hitComponent={SandboxCard} />
     <Centered horizontal>
       <Pagination />
     </Centered>
-  </Container>;
+  </Container>
+);

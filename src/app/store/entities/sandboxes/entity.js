@@ -33,5 +33,5 @@ export default new schema.Entity(
         forcedRenders: 0, // used to force renders
       };
     },
-  },
+  }
 );

@@ -10,7 +10,7 @@ self.postMessage('ready');
 declare var ts: {
   transpileModule: (
     code: string,
-    config: Object,
+    config: Object
   ) => {
     diagnostics: string[],
     outputText: string,

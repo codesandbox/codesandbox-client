@@ -38,7 +38,7 @@ const Input = styled.input`
 const StyledSearchIcon = styled(SearchIcon)`
   position: absolute;
   right: 0.5em;
-  font-size: .875em;
+  font-size: 0.875em;
 `;
 
 export default class HeaderSearchBar extends React.PureComponent {

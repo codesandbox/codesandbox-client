@@ -4,7 +4,7 @@ import { dispatch, isStandalone } from 'codesandbox-api';
 import registerServiceWorker from 'common/registerServiceWorker';
 import {
   getModulePath,
-  findMainModule
+  findMainModule,
 } from 'app/store/entities/sandboxes/modules/selectors';
 
 import loadDependencies from './npm';
@@ -22,7 +22,7 @@ import defaultBoilerplates from './boilerplates/default-boilerplates';
 import {
   getBoilerplates,
   evalBoilerplates,
-  findBoilerplate
+  findBoilerplate,
 } from './boilerplates';
 
 import Manager from './eval/manager';
@@ -62,7 +62,7 @@ function initializeResizeListener() {
     if (document.body) {
       dispatch({
         type: 'resize',
-        height: document.body.getBoundingClientRect().height
+        height: document.body.getBoundingClientRect().height,
       });
     }
   });
@@ -103,7 +103,7 @@ async function compile(message) {
     dependencies,
     hasActions,
     isModuleView = false,
-    template
+    template,
   } = message.data;
   try {
     uninject();
@@ -124,10 +124,10 @@ async function compile(message) {
 
     const [
       { manifest, isNewCombination },
-      { error: managerError }
+      { error: managerError },
     ] = await Promise.all([
       loadDependenciesAndSetWrapper(dependencies),
-      updateManager(sandboxId, template, module, modules, directories)
+      updateManager(sandboxId, template, module, modules, directories),
     ]);
 
     const { externals } = manifest;
@@ -209,7 +209,7 @@ async function compile(message) {
     }
 
     dispatch({
-      type: 'success'
+      type: 'success',
     });
   } catch (e) {
     if (manager) {
@@ -262,8 +262,8 @@ if (isStandalone) {
           externalResources: x.data.externalResources,
           dependencies: x.data.npmDependencies,
           hasActions: false,
-          template: x.data.template
-        }
+          template: x.data.template,
+        },
       };
 
       compile(message);

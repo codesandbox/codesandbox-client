@@ -10,7 +10,7 @@ import LikeHeart from 'app/containers/LikeHeart';
 import PlayButton from './PlayButton';
 
 const Container = styled.div`
-  background-color: #272C2E;
+  background-color: #272c2e;
   box-shadow: 0 3px 3px rgba(0, 0, 0, 0.3);
   box-sizing: border-box;
   padding: 1.5rem;
@@ -20,7 +20,7 @@ const Container = styled.div`
 
   margin-bottom: 2rem;
 
-  ${delayEffect(0.35)}
+  ${delayEffect(0.35)};
 `;
 
 const Title = styled.h1`
@@ -64,7 +64,7 @@ const PlayButtonContainer = styled(Link)`
 
   cursor: pointer;
 
-  ${delayEffect(0.5)}
+  ${delayEffect(0.5)};
 `;
 
 type Props = {
@@ -86,13 +86,13 @@ export default ({
 }: Props) => (
   <Container>
     <Row alignItems="center">
-      <Title>{title} <Like sandboxId={id} /></Title>
+      <Title>
+        {title} <Like sandboxId={id} />
+      </Title>
     </Row>
     <Row alignItems="flex-start">
       <div style={{ flex: 6 }}>
-        <Description>
-          {description}
-        </Description>
+        <Description>{description}</Description>
       </div>
       <Stats>
         <PlayButtonContainer to={sandboxUrl({ id })}>

@@ -60,7 +60,7 @@ function render(
   name: ?string,
   message: string,
   resolvedFrames: StackFrame[],
-  error,
+  error
 ) {
   disposeCurrentView();
 
@@ -88,7 +88,7 @@ function render(
       },
       () => {
         unmount();
-      },
+      }
     );
     if (w != null) {
       w.onkeydown = event => {
@@ -112,7 +112,7 @@ function renderErrorByIndex(index: number) {
   currReferenceIndex = index;
 
   const { error, unhandledRejection, enhancedFrames } = getErrorRecord(
-    errorReferences[index],
+    errorReferences[index]
   );
 
   if (unhandledRejection) {
@@ -120,7 +120,7 @@ function renderErrorByIndex(index: number) {
       'Unhandled Rejection (' + error.name + ')',
       error.message,
       enhancedFrames,
-      error,
+      error
     );
   } else {
     render(error.name, error.message, enhancedFrames, error);
@@ -189,7 +189,7 @@ function crash(error: Error, unhandledRejection = false) {
           errorReferences.length,
           offset => {
             switchError(offset);
-          },
+          }
         );
       } else {
         if (errorReferences.length !== 1) {
@@ -239,7 +239,7 @@ function inject() {
         message: data.message,
         stack: data.stack,
       },
-      false,
+      false
     );
   });
 }

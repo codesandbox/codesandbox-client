@@ -12,7 +12,7 @@ function findByShortid(entities: Array<Module | Directory>, shortid: ?string) {
 export default (
   modules: Array<Module>,
   directories: Array<Directory>,
-  id: string,
+  id: string
 ) => {
   const module = findById(modules, id);
 

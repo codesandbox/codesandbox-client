@@ -5,7 +5,7 @@ export const sandboxesSelector = state => state.entities.sandboxes;
 export const singleSandboxSelector = createSelector(
   sandboxesSelector,
   (_, { id }) => id,
-  (sandboxes, id) => sandboxes[id],
+  (sandboxes, id) => sandboxes[id]
 );
 
 const PRIVACY_NAMES = ['Public', 'Unlisted', 'Private'];

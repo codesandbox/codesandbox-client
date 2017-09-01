@@ -21,9 +21,7 @@ type Props = {
 
 const Container = styled.div`
   display: flex;
-  ${fadeIn(0)}
-
-  vertical-align: middle;
+  ${fadeIn(0)} vertical-align: middle;
   line-height: 1;
 `;
 
@@ -42,16 +40,29 @@ export default ({
   onCreateDirectory,
 }: Props) => (
   <div className={className}>
-    {hovering &&
+    {hovering && (
       <Container>
-        {onEdit && <Icon onClick={handleClick(onEdit)}><EditIcon /></Icon>}
-        {onCreateFile &&
-          <Icon onClick={handleClick(onCreateFile)}><AddFileIcon /></Icon>}
-        {onCreateDirectory &&
+        {onEdit && (
+          <Icon onClick={handleClick(onEdit)}>
+            <EditIcon />
+          </Icon>
+        )}
+        {onCreateFile && (
+          <Icon onClick={handleClick(onCreateFile)}>
+            <AddFileIcon />
+          </Icon>
+        )}
+        {onCreateDirectory && (
           <Icon onClick={handleClick(onCreateDirectory)}>
             <AddDirectoryIcon />
-          </Icon>}
-        {onDelete && <Icon onClick={handleClick(onDelete)}><CrossIcon /></Icon>}
-      </Container>}
+          </Icon>
+        )}
+        {onDelete && (
+          <Icon onClick={handleClick(onDelete)}>
+            <CrossIcon />
+          </Icon>
+        )}
+      </Container>
+    )}
   </div>
 );

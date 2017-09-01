@@ -15,13 +15,13 @@ const mapStateToProps = createSelector(
     loggedIn,
     sandboxId: sandbox.id,
     isLiked: sandbox.userLiked,
-  }),
+  })
 );
 const mapDispatchToProps = dispatch => ({
   likeSandbox: bindActionCreators(sandboxActionCreators.likeSandbox, dispatch),
   unLikeSandbox: bindActionCreators(
     sandboxActionCreators.unLikeSandbox,
-    dispatch,
+    dispatch
   ),
 });
 

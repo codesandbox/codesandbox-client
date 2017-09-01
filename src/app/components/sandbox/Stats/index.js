@@ -21,7 +21,7 @@ type Props = {
   sandboxId: string,
 };
 
-export default ({ viewCount, forkCount, likeCount, sandboxId }: Props) =>
+export default ({ viewCount, forkCount, likeCount, sandboxId }: Props) => (
   <Stats>
     <Stat Icon={<EyeIcon />} count={viewCount} />
     <Stat
@@ -29,4 +29,5 @@ export default ({ viewCount, forkCount, likeCount, sandboxId }: Props) =>
       count={likeCount}
     />
     <Stat Icon={<ForkIcon />} count={forkCount} />
-  </Stats>;
+  </Stats>
+);

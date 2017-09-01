@@ -117,23 +117,22 @@ export default class Dependencies extends React.PureComponent<Props, State> {
 
     return (
       <div>
-        {processing &&
-          <Overlay>
-            We{"'"}re processing dependencies, please wait...
-          </Overlay>}
+        {processing && (
+          <Overlay>We{"'"}re processing dependencies, please wait...</Overlay>
+        )}
         <Margin bottom={0}>
           <WorkspaceSubtitle>NPM Packages</WorkspaceSubtitle>
           {(Object.keys(npmDependencies) || [])
             .sort()
-            .map(dep =>
+            .map(dep => (
               <VersionEntry
                 key={dep}
                 dependencies={npmDependencies}
                 dependency={dep}
                 onRemove={this.removeDependency}
                 onRefresh={this.addDependency}
-              />,
-            )}
+              />
+            ))}
           <AddVersion
             existingDependencies={Object.keys(npmDependencies)}
             addDependency={this.addDependency}
@@ -143,13 +142,13 @@ export default class Dependencies extends React.PureComponent<Props, State> {
           <WorkspaceSubtitle>External Resources</WorkspaceSubtitle>
           {(externalResources || [])
             .sort()
-            .map(resource =>
+            .map(resource => (
               <ExternalResource
                 key={resource}
                 resource={resource}
                 removeResource={this.removeResource}
-              />,
-            )}
+              />
+            ))}
           <AddResource addResource={this.addResource} />
         </div>
       </div>

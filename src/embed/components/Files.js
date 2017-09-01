@@ -27,16 +27,16 @@ const Files = ({
   setCurrentModule,
 }: Props) => {
   const childrenModules = modules.filter(
-    m => m.directoryShortid === directoryId,
+    m => m.directoryShortid === directoryId
   );
 
   const childrenDirectories = directories.filter(
-    d => d.directoryShortid === directoryId,
+    d => d.directoryShortid === directoryId
   );
 
   return (
     <Container>
-      {sortBy(childrenDirectories, d => d.title).map(d =>
+      {sortBy(childrenDirectories, d => d.title).map(d => (
         <div key={d.shortid}>
           <File
             id={d.id}
@@ -54,9 +54,9 @@ const Files = ({
             setCurrentModule={setCurrentModule}
             currentModule={currentModule}
           />
-        </div>,
-      )}
-      {sortBy(childrenModules, m => m.title).map(m =>
+        </div>
+      ))}
+      {sortBy(childrenModules, m => m.title).map(m => (
         <File
           id={m.id}
           shortid={m.shortid}
@@ -67,8 +67,8 @@ const Files = ({
           setCurrentModule={setCurrentModule}
           active={m.id === currentModule}
           alternative={m.title === 'index.js' && m.directoryShortid == null}
-        />,
-      )}
+        />
+      ))}
     </Container>
   );
 };
