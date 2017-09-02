@@ -8,16 +8,16 @@
  */
 
 /* @flow */
-import type { StackFrame } from '../utils/stack-frame';
-import { applyStyles } from '../utils/dom/css';
-import { traceStyle, toggleStyle } from '../styles';
-import { enableTabClick } from '../utils/dom/enableTabClick';
-import { createFrame } from './frame';
+import type { StackFrame } from "../utils/stack-frame";
+import { applyStyles } from "../utils/dom/css";
+import { traceStyle, toggleStyle } from "../styles";
+import { enableTabClick } from "../utils/dom/enableTabClick";
+import { createFrame } from "./frame";
 
 type OmitsObject = {
   value: number,
   bundle: number,
-  hasReachedAppCode: boolean,
+  hasReachedAppCode: boolean
 };
 type FrameSetting = { compiled: boolean };
 export type { OmitsObject, FrameSetting };
@@ -28,7 +28,7 @@ function createFrameWrapper(
   factory,
   lIndex: number,
   frameSettings: FrameSetting[],
-  contextSize: number,
+  contextSize: number
 ) {
   const fac = factory();
   if (fac == null) {
@@ -36,19 +36,19 @@ function createFrameWrapper(
   }
   const { hasSource, elem, collapseElement } = fac;
 
-  const elemWrapper = document.createElement('div');
+  const elemWrapper = document.createElement("div");
   elemWrapper.appendChild(elem);
 
   if (hasSource) {
-    const compiledDiv = document.createElement('div');
+    const compiledDiv = document.createElement("div");
     enableTabClick(compiledDiv);
     applyStyles(compiledDiv, toggleStyle);
 
     const o = frameSettings[lIndex];
     const compiledText = document.createTextNode(
-      'View ' + (o && o.compiled ? 'source' : 'compiled'),
+      "View " + (o && o.compiled ? "source" : "compiled")
     );
-    compiledDiv.addEventListener('click', function() {
+    compiledDiv.addEventListener("click", function() {
       if (o) {
         o.compiled = !o.compiled;
       }
@@ -59,7 +59,7 @@ function createFrameWrapper(
         factory,
         lIndex,
         frameSettings,
-        contextSize,
+        contextSize
       );
       if (next != null) {
         parent.insertBefore(next, elemWrapper);
@@ -82,14 +82,14 @@ function createFrames(
   resolvedFrames: StackFrame[],
   frameSettings: FrameSetting[],
   contextSize: number,
-  errorName: ?string,
+  errorName: ?string
 ) {
   if (resolvedFrames.length !== frameSettings.length) {
     throw new Error(
-      'You must give a frame settings array of identical length to resolved frames.',
+      "You must give a frame settings array of identical length to resolved frames."
     );
   }
-  const trace = document.createElement('div');
+  const trace = document.createElement("div");
   applyStyles(trace, traceStyle);
 
   let index = 0;
@@ -111,11 +111,11 @@ function createFrames(
         omits.bundle,
         trace,
         index === resolvedFrames.length,
-        errorName,
+        errorName
       ),
       lIndex,
       frameSettings,
-      contextSize,
+      contextSize
     );
     if (elem == null) {
       return;

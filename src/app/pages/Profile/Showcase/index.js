@@ -1,27 +1,27 @@
 // @flow
-import * as React from 'react';
-import { bindActionCreators } from 'redux';
-import styled from 'styled-components';
-import { connect } from 'react-redux';
-import type { Sandbox } from 'common/types';
-import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
-import { singleSandboxSelector } from 'app/store/entities/sandboxes/selectors';
-import modalActionCreators from 'app/store/modal/actions';
-import Column from 'app/components/flex/Column';
-import Centered from 'app/components/flex/Centered';
-import Margin from 'app/components/spacing/Margin';
-import Button from 'app/components/buttons/Button';
+import * as React from "react";
+import { bindActionCreators } from "redux";
+import styled from "styled-components";
+import { connect } from "react-redux";
+import type { Sandbox } from "common/types";
+import sandboxActionCreators from "app/store/entities/sandboxes/actions";
+import { singleSandboxSelector } from "app/store/entities/sandboxes/selectors";
+import modalActionCreators from "app/store/modal/actions";
+import Column from "app/components/flex/Column";
+import Centered from "app/components/flex/Centered";
+import Margin from "app/components/spacing/Margin";
+import Button from "app/components/buttons/Button";
 
-import SandboxInfo from './SandboxInfo';
-import ShowcasePreview from './ShowcasePreview';
-import SelectSandbox from './SelectSandbox';
+import SandboxInfo from "./SandboxInfo";
+import ShowcasePreview from "./ShowcasePreview";
+import SelectSandbox from "./SelectSandbox";
 
 type Props = {
   id: string,
   sandboxActions: typeof sandboxActionCreators,
   modalActions: typeof modalActionCreators,
   sandbox: Sandbox,
-  isCurrentUser: boolean,
+  isCurrentUser: boolean
 };
 
 const ErrorTitle = styled.div`
@@ -30,15 +30,15 @@ const ErrorTitle = styled.div`
 `;
 
 const mapStateToProps = (state, props) => ({
-  sandbox: singleSandboxSelector(state, props),
+  sandbox: singleSandboxSelector(state, props)
 });
 const mapDispatchToProps = dispatch => ({
   sandboxActions: bindActionCreators(sandboxActionCreators, dispatch),
-  modalActions: bindActionCreators(modalActionCreators, dispatch),
+  modalActions: bindActionCreators(modalActionCreators, dispatch)
 });
 class Showcase extends React.PureComponent<Props, $FlowFixMeState> {
   state = {
-    loading: false,
+    loading: false
   };
 
   fetchSandbox(id: string) {
@@ -72,9 +72,9 @@ class Showcase extends React.PureComponent<Props, $FlowFixMeState> {
   openModal = () => {
     const { modalActions, sandbox } = this.props;
     modalActions.openModal({
-      title: 'Select Showcase Sandbox',
+      title: "Select Showcase Sandbox",
       width: 600,
-      Body: <SelectSandbox showcaseSandboxId={sandbox.id} />,
+      Body: <SelectSandbox showcaseSandboxId={sandbox.id} />
     });
   };
 
@@ -106,14 +106,14 @@ class Showcase extends React.PureComponent<Props, $FlowFixMeState> {
             </Button>}
         </Margin>
         {!loading &&
-          <Margin top={2} style={{ width: '100%' }}>
+          <Margin top={2} style={{ width: "100%" }}>
             <Column alignItems="initial">
               <div style={{ flex: 2 }}>
                 <ShowcasePreview sandbox={sandbox} />
               </div>
               <div style={{ flex: 1 }}>
                 <SandboxInfo
-                  title={sandbox.title || 'Untitled'}
+                  title={sandbox.title || "Untitled"}
                   description={sandbox.description}
                   likeCount={sandbox.likeCount}
                   viewCount={sandbox.viewCount}

@@ -1,6 +1,6 @@
 // @flow
-import type { Module } from 'common/types';
-import { isEqual, mapValues } from 'lodash';
+import type { Module } from "common/types";
+import { isEqual, mapValues } from "lodash";
 
 import {
   RENAME_MODULE,
@@ -8,8 +8,8 @@ import {
   SET_CODE,
   SET_MODULE_SYNCED,
   SET_MODULE_ERROR,
-  CLEAR_MODULE_ERRORS,
-} from './actions';
+  CLEAR_MODULE_ERRORS
+} from "./actions";
 
 function moduleReducer(module: Module, action): Module {
   switch (action.type) {
@@ -34,12 +34,12 @@ function moduleReducer(module: Module, action): Module {
 }
 
 type State = {
-  [id: string]: Module,
+  [id: string]: Module
 };
 
 export default function reducer(
   state: State,
-  action: { type: string, id: string, [key: string]: any },
+  action: { type: string, id: string, [key: string]: any }
 ): State {
   switch (action.type) {
     case RENAME_MODULE:
@@ -51,7 +51,7 @@ export default function reducer(
       if (module) {
         return {
           ...state,
-          [action.id]: moduleReducer(module, action),
+          [action.id]: moduleReducer(module, action)
         };
       }
       return state;

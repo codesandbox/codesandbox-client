@@ -1,6 +1,6 @@
 // @flow
-import * as React from 'react';
-import styled from 'styled-components';
+import * as React from "react";
+import styled from "styled-components";
 
 const TitleContainer = styled.span`
   display: inline-block;

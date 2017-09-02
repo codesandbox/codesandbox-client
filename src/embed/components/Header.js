@@ -1,11 +1,11 @@
 // @flow
-import * as React from 'react';
-import styled from 'styled-components';
-import MenuIconSVG from 'react-icons/lib/md/menu';
+import * as React from "react";
+import styled from "styled-components";
+import MenuIconSVG from "react-icons/lib/md/menu";
 
-import type { Sandbox } from 'common/types';
-import ModeIcons from 'app/components/sandbox/ModeIcons';
-import EditorLink from './EditorLink';
+import type { Sandbox } from "common/types";
+import ModeIcons from "app/components/sandbox/ModeIcons";
+import EditorLink from "./EditorLink";
 
 const Container = styled.div`
   position: relative;
@@ -46,7 +46,7 @@ type Props = {
   setEditorView: () => void,
   setPreviewView: () => void,
   setMixedView: () => void,
-  toggleSidebar: () => void,
+  toggleSidebar: () => void
 };
 
 export default class Header extends React.PureComponent<Props> {
@@ -58,7 +58,7 @@ export default class Header extends React.PureComponent<Props> {
       setEditorView,
       setPreviewView,
       setMixedView,
-      toggleSidebar,
+      toggleSidebar
     } = this.props;
     return (
       <Container>

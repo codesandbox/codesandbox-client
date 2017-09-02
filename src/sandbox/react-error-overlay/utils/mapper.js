@@ -8,11 +8,11 @@
  */
 
 // @flow
-import StackFrame from './stack-frame';
-import { getSourceMap } from './getSourceMap';
-import { getCurrentManager } from '../../';
-import { getLinesAround } from './getLinesAround';
-import { settle } from 'settle-promise';
+import StackFrame from "./stack-frame";
+import { getSourceMap } from "./getSourceMap";
+import { getCurrentManager } from "../../";
+import { getLinesAround } from "./getLinesAround";
+import { settle } from "settle-promise";
 
 /**
  * Enhances a set of <code>StackFrame</code>s with their original positions and code (when available).
@@ -21,7 +21,7 @@ import { settle } from 'settle-promise';
  */
 async function map(
   frames: StackFrame[],
-  contextLines: number = 3,
+  contextLines: number = 3
 ): Promise<StackFrame[]> {
   const cache: any = {};
   const files: string[] = [];
@@ -38,9 +38,9 @@ async function map(
   await settle(
     files.map(async fileName => {
       const manager = getCurrentManager();
-      if (manager != null && !fileName.startsWith('webpack')) {
+      if (manager != null && !fileName.startsWith("webpack")) {
         const transpiledModule = manager.resolveTranspiledModule(
-          `./${fileName}`,
+          `./${fileName}`
         );
 
         if (transpiledModule) {
@@ -52,7 +52,7 @@ async function map(
           cache[fileName] = { fileSource, map };
         }
       }
-    }),
+    })
   );
   return frames.map(frame => {
     const { functionName, fileName, lineNumber, columnNumber } = frame;
@@ -62,7 +62,7 @@ async function map(
     }
     const { source, line, column } = map.getOriginalPosition(
       lineNumber,
-      columnNumber,
+      columnNumber
     );
     const originalSource = source == null ? [] : map.getSource(source);
     return new StackFrame(
@@ -75,7 +75,7 @@ async function map(
       source,
       line,
       column,
-      getLinesAround(line, contextLines, originalSource),
+      getLinesAround(line, contextLines, originalSource)
     );
   });
 }

@@ -1,10 +1,10 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
-import Fullscreen from 'app/components/flex/Fullscreen';
-import Title from 'app/components/text/Title';
-import SubTitle from 'app/components/text/SubTitle';
-import Centered from 'app/components/flex/Centered';
+import Fullscreen from "app/components/flex/Fullscreen";
+import Title from "app/components/text/Title";
+import SubTitle from "app/components/text/SubTitle";
+import Centered from "app/components/flex/Centered";
 
 const Header = styled.div`
   position: absolute;

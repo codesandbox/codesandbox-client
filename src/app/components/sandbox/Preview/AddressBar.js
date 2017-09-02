@@ -1,5 +1,5 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
 const Container = styled.div`
   position: relative;
@@ -12,7 +12,7 @@ const InputContainer = styled.div`
     border-radius: 4px;
     outline: none;
     border: 1px solid #ccc;
-    padding: 0.2rem .5rem;
+    padding: 0.2rem 0.5rem;
     color: black;
     width: 100%;
     color: rgba(0, 0, 0, 0.8);
@@ -23,7 +23,7 @@ const InputContainer = styled.div`
 type Props = {
   url: string,
   onChange: (url: string) => void,
-  onConfirm: () => void,
+  onConfirm: () => void
 };
 
 export default class extends React.PureComponent {
@@ -51,7 +51,7 @@ export default class extends React.PureComponent {
   };
 
   render() {
-    const { url = '' } = this.props;
+    const { url = "" } = this.props;
     return (
       <Container onClick={this.focus}>
         <InputContainer>

@@ -1,15 +1,15 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
-import ExpandIcon from 'react-icons/lib/md/keyboard-arrow-down';
+import ExpandIcon from "react-icons/lib/md/keyboard-arrow-down";
 
 const ChildContainer = styled.div`
   position: relative;
   margin: 0;
   padding: 0;
   border-bottom: 1px solid ${props => props.theme.background2};
-  overflow: ${props => (props.open ? 'inherit' : 'hidden')};
-  height: ${props => (props.open ? '100%' : 0)};
+  overflow: ${props => (props.open ? "inherit" : "hidden")};
+  height: ${props => (props.open ? "100%" : 0)};
 
   ${({ disabled }) =>
     disabled &&
@@ -17,7 +17,7 @@ const ChildContainer = styled.div`
     pointer-events: none;
 
     &:after {
-      content: "${disabled || ''}";
+      content: "${disabled || ""}";
       color: white;
       display: flex;
       align-items: center;
@@ -66,14 +66,14 @@ type Props = {
   title: string,
   children: React.Element,
   defaultOpen: ?boolean,
-  disabled: ?string,
+  disabled: ?string
 };
 
 export default class WorkspaceItem extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      open: !!props.defaultOpen,
+      open: !!props.defaultOpen
     };
   }
 

@@ -1,23 +1,23 @@
 // @flow
-import * as React from 'react';
-import styled from 'styled-components';
-import { Link } from 'react-router-dom';
-import ConfirmLink from 'app/components/ConfirmLink';
-import GithubBadge from 'app/components/sandbox/GithubBadge';
-import { sandboxUrl, githubRepoUrl, profileUrl } from 'app/utils/url-generator';
-import UserWithAvatar from 'app/components/user/UserWithAvatar';
-import Stats from 'app/components/sandbox/Stats';
-import PrivacyStatus from 'app/components/sandbox/PrivacyStatus';
-import getTemplateDefinition from 'common/templates';
+import * as React from "react";
+import styled from "styled-components";
+import { Link } from "react-router-dom";
+import ConfirmLink from "app/components/ConfirmLink";
+import GithubBadge from "app/components/sandbox/GithubBadge";
+import { sandboxUrl, githubRepoUrl, profileUrl } from "app/utils/url-generator";
+import UserWithAvatar from "app/components/user/UserWithAvatar";
+import Stats from "app/components/sandbox/Stats";
+import PrivacyStatus from "app/components/sandbox/PrivacyStatus";
+import getTemplateDefinition from "common/templates";
 
-import type { User, GitInfo } from 'common/types';
-import WorkspaceInputContainer from '../WorkspaceInputContainer';
-import WorkspaceSubtitle from '../WorkspaceSubtitle';
+import type { User, GitInfo } from "common/types";
+import WorkspaceInputContainer from "../WorkspaceInputContainer";
+import WorkspaceSubtitle from "../WorkspaceSubtitle";
 
 const Item = styled.div`
   margin: 1rem;
   margin-top: 0;
-  font-size: .875rem;
+  font-size: 0.875rem;
 `;
 
 const GitContainer = styled.div`
@@ -30,20 +30,20 @@ const UserLink = styled(Link)`
   display: block;
   text-decoration: none;
   color: rgba(255, 255, 255, 0.8);
-  font-size: .875rem;
+  font-size: 0.875rem;
 `;
 
 const StatsContainer = styled.div`
   border-top: 1px solid ${props => props.theme.background2};
   padding: 1rem;
-  font-size: .875rem;
+  font-size: 0.875rem;
   box-sizing: border-box;
   color: rgba(255, 255, 255, 0.8);
 `;
 
 const PrivacyContainer = styled.div`
   margin: 0 1rem;
-  font-size: .875rem;
+  font-size: 0.875rem;
   color: rgba(255, 255, 255, 0.8);
   margin-bottom: 1rem;
 `;
@@ -60,22 +60,22 @@ type Props = {
   preventTransition: boolean,
   author: ?User,
   git: ?GitInfo,
-  privacy: number,
+  privacy: number
 };
 
 export default class Project extends React.PureComponent<
   Props,
   {
     title: ?string,
-    description: ?string,
-  },
+    description: ?string
+  }
 > {
   constructor(props: Props) {
     super(props);
 
     this.state = {
       title: props.title,
-      description: props.description,
+      description: props.description
     };
   }
 
@@ -89,7 +89,7 @@ export default class Project extends React.PureComponent<
     const { title, description } = this.state;
 
     if (title !== oldTitle || description !== oldDescription) {
-      this.props.updateSandboxInfo(id, title || '', description || '');
+      this.props.updateSandboxInfo(id, title || "", description || "");
     }
   };
 
@@ -120,7 +120,7 @@ export default class Project extends React.PureComponent<
       git,
       template,
       preventTransition,
-      privacy,
+      privacy
     } = this.props;
     const { title, description } = this.state;
     return (
@@ -128,8 +128,8 @@ export default class Project extends React.PureComponent<
         <WorkspaceSubtitle>Title</WorkspaceSubtitle>
         <WorkspaceInputContainer>
           <input
-            value={title || ''}
-            onChange={this.setValue('title')}
+            value={title || ""}
+            onChange={this.setValue("title")}
             type="text"
             onBlur={this.updateSandboxInfo}
             onKeyUp={this.handleKeyUp}
@@ -138,8 +138,8 @@ export default class Project extends React.PureComponent<
         <WorkspaceSubtitle>Description</WorkspaceSubtitle>
         <WorkspaceInputContainer>
           <textarea
-            value={description || ''}
-            onChange={this.setValue('description')}
+            value={description || ""}
+            onChange={this.setValue("description")}
             type="text"
             onBlur={this.updateSandboxInfo}
             onKeyUp={this.handleKeyUp}

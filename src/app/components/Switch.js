@@ -1,5 +1,5 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
 const getColor = ({ right, offMode, secondary, theme }) => {
   if (right) {
@@ -15,7 +15,7 @@ const Container = styled.div`
   background-color: ${getColor};
   width: ${({ small }) => (small ? 3 : 3.5)}rem;
   color: rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(0, 0, 0, .1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
   padding: 0.5rem;
   height: ${props => (props.small ? 20 : 26)}px;
   box-sizing: border-box;
@@ -32,7 +32,7 @@ const Container = styled.div`
 `;
 
 const getSize = ({ small }) =>
-  small ? 'calc(1.5rem + 2px)' : 'calc(2rem + 2px)';
+  small ? "calc(1.5rem + 2px)" : "calc(2rem + 2px)";
 
 const Dot = styled.div`
   transition: inherit;
@@ -41,7 +41,7 @@ const Dot = styled.div`
   width: 1rem;
   left: 0.1rem;
   border-radius: 4px;
-  transform: translateX(${props => (props.right ? getSize(props) : '0')});
+  transform: translateX(${props => (props.right ? getSize(props) : "0")});
   top: 0.1rem;
   background-color: white;
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
@@ -52,7 +52,7 @@ type Props = {
   onClick: () => void,
   offMode: ?boolean,
   small: ?boolean,
-  secondary: ?boolean,
+  secondary: ?boolean
 };
 
 export default ({
@@ -60,7 +60,7 @@ export default ({
   onClick,
   secondary = false,
   offMode = false,
-  small = false,
+  small = false
 }: Props) =>
   <Container
     small={small}

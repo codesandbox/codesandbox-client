@@ -1,9 +1,9 @@
 // @flow
-import type { Module, Directory, Sandbox, User } from 'common/types';
+import type { Module, Directory, Sandbox, User } from "common/types";
 
 export function createModule(
   index: number = 0,
-  params: ?(Module & any),
+  params: ?(Module & any)
 ): Module {
   return {
     title: `test-module${index}`,
@@ -12,20 +12,20 @@ export function createModule(
     isNotSynced: false,
     code: "import test from 'koekje'",
     directoryShortid: null,
-    ...params,
+    ...params
   };
 }
 
 export function createDirectory(
   index: number = 0,
-  params: ?(Directory & any),
+  params: ?(Directory & any)
 ): Directory {
   return {
     title: `test-dir${index}`,
     id: `longid-dir${index}`,
     shortid: `shortid-dir${index}`,
     directoryShortid: null,
-    ...params,
+    ...params
   };
 }
 
@@ -37,13 +37,13 @@ export function createUser(index: number = 0, params: ?(User & any)): User {
     avatarUrl: `https://avatar.nl/${index}.png`,
     name: `user-${index}`,
     username: `user-username-${index}`,
-    ...params,
+    ...params
   };
 }
 
 export function createSandbox(
   index: number = 0,
-  params: ?(Sandbox & any),
+  params: ?(Sandbox & any)
 ): Sandbox {
   const id = `sandbox-id${index}`;
   return {
@@ -57,6 +57,6 @@ export function createSandbox(
     externalResources: [],
     userLiked: false,
     owned: false,
-    ...params,
+    ...params
   };
 }

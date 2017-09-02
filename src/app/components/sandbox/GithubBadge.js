@@ -1,27 +1,27 @@
-import React from 'react';
-import styled, { css } from 'styled-components';
+import React from "react";
+import styled, { css } from "styled-components";
 
-import GithubIcon from 'react-icons/lib/go/mark-github';
+import GithubIcon from "react-icons/lib/go/mark-github";
 
 const BorderRadius = styled.div`
   transition: 0.3s ease all;
   border-radius: 4px;
   border: 1px solid #4f5459;
-  font-size: .75rem;
+  font-size: 0.75rem;
   margin-right: 1rem;
 
   ${props =>
     props.hasUrl &&
     css`
-    &:hover {
-      background-color: #4f5459;
-    }
-  `};
+      &:hover {
+        background-color: #4f5459;
+      }
+    `};
 `;
 
 const Text = styled.span`
   display: inline-block;
-  font-weight: .875rem;
+  font-weight: 0.875rem;
 
   color: rgba(255, 255, 255, 0.6);
   border-radius: 4px;
@@ -41,7 +41,7 @@ const StyledA = styled.a`text-decoration: none;`;
 type Props = {
   username: string,
   repo: string,
-  url: ?string,
+  url: ?string
 };
 
 const DivOrA = ({ href, ...props }) =>

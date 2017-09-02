@@ -1,14 +1,14 @@
-import React from 'react';
+import React from "react";
 
-import CrossIcon from 'react-icons/lib/md/clear';
+import CrossIcon from "react-icons/lib/md/clear";
 
-import EntryContainer from '../EntryContainer';
-import { IconArea, Icon } from '../Icon';
+import EntryContainer from "../EntryContainer";
+import { IconArea, Icon } from "../Icon";
 
-const getNormalizedUrl = (url: string) => `${url.replace(/\/$/g, '')}/`;
+const getNormalizedUrl = (url: string) => `${url.replace(/\/$/g, "")}/`;
 
 function getName(resource: string) {
-  if (resource.endsWith('.css') || resource.endsWith('.js')) {
+  if (resource.endsWith(".css") || resource.endsWith(".js")) {
     const match = resource.match(/.*\/(.*)/);
 
     if (match && match[1]) return match[1];
@@ -20,7 +20,7 @@ function getName(resource: string) {
 
 type Props = {
   resource: string,
-  removeResource: (resource: string) => void,
+  removeResource: (resource: string) => void
 };
 
 export default class ExternalResource extends React.PureComponent {
@@ -38,7 +38,9 @@ export default class ExternalResource extends React.PureComponent {
           {getName(resource)}
         </a>
         <IconArea>
-          <Icon onClick={this.removeResource}><CrossIcon /></Icon>
+          <Icon onClick={this.removeResource}>
+            <CrossIcon />
+          </Icon>
         </IconArea>
       </EntryContainer>
     );

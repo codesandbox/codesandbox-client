@@ -1,5 +1,5 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
 const Highlight = styled.strong`color: rgba(255, 255, 255, 0.8);`;
 
@@ -13,7 +13,7 @@ const Container = styled.div`
 type Props = {
   brand: string,
   last4: string,
-  name: string,
+  name: string
 };
 
 export default ({ brand, last4, name }: Props) =>

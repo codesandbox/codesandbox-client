@@ -1,20 +1,20 @@
 /* @flow */
-import * as React from 'react';
-import styled from 'styled-components';
-import { debounce } from 'lodash';
-import type { Preferences, ModuleError, Module, Directory } from 'common/types';
-import { getModulePath } from 'app/store/entities/sandboxes/modules/selectors';
+import * as React from "react";
+import styled from "styled-components";
+import { debounce } from "lodash";
+import type { Preferences, ModuleError, Module, Directory } from "common/types";
+import { getModulePath } from "app/store/entities/sandboxes/modules/selectors";
 
-import theme from 'common/theme';
+import theme from "common/theme";
 
-import SyntaxHighlightWorker from 'worker-loader!./monaco/workers/syntax-highlighter';
-import LinterWorker from 'worker-loader!./monaco/workers/linter';
-import TypingsFetcherWorker from 'worker-loader!./monaco/workers/fetch-dependency-typings';
+import SyntaxHighlightWorker from "worker-loader!./monaco/workers/syntax-highlighter";
+import LinterWorker from "worker-loader!./monaco/workers/linter";
+import TypingsFetcherWorker from "worker-loader!./monaco/workers/fetch-dependency-typings";
 
-import enableEmmet from './monaco/enable-emmet';
-import Header from './Header';
-import MonacoEditor from './monaco/MonacoReactComponent';
-import FuzzySearch from './FuzzySearch/index';
+import enableEmmet from "./monaco/enable-emmet";
+import Header from "./Header";
+import MonacoEditor from "./monaco/MonacoReactComponent";
+import FuzzySearch from "./FuzzySearch/index";
 
 let modelCache = {};
 
@@ -50,9 +50,9 @@ const fontFamilies = (...families) =>
   families
     .filter(Boolean)
     .map(
-      family => (family.indexOf(' ') !== -1 ? JSON.stringify(family) : family)
+      family => (family.indexOf(" ") !== -1 ? JSON.stringify(family) : family)
     )
-    .join(', ');
+    .join(", ");
 
 const CodeContainer = styled.div`
   position: relative;
@@ -149,9 +149,9 @@ const handleError = (
       })
       .filter(x => x);
 
-    monaco.editor.setModelMarkers(editor.getModel(), 'error', markers);
+    monaco.editor.setModelMarkers(editor.getModel(), "error", markers);
   } else {
-    monaco.editor.setModelMarkers(editor.getModel(), 'error', []);
+    monaco.editor.setModelMarkers(editor.getModel(), "error", []);
   }
 };
 
@@ -172,7 +172,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
 
     this.lint = debounce(this.lint, 400);
 
-    this.syntaxWorker.addEventListener('message', event => {
+    this.syntaxWorker.addEventListener("message", event => {
       const { classifications, version } = event.data;
 
       requestAnimationFrame(() => {
@@ -182,7 +182,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
       });
     });
 
-    this.lintWorker.addEventListener('message', event => {
+    this.lintWorker.addEventListener("message", event => {
       const { markers, version } = event.data;
 
       requestAnimationFrame(() => {
@@ -192,7 +192,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
       });
     });
 
-    this.typingsFetcherWorker.addEventListener('message', event => {
+    this.typingsFetcherWorker.addEventListener("message", event => {
       const { path, typings } = event.data;
 
       if (
@@ -234,7 +234,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
   updateLintWarnings = (markers: Array<Object>) => {
     this.monaco.editor.setModelMarkers(
       this.editor.getModel(),
-      'eslint',
+      "eslint",
       markers
     );
   };
@@ -311,8 +311,8 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     if (
       nextDependencies != null &&
       dependencies != null &&
-      Object.keys(dependencies).join('') !==
-        Object.keys(nextDependencies).join('')
+      Object.keys(dependencies).join("") !==
+        Object.keys(nextDependencies).join("")
     ) {
       this.fetchDependencyTypings(nextDependencies);
     }
@@ -392,7 +392,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     }
   }
 
-  updateCode(code: string = '') {
+  updateCode(code: string = "") {
     const pos = this.editor.getPosition();
     const lines = this.editor.getModel().getLinesContent();
     const lastLine = lines.length;
@@ -412,37 +412,37 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
   }
 
   getMode = (title: string) => {
-    if (title == null) return 'javascript';
+    if (title == null) return "javascript";
 
     const kind = title.match(/\.([^.]*)$/);
 
     if (kind) {
-      if (kind[1] === 'css') {
-        return 'css';
+      if (kind[1] === "css") {
+        return "css";
       }
-      if (kind[1] === 'scss') {
-        return 'scss';
-      } else if (kind[1] === 'html') {
-        return 'html';
-      } else if (kind[1] === 'vue') {
-        return 'html';
-      } else if (kind[1] === 'less') {
-        return 'less';
-      } else if (kind[1] === 'md') {
-        return 'markdown';
+      if (kind[1] === "scss") {
+        return "scss";
+      } else if (kind[1] === "html") {
+        return "html";
+      } else if (kind[1] === "vue") {
+        return "html";
+      } else if (kind[1] === "less") {
+        return "less";
+      } else if (kind[1] === "md") {
+        return "markdown";
       } else if (/jsx?$/.test(kind[1])) {
-        return 'javascript';
+        return "javascript";
       } else if (/tsx?$/.test(kind[1])) {
-        return 'typescript';
+        return "typescript";
       }
     }
 
-    return 'typescript';
+    return "typescript";
   };
 
   syntaxHighlight = (code: string, title: string, version: string) => {
     const mode = this.getMode(title);
-    if (mode === 'typescript' || mode === 'javascript') {
+    if (mode === "typescript" || mode === "javascript") {
       this.syntaxWorker.postMessage({
         code,
         title,
@@ -452,7 +452,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
   };
 
   lint = (code: string, title: string, version: string) => {
-    if (this.getMode(title) === 'javascript') {
+    if (this.getMode(title) === "javascript") {
       this.lintWorker.postMessage({
         code,
         title,
@@ -473,13 +473,13 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
   };
 
   editorWillMount = monaco => {
-    monaco.editor.defineTheme('CodeSandbox', {
-      base: 'vs-dark', // can also be vs-dark or hc-black
+    monaco.editor.defineTheme("CodeSandbox", {
+      base: "vs-dark", // can also be vs-dark or hc-black
       inherit: true, // can also be false to completely replace the builtin rules
       rules: [
-        { token: 'comment', foreground: '626466' },
-        { token: 'keyword', foreground: '6CAEDD' },
-        { token: 'identifier', foreground: 'fac863' }
+        { token: "comment", foreground: "626466" },
+        { token: "keyword", foreground: "6CAEDD" },
+        { token: "identifier", foreground: "fac863" }
       ]
     });
   };
@@ -496,8 +496,8 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     this.setupWorkers();
 
     const compilerDefaults = {
-      jsxFactory: 'React.createElement',
-      reactNamespace: 'React',
+      jsxFactory: "React.createElement",
+      reactNamespace: "React",
       jsx: monaco.languages.typescript.JsxEmit.React,
       target: monaco.languages.typescript.ScriptTarget.ES2016,
       allowNonTsExtensions: true,
@@ -506,7 +506,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
       experimentalDecorators: true,
       noEmit: true,
       allowJs: true,
-      typeRoots: ['node_modules/@types']
+      typeRoots: ["node_modules/@types"]
     };
 
     monaco.languages.typescript.typescriptDefaults.setMaximunWorkerIdleTime(-1);
@@ -529,7 +529,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     this.addKeyCommands();
     enableEmmet(editor, monaco, {});
 
-    window.addEventListener('resize', this.resizeEditor);
+    window.addEventListener("resize", this.resizeEditor);
     this.sizeProbeInterval = setInterval(this.resizeEditor.bind(this), 3000);
 
     if (this.props.dependencies) {
@@ -538,10 +538,10 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
 
     editor.addAction({
       // An unique identifier of the contributed action.
-      id: 'fuzzy-search',
+      id: "fuzzy-search",
 
       // A label of the action that will be presented to the user.
-      label: 'Open Module',
+      label: "Open Module",
 
       // An optional array of keybindings for the action.
       keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_P],
@@ -552,7 +552,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
       // A rule to evaluate on top of the precondition in order to dispatch the keybindings.
       keybindingContext: null,
 
-      contextMenuGroupId: 'navigation',
+      contextMenuGroupId: "navigation",
 
       contextMenuOrder: 1.5,
 
@@ -611,9 +611,11 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
   };
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.resizeEditor);
+    window.removeEventListener("resize", this.resizeEditor);
     this.disposeModules();
-    this.editor.dispose();
+    if (this.editor) {
+      this.editor.dispose();
+    }
     this.syntaxWorker.terminate();
     this.lintWorker.terminate();
     this.typingsFetcherWorker.terminate();
@@ -631,8 +633,8 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     const mode = this.getMode(module.title);
     const model = this.monaco.editor.createModel(
       module.code,
-      mode === 'javascript' ? 'typescript' : mode,
-      new this.monaco.Uri().with({ path, scheme: 'file' })
+      mode === "javascript" ? "typescript" : mode,
+      new this.monaco.Uri().with({ path, scheme: "file" })
     );
 
     model.updateOptions({ tabSize: 2 });
@@ -699,8 +701,8 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     const selection = data.options.selection;
     if (selection) {
       if (
-        typeof selection.endLineNumber === 'number' &&
-        typeof selection.endColumn === 'number'
+        typeof selection.endLineNumber === "number" &&
+        typeof selection.endColumn === "number"
       ) {
         this.editor.setSelection(selection);
         this.editor.revealRangeInCenter(selection);
@@ -724,12 +726,12 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     const code = this.getCode();
     const mode = this.getMode(title);
 
-    if (mode === 'javascript' || mode === 'css') {
+    if (mode === "javascript" || mode === "css") {
       try {
-        const prettify = await import('app/utils/codemirror/prettify');
+        const prettify = await import("app/utils/codemirror/prettify");
         const newCode = await prettify.default(
           code,
-          mode === 'javascript' ? 'jsx' : mode,
+          mode === "javascript" ? "jsx" : mode,
           false, // Force false for eslint, since we would otherwise include 2 eslint bundles
           preferences.prettierConfig
         );
@@ -787,9 +789,9 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     const options = this.getEditorOptions();
 
     const requireConfig = {
-      url: '/public/vs/loader.js',
+      url: "/public/vs/loader.js",
       paths: {
-        vs: '/public/vs'
+        vs: "/public/vs"
       }
     };
     return (

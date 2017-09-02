@@ -1,24 +1,24 @@
 // @flow
-import { camelizeKeys, decamelizeKeys } from 'humps';
-import axios from 'axios';
+import { camelizeKeys, decamelizeKeys } from "humps";
+import axios from "axios";
 
-import { optionsToParameterizedUrl } from '../../utils/url-generator';
+import { optionsToParameterizedUrl } from "../../utils/url-generator";
 
-const API_ROOT = '/api/v1/';
+const API_ROOT = "/api/v1/";
 
 export type BodyType = {
   method: ?string,
   body: ?Object,
   shouldCamelize: ?boolean,
-  jwt: ?string,
+  jwt: ?string
 };
 
 function getUrl(endpoint: string) {
-  if (endpoint.startsWith('http')) {
+  if (endpoint.startsWith("http")) {
     return endpoint;
   }
 
-  return endpoint.split('')[0] === '/' ? endpoint : `${API_ROOT}${endpoint}`;
+  return endpoint.split("")[0] === "/" ? endpoint : `${API_ROOT}${endpoint}`;
 }
 
 /**
@@ -27,9 +27,9 @@ function getUrl(endpoint: string) {
 export default (async function callApi(
   endpoint: string,
   jwt: ?string,
-  { method = 'GET', body = null, shouldCamelize = true }: ?BodyType = {},
+  { method = "GET", body = null, shouldCamelize = true }: ?BodyType = {}
 ) {
-  if (!endpoint) throw new Error('No endpoint is given');
+  if (!endpoint) throw new Error("No endpoint is given");
 
   // If it is an absolute url.
   const url = getUrl(endpoint);
@@ -38,12 +38,12 @@ export default (async function callApi(
 
   if (jwt) {
     options.headers = {
-      Authorization: `Bearer ${jwt}`,
+      Authorization: `Bearer ${jwt}`
     };
   }
 
   if (body) {
-    if (method === 'GET' && body != null) {
+    if (method === "GET" && body != null) {
       // Convert body to ?x=y&b=a format
       options.url += optionsToParameterizedUrl(decamelizeKeys(body));
     } else {

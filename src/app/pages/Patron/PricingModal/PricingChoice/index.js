@@ -1,27 +1,27 @@
-import React from 'react';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import moment from 'moment';
-import styled from 'styled-components';
+import React from "react";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import moment from "moment";
+import styled from "styled-components";
 
-import type { CurrentUser } from 'common/types';
+import type { CurrentUser } from "common/types";
 
-import Input from 'app/components/Input';
-import Centered from 'app/components/flex/Centered';
-import Relative from 'app/components/Relative';
-import SubscribeForm from 'app/components/user/SubscribeForm';
-import SignInButton from 'app/containers/SignInButton';
+import Input from "app/components/Input";
+import Centered from "app/components/flex/Centered";
+import Relative from "app/components/Relative";
+import SubscribeForm from "app/components/user/SubscribeForm";
+import SignInButton from "app/containers/SignInButton";
 
-import { loggedInSelector } from 'app/store/user/selectors';
-import userActionCreators from 'app/store/user/actions';
+import { loggedInSelector } from "app/store/user/selectors";
+import userActionCreators from "app/store/user/actions";
 
-import badges from 'app/utils/badges/patron-info';
+import badges from "app/utils/badges/patron-info";
 
-import Range from './Range';
-import ChangeSubscription from './ChangeSubscription';
-import ThankYou from './ThankYou';
+import Range from "./Range";
+import ChangeSubscription from "./ChangeSubscription";
+import ThankYou from "./ThankYou";
 
-import Title from '../Title';
+import Title from "../Title";
 
 const Container = styled.div`padding: 1rem 0;`;
 
@@ -57,7 +57,7 @@ const Currency = styled.span`
 `;
 
 const Notice = styled.p`
-  font-size: .875rem;
+  font-size: 0.875rem;
   text-align: center;
   margin: 2rem;
   font-weight: 400;
@@ -78,14 +78,14 @@ type Props = {
   badge: string,
   userActions: typeof userActionCreators,
   loggedIn: boolean,
-  user: CurrentUser,
+  user: CurrentUser
 };
 
 const mapStateToProps = state => ({
-  loggedIn: loggedInSelector(state),
+  loggedIn: loggedInSelector(state)
 });
 const mapDispatchToProps = dispatch => ({
-  userActions: bindActionCreators(userActionCreators, dispatch),
+  userActions: bindActionCreators(userActionCreators, dispatch)
 });
 class PricingChoice extends React.PureComponent {
   props: Props;
@@ -106,7 +106,7 @@ class PricingChoice extends React.PureComponent {
 
   cancelSubscription = async () => {
     const confirmed = confirm(
-      'Are you sure you want to cancel your subscription?',
+      "Are you sure you want to cancel your subscription?"
     );
 
     if (confirmed) {
@@ -149,20 +149,20 @@ class PricingChoice extends React.PureComponent {
               color={badges[badge].colors[0]}
             />
           </RangeContainer>
-          {loggedIn // eslint-disable-line no-nested-ternary
-            ? user.subscription
+          {loggedIn
+            ? user.subscription // eslint-disable-line no-nested-ternary
               ? <ChangeSubscription
                   updateSubscription={this.updateSubscription}
                   cancelSubscription={this.cancelSubscription}
                   date={user.subscription.since}
                 />
-              : <Centered style={{ marginTop: '2rem' }} horizontal>
+              : <Centered style={{ marginTop: "2rem" }} horizontal>
                   <SubscribeForm subscribe={this.subscribe} name={user.name} />
                   <Notice>
-                    You will be billed now and on the{' '}
-                    <strong style={{ color: 'white' }}>
-                      {moment().format('Do')}
-                    </strong>{' '}
+                    You will be billed now and on the{" "}
+                    <strong style={{ color: "white" }}>
+                      {moment().format("Do")}
+                    </strong>{" "}
                     of each month thereafter. You can cancel or change your
                     subscription at any time.
                   </Notice>

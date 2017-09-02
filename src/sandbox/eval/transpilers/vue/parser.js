@@ -1,7 +1,7 @@
-const compiler = require('vue-template-compiler');
-const cache = require('lru-cache')(100);
-const hash = require('hash-sum');
-const SourceMapGenerator = require('source-map').SourceMapGenerator;
+const compiler = require("vue-template-compiler");
+const cache = require("lru-cache")(100);
+const hash = require("hash-sum");
+const SourceMapGenerator = require("source-map").SourceMapGenerator;
 
 const splitRE = /\r?\n/g;
 const emptyRE = /^(?:\/\/)?\s*$/;
@@ -9,7 +9,7 @@ const emptyRE = /^(?:\/\/)?\s*$/;
 module.exports = function(content, filename, needMap) {
   const cacheKey = hash(filename + content);
   // source-map cache busting for hot-reloadded modules
-  const filenameWithHash = filename + '?' + cacheKey;
+  const filenameWithHash = filename + "?" + cacheKey;
   let output = cache.get(cacheKey);
   if (output) return output;
   output = compiler.parseComponent(content);
@@ -18,7 +18,7 @@ module.exports = function(content, filename, needMap) {
       output.script.map = generateSourceMap(
         filenameWithHash,
         content,
-        output.script.content,
+        output.script.content
       );
     }
     if (output.styles) {
@@ -27,7 +27,7 @@ module.exports = function(content, filename, needMap) {
           style.map = generateSourceMap(
             filenameWithHash,
             content,
-            style.content,
+            style.content
           );
         }
       });
@@ -46,12 +46,12 @@ function generateSourceMap(filename, source, generated) {
         source: filename,
         original: {
           line: index + 1,
-          column: 0,
+          column: 0
         },
         generated: {
           line: index + 1,
-          column: 0,
-        },
+          column: 0
+        }
       });
     }
   });

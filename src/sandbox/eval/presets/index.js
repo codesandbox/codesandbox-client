@@ -1,16 +1,16 @@
 // @flow
-import { orderBy } from 'lodash';
-import type { Module } from 'common/types';
+import { orderBy } from "lodash";
+import type { Module } from "common/types";
 
-import Transpiler from '../transpilers';
+import Transpiler from "../transpilers";
 
 export type TranspiledModule = Module & {
-  transpiledCode: string,
+  transpiledCode: string
 };
 
 type TranspilerDefinition = {
   transpiler: Transpiler,
-  config?: Object,
+  options: ?Object
 };
 
 /**
@@ -27,7 +27,7 @@ type TranspilerDefinition = {
 export default class Preset {
   loaders: Array<{
     test: (module: Module) => boolean,
-    transpilers: Array<TranspilerDefinition>,
+    transpilers: Array<TranspilerDefinition>
   }>;
   transpilers: Set<Transpiler>;
   name: string;
@@ -37,14 +37,14 @@ export default class Preset {
   constructor(
     name: string,
     ignoredExtensions: ?Array<string>,
-    alias: { [path: string]: string },
+    alias: { [path: string]: string }
   ) {
     this.loaders = [];
     this.transpilers = new Set();
     this.name = name;
 
     this.alias = alias || {};
-    this.ignoredExtensions = ignoredExtensions || ['js', 'jsx', 'json'];
+    this.ignoredExtensions = ignoredExtensions || ["js", "jsx", "json"];
   }
 
   /**
@@ -57,7 +57,7 @@ export default class Preset {
     // Find matching aliases
     const matchingAliases = aliases.filter(a => path.startsWith(a));
     const orderedAliases = orderBy(matchingAliases, alias => alias.length, [
-      'desc',
+      "desc"
     ]);
 
     const foundAlias = orderedAliases[0];
@@ -72,11 +72,11 @@ export default class Preset {
 
   registerTranspiler(
     test: (module: Module) => boolean,
-    transpilers: Array<TranspilerDefinition>,
+    transpilers: Array<TranspilerDefinition>
   ) {
     this.loaders.push({
       test,
-      transpilers,
+      transpilers
     });
 
     transpilers.forEach(t => this.transpilers.add(t.transpiler));
@@ -88,23 +88,23 @@ export default class Preset {
    * Get transpilers from the given query, the query is webpack like:
    * eg. !babel-loader!./test.js
    */
-  getLoaders(module: Module, query: string = '') {
+  getLoaders(module: Module, query: string = "") {
     const loader = this.loaders.find(t => t.test(module));
 
     // Starting !, drop all transpilers
-    const transpilers = query.startsWith('!') // eslint-disable-line no-nested-ternary
+    const transpilers = query.startsWith("!") // eslint-disable-line no-nested-ternary
       ? []
       : loader ? loader.transpilers : [];
 
     // Remove "" values
-    const transpilerNames = query.split('!').filter(x => x);
+    const transpilerNames = query.split("!").filter(x => x);
 
     const extraTranspilers = transpilerNames
       .map(loaderName => {
-        const [name, options] = loaderName.split('?');
+        const [name, options] = loaderName.split("?");
 
         const transpiler = Array.from(this.transpilers).find(
-          t => t.name === name,
+          t => t.name === name
         );
 
         if (!transpiler) {

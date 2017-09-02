@@ -1,9 +1,9 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
-import Title from 'app/components/text/Title';
-import SubTitle from 'app/components/text/SubTitle';
-import Button from 'app/components/buttons/Button';
+import Title from "app/components/text/Title";
+import SubTitle from "app/components/text/SubTitle";
+import Button from "app/components/buttons/Button";
 
 const Container = styled.div`
   height: 100%;
@@ -44,7 +44,7 @@ type Props = {
   token: ?string,
   loading: boolean,
   username: ?string,
-  signIn: () => void,
+  signIn: () => void
 };
 
 const select = event => event.target.select();

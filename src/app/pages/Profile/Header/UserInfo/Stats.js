@@ -1,13 +1,13 @@
-import React from 'react';
-import styled from 'styled-components';
-import type { Badge as BadgeT } from 'common/types';
-import { Link } from 'react-router-dom';
+import React from "react";
+import styled from "styled-components";
+import type { Badge as BadgeT } from "common/types";
+import { Link } from "react-router-dom";
 
-import Stat from 'app/components/Stat';
-import Margin from 'app/components/spacing/Margin';
-import Badge from 'app/utils/badges/Badge';
-import delayEffect from 'app/utils/animation/delay-effect';
-import { patronUrl } from 'app/utils/url-generator';
+import Stat from "app/components/Stat";
+import Margin from "app/components/spacing/Margin";
+import Badge from "app/utils/badges/Badge";
+import delayEffect from "app/utils/animation/delay-effect";
+import { patronUrl } from "app/utils/url-generator";
 
 const Container = styled.div`
   float: right;
@@ -35,7 +35,7 @@ type Props = {
   viewCount: number,
   likeCount: number,
   forkCount: number,
-  badges: Array<BadgeT>,
+  badges: Array<BadgeT>
 };
 
 const Badges = ({ badges }: { badges: Array<{ id: string, name: string }> }) =>

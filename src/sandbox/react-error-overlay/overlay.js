@@ -10,45 +10,45 @@
 /* @flow */
 import {
   register as registerError,
-  unregister as unregisterError,
-} from './effects/unhandledError';
+  unregister as unregisterError
+} from "./effects/unhandledError";
 import {
   register as registerPromise,
-  unregister as unregisterPromise,
-} from './effects/unhandledRejection';
+  unregister as unregisterPromise
+} from "./effects/unhandledRejection";
 import {
   register as registerShortcuts,
   unregister as unregisterShortcuts,
   handler as keyEventHandler,
   SHORTCUT_ESCAPE,
   SHORTCUT_LEFT,
-  SHORTCUT_RIGHT,
-} from './effects/shortcuts';
+  SHORTCUT_RIGHT
+} from "./effects/shortcuts";
 import {
   register as registerStackTraceLimit,
-  unregister as unregisterStackTraceLimit,
-} from './effects/stackTraceLimit';
+  unregister as unregisterStackTraceLimit
+} from "./effects/stackTraceLimit";
 import {
   permanentRegister as permanentRegisterConsole,
   registerReactStack,
-  unregisterReactStack,
-} from './effects/proxyConsole';
-import { massage as massageWarning } from './utils/warnings';
+  unregisterReactStack
+} from "./effects/proxyConsole";
+import { massage as massageWarning } from "./utils/warnings";
 
 import {
   consume as consumeError,
   getErrorRecord,
-  drain as drainErrors,
-} from './utils/errorRegister';
-import type { ErrorRecordReference } from './utils/errorRegister';
+  drain as drainErrors
+} from "./utils/errorRegister";
+import type { ErrorRecordReference } from "./utils/errorRegister";
 
-import type { StackFrame } from './utils/stack-frame';
-import { iframeStyle } from './styles';
-import { applyStyles } from './utils/dom/css';
-import { createOverlay } from './components/overlay';
-import { updateAdditional } from './components/additional';
+import type { StackFrame } from "./utils/stack-frame";
+import { iframeStyle } from "./styles";
+import { applyStyles } from "./utils/dom/css";
+import { createOverlay } from "./components/overlay";
+import { updateAdditional } from "./components/additional";
 
-import buildError from '../errors';
+import buildError from "../errors";
 
 const CONTEXT_SIZE: number = 3;
 let iframeReference: HTMLIFrameElement | null = null;
@@ -60,11 +60,11 @@ function render(
   name: ?string,
   message: string,
   resolvedFrames: StackFrame[],
-  error,
+  error
 ) {
   disposeCurrentView();
 
-  const iframe = window.document.createElement('iframe');
+  const iframe = window.document.createElement("iframe");
   applyStyles(iframe, iframeStyle);
   iframeReference = iframe;
   iframe.onload = () => {
@@ -88,7 +88,7 @@ function render(
       },
       () => {
         unmount();
-      },
+      }
     );
     if (w != null) {
       w.onkeydown = event => {
@@ -96,10 +96,10 @@ function render(
       };
     }
     if (document.body != null) {
-      document.body.style.margin = '0';
+      document.body.style.margin = "0";
       // Keep popup within body boundaries for iOS Safari
       // $FlowFixMe
-      document.body.style['max-width'] = '100vw';
+      document.body.style["max-width"] = "100vw";
 
       (document.body: any).appendChild(overlay);
     }
@@ -112,15 +112,15 @@ function renderErrorByIndex(index: number) {
   currReferenceIndex = index;
 
   const { error, unhandledRejection, enhancedFrames } = getErrorRecord(
-    errorReferences[index],
+    errorReferences[index]
   );
 
   if (unhandledRejection) {
     render(
-      'Unhandled Rejection (' + error.name + ')',
+      "Unhandled Rejection (" + error.name + ")",
       error.message,
       enhancedFrames,
-      error,
+      error
     );
   } else {
     render(error.name, error.message, enhancedFrames, error);
@@ -168,7 +168,7 @@ function sendErrorsToEditor() {
 }
 
 function crash(error: Error, unhandledRejection = false) {
-  if (module.hot && typeof module.hot.decline === 'function') {
+  if (module.hot && typeof module.hot.decline === "function") {
     module.hot.decline();
   }
 
@@ -189,17 +189,17 @@ function crash(error: Error, unhandledRejection = false) {
           errorReferences.length,
           offset => {
             switchError(offset);
-          },
+          }
         );
       } else {
         if (errorReferences.length !== 1) {
-          throw new Error('Something is *really* wrong.');
+          throw new Error("Something is *really* wrong.");
         }
         renderErrorByIndex((currReferenceIndex = 0));
       }
     })
     .catch(e => {
-      console.log('Could not consume error:', e);
+      console.log("Could not consume error:", e);
     });
 }
 
@@ -231,15 +231,15 @@ function inject() {
   registerStackTraceLimit();
 
   registerReactStack();
-  permanentRegisterConsole('error', (warning, stack) => {
+  permanentRegisterConsole("error", (warning, stack) => {
     const data = massageWarning(warning, stack);
     crash(
       // $FlowFixMe
       {
         message: data.message,
-        stack: data.stack,
+        stack: data.stack
       },
-      false,
+      false
     );
   });
 }

@@ -1,24 +1,24 @@
 // @flow
-import * as React from 'react';
-import styled from 'styled-components';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import Loadable from 'react-loadable';
-import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
-import { createSelector } from 'reselect';
+import * as React from "react";
+import styled from "styled-components";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import Loadable from "react-loadable";
+import { Route, Switch, Redirect, withRouter } from "react-router-dom";
+import { createSelector } from "reselect";
 
-import _debug from 'app/utils/debug';
-import Notifications from 'app/containers/Notifications';
-import ContextMenu from 'app/containers/ContextMenu';
-import Modal from 'app/containers/Modal';
-import Loading from 'app/components/Loading';
-import { loggedInSelector } from 'app/store/user/selectors';
-import userActionCreators from 'app/store/user/actions';
-import initializeConnectionManager from 'app/store/connection/actions';
+import _debug from "app/utils/debug";
+import Notifications from "app/containers/Notifications";
+import ContextMenu from "app/containers/ContextMenu";
+import Modal from "app/containers/Modal";
+import Loading from "app/components/Loading";
+import { loggedInSelector } from "app/store/user/selectors";
+import userActionCreators from "app/store/user/actions";
+import initializeConnectionManager from "app/store/connection/actions";
 
-import Sandbox from './Sandbox';
+import Sandbox from "./Sandbox";
 
-const routeDebugger = _debug('cs:app:router');
+const routeDebugger = _debug("cs:app:router");
 
 const Container = styled.div`
   display: flex;
@@ -34,57 +34,57 @@ const Content = styled.div`
 `;
 
 const SignIn = Loadable({
-  loader: () => import('./SignIn'),
-  LoadingComponent: Loading,
+  loader: () => import("./SignIn"),
+  LoadingComponent: Loading
 });
 const NotFound = Loadable({
-  loader: () => import('./NotFound'),
-  LoadingComponent: Loading,
+  loader: () => import("./NotFound"),
+  LoadingComponent: Loading
 });
 const Profile = Loadable({
-  loader: () => import('./Profile'),
-  LoadingComponent: Loading,
+  loader: () => import("./Profile"),
+  LoadingComponent: Loading
 });
 const Search = Loadable({
-  loader: () => import('./Search'),
-  LoadingComponent: Loading,
+  loader: () => import("./Search"),
+  LoadingComponent: Loading
 });
 const CLI = Loadable({
-  loader: () => import('./CLI'),
-  LoadingComponent: Loading,
+  loader: () => import("./CLI"),
+  LoadingComponent: Loading
 });
 const GitHub = Loadable({
-  loader: () => import('./GitHub'),
-  LoadingComponent: Loading,
+  loader: () => import("./GitHub"),
+  LoadingComponent: Loading
 });
 const CliInstructions = Loadable({
-  loader: () => import('./CliInstructions'),
-  LoadingComponent: Loading,
+  loader: () => import("./CliInstructions"),
+  LoadingComponent: Loading
 });
 const Patron = Loadable({
-  loader: () => import('./Patron'),
-  LoadingComponent: Loading,
+  loader: () => import("./Patron"),
+  LoadingComponent: Loading
 });
 const Terms = Loadable({
-  loader: () => import('./Terms'),
-  LoadingComponent: Loading,
+  loader: () => import("./Terms"),
+  LoadingComponent: Loading
 });
 
 type Props = {
   hasLogin: boolean,
   userActions: typeof userActionCreators,
-  initializeConnectionManager: typeof initializeConnectionManager,
+  initializeConnectionManager: typeof initializeConnectionManager
 };
 
 const mapStateToProps = createSelector(loggedInSelector, loggedIn => ({
-  hasLogin: loggedIn,
+  hasLogin: loggedIn
 }));
 const mapDispatchToProps = dispatch => ({
   userActions: bindActionCreators(userActionCreators, dispatch),
   initializeConnectionManager: bindActionCreators(
     initializeConnectionManager,
-    dispatch,
-  ),
+    dispatch
+  )
 });
 class Routes extends React.PureComponent<Props> {
   unlisten: () => void;
@@ -108,11 +108,11 @@ class Routes extends React.PureComponent<Props> {
           path="/"
           render={({ location }) => {
             routeDebugger(
-              `Sending '${location.pathname + location.search}' to ga.`,
+              `Sending '${location.pathname + location.search}' to ga.`
             );
-            if (typeof window.ga === 'function') {
-              window.ga('set', 'page', location.pathname + location.search);
-              window.ga('send', 'pageview');
+            if (typeof window.ga === "function") {
+              window.ga("set", "page", location.pathname + location.search);
+              window.ga("send", "pageview");
             }
             return null;
           }}

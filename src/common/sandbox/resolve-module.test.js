@@ -1,14 +1,14 @@
-import resolveModule, { getModulesInDirectory } from './resolve-module';
+import resolveModule, { getModulesInDirectory } from "./resolve-module";
 
-describe('root', () => {
-  test('it resolves root path', () => {
-    const path = './Test';
+describe("root", () => {
+  test("it resolves root path", () => {
+    const path = "./Test";
     const modules = [
       {
-        id: '123123',
-        title: 'Test',
-        directoryShortid: null,
-      },
+        id: "123123",
+        title: "Test",
+        directoryShortid: null
+      }
     ];
 
     const directories = [];
@@ -16,14 +16,14 @@ describe('root', () => {
     expect(resolveModule(path, modules, directories)).toBe(modules[0]);
   });
 
-  test('it resolves index files', () => {
-    const path = './';
+  test("it resolves index files", () => {
+    const path = "./";
     const modules = [
       {
-        id: '123123',
-        title: 'index',
-        directoryShortid: null,
-      },
+        id: "123123",
+        title: "index",
+        directoryShortid: null
+      }
     ];
 
     const directories = [];
@@ -32,364 +32,364 @@ describe('root', () => {
   });
 });
 
-describe('one directory deep', () => {
-  test('it resolves path', () => {
-    const path = './Directory/Test';
+describe("one directory deep", () => {
+  test("it resolves path", () => {
+    const path = "./Directory/Test";
     const directories = [
       {
-        id: '113',
-        shortid: '123123123',
-        title: 'Directory',
-        directoryShortid: null,
-      },
+        id: "113",
+        shortid: "123123123",
+        title: "Directory",
+        directoryShortid: null
+      }
     ];
 
     const modules = [
       {
-        id: '123123',
-        title: 'Test',
-        directoryShortid: directories[0].shortid,
-      },
+        id: "123123",
+        title: "Test",
+        directoryShortid: directories[0].shortid
+      }
     ];
 
     expect(resolveModule(path, modules, directories)).toBe(modules[0]);
   });
 
-  test('it resolves index', () => {
-    const path = './Directory/';
+  test("it resolves index", () => {
+    const path = "./Directory/";
     const directories = [
       {
-        id: '113',
-        shortid: '123123123',
-        title: 'Directory',
-        directoryShortid: null,
-      },
+        id: "113",
+        shortid: "123123123",
+        title: "Directory",
+        directoryShortid: null
+      }
     ];
 
     const modules = [
       {
-        id: '123123',
-        title: 'index',
-        directoryShortid: directories[0].shortid,
-      },
-    ];
-
-    expect(resolveModule(path, modules, directories)).toBe(modules[0]);
-  });
-});
-
-describe('two directories deep', () => {
-  test('it resolves path', () => {
-    const path = './Directory/Directory2/Test';
-    const directories = [
-      {
-        id: '113',
-        shortid: '123123123',
-        title: 'Directory',
-        directoryShortid: null,
-      },
-      {
-        id: '1312',
-        shortid: '1312423432',
-        title: 'Directory2',
-        directoryShortid: '123123123',
-      },
-    ];
-
-    const modules = [
-      {
-        id: '123123',
-        title: 'Test',
-        directoryShortid: '1312423432',
-      },
-    ];
-
-    expect(resolveModule(path, modules, directories)).toBe(modules[0]);
-  });
-
-  test('it resolves index', () => {
-    const path = './Directory/Directory2/index';
-    const directories = [
-      {
-        id: '113',
-        shortid: '123123123',
-        title: 'Directory',
-        directoryShortid: null,
-      },
-      {
-        id: '1312',
-        shortid: '1312423432',
-        title: 'Directory2',
-        directoryShortid: '123123123',
-      },
-    ];
-
-    const modules = [
-      {
-        id: '123123',
-        title: 'index',
-        directoryShortid: '1312423432',
-      },
+        id: "123123",
+        title: "index",
+        directoryShortid: directories[0].shortid
+      }
     ];
 
     expect(resolveModule(path, modules, directories)).toBe(modules[0]);
   });
 });
 
-describe('relative', () => {
-  test('it finds something relative from directory', () => {
-    const path = './Directory2';
+describe("two directories deep", () => {
+  test("it resolves path", () => {
+    const path = "./Directory/Directory2/Test";
     const directories = [
       {
-        id: '113',
-        shortid: '123123123',
-        title: 'Directory',
-        directoryShortid: null,
+        id: "113",
+        shortid: "123123123",
+        title: "Directory",
+        directoryShortid: null
       },
       {
-        id: '1312',
-        shortid: '1312423432',
-        title: 'Directory2',
-        directoryShortid: '123123123',
-      },
+        id: "1312",
+        shortid: "1312423432",
+        title: "Directory2",
+        directoryShortid: "123123123"
+      }
     ];
 
     const modules = [
       {
-        id: '123123',
-        title: 'index',
-        directoryShortid: '1312423432',
-      },
+        id: "123123",
+        title: "Test",
+        directoryShortid: "1312423432"
+      }
     ];
-    expect(resolveModule(path, modules, directories, '123123123')).toBe(
-      modules[0],
+
+    expect(resolveModule(path, modules, directories)).toBe(modules[0]);
+  });
+
+  test("it resolves index", () => {
+    const path = "./Directory/Directory2/index";
+    const directories = [
+      {
+        id: "113",
+        shortid: "123123123",
+        title: "Directory",
+        directoryShortid: null
+      },
+      {
+        id: "1312",
+        shortid: "1312423432",
+        title: "Directory2",
+        directoryShortid: "123123123"
+      }
+    ];
+
+    const modules = [
+      {
+        id: "123123",
+        title: "index",
+        directoryShortid: "1312423432"
+      }
+    ];
+
+    expect(resolveModule(path, modules, directories)).toBe(modules[0]);
+  });
+});
+
+describe("relative", () => {
+  test("it finds something relative from directory", () => {
+    const path = "./Directory2";
+    const directories = [
+      {
+        id: "113",
+        shortid: "123123123",
+        title: "Directory",
+        directoryShortid: null
+      },
+      {
+        id: "1312",
+        shortid: "1312423432",
+        title: "Directory2",
+        directoryShortid: "123123123"
+      }
+    ];
+
+    const modules = [
+      {
+        id: "123123",
+        title: "index",
+        directoryShortid: "1312423432"
+      }
+    ];
+    expect(resolveModule(path, modules, directories, "123123123")).toBe(
+      modules[0]
     );
   });
 
-  test('it finds current index', () => {
-    const path = './';
+  test("it finds current index", () => {
+    const path = "./";
     const directories = [
       {
-        id: '113',
-        shortid: '123123123',
-        title: 'Directory',
-        directoryShortid: null,
+        id: "113",
+        shortid: "123123123",
+        title: "Directory",
+        directoryShortid: null
       },
       {
-        id: '1312',
-        shortid: '1312423432',
-        title: 'Directory2',
-        directoryShortid: '123123123',
-      },
+        id: "1312",
+        shortid: "1312423432",
+        title: "Directory2",
+        directoryShortid: "123123123"
+      }
     ];
 
     const modules = [
       {
-        id: '123123',
-        title: 'index',
-        directoryShortid: '1312423432',
-      },
+        id: "123123",
+        title: "index",
+        directoryShortid: "1312423432"
+      }
     ];
-    expect(resolveModule(path, modules, directories, '1312423432')).toBe(
-      modules[0],
+    expect(resolveModule(path, modules, directories, "1312423432")).toBe(
+      modules[0]
     );
   });
 
-  test('it finds a parent', () => {
-    const path = '../Test';
+  test("it finds a parent", () => {
+    const path = "../Test";
     const directories = [
       {
-        id: '113',
-        shortid: '123123123',
-        title: 'Directory',
-        directoryShortid: null,
+        id: "113",
+        shortid: "123123123",
+        title: "Directory",
+        directoryShortid: null
       },
       {
-        id: '1312',
-        shortid: '1312423432',
-        title: 'Directory2',
-        directoryShortid: '123123123',
-      },
+        id: "1312",
+        shortid: "1312423432",
+        title: "Directory2",
+        directoryShortid: "123123123"
+      }
     ];
 
     const modules = [
       {
-        id: '12666',
-        title: 'Test',
-        directoryShortid: null,
+        id: "12666",
+        title: "Test",
+        directoryShortid: null
       },
       {
-        id: '123123',
-        title: 'index',
-        directoryShortid: '1312423432',
-      },
+        id: "123123",
+        title: "index",
+        directoryShortid: "1312423432"
+      }
     ];
-    expect(resolveModule(path, modules, directories, '123123123')).toBe(
-      modules[0],
+    expect(resolveModule(path, modules, directories, "123123123")).toBe(
+      modules[0]
     );
   });
 
-  test('it finds a of a parent parent', () => {
-    const path = '../../Test';
+  test("it finds a of a parent parent", () => {
+    const path = "../../Test";
     const directories = [
       {
-        id: '113',
-        shortid: '123123123',
-        title: 'Directory',
-        directoryShortid: null,
+        id: "113",
+        shortid: "123123123",
+        title: "Directory",
+        directoryShortid: null
       },
       {
-        id: '1312',
-        shortid: '1312423432',
-        title: 'Directory2',
-        directoryShortid: '123123123',
-      },
+        id: "1312",
+        shortid: "1312423432",
+        title: "Directory2",
+        directoryShortid: "123123123"
+      }
     ];
 
     const modules = [
       {
-        id: '12666',
-        title: 'Test',
-        directoryShortid: null,
+        id: "12666",
+        title: "Test",
+        directoryShortid: null
       },
       {
-        id: '123123',
-        title: 'index',
-        directoryShortid: '1312423432',
-      },
+        id: "123123",
+        title: "index",
+        directoryShortid: "1312423432"
+      }
     ];
-    expect(resolveModule(path, modules, directories, '1312423432')).toBe(
-      modules[0],
+    expect(resolveModule(path, modules, directories, "1312423432")).toBe(
+      modules[0]
     );
   });
 
   test("it doesn't find itself if nothing is found", () => {
-    const path = './Tes';
+    const path = "./Tes";
     const directories = [
       {
-        id: '12312',
-        shortid: '123123123',
-        title: 'Test',
-        directoryShortid: null,
-      },
+        id: "12312",
+        shortid: "123123123",
+        title: "Test",
+        directoryShortid: null
+      }
     ];
 
     const modules = [
       {
-        id: '12666',
-        title: 'index',
-        directoryShortid: '123123123',
+        id: "12666",
+        title: "index",
+        directoryShortid: "123123123"
       },
       {
-        id: '123123',
-        title: 'index',
-        directoryShortid: null,
-      },
+        id: "123123",
+        title: "index",
+        directoryShortid: null
+      }
     ];
 
     expect(() => resolveModule(path, modules, directories, null)).toThrow();
   });
 });
 
-describe('preference', () => {
-  test('it prefers files over folders', () => {
-    const path = './Test';
+describe("preference", () => {
+  test("it prefers files over folders", () => {
+    const path = "./Test";
     const directories = [
       {
-        id: '113',
-        shortid: '123123123',
-        title: 'Directory',
-        directoryShortid: null,
+        id: "113",
+        shortid: "123123123",
+        title: "Directory",
+        directoryShortid: null
       },
       {
-        id: '1312423432',
-        shortid: '1312423432',
-        title: 'Test',
-        directoryShortid: '123123123',
-      },
+        id: "1312423432",
+        shortid: "1312423432",
+        title: "Test",
+        directoryShortid: "123123123"
+      }
     ];
 
     const modules = [
       {
-        id: '12666',
-        title: 'Test',
-        directoryShortid: null,
+        id: "12666",
+        title: "Test",
+        directoryShortid: null
       },
       {
-        id: '123123',
-        title: 'index',
-        directoryShortid: '123123123',
-      },
+        id: "123123",
+        title: "index",
+        directoryShortid: "123123123"
+      }
     ];
     expect(resolveModule(path, modules, directories)).toBe(modules[0]);
   });
 
-  test('it prefers files over generic index', () => {
-    const path = './Test';
+  test("it prefers files over generic index", () => {
+    const path = "./Test";
     const directories = [];
 
     const modules = [
       {
-        id: '123123',
-        title: 'index',
-        directoryShortid: null,
+        id: "123123",
+        title: "index",
+        directoryShortid: null
       },
       {
-        id: '12666',
-        title: 'Test',
-        directoryShortid: null,
-      },
+        id: "12666",
+        title: "Test",
+        directoryShortid: null
+      }
     ];
     expect(resolveModule(path, modules, directories)).toBe(modules[1]);
   });
 
-  describe('getModulesInDirectory', () => {
-    it('lists all files in directory', () => {
-      const path = './';
+  describe("getModulesInDirectory", () => {
+    it("lists all files in directory", () => {
+      const path = "./";
       const directories = [];
 
       const modules = [
         {
-          id: '123123',
-          title: 'index',
-          directoryShortid: null,
+          id: "123123",
+          title: "index",
+          directoryShortid: null
         },
         {
-          id: '12666',
-          title: 'Test',
-          directoryShortid: null,
-        },
+          id: "12666",
+          title: "Test",
+          directoryShortid: null
+        }
       ];
       expect(getModulesInDirectory(path, modules, directories).modules).toEqual(
-        modules,
+        modules
       );
     });
 
-    it('lists all files in subdirectory', () => {
-      const path = './test/';
+    it("lists all files in subdirectory", () => {
+      const path = "./test/";
       const directories = [
         {
-          id: '113',
-          shortid: '123123123',
-          title: 'test',
-          directoryShortid: null,
-        },
+          id: "113",
+          shortid: "123123123",
+          title: "test",
+          directoryShortid: null
+        }
       ];
 
       const modules = [
         {
-          id: '123123',
-          title: 'index',
-          directoryShortid: '123123123',
+          id: "123123",
+          title: "index",
+          directoryShortid: "123123123"
         },
         {
-          id: '12666',
-          title: 'Test',
-          directoryShortid: '123123123',
-        },
+          id: "12666",
+          title: "Test",
+          directoryShortid: "123123123"
+        }
       ];
       expect(getModulesInDirectory(path, modules, directories).modules).toEqual(
-        modules,
+        modules
       );
     });
   });

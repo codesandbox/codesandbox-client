@@ -1,22 +1,22 @@
-import React from 'react';
-import styled, { css, keyframes } from 'styled-components';
+import React from "react";
+import styled, { css, keyframes } from "styled-components";
 
-import badges from 'app/utils/badges/patron-info';
+import badges from "app/utils/badges/patron-info";
 
 const classNameRegex = /\shide/g;
 function showElement(el: HTMLElement) {
-  if (el.nodeName === 'svg') {
-    el.setAttribute('class', el.className.baseVal.replace(classNameRegex, ''));
+  if (el.nodeName === "svg") {
+    el.setAttribute("class", el.className.baseVal.replace(classNameRegex, ""));
   } else {
-    el.className = el.className.replace(classNameRegex, ''); // eslint-disable-line no-param-reassign
+    el.className = el.className.replace(classNameRegex, ""); // eslint-disable-line no-param-reassign
   }
 }
 
 function hideElement(el: HTMLElement) {
-  if (el.nodeName === 'svg') {
-    el.setAttribute('class', `${el.className.baseVal} hide`);
+  if (el.nodeName === "svg") {
+    el.setAttribute("class", `${el.className.baseVal} hide`);
   } else {
-    el.className += ' hide'; // eslint-disable-line no-param-reassign
+    el.className += " hide"; // eslint-disable-line no-param-reassign
   }
 }
 
@@ -47,8 +47,8 @@ const Particle = styled.div`
       badges[props.badge].colors[props.i % badges[props.badge].colors.length];
 
     return css`
-    background-color: ${color};
-    box-shadow: 0 0 5px ${color};
+      background-color: ${color};
+      box-shadow: 0 0 5px ${color};
     `;
   }};
 `;
@@ -62,19 +62,19 @@ const createParticles = (amount: number, badge) =>
         i={i}
         deg={180 + (Math.floor(amount / 2) + i) * (360 / amount)}
         badge={badge}
-      />,
+      />
     );
 
 type Props = {
   makeItRain: boolean,
-  badge: 'patron-1' | 'patron-2' | 'patron-3' | 'patron-4',
+  badge: "patron-1" | "patron-2" | "patron-3" | "patron-4"
 };
 
 export default class Particles extends React.PureComponent {
   props: Props;
 
   makeItRain = () => {
-    const particleSelector = document.getElementsByClassName('particle');
+    const particleSelector = document.getElementsByClassName("particle");
     Array.forEach(particleSelector, hideElement);
 
     requestAnimationFrame(() => {
@@ -87,7 +87,7 @@ export default class Particles extends React.PureComponent {
   shouldComponentUpdate(nextProps) {
     if (nextProps.badge !== this.props.badge) {
       const particleSelector = document.getElementsByClassName(
-        `${nextProps.badge}-particle`,
+        `${nextProps.badge}-particle`
       );
 
       Array.forEach(particleSelector, hideElement);
@@ -101,7 +101,7 @@ export default class Particles extends React.PureComponent {
       }
 
       this.timeout = setTimeout(() => {
-        const allParticleSelector = document.getElementsByClassName('particle');
+        const allParticleSelector = document.getElementsByClassName("particle");
         Array.forEach(allParticleSelector, hideElement);
       }, 700);
     }
@@ -117,7 +117,7 @@ export default class Particles extends React.PureComponent {
     return (
       <div>
         {Object.keys(badges).map(badge =>
-          createParticles(badges[badge].particleCount, badge),
+          createParticles(badges[badge].particleCount, badge)
         )}
       </div>
     );

@@ -1,44 +1,44 @@
 // @flow
-import * as React from 'react';
-import styled, { ThemeProvider } from 'styled-components';
-import { createSelector } from 'reselect';
-import { Prompt } from 'react-router-dom';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import { preferencesSelector } from 'app/store/preferences/selectors';
+import * as React from "react";
+import styled, { ThemeProvider } from "styled-components";
+import { createSelector } from "reselect";
+import { Prompt } from "react-router-dom";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { preferencesSelector } from "app/store/preferences/selectors";
 import type {
   Preferences,
   Sandbox,
   CurrentUser,
   Module,
-  Directory,
-} from 'common/types';
-import { currentUserSelector } from 'app/store/user/selectors';
-import moduleActionCreators from 'app/store/entities/sandboxes/modules/actions';
-import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
-import modalActionCreators from 'app/store/modal/actions';
-import previewApiActionCreators from 'app/store/preview-actions-api/actions';
-import userActionCreators from 'app/store/user/actions';
+  Directory
+} from "common/types";
+import { currentUserSelector } from "app/store/user/selectors";
+import moduleActionCreators from "app/store/entities/sandboxes/modules/actions";
+import sandboxActionCreators from "app/store/entities/sandboxes/actions";
+import modalActionCreators from "app/store/modal/actions";
+import previewApiActionCreators from "app/store/preview-actions-api/actions";
+import userActionCreators from "app/store/user/actions";
 import {
   findMainModule,
   findCurrentModule,
   getModulePath,
-  modulesFromSandboxSelector,
-} from 'app/store/entities/sandboxes/modules/selectors';
-import { directoriesFromSandboxSelector } from 'app/store/entities/sandboxes/directories/selectors';
+  modulesFromSandboxSelector
+} from "app/store/entities/sandboxes/modules/selectors";
+import { directoriesFromSandboxSelector } from "app/store/entities/sandboxes/directories/selectors";
 
-import getTemplateDefinition from 'common/templates';
+import getTemplateDefinition from "common/templates";
 
-import SplitPane from 'react-split-pane';
+import SplitPane from "react-split-pane";
 
-import CodeEditor from 'app/components/sandbox/CodeEditor';
-import Preview from 'app/components/sandbox/Preview';
+import CodeEditor from "app/components/sandbox/CodeEditor";
+import Preview from "app/components/sandbox/Preview";
 
-import showAlternativeComponent from 'app/hoc/show-alternative-component';
-import fadeIn from 'app/utils/animation/fade-in';
+import showAlternativeComponent from "app/hoc/show-alternative-component";
+import fadeIn from "app/utils/animation/fade-in";
 
-import Header from './Header';
-import Skeleton from './Skeleton';
+import Header from "./Header";
+import Skeleton from "./Skeleton";
 
 type Props = {
   workspaceHidden: boolean,
@@ -52,17 +52,17 @@ type Props = {
   sandboxActions: typeof sandboxActionCreators,
   userActions: typeof userActionCreators,
   modalActions: typeof modalActionCreators,
-  previewApiActions: typeof previewApiActionCreators,
+  previewApiActions: typeof previewApiActionCreators
 };
 
 type State = {
-  resizing: boolean,
+  resizing: boolean
 };
 
 const FullSize = styled.div`
   height: 100%;
   width: 100%;
-  pointer-events: ${props => (props.inactive ? 'none' : 'all')};
+  pointer-events: ${props => (props.inactive ? "none" : "all")};
   ${fadeIn(0)};
 `;
 
@@ -75,19 +75,19 @@ const mapStateToProps = createSelector(
     preferences,
     user,
     modules,
-    directories,
-  }),
+    directories
+  })
 );
 const mapDispatchToProps = dispatch => ({
   moduleActions: bindActionCreators(moduleActionCreators, dispatch),
   sandboxActions: bindActionCreators(sandboxActionCreators, dispatch),
   userActions: bindActionCreators(userActionCreators, dispatch),
   modalActions: bindActionCreators(modalActionCreators, dispatch),
-  previewApiActions: bindActionCreators(previewApiActionCreators, dispatch),
+  previewApiActions: bindActionCreators(previewApiActionCreators, dispatch)
 });
 class EditorPreview extends React.PureComponent<Props, $FlowFixMeState> {
   state = {
-    resizing: false,
+    resizing: false
   };
 
   componentDidMount() {
@@ -96,7 +96,7 @@ class EditorPreview extends React.PureComponent<Props, $FlowFixMeState> {
       const notSynced = modules.some(m => m.isNotSynced);
 
       if (notSynced) {
-        return 'You have not saved all your modules, are you sure you want to close this tab?';
+        return "You have not saved all your modules, are you sure you want to close this tab?";
       }
 
       return null;
@@ -118,9 +118,9 @@ class EditorPreview extends React.PureComponent<Props, $FlowFixMeState> {
 
   getDefaultSize = () => {
     const { sandbox } = this.props;
-    if (sandbox.showEditor && !sandbox.showPreview) return '0%';
-    if (!sandbox.showEditor && sandbox.showPreview) return '100%';
-    return '50%';
+    if (sandbox.showEditor && !sandbox.showPreview) return "0%";
+    if (!sandbox.showEditor && sandbox.showPreview) return "100%";
+    return "50%";
   };
 
   render() {
@@ -137,11 +137,11 @@ class EditorPreview extends React.PureComponent<Props, $FlowFixMeState> {
       workspaceHidden,
       toggleWorkspace,
       previewApiActions,
-      errors,
+      errors
     } = this.props;
 
     const mainModule = findMainModule(modules);
-    if (!mainModule) throw new Error('Cannot find main module');
+    if (!mainModule) throw new Error("Cannot find main module");
 
     const { currentModule: currentModuleId } = sandbox;
 
@@ -149,7 +149,7 @@ class EditorPreview extends React.PureComponent<Props, $FlowFixMeState> {
       modules,
       directories,
       currentModuleId,
-      mainModule,
+      mainModule
     );
     const modulePath = getModulePath(modules, directories, currentModule.id);
 
@@ -204,14 +204,14 @@ class EditorPreview extends React.PureComponent<Props, $FlowFixMeState> {
     return (
       <ThemeProvider
         theme={{
-          templateColor: getTemplateDefinition(sandbox.template).color,
+          templateColor: getTemplateDefinition(sandbox.template).color
         }}
       >
         <FullSize>
           <Prompt
             when={notSynced}
             message={() =>
-              'You have not saved this sandbox, are you sure you want to navigate away?'}
+              "You have not saved this sandbox, are you sure you want to navigate away?"}
           />
           <Header
             sandbox={sandbox}
@@ -229,23 +229,23 @@ class EditorPreview extends React.PureComponent<Props, $FlowFixMeState> {
             split="vertical"
             defaultSize="50%"
             minSize={360}
-            paneStyle={{ height: '100%' }}
+            paneStyle={{ height: "100%" }}
             resizerStyle={{
               visibility:
                 (!sandbox.showPreview && sandbox.showEditor) ||
                 (sandbox.showPreview && !sandbox.showEditor)
-                  ? 'hidden'
-                  : 'visible',
+                  ? "hidden"
+                  : "visible"
             }}
             pane1Style={{
-              display: sandbox.showEditor ? 'block' : 'none',
+              display: sandbox.showEditor ? "block" : "none",
               minWidth:
-                !sandbox.showPreview && sandbox.showEditor ? '100%' : 'inherit',
+                !sandbox.showPreview && sandbox.showEditor ? "100%" : "inherit"
             }}
             pane2Style={{
-              display: sandbox.showPreview ? 'block' : 'none',
+              display: sandbox.showPreview ? "block" : "none",
               minWidth:
-                sandbox.showPreview && !sandbox.showEditor ? '100%' : 'inherit',
+                sandbox.showPreview && !sandbox.showEditor ? "100%" : "inherit"
             }}
           >
             {sandbox.showEditor && EditorPane}
@@ -257,6 +257,6 @@ class EditorPreview extends React.PureComponent<Props, $FlowFixMeState> {
   }
 }
 
-export default showAlternativeComponent(Skeleton, ['sandbox'])(
-  connect(mapStateToProps, mapDispatchToProps)(EditorPreview),
+export default showAlternativeComponent(Skeleton, ["sandbox"])(
+  connect(mapStateToProps, mapDispatchToProps)(EditorPreview)
 );

@@ -1,16 +1,16 @@
 // @flow
-import * as React from 'react';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import styled from 'styled-components';
+import * as React from "react";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import styled from "styled-components";
 
-import type { CurrentUser } from 'common/types';
-import { currentUserSelector } from 'app/store/user/selectors';
-import currentUserActionCreators from 'app/store/user/actions';
-import modalActionCreators from 'app/store/modal/actions';
-import usersActionCreators from 'app/store/entities/users/actions';
+import type { CurrentUser } from "common/types";
+import { currentUserSelector } from "app/store/user/selectors";
+import currentUserActionCreators from "app/store/user/actions";
+import modalActionCreators from "app/store/modal/actions";
+import usersActionCreators from "app/store/entities/users/actions";
 
-import Sandbox from './Sandbox';
+import Sandbox from "./Sandbox";
 
 const Padding = styled.div`
   padding: 1rem;
@@ -22,16 +22,16 @@ type Props = {
   currentUserActions: typeof currentUserActionCreators,
   modalActions: typeof modalActionCreators,
   user: CurrentUser,
-  showcaseSandboxId: string,
+  showcaseSandboxId: string
 };
 
 const mapStateToProps = state => ({
-  user: currentUserSelector(state),
+  user: currentUserSelector(state)
 });
 const mapDispatchToProps = dispatch => ({
   usersActions: bindActionCreators(usersActionCreators, dispatch),
   currentUserActions: bindActionCreators(currentUserActionCreators, dispatch),
-  modalActions: bindActionCreators(modalActionCreators, dispatch),
+  modalActions: bindActionCreators(modalActionCreators, dispatch)
 });
 class SelectSandbox extends React.PureComponent<Props> {
   componentDidMount() {
@@ -60,7 +60,7 @@ class SelectSandbox extends React.PureComponent<Props> {
               key={sandbox.id}
               sandbox={sandbox}
               setShowcasedSandbox={this.setShowcasedSandbox}
-            />,
+            />
           )}
       </div>
     );

@@ -1,9 +1,9 @@
-import React from 'react';
-import styled from 'styled-components';
-import { NavLink } from 'react-router-dom';
+import React from "react";
+import styled from "styled-components";
+import { NavLink } from "react-router-dom";
 
-import Row from '../../components/flex/Row';
-import delayEffect from '../../utils/animation/delay-effect';
+import Row from "../../components/flex/Row";
+import delayEffect from "../../utils/animation/delay-effect";
 
 const NavigationLink = styled(NavLink)`
   transition: 0.3s ease all;
@@ -21,31 +21,27 @@ const NavigationLink = styled(NavLink)`
   ${({ border }) =>
     border && `border-right: 1px solid rgba(255, 255, 255, 0.2)`};
 
-  ${delayEffect(0.2)}
-
-  &:hover {
+  ${delayEffect(0.2)} &:hover {
     color: white;
   }
 `;
 
-const CenteredRow = styled(Row)`
-  width: 100%;
-`;
+const CenteredRow = styled(Row)`width: 100%;`;
 
 export default ({
   username,
   sandboxCount,
-  likeCount,
+  likeCount
 }: {
   username: string,
   sandboxCount: number,
-  likeCount: number,
+  likeCount: number
 }) =>
   <CenteredRow alignItems="center" justifyContent="center">
     <NavigationLink
       to={`/u/${username}`}
       activeStyle={{
-        color: 'white',
+        color: "white"
       }}
       exact
       border
@@ -55,7 +51,7 @@ export default ({
     <NavigationLink
       to={`/u/${username}/sandboxes`}
       activeStyle={{
-        color: 'white',
+        color: "white"
       }}
       border
     >
@@ -64,7 +60,7 @@ export default ({
     <NavigationLink
       to={`/u/${username}/likes`}
       activeStyle={{
-        color: 'white',
+        color: "white"
       }}
     >
       LIKES ({likeCount})

@@ -1,13 +1,13 @@
-import React from 'react';
+import React from "react";
 
 type Props = {
   HeaderComponent: React.Component<any, any>,
   headerProps: ?Object,
-  children: Function,
+  children: Function
 };
 
 type State = {
-  open: boolean,
+  open: boolean
 };
 
 export default class HoverMenu extends React.PureComponent {
@@ -15,7 +15,7 @@ export default class HoverMenu extends React.PureComponent {
 
   state: State = {
     open: false,
-    clicked: false,
+    clicked: false
   };
 
   handleDocumentClick = e => {
@@ -36,17 +36,17 @@ export default class HoverMenu extends React.PureComponent {
   setOnclickListener = el => {
     this.element = el;
     if (el) {
-      el.addEventListener('click', this.handleViewClick);
+      el.addEventListener("click", this.handleViewClick);
     }
 
-    document.addEventListener('click', this.handleDocumentClick);
+    document.addEventListener("click", this.handleDocumentClick);
   };
 
   commponentWillUnmount() {
-    document.removeEventListener('click', this.handleDocumentClick);
+    document.removeEventListener("click", this.handleDocumentClick);
 
     if (this.element) {
-      this.element.removeEventListener('click', this.handleViewClick);
+      this.element.removeEventListener("click", this.handleViewClick);
     }
   }
 

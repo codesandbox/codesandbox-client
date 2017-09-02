@@ -1,7 +1,7 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
-import PatronStar from './PatronStar';
+import PatronStar from "./PatronStar";
 
 const CenteredText = styled.div`
   display: inline-flex;
@@ -27,7 +27,7 @@ type Props = {
   avatarUrl: string,
   username: string,
   subscriptionSince: ?string,
-  badge: ?Object,
+  badge: ?Object
 };
 
 export default ({ avatarUrl, username, subscriptionSince, ...props }: Props) =>
@@ -37,7 +37,7 @@ export default ({ avatarUrl, username, subscriptionSince, ...props }: Props) =>
       {username}
       {subscriptionSince &&
         <PatronStar
-          style={{ fontSize: '1.125em', marginBottom: '0.1em' }}
+          style={{ fontSize: "1.125em", marginBottom: "0.1em" }}
           subscriptionSince={subscriptionSince}
         />}
     </AuthorName>

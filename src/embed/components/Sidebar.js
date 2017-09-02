@@ -1,12 +1,12 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
-import type { Sandbox } from 'common/types';
+import type { Sandbox } from "common/types";
 
-import EditorLink from './EditorLink';
-import Files from './Files';
-import EntryContainer from '../../app/pages/Sandbox/Editor/Workspace/EntryContainer';
-import Padding from '../../app/components/spacing/Padding';
+import EditorLink from "./EditorLink";
+import Files from "./Files";
+import EntryContainer from "../../app/pages/Sandbox/Editor/Workspace/EntryContainer";
+import Padding from "../../app/components/spacing/Padding";
 
 const Container = styled.div`
   flex: 250px;
@@ -30,14 +30,14 @@ const Title = styled.h2`
 `;
 
 const Subtitle = styled.h3`
-  font-size: .875rem;
+  font-size: 0.875rem;
   margin: 0.5rem 1rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.5);
 `;
 
 const Description = styled.p`
-  font-size: .875rem;
+  font-size: 0.875rem;
   padding: 0 1rem;
 `;
 
@@ -60,15 +60,15 @@ const Version = styled.div`
 `;
 
 const Author = styled.div`
-  font-size: .875rem;
+  font-size: 0.875rem;
   margin: 0 1rem;
   margin-bottom: 1rem;
 `;
 
-const getNormalizedUrl = (url: string) => `${url.replace(/\/$/g, '')}/`;
+const getNormalizedUrl = (url: string) => `${url.replace(/\/$/g, "")}/`;
 
 function getName(resource: string) {
-  if (resource.endsWith('.css') || resource.endsWith('.js')) {
+  if (resource.endsWith(".css") || resource.endsWith(".js")) {
     return resource.match(/.*\/(.*)/)[1];
   }
 
@@ -79,7 +79,7 @@ function getName(resource: string) {
 type Props = {
   sandbox: Sandbox,
   setCurrentModule: (id: string) => void,
-  currentModule: string,
+  currentModule: string
 };
 
 export default ({ sandbox, setCurrentModule, currentModule }: Props) =>
@@ -119,7 +119,7 @@ export default ({ sandbox, setCurrentModule, currentModule }: Props) =>
           <Version>
             {sandbox.npmDependencies[dep]}
           </Version>
-        </EntryContainer>,
+        </EntryContainer>
       )}
 
       <Subtitle>External Resources</Subtitle>
@@ -128,7 +128,7 @@ export default ({ sandbox, setCurrentModule, currentModule }: Props) =>
           <a href={dep} rel="nofollow noopener noreferrer" target="_blank">
             {getName(dep)}
           </a>
-        </EntryContainer>,
+        </EntryContainer>
       )}
     </Item>
 

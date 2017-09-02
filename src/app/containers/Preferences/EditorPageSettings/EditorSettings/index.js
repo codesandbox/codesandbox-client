@@ -1,7 +1,7 @@
-import React from 'react';
+import React from "react";
 
-import Preferences from './Preferences';
-import Title from '../../MenuTitle';
+import Preferences from "./Preferences";
+import Title from "../../MenuTitle";
 
 export default () =>
   <div>

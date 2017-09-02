@@ -1,7 +1,7 @@
-import React from 'react';
-import styled, { keyframes } from 'styled-components';
-import Logo from './Logo';
-import Centered from './flex/Centered';
+import React from "react";
+import styled, { keyframes } from "styled-components";
+import Logo from "./Logo";
+import Centered from "./flex/Centered";
 
 const animation = keyframes`
   0%, 10% { transform: rotateZ(0deg); }

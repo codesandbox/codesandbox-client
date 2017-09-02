@@ -1,15 +1,15 @@
-import React from 'react';
-import styled from 'styled-components';
-import { Link } from 'react-router-dom';
-import { Highlight } from 'react-instantsearch/dom';
+import React from "react";
+import styled from "styled-components";
+import { Link } from "react-router-dom";
+import { Highlight } from "react-instantsearch/dom";
 
-import getTemplateDefinition from 'common/templates';
+import getTemplateDefinition from "common/templates";
 
-import Tags from 'app/components/sandbox/Tags';
+import Tags from "app/components/sandbox/Tags";
 
-import SandboxInfo from './SandboxInfo';
-import { sandboxUrl } from '../../../utils/url-generator';
-import Row from '../../../components/flex/Row';
+import SandboxInfo from "./SandboxInfo";
+import { sandboxUrl } from "../../../utils/url-generator";
+import Row from "../../../components/flex/Row";
 
 const Container = styled.div`
   transition: 0.3s ease all;
@@ -52,38 +52,38 @@ const Title = styled.h2`
 `;
 
 const Description = styled.p`
-  font-size: .875rem;
+  font-size: 0.875rem;
   color: rgba(255, 255, 255, 0.8);
   margin-bottom: 1.5rem;
 `;
 
 const TagContainer = styled.div`
-  font-size: .75rem;
+  font-size: 0.75rem;
   width: 30%;
 `;
 
 type Props = {
   hit: {
-    'view_count': number,
-    'title': ?string,
-    'npm_dependencies': Array<{ version: string, dependency: string }>,
-    'like_count': number,
-    'inserted_at': number,
-    'updated_at': number,
-    'git': ?{
+    view_count: number,
+    title: ?string,
+    npm_dependencies: Array<{ version: string, dependency: string }>,
+    like_count: number,
+    inserted_at: number,
+    updated_at: number,
+    git: ?{
       username: string,
       repo: string,
       commitSha: string,
-      path: string,
+      path: string
     },
-    'forked_sandbox': string,
-    'fork_count': number,
-    'external_resources': Array<string>,
-    'description': ?string,
-    'author': ?{ username: string, avatarUrl: string },
-    'objectID': string,
-    'template': string,
-  },
+    forked_sandbox: string,
+    fork_count: number,
+    external_resources: Array<string>,
+    description: ?string,
+    author: ?{ username: string, avatarUrl: string },
+    objectID: string,
+    template: string
+  }
 };
 
 export default ({ hit }: Props) =>

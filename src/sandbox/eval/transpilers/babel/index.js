@@ -1,9 +1,9 @@
 // @flow
-import BabelWorker from 'worker-loader!./babel-worker.js';
+import BabelWorker from "worker-loader!./babel-worker.js";
 
-import getBabelConfig from './babel-parser';
-import WorkerTranspiler from '../worker-transpiler';
-import { type LoaderContext } from '../../transpiled-module';
+import getBabelConfig from "./babel-parser";
+import WorkerTranspiler from "../worker-transpiler";
+import { type LoaderContext } from "../../transpiled-module";
 
 // Right now this is in a worker, but when we're going to allow custom plugins
 // we need to move this out of the worker again, because the config needs
@@ -12,7 +12,7 @@ class BabelTranspiler extends WorkerTranspiler {
   worker: Worker;
 
   constructor() {
-    super('babel-loader', BabelWorker, 2);
+    super("babel-loader", BabelWorker, 2);
   }
 
   doTranspilation(code: string, loaderContext: LoaderContext) {
@@ -26,7 +26,7 @@ class BabelTranspiler extends WorkerTranspiler {
         {
           code,
           config: babelConfig,
-          path,
+          path
         },
         loaderContext,
         (err, data) => {
@@ -37,7 +37,7 @@ class BabelTranspiler extends WorkerTranspiler {
           }
 
           return resolve(data);
-        },
+        }
       );
     });
   }

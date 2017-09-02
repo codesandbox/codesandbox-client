@@ -1,5 +1,5 @@
 {
-  "projectName": "CodeSandbox",
+  "projectName": "codesandbox-client",
   "projectOwner": "CompuIves",
   "files": [
     "README.md"
@@ -106,6 +106,25 @@
       "avatar_url": "https://avatars3.githubusercontent.com/u/5210019?v=4",
       "profile": "http://chakrihacker.github.io",
       "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "robbyoconnor",
+      "name": "Robert (Robby) O'Connor",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/23088?v=4",
+      "profile": "http://robby.oconnor.ninja",
+      "contributions": [
+        "infra"
+      ]
+    },
+    {
+      "login": "lbogdan",
+      "name": "Bogdan Luca",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/2083930?v=4",
+      "profile": "https://github.com/lbogdan",
+      "contributions": [
+        "bug",
         "code"
       ]
     }

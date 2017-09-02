@@ -1,7 +1,7 @@
-import React from 'react';
-import styled, { keyframes } from 'styled-components';
+import React from "react";
+import styled, { keyframes } from "styled-components";
 
-import Tooltip from 'app/components/Tooltip';
+import Tooltip from "app/components/Tooltip";
 
 const showAnimationKeyframes = keyframes`
   0%   { opacity: 0; transform: translateX(10px); }
@@ -65,7 +65,7 @@ const ViewIcon = styled.div`
 
   &:after {
     transition: 0.3s ease all;
-    content: "";
+    content: '';
     position: absolute;
     left: 0;
     right: 0;

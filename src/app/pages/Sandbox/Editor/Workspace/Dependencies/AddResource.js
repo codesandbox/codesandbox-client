@@ -1,23 +1,21 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
-import Button from 'app/components/buttons/Button';
-import WorkspaceInputContainer from '../WorkspaceInputContainer';
+import Button from "app/components/buttons/Button";
+import WorkspaceInputContainer from "../WorkspaceInputContainer";
 
-const ButtonContainer = styled.div`
-  margin: 0.5rem 1rem;
-`;
+const ButtonContainer = styled.div`margin: 0.5rem 1rem;`;
 
 type State = {
-  name: string,
+  name: string
 };
 
 type Props = {
-  addResource: (resource: string) => Promise<boolean>,
+  addResource: (resource: string) => Promise<boolean>
 };
 
 const initialState = {
-  name: '',
+  name: ""
 };
 
 export default class AddVersion extends React.PureComponent {
@@ -47,9 +45,9 @@ export default class AddVersion extends React.PureComponent {
 
   render() {
     const { name } = this.state;
-    const isValid = name !== '';
+    const isValid = name !== "";
     return (
-      <div style={{ position: 'relative' }}>
+      <div style={{ position: "relative" }}>
         <WorkspaceInputContainer>
           <input
             placeholder="https://cdn.com/bootstrap.css"

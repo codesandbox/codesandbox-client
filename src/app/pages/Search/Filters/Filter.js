@@ -1,7 +1,7 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
-import { RefinementList } from 'react-instantsearch/dom';
+import { RefinementList } from "react-instantsearch/dom";
 
 const Container = styled.div`
   padding: 1rem;
@@ -11,7 +11,7 @@ const Container = styled.div`
   margin-bottom: 1rem;
 
   .ais-SearchBox__wrapper {
-    margin-bottom: .5rem;
+    margin-bottom: 0.5rem;
   }
 
   .ais-SearchBox__reset {
@@ -19,7 +19,7 @@ const Container = styled.div`
   }
 
   .ais-SearchBox__input {
-    font-size: .875rem;
+    font-size: 0.875rem;
     padding-left: 2.5em;
   }
 `;
@@ -34,7 +34,7 @@ type Props = {
   title: string,
   attributeName: string,
   operator: string,
-  noSearch: ?boolean,
+  noSearch: ?boolean
 };
 
 export default ({ title, attributeName, operator, noSearch }: Props) =>

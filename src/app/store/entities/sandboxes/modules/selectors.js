@@ -1,13 +1,13 @@
 // @flow
-import type { Directory, Module } from 'common/types';
-import { createSelector } from 'reselect';
-import { values } from 'lodash';
-import resolveModule from 'common/sandbox/resolve-module';
+import type { Directory, Module } from "common/types";
+import { createSelector } from "reselect";
+import { values } from "lodash";
+import resolveModule from "common/sandbox/resolve-module";
 
 export const modulesSelector = state => state.entities.modules;
 
 export const isMainModule = (module: Module) =>
-  module.title === 'index.js' && module.directoryShortid == null;
+  module.title === "index.js" && module.directoryShortid == null;
 
 export const findMainModule = (modules: Module[]) =>
   modules.find(isMainModule) || modules[0];
@@ -15,11 +15,11 @@ export const findMainModule = (modules: Module[]) =>
 export const findCurrentModule = (
   modules: Module[],
   directories: Directory[],
-  modulePath: ?string = '',
-  mainModule: Module,
+  modulePath: ?string = "",
+  mainModule: Module
 ): Module => {
   // cleanPath, encode and replace first /
-  const cleanPath = decodeURIComponent(modulePath).replace('/', '');
+  const cleanPath = decodeURIComponent(modulePath).replace("/", "");
   let foundModule = null;
   try {
     foundModule = resolveModule(cleanPath, modules, directories);
@@ -46,14 +46,14 @@ function findByShortid(entities: Array<Module | Directory>, shortid: ?string) {
 export const getModulePath = (
   modules: Array<Module>,
   directories: Array<Directory>,
-  id: string,
+  id: string
 ) => {
   const module = findById(modules, id);
 
-  if (!module) return '';
+  if (!module) return "";
 
   let directory = findByShortid(directories, module.directoryShortid);
-  let path = '/';
+  let path = "/";
   while (directory != null) {
     path = `/${directory.title}${path}`;
     directory = findByShortid(directories, directory.directoryShortid);
@@ -67,7 +67,7 @@ export const getModulePath = (
 export const getModuleParents = (
   modules: Array<Module>,
   directories: Array<Directory>,
-  id: string,
+  id: string
 ) => {
   const module = findById(modules, id);
 
@@ -86,12 +86,12 @@ export const getModuleParents = (
 export const modulesFromSandboxSelector = createSelector(
   modulesSelector,
   (_, props) => props.sandbox.modules,
-  (modules, ids) => ids.map(id => modules[id]),
+  (modules, ids) => ids.map(id => modules[id])
 );
 
 export const modulesFromSandboxNotSavedSelector = createSelector(
   modulesFromSandboxSelector,
-  modules => modules.some(m => m.isNotSynced),
+  modules => modules.some(m => m.isNotSynced)
 );
 
 export const singleModuleSelector = createSelector(
@@ -99,8 +99,8 @@ export const singleModuleSelector = createSelector(
   (_, { sourceId, shortid, id }) => ({ id, sourceId, shortid }),
   (modules, { sourceId, id, shortid }) =>
     values(modules).find(
-      m => m.id === id || (m.sourceId === sourceId && m.shortid === shortid),
-    ),
+      m => m.id === id || (m.sourceId === sourceId && m.shortid === shortid)
+    )
 );
 
 export const moduleErrorsFromSandboxSelector = createSelector(
@@ -108,6 +108,6 @@ export const moduleErrorsFromSandboxSelector = createSelector(
   modules =>
     modules.reduce(
       (total, module) => (module.errors ? [...total, ...module.errors] : total),
-      [],
-    ),
+      []
+    )
 );

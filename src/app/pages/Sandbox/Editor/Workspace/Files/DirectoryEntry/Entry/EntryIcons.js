@@ -1,16 +1,16 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
-import ProjectIcon from 'react-icons/lib/go/file-code';
-import FunctionIcon from 'react-icons/lib/fa/code';
-import FolderIcon from 'react-icons/lib/md/keyboard-arrow-down';
-import DirectoryIcon from 'react-icons/lib/go/file-directory';
-import NotSyncedIcon from 'react-icons/lib/go/primitive-dot';
-import CSSIcon from 'react-icons/lib/fa/css3';
-import HTMLIcon from 'react-icons/lib/fa/html5';
-import ErrorIcon from 'react-icons/lib/md/error';
-import RawIcon from 'react-icons/lib/go/file-text';
-import ReactIcon from 'app/components/ReactIcon';
+import ProjectIcon from "react-icons/lib/go/file-code";
+import FunctionIcon from "react-icons/lib/fa/code";
+import FolderIcon from "react-icons/lib/md/keyboard-arrow-down";
+import DirectoryIcon from "react-icons/lib/go/file-directory";
+import NotSyncedIcon from "react-icons/lib/go/primitive-dot";
+import CSSIcon from "react-icons/lib/fa/css3";
+import HTMLIcon from "react-icons/lib/fa/html5";
+import ErrorIcon from "react-icons/lib/md/error";
+import RawIcon from "react-icons/lib/go/file-text";
+import ReactIcon from "app/components/ReactIcon";
 
 const NotSyncedIconWithMargin = styled(NotSyncedIcon)`
   margin-left: -20px;
@@ -26,7 +26,7 @@ const StyledFolderIcon = styled.span`
     margin-left: -20px;
     margin-right: 6px;
 
-    transform: rotateZ(${props => (props.isOpen ? '0deg' : '-90deg')});
+    transform: rotateZ(${props => (props.isOpen ? "0deg" : "-90deg")});
   }
 `;
 
@@ -43,17 +43,17 @@ const getIcon = (type, error, root) => {
   }
 
   switch (type) {
-    case 'react':
+    case "react":
       return <ReactIcon />;
-    case 'js':
-    case 'json':
-    case 'function':
+    case "js":
+    case "json":
+    case "function":
       return <FunctionIcon />;
-    case 'directory':
+    case "directory":
       return <DirectoryIcon />;
-    case 'css':
+    case "css":
       return <CSSIcon />;
-    case 'html':
+    case "html":
       return <HTMLIcon />;
     default:
       return <RawIcon />;
@@ -67,7 +67,7 @@ type Props = {
   isOpen?: boolean,
   onOpen: () => void,
   root: ?boolean,
-  error: boolean,
+  error: boolean
 };
 export default ({
   type,
@@ -76,11 +76,11 @@ export default ({
   hasChildren,
   isNotSynced,
   isOpen,
-  onOpen,
+  onOpen
 }: Props) =>
-  <div style={{ display: 'inline-block', verticalAlign: 'middle' }}>
+  <div style={{ display: "inline-block", verticalAlign: "middle" }}>
     {isNotSynced && <NotSyncedIconWithMargin />}
-    {type === 'directory' &&
+    {type === "directory" &&
       hasChildren &&
       <StyledFolderIcon isOpen={isOpen} onClick={onOpen}>
         <FolderIcon />

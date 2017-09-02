@@ -1,58 +1,58 @@
 // @flow
-import { createAPIActions, doRequest } from '../../api/actions';
-import { normalizeResult } from '../actions';
+import { createAPIActions, doRequest } from "../../api/actions";
+import { normalizeResult } from "../actions";
 
-import userEntity from './entity';
+import userEntity from "./entity";
 
-export const FETCH_USER_ACTIONS = createAPIActions('USERS', 'FETCH');
+export const FETCH_USER_ACTIONS = createAPIActions("USERS", "FETCH");
 export const FETCH_USER_SANDBOXES_ACTIONS = createAPIActions(
-  'USERS_SANDBOXES',
-  'FETCH',
+  "USERS_SANDBOXES",
+  "FETCH"
 );
 export const FETCH_USER_LIKED_SANDBOXES_ACTIONS = createAPIActions(
-  'USERS_LIKED_SANDBOXES',
-  'FETCH',
+  "USERS_LIKED_SANDBOXES",
+  "FETCH"
 );
-export const UPDATE_USER_ACTIONS = createAPIActions('USERS', 'UPDATE');
+export const UPDATE_USER_ACTIONS = createAPIActions("USERS", "UPDATE");
 
 const fetchUser = (username: string) => async (dispatch: Function) => {
   const { data } = await dispatch(
-    doRequest(FETCH_USER_ACTIONS, `users/${username}`),
+    doRequest(FETCH_USER_ACTIONS, `users/${username}`)
   );
 
   await dispatch(normalizeResult(userEntity, data));
 };
 
 const updateUser = (username: string, user: Object) => async (
-  dispatch: Function,
+  dispatch: Function
 ) => {
   const { data } = await dispatch(
     doRequest(UPDATE_USER_ACTIONS, `users/${username}`, {
-      method: 'PATCH',
+      method: "PATCH",
       body: {
-        user,
-      },
-    }),
+        user
+      }
+    })
   );
 
   await dispatch(normalizeResult(userEntity, data));
 };
 
 const fetchAllSandboxes = (username: string, page: number = 1) => async (
-  dispatch: Function,
+  dispatch: Function
 ) => {
   await dispatch(
     doRequest(FETCH_USER_SANDBOXES_ACTIONS, `users/${username}/sandboxes`, {
       body: {
         username,
-        page,
-      },
-    }),
+        page
+      }
+    })
   );
 };
 
 const fetchLikedSandboxes = (username: string, page: number = 1) => async (
-  dispatch: Function,
+  dispatch: Function
 ) => {
   await dispatch(
     doRequest(
@@ -61,10 +61,10 @@ const fetchLikedSandboxes = (username: string, page: number = 1) => async (
       {
         body: {
           username,
-          page,
-        },
-      },
-    ),
+          page
+        }
+      }
+    )
   );
 };
 
@@ -76,5 +76,5 @@ export default {
   updateUser,
   fetchAllSandboxes,
   setShowcasedSandboxId,
-  fetchLikedSandboxes,
+  fetchLikedSandboxes
 };

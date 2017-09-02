@@ -1,5 +1,5 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
 const Container = styled.div`
   display: flex;
@@ -15,11 +15,13 @@ const InnerContainer = styled.div`
 
 export default ({
   children,
-  width = 1280,
-}: { children: React.CElement, width: number }) => (
+  width = 1280
+}: {
+  children: React.CElement,
+  width: number
+}) =>
   <Container>
     <InnerContainer width={width}>
       {children}
     </InnerContainer>
-  </Container>
-);
+  </Container>;

@@ -1,14 +1,14 @@
-import { actions, dispatch } from 'codesandbox-api';
-import _debug from 'app/utils/debug';
-import dependenciesToQuery from './dependencies-to-query';
-import delay from '../utils/delay';
-import setScreen from '../status-screen';
+import { actions, dispatch } from "codesandbox-api";
+import _debug from "app/utils/debug";
+import dependenciesToQuery from "./dependencies-to-query";
+import delay from "../utils/delay";
+import setScreen from "../status-screen";
 
 type Dependencies = {
   [dependency: string]: string
 };
 
-const debug = _debug('cs:sandbox:packager');
+const debug = _debug("cs:sandbox:packager");
 
 function callApi(url: string) {
   return fetch(url)
@@ -24,9 +24,9 @@ function callApi(url: string) {
     .then(response => response.json());
 }
 
-export const PACKAGER_URL = 'https://webpack-dll-prod.herokuapp.com/v6';
+export const PACKAGER_URL = "https://webpack-dll-prod.herokuapp.com/v6";
 export const NEW_PACKAGER_URL =
-  'https://42qpdtykai.execute-api.eu-west-1.amazonaws.com/prod/package';
+  "https://42qpdtykai.execute-api.eu-west-1.amazonaws.com/prod/package";
 
 const RETRY_COUNT = 20;
 
@@ -56,8 +56,8 @@ async function requestPackager(query: string) {
         if (dispatch) {
           dispatch(
             actions.notifications.show(
-              'It seems like all packagers are busy, retrying in 10 seconds...',
-              'warning'
+              "It seems like all packagers are busy, retrying in 10 seconds...",
+              "warning"
             )
           );
         }
@@ -97,7 +97,7 @@ export default async function fetchDependencies(npmDependencies: Dependencies) {
       return result;
     } catch (e) {
       e.message = `Could not fetch dependencies: ${e.message}`;
-      dispatch(actions.notifications.show(e.message, 'error'));
+      dispatch(actions.notifications.show(e.message, "error"));
 
       throw e;
     }

@@ -1,16 +1,16 @@
-import { actions, dispatch } from 'codesandbox-api';
-import _debug from 'app/utils/debug';
-import dependenciesToQuery from './dependencies-to-query';
-import { PACKAGER_URL } from './';
-import delay from '../utils/delay';
-import setScreen from '../status-screen';
+import { actions, dispatch } from "codesandbox-api";
+import _debug from "app/utils/debug";
+import dependenciesToQuery from "./dependencies-to-query";
+import { PACKAGER_URL } from "./";
+import delay from "../utils/delay";
+import setScreen from "../status-screen";
 
 type Dependencies = {
-  [dependency: string]: string,
+  [dependency: string]: string
 };
 
 const RETRY_COUNT = 60;
-const debug = _debug('cs:sandbox:packager');
+const debug = _debug("cs:sandbox:packager");
 
 function callApi(url: string) {
   return fetch(url)
@@ -44,7 +44,7 @@ async function requestManifest(url) {
     } catch (e) {
       const statusCode = e.response && e.response.status;
 
-      setScreen({ type: 'loading', text: 'Bundling Dependencies...' });
+      setScreen({ type: "loading", text: "Bundling Dependencies..." });
 
       // 403 status code means the bundler is still bundling
       if (retries < RETRY_COUNT && statusCode === 403) {
@@ -53,9 +53,9 @@ async function requestManifest(url) {
       } else if (retries < RETRY_COUNT && statusCode === 500) {
         dispatch(
           actions.notifications.show(
-            'It seems like all packagers are busy, retrying in 10 seconds...',
-            'warning',
-          ),
+            "It seems like all packagers are busy, retrying in 10 seconds...",
+            "warning"
+          )
         );
 
         await delay(1000 * 2); // eslint-disable-line no-await-in-loop
@@ -87,7 +87,7 @@ export default async function fetchDependencies(npmDependencies: Dependencies) {
       return result;
     } catch (e) {
       e.message = `Could not fetch dependencies: ${e.message}`;
-      dispatch(actions.notifications.show(e.message, 'error'));
+      dispatch(actions.notifications.show(e.message, "error"));
 
       throw e;
     }

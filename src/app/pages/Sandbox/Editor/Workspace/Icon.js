@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import fadeIn from 'app/utils/animation/fade-in';
+import styled from "styled-components";
+import fadeIn from "app/utils/animation/fade-in";
 
 export const Icon = styled.div`
   position: relative;
@@ -17,5 +17,5 @@ export const IconArea = styled.div`
   right: 1rem;
   opacity: 0;
   line-height: 1;
-  ${fadeIn(0)}
+  ${fadeIn(0)};
 `;

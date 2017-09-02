@@ -1,17 +1,17 @@
 // @flow
 
-import type { SourceMap } from './utils/get-source-map';
-import { type LoaderContext } from '../transpiled-module';
+import type { SourceMap } from "./utils/get-source-map";
+import { type LoaderContext } from "../transpiled-module";
 
 type TranspilerResult = {
   transpiledCode: string,
   ast?: Object,
-  sourceMap?: SourceMap,
+  sourceMap?: SourceMap
 };
 
 export default class Transpiler {
   cachedResults: {
-    [id: string]: TranspilerResult,
+    [id: string]: TranspilerResult
   };
   cacheable: boolean;
   name: string;
@@ -29,15 +29,15 @@ export default class Transpiler {
 
   doTranspilation(
     code: string,
-    loaderContext: LoaderContext,
+    loaderContext: LoaderContext
   ): Promise<TranspilerResult> {
-    throw new Error('This is an abstract function, please override it!');
+    throw new Error("This is an abstract function, please override it!");
   }
   /* eslint-enable */
 
   transpile(
     code: string,
-    loaderContext: LoaderContext,
+    loaderContext: LoaderContext
   ): Promise<TranspilerResult> {
     // if (this.cacheable && this.cachedResults[code]) {
     //   return Promise.resolve(this.cachedResults[code]);

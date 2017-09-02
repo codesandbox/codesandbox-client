@@ -1,24 +1,24 @@
 // @flow
-import * as React from 'react';
-import { bindActionCreators } from 'redux';
-import styled, { injectGlobal } from 'styled-components';
-import { connect } from 'react-redux';
-import { spring, Motion } from 'react-motion';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import notificationActionCreators from 'app/store/notifications/actions';
-import Portal from 'app/components/Portal';
+import * as React from "react";
+import { bindActionCreators } from "redux";
+import styled, { injectGlobal } from "styled-components";
+import { connect } from "react-redux";
+import { spring, Motion } from "react-motion";
+import ReactCSSTransitionGroup from "react-addons-css-transition-group";
+import notificationActionCreators from "app/store/notifications/actions";
+import Portal from "app/components/Portal";
 
-import type { Notification } from 'common/types';
+import type { Notification } from "common/types";
 
-import NotificationComponent from './Notification';
+import NotificationComponent from "./Notification";
 
 type Props = {
   notifications: Array<Notification>,
-  notificationActions: typeof notificationActionCreators,
+  notificationActions: typeof notificationActionCreators
 };
 
 type State = {
-  hovering: boolean,
+  hovering: boolean
 };
 
 // eslint-disable-next-line
@@ -41,17 +41,17 @@ const NotificationContainer = styled.div`
 `;
 
 const mapStateToProps = state => ({
-  notifications: state.notifications,
+  notifications: state.notifications
 });
 const mapDispatchToProps = dispatch => ({
-  notificationActions: bindActionCreators(notificationActionCreators, dispatch),
+  notificationActions: bindActionCreators(notificationActionCreators, dispatch)
 });
 class Notifications extends React.PureComponent<Props, State> {
   constructor() {
     super();
 
     this.state = {
-      hovering: false,
+      hovering: false
     };
   }
 
@@ -117,7 +117,7 @@ class Notifications extends React.PureComponent<Props, State> {
                       close={() => this.closeNotification(n.id)}
                     />
                   </NotificationContainer>}
-              </Motion>,
+              </Motion>
             )}
           </ReactCSSTransitionGroup>
         </div>

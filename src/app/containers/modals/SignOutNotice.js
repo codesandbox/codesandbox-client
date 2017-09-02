@@ -1,12 +1,12 @@
-import React from 'react';
-import styled from 'styled-components';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import React from "react";
+import styled from "styled-components";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 
-import userActionCreators from 'app/store/user/actions';
-import modalActionCreators from 'app/store/modal/actions';
-import Button from '../../components/buttons/Button';
-import Row from '../../components/flex/Row';
+import userActionCreators from "app/store/user/actions";
+import modalActionCreators from "app/store/modal/actions";
+import Button from "../../components/buttons/Button";
+import Row from "../../components/flex/Row";
 
 const Container = styled.div`
   background-color: ${props => props.theme.background};
@@ -24,14 +24,14 @@ const Explanation = styled.p`
 
 const mapDispatchToProps = dispatch => ({
   userActions: bindActionCreators(userActionCreators, dispatch),
-  modalActions: bindActionCreators(modalActionCreators, dispatch),
+  modalActions: bindActionCreators(modalActionCreators, dispatch)
 });
 const SignOutNotice = ({
   userActions,
-  modalActions,
+  modalActions
 }: {
   userActions: typeof userActionCreators,
-  modalActions: typeof modalActionCreators,
+  modalActions: typeof modalActionCreators
 }) =>
   <Container>
     <Heading>You have been signed out</Heading>
@@ -45,7 +45,7 @@ const SignOutNotice = ({
     <Row justifyContent="space-around">
       <Button
         block
-        style={{ marginRight: '.5rem' }}
+        style={{ marginRight: ".5rem" }}
         red
         onClick={modalActions.closeModal}
       >
@@ -53,7 +53,7 @@ const SignOutNotice = ({
       </Button>
       <Button
         block
-        style={{ marginLeft: '.5rem' }}
+        style={{ marginLeft: ".5rem" }}
         onClick={() => userActions.signIn().then(modalActions.closeModal)}
       >
         Sign in

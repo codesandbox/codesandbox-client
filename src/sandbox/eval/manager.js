@@ -1,38 +1,46 @@
 // @flow
-import type { Module, Directory } from 'common/types';
-import { flattenDeep, uniq, values } from 'lodash';
+import type { Module, Directory } from "common/types";
+import { flattenDeep, uniq, values } from "lodash";
 
-import TranspiledModule from './transpiled-module';
-import Preset from './presets';
+import TranspiledModule from "./transpiled-module";
+import Preset from "./presets";
 import resolveModule, {
-  getModulesInDirectory,
-} from '../../common/sandbox/resolve-module';
+  getModulesInDirectory
+} from "../../common/sandbox/resolve-module";
 
 type Externals = {
-  [name: string]: string,
+  [name: string]: string
 };
 
 export default class Manager {
   id: string;
   transpiledModules: {
-    [id: string]: TranspiledModule,
+    [id: string]: TranspiledModule
   };
   preset: Preset;
   externals: Externals;
   modules: Array<Module>;
   directories: Array<Directory>;
 
+  // Mark if the manager is transpiling, because there is a chance that the
+  // manager gets concurrent render requests. When the first finishes with
+  // transpiling it will try to evaluate normally, but that's not possible
+  // since another transpilation is happening. That's why we check for this value
+  // first.
+  transpiling: boolean;
+
   constructor(
     id: string,
     modules: Array<Module>,
     directories: Array<Directory>,
-    preset: Preset,
+    preset: Preset
   ) {
     this.id = id;
     this.modules = modules;
     this.directories = directories;
     this.preset = preset;
     this.transpiledModules = {};
+    this.transpiling = false;
 
     console.log(this);
   }
@@ -41,27 +49,29 @@ export default class Manager {
     this.externals = externals;
   }
 
-  initialize() {}
-
   evaluateModule(module: Module) {
-    const transpiledModule = this.getTranspiledModule(module);
+    if (!this.transpiling) {
+      const transpiledModule = this.getTranspiledModule(module);
 
-    // Run post evaluate first
-    const exports = this.evaluateTranspiledModule(transpiledModule, []);
+      // Run post evaluate first
+      const exports = this.evaluateTranspiledModule(transpiledModule, []);
 
-    this.getTranspiledModules().forEach(t => t.postEvaluate(this));
+      this.getTranspiledModules().forEach(t => t.postEvaluate(this));
 
-    return exports;
+      return exports;
+    }
+
+    return null;
   }
 
   evaluateTranspiledModule(
     transpiledModule: TranspiledModule,
-    parentModules: Array<TranspiledModule>,
+    parentModules: Array<TranspiledModule>
   ) {
     return transpiledModule.evaluate(this, parentModules);
   }
 
-  addModule(module: Module, query: string = ''): TranspiledModule {
+  addModule(module: Module, query: string = ""): TranspiledModule {
     const transpiledModule = new TranspiledModule(module, query);
 
     this.transpiledModules[transpiledModule.getId()] = transpiledModule;
@@ -75,7 +85,7 @@ export default class Manager {
    * @param {*} query A webpack like syntax (!url-loader)
    * @param {*} string
    */
-  getTranspiledModule(module: Module, query: string = ''): TranspiledModule {
+  getTranspiledModule(module: Module, query: string = ""): TranspiledModule {
     let transpiledModule = this.transpiledModules[`${module.id}:${query}`];
 
     if (!transpiledModule) {
@@ -102,7 +112,7 @@ export default class Manager {
 
     return flattenDeep([
       transpiledModuleValues,
-      ...transpiledModuleValues.map(m => m.getChildTranspiledModules()),
+      ...transpiledModuleValues.map(m => m.getChildTranspiledModules())
     ]);
   }
 
@@ -114,7 +124,7 @@ export default class Manager {
    * Will transpile this module and all eventual children (requires) that go with it
    * @param {*} entry
    */
-  transpileModules(entry: Module): Promise<TranspiledModule> {
+  transpileModules(entry: Module) {
     const transpiledModule = this.getTranspiledModule(entry);
 
     transpiledModule.setIsEntry(true);
@@ -129,16 +139,16 @@ export default class Manager {
     const sandboxModules = this.modules.reduce(
       (prev, next) => ({
         ...prev,
-        [next.id]: next,
+        [next.id]: next
       }),
-      {},
+      {}
     );
     const transpiledModules = this.getTranspiledModules().reduce(
       (prev, next) => ({
         ...prev,
-        [next.module.id]: next.module,
+        [next.module.id]: next.module
       }),
-      {},
+      {}
     );
 
     return values({ ...sandboxModules, ...transpiledModules });
@@ -157,9 +167,9 @@ export default class Manager {
    */
   resolveTranspiledModule(
     path: string,
-    startdirectoryShortid: ?string,
+    startdirectoryShortid: ?string
   ): TranspiledModule {
-    const queryPath = path.split('!');
+    const queryPath = path.split("!");
     // pop() mutates queryPath, queryPath is now just the loaders
     const modulePath = queryPath.pop();
 
@@ -168,17 +178,17 @@ export default class Manager {
       this.getModules(),
       this.getDirectories(),
       startdirectoryShortid,
-      this.preset.ignoredExtensions,
+      this.preset.ignoredExtensions
     );
 
-    return this.getTranspiledModule(module, queryPath.join('!'));
+    return this.getTranspiledModule(module, queryPath.join("!"));
   }
 
   resolveTranspiledModulesInDirectory(
     path: string,
-    startdirectoryShortid: ?string,
+    startdirectoryShortid: ?string
   ): Array<TranspiledModule> {
-    const queryPath = path.split('!');
+    const queryPath = path.split("!");
     // pop() mutates queryPath, queryPath is now just the loaders
     const modulesPath = queryPath.pop();
 
@@ -186,11 +196,11 @@ export default class Manager {
       modulesPath,
       this.getModules(),
       this.getDirectories(),
-      startdirectoryShortid,
+      startdirectoryShortid
     );
 
     return modules.map(module =>
-      this.getTranspiledModule(module, queryPath.join('!')),
+      this.getTranspiledModule(module, queryPath.join("!"))
     );
   }
 
@@ -199,13 +209,14 @@ export default class Manager {
    * delete caches accordingly
    */
   updateData(modules: Array<Module>, directories: Array<Directory>) {
+    this.transpiling = true;
     // Create an object with mapping from modules
     const moduleObject = this.modules.reduce(
       (prev, next) => ({
         ...prev,
-        [next.id]: next,
+        [next.id]: next
       }),
-      {},
+      {}
     );
 
     const addedModules = [];
@@ -234,9 +245,6 @@ export default class Manager {
       }
     });
 
-    this.modules = modules;
-    this.directories = directories;
-
     deletedModules.forEach(m => {
       const transpiledModules = this.getTranspiledModulesByModule(m);
 
@@ -258,12 +266,27 @@ export default class Manager {
       flattenDeep([
         modulesToUpdate.map(m => this.getTranspiledModulesByModule(m)),
         // All modules with errors
-        this.getTranspiledModules().filter(t => t.errors.length > 0),
-      ]),
+        this.getTranspiledModules().filter(t => t.errors.length > 0)
+      ])
     );
 
     return Promise.all(
-      transpiledModulesToUpdate.map(tModule => tModule.transpile(this)),
-    );
+      transpiledModulesToUpdate.map(tModule => tModule.transpile(this))
+    )
+      .then(x => {
+        this.modules = modules;
+        this.directories = directories;
+        this.transpiling = false;
+
+        return x;
+      })
+      .catch(e => {
+        // Also set new module info for a catch
+        this.modules = modules;
+        this.directories = directories;
+        this.transpiling = false;
+
+        throw e;
+      });
   }
 }

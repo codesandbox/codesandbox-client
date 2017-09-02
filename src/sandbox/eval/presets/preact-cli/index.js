@@ -1,25 +1,25 @@
-import babelTranspiler from '../../transpilers/babel';
-import jsonTranspiler from '../../transpilers/json';
-import stylesTranspiler from '../../transpilers/css';
-import sassTranspiler from '../../transpilers/sass';
-import rawTranspiler from '../../transpilers/raw';
-import stylusTranspiler from '../../transpilers/stylus';
-import lessTranspiler from '../../transpilers/less';
+import babelTranspiler from "../../transpilers/babel";
+import jsonTranspiler from "../../transpilers/json";
+import stylesTranspiler from "../../transpilers/css";
+import sassTranspiler from "../../transpilers/sass";
+import rawTranspiler from "../../transpilers/raw";
+import stylusTranspiler from "../../transpilers/stylus";
+import lessTranspiler from "../../transpilers/less";
 
-import asyncTranspiler from './transpilers/async';
+import asyncTranspiler from "./transpilers/async";
 
-import Preset from '../';
+import Preset from "../";
 
 const preactPreset = new Preset(
-  'preact-cli',
-  ['js', 'jsx', 'ts', 'tsx', 'json', 'less', 'scss', 'sass', 'styl', 'css'],
+  "preact-cli",
+  ["js", "jsx", "ts", "tsx", "json", "less", "scss", "sass", "styl", "css"],
   {
-    preact$: 'preact',
+    preact$: "preact",
     // preact-compat aliases for supporting React dependencies:
-    react: 'preact-compat',
-    'react-dom': 'preact-compat',
-    'create-react-class': 'preact-compat/lib/create-react-class',
-    'react-addons-css-transition-group': 'preact-css-transition-group'
+    react: "preact-compat",
+    "react-dom": "preact-compat",
+    "create-react-class": "preact-compat/lib/create-react-class",
+    "react-addons-css-transition-group": "preact-css-transition-group"
   }
 );
 
@@ -30,19 +30,19 @@ preactPreset.registerTranspiler(module => /\.jsx?$/.test(module.title), [
       presets: [
         // babel preset env starts with latest, then drops rules.
         // We don't have env, so we just support latest
-        'latest',
-        'stage-1'
+        "latest",
+        "stage-1"
       ],
       plugins: [
-        'transform-object-assign',
-        'transform-decorators-legacy',
-        ['transform-react-jsx', { pragma: 'h' }],
+        "transform-object-assign",
+        "transform-decorators-legacy",
+        ["transform-react-jsx", { pragma: "h" }],
         [
-          'jsx-pragmatic',
+          "jsx-pragmatic",
           {
-            module: 'preact',
-            export: 'h',
-            import: 'h'
+            module: "preact",
+            export: "h",
+            import: "h"
           }
         ]
       ]

@@ -1,9 +1,9 @@
-import { type LoaderContext } from '../../../../transpiled-module';
+import { type LoaderContext } from "../../../../transpiled-module";
 // vue compiler module for transforming `<tag>:<attribute>` to `require`
 
 var defaultOptions = {
-  img: 'src',
-  image: 'xlink:href',
+  img: "src",
+  image: "xlink:href"
 };
 
 export default (userOptions, loaderContext: LoaderContext) => {
@@ -14,7 +14,7 @@ export default (userOptions, loaderContext: LoaderContext) => {
   return {
     postTransformNode: node => {
       transform(node, options, loaderContext);
-    },
+    }
   };
 };
 
@@ -22,11 +22,11 @@ function transform(node, options, loaderContext: LoaderContext) {
   for (var tag in options) {
     if (node.tag === tag && node.attrs) {
       var attributes = options[tag];
-      if (typeof attributes === 'string') {
+      if (typeof attributes === "string") {
         node.attrs.some(attr => rewrite(attr, attributes, loaderContext));
       } else if (Array.isArray(attributes)) {
         attributes.forEach(item =>
-          node.attrs.some(attr => rewrite(attr, item, loaderContext)),
+          node.attrs.some(attr => rewrite(attr, item, loaderContext))
         );
       }
     }
@@ -42,8 +42,8 @@ function rewrite(attr, name, loaderContext: LoaderContext) {
       return;
     }
     var firstChar = value.charAt(1);
-    if (firstChar === '.' || firstChar === '~') {
-      if (firstChar === '~') {
+    if (firstChar === "." || firstChar === "~") {
+      if (firstChar === "~") {
         value = '"' + value.slice(2);
       }
       // get dependency the quotes

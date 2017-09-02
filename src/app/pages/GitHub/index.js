@@ -1,16 +1,16 @@
 // @flow
-import * as React from 'react';
-import styled from 'styled-components';
+import * as React from "react";
+import styled from "styled-components";
 
-import Navigation from 'app/containers/Navigation';
-import Centered from 'app/components/flex/Centered';
-import Title from 'app/components/text/Title';
-import SubTitle from 'app/components/text/SubTitle';
-import MaxWidth from 'app/components/flex/MaxWidth';
-import Margin from 'app/components/spacing/Margin';
-import Input from 'app/components/Input';
-import Button from 'app/components/buttons/Button';
-import { gitHubToSandboxUrl, protocolAndHost } from 'app/utils/url-generator';
+import Navigation from "app/containers/Navigation";
+import Centered from "app/components/flex/Centered";
+import Title from "app/components/text/Title";
+import SubTitle from "app/components/text/SubTitle";
+import MaxWidth from "app/components/flex/MaxWidth";
+import Margin from "app/components/spacing/Margin";
+import Input from "app/components/Input";
+import Button from "app/components/buttons/Button";
+import { gitHubToSandboxUrl, protocolAndHost } from "app/utils/url-generator";
 
 const Container = styled.div`
   height: 100%;
@@ -54,15 +54,15 @@ const getFullGitHubUrl = url =>
 
 export default class GitHub extends React.PureComponent<{}, State> {
   state: State = {
-    url: '',
-    transformedUrl: '',
+    url: "",
+    transformedUrl: "",
     error: null
   };
 
   updateUrl = e => {
     const url = e.target.value;
 
-    if (!url.includes('github.com')) {
+    if (!url.includes("github.com")) {
       this.setState({
         url,
         error: "The URL should contain from 'github.com'."

@@ -1,11 +1,11 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
-import Button from 'app/components/buttons/Button';
+import Button from "app/components/buttons/Button";
 
-import WorkspaceInputContainer from '../WorkspaceInputContainer';
+import WorkspaceInputContainer from "../WorkspaceInputContainer";
 
-import WorkspaceSubtitle from '../WorkspaceSubtitle';
+import WorkspaceSubtitle from "../WorkspaceSubtitle";
 
 type Props = {
   id: string,
@@ -13,7 +13,7 @@ type Props = {
   newSandboxUrl: () => void,
   setSandboxPrivacy: (id: string, privacy: number) => void,
   isPatron: boolean,
-  privacy: 0 | 1 | 2,
+  privacy: 0 | 1 | 2
 };
 
 const PrivacySelect = styled.select`
@@ -31,11 +31,11 @@ const PrivacySelect = styled.select`
 export default class SandboxSettings extends React.PureComponent {
   props: Props;
   state = {
-    loading: false,
+    loading: false
   };
 
   handleDeleteSandbox = async () => {
-    const really = confirm('Are you sure you want to delete this sandbox?'); // TODO: confirm???
+    const really = confirm("Are you sure you want to delete this sandbox?"); // TODO: confirm???
     if (really) {
       await this.props.deleteSandbox(this.props.id);
       await this.props.newSandboxUrl();
@@ -82,8 +82,8 @@ export default class SandboxSettings extends React.PureComponent {
             small
             block
             style={{
-              margin: '0.5rem 0.25rem',
-              boxSizing: 'border-box',
+              margin: "0.5rem 0.25rem",
+              boxSizing: "border-box"
             }}
             onClick={this.handleDeleteSandbox}
           >

@@ -1,4 +1,4 @@
-import DependencyNotFoundError from '../../errors/dependency-not-found-error';
+import DependencyNotFoundError from "../../errors/dependency-not-found-error";
 
 /**
  * Converts a dependency string to an actual dependency
@@ -9,7 +9,7 @@ import DependencyNotFoundError from '../../errors/dependency-not-found-error';
  */
 export default function getDependency(
   dependencyPath: string,
-  externals: { [key: string]: string },
+  externals: { [key: string]: string }
 ) {
   const dependencyModule =
     externals[dependencyPath] || externals[`${dependencyPath}.js`];

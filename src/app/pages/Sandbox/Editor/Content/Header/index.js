@@ -1,38 +1,38 @@
 // @flow
-import * as React from 'react';
-import styled from 'styled-components';
-import Media from 'react-media';
+import * as React from "react";
+import styled from "styled-components";
+import Media from "react-media";
 
-import Save from 'react-icons/lib/md/save';
-import Fork from 'react-icons/lib/go/repo-forked';
-import Download from 'react-icons/lib/go/cloud-download';
-import GithubIcon from 'react-icons/lib/go/mark-github';
-import ChevronLeft from 'react-icons/lib/md/chevron-left';
-import HeartIcon from 'react-icons/lib/fa/heart-o';
-import FullHeartIcon from 'react-icons/lib/fa/heart';
-import TwitterIcon from 'react-icons/lib/fa/twitter';
-import SearchIcon from 'react-icons/lib/go/search';
-import SettingsIcon from 'react-icons/lib/md/settings';
-import { Tooltip } from 'react-tippy';
+import Save from "react-icons/lib/md/save";
+import Fork from "react-icons/lib/go/repo-forked";
+import Download from "react-icons/lib/go/cloud-download";
+import GithubIcon from "react-icons/lib/go/mark-github";
+import ChevronLeft from "react-icons/lib/md/chevron-left";
+import HeartIcon from "react-icons/lib/fa/heart-o";
+import FullHeartIcon from "react-icons/lib/fa/heart";
+import TwitterIcon from "react-icons/lib/fa/twitter";
+import SearchIcon from "react-icons/lib/go/search";
+import SettingsIcon from "react-icons/lib/md/settings";
+import { Tooltip } from "react-tippy";
 
-import type { Sandbox, CurrentUser } from 'common/types';
-import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
-import userActionCreators from 'app/store/user/actions';
-import modalActionCreators from 'app/store/modal/actions';
-import { searchUrl, patronUrl } from 'app/utils/url-generator';
-import ModeIcons from 'app/components/sandbox/ModeIcons';
+import type { Sandbox, CurrentUser } from "common/types";
+import sandboxActionCreators from "app/store/entities/sandboxes/actions";
+import userActionCreators from "app/store/user/actions";
+import modalActionCreators from "app/store/modal/actions";
+import { searchUrl, patronUrl } from "app/utils/url-generator";
+import ModeIcons from "app/components/sandbox/ModeIcons";
 
 // $FlowIssue
-import PatronBadge from '-!svg-react-loader!app/utils/badges/svg/patron-4.svg'; // eslint-disable-line import/no-webpack-loader-syntax
-import Margin from 'app/components/spacing/Margin';
-import HeaderSearchBar from 'app/components/HeaderSearchBar';
-import UserMenu from 'app/containers/UserMenu';
-import Preferences from 'app/containers/Preferences';
+import PatronBadge from "-!svg-react-loader!app/utils/badges/svg/patron-4.svg"; // eslint-disable-line import/no-webpack-loader-syntax
+import Margin from "app/components/spacing/Margin";
+import HeaderSearchBar from "app/components/HeaderSearchBar";
+import UserMenu from "app/containers/UserMenu";
+import Preferences from "app/containers/Preferences";
 
-import Action from './Action';
-import NewSandboxAction from './NewSandboxAction';
-import FeedbackView from './FeedbackView';
-import ShareView from './ShareView';
+import Action from "./Action";
+import NewSandboxAction from "./NewSandboxAction";
+import FeedbackView from "./FeedbackView";
+import ShareView from "./ShareView";
 
 const Container = styled.div`
   display: flex;
@@ -77,12 +77,12 @@ const Chevron = styled.div`
     cursor: pointer;
     &:hover {
       transform: rotateZ(
-        ${props => (props.workspaceHidden ? '135deg' : '45deg')}
+        ${props => (props.workspaceHidden ? "135deg" : "45deg")}
       );
       color: white;
     }
 
-    transform: rotateZ(${props => (props.workspaceHidden ? '180deg' : '0')});
+    transform: rotateZ(${props => (props.workspaceHidden ? "180deg" : "0")});
   }
 `;
 
@@ -94,7 +94,7 @@ type Props = {
   userActions: typeof userActionCreators,
   modalActions: typeof modalActionCreators,
   user: CurrentUser,
-  canSave: boolean,
+  canSave: boolean
 };
 
 export default class Header extends React.PureComponent<Props> {
@@ -112,7 +112,7 @@ export default class Header extends React.PureComponent<Props> {
     const { sandbox, sandboxActions } = this.props;
 
     const shouldFork = sandbox.owned
-      ? confirm('Do you want to fork your own sandbox?')
+      ? confirm("Do you want to fork your own sandbox?")
       : true;
     if (shouldFork) {
       sandboxActions.forkSandbox(sandbox.id);
@@ -147,7 +147,7 @@ export default class Header extends React.PureComponent<Props> {
   openPreferences = () => {
     this.props.modalActions.openModal({
       width: 900,
-      Body: <Preferences />,
+      Body: <Preferences />
     });
   };
 
@@ -158,7 +158,7 @@ export default class Header extends React.PureComponent<Props> {
       user,
       toggleWorkspace,
       workspaceHidden,
-      canSave,
+      canSave
     } = this.props;
 
     return (
@@ -174,7 +174,7 @@ export default class Header extends React.PureComponent<Props> {
         />
         <Left>
           <Tooltip
-            title={workspaceHidden ? 'Open sidebar' : 'Collapse sidebar'}
+            title={workspaceHidden ? "Open sidebar" : "Collapse sidebar"}
           >
             <Chevron
               workspaceHidden={workspaceHidden}
@@ -200,7 +200,7 @@ export default class Header extends React.PureComponent<Props> {
           <Action onClick={this.forkSandbox} title="Fork" Icon={Fork} />
           <Action
             onClick={canSave && this.massUpdateModules}
-            placeholder={canSave ? false : 'All modules are saved'}
+            placeholder={canSave ? false : "All modules are saved"}
             title="Save"
             Icon={Save}
           />
@@ -217,7 +217,7 @@ export default class Header extends React.PureComponent<Props> {
                     Icon={SearchIcon}
                     tooltip="Search"
                   />
-                : <div style={{ marginRight: '0.5rem', fontSize: '.875rem' }}>
+                : <div style={{ marginRight: "0.5rem", fontSize: ".875rem" }}>
                     <HeaderSearchBar />
                   </div>}
           </Media>
@@ -231,7 +231,7 @@ export default class Header extends React.PureComponent<Props> {
                 iconProps={{
                   width: 16,
                   height: 32,
-                  transform: 'scale(1.5, 1.5)',
+                  transform: "scale(1.5, 1.5)"
                 }}
               />)}
           <Action
@@ -253,12 +253,12 @@ export default class Header extends React.PureComponent<Props> {
           <Margin
             style={{
               zIndex: 20,
-              height: '100%',
+              height: "100%"
             }}
             left={1}
           >
             {user.jwt
-              ? <div style={{ fontSize: '.875rem', margin: '6px 0.5rem' }}>
+              ? <div style={{ fontSize: ".875rem", margin: "6px 0.5rem" }}>
                   <UserMenu small />
                 </div>
               : <Action

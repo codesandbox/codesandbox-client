@@ -1,14 +1,14 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import styled, { injectGlobal } from 'styled-components';
-import { bindActionCreators } from 'redux';
-import Modal from 'react-modal';
-import type { Modal as ModalType } from 'common/types';
+import React from "react";
+import { connect } from "react-redux";
+import styled, { injectGlobal } from "styled-components";
+import { bindActionCreators } from "redux";
+import Modal from "react-modal";
+import type { Modal as ModalType } from "common/types";
 
-import { modalSelector } from 'app/store/modal/selectors';
-import modalActionCreators from 'app/store/modal/actions';
+import { modalSelector } from "app/store/modal/selectors";
+import modalActionCreators from "app/store/modal/actions";
 
-const appElement = document.getElementById('modal');
+const appElement = document.getElementById("modal");
 Modal.setAppElement(appElement);
 
 const CLOSE_TIMEOUT_MS = 300;
@@ -60,7 +60,7 @@ injectGlobal`
 
 type Props = {
   modalActions: typeof modalActionCreators,
-  modal: ModalType,
+  modal: ModalType
 };
 
 const BaseModal = styled.div`
@@ -83,10 +83,10 @@ const ModalBody = styled.div`
 `;
 
 const mapStateToProps = state => ({
-  modal: modalSelector(state),
+  modal: modalSelector(state)
 });
 const mapDispatchToProps = dispatch => ({
-  modalActions: bindActionCreators(modalActionCreators, dispatch),
+  modalActions: bindActionCreators(modalActionCreators, dispatch)
 });
 class ModalContainer extends React.PureComponent {
   props: Props;
@@ -98,13 +98,13 @@ class ModalContainer extends React.PureComponent {
 
   getStyles = (width = 400, top = 20) => ({
     overlay: {
-      backgroundColor: 'rgba(0, 0, 0, 0.75)',
-      overflowY: 'auto',
-      zIndex: 20,
+      backgroundColor: "rgba(0, 0, 0, 0.75)",
+      overflowY: "auto",
+      zIndex: 20
     },
     content: {
-      position: 'relative',
-      overflow: 'hidden',
+      position: "relative",
+      overflow: "hidden",
       padding: 0,
       maxWidth: width,
       top: `${top}vh`,
@@ -112,9 +112,9 @@ class ModalContainer extends React.PureComponent {
       left: 0,
       right: 0,
       margin: `0 auto ${top}vh`,
-      border: 'none',
-      borderRadius: '4px',
-    },
+      border: "none",
+      borderRadius: "4px"
+    }
   });
 
   render() {
@@ -124,7 +124,7 @@ class ModalContainer extends React.PureComponent {
       <Modal
         isOpen={modal.open}
         onRequestClose={this.closeModal}
-        contentLabel={modal.title || 'Modal'}
+        contentLabel={modal.title || "Modal"}
         style={this.getStyles(modal.width, modal.top)}
         closeTimeoutMS={CLOSE_TIMEOUT_MS}
       >

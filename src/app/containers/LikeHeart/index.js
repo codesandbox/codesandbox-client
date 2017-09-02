@@ -1,12 +1,12 @@
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import { createSelector } from 'reselect';
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { createSelector } from "reselect";
 
-import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
-import { loggedInSelector } from 'app/store/user/selectors';
-import { singleSandboxSelector } from 'app/store/entities/sandboxes/selectors';
+import sandboxActionCreators from "app/store/entities/sandboxes/actions";
+import { loggedInSelector } from "app/store/user/selectors";
+import { singleSandboxSelector } from "app/store/entities/sandboxes/selectors";
 
-import LikeHeart from './LikeHeart';
+import LikeHeart from "./LikeHeart";
 
 const mapStateToProps = createSelector(
   loggedInSelector,
@@ -14,15 +14,15 @@ const mapStateToProps = createSelector(
   (loggedIn, sandbox) => ({
     loggedIn,
     sandboxId: sandbox.id,
-    isLiked: sandbox.userLiked,
-  }),
+    isLiked: sandbox.userLiked
+  })
 );
 const mapDispatchToProps = dispatch => ({
   likeSandbox: bindActionCreators(sandboxActionCreators.likeSandbox, dispatch),
   unLikeSandbox: bindActionCreators(
     sandboxActionCreators.unLikeSandbox,
-    dispatch,
-  ),
+    dispatch
+  )
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(LikeHeart);

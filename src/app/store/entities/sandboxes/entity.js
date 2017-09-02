@@ -1,17 +1,17 @@
 // @flow
-import { schema } from 'normalizr';
-import { getSandboxOptions } from 'common/url';
-import moduleEntity from './modules/entity';
-import directoryEntity from './directories/entity';
-import userEntity from '../users/entity';
+import { schema } from "normalizr";
+import { getSandboxOptions } from "common/url";
+import moduleEntity from "./modules/entity";
+import directoryEntity from "./directories/entity";
+import userEntity from "../users/entity";
 
 export default new schema.Entity(
-  'sandboxes',
+  "sandboxes",
   {
     modules: [moduleEntity],
     directories: [directoryEntity],
     currentModule: moduleEntity,
-    author: userEntity,
+    author: userEntity
   },
   {
     processStrategy: sandbox => {
@@ -20,7 +20,7 @@ export default new schema.Entity(
         initialPath,
         isInProjectView,
         isEditorScreen,
-        isPreviewScreen,
+        isPreviewScreen
       } = getSandboxOptions(document.location.href);
 
       return {
@@ -30,8 +30,8 @@ export default new schema.Entity(
         showPreview: !isEditorScreen,
         currentModule,
         initialPath,
-        forcedRenders: 0, // used to force renders
+        forcedRenders: 0 // used to force renders
       };
-    },
-  },
+    }
+  }
 );

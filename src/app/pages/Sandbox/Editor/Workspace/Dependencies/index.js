@@ -1,28 +1,28 @@
 // @flow
 
-import * as React from 'react';
-import styled from 'styled-components';
+import * as React from "react";
+import styled from "styled-components";
 
-import Margin from 'app/components/spacing/Margin';
-import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
+import Margin from "app/components/spacing/Margin";
+import sandboxActionCreators from "app/store/entities/sandboxes/actions";
 
-import WorkspaceSubtitle from '../WorkspaceSubtitle';
+import WorkspaceSubtitle from "../WorkspaceSubtitle";
 
-import AddVersion from './AddVersion';
-import VersionEntry from './VersionEntry';
-import AddResource from './AddResource';
-import ExternalResource from './ExternalResource';
+import AddVersion from "./AddVersion";
+import VersionEntry from "./VersionEntry";
+import AddResource from "./AddResource";
+import ExternalResource from "./ExternalResource";
 
 type Props = {
   sandboxId: string,
   npmDependencies: { [dep: string]: string },
   externalResources: Array<string>,
   sandboxActions: typeof sandboxActionCreators,
-  processing: boolean,
+  processing: boolean
 };
 
 type State = {
-  processing: boolean,
+  processing: boolean
 };
 
 const Overlay = styled.div`
@@ -42,15 +42,15 @@ const Overlay = styled.div`
 
 export default class Dependencies extends React.PureComponent<Props, State> {
   state = {
-    processing: false,
+    processing: false
   };
 
   addDependency = async (name: string, version: ?string): Promise<void> => {
     const { sandboxId, sandboxActions } = this.props;
-    const realVersion = version || 'latest';
+    const realVersion = version || "latest";
     const realName = name.toLowerCase();
     this.setState({
-      processing: true,
+      processing: true
     });
     try {
       await sandboxActions.addNPMDependency(sandboxId, realName, realVersion);
@@ -58,14 +58,14 @@ export default class Dependencies extends React.PureComponent<Props, State> {
       console.error(e);
     }
     this.setState({
-      processing: false,
+      processing: false
     });
   };
 
   addResource = async (resource: string) => {
     const { sandboxId, sandboxActions } = this.props;
     this.setState({
-      processing: true,
+      processing: true
     });
     try {
       await sandboxActions.addExternalResource(sandboxId, resource);
@@ -73,14 +73,14 @@ export default class Dependencies extends React.PureComponent<Props, State> {
       console.error(e);
     }
     this.setState({
-      processing: false,
+      processing: false
     });
   };
 
   removeDependency = async (name: string) => {
     const { sandboxId, sandboxActions } = this.props;
     this.setState({
-      processing: true,
+      processing: true
     });
     try {
       await sandboxActions.removeNPMDependency(sandboxId, name);
@@ -88,14 +88,14 @@ export default class Dependencies extends React.PureComponent<Props, State> {
       console.error(e);
     }
     this.setState({
-      processing: false,
+      processing: false
     });
   };
 
   removeResource = async (resource: string) => {
     const { sandboxId, sandboxActions } = this.props;
     this.setState({
-      processing: true,
+      processing: true
     });
     try {
       await sandboxActions.removeExternalResource(sandboxId, resource);
@@ -103,7 +103,7 @@ export default class Dependencies extends React.PureComponent<Props, State> {
       console.error(e);
     }
     this.setState({
-      processing: false,
+      processing: false
     });
   };
 
@@ -111,7 +111,7 @@ export default class Dependencies extends React.PureComponent<Props, State> {
     const {
       npmDependencies = {},
       externalResources = [],
-      processing: fetchingDependencies,
+      processing: fetchingDependencies
     } = this.props;
     const processing = fetchingDependencies || this.state.processing;
 
@@ -132,7 +132,7 @@ export default class Dependencies extends React.PureComponent<Props, State> {
                 dependency={dep}
                 onRemove={this.removeDependency}
                 onRefresh={this.addDependency}
-              />,
+              />
             )}
           <AddVersion
             existingDependencies={Object.keys(npmDependencies)}
@@ -148,7 +148,7 @@ export default class Dependencies extends React.PureComponent<Props, State> {
                 key={resource}
                 resource={resource}
                 removeResource={this.removeResource}
-              />,
+              />
             )}
           <AddResource addResource={this.addResource} />
         </div>

@@ -1,8 +1,8 @@
 // @flow
-import { dispatch, actions } from 'codesandbox-api';
+import { dispatch, actions } from "codesandbox-api";
 
-import type { ErrorRecord } from '../react-error-overlay/utils/errorRegister';
-import { getCurrentManager } from '../';
+import type { ErrorRecord } from "../react-error-overlay/utils/errorRegister";
+import { getCurrentManager } from "../";
 
 function buildErrorMessage(e) {
   const title = e.name;
@@ -42,7 +42,7 @@ function buildErrorMessage(e) {
     line: parseInt(line, 10),
     column: parseInt(column, 10),
     payload: e.payload || {},
-    severity: e.severity || 'error',
+    severity: e.severity || "error"
   };
 }
 
@@ -68,15 +68,15 @@ function buildDynamicError(ref: ErrorRecord) {
     if (tModule) {
       const module = tModule.module;
       return {
-        type: 'action',
-        action: 'show-error',
+        type: "action",
+        action: "show-error",
         moduleId: module.id,
         title: ref.error.name,
         message: ref.error.message,
         line: relevantFrame._originalLineNumber,
         column: relevantFrame._originalColumnNumber,
         payload: {},
-        severity: 'error',
+        severity: "error"
       };
     }
   } else {
@@ -86,8 +86,8 @@ function buildDynamicError(ref: ErrorRecord) {
     if (module) {
       const newError = {
         ...buildErrorMessage(error),
-        type: 'action',
-        action: 'show-error',
+        type: "action",
+        action: "show-error"
       };
 
       return newError;
@@ -106,8 +106,8 @@ export default function showError(ref: ErrorRecord) {
         line: errorToSend.line,
         column: errorToSend.column,
         moduleId: errorToSend.moduleId,
-        payload: errorToSend.payload,
-      }),
+        payload: errorToSend.payload
+      })
     );
   }
 }

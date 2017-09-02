@@ -1,21 +1,18 @@
 /* eslint-disable */
-process.env.NODE_ENV = 'development';
+process.env.NODE_ENV = "development";
 
-var express = require('express');
-var path = require('path');
-var chalk = require('chalk');
-var webpack = require('webpack');
-var WebpackDevServer = require('webpack-dev-server');
-var historyApiFallback = require('connect-history-api-fallback');
-var execSync = require('child_process').execSync;
-var opn = require('opn');
-var http = require('http');
-var proxy = require('http-proxy-middleware');
-var httpProxy = require('http-proxy');
-var prompt = require('./utils/prompt');
-var config = require('../config/webpack.dev');
-var paths = require('../config/paths');
-var env = require('../config/env');
+var express = require("express");
+var chalk = require("chalk");
+var webpack = require("webpack");
+var WebpackDevServer = require("webpack-dev-server");
+var historyApiFallback = require("connect-history-api-fallback");
+var execSync = require("child_process").execSync;
+var opn = require("opn");
+var http = require("http");
+var proxy = require("http-proxy-middleware");
+var httpProxy = require("http-proxy");
+var config = require("../config/webpack.dev");
+var paths = require("../config/paths");
 
 // Tools like Cloud9 rely on this.
 var DEFAULT_PORT = process.env.PORT || 3000;
@@ -25,7 +22,7 @@ var handleCompile;
 // Some custom utilities to prettify Webpack output.
 // This is a little hacky.
 // It would be easier if webpack provided a rich error object.
-var friendlySyntaxErrorLabel = 'Syntax error:';
+var friendlySyntaxErrorLabel = "Syntax error:";
 function isLikelyASyntaxError(message) {
   return message.indexOf(friendlySyntaxErrorLabel) !== -1;
 }
@@ -35,25 +32,25 @@ function formatMessage(message) {
       // Make some common errors shorter:
       .replace(
         // Babel syntax error
-        'Module build failed: SyntaxError:',
+        "Module build failed: SyntaxError:",
         friendlySyntaxErrorLabel
       )
       .replace(
         // Webpack file not found error
         /Module not found: Error: Cannot resolve 'file' or 'directory'/,
-        'Module not found:'
+        "Module not found:"
       )
       // Internal stacks are generally useless so we strip them
-      .replace(/^\s*at\s.*:\d+:\d+[\s\)]*\n/gm, '') // at ... ...:x:y
+      .replace(/^\s*at\s.*:\d+:\d+[\s\)]*\n/gm, "") // at ... ...:x:y
       // Webpack loader names obscure CSS filenames
-      .replace('./~/css-loader!./~/postcss-loader!', '')
+      .replace("./~/css-loader!./~/postcss-loader!", "")
   );
 }
 
 function clearConsole() {
   // This seems to work best on Windows and other systems.
   // The intention is to clear the output so you can focus on most recent build.
-  process.stdout.write('\x1bc');
+  process.stdout.write("\x1bc");
 }
 
 function setupCompiler(port, protocol) {
@@ -65,27 +62,27 @@ function setupCompiler(port, protocol) {
   // recompiling a bundle. WebpackDevServer takes care to pause serving the
   // bundle, so if you refresh, it'll wait instead of serving the old one.
   // "invalid" is short for "bundle invalidated", it doesn't imply any errors.
-  compiler.plugin('invalid', function() {
+  compiler.plugin("invalid", function() {
     clearConsole();
-    console.log('Compiling...');
+    console.log("Compiling...");
   });
 
   // "done" event fires when Webpack has finished recompiling the bundle.
   // Whether or not you have warnings or errors, you will get this event.
-  compiler.plugin('done', stats => {
+  compiler.plugin("done", stats => {
     clearConsole();
     const hasErrors = stats.hasErrors();
     const hasWarnings = stats.hasWarnings();
     if (!hasErrors && !hasWarnings) {
-      console.log(chalk.green('Compiled successfully!'));
+      console.log(chalk.green("Compiled successfully!"));
       console.log();
-      console.log('The app is running at:');
+      console.log("The app is running at:");
       console.log();
-      console.log('  ' + chalk.cyan(protocol + '://localhost:' + port + '/'));
+      console.log("  " + chalk.cyan(protocol + "://localhost:" + port + "/"));
       console.log();
-      console.log('Note that the development build is not optimized.');
+      console.log("Note that the development build is not optimized.");
       console.log(
-        'To create a production build, use ' + chalk.cyan('npm run build') + '.'
+        "To create a production build, use " + chalk.cyan("npm run build") + "."
       );
       console.log();
       return;
@@ -98,13 +95,13 @@ function setupCompiler(port, protocol) {
     // https://github.com/facebookincubator/create-react-app/issues/401#issuecomment-238291901
     var json = stats.toJson({}, true);
     var formattedErrors = json.errors.map(
-      message => 'Error in ' + formatMessage(message)
+      message => "Error in " + formatMessage(message)
     );
     var formattedWarnings = json.warnings.map(
-      message => 'Warning in ' + formatMessage(message)
+      message => "Warning in " + formatMessage(message)
     );
     if (hasErrors) {
-      console.log(chalk.red('Failed to compile.'));
+      console.log(chalk.red("Failed to compile."));
       console.log();
       if (formattedErrors.some(isLikelyASyntaxError)) {
         // If there are any syntax errors, show just them.
@@ -120,38 +117,38 @@ function setupCompiler(port, protocol) {
       return;
     }
     if (hasWarnings) {
-      console.log(chalk.yellow('Compiled with warnings.'));
+      console.log(chalk.yellow("Compiled with warnings."));
       console.log();
       formattedWarnings.forEach(message => {
         console.log(message);
         console.log();
       });
       // Teach some ESLint tricks.
-      console.log('You may use special comments to disable some warnings.');
+      console.log("You may use special comments to disable some warnings.");
       console.log(
-        'Use ' +
-          chalk.yellow('// eslint-disable-next-line') +
-          ' to ignore the next line.'
+        "Use " +
+          chalk.yellow("// eslint-disable-next-line") +
+          " to ignore the next line."
       );
       console.log(
-        'Use ' +
-          chalk.yellow('/* eslint-disable */') +
-          ' to ignore all warnings in a file.'
+        "Use " +
+          chalk.yellow("/* eslint-disable */") +
+          " to ignore all warnings in a file."
       );
     }
   });
 }
 
 function openBrowser(port, protocol) {
-  const url = protocol + '://localhost:' + port + '/s/new';
-  if (process.platform === 'darwin') {
+  const url = protocol + "://localhost:" + port + "/s/new";
+  if (process.platform === "darwin") {
     try {
       // Try our best to reuse existing tab
       // on OS X Google Chrome with AppleScript
       execSync('ps cax | grep "Google Chrome"');
-      execSync('osascript chrome.applescript ' + url, {
-        cwd: path.join(__dirname, 'utils'),
-        stdio: 'ignore'
+      execSync("osascript chrome.applescript " + url, {
+        cwd: path.join(__dirname, "utils"),
+        stdio: "ignore"
       });
       return;
     } catch (err) {
@@ -164,6 +161,13 @@ function openBrowser(port, protocol) {
 }
 
 function addMiddleware(devServer, index) {
+  devServer.use(function(req, res, next) {
+    if (req.url === "/") {
+      req.url = "/homepage";
+    }
+    next();
+  });
+  devServer.use("/homepage", express.static(paths.homepageSrc));
   devServer.use(
     historyApiFallback({
       // Allow paths with dots in them to be loaded, reference issue #387
@@ -175,14 +179,15 @@ function addMiddleware(devServer, index) {
       // Modern browsers include text/html into `accept` header when navigating.
       // However API calls like `fetch()` won’t generally won’t accept text/html.
       // If this heuristic doesn’t work well for you, don’t use `proxy`.
-      htmlAcceptHeaders: ['text/html'],
-      index
+      htmlAcceptHeaders: ["text/html"],
+      index,
+      rewrites: [{ from: /\/embed/, to: "/embed.html" }]
     })
   );
   if (process.env.LOCAL_SERVER) {
     devServer.use(
-      '/api',
-      proxy({ target: 'https://codesandbox.io', changeOrigin: true })
+      "/api",
+      proxy({ target: "https://codesandbox.io", changeOrigin: true })
     );
   }
   // Finally, by now we have certainly resolved the URL.
@@ -210,10 +215,11 @@ function runDevServer(port, protocol, index) {
       ignored: /node_modules/
     },
     // Enable HTTPS if the HTTPS environment variable is set to 'true'
-    https: protocol === 'https',
+    https: protocol === "https",
     // contentBase: paths.staticPath,
-    host: process.env.LOCAL_SERVER ? 'localhost' : 'codesandbox.dev',
-    disableHostCheck: !process.env.LOCAL_SERVER
+    host: process.env.LOCAL_SERVER ? "localhost" : "codesandbox.dev",
+    disableHostCheck: !process.env.LOCAL_SERVER,
+    contentBase: false
   });
 
   // Our custom middleware proxies requests to /index.html or a remote API.
@@ -226,25 +232,25 @@ function runDevServer(port, protocol, index) {
     }
 
     clearConsole();
-    console.log(chalk.cyan('Starting the development server...'));
+    console.log(chalk.cyan("Starting the development server..."));
     openBrowser(port, protocol);
   });
 }
 
 function run(port) {
-  var protocol = process.env.HTTPS === 'true' ? 'https' : 'http';
+  var protocol = process.env.HTTPS === "true" ? "https" : "http";
   setupCompiler(port, protocol);
-  runDevServer(port, protocol, '/app.html');
+  runDevServer(port, protocol, "/app.html");
 
   if (process.env.LOCAL_SERVER) {
     const proxy = httpProxy.createProxyServer({});
     http
       .createServer(function(req, res) {
-        if (req.url.includes('.js')) {
-          proxy.web(req, res, { target: 'http://localhost:3000' + req.url });
+        if (req.url.includes(".js")) {
+          proxy.web(req, res, { target: "http://localhost:3000" + req.url });
         } else {
           proxy.web(req, res, {
-            target: 'http://localhost:3000/frame.html',
+            target: "http://localhost:3000/frame.html",
             ignorePath: true
           });
         }

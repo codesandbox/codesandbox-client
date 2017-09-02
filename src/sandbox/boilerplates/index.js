@@ -1,7 +1,7 @@
 // @flow
-import type { Module, Directory } from 'common/types';
+import type { Module, Directory } from "common/types";
 
-import { getCurrentManager } from '../';
+import { getCurrentManager } from "../";
 
 let cachedBoilerplates = [];
 
@@ -16,7 +16,7 @@ export async function evalBoilerplates(boilerplates: Array<any>) {
         directoryShortid: null,
         sourceId: boilerplate.sourceId,
         isNotSynced: false,
-        type: ''
+        type: ""
       };
 
       const manager = getCurrentManager();

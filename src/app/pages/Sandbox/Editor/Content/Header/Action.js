@@ -1,10 +1,10 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import styled from 'styled-components';
+import React from "react";
+import { Link } from "react-router-dom";
+import styled from "styled-components";
 
-import MoreInfoIcon from 'react-icons/lib/md/arrow-drop-down';
+import MoreInfoIcon from "react-icons/lib/md/arrow-drop-down";
 
-import Tooltip from 'app/components/Tooltip';
+import Tooltip from "app/components/Tooltip";
 
 const styles = props =>
   `
@@ -48,18 +48,14 @@ const Title = styled.span`
 
 const Action = styled.div`${styles};`;
 
-const ActionLink = styled(Link)`
-  ${styles}
-  text-decoration: none;
-`;
+const ActionLink = styled(Link)`${styles} text-decoration: none;`;
 
 const ActionA = styled.a`${styles} text-decoration: none;`;
 
 const ActionTooltip = styled(Tooltip)`
-  ${styles}
-  ${props =>
-    props.disabledAction &&
-    `
+  ${styles} ${props =>
+  props.disabledAction &&
+  `
     color: rgba(255,255,255,0.3);
     cursor: default;
 
@@ -73,7 +69,7 @@ const IconContainer = styled.div`
   display: flex;
   align-items: center;
   height: 100%;
-  padding: 0 .75rem;
+  padding: 0 0.75rem;
 `;
 
 type Props = {
@@ -120,7 +116,7 @@ export default ({
             <Title unresponsive={unresponsive}>
               {title}
             </Title>}
-          {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
+          {moreInfo && <MoreInfoIcon style={{ fontSize: "1.1rem" }} />}
         </IconContainer>
       </ActionTooltip>
     );
@@ -134,7 +130,7 @@ export default ({
             <Title unresponsive={unresponsive}>
               {title}
             </Title>}
-          {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
+          {moreInfo && <MoreInfoIcon style={{ fontSize: "1.1rem" }} />}
         </IconContainer>
       </Action>
     );
@@ -150,7 +146,7 @@ export default ({
               <Title unresponsive={unresponsive}>
                 {title}
               </Title>}
-            {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
+            {moreInfo && <MoreInfoIcon style={{ fontSize: "1.1rem" }} />}
           </IconContainer>
         </ActionTooltip>
       </ActionA>
@@ -167,7 +163,7 @@ export default ({
               <Title unresponsive={unresponsive}>
                 {title}
               </Title>}
-            {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
+            {moreInfo && <MoreInfoIcon style={{ fontSize: "1.1rem" }} />}
           </IconContainer>
         </ActionTooltip>
       </ActionLink>
@@ -182,7 +178,7 @@ export default ({
           <Title unresponsive={unresponsive}>
             {title}
           </Title>}
-        {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
+        {moreInfo && <MoreInfoIcon style={{ fontSize: "1.1rem" }} />}
       </IconContainer>
     </ActionLink>
   );

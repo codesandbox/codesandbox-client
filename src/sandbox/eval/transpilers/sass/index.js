@@ -1,14 +1,14 @@
 // @flow
-import SassWorker from 'worker-loader!./sass-worker.js';
+import SassWorker from "worker-loader!./sass-worker.js";
 
-import WorkerTranspiler from '../worker-transpiler';
-import { type LoaderContext } from '../../transpiled-module';
+import WorkerTranspiler from "../worker-transpiler";
+import { type LoaderContext } from "../../transpiled-module";
 
 class SassTranspiler extends WorkerTranspiler {
   worker: Worker;
 
   constructor() {
-    super('sass-loader', SassWorker, 1);
+    super("sass-loader", SassWorker, 1);
 
     this.cacheable = false;
   }
@@ -20,9 +20,9 @@ class SassTranspiler extends WorkerTranspiler {
     const files = sassModules.reduce(
       (interMediateFiles, module) => ({
         ...interMediateFiles,
-        [loaderContext.resolvePath(module)]: module.code,
+        [loaderContext.resolvePath(module)]: module.code
       }),
-      {},
+      {}
     );
 
     return new Promise((resolve, reject) => {
@@ -31,7 +31,7 @@ class SassTranspiler extends WorkerTranspiler {
       this.queueTask(
         {
           files,
-          path,
+          path
         },
         loaderContext,
         (err, data) => {
@@ -42,7 +42,7 @@ class SassTranspiler extends WorkerTranspiler {
           }
 
           return resolve(data);
-        },
+        }
       );
     });
   }

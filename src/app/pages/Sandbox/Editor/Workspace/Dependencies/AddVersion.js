@@ -1,27 +1,25 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
-import Button from 'app/components/buttons/Button';
-import WorkspaceInputContainer from '../WorkspaceInputContainer';
+import Button from "app/components/buttons/Button";
+import WorkspaceInputContainer from "../WorkspaceInputContainer";
 
-const ButtonContainer = styled.div`
-  margin: 0.5rem 1rem;
-`;
+const ButtonContainer = styled.div`margin: 0.5rem 1rem;`;
 
 type State = {
   name: string,
-  version: string,
+  version: string
 };
 
 type Props = {
   addDependency: (dependency: string, version: string) => Promise<boolean>,
   existingDependencies: Array<string>,
-  processing: boolean,
+  processing: boolean
 };
 
 const initialState = {
-  name: '',
-  version: '',
+  name: "",
+  version: ""
 };
 
 export default class AddVersion extends React.PureComponent {
@@ -57,9 +55,9 @@ export default class AddVersion extends React.PureComponent {
   render() {
     const { name, version, replacing } = this.state;
     const { processing } = this.props;
-    const isValid = name !== '';
+    const isValid = name !== "";
     return (
-      <div style={{ position: 'relative' }}>
+      <div style={{ position: "relative" }}>
         <WorkspaceInputContainer>
           <input
             style={{ flex: 3 }}
@@ -83,7 +81,7 @@ export default class AddVersion extends React.PureComponent {
             small
             onClick={this.addDependency}
           >
-            {replacing ? 'Replace' : 'Add'} Package
+            {replacing ? "Replace" : "Add"} Package
           </Button>
         </ButtonContainer>
       </div>

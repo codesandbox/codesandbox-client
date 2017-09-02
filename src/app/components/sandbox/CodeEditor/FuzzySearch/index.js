@@ -1,15 +1,15 @@
-import * as React from 'react';
-import styled, { css } from 'styled-components';
-import { sortBy, groupBy, flatten } from 'lodash';
-import Downshift from 'downshift';
-import matchSorter from 'match-sorter';
-import type { Module, Directory } from 'common/types';
+import * as React from "react";
+import styled, { css } from "styled-components";
+import { sortBy, groupBy, flatten } from "lodash";
+import Downshift from "downshift";
+import matchSorter from "match-sorter";
+import type { Module, Directory } from "common/types";
 
-import { getModulePath } from 'app/store/entities/sandboxes/modules/selectors';
-import Input from 'app/components/Input';
+import { getModulePath } from "app/store/entities/sandboxes/modules/selectors";
+import Input from "app/components/Input";
 
-import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
-import getType from 'app/store/entities/sandboxes/modules/utils/get-type';
+import EntryIcons from "app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons";
+import getType from "app/store/entities/sandboxes/modules/utils/get-type";
 
 const Container = styled.div`
   position: absolute;
@@ -48,21 +48,18 @@ const Entry = styled.div`
   position: relative;
   display: flex;
   align-items: center;
-  font-size: .875rem;
+  font-size: 0.875rem;
   padding: 0.25rem 0.75rem;
   cursor: pointer;
 
   ${({ isNotSynced }) =>
-    isNotSynced &&
-    css`
-    padding-left: 2rem;
-  `} color: rgba(255, 255, 255, 0.8);
+    isNotSynced && css`padding-left: 2rem;`} color: rgba(255, 255, 255, 0.8);
 
   ${({ isActive }) =>
     isActive &&
     css`
-    background-color: ${props => props.theme.secondary.clearer(0.7)}
-  `};
+      background-color: ${props => props.theme.secondary.clearer(0.7)};
+    `};
 `;
 
 const CurrentModuleText = styled.div`
@@ -85,7 +82,7 @@ type Props = {
   directories: Array<Directory>,
   setCurrentModule: (moduleId: string) => void,
   closeFuzzySearch: () => void,
-  currentModuleId: string,
+  currentModuleId: string
 };
 
 export default class FuzzySearch extends React.PureComponent<Props> {
@@ -99,31 +96,31 @@ export default class FuzzySearch extends React.PureComponent<Props> {
       return {
         m,
         path,
-        depth: path.split('/').length,
+        depth: path.split("/").length
       };
     });
 
     const groupedPaths = groupBy(modulePathData, n => n.depth);
     const sortedPaths = Object.values(groupedPaths).map(group =>
-      sortBy(group, n => n.path),
+      sortBy(group, n => n.path)
     );
     const flattenedPaths = flatten(sortedPaths);
 
     this.paths = flattenedPaths.reduce(
       (paths, { m, path }) => ({
         ...paths,
-        [m.id]: { path: path.replace('/', ''), m },
+        [m.id]: { path: path.replace("/", ""), m }
       }),
-      {},
+      {}
     );
   }
 
-  itemToString = m => (m ? m.path : '');
+  itemToString = m => (m ? m.path : "");
 
-  getItems = (value = '') => {
+  getItems = (value = "") => {
     const pathArray = Object.keys(this.paths).map(id => this.paths[id]);
 
-    return matchSorter(pathArray, value, { keys: ['path'] });
+    return matchSorter(pathArray, value, { keys: ["path"] });
   };
 
   onChange = item => {
@@ -151,16 +148,16 @@ export default class FuzzySearch extends React.PureComponent<Props> {
             getItemProps,
             selectedItem,
             inputValue,
-            highlightedIndex,
+            highlightedIndex
           }) =>
-            <div style={{ width: '100%' }}>
+            <div style={{ width: "100%" }}>
               <InputContainer>
                 <Input
                   {...getInputProps({
                     innerRef: el => el && el.focus(),
                     onKeyUp: this.handleKeyUp,
                     // Timeout so the fuzzy handler can still select the module
-                    onBlur: () => setTimeout(this.props.closeFuzzySearch, 100),
+                    onBlur: () => setTimeout(this.props.closeFuzzySearch, 100)
                   })}
                 />
               </InputContainer>
@@ -171,7 +168,7 @@ export default class FuzzySearch extends React.PureComponent<Props> {
                       item,
                       index,
                       isActive: highlightedIndex === index,
-                      isSelected: selectedItem === item,
+                      isSelected: selectedItem === item
                     })}
                     key={item.m.id}
                     isNotSynced={item.m.isNotSynced}
@@ -190,7 +187,7 @@ export default class FuzzySearch extends React.PureComponent<Props> {
                       </Path>}
                     {item.m.id === currentModuleId &&
                       <CurrentModuleText>currently opened</CurrentModuleText>}
-                  </Entry>,
+                  </Entry>
                 )}
               </Items>
             </div>}

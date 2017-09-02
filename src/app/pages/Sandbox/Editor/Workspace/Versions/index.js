@@ -1,10 +1,10 @@
 // @flow
-import * as React from 'react';
-import styled from 'styled-components';
+import * as React from "react";
+import styled from "styled-components";
 
-import WorkspaceSubtitle from '../WorkspaceSubtitle';
-import EntryContainer from '../EntryContainer';
-import PublishFields from './PublishFields';
+import WorkspaceSubtitle from "../WorkspaceSubtitle";
+import EntryContainer from "../EntryContainer";
+import PublishFields from "./PublishFields";
 
 type Props = {
   // sandbox: Sandbox,
@@ -17,7 +17,7 @@ const Description = styled.p`
   margin-top: 0;
   padding: 0 1rem;
   line-height: 1.2;
-  font-size: .875rem;
+  font-size: 0.875rem;
 `;
 
 const VersionDate = styled.div`
@@ -92,7 +92,7 @@ export default class Versions extends React.PureComponent<Props> {
             <VersionDate>
               {/* moment(v.insertedAt).format('lll') */}
             </VersionDate>
-          </EntryContainer>,
+          </EntryContainer>
         )}
       </div>
     );

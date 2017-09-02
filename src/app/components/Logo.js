@@ -1,10 +1,14 @@
-import React from 'react';
+import React from "react";
 
 export default ({
   width = 35,
   height = 35,
-  className,
-}: { width: number, height: number, className: ?string }) => (
+  className
+}: {
+  width: number,
+  height: number,
+  className: ?string
+}) =>
   <svg
     x="0px"
     y="0px"
@@ -53,5 +57,4 @@ export default ({
         points="121,739.083 510.917,963.042 901,738.333 901,288 511,62 121,289"
       />
     </g>
-  </svg>
-);
+  </svg>;

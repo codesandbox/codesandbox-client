@@ -1,16 +1,16 @@
 // @flow
-import { values } from 'lodash';
+import { values } from "lodash";
 
-import sendError from 'app/utils/error';
-import notificationActions from '../notifications/actions';
-import apiRequest from '../services/api';
-import type { BodyType } from '../services/api';
-import { jwtSelector } from '../user/selectors';
+import sendError from "app/utils/error";
+import notificationActions from "../notifications/actions";
+import apiRequest from "../services/api";
+import type { BodyType } from "../services/api";
+import { jwtSelector } from "../user/selectors";
 
 type APIActions = {
   REQUEST: string,
   SUCCESS: string,
-  FAILURE: string,
+  FAILURE: string
 };
 
 export function createAPIActions(prefix: string, suffix: string): APIActions {
@@ -19,7 +19,7 @@ export function createAPIActions(prefix: string, suffix: string): APIActions {
   return {
     REQUEST: `${PREFIX}/${SUFFIX}_REQUEST`,
     SUCCESS: `${PREFIX}/${SUFFIX}_SUCCESS`,
-    FAILURE: `${PREFIX}/${SUFFIX}_FAILURE`,
+    FAILURE: `${PREFIX}/${SUFFIX}_FAILURE`
   };
 }
 
@@ -50,14 +50,14 @@ const getMessage = (error: Error & { response: ?Object }) => {
 
 const showError = error => dispatch => {
   const errorMessage = getMessage(error);
-  dispatch(notificationActions.addNotification(errorMessage, 'error'));
+  dispatch(notificationActions.addNotification(errorMessage, "error"));
   error.apiMessage = errorMessage;
 };
 
 export function doRequest(
   actions: APIActions,
   endpoint: string,
-  body?: BodyType,
+  body?: BodyType
 ) {
   return async (dispatch: Function, getState: Function) => {
     const jwt = jwtSelector(getState());
@@ -66,7 +66,7 @@ export function doRequest(
       endpoint,
       body,
       jwt,
-      meta: body ? body.body : null,
+      meta: body ? body.body : null
     });
 
     try {
@@ -75,7 +75,7 @@ export function doRequest(
       dispatch({
         type: actions.SUCCESS,
         data,
-        meta: body ? body.body : null,
+        meta: body ? body.body : null
       });
 
       return data;
@@ -83,7 +83,7 @@ export function doRequest(
       dispatch({
         type: actions.FAILURE,
         error,
-        meta: body ? body.body : null,
+        meta: body ? body.body : null
       });
 
       dispatch(showError(error));

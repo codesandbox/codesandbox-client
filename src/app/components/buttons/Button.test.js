@@ -1,34 +1,34 @@
-import React from 'react';
-import testRender from 'app/utils/test/render';
-import { MemoryRouter } from 'react-router-dom';
-import Button from './Button';
+import React from "react";
+import testRender from "app/utils/test/render";
+import { MemoryRouter } from "react-router-dom";
+import Button from "./Button";
 
-describe('Button', () => {
-  it('renders', () => {
+describe("Button", () => {
+  it("renders", () => {
     testRender(<Button>Test</Button>);
   });
 
-  it('renders onClick', () => {
+  it("renders onClick", () => {
     testRender(<Button onClick={() => {}}>Test</Button>);
   });
 
-  it('renders to', () => {
+  it("renders to", () => {
     testRender(
       <MemoryRouter>
         <Button to="https://ivesvh.com">Test</Button>
-      </MemoryRouter>,
+      </MemoryRouter>
     );
   });
 
-  it('renders href', () => {
+  it("renders href", () => {
     testRender(<Button href="https://ivesvh.com">Test</Button>);
   });
 
-  it('renders properties', () => {
+  it("renders properties", () => {
     testRender(<Button small>Test</Button>);
   });
 
-  it('renders disabled', () => {
+  it("renders disabled", () => {
     testRender(<Button disabled>Test</Button>);
   });
 });

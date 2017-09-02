@@ -18,7 +18,7 @@ var _createClass = (function() {
       var descriptor = props[i];
       descriptor.enumerable = descriptor.enumerable || false;
       descriptor.configurable = true;
-      if ('value' in descriptor) descriptor.writable = true;
+      if ("value" in descriptor) descriptor.writable = true;
       Object.defineProperty(target, descriptor.key, descriptor);
     }
   }
@@ -29,7 +29,7 @@ var _createClass = (function() {
   };
 })();
 
-var _react = require('react');
+var _react = require("react");
 
 var _react2 = _interopRequireDefault(_react);
 
@@ -39,26 +39,26 @@ function _interopRequireDefault(obj) {
 
 function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
-    throw new TypeError('Cannot call a class as a function');
+    throw new TypeError("Cannot call a class as a function");
   }
 }
 
 function _possibleConstructorReturn(self, call) {
   if (!self) {
     throw new ReferenceError(
-      "this hasn't been initialised - super() hasn't been called",
+      "this hasn't been initialised - super() hasn't been called"
     );
   }
-  return call && (typeof call === 'object' || typeof call === 'function')
+  return call && (typeof call === "object" || typeof call === "function")
     ? call
     : self;
 }
 
 function _inherits(subClass, superClass) {
-  if (typeof superClass !== 'function' && superClass !== null) {
+  if (typeof superClass !== "function" && superClass !== null) {
     throw new TypeError(
-      'Super expression must either be null or a function, not ' +
-        typeof superClass,
+      "Super expression must either be null or a function, not " +
+        typeof superClass
     );
   }
   subClass.prototype = Object.create(superClass && superClass.prototype, {
@@ -66,8 +66,8 @@ function _inherits(subClass, superClass) {
       value: subClass,
       enumerable: false,
       writable: true,
-      configurable: true,
-    },
+      configurable: true
+    }
   });
   if (superClass)
     Object.setPrototypeOf
@@ -86,7 +86,7 @@ var MonacoEditor = (function(_React$Component) {
     var _this = _possibleConstructorReturn(
       this,
       (MonacoEditor.__proto__ || Object.getPrototypeOf(MonacoEditor))
-        .call(this, props),
+        .call(this, props)
     );
 
     _this.__current_value = props.value;
@@ -95,19 +95,19 @@ var MonacoEditor = (function(_React$Component) {
 
   _createClass(MonacoEditor, [
     {
-      key: 'componentDidMount',
+      key: "componentDidMount",
       value: function componentDidMount() {
         this.afterViewInit();
-      },
+      }
     },
     {
-      key: 'componentWillUnmount',
+      key: "componentWillUnmount",
       value: function componentWillUnmount() {
         this.destroyMonaco();
-      },
+      }
     },
     {
-      key: 'componentDidUpdate',
+      key: "componentDidUpdate",
       value: function componentDidUpdate(prevProps) {
         var context = this.props.context || window;
         if (this.props.value !== this.__current_value) {
@@ -123,21 +123,21 @@ var MonacoEditor = (function(_React$Component) {
         if (prevProps.language !== this.props.language) {
           context.monaco.editor.setModelLanguage(
             this.editor.getModel(),
-            this.props.language,
+            this.props.language
           );
         }
-      },
+      }
     },
     {
-      key: 'editorWillMount',
+      key: "editorWillMount",
       value: function editorWillMount(monaco) {
         var editorWillMount = this.props.editorWillMount;
 
         editorWillMount(monaco);
-      },
+      }
     },
     {
-      key: 'editorDidMount',
+      key: "editorDidMount",
       value: function editorDidMount(editor, monaco) {
         var _this2 = this;
 
@@ -157,16 +157,16 @@ var MonacoEditor = (function(_React$Component) {
             onChange(value, event);
           }
         });
-      },
+      }
     },
     {
-      key: 'afterViewInit',
+      key: "afterViewInit",
       value: function afterViewInit() {
         var _this3 = this;
 
         var requireConfig = this.props.requireConfig;
 
-        var loaderUrl = requireConfig.url || 'vs/loader.js';
+        var loaderUrl = requireConfig.url || "vs/loader.js";
         var context = this.props.context || window;
         var onGotAmdLoader = function onGotAmdLoader() {
           if (context.__REACT_MONACO_EDITOR_LOADER_ISPENDING__) {
@@ -177,7 +177,7 @@ var MonacoEditor = (function(_React$Component) {
           }
 
           // Load monaco
-          context.require(['vs/editor/editor.main'], function() {
+          context.require(["vs/editor/editor.main"], function() {
             _this3.initMonaco();
           });
 
@@ -204,24 +204,24 @@ var MonacoEditor = (function(_React$Component) {
             context.__REACT_MONACO_EDITOR_LOADER_CALLBACKS__ || [];
           context.__REACT_MONACO_EDITOR_LOADER_CALLBACKS__.push({
             context: this,
-            fn: onGotAmdLoader,
+            fn: onGotAmdLoader
           });
         } else {
-          if (typeof context.require === 'undefined') {
-            var loaderScript = context.document.createElement('script');
-            loaderScript.type = 'text/javascript';
+          if (typeof context.require === "undefined") {
+            var loaderScript = context.document.createElement("script");
+            loaderScript.type = "text/javascript";
             loaderScript.src = loaderUrl;
-            loaderScript.addEventListener('load', onGotAmdLoader);
+            loaderScript.addEventListener("load", onGotAmdLoader);
             context.document.body.appendChild(loaderScript);
             context.__REACT_MONACO_EDITOR_LOADER_ISPENDING__ = true;
           } else {
             onGotAmdLoader();
           }
         }
-      },
+      }
     },
     {
-      key: 'initMonaco',
+      key: "initMonaco",
       value: function initMonaco() {
         var value =
           this.props.value !== null
@@ -234,14 +234,14 @@ var MonacoEditor = (function(_React$Component) {
 
         var containerElement = this.refs.container;
         var context = this.props.context || window;
-        if (typeof context.monaco !== 'undefined') {
+        if (typeof context.monaco !== "undefined") {
           // Before initializing monaco editor
           this.editorWillMount(context.monaco);
 
           var editorService = {
             openEditor: model => {
               return this.props.openReference(model);
-            },
+            }
           };
           this.editor = context.monaco.editor.create(
             containerElement,
@@ -249,47 +249,47 @@ var MonacoEditor = (function(_React$Component) {
               {
                 value: value,
                 language: language,
-                theme: theme,
+                theme: theme
               },
-              options,
+              options
             ),
-            { editorService },
+            { editorService }
           );
           // After initializing monaco editor
           this.editorDidMount(this.editor, context.monaco);
         }
-      },
+      }
     },
     {
-      key: 'destroyMonaco',
+      key: "destroyMonaco",
       value: function destroyMonaco() {
-        if (typeof this.editor !== 'undefined') {
+        if (typeof this.editor !== "undefined") {
           this.editor.dispose();
         }
-      },
+      }
     },
     {
-      key: 'render',
+      key: "render",
       value: function render() {
         var _props3 = this.props,
           width = _props3.width,
           height = _props3.height;
 
         var fixedWidth =
-          width.toString().indexOf('%') !== -1 ? width : width + 'px';
+          width.toString().indexOf("%") !== -1 ? width : width + "px";
         var fixedHeight =
-          height.toString().indexOf('%') !== -1 ? height : height + 'px';
+          height.toString().indexOf("%") !== -1 ? height : height + "px";
         var style = {
           width: fixedWidth,
-          height: fixedHeight,
+          height: fixedHeight
         };
-        return _react2.default.createElement('div', {
-          ref: 'container',
+        return _react2.default.createElement("div", {
+          ref: "container",
           style: style,
-          className: 'react-monaco-editor-container',
+          className: "react-monaco-editor-container"
         });
-      },
-    },
+      }
+    }
   ]);
 
   return MonacoEditor;
@@ -298,11 +298,11 @@ var MonacoEditor = (function(_React$Component) {
 MonacoEditor.propTypes = {
   width: _react.PropTypes.oneOfType([
     _react2.default.PropTypes.string,
-    _react2.default.PropTypes.number,
+    _react2.default.PropTypes.number
   ]),
   height: _react.PropTypes.oneOfType([
     _react2.default.PropTypes.string,
-    _react2.default.PropTypes.number,
+    _react2.default.PropTypes.number
   ]),
   value: _react.PropTypes.string,
   defaultValue: _react.PropTypes.string,
@@ -312,21 +312,21 @@ MonacoEditor.propTypes = {
   editorDidMount: _react.PropTypes.func,
   editorWillMount: _react.PropTypes.func,
   onChange: _react.PropTypes.func,
-  requireConfig: _react.PropTypes.object,
+  requireConfig: _react.PropTypes.object
 };
 
 MonacoEditor.defaultProps = {
-  width: '100%',
-  height: '100%',
+  width: "100%",
+  height: "100%",
   value: null,
-  defaultValue: '',
-  language: 'javascript',
-  theme: 'vs',
+  defaultValue: "",
+  language: "javascript",
+  theme: "vs",
   options: {},
   editorDidMount: noop,
   editorWillMount: noop,
   onChange: noop,
-  requireConfig: {},
+  requireConfig: {}
 };
 
 export default MonacoEditor;

@@ -1,32 +1,32 @@
 // @flow
-import * as React from 'react';
-import styled from 'styled-components';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { createSelector } from 'reselect';
+import * as React from "react";
+import styled from "styled-components";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { Link } from "react-router-dom";
+import { createSelector } from "reselect";
 
-import type { Sandbox } from 'common/types';
+import type { Sandbox } from "common/types";
 
-import { sandboxesSelector } from 'app/store/entities/sandboxes/selectors';
-import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
+import { sandboxesSelector } from "app/store/entities/sandboxes/selectors";
+import sandboxActionCreators from "app/store/entities/sandboxes/actions";
 
-import Title from 'app/components/text/Title';
-import SubTitle from 'app/components/text/SubTitle';
-import Centered from 'app/components/flex/Centered';
+import Title from "app/components/text/Title";
+import SubTitle from "app/components/text/SubTitle";
+import Centered from "app/components/flex/Centered";
 
-import Editor from './Editor';
-import Skeleton from './Editor/Content/Skeleton';
+import Editor from "./Editor";
+import Skeleton from "./Editor/Content/Skeleton";
 
 type Props = {
   sandboxes: { [id: string]: Sandbox },
   sandboxActions: typeof sandboxActionCreators,
-  match: { params: { id: string } },
+  match: { params: { id: string } }
 };
 type State = {
   notFound: boolean,
   error: ?string,
-  currentId: ?string,
+  currentId: ?string
 };
 
 const Container = styled.div`
@@ -36,18 +36,18 @@ const Container = styled.div`
 `;
 
 const mapStateToProps = createSelector(sandboxesSelector, sandboxes => ({
-  sandboxes,
+  sandboxes
 }));
 const mapDispatchToProps = dispatch => ({
-  sandboxActions: bindActionCreators(sandboxActionCreators, dispatch),
+  sandboxActions: bindActionCreators(sandboxActionCreators, dispatch)
 });
 class SandboxPage extends React.PureComponent<Props, State> {
   componentDidMount() {
     if (
       window.screen.availWidth < 800 &&
-      !document.location.search.includes('from-embed')
+      !document.location.search.includes("from-embed")
     ) {
-      document.location.href = document.location.href.replace('/s/', '/embed/');
+      document.location.href = document.location.href.replace("/s/", "/embed/");
     } else {
       this.fetchSandbox(this.props.match.params.id);
     }
@@ -135,7 +135,7 @@ class SandboxPage extends React.PureComponent<Props, State> {
     if (sandbox) {
       document.title = sandbox.title
         ? `${sandbox.title} - CodeSandbox`
-        : 'Editor - CodeSandbox';
+        : "Editor - CodeSandbox";
     }
 
     return (

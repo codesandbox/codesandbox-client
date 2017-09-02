@@ -1,14 +1,14 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
-import CrossIcon from 'react-icons/lib/md/clear';
-import EditIcon from 'react-icons/lib/go/pencil';
-import AddFileIcon from 'react-icons/lib/go/file-symlink-file';
-import AddDirectoryIcon from 'react-icons/lib/go/file-symlink-directory';
+import CrossIcon from "react-icons/lib/md/clear";
+import EditIcon from "react-icons/lib/go/pencil";
+import AddFileIcon from "react-icons/lib/go/file-symlink-file";
+import AddDirectoryIcon from "react-icons/lib/go/file-symlink-directory";
 
-import fadeIn from 'app/utils/animation/fade-in';
+import fadeIn from "app/utils/animation/fade-in";
 
-import { Icon } from '../../../Icon';
+import { Icon } from "../../../Icon";
 
 type Props = {
   className: ?string,
@@ -16,14 +16,12 @@ type Props = {
   onDelete: Function,
   onEdit: Function,
   onCreateFile: Function,
-  onCreateDirectory: Function,
+  onCreateDirectory: Function
 };
 
 const Container = styled.div`
   display: flex;
-  ${fadeIn(0)}
-
-  vertical-align: middle;
+  ${fadeIn(0)} vertical-align: middle;
   line-height: 1;
 `;
 
@@ -39,19 +37,26 @@ export default ({
   onDelete,
   onEdit,
   onCreateFile,
-  onCreateDirectory,
-}: Props) => (
+  onCreateDirectory
+}: Props) =>
   <div className={className}>
     {hovering &&
       <Container>
-        {onEdit && <Icon onClick={handleClick(onEdit)}><EditIcon /></Icon>}
+        {onEdit &&
+          <Icon onClick={handleClick(onEdit)}>
+            <EditIcon />
+          </Icon>}
         {onCreateFile &&
-          <Icon onClick={handleClick(onCreateFile)}><AddFileIcon /></Icon>}
+          <Icon onClick={handleClick(onCreateFile)}>
+            <AddFileIcon />
+          </Icon>}
         {onCreateDirectory &&
           <Icon onClick={handleClick(onCreateDirectory)}>
             <AddDirectoryIcon />
           </Icon>}
-        {onDelete && <Icon onClick={handleClick(onDelete)}><CrossIcon /></Icon>}
+        {onDelete &&
+          <Icon onClick={handleClick(onDelete)}>
+            <CrossIcon />
+          </Icon>}
       </Container>}
-  </div>
-);
+  </div>;

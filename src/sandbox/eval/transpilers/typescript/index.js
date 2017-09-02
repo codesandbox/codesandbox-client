@@ -1,14 +1,14 @@
 // @flow
-import TypeScriptWorker from 'worker-loader!./typescript-worker.js';
+import TypeScriptWorker from "worker-loader!./typescript-worker.js";
 
-import WorkerTranspiler from '../worker-transpiler';
-import { type LoaderContext } from '../../transpiled-module';
+import WorkerTranspiler from "../worker-transpiler";
+import { type LoaderContext } from "../../transpiled-module";
 
 class TypeScriptTranspiler extends WorkerTranspiler {
   worker: Worker;
 
   constructor() {
-    super('ts-loader', TypeScriptWorker, 2);
+    super("ts-loader", TypeScriptWorker, 2);
   }
 
   doTranspilation(code: string, loaderContext: LoaderContext) {
@@ -18,7 +18,7 @@ class TypeScriptTranspiler extends WorkerTranspiler {
       this.queueTask(
         {
           code,
-          path,
+          path
         },
         loaderContext,
         (err, data) => {
@@ -29,7 +29,7 @@ class TypeScriptTranspiler extends WorkerTranspiler {
           }
 
           return resolve(data);
-        },
+        }
       );
     });
   }

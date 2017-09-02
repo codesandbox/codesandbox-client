@@ -1,12 +1,12 @@
 // @flow
-import * as React from 'react';
-import * as actions from './actions';
+import * as React from "react";
+import * as actions from "./actions";
 
 export type ContextMenuItem = {
   title: string,
   action: Function,
   icon?: React.Component<any, any>,
-  color: ?string,
+  color: ?string
 };
 
 export type ContextMenuState = {
@@ -14,25 +14,25 @@ export type ContextMenuState = {
   items: Array<ContextMenuItem>,
   x: number,
   y: number,
-  onClose?: Function,
+  onClose?: Function
 };
 
 const initialState: ContextMenuState = {
   show: false,
   items: [],
   x: 0,
-  y: 0,
+  y: 0
 };
 
 export default function reducer(
   state: ContextMenuState = initialState,
-  action: Object,
+  action: Object
 ) {
   switch (action.type) {
     case actions.CLOSE_CONTEXT_MENU:
       return {
         ...state,
-        show: false,
+        show: false
       };
     case actions.OPEN_CONTEXT_MENU:
       return {
@@ -41,7 +41,7 @@ export default function reducer(
         x: action.x,
         y: action.y,
         onClose: action.onClose,
-        show: true,
+        show: true
       };
     default:
       return state;

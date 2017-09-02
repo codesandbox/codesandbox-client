@@ -1,22 +1,22 @@
-import React from 'react';
-import Margin from 'app/components/spacing/Margin';
-import Button from 'app/components/buttons/Button';
-import Tags from 'app/components/sandbox/Tags';
+import React from "react";
+import Margin from "app/components/spacing/Margin";
+import Button from "app/components/buttons/Button";
+import Tags from "app/components/sandbox/Tags";
 
-import WorkspaceSubtitle from '../WorkspaceSubtitle';
-import WorkspaceInputContainer from '../WorkspaceInputContainer';
+import WorkspaceSubtitle from "../WorkspaceSubtitle";
+import WorkspaceInputContainer from "../WorkspaceInputContainer";
 
 type Props = {
   sandboxId: string,
   tags: Array<string>,
   isOwner: boolean,
-  addTag: (tag: string) => void,
+  addTag: (tag: string) => void
 };
 
 export default class TagsWorkspace extends React.PureComponent {
   props: Props;
   state = {
-    tagName: '',
+    tagName: ""
   };
 
   onChange = e => {
@@ -33,7 +33,7 @@ export default class TagsWorkspace extends React.PureComponent {
   addTag = async () => {
     const { tagName } = this.state;
     try {
-      this.setState({ tagName: '' });
+      this.setState({ tagName: "" });
       await this.props.addTag(this.props.sandboxId, tagName);
     } catch (e) {
       console.error(e);
@@ -51,7 +51,7 @@ export default class TagsWorkspace extends React.PureComponent {
         {tags.length > 0 &&
           <div>
             <WorkspaceSubtitle>Tags</WorkspaceSubtitle>
-            <div style={{ fontSize: '.875rem' }}>
+            <div style={{ fontSize: ".875rem" }}>
               <Tags tags={tags} removeTag={isOwner && this.removeTag} />
             </div>
           </div>}

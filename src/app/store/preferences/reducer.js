@@ -1,10 +1,10 @@
 // @flow
 
-import type { Preferences } from 'common/types';
-import store from 'store/dist/store.modern';
+import type { Preferences } from "common/types";
+import store from "store/dist/store.modern";
 
-import { SET_PREFERENCES } from './actions';
-import * as keys from './keys';
+import { SET_PREFERENCES } from "./actions";
+import * as keys from "./keys";
 
 export const DEFAULT_PRETTIER_CONFIG = {
   printWidth: 80,
@@ -12,9 +12,9 @@ export const DEFAULT_PRETTIER_CONFIG = {
   useTabs: false,
   semi: true,
   singleQuote: false,
-  trailingComma: 'none',
+  trailingComma: "none",
   bracketSpacing: true,
-  jsxBracketSameLine: false,
+  jsxBracketSameLine: false
 };
 
 function getKey<D: any>(key: string, defaultVal: D): ?D {
@@ -30,7 +30,7 @@ function getKey<D: any>(key: string, defaultVal: D): ?D {
 const initialState: Preferences = Object.keys(keys).reduce(
   (res, key) =>
     Object.assign(res, {
-      [key]: getKey(keys[key], res[key]),
+      [key]: getKey(keys[key], res[key])
     }),
   {
     autoCompleteEnabled: true,
@@ -39,13 +39,13 @@ const initialState: Preferences = Object.keys(keys).reduce(
     lintEnabled: true,
     instantPreviewEnabled: false,
     fontSize: 14,
-    fontFamily: '',
+    fontFamily: "",
     lineHeight: 1.15,
     clearConsoleEnabled: false,
     prettierConfig: DEFAULT_PRETTIER_CONFIG,
     codeMirror: false,
-    autoDownloadTypes: true,
-  },
+    autoDownloadTypes: true
+  }
 );
 
 export default (state: Preferences = initialState, action): Preferences => {
@@ -53,7 +53,7 @@ export default (state: Preferences = initialState, action): Preferences => {
     case SET_PREFERENCES:
       return {
         ...state,
-        ...action.preferences,
+        ...action.preferences
       };
     default: {
       return state;

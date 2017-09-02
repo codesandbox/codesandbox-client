@@ -1,14 +1,14 @@
 // @flow
-import * as React from 'react';
+import * as React from "react";
 
-import type { Module, Directory } from 'common/types';
+import type { Module, Directory } from "common/types";
 
-import { validateTitle } from 'app/store/entities/sandboxes/modules/validator';
-import { isMainModule } from 'app/store/entities/sandboxes/modules/selectors';
-import getType from 'app/store/entities/sandboxes/modules/utils/get-type';
+import { validateTitle } from "app/store/entities/sandboxes/modules/validator";
+import { isMainModule } from "app/store/entities/sandboxes/modules/selectors";
+import getType from "app/store/entities/sandboxes/modules/utils/get-type";
 
-import Entry from './Entry';
-import DirectoryEntry from './';
+import Entry from "./Entry";
+import DirectoryEntry from "./";
 
 type Props = {
   depth: number,
@@ -22,7 +22,7 @@ type Props = {
   currentModuleId: ?string,
   parentShortid: string,
   isInProjectView: boolean,
-  parentShortid: string,
+  parentShortid: string
 };
 
 export default class DirectoryChildren extends React.PureComponent<Props> {
@@ -43,7 +43,7 @@ export default class DirectoryChildren extends React.PureComponent<Props> {
       modules,
       deleteEntry,
       currentModuleId,
-      isInProjectView,
+      isInProjectView
     } = this.props;
 
     return (
@@ -63,7 +63,7 @@ export default class DirectoryChildren extends React.PureComponent<Props> {
               directories={directories}
               currentModuleId={currentModuleId}
               isInProjectView={isInProjectView}
-            />,
+            />
           )}
         {modules.filter(x => x.directoryShortid === parentShortid).map(m => {
           const isActive = m.id === currentModuleId;
@@ -80,7 +80,7 @@ export default class DirectoryChildren extends React.PureComponent<Props> {
               title={m.title}
               depth={depth + 1}
               active={isActive}
-              type={type || 'function'}
+              type={type || "function"}
               rename={mainModule ? undefined : renameModule}
               openMenu={openMenu}
               deleteEntry={mainModule ? undefined : deleteEntry}

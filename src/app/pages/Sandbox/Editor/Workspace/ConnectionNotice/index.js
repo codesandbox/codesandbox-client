@@ -1,16 +1,16 @@
-import React from 'react';
-import styled from 'styled-components';
-import { connect } from 'react-redux';
+import React from "react";
+import styled from "styled-components";
+import { connect } from "react-redux";
 
 const Container = styled.div`
   color: ${props => props.theme.red};
   background-color: ${props => props.theme.redBackground};
   padding: 1rem;
-  font-size: .75rem;
+  font-size: 0.75rem;
 `;
 
 const mapStateToProps = state => ({
-  connected: state.connectionStatus.connected,
+  connected: state.connectionStatus.connected
 });
 const ConnectionNotice = ({ connected }: { connected: boolean }) =>
   !connected &&

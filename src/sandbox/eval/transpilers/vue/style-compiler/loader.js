@@ -1,9 +1,9 @@
-import postcss from 'postcss';
+import postcss from "postcss";
 
-import { type LoaderContext } from '../../../transpiled-module';
+import { type LoaderContext } from "../../../transpiled-module";
 
-import trim from './plugins/trim';
-import scopeId from './plugins/scope-id';
+import trim from "./plugins/trim";
+import scopeId from "./plugins/scope-id";
 
 export default function(code: string, loaderContext: LoaderContext) {
   return new Promise(resolve => {
@@ -15,7 +15,7 @@ export default function(code: string, loaderContext: LoaderContext) {
       vueOptions = Object.assign(
         {},
         loaderContext.options.vue,
-        loaderContext.vue,
+        loaderContext.vue
       );
     }
 
@@ -25,7 +25,7 @@ export default function(code: string, loaderContext: LoaderContext) {
     const options = {
       to: loaderContext.path,
       from: loaderContext.path,
-      map: false,
+      map: false
     };
 
     // add plugin for vue-loader scoped css rewrite
@@ -42,14 +42,14 @@ export default function(code: string, loaderContext: LoaderContext) {
       options.map = {
         inline: false,
         annotation: false,
-        prev: loaderContext.map,
+        prev: loaderContext.map
       };
     }
 
     return postcss(plugins).process(code, options).then(result => {
       if (result.messages) {
         result.messages.forEach(m => {
-          if (m.type === 'dependency') {
+          if (m.type === "dependency") {
             loaderContext.addDependency(m.file);
           }
         });

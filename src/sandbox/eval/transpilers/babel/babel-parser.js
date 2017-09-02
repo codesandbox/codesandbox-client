@@ -4,13 +4,13 @@
 const CUSTOM_BABEL_CONFIG_ENABLED = false;
 
 const DEFAULT_BABEL_CONFIG = {
-  presets: ['es2015', 'react', 'stage-0'],
+  presets: ["es2015", "react", "stage-0"],
   plugins: [
-    'transform-async-to-generator',
-    'transform-object-rest-spread',
-    'transform-class-properties',
-    'transform-decorators-legacy',
-  ],
+    "transform-async-to-generator",
+    "transform-object-rest-spread",
+    "transform-decorators-legacy",
+    "transform-class-properties"
+  ]
 };
 
 // const resolvePlugin = (plugin: string) => {
@@ -60,9 +60,9 @@ export default function getBabelConfig(config: Object = {}, path: string) {
     ...resolvedConfig,
     plugins: config.plugins ? config.plugins : resolvedConfig.plugins,
     presets: config.presets ? config.presets : resolvedConfig.presets,
-    sourceMaps: 'inline',
+    sourceMaps: "inline",
     sourceFileName: path,
-    sourceMapTarget: `${path}:transpiled`,
+    sourceMapTarget: `${path}:transpiled`
   };
 
   return resolvedConfig;

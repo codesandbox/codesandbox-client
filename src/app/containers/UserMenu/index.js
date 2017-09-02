@@ -1,26 +1,24 @@
 // @flow
-import * as React from 'react';
-import styled from 'styled-components';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import type { CurrentUser } from 'common/types';
+import * as React from "react";
+import styled from "styled-components";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import type { CurrentUser } from "common/types";
 
-import { currentUserSelector, jwtSelector } from 'app/store/user/selectors';
-import modalActionCreators from 'app/store/modal/actions';
-import userActionCreators from 'app/store/user/actions';
+import { currentUserSelector, jwtSelector } from "app/store/user/selectors";
+import modalActionCreators from "app/store/modal/actions";
+import userActionCreators from "app/store/user/actions";
 
-import Row from 'app/components/flex/Row';
-import HoverMenu from 'app/components/HoverMenu';
-import Relative from 'app/components/Relative';
-import Tooltip from 'app/components/Tooltip';
+import Row from "app/components/flex/Row";
+import HoverMenu from "app/components/HoverMenu";
+import Relative from "app/components/Relative";
+import Tooltip from "app/components/Tooltip";
 
-import Preferences from 'app/containers/Preferences';
+import Preferences from "app/containers/Preferences";
 
-import UserMenu from './UserMenu';
+import UserMenu from "./UserMenu";
 
-const ClickableContainer = styled(Row)`
-  cursor: pointer;
-`;
+const ClickableContainer = styled(Row)`cursor: pointer;`;
 
 const ProfileImage = styled.img`border-radius: 2px;`;
 
@@ -41,7 +39,7 @@ const Name = styled.div`
 `;
 
 const Username = styled.div`
-  color: ${props => (props.main ? 'white' : 'rgba(255, 255, 255, 0.6)')};
+  color: ${props => (props.main ? "white" : "rgba(255, 255, 255, 0.6)")};
   font-size: ${props => (props.main ? 1 : 0.875)}em;
 `;
 
@@ -49,28 +47,28 @@ type Props = {
   user: CurrentUser,
   small?: boolean,
   modalActions: typeof modalActionCreators,
-  userActions: typeof userActionCreators,
+  userActions: typeof userActionCreators
 };
 
 type State = {
-  menuOpen: boolean,
+  menuOpen: boolean
 };
 
 const mapStateToProps = state => ({
   user: currentUserSelector(state),
-  hasLogin: !!jwtSelector(state),
+  hasLogin: !!jwtSelector(state)
 });
 const mapDispatchToProps = dispatch => ({
   userActions: bindActionCreators(userActionCreators, dispatch),
-  modalActions: bindActionCreators(modalActionCreators, dispatch),
+  modalActions: bindActionCreators(modalActionCreators, dispatch)
 });
 class User extends React.PureComponent<Props, $FlowFixMeState> {
   static defaultProps = {
-    small: false,
+    small: false
   };
 
   state = {
-    menuOpen: false,
+    menuOpen: false
   };
 
   closeMenu = () => this.setState({ menuOpen: false });
@@ -79,7 +77,7 @@ class User extends React.PureComponent<Props, $FlowFixMeState> {
   openPreferences = () => {
     this.props.modalActions.openModal({
       width: 900,
-      Body: <Preferences />,
+      Body: <Preferences />
     });
   };
 

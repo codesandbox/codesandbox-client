@@ -1,67 +1,67 @@
-const webpack = require('webpack');
-const path = require('path');
-const paths = require('./paths');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const HappyPack = require('happypack');
-const childProcess = require('child_process');
-const WatchMissingNodeModulesPlugin = require('../scripts/utils/WatchMissingNodeModulesPlugin');
-const env = require('./env');
+const webpack = require("webpack");
+const path = require("path");
+const paths = require("./paths");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const CaseSensitivePathsPlugin = require("case-sensitive-paths-webpack-plugin");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
+const HappyPack = require("happypack");
+const childProcess = require("child_process");
+const WatchMissingNodeModulesPlugin = require("../scripts/utils/WatchMissingNodeModulesPlugin");
+const env = require("./env");
 
-const babelDev = require('./babel.dev');
-const babelProd = require('./babel.prod');
+const babelDev = require("./babel.dev");
+const babelProd = require("./babel.prod");
 
-const NODE_ENV = JSON.parse(env['process.env.NODE_ENV']);
-const __DEV__ = NODE_ENV === 'development'; // eslint-disable-line no-underscore-dangle
-const __PROD__ = NODE_ENV === 'production'; // eslint-disable-line no-underscore-dangle
+const NODE_ENV = JSON.parse(env["process.env.NODE_ENV"]);
+const __DEV__ = NODE_ENV === "development"; // eslint-disable-line no-underscore-dangle
+const __PROD__ = NODE_ENV === "production"; // eslint-disable-line no-underscore-dangle
 const babelConfig = __DEV__ ? babelDev : babelProd;
 
 const COMMIT_COUNT = childProcess
-  .execSync('git rev-list --count HEAD')
+  .execSync("git rev-list --count HEAD")
   .toString();
 
 const COMMIT_HASH = childProcess
-  .execSync('git rev-parse --short HEAD')
+  .execSync("git rev-parse --short HEAD")
   .toString();
 const VERSION = `${COMMIT_COUNT}-${COMMIT_HASH}`;
 
 module.exports = {
   entry: {
-    app: [require.resolve('./polyfills'), path.join(paths.appSrc, 'index.js')],
+    app: [require.resolve("./polyfills"), path.join(paths.appSrc, "index.js")],
     sandbox: [
-      require.resolve('babel-polyfill'),
-      require.resolve('./polyfills'),
-      path.join(paths.sandboxSrc, 'index.js')
+      require.resolve("babel-polyfill"),
+      require.resolve("./polyfills"),
+      path.join(paths.sandboxSrc, "index.js")
     ],
     embed: [
-      require.resolve('./polyfills'),
-      path.join(paths.embedSrc, 'index.js')
+      require.resolve("./polyfills"),
+      path.join(paths.embedSrc, "index.js")
     ],
-    vendor: ['react', 'react-dom', 'styled-components']
+    vendor: ["react", "react-dom", "styled-components"]
   },
-  target: 'web',
+  target: "web",
   node: {
-    fs: 'empty',
-    module: 'empty',
-    child_process: 'empty'
+    fs: "empty",
+    module: "empty",
+    child_process: "empty"
   },
   output: {
     path: paths.appBuild,
     pathinfo: true,
-    publicPath: '/'
+    publicPath: "/"
   },
 
   module: {
     rules: [
       {
         test: /create-zip\/.*\/files\/.*\.ico$/,
-        loader: 'base64-loader'
+        loader: "base64-loader"
       },
       {
         test: /create-zip\/.*\/files\/.*$/,
         exclude: [/create-zip\/.*\/files\/.*\.ico$/],
-        loader: 'raw-loader'
+        loader: "raw-loader"
       },
       {
         test: /\.js$/,
@@ -73,13 +73,13 @@ module.exports = {
           /codesandbox\/node_modules/,
           /create-zip\/.*\/files\/.*$/
         ],
-        loader: 'happypack/loader'
+        loader: "happypack/loader"
       },
       // JSON is not enabled by default in Webpack but both Node and Browserify
       // allow it implicitly so we also enable it.
       {
         test: /\.json$/,
-        loader: 'json-loader',
+        loader: "json-loader",
         exclude: [/create-zip\/.*\/files\/.*$/]
       },
       // "postcss" loader applies autoprefixer to our CSS.
@@ -89,13 +89,13 @@ module.exports = {
       // in development "style" loader enables hot editing of CSS.
       {
         test: /\.css$/,
-        loaders: ['style-loader', 'css-loader'],
+        loaders: ["style-loader", "css-loader"],
         exclude: [/create-zip\/.*\/files\/.*$/]
       },
       // For importing README.md
       {
         test: /\.md$/,
-        loader: 'raw-loader',
+        loader: "raw-loader",
         exclude: [/create-zip\/.*\/files\/.*$/]
       },
       // "file" loader makes sure those assets get served by WebpackDevServer.
@@ -104,9 +104,9 @@ module.exports = {
       {
         test: /\.(ico|jpg|png|gif|eot|otf|webp|svg|ttf|woff|woff2)(\?.*)?$/,
         exclude: [/\/favicon.ico$/, /create-zip\/.*\/files\/.*$/],
-        loader: 'file-loader',
+        loader: "file-loader",
         options: {
-          name: 'static/media/[name].[hash:8].[ext]'
+          name: "static/media/[name].[hash:8].[ext]"
         }
       },
       // A special case for favicon.ico to place it into build root directory.
@@ -114,30 +114,30 @@ module.exports = {
         test: /\/favicon.ico$/,
         include: [paths.src],
         exclude: [/create-zip\/.*\/files\/.*$/],
-        loader: 'file-loader',
+        loader: "file-loader",
         options: {
-          name: 'favicon.ico?[hash:8]'
+          name: "favicon.ico?[hash:8]"
         }
       },
       // "url" loader works just like "file" loader but it also embeds
       // assets smaller than specified size as data URLs to avoid requests.
       {
         test: /\.(mp4|webm)(\?.*)?$/,
-        loader: 'url-loader',
+        loader: "url-loader",
         exclude: [/create-zip\/.*\/files\/.*$/],
         options: {
           limit: 10000,
-          name: 'static/media/[name].[hash:8].[ext]'
+          name: "static/media/[name].[hash:8].[ext]"
         }
       },
       // "html" loader is used to process template page (index.html) to resolve
       // resources linked with <link href="./relative/path"> HTML tags.
       {
         test: /\.html$/,
-        loader: 'html-loader',
+        loader: "html-loader",
         exclude: [/create-zip\/.*\/files\/.*$/],
         options: {
-          attrs: ['link:href']
+          attrs: ["link:href"]
         }
       }
     ],
@@ -146,13 +146,13 @@ module.exports = {
   },
 
   resolve: {
-    mainFields: ['browser', 'module', 'jsnext:main', 'main'],
-    modules: ['src', 'node_modules'],
+    mainFields: ["browser", "module", "jsnext:main", "main"],
+    modules: ["src", "node_modules"],
 
-    extensions: ['.js', '.json'],
+    extensions: [".js", ".json"],
 
     alias: {
-      moment: 'moment/moment.js'
+      moment: "moment/moment.js"
     }
   },
 
@@ -160,7 +160,7 @@ module.exports = {
     new HappyPack({
       loaders: [
         {
-          path: 'babel-loader',
+          path: "babel-loader",
           query: babelConfig
         }
       ]
@@ -168,8 +168,8 @@ module.exports = {
     // Generates an `index.html` file with the <script> injected.
     new HtmlWebpackPlugin({
       inject: true,
-      chunks: ['vendor', 'common', 'app'],
-      filename: 'app.html',
+      chunks: ["vendor", "common", "app"],
+      filename: "app.html",
       template: paths.appHtml,
       minify: __PROD__ && {
         removeComments: true,
@@ -186,8 +186,8 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({
       inject: true,
-      chunks: ['vendor', 'common', 'sandbox'],
-      filename: 'frame.html',
+      chunks: ["vendor", "common", "sandbox"],
+      filename: "frame.html",
       template: paths.sandboxHtml,
       minify: __PROD__ && {
         removeComments: true,
@@ -204,9 +204,9 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({
       inject: true,
-      chunks: ['vendor', 'embed'],
-      filename: 'embed.html',
-      template: path.join(paths.embedSrc, 'index.html'),
+      chunks: ["vendor", "embed"],
+      filename: "embed.html",
+      template: path.join(paths.embedSrc, "index.html"),
       minify: __PROD__ && {
         removeComments: true,
         collapseWhitespace: true,
@@ -237,26 +237,26 @@ module.exports = {
     new CopyWebpackPlugin([
       {
         from: __DEV__
-          ? 'node_modules/monaco-editor/dev/vs'
-          : 'node_modules/monaco-editor/min/vs',
-        to: 'public/vs'
+          ? "node_modules/monaco-editor/dev/vs"
+          : "node_modules/monaco-editor/min/vs",
+        to: "public/vs"
       },
       {
-        from: 'static',
-        to: 'static'
+        from: "static",
+        to: "static"
       },
       {
-        from: 'src/homepage/static',
-        to: 'static'
+        from: "src/homepage/static",
+        to: "static"
       }
     ]),
     // Try to dedupe duplicated modules, if any:
     new webpack.optimize.CommonsChunkPlugin({
-      name: 'common',
-      chunks: ['app', 'sandbox']
+      name: "common",
+      chunks: ["app", "sandbox"]
     }),
     new webpack.optimize.CommonsChunkPlugin({
-      name: 'vendor',
+      name: "vendor",
       minChunks: Infinity
     }),
     new webpack.optimize.CommonsChunkPlugin({

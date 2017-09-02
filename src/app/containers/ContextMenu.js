@@ -1,19 +1,19 @@
 // @flow
-import * as React from 'react';
-import { bindActionCreators } from 'redux';
-import { spring, Motion } from 'react-motion';
-import styled from 'styled-components';
-import { connect } from 'react-redux';
-import theme from '../../common/theme';
+import * as React from "react";
+import { bindActionCreators } from "redux";
+import { spring, Motion } from "react-motion";
+import styled from "styled-components";
+import { connect } from "react-redux";
+import theme from "../../common/theme";
 
-import type { ContextMenuState } from '../store/context-menu/reducer';
-import contextMenuActionCreators from '../store/context-menu/actions';
-import Portal from '../components/Portal';
+import type { ContextMenuState } from "../store/context-menu/reducer";
+import contextMenuActionCreators from "../store/context-menu/actions";
+import Portal from "../components/Portal";
 
 const Container = styled.div`
   position: fixed;
 
-  font-size: .875rem;
+  font-size: 0.875rem;
   background-color: ${() => theme.background2.lighten(0.2)()};
   color: ${() => theme.background2.lighten(3)()};
   box-shadow: -1px 3px 4px rgba(0, 0, 0, 0.3);
@@ -26,7 +26,7 @@ const Container = styled.div`
 
 const Item = styled.div`
   transition: 0.3s ease all;
-  padding: .75rem 1rem;
+  padding: 0.75rem 1rem;
 
   border-bottom: 1px solid ${() => theme.background2()};
   border-left: 2px solid transparent;
@@ -52,20 +52,20 @@ const Item = styled.div`
 
 type Props = {
   contextMenu: ContextMenuState,
-  contextMenuActions: typeof contextMenuActionCreators,
+  contextMenuActions: typeof contextMenuActionCreators
 };
 
 const mapStateToProps = state => ({
-  contextMenu: state.contextMenu,
+  contextMenu: state.contextMenu
 });
 const mapDispatchToProps = dispatch => ({
-  contextMenuActions: bindActionCreators(contextMenuActionCreators, dispatch),
+  contextMenuActions: bindActionCreators(contextMenuActionCreators, dispatch)
 });
 class ContextMenu extends React.PureComponent<Props> {
   interval: number;
 
   setup = el => {
-    this.mousedown = window.addEventListener('mousedown', event => {
+    this.mousedown = window.addEventListener("mousedown", event => {
       const { contextMenu } = this.props;
 
       if (contextMenu.show) {
@@ -75,7 +75,7 @@ class ContextMenu extends React.PureComponent<Props> {
       }
     });
 
-    this.keydown = window.addEventListener('keydown', event => {
+    this.keydown = window.addEventListener("keydown", event => {
       const { contextMenu } = this.props;
       if (event.keyCode === 27 && contextMenu.show) {
         // Escape
@@ -88,8 +88,8 @@ class ContextMenu extends React.PureComponent<Props> {
   keydown: ?Function;
 
   componentWillUnmount() {
-    window.removeEventListener('mousedown', this.mousedown);
-    window.removeEventListener('keydown', this.keydown);
+    window.removeEventListener("mousedown", this.mousedown);
+    window.removeEventListener("keydown", this.keydown);
   }
 
   close = () => {
@@ -108,7 +108,7 @@ class ContextMenu extends React.PureComponent<Props> {
               defaultStyle={{ size: 0.75, opacity: 0.6 }}
               style={{
                 size: spring(1, { stiffness: 200, damping: 26 }),
-                opacity: spring(1),
+                opacity: spring(1)
               }}
             >
               {({ size, opacity }) =>
@@ -117,7 +117,7 @@ class ContextMenu extends React.PureComponent<Props> {
                     left: contextMenu.x + 10,
                     top: contextMenu.y + 10,
                     transform: `scale(${size}, ${size})`,
-                    opacity,
+                    opacity
                   }}
                 >
                   <div>
@@ -129,7 +129,7 @@ class ContextMenu extends React.PureComponent<Props> {
                       >
                         {item.icon && <item.icon />}
                         {item.title}
-                      </Item>,
+                      </Item>
                     )}
                   </div>
                 </Container>}

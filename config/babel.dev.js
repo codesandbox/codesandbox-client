@@ -6,25 +6,25 @@ module.exports = {
   cacheDirectory: true,
   presets: [
     // Latest stable ECMAScript features
-    ['es2015', { modules: false }],
+    ["es2015", { modules: false }],
     // JSX, Flow
-    'react'
+    "react"
   ],
   plugins: [
-    require.resolve('babel-plugin-transform-async-to-generator'),
-    require.resolve('babel-plugin-transform-object-rest-spread'),
-    require.resolve('babel-plugin-transform-class-properties'),
-    require.resolve('babel-plugin-transform-runtime'),
-    require.resolve('babel-plugin-lodash'),
-    require.resolve('babel-plugin-syntax-dynamic-import'),
-    require.resolve('babel-plugin-styled-components'),
+    require.resolve("babel-plugin-transform-async-to-generator"),
+    require.resolve("babel-plugin-transform-object-rest-spread"),
+    require.resolve("babel-plugin-transform-class-properties"),
+    require.resolve("babel-plugin-transform-runtime"),
+    require.resolve("babel-plugin-lodash"),
+    require.resolve("babel-plugin-syntax-dynamic-import"),
+    require.resolve("babel-plugin-styled-components"),
     [
-      require.resolve('react-loadable/babel'),
+      require.resolve("react-loadable/babel"),
       {
         server: true,
         webpack: true
       }
     ],
-    require.resolve('react-hot-loader/babel')
+    require.resolve("react-hot-loader/babel")
   ]
 };

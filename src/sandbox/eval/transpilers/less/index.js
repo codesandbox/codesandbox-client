@@ -1,14 +1,14 @@
 // @flow
-import LessWorker from 'worker-loader!./less-worker.js';
+import LessWorker from "worker-loader!./less-worker.js";
 
-import WorkerTranspiler from '../worker-transpiler';
-import { type LoaderContext } from '../../transpiled-module';
+import WorkerTranspiler from "../worker-transpiler";
+import { type LoaderContext } from "../../transpiled-module";
 
 class LessTranspiler extends WorkerTranspiler {
   worker: Worker;
 
   constructor() {
-    super('less-loader', LessWorker, 1);
+    super("less-loader", LessWorker, 1);
 
     this.cacheable = false;
   }
@@ -21,9 +21,9 @@ class LessTranspiler extends WorkerTranspiler {
       const files = lessModules.reduce(
         (interMediateFiles, module) => ({
           ...interMediateFiles,
-          [loaderContext.resolvePath(module)]: module.code,
+          [loaderContext.resolvePath(module)]: module.code
         }),
-        {},
+        {}
       );
 
       const path = loaderContext.path;
@@ -32,7 +32,7 @@ class LessTranspiler extends WorkerTranspiler {
         {
           code,
           files,
-          path,
+          path
         },
         loaderContext,
         (err, data) => {
@@ -43,7 +43,7 @@ class LessTranspiler extends WorkerTranspiler {
           }
 
           return resolve(data);
-        },
+        }
       );
     });
   }

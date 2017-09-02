@@ -1,18 +1,18 @@
 // @flow
-import * as React from 'react';
-import CodeMirror from 'codemirror';
-import styled, { keyframes } from 'styled-components';
-import type { Preferences, ModuleError } from 'common/types';
+import * as React from "react";
+import CodeMirror from "codemirror";
+import styled, { keyframes } from "styled-components";
+import type { Preferences, ModuleError } from "common/types";
 
-import { getCodeMirror } from 'app/utils/codemirror';
-import theme from 'common/theme';
+import { getCodeMirror } from "app/utils/codemirror";
+import theme from "common/theme";
 
-import 'codemirror/addon/dialog/dialog';
-import 'codemirror/addon/hint/show-hint';
-import 'codemirror/addon/tern/tern';
+import "codemirror/addon/dialog/dialog";
+import "codemirror/addon/hint/show-hint";
+import "codemirror/addon/tern/tern";
 
-import Header from './Header';
-import FuzzySearch from './FuzzySearch';
+import Header from "./Header";
+import FuzzySearch from "./FuzzySearch";
 
 const documentCache = {};
 
@@ -27,7 +27,7 @@ type Props = {
   canSave: boolean,
   preferences: Preferences,
   onlyViewMode: boolean,
-  setCurrentModule: ?(sandboxId: string, moduleId: string) => void,
+  setCurrentModule: ?(sandboxId: string, moduleId: string) => void
 };
 
 const Container = styled.div`
@@ -44,9 +44,9 @@ const fontFamilies = (...families) =>
   families
     .filter(Boolean)
     .map(
-      family => (family.indexOf(' ') !== -1 ? JSON.stringify(family) : family),
+      family => (family.indexOf(" ") !== -1 ? JSON.stringify(family) : family)
     )
-    .join(', ');
+    .join(", ");
 
 const CodeContainer = styled.div`
   position: relative;
@@ -55,7 +55,7 @@ const CodeContainer = styled.div`
   height: calc(100% - 6rem);
   .CodeMirror {
     font-family: ${props =>
-      fontFamilies(props.fontFamily, 'Source Code Pro', 'monospace')};
+      fontFamilies(props.fontFamily, "Source Code Pro", "monospace")};
     line-height: ${props => props.lineHeight};
     background: ${theme.background2()};
     color: #e0e0e0;
@@ -165,36 +165,36 @@ const handleError = (
   nextErrors: ?Array<ModuleError>,
   nextCode: ?string,
   prevId: string,
-  nextId: string,
+  nextId: string
 ) => {
   if (currentErrors && currentErrors.length > 0) {
-    cm.getValue().split('\n').forEach((_, i) => {
-      cm.removeLineClass(i, 'background', 'cm-line-error');
+    cm.getValue().split("\n").forEach((_, i) => {
+      cm.removeLineClass(i, "background", "cm-line-error");
     });
   }
 
   if (nextErrors) {
     nextErrors.forEach(error => {
-      const code = nextCode || '';
+      const code = nextCode || "";
       if (
         error &&
         (error.moduleId == null || error.moduleId === nextId) &&
         error.line !== 0 &&
-        error.line <= code.split('\n').length
+        error.line <= code.split("\n").length
       ) {
-        cm.addLineClass(error.line - 1, 'background', 'cm-line-error');
+        cm.addLineClass(error.line - 1, "background", "cm-line-error");
       }
     });
   }
 };
 
 type State = {
-  fuzzySearchEnabled: boolean,
+  fuzzySearchEnabled: boolean
 };
 
 export default class CodeEditor extends React.PureComponent<Props, State> {
   state = {
-    fuzzySearchEnabled: false,
+    fuzzySearchEnabled: false
   };
 
   shouldComponentUpdate(nextProps: Props, nextState: State) {
@@ -214,22 +214,22 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     currentId,
     nextId,
     nextCode,
-    nextTitle,
+    nextTitle
   }: {
     currentId: string,
     nextId: string,
     nextCode: ?string,
-    nextTitle: string,
+    nextTitle: string
   }) => {
     if (nextId !== currentId || nextCode !== this.getCode()) {
       if (!documentCache[nextId]) {
         const mode = await this.getMode(nextTitle);
 
-        documentCache[nextId] = new CodeMirror.Doc(nextCode || '', mode);
+        documentCache[nextId] = new CodeMirror.Doc(nextCode || "", mode);
       }
       documentCache[currentId] = this.codemirror.swapDoc(documentCache[nextId]);
 
-      this.updateCodeMirrorCode(nextCode || '');
+      this.updateCodeMirrorCode(nextCode || "");
     }
   };
 
@@ -240,7 +240,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
       id: nextId,
       code: nextCode,
       errors: nextErrors,
-      title: nextTitle,
+      title: nextTitle
     } = nextProps;
 
     if (cm) {
@@ -248,14 +248,14 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
         currentId,
         nextId,
         nextCode,
-        nextTitle,
+        nextTitle
       }).then(() => {
         handleError(cm, currentErrors, nextErrors, nextCode, currentId, nextId);
       });
     }
   }
 
-  updateCodeMirrorCode(code: string = '') {
+  updateCodeMirrorCode(code: string = "") {
     const pos = this.codemirror.getCursor();
     this.codemirror.setValue(code);
     this.codemirror.setCursor(pos);
@@ -272,24 +272,24 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
   }
 
   getMode = async (title: string) => {
-    if (title == null) return 'jsx';
+    if (title == null) return "jsx";
 
     const kind = title.match(/\.([^.]*)$/);
 
     if (kind) {
-      if (kind[1] === 'css') {
-        await System.import('codemirror/mode/css/css');
-        return 'css';
-      } else if (kind[1] === 'html') {
-        await System.import('codemirror/mode/htmlmixed/htmlmixed');
-        return 'htmlmixed';
-      } else if (kind[1] === 'md') {
-        await System.import('codemirror/mode/markdown/markdown');
-        return 'markdown';
+      if (kind[1] === "css") {
+        await System.import("codemirror/mode/css/css");
+        return "css";
+      } else if (kind[1] === "html") {
+        await System.import("codemirror/mode/htmlmixed/htmlmixed");
+        return "htmlmixed";
+      } else if (kind[1] === "md") {
+        await System.import("codemirror/mode/markdown/markdown");
+        return "markdown";
       }
     }
 
-    return 'jsx';
+    return "jsx";
   };
 
   getCodeMirror = async (el: Element) => {
@@ -298,15 +298,15 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
       CodeMirror.commands.save = this.handleSaveCode;
     }
     const mode = await this.getMode(title);
-    documentCache[id] = new CodeMirror.Doc(code || '', mode);
+    documentCache[id] = new CodeMirror.Doc(code || "", mode);
 
     this.codemirror = getCodeMirror(el, documentCache[id]);
 
     if (!this.props.onlyViewMode) {
-      this.codemirror.on('change', this.handleChange);
+      this.codemirror.on("change", this.handleChange);
       this.setCodeMirrorPreferences();
     } else {
-      this.codemirror.setOption('readOnly', true);
+      this.codemirror.setOption("readOnly", true);
     }
   };
 
@@ -314,14 +314,14 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     const { preferences } = this.props;
 
     const defaultKeys = {
-      'Cmd-/': cm => {
+      "Cmd-/": cm => {
         cm.listSelections().forEach(() => {
-          cm.toggleComment({ lineComment: '//' });
+          cm.toggleComment({ lineComment: "//" });
         });
       },
-      'Cmd-P': cm => {
+      "Cmd-P": cm => {
         this.setState({ fuzzySearchEnabled: true });
-      },
+      }
     };
 
     const updateArgHints = cm => {
@@ -332,7 +332,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
 
     const showAutoComplete = cm => {
       if (this.server) {
-        const filter = new RegExp('[.a-z_$]', 'i');
+        const filter = new RegExp("[.a-z_$]", "i");
         if (
           cm.display.input.textarea.value &&
           cm.display.input.textarea.value.slice(-1).match(filter)
@@ -343,82 +343,82 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     };
 
     if (preferences.autoCompleteEnabled) {
-      const tern = await System.import('tern');
-      const defs = await System.import('tern/defs/ecmascript.json');
+      const tern = await System.import("tern");
+      const defs = await System.import("tern/defs/ecmascript.json");
       window.tern = tern;
       this.server =
         this.server ||
         new CodeMirror.TernServer({
-          defs: [defs],
+          defs: [defs]
         });
-      this.codemirror.on('cursorActivity', updateArgHints);
-      this.codemirror.on('inputRead', showAutoComplete);
-      this.codemirror.setOption('extraKeys', {
-        'Ctrl-Space': cm => {
+      this.codemirror.on("cursorActivity", updateArgHints);
+      this.codemirror.on("inputRead", showAutoComplete);
+      this.codemirror.setOption("extraKeys", {
+        "Ctrl-Space": cm => {
           if (this.server) this.server.complete(cm);
         },
-        'Ctrl-I': cm => {
+        "Ctrl-I": cm => {
           if (this.server) this.server.showType(cm);
         },
-        'Ctrl-O': cm => {
+        "Ctrl-O": cm => {
           if (this.server) this.server.showDocs(cm);
         },
-        'Alt-.': cm => {
+        "Alt-.": cm => {
           if (this.server) this.server.jumpToDef(cm);
         },
-        'Alt-,': cm => {
+        "Alt-,": cm => {
           if (this.server) this.server.jumpBack(cm);
         },
-        'Ctrl-Q': cm => {
+        "Ctrl-Q": cm => {
           if (this.server) this.server.rename(cm);
         },
-        'Ctrl-.': cm => {
+        "Ctrl-.": cm => {
           if (this.server) this.server.selectName(cm);
         },
         Tab: cm => {
           // Indent, or place 2 spaces
           if (cm.somethingSelected()) {
-            cm.indentSelection('add');
+            cm.indentSelection("add");
           } else {
-            const spaces = Array(cm.getOption('indentUnit') + 1).join(' ');
-            cm.replaceSelection(spaces, 'end', '+input');
+            const spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
+            cm.replaceSelection(spaces, "end", "+input");
 
             try {
-              cm.execCommand('emmetExpandAbbreviation');
+              cm.execCommand("emmetExpandAbbreviation");
             } catch (e) {
               console.error(e);
             }
           }
         },
-        Enter: 'emmetInsertLineBreak',
-        ...defaultKeys,
+        Enter: "emmetInsertLineBreak",
+        ...defaultKeys
       });
     } else {
       this.server = null;
-      this.codemirror.off('cursorActivity', updateArgHints);
-      this.codemirror.off('inputRead', showAutoComplete);
+      this.codemirror.off("cursorActivity", updateArgHints);
+      this.codemirror.off("inputRead", showAutoComplete);
     }
 
     if (preferences.vimMode) {
-      await System.import('codemirror/keymap/vim');
-      this.codemirror.setOption('keyMap', 'vim');
+      await System.import("codemirror/keymap/vim");
+      this.codemirror.setOption("keyMap", "vim");
     } else {
-      this.codemirror.setOption('keyMap', 'sublime');
+      this.codemirror.setOption("keyMap", "sublime");
     }
 
     if (preferences.lintEnabled) {
-      System.import('app/utils/codemirror/eslint-lint')
+      System.import("app/utils/codemirror/eslint-lint")
         .then(initializer => initializer.default())
         .then(() => {
-          this.codemirror.setOption('lint', true);
+          this.codemirror.setOption("lint", true);
         });
     } else {
-      this.codemirror.setOption('lint', false);
+      this.codemirror.setOption("lint", false);
     }
   };
 
   handleChange = (cm: any, change: any) => {
-    if (change.origin !== 'setValue') {
+    if (change.origin !== "setValue") {
       this.props.changeCode(this.props.id, cm.getValue());
     }
   };
@@ -429,14 +429,14 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     const { id, title, preferences } = this.props;
     const code = this.getCode();
     const mode = await this.getMode(title);
-    if (mode === 'jsx' || mode === 'css') {
+    if (mode === "jsx" || mode === "css") {
       try {
-        const prettify = await import('app/utils/codemirror/prettify');
+        const prettify = await import("app/utils/codemirror/prettify");
         const newCode = await prettify.default(
           code,
           mode,
           preferences.lintEnabled,
-          preferences.prettierConfig,
+          preferences.prettierConfig
         );
 
         if (newCode !== code) {
@@ -463,12 +463,12 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     const { title } = this.props;
     const mode = await this.getMode(title);
 
-    const newMode = mode === 'htmlmixed' ? 'html' : mode;
-    const addon = newMode === 'jsx' ? { jsx: true } : null;
+    const newMode = mode === "htmlmixed" ? "html" : mode;
+    const addon = newMode === "jsx" ? { jsx: true } : null;
 
-    this.codemirror.setOption('emmet', {
+    this.codemirror.setOption("emmet", {
       addons: addon,
-      syntax: newMode,
+      syntax: newMode
     });
   };
 
@@ -494,7 +494,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
       preferences,
       modules,
       directories,
-      id,
+      id
     } = this.props;
 
     return (
@@ -517,7 +517,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
               currentModuleId={id}
             />}
           <div
-            style={{ height: '100%', fontSize: preferences.fontSize || 14 }}
+            style={{ height: "100%", fontSize: preferences.fontSize || 14 }}
             ref={this.getCodeMirror}
           />
         </CodeContainer>

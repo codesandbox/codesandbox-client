@@ -1,10 +1,10 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export default styled.div`
   display: inline-block;
   display: flex;
   overflow: visible;
-  font-size: .875rem;
+  font-size: 0.875rem;
   margin: 0.5rem 0.75rem;
   input,
   textarea {
@@ -19,7 +19,7 @@ export default styled.div`
     background-color: ${props =>
       props.errorMessage
         ? props.theme.redBackground.clearer(0.5)
-        : 'rgba(0, 0, 0, 0.2)'};
+        : "rgba(0, 0, 0, 0.2)"};
     color: ${props =>
       props.errorMessage ? props.theme.red : props.theme.white};
 
