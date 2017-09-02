@@ -25,6 +25,6 @@ module.exports = Object.keys(process.env)
     {
       'process.env.NODE_ENV': NODE_ENV,
       'process.env.CODESANDBOX_HOST': JSON.stringify(getHost()),
-      'process.env.LOCAL_SERVER': !!LOCAL_SERVER
+      'process.env.LOCAL_SERVER': !!LOCAL_SERVER,
     }
   );

@@ -151,7 +151,7 @@ function openBrowser(port, protocol) {
       execSync('ps cax | grep "Google Chrome"');
       execSync('osascript chrome.applescript ' + url, {
         cwd: path.join(__dirname, 'utils'),
-        stdio: 'ignore'
+        stdio: 'ignore',
       });
       return;
     } catch (err) {
@@ -176,7 +176,7 @@ function addMiddleware(devServer, index) {
       // However API calls like `fetch()` won’t generally won’t accept text/html.
       // If this heuristic doesn’t work well for you, don’t use `proxy`.
       htmlAcceptHeaders: ['text/html'],
-      index
+      index,
     })
   );
   if (process.env.LOCAL_SERVER) {
@@ -207,13 +207,13 @@ function runDevServer(port, protocol, index) {
     // Reportedly, this avoids CPU overload on some systems.
     // https://github.com/facebookincubator/create-react-app/issues/293
     watchOptions: {
-      ignored: /node_modules/
+      ignored: /node_modules/,
     },
     // Enable HTTPS if the HTTPS environment variable is set to 'true'
     https: protocol === 'https',
     // contentBase: paths.staticPath,
     host: process.env.LOCAL_SERVER ? 'localhost' : 'codesandbox.dev',
-    disableHostCheck: !process.env.LOCAL_SERVER
+    disableHostCheck: !process.env.LOCAL_SERVER,
   });
 
   // Our custom middleware proxies requests to /index.html or a remote API.
@@ -245,7 +245,7 @@ function run(port) {
         } else {
           proxy.web(req, res, {
             target: 'http://localhost:3000/frame.html',
-            ignorePath: true
+            ignorePath: true,
           });
         }
       })

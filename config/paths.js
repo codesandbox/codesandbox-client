@@ -38,5 +38,5 @@ module.exports = {
   embedSrc,
   appNodeModules: resolveApp('node_modules'),
   ownNodeModules: resolveApp('node_modules'),
-  nodePaths
+  nodePaths,
 };

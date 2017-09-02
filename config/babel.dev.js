@@ -8,7 +8,7 @@ module.exports = {
     // Latest stable ECMAScript features
     ['es2015', { modules: false }],
     // JSX, Flow
-    'react'
+    'react',
   ],
   plugins: [
     require.resolve('babel-plugin-transform-async-to-generator'),
@@ -22,9 +22,9 @@ module.exports = {
       require.resolve('react-loadable/babel'),
       {
         server: true,
-        webpack: true
-      }
+        webpack: true,
+      },
     ],
-    require.resolve('react-hot-loader/babel')
-  ]
+    require.resolve('react-hot-loader/babel'),
+  ],
 };

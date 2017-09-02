@@ -12,7 +12,7 @@ module.exports = function(question, isYesDefault) {
   return new Promise(resolve => {
     var rlInterface = rl.createInterface({
       input: process.stdin,
-      output: process.stdout
+      output: process.stdout,
     });
 
     var hint = isYesDefault === true ? '[Y/n]' : '[y/N]';
