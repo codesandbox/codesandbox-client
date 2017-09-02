@@ -12,7 +12,7 @@ exports[`ExternalResource renders file if there is an extension 1`] = `
     ives.js
   </a>
   <div
-    className="sc-htpNat hFdhGH"
+    className="sc-htpNat eWseAC"
   >
     <div
       className="sc-bwzfXH gUazxX"
@@ -54,7 +54,7 @@ exports[`ExternalResource renders url if there is no extension 1`] = `
     https://ivesvh.com/
   </a>
   <div
-    className="sc-htpNat hFdhGH"
+    className="sc-htpNat eWseAC"
   >
     <div
       className="sc-bwzfXH gUazxX"
@@ -96,7 +96,7 @@ exports[`ExternalResource renders url if there is no extension 2`] = `
     https://ivesvh.com/
   </a>
   <div
-    className="sc-htpNat hFdhGH"
+    className="sc-htpNat eWseAC"
   >
     <div
       className="sc-bwzfXH gUazxX"
