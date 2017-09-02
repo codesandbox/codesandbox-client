@@ -6,7 +6,6 @@ import Media from 'react-media';
 import Save from 'react-icons/lib/md/save';
 import Fork from 'react-icons/lib/go/repo-forked';
 import Download from 'react-icons/lib/go/cloud-download';
-import PlusIcon from 'react-icons/lib/go/plus';
 import GithubIcon from 'react-icons/lib/go/mark-github';
 import ChevronLeft from 'react-icons/lib/md/chevron-left';
 import HeartIcon from 'react-icons/lib/fa/heart-o';
@@ -20,12 +19,7 @@ import type { Sandbox, CurrentUser } from 'common/types';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 import userActionCreators from 'app/store/user/actions';
 import modalActionCreators from 'app/store/modal/actions';
-import {
-  searchUrl,
-  newSandboxUrl,
-  importFromGitHubUrl,
-  patronUrl,
-} from 'app/utils/url-generator';
+import { searchUrl, patronUrl } from 'app/utils/url-generator';
 import ModeIcons from 'app/components/sandbox/ModeIcons';
 
 // $FlowIssue
@@ -36,6 +30,7 @@ import UserMenu from 'app/containers/UserMenu';
 import Preferences from 'app/containers/Preferences';
 
 import Action from './Action';
+import NewSandboxAction from './NewSandboxAction';
 import FeedbackView from './FeedbackView';
 import ShareView from './ShareView';
 
@@ -250,16 +245,7 @@ export default class Header extends React.PureComponent<Props> {
             email={user.email}
             sendMessage={userActions.sendFeedback}
           />
-          <Action
-            href={importFromGitHubUrl()}
-            tooltip="Import from GitHub"
-            Icon={GithubIcon}
-          />
-          <Action
-            href={newSandboxUrl()}
-            tooltip="New Sandbox"
-            Icon={PlusIcon}
-          />
+          <NewSandboxAction showHighlight />
           <Action
             onClick={this.openPreferences}
             tooltip="Preferences"

@@ -35,7 +35,9 @@ const styles = props =>
 
     &:hover {
       color: rgba(255,255,255, 1);
-      border-color: ${props.theme.secondary()}
+      border-color: ${props.hideBottomHighlight
+        ? 'transparent'
+        : props.theme.secondary()}
     }
   `}
 `;
@@ -85,6 +87,7 @@ type Props = {
   highlight: ?boolean,
   tooltip: ?string,
   moreInfo: ?boolean,
+  hideBottomHighlight: ?boolean,
   unresponsive: boolean,
   a: ?boolean,
   iconProps: Object,

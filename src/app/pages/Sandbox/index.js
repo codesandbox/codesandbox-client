@@ -16,6 +16,7 @@ import SubTitle from 'app/components/text/SubTitle';
 import Centered from 'app/components/flex/Centered';
 
 import Editor from './Editor';
+import Skeleton from './Editor/Content/Skeleton';
 
 type Props = {
   sandboxes: { [id: string]: Sandbox },
@@ -53,11 +54,15 @@ class SandboxPage extends React.PureComponent<Props, State> {
   }
 
   fetchSandbox = (id: string) => {
-    this.props.sandboxActions.getById(id).then(this.setId, this.handleNotFound);
+    this.setState({ loading: true }, () => {
+      this.props.sandboxActions
+        .getById(id)
+        .then(this.setId, this.handleNotFound);
+    });
   };
 
   setId = (sandbox: Sandbox) => {
-    this.setState({ currentId: sandbox.id });
+    this.setState({ currentId: sandbox.id, loading: false });
   };
 
   componentDidUpdate(oldProps) {
@@ -78,17 +83,25 @@ class SandboxPage extends React.PureComponent<Props, State> {
 
   handleNotFound = e => {
     if (e.response && e.response.status === 404) {
-      this.setState({ notFound: true });
+      this.setState({ notFound: true, loading: false });
     } else {
-      this.setState({ error: e.apiMessage || e.message });
+      this.setState({ error: e.apiMessage || e.message, loading: false });
     }
   };
 
-  state = { notFound: false, currentId: null };
+  state = { notFound: false, currentId: null, loading: false };
 
   render() {
     const { sandboxes, match } = this.props;
     const { currentId } = this.state;
+
+    if (this.state.loading) {
+      return (
+        <Centered horizontal vertical>
+          <Skeleton />
+        </Centered>
+      );
+    }
 
     if (this.state.notFound) {
       return (

@@ -16,7 +16,10 @@ export const host = () => {
 export const protocolAndHost = () => `${location.protocol}//${host()}`;
 
 export const newSandboxUrl = () => `/s/new`;
+export const newPreactSandboxUrl = () => `/s/preact`;
+export const newVueSandboxUrl = () => `/s/vue`;
 export const importFromGitHubUrl = () => `/s/github`;
+export const uploadFromCliUrl = () => `/s/cli`;
 
 const sandboxGitUrl = (git: {
   repo: string,

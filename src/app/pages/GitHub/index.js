@@ -6,6 +6,8 @@ import Navigation from 'app/containers/Navigation';
 import Centered from 'app/components/flex/Centered';
 import Title from 'app/components/text/Title';
 import SubTitle from 'app/components/text/SubTitle';
+import MaxWidth from 'app/components/flex/MaxWidth';
+import Margin from 'app/components/spacing/Margin';
 import Input from 'app/components/Input';
 import Button from 'app/components/buttons/Button';
 import { gitHubToSandboxUrl, protocolAndHost } from 'app/utils/url-generator';
@@ -77,42 +79,47 @@ export default class GitHub extends React.PureComponent<{}, State> {
   render() {
     const { url, transformedUrl, error } = this.state;
     return (
-      <Container>
-        <Navigation title="GitHub Import" />
+      <MaxWidth>
+        <Margin vertical={1.5} horizontal={1.5}>
+          <Container>
+            <Navigation title="GitHub Import" />
 
-        <Content vertical horizontal>
-          <Description>
-            <Title>Import from GitHub</Title>
-            <SubTitle>
-              Enter the URL to your GitHub repository to generate a URL to your
-              sandbox. The sandbox will stay in sync with your repository.
-            </SubTitle>
-          </Description>
+            <Content vertical horizontal>
+              <Description>
+                <Title>Import from GitHub</Title>
+                <SubTitle>
+                  Enter the URL to your GitHub repository to generate a URL to
+                  your sandbox. The sandbox will stay in sync with your
+                  repository.
+                </SubTitle>
+              </Description>
 
-          <Label htmlFor="githuburl">
-            URL to GitHub Repository (supports branches and paths too)
-          </Label>
-          <StyledInput
-            name="githuburl"
-            value={url}
-            onChange={this.updateUrl}
-            placeholder="Insert GitHub URL..."
-          />
+              <Label htmlFor="githuburl">
+                URL to GitHub Repository (supports branches and paths too)
+              </Label>
+              <StyledInput
+                name="githuburl"
+                value={url}
+                onChange={this.updateUrl}
+                placeholder="Insert GitHub URL..."
+              />
 
-          {error !== null && <ErrorMessage>{error}</ErrorMessage>}
+              {error !== null && <ErrorMessage>{error}</ErrorMessage>}
 
-          <Label htmlFor="sandboxurl">Converted Sandbox URL</Label>
-          <StyledInput
-            name="sandboxurl"
-            value={transformedUrl}
-            placeholder="The Sandbox URL"
-          />
+              <Label htmlFor="sandboxurl">Converted Sandbox URL</Label>
+              <StyledInput
+                name="sandboxurl"
+                value={transformedUrl}
+                placeholder="The Sandbox URL"
+              />
 
-          <Button disabled={!transformedUrl} to={gitHubToSandboxUrl(url)}>
-            Open Sandbox
-          </Button>
-        </Content>
-      </Container>
+              <Button disabled={!transformedUrl} to={gitHubToSandboxUrl(url)}>
+                Open Sandbox
+              </Button>
+            </Content>
+          </Container>
+        </Margin>
+      </MaxWidth>
     );
   }
 }
