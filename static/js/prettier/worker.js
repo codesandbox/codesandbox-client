@@ -6,24 +6,24 @@ self.global = self;
 self.Buffer = {
   isBuffer: function() {
     return false;
-  }
+  },
 };
 // eslint-disable-next-line
 fs = module$1 = module = path = os = crypto = {};
 self.process = { argv: [], env: { PRETTIER_DEBUG: true } };
 self.assert = { ok: function() {}, strictEqual: function() {} };
 self.require = function require(path) {
-  return self[path.replace(/.+-/, "")];
+  return self[path.replace(/.+-/, '')];
 };
 
-importScripts("/static/js/prettier/index.js");
+importScripts('/static/js/prettier/index.js');
 var prettier = index; // eslint-disable-line
 
 var parsersLoaded = {};
 
 self.onmessage = function(message) {
   var options = message.data.options || {};
-  options.parser = options.parser || "babylon";
+  options.parser = options.parser || 'babylon';
   try {
     var formatted = formatCode(message.data.text, options);
   } catch (e) {
@@ -46,11 +46,11 @@ self.onmessage = function(message) {
   }
 
   if (message.data.doc) {
-    lazyLoadParser("babylon");
+    lazyLoadParser('babylon');
     try {
       doc = prettier.__debug.formatDoc(
         prettier.__debug.printToDoc(message.data.text, options),
-        { parser: "babylon" }
+        { parser: 'babylon' }
       );
     } catch (e) {
       doc = e.toString();
@@ -61,7 +61,7 @@ self.onmessage = function(message) {
     formatted: formatted,
     text: message.data.text,
     doc: doc,
-    ast: ast
+    ast: ast,
   });
 };
 
@@ -83,10 +83,10 @@ function formatCode(text, options) {
 
 function lazyLoadParser(parser) {
   var script =
-    parser === "json" ? "parser-babylon.js" : "parser-" + parser + ".js";
+    parser === 'json' ? 'parser-babylon.js' : 'parser-' + parser + '.js';
 
   if (!parsersLoaded[parser]) {
-    importScripts("/static/js/prettier/" + script);
+    importScripts('/static/js/prettier/' + script);
     parsersLoaded[parser] = true;
   }
 }
