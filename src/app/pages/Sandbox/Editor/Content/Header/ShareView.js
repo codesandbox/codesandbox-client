@@ -1,28 +1,28 @@
-import React from "react";
-import { connect } from "react-redux";
-import { createSelector } from "reselect";
-import styled from "styled-components";
-import ShareIcon from "react-icons/lib/md/share";
-import Files from "embed/components/Files";
-import ModeIcons from "app/components/sandbox/ModeIcons";
+import React from 'react';
+import { connect } from 'react-redux';
+import { createSelector } from 'reselect';
+import styled from 'styled-components';
+import ShareIcon from 'react-icons/lib/md/share';
+import Files from 'embed/components/Files';
+import ModeIcons from 'app/components/sandbox/ModeIcons';
 import {
   findMainModule,
   modulesFromSandboxSelector,
-  getModulePath
-} from "app/store/entities/sandboxes/modules/selectors";
-import { directoriesFromSandboxSelector } from "app/store/entities/sandboxes/directories/selectors";
+  getModulePath,
+} from 'app/store/entities/sandboxes/modules/selectors';
+import { directoriesFromSandboxSelector } from 'app/store/entities/sandboxes/directories/selectors';
 import {
   optionsToParameterizedUrl,
   protocolAndHost,
   sandboxUrl,
-  embedUrl
-} from "app/utils/url-generator";
+  embedUrl,
+} from 'app/utils/url-generator';
 
-import type { Sandbox, Directory, Module } from "common/types";
+import type { Sandbox, Directory, Module } from 'common/types';
 
-import Preference from "app/components/Preference";
-import HoverMenu from "./HoverMenu";
-import Action from "./Action";
+import Preference from 'app/components/Preference';
+import HoverMenu from './HoverMenu';
+import Action from './Action';
 
 const Container = styled.div`
   position: relative;
@@ -133,10 +133,10 @@ type Props = {
   sandbox: Sandbox,
   modules: Array<Module>,
   directories: Array<Directory>,
-  sendMessage: (message: string) => void
+  sendMessage: (message: string) => void,
 };
 
-const BUTTON_URL = "https://codesandbox.io/static/img/play-codesandbox.svg";
+const BUTTON_URL = 'https://codesandbox.io/static/img/play-codesandbox.svg';
 
 const mapStateToProps = createSelector(
   modulesFromSandboxSelector,
@@ -154,16 +154,16 @@ class ShareView extends React.PureComponent {
     hideNavigation: false,
     isCurrentModuleView: false,
     fontSize: 14,
-    initialPath: ""
+    initialPath: '',
   };
 
   handleChange = e => this.setState({ message: e.target.value });
 
   handleSend = () => {
-    if (this.state.message !== "") {
+    if (this.state.message !== '') {
       this.toggle();
       this.props.sendMessage(this.state.message);
-      this.setState({ message: "" });
+      this.setState({ message: '' });
     }
   };
 
@@ -186,7 +186,7 @@ class ShareView extends React.PureComponent {
       hideNavigation,
       isCurrentModuleView,
       fontSize,
-      initialPath
+      initialPath,
     } = this.state;
 
     const options = {};
@@ -198,10 +198,10 @@ class ShareView extends React.PureComponent {
     }
 
     if (showEditor && !showPreview) {
-      options.view = "editor";
+      options.view = 'editor';
     }
     if (!showEditor && showPreview) {
-      options.view = "preview";
+      options.view = 'preview';
     }
 
     if (autoResize) {
@@ -291,7 +291,7 @@ class ShareView extends React.PureComponent {
       hideNavigation,
       isCurrentModuleView,
       fontSize,
-      initialPath
+      initialPath,
     } = this.state;
 
     const defaultModule =
@@ -302,12 +302,12 @@ class ShareView extends React.PureComponent {
         <HoverMenu
           HeaderComponent={Action}
           headerProps={{
-            title: "Share",
+            title: 'Share',
             Icon: ShareIcon,
-            moreInfo: true
+            moreInfo: true,
           }}
         >
-          {() =>
+          {() => (
             <ShareOptions>
               <h3>Share options</h3>
               <Divider>
@@ -355,10 +355,10 @@ class ShareView extends React.PureComponent {
                     <h4>Default view</h4>
                     <div
                       style={{
-                        position: "relative",
-                        height: "2rem",
-                        width: "200px",
-                        marginLeft: "-10px"
+                        position: 'relative',
+                        height: '2rem',
+                        width: '200px',
+                        marginLeft: '-10px',
                       }}
                     >
                       <ModeIcons
@@ -419,7 +419,7 @@ class ShareView extends React.PureComponent {
                     <ButtonContainer>
                       <a href={sandboxUrl(sandbox)}>
                         <img
-                          alt={sandbox.title || "Untitled"}
+                          alt={sandbox.title || 'Untitled'}
                           src={BUTTON_URL}
                         />
                       </a>
@@ -440,7 +440,8 @@ class ShareView extends React.PureComponent {
                   </Inputs>
                 </Column>
               </Divider>
-            </ShareOptions>}
+            </ShareOptions>
+          )}
         </HoverMenu>
       </Container>
     );

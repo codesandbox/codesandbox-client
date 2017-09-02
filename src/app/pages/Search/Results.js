@@ -1,11 +1,11 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
 
-import { Hits, Pagination } from "react-instantsearch/dom";
-import Centered from "app/components/flex/Centered";
+import { Hits, Pagination } from 'react-instantsearch/dom';
+import Centered from 'app/components/flex/Centered';
 
-import ResultInfo from "./ResultInfo";
-import SandboxCard from "./SandboxCard";
+import ResultInfo from './ResultInfo';
+import SandboxCard from './SandboxCard';
 
 const Container = styled.div`
   flex: 2;
@@ -16,11 +16,12 @@ const Container = styled.div`
   color: rgba(255, 255, 255, 0.6);
 `;
 
-export default () =>
+export default () => (
   <Container>
     <ResultInfo />
     <Hits hitComponent={SandboxCard} />
     <Centered horizontal>
       <Pagination />
     </Centered>
-  </Container>;
+  </Container>
+);

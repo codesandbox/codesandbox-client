@@ -1,6 +1,6 @@
-import React from "react";
+import React from 'react';
 
-export default () =>
+export default () => (
   <div>
     <h1 id="ppHeader">CodeSandbox Privacy Policy</h1>
     <div id="ppBody">
@@ -82,7 +82,7 @@ export default () =>
         only accessible by a limited number of persons who have special access
         rights to such systems, and are required to keep the information
         confidential. In addition, all sensitive/credit information you supply
-        is encrypted via Secure Socket Layer (SSL) technology.{" "}
+        is encrypted via Secure Socket Layer (SSL) technology.{' '}
       </div>
       <br />
       <div className="innerText">
@@ -150,7 +150,7 @@ export default () =>
         release is appropriate to comply with the law, enforce our site
         policies, or protect ours or others' rights, property or safety. <br />
         <br /> However, non-personally identifiable visitor information may be
-        provided to other parties for marketing, advertising, or other uses.{" "}
+        provided to other parties for marketing, advertising, or other uses.{' '}
       </div>
       <div className="grayText">
         <h2>Third-party links</h2>
@@ -199,7 +199,7 @@ export default () =>
         cookies (such as the Google Analytics cookies) and third-party cookies
         (such as the DoubleClick cookie) or other third-party identifiers
         together to compile data regarding user interactions with ad impressions
-        and other ad service functions as they relate to our website.{" "}
+        and other ad service functions as they relate to our website.{' '}
       </div>
       <div className="innerText">
         <h2>Opting out:</h2>
@@ -255,7 +255,7 @@ export default () =>
       </div>
       <div className="innerText">
         We honor Do Not Track signals and Do Not Track, plant cookies, or use
-        advertising when a Do Not Track (DNT) browser mechanism is in place.{" "}
+        advertising when a Do Not Track (DNT) browser mechanism is in place.{' '}
       </div>
       <div className="innerText">
         <h2>Does our site allow third-party behavioral tracking?</h2>
@@ -398,10 +398,11 @@ export default () =>
       us using the information below.<br />
     </div>
     <div className="innerText">codesandbox.io</div>
-    <div className="innerText">Calslaan 5B</div>Enschede, Overijssel 7522 MH{" "}
+    <div className="innerText">Calslaan 5B</div>Enschede, Overijssel 7522 MH{' '}
     <div className="innerText">Netherlands</div>
     <div className="innerText">hello@codesandbox.io</div>
     <div className="innerText">
       <br />Last Edited on 2017-07-19
     </div>
-  </div>;
+  </div>
+);

@@ -1,18 +1,18 @@
 // @flow
-import * as React from "react";
-import styled from "styled-components";
-import { Link } from "react-router-dom";
-import ConfirmLink from "app/components/ConfirmLink";
-import GithubBadge from "app/components/sandbox/GithubBadge";
-import { sandboxUrl, githubRepoUrl, profileUrl } from "app/utils/url-generator";
-import UserWithAvatar from "app/components/user/UserWithAvatar";
-import Stats from "app/components/sandbox/Stats";
-import PrivacyStatus from "app/components/sandbox/PrivacyStatus";
-import getTemplateDefinition from "common/templates";
+import * as React from 'react';
+import styled from 'styled-components';
+import { Link } from 'react-router-dom';
+import ConfirmLink from 'app/components/ConfirmLink';
+import GithubBadge from 'app/components/sandbox/GithubBadge';
+import { sandboxUrl, githubRepoUrl, profileUrl } from 'app/utils/url-generator';
+import UserWithAvatar from 'app/components/user/UserWithAvatar';
+import Stats from 'app/components/sandbox/Stats';
+import PrivacyStatus from 'app/components/sandbox/PrivacyStatus';
+import getTemplateDefinition from 'common/templates';
 
-import type { User, GitInfo } from "common/types";
-import WorkspaceInputContainer from "../WorkspaceInputContainer";
-import WorkspaceSubtitle from "../WorkspaceSubtitle";
+import type { User, GitInfo } from 'common/types';
+import WorkspaceInputContainer from '../WorkspaceInputContainer';
+import WorkspaceSubtitle from '../WorkspaceSubtitle';
 
 const Item = styled.div`
   margin: 1rem;
@@ -60,14 +60,14 @@ type Props = {
   preventTransition: boolean,
   author: ?User,
   git: ?GitInfo,
-  privacy: number
+  privacy: number,
 };
 
 export default class Project extends React.PureComponent<
   Props,
   {
     title: ?string,
-    description: ?string
+    description: ?string,
   }
 > {
   constructor(props: Props) {
@@ -75,7 +75,7 @@ export default class Project extends React.PureComponent<
 
     this.state = {
       title: props.title,
-      description: props.description
+      description: props.description,
     };
   }
 
@@ -89,7 +89,7 @@ export default class Project extends React.PureComponent<
     const { title, description } = this.state;
 
     if (title !== oldTitle || description !== oldDescription) {
-      this.props.updateSandboxInfo(id, title || "", description || "");
+      this.props.updateSandboxInfo(id, title || '', description || '');
     }
   };
 
@@ -120,7 +120,7 @@ export default class Project extends React.PureComponent<
       git,
       template,
       preventTransition,
-      privacy
+      privacy,
     } = this.props;
     const { title, description } = this.state;
     return (
@@ -128,8 +128,8 @@ export default class Project extends React.PureComponent<
         <WorkspaceSubtitle>Title</WorkspaceSubtitle>
         <WorkspaceInputContainer>
           <input
-            value={title || ""}
-            onChange={this.setValue("title")}
+            value={title || ''}
+            onChange={this.setValue('title')}
             type="text"
             onBlur={this.updateSandboxInfo}
             onKeyUp={this.handleKeyUp}
@@ -138,15 +138,15 @@ export default class Project extends React.PureComponent<
         <WorkspaceSubtitle>Description</WorkspaceSubtitle>
         <WorkspaceInputContainer>
           <textarea
-            value={description || ""}
-            onChange={this.setValue("description")}
+            value={description || ''}
+            onChange={this.setValue('description')}
             type="text"
             onBlur={this.updateSandboxInfo}
             onKeyUp={this.handleKeyUp}
             rows="5"
           />
         </WorkspaceInputContainer>
-        {!!author &&
+        {!!author && (
           <div>
             <WorkspaceSubtitle>Author</WorkspaceSubtitle>
             <Item>
@@ -158,9 +158,10 @@ export default class Project extends React.PureComponent<
                 />
               </UserLink>
             </Item>
-          </div>}
+          </div>
+        )}
 
-        {!!git &&
+        {!!git && (
           <div>
             <WorkspaceSubtitle>GitHub Repository</WorkspaceSubtitle>
             <GitContainer>
@@ -170,9 +171,10 @@ export default class Project extends React.PureComponent<
                 repo={git.repo}
               />
             </GitContainer>
-          </div>}
+          </div>
+        )}
 
-        {forkedSandbox &&
+        {forkedSandbox && (
           <div>
             <WorkspaceSubtitle>Forked from</WorkspaceSubtitle>
 
@@ -185,15 +187,17 @@ export default class Project extends React.PureComponent<
                 {forkedSandbox.title || forkedSandbox.id}
               </ConfirmLink>
             </Item>
-          </div>}
+          </div>
+        )}
 
-        {privacy > 0 &&
+        {privacy > 0 && (
           <div>
             <WorkspaceSubtitle>Privacy Status</WorkspaceSubtitle>
             <PrivacyContainer>
               <PrivacyStatus privacy={privacy} />
             </PrivacyContainer>
-          </div>}
+          </div>
+        )}
 
         <div>
           <WorkspaceSubtitle>Template</WorkspaceSubtitle>

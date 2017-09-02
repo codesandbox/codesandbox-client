@@ -1,20 +1,20 @@
 // @flow
-import { flattenDeep } from "lodash";
+import { flattenDeep } from 'lodash';
 
-import type { Module } from "common/types";
-import getModulePath from "common/sandbox/get-module-path";
+import type { Module } from 'common/types';
+import getModulePath from 'common/sandbox/get-module-path';
 
-import type { SourceMap } from "./transpilers/utils/get-source-map";
-import ModuleError from "./errors/module-error";
-import ModuleWarning from "./errors/module-warning";
+import type { SourceMap } from './transpilers/utils/get-source-map';
+import ModuleError from './errors/module-error';
+import ModuleWarning from './errors/module-warning';
 
-import resolveDependency from "./loaders/dependency-resolver";
-import evaluate from "./loaders/eval";
+import resolveDependency from './loaders/dependency-resolver';
+import evaluate from './loaders/eval';
 
-import Manager from "./manager";
+import Manager from './manager';
 
 type ChildModule = Module & {
-  parent: Module
+  parent: Module,
 };
 
 class ModuleSource {
@@ -39,7 +39,7 @@ export type LoaderContext = {
   ) => TranspiledModule, // eslint-disable-line no-use-before-define
   emitFile: (name: string, content: string, sourceMap: SourceMap) => void,
   options: {
-    context: "/"
+    context: '/',
   },
   webpack: boolean,
   sourceMap: boolean,
@@ -50,16 +50,16 @@ export type LoaderContext = {
   addDependency: (
     depPath: string,
     options: ?{
-      isAbsolute: boolean
+      isAbsolute: boolean,
     }
   ) => TranspiledModule, // eslint-disable-line no-use-before-define
   addDependenciesInDirectory: (
     depPath: string,
     options: {
-      isAbsolute: boolean
+      isAbsolute: boolean,
     }
   ) => Array<TranspiledModule>, // eslint-disable-line no-use-before-define
-  _module: TranspiledModule // eslint-disable-line no-use-before-define
+  _module: TranspiledModule, // eslint-disable-line no-use-before-define
 };
 
 class Compilation {
@@ -76,7 +76,7 @@ export default class TranspiledModule {
   source: ?ModuleSource;
   cacheable: boolean;
   assets: {
-    [name: string]: ModuleSource
+    [name: string]: ModuleSource,
   };
   isEntry: boolean;
   childModules: Array<TranspiledModule>;
@@ -100,7 +100,7 @@ export default class TranspiledModule {
    * @param {*} module
    * @param {*} query A webpack query, eg: "url-loader?mimetype=image/png"
    */
-  constructor(module: Module, query: string = "") {
+  constructor(module: Module, query: string = '') {
     this.module = module;
     this.query = query;
     this.errors = [];
@@ -145,9 +145,11 @@ export default class TranspiledModule {
     if (this.compilation) {
       try {
         this.compilation = null;
-        Array.from(this.initiators).filter(t => t.compilation).forEach(dep => {
-          dep.resetCompilation();
-        });
+        Array.from(this.initiators)
+          .filter(t => t.compilation)
+          .forEach(dep => {
+            dep.resetCompilation();
+          });
       } catch (e) {
         console.error(e);
       }
@@ -175,7 +177,7 @@ export default class TranspiledModule {
       manager.getModules(),
       manager.getDirectories(),
       this.module.id
-    ).replace("/", "");
+    ).replace('/', '');
 
     return {
       emitWarning: warning => {
@@ -189,7 +191,7 @@ export default class TranspiledModule {
         code: string,
         directoryShortid = this.module.directoryShortid
       ) => {
-        const queryPath = title.split("!");
+        const queryPath = title.split('!');
         // pop() mutates queryPath, queryPath is now just the loaders
         const moduleName = queryPath.pop();
 
@@ -201,12 +203,12 @@ export default class TranspiledModule {
           directoryShortid,
           title: moduleName,
           parent: this.module,
-          code
+          code,
         };
 
         const transpiledModule = manager.addModule(
           moduleCopy,
-          queryPath.join("!")
+          queryPath.join('!')
         );
         this.childModules.push(transpiledModule);
 
@@ -264,20 +266,20 @@ export default class TranspiledModule {
           manager.getDirectories(),
           module.id
         )
-          .replace("/", "")
-          .split("?");
+          .replace('/', '')
+          .split('?');
 
         return name;
       },
       options: {
-        context: "/",
-        ...transpilerOptions
+        context: '/',
+        ...transpilerOptions,
       },
       webpack: true,
       sourceMap: true,
-      target: "web",
+      target: 'web',
       _module: this,
-      path
+      path,
     };
   }
 
@@ -313,7 +315,7 @@ export default class TranspiledModule {
     this.errors = [];
     this.warnings = [];
 
-    let code = this.module.code || "";
+    let code = this.module.code || '';
     let finalSourceMap = null;
 
     for (let i = 0; i < transpilers.length; i += 1) {
@@ -325,7 +327,7 @@ export default class TranspiledModule {
       try {
         const {
           transpiledCode,
-          sourceMap
+          sourceMap,
         } = await transpilerConfig.transpiler.transpile(code, loaderContext); // eslint-disable-line no-await-in-loop
 
         if (this.errors.length) {
@@ -346,7 +348,7 @@ export default class TranspiledModule {
       manager.getModules(),
       manager.getDirectories(),
       this.module.id
-    ).replace("/", "");
+    ).replace('/', '');
     // Add the source of the file by default, this is important for source mapping
     // errors back to their origin
     code = `${code}\n//# sourceURL=${path}`;
@@ -359,7 +361,7 @@ export default class TranspiledModule {
           t.transpile(manager)
         ),
         ...Array.from(this.dependencies).map(t => t.transpile(manager)),
-        ...this.childModules.map(t => t.transpile(manager))
+        ...this.childModules.map(t => t.transpile(manager)),
       ])
     );
   }
@@ -396,7 +398,7 @@ export default class TranspiledModule {
         const aliasedPath = manager.preset.getAliasedPath(path);
 
         // eslint-disable-line no-unused-vars
-        if (/^(\w|@)/.test(aliasedPath) && !aliasedPath.includes("!")) {
+        if (/^(\w|@)/.test(aliasedPath) && !aliasedPath.includes('!')) {
           // So it must be a dependency
 
           return resolveDependency(aliasedPath, manager.externals);
@@ -425,7 +427,7 @@ export default class TranspiledModule {
           ? cache.exports
           : manager.evaluateTranspiledModule(requiredTranspiledModule, [
               ...parentModules,
-              transpiledModule
+              transpiledModule,
             ]);
       }
 

@@ -25,7 +25,7 @@ const sandboxGitUrl = (git: {
   repo: string,
   branch: string,
   username: string,
-  path: string
+  path: string,
 }) =>
   buildEncodedUri`github/${git.username}/${git.repo}/tree/${git.branch}/` +
   git.path;
@@ -72,12 +72,12 @@ export const githubRepoUrl = ({
   repo,
   branch,
   username,
-  path
+  path,
 }: {
   repo: string,
   branch: string,
   username: string,
-  path: string
+  path: string,
 }) =>
   buildEncodedUri`https://github.com/${username}/${repo}/tree/${branch}/` +
   path;

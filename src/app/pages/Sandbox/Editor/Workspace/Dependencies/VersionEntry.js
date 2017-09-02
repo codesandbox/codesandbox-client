@@ -1,10 +1,10 @@
-import React from "react";
-import styled from "styled-components";
-import CrossIcon from "react-icons/lib/md/clear";
-import RefreshIcon from "react-icons/lib/md/refresh";
+import React from 'react';
+import styled from 'styled-components';
+import CrossIcon from 'react-icons/lib/md/clear';
+import RefreshIcon from 'react-icons/lib/md/refresh';
 
-import EntryContainer from "../EntryContainer";
-import { IconArea, Icon } from "../Icon";
+import EntryContainer from '../EntryContainer';
+import { IconArea, Icon } from '../Icon';
 
 const Version = styled.div`
   transition: 0.3s ease all;
@@ -17,11 +17,11 @@ type Props = {
   dependencies: { [key: string]: string },
   dependency: string,
   onRemove: (dep: string) => void,
-  onRefresh: (dep: string) => void
+  onRefresh: (dep: string) => void,
 };
 
 type State = {
-  hovering: boolean
+  hovering: boolean,
 };
 
 export default class VersionEntry extends React.PureComponent {
@@ -29,7 +29,7 @@ export default class VersionEntry extends React.PureComponent {
   state: State;
 
   state = {
-    hovering: false
+    hovering: false,
   };
 
   handleRemove = () => this.props.onRemove(this.props.dependency);
@@ -46,13 +46,9 @@ export default class VersionEntry extends React.PureComponent {
         onMouseEnter={this.onMouseEnter}
         onMouseLeave={this.onMouseLeave}
       >
-        <span>
-          {dependency}
-        </span>
-        <Version hovering={hovering}>
-          {dependencies[dependency]}
-        </Version>
-        {hovering &&
+        <span>{dependency}</span>
+        <Version hovering={hovering}>{dependencies[dependency]}</Version>
+        {hovering && (
           <IconArea>
             <Icon onClick={this.handleRefresh}>
               <RefreshIcon />
@@ -60,7 +56,8 @@ export default class VersionEntry extends React.PureComponent {
             <Icon onClick={this.handleRemove}>
               <CrossIcon />
             </Icon>
-          </IconArea>}
+          </IconArea>
+        )}
       </EntryContainer>
     );
   }

@@ -8,27 +8,27 @@
  */
 
 /* @flow */
-import { applyStyles } from "../utils/dom/css";
-import { footerStyle } from "../styles";
+import { applyStyles } from '../utils/dom/css';
+import { footerStyle } from '../styles';
 
 function createFooter(document: Document) {
-  const div = document.createElement("div");
+  const div = document.createElement('div');
   applyStyles(div, footerStyle);
   div.appendChild(
     document.createTextNode(
-      "This screen is visible only in development. It will not appear if the app crashes in production."
+      'This screen is visible only in development. It will not appear if the app crashes in production.'
     )
   );
-  div.appendChild(document.createElement("br"));
+  div.appendChild(document.createElement('br'));
   div.appendChild(
     document.createTextNode(
-      "Open your browser’s developer console to further inspect this error."
+      'Open your browser’s developer console to further inspect this error.'
     )
   );
-  div.appendChild(document.createElement("br"));
+  div.appendChild(document.createElement('br'));
   div.appendChild(
     document.createTextNode(
-      "This error overlay is powered by `react-error-overlay` used in `create-react-app`."
+      'This error overlay is powered by `react-error-overlay` used in `create-react-app`.'
     )
   );
   return div;

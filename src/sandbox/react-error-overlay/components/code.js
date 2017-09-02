@@ -8,19 +8,19 @@
  */
 
 /* @flow */
-import type { ScriptLine } from "../utils/stack-frame";
-import { applyStyles } from "../utils/dom/css";
+import type { ScriptLine } from '../utils/stack-frame';
+import { applyStyles } from '../utils/dom/css';
 import {
   codeStyle,
   primaryErrorStyle,
   primaryPreStyle,
   secondaryErrorStyle,
-  secondaryPreStyle
-} from "../styles";
+  secondaryPreStyle,
+} from '../styles';
 
-import generateAnsiHtml from "react-dev-utils/ansiHTML";
+import generateAnsiHtml from 'react-dev-utils/ansiHTML';
 
-import codeFrame from "babel-code-frame";
+import codeFrame from 'babel-code-frame';
 
 function createCode(
   document: Document,
@@ -36,7 +36,7 @@ function createCode(
   sourceLines.forEach(function(e) {
     const { content: text } = e;
     const m = text.match(/^\s*/);
-    if (text === "") {
+    if (text === '') {
       return;
     }
     if (m && m[0]) {
@@ -55,17 +55,17 @@ function createCode(
     sourceCode[line - 1] = text;
   });
   const ansiHighlight = codeFrame(
-    sourceCode.join("\n"),
+    sourceCode.join('\n'),
     lineNum,
     columnNum == null ? 0 : columnNum - (isFinite(whiteSpace) ? whiteSpace : 0),
     {
       forceColor: true,
       linesAbove: contextSize,
-      linesBelow: contextSize
+      linesBelow: contextSize,
     }
   );
   const htmlHighlight = generateAnsiHtml(ansiHighlight);
-  const code = document.createElement("code");
+  const code = document.createElement('code');
   code.innerHTML = htmlHighlight;
   applyStyles(code, codeStyle);
 
@@ -80,7 +80,7 @@ function createCode(
       if (text == null) {
         continue;
       }
-      if (text.indexOf(" " + lineNum + " |") === -1) {
+      if (text.indexOf(' ' + lineNum + ' |') === -1) {
         continue;
       }
       // $FlowFixMe
@@ -89,14 +89,14 @@ function createCode(
       break oLoop;
     }
   }
-  const pre = document.createElement("pre");
+  const pre = document.createElement('pre');
   applyStyles(pre, main ? primaryPreStyle : secondaryPreStyle);
   pre.appendChild(code);
 
-  if (typeof onSourceClick === "function") {
+  if (typeof onSourceClick === 'function') {
     let handler = onSourceClick;
-    pre.style.cursor = "pointer";
-    pre.addEventListener("click", function() {
+    pre.style.cursor = 'pointer';
+    pre.addEventListener('click', function() {
       handler();
     });
   }

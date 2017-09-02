@@ -1,9 +1,9 @@
-import postcss from "postcss";
+import postcss from 'postcss';
 
-import { type LoaderContext } from "../../../transpiled-module";
+import { type LoaderContext } from '../../../transpiled-module';
 
-import trim from "./plugins/trim";
-import scopeId from "./plugins/scope-id";
+import trim from './plugins/trim';
+import scopeId from './plugins/scope-id';
 
 export default function(code: string, loaderContext: LoaderContext) {
   return new Promise(resolve => {
@@ -25,7 +25,7 @@ export default function(code: string, loaderContext: LoaderContext) {
     const options = {
       to: loaderContext.path,
       from: loaderContext.path,
-      map: false
+      map: false,
     };
 
     // add plugin for vue-loader scoped css rewrite
@@ -42,23 +42,25 @@ export default function(code: string, loaderContext: LoaderContext) {
       options.map = {
         inline: false,
         annotation: false,
-        prev: loaderContext.map
+        prev: loaderContext.map,
       };
     }
 
-    return postcss(plugins).process(code, options).then(result => {
-      if (result.messages) {
-        result.messages.forEach(m => {
-          if (m.type === "dependency") {
-            loaderContext.addDependency(m.file);
-          }
-        });
-      }
+    return postcss(plugins)
+      .process(code, options)
+      .then(result => {
+        if (result.messages) {
+          result.messages.forEach(m => {
+            if (m.type === 'dependency') {
+              loaderContext.addDependency(m.file);
+            }
+          });
+        }
 
-      const map = result.map && result.map.toJSON();
-      resolve({ transpiledCode: result.css, sourceMap: map });
+        const map = result.map && result.map.toJSON();
+        resolve({ transpiledCode: result.css, sourceMap: map });
 
-      return null; // silence bluebird warning
-    });
+        return null; // silence bluebird warning
+      });
   });
 }

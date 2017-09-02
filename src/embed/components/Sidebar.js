@@ -1,12 +1,12 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
 
-import type { Sandbox } from "common/types";
+import type { Sandbox } from 'common/types';
 
-import EditorLink from "./EditorLink";
-import Files from "./Files";
-import EntryContainer from "../../app/pages/Sandbox/Editor/Workspace/EntryContainer";
-import Padding from "../../app/components/spacing/Padding";
+import EditorLink from './EditorLink';
+import Files from './Files';
+import EntryContainer from '../../app/pages/Sandbox/Editor/Workspace/EntryContainer';
+import Padding from '../../app/components/spacing/Padding';
 
 const Container = styled.div`
   flex: 250px;
@@ -65,10 +65,10 @@ const Author = styled.div`
   margin-bottom: 1rem;
 `;
 
-const getNormalizedUrl = (url: string) => `${url.replace(/\/$/g, "")}/`;
+const getNormalizedUrl = (url: string) => `${url.replace(/\/$/g, '')}/`;
 
 function getName(resource: string) {
-  if (resource.endsWith(".css") || resource.endsWith(".js")) {
+  if (resource.endsWith('.css') || resource.endsWith('.js')) {
     return resource.match(/.*\/(.*)/)[1];
   }
 
@@ -79,23 +79,19 @@ function getName(resource: string) {
 type Props = {
   sandbox: Sandbox,
   setCurrentModule: (id: string) => void,
-  currentModule: string
+  currentModule: string,
 };
 
-export default ({ sandbox, setCurrentModule, currentModule }: Props) =>
+export default ({ sandbox, setCurrentModule, currentModule }: Props) => (
   <Container>
     <Item>
-      <Title>
-        {sandbox.title || sandbox.id}
-      </Title>
-      {sandbox.author &&
+      <Title>{sandbox.title || sandbox.id}</Title>
+      {sandbox.author && (
         <Author>
           Made by <strong>{sandbox.author.username}</strong>
-        </Author>}
-      {sandbox.description &&
-        <Description>
-          {sandbox.description}
-        </Description>}
+        </Author>
+      )}
+      {sandbox.description && <Description>{sandbox.description}</Description>}
     </Item>
 
     <Item>
@@ -113,23 +109,21 @@ export default ({ sandbox, setCurrentModule, currentModule }: Props) =>
       <Title>Dependencies</Title>
 
       <Subtitle>NPM Dependencies</Subtitle>
-      {Object.keys(sandbox.npmDependencies).map(dep =>
+      {Object.keys(sandbox.npmDependencies).map(dep => (
         <EntryContainer key={dep}>
           {dep}
-          <Version>
-            {sandbox.npmDependencies[dep]}
-          </Version>
+          <Version>{sandbox.npmDependencies[dep]}</Version>
         </EntryContainer>
-      )}
+      ))}
 
       <Subtitle>External Resources</Subtitle>
-      {sandbox.externalResources.map(dep =>
+      {sandbox.externalResources.map(dep => (
         <EntryContainer key={dep}>
           <a href={dep} rel="nofollow noopener noreferrer" target="_blank">
             {getName(dep)}
           </a>
         </EntryContainer>
-      )}
+      ))}
     </Item>
 
     <Item hover>
@@ -137,4 +131,5 @@ export default ({ sandbox, setCurrentModule, currentModule }: Props) =>
         <EditorLink sandbox={sandbox} />
       </Padding>
     </Item>
-  </Container>;
+  </Container>
+);

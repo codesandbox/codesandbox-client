@@ -1,15 +1,18 @@
 // @flow
-import Transpiler from "../";
-import { type LoaderContext } from "../../transpiled-module";
+import Transpiler from '../';
+import { type LoaderContext } from '../../transpiled-module';
 
-import mimes from "./mimes.json";
+import mimes from './mimes.json';
 
 function getMime(path) {
-  const extension = path.split(".").pop().toLowerCase();
+  const extension = path
+    .split('.')
+    .pop()
+    .toLowerCase();
   const mime = mimes[extension];
   if (!mime) {
     throw new Error(
-      "Unsupported type of image of extension " + extension + ": " + path
+      'Unsupported type of image of extension ' + extension + ': ' + path
     );
   }
   return mime;
@@ -17,7 +20,7 @@ function getMime(path) {
 
 class Base64Transpiler extends Transpiler {
   constructor() {
-    super("base64-loader");
+    super('base64-loader');
   }
 
   doTranspilation(code: string) {
@@ -28,7 +31,7 @@ class Base64Transpiler extends Transpiler {
       reader.onloadend = function() {
         const base64data = reader.result;
         resolve({
-          transpiledCode: `module.exports = "${base64data.toString()}"`
+          transpiledCode: `module.exports = "${base64data.toString()}"`,
         });
       };
     });

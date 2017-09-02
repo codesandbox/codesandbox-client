@@ -1,11 +1,11 @@
-import Transpiler from "./";
-import { parseWorkerError } from "./utils/worker-error-handler";
-import { type LoaderContext } from "../transpiled-module";
+import Transpiler from './';
+import { parseWorkerError } from './utils/worker-error-handler';
+import { type LoaderContext } from '../transpiled-module';
 
 type Task = {
   message: any,
   callback: (err: ?any, data: ?any) => void,
-  loaderContext: LoaderContext
+  loaderContext: LoaderContext,
 };
 
 /**
@@ -20,7 +20,7 @@ export default class WorkerTranspiler extends Transpiler {
   initialized: boolean;
 
   runningTasks: {
-    [id: string]: (error: Error, message: Object) => void
+    [id: string]: (error: Error, message: Object) => void,
   };
 
   constructor(
@@ -44,7 +44,7 @@ export default class WorkerTranspiler extends Transpiler {
         const worker = new this.Worker();
 
         worker.onmessage = message => {
-          if (message && message.data === "ready") {
+          if (message && message.data === 'ready') {
             this.idleWorkers.push(worker);
 
             this.executeRemainingTasks();
@@ -74,39 +74,39 @@ export default class WorkerTranspiler extends Transpiler {
       const { data } = newMessage;
 
       if (data) {
-        if (data.type === "error") {
+        if (data.type === 'error') {
           const reconstructedError = parseWorkerError(data.error);
 
           callback(reconstructedError);
         }
 
-        if (data.type === "add-dependency") {
+        if (data.type === 'add-dependency') {
           // Dynamic import
           if (data.isGlob) {
             loaderContext.addDependenciesInDirectory(data.path, {
-              isAbsolute: data.isAbsolute
+              isAbsolute: data.isAbsolute,
             });
           } else {
             loaderContext.addDependency(data.path, {
-              isAbsolute: data.isAbsolute
+              isAbsolute: data.isAbsolute,
             });
           }
           return;
         }
 
-        if (data.type === "add-transpilation-dependency") {
+        if (data.type === 'add-transpilation-dependency') {
           loaderContext.addTranspilationDependency(data.path, {
-            isAbsolute: data.isAbsolute
+            isAbsolute: data.isAbsolute,
           });
           return;
         }
 
         // Means the transpile task has been completed
-        if (data.type === "compiled") {
+        if (data.type === 'compiled') {
           callback(null, data);
         }
 
-        if (data.type === "error" || data.type === "compiled") {
+        if (data.type === 'error' || data.type === 'compiled') {
           this.idleWorkers.push(worker);
           this.executeRemainingTasks();
         }

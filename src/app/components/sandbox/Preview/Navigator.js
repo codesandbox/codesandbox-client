@@ -1,15 +1,15 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
 
-import LeftIcon from "react-icons/lib/fa/angle-left";
-import RightIcon from "react-icons/lib/fa/angle-right";
-import RefreshIcon from "react-icons/lib/md/refresh";
-import ExternalIcon from "react-icons/lib/md/open-in-new";
+import LeftIcon from 'react-icons/lib/fa/angle-left';
+import RightIcon from 'react-icons/lib/fa/angle-right';
+import RefreshIcon from 'react-icons/lib/md/refresh';
+import ExternalIcon from 'react-icons/lib/md/open-in-new';
 
-import Switch from "app/components/Switch";
-import Tooltip from "app/components/Tooltip";
+import Switch from 'app/components/Switch';
+import Tooltip from 'app/components/Tooltip';
 
-import AddressBar from "./AddressBar";
+import AddressBar from './AddressBar';
 
 const Container = styled.div`
   display: flex;
@@ -61,7 +61,7 @@ type Props = {
   onRefresh: ?() => void,
   openNewWindow: ?() => void,
   isProjectView: boolean,
-  toggleProjectView: () => void
+  toggleProjectView: () => void,
 };
 
 export default ({
@@ -73,8 +73,8 @@ export default ({
   onRefresh,
   isProjectView,
   toggleProjectView,
-  openNewWindow
-}: Props) =>
+  openNewWindow,
+}: Props) => (
   <Container>
     <Icons>
       <Icon disabled={!onBack} onClick={onBack}>
@@ -90,17 +90,20 @@ export default ({
     <AddressBarContainer>
       <AddressBar url={url} onChange={onChange} onConfirm={onConfirm} />
     </AddressBarContainer>
-    {openNewWindow &&
-      <Icon style={{ marginRight: "0.75rem" }} onClick={openNewWindow}>
+    {openNewWindow && (
+      <Icon style={{ marginRight: '0.75rem' }} onClick={openNewWindow}>
         <ExternalIcon />
-      </Icon>}
-    {toggleProjectView &&
+      </Icon>
+    )}
+    {toggleProjectView && (
       <SwitchContainer>
         <Tooltip
-          title={isProjectView ? "Project View" : "Current Module View"}
+          title={isProjectView ? 'Project View' : 'Current Module View'}
           position="left"
         >
           <Switch right={isProjectView} onClick={toggleProjectView} />
         </Tooltip>
-      </SwitchContainer>}
-  </Container>;
+      </SwitchContainer>
+    )}
+  </Container>
+);

@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import Preference from "app/components/Preference";
+import styled from 'styled-components';
+import Preference from 'app/components/Preference';
 
 export const Container = styled.div`
   color: ${props => props.theme.white};

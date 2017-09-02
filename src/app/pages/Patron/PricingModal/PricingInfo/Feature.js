@@ -1,5 +1,5 @@
-import React from "react";
-import styled, { css } from "styled-components";
+import React from 'react';
+import styled, { css } from 'styled-components';
 
 const Container = styled.tr`
   margin: 1rem 0;
@@ -28,18 +28,13 @@ type Props = {
   feature: string,
   free: string,
   supporter: string,
-  disabled: boolean
+  disabled: boolean,
 };
 
-export default ({ disabled, feature, free, supporter }: Props) =>
+export default ({ disabled, feature, free, supporter }: Props) => (
   <Container disabled={disabled}>
-    <Feature>
-      {feature}
-    </Feature>
-    <Value>
-      {free}
-    </Value>
-    <Value supporter>
-      {supporter}
-    </Value>
-  </Container>;
+    <Feature>{feature}</Feature>
+    <Value>{free}</Value>
+    <Value supporter>{supporter}</Value>
+  </Container>
+);

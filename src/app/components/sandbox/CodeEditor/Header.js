@@ -1,8 +1,8 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
 
-import Button from "app/components/buttons/Button";
-import { Tooltip } from "react-tippy";
+import Button from 'app/components/buttons/Button';
+import { Tooltip } from 'react-tippy';
 
 const Container = styled.div`
   display: flex;
@@ -34,19 +34,17 @@ const Buttons = styled.div`
 type Props = {
   path: string,
   saveComponent: ?() => void,
-  prettify: ?Function
+  prettify: ?Function,
 };
 
 export default ({ path, saveComponent, prettify }: Props) => {
-  const pathParts = path.split("/");
+  const pathParts = path.split('/');
   const fileName = pathParts[pathParts.length - 1];
-  const pathName = pathParts.slice(0, pathParts.length - 1).join("/");
+  const pathName = pathParts.slice(0, pathParts.length - 1).join('/');
   return (
     <Container>
       <div>
-        <Path>
-          {pathName}/
-        </Path>
+        <Path>{pathName}/</Path>
         {fileName}
       </div>
 

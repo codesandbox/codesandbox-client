@@ -1,16 +1,16 @@
 // @flow
-import * as React from "react";
-import styled from "styled-components";
-import DeleteIcon from "react-icons/lib/md/delete";
-import Tooltip from "app/components/Tooltip";
+import * as React from 'react';
+import styled from 'styled-components';
+import DeleteIcon from 'react-icons/lib/md/delete';
+import Tooltip from 'app/components/Tooltip';
 
-const DeleteSandboxButton = styled(props =>
+const DeleteSandboxButton = styled(props => (
   <Tooltip title="Delete Sandbox">
     <button {...props}>
       <DeleteIcon />
     </button>
   </Tooltip>
-)`
+))`
   font-size: 1.2em;
   background-color: inherit;
   border: none;
@@ -24,7 +24,7 @@ const DeleteSandboxButton = styled(props =>
 
 type Props = {
   onDelete: Function,
-  id: string
+  id: string,
 };
 
 export default class DeleteSandboxButtonContainer extends React.PureComponent<

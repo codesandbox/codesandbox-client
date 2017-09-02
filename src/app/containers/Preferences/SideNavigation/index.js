@@ -1,10 +1,10 @@
-import React from "react";
-import styled, { css } from "styled-components";
+import React from 'react';
+import styled, { css } from 'styled-components';
 
-import TwitterIcon from "react-icons/lib/fa/twitter";
-import GithubIcon from "react-icons/lib/fa/github";
+import TwitterIcon from 'react-icons/lib/fa/twitter';
+import GithubIcon from 'react-icons/lib/fa/github';
 
-import Relative from "app/components/Relative";
+import Relative from 'app/components/Relative';
 
 const Container = styled.div`
   flex: 1;
@@ -40,7 +40,7 @@ const Item = styled.div`
   z-index: 1;
   cursor: pointer;
   border-radius: 4px;
-  color: ${props => (props.selected ? "white" : "rgba(255, 255, 255, 0.4)")};
+  color: ${props => (props.selected ? 'white' : 'rgba(255, 255, 255, 0.4)')};
 
   ${props =>
     !props.selected &&
@@ -88,26 +88,26 @@ const Icon = styled.a`
 type Props = {
   menuItems: Array<string>,
   itemIndex: number,
-  setItem: (index: number) => void
+  setItem: (index: number) => void,
 };
 
-export default ({ menuItems, itemIndex, setItem }: Props) =>
+export default ({ menuItems, itemIndex, setItem }: Props) => (
   <Container>
     <Title>Preferences</Title>
     <Relative style={{ height: menuItems.length * ITEM_HEIGHT }}>
-      {menuItems.map((item, i) =>
+      {menuItems.map((item, i) => (
         <Item
           onClick={() => setItem(i)}
           key={item.title}
           selected={itemIndex === i}
           top={i * ITEM_HEIGHT}
         >
-          <div style={{ height: ITEM_HEIGHT, marginRight: "0.5rem" }}>
+          <div style={{ height: ITEM_HEIGHT, marginRight: '0.5rem' }}>
             {item.icon}
           </div>
           {item.title}
         </Item>
-      )}
+      ))}
       <Selector offset={itemIndex * ITEM_HEIGHT} />
     </Relative>
 
@@ -127,4 +127,5 @@ export default ({ menuItems, itemIndex, setItem }: Props) =>
         <GithubIcon />
       </Icon>
     </SocialIcons>
-  </Container>;
+  </Container>
+);

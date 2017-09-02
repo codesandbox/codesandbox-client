@@ -1,7 +1,7 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
 
-import { RefinementList } from "react-instantsearch/dom";
+import { RefinementList } from 'react-instantsearch/dom';
 
 const Container = styled.div`
   padding: 1rem;
@@ -34,18 +34,17 @@ type Props = {
   title: string,
   attributeName: string,
   operator: string,
-  noSearch: ?boolean
+  noSearch: ?boolean,
 };
 
-export default ({ title, attributeName, operator, noSearch }: Props) =>
+export default ({ title, attributeName, operator, noSearch }: Props) => (
   <Container>
-    <Title>
-      {title}
-    </Title>
+    <Title>{title}</Title>
     <RefinementList
       withSearchBox={!noSearch}
       showMore={!noSearch}
       operator={operator}
       attributeName={attributeName}
     />
-  </Container>;
+  </Container>
+);

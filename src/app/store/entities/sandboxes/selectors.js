@@ -1,4 +1,4 @@
-import { createSelector } from "reselect";
+import { createSelector } from 'reselect';
 
 export const sandboxesSelector = state => state.entities.sandboxes;
 
@@ -8,6 +8,6 @@ export const singleSandboxSelector = createSelector(
   (sandboxes, id) => sandboxes[id]
 );
 
-const PRIVACY_NAMES = ["Public", "Unlisted", "Private"];
+const PRIVACY_NAMES = ['Public', 'Unlisted', 'Private'];
 
 export const privacyNameSelector = privacy => PRIVACY_NAMES[+privacy];

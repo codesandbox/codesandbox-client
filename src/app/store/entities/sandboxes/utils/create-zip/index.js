@@ -1,9 +1,9 @@
 // @flow
-import JSZip from "jszip";
-import { saveAs } from "file-saver";
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
 
-import type { Sandbox, Module, Directory } from "common/types";
-import { react, vue, preact } from "common/templates/index";
+import type { Sandbox, Module, Directory } from 'common/types';
+import { react, vue, preact } from 'common/templates/index';
 
 const CSSTag = (resource: string) =>
   `<link rel="stylesheet" type="text/css" href="${resource}" media="all">`;
@@ -13,7 +13,7 @@ const JSTag = (resource: string) =>
 export function getResourceTag(resource: string) {
   const kind = resource.match(/\.([^.]*)$/);
 
-  if (kind && kind[1] === "css") {
+  if (kind && kind[1] === 'css') {
     return CSSTag(resource);
   }
 
@@ -22,32 +22,32 @@ export function getResourceTag(resource: string) {
 
 export function getIndexHtmlBody(modules: Array<Module>) {
   const indexHtmlModule = modules.find(
-    m => m.title === "index.html" && m.directoryShortid == null
+    m => m.title === 'index.html' && m.directoryShortid == null
   );
 
   if (indexHtmlModule) {
-    return indexHtmlModule.code || "";
+    return indexHtmlModule.code || '';
   }
 
   return `<div id="root"></div>`;
 }
 
 function slugify(text) {
-  const a = "àáäâèéëêìíïîòóöôùúüûñçßÿœæŕśńṕẃǵǹḿǘẍźḧ·/_,:;";
-  const b = "aaaaeeeeiiiioooouuuuncsyoarsnpwgnmuxzh------";
-  const p = new RegExp(a.split("").join("|"), "g");
+  const a = 'àáäâèéëêìíïîòóöôùúüûñçßÿœæŕśńṕẃǵǹḿǘẍźḧ·/_,:;';
+  const b = 'aaaaeeeeiiiioooouuuuncsyoarsnpwgnmuxzh------';
+  const p = new RegExp(a.split('').join('|'), 'g');
 
   /* eslint-disable */
   return text
     .toString()
     .toLowerCase()
-    .replace(/\s+/g, "-") // Replace spaces with -
+    .replace(/\s+/g, '-') // Replace spaces with -
     .replace(p, c => b.charAt(a.indexOf(c))) // Replace special chars
-    .replace(/&/g, "-and-") // Replace & with 'and'
-    .replace(/[^\w\-]+/g, "") // Remove all non-word chars
-    .replace(/\-\-+/g, "-") // Replace multiple - with single -
-    .replace(/^-+/, "") // Trim - from start of text
-    .replace(/-+$/, ""); // Trim - from end of text
+    .replace(/&/g, '-and-') // Replace & with 'and'
+    .replace(/[^\w\-]+/g, '') // Remove all non-word chars
+    .replace(/\-\-+/g, '-') // Replace multiple - with single -
+    .replace(/^-+/, '') // Trim - from start of text
+    .replace(/-+$/, ''); // Trim - from end of text
   /* eslint-enable */
 }
 
@@ -69,10 +69,10 @@ export function createPackageJSON(
       dependencies: { ...sandbox.npmDependencies, ...dependencies },
       devDependencies,
       scripts,
-      ...(extra || {})
+      ...(extra || {}),
     },
     null,
-    "  "
+    '  '
   );
 }
 
@@ -102,21 +102,21 @@ export default (async function createZip(
 
   let promise = null;
   if (sandbox.template === react.name) {
-    promise = import("./create-react-app").then(generator =>
+    promise = import('./create-react-app').then(generator =>
       generator.default(zip, sandbox, modules, directories)
     );
   } else if (sandbox.template === vue.name) {
-    promise = import("./vue-cli").then(generator =>
+    promise = import('./vue-cli').then(generator =>
       generator.default(zip, sandbox, modules, directories)
     );
   } else if (sandbox.template === preact.name) {
-    promise = import("./preact-cli").then(generator =>
+    promise = import('./preact-cli').then(generator =>
       generator.default(zip, sandbox, modules, directories)
     );
   }
   if (promise) {
     await promise;
-    const file = await zip.generateAsync({ type: "blob" });
+    const file = await zip.generateAsync({ type: 'blob' });
     saveAs(file, `${slugify(sandbox.title || sandbox.id)}.zip`);
   }
 });

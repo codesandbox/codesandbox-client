@@ -1,14 +1,14 @@
 // @flow
-import * as React from "react";
-import { bindActionCreators } from "redux";
-import { spring, Motion } from "react-motion";
-import styled from "styled-components";
-import { connect } from "react-redux";
-import theme from "../../common/theme";
+import * as React from 'react';
+import { bindActionCreators } from 'redux';
+import { spring, Motion } from 'react-motion';
+import styled from 'styled-components';
+import { connect } from 'react-redux';
+import theme from '../../common/theme';
 
-import type { ContextMenuState } from "../store/context-menu/reducer";
-import contextMenuActionCreators from "../store/context-menu/actions";
-import Portal from "../components/Portal";
+import type { ContextMenuState } from '../store/context-menu/reducer';
+import contextMenuActionCreators from '../store/context-menu/actions';
+import Portal from '../components/Portal';
 
 const Container = styled.div`
   position: fixed;
@@ -52,20 +52,20 @@ const Item = styled.div`
 
 type Props = {
   contextMenu: ContextMenuState,
-  contextMenuActions: typeof contextMenuActionCreators
+  contextMenuActions: typeof contextMenuActionCreators,
 };
 
 const mapStateToProps = state => ({
-  contextMenu: state.contextMenu
+  contextMenu: state.contextMenu,
 });
 const mapDispatchToProps = dispatch => ({
-  contextMenuActions: bindActionCreators(contextMenuActionCreators, dispatch)
+  contextMenuActions: bindActionCreators(contextMenuActionCreators, dispatch),
 });
 class ContextMenu extends React.PureComponent<Props> {
   interval: number;
 
   setup = el => {
-    this.mousedown = window.addEventListener("mousedown", event => {
+    this.mousedown = window.addEventListener('mousedown', event => {
       const { contextMenu } = this.props;
 
       if (contextMenu.show) {
@@ -75,7 +75,7 @@ class ContextMenu extends React.PureComponent<Props> {
       }
     });
 
-    this.keydown = window.addEventListener("keydown", event => {
+    this.keydown = window.addEventListener('keydown', event => {
       const { contextMenu } = this.props;
       if (event.keyCode === 27 && contextMenu.show) {
         // Escape
@@ -88,8 +88,8 @@ class ContextMenu extends React.PureComponent<Props> {
   keydown: ?Function;
 
   componentWillUnmount() {
-    window.removeEventListener("mousedown", this.mousedown);
-    window.removeEventListener("keydown", this.keydown);
+    window.removeEventListener('mousedown', this.mousedown);
+    window.removeEventListener('keydown', this.keydown);
   }
 
   close = () => {
@@ -103,25 +103,25 @@ class ContextMenu extends React.PureComponent<Props> {
     return (
       <Portal>
         <div ref={this.setup}>
-          {contextMenu.show &&
+          {contextMenu.show && (
             <Motion
               defaultStyle={{ size: 0.75, opacity: 0.6 }}
               style={{
                 size: spring(1, { stiffness: 200, damping: 26 }),
-                opacity: spring(1)
+                opacity: spring(1),
               }}
             >
-              {({ size, opacity }) =>
+              {({ size, opacity }) => (
                 <Container
                   style={{
                     left: contextMenu.x + 10,
                     top: contextMenu.y + 10,
                     transform: `scale(${size}, ${size})`,
-                    opacity
+                    opacity,
                   }}
                 >
                   <div>
-                    {contextMenu.items.map(item =>
+                    {contextMenu.items.map(item => (
                       <Item
                         key={item.title}
                         color={item.color}
@@ -130,10 +130,12 @@ class ContextMenu extends React.PureComponent<Props> {
                         {item.icon && <item.icon />}
                         {item.title}
                       </Item>
-                    )}
+                    ))}
                   </div>
-                </Container>}
-            </Motion>}
+                </Container>
+              )}
+            </Motion>
+          )}
         </div>
       </Portal>
     );

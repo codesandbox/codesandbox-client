@@ -1,7 +1,7 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React from 'react';
+import { Link } from 'react-router-dom';
 
-export default () =>
+export default () => (
   <div>
     <h1>Terms and Conditions</h1>
 
@@ -22,7 +22,7 @@ export default () =>
       Your access to and use of the Service is conditioned on your acceptance of
       and compliance with these Terms. These Terms apply to all visitors, users
       and others who access or use the Service. Any information submitted by you
-      shall be subject to CodeSandbox's{" "}
+      shall be subject to CodeSandbox's{' '}
       <Link to="/legal/privacy">Privacy Policy</Link>. One person or legal
       entity may not maintain more than one Account. Accounts registered by
       “bots” or other automated methods are not permitted.
@@ -255,4 +255,5 @@ export default () =>
     <h2>Contact Us</h2>
 
     <p>If you have any questions about these Terms, please contact us.</p>
-  </div>;
+  </div>
+);

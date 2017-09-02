@@ -8,13 +8,13 @@
  */
 
 /* @flow */
-import { actions, dispatch } from "codesandbox-api";
-import { enableTabClick } from "../utils/dom/enableTabClick";
-import { createCode } from "./code";
-import { isInternalFile } from "../utils/isInternalFile";
-import type { StackFrame } from "../utils/stack-frame";
-import type { FrameSetting, OmitsObject } from "./frames";
-import { applyStyles } from "../utils/dom/css";
+import { actions, dispatch } from 'codesandbox-api';
+import { enableTabClick } from '../utils/dom/enableTabClick';
+import { createCode } from './code';
+import { isInternalFile } from '../utils/isInternalFile';
+import type { StackFrame } from '../utils/stack-frame';
+import type { FrameSetting, OmitsObject } from './frames';
+import { applyStyles } from '../utils/dom/css';
 import {
   omittedFramesExpandedStyle,
   omittedFramesCollapsedStyle,
@@ -22,39 +22,39 @@ import {
   depStyle,
   linkStyle,
   anchorStyle,
-  hiddenStyle
-} from "../styles";
-import { getCurrentManager } from "../../";
+  hiddenStyle,
+} from '../styles';
+import { getCurrentManager } from '../../';
 
 function getGroupToggle(
   document: Document,
   omitsCount: number,
   omitBundle: number
 ) {
-  const omittedFrames = document.createElement("div");
+  const omittedFrames = document.createElement('div');
   enableTabClick(omittedFrames);
   const text1 = document.createTextNode(
-    "\u25B6 " + omitsCount + " stack frames were collapsed."
+    '\u25B6 ' + omitsCount + ' stack frames were collapsed.'
   );
   omittedFrames.appendChild(text1);
-  omittedFrames.addEventListener("click", function() {
+  omittedFrames.addEventListener('click', function() {
     const hide = text1.textContent.match(/▲/);
-    const list = document.getElementsByName("bundle-" + omitBundle);
+    const list = document.getElementsByName('bundle-' + omitBundle);
     for (let index = 0; index < list.length; ++index) {
       const n = list[index];
       if (hide) {
-        n.style.display = "none";
+        n.style.display = 'none';
       } else {
-        n.style.display = "";
+        n.style.display = '';
       }
     }
     if (hide) {
-      text1.textContent = text1.textContent.replace(/▲/, "▶");
-      text1.textContent = text1.textContent.replace(/expanded/, "collapsed");
+      text1.textContent = text1.textContent.replace(/▲/, '▶');
+      text1.textContent = text1.textContent.replace(/expanded/, 'collapsed');
       applyStyles(omittedFrames, omittedFramesCollapsedStyle);
     } else {
-      text1.textContent = text1.textContent.replace(/▶/, "▲");
-      text1.textContent = text1.textContent.replace(/collapsed/, "expanded");
+      text1.textContent = text1.textContent.replace(/▶/, '▲');
+      text1.textContent = text1.textContent.replace(/collapsed/, 'expanded');
       applyStyles(omittedFrames, omittedFramesExpandedStyle);
     }
   });
@@ -69,7 +69,7 @@ function insertBeforeBundle(
   omitBundle: number,
   actionElement
 ) {
-  const children = document.getElementsByName("bundle-" + omitBundle);
+  const children = document.getElementsByName('bundle-' + omitBundle);
   if (children.length < 1) {
     return;
   }
@@ -77,18 +77,18 @@ function insertBeforeBundle(
   while (first != null && first.parentNode !== parent) {
     first = first.parentNode;
   }
-  const div = document.createElement("div");
+  const div = document.createElement('div');
   enableTabClick(div);
-  div.setAttribute("name", "bundle-" + omitBundle);
+  div.setAttribute('name', 'bundle-' + omitBundle);
   const text = document.createTextNode(
-    "\u25BC " + omitsCount + " stack frames were expanded."
+    '\u25BC ' + omitsCount + ' stack frames were expanded.'
   );
   div.appendChild(text);
-  div.addEventListener("click", function() {
+  div.addEventListener('click', function() {
     return actionElement.click();
   });
   applyStyles(div, omittedFramesExpandedStyle);
-  div.style.display = "none";
+  div.style.display = 'none';
 
   parent.insertBefore(div, first);
 }
@@ -100,17 +100,17 @@ function frameDiv(
   internalUrl,
   onSourceClick: ?Function
 ) {
-  const frame = document.createElement("div");
-  const frameFunctionName = document.createElement("div");
+  const frame = document.createElement('div');
+  const frameFunctionName = document.createElement('div');
 
   let cleanedFunctionName;
-  if (!functionName || functionName === "Object.<anonymous>") {
-    cleanedFunctionName = "(anonymous function)";
+  if (!functionName || functionName === 'Object.<anonymous>') {
+    cleanedFunctionName = '(anonymous function)';
   } else {
     cleanedFunctionName = functionName;
   }
 
-  const cleanedUrl = url.replace("webpack://", ".");
+  const cleanedUrl = url.replace('webpack://', '.');
 
   if (internalUrl) {
     applyStyles(
@@ -124,19 +124,19 @@ function frameDiv(
   frameFunctionName.appendChild(document.createTextNode(cleanedFunctionName));
   frame.appendChild(frameFunctionName);
 
-  const frameLink = document.createElement("div");
+  const frameLink = document.createElement('div');
   applyStyles(frameLink, linkStyle);
-  const frameAnchor = document.createElement("a");
+  const frameAnchor = document.createElement('a');
   applyStyles(frameAnchor, anchorStyle);
   frameAnchor.appendChild(document.createTextNode(cleanedUrl));
   frameLink.appendChild(frameAnchor);
   frame.appendChild(frameLink);
 
-  if (typeof onSourceClick === "function") {
+  if (typeof onSourceClick === 'function') {
     let handler = onSourceClick;
     enableTabClick(frameAnchor);
-    frameAnchor.style.cursor = "pointer";
-    frameAnchor.addEventListener("click", function() {
+    frameAnchor.style.cursor = 'pointer';
+    frameAnchor.addEventListener('click', function() {
       handler();
     });
   }
@@ -146,13 +146,13 @@ function frameDiv(
 
 function isBultinErrorName(errorName: ?string) {
   switch (errorName) {
-    case "EvalError":
-    case "InternalError":
-    case "RangeError":
-    case "ReferenceError":
-    case "SyntaxError":
-    case "TypeError":
-    case "URIError":
+    case 'EvalError':
+    case 'InternalError':
+    case 'RangeError':
+    case 'ReferenceError':
+    case 'SyntaxError':
+    case 'TypeError':
+    case 'URIError':
       return true;
     default:
       return false;
@@ -169,7 +169,7 @@ function getPrettyURL(
   compiled: boolean
 ): string {
   let prettyURL;
-  if (!compiled && sourceFileName && typeof sourceLineNumber === "number") {
+  if (!compiled && sourceFileName && typeof sourceLineNumber === 'number') {
     // Remove everything up to the first /src/ or /node_modules/
     const trimMatch = /^[/|\\].*?[/|\\]((src|node_modules)[/|\\].*)/.exec(
       sourceFileName
@@ -179,19 +179,19 @@ function getPrettyURL(
     } else {
       prettyURL = sourceFileName;
     }
-    prettyURL += ":" + sourceLineNumber;
+    prettyURL += ':' + sourceLineNumber;
     // Note: we intentionally skip 0's because they're produced by cheap Webpack maps
     if (sourceColumnNumber) {
-      prettyURL += ":" + sourceColumnNumber;
+      prettyURL += ':' + sourceColumnNumber;
     }
-  } else if (fileName && typeof lineNumber === "number") {
-    prettyURL = fileName + ":" + lineNumber;
+  } else if (fileName && typeof lineNumber === 'number') {
+    prettyURL = fileName + ':' + lineNumber;
     // Note: we intentionally skip 0's because they're produced by cheap Webpack maps
     if (columnNumber) {
-      prettyURL += ":" + columnNumber;
+      prettyURL += ':' + columnNumber;
     }
   } else {
-    prettyURL = "unknown";
+    prettyURL = 'unknown';
   }
   return prettyURL;
 }
@@ -217,7 +217,7 @@ function createFrame(
     _scriptCode: scriptLines,
     _originalLineNumber: sourceLineNumber,
     _originalColumnNumber: sourceColumnNumber,
-    _originalScriptCode: sourceLines
+    _originalScriptCode: sourceLines,
   } = frame;
 
   // TODO: find a better place for this.
@@ -225,10 +225,10 @@ function createFrame(
   // https://github.com/facebookincubator/create-react-app/issues/2097
   // Let's ignore a meaningless name we get for top-level modules.
   if (
-    functionName === "Object.friendlySyntaxErrorLabel" ||
-    functionName === "Object.exports.__esModule"
+    functionName === 'Object.friendlySyntaxErrorLabel' ||
+    functionName === 'Object.exports.__esModule'
   ) {
-    functionName = "(anonymous function)";
+    functionName = '(anonymous function)';
   }
 
   const prettyURL = getPrettyURL(
@@ -284,7 +284,7 @@ function createFrame(
   if (sourceFileName) {
     // e.g. "/path-to-my-app/webpack/bootstrap eaddeb46b67d75e4dfc1"
     const isInternalWebpackBootstrapCode =
-      sourceFileName.trim().indexOf(" ") !== -1;
+      sourceFileName.trim().indexOf(' ') !== -1;
     if (!isInternalWebpackBootstrapCode) {
       onSourceClick = () => {
         const manager = getCurrentManager();
@@ -315,7 +315,7 @@ function createFrame(
   );
   if (needsHidden) {
     applyStyles(elem, hiddenStyle);
-    elem.setAttribute("name", "bundle-" + omitBundle);
+    elem.setAttribute('name', 'bundle-' + omitBundle);
   }
 
   let hasSource = false;

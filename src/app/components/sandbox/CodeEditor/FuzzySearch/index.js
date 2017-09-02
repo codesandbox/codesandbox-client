@@ -1,15 +1,15 @@
-import * as React from "react";
-import styled, { css } from "styled-components";
-import { sortBy, groupBy, flatten } from "lodash";
-import Downshift from "downshift";
-import matchSorter from "match-sorter";
-import type { Module, Directory } from "common/types";
+import * as React from 'react';
+import styled, { css } from 'styled-components';
+import { sortBy, groupBy, flatten } from 'lodash';
+import Downshift from 'downshift';
+import matchSorter from 'match-sorter';
+import type { Module, Directory } from 'common/types';
 
-import { getModulePath } from "app/store/entities/sandboxes/modules/selectors";
-import Input from "app/components/Input";
+import { getModulePath } from 'app/store/entities/sandboxes/modules/selectors';
+import Input from 'app/components/Input';
 
-import EntryIcons from "app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons";
-import getType from "app/store/entities/sandboxes/modules/utils/get-type";
+import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
+import getType from 'app/store/entities/sandboxes/modules/utils/get-type';
 
 const Container = styled.div`
   position: absolute;
@@ -82,7 +82,7 @@ type Props = {
   directories: Array<Directory>,
   setCurrentModule: (moduleId: string) => void,
   closeFuzzySearch: () => void,
-  currentModuleId: string
+  currentModuleId: string,
 };
 
 export default class FuzzySearch extends React.PureComponent<Props> {
@@ -96,7 +96,7 @@ export default class FuzzySearch extends React.PureComponent<Props> {
       return {
         m,
         path,
-        depth: path.split("/").length
+        depth: path.split('/').length,
       };
     });
 
@@ -109,18 +109,18 @@ export default class FuzzySearch extends React.PureComponent<Props> {
     this.paths = flattenedPaths.reduce(
       (paths, { m, path }) => ({
         ...paths,
-        [m.id]: { path: path.replace("/", ""), m }
+        [m.id]: { path: path.replace('/', ''), m },
       }),
       {}
     );
   }
 
-  itemToString = m => (m ? m.path : "");
+  itemToString = m => (m ? m.path : '');
 
-  getItems = (value = "") => {
+  getItems = (value = '') => {
     const pathArray = Object.keys(this.paths).map(id => this.paths[id]);
 
-    return matchSorter(pathArray, value, { keys: ["path"] });
+    return matchSorter(pathArray, value, { keys: ['path'] });
   };
 
   onChange = item => {
@@ -148,27 +148,27 @@ export default class FuzzySearch extends React.PureComponent<Props> {
             getItemProps,
             selectedItem,
             inputValue,
-            highlightedIndex
-          }) =>
-            <div style={{ width: "100%" }}>
+            highlightedIndex,
+          }) => (
+            <div style={{ width: '100%' }}>
               <InputContainer>
                 <Input
                   {...getInputProps({
                     innerRef: el => el && el.focus(),
                     onKeyUp: this.handleKeyUp,
                     // Timeout so the fuzzy handler can still select the module
-                    onBlur: () => setTimeout(this.props.closeFuzzySearch, 100)
+                    onBlur: () => setTimeout(this.props.closeFuzzySearch, 100),
                   })}
                 />
               </InputContainer>
               <Items>
-                {this.getItems(inputValue).map((item, index) =>
+                {this.getItems(inputValue).map((item, index) => (
                   <Entry
                     {...getItemProps({
                       item,
                       index,
                       isActive: highlightedIndex === index,
-                      isSelected: selectedItem === item
+                      isSelected: selectedItem === item,
                     })}
                     key={item.m.id}
                     isNotSynced={item.m.isNotSynced}
@@ -178,19 +178,18 @@ export default class FuzzySearch extends React.PureComponent<Props> {
                       type={getType(item.m)}
                       error={item.m.errors && item.m.errors.length > 0}
                     />
-                    <Name>
-                      {item.m.title}
-                    </Name>
-                    {item.m.title !== this.itemToString(item) &&
-                      <Path>
-                        {this.itemToString(item)}
-                      </Path>}
-                    {item.m.id === currentModuleId &&
-                      <CurrentModuleText>currently opened</CurrentModuleText>}
+                    <Name>{item.m.title}</Name>
+                    {item.m.title !== this.itemToString(item) && (
+                      <Path>{this.itemToString(item)}</Path>
+                    )}
+                    {item.m.id === currentModuleId && (
+                      <CurrentModuleText>currently opened</CurrentModuleText>
+                    )}
                   </Entry>
-                )}
+                ))}
               </Items>
-            </div>}
+            </div>
+          )}
         </Downshift>
       </Container>
     );

@@ -1,5 +1,5 @@
-import { createSelector } from "reselect";
-import { values } from "lodash";
+import { createSelector } from 'reselect';
+import { values } from 'lodash';
 
 export const directoriesSelector = state => state.entities.directories;
 

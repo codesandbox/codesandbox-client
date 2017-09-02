@@ -1,80 +1,80 @@
 // @flow
-import type { Module, Directory } from "common/types";
-import logError from "app/utils/error";
+import type { Module, Directory } from 'common/types';
+import logError from 'app/utils/error';
 
-import { createAPIActions, doRequest } from "../../../api/actions";
-import moduleEntity from "../modules/entity";
-import directoryEntity from "../directories/entity";
-import directoryActions from "../directories/actions";
-import { modulesSelector, singleModuleSelector } from "../modules/selectors";
+import { createAPIActions, doRequest } from '../../../api/actions';
+import moduleEntity from '../modules/entity';
+import directoryEntity from '../directories/entity';
+import directoryActions from '../directories/actions';
+import { modulesSelector, singleModuleSelector } from '../modules/selectors';
 import {
   directoriesSelector,
-  singleDirectorySelector
-} from "../directories/selectors";
-import moduleActions from "../modules/actions";
-import { singleSandboxSelector } from "../selectors";
-import { normalizeResult } from "../../actions";
-import notificationActions from "../../../notifications/actions";
+  singleDirectorySelector,
+} from '../directories/selectors';
+import moduleActions from '../modules/actions';
+import { singleSandboxSelector } from '../selectors';
+import { normalizeResult } from '../../actions';
+import notificationActions from '../../../notifications/actions';
 
-import { maybeForkSandbox } from "./fork";
+import { maybeForkSandbox } from './fork';
 
 export const CREATE_MODULE_API_ACTIONS = createAPIActions(
-  "SANDBOX",
-  "CREATE_MODULE"
+  'SANDBOX',
+  'CREATE_MODULE'
 );
 export const SAVE_MODULE_CODE_API_ACTIONS = createAPIActions(
-  "SANDBOX",
-  "SAVE_MODULE_CODE"
+  'SANDBOX',
+  'SAVE_MODULE_CODE'
 );
 export const UPDATE_MODULE_API_ACTIONS = createAPIActions(
-  "SANDBOX",
-  "UPDATE_MODULE"
+  'SANDBOX',
+  'UPDATE_MODULE'
 );
 export const MASS_UPDATE_MODULE_API_ACTIONS = createAPIActions(
-  "SANDBOX",
-  "MASS_UPDATE_MODULE"
+  'SANDBOX',
+  'MASS_UPDATE_MODULE'
 );
 export const DELETE_MODULE_API_ACTIONS = createAPIActions(
-  "SANDBOX",
-  "DELETE_MODULE"
+  'SANDBOX',
+  'DELETE_MODULE'
 );
 export const CREATE_DIRECTORY_API_ACTIONS = createAPIActions(
-  "SANDBOX",
-  "CREATE_DIRECTORY"
+  'SANDBOX',
+  'CREATE_DIRECTORY'
 );
 export const UPDATE_DIRECTORY_API_ACTIONS = createAPIActions(
-  "SANDBOX",
-  "UPDATE_DIRECTORY"
+  'SANDBOX',
+  'UPDATE_DIRECTORY'
 );
 export const DELETE_DIRECTORY_API_ACTIONS = createAPIActions(
-  "SANDBOX",
-  "DELETE_DIRECTORY"
+  'SANDBOX',
+  'DELETE_DIRECTORY'
 );
 
-export const REMOVE_DIRECTORY_FROM_SANDBOX = "REMOVE_DIRECTORY_FROM_SANDBOX";
-export const ADD_MODULE_TO_SANDBOX = "ADD_MODULE_TO_SANDBOX";
-export const ADD_DIRECTORY_TO_SANDBOX = "ADD_DIRECTORY_TO_SANDBOX";
-export const REMOVE_MODULE_FROM_SANDBOX = "REMOVE_MODULE_FROM_SANDBOX";
+export const REMOVE_DIRECTORY_FROM_SANDBOX = 'REMOVE_DIRECTORY_FROM_SANDBOX';
+export const ADD_MODULE_TO_SANDBOX = 'ADD_MODULE_TO_SANDBOX';
+export const ADD_DIRECTORY_TO_SANDBOX = 'ADD_DIRECTORY_TO_SANDBOX';
+export const REMOVE_MODULE_FROM_SANDBOX = 'REMOVE_MODULE_FROM_SANDBOX';
 
 const addModuleToSandbox = (id, moduleId) => ({
   type: ADD_MODULE_TO_SANDBOX,
   id,
-  moduleId
+  moduleId,
 });
 const removeModuleFromSandbox = (id, moduleId) => ({
   type: REMOVE_MODULE_FROM_SANDBOX,
   id,
-  moduleId
+  moduleId,
 });
 const addDirectoryToSandbox = (id, directoryId) => ({
   type: ADD_DIRECTORY_TO_SANDBOX,
   id,
-  directoryId
+  directoryId,
 });
 const removeDirectoryFromSandbox = (id, directoryId) => ({
   type: REMOVE_DIRECTORY_FROM_SANDBOX,
   id,
-  directoryId
+  directoryId,
 });
 
 const removeChildrenOfDirectory = (
@@ -109,7 +109,7 @@ const renameModule = (id: string, moduleId: string, title: string) => async (
   // Maybe get new module of forked sandbox
   const newModule = singleModuleSelector(getState(), {
     sourceId,
-    shortid: module.shortid
+    shortid: module.shortid,
   });
   // Eager rename, just undo it when something goes wrong
   const oldTitle = module.title;
@@ -121,8 +121,8 @@ const renameModule = (id: string, moduleId: string, title: string) => async (
         UPDATE_MODULE_API_ACTIONS,
         `sandboxes/${sandboxId}/modules/${module.shortid}`,
         {
-          method: "PUT",
-          body: { module: { title } }
+          method: 'PUT',
+          body: { module: { title } },
         }
       )
     );
@@ -143,7 +143,7 @@ const renameDirectory = (
   // Get the new directory in case sandbox is forked
   const newDirectory = singleDirectorySelector(getState(), {
     sourceId,
-    shortid: directory.shortid
+    shortid: directory.shortid,
   });
   // Eager rename, just undo it when something goes wrong
   const oldTitle = directory.title;
@@ -155,8 +155,8 @@ const renameDirectory = (
         UPDATE_DIRECTORY_API_ACTIONS,
         `sandboxes/${sandboxId}/directories/${newDirectory.shortid}`,
         {
-          method: "PUT",
-          body: { directory: { title } }
+          method: 'PUT',
+          body: { directory: { title } },
         }
       )
     );
@@ -179,7 +179,7 @@ const moveModuleToDirectory = (
   // Maybe get new module of forked sandbox
   const newModule = singleModuleSelector(getState(), {
     sourceId,
-    shortid: module.shortid
+    shortid: module.shortid,
   });
   // Eager move it
   const olddirectoryShortid = module.directoryShortid;
@@ -191,8 +191,8 @@ const moveModuleToDirectory = (
         UPDATE_MODULE_API_ACTIONS,
         `sandboxes/${sandboxId}/modules/${newModule.shortid}`,
         {
-          method: "PUT",
-          body: { module: { directoryShortid } }
+          method: 'PUT',
+          body: { module: { directoryShortid } },
         }
       )
     );
@@ -213,7 +213,7 @@ const moveDirectoryToDirectory = (
   // Get the new directory in case sandbox is forked
   const newDirectory = singleDirectorySelector(getState(), {
     sourceId,
-    shortid: directory.shortid
+    shortid: directory.shortid,
   });
   // Eager move it
   const oldDirectoryShortid = directory.directoryShortid;
@@ -225,8 +225,8 @@ const moveDirectoryToDirectory = (
         UPDATE_DIRECTORY_API_ACTIONS,
         `sandboxes/${sandboxId}/directories/${newDirectory.shortid}`,
         {
-          method: "PUT",
-          body: { directory: { directoryShortid: parentId } }
+          method: 'PUT',
+          body: { directory: { directoryShortid: parentId } },
         }
       )
     );
@@ -250,7 +250,7 @@ const deleteModule = (id: string, moduleId: string) => async (
   // Maybe get new module of forked sandbox
   const newModule = singleModuleSelector(getState(), {
     sourceId,
-    shortid: module.shortid
+    shortid: module.shortid,
   });
   // Eager remove it
   dispatch(removeModuleFromSandbox(sandboxId, newModule.id));
@@ -261,7 +261,7 @@ const deleteModule = (id: string, moduleId: string) => async (
         DELETE_MODULE_API_ACTIONS,
         `sandboxes/${sandboxId}/modules/${newModule.shortid}`,
         {
-          method: "DELETE"
+          method: 'DELETE',
         }
       )
     );
@@ -282,7 +282,7 @@ const deleteDirectory = (id: string, directoryId: string) => async (
   // Get the new directory in case sandbox is forked
   const newDirectory = singleDirectorySelector(getState(), {
     sourceId,
-    shortid: directory.shortid
+    shortid: directory.shortid,
   });
 
   dispatch(removeDirectoryFromSandbox(sandboxId, newDirectory.id));
@@ -293,7 +293,7 @@ const deleteDirectory = (id: string, directoryId: string) => async (
         DELETE_DIRECTORY_API_ACTIONS,
         `sandboxes/${sandboxId}/directories/${newDirectory.shortid}`,
         {
-          method: "DELETE"
+          method: 'DELETE',
         }
       )
     );
@@ -317,7 +317,7 @@ const deleteDirectory = (id: string, directoryId: string) => async (
     );
 
     dispatch(
-      notificationActions.addNotification("Deleted directory", "success")
+      notificationActions.addNotification('Deleted directory', 'success')
     );
   } catch (e) {
     // It failed, add it back
@@ -334,8 +334,8 @@ const createModule = (
 
   const { data } = await dispatch(
     doRequest(CREATE_MODULE_API_ACTIONS, `sandboxes/${sandboxId}/modules`, {
-      method: "POST",
-      body: { module: { title, directoryShortid } }
+      method: 'POST',
+      body: { module: { title, directoryShortid } },
     })
   );
 
@@ -355,8 +355,8 @@ const createDirectory = (
       CREATE_DIRECTORY_API_ACTIONS,
       `sandboxes/${sandboxId}/directories`,
       {
-        method: "POST",
-        body: { directory: { title, directoryShortid } }
+        method: 'POST',
+        body: { directory: { title, directoryShortid } },
       }
     )
   );
@@ -378,7 +378,7 @@ const saveModuleCode = (id: string, moduleId: string) => async (
   // Maybe get new module of forked sandbox
   const newModule = singleModuleSelector(getState(), {
     sourceId,
-    shortid: module.shortid
+    shortid: module.shortid,
   });
   dispatch(moduleActions.setCode(newModule.id, module.code));
 
@@ -388,17 +388,17 @@ const saveModuleCode = (id: string, moduleId: string) => async (
         SAVE_MODULE_CODE_API_ACTIONS,
         `sandboxes/${sandboxId}/modules/${module.shortid}`,
         {
-          method: "PUT",
-          body: { module: { code: module.code } }
+          method: 'PUT',
+          body: { module: { code: module.code } },
         }
       )
     );
 
-    if ((data.code || "") !== (newModule.code || "")) {
+    if ((data.code || '') !== (newModule.code || '')) {
       dispatch(
         notificationActions.addNotification(
-          "Something went wrong while saving the module, please try again.",
-          "error"
+          'Something went wrong while saving the module, please try again.',
+          'error'
         )
       );
 
@@ -414,8 +414,8 @@ const saveModuleCode = (id: string, moduleId: string) => async (
   } catch (e) {
     dispatch(
       notificationActions.addNotification(
-        "Could not save the module, please try again.",
-        "error"
+        'Could not save the module, please try again.',
+        'error'
       )
     );
     e.message = `Could not save module: ${e.message}`;
@@ -448,10 +448,10 @@ const massUpdateModules = (id: string) => async (
         MASS_UPDATE_MODULE_API_ACTIONS,
         `sandboxes/${sandboxId}/modules/mupdate`,
         {
-          method: "PUT",
+          method: 'PUT',
           body: {
-            modules: modulesNotInSyncInSandbox
-          }
+            modules: modulesNotInSyncInSandbox,
+          },
         }
       )
     );
@@ -459,7 +459,7 @@ const massUpdateModules = (id: string) => async (
     modulesNotInSyncInSandbox.forEach(m => {
       const newModule = singleModuleSelector(getState(), {
         shortid: m.shortid,
-        sourceId: newSandbox.sourceId
+        sourceId: newSandbox.sourceId,
       });
       // Now we get the equivalent modules of the forked sandbox, if the sandbox is forked
       dispatch(moduleActions.setModuleSynced(newModule.id));
@@ -467,8 +467,8 @@ const massUpdateModules = (id: string) => async (
   } catch (e) {
     dispatch(
       notificationActions.addNotification(
-        "Could not save the modules, please try again.",
-        "error"
+        'Could not save the modules, please try again.',
+        'error'
       )
     );
   }
@@ -484,5 +484,5 @@ export default {
   createModule,
   createDirectory,
   saveModuleCode,
-  massUpdateModules
+  massUpdateModules,
 };

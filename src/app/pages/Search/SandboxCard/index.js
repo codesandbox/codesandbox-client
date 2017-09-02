@@ -1,15 +1,15 @@
-import React from "react";
-import styled from "styled-components";
-import { Link } from "react-router-dom";
-import { Highlight } from "react-instantsearch/dom";
+import React from 'react';
+import styled from 'styled-components';
+import { Link } from 'react-router-dom';
+import { Highlight } from 'react-instantsearch/dom';
 
-import getTemplateDefinition from "common/templates";
+import getTemplateDefinition from 'common/templates';
 
-import Tags from "app/components/sandbox/Tags";
+import Tags from 'app/components/sandbox/Tags';
 
-import SandboxInfo from "./SandboxInfo";
-import { sandboxUrl } from "../../../utils/url-generator";
-import Row from "../../../components/flex/Row";
+import SandboxInfo from './SandboxInfo';
+import { sandboxUrl } from '../../../utils/url-generator';
+import Row from '../../../components/flex/Row';
 
 const Container = styled.div`
   transition: 0.3s ease all;
@@ -74,7 +74,7 @@ type Props = {
       username: string,
       repo: string,
       commitSha: string,
-      path: string
+      path: string,
     },
     forked_sandbox: string,
     fork_count: number,
@@ -82,18 +82,20 @@ type Props = {
     description: ?string,
     author: ?{ username: string, avatarUrl: string },
     objectID: string,
-    template: string
-  }
+    template: string,
+  },
 };
 
-export default ({ hit }: Props) =>
+export default ({ hit }: Props) => (
   <StyledLink to={sandboxUrl({ id: hit.objectID, git: hit.git })}>
     <Container template={hit.template}>
       <Row alignItems="flex-start">
         <Title>
-          {hit.title
-            ? <Highlight attributeName="title" hit={hit} />
-            : hit.objectID}
+          {hit.title ? (
+            <Highlight attributeName="title" hit={hit} />
+          ) : (
+            hit.objectID
+          )}
         </Title>
         <TagContainer>
           <Tags
@@ -116,4 +118,5 @@ export default ({ hit }: Props) =>
         likeCount={hit.like_count}
       />
     </Container>
-  </StyledLink>;
+  </StyledLink>
+);

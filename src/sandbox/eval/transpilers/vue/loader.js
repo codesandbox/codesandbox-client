@@ -1,72 +1,72 @@
 // @flow
 
-import type { LoaderContext } from "../../transpiled-module";
+import type { LoaderContext } from '../../transpiled-module';
 
-import genId from "./utils/gen-id";
-import parse from "./parser";
-import componentNormalizerRaw from "!raw-loader!./component-normalizer";
+import genId from './utils/gen-id';
+import parse from './parser';
+import componentNormalizerRaw from '!raw-loader!./component-normalizer';
 
 const getStyleFileName = attrs => {
-  let extension = "css";
+  let extension = 'css';
 
-  if (attrs.lang === "scss") extension = "scss";
-  if (attrs.lang === "sass") extension = "sass";
-  if (attrs.lang === "styl") extension = "styl";
-  if (attrs.lang === "less") extension = "less";
+  if (attrs.lang === 'scss') extension = 'scss';
+  if (attrs.lang === 'sass') extension = 'sass';
+  if (attrs.lang === 'styl') extension = 'styl';
+  if (attrs.lang === 'less') extension = 'less';
 
   return attrs.module ? `module.${extension}` : extension;
 };
 
 const getStyleLoaders = attrs => {
-  let loader = "!style-loader";
+  let loader = '!style-loader';
   if (attrs.module) {
     loader += `?${JSON.stringify({ module: true })}`;
   }
 
-  if (attrs.lang === "scss") loader += "!sass-loader";
-  if (attrs.lang === "sass") loader += "!sass-loader";
-  if (attrs.lang === "styl") loader += "!stylus-loader";
-  if (attrs.lang === "less") loader += "!less-loader";
+  if (attrs.lang === 'scss') loader += '!sass-loader';
+  if (attrs.lang === 'sass') loader += '!sass-loader';
+  if (attrs.lang === 'styl') loader += '!stylus-loader';
+  if (attrs.lang === 'less') loader += '!less-loader';
 
   return loader;
 };
 
 const getScriptFileName = attrs => {
-  if (attrs.lang === "js") return "js";
-  if (attrs.lang === "typescript") return "ts";
+  if (attrs.lang === 'js') return 'js';
+  if (attrs.lang === 'typescript') return 'ts';
 
-  return "js";
+  return 'js';
 };
 
 const getTemplateFileName = attrs => {
-  if (attrs.lang === "pug") return "pug";
-  if (attrs.lang === "jade") return "jade";
+  if (attrs.lang === 'pug') return 'pug';
+  if (attrs.lang === 'jade') return 'jade';
 
-  return "html";
+  return 'html';
 };
 
 export default function(code: string, loaderContext: LoaderContext) {
   const { path, options, _module } = loaderContext;
   const moduleTitle = _module.module.title;
 
-  let output = "";
-  const moduleId = "data-v-" + genId(path, options.context, options.hashKey);
+  let output = '';
+  const moduleId = 'data-v-' + genId(path, options.context, options.hashKey);
   const parts = parse(code, _module.module.title, false);
   const hasScoped = parts.styles.some(s => s.scoped);
 
   var templateOptions =
-    "?" +
+    '?' +
     JSON.stringify({
       id: moduleId,
       hasScoped,
       transformToRequire: {
-        video: "src",
-        source: "src",
-        img: "src",
-        image: "xlink:href"
+        video: 'src',
+        source: 'src',
+        img: 'src',
+        image: 'xlink:href',
       },
       preserveWhitespace: false,
-      buble: null
+      buble: null,
       // // only pass compilerModules if it's a path string
       // compilerModules:
       //   typeof options.compilerModules === 'string'
@@ -76,18 +76,18 @@ export default function(code: string, loaderContext: LoaderContext) {
 
   var cssModules;
   if (parts.styles.length) {
-    let styleInjectionCode = "function injectStyle (ssrContext) {\n";
+    let styleInjectionCode = 'function injectStyle (ssrContext) {\n';
     parts.styles.forEach(function(style, i) {
       // require style
       const requireLocation = style.src
         ? style.src
-        : getRequire("style", style, i, style.scoped);
+        : getRequire('style', style, i, style.scoped);
 
       const requireString = `require('${requireLocation}')`;
 
       const invokeStyle = c => `  ${c}\n`;
 
-      var moduleName = style.module === true ? "$style" : style.module;
+      var moduleName = style.module === true ? '$style' : style.module;
       // setCssModule
       if (moduleName) {
         if (!cssModules) {
@@ -107,32 +107,32 @@ export default function(code: string, loaderContext: LoaderContext) {
         styleInjectionCode += invokeStyle(`require('${requireLocation}')`);
       }
     });
-    styleInjectionCode += "}\n";
+    styleInjectionCode += '}\n';
     output += styleInjectionCode;
   }
 
   loaderContext.emitModule(
     // No extension, so no transpilation !noop
-    "!noop-loader!component-normalizer.js",
+    '!noop-loader!component-normalizer.js',
     componentNormalizerRaw
   );
 
   output +=
     "var Component = require('!noop-loader!component-normalizer.js')(\n";
   // <script>
-  output += "  /* script */\n  ";
+  output += '  /* script */\n  ';
   var script = parts.script;
   if (script) {
-    const file = script.src ? script.src : getRequire("script", script);
+    const file = script.src ? script.src : getRequire('script', script);
 
     output += `require('${file}')`;
   } else {
-    output += "null";
+    output += 'null';
   }
-  output += ",\n";
+  output += ',\n';
 
   // <template>
-  output += "  /* template */\n  ";
+  output += '  /* template */\n  ';
   var template = parts.template;
   if (template) {
     const file = template.src
@@ -141,40 +141,40 @@ export default function(code: string, loaderContext: LoaderContext) {
 
     output += `require('${file}')`;
   } else {
-    output += "null";
+    output += 'null';
   }
 
-  output += ",\n";
+  output += ',\n';
 
   // style
-  output += "  /* styles */\n  ";
-  output += (parts.styles.length ? "injectStyle" : "null") + ",\n";
+  output += '  /* styles */\n  ';
+  output += (parts.styles.length ? 'injectStyle' : 'null') + ',\n';
 
   // scopeId
-  output += "  /* scopeId */\n  ";
-  output += (hasScoped ? JSON.stringify(moduleId) : "null") + ",\n";
+  output += '  /* scopeId */\n  ';
+  output += (hasScoped ? JSON.stringify(moduleId) : 'null') + ',\n';
 
   // close normalizeComponent call
-  output += ")\n";
+  output += ')\n';
 
   // add filename in dev
-  output += "Component.options.__file = " + JSON.stringify(path) + "\n";
+  output += 'Component.options.__file = ' + JSON.stringify(path) + '\n';
   // check named exports
   output +=
-    "if (Component.esModule && Object.keys(Component.esModule).some(function (key) {" +
+    'if (Component.esModule && Object.keys(Component.esModule).some(function (key) {' +
     'return key !== "default" && key.substr(0, 2) !== "__"' +
-    "})) {" +
+    '})) {' +
     'console.error("named exports are not supported in *.vue files.")' +
-    "}\n";
+    '}\n';
   // check functional components used with templates
   if (template) {
     output +=
-      "if (Component.options.functional) {" +
+      'if (Component.options.functional) {' +
       'console.error("' +
-      "[vue-loader] " +
+      '[vue-loader] ' +
       _module.module.title +
-      ": functional components are not " +
-      "supported with templates, they should use render functions." +
+      ': functional components are not ' +
+      'supported with templates, they should use render functions.' +
       '")}\n';
   }
 
@@ -226,18 +226,18 @@ export default function(code: string, loaderContext: LoaderContext) {
   }
 
   function getRequire(type, impt, i = 0, scoped) {
-    if (type === "style") {
+    if (type === 'style') {
       var styleCompiler = `${getStyleLoaders(
         impt.attrs
       )}!vue-style-compiler?${JSON.stringify({
         id: moduleId,
-        scoped: !!scoped
+        scoped: !!scoped,
       })}!${moduleTitle}:style-${i}.vue.${getStyleFileName(impt.attrs)}`;
 
       const tModule = loaderContext.emitModule(styleCompiler, impt.content);
 
       return `${tModule.query}!./${tModule.module.title}`;
-    } else if (type === "script") {
+    } else if (type === 'script') {
       const tModule = loaderContext.emitModule(
         `${moduleTitle}:script.${getScriptFileName(impt.attrs)}`,
         impt.content
@@ -245,6 +245,6 @@ export default function(code: string, loaderContext: LoaderContext) {
 
       return `./${tModule.module.title}`;
     }
-    return "";
+    return '';
   }
 }

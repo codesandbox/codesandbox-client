@@ -1,11 +1,11 @@
-import React from "react";
-import styled from "styled-components";
-import SearchIcon from "react-icons/lib/go/search";
+import React from 'react';
+import styled from 'styled-components';
+import SearchIcon from 'react-icons/lib/go/search';
 
-import history from "app/utils/history";
+import history from 'app/utils/history';
 
-import Relative from "./Relative";
-import { searchUrl } from "../utils/url-generator";
+import Relative from './Relative';
+import { searchUrl } from '../utils/url-generator';
 
 const Container = styled(Relative)`
   display: flex;
@@ -43,7 +43,7 @@ const StyledSearchIcon = styled(SearchIcon)`
 
 export default class HeaderSearchBar extends React.PureComponent {
   state = {
-    query: ""
+    query: '',
   };
 
   handleChange = e => {

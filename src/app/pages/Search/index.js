@@ -1,23 +1,23 @@
-import React from "react";
-import styled from "styled-components";
-import { InstantSearch, SearchBox, PoweredBy } from "react-instantsearch/dom";
-import qs from "qs";
+import React from 'react';
+import styled from 'styled-components';
+import { InstantSearch, SearchBox, PoweredBy } from 'react-instantsearch/dom';
+import qs from 'qs';
 
-import Title from "app/components/text/Title";
-import MaxWidth from "app/components/flex/MaxWidth";
-import Margin from "app/components/spacing/Margin";
-import Row from "app/components/flex/Row";
+import Title from 'app/components/text/Title';
+import MaxWidth from 'app/components/flex/MaxWidth';
+import Margin from 'app/components/spacing/Margin';
+import Row from 'app/components/flex/Row';
 
-import Navigation from "app/containers/Navigation";
+import Navigation from 'app/containers/Navigation';
 import {
   ALGOLIA_API_KEY,
   ALGOLIA_APPLICATION_ID,
-  ALGOLIA_DEFAULT_INDEX
-} from "app/utils/config";
+  ALGOLIA_DEFAULT_INDEX,
+} from 'app/utils/config';
 
-import "./Search.css";
-import Results from "./Results";
-import Filters from "./Filters";
+import './Search.css';
+import Results from './Results';
+import Filters from './Filters';
 
 const Content = styled.div`
   margin-top: 5%;
@@ -32,11 +32,11 @@ const StyledTitle = styled(Title)`
 `;
 
 const SEARCHABLE_THINGS = [
-  "dependency",
-  "user",
-  "sandbox title",
-  "sandbox tag",
-  "github repository"
+  'dependency',
+  'user',
+  'sandbox title',
+  'sandbox tag',
+  'github repository',
 ];
 
 const updateAfter = 700;
@@ -47,7 +47,7 @@ const getRandomSearch = () =>
 const createURL = state => `?${qs.stringify(state)}`;
 
 const searchStateToUrl = (props, searchState) =>
-  searchState ? `${props.location.pathname}${createURL(searchState)}` : "";
+  searchState ? `${props.location.pathname}${createURL(searchState)}` : '';
 
 export default class Search extends React.PureComponent {
   constructor(props) {
@@ -55,9 +55,9 @@ export default class Search extends React.PureComponent {
     this.state = { searchState: qs.parse(props.location.search.slice(1)) };
 
     this.unlisten = this.props.history.listen((location, action) => {
-      if (action === "PUSH") {
+      if (action === 'PUSH') {
         this.setState({
-          searchState: qs.parse(location.search.slice(1))
+          searchState: qs.parse(location.search.slice(1)),
         });
       }
     });
@@ -79,7 +79,7 @@ export default class Search extends React.PureComponent {
   };
 
   render() {
-    document.title = "Search - CodeSandbox";
+    document.title = 'Search - CodeSandbox';
     return (
       <MaxWidth>
         <Margin vertical={1.5} horizontal={1.5}>
@@ -99,7 +99,7 @@ export default class Search extends React.PureComponent {
                 <SearchBox
                   autoFocus
                   translations={{
-                    placeholder: `Search for a ${getRandomSearch()}...`
+                    placeholder: `Search for a ${getRandomSearch()}...`,
                   }}
                 />
                 <Row alignItems="flex-start">

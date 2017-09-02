@@ -17,7 +17,7 @@ function rejectionHandler(
   e: PromiseRejectionEvent
 ): void {
   if (e == null || e.reason == null) {
-    return callback(new Error("Unknown"));
+    return callback(new Error('Unknown'));
   }
   let { reason } = e;
   if (reason instanceof Error) {
@@ -37,7 +37,7 @@ function registerUnhandledRejection(
   }
   boundRejectionHandler = rejectionHandler.bind(undefined, callback);
   // $FlowFixMe
-  target.addEventListener("unhandledrejection", boundRejectionHandler);
+  target.addEventListener('unhandledrejection', boundRejectionHandler);
 }
 
 function unregisterUnhandledRejection(target: EventTarget) {
@@ -45,11 +45,11 @@ function unregisterUnhandledRejection(target: EventTarget) {
     return;
   }
   // $FlowFixMe
-  target.removeEventListener("unhandledrejection", boundRejectionHandler);
+  target.removeEventListener('unhandledrejection', boundRejectionHandler);
   boundRejectionHandler = null;
 }
 
 export {
   registerUnhandledRejection as register,
-  unregisterUnhandledRejection as unregister
+  unregisterUnhandledRejection as unregister,
 };

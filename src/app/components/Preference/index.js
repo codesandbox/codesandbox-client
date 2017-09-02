@@ -1,11 +1,11 @@
-import React from "react";
-import styled from "styled-components";
-import Tooltip from "app/components/Tooltip";
+import React from 'react';
+import styled from 'styled-components';
+import Tooltip from 'app/components/Tooltip';
 
-import PreferenceSwitch from "./PreferenceSwitch";
-import PreferenceDropdown from "./PreferenceDropdown";
-import PreferenceNumber from "./PreferenceNumber";
-import PreferenceText from "./PreferenceText";
+import PreferenceSwitch from './PreferenceSwitch';
+import PreferenceDropdown from './PreferenceDropdown';
+import PreferenceNumber from './PreferenceNumber';
+import PreferenceText from './PreferenceText';
 
 const Container = styled.div`
   display: flex;
@@ -19,8 +19,8 @@ type Props = {
   value: any,
   setValue: (value: any) => any,
   tooltip: ?string,
-  type: "boolean" | "number" | "string",
-  options: ?Array<string>
+  type: 'boolean' | 'number' | 'string',
+  options: ?Array<string>,
 };
 
 export default class Preference extends React.Component {
@@ -28,7 +28,7 @@ export default class Preference extends React.Component {
 
   getOptionComponent = (value: boolean | number | string) => {
     const { type } = this.props;
-    if (type === "boolean") {
+    if (type === 'boolean') {
       return (
         <PreferenceSwitch
           {...this.props}
@@ -38,7 +38,7 @@ export default class Preference extends React.Component {
       );
     }
 
-    if (type === "string") {
+    if (type === 'string') {
       return (
         <PreferenceText
           {...this.props}
@@ -48,7 +48,7 @@ export default class Preference extends React.Component {
       );
     }
 
-    if (type === "dropdown") {
+    if (type === 'dropdown') {
       return (
         <PreferenceDropdown
           {...this.props}
@@ -71,20 +71,18 @@ export default class Preference extends React.Component {
   render() {
     const { title, className, value, tooltip } = this.props;
 
-    const Title = tooltip
-      ? <Tooltip position="right" title={tooltip}>
-          {title}
-        </Tooltip>
-      : <span>
-          {title}
-        </span>;
+    const Title = tooltip ? (
+      <Tooltip position="right" title={tooltip}>
+        {title}
+      </Tooltip>
+    ) : (
+      <span>{title}</span>
+    );
 
     return (
       <Container className={className}>
         {Title}
-        <div>
-          {this.getOptionComponent(value)}
-        </div>
+        <div>{this.getOptionComponent(value)}</div>
       </Container>
     );
   }

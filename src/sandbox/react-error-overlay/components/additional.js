@@ -8,15 +8,15 @@
  */
 
 /* @flow */
-import { applyStyles } from "../utils/dom/css";
+import { applyStyles } from '../utils/dom/css';
 import {
   additionalChildStyle,
   groupStyle,
   groupElemLeft,
-  groupElemRight
-} from "../styles";
-import { consumeEvent } from "../utils/dom/consumeEvent";
-import { enableTabClick } from "../utils/dom/enableTabClick";
+  groupElemRight,
+} from '../styles';
+import { consumeEvent } from '../utils/dom/consumeEvent';
+import { enableTabClick } from '../utils/dom/enableTabClick';
 
 type SwitchCallback = (offset: number) => void;
 function updateAdditional(
@@ -34,28 +34,28 @@ function updateAdditional(
     return;
   }
 
-  const div = document.createElement("div");
+  const div = document.createElement('div');
   applyStyles(div, additionalChildStyle);
 
-  const group = document.createElement("span");
+  const group = document.createElement('span');
   applyStyles(group, groupStyle);
 
-  const left = document.createElement("button");
+  const left = document.createElement('button');
   applyStyles(left, groupElemLeft);
-  left.addEventListener("click", function(e: MouseEvent) {
+  left.addEventListener('click', function(e: MouseEvent) {
     consumeEvent(e);
     switchCallback(-1);
   });
-  left.appendChild(document.createTextNode("←"));
+  left.appendChild(document.createTextNode('←'));
   enableTabClick(left);
 
-  const right = document.createElement("button");
+  const right = document.createElement('button');
   applyStyles(right, groupElemRight);
-  right.addEventListener("click", function(e: MouseEvent) {
+  right.addEventListener('click', function(e: MouseEvent) {
     consumeEvent(e);
     switchCallback(1);
   });
-  right.appendChild(document.createTextNode("→"));
+  right.appendChild(document.createTextNode('→'));
   enableTabClick(right);
 
   group.appendChild(left);

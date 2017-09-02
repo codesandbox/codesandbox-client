@@ -1,6 +1,6 @@
 // @flow
-import type { Sandbox } from "common/types";
-import { mapValues } from "lodash";
+import type { Sandbox } from 'common/types';
+import { mapValues } from 'lodash';
 
 import {
   SET_NPM_DEPENDENCIES,
@@ -14,23 +14,23 @@ import {
   UNLIKE_SANDBOX_ACTIONS,
   SET_TAGS,
   SET_SANDBOX_PRIVACY,
-  FORCE_RENDER
-} from "./actions";
+  FORCE_RENDER,
+} from './actions';
 
 import {
   ADD_MODULE_TO_SANDBOX,
   ADD_DIRECTORY_TO_SANDBOX,
   REMOVE_MODULE_FROM_SANDBOX,
-  REMOVE_DIRECTORY_FROM_SANDBOX
-} from "./actions/files";
+  REMOVE_DIRECTORY_FROM_SANDBOX,
+} from './actions/files';
 
-import { SET_CURRENT_USER, SIGN_OUT } from "../../user/actions";
+import { SET_CURRENT_USER, SIGN_OUT } from '../../user/actions';
 
 const initialState = {};
 
 type Action = {
   [key: string]: any,
-  type: string
+  type: string,
 };
 
 function singleSandboxReducer(sandbox: Sandbox, action: Action): Sandbox {
@@ -39,7 +39,7 @@ function singleSandboxReducer(sandbox: Sandbox, action: Action): Sandbox {
       return {
         ...sandbox,
         showEditor: action.showEditor,
-        showPreview: action.showPreview
+        showPreview: action.showPreview,
       };
     case SET_PROJECT_VIEW:
       return { ...sandbox, isInProjectView: action.isInProjectView };
@@ -50,7 +50,7 @@ function singleSandboxReducer(sandbox: Sandbox, action: Action): Sandbox {
     case ADD_DIRECTORY_TO_SANDBOX:
       return {
         ...sandbox,
-        directories: [...sandbox.directories, action.directoryId]
+        directories: [...sandbox.directories, action.directoryId],
       };
     case REMOVE_MODULE_FROM_SANDBOX: {
       const currentModule = sandbox.currentModule;
@@ -59,30 +59,30 @@ function singleSandboxReducer(sandbox: Sandbox, action: Action): Sandbox {
       return {
         ...sandbox,
         currentModule: resetCurrentModule ? undefined : sandbox.currentModule,
-        modules: sandbox.modules.filter(m => m !== action.moduleId)
+        modules: sandbox.modules.filter(m => m !== action.moduleId),
       };
     }
     case REMOVE_DIRECTORY_FROM_SANDBOX:
       return {
         ...sandbox,
-        directories: sandbox.directories.filter(d => d !== action.directoryId)
+        directories: sandbox.directories.filter(d => d !== action.directoryId),
       };
     case SET_NPM_DEPENDENCIES:
       return {
         ...sandbox,
         npmDependencies: action.dependencies,
-        dependencyBundle: {} // So we can fetch dependencies later on again
+        dependencyBundle: {}, // So we can fetch dependencies later on again
       };
     case SET_EXTERNAL_RESOURCES:
       return {
         ...sandbox,
-        externalResources: action.externalResources
+        externalResources: action.externalResources,
       };
     case SET_SANDBOX_INFO:
       return {
         ...sandbox,
         title: action.title,
-        description: action.description
+        description: action.description,
       };
     case LIKE_SANDBOX_ACTIONS.REQUEST:
       if (sandbox.userLiked) return sandbox;
@@ -90,30 +90,30 @@ function singleSandboxReducer(sandbox: Sandbox, action: Action): Sandbox {
       return {
         ...sandbox,
         likeCount: sandbox.likeCount + 1,
-        userLiked: true
+        userLiked: true,
       };
     case LIKE_SANDBOX_ACTIONS.SUCCESS:
       return {
         ...sandbox,
-        likeCount: action.data.count
+        likeCount: action.data.count,
       };
     case LIKE_SANDBOX_ACTIONS.FAILURE:
       return {
         ...sandbox,
         likeCount: sandbox.likeCount - 1,
-        userLiked: false
+        userLiked: false,
       };
     case UNLIKE_SANDBOX_ACTIONS.SUCCESS:
       return {
         ...sandbox,
         userLiked: false,
-        likeCount: action.data.count
+        likeCount: action.data.count,
       };
     case UNLIKE_SANDBOX_ACTIONS.FAILURE:
       return {
         ...sandbox,
         userLiked: true,
-        likeCount: sandbox.likeCount + 1
+        likeCount: sandbox.likeCount + 1,
       };
     case UNLIKE_SANDBOX_ACTIONS.REQUEST:
       if (!sandbox.userLiked) return sandbox;
@@ -121,22 +121,22 @@ function singleSandboxReducer(sandbox: Sandbox, action: Action): Sandbox {
       return {
         ...sandbox,
         userLiked: false,
-        likeCount: sandbox.likeCount - 1
+        likeCount: sandbox.likeCount - 1,
       };
     case SET_TAGS:
       return {
         ...sandbox,
-        tags: action.tags
+        tags: action.tags,
       };
     case SET_SANDBOX_PRIVACY:
       return {
         ...sandbox,
-        privacy: action.privacy
+        privacy: action.privacy,
       };
     case FORCE_RENDER:
       return {
         ...sandbox,
-        forcedRenders: sandbox.forcedRenders + 1
+        forcedRenders: sandbox.forcedRenders + 1,
       };
     default:
       return sandbox;
@@ -171,7 +171,7 @@ export default function reducer(
       if (state[id]) {
         return {
           ...state,
-          [id]: singleSandboxReducer(state[id], action)
+          [id]: singleSandboxReducer(state[id], action),
         };
       }
 
@@ -182,17 +182,17 @@ export default function reducer(
     case SET_CURRENT_USER:
       return mapValues(state, s => ({
         ...s,
-        owned: s.owned || s.author === action.data.id
+        owned: s.owned || s.author === action.data.id,
       }));
     case SIGN_OUT:
       return mapValues(state, s => ({
         ...s,
-        owned: false
+        owned: false,
       }));
     case DELETE_SANDBOX_API_ACTIONS.SUCCESS:
       return {
         ...state,
-        [action.meta.id]: null
+        [action.meta.id]: null,
       };
     default:
       return state;

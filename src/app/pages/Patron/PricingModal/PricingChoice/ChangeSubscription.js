@@ -1,10 +1,10 @@
-import React from "react";
-import styled from "styled-components";
-import moment from "moment";
+import React from 'react';
+import styled from 'styled-components';
+import moment from 'moment';
 
-import Button from "app/components/buttons/Button";
+import Button from 'app/components/buttons/Button';
 
-import logError from "app/utils/error";
+import logError from 'app/utils/error';
 
 const SmallText = styled.div`
   text-align: center;
@@ -26,13 +26,13 @@ const StyledButton = styled(Button)`margin: 1rem;`;
 type Props = {
   date: string,
   updateSubscription: () => void,
-  cancelSubscription: () => void
+  cancelSubscription: () => void,
 };
 
 export default class ChangeSubscription extends React.PureComponent {
   props: Props;
   state = {
-    loading: false
+    loading: false,
   };
 
   updateSubscription = async () => {
@@ -79,8 +79,8 @@ export default class ChangeSubscription extends React.PureComponent {
         </Buttons>
         <SmallText>
           You will be billed every <strong>
-            {moment(date).format("Do")}
-          </strong>{" "}
+            {moment(date).format('Do')}
+          </strong>{' '}
           of the month, you can change or cancel your subscription at any time.
         </SmallText>
       </div>

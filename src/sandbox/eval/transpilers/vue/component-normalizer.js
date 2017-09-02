@@ -12,14 +12,14 @@ module.exports = function normalizeComponent(
 
   // ES6 modules interop
   var type = typeof rawScriptExports.default;
-  if (type === "object" || type === "function") {
+  if (type === 'object' || type === 'function') {
     esModule = rawScriptExports;
     scriptExports = rawScriptExports.default;
   }
 
   // Vue.extend constructor export interop
   var options =
-    typeof scriptExports === "function" ? scriptExports.options : scriptExports;
+    typeof scriptExports === 'function' ? scriptExports.options : scriptExports;
 
   // render functions
   if (compiledTemplate) {
@@ -55,6 +55,6 @@ module.exports = function normalizeComponent(
   return {
     esModule: esModule,
     exports: scriptExports,
-    options: options
+    options: options,
   };
 };

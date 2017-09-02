@@ -12,7 +12,7 @@
 type ReactFrame = {
   fileName: string | null,
   lineNumber: number | null,
-  name: string | null
+  name: string | null,
 };
 const reactFrameStack: Array<ReactFrame[]> = [];
 
@@ -26,7 +26,7 @@ export type { ReactFrame };
 /// TODO: a more comprehensive implementation.
 
 const registerReactStack = () => {
-  if (typeof console !== "undefined") {
+  if (typeof console !== 'undefined') {
     // $FlowFixMe
     console.reactStack = frames => reactFrameStack.push(frames);
     // $FlowFixMe
@@ -35,7 +35,7 @@ const registerReactStack = () => {
 };
 
 const unregisterReactStack = () => {
-  if (typeof console !== "undefined") {
+  if (typeof console !== 'undefined') {
     // $FlowFixMe
     console.reactStack = undefined;
     // $FlowFixMe
@@ -48,13 +48,13 @@ const permanentRegister = function proxyConsole(
   type: string,
   callback: ConsoleProxyCallback
 ) {
-  if (typeof console !== "undefined") {
+  if (typeof console !== 'undefined') {
     const orig = console[type];
-    if (typeof orig === "function") {
+    if (typeof orig === 'function') {
       console[type] = function __stack_frame_overlay_proxy_console__() {
         try {
           const message = arguments[0];
-          if (typeof message === "string") {
+          if (typeof message === 'string') {
             if (reactFrameStack.length > 0) {
               callback(message, reactFrameStack[reactFrameStack.length - 1]);
             }

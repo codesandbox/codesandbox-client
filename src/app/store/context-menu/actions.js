@@ -1,8 +1,8 @@
 // @flow
-import type { ContextMenuItem } from "./reducer";
+import type { ContextMenuItem } from './reducer';
 
-export const CLOSE_CONTEXT_MENU = "CLOSE_CONTEXT_MENU";
-export const OPEN_CONTEXT_MENU = "OPEN_CONTEXT_MENU";
+export const CLOSE_CONTEXT_MENU = 'CLOSE_CONTEXT_MENU';
+export const OPEN_CONTEXT_MENU = 'OPEN_CONTEXT_MENU';
 
 const openMenu = (
   items: Array<ContextMenuItem>,
@@ -14,10 +14,10 @@ const openMenu = (
   items,
   x,
   y,
-  onClose
+  onClose,
 });
 
 export default {
   openMenu,
-  closeMenu: () => ({ type: CLOSE_CONTEXT_MENU })
+  closeMenu: () => ({ type: CLOSE_CONTEXT_MENU }),
 };

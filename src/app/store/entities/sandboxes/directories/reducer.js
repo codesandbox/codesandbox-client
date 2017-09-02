@@ -1,6 +1,6 @@
 // @flow
-import type { Directory } from "common/types";
-import { RENAME_DIRECTORY, MOVE_DIRECTORY } from "./actions";
+import type { Directory } from 'common/types';
+import { RENAME_DIRECTORY, MOVE_DIRECTORY } from './actions';
 
 function directoryReducer(directory: Directory, action) {
   switch (action.type) {
@@ -14,7 +14,7 @@ function directoryReducer(directory: Directory, action) {
 }
 
 type State = {
-  [id: string]: Directory
+  [id: string]: Directory,
 };
 
 export default function reducer(
@@ -27,7 +27,7 @@ export default function reducer(
       if (state[action.id]) {
         return {
           ...state,
-          [action.id]: directoryReducer(state[action.id], action)
+          [action.id]: directoryReducer(state[action.id], action),
         };
       }
       return state;

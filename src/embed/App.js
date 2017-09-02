@@ -1,23 +1,23 @@
 // @flow
-import * as React from "react";
-import styled, { ThemeProvider } from "styled-components";
-import { camelizeKeys } from "humps";
-import "whatwg-fetch";
+import * as React from 'react';
+import styled, { ThemeProvider } from 'styled-components';
+import { camelizeKeys } from 'humps';
+import 'whatwg-fetch';
 
-import type { Sandbox, Module } from "common/types";
-import getTemplateDefinition from "common/templates";
-import Centered from "app/components/flex/Centered";
-import Title from "app/components/text/Title";
-import SubTitle from "app/components/text/SubTitle";
+import type { Sandbox, Module } from 'common/types';
+import getTemplateDefinition from 'common/templates';
+import Centered from 'app/components/flex/Centered';
+import Title from 'app/components/text/Title';
+import SubTitle from 'app/components/text/SubTitle';
 
-import Header from "./components/Header";
-import Content from "./components/Content";
-import Sidebar from "./components/Sidebar";
-import { getSandboxOptions } from "../common/url";
+import Header from './components/Header';
+import Content from './components/Content';
+import Sidebar from './components/Sidebar';
+import { getSandboxOptions } from '../common/url';
 import {
   findCurrentModule,
-  findMainModule
-} from "app/store/entities/sandboxes/modules/selectors";
+  findMainModule,
+} from 'app/store/entities/sandboxes/modules/selectors';
 
 const Container = styled.div`
   display: flex;
@@ -57,7 +57,7 @@ type State = {
   sidebarOpen: boolean,
   autoResize: boolean,
   hideNavigation: boolean,
-  fontSize: number
+  fontSize: number,
 };
 
 export default class App extends React.PureComponent<{}, State> {
@@ -72,7 +72,7 @@ export default class App extends React.PureComponent<{}, State> {
       isEditorScreen,
       autoResize,
       hideNavigation,
-      fontSize
+      fontSize,
     } = getSandboxOptions(document.location.href);
 
     this.state = {
@@ -86,7 +86,7 @@ export default class App extends React.PureComponent<{}, State> {
       initialPath,
       sidebarOpen: false,
       autoResize,
-      hideNavigation
+      hideNavigation,
     };
   }
 
@@ -99,7 +99,7 @@ export default class App extends React.PureComponent<{}, State> {
     return null;
   };
 
-  getAppOrigin = () => location.origin.replace("embed.", "");
+  getAppOrigin = () => location.origin.replace('embed.', '');
 
   fetchSandbox = async (id: string) => {
     try {
@@ -111,7 +111,7 @@ export default class App extends React.PureComponent<{}, State> {
 
       document.title = response.data.title
         ? `${response.data.title} - CodeSandbox`
-        : "Embed - CodeSandbox";
+        : 'Embed - CodeSandbox';
       this.setState({ sandbox: response.data });
     } catch (e) {
       this.setState({ notFound: true });
@@ -179,7 +179,7 @@ export default class App extends React.PureComponent<{}, State> {
       <ThemeProvider
         theme={{
           templateColor: getTemplateDefinition(this.state.sandbox.template)
-            .color
+            .color,
         }}
       >
         <Container>
@@ -213,15 +213,14 @@ export default class App extends React.PureComponent<{}, State> {
   render() {
     return (
       <Fullscreen sidebarOpen={this.state.sidebarOpen}>
-        {this.state.sandbox &&
+        {this.state.sandbox && (
           <Sidebar
             setCurrentModule={this.setCurrentModule}
             currentModule={this.getCurrentModuleFromPath().id}
             sandbox={this.state.sandbox}
-          />}
-        <Moving sidebarOpen={this.state.sidebarOpen}>
-          {this.content()}
-        </Moving>
+          />
+        )}
+        <Moving sidebarOpen={this.state.sidebarOpen}>{this.content()}</Moving>
       </Fullscreen>
     );
   }

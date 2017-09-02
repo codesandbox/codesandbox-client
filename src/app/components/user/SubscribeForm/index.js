@@ -1,11 +1,11 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
 
-import { StripeProvider, Elements } from "react-stripe-elements";
+import { StripeProvider, Elements } from 'react-stripe-elements';
 
-import { STRIPE_API_KEY } from "app/utils/config";
+import { STRIPE_API_KEY } from 'app/utils/config';
 
-import CheckoutForm from "./CheckoutForm";
+import CheckoutForm from './CheckoutForm';
 
 const Container = styled.div`
   width: 300px;
@@ -18,15 +18,15 @@ type Props = {
   name: ?string,
   subscribe: (token: string) => void,
   buttonName: string,
-  loadingText: string
+  loadingText: string,
 };
 
 export default ({
   name,
   subscribe,
-  loadingText = "Creating Subscription...",
-  buttonName = "Subscribe"
-}: Props) =>
+  loadingText = 'Creating Subscription...',
+  buttonName = 'Subscribe',
+}: Props) => (
   <Container>
     <StripeProvider apiKey={STRIPE_API_KEY}>
       <Elements>
@@ -38,4 +38,5 @@ export default ({
         />
       </Elements>
     </StripeProvider>
-  </Container>;
+  </Container>
+);

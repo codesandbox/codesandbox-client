@@ -1,14 +1,14 @@
 // @flow
-import * as React from "react";
-import styled from "styled-components";
-import { bindActionCreators } from "redux";
-import { connect } from "react-redux";
+import * as React from 'react';
+import styled from 'styled-components';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 
-import Button from "app/components/buttons/Button";
-import type { PaginatedSandboxes } from "common/types";
+import Button from 'app/components/buttons/Button';
+import type { PaginatedSandboxes } from 'common/types';
 
-import SandboxList from "app/components/sandbox/SandboxList";
-import sandboxActionCreators from "app/store/entities/sandboxes/actions";
+import SandboxList from 'app/components/sandbox/SandboxList';
+import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 
 const PER_PAGE_COUNT = 15;
 
@@ -36,12 +36,12 @@ type Props = {
   fetchSandboxes: Function,
   sandboxes: PaginatedSandboxes,
   sandboxActions: typeof sandboxActionCreators,
-  isCurrentUser: boolean
+  isCurrentUser: boolean,
 };
 
 class Sandboxes extends React.PureComponent<Props> {
   static defaultProps = {
-    page: 1
+    page: 1,
   };
 
   fetch(force = false) {
@@ -79,11 +79,12 @@ class Sandboxes extends React.PureComponent<Props> {
     if (!sandboxes || !sandboxes[page]) return <div />;
     return (
       <div>
-        {isCurrentUser &&
+        {isCurrentUser && (
           <Notice>
             You{"'"}re viewing your own profile, so you can see your private and
             unlisted sandboxes. Others can{"'"}t.
-          </Notice>}
+          </Notice>
+        )}
         <SandboxList
           isCurrentUser={isCurrentUser}
           sandboxes={sandboxes[page]}
@@ -91,22 +92,24 @@ class Sandboxes extends React.PureComponent<Props> {
         />
         <Navigation>
           <div>
-            {page > 1 &&
+            {page > 1 && (
               <Button
-                style={{ margin: "0 0.5rem" }}
+                style={{ margin: '0 0.5rem' }}
                 small
                 to={`${baseUrl}/${page - 1}`}
               >
-                {"<"}
-              </Button>}
-            {this.getLastPage() !== page &&
+                {'<'}
+              </Button>
+            )}
+            {this.getLastPage() !== page && (
               <Button
-                style={{ margin: "0 0.5rem" }}
+                style={{ margin: '0 0.5rem' }}
                 small
                 to={`${baseUrl}/${page + 1}`}
               >
-                {">"}
-              </Button>}
+                {'>'}
+              </Button>
+            )}
           </div>
         </Navigation>
       </div>
@@ -117,7 +120,7 @@ class Sandboxes extends React.PureComponent<Props> {
 const mapStateToProps = () => ({});
 
 const mapDispatchToProps = dispatch => ({
-  sandboxActions: bindActionCreators(sandboxActionCreators, dispatch)
+  sandboxActions: bindActionCreators(sandboxActionCreators, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Sandboxes);

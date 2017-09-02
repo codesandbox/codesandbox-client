@@ -1,31 +1,31 @@
 // @flow
-import * as React from "react";
-import { createSelector } from "reselect";
+import * as React from 'react';
+import { createSelector } from 'reselect';
 
-import { bindActionCreators } from "redux";
-import { connect } from "react-redux";
-import { Link } from "react-router-dom";
-import styled, { ThemeProvider } from "styled-components";
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+import styled, { ThemeProvider } from 'styled-components';
 
-import type { Sandbox, User } from "common/types";
-import sandboxActionCreators from "app/store/entities/sandboxes/actions";
-import { modulesFromSandboxNotSavedSelector } from "app/store/entities/sandboxes/modules/selectors";
-import { usersSelector } from "app/store/entities/users/selectors";
-import { isPatronSelector } from "app/store/user/selectors";
-import getTemplateDefinition from "common/templates";
+import type { Sandbox, User } from 'common/types';
+import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
+import { modulesFromSandboxNotSavedSelector } from 'app/store/entities/sandboxes/modules/selectors';
+import { usersSelector } from 'app/store/entities/users/selectors';
+import { isPatronSelector } from 'app/store/user/selectors';
+import getTemplateDefinition from 'common/templates';
 
-import showAlternativeComponent from "app/hoc/show-alternative-component";
-import fadeIn from "app/utils/animation/fade-in";
-import { tosUrl, privacyUrl } from "app/utils/url-generator";
+import showAlternativeComponent from 'app/hoc/show-alternative-component';
+import fadeIn from 'app/utils/animation/fade-in';
+import { tosUrl, privacyUrl } from 'app/utils/url-generator';
 
-import Files from "./Files";
-import Dependencies from "./Dependencies";
-import Project from "./Project";
-import Tags from "./Tags";
-import WorkspaceItem from "./WorkspaceItem";
-import SandboxActions from "./SandboxActions";
-import Logo from "./Logo";
-import ConnectionNotice from "./ConnectionNotice";
+import Files from './Files';
+import Dependencies from './Dependencies';
+import Project from './Project';
+import Tags from './Tags';
+import WorkspaceItem from './WorkspaceItem';
+import SandboxActions from './SandboxActions';
+import Logo from './Logo';
+import ConnectionNotice from './ConnectionNotice';
 
 const Container = styled.div`
   position: absolute;
@@ -55,7 +55,7 @@ type Props = {
   sandboxActions: typeof sandboxActionCreators,
   preventTransition: boolean,
   user: User,
-  isPatron: boolean
+  isPatron: boolean,
 };
 
 const mapStateToProps = createSelector(
@@ -66,12 +66,12 @@ const mapStateToProps = createSelector(
   (preventTransition, users, author, isPatron) => ({
     preventTransition,
     user: users[author],
-    isPatron
+    isPatron,
   })
 );
 
 const mapDispatchToProps = dispatch => ({
-  sandboxActions: bindActionCreators(sandboxActionCreators, dispatch)
+  sandboxActions: bindActionCreators(sandboxActionCreators, dispatch),
 });
 
 const Workspace = ({
@@ -79,11 +79,11 @@ const Workspace = ({
   user,
   preventTransition,
   sandboxActions,
-  isPatron
-}: Props) =>
+  isPatron,
+}: Props) => (
   <ThemeProvider
     theme={{
-      templateColor: getTemplateDefinition(sandbox.template).color
+      templateColor: getTemplateDefinition(sandbox.template).color,
     }}
   >
     <Container>
@@ -126,7 +126,7 @@ const Workspace = ({
           />
         </WorkspaceItem>
 
-        {(sandbox.owned || sandbox.tags.length > 0) &&
+        {(sandbox.owned || sandbox.tags.length > 0) && (
           <WorkspaceItem title="Tags">
             <Tags
               sandboxId={sandbox.id}
@@ -135,9 +135,10 @@ const Workspace = ({
               isOwner={sandbox.owned}
               tags={sandbox.tags}
             />
-          </WorkspaceItem>}
+          </WorkspaceItem>
+        )}
 
-        {sandbox.owned &&
+        {sandbox.owned && (
           <WorkspaceItem title="Sandbox Actions">
             <SandboxActions
               id={sandbox.id}
@@ -147,23 +148,25 @@ const Workspace = ({
               isPatron={isPatron}
               privacy={sandbox.privacy}
             />
-          </WorkspaceItem>}
+          </WorkspaceItem>
+        )}
       </div>
 
       <div>
         <ConnectionNotice />
         <TermsContainer>
-          By using CodeSandbox you agree to our{" "}
-          <Link to={tosUrl()}>Terms and Conditions</Link> and{" "}
+          By using CodeSandbox you agree to our{' '}
+          <Link to={tosUrl()}>Terms and Conditions</Link> and{' '}
           <Link to={privacyUrl()}>Privacy Policy</Link>.
         </TermsContainer>
       </div>
     </Container>
-  </ThemeProvider>;
+  </ThemeProvider>
+);
 
 // The skeleton to show if sandbox doesn't exist
 const Skeleton = () => <Container />;
 
-export default showAlternativeComponent(Skeleton, ["sandbox"])(
+export default showAlternativeComponent(Skeleton, ['sandbox'])(
   connect(mapStateToProps, mapDispatchToProps)(Workspace)
 );

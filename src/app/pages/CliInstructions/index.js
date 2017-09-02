@@ -26,7 +26,7 @@ const Code = styled.pre`
   color: rgba(255, 255, 255, 0.7);
 `;
 
-export default () =>
+export default () => (
   <MaxWidth>
     <Margin vertical={1.5} horizontal={1.5}>
       <Container>
@@ -46,4 +46,5 @@ export default () =>
         </Content>
       </Container>
     </Margin>
-  </MaxWidth>;
+  </MaxWidth>
+);

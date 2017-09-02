@@ -1,9 +1,9 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
 
-import SubTitle from "app/components/text/SubTitle";
-import Button from "app/components/buttons/Button";
-import { newSandboxUrl } from "app/utils/url-generator";
+import SubTitle from 'app/components/text/SubTitle';
+import Button from 'app/components/buttons/Button';
+import { newSandboxUrl } from 'app/utils/url-generator';
 
 const Container = styled.div`
   position: absolute;
@@ -30,14 +30,13 @@ const Buttons = styled.div`
   margin-top: 0.5rem;
 `;
 
-export default () =>
+export default () => (
   <Container>
     <Title>404</Title>
-    <SubTitle>
-      We could not find the page you{"'"}re looking for :(
-    </SubTitle>
+    <SubTitle>We could not find the page you{"'"}re looking for :(</SubTitle>
     <Buttons>
       <Button href="/">To Homepage</Button>
       <Button to={newSandboxUrl()}>Create Sandbox</Button>
     </Buttons>
-  </Container>;
+  </Container>
+);

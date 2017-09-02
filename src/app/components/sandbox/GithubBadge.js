@@ -1,7 +1,7 @@
-import React from "react";
-import styled, { css } from "styled-components";
+import React from 'react';
+import styled, { css } from 'styled-components';
 
-import GithubIcon from "react-icons/lib/go/mark-github";
+import GithubIcon from 'react-icons/lib/go/mark-github';
 
 const BorderRadius = styled.div`
   transition: 0.3s ease all;
@@ -41,20 +41,17 @@ const StyledA = styled.a`text-decoration: none;`;
 type Props = {
   username: string,
   repo: string,
-  url: ?string
+  url: ?string,
 };
 
 const DivOrA = ({ href, ...props }) =>
-  href
-    ? <StyledA
-        target="_blank"
-        rel="noopener noreferrer"
-        href={href}
-        {...props}
-      />
-    : <div {...props} />;
+  href ? (
+    <StyledA target="_blank" rel="noopener noreferrer" href={href} {...props} />
+  ) : (
+    <div {...props} />
+  );
 
-export default ({ username, repo, url }: Props) =>
+export default ({ username, repo, url }: Props) => (
   <DivOrA href={url}>
     <BorderRadius hasUrl={!!url}>
       <Icon>
@@ -64,4 +61,5 @@ export default ({ username, repo, url }: Props) =>
         {username}/{repo}
       </Text>
     </BorderRadius>
-  </DivOrA>;
+  </DivOrA>
+);

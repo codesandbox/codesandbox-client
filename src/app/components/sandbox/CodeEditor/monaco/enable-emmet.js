@@ -1,29 +1,29 @@
-import extractAbbreviation from "@emmetio/extract-abbreviation";
-import { expand } from "@emmetio/expand-abbreviation";
+import extractAbbreviation from '@emmetio/extract-abbreviation';
+import { expand } from '@emmetio/expand-abbreviation';
 
-const field = (index, placeholder) => "";
+const field = (index, placeholder) => '';
 
 const expandAbbreviation = (source, language) => {
   return expand(source.abbreviation, {
     field,
     syntax: language,
     addons: {
-      jsx: true
-    }
+      jsx: true,
+    },
   });
 };
 
 const enableEmmet = (editor, monaco) => {
   if (!editor) {
-    throw new Error("Must provide monaco-editor instance.");
+    throw new Error('Must provide monaco-editor instance.');
   }
 
   editor.addAction({
     // An unique identifier of the contributed action.
-    id: "emmet-abbr",
+    id: 'emmet-abbr',
 
     // A label of the action that will be presented to the user.
-    label: "Emmet: Expand abbreviation",
+    label: 'Emmet: Expand abbreviation',
 
     // An optional array of keybindings for the action.
     keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.F10],
@@ -34,7 +34,7 @@ const enableEmmet = (editor, monaco) => {
     // A rule to evaluate on top of the precondition in order to dispatch the keybindings.
     keybindingContext: null,
 
-    contextMenuGroupId: "navigation",
+    contextMenuGroupId: 'navigation',
 
     contextMenuOrder: 1.5,
 
@@ -49,7 +49,7 @@ const enableEmmet = (editor, monaco) => {
       }
       if (word) {
         // Get expand text
-        const expandText = expandAbbreviation(word, "html");
+        const expandText = expandAbbreviation(word, 'html');
         if (expandText) {
           // replace range content: pos.column , pos.column -word.length;
           const range = new monaco.Range(
@@ -63,16 +63,16 @@ const enableEmmet = (editor, monaco) => {
             identifier: id,
             range,
             text: expandText,
-            forceMoveMarkers: true
+            forceMoveMarkers: true,
           };
-          editor.executeEdits("", [op]);
+          editor.executeEdits('', [op]);
         } else {
           return false;
         }
       } else {
         return false;
       }
-    }
+    },
   });
 };
 

@@ -1,4 +1,4 @@
-import type { Sandbox, Module, Directory } from "common/types";
+import type { Sandbox, Module, Directory } from 'common/types';
 
 /* eslint-disable */
 // import favicon from '!base64-loader!./files/favicon.ico'; // $FlowIssue
@@ -12,8 +12,8 @@ import {
   getResourceTag,
   getIndexHtmlBody,
   createPackageJSON,
-  createDirectoryWithFiles
-} from "../";
+  createDirectoryWithFiles,
+} from '../';
 
 const getHTML = (modules, resources) =>
   `<!doctype html>
@@ -38,7 +38,7 @@ const getHTML = (modules, resources) =>
     Learn how to configure a non-root public URL by running \`npm run build\`.
   -->
   <title>React App</title>
-  ${resources.map(getResourceTag).join("\n")}
+  ${resources.map(getResourceTag).join('\n')}
 </head>
 <body>
   ${getIndexHtmlBody(modules)}
@@ -67,48 +67,48 @@ export default function createZip(
   modules: Array<Module>,
   directories: Array<Directory>
 ) {
-  importAll(require.context("./files", true, /.*/));
+  importAll(require.context('./files', true, /.*/));
 
-  const src = zip.folder("src");
-  src.file("createServiceWorker.js", files["./createServiceWorker.js"]);
+  const src = zip.folder('src');
+  src.file('createServiceWorker.js', files['./createServiceWorker.js']);
   modules
     .filter(x => x.directoryShortid == null)
-    .filter(x => x.title !== "index.html") // This will be included in the body
+    .filter(x => x.title !== 'index.html') // This will be included in the body
     .forEach(x => src.file(x.title, x.code));
 
   directories
     .filter(x => x.directoryShortid == null)
     .forEach(x => createDirectoryWithFiles(modules, directories, x, src));
 
-  const publicFolder = zip.folder("public");
+  const publicFolder = zip.folder('public');
 
-  publicFolder.file("favicon.ico", files["./favicon.ico"], {
-    base64: true
+  publicFolder.file('favicon.ico', files['./favicon.ico'], {
+    base64: true,
   });
 
-  publicFolder.file("index.html", getHTML(modules, sandbox.externalResources));
-  publicFolder.file("manifest.json", files["./manifest.json"]);
+  publicFolder.file('index.html', getHTML(modules, sandbox.externalResources));
+  publicFolder.file('manifest.json', files['./manifest.json']);
 
   if (
-    !modules.find(x => x.directoryShortid == null && x.title === "README.md")
+    !modules.find(x => x.directoryShortid == null && x.title === 'README.md')
   ) {
-    zip.file("README.md", files["./README.md"]);
+    zip.file('README.md', files['./README.md']);
   }
   zip.file(
-    "package.json",
+    'package.json',
     createPackageJSON(
       sandbox,
       {},
       {
-        "react-scripts": "1.0.0"
+        'react-scripts': '1.0.0',
       },
       {
-        start: "react-scripts start",
-        build: "react-scripts build",
-        test: "react-scripts test --env=jsdom",
-        eject: "react-scripts eject"
+        start: 'react-scripts start',
+        build: 'react-scripts build',
+        test: 'react-scripts test --env=jsdom',
+        eject: 'react-scripts eject',
       }
     )
   );
-  zip.file(".gitignore", files["./gitignore"]);
+  zip.file('.gitignore', files['./gitignore']);
 }

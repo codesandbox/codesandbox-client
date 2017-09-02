@@ -1,10 +1,10 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
 
-import { injectStripe, CardElement } from "react-stripe-elements";
+import { injectStripe, CardElement } from 'react-stripe-elements';
 
-import Input from "app/components/Input";
-import Button from "app/components/buttons/Button";
+import Input from 'app/components/Input';
+import Button from 'app/components/buttons/Button';
 
 const CardContainer = styled.div`
   background-color: rgba(0, 0, 0, 0.3);
@@ -38,14 +38,14 @@ type Props = {
   buttonName: string,
   loadingText: string,
   stripe: {
-    createToken: (params: ?Object) => Promise<{ token: string }>
+    createToken: (params: ?Object) => Promise<{ token: string }>,
   },
-  subscribe: (Promise<{ token: { id: string } }>) => void
+  subscribe: (Promise<{ token: { id: string } }>) => void,
 };
 
 type State = {
   name: string,
-  buttonName: string
+  buttonName: string,
 };
 
 class CheckoutForm extends React.PureComponent {
@@ -57,7 +57,7 @@ class CheckoutForm extends React.PureComponent {
 
     this.state = {
       errors: {},
-      name: props.name || ""
+      name: props.name || '',
     };
   }
 
@@ -76,7 +76,7 @@ class CheckoutForm extends React.PureComponent {
   handleSubmit = async ev => {
     ev.preventDefault();
     if (!this.state.name) {
-      return this.setState({ errors: { name: "Please provide a name " } });
+      return this.setState({ errors: { name: 'Please provide a name ' } });
     }
 
     this.setState({ loading: true, errors: {} });
@@ -84,14 +84,14 @@ class CheckoutForm extends React.PureComponent {
     // Within the context of `Elements`, this call to createToken knows which Element to
     // tokenize, since there's only one in this group.
     const { token, error } = await this.props.stripe.createToken({
-      name: this.props.name
+      name: this.props.name,
     });
     if (error) {
       return this.setState({
         loading: false,
         errors: {
-          stripe: error.message
-        }
+          stripe: error.message,
+        },
       });
     }
 
@@ -101,13 +101,13 @@ class CheckoutForm extends React.PureComponent {
       return this.setState({
         loading: false,
         errors: {
-          stripe: e.message
-        }
+          stripe: e.message,
+        },
       });
     }
 
     return this.setState({
-      loading: false
+      loading: false,
     });
   };
 
@@ -118,10 +118,7 @@ class CheckoutForm extends React.PureComponent {
     return (
       <form onSubmit={this.handleSubmit}>
         <Label>Cardholder Name</Label>
-        {errors.name != null &&
-          <ErrorText>
-            {errors.name}
-          </ErrorText>}
+        {errors.name != null && <ErrorText>{errors.name}</ErrorText>}
         <div>
           <NameInput
             value={this.state.name}
@@ -132,18 +129,15 @@ class CheckoutForm extends React.PureComponent {
         </div>
 
         <Label>Card</Label>
-        {errors.stripe != null &&
-          <ErrorText>
-            {errors.stripe}
-          </ErrorText>}
+        {errors.stripe != null && <ErrorText>{errors.stripe}</ErrorText>}
         <CardContainer>
-          <CardElement style={{ base: { color: "white", fontWeight: 300 } }} />
+          <CardElement style={{ base: { color: 'white', fontWeight: 300 } }} />
         </CardContainer>
 
         <Button
           type="submit"
           disabled={loading}
-          style={{ marginTop: "1rem", width: 300 }}
+          style={{ marginTop: '1rem', width: 300 }}
         >
           {loading ? loadingText : buttonName}
         </Button>

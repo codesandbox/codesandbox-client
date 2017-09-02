@@ -1,11 +1,11 @@
-const merge = require("webpack-merge");
-const webpack = require("webpack");
-const commonConfig = require("./webpack.common");
+const merge = require('webpack-merge');
+const webpack = require('webpack');
+const commonConfig = require('./webpack.common');
 
 const devEntries = [
-  "react-hot-loader/patch",
-  "webpack-dev-server/client?/",
-  "webpack/hot/only-dev-server"
+  'react-hot-loader/patch',
+  'webpack-dev-server/client?/',
+  'webpack/hot/only-dev-server',
 ];
 
 module.exports = merge(
@@ -13,15 +13,15 @@ module.exports = merge(
   {
     entry: {
       app: devEntries,
-      embed: devEntries
-    }
+      embed: devEntries,
+    },
   },
   commonConfig,
   {
-    devtool: "eval",
+    devtool: 'eval',
     output: {
-      filename: "static/js/[name].js"
+      filename: 'static/js/[name].js',
     },
-    plugins: [new webpack.HotModuleReplacementPlugin()]
+    plugins: [new webpack.HotModuleReplacementPlugin()],
   }
 );

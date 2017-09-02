@@ -1,10 +1,10 @@
 // @flow
-import * as React from "react";
-import styled from "styled-components";
+import * as React from 'react';
+import styled from 'styled-components';
 
-import WorkspaceSubtitle from "../WorkspaceSubtitle";
-import EntryContainer from "../EntryContainer";
-import PublishFields from "./PublishFields";
+import WorkspaceSubtitle from '../WorkspaceSubtitle';
+import EntryContainer from '../EntryContainer';
+import PublishFields from './PublishFields';
 
 type Props = {
   // sandbox: Sandbox,
@@ -84,16 +84,14 @@ export default class Versions extends React.PureComponent<Props> {
         <PublishFields />
 
         <WorkspaceSubtitle>Published versions</WorkspaceSubtitle>
-        {[].map(v =>
+        {[].map(v => (
           <EntryContainer key={v.version}>
-            <span>
-              {v.version}
-            </span>
+            <span>{v.version}</span>
             <VersionDate>
               {/* moment(v.insertedAt).format('lll') */}
             </VersionDate>
           </EntryContainer>
-        )}
+        ))}
       </div>
     );
   }

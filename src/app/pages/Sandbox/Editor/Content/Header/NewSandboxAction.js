@@ -18,7 +18,7 @@ const Container = styled.div`
 
 export default class NewSandboxAction extends React.PureComponent {
   state = {
-    menuOpen: false
+    menuOpen: false,
   };
 
   closeMenu = () => this.setState({ menuOpen: false });
@@ -35,10 +35,11 @@ export default class NewSandboxAction extends React.PureComponent {
           Icon={PlusIcon}
           moreInfo
         />
-        {menuOpen &&
+        {menuOpen && (
           <HoverMenu onClose={this.closeMenu}>
             <NewSandboxMenu />
-          </HoverMenu>}
+          </HoverMenu>
+        )}
       </Container>
     );
   }

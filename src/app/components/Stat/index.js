@@ -1,7 +1,7 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
 
-import formatNumber from "./format-number";
+import formatNumber from './format-number';
 
 const Stat = styled.div`
   display: inline-flex;
@@ -30,12 +30,9 @@ const Property = styled.div`
   margin-bottom: 0.4rem;
 `;
 
-export default ({ count, name }: { count: number, name: string }) =>
+export default ({ count, name }: { count: number, name: string }) => (
   <Stat>
-    <Property>
-      {name}
-    </Property>
-    <Number>
-      {formatNumber(count)}
-    </Number>
-  </Stat>;
+    <Property>{name}</Property>
+    <Number>{formatNumber(count)}</Number>
+  </Stat>
+);

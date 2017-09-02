@@ -1,7 +1,7 @@
-import React from "react";
-import styled, { css } from "styled-components";
+import React from 'react';
+import styled, { css } from 'styled-components';
 
-import CrossIcon from "react-icons/lib/md/clear";
+import CrossIcon from 'react-icons/lib/md/clear';
 
 const Container = styled.span`
   position: relative;
@@ -33,7 +33,7 @@ const DeleteIcon = styled(CrossIcon)`
 export default class Tag extends React.PureComponent {
   props: {
     tag: string,
-    removeTag: (tag: string) => void
+    removeTag: (tag: string) => void,
   };
 
   removeTag = () => {

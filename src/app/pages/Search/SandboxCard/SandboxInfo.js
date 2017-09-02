@@ -1,14 +1,14 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
 
-import moment from "moment";
+import moment from 'moment';
 
-import FullHeartIcon from "react-icons/lib/fa/heart";
-import EyeIcon from "react-icons/lib/fa/eye";
-import ForkIcon from "react-icons/lib/go/repo-forked";
+import FullHeartIcon from 'react-icons/lib/fa/heart';
+import EyeIcon from 'react-icons/lib/fa/eye';
+import ForkIcon from 'react-icons/lib/go/repo-forked';
 
-import UserWithAvatar from "app/components/user/UserWithAvatar";
-import GithubBadge from "app/components/sandbox/GithubBadge";
+import UserWithAvatar from 'app/components/user/UserWithAvatar';
+import GithubBadge from 'app/components/sandbox/GithubBadge';
 
 const CenteredText = styled.div`
   display: inline-flex;
@@ -37,7 +37,7 @@ const StyledUser = styled(UserWithAvatar)`font-size: 0.75rem;`;
 type Props = {
   author: ?{
     avatarUrl: string,
-    username: string
+    username: string,
   },
   updatedAt: number,
   viewCount: number,
@@ -45,23 +45,24 @@ type Props = {
   likeCount: number,
   git: {
     username: string,
-    repot: string
-  }
+    repot: string,
+  },
 };
 
-const Stat = ({ Icon, count }) =>
-  <CenteredText style={{ fontSize: ".875rem" }}>
+const Stat = ({ Icon, count }) => (
+  <CenteredText style={{ fontSize: '.875rem' }}>
     <Icon />
     <span
       style={{
-        marginLeft: "0.5rem",
-        marginRight: "1rem",
-        fontWeight: 300
+        marginLeft: '0.5rem',
+        marginRight: '1rem',
+        fontWeight: 300,
       }}
     >
       {count.toLocaleString()}
     </span>
-  </CenteredText>;
+  </CenteredText>
+);
 
 export default ({
   author,
@@ -69,20 +70,20 @@ export default ({
   viewCount,
   forkCount,
   likeCount,
-  git
-}: Props) =>
+  git,
+}: Props) => (
   <CenteredText>
-    {author &&
-      <StyledUser avatarUrl={author.avatar_url} username={author.username} />}
+    {author && (
+      <StyledUser avatarUrl={author.avatar_url} username={author.username} />
+    )}
     {git && <GithubBadge username={git.username} repo={git.repo} />}
 
-    <UpdatedAt>
-      {moment(updatedAt * 1000).fromNow()}
-    </UpdatedAt>
+    <UpdatedAt>{moment(updatedAt * 1000).fromNow()}</UpdatedAt>
 
     <Stats>
       <Stat Icon={EyeIcon} count={viewCount} />
       <Stat Icon={FullHeartIcon} count={likeCount} />
       <Stat Icon={ForkIcon} count={forkCount} />
     </Stats>
-  </CenteredText>;
+  </CenteredText>
+);

@@ -1,10 +1,10 @@
-import ts from "typescript";
-import getRequireStatements from "./get-require-statements";
+import ts from 'typescript';
+import getRequireStatements from './get-require-statements';
 
-describe("get-require-statements", () => {
+describe('get-require-statements', () => {
   function testAst(code) {
     const sourceFile = ts.createSourceFile(
-      "test.ts",
+      'test.ts',
       code,
       ts.ScriptTarget.Latest,
       true,
@@ -14,7 +14,7 @@ describe("get-require-statements", () => {
     expect(getRequireStatements(sourceFile, ts)).toMatchSnapshot();
   }
 
-  it("can find simple requires", () => {
+  it('can find simple requires', () => {
     const code = `
       import React from 'react';
       import { render } from 'react-dom';
@@ -23,7 +23,7 @@ describe("get-require-statements", () => {
     testAst(code);
   });
 
-  it("can find plain requires", () => {
+  it('can find plain requires', () => {
     const code = `
       const react = require('react');
       const reactDom = require('react-dom');
@@ -32,7 +32,7 @@ describe("get-require-statements", () => {
     testAst(code);
   });
 
-  it("can find import promises", () => {
+  it('can find import promises', () => {
     const code = `
       const reactDom = import('react-dom').then(dom => dom.render('a'));
     `;
@@ -40,7 +40,7 @@ describe("get-require-statements", () => {
     testAst(code);
   });
 
-  it("can find dynamic imports", () => {
+  it('can find dynamic imports', () => {
     const code = `
       const page = import('./' + this.props.page);
       const page2 = require('./page/' + this.props.page2);
@@ -49,7 +49,7 @@ describe("get-require-statements", () => {
     testAst(code);
   });
 
-  it("can work with real life code", () => {
+  it('can work with real life code', () => {
     const code = `
     import React from 'react'
     import { connect } from 'react-redux'

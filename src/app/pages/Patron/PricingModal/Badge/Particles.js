@@ -1,22 +1,22 @@
-import React from "react";
-import styled, { css, keyframes } from "styled-components";
+import React from 'react';
+import styled, { css, keyframes } from 'styled-components';
 
-import badges from "app/utils/badges/patron-info";
+import badges from 'app/utils/badges/patron-info';
 
 const classNameRegex = /\shide/g;
 function showElement(el: HTMLElement) {
-  if (el.nodeName === "svg") {
-    el.setAttribute("class", el.className.baseVal.replace(classNameRegex, ""));
+  if (el.nodeName === 'svg') {
+    el.setAttribute('class', el.className.baseVal.replace(classNameRegex, ''));
   } else {
-    el.className = el.className.replace(classNameRegex, ""); // eslint-disable-line no-param-reassign
+    el.className = el.className.replace(classNameRegex, ''); // eslint-disable-line no-param-reassign
   }
 }
 
 function hideElement(el: HTMLElement) {
-  if (el.nodeName === "svg") {
-    el.setAttribute("class", `${el.className.baseVal} hide`);
+  if (el.nodeName === 'svg') {
+    el.setAttribute('class', `${el.className.baseVal} hide`);
   } else {
-    el.className += " hide"; // eslint-disable-line no-param-reassign
+    el.className += ' hide'; // eslint-disable-line no-param-reassign
   }
 }
 
@@ -56,25 +56,25 @@ const Particle = styled.div`
 const createParticles = (amount: number, badge) =>
   Array(amount)
     .fill(0)
-    .map((_, i) =>
+    .map((_, i) => (
       <Particle
         className={`${badge}-particle particle hide`}
         i={i}
         deg={180 + (Math.floor(amount / 2) + i) * (360 / amount)}
         badge={badge}
       />
-    );
+    ));
 
 type Props = {
   makeItRain: boolean,
-  badge: "patron-1" | "patron-2" | "patron-3" | "patron-4"
+  badge: 'patron-1' | 'patron-2' | 'patron-3' | 'patron-4',
 };
 
 export default class Particles extends React.PureComponent {
   props: Props;
 
   makeItRain = () => {
-    const particleSelector = document.getElementsByClassName("particle");
+    const particleSelector = document.getElementsByClassName('particle');
     Array.forEach(particleSelector, hideElement);
 
     requestAnimationFrame(() => {
@@ -101,7 +101,7 @@ export default class Particles extends React.PureComponent {
       }
 
       this.timeout = setTimeout(() => {
-        const allParticleSelector = document.getElementsByClassName("particle");
+        const allParticleSelector = document.getElementsByClassName('particle');
         Array.forEach(allParticleSelector, hideElement);
       }, 700);
     }

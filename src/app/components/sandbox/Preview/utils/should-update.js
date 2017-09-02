@@ -1,16 +1,16 @@
 // @flow
-import type { Module, Directory } from "common/types";
+import type { Module, Directory } from 'common/types';
 
 // Fields to compare
 const MODULE_FIELDS = [
-  "directoryShortid",
-  "code",
-  "title",
-  "isNotSynced",
-  "isBinary"
+  'directoryShortid',
+  'code',
+  'title',
+  'isNotSynced',
+  'isBinary',
 ];
 
-const DIRECTORY_FIELDS = ["title", "directoryShortid", "shortid"];
+const DIRECTORY_FIELDS = ['title', 'directoryShortid', 'shortid'];
 
 function checkFields(m1, m2, fields: Array<String>) {
   return fields.some(field => m1[field] !== m2[field]);

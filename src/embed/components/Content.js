@@ -1,16 +1,16 @@
 // @flow
 
-import * as React from "react";
-import styled from "styled-components";
-import Preview from "app/components/sandbox/Preview";
-import CodeEditor from "app/components/sandbox/CodeEditor";
+import * as React from 'react';
+import styled from 'styled-components';
+import Preview from 'app/components/sandbox/Preview';
+import CodeEditor from 'app/components/sandbox/CodeEditor';
 import {
   findCurrentModule,
   findMainModule,
-  getModulePath
-} from "app/store/entities/sandboxes/modules/selectors";
+  getModulePath,
+} from 'app/store/entities/sandboxes/modules/selectors';
 
-import type { Sandbox, Module, ModuleError } from "common/types";
+import type { Sandbox, Module, ModuleError } from 'common/types';
 
 const Container = styled.div`
   display: flex;
@@ -21,9 +21,9 @@ const Container = styled.div`
 
 const Split = styled.div`
   position: relative;
-  width: ${props => (props.show ? "50%" : "0px")};
-  max-width: ${props => (props.only ? "100%" : "50%")};
-  min-width: ${props => (props.only ? "100%" : "50%")};
+  width: ${props => (props.show ? '50%' : '0px')};
+  max-width: ${props => (props.only ? '100%' : '50%')};
+  min-width: ${props => (props.only ? '100%' : '50%')};
   height: calc(100% + 3rem);
 `;
 
@@ -37,20 +37,20 @@ type Props = {
   autoResize: boolean,
   fontSize: number,
   initialPath: ?string,
-  setCurrentModule: id => void
+  setCurrentModule: id => void,
 };
 
 type State = {
   isInProjectView: boolean,
   codes: { [id: string]: string },
-  errors: Array<ModuleError>
+  errors: Array<ModuleError>,
 };
 
 export default class Content extends React.PureComponent<Props, State> {
   state = {
     inInProjectView: false,
     codes: {},
-    errors: []
+    errors: [],
   };
 
   componentDidMount() {
@@ -67,32 +67,32 @@ export default class Content extends React.PureComponent<Props, State> {
       window.parent.postMessage(
         JSON.stringify({
           src: window.location.toString(),
-          context: "iframe.resize",
-          height: Math.max(height + extraOffset, 50) // pixels
+          context: 'iframe.resize',
+          height: Math.max(height + extraOffset, 50), // pixels
         }),
-        "*"
+        '*'
       );
     } else if (this.props.showEditor && !this.props.showPreview) {
       // If there is a focus on the editor, make it full height
-      const editor = document.getElementsByClassName("CodeMirror-sizer")[0];
+      const editor = document.getElementsByClassName('CodeMirror-sizer')[0];
       const editorHeight = editor ? editor.getBoundingClientRect().height : 500;
 
       window.parent.postMessage(
         JSON.stringify({
           src: window.location.toString(),
-          context: "iframe.resize",
-          height: Math.max(editorHeight + extraOffset, 50) // pixels
+          context: 'iframe.resize',
+          height: Math.max(editorHeight + extraOffset, 50), // pixels
         }),
-        "*"
+        '*'
       );
     } else {
       window.parent.postMessage(
         JSON.stringify({
           src: window.location.toString(),
-          context: "iframe.resize",
-          height: 500 // pixels
+          context: 'iframe.resize',
+          height: 500, // pixels
         }),
-        "*"
+        '*'
       );
     }
   };
@@ -102,15 +102,15 @@ export default class Content extends React.PureComponent<Props, State> {
       ...this.state,
       codes: {
         ...this.state.codes,
-        [moduleId]: code
-      }
+        [moduleId]: code,
+      },
     });
   };
 
   addError = (moduleId: string, error: ModuleError) => {
     if (!this.state.errors.find(e => e.moduleId === error.moduleId)) {
       this.setState({
-        errors: [...this.state.errors, error]
+        errors: [...this.state.errors, error],
       });
     }
   };
@@ -118,7 +118,7 @@ export default class Content extends React.PureComponent<Props, State> {
   clearErrors = () => {
     if (this.state.errors.length > 0) {
       this.setState({
-        errors: []
+        errors: [],
       });
     }
   };
@@ -143,7 +143,7 @@ export default class Content extends React.PureComponent<Props, State> {
     // $FlowIssue
     const alteredModules = sandbox.modules.map((m: Module) => ({
       ...m,
-      code: codes[m.id] || m.code
+      code: codes[m.id] || m.code,
     }));
 
     this.lastAlteredModules = alteredModules;
@@ -151,7 +151,7 @@ export default class Content extends React.PureComponent<Props, State> {
   };
 
   preferences = {
-    livePreviewEnabled: true
+    livePreviewEnabled: true,
   };
 
   getPreferences = () => {
@@ -169,7 +169,7 @@ export default class Content extends React.PureComponent<Props, State> {
       showPreview,
       isInProjectView,
       currentModule,
-      hideNavigation
+      hideNavigation,
     } = this.props;
 
     const { errors } = this.state;
@@ -184,17 +184,17 @@ export default class Content extends React.PureComponent<Props, State> {
       findMainModule(sandbox.modules)
     );
 
-    if (!mainModule) throw new Error("Cannot find main module");
+    if (!mainModule) throw new Error('Cannot find main module');
 
     // The altered module is the same module, but with updated code (based on)
     // changes by the user. We need to use this to reflect changes
     const alteredMainModule = alteredModules.find(m => m.id === mainModule.id);
 
-    if (!alteredMainModule) throw new Error("Cannot find main module");
+    if (!alteredMainModule) throw new Error('Cannot find main module');
 
     return (
       <Container>
-        {showEditor &&
+        {showEditor && (
           <Split show={showEditor} only={showEditor && !showPreview}>
             <CodeEditor
               code={alteredMainModule.code}
@@ -212,9 +212,10 @@ export default class Content extends React.PureComponent<Props, State> {
               sandboxId={sandbox.id}
               setCurrentModule={this.setCurrentModule}
             />
-          </Split>}
+          </Split>
+        )}
 
-        {showPreview &&
+        {showPreview && (
           <Split show={showPreview} only={showPreview && !showEditor}>
             <Preview
               sandboxId={sandbox.id}
@@ -234,7 +235,8 @@ export default class Content extends React.PureComponent<Props, State> {
               errors={errors}
               dependencies={sandbox.npmDependencies}
             />
-          </Split>}
+          </Split>
+        )}
       </Container>
     );
   }

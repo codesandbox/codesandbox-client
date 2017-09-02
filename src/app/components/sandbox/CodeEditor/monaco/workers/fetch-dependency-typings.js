@@ -1,7 +1,7 @@
-import path from "path";
+import path from 'path';
 
 self.importScripts([
-  "https://cdnjs.cloudflare.com/ajax/libs/typescript/2.4.2/typescript.min.js"
+  'https://cdnjs.cloudflare.com/ajax/libs/typescript/2.4.2/typescript.min.js',
 ]);
 
 const ROOT_URL = `https://unpkg.com/`;
@@ -31,7 +31,7 @@ const addLib = (virtualPath, typings, fetchedPaths) => {
   fetchedPaths.push(virtualPath);
   self.postMessage({
     path: virtualPath,
-    typings
+    typings,
   });
 };
 
@@ -103,7 +103,7 @@ const getRequireStatements = (title: string, code: string) => {
 const transformFiles = dir =>
   dir.files
     ? dir.files.reduce((prev, next) => {
-        if (next.type === "file") {
+        if (next.type === 'file') {
           return { ...prev, [next.path]: next };
         }
 
@@ -135,7 +135,7 @@ const getFileTypes = (
   fetchedPaths: Array<string>,
   fileMetaData
 ) => {
-  const virtualPath = path.join("node_modules", dependency, depPath);
+  const virtualPath = path.join('node_modules', dependency, depPath);
 
   if (fetchedPaths.includes(virtualPath)) return null;
 
@@ -148,7 +148,7 @@ const getFileTypes = (
     return getRequireStatements(depPath, typings)
       .filter(
         // Don't add global deps
-        dep => dep.startsWith(".")
+        dep => dep.startsWith('.')
       )
       .map(relativePath => path.join(path.dirname(depPath), relativePath))
       .map(relativePath => resolveAppropiateFile(fileMetaData, relativePath))
@@ -188,7 +188,7 @@ function fetchFromTypings(dependency, version, fetchedPaths) {
           );
         });
       } else {
-        throw new Error("No typings field in package.json");
+        throw new Error('No typings field in package.json');
       }
     });
 }
@@ -217,7 +217,7 @@ function fetchAndAddDependencies(dependencies) {
       }
     } catch (e) {
       // Don't show these cryptic messages to users, because this is not vital
-      if (process.env.NODE_ENV === "development") {
+      if (process.env.NODE_ENV === 'development') {
         console.log(`Couldn't find typings for ${dep}`);
         console.error(e);
       }
@@ -225,7 +225,7 @@ function fetchAndAddDependencies(dependencies) {
   });
 }
 
-self.addEventListener("message", event => {
+self.addEventListener('message', event => {
   const { dependencies } = event.data;
 
   fetchAndAddDependencies(dependencies);

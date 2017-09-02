@@ -1,13 +1,13 @@
-import React from "react";
-import styled from "styled-components";
-import CloseIcon from "react-icons/lib/md/close";
-import InfoIcon from "react-icons/lib/md/info";
-import ErrorIcon from "react-icons/lib/md/error";
-import WarningIcon from "react-icons/lib/md/warning";
+import React from 'react';
+import styled from 'styled-components';
+import CloseIcon from 'react-icons/lib/md/close';
+import InfoIcon from 'react-icons/lib/md/info';
+import ErrorIcon from 'react-icons/lib/md/error';
+import WarningIcon from 'react-icons/lib/md/warning';
 
-import theme from "common/theme";
+import theme from 'common/theme';
 
-import type { NotificationButton } from "app/store/notifications/reducer";
+import type { NotificationButton } from 'app/store/notifications/reducer';
 
 const Container = styled.div`
   position: relative;
@@ -21,9 +21,9 @@ const Container = styled.div`
 
   border-left: 2px solid transparent;
   border-color: ${props => {
-    if (props.type === "error") return theme.red.darken(0.2)();
-    if (props.type === "warning") return theme.primary.darken(0.2);
-    if (props.type === "success") return theme.green();
+    if (props.type === 'error') return theme.red.darken(0.2)();
+    if (props.type === 'warning') return theme.primary.darken(0.2);
+    if (props.type === 'success') return theme.green();
     return theme.secondary();
   }};
 
@@ -66,16 +66,16 @@ const Button = styled.div`
   cursor: pointer;
   padding: 0.5rem;
   background-color: ${props => {
-    if (props.type === "error") return theme.redBackground.lighten(0.2);
-    if (props.type === "warning") return theme.primary.darken(0.5);
+    if (props.type === 'error') return theme.redBackground.lighten(0.2);
+    if (props.type === 'warning') return theme.primary.darken(0.5);
     return theme.secondary.darken(0.1);
   }};
   font-weight: 500;
 
   &:hover {
     background-color: ${props => {
-      if (props.type === "error") return theme.redBackground.lighten(0.1);
-      if (props.type === "warning") return theme.primary.darken(0.6);
+      if (props.type === 'error') return theme.redBackground.lighten(0.1);
+      if (props.type === 'warning') return theme.primary.darken(0.6);
       return theme.secondary.darken(0.2);
     }};
   }
@@ -94,16 +94,16 @@ type Props = {
   body: string, // eslint-disable-line
   type: string,
   buttons: Array<NotificationButton>,
-  close: () => void
+  close: () => void,
 };
 
 const getIcon = type => {
-  if (type === "error") return <ErrorIcon />;
-  if (type === "warning") return <WarningIcon />;
+  if (type === 'error') return <ErrorIcon />;
+  if (type === 'warning') return <WarningIcon />;
   return <InfoIcon />;
 };
 
-export default ({ title, type, buttons = [], close }: Props) =>
+export default ({ title, type, buttons = [], close }: Props) => (
   <Container type={type}>
     <CloseIconHandler>
       <CloseIcon onClick={close} />
@@ -113,10 +113,11 @@ export default ({ title, type, buttons = [], close }: Props) =>
       <Title>{title}</Title>
     </Content>
     <Buttons>
-      {buttons.map((button: NotificationButton) =>
+      {buttons.map((button: NotificationButton) => (
         <Button key={button.title} type={type} onClick={button.action}>
           {button.title}
         </Button>
-      )}
+      ))}
     </Buttons>
-  </Container>;
+  </Container>
+);

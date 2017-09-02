@@ -1,11 +1,11 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
 
-import EyeIcon from "react-icons/lib/fa/eye";
-import ForkIcon from "react-icons/lib/go/repo-forked";
+import EyeIcon from 'react-icons/lib/fa/eye';
+import ForkIcon from 'react-icons/lib/go/repo-forked';
 
-import Stat from "./Stat";
-import LikeHeart from "../../../containers/LikeHeart/index";
+import Stat from './Stat';
+import LikeHeart from '../../../containers/LikeHeart/index';
 
 const Stats = styled.div`
   display: flex;
@@ -18,10 +18,10 @@ type Props = {
   viewCount: number,
   forkCount: number,
   likeCount: number,
-  sandboxId: string
+  sandboxId: string,
 };
 
-export default ({ viewCount, forkCount, likeCount, sandboxId }: Props) =>
+export default ({ viewCount, forkCount, likeCount, sandboxId }: Props) => (
   <Stats>
     <Stat Icon={<EyeIcon />} count={viewCount} />
     <Stat
@@ -29,4 +29,5 @@ export default ({ viewCount, forkCount, likeCount, sandboxId }: Props) =>
       count={likeCount}
     />
     <Stat Icon={<ForkIcon />} count={forkCount} />
-  </Stats>;
+  </Stats>
+);

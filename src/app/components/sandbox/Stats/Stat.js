@@ -1,5 +1,5 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
 
 const CenteredText = styled.div`
   display: inline-flex;
@@ -15,18 +15,19 @@ const CenteredText = styled.div`
 
 type Props = {
   Icon: React.CElement,
-  count: number
+  count: number,
 };
 
-export default ({ Icon, count }: Props) =>
+export default ({ Icon, count }: Props) => (
   <CenteredText>
     {Icon}
     <span
       style={{
-        marginLeft: "0.5em",
-        fontWeight: 300
+        marginLeft: '0.5em',
+        fontWeight: 300,
       }}
     >
       {count.toLocaleString()}
     </span>
-  </CenteredText>;
+  </CenteredText>
+);

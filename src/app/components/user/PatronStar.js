@@ -1,8 +1,8 @@
-import React from "react";
-import styled from "styled-components";
-import moment from "moment";
-import Tooltip from "app/components/Tooltip";
-import StarIcon from "react-icons/lib/go/star";
+import React from 'react';
+import styled from 'styled-components';
+import moment from 'moment';
+import Tooltip from 'app/components/Tooltip';
+import StarIcon from 'react-icons/lib/go/star';
 
 const Container = styled(Tooltip)`
   margin-left: 0.25rem;
@@ -13,10 +13,11 @@ export default ({
   subscriptionSince,
   ...props
 }: {
-  subscriptionSince: string
-}) =>
+  subscriptionSince: string,
+}) => (
   <Container
-    title={`Patron since ${moment(subscriptionSince).format("MMM Y")}`}
+    title={`Patron since ${moment(subscriptionSince).format('MMM Y')}`}
   >
     <StarIcon {...props} />
-  </Container>;
+  </Container>
+);

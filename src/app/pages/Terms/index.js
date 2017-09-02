@@ -1,16 +1,16 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
 
-import { NavLink, Switch, Route, Redirect } from "react-router-dom";
+import { NavLink, Switch, Route, Redirect } from 'react-router-dom';
 
-import Navigation from "app/containers/Navigation";
-import Margin from "app/components/spacing/Margin";
-import MaxWidth from "app/components/flex/MaxWidth";
-import Centered from "app/components/flex/Centered";
-import { tosUrl, privacyUrl } from "app/utils/url-generator";
+import Navigation from 'app/containers/Navigation';
+import Margin from 'app/components/spacing/Margin';
+import MaxWidth from 'app/components/flex/MaxWidth';
+import Centered from 'app/components/flex/Centered';
+import { tosUrl, privacyUrl } from 'app/utils/url-generator';
 
-import TOS from "./TOS";
-import PrivacyPolicy from "./PrivacyPolicy";
+import TOS from './TOS';
+import PrivacyPolicy from './PrivacyPolicy';
 
 const Content = styled.div`
   margin-top: 5%;
@@ -53,7 +53,7 @@ const LegalNavigtion = styled.div`
   margin-bottom: 3rem;
 `;
 
-export default () =>
+export default () => (
   <MaxWidth>
     <Margin margin={1.5}>
       <Navigation title="Legal" />
@@ -64,7 +64,7 @@ export default () =>
               <NavigationLink
                 to={tosUrl()}
                 activeStyle={{
-                  color: "white"
+                  color: 'white',
                 }}
               >
                 TERMS AND CONDITIONS
@@ -73,7 +73,7 @@ export default () =>
               <NavigationLink
                 to={privacyUrl()}
                 activeStyle={{
-                  color: "white"
+                  color: 'white',
                 }}
               >
                 PRIVACY POLICY
@@ -89,4 +89,5 @@ export default () =>
         </Centered>
       </Content>
     </Margin>
-  </MaxWidth>;
+  </MaxWidth>
+);

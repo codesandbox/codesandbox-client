@@ -1,13 +1,13 @@
-import React from "react";
-import styled from "styled-components";
-import { Link } from "react-router-dom";
-import { sandboxUrl } from "app/utils/url-generator";
-import delayEffect from "app/utils/animation/delay-effect";
-import Row from "app/components/flex/Row";
+import React from 'react';
+import styled from 'styled-components';
+import { Link } from 'react-router-dom';
+import { sandboxUrl } from 'app/utils/url-generator';
+import delayEffect from 'app/utils/animation/delay-effect';
+import Row from 'app/components/flex/Row';
 
-import Stat from "app/components/Stat";
-import LikeHeart from "app/containers/LikeHeart";
-import PlayButton from "./PlayButton";
+import Stat from 'app/components/Stat';
+import LikeHeart from 'app/containers/LikeHeart';
+import PlayButton from './PlayButton';
 
 const Container = styled.div`
   background-color: #272c2e;
@@ -73,7 +73,7 @@ type Props = {
   description: string,
   likeCount: number,
   viewCount: number,
-  forkCount: number
+  forkCount: number,
 };
 
 export default ({
@@ -82,8 +82,8 @@ export default ({
   description,
   likeCount,
   viewCount,
-  forkCount
-}: Props) =>
+  forkCount,
+}: Props) => (
   <Container>
     <Row alignItems="center">
       <Title>
@@ -92,9 +92,7 @@ export default ({
     </Row>
     <Row alignItems="flex-start">
       <div style={{ flex: 6 }}>
-        <Description>
-          {description}
-        </Description>
+        <Description>{description}</Description>
       </div>
       <Stats>
         <PlayButtonContainer to={sandboxUrl({ id })}>
@@ -105,4 +103,5 @@ export default ({
         <Stat name="forks" count={forkCount} />
       </Stats>
     </Row>
-  </Container>;
+  </Container>
+);

@@ -81,15 +81,15 @@ class StackFrame {
    * This contains the file name, line number, and column number when available.
    */
   getSource(): string {
-    let str = "";
+    let str = '';
     if (this.fileName != null) {
-      str += this.fileName + ":";
+      str += this.fileName + ':';
     }
     if (this.lineNumber != null) {
-      str += this.lineNumber + ":";
+      str += this.lineNumber + ':';
     }
     if (this.columnNumber != null) {
-      str += this.columnNumber + ":";
+      str += this.columnNumber + ':';
     }
     return str.slice(0, -1);
   }

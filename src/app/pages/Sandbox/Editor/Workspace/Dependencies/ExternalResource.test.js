@@ -1,12 +1,12 @@
-import React from "react";
-import renderer from "react-test-renderer";
-import { ThemeProvider } from "styled-components";
+import React from 'react';
+import renderer from 'react-test-renderer';
+import { ThemeProvider } from 'styled-components';
 
-import ExternalResource from "./ExternalResource";
-import theme from "../../../../../../common/theme";
+import ExternalResource from './ExternalResource';
+import theme from '../../../../../../common/theme';
 
-describe("ExternalResource", () => {
-  it("renders file if there is an extension", () => {
+describe('ExternalResource', () => {
+  it('renders file if there is an extension', () => {
     const tree = renderer
       .create(
         <ThemeProvider theme={theme}>
@@ -17,7 +17,7 @@ describe("ExternalResource", () => {
     expect(tree).toMatchSnapshot();
   });
 
-  it("renders url if there is no extension", () => {
+  it('renders url if there is no extension', () => {
     const tree1 = renderer
       .create(
         <ThemeProvider theme={theme}>

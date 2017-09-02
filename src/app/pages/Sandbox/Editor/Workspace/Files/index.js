@@ -1,28 +1,28 @@
 // @flow
-import * as React from "react";
-import { createSelector } from "reselect";
-import { connect } from "react-redux";
+import * as React from 'react';
+import { createSelector } from 'reselect';
+import { connect } from 'react-redux';
 
-import { sortBy } from "lodash";
-import HTML5Backend from "react-dnd-html5-backend";
-import { DragDropContext } from "react-dnd";
+import { sortBy } from 'lodash';
+import HTML5Backend from 'react-dnd-html5-backend';
+import { DragDropContext } from 'react-dnd';
 import {
   modulesFromSandboxSelector,
   findMainModule,
-  findCurrentModule
-} from "app/store/entities/sandboxes/modules/selectors";
-import { directoriesFromSandboxSelector } from "app/store/entities/sandboxes/directories/selectors";
+  findCurrentModule,
+} from 'app/store/entities/sandboxes/modules/selectors';
+import { directoriesFromSandboxSelector } from 'app/store/entities/sandboxes/directories/selectors';
 
-import type { Sandbox, Module, Directory } from "common/types";
-import sandboxActionCreators from "app/store/entities/sandboxes/actions";
+import type { Sandbox, Module, Directory } from 'common/types';
+import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 
-import DirectoryEntry from "./DirectoryEntry/index";
+import DirectoryEntry from './DirectoryEntry/index';
 
 type Props = {
   sandbox: Sandbox,
   modules: Array<Module>,
   directories: Array<Directory>,
-  sandboxActions: typeof sandboxActionCreators
+  sandboxActions: typeof sandboxActionCreators,
 };
 const mapStateToProps = createSelector(
   modulesFromSandboxSelector,
@@ -60,10 +60,10 @@ class Files extends React.PureComponent<Props> {
     return (
       <DirectoryEntry
         root
-        title={sandbox.title || "Project"}
+        title={sandbox.title || 'Project'}
         sandboxId={sandbox.id}
-        modules={sortBy(modules, "title")}
-        directories={sortBy(directories, "title")}
+        modules={sortBy(modules, 'title')}
+        directories={sortBy(directories, 'title')}
         isInProjectView={sandbox.isInProjectView}
         currentModuleId={currentModule.id}
         id={null}

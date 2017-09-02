@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import delayEffect from "../../utils/animation/delay-effect";
+import styled from 'styled-components';
+import delayEffect from '../../utils/animation/delay-effect';
 
 export default styled.h2`
   ${props =>

@@ -1,5 +1,5 @@
 self.importScripts([
-  "https://cdnjs.cloudflare.com/ajax/libs/typescript/2.4.2/typescript.min.js"
+  'https://cdnjs.cloudflare.com/ajax/libs/typescript/2.4.2/typescript.min.js',
 ]);
 
 function getLineNumberAndOffset(start, lines) {
@@ -15,13 +15,13 @@ function getLineNumberAndOffset(start, lines) {
 
 function nodeToRange(node) {
   if (
-    typeof node.getStart === "function" &&
-    typeof node.getEnd === "function"
+    typeof node.getStart === 'function' &&
+    typeof node.getEnd === 'function'
   ) {
     return [node.getStart(), node.getEnd()];
   } else if (
-    typeof node.pos !== "undefined" &&
-    typeof node.end !== "undefined"
+    typeof node.pos !== 'undefined' &&
+    typeof node.end !== 'undefined'
   ) {
     return [node.pos, node.end];
   }
@@ -40,7 +40,7 @@ function addChildNodes(node, lines, classifications) {
       kind: self.ts.SyntaxKind[id.kind],
       node: id,
       startLine,
-      endLine
+      endLine,
     });
 
     addChildNodes(id, lines, classifications);
@@ -48,7 +48,7 @@ function addChildNodes(node, lines, classifications) {
 }
 
 // Respond to message from parent thread
-self.addEventListener("message", event => {
+self.addEventListener('message', event => {
   const { code, title, version } = event.data;
   try {
     const classifications = [];
@@ -58,7 +58,7 @@ self.addEventListener("message", event => {
       self.ts.ScriptTarget.ES6,
       true
     );
-    const lines = code.split("\n").map(line => line.length);
+    const lines = code.split('\n').map(line => line.length);
 
     addChildNodes(sourceFile, lines, classifications);
 

@@ -1,9 +1,9 @@
-import React from "react";
-import styled, { css } from "styled-components";
+import React from 'react';
+import styled, { css } from 'styled-components';
 
-import Feature from "./Feature";
+import Feature from './Feature';
 
-import Title from "../Title";
+import Title from '../Title';
 
 const Container = styled.div`
   padding: 1rem 0;
@@ -19,10 +19,10 @@ const CenteredHeader = styled.th`
   ${props => props.supporter && css`background-color: rgba(0, 0, 0, 0.3);`};
 `;
 
-export default () =>
+export default () => (
   <Container>
     <Title>Lifted Limits</Title>
-    <table style={{ borderCollapse: "collapse" }}>
+    <table style={{ borderCollapse: 'collapse' }}>
       <thead>
         <tr>
           <th />
@@ -42,4 +42,5 @@ export default () =>
         />
       </tbody>
     </table>
-  </Container>;
+  </Container>
+);

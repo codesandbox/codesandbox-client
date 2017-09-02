@@ -1,12 +1,12 @@
-import React from "react";
-import styled, { css } from "styled-components";
-import Logo from "app/components/Logo";
+import React from 'react';
+import styled, { css } from 'styled-components';
+import Logo from 'app/components/Logo';
 
-import { sandboxUrl } from "app/utils/url-generator";
+import { sandboxUrl } from 'app/utils/url-generator';
 
 type Props = {
   id: string,
-  small: boolean
+  small: boolean,
 };
 
 const Text = styled.span`
@@ -25,13 +25,14 @@ const EditText = styled.a`
   }
 `;
 
-export default ({ sandbox, small }: Props) =>
+export default ({ sandbox, small }: Props) => (
   <EditText
     small={small}
     target="_blank"
     rel="noopener noreferrer"
-    href={sandboxUrl(sandbox) + "?from-embed"}
+    href={sandboxUrl(sandbox) + '?from-embed'}
   >
     <Text small={small}>Edit on CodeSandbox</Text>
     <Logo />
-  </EditText>;
+  </EditText>
+);

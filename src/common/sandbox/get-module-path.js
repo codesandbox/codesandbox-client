@@ -1,5 +1,5 @@
 // @flow
-import type { Module, Directory } from "common/types";
+import type { Module, Directory } from 'common/types';
 
 function findById(entities: Array<Module | Directory>, id: string) {
   return entities.find(e => e.id === id);
@@ -16,10 +16,10 @@ export default (
 ) => {
   const module = findById(modules, id);
 
-  if (!module) return "";
+  if (!module) return '';
 
   let directory = findByShortid(directories, module.directoryShortid);
-  let path = "/";
+  let path = '/';
   while (directory != null) {
     path = `/${directory.title}${path}`;
     directory = findByShortid(directories, directory.directoryShortid);

@@ -8,24 +8,24 @@
  */
 
 /* @flow */
-import { applyStyles } from "../utils/dom/css";
+import { applyStyles } from '../utils/dom/css';
 import {
   containerStyle,
   overlayStyle,
   headerStyle,
-  messageHeaderStyle
-} from "../styles";
-import { createClose } from "./close";
-import { createFrames } from "./frames";
-import { createFooter } from "./footer";
-import type { CloseCallback } from "./close";
-import type { StackFrame } from "../utils/stack-frame";
-import { updateAdditional } from "./additional";
-import type { FrameSetting } from "./frames";
-import type { SwitchCallback } from "./additional";
-import { createSuggestions } from "./suggestions";
+  messageHeaderStyle,
+} from '../styles';
+import { createClose } from './close';
+import { createFrames } from './frames';
+import { createFooter } from './footer';
+import type { CloseCallback } from './close';
+import type { StackFrame } from '../utils/stack-frame';
+import { updateAdditional } from './additional';
+import type { FrameSetting } from './frames';
+import type { SwitchCallback } from './additional';
+import { createSuggestions } from './suggestions';
 
-import { areActionsEnabled } from "../../";
+import { areActionsEnabled } from '../../';
 
 function createOverlay(
   document: Document,
@@ -40,21 +40,21 @@ function createOverlay(
   closeCallback: CloseCallback
 ): {
   overlay: HTMLDivElement,
-  additional: HTMLDivElement
+  additional: HTMLDivElement,
 } {
   const frameSettings: FrameSetting[] = frames.map(() => ({ compiled: false }));
   // Create overlay
-  const overlay = document.createElement("div");
+  const overlay = document.createElement('div');
   applyStyles(overlay, overlayStyle);
 
   // Create container
-  const container = document.createElement("div");
+  const container = document.createElement('div');
   applyStyles(container, containerStyle);
   overlay.appendChild(container);
   container.appendChild(createClose(document, closeCallback));
 
   // Create "Errors X of Y" in case of multiple errors
-  const additional = document.createElement("div");
+  const additional = document.createElement('div');
   updateAdditional(
     document,
     additional,
@@ -65,10 +65,10 @@ function createOverlay(
   container.appendChild(additional);
 
   // Create header
-  const header = document.createElement("div");
+  const header = document.createElement('div');
   applyStyles(header, headerStyle);
 
-  const messageHeader = document.createElement("div");
+  const messageHeader = document.createElement('div');
   applyStyles(messageHeader, messageHeaderStyle);
 
   // Make message prettier
@@ -77,16 +77,16 @@ function createOverlay(
   finalMessage = finalMessage
     // TODO: maybe remove this prefix from fbjs?
     // It's just scaring people
-    .replace(/^Invariant Violation:\s*/, "")
+    .replace(/^Invariant Violation:\s*/, '')
     // This is not helpful either:
-    .replace(/^Warning:\s*/, "")
+    .replace(/^Warning:\s*/, '')
     // Break the actionable part to the next line.
     // AFAIK React 16+ should already do this.
-    .replace(" Check the render method", "\n\nCheck the render method")
-    .replace(" Check your code at", "\n\nCheck your code at");
+    .replace(' Check the render method', '\n\nCheck the render method')
+    .replace(' Check your code at', '\n\nCheck your code at');
 
   // Put it in the DOM
-  header.appendChild(document.createTextNode(name || ""));
+  header.appendChild(document.createTextNode(name || ''));
   messageHeader.appendChild(document.createTextNode(finalMessage));
 
   container.appendChild(header);
@@ -110,7 +110,7 @@ function createOverlay(
 
   return {
     overlay,
-    additional
+    additional,
   };
 }
 

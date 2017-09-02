@@ -1,10 +1,11 @@
-import React from "react";
+import React from 'react';
 
-import BadgesContent from "./BadgesContent";
-import Title from "../MenuTitle";
+import BadgesContent from './BadgesContent';
+import Title from '../MenuTitle';
 
-export default () =>
+export default () => (
   <div>
     <Title>Badges</Title>
     <BadgesContent />
-  </div>;
+  </div>
+);

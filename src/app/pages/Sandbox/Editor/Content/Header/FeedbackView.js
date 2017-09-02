@@ -1,10 +1,10 @@
-import React from "react";
-import styled from "styled-components";
-import FeedbackIcon from "react-icons/lib/go/comment-discussion";
-import Button from "app/components/buttons/Button";
+import React from 'react';
+import styled from 'styled-components';
+import FeedbackIcon from 'react-icons/lib/go/comment-discussion';
+import Button from 'app/components/buttons/Button';
 
-import HoverMenu from "./HoverMenu";
-import Action from "./Action";
+import HoverMenu from './HoverMenu';
+import Action from './Action';
 
 const Container = styled.div`
   position: relative;
@@ -46,22 +46,22 @@ const MessageView = styled.div`
 `;
 
 type Props = {
-  sendMessage: (message: string) => void
+  sendMessage: (message: string) => void,
 };
 
 export default class FeedbackView extends React.PureComponent {
   props: Props;
   state = {
-    message: ""
+    message: '',
   };
 
   handleChange = e => this.setState({ message: e.target.value });
 
   handleSend = (toggle: Function) => () => {
-    if (this.state.message !== "") {
+    if (this.state.message !== '') {
       toggle();
       this.props.sendMessage(this.state.message);
-      this.setState({ message: "" });
+      this.setState({ message: '' });
     }
   };
 
@@ -72,10 +72,10 @@ export default class FeedbackView extends React.PureComponent {
           HeaderComponent={Action}
           headerProps={{
             Icon: FeedbackIcon,
-            tooltip: "Give feedback"
+            tooltip: 'Give feedback',
           }}
         >
-          {toggle =>
+          {toggle => (
             <MessageView>
               <h3>Send feedback</h3>
               <textarea
@@ -85,7 +85,8 @@ export default class FeedbackView extends React.PureComponent {
                 onChange={this.handleChange}
               />
               <Button onClick={this.handleSend(toggle)}>Send</Button>
-            </MessageView>}
+            </MessageView>
+          )}
         </HoverMenu>
       </Container>
     );

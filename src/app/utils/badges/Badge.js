@@ -1,8 +1,8 @@
-import React from "react";
-import styled from "styled-components";
-import Tooltip from "app/components/Tooltip";
+import React from 'react';
+import styled from 'styled-components';
+import Tooltip from 'app/components/Tooltip';
 
-import getBadge from "./";
+import getBadge from './';
 
 const NameContainer = styled.div`
   display: inline-block;
@@ -25,11 +25,11 @@ type Props = {
   badge: {
     id: string,
     name: string,
-    visible: boolean
+    visible: boolean,
   },
   size: number,
   onClick: ?Function,
-  tooltip: ?string
+  tooltip: ?string,
 };
 
 export default class Badge extends React.PureComponent {
@@ -55,7 +55,7 @@ export default class Badge extends React.PureComponent {
     );
     if (tooltip !== false) {
       return (
-        <Tooltip style={{ display: "block" }} title={tooltip || badge.name}>
+        <Tooltip style={{ display: 'block' }} title={tooltip || badge.name}>
           {/* Margin Bottom to compensate for the tooltip */}
           {innerContent}
         </Tooltip>
@@ -64,9 +64,7 @@ export default class Badge extends React.PureComponent {
     return (
       <NameContainer>
         {innerContent}
-        <div style={{ marginTop: "0.5rem" }}>
-          {badge.name}
-        </div>
+        <div style={{ marginTop: '0.5rem' }}>{badge.name}</div>
       </NameContainer>
     );
   }

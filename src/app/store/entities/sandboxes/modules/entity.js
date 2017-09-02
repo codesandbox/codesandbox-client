@@ -1,13 +1,13 @@
 // @flow
-import { schema } from "normalizr";
+import { schema } from 'normalizr';
 
 export default new schema.Entity(
-  "modules",
+  'modules',
   {},
   {
     processStrategy: module => ({
       ...module,
-      errors: []
-    })
+      errors: [],
+    }),
   }
 );

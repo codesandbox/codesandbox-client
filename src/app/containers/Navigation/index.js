@@ -1,23 +1,23 @@
 // @flow
-import * as React from "react";
-import styled from "styled-components";
-import { connect } from "react-redux";
-import { Link } from "react-router-dom";
+import * as React from 'react';
+import styled from 'styled-components';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
-import SignInButton from "app/containers/SignInButton";
+import SignInButton from 'app/containers/SignInButton';
 
-import Logo from "app/components/Logo";
-import Row from "app/components/flex/Row";
-import Tooltip from "app/components/Tooltip";
-import HeaderSearchBar from "app/components/HeaderSearchBar";
-import NewSandboxAction from "../../pages/Sandbox/Editor/Content/Header/NewSandboxAction";
+import Logo from 'app/components/Logo';
+import Row from 'app/components/flex/Row';
+import Tooltip from 'app/components/Tooltip';
+import HeaderSearchBar from 'app/components/HeaderSearchBar';
+import NewSandboxAction from '../../pages/Sandbox/Editor/Content/Header/NewSandboxAction';
 
-import { jwtSelector, isPatronSelector } from "app/store/user/selectors";
-import { newSandboxUrl, patronUrl } from "app/utils/url-generator";
+import { jwtSelector, isPatronSelector } from 'app/store/user/selectors';
+import { newSandboxUrl, patronUrl } from 'app/utils/url-generator';
 // $FlowIssue
-import PatronBadge from "-!svg-react-loader!app/utils/badges/svg/patron-4.svg"; // eslint-disable-line import/no-webpack-loader-syntax
+import PatronBadge from '-!svg-react-loader!app/utils/badges/svg/patron-4.svg'; // eslint-disable-line import/no-webpack-loader-syntax
 
-import UserMenu from "../UserMenu";
+import UserMenu from '../UserMenu';
 
 const LogoWithBorder = styled(Logo)`padding-right: 1rem;`;
 
@@ -70,12 +70,12 @@ const PlusIcon = styled(Link)`
 type Props = {
   title: string,
   hasLogin: boolean,
-  isPatron: boolean
+  isPatron: boolean,
 };
 
 const mapStateToProps = state => ({
   hasLogin: !!jwtSelector(state),
-  isPatron: isPatronSelector(state)
+  isPatron: isPatronSelector(state),
 });
 class Navigation extends React.PureComponent<Props> {
   render() {
@@ -88,23 +88,22 @@ class Navigation extends React.PureComponent<Props> {
             <LogoWithBorder height={40} width={40} />
           </a>
           <Border width={1} size={500} />
-          <Title>
-            {title}
-          </Title>
+          <Title>{title}</Title>
         </Row>
         <Row>
           <Actions>
             <Action>
               <HeaderSearchBar />
             </Action>
-            {!isPatron &&
+            {!isPatron && (
               <Action>
                 <Tooltip position="bottom" title="Support CodeSandbox">
                   <Link to={patronUrl()}>
                     <PatronBadge width={40} height={40} />
                   </Link>
                 </Tooltip>
-              </Action>}
+              </Action>
+            )}
             <NewSandboxAction />
           </Actions>
           {hasLogin ? <UserMenu /> : <SignInButton />}

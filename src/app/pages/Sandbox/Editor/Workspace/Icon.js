@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import fadeIn from "app/utils/animation/fade-in";
+import styled from 'styled-components';
+import fadeIn from 'app/utils/animation/fade-in';
 
 export const Icon = styled.div`
   position: relative;

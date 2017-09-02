@@ -1,34 +1,34 @@
-import { camelizeKeys } from "humps";
-import { dispatch, isStandalone } from "codesandbox-api";
+import { camelizeKeys } from 'humps';
+import { dispatch, isStandalone } from 'codesandbox-api';
 
-import registerServiceWorker from "common/registerServiceWorker";
+import registerServiceWorker from 'common/registerServiceWorker';
 import {
   getModulePath,
-  findMainModule
-} from "app/store/entities/sandboxes/modules/selectors";
+  findMainModule,
+} from 'app/store/entities/sandboxes/modules/selectors';
 
-import loadDependencies from "./npm";
-import host from "./utils/host";
+import loadDependencies from './npm';
+import host from './utils/host';
 
-import handleExternalResources from "./external-resources";
-import resizeEventListener from "./resize-event-listener";
-import setupHistoryListeners from "./url-listeners";
-import resolveDependency from "./eval/loaders/dependency-resolver";
-import { resetScreen } from "./status-screen";
+import handleExternalResources from './external-resources';
+import resizeEventListener from './resize-event-listener';
+import setupHistoryListeners from './url-listeners';
+import resolveDependency from './eval/loaders/dependency-resolver';
+import { resetScreen } from './status-screen';
 
-import { inject, uninject } from "./react-error-overlay/overlay";
+import { inject, uninject } from './react-error-overlay/overlay';
 
-import defaultBoilerplates from "./boilerplates/default-boilerplates";
+import defaultBoilerplates from './boilerplates/default-boilerplates';
 import {
   getBoilerplates,
   evalBoilerplates,
-  findBoilerplate
-} from "./boilerplates";
+  findBoilerplate,
+} from './boilerplates';
 
-import Manager from "./eval/manager";
-import getPreset from "./eval";
+import Manager from './eval/manager';
+import getPreset from './eval';
 
-registerServiceWorker("/sandbox-service-worker.js");
+registerServiceWorker('/sandbox-service-worker.js');
 
 let initializedResizeListener = false;
 let loadingDependencies = false;
@@ -36,7 +36,7 @@ let manager: ?Manager = null;
 
 function getIndexHtml(modules) {
   const module = modules.find(
-    m => m.title === "index.html" && m.directoryShortid == null
+    m => m.title === 'index.html' && m.directoryShortid == null
   );
   if (module) {
     return module.code;
@@ -49,11 +49,11 @@ export function getCurrentManager(): ?Manager {
 }
 
 export function sendReady() {
-  dispatch("Ready!");
+  dispatch('Ready!');
 }
 
 function requestRender() {
-  dispatch({ type: "render" });
+  dispatch({ type: 'render' });
 }
 
 function initializeResizeListener() {
@@ -61,8 +61,8 @@ function initializeResizeListener() {
   listener.addResizeListener(document.body, () => {
     if (document.body) {
       dispatch({
-        type: "resize",
-        height: document.body.getBoundingClientRect().height
+        type: 'resize',
+        height: document.body.getBoundingClientRect().height,
       });
     }
   });
@@ -103,7 +103,7 @@ async function compile(message) {
     dependencies,
     hasActions,
     isModuleView = false,
-    template
+    template,
   } = message.data;
   try {
     uninject();
@@ -124,10 +124,10 @@ async function compile(message) {
 
     const [
       { manifest, isNewCombination },
-      { error: managerError }
+      { error: managerError },
     ] = await Promise.all([
       loadDependenciesAndSetWrapper(dependencies),
-      updateManager(sandboxId, template, module, modules, directories)
+      updateManager(sandboxId, template, module, modules, directories),
     ]);
 
     const { externals } = manifest;
@@ -151,13 +151,13 @@ async function compile(message) {
     try {
       const children = document.body.children;
       // Do unmounting for react
-      if (externals["react-dom"]) {
-        const reactDOM = resolveDependency("react-dom", externals);
+      if (externals['react-dom']) {
+        const reactDOM = resolveDependency('react-dom', externals);
         reactDOM.unmountComponentAtNode(document.body);
         for (const child in children) {
           if (
             children.hasOwnProperty(child) &&
-            children[child].tagName === "DIV"
+            children[child].tagName === 'DIV'
           ) {
             reactDOM.unmountComponentAtNode(children[child]);
           }
@@ -180,8 +180,8 @@ async function compile(message) {
 
     const domChanged = document.body.innerHTML !== html;
 
-    if (isModuleView && !domChanged && !module.title.endsWith(".html")) {
-      const isReact = module.code && module.code.includes("React");
+    if (isModuleView && !domChanged && !module.title.endsWith('.html')) {
+      const isReact = module.code && module.code.includes('React');
 
       if (isReact) {
         // initiate boilerplates
@@ -209,31 +209,31 @@ async function compile(message) {
     }
 
     dispatch({
-      type: "success"
+      type: 'success',
     });
   } catch (e) {
     if (manager) {
       manager.clearCompiledCache();
     }
-    console.log("Error in sandbox:");
+    console.log('Error in sandbox:');
     console.error(e);
 
     e.module = e.module || changedModule;
     e.fileName = e.fileName || getModulePath(modules, directories, e.module);
 
-    const event = new Event("error");
+    const event = new Event('error');
     event.error = e;
 
     window.dispatchEvent(event);
   }
 }
 
-window.addEventListener("message", async message => {
-  if (message.data.type === "compile") {
+window.addEventListener('message', async message => {
+  if (message.data.type === 'compile') {
     await compile(message);
-  } else if (message.data.type === "urlback") {
+  } else if (message.data.type === 'urlback') {
     history.back();
-  } else if (message.data.type === "urlforward") {
+  } else if (message.data.type === 'urlforward') {
     history.forward();
   }
 });
@@ -262,8 +262,8 @@ if (isStandalone) {
           externalResources: x.data.externalResources,
           dependencies: x.data.npmDependencies,
           hasActions: false,
-          template: x.data.template
-        }
+          template: x.data.template,
+        },
       };
 
       compile(message);

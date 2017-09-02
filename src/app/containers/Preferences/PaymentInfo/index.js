@@ -1,14 +1,14 @@
-import React from "react";
-import styled from "styled-components";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+import React from 'react';
+import styled from 'styled-components';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-import userActionCreators from "app/store/user/actions";
-import SubscribeForm from "app/components/user/SubscribeForm";
+import userActionCreators from 'app/store/user/actions';
+import SubscribeForm from 'app/components/user/SubscribeForm';
 
-import Card from "./Card";
-import Title from "../MenuTitle";
-import { Subheading } from "../styles";
+import Card from './Card';
+import Title from '../MenuTitle';
+import { Subheading } from '../styles';
 
 const Container = styled.div`
   font-weight: 400;
@@ -16,17 +16,17 @@ const Container = styled.div`
 `;
 
 type Props = {
-  userActions: typeof userActionCreators
+  userActions: typeof userActionCreators,
 };
 
 const mapDispatchToProps = dispatch => ({
-  userActions: bindActionCreators(userActionCreators, dispatch)
+  userActions: bindActionCreators(userActionCreators, dispatch),
 });
 class PaymentInfo extends React.PureComponent {
   props: Props;
   state = {
     loading: true,
-    data: null
+    data: null,
   };
 
   componentDidMount() {
@@ -49,11 +49,7 @@ class PaymentInfo extends React.PureComponent {
 
   paymentDetails = () => {
     if (this.state.error)
-      return (
-        <div>
-          An error occurred: {this.state.error}
-        </div>
-      );
+      return <div>An error occurred: {this.state.error}</div>;
 
     const { data } = this.state;
     return (
@@ -61,7 +57,7 @@ class PaymentInfo extends React.PureComponent {
         <Subheading>Current card</Subheading>
         <Card last4={data.last4} name={data.name} brand={data.brand} />
 
-        <Subheading style={{ marginTop: "2rem" }}>Update card info</Subheading>
+        <Subheading style={{ marginTop: '2rem' }}>Update card info</Subheading>
         <SubscribeForm
           buttonName="Update"
           loadingText="Updating Card Info..."
@@ -77,9 +73,11 @@ class PaymentInfo extends React.PureComponent {
     return (
       <Container>
         <Title>Payment Info</Title>
-        {loading
-          ? <div>Loading payment details...</div>
-          : this.paymentDetails()}
+        {loading ? (
+          <div>Loading payment details...</div>
+        ) : (
+          this.paymentDetails()
+        )}
       </Container>
     );
   }

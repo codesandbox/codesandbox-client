@@ -1,18 +1,18 @@
 /* @flow */
-import * as React from "react";
-import styled from "styled-components";
+import * as React from 'react';
+import styled from 'styled-components';
 
-import { debounce } from "lodash";
+import { debounce } from 'lodash';
 
-import type { Preferences } from "app/store/preferences/reducer";
-import type { Module, Sandbox, Directory } from "common/types";
+import type { Preferences } from 'app/store/preferences/reducer';
+import type { Module, Sandbox, Directory } from 'common/types';
 
-import { frameUrl } from "app/utils/url-generator";
-import { findMainModule } from "app/store/entities/sandboxes/modules/selectors";
-import sandboxActionCreators from "app/store/entities/sandboxes/actions";
-import shouldUpdate from "./utils/should-update";
+import { frameUrl } from 'app/utils/url-generator';
+import { findMainModule } from 'app/store/entities/sandboxes/modules/selectors';
+import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
+import shouldUpdate from './utils/should-update';
 
-import Navigator from "./Navigator";
+import Navigator from './Navigator';
 
 const Container = styled.div`
   height: 100%;
@@ -45,7 +45,7 @@ type Props = {
   setFrameHeight: ?(height: number) => any,
   dependencies: Object,
   runActionFromPreview: (arg: Object) => any,
-  forcedRenders: ?number
+  forcedRenders: ?number,
 };
 
 type State = {
@@ -53,7 +53,7 @@ type State = {
   url: ?string,
   history: Array<string>,
   historyPosition: number,
-  urlInAddressBar: string
+  urlInAddressBar: string,
 };
 
 export default class Preview extends React.PureComponent<Props, State> {
@@ -67,8 +67,8 @@ export default class Preview extends React.PureComponent<Props, State> {
       frameInitialized: false,
       history: [],
       historyPosition: 0,
-      urlInAddressBar: frameUrl(props.sandboxId, props.initialPath || ""),
-      url: null
+      urlInAddressBar: frameUrl(props.sandboxId, props.initialPath || ''),
+      url: null,
     };
 
     if (!props.noDelay) {
@@ -84,7 +84,7 @@ export default class Preview extends React.PureComponent<Props, State> {
 
   static defaultProps = {
     hideNavigation: false,
-    noDelay: false
+    noDelay: false,
   };
 
   componentDidUpdate(prevProps: Props) {
@@ -147,18 +147,18 @@ export default class Preview extends React.PureComponent<Props, State> {
   }
 
   componentDidMount() {
-    window.addEventListener("message", this.handleMessage);
+    window.addEventListener('message', this.handleMessage);
   }
 
   componentWillUnmount() {
-    window.removeEventListener("message", this.handleMessage);
+    window.removeEventListener('message', this.handleMessage);
   }
 
   openNewWindow = () => {
     if (this.props.sandboxActions) {
       this.props.sandboxActions.setViewMode(this.props.sandboxId, true, false);
     }
-    window.open(this.state.urlInAddressBar, "_blank");
+    window.open(this.state.urlInAddressBar, '_blank');
   };
 
   sendMessage = (message: Object) => {
@@ -168,35 +168,35 @@ export default class Preview extends React.PureComponent<Props, State> {
   };
 
   handleMessage = (e: MessageEvent | { data: Object | string }) => {
-    if (e.data === "Ready!") {
+    if (e.data === 'Ready!') {
       this.frames.push(e.source);
       this.setState({
-        frameInitialized: true
+        frameInitialized: true,
       });
       this.executeCodeImmediately();
     } else {
       const { type } = e.data;
 
       switch (type) {
-        case "render": {
+        case 'render': {
           this.executeCodeImmediately();
           break;
         }
-        case "urlchange": {
+        case 'urlchange': {
           this.commitUrl(e.data.url);
           break;
         }
-        case "resize": {
+        case 'resize': {
           if (this.props.setFrameHeight) {
             this.props.setFrameHeight(e.data.height);
           }
           break;
         }
-        case "action": {
+        case 'action': {
           if (this.props.runActionFromPreview) {
             this.props.runActionFromPreview({
               ...e.data,
-              sandboxId: this.props.sandboxId
+              sandboxId: this.props.sandboxId,
             });
           }
           break;
@@ -230,7 +230,7 @@ export default class Preview extends React.PureComponent<Props, State> {
       sandboxId,
       isInProjectView,
       runActionFromPreview,
-      template
+      template,
     } = this.props;
     if (preferences.clearConsoleEnabled) {
       console.clear();
@@ -240,7 +240,7 @@ export default class Preview extends React.PureComponent<Props, State> {
     this.clearErrors();
     const renderedModule = this.getRenderedModule();
     this.sendMessage({
-      type: "compile",
+      type: 'compile',
       module: renderedModule,
       changedModule: module,
       dependencies,
@@ -250,7 +250,7 @@ export default class Preview extends React.PureComponent<Props, State> {
       externalResources,
       template,
       hasActions: !!runActionFromPreview,
-      isModuleView: !isInProjectView
+      isModuleView: !isInProjectView,
     });
   };
 
@@ -267,7 +267,7 @@ export default class Preview extends React.PureComponent<Props, State> {
   sendUrl = () => {
     const { urlInAddressBar } = this.state;
 
-    document.getElementById("sandbox").src = urlInAddressBar;
+    document.getElementById('sandbox').src = urlInAddressBar;
 
     this.commitUrl(urlInAddressBar);
   };
@@ -275,51 +275,51 @@ export default class Preview extends React.PureComponent<Props, State> {
   handleRefresh = () => {
     const { history, historyPosition } = this.state;
 
-    document.getElementById("sandbox").src = "";
+    document.getElementById('sandbox').src = '';
 
     setTimeout(() => {
-      document.getElementById("sandbox").src = history[historyPosition];
+      document.getElementById('sandbox').src = history[historyPosition];
     }, 100);
 
     this.setState({
-      urlInAddressBar: history[historyPosition]
+      urlInAddressBar: history[historyPosition],
     });
   };
 
   handleBack = () => {
     this.sendMessage({
-      type: "urlback"
+      type: 'urlback',
     });
 
     const { historyPosition, history } = this.state;
     this.setState({
       historyPosition: this.state.historyPosition - 1,
-      urlInAddressBar: history[historyPosition - 1]
+      urlInAddressBar: history[historyPosition - 1],
     });
   };
 
   handleForward = () => {
     this.sendMessage({
-      type: "urlforward"
+      type: 'urlforward',
     });
 
     const { historyPosition, history } = this.state;
     this.setState({
       historyPosition: this.state.historyPosition + 1,
-      urlInAddressBar: history[historyPosition + 1]
+      urlInAddressBar: history[historyPosition + 1],
     });
   };
 
   commitUrl = (url: string) => {
     const { history, historyPosition } = this.state;
 
-    const currentHistory = history[historyPosition] || "";
+    const currentHistory = history[historyPosition] || '';
     if (currentHistory !== url) {
       history.length = historyPosition + 1;
       this.setState({
         history: [...history, url],
         historyPosition: historyPosition + 1,
-        urlInAddressBar: url
+        urlInAddressBar: url,
       });
     }
   };
@@ -338,7 +338,7 @@ export default class Preview extends React.PureComponent<Props, State> {
       sandboxId,
       isInProjectView,
       setProjectView,
-      hideNavigation
+      hideNavigation,
     } = this.props;
     const { historyPosition, history, urlInAddressBar } = this.state;
 
@@ -346,7 +346,7 @@ export default class Preview extends React.PureComponent<Props, State> {
 
     return (
       <Container>
-        {!hideNavigation &&
+        {!hideNavigation && (
           <Navigator
             url={decodeURIComponent(url)}
             onChange={this.updateUrl}
@@ -359,7 +359,8 @@ export default class Preview extends React.PureComponent<Props, State> {
             isProjectView={isInProjectView}
             toggleProjectView={setProjectView && this.toggleProjectView}
             openNewWindow={this.openNewWindow}
-          />}
+          />
+        )}
 
         <StyledFrame
           sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups allow-presentation"

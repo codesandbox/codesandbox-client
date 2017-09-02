@@ -1,11 +1,11 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
 
-import Relative from "app/components/Relative";
-import badges from "app/utils/badges/patron-info";
+import Relative from 'app/components/Relative';
+import badges from 'app/utils/badges/patron-info';
 
-import "./animations.css";
-import Particles from "./Particles";
+import './animations.css';
+import Particles from './Particles';
 
 const BadgeContainer = styled.div`
   position: absolute;
@@ -21,7 +21,7 @@ const BadgeContainer = styled.div`
 
 type Props = {
   subscribed: boolean,
-  badge: "patron-1" | "patron-2" | "patron-3" | "patron-4"
+  badge: 'patron-1' | 'patron-2' | 'patron-3' | 'patron-4',
 };
 
 const Badge = ({ badge }: Props) => {
@@ -33,9 +33,10 @@ const Badge = ({ badge }: Props) => {
   );
 };
 
-export default ({ badge, subscribed }: Props) =>
+export default ({ badge, subscribed }: Props) => (
   <Relative>
     {/* We prerender all particles, performance reasons */}
     <Particles makeItRain={subscribed} badge={badge} />
     <Badge key={badge} id="badge" badge={badge} />
-  </Relative>;
+  </Relative>
+);

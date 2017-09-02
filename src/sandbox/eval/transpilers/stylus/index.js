@@ -1,14 +1,14 @@
 // @flow
-import StylusWorker from "worker-loader!./stylus-worker.js";
+import StylusWorker from 'worker-loader!./stylus-worker.js';
 
-import WorkerTranspiler from "../worker-transpiler";
-import { type LoaderContext } from "../../transpiled-module";
+import WorkerTranspiler from '../worker-transpiler';
+import { type LoaderContext } from '../../transpiled-module';
 
 class StylusTranspiler extends WorkerTranspiler {
   worker: Worker;
 
   constructor() {
-    super("stylus-loader", StylusWorker, 1);
+    super('stylus-loader', StylusWorker, 1);
 
     this.cacheable = false;
   }
@@ -20,7 +20,7 @@ class StylusTranspiler extends WorkerTranspiler {
       this.queueTask(
         {
           code,
-          path
+          path,
         },
         loaderContext,
         (err, data) => {

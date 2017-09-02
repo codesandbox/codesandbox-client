@@ -1,12 +1,12 @@
 // @flow
-import * as actions from "./actions";
+import * as actions from './actions';
 
 type State = {
-  connected: boolean
+  connected: boolean,
 };
 
 const initialState = {
-  connected: false
+  connected: false,
 };
 
 export default function reducer(
@@ -17,7 +17,7 @@ export default function reducer(
     case actions.SET_CONNECTION_STATUS:
       return {
         ...state,
-        connected: action.connected
+        connected: action.connected,
       };
     default:
       return state;

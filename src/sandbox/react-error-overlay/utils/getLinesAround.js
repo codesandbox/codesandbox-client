@@ -8,7 +8,7 @@
  */
 
 //@flow
-import { ScriptLine } from "./stack-frame";
+import { ScriptLine } from './stack-frame';
 
 /**
  *
@@ -21,8 +21,8 @@ function getLinesAround(
   count: number,
   lines: string[] | string
 ): ScriptLine[] {
-  if (typeof lines === "string") {
-    lines = lines.split("\n");
+  if (typeof lines === 'string') {
+    lines = lines.split('\n');
   }
   const result = [];
   for (

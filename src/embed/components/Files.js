@@ -1,11 +1,11 @@
 // @flow
-import * as React from "react";
-import styled from "styled-components";
-import { sortBy } from "lodash";
+import * as React from 'react';
+import styled from 'styled-components';
+import { sortBy } from 'lodash';
 
-import type { Module, Directory } from "common/types";
+import type { Module, Directory } from 'common/types';
 
-import File from "./File";
+import File from './File';
 
 const Container = styled.div`line-height: 1;`;
 
@@ -15,7 +15,7 @@ type Props = {
   directoryId: string,
   depth: number,
   currentModule: string,
-  setCurrentModule: (id: string, shortid: string) => any
+  setCurrentModule: (id: string, shortid: string) => any,
 };
 
 const Files = ({
@@ -24,7 +24,7 @@ const Files = ({
   directoryId,
   depth = 0,
   currentModule,
-  setCurrentModule
+  setCurrentModule,
 }: Props) => {
   const childrenModules = modules.filter(
     m => m.directoryShortid === directoryId
@@ -36,7 +36,7 @@ const Files = ({
 
   return (
     <Container>
-      {sortBy(childrenDirectories, d => d.title).map(d =>
+      {sortBy(childrenDirectories, d => d.title).map(d => (
         <div key={d.shortid}>
           <File
             id={d.id}
@@ -55,8 +55,8 @@ const Files = ({
             currentModule={currentModule}
           />
         </div>
-      )}
-      {sortBy(childrenModules, m => m.title).map(m =>
+      ))}
+      {sortBy(childrenModules, m => m.title).map(m => (
         <File
           id={m.id}
           shortid={m.shortid}
@@ -66,9 +66,9 @@ const Files = ({
           depth={depth}
           setCurrentModule={setCurrentModule}
           active={m.id === currentModule}
-          alternative={m.title === "index.js" && m.directoryShortid == null}
+          alternative={m.title === 'index.js' && m.directoryShortid == null}
         />
-      )}
+      ))}
     </Container>
   );
 };

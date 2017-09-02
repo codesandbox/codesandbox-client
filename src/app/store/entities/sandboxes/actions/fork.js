@@ -1,20 +1,20 @@
 // @flow
-import { values } from "lodash";
+import { values } from 'lodash';
 
-import { push } from "react-router-redux";
+import { push } from 'react-router-redux';
 
-import type { Module, Directory } from "common/types";
-import { sandboxUrl } from "app/utils/url-generator";
+import type { Module, Directory } from 'common/types';
+import { sandboxUrl } from 'app/utils/url-generator';
 
-import { createAPIActions, doRequest } from "../../../api/actions";
-import { singleSandboxSelector } from "../selectors";
-import { modulesSelector } from "../modules/selectors";
-import { normalizeResult } from "../../actions";
-import moduleActions from "../modules/actions";
-import sandboxEntity from "../entity";
-import notificationActions from "../../../notifications/actions";
+import { createAPIActions, doRequest } from '../../../api/actions';
+import { singleSandboxSelector } from '../selectors';
+import { modulesSelector } from '../modules/selectors';
+import { normalizeResult } from '../../actions';
+import moduleActions from '../modules/actions';
+import sandboxEntity from '../entity';
+import notificationActions from '../../../notifications/actions';
 
-export const FORK_SANDBOX_API_ACTIONS = createAPIActions("SANDBOX", "FORK");
+export const FORK_SANDBOX_API_ACTIONS = createAPIActions('SANDBOX', 'FORK');
 
 /**
  * When you fork you get a 'copy' of the modules, these modules have the shortid
@@ -51,7 +51,7 @@ export const forkSandbox = (id: string) => async (
 ) => {
   const { data } = await dispatch(
     doRequest(FORK_SANDBOX_API_ACTIONS, `sandboxes/${id}/fork`, {
-      method: "POST"
+      method: 'POST',
     })
   );
 
@@ -79,7 +79,7 @@ export const forkSandbox = (id: string) => async (
 
   dispatch(push(sandboxUrl(data)));
 
-  dispatch(notificationActions.addNotification("Forked sandbox!", "success"));
+  dispatch(notificationActions.addNotification('Forked sandbox!', 'success'));
 
   return data;
 };

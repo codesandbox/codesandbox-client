@@ -1,8 +1,8 @@
-import store from "store/dist/store.modern";
+import store from 'store/dist/store.modern';
 
-import * as keys from "./keys";
+import * as keys from './keys';
 
-export const SET_PREFERENCES = "SET_PREFERENCES";
+export const SET_PREFERENCES = 'SET_PREFERENCES';
 
 const setOption = (key, val) => {
   try {
@@ -21,7 +21,7 @@ export default {
     );
     dispatch({
       type: SET_PREFERENCES,
-      preferences
+      preferences,
     });
-  }
+  },
 };

@@ -1,22 +1,23 @@
-import React from "react";
+import React from 'react';
 
-import Question from "react-icons/lib/go/question";
+import Question from 'react-icons/lib/go/question';
 
-import Prettier from "./Prettier";
-import Title from "../MenuTitle";
+import Prettier from './Prettier';
+import Title from '../MenuTitle';
 
-export default () =>
+export default () => (
   <div>
     <Title>
-      Prettier Settings{" "}
+      Prettier Settings{' '}
       <a
         href="https://github.com/prettier/prettier#options"
         target="_blank"
         rel="noopener noreferrer"
       >
-        <Question style={{ marginBottom: "3px" }} />
+        <Question style={{ marginBottom: '3px' }} />
       </a>
     </Title>
 
     <Prettier />
-  </div>;
+  </div>
+);

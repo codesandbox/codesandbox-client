@@ -1,13 +1,13 @@
-import React from "react";
-import styled from "styled-components";
-import Navigation from "app/containers/Navigation";
-import Padding from "app/components/spacing/Padding";
-import Margin from "app/components/spacing/Margin";
-import MaxWidth from "app/components/flex/MaxWidth";
+import React from 'react';
+import styled from 'styled-components';
+import Navigation from 'app/containers/Navigation';
+import Padding from 'app/components/spacing/Padding';
+import Margin from 'app/components/spacing/Margin';
+import MaxWidth from 'app/components/flex/MaxWidth';
 
-import type { User } from "common/types";
+import type { User } from 'common/types';
 
-import UserInfo from "./UserInfo";
+import UserInfo from './UserInfo';
 
 const Top = styled.div`
   display: flex;
@@ -23,7 +23,7 @@ const FullWidthPadding = styled(Padding)`width: 100%;`;
 const FullWidthMargin = styled(Margin)`width: 100%;`;
 
 type Props = {
-  user: User
+  user: User,
 };
 
 export default class Header extends React.PureComponent {

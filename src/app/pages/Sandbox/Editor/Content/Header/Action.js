@@ -1,10 +1,10 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import styled from "styled-components";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import styled from 'styled-components';
 
-import MoreInfoIcon from "react-icons/lib/md/arrow-drop-down";
+import MoreInfoIcon from 'react-icons/lib/md/arrow-drop-down';
 
-import Tooltip from "app/components/Tooltip";
+import Tooltip from 'app/components/Tooltip';
 
 const styles = props =>
   `
@@ -54,8 +54,8 @@ const ActionA = styled.a`${styles} text-decoration: none;`;
 
 const ActionTooltip = styled(Tooltip)`
   ${styles} ${props =>
-  props.disabledAction &&
-  `
+      props.disabledAction &&
+      `
     color: rgba(255,255,255,0.3);
     cursor: default;
 
@@ -84,7 +84,7 @@ type Props = {
   unresponsive: boolean,
   a: ?boolean,
   iconProps: Object,
-  iconContainerProps: Object
+  iconContainerProps: Object,
 };
 
 export default ({
@@ -112,11 +112,10 @@ export default ({
       >
         <IconContainer onClick={onClick} {...iconContainerProps}>
           <Icon {...iconProps} />
-          {title !== undefined &&
-            <Title unresponsive={unresponsive}>
-              {title}
-            </Title>}
-          {moreInfo && <MoreInfoIcon style={{ fontSize: "1.1rem" }} />}
+          {title !== undefined && (
+            <Title unresponsive={unresponsive}>{title}</Title>
+          )}
+          {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
         </IconContainer>
       </ActionTooltip>
     );
@@ -126,11 +125,10 @@ export default ({
       <Action disabledAction={!onClick} highlight={highlight} {...props}>
         <IconContainer onClick={onClick} {...iconContainerProps}>
           <Icon {...iconProps} />
-          {title !== undefined &&
-            <Title unresponsive={unresponsive}>
-              {title}
-            </Title>}
-          {moreInfo && <MoreInfoIcon style={{ fontSize: "1.1rem" }} />}
+          {title !== undefined && (
+            <Title unresponsive={unresponsive}>{title}</Title>
+          )}
+          {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
         </IconContainer>
       </Action>
     );
@@ -142,11 +140,10 @@ export default ({
         <ActionTooltip title={placeholder || tooltip}>
           <IconContainer {...iconContainerProps}>
             <Icon {...iconProps} />
-            {title !== undefined &&
-              <Title unresponsive={unresponsive}>
-                {title}
-              </Title>}
-            {moreInfo && <MoreInfoIcon style={{ fontSize: "1.1rem" }} />}
+            {title !== undefined && (
+              <Title unresponsive={unresponsive}>{title}</Title>
+            )}
+            {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
           </IconContainer>
         </ActionTooltip>
       </ActionA>
@@ -159,11 +156,10 @@ export default ({
         <ActionTooltip title={placeholder || tooltip}>
           <IconContainer>
             <Icon {...iconProps} />
-            {title !== undefined &&
-              <Title unresponsive={unresponsive}>
-                {title}
-              </Title>}
-            {moreInfo && <MoreInfoIcon style={{ fontSize: "1.1rem" }} />}
+            {title !== undefined && (
+              <Title unresponsive={unresponsive}>{title}</Title>
+            )}
+            {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
           </IconContainer>
         </ActionTooltip>
       </ActionLink>
@@ -174,11 +170,10 @@ export default ({
     <ActionLink to={href} {...props}>
       <IconContainer {...iconContainerProps}>
         <Icon {...iconProps} />
-        {title !== undefined &&
-          <Title unresponsive={unresponsive}>
-            {title}
-          </Title>}
-        {moreInfo && <MoreInfoIcon style={{ fontSize: "1.1rem" }} />}
+        {title !== undefined && (
+          <Title unresponsive={unresponsive}>{title}</Title>
+        )}
+        {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
       </IconContainer>
     </ActionLink>
   );

@@ -1,10 +1,10 @@
 // @flow
-import { schema } from "normalizr";
+import { schema } from 'normalizr';
 
 export default new schema.Entity(
-  "users",
+  'users',
   {},
   {
-    idAttribute: u => u.username
+    idAttribute: u => u.username,
   }
 );

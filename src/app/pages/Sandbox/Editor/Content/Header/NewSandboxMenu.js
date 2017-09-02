@@ -10,7 +10,7 @@ import {
   newPreactSandboxUrl,
   newVueSandboxUrl,
   importFromGitHubUrl,
-  uploadFromCliUrl
+  uploadFromCliUrl,
 } from 'app/utils/url-generator';
 
 const Container = styled.div`
@@ -27,7 +27,7 @@ const Container = styled.div`
   z-index: 20;
 `;
 
-export default () =>
+export default () => (
   <Container>
     <Link style={{ textDecoration: 'none' }} to={newSandboxUrl()}>
       <MenuItem>New React Sandbox</MenuItem>
@@ -44,4 +44,5 @@ export default () =>
     <Link style={{ textDecoration: 'none' }} to={uploadFromCliUrl()}>
       <MenuItem>Upload from CLI</MenuItem>
     </Link>
-  </Container>;
+  </Container>
+);

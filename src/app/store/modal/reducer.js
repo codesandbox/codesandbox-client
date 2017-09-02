@@ -1,12 +1,12 @@
 // @flow
-import type { Modal } from "common/types";
-import { OPEN_MODAL, CLOSE_MODAL } from "./actions";
+import type { Modal } from 'common/types';
+import { OPEN_MODAL, CLOSE_MODAL } from './actions';
 
 const initialState: Modal = {
   open: false,
   title: null,
   Body: null,
-  width: null
+  width: null,
 };
 
 export default function(
@@ -19,7 +19,7 @@ export default function(
         open: true,
         title: action.title,
         Body: action.Body,
-        width: action.width
+        width: action.width,
       };
     case CLOSE_MODAL:
       return {
@@ -27,7 +27,7 @@ export default function(
         title: null,
         Body: null,
         width: null,
-        open: false
+        open: false,
       };
     default:
       return state;

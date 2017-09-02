@@ -8,16 +8,16 @@
  */
 
 /* @flow */
-import type { StackFrame } from "./stack-frame";
-import { parse } from "./parser";
-import { map } from "./mapper";
-import { unmap } from "./unmapper";
+import type { StackFrame } from './stack-frame';
+import { parse } from './parser';
+import { map } from './mapper';
+import { unmap } from './unmapper';
 
 export type ErrorRecord = {
   error: Error,
   unhandledRejection: boolean,
   contextSize: number,
-  enhancedFrames: StackFrame[]
+  enhancedFrames: StackFrame[],
 };
 type ErrorRecordReference = number;
 const recorded: ErrorRecord[] = [];
@@ -53,13 +53,13 @@ function consume(
     enhancedFrames = enhancedFrames.filter(
       ({ functionName }) =>
         functionName == null ||
-        functionName.indexOf("__stack_frame_overlay_proxy_console__") === -1
+        functionName.indexOf('__stack_frame_overlay_proxy_console__') === -1
     );
     recorded[++errorsConsumed] = {
       error,
       unhandledRejection,
       contextSize,
-      enhancedFrames
+      enhancedFrames,
     };
     return errorsConsumed;
   });

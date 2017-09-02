@@ -1,15 +1,15 @@
-import { DEFAULT_PRETTIER_CONFIG } from "app/store/preferences/reducer";
+import { DEFAULT_PRETTIER_CONFIG } from 'app/store/preferences/reducer';
 
-const worker = new Worker("/static/js/prettier/worker.js");
+const worker = new Worker('/static/js/prettier/worker.js');
 
 function getParser(mode) {
-  if (mode === "jsx") return "babylon";
-  if (mode === "css") return "postcss";
-  if (mode === "html") return "parse5";
-  if (mode === "ts") return "typescript";
-  if (mode === "graphql") return "graphql";
+  if (mode === 'jsx') return 'babylon';
+  if (mode === 'css') return 'postcss';
+  if (mode === 'html') return 'parse5';
+  if (mode === 'ts') return 'typescript';
+  if (mode === 'graphql') return 'graphql';
 
-  return "babylon";
+  return 'babylon';
 }
 
 export default (function prettify(
@@ -24,8 +24,8 @@ export default (function prettify(
       options: {
         ...DEFAULT_PRETTIER_CONFIG,
         ...prettierConfig,
-        parser: getParser(mode)
-      }
+        parser: getParser(mode),
+      },
     });
 
     worker.onmessage = e => {

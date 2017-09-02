@@ -1,13 +1,13 @@
 // @flow
-import type { Directory, Module } from "common/types";
-import { createSelector } from "reselect";
-import { values } from "lodash";
-import resolveModule from "common/sandbox/resolve-module";
+import type { Directory, Module } from 'common/types';
+import { createSelector } from 'reselect';
+import { values } from 'lodash';
+import resolveModule from 'common/sandbox/resolve-module';
 
 export const modulesSelector = state => state.entities.modules;
 
 export const isMainModule = (module: Module) =>
-  module.title === "index.js" && module.directoryShortid == null;
+  module.title === 'index.js' && module.directoryShortid == null;
 
 export const findMainModule = (modules: Module[]) =>
   modules.find(isMainModule) || modules[0];
@@ -15,11 +15,11 @@ export const findMainModule = (modules: Module[]) =>
 export const findCurrentModule = (
   modules: Module[],
   directories: Directory[],
-  modulePath: ?string = "",
+  modulePath: ?string = '',
   mainModule: Module
 ): Module => {
   // cleanPath, encode and replace first /
-  const cleanPath = decodeURIComponent(modulePath).replace("/", "");
+  const cleanPath = decodeURIComponent(modulePath).replace('/', '');
   let foundModule = null;
   try {
     foundModule = resolveModule(cleanPath, modules, directories);
@@ -50,10 +50,10 @@ export const getModulePath = (
 ) => {
   const module = findById(modules, id);
 
-  if (!module) return "";
+  if (!module) return '';
 
   let directory = findByShortid(directories, module.directoryShortid);
-  let path = "/";
+  let path = '/';
   while (directory != null) {
     path = `/${directory.title}${path}`;
     directory = findByShortid(directories, directory.directoryShortid);

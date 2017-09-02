@@ -8,11 +8,11 @@
  */
 
 // @flow
-import StackFrame from "./stack-frame";
-import { getSourceMap } from "./getSourceMap";
-import { getCurrentManager } from "../../";
-import { getLinesAround } from "./getLinesAround";
-import { settle } from "settle-promise";
+import StackFrame from './stack-frame';
+import { getSourceMap } from './getSourceMap';
+import { getCurrentManager } from '../../';
+import { getLinesAround } from './getLinesAround';
+import { settle } from 'settle-promise';
 
 /**
  * Enhances a set of <code>StackFrame</code>s with their original positions and code (when available).
@@ -38,7 +38,7 @@ async function map(
   await settle(
     files.map(async fileName => {
       const manager = getCurrentManager();
-      if (manager != null && !fileName.startsWith("webpack")) {
+      if (manager != null && !fileName.startsWith('webpack')) {
         const transpiledModule = manager.resolveTranspiledModule(
           `./${fileName}`
         );

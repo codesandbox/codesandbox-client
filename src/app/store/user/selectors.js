@@ -1,4 +1,4 @@
-import { createSelector } from "reselect";
+import { createSelector } from 'reselect';
 
 export const currentUserSelector = state => state.user;
 export const jwtSelector = state => state.user.jwt;

@@ -8,7 +8,7 @@
  */
 
 //@flow
-import { SourceMapConsumer } from "source-map";
+import { SourceMapConsumer } from 'source-map';
 
 /**
  * A wrapped instance of a <code>{@link https://github.com/mozilla/source-map SourceMapConsumer}</code>.
@@ -34,10 +34,10 @@ export class SourceMap {
     const {
       line: l,
       column: c,
-      source: s
+      source: s,
     } = this.__source_map.originalPositionFor({
       line,
-      column
+      column,
     });
     return { line: l, column: c, source: s };
   }
@@ -56,11 +56,11 @@ export class SourceMap {
     const { line: l, column: c } = this.__source_map.generatedPositionFor({
       source,
       line,
-      column
+      column,
     });
     return {
       line: l,
-      column: c
+      column: c,
     };
   }
 
@@ -103,12 +103,12 @@ async function getSourceMap(
   fileContents: string
 ): Promise<SourceMap> {
   let sm = await extractSourceMapUrl(fileUri, fileContents);
-  if (sm.indexOf("data:") === 0) {
+  if (sm.indexOf('data:') === 0) {
     const base64 = /^data:application\/json;([\w=:"-]+;)*base64,/;
     const match2 = sm.match(base64);
     if (!match2) {
       throw new Error(
-        "Sorry, non-base64 inline source-map encoding is not supported."
+        'Sorry, non-base64 inline source-map encoding is not supported.'
       );
     }
     sm = sm.substring(match2[0].length);
@@ -116,7 +116,7 @@ async function getSourceMap(
     sm = JSON.parse(sm);
     return new SourceMap(new SourceMapConsumer(sm));
   } else {
-    const index = fileUri.lastIndexOf("/");
+    const index = fileUri.lastIndexOf('/');
     const url = fileUri.substring(0, index + 1) + sm;
     const obj = await fetch(url).then(res => res.json());
     return new SourceMap(new SourceMapConsumer(obj));
