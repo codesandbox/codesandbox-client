@@ -388,15 +388,28 @@ class ShareView extends React.PureComponent {
                   <ButtonName>Links</ButtonName>
                   <Inputs>
                     <LinkName>Editor url</LinkName>
-                    <input onFocus={this.select} value={this.getEditorUrl()} />
+                    <input
+                      onFocus={this.select}
+                      value={this.getEditorUrl()}
+                      readOnly
+                    />
                     <LinkName>Fullscreen url</LinkName>
-                    <input onFocus={this.select} value={this.getEmbedUrl()} />
+                    <input
+                      onFocus={this.select}
+                      value={this.getEmbedUrl()}
+                      readOnly
+                    />
                     <LinkName>Embed url (Medium/Embedly)</LinkName>
-                    <input onFocus={this.select} value={this.getEditorUrl()} />
+                    <input
+                      onFocus={this.select}
+                      value={this.getEditorUrl()}
+                      readOnly
+                    />
                     <LinkName>iframe</LinkName>
                     <textarea
                       onFocus={this.select}
                       value={this.getIframeScript()}
+                      readOnly
                     />
                   </Inputs>
                 </Column>
@@ -415,12 +428,14 @@ class ShareView extends React.PureComponent {
                     <textarea
                       onFocus={this.select}
                       value={this.getButtonMarkdown()}
+                      readOnly
                     />
 
                     <LinkName>HTML</LinkName>
                     <textarea
                       onFocus={this.select}
                       value={this.getButtonHTML()}
+                      readOnly
                     />
                   </Inputs>
                 </Column>
