@@ -177,6 +177,7 @@ function addMiddleware(devServer, index) {
       // If this heuristic doesn’t work well for you, don’t use `proxy`.
       htmlAcceptHeaders: ['text/html'],
       index,
+      rewrites: [{ from: /\/embed/, to: '/embed.html' }],
     })
   );
   if (process.env.LOCAL_SERVER) {
