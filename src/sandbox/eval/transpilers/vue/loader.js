@@ -95,12 +95,12 @@ export default function(code: string, loaderContext: LoaderContext) {
         }
         if (moduleName in cssModules) {
           loaderContext.emitError(
-            'CSS module name "' + moduleName + '" is not unique!',
+            'CSS module name "' + moduleName + '" is not unique!'
           );
           styleInjectionCode += invokeStyle(requireLocation);
         } else {
           styleInjectionCode += invokeStyle(
-            'this["' + moduleName + '"] = ' + requireString,
+            'this["' + moduleName + '"] = ' + requireString
           );
         }
       } else {
@@ -114,7 +114,7 @@ export default function(code: string, loaderContext: LoaderContext) {
   loaderContext.emitModule(
     // No extension, so no transpilation !noop
     '!noop-loader!component-normalizer.js',
-    componentNormalizerRaw,
+    componentNormalizerRaw
   );
 
   output +=
@@ -217,9 +217,9 @@ export default function(code: string, loaderContext: LoaderContext) {
   function getTemplateRequire(templateCompilerOptions, impt) {
     const tModule = loaderContext.emitModule(
       `!vue-template-compiler${templateCompilerOptions}!${moduleTitle}:template.vue.${getTemplateFileName(
-        impt.attrs,
+        impt.attrs
       )}`,
-      impt.content,
+      impt.content
     );
 
     return `${tModule.query}!./${tModule.module.title}`;
@@ -228,7 +228,7 @@ export default function(code: string, loaderContext: LoaderContext) {
   function getRequire(type, impt, i = 0, scoped) {
     if (type === 'style') {
       var styleCompiler = `${getStyleLoaders(
-        impt.attrs,
+        impt.attrs
       )}!vue-style-compiler?${JSON.stringify({
         id: moduleId,
         scoped: !!scoped,
@@ -240,7 +240,7 @@ export default function(code: string, loaderContext: LoaderContext) {
     } else if (type === 'script') {
       const tModule = loaderContext.emitModule(
         `${moduleTitle}:script.${getScriptFileName(impt.attrs)}`,
-        impt.content,
+        impt.content
       );
 
       return `./${tModule.module.title}`;

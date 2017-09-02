@@ -87,10 +87,9 @@ class Showcase extends React.PureComponent<Props, $FlowFixMeState> {
       return (
         <Centered vertical horizontal>
           <Margin top={4}>
-            {!id &&
-              <ErrorTitle>
-                This user doesn{"'"}t have a sandbox yet
-              </ErrorTitle>}
+            {!id && (
+              <ErrorTitle>This user doesn{"'"}t have a sandbox yet</ErrorTitle>
+            )}
           </Margin>
         </Centered>
       );
@@ -100,12 +99,13 @@ class Showcase extends React.PureComponent<Props, $FlowFixMeState> {
     return (
       <Column alignItems="center">
         <Margin top={1}>
-          {isCurrentUser &&
+          {isCurrentUser && (
             <Button small onClick={this.openModal}>
               Change Sandbox
-            </Button>}
+            </Button>
+          )}
         </Margin>
-        {!loading &&
+        {!loading && (
           <Margin top={2} style={{ width: '100%' }}>
             <Column alignItems="initial">
               <div style={{ flex: 2 }}>
@@ -122,7 +122,8 @@ class Showcase extends React.PureComponent<Props, $FlowFixMeState> {
                 />
               </div>
             </Column>
-          </Margin>}
+          </Margin>
+        )}
       </Column>
     );
   }

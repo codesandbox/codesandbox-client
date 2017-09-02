@@ -23,7 +23,7 @@ export function createSuggestions(error: SandboxError) {
       'onmouseout',
       `this.style.backgroundColor="${suggestionsButtonStyle[
         'background-color'
-      ]}"`,
+      ]}"`
     );
     applyStyles(button, suggestionsButtonStyle);
 

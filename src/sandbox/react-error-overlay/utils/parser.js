@@ -13,13 +13,16 @@ import StackFrame from './stack-frame';
 const regexExtractLocation = /\(?(.+?)(?::(\d+))?(?::(\d+))?\)?$/;
 
 function extractLocation(token: string): [string, number, number] {
-  return regexExtractLocation.exec(token).slice(1).map(v => {
-    const p = Number(v);
-    if (!isNaN(p)) {
-      return p;
-    }
-    return v;
-  });
+  return regexExtractLocation
+    .exec(token)
+    .slice(1)
+    .map(v => {
+      const p = Number(v);
+      if (!isNaN(p)) {
+        return p;
+      }
+      return v;
+    });
 }
 
 const regexValidFrame_Chrome = /^\s*(at|in)\s.+(:\d+)/;
@@ -28,7 +31,7 @@ const regexValidFrame_FireFox = /(^|@)\S+:\d+|.+line\s+\d+\s+>\s+(eval|Function)
 function parseStack(stack: string[]): StackFrame[] {
   const frames = stack
     .filter(
-      e => regexValidFrame_Chrome.test(e) || regexValidFrame_FireFox.test(e),
+      e => regexValidFrame_Chrome.test(e) || regexValidFrame_FireFox.test(e)
     )
     .map(e => {
       if (regexValidFrame_FireFox.test(e)) {
@@ -37,7 +40,7 @@ function parseStack(stack: string[]): StackFrame[] {
         if (/ > (eval|Function)/.test(e)) {
           e = e.replace(
             / line (\d+)(?: > eval line \d+)* > (eval|Function):\d+:\d+/g,
-            ':$1',
+            ':$1'
           );
           isEval = true;
         }
@@ -45,7 +48,7 @@ function parseStack(stack: string[]): StackFrame[] {
         const last = data.pop();
         return new StackFrame(
           data.join('@') || (isEval ? 'eval' : null),
-          ...extractLocation(last),
+          ...extractLocation(last)
         );
       } else {
         // Strip eval, we don't care about it
@@ -55,7 +58,10 @@ function parseStack(stack: string[]): StackFrame[] {
         if (e.indexOf('(at ') !== -1) {
           e = e.replace(/\(at /, '(');
         }
-        const data = e.trim().split(/\s+/g).slice(1);
+        const data = e
+          .trim()
+          .split(/\s+/g)
+          .slice(1);
         const last = data.pop();
         return new StackFrame(data.join(' ') || null, ...extractLocation(last));
       }

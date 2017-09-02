@@ -47,7 +47,7 @@ const TermsContainer = styled.div`
   border-top: 1px solid rgba(0, 0, 0, 0.3);
   padding: 1rem;
   color: rgba(255, 255, 255, 0.6);
-  font-size: .75rem;
+  font-size: 0.75rem;
 `;
 
 type Props = {
@@ -67,7 +67,7 @@ const mapStateToProps = createSelector(
     preventTransition,
     user: users[author],
     isPatron,
-  }),
+  })
 );
 
 const mapDispatchToProps = dispatch => ({
@@ -80,7 +80,7 @@ const Workspace = ({
   preventTransition,
   sandboxActions,
   isPatron,
-}: Props) =>
+}: Props) => (
   <ThemeProvider
     theme={{
       templateColor: getTemplateDefinition(sandbox.template).color,
@@ -126,7 +126,7 @@ const Workspace = ({
           />
         </WorkspaceItem>
 
-        {(sandbox.owned || sandbox.tags.length > 0) &&
+        {(sandbox.owned || sandbox.tags.length > 0) && (
           <WorkspaceItem title="Tags">
             <Tags
               sandboxId={sandbox.id}
@@ -135,9 +135,10 @@ const Workspace = ({
               isOwner={sandbox.owned}
               tags={sandbox.tags}
             />
-          </WorkspaceItem>}
+          </WorkspaceItem>
+        )}
 
-        {sandbox.owned &&
+        {sandbox.owned && (
           <WorkspaceItem title="Sandbox Actions">
             <SandboxActions
               id={sandbox.id}
@@ -147,7 +148,8 @@ const Workspace = ({
               isPatron={isPatron}
               privacy={sandbox.privacy}
             />
-          </WorkspaceItem>}
+          </WorkspaceItem>
+        )}
       </div>
 
       <div>
@@ -159,11 +161,12 @@ const Workspace = ({
         </TermsContainer>
       </div>
     </Container>
-  </ThemeProvider>;
+  </ThemeProvider>
+);
 
 // The skeleton to show if sandbox doesn't exist
 const Skeleton = () => <Container />;
 
 export default showAlternativeComponent(Skeleton, ['sandbox'])(
-  connect(mapStateToProps, mapDispatchToProps)(Workspace),
+  connect(mapStateToProps, mapDispatchToProps)(Workspace)
 );

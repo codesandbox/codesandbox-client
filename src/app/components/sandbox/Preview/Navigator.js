@@ -74,7 +74,7 @@ export default ({
   isProjectView,
   toggleProjectView,
   openNewWindow,
-}: Props) =>
+}: Props) => (
   <Container>
     <Icons>
       <Icon disabled={!onBack} onClick={onBack}>
@@ -90,11 +90,12 @@ export default ({
     <AddressBarContainer>
       <AddressBar url={url} onChange={onChange} onConfirm={onConfirm} />
     </AddressBarContainer>
-    {openNewWindow &&
+    {openNewWindow && (
       <Icon style={{ marginRight: '0.75rem' }} onClick={openNewWindow}>
         <ExternalIcon />
-      </Icon>}
-    {toggleProjectView &&
+      </Icon>
+    )}
+    {toggleProjectView && (
       <SwitchContainer>
         <Tooltip
           title={isProjectView ? 'Project View' : 'Current Module View'}
@@ -102,5 +103,7 @@ export default ({
         >
           <Switch right={isProjectView} onClick={toggleProjectView} />
         </Tooltip>
-      </SwitchContainer>}
-  </Container>;
+      </SwitchContainer>
+    )}
+  </Container>
+);

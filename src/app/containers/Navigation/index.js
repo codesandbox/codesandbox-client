@@ -18,9 +18,7 @@ import PatronBadge from '-!svg-react-loader!app/utils/badges/svg/patron-4.svg'; 
 
 import UserMenu from '../UserMenu';
 
-const LogoWithBorder = styled(Logo)`
-  padding-right: 1rem;
-`;
+const LogoWithBorder = styled(Logo)`padding-right: 1rem;`;
 
 const Border = styled.hr`
   display: inline-block;
@@ -89,23 +87,22 @@ class Navigation extends React.PureComponent<Props> {
             <LogoWithBorder height={40} width={40} />
           </a>
           <Border width={1} size={500} />
-          <Title>
-            {title}
-          </Title>
+          <Title>{title}</Title>
         </Row>
         <Row>
           <Actions>
             <Action>
               <HeaderSearchBar />
             </Action>
-            {!isPatron &&
+            {!isPatron && (
               <Action>
                 <Tooltip position="bottom" title="Support CodeSandbox">
                   <Link to={patronUrl()}>
                     <PatronBadge width={40} height={40} />
                   </Link>
                 </Tooltip>
-              </Action>}
+              </Action>
+            )}
             <Action>
               <Tooltip title="New Sandbox">
                 <PlusIcon to={newSandboxUrl()}>+</PlusIcon>

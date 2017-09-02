@@ -37,14 +37,14 @@ class BadgesContent extends React.PureComponent<{
           You can click on the badges to toggle visibility.
         </strong>
         <Margin top={2}>
-          {user.badges.map(b =>
+          {user.badges.map(b => (
             <Badge
               tooltip={false}
               onClick={this.toggleVisibility}
               badge={b}
               size={128}
-            />,
-          )}
+            />
+          ))}
         </Margin>
       </div>
     );

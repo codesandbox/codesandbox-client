@@ -27,7 +27,7 @@ type Props = {
 const mapStateToProps = createSelector(
   modulesFromSandboxSelector,
   directoriesFromSandboxSelector,
-  (modules, directories) => ({ modules, directories }),
+  (modules, directories) => ({ modules, directories })
 );
 class Files extends React.PureComponent<Props> {
   deleteModule = id => {
@@ -54,7 +54,7 @@ class Files extends React.PureComponent<Props> {
       modules,
       directories,
       currentModuleId,
-      mainModule,
+      mainModule
     );
 
     return (

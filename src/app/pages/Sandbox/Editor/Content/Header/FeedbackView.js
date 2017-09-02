@@ -18,7 +18,7 @@ const MessageView = styled.div`
   right: 0;
   z-index: 2;
   border-radius: 4px;
-  font-size: .875rem;
+  font-size: 0.875rem;
 
   color: rgba(255, 255, 255, 0.8);
   padding: 1rem;
@@ -75,7 +75,7 @@ export default class FeedbackView extends React.PureComponent {
             tooltip: 'Give feedback',
           }}
         >
-          {toggle =>
+          {toggle => (
             <MessageView>
               <h3>Send feedback</h3>
               <textarea
@@ -85,7 +85,8 @@ export default class FeedbackView extends React.PureComponent {
                 onChange={this.handleChange}
               />
               <Button onClick={this.handleSend(toggle)}>Send</Button>
-            </MessageView>}
+            </MessageView>
+          )}
         </HoverMenu>
       </Container>
     );

@@ -20,10 +20,11 @@ const SubTitle = styled.div`
   text-align: center;
 `;
 
-export default ({ color, price }: { color: string, price: number }) =>
+export default ({ color, price }: { color: string, price: number }) => (
   <Margin bottom={2}>
     <Title color={color}>Awesome!</Title>
     <SubTitle>
       Thank you <strong>so</strong> much for your support of ${price}!
     </SubTitle>
-  </Margin>;
+  </Margin>
+);

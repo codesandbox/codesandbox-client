@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default () =>
+export default () => (
   <div>
     <h1 id="ppHeader">CodeSandbox Privacy Policy</h1>
     <div id="ppBody">
@@ -404,4 +404,5 @@ export default () =>
     <div className="innerText">
       <br />Last Edited on 2017-07-19
     </div>
-  </div>;
+  </div>
+);

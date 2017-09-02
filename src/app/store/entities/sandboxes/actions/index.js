@@ -21,23 +21,23 @@ export const UPDATE_SANDBOX_API_ACTIONS = createAPIActions('SANDBOX', 'UPDATE');
 
 export const UPDATE_NPM_DEPENDENCY_ACTIONS = createAPIActions(
   'SANDBOX',
-  'UPDATE_NPM_DEPENDENCY',
+  'UPDATE_NPM_DEPENDENCY'
 );
 export const DELETE_NPM_DEPENDENCY_ACTIONS = createAPIActions(
   'SANDBOX',
-  'DELETE_NPM_DEPENDENCY',
+  'DELETE_NPM_DEPENDENCY'
 );
 export const ADD_EXTERNAL_RESOURCE_ACTIONS = createAPIActions(
   'SANDBOX',
-  'ADD_EXTERNAL_RESOURCE',
+  'ADD_EXTERNAL_RESOURCE'
 );
 export const DELETE_EXTERNAL_RESOURCE_ACTIONS = createAPIActions(
   'SANDBOX',
-  'DELETE_EXTERNAL_RESOURCE',
+  'DELETE_EXTERNAL_RESOURCE'
 );
 export const SET_SANDBOX_PRIVACY_ACTIONS = createAPIActions(
   'SANDBOX',
-  'PRIVACY',
+  'PRIVACY'
 );
 export const ADD_TAG_ACTIONS = createAPIActions('SANDBOX', 'ADD_TAG');
 export const REMOVE_TAG_ACTIONS = createAPIActions('SANDBOX', 'REMOVE_TAG');
@@ -57,7 +57,7 @@ export const FORCE_RENDER = 'FORCE_RENDER';
 export default {
   updateSandboxInfo: (id: string, title: string, description: string) => async (
     dispatch: Function,
-    getState: Function,
+    getState: Function
   ) => {
     const sandboxId = await dispatch(maybeForkSandbox(id));
     const {
@@ -78,7 +78,7 @@ export default {
             sandbox: { title, description },
           },
           method: 'PUT',
-        }),
+        })
       );
     } catch (e) {
       dispatch({
@@ -112,7 +112,7 @@ export default {
 
   getById: (id: string) => async (dispatch: Function) => {
     const { data } = await dispatch(
-      doRequest(SINGLE_SANDBOX_API_ACTIONS, `sandboxes/${id}`),
+      doRequest(SINGLE_SANDBOX_API_ACTIONS, `sandboxes/${id}`)
     );
 
     dispatch(normalizeResult(entity, data));
@@ -125,7 +125,7 @@ export default {
       doRequest(CREATE_SANDBOX_API_ACTIONS, `sandboxes`, {
         method: 'POST',
         body: { sandbox: {} },
-      }),
+      })
     );
 
     await dispatch(normalizeResult(entity, data));
@@ -137,7 +137,7 @@ export default {
 
   addTag: (id: string, tag: string) => async (
     dispatch: Function,
-    getState: Function,
+    getState: Function
   ) => {
     const sandboxId = await dispatch(maybeForkSandbox(id));
 
@@ -157,7 +157,7 @@ export default {
           body: {
             tag,
           },
-        }),
+        })
       );
       dispatch({
         type: SET_TAGS,
@@ -176,7 +176,7 @@ export default {
 
   removeTag: (id: string, tag: string) => async (
     dispatch: Function,
-    getState: Function,
+    getState: Function
   ) => {
     const sandboxId = await dispatch(maybeForkSandbox(id));
 
@@ -193,7 +193,7 @@ export default {
       const result = await dispatch(
         doRequest(REMOVE_TAG_ACTIONS, `sandboxes/${sandboxId}/tags/${tag}`, {
           method: 'DELETE',
-        }),
+        })
       );
       dispatch({
         type: SET_TAGS,
@@ -211,7 +211,7 @@ export default {
   },
 
   addNPMDependency: (id: string, dependency: string, version: string) => async (
-    dispatch: Function,
+    dispatch: Function
   ) => {
     const sandboxId = await dispatch(maybeForkSandbox(id));
     const result = await dispatch(
@@ -226,8 +226,8 @@ export default {
               version,
             },
           },
-        },
-      ),
+        }
+      )
     );
 
     dispatch({
@@ -238,7 +238,7 @@ export default {
   },
 
   removeNPMDependency: (id: string, dependency: string) => async (
-    dispatch: Function,
+    dispatch: Function
   ) => {
     const sandboxId = await dispatch(maybeForkSandbox(id));
 
@@ -248,8 +248,8 @@ export default {
         `sandboxes/${sandboxId}/dependencies/${dependency}`,
         {
           method: 'DELETE',
-        },
-      ),
+        }
+      )
     );
 
     dispatch({
@@ -260,7 +260,7 @@ export default {
   },
 
   addExternalResource: (id: string, resource: string) => async (
-    dispatch: Function,
+    dispatch: Function
   ) => {
     const sandboxId = await dispatch(maybeForkSandbox(id));
     const result = await dispatch(
@@ -272,8 +272,8 @@ export default {
           body: {
             external_resource: resource,
           },
-        },
-      ),
+        }
+      )
     );
 
     dispatch({
@@ -284,7 +284,7 @@ export default {
   },
 
   removeExternalResource: (id: string, resource: string) => async (
-    dispatch: Function,
+    dispatch: Function
   ) => {
     const sandboxId = await dispatch(maybeForkSandbox(id));
     const result = await dispatch(
@@ -296,8 +296,8 @@ export default {
           body: {
             id: resource,
           },
-        },
-      ),
+        }
+      )
     );
 
     dispatch({
@@ -321,7 +321,7 @@ export default {
     createZip.default(
       sandbox,
       sandbox.modules.map(x => modules[x]),
-      sandbox.directories.map(x => directories[x]),
+      sandbox.directories.map(x => directories[x])
     );
   },
 
@@ -332,7 +332,7 @@ export default {
         body: {
           id,
         },
-      }),
+      })
     );
 
     dispatch(notificationActions.addNotification('Deleted Sandbox', 'success'));
@@ -349,7 +349,7 @@ export default {
         body: {
           id,
         },
-      }),
+      })
     );
   },
 
@@ -360,13 +360,13 @@ export default {
         body: {
           id,
         },
-      }),
+      })
     );
   },
 
   setSandboxPrivacy: (id: string, privacy: number) => async (
     dispatch: Function,
-    getState: Function,
+    getState: Function
   ) => {
     const oldPrivacy = singleSandboxSelector(getState(), { id });
     dispatch({
@@ -384,7 +384,7 @@ export default {
               privacy,
             },
           },
-        }),
+        })
       );
       return result;
     } catch (e) {

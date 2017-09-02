@@ -128,16 +128,12 @@ class ModalContainer extends React.PureComponent {
         style={this.getStyles(modal.width, modal.top)}
         closeTimeoutMS={CLOSE_TIMEOUT_MS}
       >
-        {modal.open &&
+        {modal.open && (
           <BaseModal>
-            {modal.title &&
-              <ModalTitle>
-                {modal.title}
-              </ModalTitle>}
-            <ModalBody>
-              {modal.Body}
-            </ModalBody>
-          </BaseModal>}
+            {modal.title && <ModalTitle>{modal.title}</ModalTitle>}
+            <ModalBody>{modal.Body}</ModalBody>
+          </BaseModal>
+        )}
       </Modal>
     );
   }

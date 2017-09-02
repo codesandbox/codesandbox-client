@@ -29,7 +29,7 @@ class TypeScriptTranspiler extends WorkerTranspiler {
           }
 
           return resolve(data);
-        },
+        }
       );
     });
   }

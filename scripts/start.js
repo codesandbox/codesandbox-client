@@ -2,7 +2,6 @@
 process.env.NODE_ENV = 'development';
 
 var express = require('express');
-var path = require('path');
 var chalk = require('chalk');
 var webpack = require('webpack');
 var WebpackDevServer = require('webpack-dev-server');
@@ -12,10 +11,8 @@ var opn = require('opn');
 var http = require('http');
 var proxy = require('http-proxy-middleware');
 var httpProxy = require('http-proxy');
-var prompt = require('./utils/prompt');
 var config = require('../config/webpack.dev');
 var paths = require('../config/paths');
-var env = require('../config/env');
 
 // Tools like Cloud9 rely on this.
 var DEFAULT_PORT = process.env.PORT || 3000;
@@ -151,7 +148,7 @@ function openBrowser(port, protocol) {
       execSync('ps cax | grep "Google Chrome"');
       execSync('osascript chrome.applescript ' + url, {
         cwd: path.join(__dirname, 'utils'),
-        stdio: 'ignore'
+        stdio: 'ignore',
       });
       return;
     } catch (err) {
@@ -164,6 +161,13 @@ function openBrowser(port, protocol) {
 }
 
 function addMiddleware(devServer, index) {
+  devServer.use(function(req, res, next) {
+    if (req.url === '/') {
+      req.url = '/homepage';
+    }
+    next();
+  });
+  devServer.use('/homepage', express.static(paths.homepageSrc));
   devServer.use(
     historyApiFallback({
       // Allow paths with dots in them to be loaded, reference issue #387
@@ -176,7 +180,8 @@ function addMiddleware(devServer, index) {
       // However API calls like `fetch()` won’t generally won’t accept text/html.
       // If this heuristic doesn’t work well for you, don’t use `proxy`.
       htmlAcceptHeaders: ['text/html'],
-      index
+      index,
+      rewrites: [{ from: /\/embed/, to: '/embed.html' }],
     })
   );
   if (process.env.LOCAL_SERVER) {
@@ -207,13 +212,14 @@ function runDevServer(port, protocol, index) {
     // Reportedly, this avoids CPU overload on some systems.
     // https://github.com/facebookincubator/create-react-app/issues/293
     watchOptions: {
-      ignored: /node_modules/
+      ignored: /node_modules/,
     },
     // Enable HTTPS if the HTTPS environment variable is set to 'true'
     https: protocol === 'https',
     // contentBase: paths.staticPath,
     host: process.env.LOCAL_SERVER ? 'localhost' : 'codesandbox.dev',
-    disableHostCheck: !process.env.LOCAL_SERVER
+    disableHostCheck: !process.env.LOCAL_SERVER,
+    contentBase: false,
   });
 
   // Our custom middleware proxies requests to /index.html or a remote API.
@@ -245,7 +251,7 @@ function run(port) {
         } else {
           proxy.web(req, res, {
             target: 'http://localhost:3000/frame.html',
-            ignorePath: true
+            ignorePath: true,
           });
         }
       })

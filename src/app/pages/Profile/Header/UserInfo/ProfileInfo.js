@@ -55,17 +55,19 @@ type Props = {
   subscriptionSince: ?string,
 };
 
-export default ({ username, subscriptionSince, name, avatarUrl }: Props) =>
+export default ({ username, subscriptionSince, name, avatarUrl }: Props) => (
   <Row style={{ flex: 1 }}>
     <ProfileImage alt={username} height={175} width={175} src={avatarUrl} />
     <Margin bottom={3}>
       <Column justifyContent="space-between">
-        {name &&
+        {name && (
           <Name>
             {name}
-            {subscriptionSince &&
-              <PatronStar subscriptionSince={subscriptionSince} />}
-          </Name>}
+            {subscriptionSince && (
+              <PatronStar subscriptionSince={subscriptionSince} />
+            )}
+          </Name>
+        )}
         <Username main={!name}>
           {username}
           <a
@@ -78,4 +80,5 @@ export default ({ username, subscriptionSince, name, avatarUrl }: Props) =>
         </Username>
       </Column>
     </Margin>
-  </Row>;
+  </Row>
+);

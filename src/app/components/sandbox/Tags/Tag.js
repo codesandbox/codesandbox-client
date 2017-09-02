@@ -7,7 +7,7 @@ const Container = styled.span`
   position: relative;
   color: white;
   background-color: ${props => props.theme.secondary};
-  padding: .3em .5em;
+  padding: 0.3em 0.5em;
   border-radius: 4px;
   font-weight: 500;
 
@@ -17,7 +17,7 @@ const Container = styled.span`
 const DeleteIcon = styled(CrossIcon)`
   transition: 0.3s ease all;
   position: absolute;
-  right: .3rem;
+  right: 0.3rem;
   top: 0;
   bottom: 0;
 

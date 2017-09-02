@@ -71,7 +71,7 @@ function printFileSizes(stats, previousSizeMap) {
         folder: path.join('build', path.dirname(asset.name)),
         name: path.basename(asset.name),
         size,
-        sizeLabel: filesize(size) + (difference ? ` (${difference})` : '')
+        sizeLabel: filesize(size) + (difference ? ` (${difference})` : ''),
       };
     });
   assets.sort((a, b) => b.size - a.size);

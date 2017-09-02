@@ -41,7 +41,9 @@ const createEntityReducer = (key: string) => (state = {}, action) => {
 };
 
 d(
-  `Generating entity reducers for these entities: ${Object.keys(entities.default)}`,
+  `Generating entity reducers for these entities: ${Object.keys(
+    entities.default
+  )}`
 );
 const reducers = Object.keys(entities.default).reduce((total, next) => {
   const entity = entities.default[next];

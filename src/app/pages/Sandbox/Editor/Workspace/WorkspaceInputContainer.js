@@ -4,7 +4,7 @@ export default styled.div`
   display: inline-block;
   display: flex;
   overflow: visible;
-  font-size: .875rem;
+  font-size: 0.875rem;
   margin: 0.5rem 0.75rem;
   input,
   textarea {

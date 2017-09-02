@@ -7,11 +7,7 @@ import theme from 'common/theme';
 
 export default Component => {
   const tree = renderer
-    .create(
-      <ThemeProvider theme={theme}>
-        {Component}
-      </ThemeProvider>,
-    )
+    .create(<ThemeProvider theme={theme}>{Component}</ThemeProvider>)
     .toJSON();
   expect(tree).toMatchSnapshot();
 };

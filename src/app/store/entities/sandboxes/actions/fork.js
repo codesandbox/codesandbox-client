@@ -23,7 +23,7 @@ export const FORK_SANDBOX_API_ACTIONS = createAPIActions('SANDBOX', 'FORK');
  */
 export const getEquivalentModule = (module: Module, modules: Array<Module>) => {
   const newModule = modules.find(
-    m => m.id !== module.id && m.shortid === module.shortid,
+    m => m.id !== module.id && m.shortid === module.shortid
   );
 
   return newModule;
@@ -36,10 +36,10 @@ export const getEquivalentModule = (module: Module, modules: Array<Module>) => {
  */
 export const getEquivalentDirectory = (
   directory: Directory,
-  directories: Array<Directory>,
+  directories: Array<Directory>
 ) => {
   const newDirectory = directories.find(
-    d => d.id !== directory.id && d.shortid === directory.shortid,
+    d => d.id !== directory.id && d.shortid === directory.shortid
   );
 
   return newDirectory;
@@ -47,12 +47,12 @@ export const getEquivalentDirectory = (
 
 export const forkSandbox = (id: string) => async (
   dispatch: Function,
-  getState: Function,
+  getState: Function
 ) => {
   const { data } = await dispatch(
     doRequest(FORK_SANDBOX_API_ACTIONS, `sandboxes/${id}/fork`, {
       method: 'POST',
-    }),
+    })
   );
 
   const currentSandbox = singleSandboxSelector(getState(), { id });
@@ -63,7 +63,7 @@ export const forkSandbox = (id: string) => async (
 
   // Save the unsaved modules
   const oldModules = currentSandbox.modules.map(
-    x => modulesSelector(getState())[x],
+    x => modulesSelector(getState())[x]
   );
   await dispatch(normalizeResult(sandboxEntity, data));
 
@@ -90,7 +90,7 @@ export const forkSandbox = (id: string) => async (
  */
 export const maybeForkSandbox = (sandboxId: string) => async (
   dispatch: Function,
-  getState: Function,
+  getState: Function
 ) => {
   const sandbox = singleSandboxSelector(getState(), { id: sandboxId });
   if (sandbox.owned) {

@@ -15,7 +15,7 @@ self.postMessage('ready');
 declare var Babel: {
   transform: (
     code: string,
-    config: Object,
+    config: Object
   ) => {
     ast: Object,
     code: string,

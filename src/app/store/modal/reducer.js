@@ -11,7 +11,7 @@ const initialState: Modal = {
 
 export default function(
   state: Modal = initialState,
-  action: { type: string, [key: string]: any },
+  action: { type: string, [key: string]: any }
 ) {
   switch (action.type) {
     case OPEN_MODAL:

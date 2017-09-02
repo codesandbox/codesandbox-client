@@ -18,9 +18,7 @@ import Preferences from 'app/containers/Preferences';
 
 import UserMenu from './UserMenu';
 
-const ClickableContainer = styled(Row)`
-  cursor: pointer;
-`;
+const ClickableContainer = styled(Row)`cursor: pointer;`;
 
 const ProfileImage = styled.img`border-radius: 2px;`;
 
@@ -91,13 +89,8 @@ class User extends React.PureComponent<Props, $FlowFixMeState> {
       <Relative>
         <ClickableContainer onClick={menuOpen ? this.closeMenu : this.openMenu}>
           <ProfileInfo>
-            {user.name &&
-              <Name>
-                {user.name}
-              </Name>}
-            <Username main={!user.name}>
-              {user.username}
-            </Username>
+            {user.name && <Name>{user.name}</Name>}
+            <Username main={!user.name}>{user.username}</Username>
           </ProfileInfo>
 
           <Tooltip title="User Menu">
@@ -109,14 +102,15 @@ class User extends React.PureComponent<Props, $FlowFixMeState> {
             />
           </Tooltip>
         </ClickableContainer>
-        {menuOpen &&
+        {menuOpen && (
           <HoverMenu onClose={this.closeMenu}>
             <UserMenu
               openPreferences={this.openPreferences}
               signOut={userActions.signOut}
               username={user.username}
             />
-          </HoverMenu>}
+          </HoverMenu>
+        )}
       </Relative>
     );
   }

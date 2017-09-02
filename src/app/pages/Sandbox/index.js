@@ -107,9 +107,7 @@ class SandboxPage extends React.PureComponent<Props, State> {
       return (
         <Centered horizontal vertical>
           <Title>An error occured when fetching the sandbox:</Title>
-          <SubTitle>
-            {this.state.error}
-          </SubTitle>
+          <SubTitle>{this.state.error}</SubTitle>
           <br />
           <br />
           <Link to="/s/new">Create Sandbox</Link>

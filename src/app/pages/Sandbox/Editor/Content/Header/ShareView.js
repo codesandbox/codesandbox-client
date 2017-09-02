@@ -51,7 +51,7 @@ const ShareOptions = styled.div`
   box-sizing: border-box;
   z-index: 2;
   border-radius: 4px;
-  font-size: .875rem;
+  font-size: 0.875rem;
 
   color: rgba(255, 255, 255, 0.8);
   padding: 1rem;
@@ -113,7 +113,7 @@ const Column = styled.div`
   flex: 100%;
 
   color: rgba(255, 255, 255, 0.8);
-  margin: 0 .75rem;
+  margin: 0 0.75rem;
 
   h4 {
     margin: 1rem 0;
@@ -141,7 +141,7 @@ const BUTTON_URL = 'https://codesandbox.io/static/img/play-codesandbox.svg';
 const mapStateToProps = createSelector(
   modulesFromSandboxSelector,
   directoriesFromSandboxSelector,
-  (modules, directories) => ({ modules, directories }),
+  (modules, directories) => ({ modules, directories })
 );
 class ShareView extends React.PureComponent {
   props: Props;
@@ -307,7 +307,7 @@ class ShareView extends React.PureComponent {
             moreInfo: true,
           }}
         >
-          {() =>
+          {() => (
             <ShareOptions>
               <h3>Share options</h3>
               <Divider>
@@ -425,7 +425,8 @@ class ShareView extends React.PureComponent {
                   </Inputs>
                 </Column>
               </Divider>
-            </ShareOptions>}
+            </ShareOptions>
+          )}
         </HoverMenu>
       </Container>
     );

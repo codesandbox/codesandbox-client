@@ -45,10 +45,11 @@ const Item = styled.div`
   ${props =>
     !props.selected &&
     css`
-  &:hover {
-    color: rgba(255, 255, 255, 0.6);
-    background-color: ${props => props.theme.background};
-  }`};
+      &:hover {
+        color: rgba(255, 255, 255, 0.6);
+        background-color: ${props => props.theme.background};
+      }
+    `};
 `;
 
 const Selector = styled.div`
@@ -61,7 +62,7 @@ const Selector = styled.div`
   border-radius: 4px;
   z-index: 0;
   background-color: ${props => props.theme.secondary};
-  box-shadow: 0 4px 6px rgba(0, 0, 0, .25);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.25);
 
   transform: translateY(${props => props.offset + 1}px);
 `;
@@ -77,7 +78,7 @@ const Icon = styled.a`
   display: inline-block;
   color: rgba(255, 255, 255, 0.4);
   font-size: 1.125rem;
-  margin-right: .5rem;
+  margin-right: 0.5rem;
 
   &:hover {
     color: rgba(255, 255, 255, 0.6);
@@ -90,11 +91,11 @@ type Props = {
   setItem: (index: number) => void,
 };
 
-export default ({ menuItems, itemIndex, setItem }: Props) =>
+export default ({ menuItems, itemIndex, setItem }: Props) => (
   <Container>
     <Title>Preferences</Title>
     <Relative style={{ height: menuItems.length * ITEM_HEIGHT }}>
-      {menuItems.map((item, i) =>
+      {menuItems.map((item, i) => (
         <Item
           onClick={() => setItem(i)}
           key={item.title}
@@ -105,8 +106,8 @@ export default ({ menuItems, itemIndex, setItem }: Props) =>
             {item.icon}
           </div>
           {item.title}
-        </Item>,
-      )}
+        </Item>
+      ))}
       <Selector offset={itemIndex * ITEM_HEIGHT} />
     </Relative>
 
@@ -126,4 +127,5 @@ export default ({ menuItems, itemIndex, setItem }: Props) =>
         <GithubIcon />
       </Icon>
     </SocialIcons>
-  </Container>;
+  </Container>
+);

@@ -71,20 +71,18 @@ export default class Preference extends React.Component {
   render() {
     const { title, className, value, tooltip } = this.props;
 
-    const Title = tooltip
-      ? <Tooltip position="right" title={tooltip}>
-          {title}
-        </Tooltip>
-      : <span>
-          {title}
-        </span>;
+    const Title = tooltip ? (
+      <Tooltip position="right" title={tooltip}>
+        {title}
+      </Tooltip>
+    ) : (
+      <span>{title}</span>
+    );
 
     return (
       <Container className={className}>
         {Title}
-        <div>
-          {this.getOptionComponent(value)}
-        </div>
+        <div>{this.getOptionComponent(value)}</div>
       </Container>
     );
   }

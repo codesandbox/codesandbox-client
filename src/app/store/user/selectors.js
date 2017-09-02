@@ -6,9 +6,9 @@ export const userIdSelector = state => state.user.id;
 export const loggedInSelector = state => !!jwtSelector(state);
 export const isPatronSelector = createSelector(
   currentUserSelector,
-  user => user.subscription && user.subscription.since,
+  user => user.subscription && user.subscription.since
 );
 export const badgesSelector = createSelector(
   currentUserSelector,
-  user => user.badges,
+  user => user.badges
 );

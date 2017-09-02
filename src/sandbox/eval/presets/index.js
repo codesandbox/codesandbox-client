@@ -10,7 +10,7 @@ export type TranspiledModule = Module & {
 
 type TranspilerDefinition = {
   transpiler: Transpiler,
-  config?: Object,
+  options: ?Object,
 };
 
 /**
@@ -37,7 +37,7 @@ export default class Preset {
   constructor(
     name: string,
     ignoredExtensions: ?Array<string>,
-    alias: { [path: string]: string },
+    alias: { [path: string]: string }
   ) {
     this.loaders = [];
     this.transpilers = new Set();
@@ -72,7 +72,7 @@ export default class Preset {
 
   registerTranspiler(
     test: (module: Module) => boolean,
-    transpilers: Array<TranspilerDefinition>,
+    transpilers: Array<TranspilerDefinition>
   ) {
     this.loaders.push({
       test,
@@ -104,7 +104,7 @@ export default class Preset {
         const [name, options] = loaderName.split('?');
 
         const transpiler = Array.from(this.transpilers).find(
-          t => t.name === name,
+          t => t.name === name
         );
 
         if (!transpiler) {

@@ -23,15 +23,15 @@ export const Subheading = styled.div`
 export const PreferenceContainer = styled.div`padding-top: 0.5rem;`;
 
 export const PaddedPreference = styled(Preference)`
-padding: 0;
-font-weight: 400;
+  padding: 0;
+  font-weight: 400;
 `;
 
 export const Description = styled.div`
   margin-top: 0.25rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.5);
-  font-size: .875rem;
+  font-size: 0.875rem;
 `;
 
 export const Rule = styled.hr`

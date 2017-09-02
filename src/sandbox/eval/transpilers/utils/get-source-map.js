@@ -29,7 +29,7 @@ export class SourceMap {
    */
   getOriginalPosition(
     line: number,
-    column: number,
+    column: number
   ): { source: string, line: number, column: number } {
     const {
       line: l,
@@ -51,7 +51,7 @@ export class SourceMap {
   getGeneratedPosition(
     source: string,
     line: number,
-    column: number,
+    column: number
   ): { line: number, column: number } {
     const { line: l, column: c } = this.__source_map.generatedPositionFor({
       source,
@@ -100,7 +100,7 @@ function extractSourceMapUrl(fileUri: string, fileContents: string) {
  */
 async function getSourceMap(
   fileUri: string,
-  fileContents: string,
+  fileContents: string
 ): Promise<SourceMap> {
   let sm = await extractSourceMapUrl(fileUri, fileContents);
   if (sm.indexOf('data:') === 0) {
@@ -108,7 +108,7 @@ async function getSourceMap(
     const match2 = sm.match(base64);
     if (!match2) {
       throw new Error(
-        'Sorry, non-base64 inline source-map encoding is not supported.',
+        'Sorry, non-base64 inline source-map encoding is not supported.'
       );
     }
     sm = sm.substring(match2[0].length);

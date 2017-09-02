@@ -4,7 +4,7 @@ import type { Module, Directory } from 'common/types';
 const compareTitle = (
   original: string,
   test: string,
-  ignoredExtensions: Array<string>,
+  ignoredExtensions: Array<string>
 ) => {
   if (original === test) return true;
 
@@ -19,7 +19,7 @@ export function getModulesInDirectory(
   path: ?string,
   modules: Array<Module>,
   directories: Array<Directory>,
-  startdirectoryShortid: ?string = undefined,
+  startdirectoryShortid: ?string = undefined
 ) {
   if (!path) return throwError('');
 
@@ -40,23 +40,23 @@ export function getModulesInDirectory(
 
       const directoriesInDirectory = directories.filter(
         // eslint-disable-next-line eqeqeq
-        m => m.directoryShortid == dirId,
+        m => m.directoryShortid == dirId
       );
       const nextDirectory = directoriesInDirectory.find(d =>
-        compareTitle(d.title, pathPart, []),
+        compareTitle(d.title, pathPart, [])
       );
 
       if (nextDirectory == null) throwError(path);
 
       return nextDirectory.shortid;
     },
-    startdirectoryShortid,
+    startdirectoryShortid
   );
 
   const lastPath = splitPath[splitPath.length - 1];
   const modulesInFoundDirectory = modules.filter(
     // eslint-disable-next-line eqeqeq
-    m => m.directoryShortid == foundDirectoryShortid,
+    m => m.directoryShortid == foundDirectoryShortid
   );
 
   return {
@@ -75,7 +75,7 @@ export default (
   modules: Array<Module>,
   directories: Array<Directory>,
   startdirectoryShortid: ?string = undefined,
-  ignoredExtensions: Array<string> = ['js', 'jsx', 'json'],
+  ignoredExtensions: Array<string> = ['js', 'jsx', 'json']
 ): Module => {
   const {
     modules: modulesInFoundDirectory,
@@ -86,17 +86,17 @@ export default (
 
   // Find module with same name
   const foundModule = modulesInFoundDirectory.find(m =>
-    compareTitle(m.title, lastPath, ignoredExtensions),
+    compareTitle(m.title, lastPath, ignoredExtensions)
   );
   if (foundModule) return foundModule;
 
   // Check all directories in said directory for same name
   const directoriesInFoundDirectory = directories.filter(
     // eslint-disable-next-line eqeqeq
-    m => m.directoryShortid == foundDirectoryShortid,
+    m => m.directoryShortid == foundDirectoryShortid
   );
   const foundDirectory = directoriesInFoundDirectory.find(m =>
-    compareTitle(m.title, lastPath, ignoredExtensions),
+    compareTitle(m.title, lastPath, ignoredExtensions)
   );
 
   // If it refers to a directory
@@ -106,7 +106,7 @@ export default (
       m =>
         // eslint-disable-next-line eqeqeq
         m.directoryShortid == foundDirectory.shortid &&
-        compareTitle(m.title, 'index', ignoredExtensions),
+        compareTitle(m.title, 'index', ignoredExtensions)
     );
     if (indexModule == null) throwError(path);
     return indexModule;
@@ -115,7 +115,7 @@ export default (
   if (splitPath[splitPath.length - 1] === '') {
     // Last resort, check if there is something in the same folder called index
     const indexModule = modulesInFoundDirectory.find(m =>
-      compareTitle(m.title, 'index', ignoredExtensions),
+      compareTitle(m.title, 'index', ignoredExtensions)
     );
     if (indexModule) return indexModule;
   }

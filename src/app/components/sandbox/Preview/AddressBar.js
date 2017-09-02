@@ -12,7 +12,7 @@ const InputContainer = styled.div`
     border-radius: 4px;
     outline: none;
     border: 1px solid #ccc;
-    padding: 0.2rem .5rem;
+    padding: 0.2rem 0.5rem;
     color: black;
     width: 100%;
     color: rgba(0, 0, 0, 0.8);

@@ -5,7 +5,7 @@ import Question from 'react-icons/lib/go/question';
 import Prettier from './Prettier';
 import Title from '../MenuTitle';
 
-export default () =>
+export default () => (
   <div>
     <Title>
       Prettier Settings{' '}
@@ -19,4 +19,5 @@ export default () =>
     </Title>
 
     <Prettier />
-  </div>;
+  </div>
+);

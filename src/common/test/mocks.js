@@ -3,7 +3,7 @@ import type { Module, Directory, Sandbox, User } from 'common/types';
 
 export function createModule(
   index: number = 0,
-  params: ?(Module & any),
+  params: ?(Module & any)
 ): Module {
   return {
     title: `test-module${index}`,
@@ -18,7 +18,7 @@ export function createModule(
 
 export function createDirectory(
   index: number = 0,
-  params: ?(Directory & any),
+  params: ?(Directory & any)
 ): Directory {
   return {
     title: `test-dir${index}`,
@@ -43,7 +43,7 @@ export function createUser(index: number = 0, params: ?(User & any)): User {
 
 export function createSandbox(
   index: number = 0,
-  params: ?(Sandbox & any),
+  params: ?(Sandbox & any)
 ): Sandbox {
   const id = `sandbox-id${index}`;
   return {

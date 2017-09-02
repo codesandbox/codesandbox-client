@@ -10,12 +10,12 @@ module.exports = merge(commonConfig, {
   output: {
     filename: 'static/js/[name].[chunkhash].js',
     chunkFilename: 'static/js/[name].[chunkhash].chunk.js',
-    sourceMapFilename: '[file].map' // Default
+    sourceMapFilename: '[file].map', // Default
   },
   plugins: [
     new webpack.LoaderOptionsPlugin({
       minimize: true,
-      debug: false
+      debug: false,
     }),
     new webpack.optimize.UglifyJsPlugin({
       beautify: false,
@@ -29,12 +29,12 @@ module.exports = merge(commonConfig, {
         dead_code: true,
         evaluate: true,
         if_return: true,
-        join_vars: true
+        join_vars: true,
       },
       output: {
-        comments: false
+        comments: false,
       },
-      sourceMap: true
+      sourceMap: true,
     }),
     // Generate a service worker script that will precache, and keep up to date,
     // the HTML & assets that are part of the Webpack build.
@@ -72,9 +72,9 @@ module.exports = merge(commonConfig, {
           options: {
             cache: {
               maxEntries: 50,
-              name: 'sandboxes-cache'
-            }
-          }
+              name: 'sandboxes-cache',
+            },
+          },
         },
         {
           urlPattern: /^https:\/\/unpkg\.com/,
@@ -82,9 +82,9 @@ module.exports = merge(commonConfig, {
           options: {
             cache: {
               maxEntries: 300,
-              name: 'unpkg-cache'
-            }
-          }
+              name: 'unpkg-cache',
+            },
+          },
         },
         {
           urlPattern: /cloudflare\.com/,
@@ -92,11 +92,11 @@ module.exports = merge(commonConfig, {
           options: {
             cache: {
               maxEntries: 20,
-              name: 'cloudflare-cache'
-            }
-          }
-        }
-      ]
+              name: 'cloudflare-cache',
+            },
+          },
+        },
+      ],
     }),
     // Generate a service worker script that will precache, and keep up to date,
     // the HTML & assets that are part of the Webpack build.
@@ -138,9 +138,9 @@ module.exports = merge(commonConfig, {
           options: {
             cache: {
               maxEntries: 50,
-              name: 'sandboxes-cache'
-            }
-          }
+              name: 'sandboxes-cache',
+            },
+          },
         },
         {
           // These should be dynamic, since it's not loaded from this domain
@@ -149,9 +149,9 @@ module.exports = merge(commonConfig, {
           handler: 'networkFirst',
           options: {
             cache: {
-              name: 'static-root-cache'
-            }
-          }
+              name: 'static-root-cache',
+            },
+          },
         },
         {
           urlPattern: /api\/v1\/sandboxes/,
@@ -159,9 +159,9 @@ module.exports = merge(commonConfig, {
           options: {
             cache: {
               maxEntries: 50,
-              name: 'sandboxes-cache'
-            }
-          }
+              name: 'sandboxes-cache',
+            },
+          },
         },
         {
           urlPattern: /\.amazonaws\.com\/prod\/package/,
@@ -170,9 +170,9 @@ module.exports = merge(commonConfig, {
             cache: {
               // a week
               maxAgeSeconds: 60 * 60 * 24 * 7,
-              name: 'dependency-url-generator-cache'
-            }
-          }
+              name: 'dependency-url-generator-cache',
+            },
+          },
         },
         {
           urlPattern: /webpack-dll-prod\.herokuapp\.com/,
@@ -180,9 +180,9 @@ module.exports = merge(commonConfig, {
           options: {
             cache: {
               maxEntries: 100,
-              name: 'packager-cache'
-            }
-          }
+              name: 'packager-cache',
+            },
+          },
         },
         {
           urlPattern: /https:\/\/d3i2v4dxqvxaq9\.cloudfront\.net/,
@@ -190,20 +190,20 @@ module.exports = merge(commonConfig, {
           options: {
             cache: {
               maxEntries: 200,
-              name: 'dependency-files-cache'
-            }
-          }
+              name: 'dependency-files-cache',
+            },
+          },
         },
         {
           urlPattern: /cloudflare\.com/,
           handler: 'cacheFirst',
           options: {
             cache: {
-              name: 'cloudflare-cache'
-            }
-          }
-        }
-      ]
+              name: 'cloudflare-cache',
+            },
+          },
+        },
+      ],
     }),
     // Moment.js is an extremely popular library that bundles large locale files
     // by default due to how Webpack interprets its code. This is a practical
@@ -211,6 +211,6 @@ module.exports = merge(commonConfig, {
     // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
     // You can remove this if you don't use Moment.js:
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-    new webpack.optimize.ModuleConcatenationPlugin()
-  ]
+    new webpack.optimize.ModuleConcatenationPlugin(),
+  ],
 });

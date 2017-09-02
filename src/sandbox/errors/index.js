@@ -107,7 +107,7 @@ export default function showError(ref: ErrorRecord) {
         column: errorToSend.column,
         moduleId: errorToSend.moduleId,
         payload: errorToSend.payload,
-      }),
+      })
     );
   }
 }

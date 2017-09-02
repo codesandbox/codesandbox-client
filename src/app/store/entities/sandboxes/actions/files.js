@@ -20,35 +20,35 @@ import { maybeForkSandbox } from './fork';
 
 export const CREATE_MODULE_API_ACTIONS = createAPIActions(
   'SANDBOX',
-  'CREATE_MODULE',
+  'CREATE_MODULE'
 );
 export const SAVE_MODULE_CODE_API_ACTIONS = createAPIActions(
   'SANDBOX',
-  'SAVE_MODULE_CODE',
+  'SAVE_MODULE_CODE'
 );
 export const UPDATE_MODULE_API_ACTIONS = createAPIActions(
   'SANDBOX',
-  'UPDATE_MODULE',
+  'UPDATE_MODULE'
 );
 export const MASS_UPDATE_MODULE_API_ACTIONS = createAPIActions(
   'SANDBOX',
-  'MASS_UPDATE_MODULE',
+  'MASS_UPDATE_MODULE'
 );
 export const DELETE_MODULE_API_ACTIONS = createAPIActions(
   'SANDBOX',
-  'DELETE_MODULE',
+  'DELETE_MODULE'
 );
 export const CREATE_DIRECTORY_API_ACTIONS = createAPIActions(
   'SANDBOX',
-  'CREATE_DIRECTORY',
+  'CREATE_DIRECTORY'
 );
 export const UPDATE_DIRECTORY_API_ACTIONS = createAPIActions(
   'SANDBOX',
-  'UPDATE_DIRECTORY',
+  'UPDATE_DIRECTORY'
 );
 export const DELETE_DIRECTORY_API_ACTIONS = createAPIActions(
   'SANDBOX',
-  'DELETE_DIRECTORY',
+  'DELETE_DIRECTORY'
 );
 
 export const REMOVE_DIRECTORY_FROM_SANDBOX = 'REMOVE_DIRECTORY_FROM_SANDBOX';
@@ -81,7 +81,7 @@ const removeChildrenOfDirectory = (
   directoryShortid,
   sandboxId: string,
   modules: Array<Module>,
-  directories: Array<Directory>,
+  directories: Array<Directory>
 ) => dispatch => {
   modules
     .filter(m => m.directoryShortid === directoryShortid)
@@ -91,14 +91,14 @@ const removeChildrenOfDirectory = (
     .forEach(d => {
       dispatch(removeDirectoryFromSandbox(sandboxId, d.id));
       dispatch(
-        removeChildrenOfDirectory(d.shortid, sandboxId, modules, directories),
+        removeChildrenOfDirectory(d.shortid, sandboxId, modules, directories)
       );
     });
 };
 
 const renameModule = (id: string, moduleId: string, title: string) => async (
   dispatch: Function,
-  getState: Function,
+  getState: Function
 ) => {
   const module = singleModuleSelector(getState(), { id: moduleId });
   const sandboxId = await dispatch(maybeForkSandbox(id));
@@ -123,8 +123,8 @@ const renameModule = (id: string, moduleId: string, title: string) => async (
         {
           method: 'PUT',
           body: { module: { title } },
-        },
-      ),
+        }
+      )
     );
   } catch (e) {
     dispatch(moduleActions.renameModule(newModule.id, oldTitle));
@@ -134,7 +134,7 @@ const renameModule = (id: string, moduleId: string, title: string) => async (
 const renameDirectory = (
   id: string,
   directoryId: string,
-  title: string,
+  title: string
 ) => async (dispatch: Function, getState: Function) => {
   const directory = singleDirectorySelector(getState(), { id: directoryId });
   const sandboxId = await dispatch(maybeForkSandbox(id));
@@ -157,8 +157,8 @@ const renameDirectory = (
         {
           method: 'PUT',
           body: { directory: { title } },
-        },
-      ),
+        }
+      )
     );
   } catch (e) {
     dispatch(directoryActions.renameDirectory(newDirectory.id, oldTitle));
@@ -168,7 +168,7 @@ const renameDirectory = (
 const moveModuleToDirectory = (
   id: string,
   moduleId: string,
-  directoryShortid: string,
+  directoryShortid: string
 ) => async (dispatch: Function, getState: Function) => {
   const module = singleModuleSelector(getState(), { id: moduleId });
   const sandboxId = await dispatch(maybeForkSandbox(id));
@@ -193,8 +193,8 @@ const moveModuleToDirectory = (
         {
           method: 'PUT',
           body: { module: { directoryShortid } },
-        },
-      ),
+        }
+      )
     );
   } catch (e) {
     dispatch(moduleActions.moveModule(newModule.id, olddirectoryShortid));
@@ -204,7 +204,7 @@ const moveModuleToDirectory = (
 const moveDirectoryToDirectory = (
   id: string,
   directoryId: string,
-  parentId: string,
+  parentId: string
 ) => async (dispatch: Function, getState: Function) => {
   const directory = singleDirectorySelector(getState(), { id: directoryId });
   const sandboxId = await dispatch(maybeForkSandbox(id));
@@ -227,19 +227,19 @@ const moveDirectoryToDirectory = (
         {
           method: 'PUT',
           body: { directory: { directoryShortid: parentId } },
-        },
-      ),
+        }
+      )
     );
   } catch (e) {
     dispatch(
-      directoryActions.moveDirectory(newDirectory.id, oldDirectoryShortid),
+      directoryActions.moveDirectory(newDirectory.id, oldDirectoryShortid)
     );
   }
 };
 
 const deleteModule = (id: string, moduleId: string) => async (
   dispatch: Function,
-  getState: Function,
+  getState: Function
 ) => {
   const module = singleModuleSelector(getState(), { id: moduleId });
   const sandboxId = await dispatch(maybeForkSandbox(id));
@@ -262,8 +262,8 @@ const deleteModule = (id: string, moduleId: string) => async (
         `sandboxes/${sandboxId}/modules/${newModule.shortid}`,
         {
           method: 'DELETE',
-        },
-      ),
+        }
+      )
     );
   } catch (e) {
     // It failed, just add it back
@@ -273,7 +273,7 @@ const deleteModule = (id: string, moduleId: string) => async (
 
 const deleteDirectory = (id: string, directoryId: string) => async (
   dispatch: Function,
-  getState: Function,
+  getState: Function
 ) => {
   const directory = singleDirectorySelector(getState(), { id: directoryId });
   const sandboxId = await dispatch(maybeForkSandbox(id));
@@ -294,8 +294,8 @@ const deleteDirectory = (id: string, directoryId: string) => async (
         `sandboxes/${sandboxId}/directories/${newDirectory.shortid}`,
         {
           method: 'DELETE',
-        },
-      ),
+        }
+      )
     );
 
     const sandbox = singleSandboxSelector(getState(), { id: sandboxId });
@@ -303,7 +303,7 @@ const deleteDirectory = (id: string, directoryId: string) => async (
     const allDirectories = directoriesSelector(getState());
     const modules = sandbox.modules.map(mid => allModules[mid]);
     const sandboxDirectories = sandbox.directories.map(
-      did => allDirectories[did],
+      did => allDirectories[did]
     );
 
     // Recursively delete all children
@@ -312,12 +312,12 @@ const deleteDirectory = (id: string, directoryId: string) => async (
         newDirectory.shortid,
         sandboxId,
         modules,
-        sandboxDirectories,
-      ),
+        sandboxDirectories
+      )
     );
 
     dispatch(
-      notificationActions.addNotification('Deleted directory', 'success'),
+      notificationActions.addNotification('Deleted directory', 'success')
     );
   } catch (e) {
     // It failed, add it back
@@ -328,7 +328,7 @@ const deleteDirectory = (id: string, directoryId: string) => async (
 const createModule = (
   id: string,
   title: string,
-  directoryShortid: ?string,
+  directoryShortid: ?string
 ) => async (dispatch: Function) => {
   const sandboxId = await dispatch(maybeForkSandbox(id));
 
@@ -336,7 +336,7 @@ const createModule = (
     doRequest(CREATE_MODULE_API_ACTIONS, `sandboxes/${sandboxId}/modules`, {
       method: 'POST',
       body: { module: { title, directoryShortid } },
-    }),
+    })
   );
 
   dispatch(normalizeResult(moduleEntity, data));
@@ -346,7 +346,7 @@ const createModule = (
 const createDirectory = (
   id: string,
   title: string,
-  directoryShortid: ?string,
+  directoryShortid: ?string
 ) => async (dispatch: Function) => {
   const sandboxId = await dispatch(maybeForkSandbox(id));
 
@@ -357,8 +357,8 @@ const createDirectory = (
       {
         method: 'POST',
         body: { directory: { title, directoryShortid } },
-      },
-    ),
+      }
+    )
   );
 
   dispatch(normalizeResult(directoryEntity, data));
@@ -367,7 +367,7 @@ const createDirectory = (
 
 const saveModuleCode = (id: string, moduleId: string) => async (
   dispatch: Function,
-  getState: Function,
+  getState: Function
 ) => {
   const module = singleModuleSelector(getState(), { id: moduleId });
   const sandboxId = await dispatch(maybeForkSandbox(id));
@@ -390,22 +390,22 @@ const saveModuleCode = (id: string, moduleId: string) => async (
         {
           method: 'PUT',
           body: { module: { code: module.code } },
-        },
-      ),
+        }
+      )
     );
 
     if ((data.code || '') !== (newModule.code || '')) {
       dispatch(
         notificationActions.addNotification(
           'Something went wrong while saving the module, please try again.',
-          'error',
-        ),
+          'error'
+        )
       );
 
       logError(
         new Error(
-          `Saving module went wrong, mismatch:\n\n${data.code}\n\nvs\n\n ${newModule.code}`,
-        ),
+          `Saving module went wrong, mismatch:\n\n${data.code}\n\nvs\n\n ${newModule.code}`
+        )
       );
     } else {
       dispatch(moduleActions.setModuleSynced(newModule.id));
@@ -415,8 +415,8 @@ const saveModuleCode = (id: string, moduleId: string) => async (
     dispatch(
       notificationActions.addNotification(
         'Could not save the module, please try again.',
-        'error',
-      ),
+        'error'
+      )
     );
     e.message = `Could not save module: ${e.message}`;
     logError(e);
@@ -428,7 +428,7 @@ const saveModuleCode = (id: string, moduleId: string) => async (
    */
 const massUpdateModules = (id: string) => async (
   dispatch: Function,
-  getState: Function,
+  getState: Function
 ) => {
   // First get the modules that changed, that way we make sure that we don't get
   // the non-updated modules from the forked sandbox to send. The server handles
@@ -452,8 +452,8 @@ const massUpdateModules = (id: string) => async (
           body: {
             modules: modulesNotInSyncInSandbox,
           },
-        },
-      ),
+        }
+      )
     );
     const newSandbox = singleSandboxSelector(getState(), { id: sandboxId });
     modulesNotInSyncInSandbox.forEach(m => {
@@ -468,8 +468,8 @@ const massUpdateModules = (id: string) => async (
     dispatch(
       notificationActions.addNotification(
         'Could not save the modules, please try again.',
-        'error',
-      ),
+        'error'
+      )
     );
   }
 };

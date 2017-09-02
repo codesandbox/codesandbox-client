@@ -8,8 +8,8 @@ const DEFAULT_BABEL_CONFIG = {
   plugins: [
     'transform-async-to-generator',
     'transform-object-rest-spread',
-    'transform-class-properties',
     'transform-decorators-legacy',
+    'transform-class-properties',
   ],
 };
 

@@ -18,7 +18,7 @@ type Props = {
   count: number,
 };
 
-export default ({ Icon, count }: Props) =>
+export default ({ Icon, count }: Props) => (
   <CenteredText>
     {Icon}
     <span
@@ -29,4 +29,5 @@ export default ({ Icon, count }: Props) =>
     >
       {count.toLocaleString()}
     </span>
-  </CenteredText>;
+  </CenteredText>
+);

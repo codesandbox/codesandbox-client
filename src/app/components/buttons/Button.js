@@ -78,7 +78,7 @@ const styles = css`
     box-shadow: 0 0 0 rgba(0, 0, 0, 0.5);
   }`};
 `;
-const LinkButton = styled(Link)`${styles}`;
+const LinkButton = styled(Link)`${styles};`;
 const AButton = styled.a`${styles};`;
 const Button = styled.button`${styles};`;
 

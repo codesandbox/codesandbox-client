@@ -16,7 +16,7 @@ export async function evalBoilerplates(boilerplates: Array<any>) {
         directoryShortid: null,
         sourceId: boilerplate.sourceId,
         isNotSynced: false,
-        type: ''
+        type: '',
       };
 
       const manager = getCurrentManager();

@@ -45,7 +45,7 @@ export default postcss.plugin('add-id', function(opts) {
             node,
             selectorParser.attribute({
               attribute: opts.id,
-            }),
+            })
           );
         });
       }).process(node.selector).result;

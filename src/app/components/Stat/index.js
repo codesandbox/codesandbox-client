@@ -24,7 +24,7 @@ const Number = styled.div`
 
 const Property = styled.div`
   font-weight: 400;
-  font-size: .875em;
+  font-size: 0.875em;
   color: rgba(255, 255, 255, 0.5);
   text-transform: uppercase;
   margin-bottom: 0.4rem;

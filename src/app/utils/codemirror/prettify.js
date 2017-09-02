@@ -1,40 +1,42 @@
-import prettier from 'custom-prettier-codesandbox';
-import babylonParser from 'custom-prettier-codesandbox/parser-babylon';
-import cssParser from 'custom-prettier-codesandbox/parser-postcss';
-
 import { DEFAULT_PRETTIER_CONFIG } from 'app/store/preferences/reducer';
 
-function getParser(mode) {
-  if (mode === 'jsx') return babylonParser;
-  if (mode === 'css') return cssParser;
+const worker = new Worker('/static/js/prettier/worker.js');
 
-  return babylonParser;
+function getParser(mode) {
+  if (mode === 'jsx') return 'babylon';
+  if (mode === 'css') return 'postcss';
+  if (mode === 'html') return 'parse5';
+  if (mode === 'ts') return 'typescript';
+  if (mode === 'graphql') return 'graphql';
+
+  return 'babylon';
 }
 
-export default (async function prettify(
+export default (function prettify(
   code,
   mode,
   eslintEnabled,
-  prettierConfig = DEFAULT_PRETTIER_CONFIG,
+  prettierConfig = DEFAULT_PRETTIER_CONFIG
 ) {
-  const prettifiedCode = prettier.format(code, {
-    ...DEFAULT_PRETTIER_CONFIG,
-    ...prettierConfig,
-    parser: getParser(mode),
+  return new Promise(resolve => {
+    worker.postMessage({
+      text: code,
+      options: {
+        ...DEFAULT_PRETTIER_CONFIG,
+        ...prettierConfig,
+        parser: getParser(mode),
+      },
+    });
+
+    worker.onmessage = e => {
+      const { formatted, text, error } = e.data;
+      if (error) {
+        console.error(error);
+        resolve(text);
+      }
+      if (formatted) {
+        resolve(formatted);
+      }
+    };
   });
-
-  if (eslintEnabled && mode === 'jsx') {
-    const { fix } = await System.import('app/utils/codemirror/eslint-lint');
-    try {
-      const lintedCode = fix(prettifiedCode).output;
-
-      // If linter can't parse, it will return an empty string. Unwanted, so fall
-      // back to prettified code
-      if (lintedCode) return lintedCode;
-    } catch (e) {
-      console.error(e);
-    }
-  }
-
-  return prettifiedCode;
 });

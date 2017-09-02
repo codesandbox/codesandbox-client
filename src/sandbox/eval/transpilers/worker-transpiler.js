@@ -26,7 +26,7 @@ export default class WorkerTranspiler extends Transpiler {
   constructor(
     name: string,
     Worker: Worker,
-    workerCount = navigator.hardwareConcurrency,
+    workerCount = navigator.hardwareConcurrency
   ) {
     super(name);
 
@@ -118,7 +118,7 @@ export default class WorkerTranspiler extends Transpiler {
   queueTask(
     message: any,
     loaderContext: LoaderContext,
-    callback: (err: Error, message: Object) => void,
+    callback: (err: Error, message: Object) => void
   ) {
     if (!this.initialized) {
       this.initialize();

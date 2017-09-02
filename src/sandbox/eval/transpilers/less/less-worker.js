@@ -43,12 +43,12 @@ self.addEventListener('message', event => {
       self.postMessage({
         type: 'compiled',
         transpiledCode: css,
-      }),
+      })
     )
     .catch(err =>
       self.postMessage({
         type: 'error',
         error: buildWorkerError(err),
-      }),
+      })
     );
 });

@@ -49,7 +49,7 @@ function registerStyleTranspilers() {
   return Object.keys(styles).forEach(type => {
     vuePreset.registerTranspiler(
       module => new RegExp(`\\.${type}`).test(module.title),
-      [...styles[type], { transpiler: stylesTranspiler }],
+      [...styles[type], { transpiler: stylesTranspiler }]
     );
   });
 }

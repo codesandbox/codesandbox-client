@@ -64,9 +64,7 @@ export default class Badge extends React.PureComponent {
     return (
       <NameContainer>
         {innerContent}
-        <div style={{ marginTop: '0.5rem' }}>
-          {badge.name}
-        </div>
+        <div style={{ marginTop: '0.5rem' }}>{badge.name}</div>
       </NameContainer>
     );
   }

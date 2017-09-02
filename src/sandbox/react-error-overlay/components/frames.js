@@ -28,7 +28,7 @@ function createFrameWrapper(
   factory,
   lIndex: number,
   frameSettings: FrameSetting[],
-  contextSize: number,
+  contextSize: number
 ) {
   const fac = factory();
   if (fac == null) {
@@ -46,7 +46,7 @@ function createFrameWrapper(
 
     const o = frameSettings[lIndex];
     const compiledText = document.createTextNode(
-      'View ' + (o && o.compiled ? 'source' : 'compiled'),
+      'View ' + (o && o.compiled ? 'source' : 'compiled')
     );
     compiledDiv.addEventListener('click', function() {
       if (o) {
@@ -59,7 +59,7 @@ function createFrameWrapper(
         factory,
         lIndex,
         frameSettings,
-        contextSize,
+        contextSize
       );
       if (next != null) {
         parent.insertBefore(next, elemWrapper);
@@ -82,11 +82,11 @@ function createFrames(
   resolvedFrames: StackFrame[],
   frameSettings: FrameSetting[],
   contextSize: number,
-  errorName: ?string,
+  errorName: ?string
 ) {
   if (resolvedFrames.length !== frameSettings.length) {
     throw new Error(
-      'You must give a frame settings array of identical length to resolved frames.',
+      'You must give a frame settings array of identical length to resolved frames.'
     );
   }
   const trace = document.createElement('div');
@@ -111,11 +111,11 @@ function createFrames(
         omits.bundle,
         trace,
         index === resolvedFrames.length,
-        errorName,
+        errorName
       ),
       lIndex,
       frameSettings,
-      contextSize,
+      contextSize
     );
     if (elem == null) {
       return;

@@ -8,7 +8,7 @@ declare var stylus: {
   render: (
     code: string,
     { filename: string },
-    (err, css: string) => void,
+    (err, css: string) => void
   ) => void,
 };
 

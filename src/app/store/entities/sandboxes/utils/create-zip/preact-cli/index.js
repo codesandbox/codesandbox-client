@@ -5,7 +5,7 @@ import {
   getResourceTag,
   getIndexHtmlBody,
   createPackageJSON,
-  createDirectoryWithFiles
+  createDirectoryWithFiles,
 } from '../';
 
 const getHTML = (modules, resources) =>
@@ -85,7 +85,7 @@ export default function createZip(
           'preact-cli': '^1.4.1',
           'sass-loader': '^6.0.6',
           stylus: '^0.54.5',
-          'stylus-loader': '^3.0.1'
+          'stylus-loader': '^3.0.1',
         },
         {
           test: 'eslint . && preact test',
@@ -93,12 +93,12 @@ export default function createZip(
             'if-env NODE_ENV=production && npm run -s serve || npm run -s dev',
           build: 'preact build',
           serve: 'preact build && preact serve',
-          dev: 'preact watch'
+          dev: 'preact watch',
         },
         {
           eslintConfig: {
-            extends: 'eslint-config-synacor'
-          }
+            extends: 'eslint-config-synacor',
+          },
         }
       )
     );

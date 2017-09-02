@@ -16,10 +16,11 @@ const InnerContainer = styled.div`
 export default ({
   children,
   width = 1280,
-}: { children: React.CElement, width: number }) => (
+}: {
+  children: React.CElement,
+  width: number,
+}) => (
   <Container>
-    <InnerContainer width={width}>
-      {children}
-    </InnerContainer>
+    <InnerContainer width={width}>{children}</InnerContainer>
   </Container>
 );

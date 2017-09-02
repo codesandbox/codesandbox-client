@@ -65,7 +65,7 @@ const ViewIcon = styled.div`
 
   &:after {
     transition: 0.3s ease all;
-    content: "";
+    content: '';
     position: absolute;
     left: 0;
     right: 0;
@@ -119,7 +119,7 @@ type Props = {
   setEditorView: () => void,
   setPreviewView: () => void,
   setMixedView: () => void,
-  noPreview: ?boolean
+  noPreview: ?boolean,
 };
 
 const getCurrentMode = ({
@@ -127,7 +127,7 @@ const getCurrentMode = ({
   showPreview,
   setMixedView,
   setEditorView,
-  setPreviewView
+  setPreviewView,
 }: Props) => {
   const both = (
     <ViewIcon onClick={setMixedView} active={showEditor && showPreview}>
@@ -166,20 +166,20 @@ export default class ModeIcons extends React.PureComponent<Props> {
       hovering: false,
       showSubmodes: false,
       currentMode,
-      otherModes
+      otherModes,
     };
   }
 
   onMouseEnter = () => {
     this.setState({
       showSubmodes: true,
-      hovering: true
+      hovering: true,
     });
   };
 
   onMouseLeave = () => {
     this.setState({
-      hovering: false
+      hovering: false,
     });
   };
 
@@ -190,7 +190,7 @@ export default class ModeIcons extends React.PureComponent<Props> {
       this.setState({
         showSubmodes: false,
         currentMode,
-        otherModes
+        otherModes,
       });
     }
   };
@@ -201,11 +201,11 @@ export default class ModeIcons extends React.PureComponent<Props> {
     if (!this.state.hovering) {
       this.setState({
         currentMode,
-        otherModes
+        otherModes,
       });
     } else {
       this.setState({
-        currentMode
+        currentMode,
       });
     }
   }
@@ -217,7 +217,7 @@ export default class ModeIcons extends React.PureComponent<Props> {
       setEditorView,
       setMixedView,
       setPreviewView,
-      dropdown
+      dropdown,
     } = this.props;
 
     const { hovering, showSubmodes, currentMode, otherModes } = this.state;
@@ -226,7 +226,7 @@ export default class ModeIcons extends React.PureComponent<Props> {
       return (
         <Tooltips>
           <Hover onMouseLeave={this.onMouseLeave}>
-            {showSubmodes &&
+            {showSubmodes && (
               <SubMode
                 onClick={this.onMouseLeave}
                 onAnimationEnd={this.onAnimationEnd}
@@ -234,11 +234,10 @@ export default class ModeIcons extends React.PureComponent<Props> {
                 i={0}
               >
                 {otherModes[0]}
-              </SubMode>}
-            <div onMouseEnter={this.onMouseEnter}>
-              {currentMode}
-            </div>
-            {showSubmodes &&
+              </SubMode>
+            )}
+            <div onMouseEnter={this.onMouseEnter}>{currentMode}</div>
+            {showSubmodes && (
               <SubMode
                 onClick={this.onMouseLeave}
                 onAnimationEnd={this.onAnimationEnd}
@@ -246,7 +245,8 @@ export default class ModeIcons extends React.PureComponent<Props> {
                 i={1}
               >
                 {otherModes[1]}
-              </SubMode>}
+              </SubMode>
+            )}
           </Hover>
         </Tooltips>
       );

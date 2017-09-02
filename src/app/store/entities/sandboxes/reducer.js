@@ -145,7 +145,7 @@ function singleSandboxReducer(sandbox: Sandbox, action: Action): Sandbox {
 
 export default function reducer(
   state = initialState,
-  action: Action,
+  action: Action
 ): { [id: string]: Sandbox } {
   switch (action.type) {
     case ADD_MODULE_TO_SANDBOX:

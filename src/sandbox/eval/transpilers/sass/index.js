@@ -22,7 +22,7 @@ class SassTranspiler extends WorkerTranspiler {
         ...interMediateFiles,
         [loaderContext.resolvePath(module)]: module.code,
       }),
-      {},
+      {}
     );
 
     return new Promise((resolve, reject) => {
@@ -42,7 +42,7 @@ class SassTranspiler extends WorkerTranspiler {
           }
 
           return resolve(data);
-        },
+        }
       );
     });
   }

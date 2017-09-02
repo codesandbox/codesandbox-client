@@ -17,11 +17,12 @@ const Header = styled.div`
   border-bottom: 1px solid ${props => props.theme.background2.darken(0.3)};
 `;
 
-export default () =>
+export default () => (
   <Fullscreen>
     <Header />
     <Centered horizontal vertical>
       <Title delay={0.6}>Loading Sandbox...</Title>
       <SubTitle delay={1}>Fetching git repository...</SubTitle>
     </Centered>
-  </Fullscreen>;
+  </Fullscreen>
+);

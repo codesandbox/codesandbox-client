@@ -63,7 +63,7 @@ const fetchFromDefinitelyTyped = (dependency, version, fetchedPaths) =>
     addLib(
       `node_modules/@types/${dependency}/index.d.ts`,
       typings,
-      fetchedPaths,
+      fetchedPaths
     );
   });
 
@@ -75,7 +75,7 @@ const getRequireStatements = (title: string, code: string) => {
     code,
     self.ts.ScriptTarget.Latest,
     true,
-    self.ts.ScriptKind.TS,
+    self.ts.ScriptKind.TS
   );
 
   self.ts.forEachChild(sourceFile, node => {
@@ -112,7 +112,7 @@ const transformFiles = dir =>
     : {};
 
 const getFileMetaData = (depUrl, depPath) =>
-  doFetch(`${depUrl}/${path.dirname(depPath)}?meta`)
+  doFetch(`${depUrl}/${path.dirname(depPath)}/?meta`)
     .then(response => JSON.parse(response))
     .then(transformFiles);
 
@@ -133,7 +133,7 @@ const getFileTypes = (
   dependency,
   depPath,
   fetchedPaths: Array<string>,
-  fileMetaData,
+  fileMetaData
 ) => {
   const virtualPath = path.join('node_modules', dependency, depPath);
 
@@ -148,7 +148,7 @@ const getFileTypes = (
     return getRequireStatements(depPath, typings)
       .filter(
         // Don't add global deps
-        dep => dep.startsWith('.'),
+        dep => dep.startsWith('.')
       )
       .map(relativePath => path.join(path.dirname(depPath), relativePath))
       .map(relativePath => resolveAppropiateFile(fileMetaData, relativePath))
@@ -158,55 +158,69 @@ const getFileTypes = (
           dependency,
           nextDepPath,
           fetchedPaths,
-          fileMetaData,
-        ),
+          fileMetaData
+        )
       );
   });
 };
+
+function fetchFromTypings(dependency, version, fetchedPaths) {
+  const depUrl = `${ROOT_URL}${dependency}@${version}`;
+  return doFetch(`${depUrl}/package.json`)
+    .then(response => JSON.parse(response))
+    .then(packageJSON => {
+      if (packageJSON.typings) {
+        // Add package.json, since this defines where all types lie
+        addLib(
+          `node_modules/${dependency}/package.json`,
+          JSON.stringify(packageJSON),
+          fetchedPaths
+        );
+
+        // get all files in the specified directory
+        getFileMetaData(depUrl, packageJSON.typings).then(fileData => {
+          getFileTypes(
+            depUrl,
+            dependency,
+            resolveAppropiateFile(fileData, packageJSON.typings),
+            fetchedPaths,
+            fileData
+          );
+        });
+      } else {
+        throw new Error('No typings field in package.json');
+      }
+    });
+}
 
 function fetchAndAddDependencies(dependencies) {
   const fetchedPaths = [];
   Object.keys(dependencies).forEach(dep => {
     try {
       if (loadedTypings.indexOf(dep) === -1) {
-        loadedTypings.push(dep);
-
-        fetchFromDefinitelyTyped(
+        fetchFromTypings(
           dep,
-          dependencies[dep],
-          fetchedPaths,
+          getVersion(dependencies[dep]),
+          fetchedPaths
         ).catch(() => {
-          // Not available as @types, try checking in package.json
-
-          const depUrl = `${ROOT_URL}${dep}@${getVersion(dependencies[dep])}`;
-          doFetch(`${depUrl}/package.json`)
-            .then(response => JSON.parse(response))
-            .then(packageJSON => {
-              if (packageJSON.typings) {
-                // Add package.json, since this defines where all types lie
-                addLib(
-                  `node_modules/${dep}/package.json`,
-                  JSON.stringify(packageJSON),
-                  fetchedPaths,
-                );
-
-                // get all files in the specified directory
-                getFileMetaData(depUrl, packageJSON.typings).then(fileData => {
-                  getFileTypes(
-                    depUrl,
-                    dep,
-                    resolveAppropiateFile(fileData, packageJSON.typings),
-                    fetchedPaths,
-                    fileData,
-                  );
-                });
-              }
-            });
+          // Not available in package.json, try checking in @types/
+          fetchFromDefinitelyTyped(
+            dep,
+            dependencies[dep],
+            fetchedPaths
+          ).catch(() => {
+            // Do nothing if it still can't be fetched
+          });
         });
+
+        loadedTypings.push(dep);
       }
     } catch (e) {
-      console.log(`Couldn't find typings for ${dep}`);
-      console.error(e);
+      // Don't show these cryptic messages to users, because this is not vital
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`Couldn't find typings for ${dep}`);
+        console.error(e);
+      }
     }
   });
 }

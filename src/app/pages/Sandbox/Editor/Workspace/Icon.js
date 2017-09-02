@@ -17,5 +17,5 @@ export const IconArea = styled.div`
   right: 1rem;
   opacity: 0;
   line-height: 1;
-  ${fadeIn(0)}
+  ${fadeIn(0)};
 `;

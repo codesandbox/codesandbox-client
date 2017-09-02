@@ -15,7 +15,7 @@ const Container = styled.div`
   background-color: ${getColor};
   width: ${({ small }) => (small ? 3 : 3.5)}rem;
   color: rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(0, 0, 0, .1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
   padding: 0.5rem;
   height: ${props => (props.small ? 20 : 26)}px;
   box-sizing: border-box;
@@ -61,7 +61,7 @@ export default ({
   secondary = false,
   offMode = false,
   small = false,
-}: Props) =>
+}: Props) => (
   <Container
     small={small}
     secondary={secondary}
@@ -70,4 +70,5 @@ export default ({
     right={right}
   >
     <Dot small={small} right={right} />
-  </Container>;
+  </Container>
+);

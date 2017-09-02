@@ -8,7 +8,7 @@ describe('get-require-statements', () => {
       code,
       ts.ScriptTarget.Latest,
       true,
-      ts.ScriptKind.TS,
+      ts.ScriptKind.TS
     );
 
     expect(getRequireStatements(sourceFile, ts)).toMatchSnapshot();

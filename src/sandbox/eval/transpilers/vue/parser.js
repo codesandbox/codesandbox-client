@@ -18,7 +18,7 @@ module.exports = function(content, filename, needMap) {
       output.script.map = generateSourceMap(
         filenameWithHash,
         content,
-        output.script.content,
+        output.script.content
       );
     }
     if (output.styles) {
@@ -27,7 +27,7 @@ module.exports = function(content, filename, needMap) {
           style.map = generateSourceMap(
             filenameWithHash,
             content,
-            style.content,
+            style.content
           );
         }
       });

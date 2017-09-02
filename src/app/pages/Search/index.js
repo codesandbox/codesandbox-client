@@ -72,7 +72,7 @@ export default class Search extends React.PureComponent {
     this.debouncedSetState = setTimeout(() => {
       this.props.history.push(
         searchStateToUrl(this.props, searchState),
-        searchState,
+        searchState
       );
     }, updateAfter);
     this.setState({ searchState });

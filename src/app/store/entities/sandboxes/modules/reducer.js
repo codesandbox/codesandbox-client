@@ -39,7 +39,7 @@ type State = {
 
 export default function reducer(
   state: State,
-  action: { type: string, id: string, [key: string]: any },
+  action: { type: string, id: string, [key: string]: any }
 ): State {
   switch (action.type) {
     case RENAME_MODULE:

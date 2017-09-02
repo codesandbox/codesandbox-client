@@ -19,7 +19,7 @@ const CenteredHeader = styled.th`
   ${props => props.supporter && css`background-color: rgba(0, 0, 0, 0.3);`};
 `;
 
-export default () =>
+export default () => (
   <Container>
     <Title>Lifted Limits</Title>
     <table style={{ borderCollapse: 'collapse' }}>
@@ -42,4 +42,5 @@ export default () =>
         />
       </tbody>
     </table>
-  </Container>;
+  </Container>
+);

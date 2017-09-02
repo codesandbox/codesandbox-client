@@ -16,7 +16,7 @@ describe('Button', () => {
     testRender(
       <MemoryRouter>
         <Button to="https://ivesvh.com">Test</Button>
-      </MemoryRouter>,
+      </MemoryRouter>
     );
   });
 

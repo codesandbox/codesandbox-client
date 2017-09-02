@@ -57,7 +57,7 @@ const Currency = styled.span`
 `;
 
 const Notice = styled.p`
-  font-size: .875rem;
+  font-size: 0.875rem;
   text-align: center;
   margin: 2rem;
   font-weight: 400;
@@ -106,7 +106,7 @@ class PricingChoice extends React.PureComponent {
 
   cancelSubscription = async () => {
     const confirmed = confirm(
-      'Are you sure you want to cancel your subscription?',
+      'Are you sure you want to cancel your subscription?'
     );
 
     if (confirmed) {
@@ -125,11 +125,12 @@ class PricingChoice extends React.PureComponent {
       <Container>
         <Centered horizontal vertical={false}>
           <Title>Pay what you want</Title>
-          {subscribed &&
+          {subscribed && (
             <ThankYou
               price={user.subscription.amount}
               color={badges[badge].colors[0]}
-            />}
+            />
+          )}
           <Relative>
             <Currency>$</Currency>
             <PriceInput
@@ -149,25 +150,27 @@ class PricingChoice extends React.PureComponent {
               color={badges[badge].colors[0]}
             />
           </RangeContainer>
-          {loggedIn // eslint-disable-line no-nested-ternary
-            ? user.subscription
-              ? <ChangeSubscription
-                  updateSubscription={this.updateSubscription}
-                  cancelSubscription={this.cancelSubscription}
-                  date={user.subscription.since}
-                />
-              : <Centered style={{ marginTop: '2rem' }} horizontal>
-                  <SubscribeForm subscribe={this.subscribe} name={user.name} />
-                  <Notice>
-                    You will be billed now and on the{' '}
-                    <strong style={{ color: 'white' }}>
-                      {moment().format('Do')}
-                    </strong>{' '}
-                    of each month thereafter. You can cancel or change your
-                    subscription at any time.
-                  </Notice>
-                </Centered>
-            : <StyledSignInButton />}
+          {loggedIn ? user.subscription ? ( // eslint-disable-line no-nested-ternary
+            <ChangeSubscription
+              updateSubscription={this.updateSubscription}
+              cancelSubscription={this.cancelSubscription}
+              date={user.subscription.since}
+            />
+          ) : (
+            <Centered style={{ marginTop: '2rem' }} horizontal>
+              <SubscribeForm subscribe={this.subscribe} name={user.name} />
+              <Notice>
+                You will be billed now and on the{' '}
+                <strong style={{ color: 'white' }}>
+                  {moment().format('Do')}
+                </strong>{' '}
+                of each month thereafter. You can cancel or change your
+                subscription at any time.
+              </Notice>
+            </Centered>
+          ) : (
+            <StyledSignInButton />
+          )}
         </Centered>
       </Container>
     );

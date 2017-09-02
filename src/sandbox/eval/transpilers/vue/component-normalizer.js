@@ -5,7 +5,7 @@ module.exports = function normalizeComponent(
   rawScriptExports,
   compiledTemplate,
   injectStyles,
-  scopeId,
+  scopeId
 ) {
   var esModule;
   var scriptExports = (rawScriptExports = rawScriptExports || {});

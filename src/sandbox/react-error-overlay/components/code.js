@@ -29,7 +29,7 @@ function createCode(
   columnNum: number | null,
   contextSize: number,
   main: boolean,
-  onSourceClick: ?Function,
+  onSourceClick: ?Function
 ) {
   const sourceCode = [];
   let whiteSpace = Infinity;
@@ -62,7 +62,7 @@ function createCode(
       forceColor: true,
       linesAbove: contextSize,
       linesBelow: contextSize,
-    },
+    }
   );
   const htmlHighlight = generateAnsiHtml(ansiHighlight);
   const code = document.createElement('code');

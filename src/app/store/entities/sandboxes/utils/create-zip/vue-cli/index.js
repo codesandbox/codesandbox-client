@@ -59,7 +59,7 @@ export default function createZip(
   zip,
   sandbox: Sandbox,
   modules: Array<Module>,
-  directories: Array<Directory>,
+  directories: Array<Directory>
 ) {
   zip.file('README.md', README);
 
@@ -171,8 +171,8 @@ export default function createZip(
             npm: '>= 3.0.0',
           },
           browserslist: ['> 1%', 'last 2 versions', 'not ie <= 8'],
-        },
-      ),
+        }
+      )
     );
   });
 }

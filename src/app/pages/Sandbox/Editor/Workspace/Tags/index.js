@@ -48,15 +48,16 @@ export default class TagsWorkspace extends React.PureComponent {
     const { tags, isOwner } = this.props;
     return (
       <div>
-        {tags.length > 0 &&
+        {tags.length > 0 && (
           <div>
             <WorkspaceSubtitle>Tags</WorkspaceSubtitle>
             <div style={{ fontSize: '.875rem' }}>
               <Tags tags={tags} removeTag={isOwner && this.removeTag} />
             </div>
-          </div>}
+          </div>
+        )}
 
-        {isOwner &&
+        {isOwner && (
           <div>
             <WorkspaceSubtitle>Add up to 5 tags</WorkspaceSubtitle>
             <WorkspaceInputContainer>
@@ -77,7 +78,8 @@ export default class TagsWorkspace extends React.PureComponent {
                 Add Tag
               </Button>
             </Margin>
-          </div>}
+          </div>
+        )}
       </div>
     );
   }

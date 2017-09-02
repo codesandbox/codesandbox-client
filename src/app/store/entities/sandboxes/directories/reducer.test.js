@@ -9,7 +9,7 @@ describe('directoriesReducer', () => {
 
     const newState = reducer(
       state,
-      actions.moveDirectory(directory.id, '218hj'),
+      actions.moveDirectory(directory.id, '218hj')
     );
 
     expect(newState).toMatchSnapshot();
@@ -21,7 +21,7 @@ describe('directoriesReducer', () => {
 
     const newState = reducer(
       state,
-      actions.renameDirectory(directory.id, 'ttest2'),
+      actions.renameDirectory(directory.id, 'ttest2')
     );
 
     expect(newState).toMatchSnapshot();

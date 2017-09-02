@@ -6,7 +6,7 @@ import StarIcon from 'react-icons/lib/go/star';
 
 const Container = styled(Tooltip)`
   margin-left: 0.25rem;
-  color: ${props => props.theme.primary()}
+  color: ${props => props.theme.primary()};
 `;
 
 export default ({
@@ -14,9 +14,10 @@ export default ({
   ...props
 }: {
   subscriptionSince: string,
-}) =>
+}) => (
   <Container
     title={`Patron since ${moment(subscriptionSince).format('MMM Y')}`}
   >
     <StarIcon {...props} />
-  </Container>;
+  </Container>
+);

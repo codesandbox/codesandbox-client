@@ -9,7 +9,7 @@ class VueStyleCompiler extends Transpiler {
 
   doTranspilation(code: string, loaderContext: LoaderContext) {
     return import('./loader').then(loader =>
-      loader.default(code, loaderContext),
+      loader.default(code, loaderContext)
     );
   }
 }

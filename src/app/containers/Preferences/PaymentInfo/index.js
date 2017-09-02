@@ -49,11 +49,7 @@ class PaymentInfo extends React.PureComponent {
 
   paymentDetails = () => {
     if (this.state.error)
-      return (
-        <div>
-          An error occurred: {this.state.error}
-        </div>
-      );
+      return <div>An error occurred: {this.state.error}</div>;
 
     const { data } = this.state;
     return (
@@ -77,9 +73,11 @@ class PaymentInfo extends React.PureComponent {
     return (
       <Container>
         <Title>Payment Info</Title>
-        {loading
-          ? <div>Loading payment details...</div>
-          : this.paymentDetails()}
+        {loading ? (
+          <div>Loading payment details...</div>
+        ) : (
+          this.paymentDetails()
+        )}
       </Container>
     );
   }

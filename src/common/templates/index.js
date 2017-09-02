@@ -19,7 +19,7 @@ export const preact = {
 };
 
 export default function getDefinition(
-  theme: 'create-react-app' | 'vue-cli' | 'preact-cli',
+  theme: 'create-react-app' | 'vue-cli' | 'preact-cli'
 ) {
   if (!theme) {
     return react;

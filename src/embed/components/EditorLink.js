@@ -11,13 +11,7 @@ type Props = {
 
 const Text = styled.span`
   color: white;
-  ${({ small }) =>
-    small &&
-    css`
-  @media (max-width: 620px) {
-    display: none;
-  }
-  `};
+  ${({ small }) => small && css`@media (max-width: 620px) {display: none;}`};
 `;
 
 const EditText = styled.a`
@@ -31,7 +25,7 @@ const EditText = styled.a`
   }
 `;
 
-export default ({ sandbox, small }: Props) =>
+export default ({ sandbox, small }: Props) => (
   <EditText
     small={small}
     target="_blank"
@@ -40,4 +34,5 @@ export default ({ sandbox, small }: Props) =>
   >
     <Text small={small}>Edit on CodeSandbox</Text>
     <Logo />
-  </EditText>;
+  </EditText>
+);

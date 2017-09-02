@@ -195,28 +195,33 @@ class Entry extends React.PureComponent<Props, State> {
             root={root}
             error={moduleHasError}
           />
-          {state === 'editing'
-            ? <EntryTitleInput
-                title={title}
-                onChange={this.handleValidateTitle}
-                onCancel={this.resetState}
-                onCommit={this.handleRename}
-              />
-            : <EntryTitle title={title} />}
-          {state === '' &&
+          {state === 'editing' ? (
+            <EntryTitleInput
+              title={title}
+              onChange={this.handleValidateTitle}
+              onCancel={this.resetState}
+              onCommit={this.handleRename}
+            />
+          ) : (
+            <EntryTitle title={title} />
+          )}
+          {state === '' && (
             <Right>
-              {isMainModule
-                ? <span style={{ opacity: hovering ? 1 : 0 }}>main</span>
-                : <EditIcons
-                    hovering={hovering}
-                    onCreateFile={onCreateModuleClick}
-                    onCreateDirectory={onCreateDirectoryClick}
-                    onDelete={deleteEntry && this.delete}
-                    onEdit={rename && this.rename}
-                  />}
-            </Right>}
+              {isMainModule ? (
+                <span style={{ opacity: hovering ? 1 : 0 }}>main</span>
+              ) : (
+                <EditIcons
+                  hovering={hovering}
+                  onCreateFile={onCreateModuleClick}
+                  onCreateDirectory={onCreateDirectoryClick}
+                  onDelete={deleteEntry && this.delete}
+                  onEdit={rename && this.rename}
+                />
+              )}
+            </Right>
+          )}
         </EntryContainer>
-      </div>,
+      </div>
     );
   }
 }

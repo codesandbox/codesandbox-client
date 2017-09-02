@@ -83,7 +83,7 @@ export const optionsToParameterizedUrl = (options: Object) => {
   const keyValues = Object.keys(options)
     .sort()
     .map(
-      key => `${encodeURIComponent(key)}=${encodeURIComponent(options[key])}`,
+      key => `${encodeURIComponent(key)}=${encodeURIComponent(options[key])}`
     )
     .join('&');
 

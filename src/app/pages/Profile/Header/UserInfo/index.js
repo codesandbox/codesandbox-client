@@ -11,7 +11,7 @@ type Props = {
   user: User,
 };
 
-export default ({ user }: Props) =>
+export default ({ user }: Props) => (
   <Row>
     <ProfileInfo
       username={user.username}
@@ -25,4 +25,5 @@ export default ({ user }: Props) =>
       forkCount={user.forkedCount}
       badges={user.badges}
     />
-  </Row>;
+  </Row>
+);

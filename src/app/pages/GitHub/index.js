@@ -99,10 +99,7 @@ export default class GitHub extends React.PureComponent<{}, State> {
             placeholder="Insert GitHub URL..."
           />
 
-          {error !== null &&
-            <ErrorMessage>
-              {error}
-            </ErrorMessage>}
+          {error !== null && <ErrorMessage>{error}</ErrorMessage>}
 
           <Label htmlFor="sandboxurl">Converted Sandbox URL</Label>
           <StyledInput

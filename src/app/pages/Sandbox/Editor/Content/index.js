@@ -76,7 +76,7 @@ const mapStateToProps = createSelector(
     user,
     modules,
     directories,
-  }),
+  })
 );
 const mapDispatchToProps = dispatch => ({
   moduleActions: bindActionCreators(moduleActionCreators, dispatch),
@@ -149,7 +149,7 @@ class EditorPreview extends React.PureComponent<Props, $FlowFixMeState> {
       modules,
       directories,
       currentModuleId,
-      mainModule,
+      mainModule
     );
     const modulePath = getModulePath(modules, directories, currentModule.id);
 
@@ -258,5 +258,5 @@ class EditorPreview extends React.PureComponent<Props, $FlowFixMeState> {
 }
 
 export default showAlternativeComponent(Skeleton, ['sandbox'])(
-  connect(mapStateToProps, mapDispatchToProps)(EditorPreview),
+  connect(mapStateToProps, mapDispatchToProps)(EditorPreview)
 );

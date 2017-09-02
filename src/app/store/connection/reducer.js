@@ -11,7 +11,7 @@ const initialState = {
 
 export default function reducer(
   state: State = initialState,
-  action: Object,
+  action: Object
 ): State {
   switch (action.type) {
     case actions.SET_CONNECTION_STATUS:

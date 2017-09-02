@@ -8,7 +8,7 @@ import logError from 'app/utils/error';
 
 const SmallText = styled.div`
   text-align: center;
-  font-size: .875rem;
+  font-size: 0.875rem;
 
   margin: 1rem;
   color: rgba(255, 255, 255, 0.6);
@@ -21,9 +21,7 @@ const Buttons = styled.div`
   margin-top: 1rem;
 `;
 
-const StyledButton = styled(Button)`
-  margin: 1rem;
-`;
+const StyledButton = styled(Button)`margin: 1rem;`;
 
 type Props = {
   date: string,

@@ -24,34 +24,34 @@ export const SIGN_OUT_API = createAPIActions('SIGN_OUT_API', 'DELETE');
 export const GET_CURRENT_USER_API = createAPIActions('CURRENT_USER', 'FETCH');
 export const UPDATE_CURRENT_USER_API = createAPIActions(
   'CURRENT_USER',
-  'UPDATE',
+  'UPDATE'
 );
 export const LOAD_USER_SANDBOXES = createAPIActions(
   'CURRENT_USER',
-  'FETCH_SANDBOXES',
+  'FETCH_SANDBOXES'
 );
 export const SEND_FEEDBACK_API = createAPIActions('FEEDBACK', 'SEND');
 export const GET_AUTH_TOKEN_API = createAPIActions('AUTH_TOKEN', 'FETCH');
 
 export const CREATE_SUBSCRIPTION_API = createAPIActions(
   'SUBSCRIPTION',
-  'CREATE',
+  'CREATE'
 );
 export const UPDATE_SUBSCRIPTION_API = createAPIActions(
   'SUBSCRIPTION',
-  'UPDATE',
+  'UPDATE'
 );
 export const CANCEL_SUBSCRIPTION_API = createAPIActions(
   'SUBSCRIPTION',
-  'CANCEL',
+  'CANCEL'
 );
 export const FETCH_PAYMENT_DETAILS = createAPIActions(
   'PAYMENT_DETAILS',
-  'FETCH',
+  'FETCH'
 );
 export const UPDATE_PAYMENT_DETAILS = createAPIActions(
   'PAYMENT_DETAILS',
-  'UPDATE',
+  'UPDATE'
 );
 export const UPDATE_BADGE_INFO = createAPIActions('BADGE', 'UPDATE');
 
@@ -60,7 +60,7 @@ const signOut = (apiRequest = true) => async (dispatch: Function) => {
     await dispatch(
       doRequest(SIGN_OUT_API, 'users/signout', {
         method: 'DELETE',
-      }),
+      })
     );
   }
 
@@ -76,7 +76,7 @@ const getCurrentUser = () => async (dispatch: Function, getState: Function) => {
   if (jwt) {
     try {
       const { data } = await dispatch(
-        doRequest(GET_CURRENT_USER_API, `users/current`),
+        doRequest(GET_CURRENT_USER_API, `users/current`)
       );
 
       identify(data);
@@ -86,7 +86,7 @@ const getCurrentUser = () => async (dispatch: Function, getState: Function) => {
     } catch (e) {
       if (e.response.status === 401) {
         dispatch(
-          modalActions.openModal({ Body: <SignOutNotice />, width: 500 }),
+          modalActions.openModal({ Body: <SignOutNotice />, width: 500 })
         );
         await dispatch(signOut(false));
       }
@@ -124,7 +124,7 @@ const signIn = () => (dispatch: Function) =>
 
 const getAuthToken = () => async (dispatch: Function): string => {
   const { data } = await dispatch(
-    doRequest(GET_AUTH_TOKEN_API, 'auth/auth-token'),
+    doRequest(GET_AUTH_TOKEN_API, 'auth/auth-token')
   );
 
   return data.token;
@@ -149,16 +149,16 @@ const sendFeedback = (message: string) => async (dispatch: Function) => {
           url: window.location.href,
         },
       },
-    }),
+    })
   );
 
   dispatch(
-    notifActions.addNotification('Thanks a lot for your feedback!', 'success'),
+    notifActions.addNotification('Thanks a lot for your feedback!', 'success')
   );
 };
 
 const createSubscription = (token: string, amount: number) => async (
-  dispatch: Function,
+  dispatch: Function
 ) => {
   await dispatch(
     doRequest(CREATE_SUBSCRIPTION_API, 'users/current_user/subscription', {
@@ -169,14 +169,14 @@ const createSubscription = (token: string, amount: number) => async (
           token,
         },
       },
-    }),
+    })
   );
 
   dispatch(
     notifActions.addNotification(
       'Thank you very much for your support!',
-      'success',
-    ),
+      'success'
+    )
   );
 };
 
@@ -189,11 +189,11 @@ const updateSubscription = (amount: number) => async (dispatch: Function) => {
           amount,
         },
       },
-    }),
+    })
   );
 
   dispatch(
-    notifActions.addNotification('Succesfully updated subscription', 'success'),
+    notifActions.addNotification('Succesfully updated subscription', 'success')
   );
 };
 
@@ -201,13 +201,13 @@ const cancelSubscription = () => async (dispatch: Function) => {
   await dispatch(
     doRequest(CANCEL_SUBSCRIPTION_API, 'users/current_user/subscription', {
       method: 'DELETE',
-    }),
+    })
   );
 };
 
 const getPaymentDetails = () => async (dispatch: Function) =>
   dispatch(
-    doRequest(FETCH_PAYMENT_DETAILS, 'users/current_user/payment_details'),
+    doRequest(FETCH_PAYMENT_DETAILS, 'users/current_user/payment_details')
   );
 
 const updatePaymentDetails = (token: string) => async (dispatch: Function) =>
@@ -219,12 +219,12 @@ const updatePaymentDetails = (token: string) => async (dispatch: Function) =>
           token,
         },
       },
-    }),
+    })
   );
 
 const setBadgeVisibility = (badgeId: string, visible: boolean) => async (
   dispatch: Function,
-  getState: Function,
+  getState: Function
 ) => {
   const oldVisibility = badgesSelector(getState()).find(b => b.id === badgeId)
     .visible;
@@ -242,7 +242,7 @@ const setBadgeVisibility = (badgeId: string, visible: boolean) => async (
             visible,
           },
         },
-      }),
+      })
     );
     return result;
   } catch (e) {

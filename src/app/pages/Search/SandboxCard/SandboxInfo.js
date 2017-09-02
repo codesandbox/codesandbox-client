@@ -17,13 +17,13 @@ const CenteredText = styled.div`
   flex-direction: row;
 `;
 
-const UpdatedAt = styled.em`font-size: .75rem;`;
+const UpdatedAt = styled.em`font-size: 0.75rem;`;
 
 const Stats = styled.div`
   position: absolute;
   right: 0;
 
-  font-size: .875rem;
+  font-size: 0.875rem;
   display: flex;
 
   display: inline-flex;
@@ -32,9 +32,7 @@ const Stats = styled.div`
   flex-direction: row;
 `;
 
-const StyledUser = styled(UserWithAvatar)`
-  font-size: .75rem;
-`;
+const StyledUser = styled(UserWithAvatar)`font-size: 0.75rem;`;
 
 type Props = {
   author: ?{
@@ -51,7 +49,7 @@ type Props = {
   },
 };
 
-const Stat = ({ Icon, count }) =>
+const Stat = ({ Icon, count }) => (
   <CenteredText style={{ fontSize: '.875rem' }}>
     <Icon />
     <span
@@ -63,7 +61,8 @@ const Stat = ({ Icon, count }) =>
     >
       {count.toLocaleString()}
     </span>
-  </CenteredText>;
+  </CenteredText>
+);
 
 export default ({
   author,
@@ -72,19 +71,19 @@ export default ({
   forkCount,
   likeCount,
   git,
-}: Props) =>
+}: Props) => (
   <CenteredText>
-    {author &&
-      <StyledUser avatarUrl={author.avatar_url} username={author.username} />}
+    {author && (
+      <StyledUser avatarUrl={author.avatar_url} username={author.username} />
+    )}
     {git && <GithubBadge username={git.username} repo={git.repo} />}
 
-    <UpdatedAt>
-      {moment(updatedAt * 1000).fromNow()}
-    </UpdatedAt>
+    <UpdatedAt>{moment(updatedAt * 1000).fromNow()}</UpdatedAt>
 
     <Stats>
       <Stat Icon={EyeIcon} count={viewCount} />
       <Stat Icon={FullHeartIcon} count={likeCount} />
       <Stat Icon={ForkIcon} count={forkCount} />
     </Stats>
-  </CenteredText>;
+  </CenteredText>
+);

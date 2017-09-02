@@ -66,7 +66,7 @@ class DirectoryEntry extends React.PureComponent {
     const currentModuleParents = getModuleParents(
       modules,
       directories,
-      currentModuleId,
+      currentModuleId
     );
 
     const isParentOfModule = currentModuleParents.includes(id);
@@ -86,7 +86,7 @@ class DirectoryEntry extends React.PureComponent {
       const currentModuleParents = getModuleParents(
         modules,
         directories,
-        currentModuleId,
+        currentModuleId
       );
 
       const isParentOfModule = currentModuleParents.includes(id);
@@ -122,7 +122,7 @@ class DirectoryEntry extends React.PureComponent {
     const module = modules.find(m => m.id === id);
 
     const confirmed = confirm(
-      `Are you sure you want to delete ${module.title}?`,
+      `Are you sure you want to delete ${module.title}?`
     );
 
     if (confirmed) {
@@ -154,7 +154,7 @@ class DirectoryEntry extends React.PureComponent {
     const { id, title, sandboxId, sandboxActions } = this.props;
 
     const confirmed = confirm(
-      `Are you sure you want to delete ${title} and all its children?`,
+      `Are you sure you want to delete ${title} and all its children?`
     );
 
     if (confirmed) {
@@ -234,7 +234,7 @@ class DirectoryEntry extends React.PureComponent {
           />
         </EntryContainer>
         <Opener open={open}>
-          {creating === 'directory' &&
+          {creating === 'directory' && (
             <Entry
               id=""
               title=""
@@ -244,7 +244,8 @@ class DirectoryEntry extends React.PureComponent {
               renameValidator={this.validateModuleTitle}
               rename={this.createDirectory}
               onRenameCancel={this.resetState}
-            />}
+            />
+          )}
           <DirectoryChildren
             modules={modules}
             directories={directories}
@@ -258,7 +259,7 @@ class DirectoryEntry extends React.PureComponent {
             currentModuleId={currentModuleId}
             isInProjectView={isInProjectView}
           />
-          {creating === 'module' &&
+          {creating === 'module' && (
             <Entry
               id=""
               title=""
@@ -267,9 +268,10 @@ class DirectoryEntry extends React.PureComponent {
               renameValidator={this.validateModuleTitle}
               rename={this.createModule}
               onRenameCancel={this.resetState}
-            />}
+            />
+          )}
         </Opener>
-      </div>,
+      </div>
     );
   }
 }
@@ -287,13 +289,13 @@ const entryTarget = {
       props.sandboxActions.moveDirectoryToDirectory(
         props.sandboxId,
         sourceItem.id,
-        props.shortid,
+        props.shortid
       );
     } else {
       props.sandboxActions.moveModuleToDirectory(
         props.sandboxId,
         sourceItem.id,
-        props.shortid,
+        props.shortid
       );
     }
   },
@@ -321,5 +323,5 @@ function collectTarget(connectMonitor, monitor) {
 }
 
 export default connect(null, mapDispatchToProps)(
-  DropTarget('ENTRY', entryTarget, collectTarget)(DirectoryEntry),
+  DropTarget('ENTRY', entryTarget, collectTarget)(DirectoryEntry)
 );

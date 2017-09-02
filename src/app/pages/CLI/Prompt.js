@@ -54,9 +54,7 @@ export default ({ error, token, loading, username, signIn }: Props) => {
     return (
       <Container>
         <Title>An error occured:</Title>
-        <SubTitle>
-          {error}
-        </SubTitle>
+        <SubTitle>{error}</SubTitle>
         <Buttons>
           <Button href="/">Go to homepage</Button>
         </Buttons>
@@ -88,9 +86,7 @@ export default ({ error, token, loading, username, signIn }: Props) => {
 
   return (
     <Container>
-      <Title>
-        Hello {username}!
-      </Title>
+      <Title>Hello {username}!</Title>
       <SubTitle>
         The CLI needs authorization to work.
         <br />Please paste the following code in the CLI:

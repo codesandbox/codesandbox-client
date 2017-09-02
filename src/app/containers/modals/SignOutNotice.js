@@ -32,7 +32,7 @@ const SignOutNotice = ({
 }: {
   userActions: typeof userActionCreators,
   modalActions: typeof modalActionCreators,
-}) =>
+}) => (
   <Container>
     <Heading>You have been signed out</Heading>
     <Explanation>
@@ -59,6 +59,7 @@ const SignOutNotice = ({
         Sign in
       </Button>
     </Row>
-  </Container>;
+  </Container>
+);
 
 export default connect(null, mapDispatchToProps)(SignOutNotice);

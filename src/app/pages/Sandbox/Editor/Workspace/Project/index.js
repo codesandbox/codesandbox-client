@@ -17,7 +17,7 @@ import WorkspaceSubtitle from '../WorkspaceSubtitle';
 const Item = styled.div`
   margin: 1rem;
   margin-top: 0;
-  font-size: .875rem;
+  font-size: 0.875rem;
 `;
 
 const GitContainer = styled.div`
@@ -30,20 +30,20 @@ const UserLink = styled(Link)`
   display: block;
   text-decoration: none;
   color: rgba(255, 255, 255, 0.8);
-  font-size: .875rem;
+  font-size: 0.875rem;
 `;
 
 const StatsContainer = styled.div`
   border-top: 1px solid ${props => props.theme.background2};
   padding: 1rem;
-  font-size: .875rem;
+  font-size: 0.875rem;
   box-sizing: border-box;
   color: rgba(255, 255, 255, 0.8);
 `;
 
 const PrivacyContainer = styled.div`
   margin: 0 1rem;
-  font-size: .875rem;
+  font-size: 0.875rem;
   color: rgba(255, 255, 255, 0.8);
   margin-bottom: 1rem;
 `;
@@ -68,7 +68,7 @@ export default class Project extends React.PureComponent<
   {
     title: ?string,
     description: ?string,
-  },
+  }
 > {
   constructor(props: Props) {
     super(props);
@@ -146,7 +146,7 @@ export default class Project extends React.PureComponent<
             rows="5"
           />
         </WorkspaceInputContainer>
-        {!!author &&
+        {!!author && (
           <div>
             <WorkspaceSubtitle>Author</WorkspaceSubtitle>
             <Item>
@@ -158,9 +158,10 @@ export default class Project extends React.PureComponent<
                 />
               </UserLink>
             </Item>
-          </div>}
+          </div>
+        )}
 
-        {!!git &&
+        {!!git && (
           <div>
             <WorkspaceSubtitle>GitHub Repository</WorkspaceSubtitle>
             <GitContainer>
@@ -170,9 +171,10 @@ export default class Project extends React.PureComponent<
                 repo={git.repo}
               />
             </GitContainer>
-          </div>}
+          </div>
+        )}
 
-        {forkedSandbox &&
+        {forkedSandbox && (
           <div>
             <WorkspaceSubtitle>Forked from</WorkspaceSubtitle>
 
@@ -185,15 +187,17 @@ export default class Project extends React.PureComponent<
                 {forkedSandbox.title || forkedSandbox.id}
               </ConfirmLink>
             </Item>
-          </div>}
+          </div>
+        )}
 
-        {privacy > 0 &&
+        {privacy > 0 && (
           <div>
             <WorkspaceSubtitle>Privacy Status</WorkspaceSubtitle>
             <PrivacyContainer>
               <PrivacyStatus privacy={privacy} />
             </PrivacyContainer>
-          </div>}
+          </div>
+        )}
 
         <div>
           <WorkspaceSubtitle>Template</WorkspaceSubtitle>

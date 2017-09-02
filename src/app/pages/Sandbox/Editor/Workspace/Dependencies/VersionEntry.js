@@ -48,10 +48,16 @@ export default class VersionEntry extends React.PureComponent {
       >
         <span>{dependency}</span>
         <Version hovering={hovering}>{dependencies[dependency]}</Version>
-        {hovering && <IconArea>
-          <Icon onClick={this.handleRefresh}><RefreshIcon /></Icon>
-          <Icon onClick={this.handleRemove}><CrossIcon /></Icon>
-        </IconArea>}
+        {hovering && (
+          <IconArea>
+            <Icon onClick={this.handleRefresh}>
+              <RefreshIcon />
+            </Icon>
+            <Icon onClick={this.handleRemove}>
+              <CrossIcon />
+            </Icon>
+          </IconArea>
+        )}
       </EntryContainer>
     );
   }

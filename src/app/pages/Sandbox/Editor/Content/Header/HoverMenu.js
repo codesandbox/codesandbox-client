@@ -64,9 +64,7 @@ export default class HoverMenu extends React.PureComponent {
     return (
       <span>
         <HeaderComponent {...headerProps} onClick={this.toggle} />
-        <div ref={this.setOnclickListener}>
-          {open && children(this.toggle)}
-        </div>
+        <div ref={this.setOnclickListener}>{open && children(this.toggle)}</div>
       </span>
     );
   }

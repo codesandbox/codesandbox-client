@@ -79,7 +79,7 @@ const mapDispatchToProps = dispatch => ({
   userActions: bindActionCreators(userActionCreators, dispatch),
   initializeConnectionManager: bindActionCreators(
     initializeConnectionManager,
-    dispatch,
+    dispatch
   ),
 });
 class Routes extends React.PureComponent<Props> {
@@ -104,7 +104,7 @@ class Routes extends React.PureComponent<Props> {
           path="/"
           render={({ location }) => {
             routeDebugger(
-              `Sending '${location.pathname + location.search}' to ga.`,
+              `Sending '${location.pathname + location.search}' to ga.`
             );
             if (typeof window.ga === 'function') {
               window.ga('set', 'page', location.pathname + location.search);

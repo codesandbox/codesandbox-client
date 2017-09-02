@@ -20,9 +20,7 @@ const Container = styled.div`
   color: white;
 `;
 
-const Title = styled.h1`
-  margin-bottom: 0;
-`;
+const Title = styled.h1`margin-bottom: 0;`;
 
 const Buttons = styled.div`
   display: flex;

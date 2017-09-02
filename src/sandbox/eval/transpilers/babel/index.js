@@ -37,7 +37,7 @@ class BabelTranspiler extends WorkerTranspiler {
           }
 
           return resolve(data);
-        },
+        }
       );
     });
   }

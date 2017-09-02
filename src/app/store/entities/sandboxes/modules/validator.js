@@ -4,7 +4,7 @@ import type { Module, Directory } from 'common/types';
 export const validateTitle = (
   id: string,
   title: string,
-  siblings: Array<Module | Directory>, // eslint-disable-line
+  siblings: Array<Module | Directory> // eslint-disable-line
 ) => {
   if (title.length === 0) return 'Title cannot be empty';
   if (/^[09azAZ_.]+$/.test(title)) {

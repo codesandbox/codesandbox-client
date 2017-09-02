@@ -16,7 +16,7 @@ import Sidebar from './components/Sidebar';
 import { getSandboxOptions } from '../common/url';
 import {
   findCurrentModule,
-  findMainModule
+  findMainModule,
 } from 'app/store/entities/sandboxes/modules/selectors';
 
 const Container = styled.div`
@@ -57,7 +57,7 @@ type State = {
   sidebarOpen: boolean,
   autoResize: boolean,
   hideNavigation: boolean,
-  fontSize: number
+  fontSize: number,
 };
 
 export default class App extends React.PureComponent<{}, State> {
@@ -72,7 +72,7 @@ export default class App extends React.PureComponent<{}, State> {
       isEditorScreen,
       autoResize,
       hideNavigation,
-      fontSize
+      fontSize,
     } = getSandboxOptions(document.location.href);
 
     this.state = {
@@ -86,7 +86,7 @@ export default class App extends React.PureComponent<{}, State> {
       initialPath,
       sidebarOpen: false,
       autoResize,
-      hideNavigation
+      hideNavigation,
     };
   }
 
@@ -179,7 +179,7 @@ export default class App extends React.PureComponent<{}, State> {
       <ThemeProvider
         theme={{
           templateColor: getTemplateDefinition(this.state.sandbox.template)
-            .color
+            .color,
         }}
       >
         <Container>
@@ -213,15 +213,14 @@ export default class App extends React.PureComponent<{}, State> {
   render() {
     return (
       <Fullscreen sidebarOpen={this.state.sidebarOpen}>
-        {this.state.sandbox &&
+        {this.state.sandbox && (
           <Sidebar
             setCurrentModule={this.setCurrentModule}
             currentModule={this.getCurrentModuleFromPath().id}
             sandbox={this.state.sandbox}
-          />}
-        <Moving sidebarOpen={this.state.sidebarOpen}>
-          {this.content()}
-        </Moving>
+          />
+        )}
+        <Moving sidebarOpen={this.state.sidebarOpen}>{this.content()}</Moving>
       </Fullscreen>
     );
   }

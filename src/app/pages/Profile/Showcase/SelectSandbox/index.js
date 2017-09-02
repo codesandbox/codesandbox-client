@@ -54,14 +54,14 @@ class SelectSandbox extends React.PureComponent<Props> {
       <div>
         {user.sandboxes
           .filter(x => x)
-          .map(sandbox =>
+          .map(sandbox => (
             <Sandbox
               active={sandbox.id === showcaseSandboxId}
               key={sandbox.id}
               sandbox={sandbox}
               setShowcasedSandbox={this.setShowcasedSandbox}
-            />,
-          )}
+            />
+          ))}
       </div>
     );
   }

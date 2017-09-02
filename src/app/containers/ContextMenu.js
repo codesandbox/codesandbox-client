@@ -13,7 +13,7 @@ import Portal from '../components/Portal';
 const Container = styled.div`
   position: fixed;
 
-  font-size: .875rem;
+  font-size: 0.875rem;
   background-color: ${() => theme.background2.lighten(0.2)()};
   color: ${() => theme.background2.lighten(3)()};
   box-shadow: -1px 3px 4px rgba(0, 0, 0, 0.3);
@@ -26,7 +26,7 @@ const Container = styled.div`
 
 const Item = styled.div`
   transition: 0.3s ease all;
-  padding: .75rem 1rem;
+  padding: 0.75rem 1rem;
 
   border-bottom: 1px solid ${() => theme.background2()};
   border-left: 2px solid transparent;
@@ -103,7 +103,7 @@ class ContextMenu extends React.PureComponent<Props> {
     return (
       <Portal>
         <div ref={this.setup}>
-          {contextMenu.show &&
+          {contextMenu.show && (
             <Motion
               defaultStyle={{ size: 0.75, opacity: 0.6 }}
               style={{
@@ -111,7 +111,7 @@ class ContextMenu extends React.PureComponent<Props> {
                 opacity: spring(1),
               }}
             >
-              {({ size, opacity }) =>
+              {({ size, opacity }) => (
                 <Container
                   style={{
                     left: contextMenu.x + 10,
@@ -121,7 +121,7 @@ class ContextMenu extends React.PureComponent<Props> {
                   }}
                 >
                   <div>
-                    {contextMenu.items.map(item =>
+                    {contextMenu.items.map(item => (
                       <Item
                         key={item.title}
                         color={item.color}
@@ -129,11 +129,13 @@ class ContextMenu extends React.PureComponent<Props> {
                       >
                         {item.icon && <item.icon />}
                         {item.title}
-                      </Item>,
-                    )}
+                      </Item>
+                    ))}
                   </div>
-                </Container>}
-            </Motion>}
+                </Container>
+              )}
+            </Motion>
+          )}
         </div>
       </Portal>
     );

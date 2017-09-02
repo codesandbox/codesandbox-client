@@ -30,14 +30,14 @@ const Title = styled.h2`
 `;
 
 const Subtitle = styled.h3`
-  font-size: .875rem;
+  font-size: 0.875rem;
   margin: 0.5rem 1rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.5);
 `;
 
 const Description = styled.p`
-  font-size: .875rem;
+  font-size: 0.875rem;
   padding: 0 1rem;
 `;
 
@@ -60,7 +60,7 @@ const Version = styled.div`
 `;
 
 const Author = styled.div`
-  font-size: .875rem;
+  font-size: 0.875rem;
   margin: 0 1rem;
   margin-bottom: 1rem;
 `;
@@ -82,20 +82,16 @@ type Props = {
   currentModule: string,
 };
 
-export default ({ sandbox, setCurrentModule, currentModule }: Props) =>
+export default ({ sandbox, setCurrentModule, currentModule }: Props) => (
   <Container>
     <Item>
-      <Title>
-        {sandbox.title || sandbox.id}
-      </Title>
-      {sandbox.author &&
+      <Title>{sandbox.title || sandbox.id}</Title>
+      {sandbox.author && (
         <Author>
           Made by <strong>{sandbox.author.username}</strong>
-        </Author>}
-      {sandbox.description &&
-        <Description>
-          {sandbox.description}
-        </Description>}
+        </Author>
+      )}
+      {sandbox.description && <Description>{sandbox.description}</Description>}
     </Item>
 
     <Item>
@@ -113,23 +109,21 @@ export default ({ sandbox, setCurrentModule, currentModule }: Props) =>
       <Title>Dependencies</Title>
 
       <Subtitle>NPM Dependencies</Subtitle>
-      {Object.keys(sandbox.npmDependencies).map(dep =>
+      {Object.keys(sandbox.npmDependencies).map(dep => (
         <EntryContainer key={dep}>
           {dep}
-          <Version>
-            {sandbox.npmDependencies[dep]}
-          </Version>
-        </EntryContainer>,
-      )}
+          <Version>{sandbox.npmDependencies[dep]}</Version>
+        </EntryContainer>
+      ))}
 
       <Subtitle>External Resources</Subtitle>
-      {sandbox.externalResources.map(dep =>
+      {sandbox.externalResources.map(dep => (
         <EntryContainer key={dep}>
           <a href={dep} rel="nofollow noopener noreferrer" target="_blank">
             {getName(dep)}
           </a>
-        </EntryContainer>,
-      )}
+        </EntryContainer>
+      ))}
     </Item>
 
     <Item hover>
@@ -137,4 +131,5 @@ export default ({ sandbox, setCurrentModule, currentModule }: Props) =>
         <EditorLink sandbox={sandbox} />
       </Padding>
     </Item>
-  </Container>;
+  </Container>
+);

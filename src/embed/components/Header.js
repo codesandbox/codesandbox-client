@@ -63,9 +63,7 @@ export default class Header extends React.PureComponent<Props> {
     return (
       <Container>
         <MenuIcon onClick={toggleSidebar} />
-        <Title>
-          {sandbox.title || sandbox.id}
-        </Title>
+        <Title>{sandbox.title || sandbox.id}</Title>
         <ModeIcons
           showEditor={showEditor}
           showPreview={showPreview}

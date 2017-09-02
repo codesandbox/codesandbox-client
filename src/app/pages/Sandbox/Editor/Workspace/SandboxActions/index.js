@@ -62,7 +62,7 @@ export default class SandboxSettings extends React.PureComponent {
     const { isPatron, privacy } = this.props;
     return (
       <div>
-        {isPatron &&
+        {isPatron && (
           <div>
             <WorkspaceSubtitle>Sandbox Privacy</WorkspaceSubtitle>
             <WorkspaceInputContainer>
@@ -75,7 +75,8 @@ export default class SandboxSettings extends React.PureComponent {
                 <option value={2}>Private</option>
               </PrivacySelect>
             </WorkspaceInputContainer>
-          </div>}
+          </div>
+        )}
         <WorkspaceSubtitle>Delete Sandbox</WorkspaceSubtitle>
         <WorkspaceInputContainer>
           <Button

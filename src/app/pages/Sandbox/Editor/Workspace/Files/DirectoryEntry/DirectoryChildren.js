@@ -50,7 +50,7 @@ export default class DirectoryChildren extends React.PureComponent<Props> {
       <div>
         {directories
           .filter(x => x.directoryShortid === parentShortid)
-          .map(dir =>
+          .map(dir => (
             <DirectoryEntry
               key={dir.id}
               siblings={[...directories, ...modules]}
@@ -63,8 +63,8 @@ export default class DirectoryChildren extends React.PureComponent<Props> {
               directories={directories}
               currentModuleId={currentModuleId}
               isInProjectView={isInProjectView}
-            />,
-          )}
+            />
+          ))}
         {modules.filter(x => x.directoryShortid === parentShortid).map(m => {
           const isActive = m.id === currentModuleId;
           const mainModule = isMainModule(m);

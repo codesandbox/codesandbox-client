@@ -1,6 +1,7 @@
 // @flow
-import type { Module } from 'common/types';
 import { flattenDeep } from 'lodash';
+
+import type { Module } from 'common/types';
 import getModulePath from 'common/sandbox/get-module-path';
 
 import type { SourceMap } from './transpilers/utils/get-source-map';
@@ -13,7 +14,7 @@ import evaluate from './loaders/eval';
 import Manager from './manager';
 
 type ChildModule = Module & {
-  parent: Module
+  parent: Module,
 };
 
 class ModuleSource {
@@ -35,10 +36,10 @@ export type LoaderContext = {
     title: string,
     code: string,
     directoryShortid: ?string
-  ) => TranspiledModule,
+  ) => TranspiledModule, // eslint-disable-line no-use-before-define
   emitFile: (name: string, content: string, sourceMap: SourceMap) => void,
   options: {
-    context: '/'
+    context: '/',
   },
   webpack: boolean,
   sourceMap: boolean,
@@ -49,16 +50,16 @@ export type LoaderContext = {
   addDependency: (
     depPath: string,
     options: ?{
-      isAbsolute: boolean
+      isAbsolute: boolean,
     }
-  ) => TranspiledModule,
+  ) => TranspiledModule, // eslint-disable-line no-use-before-define
   addDependenciesInDirectory: (
     depPath: string,
     options: {
-      isAbsolute: boolean
+      isAbsolute: boolean,
     }
-  ) => Array<TranspiledModule>,
-  _module: TranspiledModule // eslint-disable-line no-use-before-define
+  ) => Array<TranspiledModule>, // eslint-disable-line no-use-before-define
+  _module: TranspiledModule, // eslint-disable-line no-use-before-define
 };
 
 class Compilation {
@@ -75,7 +76,7 @@ export default class TranspiledModule {
   source: ?ModuleSource;
   cacheable: boolean;
   assets: {
-    [name: string]: ModuleSource
+    [name: string]: ModuleSource,
   };
   isEntry: boolean;
   childModules: Array<TranspiledModule>;
@@ -144,9 +145,11 @@ export default class TranspiledModule {
     if (this.compilation) {
       try {
         this.compilation = null;
-        Array.from(this.initiators).filter(t => t.compilation).forEach(dep => {
-          dep.resetCompilation();
-        });
+        Array.from(this.initiators)
+          .filter(t => t.compilation)
+          .forEach(dep => {
+            dep.resetCompilation();
+          });
       } catch (e) {
         console.error(e);
       }
@@ -168,7 +171,7 @@ export default class TranspiledModule {
 
   getLoaderContext(
     manager: Manager,
-    transpilerOptions: Object = {}
+    transpilerOptions: ?Object = {}
   ): LoaderContext {
     const path = getModulePath(
       manager.getModules(),
@@ -200,7 +203,7 @@ export default class TranspiledModule {
           directoryShortid,
           title: moduleName,
           parent: this.module,
-          code
+          code,
         };
 
         const transpiledModule = manager.addModule(
@@ -270,13 +273,13 @@ export default class TranspiledModule {
       },
       options: {
         context: '/',
-        ...transpilerOptions
+        ...transpilerOptions,
       },
       webpack: true,
       sourceMap: true,
       target: 'web',
       _module: this,
-      path
+      path,
     };
   }
 
@@ -314,6 +317,7 @@ export default class TranspiledModule {
 
     let code = this.module.code || '';
     let finalSourceMap = null;
+
     for (let i = 0; i < transpilers.length; i += 1) {
       const transpilerConfig = transpilers[i];
       const loaderContext = this.getLoaderContext(
@@ -323,17 +327,19 @@ export default class TranspiledModule {
       try {
         const {
           transpiledCode,
-          sourceMap
+          sourceMap,
         } = await transpilerConfig.transpiler.transpile(code, loaderContext); // eslint-disable-line no-await-in-loop
 
         if (this.errors.length) {
           throw this.errors[0];
         }
+
         code = transpiledCode;
         finalSourceMap = sourceMap;
       } catch (e) {
         e.fileName = loaderContext.path;
         e.module = this.module;
+        this.resetTranspilation();
         throw e;
       }
     }
@@ -348,17 +354,16 @@ export default class TranspiledModule {
     code = `${code}\n//# sourceURL=${path}`;
 
     this.source = new ModuleSource(this.module.title, code, finalSourceMap);
-    await Promise.all(
+
+    return Promise.all(
       flattenDeep([
         ...Array.from(this.transpilationInitiators).map(t =>
           t.transpile(manager)
         ),
         ...Array.from(this.dependencies).map(t => t.transpile(manager)),
-        ...this.childModules.map(t => t.transpile(manager))
+        ...this.childModules.map(t => t.transpile(manager)),
       ])
     );
-
-    return this;
   }
 
   getChildTranspiledModules(): Array<TranspiledModule> {
@@ -422,7 +427,7 @@ export default class TranspiledModule {
           ? cache.exports
           : manager.evaluateTranspiledModule(requiredTranspiledModule, [
               ...parentModules,
-              transpiledModule
+              transpiledModule,
             ]);
       }
 
