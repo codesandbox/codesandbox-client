@@ -5,7 +5,7 @@ self.importScripts([
 function getLineNumberAndOffset(start, lines) {
   let line = 0;
   let offset = 0;
-  while (offset + lines[line] <= start) {
+  while (offset + lines[line] < start) {
     offset += lines[line] + 1;
     line += 1;
   }
@@ -13,13 +13,27 @@ function getLineNumberAndOffset(start, lines) {
   return { line: line + 1, offset };
 }
 
+function nodeToRange(node) {
+  if (
+    typeof node.getStart === 'function' &&
+    typeof node.getEnd === 'function'
+  ) {
+    return [node.getStart(), node.getEnd()];
+  } else if (
+    typeof node.pos !== 'undefined' &&
+    typeof node.end !== 'undefined'
+  ) {
+    return [node.pos, node.end];
+  }
+  return [0, 0];
+}
+
 function addChildNodes(node, lines, classifications) {
   self.ts.forEachChild(node, id => {
-    const { offset, line: startLine } = getLineNumberAndOffset(
-      id.getStart(),
-      lines
-    );
-    const { line: endLine } = getLineNumberAndOffset(id.getEnd(), lines);
+    const [start, end] = nodeToRange(id);
+
+    const { offset, line: startLine } = getLineNumberAndOffset(start, lines);
+    const { line: endLine } = getLineNumberAndOffset(end, lines);
     classifications.push({
       start: id.getStart() + 1 - offset,
       end: id.getEnd() + 1 - offset,

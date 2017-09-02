@@ -317,6 +317,7 @@ export default class TranspiledModule {
 
     let code = this.module.code || '';
     let finalSourceMap = null;
+
     for (let i = 0; i < transpilers.length; i += 1) {
       const transpilerConfig = transpilers[i];
       const loaderContext = this.getLoaderContext(
@@ -338,6 +339,7 @@ export default class TranspiledModule {
       } catch (e) {
         e.fileName = loaderContext.path;
         e.module = this.module;
+        this.resetTranspilation();
         throw e;
       }
     }

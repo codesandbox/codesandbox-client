@@ -22,6 +22,13 @@ export default class Manager {
   modules: Array<Module>;
   directories: Array<Directory>;
 
+  // Mark if the manager is transpiling, because there is a chance that the
+  // manager gets concurrent render requests. When the first finishes with
+  // transpiling it will try to evaluate normally, but that's not possible
+  // since another transpilation is happening. That's why we check for this value
+  // first.
+  transpiling: boolean;
+
   constructor(
     id: string,
     modules: Array<Module>,
@@ -33,6 +40,7 @@ export default class Manager {
     this.directories = directories;
     this.preset = preset;
     this.transpiledModules = {};
+    this.transpiling = false;
 
     console.log(this);
   }
@@ -42,14 +50,18 @@ export default class Manager {
   }
 
   evaluateModule(module: Module) {
-    const transpiledModule = this.getTranspiledModule(module);
+    if (!this.transpiling) {
+      const transpiledModule = this.getTranspiledModule(module);
 
-    // Run post evaluate first
-    const exports = this.evaluateTranspiledModule(transpiledModule, []);
+      // Run post evaluate first
+      const exports = this.evaluateTranspiledModule(transpiledModule, []);
 
-    this.getTranspiledModules().forEach(t => t.postEvaluate(this));
+      this.getTranspiledModules().forEach(t => t.postEvaluate(this));
 
-    return exports;
+      return exports;
+    }
+
+    return null;
   }
 
   evaluateTranspiledModule(
@@ -197,6 +209,7 @@ export default class Manager {
    * delete caches accordingly
    */
   updateData(modules: Array<Module>, directories: Array<Directory>) {
+    this.transpiling = true;
     // Create an object with mapping from modules
     const moduleObject = this.modules.reduce(
       (prev, next) => ({
@@ -259,11 +272,21 @@ export default class Manager {
 
     return Promise.all(
       transpiledModulesToUpdate.map(tModule => tModule.transpile(this))
-    ).then(x => {
-      this.modules = modules;
-      this.directories = directories;
+    )
+      .then(x => {
+        this.modules = modules;
+        this.directories = directories;
+        this.transpiling = false;
 
-      return x;
-    });
+        return x;
+      })
+      .catch(e => {
+        // Also set new module info for a catch
+        this.modules = modules;
+        this.directories = directories;
+        this.transpiling = false;
+
+        throw e;
+      });
   }
 }
