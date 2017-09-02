@@ -16,7 +16,18 @@ const Container = styled.div`
   vertical-align: middle;
 `;
 
-export default class NewSandboxAction extends React.PureComponent {
+type Props = {
+  showHighlight: boolean,
+};
+
+type State = {
+  menuOpen: boolean,
+};
+
+export default class NewSandboxAction extends React.PureComponent<
+  Props,
+  State
+> {
   state = {
     menuOpen: false,
   };
@@ -26,7 +37,6 @@ export default class NewSandboxAction extends React.PureComponent {
 
   render() {
     const { menuOpen } = this.state;
-
     return (
       <Container>
         <Action
@@ -34,6 +44,7 @@ export default class NewSandboxAction extends React.PureComponent {
           tooltip="New Sandbox"
           Icon={PlusIcon}
           moreInfo
+          hideBottomHighlight={!this.props.showHighlight}
         />
         {menuOpen && (
           <HoverMenu onClose={this.closeMenu}>

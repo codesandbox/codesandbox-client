@@ -245,7 +245,7 @@ export default class Header extends React.PureComponent<Props> {
             email={user.email}
             sendMessage={userActions.sendFeedback}
           />
-          <NewSandboxAction />
+          <NewSandboxAction showHighlight />
           <Action
             onClick={this.openPreferences}
             tooltip="Preferences"
