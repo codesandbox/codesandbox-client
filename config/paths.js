@@ -24,6 +24,7 @@ const src = resolveApp('src');
 const appSrc = path.join(src, 'app');
 const sandboxSrc = path.join(src, 'sandbox');
 const embedSrc = path.join(src, 'embed');
+const homepageSrc = path.join(src, 'homepage');
 
 // config after eject: we're in ./config/
 module.exports = {
@@ -36,6 +37,7 @@ module.exports = {
   appSrc,
   sandboxSrc,
   embedSrc,
+  homepageSrc,
   appNodeModules: resolveApp('node_modules'),
   ownNodeModules: resolveApp('node_modules'),
   nodePaths,

@@ -2,7 +2,6 @@
 process.env.NODE_ENV = 'development';
 
 var express = require('express');
-var path = require('path');
 var chalk = require('chalk');
 var webpack = require('webpack');
 var WebpackDevServer = require('webpack-dev-server');
@@ -12,10 +11,8 @@ var opn = require('opn');
 var http = require('http');
 var proxy = require('http-proxy-middleware');
 var httpProxy = require('http-proxy');
-var prompt = require('./utils/prompt');
 var config = require('../config/webpack.dev');
 var paths = require('../config/paths');
-var env = require('../config/env');
 
 // Tools like Cloud9 rely on this.
 var DEFAULT_PORT = process.env.PORT || 3000;
@@ -164,6 +161,13 @@ function openBrowser(port, protocol) {
 }
 
 function addMiddleware(devServer, index) {
+  devServer.use(function(req, res, next) {
+    if (req.url === '/') {
+      req.url = '/homepage';
+    }
+    next();
+  });
+  devServer.use('/homepage', express.static(paths.homepageSrc));
   devServer.use(
     historyApiFallback({
       // Allow paths with dots in them to be loaded, reference issue #387
@@ -215,6 +219,7 @@ function runDevServer(port, protocol, index) {
     // contentBase: paths.staticPath,
     host: process.env.LOCAL_SERVER ? 'localhost' : 'codesandbox.dev',
     disableHostCheck: !process.env.LOCAL_SERVER,
+    contentBase: false,
   });
 
   // Our custom middleware proxies requests to /index.html or a remote API.
