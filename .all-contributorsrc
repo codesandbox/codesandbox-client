@@ -108,6 +108,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "lbogdan",
+      "name": "Bogdan Luca",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/2083930?v=4",
+      "profile": "https://github.com/lbogdan",
+      "contributions": [
+        "bug",
+        "code"
+      ]
     }
   ]
 }
