@@ -8,14 +8,20 @@ const devEntries = [
   'webpack/hot/only-dev-server',
 ];
 
-module.exports = merge(commonConfig, {
-  devtool: 'eval',
-  output: {
-    filename: 'static/js/[name].js',
+module.exports = merge(
+  // these go first, because "react-hot-loader/patch" has to be the first entry
+  {
+    entry: {
+      app: devEntries,
+      embed: devEntries,
+    },
   },
-  entry: {
-    app: devEntries,
-    embed: devEntries,
-  },
-  plugins: [new webpack.HotModuleReplacementPlugin()],
-});
+  commonConfig,
+  {
+    devtool: 'eval',
+    output: {
+      filename: 'static/js/[name].js',
+    },
+    plugins: [new webpack.HotModuleReplacementPlugin()],
+  }
+);
