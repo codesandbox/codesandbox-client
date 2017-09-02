@@ -103,12 +103,14 @@ class Routes extends React.PureComponent<Props> {
         <Route
           path="/"
           render={({ location }) => {
-            routeDebugger(
-              `Sending '${location.pathname + location.search}' to ga.`
-            );
-            if (typeof window.ga === 'function') {
-              window.ga('set', 'page', location.pathname + location.search);
-              window.ga('send', 'pageview');
+            if (process.env.NODE_ENV === 'production') {
+              routeDebugger(
+                `Sending '${location.pathname + location.search}' to ga.`
+              );
+              if (typeof window.ga === 'function') {
+                window.ga('set', 'page', location.pathname + location.search);
+                window.ga('send', 'pageview');
+              }
             }
             return null;
           }}
