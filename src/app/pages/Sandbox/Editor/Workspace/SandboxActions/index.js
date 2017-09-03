@@ -53,9 +53,9 @@ class SandboxSettings extends React.PureComponent {
           title="Delete File"
           body={<span>Are you sure you want to delete this sandbox?</span>}
           onCancel={modalActions.closeModal}
-          onDelete={async () => {
-            await this.props.deleteSandbox(this.props.id);
-            await this.props.newSandboxUrl();
+          onDelete={() => {
+            this.props.deleteSandbox(this.props.id);
+            this.props.newSandboxUrl();
             modalActions.closeModal();
           }}
         />
