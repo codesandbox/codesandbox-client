@@ -1,6 +1,6 @@
-import React from 'react';
-import styled from 'styled-components';
-import Button from 'app/components/buttons/Button';
+import React from "react";
+import styled from "styled-components";
+import Button from "app/components/buttons/Button";
 
 const Container = styled.div`
   display: flex;
@@ -54,10 +54,10 @@ const DeleteFile = ({ filename, onCancel, onDelete }: Props) =>
     </Text>
 
     <Buttons>
-      <Button small block onClick={onCancel}>
+      <Button small block secondary onClick={onCancel}>
         Cancel
       </Button>
-      <Button small block red onClick={onDelete}>
+      <Button small block primary onClick={onDelete}>
         Delete
       </Button>
     </Buttons>

@@ -1,19 +1,26 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import styled, { css, keyframes } from 'styled-components';
+import React from "react";
+import { Link } from "react-router-dom";
+import styled, { css, keyframes } from "styled-components";
 
-import theme from 'common/theme';
+import theme from "common/theme";
 
-const getBackgroundColor = ({ disabled, red }) => {
+const getBackgroundColor = ({ disabled, red, secondary }) => {
   if (disabled) return `background: ${theme.background2.darken(0.1)()}`;
+  if (secondary) return `background: #3A4B5D`;
   if (red)
     return `background-image: linear-gradient(270deg, #F27777, #400000);`;
   return `background-image: linear-gradient(270deg, #fed29d, #A58B66, #7abae8, #56a0d6);`;
 };
 
-const getColor = ({ disabled }) => {
+const getColor = ({ disabled, secondary }) => {
   if (disabled) return theme.background2.lighten(1.5)();
-  return 'white';
+  if (secondary) return `#56a0d6`;
+  return "white";
+};
+
+const getBorder = ({ secondary }) => {
+  if (secondary) return `1px solid #56a0d6`;
+  return "none";
 };
 
 const forward = keyframes`
@@ -37,6 +44,7 @@ const styles = css`
   ${props => getBackgroundColor(props)};
   background-size: 720%;
 
+  border:${props => getBorder(props)};
   border-radius: 4px;
 
   box-sizing: border-box;
@@ -45,7 +53,7 @@ const styles = css`
   color: ${props => getColor(props)};
   font-weight: 400;
   ${props => !props.disabled && `box-shadow: 0 3px 3px rgba(0, 0, 0, 0.5);`};
-  width: ${props => (props.block ? '100%' : 'inherit')};
+  width: ${props => (props.block ? "100%" : "inherit")};
 
   ${props => () => {
     if (props.small) {
@@ -54,7 +62,7 @@ const styles = css`
         font-size: 0.875rem;
       `;
     }
-    return 'padding: 0.65rem 2.25rem;';
+    return "padding: 0.65rem 2.25rem;";
   }} user-select: none;
   text-decoration: none;
 
@@ -85,7 +93,7 @@ const Button = styled.button`${styles};`;
 type Props = {
   [key: any]: any,
   to: ?string,
-  href: ?string,
+  href: ?string
 };
 
 export default (props: Props) => {
