@@ -48,6 +48,16 @@ const Container = styled.div`
   z-index: 30;
 `;
 
+/*
+const fontFamilies = (...families) =>
+  families
+    .filter(Boolean)
+    .map(
+      family => (family.indexOf(' ') !== -1 ? JSON.stringify(family) : family)
+    )
+    .join(', ');
+*/
+
 const CodeContainer = styled.div`
   position: relative;
   width: 100%;

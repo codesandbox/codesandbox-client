@@ -1,13 +1,11 @@
 import React from 'react';
 import Loadable from 'react-loadable';
+import { Preferences } from 'common/types';
 
 import Monaco from './Monaco';
 
 type Props = {
-  preferences: {
-    vimMode: ?boolean,
-    codeMirror: ?boolean,
-  },
+  preferences: Preferences,
 };
 
 const CodeMirror = Loadable({
