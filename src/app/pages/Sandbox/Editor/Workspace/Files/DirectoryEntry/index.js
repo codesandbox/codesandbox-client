@@ -11,10 +11,10 @@ import { validateTitle } from "app/store/entities//sandboxes/modules/validator";
 import contextMenuActionCreators from "app/store/context-menu/actions";
 import { getModuleParents } from "app/store/entities/sandboxes/modules/selectors";
 import modalActionCreators from "app/store/modal/actions";
+import Alert from "app/components/Alert";
 
 import Entry from "./Entry";
 import DirectoryChildren from "./DirectoryChildren";
-import DeleteFile from "./DeleteFile";
 
 const EntryContainer = styled.div`position: relative;`;
 
@@ -127,7 +127,7 @@ class DirectoryEntry extends React.PureComponent {
 
     modalActions.openModal({
       Body: (
-        <DeleteFile
+        <Alert
           title="Delete File"
           body={
             <span>

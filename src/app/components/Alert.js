@@ -45,7 +45,7 @@ type Props = {
   onDelete: Function
 };
 
-const DeleteFile = ({ title, body, onCancel, onDelete }: Props) =>
+const Alert = ({ title, body, onCancel, onDelete }: Props) =>
   <Container>
     <Title>
       {title}
@@ -65,4 +65,4 @@ const DeleteFile = ({ title, body, onCancel, onDelete }: Props) =>
     </Buttons>
   </Container>;
 
-export default DeleteFile;
+export default Alert;
