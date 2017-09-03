@@ -25,7 +25,7 @@ declare var Babel: {
 };
 
 Babel.registerPlugin('dynamic-import-node', dynamicImportPlugin);
-console.log(Babel);
+
 self.addEventListener('message', async event => {
   const { code, path, config } = event.data;
 

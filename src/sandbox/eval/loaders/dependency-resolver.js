@@ -15,7 +15,7 @@ export default function getDependency(
   // This is also included in CRA by default, so we keep compatability with
   // CRA.
   if (dependencyPath === 'babel-runtime/regenerator') {
-    return require('babel-runtime/regenerator');
+    return require('babel-runtime/regenerator'); // eslint-disable-line global-require
   }
 
   const dependencyModule =
