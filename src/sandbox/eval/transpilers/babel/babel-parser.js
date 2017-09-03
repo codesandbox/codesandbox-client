@@ -10,6 +10,22 @@ const DEFAULT_BABEL_CONFIG = {
     'transform-object-rest-spread',
     'transform-decorators-legacy',
     'transform-class-properties',
+    // Polyfills the runtime needed for async/await and generators
+    [
+      'transform-runtime',
+      {
+        helpers: false,
+        polyfill: false,
+        regenerator: true,
+      },
+    ],
+    [
+      'transform-regenerator',
+      {
+        // Async functions are converted to generators by babel-preset-env
+        async: false,
+      },
+    ],
   ],
 };
 

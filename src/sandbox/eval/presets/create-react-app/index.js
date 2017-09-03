@@ -5,7 +5,13 @@ import babelTranspiler from '../../transpilers/babel';
 import jsonTranspiler from '../../transpilers/json';
 import rawTranspiler from '../../transpilers/raw';
 
-const preset = new Preset('create-react-app');
+const preset = new Preset('create-react-app', [
+  'web.js',
+  'js',
+  'json',
+  'web.jsx',
+  'jsx',
+]);
 
 preset.registerTranspiler(module => /\.css$/.test(module.title), [
   { transpiler: stylesTranspiler },
