@@ -8,8 +8,8 @@ const publicPath = '/';
 module.exports = merge(commonConfig, {
   devtool: 'source-map',
   output: {
-    filename: 'static/js/[name].[chunkhash].js',
-    chunkFilename: 'static/js/[name].[chunkhash].chunk.js',
+    filename: 'static/js/[name].[chunkhash:8].js',
+    chunkFilename: 'static/js/[name].[chunkhash:8].chunk.js',
     sourceMapFilename: '[file].map', // Default
   },
   plugins: [
@@ -107,6 +107,7 @@ module.exports = merge(commonConfig, {
       // about it being stale, and the cache-busting can be skipped.
       dontCacheBustUrlsMatching: /\.\w{8}\./,
       filename: 'sandbox-service-worker.js',
+      cacheId: 'code-sandbox-sandbox',
       logger(message) {
         if (message.indexOf('Total precache size is') === 0) {
           // This message occurs for every build and is a bit too noisy.
@@ -124,7 +125,6 @@ module.exports = merge(commonConfig, {
       navigateFallback: 'https://new.codesandbox.io/frame.html',
       staticFileGlobs: ['www/frame.html'],
       stripPrefix: 'www/',
-      cacheId: 'code-sandbox-sandbox',
       // Ignores URLs starting from /__ (useful for Firebase):
       // https://github.com/facebookincubator/create-react-app/issues/2237#issuecomment-302693219
       navigateFallbackWhitelist: [/^(?!\/__).*/],
@@ -211,6 +211,5 @@ module.exports = merge(commonConfig, {
     // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
     // You can remove this if you don't use Moment.js:
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-    new webpack.optimize.ModuleConcatenationPlugin(),
   ],
 });
