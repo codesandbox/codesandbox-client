@@ -9,6 +9,7 @@ type Props = {
   value: boolean,
   setValue: boolean => any,
   style: Object,
+  step: number,
 };
 
 export default class PreferenceInput extends React.PureComponent {
@@ -23,9 +24,10 @@ export default class PreferenceInput extends React.PureComponent {
   };
 
   render() {
-    const { value, style } = this.props;
+    const { value, style, step } = this.props;
     return (
       <StyledInput
+        step={step}
         style={{ width: '3rem', ...style }}
         type="number"
         value={value}
