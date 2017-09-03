@@ -39,18 +39,20 @@ const Buttons = styled.div`
 `;
 
 type Props = {
-  filename: string,
+  title: string,
+  body: string | Object,
   onCancel: Function,
   onDelete: Function
 };
 
-const DeleteFile = ({ filename, onCancel, onDelete }: Props) =>
+const DeleteFile = ({ title, body, onCancel, onDelete }: Props) =>
   <Container>
-    <Title>Delete</Title>
+    <Title>
+      {title}
+    </Title>
 
     <Text>
-      Are you sure you want to delete <b>{filename}</b>? The file will be
-      permanently removed.
+      {body}
     </Text>
 
     <Buttons>
