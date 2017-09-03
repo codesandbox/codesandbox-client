@@ -5,7 +5,7 @@ import Logo from 'app/components/Logo';
 import { sandboxUrl } from 'app/utils/url-generator';
 
 type Props = {
-  id: string,
+  sandbox: string,
   small: boolean,
 };
 
@@ -30,7 +30,7 @@ export default ({ sandbox, small }: Props) => (
     small={small}
     target="_blank"
     rel="noopener noreferrer"
-    href={sandboxUrl(sandbox) + '?from-embed'}
+    href={`${sandboxUrl(sandbox)}?from-embed`}
   >
     <Text small={small}>Edit on CodeSandbox</Text>
     <Logo />
