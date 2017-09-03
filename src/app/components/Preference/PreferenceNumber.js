@@ -8,6 +8,7 @@ const StyledInput = styled(Input)`text-align: center;`;
 type Props = {
   value: boolean,
   setValue: boolean => any,
+  style: Object,
 };
 
 export default class PreferenceInput extends React.PureComponent {
@@ -22,10 +23,9 @@ export default class PreferenceInput extends React.PureComponent {
   };
 
   render() {
-    const { value, style, step } = this.props;
+    const { value, style } = this.props;
     return (
       <StyledInput
-        step={step}
         style={{ width: '3rem', ...style }}
         type="number"
         value={value}

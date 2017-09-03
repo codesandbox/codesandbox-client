@@ -28,6 +28,9 @@ type Props = {
   preferences: Preferences,
   onlyViewMode: boolean,
   setCurrentModule: ?(sandboxId: string, moduleId: string) => void,
+  sandboxId: string,
+  modules: Array,
+  directories: Array,
 };
 
 const Container = styled.div`
@@ -322,7 +325,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
           cm.toggleComment({ lineComment: '//' });
         });
       },
-      'Cmd-P': cm => {
+      'Cmd-P': () => {
         this.setState({ fuzzySearchEnabled: true });
       },
     };

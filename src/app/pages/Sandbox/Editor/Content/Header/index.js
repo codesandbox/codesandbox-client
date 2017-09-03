@@ -112,7 +112,7 @@ export default class Header extends React.PureComponent<Props> {
     const { sandbox, sandboxActions } = this.props;
 
     const shouldFork = sandbox.owned
-      ? confirm('Do you want to fork your own sandbox?')
+      ? confirm('Do you want to fork your own sandbox?') // eslint-disable-line no-alert
       : true;
     if (shouldFork) {
       sandboxActions.forkSandbox(sandbox.id);

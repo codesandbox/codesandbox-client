@@ -49,7 +49,12 @@ type Props = {
   },
 };
 
-const Stat = ({ Icon, count }) => (
+type StatProps = {
+  Icon: React.PureComponent,
+  count: number,
+};
+
+const Stat = ({ Icon, count }: StatProps) => (
   <CenteredText style={{ fontSize: '.875rem' }}>
     <Icon />
     <span

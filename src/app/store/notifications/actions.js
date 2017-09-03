@@ -12,13 +12,16 @@ export default {
     notificationType: 'notice' | 'warning' | 'error' | 'success' = 'notice',
     timeAlive: number = 2,
     buttons: Array<NotificationButton> = []
-  ) => ({
-    id: (lastId += 1),
-    type: ADD_NOTIFICATION,
-    title,
-    notificationType,
-    buttons,
-    endTime: Date.now() + timeAlive * 1000,
-  }),
+  ) => {
+    lastId += 1;
+    return {
+      id: lastId,
+      type: ADD_NOTIFICATION,
+      title,
+      notificationType,
+      buttons,
+      endTime: Date.now() + timeAlive * 1000,
+    };
+  },
   removeNotification: (id: number) => ({ type: REMOVE_NOTIFICATION, id }),
 };

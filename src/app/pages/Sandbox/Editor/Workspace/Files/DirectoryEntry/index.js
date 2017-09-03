@@ -168,6 +168,7 @@ class DirectoryEntry extends React.PureComponent {
   deleteDirectory = () => {
     const { id, title, sandboxId, sandboxActions } = this.props;
 
+    // eslint-disable-next-line no-alert
     const confirmed = confirm(
       `Are you sure you want to delete ${title} and all its children?`
     );

@@ -1,3 +1,4 @@
+/* eslint-disable */
 var _extends =
   Object.assign ||
   function(target) {

@@ -7,9 +7,11 @@ import { getModulePath } from 'app/store/entities/sandboxes/modules/selectors';
 
 import theme from 'common/theme';
 
+/* eslint-disable import/no-webpack-loader-syntax */
 import SyntaxHighlightWorker from 'worker-loader!./monaco/workers/syntax-highlighter';
 import LinterWorker from 'worker-loader!./monaco/workers/linter';
 import TypingsFetcherWorker from 'worker-loader!./monaco/workers/fetch-dependency-typings';
+/* eslint-enable import/no-webpack-loader-syntax */
 
 import enableEmmet from './monaco/enable-emmet';
 import Header from './Header';
@@ -45,14 +47,6 @@ const Container = styled.div`
   height: 100%;
   z-index: 30;
 `;
-
-const fontFamilies = (...families) =>
-  families
-    .filter(Boolean)
-    .map(
-      family => (family.indexOf(' ') !== -1 ? JSON.stringify(family) : family)
-    )
-    .join(', ');
 
 const CodeContainer = styled.div`
   position: relative;
@@ -125,10 +119,7 @@ const handleError = (
   monaco,
   editor,
   currentErrors: ?Array<ModuleError>,
-  nextErrors: ?Array<ModuleError>,
-  nextCode: ?string,
-  prevId: string,
-  nextId: string
+  nextErrors: ?Array<ModuleError>
 ) => {
   if (!monaco) return;
   if (nextErrors && nextErrors.length > 0) {
@@ -329,7 +320,6 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
   swapDocuments = async ({
     currentId,
     nextId,
-    nextCode,
     nextTitle,
   }: {
     currentId: string,
@@ -488,6 +478,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     this.editor = editor;
     this.monaco = monaco;
 
+    // eslint-disable-next-line no-underscore-dangle
     window._cs = {
       editor: this.editor,
       monaco: this.monaco,
@@ -544,7 +535,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
       label: 'Open Module',
 
       // An optional array of keybindings for the action.
-      keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_P],
+      keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_P], // eslint-disable-line no-bitwise
 
       // A precondition for this action.
       precondition: null,
@@ -558,7 +549,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
 
       // Method that will be executed when the action is triggered.
       // @param editor The editor instance is passed in as a convinience
-      run: ed => {
+      run: () => {
         this.setState({
           fuzzySearchEnabled: true,
         });
@@ -579,7 +570,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
 
   addKeyCommands = () => {
     this.editor.addCommand(
-      this.monaco.KeyMod.CtrlCmd | this.monaco.KeyCode.KEY_S,
+      this.monaco.KeyMod.CtrlCmd | this.monaco.KeyCode.KEY_S, // eslint-disable-line no-bitwise
       () => {
         this.handleSaveCode();
       }

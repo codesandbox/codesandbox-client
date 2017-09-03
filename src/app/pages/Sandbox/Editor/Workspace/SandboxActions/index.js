@@ -63,17 +63,17 @@ class SandboxSettings extends React.PureComponent {
     });
   };
 
-  updateSandboxPrivacy = async e => {
+  updateSandboxPrivacy = async ev => {
     this.setState({ loading: true });
 
     try {
-      const privacy = +e.target.value;
+      const privacy = +ev.target.value;
 
       if (!Number.isNaN(privacy)) {
         await this.props.setSandboxPrivacy(this.props.id, privacy);
       }
-    } catch (e) {
-      console.error(e);
+    } catch (err) {
+      console.error(err);
     }
 
     this.setState({ loading: false });

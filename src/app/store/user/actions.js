@@ -71,6 +71,7 @@ const signOut = (apiRequest = true) => async (dispatch: Function) => {
   });
 };
 
+// eslint-disable-next-line consistent-return
 const getCurrentUser = () => async (dispatch: Function, getState: Function) => {
   const jwt = jwtSelector(getState());
   if (jwt) {
@@ -102,7 +103,7 @@ const signIn = () => (dispatch: Function) =>
     });
     const popup = openPopup(signInUrl(), 'sign in');
 
-    window.addEventListener('message', function(e) {
+    window.addEventListener('message', function onMessage(e) {
       if (e.data.type === 'signin') {
         const jwt = e.data.data.jwt;
         setJwt(jwt);

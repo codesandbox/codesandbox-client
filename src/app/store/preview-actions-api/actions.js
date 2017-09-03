@@ -28,7 +28,7 @@ export default {
         return dispatch(sandboxActions.forceRender(sandboxId));
       }
       case 'editor.open-module': {
-        const { moduleId, sandboxId, lineNumber } = action;
+        const { moduleId, sandboxId /* , lineNumber */ } = action;
         // TODO functionality to open specific lineNumber
         return dispatch(sandboxActions.setCurrentModule(sandboxId, moduleId));
       }

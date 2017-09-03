@@ -20,7 +20,7 @@ function hideElement(el: HTMLElement) {
   }
 }
 
-const particleAnimation = (deg: number, i: number) => keyframes`
+const particleAnimation = (deg: number) => keyframes`
   0% {
     transform: rotate(${deg}deg) translateY(50px) scale3d(1, 1, 1);
   }

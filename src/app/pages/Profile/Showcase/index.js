@@ -24,6 +24,10 @@ type Props = {
   isCurrentUser: boolean,
 };
 
+type State = {
+  loading: boolean,
+};
+
 const ErrorTitle = styled.div`
   font-size: 1.25rem;
   color: rgba(255, 255, 255, 0.7);
@@ -36,7 +40,7 @@ const mapDispatchToProps = dispatch => ({
   sandboxActions: bindActionCreators(sandboxActionCreators, dispatch),
   modalActions: bindActionCreators(modalActionCreators, dispatch),
 });
-class Showcase extends React.PureComponent<Props, $FlowFixMeState> {
+class Showcase extends React.PureComponent<Props, State> {
   state = {
     loading: false,
   };

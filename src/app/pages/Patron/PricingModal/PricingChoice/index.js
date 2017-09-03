@@ -105,6 +105,7 @@ class PricingChoice extends React.PureComponent {
     this.props.userActions.updateSubscription(this.props.price);
 
   cancelSubscription = async () => {
+    // eslint-disable-next-line no-alert
     const confirmed = confirm(
       'Are you sure you want to cancel your subscription?'
     );

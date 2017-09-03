@@ -1,13 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import moment from 'moment';
 import GithubIcon from 'react-icons/lib/go/mark-github';
-import StarIcon from 'react-icons/lib/go/star';
-import { Link } from 'react-router-dom';
-import { patronUrl } from 'app/utils/url-generator';
 
 import Row from 'app/components/flex/Row';
-import Tooltip from 'app/components/Tooltip';
 import Column from 'app/components/flex/Column';
 import delayEffect from 'app/utils/animation/delay-effect';
 import Margin from 'app/components/spacing/Margin';

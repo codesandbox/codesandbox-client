@@ -304,7 +304,7 @@ const defaultConfig = {
   },
 };
 
-const linter = new self.eslint();
+const linter = new self.eslint(); // eslint-disable-line new-cap
 linter.defineRules(allRules);
 
 function getPos(error, from) {

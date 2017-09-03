@@ -62,7 +62,7 @@ const mapDispatchToProps = dispatch => ({
   userActions: bindActionCreators(userActionCreators, dispatch),
   modalActions: bindActionCreators(modalActionCreators, dispatch),
 });
-class User extends React.PureComponent<Props, $FlowFixMeState> {
+class User extends React.PureComponent<Props, State> {
   static defaultProps = {
     small: false,
   };

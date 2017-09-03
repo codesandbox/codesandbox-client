@@ -1,17 +1,16 @@
 import extractAbbreviation from '@emmetio/extract-abbreviation';
 import { expand } from '@emmetio/expand-abbreviation';
 
-const field = (index, placeholder) => '';
+const field = () => '';
 
-const expandAbbreviation = (source, language) => {
-  return expand(source.abbreviation, {
+const expandAbbreviation = (source, language) =>
+  expand(source.abbreviation, {
     field,
     syntax: language,
     addons: {
       jsx: true,
     },
   });
-};
 
 const enableEmmet = (editor, monaco) => {
   if (!editor) {
@@ -26,7 +25,7 @@ const enableEmmet = (editor, monaco) => {
     label: 'Emmet: Expand abbreviation',
 
     // An optional array of keybindings for the action.
-    keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.F10],
+    keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.F10], // eslint-disable-line no-bitwise
 
     // A precondition for this action.
     precondition: null,
@@ -39,8 +38,8 @@ const enableEmmet = (editor, monaco) => {
     contextMenuOrder: 1.5,
 
     // Method that will be executed when the action is triggered.
-    // @param editor The editor instance is passed in as a convinience
-    run: function(ed) {
+    // @param editor The editor instance is passed in as a convenience
+    run: () => {
       let word = editor.model.getValueInRange(editor.getSelection());
       const pos = editor.getPosition();
       if (!word) {
@@ -66,12 +65,11 @@ const enableEmmet = (editor, monaco) => {
             forceMoveMarkers: true,
           };
           editor.executeEdits('', [op]);
-        } else {
-          return false;
+          return null;
         }
-      } else {
         return false;
       }
+      return false;
     },
   });
 };
