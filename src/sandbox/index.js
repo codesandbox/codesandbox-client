@@ -79,10 +79,10 @@ export function areActionsEnabled() {
 function updateManager(sandboxId, template, module, modules, directories) {
   if (!manager || manager.id !== sandboxId) {
     manager = new Manager(sandboxId, modules, directories, getPreset(template));
-    return manager.transpileModules(module).catch(e => ({ error: e }));
   }
+  manager.updateData(modules, directories);
 
-  return manager.updateData(modules, directories).catch(e => ({ error: e }));
+  return manager.transpileModules(module).catch(e => ({ error: e }));
 }
 
 async function loadDependenciesAndSetWrapper(dependencies) {
@@ -107,10 +107,10 @@ async function compile(message) {
   } = message.data;
   try {
     uninject();
+    inject();
   } catch (e) {
     console.error(e);
   }
-  inject();
 
   actionsEnabled = hasActions;
 

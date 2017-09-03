@@ -30,7 +30,6 @@ module.exports = {
   entry: {
     app: [require.resolve('./polyfills'), path.join(paths.appSrc, 'index.js')],
     sandbox: [
-      require.resolve('babel-polyfill'),
       require.resolve('./polyfills'),
       path.join(paths.sandboxSrc, 'index.js'),
     ],

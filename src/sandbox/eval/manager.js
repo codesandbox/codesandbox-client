@@ -125,10 +125,20 @@ export default class Manager {
    * @param {*} entry
    */
   transpileModules(entry: Module) {
+    this.transpiling = true;
     const transpiledModule = this.getTranspiledModule(entry);
 
     transpiledModule.setIsEntry(true);
-    return transpiledModule.transpile(this);
+    return transpiledModule
+      .transpile(this)
+      .then(x => {
+        this.transpiling = false;
+        return x;
+      })
+      .catch(e => {
+        this.transpiling = false;
+        throw e;
+      });
   }
 
   clearCompiledCache() {
@@ -209,7 +219,6 @@ export default class Manager {
    * delete caches accordingly
    */
   updateData(modules: Array<Module>, directories: Array<Directory>) {
-    this.transpiling = true;
     // Create an object with mapping from modules
     const moduleObject = this.modules.reduce(
       (prev, next) => ({
@@ -270,23 +279,9 @@ export default class Manager {
       ])
     );
 
-    return Promise.all(
-      transpiledModulesToUpdate.map(tModule => tModule.transpile(this))
-    )
-      .then(x => {
-        this.modules = modules;
-        this.directories = directories;
-        this.transpiling = false;
+    this.modules = modules;
+    this.directories = directories;
 
-        return x;
-      })
-      .catch(e => {
-        // Also set new module info for a catch
-        this.modules = modules;
-        this.directories = directories;
-        this.transpiling = false;
-
-        throw e;
-      });
+    return transpiledModulesToUpdate.map(tModule => tModule.transpile(this));
   }
 }
