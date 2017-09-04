@@ -10,6 +10,8 @@ import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 import { validateTitle } from 'app/store/entities//sandboxes/modules/validator';
 import contextMenuActionCreators from 'app/store/context-menu/actions';
 import { getModuleParents } from 'app/store/entities/sandboxes/modules/selectors';
+import modalActionCreators from 'app/store/modal/actions';
+import Alert from 'app/components/Alert';
 
 import Entry from './Entry';
 import DirectoryChildren from './DirectoryChildren';
@@ -34,6 +36,7 @@ const Opener = styled.div`
 const mapDispatchToProps = dispatch => ({
   sandboxActions: bindActionCreators(sandboxActionCreators, dispatch),
   openMenu: bindActionCreators(contextMenuActionCreators, dispatch).openMenu,
+  modalActions: bindActionCreators(modalActionCreators, dispatch),
 });
 type Props = {
   id: string,
@@ -49,6 +52,7 @@ type Props = {
   depth: ?number,
   openMenu: (e: Event) => void,
   sandboxActions: typeof sandboxActionCreators,
+  modalActions: typeof modalActionCreators,
   currentModuleId: ?string,
   isInProjectView: boolean,
 };
@@ -118,17 +122,28 @@ class DirectoryEntry extends React.PureComponent {
   };
 
   deleteModule = (id: string) => {
-    const { sandboxId, modules, sandboxActions } = this.props;
+    const { sandboxId, modules, sandboxActions, modalActions } = this.props;
     const module = modules.find(m => m.id === id);
 
-    const confirmed = confirm(
-      `Are you sure you want to delete ${module.title}?`
-    );
-
-    if (confirmed) {
-      sandboxActions.deleteModule(sandboxId, id);
-    }
-    return true;
+    modalActions.openModal({
+      Body: (
+        <Alert
+          title="Delete File"
+          body={
+            <span>
+              Are you sure you want to delete <b>{module.title}</b>?
+              <br />
+              The file will be permanently removed.
+            </span>
+          }
+          onCancel={modalActions.closeModal}
+          onDelete={() => {
+            modalActions.closeModal();
+            sandboxActions.deleteModule(sandboxId, id);
+          }}
+        />
+      ),
+    });
   };
 
   onCreateDirectoryClick = () => {

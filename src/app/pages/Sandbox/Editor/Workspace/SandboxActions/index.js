@@ -1,20 +1,16 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 
 import Button from 'app/components/buttons/Button';
 
+import modalActionCreators from 'app/store/modal/actions';
+import Alert from 'app/components/Alert';
+
 import WorkspaceInputContainer from '../WorkspaceInputContainer';
 
 import WorkspaceSubtitle from '../WorkspaceSubtitle';
-
-type Props = {
-  id: string,
-  deleteSandbox: (id: string) => void,
-  newSandboxUrl: () => void,
-  setSandboxPrivacy: (id: string, privacy: number) => void,
-  isPatron: boolean,
-  privacy: 0 | 1 | 2,
-};
 
 const PrivacySelect = styled.select`
   background-color: rgba(0, 0, 0, 0.3);
@@ -28,18 +24,43 @@ const PrivacySelect = styled.select`
   box-sizing: border-box;
 `;
 
-export default class SandboxSettings extends React.PureComponent {
+const mapDispatchToProps = dispatch => ({
+  modalActions: bindActionCreators(modalActionCreators, dispatch),
+});
+
+type Props = {
+  id: string,
+  deleteSandbox: (id: string) => void,
+  newSandboxUrl: () => void,
+  setSandboxPrivacy: (id: string, privacy: number) => void,
+  isPatron: boolean,
+  privacy: 0 | 1 | 2,
+  modalActions: typeof modalActionCreators,
+};
+
+class SandboxSettings extends React.PureComponent {
   props: Props;
   state = {
     loading: false,
   };
 
-  handleDeleteSandbox = async () => {
-    const really = confirm('Are you sure you want to delete this sandbox?'); // TODO: confirm???
-    if (really) {
-      await this.props.deleteSandbox(this.props.id);
-      await this.props.newSandboxUrl();
-    }
+  handleDeleteSandbox = () => {
+    const { modalActions } = this.props;
+
+    modalActions.openModal({
+      Body: (
+        <Alert
+          title="Delete File"
+          body={<span>Are you sure you want to delete this sandbox?</span>}
+          onCancel={modalActions.closeModal}
+          onDelete={() => {
+            this.props.deleteSandbox(this.props.id);
+            this.props.newSandboxUrl();
+            modalActions.closeModal();
+          }}
+        />
+      ),
+    });
   };
 
   updateSandboxPrivacy = async e => {
@@ -95,3 +116,5 @@ export default class SandboxSettings extends React.PureComponent {
     );
   }
 }
+
+export default connect(undefined, mapDispatchToProps)(SandboxSettings);
