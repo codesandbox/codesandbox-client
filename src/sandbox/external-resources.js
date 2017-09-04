@@ -1,4 +1,4 @@
-function getExternalResourcesConcatination(resources: Array<string>) {
+function getExternalResourcesConcatenation(resources: Array<string>) {
   return resources.sort().join('');
 }
 
@@ -44,8 +44,8 @@ function addResource(resource: string) {
 
 let cachedExternalResources = '';
 
-export default function handelExternalResources(externalResources) {
-  const extResString = getExternalResourcesConcatination(externalResources);
+export default function handleExternalResources(externalResources) {
+  const extResString = getExternalResourcesConcatenation(externalResources);
   if (extResString !== cachedExternalResources) {
     clearExternalResources();
     externalResources.forEach(addResource);
