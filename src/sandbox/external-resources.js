@@ -1,5 +1,5 @@
 function getExternalResourcesConcatenation(resources: Array<string>) {
-  return resources.sort().join('');
+  return resources.join('');
 }
 
 function clearExternalResources() {
