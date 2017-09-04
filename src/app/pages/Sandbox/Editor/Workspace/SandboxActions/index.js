@@ -1,16 +1,16 @@
-import React from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import styled from "styled-components";
+import React from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import styled from 'styled-components';
 
-import Button from "app/components/buttons/Button";
+import Button from 'app/components/buttons/Button';
 
-import modalActionCreators from "app/store/modal/actions";
-import Alert from "app/components/Alert";
+import modalActionCreators from 'app/store/modal/actions';
+import Alert from 'app/components/Alert';
 
-import WorkspaceInputContainer from "../WorkspaceInputContainer";
+import WorkspaceInputContainer from '../WorkspaceInputContainer';
 
-import WorkspaceSubtitle from "../WorkspaceSubtitle";
+import WorkspaceSubtitle from '../WorkspaceSubtitle';
 
 const PrivacySelect = styled.select`
   background-color: rgba(0, 0, 0, 0.3);
@@ -25,7 +25,7 @@ const PrivacySelect = styled.select`
 `;
 
 const mapDispatchToProps = dispatch => ({
-  modalActions: bindActionCreators(modalActionCreators, dispatch)
+  modalActions: bindActionCreators(modalActionCreators, dispatch),
 });
 
 type Props = {
@@ -35,13 +35,13 @@ type Props = {
   setSandboxPrivacy: (id: string, privacy: number) => void,
   isPatron: boolean,
   privacy: 0 | 1 | 2,
-  modalActions: typeof modalActionCreators
+  modalActions: typeof modalActionCreators,
 };
 
 class SandboxSettings extends React.PureComponent {
   props: Props;
   state = {
-    loading: false
+    loading: false,
   };
 
   handleDeleteSandbox = () => {
@@ -59,7 +59,7 @@ class SandboxSettings extends React.PureComponent {
             modalActions.closeModal();
           }}
         />
-      )
+      ),
     });
   };
 
@@ -83,7 +83,7 @@ class SandboxSettings extends React.PureComponent {
     const { isPatron, privacy } = this.props;
     return (
       <div>
-        {isPatron &&
+        {isPatron && (
           <div>
             <WorkspaceSubtitle>Sandbox Privacy</WorkspaceSubtitle>
             <WorkspaceInputContainer>
@@ -96,15 +96,16 @@ class SandboxSettings extends React.PureComponent {
                 <option value={2}>Private</option>
               </PrivacySelect>
             </WorkspaceInputContainer>
-          </div>}
+          </div>
+        )}
         <WorkspaceSubtitle>Delete Sandbox</WorkspaceSubtitle>
         <WorkspaceInputContainer>
           <Button
             small
             block
             style={{
-              margin: "0.5rem 0.25rem",
-              boxSizing: "border-box"
+              margin: '0.5rem 0.25rem',
+              boxSizing: 'border-box',
             }}
             onClick={this.handleDeleteSandbox}
           >

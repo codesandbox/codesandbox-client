@@ -1,20 +1,20 @@
-import React from "react";
-import styled from "styled-components";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { DropTarget } from "react-dnd";
+import React from 'react';
+import styled from 'styled-components';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { DropTarget } from 'react-dnd';
 
-import type { Module, Directory } from "common/types";
+import type { Module, Directory } from 'common/types';
 
-import sandboxActionCreators from "app/store/entities/sandboxes/actions";
-import { validateTitle } from "app/store/entities//sandboxes/modules/validator";
-import contextMenuActionCreators from "app/store/context-menu/actions";
-import { getModuleParents } from "app/store/entities/sandboxes/modules/selectors";
-import modalActionCreators from "app/store/modal/actions";
-import Alert from "app/components/Alert";
+import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
+import { validateTitle } from 'app/store/entities//sandboxes/modules/validator';
+import contextMenuActionCreators from 'app/store/context-menu/actions';
+import { getModuleParents } from 'app/store/entities/sandboxes/modules/selectors';
+import modalActionCreators from 'app/store/modal/actions';
+import Alert from 'app/components/Alert';
 
-import Entry from "./Entry";
-import DirectoryChildren from "./DirectoryChildren";
+import Entry from './Entry';
+import DirectoryChildren from './DirectoryChildren';
 
 const EntryContainer = styled.div`position: relative;`;
 
@@ -25,18 +25,18 @@ const Overlay = styled.div`
   left: 0;
   right: 0;
   background-color: rgba(0, 0, 0, 0.3);
-  display: ${props => (props.isOver ? "block" : "none")};
+  display: ${props => (props.isOver ? 'block' : 'none')};
 `;
 
 const Opener = styled.div`
-  height: ${props => (props.open ? "100%" : "0px")};
+  height: ${props => (props.open ? '100%' : '0px')};
   overflow: hidden;
 `;
 
 const mapDispatchToProps = dispatch => ({
   sandboxActions: bindActionCreators(sandboxActionCreators, dispatch),
   openMenu: bindActionCreators(contextMenuActionCreators, dispatch).openMenu,
-  modalActions: bindActionCreators(modalActionCreators, dispatch)
+  modalActions: bindActionCreators(modalActionCreators, dispatch),
 });
 type Props = {
   id: string,
@@ -54,10 +54,10 @@ type Props = {
   sandboxActions: typeof sandboxActionCreators,
   modalActions: typeof modalActionCreators,
   currentModuleId: ?string,
-  isInProjectView: boolean
+  isInProjectView: boolean,
 };
 type State = {
-  creating: "" | "module" | "directory"
+  creating: '' | 'module' | 'directory',
 };
 class DirectoryEntry extends React.PureComponent {
   props: Props;
@@ -76,8 +76,8 @@ class DirectoryEntry extends React.PureComponent {
     const isParentOfModule = currentModuleParents.includes(id);
 
     this.state = {
-      creating: "",
-      open: props.root || isParentOfModule
+      creating: '',
+      open: props.root || isParentOfModule,
     };
   }
 
@@ -100,12 +100,12 @@ class DirectoryEntry extends React.PureComponent {
     }
   }
 
-  resetState = () => this.setState({ creating: "" });
+  resetState = () => this.setState({ creating: '' });
 
   onCreateModuleClick = () => {
     this.setState({
-      creating: "module",
-      open: true
+      creating: 'module',
+      open: true,
     });
     return true;
   };
@@ -142,14 +142,14 @@ class DirectoryEntry extends React.PureComponent {
             sandboxActions.deleteModule(sandboxId, id);
           }}
         />
-      )
+      ),
     });
   };
 
   onCreateDirectoryClick = () => {
     this.setState({
-      creating: "directory",
-      open: true
+      creating: 'directory',
+      open: true,
     });
     return true;
   };
@@ -199,7 +199,7 @@ class DirectoryEntry extends React.PureComponent {
 
     return [
       ...modules.filter(m => m.directoryShortid === shortid),
-      ...directories.filter(d => d.directoryShortid === shortid)
+      ...directories.filter(d => d.directoryShortid === shortid),
     ];
   };
 
@@ -222,12 +222,12 @@ class DirectoryEntry extends React.PureComponent {
       isOver, // eslint-disable-line
       isInProjectView,
       depth = 0,
-      root
+      root,
     } = this.props;
     const { creating, open } = this.state;
 
     return connectDropTarget(
-      <div style={{ position: "relative" }}>
+      <div style={{ position: 'relative' }}>
         <Overlay isOver={isOver} />
         <EntryContainer>
           <Entry
@@ -249,7 +249,7 @@ class DirectoryEntry extends React.PureComponent {
           />
         </EntryContainer>
         <Opener open={open}>
-          {creating === "directory" &&
+          {creating === 'directory' && (
             <Entry
               id=""
               title=""
@@ -259,7 +259,8 @@ class DirectoryEntry extends React.PureComponent {
               renameValidator={this.validateModuleTitle}
               rename={this.createDirectory}
               onRenameCancel={this.resetState}
-            />}
+            />
+          )}
           <DirectoryChildren
             modules={modules}
             directories={directories}
@@ -273,7 +274,7 @@ class DirectoryEntry extends React.PureComponent {
             currentModuleId={currentModuleId}
             isInProjectView={isInProjectView}
           />
-          {creating === "module" &&
+          {creating === 'module' && (
             <Entry
               id=""
               title=""
@@ -282,7 +283,8 @@ class DirectoryEntry extends React.PureComponent {
               renameValidator={this.validateModuleTitle}
               rename={this.createModule}
               onRenameCancel={this.resetState}
-            />}
+            />
+          )}
         </Opener>
       </div>
     );
@@ -320,7 +322,7 @@ const entryTarget = {
 
     if (source.id === props.id) return false;
     return true;
-  }
+  },
 };
 
 function collectTarget(connectMonitor, monitor) {
@@ -331,10 +333,10 @@ function collectTarget(connectMonitor, monitor) {
     // You can ask the monitor about the current drag state:
     isOver: monitor.isOver({ shallow: true }),
     canDrop: monitor.canDrop(),
-    itemType: monitor.getItemType()
+    itemType: monitor.getItemType(),
   };
 }
 
 export default connect(null, mapDispatchToProps)(
-  DropTarget("ENTRY", entryTarget, collectTarget)(DirectoryEntry)
+  DropTarget('ENTRY', entryTarget, collectTarget)(DirectoryEntry)
 );

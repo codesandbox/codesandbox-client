@@ -1,6 +1,6 @@
-import React from "react";
-import styled from "styled-components";
-import Button from "app/components/buttons/Button";
+import React from 'react';
+import styled from 'styled-components';
+import Button from 'app/components/buttons/Button';
 
 const Container = styled.div`
   display: flex;
@@ -42,18 +42,14 @@ type Props = {
   title: string,
   body: string | Object,
   onCancel: Function,
-  onDelete: Function
+  onDelete: Function,
 };
 
-const Alert = ({ title, body, onCancel, onDelete }: Props) =>
+const Alert = ({ title, body, onCancel, onDelete }: Props) => (
   <Container>
-    <Title>
-      {title}
-    </Title>
+    <Title>{title}</Title>
 
-    <Text>
-      {body}
-    </Text>
+    <Text>{body}</Text>
 
     <Buttons>
       <Button small block secondary onClick={onCancel}>
@@ -63,6 +59,7 @@ const Alert = ({ title, body, onCancel, onDelete }: Props) =>
         Delete
       </Button>
     </Buttons>
-  </Container>;
+  </Container>
+);
 
 export default Alert;
