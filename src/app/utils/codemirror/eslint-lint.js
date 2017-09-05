@@ -307,6 +307,7 @@ const defaultConfig = {
 };
 
 let linter = null;
+let eslintRequire = null;
 
 function getPos(error, from) {
   let line = error.line - 1;
@@ -336,7 +337,11 @@ function getSeverity(error) {
 
 function eslintValidate(text) {
   if (!linter) return [];
-  return linter.verify(text, defaultConfig);
+  const saveRequire = window.require;
+  window.require = eslintRequire;
+  const result = linter.verify(text, defaultConfig);
+  window.require = saveRequire;
+  return result;
 }
 
 export function validator(text: string) {
@@ -377,6 +382,7 @@ export default (async function initialize() {
     await delay(100);
   }
 
+  eslintRequire = window.require;
   window.require = origRequire;
 
   linter = new window.eslint();
