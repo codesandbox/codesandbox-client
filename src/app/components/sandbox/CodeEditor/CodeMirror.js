@@ -442,7 +442,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
           preferences.prettierConfig
         );
 
-        if (newCode !== code) {
+        if (newCode && newCode !== code) {
           this.props.changeCode(id, newCode);
           this.updateCodeMirrorCode(newCode);
         }
