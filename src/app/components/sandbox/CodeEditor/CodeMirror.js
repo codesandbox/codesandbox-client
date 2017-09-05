@@ -426,7 +426,6 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
   getCode = () => this.codemirror.getValue();
 
   prettify = async () => {
-    console.log('Prettify!!');
     const { id, title, preferences } = this.props;
     const code = this.getCode();
     const mode = await this.getMode(title);
