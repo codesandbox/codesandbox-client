@@ -722,6 +722,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
   getCode = () => this.editor.getValue();
 
   prettify = async () => {
+    console.log('Prettify Monaco!!');
     const { id, title, preferences } = this.props;
     const code = this.getCode();
     const mode = this.getMode(title);
@@ -736,7 +737,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
           preferences.prettierConfig
         );
 
-        if (newCode !== code) {
+        if (newCode && newCode !== code) {
           this.props.changeCode(id, newCode);
           this.updateCode(newCode);
         }
@@ -802,15 +803,14 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
           path={modulePath}
         />
         <CodeContainer>
-          {this.state.fuzzySearchEnabled && (
+          {this.state.fuzzySearchEnabled &&
             <FuzzySearch
               closeFuzzySearch={this.closeFuzzySearch}
               setCurrentModule={this.setCurrentModule}
               modules={modules}
               directories={directories}
               currentModuleId={this.props.id}
-            />
-          )}
+            />}
           <MonacoEditor
             width="100%"
             height="100%"
