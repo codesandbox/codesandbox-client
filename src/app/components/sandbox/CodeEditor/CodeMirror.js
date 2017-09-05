@@ -168,9 +168,12 @@ const handleError = (
   nextId: string
 ) => {
   if (currentErrors && currentErrors.length > 0) {
-    cm.getValue().split('\n').forEach((_, i) => {
-      cm.removeLineClass(i, 'background', 'cm-line-error');
-    });
+    cm
+      .getValue()
+      .split('\n')
+      .forEach((_, i) => {
+        cm.removeLineClass(i, 'background', 'cm-line-error');
+      });
   }
 
   if (nextErrors) {
@@ -508,14 +511,15 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
           fontFamily={preferences.fontFamily}
           lineHeight={preferences.lineHeight}
         >
-          {this.state.fuzzySearchEnabled &&
+          {this.state.fuzzySearchEnabled && (
             <FuzzySearch
               closeFuzzySearch={this.closeFuzzySearch}
               setCurrentModule={this.setCurrentModule}
               modules={modules}
               directories={directories}
               currentModuleId={id}
-            />}
+            />
+          )}
           <div
             style={{ height: '100%', fontSize: preferences.fontSize || 14 }}
             ref={this.getCodeMirror}

@@ -802,14 +802,15 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
           path={modulePath}
         />
         <CodeContainer>
-          {this.state.fuzzySearchEnabled &&
+          {this.state.fuzzySearchEnabled && (
             <FuzzySearch
               closeFuzzySearch={this.closeFuzzySearch}
               setCurrentModule={this.setCurrentModule}
               modules={modules}
               directories={directories}
               currentModuleId={this.props.id}
-            />}
+            />
+          )}
           <MonacoEditor
             width="100%"
             height="100%"
