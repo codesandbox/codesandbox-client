@@ -1,11 +1,12 @@
 import React from 'react';
 import Loadable from 'react-loadable';
+import Loading from 'app/components/Loading';
 
 import Monaco from './Monaco';
 
 const CodeMirror = Loadable({
   loader: () => import('./CodeMirror'),
-  LoadingComponent: 'div',
+  LoadingComponent: Loading,
 });
 
 export default props => {
