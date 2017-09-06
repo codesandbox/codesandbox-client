@@ -69,19 +69,18 @@ function initializeResizeListener() {
   initializedResizeListener = true;
 }
 
-async function compile(message) {
-  const {
-    sandboxId,
-    modules,
-    directories,
-    module,
-    changedModule,
-    externalResources,
-    dependencies,
-    hasActions,
-    isModuleView = false,
-    template,
-  } = message.data;
+async function compile({
+  sandboxId,
+  modules,
+  directories,
+  module,
+  changedModule,
+  externalResources,
+  dependencies,
+  hasActions,
+  isModuleView = false,
+  template,
+}) {
   try {
     uninject();
     inject();
