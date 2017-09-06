@@ -82,7 +82,10 @@ function updateManager(sandboxId, template, module, modules, directories) {
     return manager.transpileModules(module).catch(e => ({ error: e }));
   }
 
-  return manager.updateData(modules, directories).catch(e => ({ error: e }));
+  return manager
+    .updateData(modules, directories)
+    .then(() => manager.transpileModules(module)) // We need to transpile the module if it was never an entry
+    .catch(e => ({ error: e }));
 }
 
 async function loadDependenciesAndSetWrapper(dependencies) {
