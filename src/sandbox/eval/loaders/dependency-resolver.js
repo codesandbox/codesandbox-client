@@ -26,8 +26,10 @@ export default function getDependency(
       try {
         return window.dll_bundle(idMatch[1]);
       } catch (e) {
-        // Delete the cache of the throwing dependency
-        delete window.dll_bundle.c[idMatch[1]];
+        if (window.dll_bundle) {
+          // Delete the cache of the throwing dependency
+          delete window.dll_bundle.c[idMatch[1]];
+        }
         throw e;
       }
     }
