@@ -169,7 +169,8 @@ function fetchFromTypings(dependency, version, fetchedPaths) {
   return doFetch(`${depUrl}/package.json`)
     .then(response => JSON.parse(response))
     .then(packageJSON => {
-      if (packageJSON.typings) {
+      const types = packageJSON.typings || packageJSON.types;
+      if (types) {
         // Add package.json, since this defines where all types lie
         addLib(
           `node_modules/${dependency}/package.json`,
@@ -178,11 +179,11 @@ function fetchFromTypings(dependency, version, fetchedPaths) {
         );
 
         // get all files in the specified directory
-        getFileMetaData(depUrl, packageJSON.typings).then(fileData => {
+        getFileMetaData(depUrl, types).then(fileData => {
           getFileTypes(
             depUrl,
             dependency,
-            resolveAppropiateFile(fileData, packageJSON.typings),
+            resolveAppropiateFile(fileData, types),
             fetchedPaths,
             fileData
           );
@@ -202,7 +203,9 @@ function fetchAndAddDependencies(dependencies) {
           dep,
           getVersion(dependencies[dep]),
           fetchedPaths
-        ).catch(() => {
+        ).catch(e => {
+          console.log(dep);
+          console.error(e);
           // Not available in package.json, try checking in @types/
           fetchFromDefinitelyTyped(
             dep,
