@@ -2,7 +2,7 @@
 import { dispatch, actions } from 'codesandbox-api';
 
 import type { ErrorRecord } from '../react-error-overlay/utils/errorRegister';
-import { getCurrentManager } from '../';
+import { getCurrentManager } from '../compile';
 
 function buildErrorMessage(e) {
   const title = e.name;

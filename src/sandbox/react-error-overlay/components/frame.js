@@ -24,7 +24,7 @@ import {
   anchorStyle,
   hiddenStyle,
 } from '../styles';
-import { getCurrentManager } from '../../';
+import { getCurrentManager } from '../../compile';
 
 function getGroupToggle(
   document: Document,
