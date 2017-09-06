@@ -37,7 +37,8 @@ type Props = {
   autoResize: boolean,
   fontSize: number,
   initialPath: ?string,
-  setCurrentModule: id => void,
+  setCurrentModule: (moduleId: string) => void,
+  setProjectView: (id: string, isInProjectView: boolean) => any,
 };
 
 type State = {
@@ -154,12 +155,13 @@ export default class Content extends React.PureComponent<Props, State> {
     livePreviewEnabled: true,
   };
 
-  getPreferences = () => {
-    return { ...this.preferences, fontSize: this.props.fontSize };
-  };
+  getPreferences = () => ({
+    ...this.preferences,
+    fontSize: this.props.fontSize,
+  });
 
-  setCurrentModule = (_, id) => {
-    this.props.setCurrentModule(id);
+  setCurrentModule = (_, moduleId) => {
+    this.props.setCurrentModule(moduleId);
   };
 
   render() {
