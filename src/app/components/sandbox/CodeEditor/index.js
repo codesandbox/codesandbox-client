@@ -1,5 +1,6 @@
 import React from 'react';
 import Loadable from 'react-loadable';
+import Loading from 'app/components/Loading';
 import { Preferences } from 'common/types';
 
 import Monaco from './Monaco';
@@ -10,7 +11,7 @@ type Props = {
 
 const CodeMirror = Loadable({
   loader: () => import('./CodeMirror'),
-  LoadingComponent: 'div',
+  LoadingComponent: Loading,
 });
 
 export default (props: Props) => {
