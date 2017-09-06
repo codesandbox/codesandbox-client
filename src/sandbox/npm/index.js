@@ -33,8 +33,6 @@ export default async function loadDependencies(dependencies: NPMDependencies) {
   if (Object.keys(dependencies).length !== 0) {
     const depQuery = dependenciesToQuery(dependencies);
 
-    const isNewCombination = loadedDependencyCombination !== depQuery;
-
     if (loadedDependencyCombination !== depQuery) {
       // Mark that the last requested url is this
       loadedDependencyCombination = depQuery;
@@ -49,9 +47,7 @@ export default async function loadDependencies(dependencies: NPMDependencies) {
 
       await addDependencyBundle(data.url);
     }
-
-    return { manifest, isNewCombination };
   }
 
-  return { isNewCombination: false };
+  return { manifest };
 }

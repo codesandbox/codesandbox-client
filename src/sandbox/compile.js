@@ -194,13 +194,18 @@ type Arguments = {
 };
 
 const tasks: Array<Arguments> = [];
+let runningTask = false;
 
 async function executeTaskIfAvailable() {
-  const task = tasks.pop();
+  if (tasks.length) {
+    const task = tasks.pop();
 
-  await compile(task);
+    runningTask = true;
+    await compile(task);
+    runningTask = false;
 
-  executeTaskIfAvailable();
+    executeTaskIfAvailable();
+  }
 }
 
 /**
@@ -210,11 +215,9 @@ async function executeTaskIfAvailable() {
  * latest version.
  */
 export default function queueTask(data: Arguments) {
-  if (tasks.length === 0) {
-    tasks.push(data);
-  } else {
-    tasks[1] = data;
-  }
+  tasks[0] = data;
 
-  executeTaskIfAvailable();
+  if (!runningTask) {
+    executeTaskIfAvailable();
+  }
 }
