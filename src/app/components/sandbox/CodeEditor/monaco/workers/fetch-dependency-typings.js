@@ -203,9 +203,7 @@ function fetchAndAddDependencies(dependencies) {
           dep,
           getVersion(dependencies[dep]),
           fetchedPaths
-        ).catch(e => {
-          console.log(dep);
-          console.error(e);
+        ).catch(() => {
           // Not available in package.json, try checking in @types/
           fetchFromDefinitelyTyped(
             dep,
