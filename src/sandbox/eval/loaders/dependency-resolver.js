@@ -15,8 +15,11 @@ export default function getDependency(
   // This is also included in CRA by default, so we keep compatability with
   // CRA.
   if (dependencyPath.startsWith('babel-runtime')) {
-    return require('../../../../node_modules/babel-runtime' + // eslint-disable-line global-require
-      dependencyPath.replace('babel-runtime', ''));
+    // eslint-disable-next-line global-require, import/no-dynamic-require
+    return require(`../../../../node_modules/babel-runtime${dependencyPath.replace(
+      'babel-runtime',
+      ''
+    )}`);
   }
 
   const dependencyModule =
