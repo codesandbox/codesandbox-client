@@ -7,6 +7,12 @@ function sendUrlChange(url: string) {
   });
 }
 
+function updateUrl() {
+  setTimeout(() => {
+    sendUrlChange(document.location.href);
+  });
+}
+
 export default function setupHistoryListeners() {
   const pushState = window.history.pushState;
   window.history.pushState = function(state, ...args) {
@@ -28,17 +34,11 @@ export default function setupHistoryListeners() {
     return replaceState.apply(window.history, [state, ...args]);
   };
 
-  history.onpushstate = () => {
-    setTimeout(() => {
-      sendUrlChange(document.location.href);
-    });
-  };
+  history.onpushstate = updateUrl;
 
-  history.onreplacestate = () => {
-    setTimeout(() => {
-      sendUrlChange(document.location.href);
-    });
-  };
+  history.onreplacestate = updateUrl;
+
+  window.addEventListener('hashchange', updateUrl);
 
   setTimeout(() => {
     sendUrlChange(document.location.href);
