@@ -1,7 +1,7 @@
 // @flow
-import type { Module, Directory } from 'common/types';
+import type { Module } from 'common/types';
 
-import { getCurrentManager } from '../';
+import { getCurrentManager } from '../compile';
 
 let cachedBoilerplates = [];
 

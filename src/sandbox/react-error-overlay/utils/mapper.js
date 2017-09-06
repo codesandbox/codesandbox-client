@@ -10,7 +10,7 @@
 // @flow
 import StackFrame from './stack-frame';
 import { getSourceMap } from './getSourceMap';
-import { getCurrentManager } from '../../';
+import { getCurrentManager } from '../../compile';
 import { getLinesAround } from './getLinesAround';
 import { settle } from 'settle-promise';
 

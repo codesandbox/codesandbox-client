@@ -124,8 +124,6 @@ export default class TranspiledModule {
 
   reset() {
     this.childModules = [];
-    this.errors = [];
-    this.warnings = [];
     this.emittedAssets = [];
     this.setIsEntry(false);
     this.resetCompilation();
@@ -139,6 +137,8 @@ export default class TranspiledModule {
         dep.resetTranspilation();
       });
     this.source = null;
+    this.errors = [];
+    this.warnings = [];
   }
 
   resetCompilation() {
