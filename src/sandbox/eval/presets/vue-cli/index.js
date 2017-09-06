@@ -64,17 +64,7 @@ vuePreset.registerTranspiler(module => /\.jsx?$/.test(module.title), [
         'latest',
         'stage-2',
       ],
-      plugins: [
-        [
-          'transform-runtime',
-          {
-            helpers: false,
-            polyfill: false,
-            regenerator: true,
-          },
-        ],
-        'transform-vue-jsx',
-      ],
+      plugins: ['transform-runtime', 'transform-vue-jsx'],
     },
   },
 ]);

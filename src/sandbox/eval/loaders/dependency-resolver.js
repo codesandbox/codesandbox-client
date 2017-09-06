@@ -14,8 +14,9 @@ export default function getDependency(
   // This polyfill is included by default in the sandbox, no external dependency needed.
   // This is also included in CRA by default, so we keep compatability with
   // CRA.
-  if (dependencyPath === 'babel-runtime/regenerator') {
-    return require('babel-runtime/regenerator'); // eslint-disable-line global-require
+  if (dependencyPath.startsWith('babel-runtime')) {
+    return require('../../../../node_modules/babel-runtime' + // eslint-disable-line global-require
+      dependencyPath.replace('babel-runtime', ''));
   }
 
   const dependencyModule =
