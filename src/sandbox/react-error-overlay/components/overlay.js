@@ -25,7 +25,7 @@ import type { FrameSetting } from './frames';
 import type { SwitchCallback } from './additional';
 import { createSuggestions } from './suggestions';
 
-import { areActionsEnabled } from '../../';
+import { areActionsEnabled } from '../../compile';
 
 function createOverlay(
   document: Document,

@@ -1,6 +1,6 @@
 import type { Sandbox, Module, Directory } from 'common/types';
 
-import files from 'buffer-loader!./files.zip';
+import files from 'buffer-loader!./files.zip'; // eslint-disable-line import/no-webpack-loader-syntax
 import {
   getResourceTag,
   getIndexHtmlBody,
@@ -63,20 +63,22 @@ export default function createZip(
 ) {
   zip.file('README.md', README);
 
-  return zip.loadAsync(files).then(zip => {
-    const src = zip.folder('src');
+  return zip.loadAsync(files).then(src => {
+    const srcFolder = src.folder('src');
     modules
       .filter(x => x.directoryShortid == null)
       .filter(x => x.title !== 'index.html') // This will be included in the body
-      .forEach(x => src.file(x.title, x.code));
+      .forEach(x => srcFolder.file(x.title, x.code));
 
     directories
       .filter(x => x.directoryShortid == null)
-      .forEach(x => createDirectoryWithFiles(modules, directories, x, src));
+      .forEach(x =>
+        createDirectoryWithFiles(modules, directories, x, srcFolder)
+      );
 
-    zip.file('index.html', getHTML(modules, sandbox.externalResources));
+    src.file('index.html', getHTML(modules, sandbox.externalResources));
 
-    zip.file(
+    src.file(
       'package.json',
       createPackageJSON(
         sandbox,

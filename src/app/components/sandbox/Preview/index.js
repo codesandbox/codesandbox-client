@@ -233,7 +233,7 @@ export default class Preview extends React.PureComponent<Props, State> {
       template,
     } = this.props;
     if (preferences.clearConsoleEnabled) {
-      console.clear();
+      console.clear(); // eslint-disable-line no-console
     }
 
     // Do it here so we can see the dependency fetching screen if needed

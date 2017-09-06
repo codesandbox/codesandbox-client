@@ -19,12 +19,18 @@ const BadgeContainer = styled.div`
   top: -110px;
 `;
 
+type BadgeProp = 'patron-1' | 'patron-2' | 'patron-3' | 'patron-4';
+
 type Props = {
   subscribed: boolean,
-  badge: 'patron-1' | 'patron-2' | 'patron-3' | 'patron-4',
+  badge: BadgeProp,
 };
 
-const Badge = ({ badge }: Props) => {
+type BadgeProps = {
+  badge: BadgeProp,
+};
+
+const Badge = ({ badge }: BadgeProps) => {
   const BadgeComponent = badges[badge].Badge;
   return (
     <BadgeContainer>

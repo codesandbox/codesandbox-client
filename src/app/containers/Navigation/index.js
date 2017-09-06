@@ -10,12 +10,13 @@ import Logo from 'app/components/Logo';
 import Row from 'app/components/flex/Row';
 import Tooltip from 'app/components/Tooltip';
 import HeaderSearchBar from 'app/components/HeaderSearchBar';
-import NewSandboxAction from '../../pages/Sandbox/Editor/Content/Header/NewSandboxAction';
 
 import { jwtSelector, isPatronSelector } from 'app/store/user/selectors';
-import { newSandboxUrl, patronUrl } from 'app/utils/url-generator';
+import { patronUrl } from 'app/utils/url-generator';
 // $FlowIssue
 import PatronBadge from '-!svg-react-loader!app/utils/badges/svg/patron-4.svg'; // eslint-disable-line import/no-webpack-loader-syntax
+
+import NewSandboxAction from '../../pages/Sandbox/Editor/Content/Header/NewSandboxAction';
 
 import UserMenu from '../UserMenu';
 
@@ -51,20 +52,6 @@ const Action = styled.div`
   &:hover {
     color: white;
   }
-`;
-
-const Icon = styled(Link)`
-  color: inherit;
-  text-decoration: none;
-  font-size: 1.25rem;
-  font-weight: 300;
-`;
-
-const PlusIcon = styled(Link)`
-  color: inherit;
-  text-decoration: none;
-  font-size: 1.5rem;
-  font-weight: 300;
 `;
 
 type Props = {

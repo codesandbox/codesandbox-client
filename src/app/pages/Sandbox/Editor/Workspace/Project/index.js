@@ -61,6 +61,7 @@ type Props = {
   author: ?User,
   git: ?GitInfo,
   privacy: number,
+  template: string,
 };
 
 export default class Project extends React.PureComponent<

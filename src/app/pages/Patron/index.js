@@ -17,29 +17,27 @@ const Content = styled.div`
   color: white;
 `;
 
-export default class Support extends React.PureComponent {
-  render() {
-    document.title = 'Patron - CodeSandbox';
-    return (
-      <MaxWidth>
-        <Margin vertical={1.5} horizontal={1.5}>
-          <Navigation title="Become a Patron" />
-          <Content>
-            <MaxWidth width={1024}>
-              <Title>Become a CodeSandbox Patron!</Title>
-              <SubTitle>
-                You can support us by paying a monthly amount of your choice.
-                <br />
-                The money goes to all expenses of CodeSandbox.
-              </SubTitle>
+export default function Support() {
+  document.title = 'Patron - CodeSandbox';
+  return (
+    <MaxWidth>
+      <Margin vertical={1.5} horizontal={1.5}>
+        <Navigation title="Become a Patron" />
+        <Content>
+          <MaxWidth width={1024}>
+            <Title>Become a CodeSandbox Patron!</Title>
+            <SubTitle>
+              You can support us by paying a monthly amount of your choice.
+              <br />
+              The money goes to all expenses of CodeSandbox.
+            </SubTitle>
 
-              <Centered horizontal>
-                <PricingModal />
-              </Centered>
-            </MaxWidth>
-          </Content>
-        </Margin>
-      </MaxWidth>
-    );
-  }
+            <Centered horizontal>
+              <PricingModal />
+            </Centered>
+          </MaxWidth>
+        </Content>
+      </Margin>
+    </MaxWidth>
+  );
 }

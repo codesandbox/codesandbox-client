@@ -141,7 +141,6 @@ export default class Dependencies extends React.PureComponent<Props, State> {
         <div>
           <WorkspaceSubtitle>External Resources</WorkspaceSubtitle>
           {(externalResources || [])
-            .sort()
             .map(resource => (
               <ExternalResource
                 key={resource}

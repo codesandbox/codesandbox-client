@@ -44,13 +44,17 @@ type Props = {
   versions: Array<Version>,
 };
 
+type State = {
+  major: string,
+  minor: string,
+  patch: string,
+  errorMessage: string,
+};
+
 const DUPLICATE_VERSION_INFO =
   'You cannot publish a version that already exists.';
 
-export default class PublishFields extends React.PureComponent<
-  Props,
-  $FlowFixMeState
-> {
+export default class PublishFields extends React.PureComponent<Props, State> {
   state = initialState;
 
   major: ?HTMLInputElement;

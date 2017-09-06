@@ -51,7 +51,7 @@ const getMessage = (error: Error & { response: ?Object }) => {
 const showError = error => dispatch => {
   const errorMessage = getMessage(error);
   dispatch(notificationActions.addNotification(errorMessage, 'error'));
-  error.apiMessage = errorMessage;
+  error.apiMessage = errorMessage; // eslint-disable-line no-param-reassign
 };
 
 export function doRequest(

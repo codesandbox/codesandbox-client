@@ -24,7 +24,7 @@ function compareArrays(m1, m2, fields: Array<String>) {
       return true;
     }
 
-    return checkFields(first, second, MODULE_FIELDS);
+    return checkFields(first, second, fields);
   });
 }
 

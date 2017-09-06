@@ -169,7 +169,8 @@ function fetchFromTypings(dependency, version, fetchedPaths) {
   return doFetch(`${depUrl}/package.json`)
     .then(response => JSON.parse(response))
     .then(packageJSON => {
-      if (packageJSON.typings) {
+      const types = packageJSON.typings || packageJSON.types;
+      if (types) {
         // Add package.json, since this defines where all types lie
         addLib(
           `node_modules/${dependency}/package.json`,
@@ -178,11 +179,11 @@ function fetchFromTypings(dependency, version, fetchedPaths) {
         );
 
         // get all files in the specified directory
-        getFileMetaData(depUrl, packageJSON.typings).then(fileData => {
+        getFileMetaData(depUrl, types).then(fileData => {
           getFileTypes(
             depUrl,
             dependency,
-            resolveAppropiateFile(fileData, packageJSON.typings),
+            resolveAppropiateFile(fileData, types),
             fetchedPaths,
             fileData
           );
@@ -218,8 +219,7 @@ function fetchAndAddDependencies(dependencies) {
     } catch (e) {
       // Don't show these cryptic messages to users, because this is not vital
       if (process.env.NODE_ENV === 'development') {
-        console.log(`Couldn't find typings for ${dep}`);
-        console.error(e);
+        console.error(`Couldn't find typings for ${dep}`, e);
       }
     }
   });

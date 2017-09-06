@@ -12,7 +12,7 @@ export default class ConfirmLink extends React.PureComponent<Props> {
     const { enabled, message } = this.props;
 
     if (enabled) {
-      const yes = confirm(message);
+      const yes = confirm(message); // eslint-disable-line no-alert
 
       if (!yes) {
         e.preventDefault();

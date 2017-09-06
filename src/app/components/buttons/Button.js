@@ -4,16 +4,23 @@ import styled, { css, keyframes } from 'styled-components';
 
 import theme from 'common/theme';
 
-const getBackgroundColor = ({ disabled, red }) => {
+const getBackgroundColor = ({ disabled, red, secondary }) => {
   if (disabled) return `background: ${theme.background2.darken(0.1)()}`;
+  if (secondary) return `background: #3A4B5D`;
   if (red)
     return `background-image: linear-gradient(270deg, #F27777, #400000);`;
   return `background-image: linear-gradient(270deg, #fed29d, #A58B66, #7abae8, #56a0d6);`;
 };
 
-const getColor = ({ disabled }) => {
+const getColor = ({ disabled, secondary }) => {
   if (disabled) return theme.background2.lighten(1.5)();
+  if (secondary) return `#56a0d6`;
   return 'white';
+};
+
+const getBorder = ({ secondary }) => {
+  if (secondary) return `1px solid #56a0d6`;
+  return 'none';
 };
 
 const forward = keyframes`
@@ -37,6 +44,7 @@ const styles = css`
   ${props => getBackgroundColor(props)};
   background-size: 720%;
 
+  border: ${props => getBorder(props)};
   border-radius: 4px;
 
   box-sizing: border-box;

@@ -22,8 +22,8 @@ exports[`File renders 1`] = `
   user-select: none;
 }
 
-.c0 function (props) {
-  return: props.noTransition || 'transition: 0.3s ease all;';
+.c0 function (styleProps) {
+  return: styleProps.noTransition || 'transition: 0.3s ease all;';
 }
 
 .c0:hover {
@@ -102,8 +102,8 @@ exports[`File renders alternative 1`] = `
   user-select: none;
 }
 
-.c0 function (props) {
-  return: props.noTransition || 'transition: 0.3s ease all;';
+.c0 function (styleProps) {
+  return: styleProps.noTransition || 'transition: 0.3s ease all;';
 }
 
 .c0:hover {
@@ -185,8 +185,8 @@ exports[`File renders as active 1`] = `
   background-color: rgba(139,191,228,0.19999999999999996) !important;
 }
 
-.c0 function (props) {
-  return: props.noTransition || 'transition: 0.3s ease all;';
+.c0 function (styleProps) {
+  return: styleProps.noTransition || 'transition: 0.3s ease all;';
 }
 
 .c0:hover > div {
@@ -259,8 +259,8 @@ exports[`File renders directory 1`] = `
   user-select: none;
 }
 
-.c0 function (props) {
-  return: props.noTransition || 'transition: 0.3s ease all;';
+.c0 function (styleProps) {
+  return: styleProps.noTransition || 'transition: 0.3s ease all;';
 }
 
 .c0:hover {

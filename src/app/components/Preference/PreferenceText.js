@@ -5,6 +5,7 @@ import Input from 'app/components/Input';
 type Props = {
   value: boolean,
   setValue: boolean => any,
+  placeholder: string,
 };
 
 export default class PreferenceText extends React.PureComponent {

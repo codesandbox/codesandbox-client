@@ -31,4 +31,8 @@ describe('Button', () => {
   it('renders disabled', () => {
     testRender(<Button disabled>Test</Button>);
   });
+
+  it('renders secondary', () => {
+    testRender(<Button secondary>Test</Button>);
+  });
 });

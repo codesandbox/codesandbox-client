@@ -85,7 +85,7 @@ const mapDispatchToProps = dispatch => ({
   modalActions: bindActionCreators(modalActionCreators, dispatch),
   previewApiActions: bindActionCreators(previewApiActionCreators, dispatch),
 });
-class EditorPreview extends React.PureComponent<Props, $FlowFixMeState> {
+class EditorPreview extends React.PureComponent<Props, State> {
   state = {
     resizing: false,
   };
@@ -137,7 +137,6 @@ class EditorPreview extends React.PureComponent<Props, $FlowFixMeState> {
       workspaceHidden,
       toggleWorkspace,
       previewApiActions,
-      errors,
     } = this.props;
 
     const mainModule = findMainModule(modules);

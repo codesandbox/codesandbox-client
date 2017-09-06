@@ -4,20 +4,20 @@ import styled, { ThemeProvider } from 'styled-components';
 import { camelizeKeys } from 'humps';
 import 'whatwg-fetch';
 
-import type { Sandbox, Module } from 'common/types';
+import type { Sandbox } from 'common/types';
 import getTemplateDefinition from 'common/templates';
 import Centered from 'app/components/flex/Centered';
 import Title from 'app/components/text/Title';
 import SubTitle from 'app/components/text/SubTitle';
+import {
+  findCurrentModule,
+  findMainModule,
+} from 'app/store/entities/sandboxes/modules/selectors';
 
 import Header from './components/Header';
 import Content from './components/Content';
 import Sidebar from './components/Sidebar';
 import { getSandboxOptions } from '../common/url';
-import {
-  findCurrentModule,
-  findMainModule,
-} from 'app/store/entities/sandboxes/modules/selectors';
 
 const Container = styled.div`
   display: flex;

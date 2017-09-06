@@ -19,6 +19,16 @@ import './Search.css';
 import Results from './Results';
 import Filters from './Filters';
 
+type Props = {
+  location: {
+    search: string,
+  },
+  history: {
+    listen: Function,
+    push: Function,
+  },
+};
+
 const Content = styled.div`
   margin-top: 5%;
   text-align: left;
@@ -49,7 +59,7 @@ const createURL = state => `?${qs.stringify(state)}`;
 const searchStateToUrl = (props, searchState) =>
   searchState ? `${props.location.pathname}${createURL(searchState)}` : '';
 
-export default class Search extends React.PureComponent {
+export default class Search extends React.PureComponent<Props> {
   constructor(props) {
     super(props);
     this.state = { searchState: qs.parse(props.location.search.slice(1)) };

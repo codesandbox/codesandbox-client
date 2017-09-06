@@ -123,8 +123,8 @@ class Prettier extends React.PureComponent {
             setValue={this.setPrettierOption('jsxBracketSameLine')}
           />
           <Description>
-            Put the `>` of a multi-line JSX element at the end of the last line
-            instead of being alone on the next line.
+            Put the `{'>'}` of a multi-line JSX element at the end of the last
+            line instead of being alone on the next line.
           </Description>
         </PreferenceContainer>
       </Container>

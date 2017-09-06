@@ -1,5 +1,5 @@
-function getExternalResourcesConcatination(resources: Array<string>) {
-  return resources.sort().join('');
+function getExternalResourcesConcatenation(resources: Array<string>) {
+  return resources.join('');
 }
 
 function clearExternalResources() {
@@ -27,7 +27,7 @@ function addCSS(resource: string) {
 function addJS(resource: string) {
   const script = document.createElement('script');
   script.setAttribute('src', resource);
-  script.setAttribute('async', false);
+  script.async = false;
   script.setAttribute('id', 'external-js');
   document.head.appendChild(script);
 }
@@ -44,8 +44,8 @@ function addResource(resource: string) {
 
 let cachedExternalResources = '';
 
-export default function handelExternalResources(externalResources) {
-  const extResString = getExternalResourcesConcatination(externalResources);
+export default function handleExternalResources(externalResources) {
+  const extResString = getExternalResourcesConcatenation(externalResources);
   if (extResString !== cachedExternalResources) {
     clearExternalResources();
     externalResources.forEach(addResource);

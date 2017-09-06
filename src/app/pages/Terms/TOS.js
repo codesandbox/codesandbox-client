@@ -8,10 +8,10 @@ export default () => (
     <p>Last updated: July 20, 2017</p>
 
     <p>
-      These Terms and Conditions ("Terms", "Terms and Conditions") govern your
-      relationship with https://codesandbox.io website (the "Service") and the
-      Sandbox creation service therein operated by Bas en Ives VOF ("us", "we",
-      or "our").
+      These Terms and Conditions ({'"'}Terms{'"'}, {'"'}Terms and Conditions{'"'})
+      govern your relationship with https://codesandbox.io website (the {'"'}Service{'"'})
+      and the Sandbox creation service therein operated by Bas en Ives VOF ({'"'}us{'"'},{' '}
+      {'"'}we{'"'}, or {'"'}our{'"'}).
     </p>
 
     <p>
@@ -22,7 +22,7 @@ export default () => (
       Your access to and use of the Service is conditioned on your acceptance of
       and compliance with these Terms. These Terms apply to all visitors, users
       and others who access or use the Service. Any information submitted by you
-      shall be subject to CodeSandbox's{' '}
+      shall be subject to CodeSandbox{"'"}s{' '}
       <Link to="/legal/privacy">Privacy Policy</Link>. One person or legal
       entity may not maintain more than one Account. Accounts registered by
       “bots” or other automated methods are not permitted.
@@ -37,10 +37,9 @@ export default () => (
     <h2>Subscriptions</h2>
 
     <p>
-      Some parts of the Service are billed on a subscription basis
-      ("Subscription(s)"). You will be billed in advance on a recurring and
-      periodic basis ("Billing Cycle"). Billing cycles are set on a monthly
-      basis.
+      Some parts of the Service are billed on a subscription basis ({'"'}Subscription(s){'"'}).
+      You will be billed in advance on a recurring and periodic basis ({'"'}Billing
+      Cycle{'"'}). Billing cycles are set on a monthly basis.
     </p>
 
     <p>
@@ -100,9 +99,9 @@ export default () => (
 
     <p>
       Our Service allows you to post, link, store, share and otherwise make
-      available certain information, text, graphics, videos, or other material
-      ("Content"). You are responsible for the Content that you post to the
-      Service, including its legality, reliability, and appropriateness.
+      available certain information, text, graphics, videos, or other material ({'"'}Content{'"'}).
+      You are responsible for the Content that you post to the Service,
+      including its legality, reliability, and appropriateness.
     </p>
 
     <p>
@@ -206,10 +205,11 @@ export default () => (
 
     <p>
       Your use of the Service is at your sole risk. The Service is provided on
-      an "AS IS" and "AS AVAILABLE" basis. The Service is provided without
-      warranties of any kind, whether express or implied, including, but not
-      limited to, implied warranties of merchantability, fitness for a
-      particular purpose, non-infringement or course of performance.
+      an {'"'}AS IS{'"'} and {'"'}AS AVAILABLE{'"'} basis. The Service is
+      provided without warranties of any kind, whether express or implied,
+      including, but not limited to, implied warranties of merchantability,
+      fitness for a particular purpose, non-infringement or course of
+      performance.
     </p>
 
     <p>

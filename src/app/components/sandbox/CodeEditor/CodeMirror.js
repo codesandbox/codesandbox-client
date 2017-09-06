@@ -28,6 +28,9 @@ type Props = {
   preferences: Preferences,
   onlyViewMode: boolean,
   setCurrentModule: ?(sandboxId: string, moduleId: string) => void,
+  sandboxId: string,
+  modules: Array,
+  directories: Array,
 };
 
 const Container = styled.div`
@@ -322,7 +325,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
           cm.toggleComment({ lineComment: '//' });
         });
       },
-      'Cmd-P': cm => {
+      'Cmd-P': () => {
         this.setState({ fuzzySearchEnabled: true });
       },
     };
@@ -410,8 +413,9 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     }
 
     if (preferences.lintEnabled) {
+      const initialized = 'eslint' in window;
       System.import('app/utils/codemirror/eslint-lint')
-        .then(initializer => initializer.default())
+        .then(initializer => !initialized && initializer.default())
         .then(() => {
           this.codemirror.setOption('lint', true);
         });
@@ -442,7 +446,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
           preferences.prettierConfig
         );
 
-        if (newCode !== code) {
+        if (newCode && newCode !== code) {
           this.props.changeCode(id, newCode);
           this.updateCodeMirrorCode(newCode);
         }
