@@ -22,6 +22,7 @@ export function getMode(module: Module) {
 const jsRegex = /\.jsx?$/;
 function isJS(module: Module) {
   if (jsRegex.test(module.title)) return 'js';
+  return undefined;
 }
 
 export default function getType(module: Module) {

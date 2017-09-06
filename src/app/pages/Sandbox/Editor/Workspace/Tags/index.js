@@ -11,6 +11,7 @@ type Props = {
   tags: Array<string>,
   isOwner: boolean,
   addTag: (tag: string) => void,
+  removeTag: ?(id: string, tag: string) => void,
 };
 
 export default class TagsWorkspace extends React.PureComponent {

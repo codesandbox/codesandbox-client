@@ -44,7 +44,11 @@ type Props = {
   url: ?string,
 };
 
-const DivOrA = ({ href, ...props }) =>
+type DivOrAProps = {
+  href: string,
+};
+
+const DivOrA = ({ href, ...props }: DivOrAProps) =>
   href ? (
     <StyledA target="_blank" rel="noopener noreferrer" href={href} {...props} />
   ) : (

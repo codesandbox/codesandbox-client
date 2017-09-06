@@ -47,7 +47,7 @@ const Item = styled.div`
     css`
       &:hover {
         color: rgba(255, 255, 255, 0.6);
-        background-color: ${props => props.theme.background};
+        background-color: ${styleProps => styleProps.theme.background};
       }
     `};
 `;

@@ -12,6 +12,11 @@ type Props = {
   unLikeSandbox: Function,
   sandboxId: string,
   className: ?string,
+  colorless: boolean,
+};
+
+type MaybeTooltipProps = {
+  loggedIn: boolean,
 };
 
 const Container = styled.div`
@@ -30,7 +35,7 @@ const Container = styled.div`
     `};
 `;
 
-const MaybeTooltip = ({ loggedIn, ...props }) =>
+const MaybeTooltip = ({ loggedIn, ...props }: MaybeTooltipProps) =>
   loggedIn ? <Tooltip {...props} /> : <div {...props} />;
 
 export default class LikeHeart extends React.PureComponent {

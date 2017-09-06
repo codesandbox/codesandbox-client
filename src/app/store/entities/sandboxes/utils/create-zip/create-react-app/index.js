@@ -58,7 +58,9 @@ const getHTML = (modules, resources) =>
 
 const files = {};
 function importAll(r) {
-  r.keys().forEach(key => (files[key] = r(key)));
+  r.keys().forEach(key => {
+    files[key] = r(key);
+  });
 }
 
 export default function createZip(

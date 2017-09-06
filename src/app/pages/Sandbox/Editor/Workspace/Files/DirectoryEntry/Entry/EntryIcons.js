@@ -69,7 +69,7 @@ type Props = {
   root: ?boolean,
   error: boolean,
 };
-export default ({
+export default function EntryIcon({
   type,
   root,
   error,
@@ -77,15 +77,21 @@ export default ({
   isNotSynced,
   isOpen,
   onOpen,
-}: Props) => (
-  <div style={{ display: 'inline-block', verticalAlign: 'middle' }}>
-    {isNotSynced && <NotSyncedIconWithMargin />}
-    {type === 'directory' &&
-    hasChildren && (
-      <StyledFolderIcon isOpen={isOpen} onClick={onOpen}>
-        <FolderIcon />
-      </StyledFolderIcon>
-    )}
-    {getIcon(type, error, root)}
-  </div>
-);
+}: Props) {
+  return (
+    <div style={{ display: 'inline-block', verticalAlign: 'middle' }}>
+      {isNotSynced && <NotSyncedIconWithMargin />}
+      {type === 'directory' &&
+      hasChildren && (
+        <StyledFolderIcon isOpen={isOpen} onClick={onOpen}>
+          <FolderIcon />
+        </StyledFolderIcon>
+      )}
+      {getIcon(type, error, root)}
+    </div>
+  );
+}
+
+EntryIcon.defaultProps = {
+  isOpen: false,
+};

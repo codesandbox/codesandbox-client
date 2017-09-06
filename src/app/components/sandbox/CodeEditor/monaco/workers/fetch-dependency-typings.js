@@ -218,8 +218,7 @@ function fetchAndAddDependencies(dependencies) {
     } catch (e) {
       // Don't show these cryptic messages to users, because this is not vital
       if (process.env.NODE_ENV === 'development') {
-        console.log(`Couldn't find typings for ${dep}`);
-        console.error(e);
+        console.error(`Couldn't find typings for ${dep}`, e);
       }
     }
   });

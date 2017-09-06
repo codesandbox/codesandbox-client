@@ -2,7 +2,11 @@ import React from 'react';
 import Slider from 'rc-slider/lib/Slider';
 import 'rc-slider/assets/index.css';
 
-export default props => (
+type Props = {
+  color: string,
+};
+
+export default (props: Props) => (
   <Slider
     railStyle={{ background: 'rgba(0, 0, 0, 0.3)', height: 12 }}
     trackStyle={{

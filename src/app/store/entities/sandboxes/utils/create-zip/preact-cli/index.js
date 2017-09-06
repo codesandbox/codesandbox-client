@@ -1,6 +1,6 @@
 import type { Sandbox, Module, Directory } from 'common/types';
 
-import files from 'buffer-loader!./files.zip';
+import files from 'buffer-loader!./files.zip'; // eslint-disable-line import/no-webpack-loader-syntax
 import {
   getResourceTag,
   getIndexHtmlBody,
@@ -8,6 +8,7 @@ import {
   createDirectoryWithFiles,
 } from '../';
 
+/* eslint-disable no-useless-escape */
 const getHTML = (modules, resources) =>
   `<!DOCTYPE html>
 <html lang="en">
@@ -43,6 +44,7 @@ const getHTML = (modules, resources) =>
   </body>
 </html>
 `;
+/* eslint-enable no-useless-escape */
 
 export default function createZip(
   zip,
@@ -50,57 +52,59 @@ export default function createZip(
   modules: Array<Module>,
   directories: Array<Directory>
 ) {
-  const src = zip.folder('src');
-  return src.loadAsync(files).then(src => {
-    modules
-      .filter(x => x.directoryShortid == null)
-      .filter(x => x.title !== 'index.html') // This will be included in the body
-      .forEach(x => src.file(x.title, x.code));
+  return zip
+    .folder('src')
+    .loadAsync(files)
+    .then(src => {
+      modules
+        .filter(x => x.directoryShortid == null)
+        .filter(x => x.title !== 'index.html') // This will be included in the body
+        .forEach(x => src.file(x.title, x.code));
 
-    directories
-      .filter(x => x.directoryShortid == null)
-      .forEach(x => createDirectoryWithFiles(modules, directories, x, src));
+      directories
+        .filter(x => x.directoryShortid == null)
+        .forEach(x => createDirectoryWithFiles(modules, directories, x, src));
 
-    if (
-      modules.filter(
-        m => m.directoryShortid == null && m.title === 'index.html'
-      ).length ||
-      sandbox.externalResources.length
-    ) {
-      src.file('template.html', getHTML(modules, sandbox.externalResources));
-    }
+      if (
+        modules.filter(
+          m => m.directoryShortid == null && m.title === 'index.html'
+        ).length ||
+        sandbox.externalResources.length
+      ) {
+        src.file('template.html', getHTML(modules, sandbox.externalResources));
+      }
 
-    zip.file(
-      'package.json',
-      createPackageJSON(
-        sandbox,
-        {},
-        {
-          eslint: '^4.5.0',
-          'eslint-config-synacor': '^1.1.0',
-          'if-env': '^1.0.0',
-          less: '^2.7.2',
-          'less-loader': '^4.0.5',
-          'node-sass': '^4.5.3',
-          'preact-cli': '^1.4.1',
-          'sass-loader': '^6.0.6',
-          stylus: '^0.54.5',
-          'stylus-loader': '^3.0.1',
-        },
-        {
-          test: 'eslint . && preact test',
-          start:
-            'if-env NODE_ENV=production && npm run -s serve || npm run -s dev',
-          build: 'preact build',
-          serve: 'preact build && preact serve',
-          dev: 'preact watch',
-        },
-        {
-          eslintConfig: {
-            extends: 'eslint-config-synacor',
+      zip.file(
+        'package.json',
+        createPackageJSON(
+          sandbox,
+          {},
+          {
+            eslint: '^4.5.0',
+            'eslint-config-synacor': '^1.1.0',
+            'if-env': '^1.0.0',
+            less: '^2.7.2',
+            'less-loader': '^4.0.5',
+            'node-sass': '^4.5.3',
+            'preact-cli': '^1.4.1',
+            'sass-loader': '^6.0.6',
+            stylus: '^0.54.5',
+            'stylus-loader': '^3.0.1',
           },
-        }
-      )
-    );
-  });
+          {
+            test: 'eslint . && preact test',
+            start:
+              'if-env NODE_ENV=production && npm run -s serve || npm run -s dev',
+            build: 'preact build',
+            serve: 'preact build && preact serve',
+            dev: 'preact watch',
+          },
+          {
+            eslintConfig: {
+              extends: 'eslint-config-synacor',
+            },
+          }
+        )
+      );
+    });
 }

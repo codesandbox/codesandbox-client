@@ -67,6 +67,7 @@ class Sandboxes extends React.PureComponent<Props> {
   };
 
   deleteSandbox = async (id: string) => {
+    // eslint-disable-next-line no-alert
     const really = confirm(`Are you sure you want to delete this sandbox?`); // TODO: confirm???
     if (really) {
       await this.props.sandboxActions.deleteSandbox(id);

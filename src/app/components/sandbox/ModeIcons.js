@@ -120,6 +120,7 @@ type Props = {
   setPreviewView: () => void,
   setMixedView: () => void,
   noPreview: ?boolean,
+  dropdown: boolean,
 };
 
 const getCurrentMode = ({
