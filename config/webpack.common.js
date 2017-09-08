@@ -241,6 +241,10 @@ module.exports = {
         to: 'public/vs',
       },
       {
+        from: 'node_modules/monaco-vue/release/min',
+        to: 'public/vs/language/vue',
+      },
+      {
         from: 'static',
         to: 'static',
       },

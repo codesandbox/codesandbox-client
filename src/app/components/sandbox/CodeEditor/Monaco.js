@@ -125,6 +125,9 @@ const CodeContainer = styled.div`
   }
 `;
 
+const requireAMDModule = paths =>
+  new Promise(resolve => window.require(paths, () => resolve()));
+
 const handleError = (
   monaco,
   editor,
@@ -211,7 +214,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     });
   };
 
-  updateDecorations = (classifications: Array<Object>) => {
+  updateDecorations = async (classifications: Array<Object>) => {
     const decorations = classifications.map(classification => ({
       range: new this.monaco.Range(
         classification.startLine,
@@ -224,7 +227,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
       },
     }));
 
-    const modelInfo = this.getModelById(this.props.id);
+    const modelInfo = await this.getModelById(this.props.id);
 
     modelInfo.decorations = this.editor.deltaDecorations(
       modelInfo.decorations || [],
@@ -270,16 +273,16 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
             modelCache[module.id].model.dispose();
             delete modelCache[module.id];
 
-            const newModel = this.createModel(
+            this.createModel(
               module,
               nextProps.modules,
               nextProps.directories
-            );
-
-            if (isCurrentlyOpened) {
-              // Open it again if it was open
-              this.editor.setModel(newModel);
-            }
+            ).then(newModel => {
+              if (isCurrentlyOpened) {
+                // Open it again if it was open
+                this.editor.setModel(newModel);
+              }
+            });
           }
         }
       });
@@ -337,12 +340,12 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     nextCode: ?string,
     nextTitle: string,
   }) => {
-    if (nextId !== currentId) {
+    if (nextId !== currentId && this.editor) {
       const pos = this.editor.getPosition();
       if (modelCache[currentId]) {
         modelCache[currentId].cursorPos = pos;
       }
-      this.openNewModel(nextId, nextTitle);
+      await this.openNewModel(nextId, nextTitle);
       this.editor.focus();
     }
   };
@@ -369,8 +372,9 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
       // Do in setTimeout, since disposeModules is async
       setTimeout(() => {
         // Initialize new models
-        this.initializeModules(nextProps.modules);
-        this.openNewModel(nextId, nextTitle);
+        this.initializeModules(nextProps.modules).then(() => {
+          this.openNewModel(nextId, nextTitle);
+        });
       });
     } else {
       this.swapDocuments({
@@ -411,7 +415,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     this.editor.setPosition(pos);
   }
 
-  getMode = (title: string) => {
+  getMode = async (title: string) => {
     if (title == null) return 'javascript';
 
     const kind = title.match(/\.([^.]*)$/);
@@ -425,7 +429,10 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
       } else if (kind[1] === 'html') {
         return 'html';
       } else if (kind[1] === 'vue') {
-        return 'html';
+        if (!this.monaco.languages.getLanguages().find(l => l.id === 'vue')) {
+          await requireAMDModule(['vs/language/vue/monaco.contribution']);
+        }
+        return 'vue';
       } else if (kind[1] === 'less') {
         return 'less';
       } else if (kind[1] === 'md') {
@@ -440,8 +447,8 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     return 'typescript';
   };
 
-  syntaxHighlight = (code: string, title: string, version: string) => {
-    const mode = this.getMode(title);
+  syntaxHighlight = async (code: string, title: string, version: string) => {
+    const mode = await this.getMode(title);
     if (mode === 'typescript' || mode === 'javascript') {
       this.syntaxWorker.postMessage({
         code,
@@ -451,8 +458,9 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     }
   };
 
-  lint = (code: string, title: string, version: string) => {
-    if (this.getMode(title) === 'javascript') {
+  lint = async (code: string, title: string, version: string) => {
+    const mode = await this.getMode(title);
+    if (mode === 'javascript') {
       this.lintWorker.postMessage({
         code,
         title,
@@ -461,7 +469,8 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     }
   };
 
-  handleChange = (newCode: string) => {
+  handleChange = () => {
+    const newCode = this.editor.getModel().getValue();
     this.props.changeCode(this.props.id, newCode);
 
     this.syntaxHighlight(
@@ -484,7 +493,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     });
   };
 
-  configureEditor = (editor, monaco) => {
+  configureEditor = async (editor, monaco) => {
     this.editor = editor;
     this.monaco = monaco;
 
@@ -524,8 +533,8 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
       noSyntaxValidation: true,
     });
 
-    this.initializeModules();
-    this.openNewModel(this.props.id, this.props.title);
+    await this.initializeModules();
+    await this.openNewModel(this.props.id, this.props.title);
 
     this.addKeyCommands();
     enableEmmet(editor, monaco, {});
@@ -565,6 +574,10 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
         });
       },
     });
+
+    editor.onDidChangeModelContent(() => {
+      this.handleChange();
+    });
   };
 
   closeFuzzySearch = () => {
@@ -601,11 +614,8 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     modelCache = {};
   };
 
-  initializeModules = (modules = this.props.modules) => {
-    modules.forEach(module => {
-      this.createModel(module, modules);
-    });
-  };
+  initializeModules = (modules = this.props.modules) =>
+    Promise.all(modules.map(module => this.createModel(module, modules)));
 
   resizeEditor = () => {
     this.editor.layout();
@@ -623,7 +633,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     clearTimeout(this.sizeProbeInterval);
   }
 
-  createModel = (
+  createModel = async (
     module: Module,
     modules: Array<Module> = this.props.modules,
     directories: Array<Directory> = this.props.directories
@@ -631,7 +641,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     // Remove the first slash, as this will otherwise create errors in monaco
     const path = getModulePath(modules, directories, module.id);
 
-    const mode = this.getMode(module.title);
+    const mode = await this.getMode(module.title);
     const model = this.monaco.editor.createModel(
       module.code,
       mode === 'javascript' ? 'typescript' : mode,
@@ -650,19 +660,19 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     return model;
   };
 
-  getModelById = (id: string) => {
+  getModelById = async (id: string) => {
     const { modules } = this.props;
     if (!modelCache[id]) {
       const module = modules.find(m => m.id === id);
 
-      this.createModel(module);
+      await this.createModel(module);
     }
 
     return modelCache[id];
   };
 
-  openNewModel = (id: string, title: string) => {
-    const modelInfo = this.getModelById(id);
+  openNewModel = async (id: string, title: string) => {
+    const modelInfo = await this.getModelById(id);
     this.editor.setModel(modelInfo.model);
 
     if (modelInfo.cursorPos) {
@@ -789,12 +799,6 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
 
     const options = this.getEditorOptions();
 
-    const requireConfig = {
-      url: '/public/vs/loader.js',
-      paths: {
-        vs: '/public/vs',
-      },
-    };
     return (
       <Container>
         <Header
@@ -815,13 +819,10 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
           <MonacoEditor
             width="100%"
             height="100%"
-            language="typescript"
             theme="CodeSandbox"
             options={options}
-            requireConfig={requireConfig}
             editorDidMount={this.configureEditor}
             editorWillMount={this.editorWillMount}
-            onChange={this.handleChange}
             openReference={this.openReference}
           />
         </CodeContainer>
