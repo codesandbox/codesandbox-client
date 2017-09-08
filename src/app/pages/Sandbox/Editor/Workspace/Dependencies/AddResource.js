@@ -31,7 +31,7 @@ export default class AddVersion extends React.PureComponent {
 
   addResource = async () => {
     if (this.state.name) {
-      await this.props.addResource(this.state.name);
+      await this.props.addResource(this.state.name.trim());
       this.setState(initialState);
     }
   };
