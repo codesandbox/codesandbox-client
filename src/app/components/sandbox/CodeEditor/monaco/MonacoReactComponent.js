@@ -107,7 +107,6 @@ MonacoEditor.propTypes = {
   editorDidMount: PropTypes.func,
   openReference: PropTypes.func.isRequired,
   editorWillMount: PropTypes.func,
-  template: PropTypes.string,
   context: PropTypes.object, // eslint-disable-line react/require-default-props, react/forbid-prop-types
 };
 
