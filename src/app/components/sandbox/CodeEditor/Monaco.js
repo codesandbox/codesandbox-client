@@ -340,7 +340,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     nextCode: ?string,
     nextTitle: string,
   }) => {
-    if (nextId !== currentId) {
+    if (nextId !== currentId && this.editor) {
       const pos = this.editor.getPosition();
       if (modelCache[currentId]) {
         modelCache[currentId].cursorPos = pos;

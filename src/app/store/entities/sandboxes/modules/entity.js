@@ -23,14 +23,16 @@ export default new schema.Entity(
   {},
   {
     processStrategy: module => {
-      const newCode = getDefaultCode(module);
+      const defaultCode = getDefaultCode(module);
+      const shouldUpdate = module.code == null;
+      const code = shouldUpdate ? defaultCode : module.code;
 
-      const isNotSynced = newCode !== '';
+      const isNotSynced = shouldUpdate && defaultCode !== module.code;
       return {
         ...module,
         errors: [],
-        code: module.code || newCode,
-        isNotSynced: module.code ? false : isNotSynced,
+        code,
+        isNotSynced,
       };
     },
   }
