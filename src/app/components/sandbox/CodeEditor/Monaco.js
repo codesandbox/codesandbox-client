@@ -42,6 +42,7 @@ type Props = {
   dependencies: ?Object,
   setCurrentModule: ?(sandboxId: string, moduleId: string) => void,
   template: string,
+  addDependency: ?(sandboxId: string, dependency: string) => void,
 };
 
 const Container = styled.div`
@@ -200,6 +201,18 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
 
     this.typingsFetcherWorker.addEventListener('message', event => {
       const { path, typings } = event.data;
+
+      if (
+        path.startsWith('node_modules/@types') &&
+        this.hasNativeTypescript() &&
+        this.props.addDependency != null
+      ) {
+        const dependency = path.match(/node_modules\/(@types\/.*)\//)[1];
+
+        if (!Object.keys(this.props.dependencies).includes(dependency)) {
+          this.props.addDependency(this.props.sandboxId, dependency);
+        }
+      }
 
       if (
         !this.monaco.languages.typescript.typescriptDefaults.getExtraLibs()[
@@ -498,6 +511,11 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     });
   };
 
+  hasNativeTypescript = () => {
+    const template = getTemplate(this.props.template);
+    return template.sourceConfig && template.sourceConfig.typescript;
+  };
+
   configureEditor = async (editor, monaco) => {
     this.editor = editor;
     this.monaco = monaco;
@@ -510,9 +528,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
 
     this.setupWorkers();
 
-    const template = getTemplate(this.props.template);
-    const hasNativeTypescript =
-      template.sourceConfig && template.sourceConfig.typescript;
+    const hasNativeTypescript = this.hasNativeTypescript();
 
     const compilerDefaults = {
       jsxFactory: 'React.createElement',

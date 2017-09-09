@@ -295,7 +295,7 @@ class ShareView extends React.PureComponent {
     } = this.state;
 
     const defaultModule =
-      this.state.defaultModule || findMainModule(modules).id;
+      this.state.defaultModule || findMainModule(modules, sandbox.template).id;
 
     return (
       <Container>

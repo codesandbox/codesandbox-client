@@ -82,13 +82,12 @@ export default function createZip(
       'package.json',
       createPackageJSON(
         sandbox,
-        {},
         {
-          'react-scripts-ts': '2.6.0',
           '@types/jest': '^20.0.8',
           '@types/node': '^8.0.28',
-          '@types/react': '^16.0.5',
-          '@types/react-dom': '^15.5.4',
+        },
+        {
+          'react-scripts-ts': '2.6.0',
         },
         {
           start: 'react-scripts-ts start',
