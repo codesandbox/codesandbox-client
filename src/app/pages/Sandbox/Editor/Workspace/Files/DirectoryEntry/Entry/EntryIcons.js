@@ -11,6 +11,7 @@ import HTMLIcon from 'react-icons/lib/fa/html5';
 import ErrorIcon from 'react-icons/lib/md/error';
 import RawIcon from 'react-icons/lib/go/file-text';
 import ReactIcon from 'app/components/ReactIcon';
+import TypeScriptIcon from 'app/components/TypeScriptIcon';
 
 const NotSyncedIconWithMargin = styled(NotSyncedIcon)`
   margin-left: -20px;
@@ -53,6 +54,8 @@ const getIcon = (type, error, root) => {
       return <DirectoryIcon />;
     case 'css':
       return <CSSIcon />;
+    case 'ts':
+      return <TypeScriptIcon />;
     case 'html':
       return <HTMLIcon />;
     default:

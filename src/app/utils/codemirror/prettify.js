@@ -6,7 +6,7 @@ function getParser(mode) {
   if (mode === 'jsx') return 'babylon';
   if (mode === 'css') return 'postcss';
   if (mode === 'html') return 'parse5';
-  if (mode === 'ts') return 'typescript';
+  if (mode === 'typescript') return 'typescript';
   if (mode === 'graphql') return 'graphql';
 
   return 'babylon';

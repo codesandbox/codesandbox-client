@@ -20,15 +20,18 @@ export function getMode(module: Module) {
 }
 
 const jsRegex = /\.jsx?$/;
+const tsRegex = /\.tsx?$/;
 function isJS(module: Module) {
   if (jsRegex.test(module.title)) return 'js';
+  if (tsRegex.test(module.title)) return 'ts';
   return undefined;
 }
 
 export default function getType(module: Module) {
-  if (isJS(module)) {
+  const isJSType = isJS(module);
+  if (isJSType) {
     if (hasReact(module.code || '')) return 'react';
-    return 'js';
+    return isJSType;
   }
 
   return getMode(module);

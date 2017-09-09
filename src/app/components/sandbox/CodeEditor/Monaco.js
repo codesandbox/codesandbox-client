@@ -521,11 +521,19 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
       target: monaco.languages.typescript.ScriptTarget.ES2016,
       allowNonTsExtensions: !hasNativeTypescript,
       moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
-      module: monaco.languages.typescript.ModuleKind.ES6,
+      module: monaco.languages.typescript.ModuleKind.ES2015,
       experimentalDecorators: !hasNativeTypescript,
       noEmit: true,
       allowJs: true,
       typeRoots: ['node_modules/@types'],
+
+      forceConsistentCasingInFileNames: hasNativeTypescript,
+      noImplicitReturns: hasNativeTypescript,
+      noImplicitThis: hasNativeTypescript,
+      noImplicitAny: hasNativeTypescript,
+      strictNullChecks: hasNativeTypescript,
+      suppressImplicitAnyIndexErrors: hasNativeTypescript,
+      noUnusedLocals: hasNativeTypescript,
     };
 
     monaco.languages.typescript.typescriptDefaults.setMaximunWorkerIdleTime(-1);
@@ -624,7 +632,9 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
   };
 
   initializeModules = (modules = this.props.modules) =>
-    Promise.all(modules.map(module => this.createModel(module, modules)));
+    Promise.all(
+      modules.reverse().map(module => this.createModel(module, modules))
+    );
 
   resizeEditor = () => {
     this.editor.layout();
@@ -746,7 +756,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     const code = this.getCode();
     const mode = await this.getMode(title);
 
-    if (mode === 'javascript' || mode === 'css') {
+    if (mode === 'javascript' || mode === 'typescript' || mode === 'css') {
       try {
         const prettify = await import('app/utils/codemirror/prettify');
         const newCode = await prettify.default(

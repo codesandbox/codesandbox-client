@@ -26,14 +26,12 @@ self.addEventListener('message', event => {
     reportDiagnostics: true,
     compilerOptions: {
       target: ts.ScriptTarget.ES5,
-      module: ts.ModuleKind.ES6,
+      module: ts.ModuleKind.CommonJS,
       moduleResolution: ts.ModuleResolutionKind.NodeJs,
       allowJs: true,
       alwaysStrict: true,
       downlevelIteration: true,
       noImplicitUseStrict: false,
-      inlineSourceMap: true,
-      inlineSources: true,
       jsx: ts.JsxEmit.React,
       forceConsistentCasingInFileNames: true,
       noImplicitReturns: true,
@@ -42,6 +40,8 @@ self.addEventListener('message', event => {
       strictNullChecks: true,
       suppressImplicitAnyIndexErrors: true,
       noUnusedLocals: true,
+      inlineSourceMap: true,
+      inlineSources: true,
     },
   };
 

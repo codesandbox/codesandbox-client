@@ -436,7 +436,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     const { id, title, preferences } = this.props;
     const code = this.getCode();
     const mode = await this.getMode(title);
-    if (mode === 'jsx' || mode === 'css') {
+    if (mode === 'jsx' || mode === 'typescript' || mode === 'css') {
       try {
         const prettify = await import('app/utils/codemirror/prettify');
         const newCode = await prettify.default(
