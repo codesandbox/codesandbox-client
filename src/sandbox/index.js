@@ -36,7 +36,7 @@ if (isStandalone) {
     .then(res => res.json())
     .then(res => camelizeKeys(res))
     .then(x => {
-      const mainModule = findMainModule(x.data.modules);
+      const mainModule = findMainModule(x.data.modules, x.data.template);
 
       const data = {
         sandboxId: id,

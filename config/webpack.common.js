@@ -233,26 +233,32 @@ module.exports = {
     // See https://github.com/facebookincubator/create-react-app/issues/186
     new WatchMissingNodeModulesPlugin(paths.appNodeModules),
     // Make the monaco editor work
-    new CopyWebpackPlugin([
-      {
-        from: __DEV__
-          ? 'node_modules/monaco-editor/dev/vs'
-          : 'node_modules/monaco-editor/min/vs',
-        to: 'public/vs',
-      },
-      {
-        from: 'node_modules/monaco-vue/release/min',
-        to: 'public/vs/language/vue',
-      },
-      {
-        from: 'static',
-        to: 'static',
-      },
-      {
-        from: 'src/homepage/static',
-        to: 'static',
-      },
-    ]),
+    new CopyWebpackPlugin(
+      [
+        {
+          from: __DEV__
+            ? 'node_modules/monaco-editor/dev/vs'
+            : 'node_modules/monaco-editor/min/vs',
+          to: 'public/vs',
+        },
+        __PROD__ && {
+          from: 'node_modules/monaco-editor/min-maps',
+          to: 'public/min-maps',
+        },
+        {
+          from: 'node_modules/monaco-vue/release/min',
+          to: 'public/vs/language/vue',
+        },
+        {
+          from: 'static',
+          to: 'static',
+        },
+        {
+          from: 'src/homepage/static',
+          to: 'static',
+        },
+      ].filter(x => x)
+    ),
     // Try to dedupe duplicated modules, if any:
     new webpack.optimize.CommonsChunkPlugin({
       name: 'common',

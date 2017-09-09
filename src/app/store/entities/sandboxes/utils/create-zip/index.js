@@ -3,7 +3,7 @@ import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 
 import type { Sandbox, Module, Directory } from 'common/types';
-import { react, vue, preact } from 'common/templates/index';
+import { react, reactTs, vue, preact } from 'common/templates/index';
 
 const CSSTag = (resource: string) =>
   `<link rel="stylesheet" type="text/css" href="${resource}" media="all">`;
@@ -103,6 +103,10 @@ export default (async function createZip(
   let promise = null;
   if (sandbox.template === react.name) {
     promise = import('./create-react-app').then(generator =>
+      generator.default(zip, sandbox, modules, directories)
+    );
+  } else if (sandbox.template === reactTs.name) {
+    promise = import('./create-react-app-typescript').then(generator =>
       generator.default(zip, sandbox, modules, directories)
     );
   } else if (sandbox.template === vue.name) {

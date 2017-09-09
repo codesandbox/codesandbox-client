@@ -177,7 +177,7 @@ class ShareView extends React.PureComponent {
   clearDefaultModule = () => this.setState({ defaultModule: null });
 
   getOptionsUrl = () => {
-    const { modules, directories } = this.props;
+    const { sandbox, modules, directories } = this.props;
     const {
       defaultModule,
       showEditor,
@@ -191,7 +191,7 @@ class ShareView extends React.PureComponent {
 
     const options = {};
 
-    const mainModuleId = findMainModule(modules).id;
+    const mainModuleId = findMainModule(modules, sandbox.template).id;
     if (defaultModule && defaultModule !== mainModuleId) {
       const modulePath = getModulePath(modules, directories, defaultModule);
       options.module = modulePath;
@@ -295,7 +295,7 @@ class ShareView extends React.PureComponent {
     } = this.state;
 
     const defaultModule =
-      this.state.defaultModule || findMainModule(modules).id;
+      this.state.defaultModule || findMainModule(modules, sandbox.template).id;
 
     return (
       <Container>

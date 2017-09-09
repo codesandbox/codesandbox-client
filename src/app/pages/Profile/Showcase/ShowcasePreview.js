@@ -54,7 +54,7 @@ class ShowcasePreview extends React.PureComponent {
       directories,
     } = this.props;
 
-    const mainModule = findMainModule(modules);
+    const mainModule = findMainModule(modules, sandbox.template);
 
     return (
       <Container>

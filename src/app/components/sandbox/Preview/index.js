@@ -4,8 +4,7 @@ import styled from 'styled-components';
 
 import { debounce } from 'lodash';
 
-import type { Preferences } from 'app/store/preferences/reducer';
-import type { Module, Sandbox, Directory } from 'common/types';
+import type { Module, Sandbox, Preferences, Directory } from 'common/types';
 
 import { frameUrl } from 'app/utils/url-generator';
 import { findMainModule } from 'app/store/entities/sandboxes/modules/selectors';
@@ -215,8 +214,8 @@ export default class Preview extends React.PureComponent<Props, State> {
   };
 
   getRenderedModule = () => {
-    const { modules, module, isInProjectView } = this.props;
-    return isInProjectView ? findMainModule(modules) : module;
+    const { modules, module, template, isInProjectView } = this.props;
+    return isInProjectView ? findMainModule(modules, template) : module;
   };
 
   executeCodeImmediately = () => {

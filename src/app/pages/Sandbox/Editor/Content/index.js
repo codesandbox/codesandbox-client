@@ -109,7 +109,7 @@ class EditorPreview extends React.PureComponent<Props, State> {
   saveCode = () => {
     const { sandbox, modules, sandboxActions } = this.props;
 
-    const mainModule = findMainModule(modules);
+    const mainModule = findMainModule(modules, sandbox.template);
     const { currentModule } = sandbox;
 
     // $FlowIssue
@@ -139,7 +139,7 @@ class EditorPreview extends React.PureComponent<Props, State> {
       previewApiActions,
     } = this.props;
 
-    const mainModule = findMainModule(modules);
+    const mainModule = findMainModule(modules, sandbox.template);
     if (!mainModule) throw new Error('Cannot find main module');
 
     const { currentModule: currentModuleId } = sandbox;
@@ -173,6 +173,8 @@ class EditorPreview extends React.PureComponent<Props, State> {
           sandboxId={sandbox.id}
           dependencies={sandbox.npmDependencies}
           setCurrentModule={sandboxActions.setCurrentModule}
+          addDependency={sandboxActions.addNPMDependency}
+          template={sandbox.template}
         />
       </FullSize>
     );

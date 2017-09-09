@@ -6,6 +6,7 @@ import type { Preferences, ModuleError, Module, Directory } from 'common/types';
 import { getModulePath } from 'app/store/entities/sandboxes/modules/selectors';
 
 import theme from 'common/theme';
+import getTemplate from 'common/templates';
 
 /* eslint-disable import/no-webpack-loader-syntax */
 import SyntaxHighlightWorker from 'worker-loader!./monaco/workers/syntax-highlighter';
@@ -40,6 +41,8 @@ type Props = {
   directories: Array<Directory>,
   dependencies: ?Object,
   setCurrentModule: ?(sandboxId: string, moduleId: string) => void,
+  template: string,
+  addDependency: ?(sandboxId: string, dependency: string) => void,
 };
 
 const Container = styled.div`
@@ -200,6 +203,18 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
       const { path, typings } = event.data;
 
       if (
+        path.startsWith('node_modules/@types') &&
+        this.hasNativeTypescript() &&
+        this.props.addDependency != null
+      ) {
+        const dependency = path.match(/node_modules\/(@types\/.*)\//)[1];
+
+        if (!Object.keys(this.props.dependencies).includes(dependency)) {
+          this.props.addDependency(this.props.sandboxId, dependency);
+        }
+      }
+
+      if (
         !this.monaco.languages.typescript.typescriptDefaults.getExtraLibs()[
           `file:///${path}`
         ]
@@ -235,12 +250,15 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     );
   };
 
-  updateLintWarnings = (markers: Array<Object>) => {
-    this.monaco.editor.setModelMarkers(
-      this.editor.getModel(),
-      'eslint',
-      markers
-    );
+  updateLintWarnings = async (markers: Array<Object>) => {
+    const mode = await this.getMode(this.props.title);
+    if (mode === 'javascript') {
+      this.monaco.editor.setModelMarkers(
+        this.editor.getModel(),
+        'eslint',
+        markers
+      );
+    }
   };
 
   shouldComponentUpdate(nextProps: Props, nextState: State) {
@@ -493,6 +511,11 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     });
   };
 
+  hasNativeTypescript = () => {
+    const template = getTemplate(this.props.template);
+    return template.sourceConfig && template.sourceConfig.typescript;
+  };
+
   configureEditor = async (editor, monaco) => {
     this.editor = editor;
     this.monaco = monaco;
@@ -505,18 +528,28 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
 
     this.setupWorkers();
 
+    const hasNativeTypescript = this.hasNativeTypescript();
+
     const compilerDefaults = {
       jsxFactory: 'React.createElement',
       reactNamespace: 'React',
       jsx: monaco.languages.typescript.JsxEmit.React,
       target: monaco.languages.typescript.ScriptTarget.ES2016,
-      allowNonTsExtensions: true,
+      allowNonTsExtensions: !hasNativeTypescript,
       moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
-      module: monaco.languages.typescript.ModuleKind.System,
-      experimentalDecorators: true,
+      module: monaco.languages.typescript.ModuleKind.ES2015,
+      experimentalDecorators: !hasNativeTypescript,
       noEmit: true,
       allowJs: true,
       typeRoots: ['node_modules/@types'],
+
+      forceConsistentCasingInFileNames: hasNativeTypescript,
+      noImplicitReturns: hasNativeTypescript,
+      noImplicitThis: hasNativeTypescript,
+      noImplicitAny: hasNativeTypescript,
+      strictNullChecks: hasNativeTypescript,
+      suppressImplicitAnyIndexErrors: hasNativeTypescript,
+      noUnusedLocals: hasNativeTypescript,
     };
 
     monaco.languages.typescript.typescriptDefaults.setMaximunWorkerIdleTime(-1);
@@ -530,7 +563,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
 
     monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
       noSemanticValidation: false,
-      noSyntaxValidation: true,
+      noSyntaxValidation: !hasNativeTypescript,
     });
 
     await this.initializeModules();
@@ -615,7 +648,9 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
   };
 
   initializeModules = (modules = this.props.modules) =>
-    Promise.all(modules.map(module => this.createModel(module, modules)));
+    Promise.all(
+      modules.reverse().map(module => this.createModel(module, modules))
+    );
 
   resizeEditor = () => {
     this.editor.layout();
@@ -737,7 +772,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     const code = this.getCode();
     const mode = await this.getMode(title);
 
-    if (mode === 'javascript' || mode === 'css') {
+    if (mode === 'javascript' || mode === 'typescript' || mode === 'css') {
       try {
         const prettify = await import('app/utils/codemirror/prettify');
         const newCode = await prettify.default(

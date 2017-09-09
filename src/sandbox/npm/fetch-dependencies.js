@@ -2,7 +2,6 @@ import { actions, dispatch } from 'codesandbox-api';
 import _debug from 'app/utils/debug';
 import dependenciesToQuery from './dependencies-to-query';
 import delay from '../utils/delay';
-import setScreen from '../status-screen';
 
 type Dependencies = {
   [dependency: string]: string,

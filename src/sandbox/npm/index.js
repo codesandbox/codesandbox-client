@@ -1,3 +1,4 @@
+import { pickBy } from 'lodash';
 import fetchDependencies from './fetch-dependencies';
 import dependenciesToQuery from './dependencies-to-query';
 
@@ -31,7 +32,13 @@ function addDependencyBundle(url) {
  */
 export default async function loadDependencies(dependencies: NPMDependencies) {
   if (Object.keys(dependencies).length !== 0) {
-    const depQuery = dependenciesToQuery(dependencies);
+    // We filter out all @types, as they are not of any worth to the bundler
+    const dependenciesWithoutTypings = pickBy(
+      dependencies,
+      (val, key) => !key.includes('@types')
+    );
+
+    const depQuery = dependenciesToQuery(dependenciesWithoutTypings);
 
     if (loadedDependencyCombination !== depQuery) {
       // Mark that the last requested url is this
@@ -39,7 +46,7 @@ export default async function loadDependencies(dependencies: NPMDependencies) {
 
       setScreen({ type: 'loading', text: 'Bundling Dependencies...' });
 
-      const data = await fetchDependencies(dependencies);
+      const data = await fetchDependencies(dependenciesWithoutTypings);
 
       manifest = data;
 

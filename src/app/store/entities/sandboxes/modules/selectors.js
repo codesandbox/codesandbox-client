@@ -4,13 +4,26 @@ import { createSelector } from 'reselect';
 import { values } from 'lodash';
 import resolveModule from 'common/sandbox/resolve-module';
 
+import getTemplate from 'common/templates';
+
 export const modulesSelector = state => state.entities.modules;
 
-export const isMainModule = (module: Module) =>
-  module.title === 'index.js' && module.directoryShortid == null;
+export const isMainModule = (module: Module, templateId: string) => {
+  let moduleTitle = 'index.js';
 
-export const findMainModule = (modules: Module[]) =>
-  modules.find(isMainModule) || modules[0];
+  if (templateId) {
+    const template = getTemplate(templateId);
+
+    if (template && template.sourceConfig && template.sourceConfig.entry) {
+      moduleTitle = template.sourceConfig.entry;
+    }
+  }
+
+  return module.title === moduleTitle && module.directoryShortid == null;
+};
+
+export const findMainModule = (modules: Module[], templateId: string) =>
+  modules.find(m => isMainModule(m, templateId)) || modules[0];
 
 export const findCurrentModule = (
   modules: Module[],

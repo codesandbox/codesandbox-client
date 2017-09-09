@@ -149,7 +149,7 @@ export default class App extends React.PureComponent<{}, State> {
       sandbox.modules,
       sandbox.directories,
       currentModulePath,
-      findMainModule(sandbox.modules)
+      findMainModule(sandbox.modules, sandbox.template)
     );
   };
 

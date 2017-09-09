@@ -42,6 +42,7 @@ type Props = {
   id: string,
   shortid: string,
   sandboxId: string,
+  sandboxTemplate: string,
   root: ?boolean,
   title: string,
   modules: Array<Module>,
@@ -214,6 +215,7 @@ class DirectoryEntry extends React.PureComponent {
       id,
       shortid,
       sandboxId,
+      sandboxTemplate,
       modules,
       directories,
       title,
@@ -269,6 +271,7 @@ class DirectoryEntry extends React.PureComponent {
             renameModule={this.renameModule}
             openMenu={openMenu}
             sandboxId={sandboxId}
+            sandboxTemplate={sandboxTemplate}
             parentShortid={shortid}
             deleteEntry={this.deleteModule}
             setCurrentModule={this.setCurrentModule}

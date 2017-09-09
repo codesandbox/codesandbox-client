@@ -6,6 +6,17 @@ export const react = {
   color: decorateSelector(() => '#6CAEDD'),
 };
 
+export const reactTs = {
+  name: 'create-react-app-typescript',
+  url: 'https://github.com/wmonk/create-react-app-typescript',
+  color: decorateSelector(() => '#009fff'),
+
+  sourceConfig: {
+    typescript: true,
+    entry: 'index.tsx',
+  },
+};
+
 export const vue = {
   name: 'vue-cli',
   url: 'https://github.com/vuejs/vue-cli',
@@ -19,7 +30,11 @@ export const preact = {
 };
 
 export default function getDefinition(
-  theme: 'create-react-app' | 'vue-cli' | 'preact-cli'
+  theme:
+    | 'create-react-app'
+    | 'vue-cli'
+    | 'preact-cli'
+    | 'create-react-app-typescript'
 ) {
   if (!theme) {
     return react;
@@ -32,6 +47,8 @@ export default function getDefinition(
       return vue;
     case preact.name:
       return preact;
+    case reactTs.name:
+      return reactTs;
     default:
       return react;
   }
