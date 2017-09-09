@@ -54,13 +54,13 @@ export default class Preset {
   getAliasedPath(path: string): string {
     const aliases = Object.keys(this.alias);
 
-    // Find matching aliases
-    const matchingAliases = aliases.filter(a => path.startsWith(a));
-    const orderedAliases = orderBy(matchingAliases, alias => alias.length, [
-      'desc',
-    ]);
+    const pathParts = path.split('/'); // eslint-disable-line prefer-const
 
-    const foundAlias = orderedAliases[0];
+    // Find matching aliases
+    const foundAlias = orderBy(aliases, a => -a.split('/').length).find(a => {
+      const parts = a.split('/');
+      return parts.every((p, i) => pathParts[i] === p);
+    });
 
     if (foundAlias) {
       // if an alias is found we will replace the path with the alias
