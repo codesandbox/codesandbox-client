@@ -237,12 +237,15 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     );
   };
 
-  updateLintWarnings = (markers: Array<Object>) => {
-    this.monaco.editor.setModelMarkers(
-      this.editor.getModel(),
-      'eslint',
-      markers
-    );
+  updateLintWarnings = async (markers: Array<Object>) => {
+    const mode = await this.getMode(this.props.title);
+    if (mode === 'javascript') {
+      this.monaco.editor.setModelMarkers(
+        this.editor.getModel(),
+        'eslint',
+        markers
+      );
+    }
   };
 
   shouldComponentUpdate(nextProps: Props, nextState: State) {
@@ -536,7 +539,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
 
     monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
       noSemanticValidation: false,
-      noSyntaxValidation: true,
+      noSyntaxValidation: !hasNativeTypescript,
     });
 
     await this.initializeModules();

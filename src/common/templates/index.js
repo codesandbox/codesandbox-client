@@ -9,7 +9,7 @@ export const react = {
 export const reactTs = {
   name: 'create-react-app-typescript',
   url: 'https://github.com/wmonk/create-react-app-typescript',
-  color: decorateSelector(() => '#6CAEDD'),
+  color: decorateSelector(() => '#009fff'),
 
   sourceConfig: {
     typescript: true,
