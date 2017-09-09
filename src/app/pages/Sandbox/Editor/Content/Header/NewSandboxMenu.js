@@ -11,6 +11,7 @@ import {
   newVueSandboxUrl,
   importFromGitHubUrl,
   uploadFromCliUrl,
+  newReactTypeScriptSandboxUrl,
 } from 'app/utils/url-generator';
 
 const Container = styled.div`
@@ -31,6 +32,12 @@ export default () => (
   <Container>
     <Link style={{ textDecoration: 'none' }} to={newSandboxUrl()}>
       <MenuItem>New React Sandbox</MenuItem>
+    </Link>
+    <Link
+      style={{ textDecoration: 'none' }}
+      to={newReactTypeScriptSandboxUrl()}
+    >
+      <MenuItem>New React TypeScript Sandbox</MenuItem>
     </Link>
     <Link style={{ textDecoration: 'none' }} to={newPreactSandboxUrl()}>
       <MenuItem>New Preact Sandbox</MenuItem>
