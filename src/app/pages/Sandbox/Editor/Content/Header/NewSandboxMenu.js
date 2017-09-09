@@ -37,7 +37,7 @@ export default () => (
       style={{ textDecoration: 'none' }}
       to={newReactTypeScriptSandboxUrl()}
     >
-      <MenuItem>New React TypeScript Sandbox</MenuItem>
+      <MenuItem>New React TS Sandbox</MenuItem>
     </Link>
     <Link style={{ textDecoration: 'none' }} to={newPreactSandboxUrl()}>
       <MenuItem>New Preact Sandbox</MenuItem>
