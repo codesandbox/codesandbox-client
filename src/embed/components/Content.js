@@ -158,6 +158,7 @@ export default class Content extends React.PureComponent<Props, State> {
   getPreferences = () => ({
     ...this.preferences,
     fontSize: this.props.fontSize,
+    autoDownloadTypes: true,
   });
 
   setCurrentModule = (_, moduleId) => {
@@ -214,6 +215,7 @@ export default class Content extends React.PureComponent<Props, State> {
               sandboxId={sandbox.id}
               setCurrentModule={this.setCurrentModule}
               template={sandbox.template}
+              dependencies={sandbox.npmDependencies}
             />
           </Split>
         )}

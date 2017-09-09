@@ -102,6 +102,7 @@ export default ({ sandbox, setCurrentModule, currentModule }: Props) => (
         directoryId={null}
         setCurrentModule={setCurrentModule}
         currentModule={currentModule}
+        template={sandbox.template}
       />
     </Item>
 

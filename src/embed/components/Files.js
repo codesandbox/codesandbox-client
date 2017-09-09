@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { sortBy } from 'lodash';
 
 import type { Module, Directory } from 'common/types';
+import { isMainModule } from 'app/store/entities/sandboxes/modules/selectors';
 
 import File from './File';
 
@@ -16,6 +17,7 @@ type Props = {
   depth: number,
   currentModule: string,
   setCurrentModule: (id: string, shortid: string) => any,
+  template: string,
 };
 
 const Files = ({
@@ -25,6 +27,7 @@ const Files = ({
   depth = 0,
   currentModule,
   setCurrentModule,
+  template,
 }: Props) => {
   const childrenModules = modules.filter(
     m => m.directoryShortid === directoryId
@@ -53,6 +56,7 @@ const Files = ({
             depth={depth + 1}
             setCurrentModule={setCurrentModule}
             currentModule={currentModule}
+            template={template}
           />
         </div>
       ))}
@@ -66,7 +70,7 @@ const Files = ({
           depth={depth}
           setCurrentModule={setCurrentModule}
           active={m.id === currentModule}
-          alternative={m.title === 'index.js' && m.directoryShortid == null}
+          alternative={isMainModule(m, template)}
         />
       ))}
     </Container>
