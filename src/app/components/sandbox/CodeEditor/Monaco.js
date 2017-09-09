@@ -6,6 +6,7 @@ import type { Preferences, ModuleError, Module, Directory } from 'common/types';
 import { getModulePath } from 'app/store/entities/sandboxes/modules/selectors';
 
 import theme from 'common/theme';
+import getTemplate from 'common/templates';
 
 /* eslint-disable import/no-webpack-loader-syntax */
 import SyntaxHighlightWorker from 'worker-loader!./monaco/workers/syntax-highlighter';
@@ -40,6 +41,7 @@ type Props = {
   directories: Array<Directory>,
   dependencies: ?Object,
   setCurrentModule: ?(sandboxId: string, moduleId: string) => void,
+  template: string,
 };
 
 const Container = styled.div`
@@ -505,15 +507,19 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
 
     this.setupWorkers();
 
+    const template = getTemplate(this.props.template);
+    const hasNativeTypescript =
+      template.sourceConfig && template.sourceConfig.typescript;
+
     const compilerDefaults = {
       jsxFactory: 'React.createElement',
       reactNamespace: 'React',
       jsx: monaco.languages.typescript.JsxEmit.React,
       target: monaco.languages.typescript.ScriptTarget.ES2016,
-      allowNonTsExtensions: true,
+      allowNonTsExtensions: !hasNativeTypescript,
       moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
-      module: monaco.languages.typescript.ModuleKind.System,
-      experimentalDecorators: true,
+      module: monaco.languages.typescript.ModuleKind.ES6,
+      experimentalDecorators: !hasNativeTypescript,
       noEmit: true,
       allowJs: true,
       typeRoots: ['node_modules/@types'],

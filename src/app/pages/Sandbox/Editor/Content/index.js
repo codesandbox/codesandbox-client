@@ -173,6 +173,7 @@ class EditorPreview extends React.PureComponent<Props, State> {
           sandboxId={sandbox.id}
           dependencies={sandbox.npmDependencies}
           setCurrentModule={sandboxActions.setCurrentModule}
+          template={sandbox.template}
         />
       </FullSize>
     );

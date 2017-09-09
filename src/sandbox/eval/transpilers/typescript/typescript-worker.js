@@ -21,28 +21,42 @@ declare var ts: {
 
 self.addEventListener('message', event => {
   const { code, path } = event.data;
-
   const config = {
     fileName: path,
     reportDiagnostics: true,
     compilerOptions: {
       target: ts.ScriptTarget.ES5,
-      module: ts.ModuleKind.CommonJS,
+      module: ts.ModuleKind.ES6,
+      moduleResolution: ts.ModuleResolutionKind.NodeJs,
       allowJs: true,
       alwaysStrict: true,
       downlevelIteration: true,
       noImplicitUseStrict: false,
       inlineSourceMap: true,
       inlineSources: true,
-      experimentalDecorators: true,
       jsx: ts.JsxEmit.React,
+      forceConsistentCasingInFileNames: true,
+      noImplicitReturns: true,
+      noImplicitThis: true,
+      noImplicitAny: true,
+      strictNullChecks: true,
+      suppressImplicitAnyIndexErrors: true,
+      noUnusedLocals: true,
     },
   };
 
   try {
-    const { outputText: compiledCode, ast } = ts.transpileModule(code, config);
+    const { outputText: compiledCode } = ts.transpileModule(code, config);
 
-    const dependencies = getDependencies(ast, self.ts);
+    const sourceFile = ts.createSourceFile(
+      path,
+      code,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS
+    );
+
+    const dependencies = getDependencies(sourceFile, self.ts);
 
     dependencies.forEach(dependency => {
       if (/^(\w|@)/.test(dependency.path) && !dependency.path.includes('!')) {

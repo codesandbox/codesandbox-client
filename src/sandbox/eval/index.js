@@ -2,6 +2,7 @@
 import { react, vue, preact } from 'common/templates';
 
 import reactPreset from './presets/create-react-app';
+import reactTsPreset from './presets/create-react-app-typescript';
 import vuePreset from './presets/vue-cli';
 import preactPreset from './presets/preact-cli';
 
@@ -9,6 +10,8 @@ export default function getPreset(template: string) {
   switch (template) {
     case react.name:
       return reactPreset;
+    case reactTsPreset.name:
+      return reactTsPreset;
     case vue.name:
       return vuePreset;
     case preact.name:

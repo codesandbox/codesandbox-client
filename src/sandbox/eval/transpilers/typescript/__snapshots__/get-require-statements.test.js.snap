@@ -35,6 +35,15 @@ Array [
 ]
 `;
 
+exports[`get-require-statements can find relative imports 1`] = `
+Array [
+  Object {
+    "path": "./Hello",
+    "type": "direct",
+  },
+]
+`;
+
 exports[`get-require-statements can find simple requires 1`] = `
 Array [
   Object {

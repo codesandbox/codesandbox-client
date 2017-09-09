@@ -183,7 +183,7 @@ export default class Content extends React.PureComponent<Props, State> {
       sandbox.modules,
       sandbox.directories,
       currentModule,
-      findMainModule(sandbox.modules)
+      findMainModule(sandbox.modules, sandbox.template)
     );
 
     if (!mainModule) throw new Error('Cannot find main module');
@@ -213,6 +213,7 @@ export default class Content extends React.PureComponent<Props, State> {
               directories={sandbox.directories}
               sandboxId={sandbox.id}
               setCurrentModule={this.setCurrentModule}
+              template={sandbox.template}
             />
           </Split>
         )}

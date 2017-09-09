@@ -49,6 +49,14 @@ describe('get-require-statements', () => {
     testAst(code);
   });
 
+  it('can find relative imports', () => {
+    const code = `
+    import Hello from './Hello';
+  `;
+
+    testAst(code);
+  });
+
   it('can work with real life code', () => {
     const code = `
     import React from 'react'

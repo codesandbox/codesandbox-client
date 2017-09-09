@@ -23,6 +23,7 @@ type Props = {
   parentShortid: string,
   isInProjectView: boolean,
   parentShortid: string,
+  sandboxTemplate: string,
 };
 
 export default class DirectoryChildren extends React.PureComponent<Props> {
@@ -40,6 +41,7 @@ export default class DirectoryChildren extends React.PureComponent<Props> {
       directories,
       parentShortid,
       sandboxId,
+      sandboxTemplate,
       modules,
       deleteEntry,
       currentModuleId,
@@ -59,6 +61,7 @@ export default class DirectoryChildren extends React.PureComponent<Props> {
               shortid={dir.shortid}
               title={dir.title}
               sandboxId={sandboxId}
+              sandboxTemplate={sandboxTemplate}
               modules={modules}
               directories={directories}
               currentModuleId={currentModuleId}
@@ -67,7 +70,7 @@ export default class DirectoryChildren extends React.PureComponent<Props> {
           ))}
         {modules.filter(x => x.directoryShortid === parentShortid).map(m => {
           const isActive = m.id === currentModuleId;
-          const mainModule = isMainModule(m);
+          const mainModule = isMainModule(m, sandboxTemplate);
           const type = getType(m);
 
           const hasError = m && m.errors.length;
