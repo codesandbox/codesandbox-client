@@ -735,7 +735,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
   prettify = async () => {
     const { id, title, preferences } = this.props;
     const code = this.getCode();
-    const mode = this.getMode(title);
+    const mode = await this.getMode(title);
 
     if (mode === 'javascript' || mode === 'css') {
       try {
@@ -743,7 +743,6 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
         const newCode = await prettify.default(
           code,
           mode === 'javascript' ? 'jsx' : mode,
-          false, // Force false for eslint, since we would otherwise include 2 eslint bundles
           preferences.prettierConfig
         );
 

@@ -15,7 +15,6 @@ function getParser(mode) {
 export default (function prettify(
   code,
   mode,
-  eslintEnabled,
   prettierConfig = DEFAULT_PRETTIER_CONFIG
 ) {
   return new Promise(resolve => {
@@ -36,6 +35,8 @@ export default (function prettify(
       }
       if (formatted) {
         resolve(formatted);
+      } else {
+        resolve(text);
       }
     };
   });
