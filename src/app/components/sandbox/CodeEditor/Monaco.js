@@ -537,7 +537,9 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
       target: monaco.languages.typescript.ScriptTarget.ES2016,
       allowNonTsExtensions: !hasNativeTypescript,
       moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
-      module: monaco.languages.typescript.ModuleKind.ES2015,
+      module: hasNativeTypescript
+        ? monaco.languages.typescript.ModuleKind.ES2015
+        : monaco.languages.typescript.ModuleKind.System,
       experimentalDecorators: !hasNativeTypescript,
       noEmit: true,
       allowJs: true,
