@@ -73,11 +73,6 @@ export default function createZip(
       getHTML(modules, sandbox.externalResources)
     );
 
-    if (
-      !modules.find(x => x.directoryShortid == null && x.title === 'README.md')
-    ) {
-      zip.file('README.md', files['./README.md']);
-    }
     zip.file(
       'package.json',
       createPackageJSON(

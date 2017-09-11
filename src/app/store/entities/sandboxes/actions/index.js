@@ -51,6 +51,7 @@ export const SET_CURRENT_MODULE = 'SET_CURRENT_MODULE';
 export const SET_PROJECT_VIEW = 'SET_PROJECT_VIEW';
 export const SET_VIEW_MODE = 'SET_VIEW_MODE';
 export const CREATE_ZIP = 'CREATE_ZIP';
+export const DEPLOY_SANDBOX = 'DEPLOY_SANDBOX';
 export const SET_SANDBOX_PRIVACY = 'SET_SANDBOX_PRIVACY';
 export const FORCE_RENDER = 'FORCE_RENDER';
 
@@ -319,6 +320,24 @@ export default {
     const createZip = await import('../utils/create-zip');
 
     createZip.default(
+      sandbox,
+      sandbox.modules.map(x => modules[x]),
+      sandbox.directories.map(x => directories[x])
+    );
+  },
+
+  deploy: (id: string) => async (dispatch: Function, getState: Function) => {
+    dispatch({
+      type: DEPLOY_SANDBOX,
+      id,
+    });
+    const modules = modulesSelector(getState());
+    const directories = directoriesSelector(getState());
+    const sandbox = singleSandboxSelector(getState(), { id });
+
+    const deploy = await import('../utils/deploy');
+
+    deploy.default(
       sandbox,
       sandbox.modules.map(x => modules[x]),
       sandbox.directories.map(x => directories[x])

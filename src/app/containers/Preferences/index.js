@@ -10,6 +10,7 @@ import CreditCardIcon from 'react-icons/lib/md/credit-card';
 import BrowserIcon from 'react-icons/lib/go/browser';
 import StarIcon from 'react-icons/lib/go/star';
 import CodeFormatIcon from 'react-icons/lib/fa/dedent';
+import IntegrationIcon from 'react-icons/lib/md/device-hub';
 
 import SideNavigation from './SideNavigation';
 
@@ -17,6 +18,7 @@ import EditorSettings from './EditorPageSettings/EditorSettings';
 import PreviewSettings from './EditorPageSettings/PreviewSettings';
 import CodeFormatting from './CodeFormatting';
 import PaymentInfo from './PaymentInfo';
+import Integrations from './Integrations';
 import Badges from './Badges';
 
 const Container = styled.div`
@@ -51,6 +53,7 @@ class Preferences extends React.PureComponent {
 
   getItems = () => {
     const hasSubscription = Boolean(this.props.user.subscription);
+    const signedIn = Boolean(this.props.user.jwt);
     return [
       {
         title: 'Editor',
@@ -66,6 +69,11 @@ class Preferences extends React.PureComponent {
         title: 'Preview',
         icon: <BrowserIcon />,
         content: <PreviewSettings />,
+      },
+      signedIn && {
+        title: 'Integrations',
+        icon: <IntegrationIcon />,
+        content: <Integrations />,
       },
       hasSubscription && {
         title: 'Payment Info',

@@ -9,6 +9,7 @@ import Download from 'react-icons/lib/go/cloud-download';
 import PlusIcon from 'react-icons/lib/go/plus';
 import GithubIcon from 'react-icons/lib/go/mark-github';
 import ChevronLeft from 'react-icons/lib/md/chevron-left';
+import ZeitIcon from 'app/components/ZeitLogo';
 import HeartIcon from 'react-icons/lib/fa/heart-o';
 import FullHeartIcon from 'react-icons/lib/fa/heart';
 import TwitterIcon from 'react-icons/lib/fa/twitter';
@@ -30,6 +31,8 @@ import HeaderSearchBar from 'app/components/HeaderSearchBar';
 import UserMenu from 'app/containers/UserMenu';
 import Preferences from 'app/containers/Preferences';
 import NewSandbox from 'app/containers/modals/NewSandbox';
+
+import deploy from 'app/store/entities/sandboxes/utils/deploy';
 
 import Action from './Action';
 import FeedbackView from './FeedbackView';
@@ -102,6 +105,11 @@ export default class Header extends React.PureComponent<Props> {
   massUpdateModules = () => {
     const { sandbox, sandboxActions } = this.props;
     sandboxActions.massUpdateModules(sandbox.id);
+  };
+
+  deploySandbox = () => {
+    const { sandbox, sandboxActions } = this.props;
+    sandboxActions.deploy(sandbox.id);
   };
 
   zipSandbox = () => {
@@ -215,6 +223,7 @@ export default class Header extends React.PureComponent<Props> {
             Icon={Save}
           />
           <Action title="Download" Icon={Download} onClick={this.zipSandbox} />
+          <Action title="Deploy" Icon={ZeitIcon} onClick={this.deploySandbox} />
           <ShareView sandbox={sandbox} />
         </Left>
 

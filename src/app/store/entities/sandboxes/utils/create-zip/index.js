@@ -53,9 +53,9 @@ function slugify(text) {
 
 export function createPackageJSON(
   sandbox: Sandbox,
-  dependencies,
-  devDependencies,
-  scripts,
+  dependencies: Object,
+  devDependencies: Object,
+  scripts: Object,
   extra: Object
 ) {
   const name = slugify(sandbox.title || sandbox.id);
@@ -93,7 +93,7 @@ export function createDirectoryWithFiles(
     .forEach(x => createDirectoryWithFiles(modules, directories, x, newZip));
 }
 
-export default (async function createZip(
+export async function createZip(
   sandbox: Sandbox,
   modules: Array<Module>,
   directories: Array<Directory>
@@ -122,9 +122,25 @@ export default (async function createZip(
       generator.default(zip, sandbox, modules, directories)
     );
   }
+
   if (promise) {
     await promise;
     const file = await zip.generateAsync({ type: 'blob' });
+
+    return file;
+  }
+
+  return null;
+}
+
+export default (async function downloadZip(
+  sandbox: Sandbox,
+  modules: Array<Module>,
+  directories: Array<Directory>
+) {
+  const file = await createZip(sandbox, modules, directories);
+
+  if (file) {
     saveAs(file, `${slugify(sandbox.title || sandbox.id)}.zip`);
   }
 });
