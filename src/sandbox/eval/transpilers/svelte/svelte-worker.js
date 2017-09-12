@@ -18,6 +18,7 @@ self.addEventListener('message', event => {
   const { code: compiledCode, map } = svelte.compile(code, {
     filename: path,
     dev: true,
+    cascade: false,
 
     onerror: e => {
       self.postMessage({

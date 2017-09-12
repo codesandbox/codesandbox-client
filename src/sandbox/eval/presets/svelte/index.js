@@ -5,11 +5,7 @@ import svelteTranspiler from '../../transpilers/svelte';
 
 import Preset from '../';
 
-const sveltePreset = new Preset(
-  'svelte',
-  ['js', 'jsx', 'html', 'json', 'less', 'scss', 'sass', 'styl', 'css'],
-  {}
-);
+const sveltePreset = new Preset('svelte', ['js', 'jsx'], {});
 
 sveltePreset.registerTranspiler(module => /\.jsx?$/.test(module.title), [
   { transpiler: babelTranspiler },

@@ -3,7 +3,7 @@ import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 
 import type { Sandbox, Module, Directory } from 'common/types';
-import { react, reactTs, vue, preact } from 'common/templates/index';
+import { react, reactTs, vue, preact, svelte } from 'common/templates/index';
 
 const CSSTag = (resource: string) =>
   `<link rel="stylesheet" type="text/css" href="${resource}" media="all">`;
@@ -115,6 +115,10 @@ export default (async function createZip(
     );
   } else if (sandbox.template === preact.name) {
     promise = import('./preact-cli').then(generator =>
+      generator.default(zip, sandbox, modules, directories)
+    );
+  } else if (sandbox.template === svelte.name) {
+    promise = import('./svelte').then(generator =>
       generator.default(zip, sandbox, modules, directories)
     );
   }
