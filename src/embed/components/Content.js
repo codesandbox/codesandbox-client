@@ -10,7 +10,7 @@ import {
   getModulePath,
 } from 'app/store/entities/sandboxes/modules/selectors';
 
-import type { Sandbox, Module, ModuleCorrection } from 'common/types';
+import type { Sandbox, Module, ModuleError } from 'common/types';
 
 const Container = styled.div`
   display: flex;
@@ -108,7 +108,7 @@ export default class Content extends React.PureComponent<Props, State> {
     });
   };
 
-  addError = (moduleId: string, error: ModuleCorrection) => {
+  addError = (moduleId: string, error: ModuleError) => {
     if (!this.state.errors.find(e => e.moduleId === error.moduleId)) {
       this.setState({
         errors: [...this.state.errors, error],
@@ -237,7 +237,8 @@ export default class Content extends React.PureComponent<Props, State> {
               hideNavigation={hideNavigation}
               setFrameHeight={this.handleResize}
               initialPath={this.props.initialPath}
-              corrections={errors}
+              errors={errors}
+              corrections={[]}
               dependencies={sandbox.npmDependencies}
             />
           </Split>
