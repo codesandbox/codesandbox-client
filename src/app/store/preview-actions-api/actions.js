@@ -16,6 +16,9 @@ export default {
       case 'show-error': {
         return dispatch(moduleActions.setError(action.moduleId, action));
       }
+      case 'show-correction': {
+        return dispatch(moduleActions.addCorrection(action.moduleId, action));
+      }
       case 'source.module.rename': {
         const { sandboxId, moduleId, title } = action;
         return dispatch(

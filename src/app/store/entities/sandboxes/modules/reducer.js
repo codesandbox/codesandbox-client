@@ -8,6 +8,7 @@ import {
   SET_CODE,
   SET_MODULE_SYNCED,
   SET_MODULE_ERROR,
+  ADD_MODULE_CORRECTION,
   CLEAR_MODULE_ERRORS,
 } from './actions';
 
@@ -21,6 +22,15 @@ function moduleReducer(module: Module, action): Module {
       return { ...module, code: action.code, isNotSynced: true };
     case SET_MODULE_SYNCED:
       return { ...module, isNotSynced: false };
+    case ADD_MODULE_CORRECTION:
+      if (!isEqual(action.correction, module.corrections[0])) {
+        return {
+          ...module,
+          corrections: [...module.corrections, action.correction],
+        };
+      }
+
+      return module;
     case SET_MODULE_ERROR: {
       if (!isEqual(action.error, module.errors[0])) {
         return { ...module, errors: [...module.errors, action.error] };
@@ -46,6 +56,7 @@ export default function reducer(
     case MOVE_MODULE:
     case SET_CODE:
     case SET_MODULE_SYNCED:
+    case ADD_MODULE_CORRECTION:
     case SET_MODULE_ERROR: {
       const module = state[action.id];
       if (module) {
@@ -57,7 +68,7 @@ export default function reducer(
       return state;
     }
     case CLEAR_MODULE_ERRORS: {
-      return mapValues(state, m => ({ ...m, errors: [] }));
+      return mapValues(state, m => ({ ...m, errors: [], corrections: [] }));
     }
     default:
       return state;

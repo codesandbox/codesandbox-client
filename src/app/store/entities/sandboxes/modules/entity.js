@@ -35,6 +35,7 @@ export default new schema.Entity(
       return {
         ...module,
         errors: [],
+        corrections: [],
         code,
         isNotSynced,
       };

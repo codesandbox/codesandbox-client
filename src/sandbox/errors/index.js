@@ -102,7 +102,7 @@ export default function showError(ref: ErrorRecord) {
   const errorToSend = buildDynamicError(ref);
   if (errorToSend) {
     dispatch(
-      actions.error.show(errorToSend.title, errorToSend.message, {
+      actions.correction.show(errorToSend.title, errorToSend.message, {
         line: errorToSend.line,
         column: errorToSend.column,
         moduleId: errorToSend.moduleId,

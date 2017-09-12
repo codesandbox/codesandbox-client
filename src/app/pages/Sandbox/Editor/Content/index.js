@@ -162,6 +162,7 @@ class EditorPreview extends React.PureComponent<Props, State> {
           changeCode={moduleActions.setCode}
           id={currentModule.id}
           errors={currentModule.errors}
+          corrections={currentModule.corrections}
           code={currentModule.code}
           title={currentModule.title}
           canSave={currentModule.isNotSynced}

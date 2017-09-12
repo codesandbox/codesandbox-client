@@ -7,6 +7,8 @@ export const SET_MODULE_SYNCED = 'SET_MODULE_SYNCED';
 export const SET_MODULE_ERROR = 'SET_MODULE_ERROR';
 export const CLEAR_MODULE_ERRORS = 'CLEAR_MODULE_ERRORS';
 
+export const ADD_MODULE_CORRECTION = 'ADD_MODULE_CORRECTION';
+
 export default {
   renameModule: (id: string, title: string) => ({
     type: RENAME_MODULE,
@@ -47,6 +49,33 @@ export default {
       message,
       line,
       column,
+    },
+  }),
+
+  addCorrection: (
+    id: string,
+    {
+      message,
+      line,
+      column,
+      severity,
+      source,
+    }: {
+      message: string,
+      line: number,
+      column: number,
+      severity: 'warning' | 'notice',
+      source: ?string,
+    }
+  ) => ({
+    id,
+    type: ADD_MODULE_CORRECTION,
+    correction: {
+      message,
+      line,
+      column,
+      severity,
+      source,
     },
   }),
 };
