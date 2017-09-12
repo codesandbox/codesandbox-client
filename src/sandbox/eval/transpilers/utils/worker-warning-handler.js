@@ -1,14 +1,12 @@
 // @flow
 
-import ModuleWarning from '../../errors/module-warning';
-
 export type WarningStructure = {
   name: ?string,
   message: string,
   fileName: ?string,
   lineNumber: number,
   columnNumber: number,
-  source?: string,
+  source: ?string,
 };
 
 type Params = {

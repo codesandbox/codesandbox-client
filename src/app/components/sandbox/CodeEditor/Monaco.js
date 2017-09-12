@@ -177,11 +177,12 @@ const handleError = (
               correction.severity === 'warning'
                 ? monaco.Severity.Warning
                 : monaco.Severity.Notice,
-            startColumn: 1,
+            startColumn: correction.column,
             startLineNumber: correction.line,
-            endColumn: correction.column,
+            endColumn: 1,
             endLineNumber: correction.line + 1,
             message: correction.message,
+            source: correction.source,
           };
         }
 

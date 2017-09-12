@@ -23,19 +23,22 @@ self.addEventListener('message', event => {
     onerror: e => {
       self.postMessage({
         type: 'error',
-        error: buildWorkerError(e, 'svelte'),
+        error: buildWorkerError(e),
       });
     },
 
     onwarn: w => {
       self.postMessage({
         type: 'warning',
-        warning: buildWorkerWarning({
-          fileName: w.fileName,
-          lineNumber: w.loc && w.loc.line,
-          columnNumber: w.loc && w.loc.column,
-          message: w.message,
-        }),
+        warning: buildWorkerWarning(
+          {
+            fileName: w.fileName,
+            lineNumber: w.loc && w.loc.line,
+            columnNumber: w.loc && w.loc.column,
+            message: w.message,
+          },
+          'svelte'
+        ),
       });
     },
   });
