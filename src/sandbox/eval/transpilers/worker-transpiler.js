@@ -80,6 +80,11 @@ export default class WorkerTranspiler extends Transpiler {
           callback(reconstructedError);
         }
 
+        if (data.type === 'warning') {
+          loaderContext.emitWarning(data.warning);
+          return;
+        }
+
         if (data.type === 'add-dependency') {
           // Dynamic import
           if (data.isGlob) {

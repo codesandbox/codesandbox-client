@@ -23,6 +23,12 @@ export const vue = {
   color: decorateSelector(() => '#41B883'),
 };
 
+export const svelte = {
+  name: 'svelte',
+  url: 'https://github.com/sveltejs/svelte',
+  color: decorateSelector(() => '#AA1E1E'),
+};
+
 export const preact = {
   name: 'preact-cli',
   url: 'https://github.com/developit/preact-cli',
@@ -49,6 +55,8 @@ export default function getDefinition(
       return preact;
     case reactTs.name:
       return reactTs;
+    case svelte.name:
+      return svelte;
     default:
       return react;
   }

@@ -97,7 +97,7 @@ async function compile({
       updateManager(sandboxId, template, module, modules, directories),
     ]);
 
-    const { externals } = manifest;
+    const { externals = {} } = manifest;
     manager.setExternals(externals);
 
     if (managerError) {

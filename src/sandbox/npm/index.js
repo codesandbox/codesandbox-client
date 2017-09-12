@@ -54,6 +54,8 @@ export default async function loadDependencies(dependencies: NPMDependencies) {
 
       await addDependencyBundle(data.url);
     }
+  } else {
+    manifest = {};
   }
 
   return { manifest };

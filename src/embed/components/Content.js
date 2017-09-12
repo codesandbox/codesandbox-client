@@ -238,6 +238,7 @@ export default class Content extends React.PureComponent<Props, State> {
               setFrameHeight={this.handleResize}
               initialPath={this.props.initialPath}
               errors={errors}
+              corrections={[]}
               dependencies={sandbox.npmDependencies}
             />
           </Split>

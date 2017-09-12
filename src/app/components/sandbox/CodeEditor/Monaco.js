@@ -2,7 +2,13 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { debounce } from 'lodash';
-import type { Preferences, ModuleError, Module, Directory } from 'common/types';
+import type {
+  Preferences,
+  ModuleError,
+  ModuleCorrection,
+  Module,
+  Directory,
+} from 'common/types';
 import { getModulePath } from 'app/store/entities/sandboxes/modules/selectors';
 
 import theme from 'common/theme';
@@ -28,6 +34,7 @@ type State = {
 type Props = {
   code: ?string,
   errors: ?Array<ModuleError>,
+  corrections: Array<ModuleCorrection>,
   id: string,
   sandboxId: string,
   title: string,
@@ -134,12 +141,12 @@ const requireAMDModule = paths =>
 const handleError = (
   monaco,
   editor,
-  currentErrors: ?Array<ModuleError>,
-  nextErrors: ?Array<ModuleError>
+  nextErrors: ?Array<ModuleError>,
+  nextCorrections: Array<ModuleCorrection>
 ) => {
   if (!monaco) return;
   if (nextErrors && nextErrors.length > 0) {
-    const markers = nextErrors
+    const errorMarkers = nextErrors
       .map(error => {
         if (error) {
           return {
@@ -156,9 +163,40 @@ const handleError = (
       })
       .filter(x => x);
 
-    monaco.editor.setModelMarkers(editor.getModel(), 'error', markers);
+    monaco.editor.setModelMarkers(editor.getModel(), 'error', errorMarkers);
   } else {
     monaco.editor.setModelMarkers(editor.getModel(), 'error', []);
+  }
+
+  if (nextCorrections.length > 0) {
+    const correctionMarkers = nextCorrections
+      .map(correction => {
+        if (correction) {
+          return {
+            severity:
+              correction.severity === 'warning'
+                ? monaco.Severity.Warning
+                : monaco.Severity.Notice,
+            startColumn: correction.column,
+            startLineNumber: correction.line,
+            endColumn: 1,
+            endLineNumber: correction.line + 1,
+            message: correction.message,
+            source: correction.source,
+          };
+        }
+
+        return null;
+      })
+      .filter(x => x);
+
+    monaco.editor.setModelMarkers(
+      editor.getModel(),
+      'correction',
+      correctionMarkers
+    );
+  } else {
+    monaco.editor.setModelMarkers(editor.getModel(), 'correction', []);
   }
 };
 
@@ -343,6 +381,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
       nextProps.sandboxId !== this.props.sandboxId ||
       nextProps.id !== this.props.id ||
       nextProps.errors !== this.props.errors ||
+      nextProps.corrections !== this.props.corrections ||
       this.props.canSave !== nextProps.canSave ||
       this.props.preferences !== nextProps.preferences
     );
@@ -369,16 +408,13 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
   };
 
   componentWillUpdate(nextProps: Props) {
-    const {
-      id: currentId,
-      sandboxId: currentSandboxId,
-      errors: currentErrors,
-    } = this.props;
+    const { id: currentId, sandboxId: currentSandboxId } = this.props;
 
     const {
       id: nextId,
       code: nextCode,
       errors: nextErrors,
+      corrections: nextCorrections,
       title: nextTitle,
       sandboxId: nextSandboxId,
     } = nextProps;
@@ -401,15 +437,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
         nextCode,
         nextTitle,
       }).then(() => {
-        handleError(
-          this.monaco,
-          this.editor,
-          currentErrors,
-          nextErrors,
-          nextCode,
-          currentId,
-          nextId
-        );
+        handleError(this.monaco, this.editor, nextErrors, nextCorrections);
       });
     }
   }

@@ -12,6 +12,15 @@ export type ModuleError = {
   payload: Object,
 };
 
+export type ModuleCorrection = {
+  message: string,
+  line: number,
+  column: number,
+  moduleId: string,
+  source: ?string,
+  severity: 'notice' | 'warning',
+};
+
 export type Module = {
   id: string,
   title: string,
@@ -21,6 +30,7 @@ export type Module = {
   isNotSynced: boolean,
   sourceId: string,
   errors: ?Array<ModuleError>,
+  corrections: Array<ModuleCorrection>,
 };
 
 export type Directory = {

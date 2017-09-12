@@ -1,12 +1,16 @@
 // @flow
 import { flattenDeep } from 'lodash';
 
+import { actions, dispatch } from 'codesandbox-api';
+
 import type { Module } from 'common/types';
 import getModulePath from 'common/sandbox/get-module-path';
 
 import type { SourceMap } from './transpilers/utils/get-source-map';
 import ModuleError from './errors/module-error';
 import ModuleWarning from './errors/module-warning';
+
+import type { WarningStructure } from './transpilers/utils/worker-warning-handler';
 
 import resolveDependency from './loaders/dependency-resolver';
 import evaluate from './loaders/eval';
@@ -30,7 +34,7 @@ class ModuleSource {
 }
 
 export type LoaderContext = {
-  emitWarning: (warning: string) => void,
+  emitWarning: (warning: WarningStructure) => void,
   emitError: (error: Error) => void,
   emitModule: (
     title: string,
@@ -329,6 +333,21 @@ export default class TranspiledModule {
           transpiledCode,
           sourceMap,
         } = await transpilerConfig.transpiler.transpile(code, loaderContext); // eslint-disable-line no-await-in-loop
+
+        if (this.warnings.length) {
+          this.warnings.forEach(warning => {
+            console.warn(warning.message); // eslint-disable-line no-console
+            dispatch(
+              actions.correction.show(warning.message, {
+                line: warning.lineNumber,
+                column: warning.columnNumber,
+                moduleId: warning.module.module.id,
+                source: warning.source,
+                severity: 'warning',
+              })
+            );
+          });
+        }
 
         if (this.errors.length) {
           throw this.errors[0];
