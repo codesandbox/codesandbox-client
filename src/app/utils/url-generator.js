@@ -23,6 +23,7 @@ export const newReactTypeScriptSandboxUrl = () => `/s/react-ts`;
 export const newPreactSandboxUrl = () => `/s/preact`;
 export const newVueSandboxUrl = () => `/s/vue`;
 export const importFromGitHubUrl = () => `/s/github`;
+export const newSvelteSandboxUrl = () => `/s/svelte`;
 export const uploadFromCliUrl = () => `/s/cli`;
 
 const sandboxGitUrl = (git: {

@@ -9,6 +9,7 @@ import {
   newSandboxUrl,
   newPreactSandboxUrl,
   newVueSandboxUrl,
+  newSvelteSandboxUrl,
   importFromGitHubUrl,
   uploadFromCliUrl,
   newReactTypeScriptSandboxUrl,
@@ -41,6 +42,9 @@ export default () => (
     </Link>
     <Link style={{ textDecoration: 'none' }} to={newPreactSandboxUrl()}>
       <MenuItem>New Preact Sandbox</MenuItem>
+    </Link>
+    <Link style={{ textDecoration: 'none' }} to={newSvelteSandboxUrl()}>
+      <MenuItem>New Svelte Sandbox</MenuItem>
     </Link>
     <Link style={{ textDecoration: 'none' }} to={newVueSandboxUrl()}>
       <MenuItem>New Vue Sandbox</MenuItem>
