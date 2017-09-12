@@ -1,6 +1,5 @@
 import babelTranspiler from '../../transpilers/babel';
 import jsonTranspiler from '../../transpilers/json';
-import stylesTranspiler from '../../transpilers/css';
 import rawTranspiler from '../../transpilers/raw';
 import svelteTranspiler from '../../transpilers/svelte';
 
@@ -23,10 +22,6 @@ sveltePreset.registerTranspiler(module => /\.html$/.test(module.title), [
 
 sveltePreset.registerTranspiler(module => /\.json/.test(module.title), [
   { transpiler: jsonTranspiler },
-]);
-
-sveltePreset.registerTranspiler(module => /\.css/.test(module.title), [
-  { transpiler: stylesTranspiler },
 ]);
 
 sveltePreset.registerTranspiler(() => true, [{ transpiler: rawTranspiler }]);
