@@ -32,7 +32,7 @@ function addJS(resource: string) {
   document.head.appendChild(script);
 }
 
-function addResource(resource: string) {
+export function addResource(resource: string, addCSS = addCSS, addJS = addJS) {
   const match = resource.match(/\.([^.]*)$/);
 
   if (match && match[1] === 'css') {
