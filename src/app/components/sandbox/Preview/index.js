@@ -350,7 +350,7 @@ export default class Preview extends React.PureComponent<Props, State> {
             url={decodeURIComponent(url)}
             onChange={this.updateUrl}
             onConfirm={this.sendUrl}
-            onBack={historyPosition > 0 && this.handleBack}
+            onBack={historyPosition > 1 && this.handleBack}
             onForward={
               historyPosition < history.length - 1 && this.handleForward
             }
