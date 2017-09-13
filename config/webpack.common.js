@@ -54,23 +54,13 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /create-zip\/.*\/files\/.*\.ico$/,
-        loader: 'base64-loader',
-      },
-      {
-        test: /create-zip\/.*\/files\/.*$/,
-        exclude: [/create-zip\/.*\/files\/.*\.ico$/],
-        loader: 'raw-loader',
-      },
-      {
         test: /\.js$/,
         include: paths.src,
         exclude: [
           /eslint\.4\.1\.0\.min\.js$/,
           /typescriptServices\.js$/,
           // Don't do the node modules of the codesandbox module itself
-          /codesandbox\/node_modules/,
-          /create-zip\/.*\/files\/.*$/,
+          /codesandbox-api\/node_modules/,
         ],
         loader: 'happypack/loader',
       },
@@ -79,7 +69,6 @@ module.exports = {
       {
         test: /\.json$/,
         loader: 'json-loader',
-        exclude: [/create-zip\/.*\/files\/.*$/],
       },
       // "postcss" loader applies autoprefixer to our CSS.
       // "css" loader resolves paths in CSS and adds assets as dependencies.
@@ -89,20 +78,18 @@ module.exports = {
       {
         test: /\.css$/,
         loaders: ['style-loader', 'css-loader'],
-        exclude: [/create-zip\/.*\/files\/.*$/],
       },
       // For importing README.md
       {
         test: /\.md$/,
         loader: 'raw-loader',
-        exclude: [/create-zip\/.*\/files\/.*$/],
       },
       // "file" loader makes sure those assets get served by WebpackDevServer.
       // When you `import` an asset, you get its (virtual) filename.
       // In production, they would get copied to the `build` folder.
       {
         test: /\.(ico|jpg|png|gif|eot|otf|webp|svg|ttf|woff|woff2)(\?.*)?$/,
-        exclude: [/\/favicon.ico$/, /create-zip\/.*\/files\/.*$/],
+        exclude: [/\/favicon.ico$/],
         loader: 'file-loader',
         options: {
           name: 'static/media/[name].[hash:8].[ext]',
@@ -112,7 +99,6 @@ module.exports = {
       {
         test: /\/favicon.ico$/,
         include: [paths.src],
-        exclude: [/create-zip\/.*\/files\/.*$/],
         loader: 'file-loader',
         options: {
           name: 'favicon.ico?[hash:8]',
@@ -123,7 +109,6 @@ module.exports = {
       {
         test: /\.(mp4|webm)(\?.*)?$/,
         loader: 'url-loader',
-        exclude: [/create-zip\/.*\/files\/.*$/],
         options: {
           limit: 10000,
           name: 'static/media/[name].[hash:8].[ext]',
@@ -134,7 +119,6 @@ module.exports = {
       {
         test: /\.html$/,
         loader: 'html-loader',
-        exclude: [/create-zip\/.*\/files\/.*$/],
         options: {
           attrs: ['link:href'],
         },
