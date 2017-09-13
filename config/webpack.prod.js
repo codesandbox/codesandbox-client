@@ -1,9 +1,19 @@
 const merge = require('webpack-merge');
 const webpack = require('webpack');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
+const childProcess = require('child_process');
 const commonConfig = require('./webpack.common');
 
 const publicPath = '/';
+
+const COMMIT_COUNT = childProcess
+  .execSync('git rev-list --count HEAD')
+  .toString();
+
+const COMMIT_HASH = childProcess
+  .execSync('git rev-parse --short HEAD')
+  .toString();
+const VERSION = `${COMMIT_COUNT}-${COMMIT_HASH}`;
 
 module.exports = merge(commonConfig, {
   devtool: 'source-map',
@@ -13,6 +23,7 @@ module.exports = merge(commonConfig, {
     sourceMapFilename: '[file].map', // Default
   },
   plugins: [
+    new webpack.DefinePlugin({ VERSION: JSON.stringify(VERSION) }),
     new webpack.LoaderOptionsPlugin({
       minimize: true,
       debug: false,
