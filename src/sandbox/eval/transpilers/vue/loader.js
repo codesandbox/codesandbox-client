@@ -17,8 +17,12 @@ const getStyleFileName = attrs => {
   return attrs.module ? `module.${extension}` : extension;
 };
 
-const getStyleLoaders = attrs => {
-  let loader = '!style-loader';
+const getStyleLoaders = (attrs, id, scoped) => {
+  let loader = `!style-loader!vue-style-compiler?${JSON.stringify({
+    id,
+    scoped: !!scoped,
+  })}`;
+
   if (attrs.module) {
     loader += `?${JSON.stringify({ module: true })}`;
   }
@@ -227,12 +231,11 @@ export default function(code: string, loaderContext: LoaderContext) {
 
   function getRequire(type, impt, i = 0, scoped) {
     if (type === 'style') {
-      var styleCompiler = `${getStyleLoaders(
-        impt.attrs
-      )}!vue-style-compiler?${JSON.stringify({
-        id: moduleId,
-        scoped: !!scoped,
-      })}!${moduleTitle}:style-${i}.vue.${getStyleFileName(impt.attrs)}`;
+      const styleCompiler = `${getStyleLoaders(
+        impt.attrs,
+        moduleId,
+        !!scoped
+      )}!${moduleTitle}:style-${i}.vue.${getStyleFileName(impt.attrs)}`;
 
       const tModule = loaderContext.emitModule(styleCompiler, impt.content);
 

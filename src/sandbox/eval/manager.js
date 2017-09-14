@@ -218,6 +218,7 @@ export default class Manager {
       } else if (
         mirrorModule.code !== module.code ||
         mirrorModule.title !== module.title ||
+        mirrorModule.isNotSynced !== module.isNotSynced ||
         mirrorModule.directoryShortid !== module.directoryShortid
       ) {
         updatedModules.push(module);

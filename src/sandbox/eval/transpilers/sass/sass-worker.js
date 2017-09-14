@@ -28,26 +28,29 @@ self.addEventListener('message', event => {
   });
 
   Sass.clearFiles(() => {
-    Sass.options({ sourceMapEmbed: true }, () => {
-      Sass.writeFile(files, () => {
-        Sass.compileFile(path, result => {
-          if (result.status === 0) {
-            self.postMessage({
-              type: 'compiled',
-              transpiledCode: result.text,
-            });
-          } else {
-            self.postMessage({
-              type: 'error',
-              error: {
-                name: 'CompileError',
-                message: result.formatted,
-                fileName: result.file && result.file.replace('/sass/', ''),
-              },
-            });
-          }
+    Sass.options(
+      { sourceMapEmbed: true, indentedSyntax: path.endsWith('.sass') },
+      () => {
+        Sass.writeFile(files, () => {
+          Sass.compileFile(path, result => {
+            if (result.status === 0) {
+              self.postMessage({
+                type: 'compiled',
+                transpiledCode: result.text,
+              });
+            } else {
+              self.postMessage({
+                type: 'error',
+                error: {
+                  name: 'CompileError',
+                  message: result.formatted,
+                  fileName: result.file && result.file.replace('/sass/', ''),
+                },
+              });
+            }
+          });
         });
-      });
-    });
+      }
+    );
   });
 });
