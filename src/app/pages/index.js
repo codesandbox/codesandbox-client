@@ -37,6 +37,10 @@ const SignIn = Loadable({
   loader: () => import('./SignIn'),
   LoadingComponent: Loading,
 });
+const ZeitSignIn = Loadable({
+  loader: () => import('./auth/Zeit'),
+  LoadingComponent: Loading,
+});
 const NotFound = Loadable({
   loader: () => import('./NotFound'),
   LoadingComponent: Loading,
@@ -134,6 +138,7 @@ class Routes extends React.PureComponent<Props> {
             <Route path="/patron" component={Patron} />
             <Route path="/cli/login" component={CLI} />
             <Route path="/legal" component={Terms} />
+            <Route path="/auth/zeit" component={ZeitSignIn} />
             <Route component={NotFound} />
           </Switch>
         </Content>

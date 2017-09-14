@@ -2,6 +2,8 @@ import JSZip from 'jszip';
 
 import type { Sandbox, Module, Directory } from 'common/types';
 
+import getTemplate from 'common/templates';
+
 import { createZip } from '../create-zip';
 
 export default async function deploy(
@@ -14,12 +16,12 @@ export default async function deploy(
   const zipFile = await createZip(sandbox, modules, directories);
 
   if (!zipFile) {
-    return;
+    return null;
   }
 
   const contents = await JSZip.loadAsync(zipFile);
 
-  const apiData = {};
+  let apiData = {};
   const filePaths = Object.keys(contents.files);
   for (let i = 0; i < filePaths.length; i += 1) {
     const filePath = filePaths[i];
@@ -31,6 +33,13 @@ export default async function deploy(
   }
 
   apiData.package = JSON.parse(apiData['package.json']);
+  apiData['package.json'] = null;
 
-  console.log(apiData);
+  const template = getTemplate(sandbox.template);
+
+  if (template.alterDeploymentData) {
+    apiData = template.alterDeploymentData(apiData);
+  }
+
+  return apiData;
 }

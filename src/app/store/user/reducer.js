@@ -10,6 +10,9 @@ import {
   UPDATE_SUBSCRIPTION_API,
   CANCEL_SUBSCRIPTION_API,
   SET_BADGE_VISIBILITY,
+  SET_ZEIT_USER_INFO,
+  SIGN_OUT_ZEIT,
+  SIGN_IN_ZEIT,
 } from './actions';
 
 const initialState: CurrentUser = {
@@ -21,6 +24,7 @@ const initialState: CurrentUser = {
   jwt: getJwt(),
   subscription: null,
   badges: [],
+  integrations: {},
 };
 
 export default (state: CurrentUser = initialState, action: Object) => {
@@ -39,6 +43,8 @@ export default (state: CurrentUser = initialState, action: Object) => {
       return {
         ...state,
         ...action.data,
+
+        integrations: action.data.integrations,
       };
     case SET_USER_SANDBOXES:
       return {
@@ -52,6 +58,32 @@ export default (state: CurrentUser = initialState, action: Object) => {
           ...b,
           visible: b.id === action.id ? action.visible : b.visible,
         })),
+      };
+    case SIGN_OUT_ZEIT.SUCCESS: {
+      return {
+        ...state,
+        integrations: {
+          ...state.integrations,
+          zeit: null,
+        },
+      };
+    }
+    case SIGN_IN_ZEIT.SUCCESS: {
+      return {
+        ...state,
+        ...action.data.data,
+      };
+    }
+    case SET_ZEIT_USER_INFO:
+      return {
+        ...state,
+        integrations: {
+          ...state.integrations,
+          zeit: {
+            ...state.integrations.zeit,
+            ...action.data,
+          },
+        },
       };
     case CREATE_SUBSCRIPTION_API.SUCCESS:
     case UPDATE_SUBSCRIPTION_API.SUCCESS:

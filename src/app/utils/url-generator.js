@@ -67,6 +67,7 @@ export const forkSandboxUrl = (sandbox: Sandbox) =>
   `${sandboxUrl(sandbox)}/fork`;
 
 export const signInUrl = () => '/auth/github';
+export const signInZeitUrl = () => '/auth/zeit';
 
 export const profileUrl = (username: string) => `/u/${username}`;
 export const profileSandboxesUrl = (username: string, page?: number) =>

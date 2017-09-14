@@ -13,6 +13,8 @@ import { directoriesSelector } from '../directories/selectors';
 
 import { maybeForkSandbox, forkSandbox } from './fork';
 import fileActions from './files';
+import { currentUserSelector } from '../../../user/selectors';
+import { resolve } from 'babel-standalone';
 
 export const SINGLE_SANDBOX_API_ACTIONS = createAPIActions('SANDBOX', 'SINGLE');
 export const CREATE_SANDBOX_API_ACTIONS = createAPIActions('SANDBOX', 'CREATE');
@@ -337,11 +339,32 @@ export default {
 
     const deploy = await import('../utils/deploy');
 
-    deploy.default(
+    const apiData = await deploy.default(
       sandbox,
       sandbox.modules.map(x => modules[x]),
       sandbox.directories.map(x => directories[x])
     );
+
+    const user = currentUserSelector(getState());
+
+    const token = user.integrations.zeit.token;
+
+    const res = await fetch('https://api.zeit.co/now/deployments', {
+      method: 'POST',
+      body: JSON.stringify(apiData),
+      headers: {
+        Authorization: `bearer ${token}`,
+      },
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      dispatch(notificationActions.addNotification(data.err.mesage, 'error'));
+      return;
+    }
+
+    console.log(data);
   },
 
   deleteSandbox: (id: string) => async (dispatch: Function) => {

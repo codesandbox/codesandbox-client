@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import CrossIcon from 'react-icons/lib/md/clear';
 import ChevronIcon from 'react-icons/lib/md/keyboard-arrow-right';
@@ -10,6 +10,8 @@ const Container = styled.div`
   display: inline-flex;
   border-radius: 4px;
   overflow: hidden;
+
+  ${props => props.loading && css`opacity: 0.5;`};
 `;
 
 const IntegrationBlock = styled.div`
@@ -112,23 +114,39 @@ type Props = {
   name: string,
   color: string,
   description: string,
-  loggedIn: boolean,
+  signOut: Function,
+  signIn: Function,
+  userInfo: ?{
+    token: string,
+    email: string,
+    [key: string]: string,
+  },
+  loading: boolean,
 };
 
-export default ({ Icon, name, description, color, loggedIn }: Props) => (
-  <Container>
+export default ({
+  Icon,
+  name,
+  signOut,
+  signIn,
+  description,
+  color,
+  userInfo,
+  loading,
+}: Props) => (
+  <Container loading={loading}>
     <IntegrationBlock bgColor={color}>
       <Icon />
       <Name>{name}</Name>
     </IntegrationBlock>
-    {!loggedIn ? (
+    {userInfo ? (
       <DetailInfo
-        signOut={() => {}}
+        signOut={signOut}
         heading="Signed in as"
-        info="ives.v.h@gmail.com"
+        info={userInfo.email || 'Loading...'}
       />
     ) : (
-      <DetailInfo signIn={() => {}} heading="Enables" info={description} />
+      <DetailInfo signIn={signIn} heading="Enables" info={description} />
     )}
   </Container>
 );

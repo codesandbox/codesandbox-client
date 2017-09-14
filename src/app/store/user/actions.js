@@ -1,6 +1,6 @@
 // @flow
 import * as React from 'react';
-import { signInUrl } from 'app/utils/url-generator';
+import { signInUrl, signInZeitUrl } from 'app/utils/url-generator';
 import { identify } from 'app/utils/analytics';
 
 import SignOutNotice from 'app/containers/modals/SignOutNotice';
@@ -11,7 +11,7 @@ import modalActions from '../modal/actions';
 
 import openPopup from './utils/popup';
 import { resetJwt, setJwt } from './utils/jwt';
-import { jwtSelector, badgesSelector } from './selectors';
+import { jwtSelector, badgesSelector, currentUserSelector } from './selectors';
 
 export const SIGN_IN = 'SIGN_IN';
 export const SIGN_IN_SUCCESFULL = 'SIGN_IN_SUCCESFULL';
@@ -54,6 +54,10 @@ export const UPDATE_PAYMENT_DETAILS = createAPIActions(
   'UPDATE'
 );
 export const UPDATE_BADGE_INFO = createAPIActions('BADGE', 'UPDATE');
+
+export const SET_ZEIT_USER_INFO = 'SET_ZEIT_USER_INFO';
+export const SIGN_OUT_ZEIT = createAPIActions('ZEIT', 'SIGN_OUT');
+export const SIGN_IN_ZEIT = createAPIActions('ZEIT', 'SIGN_IN');
 
 const signOut = (apiRequest = true) => async (dispatch: Function) => {
   if (apiRequest) {
@@ -257,6 +261,72 @@ const setBadgeVisibility = (badgeId: string, visible: boolean) => async (
   }
 };
 
+const signOutFromZeit = () => async (dispatch: Function) => {
+  await dispatch(
+    doRequest(SIGN_OUT_ZEIT, `users/current_user/integrations/zeit`, {
+      method: 'DELETE',
+    })
+  );
+};
+
+const fetchZeitUserDetails = () => async (
+  dispatch: Function,
+  getState: Function
+) => {
+  const user = currentUserSelector(getState());
+
+  const { token } = user.integrations.zeit;
+
+  if (!token) return;
+
+  const res = await fetch('https://api.zeit.co/www/user', {
+    headers: {
+      Authorization: `bearer ${token}`,
+    },
+  });
+
+  const body = await res.json();
+
+  if (!res.ok) {
+    dispatch(
+      notifActions.addNotification('Could not authorize with ZEIT', 'error')
+    );
+
+    dispatch(signOutFromZeit());
+    return;
+  }
+
+  dispatch({
+    type: SET_ZEIT_USER_INFO,
+    data: body.user,
+  });
+};
+
+const signInZeit = () => async (dispatch: Function) =>
+  new Promise(resolve => {
+    const popup = openPopup(signInZeitUrl(), 'sign in');
+
+    window.addEventListener('message', async function onMessage(e) {
+      if (e.data.type === 'signin') {
+        window.removeEventListener('message', this);
+        popup.close();
+
+        const { code } = e.data.data;
+
+        await dispatch(
+          doRequest(SIGN_IN_ZEIT, `users/current_user/integrations/zeit`, {
+            method: 'POST',
+            body: {
+              code,
+            },
+          })
+        );
+
+        resolve(dispatch(fetchZeitUserDetails()));
+      }
+    });
+  });
+
 export default {
   createSubscription,
   updateSubscription,
@@ -270,4 +340,7 @@ export default {
   loadUserSandboxes,
   sendFeedback,
   setBadgeVisibility,
+  fetchZeitUserDetails,
+  signOutFromZeit,
+  signInZeit,
 };

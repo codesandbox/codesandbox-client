@@ -59,6 +59,12 @@ export type CurrentUser = {
     amount: string,
   },
   badges: Array<Badge>,
+  integrations: {
+    zeit?: {
+      token: string,
+      email: ?string,
+    },
+  },
 };
 
 export type SmallSandbox = {

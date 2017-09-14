@@ -4,6 +4,21 @@ export const react = {
   name: 'create-react-app',
   url: 'https://github.com/facebookincubator/create-react-app',
   color: decorateSelector(() => '#6CAEDD'),
+
+  alterDeploymentData: apiData => ({
+    ...apiData,
+    package: {
+      ...apiData.package,
+      devDependencies: {
+        ...apiData.package.devDependencies,
+        serve: '^5.0.1',
+      },
+      scripts: {
+        ...apiData.package.scripts,
+        'now-start': 'cd build && serve -s ./',
+      },
+    },
+  }),
 };
 
 export const reactTs = {
