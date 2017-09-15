@@ -8,9 +8,13 @@ const buildEncodedUri = (strings: Array<string>, ...values: Array<string>) =>
     .join('');
 
 export const host = () => {
-  return process.env.NODE_ENV === 'production'
-    ? 'codesandbox.io'
-    : process.env.LOCAL_SERVER ? 'localhost:3000' : 'codesandbox.dev';
+  if (process.env.NODE_ENV === 'production') {
+    return 'codesandbox.io';
+  }
+  if (process.env.LOCAL_SERVER) {
+    return 'localhost:3000';
+  }
+  return 'codesandbox.dev';
 };
 
 export const protocolAndHost = () => `${location.protocol}//${host()}`;

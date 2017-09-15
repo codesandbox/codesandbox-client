@@ -4,16 +4,10 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import modalActionCreators from 'app/store/modal/actions';
-import ReactIcon from '../../components/logos/React';
-import PreactIcon from '../../components/logos/Preact';
-import VueIcon from '../../components/logos/Vue';
-import SvelteIcon from '../../components/logos/Svelte';
 import GithubIcon from 'react-icons/lib/go/mark-github';
 import TerminalIcon from 'react-icons/lib/go/terminal';
 
-import Row from '../../components/flex/Row';
-
+import modalActionCreators from 'app/store/modal/actions';
 import {
   newSandboxUrl,
   newReactTypeScriptSandboxUrl,
@@ -23,6 +17,13 @@ import {
   importFromGitHubUrl,
   uploadFromCliUrl,
 } from 'app/utils/url-generator';
+
+import ReactIcon from '../../components/logos/React';
+import PreactIcon from '../../components/logos/Preact';
+import VueIcon from '../../components/logos/Vue';
+import SvelteIcon from '../../components/logos/Svelte';
+
+import Row from '../../components/flex/Row';
 
 const Container = styled.div`
   display: flex;
@@ -60,7 +61,16 @@ const LogoLink = styled(Link)`
   width: 140px;
   margin: 0 1rem;
 `;
-const Logo = ({ Icon, width, height, text, href, onClick }) => (
+type LogoProps = {
+  Icon: any,
+  width: number,
+  height: number,
+  text: string,
+  href: string,
+  onClick: () => {},
+};
+
+const Logo = ({ Icon, width, height, text, href, onClick }: LogoProps) => (
   <LogoLink to={href} onClick={onClick}>
     <LogoContainer>
       <Icon width={width} height={height} />
