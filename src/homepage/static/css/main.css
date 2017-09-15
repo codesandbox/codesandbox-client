@@ -31,7 +31,18 @@ h1 {
   text-transform: uppercase;
 }
 
+.actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .secondary-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
   margin-top: 2rem;
 }
 
@@ -44,12 +55,14 @@ h1 {
 }
 
 .button {
-  display: block;
+  display: inline-block;
   text-align: center;
   margin-bottom: 20px;
+  margin-left: 10px;
+  margin-right: 10px;
   transition: 0.3s ease all;
   background: #1c2022;
-  background: rgba(255, 211, 153, 0.20);
+  background: rgba(255, 211, 153, 0.2);
   border: 1px solid #fed594;
   border-radius: 4px;
   padding: 0.75rem 2.5rem;
@@ -97,7 +110,7 @@ h1 {
   background-image: radial-gradient(
     circle,
     rgba(47, 170, 255, 0.04) 50%,
-    rgba(255, 211, 153, 0.00) 100%
+    rgba(255, 211, 153, 0) 100%
   );
   overflow: hidden;
 }
@@ -290,7 +303,7 @@ h1 {
 }
 
 .project:hover {
-  background: rgba(255, 211, 153, 0.20);
+  background: rgba(255, 211, 153, 0.2);
   border: 1px solid #fed594;
 }
 
@@ -311,8 +324,12 @@ h1 {
     font-size: 2rem;
   }
 
-  .description  h3 {
+  .description h3 {
     font-size: 2rem;
+  }
+
+  .actions {
+    flex-direction: column;
   }
 
   .logocontent {
