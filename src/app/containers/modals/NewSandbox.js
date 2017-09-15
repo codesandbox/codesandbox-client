@@ -34,9 +34,9 @@ const Container = styled.div`
 const RowContainer = styled(Row)`
   justify-content: center;
   color: rgba(255, 255, 255, 0.8);
-  padding-top: 3rem;
+  padding-top: 1.5rem;
   &:last-of-type {
-    padding-bottom: 3rem;
+    padding-bottom: 1.5rem;
   }
 `;
 
@@ -48,8 +48,11 @@ const LogoContainer = styled.div`
   transition: 0.3s ease all;
   opacity: 0.8;
 
+  padding: 1.5rem 0;
+
   &:hover {
     opacity: 1;
+    background-color: rgba(0, 0, 0, 0.2);
   }
 `;
 
