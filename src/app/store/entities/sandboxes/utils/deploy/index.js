@@ -33,7 +33,7 @@ export default async function deploy(
   }
 
   apiData.package = JSON.parse(apiData['package.json']);
-  apiData['package.json'] = null;
+  delete apiData['package.json'];
 
   const template = getTemplate(sandbox.template);
 

@@ -344,11 +344,10 @@ export default {
       sandbox.modules.map(x => modules[x]),
       sandbox.directories.map(x => directories[x])
     );
+    console.log(apiData);
 
     const user = currentUserSelector(getState());
-
     const token = user.integrations.zeit.token;
-
     const res = await fetch('https://api.zeit.co/now/deployments', {
       method: 'POST',
       body: JSON.stringify(apiData),
