@@ -220,6 +220,7 @@ function runDevServer(port, protocol, index) {
     host: process.env.LOCAL_SERVER ? 'localhost' : 'codesandbox.dev',
     disableHostCheck: !process.env.LOCAL_SERVER,
     contentBase: false,
+    clientLogLevel: 'warning',
   });
 
   // Our custom middleware proxies requests to /index.html or a remote API.
