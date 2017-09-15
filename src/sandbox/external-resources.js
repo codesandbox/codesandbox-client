@@ -24,6 +24,13 @@ function addCSS(resource: string) {
   head.appendChild(link);
 }
 
+function getContentType(resource: string) {
+  return fetch(resource, {
+    method: 'HEAD',
+    mode: 'cors',
+  }).then(response => response.headers.get('Content-Type'));
+}
+
 function addJS(resource: string) {
   const script = document.createElement('script');
   script.setAttribute('src', resource);
@@ -32,13 +39,28 @@ function addJS(resource: string) {
   document.head.appendChild(script);
 }
 
-export function addResource(resource: string, addCSS = addCSS, addJS = addJS) {
+export function addResource(
+  resource: string,
+  addCSS = addCSS,
+  addJS = addJS,
+  getContentType = getContentType
+) {
   const match = resource.match(/\.([^.]*)$/);
 
   if (match && match[1] === 'css') {
     addCSS(resource);
-  } else {
+  } else if (match && match[1] === 'js') {
     addJS(resource);
+  } else {
+    return getContentType(resource).then(contentType => {
+      if (contentType.indexOf('text/css') === 0) {
+        addCSS(resource);
+      } else if (contentType.indexOf('application/javascript') === 0) {
+        addJS(resource);
+      } else {
+        throw new Error(`Unsupported Content-Type: ${contentType}`);
+      }
+    });
   }
 }
 
@@ -48,7 +70,9 @@ export default function handleExternalResources(externalResources) {
   const extResString = getExternalResourcesConcatenation(externalResources);
   if (extResString !== cachedExternalResources) {
     clearExternalResources();
-    externalResources.forEach(addResource);
+    externalResources.forEach(resource => {
+      addResource(resource, addCSS, addJS, getContentType);
+    });
     cachedExternalResources = extResString;
   }
 }
