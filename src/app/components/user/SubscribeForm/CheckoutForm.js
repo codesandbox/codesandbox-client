@@ -131,7 +131,9 @@ class CheckoutForm extends React.PureComponent {
         <Label>Card</Label>
         {errors.stripe != null && <ErrorText>{errors.stripe}</ErrorText>}
         <CardContainer>
-          <CardElement style={{ base: { color: 'white', fontWeight: 300 } }} />
+          <CardElement
+            style={{ base: { color: 'white', fontWeight: '500' } }}
+          />
         </CardContainer>
 
         <Button

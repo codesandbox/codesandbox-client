@@ -26,6 +26,7 @@ import WorkspaceItem from './WorkspaceItem';
 import SandboxActions from './SandboxActions';
 import Logo from './Logo';
 import ConnectionNotice from './ConnectionNotice';
+import Advertisement from './Advertisement';
 
 const Container = styled.div`
   position: absolute;
@@ -153,6 +154,7 @@ const Workspace = ({
       </div>
 
       <div>
+        {!isPatron && <Advertisement />}
         <ConnectionNotice />
         <TermsContainer>
           By using CodeSandbox you agree to our{' '}

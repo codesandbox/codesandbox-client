@@ -7187,9 +7187,9 @@ react-split-pane@^0.1.63:
     prop-types "^15.5.10"
     react-style-proptype "^3.0.0"
 
-react-stripe-elements@^0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/react-stripe-elements/-/react-stripe-elements-0.0.2.tgz#57ec82e086a236482d5ad1599e58234ee9e3a881"
+react-stripe-elements@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/react-stripe-elements/-/react-stripe-elements-0.1.0.tgz#1cddd0b33ea341f83de0956d9bbd94386e3189d1"
   dependencies:
     prop-types "^15.5.8"
 
