@@ -3,6 +3,8 @@ import styled from 'styled-components';
 
 import { injectStripe, CardElement } from 'react-stripe-elements';
 
+import reportError from 'app/utils/error';
+
 import Input from 'app/components/Input';
 import Button from 'app/components/buttons/Button';
 
@@ -84,7 +86,7 @@ class CheckoutForm extends React.PureComponent {
     // Within the context of `Elements`, this call to createToken knows which Element to
     // tokenize, since there's only one in this group.
     const { token, error } = await this.props.stripe.createToken({
-      name: this.props.name,
+      name: this.state.name,
     });
     if (error) {
       return this.setState({
@@ -98,6 +100,8 @@ class CheckoutForm extends React.PureComponent {
     try {
       await this.props.subscribe(token.id);
     } catch (e) {
+      reportError(e);
+
       return this.setState({
         loading: false,
         errors: {
