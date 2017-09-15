@@ -39,7 +39,7 @@ function addJS(resource: string) {
   document.head.appendChild(script);
 }
 
-export function addResource(
+export async function addResource(
   resource: string,
   addCSS = addCSS,
   addJS = addJS,
@@ -52,7 +52,8 @@ export function addResource(
   } else if (match && match[1] === 'js') {
     addJS(resource);
   } else {
-    return getContentType(resource).then(contentType => {
+    try {
+      const contentType = await getContentType(resource);
       if (contentType.indexOf('text/css') === 0) {
         addCSS(resource);
       } else if (contentType.indexOf('application/javascript') === 0) {
@@ -60,19 +61,27 @@ export function addResource(
       } else {
         throw new Error(`Unsupported Content-Type: ${contentType}`);
       }
-    });
+    } catch (e) {
+      if (e.message === 'Failed to fetch') {
+        e.name = 'ResourceNotFound';
+        e.message = `Could not fetch '${resource}'`;
+      }
+      throw e;
+    }
   }
 }
 
 let cachedExternalResources = '';
 
-export default function handleExternalResources(externalResources) {
+export default async function handleExternalResources(externalResources) {
   const extResString = getExternalResourcesConcatenation(externalResources);
   if (extResString !== cachedExternalResources) {
     clearExternalResources();
-    externalResources.forEach(resource => {
-      addResource(resource, addCSS, addJS, getContentType);
-    });
+    await Promise.all(
+      externalResources.map(resource =>
+        addResource(resource, addCSS, addJS, getContentType)
+      )
+    );
     cachedExternalResources = extResString;
   }
 }

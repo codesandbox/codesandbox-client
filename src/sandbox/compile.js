@@ -89,9 +89,9 @@ async function compile({
   }
 
   actionsEnabled = hasActions;
-  handleExternalResources(externalResources);
-
   try {
+    await handleExternalResources(externalResources);
+
     const [{ manifest }, { error: managerError }] = await Promise.all([
       loadDependencies(dependencies),
       updateManager(sandboxId, template, module, modules, directories),
