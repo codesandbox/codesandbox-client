@@ -28,21 +28,7 @@ function pathWithHash(location) {
 
 export default function setupHistoryListeners() {
   if (!isStandalone) {
-    const historyProto = {
-      get length() {
-        console.log('get length()');
-        return historyList.length;
-      },
-
-      get state() {
-        console.log('get state()');
-        return historyList[historyPosition].state;
-      },
-
-      get historyList() {
-        return { position: historyPosition, list: historyList };
-      },
-
+    const newHistory = {
       go(delta) {
         console.log(`go(${delta})`);
         const newPos = historyPosition + delta;
@@ -88,9 +74,35 @@ export default function setupHistoryListeners() {
       },
     };
 
+    Object.keys(newHistory).forEach(method => {
+      window.history[method] = newHistory[method];
+    });
+
+    const newHistoryGetters = {
+      length() {
+        console.log('get length()');
+        return historyList.length;
+      },
+
+      state() {
+        console.log('get state()');
+        return historyList[historyPosition].state;
+      },
+
+      historyList() {
+        return { position: historyPosition, list: historyList };
+      },
+    };
+
+    Object.keys(newHistoryGetters).forEach(name => {
+      Object.defineProperty(window.history, name, {
+        get: newHistoryGetters[name],
+      });
+    });
+
     window.addEventListener('hashchange', () => {
       if (!disableNextHashChange) {
-        const url = `${document.location.pathname}${document.location.hash}`;
+        const url = pathWithHash(document.location);
         pushHistory(url, null);
         sendUrlChange(document.location.href);
       } else {
@@ -129,7 +141,5 @@ export default function setupHistoryListeners() {
     setTimeout(() => {
       sendUrlChange(document.location.href);
     });
-
-    window.history.__proto__ = historyProto; // eslint-disable-line no-proto
   }
 }
