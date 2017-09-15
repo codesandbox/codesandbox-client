@@ -221,6 +221,7 @@ function runDevServer(port, protocol, index) {
     disableHostCheck: !process.env.LOCAL_SERVER,
     contentBase: false,
     clientLogLevel: 'warning',
+    overlay: true,
   });
 
   // Our custom middleware proxies requests to /index.html or a remote API.
