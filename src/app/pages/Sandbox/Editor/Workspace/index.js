@@ -154,7 +154,7 @@ const Workspace = ({
       </div>
 
       <div>
-        {!isPatron && <Advertisement />}
+        {!isPatron && !sandbox.owned && <Advertisement />}
         <ConnectionNotice />
         <TermsContainer>
           By using CodeSandbox you agree to our{' '}
