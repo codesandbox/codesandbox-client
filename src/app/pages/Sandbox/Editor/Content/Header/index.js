@@ -6,6 +6,7 @@ import Media from 'react-media';
 import Save from 'react-icons/lib/md/save';
 import Fork from 'react-icons/lib/go/repo-forked';
 import Download from 'react-icons/lib/go/cloud-download';
+import PlusIcon from 'react-icons/lib/go/plus';
 import GithubIcon from 'react-icons/lib/go/mark-github';
 import ChevronLeft from 'react-icons/lib/md/chevron-left';
 import HeartIcon from 'react-icons/lib/fa/heart-o';
@@ -28,9 +29,9 @@ import Margin from 'app/components/spacing/Margin';
 import HeaderSearchBar from 'app/components/HeaderSearchBar';
 import UserMenu from 'app/containers/UserMenu';
 import Preferences from 'app/containers/Preferences';
+import NewSandbox from 'app/containers/modals/NewSandbox';
 
 import Action from './Action';
-import NewSandboxAction from './NewSandboxAction';
 import FeedbackView from './FeedbackView';
 import ShareView from './ShareView';
 
@@ -151,6 +152,13 @@ export default class Header extends React.PureComponent<Props> {
     });
   };
 
+  openNewSandbox = () => {
+    this.props.modalActions.openModal({
+      width: 900,
+      Body: <NewSandbox />,
+    });
+  };
+
   render() {
     const {
       sandbox,
@@ -245,7 +253,11 @@ export default class Header extends React.PureComponent<Props> {
             email={user.email}
             sendMessage={userActions.sendFeedback}
           />
-          <NewSandboxAction showHighlight />
+          <Action
+            onClick={this.openNewSandbox}
+            tooltip="New Sandbox"
+            Icon={PlusIcon}
+          />
           <Action
             onClick={this.openPreferences}
             tooltip="Preferences"
