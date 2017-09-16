@@ -112,7 +112,7 @@ export default class Header extends React.PureComponent<Props> {
 
     this.props.modalActions.openModal({
       width: 600,
-      Body: <Deployment />,
+      Body: <Deployment id={sandbox.id} />,
     });
 
     sandboxActions.deploy(sandbox.id);
@@ -229,7 +229,13 @@ export default class Header extends React.PureComponent<Props> {
             Icon={Save}
           />
           <Action title="Download" Icon={Download} onClick={this.zipSandbox} />
-          <Action title="Deploy" Icon={ZeitIcon} onClick={this.deploySandbox} />
+          {sandbox.owned && (
+            <Action
+              title="Deploy"
+              Icon={ZeitIcon}
+              onClick={this.deploySandbox}
+            />
+          )}
           <ShareView sandbox={sandbox} />
         </Left>
 

@@ -1,8 +1,8 @@
 import React from 'react';
 import IconBase from 'react-icons/IconBase';
 
-export default () => (
-  <IconBase viewBox="0 0 226 200">
+export default ({ className }: { className: string }) => (
+  <IconBase className={className} viewBox="0 0 226 200">
     <defs>
       <linearGradient
         x1="196.572434%"

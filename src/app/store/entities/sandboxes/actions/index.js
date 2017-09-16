@@ -14,7 +14,6 @@ import { directoriesSelector } from '../directories/selectors';
 import { maybeForkSandbox, forkSandbox } from './fork';
 import fileActions from './files';
 import { currentUserSelector } from '../../../user/selectors';
-import { resolve } from 'babel-standalone';
 
 export const SINGLE_SANDBOX_API_ACTIONS = createAPIActions('SANDBOX', 'SINGLE');
 export const CREATE_SANDBOX_API_ACTIONS = createAPIActions('SANDBOX', 'CREATE');
@@ -344,7 +343,6 @@ export default {
       sandbox.modules.map(x => modules[x]),
       sandbox.directories.map(x => directories[x])
     );
-    console.log(apiData);
 
     const user = currentUserSelector(getState());
     const token = user.integrations.zeit.token;
@@ -360,10 +358,10 @@ export default {
 
     if (!res.ok) {
       dispatch(notificationActions.addNotification(data.err.message, 'error'));
-      return;
+      throw new Error(data.err.message);
     }
 
-    console.log(data);
+    return data.host && `https://${data.host}`;
   },
 
   deleteSandbox: (id: string) => async (dispatch: Function) => {

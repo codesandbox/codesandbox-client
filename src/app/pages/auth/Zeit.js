@@ -20,7 +20,7 @@ export default class ZeitSignIn extends React.PureComponent<State> {
 
     // eslint-disable-next-line no-unused-vars
     const [_, code] = document.location.search.match(/\?code=(.*)/);
-    console.log('code', code);
+
     if (code) {
       if (window.opener) {
         this.state = {

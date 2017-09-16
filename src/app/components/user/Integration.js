@@ -2,9 +2,10 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 
 import CrossIcon from 'react-icons/lib/md/clear';
-import ChevronIcon from 'react-icons/lib/md/keyboard-arrow-right';
+
 import Margin from 'app/components/spacing/Margin';
 import Tooltip from 'app/components/Tooltip';
+import Button from '../buttons/Button';
 
 const Container = styled.div`
   display: inline-flex;
@@ -100,11 +101,9 @@ const DetailInfo = ({ heading, info, signOut, signIn }: DetailProps) => (
         </Action>
       </Tooltip>
     ) : (
-      <Tooltip title="Sign in">
-        <Action onClick={signIn}>
-          <ChevronIcon />
-        </Action>
-      </Tooltip>
+      <Button small onClick={signIn}>
+        Sign in
+      </Button>
     )}
   </Details>
 );
