@@ -359,7 +359,7 @@ export default {
     const data = await res.json();
 
     if (!res.ok) {
-      dispatch(notificationActions.addNotification(data.err.mesage, 'error'));
+      dispatch(notificationActions.addNotification(data.err.message, 'error'));
       return;
     }
 

@@ -32,7 +32,7 @@ import UserMenu from 'app/containers/UserMenu';
 import Preferences from 'app/containers/Preferences';
 import NewSandbox from 'app/containers/modals/NewSandbox';
 
-import deploy from 'app/store/entities/sandboxes/utils/deploy';
+import Deployment from 'app/containers/Deployment';
 
 import Action from './Action';
 import FeedbackView from './FeedbackView';
@@ -109,6 +109,12 @@ export default class Header extends React.PureComponent<Props> {
 
   deploySandbox = () => {
     const { sandbox, sandboxActions } = this.props;
+
+    this.props.modalActions.openModal({
+      width: 600,
+      Body: <Deployment />,
+    });
+
     sandboxActions.deploy(sandbox.id);
   };
 
