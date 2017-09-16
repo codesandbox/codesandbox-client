@@ -1,22 +1,24 @@
 // @flow
 import * as React from 'react';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 import SignInButton from 'app/containers/SignInButton';
+import NewSandbox from 'app/containers/modals/NewSandbox';
 
+import PlusIcon from 'react-icons/lib/go/plus';
 import Logo from 'app/components/Logo';
 import Row from 'app/components/flex/Row';
 import Tooltip from 'app/components/Tooltip';
 import HeaderSearchBar from 'app/components/HeaderSearchBar';
 
 import { jwtSelector, isPatronSelector } from 'app/store/user/selectors';
+import modalActionCreators from 'app/store/modal/actions';
 import { patronUrl } from 'app/utils/url-generator';
 // $FlowIssue
 import PatronBadge from '-!svg-react-loader!app/utils/badges/svg/patron-4.svg'; // eslint-disable-line import/no-webpack-loader-syntax
-
-import NewSandboxAction from '../../pages/Sandbox/Editor/Content/Header/NewSandboxAction';
 
 import UserMenu from '../UserMenu';
 
@@ -48,9 +50,10 @@ const Action = styled.div`
   margin: 0 1rem;
   cursor: pointer;
   color: white;
+  opacity: 0.8;
 
   &:hover {
-    color: white;
+    opacity: 1;
   }
 `;
 
@@ -58,13 +61,24 @@ type Props = {
   title: string,
   hasLogin: boolean,
   isPatron: boolean,
+  modalActions: typeof modalActionCreators,
 };
 
 const mapStateToProps = state => ({
   hasLogin: !!jwtSelector(state),
   isPatron: isPatronSelector(state),
 });
+const mapDispatchToProps = dispatch => ({
+  modalActions: bindActionCreators(modalActionCreators, dispatch),
+});
 class Navigation extends React.PureComponent<Props> {
+  openNewSandbox = () => {
+    this.props.modalActions.openModal({
+      width: 900,
+      Body: <NewSandbox />,
+    });
+  };
+
   render() {
     const { title, hasLogin, isPatron } = this.props;
 
@@ -91,7 +105,11 @@ class Navigation extends React.PureComponent<Props> {
                 </Tooltip>
               </Action>
             )}
-            <NewSandboxAction />
+            <Action onClick={this.openNewSandbox}>
+              <Tooltip position="bottom" title="New Sandbox">
+                <PlusIcon height={35} />
+              </Tooltip>
+            </Action>
           </Actions>
           {hasLogin ? <UserMenu /> : <SignInButton />}
         </Row>
@@ -100,4 +118,4 @@ class Navigation extends React.PureComponent<Props> {
   }
 }
 
-export default connect(mapStateToProps)(Navigation);
+export default connect(mapStateToProps, mapDispatchToProps)(Navigation);
