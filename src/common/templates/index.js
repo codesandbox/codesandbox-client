@@ -36,18 +36,63 @@ export const vue = {
   name: 'vue-cli',
   url: 'https://github.com/vuejs/vue-cli',
   color: decorateSelector(() => '#41B883'),
+
+  alterDeploymentData: apiData => ({
+    ...apiData,
+    package: {
+      ...apiData.package,
+      devDependencies: {
+        ...apiData.package.devDependencies,
+        serve: '^5.0.1',
+      },
+      scripts: {
+        ...apiData.package.scripts,
+        'now-start': 'cd dist && serve -s ./',
+      },
+    },
+  }),
 };
 
 export const svelte = {
   name: 'svelte',
   url: 'https://github.com/sveltejs/svelte',
   color: decorateSelector(() => '#AA1E1E'),
+
+  alterDeploymentData: apiData => ({
+    ...apiData,
+    package: {
+      ...apiData.package,
+      devDependencies: {
+        ...apiData.package.devDependencies,
+        serve: '^5.0.1',
+      },
+      scripts: {
+        ...apiData.package.scripts,
+        'now-start': 'cd public && serve -s ./',
+      },
+    },
+  }),
 };
 
 export const preact = {
   name: 'preact-cli',
   url: 'https://github.com/developit/preact-cli',
   color: decorateSelector(() => '#AD78DC'),
+
+  alterDeploymentData: apiData => ({
+    ...apiData,
+    package: {
+      ...apiData.package,
+      devDependencies: {
+        ...apiData.package.devDependencies,
+        serve: '^5.0.1',
+      },
+      scripts: {
+        ...apiData.package.scripts,
+        'now-start': 'cd build && serve -s ./',
+      },
+    },
+  }),
 };
 
 export default function getDefinition(

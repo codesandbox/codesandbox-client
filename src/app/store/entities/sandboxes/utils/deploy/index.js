@@ -35,7 +35,7 @@ export default async function deploy(
   apiData.package = JSON.parse(apiData['package.json']);
   // We force the sandbox id, so ZEIT will always group the deployments to a
   // single sandbox
-  apiData.package.name = sandbox.id;
+  apiData.package.name = `csb-${sandbox.id}`;
   delete apiData['package.json'];
 
   const template = getTemplate(sandbox.template);
