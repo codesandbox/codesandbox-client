@@ -78,6 +78,7 @@ const DisabledOverlay = styled.div`
   margin: 0 auto;
   color: white;
   font-size: 1.25rem;
+  z-index: 20;
 `;
 
 const DeployAnimationContainer = styled.div`
@@ -96,24 +97,24 @@ const DeployAnimationContainer = styled.div`
 const StyledZeitLogo = styled(ZeitLogo)`
   position: absolute;
   font-size: 4rem;
-  transform: translateX(80px);
+  transform: translateY(10px) translateX(80px);
 `;
 
 const cubeAnimation = keyframes`
   0% {
-    transform: translateY(10px) translateX(-100px) scale(0, 0);
+    transform: translateY(20px) translateX(-100px) scale(0, 0);
   }
 
   20% {
-    transform: translateY(10px) translateX(-100px) scale(1, 1);
+    transform: translateY(20px) translateX(-100px) scale(1, 1);
   }
 
   80% {
-    transform: translateY(10px) translateX(80px) scale(1, 1);
+    transform: translateY(20px) translateX(80px) scale(1, 1);
   }
 
   100% {
-    transform: translateY(10px) translateX(80px) scale(1, 1);
+    transform: translateY(20px) translateX(80px) scale(1, 1);
   }
 `;
 
@@ -121,26 +122,30 @@ const StyledCube = styled(Cube)`
   position: absolute;
   animation: ${cubeAnimation} 2s ease-in infinite;
   animation-delay: ${({ i }) => i * 0.5}s;
-  transform: translateY(10px) translateX(-100px) scale(0, 0);
+  transform: translateY(20px) translateX(-100px) scale(0, 0);
 `;
 
 const StyledLogo = styled(OpaqueLogo)`
   position: absolute;
-  transform: translateY(5px) translateX(-100px);
+  transform: translateY(15px) translateX(-100px);
   z-index: 10;
 `;
 
 const DeployText = styled.div`
   ${delayInEffect()};
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  font-size: 1.125rem;
 `;
 
-const DeployedLink = styled.a`${delayInEffect(0.25)};`;
+const DeployedLink = styled.a`
+  ${delayInEffect(0.25)};
+  font-size: 1.25rem;
+`;
 
 const DeploymentManagementNotice = styled.div`
   ${delayInEffect(0.45)};
   font-size: 0.75rem;
-  margin-top: 2rem;
+  margin-top: 1rem;
 `;
 
 type Props = {
@@ -226,7 +231,7 @@ class Deploy extends React.PureComponent<Props, State> {
             )}
 
             {this.state.url ? (
-              <Margin top={1} bottom={1}>
+              <Margin top={1} bottom={2}>
                 <Centered horizontal>
                   <DeployText>Deployed!</DeployText>
 
