@@ -22,6 +22,9 @@ module.exports = merge(
     output: {
       filename: 'static/js/[name].js',
     },
-    plugins: [new webpack.HotModuleReplacementPlugin()],
+    plugins: [
+      new webpack.HotModuleReplacementPlugin(),
+      new webpack.NoEmitOnErrorsPlugin(),
+    ],
   }
 );

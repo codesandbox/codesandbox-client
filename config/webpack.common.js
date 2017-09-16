@@ -45,6 +45,12 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
+        loader: 'eslint-loader',
+        enforce: 'pre',
+        include: [paths.appSrc, paths.embedSrc],
+      },
+      {
+        test: /\.js$/,
         include: paths.src,
         exclude: [
           /eslint\.4\.1\.0\.min\.js$/,
