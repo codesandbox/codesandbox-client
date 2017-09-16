@@ -23,32 +23,41 @@ describe('addResource', () => {
     expect(getContentType).toHaveBeenCalled();
   });
 
-  it('throws an error for unknown content types', () => {
+  it('throws an error for unknown content types', async () => {
     const getContentType = jest.fn();
     getContentType.mockReturnValue(Promise.resolve('foo'));
     const resource = 'resource';
-    addResource(resource, jest.fn(), jest.fn(), getContentType).catch(e => {
+    try {
+      await addResource(resource, jest.fn(), jest.fn(), getContentType);
+    } catch (e) {
       expect(e).toBeInstanceOf(Error);
-    });
+    }
   });
 
-  it('adds "text/css" as CSS', () => {
+  it('adds "text/css" as CSS', async () => {
     const addCSS = jest.fn();
     const getContentType = jest.fn();
     getContentType.mockReturnValue(Promise.resolve('text/css'));
     const resource = 'resource';
-    addResource(resource, addCSS, jest.fn(), getContentType).then(() => {
-      expect(addCSS).toHaveBeenCalled();
-    });
+    await addResource(resource, addCSS, jest.fn(), getContentType);
+    expect(addCSS).toHaveBeenCalled();
   });
 
-  it('adds "application/javascript" as JS', () => {
+  it('adds "application/javascript" as JS', async () => {
     const addJS = jest.fn();
     const getContentType = jest.fn();
     getContentType.mockReturnValue(Promise.resolve('application/javascript'));
     const resource = 'resource';
-    addResource(resource, jest.fn(), addJS, getContentType).then(() => {
-      expect(addJS).toHaveBeenCalled();
-    });
+    await addResource(resource, jest.fn(), addJS, getContentType);
+    expect(addJS).toHaveBeenCalled();
+  });
+
+  it('adds "text/javascript" as JS', async () => {
+    const addJS = jest.fn();
+    const getContentType = jest.fn();
+    getContentType.mockReturnValue(Promise.resolve('text/javascript'));
+    const resource = 'resource';
+    await addResource(resource, jest.fn(), addJS, getContentType);
+    expect(addJS).toHaveBeenCalled();
   });
 });
