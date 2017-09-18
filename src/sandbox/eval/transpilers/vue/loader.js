@@ -12,6 +12,7 @@ const getStyleFileName = attrs => {
   if (attrs.lang === 'scss') extension = 'scss';
   if (attrs.lang === 'sass') extension = 'sass';
   if (attrs.lang === 'styl') extension = 'styl';
+  if (attrs.lang === 'stylus') extension = 'styl';
   if (attrs.lang === 'less') extension = 'less';
 
   return attrs.module ? `module.${extension}` : extension;
