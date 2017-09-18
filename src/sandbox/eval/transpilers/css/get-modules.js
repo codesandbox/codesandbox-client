@@ -7,6 +7,7 @@ const core = new Core();
 export default (code: string, loaderContext: LoaderContext) =>
   core
     .load(code, loaderContext.path, (dependencyPath: string) => {
+      console.log(dependencyPath);
       const tModule = loaderContext.addDependency(dependencyPath);
 
       return tModule.source ? tModule.source.compiledCode : tModule.module.code;

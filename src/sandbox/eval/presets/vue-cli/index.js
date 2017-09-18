@@ -15,7 +15,9 @@ import base64Transpiler from '../../transpilers/base64';
 
 import Preset from '../';
 
-const vuePreset = new Preset('vue-cli', ['vue', 'json', 'js']);
+const vuePreset = new Preset('vue-cli', ['vue', 'json', 'js'], {
+  '@': '{{sandboxRoot}}',
+});
 
 const sassWithConfig = {
   transpiler: sassTranspiler,

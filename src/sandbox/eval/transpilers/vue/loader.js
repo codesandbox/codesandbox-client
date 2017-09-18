@@ -84,7 +84,7 @@ export default function(code: string, loaderContext: LoaderContext) {
     parts.styles.forEach(function(style, i) {
       // require style
       const requireLocation = style.src
-        ? style.src
+        ? getRequireForImport('style', style, i, style.scoped)
         : getRequire('style', style, i, style.scoped);
 
       const requireString = `require('${requireLocation}')`;
@@ -127,7 +127,9 @@ export default function(code: string, loaderContext: LoaderContext) {
   output += '  /* script */\n  ';
   var script = parts.script;
   if (script) {
-    const file = script.src ? script.src : getRequire('script', script);
+    const file = script.src
+      ? getRequireForImport('script', script)
+      : getRequire('script', script);
 
     output += `require('${file}')`;
   } else {
@@ -140,7 +142,7 @@ export default function(code: string, loaderContext: LoaderContext) {
   var template = parts.template;
   if (template) {
     const file = template.src
-      ? template.src
+      ? getRequireForImport('template', template)
       : getTemplateRequire(templateOptions, template);
 
     output += `require('${file}')`;
@@ -229,9 +231,28 @@ export default function(code: string, loaderContext: LoaderContext) {
     return `${tModule.query}!./${tModule.module.title}`;
   }
 
+  function getRequireForImport(type, impt, i = 0, scoped) {
+    if (type === 'style') {
+      const styleCompiler = `!!${getStyleLoaders(
+        impt.attrs,
+        moduleId,
+        !!scoped
+      )}!${impt.src}`;
+
+      const tModule = loaderContext.addDependency(styleCompiler);
+
+      return `${tModule.query}!./${tModule.module.title}`;
+    } else if (type === 'script' || type === 'template') {
+      const tModule = loaderContext.addDependency(impt.src);
+
+      return `./${tModule.module.title}`;
+    }
+    return '';
+  }
+
   function getRequire(type, impt, i = 0, scoped) {
     if (type === 'style') {
-      const styleCompiler = `${getStyleLoaders(
+      const styleCompiler = `!!${getStyleLoaders(
         impt.attrs,
         moduleId,
         !!scoped

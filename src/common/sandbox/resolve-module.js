@@ -16,12 +16,20 @@ const throwError = (path: string) => {
 };
 
 export function getModulesInDirectory(
-  path: ?string,
+  _path: ?string,
   modules: Array<Module>,
   directories: Array<Directory>,
-  startdirectoryShortid: ?string = undefined
+  _startdirectoryShortid: ?string = undefined
 ) {
-  if (!path) return throwError('');
+  if (!_path) return throwError('');
+
+  let path = _path;
+  let startdirectoryShortid = _startdirectoryShortid;
+  // If paths start with {{sandboxRoot}} we see them as root paths
+  if (path.startsWith('{{sandboxRoot}}')) {
+    startdirectoryShortid = undefined;
+    path = _path.replace('{{sandboxRoot}}/', './');
+  }
 
   // Split path
   const splitPath = path.replace(/^.\//, '').split('/');

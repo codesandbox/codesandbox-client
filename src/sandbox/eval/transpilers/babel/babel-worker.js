@@ -58,7 +58,7 @@ self.addEventListener('message', async event => {
     const dependencies = getDependencies(result.ast);
 
     dependencies.forEach(dependency => {
-      if (/^(\w|@)/.test(dependency.path) && !dependency.path.includes('!')) {
+      if (/^(\w|@\w)/.test(dependency.path) && !dependency.path.includes('!')) {
         // Don't push dependencies
         return;
       }
