@@ -30,7 +30,8 @@ const getStyleLoaders = (attrs, id, scoped) => {
 
   if (attrs.lang === 'scss') loader += '!sass-loader';
   if (attrs.lang === 'sass') loader += '!sass-loader';
-  if (attrs.lang === 'styl') loader += '!stylus-loader';
+  if (attrs.lang === 'styl' || attrs.lang === 'stylus')
+    loader += '!stylus-loader';
   if (attrs.lang === 'less') loader += '!less-loader';
 
   return loader;
