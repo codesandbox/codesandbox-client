@@ -36,7 +36,7 @@ function buildErrorMessage(e) {
   }
 
   return {
-    moduleId: e.module ? e.module.id : e.moduleId,
+    moduleId: e.tModule ? e.tModule.module.id : e.moduleId,
     title,
     message,
     line: parseInt(line, 10),
@@ -81,9 +81,9 @@ function buildDynamicError(ref: ErrorRecord) {
     }
   } else {
     const error = ref.error;
-    const module = error.module;
+    const tModule = error.tModule;
 
-    if (module) {
+    if (tModule) {
       const newError = {
         ...buildErrorMessage(error),
         type: 'action',

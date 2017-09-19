@@ -357,7 +357,7 @@ export default class TranspiledModule {
         finalSourceMap = sourceMap;
       } catch (e) {
         e.fileName = loaderContext.path;
-        e.module = this.module;
+        e.tModule = this;
         this.resetTranspilation();
         throw e;
       }
@@ -459,24 +459,7 @@ export default class TranspiledModule {
       }
       return exports;
     } catch (e) {
-      e.module = e.module || module;
-
-      try {
-        const errorDecorations = transformError(
-          e,
-          this,
-          manager.getTranspiledModules(),
-          manager.getDirectories()
-        );
-        if (errorDecorations) {
-          e.name = errorDecorations.name || e.name;
-          e.message = errorDecorations.message;
-          e.suggestions = errorDecorations.suggestions;
-        }
-      } catch (ex) {
-        /* Decorating went wrong, don't throw */
-        console.error(ex);
-      }
+      e.tModule = e.tModule || transpiledModule;
 
       throw e;
     }

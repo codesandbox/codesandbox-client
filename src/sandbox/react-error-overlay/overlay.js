@@ -8,6 +8,8 @@
  */
 
 /* @flow */
+import { transformError } from 'codesandbox-api';
+
 import {
   register as registerError,
   unregister as unregisterError,
@@ -49,6 +51,7 @@ import { createOverlay } from './components/overlay';
 import { updateAdditional } from './components/additional';
 
 import buildError from '../errors';
+import { getCurrentManager } from '../compile';
 
 const CONTEXT_SIZE: number = 3;
 let iframeReference: HTMLIFrameElement | null = null;
@@ -166,6 +169,61 @@ function sendErrorsToEditor() {
   });
 }
 
+/**
+ * Transforms the error with give transformers to codesandbox-api, this adds
+ * suggestions and can alter the error name + message.
+ */
+function transformErrors() {
+  const manager = getCurrentManager();
+  if (manager) {
+    errorReferences.forEach(ref => {
+      const errRef = getErrorRecord(ref);
+
+      const relevantFrame = errRef.enhancedFrames.find(r => {
+        try {
+          return (
+            manager &&
+            !!manager.resolveTranspiledModule(r._originalFileName || r.fileName)
+          );
+        } catch (e) {
+          /* don't do anything */
+          return false;
+        }
+      });
+
+      let tModule = errRef.error.tModule;
+
+      if (!tModule && relevantFrame) {
+        const fileName =
+          relevantFrame._originalFileName || relevantFrame.fileName;
+        tModule = manager.resolveTranspiledModule(fileName);
+      }
+
+      if (!tModule) {
+        return;
+      }
+
+      try {
+        const transformation = transformError(
+          errRef.error,
+          tModule,
+          manager.getTranspiledModules(),
+          manager.getDirectories()
+        );
+
+        if (transformation) {
+          errRef.error.name = transformation.name || errRef.error.name;
+          errRef.error.message = transformation.message;
+          errRef.error.suggestions = transformation.suggestions;
+        }
+      } catch (ex) {
+        /* just catch */
+        console.error(ex);
+      }
+    });
+  }
+}
+
 function crash(error: Error, unhandledRejection = false) {
   if (module.hot && typeof module.hot.decline === 'function') {
     module.hot.decline();
@@ -180,6 +238,7 @@ function crash(error: Error, unhandledRejection = false) {
       errorReferences.push(ref);
 
       sendErrorsToEditor();
+      transformErrors();
       if (iframeReference !== null && additionalReference !== null) {
         updateAdditional(
           iframeReference.contentDocument,
