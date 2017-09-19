@@ -15,7 +15,7 @@ export default class Advertisement extends React.PureComponent {
 
   render() {
     return (
-      <div style={{ paddingTop: 6, borderTop: '1px solid rgba(0, 0, 0, 0.2)' }}>
+      <div style={{ paddingTop: 6, borderTop: '1px solid rgba(0, 0, 0, 0.3)' }}>
         <div id="code-sponsor-widget" />
       </div>
     );
