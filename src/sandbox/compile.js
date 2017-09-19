@@ -1,8 +1,9 @@
-import { dispatch } from 'codesandbox-api';
+import { dispatch, clearErrorTransformers } from 'codesandbox-api';
 
 import { getModulePath } from 'app/store/entities/sandboxes/modules/selectors';
 import type { Module, Directory } from 'common/types';
 
+import initializeErrorTransformers from './errors/transformers';
 import getPreset from './eval';
 import Manager from './eval/manager';
 import resolveDependency from './eval/loaders/dependency-resolver';
@@ -82,6 +83,8 @@ async function compile({
   template,
 }) {
   try {
+    clearErrorTransformers();
+    initializeErrorTransformers();
     uninject();
     inject();
   } catch (e) {

@@ -22,6 +22,9 @@ export default function getDependency(
     )}`);
   }
 
+  if (dependencyPath === 'codesandbox-api') {
+    return require('codesandbox-api');
+  }
   const dependencyModule =
     externals[dependencyPath] || externals[`${dependencyPath}.js`];
   if (dependencyModule) {

@@ -162,7 +162,6 @@ function unmount() {
 function sendErrorsToEditor() {
   errorReferences.forEach(ref => {
     const error = getErrorRecord(ref);
-
     buildError(error);
   });
 }
