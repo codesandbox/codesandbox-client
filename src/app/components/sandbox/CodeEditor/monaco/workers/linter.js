@@ -115,6 +115,7 @@ const defaultConfig = {
       experimentalObjectRestSpread: true,
     },
   },
+  parser: 'babel-eslint',
   env: {
     browser: true,
     commonjs: true,
@@ -332,6 +333,19 @@ function getSeverity(error) {
       return 3;
   }
 }
+
+const oldRequire = self.require;
+self.require = (...args) => {
+  const [requireDep] = args;
+
+  if (requireDep === 'babel-eslint') {
+    const babelEslint = require('babel-eslint'); // eslint-disable-line global-require
+
+    return { parse: babelEslint.parseNoPatch };
+  }
+
+  return oldRequire(...args);
+};
 
 // Respond to message from parent thread
 self.addEventListener('message', event => {
