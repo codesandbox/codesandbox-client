@@ -212,6 +212,9 @@ function transformErrors() {
         );
 
         if (transformation) {
+          errRef.error.originalName = errRef.error.name;
+          errRef.error.originalMessage = errRef.error.message;
+
           errRef.error.name = transformation.name || errRef.error.name;
           errRef.error.message = transformation.message;
           errRef.error.suggestions = transformation.suggestions;

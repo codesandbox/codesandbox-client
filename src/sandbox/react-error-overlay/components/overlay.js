@@ -14,6 +14,8 @@ import {
   overlayStyle,
   headerStyle,
   messageHeaderStyle,
+  originalHeaderStyle,
+  originalMessageHeaderStyle,
 } from '../styles';
 import { createClose } from './close';
 import { createFrames } from './frames';
@@ -91,6 +93,28 @@ function createOverlay(
 
   container.appendChild(header);
   container.appendChild(messageHeader);
+
+  // If the error has been transformed
+  if (error.originalName || error.originalMessage) {
+    const originalErrorContainer = document.createElement('div');
+    const errorHeader = document.createElement('div');
+    applyStyles(errorHeader, originalHeaderStyle);
+    errorHeader.appendChild(document.createTextNode('Original error:'));
+    originalErrorContainer.appendChild(errorHeader);
+
+    // Create header
+    const originalMessageHeader = document.createElement('div');
+    applyStyles(originalMessageHeader, originalMessageHeaderStyle);
+
+    originalMessageHeader.appendChild(
+      document.createTextNode(
+        `${error.originalName || ''}: ${error.originalMessage}`
+      )
+    );
+
+    originalErrorContainer.appendChild(originalMessageHeader);
+    messageHeader.appendChild(originalErrorContainer);
+  }
 
   if (
     areActionsEnabled() &&

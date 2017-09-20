@@ -112,6 +112,22 @@ const messageHeaderStyle = {
   'border-bottom': '1px solid #ddd',
 };
 
+const originalHeaderStyle = {
+  color: 'rgba(0, 0, 0, 0.7)',
+  'font-size': '.75em',
+  'padding-top': '1rem',
+  'padding-bottom': '.5rem',
+};
+
+const originalMessageHeaderStyle = {
+  color: 'black',
+  'font-size': '.875em',
+  'font-family': 'Consolas, Menlo, monospace',
+  margin: 0,
+  'white-space': 'pre-wrap',
+  overflow: 'auto',
+};
+
 const functionNameStyle = {};
 
 const linkStyle = {
@@ -234,6 +250,7 @@ const suggestionsButtonStyle = {
   'margin-bottom': '.5rem',
   'font-size': '.75rem',
   'border-radius': '4px',
+  'margin-right': '.5rem',
   border: '1px solid #6CAEDD',
   cursor: 'pointer',
 };
@@ -259,6 +276,8 @@ export {
   secondaryPreStyle,
   omittedFramesCollapsedStyle,
   omittedFramesExpandedStyle,
+  originalHeaderStyle,
+  originalMessageHeaderStyle,
   toggleStyle,
   codeStyle,
   hiddenStyle,
