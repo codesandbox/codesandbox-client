@@ -9,7 +9,7 @@ import Download from 'react-icons/lib/go/cloud-download';
 import PlusIcon from 'react-icons/lib/go/plus';
 import GithubIcon from 'react-icons/lib/go/mark-github';
 import ChevronLeft from 'react-icons/lib/md/chevron-left';
-import ZeitIcon from 'app/components/ZeitLogo';
+import NowIcon from 'app/components/NowLogo';
 import HeartIcon from 'react-icons/lib/fa/heart-o';
 import FullHeartIcon from 'react-icons/lib/fa/heart';
 import TwitterIcon from 'react-icons/lib/fa/twitter';
@@ -229,10 +229,11 @@ export default class Header extends React.PureComponent<Props> {
             Icon={Save}
           />
           <Action title="Download" Icon={Download} onClick={this.zipSandbox} />
-          {sandbox.owned && (
+          {user.jwt &&
+          sandbox.owned && (
             <Action
               title="Deploy"
-              Icon={ZeitIcon}
+              Icon={NowIcon}
               onClick={this.deploySandbox}
             />
           )}

@@ -12,7 +12,7 @@ import ZeitIntegration from 'app/containers/integrations/Zeit';
 import Button from 'app/components/buttons/Button';
 import Centered from 'app/components/flex/Centered';
 import Margin from 'app/components/spacing/Margin';
-import ZeitLogo from 'app/components/ZeitLogo';
+import NowLogo from 'app/components/NowLogo';
 
 import delayInEffect from 'app/utils/animation/delay-effect';
 import delayOutEffect from 'app/utils/animation/delay-out-effect';
@@ -94,7 +94,7 @@ const DeployAnimationContainer = styled.div`
   ${({ deploying }) => deploying && delayInEffect(0, false)};
 `;
 
-const StyledZeitLogo = styled(ZeitLogo)`
+const StyledNowLogo = styled(NowLogo)`
   position: absolute;
   font-size: 4rem;
   transform: translateY(10px) translateX(80px);
@@ -225,7 +225,7 @@ class Deploy extends React.PureComponent<Props, State> {
                   {[0, 1, 2, 3].map(i => (
                     <StyledCube key={i} i={i} size={20} />
                   ))}
-                  <StyledZeitLogo />
+                  <StyledNowLogo backgroundColor="#24282A" />
                 </DeployAnimationContainer>
               </Margin>
             )}
