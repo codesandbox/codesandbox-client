@@ -35,10 +35,12 @@ const ContentContainer = styled.div`
 
 type Props = {
   user: CurrentUser,
+  integrationsEnabled: boolean,
 };
 
 const mapStateToProps = state => ({
   user: currentUserSelector(state),
+  integrationsEnabled: state.features.integrations,
 });
 class Preferences extends React.PureComponent {
   props: Props;
@@ -70,7 +72,8 @@ class Preferences extends React.PureComponent {
         icon: <BrowserIcon />,
         content: <PreviewSettings />,
       },
-      signedIn && {
+      signedIn &&
+      this.props.integrationsEnabled && {
         title: 'Integrations',
         icon: <IntegrationIcon />,
         content: <Integrations />,

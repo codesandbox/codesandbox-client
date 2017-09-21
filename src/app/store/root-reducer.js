@@ -9,11 +9,13 @@ import notificationsReducer from './notifications/reducer';
 import preferencesReducer from './preferences/reducer';
 import userReducer from './user/reducer';
 import connectionStatusReducer from './connection/reducer';
+import featuresReducer from './features/reducer';
 
 export default combineReducers({
   entities: entityReducer,
   contextMenu: contextMenuReducer,
   connectionStatus: connectionStatusReducer,
+  features: featuresReducer,
   modal: modalReducer,
   notifications: notificationsReducer,
   preferences: preferencesReducer,

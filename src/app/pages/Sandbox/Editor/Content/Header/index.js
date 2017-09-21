@@ -99,6 +99,7 @@ type Props = {
   modalActions: typeof modalActionCreators,
   user: CurrentUser,
   canSave: boolean,
+  integrationsEnabled: boolean,
 };
 
 export default class Header extends React.PureComponent<Props> {
@@ -230,7 +231,8 @@ export default class Header extends React.PureComponent<Props> {
           />
           <Action title="Download" Icon={Download} onClick={this.zipSandbox} />
           {user.jwt &&
-          sandbox.owned && (
+          sandbox.owned &&
+          this.props.integrationsEnabled && (
             <Action
               title="Deploy"
               Icon={NowIcon}
