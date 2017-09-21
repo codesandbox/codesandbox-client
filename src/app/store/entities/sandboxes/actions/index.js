@@ -346,13 +346,26 @@ export default {
 
     const user = currentUserSelector(getState());
     const token = user.integrations.zeit.token;
-    const res = await fetch('https://api.zeit.co/now/deployments', {
-      method: 'POST',
-      body: JSON.stringify(apiData),
-      headers: {
-        Authorization: `bearer ${token}`,
-      },
-    });
+
+    let res;
+    try {
+      res = await fetch('https://api.zeit.co/now/deployments', {
+        method: 'POST',
+        body: JSON.stringify(apiData),
+        headers: {
+          Authorization: `bearer ${token}`,
+        },
+      });
+    } catch (e) {
+      dispatch(
+        notificationActions.addNotification(
+          'An unknown error occured when connecting to ZEIT',
+          'error'
+        )
+      );
+
+      throw e;
+    }
 
     const data = await res.json();
 
