@@ -109,14 +109,12 @@ export default class Header extends React.PureComponent<Props> {
   };
 
   deploySandbox = () => {
-    const { sandbox, sandboxActions } = this.props;
+    const { sandbox } = this.props;
 
     this.props.modalActions.openModal({
       width: 600,
       Body: <Deployment id={sandbox.id} />,
     });
-
-    sandboxActions.deploy(sandbox.id);
   };
 
   zipSandbox = () => {
