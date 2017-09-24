@@ -53,7 +53,6 @@ type Props = {
   userActions: typeof userActionCreators,
   modalActions: typeof modalActionCreators,
   previewApiActions: typeof previewApiActionCreators,
-  integrationsEnabled: boolean,
 };
 
 type State = {
@@ -72,13 +71,11 @@ const mapStateToProps = createSelector(
   currentUserSelector,
   modulesFromSandboxSelector,
   directoriesFromSandboxSelector,
-  state => state.features.integrations,
-  (preferences, user, modules, directories, integrationsEnabled) => ({
+  (preferences, user, modules, directories) => ({
     preferences,
     user,
     modules,
     directories,
-    integrationsEnabled,
   })
 );
 const mapDispatchToProps = dispatch => ({
@@ -227,7 +224,6 @@ class EditorPreview extends React.PureComponent<Props, State> {
             workspaceHidden={workspaceHidden}
             toggleWorkspace={toggleWorkspace}
             canSave={notSynced}
-            integrationsEnabled={this.props.integrationsEnabled}
           />
           <SplitPane
             onDragStarted={this.startResizing}

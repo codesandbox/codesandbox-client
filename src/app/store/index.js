@@ -22,7 +22,9 @@ export default history => {
     composeEnhancers(applyMiddleware(thunk, routerMiddleware(history)))
   );
 
-  window.store = store;
+  if (process.env.NODE_ENV === 'development') {
+    window.store = store;
+  }
 
   return store;
 };
