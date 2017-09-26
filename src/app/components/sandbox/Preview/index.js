@@ -169,7 +169,7 @@ export default class Preview extends React.PureComponent<Props, State> {
   handleMessage = (e: MessageEvent | { data: Object | string }) => {
     if (e.data === 'Ready!') {
       this.frames.add(e.source);
-      console.log(this.frames); // eslint-disable-line
+
       this.setState({
         frameInitialized: true,
       });
