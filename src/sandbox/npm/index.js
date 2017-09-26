@@ -20,6 +20,7 @@ function addDependencyBundle(url) {
     const script = document.createElement('script');
     script.setAttribute('src', `${url}/dll.js`);
     script.setAttribute('async', false);
+    script.setAttribute('crossorigin', true);
     script.addEventListener('load', resolve);
 
     document.head.appendChild(script);
