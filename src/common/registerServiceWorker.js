@@ -73,7 +73,7 @@ function registerValidSW(swUrl, sendNotification) {
               if (sendNotification) {
                 sendNotification(
                   'CodeSandbox has been cached, it now works offline.',
-                  'notice'
+                  'success'
                 );
               }
             }
