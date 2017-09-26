@@ -18,7 +18,7 @@ const isLocalhost = Boolean(
     )
 );
 
-export default function register(swUrl) {
+export default function register(swUrl, sendNotification) {
   if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
     // The URL constructor is available in all browsers that support SW.
     const publicUrl = new URL(process.env.PUBLIC_URL, window.location);
@@ -32,7 +32,7 @@ export default function register(swUrl) {
     window.addEventListener('load', () => {
       if (!isLocalhost) {
         // Is not local host. Just register service worker
-        registerValidSW(swUrl);
+        registerValidSW(swUrl, sendNotification);
       } else {
         // This is running on localhost. Lets check if a service worker still exists or not.
         checkValidServiceWorker(swUrl);
@@ -41,7 +41,7 @@ export default function register(swUrl) {
   }
 }
 
-function registerValidSW(swUrl) {
+function registerValidSW(swUrl, sendNotification) {
   navigator.serviceWorker
     .register(swUrl)
     .then(registration => {
@@ -55,11 +55,27 @@ function registerValidSW(swUrl) {
               // It's the perfect time to display a "New content is
               // available; please refresh." message in your web app.
               console.log('New content is available; please refresh.');
+
+              if (sendNotification) {
+                sendNotification(
+                  'CodeSandbox received an update, refresh to see it!',
+                  'notice'
+                );
+              } else {
+                document.location.reload();
+              }
             } else {
               // At this point, everything has been precached.
               // It's the perfect time to display a
               // "Content is cached for offline use." message.
               console.log('Content is cached for offline use.');
+
+              if (sendNotification) {
+                sendNotification(
+                  'CodeSandbox has been cached, it now works offline.',
+                  'notice'
+                );
+              }
             }
           }
         };

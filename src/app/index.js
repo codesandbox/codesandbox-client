@@ -6,6 +6,7 @@ import { ThemeProvider } from 'styled-components';
 import { ConnectedRouter } from 'react-router-redux';
 import registerServiceWorker from 'common/registerServiceWorker';
 import 'normalize.css';
+import notificationActions from 'app/store/notifications/actions';
 
 import App from './pages/index';
 import '../common/global.css';
@@ -14,8 +15,6 @@ import createStore from './store';
 import theme from '../common/theme';
 import logError from './utils/error';
 import history from './utils/history';
-
-registerServiceWorker('/service-worker.js');
 
 if (process.env.NODE_ENV === 'production') {
   try {
@@ -69,6 +68,12 @@ if (process.env.NODE_ENV === 'production') {
 const rootEl = document.getElementById('root');
 
 const store = createStore(history);
+
+const showNotification = (message, type) =>
+  store.dispatch(notificationActions.addNotification(message, type));
+
+registerServiceWorker('/service-worker.js', showNotification);
+
 const renderApp = RootComponent => {
   try {
     render(
