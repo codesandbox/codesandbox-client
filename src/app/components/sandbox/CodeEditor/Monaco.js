@@ -692,9 +692,15 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     if (this.editor) {
       this.editor.dispose();
     }
-    this.syntaxWorker.terminate();
-    this.lintWorker.terminate();
-    this.typingsFetcherWorker.terminate();
+    if (this.syntaxWorker) {
+      this.syntaxWorker.terminate();
+    }
+    if (this.lintWorker) {
+      this.lintWorker.terminate();
+    }
+    if (this.typingsFetcherWorker) {
+      this.typingsFetcherWorker.terminate();
+    }
     clearTimeout(this.sizeProbeInterval);
   }
 
