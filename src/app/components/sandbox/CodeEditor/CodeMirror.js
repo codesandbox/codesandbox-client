@@ -198,7 +198,7 @@ type State = {
   fuzzySearchEnabled: boolean,
 };
 
-export default class CodeEditor extends React.PureComponent<Props, State> {
+export default class CodeEditor extends React.Component<Props, State> {
   state = {
     fuzzySearchEnabled: false,
   };

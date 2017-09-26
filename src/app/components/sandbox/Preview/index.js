@@ -57,7 +57,7 @@ type State = {
 
 export default class Preview extends React.PureComponent<Props, State> {
   initialPath: string;
-  frames: Array<HTMLFrameElement>;
+  frames: Set<HTMLIFrameElement>;
 
   constructor(props: Props) {
     super(props);
@@ -78,7 +78,7 @@ export default class Preview extends React.PureComponent<Props, State> {
     // from the query params, or the iframe will continue to be re-rendered
     // when the user navigates the iframe app, which shows the loading screen
     this.initialPath = props.initialPath;
-    this.frames = [];
+    this.frames = new Set();
   }
 
   static defaultProps = {
@@ -161,14 +161,15 @@ export default class Preview extends React.PureComponent<Props, State> {
   };
 
   sendMessage = (message: Object) => {
-    this.frames.forEach(frame => {
+    Array.from(this.frames).forEach(frame => {
       frame.postMessage(message, frameUrl(this.props.sandboxId));
     });
   };
 
   handleMessage = (e: MessageEvent | { data: Object | string }) => {
     if (e.data === 'Ready!') {
-      this.frames.push(e.source);
+      this.frames.add(e.source);
+      console.log(this.frames); // eslint-disable-line
       this.setState({
         frameInitialized: true,
       });
@@ -274,11 +275,7 @@ export default class Preview extends React.PureComponent<Props, State> {
   handleRefresh = () => {
     const { history, historyPosition } = this.state;
 
-    document.getElementById('sandbox').src = '';
-
-    setTimeout(() => {
-      document.getElementById('sandbox').src = history[historyPosition];
-    }, 100);
+    document.getElementById('sandbox').src = history[historyPosition];
 
     this.setState({
       urlInAddressBar: history[historyPosition],
