@@ -1,29 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`it handles normal deps correctly 1`] = `
-Object {
-  "dependency": "redux-form",
-  "path": "redux-form",
-}
-`;
+exports[`it handles normal deps correctly 1`] = `"Could not find dependency: 'redux-form'"`;
 
-exports[`it parses dependency names with multiple slashes correctly 1`] = `
-Object {
-  "dependency": "redux-form",
-  "path": "redux-form/immutable/koekjes",
-}
-`;
+exports[`it parses dependency names with multiple slashes correctly 1`] = `"Could not find dependency: 'redux-form'"`;
 
-exports[`it parses dependency names with slashes correctly 1`] = `
-Object {
-  "dependency": "redux-form",
-  "path": "redux-form/immutable",
-}
-`;
+exports[`it parses dependency names with slashes correctly 1`] = `"Could not find dependency: 'redux-form'"`;
 
-exports[`it parses scoped packages 1`] = `
-Object {
-  "dependency": "@vx/group",
-  "path": "@vx/group",
-}
-`;
+exports[`it parses scoped packages 1`] = `"Could not find dependency: '@vx/group'"`;
