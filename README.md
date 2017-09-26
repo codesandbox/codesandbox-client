@@ -2,6 +2,10 @@
 
 An online code editor with a focus on React.
 
+<a target='_blank' rel='nofollow' href='https://app.codesponsor.io/link/sm85y5UkG7rypodi9kLCd9pm/CompuIves/codesandbox-client'>
+  <img alt='Sponsor' width='888' height='68' src='https://app.codesponsor.io/embed/sm85y5UkG7rypodi9kLCd9pm/CompuIves/codesandbox-client.svg' />
+</a>
+
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
 The JavaScript community has sharing as its selling point. It has the biggest open source community and every day new ideas and proposals are shared on Twitter. This is great and a really strong point, but the side effect of this is that there are a lot of tools and configurations to consider before you can start building.
