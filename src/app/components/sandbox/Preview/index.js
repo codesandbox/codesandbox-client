@@ -269,16 +269,23 @@ export default class Preview extends React.PureComponent<Props, State> {
 
     document.getElementById('sandbox').src = urlInAddressBar;
 
-    this.commitUrl(urlInAddressBar);
+    this.setState({
+      history: [urlInAddressBar],
+      historyPosition: 0,
+      urlInAddressBar,
+    });
   };
 
   handleRefresh = () => {
     const { history, historyPosition } = this.state;
+    const url = history[historyPosition];
 
-    document.getElementById('sandbox').src = history[historyPosition];
+    document.getElementById('sandbox').src = url;
 
     this.setState({
-      urlInAddressBar: history[historyPosition],
+      history: [url],
+      historyPosition: 0,
+      urlInAddressBar: url,
     });
   };
 
