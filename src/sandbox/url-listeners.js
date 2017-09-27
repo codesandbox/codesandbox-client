@@ -28,7 +28,7 @@ function pathWithHash(location) {
 
 export default function setupHistoryListeners() {
   if (!isStandalone) {
-    const newHistory = {
+    Object.assign(window.history, {
       go(delta) {
         console.log(`go(${delta})`);
         const newPos = historyPosition + delta;
@@ -72,32 +72,29 @@ export default function setupHistoryListeners() {
         historyList[historyPosition] = { state, url };
         sendUrlChange(document.location.href);
       },
-    };
-
-    Object.keys(newHistory).forEach(method => {
-      window.history[method] = newHistory[method];
     });
 
-    const newHistoryGetters = {
-      length() {
-        console.log('get length()');
-        return historyList.length;
+    Object.defineProperties(window.history, {
+      length: {
+        get() {
+          console.log('get length()');
+          return historyList.length;
+        },
       },
 
-      state() {
-        console.log('get state()');
-        return historyList[historyPosition].state;
+      state: {
+        get() {
+          console.log('get state()');
+          return historyList[historyPosition].state;
+        },
       },
 
-      historyList() {
-        return { position: historyPosition, list: historyList };
+      // debug only
+      historyList: {
+        get() {
+          return { position: historyPosition, list: historyList };
+        },
       },
-    };
-
-    Object.keys(newHistoryGetters).forEach(name => {
-      Object.defineProperty(window.history, name, {
-        get: newHistoryGetters[name],
-      });
     });
 
     window.addEventListener('hashchange', () => {
