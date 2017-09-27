@@ -65,7 +65,7 @@ export default class Preview extends React.PureComponent<Props, State> {
     this.state = {
       frameInitialized: false,
       history: [],
-      historyPosition: 0,
+      historyPosition: -1,
       urlInAddressBar: frameUrl(props.sandboxId, props.initialPath || ''),
       url: null,
     };
@@ -347,7 +347,7 @@ export default class Preview extends React.PureComponent<Props, State> {
             url={decodeURIComponent(url)}
             onChange={this.updateUrl}
             onConfirm={this.sendUrl}
-            onBack={historyPosition > 1 ? this.handleBack : null}
+            onBack={historyPosition > 0 ? this.handleBack : null}
             onForward={
               historyPosition < history.length - 1 ? this.handleForward : null
             }
