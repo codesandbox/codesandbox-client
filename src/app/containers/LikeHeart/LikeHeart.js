@@ -61,10 +61,10 @@ export default class LikeHeart extends React.PureComponent {
           {isLiked ? (
             <FullHeartIcon
               style={!colorless && { color: '#E01F4E' }}
-              onClick={loggedIn && this.unlikeSandbox}
+              onClick={loggedIn ? this.unlikeSandbox : null}
             />
           ) : (
-            <HeartIcon onClick={loggedIn && this.likeSandbox} />
+            <HeartIcon onClick={loggedIn ? this.likeSandbox : null} />
           )}
         </MaybeTooltip>
       </Container>

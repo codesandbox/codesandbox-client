@@ -221,20 +221,20 @@ export default class Header extends React.PureComponent<Props> {
             ))}
           <Action onClick={this.forkSandbox} title="Fork" Icon={Fork} />
           <Action
-            onClick={canSave && this.massUpdateModules}
+            onClick={canSave ? this.massUpdateModules : null}
             placeholder={canSave ? false : 'All modules are saved'}
             title="Save"
             Icon={Save}
           />
           <Action title="Download" Icon={Download} onClick={this.zipSandbox} />
           {user.jwt &&
-          sandbox.owned && (
-            <Action
-              title="Deploy"
-              Icon={NowIcon}
-              onClick={this.deploySandbox}
-            />
-          )}
+            sandbox.owned && (
+              <Action
+                title="Deploy"
+                Icon={NowIcon}
+                onClick={this.deploySandbox}
+              />
+            )}
           <ShareView sandbox={sandbox} />
         </Left>
 
