@@ -206,6 +206,14 @@ module.exports = {
     // a plugin that prints an error when you attempt to do this.
     // See https://github.com/facebookincubator/create-react-app/issues/240
     new CaseSensitivePathsPlugin(),
+
+    // With this plugin we override the load-rules of eslint, this function prevents
+    // us from using eslint in the browser, therefore we need to stop it!
+    new webpack.NormalModuleReplacementPlugin(
+      /eslint\/lib\/load-rules/,
+      '../../../config/stubs/load-rules.compiled.js'
+    ),
+
     // If you require a missing module and then `npm install` it, you still have
     // to restart the development server for Webpack to discover it. This plugin
     // makes the discovery automatic so you don't have to restart.

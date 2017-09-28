@@ -41,4 +41,5 @@ module.exports = {
   appNodeModules: resolveApp('node_modules'),
   ownNodeModules: resolveApp('node_modules'),
   nodePaths,
+  config: resolveApp('config'),
 };
