@@ -17,6 +17,7 @@ module.exports = {
     require.resolve('babel-plugin-lodash'),
     require.resolve('babel-plugin-syntax-dynamic-import'),
     require.resolve('babel-plugin-styled-components'),
+    require.resolve('babel-macros'),
     [
       require.resolve('react-loadable/babel'),
       {

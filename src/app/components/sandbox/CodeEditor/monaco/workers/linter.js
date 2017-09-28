@@ -1,6 +1,6 @@
-if (!self.eslint) {
-  self.importScripts(['/static/js/eslint.4.1.0.min.js']);
-}
+import Linter from 'eslint/lib/linter';
+
+import monkeypatch from './utils/monkeypatch-babel-eslint';
 
 /* eslint-disable global-require */
 const allRules = {
@@ -113,6 +113,7 @@ const defaultConfig = {
       globalReturn: false,
       impliedStrict: true,
       experimentalObjectRestSpread: true,
+      modules: true,
     },
   },
   parser: 'babel-eslint',
@@ -305,7 +306,14 @@ const defaultConfig = {
   },
 };
 
-const linter = new self.eslint(); // eslint-disable-line new-cap
+monkeypatch({}, defaultConfig.parserOptions);
+
+const linter = new Linter();
+
+linter.defineParser('babel-eslint', {
+  parse: require('babel-eslint').parseNoPatch, // eslint-disable-line global-require
+});
+
 linter.defineRules(allRules);
 
 function getPos(error, from) {
@@ -334,24 +342,12 @@ function getSeverity(error) {
   }
 }
 
-const oldRequire = self.require;
-self.require = (...args) => {
-  const [requireDep] = args;
-
-  if (requireDep === 'babel-eslint') {
-    const babelEslint = require('babel-eslint'); // eslint-disable-line global-require
-
-    return { parse: babelEslint.parseNoPatch };
-  }
-
-  return oldRequire(...args);
-};
-
 // Respond to message from parent thread
 self.addEventListener('message', event => {
   const { code, version } = event.data;
 
   const validations = linter.verify(code, defaultConfig);
+
   const markers = validations.map(error => {
     const { line: startL, column: startCol } = getPos(error, true);
     const { line: endL, column: endCol } = getPos(error, false);
