@@ -347,7 +347,7 @@ self.addEventListener('message', event => {
   const { code, version } = event.data;
 
   const validations = linter.verify(code, defaultConfig);
-  console.log(validations);
+
   const markers = validations.map(error => {
     const { line: startL, column: startCol } = getPos(error, true);
     const { line: endL, column: endCol } = getPos(error, false);
