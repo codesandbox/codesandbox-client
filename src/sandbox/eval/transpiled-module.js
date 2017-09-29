@@ -44,6 +44,7 @@ export type LoaderContext = {
   emitFile: (name: string, content: string, sourceMap: SourceMap) => void,
   options: {
     context: '/',
+    [key: string]: any,
   },
   webpack: boolean,
   sourceMap: boolean,

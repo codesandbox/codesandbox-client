@@ -1,10 +1,11 @@
 // @flow
+/* eslint-disable import/no-webpack-loader-syntax, prefer-template, no-use-before-define */
 
+import componentNormalizerRaw from '!raw-loader!./component-normalizer';
 import type { LoaderContext } from '../../transpiled-module';
 
 import genId from './utils/gen-id';
 import parse from './parser';
-import componentNormalizerRaw from '!raw-loader!./component-normalizer';
 
 const getStyleFileName = attrs => {
   let extension = 'css';
@@ -60,7 +61,7 @@ export default function(code: string, loaderContext: LoaderContext) {
   const parts = parse(code, _module.module.title, false);
   const hasScoped = parts.styles.some(s => s.scoped);
 
-  var templateOptions =
+  const templateOptions =
     '?' +
     JSON.stringify({
       id: moduleId,
@@ -80,7 +81,7 @@ export default function(code: string, loaderContext: LoaderContext) {
       //     : undefined,
     });
 
-  var cssModules;
+  let cssModules;
   if (parts.styles.length) {
     let styleInjectionCode = 'function injectStyle (ssrContext) {\n';
     parts.styles.forEach(function(style, i) {
@@ -93,7 +94,7 @@ export default function(code: string, loaderContext: LoaderContext) {
 
       const invokeStyle = c => `  ${c}\n`;
 
-      var moduleName = style.module === true ? '$style' : style.module;
+      const moduleName = style.module === true ? '$style' : style.module;
       // setCssModule
       if (moduleName) {
         if (!cssModules) {
@@ -101,7 +102,7 @@ export default function(code: string, loaderContext: LoaderContext) {
         }
         if (moduleName in cssModules) {
           loaderContext.emitError(
-            'CSS module name "' + moduleName + '" is not unique!'
+            new Error('CSS module name "' + moduleName + '" is not unique!')
           );
           styleInjectionCode += invokeStyle(requireLocation);
         } else {
@@ -127,7 +128,7 @@ export default function(code: string, loaderContext: LoaderContext) {
     "var Component = require('!noop-loader!component-normalizer.js')(\n";
   // <script>
   output += '  /* script */\n  ';
-  var script = parts.script;
+  const script = parts.script;
   if (script) {
     const file = script.src
       ? getRequireForImport('script', script)
@@ -141,7 +142,7 @@ export default function(code: string, loaderContext: LoaderContext) {
 
   // <template>
   output += '  /* template */\n  ';
-  var template = parts.template;
+  const template = parts.template;
   if (template) {
     const file = template.src
       ? getRequireForImport('template', template)
@@ -186,7 +187,7 @@ export default function(code: string, loaderContext: LoaderContext) {
       '")}\n';
   }
 
-  output += `module.exports = Component.esModule;\n`;
+  output += `module.exports = Component.exports;\n`;
 
   // IVES: Implement custom blocks later?
 
