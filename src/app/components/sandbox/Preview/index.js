@@ -86,16 +86,24 @@ export default class Preview extends React.PureComponent<Props, State> {
     noDelay: false,
   };
 
+  componentWillReceiveProps(nextProps: Props) {
+    if (nextProps.sandboxId !== this.props.sandboxId) {
+      const url = frameUrl(nextProps.sandboxId, this.initialPath);
+      this.setState({
+        history: [url],
+        historyPosition: 0,
+        urlInAddressBar: url,
+      });
+    }
+  }
+
   componentDidUpdate(prevProps: Props) {
     if (prevProps.isInProjectView !== this.props.isInProjectView) {
       this.executeCodeImmediately();
       return;
     }
 
-    if (prevProps.sandboxId !== this.props.sandboxId) {
-      this.executeCodeImmediately();
-      return;
-    } else if (prevProps.forcedRenders !== this.props.forcedRenders) {
+    if (prevProps.forcedRenders !== this.props.forcedRenders) {
       this.executeCodeImmediately();
       return;
     }
