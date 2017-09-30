@@ -6,7 +6,7 @@ module.exports = {
   cacheDirectory: true,
   presets: [
     // Latest stable ECMAScript features
-    ['es2015', { modules: false }],
+    ['env', { modules: false }],
     // JSX, Flow
     'react',
   ],
