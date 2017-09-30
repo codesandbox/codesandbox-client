@@ -60,14 +60,12 @@ export default function setupHistoryListeners() {
       },
 
       pushState(state, title, url) {
-        console.log(`pushState("${state}", "${title}", "${url}")`);
         origHistoryProto.replaceState.call(window.history, state, title, url);
         pushHistory(url, state);
         sendUrlChange(document.location.href);
       },
 
       replaceState(state, title, url) {
-        console.log(`replaceState("${state}", "${title}", "${url}")`);
         origHistoryProto.replaceState.call(window.history, state, title, url);
         historyList[historyPosition] = { state, url };
         sendUrlChange(document.location.href);
@@ -77,22 +75,13 @@ export default function setupHistoryListeners() {
     Object.defineProperties(window.history, {
       length: {
         get() {
-          console.log('get length()');
           return historyList.length;
         },
       },
 
       state: {
         get() {
-          console.log('get state()');
           return historyList[historyPosition].state;
-        },
-      },
-
-      // debug only
-      historyList: {
-        get() {
-          return { position: historyPosition, list: historyList };
         },
       },
     });
@@ -123,8 +112,6 @@ export default function setupHistoryListeners() {
             );
             pushHistory(pathWithHash(document.location), null);
             sendUrlChange(document.location.href);
-          } else {
-            console.log('same url');
           }
           ev.preventDefault();
           ev.stopPropagation();
