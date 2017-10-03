@@ -7,6 +7,9 @@ import { connect } from 'react-redux';
 import Button from 'app/components/buttons/Button';
 import type { PaginatedSandboxes } from 'common/types';
 
+import modalActionCreators from 'app/store/modal/actions';
+import Alert from 'app/components/Alert';
+
 import SandboxList from 'app/components/sandbox/SandboxList';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 
@@ -67,12 +70,21 @@ class Sandboxes extends React.PureComponent<Props> {
   };
 
   deleteSandbox = async (id: string) => {
-    // eslint-disable-next-line no-alert
-    const really = confirm(`Are you sure you want to delete this sandbox?`); // TODO: confirm???
-    if (really) {
-      await this.props.sandboxActions.deleteSandbox(id);
-      this.fetch(true);
-    }
+    const { modalActions } = this.props;
+
+    modalActions.openModal({
+      Body: (
+        <Alert
+          title="Delete File"
+          body={<span>Are you sure you want to delete this sandbox?</span>}
+          onCancel={modalActions.closeModal}
+          onDelete={async () => {
+            await this.props.sandboxActions.deleteSandbox(id);
+            this.fetch(true);
+          }}
+        />
+      ),
+    });
   };
 
   render() {
@@ -118,10 +130,9 @@ class Sandboxes extends React.PureComponent<Props> {
   }
 }
 
-const mapStateToProps = () => ({});
-
 const mapDispatchToProps = dispatch => ({
   sandboxActions: bindActionCreators(sandboxActionCreators, dispatch),
+  modalActions: bindActionCreators(modalActionCreators, dispatch),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Sandboxes);
+export default connect(undefined, mapDispatchToProps)(Sandboxes);
