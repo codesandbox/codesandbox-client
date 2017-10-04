@@ -1,5 +1,6 @@
 import { actions, dispatch } from 'codesandbox-api';
 import _debug from 'app/utils/debug';
+import reportError from 'app/utils/error';
 import dependenciesToQuery from './dependencies-to-query';
 import delay from '../utils/delay';
 
@@ -25,7 +26,7 @@ function callApi(url: string) {
 
 export const PACKAGER_URL = 'https://webpack-dll-prod.herokuapp.com/v6';
 export const NEW_PACKAGER_URL =
-  'https://42qpdtykai.execute-api.eu-west-1.amazonaws.com/prod/package';
+  'https://drq28qbjmc.execute-api.eu-west-1.amazonaws.com/prod/packages';
 
 const RETRY_COUNT = 20;
 
@@ -38,6 +39,7 @@ const RETRY_COUNT = 20;
 async function requestPackager(query: string) {
   let retries = 0;
 
+  // eslint-disable-next-line no-constant-condition
   while (true) {
     debug(`Trying to call packager for ${retries} time`);
     try {
@@ -72,12 +74,18 @@ async function requestPackager(query: string) {
 async function callPackager(dependencies: Object) {
   const dependencyUrl = dependenciesToQuery(dependencies);
 
-  // try {
-  //   // Warmup cache
-  //   window.fetch(`${NEW_PACKAGER_URL}/${dependencyUrl}`);
-  // } catch (e) {
-  //   console.error(e);
-  // }
+  try {
+    // Warmup cache
+    window.fetch(`${NEW_PACKAGER_URL}/${dependencyUrl}`).catch(e => {
+      if (process.env.NODE_ENV === 'development') {
+        console.error(e);
+      } else {
+        reportError(e, { service: 'new-packager' });
+      }
+    });
+  } catch (e) {
+    console.error(e);
+  }
 
   const manifest = await requestPackager(dependencyUrl);
   return manifest;
