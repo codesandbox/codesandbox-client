@@ -1,6 +1,5 @@
 import { actions, dispatch } from 'codesandbox-api';
 import _debug from 'app/utils/debug';
-import reportError from 'app/utils/error';
 import dependenciesToQuery from './dependencies-to-query';
 import delay from '../utils/delay';
 
@@ -79,8 +78,6 @@ async function callPackager(dependencies: Object) {
     window.fetch(`${NEW_PACKAGER_URL}/${dependencyUrl}`).catch(e => {
       if (process.env.NODE_ENV === 'development') {
         console.error(e);
-      } else {
-        reportError(e, { service: 'new-packager' });
       }
     });
   } catch (e) {
