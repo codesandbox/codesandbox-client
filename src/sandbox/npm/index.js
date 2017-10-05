@@ -1,5 +1,7 @@
 import { pickBy } from 'lodash';
+
 import fetchDependencies from './fetch-dependencies';
+import fetchDependenciesNew from './fetch-dependencies.new';
 import dependenciesToQuery from './dependencies-to-query';
 
 import setScreen from '../status-screen';
@@ -31,7 +33,10 @@ function addDependencyBundle(url) {
  * This fetches the manifest and dependencies from the
  * @param {*} dependencies
  */
-export default async function loadDependencies(dependencies: NPMDependencies) {
+export default async function loadDependencies(
+  dependencies: NPMDependencies,
+  experimentalPackager = false
+) {
   if (Object.keys(dependencies).length !== 0) {
     // We filter out all @types, as they are not of any worth to the bundler
     const dependenciesWithoutTypings = pickBy(
@@ -47,13 +52,18 @@ export default async function loadDependencies(dependencies: NPMDependencies) {
 
       setScreen({ type: 'loading', text: 'Bundling Dependencies...' });
 
-      const data = await fetchDependencies(dependenciesWithoutTypings);
+      const fetcher = experimentalPackager
+        ? fetchDependenciesNew
+        : fetchDependencies;
 
+      const data = await fetcher(dependenciesWithoutTypings);
       manifest = data;
 
       setScreen({ type: 'loading', text: 'Downloading Dependencies...' });
 
-      await addDependencyBundle(data.url);
+      if (!experimentalPackager) {
+        await addDependencyBundle(data.url);
+      }
     }
   } else {
     manifest = {};

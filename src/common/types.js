@@ -158,6 +158,7 @@ export type Preferences = {
   clearConsoleEnabled: ?boolean,
   prettierConfig: Object,
   autoDownloadTypes: ?boolean,
+  newPackagerExperiment: ?boolean,
 };
 
 export type NotificationButton = {

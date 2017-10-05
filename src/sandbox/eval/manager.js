@@ -12,6 +12,19 @@ type Externals = {
   [name: string]: string,
 };
 
+type Manifest = {
+  aliases: {
+    [path: string]: string | false,
+  },
+  contents: {
+    [path: string]: string,
+  },
+  dependencies: Array<{ name: string, version: string }>,
+  dependencyDependencies: {
+    [name: string]: string,
+  },
+};
+
 export default class Manager {
   id: string;
   transpiledModules: {
@@ -22,11 +35,15 @@ export default class Manager {
   modules: Array<Module>;
   directories: Array<Directory>;
 
+  manifest: Manifest;
+  experimentalPackager: boolean;
+
   constructor(
     id: string,
     modules: Array<Module>,
     directories: Array<Directory>,
-    preset: Preset
+    preset: Preset,
+    options: Object = {}
   ) {
     this.id = id;
     this.modules = modules;
@@ -34,11 +51,19 @@ export default class Manager {
     this.preset = preset;
     this.transpiledModules = {};
 
-    console.log(this);
+    this.experimentalPackager = options.experimentalPackager || false;
+
+    if (process.env.NODE_ENV === 'development') {
+      console.log(this);
+    }
   }
 
   setExternals(externals: Externals) {
     this.externals = externals;
+  }
+
+  setManifest(manifest: Manifest) {
+    this.manifest = manifest;
   }
 
   evaluateModule(module: Module) {
@@ -146,6 +171,19 @@ export default class Manager {
     return this.directories;
   }
 
+  resolveDependency(path: string, startdirectoryShortid: ?string): Module {
+    console.log(this.manifest);
+    const alias = this.manifest.aliases[path];
+
+    return {
+      code: this.manifest.contents[alias || path],
+      id: path,
+      title: path,
+      shortid: path,
+      directoryShortid: null,
+    };
+  }
+
   /**
    * Resolve the transpiled module from the path, note that the path can actually
    * include loaders. That's why we're focussing on first extracting this query
@@ -161,13 +199,22 @@ export default class Manager {
     // pop() mutates queryPath, queryPath is now just the loaders
     const modulePath = queryPath.pop();
 
-    const module = resolveModule(
-      this.preset.getAliasedPath(modulePath),
-      this.getModules(),
-      this.getDirectories(),
-      startdirectoryShortid,
-      this.preset.ignoredExtensions
-    );
+    let module;
+    if (
+      /^(\w|@\w)/.test(modulePath) &&
+      !modulePath.includes('!') &&
+      this.experimentalPackager
+    ) {
+      module = this.resolveDependency(modulePath, startdirectoryShortid);
+    } else {
+      module = resolveModule(
+        this.preset.getAliasedPath(modulePath),
+        this.getModules(),
+        this.getDirectories(),
+        startdirectoryShortid,
+        this.preset.ignoredExtensions
+      );
+    }
 
     return this.getTranspiledModule(module, queryPath.join('!'));
   }

@@ -1,7 +1,7 @@
 // @flow
 import { flattenDeep } from 'lodash';
 
-import { actions, dispatch, transformError } from 'codesandbox-api';
+import { actions, dispatch } from 'codesandbox-api';
 
 import type { Module } from 'common/types';
 import getModulePath from 'common/sandbox/get-module-path';
@@ -418,7 +418,11 @@ export default class TranspiledModule {
         const aliasedPath = manager.preset.getAliasedPath(path);
 
         // eslint-disable-line no-unused-vars
-        if (/^(\w|@)/.test(aliasedPath) && !aliasedPath.includes('!')) {
+        if (
+          /^(\w|@)/.test(aliasedPath) &&
+          !aliasedPath.includes('!') &&
+          !manager.experimentalPackager
+        ) {
           // So it must be a dependency
 
           return resolveDependency(aliasedPath, manager.externals);

@@ -45,16 +45,29 @@ function getIndexHtml(modules) {
   return '<div id="root"></div>';
 }
 
-function updateManager(sandboxId, template, module, modules, directories) {
+async function updateManager(
+  sandboxId,
+  template,
+  module,
+  modules,
+  directories,
+  experimentalPackager = false
+) {
   if (!manager || manager.id !== sandboxId) {
-    manager = new Manager(sandboxId, modules, directories, getPreset(template));
-    return manager.transpileModules(module).catch(e => ({ error: e }));
+    manager = new Manager(
+      sandboxId,
+      modules,
+      directories,
+      getPreset(template),
+      {
+        experimentalPackager,
+      }
+    );
+  } else {
+    await manager.updateData(modules, directories);
   }
 
-  return manager
-    .updateData(modules, directories)
-    .then(() => manager.transpileModules(module)) // We need to transpile the module if it was never an entry
-    .catch(e => ({ error: e }));
+  return manager;
 }
 
 function initializeResizeListener() {
@@ -81,6 +94,7 @@ async function compile({
   hasActions,
   isModuleView = false,
   template,
+  experimentalPackager = false,
 }) {
   try {
     clearErrorTransformers();
@@ -95,17 +109,27 @@ async function compile({
   handleExternalResources(externalResources);
 
   try {
-    const [{ manifest }, { error: managerError }] = await Promise.all([
-      loadDependencies(dependencies),
-      updateManager(sandboxId, template, module, modules, directories),
+    const [{ manifest }, manager] = await Promise.all([
+      loadDependencies(dependencies, experimentalPackager),
+      updateManager(
+        sandboxId,
+        template,
+        module,
+        modules,
+        directories,
+        experimentalPackager
+      ),
     ]);
 
     const { externals = {} } = manifest;
-    manager.setExternals(externals);
 
-    if (managerError) {
-      throw managerError;
+    if (experimentalPackager) {
+      manager.setManifest(manifest);
+    } else {
+      manager.setExternals(externals);
     }
+
+    await manager.transpileModules(module);
 
     resetScreen();
 
