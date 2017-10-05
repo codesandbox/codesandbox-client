@@ -65,7 +65,7 @@ export default class Preview extends React.PureComponent<Props, State> {
     this.state = {
       frameInitialized: false,
       history: [],
-      historyPosition: 0,
+      historyPosition: -1,
       urlInAddressBar: frameUrl(props.sandboxId, props.initialPath || ''),
       url: null,
     };
@@ -86,16 +86,24 @@ export default class Preview extends React.PureComponent<Props, State> {
     noDelay: false,
   };
 
+  componentWillReceiveProps(nextProps: Props) {
+    if (nextProps.sandboxId !== this.props.sandboxId) {
+      const url = frameUrl(nextProps.sandboxId, this.initialPath);
+      this.setState({
+        history: [url],
+        historyPosition: 0,
+        urlInAddressBar: url,
+      });
+    }
+  }
+
   componentDidUpdate(prevProps: Props) {
     if (prevProps.isInProjectView !== this.props.isInProjectView) {
       this.executeCodeImmediately();
       return;
     }
 
-    if (prevProps.sandboxId !== this.props.sandboxId) {
-      this.executeCodeImmediately();
-      return;
-    } else if (prevProps.forcedRenders !== this.props.forcedRenders) {
+    if (prevProps.forcedRenders !== this.props.forcedRenders) {
       this.executeCodeImmediately();
       return;
     }
@@ -269,16 +277,23 @@ export default class Preview extends React.PureComponent<Props, State> {
 
     document.getElementById('sandbox').src = urlInAddressBar;
 
-    this.commitUrl(urlInAddressBar);
+    this.setState({
+      history: [urlInAddressBar],
+      historyPosition: 0,
+      urlInAddressBar,
+    });
   };
 
   handleRefresh = () => {
     const { history, historyPosition } = this.state;
+    const url = history[historyPosition];
 
-    document.getElementById('sandbox').src = history[historyPosition];
+    document.getElementById('sandbox').src = url;
 
     this.setState({
-      urlInAddressBar: history[historyPosition],
+      history: [url],
+      historyPosition: 0,
+      urlInAddressBar: url,
     });
   };
 
@@ -347,7 +362,7 @@ export default class Preview extends React.PureComponent<Props, State> {
             url={decodeURIComponent(url)}
             onChange={this.updateUrl}
             onConfirm={this.sendUrl}
-            onBack={historyPosition > 1 ? this.handleBack : null}
+            onBack={historyPosition > 0 ? this.handleBack : null}
             onForward={
               historyPosition < history.length - 1 ? this.handleForward : null
             }
