@@ -48,23 +48,15 @@ function getIndexHtml(modules) {
 async function updateManager(
   sandboxId,
   template,
-  module,
-  modules,
-  directories,
+  managerModules,
   experimentalPackager = false
 ) {
   if (!manager || manager.id !== sandboxId) {
-    manager = new Manager(
-      sandboxId,
-      modules,
-      directories,
-      getPreset(template),
-      {
-        experimentalPackager,
-      }
-    );
+    manager = new Manager(sandboxId, managerModules, getPreset(template), {
+      experimentalPackager,
+    });
   } else {
-    await manager.updateData(modules, directories);
+    await manager.updateData(managerModules);
   }
 
   return manager;
@@ -109,16 +101,15 @@ async function compile({
   handleExternalResources(externalResources);
 
   try {
-    const [{ manifest }, manager] = await Promise.all([
+    // We convert the modules to a format the manager understands
+    const managerModules = modules.map(m => ({
+      path: getModulePath(modules, directories, m.id),
+      code: m.code,
+    }));
+
+    const [{ manifest }] = await Promise.all([
       loadDependencies(dependencies, experimentalPackager),
-      updateManager(
-        sandboxId,
-        template,
-        module,
-        modules,
-        directories,
-        experimentalPackager
-      ),
+      updateManager(sandboxId, template, managerModules, experimentalPackager),
     ]);
 
     const { externals = {} } = manifest;
@@ -129,7 +120,17 @@ async function compile({
       manager.setExternals(externals);
     }
 
-    await manager.transpileModules(module);
+    const managerModulePathToTranspile = getModulePath(
+      modules,
+      directories,
+      module.id
+    );
+    const managerModuleToTranspile = managerModules.find(
+      m => m.path === managerModulePathToTranspile
+    );
+    console.log('start transpilation', Date.now());
+    await manager.transpileModules(managerModuleToTranspile);
+    console.log('end transpilation', Date.now());
 
     resetScreen();
 
@@ -139,12 +140,9 @@ async function compile({
       if (externals['react-dom']) {
         const reactDOM = resolveDependency('react-dom', externals);
         reactDOM.unmountComponentAtNode(document.body);
-        for (const child in children) {
-          if (
-            children.hasOwnProperty(child) &&
-            children[child].tagName === 'DIV'
-          ) {
-            reactDOM.unmountComponentAtNode(children[child]);
+        for (let i = 0; i < children.length; i += 1) {
+          if (children[i].tagName === 'DIV') {
+            reactDOM.unmountComponentAtNode(children[i]);
           }
         }
       }
@@ -155,7 +153,9 @@ async function compile({
     const html = getIndexHtml(modules);
     document.body.innerHTML = html;
 
-    const evalled = manager.evaluateModule(module);
+    console.log('start eval', Date.now());
+    const evalled = manager.evaluateModule(managerModuleToTranspile);
+    console.log('end eval', Date.now());
 
     const domChanged = document.body.innerHTML !== html;
 

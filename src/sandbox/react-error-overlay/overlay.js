@@ -183,7 +183,10 @@ function transformErrors() {
         try {
           return (
             manager &&
-            !!manager.resolveTranspiledModule(r._originalFileName || r.fileName)
+            !!manager.resolveTranspiledModule(
+              r._originalFileName || r.fileName,
+              '/'
+            )
           );
         } catch (e) {
           /* don't do anything */
@@ -196,7 +199,7 @@ function transformErrors() {
       if (!tModule && relevantFrame) {
         const fileName =
           relevantFrame._originalFileName || relevantFrame.fileName;
-        tModule = manager.resolveTranspiledModule(fileName);
+        tModule = manager.resolveTranspiledModule(fileName, '/');
       }
 
       if (!tModule) {

@@ -1,5 +1,6 @@
 // @flow
 /* eslint-disable import/no-webpack-loader-syntax, prefer-template, no-use-before-define */
+import { basename } from 'common/utils/path';
 
 import componentNormalizerRaw from '!raw-loader!./component-normalizer';
 import type { LoaderContext } from '../../transpiled-module';
@@ -54,11 +55,11 @@ const getTemplateFileName = attrs => {
 
 export default function(code: string, loaderContext: LoaderContext) {
   const { path, options, _module } = loaderContext;
-  const moduleTitle = _module.module.title;
+  const moduleTitle = basename(_module.module.path);
 
   let output = '';
   const moduleId = 'data-v-' + genId(path, options.context, options.hashKey);
-  const parts = parse(code, _module.module.title, false);
+  const parts = parse(code, moduleTitle, false);
   const hasScoped = parts.styles.some(s => s.scoped);
 
   const templateOptions =
@@ -121,11 +122,12 @@ export default function(code: string, loaderContext: LoaderContext) {
   loaderContext.emitModule(
     // No extension, so no transpilation !noop
     '!noop-loader!component-normalizer.js',
-    componentNormalizerRaw
+    componentNormalizerRaw,
+    '/'
   );
 
   output +=
-    "var Component = require('!noop-loader!component-normalizer.js')(\n";
+    "var Component = require('!noop-loader!@/component-normalizer.js')(\n";
   // <script>
   output += '  /* script */\n  ';
   const script = parts.script;
@@ -181,7 +183,7 @@ export default function(code: string, loaderContext: LoaderContext) {
       'if (Component.options.functional) {' +
       'console.error("' +
       '[vue-loader] ' +
-      _module.module.title +
+      moduleTitle +
       ': functional components are not ' +
       'supported with templates, they should use render functions.' +
       '")}\n';
@@ -231,7 +233,7 @@ export default function(code: string, loaderContext: LoaderContext) {
       impt.content
     );
 
-    return `${tModule.query}!./${tModule.module.title}`;
+    return `${tModule.query}!./${basename(tModule.module.path)}`;
   }
 
   function getRequireForImport(type, impt, i = 0, scoped) {
@@ -244,11 +246,11 @@ export default function(code: string, loaderContext: LoaderContext) {
 
       const tModule = loaderContext.addDependency(styleCompiler);
 
-      return `${tModule.query}!./${tModule.module.title}`;
+      return `${tModule.query}!./${basename(tModule.module.path)}`;
     } else if (type === 'script' || type === 'template') {
       const tModule = loaderContext.addDependency(impt.src);
 
-      return `./${tModule.module.title}`;
+      return `./${basename(tModule.module.path)}`;
     }
     return '';
   }
@@ -263,14 +265,14 @@ export default function(code: string, loaderContext: LoaderContext) {
 
       const tModule = loaderContext.emitModule(styleCompiler, impt.content);
 
-      return `${tModule.query}!./${tModule.module.title}`;
+      return `${tModule.query}!./${basename(tModule.module.path)}`;
     } else if (type === 'script') {
       const tModule = loaderContext.emitModule(
         `${moduleTitle}:script.${getScriptFileName(impt.attrs)}`,
         impt.content
       );
 
-      return `./${tModule.module.title}`;
+      return `./${basename(tModule.module.path)}`;
     }
     return '';
   }

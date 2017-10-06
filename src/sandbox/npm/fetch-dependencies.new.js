@@ -90,9 +90,13 @@ async function getDependencies(dependencies: Object) {
   const bucketDependencyUrl = dependenciesToBucketPath(dependencies);
 
   try {
-    return callApi(`${BUCKET_URL}/${bucketDependencyUrl}`);
+    const bucketManifest = await callApi(
+      `${BUCKET_URL}/${bucketDependencyUrl}`
+    );
+    return bucketManifest;
   } catch (e) {
-    const url = await requestPackager(`${PACKAGER_URL}/${dependencyUrl}`);
+    // The dep has not been generated yet...
+    const { url } = await requestPackager(`${PACKAGER_URL}/${dependencyUrl}`);
 
     return callApi(`${BUCKET_URL}/${url}`);
   }

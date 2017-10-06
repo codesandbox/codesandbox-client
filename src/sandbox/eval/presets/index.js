@@ -1,6 +1,6 @@
 // @flow
 import { orderBy } from 'lodash';
-import type { Module } from 'common/types';
+import type { Module } from '../entities/module';
 
 import Transpiler from '../transpilers';
 
@@ -120,7 +120,7 @@ export default class Preset {
     const finalTranspilers = [...transpilers, ...extraTranspilers];
 
     if (finalTranspilers.length === 0) {
-      throw new Error(`No transpilers found for ${module.title}`);
+      throw new Error(`No transpilers found for ${module.path}`);
     }
 
     return finalTranspilers;

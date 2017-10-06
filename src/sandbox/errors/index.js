@@ -53,7 +53,10 @@ function buildDynamicError(ref: ErrorRecord) {
     try {
       return (
         manager &&
-        !!manager.resolveTranspiledModule(r._originalFileName || r.fileName)
+        !!manager.resolveTranspiledModule(
+          r._originalFileName || r.fileName,
+          '/'
+        )
       );
     } catch (e) {
       /* don't do anything */
@@ -63,7 +66,7 @@ function buildDynamicError(ref: ErrorRecord) {
 
   if (relevantFrame && manager) {
     const fileName = relevantFrame._originalFileName || relevantFrame.fileName;
-    const tModule = manager.resolveTranspiledModule(fileName);
+    const tModule = manager.resolveTranspiledModule(fileName, '/');
 
     if (tModule) {
       const module = tModule.module;

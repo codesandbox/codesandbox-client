@@ -50,13 +50,13 @@ function registerStyleTranspilers() {
 
   return Object.keys(styles).forEach(type => {
     vuePreset.registerTranspiler(
-      module => new RegExp(`\\.${type}`).test(module.title),
+      module => new RegExp(`\\.${type}`).test(module.path),
       [...styles[type], { transpiler: stylesTranspiler }]
     );
   });
 }
 
-vuePreset.registerTranspiler(module => /\.jsx?$/.test(module.title), [
+vuePreset.registerTranspiler(module => /\.jsx?$/.test(module.path), [
   {
     transpiler: babelTranspiler,
     options: {
@@ -70,13 +70,13 @@ vuePreset.registerTranspiler(module => /\.jsx?$/.test(module.title), [
     },
   },
 ]);
-vuePreset.registerTranspiler(module => /\.tsx?$/.test(module.title), [
+vuePreset.registerTranspiler(module => /\.tsx?$/.test(module.path), [
   { transpiler: typescriptTranspiler },
 ]);
-vuePreset.registerTranspiler(module => /\.json$/.test(module.title), [
+vuePreset.registerTranspiler(module => /\.json$/.test(module.path), [
   { transpiler: jsonTranspiler },
 ]);
-vuePreset.registerTranspiler(module => /\.vue$/.test(module.title), [
+vuePreset.registerTranspiler(module => /\.vue$/.test(module.path), [
   { transpiler: vueTranspiler },
 ]);
 
@@ -87,11 +87,11 @@ vuePreset.registerTranspiler(() => false, [
 ]);
 vuePreset.registerTranspiler(() => false, [{ transpiler: vueStyleTranspiler }]);
 
-vuePreset.registerTranspiler(module => /\.png$/.test(module.title), [
+vuePreset.registerTranspiler(module => /\.png$/.test(module.path), [
   { transpiler: binaryTranspiler },
   { transpiler: base64Transpiler },
 ]);
-vuePreset.registerTranspiler(module => /!noop/.test(module.title), [
+vuePreset.registerTranspiler(module => /!noop/.test(module.path), [
   { transpiler: noopTranspiler },
 ]);
 vuePreset.registerTranspiler(() => true, [{ transpiler: rawTranspiler }]);

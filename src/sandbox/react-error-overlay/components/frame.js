@@ -289,7 +289,7 @@ function createFrame(
       onSourceClick = () => {
         const manager = getCurrentManager();
         if (manager) {
-          const tModule = manager.resolveTranspiledModule(sourceFileName);
+          const tModule = manager.resolveTranspiledModule(sourceFileName, '/');
 
           dispatch(
             actions.editor.openModule(

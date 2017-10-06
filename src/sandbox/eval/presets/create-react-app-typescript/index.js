@@ -13,15 +13,15 @@ const preset = new Preset('create-react-app-typescript', [
   'tsx',
 ]);
 
-preset.registerTranspiler(module => /\.css$/.test(module.title), [
+preset.registerTranspiler(module => /\.css$/.test(module.path), [
   { transpiler: stylesTranspiler },
 ]);
 
-preset.registerTranspiler(module => /\.tsx?$/.test(module.title), [
+preset.registerTranspiler(module => /\.tsx?$/.test(module.path), [
   { transpiler: typescriptTranspiler },
 ]);
 
-preset.registerTranspiler(module => /\.json$/.test(module.title), [
+preset.registerTranspiler(module => /\.json$/.test(module.path), [
   { transpiler: jsonTranspiler },
 ]);
 
