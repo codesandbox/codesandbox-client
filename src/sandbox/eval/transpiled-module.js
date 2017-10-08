@@ -127,6 +127,9 @@ export default class TranspiledModule {
   }
 
   reset() {
+    this.childModules.forEach(m => {
+      m.reset();
+    });
     this.childModules = [];
     this.emittedAssets = [];
     this.setIsEntry(false);
@@ -143,6 +146,11 @@ export default class TranspiledModule {
     this.source = null;
     this.errors = [];
     this.warnings = [];
+
+    Array.from(this.dependencies).forEach(t => {
+      t.initiators.delete(this);
+    });
+    this.dependencies.clear();
   }
 
   resetCompilation() {
@@ -158,6 +166,12 @@ export default class TranspiledModule {
         console.error(e);
       }
     }
+
+    Array.from(this.transpilationInitiators)
+      .filter(t => t.compilation)
+      .forEach(dep => {
+        dep.resetCompilation();
+      });
   }
 
   update(module: Module): TranspiledModule {
@@ -461,14 +475,12 @@ export default class TranspiledModule {
               transpiledModule,
             ]);
       }
-
       const exports = evaluate(this.source.compiledCode, require);
 
       compilation.exports = exports;
 
-      if (cacheable) {
-        this.compilation = compilation;
-      }
+      this.compilation = compilation;
+
       return exports;
     } catch (e) {
       e.tModule = e.tModule || transpiledModule;

@@ -1,5 +1,7 @@
 import { actions, dispatch } from 'codesandbox-api';
 
+import { basename } from 'common/utils/path';
+
 function findRawModule(module) {
   const rawModule = Array.from(module.dependencies).find(
     m => !/\.([\w]{2}|[\w]{3})$/.test(m.module.title)
@@ -35,17 +37,19 @@ export default function(error: Error, module) {
       const [sourceModule, rawModule] = result;
       return {
         name: 'Raw import',
-        message: `It seems like '${sourceModule.module
-          .title}' is importing a raw module (${rawModule.module.title})`,
+        message: `It seems like '${basename(
+          sourceModule.module.path
+        )}' is importing a raw module (${basename(rawModule.module.path)})`,
         suggestions: [
           {
-            title: `Rename ${rawModule.module.title} to ${rawModule.module
-              .title}.js`,
+            title: `Rename ${basename(rawModule.module.path)} to ${basename(
+              rawModule.module.path
+            )}.js`,
             action: () => {
               dispatch(
                 actions.source.modules.rename(
-                  rawModule.module.id,
-                  `${rawModule.module.title}.js`
+                  rawModule.module.path,
+                  `${basename(rawModule.module.path)}.js`
                 )
               );
             },

@@ -210,8 +210,7 @@ function transformErrors() {
         const transformation = transformError(
           errRef.error,
           tModule,
-          manager.getTranspiledModules(),
-          manager.getDirectories()
+          manager.getTranspiledModules()
         );
 
         if (transformation) {

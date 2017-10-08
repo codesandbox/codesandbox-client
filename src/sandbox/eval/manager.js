@@ -100,6 +100,7 @@ export default class Manager {
     if (!this.transpiledModules[module.path]) {
       this.addModule(module);
     }
+    this.transpiledModules[module.path].module = module;
 
     const transpiledModule = new TranspiledModule(module, query);
 
@@ -154,6 +155,14 @@ export default class Manager {
     delete this.transpiledModules[tModule.module.path].tModules[tModule.query];
   }
 
+  removeModule(module: Module) {
+    const existingModule = this.transpiledModules[module.path];
+
+    values(existingModule.tModules).forEach(m => m.dispose());
+
+    delete this.transpiledModules[module.path];
+  }
+
   /**
    * Will transpile this module and all eventual children (requires) that go with it
    * @param {*} entry
@@ -167,6 +176,10 @@ export default class Manager {
 
   clearCompiledCache() {
     this.getTranspiledModules().map(tModule => tModule.resetCompilation());
+  }
+
+  getModules(): Array<Module> {
+    return values(this.transpiledModules).map(t => t.module);
   }
 
   resolveModule(
@@ -302,8 +315,18 @@ export default class Manager {
 
       if (!mirrorModule) {
         addedModules.push(module);
+        this.addTranspiledModule(module);
       } else if (mirrorModule.module.code !== module.code) {
         updatedModules.push(module);
+      }
+    });
+
+    this.getModules().forEach(m => {
+      if (
+        !m.path.startsWith('/node_modules') &&
+        !modules.find(m2 => m2.path === m.path)
+      ) {
+        this.removeModule(m);
       }
     });
 
@@ -311,12 +334,15 @@ export default class Manager {
 
     const tModulesToUpdate = modulesToUpdate.map(m =>
       this.getTranspiledModulesByModule(m).map(tModule => {
+        console.log(tModule);
         this.transpiledModules[m.path].module = m;
         tModule.update(m);
 
         return tModule;
       })
     );
+
+    console.log(tModulesToUpdate);
 
     const transpiledModulesToUpdate = uniq(
       flattenDeep([

@@ -128,10 +128,9 @@ async function compile({
     const managerModuleToTranspile = managerModules.find(
       m => m.path === managerModulePathToTranspile
     );
-    console.log('start transpilation', Date.now());
     const t = Date.now();
     await manager.transpileModules(managerModuleToTranspile);
-    console.log('end transpilation', Date.now() - t);
+    console.log('transpilation', Date.now() - t);
 
     resetScreen();
 
@@ -154,10 +153,9 @@ async function compile({
     const html = getIndexHtml(modules);
     document.body.innerHTML = html;
 
-    console.log('start eval', Date.now());
     const tt = Date.now();
     const evalled = manager.evaluateModule(managerModuleToTranspile);
-    console.log('end eval', Date.now() - tt);
+    console.log('eval', Date.now() - tt);
 
     const domChanged = document.body.innerHTML !== html;
 

@@ -238,7 +238,7 @@ export default function(code: string, loaderContext: LoaderContext) {
 
   function getRequireForImport(type, impt, i = 0, scoped) {
     if (type === 'style') {
-      const styleCompiler = `!!${getStyleLoaders(
+      const styleCompiler = `${getStyleLoaders(
         impt.attrs,
         moduleId,
         !!scoped
@@ -257,7 +257,7 @@ export default function(code: string, loaderContext: LoaderContext) {
 
   function getRequire(type, impt, i = 0, scoped) {
     if (type === 'style') {
-      const styleCompiler = `!!${getStyleLoaders(
+      const styleCompiler = `${getStyleLoaders(
         impt.attrs,
         moduleId,
         !!scoped
