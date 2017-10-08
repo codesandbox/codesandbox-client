@@ -15,9 +15,9 @@ import theme from 'common/theme';
 import getTemplate from 'common/templates';
 
 /* eslint-disable import/no-webpack-loader-syntax */
-import SyntaxHighlightWorker from 'worker-loader!./monaco/workers/syntax-highlighter';
-import LinterWorker from 'worker-loader!./monaco/workers/linter';
-import TypingsFetcherWorker from 'worker-loader!./monaco/workers/fetch-dependency-typings';
+import SyntaxHighlightWorker from 'worker-loader?inline!./monaco/workers/syntax-highlighter';
+import LinterWorker from 'worker-loader?inline!./monaco/workers/linter';
+import TypingsFetcherWorker from 'worker-loader?inline!./monaco/workers/fetch-dependency-typings';
 /* eslint-enable import/no-webpack-loader-syntax */
 
 import enableEmmet from './monaco/enable-emmet';
@@ -606,7 +606,9 @@ export default class CodeEditor extends React.Component<Props, State> {
     this.sizeProbeInterval = setInterval(this.resizeEditor.bind(this), 3000);
 
     if (this.props.dependencies) {
-      this.fetchDependencyTypings(this.props.dependencies, monaco);
+      setTimeout(() => {
+        this.fetchDependencyTypings(this.props.dependencies, monaco);
+      }, 5000);
     }
 
     editor.addAction({

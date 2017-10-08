@@ -12,6 +12,10 @@ type Externals = {
   [name: string]: string,
 };
 
+type ModuleObject = {
+  [path: string]: Module,
+};
+
 type Manifest = {
   aliases: {
     [path: string]: string | false,
@@ -28,11 +32,16 @@ type Manifest = {
 export default class Manager {
   id: string;
   transpiledModules: {
-    [id: string]: TranspiledModule,
+    [path: string]: {
+      module: Module,
+      tModules: {
+        [query: string]: TranspiledModule,
+      },
+    },
   };
   preset: Preset;
   externals: Externals;
-  modules: Array<Module>;
+  modules: ModuleObject;
 
   manifest: Manifest;
   experimentalPackager: boolean;
@@ -44,9 +53,9 @@ export default class Manager {
     options: Object = {}
   ) {
     this.id = id;
-    this.modules = modules;
     this.preset = preset;
     this.transpiledModules = {};
+    modules.forEach(m => this.addModule(m));
 
     this.experimentalPackager = options.experimentalPackager || false;
 
@@ -81,10 +90,21 @@ export default class Manager {
     return transpiledModule.evaluate(this, parentModules);
   }
 
-  addModule(module: Module, query: string = ''): TranspiledModule {
+  addModule(module: Module) {
+    this.transpiledModules[module.path] = this.transpiledModules[
+      module.path
+    ] || { module, tModules: {} };
+  }
+
+  addTranspiledModule(module: Module, query: string = ''): TranspiledModule {
+    if (!this.transpiledModules[module.path]) {
+      this.addModule(module);
+    }
+
     const transpiledModule = new TranspiledModule(module, query);
 
-    this.transpiledModules[transpiledModule.getId()] = transpiledModule;
+    this.transpiledModules[module.path].tModules[query] = transpiledModule;
+
     return transpiledModule;
   }
 
@@ -96,10 +116,15 @@ export default class Manager {
    * @param {*} string
    */
   getTranspiledModule(module: Module, query: string = ''): TranspiledModule {
-    let transpiledModule = this.transpiledModules[`${module.path}:${query}`];
+    const moduleObject = this.transpiledModules[module.path];
+    if (!moduleObject) {
+      this.addModule(module);
+    }
+
+    let transpiledModule = this.transpiledModules[module.path].tModules[query];
 
     if (!transpiledModule) {
-      transpiledModule = this.addModule(module, query);
+      transpiledModule = this.addTranspiledModule(module, query);
     }
 
     return transpiledModule;
@@ -114,22 +139,19 @@ export default class Manager {
    * @param {*} module
    */
   getTranspiledModulesByModule(module: Module): Array<TranspiledModule> {
-    return this.getTranspiledModules().filter(
-      t => t.module.path === module.path
-    );
+    return this.transpiledModules[module.path]
+      ? values(this.transpiledModules[module.path].tModules)
+      : [];
   }
 
   getTranspiledModules() {
     const transpiledModuleValues = values(this.transpiledModules);
 
-    return flattenDeep([
-      transpiledModuleValues,
-      ...transpiledModuleValues.map(m => m.getChildTranspiledModules()),
-    ]);
+    return flattenDeep(transpiledModuleValues.map(m => values(m.tModules)));
   }
 
   removeTranspiledModule(tModule: TranspiledModule) {
-    delete this.transpiledModules[tModule.getId()];
+    delete this.transpiledModules[tModule.module.path].tModules[tModule.query];
   }
 
   /**
@@ -147,34 +169,15 @@ export default class Manager {
     this.getTranspiledModules().map(tModule => tModule.resetCompilation());
   }
 
-  getModules(): Array<Module> {
-    const sandboxModules = this.modules.reduce(
-      (prev, next) => ({
-        ...prev,
-        [next.path]: next,
-      }),
-      {}
-    );
-    const transpiledModules = this.getTranspiledModules().reduce(
-      (prev, next) => ({
-        ...prev,
-        [next.module.path]: next.module,
-      }),
-      {}
-    );
-
-    return values({ ...sandboxModules, ...transpiledModules });
-  }
-
   resolveModule(
     path: string,
     defaultExtensions: Array<string> = ['js', 'jsx', 'json']
   ): Module {
-    const moduleObject = this.getModuleObject();
+    const moduleObject = this.transpiledModules;
     const foundPath = nodeResolvePath(path, moduleObject, defaultExtensions);
 
     if (foundPath && moduleObject[foundPath]) {
-      return moduleObject[foundPath];
+      return moduleObject[foundPath].module;
     }
 
     throw new Error(`Cannot find module in ${path}`);
@@ -250,7 +253,6 @@ export default class Manager {
       newPath = pathUtils.join('/node_modules', modulePath);
     }
 
-    // TODO DRY
     if (newPath.startsWith('/node_modules')) {
       if (this.experimentalPackager) {
         module = this.resolveDependency(newPath, this.preset.ignoredExtensions);
@@ -277,80 +279,52 @@ export default class Manager {
       modulesPath
     );
 
-    const modules = this.getModules().filter(m =>
-      m.path.startsWith(joinedPath)
-    );
-
-    return modules.map(module =>
-      this.getTranspiledModule(module, queryPath.join('!'))
-    );
+    return Object.keys(this.transpiledModules)
+      .filter(p => p.startsWith(joinedPath))
+      .map(m =>
+        this.getTranspiledModule(
+          this.transpiledModules[m].module,
+          queryPath.join('!')
+        )
+      );
   }
-
-  getModuleObject = () =>
-    this.getModules().reduce(
-      (prev, next) => ({
-        ...prev,
-        [next.path]: next,
-      }),
-      {}
-    );
 
   /**
    * Find all changed, added and deleted modules. Update trees and
    * delete caches accordingly
    */
   updateData(modules: Array<Module>) {
-    // Create an object with mapping from modules
-    const moduleObject = this.getModuleObject();
-
     const addedModules = [];
     const updatedModules = [];
-    const deletedModules = [];
 
     modules.forEach(module => {
-      const mirrorModule = moduleObject[module.path];
+      const mirrorModule = this.transpiledModules[module.path];
 
       if (!mirrorModule) {
         addedModules.push(module);
-      } else if (mirrorModule.code !== module.code) {
+      } else if (mirrorModule.module.code !== module.code) {
         updatedModules.push(module);
       }
     });
 
-    this.modules.forEach(module => {
-      const mirrorModule = modules.find(m => m.path === module.path);
-
-      if (!mirrorModule) {
-        deletedModules.push(module);
-      }
-    });
-
-    deletedModules.forEach(m => {
-      const transpiledModules = this.getTranspiledModulesByModule(m);
-
-      transpiledModules.forEach(tModule => {
-        tModule.dispose();
-        delete this.transpiledModules[tModule.getId()];
-      });
-    });
-
     const modulesToUpdate = uniq([...addedModules, ...updatedModules]);
 
-    modulesToUpdate.forEach(m => {
-      this.getTranspiledModulesByModule(m).forEach(tModule => {
+    const tModulesToUpdate = modulesToUpdate.map(m =>
+      this.getTranspiledModulesByModule(m).map(tModule => {
+        this.transpiledModules[m.path].module = m;
         tModule.update(m);
-      });
-    });
+
+        return tModule;
+      })
+    );
 
     const transpiledModulesToUpdate = uniq(
       flattenDeep([
-        modulesToUpdate.map(m => this.getTranspiledModulesByModule(m)),
+        tModulesToUpdate,
         // All modules with errors
         this.getTranspiledModules().filter(t => t.errors.length > 0),
       ])
     );
-
-    this.modules = modules;
 
     return Promise.all(
       transpiledModulesToUpdate.map(tModule => tModule.transpile(this))

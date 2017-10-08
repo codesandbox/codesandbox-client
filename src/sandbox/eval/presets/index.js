@@ -125,4 +125,13 @@ export default class Preset {
 
     return finalTranspilers;
   }
+
+  /**
+   * Get the query syntax of the module
+   */
+  getQuery(module: Module, query: string = '') {
+    const loaders = this.getLoaders(module, query);
+
+    return `!${loaders.map(t => t.transpiler.name).join('!')}`;
+  }
 }

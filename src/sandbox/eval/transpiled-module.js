@@ -201,7 +201,7 @@ export default class TranspiledModule {
           code,
         };
 
-        const transpiledModule = manager.addModule(
+        const transpiledModule = manager.addTranspiledModule(
           moduleCopy,
           queryPath.join('!')
         );
@@ -325,49 +325,53 @@ export default class TranspiledModule {
     let code = this.module.code || '';
     let finalSourceMap = null;
 
-    for (let i = 0; i < transpilers.length; i += 1) {
-      const transpilerConfig = transpilers[i];
-      const loaderContext = this.getLoaderContext(
-        manager,
-        transpilerConfig.options || {}
-      );
-      try {
-        const {
-          transpiledCode,
-          sourceMap,
-        } = await transpilerConfig.transpiler.transpile(code, loaderContext); // eslint-disable-line no-await-in-loop
+    if (this.module.requires) {
+      // We now know that this has been transpiled on the server, so we shortcut
+      const loaderContext = this.getLoaderContext(manager, {});
+      // These are precomputed requires, for npm dependencies
+      this.module.requires.forEach(loaderContext.addDependency);
 
-        if (this.module.requires) {
-          // These are precomputed requires, for npm dependencies
-          this.module.requires.forEach(loaderContext.addDependency);
+      code = this.module.code;
+    } else {
+      for (let i = 0; i < transpilers.length; i += 1) {
+        const transpilerConfig = transpilers[i];
+        const loaderContext = this.getLoaderContext(
+          manager,
+          transpilerConfig.options || {}
+        );
+        try {
+          const {
+            transpiledCode,
+            sourceMap,
+          } = await transpilerConfig.transpiler.transpile(code, loaderContext); // eslint-disable-line no-await-in-loop
+
+          if (this.warnings.length) {
+            this.warnings.forEach(warning => {
+              console.warn(warning.message); // eslint-disable-line no-console
+              dispatch(
+                actions.correction.show(warning.message, {
+                  line: warning.lineNumber,
+                  column: warning.columnNumber,
+                  moduleId: warning.module.module.id,
+                  source: warning.source,
+                  severity: 'warning',
+                })
+              );
+            });
+          }
+
+          if (this.errors.length) {
+            throw this.errors[0];
+          }
+
+          code = transpiledCode;
+          finalSourceMap = sourceMap;
+        } catch (e) {
+          e.fileName = loaderContext.path;
+          e.tModule = this;
+          this.resetTranspilation();
+          throw e;
         }
-
-        if (this.warnings.length) {
-          this.warnings.forEach(warning => {
-            console.warn(warning.message); // eslint-disable-line no-console
-            dispatch(
-              actions.correction.show(warning.message, {
-                line: warning.lineNumber,
-                column: warning.columnNumber,
-                moduleId: warning.module.module.id,
-                source: warning.source,
-                severity: 'warning',
-              })
-            );
-          });
-        }
-
-        if (this.errors.length) {
-          throw this.errors[0];
-        }
-
-        code = transpiledCode;
-        finalSourceMap = sourceMap;
-      } catch (e) {
-        e.fileName = loaderContext.path;
-        e.tModule = this;
-        this.resetTranspilation();
-        throw e;
       }
     }
 
@@ -421,14 +425,14 @@ export default class TranspiledModule {
         const aliasedPath = manager.preset.getAliasedPath(path);
 
         // eslint-disable-line no-unused-vars
-        if (
-          /^(\w|@)/.test(aliasedPath) &&
-          !aliasedPath.includes('!') &&
-          !manager.experimentalPackager
-        ) {
+        if (/^(\w|@\w)/.test(aliasedPath) && !aliasedPath.includes('!')) {
           // So it must be a dependency
-
-          return resolveDependency(aliasedPath, manager.externals);
+          if (
+            !manager.experimentalPackager ||
+            aliasedPath.startsWith('babel-runtime') ||
+            aliasedPath.startsWith('codesandbox-api')
+          )
+            return resolveDependency(aliasedPath, manager.externals);
         }
 
         const requiredTranspiledModule = manager.resolveTranspiledModule(
@@ -447,7 +451,7 @@ export default class TranspiledModule {
         // This is a cyclic dependency, we should return undefined for first
         // execution according to ES module spec
         if (parentModules.includes(requiredTranspiledModule) && !cache) {
-          return undefined;
+          return {};
         }
 
         return cache
