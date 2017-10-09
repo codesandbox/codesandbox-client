@@ -210,8 +210,8 @@ module.exports = {
     // With this plugin we override the load-rules of eslint, this function prevents
     // us from using eslint in the browser, therefore we need to stop it!
     new webpack.NormalModuleReplacementPlugin(
-      /eslint\/lib\/load-rules/,
-      '../../../config/stubs/load-rules.compiled.js'
+      new RegExp(['eslint', 'lib', 'load-rules'].join(`\\${path.sep}`)),
+      path.join(paths.config, 'stubs/load-rules.compiled.js')
     ),
 
     // If you require a missing module and then `npm install` it, you still have
