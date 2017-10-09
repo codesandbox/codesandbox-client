@@ -4,7 +4,6 @@ import stylesTranspiler from '../../transpilers/css';
 import babelTranspiler from '../../transpilers/babel';
 import jsonTranspiler from '../../transpilers/json';
 import rawTranspiler from '../../transpilers/raw';
-import noopTranspiler from '../../transpilers/noop';
 
 const preset = new Preset('create-react-app', [
   'web.js',
@@ -12,10 +11,6 @@ const preset = new Preset('create-react-app', [
   'json',
   'web.jsx',
   'jsx',
-]);
-
-preset.registerTranspiler(module => module.path.startsWith('/node_modules'), [
-  { transpiler: noopTranspiler },
 ]);
 
 preset.registerTranspiler(module => /\.css$/.test(module.path), [

@@ -9,6 +9,7 @@ import type { Module } from './entities/module';
 import type { SourceMap } from './transpilers/utils/get-source-map';
 import ModuleError from './errors/module-error';
 import ModuleWarning from './errors/module-warning';
+import DependencyNotFoundError from '../errors/dependency-not-found-error';
 
 import type { WarningStructure } from './transpilers/utils/worker-warning-handler';
 
@@ -78,7 +79,6 @@ export default class TranspiledModule {
   module: Module;
   query: string;
   source: ?ModuleSource;
-  cacheable: boolean;
   assets: {
     [name: string]: ModuleSource,
   };
@@ -93,6 +93,7 @@ export default class TranspiledModule {
   compilation: ?Compilation;
   initiators: Set<TranspiledModule>; // eslint-disable-line no-use-before-define
   dependencies: Set<TranspiledModule>; // eslint-disable-line no-use-before-define
+  asyncDependencies: Array<Promise<TranspiledModule>>; // eslint-disable-line no-use-before-define
   transpilationDependencies: Set<TranspiledModule>;
   transpilationInitiators: Set<TranspiledModule>;
 
@@ -109,10 +110,10 @@ export default class TranspiledModule {
     this.query = query;
     this.errors = [];
     this.warnings = [];
-    this.cacheable = true;
     this.childModules = [];
     this.transpilationDependencies = new Set();
     this.dependencies = new Set();
+    this.asyncDependencies = [];
     this.transpilationInitiators = new Set();
     this.initiators = new Set();
     this.isEntry = false;
@@ -151,6 +152,7 @@ export default class TranspiledModule {
       t.initiators.delete(this);
     });
     this.dependencies.clear();
+    this.asyncDependencies = [];
   }
 
   resetCompilation() {
@@ -260,15 +262,23 @@ export default class TranspiledModule {
           return;
         }
 
-        const tModule = manager.resolveTranspiledModule(
-          depPath,
-          options && options.isAbsolute ? '/' : this.module.path
-        );
+        try {
+          const tModule = manager.resolveTranspiledModule(
+            depPath,
+            options && options.isAbsolute ? '/' : this.module.path
+          );
 
-        this.dependencies.add(tModule);
-        tModule.initiators.add(this);
+          this.dependencies.add(tModule);
+          tModule.initiators.add(this);
 
-        return tModule;
+          return tModule;
+        } catch (e) {
+          if (e.type === 'module-not-found' && e.isDependency) {
+            this.asyncDependencies.push(manager.downloadDependency(e.path));
+          } else {
+            this.errors.push(e);
+          }
+        }
       },
       addDependenciesInDirectory: (folderPath: string, options) => {
         if (
@@ -395,13 +405,27 @@ export default class TranspiledModule {
 
     this.source = new ModuleSource(this.module.path, code, finalSourceMap);
 
+    await Promise.all(
+      this.asyncDependencies.map(async p => {
+        try {
+          const tModule = await p;
+
+          this.dependencies.add(tModule);
+          tModule.initiators.add(this);
+        } catch (e) {
+          /* let this handle at evaluation */
+        }
+      })
+    );
+
+    this.asyncDependencies = [];
+
     return Promise.all(
       flattenDeep([
         ...Array.from(this.transpilationInitiators).map(t =>
           t.transpile(manager)
         ),
         ...Array.from(this.dependencies).map(t => t.transpile(manager)),
-        ...this.childModules.map(t => t.transpile(manager)),
       ])
     );
   }
@@ -424,9 +448,6 @@ export default class TranspiledModule {
     }
 
     const module = this.module;
-
-    const transpilers = manager.preset.getLoaders(module, this.query);
-    const cacheable = transpilers.every(t => t.transpiler.cacheable);
 
     const compilation = new Compilation();
     const transpiledModule = this;

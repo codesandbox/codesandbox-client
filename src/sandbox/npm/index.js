@@ -37,6 +37,7 @@ export default async function loadDependencies(
   dependencies: NPMDependencies,
   experimentalPackager = false
 ) {
+  let isNewCombination = false;
   if (Object.keys(dependencies).length !== 0) {
     // We filter out all @types, as they are not of any worth to the bundler
     const dependenciesWithoutTypings = pickBy(
@@ -47,6 +48,7 @@ export default async function loadDependencies(
     const depQuery = dependenciesToQuery(dependenciesWithoutTypings);
 
     if (loadedDependencyCombination !== depQuery) {
+      isNewCombination = true;
       // Mark that the last requested url is this
       loadedDependencyCombination = depQuery;
 
@@ -69,5 +71,5 @@ export default async function loadDependencies(
     manifest = {};
   }
 
-  return { manifest };
+  return { manifest, isNewCombination };
 }

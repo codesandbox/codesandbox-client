@@ -7,6 +7,9 @@ import type { Module } from './entities/module';
 import TranspiledModule from './transpiled-module';
 import Preset from './presets';
 import nodeResolvePath from './utils/node-resolve-path';
+import fetchModule from './npm/fetch-npm-module';
+import DependencyNotFoundError from '../errors/dependency-not-found-error';
+import ModuleNotFoundError from '../errors/module-not-found-error';
 
 type Externals = {
   [name: string]: string,
@@ -16,7 +19,7 @@ type ModuleObject = {
   [path: string]: Module,
 };
 
-type Manifest = {
+export type Manifest = {
   aliases: {
     [path: string]: string | false,
   },
@@ -193,13 +196,13 @@ export default class Manager {
       return moduleObject[foundPath].module;
     }
 
-    throw new Error(`Cannot find module in ${path}`);
+    throw new ModuleNotFoundError(path, false);
   }
 
   resolveDependency(
     path: string,
     defaultExtensions: Array<string> = ['js', 'jsx', 'json']
-  ): { code: string, path: string, requires: Array<string> } {
+  ): Module {
     let depPath = path.replace('/node_modules/', '');
 
     const aliasedPath = nodeResolvePath(
@@ -220,20 +223,50 @@ export default class Manager {
       };
     }
 
-    depPath = nodeResolvePath(
+    // Check if the module is already there
+    const foundPath = nodeResolvePath(
+      path,
+      this.transpiledModules,
+      defaultExtensions
+    );
+    if (foundPath && this.transpiledModules[foundPath]) {
+      return this.transpiledModules[foundPath].module;
+    }
+
+    const resolvedPath = nodeResolvePath(
       alias || depPath,
       this.manifest.contents,
       defaultExtensions
     );
-    if (depPath && this.manifest.contents[depPath]) {
+    if (resolvedPath && this.manifest.contents[resolvedPath]) {
       return {
-        path: pathUtils.join('/node_modules', depPath),
-        code: this.manifest.contents[depPath].content,
-        requires: this.manifest.contents[depPath].requires,
+        path: pathUtils.join('/node_modules', resolvedPath),
+        code: this.manifest.contents[resolvedPath].content,
+        requires: this.manifest.contents[resolvedPath].requires,
       };
     }
 
-    throw new Error(`Cannot find dependency in ${path}`);
+    const dependencyParts = depPath.split('/');
+    const dependencyName = depPath.startsWith('@')
+      ? `${dependencyParts[0]}/${dependencyParts[1]}`
+      : dependencyParts[0];
+
+    if (
+      this.manifest.dependencies.find(d => d.name === dependencyName) ||
+      this.manifest.dependencyDependencies[dependencyName]
+    ) {
+      throw new ModuleNotFoundError(alias || depPath, true);
+    } else {
+      throw new DependencyNotFoundError(alias || depPath);
+    }
+  }
+
+  async downloadDependency(path: string): Promise<TranspiledModule> {
+    return fetchModule(
+      path,
+      this.manifest,
+      this.preset.ignoredExtensions
+    ).then(module => this.getTranspiledModule(module));
   }
 
   /**
@@ -241,7 +274,6 @@ export default class Manager {
    * include loaders. That's why we're focussing on first extracting this query
    * @param {*} path
    * @param {*} currentPath
-   * @param {*} string
    */
   resolveTranspiledModule(path: string, currentPath: string): TranspiledModule {
     if (path.startsWith('webpack:')) {
@@ -267,11 +299,7 @@ export default class Manager {
     }
 
     if (newPath.startsWith('/node_modules')) {
-      if (this.experimentalPackager) {
-        module = this.resolveDependency(newPath, this.preset.ignoredExtensions);
-      } else {
-        return;
-      }
+      module = this.resolveDependency(newPath, this.preset.ignoredExtensions);
     } else {
       module = this.resolveModule(newPath, this.preset.ignoredExtensions);
     }
@@ -334,15 +362,12 @@ export default class Manager {
 
     const tModulesToUpdate = modulesToUpdate.map(m =>
       this.getTranspiledModulesByModule(m).map(tModule => {
-        console.log(tModule);
         this.transpiledModules[m.path].module = m;
         tModule.update(m);
 
         return tModule;
       })
     );
-
-    console.log(tModulesToUpdate);
 
     const transpiledModulesToUpdate = uniq(
       flattenDeep([

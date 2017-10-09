@@ -107,7 +107,7 @@ async function compile({
       code: m.code,
     }));
 
-    const [{ manifest }] = await Promise.all([
+    const [{ manifest, isNewCombination }] = await Promise.all([
       loadDependencies(dependencies, experimentalPackager),
       updateManager(sandboxId, template, managerModules, experimentalPackager),
     ]);
@@ -120,6 +120,10 @@ async function compile({
       manager.setExternals(externals);
     }
 
+    if (isNewCombination) {
+      manager.clearCompiledCache();
+    }
+
     const managerModulePathToTranspile = getModulePath(
       modules,
       directories,
@@ -128,6 +132,7 @@ async function compile({
     const managerModuleToTranspile = managerModules.find(
       m => m.path === managerModulePathToTranspile
     );
+
     const t = Date.now();
     await manager.transpileModules(managerModuleToTranspile);
     console.log('transpilation', Date.now() - t);
@@ -191,9 +196,6 @@ async function compile({
       type: 'success',
     });
   } catch (e) {
-    if (manager) {
-      manager.clearCompiledCache();
-    }
     console.log('Error in sandbox:');
     console.error(e);
 
