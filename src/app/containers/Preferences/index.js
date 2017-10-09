@@ -87,7 +87,7 @@ class Preferences extends React.PureComponent {
         icon: <StarIcon />,
         content: <Badges />,
       },
-      hasSubscription && {
+      {
         title: 'Experiments',
         icon: <FlaskIcon />,
         content: <Experiments />,
