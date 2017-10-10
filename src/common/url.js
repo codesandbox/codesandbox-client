@@ -31,6 +31,8 @@ export const getSandboxOptions = (url: string) => {
   result.hideNavigation = url.includes('hidenavigation=1');
   result.isInProjectView = !url.includes('moduleview=1');
   result.autoResize = url.includes('autoresize=1');
+  result.useCodeMirror = url.includes('codemirror=1');
+  result.enableEslint = url.includes('eslint=1');
 
   return result;
 };

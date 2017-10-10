@@ -58,6 +58,8 @@ type State = {
   autoResize: boolean,
   hideNavigation: boolean,
   fontSize: number,
+  enableEslint: boolean,
+  useCodeMirror: boolean,
 };
 
 export default class App extends React.PureComponent<{}, State> {
@@ -73,6 +75,8 @@ export default class App extends React.PureComponent<{}, State> {
       autoResize,
       hideNavigation,
       fontSize,
+      enableEslint,
+      useCodeMirror,
     } = getSandboxOptions(document.location.href);
 
     this.state = {
@@ -87,6 +91,8 @@ export default class App extends React.PureComponent<{}, State> {
       sidebarOpen: false,
       autoResize,
       hideNavigation,
+      enableEslint,
+      useCodeMirror,
     };
   }
 
@@ -204,6 +210,8 @@ export default class App extends React.PureComponent<{}, State> {
             fontSize={this.state.fontSize}
             initialPath={this.state.initialPath}
             setCurrentModule={this.setCurrentModule}
+            useCodeMirror={this.state.useCodeMirror}
+            enableEslint={this.state.enableEslint}
           />
         </Container>
       </ThemeProvider>

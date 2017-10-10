@@ -205,37 +205,13 @@ export default class CodeEditor extends React.Component<Props, State> {
     fuzzySearchEnabled: false,
   };
 
-  syntaxWorker: Worker;
-  lintWorker: Worker;
-  typingsFetcherWorker: Worker;
+  syntaxWorker: ?Worker;
+  lintWorker: ?Worker;
+  typingsFetcherWorker: ?Worker;
   sizeProbeInterval: number;
 
-  setupWorkers = () => {
-    this.syntaxWorker = new SyntaxHighlightWorker();
-    this.lintWorker = new LinterWorker();
+  setupTypeWorker = () => {
     this.typingsFetcherWorker = new TypingsFetcherWorker();
-
-    this.lint = debounce(this.lint, 400);
-
-    this.syntaxWorker.addEventListener('message', event => {
-      const { classifications, version } = event.data;
-
-      requestAnimationFrame(() => {
-        if (version === this.editor.getModel().getVersionId()) {
-          this.updateDecorations(classifications);
-        }
-      });
-    });
-
-    this.lintWorker.addEventListener('message', event => {
-      const { markers, version } = event.data;
-
-      requestAnimationFrame(() => {
-        if (version === this.editor.getModel().getVersionId()) {
-          this.updateLintWarnings(markers);
-        }
-      });
-    });
 
     this.typingsFetcherWorker.addEventListener('message', event => {
       const { path, typings } = event.data;
@@ -265,6 +241,48 @@ export default class CodeEditor extends React.Component<Props, State> {
         });
       }
     });
+  };
+
+  setupLintWorker = () => {
+    this.lintWorker = new LinterWorker();
+
+    this.lintWorker.addEventListener('message', event => {
+      const { markers, version } = event.data;
+
+      requestAnimationFrame(() => {
+        if (version === this.editor.getModel().getVersionId()) {
+          this.updateLintWarnings(markers);
+        }
+      });
+    });
+
+    this.lint = debounce(this.lint, 400);
+  };
+
+  setupSyntaxWorker = () => {
+    this.syntaxWorker = new SyntaxHighlightWorker();
+
+    this.syntaxWorker.addEventListener('message', event => {
+      const { classifications, version } = event.data;
+
+      requestAnimationFrame(() => {
+        if (version === this.editor.getModel().getVersionId()) {
+          this.updateDecorations(classifications);
+        }
+      });
+    });
+  };
+
+  setupWorkers = () => {
+    this.setupSyntaxWorker();
+
+    if (this.props.preferences.lintEnabled) {
+      this.setupLintWorker();
+    }
+
+    if (this.props.preferences.autoDownloadTypes) {
+      this.setupTypeWorker();
+    }
   };
 
   updateDecorations = async (classifications: Array<Object>) => {
@@ -507,11 +525,13 @@ export default class CodeEditor extends React.Component<Props, State> {
   lint = async (code: string, title: string, version: string) => {
     const mode = await this.getMode(title);
     if (mode === 'javascript') {
-      this.lintWorker.postMessage({
-        code,
-        title,
-        version,
-      });
+      if (this.lintWorker) {
+        this.lintWorker.postMessage({
+          code,
+          title,
+          version,
+        });
+      }
     }
   };
 
@@ -554,7 +574,9 @@ export default class CodeEditor extends React.Component<Props, State> {
       monaco: this.monaco,
     };
 
-    this.setupWorkers();
+    requestAnimationFrame(() => {
+      this.setupWorkers();
+    });
 
     const hasNativeTypescript = this.hasNativeTypescript();
 
@@ -651,7 +673,7 @@ export default class CodeEditor extends React.Component<Props, State> {
   };
 
   fetchDependencyTypings = (dependencies: Object) => {
-    if (this.props.preferences.autoDownloadTypes) {
+    if (this.typingsFetcherWorker) {
       this.typingsFetcherWorker.postMessage({ dependencies });
     }
   };

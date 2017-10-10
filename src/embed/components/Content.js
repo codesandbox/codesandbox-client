@@ -39,6 +39,9 @@ type Props = {
   initialPath: ?string,
   setCurrentModule: (moduleId: string) => void,
   setProjectView: (id: string, isInProjectView: boolean) => any,
+  useCodeMirror: boolean,
+  enableEslint: boolean,
+  isInProjectView: boolean,
 };
 
 type State = {
@@ -159,6 +162,8 @@ export default class Content extends React.PureComponent<Props, State> {
     ...this.preferences,
     fontSize: this.props.fontSize,
     autoDownloadTypes: true,
+    lintEnabled: this.props.enableEslint,
+    codeMirror: this.props.useCodeMirror,
   });
 
   setCurrentModule = (_, moduleId) => {

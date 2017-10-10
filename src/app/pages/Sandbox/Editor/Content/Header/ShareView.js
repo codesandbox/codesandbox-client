@@ -155,6 +155,8 @@ class ShareView extends React.PureComponent {
     isCurrentModuleView: false,
     fontSize: 14,
     initialPath: '',
+    useCodeMirror: false,
+    enableEslint: false,
   };
 
   handleChange = e => this.setState({ message: e.target.value });
@@ -187,6 +189,8 @@ class ShareView extends React.PureComponent {
       isCurrentModuleView,
       fontSize,
       initialPath,
+      enableEslint,
+      useCodeMirror,
     } = this.state;
 
     const options = {};
@@ -214,6 +218,14 @@ class ShareView extends React.PureComponent {
 
     if (isCurrentModuleView) {
       options.moduleview = 1;
+    }
+
+    if (enableEslint) {
+      options.eslint = 1;
+    }
+
+    if (useCodeMirror) {
+      options.codemirror = 1;
     }
 
     if (fontSize !== 14) {
@@ -275,6 +287,14 @@ class ShareView extends React.PureComponent {
     this.setState({ hideNavigation });
   };
 
+  setUseCodeMirror = (useCodeMirror: boolean) => {
+    this.setState({ useCodeMirror });
+  };
+
+  setEnableEslint = (enableEslint: boolean) => {
+    this.setState({ enableEslint });
+  };
+
   setIsCurrentModuleView = (isCurrentModuleView: boolean) => {
     this.setState({ isCurrentModuleView });
   };
@@ -292,6 +312,8 @@ class ShareView extends React.PureComponent {
       isCurrentModuleView,
       fontSize,
       initialPath,
+      useCodeMirror,
+      enableEslint,
     } = this.state;
 
     const defaultModule =
@@ -327,6 +349,18 @@ class ShareView extends React.PureComponent {
                       type="boolean"
                       value={hideNavigation}
                       setValue={this.setHideNavigation}
+                    />
+                    <PaddedPreference
+                      title="Use CodeMirror instead of Monaco editor"
+                      type="boolean"
+                      value={useCodeMirror}
+                      setValue={this.setUseCodeMirror}
+                    />
+                    <PaddedPreference
+                      title="Enable eslint (significantly higher bundle size)"
+                      type="boolean"
+                      value={enableEslint}
+                      setValue={this.setEnableEslint}
                     />
                     <PaddedPreference
                       title="Show current module view"
