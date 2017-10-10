@@ -96,30 +96,6 @@ export default function setupHistoryListeners() {
       }
     });
 
-    document.addEventListener(
-      'click',
-      ev => {
-        const el = ev.target;
-        if (el.nodeName === 'A' && el.href.indexOf('#') !== -1) {
-          const url = el.href;
-          const oldURL = document.location.href;
-          origHistoryProto.replaceState.call(window.history, null, '', url);
-          const newURL = document.location.href;
-          if (oldURL !== newURL) {
-            disableNextHashChange = true;
-            window.dispatchEvent(
-              new HashChangeEvent('hashchange', { oldURL, newURL })
-            );
-            pushHistory(pathWithHash(document.location), null);
-            sendUrlChange(document.location.href);
-          }
-          ev.preventDefault();
-          ev.stopPropagation();
-        }
-      },
-      true
-    );
-
     pushHistory(pathWithHash(document.location), null);
 
     setTimeout(() => {
