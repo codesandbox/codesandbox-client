@@ -1,9 +1,8 @@
 // @flow
 
 /* eslint-disable no-unused-vars */
-export default function(code: string, require: Function) {
+export default function(code: string, require: Function, exports) {
   const module = { exports: {} };
-  const exports = {};
   const global = window;
   const process = { env: { NODE_ENV: 'development' } };
 

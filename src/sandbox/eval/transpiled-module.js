@@ -73,7 +73,7 @@ class Compilation {
   exports: any;
 
   constructor() {
-    this.exports = null;
+    this.exports = {};
   }
 }
 
@@ -407,7 +407,7 @@ export default class TranspiledModule {
 
     // Add the source of the file by default, this is important for source mapping
     // errors back to their origin
-    code = `${code}\n//# sourceURL=${this.module.path}`;
+    code = `${code}\n//# sourceURL=${location.origin}${this.module.path}`;
 
     this.source = new ModuleSource(this.module.path, code, finalSourceMap);
 
@@ -455,7 +455,7 @@ export default class TranspiledModule {
 
     const module = this.module;
 
-    const compilation = new Compilation();
+    this.compilation = new Compilation();
     const transpiledModule = this;
 
     try {
@@ -495,12 +495,6 @@ export default class TranspiledModule {
         // of that compilation
         const cache = requiredTranspiledModule.compilation;
 
-        // This is a cyclic dependency, we should return undefined for first
-        // execution according to ES module spec
-        if (parentModules.includes(requiredTranspiledModule) && !cache) {
-          return {};
-        }
-
         return cache
           ? cache.exports
           : manager.evaluateTranspiledModule(requiredTranspiledModule, [
@@ -508,11 +502,13 @@ export default class TranspiledModule {
               transpiledModule,
             ]);
       }
-      const exports = evaluate(this.source.compiledCode, require);
+      const exports = evaluate(
+        this.source.compiledCode,
+        require,
+        this.compilation.exports
+      );
 
-      compilation.exports = exports;
-
-      this.compilation = compilation;
+      this.compilation.exports = exports;
 
       return exports;
     } catch (e) {
