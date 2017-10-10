@@ -100,7 +100,11 @@ export default function setupHistoryListeners() {
       'click',
       ev => {
         const el = ev.target;
-        if (el.nodeName === 'A' && el.href.indexOf('#') !== -1) {
+        if (
+          el.nodeName === 'A' &&
+          el.href.indexOf('#') !== -1 &&
+          el.href.substr(-1) !== '#'
+        ) {
           const url = el.href;
           const oldURL = document.location.href;
           origHistoryProto.replaceState.call(window.history, null, '', url);
