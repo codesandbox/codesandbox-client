@@ -39,7 +39,10 @@ async function map(
     files.map(async fileName => {
       const manager = getCurrentManager();
       if (manager != null && !fileName.startsWith('webpack')) {
-        const transpiledModule = manager.resolveTranspiledModule(fileName, '/');
+        const transpiledModule = manager.resolveTranspiledModule(
+          fileName.replace(location.origin, ''),
+          '/'
+        );
 
         if (transpiledModule) {
           const fileSource =

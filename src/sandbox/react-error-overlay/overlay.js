@@ -184,7 +184,10 @@ function transformErrors() {
           return (
             manager &&
             !!manager.resolveTranspiledModule(
-              r._originalFileName || r.fileName,
+              (r._originalFileName || r.fileName || '').replace(
+                location.origin,
+                ''
+              ),
               '/'
             )
           );
@@ -198,8 +201,11 @@ function transformErrors() {
 
       if (!tModule && relevantFrame) {
         const fileName =
-          relevantFrame._originalFileName || relevantFrame.fileName;
-        tModule = manager.resolveTranspiledModule(fileName, '/');
+          relevantFrame._originalFileName || relevantFrame.fileName || '';
+        tModule = manager.resolveTranspiledModule(
+          fileName.replace(location.origin, ''),
+          '/'
+        );
       }
 
       if (!tModule) {
