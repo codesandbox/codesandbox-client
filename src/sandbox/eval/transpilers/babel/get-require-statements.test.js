@@ -1,21 +1,26 @@
 import { transform } from 'babel-standalone';
+import dynamicImportSyntax from 'babel-plugin-syntax-dynamic-import';
+
+import detective from './plugins/babel-plugin-detective';
+import importNode from './plugins/babel-plugin-dynamic-import-node';
 import getRequireStatements from './get-require-statements';
-import importNode from 'babel-plugin-dynamic-import-node';
 
 describe('get-require-statements', () => {
   function testAst(code) {
-    const { ast } = transform(code, {
+    const result = transform(code, {
       presets: ['es2015', 'react'],
       plugins: [
         'transform-async-to-generator',
         'transform-object-rest-spread',
         'transform-class-properties',
         'transform-decorators-legacy',
+        dynamicImportSyntax,
         importNode,
+        [detective, { source: true, nodes: true }],
       ],
     });
 
-    expect(getRequireStatements(ast)).toMatchSnapshot();
+    expect(getRequireStatements(detective.metadata(result))).toMatchSnapshot();
   }
 
   it('can find simple requires', () => {

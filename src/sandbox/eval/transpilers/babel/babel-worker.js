@@ -1,7 +1,8 @@
 // @flow
 
 import flatten from 'lodash/flatten';
-import dynamicImportPlugin from 'babel-plugin-dynamic-import-node';
+import dynamicImportPlugin from './plugins/babel-plugin-dynamic-import-node';
+import detective from './plugins/babel-plugin-detective';
 
 import { buildWorkerError } from '../utils/worker-error-handler';
 import getDependencies from './get-require-statements';
@@ -25,6 +26,7 @@ declare var Babel: {
 };
 
 Babel.registerPlugin('dynamic-import-node', dynamicImportPlugin);
+Babel.registerPlugin('babel-plugin-detective', detective);
 
 self.addEventListener('message', async event => {
   const { code, path, config } = event.data;
@@ -45,7 +47,11 @@ self.addEventListener('message', async event => {
     Babel.registerPlugin('jsx-pragmatic', pragmaticPlugin);
   }
 
-  const plugins = [...config.plugins, 'dynamic-import-node'];
+  const plugins = [
+    ...config.plugins,
+    'dynamic-import-node',
+    ['babel-plugin-detective', { source: true, nodes: true }],
+  ];
 
   const customConfig = {
     ...config,
@@ -55,7 +61,7 @@ self.addEventListener('message', async event => {
   try {
     const result = Babel.transform(code, customConfig);
 
-    const dependencies = getDependencies(result.ast);
+    const dependencies = getDependencies(detective.metadata(result));
 
     dependencies.forEach(dependency => {
       self.postMessage({

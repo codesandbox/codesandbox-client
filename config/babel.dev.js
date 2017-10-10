@@ -6,7 +6,20 @@ module.exports = {
   cacheDirectory: true,
   presets: [
     // Latest stable ECMAScript features
-    ['env', { modules: false }],
+    [
+      'env',
+      {
+        targets: {
+          ie: 11,
+          // We currently minify with uglify
+          // Remove after https://github.com/mishoo/UglifyJS2/issues/448
+          uglify: true,
+        },
+        // Disable polyfill transforms
+        useBuiltIns: false,
+        modules: false,
+      },
+    ],
     // JSX, Flow
     'react',
   ],

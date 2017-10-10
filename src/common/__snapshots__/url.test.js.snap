@@ -3,10 +3,12 @@
 exports[`url parameters can autoresize 1`] = `
 Object {
   "autoResize": true,
+  "enableEslint": false,
   "hideNavigation": false,
   "isEditorScreen": false,
   "isInProjectView": true,
   "isPreviewScreen": false,
+  "useCodeMirror": false,
 }
 `;
 
@@ -14,40 +16,48 @@ exports[`url parameters can handle multiple options 1`] = `
 Object {
   "autoResize": true,
   "currentModule": "test",
+  "enableEslint": false,
   "hideNavigation": true,
   "isEditorScreen": true,
   "isInProjectView": true,
   "isPreviewScreen": false,
+  "useCodeMirror": false,
 }
 `;
 
 exports[`url parameters can hide navigation 1`] = `
 Object {
   "autoResize": false,
+  "enableEslint": false,
   "hideNavigation": true,
   "isEditorScreen": false,
   "isInProjectView": true,
   "isPreviewScreen": false,
+  "useCodeMirror": false,
 }
 `;
 
 exports[`url parameters doesn't set unknown fields 1`] = `
 Object {
   "autoResize": false,
+  "enableEslint": false,
   "hideNavigation": false,
   "isEditorScreen": false,
   "isInProjectView": true,
   "isPreviewScreen": false,
+  "useCodeMirror": false,
 }
 `;
 
 exports[`url parameters keeps everything false on normal urls 1`] = `
 Object {
   "autoResize": false,
+  "enableEslint": false,
   "hideNavigation": false,
   "isEditorScreen": false,
   "isInProjectView": true,
   "isPreviewScreen": false,
+  "useCodeMirror": false,
 }
 `;
 
@@ -55,29 +65,35 @@ exports[`url parameters sets current module if there is one 1`] = `
 Object {
   "autoResize": false,
   "currentModule": "test",
+  "enableEslint": false,
   "hideNavigation": false,
   "isEditorScreen": false,
   "isInProjectView": true,
   "isPreviewScreen": false,
+  "useCodeMirror": false,
 }
 `;
 
 exports[`url parameters sets editor view 1`] = `
 Object {
   "autoResize": false,
+  "enableEslint": false,
   "hideNavigation": false,
   "isEditorScreen": true,
   "isInProjectView": true,
   "isPreviewScreen": false,
+  "useCodeMirror": false,
 }
 `;
 
 exports[`url parameters sets preview view 1`] = `
 Object {
   "autoResize": false,
+  "enableEslint": false,
   "hideNavigation": false,
   "isEditorScreen": false,
   "isInProjectView": true,
   "isPreviewScreen": true,
+  "useCodeMirror": false,
 }
 `;
