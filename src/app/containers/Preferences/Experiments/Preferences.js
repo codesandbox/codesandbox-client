@@ -39,7 +39,10 @@ const Preferences = ({ preferences, preferencesActions }: Props) => {
           type="boolean"
           {...bindValue('newPackagerExperiment')}
         />
-        <Description>Use the new, faster dependency bundler.</Description>
+        <Description>
+          Use the new, faster, client side dependency bundler. Reload the
+          browser for changes to take effect.
+        </Description>
       </PreferenceContainer>
     </Container>
   );
