@@ -1,11 +1,16 @@
 // @flow
-import Core from 'css-modules-loader-core';
 import { type LoaderContext } from '../../transpiled-module';
 
-const core = new Core();
+let core = null;
 
-export default (code: string, loaderContext: LoaderContext) =>
-  core
+export default async (code: string, loaderContext: LoaderContext) => {
+  if (!core) {
+    const Core = await import('css-modules-loader-core');
+
+    core = new Core();
+  }
+
+  return core
     .load(code, loaderContext.path, (dependencyPath: string) => {
       const tModule = loaderContext.addDependency(dependencyPath);
 
@@ -15,3 +20,4 @@ export default (code: string, loaderContext: LoaderContext) =>
       css: injectableSource,
       exportTokens,
     }));
+};

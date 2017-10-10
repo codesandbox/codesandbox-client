@@ -21,14 +21,16 @@ const getStyleFileName = attrs => {
 };
 
 const getStyleLoaders = (attrs, id, scoped) => {
-  let loader = `!style-loader!vue-style-compiler?${JSON.stringify({
-    id,
-    scoped: !!scoped,
-  })}`;
+  let loader = `!style-loader`;
 
   if (attrs.module) {
     loader += `?${JSON.stringify({ module: true })}`;
   }
+
+  loader += `!vue-style-compiler?${JSON.stringify({
+    id,
+    scoped: !!scoped,
+  })}`;
 
   if (attrs.lang === 'scss') loader += '!sass-loader';
   if (attrs.lang === 'sass') loader += '!sass-loader';
