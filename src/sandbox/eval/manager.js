@@ -32,6 +32,8 @@ export type Manifest = {
   },
 };
 
+const NODE_LIBS = ['dgram', 'fs', 'net', 'tls', 'child_process'];
+
 export default class Manager {
   id: string;
   transpiledModules: {
@@ -250,6 +252,14 @@ export default class Manager {
     const dependencyName = depPath.startsWith('@')
       ? `${dependencyParts[0]}/${dependencyParts[1]}`
       : dependencyParts[0];
+
+    if (NODE_LIBS.includes(dependencyName)) {
+      return {
+        path: pathUtils.join('/node_modules', depPath),
+        code: `// empty`,
+        requires: [],
+      };
+    }
 
     if (
       this.manifest.dependencies.find(d => d.name === dependencyName) ||
