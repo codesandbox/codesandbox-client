@@ -2,6 +2,7 @@ import { dispatch, clearErrorTransformers } from 'codesandbox-api';
 
 import { getModulePath } from 'app/store/entities/sandboxes/modules/selectors';
 import type { Module, Directory } from 'common/types';
+import _debug from 'app/utils/debug';
 
 import initializeErrorTransformers from './errors/transformers';
 import getPreset from './eval';
@@ -23,9 +24,16 @@ import {
 
 import loadDependencies from './npm';
 
+// Preload the babel loader
+import babelWorker from './eval/transpilers/babel';
+
+babelWorker.initialize();
+
 let initializedResizeListener = false;
 let manager: ?Manager = null;
 let actionsEnabled = false;
+
+const debug = _debug('cs:compiler');
 
 export function areActionsEnabled() {
   return actionsEnabled;
@@ -135,7 +143,7 @@ async function compile({
 
     const t = Date.now();
     await manager.transpileModules(managerModuleToTranspile);
-    console.log('transpilation', Date.now() - t);
+    debug(`Transpilation time ${Date.now() - t}ms`);
 
     resetScreen();
 
@@ -160,7 +168,7 @@ async function compile({
 
     const tt = Date.now();
     const evalled = manager.evaluateModule(managerModuleToTranspile);
-    console.log('eval', Date.now() - tt);
+    debug(`Evaluation time: ${Date.now() - tt}ms`);
 
     const domChanged = document.body.innerHTML !== html;
 

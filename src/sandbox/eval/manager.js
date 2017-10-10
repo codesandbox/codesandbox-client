@@ -295,7 +295,10 @@ export default class Manager {
 
     if (/^(\w|@\w)/.test(modulePath) && !modulePath.includes('!')) {
       // Prepend node_modules and go to root if it is a dependency
-      newPath = pathUtils.join('/node_modules', modulePath);
+      newPath = pathUtils.join(
+        '/node_modules',
+        this.preset.getAliasedPath(modulePath)
+      );
     }
 
     if (newPath.startsWith('/node_modules')) {
@@ -352,7 +355,8 @@ export default class Manager {
     this.getModules().forEach(m => {
       if (
         !m.path.startsWith('/node_modules') &&
-        !modules.find(m2 => m2.path === m.path)
+        !modules.find(m2 => m2.path === m.path) &&
+        !m.parent // not an emitted module
       ) {
         this.removeModule(m);
       }

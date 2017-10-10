@@ -17,6 +17,7 @@ import Preset from '../';
 
 const vuePreset = new Preset('vue-cli', ['vue', 'json', 'js'], {
   '@': '{{sandboxRoot}}',
+  vue$: 'vue/dist/vue.common.js',
 });
 
 const sassWithConfig = {

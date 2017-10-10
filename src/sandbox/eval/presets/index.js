@@ -54,6 +54,21 @@ export default class Preset {
   getAliasedPath(path: string): string {
     const aliases = Object.keys(this.alias);
 
+    const exactAliases = aliases.filter(a => a.endsWith('$'));
+    const exactFoundAlias = exactAliases.find(a => {
+      const alias = a.slice(0, -1);
+
+      if (path === alias) {
+        return alias;
+      }
+
+      return false;
+    });
+
+    if (exactFoundAlias) {
+      return this.alias[exactFoundAlias];
+    }
+
     const pathParts = path.split('/'); // eslint-disable-line prefer-const
 
     // Find matching aliases

@@ -87,7 +87,7 @@ export default async function fetchModule(
         return x.text();
       }
 
-      throw new ModuleNotFoundError(resolvedPath, true);
+      return `throw new Error("Could not find module ${path}`;
     })
     .then(x => ({
       path: pathUtils.join('/node_modules', dependencyName, resolvedPath),

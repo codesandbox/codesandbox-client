@@ -2,6 +2,7 @@
 import { flattenDeep } from 'lodash';
 
 import { actions, dispatch } from 'codesandbox-api';
+import _debug from 'app/utils/debug';
 
 import * as pathUtils from 'common/utils/path';
 
@@ -9,7 +10,6 @@ import type { Module } from './entities/module';
 import type { SourceMap } from './transpilers/utils/get-source-map';
 import ModuleError from './errors/module-error';
 import ModuleWarning from './errors/module-warning';
-import DependencyNotFoundError from '../errors/dependency-not-found-error';
 
 import type { WarningStructure } from './transpilers/utils/worker-warning-handler';
 
@@ -17,6 +17,8 @@ import resolveDependency from './loaders/dependency-resolver';
 import evaluate from './loaders/eval';
 
 import Manager from './manager';
+
+const debug = _debug('cs:compiler:transpiled-module');
 
 type ChildModule = Module & {
   parent: Module,
@@ -255,9 +257,11 @@ export default class TranspiledModule {
       },
       addDependency: (depPath: string, options) => {
         if (
-          /^(\w|@\w)/.test(depPath) &&
-          !depPath.includes('!') &&
-          !manager.experimentalPackager
+          (/^(\w|@\w)/.test(depPath) &&
+            !depPath.includes('!') &&
+            !manager.experimentalPackager) ||
+          depPath.startsWith('babel-runtime') ||
+          depPath.startsWith('codesandbox-api')
         ) {
           return;
         }
@@ -357,6 +361,7 @@ export default class TranspiledModule {
 
       code = this.module.code;
     } else {
+      const t = Date.now();
       for (let i = 0; i < transpilers.length; i += 1) {
         const transpilerConfig = transpilers[i];
         const loaderContext = this.getLoaderContext(
@@ -396,6 +401,7 @@ export default class TranspiledModule {
           this.resetTranspilation();
           throw e;
         }
+        debug(`Transpiled '${this.getId()}' in ${Date.now() - t}ms`);
       }
     }
 
@@ -467,7 +473,13 @@ export default class TranspiledModule {
             aliasedPath.startsWith('babel-runtime') ||
             aliasedPath.startsWith('codesandbox-api')
           )
-            return resolveDependency(aliasedPath, manager.externals);
+            // TODO remove this hack for not-experimental packager
+            return resolveDependency(
+              path === 'vue' && !manager.experimentalPackager
+                ? path
+                : aliasedPath,
+              manager.externals
+            );
         }
 
         const requiredTranspiledModule = manager.resolveTranspiledModule(

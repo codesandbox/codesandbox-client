@@ -135,6 +135,24 @@ describe('sandbox', () => {
 
         expect(preset.getAliasedPath('react-foo')).toBe('react-foo');
       });
+
+      describe('exact alias', () => {
+        it('resolves an exact alias', () => {
+          const preset = createPreset({
+            vue$: 'vue/common/dist',
+          });
+
+          expect(preset.getAliasedPath('vue')).toBe('vue/common/dist');
+        });
+
+        it("doesnt't resolve a not exact alias", () => {
+          const preset = createPreset({
+            vue$: 'vue/common/dist',
+          });
+
+          expect(preset.getAliasedPath('vue/test')).toBe('vue/test');
+        });
+      });
     });
   });
 });
