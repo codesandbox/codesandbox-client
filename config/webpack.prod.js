@@ -196,12 +196,22 @@ module.exports = merge(commonConfig, {
           },
         },
         {
-          urlPattern: /https:\/\/d3i2v4dxqvxaq9\.cloudfront\.net/,
+          urlPattern: /https:\/\/d1jyvh0kxilfa7\.cloudfront\.net/,
           handler: 'fastest',
           options: {
             cache: {
               maxEntries: 200,
               name: 'dependency-files-cache',
+            },
+          },
+        },
+        {
+          urlPattern: /^https:\/\/unpkg\.com/,
+          handler: 'cacheFirst',
+          options: {
+            cache: {
+              maxEntries: 300,
+              name: 'unpkg-dep-cache',
             },
           },
         },

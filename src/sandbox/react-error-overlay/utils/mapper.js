@@ -40,7 +40,8 @@ async function map(
       const manager = getCurrentManager();
       if (manager != null && !fileName.startsWith('webpack')) {
         const transpiledModule = manager.resolveTranspiledModule(
-          `./${fileName}`
+          fileName.replace(location.origin, ''),
+          '/'
         );
 
         if (transpiledModule) {

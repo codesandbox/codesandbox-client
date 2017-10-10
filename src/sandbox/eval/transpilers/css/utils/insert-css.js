@@ -14,11 +14,6 @@ function createStyleNode(id, content) {
   document.head.appendChild(styleNode);
 }
 
-// var classNameRegex = /\.(-?[_a-zA-Z]+[_a-zA-Z0-9-]*)/g;
-// var classNames = css.match(classNameRegex);
-
-// const alteredClassNames = getGeneratedClassNames(module.id, classNames);
-// const newCode = getGeneratedClassNameCode(module.code, alteredClassNames);
 createStyleNode(
   ${JSON.stringify(id)},
   ${JSON.stringify(css)}

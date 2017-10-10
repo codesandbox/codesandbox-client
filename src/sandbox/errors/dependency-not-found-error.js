@@ -5,6 +5,8 @@ import SandboxError from './sandbox-error';
 export default class DependencyNotFoundError extends SandboxError {
   constructor(dependencyName: string) {
     super();
+    this.path = dependencyName;
+
     const [root, second] = dependencyName.split('/');
 
     // If the package starts with a @ it's scoped, we should add the second
@@ -24,4 +26,5 @@ export default class DependencyNotFoundError extends SandboxError {
   }
   type = 'dependency-not-found';
   severity = 'error';
+  path: string;
 }

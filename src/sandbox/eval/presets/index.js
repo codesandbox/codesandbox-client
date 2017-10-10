@@ -1,6 +1,6 @@
 // @flow
 import { orderBy } from 'lodash';
-import type { Module } from 'common/types';
+import type { Module } from '../entities/module';
 
 import Transpiler from '../transpilers';
 
@@ -53,6 +53,21 @@ export default class Preset {
    */
   getAliasedPath(path: string): string {
     const aliases = Object.keys(this.alias);
+
+    const exactAliases = aliases.filter(a => a.endsWith('$'));
+    const exactFoundAlias = exactAliases.find(a => {
+      const alias = a.slice(0, -1);
+
+      if (path === alias) {
+        return alias;
+      }
+
+      return false;
+    });
+
+    if (exactFoundAlias) {
+      return this.alias[exactFoundAlias];
+    }
 
     const pathParts = path.split('/'); // eslint-disable-line prefer-const
 
@@ -120,9 +135,18 @@ export default class Preset {
     const finalTranspilers = [...transpilers, ...extraTranspilers];
 
     if (finalTranspilers.length === 0) {
-      throw new Error(`No transpilers found for ${module.title}`);
+      throw new Error(`No transpilers found for ${module.path}`);
     }
 
     return finalTranspilers;
+  }
+
+  /**
+   * Get the query syntax of the module
+   */
+  getQuery(module: Module, query: string = '') {
+    const loaders = this.getLoaders(module, query);
+
+    return `!${loaders.map(t => t.transpiler.name).join('!')}`;
   }
 }

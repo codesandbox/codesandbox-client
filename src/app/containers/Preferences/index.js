@@ -9,6 +9,7 @@ import CodeIcon from 'react-icons/lib/fa/code';
 import CreditCardIcon from 'react-icons/lib/md/credit-card';
 import BrowserIcon from 'react-icons/lib/go/browser';
 import StarIcon from 'react-icons/lib/go/star';
+import FlaskIcon from 'react-icons/lib/fa/flask';
 import CodeFormatIcon from 'react-icons/lib/fa/dedent';
 import IntegrationIcon from 'react-icons/lib/md/device-hub';
 
@@ -20,6 +21,7 @@ import CodeFormatting from './CodeFormatting';
 import PaymentInfo from './PaymentInfo';
 import Integrations from './Integrations';
 import Badges from './Badges';
+import Experiments from './Experiments';
 
 const Container = styled.div`
   display: flex;
@@ -84,6 +86,11 @@ class Preferences extends React.PureComponent {
         title: 'Badges',
         icon: <StarIcon />,
         content: <Badges />,
+      },
+      {
+        title: 'Experiments',
+        icon: <FlaskIcon />,
+        content: <Experiments />,
       },
     ].filter(x => x);
   };

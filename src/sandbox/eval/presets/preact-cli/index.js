@@ -23,7 +23,7 @@ const preactPreset = new Preset(
   }
 );
 
-preactPreset.registerTranspiler(module => /\.jsx?$/.test(module.title), [
+preactPreset.registerTranspiler(module => /\.jsx?$/.test(module.path), [
   {
     transpiler: babelTranspiler,
     options: {
@@ -50,21 +50,21 @@ preactPreset.registerTranspiler(module => /\.jsx?$/.test(module.title), [
   },
 ]);
 
-preactPreset.registerTranspiler(module => /\.s[a|c]ss/.test(module.title), [
+preactPreset.registerTranspiler(module => /\.s[a|c]ss/.test(module.path), [
   { transpiler: sassTranspiler },
   { transpiler: stylesTranspiler },
 ]);
 
-preactPreset.registerTranspiler(module => /\.less/.test(module.title), [
+preactPreset.registerTranspiler(module => /\.less/.test(module.path), [
   { transpiler: lessTranspiler },
   { transpiler: stylesTranspiler },
 ]);
 
-preactPreset.registerTranspiler(module => /\.json/.test(module.title), [
+preactPreset.registerTranspiler(module => /\.json/.test(module.path), [
   { transpiler: jsonTranspiler },
 ]);
 
-preactPreset.registerTranspiler(module => /\.styl/.test(module.title), [
+preactPreset.registerTranspiler(module => /\.styl/.test(module.path), [
   { transpiler: stylusTranspiler },
   { transpiler: stylesTranspiler },
 ]);

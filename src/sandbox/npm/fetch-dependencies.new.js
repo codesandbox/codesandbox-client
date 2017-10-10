@@ -1,7 +1,7 @@
 import { actions, dispatch } from 'codesandbox-api';
 import _debug from 'app/utils/debug';
 import dependenciesToQuery from './dependencies-to-query';
-import { PACKAGER_URL } from './';
+
 import delay from '../utils/delay';
 import setScreen from '../status-screen';
 
@@ -11,6 +11,10 @@ type Dependencies = {
 
 const RETRY_COUNT = 60;
 const debug = _debug('cs:sandbox:packager');
+
+const BUCKET_URL = 'https://d1jyvh0kxilfa7.cloudfront.net';
+const PACKAGER_URL =
+  'https://drq28qbjmc.execute-api.eu-west-1.amazonaws.com/prod/packages';
 
 function callApi(url: string) {
   return fetch(url)
@@ -32,9 +36,10 @@ function callApi(url: string) {
  *
  * @param {string} query The dependencies to call
  */
-async function requestManifest(url) {
+async function requestPackager(url) {
   let retries = 0;
 
+  // eslint-disable-next-line no-constant-condition
   while (true) {
     debug(`Trying to call packager for ${retries} time`);
     try {
@@ -67,22 +72,44 @@ async function requestManifest(url) {
   }
 }
 
-async function callPackager(dependencies: Object) {
+function dependenciesToBucketPath(dependencies: Object) {
+  return `combinations/${Object.keys(dependencies)
+    .sort()
+    .map(
+      // Paths starting with slashes don't work with cloudfront, even escaped. So we remove the slashes
+      dep =>
+        `${encodeURIComponent(
+          dep.replace('/', '-').replace('@', '')
+        )}@${dependencies[dep]}`
+    )
+    .join('%2B')}.json`;
+}
+
+async function getDependencies(dependencies: Object) {
   const dependencyUrl = dependenciesToQuery(dependencies);
+  const bucketDependencyUrl = dependenciesToBucketPath(dependencies);
 
-  const result = await callApi(`${PACKAGER_URL}/${dependencyUrl}`);
+  setScreen({ type: 'loading', text: 'Downloading Dependencies...' });
+  try {
+    const bucketManifest = await callApi(
+      `${BUCKET_URL}/${bucketDependencyUrl}`
+    );
+    return bucketManifest;
+  } catch (e) {
+    // The dep has not been generated yet...
+    const { url } = await requestPackager(`${PACKAGER_URL}/${dependencyUrl}`);
 
-  const dataUrl = result.url;
-  const manifest = await requestManifest(`${dataUrl}/manifest.json`);
-
-  return { url: dataUrl, manifest };
+    setScreen({ type: 'loading', text: 'Downloading Dependencies...' });
+    return callApi(`${BUCKET_URL}/${url}`);
+  }
 }
 
 export default async function fetchDependencies(npmDependencies: Dependencies) {
   if (Object.keys(npmDependencies).length !== 0) {
     // New Packager flow
+
     try {
-      const result = await callPackager(npmDependencies);
+      const result = await getDependencies(npmDependencies);
 
       return result;
     } catch (e) {

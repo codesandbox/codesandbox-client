@@ -17,11 +17,11 @@ class LessTranspiler extends WorkerTranspiler {
     return new Promise((resolve, reject) => {
       const modules = loaderContext.getModules();
 
-      const lessModules = modules.filter(m => /\.[css|less]/.test(m.title));
+      const lessModules = modules.filter(m => /\.[css|less]$/.test(m.path));
       const files = lessModules.reduce(
         (interMediateFiles, module) => ({
           ...interMediateFiles,
-          [loaderContext.resolvePath(module)]: module.code,
+          [module.path]: module.code,
         }),
         {}
       );

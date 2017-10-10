@@ -183,7 +183,13 @@ function transformErrors() {
         try {
           return (
             manager &&
-            !!manager.resolveTranspiledModule(r._originalFileName || r.fileName)
+            !!manager.resolveTranspiledModule(
+              (r._originalFileName || r.fileName || '').replace(
+                location.origin,
+                ''
+              ),
+              '/'
+            )
           );
         } catch (e) {
           /* don't do anything */
@@ -195,8 +201,11 @@ function transformErrors() {
 
       if (!tModule && relevantFrame) {
         const fileName =
-          relevantFrame._originalFileName || relevantFrame.fileName;
-        tModule = manager.resolveTranspiledModule(fileName);
+          relevantFrame._originalFileName || relevantFrame.fileName || '';
+        tModule = manager.resolveTranspiledModule(
+          fileName.replace(location.origin, ''),
+          '/'
+        );
       }
 
       if (!tModule) {
@@ -207,8 +216,7 @@ function transformErrors() {
         const transformation = transformError(
           errRef.error,
           tModule,
-          manager.getTranspiledModules(),
-          manager.getDirectories()
+          manager.getTranspiledModules()
         );
 
         if (transformation) {

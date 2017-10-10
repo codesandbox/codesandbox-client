@@ -7,16 +7,16 @@ import Preset from '../';
 
 const sveltePreset = new Preset('svelte', ['js', 'jsx'], {});
 
-sveltePreset.registerTranspiler(module => /\.jsx?$/.test(module.title), [
+sveltePreset.registerTranspiler(module => /\.jsx?$/.test(module.path), [
   { transpiler: babelTranspiler },
 ]);
 
-sveltePreset.registerTranspiler(module => /\.html$/.test(module.title), [
+sveltePreset.registerTranspiler(module => /\.html$/.test(module.path), [
   { transpiler: svelteTranspiler },
   { transpiler: babelTranspiler },
 ]);
 
-sveltePreset.registerTranspiler(module => /\.json/.test(module.title), [
+sveltePreset.registerTranspiler(module => /\.json/.test(module.path), [
   { transpiler: jsonTranspiler },
 ]);
 

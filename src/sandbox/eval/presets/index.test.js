@@ -1,7 +1,71 @@
 import Preset from './';
 
+import Transpiler from '../transpilers';
+
+function createDummyTranspiler(name: string) {
+  const Klass = class Trans extends Transpiler {
+    constructor() {
+      super(name);
+    }
+  };
+
+  return new Klass();
+}
+
 describe('sandbox', () => {
   describe('preset', () => {
+    describe('query', () => {
+      const preset = new Preset('test', [], []);
+
+      preset.registerTranspiler(t => t.path.endsWith('.js'), [
+        { transpiler: createDummyTranspiler('babel-loader') },
+      ]);
+      preset.registerTranspiler(t => t.path.endsWith('.css'), [
+        { transpiler: createDummyTranspiler('style-loader') },
+        { transpiler: createDummyTranspiler('modules-loader') },
+      ]);
+
+      it('generates the right query for 1 transpiler', () => {
+        const module = {
+          path: 'test.js',
+          code: '',
+        };
+
+        expect(preset.getQuery(module)).toEqual('!babel-loader');
+      });
+
+      it('generates the right query for 2 transpiler', () => {
+        const module = {
+          path: 'test.css',
+          code: '',
+        };
+
+        expect(preset.getQuery(module)).toEqual('!style-loader!modules-loader');
+      });
+
+      it('generates the right query for absolute custom query', () => {
+        const module = {
+          path: 'test.css',
+          code: '',
+        };
+
+        expect(preset.getQuery(module, '!babel-loader')).toEqual(
+          '!babel-loader'
+        );
+      });
+
+      it('generates the right query for custom query', () => {
+        const module = {
+          path: 'test.css',
+          code: '',
+        };
+
+        expect(preset.getQuery(module, 'babel-loader')).toEqual(
+          '!style-loader!modules-loader!babel-loader'
+        );
+      });
+    });
+
     describe('alias', () => {
       function createPreset(aliases) {
         return new Preset('test', [], aliases);
@@ -70,6 +134,24 @@ describe('sandbox', () => {
         });
 
         expect(preset.getAliasedPath('react-foo')).toBe('react-foo');
+      });
+
+      describe('exact alias', () => {
+        it('resolves an exact alias', () => {
+          const preset = createPreset({
+            vue$: 'vue/common/dist',
+          });
+
+          expect(preset.getAliasedPath('vue')).toBe('vue/common/dist');
+        });
+
+        it("doesnt't resolve a not exact alias", () => {
+          const preset = createPreset({
+            vue$: 'vue/common/dist',
+          });
+
+          expect(preset.getAliasedPath('vue/test')).toBe('vue/test');
+        });
       });
     });
   });

@@ -2,6 +2,7 @@ import { dispatch, clearErrorTransformers } from 'codesandbox-api';
 
 import { getModulePath } from 'app/store/entities/sandboxes/modules/selectors';
 import type { Module, Directory } from 'common/types';
+import _debug from 'app/utils/debug';
 
 import initializeErrorTransformers from './errors/transformers';
 import getPreset from './eval';
@@ -23,9 +24,16 @@ import {
 
 import loadDependencies from './npm';
 
+// Preload the babel loader
+import babelWorker from './eval/transpilers/babel';
+
+babelWorker.initialize();
+
 let initializedResizeListener = false;
 let manager: ?Manager = null;
 let actionsEnabled = false;
+
+const debug = _debug('cs:compiler');
 
 export function areActionsEnabled() {
   return actionsEnabled;
@@ -45,16 +53,21 @@ function getIndexHtml(modules) {
   return '<div id="root"></div>';
 }
 
-function updateManager(sandboxId, template, module, modules, directories) {
+async function updateManager(
+  sandboxId,
+  template,
+  managerModules,
+  experimentalPackager = false
+) {
   if (!manager || manager.id !== sandboxId) {
-    manager = new Manager(sandboxId, modules, directories, getPreset(template));
-    return manager.transpileModules(module).catch(e => ({ error: e }));
+    manager = new Manager(sandboxId, managerModules, getPreset(template), {
+      experimentalPackager,
+    });
+  } else {
+    await manager.updateData(managerModules);
   }
 
-  return manager
-    .updateData(modules, directories)
-    .then(() => manager.transpileModules(module)) // We need to transpile the module if it was never an entry
-    .catch(e => ({ error: e }));
+  return manager;
 }
 
 function initializeResizeListener() {
@@ -81,6 +94,7 @@ async function compile({
   hasActions,
   isModuleView = false,
   template,
+  experimentalPackager = false,
 }) {
   try {
     clearErrorTransformers();
@@ -95,17 +109,41 @@ async function compile({
   handleExternalResources(externalResources);
 
   try {
-    const [{ manifest }, { error: managerError }] = await Promise.all([
-      loadDependencies(dependencies),
-      updateManager(sandboxId, template, module, modules, directories),
+    // We convert the modules to a format the manager understands
+    const managerModules = modules.map(m => ({
+      path: getModulePath(modules, directories, m.id),
+      code: m.code,
+    }));
+
+    const [{ manifest, isNewCombination }] = await Promise.all([
+      loadDependencies(dependencies, experimentalPackager),
+      updateManager(sandboxId, template, managerModules, experimentalPackager),
     ]);
 
     const { externals = {} } = manifest;
-    manager.setExternals(externals);
 
-    if (managerError) {
-      throw managerError;
+    if (experimentalPackager) {
+      manager.setManifest(manifest);
+    } else {
+      manager.setExternals(externals);
     }
+
+    if (isNewCombination) {
+      manager.clearCompiledCache();
+    }
+
+    const managerModulePathToTranspile = getModulePath(
+      modules,
+      directories,
+      module.id
+    );
+    const managerModuleToTranspile = managerModules.find(
+      m => m.path === managerModulePathToTranspile
+    );
+
+    const t = Date.now();
+    await manager.transpileModules(managerModuleToTranspile);
+    debug(`Transpilation time ${Date.now() - t}ms`);
 
     resetScreen();
 
@@ -115,12 +153,9 @@ async function compile({
       if (externals['react-dom']) {
         const reactDOM = resolveDependency('react-dom', externals);
         reactDOM.unmountComponentAtNode(document.body);
-        for (const child in children) {
-          if (
-            children.hasOwnProperty(child) &&
-            children[child].tagName === 'DIV'
-          ) {
-            reactDOM.unmountComponentAtNode(children[child]);
+        for (let i = 0; i < children.length; i += 1) {
+          if (children[i].tagName === 'DIV') {
+            reactDOM.unmountComponentAtNode(children[i]);
           }
         }
       }
@@ -131,7 +166,9 @@ async function compile({
     const html = getIndexHtml(modules);
     document.body.innerHTML = html;
 
-    const evalled = manager.evaluateModule(module);
+    const tt = Date.now();
+    const evalled = manager.evaluateModule(managerModuleToTranspile);
+    debug(`Evaluation time: ${Date.now() - tt}ms`);
 
     const domChanged = document.body.innerHTML !== html;
 
@@ -167,9 +204,6 @@ async function compile({
       type: 'success',
     });
   } catch (e) {
-    if (manager) {
-      manager.clearCompiledCache();
-    }
     console.log('Error in sandbox:');
     console.error(e);
 

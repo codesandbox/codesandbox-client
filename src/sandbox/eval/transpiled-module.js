@@ -1,11 +1,12 @@
 // @flow
 import { flattenDeep } from 'lodash';
 
-import { actions, dispatch, transformError } from 'codesandbox-api';
+import { actions, dispatch } from 'codesandbox-api';
+import _debug from 'app/utils/debug';
 
-import type { Module } from 'common/types';
-import getModulePath from 'common/sandbox/get-module-path';
+import * as pathUtils from 'common/utils/path';
 
+import type { Module } from './entities/module';
 import type { SourceMap } from './transpilers/utils/get-source-map';
 import ModuleError from './errors/module-error';
 import ModuleWarning from './errors/module-warning';
@@ -16,6 +17,8 @@ import resolveDependency from './loaders/dependency-resolver';
 import evaluate from './loaders/eval';
 
 import Manager from './manager';
+
+const debug = _debug('cs:compiler:transpiled-module');
 
 type ChildModule = Module & {
   parent: Module,
@@ -39,7 +42,7 @@ export type LoaderContext = {
   emitModule: (
     title: string,
     code: string,
-    directoryShortid: ?string
+    currentPath: string
   ) => TranspiledModule, // eslint-disable-line no-use-before-define
   emitFile: (name: string, content: string, sourceMap: SourceMap) => void,
   options: {
@@ -51,7 +54,6 @@ export type LoaderContext = {
   target: string,
   path: string,
   getModules: () => Array<Module>,
-  resolvePath: (module: Module) => string,
   addDependency: (
     depPath: string,
     options: ?{
@@ -71,7 +73,7 @@ class Compilation {
   exports: any;
 
   constructor() {
-    this.exports = null;
+    this.exports = {};
   }
 }
 
@@ -79,7 +81,6 @@ export default class TranspiledModule {
   module: Module;
   query: string;
   source: ?ModuleSource;
-  cacheable: boolean;
   assets: {
     [name: string]: ModuleSource,
   };
@@ -94,6 +95,7 @@ export default class TranspiledModule {
   compilation: ?Compilation;
   initiators: Set<TranspiledModule>; // eslint-disable-line no-use-before-define
   dependencies: Set<TranspiledModule>; // eslint-disable-line no-use-before-define
+  asyncDependencies: Array<Promise<TranspiledModule>>; // eslint-disable-line no-use-before-define
   transpilationDependencies: Set<TranspiledModule>;
   transpilationInitiators: Set<TranspiledModule>;
 
@@ -110,17 +112,17 @@ export default class TranspiledModule {
     this.query = query;
     this.errors = [];
     this.warnings = [];
-    this.cacheable = true;
     this.childModules = [];
     this.transpilationDependencies = new Set();
     this.dependencies = new Set();
+    this.asyncDependencies = [];
     this.transpilationInitiators = new Set();
     this.initiators = new Set();
     this.isEntry = false;
   }
 
   getId() {
-    return `${this.module.id}:${this.query}`;
+    return `${this.module.path}:${this.query}`;
   }
 
   dispose() {
@@ -128,6 +130,9 @@ export default class TranspiledModule {
   }
 
   reset() {
+    this.childModules.forEach(m => {
+      m.reset();
+    });
     this.childModules = [];
     this.emittedAssets = [];
     this.setIsEntry(false);
@@ -144,6 +149,12 @@ export default class TranspiledModule {
     this.source = null;
     this.errors = [];
     this.warnings = [];
+
+    Array.from(this.dependencies).forEach(t => {
+      t.initiators.delete(this);
+    });
+    this.dependencies.clear();
+    this.asyncDependencies = [];
   }
 
   resetCompilation() {
@@ -159,6 +170,12 @@ export default class TranspiledModule {
         console.error(e);
       }
     }
+
+    Array.from(this.transpilationInitiators)
+      .filter(t => t.compilation)
+      .forEach(dep => {
+        dep.resetCompilation();
+      });
   }
 
   update(module: Module): TranspiledModule {
@@ -178,12 +195,6 @@ export default class TranspiledModule {
     manager: Manager,
     transpilerOptions: ?Object = {}
   ): LoaderContext {
-    const path = getModulePath(
-      manager.getModules(),
-      manager.getDirectories(),
-      this.module.id
-    ).replace('/', '');
-
     return {
       emitWarning: warning => {
         this.warnings.push(new ModuleWarning(this, warning));
@@ -192,26 +203,23 @@ export default class TranspiledModule {
         this.errors.push(new ModuleError(this, error));
       },
       emitModule: (
-        title: string,
+        path: string,
         code: string,
-        directoryShortid = this.module.directoryShortid
+        directoryPath: string = pathUtils.dirname(this.module.path)
       ) => {
-        const queryPath = title.split('!');
+        const queryPath = path.split('!');
         // pop() mutates queryPath, queryPath is now just the loaders
-        const moduleName = queryPath.pop();
+        const modulePath = queryPath.pop();
 
         // Copy the module info, with new name
         const moduleCopy: ChildModule = {
           ...this.module,
-          id: `${this.module.id}:${moduleName}`,
-          shortid: `${this.module.shortid}:${moduleName}`,
-          directoryShortid,
-          title: moduleName,
+          path: pathUtils.join(directoryPath, modulePath),
           parent: this.module,
           code,
         };
 
-        const transpiledModule = manager.addModule(
+        const transpiledModule = manager.addTranspiledModule(
           moduleCopy,
           queryPath.join('!')
         );
@@ -229,9 +237,17 @@ export default class TranspiledModule {
       // that include the source of another file by themselves, we need to
       // force transpilation to rebuild the file
       addTranspilationDependency: (depPath: string, options) => {
+        if (
+          /^(\w|@\w)/.test(depPath) &&
+          !depPath.includes('!') &&
+          !manager.experimentalPackager
+        ) {
+          return;
+        }
+
         const tModule = manager.resolveTranspiledModule(
           depPath,
-          options && options.isAbsolute ? null : this.module.directoryShortid
+          options && options.isAbsolute ? '/' : this.module.path
         );
 
         this.transpilationDependencies.add(tModule);
@@ -240,20 +256,46 @@ export default class TranspiledModule {
         return tModule;
       },
       addDependency: (depPath: string, options) => {
-        const tModule = manager.resolveTranspiledModule(
-          depPath,
-          options && options.isAbsolute ? null : this.module.directoryShortid
-        );
+        if (
+          (/^(\w|@\w)/.test(depPath) &&
+            !depPath.includes('!') &&
+            !manager.experimentalPackager) ||
+          depPath.startsWith('babel-runtime') ||
+          depPath.startsWith('codesandbox-api')
+        ) {
+          return;
+        }
 
-        this.dependencies.add(tModule);
-        tModule.initiators.add(this);
+        try {
+          const tModule = manager.resolveTranspiledModule(
+            depPath,
+            options && options.isAbsolute ? '/' : this.module.path
+          );
 
-        return tModule;
+          this.dependencies.add(tModule);
+          tModule.initiators.add(this);
+
+          return tModule;
+        } catch (e) {
+          if (e.type === 'module-not-found' && e.isDependency) {
+            this.asyncDependencies.push(manager.downloadDependency(e.path));
+          } else {
+            this.errors.push(e);
+          }
+        }
       },
-      addDependenciesInDirectory: (folderPath: string, { isAbsolute } = {}) => {
+      addDependenciesInDirectory: (folderPath: string, options) => {
+        if (
+          /^(\w|@\w)/.test(folderPath) &&
+          !folderPath.includes('!') &&
+          !manager.experimentalPackager
+        ) {
+          return;
+        }
+
         const tModules = manager.resolveTranspiledModulesInDirectory(
           folderPath,
-          isAbsolute ? null : this.module.directoryShortid
+          options && options.isAbsolute ? '/' : this.module.path
         );
 
         tModules.forEach(tModule => {
@@ -264,18 +306,6 @@ export default class TranspiledModule {
         return tModules;
       },
       getModules: (): Array<Module> => manager.getModules(),
-      resolvePath: (module: Module) => {
-        // We have to split the options off
-        const [name] = getModulePath(
-          manager.getModules(),
-          manager.getDirectories(),
-          module.id
-        )
-          .replace('/', '')
-          .split('?');
-
-        return name;
-      },
       options: {
         context: '/',
         ...transpilerOptions,
@@ -284,7 +314,7 @@ export default class TranspiledModule {
       sourceMap: true,
       target: 'web',
       _module: this,
-      path,
+      path: this.module.path,
     };
   }
 
@@ -323,57 +353,78 @@ export default class TranspiledModule {
     let code = this.module.code || '';
     let finalSourceMap = null;
 
-    for (let i = 0; i < transpilers.length; i += 1) {
-      const transpilerConfig = transpilers[i];
-      const loaderContext = this.getLoaderContext(
-        manager,
-        transpilerConfig.options || {}
-      );
-      try {
-        const {
-          transpiledCode,
-          sourceMap,
-        } = await transpilerConfig.transpiler.transpile(code, loaderContext); // eslint-disable-line no-await-in-loop
+    if (this.module.requires) {
+      // We now know that this has been transpiled on the server, so we shortcut
+      const loaderContext = this.getLoaderContext(manager, {});
+      // These are precomputed requires, for npm dependencies
+      this.module.requires.forEach(loaderContext.addDependency);
 
-        if (this.warnings.length) {
-          this.warnings.forEach(warning => {
-            console.warn(warning.message); // eslint-disable-line no-console
-            dispatch(
-              actions.correction.show(warning.message, {
-                line: warning.lineNumber,
-                column: warning.columnNumber,
-                moduleId: warning.module.module.id,
-                source: warning.source,
-                severity: 'warning',
-              })
-            );
-          });
+      code = this.module.code;
+    } else {
+      const t = Date.now();
+      for (let i = 0; i < transpilers.length; i += 1) {
+        const transpilerConfig = transpilers[i];
+        const loaderContext = this.getLoaderContext(
+          manager,
+          transpilerConfig.options || {}
+        );
+        try {
+          const {
+            transpiledCode,
+            sourceMap,
+          } = await transpilerConfig.transpiler.transpile(code, loaderContext); // eslint-disable-line no-await-in-loop
+
+          if (this.warnings.length) {
+            this.warnings.forEach(warning => {
+              console.warn(warning.message); // eslint-disable-line no-console
+              dispatch(
+                actions.correction.show(warning.message, {
+                  line: warning.lineNumber,
+                  column: warning.columnNumber,
+                  moduleId: warning.module.module.id,
+                  source: warning.source,
+                  severity: 'warning',
+                })
+              );
+            });
+          }
+
+          if (this.errors.length) {
+            throw this.errors[0];
+          }
+
+          code = transpiledCode;
+          finalSourceMap = sourceMap;
+        } catch (e) {
+          e.fileName = loaderContext.path;
+          e.tModule = this;
+          this.resetTranspilation();
+          throw e;
         }
-
-        if (this.errors.length) {
-          throw this.errors[0];
-        }
-
-        code = transpiledCode;
-        finalSourceMap = sourceMap;
-      } catch (e) {
-        e.fileName = loaderContext.path;
-        e.tModule = this;
-        this.resetTranspilation();
-        throw e;
+        debug(`Transpiled '${this.getId()}' in ${Date.now() - t}ms`);
       }
     }
 
-    const path = getModulePath(
-      manager.getModules(),
-      manager.getDirectories(),
-      this.module.id
-    ).replace('/', '');
     // Add the source of the file by default, this is important for source mapping
     // errors back to their origin
-    code = `${code}\n//# sourceURL=${path}`;
+    code = `${code}\n//# sourceURL=${location.origin}${this.module.path}`;
 
-    this.source = new ModuleSource(this.module.title, code, finalSourceMap);
+    this.source = new ModuleSource(this.module.path, code, finalSourceMap);
+
+    await Promise.all(
+      this.asyncDependencies.map(async p => {
+        try {
+          const tModule = await p;
+
+          this.dependencies.add(tModule);
+          tModule.initiators.add(this);
+        } catch (e) {
+          /* let this handle at evaluation */
+        }
+      })
+    );
+
+    this.asyncDependencies = [];
 
     return Promise.all(
       flattenDeep([
@@ -381,7 +432,6 @@ export default class TranspiledModule {
           t.transpile(manager)
         ),
         ...Array.from(this.dependencies).map(t => t.transpile(manager)),
-        ...this.childModules.map(t => t.transpile(manager)),
       ])
     );
   }
@@ -400,48 +450,50 @@ export default class TranspiledModule {
 
   evaluate(manager: Manager, parentModules: Array<TranspiledModule>) {
     if (this.source == null) {
-      throw new Error(`${this.module.title} hasn't been transpiled yet.`);
+      throw new Error(`${this.module.path} hasn't been transpiled yet.`);
     }
 
     const module = this.module;
 
-    const transpilers = manager.preset.getLoaders(module, this.query);
-    const cacheable = transpilers.every(t => t.transpiler.cacheable);
-
-    const compilation = new Compilation();
+    this.compilation = new Compilation();
     const transpiledModule = this;
 
     try {
+      // eslint-disable-next-line no-inner-declarations
       function require(path: string) {
         // First check if there is an alias for the path, in that case
         // we must alter the path to it
         const aliasedPath = manager.preset.getAliasedPath(path);
 
         // eslint-disable-line no-unused-vars
-        if (/^(\w|@)/.test(aliasedPath) && !aliasedPath.includes('!')) {
+        if (/^(\w|@\w)/.test(aliasedPath) && !aliasedPath.includes('!')) {
           // So it must be a dependency
-
-          return resolveDependency(aliasedPath, manager.externals);
+          if (
+            !manager.experimentalPackager ||
+            aliasedPath.startsWith('babel-runtime') ||
+            aliasedPath.startsWith('codesandbox-api')
+          )
+            // TODO remove this hack for not-experimental packager
+            return resolveDependency(
+              path === 'vue' && !manager.experimentalPackager
+                ? path
+                : aliasedPath,
+              manager.externals
+            );
         }
 
         const requiredTranspiledModule = manager.resolveTranspiledModule(
           aliasedPath,
-          module.directoryShortid
+          module.path
         );
 
         if (module === requiredTranspiledModule.module) {
-          throw new Error(`${module.title} is importing itself`);
+          throw new Error(`${module.path} is importing itself`);
         }
 
         // Check if this module has been evaluated before, if so return the exports
         // of that compilation
         const cache = requiredTranspiledModule.compilation;
-
-        // This is a cyclic dependency, we should return undefined for first
-        // execution according to ES module spec
-        if (parentModules.includes(requiredTranspiledModule) && !cache) {
-          return undefined;
-        }
 
         return cache
           ? cache.exports
@@ -450,14 +502,14 @@ export default class TranspiledModule {
               transpiledModule,
             ]);
       }
+      const exports = evaluate(
+        this.source.compiledCode,
+        require,
+        this.compilation.exports
+      );
 
-      const exports = evaluate(this.source.compiledCode, require);
+      this.compilation.exports = exports;
 
-      compilation.exports = exports;
-
-      if (cacheable) {
-        this.compilation = compilation;
-      }
       return exports;
     } catch (e) {
       e.tModule = e.tModule || transpiledModule;

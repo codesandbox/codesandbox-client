@@ -1,44 +1,78 @@
 // @flow
-import type { Module, Directory } from 'common/types';
 import { flattenDeep, uniq, values } from 'lodash';
 
+import * as pathUtils from 'common/utils/path';
+
+import type { Module } from './entities/module';
 import TranspiledModule from './transpiled-module';
 import Preset from './presets';
-import resolveModule, {
-  getModulesInDirectory,
-} from '../../common/sandbox/resolve-module';
+import nodeResolvePath from './utils/node-resolve-path';
+import fetchModule from './npm/fetch-npm-module';
+import DependencyNotFoundError from '../errors/dependency-not-found-error';
+import ModuleNotFoundError from '../errors/module-not-found-error';
 
 type Externals = {
   [name: string]: string,
 };
 
+type ModuleObject = {
+  [path: string]: Module,
+};
+
+export type Manifest = {
+  aliases: {
+    [path: string]: string | false,
+  },
+  contents: {
+    [path: string]: { content: string, requires: Array<string> },
+  },
+  dependencies: Array<{ name: string, version: string }>,
+  dependencyDependencies: {
+    [name: string]: string,
+  },
+};
+
 export default class Manager {
   id: string;
   transpiledModules: {
-    [id: string]: TranspiledModule,
+    [path: string]: {
+      module: Module,
+      tModules: {
+        [query: string]: TranspiledModule,
+      },
+    },
   };
   preset: Preset;
   externals: Externals;
-  modules: Array<Module>;
-  directories: Array<Directory>;
+  modules: ModuleObject;
+
+  manifest: Manifest;
+  experimentalPackager: boolean;
 
   constructor(
     id: string,
     modules: Array<Module>,
-    directories: Array<Directory>,
-    preset: Preset
+    preset: Preset,
+    options: Object = {}
   ) {
     this.id = id;
-    this.modules = modules;
-    this.directories = directories;
     this.preset = preset;
     this.transpiledModules = {};
+    modules.forEach(m => this.addModule(m));
 
-    console.log(this);
+    this.experimentalPackager = options.experimentalPackager || false;
+
+    if (process.env.NODE_ENV === 'development') {
+      console.log(this);
+    }
   }
 
   setExternals(externals: Externals) {
     this.externals = externals;
+  }
+
+  setManifest(manifest: Manifest) {
+    this.manifest = manifest;
   }
 
   evaluateModule(module: Module) {
@@ -59,10 +93,22 @@ export default class Manager {
     return transpiledModule.evaluate(this, parentModules);
   }
 
-  addModule(module: Module, query: string = ''): TranspiledModule {
+  addModule(module: Module) {
+    this.transpiledModules[module.path] = this.transpiledModules[
+      module.path
+    ] || { module, tModules: {} };
+  }
+
+  addTranspiledModule(module: Module, query: string = ''): TranspiledModule {
+    if (!this.transpiledModules[module.path]) {
+      this.addModule(module);
+    }
+    this.transpiledModules[module.path].module = module;
+
     const transpiledModule = new TranspiledModule(module, query);
 
-    this.transpiledModules[transpiledModule.getId()] = transpiledModule;
+    this.transpiledModules[module.path].tModules[query] = transpiledModule;
+
     return transpiledModule;
   }
 
@@ -74,10 +120,15 @@ export default class Manager {
    * @param {*} string
    */
   getTranspiledModule(module: Module, query: string = ''): TranspiledModule {
-    let transpiledModule = this.transpiledModules[`${module.id}:${query}`];
+    const moduleObject = this.transpiledModules[module.path];
+    if (!moduleObject) {
+      this.addModule(module);
+    }
+
+    let transpiledModule = this.transpiledModules[module.path].tModules[query];
 
     if (!transpiledModule) {
-      transpiledModule = this.addModule(module, query);
+      transpiledModule = this.addTranspiledModule(module, query);
     }
 
     return transpiledModule;
@@ -92,20 +143,27 @@ export default class Manager {
    * @param {*} module
    */
   getTranspiledModulesByModule(module: Module): Array<TranspiledModule> {
-    return this.getTranspiledModules().filter(t => t.module.id === module.id);
+    return this.transpiledModules[module.path]
+      ? values(this.transpiledModules[module.path].tModules)
+      : [];
   }
 
   getTranspiledModules() {
     const transpiledModuleValues = values(this.transpiledModules);
 
-    return flattenDeep([
-      transpiledModuleValues,
-      ...transpiledModuleValues.map(m => m.getChildTranspiledModules()),
-    ]);
+    return flattenDeep(transpiledModuleValues.map(m => values(m.tModules)));
   }
 
   removeTranspiledModule(tModule: TranspiledModule) {
-    delete this.transpiledModules[tModule.getId()];
+    delete this.transpiledModules[tModule.module.path].tModules[tModule.query];
+  }
+
+  removeModule(module: Module) {
+    const existingModule = this.transpiledModules[module.path];
+
+    values(existingModule.tModules).forEach(m => m.dispose());
+
+    delete this.transpiledModules[module.path];
   }
 
   /**
@@ -124,142 +182,204 @@ export default class Manager {
   }
 
   getModules(): Array<Module> {
-    const sandboxModules = this.modules.reduce(
-      (prev, next) => ({
-        ...prev,
-        [next.id]: next,
-      }),
-      {}
-    );
-    const transpiledModules = this.getTranspiledModules().reduce(
-      (prev, next) => ({
-        ...prev,
-        [next.module.id]: next.module,
-      }),
-      {}
-    );
-
-    return values({ ...sandboxModules, ...transpiledModules });
+    return values(this.transpiledModules).map(t => t.module);
   }
 
-  getDirectories() {
-    return this.directories;
+  resolveModule(
+    path: string,
+    defaultExtensions: Array<string> = ['js', 'jsx', 'json']
+  ): Module {
+    const moduleObject = this.transpiledModules;
+    const foundPath = nodeResolvePath(path, moduleObject, defaultExtensions);
+
+    if (foundPath && moduleObject[foundPath]) {
+      return moduleObject[foundPath].module;
+    }
+
+    throw new ModuleNotFoundError(path, false);
+  }
+
+  resolveDependency(
+    path: string,
+    defaultExtensions: Array<string> = ['js', 'jsx', 'json']
+  ): Module {
+    let depPath = path.replace('/node_modules/', '');
+
+    const aliasedPath = nodeResolvePath(
+      depPath,
+      this.manifest.aliases,
+      defaultExtensions
+    );
+
+    depPath = aliasedPath == null ? depPath : aliasedPath;
+
+    const alias = this.manifest.aliases[depPath];
+    // So aliased to not be included in the bundle, decided by browser object on pkg
+    if (alias === false) {
+      return {
+        path: pathUtils.join('/node_modules', depPath),
+        code: 'module.exports = null;',
+        requires: [],
+      };
+    }
+
+    // Check if the module is already there
+    const foundPath = nodeResolvePath(
+      path,
+      this.transpiledModules,
+      defaultExtensions
+    );
+    if (foundPath && this.transpiledModules[foundPath]) {
+      return this.transpiledModules[foundPath].module;
+    }
+
+    const resolvedPath = nodeResolvePath(
+      alias || depPath,
+      this.manifest.contents,
+      defaultExtensions
+    );
+    if (resolvedPath && this.manifest.contents[resolvedPath]) {
+      return {
+        path: pathUtils.join('/node_modules', resolvedPath),
+        code: this.manifest.contents[resolvedPath].content,
+        requires: this.manifest.contents[resolvedPath].requires,
+      };
+    }
+
+    const dependencyParts = depPath.split('/');
+    const dependencyName = depPath.startsWith('@')
+      ? `${dependencyParts[0]}/${dependencyParts[1]}`
+      : dependencyParts[0];
+
+    if (
+      this.manifest.dependencies.find(d => d.name === dependencyName) ||
+      this.manifest.dependencyDependencies[dependencyName]
+    ) {
+      throw new ModuleNotFoundError(alias || depPath, true);
+    } else {
+      throw new DependencyNotFoundError(alias || depPath);
+    }
+  }
+
+  async downloadDependency(path: string): Promise<TranspiledModule> {
+    return fetchModule(
+      path,
+      this.manifest,
+      this.preset.ignoredExtensions
+    ).then(module => this.getTranspiledModule(module));
   }
 
   /**
    * Resolve the transpiled module from the path, note that the path can actually
    * include loaders. That's why we're focussing on first extracting this query
    * @param {*} path
-   * @param {*} startdirectoryShortid
-   * @param {*} string
+   * @param {*} currentPath
    */
-  resolveTranspiledModule(
-    path: string,
-    startdirectoryShortid: ?string
-  ): TranspiledModule {
+  resolveTranspiledModule(path: string, currentPath: string): TranspiledModule {
+    if (path.startsWith('webpack:')) {
+      throw new Error('Cannot resolve webpack path');
+    }
+
     const queryPath = path.split('!');
     // pop() mutates queryPath, queryPath is now just the loaders
     const modulePath = queryPath.pop();
 
-    const module = resolveModule(
-      this.preset.getAliasedPath(modulePath),
-      this.getModules(),
-      this.getDirectories(),
-      startdirectoryShortid,
-      this.preset.ignoredExtensions
-    );
+    let module;
+
+    let newPath = pathUtils
+      .join(
+        pathUtils.dirname(currentPath),
+        this.preset.getAliasedPath(modulePath)
+      )
+      .replace(/.*\{\{sandboxRoot\}\}/, '');
+
+    if (/^(\w|@\w)/.test(modulePath) && !modulePath.includes('!')) {
+      // Prepend node_modules and go to root if it is a dependency
+      newPath = pathUtils.join(
+        '/node_modules',
+        this.preset.getAliasedPath(modulePath)
+      );
+    }
+
+    if (newPath.startsWith('/node_modules')) {
+      module = this.resolveDependency(newPath, this.preset.ignoredExtensions);
+    } else {
+      module = this.resolveModule(newPath, this.preset.ignoredExtensions);
+    }
 
     return this.getTranspiledModule(module, queryPath.join('!'));
   }
 
   resolveTranspiledModulesInDirectory(
     path: string,
-    startdirectoryShortid: ?string
+    currentPath: string
   ): Array<TranspiledModule> {
     const queryPath = path.split('!');
     // pop() mutates queryPath, queryPath is now just the loaders
     const modulesPath = queryPath.pop();
 
-    const { modules } = getModulesInDirectory(
-      modulesPath,
-      this.getModules(),
-      this.getDirectories(),
-      startdirectoryShortid
+    const joinedPath = pathUtils.join(
+      pathUtils.dirname(currentPath),
+      modulesPath
     );
 
-    return modules.map(module =>
-      this.getTranspiledModule(module, queryPath.join('!'))
-    );
+    return Object.keys(this.transpiledModules)
+      .filter(p => p.startsWith(joinedPath))
+      .map(m =>
+        this.getTranspiledModule(
+          this.transpiledModules[m].module,
+          queryPath.join('!')
+        )
+      );
   }
 
   /**
    * Find all changed, added and deleted modules. Update trees and
    * delete caches accordingly
    */
-  updateData(modules: Array<Module>, directories: Array<Directory>) {
-    // Create an object with mapping from modules
-    const moduleObject = this.modules.reduce(
-      (prev, next) => ({
-        ...prev,
-        [next.id]: next,
-      }),
-      {}
-    );
-
+  updateData(modules: Array<Module>) {
     const addedModules = [];
     const updatedModules = [];
-    const deletedModules = [];
 
     modules.forEach(module => {
-      const mirrorModule = moduleObject[module.id];
+      const mirrorModule = this.transpiledModules[module.path];
 
       if (!mirrorModule) {
         addedModules.push(module);
-      } else if (
-        mirrorModule.code !== module.code ||
-        mirrorModule.title !== module.title ||
-        mirrorModule.isNotSynced !== module.isNotSynced ||
-        mirrorModule.directoryShortid !== module.directoryShortid
-      ) {
+        this.addTranspiledModule(module);
+      } else if (mirrorModule.module.code !== module.code) {
         updatedModules.push(module);
       }
     });
 
-    this.modules.forEach(module => {
-      const mirrorModule = modules.find(m => m.id === module.id);
-
-      if (!mirrorModule) {
-        deletedModules.push(module);
+    this.getModules().forEach(m => {
+      if (
+        !m.path.startsWith('/node_modules') &&
+        !modules.find(m2 => m2.path === m.path) &&
+        !m.parent // not an emitted module
+      ) {
+        this.removeModule(m);
       }
-    });
-
-    deletedModules.forEach(m => {
-      const transpiledModules = this.getTranspiledModulesByModule(m);
-
-      transpiledModules.forEach(tModule => {
-        tModule.dispose();
-        delete this.transpiledModules[tModule.getId()];
-      });
     });
 
     const modulesToUpdate = uniq([...addedModules, ...updatedModules]);
 
-    modulesToUpdate.forEach(m => {
-      this.getTranspiledModulesByModule(m).forEach(tModule => {
+    const tModulesToUpdate = modulesToUpdate.map(m =>
+      this.getTranspiledModulesByModule(m).map(tModule => {
+        this.transpiledModules[m.path].module = m;
         tModule.update(m);
-      });
-    });
+
+        return tModule;
+      })
+    );
 
     const transpiledModulesToUpdate = uniq(
       flattenDeep([
-        modulesToUpdate.map(m => this.getTranspiledModulesByModule(m)),
+        tModulesToUpdate,
         // All modules with errors
         this.getTranspiledModules().filter(t => t.errors.length > 0),
       ])
     );
-
-    this.modules = modules;
-    this.directories = directories;
 
     return Promise.all(
       transpiledModulesToUpdate.map(tModule => tModule.transpile(this))

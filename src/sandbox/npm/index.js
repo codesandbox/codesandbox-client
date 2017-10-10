@@ -1,5 +1,7 @@
 import { pickBy } from 'lodash';
+
 import fetchDependencies from './fetch-dependencies';
+import fetchDependenciesNew from './fetch-dependencies.new';
 import dependenciesToQuery from './dependencies-to-query';
 
 import setScreen from '../status-screen';
@@ -31,7 +33,11 @@ function addDependencyBundle(url) {
  * This fetches the manifest and dependencies from the
  * @param {*} dependencies
  */
-export default async function loadDependencies(dependencies: NPMDependencies) {
+export default async function loadDependencies(
+  dependencies: NPMDependencies,
+  experimentalPackager = false
+) {
+  let isNewCombination = false;
   if (Object.keys(dependencies).length !== 0) {
     // We filter out all @types, as they are not of any worth to the bundler
     const dependenciesWithoutTypings = pickBy(
@@ -42,22 +48,28 @@ export default async function loadDependencies(dependencies: NPMDependencies) {
     const depQuery = dependenciesToQuery(dependenciesWithoutTypings);
 
     if (loadedDependencyCombination !== depQuery) {
+      isNewCombination = true;
       // Mark that the last requested url is this
       loadedDependencyCombination = depQuery;
 
       setScreen({ type: 'loading', text: 'Bundling Dependencies...' });
 
-      const data = await fetchDependencies(dependenciesWithoutTypings);
+      const fetcher = experimentalPackager
+        ? fetchDependenciesNew
+        : fetchDependencies;
 
+      const data = await fetcher(dependenciesWithoutTypings);
       manifest = data;
 
       setScreen({ type: 'loading', text: 'Downloading Dependencies...' });
 
-      await addDependencyBundle(data.url);
+      if (!experimentalPackager) {
+        await addDependencyBundle(data.url);
+      }
     }
   } else {
     manifest = {};
   }
 
-  return { manifest };
+  return { manifest, isNewCombination };
 }

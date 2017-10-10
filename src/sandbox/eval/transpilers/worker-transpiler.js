@@ -1,6 +1,10 @@
+import _debug from 'app/utils/debug';
+
 import Transpiler from './';
 import { parseWorkerError } from './utils/worker-error-handler';
 import { type LoaderContext } from '../transpiled-module';
+
+const debug = _debug('cs:compiler:worker-transpiler');
 
 type Task = {
   message: any,
@@ -38,20 +42,30 @@ export default class WorkerTranspiler extends Transpiler {
     this.initialized = false;
   }
 
+  loadWorker() {
+    return new Promise(resolve => {
+      const worker = new this.Worker();
+      const t = Date.now();
+
+      worker.onmessage = message => {
+        if (message && message.data === 'ready') {
+          debug(`Loaded '${this.name}' worker in ${Date.now() - t}ms`);
+          this.idleWorkers.push(worker);
+
+          this.executeRemainingTasks();
+
+          resolve();
+        }
+      };
+
+      this.workers.push(worker);
+    });
+  }
+
   initialize() {
     if (this.workers.length === 0) {
       for (let i = 0; i < this.workerCount; i += 1) {
-        const worker = new this.Worker();
-
-        worker.onmessage = message => {
-          if (message && message.data === 'ready') {
-            this.idleWorkers.push(worker);
-
-            this.executeRemainingTasks();
-          }
-        };
-
-        this.workers.push(worker);
+        this.loadWorker();
       }
     }
   }

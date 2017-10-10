@@ -13,15 +13,15 @@ const preset = new Preset('create-react-app', [
   'jsx',
 ]);
 
-preset.registerTranspiler(module => /\.css$/.test(module.title), [
+preset.registerTranspiler(module => /\.css$/.test(module.path), [
   { transpiler: stylesTranspiler },
 ]);
 
-preset.registerTranspiler(module => /\.jsx?$/.test(module.title), [
+preset.registerTranspiler(module => /\.jsx?$/.test(module.path), [
   { transpiler: babelTranspiler },
 ]);
 
-preset.registerTranspiler(module => /\.json$/.test(module.title), [
+preset.registerTranspiler(module => /\.json$/.test(module.path), [
   { transpiler: jsonTranspiler },
 ]);
 
