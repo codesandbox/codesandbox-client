@@ -40,8 +40,7 @@
     "eslint-plugin-flowtype": "^2.34.0",
     "eslint-plugin-import": "^2.3.0",
     "eslint-plugin-jsx-a11y": "^5.0.3",
-    "eslint-plugin-react":
-      "https://github.com/yannickcr/eslint-plugin-react.git#master",
+    "eslint-plugin-react": "^7.4.0",
     "express": "^4.15.3",
     "extract-text-webpack-plugin": "^2.1.0",
     "file-loader": "^0.11.1",

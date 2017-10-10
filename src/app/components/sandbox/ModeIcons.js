@@ -119,7 +119,6 @@ type Props = {
   setEditorView: () => void,
   setPreviewView: () => void,
   setMixedView: () => void,
-  noPreview: ?boolean,
   dropdown: boolean,
 };
 

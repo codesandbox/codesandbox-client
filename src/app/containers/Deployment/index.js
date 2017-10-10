@@ -5,7 +5,6 @@ import styled, { keyframes } from 'styled-components';
 
 import type { CurrentUser } from 'common/types';
 import { currentUserSelector } from 'app/store/user/selectors';
-import userActionCreators from 'app/store/user/actions';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 
 import ZeitIntegration from 'app/containers/integrations/Zeit';
@@ -151,7 +150,6 @@ const DeploymentManagementNotice = styled.div`
 type Props = {
   id: string,
   user: CurrentUser,
-  userActions: typeof userActionCreators,
   sandboxActions: typeof sandboxActionCreators,
 };
 type State = {
@@ -160,7 +158,6 @@ type State = {
 };
 
 const mapDispatchToProps = dispatch => ({
-  userActions: bindActionCreators(userActionCreators, dispatch),
   sandboxActions: bindActionCreators(sandboxActionCreators, dispatch),
 });
 const mapStateToProps = state => ({
