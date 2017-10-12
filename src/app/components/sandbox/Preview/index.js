@@ -2,6 +2,9 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
+import SplitPane from 'react-split-pane';
+import Console from 'react-console';
+
 import { debounce } from 'lodash';
 
 import type { Module, Sandbox, Preferences, Directory } from 'common/types';
@@ -21,7 +24,7 @@ const Container = styled.div`
 
 const StyledFrame = styled.iframe`
   border-width: 0px;
-  height: calc(100% - ${props => (props.hideNavigation ? 3 : 6)}rem);
+  height: calc(100% - ${props => (props.hideNavigation ? 0 : 3)}rem);
   width: 100%;
   overflow: auto;
 `;
@@ -211,6 +214,25 @@ export default class Preview extends React.PureComponent<Props, State> {
           }
           break;
         }
+        case 'console': {
+          if (!this.props.preferences.consoleExperiment) {
+            break;
+          }
+          const { method, args: jsonArgs } = e.data;
+          const args = JSON.parse(jsonArgs);
+          if (args.length > 0 && typeof args[0] === 'string') {
+            if (args[0].indexOf('cs:') !== -1) {
+              break;
+            }
+            const matches = args[0].match(/%c/g);
+            if (matches) {
+              args[0] = args[0].replace(/%c/g, '');
+              args.splice(1, matches.length);
+            }
+          }
+          this.console.addMessage(method || method, args);
+          break;
+        }
         default: {
           break;
         }
@@ -363,7 +385,7 @@ export default class Preview extends React.PureComponent<Props, State> {
 
     const url = urlInAddressBar || frameUrl(sandboxId);
 
-    return (
+    const container = (
       <Container>
         {!hideNavigation && (
           <Navigator
@@ -389,5 +411,32 @@ export default class Preview extends React.PureComponent<Props, State> {
         />
       </Container>
     );
+
+    if (this.props.preferences.consoleExperiment) {
+      return (
+        <SplitPane
+          // onDragStarted={this.startResizing}
+          // onDragFinished={this.stopResizing}
+          split="horizontal"
+          minSize={200}
+          maxSize={-100}
+          defaultSize="80%"
+        >
+          {container}
+          <Console
+            ref={c => {
+              this.console = c;
+            }}
+            style={{
+              backgroundColor: '#ffffff',
+              color: '#000000',
+              height: '100%',
+            }}
+          />
+        </SplitPane>
+      );
+    }
+
+    return container;
   }
 }

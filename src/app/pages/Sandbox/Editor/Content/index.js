@@ -231,6 +231,7 @@ class EditorPreview extends React.PureComponent<Props, State> {
             split="vertical"
             defaultSize="50%"
             minSize={360}
+            style={{ height: 'calc(100% - 3rem)' }}
             paneStyle={{ height: '100%' }}
             resizerStyle={{
               visibility:

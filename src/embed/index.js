@@ -3,6 +3,7 @@ import { render } from 'react-dom';
 import { ThemeProvider } from 'styled-components';
 import requirePolyfills from 'common/load-dynamic-polyfills';
 import 'normalize.css';
+import '../app/split-pane.css';
 
 import theme from '../common/theme';
 import '../common/global.css';

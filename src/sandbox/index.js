@@ -9,6 +9,7 @@ import host from './utils/host';
 
 import setupHistoryListeners from './url-listeners';
 import compile from './compile';
+import setupConsole from './console';
 
 function getId() {
   if (process.env.NODE_ENV === 'test') {
@@ -37,6 +38,7 @@ requirePolyfills().then(() => {
 
   sendReady();
   setupHistoryListeners();
+  setupConsole();
 
   if (process.env.NODE_ENV === 'test' || isStandalone) {
     // We need to fetch the sandbox ourselves...
