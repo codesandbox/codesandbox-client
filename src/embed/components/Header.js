@@ -15,8 +15,8 @@ const Container = styled.div`
   height: 3rem;
   padding: 0 1rem;
   box-sizing: border-box;
-  border-bottom: 1px solid ${props => props.theme.background2.darken(0.3)};
-  background-color: ${props => props.theme.background2};
+  border-bottom: 1px solid ${props => props.theme.background.darken(0.3)};
+  background-color: ${props => props.theme.background};
 `;
 
 const MenuIcon = styled(MenuIconSVG)`

@@ -31,6 +31,7 @@ type Props = {
   sandboxId: string,
   modules: Array,
   directories: Array,
+  hideNavigation: boolean,
 };
 
 const Container = styled.div`
@@ -55,7 +56,7 @@ const CodeContainer = styled.div`
   position: relative;
   overflow: auto;
   width: 100%;
-  height: calc(100% - 6rem);
+  height: calc(100% - ${props => (props.hideNavigation ? 3 : 6)}rem);
   .CodeMirror {
     font-family: ${props =>
       fontFamilies(props.fontFamily, 'Source Code Pro', 'monospace')};
@@ -501,18 +502,22 @@ export default class CodeEditor extends React.Component<Props, State> {
       modules,
       directories,
       id,
+      hideNavigation,
     } = this.props;
 
     return (
       <Container>
-        <Header
-          saveComponent={canSave && !onlyViewMode && this.handleSaveCode}
-          prettify={!onlyViewMode && this.prettify}
-          path={modulePath}
-        />
+        {!hideNavigation && (
+          <Header
+            saveComponent={canSave && !onlyViewMode && this.handleSaveCode}
+            prettify={!onlyViewMode && this.prettify}
+            path={modulePath}
+          />
+        )}
         <CodeContainer
           fontFamily={preferences.fontFamily}
           lineHeight={preferences.lineHeight}
+          hideNavigation={hideNavigation}
         >
           {this.state.fuzzySearchEnabled && (
             <FuzzySearch

@@ -60,6 +60,7 @@ type State = {
   fontSize: number,
   enableEslint: boolean,
   useCodeMirror: boolean,
+  editorSize: number,
 };
 
 export default class App extends React.PureComponent<{}, State> {
@@ -77,6 +78,7 @@ export default class App extends React.PureComponent<{}, State> {
       fontSize,
       enableEslint,
       useCodeMirror,
+      editorSize,
     } = getSandboxOptions(document.location.href);
 
     this.state = {
@@ -93,6 +95,7 @@ export default class App extends React.PureComponent<{}, State> {
       hideNavigation,
       enableEslint,
       useCodeMirror,
+      editorSize,
     };
   }
 
@@ -212,6 +215,7 @@ export default class App extends React.PureComponent<{}, State> {
             setCurrentModule={this.setCurrentModule}
             useCodeMirror={this.state.useCodeMirror}
             enableEslint={this.state.enableEslint}
+            editorSize={this.state.editorSize}
           />
         </Container>
       </ThemeProvider>
