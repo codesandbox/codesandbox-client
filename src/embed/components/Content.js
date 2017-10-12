@@ -21,9 +21,9 @@ const Container = styled.div`
 
 const Split = styled.div`
   position: relative;
-  width: ${props => (props.show ? '50%' : '0px')};
-  max-width: ${props => (props.only ? '100%' : '50%')};
-  min-width: ${props => (props.only ? '100%' : '50%')};
+  width: ${props => (props.show ? `${props.size}%` : '0px')};
+  max-width: ${props => (props.only ? '100%' : `${props.size}%`)};
+  min-width: ${props => (props.only ? '100%' : `${props.size}%`)};
   height: calc(100% + 3rem);
 `;
 
@@ -42,6 +42,7 @@ type Props = {
   useCodeMirror: boolean,
   enableEslint: boolean,
   isInProjectView: boolean,
+  editorSize: number,
 };
 
 type State = {
@@ -164,6 +165,7 @@ export default class Content extends React.PureComponent<Props, State> {
     autoDownloadTypes: true,
     lintEnabled: this.props.enableEslint,
     codeMirror: this.props.useCodeMirror,
+    lineHeight: 1.4,
   });
 
   setCurrentModule = (_, moduleId) => {
@@ -178,6 +180,7 @@ export default class Content extends React.PureComponent<Props, State> {
       isInProjectView,
       currentModule,
       hideNavigation,
+      editorSize,
     } = this.props;
 
     const { errors } = this.state;
@@ -203,7 +206,11 @@ export default class Content extends React.PureComponent<Props, State> {
     return (
       <Container>
         {showEditor && (
-          <Split show={showEditor} only={showEditor && !showPreview}>
+          <Split
+            show={showEditor}
+            only={showEditor && !showPreview}
+            size={editorSize}
+          >
             <CodeEditor
               code={alteredMainModule.code}
               id={alteredMainModule.id}
@@ -221,6 +228,7 @@ export default class Content extends React.PureComponent<Props, State> {
               setCurrentModule={this.setCurrentModule}
               template={sandbox.template}
               dependencies={sandbox.npmDependencies}
+              hideNavigation={hideNavigation}
               canSave={false}
               corrections={[]}
             />
@@ -228,7 +236,11 @@ export default class Content extends React.PureComponent<Props, State> {
         )}
 
         {showPreview && (
-          <Split show={showPreview} only={showPreview && !showEditor}>
+          <Split
+            show={showPreview}
+            only={showPreview && !showEditor}
+            size={100 - editorSize}
+          >
             <Preview
               sandboxId={sandbox.id}
               template={sandbox.template}
