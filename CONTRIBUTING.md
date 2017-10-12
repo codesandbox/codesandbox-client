@@ -46,7 +46,7 @@ To install the project you need to have `yarn` and `node`
 
 ## Submitting a Pull Request
 
-Please go through existing pull requests and check if somebody else is already working on this.
+Please go through existing issues and pull requests to check if somebody else is already working on it, we use `someone working on it` label to mark such issues.
 
 Also, make sure to run the tests before you commit your changes.
 
