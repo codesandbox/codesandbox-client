@@ -221,6 +221,8 @@ export default class Content extends React.PureComponent<Props, State> {
               setCurrentModule={this.setCurrentModule}
               template={sandbox.template}
               dependencies={sandbox.npmDependencies}
+              canSave={false}
+              corrections={[]}
             />
           </Split>
         )}
