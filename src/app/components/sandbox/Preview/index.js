@@ -432,6 +432,7 @@ export default class Preview extends React.PureComponent<Props, State> {
               backgroundColor: '#ffffff',
               color: '#000000',
               height: '100%',
+              boxSizing: 'border-box',
             }}
           />
         </SplitPane>
