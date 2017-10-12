@@ -417,8 +417,6 @@ export default class Preview extends React.PureComponent<Props, State> {
     if (this.props.preferences.consoleExperiment) {
       return (
         <SplitPane
-          // onDragStarted={this.startResizing}
-          // onDragFinished={this.stopResizing}
           split="horizontal"
           minSize={50}
           maxSize={-100}

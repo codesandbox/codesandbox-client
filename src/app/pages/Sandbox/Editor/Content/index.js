@@ -233,6 +233,7 @@ class EditorPreview extends React.PureComponent<Props, State> {
             split="vertical"
             defaultSize="50%"
             minSize={360}
+            style={{ position: 'static' }}
             resizerStyle={{
               visibility:
                 (!sandbox.showPreview && sandbox.showEditor) ||
