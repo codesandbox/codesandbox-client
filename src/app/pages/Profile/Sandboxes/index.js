@@ -39,6 +39,7 @@ type Props = {
   fetchSandboxes: Function,
   sandboxes: PaginatedSandboxes,
   sandboxActions: typeof sandboxActionCreators,
+  modalActions: typeof modalActionCreators,
   isCurrentUser: boolean,
 };
 
@@ -69,7 +70,7 @@ class Sandboxes extends React.PureComponent<Props> {
     return Math.ceil(sandboxCount / PER_PAGE_COUNT);
   };
 
-  deleteSandbox = async (id: string) => {
+  deleteSandbox = (id: string) => {
     const { modalActions } = this.props;
 
     modalActions.openModal({
@@ -81,6 +82,7 @@ class Sandboxes extends React.PureComponent<Props> {
           onDelete={async () => {
             await this.props.sandboxActions.deleteSandbox(id);
             this.fetch(true);
+            modalActions.closeModal();
           }}
         />
       ),
