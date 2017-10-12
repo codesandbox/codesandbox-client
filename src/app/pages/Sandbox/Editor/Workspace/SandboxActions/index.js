@@ -50,7 +50,7 @@ class SandboxSettings extends React.PureComponent {
     modalActions.openModal({
       Body: (
         <Alert
-          title="Delete File"
+          title="Delete Sandbox"
           body={<span>Are you sure you want to delete this sandbox?</span>}
           onCancel={modalActions.closeModal}
           onDelete={() => {

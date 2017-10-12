@@ -14,7 +14,7 @@ type State = {
   redirect: ?string,
 };
 
-export default class ZeitSignIn extends React.PureComponent<State> {
+export default class ZeitSignIn extends React.PureComponent<void, State> {
   constructor(props) {
     super(props);
 

@@ -19,7 +19,6 @@
             "webpack": true
           }
         ],
-        "babel-plugin-lodash",
         "babel-plugin-system-import-transformer"
       ]
     }

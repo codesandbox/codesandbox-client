@@ -40,7 +40,7 @@ type Props = {
   title: string,
   modulePath: string,
   changeCode: (id: string, code: string) => Object,
-  saveCode: () => void,
+  saveCode: ?() => void,
   canSave: boolean,
   preferences: Preferences,
   onlyViewMode: boolean,

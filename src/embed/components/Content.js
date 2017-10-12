@@ -229,6 +229,8 @@ export default class Content extends React.PureComponent<Props, State> {
               template={sandbox.template}
               dependencies={sandbox.npmDependencies}
               hideNavigation={hideNavigation}
+              canSave={false}
+              corrections={[]}
             />
           </Split>
         )}
