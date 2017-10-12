@@ -325,6 +325,7 @@ class ShareView extends React.PureComponent {
           HeaderComponent={Action}
           headerProps={{
             title: 'Share',
+            tooltip: 'Share sandbox',
             Icon: ShareIcon,
             moreInfo: true,
           }}

@@ -131,22 +131,28 @@ const getCurrentMode = ({
   setPreviewView,
 }: Props) => {
   const both = (
-    <ViewIcon onClick={setMixedView} active={showEditor && showPreview}>
-      <EditorIcon half />
-      <PreviewIcon half />
-    </ViewIcon>
+    <Tooltip title="Show both">
+      <ViewIcon onClick={setMixedView} active={showEditor && showPreview}>
+        <EditorIcon half />
+        <PreviewIcon half />
+      </ViewIcon>
+    </Tooltip>
   );
 
   const editor = (
-    <ViewIcon onClick={setEditorView} active={showEditor && !showPreview}>
-      <EditorIcon />
-    </ViewIcon>
+    <Tooltip title="Show editor">
+      <ViewIcon onClick={setEditorView} active={showEditor && !showPreview}>
+        <EditorIcon />
+      </ViewIcon>
+    </Tooltip>
   );
 
   const preview = (
-    <ViewIcon onClick={setPreviewView} active={!showEditor && showPreview}>
-      <PreviewIcon />
-    </ViewIcon>
+    <Tooltip title="Show preview">
+      <ViewIcon onClick={setPreviewView} active={!showEditor && showPreview}>
+        <PreviewIcon />
+      </ViewIcon>
+    </Tooltip>
   );
 
   if (showEditor && !showPreview)
