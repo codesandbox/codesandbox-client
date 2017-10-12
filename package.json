@@ -69,7 +69,7 @@
     "preval.macro": "^1.0.1",
     "promise": "7.1.1",
     "raw-loader": "^0.5.1",
-    "react-console": "https://github.com/lbogdan/react-console.git",
+    "react-console": "https://github.com/lbogdan/react-console#master",
     "react-hot-loader": "^3.0.0-beta.6",
     "react-test-renderer": "16",
     "recursive-readdir": "^2.2.1",

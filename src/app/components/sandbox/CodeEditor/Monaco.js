@@ -56,6 +56,8 @@ const Container = styled.div`
   width: 100%;
   height: 100%;
   z-index: 30;
+  display: flex;
+  flex-direction: column;
 `;
 
 /*
@@ -71,8 +73,8 @@ const fontFamilies = (...families) =>
 const CodeContainer = styled.div`
   position: relative;
   width: 100%;
-  height: calc(100% - ${props => (props.hideNavigation ? 3 : 6)}rem);
   z-index: 30;
+  flex: 1 1 auto;
 
   .margin-view-overlays {
     background: ${theme.background2()};

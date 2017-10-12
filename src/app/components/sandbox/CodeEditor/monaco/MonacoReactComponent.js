@@ -87,6 +87,8 @@ class MonacoEditor extends React.Component {
     const style = {
       width: fixedWidth,
       height: fixedHeight,
+      overflow: 'hidden',
+      position: 'absolute',
     };
 
     return (

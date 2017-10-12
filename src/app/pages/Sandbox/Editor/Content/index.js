@@ -64,6 +64,8 @@ const FullSize = styled.div`
   width: 100%;
   pointer-events: ${props => (props.inactive ? 'none' : 'all')};
   ${fadeIn(0)};
+  display: flex;
+  flex-direction: column;
 `;
 
 const mapStateToProps = createSelector(
@@ -231,8 +233,6 @@ class EditorPreview extends React.PureComponent<Props, State> {
             split="vertical"
             defaultSize="50%"
             minSize={360}
-            style={{ height: 'calc(100% - 3rem)' }}
-            paneStyle={{ height: '100%' }}
             resizerStyle={{
               visibility:
                 (!sandbox.showPreview && sandbox.showEditor) ||
@@ -249,6 +249,7 @@ class EditorPreview extends React.PureComponent<Props, State> {
               display: sandbox.showPreview ? 'block' : 'none',
               minWidth:
                 sandbox.showPreview && !sandbox.showEditor ? '100%' : 'inherit',
+              height: '100%',
             }}
           >
             {sandbox.showEditor && EditorPane}

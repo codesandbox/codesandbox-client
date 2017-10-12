@@ -20,13 +20,15 @@ const Container = styled.div`
   height: 100%;
   width: 100%;
   background-color: white;
+  display: flex;
+  flex-direction: column;
 `;
 
 const StyledFrame = styled.iframe`
   border-width: 0px;
-  height: calc(100% - ${props => (props.hideNavigation ? 0 : 3)}rem);
   width: 100%;
   overflow: auto;
+  flex: 1 1 auto;
 `;
 
 type Props = {
@@ -418,9 +420,10 @@ export default class Preview extends React.PureComponent<Props, State> {
           // onDragStarted={this.startResizing}
           // onDragFinished={this.stopResizing}
           split="horizontal"
-          minSize={200}
+          minSize={50}
           maxSize={-100}
           defaultSize="80%"
+          pane2Style={{ overflow: 'auto' }}
         >
           {container}
           <Console

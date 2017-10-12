@@ -38,6 +38,8 @@ type Props = {
 const Container = styled.div`
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
 `;
 
 const fadeInAnimation = keyframes`
@@ -57,7 +59,7 @@ const CodeContainer = styled.div`
   position: relative;
   overflow: auto;
   width: 100%;
-  height: calc(100% - ${props => (props.hideNavigation ? 3 : 6)}rem);
+  flex: 1 1 auto;
   .CodeMirror {
     font-family: ${props =>
       fontFamilies(props.fontFamily, 'Source Code Pro', 'monospace')};
