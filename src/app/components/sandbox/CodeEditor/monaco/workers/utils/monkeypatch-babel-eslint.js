@@ -1,4 +1,4 @@
-/* eslint-disable no-underscore-dangle, global-require, no-var, vars-on-top, no-param-reassign, prefer-arrow-callback, no-func-names, no-continue, no-use-before-define, no-plusplus, prefer-spread, prefer-rest-params, no-multi-assign */
+/* eslint-disable no-underscore-dangle, global-require, no-var, vars-on-top, no-param-reassign, prefer-arrow-callback, no-func-names, no-continue, no-use-before-define, no-plusplus, prefer-spread, prefer-rest-params, no-multi-assign, func-names */
 
 const t = require('babel-types');
 
