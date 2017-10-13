@@ -6,7 +6,7 @@ import trim from './plugins/trim';
 import scopeId from './plugins/scope-id';
 
 export default function(code: string, loaderContext: LoaderContext) {
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
     const query = loaderContext.options;
 
     let vueOptions = loaderContext.options.__vueOptions__;
@@ -61,6 +61,7 @@ export default function(code: string, loaderContext: LoaderContext) {
         resolve({ transpiledCode: result.css, sourceMap: map });
 
         return null; // silence bluebird warning
-      });
+      })
+      .catch(err => reject(err));
   });
 }
