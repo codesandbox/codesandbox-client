@@ -314,7 +314,6 @@ export default class Header extends React.PureComponent<Props> {
             ) : (
               <Action
                 onClick={userActions.signIn}
-                tooltip="Sign in with Github"
                 title="Sign in with Github"
                 Icon={GithubIcon}
                 highlight
