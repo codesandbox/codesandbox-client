@@ -172,7 +172,7 @@
     "lint:app": "eslint src/app",
     "typecheck": "flow check",
     "lint:embed": "eslint src/embed",
-    "add": "all-contributors add",
+    "add-contributor": "all-contributors add",
     "generate": "all-contributors generate",
     "precommit": "lint-staged"
   },
