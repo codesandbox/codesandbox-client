@@ -205,7 +205,7 @@ const highlightLines = (
   highlightedLines: Array<string>
 ) => {
   highlightedLines.forEach(line => {
-    cm.addLineClass(+line, 'background', 'cm-line-highlight');
+    cm.addLineClass(+line - 1, 'background', 'cm-line-highlight');
   });
 };
 

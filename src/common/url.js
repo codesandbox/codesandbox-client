@@ -20,12 +20,8 @@ export const getSandboxOptions = (url: string) => {
   }
 
   const highlightMatch = url.match(/(\?|&)(highlights)=([^&]+)/);
-  if (highlightMatch) {
-    const lineHighlightsMatch = highlightMatch[3].match(/{(.*)}/);
-
-    if (lineHighlightsMatch) {
-      result.highlightedLines = lineHighlightsMatch[1].split(',');
-    }
+  if (highlightMatch && highlightMatch[3]) {
+    result.highlightedLines = highlightMatch[3].split(',');
   }
 
   const editorSizeMatch = url.match(/(\?|&)(editorsize)=([^&]+)/);
