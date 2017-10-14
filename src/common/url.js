@@ -26,10 +26,15 @@ export const getSandboxOptions = (url: string) => {
 
   result.isPreviewScreen = url.includes('view=preview');
   result.isEditorScreen = url.includes('view=editor');
+  result.isSplitScreen = url.includes('view=split');
 
   // If there is no view specified and the width of the window is <800 we want
   // to default to preview
-  if (!result.isPreviewScreen && !result.isEditorScreen) {
+  if (
+    !result.isPreviewScreen &&
+    !result.isEditorScreen &&
+    !result.isSplitScreen
+  ) {
     const windowWidth =
       window.innerWidth || document.documentElement.clientWidth;
     result.isPreviewScreen = windowWidth < 800;
