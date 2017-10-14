@@ -204,7 +204,6 @@ const highlightLines = (
   cm: typeof CodeMirror,
   highlightedLines: Array<string>
 ) => {
-  console.log(highlightedLines); // eslint-disable-line
   highlightedLines.forEach(line => {
     cm.addLineClass(+line, 'background', 'cm-line-highlight');
   });
@@ -331,7 +330,6 @@ export default class CodeEditor extends React.Component<Props, State> {
       this.codemirror.setOption('readOnly', true);
     }
 
-    console.log(this.props); // eslint-disable-line
     if (highlightedLines) {
       highlightLines(this.codemirror, highlightedLines);
     }
