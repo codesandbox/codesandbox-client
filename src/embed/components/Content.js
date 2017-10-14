@@ -43,6 +43,7 @@ type Props = {
   enableEslint: boolean,
   isInProjectView: boolean,
   editorSize: number,
+  highlightedLines: Array<string>,
 };
 
 type State = {
@@ -181,6 +182,7 @@ export default class Content extends React.PureComponent<Props, State> {
       currentModule,
       hideNavigation,
       editorSize,
+      highlightedLines,
     } = this.props;
 
     const { errors } = this.state;
@@ -231,6 +233,7 @@ export default class Content extends React.PureComponent<Props, State> {
               hideNavigation={hideNavigation}
               canSave={false}
               corrections={[]}
+              highlightedLines={highlightedLines}
             />
           </Split>
         )}

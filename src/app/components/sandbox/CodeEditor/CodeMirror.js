@@ -32,6 +32,7 @@ type Props = {
   modules: Array,
   directories: Array,
   hideNavigation: boolean,
+  highlightedLines: ?Array<string>,
 };
 
 const Container = styled.div`
@@ -141,7 +142,7 @@ const CodeContainer = styled.div`
   }
 
   .CodeMirror-activeline-background {
-    background: #374140;
+    background: rgba(0, 0, 0, 0.2);
   }
   .CodeMirror-matchingbracket {
     text-decoration: underline;
@@ -160,6 +161,10 @@ const CodeContainer = styled.div`
   div.cm-line-error.CodeMirror-linebackground {
     animation: ${fadeInAnimation} 0.3s;
     background-color: #561011;
+  }
+
+  div.cm-line-highlight.CodeMirror-linebackground {
+    background-color: rgba(0, 0, 0, 0.3);
   }
 `;
 
@@ -193,6 +198,16 @@ const handleError = (
       }
     });
   }
+};
+
+const highlightLines = (
+  cm: typeof CodeMirror,
+  highlightedLines: Array<string>
+) => {
+  console.log(highlightedLines); // eslint-disable-line
+  highlightedLines.forEach(line => {
+    cm.addLineClass(+line, 'background', 'cm-line-highlight');
+  });
 };
 
 type State = {
@@ -300,7 +315,7 @@ export default class CodeEditor extends React.Component<Props, State> {
   };
 
   getCodeMirror = async (el: Element) => {
-    const { code, id, title } = this.props;
+    const { code, id, title, highlightedLines } = this.props;
     if (!this.props.onlyViewMode) {
       CodeMirror.commands.save = this.handleSaveCode;
     }
@@ -314,6 +329,11 @@ export default class CodeEditor extends React.Component<Props, State> {
       this.setCodeMirrorPreferences();
     } else {
       this.codemirror.setOption('readOnly', true);
+    }
+
+    console.log(this.props); // eslint-disable-line
+    if (highlightedLines) {
+      highlightLines(this.codemirror, highlightedLines);
     }
   };
 

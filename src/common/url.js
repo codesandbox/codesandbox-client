@@ -19,6 +19,15 @@ export const getSandboxOptions = (url: string) => {
     result.fontSize = +fontSizeMatch[3];
   }
 
+  const highlightMatch = url.match(/(\?|&)(highlights)=([^&]+)/);
+  if (highlightMatch) {
+    const lineHighlightsMatch = highlightMatch[3].match(/{(.*)}/);
+
+    if (lineHighlightsMatch) {
+      result.highlightedLines = lineHighlightsMatch[1].split(',');
+    }
+  }
+
   const editorSizeMatch = url.match(/(\?|&)(editorsize)=([^&]+)/);
   if (editorSizeMatch) {
     result.editorSize = +editorSizeMatch[3];
