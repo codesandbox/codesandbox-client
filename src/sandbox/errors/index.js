@@ -79,7 +79,7 @@ function buildDynamicError(ref: ErrorRecord) {
       return {
         type: 'action',
         action: 'show-error',
-        path: module.path,
+        path: module.parent ? module.parent.path : module.path,
         title: ref.error.name,
         message: ref.error.message,
         line: relevantFrame._originalLineNumber,
