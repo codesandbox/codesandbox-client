@@ -158,9 +158,9 @@
     "styled-components": "^2.1.1",
     "svg-react-loader": "^0.4.4",
     "tern": "^0.21.0",
-    "vue": "^2.4.2",
-    "vue-template-compiler": "^2.4.2",
-    "vue-template-es2015-compiler": "^1.5.3"
+    "vue": "^2.5.2",
+    "vue-template-compiler": "^2.5.2",
+    "vue-template-es2015-compiler": "^1.6.0"
   },
   "scripts": {
     "start": "cross-env LOCAL_SERVER=1 node scripts/start.js",

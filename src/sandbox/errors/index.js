@@ -36,7 +36,7 @@ function buildErrorMessage(e) {
   }
 
   return {
-    moduleId: e.tModule ? e.tModule.module.id : e.moduleId,
+    path: e.tModule ? e.tModule.module.path : e.path,
     title,
     message,
     line: parseInt(line, 10),
@@ -79,7 +79,7 @@ function buildDynamicError(ref: ErrorRecord) {
       return {
         type: 'action',
         action: 'show-error',
-        moduleId: module.id,
+        path: module.path,
         title: ref.error.name,
         message: ref.error.message,
         line: relevantFrame._originalLineNumber,
@@ -114,7 +114,7 @@ export default function showError(ref: ErrorRecord) {
       actions.error.show(errorToSend.title, errorToSend.message, {
         line: errorToSend.line,
         column: errorToSend.column,
-        moduleId: errorToSend.moduleId,
+        path: errorToSend.path,
         payload: errorToSend.payload,
       })
     );
