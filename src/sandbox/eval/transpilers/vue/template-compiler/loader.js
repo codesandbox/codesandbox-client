@@ -30,7 +30,16 @@ export default function(html: string, loaderContext: LoaderContext) {
   // tips
   if (compiled.tips && compiled.tips.length) {
     compiled.tips.forEach(tip => {
-      this.emitWarning(tip);
+      loaderContext.emitWarning({
+        name: 'vue-warning',
+        message: tip,
+        fileName: loaderContext._module.module.parent
+          ? loaderContext._module.module.parent.path
+          : loaderContext.path,
+        lineNumber: 1,
+        columnNumber: 1,
+        source: 'vue-template-compiler',
+      });
     });
   }
 
