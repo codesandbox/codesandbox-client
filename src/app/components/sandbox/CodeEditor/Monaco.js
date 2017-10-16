@@ -20,7 +20,6 @@ import LinterWorker from 'worker-loader!./monaco/workers/linter';
 import TypingsFetcherWorker from 'worker-loader!./monaco/workers/fetch-dependency-typings';
 /* eslint-enable import/no-webpack-loader-syntax */
 
-import enableEmmet from './monaco/enable-emmet';
 import Header from './Header';
 import MonacoEditor from './monaco/MonacoReactComponent';
 import FuzzySearch from './FuzzySearch/index';
@@ -623,7 +622,9 @@ export default class CodeEditor extends React.Component<Props, State> {
     await this.openNewModel(this.props.id, this.props.title);
 
     this.addKeyCommands();
-    enableEmmet(editor, monaco, {});
+    import('./monaco/enable-emmet').then(enableEmmet => {
+      enableEmmet.default(editor, monaco, {});
+    });
 
     window.addEventListener('resize', this.resizeEditor);
     this.sizeProbeInterval = setInterval(this.resizeEditor.bind(this), 3000);
