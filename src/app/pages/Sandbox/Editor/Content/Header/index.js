@@ -219,17 +219,29 @@ export default class Header extends React.PureComponent<Props> {
                 onClick={this.toggleLike}
               />
             ))}
-          <Action onClick={this.forkSandbox} title="Fork" Icon={Fork} />
+          <Action
+            onClick={this.forkSandbox}
+            tooltip="Fork sandbox"
+            title="Fork"
+            Icon={Fork}
+          />
           <Action
             onClick={canSave ? this.massUpdateModules : null}
             placeholder={canSave ? false : 'All modules are saved'}
+            tooltip="Save sandbox"
             title="Save"
             Icon={Save}
           />
-          <Action title="Download" Icon={Download} onClick={this.zipSandbox} />
+          <Action
+            tooltip="Download sandbox"
+            title="Download"
+            Icon={Download}
+            onClick={this.zipSandbox}
+          />
           {user.jwt &&
             sandbox.owned && (
               <Action
+                tooltip="Deploy sandbox"
                 title="Deploy"
                 Icon={NowIcon}
                 onClick={this.deploySandbox}
@@ -242,7 +254,12 @@ export default class Header extends React.PureComponent<Props> {
           <Media query="(max-width: 1560px)">
             {matches =>
               matches ? (
-                <Action href={searchUrl()} Icon={SearchIcon} tooltip="Search" />
+                <Action
+                  href={searchUrl()}
+                  Icon={SearchIcon}
+                  tooltip="Search"
+                  title="Search"
+                />
               ) : (
                 <div style={{ marginRight: '0.5rem', fontSize: '.875rem' }}>
                   <HeaderSearchBar />

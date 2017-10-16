@@ -1,6 +1,6 @@
 // @flow
 /* eslint-disable import/no-webpack-loader-syntax, prefer-template, no-use-before-define */
-import { basename } from 'common/utils/path';
+import { basename, dirname } from 'common/utils/path';
 
 import componentNormalizerRaw from '!raw-loader!./component-normalizer';
 import type { LoaderContext } from '../../transpiled-module';
@@ -59,16 +59,29 @@ export default function(code: string, loaderContext: LoaderContext) {
   const { path, options, _module } = loaderContext;
   const moduleTitle = basename(_module.module.path);
 
-  let output = '';
+  const sourceRoot = dirname(path);
   const moduleId = 'data-v-' + genId(path, options.context, options.hashKey);
-  const parts = parse(code, moduleTitle, false);
+
+  let output = '';
+  const parts = parse(code, moduleTitle, false, sourceRoot);
   const hasScoped = parts.styles.some(s => s.scoped);
+  const templateAttrs =
+    parts.template && parts.template.attrs && parts.template.attrs;
+  const hasComment = templateAttrs && templateAttrs.comments;
+  const functionalTemplate = templateAttrs && templateAttrs.functional;
+  const bubleTemplateOptions = Object.assign({}, options.buble);
+  bubleTemplateOptions.transforms = Object.assign(
+    {},
+    bubleTemplateOptions.transforms
+  );
+  bubleTemplateOptions.transforms.stripWithFunctional = functionalTemplate;
 
   const templateOptions =
     '?' +
     JSON.stringify({
       id: moduleId,
       hasScoped,
+      hasComment,
       transformToRequire: {
         video: 'src',
         source: 'src',
@@ -76,18 +89,18 @@ export default function(code: string, loaderContext: LoaderContext) {
         image: 'xlink:href',
       },
       preserveWhitespace: false,
-      buble: null,
-      // // only pass compilerModules if it's a path string
-      // compilerModules:
-      //   typeof options.compilerModules === 'string'
-      //     ? options.compilerModules
-      //     : undefined,
+      buble: bubleTemplateOptions,
+      // only pass compilerModules if it's a path string
+      compilerModules:
+        typeof options.compilerModules === 'string'
+          ? options.compilerModules
+          : undefined,
     });
 
   let cssModules;
   if (parts.styles.length) {
     let styleInjectionCode = 'function injectStyle (ssrContext) {\n';
-    parts.styles.forEach(function(style, i) {
+    parts.styles.forEach((style, i) => {
       // require style
       const requireLocation = style.src
         ? getRequireForImport('style', style, i, style.scoped)
@@ -128,8 +141,17 @@ export default function(code: string, loaderContext: LoaderContext) {
     '/'
   );
 
+  // we require the component normalizer function, and call it like so:
+  // normalizeComponent(
+  //   scriptExports,
+  //   compiledTemplate,
+  //   functionalTemplate,
+  //   injectStyles,
+  //   scopeId,
+  //   moduleIdentifier (server only)
+  // )
   output +=
-    "var Component = require('!noop-loader!@/component-normalizer.js')(\n";
+    "var normalizeComponent = require('!noop-loader!@/component-normalizer.js')\n";
   // <script>
   output += '  /* script */\n  ';
   const script = parts.script;
@@ -138,11 +160,10 @@ export default function(code: string, loaderContext: LoaderContext) {
       ? getRequireForImport('script', script)
       : getRequire('script', script);
 
-    output += `require('${file}')`;
+    output += `var __vue_script__ = require('${file}')\n`;
   } else {
-    output += 'null';
+    output += 'var __vue_script__ = null\n';
   }
-  output += ',\n';
 
   // <template>
   output += '  /* template */\n  ';
@@ -152,23 +173,46 @@ export default function(code: string, loaderContext: LoaderContext) {
       ? getRequireForImport('template', template)
       : getTemplateRequire(templateOptions, template);
 
-    output += `require('${file}')`;
+    output += `var __vue_template__ = require('${file}')\n`;
   } else {
-    output += 'null';
+    output += 'var __vue_template__ = null\n';
   }
 
-  output += ',\n';
+  // template functional
+  output += '/* template functional */\n  ';
+  output +=
+    'var __vue_template_functional__ = ' +
+    (functionalTemplate ? 'true' : 'false') +
+    '\n';
 
   // style
   output += '  /* styles */\n  ';
-  output += (parts.styles.length ? 'injectStyle' : 'null') + ',\n';
+  output +=
+    'var __vue_styles__ = ' +
+    (parts.styles.length ? 'injectStyle' : 'null') +
+    '\n';
 
   // scopeId
   output += '  /* scopeId */\n  ';
-  output += (hasScoped ? JSON.stringify(moduleId) : 'null') + ',\n';
+  output +=
+    'var __vue_scopeId__ = ' +
+    (hasScoped ? JSON.stringify(moduleId) : 'null') +
+    '\n';
+
+  // moduleIdentifier (server only)
+  output += '/* moduleIdentifier (server only) */\n';
+  output += 'var __vue_module_identifier__ = null\n';
 
   // close normalizeComponent call
-  output += ')\n';
+  output +=
+    'var Component = normalizeComponent(\n' +
+    '  __vue_script__,\n' +
+    '  __vue_template__,\n' +
+    '  __vue_template_functional__,\n' +
+    '  __vue_styles__,\n' +
+    '  __vue_scopeId__,\n' +
+    '  __vue_module_identifier__\n' +
+    ')\n';
 
   // add filename in dev
   output += 'Component.options.__file = ' + JSON.stringify(path) + '\n';
@@ -179,51 +223,8 @@ export default function(code: string, loaderContext: LoaderContext) {
     '})) {' +
     'console.error("named exports are not supported in *.vue files.")' +
     '}\n';
-  // check functional components used with templates
-  if (template) {
-    output +=
-      'if (Component.options.functional) {' +
-      'console.error("' +
-      '[vue-loader] ' +
-      moduleTitle +
-      ': functional components are not ' +
-      'supported with templates, they should use render functions.' +
-      '")}\n';
-  }
 
   output += `module.exports = Component.exports;\n`;
-
-  // IVES: Implement custom blocks later?
-
-  // // add requires for customBlocks
-  // if (parts.customBlocks && parts.customBlocks.length) {
-  //   var addedPrefix = false;
-
-  //   parts.customBlocks.forEach(function(customBlock, i) {
-  //     if (loaders[customBlock.type]) {
-  //       // require customBlock
-  //       customBlock.src = customBlock.attrs.src;
-  //       var requireString = customBlock.src
-  //         ? getRequireForImport(customBlock.type, customBlock)
-  //         : getRequire(customBlock.type, customBlock, i);
-
-  //       if (!addedPrefix) {
-  //         output += '\n/* customBlocks */\n';
-  //         addedPrefix = true;
-  //       }
-
-  //       output +=
-  //         'var customBlock = ' +
-  //         requireString +
-  //         '\n' +
-  //         'if (typeof customBlock === "function") {' +
-  //         'customBlock(Component)' +
-  //         '}\n';
-  //     }
-  //   });
-
-  //   output += '\n';
-  // }
 
   return output;
 

@@ -19,6 +19,11 @@ export const getSandboxOptions = (url: string) => {
     result.fontSize = +fontSizeMatch[3];
   }
 
+  const highlightMatch = url.match(/(\?|&)(highlights)=([^&]+)/);
+  if (highlightMatch && highlightMatch[3]) {
+    result.highlightedLines = highlightMatch[3].split(',');
+  }
+
   const editorSizeMatch = url.match(/(\?|&)(editorsize)=([^&]+)/);
   if (editorSizeMatch) {
     result.editorSize = +editorSizeMatch[3];
@@ -26,10 +31,15 @@ export const getSandboxOptions = (url: string) => {
 
   result.isPreviewScreen = url.includes('view=preview');
   result.isEditorScreen = url.includes('view=editor');
+  result.isSplitScreen = url.includes('view=split');
 
   // If there is no view specified and the width of the window is <800 we want
   // to default to preview
-  if (!result.isPreviewScreen && !result.isEditorScreen) {
+  if (
+    !result.isPreviewScreen &&
+    !result.isEditorScreen &&
+    !result.isSplitScreen
+  ) {
     const windowWidth =
       window.innerWidth || document.documentElement.clientWidth;
     result.isPreviewScreen = windowWidth < 800;

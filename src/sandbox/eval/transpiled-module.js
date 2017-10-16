@@ -381,7 +381,7 @@ export default class TranspiledModule {
                 actions.correction.show(warning.message, {
                   line: warning.lineNumber,
                   column: warning.columnNumber,
-                  moduleId: warning.module.module.id,
+                  path: warning.path,
                   source: warning.source,
                   severity: 'warning',
                 })

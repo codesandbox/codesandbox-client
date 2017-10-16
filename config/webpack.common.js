@@ -51,7 +51,7 @@ module.exports = {
       },
       {
         test: /\.js$/,
-        include: paths.src,
+        include: [paths.src, /@emmetio/],
         exclude: [
           /eslint\.4\.1\.0\.min\.js$/,
           /typescriptServices\.js$/,

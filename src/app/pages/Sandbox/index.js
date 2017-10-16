@@ -47,7 +47,11 @@ class SandboxPage extends React.PureComponent<Props, State> {
       window.screen.availWidth < 800 &&
       !document.location.search.includes('from-embed')
     ) {
-      document.location.href = document.location.href.replace('/s/', '/embed/');
+      const addedSign = document.location.search ? '&' : '?';
+      document.location.href =
+        document.location.href.replace('/s/', '/embed/') +
+        addedSign +
+        'codemirror=1';
     } else {
       this.fetchSandbox(this.props.match.params.id);
     }

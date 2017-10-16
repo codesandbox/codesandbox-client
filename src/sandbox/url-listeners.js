@@ -30,7 +30,6 @@ export default function setupHistoryListeners() {
   if (!isStandalone) {
     Object.assign(window.history, {
       go(delta) {
-        console.log(`go(${delta})`);
         const newPos = historyPosition + delta;
         if (newPos >= 0 && newPos <= historyList.length - 1) {
           historyPosition = newPos;
@@ -50,12 +49,10 @@ export default function setupHistoryListeners() {
       },
 
       back() {
-        console.log('back()');
         window.history.go(-1);
       },
 
       forward() {
-        console.log('forward()');
         window.history.go(1);
       },
 

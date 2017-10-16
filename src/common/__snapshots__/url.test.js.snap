@@ -9,6 +9,7 @@ Object {
   "isEditorScreen": false,
   "isInProjectView": true,
   "isPreviewScreen": false,
+  "isSplitScreen": false,
   "useCodeMirror": false,
 }
 `;
@@ -23,6 +24,7 @@ Object {
   "isEditorScreen": true,
   "isInProjectView": true,
   "isPreviewScreen": false,
+  "isSplitScreen": false,
   "useCodeMirror": false,
 }
 `;
@@ -36,6 +38,7 @@ Object {
   "isEditorScreen": false,
   "isInProjectView": true,
   "isPreviewScreen": false,
+  "isSplitScreen": false,
   "useCodeMirror": false,
 }
 `;
@@ -49,6 +52,7 @@ Object {
   "isEditorScreen": false,
   "isInProjectView": true,
   "isPreviewScreen": false,
+  "isSplitScreen": false,
   "useCodeMirror": false,
 }
 `;
@@ -62,6 +66,7 @@ Object {
   "isEditorScreen": false,
   "isInProjectView": true,
   "isPreviewScreen": false,
+  "isSplitScreen": false,
   "useCodeMirror": false,
 }
 `;
@@ -76,6 +81,7 @@ Object {
   "isEditorScreen": false,
   "isInProjectView": true,
   "isPreviewScreen": false,
+  "isSplitScreen": false,
   "useCodeMirror": false,
 }
 `;
@@ -89,6 +95,7 @@ Object {
   "isEditorScreen": true,
   "isInProjectView": true,
   "isPreviewScreen": false,
+  "isSplitScreen": false,
   "useCodeMirror": false,
 }
 `;
@@ -102,6 +109,7 @@ Object {
   "isEditorScreen": false,
   "isInProjectView": true,
   "isPreviewScreen": true,
+  "isSplitScreen": false,
   "useCodeMirror": false,
 }
 `;
