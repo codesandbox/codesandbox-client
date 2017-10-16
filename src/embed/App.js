@@ -2,7 +2,6 @@
 import * as React from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 import { camelizeKeys } from 'humps';
-import 'whatwg-fetch';
 
 import type { Sandbox } from 'common/types';
 import getTemplateDefinition from 'common/templates';

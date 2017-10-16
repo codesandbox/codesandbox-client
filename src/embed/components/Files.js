@@ -1,7 +1,7 @@
 // @flow
 import * as React from 'react';
 import styled from 'styled-components';
-import { sortBy } from 'lodash';
+import sortBy from 'lodash/sortBy';
 
 import type { Module, Directory } from 'common/types';
 import { isMainModule } from 'app/store/entities/sandboxes/modules/selectors';

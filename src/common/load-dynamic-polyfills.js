@@ -20,7 +20,7 @@ function detectIE() {
 
 export default function requirePolyfills() {
   if (detectIE()) {
-    return import('es6-shim');
+    return import('babel-polyfill');
   }
 
   return Promise.resolve();

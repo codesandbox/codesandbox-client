@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'react-router-dom/Link';
 import styled, { css, keyframes } from 'styled-components';
 
 import theme from 'common/theme';
