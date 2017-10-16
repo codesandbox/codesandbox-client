@@ -100,7 +100,7 @@ class ModalContainer extends React.PureComponent {
     overlay: {
       backgroundColor: 'rgba(0, 0, 0, 0.75)',
       overflowY: 'auto',
-      zIndex: 20,
+      zIndex: 30,
     },
     content: {
       position: 'relative',
