@@ -39,7 +39,7 @@ export default class ContentSplit extends React.PureComponent<Props, State> {
         <SplitPane
           split="vertical"
           defaultSize={16 * 16}
-          minSize={16 * 16}
+          minSize={14 * 16}
           style={{ top: 0 }}
           onDragStarted={this.startResizing}
           onDragFinished={this.stopResizing}
