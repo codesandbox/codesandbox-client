@@ -1,11 +1,12 @@
 import TranspiledModule from '../transpiled-module';
+import { WarningStructure } from '../transpilers/utils/worker-warning-handler';
 
 export default class ModuleWarning extends Error {
-  constructor(module, warning) {
+  constructor(module: TranspiledModule, warning: WarningStructure) {
     super();
 
     this.name = 'ModuleWarning';
-    this.module = module;
+    this.path = warning.fileName || module.module.path;
     this.message = warning.message;
     this.warning = warning.message;
     this.lineNumber = warning.lineNumber;
@@ -16,7 +17,7 @@ export default class ModuleWarning extends Error {
     Error.captureStackTrace(this, this.constructor);
   }
 
-  module: TranspiledModule;
+  path: string;
   message: string;
   warning: string;
   message: string;

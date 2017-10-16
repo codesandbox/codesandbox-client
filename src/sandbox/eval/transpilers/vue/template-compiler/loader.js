@@ -4,30 +4,46 @@ const compiler = require('vue-template-compiler');
 import { type LoaderContext } from '../../../transpiled-module';
 
 import transformRequire from './modules/transform-require';
+import transformSrcset from './modules/transform-srcset';
 
 export default function(html: string, loaderContext: LoaderContext) {
-  var options = loaderContext.options;
+  const options = loaderContext.options;
+  const vueOptions = options.vueOptions || {};
 
-  var defaultModules = [
-    transformRequire(options.transformToRequire, loaderContext),
+  const defaultModules = [
+    transformRequire(options.transformRequire, loaderContext),
+    transformSrcset(),
   ];
+  const userModules = vueOptions.compilerModules || options.compilerModules;
 
-  var compilerOptions = {
+  const compilerOptions = {
     preserveWhitespace: options.preserveWhitespace,
-    modules: defaultModules,
+    modules: defaultModules.concat(userModules || []),
+    directives:
+      vueOptions.compilerDirectives || options.compilerDirectives || {},
     scopeId: options.hasScoped ? options.id : null,
+    comments: options.hasComment,
   };
 
-  var compiled = compiler.compile(html, compilerOptions);
+  const compiled = compiler.compile(html, compilerOptions);
 
   // tips
   if (compiled.tips && compiled.tips.length) {
     compiled.tips.forEach(tip => {
-      this.emitWarning(tip);
+      loaderContext.emitWarning({
+        name: 'vue-warning',
+        message: tip,
+        fileName: loaderContext._module.module.parent
+          ? loaderContext._module.module.parent.path
+          : loaderContext.path,
+        lineNumber: 1,
+        columnNumber: 1,
+        source: 'vue-template-compiler',
+      });
     });
   }
 
-  var code;
+  let code;
   if (compiled.errors && compiled.errors.length) {
     loaderContext.emitError(
       new Error(
@@ -38,47 +54,40 @@ export default function(html: string, loaderContext: LoaderContext) {
     );
     code = 'module.exports={render:function(){},staticRenderFns:[]}';
   } else {
-    var bubleOptions = options.buble;
-    code = transpile(
-      'module.exports={' +
-        'render:' +
-        toFunction(compiled.render) +
-        ',' +
-        'staticRenderFns: [' +
-        compiled.staticRenderFns.map(toFunction).join(',') +
-        ']' +
-        '}',
-      bubleOptions
+    const bubleOptions = options.buble;
+    const stripWith = bubleOptions.transforms.stripWith !== false;
+    const stripWithFunctional = bubleOptions.transforms.stripWithFunctional;
+
+    const staticRenderFns = compiled.staticRenderFns.map(fn =>
+      toFunction(fn, stripWithFunctional)
     );
+
+    code =
+      transpile(
+        'var render = ' +
+          toFunction(compiled.render, stripWithFunctional) +
+          '\n' +
+          'var staticRenderFns = [' +
+          staticRenderFns.join(',') +
+          ']',
+        bubleOptions
+      ) + '\n';
     // mark with stripped (this enables Vue to use correct runtime proxy detection)
-    if (
-      !bubleOptions ||
-      !bubleOptions.transforms ||
-      bubleOptions.transforms.stripWith !== false
-    ) {
-      code += `\nmodule.exports.render._withStripped = true`;
+    if (stripWith) {
+      code += `render._withStripped = true\n`;
     }
+
+    const exports = `{ render: render, staticRenderFns: staticRenderFns }`;
+    code += `module.exports = ${exports}`;
   }
-  // // hot-reload
-  // if (!isServer && !isProduction) {
-  //   code +=
-  //     '\nif (module.hot) {\n' +
-  //     '  module.hot.accept()\n' +
-  //     '  if (module.hot.data) {\n' +
-  //     '     require("' +
-  //     hotReloadAPIPath +
-  //     '").rerender("' +
-  //     options.id +
-  //     '", module.exports)\n' +
-  //     '  }\n' +
-  //     '}';
-  // }
 
   return code;
 }
 
-function toFunction(code) {
-  return 'function (){' + code + '}';
+function toFunction(code, stripWithFunctional) {
+  return (
+    'function (' + (stripWithFunctional ? '_h,_vm' : '') + ') {' + code + '}'
+  );
 }
 
 function pad(html) {

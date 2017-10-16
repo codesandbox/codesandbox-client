@@ -2,7 +2,6 @@
 import * as React from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 import { camelizeKeys } from 'humps';
-import 'whatwg-fetch';
 
 import type { Sandbox } from 'common/types';
 import getTemplateDefinition from 'common/templates';
@@ -60,6 +59,8 @@ type State = {
   fontSize: number,
   enableEslint: boolean,
   useCodeMirror: boolean,
+  editorSize: number,
+  highlightedLines: Array<string>,
 };
 
 export default class App extends React.PureComponent<{}, State> {
@@ -77,6 +78,8 @@ export default class App extends React.PureComponent<{}, State> {
       fontSize,
       enableEslint,
       useCodeMirror,
+      editorSize,
+      highlightedLines,
     } = getSandboxOptions(document.location.href);
 
     this.state = {
@@ -93,6 +96,8 @@ export default class App extends React.PureComponent<{}, State> {
       hideNavigation,
       enableEslint,
       useCodeMirror,
+      editorSize,
+      highlightedLines: highlightedLines || [],
     };
   }
 
@@ -212,6 +217,8 @@ export default class App extends React.PureComponent<{}, State> {
             setCurrentModule={this.setCurrentModule}
             useCodeMirror={this.state.useCodeMirror}
             enableEslint={this.state.enableEslint}
+            editorSize={this.state.editorSize}
+            highlightedLines={this.state.highlightedLines}
           />
         </Container>
       </ThemeProvider>

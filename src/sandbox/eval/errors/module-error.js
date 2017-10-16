@@ -7,7 +7,7 @@ export default class ModuleError extends Error {
     super();
 
     this.name = 'ModuleError';
-    this.module = module;
+    this.path = err.fileName || module.module.path;
     this.message =
       err && typeof err === 'object' && err.message ? err.message : err;
     this.error = err;

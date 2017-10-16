@@ -6,19 +6,20 @@ const SourceMapGenerator = require('source-map').SourceMapGenerator;
 const splitRE = /\r?\n/g;
 const emptyRE = /^(?:\/\/)?\s*$/;
 
-module.exports = function(content, filename, needMap) {
+module.exports = function(content, filename, needMap, sourceRoot) {
   const cacheKey = hash(filename + content);
   // source-map cache busting for hot-reloadded modules
   const filenameWithHash = filename + '?' + cacheKey;
   let output = cache.get(cacheKey);
   if (output) return output;
-  output = compiler.parseComponent(content);
+  output = compiler.parseComponent(content, { pad: 'line' });
   if (needMap) {
     if (output.script && !output.script.src) {
       output.script.map = generateSourceMap(
         filenameWithHash,
         content,
-        output.script.content
+        output.script.content,
+        sourceRoot
       );
     }
     if (output.styles) {
@@ -27,7 +28,8 @@ module.exports = function(content, filename, needMap) {
           style.map = generateSourceMap(
             filenameWithHash,
             content,
-            style.content
+            style.content,
+            sourceRoot
           );
         }
       });
@@ -37,8 +39,8 @@ module.exports = function(content, filename, needMap) {
   return output;
 };
 
-function generateSourceMap(filename, source, generated) {
-  var map = new SourceMapGenerator();
+function generateSourceMap(filename, source, generated, sourceRoot) {
+  const map = new SourceMapGenerator({ sourceRoot });
   map.setSourceContent(filename, source);
   generated.split(splitRE).forEach((line, index) => {
     if (!emptyRE.test(line)) {

@@ -20,7 +20,6 @@ import LinterWorker from 'worker-loader!./monaco/workers/linter';
 import TypingsFetcherWorker from 'worker-loader!./monaco/workers/fetch-dependency-typings';
 /* eslint-enable import/no-webpack-loader-syntax */
 
-import enableEmmet from './monaco/enable-emmet';
 import Header from './Header';
 import MonacoEditor from './monaco/MonacoReactComponent';
 import FuzzySearch from './FuzzySearch/index';
@@ -40,7 +39,7 @@ type Props = {
   title: string,
   modulePath: string,
   changeCode: (id: string, code: string) => Object,
-  saveCode: () => void,
+  saveCode: ?() => void,
   canSave: boolean,
   preferences: Preferences,
   onlyViewMode: boolean,
@@ -50,6 +49,7 @@ type Props = {
   setCurrentModule: ?(sandboxId: string, moduleId: string) => void,
   template: string,
   addDependency: ?(sandboxId: string, dependency: string) => void,
+  hideNavigation: boolean,
 };
 
 const Container = styled.div`
@@ -71,7 +71,7 @@ const fontFamilies = (...families) =>
 const CodeContainer = styled.div`
   position: relative;
   width: 100%;
-  height: calc(100% - 6rem);
+  height: calc(100% - ${props => (props.hideNavigation ? 3 : 6)}rem);
   z-index: 30;
 
   .margin-view-overlays {
@@ -622,7 +622,9 @@ export default class CodeEditor extends React.Component<Props, State> {
     await this.openNewModel(this.props.id, this.props.title);
 
     this.addKeyCommands();
-    enableEmmet(editor, monaco, {});
+    import('./monaco/enable-emmet').then(enableEmmet => {
+      enableEmmet.default(editor, monaco, {});
+    });
 
     window.addEventListener('resize', this.resizeEditor);
     this.sizeProbeInterval = setInterval(this.resizeEditor.bind(this), 3000);
@@ -889,18 +891,23 @@ export default class CodeEditor extends React.Component<Props, State> {
       directories,
       onlyViewMode,
       modulePath,
+      hideNavigation,
     } = this.props;
 
     const options = this.getEditorOptions();
 
     return (
       <Container>
-        <Header
-          saveComponent={canSave && !onlyViewMode ? this.handleSaveCode : null}
-          prettify={!onlyViewMode && this.prettify}
-          path={modulePath}
-        />
-        <CodeContainer>
+        {!hideNavigation && (
+          <Header
+            saveComponent={
+              canSave && !onlyViewMode ? this.handleSaveCode : null
+            }
+            prettify={!onlyViewMode && this.prettify}
+            path={modulePath}
+          />
+        )}
+        <CodeContainer hideNavigation={hideNavigation}>
           {this.state.fuzzySearchEnabled && (
             <FuzzySearch
               closeFuzzySearch={this.closeFuzzySearch}

@@ -78,7 +78,10 @@
       "avatar_url": "https://avatars1.githubusercontent.com/u/1854763?v=4",
       "profile": "https://twitter.com/tushkiz",
       "contributions": [
-        "code"
+        "question",
+        "code",
+        "doc",
+        "ideas"
       ]
     },
     {
@@ -151,6 +154,15 @@
       "name": "Philipp Brumm",
       "avatar_url": "https://avatars3.githubusercontent.com/u/170500?v=4",
       "profile": "https://github.com/brumm",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "ValentinH",
+      "name": "Valentin Hervieu",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/2678610?v=4",
+      "profile": "http://valentin-hervieu.fr",
       "contributions": [
         "code"
       ]
