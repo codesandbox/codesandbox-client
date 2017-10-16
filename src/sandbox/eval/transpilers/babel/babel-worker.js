@@ -32,16 +32,16 @@ self.addEventListener('message', async event => {
   const { code, path, config } = event.data;
 
   if (
-    flatten(config.plugins).includes('transform-vue-jsx') &&
-    !Object.keys(Babel.availablePlugins).includes('transform-vue-jsx')
+    flatten(config.plugins).indexOf('transform-vue-jsx') > -1 &&
+    !Object.keys(Babel.availablePlugins).indexOf('transform-vue-js > -1x')
   ) {
     const vuePlugin = await import('babel-plugin-transform-vue-jsx');
     Babel.registerPlugin('transform-vue-jsx', vuePlugin);
   }
 
   if (
-    flatten(config.plugins).includes('jsx-pragmatic') &&
-    !Object.keys(Babel.availablePlugins).includes('jsx-pragmatic')
+    flatten(config.plugins).indexOf('jsx-pragmatic') > -1 &&
+    !Object.keys(Babel.availablePlugins).indexOf('jsx-pragmati > -1c')
   ) {
     const pragmaticPlugin = await import('babel-plugin-jsx-pragmatic');
     Babel.registerPlugin('jsx-pragmatic', pragmaticPlugin);
