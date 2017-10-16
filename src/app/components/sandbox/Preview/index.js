@@ -57,7 +57,7 @@ type State = {
 
 export default class Preview extends React.PureComponent<Props, State> {
   initialPath: string;
-  frames: Set<HTMLIFrameElement>;
+  frames: Array<HTMLIFrameElement>;
 
   constructor(props: Props) {
     super(props);
@@ -78,7 +78,7 @@ export default class Preview extends React.PureComponent<Props, State> {
     // from the query params, or the iframe will continue to be re-rendered
     // when the user navigates the iframe app, which shows the loading screen
     this.initialPath = props.initialPath;
-    this.frames = new Set();
+    this.frames = [];
   }
 
   static defaultProps = {
@@ -169,14 +169,16 @@ export default class Preview extends React.PureComponent<Props, State> {
   };
 
   sendMessage = (message: Object) => {
-    Array.from(this.frames).forEach(frame => {
+    this.frames.forEach(frame => {
       frame.postMessage(message, frameUrl(this.props.sandboxId));
     });
   };
 
   handleMessage = (e: MessageEvent | { data: Object | string }) => {
     if (e.data === 'Ready!') {
-      this.frames.add(e.source);
+      if (this.frames.indexOf(e.source) === -1) {
+        this.frames.push(e.source);
+      }
 
       this.setState({
         frameInitialized: true,
