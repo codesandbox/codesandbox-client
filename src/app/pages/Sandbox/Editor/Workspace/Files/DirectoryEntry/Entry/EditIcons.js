@@ -7,6 +7,7 @@ import AddFileIcon from 'react-icons/lib/go/file-symlink-file';
 import AddDirectoryIcon from 'react-icons/lib/go/file-symlink-directory';
 
 import fadeIn from 'app/utils/animation/fade-in';
+import Tooltip from 'app/components/Tooltip';
 
 import { Icon } from '../../../Icon';
 
@@ -43,24 +44,32 @@ export default ({
     {hovering && (
       <Container>
         {onEdit && (
-          <Icon onClick={handleClick(onEdit)}>
-            <EditIcon />
-          </Icon>
+          <Tooltip title="Edit">
+            <Icon onClick={handleClick(onEdit)}>
+              <EditIcon />
+            </Icon>
+          </Tooltip>
         )}
         {onCreateFile && (
-          <Icon onClick={handleClick(onCreateFile)}>
-            <AddFileIcon />
-          </Icon>
+          <Tooltip title="New Module">
+            <Icon onClick={handleClick(onCreateFile)}>
+              <AddFileIcon />
+            </Icon>
+          </Tooltip>
         )}
         {onCreateDirectory && (
-          <Icon onClick={handleClick(onCreateDirectory)}>
-            <AddDirectoryIcon />
-          </Icon>
+          <Tooltip title="New Directory">
+            <Icon onClick={handleClick(onCreateDirectory)}>
+              <AddDirectoryIcon />
+            </Icon>
+          </Tooltip>
         )}
         {onDelete && (
-          <Icon onClick={handleClick(onDelete)}>
-            <CrossIcon />
-          </Icon>
+          <Tooltip title="Delete">
+            <Icon onClick={handleClick(onDelete)}>
+              <CrossIcon />
+            </Icon>
+          </Tooltip>
         )}
       </Container>
     )}
