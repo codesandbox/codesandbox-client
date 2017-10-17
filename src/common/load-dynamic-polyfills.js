@@ -18,8 +18,12 @@ function detectIE() {
   return false;
 }
 
+function detectOpera() {
+  return navigator.userAgent.indexOf('Opera');
+}
+
 export default function requirePolyfills() {
-  if (detectIE()) {
+  if (detectIE() || detectOpera()) {
     return import('babel-polyfill');
   }
 
