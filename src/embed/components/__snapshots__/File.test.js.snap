@@ -10,6 +10,7 @@ exports[`File renders 1`] = `
   font-size: 14px;
   padding: 0.6rem;
   padding-left: calc(1rem - 2px);
+  padding-right: 3rem;
   color: rgb(106,118,124);
   text-decoration: none;
   font-weight: 400;
@@ -90,6 +91,7 @@ exports[`File renders alternative 1`] = `
   font-size: 14px;
   padding: 0.6rem;
   padding-left: calc(1rem - 2px);
+  padding-right: 3rem;
   color: rgb(106,118,124);
   text-decoration: none;
   font-weight: 400;
@@ -170,6 +172,7 @@ exports[`File renders as active 1`] = `
   font-size: 14px;
   padding: 0.6rem;
   padding-left: calc(1rem - 2px);
+  padding-right: 3rem;
   color: rgb(106,118,124);
   text-decoration: none;
   font-weight: 400;
@@ -247,6 +250,7 @@ exports[`File renders directory 1`] = `
   font-size: 14px;
   padding: 0.6rem;
   padding-left: calc(1rem - 2px);
+  padding-right: 3rem;
   color: rgb(106,118,124);
   text-decoration: none;
   font-weight: 400;
