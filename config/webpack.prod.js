@@ -163,16 +163,6 @@ module.exports = merge(commonConfig, {
           },
         },
         {
-          urlPattern: /api\/v1\/sandboxes/,
-          handler: 'networkFirst',
-          options: {
-            cache: {
-              maxEntries: 50,
-              name: 'sandboxes-cache',
-            },
-          },
-        },
-        {
           urlPattern: /\.amazonaws\.com\/prod\/package/,
           handler: 'fastest',
           options: {
@@ -189,6 +179,7 @@ module.exports = merge(commonConfig, {
           options: {
             cache: {
               maxEntries: 100,
+              maxAgeSeconds: 60 * 60 * 24,
               name: 'packager-cache',
             },
           },
