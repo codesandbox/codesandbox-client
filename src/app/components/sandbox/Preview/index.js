@@ -183,7 +183,7 @@ export default class Preview extends React.PureComponent<Props, State> {
       this.setState({
         frameInitialized: true,
       });
-      this.executeCodeImmediately();
+      this.executeCodeImmediately(true);
     } else {
       const { type } = e.data;
 
@@ -229,7 +229,7 @@ export default class Preview extends React.PureComponent<Props, State> {
     return isInProjectView ? findMainModule(modules, template) : module;
   };
 
-  executeCodeImmediately = () => {
+  executeCodeImmediately = (initialRender: boolean = false) => {
     const {
       modules,
       directories,
@@ -248,22 +248,26 @@ export default class Preview extends React.PureComponent<Props, State> {
 
     // Do it here so we can see the dependency fetching screen if needed
     this.clearErrors();
-    const renderedModule = this.getRenderedModule();
-    this.sendMessage({
-      type: 'compile',
-      module: renderedModule,
-      changedModule: module,
-      dependencies,
-      modules,
-      directories,
-      sandboxId,
-      externalResources,
-      template,
-      hasActions: !!runActionFromPreview,
-      isModuleView: !isInProjectView,
-      // TODO remove this in 2 weeks
-      experimentalPackager: preferences.newPackagerExperiment,
-    });
+    if (preferences.forceRefresh && !initialRender) {
+      this.handleRefresh();
+    } else {
+      const renderedModule = this.getRenderedModule();
+      this.sendMessage({
+        type: 'compile',
+        module: renderedModule,
+        changedModule: module,
+        dependencies,
+        modules,
+        directories,
+        sandboxId,
+        externalResources,
+        template,
+        hasActions: !!runActionFromPreview,
+        isModuleView: !isInProjectView,
+        // TODO remove this in 2 weeks
+        experimentalPackager: preferences.newPackagerExperiment,
+      });
+    }
   };
 
   clearErrors = () => {

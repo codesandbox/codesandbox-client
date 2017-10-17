@@ -43,6 +43,7 @@ type Props = {
   enableEslint: boolean,
   isInProjectView: boolean,
   editorSize: number,
+  forceRefresh: boolean,
   highlightedLines: Array<string>,
 };
 
@@ -58,6 +59,14 @@ export default class Content extends React.PureComponent<Props, State> {
     codes: {},
     errors: [],
   };
+
+  // constructor(props) {
+  //   super(props);
+
+  //   if (props.forceRefresh) {
+  //     this.setCode = debounce(this.set)
+  //   }
+  // }
 
   componentDidMount() {
     setTimeout(() => this.handleResize());
@@ -162,6 +171,8 @@ export default class Content extends React.PureComponent<Props, State> {
 
   getPreferences = () => ({
     ...this.preferences,
+    forceRefresh: this.props.forceRefresh,
+    instantPreviewEnabled: !this.props.forceRefresh,
     fontSize: this.props.fontSize,
     autoDownloadTypes: true,
     lintEnabled: this.props.enableEslint,
@@ -251,7 +262,7 @@ export default class Content extends React.PureComponent<Props, State> {
               modules={alteredModules}
               directories={sandbox.directories}
               externalResources={sandbox.externalResources}
-              module={mainModule}
+              module={alteredMainModule}
               addError={this.addError}
               clearErrors={this.clearErrors}
               preferences={this.getPreferences()}

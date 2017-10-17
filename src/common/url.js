@@ -50,6 +50,7 @@ export const getSandboxOptions = (url: string) => {
   result.autoResize = url.includes('autoresize=1');
   result.useCodeMirror = url.includes('codemirror=1');
   result.enableEslint = url.includes('eslint=1');
+  result.forceRefresh = url.includes('forcerefresh=1');
 
   return result;
 };

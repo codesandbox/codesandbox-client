@@ -12,11 +12,11 @@ const MODULE_FIELDS = [
 
 const DIRECTORY_FIELDS = ['title', 'directoryShortid', 'shortid'];
 
-function checkFields(m1, m2, fields: Array<String>) {
+function checkFields(m1, m2, fields: Array<string>) {
   return fields.some(field => m1[field] !== m2[field]);
 }
 
-function compareArrays(m1, m2, fields: Array<String>) {
+function compareArrays(m1, m2, fields: Array<string>) {
   return m1.some(first => {
     const second = m2.find(m => m.id === first.id);
 

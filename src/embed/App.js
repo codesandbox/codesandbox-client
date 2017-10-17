@@ -60,6 +60,7 @@ type State = {
   enableEslint: boolean,
   useCodeMirror: boolean,
   editorSize: number,
+  forceRefresh: boolean,
   highlightedLines: Array<string>,
 };
 
@@ -80,6 +81,7 @@ export default class App extends React.PureComponent<{}, State> {
       useCodeMirror,
       editorSize,
       highlightedLines,
+      forceRefresh,
     } = getSandboxOptions(document.location.href);
 
     this.state = {
@@ -97,6 +99,7 @@ export default class App extends React.PureComponent<{}, State> {
       enableEslint,
       useCodeMirror,
       editorSize,
+      forceRefresh,
       highlightedLines: highlightedLines || [],
     };
   }
@@ -219,6 +222,7 @@ export default class App extends React.PureComponent<{}, State> {
             enableEslint={this.state.enableEslint}
             editorSize={this.state.editorSize}
             highlightedLines={this.state.highlightedLines}
+            forceRefresh={this.state.forceRefresh}
           />
         </Container>
       </ThemeProvider>
