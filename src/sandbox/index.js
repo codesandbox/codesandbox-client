@@ -1,5 +1,5 @@
 import { camelizeKeys } from 'humps';
-import { dispatch, isStandalone } from 'codesandbox-api';
+import { isStandalone, dispatch } from 'codesandbox-api';
 
 import registerServiceWorker from 'common/registerServiceWorker';
 import requirePolyfills from 'common/load-dynamic-polyfills';
@@ -9,6 +9,14 @@ import host from './utils/host';
 
 import setupHistoryListeners from './url-listeners';
 import compile from './compile';
+
+function getId() {
+  if (process.env.NODE_ENV === 'test') {
+    return document.location.hash.replace('#', '');
+  }
+
+  return document.location.host.match(/(.*)\.codesandbox/)[1];
+}
 
 requirePolyfills().then(() => {
   registerServiceWorker('/sandbox-service-worker.js');
@@ -30,9 +38,9 @@ requirePolyfills().then(() => {
   sendReady();
   setupHistoryListeners();
 
-  if (isStandalone) {
+  if (process.env.NODE_ENV === 'test' || isStandalone) {
     // We need to fetch the sandbox ourselves...
-    const id = document.location.host.match(/(.*)\.codesandbox/)[1];
+    const id = getId();
     window
       .fetch(`${host}/api/v1/sandboxes/${id}`)
       .then(res => res.json())

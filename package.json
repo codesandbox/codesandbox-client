@@ -28,6 +28,7 @@
     "chalk": "1.1.3",
     "connect-history-api-fallback": "1.3.0",
     "copy-webpack-plugin": "^4.0.1",
+    "cors": "^2.8.4",
     "cross-env": "^5.0.5",
     "cross-spawn": "^5.0.1",
     "css-loader": "^0.28.1",
@@ -55,6 +56,7 @@
     "http-proxy-middleware": "^0.17.3",
     "husky": "^0.14.3",
     "jest": "^20.0.0",
+    "jest-image-snapshot": "^1.0.1",
     "jest-styled-components": "^4.3.0",
     "json-loader": "0.5.4",
     "lint-staged": "^4.0.1",
@@ -66,6 +68,7 @@
     "prettier": "^1.6.1",
     "preval.macro": "^1.0.1",
     "promise": "7.1.1",
+    "puppeteer": "^0.12.0",
     "raw-loader": "^0.5.1",
     "react-hot-loader": "^3.0.0-beta.6",
     "react-test-renderer": "16",
@@ -165,10 +168,14 @@
   "scripts": {
     "start": "cross-env LOCAL_SERVER=1 node scripts/start.js",
     "start:dev_api": "node scripts/start.js",
+    "start:test":
+      "cross-env LOCAL_SERVER=1 NODE_ENV=test node scripts/start.js",
     "build": "cross-env NODE_ENV=production node scripts/build.js && gulp",
     "test": "npm run lint && jest --env=jsdom",
-    "lint": "npm run lint:app && npm run lint:embed",
     "test:watch": "jest --watch --env=jsdom",
+    "test:integrations":
+      "jest --config integration-tests/jest.config.json --env=jsdom",
+    "lint": "npm run lint:app && npm run lint:embed",
     "lint:app": "eslint src/app",
     "typecheck": "flow check",
     "lint:embed": "eslint src/embed",
@@ -188,7 +195,7 @@
     ]
   },
   "jest": {
-    "rootDir": "src",
+    "roots": ["<rootDir>/src"],
     "moduleDirectories": ["node_modules", "src"],
     "testPathIgnorePatterns": ["/node_modules/", "/create-zip\\/.*\\/files/"],
     "moduleNameMapper": {
