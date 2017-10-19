@@ -29,9 +29,9 @@ SANDBOXES.forEach(sandbox => {
         await page.waitForSelector('#' + root);
         await page.waitFor(2000);
 
-        const html = await page.evaluate(() => document.body.innerHTML);
+        // const html = await page.evaluate(() => document.body.innerHTML);
+        // expect(html).toMatchSnapshot(id.split('/').join('-'));
 
-        expect(html).toMatchSnapshot(id.split('/').join('-'));
         const screenshot = await page.screenshot();
 
         expect(screenshot).toMatchImageSnapshot({
