@@ -36,7 +36,7 @@ SANDBOXES.forEach(sandbox => {
 
         expect(screenshot).toMatchImageSnapshot({
           customDiffConfig: {
-            threshold: 0.05, // 1% threshold
+            threshold: 0.03, // 3% threshold
           },
           customSnapshotIdentifier: id.split('/').join('-'),
         });
