@@ -14,21 +14,32 @@ const babelProd = require('./babel.prod');
 const NODE_ENV = JSON.parse(env['process.env.NODE_ENV']);
 const __DEV__ = NODE_ENV === 'development'; // eslint-disable-line no-underscore-dangle
 const __PROD__ = NODE_ENV === 'production'; // eslint-disable-line no-underscore-dangle
+const __TEST__ = NODE_ENV === 'test'; // eslint-disable-line no-underscore-dangle
 const babelConfig = __DEV__ ? babelDev : babelProd;
 
 module.exports = {
-  entry: {
-    app: [require.resolve('./polyfills'), path.join(paths.appSrc, 'index.js')],
-    sandbox: [
-      require.resolve('./polyfills'),
-      path.join(paths.sandboxSrc, 'index.js'),
-    ],
-    embed: [
-      require.resolve('./polyfills'),
-      path.join(paths.embedSrc, 'index.js'),
-    ],
-    vendor: ['react', 'react-dom', 'styled-components'],
-  },
+  entry: __TEST__
+    ? {
+        sandbox: [
+          require.resolve('./polyfills'),
+          path.join(paths.sandboxSrc, 'index.js'),
+        ],
+      }
+    : {
+        app: [
+          require.resolve('./polyfills'),
+          path.join(paths.appSrc, 'index.js'),
+        ],
+        sandbox: [
+          require.resolve('./polyfills'),
+          path.join(paths.sandboxSrc, 'index.js'),
+        ],
+        embed: [
+          require.resolve('./polyfills'),
+          path.join(paths.embedSrc, 'index.js'),
+        ],
+        vendor: ['react', 'react-dom', 'styled-components'],
+      },
   target: 'web',
   node: {
     fs: 'empty',

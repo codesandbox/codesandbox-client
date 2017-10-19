@@ -3,6 +3,8 @@
 # dependencies
 /node_modules
 
+/integration-tests/**/__diff_output__
+
 # testing
 coverage
 

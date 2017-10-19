@@ -1,0 +1,36 @@
+version: 2
+
+jobs:
+  build:
+    working_directory: ~/codesandbox-client
+    docker:
+      - image: circleci/node:8.4.0
+    environment:
+      TZ: "/usr/share/zoneinfo/Europe/Amsterdam"
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+      - run:
+          name: Install Dependency
+          command: yarn install
+      - save_cache:
+          key: dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          paths:
+            - ./node_modules
+            - ~/.yarn-cache
+      - run:
+          name: Workaround for https://github.com/GoogleChrome/puppeteer/issues/290
+          command: sh ./integration-tests/scripts/workaround-puppeteer-issue-290.sh
+      - run:
+          name: Start Server
+          command: yarn start:test
+          background: true
+      - run:
+          name: Test
+          command: |
+            sleep 2
+            yarn test:integrations -- --maxWorkers=2
+      - store_artifacts:
+          path: integration-tests/tests/__image_snapshots__/__diff_output__
+          destination: image_snapshot_diff

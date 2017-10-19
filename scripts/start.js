@@ -1,7 +1,8 @@
 /* eslint-disable */
-process.env.NODE_ENV = 'development';
+process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 var express = require('express');
+var cors = require('cors');
 var chalk = require('chalk');
 var webpack = require('webpack');
 var WebpackDevServer = require('webpack-dev-server');
@@ -185,9 +186,13 @@ function addMiddleware(devServer, index) {
     })
   );
   if (process.env.LOCAL_SERVER) {
+    devServer.use(cors());
     devServer.use(
       '/api',
-      proxy({ target: 'https://codesandbox.io', changeOrigin: true })
+      proxy({
+        target: 'https://codesandbox.io',
+        changeOrigin: true,
+      })
     );
   }
   // Finally, by now we have certainly resolved the URL.
