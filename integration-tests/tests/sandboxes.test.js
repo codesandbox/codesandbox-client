@@ -29,9 +29,15 @@ SANDBOXES.forEach(sandbox => {
         await page.waitForSelector('#' + root);
         await page.waitFor(2000);
 
+        const html = await page.evaluate(() => document.body.innerHTML);
+
+        expect(html).toMatchSnapshot(id.split('/').join('-'));
         const screenshot = await page.screenshot();
 
         expect(screenshot).toMatchImageSnapshot({
+          customDiffConfig: {
+            threshold: 0.05, // 1% threshold
+          },
           customSnapshotIdentifier: id.split('/').join('-'),
         });
       },
