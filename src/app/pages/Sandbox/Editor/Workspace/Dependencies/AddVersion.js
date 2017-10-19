@@ -1,8 +1,12 @@
 import React from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
 
 import Button from 'app/components/buttons/Button';
-import WorkspaceInputContainer from '../WorkspaceInputContainer';
+import modalActionCreators from 'app/store/modal/actions';
+
+import SearchDependencies from './SearchDependencies';
 
 const ButtonContainer = styled.div`margin: 0.5rem 1rem;`;
 
@@ -13,7 +17,7 @@ type State = {
 
 type Props = {
   addDependency: (dependency: string, version: string) => Promise<boolean>,
-  existingDependencies: Array<string>,
+  modalActions: typeof modalActionCreators,
   processing: boolean,
 };
 
@@ -22,61 +26,35 @@ const initialState = {
   version: '',
 };
 
-export default class AddVersion extends React.PureComponent {
+const mapDispatchToProps = dispatch => ({
+  modalActions: bindActionCreators(modalActionCreators, dispatch),
+});
+
+class AddVersion extends React.PureComponent {
   state = initialState;
 
   state: State;
   props: Props;
 
-  setName = (e: KeyboardEvent) => {
-    const { existingDependencies } = this.props;
-    const name = e.target.value;
-    this.setState({ name, replacing: existingDependencies.includes(name) });
-  };
-
-  setVersion = (e: KeyboardEvent) => {
-    this.setState({ version: e.target.value });
-  };
-
   addDependency = async () => {
+    this.props.modalActions.openModal({
+      width: 600,
+      Body: <SearchDependencies />,
+    });
     if (this.state.name) {
       await this.props.addDependency(this.state.name, this.state.version);
       this.setState(initialState);
     }
   };
 
-  handleKeyUp = (e: KeyboardEvent) => {
-    if (e.keyCode === 13) {
-      // Enter
-      this.addDependency();
-    }
-  };
-
   render() {
-    const { name, version, replacing } = this.state;
+    const { replacing } = this.state;
     const { processing } = this.props;
-    const isValid = name !== '';
     return (
       <div style={{ position: 'relative' }}>
-        <WorkspaceInputContainer>
-          <input
-            style={{ flex: 3 }}
-            placeholder="package name"
-            value={name}
-            onChange={this.setName}
-            onKeyUp={this.handleKeyUp}
-          />
-          <input
-            style={{ flex: 1 }}
-            placeholder="version"
-            value={version}
-            onChange={this.setVersion}
-            onKeyUp={this.handleKeyUp}
-          />
-        </WorkspaceInputContainer>
         <ButtonContainer>
           <Button
-            disabled={!isValid || processing}
+            disabled={processing}
             block
             small
             onClick={this.addDependency}
@@ -88,3 +66,5 @@ export default class AddVersion extends React.PureComponent {
     );
   }
 }
+
+export default connect(null, mapDispatchToProps)(AddVersion);
