@@ -20,7 +20,9 @@ const SANDBOXES = [
 SANDBOXES.forEach(sandbox => {
   const id = sandbox.id || sandbox;
   const root = sandbox.root || '#root';
-  let browser = puppeteer.launch();
+  let browser = puppeteer.launch({
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+  });
 
   describe('sandboxes', () => {
     afterAll(() => {
@@ -43,7 +45,7 @@ SANDBOXES.forEach(sandbox => {
 
         expect(screenshot).toMatchImageSnapshot({
           customDiffConfig: {
-            threshold: 0.03, // 3% threshold
+            threshold: 0.01, // 1% threshold
           },
           customSnapshotIdentifier: id.split('/').join('-'),
         });
