@@ -65,7 +65,7 @@ export default class Manager {
     this.transpiledModules = {};
     modules.forEach(m => this.addModule(m));
 
-    this.experimentalPackager = options.experimentalPackager || false;
+    this.experimentalPackager = options.experimentalPackager || true;
 
     if (process.env.NODE_ENV === 'development') {
       console.log(this);
