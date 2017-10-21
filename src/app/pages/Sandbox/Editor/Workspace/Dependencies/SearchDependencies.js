@@ -60,7 +60,7 @@ export default class SearchDependencies extends React.PureComponent {
           searchState={searchState}
           onSearchStateChange={this.handleSearchStateChange}
         >
-          <SearchBox />
+          <SearchBox autoFocus />
           {showHits && <Hits hitComponent={this.hitComponent} />}
           <select ref={this.selectRef}>
             {selectedHit && versions.map(v => <option value={v}>{v}</option>)}
