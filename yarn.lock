@@ -1823,7 +1823,13 @@ brorand@^1.0.1:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/brorand/-/brorand-1.1.0.tgz#12c25efe40a45e3c323eb8675a0a0ce57b22371f"
 
-browser-resolve@CompuIves/node-browser-resolve, browser-resolve@^1.11.2:
+browser-resolve@CompuIves/node-browser-resolve:
+  version "1.11.3"
+  resolved "https://codeload.github.com/CompuIves/node-browser-resolve/tar.gz/b775b08e86577119c9813197066cfe5586d08606"
+  dependencies:
+    resolve "^1.4.0"
+
+browser-resolve@^1.11.2:
   version "1.11.2"
   resolved "https://codeload.github.com/CompuIves/node-browser-resolve/tar.gz/4ac4d29e85a547d2c9f5d383bd46021c4b7141c1"
   dependencies:
@@ -6075,8 +6081,6 @@ moment@^2.18.1:
 monaco-editor@CompuIves/codesandbox-monaco-editor:
   version "0.9.0"
   resolved "https://codeload.github.com/CompuIves/codesandbox-monaco-editor/tar.gz/e4e1efb582934ffd8fb135b1cfa1af82cdbc85e3"
-  dependencies:
-    monaco-typescript CompuIves/monaco-typescript
 
 monaco-vue@^0.1.0:
   version "0.1.0"

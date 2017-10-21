@@ -11,6 +11,7 @@ const preset = new Preset('create-react-app-typescript', [
   'json',
   'web.tsx',
   'tsx',
+  'js',
 ]);
 
 preset.registerTranspiler(module => /\.css$/.test(module.path), [
