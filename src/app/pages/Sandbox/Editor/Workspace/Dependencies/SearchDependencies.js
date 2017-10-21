@@ -31,8 +31,7 @@ export default class SearchDependencies extends React.PureComponent {
 
   render() {
     const { searchState, selectedHit } = this.state;
-    const showHits =
-      !selectedHit || (searchState && searchState.query !== selectedHit.name);
+    const showHits = searchState.query && !selectedHit;
     // Copied from https://github.com/yarnpkg/website/blob/956150946634b1e6ae8c3aebd3fd269744180738/scripts/sitemaps.js
     // TODO: Use our own key
     return (
@@ -46,6 +45,14 @@ export default class SearchDependencies extends React.PureComponent {
         >
           <SearchBox />
           {showHits && <Hits hitComponent={this.hitComponent} />}
+          <select>
+            {selectedHit &&
+              Object.keys(selectedHit.versions).map((v, i, arr) => (
+                <option value={v} selected={i === arr.length - 1}>
+                  {v}
+                </option>
+              ))}
+          </select>
         </InstantSearch>
       </div>
     );
