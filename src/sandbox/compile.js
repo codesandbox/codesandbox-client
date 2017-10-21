@@ -120,8 +120,7 @@ async function compile({
       updateManager(sandboxId, template, managerModules, experimentalPackager),
     ]);
 
-    const { externals = {} } = manifest;
-
+    const { externals = {} } = manifest || {};
     if (experimentalPackager) {
       manager.setManifest(manifest);
     } else {

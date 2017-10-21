@@ -7,7 +7,6 @@ import * as pathUtils from 'common/utils/path';
 import type { Module } from './entities/module';
 import TranspiledModule from './transpiled-module';
 import Preset from './presets';
-import nodeResolvePath from './utils/node-resolve-path';
 import fetchModule from './npm/fetch-npm-module';
 import DependencyNotFoundError from '../errors/dependency-not-found-error';
 import ModuleNotFoundError from '../errors/module-not-found-error';
@@ -76,14 +75,19 @@ export default class Manager {
     this.externals = externals;
   }
 
-  setManifest(manifest: Manifest) {
-    this.manifest = manifest;
+  setManifest(manifest: ?Manifest) {
+    this.manifest = manifest || {
+      contents: {},
+      dependencies: [],
+      dependencyDependencies: {},
+      dependencyAliases: {},
+    };
 
-    Object.keys(manifest.contents).forEach(path => {
+    Object.keys(this.manifest.contents).forEach(path => {
       this.addModule({
         path,
-        code: manifest.contents[path].content,
-        requires: manifest.contents[path].requires,
+        code: this.manifest.contents[path].content,
+        requires: this.manifest.contents[path].requires,
       });
     });
   }
@@ -223,12 +227,12 @@ export default class Manager {
       : previousDependencyParts[0];
 
     if (
-      this.manifest[previousDependencyName] &&
-      this.manifest[previousDependencyName][dependencyName]
+      this.manifest.dependencyAliases[previousDependencyName] &&
+      this.manifest.dependencyAliases[previousDependencyName][dependencyName]
     ) {
-      const aliasedDependencyName = this.manifest[previousDependencyName][
-        dependencyName
-      ];
+      const aliasedDependencyName = this.manifest.dependencyAliases[
+        previousDependencyName
+      ][dependencyName];
 
       return path.replace(dependencyName, aliasedDependencyName);
     }

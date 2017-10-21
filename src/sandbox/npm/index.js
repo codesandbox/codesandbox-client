@@ -68,7 +68,7 @@ export default async function loadDependencies(
       }
     }
   } else {
-    manifest = {};
+    manifest = null;
   }
 
   return { manifest, isNewCombination };
