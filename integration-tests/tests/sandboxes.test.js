@@ -12,9 +12,9 @@ const SANDBOXES = [
   'github/faceyspacey/redux-first-router-codesandbox/tree/master',
   'mZRjw05yp',
   'pk1qjqpw67',
-  'X6npLXPRW',
   { id: 'o29j95wx9', root: '#app' },
   { id: 'k3q1zjjml5', root: '#app' },
+  'github/reactjs/redux/tree/master/examples/real-world',
 ];
 
 SANDBOXES.forEach(sandbox => {
@@ -49,8 +49,6 @@ SANDBOXES.forEach(sandbox => {
           },
           customSnapshotIdentifier: id.split('/').join('-'),
         });
-
-        page.close();
       },
       1000 * 60 * 10 // 10 minutes for all tests in total
     );
