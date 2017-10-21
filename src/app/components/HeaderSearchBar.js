@@ -36,9 +36,16 @@ const Input = styled.input`
 `;
 
 const StyledSearchIcon = styled(SearchIcon)`
+  font-size: 0.875em;
+  color: rgba(255, 255, 255, 0.7);
+`;
+
+const StyledSearchButton = styled.a`
   position: absolute;
   right: 0.5em;
-  font-size: 0.875em;
+  top: 50%;
+  transform: translate(0, -50%);
+  z-index: 20;
 `;
 
 export default class HeaderSearchBar extends React.PureComponent {
@@ -58,6 +65,8 @@ export default class HeaderSearchBar extends React.PureComponent {
   };
 
   render() {
+    const currentSearchUrl = searchUrl(this.state.query);
+
     return (
       <Container>
         <Input
@@ -65,7 +74,9 @@ export default class HeaderSearchBar extends React.PureComponent {
           placeholder="Search sandboxes"
           onKeyUp={this.handleKeyUp}
         />
-        <StyledSearchIcon value={this.state.query} />
+        <StyledSearchButton href={currentSearchUrl}>
+          <StyledSearchIcon />
+        </StyledSearchButton>
       </Container>
     );
   }

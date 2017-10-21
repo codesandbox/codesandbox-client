@@ -13,7 +13,7 @@ jobs:
           key: dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
       - run:
           name: Install Dependency
-          command: yarn install
+          command: yarn install && yarn add puppeteer
       - save_cache:
           key: dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
           paths:
