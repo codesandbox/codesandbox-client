@@ -7,7 +7,7 @@ const SANDBOXES = [
   'svelte',
   'react-ts',
   'github/reactjs/redux/tree/master/examples/todomvc',
-  'jvlrl98xw3',
+  { id: 'jvlrl98xw3', threshold: 0.05 },
   'vVoQVk78',
   'github/faceyspacey/redux-first-router-codesandbox/tree/master',
   'mZRjw05yp',
@@ -20,6 +20,7 @@ const SANDBOXES = [
 SANDBOXES.forEach(sandbox => {
   const id = sandbox.id || sandbox;
   const root = sandbox.root || '#root';
+  const threshold = sandbox.threshold || 0.01;
   let browser = puppeteer.launch({
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
   });
@@ -45,7 +46,7 @@ SANDBOXES.forEach(sandbox => {
 
         expect(screenshot).toMatchImageSnapshot({
           customDiffConfig: {
-            threshold: 0.01, // 1% threshold
+            threshold,
           },
           customSnapshotIdentifier: id.split('/').join('-'),
         });
