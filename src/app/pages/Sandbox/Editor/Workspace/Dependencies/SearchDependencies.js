@@ -1,20 +1,16 @@
 import React from 'react';
-import { InstantSearch, SearchBox } from 'react-instantsearch/dom';
-
-import {
-  ALGOLIA_API_KEY,
-  ALGOLIA_APPLICATION_ID,
-  ALGOLIA_DEFAULT_INDEX,
-} from 'app/utils/config';
+import { InstantSearch, SearchBox, Hits } from 'react-instantsearch/dom';
 
 import 'app/pages/Search/Search.css';
 
+import DependencyHit from './DependencyHit';
+
 type State = {
-  searchState: string,
+  searchState: Object,
 };
 
 const initialState = {
-  searchState: 'foo',
+  searchState: {},
 };
 
 export default class SearchDependencies extends React.PureComponent {
@@ -23,20 +19,22 @@ export default class SearchDependencies extends React.PureComponent {
   state = initialState;
 
   onSearchStateChange = searchState => {
-    console.log(searchState); // eslint-disable-line
     this.setState({ searchState });
   };
 
   render() {
+    // Copied from https://github.com/yarnpkg/website/blob/956150946634b1e6ae8c3aebd3fd269744180738/scripts/sitemaps.js
+    // TODO: Use our own key
     return (
       <InstantSearch
-        appId={ALGOLIA_APPLICATION_ID}
-        apiKey={ALGOLIA_API_KEY}
-        indexName={ALGOLIA_DEFAULT_INDEX}
+        appId="OFCNCOG2CU"
+        apiKey="f54e21fa3a2a0160595bb058179bfb1e"
+        indexName="npm-search"
         searchState={this.state.searchState}
         onSearchStateChange={this.onSearchStateChange}
       >
-        <SearchBox autoFocus />
+        <SearchBox />
+        <Hits hitComponent={DependencyHit} />
       </InstantSearch>
     );
   }
