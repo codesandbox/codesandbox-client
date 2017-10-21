@@ -1,18 +1,25 @@
 import puppeteer from 'puppeteer';
-import { basename } from 'path';
 
 const SANDBOXES = [
   'new',
   'preact',
-  { id: 'vue', root: 'app' },
+  { id: 'vue', root: '#app' },
   'svelte',
   'react-ts',
   'github/reactjs/redux/tree/master/examples/todomvc',
+  'jvlrl98xw3',
+  'vVoQVk78',
+  'github/faceyspacey/redux-first-router-codesandbox/tree/master',
+  'mZRjw05yp',
+  'pk1qjqpw67',
+  'X6npLXPRW',
+  { id: 'o29j95wx9', root: '#app' },
+  { id: 'k3q1zjjml5', root: '#app' },
 ];
 
 SANDBOXES.forEach(sandbox => {
   const id = sandbox.id || sandbox;
-  const root = sandbox.root || 'root';
+  const root = sandbox.root || '#root';
   let browser = puppeteer.launch();
 
   describe('sandboxes', () => {
@@ -26,7 +33,7 @@ SANDBOXES.forEach(sandbox => {
         browser = await browser;
         const page = await browser.newPage();
         await page.goto('http://localhost:3001/#' + id);
-        await page.waitForSelector('#' + root);
+        await page.waitForSelector(root);
         await page.waitFor(2000);
 
         // const html = await page.evaluate(() => document.body.innerHTML);
@@ -40,6 +47,8 @@ SANDBOXES.forEach(sandbox => {
           },
           customSnapshotIdentifier: id.split('/').join('-'),
         });
+
+        page.close();
       },
       1000 * 60 * 10 // 10 minutes for all tests in total
     );
