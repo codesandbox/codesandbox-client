@@ -176,6 +176,8 @@
       "jest --config integration-tests/jest.config.json --env=jsdom",
     "lint": "npm run lint:app && npm run lint:embed",
     "lint:app": "eslint src/app",
+    "integrations:start":
+      "docker run -v $(pwd):/app/ -it codesandbox/test yarn start:test",
     "typecheck": "flow check",
     "lint:embed": "eslint src/embed",
     "add-contributor": "all-contributors add",
