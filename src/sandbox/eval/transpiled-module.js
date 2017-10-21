@@ -280,7 +280,8 @@ export default class TranspiledModule {
           if (e.type === 'module-not-found' && e.isDependency) {
             this.asyncDependencies.push(manager.downloadDependency(e.path));
           } else {
-            this.errors.push(e);
+            // Don't throw the error, we want to throw this error during evaluation
+            // so we get the correct line as error
           }
         }
       },

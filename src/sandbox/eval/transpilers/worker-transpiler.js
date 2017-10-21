@@ -142,7 +142,13 @@ export default class WorkerTranspiler extends Transpiler {
     if (!this.initialized) {
       this.initialize();
     }
-    this.tasks.push({ message, loaderContext, callback });
+
+    this.tasks.push({
+      id: loaderContext._module.getId(),
+      message,
+      loaderContext,
+      callback,
+    });
 
     this.executeRemainingTasks();
   }

@@ -12,12 +12,19 @@ type Dependencies = {
 const RETRY_COUNT = 60;
 const debug = _debug('cs:sandbox:packager');
 
-const BUCKET_URL = 'https://d1jyvh0kxilfa7.cloudfront.net';
+const BUCKET_URL =
+  process.env.NODE_ENV === 'production'
+    ? 'https://d1jyvh0kxilfa7.cloudfront.net'
+    : 'https://s3-eu-west-1.amazonaws.com/dev.packager.packages';
 const PACKAGER_URL =
-  'https://drq28qbjmc.execute-api.eu-west-1.amazonaws.com/prod/packages';
+  process.env.NODE_ENV === 'production'
+    ? 'https://drq28qbjmc.execute-api.eu-west-1.amazonaws.com/prod/packages'
+    : 'https://8o2xeuyo66.execute-api.eu-west-1.amazonaws.com/dev/packages';
 
-function callApi(url: string) {
-  return fetch(url)
+function callApi(url: string, method = 'GET') {
+  return fetch(url, {
+    method,
+  })
     .then(response => {
       if (response.status >= 200 && response.status < 300) {
         return Promise.resolve(response);
@@ -36,14 +43,14 @@ function callApi(url: string) {
  *
  * @param {string} query The dependencies to call
  */
-async function requestPackager(url) {
+async function requestPackager(url, method = 'GET') {
   let retries = 0;
 
   // eslint-disable-next-line no-constant-condition
   while (true) {
     debug(`Trying to call packager for ${retries} time`);
     try {
-      const manifest = await callApi(url); // eslint-disable-line no-await-in-loop
+      const manifest = await callApi(url, method); // eslint-disable-line no-await-in-loop
 
       return manifest;
     } catch (e) {
@@ -97,10 +104,13 @@ async function getDependencies(dependencies: Object) {
     return bucketManifest;
   } catch (e) {
     // The dep has not been generated yet...
-    const { url } = await requestPackager(`${PACKAGER_URL}/${dependencyUrl}`);
+    const { url } = await requestPackager(
+      `${PACKAGER_URL}/${dependencyUrl}`,
+      'POST'
+    );
 
     setScreen({ type: 'loading', text: 'Downloading Dependencies...' });
-    return callApi(`${BUCKET_URL}/${url}`);
+    return requestPackager(`${BUCKET_URL}/${url}`);
   }
 }
 

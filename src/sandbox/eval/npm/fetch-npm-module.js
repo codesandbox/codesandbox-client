@@ -5,7 +5,6 @@ import type { Module } from '../entities/module';
 import type { Manifest } from '../manager';
 
 import DependencyNotFoundError from '../../errors/dependency-not-found-error';
-import ModuleNotFoundError from '../../errors/module-not-found-error';
 import nodeResolvePath from '../utils/node-resolve-path';
 
 type Meta = {
@@ -15,9 +14,14 @@ type Metas = {
   [dependencyAndVersion: string]: Meta,
 };
 
+type Packages = {
+  [path: string]: Object,
+};
+
 type MetaFiles = Array<{ path: string, files?: MetaFiles }>;
 
 const metas: Metas = {};
+const packages: Packages = {};
 
 function normalize(files: MetaFiles, fileObject: Meta = {}) {
   for (let i = 0; i < files.length; i += 1) {
@@ -53,6 +57,10 @@ export default async function fetchModule(
   manifest: Manifest,
   defaultExtensions: Array<string> = ['js', 'jsx', 'json']
 ): Promise<Module> {
+  if (packages[path]) {
+    return packages[path];
+  }
+
   const installedDependencies = {
     ...manifest.dependencies.reduce(
       (t, n) => ({ ...t, [n.name]: n.version }),
@@ -92,5 +100,9 @@ export default async function fetchModule(
     .then(x => ({
       path: pathUtils.join('/node_modules', dependencyName, resolvedPath),
       code: x,
-    }));
+    }))
+    .then(module => {
+      packages[path] = module;
+      return module;
+    });
 }
