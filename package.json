@@ -106,7 +106,7 @@
     "babel-standalone": "^6.25.0",
     "base64-loader": "^1.0.0",
     "codemirror": "^5.27.4",
-    "codesandbox-api": "0.0.6",
+    "codesandbox-api": "^0.0.11",
     "color": "^0.11.4",
     "css-modules-loader-core": "^1.1.0",
     "cssnano": "^3.10.0",
