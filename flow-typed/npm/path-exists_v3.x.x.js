@@ -1,5 +1,5 @@
-// flow-typed signature: a337b8eb7d61407ef752cc322846aeb7
-// flow-typed version: b43dff3e0e/path-exists_v3.x.x/flow_>=v0.25.x
+// flow-typed signature: 33a3a3bf2de571b296cf5905aea164bf
+// flow-typed version: 94e9f7e0a4/path-exists_v3.x.x/flow_>=v0.28.x
 
 declare module 'path-exists' {
   declare module.exports: {
