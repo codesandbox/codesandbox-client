@@ -97,23 +97,27 @@ export default async function fetchModule(
   manager: Manager,
   defaultExtensions: Array<string> = ['js', 'jsx', 'json']
 ): Promise<Module> {
-  const installedDependencies = {
-    ...manager.manifest.dependencies.reduce(
-      (t, n) => ({ ...t, [n.name]: n.version }),
-      {}
-    ),
-    ...manager.manifest.dependencyDependencies,
-  };
-
   const dependencyName = getDependencyName(path);
 
-  const version = installedDependencies[dependencyName];
+  let version = null;
+
+  if (manager.manifest.dependencyDependencies[dependencyName]) {
+    version = manager.manifest.dependencyDependencies[dependencyName].resolved;
+  } else {
+    const dep = manager.manifest.dependencies.find(
+      m => m.name === dependencyName
+    );
+
+    if (dep) {
+      version = dep.version;
+    }
+  }
 
   if (!version) {
     throw new DependencyNotFoundError(path);
   }
 
-  const meta = await getMeta(dependencyName, version.resolved);
+  const meta = await getMeta(dependencyName, version);
 
   return new Promise((res, reject) => {
     resolve(
@@ -163,9 +167,7 @@ export default async function fetchModule(
           return reject(err);
         }
 
-        return res(
-          downloadDependency(dependencyName, version.resolved, resolvedPath)
-        );
+        return res(downloadDependency(dependencyName, version, resolvedPath));
       }
     );
   });
