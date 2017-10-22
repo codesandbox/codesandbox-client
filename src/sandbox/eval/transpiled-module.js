@@ -278,7 +278,9 @@ export default class TranspiledModule {
           return tModule;
         } catch (e) {
           if (e.type === 'module-not-found' && e.isDependency) {
-            this.asyncDependencies.push(manager.downloadDependency(e.path));
+            this.asyncDependencies.push(
+              manager.downloadDependency(e.path, this.module.path)
+            );
           } else {
             // Don't throw the error, we want to throw this error during evaluation
             // so we get the correct line as error

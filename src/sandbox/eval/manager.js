@@ -7,7 +7,8 @@ import * as pathUtils from 'common/utils/path';
 import type { Module } from './entities/module';
 import TranspiledModule from './transpiled-module';
 import Preset from './presets';
-import fetchModule from './npm/fetch-npm-module';
+import fetchModule, { getCombinedMetas } from './npm/fetch-npm-module';
+import coreLibraries from './npm/get-core-libraries';
 import getDependencyName from './utils/get-dependency-name';
 import DependencyNotFoundError from '../errors/dependency-not-found-error';
 import ModuleNotFoundError from '../errors/module-not-found-error';
@@ -26,7 +27,11 @@ export type Manifest = {
   },
   dependencies: Array<{ name: string, version: string }>,
   dependencyDependencies: {
-    [name: string]: string,
+    [name: string]: {
+      semver: string,
+      resolved: string,
+      parents: string[],
+    },
   },
   dependencyAliases: {
     [name: string]: {
@@ -35,7 +40,7 @@ export type Manifest = {
   },
 };
 
-const NODE_LIBS = ['dgram', 'fs', 'path', 'net', 'tls', 'child_process'];
+const NODE_LIBS = ['dgram', 'fs', 'net', 'tls', 'child_process'];
 
 export default class Manager {
   id: string;
@@ -237,15 +242,13 @@ export default class Manager {
     currentPath: string,
     defaultExtensions: Array<string> = ['js', 'jsx', 'json']
   ): Module {
-    const isDependency = /^(\w|@\w)/.test(path);
-
     const aliasedPath = this.getAliasedDependencyPath(path, currentPath);
-
+    const shimmedPath = coreLibraries[aliasedPath] || aliasedPath;
     try {
-      const resolvedPath = resolve.sync(aliasedPath, {
+      const resolvedPath = resolve.sync(shimmedPath, {
         filename: currentPath,
         extensions: defaultExtensions.map(ext => '.' + ext),
-        isFile: p => !!this.transpiledModules[p],
+        isFile: p => !!this.transpiledModules[p] || !!getCombinedMetas()[p],
         readFileSync: p => {
           if (this.transpiledModules[p]) {
             return this.transpiledModules[p].module.code;
@@ -268,35 +271,41 @@ export default class Manager {
 
       return this.transpiledModules[resolvedPath].module;
     } catch (e) {
+      let connectedPath = /^(\w|@\w)/.test(shimmedPath)
+        ? pathUtils.join('/node_modules', shimmedPath)
+        : pathUtils.join(pathUtils.dirname(currentPath), shimmedPath);
+
+      const isDependency = connectedPath.includes('/node_modules/');
+
+      connectedPath = connectedPath.replace('/node_modules/', '');
+
       if (!isDependency) {
-        throw new ModuleNotFoundError(aliasedPath, false);
+        throw new ModuleNotFoundError(shimmedPath, false);
       }
 
-      const dependencyName = getDependencyName(path);
+      const dependencyName = getDependencyName(connectedPath);
 
       if (
         this.manifest.dependencies.find(d => d.name === dependencyName) ||
         this.manifest.dependencyDependencies[dependencyName]
       ) {
-        throw new ModuleNotFoundError(aliasedPath, true);
+        throw new ModuleNotFoundError(connectedPath, true);
       } else {
-        throw new DependencyNotFoundError(path);
+        throw new DependencyNotFoundError(connectedPath);
       }
     }
   }
 
-  downloadPromises = {};
-
-  async downloadDependency(path: string): Promise<TranspiledModule> {
-    this.downloadPromises[path] =
-      this.downloadPromises[path] ||
-      fetchModule(
-        path,
-        this.manifest,
-        this.preset.ignoredExtensions
-      ).then(module => this.getTranspiledModule(module));
-
-    return this.downloadPromises[path];
+  async downloadDependency(
+    path: string,
+    currentPath: string
+  ): Promise<TranspiledModule> {
+    return fetchModule(
+      path,
+      currentPath,
+      this,
+      this.preset.ignoredExtensions
+    ).then(module => this.getTranspiledModule(module));
   }
 
   /**

@@ -1824,8 +1824,8 @@ brorand@^1.0.1:
   resolved "https://registry.yarnpkg.com/brorand/-/brorand-1.1.0.tgz#12c25efe40a45e3c323eb8675a0a0ce57b22371f"
 
 browser-resolve@CompuIves/node-browser-resolve:
-  version "1.11.3"
-  resolved "https://codeload.github.com/CompuIves/node-browser-resolve/tar.gz/b775b08e86577119c9813197066cfe5586d08606"
+  version "1.11.4"
+  resolved "https://codeload.github.com/CompuIves/node-browser-resolve/tar.gz/9c5dff31be5cd39b25b9e978fed579f43c55828d"
   dependencies:
     resolve "^1.4.0"
 
