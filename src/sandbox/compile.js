@@ -57,7 +57,7 @@ async function updateManager(
   sandboxId,
   template,
   managerModules,
-  experimentalPackager = true
+  experimentalPackager = false
 ) {
   if (!manager || manager.id !== sandboxId) {
     manager = new Manager(sandboxId, managerModules, getPreset(template), {
@@ -94,7 +94,7 @@ async function compile({
   hasActions,
   isModuleView = false,
   template,
-  experimentalPackager = true,
+  experimentalPackager = false,
 }) {
   try {
     clearErrorTransformers();
