@@ -8,6 +8,7 @@ import type { Module } from './entities/module';
 import TranspiledModule from './transpiled-module';
 import Preset from './presets';
 import fetchModule from './npm/fetch-npm-module';
+import getDependencyName from './utils/get-dependency-name';
 import DependencyNotFoundError from '../errors/dependency-not-found-error';
 import ModuleNotFoundError from '../errors/module-not-found-error';
 
@@ -214,17 +215,8 @@ export default class Manager {
       return path;
     }
 
-    const dependencyParts = path.split('/');
-    const dependencyName = path.startsWith('@')
-      ? `${dependencyParts[0]}/${dependencyParts[1]}`
-      : dependencyParts[0];
-
-    const previousDependencyParts = currentPath
-      .replace('/node_modules/', '')
-      .split('/');
-    const previousDependencyName = path.startsWith('@')
-      ? `${previousDependencyParts[0]}/${previousDependencyParts[1]}`
-      : previousDependencyParts[0];
+    const dependencyName = getDependencyName(path);
+    const previousDependencyName = getDependencyName(currentPath);
 
     if (
       this.manifest.dependencyAliases[previousDependencyName] &&
@@ -280,10 +272,7 @@ export default class Manager {
         throw new ModuleNotFoundError(aliasedPath, false);
       }
 
-      const dependencyParts = path.split('/');
-      const dependencyName = path.startsWith('@')
-        ? `${dependencyParts[0]}/${dependencyParts[1]}`
-        : dependencyParts[0];
+      const dependencyName = getDependencyName(path);
 
       if (
         this.manifest.dependencies.find(d => d.name === dependencyName) ||
