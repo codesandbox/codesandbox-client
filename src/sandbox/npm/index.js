@@ -35,7 +35,7 @@ function addDependencyBundle(url) {
  */
 export default async function loadDependencies(
   dependencies: NPMDependencies,
-  experimentalPackager = true
+  experimentalPackager = false
 ) {
   let isNewCombination = false;
   if (Object.keys(dependencies).length !== 0) {
