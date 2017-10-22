@@ -11,7 +11,7 @@ import resolveDependency from './eval/loaders/dependency-resolver';
 
 import { resetScreen } from './status-screen';
 
-import { inject, uninject } from './react-error-overlay/overlay';
+import { inject, unmount } from './react-error-overlay/overlay';
 import handleExternalResources from './external-resources';
 
 import defaultBoilerplates from './boilerplates/default-boilerplates';
@@ -82,6 +82,7 @@ function initializeResizeListener() {
   });
   initializedResizeListener = true;
 }
+inject();
 
 async function compile({
   sandboxId,
@@ -99,8 +100,7 @@ async function compile({
   try {
     clearErrorTransformers();
     initializeErrorTransformers();
-    uninject();
-    inject();
+    unmount();
   } catch (e) {
     console.error(e);
   }

@@ -147,10 +147,11 @@ function switchError(offset) {
 }
 
 function disposeCurrentView() {
-  if (iframeReference === null) {
-    return;
-  }
-  window.document.body.removeChild(iframeReference);
+  // CodeSandbox already resets this
+  // if (iframeReference === null) {
+  //   return;
+  // }
+  // window.document.body.removeChild(iframeReference);
   iframeReference = null;
   additionalReference = null;
 }
@@ -322,4 +323,4 @@ function uninject() {
   unmount();
 }
 
-export { inject, uninject };
+export { inject, uninject, unmount };
