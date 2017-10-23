@@ -75,11 +75,13 @@ async function callPackager(dependencies: Object) {
 
   try {
     // Warmup cache
-    window.fetch(`${NEW_PACKAGER_URL}/${dependencyUrl}`).catch(e => {
-      if (process.env.NODE_ENV === 'development') {
-        console.error(e);
-      }
-    });
+    window
+      .fetch(`${NEW_PACKAGER_URL}/${dependencyUrl}`, { method: 'POST' })
+      .catch(e => {
+        if (process.env.NODE_ENV === 'development') {
+          console.error(e);
+        }
+      });
   } catch (e) {
     console.error(e);
   }
