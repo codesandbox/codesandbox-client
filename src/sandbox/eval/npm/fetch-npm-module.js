@@ -1,12 +1,12 @@
 // @flow
 import * as pathUtils from 'common/utils/path';
+import resolve from 'browser-resolve';
 
 import type { Module } from '../entities/module';
-import type { Manifest } from '../manager';
+import Manager from '../manager';
 
 import DependencyNotFoundError from '../../errors/dependency-not-found-error';
-import ModuleNotFoundError from '../../errors/module-not-found-error';
-import nodeResolvePath from '../utils/node-resolve-path';
+import getDependencyName from '../utils/get-dependency-name';
 
 type Meta = {
   [path: string]: any,
@@ -15,16 +15,31 @@ type Metas = {
   [dependencyAndVersion: string]: Meta,
 };
 
+type Packages = {
+  [path: string]: Object,
+};
+
 type MetaFiles = Array<{ path: string, files?: MetaFiles }>;
 
 const metas: Metas = {};
+let combinedMetas: Meta = {};
+const packages: Packages = {};
 
-function normalize(files: MetaFiles, fileObject: Meta = {}) {
+export function getCombinedMetas() {
+  return combinedMetas;
+}
+
+function normalize(depName: string, files: MetaFiles, fileObject: Meta = {}) {
   for (let i = 0; i < files.length; i += 1) {
-    fileObject[files[i].path] = true; // eslint-disable-line no-param-reassign
+    const absolutePath = pathUtils.join(
+      '/node_modules',
+      depName,
+      files[i].path
+    );
+    fileObject[absolutePath] = true; // eslint-disable-line no-param-reassign
 
     if (files[i].files) {
-      normalize(files[i].files, fileObject);
+      normalize(depName, files[i].files, fileObject);
     }
   }
 
@@ -32,56 +47,35 @@ function normalize(files: MetaFiles, fileObject: Meta = {}) {
 }
 
 function getMeta(name: string, version: string) {
-  if (metas[`${name}@${version}`]) {
-    return metas[`${name}@${version}`];
+  const id = `${name}@${version}`;
+  if (metas[id]) {
+    return metas[id];
   }
 
-  return window
+  metas[id] = window
     .fetch(`https://unpkg.com/${name}@${version}/?meta`)
     .then(x => x.json())
-    .then(metaInfo => {
-      const normalizedMetaInfo = normalize(metaInfo.files);
-      // rewrite to path: any object
-      metas[`${name}@${version}`] = normalizedMetaInfo;
-
-      return normalizedMetaInfo;
+    .then(metaInfo => normalize(name, metaInfo.files))
+    .then(normalizedMetas => {
+      combinedMetas = { ...combinedMetas, ...normalizedMetas };
+      return normalizedMetas;
     });
+
+  return metas[id];
 }
 
-export default async function fetchModule(
-  path: string,
-  manifest: Manifest,
-  defaultExtensions: Array<string> = ['js', 'jsx', 'json']
-): Promise<Module> {
-  const installedDependencies = {
-    ...manifest.dependencies.reduce(
-      (t, n) => ({ ...t, [n.name]: n.version }),
-      {}
-    ),
-    ...manifest.dependencyDependencies,
-  };
-
-  const dependencyParts = path.split('/');
-  const dependencyName = path.startsWith('@')
-    ? `${dependencyParts[0]}/${dependencyParts[1]}`
-    : dependencyParts[0];
-
-  const version = installedDependencies[dependencyName];
-
-  if (!version) {
-    throw new DependencyNotFoundError(path);
+function downloadDependency(depName: string, depVersion: string, path: string) {
+  if (packages[path]) {
+    return packages[path];
   }
 
-  const meta = await getMeta(dependencyName, version);
-
-  const resolvedPath = nodeResolvePath(
-    path.replace(dependencyName, ''),
-    meta,
-    defaultExtensions
+  const relativePath = path.replace(
+    pathUtils.join('/node_modules', depName),
+    ''
   );
 
-  return window
-    .fetch(`https://unpkg.com/${dependencyName}@${version}${resolvedPath}`)
+  packages[path] = window
+    .fetch(`https://unpkg.com/${depName}@${depVersion}${relativePath}`)
     .then(x => {
       if (x.ok) {
         return x.text();
@@ -90,7 +84,91 @@ export default async function fetchModule(
       return `throw new Error("Could not find module ${path}`;
     })
     .then(x => ({
-      path: pathUtils.join('/node_modules', dependencyName, resolvedPath),
+      path,
       code: x,
     }));
+
+  return packages[path];
+}
+
+export default async function fetchModule(
+  path: string,
+  currentPath: string,
+  manager: Manager,
+  defaultExtensions: Array<string> = ['js', 'jsx', 'json']
+): Promise<Module> {
+  const dependencyName = getDependencyName(path);
+
+  let version = null;
+
+  if (manager.manifest.dependencyDependencies[dependencyName]) {
+    version = manager.manifest.dependencyDependencies[dependencyName].resolved;
+  } else {
+    const dep = manager.manifest.dependencies.find(
+      m => m.name === dependencyName
+    );
+
+    if (dep) {
+      version = dep.version;
+    }
+  }
+
+  if (!version) {
+    throw new DependencyNotFoundError(path);
+  }
+
+  const meta = await getMeta(dependencyName, version);
+
+  return new Promise((res, reject) => {
+    resolve(
+      path,
+      {
+        filename: currentPath,
+        extensions: defaultExtensions.map(ext => '.' + ext),
+        isFile: (p, c) => c(null, !!manager.transpiledModules[p] || !!meta[p]),
+        readFile: async (p, c, cb) => {
+          const callback = cb || c;
+          if (manager.transpiledModules[p]) {
+            return callback(null, manager.transpiledModules[p].module.code);
+          }
+
+          const depName = getDependencyName(p);
+          const depInfo = manager.manifest.dependencyDependencies[depName];
+
+          if (depInfo) {
+            try {
+              const module = await downloadDependency(
+                depName,
+                depInfo.resolved,
+                p
+              );
+
+              if (module) {
+                manager.addModule(module);
+
+                callback(null, module.code);
+                return null;
+              }
+            } catch (e) {
+              // Let it throw the error
+            }
+          }
+
+          const err = new Error('Could not find ' + p);
+          err.code = 'ENOENT';
+
+          callback(err);
+          return null;
+        },
+      },
+      (err, resolvedPath) => {
+        if (err) {
+          console.error(err);
+          return reject(err);
+        }
+
+        return res(downloadDependency(dependencyName, version, resolvedPath));
+      }
+    );
+  });
 }

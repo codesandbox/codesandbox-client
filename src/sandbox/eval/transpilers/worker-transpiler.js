@@ -8,7 +8,7 @@ const debug = _debug('cs:compiler:worker-transpiler');
 
 type Task = {
   message: any,
-  callback: (err: ?any, data: ?any) => void,
+  callbacks: Array<(err: ?any, data: ?any) => void>,
   loaderContext: LoaderContext,
 };
 
@@ -20,7 +20,9 @@ export default class WorkerTranspiler extends Transpiler {
   workers: Array<Worker>;
   idleWorkers: Array<Worker>;
   workerCount: number;
-  tasks: Array<Task>;
+  tasks: {
+    [id: string]: Task,
+  };
   initialized: boolean;
 
   runningTasks: {
@@ -38,7 +40,7 @@ export default class WorkerTranspiler extends Transpiler {
     this.Worker = Worker;
     this.workers = [];
     this.idleWorkers = [];
-    this.tasks = [];
+    this.tasks = {};
     this.initialized = false;
   }
 
@@ -76,14 +78,23 @@ export default class WorkerTranspiler extends Transpiler {
   }
 
   executeRemainingTasks() {
-    while (this.idleWorkers.length && this.tasks.length) {
-      const task = this.tasks.shift();
+    const taskIds = Object.keys(this.tasks);
+    while (this.idleWorkers.length && taskIds.length) {
+      const taskId = taskIds.shift();
+
+      const task = this.tasks[taskId];
+      delete this.tasks[taskId];
+
       const worker = this.idleWorkers.shift();
       this.executeTask(task, worker);
     }
   }
 
-  executeTask({ message, loaderContext, callback }: Task, worker: Worker) {
+  runCallbacks(callbacks: Array<Function>, err, data) {
+    callbacks.forEach(c => c(err, data));
+  }
+
+  executeTask({ message, loaderContext, callbacks }: Task, worker: Worker) {
     worker.onmessage = newMessage => {
       const { data } = newMessage;
 
@@ -91,7 +102,7 @@ export default class WorkerTranspiler extends Transpiler {
         if (data.type === 'error') {
           const reconstructedError = parseWorkerError(data.error);
 
-          callback(reconstructedError);
+          this.runCallbacks(callbacks, reconstructedError);
         }
 
         if (data.type === 'warning') {
@@ -122,7 +133,7 @@ export default class WorkerTranspiler extends Transpiler {
 
         // Means the transpile task has been completed
         if (data.type === 'compiled') {
-          callback(null, data);
+          this.runCallbacks(callbacks, null, data);
         }
 
         if (data.type === 'error' || data.type === 'compiled') {
@@ -142,7 +153,17 @@ export default class WorkerTranspiler extends Transpiler {
     if (!this.initialized) {
       this.initialize();
     }
-    this.tasks.push({ message, loaderContext, callback });
+
+    const id = loaderContext._module.getId();
+    if (!this.tasks[id]) {
+      this.tasks[id] = {
+        message,
+        loaderContext,
+        callbacks: [],
+      };
+    }
+
+    this.tasks[id].callbacks.push(callback);
 
     this.executeRemainingTasks();
   }

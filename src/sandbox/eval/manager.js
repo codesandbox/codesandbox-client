@@ -1,13 +1,15 @@
 // @flow
 import { flattenDeep, uniq, values } from 'lodash';
+import resolve from 'browser-resolve';
 
 import * as pathUtils from 'common/utils/path';
 
 import type { Module } from './entities/module';
 import TranspiledModule from './transpiled-module';
 import Preset from './presets';
-import nodeResolvePath from './utils/node-resolve-path';
-import fetchModule from './npm/fetch-npm-module';
+import fetchModule, { getCombinedMetas } from './npm/fetch-npm-module';
+import coreLibraries from './npm/get-core-libraries';
+import getDependencyName from './utils/get-dependency-name';
 import DependencyNotFoundError from '../errors/dependency-not-found-error';
 import ModuleNotFoundError from '../errors/module-not-found-error';
 
@@ -20,15 +22,21 @@ type ModuleObject = {
 };
 
 export type Manifest = {
-  aliases: {
-    [path: string]: string | false,
-  },
   contents: {
     [path: string]: { content: string, requires: Array<string> },
   },
   dependencies: Array<{ name: string, version: string }>,
   dependencyDependencies: {
-    [name: string]: string,
+    [name: string]: {
+      semver: string,
+      resolved: string,
+      parents: string[],
+    },
+  },
+  dependencyAliases: {
+    [name: string]: {
+      [depName: string]: string,
+    },
   },
 };
 
@@ -73,8 +81,21 @@ export default class Manager {
     this.externals = externals;
   }
 
-  setManifest(manifest: Manifest) {
-    this.manifest = manifest;
+  setManifest(manifest: ?Manifest) {
+    this.manifest = manifest || {
+      contents: {},
+      dependencies: [],
+      dependencyDependencies: {},
+      dependencyAliases: {},
+    };
+
+    Object.keys(this.manifest.contents).forEach(path => {
+      this.addModule({
+        path,
+        code: this.manifest.contents[path].content,
+        requires: this.manifest.contents[path].requires,
+      });
+    });
   }
 
   evaluateModule(module: Module) {
@@ -187,94 +208,102 @@ export default class Manager {
     return values(this.transpiledModules).map(t => t.module);
   }
 
-  resolveModule(
-    path: string,
-    defaultExtensions: Array<string> = ['js', 'jsx', 'json']
-  ): Module {
-    const moduleObject = this.transpiledModules;
-    const foundPath = nodeResolvePath(path, moduleObject, defaultExtensions);
+  getAliasedDependencyPath(path: string, currentPath: string) {
+    const isDependency = /^(\w|@\w)/.test(path);
 
-    if (foundPath && moduleObject[foundPath]) {
-      return moduleObject[foundPath].module;
+    if (!isDependency) {
+      return path;
     }
 
-    throw new ModuleNotFoundError(path, false);
-  }
-
-  resolveDependency(
-    path: string,
-    defaultExtensions: Array<string> = ['js', 'jsx', 'json']
-  ): Module {
-    let depPath = path.replace('/node_modules/', '');
-
-    const aliasedPath = nodeResolvePath(
-      depPath,
-      this.manifest.aliases,
-      defaultExtensions
-    );
-
-    depPath = aliasedPath == null ? depPath : aliasedPath;
-
-    const alias = this.manifest.aliases[depPath];
-    // So aliased to not be included in the bundle, decided by browser object on pkg
-    if (alias === false) {
-      return {
-        path: pathUtils.join('/node_modules', depPath),
-        code: 'module.exports = null;',
-        requires: [],
-      };
+    const isCurrentPathDependency = currentPath.startsWith('/node_modules');
+    if (!isCurrentPathDependency) {
+      return path;
     }
 
-    // Check if the module is already there
-    const foundPath = nodeResolvePath(
-      path,
-      this.transpiledModules,
-      defaultExtensions
-    );
-    if (foundPath && this.transpiledModules[foundPath]) {
-      return this.transpiledModules[foundPath].module;
-    }
-
-    const resolvedPath = nodeResolvePath(
-      alias || depPath,
-      this.manifest.contents,
-      defaultExtensions
-    );
-    if (resolvedPath && this.manifest.contents[resolvedPath]) {
-      return {
-        path: pathUtils.join('/node_modules', resolvedPath),
-        code: this.manifest.contents[resolvedPath].content,
-        requires: this.manifest.contents[resolvedPath].requires,
-      };
-    }
-
-    const dependencyParts = depPath.split('/');
-    const dependencyName = depPath.startsWith('@')
-      ? `${dependencyParts[0]}/${dependencyParts[1]}`
-      : dependencyParts[0];
-
-    if (NODE_LIBS.includes(dependencyName)) {
-      return {
-        path: pathUtils.join('/node_modules', depPath),
-        code: `// empty`,
-        requires: [],
-      };
-    }
+    const dependencyName = getDependencyName(path);
+    const previousDependencyName = getDependencyName(currentPath);
 
     if (
-      this.manifest.dependencies.find(d => d.name === dependencyName) ||
-      this.manifest.dependencyDependencies[dependencyName]
+      this.manifest.dependencyAliases[previousDependencyName] &&
+      this.manifest.dependencyAliases[previousDependencyName][dependencyName]
     ) {
-      throw new ModuleNotFoundError(alias || depPath, true);
-    } else {
-      throw new DependencyNotFoundError(alias || depPath);
+      const aliasedDependencyName = this.manifest.dependencyAliases[
+        previousDependencyName
+      ][dependencyName];
+
+      return path.replace(dependencyName, aliasedDependencyName);
+    }
+
+    return path;
+  }
+
+  resolveModule(
+    path: string,
+    currentPath: string,
+    defaultExtensions: Array<string> = ['js', 'jsx', 'json']
+  ): Module {
+    const aliasedPath = this.getAliasedDependencyPath(path, currentPath);
+    const shimmedPath = coreLibraries[aliasedPath] || aliasedPath;
+    try {
+      const resolvedPath = resolve.sync(shimmedPath, {
+        filename: currentPath,
+        extensions: defaultExtensions.map(ext => '.' + ext),
+        isFile: p => !!this.transpiledModules[p] || !!getCombinedMetas()[p],
+        readFileSync: p => {
+          if (this.transpiledModules[p]) {
+            return this.transpiledModules[p].module.code;
+          }
+
+          const err = new Error('Could not find ' + p);
+          err.code = 'ENOENT';
+
+          throw err;
+        },
+      });
+
+      if (NODE_LIBS.includes(resolvedPath)) {
+        return {
+          path: pathUtils.join('/node_modules', resolvedPath),
+          code: `// empty`,
+          requires: [],
+        };
+      }
+
+      return this.transpiledModules[resolvedPath].module;
+    } catch (e) {
+      let connectedPath = /^(\w|@\w)/.test(shimmedPath)
+        ? pathUtils.join('/node_modules', shimmedPath)
+        : pathUtils.join(pathUtils.dirname(currentPath), shimmedPath);
+
+      const isDependency = connectedPath.includes('/node_modules/');
+
+      connectedPath = connectedPath.replace('/node_modules/', '');
+
+      if (!isDependency) {
+        throw new ModuleNotFoundError(shimmedPath, false);
+      }
+
+      const dependencyName = getDependencyName(connectedPath);
+
+      if (
+        this.manifest.dependencies.find(d => d.name === dependencyName) ||
+        this.manifest.dependencyDependencies[dependencyName]
+      ) {
+        throw new ModuleNotFoundError(connectedPath, true);
+      } else {
+        throw new DependencyNotFoundError(connectedPath);
+      }
     }
   }
 
-  async downloadDependency(path: string): Promise<TranspiledModule> {
+  async downloadDependency(
+    path: string,
+    currentPath: string
+  ): Promise<TranspiledModule> {
     return fetchModule(
       path,
-      this.manifest,
+      currentPath,
+      this,
       this.preset.ignoredExtensions
     ).then(module => this.getTranspiledModule(module));
   }
@@ -294,28 +323,15 @@ export default class Manager {
     // pop() mutates queryPath, queryPath is now just the loaders
     const modulePath = queryPath.pop();
 
-    let module;
-
-    let newPath = pathUtils
-      .join(
-        pathUtils.dirname(currentPath),
-        this.preset.getAliasedPath(modulePath)
-      )
+    const newPath = this.preset
+      .getAliasedPath(modulePath)
       .replace(/.*\{\{sandboxRoot\}\}/, '');
 
-    if (/^(\w|@\w)/.test(modulePath) && !modulePath.includes('!')) {
-      // Prepend node_modules and go to root if it is a dependency
-      newPath = pathUtils.join(
-        '/node_modules',
-        this.preset.getAliasedPath(modulePath)
-      );
-    }
-
-    if (newPath.startsWith('/node_modules')) {
-      module = this.resolveDependency(newPath, this.preset.ignoredExtensions);
-    } else {
-      module = this.resolveModule(newPath, this.preset.ignoredExtensions);
-    }
+    const module = this.resolveModule(
+      newPath,
+      currentPath,
+      this.preset.ignoredExtensions
+    );
 
     return this.getTranspiledModule(module, queryPath.join('!'));
   }

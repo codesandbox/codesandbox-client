@@ -59,11 +59,6 @@ self.addEventListener('message', event => {
     const dependencies = getDependencies(sourceFile, self.ts);
 
     dependencies.forEach(dependency => {
-      if (/^(\w|@)/.test(dependency.path) && !dependency.path.includes('!')) {
-        // Don't push dependencies
-        return;
-      }
-
       self.postMessage({
         type: 'add-dependency',
         path: dependency.path,

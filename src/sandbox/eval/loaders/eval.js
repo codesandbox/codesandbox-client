@@ -1,10 +1,11 @@
 // @flow
+import buildProcess from './utils/process';
 
 /* eslint-disable no-unused-vars */
 export default function(code: string, require: Function, exports) {
   const module = { exports: {} };
   const global = window;
-  const process = { env: { NODE_ENV: 'development' } };
+  const process = buildProcess();
 
   try {
     eval(code); // eslint-disable-line no-eval
