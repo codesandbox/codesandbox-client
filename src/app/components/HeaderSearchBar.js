@@ -40,44 +40,36 @@ const StyledSearchIcon = styled(SearchIcon)`
   color: rgba(255, 255, 255, 0.7);
 `;
 
-const StyledSearchButton = styled.a`
+const StyledSearchButton = styled.button`
   position: absolute;
-  right: 0.5em;
+  right: 0;
   top: 50%;
+  padding: 0.35em 0.5em;
   transform: translate(0, -50%);
   z-index: 20;
+  background: transparent;
+  outline: none;
+  border: none;
+  cursor: pointer;
 `;
 
-export default class HeaderSearchBar extends React.PureComponent {
-  state = {
-    query: '',
+const HeaderSearchBar = () => {
+  const handleFormSubmit = (e: KeyboardEvent) => {
+    e.preventDefault();
+    const searchQuery = e.target.elements.q.value;
+    history.push(searchUrl(searchQuery));
   };
 
-  handleChange = e => {
-    this.setState({ query: e.target.value });
-  };
-
-  handleKeyUp = (e: KeyboardEvent) => {
-    if (e.keyCode === 13) {
-      // Enter
-      history.push(searchUrl(this.state.query));
-    }
-  };
-
-  render() {
-    const currentSearchUrl = searchUrl(this.state.query);
-
-    return (
-      <Container>
-        <Input
-          onChange={this.handleChange}
-          placeholder="Search sandboxes"
-          onKeyUp={this.handleKeyUp}
-        />
-        <StyledSearchButton href={currentSearchUrl}>
+  return (
+    <Container>
+      <form onSubmit={handleFormSubmit}>
+        <Input name="q" placeholder="Search sandboxes" />
+        <StyledSearchButton>
           <StyledSearchIcon />
         </StyledSearchButton>
-      </Container>
-    );
-  }
-}
+      </form>
+    </Container>
+  );
+};
+
+export default HeaderSearchBar;
