@@ -55,6 +55,7 @@ const StyledSearchButton = styled.button`
 
 const HeaderSearchBar = () => {
   const handleFormSubmit = (e: KeyboardEvent) => {
+    e.preventDefault();
     const searchQuery = e.target.elements.q.value;
     history.push(searchUrl(searchQuery));
   };
