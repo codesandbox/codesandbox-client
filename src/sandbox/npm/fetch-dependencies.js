@@ -23,7 +23,7 @@ function callApi(url: string) {
     .then(response => response.json());
 }
 
-export const PACKAGER_URL = 'https://webpack-dll-prod.herokuapp.com/v5';
+export const PACKAGER_URL = 'https://webpack-dll-prod.herokuapp.com/v4';
 export const NEW_PACKAGER_URL =
   'https://drq28qbjmc.execute-api.eu-west-1.amazonaws.com/prod/packages';
 
