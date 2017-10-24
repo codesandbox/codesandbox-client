@@ -12,6 +12,8 @@ type Dependencies = {
 const RETRY_COUNT = 60;
 const debug = _debug('cs:sandbox:packager');
 
+const VERSION = 1;
+
 const BUCKET_URL =
   process.env.NODE_ENV === 'production'
     ? 'https://d1jyvh0kxilfa7.cloudfront.net'
@@ -80,7 +82,7 @@ async function requestPackager(url, method = 'GET') {
 }
 
 function dependenciesToBucketPath(dependencies: Object) {
-  return `combinations/${Object.keys(dependencies)
+  return `v${VERSION}/combinations/${Object.keys(dependencies)
     .sort()
     .map(
       // Paths starting with slashes don't work with cloudfront, even escaped. So we remove the slashes
