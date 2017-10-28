@@ -4,7 +4,7 @@ import Transpiler from '../';
 class JSONTranspiler extends Transpiler {
   doTranspilation(code: string) {
     const result = `
-      exports = JSON.parse(${JSON.stringify(code || '')})
+      module.exports = JSON.parse(${JSON.stringify(code || '')})
     `;
 
     return Promise.resolve({

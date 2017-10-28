@@ -479,6 +479,7 @@ export default class TranspiledModule {
               transpiledModule,
             ]);
       }
+
       const exports = evaluate(
         this.source.compiledCode,
         require,
