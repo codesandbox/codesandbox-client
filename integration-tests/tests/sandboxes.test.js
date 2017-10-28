@@ -15,6 +15,7 @@ const SANDBOXES = [
   { id: 'o29j95wx9', root: '#app' },
   { id: 'k3q1zjjml5', root: '#app' },
   'github/reactjs/redux/tree/master/examples/real-world',
+  'github/CompuIves/codesandbox-presentation',
 ];
 
 SANDBOXES.forEach(sandbox => {
