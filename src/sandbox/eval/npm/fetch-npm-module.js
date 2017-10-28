@@ -81,7 +81,7 @@ function downloadDependency(depName: string, depVersion: string, path: string) {
         return x.text();
       }
 
-      return `throw new Error("Could not find module ${path}`;
+      return `throw new Error("Could not find module ${path}")`;
     })
     .then(x => ({
       path,
@@ -165,6 +165,14 @@ export default async function fetchModule(
         if (err) {
           console.error(err);
           return reject(err);
+        }
+
+        if (resolvedPath === '//empty.js') {
+          return res({
+            path: '//empty.js',
+            code: 'module.exports = {};',
+            requires: [],
+          });
         }
 
         return res(downloadDependency(dependencyName, version, resolvedPath));
