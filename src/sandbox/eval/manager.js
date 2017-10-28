@@ -62,6 +62,7 @@ export default class Manager {
     this.id = id;
     this.preset = preset;
     this.transpiledModules = {};
+    this.cachedPaths = {};
     modules.forEach(m => this.addModule(m));
 
     if (process.env.NODE_ENV === 'development') {
@@ -197,6 +198,7 @@ export default class Manager {
    * @param {*} entry
    */
   transpileModules(entry: Module) {
+    this.cachedPaths = {};
     const transpiledModule = this.getTranspiledModule(entry);
 
     transpiledModule.setIsEntry(true);
@@ -254,6 +256,12 @@ export default class Manager {
     return path;
   }
 
+  // All paths are resolved at least twice: during transpilation and evaluation.
+  // We can improve performance by almost 2x in this scenario if we cache the lookups
+  cachedPaths: {
+    [path: string]: string,
+  } = {};
+
   resolveModule(
     path: string,
     currentPath: string,
@@ -261,13 +269,24 @@ export default class Manager {
   ): Module {
     const aliasedPath = this.getAliasedDependencyPath(path, currentPath);
     const shimmedPath = coreLibraries[aliasedPath] || aliasedPath;
+
+    const pathId = path + currentPath;
+    const cachedPath = this.cachedPaths[pathId];
     try {
-      const resolvedPath = resolve.sync(shimmedPath, {
-        filename: currentPath,
-        extensions: defaultExtensions.map(ext => '.' + ext),
-        isFile: this.isFile,
-        readFileSync: this.readFileSync,
-      });
+      let resolvedPath;
+
+      if (cachedPath) {
+        resolvedPath = cachedPath;
+      } else {
+        resolvedPath = resolve.sync(shimmedPath, {
+          filename: currentPath,
+          extensions: defaultExtensions.map(ext => '.' + ext),
+          isFile: this.isFile,
+          readFileSync: this.readFileSync,
+        });
+
+        this.cachedPaths[pathId] = resolvedPath;
+      }
 
       if (NODE_LIBS.includes(resolvedPath)) {
         return {
