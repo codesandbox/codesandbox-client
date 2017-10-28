@@ -12,8 +12,6 @@ export default function(code: string, require: Function, exports: Object) {
     const newCode = `(function evaluate(require, module, exports, process, global) {${code}\n})`;
     (0, eval)(newCode)(require, module, exports, process, global); // eslint-disable-line no-eval
 
-    console.log(module, exports);
-
     // Choose either the export of __esModule or node
     return Object.keys(module.exports || {}).length > 0 ||
       (module.exports || {}).constructor !== Object ||
