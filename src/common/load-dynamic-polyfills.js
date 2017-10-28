@@ -19,7 +19,7 @@ function detectIE() {
 }
 
 function detectOpera() {
-  return navigator.userAgent.indexOf('Opera');
+  return navigator.userAgent.indexOf('Opera') > -1;
 }
 
 export default function requirePolyfills() {
