@@ -70,8 +70,10 @@ export default class Manager {
   }
 
   // Hoist these 2 functions to the top, since they get executed A LOT
-  isFile = p => !!this.transpiledModules[p] || !!getCombinedMetas()[p];
-  readFileSync = p => {
+  isFile = (p: string) =>
+    !!this.transpiledModules[p] || !!getCombinedMetas()[p];
+
+  readFileSync = (p: string) => {
     if (this.transpiledModules[p]) {
       return this.transpiledModules[p].module.code;
     }
@@ -81,10 +83,6 @@ export default class Manager {
 
     throw err;
   };
-
-  setExternals(externals: Externals) {
-    this.externals = externals;
-  }
 
   setManifest(manifest: ?Manifest) {
     this.manifest = manifest || {
@@ -213,6 +211,20 @@ export default class Manager {
     return values(this.transpiledModules).map(t => t.module);
   }
 
+  /**
+   * The packager returns a list of dependencies that require a different path
+   * of their subdependencies.
+   *
+   * An example:
+   * if react requires lodash v3, and react-dom requires lodash v4. We add them
+   * both to the bundle, and rewrite paths for lodash v3 to `lodash/3.0.0/`. Then
+   * we specify that when react resolves `lodash` it should resolve `lodash/3.0.0`.
+   *
+   * @param {string} path
+   * @param {string} currentPath
+   * @returns
+   * @memberof Manager
+   */
   getAliasedDependencyPath(path: string, currentPath: string) {
     const isDependency = /^(\w|@\w)/.test(path);
 
