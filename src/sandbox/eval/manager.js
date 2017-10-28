@@ -57,25 +57,30 @@ export default class Manager {
   modules: ModuleObject;
 
   manifest: Manifest;
-  experimentalPackager: boolean;
 
-  constructor(
-    id: string,
-    modules: Array<Module>,
-    preset: Preset,
-    options: Object = {}
-  ) {
+  constructor(id: string, modules: Array<Module>, preset: Preset) {
     this.id = id;
     this.preset = preset;
     this.transpiledModules = {};
     modules.forEach(m => this.addModule(m));
 
-    this.experimentalPackager = options.experimentalPackager || false;
-
     if (process.env.NODE_ENV === 'development') {
       console.log(this);
     }
   }
+
+  // Hoist these 2 functions to the top, since they get executed A LOT
+  isFile = p => !!this.transpiledModules[p] || !!getCombinedMetas()[p];
+  readFileSync = p => {
+    if (this.transpiledModules[p]) {
+      return this.transpiledModules[p].module.code;
+    }
+
+    const err = new Error('Could not find ' + p);
+    err.code = 'ENOENT';
+
+    throw err;
+  };
 
   setExternals(externals: Externals) {
     this.externals = externals;
@@ -248,17 +253,8 @@ export default class Manager {
       const resolvedPath = resolve.sync(shimmedPath, {
         filename: currentPath,
         extensions: defaultExtensions.map(ext => '.' + ext),
-        isFile: p => !!this.transpiledModules[p] || !!getCombinedMetas()[p],
-        readFileSync: p => {
-          if (this.transpiledModules[p]) {
-            return this.transpiledModules[p].module.code;
-          }
-
-          const err = new Error('Could not find ' + p);
-          err.code = 'ENOENT';
-
-          throw err;
-        },
+        isFile: this.isFile,
+        readFileSync: this.readFileSync,
       });
 
       if (NODE_LIBS.includes(resolvedPath)) {
