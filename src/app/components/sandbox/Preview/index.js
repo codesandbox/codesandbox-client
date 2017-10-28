@@ -3,7 +3,6 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 import SplitPane from 'react-split-pane';
-import Console from 'react-console';
 
 import { debounce } from 'lodash';
 
@@ -14,6 +13,7 @@ import { findMainModule } from 'app/store/entities/sandboxes/modules/selectors';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 import shouldUpdate from './utils/should-update';
 
+import Console from './Console';
 import Navigator from './Navigator';
 
 const Container = styled.div`
@@ -222,17 +222,24 @@ export default class Preview extends React.PureComponent<Props, State> {
           }
           const { method, args: jsonArgs } = e.data;
           const args = JSON.parse(jsonArgs);
-          if (args.length > 0 && typeof args[0] === 'string') {
-            if (args[0].indexOf('cs:') !== -1) {
-              break;
-            }
-            const matches = args[0].match(/%c/g);
-            if (matches) {
-              args[0] = args[0].replace(/%c/g, '');
-              args.splice(1, matches.length);
-            }
+          this.console.addMessage(method, args);
+          break;
+        }
+        case 'eval-result': {
+          if (!this.props.preferences.consoleExperiment) {
+            break;
           }
-          this.console.addMessage(method || method, args);
+          const { result, error } = e.data;
+
+          if (!error) {
+            if (result) {
+              this.console.addMessage('log', [JSON.parse(result)], 'return');
+            } else {
+              this.console.addMessage('log', [undefined], 'return');
+            }
+          } else {
+            this.console.addMessage('error', [JSON.parse(result)]);
+          }
           break;
         }
         default: {
@@ -353,6 +360,13 @@ export default class Preview extends React.PureComponent<Props, State> {
     });
   };
 
+  evaluateInSandbox = (command: string) => {
+    this.sendMessage({
+      type: 'evaluate',
+      command,
+    });
+  };
+
   commitUrl = (url: string) => {
     const { history, historyPosition } = this.state;
 
@@ -420,20 +434,15 @@ export default class Preview extends React.PureComponent<Props, State> {
           split="horizontal"
           minSize={50}
           maxSize={-100}
-          defaultSize="80%"
-          pane2Style={{ overflow: 'auto' }}
+          defaultSize="50%"
+          primary="second"
         >
           {container}
           <Console
-            ref={c => {
+            bindConsole={c => {
               this.console = c;
             }}
-            style={{
-              backgroundColor: '#ffffff',
-              color: '#000000',
-              height: '100%',
-              boxSizing: 'border-box',
-            }}
+            evaluateCommand={this.evaluateInSandbox}
           />
         </SplitPane>
       );

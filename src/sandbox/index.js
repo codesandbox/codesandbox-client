@@ -10,6 +10,7 @@ import host from './utils/host';
 import setupHistoryListeners from './url-listeners';
 import compile from './compile';
 import setupConsole from './console';
+import mapConsoleResult from './utils/map-console-result';
 
 function getId() {
   if (process.env.NODE_ENV === 'test') {
@@ -33,6 +34,25 @@ requirePolyfills().then(() => {
       history.back();
     } else if (message.data.type === 'urlforward') {
       history.forward();
+    } else if (message.data.type === 'evaluate') {
+      let result = null;
+      let error = false;
+      try {
+        result = eval(message.data.command); // eslint-disable-line no-eval
+      } catch (e) {
+        result = e;
+        error = true;
+      }
+
+      try {
+        dispatch({
+          type: 'eval-result',
+          error,
+          result: JSON.stringify(mapConsoleResult(result)),
+        });
+      } catch (e) {
+        console.error(e);
+      }
     }
   });
 
