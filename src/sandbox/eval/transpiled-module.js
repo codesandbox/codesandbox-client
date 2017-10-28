@@ -237,14 +237,6 @@ export default class TranspiledModule {
       // that include the source of another file by themselves, we need to
       // force transpilation to rebuild the file
       addTranspilationDependency: (depPath: string, options) => {
-        if (
-          /^(\w|@\w)/.test(depPath) &&
-          !depPath.includes('!') &&
-          !manager.experimentalPackager
-        ) {
-          return;
-        }
-
         const tModule = manager.resolveTranspiledModule(
           depPath,
           options && options.isAbsolute ? '/' : this.module.path
@@ -257,9 +249,6 @@ export default class TranspiledModule {
       },
       addDependency: (depPath: string, options) => {
         if (
-          (/^(\w|@\w)/.test(depPath) &&
-            !depPath.includes('!') &&
-            !manager.experimentalPackager) ||
           depPath.startsWith('babel-runtime') ||
           depPath.startsWith('codesandbox-api')
         ) {
@@ -288,14 +277,6 @@ export default class TranspiledModule {
         }
       },
       addDependenciesInDirectory: (folderPath: string, options) => {
-        if (
-          /^(\w|@\w)/.test(folderPath) &&
-          !folderPath.includes('!') &&
-          !manager.experimentalPackager
-        ) {
-          return;
-        }
-
         const tModules = manager.resolveTranspiledModulesInDirectory(
           folderPath,
           options && options.isAbsolute ? '/' : this.module.path
@@ -472,17 +453,10 @@ export default class TranspiledModule {
         if (/^(\w|@\w)/.test(aliasedPath) && !aliasedPath.includes('!')) {
           // So it must be a dependency
           if (
-            !manager.experimentalPackager ||
             aliasedPath.startsWith('babel-runtime') ||
             aliasedPath.startsWith('codesandbox-api')
           )
-            // TODO remove this hack for not-experimental packager
-            return resolveDependency(
-              path === 'vue' && !manager.experimentalPackager
-                ? path
-                : aliasedPath,
-              manager.externals
-            );
+            return resolveDependency(aliasedPath, manager.externals);
         }
 
         const requiredTranspiledModule = manager.resolveTranspiledModule(

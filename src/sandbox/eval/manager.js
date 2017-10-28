@@ -57,29 +57,33 @@ export default class Manager {
   modules: ModuleObject;
 
   manifest: Manifest;
-  experimentalPackager: boolean;
 
-  constructor(
-    id: string,
-    modules: Array<Module>,
-    preset: Preset,
-    options: Object = {}
-  ) {
+  constructor(id: string, modules: Array<Module>, preset: Preset) {
     this.id = id;
     this.preset = preset;
     this.transpiledModules = {};
+    this.cachedPaths = {};
     modules.forEach(m => this.addModule(m));
-
-    this.experimentalPackager = options.experimentalPackager || false;
 
     if (process.env.NODE_ENV === 'development') {
       console.log(this);
     }
   }
 
-  setExternals(externals: Externals) {
-    this.externals = externals;
-  }
+  // Hoist these 2 functions to the top, since they get executed A LOT
+  isFile = (p: string) =>
+    !!this.transpiledModules[p] || !!getCombinedMetas()[p];
+
+  readFileSync = (p: string) => {
+    if (this.transpiledModules[p]) {
+      return this.transpiledModules[p].module.code;
+    }
+
+    const err = new Error('Could not find ' + p);
+    err.code = 'ENOENT';
+
+    throw err;
+  };
 
   setManifest(manifest: ?Manifest) {
     this.manifest = manifest || {
@@ -194,6 +198,7 @@ export default class Manager {
    * @param {*} entry
    */
   transpileModules(entry: Module) {
+    this.cachedPaths = {};
     const transpiledModule = this.getTranspiledModule(entry);
 
     transpiledModule.setIsEntry(true);
@@ -208,6 +213,20 @@ export default class Manager {
     return values(this.transpiledModules).map(t => t.module);
   }
 
+  /**
+   * The packager returns a list of dependencies that require a different path
+   * of their subdependencies.
+   *
+   * An example:
+   * if react requires lodash v3, and react-dom requires lodash v4. We add them
+   * both to the bundle, and rewrite paths for lodash v3 to `lodash/3.0.0/`. Then
+   * we specify that when react resolves `lodash` it should resolve `lodash/3.0.0`.
+   *
+   * @param {string} path
+   * @param {string} currentPath
+   * @returns
+   * @memberof Manager
+   */
   getAliasedDependencyPath(path: string, currentPath: string) {
     const isDependency = /^(\w|@\w)/.test(path);
 
@@ -237,6 +256,12 @@ export default class Manager {
     return path;
   }
 
+  // All paths are resolved at least twice: during transpilation and evaluation.
+  // We can improve performance by almost 2x in this scenario if we cache the lookups
+  cachedPaths: {
+    [path: string]: string,
+  } = {};
+
   resolveModule(
     path: string,
     currentPath: string,
@@ -244,22 +269,24 @@ export default class Manager {
   ): Module {
     const aliasedPath = this.getAliasedDependencyPath(path, currentPath);
     const shimmedPath = coreLibraries[aliasedPath] || aliasedPath;
+
+    const pathId = path + currentPath;
+    const cachedPath = this.cachedPaths[pathId];
     try {
-      const resolvedPath = resolve.sync(shimmedPath, {
-        filename: currentPath,
-        extensions: defaultExtensions.map(ext => '.' + ext),
-        isFile: p => !!this.transpiledModules[p] || !!getCombinedMetas()[p],
-        readFileSync: p => {
-          if (this.transpiledModules[p]) {
-            return this.transpiledModules[p].module.code;
-          }
+      let resolvedPath;
 
-          const err = new Error('Could not find ' + p);
-          err.code = 'ENOENT';
+      if (cachedPath) {
+        resolvedPath = cachedPath;
+      } else {
+        resolvedPath = resolve.sync(shimmedPath, {
+          filename: currentPath,
+          extensions: defaultExtensions.map(ext => '.' + ext),
+          isFile: this.isFile,
+          readFileSync: this.readFileSync,
+        });
 
-          throw err;
-        },
-      });
+        this.cachedPaths[pathId] = resolvedPath;
+      }
 
       if (NODE_LIBS.includes(resolvedPath)) {
         return {

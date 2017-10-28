@@ -8,7 +8,7 @@ import preferencesActionCreators from 'app/store/preferences/actions';
 import {
   Container,
   PreferenceContainer,
-  PaddedPreference,
+  // PaddedPreference,
   Description,
 } from '../styles';
 
@@ -23,25 +23,22 @@ const mapDispatchToProps = dispatch => ({
 const mapStateToProps = state => ({
   preferences: preferencesSelector(state),
 });
+// eslint-disable-next-line no-unused-vars arrow-body-style
 const Preferences = ({ preferences, preferencesActions }: Props) => {
-  const bindValue = name => ({
-    value: preferences[name],
-    setValue: value =>
-      preferencesActions.setPreference({
-        [name]: value,
-      }),
-  });
+  // const bindValue = name => ({
+  //   value: preferences[name],
+  //   setValue: value =>
+  //     preferencesActions.setPreference({
+  //       [name]: value,
+  //     }),
+  // });
+
   return (
     <Container>
       <PreferenceContainer>
-        <PaddedPreference
-          title="New dependency bundler"
-          type="boolean"
-          {...bindValue('newPackagerExperiment')}
-        />
         <Description>
-          Use the new, faster, client side dependency bundler. Reload the
-          browser for changes to take effect.
+          We have no experiments running currently! Tune in later to find some
+          new goodies to test.
         </Description>
       </PreferenceContainer>
     </Container>
