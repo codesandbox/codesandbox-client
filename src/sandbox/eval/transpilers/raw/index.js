@@ -9,7 +9,7 @@ class RawTranspiler extends Transpiler {
   doTranspilation(code: string) {
     return Promise.resolve({
       transpiledCode: `
-      exports = ${JSON.stringify(code)};`,
+      module.exports = ${JSON.stringify(code)};`,
     });
   }
 }

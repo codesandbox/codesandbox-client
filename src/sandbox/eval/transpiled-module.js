@@ -479,11 +479,11 @@ export default class TranspiledModule {
               transpiledModule,
             ]);
       }
-      const exports = evaluate(
+      const exports = evaluate.apply(this.compilation.exports, [
         this.source.compiledCode,
         require,
-        this.compilation.exports
-      );
+        this.compilation.exports,
+      ]);
 
       this.compilation.exports = exports;
 
