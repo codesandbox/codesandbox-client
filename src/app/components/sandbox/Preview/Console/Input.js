@@ -13,7 +13,7 @@ const Container = styled.div`
   background-color: ${props => props.theme.background.darken(0.3)};
 
   display: flex;
-  justify-content: center;
+  align-items: center;
 `;
 
 const Input = styled.input`
