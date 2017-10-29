@@ -3,7 +3,7 @@ import * as pathUtils from 'common/utils/path';
 import resolve from 'browser-resolve';
 
 import type { Module } from '../entities/module';
-import Manager from '../manager';
+import Manager, { Manifest } from '../manager';
 
 import DependencyNotFoundError from '../../errors/dependency-not-found-error';
 import getDependencyName from '../utils/get-dependency-name';
@@ -31,12 +31,14 @@ export function getCombinedMetas() {
 
 function normalize(depName: string, files: MetaFiles, fileObject: Meta = {}) {
   for (let i = 0; i < files.length; i += 1) {
-    const absolutePath = pathUtils.join(
-      '/node_modules',
-      depName,
-      files[i].path
-    );
-    fileObject[absolutePath] = true; // eslint-disable-line no-param-reassign
+    if (files[i].type === 'file') {
+      const absolutePath = pathUtils.join(
+        '/node_modules',
+        depName,
+        files[i].path
+      );
+      fileObject[absolutePath] = true; // eslint-disable-line no-param-reassign
+    }
 
     if (files[i].files) {
       normalize(depName, files[i].files, fileObject);
@@ -91,6 +93,26 @@ function downloadDependency(depName: string, depVersion: string, path: string) {
   return packages[path];
 }
 
+function findDependencyVersion(manifest: Manifest, dependencyName: string) {
+  let version = null;
+
+  if (manifest.dependencyDependencies[dependencyName]) {
+    version = manifest.dependencyDependencies[dependencyName].resolved;
+  } else {
+    const dep = manifest.dependencies.find(m => m.name === dependencyName);
+
+    if (dep) {
+      version = dep.version;
+    }
+  }
+
+  if (version) {
+    return version;
+  }
+
+  return null;
+}
+
 export default async function fetchModule(
   path: string,
   currentPath: string,
@@ -99,19 +121,7 @@ export default async function fetchModule(
 ): Promise<Module> {
   const dependencyName = getDependencyName(path);
 
-  let version = null;
-
-  if (manager.manifest.dependencyDependencies[dependencyName]) {
-    version = manager.manifest.dependencyDependencies[dependencyName].resolved;
-  } else {
-    const dep = manager.manifest.dependencies.find(
-      m => m.name === dependencyName
-    );
-
-    if (dep) {
-      version = dep.version;
-    }
-  }
+  const version = findDependencyVersion(manager.manifest, dependencyName);
 
   if (!version) {
     throw new DependencyNotFoundError(path);
@@ -132,14 +142,19 @@ export default async function fetchModule(
             return callback(null, manager.transpiledModules[p].module.code);
           }
 
-          const depName = getDependencyName(p);
-          const depInfo = manager.manifest.dependencyDependencies[depName];
+          const depPath = p.replace('/node_modules/', '');
+          const depName = getDependencyName(depPath);
 
-          if (depInfo) {
+          const subDepVersion = findDependencyVersion(
+            manager.manifest,
+            depName
+          );
+
+          if (subDepVersion) {
             try {
               const module = await downloadDependency(
                 depName,
-                depInfo.resolved,
+                subDepVersion,
                 p
               );
 
