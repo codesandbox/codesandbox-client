@@ -2,6 +2,7 @@
   "name": "react-sandbox",
   "version": "0.1.0",
   "license": "MIT",
+  "private": true,
   "devDependencies": {
     "all-contributors-cli": "^4.3.0",
     "autoprefixer": "^6.7.7",
@@ -59,6 +60,7 @@
     "jest-image-snapshot": "^1.0.1",
     "jest-styled-components": "^4.3.0",
     "json-loader": "0.5.4",
+    "lerna": "^2.4.0",
     "lint-staged": "^4.0.1",
     "object-assign": "^4.1.1",
     "opn": "4.0.2",
@@ -203,5 +205,6 @@
       "\\.css$": "<rootDir>/__mocks__/styleMock.js",
       "\\.html$": "<rootDir>/__mocks__/styleMock.js"
     }
-  }
+  },
+  "workspaces": ["src/**"]
 }

@@ -7,7 +7,7 @@
   "module": "dist/codesandbox.es5.js",
   "typings": "dist/types/codesandbox.d.ts",
   "files": ["dist"],
-  "author": "Ives van Hoorne <i.vanhoorne@catawiki.nl>",
+  "author": "Ives van Hoorne <ives.v.h@gmail.com>",
   "repository": {
     "type": "git",
     "url": ""
