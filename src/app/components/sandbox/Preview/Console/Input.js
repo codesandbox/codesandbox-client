@@ -35,6 +35,8 @@ type Props = {
 export default class ConsoleInput extends React.PureComponent<Props> {
   state = {
     command: '',
+    commandHistory: [],
+    commandCursor: -1,
   };
 
   onChange = e => {
@@ -51,7 +53,27 @@ export default class ConsoleInput extends React.PureComponent<Props> {
       e.stopPropagation();
       // Enter
       evaluateConsole(this.state.command);
-      this.setState({ command: '' });
+      this.setState({
+        command: '',
+        commandHistory: [this.state.command, ...this.state.commandHistory],
+      });
+    } else if (e.keyCode === 38) {
+      const newCursor = Math.min(
+        this.state.commandCursor + 1,
+        this.state.commandHistory.length - 1
+      );
+      // Up arrow
+      this.setState({
+        command: this.state.commandHistory[newCursor] || '',
+        commandCursor: newCursor,
+      });
+    } else if (e.keyCode === 40) {
+      const newCursor = Math.max(this.state.commandCursor - 1, -1);
+      // Down arrow
+      this.setState({
+        command: this.state.commandHistory[newCursor] || '',
+        commandCursor: newCursor,
+      });
     }
   };
 
