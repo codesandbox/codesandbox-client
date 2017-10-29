@@ -3,6 +3,7 @@ import { decorateSelector } from '../theme';
 export const react = {
   name: 'create-react-app',
   url: 'https://github.com/facebookincubator/create-react-app',
+  shortid: 'new',
   color: decorateSelector(() => '#6CAEDD'),
 
   alterDeploymentData: apiData => ({
@@ -24,6 +25,7 @@ export const react = {
 export const reactTs = {
   name: 'create-react-app-typescript',
   url: 'https://github.com/wmonk/create-react-app-typescript',
+  shortid: 'react-ts',
   color: decorateSelector(() => '#009fff'),
 
   sourceConfig: {
@@ -35,6 +37,7 @@ export const reactTs = {
 export const vue = {
   name: 'vue-cli',
   url: 'https://github.com/vuejs/vue-cli',
+  shortid: 'vue',
   color: decorateSelector(() => '#41B883'),
 
   alterDeploymentData: apiData => ({
@@ -56,6 +59,7 @@ export const vue = {
 export const svelte = {
   name: 'svelte',
   url: 'https://github.com/sveltejs/svelte',
+  shortid: 'svelte',
   color: decorateSelector(() => '#AA1E1E'),
 
   alterDeploymentData: apiData => ({
@@ -77,6 +81,7 @@ export const svelte = {
 export const preact = {
   name: 'preact-cli',
   url: 'https://github.com/developit/preact-cli',
+  shortid: 'preact',
   color: decorateSelector(() => '#AD78DC'),
 
   alterDeploymentData: apiData => ({
