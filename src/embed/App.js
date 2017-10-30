@@ -61,6 +61,7 @@ type State = {
   useCodeMirror: boolean,
   editorSize: number,
   forceRefresh: boolean,
+  expandDevTools: boolean,
   highlightedLines: Array<string>,
 };
 
@@ -82,6 +83,7 @@ export default class App extends React.PureComponent<{}, State> {
       editorSize,
       highlightedLines,
       forceRefresh,
+      expandDevTools,
     } = getSandboxOptions(document.location.href);
 
     this.state = {
@@ -100,6 +102,7 @@ export default class App extends React.PureComponent<{}, State> {
       useCodeMirror,
       editorSize,
       forceRefresh,
+      expandDevTools,
       highlightedLines: highlightedLines || [],
     };
   }
@@ -223,6 +226,7 @@ export default class App extends React.PureComponent<{}, State> {
             editorSize={this.state.editorSize}
             highlightedLines={this.state.highlightedLines}
             forceRefresh={this.state.forceRefresh}
+            expandDevTools={this.state.expandDevTools}
           />
         </Container>
       </ThemeProvider>

@@ -157,6 +157,7 @@ class ShareView extends React.PureComponent {
     initialPath: '',
     useCodeMirror: false,
     enableEslint: false,
+    expandDevTools: false,
   };
 
   handleChange = e => this.setState({ message: e.target.value });
@@ -191,6 +192,7 @@ class ShareView extends React.PureComponent {
       initialPath,
       enableEslint,
       useCodeMirror,
+      expandDevTools,
     } = this.state;
 
     const options = {};
@@ -234,6 +236,10 @@ class ShareView extends React.PureComponent {
 
     if (initialPath) {
       options.initialpath = initialPath;
+    }
+
+    if (expandDevTools) {
+      options.expanddevtools = 1;
     }
 
     return optionsToParameterizedUrl(options);
@@ -299,6 +305,10 @@ class ShareView extends React.PureComponent {
     this.setState({ isCurrentModuleView });
   };
 
+  setExpandDevTools = (expandDevTools: boolean) => {
+    this.setState({ expandDevTools });
+  };
+
   setFontSize = (fontSize: number) => [this.setState({ fontSize })];
 
   render() {
@@ -314,6 +324,7 @@ class ShareView extends React.PureComponent {
       initialPath,
       useCodeMirror,
       enableEslint,
+      expandDevTools,
     } = this.state;
 
     const defaultModule =
@@ -350,6 +361,12 @@ class ShareView extends React.PureComponent {
                       type="boolean"
                       value={hideNavigation}
                       setValue={this.setHideNavigation}
+                    />
+                    <PaddedPreference
+                      title="Expand console"
+                      type="boolean"
+                      value={expandDevTools}
+                      setValue={this.setExpandDevTools}
                     />
                     <PaddedPreference
                       title="Use CodeMirror instead of Monaco editor"
@@ -422,22 +439,16 @@ class ShareView extends React.PureComponent {
                 <Column>
                   <ButtonName>Links</ButtonName>
                   <Inputs>
-                    <LinkName>Editor url</LinkName>
+                    <LinkName>Editor url (also works on Medium)</LinkName>
                     <input
                       onFocus={this.select}
                       value={this.getEditorUrl()}
                       readOnly
                     />
-                    <LinkName>Fullscreen url</LinkName>
+                    <LinkName>Embed url</LinkName>
                     <input
                       onFocus={this.select}
                       value={this.getEmbedUrl()}
-                      readOnly
-                    />
-                    <LinkName>Embed url (Medium/Embedly)</LinkName>
-                    <input
-                      onFocus={this.select}
-                      value={this.getEditorUrl()}
                       readOnly
                     />
                     <LinkName>iframe</LinkName>

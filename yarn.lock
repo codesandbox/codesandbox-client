@@ -2083,6 +2083,10 @@ circular-json@^0.3.1:
   version "0.3.3"
   resolved "https://registry.yarnpkg.com/circular-json/-/circular-json-0.3.3.tgz#815c99ea84f6809529d2f45791bdf82711352d66"
 
+circular-json@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/circular-json/-/circular-json-0.4.0.tgz#c448ea998b7fe31ecf472ec29c6b608e2e2a62fd"
+
 clap@^1.0.9:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/clap/-/clap-1.2.0.tgz#59c90fe3e137104746ff19469a27a634ff68c857"
@@ -2176,9 +2180,9 @@ codemirror@^5.27.4:
   version "5.30.0"
   resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.30.0.tgz#86e57dd5ea5535acbcf9c720797b4cefe05b5a70"
 
-codesandbox-api@^0.0.12:
-  version "0.0.12"
-  resolved "https://registry.yarnpkg.com/codesandbox-api/-/codesandbox-api-0.0.12.tgz#b3932c8a5f05f660e5bd7902351384e2eaddafaa"
+codesandbox-api@^0.0.14:
+  version "0.0.14"
+  resolved "https://registry.yarnpkg.com/codesandbox-api/-/codesandbox-api-0.0.14.tgz#064f65b88de08e0dfb90122a7ad4a22ac74ff8f6"
 
 color-convert@^1.3.0, color-convert@^1.9.0:
   version "1.9.0"
@@ -4161,6 +4165,10 @@ growly@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/growly/-/growly-1.3.0.tgz#f10748cbe76af964b7c96c93c6bcc28af120c081"
 
+gsap@^1.20.3:
+  version "1.20.3"
+  resolved "https://registry.yarnpkg.com/gsap/-/gsap-1.20.3.tgz#c9a6e7be057cf59417483448f925472fa2f73cd7"
+
 gulp-filter@^5.0.0:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/gulp-filter/-/gulp-filter-5.0.1.tgz#5d87f662e317e5839ef7650e620e6c9008ff92d0"
@@ -4762,6 +4770,10 @@ is-date-object@^1.0.1:
 is-directory@^0.3.1:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/is-directory/-/is-directory-0.3.1.tgz#61339b6f2475fc772fd9c9d83f5c8575dc154ae1"
+
+is-dom@^1.0.9:
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/is-dom/-/is-dom-1.0.9.tgz#483832d52972073de12b9fe3f60320870da8370d"
 
 is-dotfile@^1.0.0:
   version "1.0.3"
@@ -7413,6 +7425,13 @@ react-icons@^2.2.7:
   resolved "https://registry.yarnpkg.com/react-icons/-/react-icons-2.2.7.tgz#d7860826b258557510dac10680abea5ca23cf650"
   dependencies:
     react-icon-base "2.1.0"
+
+react-inspector@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/react-inspector/-/react-inspector-2.2.0.tgz#2aa0778c3512063f598d7a89a28a5d5c7733cad7"
+  dependencies:
+    babel-runtime "^6.26.0"
+    is-dom "^1.0.9"
 
 react-instantsearch@^4.0.6:
   version "4.1.2"
