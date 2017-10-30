@@ -422,22 +422,16 @@ class ShareView extends React.PureComponent {
                 <Column>
                   <ButtonName>Links</ButtonName>
                   <Inputs>
-                    <LinkName>Editor url</LinkName>
+                    <LinkName>Editor url (also works on Medium)</LinkName>
                     <input
                       onFocus={this.select}
                       value={this.getEditorUrl()}
                       readOnly
                     />
-                    <LinkName>Fullscreen url</LinkName>
+                    <LinkName>Embed url</LinkName>
                     <input
                       onFocus={this.select}
                       value={this.getEmbedUrl()}
-                      readOnly
-                    />
-                    <LinkName>Embed url (Medium/Embedly)</LinkName>
-                    <input
-                      onFocus={this.select}
-                      value={this.getEditorUrl()}
                       readOnly
                     />
                     <LinkName>iframe</LinkName>
