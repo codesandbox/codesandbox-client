@@ -159,7 +159,6 @@ export type Preferences = {
   prettierConfig: Object,
   autoDownloadTypes: ?boolean,
   newPackagerExperiment: ?boolean,
-  consoleExperiment: ?boolean,
 };
 
 export type NotificationButton = {
