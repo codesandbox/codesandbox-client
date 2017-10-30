@@ -51,9 +51,14 @@ const MinimizeIcon = styled(Chevron)`
 
   position: absolute;
   right: 1rem;
-  font-size: 1rem;
+  font-size: 1.125rem;
 
   cursor: pointer;
+  color: rgba(255, 255, 255, 0.7);
+
+  &:hover {
+    color: white;
+  }
 `;
 
 export type Status = {
