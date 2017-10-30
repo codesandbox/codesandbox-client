@@ -16,6 +16,7 @@ export default ({ type, logType }: { type: string, logType: string }) => {
 
   switch (logType) {
     case 'warning':
+    case 'warn':
       return <WarningIcon />;
     case 'error':
       return <ErrorIcon />;

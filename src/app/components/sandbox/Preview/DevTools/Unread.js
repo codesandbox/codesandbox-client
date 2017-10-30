@@ -25,7 +25,7 @@ const Container = styled.div`
     if (status === 'info') {
       return theme.secondary();
     } else if (status === 'warning') {
-      return theme.primary();
+      return theme.primary.darken(0.3)();
     } else if (status === 'error') {
       return theme.red();
     }
