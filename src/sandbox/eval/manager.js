@@ -94,11 +94,18 @@ export default class Manager {
     };
 
     Object.keys(this.manifest.contents).forEach(path => {
-      this.addModule({
+      const module: Module = {
         path,
         code: this.manifest.contents[path].content,
-        requires: this.manifest.contents[path].requires,
-      });
+      };
+
+      // Check if module syntax, only transpile when that's NOT the case
+      // TODO move this check to the packager
+      if (!/^(import|export)\s/gm.test(module.code)) {
+        module.requires = this.manifest.contents[path].requires;
+      }
+
+      this.addModule(module);
     });
   }
 
