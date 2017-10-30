@@ -70,6 +70,7 @@ type Props = {
   setDragging: (dragging: boolean) => void,
   evaluateCommand: (cmd: string) => void,
   sandboxId: string,
+  shouldExpandDevTools: boolean,
 };
 type State = {
   consoleStatus: Status,
@@ -121,6 +122,10 @@ export default class DevTools extends React.PureComponent<Props, State> {
   componentDidMount() {
     document.addEventListener('mouseup', this.handleMouseUp, false);
     document.addEventListener('mousemove', this.handleMouseMove, false);
+
+    if (this.props.shouldExpandDevTools) {
+      this.openDevTools();
+    }
   }
 
   componentWillUnmount() {

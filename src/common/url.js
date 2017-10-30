@@ -51,6 +51,7 @@ export const getSandboxOptions = (url: string) => {
   result.useCodeMirror = url.includes('codemirror=1');
   result.enableEslint = url.includes('eslint=1');
   result.forceRefresh = url.includes('forcerefresh=1');
+  result.expandDevTools = url.includes('expanddevtools=1');
 
   return result;
 };

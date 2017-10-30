@@ -52,6 +52,7 @@ type Props = {
   runActionFromPreview: (arg: Object) => any,
   forcedRenders: ?number,
   inactive: ?boolean,
+  shouldExpandDevTools: ?boolean,
 };
 
 type State = {
@@ -383,6 +384,7 @@ export default class Preview extends React.PureComponent<Props, State> {
       setProjectView,
       hideNavigation,
       inactive,
+      shouldExpandDevTools,
     } = this.props;
     const { historyPosition, history, dragging, urlInAddressBar } = this.state;
 
@@ -418,6 +420,7 @@ export default class Preview extends React.PureComponent<Props, State> {
           setDragging={this.setDragging}
           evaluateCommand={this.evaluateInSandbox}
           sandboxId={sandboxId}
+          shouldExpandDevTools={shouldExpandDevTools}
         />
       </Container>
     );
