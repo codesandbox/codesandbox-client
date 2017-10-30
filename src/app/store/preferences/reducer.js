@@ -46,7 +46,6 @@ const initialState: Preferences = Object.keys(keys).reduce(
     codeMirror: false,
     autoDownloadTypes: true,
     newPackagerExperiment: false,
-    consoleExperiment: true,
   }
 );
 

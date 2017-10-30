@@ -32,12 +32,6 @@ const StyledFrame = styled.iframe`
   overflow: auto;
 `;
 
-// const Split = styled.div`
-//   display: flex;
-//   flex-direction: column;
-//   height: 100%;
-// `;
-
 type Props = {
   sandboxId: string,
   template: string,

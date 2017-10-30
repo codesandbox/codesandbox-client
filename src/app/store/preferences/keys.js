@@ -11,4 +11,3 @@ export const clearConsoleEnabled = 'settings.clearconsole';
 export const codeMirror = 'settings.codemirror';
 export const autoDownloadTypes = 'settings.autoDownloadTypes';
 export const newPackagerExperiment = 'settings.newPackagerExperiment';
-export const consoleExperiment = 'settings.consoleExperiment';

@@ -44,14 +44,6 @@ const Preferences = ({ preferences, preferencesActions }: Props) => {
           browser for changes to take effect.
         </Description>
       </PreferenceContainer>
-      <PreferenceContainer>
-        <PaddedPreference
-          title="Sandbox console"
-          type="boolean"
-          {...bindValue('consoleExperiment')}
-        />
-        <Description>Brand new sandbox console</Description>
-      </PreferenceContainer>
     </Container>
   );
 };
