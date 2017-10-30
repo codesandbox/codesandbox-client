@@ -70,7 +70,7 @@ type Props = {
   setDragging: (dragging: boolean) => void,
   evaluateCommand: (cmd: string) => void,
   sandboxId: string,
-  shouldExpandDevTools: boolean,
+  shouldExpandDevTools: ?boolean,
 };
 type State = {
   consoleStatus: Status,

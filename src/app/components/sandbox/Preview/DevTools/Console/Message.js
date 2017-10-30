@@ -123,7 +123,10 @@ function getMessage(message: IMessage) {
     return (
       <InnerItem
         dangerouslySetInnerHTML={{
-          __html: formatMessage(message).outerHTML,
+          __html: formatMessage(message).outerHTML.replace(
+            /(?:\r\n|\r|\n)/g,
+            '<br />'
+          ),
         }}
       />
     );
