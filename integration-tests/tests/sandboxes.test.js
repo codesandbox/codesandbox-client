@@ -37,7 +37,7 @@ SANDBOXES.forEach(sandbox => {
         browser = await browser;
         const page = await browser.newPage();
         await page.goto('http://localhost:3001/#' + id);
-        await page.waitForSelector(root);
+        await page.waitForSelector(root, { timeout: 45000 });
         await page.waitFor(2000);
 
         // const html = await page.evaluate(() => document.body.innerHTML);
