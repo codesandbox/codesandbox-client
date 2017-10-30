@@ -296,9 +296,14 @@ export default class DevTools extends React.PureComponent<Props, State> {
 
           <Actions>
             {actions.map(({ title, onClick, Icon }) => (
-              <Tooltip title={title}>
+              <Tooltip
+                style={{ pointerEvents: hidden ? 'none' : 'initial' }}
+                title={title}
+              >
                 <Icon
-                  style={{ opacity: hidden ? 0 : 1 }}
+                  style={{
+                    opacity: hidden ? 0 : 1,
+                  }}
                   onClick={onClick}
                   key={title}
                 />
