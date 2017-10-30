@@ -3,11 +3,13 @@ import React from 'react';
 import styled from 'styled-components';
 import { TweenMax, Elastic } from 'gsap';
 
-import Chevron from 'react-icons/lib/fa/angle-up';
+import Tooltip from 'app/components/Tooltip';
+
+import MinimizeIcon from 'react-icons/lib/fa/angle-up';
 
 import Unread from './Unread';
 
-import Console from './Console';
+import console from './Console';
 
 const Container = styled.div`
   display: flex;
@@ -46,18 +48,22 @@ const Tab = styled.div`
   font-weight: 600;
 `;
 
-const MinimizeIcon = styled(Chevron)`
-  transition: 0.3s ease all;
-
+const Actions = styled.div`
   position: absolute;
   right: 1rem;
   font-size: 1.125rem;
 
-  cursor: pointer;
-  color: rgba(255, 255, 255, 0.7);
+  svg {
+    margin: 0 0.5rem;
 
-  &:hover {
-    color: white;
+    transition: 0.3s ease all;
+
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.7);
+
+    &:hover {
+      color: white;
+    }
   }
 `;
 
@@ -73,12 +79,13 @@ type Props = {
   shouldExpandDevTools: ?boolean,
 };
 type State = {
-  consoleStatus: Status,
+  status: { [title: string]: ?Status },
   height: number,
   mouseDown: boolean,
   hidden: boolean,
   startY: number,
   startHeight: number,
+  currentPane: string,
 };
 
 function unFocus(document, window) {
@@ -92,12 +99,12 @@ function unFocus(document, window) {
   }
 }
 
+const PANES = { [console.title]: console };
+
 export default class DevTools extends React.PureComponent<Props, State> {
   state = {
-    consoleStatus: {
-      unread: 0,
-      type: 'info',
-    },
+    status: {},
+    currentPane: PANES[Object.keys(PANES)[0]].title,
 
     mouseDown: false,
     startY: 0,
@@ -111,10 +118,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
   componentWillReceiveProps(nextProps: Props) {
     if (nextProps.sandboxId !== this.props.sandboxId) {
       this.setState({
-        consoleStatus: {
-          unread: 0,
-          type: 'info',
-        },
+        status: {},
       });
     }
   }
@@ -136,9 +140,9 @@ export default class DevTools extends React.PureComponent<Props, State> {
   setHidden = (hidden: boolean) => {
     if (!hidden) {
       return this.setState({
-        consoleStatus: {
-          unread: 0,
-          type: 'info',
+        status: {
+          ...this.state.status,
+          [this.state.currentPane]: null,
         },
         hidden: false,
       });
@@ -147,12 +151,15 @@ export default class DevTools extends React.PureComponent<Props, State> {
     return this.setState({ hidden });
   };
 
-  updateStatus = (status: 'warning' | 'error' | 'info') => {
+  updateStatus = (title: string) => (status: 'warning' | 'error' | 'info') => {
     if (!this.state.hidden) {
       return;
     }
 
-    const currentStatus = this.state.consoleStatus;
+    const currentStatus = this.state.status[title] || {
+      unread: 0,
+      type: 'info',
+    };
     let newStatus = currentStatus.type;
 
     if (status === 'warning' && newStatus !== 'error') {
@@ -162,9 +169,11 @@ export default class DevTools extends React.PureComponent<Props, State> {
     }
 
     this.setState({
-      consoleStatus: {
-        type: newStatus,
-        unread: this.state.consoleStatus.unread + 1,
+      status: {
+        [title]: {
+          type: newStatus,
+          unread: currentStatus.unread + 1,
+        },
       },
     });
   };
@@ -258,7 +267,9 @@ export default class DevTools extends React.PureComponent<Props, State> {
 
   render() {
     const { sandboxId } = this.props;
-    const { consoleStatus, hidden, height } = this.state;
+    const { hidden, height, status } = this.state;
+
+    const { actions, Content } = PANES[this.state.currentPane];
 
     return (
       <Container
@@ -273,25 +284,39 @@ export default class DevTools extends React.PureComponent<Props, State> {
         }}
       >
         <Header onMouseDown={this.handleMouseDown}>
-          <Tab>
-            Console
-            <Unread status={consoleStatus.type} unread={consoleStatus.unread} />
-          </Tab>
+          {Object.keys(PANES).map(title => (
+            <Tab key={title}>
+              {title}
+              <Unread
+                status={status[title] ? status[title].type : 'info'}
+                unread={status[title] ? status[title].unread : 0}
+              />
+            </Tab>
+          ))}
 
-          <MinimizeIcon
-            onMouseDown={
-              this.state.hidden ? undefined : this.handleMinimizeClick
-            }
-            style={{
-              transform: hidden ? `rotateZ(0deg)` : `rotateZ(180deg)`,
-            }}
-          />
+          <Actions>
+            {actions.map(({ title, onClick, Icon }) => (
+              <Tooltip title={title}>
+                <Icon
+                  style={{ opacity: hidden ? 0 : 1 }}
+                  onClick={onClick}
+                  key={title}
+                />
+              </Tooltip>
+            ))}
+
+            <MinimizeIcon
+              onMouseDown={hidden ? undefined : this.handleMinimizeClick}
+              style={{
+                transform: hidden ? `rotateZ(0deg)` : `rotateZ(180deg)`,
+              }}
+            />
+          </Actions>
         </Header>
-
-        <Console
+        <Content
           hidden={hidden}
           evaluateCommand={this.props.evaluateCommand}
-          updateStatus={this.updateStatus}
+          updateStatus={this.updateStatus(this.state.currentPane)}
           sandboxId={sandboxId}
         />
       </Container>

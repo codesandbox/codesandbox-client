@@ -1,5 +1,5 @@
 import { camelizeKeys } from 'humps';
-import { isStandalone, dispatch } from 'codesandbox-api';
+import { isStandalone, listen, dispatch } from 'codesandbox-api';
 
 import registerServiceWorker from 'common/registerServiceWorker';
 import requirePolyfills from 'common/load-dynamic-polyfills';
@@ -27,34 +27,38 @@ requirePolyfills().then(() => {
     dispatch({ type: 'initialized' });
   }
 
-  window.addEventListener('message', async message => {
-    if (message.data.type === 'compile') {
-      compile(message.data);
-    } else if (message.data.type === 'urlback') {
-      history.back();
-    } else if (message.data.type === 'urlforward') {
-      history.forward();
-    } else if (message.data.type === 'evaluate') {
-      let result = null;
-      let error = false;
-      try {
-        result = (0, eval)(message.data.command); // eslint-disable-line no-eval
-      } catch (e) {
-        result = e;
-        error = true;
-      }
+  function handleMessage(data, source) {
+    if (source) {
+      if (data.type === 'compile') {
+        compile(data);
+      } else if (data.type === 'urlback') {
+        history.back();
+      } else if (data.type === 'urlforward') {
+        history.forward();
+      } else if (data.type === 'evaluate') {
+        let result = null;
+        let error = false;
+        try {
+          result = (0, eval)(data.command); // eslint-disable-line no-eval
+        } catch (e) {
+          result = e;
+          error = true;
+        }
 
-      try {
-        dispatch({
-          type: 'eval-result',
-          error,
-          result: massageJSON(result),
-        });
-      } catch (e) {
-        console.error(e);
+        try {
+          dispatch({
+            type: 'eval-result',
+            error,
+            result: massageJSON(result),
+          });
+        } catch (e) {
+          console.error(e);
+        }
       }
     }
-  });
+  }
+
+  listen(handleMessage);
 
   sendReady();
   setupHistoryListeners();

@@ -1,7 +1,9 @@
 // @flow
 import React from 'react';
 import styled from 'styled-components';
-import { listen } from 'codesandbox-api';
+import { listen, dispatch } from 'codesandbox-api';
+
+import ClearIcon from 'react-icons/lib/md/clear-all';
 
 import CircularJSON from 'circular-json';
 import Message from './Message';
@@ -40,7 +42,7 @@ type State = {
   messages: Array<IMessage>,
 };
 
-export default class Console extends React.Component<Props, State> {
+class Console extends React.Component<Props, State> {
   state = {
     messages: [],
     scrollToBottom: true,
@@ -64,6 +66,10 @@ export default class Console extends React.Component<Props, State> {
         const { method, args: jsonArgs } = data;
         const args = CircularJSON.parse(jsonArgs);
         this.addMessage(method, args);
+        break;
+      }
+      case 'clear-console': {
+        this.clearConsole();
         break;
       }
       case 'eval-result': {
@@ -123,9 +129,13 @@ export default class Console extends React.Component<Props, State> {
 
   componentWillReceiveProps(nextProps: Props) {
     if (nextProps.sandboxId !== this.props.sandboxId) {
-      this.setState({ messages: [] });
+      this.clearConsole();
     }
   }
+
+  clearConsole = () => {
+    this.setState({ messages: [] });
+  };
 
   componentDidUpdate() {
     if (this.list) {
@@ -161,3 +171,17 @@ export default class Console extends React.Component<Props, State> {
     );
   }
 }
+
+export default {
+  title: 'Console',
+  Content: Console,
+  actions: [
+    {
+      title: 'Clear Console',
+      onClick: () => {
+        dispatch({ type: 'clear-console' });
+      },
+      Icon: ClearIcon,
+    },
+  ],
+};

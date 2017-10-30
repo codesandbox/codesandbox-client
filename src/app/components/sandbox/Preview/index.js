@@ -184,49 +184,54 @@ export default class Preview extends React.PureComponent<Props, State> {
 
   sendMessage = (message: Object) => {
     this.frames.forEach(frame => {
-      frame.postMessage(message, frameUrl(this.props.sandboxId));
+      frame.postMessage(
+        { ...message, codesandbox: true },
+        frameUrl(this.props.sandboxId)
+      );
     });
   };
 
   handleMessage = (data: Object, source: HTMLIFrameElement) => {
-    if (data.type === 'initialized') {
-      if (this.frames.indexOf(source) === -1) {
-        this.frames.push(source);
-      }
+    if (source) {
+      if (data.type === 'initialized') {
+        if (this.frames.indexOf(source) === -1) {
+          this.frames.push(source);
+        }
 
-      this.setState({
-        frameInitialized: true,
-      });
-      this.executeCodeImmediately(true);
-    } else {
-      const { type } = data;
+        this.setState({
+          frameInitialized: true,
+        });
+        this.executeCodeImmediately(true);
+      } else {
+        const { type } = data;
 
-      switch (type) {
-        case 'render': {
-          this.executeCodeImmediately();
-          break;
-        }
-        case 'urlchange': {
-          this.commitUrl(data.url);
-          break;
-        }
-        case 'resize': {
-          if (this.props.setFrameHeight) {
-            this.props.setFrameHeight(data.height);
+        switch (type) {
+          case 'render': {
+            this.executeCodeImmediately();
+            break;
           }
-          break;
-        }
-        case 'action': {
-          if (this.props.runActionFromPreview) {
-            this.props.runActionFromPreview({
-              ...data,
-              sandboxId: this.props.sandboxId,
-            });
+          case 'urlchange': {
+            this.commitUrl(data.url);
+            break;
           }
-          break;
-        }
-        default: {
-          break;
+          case 'resize': {
+            if (this.props.setFrameHeight) {
+              this.props.setFrameHeight(data.height);
+            }
+            break;
+          }
+          case 'action': {
+            if (this.props.runActionFromPreview) {
+              this.props.runActionFromPreview({
+                ...data,
+                sandboxId: this.props.sandboxId,
+              });
+            }
+            break;
+          }
+          default: {
+            break;
+          }
         }
       }
     }
