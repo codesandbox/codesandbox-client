@@ -210,12 +210,10 @@ export default class DevTools extends React.PureComponent<Props, State> {
   };
 
   handleTouchEnd = (event: TouchEvent) => {
-    if (event.touches && event.touches.length) {
-      this.handleMouseUp(normalizeTouchEvent(event));
-    }
+    this.handleMouseUp(event);
   };
 
-  handleMouseUp = (e: Event & { clientX: number, clientY: number }) => {
+  handleMouseUp = (e: Event) => {
     if (this.state.mouseDown) {
       this.setState({ mouseDown: false });
       this.props.setDragging(false);
@@ -333,6 +331,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
               <Tooltip
                 style={{ pointerEvents: hidden ? 'none' : 'initial' }}
                 title={title}
+                key={title}
               >
                 <Icon
                   style={{
