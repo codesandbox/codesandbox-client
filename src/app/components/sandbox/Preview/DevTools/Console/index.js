@@ -3,6 +3,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { listen } from 'codesandbox-api';
 
+import CircularJSON from 'circular-json';
 import Message from './Message';
 import Input from './Input';
 
@@ -67,14 +68,16 @@ export default class Console extends React.Component<Props, State> {
       case 'eval-result': {
         const { result, error } = data;
 
+        const parsedJson = CircularJSON.parse(result);
+
         if (!error) {
-          if (result) {
-            this.addMessage('log', [JSON.parse(result)], 'return');
+          if (parsedJson) {
+            this.addMessage('log', [parsedJson], 'return');
           } else {
             this.addMessage('log', [undefined], 'return');
           }
         } else {
-          this.addMessage('error', [JSON.parse(result)]);
+          this.addMessage('error', [parsedJson]);
         }
         break;
       }

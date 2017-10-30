@@ -1,22 +1,16 @@
 import { dispatch } from 'codesandbox-api';
 
-import mapConsoleResult from './utils/map-console-result';
-
-function mapArgs(args: any[]) {
-  return args.map(mapConsoleResult);
-}
+import massageJSON from './massage-json';
 
 function replaceConsoleMethod(method) {
   const oldMethod = console[method];
   console[method] = (...args) => {
     try {
-      const mappedArgs = mapArgs(args);
-
-      if (mappedArgs.length > 0) {
+      if (args.length > 0) {
         dispatch({
           type: 'console',
           method,
-          args: JSON.stringify(mappedArgs),
+          args: massageJSON(args),
         });
       }
     } catch (e) {

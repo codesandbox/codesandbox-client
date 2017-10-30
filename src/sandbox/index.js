@@ -10,7 +10,7 @@ import host from './utils/host';
 import setupHistoryListeners from './url-listeners';
 import compile from './compile';
 import setupConsole from './console';
-import mapConsoleResult from './utils/map-console-result';
+import massageJSON from './console/massage-json';
 
 function getId() {
   if (process.env.NODE_ENV === 'test') {
@@ -48,7 +48,7 @@ requirePolyfills().then(() => {
         dispatch({
           type: 'eval-result',
           error,
-          result: JSON.stringify(mapConsoleResult(result)),
+          result: massageJSON(result),
         });
       } catch (e) {
         console.error(e);
