@@ -15,13 +15,15 @@ const SANDBOXES = [
   { id: 'o29j95wx9', root: '#app' },
   { id: 'k3q1zjjml5', root: '#app' },
   'github/reactjs/redux/tree/master/examples/real-world',
-  'github/CompuIves/codesandbox-presentation',
+  { id: 'github/CompuIves/codesandbox-presentation', timeout: 60000 },
+  'lp5rjr0z4z',
 ];
 
 SANDBOXES.forEach(sandbox => {
   const id = sandbox.id || sandbox;
   const root = sandbox.root || '#root';
   const threshold = sandbox.threshold || 0.01;
+  const timeout = sandbox.timeout || 30000;
   let browser = puppeteer.launch({
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
   });
@@ -37,7 +39,7 @@ SANDBOXES.forEach(sandbox => {
         browser = await browser;
         const page = await browser.newPage();
         await page.goto('http://localhost:3001/#' + id);
-        await page.waitForSelector(root, { timeout: 45000 });
+        await page.waitForSelector(root, { timeout });
         await page.waitFor(2000);
 
         // const html = await page.evaluate(() => document.body.innerHTML);
