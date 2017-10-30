@@ -11,7 +11,7 @@ import setupHistoryListeners from './url-listeners';
 import compile from './compile';
 
 function getId() {
-  if (process.env.NODE_ENV === 'test') {
+  if (process.env.LOCAL_SERVER) {
     return document.location.hash.replace('#', '');
   }
 
