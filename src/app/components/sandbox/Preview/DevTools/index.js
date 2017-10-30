@@ -99,6 +99,15 @@ function unFocus(document, window) {
   }
 }
 
+function normalizeTouchEvent(event: TouchEvent): MouseEvent {
+  // $FlowIssue
+  return {
+    ...event,
+    clientX: event.touches[0].clientX,
+    clientY: event.touches[0].clientY,
+  };
+}
+
 const PANES = { [console.title]: console };
 
 export default class DevTools extends React.PureComponent<Props, State> {
@@ -126,6 +135,8 @@ export default class DevTools extends React.PureComponent<Props, State> {
   componentDidMount() {
     document.addEventListener('mouseup', this.handleMouseUp, false);
     document.addEventListener('mousemove', this.handleMouseMove, false);
+    document.addEventListener('touchend', this.handleTouchEnd, false);
+    document.addEventListener('touchmove', this.handleTouchMove, false);
 
     if (this.props.shouldExpandDevTools) {
       this.openDevTools();
@@ -135,6 +146,8 @@ export default class DevTools extends React.PureComponent<Props, State> {
   componentWillUnmount() {
     document.removeEventListener('mouseup', this.handleMouseUp, false);
     document.removeEventListener('mousemove', this.handleMouseMove, false);
+    document.removeEventListener('touchend', this.handleTouchEnd, false);
+    document.removeEventListener('touchmove', this.handleTouchMove, false);
   }
 
   setHidden = (hidden: boolean) => {
@@ -178,7 +191,13 @@ export default class DevTools extends React.PureComponent<Props, State> {
     });
   };
 
-  handleMouseDown = (event: MouseEvent) => {
+  handleTouchStart = (event: TouchEvent) => {
+    if (event.touches && event.touches.length) {
+      this.handleMouseDown(normalizeTouchEvent(event));
+    }
+  };
+
+  handleMouseDown = (event: Event & { clientX: number, clientY: number }) => {
     if (!this.state.mouseDown) {
       unFocus(document, window);
       this.setState({
@@ -190,7 +209,13 @@ export default class DevTools extends React.PureComponent<Props, State> {
     }
   };
 
-  handleMouseUp = (e: MouseEvent) => {
+  handleTouchEnd = (event: TouchEvent) => {
+    if (event.touches && event.touches.length) {
+      this.handleMouseUp(normalizeTouchEvent(event));
+    }
+  };
+
+  handleMouseUp = (e: Event & { clientX: number, clientY: number }) => {
     if (this.state.mouseDown) {
       this.setState({ mouseDown: false });
       this.props.setDragging(false);
@@ -213,7 +238,13 @@ export default class DevTools extends React.PureComponent<Props, State> {
     }
   };
 
-  handleMouseMove = (event: MouseEvent) => {
+  handleTouchMove = (event: TouchEvent) => {
+    if (event.touches && event.touches.length) {
+      this.handleMouseMove(normalizeTouchEvent(event));
+    }
+  };
+
+  handleMouseMove = (event: Event & { clientX: number, clientY: number }) => {
     if (this.state.mouseDown) {
       const newHeight =
         this.state.startHeight - (event.clientY - this.state.startY);
@@ -283,7 +314,10 @@ export default class DevTools extends React.PureComponent<Props, State> {
           display: 'flex',
         }}
       >
-        <Header onMouseDown={this.handleMouseDown}>
+        <Header
+          onTouchStart={this.handleTouchStart}
+          onMouseDown={this.handleMouseDown}
+        >
           {Object.keys(PANES).map(title => (
             <Tab key={title}>
               {title}
