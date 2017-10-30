@@ -128,8 +128,9 @@ function getMessage(message: IMessage) {
     );
   }
 
-  return message.arguments.map(m => (
-    <InnerItem>
+  return message.arguments.map((m, i) => (
+    // eslint-disable-next-line react/no-array-index-key
+    <InnerItem key={i}>
       <ObjectInspector theme={inspectorTheme} data={m} />
     </InnerItem>
   ));

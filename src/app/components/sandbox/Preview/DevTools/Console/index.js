@@ -144,7 +144,10 @@ export default class Console extends React.Component<Props, State> {
             this.list = el;
           }}
         >
-          {this.state.messages.map(mes => <Message message={mes} />)}
+          {/* eslint-disable react/no-array-index-key */}
+          {this.state.messages.map((mes, i) => (
+            <Message key={i} message={mes} />
+          ))}
         </Messages>
         <Input evaluateConsole={this.evaluateConsole} />
       </Container>

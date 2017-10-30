@@ -53,9 +53,6 @@ const MinimizeIcon = styled(Chevron)`
   right: 1rem;
   font-size: 1rem;
 
-  transform: ${({ shouldRotate }) =>
-    shouldRotate ? `rotateZ(0deg)` : `rotateZ(180deg)`};
-
   cursor: pointer;
 `;
 
@@ -260,7 +257,9 @@ export default class DevTools extends React.PureComponent<Props, State> {
 
           <MinimizeIcon
             onMouseUp={this.state.hidden ? undefined : this.handleMinimizeClick}
-            shouldRotate={hidden}
+            style={{
+              transform: hidden ? `rotateZ(0deg)` : `rotateZ(180deg)`,
+            }}
           />
         </Header>
 
