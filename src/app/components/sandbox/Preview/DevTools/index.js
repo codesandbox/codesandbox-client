@@ -69,6 +69,7 @@ export type Status = {
 type Props = {
   setDragging: (dragging: boolean) => void,
   evaluateCommand: (cmd: string) => void,
+  sandboxId: string,
 };
 type State = {
   consoleStatus: Status,
@@ -105,6 +106,17 @@ export default class DevTools extends React.PureComponent<Props, State> {
 
     height: 2 * 16,
   };
+
+  componentWillReceiveProps(nextProps: Props) {
+    if (nextProps.sandboxId !== this.props.sandboxId) {
+      this.setState({
+        consoleStatus: {
+          unread: 0,
+          type: 'info',
+        },
+      });
+    }
+  }
 
   componentDidMount() {
     document.addEventListener('mouseup', this.handleMouseUp, false);
@@ -240,6 +252,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
   node: HTMLElement;
 
   render() {
+    const { sandboxId } = this.props;
     const { consoleStatus, hidden, height } = this.state;
 
     return (
@@ -274,6 +287,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
           hidden={hidden}
           evaluateCommand={this.props.evaluateCommand}
           updateStatus={this.updateStatus}
+          sandboxId={sandboxId}
         />
       </Container>
     );

@@ -33,6 +33,7 @@ type Props = {
   evaluateCommand: (c: string) => void,
   updateStatus: (s: 'info' | 'warning' | 'error') => void,
   hidden: boolean,
+  sandboxId: string,
 };
 
 type State = {
@@ -119,6 +120,12 @@ export default class Console extends React.Component<Props, State> {
   }
 
   list: ?HTMLElement;
+
+  componentWillReceiveProps(nextProps: Props) {
+    if (nextProps.sandboxId !== this.props.sandboxId) {
+      this.setState({ messages: [] });
+    }
+  }
 
   componentDidUpdate() {
     if (this.list) {

@@ -417,6 +417,7 @@ export default class Preview extends React.PureComponent<Props, State> {
         <DevTools
           setDragging={this.setDragging}
           evaluateCommand={this.evaluateInSandbox}
+          sandboxId={sandboxId}
         />
       </Container>
     );
