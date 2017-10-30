@@ -13,7 +13,7 @@ import setupConsole from './console';
 import massageJSON from './console/massage-json';
 
 function getId() {
-  if (process.env.NODE_ENV === 'test') {
+  if (process.env.LOCAL_SERVER) {
     return document.location.hash.replace('#', '');
   }
 
