@@ -62,7 +62,7 @@ type State = {
 const FullSize = styled.div`
   height: 100%;
   width: 100%;
-  pointer-events: ${props => (props.inactive ? 'none' : 'all')};
+
   ${fadeIn(0)};
   display: flex;
   flex-direction: column;
@@ -183,7 +183,7 @@ class EditorPreview extends React.PureComponent<Props, State> {
     );
 
     const PreviewPane = (
-      <FullSize inactive={this.state.resizing}>
+      <FullSize>
         <Preview
           sandboxId={sandbox.id}
           template={sandbox.template}
@@ -201,6 +201,7 @@ class EditorPreview extends React.PureComponent<Props, State> {
           dependencies={sandbox.npmDependencies}
           runActionFromPreview={previewApiActions.executeAction}
           forcedRenders={sandbox.forcedRenders}
+          inactive={this.state.resizing}
         />
       </FullSize>
     );

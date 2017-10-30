@@ -51,6 +51,7 @@ type Props = {
   dependencies: Object,
   runActionFromPreview: (arg: Object) => any,
   forcedRenders: ?number,
+  inactive: ?boolean,
 };
 
 type State = {
@@ -381,6 +382,7 @@ export default class Preview extends React.PureComponent<Props, State> {
       isInProjectView,
       setProjectView,
       hideNavigation,
+      inactive,
     } = this.props;
     const { historyPosition, history, dragging, urlInAddressBar } = this.state;
 
@@ -410,7 +412,7 @@ export default class Preview extends React.PureComponent<Props, State> {
           id="sandbox"
           title={sandboxId}
           hideNavigation={hideNavigation}
-          style={{ pointerEvents: dragging ? 'none' : 'initial' }}
+          style={{ pointerEvents: dragging || inactive ? 'none' : 'initial' }}
         />
         <DevTools
           setDragging={this.setDragging}
