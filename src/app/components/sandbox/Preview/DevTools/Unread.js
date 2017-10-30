@@ -3,6 +3,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 const Container = styled.div`
+  transition: 0.3s ease all;
   display: inline-flex;
   justify-content: center;
   align-items: center;
@@ -14,8 +15,13 @@ const Container = styled.div`
   height: 16px;
   width: 16px;
 
-  color: white;
-  background-color: ${({ status, theme }) => {
+  color: ${({ unread }) =>
+    unread === 0 ? `rgba(255, 255, 255, 0.4)` : 'white'};
+  background-color: ${({ status, unread, theme }) => {
+    if (unread === 0) {
+      return 'rgba(255, 255, 255, 0.2)';
+    }
+
     if (status === 'info') {
       return theme.secondary();
     } else if (status === 'warning') {
@@ -34,5 +40,7 @@ type Props = {
 };
 
 export default ({ status, unread }: Props) => (
-  <Container status={status}>{unread}</Container>
+  <Container unread={unread} status={status}>
+    {unread}
+  </Container>
 );

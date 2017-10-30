@@ -24,7 +24,7 @@ const Split = styled.div`
   width: ${props => (props.show ? `${props.size}%` : '0px')};
   max-width: ${props => (props.only ? '100%' : `${props.size}%`)};
   min-width: ${props => (props.only ? '100%' : `${props.size}%`)};
-  height: calc(100% + 3rem);
+  height: 100%;
 `;
 
 type Props = {

@@ -9,6 +9,7 @@ import { IconContainer } from './styles';
 const Container = styled.div`
   position: relative;
   height: 2rem;
+  min-height: 2rem;
   width: 100%;
   background-color: ${props => props.theme.background.darken(0.3)};
 

@@ -38,7 +38,7 @@ requirePolyfills().then(() => {
       let result = null;
       let error = false;
       try {
-        result = eval(message.data.command); // eslint-disable-line no-eval
+        result = (0, eval)(message.data.command); // eslint-disable-line no-eval
       } catch (e) {
         result = e;
         error = true;
