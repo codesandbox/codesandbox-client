@@ -261,7 +261,9 @@ export default class DevTools extends React.PureComponent<Props, State> {
           </Tab>
 
           <MinimizeIcon
-            onMouseUp={this.state.hidden ? undefined : this.handleMinimizeClick}
+            onMouseDown={
+              this.state.hidden ? undefined : this.handleMinimizeClick
+            }
             style={{
               transform: hidden ? `rotateZ(0deg)` : `rotateZ(180deg)`,
             }}
