@@ -24,7 +24,7 @@ requirePolyfills().then(() => {
   registerServiceWorker('/sandbox-service-worker.js');
 
   function sendReady() {
-    dispatch('Ready!');
+    dispatch({ type: 'initialized' });
   }
 
   window.addEventListener('message', async message => {

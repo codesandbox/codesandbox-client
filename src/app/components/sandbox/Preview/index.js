@@ -1,8 +1,7 @@
 /* @flow */
 import * as React from 'react';
 import styled from 'styled-components';
-
-import SplitPane from 'react-split-pane';
+import { listen } from 'codesandbox-api';
 
 import { debounce } from 'lodash';
 
@@ -13,13 +12,14 @@ import { findMainModule } from 'app/store/entities/sandboxes/modules/selectors';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 import shouldUpdate from './utils/should-update';
 
-import Console from './Console';
+import DevTools from './DevTools';
 import Navigator from './Navigator';
 
 const Container = styled.div`
   height: 100%;
   width: 100%;
   background-color: white;
+
   display: flex;
   flex-direction: column;
 `;
@@ -27,9 +27,15 @@ const Container = styled.div`
 const StyledFrame = styled.iframe`
   border-width: 0px;
   width: 100%;
+  height: 100%;
   overflow: auto;
-  flex: 1 1 auto;
 `;
+
+// const Split = styled.div`
+//   display: flex;
+//   flex-direction: column;
+//   height: 100%;
+// `;
 
 type Props = {
   sandboxId: string,
@@ -58,6 +64,7 @@ type State = {
   history: Array<string>,
   historyPosition: number,
   urlInAddressBar: string,
+  dragging: boolean,
 };
 
 export default class Preview extends React.PureComponent<Props, State> {
@@ -73,6 +80,7 @@ export default class Preview extends React.PureComponent<Props, State> {
       historyPosition: -1,
       urlInAddressBar: frameUrl(props.sandboxId, props.initialPath || ''),
       url: null,
+      dragging: false,
     };
 
     if (!props.noDelay) {
@@ -158,12 +166,16 @@ export default class Preview extends React.PureComponent<Props, State> {
     }
   }
 
+  listener: Function;
+
   componentDidMount() {
-    window.addEventListener('message', this.handleMessage);
+    this.listener = listen(this.handleMessage);
   }
 
   componentWillUnmount() {
-    window.removeEventListener('message', this.handleMessage);
+    if (this.listener) {
+      this.listener();
+    }
   }
 
   openNewWindow = () => {
@@ -179,10 +191,10 @@ export default class Preview extends React.PureComponent<Props, State> {
     });
   };
 
-  handleMessage = (e: MessageEvent | { data: Object | string }) => {
-    if (e.data === 'Ready!') {
-      if (this.frames.indexOf(e.source) === -1) {
-        this.frames.push(e.source);
+  handleMessage = (data: Object, source: HTMLIFrameElement) => {
+    if (data.type === 'initialized') {
+      if (this.frames.indexOf(source) === -1) {
+        this.frames.push(source);
       }
 
       this.setState({
@@ -190,7 +202,7 @@ export default class Preview extends React.PureComponent<Props, State> {
       });
       this.executeCodeImmediately(true);
     } else {
-      const { type } = e.data;
+      const { type } = data;
 
       switch (type) {
         case 'render': {
@@ -198,47 +210,21 @@ export default class Preview extends React.PureComponent<Props, State> {
           break;
         }
         case 'urlchange': {
-          this.commitUrl(e.data.url);
+          this.commitUrl(data.url);
           break;
         }
         case 'resize': {
           if (this.props.setFrameHeight) {
-            this.props.setFrameHeight(e.data.height);
+            this.props.setFrameHeight(data.height);
           }
           break;
         }
         case 'action': {
           if (this.props.runActionFromPreview) {
             this.props.runActionFromPreview({
-              ...e.data,
+              ...data,
               sandboxId: this.props.sandboxId,
             });
-          }
-          break;
-        }
-        case 'console': {
-          if (!this.props.preferences.consoleExperiment) {
-            break;
-          }
-          const { method, args: jsonArgs } = e.data;
-          const args = JSON.parse(jsonArgs);
-          this.console.addMessage(method, args);
-          break;
-        }
-        case 'eval-result': {
-          if (!this.props.preferences.consoleExperiment) {
-            break;
-          }
-          const { result, error } = e.data;
-
-          if (!error) {
-            if (result) {
-              this.console.addMessage('log', [JSON.parse(result)], 'return');
-            } else {
-              this.console.addMessage('log', [undefined], 'return');
-            }
-          } else {
-            this.console.addMessage('error', [JSON.parse(result)]);
           }
           break;
         }
@@ -253,6 +239,10 @@ export default class Preview extends React.PureComponent<Props, State> {
     requestAnimationFrame(() => {
       this.executeCodeImmediately();
     });
+  };
+
+  setDragging = (dragging: boolean) => {
+    this.setState({ dragging });
   };
 
   getRenderedModule = () => {
@@ -397,11 +387,11 @@ export default class Preview extends React.PureComponent<Props, State> {
       setProjectView,
       hideNavigation,
     } = this.props;
-    const { historyPosition, history, urlInAddressBar } = this.state;
+    const { historyPosition, history, dragging, urlInAddressBar } = this.state;
 
     const url = urlInAddressBar || frameUrl(sandboxId);
 
-    const container = (
+    return (
       <Container>
         {!hideNavigation && (
           <Navigator
@@ -423,31 +413,15 @@ export default class Preview extends React.PureComponent<Props, State> {
           sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups allow-presentation"
           src={frameUrl(sandboxId, this.initialPath)}
           id="sandbox"
+          title={sandboxId}
           hideNavigation={hideNavigation}
+          style={{ pointerEvents: dragging ? 'none' : 'initial' }}
+        />
+        <DevTools
+          setDragging={this.setDragging}
+          evaluateCommand={this.evaluateInSandbox}
         />
       </Container>
     );
-
-    if (this.props.preferences.consoleExperiment) {
-      return (
-        <SplitPane
-          split="horizontal"
-          minSize={50}
-          maxSize={-100}
-          defaultSize="50%"
-          primary="second"
-        >
-          {container}
-          <Console
-            bindConsole={c => {
-              this.console = c;
-            }}
-            evaluateCommand={this.evaluateInSandbox}
-          />
-        </SplitPane>
-      );
-    }
-
-    return container;
   }
 }

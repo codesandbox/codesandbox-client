@@ -1,6 +1,7 @@
 // @flow
 import React from 'react';
 import styled from 'styled-components';
+import { listen } from 'codesandbox-api';
 
 import Message from './Message';
 import Input from './Input';
@@ -10,6 +11,7 @@ const Container = styled.div`
   font-family: Menlo, monospace;
   color: rgba(255, 255, 255, 0.8);
   width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
 `;
@@ -27,8 +29,9 @@ export type IMessage = {
 };
 
 type Props = {
-  bindConsole: (c: any) => void,
   evaluateCommand: (c: string) => void,
+  updateStatus: (s: 'info' | 'warning' | 'error') => void,
+  hidden: boolean,
 };
 
 type State = {
@@ -41,15 +44,65 @@ export default class Console extends React.Component<Props, State> {
     scrollToBottom: true,
   };
 
+  listener: Function;
+
   componentDidMount() {
-    this.props.bindConsole(this);
+    this.listener = listen(this.handleMessage);
   }
+
+  componentWillUnmount() {
+    if (this.listener) {
+      this.listener();
+    }
+  }
+
+  handleMessage = (data: Object) => {
+    switch (data.type) {
+      case 'console': {
+        const { method, args: jsonArgs } = data;
+        const args = JSON.parse(jsonArgs);
+        this.addMessage(method, args);
+        break;
+      }
+      case 'eval-result': {
+        const { result, error } = data;
+
+        if (!error) {
+          if (result) {
+            this.addMessage('log', [JSON.parse(result)], 'return');
+          } else {
+            this.addMessage('log', [undefined], 'return');
+          }
+        } else {
+          this.addMessage('error', [JSON.parse(result)]);
+        }
+        break;
+      }
+      default: {
+        break;
+      }
+    }
+  };
+
+  getType = (message: 'info' | 'log' | 'warn' | 'error') => {
+    if (message === 'log' || message === 'info') {
+      return 'info';
+    }
+
+    if (message === 'warn') {
+      return 'warning';
+    }
+
+    return 'error';
+  };
 
   addMessage(
     message: 'log' | 'warn' | 'error',
-    args: string[],
+    args: Array<string | typeof undefined>,
     type: 'message' | 'command' | 'return' = 'message'
   ) {
+    this.props.updateStatus(this.getType(message));
+
     this.setState({
       messages: [
         ...this.state.messages,
@@ -62,8 +115,12 @@ export default class Console extends React.Component<Props, State> {
     });
   }
 
+  list: ?HTMLElement;
+
   componentDidUpdate() {
-    this.list.scrollTop = this.list.scrollHeight;
+    if (this.list) {
+      this.list.scrollTop = this.list.scrollHeight;
+    }
   }
 
   evaluateConsole = (command: string) => {
@@ -73,6 +130,10 @@ export default class Console extends React.Component<Props, State> {
   };
 
   render() {
+    if (this.props.hidden) {
+      return null;
+    }
+
     return (
       <Container>
         <Messages
