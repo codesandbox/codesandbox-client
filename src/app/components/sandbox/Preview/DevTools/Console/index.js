@@ -61,14 +61,14 @@ export default class Console extends React.Component<Props, State> {
     switch (data.type) {
       case 'console': {
         const { method, args: jsonArgs } = data;
-        const args = JSON.parse(jsonArgs);
+        const args = CircularJSON.parse(jsonArgs);
         this.addMessage(method, args);
         break;
       }
       case 'eval-result': {
         const { result, error } = data;
 
-        const parsedJson = CircularJSON.parse(result);
+        const parsedJson = result ? CircularJSON.parse(result) : result;
 
         if (!error) {
           if (parsedJson) {
