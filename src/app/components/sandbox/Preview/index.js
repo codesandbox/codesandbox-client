@@ -287,8 +287,6 @@ export default class Preview extends React.PureComponent<Props, State> {
         template,
         hasActions: !!runActionFromPreview,
         isModuleView: !isInProjectView,
-        // TODO remove this in 2 weeks
-        experimentalPackager: preferences.newPackagerExperiment,
       });
     }
   };

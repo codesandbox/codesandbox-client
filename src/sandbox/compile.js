@@ -7,7 +7,6 @@ import _debug from 'app/utils/debug';
 import initializeErrorTransformers from './errors/transformers';
 import getPreset from './eval';
 import Manager from './eval/manager';
-import resolveDependency from './eval/loaders/dependency-resolver';
 
 import { resetScreen } from './status-screen';
 
@@ -53,16 +52,9 @@ function getIndexHtml(modules) {
   return '<div id="root"></div>';
 }
 
-async function updateManager(
-  sandboxId,
-  template,
-  managerModules,
-  experimentalPackager = false
-) {
+async function updateManager(sandboxId, template, managerModules) {
   if (!manager || manager.id !== sandboxId) {
-    manager = new Manager(sandboxId, managerModules, getPreset(template), {
-      experimentalPackager,
-    });
+    manager = new Manager(sandboxId, managerModules, getPreset(template));
   } else {
     await manager.updateData(managerModules);
   }
@@ -95,7 +87,6 @@ async function compile({
   hasActions,
   isModuleView = false,
   template,
-  experimentalPackager = false,
 }) {
   try {
     clearErrorTransformers();
@@ -116,20 +107,17 @@ async function compile({
     }));
 
     const [{ manifest, isNewCombination }] = await Promise.all([
-      loadDependencies(dependencies, experimentalPackager),
-      updateManager(sandboxId, template, managerModules, experimentalPackager),
+      loadDependencies(dependencies),
+      updateManager(sandboxId, template, managerModules),
     ]);
 
-    const { externals = {} } = manifest || {};
-    if (experimentalPackager) {
-      manager.setManifest(manifest);
-    } else {
-      manager.setExternals(externals);
+    // Just reset the whole packager if it's a new combination
+    if (isNewCombination) {
+      manager = null;
+      await updateManager(sandboxId, template, managerModules);
     }
 
-    if (isNewCombination) {
-      manager.clearCompiledCache();
-    }
+    manager.setManifest(manifest);
 
     const managerModulePathToTranspile = getModulePath(
       modules,
@@ -149,9 +137,12 @@ async function compile({
     try {
       const children = document.body.children;
       // Do unmounting for react
-      if (externals['react-dom']) {
-        const reactDOM = resolveDependency('react-dom', externals);
+      if (manifest.dependencies.find(n => n.name === 'react-dom')) {
+        const reactDOMModule = manager.resolveModule('react-dom', '');
+        const reactDOM = manager.evaluateModule(reactDOMModule);
+
         reactDOM.unmountComponentAtNode(document.body);
+
         for (let i = 0; i < children.length; i += 1) {
           if (children[i].tagName === 'DIV') {
             reactDOM.unmountComponentAtNode(children[i]);

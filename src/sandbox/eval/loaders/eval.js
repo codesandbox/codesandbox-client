@@ -2,13 +2,15 @@
 import buildProcess from './utils/process';
 
 /* eslint-disable no-unused-vars */
-export default function(code: string, require: Function, exports) {
+export default function(code: string, require: Function, exports: Object) {
   const module = { exports: {} };
   const global = window;
   const process = buildProcess();
+  window.global = global;
 
   try {
-    eval(code); // eslint-disable-line no-eval
+    const newCode = `(function evaluate(require, module, exports, process, global) {${code}\n})`;
+    (0, eval)(newCode)(require, module, exports, process, global); // eslint-disable-line no-eval
 
     // Choose either the export of __esModule or node
     return Object.keys(module.exports || {}).length > 0 ||
