@@ -80,7 +80,7 @@ const Container = styled.div`
   border-bottom: 1px solid rgba(0, 0, 0, 0.3);
   font-size: 13px;
   line-height: 16px;
-  word-break: break-all;
+  word-break: break-word;
   ${props => getTypeStyles(props.logType)};
 `;
 
