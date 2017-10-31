@@ -6,7 +6,9 @@ function replaceConsoleMethod(method) {
   const oldMethod = console[method];
   console[method] = (...args) => {
     try {
-      if (args.length > 0) {
+      if (method === 'clear') {
+        dispatch({ type: 'clear-console' });
+      } else if (args.length > 0) {
         dispatch({
           type: 'console',
           method,
