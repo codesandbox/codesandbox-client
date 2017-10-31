@@ -1,6 +1,6 @@
 import { dispatch } from 'codesandbox-api';
 
-import massageJSON from './massage-json';
+import transformJSON from './transform-json';
 
 function replaceConsoleMethod(method) {
   const oldMethod = console[method];
@@ -10,7 +10,7 @@ function replaceConsoleMethod(method) {
         dispatch({
           type: 'console',
           method,
-          args: massageJSON(args),
+          args: transformJSON(args),
         });
       }
     } catch (e) {
