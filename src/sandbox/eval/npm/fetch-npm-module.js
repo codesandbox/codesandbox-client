@@ -83,7 +83,7 @@ function downloadDependency(depName: string, depVersion: string, path: string) {
         return x.text();
       }
 
-      return `throw new Error("Could not find module ${path}")`;
+      throw new Error(`Could not find module ${path}`);
     })
     .then(x => ({
       path,

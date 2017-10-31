@@ -24,7 +24,7 @@ const Split = styled.div`
   width: ${props => (props.show ? `${props.size}%` : '0px')};
   max-width: ${props => (props.only ? '100%' : `${props.size}%`)};
   min-width: ${props => (props.only ? '100%' : `${props.size}%`)};
-  height: calc(100% + 3rem);
+  height: 100%;
 `;
 
 type Props = {
@@ -45,6 +45,7 @@ type Props = {
   editorSize: number,
   forceRefresh: boolean,
   highlightedLines: Array<string>,
+  expandDevTools: boolean,
 };
 
 type State = {
@@ -194,6 +195,7 @@ export default class Content extends React.PureComponent<Props, State> {
       hideNavigation,
       editorSize,
       highlightedLines,
+      expandDevTools,
     } = this.props;
 
     const { errors } = this.state;
@@ -273,6 +275,7 @@ export default class Content extends React.PureComponent<Props, State> {
               errors={errors}
               corrections={[]}
               dependencies={sandbox.npmDependencies}
+              shouldExpandDevTools={expandDevTools}
             />
           </Split>
         )}

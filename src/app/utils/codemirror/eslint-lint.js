@@ -363,6 +363,9 @@ export default (async function initialize() {
   // this breaks the monaco loader.js
   // the following workaround can be removed after migration to monaco (vim mode) is done
   const origRequire = window.require;
+  window.require = undefined;
+  const origDefine = window.define;
+  window.define = undefined;
   if (
     !window.eslint &&
     linter === null &&
@@ -382,10 +385,11 @@ export default (async function initialize() {
     await delay(100);
   }
 
-  eslintRequire = window.require;
-  window.require = origRequire;
-
   linter = new window.eslint();
   linter.defineRules(allRules);
   CodeMirror.registerHelper('lint', 'javascript', validator);
+
+  eslintRequire = window.require;
+  window.require = origRequire;
+  window.define = origDefine;
 });

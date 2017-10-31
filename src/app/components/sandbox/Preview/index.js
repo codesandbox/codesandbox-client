@@ -1,6 +1,7 @@
 /* @flow */
 import * as React from 'react';
 import styled from 'styled-components';
+import { listen } from 'codesandbox-api';
 
 import { debounce } from 'lodash';
 
@@ -11,18 +12,23 @@ import { findMainModule } from 'app/store/entities/sandboxes/modules/selectors';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 import shouldUpdate from './utils/should-update';
 
+import DevTools from './DevTools';
 import Navigator from './Navigator';
 
 const Container = styled.div`
   height: 100%;
   width: 100%;
   background-color: white;
+
+  display: flex;
+  flex-direction: column;
 `;
 
 const StyledFrame = styled.iframe`
   border-width: 0px;
-  height: calc(100% - ${props => (props.hideNavigation ? 3 : 6)}rem);
   width: 100%;
+  height: 100%;
+  min-height: 0;
   overflow: auto;
 `;
 
@@ -45,6 +51,8 @@ type Props = {
   dependencies: Object,
   runActionFromPreview: (arg: Object) => any,
   forcedRenders: ?number,
+  inactive: ?boolean,
+  shouldExpandDevTools: ?boolean,
 };
 
 type State = {
@@ -53,6 +61,7 @@ type State = {
   history: Array<string>,
   historyPosition: number,
   urlInAddressBar: string,
+  dragging: boolean,
 };
 
 export default class Preview extends React.PureComponent<Props, State> {
@@ -68,6 +77,7 @@ export default class Preview extends React.PureComponent<Props, State> {
       historyPosition: -1,
       urlInAddressBar: frameUrl(props.sandboxId, props.initialPath || ''),
       url: null,
+      dragging: false,
     };
 
     if (!props.noDelay) {
@@ -153,12 +163,16 @@ export default class Preview extends React.PureComponent<Props, State> {
     }
   }
 
+  listener: Function;
+
   componentDidMount() {
-    window.addEventListener('message', this.handleMessage);
+    this.listener = listen(this.handleMessage);
   }
 
   componentWillUnmount() {
-    window.removeEventListener('message', this.handleMessage);
+    if (this.listener) {
+      this.listener();
+    }
   }
 
   openNewWindow = () => {
@@ -170,49 +184,54 @@ export default class Preview extends React.PureComponent<Props, State> {
 
   sendMessage = (message: Object) => {
     this.frames.forEach(frame => {
-      frame.postMessage(message, frameUrl(this.props.sandboxId));
+      frame.postMessage(
+        { ...message, codesandbox: true },
+        frameUrl(this.props.sandboxId)
+      );
     });
   };
 
-  handleMessage = (e: MessageEvent | { data: Object | string }) => {
-    if (e.data === 'Ready!') {
-      if (this.frames.indexOf(e.source) === -1) {
-        this.frames.push(e.source);
-      }
+  handleMessage = (data: Object, source: HTMLIFrameElement) => {
+    if (source) {
+      if (data.type === 'initialized') {
+        if (this.frames.indexOf(source) === -1) {
+          this.frames.push(source);
+        }
 
-      this.setState({
-        frameInitialized: true,
-      });
-      this.executeCodeImmediately(true);
-    } else {
-      const { type } = e.data;
+        this.setState({
+          frameInitialized: true,
+        });
+        this.executeCodeImmediately(true);
+      } else {
+        const { type } = data;
 
-      switch (type) {
-        case 'render': {
-          this.executeCodeImmediately();
-          break;
-        }
-        case 'urlchange': {
-          this.commitUrl(e.data.url);
-          break;
-        }
-        case 'resize': {
-          if (this.props.setFrameHeight) {
-            this.props.setFrameHeight(e.data.height);
+        switch (type) {
+          case 'render': {
+            this.executeCodeImmediately();
+            break;
           }
-          break;
-        }
-        case 'action': {
-          if (this.props.runActionFromPreview) {
-            this.props.runActionFromPreview({
-              ...e.data,
-              sandboxId: this.props.sandboxId,
-            });
+          case 'urlchange': {
+            this.commitUrl(data.url);
+            break;
           }
-          break;
-        }
-        default: {
-          break;
+          case 'resize': {
+            if (this.props.setFrameHeight) {
+              this.props.setFrameHeight(data.height);
+            }
+            break;
+          }
+          case 'action': {
+            if (this.props.runActionFromPreview) {
+              this.props.runActionFromPreview({
+                ...data,
+                sandboxId: this.props.sandboxId,
+              });
+            }
+            break;
+          }
+          default: {
+            break;
+          }
         }
       }
     }
@@ -222,6 +241,10 @@ export default class Preview extends React.PureComponent<Props, State> {
     requestAnimationFrame(() => {
       this.executeCodeImmediately();
     });
+  };
+
+  setDragging = (dragging: boolean) => {
+    this.setState({ dragging });
   };
 
   getRenderedModule = () => {
@@ -327,6 +350,13 @@ export default class Preview extends React.PureComponent<Props, State> {
     });
   };
 
+  evaluateInSandbox = (command: string) => {
+    this.sendMessage({
+      type: 'evaluate',
+      command,
+    });
+  };
+
   commitUrl = (url: string) => {
     const { history, historyPosition } = this.state;
 
@@ -356,8 +386,10 @@ export default class Preview extends React.PureComponent<Props, State> {
       isInProjectView,
       setProjectView,
       hideNavigation,
+      inactive,
+      shouldExpandDevTools,
     } = this.props;
-    const { historyPosition, history, urlInAddressBar } = this.state;
+    const { historyPosition, history, dragging, urlInAddressBar } = this.state;
 
     const url = urlInAddressBar || frameUrl(sandboxId);
 
@@ -383,7 +415,15 @@ export default class Preview extends React.PureComponent<Props, State> {
           sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups allow-presentation"
           src={frameUrl(sandboxId, this.initialPath)}
           id="sandbox"
+          title={sandboxId}
           hideNavigation={hideNavigation}
+          style={{ pointerEvents: dragging || inactive ? 'none' : 'initial' }}
+        />
+        <DevTools
+          setDragging={this.setDragging}
+          evaluateCommand={this.evaluateInSandbox}
+          sandboxId={sandboxId}
+          shouldExpandDevTools={shouldExpandDevTools}
         />
       </Container>
     );
