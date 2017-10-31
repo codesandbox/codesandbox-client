@@ -7,6 +7,8 @@ import Tooltip from 'app/components/Tooltip';
 
 import MinimizeIcon from 'react-icons/lib/fa/angle-up';
 
+import store from 'store/dist/store.modern';
+
 import Unread from './Unread';
 
 import console from './Console';
@@ -230,7 +232,11 @@ export default class DevTools extends React.PureComponent<Props, State> {
         // happen when pointer events are disabled and in turn disables scroll.
         // It's hacky, but it's to fix a bug in the browser.
         setTimeout(() => {
-          this.setState({ height: this.state.height + 1 });
+          const height = this.state.height + 1;
+          this.setState({ height });
+          if (height > 64) {
+            store.set('devtools.height', height);
+          }
         }, 50);
       }
     }
@@ -272,7 +278,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
     this.setHidden(false);
     const heightObject = { height: this.state.height };
     TweenMax.to(heightObject, 0.3, {
-      height: 300,
+      height: store.get('devtools.height') || 300,
       onUpdate: () => {
         this.setState(heightObject);
       },
