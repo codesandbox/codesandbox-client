@@ -6,6 +6,10 @@ function mapConsoleResult(arg: any) {
     return arg.stack;
   }
 
+  if (typeof arg === 'function') {
+    return arg.toString();
+  }
+
   return arg;
 }
 
