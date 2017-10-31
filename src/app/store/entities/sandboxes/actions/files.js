@@ -18,6 +18,8 @@ import notificationActions from '../../../notifications/actions';
 
 import { maybeForkSandbox } from './fork';
 
+import sandboxActions from './index';
+
 export const CREATE_MODULE_API_ACTIONS = createAPIActions(
   'SANDBOX',
   'CREATE_MODULE'
@@ -341,6 +343,7 @@ const createModule = (
 
   dispatch(normalizeResult(moduleEntity, data));
   dispatch(addModuleToSandbox(sandboxId, data.id));
+  dispatch(sandboxActions.setCurrentModule(sandboxId, data.id));
 };
 
 const createDirectory = (
