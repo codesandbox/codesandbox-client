@@ -256,10 +256,14 @@ module.exports = {
         },
       ].filter(x => x)
     ),
+    // We first create a common chunk between embed and app, to share components
+    // and dependencies.
     new webpack.optimize.CommonsChunkPlugin({
       name: 'common',
       chunks: ['app', 'embed'],
     }),
+    // Then we find all commonalities between sandbox and common, because sandbox
+    // is always loaded by embed and app.
     new webpack.optimize.CommonsChunkPlugin({
       name: 'common-sandbox',
       chunks: ['common', 'sandbox'],
