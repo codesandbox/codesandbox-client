@@ -54,8 +54,6 @@ function registerValidSW(swUrl, sendNotification) {
               // the fresh content will have been added to the cache.
               // It's the perfect time to display a "New content is
               // available; please refresh." message in your web app.
-              console.log('New content is available; please refresh.');
-
               if (sendNotification) {
                 sendNotification(
                   'CodeSandbox received an update, refresh to see it!',
@@ -68,8 +66,6 @@ function registerValidSW(swUrl, sendNotification) {
               // At this point, everything has been precached.
               // It's the perfect time to display a
               // "Content is cached for offline use." message.
-              console.log('Content is cached for offline use.');
-
               if (sendNotification) {
                 sendNotification(
                   'CodeSandbox has been cached, it now works offline.',
