@@ -301,13 +301,19 @@ export default class CodeEditor extends React.Component<Props, State> {
 
     if (kind) {
       if (kind[1] === 'css') {
-        await System.import('codemirror/mode/css/css');
+        await System.import(
+          /* webpackChunkName: 'codemirror-css' */ 'codemirror/mode/css/css'
+        );
         return 'css';
       } else if (kind[1] === 'html' || kind[1] === 'vue') {
-        await System.import('codemirror/mode/htmlmixed/htmlmixed');
+        await System.import(
+          /* webpackChunkName: 'codemirror-html' */ 'codemirror/mode/htmlmixed/htmlmixed'
+        );
         return 'htmlmixed';
       } else if (kind[1] === 'md') {
-        await System.import('codemirror/mode/markdown/markdown');
+        await System.import(
+          /* webpackChunkName: 'codemirror-markdown' */ 'codemirror/mode/markdown/markdown'
+        );
         return 'markdown';
       }
     }
@@ -370,8 +376,12 @@ export default class CodeEditor extends React.Component<Props, State> {
     };
 
     if (preferences.autoCompleteEnabled) {
-      const tern = await System.import('tern');
-      const defs = await System.import('tern/defs/ecmascript.json');
+      const tern = await System.import(
+        /* webpackChunkName: 'codemirror-tern' */ 'tern'
+      );
+      const defs = await System.import(
+        /* webpackChunkName: 'codemirror-tern-definitions' */ 'tern/defs/ecmascript.json'
+      );
       window.tern = tern;
       this.server =
         this.server ||
@@ -427,7 +437,9 @@ export default class CodeEditor extends React.Component<Props, State> {
     }
 
     if (preferences.vimMode) {
-      await System.import('codemirror/keymap/vim');
+      await System.import(
+        /* webpackChunkName: 'codemirror-vim' */ 'codemirror/keymap/vim'
+      );
       this.codemirror.setOption('keyMap', 'vim');
     } else {
       this.codemirror.setOption('keyMap', 'sublime');
@@ -435,7 +447,9 @@ export default class CodeEditor extends React.Component<Props, State> {
 
     if (preferences.lintEnabled) {
       const initialized = 'eslint' in window;
-      System.import('app/utils/codemirror/eslint-lint')
+      System.import(
+        /* webpackChunkName: 'codemirror-eslint' */ 'app/utils/codemirror/eslint-lint'
+      )
         .then(initializer => !initialized && initializer.default())
         .then(() => {
           this.codemirror.setOption('lint', true);
@@ -459,7 +473,7 @@ export default class CodeEditor extends React.Component<Props, State> {
     const mode = await this.getMode(title);
     if (mode === 'jsx' || mode === 'typescript' || mode === 'css') {
       try {
-        const prettify = await import('app/utils/codemirror/prettify');
+        const prettify = await import(/* webpackChunkName: 'prettier' */ 'app/utils/codemirror/prettify');
         const newCode = await prettify.default(
           code,
           mode,

@@ -38,7 +38,6 @@ module.exports = {
           require.resolve('./polyfills'),
           path.join(paths.embedSrc, 'index.js'),
         ],
-        vendor: ['react', 'react-dom', 'styled-components'],
       },
   target: 'web',
   node: {
@@ -257,14 +256,13 @@ module.exports = {
         },
       ].filter(x => x)
     ),
-    // Try to dedupe duplicated modules, if any:
     new webpack.optimize.CommonsChunkPlugin({
-      name: 'common',
-      chunks: ['app', 'sandbox'],
+      name: 'common-sandbox',
+      chunks: ['app', 'embed', 'sandbox'],
     }),
     new webpack.optimize.CommonsChunkPlugin({
-      name: 'vendor',
-      minChunks: Infinity,
+      name: 'common',
+      chunks: ['app', 'embed'],
     }),
     new webpack.optimize.CommonsChunkPlugin({
       async: true,
