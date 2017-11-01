@@ -178,7 +178,6 @@ async function compile({
         const boilerplate = findBoilerplate(module);
         if (boilerplate) {
           try {
-            console.log(boilerplate);
             boilerplate.module.default(evalled);
           } catch (e) {
             console.error(e);
