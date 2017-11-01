@@ -78,6 +78,7 @@
     "style-loader": "^0.18.2",
     "sw-precache-webpack-plugin": "^0.11.4",
     "typescript": "^2.4.2",
+    "uglifyjs-webpack-plugin": "^1.0.1",
     "url-loader": "^0.5.9",
     "webpack": "^3.5.4",
     "webpack-dev-middleware": "^1.11.0",
