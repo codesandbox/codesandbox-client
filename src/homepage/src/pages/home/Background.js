@@ -16,7 +16,9 @@ const Container = styled.div`
   background-image: linear-gradient(
     -45deg,
     ${({ color }) => color} 0%,
-    rgba(0, 0, 0, 0) 70%
+    rgba(0, 0, 0, 0) 30%,
+    rgba(0, 0, 0, 0) 60%,
+    ${({ color }) => color} 100%
   );
 `;
 
@@ -41,34 +43,35 @@ export default class Background extends React.PureComponent {
     const { template, templateIndex } = this.props;
 
     return (
-      <Container color={template.color.clearer(0.95)}>
-        <PositionedCube
-          color={this.state.templates[
-            (templateIndex + 3) % this.state.templates.length
-          ].color.clearer(0.2)}
+      <Container color={template.color.clearer(0.85)}>
+        {/* <PositionedCube
+          color={template.color.clearer(0.2).darken(0.3)()}
           bottom={50}
           left={120}
-          size={20}
+          size={50}
           speed={250}
         />
         <PositionedCube
-          color={this.state.templates[
-            (templateIndex + 1) % this.state.templates.length
-          ].color.clearer(0.2)}
+          color={template.color.clearer(0.5).darken(0.2)()}
           bottom={170}
           left={700}
-          size={25}
+          size={65}
           speed={150}
         />
         <PositionedCube
-          color={this.state.templates[
-            (templateIndex + 2) % this.state.templates.length
-          ].color.clearer(0.2)}
+          color={template.color.clearer(0.1).darken(0.1)()}
+          top={170}
+          left={700}
+          size={65}
+          speed={150}
+        />
+        <PositionedCube
+          color={template.color.clearer(0.2).lighten(0.2)()}
           bottom={500}
           left={90}
-          size={30}
+          size={40}
           speed={250}
-        />
+        /> */}
       </Container>
     );
   }

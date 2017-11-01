@@ -61,19 +61,10 @@ export default class Cubes extends React.PureComponent {
     return (
       <Container>
         <Centered horizontal>
-          <iframe
-            src={`https://codesandbox.io/embed/${template.shortid}?codemirror=1`}
-            style={{
-              height: 500,
-              width: 900,
-              border: 0,
-              borderRadius: 4,
-              overflow: 'hidden',
-              transform: ' rotateY(-30deg) rotateX(20deg)',
-              perspective: 1200,
-              boxShadow: '25px 25px 25px rgba(0, 0, 0, 0.4)',
-            }}
-            sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"
+          <StyledCube
+            color={template.color.clearer(0.2)()}
+            size={190}
+            speed={100}
           />
         </Centered>
       </Container>
