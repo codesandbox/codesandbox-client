@@ -167,7 +167,7 @@ async function compile({
 
       if (isReact) {
         // initiate boilerplates
-        if (getBoilerplates().length === 0 && externals != null) {
+        if (getBoilerplates().length === 0) {
           try {
             await evalBoilerplates(defaultBoilerplates);
           } catch (e) {
@@ -178,6 +178,7 @@ async function compile({
         const boilerplate = findBoilerplate(module);
         if (boilerplate) {
           try {
+            console.log(boilerplate);
             boilerplate.module.default(evalled);
           } catch (e) {
             console.error(e);
