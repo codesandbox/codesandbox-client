@@ -23,6 +23,7 @@ module.exports = merge(commonConfig, {
     sourceMapFilename: '[file].map', // Default
   },
   plugins: [
+    new webpack.optimize.ModuleConcatenationPlugin(),
     new webpack.DefinePlugin({ VERSION: JSON.stringify(VERSION) }),
     new webpack.LoaderOptionsPlugin({
       minimize: true,
