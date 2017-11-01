@@ -157,7 +157,7 @@ module.exports = {
     // Generates an `index.html` file with the <script> injected.
     new HtmlWebpackPlugin({
       inject: true,
-      chunks: ['vendor', 'common', 'app'],
+      chunks: ['common-sandbox', 'common', 'app'],
       filename: 'app.html',
       template: paths.appHtml,
       minify: __PROD__ && {
@@ -175,7 +175,7 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({
       inject: true,
-      chunks: ['vendor', 'common', 'sandbox'],
+      chunks: ['common-sandbox', 'sandbox'],
       filename: 'frame.html',
       template: paths.sandboxHtml,
       minify: __PROD__ && {
@@ -193,7 +193,7 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({
       inject: true,
-      chunks: ['vendor', 'embed'],
+      chunks: ['common-sandbox', 'common', 'embed'],
       filename: 'embed.html',
       template: path.join(paths.embedSrc, 'index.html'),
       minify: __PROD__ && {
@@ -263,6 +263,7 @@ module.exports = {
     new webpack.optimize.CommonsChunkPlugin({
       name: 'common',
       chunks: ['app', 'embed'],
+      minChunks: 2,
     }),
     new webpack.optimize.CommonsChunkPlugin({
       async: true,
