@@ -257,13 +257,12 @@ module.exports = {
       ].filter(x => x)
     ),
     new webpack.optimize.CommonsChunkPlugin({
-      name: 'common-sandbox',
-      chunks: ['app', 'embed', 'sandbox'],
-    }),
-    new webpack.optimize.CommonsChunkPlugin({
       name: 'common',
       chunks: ['app', 'embed'],
-      minChunks: 2,
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'common-sandbox',
+      chunks: ['common', 'sandbox'],
     }),
     new webpack.optimize.CommonsChunkPlugin({
       async: true,
