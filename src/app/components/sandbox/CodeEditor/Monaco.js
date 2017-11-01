@@ -15,9 +15,9 @@ import theme from 'common/theme';
 import getTemplate from 'common/templates';
 
 /* eslint-disable import/no-webpack-loader-syntax */
-import SyntaxHighlightWorker from 'worker-loader!./monaco/workers/syntax-highlighter';
-import LinterWorker from 'worker-loader!./monaco/workers/linter';
-import TypingsFetcherWorker from 'worker-loader!./monaco/workers/fetch-dependency-typings';
+import SyntaxHighlightWorker from 'worker-loader?name=monaco-syntax-highlighter.[hash].worker.js!./monaco/workers/syntax-highlighter';
+import LinterWorker from 'worker-loader?name=monaco-linter.[hash].worker.js!./monaco/workers/linter';
+import TypingsFetcherWorker from 'worker-loader?name=monaco-typings-ata.[hash].worker.js!./monaco/workers/fetch-dependency-typings';
 /* eslint-enable import/no-webpack-loader-syntax */
 
 import Header from './Header';
@@ -661,9 +661,11 @@ export default class CodeEditor extends React.Component<Props, State> {
     await this.openNewModel(this.props.id, this.props.title);
 
     this.addKeyCommands();
-    import('./monaco/enable-emmet').then(enableEmmet => {
-      enableEmmet.default(editor, monaco, {});
-    });
+    import(/* webpackChunkName: 'monaco-emmet' */ './monaco/enable-emmet').then(
+      enableEmmet => {
+        enableEmmet.default(editor, monaco, {});
+      }
+    );
 
     window.addEventListener('resize', this.resizeEditor);
     this.sizeProbeInterval = setInterval(this.resizeEditor.bind(this), 3000);
@@ -882,7 +884,7 @@ export default class CodeEditor extends React.Component<Props, State> {
 
     if (mode === 'javascript' || mode === 'typescript' || mode === 'css') {
       try {
-        const prettify = await import('app/utils/codemirror/prettify');
+        const prettify = await import(/* webpackChunkName: 'prettier' */ 'app/utils/codemirror/prettify');
         const newCode = await prettify.default(
           code,
           mode === 'javascript' ? 'jsx' : mode,

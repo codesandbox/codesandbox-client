@@ -34,43 +34,44 @@ const Content = styled.div`
 `;
 
 const SignIn = Loadable({
-  loader: () => import('./SignIn'),
+  loader: () => import(/* webpackChunkName: 'page-sign-in' */ './SignIn'),
   LoadingComponent: Loading,
 });
 const ZeitSignIn = Loadable({
-  loader: () => import('./auth/Zeit'),
+  loader: () => import(/* webpackChunkName: 'page-zeit' */ './auth/Zeit'),
   LoadingComponent: Loading,
 });
 const NotFound = Loadable({
-  loader: () => import('./NotFound'),
+  loader: () => import(/* webpackChunkName: 'page-not-found' */ './NotFound'),
   LoadingComponent: Loading,
 });
 const Profile = Loadable({
-  loader: () => import('./Profile'),
+  loader: () => import(/* webpackChunkName: 'page-profile' */ './Profile'),
   LoadingComponent: Loading,
 });
 const Search = Loadable({
-  loader: () => import('./Search'),
+  loader: () => import(/* webpackChunkName: 'page-search' */ './Search'),
   LoadingComponent: Loading,
 });
 const CLI = Loadable({
-  loader: () => import('./CLI'),
+  loader: () => import(/* webpackChunkName: 'page-cli' */ './CLI'),
   LoadingComponent: Loading,
 });
 const GitHub = Loadable({
-  loader: () => import('./GitHub'),
+  loader: () => import(/* webpackChunkName: 'page-github' */ './GitHub'),
   LoadingComponent: Loading,
 });
 const CliInstructions = Loadable({
-  loader: () => import('./CliInstructions'),
+  loader: () =>
+    import(/* webpackChunkName: 'page-cli-instructions' */ './CliInstructions'),
   LoadingComponent: Loading,
 });
 const Patron = Loadable({
-  loader: () => import('./Patron'),
+  loader: () => import(/* webpackChunkName: 'page-patron' */ './Patron'),
   LoadingComponent: Loading,
 });
 const Terms = Loadable({
-  loader: () => import('./Terms'),
+  loader: () => import(/* webpackChunkName: 'page-terms' */ './Terms'),
   LoadingComponent: Loading,
 });
 

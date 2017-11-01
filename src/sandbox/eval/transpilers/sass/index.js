@@ -1,5 +1,5 @@
 // @flow
-import SassWorker from 'worker-loader!./sass-worker.js';
+import SassWorker from 'worker-loader?name=sass-transpiler.[hash].worker.js!./sass-worker.js';
 
 import WorkerTranspiler from '../worker-transpiler';
 import { type LoaderContext } from '../../transpiled-module';

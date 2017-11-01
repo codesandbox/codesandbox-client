@@ -38,7 +38,6 @@ module.exports = {
           require.resolve('./polyfills'),
           path.join(paths.embedSrc, 'index.js'),
         ],
-        vendor: ['react', 'react-dom', 'styled-components'],
       },
   target: 'web',
   node: {
@@ -158,7 +157,7 @@ module.exports = {
     // Generates an `index.html` file with the <script> injected.
     new HtmlWebpackPlugin({
       inject: true,
-      chunks: ['vendor', 'common', 'app'],
+      chunks: ['common-sandbox', 'common', 'app'],
       filename: 'app.html',
       template: paths.appHtml,
       minify: __PROD__ && {
@@ -176,7 +175,7 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({
       inject: true,
-      chunks: ['vendor', 'common', 'sandbox'],
+      chunks: ['common-sandbox', 'sandbox'],
       filename: 'frame.html',
       template: paths.sandboxHtml,
       minify: __PROD__ && {
@@ -194,7 +193,7 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({
       inject: true,
-      chunks: ['vendor', 'embed'],
+      chunks: ['common-sandbox', 'common', 'embed'],
       filename: 'embed.html',
       template: path.join(paths.embedSrc, 'index.html'),
       minify: __PROD__ && {
@@ -257,14 +256,17 @@ module.exports = {
         },
       ].filter(x => x)
     ),
-    // Try to dedupe duplicated modules, if any:
+    // We first create a common chunk between embed and app, to share components
+    // and dependencies.
     new webpack.optimize.CommonsChunkPlugin({
       name: 'common',
-      chunks: ['app', 'sandbox'],
+      chunks: ['app', 'embed'],
     }),
+    // Then we find all commonalities between sandbox and common, because sandbox
+    // is always loaded by embed and app.
     new webpack.optimize.CommonsChunkPlugin({
-      name: 'vendor',
-      minChunks: Infinity,
+      name: 'common-sandbox',
+      chunks: ['common', 'sandbox'],
     }),
     new webpack.optimize.CommonsChunkPlugin({
       async: true,
