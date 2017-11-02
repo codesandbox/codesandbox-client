@@ -30,7 +30,6 @@ export const LOAD_USER_SANDBOXES = createAPIActions(
   'CURRENT_USER',
   'FETCH_SANDBOXES'
 );
-export const SEND_FEEDBACK_API = createAPIActions('FEEDBACK', 'SEND');
 export const GET_AUTH_TOKEN_API = createAPIActions('AUTH_TOKEN', 'FETCH');
 
 export const CREATE_SUBSCRIPTION_API = createAPIActions(
@@ -142,24 +141,6 @@ const loadUserSandboxes = () => async (dispatch: Function) => {
     type: SET_USER_SANDBOXES,
     data,
   });
-};
-
-const sendFeedback = (message: string) => async (dispatch: Function) => {
-  await dispatch(
-    doRequest(SEND_FEEDBACK_API, 'feedbacks', {
-      method: 'POST',
-      body: {
-        feedback: {
-          feedback: message,
-          url: window.location.href,
-        },
-      },
-    })
-  );
-
-  dispatch(
-    notifActions.addNotification('Thanks a lot for your feedback!', 'success')
-  );
 };
 
 const createSubscription = (token: string, amount: number) => async (
@@ -338,7 +319,6 @@ export default {
   signIn,
   getCurrentUser,
   loadUserSandboxes,
-  sendFeedback,
   setBadgeVisibility,
   fetchZeitUserDetails,
   signOutFromZeit,
