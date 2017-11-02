@@ -60,7 +60,6 @@ const Container = styled.div`
   flex-direction: column;
 `;
 
-/*
 const fontFamilies = (...families) =>
   families
     .filter(Boolean)
@@ -68,7 +67,6 @@ const fontFamilies = (...families) =>
       family => (family.indexOf(' ') !== -1 ? JSON.stringify(family) : family)
     )
     .join(', ');
-*/
 
 const CodeContainer = styled.div`
   position: relative;
@@ -381,7 +379,7 @@ export default class CodeEditor extends React.Component<Props, State> {
       preferences.fontSize !== nextPref.fontSize ||
       preferences.lineHeight !== nextPref.lineHeight
     ) {
-      this.editor.updateOptions(this.getEditorOptions());
+      this.editor.updateOptions(this.getEditorOptions(nextProps));
     }
 
     const { dependencies } = this.props;
@@ -865,18 +863,17 @@ export default class CodeEditor extends React.Component<Props, State> {
     saveCode();
   };
 
-  getEditorOptions = () => {
-    const { preferences, title } = this.props;
+  getEditorOptions = props => {
+    const { preferences, title } = props;
     return {
       selectOnLineNumbers: true,
       fontSize: preferences.fontSize,
-      // Disable this because of a current issue in Windows:
-      // https://github.com/Microsoft/monaco-editor/issues/392
-      // fontFamily: fontFamilies(
-      //   preferences.fontFamily,
-      //   'Source Code Pro',
-      //   'monospace',
-      // ),
+      fontFamily: fontFamilies(
+        preferences.fontFamily,
+        'Source Code Pro',
+        'monospace'
+      ),
+      fontLigatures: true,
       minimap: {
         enabled: false,
       },
@@ -896,7 +893,7 @@ export default class CodeEditor extends React.Component<Props, State> {
       hideNavigation,
     } = this.props;
 
-    const options = this.getEditorOptions();
+    const options = this.getEditorOptions(this.props);
 
     return (
       <Container>
