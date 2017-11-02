@@ -12,26 +12,31 @@ const Cube = styled.div`
   }
 `;
 
-const rotateAnimation = keyframes`
+const getAnimation = (offset: number = 0) => {
+  return keyframes`
   0% {
-    transform: rotateY(45deg) rotateX(-37.5deg);
+    transform: rotateY(${45 + offset}deg) rotateX(${-37.5 + offset}deg);
   }
   100% {
-    transform: rotateY(405deg) rotateX(322.5deg);
+    transform: rotateY(${45 + offset + 360}deg) rotateX(${-37.5 +
+    offset +
+    360}deg);
   }
 `;
+};
 
 const Sides = styled.div`
   transition: 0.8s ease all;
-  ${({ noAnimation, speed }) =>
-    !noAnimation && `animation: ${rotateAnimation} ${speed}s linear infinite;`};
+  ${({ noAnimation, offset, speed }) =>
+    !noAnimation &&
+    `animation: ${getAnimation(offset)} ${speed}s linear infinite;`};
   transform-style: preserve-3d;
-  transform: rotateX(-37.5deg) rotateY(45deg);
 
   * {
     box-sizing: border-box;
-    background-color: ${({ color }) => color};
-    border: ${({ size }) => size / 40}px solid rgba(255, 255, 255, 0.7);
+    background-color: ${({ color }) => color.clearer(0.2)};
+    border: ${({ size }) => size / 80}px solid
+      ${({ color }) => color.lighten(3)};
   }
 `;
 
@@ -47,47 +52,62 @@ type Props = {
   noAnimation: ?boolean,
   speed: number,
   color: string,
+  offset: number,
 };
 
-export default ({
-  size = 150,
-  color = 'rgba(242,119,119,0.5)',
-  speed = 1,
-  noAnimation,
-  className,
-}: Props) => (
-  <Cube className={className} size={size}>
-    <Sides color={color} speed={speed} noAnimation={noAnimation} size={size}>
-      <Side
-        style={{ boxShadow: `0px 0px 400px ${color}` }}
-        rotate="rotateX(90deg)"
-        size={size}
-      />
-      <Side
-        style={{ boxShadow: `0px 0px 400px ${color}` }}
-        rotate="rotateX(-90deg)"
-        size={size}
-      />
-      <Side
-        style={{ boxShadow: `0px 0px 400px ${color}` }}
-        rotate="rotateY(0deg)"
-        size={size}
-      />
-      <Side
-        style={{ boxShadow: `0px 0px 400px ${color}` }}
-        rotate="rotateY(-180deg)"
-        size={size}
-      />
-      <Side
-        style={{ boxShadow: `0px 0px 400px ${color}` }}
-        rotate="rotateY(-90deg)"
-        size={size}
-      />
-      <Side
-        style={{ boxShadow: `0px 0px 400px ${color}` }}
-        rotate="rotateY(90deg)"
-        size={size}
-      />
-    </Sides>
-  </Cube>
-);
+export default class GlowCube extends React.Component<Props> {
+  render() {
+    const {
+      size = 150,
+      color = 'rgba(242,119,119,0.5)',
+      speed = 1,
+      offset = 0,
+      noAnimation,
+      className,
+      ref,
+      id,
+    } = this.props;
+    return (
+      <Cube id={id} innerRef={ref} className={className} size={size}>
+        <Sides
+          color={color}
+          offset={offset}
+          speed={speed}
+          noAnimation={noAnimation}
+          size={size}
+        >
+          <Side
+            style={{ boxShadow: `0px 0px 400px ${color()}` }}
+            rotate="rotateX(90deg)"
+            size={size}
+          />
+          <Side
+            style={{ boxShadow: `0px 0px 400px ${color()}` }}
+            rotate="rotateX(-90deg)"
+            size={size}
+          />
+          <Side
+            style={{ boxShadow: `0px 0px 400px ${color()}` }}
+            rotate="rotateY(0deg)"
+            size={size}
+          />
+          <Side
+            style={{ boxShadow: `0px 0px 400px ${color()}` }}
+            rotate="rotateY(-180deg)"
+            size={size}
+          />
+          <Side
+            style={{ boxShadow: `0px 0px 400px ${color()}` }}
+            rotate="rotateY(-90deg)"
+            size={size}
+          />
+          <Side
+            style={{ boxShadow: `0px 0px 400px ${color()}` }}
+            rotate="rotateY(90deg)"
+            size={size}
+          />
+        </Sides>
+      </Cube>
+    );
+  }
+}

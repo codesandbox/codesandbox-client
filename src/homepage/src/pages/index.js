@@ -31,6 +31,7 @@ class IndexPage extends React.PureComponent {
       .filter(k => k !== 'default' && k !== '__esModule')
       .map(tem => templates[tem]),
     templateIndex: 0,
+    canvas: null,
   };
 
   componentDidMount() {
@@ -39,8 +40,12 @@ class IndexPage extends React.PureComponent {
         templateIndex:
           (this.state.templateIndex + 1) % this.state.templates.length,
       });
-    }, 15000);
+    }, 10000);
   }
+
+  setCanvas = canvas => {
+    this.setState({ canvas });
+  };
 
   render() {
     const template = this.state.templates[this.state.templateIndex];
@@ -50,10 +55,11 @@ class IndexPage extends React.PureComponent {
           <Background
             templateIndex={this.state.templateIndex}
             template={template}
+            setCanvas={this.setCanvas}
           />
           <Container horizontal>
             <HomeTitle template={template} />
-            <Cubes template={template} />
+            <Cubes canvas={this.state.canvas} template={template} />
           </Container>
         </Fullscreen>
       </Relative>

@@ -19,7 +19,8 @@
     "import/prefer-default-export": 0,
     "class-methods-use-this": 0,
     "no-console": ["error", { "allow": ["error"] }],
-    "prefer-template": "off"
+    "prefer-template": "off",
+    "no-plusplus": 0
   },
   "settings": {
     "import/resolver": {

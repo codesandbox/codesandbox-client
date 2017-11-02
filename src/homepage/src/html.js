@@ -37,7 +37,6 @@ class Html extends Component {
 
           <meta name="referrer" content="origin" />
           <meta charSet="utf-8" />
-          <meta name="description" content="Gatsby example site using Glamor" />
           <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
           <meta
             name="viewport"
@@ -45,6 +44,10 @@ class Html extends Component {
           />
           <title>Gatsby Glamor</title>
           <TypographyStyle typography={typography} />
+          <link
+            href="https://fonts.googleapis.com/css?family=Roboto:400,500|Source+Sans+Pro:200,300"
+            rel="stylesheet"
+          />
           {css}
         </head>
         <body>

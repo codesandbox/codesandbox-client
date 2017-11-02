@@ -3,32 +3,18 @@ import styled from 'styled-components';
 
 import * as templates from 'common/templates';
 
-import Cube from '../../components/Cube';
+import setupCanvas from './canvas';
 
 const Container = styled.div`
   transition: 0.8s ease all;
+  transition-delay: 1s;
   position: absolute;
   top: 0;
   bottom: 0;
   right: 0;
   left: 0;
 
-  background-image: linear-gradient(
-    -45deg,
-    ${({ color }) => color} 0%,
-    rgba(0, 0, 0, 0) 30%,
-    rgba(0, 0, 0, 0) 60%,
-    ${({ color }) => color} 100%
-  );
-`;
-
-const PositionedCube = styled(Cube)`
-  position: absolute;
-
-  top: ${props => props.top}px;
-  bottom: ${props => props.bottom}px;
-  left: ${props => props.left}px;
-  right: ${props => props.right}px;
+  background-color: ${props => props.color};
 `;
 
 export default class Background extends React.PureComponent {
@@ -39,39 +25,21 @@ export default class Background extends React.PureComponent {
     templateIndex: 0,
   };
 
+  startCanvas = (el: HTMLElement) => {
+    this.canvas = setupCanvas(el);
+
+    this.props.setCanvas(this.canvas);
+  };
+
   render() {
     const { template, templateIndex } = this.props;
 
     return (
-      <Container color={template.color.clearer(0.85)}>
-        {/* <PositionedCube
-          color={template.color.clearer(0.2).darken(0.3)()}
-          bottom={50}
-          left={120}
-          size={50}
-          speed={250}
+      <Container color={template.color.clearer(0.97)()}>
+        <canvas
+          style={{ position: 'absolute', top: 0, left: 0 }}
+          ref={this.startCanvas}
         />
-        <PositionedCube
-          color={template.color.clearer(0.5).darken(0.2)()}
-          bottom={170}
-          left={700}
-          size={65}
-          speed={150}
-        />
-        <PositionedCube
-          color={template.color.clearer(0.1).darken(0.1)()}
-          top={170}
-          left={700}
-          size={65}
-          speed={150}
-        />
-        <PositionedCube
-          color={template.color.clearer(0.2).lighten(0.2)()}
-          bottom={500}
-          left={90}
-          size={40}
-          speed={250}
-        /> */}
       </Container>
     );
   }

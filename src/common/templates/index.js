@@ -2,6 +2,7 @@ import { decorateSelector } from '../theme';
 
 export const react = {
   name: 'create-react-app',
+  niceName: 'React',
   url: 'https://github.com/facebookincubator/create-react-app',
   shortid: 'new',
   color: decorateSelector(() => '#6CAEDD'),
@@ -24,6 +25,7 @@ export const react = {
 
 export const reactTs = {
   name: 'create-react-app-typescript',
+  niceName: 'React + TS',
   url: 'https://github.com/wmonk/create-react-app-typescript',
   shortid: 'react-ts',
   color: decorateSelector(() => '#009fff'),
@@ -36,6 +38,7 @@ export const reactTs = {
 
 export const vue = {
   name: 'vue-cli',
+  niceName: 'Vue',
   url: 'https://github.com/vuejs/vue-cli',
   shortid: 'vue',
   color: decorateSelector(() => '#41B883'),
@@ -58,6 +61,7 @@ export const vue = {
 
 export const svelte = {
   name: 'svelte',
+  niceName: 'Svelte',
   url: 'https://github.com/sveltejs/svelte',
   shortid: 'svelte',
   color: decorateSelector(() => '#AA1E1E'),
@@ -80,6 +84,7 @@ export const svelte = {
 
 export const preact = {
   name: 'preact-cli',
+  niceName: 'Preact',
   url: 'https://github.com/developit/preact-cli',
   shortid: 'preact',
   color: decorateSelector(() => '#AD78DC'),

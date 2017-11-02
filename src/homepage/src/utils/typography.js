@@ -9,8 +9,8 @@ const options = {
   baseLineHeight: 1.45,
   blockMarginBottom: 0.75,
   scaleRatio: 2.15,
-  bodyFontFamily: ['Roboto'],
-  headerFontFamily: ['Roboto'],
+  bodyFontFamily: ['Source Sans Pro'],
+  headerFontFamily: ['Source Sans Pro'],
   overrideStyles: ({ rhythm, scale }, options) => {
     return {
       'h1,h2,h3,h4': {

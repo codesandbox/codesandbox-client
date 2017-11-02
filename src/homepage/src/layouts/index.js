@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Link from 'gatsby-link';
 import Helmet from 'react-helmet';
-import styled from 'styled-components';
+import styled, { ThemeProvider } from 'styled-components';
 
 import Logo from 'common/components/Logo';
 
@@ -30,25 +30,27 @@ const Header = () => (
 );
 
 const TemplateWrapper = ({ children }) => (
-  <div>
-    <Helmet
-      title="CodeSandbox"
-      meta={[
-        {
-          name: 'description',
-          content:
-            'CodeSandbox is an online editor with a focus on creating and sharing web application projects',
-        },
-        {
-          name: 'keywords',
-          content:
-            'react, codesandbox, editor, code, javascript, playground, sharing, spa, single, page, application, web, application, frontend, front, end',
-        },
-      ]}
-    />
+  <ThemeProvider theme={theme}>
+    <div>
+      <Helmet
+        title="CodeSandbox"
+        meta={[
+          {
+            name: 'description',
+            content:
+              'CodeSandbox is an online editor with a focus on creating and sharing web application projects',
+          },
+          {
+            name: 'keywords',
+            content:
+              'react, codesandbox, editor, code, javascript, playground, sharing, spa, single, page, application, web, application, frontend, front, end',
+          },
+        ]}
+      />
 
-    <div>{children()}</div>
-  </div>
+      <div>{children()}</div>
+    </div>
+  </ThemeProvider>
 );
 
 TemplateWrapper.propTypes = {
