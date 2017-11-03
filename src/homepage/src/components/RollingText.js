@@ -6,14 +6,10 @@ import { TimelineLite } from 'gsap';
 const FadeOut = styled.span`
   position: absolute;
   left: 0;
-  width: ${({ width }) => width};
 `;
 
 const FadeIn = styled.span`
-  position: absolute;
-  left: 0;
-  opacity: 0;
-  width: ${({ width }) => width};
+  display: inline-block;
 `;
 
 export default class RollingText extends React.PureComponent {
@@ -48,7 +44,7 @@ export default class RollingText extends React.PureComponent {
   }
 
   render() {
-    const { children, width } = this.props;
+    const { children } = this.props;
     const { oldChildren } = this.state;
 
     return (
@@ -57,7 +53,6 @@ export default class RollingText extends React.PureComponent {
           innerRef={el => {
             this.fadeout = el;
           }}
-          width={width}
         >
           {oldChildren}
         </FadeOut>
@@ -65,7 +60,6 @@ export default class RollingText extends React.PureComponent {
           innerRef={el => {
             this.fadein = el;
           }}
-          width={width}
         >
           {children}
         </FadeIn>

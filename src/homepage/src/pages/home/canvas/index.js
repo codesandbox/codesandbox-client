@@ -1,4 +1,4 @@
-import { Power2 } from 'gsap';
+import getScrollPos from '../../../utils/scroll';
 
 import Dot from './Dot';
 import Wave from './Wave';
@@ -10,8 +10,8 @@ class Canvas {
   waves: Array<Wave> = [];
 
   lastDelta: number = Date.now();
-  cubeX: number = 1600;
-  cubeY: number = 800;
+  cubeX: number = 1300;
+  cubeY: number = 500;
 
   constructor(el: HTMLElement) {
     this.stage = el;
@@ -22,7 +22,7 @@ class Canvas {
   }
 
   init() {
-    const gridSize = 40;
+    const gridSize = 60;
     const dotAmountHeight = Math.floor(this.stage.height / gridSize);
     const dotAmountWidth = Math.floor(this.stage.width / gridSize);
 
@@ -40,6 +40,11 @@ class Canvas {
   }
 
   loop = () => {
+    if (getScrollPos().y > this.stage.height) {
+      requestAnimationFrame(this.loop);
+      return;
+    }
+
     this.ctx.clearRect(0, 0, this.stage.width, this.stage.height);
 
     const delta = Date.now() - this.lastDelta;

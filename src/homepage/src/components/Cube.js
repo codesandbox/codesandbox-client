@@ -35,8 +35,7 @@ const Sides = styled.div`
   * {
     box-sizing: border-box;
     background-color: ${({ color }) => color.clearer(0.2)};
-    border: ${({ size }) => size / 80}px solid
-      ${({ color }) => color.lighten(3)};
+    border: ${({ size }) => size / 70}px solid rgba(255, 255, 255, 0.4);
   }
 `;
 

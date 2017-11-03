@@ -1,3 +1,8 @@
+import ReactIcon from 'app/components/logos/React';
+import PreactIcon from 'app/components/logos/Preact';
+import VueIcon from 'app/components/logos/Vue';
+import SvelteIcon from 'app/components/logos/Svelte';
+
 import { decorateSelector } from '../theme';
 
 export const react = {
@@ -5,6 +10,9 @@ export const react = {
   niceName: 'React',
   url: 'https://github.com/facebookincubator/create-react-app',
   shortid: 'new',
+  Icon: ReactIcon,
+  description: `A library first created to solve complex UI by Facebook,
+  now used by big companies all over the world. It's known for its simplicity: "it's just JavaScript".`,
   color: decorateSelector(() => '#6CAEDD'),
 
   alterDeploymentData: apiData => ({
@@ -41,6 +49,7 @@ export const vue = {
   niceName: 'Vue',
   url: 'https://github.com/vuejs/vue-cli',
   shortid: 'vue',
+  Icon: VueIcon,
   color: decorateSelector(() => '#41B883'),
 
   alterDeploymentData: apiData => ({
@@ -64,6 +73,7 @@ export const svelte = {
   niceName: 'Svelte',
   url: 'https://github.com/sveltejs/svelte',
   shortid: 'svelte',
+  Icon: SvelteIcon,
   color: decorateSelector(() => '#AA1E1E'),
 
   alterDeploymentData: apiData => ({
@@ -87,6 +97,7 @@ export const preact = {
   niceName: 'Preact',
   url: 'https://github.com/developit/preact-cli',
   shortid: 'preact',
+  Icon: PreactIcon,
   color: decorateSelector(() => '#AD78DC'),
 
   alterDeploymentData: apiData => ({

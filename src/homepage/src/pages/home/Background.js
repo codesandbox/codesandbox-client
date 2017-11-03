@@ -1,8 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import * as templates from 'common/templates';
-
 import setupCanvas from './canvas';
 
 const Container = styled.div`
@@ -13,18 +11,12 @@ const Container = styled.div`
   bottom: 0;
   right: 0;
   left: 0;
-
+  z-index: 0;
+  pointer-events: none;
   background-color: ${props => props.color};
 `;
 
 export default class Background extends React.PureComponent {
-  state = {
-    templates: Object.keys(templates)
-      .filter(k => k !== 'default' && k !== '__esModule')
-      .map(tem => templates[tem]),
-    templateIndex: 0,
-  };
-
   startCanvas = (el: HTMLElement) => {
     this.canvas = setupCanvas(el);
 
@@ -32,7 +24,7 @@ export default class Background extends React.PureComponent {
   };
 
   render() {
-    const { template, templateIndex } = this.props;
+    const { template } = this.props;
 
     return (
       <Container color={template.color.clearer(0.97)()}>

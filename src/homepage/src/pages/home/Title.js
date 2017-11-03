@@ -1,19 +1,30 @@
 import React from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 import { sandboxUrl } from 'app/utils/url-generator';
+
+import media from '../../utils/media';
 import { fadeIn } from '../../utils/animation';
 import RollingText from '../../components/RollingText';
+import Button from '../../components/Button';
 
 const Container = styled.div`
   color: white;
   flex: 2;
+
+  ${media.tablet`
+    flex: 1;
+    transform: none;
+  `};
 `;
 
 const Title = styled.h1`
   font-weight: 300;
   font-size: 4rem;
   text-shadow: 0 0 3px rgba(0, 0, 0, 0.6);
+  ${media.tablet`
+    text-align: center;
+  `};
 `;
 
 const SubTitle = styled.h2`
@@ -25,58 +36,21 @@ const SubTitle = styled.h2`
   color: rgba(255, 255, 255, 0.9);
 
   ${fadeIn(0.4)};
-`;
 
-const getGradient = color => {
-  return css`linear-gradient(
-  45deg,
-  ${color},
-  ${color.darken(0.2)}
-)`;
-};
-
-const Button = styled.a`
-  position: relative;
-  background: ${({ color, secondary }) =>
-    secondary ? '' : getGradient(color)};
-  border: none;
-  ${({ color, theme, secondary }) =>
-    secondary &&
-    css`
-      position: relative;
-      border: 4px solid transparent;
-      border-image-slice: 1;
-      background-clip: padding-box;
-      background: ${theme.background()};
-
-      &::after {
-        position: absolute;
-        top: -8px;
-        bottom: -8px;
-        left: -8px;
-        right: -8px;
-        background: ${getGradient(color)};
-        content: '';
-        z-index: -1;
-        border-radius: 4px;
-      }
-    `} outline: none;
-  padding: 0.75rem 1.5rem;
-  font-weight: 300;
-  font-size: 1.25rem;
-  border-radius: 4px;
-  color: ${({ color, secondary }) => (secondary ? color : 'white')};
-  box-shadow: 0 0 100px ${props => props.color.clearer(0.3)};
-  text-transform: uppercase;
-
-  text-decoration: none;
+  ${media.tablet`
+    text-align: center;
+  `};
 `;
 
 const Buttons = styled.div`
   display: flex;
+  justify-content: space-between;
+  width: 550px;
+  ${fadeIn(0.5)};
+  font-size: 1.25rem;
 
   a {
-    margin: 0 0.5rem;
+    margin-right: 1rem;
   }
 `;
 
@@ -108,14 +82,14 @@ export default ({ template }) => (
     <RollingText width="32rem">
       <Buttons>
         <Button
-          href={sandboxUrl({ shortid: template.shortid })}
+          href={sandboxUrl({ id: template.shortid })}
           color={template.color}
         >
           Open {template.niceName}
         </Button>
 
         <Button
-          href={sandboxUrl({ shortid: template.shortid })}
+          href={sandboxUrl({ id: template.shortid })}
           color={template.color}
           secondary
         >

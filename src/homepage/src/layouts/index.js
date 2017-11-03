@@ -8,7 +8,7 @@ import Logo from 'common/components/Logo';
 
 import theme from 'common/theme';
 
-import 'common/global.css';
+import './index.css';
 
 const RightNavigation = styled.div`
   float: right;

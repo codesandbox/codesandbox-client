@@ -8,11 +8,17 @@ export default class Dot extends PositionedElement {
   dvAlpha: number = -0.1;
   size: number = 1;
 
+  minAlpha: number = 0.2;
+  minSize: number = 1;
+
   constructor(x: number, y: number, color: number[], alpha: number) {
     super(x, y);
 
     this.color = color;
     this.alpha = alpha;
+    const r = Math.random();
+    this.minAlpha = 0.1 + r * 0.2;
+    this.minSize = 0.5 + r * 2;
   }
 
   draw(ctx: CanvasRenderingContext2D) {
@@ -23,11 +29,11 @@ export default class Dot extends PositionedElement {
   }
 
   setAlpha(alpha: number) {
-    this.alpha = alpha;
+    this.alpha = Math.max(this.minAlpha, alpha);
   }
 
   setSize(size: number) {
-    this.size = size;
+    this.size = Math.max(this.minSize, size);
   }
 
   setColor(color: Array<number>) {

@@ -45,7 +45,7 @@ class Html extends Component {
           <title>Gatsby Glamor</title>
           <TypographyStyle typography={typography} />
           <link
-            href="https://fonts.googleapis.com/css?family=Roboto:400,500|Source+Sans+Pro:200,300"
+            href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700"
             rel="stylesheet"
           />
           {css}
