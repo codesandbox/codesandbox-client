@@ -10,9 +10,15 @@ const getHost = () => {
     return 'http://localhost:3000';
   }
 
-  return process.env.NODE_ENV === 'development'
-    ? '*'
-    : 'https://codesandbox.io';
+  if (process.env.NODE_ENV === 'development') {
+    return '*';
+  }
+
+  if ('STAGING_BRANCH' in process.env) {
+    return `http://${process.env.STAGING_BRANCH}.cs.lbogdan.tk`;
+  }
+
+  return 'https://codesandbox.io';
 };
 
 module.exports = Object.keys(process.env)
@@ -26,5 +32,6 @@ module.exports = Object.keys(process.env)
       'process.env.NODE_ENV': NODE_ENV,
       'process.env.CODESANDBOX_HOST': JSON.stringify(getHost()),
       'process.env.LOCAL_SERVER': !!LOCAL_SERVER,
+      'process.env.STAGING': 'STAGING_BRANCH' in process.env,
     }
   );
