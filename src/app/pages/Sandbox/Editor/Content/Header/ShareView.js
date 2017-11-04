@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
 import styled from 'styled-components';
-import ShareIcon from 'react-icons/lib/md/share';
 import Files from 'embed/components/Files';
 import ModeIcons from 'app/components/sandbox/ModeIcons';
 import {
@@ -21,14 +20,6 @@ import {
 import type { Sandbox, Directory, Module } from 'common/types';
 
 import Preference from 'app/components/Preference';
-import HoverMenu from './HoverMenu';
-import Action from './Action';
-
-const Container = styled.div`
-  position: relative;
-  z-index: 200;
-  height: 100%;
-`;
 
 const FilesContainer = styled.div`
   max-height: 300px;
@@ -45,21 +36,10 @@ const PaddedPreference = styled(Preference)`
 `;
 
 const ShareOptions = styled.div`
-  position: absolute;
-  top: calc(100% + 0.25rem);
-  left: -250px;
-  box-sizing: border-box;
-  z-index: 2;
-  border-radius: 4px;
   font-size: 0.875rem;
-
   color: rgba(255, 255, 255, 0.8);
   padding: 1rem;
-
-  box-shadow: -1px 4px 5px rgba(0, 0, 0, 0.5);
   background-color: ${props => props.theme.background2};
-
-  width: 900px;
 
   h3 {
     text-align: center;
@@ -331,165 +311,148 @@ class ShareView extends React.PureComponent {
       this.state.defaultModule || findMainModule(modules, sandbox.template).id;
 
     return (
-      <Container>
-        <HoverMenu
-          HeaderComponent={Action}
-          headerProps={{
-            title: 'Share',
-            tooltip: 'Share sandbox',
-            Icon: ShareIcon,
-            moreInfo: true,
-          }}
-        >
-          {() => (
-            <ShareOptions>
-              <h3>Share options</h3>
-              <Divider>
-                <Column>
-                  <ButtonName>URL Options</ButtonName>
-                  <div>
-                    <h4>Embed specific options</h4>
-                    <PaddedPreference
-                      title="Auto resize"
-                      type="boolean"
-                      tooltip="Works only on Medium"
-                      value={autoResize}
-                      setValue={this.setAutoResize}
-                    />
-                    <PaddedPreference
-                      title="Hide navigation bar"
-                      type="boolean"
-                      value={hideNavigation}
-                      setValue={this.setHideNavigation}
-                    />
-                    <PaddedPreference
-                      title="Expand console"
-                      type="boolean"
-                      value={expandDevTools}
-                      setValue={this.setExpandDevTools}
-                    />
-                    <PaddedPreference
-                      title="Use CodeMirror instead of Monaco editor"
-                      type="boolean"
-                      value={useCodeMirror}
-                      setValue={this.setUseCodeMirror}
-                    />
-                    <PaddedPreference
-                      title="Enable eslint (significantly higher bundle size)"
-                      type="boolean"
-                      value={enableEslint}
-                      setValue={this.setEnableEslint}
-                    />
-                    <PaddedPreference
-                      title="Show current module view"
-                      type="boolean"
-                      tooltip="Only show the module that's currently open"
-                      value={isCurrentModuleView}
-                      setValue={this.setIsCurrentModuleView}
-                    />
-                    <PaddedPreference
-                      title="Font size"
-                      type="number"
-                      value={fontSize}
-                      setValue={this.setFontSize}
-                    />
-                  </div>
-                  <Inputs>
-                    <LinkName>Project Initial Path</LinkName>
-                    <input
-                      onFocus={this.select}
-                      placeholder="e.g: /home"
-                      value={initialPath}
-                      onChange={this.setInitialPath}
-                    />
-                  </Inputs>
-                  <div>
-                    <h4>Default view</h4>
-                    <div
-                      style={{
-                        position: 'relative',
-                        height: '2rem',
-                        width: '200px',
-                        marginLeft: '-10px',
-                      }}
-                    >
-                      <ModeIcons
-                        showEditor={showEditor}
-                        showPreview={showPreview}
-                        setEditorView={this.setEditorView}
-                        setPreviewView={this.setPreviewView}
-                        setMixedView={this.setMixedView}
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <h4>Default module to show</h4>
+      <ShareOptions>
+        <h3>Share options</h3>
+        <Divider>
+          <Column>
+            <ButtonName>URL Options</ButtonName>
+            <div>
+              <h4>Embed specific options</h4>
+              <PaddedPreference
+                title="Auto resize"
+                type="boolean"
+                tooltip="Works only on Medium"
+                value={autoResize}
+                setValue={this.setAutoResize}
+              />
+              <PaddedPreference
+                title="Hide navigation bar"
+                type="boolean"
+                value={hideNavigation}
+                setValue={this.setHideNavigation}
+              />
+              <PaddedPreference
+                title="Expand console"
+                type="boolean"
+                value={expandDevTools}
+                setValue={this.setExpandDevTools}
+              />
+              <PaddedPreference
+                title="Use CodeMirror instead of Monaco editor"
+                type="boolean"
+                value={useCodeMirror}
+                setValue={this.setUseCodeMirror}
+              />
+              <PaddedPreference
+                title="Enable eslint (significantly higher bundle size)"
+                type="boolean"
+                value={enableEslint}
+                setValue={this.setEnableEslint}
+              />
+              <PaddedPreference
+                title="Show current module view"
+                type="boolean"
+                tooltip="Only show the module that's currently open"
+                value={isCurrentModuleView}
+                setValue={this.setIsCurrentModuleView}
+              />
+              <PaddedPreference
+                title="Font size"
+                type="number"
+                value={fontSize}
+                setValue={this.setFontSize}
+              />
+            </div>
+            <Inputs>
+              <LinkName>Project Initial Path</LinkName>
+              <input
+                onFocus={this.select}
+                placeholder="e.g: /home"
+                value={initialPath}
+                onChange={this.setInitialPath}
+              />
+            </Inputs>
+            <div>
+              <h4>Default view</h4>
+              <div
+                style={{
+                  position: 'relative',
+                  height: '2rem',
+                  width: '200px',
+                  marginLeft: '-10px',
+                }}
+              >
+                <ModeIcons
+                  showEditor={showEditor}
+                  showPreview={showPreview}
+                  setEditorView={this.setEditorView}
+                  setPreviewView={this.setPreviewView}
+                  setMixedView={this.setMixedView}
+                />
+              </div>
+            </div>
+            <div>
+              <h4>Default module to show</h4>
 
-                    <FilesContainer>
-                      <Files
-                        modules={modules}
-                        directoryId={null}
-                        directories={directories}
-                        currentModule={defaultModule}
-                        setCurrentModule={this.setDefaultModule}
-                      />
-                    </FilesContainer>
-                  </div>
-                </Column>
-                <Column>
-                  <ButtonName>Links</ButtonName>
-                  <Inputs>
-                    <LinkName>Editor url (also works on Medium)</LinkName>
-                    <input
-                      onFocus={this.select}
-                      value={this.getEditorUrl()}
-                      readOnly
-                    />
-                    <LinkName>Embed url</LinkName>
-                    <input
-                      onFocus={this.select}
-                      value={this.getEmbedUrl()}
-                      readOnly
-                    />
-                    <LinkName>iframe</LinkName>
-                    <textarea
-                      onFocus={this.select}
-                      value={this.getIframeScript()}
-                      readOnly
-                    />
-                  </Inputs>
-                </Column>
-                <Column>
-                  <ButtonName>Button</ButtonName>
-                  <Inputs>
-                    <ButtonContainer>
-                      <a href={sandboxUrl(sandbox)}>
-                        <img
-                          alt={sandbox.title || 'Untitled'}
-                          src={BUTTON_URL}
-                        />
-                      </a>
-                    </ButtonContainer>
-                    <LinkName>Markdown</LinkName>
-                    <textarea
-                      onFocus={this.select}
-                      value={this.getButtonMarkdown()}
-                      readOnly
-                    />
+              <FilesContainer>
+                <Files
+                  modules={modules}
+                  directoryId={null}
+                  directories={directories}
+                  currentModule={defaultModule}
+                  setCurrentModule={this.setDefaultModule}
+                />
+              </FilesContainer>
+            </div>
+          </Column>
+          <Column>
+            <ButtonName>Links</ButtonName>
+            <Inputs>
+              <LinkName>Editor url (also works on Medium)</LinkName>
+              <input
+                onFocus={this.select}
+                value={this.getEditorUrl()}
+                readOnly
+              />
+              <LinkName>Embed url</LinkName>
+              <input
+                onFocus={this.select}
+                value={this.getEmbedUrl()}
+                readOnly
+              />
+              <LinkName>iframe</LinkName>
+              <textarea
+                onFocus={this.select}
+                value={this.getIframeScript()}
+                readOnly
+              />
+            </Inputs>
+          </Column>
+          <Column>
+            <ButtonName>Button</ButtonName>
+            <Inputs>
+              <ButtonContainer>
+                <a href={sandboxUrl(sandbox)}>
+                  <img alt={sandbox.title || 'Untitled'} src={BUTTON_URL} />
+                </a>
+              </ButtonContainer>
+              <LinkName>Markdown</LinkName>
+              <textarea
+                onFocus={this.select}
+                value={this.getButtonMarkdown()}
+                readOnly
+              />
 
-                    <LinkName>HTML</LinkName>
-                    <textarea
-                      onFocus={this.select}
-                      value={this.getButtonHTML()}
-                      readOnly
-                    />
-                  </Inputs>
-                </Column>
-              </Divider>
-            </ShareOptions>
-          )}
-        </HoverMenu>
-      </Container>
+              <LinkName>HTML</LinkName>
+              <textarea
+                onFocus={this.select}
+                value={this.getButtonHTML()}
+                readOnly
+              />
+            </Inputs>
+          </Column>
+        </Divider>
+      </ShareOptions>
     );
   }
 }
