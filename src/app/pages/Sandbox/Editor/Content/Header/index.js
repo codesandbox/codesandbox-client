@@ -247,7 +247,7 @@ export default class Header extends React.PureComponent<Props> {
                 onClick={this.deploySandbox}
               />
             )}
-          <ShareView sandbox={sandbox} />
+          <ShareView sandbox={sandbox} workspaceHidden={workspaceHidden} />
         </Left>
 
         <Right>
