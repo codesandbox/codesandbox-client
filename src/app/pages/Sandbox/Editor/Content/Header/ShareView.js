@@ -47,7 +47,7 @@ const PaddedPreference = styled(Preference)`
 const ShareOptions = styled.div`
   position: absolute;
   top: calc(100% + 0.25rem);
-  left: -250px;
+  left: ${props => (props.workspaceHidden ? -155 : -250)}px;
   box-sizing: border-box;
   z-index: 2;
   border-radius: 4px;
@@ -131,6 +131,7 @@ const ButtonName = styled.div`
 
 type Props = {
   sandbox: Sandbox,
+  workspaceHidden: boolean,
   modules: Array<Module>,
   directories: Array<Directory>,
   sendMessage: (message: string) => void,
@@ -312,7 +313,7 @@ class ShareView extends React.PureComponent {
   setFontSize = (fontSize: number) => [this.setState({ fontSize })];
 
   render() {
-    const { sandbox, modules, directories } = this.props;
+    const { sandbox, workspaceHidden, modules, directories } = this.props;
 
     const {
       showEditor,
@@ -342,7 +343,7 @@ class ShareView extends React.PureComponent {
           }}
         >
           {() => (
-            <ShareOptions>
+            <ShareOptions workspaceHidden={workspaceHidden}>
               <h3>Share options</h3>
               <Divider>
                 <Column>
