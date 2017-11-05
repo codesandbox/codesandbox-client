@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "author": "Ives van Hoorne <ives.v.h@gmail.com>",
   "dependencies": {
+    "algoliasearch": "^3.24.5",
     "gatsby": "^1.9.73",
     "gatsby-link": "^1.6.22",
     "gatsby-plugin-react-helmet": "^1.0.8",

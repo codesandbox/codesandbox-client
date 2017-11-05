@@ -13,6 +13,8 @@ import Frameworks from './home/Frameworks';
 import Background from './home/Background';
 import EditorFeatures from './home/EditorFeatures';
 import NPMFeature from './home/NPMFeature';
+import CycleFeature from './home/CycleFeature';
+
 import media from '../utils/media';
 
 const Container = styled(Centered)`
@@ -27,8 +29,27 @@ const Container = styled(Centered)`
   padding-top: 0;
 
   ${media.tablet`
+    display: block;
     flex-direction: column;
     margin-top: 2rem;
+  `};
+`;
+
+const Message = styled.div`
+  text-align: center;
+  font-weight: 200;
+
+  color: white;
+  font-size: 2.5rem;
+  max-width: 1000px;
+  line-height: 1.2;
+  margin-bottom: 4rem;
+
+  margin-right: 2rem;
+  margin-left: 2rem;
+
+  ${media.phone`
+    font-size: 1.25rem;
   `};
 `;
 
@@ -96,6 +117,12 @@ class IndexPage extends React.PureComponent {
               />
             </Container>
           </Fullscreen>
+          <Centered horizontal>
+            <Message>
+              CodeSandbox is an online editor that helps you create web
+              applications, from prototype to deployment.
+            </Message>
+          </Centered>
           <Frameworks
             templates={this.state.templates}
             template={template}
@@ -103,6 +130,7 @@ class IndexPage extends React.PureComponent {
           />
         </Relative>
         <NPMFeature />
+        <CycleFeature />
       </div>
     );
   }

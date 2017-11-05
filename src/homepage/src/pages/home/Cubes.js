@@ -12,12 +12,16 @@ const RADIUS = 300;
 const Container = styled.div`
   flex: 2;
   position: relative;
-  transform: translateX(${RADIUS}px) translateY(${125}px);
+  transform: translateX(${RADIUS}px) translateY(125px);
 
   ${media.tablet`
-    flex: 1;
-    transform: none;
-    height: 200px;
+    flex: 2;
+    width: 100%;
+
+    transform: translateX(${RADIUS}px) translateY(400px);
+
+    justify-content: center;
+    align-items: center;
   `};
 `;
 
@@ -29,10 +33,6 @@ const SmallCube = styled.div`
 
   cursor: pointer;
   transform: scale(0.4, 0.4);
-
-  ${media.tablet`
-    ${({ selected }) => !selected && 'visibility: hidden'}
-  `};
 `;
 
 export default class Cubes extends React.PureComponent {

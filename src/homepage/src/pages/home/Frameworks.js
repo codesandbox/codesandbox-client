@@ -3,17 +3,19 @@ import styled, { css } from 'styled-components';
 
 import MaxWidth from 'app/components/flex/MaxWidth';
 import Column from 'app/components/flex/Column';
+import Row from 'app/components/flex/Row';
 import Padding from 'app/components/spacing/Padding';
+import Margin from 'app/components/spacing/Margin';
 
 import RollingText from '../../components/RollingText';
 import Button from '../../components/Button';
 import { Heading3 } from '../../components/headings';
 
+import media from '../../utils/media';
+
 const Container = styled.div`
   transition: 0.3s ease all;
   border-radius: 2px;
-  margin-left: 1rem;
-  margin-top: 1rem;
 
   background-color: ${({ color, theme }) => theme.background};
 
@@ -21,6 +23,7 @@ const Container = styled.div`
 
   display: flex;
   flex-direction: column;
+  margin-top: 2rem;
 `;
 
 const Pane = styled(MaxWidth)`
@@ -32,9 +35,16 @@ const Pane = styled(MaxWidth)`
   line-height: 1.4;
   border-radius: 4px;
 
-  margin-bottom: 18rem;
+  margin-top: 2rem;
+  margin-bottom: 16rem;
+  margin-left: 2rem;
+  margin-right: 2rem;
 
   z-index: 2;
+
+  ${media.tablet`
+    flex-direction: column;
+  `};
 `;
 
 const Icons = styled.div`

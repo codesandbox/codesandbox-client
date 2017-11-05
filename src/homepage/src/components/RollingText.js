@@ -8,8 +8,9 @@ const FadeOut = styled.span`
   left: 0;
 `;
 
-const FadeIn = styled.span`
+const FadeIn = styled.div`
   display: inline-block;
+  width: inherit;
 `;
 
 export default class RollingText extends React.PureComponent {
@@ -44,11 +45,14 @@ export default class RollingText extends React.PureComponent {
   }
 
   render() {
-    const { children } = this.props;
+    const { children, className } = this.props;
     const { oldChildren } = this.state;
 
     return (
-      <span style={{ position: 'relative' }}>
+      <div
+        className={className}
+        style={{ display: 'inline-block', position: 'relative' }}
+      >
         <FadeOut
           innerRef={el => {
             this.fadeout = el;
@@ -63,7 +67,7 @@ export default class RollingText extends React.PureComponent {
         >
           {children}
         </FadeIn>
-      </span>
+      </div>
     );
   }
 }

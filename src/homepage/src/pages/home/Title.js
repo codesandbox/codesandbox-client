@@ -25,6 +25,10 @@ const Title = styled.h1`
   ${media.tablet`
     text-align: center;
   `};
+
+  ${media.phone`
+    font-size: 3rem;
+  `};
 `;
 
 const SubTitle = styled.h2`
@@ -40,6 +44,10 @@ const SubTitle = styled.h2`
   ${media.tablet`
     text-align: center;
   `};
+
+  ${media.phone`
+    font-size: 1.5rem;
+  `};
 `;
 
 const Buttons = styled.div`
@@ -51,7 +59,31 @@ const Buttons = styled.div`
 
   a {
     margin-right: 1rem;
+
+    ${media.tablet`
+      margin: 0;
+      text-align: center;
+      margin-right: 0;
+    `};
   }
+
+  ${media.tablet`
+      margin: 0 1rem;
+      justify-content: space-around;
+      width: 100%;
+      text-align: center;
+
+    `};
+
+  ${media.phone`
+    font-size: .875rem;
+  `};
+`;
+
+const ResponsiveRollingText = styled(RollingText)`
+  ${media.tablet`
+    width: 100%;
+  `};
 `;
 
 const Primary = styled.div`
@@ -79,7 +111,7 @@ export default ({ template }) => (
       </RollingText>
     </SubTitle>
 
-    <RollingText width="32rem">
+    <ResponsiveRollingText>
       <Buttons>
         <Button
           href={sandboxUrl({ id: template.shortid })}
@@ -96,6 +128,6 @@ export default ({ template }) => (
           Explore Examples
         </Button>
       </Buttons>
-    </RollingText>
+    </ResponsiveRollingText>
   </Container>
 );

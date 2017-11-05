@@ -6,4 +6,10 @@ export default {
       ${css(...args)};
     }
   `,
+
+  phone: (...args) => css`
+    @media (max-width: 600px) {
+      ${css(...args)};
+    }
+  `,
 };
