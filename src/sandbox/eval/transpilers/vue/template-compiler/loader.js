@@ -1,5 +1,5 @@
 import transpile from 'vue-template-es2015-compiler';
-const compiler = require('vue-template-compiler');
+import * as compiler from 'vue-template-compiler';
 
 import { type LoaderContext } from '../../../transpiled-module';
 

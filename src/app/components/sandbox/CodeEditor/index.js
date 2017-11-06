@@ -10,7 +10,7 @@ type Props = {
 };
 
 const CodeMirror = Loadable({
-  loader: () => import('./CodeMirror'),
+  loader: () => import(/* webpackChunkName: 'codemirror' */ './CodeMirror'),
   LoadingComponent: Loading,
 });
 

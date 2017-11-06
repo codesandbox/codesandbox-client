@@ -5,7 +5,7 @@ let core = null;
 
 export default async (code: string, loaderContext: LoaderContext) => {
   if (!core) {
-    const Core = await import('css-modules-loader-core');
+    const Core = await import(/* webpackChunkName: 'css-modules-loader-core' */ 'css-modules-loader-core');
 
     core = new Core();
   }

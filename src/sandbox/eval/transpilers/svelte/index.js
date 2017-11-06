@@ -1,5 +1,5 @@
 // @flow
-import SvelteWorker from 'worker-loader!./svelte-worker.js';
+import SvelteWorker from 'worker-loader?name=svelte-transpiler.[hash].worker.js!./svelte-worker.js';
 
 import WorkerTranspiler from '../worker-transpiler';
 import { type LoaderContext } from '../../transpiled-module';

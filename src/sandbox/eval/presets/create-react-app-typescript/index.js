@@ -4,6 +4,7 @@ import stylesTranspiler from '../../transpilers/css';
 import typescriptTranspiler from '../../transpilers/typescript';
 import jsonTranspiler from '../../transpilers/json';
 import rawTranspiler from '../../transpilers/raw';
+import babelTranspiler from '../../transpilers/babel';
 
 const preset = new Preset('create-react-app-typescript', [
   'web.ts',
@@ -20,6 +21,10 @@ preset.registerTranspiler(module => /\.css$/.test(module.path), [
 
 preset.registerTranspiler(module => /\.tsx?$/.test(module.path), [
   { transpiler: typescriptTranspiler },
+]);
+
+preset.registerTranspiler(module => /\.jsx?$/.test(module.path), [
+  { transpiler: babelTranspiler },
 ]);
 
 preset.registerTranspiler(module => /\.json$/.test(module.path), [

@@ -318,7 +318,7 @@ export default {
     const directories = directoriesSelector(getState());
     const sandbox = singleSandboxSelector(getState(), { id });
 
-    const createZip = await import('../utils/create-zip');
+    const createZip = await import(/* webpackChunkName: 'create-zip' */ '../utils/create-zip');
 
     createZip.default(
       sandbox,
@@ -336,7 +336,7 @@ export default {
     const directories = directoriesSelector(getState());
     const sandbox = singleSandboxSelector(getState(), { id });
 
-    const deploy = await import('../utils/deploy');
+    const deploy = await import(/* webpackChunkName: 'deploy' */ '../utils/deploy');
 
     const apiData = await deploy.default(
       sandbox,

@@ -118,7 +118,8 @@ function getMessage(message: IMessage) {
 
   if (
     message.arguments.length > 0 &&
-    typeof message.arguments[0] === 'string'
+    typeof message.arguments[0] === 'string' &&
+    message.arguments[0].indexOf('%') > -1
   ) {
     return (
       <InnerItem
