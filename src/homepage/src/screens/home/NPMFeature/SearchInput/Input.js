@@ -25,7 +25,7 @@ const Input = styled.input`
 
 export default class SearchInput extends React.PureComponent {
   state = {
-    query: 'lodash',
+    query: '',
   };
 
   onChange = e => {

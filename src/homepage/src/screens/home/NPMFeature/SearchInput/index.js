@@ -33,7 +33,7 @@ export default class SearchInput extends React.PureComponent {
     this.client = algoliasearch(ALGOLIA_APPLICATION_ID, ALGOLIA_API_KEY);
     this.index = this.client.initIndex(ALGOLIA_DEFAULT_INDEX);
 
-    this.searchQuery('lodash');
+    this.searchQuery('');
   }
 
   searchQuery = (query: string) => {

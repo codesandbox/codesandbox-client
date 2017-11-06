@@ -24,6 +24,8 @@
   "license": "MIT",
   "main": "n/a",
   "scripts": {
+            "patch": "sed -i -e 's/if(c\\.initial) return;/if(!c||c.initial) return;/g' ../../node_modules/extract-text-webpack-plugin/index.js",
+
     "build": "gatsby build",
     "develop": "gatsby develop",
     "format": "prettier --trailing-comma es5 --no-semi --single-quote --write 'src/**/*.js'",

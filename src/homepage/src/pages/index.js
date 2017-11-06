@@ -7,13 +7,13 @@ import Relative from 'app/components/Relative';
 
 import * as templates from 'common/templates';
 
-import HomeTitle from './home/Title';
-import Cubes from './home/Cubes';
-import Frameworks from './home/Frameworks';
-import Background from './home/Background';
-import EditorFeatures from './home/EditorFeatures';
-import NPMFeature from './home/NPMFeature';
-import CycleFeature from './home/CycleFeature';
+import HomeTitle from '../screens/home/Title';
+import Cubes from '../screens/home/Cubes';
+import Frameworks from '../screens/home/Frameworks';
+import Background from '../screens/home/Background';
+import EditorFeatures from '../screens/home/EditorFeatures';
+import NPMFeature from '../screens/home/NPMFeature';
+import CycleFeature from '../screens/home/CycleFeature';
 
 import media from '../utils/media';
 

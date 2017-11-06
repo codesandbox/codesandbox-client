@@ -178,7 +178,7 @@ export default class CycleFeatures extends React.PureComponent {
     }
 
     if (this.state.selectedStep === 3) {
-      this.animation.timeScale(2);
+      this.animation.progress(0);
     }
 
     this.setState({ selectedStep: step, manuallySelected: manual });
