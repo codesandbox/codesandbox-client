@@ -18,6 +18,7 @@ type Props = {
   currentModule: string,
   setCurrentModule: (id: string, shortid: string) => any,
   template: string,
+  entry: string,
 };
 
 const Files = ({
@@ -28,6 +29,7 @@ const Files = ({
   currentModule,
   setCurrentModule,
   template,
+  entry,
 }: Props) => {
   const childrenModules = modules.filter(
     m => m.directoryShortid === directoryId
@@ -57,6 +59,7 @@ const Files = ({
             setCurrentModule={setCurrentModule}
             currentModule={currentModule}
             template={template}
+            entry={entry}
           />
         </div>
       ))}
@@ -70,7 +73,7 @@ const Files = ({
           depth={depth}
           setCurrentModule={setCurrentModule}
           active={m.id === currentModule}
-          alternative={isMainModule(m, template)}
+          alternative={isMainModule(m, modules, directories, entry)}
         />
       ))}
     </Container>

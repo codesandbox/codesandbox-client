@@ -54,7 +54,7 @@ class ShowcasePreview extends React.PureComponent {
       directories,
     } = this.props;
 
-    const mainModule = findMainModule(modules, sandbox.template);
+    const mainModule = findMainModule(modules, directories, sandbox.entry);
 
     return (
       <Container>
@@ -71,6 +71,7 @@ class ShowcasePreview extends React.PureComponent {
           clearErrors={sandboxActions.clearErrors}
           preferences={preferences}
           dependencies={sandbox.npmDependencies}
+          entry={sandbox.entry}
           noDelay
         />
       </Container>

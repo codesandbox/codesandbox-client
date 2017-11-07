@@ -79,7 +79,11 @@ requirePolyfills().then(() => {
       .then(res => res.json())
       .then(res => camelizeKeys(res))
       .then(x => {
-        const mainModule = findMainModule(x.data.modules, x.data.template);
+        const mainModule = findMainModule(
+          x.data.modules,
+          x.data.directories,
+          x.data.entry
+        );
 
         const data = {
           sandboxId: id,

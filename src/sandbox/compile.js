@@ -42,16 +42,6 @@ export function getCurrentManager(): ?Manager {
   return manager;
 }
 
-function getIndexHtml(modules) {
-  const module = modules.find(
-    m => m.title === 'index.html' && m.directoryShortid == null
-  );
-  if (module) {
-    return module.code;
-  }
-  return '<div id="root"></div>';
-}
-
 async function updateManager(sandboxId, template, managerModules) {
   if (!manager || manager.id !== sandboxId) {
     manager = new Manager(sandboxId, managerModules, getPreset(template));
@@ -152,8 +142,11 @@ async function compile({
     } catch (e) {
       /* don't do anything with this error */
     }
+    const htmlModule = managerModules.find(
+      m => m.path === '/public/index.html' || m.path === '/index.html'
+    );
+    const html = htmlModule ? htmlModule.code : '<div id="root"></div>';
 
-    const html = getIndexHtml(modules);
     document.body.innerHTML = html;
 
     const tt = Date.now();

@@ -103,6 +103,7 @@ export default ({ sandbox, setCurrentModule, currentModule }: Props) => (
         setCurrentModule={setCurrentModule}
         currentModule={currentModule}
         template={sandbox.template}
+        entry={sandbox.entry}
       />
     </Item>
 

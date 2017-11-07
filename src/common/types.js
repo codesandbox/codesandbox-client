@@ -29,6 +29,7 @@ export type Module = {
   directoryShortid: ?string,
   isNotSynced: boolean,
   sourceId: string,
+  isBinary: boolean,
   errors: ?Array<ModuleError>,
   corrections: Array<ModuleCorrection>,
 };
@@ -143,7 +144,8 @@ export type Sandbox = {
   tags: Array<string>,
   sourceId: string, // This is the source it's assigned to, a source contains all dependencies, modules and directories
   forcedRenders: number,
-  template: render,
+  template: string,
+  entry: string,
 };
 
 export type Preferences = {

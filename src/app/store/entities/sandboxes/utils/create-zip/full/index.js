@@ -1,14 +1,12 @@
 import type { Sandbox, Module, Directory } from 'common/types';
-import files from 'buffer-loader!./files.zip'; // eslint-disable-line import/no-webpack-loader-syntax
 import {
   getResourceTag,
   getIndexHtmlBody,
-  createPackageJSON,
   createFile,
   createDirectoryWithFiles,
 } from '../';
 
-const getHTML = (modules, resources) =>
+const getHTML = (modules, directories, resources) =>
   `<!doctype html>
 <html lang="en">
 <head>
@@ -34,7 +32,7 @@ const getHTML = (modules, resources) =>
   ${resources.map(getResourceTag).join('\n')}
 </head>
 <body>
-  ${getIndexHtmlBody(modules)}
+  ${getIndexHtmlBody(modules, directories)}
   <!--
     This HTML file is a template.
     If you open it directly in the browser, you will see an empty page.
@@ -49,50 +47,30 @@ const getHTML = (modules, resources) =>
 </html>
 `;
 
-export default function createZip(
+export default async function createZip(
   zip,
   sandbox: Sandbox,
   modules: Array<Module>,
   directories: Array<Directory>
 ) {
-  return zip.loadAsync(files).then(async srcFolder => {
-    const src = srcFolder.folder('src');
+  await Promise.all(
+    modules
+      .filter(x => x.directoryShortid == null)
+      .filter(x => x.title !== 'index.html') // This will be included in the body
+      .map(x => createFile(x, zip))
+  );
 
-    await Promise.all(
-      modules
-        .filter(x => x.directoryShortid == null)
-        .filter(x => x.title !== 'index.html') // This will be included in the body
-        .map(x => createFile(x, src))
-    );
+  await Promise.all(
+    directories
+      .filter(x => x.directoryShortid == null)
+      .map(x => createDirectoryWithFiles(modules, directories, x, zip))
+  );
 
-    await Promise.all(
-      directories
-        .filter(x => x.directoryShortid == null)
-        .map(x => createDirectoryWithFiles(modules, directories, x, src))
-    );
+  const publicFolder = zip.folder('public');
 
-    const publicFolder = zip.folder('public');
-
-    publicFolder.file(
-      'index.html',
-      getHTML(modules, sandbox.externalResources)
-    );
-
-    zip.file(
-      'package.json',
-      createPackageJSON(
-        sandbox,
-        {},
-        {
-          'react-scripts': '1.0.0',
-        },
-        {
-          start: 'react-scripts start',
-          build: 'react-scripts build',
-          test: 'react-scripts test --env=jsdom',
-          eject: 'react-scripts eject',
-        }
-      )
-    );
-  });
+  publicFolder.file(
+    'index.html',
+    getHTML(modules, directories, sandbox.externalResources)
+  );
+  return zip;
 }

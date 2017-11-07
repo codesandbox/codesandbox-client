@@ -207,7 +207,7 @@ export default class Content extends React.PureComponent<Props, State> {
       sandbox.modules,
       sandbox.directories,
       currentModule,
-      findMainModule(sandbox.modules, sandbox.template)
+      findMainModule(sandbox.modules, sandbox.directories, sandbox.entry)
     );
 
     if (!mainModule) throw new Error('Cannot find main module');
@@ -276,6 +276,7 @@ export default class Content extends React.PureComponent<Props, State> {
               corrections={[]}
               dependencies={sandbox.npmDependencies}
               shouldExpandDevTools={expandDevTools}
+              entry={sandbox.entry}
             />
           </Split>
         )}
