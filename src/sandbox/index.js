@@ -5,16 +5,23 @@ import registerServiceWorker from 'common/registerServiceWorker';
 import requirePolyfills from 'common/load-dynamic-polyfills';
 import { findMainModule } from 'app/store/entities/sandboxes/modules/selectors';
 
-import host from './utils/host';
-
 import setupHistoryListeners from './url-listeners';
 import compile from './compile';
 import setupConsole from './console';
 import transformJSON from './console/transform-json';
 
+const host = process.env.CODESANDBOX_HOST;
+
 function getId() {
   if (process.env.LOCAL_SERVER) {
     return document.location.hash.replace('#', '');
+  }
+
+  if (process.env.STAGING) {
+    const segments = host.split('//')[1].split('.');
+    const first = segments.shift();
+    const re = RegExp(`${first}-(.*)\\.${segments.join('\\.')}`);
+    return document.location.host.match(re)[1];
   }
 
   return document.location.host.match(/(.*)\.codesandbox/)[1];

@@ -9,7 +9,7 @@ const buildEncodedUri = (strings: Array<string>, ...values: Array<string>) =>
 
 export const host = () => {
   if (process.env.NODE_ENV === 'production') {
-    return 'codesandbox.io';
+    return process.env.CODESANDBOX_HOST.split('//')[1];
   }
   if (process.env.LOCAL_SERVER) {
     return 'localhost:3000';
@@ -53,11 +53,24 @@ export const embedUrl = (sandbox: Sandbox) => {
   return `/embed/${sandbox.id}`;
 };
 
+const stagingFrameUrl = (shortid: string, path: string) => {
+  const stagingHost = process.env.CODESANDBOX_HOST.split('//')[1];
+  const segments = stagingHost.split('.');
+  const first = segments.shift();
+  return `${location.protocol}//${first}-${shortid}.${segments.join(
+    '.'
+  )}/${path}`;
+};
+
 export const frameUrl = (shortid: string, append: string = '') => {
   const path = append.indexOf('/') === 0 ? append.substr(1) : append;
 
   if (process.env.LOCAL_SERVER) {
     return `http://localhost:3001/${path}`;
+  }
+
+  if (process.env.STAGING) {
+    return stagingFrameUrl(shortid, path);
   }
 
   return `${location.protocol}//${shortid}.${host()}/${path}`;
