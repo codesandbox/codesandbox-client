@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import Centered from 'app/components/flex/Centered';
+import Input from 'app/components/Input';
 
 const Container = styled(Centered)`
   height: 100%;
@@ -16,6 +17,19 @@ const Title = styled.div`
 const SubTitle = styled.div`
   font-size: 1.5rem;
   color: rgba(255, 255, 255, 0.7);
+`;
+
+const Image = styled.img`
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+
+  max-width: 80%;
+  max-height: 70%;
+`;
+
+const StyledInput = styled(Input)`
+  max-width: 80%;
+  font-size: 1.5rem;
 `;
 
 type Props = {
@@ -39,7 +53,9 @@ export default class ImageViewer extends React.Component<Props> {
           image.
         </SubTitle>
 
-        <img src={this.props.code} alt={this.props.title} />
+        <Image src={this.props.code} alt={this.props.title} />
+
+        <StyledInput value={this.props.code} />
       </Container>
     );
   }
