@@ -7,6 +7,7 @@ import Button from 'app/components/buttons/Button';
 
 import modalActionCreators from 'app/store/modal/actions';
 import Alert from 'app/components/Alert';
+import Relative from 'app/components/Relative';
 
 import WorkspaceInputContainer from '../WorkspaceInputContainer';
 
@@ -22,6 +23,12 @@ const PrivacySelect = styled.select`
   width: 100%;
   border: none;
   box-sizing: border-box;
+`;
+
+const PatronMessage = styled.div`
+  margin: 0.5rem 1rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.875rem;
 `;
 
 const mapDispatchToProps = dispatch => ({
@@ -83,21 +90,25 @@ class SandboxSettings extends React.PureComponent {
     const { isPatron, privacy } = this.props;
     return (
       <div>
-        {isPatron && (
-          <div>
-            <WorkspaceSubtitle>Sandbox Privacy</WorkspaceSubtitle>
-            <WorkspaceInputContainer>
-              <PrivacySelect
-                value={privacy}
-                onChange={this.updateSandboxPrivacy}
-              >
-                <option value={0}>Public</option>
-                <option value={1}>Unlisted (only findable with url)</option>
-                <option value={2}>Private</option>
-              </PrivacySelect>
-            </WorkspaceInputContainer>
-          </div>
+        <WorkspaceSubtitle>Sandbox Privacy</WorkspaceSubtitle>
+        {!isPatron && (
+          <PatronMessage>
+            Private and unlisted Sandboxes are available as a{' '}
+            <a href="/patron" target="_blank">
+              Patron
+            </a>.
+          </PatronMessage>
         )}
+        {isPatron && (
+          <WorkspaceInputContainer>
+            <PrivacySelect value={privacy} onChange={this.updateSandboxPrivacy}>
+              <option value={0}>Public</option>
+              <option value={1}>Unlisted (only findable with url)</option>
+              <option value={2}>Private</option>
+            </PrivacySelect>
+          </WorkspaceInputContainer>
+        )}
+
         <WorkspaceSubtitle>Delete Sandbox</WorkspaceSubtitle>
         <WorkspaceInputContainer>
           <Button
