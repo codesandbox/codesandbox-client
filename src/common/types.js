@@ -128,13 +128,6 @@ export type Sandbox = {
   },
   externalResources: Array<string>,
   isInProjectView: ?boolean,
-  dependencyBundle: ?{
-    externals?: Object,
-    hash?: string,
-    url?: string,
-    error?: string,
-    processing?: boolean,
-  },
   privacy: 0 | 1 | 2,
   showEditor: ?boolean,
   showPreview: ?boolean,
@@ -146,6 +139,13 @@ export type Sandbox = {
   forcedRenders: number,
   template: string,
   entry: string,
+  originalGit: ?GitInfo,
+  originalGitCommitSha: ?string,
+  originalGitChanges: ?{
+    added: Array<string>,
+    modified: Array<string>,
+    deleted: Array<string>,
+  },
 };
 
 export type Preferences = {

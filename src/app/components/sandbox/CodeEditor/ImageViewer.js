@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import Centered from 'app/components/flex/Centered';
 import Input from 'app/components/Input';
+import Button from 'app/components/buttons/Button';
 
 const Container = styled(Centered)`
   height: 100%;
@@ -11,6 +12,7 @@ const Container = styled(Centered)`
 
 const Title = styled.div`
   font-size: 2rem;
+  margin-top: 3rem;
   margin: 1rem 0;
 `;
 
@@ -27,21 +29,41 @@ const Image = styled.img`
   max-height: 70%;
 `;
 
-const StyledInput = styled(Input)`
-  max-width: 80%;
-  font-size: 1.5rem;
+const MaxWidth = styled.form`
+  display: flex;
+  justify-content: centered;
+  flex-direction: row;
+  width: 80%;
+
+  input {
+    flex: 4;
+    font-size: 1.5rem;
+  }
+
+  button {
+    flex: 1;
+    margin-left: 1rem;
+  }
 `;
 
 type Props = {
-  // id: string,
+  id: string,
   code: string,
   title: string,
-  // updateCode: Function,
+  isNotSynced: boolean,
+  changeCode: (id: string, code: string) => Object,
+  saveCode: ?() => void,
 };
 
 export default class ImageViewer extends React.Component<Props> {
-  state = {
-    changedUrl: '',
+  onSubmit = e => {
+    e.preventDefault();
+
+    this.props.saveCode();
+  };
+
+  changeCode = e => {
+    this.props.changeCode(this.props.id, e.target.value);
   };
 
   render() {
@@ -55,7 +77,18 @@ export default class ImageViewer extends React.Component<Props> {
 
         <Image src={this.props.code} alt={this.props.title} />
 
-        <StyledInput value={this.props.code} />
+        <MaxWidth onSubmit={this.onSubmit}>
+          <Input
+            innerRef={el => {
+              this.input = el;
+            }}
+            onChange={this.changeCode}
+            value={this.props.code}
+          />
+          <Button disabled={!this.props.isNotSynced} type="submit">
+            Save
+          </Button>
+        </MaxWidth>
       </Container>
     );
   }

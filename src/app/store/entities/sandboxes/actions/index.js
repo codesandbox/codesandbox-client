@@ -13,6 +13,7 @@ import { directoriesSelector } from '../directories/selectors';
 
 import { maybeForkSandbox, forkSandbox } from './fork';
 import fileActions from './files';
+import gitActions from './git';
 import { currentUserSelector } from '../../../user/selectors';
 
 export const SINGLE_SANDBOX_API_ACTIONS = createAPIActions('SANDBOX', 'SINGLE');
@@ -452,4 +453,5 @@ export default {
   }),
 
   ...fileActions,
+  ...gitActions,
 };

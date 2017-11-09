@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export default styled.input`
+const Input = styled.input`
   transition: 0.3s ease border-color;
   background-color: rgba(0, 0, 0, 0.3);
   border: none;
@@ -8,7 +8,7 @@ export default styled.input`
   border-radius: 4px;
   color: white;
   padding: 0.25em;
-  width: inherit;
+  width: ${({ block }) => (block ? '100%' : 'inherit')};
   box-sizing: border-box;
 
   border: 1px solid
@@ -19,3 +19,7 @@ export default styled.input`
     border-color: ${props => props.theme.secondary.clearer(0.6)};
   }
 `;
+
+export default Input;
+
+export const TextArea = Input.withComponent('textarea');

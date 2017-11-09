@@ -14,6 +14,8 @@ type Props = {
   id: string,
   modules: Array<Module>,
   directories: Array<Directory>,
+  changeCode: (id: string, code: string) => Object,
+  saveCode: ?() => void,
 };
 
 const CodeMirror = Loadable({
@@ -27,7 +29,16 @@ export default (props: Props) => {
   if (module) {
     if (module.isBinary) {
       if (isImage(module.title)) {
-        return <ImageViewer code={module.code} title={module.title} />;
+        return (
+          <ImageViewer
+            changeCode={props.changeCode}
+            saveCode={props.saveCode}
+            code={module.code}
+            title={module.title}
+            id={module.id}
+            isNotSynced={module.isNotSynced}
+          />
+        );
       }
     }
   }

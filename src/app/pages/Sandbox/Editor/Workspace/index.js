@@ -9,6 +9,7 @@ import styled, { ThemeProvider } from 'styled-components';
 
 import type { Sandbox, User } from 'common/types';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
+import modalActionCreators from 'app/store/modal/actions';
 import { modulesFromSandboxNotSavedSelector } from 'app/store/entities/sandboxes/modules/selectors';
 import { usersSelector } from 'app/store/entities/users/selectors';
 import { isPatronSelector } from 'app/store/user/selectors';
@@ -27,6 +28,7 @@ import SandboxActions from './SandboxActions';
 import Logo from './Logo';
 import ConnectionNotice from './ConnectionNotice';
 import Advertisement from './Advertisement';
+import Git from './Git';
 
 const Container = styled.div`
   position: absolute;
@@ -54,6 +56,7 @@ const TermsContainer = styled.div`
 type Props = {
   sandbox: Sandbox,
   sandboxActions: typeof sandboxActionCreators,
+  modalActions: typeof modalActionCreators,
   preventTransition: boolean,
   user: User,
   isPatron: boolean,
@@ -73,6 +76,7 @@ const mapStateToProps = createSelector(
 
 const mapDispatchToProps = dispatch => ({
   sandboxActions: bindActionCreators(sandboxActionCreators, dispatch),
+  modalActions: bindActionCreators(modalActionCreators, dispatch),
 });
 
 const Workspace = ({
@@ -81,6 +85,7 @@ const Workspace = ({
   preventTransition,
   sandboxActions,
   isPatron,
+  modalActions,
 }: Props) => (
   <ThemeProvider
     theme={{
@@ -90,7 +95,7 @@ const Workspace = ({
     <Container>
       <div>
         <Logo />
-        <WorkspaceItem defaultOpen title="Project">
+        <WorkspaceItem defaultOpen keepState title="Project">
           <Project
             updateSandboxInfo={sandboxActions.updateSandboxInfo}
             id={sandbox.id}
@@ -109,7 +114,7 @@ const Workspace = ({
           />
         </WorkspaceItem>
 
-        <WorkspaceItem defaultOpen title="Files">
+        <WorkspaceItem defaultOpen keepState title="Files">
           <Files sandbox={sandbox} sandboxActions={sandboxActions} />
         </WorkspaceItem>
 
@@ -127,17 +132,30 @@ const Workspace = ({
           />
         </WorkspaceItem>
 
+        {sandbox.owned &&
+          sandbox.originalGitCommitSha && (
+            <WorkspaceItem title="GitHub">
+              <Git
+                sandboxId={sandbox.id}
+                originalGit={sandbox.originalGit}
+                gitChanges={sandbox.originalGitChanges}
+                fetchGitChanges={sandboxActions.fetchGitChanges}
+                openModal={modalActions.openModal}
+              />
+            </WorkspaceItem>
+          )}
+
         {(sandbox.owned || sandbox.tags.length > 0) && (
-          <WorkspaceItem title="Tags">
-            <Tags
-              sandboxId={sandbox.id}
-              addTag={sandboxActions.addTag}
-              removeTag={sandboxActions.removeTag}
-              isOwner={sandbox.owned}
-              tags={sandbox.tags}
-            />
-          </WorkspaceItem>
-        )}
+            <WorkspaceItem title="Tags">
+              <Tags
+                sandboxId={sandbox.id}
+                addTag={sandboxActions.addTag}
+                removeTag={sandboxActions.removeTag}
+                isOwner={sandbox.owned}
+                tags={sandbox.tags}
+              />
+            </WorkspaceItem>
+          )}
 
         {sandbox.owned && (
           <WorkspaceItem title="Sandbox Actions">
