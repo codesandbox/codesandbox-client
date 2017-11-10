@@ -79,7 +79,8 @@ export const frameUrl = (shortid: string, append: string = '') => {
 export const forkSandboxUrl = (sandbox: Sandbox) =>
   `${sandboxUrl(sandbox)}/fork`;
 
-export const signInUrl = () => '/auth/github';
+export const signInUrl = (extraScopes: boolean = false) =>
+  '/auth/github' + (extraScopes ? '?scope=user:email,public_repo' : '');
 export const signInZeitUrl = () => '/auth/zeit';
 
 export const profileUrl = (username: string) => `/u/${username}`;

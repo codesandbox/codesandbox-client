@@ -13,6 +13,7 @@ import {
   SET_ZEIT_USER_INFO,
   SIGN_OUT_ZEIT,
   SIGN_IN_ZEIT,
+  SIGN_OUT_GITHUB_INTEGRATION,
 } from './actions';
 
 const initialState: CurrentUser = {
@@ -65,6 +66,15 @@ export default (state: CurrentUser = initialState, action: Object) => {
         integrations: {
           ...state.integrations,
           zeit: null,
+        },
+      };
+    }
+    case SIGN_OUT_GITHUB_INTEGRATION.SUCCESS: {
+      return {
+        ...state,
+        integrations: {
+          ...state.integrations,
+          github: null,
         },
       };
     }

@@ -37,6 +37,7 @@ const ContentContainer = styled.div`
 
 type Props = {
   user: CurrentUser,
+  initialPane: ?string,
 };
 
 const mapStateToProps = state => ({
@@ -48,6 +49,18 @@ class Preferences extends React.PureComponent {
   state = {
     itemIndex: 0,
   };
+
+  constructor(props: Props) {
+    super(props);
+
+    if (props.initialPane) {
+      this.state = {
+        itemIndex: this.getItems()
+          .map(x => x.title)
+          .indexOf(props.initialPane),
+      };
+    }
+  }
 
   setItem = (index: number) => {
     this.setState({ itemIndex: index });

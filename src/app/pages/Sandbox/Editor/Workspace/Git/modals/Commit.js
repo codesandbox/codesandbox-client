@@ -1,27 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import Input, { TextArea } from 'app/components/Input';
+import { TextArea } from 'app/components/Input';
+import Centered from 'app/components/flex/Centered';
 import Margin from 'app/components/spacing/Margin';
-import Row from 'app/components/flex/Row';
-import Column from 'app/components/flex/Column';
+import Padding from 'app/components/spacing/Padding';
 import Button from 'app/components/buttons/Button';
-import type Sandbox from 'common/types';
+import GitHubIntegration from 'app/containers/integrations/GitHub';
+import IntegrationModal from 'app/containers/modals/IntegrationModal';
+import type { Sandbox, CurrentUser } from 'common/types';
 
-import TotalChanges from '../TotalChanges';
-
-const Container = styled.div`
-  background-color: ${({ theme }) => theme.background2};
-  padding: 1rem;
-  color: rgba(255, 255, 255, 0.8);
-`;
-
-const Title = styled.h2`
-  font-size: 1.25rem;
-  font-weight: 400;
-  margin-top: 0 !important;
-  margin-bottom: 1rem;
-`;
+import { Added, Modified, Deleted } from '../Changes';
 
 const SubTitle = styled.h3`
   font-weight: 500;
@@ -33,53 +22,120 @@ const SubTitle = styled.h3`
 
 const CommitContainer = Margin.extend`font-size: 0.875rem;`;
 
+const ChangeColumns = styled.div`display: flex;`;
+const ChangeColumn = styled.div`flex: 1;`;
+const NoChanges = styled.em`
+  display: block;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 1rem;
+`;
+
+const RadioInput = styled.div`
+  margin: 0.5rem 0;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1;
+  font-size: 1rem;
+  label {
+    margin-left: 0.5rem;
+  }
+`;
+
 type Props = {
+  sandboxId: string,
   gitChanges: Sandbox.originalGitChanges,
+  createCommit: (id: string, message: string) => void,
+  user: CurrentUser,
 };
 
 export default class Commit extends React.PureComponent<Props> {
   state = {
     title: '',
-    message: '',
   };
 
   changeTitle = e => this.setState({ title: e.target.value });
-  changeMessage = e => this.setState({ message: e.target.value });
 
-  commit = () => {};
+  commit = () => {
+    this.props.createCommit(this.props.sandboxId, this.state.title);
+  };
 
   render() {
-    const { gitChanges } = this.props;
+    const { gitChanges, user } = this.props;
 
     return (
-      <Container>
-        <Title>Make a commit</Title>
-        <SubTitle>Changes</SubTitle>
-        <TotalChanges hideColor gitChanges={gitChanges} />
+      <IntegrationModal
+        name="GitHub"
+        Integration={GitHubIntegration}
+        title="Source Control"
+        subtitle={
+          <div>
+            Commit your changes directly to{' '}
+            <a
+              target="_blank"
+              rel="noreferrer noopener"
+              href="https://github.com"
+            >
+              GitHub
+            </a>
+          </div>
+        }
+        signedIn={user.integrations.github}
+      >
+        <Padding vertical={2} horizontal={2}>
+          <ChangeColumns>
+            <ChangeColumn>
+              <SubTitle>Added</SubTitle>
+              {gitChanges.added.length ? (
+                <Added hideColor changes={gitChanges.added} />
+              ) : (
+                <NoChanges>No Changes</NoChanges>
+              )}
+            </ChangeColumn>
+            <ChangeColumn>
+              <SubTitle>Modified</SubTitle>
+              {gitChanges.modified.length ? (
+                <Modified hideColor changes={gitChanges.modified} />
+              ) : (
+                <NoChanges>No Changes</NoChanges>
+              )}
+            </ChangeColumn>
+            <ChangeColumn>
+              <SubTitle>Deleted</SubTitle>
+              {gitChanges.deleted.length ? (
+                <Deleted hideColor changes={gitChanges.deleted} />
+              ) : (
+                <NoChanges>No Changes</NoChanges>
+              )}
+            </ChangeColumn>
+          </ChangeColumns>
 
-        <CommitContainer top={1}>
-          <SubTitle>Commit Info</SubTitle>
-          <Margin bottom={0.5} top={0.5}>
-            <Input
-              block
-              placeholder="Commit Title"
-              value={this.state.title}
-              onChange={this.changeTitle}
-            />
-          </Margin>
-          <TextArea
-            block
-            placeholder="Commit Message (optional)"
-            value={this.state.message}
-            onChange={this.changeMessage}
-          />
-          <Margin top={1}>
-            <Button small block>
-              Make Commit
-            </Button>
-          </Margin>
-        </CommitContainer>
-      </Container>
+          <CommitContainer top={2}>
+            <Margin bottom={0.5} top={0.5}>
+              <TextArea
+                block
+                rows="3"
+                placeholder="Commit Message"
+                value={this.state.title}
+                onChange={this.changeTitle}
+              />
+            </Margin>
+            <Margin top={1}>
+              <div>
+                <RadioInput>
+                  <input id="mainBranch" type="radio" />
+                  <label htmlFor="mainBranch">Commit directly to master</label>
+                </RadioInput>
+
+                <RadioInput>
+                  <input id="newBranch" type="radio" />
+                  <label htmlFor="newBranch">Create a new branch called</label>
+                </RadioInput>
+              </div>
+              <Button onClick={this.commit}>Make Commit</Button>
+            </Margin>
+          </CommitContainer>
+        </Padding>
+      </IntegrationModal>
     );
   }
 }

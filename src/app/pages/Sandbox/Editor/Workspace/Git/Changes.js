@@ -1,6 +1,12 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 
+import theme from 'common/theme';
+
+import AddedIcon from 'react-icons/lib/go/diff-added';
+import ModifiedIcon from 'react-icons/lib/go/diff-modified';
+import RemovedIcon from 'react-icons/lib/go/diff-removed';
+
 import Tooltip from 'app/components/Tooltip';
 import EntryContainer from '../EntryContainer';
 
@@ -29,7 +35,7 @@ const Entry = styled(EntryContainer)`
   }
 `;
 
-export default ({
+const Changes = ({
   changes,
   color,
   Icon,
@@ -55,3 +61,40 @@ export default ({
     ))}
   </div>
 );
+
+type ExtraProps = {
+  changes: Array<string>,
+  hideColor: boolean,
+};
+
+export const Added = ({ changes, hideColor }: ExtraProps) => (
+  <Changes
+    changes={changes}
+    color={theme.green}
+    Icon={AddedIcon}
+    title="Added"
+    hideColor={hideColor}
+  />
+);
+
+export const Modified = ({ changes, hideColor }: ExtraProps) => (
+  <Changes
+    changes={changes}
+    color={theme.secondary}
+    Icon={ModifiedIcon}
+    title="Modified"
+    hideColor={hideColor}
+  />
+);
+
+export const Deleted = ({ changes, hideColor }: ExtraProps) => (
+  <Changes
+    changes={changes}
+    color={theme.red}
+    Icon={RemovedIcon}
+    title="Deleted"
+    hideColor={hideColor}
+  />
+);
+
+export default Changes;

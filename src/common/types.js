@@ -65,6 +65,9 @@ export type CurrentUser = {
       token: string,
       email: ?string,
     },
+    github?: {
+      email: string,
+    },
   },
 };
 
@@ -145,6 +148,7 @@ export type Sandbox = {
     added: Array<string>,
     modified: Array<string>,
     deleted: Array<string>,
+    rights: 'none' | 'read' | 'write' | 'admin',
   },
 };
 
