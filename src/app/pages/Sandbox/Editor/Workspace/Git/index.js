@@ -10,6 +10,7 @@ import type { Sandbox, GitInfo, CurrentUser } from 'common/types';
 
 import TotalChanges from './TotalChanges';
 import CommitModal from './modals/Commit';
+import PRModal from './modals/PR';
 import WorkspaceSubtitle from '../WorkspaceSubtitle';
 import WorkspaceInputContainer from '../WorkspaceInputContainer';
 
@@ -87,9 +88,23 @@ export default class Git extends React.PureComponent<Props> {
   };
 
   createPR = () => {
-    const { sandboxId, createGitPR } = this.props;
+    const { sandboxId, createGitPR, originalGit } = this.props;
 
-    createGitPR(sandboxId, 'Hello PR!');
+    const promise = createGitPR(sandboxId, this.state.message);
+    this.props.openModal({
+      width: 400,
+      Body: (
+        <PRModal
+          promise={promise}
+          username={originalGit.username}
+          repo={originalGit.repo}
+          branch={originalGit.branch}
+          path={originalGit.path}
+          newUser={this.props.user.username}
+        />
+      ),
+      preventClosing: true,
+    });
   };
 
   changeMessage = e => {
@@ -135,11 +150,21 @@ export default class Git extends React.PureComponent<Props> {
                   </WorkspaceInputContainer>
                   <Buttons>
                     {hasWriteAccess(gitChanges.rights) && (
-                      <Button onClick={this.openCommitModal} block small>
+                      <Button
+                        disabled={!this.state.message}
+                        onClick={this.openCommitModal}
+                        block
+                        small
+                      >
                         Commit
                       </Button>
                     )}
-                    <Button onClick={this.createPR} block small>
+                    <Button
+                      disabled={!this.state.message}
+                      onClick={this.createPR}
+                      block
+                      small
+                    >
                       Open PR
                     </Button>
                   </Buttons>
