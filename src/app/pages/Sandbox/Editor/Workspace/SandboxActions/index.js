@@ -7,7 +7,6 @@ import Button from 'app/components/buttons/Button';
 
 import modalActionCreators from 'app/store/modal/actions';
 import Alert from 'app/components/Alert';
-import Relative from 'app/components/Relative';
 
 import WorkspaceInputContainer from '../WorkspaceInputContainer';
 
