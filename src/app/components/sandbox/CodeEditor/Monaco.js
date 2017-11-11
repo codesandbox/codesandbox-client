@@ -521,27 +521,20 @@ export default class CodeEditor extends React.Component<Props, State> {
     const kind = title.match(/\.([^.]*)$/);
 
     if (kind) {
-      if (kind[1] === 'css') {
-        return 'css';
-      }
-      if (kind[1] === 'scss') {
-        return 'scss';
-      } else if (kind[1] === 'html') {
-        return 'html';
-      } else if (kind[1] === 'vue') {
+      if (kind[1] === 'css') return 'css';
+      if (kind[1] === 'scss') return 'scss';
+      if (kind[1] === 'json') return 'json';
+      if (kind[1] === 'html') return 'html';
+      if (kind[1] === 'vue') {
         if (!this.monaco.languages.getLanguages().find(l => l.id === 'vue')) {
           await requireAMDModule(['vs/language/vue/monaco.contribution']);
         }
         return 'vue';
-      } else if (kind[1] === 'less') {
-        return 'less';
-      } else if (kind[1] === 'md') {
-        return 'markdown';
-      } else if (/jsx?$/.test(kind[1])) {
-        return 'javascript';
-      } else if (/tsx?$/.test(kind[1])) {
-        return 'typescript';
       }
+      if (kind[1] === 'less') return 'less';
+      if (kind[1] === 'md') return 'markdown';
+      if (/jsx?$/.test(kind[1])) return 'javascript';
+      if (/tsx?$/.test(kind[1])) return 'typescript';
     }
 
     return 'typescript';
@@ -882,7 +875,12 @@ export default class CodeEditor extends React.Component<Props, State> {
     const code = this.getCode();
     const mode = await this.getMode(title);
 
-    if (mode === 'javascript' || mode === 'typescript' || mode === 'css') {
+    if (
+      mode === 'javascript' ||
+      mode === 'typescript' ||
+      mode === 'json' ||
+      mode === 'css'
+    ) {
       try {
         const prettify = await import(/* webpackChunkName: 'prettier' */ 'app/utils/codemirror/prettify');
         const newCode = await prettify.default(
