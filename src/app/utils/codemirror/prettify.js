@@ -4,6 +4,7 @@ const worker = new Worker('/static/js/prettier/worker.js');
 
 function getParser(mode) {
   if (mode === 'jsx') return 'babylon';
+  if (mode === 'json') return 'json';
   if (mode === 'css') return 'postcss';
   if (mode === 'html') return 'parse5';
   if (mode === 'typescript') return 'typescript';
