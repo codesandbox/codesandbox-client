@@ -9,7 +9,8 @@
   },
   "globals": {
     "Raven": true,
-    "VERSION": true
+    "VERSION": true,
+    "$PropertyType": true
   },
   "rules": {
     "react/jsx-filename-extension": 0,

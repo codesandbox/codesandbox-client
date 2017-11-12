@@ -2,6 +2,7 @@ const merge = require('webpack-merge');
 const webpack = require('webpack');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const ManifestPlugin = require('webpack-manifest-plugin');
 const childProcess = require('child_process');
 const commonConfig = require('./webpack.common');
 
@@ -212,5 +213,8 @@ module.exports = merge(commonConfig, {
     // You can remove this if you don't use Moment.js:
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     new webpack.IgnorePlugin(/\/src\/node_modules/),
+    new ManifestPlugin({
+      fileName: 'file-manifest.json',
+    }),
   ],
 });

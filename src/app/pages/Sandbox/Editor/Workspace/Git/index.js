@@ -1,3 +1,4 @@
+// @flow
 import React from 'react';
 import styled from 'styled-components';
 
@@ -19,10 +20,12 @@ type Props = {
   createGitCommit: (id: string, message: string) => Promise<any>,
   createGitPR: (id: string, message: string) => Promise<any>,
   sandboxId: string,
-  gitChanges: Sandbox.gitChanges,
+  gitChanges: $PropertyType<Sandbox, 'originalGitChanges'>,
   originalGit: GitInfo,
   openModal: (options: Object) => void,
+  closeModal: () => void,
   user: CurrentUser,
+  modulesNotSaved: boolean,
 };
 
 const Container = styled.div`color: rgba(255, 255, 255, 0.8);`;
@@ -36,11 +39,23 @@ const Buttons = styled.div`
   }
 `;
 
+const ErrorMessage = styled.div`
+  color: ${({ theme }) => theme.red};
+  margin: 1rem;
+  font-size: 0.875rem;
+`;
+
 function hasWriteAccess(rights: 'none' | 'read' | 'write' | 'admin') {
   return rights === 'write' || rights === 'admin';
 }
 
-export default class Git extends React.PureComponent<Props> {
+type State = {
+  showFetchButton: boolean,
+  fetching: boolean,
+  message: string,
+};
+
+export default class Git extends React.PureComponent<Props, State> {
   state = {
     showFetchButton: false,
     fetching: false,
@@ -72,23 +87,39 @@ export default class Git extends React.PureComponent<Props> {
     }
   }
 
-  openCommitModal = () => {
-    const { user } = this.props;
+  createCommit = () => {
+    const {
+      sandboxId,
+      createGitCommit,
+      closeModal,
+      user,
+      originalGit,
+    } = this.props;
+
+    const promise = createGitCommit(sandboxId, this.state.message);
     this.props.openModal({
-      width: 800,
+      width: 400,
       Body: (
         <CommitModal
-          sandboxId={this.props.sandboxId}
-          createCommit={this.props.createGitCommit}
-          gitChanges={this.props.gitChanges}
-          user={user}
+          promise={promise}
+          username={originalGit.username}
+          repo={originalGit.repo}
+          branch={originalGit.branch}
+          closeModal={closeModal}
+          newUser={user.username}
         />
       ),
     });
   };
 
   createPR = () => {
-    const { sandboxId, createGitPR, originalGit } = this.props;
+    const {
+      sandboxId,
+      closeModal,
+      createGitPR,
+      user,
+      originalGit,
+    } = this.props;
 
     const promise = createGitPR(sandboxId, this.state.message);
     this.props.openModal({
@@ -99,20 +130,20 @@ export default class Git extends React.PureComponent<Props> {
           username={originalGit.username}
           repo={originalGit.repo}
           branch={originalGit.branch}
-          path={originalGit.path}
-          newUser={this.props.user.username}
+          closeModal={closeModal}
+          newUser={user.username}
         />
       ),
       preventClosing: true,
     });
   };
 
-  changeMessage = e => {
+  changeMessage = (e: KeyboardEvent & { target: { value: string } }) => {
     this.setState({ message: e.target.value });
   };
 
   render() {
-    const { gitChanges, originalGit } = this.props;
+    const { gitChanges, originalGit, modulesNotSaved } = this.props;
     const changeCount = gitChanges
       ? gitChanges.added.length +
         gitChanges.modified.length +
@@ -140,6 +171,11 @@ export default class Git extends React.PureComponent<Props> {
               {changeCount > 0 ? (
                 <Margin top={1}>
                   <WorkspaceSubtitle>Commit Info</WorkspaceSubtitle>
+                  {modulesNotSaved && (
+                    <ErrorMessage>
+                      You need to save all modules before you can commit
+                    </ErrorMessage>
+                  )}
                   <WorkspaceInputContainer>
                     <Input
                       value={this.state.message}
@@ -151,8 +187,8 @@ export default class Git extends React.PureComponent<Props> {
                   <Buttons>
                     {hasWriteAccess(gitChanges.rights) && (
                       <Button
-                        disabled={!this.state.message}
-                        onClick={this.openCommitModal}
+                        disabled={!this.state.message || modulesNotSaved}
+                        onClick={this.createCommit}
                         block
                         small
                       >
@@ -160,7 +196,7 @@ export default class Git extends React.PureComponent<Props> {
                       </Button>
                     )}
                     <Button
-                      disabled={!this.state.message}
+                      disabled={!this.state.message || modulesNotSaved}
                       onClick={this.createPR}
                       block
                       small

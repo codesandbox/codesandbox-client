@@ -26,7 +26,7 @@ import {
   MASS_UPDATE_MODULE_API_ACTIONS,
 } from './actions/files';
 
-import { FETCH_GIT_CHANGES_API_ACTIONS } from './actions/git';
+import { FETCH_GIT_CHANGES_API_ACTIONS, SET_ORIGINAL_GIT } from './actions/git';
 import { RENAME_MODULE, MOVE_MODULE } from './modules/actions';
 
 import { RENAME_DIRECTORY, MOVE_DIRECTORY } from './directories/actions';
@@ -148,6 +148,13 @@ function singleSandboxReducer(sandbox: Sandbox, action: Action): Sandbox {
         ...sandbox,
         originalGitChanges: null,
       };
+    case SET_ORIGINAL_GIT:
+      return {
+        ...sandbox,
+        originalGit: action.originalGit,
+        originalGitCommitSha: action.originalGitCommitSha,
+        originalGitChanges: null,
+      };
     case SET_TAGS:
       return {
         ...sandbox,
@@ -194,6 +201,7 @@ export default function reducer(
     case FETCH_GIT_CHANGES_API_ACTIONS.REQUEST:
     case FETCH_GIT_CHANGES_API_ACTIONS.FAILURE:
     case SET_SANDBOX_PRIVACY:
+    case SET_ORIGINAL_GIT:
     case FORCE_RENDER: {
       const id = action.id || (action.meta ? action.meta.id : undefined);
       if (state[id]) {

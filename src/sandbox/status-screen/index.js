@@ -29,27 +29,20 @@ let currentScreen: ?Screen = {
 };
 
 export function resetScreen() {
-  document.body.innerHTML = '';
-  currentScreen = null;
-}
-
-export function openErrorScreen(error: Error | SandboxError) {
-  if (error.severity == null || error.severity === 'error') {
-    document.body.innerHTML = `<div>${error.name}
-
-    ${error.stack}</div>`;
-  } else {
-    document.body.innerHTML = '<div>PANIEK EEN WARNING</div>';
+  if (document.getElementById('loading-screen')) {
+    document.body.innerHTML = '';
+    currentScreen = null;
   }
 }
 
 export default function setScreen(screen: Screen) {
-  if (screen.type === 'loading') {
-    if (!currentScreen || currentScreen.type !== 'loading') {
-      document.body.innerHTML = loadingHTML;
+  if (document.getElementById('loading-screen')) {
+    if (screen.type === 'loading') {
+      if (!currentScreen || currentScreen.type !== 'loading') {
+        document.body.innerHTML = loadingHTML;
+      }
+      document.getElementsByClassName('text').item(0).textContent = screen.text;
     }
-    document.getElementsByClassName('text').item(0).textContent = screen.text;
-  } else {
   }
 
   currentScreen = screen;

@@ -278,6 +278,7 @@ export default class Preview extends React.PureComponent<Props, State> {
       this.handleRefresh();
     } else {
       const renderedModule = this.getRenderedModule();
+
       this.sendMessage({
         type: 'compile',
         module: renderedModule,

@@ -168,7 +168,9 @@ class Workspace extends React.PureComponent<Props> {
                       createGitCommit={sandboxActions.createGitCommit}
                       createGitPR={sandboxActions.createGitPR}
                       openModal={modalActions.openModal}
+                      closeModal={modalActions.closeModal}
                       user={currentUser}
+                      modulesNotSaved={preventTransition}
                     />
                   ) : (
                     <div>

@@ -13,12 +13,12 @@ import Button from 'app/components/buttons/Button';
 import Centered from 'app/components/flex/Centered';
 import Margin from 'app/components/spacing/Margin';
 import NowLogo from 'app/components/NowLogo';
+import OpaqueLogo from 'app/components/OpaqueLogo';
 
 import delayInEffect from 'app/utils/animation/delay-effect';
 import delayOutEffect from 'app/utils/animation/delay-out-effect';
 
 import Cube from './Cube';
-import OpaqueLogo from './OpaqueLogo';
 
 const ButtonContainer = styled.div`
   margin: 2rem 4rem;

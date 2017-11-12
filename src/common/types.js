@@ -52,7 +52,7 @@ export type CurrentUser = {
   id: ?string,
   email: ?string,
   name: ?string,
-  username: ?string,
+  username: string,
   avatarUrl: ?string,
   jwt: ?string,
   subscription: ?{
