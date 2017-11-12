@@ -2,6 +2,10 @@ import React from 'react';
 import Loadable from 'react-loadable';
 
 import Loading from 'app/components/Loading';
+import Title from 'app/components/text/Title';
+import SubTitle from 'app/components/text/SubTitle';
+import Centered from 'app/components/flex/Centered';
+import Margin from 'app/components/spacing/Margin';
 import { Preferences, Module, Directory } from 'common/types';
 
 import isImage from 'is-image';
@@ -40,6 +44,21 @@ export default (props: Props) => {
           />
         );
       }
+
+      return (
+        <Margin top={2}>
+          <Centered horizontal vertical>
+            <Title>This file is too big to edit</Title>
+            <SubTitle>
+              We will add support for this as soon as possible.
+            </SubTitle>
+
+            <a href={module.code} target="_blank" rel="noreferrer noopener">
+              Open file externally
+            </a>
+          </Centered>
+        </Margin>
+      );
     }
   }
 

@@ -43,7 +43,7 @@ const StyledA = styled.a`text-decoration: none;`;
 type Props = {
   username: string,
   repo: string,
-  branch?: string,
+  branch: ?string,
   url: ?string,
 };
 

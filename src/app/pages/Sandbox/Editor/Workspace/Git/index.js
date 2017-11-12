@@ -45,6 +45,20 @@ const ErrorMessage = styled.div`
   font-size: 0.875rem;
 `;
 
+const Notice = styled.div`
+  font-size: 0.75rem;
+  color: white;
+  padding: 0.125rem 0.2rem;
+  background-image: linear-gradient(
+    45deg,
+    ${({ theme }) => theme.secondary.darken(0.2)} 0%,
+    ${({ theme }) => theme.secondary.darken(0.1)} 100%
+  );
+  border-radius: 4px;
+  float: right;
+  margin-right: 2rem;
+`;
+
 function hasWriteAccess(rights: 'none' | 'read' | 'write' | 'admin') {
   return rights === 'write' || rights === 'admin';
 }
@@ -151,6 +165,7 @@ export default class Git extends React.PureComponent<Props, State> {
       : 0;
     return (
       <Container>
+        <Notice>beta</Notice>
         <WorkspaceSubtitle>GitHub Repository</WorkspaceSubtitle>
         <Margin margin={1}>
           <GithubBadge
