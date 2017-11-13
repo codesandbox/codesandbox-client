@@ -16,6 +16,7 @@ import TwitterIcon from 'react-icons/lib/fa/twitter';
 import SearchIcon from 'react-icons/lib/go/search';
 import FeedbackIcon from 'react-icons/lib/go/comment-discussion';
 import SettingsIcon from 'react-icons/lib/md/settings';
+import ShareIcon from 'react-icons/lib/md/share';
 import { Tooltip } from 'react-tippy';
 
 import type { Sandbox, CurrentUser } from 'common/types';
@@ -130,6 +131,13 @@ export default class Header extends React.PureComponent<Props> {
     if (shouldFork) {
       sandboxActions.forkSandbox(sandbox.id);
     }
+  };
+
+  openShareView = () => {
+    this.props.modalActions.openModal({
+      width: 900,
+      Body: <ShareView sandbox={this.props.sandbox} />,
+    });
   };
 
   setEditorView = () => {
@@ -247,7 +255,12 @@ export default class Header extends React.PureComponent<Props> {
                 onClick={this.deploySandbox}
               />
             )}
-          <ShareView sandbox={sandbox} />
+          <Action
+            tooltip="Share sandbox"
+            title="Share"
+            Icon={ShareIcon}
+            onClick={this.openShareView}
+          />
         </Left>
 
         <Right>

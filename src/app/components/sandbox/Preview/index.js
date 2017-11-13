@@ -1,7 +1,7 @@
 /* @flow */
 import * as React from 'react';
 import styled from 'styled-components';
-import { listen } from 'codesandbox-api';
+import { listen, dispatch } from 'codesandbox-api';
 
 import { debounce } from 'lodash';
 
@@ -267,6 +267,7 @@ export default class Preview extends React.PureComponent<Props, State> {
     } = this.props;
     if (preferences.clearConsoleEnabled) {
       console.clear(); // eslint-disable-line no-console
+      dispatch({ type: 'clear-console' });
     }
 
     // Do it here so we can see the dependency fetching screen if needed
