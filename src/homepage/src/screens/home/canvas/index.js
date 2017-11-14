@@ -22,7 +22,7 @@ class Canvas {
   }
 
   init() {
-    const gridSize = 60;
+    const gridSize = 80;
     const dotAmountHeight = Math.floor(this.stage.height / gridSize);
     const dotAmountWidth = Math.floor(this.stage.width / gridSize);
 
@@ -81,20 +81,19 @@ class Canvas {
       if (this.wave) {
         const dirX = this.dots[i].x - this.wave.x;
         const dirY = this.dots[i].y - this.wave.y;
-        const distance = Math.sqrt(dirX * dirX + dirY * dirY);
+        const waveDistance = Math.sqrt(dirX * dirX + dirY * dirY);
 
-        if (distance < middle) {
+        if (waveDistance < middle) {
           this.dots[i].setColor(this.wave.color);
         }
+        if (waveDistance > startRadius && waveDistance < endRadius) {
+          power = Math.max(
+            0,
+            -((waveDistance - startRadius) * (waveDistance - endRadius)) / top
+          );
 
-        power = Math.max(
-          0,
-          -((distance - startRadius) * (distance - endRadius)) / top
-        );
-
-        if (distance > startRadius && distance < endRadius) {
-          this.dots[i].x += (power - 0.5) * (dirX / distance) * 5;
-          this.dots[i].y += (power - 0.5) * (dirY / distance) * 5;
+          this.dots[i].x += (power - 0.5) * (dirX / waveDistance) * 5;
+          this.dots[i].y += (power - 0.5) * (dirY / waveDistance) * 5;
 
           this.dots[i].alpha *= (power + 1) ** 4;
           this.dots[i].size *= power * 0.5 + 1;

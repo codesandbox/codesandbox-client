@@ -52,7 +52,6 @@ const SubTitle = styled.h2`
 
 const Buttons = styled.div`
   display: flex;
-  justify-content: space-between;
   width: 550px;
   ${fadeIn(0.5)};
   font-size: 1.25rem;
@@ -93,20 +92,21 @@ const Primary = styled.div`
 `;
 
 const Secondary = styled.div`
+  transition: 0.3s ease color;
   display: inline-block;
   ${fadeIn(0.2)};
-  color: ${props => props.theme.secondary};
+  color: ${props => props.color || props.template.secondary};
 `;
 
 export default ({ template }) => (
   <Container>
     <Title>
-      <Secondary>Code</Secondary>
+      <Secondary color={template.color}>Code</Secondary>
       <Primary>Sandbox</Primary>
     </Title>
     <SubTitle>
       The online code editor for&nbsp;
-      <RollingText width="12rem">
+      <RollingText updateCheck={template.name} width="12rem">
         <span style={{ color: template.color() }}>{template.niceName}</span>
       </RollingText>
     </SubTitle>
@@ -116,6 +116,7 @@ export default ({ template }) => (
         <Button
           href={sandboxUrl({ id: template.shortid })}
           color={template.color}
+          style={{ width: 200 }}
         >
           Open {template.niceName}
         </Button>

@@ -22,7 +22,7 @@ const Heading = styled.h2`
   text-align: center;
   font-weight: 300;
   font-size: 2.5rem;
-  margin-top: 3rem;
+  margin-top: 6rem;
   margin-bottom: 1rem;
 
   text-transform: uppercase;
@@ -58,9 +58,7 @@ const Flow = styled.div`
   margin-top: 8rem;
 `;
 
-const OffsettedCube = styled.div`
-  margin-top: -80px;
-`;
+const OffsettedCube = styled.div`margin-top: -80px;`;
 
 const CubeSteps = styled.div`
   position: relative;
@@ -203,7 +201,8 @@ export default class CycleFeatures extends React.PureComponent {
         position: 'absolute',
       })
       .set('#main-cube-side', {
-        backgroundColor: theme.primary.clearer(0.2)(),
+        backgroundColor: theme.secondary.clearer(0.2)(),
+        zIndex: 1,
         boxShadow: `0px 0px 150px ${theme.secondary()}`,
       })
       .set('#progress-text', {
@@ -227,12 +226,12 @@ export default class CycleFeatures extends React.PureComponent {
         {
           scale: 0,
           x: 0,
-          position: 'absolute',
+          position: 'relative',
           rotation: 0,
-          y: this.verticalSteps[0] - cubeY + 20,
+          y: this.verticalSteps[0] - cubeY - 40,
         },
         {
-          y: this.verticalSteps[0] - cubeY + 20,
+          y: this.verticalSteps[0] - cubeY - 40,
           ease: Power2.easeInOut,
         }
       )
@@ -240,13 +239,14 @@ export default class CycleFeatures extends React.PureComponent {
         this.cube,
         1.2,
         {
-          y: this.verticalSteps[1] - cubeY + 20,
+          y: this.verticalSteps[1] - cubeY - 40,
           scale: 1,
           rotation: 720,
           ease: Power2.easeInOut,
         },
         'step1'
       )
+      .set('#main-cube-side', { backgroundColor: theme.primary.clearer(0.2)() })
       .to('#addition-cube', 0.6, {
         ease: Power2.easeOut,
         y: -45,
@@ -263,14 +263,16 @@ export default class CycleFeatures extends React.PureComponent {
       .to(
         '#main-cube-side',
         0.2,
-        { boxShadow: `0px 0px 150px ${theme.primary()}` },
+        {
+          boxShadow: `0px 0px 150px ${theme.primary()}`,
+        },
         '-=0.6'
       )
       .to(
         this.cube,
         1.2,
         {
-          y: this.verticalSteps[2] - cubeY + 20,
+          y: this.verticalSteps[2] - cubeY - 40,
 
           ease: Power2.easeInOut,
         },
@@ -302,7 +304,7 @@ export default class CycleFeatures extends React.PureComponent {
         },
         '-=0.2'
       )
-      .to('#main-cube-side', 0.2, {
+      .to('#main-cube-side', 0.7, {
         backgroundColor: theme.secondary.clearer(0.2)(),
         boxShadow: `0px 0px 150px ${theme.secondary()}`,
         ease: Power2.easeInOut,
@@ -317,7 +319,7 @@ export default class CycleFeatures extends React.PureComponent {
         'step3'
       )
       .to(this.cube, 1.2, {
-        y: this.verticalSteps[3] - cubeY + 100,
+        y: this.verticalSteps[3] - cubeY + 40,
         scale: 0.5,
         ease: Power2.easeInOut,
       })
@@ -414,7 +416,7 @@ export default class CycleFeatures extends React.PureComponent {
                 size={90}
                 offset={40}
                 color={theme.secondary}
-                style={{ position: 'absolute' }}
+                style={{ position: 'absolute', top: 0 }}
               />
               <Cube
                 id="main-cube"
@@ -422,7 +424,7 @@ export default class CycleFeatures extends React.PureComponent {
                 size={90}
                 offset={40}
                 color={theme.primary}
-                style={{ position: 'absolute' }}
+                style={{ position: 'absolute', top: 0 }}
               />
             </OffsettedCube>
             <ImportContainer>

@@ -13,8 +13,6 @@ const Cube = styled.div`
 `;
 
 const Sides = styled.div`
-  transition: 0.8s ease all;
-
   transform: rotateY(48deg) rotateX(-20deg) rotateZ(-20deg);
   transform-style: preserve-3d;
   perspective: 10200;
@@ -27,7 +25,6 @@ const Sides = styled.div`
 `;
 
 const Side = styled.div`
-  transition: 0.8s ease all;
   transform-origin: 50% 50%;
   transform: ${({ rotate }) => rotate} translateZ(${({ size }) => size / 2}px);
 `;

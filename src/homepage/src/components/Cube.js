@@ -1,5 +1,5 @@
 import React from 'react';
-import styled, { css, keyframes } from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 const Cube = styled.div`
   width: ${props => props.size + 1}px;
@@ -54,6 +54,11 @@ type Props = {
   offset: number,
 };
 
+const isSafari =
+  typeof navigator !== 'undefined' &&
+  /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+const SHADOW_SIZE = isSafari ? 100 : 200;
+
 export default class GlowCube extends React.Component<Props> {
   render() {
     const {
@@ -76,32 +81,32 @@ export default class GlowCube extends React.Component<Props> {
           size={size}
         >
           <Side
-            style={{ boxShadow: `0px 0px 400px ${color()}` }}
+            style={{ boxShadow: `0px 0px ${SHADOW_SIZE}px ${color()}` }}
             rotate="rotateX(90deg)"
             size={size}
           />
           <Side
-            style={{ boxShadow: `0px 0px 400px ${color()}` }}
+            style={{ boxShadow: `0px 0px ${SHADOW_SIZE}px ${color()}` }}
             rotate="rotateX(-90deg)"
             size={size}
           />
           <Side
-            style={{ boxShadow: `0px 0px 400px ${color()}` }}
+            style={{ boxShadow: `0px 0px ${SHADOW_SIZE}px ${color()}` }}
             rotate="rotateY(0deg)"
             size={size}
           />
           <Side
-            style={{ boxShadow: `0px 0px 400px ${color()}` }}
+            style={{ boxShadow: `0px 0px ${SHADOW_SIZE}px ${color()}` }}
             rotate="rotateY(-180deg)"
             size={size}
           />
           <Side
-            style={{ boxShadow: `0px 0px 400px ${color()}` }}
+            style={{ boxShadow: `0px 0px ${SHADOW_SIZE}px ${color()}` }}
             rotate="rotateY(-90deg)"
             size={size}
           />
           <Side
-            style={{ boxShadow: `0px 0px 400px ${color()}` }}
+            style={{ boxShadow: `0px 0px ${SHADOW_SIZE}px ${color()}` }}
             rotate="rotateY(90deg)"
             size={size}
           />

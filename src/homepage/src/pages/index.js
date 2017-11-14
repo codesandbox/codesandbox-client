@@ -7,6 +7,8 @@ import Relative from 'app/components/Relative';
 
 import * as templates from 'common/templates';
 
+import Media from 'react-media';
+
 import HomeTitle from '../screens/home/Title';
 import Cubes from '../screens/home/Cubes';
 import Frameworks from '../screens/home/Frameworks';
@@ -14,6 +16,8 @@ import Background from '../screens/home/Background';
 import EditorFeatures from '../screens/home/EditorFeatures';
 import NPMFeature from '../screens/home/NPMFeature';
 import CycleFeature from '../screens/home/CycleFeature';
+import ExtraFeatures from '../screens/home/ExtraFeatures';
+import Footer from '../screens/home/Footer';
 
 import media from '../utils/media';
 
@@ -31,7 +35,10 @@ const Container = styled(Centered)`
   ${media.tablet`
     display: block;
     flex-direction: column;
-    margin-top: 2rem;
+    margin-top: 6rem;
+    margin-bottom: 8rem;
+
+    height: initial;
   `};
 `;
 
@@ -109,12 +116,14 @@ class IndexPage extends React.PureComponent {
             />
             <Container horizontal>
               <HomeTitle template={template} />
-              <Cubes
-                canvas={this.state.canvas}
-                templates={this.state.templates}
-                template={template}
-                setTemplate={this.selectTemplate}
-              />
+              <Media query="(min-width: 1280px)">
+                <Cubes
+                  canvas={this.state.canvas}
+                  templates={this.state.templates}
+                  template={template}
+                  setTemplate={this.selectTemplate}
+                />
+              </Media>
             </Container>
           </Fullscreen>
           <Centered horizontal>
@@ -123,14 +132,12 @@ class IndexPage extends React.PureComponent {
               applications, from prototype to deployment.
             </Message>
           </Centered>
-          <Frameworks
-            templates={this.state.templates}
-            template={template}
-            setTemplate={this.selectTemplate}
-          />
+          <Frameworks templates={this.state.templates} />
         </Relative>
         <NPMFeature />
         <CycleFeature />
+        <ExtraFeatures />
+        <Footer />
       </div>
     );
   }

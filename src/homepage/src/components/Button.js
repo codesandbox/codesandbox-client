@@ -17,6 +17,7 @@ export default styled.a`
   font-weight: 400;
   border-radius: 4px;
   color: white;
+  text-align: center;
   box-shadow: 0 0 100px ${props => props.color.clearer(0.3)};
   text-transform: uppercase;
 

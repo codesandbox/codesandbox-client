@@ -42,9 +42,39 @@ class Html extends Component {
             name="viewport"
             content="width=device-width, initial-scale=1.0"
           />
-          <meta charset="utf-8" />
-          <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-          <title>Gatsby Glamor</title>
+          <title>
+            CodeSandbox: Online Editor Tailored for Web Application Development
+          </title>
+          <meta property="og:type" content="website" />
+          <meta property="og:author" content="https://ivesvh.com" />
+          <meta
+            property="og:title"
+            content="CodeSandbox: Online Editor Tailored for Web Application Development"
+          />
+          <meta
+            property="og:description"
+            content="CodeSandbox is an online editor with a focus on creating and sharing web application projects"
+          />
+          <meta
+            property="og:image"
+            content="https://codesandbox.io/static/img/banner.png"
+          />
+          <meta property="og:image:width" content="1200" />
+          <meta property="og:image:height" content="630" />
+          <meta property="twitter:card" content="summary_large_image" />
+          <meta property="twitter:site" content="@CompuIves" />
+          <meta property="twitter:creator" content="@CompuIves" />
+          <meta property="twitter:title" content="CodeSandbox" />
+          <meta
+            property="twitter:description"
+            content="CodeSandbox is an online editor with a focus on creating and sharing web application projects"
+          />
+          <meta
+            property="twitter:image:src"
+            content="https://codesandbox.io/static/img/banner.png"
+          />
+          <meta property="twitter:image:width" content="1200" />
+          <meta property="twitter:image:height" content="630" />
           <TypographyStyle typography={typography} />
           <link
             href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700"

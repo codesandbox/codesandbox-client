@@ -13,7 +13,6 @@ const Container = styled.div`
   left: 0;
   z-index: 0;
   pointer-events: none;
-  background-color: ${props => props.color};
 `;
 
 export default class Background extends React.PureComponent {
@@ -27,7 +26,7 @@ export default class Background extends React.PureComponent {
     const { template } = this.props;
 
     return (
-      <Container color={template.color.clearer(0.97)()}>
+      <Container style={{ backgroundColor: template.color.clearer(0.97)() }}>
         <canvas
           style={{ position: 'absolute', top: 0, left: 0 }}
           ref={this.startCanvas}

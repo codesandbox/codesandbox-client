@@ -1,6 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import Relative from 'app/components/Relative';
+
+import SearchIcon from 'react-icons/lib/md/search';
+
 const Input = styled.input`
   transition: 0.3s ease all;
   width: 100%;
@@ -8,19 +12,25 @@ const Input = styled.input`
   outline: none;
   border-radius: 4px;
   padding: 0.5rem 1rem;
+
+  padding-left: 2.5rem;
   font-size: 1.125rem;
 
   margin-bottom: 2rem;
 
-  /* border: 2px solid ${({ theme }) => theme.secondary.clearer(0.3)}; */
-
-  /* background-color: rgba(0, 0, 0, 0.3); */
-  /* color: rgba(255, 255, 255, 0.8); */
   box-shadow: 0 0 100px rgba(255, 255, 255, 0.3);
 
   &:focus {
     box-shadow: 0 0 140px rgba(255, 255, 255, 0.5);
   }
+`;
+
+const Icon = styled(SearchIcon)`
+  position: absolute;
+  left: 0.5rem;
+  top: 0.55rem;
+  font-size: 1.5rem;
+  color: rgba(0, 0, 0, 0.5);
 `;
 
 export default class SearchInput extends React.PureComponent {
@@ -35,11 +45,14 @@ export default class SearchInput extends React.PureComponent {
 
   render() {
     return (
-      <Input
-        placeholder="Search for a dependency"
-        value={this.state.query}
-        onChange={this.onChange}
-      />
+      <Relative>
+        <Input
+          placeholder="Search for a dependency"
+          value={this.state.query}
+          onChange={this.onChange}
+        />
+        <Icon />
+      </Relative>
     );
   }
 }

@@ -10,6 +10,7 @@ const Container = styled.section`
   color: rgba(255, 255, 255, 0.4);
   flex: 1;
   height: 250px;
+  min-height: 250px;
 
   cursor: pointer;
 

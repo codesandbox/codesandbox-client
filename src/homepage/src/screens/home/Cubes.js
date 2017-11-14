@@ -8,7 +8,6 @@ import media from '../../utils/media';
 import getScrollPos from '../../utils/scroll';
 
 const RADIUS = 300;
-
 const Container = styled.div`
   flex: 2;
   position: relative;
@@ -35,6 +34,8 @@ const SmallCube = styled.div`
   transform: scale(0.4, 0.4);
 `;
 
+const OFFSETS = [84, 32, 54, 110];
+
 export default class Cubes extends React.PureComponent {
   els = {};
 
@@ -51,7 +52,7 @@ export default class Cubes extends React.PureComponent {
           template: tem,
           x,
           y,
-          offset: Math.random() * 120,
+          offset: OFFSETS[i],
         };
       }),
       canvas: null,
@@ -61,7 +62,7 @@ export default class Cubes extends React.PureComponent {
   animate = () => {
     const delta = Date.now() - this.lastTick;
 
-    if (delta < 0.15) {
+    if (delta < 0.3) {
       requestAnimationFrame(this.animate);
       return;
     }
@@ -82,7 +83,7 @@ export default class Cubes extends React.PureComponent {
 
       TweenMax.to(
         this.els[template.template.name],
-        isLastTemplate ? 0.8 : 0.15,
+        isLastTemplate ? 0.8 : 0.3,
         {
           left: x,
           bottom: y,
@@ -108,7 +109,7 @@ export default class Cubes extends React.PureComponent {
     this.lastTick = Date.now();
     this.time = 0;
 
-    this.animating = true;
+    this.animating = false && window.innerWidth > 1600;
 
     if (this.animating) {
       this.animate();
@@ -165,7 +166,7 @@ export default class Cubes extends React.PureComponent {
       new TimelineMax().to(el, 0.7, { scale: 0.4, ease: Power2.easeOut });
     } else {
       new TimelineMax()
-        .to(el, 0.8, { left: template.x, bottomy: template.y })
+        .to(el, 0.8, { left: template.x, bottom: template.y })
         .to(el, 0.7, { scale: 0.4, ease: Power2.easeOut }, '-=0.7');
     }
   };
@@ -196,6 +197,7 @@ export default class Cubes extends React.PureComponent {
 
   render() {
     const { template } = this.props;
+
     return (
       <Container>
         {this.state.templates.map((t, i) => {

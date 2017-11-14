@@ -11,8 +11,6 @@ export const react = {
   url: 'https://github.com/facebookincubator/create-react-app',
   shortid: 'new',
   Icon: ReactIcon,
-  description: `A library first created to solve complex UI by Facebook,
-  now used by big companies all over the world. It's known for its simplicity: "it's just JavaScript".`,
   color: decorateSelector(() => '#6CAEDD'),
 
   alterDeploymentData: apiData => ({
@@ -68,30 +66,6 @@ export const vue = {
   }),
 };
 
-export const svelte = {
-  name: 'svelte',
-  niceName: 'Svelte',
-  url: 'https://github.com/sveltejs/svelte',
-  shortid: 'svelte',
-  Icon: SvelteIcon,
-  color: decorateSelector(() => '#AA1E1E'),
-
-  alterDeploymentData: apiData => ({
-    ...apiData,
-    package: {
-      ...apiData.package,
-      devDependencies: {
-        ...apiData.package.devDependencies,
-        serve: '^5.0.1',
-      },
-      scripts: {
-        ...apiData.package.scripts,
-        'now-start': 'cd public && serve -s ./',
-      },
-    },
-  }),
-};
-
 export const preact = {
   name: 'preact-cli',
   niceName: 'Preact',
@@ -111,6 +85,30 @@ export const preact = {
       scripts: {
         ...apiData.package.scripts,
         'now-start': 'cd build && serve -s ./',
+      },
+    },
+  }),
+};
+
+export const svelte = {
+  name: 'svelte',
+  niceName: 'Svelte',
+  url: 'https://github.com/sveltejs/svelte',
+  shortid: 'svelte',
+  Icon: SvelteIcon,
+  color: decorateSelector(() => '#AA1E1E'),
+
+  alterDeploymentData: apiData => ({
+    ...apiData,
+    package: {
+      ...apiData.package,
+      devDependencies: {
+        ...apiData.package.devDependencies,
+        serve: '^5.0.1',
+      },
+      scripts: {
+        ...apiData.package.scripts,
+        'now-start': 'cd public && serve -s ./',
       },
     },
   }),

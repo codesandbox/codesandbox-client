@@ -12,6 +12,8 @@ import Input from './Input';
 import Hit from './Hit';
 
 import algoliaImage from './algolia.svg';
+import { searchFacets } from '../../../../utils/algolia';
+import media from '../../../../utils/media';
 
 const Legenda = styled.div`
   display: flex;
@@ -37,21 +39,14 @@ export default class SearchInput extends React.PureComponent {
   }
 
   searchQuery = (query: string) => {
-    this.index.searchForFacetValues(
-      { facetName: 'npm_dependencies.dependency', facetQuery: query },
-      (err, content) => {
-        if (err) {
-          console.error(err);
-        }
-
-        this.setState({ hits: content.facetHits.slice(0, 3) });
-      }
-    );
+    searchFacets('npm_dependencies.dependency', query).then(res => {
+      this.setState({ hits: res.facetHits.slice(0, 3) });
+    });
   };
 
   render() {
     return (
-      <div>
+      <div style={{ width: '100%' }}>
         <Input searchQuery={this.searchQuery} />
         <Legenda>
           <div>Dependency</div>
