@@ -13,11 +13,11 @@ import HomeTitle from '../screens/home/Title';
 import Cubes from '../screens/home/Cubes';
 import Frameworks from '../screens/home/Frameworks';
 import Background from '../screens/home/Background';
-import EditorFeatures from '../screens/home/EditorFeatures';
 import NPMFeature from '../screens/home/NPMFeature';
 import CycleFeature from '../screens/home/CycleFeature';
 import ExtraFeatures from '../screens/home/ExtraFeatures';
 import Footer from '../screens/home/Footer';
+import RecentPublications from '../screens/home/RecentPublications';
 
 import media from '../utils/media';
 
@@ -81,14 +81,16 @@ class IndexPage extends React.PureComponent {
 
   startTimer = () => {
     this.timeout = setTimeout(() => {
-      if (!this.state.templateSelected) {
-        this.setState({
-          templateIndex:
-            (this.state.templateIndex + 1) % this.state.templates.length,
-        });
+      requestAnimationFrame(() => {
+        if (!this.state.templateSelected) {
+          this.setState({
+            templateIndex:
+              (this.state.templateIndex + 1) % this.state.templates.length,
+          });
 
-        this.startTimer();
-      }
+          this.startTimer();
+        }
+      });
     }, 5000);
   };
 
@@ -137,6 +139,7 @@ class IndexPage extends React.PureComponent {
         <NPMFeature />
         <CycleFeature />
         <ExtraFeatures />
+        <RecentPublications />
         <Footer />
       </div>
     );

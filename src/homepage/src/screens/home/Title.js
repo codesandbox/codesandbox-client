@@ -67,15 +67,18 @@ const Buttons = styled.div`
   }
 
   ${media.tablet`
-      margin: 0 1rem;
-      justify-content: space-around;
-      width: 100%;
-      text-align: center;
-
-    `};
+    margin: 0 1rem;
+    justify-content: space-around;
+    width: 100%;
+    text-align: center;
+  `};
 
   ${media.phone`
     font-size: .875rem;
+
+    a {
+      width: inherit;
+    }
   `};
 `;
 
@@ -111,12 +114,12 @@ export default ({ template }) => (
       </RollingText>
     </SubTitle>
 
-    <ResponsiveRollingText>
+    <ResponsiveRollingText updateCheck={template.name}>
       <Buttons>
         <Button
           href={sandboxUrl({ id: template.shortid })}
           color={template.color}
-          style={{ width: 200 }}
+          style={{ width: 220 }}
         >
           Open {template.niceName}
         </Button>

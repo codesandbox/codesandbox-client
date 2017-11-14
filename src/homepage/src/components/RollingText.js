@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { TimelineLite } from 'gsap';
+import { TimelineLite, TweenMax } from 'gsap';
 
 const FadeOut = styled.span`
   position: absolute;
@@ -13,7 +13,7 @@ const FadeIn = styled.div`
   width: inherit;
 `;
 
-export default class RollingText extends React.PureComponent {
+export default class RollingText extends React.Component {
   state = {
     oldChildren: null,
   };
@@ -41,9 +41,11 @@ export default class RollingText extends React.PureComponent {
       { opacity: 1, y: 0 },
       { opacity: 0, y: -20 }
     );
+
+    TweenMax.set(this.fadein, { opacity: 1, y: 0 });
   }
 
-  componentWillUpdate(nextProps) {
+  componentDidUpdate(nextProps) {
     if (nextProps.children !== this.props.children) {
       this.oldChildren = this.props.children;
       this.fadeInTL.restart();

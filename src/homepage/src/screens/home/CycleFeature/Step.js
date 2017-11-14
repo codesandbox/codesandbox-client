@@ -6,7 +6,7 @@ const Container = styled.section`
   flex-direction: row;
   align-items: flex-start;
 
-  transition: 0.3s ease all;
+  transition: 0.3s ease color;
   color: rgba(255, 255, 255, 0.4);
   flex: 1;
   height: 250px;

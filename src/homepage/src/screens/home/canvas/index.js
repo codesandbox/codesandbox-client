@@ -35,19 +35,21 @@ class Canvas {
 
         // Push to into an array of dots
         this.dots.push(dot);
+
+        dot.setSpeed(Math.random() / 200, Math.random() / 200);
       }
     }
   }
 
   loop = () => {
-    if (getScrollPos().y > this.stage.height) {
+    const now = Date.now();
+    const delta = now - this.lastDelta;
+    if (getScrollPos(now).y > this.stage.height || delta < 30) {
       requestAnimationFrame(this.loop);
       return;
     }
 
     this.ctx.clearRect(0, 0, this.stage.width, this.stage.height);
-
-    const delta = Date.now() - this.lastDelta;
 
     let distX;
     let distY;
@@ -67,6 +69,10 @@ class Canvas {
       endRadius = this.wave.waveRadius + radius / 2 - radius;
       middle = startRadius + (endRadius - startRadius) / 2;
       top = -(middle - startRadius) * (middle - endRadius);
+
+      if (startRadius > this.stage.width + 200) {
+        this.wave = null;
+      }
     }
 
     for (let i = 0; i < this.dots.length; i++) {
@@ -103,7 +109,7 @@ class Canvas {
       this.dots[i].draw(this.ctx);
     }
 
-    this.lastDelta = Date.now();
+    this.lastDelta = now;
 
     requestAnimationFrame(this.loop);
   };
@@ -118,20 +124,25 @@ class Canvas {
     this.wave = new Wave(x, y, color);
   }
 
+  calibrated = false;
+
   setCubePos(x: number, y: number) {
     this.cubeX = x;
     this.cubeY = y;
 
-    for (let i = 0; i < this.dots.length; i++) {
-      const distX = this.cubeX - this.dots[i].x;
-      const distY = this.cubeY - this.dots[i].y;
+    if (!this.calibrated) {
+      for (let i = 0; i < this.dots.length; i++) {
+        const distX = this.cubeX - this.dots[i].x;
+        const distY = this.cubeY - this.dots[i].y;
 
-      const distance = Math.sqrt(distX * distX + distY * distY);
+        const distance = Math.sqrt(distX * distX + distY * distY);
 
-      this.dots[i].setSpeed(
-        distX / distance / 20 * ((Math.random() + 0.1) * 0.2),
-        distY / distance / 20 * ((Math.random() + 0.1) * 0.2)
-      );
+        this.dots[i].setSpeed(
+          distX / distance / 20 * ((Math.random() + 0.1) * 0.2),
+          distY / distance / 20 * ((Math.random() + 0.1) * 0.2)
+        );
+      }
+      this.calibrated = true;
     }
   }
 }
@@ -140,7 +151,6 @@ export default function start(el: HTMLElement) {
   const c = new Canvas(el);
 
   c.init();
-
   c.loop();
   return c;
 }

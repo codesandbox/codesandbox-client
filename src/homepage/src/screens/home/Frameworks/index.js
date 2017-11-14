@@ -5,7 +5,6 @@ import MaxWidth from 'app/components/flex/MaxWidth';
 import Column from 'app/components/flex/Column';
 import Centered from 'app/components/flex/Centered';
 import Padding from 'app/components/spacing/Padding';
-import Tooltip from 'app/components/Tooltip';
 
 import LoadInView from '../../../components/LoadInView';
 import RollingText from '../../../components/RollingText';
@@ -28,16 +27,21 @@ import FileType, {
 import media from '../../../utils/media';
 
 const Container = styled.div`
-  transition: 0.3s ease all;
+  transition: 0.3s ease box-shadow;
   border-radius: 2px;
 
-  background-color: ${({ color, theme }) => theme.background};
+  background-color: ${({ theme }) => theme.background};
 
   box-shadow: 0 3px 200px ${({ color }) => color.clearer(0.8)};
 
   display: flex;
   flex-direction: row;
   height: 255px;
+
+  ${media.phone`
+    margin-top: 1rem;
+    height: 280px;
+  `};
 `;
 
 const Pane = styled(MaxWidth)`
@@ -57,7 +61,7 @@ const Flex = styled.div`
   display: flex;
   flex-direction: row;
 
-  ${media.tablet`
+  ${media.phone`
     flex-direction: column;
   `};
 `;
@@ -70,7 +74,7 @@ const Icons = styled.div`
 `;
 
 const IconContainer = styled.div`
-  transition: 0.3s ease all;
+  transition: 0.3s ease background-color;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -78,6 +82,16 @@ const IconContainer = styled.div`
 
   width: 128px;
   height: 128px;
+
+  ${media.phone`
+    width: 96px;
+    height: 96px;
+
+    svg {
+      width: 60px;
+      height: 60px;
+    }
+  `};
 
   border-radius: 2px;
 
@@ -141,6 +155,10 @@ const TemplateIcons = styled.div`
     width: 25%;
     box-sizing: border-box;
     margin-top: 0.5rem;
+
+    ${media.tablet`
+      width: 50%;
+    `};
   }
 `;
 
@@ -205,10 +223,9 @@ export default class Frameworks extends React.PureComponent {
             <Heading3>Tailored for web applications</Heading3>
             <p>
               We know how overwhelming JavaScript development can be. With
-              CodeSandbox we specifically focus on{' '}
-              <strong>web application development</strong> to make the
-              experience as smooth as possible. Just open your browser and start
-              coding.
+              CodeSandbox we specifically focus on web application development
+              to make the experience as smooth as possible. Just open your
+              browser and start coding.
             </p>
           </Column>
           <Column flex={4}>
@@ -250,7 +267,7 @@ export default class Frameworks extends React.PureComponent {
         </Flex>
 
         <Centered horizontal>
-          <LoadInView>
+          <LoadInView style={{ height: 650 }}>
             <iframe
               src={
                 this.state.frameUrl ||
@@ -259,7 +276,7 @@ export default class Frameworks extends React.PureComponent {
               style={{
                 borderRadius: 4,
                 width: '100%',
-
+                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
                 border: 'none',
                 marginTop: '5rem',
               }}

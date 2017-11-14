@@ -26,11 +26,11 @@ const getAnimation = (offset: number = 0) => {
 };
 
 const Sides = styled.div`
-  transition: 0.8s ease all;
   ${({ noAnimation, offset, speed }) =>
     !noAnimation &&
     `animation: ${getAnimation(offset)} ${speed}s linear infinite;`};
   transform-style: preserve-3d;
+  will-change: transform;
 
   * {
     box-sizing: border-box;
@@ -40,8 +40,8 @@ const Sides = styled.div`
 `;
 
 const Side = styled.div`
-  transition: 0.8s ease all;
   transform-origin: 50% 50%;
+  will-change: transform;
   transform: ${({ rotate }) => rotate} translateZ(${({ size }) => size / 2}px);
 `;
 
@@ -57,9 +57,9 @@ type Props = {
 const isSafari =
   typeof navigator !== 'undefined' &&
   /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-const SHADOW_SIZE = isSafari ? 100 : 200;
+const SHADOW_SIZE = isSafari ? 100 : 150;
 
-export default class GlowCube extends React.Component<Props> {
+export default class GlowCube extends React.PureComponent<Props> {
   render() {
     const {
       size = 150,

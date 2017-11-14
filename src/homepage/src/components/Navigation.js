@@ -9,7 +9,7 @@ import media from '../utils/media';
 const Container = styled.div`
   display: flex;
   align-items: center;
-  padding: 1rem;
+  padding: 1rem 0;
   width: 100%;
   color: white;
   z-index: 5;
@@ -44,6 +44,9 @@ const Item = styled.a`
   ${props =>
     props.button &&
     css`
+      ${media.phone`
+      display: none;
+    `};
       padding: 0.35rem 0.8rem;
       border-radius: 4px;
       background-image: linear-gradient(

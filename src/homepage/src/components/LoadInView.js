@@ -15,7 +15,9 @@ export default class LoadInView extends React.PureComponent {
 
   listen = () => {
     if (!this.state.show && getScrollPos().y < this.elPos) {
-      this.setState({ show: true });
+      requestAnimationFrame(() => {
+        this.setState({ show: true });
+      });
     }
   };
 
@@ -30,13 +32,14 @@ export default class LoadInView extends React.PureComponent {
   }
 
   render() {
-    const { children } = this.props;
+    const { children, style, ...props } = this.props;
     return (
       <div
-        style={{ display: 'inline-block', width: 'inherit' }}
+        style={{ display: 'inline-block', width: '100%', ...style }}
         ref={el => {
           this.el = el;
         }}
+        {...props}
       >
         {this.state.show && children}
       </div>

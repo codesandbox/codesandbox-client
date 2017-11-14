@@ -27,6 +27,11 @@ const Heading = styled.h2`
 
   text-transform: uppercase;
 
+  ${media.phone`
+    margin-top: 3rem;
+    margin-bottom: 0;
+  `};
+
   color: ${({ theme }) => theme.secondary};
   text-shadow: 0 0 50px ${({ theme }) => theme.secondary.clearer(0.6)};
 `;

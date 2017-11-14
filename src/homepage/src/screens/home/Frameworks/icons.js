@@ -3,15 +3,15 @@ import styled from 'styled-components';
 
 import { fadeIn } from '../../../utils/animation';
 
-import babelSvg from './babel.svg';
-import cssSvg from './css.svg';
-import htmlSvg from './html.svg';
-import imageSvg from './image.svg';
-import lessSvg from './less.svg';
-import scssSvg from './scss.svg';
-import stylusSvg from './stylus.svg';
-import typescriptSvg from './typescript.svg';
-import vueSvg from './vue.svg';
+import babelSvg from './babel.png';
+import cssSvg from './css.png';
+import htmlSvg from './html.png';
+import imageSvg from './image.png';
+import lessSvg from './less.png';
+import scssSvg from './scss.png';
+import stylusSvg from './stylus.png';
+import typescriptSvg from './typescript.png';
+import vueSvg from './vue.png';
 
 const Container = styled.div`
   display: flex;

@@ -7,7 +7,6 @@ const getGradient = color => css`linear-gradient(
 )`;
 
 export default styled.a`
-  transition: ease all 0.3s;
   position: relative;
   background: ${({ color, secondary }) =>
     secondary ? '' : getGradient(color)};

@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { TimelineMax, TweenMax, Power2, Power3, Elastic } from 'gsap';
+import fadeIn from 'app/utils/animation/fade-in';
 
 import Cube from '../../components/Cube';
 import media from '../../utils/media';
@@ -12,6 +13,8 @@ const Container = styled.div`
   flex: 2;
   position: relative;
   transform: translateX(${RADIUS}px) translateY(125px);
+
+  ${fadeIn(0)};
 
   ${media.tablet`
     flex: 2;
@@ -24,18 +27,33 @@ const Container = styled.div`
   `};
 `;
 
-const SmallCube = styled.div`
-  position: absolute;
+const SmallCube = styled(
+  class SmallCubeInner extends React.Component {
+    shouldComponentUpdate(nextProps) {
+      return nextProps.selected !== this.props.selected;
+    }
 
-  left: ${({ left }) => left}px;
-  bottom: ${({ bottom }) => bottom}px;
+    render() {
+      return (
+        <div
+          style={{ willChange: 'transform' }}
+          ref={this.props.cubeRef}
+          {...this.props}
+        />
+      );
+    }
+  }
+)`
+  position: absolute;
 
   cursor: pointer;
   transform: scale(0.4, 0.4);
+  will-change: transform;
 `;
 
 const OFFSETS = [84, 32, 54, 110];
 
+// eslint-disable-next-line react/no-multi-comp
 export default class Cubes extends React.PureComponent {
   els = {};
 
@@ -96,15 +114,8 @@ export default class Cubes extends React.PureComponent {
 
   componentDidMount() {
     requestAnimationFrame(() => {
-      this.growCube(this.props.template, this.props.canvas).add(
-        this.updateCubePos,
-        '-=.6'
-      );
+      this.growCube(this.props.template, this.props.canvas);
     });
-
-    window.onresize = () => {
-      this.updateCubePos();
-    };
 
     this.lastTick = Date.now();
     this.time = 0;
@@ -140,23 +151,32 @@ export default class Cubes extends React.PureComponent {
     }
   }
 
+  growTimelines = {};
+  shrinkTimelines = {};
+
   growCube = (template, canvas) => {
     const el = this.els[template.name];
     const rgb = template.color.lighten(0)()
       .match(/rgb\((.*)\)/)[1]
       .split(',');
+    const { x, y } = this.state.templates.find(x => x.template === template);
 
-    return new TimelineMax()
-      .to(el, 0.8, { bottom: 0, left: 0, ease: Power3.easeIn })
-      .to(el, 0.7, {
-        scale: 1,
-        ease: Elastic.easeOut,
-      })
-      .add(() => {
-        if (canvas) {
-          canvas.makeWave(canvas.cubeX, canvas.cubeY, rgb);
-        }
-      }, '-=.7');
+    this.growTimelines[template.name] =
+      this.growTimelines[template.name] ||
+      new TimelineMax({ paused: true })
+        .to(el, 0.8, { x: -x, y, ease: Power3.easeIn })
+        .to(el, 0.7, {
+          scale: 1,
+          ease: Elastic.easeOut,
+        })
+        .add(() => {
+          if (canvas) {
+            canvas.makeWave(canvas.cubeX, canvas.cubeY, rgb);
+          }
+        }, '-=.7')
+        .add(this.updateCubePos, '-=.7');
+
+    return this.growTimelines[template.name].restart();
   };
 
   shrinkCube = template => {
@@ -165,9 +185,13 @@ export default class Cubes extends React.PureComponent {
     if (this.animating) {
       new TimelineMax().to(el, 0.7, { scale: 0.4, ease: Power2.easeOut });
     } else {
-      new TimelineMax()
-        .to(el, 0.8, { left: template.x, bottom: template.y })
-        .to(el, 0.7, { scale: 0.4, ease: Power2.easeOut }, '-=0.7');
+      this.shrinkTimelines[template.template.name] =
+        this.shrinkTimelines[template.template.name] ||
+        new TimelineMax()
+          .to(el, 0.8, { x: 0, y: 0 })
+          .to(el, 0.7, { scale: 0.4, ease: Power2.easeOut }, '-=0.7');
+
+      return this.shrinkTimelines[template.template.name].restart();
     }
   };
 
@@ -198,6 +222,10 @@ export default class Cubes extends React.PureComponent {
   render() {
     const { template } = this.props;
 
+    if (typeof window === 'undefined') {
+      return null;
+    }
+
     return (
       <Container>
         {this.state.templates.map((t, i) => {
@@ -205,12 +233,11 @@ export default class Cubes extends React.PureComponent {
 
           return (
             <SmallCube
-              innerRef={el => {
+              cubeRef={el => {
                 this.els[t.template.name] = el;
               }}
+              style={{ bottom: t.y, left: t.x }}
               key={t.template.name}
-              bottom={t.y}
-              left={t.x}
               selected={selected}
               i={i}
               onMouseEnter={() => this.hoverCube(t)}

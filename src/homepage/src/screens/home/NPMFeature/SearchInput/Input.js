@@ -6,7 +6,7 @@ import Relative from 'app/components/Relative';
 import SearchIcon from 'react-icons/lib/md/search';
 
 const Input = styled.input`
-  transition: 0.3s ease all;
+  transition: 0.3s ease box-shadow;
   width: 100%;
   border: none;
   outline: none;

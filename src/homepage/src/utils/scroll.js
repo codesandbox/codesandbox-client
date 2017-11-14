@@ -1,6 +1,16 @@
-export default function getScrollPos() {
+let cache = null;
+
+export default function getScrollPos(now = Date.now()) {
+  if (cache && now - cache.now < 1000) {
+    return cache.result;
+  }
+
   if (window.pageYOffset !== undefined) {
-    return { x: pageXOffset, y: pageYOffset };
+    cache = {
+      now,
+      result: { x: pageXOffset, y: pageYOffset },
+    };
+    return cache.result;
   }
 
   const d = document;
@@ -8,5 +18,10 @@ export default function getScrollPos() {
   const b = d.body;
   const sx = r.scrollLeft || b.scrollLeft || 0;
   const sy = r.scrollTop || b.scrollTop || 0;
-  return { x: sx, y: sy };
+
+  cache = {
+    now,
+    result: { x: sx, y: sy },
+  };
+  return cache.result;
 }
