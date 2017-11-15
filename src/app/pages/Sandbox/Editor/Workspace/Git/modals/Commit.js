@@ -17,7 +17,7 @@ type State = {
   message: ?React.Element<{}>,
 };
 
-export default class PR extends React.PureComponent<Props, State> {
+export default class Commit extends React.PureComponent<Props, State> {
   state = {
     message: null,
   };
@@ -33,7 +33,9 @@ export default class PR extends React.PureComponent<Props, State> {
     let message = null;
 
     if (newBranch) {
-      const newUrl = `https://github.com/${username}/${repo}/compare/${branch}...${newUser}:${newBranch}?expand=1`;
+      const newUrl = `https://github.com/${username}/${repo}/compare/${
+        branch
+      }...${newUser}:${newBranch}?expand=1`;
       message = (
         <div>
           There was a merge conflict while committing, you can open a PR

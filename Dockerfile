@@ -1,4 +1,4 @@
-FROM node:8.9
+FROM node:9
 LABEL maintainer "Ives van Hoorne"
 
 RUN mkdir /usr/src/app

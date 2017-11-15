@@ -1,5 +1,6 @@
 import { actions, dispatch } from 'codesandbox-api';
 import _debug from 'app/utils/debug';
+
 import dependenciesToQuery from './dependencies-to-query';
 
 import delay from '../utils/delay';
@@ -48,6 +49,7 @@ function callApi(url: string, method = 'GET') {
 async function requestPackager(url, method = 'GET') {
   let retries = 0;
 
+  dispatch(actions.notifications.show('Bundling dependencies...'));
   // eslint-disable-next-line no-constant-condition
   while (true) {
     debug(`Trying to call packager for ${retries} time`);
@@ -87,9 +89,9 @@ function dependenciesToBucketPath(dependencies: Object) {
     .map(
       // Paths starting with slashes don't work with cloudfront, even escaped. So we remove the slashes
       dep =>
-        `${encodeURIComponent(
-          dep.replace('/', '-').replace('@', '')
-        )}@${dependencies[dep]}`
+        `${encodeURIComponent(dep.replace('/', '-').replace('@', ''))}@${
+          dependencies[dep]
+        }`
     )
     .join('%2B')}.json`;
 }

@@ -37,6 +37,7 @@ import Logo from './Logo';
 import ConnectionNotice from './ConnectionNotice';
 import Advertisement from './Advertisement';
 import Git from './Git';
+import CreateRepo from './Git/CreateRepo';
 
 const Container = styled.div`
   position: absolute;
@@ -157,21 +158,32 @@ class Workspace extends React.PureComponent<Props> {
             </WorkspaceItem>
 
             {sandbox.owned &&
-              sandbox.originalGitCommitSha && (
+              !sandbox.git && (
                 <WorkspaceItem title="GitHub">
                   {currentUser.integrations.github ? (
-                    <Git
-                      sandboxId={sandbox.id}
-                      originalGit={sandbox.originalGit}
-                      gitChanges={sandbox.originalGitChanges}
-                      fetchGitChanges={sandboxActions.fetchGitChanges}
-                      createGitCommit={sandboxActions.createGitCommit}
-                      createGitPR={sandboxActions.createGitPR}
-                      openModal={modalActions.openModal}
-                      closeModal={modalActions.closeModal}
-                      user={currentUser}
-                      modulesNotSaved={preventTransition}
-                    />
+                    sandbox.originalGit ? (
+                      <Git
+                        sandboxId={sandbox.id}
+                        originalGit={sandbox.originalGit}
+                        gitChanges={sandbox.originalGitChanges}
+                        fetchGitChanges={sandboxActions.fetchGitChanges}
+                        createGitCommit={sandboxActions.createGitCommit}
+                        createGitPR={sandboxActions.createGitPR}
+                        openModal={modalActions.openModal}
+                        closeModal={modalActions.closeModal}
+                        user={currentUser}
+                        modulesNotSaved={preventTransition}
+                      />
+                    ) : (
+                      <CreateRepo
+                        sandboxId={sandbox.id}
+                        title={sandbox.title}
+                        exportToGithub={sandboxActions.exportToGithub}
+                        modulesNotSaved={preventTransition}
+                        openModal={modalActions.openModal}
+                        closeModal={modalActions.closeModal}
+                      />
+                    )
                   ) : (
                     <div>
                       <Margin
@@ -193,16 +205,16 @@ class Workspace extends React.PureComponent<Props> {
               )}
 
             {(sandbox.owned || sandbox.tags.length > 0) && (
-                <WorkspaceItem title="Tags">
-                  <Tags
-                    sandboxId={sandbox.id}
-                    addTag={sandboxActions.addTag}
-                    removeTag={sandboxActions.removeTag}
-                    isOwner={sandbox.owned}
-                    tags={sandbox.tags}
-                  />
-                </WorkspaceItem>
-              )}
+              <WorkspaceItem title="Tags">
+                <Tags
+                  sandboxId={sandbox.id}
+                  addTag={sandboxActions.addTag}
+                  removeTag={sandboxActions.removeTag}
+                  isOwner={sandbox.owned}
+                  tags={sandbox.tags}
+                />
+              </WorkspaceItem>
+            )}
 
             {sandbox.owned && (
               <WorkspaceItem title="Sandbox Actions">
