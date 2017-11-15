@@ -8,7 +8,7 @@ import Footer from '../screens/home/Footer';
 import RecentPublications from '../screens/home/RecentPublications';
 
 export default () => (
-  <div style={{ marginBottom: 900 }} v>
+  <div>
     <Animation />
     <NPMFeature />
     <CycleFeature />

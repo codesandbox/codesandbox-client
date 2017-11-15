@@ -11,7 +11,9 @@ const Container = styled.div`
   padding-bottom: 3rem;
 `;
 
-const Column = styled.div`flex: 1;`;
+const Column = styled.div`
+  flex: 1;
+`;
 
 const Title = styled.h5`
   font-size: 1.125rem;
@@ -54,8 +56,8 @@ export default () => (
           <Title>CodeSandbox</Title>
           <List>
             <li>
-              <a href="/s/new" target="_blank" rel="noopener noreferrer">
-                Create A Sandbox
+              <a href="/s" target="_blank" rel="noopener noreferrer">
+                Create Sandbox
               </a>
             </li>
             <li>
@@ -74,16 +76,48 @@ export default () => (
         <Column>
           <Title>About</Title>
           <List>
-            <li>Blog</li>
-            <li>GitHub</li>
+            <li>
+              <a
+                href="https://medium.com/@compuives"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Blog
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://github.com/CompuIves/codesandbox-client"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                GitHub
+              </a>
+            </li>
           </List>
         </Column>
 
         <Column>
           <Title>Social</Title>
           <List>
-            <li>Twitter</li>
-            <li>Discord</li>
+            <li>
+              <a
+                href="https://twitter.com/codesandboxapp"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Twitter
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://discord.gg/KE3TbEZ"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Discord
+              </a>
+            </li>
           </List>
         </Column>
       </Container>

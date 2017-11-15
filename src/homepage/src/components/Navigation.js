@@ -76,13 +76,6 @@ export default () => (
           target="_blank"
           rel="noopener noreferrer"
         >
-          Examples
-        </Item>
-        <Item
-          href="https://medium.com/@compuives"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
           Blog
         </Item>
         <Item
@@ -92,12 +85,7 @@ export default () => (
         >
           GitHub
         </Item>
-        <Item
-          href="https://github.com/CompuIves/codesandbox-client"
-          target="_blank"
-          rel="noopener noreferrer"
-          button
-        >
+        <Item href="/s" target="_blank" rel="noopener noreferrer" button>
           Create Sandbox
         </Item>
       </Right>

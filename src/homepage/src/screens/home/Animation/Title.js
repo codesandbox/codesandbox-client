@@ -124,7 +124,9 @@ export default ({ template }) => (
         </Button>
 
         <Button
-          href={sandboxUrl({ id: template.shortid })}
+          href={`https://codesandbox.io/search?refinementList%5Btemplate%5D%5B0%5D=${
+            template.name
+          }`}
           color={template.color}
           secondary
         >

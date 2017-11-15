@@ -75,17 +75,15 @@ export default class Animation extends React.PureComponent {
 
   startTimer = () => {
     this.timeout = setTimeout(() => {
-      requestAnimationFrame(() => {
-        if (!this.state.templateSelected) {
-          this.setState({
-            templateIndex:
-              (this.state.templateIndex + 1) % this.state.templates.length,
-          });
+      if (!this.state.templateSelected) {
+        this.setState({
+          templateIndex:
+            (this.state.templateIndex + 1) % this.state.templates.length,
+        });
 
-          this.startTimer();
-        }
-      });
-    }, 5000);
+        this.startTimer();
+      }
+    }, 6000);
   };
 
   setCanvas = canvas => {

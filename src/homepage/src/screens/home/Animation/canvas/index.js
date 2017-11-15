@@ -7,7 +7,7 @@ class Canvas {
   stage: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
   dots: Array<Dot> = [];
-  waves: Array<Wave> = [];
+  wave: Wave = null;
 
   lastDelta: number = Date.now();
   cubeX: number = 1300;
@@ -41,12 +41,19 @@ class Canvas {
     }
   }
 
+  lowPerf = false;
+
   loop = () => {
     const now = Date.now();
     const delta = now - this.lastDelta;
-    if (getScrollPos(now).y > this.stage.height) {
+    if (getScrollPos(now).y > this.stage.height || delta < 33) {
       requestAnimationFrame(this.loop);
       return;
+    }
+
+    if (delta > 2000) {
+      this.lowPerf = true;
+      this.dots = this.dots.filter(x => Math.random() > 0.5);
     }
 
     this.ctx.clearRect(0, 0, this.stage.width, this.stage.height);
