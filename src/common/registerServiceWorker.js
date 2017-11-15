@@ -18,6 +18,8 @@ const isLocalhost = Boolean(
     )
 );
 
+const isHttp = Boolean(window.location.protocol === 'http:');
+
 export default function register(swUrl, sendNotification) {
   if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
     // The URL constructor is available in all browsers that support SW.
@@ -30,10 +32,10 @@ export default function register(swUrl, sendNotification) {
     }
 
     window.addEventListener('load', () => {
-      if (!isLocalhost) {
-        // Is not local host. Just register service worker
+      if (!isLocalhost && !isHttp) {
+        // It's neither localhost nor http. Just register service worker
         registerValidSW(swUrl, sendNotification);
-      } else {
+      } else if (isLocalhost) {
         // This is running on localhost. Lets check if a service worker still exists or not.
         checkValidServiceWorker(swUrl);
       }
@@ -54,8 +56,6 @@ function registerValidSW(swUrl, sendNotification) {
               // the fresh content will have been added to the cache.
               // It's the perfect time to display a "New content is
               // available; please refresh." message in your web app.
-              console.log('New content is available; please refresh.');
-
               if (sendNotification) {
                 sendNotification(
                   'CodeSandbox received an update, refresh to see it!',
@@ -68,8 +68,6 @@ function registerValidSW(swUrl, sendNotification) {
               // At this point, everything has been precached.
               // It's the perfect time to display a
               // "Content is cached for offline use." message.
-              console.log('Content is cached for offline use.');
-
               if (sendNotification) {
                 sendNotification(
                   'CodeSandbox has been cached, it now works offline.',

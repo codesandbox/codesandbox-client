@@ -24,7 +24,7 @@ function detectOpera() {
 
 export default function requirePolyfills() {
   if (detectIE() || detectOpera()) {
-    return import('babel-polyfill');
+    return import(/* webpackChunkName: 'polyfills' */ 'babel-polyfill');
   }
 
   return Promise.resolve();

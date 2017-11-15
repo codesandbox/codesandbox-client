@@ -59,7 +59,7 @@ export type LoaderContext = {
     options: ?{
       isAbsolute: boolean,
     }
-  ) => TranspiledModule, // eslint-disable-line no-use-before-define
+  ) => ?TranspiledModule, // eslint-disable-line no-use-before-define
   addDependenciesInDirectory: (
     depPath: string,
     options: {
@@ -252,7 +252,7 @@ export default class TranspiledModule {
           depPath.startsWith('babel-runtime') ||
           depPath.startsWith('codesandbox-api')
         ) {
-          return;
+          return null;
         }
 
         try {
@@ -497,10 +497,18 @@ export default class TranspiledModule {
   }
 
   postEvaluate(manager: Manager) {
+    // For non cacheable transpilers we remove the cached evaluation
+    if (
+      manager.preset
+        .getLoaders(this.module, this.query)
+        .some(t => !t.transpiler.cacheable)
+    ) {
+      this.compilation = null;
+    }
+
     // There are no other modules calling this module, so we run a function on
     // all transpilers that clears side effects if there are any. Example:
     // Remove CSS styles from the dom.
-
     if (this.initiators.size === 0 && !this.isEntry) {
       manager.preset.getLoaders(this.module, this.query).forEach(t => {
         t.transpiler.cleanModule(this.getLoaderContext(manager, t.options));

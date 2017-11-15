@@ -167,7 +167,7 @@ async function compile({
 
       if (isReact) {
         // initiate boilerplates
-        if (getBoilerplates().length === 0 && externals != null) {
+        if (getBoilerplates().length === 0) {
           try {
             await evalBoilerplates(defaultBoilerplates);
           } catch (e) {

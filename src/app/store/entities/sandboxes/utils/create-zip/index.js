@@ -102,24 +102,24 @@ export async function createZip(
 
   let promise = null;
   if (sandbox.template === react.name) {
-    promise = import('./create-react-app').then(generator =>
-      generator.default(zip, sandbox, modules, directories)
+    promise = import(/* webpackChunkName: 'create-react-app-zip' */ './create-react-app').then(
+      generator => generator.default(zip, sandbox, modules, directories)
     );
   } else if (sandbox.template === reactTs.name) {
-    promise = import('./create-react-app-typescript').then(generator =>
-      generator.default(zip, sandbox, modules, directories)
+    promise = import(/* webpackChunkName: 'create-react-app-typescript-zip' */ './create-react-app-typescript').then(
+      generator => generator.default(zip, sandbox, modules, directories)
     );
   } else if (sandbox.template === vue.name) {
-    promise = import('./vue-cli').then(generator =>
-      generator.default(zip, sandbox, modules, directories)
+    promise = import(/* webpackChunkName: 'vue-zip' */ './vue-cli').then(
+      generator => generator.default(zip, sandbox, modules, directories)
     );
   } else if (sandbox.template === preact.name) {
-    promise = import('./preact-cli').then(generator =>
-      generator.default(zip, sandbox, modules, directories)
+    promise = import(/* webpackChunkName: 'preact-zip' */ './preact-cli').then(
+      generator => generator.default(zip, sandbox, modules, directories)
     );
   } else if (sandbox.template === svelte.name) {
-    promise = import('./svelte').then(generator =>
-      generator.default(zip, sandbox, modules, directories)
+    promise = import(/* webpackChunkName: 'svelte-zip' */ './svelte').then(
+      generator => generator.default(zip, sandbox, modules, directories)
     );
   }
 

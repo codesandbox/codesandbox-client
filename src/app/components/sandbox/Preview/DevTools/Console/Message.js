@@ -16,7 +16,7 @@ const inspectorTheme = {
   BASE_FONT_SIZE: '14px',
   BASE_LINE_HEIGHT: '18px',
 
-  BASE_BACKGROUND_COLOR: theme.background(),
+  BASE_BACKGROUND_COLOR: 'rgba(0, 0, 0, 0)',
   BASE_COLOR: 'rgb(213, 213, 213)',
 
   OBJECT_NAME_COLOR: theme.secondary(),
@@ -118,7 +118,8 @@ function getMessage(message: IMessage) {
 
   if (
     message.arguments.length > 0 &&
-    typeof message.arguments[0] === 'string'
+    typeof message.arguments[0] === 'string' &&
+    message.arguments[0].indexOf('%') > -1
   ) {
     return (
       <InnerItem

@@ -70,9 +70,9 @@ class PricingModal extends React.PureComponent {
   getPatronTier = () => {
     const { price } = this.state;
 
-    if (price >= 35) return 4;
-    if (price >= 25) return 3;
-    if (price >= 15) return 2;
+    if (price >= 20) return 4;
+    if (price >= 15) return 3;
+    if (price >= 10) return 2;
     return 1;
   };
 

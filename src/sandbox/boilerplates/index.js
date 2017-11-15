@@ -1,5 +1,5 @@
 // @flow
-import type { Module } from 'common/types';
+import type { Module } from '../eval/entities/module';
 
 import { getCurrentManager } from '../compile';
 
@@ -9,14 +9,8 @@ export async function evalBoilerplates(boilerplates: Array<any>) {
   cachedBoilerplates = await Promise.all(
     boilerplates.map(async boilerplate => {
       const fakeModule: Module = {
-        id: boilerplate.id,
-        shortid: boilerplate.id,
-        title: `boilerplate-${boilerplate.condition}${boilerplate.extension}`,
+        path: `/boilerplate-${boilerplate.condition}${boilerplate.extension}`,
         code: boilerplate.code,
-        directoryShortid: null,
-        sourceId: boilerplate.sourceId,
-        isNotSynced: false,
-        type: '',
       };
 
       const manager = getCurrentManager();
@@ -42,7 +36,9 @@ export function findBoilerplate(module: Module): any {
 
   if (boilerplate == null) {
     throw new Error(
-      `No boilerplate found for ${module.title}, you can create one in the future`
+      `No boilerplate found for ${
+        module.title
+      }, you can create one in the future`
     );
   }
 

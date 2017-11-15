@@ -30,17 +30,17 @@ const getMessage = (error: Error & { response: ?Object }) => {
     sendError(error);
   }
 
-  if (response && response.data && response.data.errors) {
-    const errors = values(response.data.errors)[0];
-    if (Array.isArray(errors)) {
-      if (errors[0]) {
-        error.message = errors[0]; // eslint-disable-line no-param-reassign
+  if (response && response.data) {
+    if (response.data.errors) {
+      const errors = values(response.data.errors)[0];
+      if (Array.isArray(errors)) {
+        if (errors[0]) {
+          error.message = errors[0]; // eslint-disable-line no-param-reassign
+        }
+      } else {
+        error.message = errors; // eslint-disable-line no-param-reassign
       }
-    } else {
-      error.message = errors; // eslint-disable-line no-param-reassign
-    }
-
-    if (response.data.error) {
+    } else if (response.data.error) {
       error.message = response.data.error; // eslint-disable-line no-param-reassign
     }
   }

@@ -295,7 +295,7 @@ export default class Manager {
         this.cachedPaths[pathId] = resolvedPath;
       }
 
-      if (NODE_LIBS.includes(resolvedPath)) {
+      if (NODE_LIBS.includes(shimmedPath)) {
         return {
           path: pathUtils.join('/node_modules', resolvedPath),
           code: `// empty`,

@@ -15,9 +15,9 @@ import theme from 'common/theme';
 import getTemplate from 'common/templates';
 
 /* eslint-disable import/no-webpack-loader-syntax */
-import SyntaxHighlightWorker from 'worker-loader!./monaco/workers/syntax-highlighter';
-import LinterWorker from 'worker-loader!./monaco/workers/linter';
-import TypingsFetcherWorker from 'worker-loader!./monaco/workers/fetch-dependency-typings';
+import SyntaxHighlightWorker from 'worker-loader?name=monaco-syntax-highlighter.[hash].worker.js!./monaco/workers/syntax-highlighter';
+import LinterWorker from 'worker-loader?name=monaco-linter.[hash].worker.js!./monaco/workers/linter';
+import TypingsFetcherWorker from 'worker-loader?name=monaco-typings-ata.[hash].worker.js!./monaco/workers/fetch-dependency-typings';
 /* eslint-enable import/no-webpack-loader-syntax */
 
 import Header from './Header';
@@ -319,6 +319,23 @@ export default class CodeEditor extends React.Component<Props, State> {
     }
   };
 
+  disposeModel = (id: string) => {
+    if (modelCache[id]) {
+      try {
+        if (modelCache[id].model) {
+          modelCache[id].model.dispose();
+        }
+        if (modelCache[id].lib) {
+          modelCache[id].lib.dispose();
+        }
+
+        delete modelCache[id];
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  };
+
   shouldComponentUpdate(nextProps: Props, nextState: State) {
     if (nextState.fuzzySearchEnabled !== this.state.fuzzySearchEnabled) {
       return true;
@@ -346,8 +363,7 @@ export default class CodeEditor extends React.Component<Props, State> {
               this.editor.setModel(null);
             }
 
-            modelCache[module.id].model.dispose();
-            delete modelCache[module.id];
+            this.disposeModel(module.id);
 
             this.createModel(
               module,
@@ -367,8 +383,7 @@ export default class CodeEditor extends React.Component<Props, State> {
       Object.keys(modelCache).forEach(moduleId => {
         // This module got deleted, dispose it
         if (!nextProps.modules.find(m => m.id === moduleId)) {
-          modelCache[moduleId].model.dispose();
-          delete modelCache[moduleId];
+          this.disposeModel(moduleId);
         }
       });
     }
@@ -420,8 +435,27 @@ export default class CodeEditor extends React.Component<Props, State> {
     if (nextId !== currentId && this.editor) {
       const pos = this.editor.getPosition();
       if (modelCache[currentId]) {
+        const currentModule = this.props.modules.find(m => m.id === currentId);
+        const path = getModulePath(
+          this.props.modules,
+          this.props.directories,
+          currentId
+        );
+
         modelCache[currentId].cursorPos = pos;
+        if (modelCache[currentId].lib) {
+          // We let Monaco know what the latest code is of this file by removing
+          // the old extraLib definition and defining a new one.
+          modelCache[currentId].lib.dispose();
+          modelCache[
+            currentId
+          ].lib = this.monaco.languages.typescript.typescriptDefaults.addExtraLib(
+            currentModule.code,
+            `file://${path}`
+          );
+        }
       }
+
       await this.openNewModel(nextId, nextTitle);
       this.editor.focus();
     }
@@ -441,7 +475,7 @@ export default class CodeEditor extends React.Component<Props, State> {
 
     if (nextSandboxId !== currentSandboxId) {
       // Reset models, dispose old ones
-      this.disposeModules();
+      this.disposeModules(this.props.modules);
 
       // Do in setTimeout, since disposeModules is async
       setTimeout(() => {
@@ -487,27 +521,20 @@ export default class CodeEditor extends React.Component<Props, State> {
     const kind = title.match(/\.([^.]*)$/);
 
     if (kind) {
-      if (kind[1] === 'css') {
-        return 'css';
-      }
-      if (kind[1] === 'scss') {
-        return 'scss';
-      } else if (kind[1] === 'html') {
-        return 'html';
-      } else if (kind[1] === 'vue') {
+      if (kind[1] === 'css') return 'css';
+      if (kind[1] === 'scss') return 'scss';
+      if (kind[1] === 'json') return 'json';
+      if (kind[1] === 'html') return 'html';
+      if (kind[1] === 'vue') {
         if (!this.monaco.languages.getLanguages().find(l => l.id === 'vue')) {
           await requireAMDModule(['vs/language/vue/monaco.contribution']);
         }
         return 'vue';
-      } else if (kind[1] === 'less') {
-        return 'less';
-      } else if (kind[1] === 'md') {
-        return 'markdown';
-      } else if (/jsx?$/.test(kind[1])) {
-        return 'javascript';
-      } else if (/tsx?$/.test(kind[1])) {
-        return 'typescript';
       }
+      if (kind[1] === 'less') return 'less';
+      if (kind[1] === 'md') return 'markdown';
+      if (/jsx?$/.test(kind[1])) return 'javascript';
+      if (/tsx?$/.test(kind[1])) return 'typescript';
     }
 
     return 'typescript';
@@ -615,6 +642,9 @@ export default class CodeEditor extends React.Component<Props, State> {
       compilerDefaults
     );
 
+    monaco.languages.typescript.typescriptDefaults.setEagerModelSync(true);
+    monaco.languages.typescript.javascriptDefaults.setEagerModelSync(true);
+
     monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
       noSemanticValidation: false,
       noSyntaxValidation: !hasNativeTypescript,
@@ -624,9 +654,11 @@ export default class CodeEditor extends React.Component<Props, State> {
     await this.openNewModel(this.props.id, this.props.title);
 
     this.addKeyCommands();
-    import('./monaco/enable-emmet').then(enableEmmet => {
-      enableEmmet.default(editor, monaco, {});
-    });
+    import(/* webpackChunkName: 'monaco-emmet' */ './monaco/enable-emmet').then(
+      enableEmmet => {
+        enableEmmet.default(editor, monaco, {});
+      }
+    );
 
     window.addEventListener('resize', this.resizeEditor);
     this.sizeProbeInterval = setInterval(this.resizeEditor.bind(this), 3000);
@@ -691,24 +723,22 @@ export default class CodeEditor extends React.Component<Props, State> {
     );
   };
 
-  disposeModules = () => {
+  disposeModules = (modules: Array<Module>) => {
     if (this.editor) {
       this.editor.setModel(null);
     }
 
     if (this.monaco) {
-      this.monaco.editor.getModels().forEach(model => {
-        model.dispose();
+      modules.forEach(m => {
+        this.disposeModel(m.id);
       });
     }
 
     modelCache = {};
   };
 
-  initializeModules = (modules = this.props.modules) =>
-    Promise.all(
-      modules.reverse().map(module => this.createModel(module, modules))
-    );
+  initializeModules = (modules: Array<Module> = this.props.modules) =>
+    Promise.all(modules.map(module => this.createModel(module, modules)));
 
   resizeEditor = () => {
     this.editor.layout();
@@ -716,7 +746,7 @@ export default class CodeEditor extends React.Component<Props, State> {
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.resizeEditor);
-    this.disposeModules();
+    this.disposeModules(this.props.modules);
     if (this.editor) {
       this.editor.dispose();
     }
@@ -740,6 +770,14 @@ export default class CodeEditor extends React.Component<Props, State> {
     // Remove the first slash, as this will otherwise create errors in monaco
     const path = getModulePath(modules, directories, module.id);
 
+    // We need to add this as a lib specifically to Monaco, because Monaco
+    // tends to lose type definitions if you don't touch a file for a while.
+    // Related issue: https://github.com/Microsoft/monaco-editor/issues/461
+    const lib = this.monaco.languages.typescript.typescriptDefaults.addExtraLib(
+      module.code,
+      `file://${path}`
+    );
+
     const mode = await this.getMode(module.title);
     const model = this.monaco.editor.createModel(
       module.code,
@@ -755,6 +793,7 @@ export default class CodeEditor extends React.Component<Props, State> {
       cursorPos: null,
     };
     modelCache[module.id].model = model;
+    modelCache[module.id].lib = lib;
 
     return model;
   };
@@ -836,9 +875,14 @@ export default class CodeEditor extends React.Component<Props, State> {
     const code = this.getCode();
     const mode = await this.getMode(title);
 
-    if (mode === 'javascript' || mode === 'typescript' || mode === 'css') {
+    if (
+      mode === 'javascript' ||
+      mode === 'typescript' ||
+      mode === 'json' ||
+      mode === 'css'
+    ) {
       try {
-        const prettify = await import('app/utils/codemirror/prettify');
+        const prettify = await import(/* webpackChunkName: 'prettier' */ 'app/utils/codemirror/prettify');
         const newCode = await prettify.default(
           code,
           mode === 'javascript' ? 'jsx' : mode,

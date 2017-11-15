@@ -41,7 +41,7 @@ const initialState: Preferences = Object.keys(keys).reduce(
     fontSize: 14,
     fontFamily: '',
     lineHeight: 1.15,
-    clearConsoleEnabled: false,
+    clearConsoleEnabled: true,
     prettierConfig: DEFAULT_PRETTIER_CONFIG,
     codeMirror: false,
     autoDownloadTypes: true,

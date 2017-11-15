@@ -27,7 +27,7 @@ function replaceConsoleMethod(method) {
 }
 
 export default function setupConsole() {
-  ['log', 'info', 'warn', 'error', 'debug'].forEach(method =>
+  ['log', 'info', 'warn', 'error', 'debug', 'clear'].forEach(method =>
     replaceConsoleMethod(method)
   );
 }
