@@ -42,7 +42,7 @@ const TemplateWrapper = ({ children }) => (
       />
 
       <Header />
-      <div style={{ maxWidth: '100vw', overflow: 'hidden' }}>{children()}</div>
+      <div style={{ maxWidth: '100vw', overflowX: 'hidden' }}>{children()}</div>
     </div>
   </ThemeProvider>
 );

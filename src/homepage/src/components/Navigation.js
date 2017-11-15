@@ -49,11 +49,17 @@ const Item = styled.a`
     `};
       padding: 0.35rem 0.8rem;
       border-radius: 4px;
+      box-shadow: 0 3px 4px rgba(0, 0, 0, 0.3);
       background-image: linear-gradient(
         45deg,
-        ${p => p.theme.secondary.darken(0.3)} 0%,
+        ${p => p.theme.secondary.darken(0.1)} 0%,
         ${p => p.theme.secondary} 100%
       );
+
+      &:hover {
+        transform: translateY(-10px);
+        color: white;
+      }
     `};
 
   ${media.phone`
@@ -68,7 +74,7 @@ export default () => (
   <MaxWidth width={1280}>
     <Container>
       <Left>
-        <StyledLogo width={50} height={50} />
+        <StyledLogo title="CodeSandbox" width={50} height={50} />
       </Left>
       <Right>
         <Item
