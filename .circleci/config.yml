@@ -4,7 +4,7 @@ jobs:
   build:
     working_directory: ~/codesandbox-client
     docker:
-      - image: circleci/node:8.4.0
+      - image: circleci/node:9.0
     environment:
       TZ: "/usr/share/zoneinfo/Europe/Amsterdam"
     steps:
