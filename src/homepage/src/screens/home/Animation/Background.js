@@ -44,7 +44,11 @@ export default class Background extends React.PureComponent {
         }}
       >
         <canvas
-          style={{ position: 'absolute', top: 0, left: 0 }}
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+          }}
           ref={this.startCanvas}
         />
       </Container>

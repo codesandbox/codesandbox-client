@@ -23,8 +23,9 @@ export default class Dot extends PositionedElement {
 
   draw(ctx: CanvasRenderingContext2D) {
     ctx.beginPath();
-    ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI, false);
     ctx.fillStyle = `rgba(${this.color.join(',')}, ${this.alpha})`;
+    ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI, false);
+    ctx.closePath();
     ctx.fill();
   }
 

@@ -6,6 +6,8 @@ import Column from 'app/components/flex/Column';
 import Centered from 'app/components/flex/Centered';
 import Padding from 'app/components/spacing/Padding';
 
+import theme from 'common/theme';
+
 import LoadInView from '../../../components/LoadInView';
 import RollingText from '../../../components/RollingText';
 
@@ -285,6 +287,7 @@ export default class Frameworks extends React.Component {
                 boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
                 border: 'none',
                 marginTop: '5rem',
+                backgroundColor: theme.background2(),
               }}
               height={650}
               title="sandbox"

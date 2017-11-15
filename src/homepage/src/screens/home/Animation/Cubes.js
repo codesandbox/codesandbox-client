@@ -142,11 +142,6 @@ export default class Cubes extends React.PureComponent {
 
     if (nextTemplate !== currentTemplate.template) {
       this.shrinkCube(currentTemplate);
-      this.setState({ lastTemplate: currentTemplate });
-      setTimeout(() => {
-        this.setState({ lastTemplate: null });
-      }, 800);
-
       this.growCube(nextTemplate, nextProps.canvas);
     }
   }

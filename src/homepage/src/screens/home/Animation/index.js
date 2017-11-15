@@ -13,9 +13,11 @@ import HomeTitle from './Title';
 import Cubes from './Cubes';
 import Frameworks from '../Frameworks';
 
+import getScrollPos from '../../../utils/scroll';
+
 import media from '../../../utils/media';
 
-const Container = styled(Centered)`
+const Container = Centered.extend`
   position: relative;
   width: 100%;
   height: 100vh;
@@ -76,10 +78,12 @@ export default class Animation extends React.PureComponent {
   startTimer = () => {
     this.timeout = setTimeout(() => {
       if (!this.state.templateSelected) {
-        this.setState({
-          templateIndex:
-            (this.state.templateIndex + 1) % this.state.templates.length,
-        });
+        if (!window.scrolling && getScrollPos().y < window.innerHeight) {
+          this.setState({
+            templateIndex:
+              (this.state.templateIndex + 1) % this.state.templates.length,
+          });
+        }
 
         this.startTimer();
       }

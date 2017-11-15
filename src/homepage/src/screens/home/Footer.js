@@ -3,16 +3,25 @@ import styled from 'styled-components';
 
 import MaxWidth from 'app/components/flex/MaxWidth';
 
+import media from '../../utils/media';
+
 const Container = styled.div`
   display: flex;
   justify-content: space-around;
   width: 100%;
   padding-top: 5rem;
   padding-bottom: 3rem;
+  flex-wrap: wrap;
 `;
 
 const Column = styled.div`
-  flex: 1;
+  width: calc(33% - 2rem);
+  margin: 0 1rem;
+
+  ${media.phone`
+    width: 100%;
+    margin-bottom: 1rem;
+  `};
 `;
 
 const Title = styled.h5`

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { TimelineLite, TweenMax } from 'gsap';
+import { TimelineMax, TweenMax } from 'gsap';
 
 export default class RollingText extends React.Component {
   state = {
@@ -15,7 +15,7 @@ export default class RollingText extends React.Component {
   }
 
   componentDidMount() {
-    this.fadeInTL = new TimelineLite({ paused: true });
+    this.fadeInTL = new TimelineMax({ paused: true });
     this.fadeInTL.fromTo(
       this.fadein,
       0.8,
@@ -23,7 +23,7 @@ export default class RollingText extends React.Component {
       { opacity: 1, y: 0 }
     );
 
-    this.fadeOutTL = new TimelineLite({ paused: true });
+    this.fadeOutTL = new TimelineMax({ paused: true });
     this.fadeOutTL.fromTo(
       this.fadeout,
       0.8,
