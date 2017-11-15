@@ -175,7 +175,7 @@ export default class Cubes extends React.PureComponent {
           if (canvas) {
             canvas.makeWave(canvas.cubeX, canvas.cubeY, rgb);
           }
-        }, '-=.7');
+        }, '-=.9');
 
     return this.growTimelines[template.name].restart();
   };

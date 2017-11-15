@@ -113,7 +113,7 @@ export default class Animation extends React.PureComponent {
           />
           <Container horizontal>
             <HomeTitle template={template} />
-            <Media query="(min-width: 1280px)">
+            <Media query="(min-width: 1281px)">
               <Cubes
                 canvas={this.state.canvas}
                 templates={this.state.templates}

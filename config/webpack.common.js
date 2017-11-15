@@ -250,10 +250,10 @@ module.exports = {
           from: 'static',
           to: 'static',
         },
-        {
-          from: 'src/homepage/static',
-          to: 'static',
-        },
+        // {
+        //   from: 'src/homepage/static',
+        //   to: 'static',
+        // },
       ].filter(x => x)
     ),
     // We first create a common chunk between embed and app, to share components
