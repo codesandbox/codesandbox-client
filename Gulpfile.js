@@ -5,8 +5,8 @@ const config = require('./config/paths');
 
 gulp.task('homepage', function() {
   return gulp
-    .src('src/homepage/www/*.*')
-    .pipe(gulp.dest(`${config.appBuild}/homepage`));
+    .src('src/homepage/public/*.*')
+    .pipe(gulp.dest(`${config.appBuild}/`));
 });
 
 gulp.task('static', function() {
