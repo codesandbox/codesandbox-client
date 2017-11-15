@@ -5,7 +5,7 @@ const config = require('./config/paths');
 
 gulp.task('homepage', function() {
   return gulp
-    .src('src/homepage/public/*.*')
+    .src('src/homepage/public/**/*.*')
     .pipe(gulp.dest(`${config.appBuild}/`));
 });
 
