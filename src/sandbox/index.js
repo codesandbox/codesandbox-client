@@ -75,7 +75,7 @@ requirePolyfills().then(() => {
     // We need to fetch the sandbox ourselves...
     const id = getId();
     window
-      .fetch(`/api/v1/sandboxes/${id}`)
+      .fetch(host + `/api/v1/sandboxes/${id}`)
       .then(res => res.json())
       .then(res => camelizeKeys(res))
       .then(x => {
