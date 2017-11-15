@@ -175,7 +175,7 @@
     "start:test":
       "cross-env LOCAL_SERVER=1 NODE_ENV=test node scripts/start.js",
     "build": "cross-env NODE_ENV=production node scripts/build.js && gulp",
-    "test": "npm run lint && jest --env=jsdom",
+    "test": "lerna run build --ignore app && npm run lint && jest --env=jsdom",
     "test:watch": "jest --watch --env=jsdom",
     "test:integrations":
       "jest --config integration-tests/jest.config.json --env=jsdom",
