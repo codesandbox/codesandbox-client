@@ -40,8 +40,11 @@ export default () => (
       <Centered horizontal>
         <Heading>There{"'"}s more</Heading>
         <SubHeading>
-          We have a lot more to show, keep track of this list to see what new
-          features have been added recently!
+          This was just the tip of the iceberg. There are many more things to
+          explore, if you are missing anything you can always send a message to{' '}
+          <a style={{ color: 'white' }} href="mailto:hello@codesandbox.io">
+            hello@codesandbox.io
+          </a>.
         </SubHeading>
       </Centered>
 

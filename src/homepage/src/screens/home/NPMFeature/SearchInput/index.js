@@ -13,9 +13,8 @@ import Hit from './Hit';
 
 import algoliaImage from './algolia.svg';
 import { searchFacets } from '../../../../utils/algolia';
-import media from '../../../../utils/media';
 
-const Legenda = styled.div`
+const Legend = styled.div`
   display: flex;
 
   justify-content: space-between;
@@ -48,10 +47,10 @@ export default class SearchInput extends React.PureComponent {
     return (
       <div style={{ width: '100%' }}>
         <Input searchQuery={this.searchQuery} />
-        <Legenda>
+        <Legend>
           <div>Dependency</div>
           <div>Sandbox Count</div>
-        </Legenda>
+        </Legend>
         {this.state.hits.map((hit, i) => <Hit key={i} hit={hit} />)}
         <a
           href="https://www.algolia.com/?utm_source=algoliaclient&utm_medium=website&utm_content=codesandbox.io&utm_campaign=poweredby"

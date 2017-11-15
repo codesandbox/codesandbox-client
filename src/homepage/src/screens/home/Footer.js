@@ -52,6 +52,12 @@ const List = styled.ul`
   }
 `;
 
+const Authors = styled.div`
+  color: white;
+  font-size: 0.875rem;
+  text-align: right;
+`;
+
 const Background = styled.div`
   background-color: ${props => props.theme.background2.darken(0.2)};
   padding: 2rem;
@@ -103,6 +109,9 @@ export default () => (
                 GitHub
               </a>
             </li>
+            <li>
+              <a href="mailto:hello@codesandbox.io">Contact Us</a>
+            </li>
           </List>
         </Column>
 
@@ -130,6 +139,25 @@ export default () => (
           </List>
         </Column>
       </Container>
+
+      <Authors>
+        By{' '}
+        <a
+          href="https://www.linkedin.com/in/basbuursma/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Bas Buursma
+        </a>{' '}
+        and{' '}
+        <a
+          href="https://twitter.com/CompuIves"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Ives van Hoorne
+        </a>
+      </Authors>
     </MaxWidth>
   </Background>
 );
