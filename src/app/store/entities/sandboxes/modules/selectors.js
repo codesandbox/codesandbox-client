@@ -36,11 +36,9 @@ export const isMainModule = (
   module: Module,
   modules: Module[],
   directories: Directory[],
-  entry: string
+  entry: string = 'index.js'
 ) => {
   const path = getModulePath(modules, directories, module.id);
-
-  console.log(path, entry); // eslint-disable-line
 
   return path.replace('/', '') === entry;
 };
@@ -48,14 +46,13 @@ export const isMainModule = (
 export const findMainModule = (
   modules: Module[],
   directories: Directory[],
-  entry: string
+  entry: string = 'index.js'
 ) => {
   try {
     const module = resolveModule(entry, modules, directories);
 
     return module;
   } catch (e) {
-    console.log(modules, directories, entry); // eslint-disable-line
     return modules[0];
   }
 };
