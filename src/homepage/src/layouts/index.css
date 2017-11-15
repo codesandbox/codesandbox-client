@@ -25,6 +25,11 @@ input {
   -webkit-touch-callout: none;
 }
 
+.disable-hover,
+.disable-hover * {
+  pointer-events: none !important;
+}
+
 a {
   color: #6caedd;
 }

@@ -136,9 +136,9 @@ export default class Cubes extends React.PureComponent {
 
   componentWillReceiveProps(nextProps) {
     const nextTemplate = nextProps.template;
-    const currentTemplate = this.state.templates.find(
-      t => t.template === this.props.template
-    );
+    const { templates } = this.state;
+    const currentTemplate =
+      templates[templates.map(t => t.template).indexOf(this.props.template)];
 
     if (nextTemplate !== currentTemplate.template) {
       this.shrinkCube(currentTemplate);
@@ -164,7 +164,9 @@ export default class Cubes extends React.PureComponent {
       .lighten(0)()
       .match(/rgb\((.*)\)/)[1]
       .split(',');
-    const { x, y } = this.state.templates.find(x => x.template === template);
+    const { x, y } = this.state.templates[
+      this.state.templates.map(({ template: t }) => t).indexOf(template)
+    ];
 
     this.growTimelines[template.name] =
       this.growTimelines[template.name] ||

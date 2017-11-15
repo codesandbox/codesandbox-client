@@ -44,8 +44,8 @@ const Message = styled.div`
   font-size: 2.5rem;
   max-width: 1000px;
   line-height: 1.2;
-  margin-bottom: 4rem;
-
+  margin-bottom: 3rem;
+  margin-top: 3rem;
   margin-right: 2rem;
   margin-left: 2rem;
 

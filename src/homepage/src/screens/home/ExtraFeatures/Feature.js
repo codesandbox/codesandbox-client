@@ -49,6 +49,8 @@ const Description = styled.div`
 
   text-shadow: 0 1px 0px rgba(0, 0, 0, 0.3);
 
+  max-width: 100%; /* IE11 */
+
   a {
     color: white;
     font-weight: 600;
