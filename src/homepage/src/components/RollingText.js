@@ -1,17 +1,6 @@
 import React from 'react';
-import styled from 'styled-components';
 
 import { TimelineLite, TweenMax } from 'gsap';
-
-const FadeOut = styled.span`
-  position: absolute;
-  left: 0;
-`;
-
-const FadeIn = styled.div`
-  display: inline-block;
-  width: inherit;
-`;
 
 export default class RollingText extends React.Component {
   state = {
@@ -54,29 +43,30 @@ export default class RollingText extends React.Component {
   }
 
   render() {
-    const { children, className, style, ...props } = this.props;
+    const { children, className, style } = this.props;
     const oldChildren = this.oldChildren;
 
     return (
       <div
         className={className}
         style={{ display: 'inline-block', position: 'relative', ...style }}
-        {...props}
       >
-        <FadeOut
-          innerRef={el => {
+        <div
+          style={{ position: 'absolute', left: 0 }}
+          ref={el => {
             this.fadeout = el;
           }}
         >
           {oldChildren}
-        </FadeOut>
-        <FadeIn
-          innerRef={el => {
+        </div>
+        <div
+          style={{ display: 'inline-block', width: 'inherit' }}
+          ref={el => {
             this.fadein = el;
           }}
         >
           {children}
-        </FadeIn>
+        </div>
       </div>
     );
   }

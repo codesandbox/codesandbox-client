@@ -14,7 +14,7 @@ export default class LoadInView extends React.PureComponent {
   }
 
   listen = () => {
-    if (!this.state.show && getScrollPos().y < this.elPos) {
+    if (!this.state.show && this.elPos && getScrollPos().y + 300 > this.elPos) {
       requestAnimationFrame(() => {
         this.setState({ show: true });
       });

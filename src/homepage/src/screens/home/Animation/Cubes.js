@@ -4,9 +4,9 @@ import styled from 'styled-components';
 import { TimelineMax, TweenMax, Power2, Power3, Elastic } from 'gsap';
 import fadeIn from 'app/utils/animation/fade-in';
 
-import Cube from '../../components/Cube';
-import media from '../../utils/media';
-import getScrollPos from '../../utils/scroll';
+import Cube from '../../../components/Cube';
+import media from '../../../utils/media';
+import getScrollPos from '../../../utils/scroll';
 
 const RADIUS = 300;
 const Container = styled.div`
@@ -29,17 +29,14 @@ const Container = styled.div`
 
 const SmallCube = styled(
   class SmallCubeInner extends React.Component {
-    shouldComponentUpdate(nextProps) {
-      return nextProps.selected !== this.props.selected;
+    shouldComponentUpdate() {
+      return false;
     }
 
     render() {
+      const { cubeRef, ...props } = this.props;
       return (
-        <div
-          style={{ willChange: 'transform' }}
-          ref={this.props.cubeRef}
-          {...this.props}
-        />
+        <div style={{ willChange: 'transform' }} ref={cubeRef} {...props} />
       );
     }
   }
@@ -114,7 +111,10 @@ export default class Cubes extends React.PureComponent {
 
   componentDidMount() {
     requestAnimationFrame(() => {
-      this.growCube(this.props.template, this.props.canvas);
+      this.growCube(this.props.template, this.props.canvas).add(
+        this.updateCubePos,
+        '-=.7'
+      );
     });
 
     this.lastTick = Date.now();
@@ -151,12 +151,17 @@ export default class Cubes extends React.PureComponent {
     }
   }
 
+  shouldComponentUpdate() {
+    return false;
+  }
+
   growTimelines = {};
   shrinkTimelines = {};
 
   growCube = (template, canvas) => {
     const el = this.els[template.name];
-    const rgb = template.color.lighten(0)()
+    const rgb = template.color
+      .lighten(0)()
       .match(/rgb\((.*)\)/)[1]
       .split(',');
     const { x, y } = this.state.templates.find(x => x.template === template);
@@ -173,8 +178,7 @@ export default class Cubes extends React.PureComponent {
           if (canvas) {
             canvas.makeWave(canvas.cubeX, canvas.cubeY, rgb);
           }
-        }, '-=.7')
-        .add(this.updateCubePos, '-=.7');
+        }, '-=.7');
 
     return this.growTimelines[template.name].restart();
   };

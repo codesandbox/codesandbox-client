@@ -3,10 +3,10 @@ import styled from 'styled-components';
 
 import { sandboxUrl } from 'app/utils/url-generator';
 
-import media from '../../utils/media';
-import { fadeIn } from '../../utils/animation';
-import RollingText from '../../components/RollingText';
-import Button from '../../components/Button';
+import media from '../../../utils/media';
+import { fadeIn } from '../../../utils/animation';
+import RollingText from '../../../components/RollingText';
+import Button from '../../../components/Button';
 
 const Container = styled.div`
   color: white;
@@ -98,13 +98,12 @@ const Secondary = styled.div`
   transition: 0.3s ease color;
   display: inline-block;
   ${fadeIn(0.2)};
-  color: ${props => props.color || props.template.secondary};
 `;
 
 export default ({ template }) => (
   <Container>
     <Title>
-      <Secondary color={template.color}>Code</Secondary>
+      <Secondary style={{ color: template.color() }}>Code</Secondary>
       <Primary>Sandbox</Primary>
     </Title>
     <SubTitle>

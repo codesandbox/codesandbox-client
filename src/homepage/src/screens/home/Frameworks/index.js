@@ -184,15 +184,21 @@ const TEMPLATE_SUPPORT = {
   svelte: { loaders: [js, html, image], css: ['Global', 'Scoped', 'Modules'] },
 };
 
-export default class Frameworks extends React.PureComponent {
+export default class Frameworks extends React.Component {
   state = { templateIndex: 0 };
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return nextState.templateIndex !== this.state.templateIndex;
+  }
 
   setTemplate = template => {
     this.setState({ templateIndex: this.props.templates.indexOf(template) });
 
     setTimeout(() => {
       this.setState({
-        frameUrl: `https://codesandbox.io/embed/${template.shortid}?fontsize=14`,
+        frameUrl: `https://codesandbox.io/embed/${
+          template.shortid
+        }?fontsize=14`,
       });
     }, 300);
   };

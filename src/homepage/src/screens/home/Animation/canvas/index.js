@@ -1,4 +1,4 @@
-import getScrollPos from '../../../utils/scroll';
+import getScrollPos from '../../../../utils/scroll';
 
 import Dot from './Dot';
 import Wave from './Wave';
@@ -44,7 +44,7 @@ class Canvas {
   loop = () => {
     const now = Date.now();
     const delta = now - this.lastDelta;
-    if (getScrollPos(now).y > this.stage.height || delta < 30) {
+    if (getScrollPos(now).y > this.stage.height) {
       requestAnimationFrame(this.loop);
       return;
     }
@@ -138,8 +138,8 @@ class Canvas {
         const distance = Math.sqrt(distX * distX + distY * distY);
 
         this.dots[i].setSpeed(
-          distX / distance / 20 * ((Math.random() + 0.1) * 0.2),
-          distY / distance / 20 * ((Math.random() + 0.1) * 0.2)
+          distX / distance / 40 * ((Math.random() + 0.1) * 0.2),
+          distY / distance / 40 * ((Math.random() + 0.1) * 0.2)
         );
       }
       this.calibrated = true;
