@@ -19,6 +19,11 @@ class Canvas {
 
     this.stage.height = window.innerHeight;
     this.stage.width = window.innerWidth;
+
+    window.onfocus = () => {
+      // So we don't think there are performance problems if user moves away from tab
+      this.lastDelta = Date.now();
+    };
   }
 
   init() {
