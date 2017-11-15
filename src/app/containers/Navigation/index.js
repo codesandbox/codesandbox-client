@@ -9,7 +9,7 @@ import SignInButton from 'app/containers/SignInButton';
 import NewSandbox from 'app/containers/modals/NewSandbox';
 
 import PlusIcon from 'react-icons/lib/go/plus';
-import Logo from 'app/components/Logo';
+import Logo from 'common/components/Logo';
 import Row from 'app/components/flex/Row';
 import Tooltip from 'app/components/Tooltip';
 import HeaderSearchBar from 'app/components/HeaderSearchBar';
@@ -22,7 +22,9 @@ import PatronBadge from '-!svg-react-loader!app/utils/badges/svg/patron-4.svg'; 
 
 import UserMenu from '../UserMenu';
 
-const LogoWithBorder = styled(Logo)`padding-right: 1rem;`;
+const LogoWithBorder = styled(Logo)`
+  padding-right: 1rem;
+`;
 
 const Border = styled.hr`
   display: inline-block;

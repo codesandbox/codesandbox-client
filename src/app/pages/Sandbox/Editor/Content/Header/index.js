@@ -277,7 +277,8 @@ export default class Header extends React.PureComponent<Props> {
                 <div style={{ marginRight: '0.5rem', fontSize: '.875rem' }}>
                   <HeaderSearchBar />
                 </div>
-              )}
+              )
+            }
           </Media>
 
           {!user ||

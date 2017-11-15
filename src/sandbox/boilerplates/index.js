@@ -36,7 +36,9 @@ export function findBoilerplate(module: Module): any {
 
   if (boilerplate == null) {
     throw new Error(
-      `No boilerplate found for ${module.title}, you can create one in the future`
+      `No boilerplate found for ${
+        module.title
+      }, you can create one in the future`
     );
   }
 

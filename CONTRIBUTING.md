@@ -12,6 +12,8 @@ The CodeSandbox client is currently divided in to 5 parts.
 
 This version of CodeSandbox is using the production server as source of truth, this is specified by the environment variable `LOCAL_SERVER`. It's not yet possible to sign in using this version, I haven't figured out how to handle this yet.
 
+**Working on your first Pull Request?** You can learn how from this *free* series [How to Contribute to an Open Source Project on GitHub](https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github) 
+
 ## Setting Up the project locally
 
 To install the project you need to have `yarn` and `node`

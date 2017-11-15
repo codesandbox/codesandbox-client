@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import Logo from 'app/components/Logo';
+import Logo from 'common/components/Logo';
 
 import { sandboxUrl } from 'app/utils/url-generator';
 
@@ -11,7 +11,13 @@ type Props = {
 
 const Text = styled.span`
   color: white;
-  ${({ small }) => small && css`@media (max-width: 620px) {display: none;}`};
+  ${({ small }) =>
+    small &&
+    css`
+      @media (max-width: 620px) {
+        display: none;
+      }
+    `};
 `;
 
 const EditText = styled.a`

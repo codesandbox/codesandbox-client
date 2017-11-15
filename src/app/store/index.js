@@ -15,7 +15,7 @@ function getComposeEnhancers() {
   return compose;
 }
 
-export default history => {
+export default (history: any) => {
   const composeEnhancers = getComposeEnhancers();
   const store = createStore(
     rootReducer,

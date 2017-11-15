@@ -4,7 +4,7 @@ jobs:
   build:
     working_directory: ~/codesandbox-client
     docker:
-      - image: circleci/node:8.4.0
+      - image: circleci/node:9.0
     environment:
       TZ: "/usr/share/zoneinfo/Europe/Amsterdam"
     steps:
@@ -13,7 +13,7 @@ jobs:
           key: dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
       - run:
           name: Install Dependency
-          command: yarn install && yarn add puppeteer
+          command: yarn install && yarn add puppeteer -W
       - save_cache:
           key: dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
           paths:

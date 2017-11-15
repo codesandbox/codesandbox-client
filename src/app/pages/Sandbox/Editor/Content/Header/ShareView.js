@@ -101,7 +101,9 @@ const Column = styled.div`
   }
 `;
 
-const ButtonContainer = styled.div`margin-top: 0.25rem;`;
+const ButtonContainer = styled.div`
+  margin-top: 0.25rem;
+`;
 
 const ButtonName = styled.div`
   margin: 0.5rem 0;
@@ -252,8 +254,9 @@ class ShareView extends React.PureComponent {
   // eslint-disable-next-line
   getButtonMarkdown = () => {
     const { sandbox } = this.props;
-    return `[![Edit ${sandbox.title ||
-      sandbox.id}](${BUTTON_URL})](${this.getEditorUrl()})`;
+    return `[![Edit ${sandbox.title || sandbox.id}](${
+      BUTTON_URL
+    })](${this.getEditorUrl()})`;
   };
 
   // eslint-disable-next-line
