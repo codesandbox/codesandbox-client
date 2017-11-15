@@ -76,7 +76,7 @@
     "lint-staged": "^4.0.0",
     "lodash.camelcase": "^4.3.0",
     "nodemon": "^1.11.0",
-    "prettier": "^1.4.4",
+    "prettier": "^1.8.2",
     "prompt": "^1.0.0",
     "replace-in-file": "^2.5.0",
     "rimraf": "^2.6.1",
