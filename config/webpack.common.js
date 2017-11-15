@@ -137,7 +137,7 @@ module.exports = {
 
   resolve: {
     mainFields: ['browser', 'module', 'jsnext:main', 'main'],
-    modules: ['src', 'node_modules'],
+    modules: ['node_modules'],
 
     extensions: ['.js', '.json'],
 

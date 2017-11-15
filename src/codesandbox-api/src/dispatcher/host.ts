@@ -1,3 +1,1 @@
-const host = process.env.CODESANDBOX_HOST;
-
-export default host || 'https://codesandbox.io';
+export default 'https://codesandbox.io';
