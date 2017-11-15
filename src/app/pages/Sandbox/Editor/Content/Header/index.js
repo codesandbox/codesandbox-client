@@ -14,6 +14,7 @@ import HeartIcon from 'react-icons/lib/fa/heart-o';
 import FullHeartIcon from 'react-icons/lib/fa/heart';
 import TwitterIcon from 'react-icons/lib/fa/twitter';
 import SearchIcon from 'react-icons/lib/go/search';
+import FeedbackIcon from 'react-icons/lib/go/comment-discussion';
 import SettingsIcon from 'react-icons/lib/md/settings';
 import ShareIcon from 'react-icons/lib/md/share';
 import { Tooltip } from 'react-tippy';
@@ -36,7 +37,6 @@ import NewSandbox from 'app/containers/modals/NewSandbox';
 import Deployment from 'app/containers/Deployment';
 
 import Action from './Action';
-import FeedbackView from './FeedbackView';
 import ShareView from './ShareView';
 
 const Container = styled.div`
@@ -299,9 +299,11 @@ export default class Header extends React.PureComponent<Props> {
             tooltip="Contact"
             Icon={TwitterIcon}
           />
-          <FeedbackView
-            email={user.email}
-            sendMessage={userActions.sendFeedback}
+          <Action
+            href="https://discord.gg/FGeubVt"
+            a
+            tooltip="Chat on Discord"
+            Icon={FeedbackIcon}
           />
           <Action
             onClick={this.openNewSandbox}

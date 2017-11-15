@@ -3,6 +3,7 @@ import styled, { css } from 'styled-components';
 
 import TwitterIcon from 'react-icons/lib/fa/twitter';
 import GithubIcon from 'react-icons/lib/fa/github';
+import FeedbackIcon from 'react-icons/lib/go/comment-discussion';
 
 import Relative from 'app/components/Relative';
 
@@ -125,6 +126,13 @@ export default ({ menuItems, itemIndex, setItem }: Props) => (
         rel="noopener noreferrer"
       >
         <GithubIcon />
+      </Icon>
+      <Icon
+        href="https://discord.gg/FGeubVt"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <FeedbackIcon />
       </Icon>
     </SocialIcons>
   </Container>
