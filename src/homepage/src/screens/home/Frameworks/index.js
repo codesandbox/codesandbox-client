@@ -195,14 +195,6 @@ export default class Frameworks extends React.Component {
 
   setTemplate = template => {
     this.setState({ templateIndex: this.props.templates.indexOf(template) });
-
-    setTimeout(() => {
-      this.setState({
-        frameUrl: `https://codesandbox.io/embed/${
-          template.shortid
-        }?fontsize=14`,
-      });
-    }, 300);
   };
 
   render() {
@@ -277,10 +269,9 @@ export default class Frameworks extends React.Component {
         <Centered horizontal>
           <LoadInView style={{ height: 650 }}>
             <iframe
-              src={
-                this.state.frameUrl ||
-                `https://codesandbox.io/embed/${template.shortid}?fontsize=14`
-              }
+              src={`https://codesandbox.io/embed/${
+                template.shortid
+              }?fontsize=14`}
               style={{
                 borderRadius: 4,
                 width: '100%',
