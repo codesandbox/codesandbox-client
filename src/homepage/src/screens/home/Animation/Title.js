@@ -102,11 +102,11 @@ const Secondary = styled.div`
 
 export default ({ template }) => (
   <Container>
-    <Title>
+    <Title title="CodeSandbox">
       <Secondary style={{ color: template.color() }}>Code</Secondary>
       <Primary>Sandbox</Primary>
     </Title>
-    <SubTitle>
+    <SubTitle title="The online editor tailored for web applications">
       The online code editor for&nbsp;
       <RollingText updateCheck={template.name} width="12rem">
         <span style={{ color: template.color() }}>{template.niceName}</span>

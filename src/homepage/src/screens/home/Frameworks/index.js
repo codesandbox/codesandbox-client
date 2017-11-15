@@ -40,6 +40,11 @@ const Container = styled.div`
   flex-direction: row;
   height: 255px;
 
+  ${media.tablet`
+    margin-top: 1rem;
+    height: 320px;
+  `};
+
   ${media.phone`
     margin-top: 1rem;
     height: 280px;
