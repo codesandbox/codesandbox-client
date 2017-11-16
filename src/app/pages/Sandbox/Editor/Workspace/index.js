@@ -160,7 +160,7 @@ class Workspace extends React.PureComponent<Props> {
             {sandbox.owned &&
               !sandbox.git && (
                 <WorkspaceItem title="GitHub">
-                  {currentUser.integrations.github ? (
+                  {currentUser.integrations.github ? ( // eslint-disable-line
                     sandbox.originalGit ? (
                       <Git
                         sandboxId={sandbox.id}
