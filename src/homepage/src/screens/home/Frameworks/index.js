@@ -89,6 +89,7 @@ const Icons = styled.div`
   margin-top: 1rem;
   margin-bottom: 4rem;
   flex: 1;
+  min-width: 100%;
 
   ${media.phone`
     margin: 2rem 0;
@@ -224,7 +225,7 @@ export default class Frameworks extends React.Component {
     return (
       <Pane width={1280}>
         <Flex>
-          <Icons style={{ minWidth: '100%' }}>
+          <Icons>
             {templates.map(({ Icon }, i) => (
               <IconContainer
                 key={i}
