@@ -7,77 +7,24 @@ import type { CurrentUser } from 'common/types';
 import { currentUserSelector } from 'app/store/user/selectors';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 
+import IntegrationModal from 'app/containers/modals/IntegrationModal';
 import ZeitIntegration from 'app/containers/integrations/Zeit';
 import Button from 'app/components/buttons/Button';
 import Centered from 'app/components/flex/Centered';
 import Margin from 'app/components/spacing/Margin';
 import NowLogo from 'app/components/NowLogo';
+import OpaqueLogo from 'app/components/OpaqueLogo';
 
 import delayInEffect from 'app/utils/animation/delay-effect';
 import delayOutEffect from 'app/utils/animation/delay-out-effect';
 
 import Cube from './Cube';
-import OpaqueLogo from './OpaqueLogo';
-
-const Container = styled.div`
-  background-color: ${props => props.theme.background};
-  margin: 0;
-  color: rgba(255, 255, 255, 0.8);
-`;
-
-const Title = styled.h1`
-  font-weight: 500;
-  font-size: 1.25rem;
-  color: white;
-  margin: 0;
-  text-transform: uppercase;
-  margin-bottom: 0.5rem;
-`;
-
-const PoweredBy = styled.h2`
-  font-weight: 400;
-  font-size: 1rem;
-  color: white;
-  margin-top: 0 !important;
-  margin-bottom: 0;
-`;
-
-const Header = styled.div`
-  text-align: center;
-  padding: 1rem;
-  background-color: rgba(0, 0, 0, 0.3);
-`;
-
-const Division = styled.hr`
-  border: none;
-  height: 1px;
-  outline: none;
-  margin: 0;
-
-  background-color: rgba(255, 255, 255, 0.1);
-`;
 
 const ButtonContainer = styled.div`
   margin: 2rem 4rem;
   margin-bottom: 3rem;
   ${delayInEffect()} ${({ deploying }) =>
       deploying && delayOutEffect(0, false)};
-`;
-
-const DisabledOverlay = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  left: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  margin: 0 auto;
-  color: white;
-  font-size: 1.25rem;
-  z-index: 20;
 `;
 
 const DeployAnimationContainer = styled.div`
@@ -187,11 +134,15 @@ class Deploy extends React.PureComponent<Props, State> {
     const { user } = this.props;
 
     const zeitSignedIn = user.integrations.zeit;
+
     return (
-      <Container>
-        <Header>
-          <Title>Deployment</Title>
-          <PoweredBy>
+      <IntegrationModal
+        name="ZEIT"
+        Integration={ZeitIntegration}
+        title="Deployment"
+        subtitle={
+          <div>
+            {' '}
             Deploy a production version of your sandbox using{' '}
             <a
               target="_blank"
@@ -200,71 +151,59 @@ class Deploy extends React.PureComponent<Props, State> {
             >
               ZEIT Now
             </a>
-          </PoweredBy>
-        </Header>
-        <div>
-          <Centered horizontal>
-            <Margin margin={2}>
-              <ZeitIntegration />
+          </div>
+        }
+        signedIn={user.integrations.zeit}
+      >
+        <Centered horizontal>
+          {this.state.deploying && (
+            <Margin top={1}>
+              <DeployText>Deploying sandbox...</DeployText>
+              <DeployAnimationContainer deploying={this.state.deploying}>
+                <StyledLogo width={70} height={70} />
+                {[0, 1, 2, 3].map(i => <StyledCube key={i} i={i} size={20} />)}
+                <StyledNowLogo backgroundColor="#24282A" />
+              </DeployAnimationContainer>
             </Margin>
-          </Centered>
-          <Division />
-          <Centered horizontal>
-            {!zeitSignedIn && (
-              <DisabledOverlay>Sign in to ZEIT to deploy</DisabledOverlay>
-            )}
+          )}
 
-            {this.state.deploying && (
-              <Margin top={1}>
-                <DeployText>Deploying sandbox...</DeployText>
-                <DeployAnimationContainer deploying={this.state.deploying}>
-                  <StyledLogo width={70} height={70} />
-                  {[0, 1, 2, 3].map(i => (
-                    <StyledCube key={i} i={i} size={20} />
-                  ))}
-                  <StyledNowLogo backgroundColor="#24282A" />
-                </DeployAnimationContainer>
-              </Margin>
-            )}
+          {this.state.url ? (
+            <Margin top={1} bottom={2}>
+              <Centered horizontal>
+                <DeployText>Deployed!</DeployText>
 
-            {this.state.url ? (
-              <Margin top={1} bottom={2}>
-                <Centered horizontal>
-                  <DeployText>Deployed!</DeployText>
-
-                  <DeployedLink
-                    href={this.state.url}
-                    rel="nofollow noreferrer"
-                    target="_blank"
-                  >
-                    {this.state.url}
-                  </DeployedLink>
-
-                  <DeploymentManagementNotice>
-                    You can manage your deployments{' '}
-                    <a
-                      href="https://zeit.co/dashboard"
-                      target="_blank"
-                      rel="noreferrer noopener"
-                    >
-                      here
-                    </a>.
-                  </DeploymentManagementNotice>
-                </Centered>
-              </Margin>
-            ) : (
-              <ButtonContainer deploying={this.state.deploying}>
-                <Button
-                  onClick={this.deploy}
-                  disabled={!zeitSignedIn || this.state.deploying}
+                <DeployedLink
+                  href={this.state.url}
+                  rel="nofollow noreferrer"
+                  target="_blank"
                 >
-                  Deploy Now
-                </Button>
-              </ButtonContainer>
-            )}
-          </Centered>
-        </div>
-      </Container>
+                  {this.state.url}
+                </DeployedLink>
+
+                <DeploymentManagementNotice>
+                  You can manage your deployments{' '}
+                  <a
+                    href="https://zeit.co/dashboard"
+                    target="_blank"
+                    rel="noreferrer noopener"
+                  >
+                    here
+                  </a>.
+                </DeploymentManagementNotice>
+              </Centered>
+            </Margin>
+          ) : (
+            <ButtonContainer deploying={this.state.deploying}>
+              <Button
+                onClick={this.deploy}
+                disabled={!zeitSignedIn || this.state.deploying}
+              >
+                Deploy Now
+              </Button>
+            </ButtonContainer>
+          )}
+        </Centered>
+      </IntegrationModal>
     );
   }
 }

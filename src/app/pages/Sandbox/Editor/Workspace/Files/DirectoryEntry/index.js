@@ -56,6 +56,7 @@ type Props = {
   modalActions: typeof modalActionCreators,
   currentModuleId: ?string,
   isInProjectView: boolean,
+  mainModuleId: string,
 };
 type State = {
   creating: '' | 'module' | 'directory',
@@ -226,6 +227,7 @@ class DirectoryEntry extends React.PureComponent {
       isInProjectView,
       depth = 0,
       root,
+      mainModuleId,
     } = this.props;
     const { creating, open } = this.state;
 
@@ -271,6 +273,7 @@ class DirectoryEntry extends React.PureComponent {
             renameModule={this.renameModule}
             openMenu={openMenu}
             sandboxId={sandboxId}
+            mainModuleId={mainModuleId}
             sandboxTemplate={sandboxTemplate}
             parentShortid={shortid}
             deleteEntry={this.deleteModule}

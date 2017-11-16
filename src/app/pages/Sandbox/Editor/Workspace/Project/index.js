@@ -170,6 +170,7 @@ export default class Project extends React.PureComponent<
                 url={githubRepoUrl(git)}
                 username={git.username}
                 repo={git.repo}
+                branch={git.branch}
               />
             </GitContainer>
           </div>

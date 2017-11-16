@@ -75,11 +75,15 @@ requirePolyfills().then(() => {
     // We need to fetch the sandbox ourselves...
     const id = getId();
     window
-      .fetch(`${host}/api/v1/sandboxes/${id}`)
+      .fetch(host + `/api/v1/sandboxes/${id}`)
       .then(res => res.json())
       .then(res => camelizeKeys(res))
       .then(x => {
-        const mainModule = findMainModule(x.data.modules, x.data.template);
+        const mainModule = findMainModule(
+          x.data.modules,
+          x.data.directories,
+          x.data.entry
+        );
 
         const data = {
           sandboxId: id,

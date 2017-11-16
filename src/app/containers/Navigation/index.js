@@ -22,7 +22,9 @@ import PatronBadge from '-!svg-react-loader!app/utils/badges/svg/patron-4.svg'; 
 
 import UserMenu from '../UserMenu';
 
-const LogoWithBorder = styled(Logo)`padding-right: 1rem;`;
+const LogoWithBorder = styled(Logo)`
+  padding-right: 1rem;
+`;
 
 const Border = styled.hr`
   display: inline-block;

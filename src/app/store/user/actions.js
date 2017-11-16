@@ -57,8 +57,12 @@ export const UPDATE_BADGE_INFO = createAPIActions('BADGE', 'UPDATE');
 export const SET_ZEIT_USER_INFO = 'SET_ZEIT_USER_INFO';
 export const SIGN_OUT_ZEIT = createAPIActions('ZEIT', 'SIGN_OUT');
 export const SIGN_IN_ZEIT = createAPIActions('ZEIT', 'SIGN_IN');
+export const SIGN_OUT_GITHUB_INTEGRATION = createAPIActions(
+  'GITHUB_INTEGRATION',
+  'SIGN_OUT'
+);
 
-const signOut = (apiRequest = true) => async (dispatch: Function) => {
+const signOut = (apiRequest: boolean = true) => async (dispatch: Function) => {
   if (apiRequest) {
     await dispatch(
       doRequest(SIGN_OUT_API, 'users/signout', {
@@ -99,12 +103,12 @@ const getCurrentUser = () => async (dispatch: Function, getState: Function) => {
   }
 };
 
-const signIn = () => (dispatch: Function) =>
+const signIn = (extraScopes: boolean = false) => (dispatch: Function) =>
   new Promise((resolve, reject) => {
     dispatch({
       type: SIGN_IN,
     });
-    const popup = openPopup(signInUrl(), 'sign in');
+    const popup = openPopup(signInUrl(extraScopes), 'sign in');
 
     window.addEventListener('message', function onMessage(e) {
       if (e.data.type === 'signin') {
@@ -242,6 +246,18 @@ const setBadgeVisibility = (badgeId: string, visible: boolean) => async (
   }
 };
 
+const signOutFromGitHubIntegration = () => async (dispatch: Function) => {
+  await dispatch(
+    doRequest(
+      SIGN_OUT_GITHUB_INTEGRATION,
+      `users/current_user/integrations/github`,
+      {
+        method: 'DELETE',
+      }
+    )
+  );
+};
+
 const signOutFromZeit = () => async (dispatch: Function) => {
   await dispatch(
     doRequest(SIGN_OUT_ZEIT, `users/current_user/integrations/zeit`, {
@@ -323,4 +339,5 @@ export default {
   fetchZeitUserDetails,
   signOutFromZeit,
   signInZeit,
+  signOutFromGitHubIntegration,
 };

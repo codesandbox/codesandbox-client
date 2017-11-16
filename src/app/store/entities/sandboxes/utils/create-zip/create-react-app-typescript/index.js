@@ -4,6 +4,7 @@ import {
   getResourceTag,
   getIndexHtmlBody,
   createPackageJSON,
+  createFile,
   createDirectoryWithFiles,
 } from '../';
 
@@ -54,17 +55,21 @@ export default function createZip(
   modules: Array<Module>,
   directories: Array<Directory>
 ) {
-  return zip.loadAsync(files).then(srcFolder => {
+  return zip.loadAsync(files).then(async srcFolder => {
     const src = srcFolder.folder('src');
 
-    modules
-      .filter(x => x.directoryShortid == null)
-      .filter(x => x.title !== 'index.html') // This will be included in the body
-      .forEach(x => src.file(x.title, x.code));
+    await Promise.all(
+      modules
+        .filter(x => x.directoryShortid == null)
+        .filter(x => x.title !== 'index.html') // This will be included in the body
+        .map(x => createFile(x, src))
+    );
 
-    directories
-      .filter(x => x.directoryShortid == null)
-      .forEach(x => createDirectoryWithFiles(modules, directories, x, src));
+    await Promise.all(
+      directories
+        .filter(x => x.directoryShortid == null)
+        .map(x => createDirectoryWithFiles(modules, directories, x, src))
+    );
 
     const publicFolder = zip.folder('public');
 

@@ -62,8 +62,9 @@ export default class Hit extends React.PureComponent {
         innerRef={el => {
           this.el = el;
         }}
-        href={`https://codesandbox.io/search?refinementList%5Bnpm_dependencies.dependency%5D%5B0%5D=${this
-          .props.hit.value}&page=1`}
+        href={`https://codesandbox.io/search?refinementList%5Bnpm_dependencies.dependency%5D%5B0%5D=${
+          this.props.hit.value
+        }&page=1`}
         target="_blank"
         rel="noreferrer noopener"
       >

@@ -29,6 +29,7 @@ export type Module = {
   directoryShortid: ?string,
   isNotSynced: boolean,
   sourceId: string,
+  isBinary: boolean,
   errors: ?Array<ModuleError>,
   corrections: Array<ModuleCorrection>,
 };
@@ -51,7 +52,7 @@ export type CurrentUser = {
   id: ?string,
   email: ?string,
   name: ?string,
-  username: ?string,
+  username: string,
   avatarUrl: ?string,
   jwt: ?string,
   subscription: ?{
@@ -63,6 +64,9 @@ export type CurrentUser = {
     zeit?: {
       token: string,
       email: ?string,
+    },
+    github?: {
+      email: string,
     },
   },
 };
@@ -127,13 +131,6 @@ export type Sandbox = {
   },
   externalResources: Array<string>,
   isInProjectView: ?boolean,
-  dependencyBundle: ?{
-    externals?: Object,
-    hash?: string,
-    url?: string,
-    error?: string,
-    processing?: boolean,
-  },
   privacy: 0 | 1 | 2,
   showEditor: ?boolean,
   showPreview: ?boolean,
@@ -143,7 +140,16 @@ export type Sandbox = {
   tags: Array<string>,
   sourceId: string, // This is the source it's assigned to, a source contains all dependencies, modules and directories
   forcedRenders: number,
-  template: render,
+  template: string,
+  entry: string,
+  originalGit: ?GitInfo,
+  originalGitCommitSha: ?string,
+  originalGitChanges: ?{
+    added: Array<string>,
+    modified: Array<string>,
+    deleted: Array<string>,
+    rights: 'none' | 'read' | 'write' | 'admin',
+  },
 };
 
 export type Preferences = {

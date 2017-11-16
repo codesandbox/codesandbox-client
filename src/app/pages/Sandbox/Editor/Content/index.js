@@ -109,9 +109,9 @@ class EditorPreview extends React.PureComponent<Props, State> {
   stopResizing = () => this.setState({ resizing: false });
 
   saveCode = () => {
-    const { sandbox, modules, sandboxActions } = this.props;
+    const { sandbox, modules, directories, sandboxActions } = this.props;
 
-    const mainModule = findMainModule(modules, sandbox.template);
+    const mainModule = findMainModule(modules, directories, sandbox.entry);
     const { currentModule } = sandbox;
 
     // $FlowIssue
@@ -141,7 +141,7 @@ class EditorPreview extends React.PureComponent<Props, State> {
       previewApiActions,
     } = this.props;
 
-    const mainModule = findMainModule(modules, sandbox.template);
+    const mainModule = findMainModule(modules, directories, sandbox.entry);
     if (!mainModule) throw new Error('Cannot find main module');
 
     const { currentModule: currentModuleId } = sandbox;
@@ -202,6 +202,7 @@ class EditorPreview extends React.PureComponent<Props, State> {
           runActionFromPreview={previewApiActions.executeAction}
           forcedRenders={sandbox.forcedRenders}
           inactive={this.state.resizing}
+          entry={sandbox.entry}
         />
       </FullSize>
     );

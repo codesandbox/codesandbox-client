@@ -10,6 +10,8 @@ const BorderRadius = styled.div`
   font-size: 0.75rem;
   margin-right: 1rem;
 
+  display: flex;
+
   ${props =>
     props.hasUrl &&
     css`
@@ -41,6 +43,7 @@ const StyledA = styled.a`text-decoration: none;`;
 type Props = {
   username: string,
   repo: string,
+  branch: ?string,
   url: ?string,
 };
 
@@ -55,7 +58,7 @@ const DivOrA = ({ href, ...props }: DivOrAProps) =>
     <div {...props} />
   );
 
-export default ({ username, repo, url }: Props) => (
+export default ({ username, repo, url, branch }: Props) => (
   <DivOrA href={url}>
     <BorderRadius hasUrl={!!url}>
       <Icon>
@@ -63,6 +66,7 @@ export default ({ username, repo, url }: Props) => (
       </Icon>
       <Text>
         {username}/{repo}
+        {branch && branch !== 'master' ? `@${branch}` : ''}
       </Text>
     </BorderRadius>
   </DivOrA>

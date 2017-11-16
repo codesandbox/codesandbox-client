@@ -67,6 +67,10 @@ type Props = {
   children: React.Element,
   defaultOpen: ?boolean,
   disabled: ?string,
+
+  // this determines whether we need to keep the child component mounted when
+  // the item is collapsed
+  keepState: ?boolean,
 };
 
 export default class WorkspaceItem extends React.PureComponent {
@@ -82,7 +86,7 @@ export default class WorkspaceItem extends React.PureComponent {
   toggleOpen = () => this.setState({ open: !this.state.open });
 
   render() {
-    const { children, title, disabled } = this.props;
+    const { children, title, keepState, disabled } = this.props;
     const { open } = this.state;
 
     return (
@@ -92,7 +96,7 @@ export default class WorkspaceItem extends React.PureComponent {
           <ExpandIconContainer open={open} />
         </ItemHeader>
         <ChildContainer disabled={disabled} open={open}>
-          {children}
+          {(keepState || open) && children}
         </ChildContainer>
       </div>
     );

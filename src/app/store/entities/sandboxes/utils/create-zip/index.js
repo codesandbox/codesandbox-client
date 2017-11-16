@@ -4,6 +4,7 @@ import { saveAs } from 'file-saver';
 
 import type { Sandbox, Module, Directory } from 'common/types';
 import { react, reactTs, vue, preact, svelte } from 'common/templates/index';
+import resolveModule from 'common/sandbox/resolve-module';
 
 const CSSTag = (resource: string) =>
   `<link rel="stylesheet" type="text/css" href="${resource}" media="all">`;
@@ -20,10 +21,25 @@ export function getResourceTag(resource: string) {
   return JSTag(resource);
 }
 
-export function getIndexHtmlBody(modules: Array<Module>) {
-  const indexHtmlModule = modules.find(
+export function getIndexHtmlBody(
+  modules: Array<Module>,
+  directories: Array<Directory>
+) {
+  let indexHtmlModule = modules.find(
     m => m.title === 'index.html' && m.directoryShortid == null
   );
+
+  if (!indexHtmlModule && directories) {
+    try {
+      indexHtmlModule = resolveModule(
+        'public/index.html',
+        modules,
+        directories
+      );
+    } catch (e) {
+      /* ignore */
+    }
+  }
 
   if (indexHtmlModule) {
     return indexHtmlModule.code || '';
@@ -76,7 +92,25 @@ export function createPackageJSON(
   );
 }
 
-export function createDirectoryWithFiles(
+export async function createFile(module: Module, zip) {
+  if (module.isBinary) {
+    const code = await window.fetch(module.code).then(x => {
+      const contentType = x.headers['Content-Type'];
+
+      if (contentType && contentType.startsWith('text/plain')) {
+        return x.text();
+      }
+
+      return x.blob();
+    });
+
+    return zip.file(module.title, code);
+  }
+
+  return zip.file(module.title, module.code);
+}
+
+export async function createDirectoryWithFiles(
   modules: Array<Module>,
   directories: Array<Directory>,
   directory: Directory,
@@ -84,13 +118,17 @@ export function createDirectoryWithFiles(
 ) {
   const newZip = zip.folder(directory.title);
 
-  modules
-    .filter(x => x.directoryShortid === directory.shortid)
-    .forEach(x => newZip.file(x.title, x.code));
+  await Promise.all(
+    modules
+      .filter(x => x.directoryShortid === directory.shortid)
+      .map(x => createFile(x, newZip))
+  );
 
-  directories
-    .filter(x => x.directoryShortid === directory.shortid)
-    .forEach(x => createDirectoryWithFiles(modules, directories, x, newZip));
+  await Promise.all(
+    directories
+      .filter(x => x.directoryShortid === directory.shortid)
+      .map(x => createDirectoryWithFiles(modules, directories, x, newZip))
+  );
 }
 
 export async function createZip(
@@ -101,7 +139,16 @@ export async function createZip(
   const zip = new JSZip();
 
   let promise = null;
-  if (sandbox.template === react.name) {
+
+  if (
+    modules.find(m => m.title === 'package.json' && m.directoryShortid == null)
+  ) {
+    // This is a full project, with all files already in there. We need to create
+    // a zip by just adding all existing files to it (downloading binaries too).
+    promise = import(/* webpackChunkName: 'full-zip' */ './full').then(
+      generator => generator.default(zip, sandbox, modules, directories)
+    );
+  } else if (sandbox.template === react.name) {
     promise = import(/* webpackChunkName: 'create-react-app-zip' */ './create-react-app').then(
       generator => generator.default(zip, sandbox, modules, directories)
     );

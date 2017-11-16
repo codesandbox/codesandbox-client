@@ -11,7 +11,13 @@ type Props = {
 
 const Text = styled.span`
   color: white;
-  ${({ small }) => small && css`@media (max-width: 620px) {display: none;}`};
+  ${({ small }) =>
+    small &&
+    css`
+      @media (max-width: 620px) {
+        display: none;
+      }
+    `};
 `;
 
 const EditText = styled.a`

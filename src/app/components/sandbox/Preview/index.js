@@ -53,6 +53,7 @@ type Props = {
   forcedRenders: ?number,
   inactive: ?boolean,
   shouldExpandDevTools: ?boolean,
+  entry: string,
 };
 
 type State = {
@@ -248,8 +249,10 @@ export default class Preview extends React.PureComponent<Props, State> {
   };
 
   getRenderedModule = () => {
-    const { modules, module, template, isInProjectView } = this.props;
-    return isInProjectView ? findMainModule(modules, template) : module;
+    const { modules, module, directories, entry, isInProjectView } = this.props;
+    return isInProjectView
+      ? findMainModule(modules, directories, entry)
+      : module;
   };
 
   executeCodeImmediately = (initialRender: boolean = false) => {
@@ -276,6 +279,7 @@ export default class Preview extends React.PureComponent<Props, State> {
       this.handleRefresh();
     } else {
       const renderedModule = this.getRenderedModule();
+
       this.sendMessage({
         type: 'compile',
         module: renderedModule,

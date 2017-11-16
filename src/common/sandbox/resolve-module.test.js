@@ -30,6 +30,43 @@ describe('root', () => {
 
     expect(resolveModule(path, modules, directories)).toBe(modules[0]);
   });
+
+  test('it resolves entry files', () => {
+    const path = 'src/index.js';
+    const directories = [
+      {
+        id: '123124',
+        title: 'src',
+        shortid: '123124',
+        directoryShortid: null,
+      },
+      {
+        id: '123125',
+        title: 'test',
+        shortid: '123125',
+        directoryShortid: null,
+      },
+    ];
+    const modules = [
+      {
+        id: '123123',
+        title: 'index.js',
+        directoryShortid: null,
+      },
+      {
+        id: '123126',
+        title: 'index.js',
+        directoryShortid: '123124',
+      },
+      {
+        id: '123127',
+        title: 'sum.js',
+        directoryShortid: '123124',
+      },
+    ];
+
+    expect(resolveModule(path, modules, directories)).toBe(modules[1]);
+  });
 });
 
 describe('one directory deep', () => {

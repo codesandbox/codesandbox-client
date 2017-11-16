@@ -22,7 +22,14 @@ import {
   ADD_DIRECTORY_TO_SANDBOX,
   REMOVE_MODULE_FROM_SANDBOX,
   REMOVE_DIRECTORY_FROM_SANDBOX,
+  SAVE_MODULE_CODE_API_ACTIONS,
+  MASS_UPDATE_MODULE_API_ACTIONS,
 } from './actions/files';
+
+import { FETCH_GIT_CHANGES_API_ACTIONS, SET_ORIGINAL_GIT } from './actions/git';
+import { RENAME_MODULE, MOVE_MODULE } from './modules/actions';
+
+import { RENAME_DIRECTORY, MOVE_DIRECTORY } from './directories/actions';
 
 import { SET_CURRENT_USER, SIGN_OUT } from '../../user/actions';
 
@@ -46,11 +53,16 @@ function singleSandboxReducer(sandbox: Sandbox, action: Action): Sandbox {
     case SET_CURRENT_MODULE:
       return { ...sandbox, currentModule: action.moduleId };
     case ADD_MODULE_TO_SANDBOX:
-      return { ...sandbox, modules: [...sandbox.modules, action.moduleId] };
+      return {
+        ...sandbox,
+        modules: [...sandbox.modules, action.moduleId],
+        originalGitChanges: null,
+      };
     case ADD_DIRECTORY_TO_SANDBOX:
       return {
         ...sandbox,
         directories: [...sandbox.directories, action.directoryId],
+        originalGitChanges: null,
       };
     case REMOVE_MODULE_FROM_SANDBOX: {
       const currentModule = sandbox.currentModule;
@@ -60,12 +72,14 @@ function singleSandboxReducer(sandbox: Sandbox, action: Action): Sandbox {
         ...sandbox,
         currentModule: resetCurrentModule ? undefined : sandbox.currentModule,
         modules: sandbox.modules.filter(m => m !== action.moduleId),
+        originalGitChanges: null,
       };
     }
     case REMOVE_DIRECTORY_FROM_SANDBOX:
       return {
         ...sandbox,
         directories: sandbox.directories.filter(d => d !== action.directoryId),
+        originalGitChanges: null,
       };
     case SET_NPM_DEPENDENCIES:
       return {
@@ -123,6 +137,24 @@ function singleSandboxReducer(sandbox: Sandbox, action: Action): Sandbox {
         userLiked: false,
         likeCount: sandbox.likeCount - 1,
       };
+    case FETCH_GIT_CHANGES_API_ACTIONS.SUCCESS:
+      return {
+        ...sandbox,
+        originalGitChanges: action.data,
+      };
+    case FETCH_GIT_CHANGES_API_ACTIONS.FAILURE:
+    case FETCH_GIT_CHANGES_API_ACTIONS.REQUEST:
+      return {
+        ...sandbox,
+        originalGitChanges: null,
+      };
+    case SET_ORIGINAL_GIT:
+      return {
+        ...sandbox,
+        originalGit: action.originalGit,
+        originalGitCommitSha: action.originalGitCommitSha,
+        originalGitChanges: null,
+      };
     case SET_TAGS:
       return {
         ...sandbox,
@@ -165,7 +197,11 @@ export default function reducer(
     case UNLIKE_SANDBOX_ACTIONS.REQUEST:
     case UNLIKE_SANDBOX_ACTIONS.FAILURE:
     case UNLIKE_SANDBOX_ACTIONS.SUCCESS:
+    case FETCH_GIT_CHANGES_API_ACTIONS.SUCCESS:
+    case FETCH_GIT_CHANGES_API_ACTIONS.REQUEST:
+    case FETCH_GIT_CHANGES_API_ACTIONS.FAILURE:
     case SET_SANDBOX_PRIVACY:
+    case SET_ORIGINAL_GIT:
     case FORCE_RENDER: {
       const id = action.id || (action.meta ? action.meta.id : undefined);
       if (state[id]) {
@@ -194,6 +230,24 @@ export default function reducer(
         ...state,
         [action.meta.id]: null,
       };
+
+    // Git changes
+    case RENAME_MODULE:
+    case MOVE_MODULE:
+    case RENAME_DIRECTORY:
+    case MOVE_DIRECTORY:
+    case SAVE_MODULE_CODE_API_ACTIONS.REQUEST:
+    case MASS_UPDATE_MODULE_API_ACTIONS.REQUEST:
+      return mapValues(state, s => {
+        if (!s.originalGitChanges) {
+          return s;
+        }
+
+        return {
+          ...s,
+          originalGitChanges: null,
+        };
+      });
     default:
       return state;
   }

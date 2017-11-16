@@ -5,6 +5,7 @@ import {
   getResourceTag,
   getIndexHtmlBody,
   createPackageJSON,
+  createFile,
   createDirectoryWithFiles,
 } from '../';
 
@@ -63,18 +64,21 @@ export default function createZip(
 ) {
   zip.file('README.md', README);
 
-  return zip.loadAsync(files).then(src => {
+  return zip.loadAsync(files).then(async src => {
     const srcFolder = src.folder('src');
-    modules
-      .filter(x => x.directoryShortid == null)
-      .filter(x => x.title !== 'index.html') // This will be included in the body
-      .forEach(x => srcFolder.file(x.title, x.code));
 
-    directories
-      .filter(x => x.directoryShortid == null)
-      .forEach(x =>
-        createDirectoryWithFiles(modules, directories, x, srcFolder)
-      );
+    await Promise.all(
+      modules
+        .filter(x => x.directoryShortid == null)
+        .filter(x => x.title !== 'index.html') // This will be included in the body
+        .map(x => createFile(x, srcFolder))
+    );
+
+    await Promise.all(
+      directories
+        .filter(x => x.directoryShortid == null)
+        .map(x => createDirectoryWithFiles(modules, directories, x, srcFolder))
+    );
 
     src.file('index.html', getHTML(modules, sandbox.externalResources));
 

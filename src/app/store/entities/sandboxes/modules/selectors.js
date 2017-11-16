@@ -4,49 +4,7 @@ import { createSelector } from 'reselect';
 import { values } from 'lodash';
 import resolveModule from 'common/sandbox/resolve-module';
 
-import getTemplate from 'common/templates';
-
 export const modulesSelector = state => state.entities.modules;
-
-export const isMainModule = (module: Module, templateId: string) => {
-  let moduleTitle = 'index.js';
-
-  if (templateId) {
-    const template = getTemplate(templateId);
-
-    if (template && template.sourceConfig && template.sourceConfig.entry) {
-      moduleTitle = template.sourceConfig.entry;
-    }
-  }
-
-  return module.title === moduleTitle && module.directoryShortid == null;
-};
-
-export const findMainModule = (modules: Module[], templateId: string) =>
-  modules.find(m => isMainModule(m, templateId)) || modules[0];
-
-export const findCurrentModule = (
-  modules: Module[],
-  directories: Directory[],
-  modulePath: ?string = '',
-  mainModule: Module
-): Module => {
-  // cleanPath, encode and replace first /
-  const cleanPath = decodeURIComponent(modulePath).replace('/', '');
-  let foundModule = null;
-  try {
-    foundModule = resolveModule(cleanPath, modules, directories);
-  } catch (e) {
-    /* leave empty */
-  }
-
-  return (
-    foundModule ||
-    modules.find(m => m.id === modulePath) ||
-    modules.find(m => m.shortid === modulePath) || // deep-links requires this
-    mainModule
-  );
-};
 
 function findById(entities: Array<Module | Directory>, id: string) {
   return entities.find(e => e.id === id);
@@ -74,6 +32,53 @@ export const getModulePath = (
   return `${path}${module.title}`;
 };
 
+export const isMainModule = (
+  module: Module,
+  modules: Module[],
+  directories: Directory[],
+  entry: string = 'index.js'
+) => {
+  const path = getModulePath(modules, directories, module.id);
+
+  return path.replace('/', '') === entry;
+};
+
+export const findMainModule = (
+  modules: Module[],
+  directories: Directory[],
+  entry: string = 'index.js'
+) => {
+  try {
+    const module = resolveModule(entry, modules, directories);
+
+    return module;
+  } catch (e) {
+    return modules[0];
+  }
+};
+
+export const findCurrentModule = (
+  modules: Module[],
+  directories: Directory[],
+  modulePath: ?string = '',
+  mainModule: Module
+): Module => {
+  // cleanPath, encode and replace first /
+  const cleanPath = decodeURIComponent(modulePath).replace('/', '');
+  let foundModule = null;
+  try {
+    foundModule = resolveModule(cleanPath, modules, directories);
+  } catch (e) {
+    /* leave empty */
+  }
+
+  return (
+    foundModule ||
+    modules.find(m => m.id === modulePath) ||
+    modules.find(m => m.shortid === modulePath) || // deep-links requires this
+    mainModule
+  );
+};
 /**
  * Return an array of the ids of the directories that are the parents of the given module
  */

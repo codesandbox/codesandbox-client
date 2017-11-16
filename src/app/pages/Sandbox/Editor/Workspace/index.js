@@ -7,17 +7,26 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import styled, { ThemeProvider } from 'styled-components';
 
-import type { Sandbox, User } from 'common/types';
+import type { Sandbox, User, CurrentUser } from 'common/types';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
+import modalActionCreators from 'app/store/modal/actions';
 import { modulesFromSandboxNotSavedSelector } from 'app/store/entities/sandboxes/modules/selectors';
 import { usersSelector } from 'app/store/entities/users/selectors';
-import { isPatronSelector } from 'app/store/user/selectors';
+import {
+  currentUserSelector,
+  isPatronSelector,
+} from 'app/store/user/selectors';
 import getTemplateDefinition from 'common/templates';
 
 import showAlternativeComponent from 'app/hoc/show-alternative-component';
 import fadeIn from 'app/utils/animation/fade-in';
 import { tosUrl, privacyUrl } from 'app/utils/url-generator';
 
+import Button from 'app/components/buttons/Button';
+import Margin from 'app/components/spacing/Margin';
+import Preferences from 'app/containers/Preferences';
+
+import WorkspaceInputContainer from './WorkspaceInputContainer';
 import Files from './Files';
 import Dependencies from './Dependencies';
 import Project from './Project';
@@ -27,6 +36,8 @@ import SandboxActions from './SandboxActions';
 import Logo from './Logo';
 import ConnectionNotice from './ConnectionNotice';
 import Advertisement from './Advertisement';
+import Git from './Git';
+import CreateRepo from './Git/CreateRepo';
 
 const Container = styled.div`
   position: absolute;
@@ -54,8 +65,10 @@ const TermsContainer = styled.div`
 type Props = {
   sandbox: Sandbox,
   sandboxActions: typeof sandboxActionCreators,
+  modalActions: typeof modalActionCreators,
   preventTransition: boolean,
   user: User,
+  currentUser: CurrentUser,
   isPatron: boolean,
 };
 
@@ -64,107 +77,173 @@ const mapStateToProps = createSelector(
   usersSelector,
   (_, props) => props.sandbox && props.sandbox.author,
   isPatronSelector,
-  (preventTransition, users, author, isPatron) => ({
+  currentUserSelector,
+  (preventTransition, users, author, isPatron, currentUser) => ({
     preventTransition,
     user: users[author],
     isPatron,
+    currentUser,
   })
 );
 
 const mapDispatchToProps = dispatch => ({
   sandboxActions: bindActionCreators(sandboxActionCreators, dispatch),
+  modalActions: bindActionCreators(modalActionCreators, dispatch),
 });
 
-const Workspace = ({
-  sandbox,
-  user,
-  preventTransition,
-  sandboxActions,
-  isPatron,
-}: Props) => (
-  <ThemeProvider
-    theme={{
-      templateColor: getTemplateDefinition(sandbox.template).color,
-    }}
-  >
-    <Container>
-      <div>
-        <Logo />
-        <WorkspaceItem defaultOpen title="Project">
-          <Project
-            updateSandboxInfo={sandboxActions.updateSandboxInfo}
-            id={sandbox.id}
-            title={sandbox.title}
-            viewCount={sandbox.viewCount}
-            likeCount={sandbox.likeCount}
-            forkCount={sandbox.forkCount}
-            git={sandbox.git}
-            description={sandbox.description}
-            forkedSandbox={sandbox.forkedFromSandbox}
-            preventTransition={preventTransition}
-            owned={sandbox.owned}
-            author={user}
-            privacy={sandbox.privacy}
-            template={sandbox.template}
-          />
-        </WorkspaceItem>
+class Workspace extends React.PureComponent<Props> {
+  openPreferences = () => {
+    this.props.modalActions.openModal({
+      width: 900,
+      Body: <Preferences initialPane="Integrations" />,
+    });
+  };
 
-        <WorkspaceItem defaultOpen title="Files">
-          <Files sandbox={sandbox} sandboxActions={sandboxActions} />
-        </WorkspaceItem>
+  render() {
+    const {
+      sandbox,
+      user,
+      preventTransition,
+      sandboxActions,
+      isPatron,
+      modalActions,
+      currentUser,
+    } = this.props;
 
-        <WorkspaceItem title="Dependencies">
-          <Dependencies
-            sandboxId={sandbox.id}
-            npmDependencies={sandbox.npmDependencies}
-            externalResources={sandbox.externalResources}
-            sandboxActions={sandboxActions}
-            processing={
-              !!(
-                sandbox.dependencyBundle && sandbox.dependencyBundle.processing
-              )
-            }
-          />
-        </WorkspaceItem>
+    return (
+      <ThemeProvider
+        theme={{
+          templateColor: getTemplateDefinition(sandbox.template).color,
+        }}
+      >
+        <Container>
+          <div>
+            <Logo />
+            <WorkspaceItem defaultOpen keepState title="Project">
+              <Project
+                updateSandboxInfo={sandboxActions.updateSandboxInfo}
+                id={sandbox.id}
+                title={sandbox.title}
+                viewCount={sandbox.viewCount}
+                likeCount={sandbox.likeCount}
+                forkCount={sandbox.forkCount}
+                git={sandbox.git}
+                description={sandbox.description}
+                forkedSandbox={sandbox.forkedFromSandbox}
+                preventTransition={preventTransition}
+                owned={sandbox.owned}
+                author={user}
+                privacy={sandbox.privacy}
+                template={sandbox.template}
+              />
+            </WorkspaceItem>
 
-        {(sandbox.owned || sandbox.tags.length > 0) && (
-          <WorkspaceItem title="Tags">
-            <Tags
-              sandboxId={sandbox.id}
-              addTag={sandboxActions.addTag}
-              removeTag={sandboxActions.removeTag}
-              isOwner={sandbox.owned}
-              tags={sandbox.tags}
-            />
-          </WorkspaceItem>
-        )}
+            <WorkspaceItem defaultOpen keepState title="Files">
+              <Files sandbox={sandbox} sandboxActions={sandboxActions} />
+            </WorkspaceItem>
 
-        {sandbox.owned && (
-          <WorkspaceItem title="Sandbox Actions">
-            <SandboxActions
-              id={sandbox.id}
-              deleteSandbox={sandboxActions.deleteSandbox}
-              newSandboxUrl={sandboxActions.newSandboxUrl}
-              setSandboxPrivacy={sandboxActions.setSandboxPrivacy}
-              isPatron={isPatron}
-              privacy={sandbox.privacy}
-            />
-          </WorkspaceItem>
-        )}
-      </div>
+            <WorkspaceItem title="Dependencies">
+              <Dependencies
+                sandboxId={sandbox.id}
+                npmDependencies={sandbox.npmDependencies}
+                externalResources={sandbox.externalResources}
+                sandboxActions={sandboxActions}
+                processing={
+                  !!(
+                    sandbox.dependencyBundle &&
+                    sandbox.dependencyBundle.processing
+                  )
+                }
+              />
+            </WorkspaceItem>
 
-      <div>
-        {!isPatron && !sandbox.owned && <Advertisement />}
-        <ConnectionNotice />
-        <TermsContainer>
-          By using CodeSandbox you agree to our{' '}
-          <Link to={tosUrl()}>Terms and Conditions</Link> and{' '}
-          <Link to={privacyUrl()}>Privacy Policy</Link>.
-        </TermsContainer>
-      </div>
-    </Container>
-  </ThemeProvider>
-);
+            {sandbox.owned &&
+              !sandbox.git && (
+                <WorkspaceItem title="GitHub">
+                  {currentUser.integrations.github ? ( // eslint-disable-line
+                    sandbox.originalGit ? (
+                      <Git
+                        sandboxId={sandbox.id}
+                        originalGit={sandbox.originalGit}
+                        gitChanges={sandbox.originalGitChanges}
+                        fetchGitChanges={sandboxActions.fetchGitChanges}
+                        createGitCommit={sandboxActions.createGitCommit}
+                        createGitPR={sandboxActions.createGitPR}
+                        openModal={modalActions.openModal}
+                        closeModal={modalActions.closeModal}
+                        user={currentUser}
+                        modulesNotSaved={preventTransition}
+                      />
+                    ) : (
+                      <CreateRepo
+                        sandboxId={sandbox.id}
+                        title={sandbox.title}
+                        exportToGithub={sandboxActions.exportToGithub}
+                        modulesNotSaved={preventTransition}
+                        openModal={modalActions.openModal}
+                        closeModal={modalActions.closeModal}
+                      />
+                    )
+                  ) : (
+                    <div>
+                      <Margin
+                        margin={1}
+                        top={0}
+                        style={{ color: 'rgba(255, 255, 255, 0.8)' }}
+                      >
+                        You can create commits and open pull requests if you add
+                        GitHub to your integrations.
+                      </Margin>
+                      <WorkspaceInputContainer>
+                        <Button onClick={this.openPreferences} small block>
+                          Open Integrations
+                        </Button>
+                      </WorkspaceInputContainer>
+                    </div>
+                  )}
+                </WorkspaceItem>
+              )}
+
+            {(sandbox.owned || sandbox.tags.length > 0) && (
+              <WorkspaceItem title="Tags">
+                <Tags
+                  sandboxId={sandbox.id}
+                  addTag={sandboxActions.addTag}
+                  removeTag={sandboxActions.removeTag}
+                  isOwner={sandbox.owned}
+                  tags={sandbox.tags}
+                />
+              </WorkspaceItem>
+            )}
+
+            {sandbox.owned && (
+              <WorkspaceItem title="Sandbox Actions">
+                <SandboxActions
+                  id={sandbox.id}
+                  deleteSandbox={sandboxActions.deleteSandbox}
+                  newSandboxUrl={sandboxActions.newSandboxUrl}
+                  setSandboxPrivacy={sandboxActions.setSandboxPrivacy}
+                  isPatron={isPatron}
+                  privacy={sandbox.privacy}
+                />
+              </WorkspaceItem>
+            )}
+          </div>
+
+          <div>
+            {!isPatron && !sandbox.owned && <Advertisement />}
+            <ConnectionNotice />
+            <TermsContainer>
+              By using CodeSandbox you agree to our{' '}
+              <Link to={tosUrl()}>Terms and Conditions</Link> and{' '}
+              <Link to={privacyUrl()}>Privacy Policy</Link>.
+            </TermsContainer>
+          </div>
+        </Container>
+      </ThemeProvider>
+    );
+  }
+}
 
 // The skeleton to show if sandbox doesn't exist
 const Skeleton = () => <Container />;

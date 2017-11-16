@@ -4,7 +4,6 @@ import * as React from 'react';
 import type { Module, Directory } from 'common/types';
 
 import { validateTitle } from 'app/store/entities/sandboxes/modules/validator';
-import { isMainModule } from 'app/store/entities/sandboxes/modules/selectors';
 import getType from 'app/store/entities/sandboxes/modules/utils/get-type';
 
 import Entry from './Entry';
@@ -24,6 +23,7 @@ type Props = {
   isInProjectView: boolean,
   parentShortid: string,
   sandboxTemplate: string,
+  mainModuleId: string,
 };
 
 export default class DirectoryChildren extends React.PureComponent<Props> {
@@ -41,6 +41,7 @@ export default class DirectoryChildren extends React.PureComponent<Props> {
       directories,
       parentShortid,
       sandboxId,
+      mainModuleId,
       sandboxTemplate,
       modules,
       deleteEntry,
@@ -62,6 +63,7 @@ export default class DirectoryChildren extends React.PureComponent<Props> {
               title={dir.title}
               sandboxId={sandboxId}
               sandboxTemplate={sandboxTemplate}
+              mainModuleId={mainModuleId}
               modules={modules}
               directories={directories}
               currentModuleId={currentModuleId}
@@ -70,7 +72,7 @@ export default class DirectoryChildren extends React.PureComponent<Props> {
           ))}
         {modules.filter(x => x.directoryShortid === parentShortid).map(m => {
           const isActive = m.id === currentModuleId;
-          const mainModule = isMainModule(m, sandboxTemplate);
+          const mainModule = m.id === mainModuleId;
           const type = getType(m);
 
           const hasError = m && m.errors.length;

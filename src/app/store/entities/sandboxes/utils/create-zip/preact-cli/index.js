@@ -6,6 +6,7 @@ import {
   getIndexHtmlBody,
   createPackageJSON,
   createDirectoryWithFiles,
+  createFile,
 } from '../';
 
 /* eslint-disable no-useless-escape */
@@ -55,15 +56,19 @@ export default function createZip(
   return zip
     .folder('src')
     .loadAsync(files)
-    .then(src => {
-      modules
-        .filter(x => x.directoryShortid == null)
-        .filter(x => x.title !== 'index.html') // This will be included in the body
-        .forEach(x => src.file(x.title, x.code));
+    .then(async src => {
+      await Promise.all(
+        modules
+          .filter(x => x.directoryShortid == null)
+          .filter(x => x.title !== 'index.html') // This will be included in the body
+          .map(x => createFile(x, src))
+      );
 
-      directories
-        .filter(x => x.directoryShortid == null)
-        .forEach(x => createDirectoryWithFiles(modules, directories, x, src));
+      await Promise.all(
+        directories
+          .filter(x => x.directoryShortid == null)
+          .map(x => createDirectoryWithFiles(modules, directories, x, src))
+      );
 
       if (
         modules.filter(
