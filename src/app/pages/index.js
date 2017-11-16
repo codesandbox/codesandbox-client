@@ -17,6 +17,7 @@ import userActionCreators from 'app/store/user/actions';
 import initializeConnectionManager from 'app/store/connection/actions';
 
 import Sandbox from './Sandbox';
+import NewSandbox from './NewSandbox';
 
 const routeDebugger = _debug('cs:app:router');
 
@@ -132,6 +133,7 @@ class Routes extends React.PureComponent<Props> {
             <Route exact path="/" render={() => <Redirect to="/s/new" />} />
             <Route exact path="/s/github" component={GitHub} />
             <Route exact path="/s/cli" component={CliInstructions} />
+            <Route exact path="/s" component={NewSandbox} />
             <Route path="/s/:id*" component={Sandbox} />
             <Route path="/signin/:jwt?" component={SignIn} />
             <Route path="/u/:username" component={Profile} />

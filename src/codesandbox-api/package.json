@@ -1,0 +1,98 @@
+{
+  "name": "codesandbox-api",
+  "version": "0.0.14",
+  "description": "",
+  "keywords": [],
+  "main": "dist/codesandbox.umd.js",
+  "module": "dist/codesandbox.es5.js",
+  "typings": "dist/types/codesandbox.d.ts",
+  "files": ["dist"],
+  "author": "Ives van Hoorne <ives.v.h@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "scripts": {
+    "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
+    "prebuild": "rimraf dist",
+    "build:clean": "tsc && rollup -c",
+    "build":
+      "tsc && rollup -c && rimraf compiled && typedoc --out dist/docs --target es6 --theme minimal src",
+    "start": "nodemon -e ts --exec \"npm run build:clean\"",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:prod": "npm run lint && npm run test -- --coverage --no-cache",
+    "deploy-docs": "ts-node tools/gh-pages-publish",
+    "report-coverage": "cat ./coverage/lcov.info | coveralls",
+    "commit": "git-cz",
+    "semantic-release":
+      "semantic-release pre && npm publish && semantic-release post",
+    "semantic-release-prepare": "ts-node tools/semantic-release-prepare",
+    "precommit": "lint-staged"
+  },
+  "lint-staged": {
+    "./{src,test}/**/*.ts": ["prettier --write --no-semi", "git add"]
+  },
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-conventional-changelog"
+    },
+    "validate-commit-msg": {
+      "types": "conventional-commit-types",
+      "helpMessage":
+        "Use \"npm run commit\" instead, we use conventional-changelog format :) (https://github.com/commitizen/cz-cli)"
+    }
+  },
+  "jest": {
+    "transform": {
+      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+    "moduleFileExtensions": ["ts", "tsx", "js"],
+    "coveragePathIgnorePatterns": ["/node_modules/", "/test/"],
+    "coverageThreshold": {
+      "global": {
+        "branches": 90,
+        "functions": 95,
+        "lines": 95,
+        "statements": 95
+      }
+    }
+  },
+  "devDependencies": {
+    "@types/debug": "^0.0.30",
+    "@types/jest": "^20.0.0",
+    "colors": "^1.1.2",
+    "commitizen": "^2.9.6",
+    "coveralls": "^2.13.1",
+    "cross-env": "^5.0.1",
+    "cz-conventional-changelog": "^2.0.0",
+    "husky": "^0.14.0",
+    "jest": "^20.0.4",
+    "lint-staged": "^4.0.0",
+    "lodash.camelcase": "^4.3.0",
+    "nodemon": "^1.11.0",
+    "prettier": "^1.8.2",
+    "prompt": "^1.0.0",
+    "replace-in-file": "^2.5.0",
+    "rimraf": "^2.6.1",
+    "rollup": "^0.46.0",
+    "rollup-plugin-commonjs": "^8.0.2",
+    "rollup-plugin-node-resolve": "^3.0.0",
+    "rollup-plugin-sourcemaps": "^0.4.2",
+    "semantic-release": "^6.3.6",
+    "ts-jest": "^20.0.6",
+    "ts-node": "^3.0.6",
+    "tsc-watch": "^1.0.5",
+    "tslint": "^5.4.3",
+    "tslint-config-prettier": "^1.1.0",
+    "tslint-config-standard": "^6.0.0",
+    "typedoc": "^0.7.1",
+    "typescript": "^2.3.4",
+    "validate-commit-msg": "^2.12.2"
+  }
+}

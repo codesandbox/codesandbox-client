@@ -1,4 +1,4 @@
-import { mapValues } from 'lodash';
+import { mapValues, memoize } from 'lodash';
 import Color from 'color';
 
 const colorMethods = [
@@ -27,7 +27,6 @@ const colorMethods = [
  */
 const addModifier = (fn, method, ...modifierArgs) => (...args) =>
   new Color(fn(...args))[method](...modifierArgs).rgbString();
-
 /**
  * Add useful methods directly to selector function, as well as put an rgbString() call at the end
  * @param selector
@@ -35,8 +34,9 @@ const addModifier = (fn, method, ...modifierArgs) => (...args) =>
 export const decorateSelector = selector => {
   // add member functions to our selector
   colorMethods.forEach(method => {
-    selector[method] = (...args) =>
-      decorateSelector(addModifier(selector, method, ...args));
+    selector[method] = memoize((...args) =>
+      decorateSelector(addModifier(selector, method, ...args))
+    );
   });
   return selector;
 };

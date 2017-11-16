@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import Logo from 'app/components/Logo';
+import Logo from 'common/components/Logo';
 
 import { sandboxUrl } from 'app/utils/url-generator';
 

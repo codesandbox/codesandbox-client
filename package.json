@@ -2,13 +2,14 @@
   "name": "react-sandbox",
   "version": "0.1.0",
   "license": "MIT",
+  "private": true,
   "devDependencies": {
     "all-contributors-cli": "^4.3.0",
     "autoprefixer": "^6.7.7",
     "babel-core": "^6.25.0",
     "babel-eslint": "^7.2.3",
-    "babel-jest": "^20.0.3",
-    "babel-loader": "^7.1.0",
+    "babel-jest": "^21.2.0",
+    "babel-loader": "7.1.1",
     "babel-macros": "^1.0.2",
     "babel-plugin-codegen": "^1.2.0",
     "babel-plugin-lodash": "^3.2.11",
@@ -55,10 +56,11 @@
     "html-webpack-plugin": "^2.24.1",
     "http-proxy-middleware": "^0.17.3",
     "husky": "^0.14.3",
-    "jest": "^20.0.0",
+    "jest": "^21.2.1",
     "jest-image-snapshot": "^1.0.1",
-    "jest-styled-components": "^4.3.0",
+    "jest-styled-components": "^4.9.0",
     "json-loader": "0.5.4",
+    "lerna": "^2.4.0",
     "lint-staged": "^4.0.1",
     "object-assign": "^4.1.1",
     "opn": "4.0.2",
@@ -174,8 +176,9 @@
     "start:dev_api": "node scripts/start.js",
     "start:test":
       "cross-env LOCAL_SERVER=1 NODE_ENV=test node scripts/start.js",
-    "build": "cross-env NODE_ENV=production node scripts/build.js && gulp",
-    "test": "npm run lint && jest --env=jsdom",
+    "build":
+      "lerna run build && cross-env NODE_ENV=production node scripts/build.js && gulp",
+    "test": "lerna run build --ignore app && npm run lint && jest --env=jsdom",
     "test:watch": "jest --watch --env=jsdom",
     "test:integrations":
       "jest --config integration-tests/jest.config.json --env=jsdom",
@@ -202,11 +205,18 @@
   },
   "jest": {
     "roots": ["<rootDir>/src"],
-    "moduleDirectories": ["node_modules", "src"],
-    "testPathIgnorePatterns": ["/node_modules/", "/create-zip\\/.*\\/files/"],
+    "moduleDirectories": ["node_modules"],
+    "testPathIgnorePatterns": ["/create-zip\\/.*\\/files/"],
+    "transformIgnorePatterns": [
+      "<rootDir>/node_modules/(?!(embed|app|common))"
+    ],
     "moduleNameMapper": {
       "\\.css$": "<rootDir>/__mocks__/styleMock.js",
       "\\.html$": "<rootDir>/__mocks__/styleMock.js"
+    },
+    "transform": {
+      "^.+\\.js$": "babel-jest"
     }
-  }
+  },
+  "workspaces": ["src/**"]
 }

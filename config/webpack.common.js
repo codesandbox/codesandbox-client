@@ -136,7 +136,7 @@ module.exports = {
 
   resolve: {
     mainFields: ['browser', 'module', 'jsnext:main', 'main'],
-    modules: ['src', 'node_modules'],
+    modules: ['node_modules'],
 
     extensions: ['.js', '.json'],
 
@@ -250,10 +250,10 @@ module.exports = {
           from: 'static',
           to: 'static',
         },
-        {
-          from: 'src/homepage/static',
-          to: 'static',
-        },
+        // {
+        //   from: 'src/homepage/static',
+        //   to: 'static',
+        // },
       ].filter(x => x)
     ),
     // We first create a common chunk between embed and app, to share components

@@ -1,7 +1,7 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
 # dependencies
-/node_modules
+node_modules
 
 /integration-tests/**/__diff_output__
 
@@ -20,3 +20,5 @@ yarn-error.log
 .vscode
 .idea
 jest
+
+lerna-debug.log

@@ -1,6 +1,7 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
-import Logo from './Logo';
+import Logo from 'common/components/Logo';
+
 import Centered from './flex/Centered';
 
 const animation = keyframes`
