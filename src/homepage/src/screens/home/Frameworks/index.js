@@ -1,6 +1,8 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 
+import Media from 'react-media';
+
 import MaxWidth from 'app/components/flex/MaxWidth';
 import Column from 'app/components/flex/Column';
 import Centered from 'app/components/flex/Centered';
@@ -78,6 +80,10 @@ const Icons = styled.div`
   justify-content: space-around;
   margin-top: 1rem;
   margin-bottom: 4rem;
+
+  ${media.phone`
+    margin: 2rem 0;
+  `};
 `;
 
 const IconContainer = styled.div`
@@ -208,6 +214,18 @@ export default class Frameworks extends React.Component {
 
     return (
       <Pane width={1280}>
+        <Media query="(max-width: 660px)">
+          <Column style={{ marginRight: '2rem' }} flex={4}>
+            <Heading3>Tailored for web applications</Heading3>
+            <p>
+              We know how overwhelming JavaScript development can be. With
+              CodeSandbox we specifically focus on web application development
+              to make the experience as smooth as possible. Just open your
+              browser and start coding.
+            </p>
+          </Column>
+        </Media>
+
         <Icons>
           {templates.map(({ Icon }, i) => (
             <IconContainer
@@ -224,15 +242,17 @@ export default class Frameworks extends React.Component {
         </Icons>
 
         <Flex>
-          <Column style={{ marginRight: '2rem' }} flex={4}>
-            <Heading3>Tailored for web applications</Heading3>
-            <p>
-              We know how overwhelming JavaScript development can be. With
-              CodeSandbox we specifically focus on web application development
-              to make the experience as smooth as possible. Just open your
-              browser and start coding.
-            </p>
-          </Column>
+          <Media query="(min-width: 660px)">
+            <Column style={{ marginRight: '2rem' }} flex={4}>
+              <Heading3>Tailored for web applications</Heading3>
+              <p>
+                We know how overwhelming JavaScript development can be. With
+                CodeSandbox we specifically focus on web application development
+                to make the experience as smooth as possible. Just open your
+                browser and start coding.
+              </p>
+            </Column>
+          </Media>
           <Column flex={4}>
             <Container color={template.color}>
               <RollingText
