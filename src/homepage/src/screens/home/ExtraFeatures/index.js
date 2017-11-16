@@ -41,9 +41,14 @@ export default () => (
         <Heading>There{"'"}s more</Heading>
         <SubHeading>
           This was just the tip of the iceberg. There are many more things to
-          explore, if you are missing anything you can always send a message to{' '}
-          <a style={{ color: 'white' }} href="mailto:hello@codesandbox.io">
-            hello@codesandbox.io
+          explore, if you are missing anything you can always open an issue on{' '}
+          <a
+            style={{ color: 'white' }}
+            target="_blank"
+            rel="noreferrer noopener"
+            href="https://github.com/CompuIves/codesandbox-client/issues"
+          >
+            GitHub
           </a>.
         </SubHeading>
       </Centered>
