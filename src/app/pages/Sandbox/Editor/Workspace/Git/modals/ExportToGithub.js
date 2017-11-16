@@ -23,7 +23,7 @@ export default class ExportToGithub extends React.PureComponent<Props, State> {
   }
 
   awaitExport = async () => {
-    const result = await this.props.promise;
+    await this.props.promise;
     const { closeModal } = this.props;
 
     const message = <div>Exported to GitHub!</div>;
