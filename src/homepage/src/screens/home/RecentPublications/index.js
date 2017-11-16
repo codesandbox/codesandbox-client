@@ -85,7 +85,7 @@ export default () => (
           title="CodeSandbox 2.0"
           description="Announcing CodeSandbox 2.0. With GitHub commiting, a new homepage and support for static files."
           image={codesandbox2Image}
-          url="Announcing Coe"
+          url="https://medium.com/@compuives/announcing-codesandbox-2-0-938cff3a0fcb"
         />
         <PublicationItem
           title="The Journey of CodeSandbox"
