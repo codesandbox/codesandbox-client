@@ -354,7 +354,7 @@ export default class CycleFeatures extends React.PureComponent {
     return (
       <MaxWidth width={1280}>
         <Centered horizontal>
-          <Heading>Not just a playground</Heading>
+          <Heading>Be Productive, Anywhere</Heading>
           <SubHeading>
             We aim to give you the tools to build a full blown web application.
             You can easily import projects from GitHub, make commits, and

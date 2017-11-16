@@ -6,6 +6,7 @@ import CycleFeature from '../screens/home/CycleFeature';
 import ExtraFeatures from '../screens/home/ExtraFeatures';
 import Footer from '../screens/home/Footer';
 import RecentPublications from '../screens/home/RecentPublications';
+import Patron from '../screens/home/Patron';
 
 export default class HomePage extends React.PureComponent {
   componentDidMount() {
@@ -37,6 +38,7 @@ export default class HomePage extends React.PureComponent {
         <CycleFeature />
         <ExtraFeatures />
         <RecentPublications />
+        <Patron />
         <Footer />
       </div>
     );
