@@ -1,8 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 
-// import Media from 'react-media';
-
 import MaxWidth from 'app/components/flex/MaxWidth';
 import Column from 'app/components/flex/Column';
 import Centered from 'app/components/flex/Centered';
