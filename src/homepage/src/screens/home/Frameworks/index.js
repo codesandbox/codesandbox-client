@@ -39,6 +39,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: row;
   height: 255px;
+  flex: 1;
 
   ${media.tablet`
     margin-top: 1rem;
@@ -67,9 +68,18 @@ const Pane = styled(MaxWidth)`
 const Flex = styled.div`
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
 
   ${media.phone`
     flex-direction: column;
+  `};
+`;
+
+const Intro = styled(Column)`
+  flex: 1;
+
+  ${media.phone`
+    order: -1;
   `};
 `;
 
@@ -78,6 +88,12 @@ const Icons = styled.div`
   justify-content: space-around;
   margin-top: 1rem;
   margin-bottom: 4rem;
+  flex: 1;
+  min-width: 100%;
+
+  ${media.phone`
+    margin: 2rem 0;
+  `};
 `;
 
 const IconContainer = styled.div`
@@ -208,23 +224,23 @@ export default class Frameworks extends React.Component {
 
     return (
       <Pane width={1280}>
-        <Icons>
-          {templates.map(({ Icon }, i) => (
-            <IconContainer
-              key={i}
-              selected={templates[i] === template}
-              template={templates[i]}
-              onClick={() => {
-                this.setTemplate(templates[i]);
-              }}
-            >
-              <Icon width={80} height={80} />
-            </IconContainer>
-          ))}
-        </Icons>
-
         <Flex>
-          <Column style={{ marginRight: '2rem' }} flex={4}>
+          <Icons>
+            {templates.map(({ Icon }, i) => (
+              <IconContainer
+                key={i}
+                selected={templates[i] === template}
+                template={templates[i]}
+                onClick={() => {
+                  this.setTemplate(templates[i]);
+                }}
+              >
+                <Icon width={80} height={80} />
+              </IconContainer>
+            ))}
+          </Icons>
+
+          <Intro style={{ marginRight: '2rem' }}>
             <Heading3>Tailored for web applications</Heading3>
             <p>
               We know how overwhelming JavaScript development can be. With
@@ -232,43 +248,42 @@ export default class Frameworks extends React.Component {
               to make the experience as smooth as possible. Just open your
               browser and start coding.
             </p>
-          </Column>
-          <Column flex={4}>
-            <Container color={template.color}>
-              <RollingText
-                style={{
-                  display: 'flex',
-                  height: '100%',
-                  alignItems: 'center',
-                }}
-                updateCheck={template}
-              >
-                <TemplateName color={template.color}>
-                  <template.Icon width={96} height={96} />
-                  <h4>{template.niceName}</h4>
-                </TemplateName>
-              </RollingText>
-              <Padding style={{ width: '100%' }} top={1}>
-                <HeaderTitle>Supported Loaders</HeaderTitle>
-                <TemplateIcons color={template.color}>
-                  {TEMPLATE_SUPPORT[template.name].loaders.map((data, i) => (
-                    <FileType
-                      key={template.name + data.title}
-                      iconSrc={data.svg}
-                      title={data.title}
-                      extension={data.extension}
-                      i={i}
-                    />
-                  ))}
-                </TemplateIcons>
+          </Intro>
 
-                <HeaderTitle>CSS Scoping Support</HeaderTitle>
-                <CSSTypes>
-                  {TEMPLATE_SUPPORT[template.name].css.join(', ')}
-                </CSSTypes>
-              </Padding>
-            </Container>
-          </Column>
+          <Container color={template.color}>
+            <RollingText
+              style={{
+                display: 'flex',
+                height: '100%',
+                alignItems: 'center',
+              }}
+              updateCheck={template}
+            >
+              <TemplateName color={template.color}>
+                <template.Icon width={96} height={96} />
+                <h4>{template.niceName}</h4>
+              </TemplateName>
+            </RollingText>
+            <Padding style={{ width: '100%' }} top={1}>
+              <HeaderTitle>Supported Loaders</HeaderTitle>
+              <TemplateIcons color={template.color}>
+                {TEMPLATE_SUPPORT[template.name].loaders.map((data, i) => (
+                  <FileType
+                    key={template.name + data.title}
+                    iconSrc={data.svg}
+                    title={data.title}
+                    extension={data.extension}
+                    i={i}
+                  />
+                ))}
+              </TemplateIcons>
+
+              <HeaderTitle>CSS Scoping Support</HeaderTitle>
+              <CSSTypes>
+                {TEMPLATE_SUPPORT[template.name].css.join(', ')}
+              </CSSTypes>
+            </Padding>
+          </Container>
         </Flex>
 
         <Centered horizontal>
