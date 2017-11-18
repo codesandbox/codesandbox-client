@@ -35,8 +35,10 @@ module.exports = merge(commonConfig, {
       cache: true,
       parallel: true,
       sourceMap: true,
-      mangle: {
-        safari10: true,
+      uglifyOptions: {
+        mangle: {
+          safari10: true,
+        },
       },
     }),
     // Generate a service worker script that will precache, and keep up to date,
