@@ -24,7 +24,7 @@ jobs:
           command: sh ./packages/app/integration-tests/scripts/workaround-puppeteer-issue-290.sh
       - run:
           name: Build
-          command: lerna run build --ignore app --parallel
+          command: yarn build:test
       - run:
           name: Start Server
           command: yarn start:test

@@ -5,11 +5,12 @@
   "private": true,
   "scripts": {
     "build": "lerna run build",
+    "build:test": "lerna run build --ignore app --parallel",
     "start": "lerna run start",
     "start:test": "lerna run start --scope app --stream",
     "test": "lerna run test",
-    "lint": "lerna run lint",
-    "test:integrations": "lerna run test:integrations --scope app --stream"
+    "test:integrations": "lerna run test:integrations --scope app --stream",
+    "lint": "lerna run lint"
   },
   "lint-staged": {
     "*.js": ["prettier --write --single-quote --trailing-comma es5", "git add"],
