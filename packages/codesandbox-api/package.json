@@ -22,7 +22,8 @@
     "build:clean": "tsc && rollup -c",
     "build":
       "tsc && rollup -c && rimraf compiled && typedoc --out dist/docs --target es6 --theme minimal src",
-    "start": "nodemon -e ts --exec \"npm run build:clean\"",
+    "start":
+      "nodemon --watch \"src/**/*.ts\" -e ts --exec \"npm run build:clean\"",
     "test": "echo TODO",
     "test:watch": "jest --watch",
     "test:prod": "npm run lint && npm run test -- --coverage --no-cache",

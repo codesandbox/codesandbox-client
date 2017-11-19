@@ -28,7 +28,7 @@ class StyleTranspiler extends Transpiler {
     if (loaderContext.options.module) {
       return getModules(code, loaderContext).then(({ css, exportTokens }) => {
         let result = insertCss(id, css);
-        result += `\nexports=${JSON.stringify(exportTokens)};`;
+        result += `\nmodule.exports=${JSON.stringify(exportTokens)};`;
 
         return Promise.resolve({ transpiledCode: result });
       });

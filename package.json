@@ -9,7 +9,7 @@
       "lerna run build --scope app --scope homepage --parallel && gulp",
     "build:dependents":
       "lerna run build --ignore app --ignore homepage --parallel",
-    "start": "lerna run start",
+    "start": "lerna run start --parallel",
     "start:test": "lerna run start:test --scope app --stream",
     "test": "lerna run test",
     "test:integrations": "lerna run test:integrations --scope app --stream",
