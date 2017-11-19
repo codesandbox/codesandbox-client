@@ -108,6 +108,9 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "f7:f1:e6:60:96:24:d9:cd:1b:8b:c0:34:e7:ee:fa:82"
+      - run:
+          name: Add key to known_hosts
+          command: echo "ssh.codesandbox.io ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBKyKbuMPJSETTyPRRJVOeC5I8j7wyUMW8HYheg7cN71eKTuw55tkoygxI59BvNi/CAyCnRT5LnxZhvrq9nSlPYc=" >> ~/.ssh/known_hosts
       - deploy:
           command: sh ./deploy.sh
         
