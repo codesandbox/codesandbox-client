@@ -2,6 +2,6 @@
   "name": "common",
   "version": "1.0.0",
   "dependencies": {
-    "react-tippy": "^1.2.2"
+    "react-tippy": "^0.14.0"
   }
 }
