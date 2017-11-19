@@ -6,4 +6,5 @@ RUN sudo apt-get update && sudo apt-get install -yq gconf-service libasound2 lib
   libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 \
   ca-certificates fonts-liberation libappindicator1 libnss3 lsb-release xdg-utils wget
 
-RUN sudo yarn add global puppeteer
+RUN sudo chown -R $(whoami) $(npm config get prefix)/lib/node_modules
+RUN npm i -g puppeteer
