@@ -8,7 +8,7 @@
     "start:dev_api": "node scripts/start.js",
     "start:test": "cross-env LOCAL_SERVER=1 NODE_ENV=test node scripts/start.js",
     "build": "NODE_ENV=production node scripts/build.js",
-    "test": "lerna run build --ignore app && npm run lint && jest --env=jsdom",
+    "test": "lerna run build --scope codesandbox-api && npm run lint && jest --env=jsdom",
     "test:watch": "jest --watch --env=jsdom",
     "test:integrations": "jest --config integration-tests/jest.config.json --env=jsdom",
     "lint": "npm run lint:app && npm run lint:embed",
