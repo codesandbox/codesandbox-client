@@ -134,6 +134,9 @@ workflows:
             - test-integrations
             - test-jest
       - deploy:
+          filters:
+            branches:
+              only: master
           requires:
             - hold
 
