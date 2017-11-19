@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "ES6",
+    "paths": {
+      "sandbox/*": "packages/app/src/sandbox/*",
+      "app/*": "packages/app/src/app/*",
+      "common/*": "packages/common/*",
+      "codesandbox/*": "packages/codesandbox-api/*"
+    }
+  },
+  "files": ["src/**/*.js"],
+  "exclude": ["node_modules/**/*.*"]
+}
