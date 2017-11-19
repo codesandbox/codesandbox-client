@@ -32,9 +32,16 @@ jobs:
     steps:
       - restore_cache:
           key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+      # We do this to compare sizes from previous builds
+      - restore_cache:
+          key: prod-build-cache-{{ .Environment.CIRCLE_PREVIOUS_BUILD_NUM }}
       - run:
           name: Build Application
           command: yarn build:prod
+      - save_cache:
+          key: prod-build-cache-{{ .Environment.CIRCLE_BUILD_NUM }}
+          paths:
+            - ./packages/app/www
 
   test-integrations:
     docker:

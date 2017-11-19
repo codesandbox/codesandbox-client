@@ -5,8 +5,10 @@
   "private": true,
   "scripts": {
     "build": "yarn build:dependents && yarn build:prod",
-    "build:prod": "lerna run build --scope app --stream && gulp",
-    "build:dependents": "lerna run build --ignore app --parallel",
+    "build:prod":
+      "lerna run build --scope app --scope homepage --parallel && gulp",
+    "build:dependents":
+      "lerna run build --ignore app --ignore homepage --parallel",
     "start": "lerna run start",
     "start:test": "lerna run start:test --scope app --stream",
     "test": "lerna run test",
