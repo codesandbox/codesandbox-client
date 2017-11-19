@@ -23,7 +23,7 @@ import fadeIn from 'app/utils/animation/fade-in';
 import { tosUrl, privacyUrl } from 'common/utils/url-generator';
 
 import Button from 'app/components/buttons/Button';
-import Margin from 'app/components/spacing/Margin';
+import Margin from 'common/components/spacing/Margin';
 import Preferences from 'app/containers/Preferences';
 
 import WorkspaceInputContainer from './WorkspaceInputContainer';

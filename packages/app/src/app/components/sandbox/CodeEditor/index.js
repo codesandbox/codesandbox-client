@@ -5,7 +5,7 @@ import Loading from 'app/components/Loading';
 import Title from 'app/components/text/Title';
 import SubTitle from 'app/components/text/SubTitle';
 import Centered from 'common/components/flex/Centered';
-import Margin from 'app/components/spacing/Margin';
+import Margin from 'common/components/spacing/Margin';
 import { Preferences, Module, Directory } from 'common/types';
 
 import isImage from 'is-image';

@@ -11,7 +11,7 @@ import userActionCreators from 'app/store/user/actions';
 
 import Row from 'common/components/flex/Row';
 import HoverMenu from 'app/components/HoverMenu';
-import Relative from 'app/components/Relative';
+import Relative from 'common/components/Relative';
 import Tooltip from 'app/components/Tooltip';
 
 import Preferences from 'app/containers/Preferences';

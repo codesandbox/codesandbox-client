@@ -11,7 +11,7 @@ import Fullscreen from 'common/components/flex/Fullscreen';
 import userActionCreators from 'app/store/entities/users/actions';
 import { currentUserSelector } from 'app/store/user/selectors';
 import type { User } from 'common/types';
-import Margin from 'app/components/spacing/Margin';
+import Margin from 'common/components/spacing/Margin';
 import { usersSelector } from 'app/store/entities/users/selectors';
 import { profileSandboxesUrl, profileLikesUrl } from 'common/utils/url-generator';
 

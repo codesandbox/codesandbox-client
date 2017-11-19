@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import Relative from 'app/components/Relative';
+import Relative from 'common/components/Relative';
 import badges from 'app/utils/badges/patron-info';
 
 import './animations.css';

@@ -5,7 +5,7 @@ import GithubIcon from 'react-icons/lib/go/mark-github';
 import Row from 'common/components/flex/Row';
 import Column from 'common/components/flex/Column';
 import delayEffect from 'app/utils/animation/delay-effect';
-import Margin from 'app/components/spacing/Margin';
+import Margin from 'common/components/spacing/Margin';
 import PatronStar from 'app/components/user/PatronStar';
 
 const ProfileImage = styled.img`

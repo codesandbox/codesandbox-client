@@ -5,7 +5,7 @@ import SearchIcon from 'react-icons/lib/go/search';
 import history from 'app/utils/history';
 import { searchUrl } from 'common/utils/url-generator';
 
-import Relative from './Relative';
+import Relative from 'common/components/Relative';
 
 const Container = styled(Relative)`
   display: flex;

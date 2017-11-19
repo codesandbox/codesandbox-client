@@ -4,7 +4,7 @@ import type { Badge as BadgeT } from 'common/types';
 import { Link } from 'react-router-dom';
 
 import Stat from 'app/components/Stat';
-import Margin from 'app/components/spacing/Margin';
+import Margin from 'common/components/spacing/Margin';
 import Badge from 'app/utils/badges/Badge';
 import delayEffect from 'app/utils/animation/delay-effect';
 import { patronUrl } from 'common/utils/url-generator';

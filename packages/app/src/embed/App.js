@@ -5,19 +5,19 @@ import { camelizeKeys } from 'humps';
 
 import type { Sandbox } from 'common/types';
 import getTemplateDefinition from 'common/templates';
+import Centered from 'common/components/flex/Centered';
 import Title from 'app/components/text/Title';
 import SubTitle from 'app/components/text/SubTitle';
+import { getSandboxOptions } from 'common/url';
+
 import {
   findCurrentModule,
   findMainModule,
 } from 'app/store/entities/sandboxes/modules/selectors';
 
-import Centered from 'common/components/flex/Centered';
 import Header from './components/Header';
 import Content from './components/Content';
 import Sidebar from './components/Sidebar';
-
-import { getSandboxOptions } from 'common/url';
 
 const Container = styled.div`
   display: flex;

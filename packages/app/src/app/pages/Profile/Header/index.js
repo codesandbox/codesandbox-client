@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import Navigation from 'app/containers/Navigation';
-import Padding from 'app/components/spacing/Padding';
-import Margin from 'app/components/spacing/Margin';
+import Padding from 'common/components/spacing/Padding';
+import Margin from 'common/components/spacing/Margin';
 import MaxWidth from 'common/components/flex/MaxWidth';
 
 import type { User } from 'common/types';

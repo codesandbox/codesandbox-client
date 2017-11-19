@@ -5,7 +5,7 @@ import TwitterIcon from 'react-icons/lib/fa/twitter';
 import GithubIcon from 'react-icons/lib/fa/github';
 import FeedbackIcon from 'react-icons/lib/go/comment-discussion';
 
-import Relative from 'app/components/Relative';
+import Relative from 'common/components/Relative';
 
 const Container = styled.div`
   flex: 1;

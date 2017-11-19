@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 
 import Centered from 'common/components/flex/Centered';
-import Margin from 'app/components/spacing/Margin';
-import Relative from 'app/components/Relative';
+import Margin from 'common/components/spacing/Margin';
+import Relative from 'common/components/Relative';
 
 const Container = styled.div`
   background-color: ${props => props.theme.background};

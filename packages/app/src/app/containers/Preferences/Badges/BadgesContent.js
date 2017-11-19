@@ -7,7 +7,7 @@ import type { CurrentUser, Badge as BadgeT } from 'common/types';
 
 import userActionCreators from 'app/store/user/actions';
 import { currentUserSelector } from 'app/store/user/selectors';
-import Margin from 'app/components/spacing/Margin';
+import Margin from 'common/components/spacing/Margin';
 import Badge from 'app/utils/badges/Badge';
 
 const mapDispatchToProps = dispatch => ({

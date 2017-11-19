@@ -7,7 +7,7 @@ import Centered from 'common/components/flex/Centered';
 import Title from 'app/components/text/Title';
 import SubTitle from 'app/components/text/SubTitle';
 import MaxWidth from 'common/components/flex/MaxWidth';
-import Margin from 'app/components/spacing/Margin';
+import Margin from 'common/components/spacing/Margin';
 import Input from 'app/components/Input';
 import Button from 'app/components/buttons/Button';
 import { gitHubToSandboxUrl, protocolAndHost } from 'common/utils/url-generator';

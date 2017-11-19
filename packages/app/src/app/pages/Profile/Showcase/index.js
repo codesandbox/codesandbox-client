@@ -9,7 +9,7 @@ import { singleSandboxSelector } from 'app/store/entities/sandboxes/selectors';
 import modalActionCreators from 'app/store/modal/actions';
 import Column from 'common/components/flex/Column';
 import Centered from 'common/components/flex/Centered';
-import Margin from 'app/components/spacing/Margin';
+import Margin from 'common/components/spacing/Margin';
 import Button from 'app/components/buttons/Button';
 
 import SandboxInfo from './SandboxInfo';

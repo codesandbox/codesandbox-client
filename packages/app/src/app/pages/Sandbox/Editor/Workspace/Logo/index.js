@@ -4,7 +4,7 @@ import styled, { injectGlobal } from 'styled-components';
 
 import GithubIcon from 'react-icons/lib/go/mark-github';
 
-import Relative from 'app/components/Relative';
+import Relative from 'common/components/Relative';
 import LogoIcon from 'common/components/Logo';
 import Tooltip from 'app/components/Tooltip';
 import theme from 'common/theme';

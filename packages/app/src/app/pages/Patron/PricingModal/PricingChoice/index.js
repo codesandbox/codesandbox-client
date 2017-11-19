@@ -8,7 +8,7 @@ import type { CurrentUser } from 'common/types';
 
 import Input from 'app/components/Input';
 import Centered from 'common/components/flex/Centered';
-import Relative from 'app/components/Relative';
+import Relative from 'common/components/Relative';
 import SubscribeForm from 'app/components/user/SubscribeForm';
 import SignInButton from 'app/containers/SignInButton';
 

@@ -2,7 +2,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
-import Margin from 'app/components/spacing/Margin';
+import Margin from 'common/components/spacing/Margin';
 
 import Tag from './Tag';
 

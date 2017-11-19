@@ -385,7 +385,7 @@ export default (async function initialize() {
     await delay(100);
   }
 
-  linter = new window.eslint();
+  linter = new window.eslint(); // eslint-disable-line new-cap
   linter.defineRules(allRules);
   CodeMirror.registerHelper('lint', 'javascript', validator);
 

@@ -28,7 +28,7 @@ import ModeIcons from 'app/components/sandbox/ModeIcons';
 
 // $FlowIssue
 import PatronBadge from '-!svg-react-loader!app/utils/badges/svg/patron-4.svg'; // eslint-disable-line import/no-webpack-loader-syntax
-import Margin from 'app/components/spacing/Margin';
+import Margin from 'common/components/spacing/Margin';
 import HeaderSearchBar from 'app/components/HeaderSearchBar';
 import UserMenu from 'app/containers/UserMenu';
 import Preferences from 'app/containers/Preferences';

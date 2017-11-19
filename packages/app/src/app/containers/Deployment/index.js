@@ -11,7 +11,7 @@ import IntegrationModal from 'app/containers/modals/IntegrationModal';
 import ZeitIntegration from 'app/containers/integrations/Zeit';
 import Button from 'app/components/buttons/Button';
 import Centered from 'common/components/flex/Centered';
-import Margin from 'app/components/spacing/Margin';
+import Margin from 'common/components/spacing/Margin';
 import NowLogo from 'app/components/NowLogo';
 import OpaqueLogo from 'app/components/OpaqueLogo';
 

@@ -3,7 +3,7 @@ import renderer from 'react-test-renderer';
 import { ThemeProvider } from 'styled-components';
 
 import ExternalResource from './ExternalResource';
-import theme from '../../../../../../common/theme';
+import theme from '../../../../../../../../common/theme';
 
 describe('ExternalResource', () => {
   it('renders file if there is an extension', () => {

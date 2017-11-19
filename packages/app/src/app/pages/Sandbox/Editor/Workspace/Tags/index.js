@@ -1,5 +1,5 @@
 import React from 'react';
-import Margin from 'app/components/spacing/Margin';
+import Margin from 'common/components/spacing/Margin';
 import Button from 'app/components/buttons/Button';
 import Tags from 'app/components/sandbox/Tags';
 

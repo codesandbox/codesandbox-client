@@ -7,9 +7,10 @@ import getTemplateDefinition from 'common/templates';
 
 import Tags from 'app/components/sandbox/Tags';
 
-import SandboxInfo from './SandboxInfo';
 import { sandboxUrl } from 'common/utils/url-generator';
 import Row from 'common/components/flex/Row';
+
+import SandboxInfo from './SandboxInfo';
 
 const Container = styled.div`
   transition: 0.3s ease all;

@@ -5,7 +5,7 @@ import qs from 'qs';
 
 import Title from 'app/components/text/Title';
 import MaxWidth from 'common/components/flex/MaxWidth';
-import Margin from 'app/components/spacing/Margin';
+import Margin from 'common/components/spacing/Margin';
 import Row from 'common/components/flex/Row';
 
 import Navigation from 'app/containers/Navigation';

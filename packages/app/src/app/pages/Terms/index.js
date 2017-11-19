@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { NavLink, Switch, Route, Redirect } from 'react-router-dom';
 
 import Navigation from 'app/containers/Navigation';
-import Margin from 'app/components/spacing/Margin';
+import Margin from 'common/components/spacing/Margin';
 import MaxWidth from 'common/components/flex/MaxWidth';
 import Centered from 'common/components/flex/Centered';
 import { tosUrl, privacyUrl } from 'common/utils/url-generator';

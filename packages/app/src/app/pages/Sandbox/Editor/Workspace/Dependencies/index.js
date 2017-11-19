@@ -3,7 +3,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
-import Margin from 'app/components/spacing/Margin';
+import Margin from 'common/components/spacing/Margin';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 
 import WorkspaceSubtitle from '../WorkspaceSubtitle';

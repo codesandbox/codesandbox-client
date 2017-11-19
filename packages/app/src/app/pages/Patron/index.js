@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import Title from 'app/components/text/Title';
 import SubTitle from 'app/components/text/SubTitle';
 import MaxWidth from 'common/components/flex/MaxWidth';
-import Margin from 'app/components/spacing/Margin';
+import Margin from 'common/components/spacing/Margin';
 import Centered from 'common/components/flex/Centered';
 
 import Navigation from 'app/containers/Navigation';

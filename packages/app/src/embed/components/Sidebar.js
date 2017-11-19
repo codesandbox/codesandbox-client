@@ -2,11 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 
 import type { Sandbox } from 'common/types';
+import Padding from 'common/components/spacing/Padding';
+import EntryContainer from 'app/pages/Sandbox/Editor/Workspace/EntryContainer';
 
 import EditorLink from './EditorLink';
 import Files from './Files';
-import EntryContainer from '../../app/pages/Sandbox/Editor/Workspace/EntryContainer';
-import Padding from '../../app/components/spacing/Padding';
 
 const Container = styled.div`
   flex: 250px;

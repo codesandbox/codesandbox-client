@@ -4,7 +4,7 @@ import Navigation from 'app/containers/Navigation';
 
 import MaxWidth from 'common/components/flex/MaxWidth';
 import Centered from 'common/components/flex/Centered';
-import Margin from 'app/components/spacing/Margin';
+import Margin from 'common/components/spacing/Margin';
 import Title from 'app/components/text/Title';
 
 import NewSandbox from 'app/components/sandbox/NewSandbox';

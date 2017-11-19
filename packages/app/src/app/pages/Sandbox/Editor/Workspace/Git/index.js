@@ -2,7 +2,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import Margin from 'app/components/spacing/Margin';
+import Margin from 'common/components/spacing/Margin';
 import GithubBadge from 'app/components/sandbox/GithubBadge';
 import { githubRepoUrl } from 'common/utils/url-generator';
 import Button from 'app/components/buttons/Button';
