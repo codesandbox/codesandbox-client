@@ -48,6 +48,9 @@ jobs:
           key: v1-prod-build-cache-{{ .Environment.CIRCLE_BUILD_NUM }}
           paths:
             - ./packages/app/www
+      - store_artifacts:
+          path: ./www
+          destination: www
 
   test-integrations:
     docker:
