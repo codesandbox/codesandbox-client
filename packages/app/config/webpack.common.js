@@ -235,14 +235,6 @@ module.exports = {
           from: '../../node_modules/monaco-vue/release/min',
           to: 'public/vs/language/vue',
         },
-        {
-          from: 'static',
-          to: 'static',
-        },
-        // {
-        //   from: 'src/homepage/static',
-        //   to: 'static',
-        // },
       ].filter(x => x)
     ),
     // We first create a common chunk between embed and app, to share components

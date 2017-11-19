@@ -8,7 +8,7 @@ import ExitIcon from 'react-icons/lib/md/exit-to-app';
 import SettingsIcon from 'react-icons/lib/md/settings';
 
 import { profileUrl, patronUrl } from 'common/utils/url-generator';
-import PatronBadge from '../../utils/badges/PatronBadge';
+import PatronBadge from 'common/utils/badges/PatronBadge';
 
 const Container = styled.div`
   position: absolute;
@@ -46,7 +46,9 @@ const Item = styled.div`
   }
 `;
 
-const Icon = styled.span`margin-right: 0.75rem;`;
+const Icon = styled.span`
+  margin-right: 0.75rem;
+`;
 
 type Props = {
   username: string,
