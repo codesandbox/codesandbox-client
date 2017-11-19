@@ -23,13 +23,16 @@ jobs:
           name: Workaround for https://github.com/GoogleChrome/puppeteer/issues/290
           command: sh ./packages/app/integration-tests/scripts/workaround-puppeteer-issue-290.sh
       - run:
+        name: Build
+        command: lerna run build --ignore app --parallel
+      - run:
           name: Start Server
           command: yarn start:test
           background: true
       - run:
           name: Test
           command: |
-            sleep 2
+            sleep 6
             yarn test:integrations --maxWorkers=2
       - store_artifacts:
           path: integration-tests/tests/__image_snapshots__/__diff_output__
