@@ -212,7 +212,6 @@ module.exports = merge(commonConfig, {
     // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
     // You can remove this if you don't use Moment.js:
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-    new webpack.IgnorePlugin(/\/src\/node_modules/),
     new ManifestPlugin({
       fileName: 'file-manifest.json',
     }),
