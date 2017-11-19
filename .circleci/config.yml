@@ -16,6 +16,10 @@ jobs:
           key: dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
           paths:
             - ./node_modules
+            - ./packages/app/node_modules
+            - ./packages/codesandbox-api/node_modules
+            - ./packages/common/node_modules
+            - ./packages/homepage/node_modules
             - ~/.yarn-cache
       - run:
           name: Build
