@@ -7,7 +7,7 @@
     "build": "lerna run build",
     "build:test": "lerna run build --ignore app --parallel",
     "start": "lerna run start",
-    "start:test": "lerna run start --scope app --stream",
+    "start:test": "lerna run start:test --scope app --stream",
     "test": "lerna run test",
     "test:integrations": "lerna run test:integrations --scope app --stream",
     "lint": "lerna run lint"

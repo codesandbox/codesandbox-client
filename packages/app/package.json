@@ -13,7 +13,7 @@
       "lerna run build --scope codesandbox-api && npm run lint && jest --env=jsdom",
     "test:watch": "jest --watch --env=jsdom",
     "test:integrations":
-      "jest --config integration-tests/jest.config.json --env=jsdom",
+      "jest --config integration-tests/jest.config.json --env=jsdom --maxWorkers=2",
     "lint": "npm run lint:app && npm run lint:embed",
     "lint:app": "eslint src/app",
     "integrations:start":
