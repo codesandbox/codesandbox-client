@@ -8,12 +8,12 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          key: v1-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
       - run:
           name: Install Dependencies
           command: yarn install
       - save_cache:
-          key: dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          key: v1-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
           paths:
             - ./node_modules
             - ./packages/app/node_modules
@@ -38,12 +38,14 @@ jobs:
           key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
       # We do this to compare sizes from previous builds
       - restore_cache:
-          key: prod-build-cache-{{ .Environment.CIRCLE_PREVIOUS_BUILD_NUM }}
+          key: v1-prod-build-cache-{{ .Environment.CIRCLE_PREVIOUS_BUILD_NUM }}
+          # Use nearest cache if cache not found
+          key: v1-prod-build-cache-
       - run:
           name: Build Application
           command: yarn build:prod
       - save_cache:
-          key: prod-build-cache-{{ .Environment.CIRCLE_BUILD_NUM }}
+          key: v1-prod-build-cache-{{ .Environment.CIRCLE_BUILD_NUM }}
           paths:
             - ./packages/app/www
 
@@ -95,7 +97,7 @@ jobs:
     working_directory: ~/codesandbox-client
     steps:
       - restore_cache:
-          key: prod-build-cache-{{ .Environment.CIRCLE_BUILD_NUM }}
+          key: v1-prod-build-cache-{{ .Environment.CIRCLE_BUILD_NUM }}
       - run:
           name: Deploy
           command: echo DEPLOY!
