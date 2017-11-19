@@ -38,14 +38,18 @@ jobs:
           key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
       # We do this to compare sizes from these builds with master
       - restore_cache:
-          key: v1-prod-build-cache-master
+          key: v1-prod-app-build-cache-master
       - run:
           name: Build Application
           command: yarn build:prod
       - save_cache:
-          key: v1-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}
+          key: v1-prod-app-build-cache-{{ .Environment.CIRCLE_BRANCH }}
           paths:
             - ./packages/app/www
+      - save_cache:
+          key: v1-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}
+          paths:
+            - ./www
       - store_artifacts:
           path: ./www
           destination: www
