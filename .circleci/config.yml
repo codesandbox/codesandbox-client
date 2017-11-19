@@ -36,16 +36,14 @@ jobs:
     steps:
       - restore_cache:
           key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
-      # We do this to compare sizes from previous builds
+      # We do this to compare sizes from these builds with master
       - restore_cache:
-          key: v1-prod-build-cache-{{ .Environment.CIRCLE_PREVIOUS_BUILD_NUM }}
-          # Use nearest cache if cache not found
-          key: v1-prod-build-cache-
+          key: v1-prod-build-cache-master
       - run:
           name: Build Application
           command: yarn build:prod
       - save_cache:
-          key: v1-prod-build-cache-{{ .Environment.CIRCLE_BUILD_NUM }}
+          key: v1-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}
           paths:
             - ./packages/app/www
       - store_artifacts:
@@ -100,7 +98,7 @@ jobs:
     working_directory: ~/codesandbox-client
     steps:
       - restore_cache:
-          key: v1-prod-build-cache-{{ .Environment.CIRCLE_BUILD_NUM }}
+          key: v1-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}
       - run:
           name: Deploy
           command: echo DEPLOY!
