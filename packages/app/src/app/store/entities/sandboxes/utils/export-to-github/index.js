@@ -19,17 +19,18 @@ export default async function deploy(
 
   const contents = await JSZip.loadAsync(zipFile);
 
-  const apiData = { sandbox: {} };
+  const apiData = { sandbox: [] };
   const filePaths = Object.keys(contents.files);
   for (let i = 0; i < filePaths.length; i += 1) {
     const filePath = filePaths[i];
     const file = contents.files[filePath];
 
     if (!file.dir) {
-      apiData.sandbox[filePath] = {
+      apiData.sandbox.push({
         content: await file.async('text'), // eslint-disable-line no-await-in-loop
         isBinary: false,
-      };
+        path: filePath,
+      });
     }
   }
 
