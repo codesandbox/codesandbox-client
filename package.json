@@ -4,8 +4,9 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "build": "lerna run build",
-    "build:test": "lerna run build --ignore app --parallel",
+    "build":
+      "yarn build:dependents && lerna run build --scope app --stream && gulp",
+    "build:dependents": "lerna run build --ignore app --parallel",
     "start": "lerna run start",
     "start:test": "lerna run start:test --scope app --stream",
     "test": "lerna run test",
@@ -25,9 +26,6 @@
   },
   "workspaces": ["packages/**"],
   "devDependencies": {
-    "lerna": "^2.5.1",
-    "lint-staged": "^5.0.0",
-    "prettier": "^1.8.2",
     "babel-eslint": "^7.2.3",
     "eslint": "CompuIves/eslint#add/define-parser",
     "eslint-config-airbnb": "^15.0.1",
@@ -37,6 +35,10 @@
     "eslint-plugin-flowtype": "^2.34.0",
     "eslint-plugin-import": "^2.3.0",
     "eslint-plugin-jsx-a11y": "^5.0.3",
-    "eslint-plugin-react": "~7.4.0"
+    "eslint-plugin-react": "~7.4.0",
+    "gulp": "^3.9.1",
+    "lerna": "^2.5.1",
+    "lint-staged": "^5.0.0",
+    "prettier": "^1.8.2"
   }
 }

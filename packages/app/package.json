@@ -9,17 +9,16 @@
     "start:test":
       "cross-env LOCAL_SERVER=1 NODE_ENV=test node scripts/start.js",
     "build": "NODE_ENV=production node scripts/build.js",
-    "test":
-      "lerna run build --scope codesandbox-api && npm run lint && jest --env=jsdom",
+    "test": "jest --env=jsdom",
     "test:watch": "jest --watch --env=jsdom",
     "test:integrations":
       "jest --config integration-tests/jest.config.json --env=jsdom --maxWorkers=2",
     "lint": "npm run lint:app && npm run lint:embed",
     "lint:app": "eslint src/app",
+    "lint:embed": "eslint src/embed",
     "integrations:start":
       "docker run -v $(pwd):/app/ -it codesandbox/test yarn start:test",
     "typecheck": "flow check",
-    "lint:embed": "eslint src/embed",
     "add-contributor": "all-contributors add",
     "generate": "all-contributors generate",
     "precommit": "lint-staged"

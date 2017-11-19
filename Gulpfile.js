@@ -1,22 +1,11 @@
 const gulp = require('gulp');
-const runSequence = require('run-sequence');
 
-const config = require('./config/paths');
+gulp.task('app', function() {
+  return gulp.src('packages/app/www/**/*').pipe(gulp.dest('www'));
+});
 
 gulp.task('homepage', function() {
-  return gulp
-    .src('src/homepage/public/**/*.*')
-    .pipe(gulp.dest(`${config.appBuild}/`));
+  return gulp.src('packages/homepage/public/**/*').pipe(gulp.dest('www'));
 });
 
-gulp.task('static', function() {
-  return gulp
-    .src(`${config.staticPath}/**/*`)
-    .pipe(gulp.dest(`${config.appBuild}/`));
-});
-
-gulp.task('build', function(cb) {
-  return runSequence(['homepage', 'static'], cb);
-});
-
-gulp.task('default', ['build']);
+gulp.task('default', ['app', 'homepage']);
