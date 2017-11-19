@@ -106,11 +106,17 @@ export default ({ template }) => (
       <Secondary style={{ color: template.color() }}>Code</Secondary>
       <Primary>Sandbox</Primary>
     </Title>
-    <SubTitle title="The online editor tailored for web applications">
-      The online code editor for&nbsp;
-      <RollingText updateCheck={template.name} width="12rem">
-        <span style={{ color: template.color() }}>{template.niceName}</span>
-      </RollingText>
+    <SubTitle title="The online code editor tailored for web applications">
+      {typeof window === 'undefined' ? (
+        <span>The online code editor for web applications</span>
+      ) : (
+        <span>
+          The online code editor for{' '}
+          <RollingText updateCheck={template.name} width="12rem">
+            <span style={{ color: template.color() }}>{template.niceName}</span>
+          </RollingText>
+        </span>
+      )}
     </SubTitle>
 
     <ResponsiveRollingText updateCheck={template.name}>
