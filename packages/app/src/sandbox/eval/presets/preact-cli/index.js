@@ -50,23 +50,41 @@ preactPreset.registerTranspiler(module => /\.jsx?$/.test(module.path), [
   },
 ]);
 
-preactPreset.registerTranspiler(module => /\.s[a|c]ss/.test(module.path), [
-  { transpiler: sassTranspiler },
-  { transpiler: stylesTranspiler },
-]);
+// For these routes we need to enable css modules
+const cssModulesPaths = [
+  '/src/components',
+  '/components',
+  '/src/routes',
+  '/routes',
+];
 
-preactPreset.registerTranspiler(module => /\.less/.test(module.path), [
-  { transpiler: lessTranspiler },
-  { transpiler: stylesTranspiler },
-]);
+const cssModulesRegex = extension =>
+  new RegExp(`^(${cssModulesPaths.join('|')})\/.*\.${extension}$`);
+
+const cssTypes = {
+  css: [],
+  's[a|c]ss': [sassTranspiler],
+  less: [lessTranspiler],
+  styl: [stylusTranspiler],
+};
+
+Object.keys(cssTypes).forEach(cssType => {
+  preactPreset.registerTranspiler(
+    module => cssModulesRegex(cssType).test(module.path),
+    [
+      ...cssTypes[cssType],
+      { transpiler: stylesTranspiler, options: { module: true } },
+    ]
+  );
+
+  preactPreset.registerTranspiler(
+    module => new RegExp(`\.${cssType}$`).test(module.path),
+    [...cssTypes[cssType], { transpiler: stylesTranspiler }]
+  );
+});
 
 preactPreset.registerTranspiler(module => /\.json/.test(module.path), [
   { transpiler: jsonTranspiler },
-]);
-
-preactPreset.registerTranspiler(module => /\.styl/.test(module.path), [
-  { transpiler: stylusTranspiler },
-  { transpiler: stylesTranspiler },
 ]);
 
 // Support for !async statements
