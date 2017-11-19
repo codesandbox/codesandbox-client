@@ -6,18 +6,15 @@
   "scripts": {
     "start": "cross-env LOCAL_SERVER=1 node scripts/start.js",
     "start:dev_api": "node scripts/start.js",
-    "start:test":
-      "cross-env LOCAL_SERVER=1 NODE_ENV=test node scripts/start.js",
+    "start:test": "cross-env LOCAL_SERVER=1 NODE_ENV=test node scripts/start.js",
     "build": "NODE_ENV=production node scripts/build.js",
     "test": "jest --env=jsdom",
     "test:watch": "jest --watch --env=jsdom",
-    "test:integrations":
-      "jest --config integration-tests/jest.config.json --env=jsdom --maxWorkers=2",
+    "test:integrations": "jest --config integration-tests/jest.config.json --env=jsdom --maxWorkers=2",
     "lint": "npm run lint:app && npm run lint:embed",
     "lint:app": "eslint src/app",
     "lint:embed": "eslint src/embed",
-    "integrations:start":
-      "docker run -v $(pwd):/app/ -it codesandbox/test yarn start:test",
+    "integrations:start": "docker run -v $(pwd):/app/ -it codesandbox/test yarn start:test",
     "typecheck": "flow check",
     "add-contributor": "all-contributors add",
     "generate": "all-contributors generate",
@@ -113,6 +110,7 @@
     "babel-plugin-transform-vue-jsx": "^3.5.0",
     "babel-polyfill": "^6.23.0",
     "babel-preset-stage-0": "^6.24.1",
+    "babel-runtime": "^6.26.0",
     "babel-standalone": "^6.25.0",
     "base64-loader": "^1.0.0",
     "browser-resolve": "CompuIves/node-browser-resolve",
@@ -180,10 +178,19 @@
     "vue-template-es2015-compiler": "^1.6.0"
   },
   "jest": {
-    "roots": ["<rootDir>/src"],
-    "moduleDirectories": ["node_modules", "src"],
-    "testPathIgnorePatterns": ["/create-zip\\/.*\\/files/"],
-    "transformIgnorePatterns": ["node_modules/(?!(common))"],
+    "roots": [
+      "<rootDir>/src"
+    ],
+    "moduleDirectories": [
+      "node_modules",
+      "src"
+    ],
+    "testPathIgnorePatterns": [
+      "/create-zip\\/.*\\/files/"
+    ],
+    "transformIgnorePatterns": [
+      "node_modules/(?!(common))"
+    ],
     "moduleNameMapper": {
       "\\.css$": "<rootDir>/__mocks__/styleMock.js",
       "\\.html$": "<rootDir>/__mocks__/styleMock.js"
