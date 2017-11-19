@@ -193,7 +193,7 @@ const CSSTypes = styled.div`
 
 const TEMPLATE_SUPPORT = {
   'create-react-app': {
-    loaders: [js, html, cssGlobal, image],
+    loaders: [js, ts, html, cssGlobal, image],
     css: ['Global'],
   },
   'vue-cli': {
