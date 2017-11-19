@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import MoreInfoIcon from 'react-icons/lib/md/arrow-drop-down';
 
-import Tooltip from 'app/components/Tooltip';
+import Tooltip from 'common/components/Tooltip';
 
 const styles = props =>
   `

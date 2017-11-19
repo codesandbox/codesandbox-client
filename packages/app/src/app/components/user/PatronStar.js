@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import moment from 'moment';
-import Tooltip from 'app/components/Tooltip';
+import Tooltip from 'common/components/Tooltip';
 import StarIcon from 'react-icons/lib/go/star';
 
 const Container = styled(Tooltip)`

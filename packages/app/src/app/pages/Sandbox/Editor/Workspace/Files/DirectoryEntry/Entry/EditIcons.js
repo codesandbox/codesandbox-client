@@ -7,7 +7,7 @@ import AddFileIcon from 'react-icons/lib/go/file-symlink-file';
 import AddDirectoryIcon from 'react-icons/lib/go/file-symlink-directory';
 
 import fadeIn from 'common/utils/animation/fade-in';
-import Tooltip from 'app/components/Tooltip';
+import Tooltip from 'common/components/Tooltip';
 
 import { Icon } from '../../../Icon';
 

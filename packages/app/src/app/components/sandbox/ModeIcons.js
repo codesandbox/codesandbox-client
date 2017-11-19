@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
 
-import Tooltip from 'app/components/Tooltip';
+import Tooltip from 'common/components/Tooltip';
 
 const showAnimationKeyframes = keyframes`
   0%   { opacity: 0; transform: translateX(10px); }

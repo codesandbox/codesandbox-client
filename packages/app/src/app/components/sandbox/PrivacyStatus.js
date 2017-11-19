@@ -5,7 +5,7 @@ import Question from 'react-icons/lib/go/question';
 import Unlisted from 'react-icons/lib/go/link';
 import Private from 'react-icons/lib/go/lock';
 
-import Tooltip from '../Tooltip';
+import Tooltip from 'common/components/Tooltip';
 
 const iconStyles = css`
   opacity: 0.5;

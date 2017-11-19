@@ -11,7 +11,7 @@ import NewSandbox from 'app/containers/modals/NewSandbox';
 import PlusIcon from 'react-icons/lib/go/plus';
 import Logo from 'common/components/Logo';
 import Row from 'common/components/flex/Row';
-import Tooltip from 'app/components/Tooltip';
+import Tooltip from 'common/components/Tooltip';
 import HeaderSearchBar from 'app/components/HeaderSearchBar';
 
 import { jwtSelector, isPatronSelector } from 'app/store/user/selectors';

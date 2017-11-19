@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import Tooltip from 'app/components/Tooltip';
+import Tooltip from 'common/components/Tooltip';
 
 import PreferenceSwitch from './PreferenceSwitch';
 import PreferenceDropdown from './PreferenceDropdown';

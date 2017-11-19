@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components';
 import CrossIcon from 'react-icons/lib/md/clear';
 
 import Margin from 'common/components/spacing/Margin';
-import Tooltip from 'app/components/Tooltip';
+import Tooltip from 'common/components/Tooltip';
 import Button from '../buttons/Button';
 
 const Container = styled.div`

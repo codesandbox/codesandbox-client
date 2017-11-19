@@ -6,7 +6,7 @@ import GithubIcon from 'react-icons/lib/go/mark-github';
 
 import Relative from 'common/components/Relative';
 import LogoIcon from 'common/components/Logo';
-import Tooltip from 'app/components/Tooltip';
+import Tooltip from 'common/components/Tooltip';
 import theme from 'common/theme';
 
 const Container = styled.a`

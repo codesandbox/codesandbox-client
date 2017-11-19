@@ -3,7 +3,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { TweenMax, Elastic } from 'gsap';
 
-import Tooltip from 'app/components/Tooltip';
+import Tooltip from 'common/components/Tooltip';
 
 import MinimizeIcon from 'react-icons/lib/fa/angle-up';
 

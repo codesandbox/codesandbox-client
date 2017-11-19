@@ -7,7 +7,7 @@ import AddedIcon from 'react-icons/lib/go/diff-added';
 import ModifiedIcon from 'react-icons/lib/go/diff-modified';
 import RemovedIcon from 'react-icons/lib/go/diff-removed';
 
-import Tooltip from 'app/components/Tooltip';
+import Tooltip from 'common/components/Tooltip';
 import EntryContainer from '../EntryContainer';
 
 // border-bottom: 1px solid ${({ color }) => color.clearer(0.7)};

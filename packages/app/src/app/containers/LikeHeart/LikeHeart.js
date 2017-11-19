@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import HeartIcon from 'react-icons/lib/fa/heart-o';
 import FullHeartIcon from 'react-icons/lib/fa/heart';
 
-import Tooltip from 'app/components/Tooltip';
+import Tooltip from 'common/components/Tooltip';
 
 type Props = {
   isLiked: boolean,

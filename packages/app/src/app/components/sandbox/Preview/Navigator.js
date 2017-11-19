@@ -7,7 +7,7 @@ import RefreshIcon from 'react-icons/lib/md/refresh';
 import ExternalIcon from 'react-icons/lib/md/open-in-new';
 
 import Switch from 'app/components/Switch';
-import Tooltip from 'app/components/Tooltip';
+import Tooltip from 'common/components/Tooltip';
 
 import AddressBar from './AddressBar';
 
