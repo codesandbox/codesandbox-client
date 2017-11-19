@@ -56,7 +56,11 @@ module.exports = {
       {
         test: /\.js$/,
         include: [paths.src, paths.common, /@emmetio/],
-        exclude: [/eslint\.4\.1\.0\.min\.js$/, /typescriptServices\.js$/],
+        exclude: [
+          /eslint\.4\.1\.0\.min\.js$/,
+          /typescriptServices\.js$/,
+          /babel-runtime\//,
+        ],
         loader: 'happypack/loader',
       },
       // JSON is not enabled by default in Webpack but both Node and Browserify
