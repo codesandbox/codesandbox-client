@@ -1,6 +1,6 @@
 # [CodeSandbox](https://codesandbox.io) [![Chat](https://img.shields.io/badge/chat-on%20discord-7289da.svg)](https://discord.gg/KE3TbEZ) [![All Contributors](https://img.shields.io/badge/all_contributors-19-orange.svg?style=flat-square)](#contributors) [![Build Status](https://travis-ci.org/CompuIves/codesandbox-client.svg?branch=master)](https://travis-ci.org/CompuIves/codesandbox-client) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com) [![first-timers-only Friendly](https://img.shields.io/badge/first--timers--only-friendly-blue.svg)](http://www.firsttimersonly.com/)
 
-An online code editor with a focus on React.
+An online code editor tailored for web applications.
 
 <a target='_blank' rel='nofollow' href='https://app.codesponsor.io/link/sm85y5UkG7rypodi9kLCd9pm/CompuIves/codesandbox-client'>
   <img alt='Sponsor' width='888' height='68' src='https://app.codesponsor.io/embed/sm85y5UkG7rypodi9kLCd9pm/CompuIves/codesandbox-client.svg' />
