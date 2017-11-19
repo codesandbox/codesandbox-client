@@ -6,6 +6,7 @@
   "scripts": {
     "build": "lerna run build",
     "start": "lerna run start",
+    "start:test": "lerna run start --scope app",
     "test": "lerna run test",
     "lint": "lerna run lint",
     "test:integrations": "lerna run test:integrations --scope app"
