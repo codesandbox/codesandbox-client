@@ -236,7 +236,7 @@ module.exports = {
           to: 'public/vs/language/vue',
         },
         {
-          from: 'src/homepage/static',
+          from: 'static',
           to: 'static',
         },
       ].filter(x => x)
