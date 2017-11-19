@@ -11,7 +11,7 @@ jobs:
           key: dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
       - run:
           name: Install Dependencies
-          command: yarn install && yarn add puppeteer -W
+          command: yarn install
       - save_cache:
           key: dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
           paths:
@@ -45,14 +45,11 @@ jobs:
 
   test-integrations:
     docker:
-      - image: circleci/node:9.0
+      - image: codesandbox/node-puppeteer
     working_directory: ~/codesandbox-client
     steps:
       - restore_cache:
           key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
-      - run:
-          name: Workaround for https://github.com/GoogleChrome/puppeteer/issues/290
-          command: sh ./packages/app/integration-tests/scripts/workaround-puppeteer-issue-290.sh
       - run:
           name: Start Test Server
           command: yarn start:test
