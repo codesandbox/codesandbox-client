@@ -1,12 +1,8 @@
 #!/bin/bash
 
-docker build -t codesandbox/prod/client --file Dockerfile.prod . && \
-id=$(docker create codesandbox/prod/client) && \
 rm -rf .deliver && \
 mkdir .deliver && \
-mkdir .deliver/www && \
-docker cp $id:/app/www/ ./.deliver/ && \
-docker rm -v $id && \
+cp -R www .deliver && \
 echo "Tarring build files" && \
 tar -C .deliver -zcvf .deliver/code_sandbox_client.tar.gz www && \
 echo "Cleaning remote tar" && \

@@ -2,17 +2,16 @@
 
 ## Code Organization
 
-The CodeSandbox client is currently divided in to 5 parts.
+The CodeSandbox client is currently divided in to 5 parts. We use `lerna` to share dependencies between these parts.
 
-- `app`: The editor and profile page
-- `sandbox`: The preview pane of the editor
-- `embed`: The embedded version of CodeSandbox (which you can embed on medium)
-- `common`: The common parts between `sandbox`, `embed` and `app`
-- `homepage`: Homepage!
+- `app`: The editor, the search, profile page, the embed and the sandbox.
+- `homepage`: The Gatsby website of the homepage.
+- `codesandbox-api`: The npm package that's responsible for communication between the sandbox and the editor.
+- `common`: All common parts between these packages, reusable JS.
 
 This version of CodeSandbox is using the production server as source of truth, this is specified by the environment variable `LOCAL_SERVER`. It's not yet possible to sign in using this version, I haven't figured out how to handle this yet.
 
-**Working on your first Pull Request?** You can learn how from this *free* series [How to Contribute to an Open Source Project on GitHub](https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github) 
+**Working on your first Pull Request?** You can learn how from this *free* series [How to Contribute to an Open Source Project on GitHub](https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github)
 
 ## Setting Up the project locally
 

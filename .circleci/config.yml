@@ -1,36 +1,144 @@
 version: 2
 
 jobs:
-  build:
-    working_directory: ~/codesandbox-client
+  build-dependencies:
     docker:
       - image: circleci/node:9.0
-    environment:
-      TZ: "/usr/share/zoneinfo/Europe/Amsterdam"
+    working_directory: ~/codesandbox-client
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          key: v1-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
       - run:
-          name: Install Dependency
-          command: yarn install && yarn add puppeteer -W
+          name: Install Dependencies
+          command: yarn install
       - save_cache:
-          key: dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          key: v1-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
           paths:
             - ./node_modules
+            - ./packages/app/node_modules
+            - ./packages/codesandbox-api/node_modules
+            - ./packages/common/node_modules
+            - ./packages/homepage/node_modules
             - ~/.yarn-cache
       - run:
-          name: Workaround for https://github.com/GoogleChrome/puppeteer/issues/290
-          command: sh ./integration-tests/scripts/workaround-puppeteer-issue-290.sh
+          name: Build
+          command: yarn build:dependents
+      - save_cache:
+          key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+            - ~/codesandbox-client
+
+  build-prod:
+    docker:
+      - image: circleci/node:9.0
+    working_directory: ~/codesandbox-client
+    steps:
+      - restore_cache:
+          key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+      # We do this to compare sizes from these builds with master
+      - restore_cache:
+          key: v1-prod-build-cache-master
       - run:
-          name: Start Server
+          name: Build Application
+          command: yarn build:prod
+      - save_cache:
+          key: v1-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}
+          paths:
+            - ./packages/app/www
+      - store_artifacts:
+          path: ./www
+          destination: www
+
+  test-integrations:
+    docker:
+      - image: codesandbox/node-puppeteer
+    working_directory: ~/codesandbox-client
+    steps:
+      - restore_cache:
+          key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+      - run:
+          name: Start Test Server
           command: yarn start:test
           background: true
       - run:
-          name: Test
+          name: Test Integrations
           command: |
-            sleep 2
-            yarn test:integrations -- --maxWorkers=2
+            sleep 6
+            yarn test:integrations
       - store_artifacts:
-          path: integration-tests/tests/__image_snapshots__/__diff_output__
+          path: packages/app/integration-tests/tests/__image_snapshots__/__diff_output__
           destination: image_snapshot_diff
+  
+  test-jest:
+    docker:
+      - image: circleci/node:9.0
+    working_directory: ~/codesandbox-client
+    steps:
+      - restore_cache:
+          key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+      - run:
+          name: Test
+          command: yarn test
+
+  lint:
+    docker:
+      - image: circleci/node:9.0
+    working_directory: ~/codesandbox-client
+    steps:
+      - restore_cache:
+          key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+      - run:
+          name: Lint
+          command: yarn lint
+
+  deploy:
+    docker:
+      - image: circleci/node:9.0
+    working_directory: ~/codesandbox-client
+    steps:
+      - restore_cache:
+          key: v1-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}
+      - add_ssh_keys:
+          fingerprints:
+            - "f7:f1:e6:60:96:24:d9:cd:1b:8b:c0:34:e7:ee:fa:82"
+      - run:
+          name: Deploy
+          command: sh ./deploy.sh
+        
+workflows:
+  version: 2
+  build-and-test:
+    jobs:
+      - build-dependencies
+      - test-integrations:
+          requires:
+            - build-dependencies
+      - test-jest:
+          requires:
+            - build-dependencies
+      - lint:
+          requires:
+            - build-dependencies
+      - build-prod:
+          requires:
+            - build-dependencies
+      - hold:
+          type: approval
+          filters:
+            branches:
+              only: master
+          requires:
+            - build-prod
+            - lint
+            - test-integrations
+            - test-jest
+      - deploy:
+          filters:
+            branches:
+              only: master
+          requires:
+            - hold
+
+
+
