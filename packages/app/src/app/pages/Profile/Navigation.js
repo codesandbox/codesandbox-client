@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 
 import Row from 'common/components/flex/Row';
-import delayEffect from 'app/utils/animation/delay-effect';
+import delayEffect from 'common/utils/animation/delay-effect';
 
 const NavigationLink = styled(NavLink)`
   transition: 0.3s ease all;

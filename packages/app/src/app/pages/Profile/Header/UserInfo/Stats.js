@@ -5,8 +5,8 @@ import { Link } from 'react-router-dom';
 
 import Stat from 'app/components/Stat';
 import Margin from 'common/components/spacing/Margin';
-import Badge from 'app/utils/badges/Badge';
-import delayEffect from 'app/utils/animation/delay-effect';
+import Badge from 'common/utils/badges/Badge';
+import delayEffect from 'common/utils/animation/delay-effect';
 import { patronUrl } from 'common/utils/url-generator';
 
 const Container = styled.div`

@@ -3,7 +3,7 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
 
-import delayInEffect from 'app/utils/animation/delay-effect';
+import delayInEffect from 'common/utils/animation/delay-effect';
 import OpaqueLogo from 'app/components/OpaqueLogo';
 
 import GitHubLogo from './GitHubLogo';

@@ -5,7 +5,7 @@ import moment from 'moment';
 import { Link } from 'react-router-dom';
 
 import PrivacyStatus from 'app/components/sandbox/PrivacyStatus';
-import delayEffect from 'app/utils/animation/delay-effect';
+import delayEffect from 'common/utils/animation/delay-effect';
 import { sandboxUrl } from 'common/utils/url-generator';
 
 import type { SmallSandbox } from 'common/types';

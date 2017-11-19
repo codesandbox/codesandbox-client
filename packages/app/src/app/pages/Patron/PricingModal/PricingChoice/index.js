@@ -15,7 +15,7 @@ import SignInButton from 'app/containers/SignInButton';
 import { loggedInSelector } from 'app/store/user/selectors';
 import userActionCreators from 'app/store/user/actions';
 
-import badges from 'app/utils/badges/patron-info';
+import badges from 'common/utils/badges/patron-info';
 
 import Range from './Range';
 import ChangeSubscription from './ChangeSubscription';

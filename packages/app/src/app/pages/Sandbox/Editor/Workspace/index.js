@@ -19,7 +19,7 @@ import {
 import getTemplateDefinition from 'common/templates';
 
 import showAlternativeComponent from 'app/hoc/show-alternative-component';
-import fadeIn from 'app/utils/animation/fade-in';
+import fadeIn from 'common/utils/animation/fade-in';
 import { tosUrl, privacyUrl } from 'common/utils/url-generator';
 
 import Button from 'app/components/buttons/Button';

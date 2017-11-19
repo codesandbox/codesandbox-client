@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import Margin from 'common/components/spacing/Margin';
-import delay from 'app/utils/animation/delay-effect';
+import delay from 'common/utils/animation/delay-effect';
 
 const Title = styled.div`
   ${delay(0)} transition: 0.3s ease all;

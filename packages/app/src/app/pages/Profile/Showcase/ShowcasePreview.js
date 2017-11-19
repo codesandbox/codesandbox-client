@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import type { Module, Directory, Sandbox } from 'common/types';
 
 import Preview from 'app/components/sandbox/Preview';
-import delayEffect from 'app/utils/animation/delay-effect';
+import delayEffect from 'common/utils/animation/delay-effect';
 import {
   modulesFromSandboxSelector,
   findMainModule,

@@ -13,7 +13,7 @@ import {
   ALGOLIA_API_KEY,
   ALGOLIA_APPLICATION_ID,
   ALGOLIA_DEFAULT_INDEX,
-} from 'app/utils/config';
+} from 'common/utils/config';
 
 import './Search.css';
 import Results from './Results';

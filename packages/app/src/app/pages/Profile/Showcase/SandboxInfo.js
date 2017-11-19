@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { sandboxUrl } from 'common/utils/url-generator';
-import delayEffect from 'app/utils/animation/delay-effect';
+import delayEffect from 'common/utils/animation/delay-effect';
 import Row from 'common/components/flex/Row';
 
 import Stat from 'app/components/Stat';

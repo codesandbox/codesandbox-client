@@ -18,7 +18,7 @@ import { jwtSelector, isPatronSelector } from 'app/store/user/selectors';
 import modalActionCreators from 'app/store/modal/actions';
 import { patronUrl } from 'common/utils/url-generator';
 // $FlowIssue
-import PatronBadge from '-!svg-react-loader!app/utils/badges/svg/patron-4.svg'; // eslint-disable-line import/no-webpack-loader-syntax
+import PatronBadge from '-!svg-react-loader!common/utils/badges/svg/patron-4.svg'; // eslint-disable-line import/no-webpack-loader-syntax
 
 import UserMenu from '../UserMenu';
 

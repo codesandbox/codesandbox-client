@@ -15,8 +15,8 @@ import Margin from 'common/components/spacing/Margin';
 import NowLogo from 'app/components/NowLogo';
 import OpaqueLogo from 'app/components/OpaqueLogo';
 
-import delayInEffect from 'app/utils/animation/delay-effect';
-import delayOutEffect from 'app/utils/animation/delay-out-effect';
+import delayInEffect from 'common/utils/animation/delay-effect';
+import delayOutEffect from 'common/utils/animation/delay-out-effect';
 
 import Cube from './Cube';
 

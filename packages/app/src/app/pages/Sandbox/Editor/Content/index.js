@@ -35,7 +35,7 @@ import CodeEditor from 'app/components/sandbox/CodeEditor';
 import Preview from 'app/components/sandbox/Preview';
 
 import showAlternativeComponent from 'app/hoc/show-alternative-component';
-import fadeIn from 'app/utils/animation/fade-in';
+import fadeIn from 'common/utils/animation/fade-in';
 
 import Header from './Header';
 import Skeleton from './Skeleton';

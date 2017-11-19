@@ -6,7 +6,7 @@ import EditIcon from 'react-icons/lib/go/pencil';
 import AddFileIcon from 'react-icons/lib/go/file-symlink-file';
 import AddDirectoryIcon from 'react-icons/lib/go/file-symlink-directory';
 
-import fadeIn from 'app/utils/animation/fade-in';
+import fadeIn from 'common/utils/animation/fade-in';
 import Tooltip from 'app/components/Tooltip';
 
 import { Icon } from '../../../Icon';

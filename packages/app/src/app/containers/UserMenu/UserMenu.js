@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import delayEffect from 'app/utils/animation/delay-effect';
+import delayEffect from 'common/utils/animation/delay-effect';
 import { Link } from 'react-router-dom';
 
 import UserIcon from 'react-icons/lib/ti/user';

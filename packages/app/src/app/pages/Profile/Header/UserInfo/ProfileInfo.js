@@ -4,7 +4,7 @@ import GithubIcon from 'react-icons/lib/go/mark-github';
 
 import Row from 'common/components/flex/Row';
 import Column from 'common/components/flex/Column';
-import delayEffect from 'app/utils/animation/delay-effect';
+import delayEffect from 'common/utils/animation/delay-effect';
 import Margin from 'common/components/spacing/Margin';
 import PatronStar from 'app/components/user/PatronStar';
 

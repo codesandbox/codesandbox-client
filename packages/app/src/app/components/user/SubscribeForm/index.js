@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { StripeProvider, Elements } from 'react-stripe-elements';
 
-import { STRIPE_API_KEY } from 'app/utils/config';
+import { STRIPE_API_KEY } from 'common/utils/config';
 
 import CheckoutForm from './CheckoutForm';
 

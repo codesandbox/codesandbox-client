@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import Relative from 'common/components/Relative';
-import badges from 'app/utils/badges/patron-info';
+import badges from 'common/utils/badges/patron-info';
 
 import './animations.css';
 import Particles from './Particles';
