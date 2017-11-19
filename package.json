@@ -13,7 +13,10 @@
     "start:test": "lerna run start:test --scope app --stream",
     "test": "lerna run test",
     "test:integrations": "lerna run test:integrations --scope app --stream",
-    "lint": "lerna run lint"
+    "lint": "lerna run lint",
+    "add-contributor": "all-contributors add",
+    "generate": "all-contributors generate",
+    "precommit": "lint-staged"
   },
   "lint-staged": {
     "*.js": ["prettier --write --single-quote --trailing-comma es5", "git add"],
