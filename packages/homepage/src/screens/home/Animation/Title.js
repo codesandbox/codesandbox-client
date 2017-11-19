@@ -100,6 +100,12 @@ const Secondary = styled.div`
   ${fadeIn(0.2)};
 `;
 
+const isBot = () => {
+  return /google|baidu|bing|msn|duckduckgo|teoma|slurp|yandex/i.test(
+    navigator.userAgent
+  );
+};
+
 export default ({ template }) => (
   <Container>
     <Title title="CodeSandbox">
@@ -107,7 +113,7 @@ export default ({ template }) => (
       <Primary>Sandbox</Primary>
     </Title>
     <SubTitle title="The online code editor tailored for web applications">
-      {typeof window === 'undefined' ? (
+      {typeof window === 'undefined' || isBot() ? (
         <span>The online code editor for web applications</span>
       ) : (
         <span>
