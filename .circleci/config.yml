@@ -98,6 +98,8 @@ jobs:
     working_directory: ~/codesandbox-client
     steps:
       - restore_cache:
+          key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+      - restore_cache:
           key: v1-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}
       - add_ssh_keys:
           fingerprints:
