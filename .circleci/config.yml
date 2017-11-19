@@ -108,8 +108,7 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "f7:f1:e6:60:96:24:d9:cd:1b:8b:c0:34:e7:ee:fa:82"
-      - run:
-          name: Deploy
+      - deploy:
           command: sh ./deploy.sh
         
 workflows:
