@@ -88,6 +88,17 @@ jobs:
       - run:
           name: Lint
           command: yarn lint
+
+  deploy:
+    docker:
+      - image: circleci/node:9.0
+    working_directory: ~/codesandbox-client
+    steps:
+      - restore_cache:
+          key: prod-build-cache-{{ .Environment.CIRCLE_BUILD_NUM }}
+      - run:
+          name: Deploy
+          command: echo DEPLOY!
         
 workflows:
   version: 2
@@ -106,5 +117,19 @@ workflows:
       - build-prod:
           requires:
             - build-dependencies
+      - hold:
+          type: approval
+          filters:
+            branches:
+              only: master
+          requires:
+            - build-prod
+            - lint
+            - test-integrations
+            - test-jest
+      - deploy:
+          requires:
+            - hold
+
 
 
