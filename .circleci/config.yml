@@ -1,7 +1,7 @@
 version: 2
 
 jobs:
-  build:
+  build-dependencies:
     docker:
       - image: circleci/node:9.0
     working_directory: ~/codesandbox-client
@@ -18,15 +18,23 @@ jobs:
             - ./node_modules
             - ~/.yarn-cache
       - run:
-          name: Workaround for https://github.com/GoogleChrome/puppeteer/issues/290
-          command: sh ./packages/app/integration-tests/scripts/workaround-puppeteer-issue-290.sh
-      - run:
           name: Build
-          command: yarn build
+          command: yarn build:dependents
       - save_cache:
           key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - ~/codesandbox-client
+
+  build-prod:
+    docker:
+      - image: circleci/node:9.0
+    working_directory: ~/codesandbox-client
+    steps:
+      - restore_cache:
+          key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+      - run:
+          name: Build Application
+          command: yarn build:prod
 
   test-integrations:
     docker:
@@ -35,6 +43,9 @@ jobs:
     steps:
       - restore_cache:
           key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+      - run:
+          name: Workaround for https://github.com/GoogleChrome/puppeteer/issues/290
+          command: sh ./packages/app/integration-tests/scripts/workaround-puppeteer-issue-290.sh
       - run:
           name: Start Test Server
           command: yarn start:test
@@ -77,12 +88,15 @@ workflows:
       - build
       - test-integrations:
           requires:
-            - build
+            - build-dependencies
       - test-jest:
           requires:
-            - build
+            - build-dependencies
       - lint:
           requires:
-            - build
+            - build-dependencies
+      - build-prod:
+          requires:
+            - build-dependencies
 
 

@@ -4,8 +4,8 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "build":
-      "yarn build:dependents && lerna run build --scope app --stream && gulp",
+    "build": "yarn build:dependents && yarn build:prod",
+    "build:prod": "lerna run build --scope app --stream && gulp",
     "build:dependents": "lerna run build --ignore app --parallel",
     "start": "lerna run start",
     "start:test": "lerna run start:test --scope app --stream",
