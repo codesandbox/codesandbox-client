@@ -16,7 +16,7 @@ export default function getDependency(
   // CRA.
   if (dependencyPath.startsWith('babel-runtime')) {
     // eslint-disable-next-line global-require, import/no-dynamic-require
-    return require(`../../../../node_modules/babel-runtime${dependencyPath.replace(
+    return require(`../../../../../node_modules/babel-runtime${dependencyPath.replace(
       'babel-runtime',
       ''
     )}`);
