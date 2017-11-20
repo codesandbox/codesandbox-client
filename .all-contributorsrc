@@ -198,6 +198,16 @@
         "design",
         "code"
       ]
+    },
+    {
+      "login": "nagamalli9999",
+      "name": "Eswar Yaganti",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/3381746?v=4",
+      "profile": "http://nyaganti.com",
+      "contributions": [
+        "code",
+        "infra"
+      ]
     }
   ]
 }
