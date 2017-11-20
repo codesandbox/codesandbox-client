@@ -239,7 +239,7 @@ export default function reducer(
     case SAVE_MODULE_CODE_API_ACTIONS.REQUEST:
     case MASS_UPDATE_MODULE_API_ACTIONS.REQUEST:
       return mapValues(state, s => {
-        if (!s.originalGitChanges) {
+        if (!s || !s.originalGitChanges) {
           return s;
         }
 
