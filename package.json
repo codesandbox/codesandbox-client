@@ -11,6 +11,8 @@
       "lerna run build --ignore app --ignore homepage --parallel",
     "start": "lerna run start --parallel",
     "start:test": "lerna run start:test --scope app --stream",
+    "start:dev_api":
+      "lerna run start --parallel --ignore app & lerna run start:dev_api --scope app --stream",
     "test": "lerna run test",
     "test:integrations": "lerna run test:integrations --scope app --stream",
     "lint": "lerna run lint",
