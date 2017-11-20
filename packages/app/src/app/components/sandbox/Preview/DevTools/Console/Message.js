@@ -133,6 +133,10 @@ function getMessage(message: IMessage) {
     );
   }
 
+  if (message.arguments.every(argument => typeof argument === 'string')) {
+    return <InnerItem>{message.arguments.join(' ')}</InnerItem>;
+  }
+
   return message.arguments.map((m, i) => (
     // eslint-disable-next-line react/no-array-index-key
     <InnerItem key={i}>
