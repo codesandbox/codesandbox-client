@@ -2,6 +2,8 @@
 
 # dependencies
 node_modules
+# we use yarn
+package-lock.json
 
 /integration-tests/**/__diff_output__
 
