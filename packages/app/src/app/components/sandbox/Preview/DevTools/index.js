@@ -166,12 +166,14 @@ export default class DevTools extends React.PureComponent<Props, State> {
     return this.setState({ hidden });
   };
 
-  updateStatus = (title: string) => (status: 'warning' | 'error' | 'info') => {
+  updateStatus = (title: string) => (
+    status: 'warning' | 'error' | 'info' | 'clear'
+  ) => {
     if (!this.state.hidden) {
       return;
     }
 
-    const currentStatus = this.state.status[title] || {
+    const currentStatus = (status !== 'clear' && this.state.status[title]) || {
       unread: 0,
       type: 'info',
     };
@@ -187,7 +189,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
       status: {
         [title]: {
           type: newStatus,
-          unread: currentStatus.unread + 1,
+          unread: currentStatus.unread + (status !== 'clear' ? 1 : 0),
         },
       },
     });
