@@ -1,14 +1,15 @@
 import React from 'react';
 import Loadable from 'react-loadable';
 
+import path from 'path';
+import imageExtensions from 'image-extensions/image-extensions.json';
+
 import Loading from 'app/components/Loading';
 import Title from 'app/components/text/Title';
 import SubTitle from 'app/components/text/SubTitle';
 import Centered from 'common/components/flex/Centered';
 import Margin from 'common/components/spacing/Margin';
 import { Preferences, Module, Directory } from 'common/types';
-
-import isImage from 'is-image';
 
 import Monaco from './Monaco';
 import ImageViewer from './ImageViewer';
@@ -26,6 +27,15 @@ const CodeMirror = Loadable({
   loader: () => import(/* webpackChunkName: 'codemirror' */ './CodeMirror'),
   LoadingComponent: Loading,
 });
+
+const exts = new Set(imageExtensions);
+const isImage = filepath =>
+  exts.has(
+    path
+      .extname(filepath)
+      .slice(1)
+      .toLowerCase()
+  );
 
 export default (props: Props) => {
   const module = props.modules.find(m => m.id === props.id);
