@@ -1,11 +1,3 @@
-console.log({
-  resolve: `gatsby-source-filesystem`,
-  options: {
-    name: `src`,
-    path: `${__dirname}/src/`,
-  },
-});
-
 module.exports = {
   siteMetadata: {
     title: `CodeSandbox`,
