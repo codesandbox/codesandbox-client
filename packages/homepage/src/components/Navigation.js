@@ -49,6 +49,7 @@ const Item = styled.a`
       ${media.phone`
       display: none;
     `};
+      transition: 0.3s ease all;
       padding: 0.35rem 0.8rem;
       border-radius: 4px;
       box-shadow: 0 3px 4px rgba(0, 0, 0, 0.3);
@@ -59,7 +60,7 @@ const Item = styled.a`
       );
 
       &:hover {
-        transform: translateY(-10px);
+        transform: translateY(-3px);
         color: white;
       }
     `};
