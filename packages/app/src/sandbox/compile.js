@@ -150,10 +150,10 @@ async function compile({
     document.body.innerHTML = html;
 
     const tt = Date.now();
+    const oldHTML = document.body.innerHTML;
     const evalled = manager.evaluateModule(managerModuleToTranspile);
     debug(`Evaluation time: ${Date.now() - tt}ms`);
-
-    const domChanged = document.body.innerHTML !== html;
+    const domChanged = oldHTML !== document.body.innerHTML;
 
     if (isModuleView && !domChanged && !module.title.endsWith('.html')) {
       const isReact = module.code && module.code.includes('React');

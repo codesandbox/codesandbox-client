@@ -280,6 +280,10 @@ export default class Preview extends React.PureComponent<Props, State> {
     } else {
       const renderedModule = this.getRenderedModule();
 
+      if (!isInProjectView) {
+        this.evaluateInSandbox(`history.pushState({}, null, '/')`);
+      }
+
       this.sendMessage({
         type: 'compile',
         module: renderedModule,
