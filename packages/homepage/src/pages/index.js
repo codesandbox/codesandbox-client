@@ -37,10 +37,27 @@ export default class HomePage extends React.PureComponent {
         <NPMFeature />
         <CycleFeature />
         <ExtraFeatures />
-        <RecentPublications />
+        <RecentPublications sizes={this.props.data.publicationImages.edges} />
         <Patron />
         <Footer />
       </div>
     );
   }
 }
+
+export const query = graphql`
+  query ImageSizesQuery {
+    publicationImages: allImageSharp(
+      filter: { id: { regex: "/RecentPublications/" } }
+    ) {
+      edges {
+        node {
+          id
+          sizes(maxWidth: 400) {
+            ...GatsbyImageSharpSizes
+          }
+        }
+      }
+    }
+  }
+`;
