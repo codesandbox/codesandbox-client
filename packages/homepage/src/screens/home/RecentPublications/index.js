@@ -1,11 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import Img from 'gatsby-image';
+
 import MaxWidth from 'common/components/flex/MaxWidth';
 
-import npmArticleImage from './npm-article.png';
-import codesandbox2Image from './codesandbox2.png';
-import zeitTalkImage from './zeit-talk.jpg';
+import codesandbox2Image from './1-codesandbox2.png';
+import zeitTalkImage from './2-zeit-talk.jpg';
+import npmArticleImage from './3-npm-article.png';
 
 import media from '../../../utils/media';
 
@@ -63,9 +65,10 @@ const PublicationDescription = styled.p`
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 `;
 
-const PublicationItem = ({ title, image, url, description }) => (
+const PublicationItem = ({ title, image, url, description, sizes }) => (
   <Item href={url} target="_blank" rel="noopener noreferrer">
-    <img
+    <Img
+      sizes={sizes}
       style={{ boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)' }}
       src={image}
       alt={title}
@@ -75,7 +78,7 @@ const PublicationItem = ({ title, image, url, description }) => (
   </Item>
 );
 
-export default () => (
+export default ({ sizes }) => (
   <Container>
     <MaxWidth width={1280}>
       <Title>Recent Publications</Title>
@@ -84,20 +87,23 @@ export default () => (
         <PublicationItem
           title="CodeSandbox 2.0"
           description="Announcing CodeSandbox 2.0. With GitHub commiting, a new homepage and support for static files."
-          image={codesandbox2Image}
           url="https://medium.com/@compuives/announcing-codesandbox-2-0-938cff3a0fcb"
+          image={codesandbox2Image}
+          sizes={sizes[0].node.sizes}
         />
         <PublicationItem
           title="The Journey of CodeSandbox"
           description="Ives explains how CodeSandbox came to be, how it works and what the future holds."
           url="https://www.youtube.com/watch?v=5lR29NsJKW8"
           image={zeitTalkImage}
+          sizes={sizes[1].node.sizes}
         />
         <PublicationItem
           title="NPM in the browser"
           description="What we have done to make npm work in the browser, and what we will do in the future."
-          image={npmArticleImage}
           url="https://hackernoon.com/how-we-make-npm-packages-work-in-the-browser-announcing-the-new-packager-6ce16aa4cee6"
+          image={npmArticleImage}
+          sizes={sizes[2].node.sizes}
         />
       </Items>
     </MaxWidth>

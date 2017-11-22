@@ -75,10 +75,6 @@ class Html extends Component {
           />
           <meta property="twitter:image:width" content="1200" />
           <meta property="twitter:image:height" content="630" />
-          <link
-            href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700"
-            rel="stylesheet"
-          />
           <TypographyStyle typography={typography} />
           {css}
         </head>

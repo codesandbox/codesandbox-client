@@ -29,6 +29,8 @@ const StyledLogo = styled(Logo)`
 `;
 
 const Item = styled.a`
+  display: inline-flex;
+  align-items: center;
   transition: 0.2s ease color;
   font-size: 1.125rem;
   text-decoration: none;
@@ -47,6 +49,7 @@ const Item = styled.a`
       ${media.phone`
       display: none;
     `};
+      transition: 0.3s ease all;
       padding: 0.35rem 0.8rem;
       border-radius: 4px;
       box-shadow: 0 3px 4px rgba(0, 0, 0, 0.3);
@@ -57,7 +60,7 @@ const Item = styled.a`
       );
 
       &:hover {
-        transform: translateY(-10px);
+        transform: translateY(-3px);
         color: white;
       }
     `};
@@ -68,33 +71,84 @@ const Item = styled.a`
   `};
 `;
 
-const Right = styled.div``;
+const Right = styled.div`
+  display: flex;
+  align-items: center;
+`;
 
-export default () => (
-  <MaxWidth width={1280}>
-    <Container>
-      <Left>
-        <StyledLogo title="CodeSandbox" width={50} height={50} />
-      </Left>
-      <Right>
-        <Item
-          href="https://medium.com/@compuives"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Blog
-        </Item>
-        <Item
-          href="https://github.com/CompuIves/codesandbox-client"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          GitHub
-        </Item>
-        <Item href="/s" target="_blank" rel="noopener noreferrer" button>
-          Create Sandbox
-        </Item>
-      </Right>
-    </Container>
-  </MaxWidth>
-);
+const Image = styled.img`
+  width: 1.75em;
+  height: 1.75em;
+  border-radius: 4px;
+  margin-left: 0.75rem;
+  margin-bottom: 0;
+`;
+
+export default class Navigation extends React.PureComponent {
+  state = {
+    user: null,
+  };
+
+  fetchCurrentUser = async () => {
+    try {
+      const jwt = JSON.parse(localStorage.getItem('jwt'));
+
+      const BASE =
+        process.env.NODE_ENV === 'development' ? 'https://codesandbox.dev' : '';
+
+      const { data } = await window
+        .fetch(BASE + '/api/v1/users/current', {
+          headers: { Authorization: `Bearer ${jwt}` },
+        })
+        .then(x => x.json());
+
+      this.setState({ user: data });
+    } catch (e) {
+      // fail silently
+    }
+  };
+
+  componentDidMount() {
+    if (localStorage.getItem('jwt')) {
+      this.fetchCurrentUser();
+    }
+  }
+
+  render() {
+    const { user } = this.state;
+    return (
+      <MaxWidth width={1280}>
+        <Container>
+          <Left>
+            <StyledLogo title="CodeSandbox" width={50} height={50} />
+          </Left>
+          <Right>
+            <Item
+              href="https://medium.com/@compuives"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Blog
+            </Item>
+            <Item
+              href="https://github.com/CompuIves/codesandbox-client"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              GitHub
+            </Item>{' '}
+            <Item href="/s" rel="noopener noreferrer" button={!user}>
+              Create Sandbox
+            </Item>
+            {user && (
+              <Item href={`/u/${user.username}`} rel="noopener noreferrer">
+                {user.username}
+                <Image alt={user.username} src={user.avatar_url} />
+              </Item>
+            )}
+          </Right>
+        </Container>
+      </MaxWidth>
+    );
+  }
+}
