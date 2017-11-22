@@ -135,6 +135,7 @@ class Console extends React.Component<Props, State> {
   }
 
   clearConsole = () => {
+    this.props.updateStatus('clear');
     this.setState({ messages: [] });
   };
 
