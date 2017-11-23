@@ -4,7 +4,8 @@ import styled from 'styled-components';
 import ProjectIcon from 'react-icons/lib/go/file-code';
 import FunctionIcon from 'react-icons/lib/fa/code';
 import FolderIcon from 'react-icons/lib/md/keyboard-arrow-down';
-import DirectoryIcon from 'react-icons/lib/go/file-directory';
+import DirectoryIcon from 'react-icons/lib/md/folder';
+import DirectoryOpenIcon from 'react-icons/lib/md/folder-open';
 import NotSyncedIcon from 'react-icons/lib/go/primitive-dot';
 import CSSIcon from 'react-icons/lib/fa/css3';
 import HTMLIcon from 'react-icons/lib/fa/html5';
@@ -19,7 +20,9 @@ const NotSyncedIconWithMargin = styled(NotSyncedIcon)`
   color: ${props => props.theme.templateColor || props.theme.secondary};
 `;
 
-const RedIcon = styled.span`color: ${props => props.theme.red};`;
+const RedIcon = styled.span`
+  color: ${props => props.theme.red};
+`;
 
 const StyledFolderIcon = styled.span`
   svg {
@@ -31,7 +34,7 @@ const StyledFolderIcon = styled.span`
   }
 `;
 
-const getIcon = (type, error, root) => {
+const getIcon = (type, error, root, open) => {
   if (root) {
     return <ProjectIcon />;
   }
@@ -51,7 +54,7 @@ const getIcon = (type, error, root) => {
     case 'function':
       return <FunctionIcon />;
     case 'directory':
-      return <DirectoryIcon />;
+      return open ? <DirectoryOpenIcon /> : <DirectoryIcon />;
     case 'css':
       return <CSSIcon />;
     case 'ts':
@@ -85,12 +88,12 @@ export default function EntryIcon({
     <div style={{ display: 'inline-block', verticalAlign: 'middle' }}>
       {isNotSynced && <NotSyncedIconWithMargin />}
       {type === 'directory' &&
-      hasChildren && (
-        <StyledFolderIcon isOpen={isOpen} onClick={onOpen}>
-          <FolderIcon />
-        </StyledFolderIcon>
-      )}
-      {getIcon(type, error, root)}
+        hasChildren && (
+          <StyledFolderIcon isOpen={isOpen} onClick={onOpen}>
+            <FolderIcon />
+          </StyledFolderIcon>
+        )}
+      {getIcon(type, error, root, isOpen)}
     </div>
   );
 }

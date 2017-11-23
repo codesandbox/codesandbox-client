@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 const InputContainer = styled.div`
   display: inline-block;
-  overflow: visible;
+  overflow: auto;
   input {
     transition: 0.3s ease all;
     font-family: inherit;

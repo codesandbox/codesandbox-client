@@ -12,12 +12,12 @@ export const getContainerStyles = props => {
     position: relative;
     display: flex;
     font-size: 14px;
-    padding: 0.6rem;
-    padding-left: ${props.depth != null
-      ? `${props.depth + 1.5}rem`
-      : 'calc(1rem - 2px)'};
+    padding: 0.4rem;
+    padding-left: ${
+      props.depth != null ? `${props.depth + 1.5}rem` : 'calc(1rem - 2px)'
+    };
     padding-right: 3rem;
-    color: ${theme.background.lighten(2)()};
+    color: rgba(255, 255, 255, 0.5);
     text-decoration: none;
     font-weight: 400;
     min-width: 100px;
@@ -26,13 +26,15 @@ export const getContainerStyles = props => {
     user-select: none;
 
     &:hover {
-      ${props.active || props.editing
-        ? ''
-        : `
+      ${
+        props.active || props.editing
+          ? ''
+          : `
         background-color: ${color.clearer(0.9)()};
         color: ${theme.background.lighten(5)()};
         border-color: ${color.darken(0.4)()};
-      `}
+      `
+      }
 
       > div {
         opacity: 1 !important;

@@ -47,8 +47,8 @@ const Container = styled.div`
   background-color: ${props => props.theme.background};
   height: 100%;
   width: 100%;
-  overflow: auto;
   overflow-y: overlay;
+  overflow-x: auto;
 
   > div {
     ${fadeIn(0)};
