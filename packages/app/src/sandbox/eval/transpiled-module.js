@@ -483,7 +483,8 @@ export default class TranspiledModule {
       const exports = evaluate(
         this.source.compiledCode,
         require,
-        this.compilation.exports
+        this.compilation.exports,
+        manager.envVariables
       );
 
       this.compilation.exports = exports;

@@ -135,6 +135,10 @@ export default async function fetchModule(
       {
         filename: currentPath,
         extensions: defaultExtensions.map(ext => '.' + ext),
+        moduleDirectory: [
+          'node_modules',
+          manager.envVariables.NODE_PATH,
+        ].filter(x => x),
         isFile: (p, c) => c(null, !!manager.transpiledModules[p] || !!meta[p]),
         readFile: async (p, c, cb) => {
           const callback = cb || c;

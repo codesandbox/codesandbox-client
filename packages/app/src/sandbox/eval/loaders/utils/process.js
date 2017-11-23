@@ -36,6 +36,7 @@ process.umask = function() {
   return 0;
 };
 
-export default function build() {
+export default function build(env) {
+  process.env = { NODE_ENV: 'development', ...env };
   return process;
 }
