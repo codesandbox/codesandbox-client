@@ -111,7 +111,6 @@ export default class Manager {
   }
 
   evaluateModule(module: Module) {
-    this.setEnvironmentVariables();
     const transpiledModule = this.getTranspiledModule(module);
 
     // Run post evaluate first
@@ -223,6 +222,7 @@ export default class Manager {
    * @param {*} entry
    */
   transpileModules(entry: Module) {
+    this.setEnvironmentVariables();
     this.cachedPaths = {};
     const transpiledModule = this.getTranspiledModule(entry);
 
