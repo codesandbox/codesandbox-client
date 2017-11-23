@@ -10,8 +10,8 @@ const Container = styled.div`
   box-shadow: 0 3px 3px ${props => props.theme.background2};
   color: ${props => props.theme.white};
   padding: 0.5rem 1rem;
-  height: 3rem;
-  flex: 0 0 3rem;
+  height: 2.5rem;
+  flex: 0 0 2.5rem;
   box-sizing: border-box;
   justify-content: space-between;
   vertical-align: middle;

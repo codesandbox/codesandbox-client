@@ -138,9 +138,7 @@ class Workspace extends React.PureComponent<Props> {
               />
             </WorkspaceItem>
 
-            <WorkspaceItem defaultOpen keepState title="Files">
-              <Files sandbox={sandbox} sandboxActions={sandboxActions} />
-            </WorkspaceItem>
+            <Files sandbox={sandbox} sandboxActions={sandboxActions} />
 
             <WorkspaceItem title="Dependencies">
               <Dependencies

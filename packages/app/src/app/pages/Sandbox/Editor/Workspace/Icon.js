@@ -5,8 +5,8 @@ export const Icon = styled.div`
   position: relative;
   display: inline-block;
   transition: 0.3s ease color;
-  color: ${props => props.theme.background2.lighten(3)};
-  padding-left: 0.25rem;
+  color: rgba(255, 255, 255, 0.5);
+  padding-left: 0.5rem;
   &:hover {
     color: white;
   }
@@ -17,5 +17,6 @@ export const IconArea = styled.div`
   right: 1rem;
   opacity: 0;
   line-height: 1;
+  vertical-align: middle;
   ${fadeIn(0)};
 `;

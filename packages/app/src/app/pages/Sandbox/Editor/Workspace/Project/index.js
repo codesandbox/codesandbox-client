@@ -4,7 +4,11 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import ConfirmLink from 'app/components/ConfirmLink';
 import GithubBadge from 'app/components/sandbox/GithubBadge';
-import { sandboxUrl, githubRepoUrl, profileUrl } from 'common/utils/url-generator';
+import {
+  sandboxUrl,
+  githubRepoUrl,
+  profileUrl,
+} from 'common/utils/url-generator';
 import UserWithAvatar from 'app/components/user/UserWithAvatar';
 import Stats from 'app/components/sandbox/Stats';
 import PrivacyStatus from 'app/components/sandbox/PrivacyStatus';
@@ -34,8 +38,7 @@ const UserLink = styled(Link)`
 `;
 
 const StatsContainer = styled.div`
-  border-top: 1px solid ${props => props.theme.background2};
-  padding: 1rem;
+  height: 2rem;
   font-size: 0.875rem;
   box-sizing: border-box;
   color: rgba(255, 255, 255, 0.8);
