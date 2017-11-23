@@ -111,6 +111,7 @@ export default class Manager {
   }
 
   evaluateModule(module: Module) {
+    this.setEnvironmentVariables();
     const transpiledModule = this.getTranspiledModule(module);
 
     // Run post evaluate first
@@ -200,16 +201,20 @@ export default class Manager {
     delete this.transpiledModules[module.path];
   }
 
-  setEnvironmentVariables(envCode: string) {
-    this.envVariables = {};
-    try {
-      envCode.split('\n').forEach(envLine => {
-        const [name, ...val] = envLine.split('=');
+  setEnvironmentVariables() {
+    if (this.transpiledModules['/.env'] && this.preset.hasDotEnv) {
+      const envCode = this.transpiledModules['/.env'].module.code;
 
-        this.envVariables[name] = val.join('=');
-      });
-    } catch (e) {
-      console.error(e);
+      this.envVariables = {};
+      try {
+        envCode.split('\n').forEach(envLine => {
+          const [name, ...val] = envLine.split('=');
+
+          this.envVariables[name] = val.join('=');
+        });
+      } catch (e) {
+        console.error(e);
+      }
     }
   }
 
@@ -220,10 +225,6 @@ export default class Manager {
   transpileModules(entry: Module) {
     this.cachedPaths = {};
     const transpiledModule = this.getTranspiledModule(entry);
-
-    if (this.transpiledModules['/.env']) {
-      this.setEnvironmentVariables(this.transpiledModules['/.env'].module.code);
-    }
 
     transpiledModule.setIsEntry(true);
     return transpiledModule.transpile(this);
