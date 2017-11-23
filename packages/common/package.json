@@ -1,0 +1,7 @@
+{
+  "name": "common",
+  "version": "1.0.0",
+  "dependencies": {
+    "react-tippy": "^0.14.0"
+  }
+}

@@ -2,7 +2,7 @@
   "env": {
     "test": {
       "presets": [
-        "es2015",
+        "env",
         "react"
       ],
       "plugins": [
@@ -19,7 +19,6 @@
             "webpack": true
           }
         ],
-        "babel-plugin-lodash",
         "babel-plugin-system-import-transformer"
       ]
     }
