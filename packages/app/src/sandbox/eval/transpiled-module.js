@@ -69,13 +69,9 @@ export type LoaderContext = {
   _module: TranspiledModule, // eslint-disable-line no-use-before-define
 };
 
-class Compilation {
-  exports: any;
-
-  constructor() {
-    this.exports = {};
-  }
-}
+type Compilation = {
+  exports: any,
+};
 
 export default class TranspiledModule {
   module: Module;
@@ -437,9 +433,11 @@ export default class TranspiledModule {
       throw new Error(`${this.module.path} hasn't been transpiled yet.`);
     }
 
-    const module = this.module;
+    const localModule = this.module;
 
-    this.compilation = new Compilation();
+    this.compilation = {
+      exports: {},
+    };
     const transpiledModule = this;
 
     try {
@@ -461,11 +459,11 @@ export default class TranspiledModule {
 
         const requiredTranspiledModule = manager.resolveTranspiledModule(
           aliasedPath,
-          module.path
+          localModule.path
         );
 
-        if (module === requiredTranspiledModule.module) {
-          throw new Error(`${module.path} is importing itself`);
+        if (localModule === requiredTranspiledModule.module) {
+          throw new Error(`${localModule.path} is importing itself`);
         }
 
         // Check if this module has been evaluated before, if so return the exports
@@ -483,11 +481,9 @@ export default class TranspiledModule {
       const exports = evaluate(
         this.source.compiledCode,
         require,
-        this.compilation.exports,
+        this.compilation,
         manager.envVariables
       );
-
-      this.compilation.exports = exports;
 
       return exports;
     } catch (e) {

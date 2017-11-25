@@ -17,6 +17,7 @@ const SANDBOXES = [
   'github/reactjs/redux/tree/master/examples/real-world',
   { id: 'github/CompuIves/codesandbox-presentation', timeout: 60000 },
   'lp5rjr0z4z',
+  'nOymMxyY',
 ];
 
 SANDBOXES.forEach(sandbox => {
