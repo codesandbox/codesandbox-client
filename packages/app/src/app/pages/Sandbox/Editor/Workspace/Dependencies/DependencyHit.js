@@ -73,6 +73,13 @@ export default class DependencyHit extends React.PureComponent {
     props.onClick(props.hit, state.selectedVersion);
   };
 
+  handleKeyUp = e => {
+    const { key } = e;
+    if (key === 'Enter') {
+      this.handleClick();
+    }
+  };
+
   handleVersionChange = e => {
     const selectedVersion = e.target.value;
     this.setState({ selectedVersion });
@@ -83,7 +90,12 @@ export default class DependencyHit extends React.PureComponent {
     const versions = Object.keys(hit.versions);
     versions.reverse();
     return (
-      <Container role="button" tabIndex={0} onClick={this.handleClick}>
+      <Container
+        role="button"
+        tabIndex={0}
+        onClick={this.handleClick}
+        onKeyUp={this.handleKeyUp}
+      >
         <Left>
           <Row>
             <Highlight attributeName="name" hit={hit} />
