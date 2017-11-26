@@ -2,6 +2,8 @@ import React from 'react';
 import { Highlight } from 'react-instantsearch/dom';
 import styled from 'styled-components';
 
+import GitHubLogo from '../Git/modals/GitHubLogo';
+
 const Container = styled.div`
   display: flex;
   border-bottom: 1px solid ${props => props.theme.gray};
@@ -35,6 +37,11 @@ const License = styled.span`
   font-size: 12px;
 `;
 
+const GitHubContainer = styled.a`
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.8);
+`;
+
 type Props = {
   hit: Object,
 };
@@ -51,7 +58,18 @@ export default function DependencyHit({ hit }: Props) {
         <Row>{hit.description}</Row>
       </Left>
       <Right>
-        <Row>github link</Row>
+        <Row>
+          {hit.githubRepo && (
+            <GitHubContainer
+              href={makeGitHubRepoUrl(hit.githubRepo)}
+              target="_blank"
+              rel="noreferrer noopener"
+              onClick={stopPropagation}
+            >
+              <GitHubLogo />
+            </GitHubContainer>
+          )}
+        </Row>
       </Right>
     </Container>
   );
@@ -80,4 +98,12 @@ export function formatDownloads(downloads) {
     return thousands + 'K';
   }
   return downloads.toString();
+}
+
+function makeGitHubRepoUrl(repo) {
+  return `https://github.com/${repo.user}/${repo.project}`;
+}
+
+function stopPropagation(e) {
+  e.stopPropagation();
 }
