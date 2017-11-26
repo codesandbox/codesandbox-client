@@ -14,7 +14,7 @@ CodeSandbox aims to solve this by allowing developers to simply go to a URL in t
 
 ## Other CodeSandbox repositories
 
-CodeSandbox consists several separate servers, some of these are open sourced.
+CodeSandbox consists of several separate servers, some of which are open sourced.
 
 - Client: the web application
 - Server: the Phoenix API server

@@ -5,10 +5,11 @@ import buildProcess from './utils/process';
 export default function(
   code: string,
   require: Function,
-  exports: Object,
+  module: Object,
   env: Object = {}
 ) {
-  const module = { exports: {} };
+  const exports = module.exports;
+
   const global = window;
   const process = buildProcess(env);
   window.global = global;
@@ -19,12 +20,7 @@ export default function(
     }\n})`;
     (0, eval)(newCode)(require, module, exports, process, global); // eslint-disable-line no-eval
 
-    // Choose either the export of __esModule or node
-    return Object.keys(module.exports || {}).length > 0 ||
-      (module.exports || {}).constructor !== Object ||
-      (module.exports && !exports)
-      ? module.exports
-      : exports;
+    return module.exports;
   } catch (e) {
     e.isEvalError = true;
 
