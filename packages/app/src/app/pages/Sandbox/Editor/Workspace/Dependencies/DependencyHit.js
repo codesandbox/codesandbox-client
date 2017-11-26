@@ -1,6 +1,9 @@
 import React from 'react';
+import HomeIcon from 'react-icons/lib/io/home';
 import { Highlight } from 'react-instantsearch/dom';
 import styled from 'styled-components';
+
+import Tooltip from 'common/components/Tooltip';
 
 import GitHubLogo from '../Git/modals/GitHubLogo';
 
@@ -37,7 +40,7 @@ const License = styled.span`
   font-size: 12px;
 `;
 
-const GitHubContainer = styled.a`
+const IconLink = styled.a`
   font-size: 1rem;
   color: rgba(255, 255, 255, 0.8);
 `;
@@ -60,14 +63,28 @@ export default function DependencyHit({ hit }: Props) {
       <Right>
         <Row>
           {hit.githubRepo && (
-            <GitHubContainer
-              href={makeGitHubRepoUrl(hit.githubRepo)}
-              target="_blank"
-              rel="noreferrer noopener"
-              onClick={stopPropagation}
-            >
-              <GitHubLogo />
-            </GitHubContainer>
+            <Tooltip title={`GitHub repository of ${hit.name}`}>
+              <IconLink
+                href={makeGitHubRepoUrl(hit.githubRepo)}
+                target="_blank"
+                rel="noreferrer noopener"
+                onClick={stopPropagation}
+              >
+                <GitHubLogo />
+              </IconLink>
+            </Tooltip>
+          )}
+          {hit.homepage && (
+            <Tooltip title={`Homepage of ${hit.name}`}>
+              <IconLink
+                href={hit.homepage}
+                target="_blank"
+                rel="noreferrer noopener"
+                onClick={stopPropagation}
+              >
+                <HomeIcon />
+              </IconLink>
+            </Tooltip>
           )}
         </Row>
       </Right>
