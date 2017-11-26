@@ -64,6 +64,11 @@ const ExpandIconContainer = styled(ExpandIcon)`
 const Actions = styled.div`
   position: absolute;
   right: 1rem;
+  top: 0;
+  bottom: 0;
+
+  display: flex;
+  align-items: center;
 `;
 
 type Props = {
@@ -101,7 +106,7 @@ export default class WorkspaceItem extends React.PureComponent {
           <ExpandIconContainer open={open} />
           <Title>{title}</Title>
 
-          <Actions>{actions}</Actions>
+          {open && <Actions>{actions}</Actions>}
         </ItemHeader>
         <ChildContainer disabled={disabled} open={open}>
           {(keepState || open) && children}

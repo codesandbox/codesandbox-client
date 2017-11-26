@@ -3,10 +3,8 @@ import styled from 'styled-components';
 
 import ProjectIcon from 'react-icons/lib/go/file-code';
 import FunctionIcon from 'react-icons/lib/fa/code';
-import FolderIcon from 'react-icons/lib/md/keyboard-arrow-down';
 import DirectoryIcon from 'react-icons/lib/md/folder';
 import DirectoryOpenIcon from 'react-icons/lib/md/folder-open';
-import NotSyncedIcon from 'react-icons/lib/go/primitive-dot';
 import CSSIcon from 'react-icons/lib/fa/css3';
 import HTMLIcon from 'react-icons/lib/fa/html5';
 import ErrorIcon from 'react-icons/lib/md/error';
@@ -14,24 +12,8 @@ import RawIcon from 'react-icons/lib/go/file-text';
 import ReactIcon from 'app/components/ReactIcon';
 import TypeScriptIcon from 'app/components/TypeScriptIcon';
 
-const NotSyncedIconWithMargin = styled(NotSyncedIcon)`
-  margin-left: -20px;
-  margin-right: 6px;
-  color: ${props => props.theme.templateColor || props.theme.secondary};
-`;
-
 const RedIcon = styled.span`
   color: ${props => props.theme.red};
-`;
-
-const StyledFolderIcon = styled.span`
-  svg {
-    transition: 0.3s ease transform;
-    margin-left: -20px;
-    margin-right: 6px;
-
-    transform: rotateZ(${props => (props.isOpen ? '0deg' : '-90deg')});
-  }
 `;
 
 const getIcon = (type, error, root, open) => {
@@ -68,31 +50,13 @@ const getIcon = (type, error, root, open) => {
 
 type Props = {
   type: string,
-  hasChildren: boolean,
-  isNotSynced: ?boolean,
   isOpen?: boolean,
-  onOpen: () => void,
   root: ?boolean,
   error: boolean,
 };
-export default function EntryIcon({
-  type,
-  root,
-  error,
-  hasChildren,
-  isNotSynced,
-  isOpen,
-  onOpen,
-}: Props) {
+export default function EntryIcon({ type, root, error, isOpen }: Props) {
   return (
     <div style={{ display: 'inline-block', verticalAlign: 'middle' }}>
-      {isNotSynced && <NotSyncedIconWithMargin />}
-      {type === 'directory' &&
-        hasChildren && (
-          <StyledFolderIcon isOpen={isOpen} onClick={onOpen}>
-            <FolderIcon />
-          </StyledFolderIcon>
-        )}
       {getIcon(type, error, root, isOpen)}
     </div>
   );

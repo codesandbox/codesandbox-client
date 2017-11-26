@@ -11,7 +11,6 @@ const Container = styled.div`
   color: ${props => props.theme.white};
   padding: 0.5rem 1rem;
   height: 2.5rem;
-  flex: 0 0 2.5rem;
   box-sizing: border-box;
   justify-content: space-between;
   vertical-align: middle;
