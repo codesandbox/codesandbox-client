@@ -1,5 +1,10 @@
 import React from 'react';
-import { InstantSearch, SearchBox, Hits } from 'react-instantsearch/dom';
+import {
+  InstantSearch,
+  Configure,
+  Hits,
+  SearchBox,
+} from 'react-instantsearch/dom';
 
 import 'app/pages/Search/Search.css';
 
@@ -47,6 +52,7 @@ export default class SearchDependencies extends React.PureComponent {
           searchState={searchState}
           onSearchStateChange={this.handleSearchStateChange}
         >
+          <Configure hitsPerPage={5} />
           <SearchBox autoFocus />
           {showHits && <Hits hitComponent={this.hitComponent} />}
         </InstantSearch>
