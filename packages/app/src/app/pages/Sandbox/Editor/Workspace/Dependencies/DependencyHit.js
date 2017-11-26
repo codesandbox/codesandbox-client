@@ -45,7 +45,7 @@ export default function DependencyHit({ hit }: Props) {
       <Left>
         <Row>
           <Highlight attributeName="name" hit={hit} />
-          <Downloads>{hit.downloadsLast30Days}</Downloads>
+          <Downloads>{formatDownloads(hit.downloadsLast30Days)}</Downloads>
           {hit.license && <License>{hit.license}</License>}
         </Row>
         <Row>{hit.description}</Row>
@@ -66,4 +66,18 @@ export function hitComponent(makeOnClick) {
       </div>
     );
   };
+}
+
+export function formatDownloads(downloads) {
+  if (downloads >= 1000000) {
+    const x = Math.floor(downloads / 100000);
+    const millions = x / 10;
+    return millions + 'M';
+  }
+  if (downloads >= 1000) {
+    const x = Math.floor(downloads / 100);
+    const thousands = x / 10;
+    return thousands + 'K';
+  }
+  return downloads.toString();
 }
