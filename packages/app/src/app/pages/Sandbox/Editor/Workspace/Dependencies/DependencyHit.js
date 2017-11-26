@@ -4,6 +4,7 @@ import { Highlight } from 'react-instantsearch/dom';
 import styled from 'styled-components';
 
 import Tooltip from 'common/components/Tooltip';
+import Select from 'app/components/Select';
 
 import GitHubLogo from '../Git/modals/GitHubLogo';
 
@@ -18,7 +19,10 @@ const Left = styled.div`
   flex: 1;
 `;
 
-const Right = styled.div``;
+const Right = styled.div`
+  display: flex;
+  align-items: center;
+`;
 
 const Row = styled.div`
   margin: 10px;
@@ -50,6 +54,8 @@ type Props = {
 };
 
 export default function DependencyHit({ hit }: Props) {
+  const versions = Object.keys(hit.versions);
+  versions.reverse();
   return (
     <Container>
       <Left>
@@ -86,6 +92,9 @@ export default function DependencyHit({ hit }: Props) {
               </IconLink>
             </Tooltip>
           )}
+          <Select onClick={stopPropagation}>
+            {versions.map(v => <option key={v}>{v}</option>)}
+          </Select>
         </Row>
       </Right>
     </Container>
