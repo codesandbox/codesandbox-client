@@ -27,13 +27,14 @@ export default class SearchDependencies extends React.PureComponent {
   props: Props;
   state = initialState;
 
-  makeOnClick = hit => () => {
-    console.log(hit); // eslint-disable-line
+  handleHitClick = (hit, selectedVersion) => {
+    console.log(hit.name); // eslint-disable-line
+    console.log(selectedVersion); // eslint-disable-line
     if (false) {
-      this.props.onConfirm(hit.name, hit.version);
+      this.props.onConfirm(hit.name, selectedVersion);
     }
   };
-  hitComponent = hitComponent(this.makeOnClick);
+  hitComponent = hitComponent(this.handleHitClick);
 
   handleSearchStateChange = searchState => {
     this.setState({ searchState });

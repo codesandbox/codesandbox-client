@@ -53,59 +53,87 @@ const IconLink = styled.a`
 
 type Props = {
   hit: Object,
+  onClick: Function,
 };
 
-export default function DependencyHit({ hit, onClick }: Props) {
-  const versions = Object.keys(hit.versions);
-  versions.reverse();
-  return (
-    <Container role="button" tabIndex={0} onClick={onClick}>
-      <Left>
-        <Row>
-          <Highlight attributeName="name" hit={hit} />
-          <Downloads>{formatDownloads(hit.downloadsLast30Days)}</Downloads>
-          {hit.license && <License>{hit.license}</License>}
-        </Row>
-        <Row>{hit.description}</Row>
-      </Left>
-      <Right>
-        <Row>
-          {hit.githubRepo && (
-            <Tooltip title={`GitHub repository of ${hit.name}`}>
-              <IconLink
-                href={makeGitHubRepoUrl(hit.githubRepo)}
-                target="_blank"
-                rel="noreferrer noopener"
-                onClick={stopPropagation}
-              >
-                <GitHubLogo />
-              </IconLink>
-            </Tooltip>
-          )}
-          {hit.homepage && (
-            <Tooltip title={`Homepage of ${hit.name}`}>
-              <IconLink
-                href={hit.homepage}
-                target="_blank"
-                rel="noreferrer noopener"
-                onClick={stopPropagation}
-              >
-                <HomeIcon />
-              </IconLink>
-            </Tooltip>
-          )}
-          <Select onClick={stopPropagation}>
-            {versions.map(v => <option key={v}>{v}</option>)}
-          </Select>
-        </Row>
-      </Right>
-    </Container>
-  );
+type State = {
+  selectedVersion: string,
+};
+
+const initialState: State = {
+  selectedVersion: '',
+};
+
+export default class DependencyHit extends React.PureComponent {
+  props: Props;
+  state = initialState;
+
+  handleClick = () => {
+    const { props, state } = this;
+    props.onClick(props.hit, state.selectedVersion);
+  };
+
+  handleVersionChange = e => {
+    const selectedVersion = e.target.value;
+    this.setState({ selectedVersion });
+  };
+
+  render() {
+    const { hit, onClick } = this.props;
+    const versions = Object.keys(hit.versions);
+    versions.reverse();
+    return (
+      <Container role="button" tabIndex={0} onClick={this.handleClick}>
+        <Left>
+          <Row>
+            <Highlight attributeName="name" hit={hit} />
+            <Downloads>{formatDownloads(hit.downloadsLast30Days)}</Downloads>
+            {hit.license && <License>{hit.license}</License>}
+          </Row>
+          <Row>{hit.description}</Row>
+        </Left>
+        <Right>
+          <Row>
+            {hit.githubRepo && (
+              <Tooltip title={`GitHub repository of ${hit.name}`}>
+                <IconLink
+                  href={makeGitHubRepoUrl(hit.githubRepo)}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  onClick={stopPropagation}
+                >
+                  <GitHubLogo />
+                </IconLink>
+              </Tooltip>
+            )}
+            {hit.homepage && (
+              <Tooltip title={`Homepage of ${hit.name}`}>
+                <IconLink
+                  href={hit.homepage}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  onClick={stopPropagation}
+                >
+                  <HomeIcon />
+                </IconLink>
+              </Tooltip>
+            )}
+            <Select
+              onClick={stopPropagation}
+              onChange={this.handleVersionChange}
+              value={this.state.selectedVersion}
+            >
+              {versions.map(v => <option key={v}>{v}</option>)}
+            </Select>
+          </Row>
+        </Right>
+      </Container>
+    );
+  }
 }
 
-export function hitComponent(makeOnClick) {
-  return ({ hit }: { hit: Object }) => {
-    const onClick = makeOnClick(hit);
+export function hitComponent(onClick) {
+  return ({ hit }) => {
     return <DependencyHit hit={hit} onClick={onClick} />;
   };
 }
