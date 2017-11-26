@@ -9,7 +9,9 @@ const Container = styled.div`
   color: ${props => props.theme.white};
 `;
 
-const Left = styled.div`flex: 1;`;
+const Left = styled.div`
+  flex: 1;
+`;
 
 const Right = styled.div``;
 
