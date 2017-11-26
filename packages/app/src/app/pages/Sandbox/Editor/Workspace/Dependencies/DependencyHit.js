@@ -10,9 +10,11 @@ import GitHubLogo from '../Git/modals/GitHubLogo';
 
 const Container = styled.div`
   display: flex;
-  border-bottom: 1px solid ${props => props.theme.gray};
   background: ${props => props.theme.background2};
   color: ${props => props.theme.white};
+  &:not(:last-child) {
+    border-bottom: 1px solid ${props => props.theme.background3};
+  }
 `;
 
 const Left = styled.div`
@@ -53,11 +55,11 @@ type Props = {
   hit: Object,
 };
 
-export default function DependencyHit({ hit }: Props) {
+export default function DependencyHit({ hit, onClick }: Props) {
   const versions = Object.keys(hit.versions);
   versions.reverse();
   return (
-    <Container>
+    <Container role="button" tabIndex={0} onClick={onClick}>
       <Left>
         <Row>
           <Highlight attributeName="name" hit={hit} />
@@ -104,11 +106,7 @@ export default function DependencyHit({ hit }: Props) {
 export function hitComponent(makeOnClick) {
   return ({ hit }: { hit: Object }) => {
     const onClick = makeOnClick(hit);
-    return (
-      <div role="button" tabIndex={0} onClick={onClick}>
-        <DependencyHit hit={hit} />
-      </div>
-    );
+    return <DependencyHit hit={hit} onClick={onClick} />;
   };
 }
 
