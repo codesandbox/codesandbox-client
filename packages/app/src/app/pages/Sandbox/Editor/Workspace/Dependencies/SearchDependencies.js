@@ -7,6 +7,7 @@ import {
 } from 'react-instantsearch/dom';
 
 import 'app/pages/Search/Search.css';
+import './Dependencies.css';
 
 import { hitComponent } from './DependencyHit';
 
