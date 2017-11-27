@@ -35,7 +35,7 @@ export default class ContentSplit extends React.PureComponent<Props, State> {
     const { sandbox, match } = this.props;
     const { resizing, workspaceHidden } = this.state;
     return (
-      <Fullscreen style={{ position: 'relative' }}>
+      <Fullscreen style={{ position: 'relative', overflow: 'hidden' }}>
         <SplitPane
           split="vertical"
           defaultSize={18 * 16}
