@@ -56,7 +56,7 @@ const Item = styled.a`
 const PublicationTitle = styled.h4`
   font-weight: 400;
   font-size: 1.25rem;
-  margin-bottom: 0.5rem;
+  margin: 0.5rem 0;
 `;
 
 const PublicationDescription = styled.p`
