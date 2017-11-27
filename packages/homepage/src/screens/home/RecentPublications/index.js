@@ -89,21 +89,21 @@ export default ({ sizes }) => (
           description="Announcing CodeSandbox 2.0. With GitHub commiting, a new homepage and support for static files."
           url="https://medium.com/@compuives/announcing-codesandbox-2-0-938cff3a0fcb"
           image={codesandbox2Image}
-          sizes={sizes[0].node.sizes}
+          sizes={sizes[2].node.sizes}
         />
         <PublicationItem
           title="The Journey of CodeSandbox"
           description="Ives explains how CodeSandbox came to be, how it works and what the future holds."
           url="https://www.youtube.com/watch?v=5lR29NsJKW8"
           image={zeitTalkImage}
-          sizes={sizes[1].node.sizes}
+          sizes={sizes[0].node.sizes}
         />
         <PublicationItem
           title="NPM in the browser"
           description="What we have done to make npm work in the browser, and what we will do in the future."
           url="https://hackernoon.com/how-we-make-npm-packages-work-in-the-browser-announcing-the-new-packager-6ce16aa4cee6"
           image={npmArticleImage}
-          sizes={sizes[2].node.sizes}
+          sizes={sizes[1].node.sizes}
         />
       </Items>
     </MaxWidth>
