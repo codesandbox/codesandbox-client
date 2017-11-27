@@ -30,6 +30,7 @@ import WorkspaceInputContainer from './WorkspaceInputContainer';
 import Files from './Files';
 import Dependencies from './Dependencies';
 import Project from './Project';
+import CSS from './CSS';
 import Tags from './Tags';
 import WorkspaceItem from './WorkspaceItem';
 import SandboxActions from './SandboxActions';
@@ -136,6 +137,10 @@ class Workspace extends React.PureComponent<Props> {
                 privacy={sandbox.privacy}
                 template={sandbox.template}
               />
+            </WorkspaceItem>
+
+            <WorkspaceItem keepState title="CSS">
+              <CSS />
             </WorkspaceItem>
 
             <WorkspaceItem defaultOpen keepState title="Files">
