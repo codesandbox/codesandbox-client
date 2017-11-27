@@ -143,6 +143,7 @@ export default () => (
       <Authors>
         By{' '}
         <a
+          id="bas"
           href="https://www.linkedin.com/in/basbuursma/"
           target="_blank"
           rel="noopener noreferrer"
@@ -151,6 +152,7 @@ export default () => (
         </a>{' '}
         and{' '}
         <a
+          id="ives"
           href="https://twitter.com/CompuIves"
           target="_blank"
           rel="noopener noreferrer"
