@@ -6,6 +6,7 @@ import {
   SET_NPM_DEPENDENCIES,
   SET_EXTERNAL_RESOURCES,
   SET_CURRENT_MODULE,
+  REMOVE_TAB,
   SET_SANDBOX_INFO,
   SET_PROJECT_VIEW,
   SET_VIEW_MODE,
@@ -51,7 +52,18 @@ function singleSandboxReducer(sandbox: Sandbox, action: Action): Sandbox {
     case SET_PROJECT_VIEW:
       return { ...sandbox, isInProjectView: action.isInProjectView };
     case SET_CURRENT_MODULE:
-      return { ...sandbox, currentModule: action.moduleId };
+      return {
+        ...sandbox,
+        currentModule: action.moduleId,
+        tabs: sandbox.tabs.includes(action.moduleId)
+          ? sandbox.tabs
+          : [...sandbox.tabs, action.moduleId],
+      };
+    case REMOVE_TAB:
+      return {
+        ...sandbox,
+        tabs: sandbox.tabs.filter(moduleId => moduleId !== action.moduleId),
+      };
     case ADD_MODULE_TO_SANDBOX:
       return {
         ...sandbox,
@@ -187,6 +199,7 @@ export default function reducer(
     case SET_NPM_DEPENDENCIES:
     case SET_EXTERNAL_RESOURCES:
     case SET_CURRENT_MODULE:
+    case REMOVE_TAB:
     case SET_SANDBOX_INFO:
     case SET_PROJECT_VIEW:
     case SET_VIEW_MODE:

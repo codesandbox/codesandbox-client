@@ -944,15 +944,6 @@ export default class CodeEditor extends React.Component<Props, State> {
 
     return (
       <Container>
-        {!hideNavigation && (
-          <Header
-            saveComponent={
-              canSave && !onlyViewMode ? this.handleSaveCode : null
-            }
-            prettify={!onlyViewMode && this.prettify}
-            path={modulePath}
-          />
-        )}
         <CodeContainer hideNavigation={hideNavigation}>
           {this.state.fuzzySearchEnabled && (
             <FuzzySearch

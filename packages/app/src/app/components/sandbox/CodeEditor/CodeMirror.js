@@ -541,13 +541,6 @@ export default class CodeEditor extends React.Component<Props, State> {
 
     return (
       <Container>
-        {!hideNavigation && (
-          <Header
-            saveComponent={canSave && !onlyViewMode && this.handleSaveCode}
-            prettify={!onlyViewMode && this.prettify}
-            path={modulePath}
-          />
-        )}
         <CodeContainer
           fontFamily={preferences.fontFamily}
           lineHeight={preferences.lineHeight}

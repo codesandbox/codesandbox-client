@@ -50,6 +50,7 @@ export const SET_NPM_DEPENDENCIES = 'SET_NPM_DEPENDENCIES';
 export const SET_EXTERNAL_RESOURCES = 'SET_EXTERNAL_RESOURCES';
 export const SET_TAGS = 'SET_TAGS';
 export const SET_CURRENT_MODULE = 'SET_CURRENT_MODULE';
+export const REMOVE_TAB = 'REMOVE_TAB';
 export const SET_PROJECT_VIEW = 'SET_PROJECT_VIEW';
 export const SET_VIEW_MODE = 'SET_VIEW_MODE';
 export const CREATE_ZIP = 'CREATE_ZIP';
@@ -111,6 +112,12 @@ export default {
     id,
     moduleId,
     lineNumber,
+  }),
+
+  removeTab: (id: string, moduleId: string) => ({
+    type: REMOVE_TAB,
+    id,
+    moduleId,
   }),
 
   getById: (id: string) => async (dispatch: Function) => {

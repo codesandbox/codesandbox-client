@@ -32,6 +32,7 @@ import getTemplateDefinition from 'common/templates';
 import SplitPane from 'react-split-pane';
 
 import CodeEditor from 'app/components/sandbox/CodeEditor';
+import Tabs from 'app/components/sandbox/CodeEditor/Tabs';
 import Preview from 'app/components/sandbox/Preview';
 
 import showAlternativeComponent from 'app/hoc/show-alternative-component';
@@ -160,6 +161,7 @@ class EditorPreview extends React.PureComponent<Props, State> {
 
     const EditorPane = (
       <FullSize>
+        <Tabs />
         <CodeEditor
           changeCode={moduleActions.setCode}
           id={currentModule.id}
@@ -217,7 +219,8 @@ class EditorPreview extends React.PureComponent<Props, State> {
           <Prompt
             when={notSynced}
             message={() =>
-              'You have not saved this sandbox, are you sure you want to navigate away?'}
+              'You have not saved this sandbox, are you sure you want to navigate away?'
+            }
           />
           <Header
             sandbox={sandbox}

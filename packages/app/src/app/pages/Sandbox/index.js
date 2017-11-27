@@ -9,6 +9,7 @@ import { createSelector } from 'reselect';
 import type { Sandbox } from 'common/types';
 
 import { sandboxesSelector } from 'app/store/entities/sandboxes/selectors';
+import { findMainModule } from 'app/store/entities/sandboxes/modules/selectors';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 
 import Title from 'app/components/text/Title';
@@ -59,9 +60,11 @@ class SandboxPage extends React.PureComponent<Props, State> {
 
   fetchSandbox = (id: string) => {
     this.setState({ loading: true }, () => {
-      this.props.sandboxActions
-        .getById(id)
-        .then(this.setId, this.handleNotFound);
+      this.props.sandboxActions.getById(id).then(sandbox => {
+        this.setId(sandbox);
+        const mainModule = findMainModule(sandbox.modules, sandbox.template);
+        this.props.sandboxActions.setCurrentModule(sandbox.id, mainModule.id);
+      }, this.handleNotFound);
     });
   };
 
