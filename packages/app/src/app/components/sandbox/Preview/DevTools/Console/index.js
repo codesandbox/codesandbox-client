@@ -7,7 +7,7 @@ import ClearIcon from 'react-icons/lib/md/clear-all';
 
 import CircularJSON from 'circular-json';
 import Message from './Message';
-import Input from './Input';
+import Input from './MonacoInput';
 
 const Container = styled.div`
   background-color: ${props => props.theme.background};
