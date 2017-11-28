@@ -151,9 +151,16 @@ export default class Manager {
    * in the registry it will create a new one
    * @param {*} module
    * @param {*} query A webpack like syntax (!url-loader)
-   * @param {*} string
    */
   getTranspiledModule(module: Module, query: string = ''): TranspiledModule {
+    if (module.origPath) {
+      const origPath = `/node_modules/${module.origPath}`;
+      if (origPath !== module.path) {
+        if (!(origPath in this.aliasedPaths)) {
+          this.aliasedPaths[origPath] = module.path;
+        }
+      }
+    }
     const moduleObject = this.transpiledModules[module.path];
     if (!moduleObject) {
       this.addModule(module);
@@ -287,6 +294,10 @@ export default class Manager {
     [path: string]: string,
   } = {};
 
+  aliasedPaths: {
+    [path: string]: string,
+  } = {};
+
   resolveModule(
     path: string,
     currentPath: string,
@@ -324,6 +335,9 @@ export default class Manager {
         };
       }
 
+      if (!(resolvedPath in this.transpiledModules)) {
+        resolvedPath = this.aliasedPaths[resolvedPath];
+      }
       return this.transpiledModules[resolvedPath].module;
     } catch (e) {
       let connectedPath = /^(\w|@\w)/.test(shimmedPath)
