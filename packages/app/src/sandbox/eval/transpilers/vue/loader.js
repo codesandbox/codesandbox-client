@@ -43,6 +43,7 @@ const getStyleLoaders = (attrs, id, scoped) => {
 
 const getScriptFileName = attrs => {
   if (attrs.lang === 'js') return 'js';
+  if (attrs.lang === 'ts') return 'ts';
   if (attrs.lang === 'typescript') return 'ts';
 
   return 'js';
@@ -230,9 +231,9 @@ export default function(code: string, loaderContext: LoaderContext) {
 
   function getTemplateRequire(templateCompilerOptions, impt) {
     const tModule = loaderContext.emitModule(
-      `!vue-template-compiler${templateCompilerOptions}!${moduleTitle}:template.vue.${getTemplateFileName(
-        impt.attrs
-      )}`,
+      `!vue-template-compiler${templateCompilerOptions}!${
+        moduleTitle
+      }:template.vue.${getTemplateFileName(impt.attrs)}`,
       impt.content
     );
 
