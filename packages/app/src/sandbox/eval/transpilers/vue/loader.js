@@ -32,11 +32,9 @@ const getStyleLoaders = (attrs, id, scoped) => {
     scoped: !!scoped,
   })}`;
 
-  if (attrs.lang === 'scss') loader += '!sass-loader';
-  if (attrs.lang === 'sass') loader += '!sass-loader';
-  if (attrs.lang === 'styl' || attrs.lang === 'stylus')
-    loader += '!stylus-loader';
-  if (attrs.lang === 'less') loader += '!less-loader';
+  const match = attrs.lang.match(/^(?:s[ac]|le)ss|styl(?:us)?$/);
+
+  if (match) loader += `!${match[0].replace(/^styl$/, 'stylus')}-loader`;
 
   return loader;
 };
