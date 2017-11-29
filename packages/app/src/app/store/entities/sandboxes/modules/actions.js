@@ -9,6 +9,12 @@ export const CLEAR_MODULE_ERRORS = 'CLEAR_MODULE_ERRORS';
 
 export const ADD_MODULE_CORRECTION = 'ADD_MODULE_CORRECTION';
 
+const setModuleSynced = (id: string, synced: boolean = true) => ({
+  type: SET_MODULE_SYNCED,
+  id,
+  synced,
+});
+
 export default {
   renameModule: (id: string, title: string) => ({
     type: RENAME_MODULE,
@@ -20,16 +26,18 @@ export default {
     id,
     directoryShortid,
   }),
-  setCode: (id: string, code: string, isNotSynced: boolean = true) => ({
-    type: SET_CODE,
-    id,
-    code,
-    isNotSynced,
-  }),
-  setModuleSynced: (id: string) => ({
-    type: SET_MODULE_SYNCED,
-    id,
-  }),
+  setCode: (id: string, code: string, isNotSynced: boolean = true) => (
+    dispatch: Function
+  ) => {
+    dispatch({
+      type: SET_CODE,
+      id,
+      code,
+      isNotSynced,
+    });
+    dispatch(setModuleSynced(id, !isNotSynced));
+  },
+  setModuleSynced,
   clearErrors: () => ({
     type: CLEAR_MODULE_ERRORS,
   }),

@@ -20,7 +20,8 @@ type Props = {
   setCurrentModule: (sandboxId: string, moduleId: string) => void,
   closeTab: (sandboxId: string, moduleId: string) => void,
   moveTab: (sandboxId: string, moduleId: string, position: number) => void,
-  tabs: Array<string>,
+  markNotDirty: (sandboxId: string) => void,
+  tabs: Array<{ moduleId: string }>,
   modules: Array<Module>,
   currentModuleId: string,
   sandboxId: string,
@@ -33,6 +34,13 @@ export default class EditorTabs extends React.PureComponent<Props> {
 
   moveTab = (moduleId: string, position: number) => {
     this.props.moveTab(this.props.sandboxId, moduleId, position);
+  };
+
+  /**
+   * Mark all tabs not dirty (not cursive)
+   */
+  markNotDirty = () => {
+    this.props.markNotDirty(this.props.sandboxId);
   };
 
   setCurrentModule = (moduleId: string) => {
@@ -50,17 +58,19 @@ export default class EditorTabs extends React.PureComponent<Props> {
     return (
       <Container>
         {tabs
-          .map(id => moduleObject[id])
-          .map((m, i) => (
+          .map(tab => ({ ...tab, module: moduleObject[tab.moduleId] }))
+          .map((tab, i) => (
             <Tab
               setCurrentModule={this.setCurrentModule}
-              active={currentModuleId === m.id}
-              key={m.id}
-              module={m}
+              active={currentModuleId === tab.module.id}
+              key={tab.module.id}
+              module={tab.module}
               closeTab={this.closeTab}
               moveTab={this.moveTab}
+              markNotDirty={this.markNotDirty}
               tabCount={tabs.length}
               position={i}
+              dirty={tab.dirty}
             />
           ))}
       </Container>

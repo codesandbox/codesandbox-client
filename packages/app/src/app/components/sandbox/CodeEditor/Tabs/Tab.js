@@ -1,6 +1,8 @@
 // @flow
 import React from 'react';
 import styled, { css } from 'styled-components';
+import NotSyncedIcon from 'react-icons/lib/go/primitive-dot';
+
 import type { Module } from 'common/types';
 
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
@@ -43,6 +45,11 @@ const Container = styled.div`
       border-color: ${props.theme.secondary};
       color: white;
     `};
+  ${props =>
+    props.dirty &&
+    css`
+      font-style: italic;
+    `};
 `;
 
 const TabTitle = styled.div`
@@ -54,7 +61,8 @@ const StyledCloseIcon = styled(CloseIcon)`
   position: absolute;
   right: 0.125rem;
   opacity: 1;
-  color: white;
+  color: rgba(255, 255, 255, 0.9);
+  margin-right: 0;
 
   ${props =>
     !props.show &&
@@ -63,20 +71,25 @@ const StyledCloseIcon = styled(CloseIcon)`
       opacity: 0;
     `};
 `;
+const StyledNotSyncedIcon = StyledCloseIcon.withComponent(NotSyncedIcon);
 
 type Props = {
   module: Module,
   active: boolean,
   setCurrentModule: (moduleId: string) => void,
-  closeTab: (moduleId: string) => void,
-  moveTab: (moduleId: string, position: number) => void,
+  closeTab: (position: number) => void,
+  moveTab: (oldPosition: number, position: number) => void,
+  markNotDirty: () => void,
   tabCount: number,
 
   // Injected by React DnD:
   isDragging: boolean,
+  isOver: boolean,
   connectDragSource: Function,
+  connectDropTarget: Function,
 
   position: number,
+  dirty: boolean,
 };
 
 type State = {
@@ -95,7 +108,7 @@ class Tab extends React.PureComponent<Props, State> {
   closeTab = (e: MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    this.props.closeTab(this.props.module.id);
+    this.props.closeTab(this.props.position);
   };
 
   handleMouseEnter = () => {
@@ -118,16 +131,20 @@ class Tab extends React.PureComponent<Props, State> {
       module,
       active,
       tabCount,
+      isDragging,
+      dirty,
     } = this.props;
     const { hovering } = this.state;
 
     return connectDropTarget(
       connectDragSource(
-        <span>
+        <span style={{ opacity: isDragging ? 0.5 : 1 }}>
           <Container
             active={active}
+            dirty={dirty}
             isOver={isOver}
             onClick={this.setCurrentModule}
+            onDoubleClick={this.props.markNotDirty}
             onMouseEnter={this.handleMouseEnter}
             onMouseLeave={this.handleMouseLeave}
           >
@@ -137,10 +154,17 @@ class Tab extends React.PureComponent<Props, State> {
               error={module.errors && module.errors.length > 0}
             />
             <TabTitle>{module.title}</TabTitle>
-            <StyledCloseIcon
-              onClick={this.closeTab}
-              show={tabCount !== 1 && (active || hovering)}
-            />
+            {module.isNotSynced ? (
+              <StyledNotSyncedIcon
+                onClick={tabCount > 1 ? this.closeTab : null}
+                show
+              />
+            ) : (
+              <StyledCloseIcon
+                onClick={this.closeTab}
+                show={tabCount > 1 && (active || hovering) ? true : undefined}
+              />
+            )}
           </Container>
         </span>
       )
@@ -158,7 +182,7 @@ const entryTarget = {
       return;
     }
 
-    props.moveTab(sourceItem.id, props.position);
+    props.moveTab(sourceItem.position, props.position);
   },
 
   canDrop: (props, monitor) => {
@@ -166,7 +190,7 @@ const entryTarget = {
     const source = monitor.getItem();
     if (source == null) return false;
 
-    return true;
+    return props.position !== source.position;
   },
 };
 
@@ -185,7 +209,7 @@ function collectTarget(connectMonitor, monitor) {
 const entrySource = {
   canDrag: () => true,
   beginDrag: (props: Props) => {
-    return { id: props.module.id, position: props.position };
+    return { position: props.position };
   },
 };
 

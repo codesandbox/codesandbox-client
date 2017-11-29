@@ -19,9 +19,12 @@ function moduleReducer(module: Module, action): Module {
     case MOVE_MODULE:
       return { ...module, directoryShortid: action.directoryShortid };
     case SET_CODE:
-      return { ...module, code: action.code, isNotSynced: true };
+      return { ...module, code: action.code };
     case SET_MODULE_SYNCED:
-      return { ...module, isNotSynced: false };
+      if (module.isNotSynced === !action.synced) {
+        return module;
+      }
+      return { ...module, isNotSynced: !action.synced };
     case ADD_MODULE_CORRECTION:
       if (!isEqual(action.correction, module.corrections[0])) {
         return {

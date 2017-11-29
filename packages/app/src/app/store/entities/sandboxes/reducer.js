@@ -9,6 +9,7 @@ import {
   SET_CURRENT_MODULE,
   CLOSE_TAB,
   MOVE_TAB,
+  MARK_TABS_NOT_DIRTY,
   SET_SANDBOX_INFO,
   SET_PROJECT_VIEW,
   SET_VIEW_MODE,
@@ -30,8 +31,12 @@ import {
 } from './actions/files';
 
 import { FETCH_GIT_CHANGES_API_ACTIONS, SET_ORIGINAL_GIT } from './actions/git';
-import { RENAME_MODULE, MOVE_MODULE } from './modules/actions';
 
+import {
+  RENAME_MODULE,
+  MOVE_MODULE,
+  SET_MODULE_SYNCED,
+} from './modules/actions';
 import { RENAME_DIRECTORY, MOVE_DIRECTORY } from './directories/actions';
 
 import { SET_CURRENT_USER, SIGN_OUT } from '../../user/actions';
@@ -53,18 +58,41 @@ function singleSandboxReducer(sandbox: Sandbox, action: Action): Sandbox {
       };
     case SET_PROJECT_VIEW:
       return { ...sandbox, isInProjectView: action.isInProjectView };
-    case SET_CURRENT_MODULE:
+    case SET_CURRENT_MODULE: {
+      const tab = {
+        type: 'MODULE',
+        moduleId: action.moduleId,
+        dirty: true,
+      };
+      const currentTabPos = sandbox.tabs.findIndex(
+        x => x.moduleId === sandbox.currentModule
+      );
+
+      let tabs;
+      if (sandbox.tabs.length === 0) {
+        tabs = [tab];
+      } else {
+        const filteredTabs = sandbox.tabs.filter(x => !x.dirty);
+        tabs = sandbox.tabs.some(x => x.moduleId === action.moduleId)
+          ? sandbox.tabs
+          : [
+              ...filteredTabs.slice(0, currentTabPos + 1),
+              tab,
+              ...filteredTabs.slice(currentTabPos + 1),
+            ];
+      }
+
       return {
         ...sandbox,
         currentModule: action.moduleId,
-        tabs: sandbox.tabs.includes(action.moduleId)
-          ? sandbox.tabs
-          : [...sandbox.tabs, action.moduleId],
+        tabs,
       };
+    }
     case CLOSE_TAB: {
-      const tabPos = sandbox.tabs.indexOf(action.moduleId);
+      const tabPos = action.position;
       let currentModule = sandbox.currentModule;
-      const isActiveTab = currentModule === action.moduleId;
+      const tabModuleId = sandbox.tabs[tabPos].moduleId;
+      const isActiveTab = currentModule === tabModuleId;
 
       if (isActiveTab) {
         currentModule =
@@ -73,12 +101,21 @@ function singleSandboxReducer(sandbox: Sandbox, action: Action): Sandbox {
 
       return {
         ...sandbox,
-        tabs: sandbox.tabs.filter(moduleId => moduleId !== action.moduleId),
+        tabs: [
+          ...sandbox.tabs.splice(0, tabPos),
+          ...sandbox.tabs.splice(tabPos + 1),
+        ],
         currentModule,
       };
     }
+    case MARK_TABS_NOT_DIRTY: {
+      return {
+        ...sandbox,
+        tabs: sandbox.tabs.map(t => ({ ...t, dirty: false })),
+      };
+    }
     case MOVE_TAB: {
-      const tabPos = sandbox.tabs.indexOf(action.moduleId);
+      const tabPos = action.oldPosition;
 
       return {
         ...sandbox,
@@ -222,6 +259,7 @@ export default function reducer(
     case SET_CURRENT_MODULE:
     case CLOSE_TAB:
     case MOVE_TAB:
+    case MARK_TABS_NOT_DIRTY:
     case SET_SANDBOX_INFO:
     case SET_PROJECT_VIEW:
     case SET_VIEW_MODE:
@@ -247,9 +285,9 @@ export default function reducer(
       }
 
       return state;
-      // The user has changed, we need to mark all sandboxes as owned if the author
-      // id corresponds with the new user id
     }
+    // The user has changed, we need to mark all sandboxes as owned if the author
+    // id corresponds with the new user id
     case SET_CURRENT_USER:
       return mapValues(state, s => ({
         ...s,
@@ -265,6 +303,12 @@ export default function reducer(
         ...state,
         [action.meta.id]: null,
       };
+
+    case SET_MODULE_SYNCED:
+      return mapValues(state, s => ({
+        ...s,
+        tabs: s.tabs.map(t => ({ ...t, dirty: false })),
+      }));
 
     // Git changes
     case RENAME_MODULE:

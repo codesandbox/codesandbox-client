@@ -25,22 +25,12 @@ type Props = {
   directories: Array<Directory>,
   sandboxActions: typeof sandboxActionCreators,
 };
-type State = {
-  creating: '' | 'module' | 'directory',
-};
 const mapStateToProps = createSelector(
   modulesFromSandboxSelector,
   directoriesFromSandboxSelector,
   (modules, directories) => ({ modules, directories })
 );
-class Files extends React.PureComponent<Props, State> {
-  constructor(props: Props) {
-    super(props);
-
-    this.state = {
-      creating: '',
-    };
-  }
+class Files extends React.PureComponent<Props> {
   directory: typeof DirectoryEntry;
 
   deleteModule = id => {

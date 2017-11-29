@@ -84,12 +84,20 @@ type Props = {
   actions: React.Element,
 };
 
-export default class WorkspaceItem extends React.PureComponent {
+export default class WorkspaceItem extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       open: !!props.defaultOpen,
     };
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return (
+      nextState.open !== this.state.open ||
+      nextProps.disabled !== this.props.disabled ||
+      this.props.children !== nextProps.children
+    );
   }
 
   props: Props;

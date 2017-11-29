@@ -169,6 +169,7 @@ class EditorPreview extends React.PureComponent<Props, State> {
           setCurrentModule={sandboxActions.setCurrentModule}
           closeTab={sandboxActions.closeTab}
           moveTab={sandboxActions.moveTab}
+          markNotDirty={sandboxActions.markTabsNotDirty}
         />
         <CodeEditor
           changeCode={moduleActions.setCode}
@@ -231,7 +232,12 @@ class EditorPreview extends React.PureComponent<Props, State> {
             }
           />
           <Header
-            sandbox={sandbox}
+            sandboxId={sandbox.id}
+            owned={sandbox.owned}
+            showEditor={sandbox.showEditor}
+            showPreview={sandbox.showPreview}
+            sandboxLiked={sandbox.userLiked}
+            sandboxLikeCount={sandbox.likeCount}
             sandboxActions={sandboxActions}
             userActions={userActions}
             modalActions={modalActions}
@@ -239,6 +245,8 @@ class EditorPreview extends React.PureComponent<Props, State> {
             workspaceHidden={workspaceHidden}
             toggleWorkspace={toggleWorkspace}
             canSave={notSynced}
+            modules={sandbox.modules}
+            directories={sandbox.directories}
           />
           <SplitPane
             onDragStarted={this.startResizing}

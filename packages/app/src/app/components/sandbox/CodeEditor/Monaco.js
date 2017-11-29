@@ -279,7 +279,10 @@ export default class CodeEditor extends React.Component<Props, State> {
     this.setupSyntaxWorker();
 
     if (this.props.preferences.lintEnabled) {
-      this.setupLintWorker();
+      // Delay this one, as initialization is very heavy
+      setTimeout(() => {
+        this.setupLintWorker();
+      }, 5000);
     }
 
     if (this.props.preferences.autoDownloadTypes) {

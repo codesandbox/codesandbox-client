@@ -52,6 +52,7 @@ export const SET_TAGS = 'SET_TAGS';
 export const SET_CURRENT_MODULE = 'SET_CURRENT_MODULE';
 export const CLOSE_TAB = 'CLOSE_TAB';
 export const MOVE_TAB = 'MOVE_TAB';
+export const MARK_TABS_NOT_DIRTY = 'MARK_TABS_NOT_DIRTY';
 export const SET_PROJECT_VIEW = 'SET_PROJECT_VIEW';
 export const SET_VIEW_MODE = 'SET_VIEW_MODE';
 export const CREATE_ZIP = 'CREATE_ZIP';
@@ -115,17 +116,22 @@ export default {
     lineNumber,
   }),
 
-  closeTab: (id: string, moduleId: string) => ({
+  closeTab: (id: string, position: number) => ({
     type: CLOSE_TAB,
     id,
-    moduleId,
+    position,
   }),
 
-  moveTab: (id: string, moduleId: string, position: number) => ({
+  moveTab: (id: string, oldPosition: number, position: number) => ({
     type: MOVE_TAB,
     id,
-    moduleId,
+    oldPosition,
     position,
+  }),
+
+  markTabsNotDirty: (id: string) => ({
+    type: MARK_TABS_NOT_DIRTY,
+    id,
   }),
 
   getById: (id: string) => async (dispatch: Function) => {
