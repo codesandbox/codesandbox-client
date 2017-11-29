@@ -82,11 +82,17 @@ function singleSandboxReducer(sandbox: Sandbox, action: Action): Sandbox {
             ];
       }
 
-      return {
+      const newSandbox = {
         ...sandbox,
         currentModule: action.moduleId,
         tabs,
       };
+
+      if (newSandbox.isInProjectView) {
+        newSandbox.showEditor = true;
+      }
+
+      return newSandbox;
     }
     case CLOSE_TAB: {
       const tabPos = action.position;

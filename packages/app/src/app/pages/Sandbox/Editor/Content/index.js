@@ -94,12 +94,15 @@ class EditorPreview extends React.PureComponent<Props, State> {
   };
 
   componentDidMount() {
-    window.onbeforeunload = () => {
+    window.onbeforeunload = e => {
       const { modules } = this.props;
       const notSynced = modules.some(m => m.isNotSynced);
 
       if (notSynced) {
-        return 'You have not saved all your modules, are you sure you want to close this tab?';
+        const returnMessage =
+          'You have not saved all your modules, are you sure you want to close this tab?';
+        e.returnValue = returnMessage;
+        return returnMessage;
       }
 
       return null;

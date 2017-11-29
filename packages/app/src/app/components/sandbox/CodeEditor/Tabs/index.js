@@ -28,8 +28,25 @@ type Props = {
 };
 
 export default class EditorTabs extends React.PureComponent<Props> {
-  closeTab = (moduleId: string) => {
-    this.props.closeTab(this.props.sandboxId, moduleId);
+  componentWillMount() {
+    window.addEventListener('keydown', this.closeListener);
+  }
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.closeListener);
+  }
+
+  closeListener = e => {
+    if ((e.ctrlKey || e.metaKey) && e.code === 'KeyW') {
+      e.preventDefault();
+      const currentPos = this.props.tabs.findIndex(
+        t => t.moduleId === this.props.currentModuleId
+      );
+      this.closeTab(currentPos);
+    }
+  };
+
+  closeTab = (position: number) => {
+    this.props.closeTab(this.props.sandboxId, position);
   };
 
   moveTab = (moduleId: string, position: number) => {
