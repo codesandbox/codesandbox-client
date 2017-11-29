@@ -5,6 +5,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { createSelector } from 'reselect';
+import { DragDropContext } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
 
 import type { Sandbox } from 'common/types';
 
@@ -150,4 +152,7 @@ class SandboxPage extends React.PureComponent<Props, State> {
     );
   }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(SandboxPage);
+
+export default DragDropContext(HTML5Backend)(
+  connect(mapStateToProps, mapDispatchToProps)(SandboxPage)
+);

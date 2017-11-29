@@ -161,7 +161,15 @@ class EditorPreview extends React.PureComponent<Props, State> {
 
     const EditorPane = (
       <FullSize>
-        <Tabs />
+        <Tabs
+          tabs={sandbox.tabs}
+          modules={modules}
+          currentModuleId={currentModule.id}
+          sandboxId={sandbox.id}
+          setCurrentModule={sandboxActions.setCurrentModule}
+          closeTab={sandboxActions.closeTab}
+          moveTab={sandboxActions.moveTab}
+        />
         <CodeEditor
           changeCode={moduleActions.setCode}
           id={currentModule.id}

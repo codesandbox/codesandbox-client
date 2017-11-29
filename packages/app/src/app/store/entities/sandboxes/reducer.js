@@ -1,12 +1,14 @@
 // @flow
 import type { Sandbox } from 'common/types';
+import { moveItem } from 'common/utils/array';
 import { mapValues } from 'lodash';
 
 import {
   SET_NPM_DEPENDENCIES,
   SET_EXTERNAL_RESOURCES,
   SET_CURRENT_MODULE,
-  REMOVE_TAB,
+  CLOSE_TAB,
+  MOVE_TAB,
   SET_SANDBOX_INFO,
   SET_PROJECT_VIEW,
   SET_VIEW_MODE,
@@ -59,11 +61,30 @@ function singleSandboxReducer(sandbox: Sandbox, action: Action): Sandbox {
           ? sandbox.tabs
           : [...sandbox.tabs, action.moduleId],
       };
-    case REMOVE_TAB:
+    case CLOSE_TAB: {
+      const tabPos = sandbox.tabs.indexOf(action.moduleId);
+      let currentModule = sandbox.currentModule;
+      const isActiveTab = currentModule === action.moduleId;
+
+      if (isActiveTab) {
+        currentModule =
+          tabPos > 0 ? sandbox.tabs[tabPos - 1] : sandbox.tabs[tabPos + 1];
+      }
+
       return {
         ...sandbox,
         tabs: sandbox.tabs.filter(moduleId => moduleId !== action.moduleId),
+        currentModule,
       };
+    }
+    case MOVE_TAB: {
+      const tabPos = sandbox.tabs.indexOf(action.moduleId);
+
+      return {
+        ...sandbox,
+        tabs: [...moveItem(sandbox.tabs, tabPos, action.position)],
+      };
+    }
     case ADD_MODULE_TO_SANDBOX:
       return {
         ...sandbox,
@@ -199,7 +220,8 @@ export default function reducer(
     case SET_NPM_DEPENDENCIES:
     case SET_EXTERNAL_RESOURCES:
     case SET_CURRENT_MODULE:
-    case REMOVE_TAB:
+    case CLOSE_TAB:
+    case MOVE_TAB:
     case SET_SANDBOX_INFO:
     case SET_PROJECT_VIEW:
     case SET_VIEW_MODE:

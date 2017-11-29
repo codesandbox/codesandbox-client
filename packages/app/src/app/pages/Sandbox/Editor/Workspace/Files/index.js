@@ -4,8 +4,6 @@ import { createSelector } from 'reselect';
 import { connect } from 'react-redux';
 
 import { sortBy } from 'lodash';
-import HTML5Backend from 'react-dnd-html5-backend';
-import { DragDropContext } from 'react-dnd';
 import {
   modulesFromSandboxSelector,
   findMainModule,
@@ -117,4 +115,4 @@ class Files extends React.PureComponent<Props, State> {
   }
 }
 
-export default DragDropContext(HTML5Backend)(connect(mapStateToProps)(Files));
+export default connect(mapStateToProps)(Files);
