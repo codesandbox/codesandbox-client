@@ -66,7 +66,12 @@ function getMeta(name: string, version: string) {
   return metas[id];
 }
 
-function downloadDependency(depName: string, depVersion: string, path: string) {
+function downloadDependency(
+  depName: string,
+  depVersion: string,
+  path: string,
+  origPath?: string
+) {
   if (packages[path]) {
     return packages[path];
   }
@@ -88,6 +93,7 @@ function downloadDependency(depName: string, depVersion: string, path: string) {
     .then(x => ({
       path,
       code: x,
+      origPath,
     }));
 
   return packages[path];
@@ -194,7 +200,9 @@ export default async function fetchModule(
           });
         }
 
-        return res(downloadDependency(dependencyName, version, resolvedPath));
+        return res(
+          downloadDependency(dependencyName, version, resolvedPath, path)
+        );
       }
     );
   });
