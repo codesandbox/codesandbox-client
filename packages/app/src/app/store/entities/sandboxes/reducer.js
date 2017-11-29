@@ -95,16 +95,17 @@ function singleSandboxReducer(sandbox: Sandbox, action: Action): Sandbox {
       const isActiveTab = currentModule === tabModuleId;
 
       if (isActiveTab) {
-        currentModule =
+        const newTab =
           tabPos > 0 ? sandbox.tabs[tabPos - 1] : sandbox.tabs[tabPos + 1];
+
+        if (newTab) {
+          currentModule = newTab.moduleId;
+        }
       }
 
       return {
         ...sandbox,
-        tabs: [
-          ...sandbox.tabs.splice(0, tabPos),
-          ...sandbox.tabs.splice(tabPos + 1),
-        ],
+        tabs: sandbox.tabs.filter((_, i) => i !== tabPos),
         currentModule,
       };
     }
