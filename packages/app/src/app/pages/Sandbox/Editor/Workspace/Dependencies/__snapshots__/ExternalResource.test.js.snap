@@ -12,10 +12,10 @@ exports[`ExternalResource renders file if there is an extension 1`] = `
     ives.js
   </a>
   <div
-    className="sc-htpNat eWseAC"
+    className="sc-htpNat GNtWj"
   >
     <div
-      className="sc-bwzfXH gUazxX"
+      className="sc-bwzfXH hwjFlk"
       onClick={[Function]}
     >
       <svg
@@ -54,10 +54,10 @@ exports[`ExternalResource renders url if there is no extension 1`] = `
     https://ivesvh.com/
   </a>
   <div
-    className="sc-htpNat eWseAC"
+    className="sc-htpNat GNtWj"
   >
     <div
-      className="sc-bwzfXH gUazxX"
+      className="sc-bwzfXH hwjFlk"
       onClick={[Function]}
     >
       <svg
@@ -96,10 +96,10 @@ exports[`ExternalResource renders url if there is no extension 2`] = `
     https://ivesvh.com/
   </a>
   <div
-    className="sc-htpNat eWseAC"
+    className="sc-htpNat GNtWj"
   >
     <div
-      className="sc-bwzfXH gUazxX"
+      className="sc-bwzfXH hwjFlk"
       onClick={[Function]}
     >
       <svg
