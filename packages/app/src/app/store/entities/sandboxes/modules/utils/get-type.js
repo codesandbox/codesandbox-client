@@ -1,4 +1,5 @@
 /* @flow */
+import isImage from 'common/utils/is-image';
 
 const reactRegex = /import.*from\s['|"]react['|"]/;
 export function hasReact(code: string) {
@@ -32,6 +33,10 @@ export function getMode(title: string, code: string) {
   if (vueRegex.test(title)) return 'vue';
   if (svgRegex.test(title)) return 'svg';
   if (!title.includes('.')) return 'raw';
+
+  if (isImage(title)) {
+    return 'image';
+  }
 
   return '';
 }

@@ -18,6 +18,7 @@ import npmSvg from 'common/components/icons/npm.svg';
 import vueSvg from 'common/components/icons/vue.svg';
 import fileSvg from 'common/components/icons/file.svg';
 import svgSvg from 'common/components/icons/svg.svg';
+import imageSvg from 'common/components/icons/image.svg';
 
 const icons = {
   directory: folderSvg,
@@ -34,6 +35,7 @@ const icons = {
   js: jsSvg,
   ts: tsSvg,
   svg: svgSvg,
+  image: imageSvg,
 };
 
 function getIconSvg(type) {
