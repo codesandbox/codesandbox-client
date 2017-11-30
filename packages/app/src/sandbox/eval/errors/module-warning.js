@@ -13,8 +13,6 @@ export default class ModuleWarning extends Error {
     this.columnNumber = warning.columnNumber;
     this.severity = warning.severity;
     this.source = warning.source;
-
-    Error.captureStackTrace(this, this.constructor);
   }
 
   path: string;
