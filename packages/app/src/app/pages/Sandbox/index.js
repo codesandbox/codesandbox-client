@@ -10,7 +10,6 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import type { Sandbox } from 'common/types';
 
 import { sandboxesSelector } from 'app/store/entities/sandboxes/selectors';
-import { findMainModule } from 'app/store/entities/sandboxes/modules/selectors';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 
 import Title from 'app/components/text/Title';

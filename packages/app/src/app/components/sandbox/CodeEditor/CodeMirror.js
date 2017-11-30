@@ -29,6 +29,7 @@ type Props = {
   directories: Array,
   hideNavigation: boolean,
   highlightedLines: ?Array<string>,
+  onlyViewMode: ?boolean,
 };
 
 const Container = styled.div`
@@ -223,7 +224,6 @@ export default class CodeEditor extends React.Component<Props, State> {
     return (
       nextProps.id !== this.props.id ||
       nextProps.errors !== this.props.errors ||
-      this.props.canSave !== nextProps.canSave ||
       this.props.preferences !== nextProps.preferences
     );
   }
