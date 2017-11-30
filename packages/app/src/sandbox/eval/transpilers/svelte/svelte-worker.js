@@ -4,7 +4,7 @@ import { buildWorkerWarning } from '../utils/worker-warning-handler';
 // Allow svelte to use btoa
 self.window = self;
 
-self.importScripts(['https://unpkg.com/svelte@^1.39.0/compiler/svelte.js']);
+self.importScripts(['https://unpkg.com/svelte@^1.43.1/compiler/svelte.js']);
 
 self.postMessage('ready');
 
@@ -19,6 +19,7 @@ self.addEventListener('message', event => {
     filename: path,
     dev: true,
     cascade: false,
+    store: true,
 
     onerror: e => {
       self.postMessage({
