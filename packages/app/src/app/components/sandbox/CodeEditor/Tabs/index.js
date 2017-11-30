@@ -59,7 +59,7 @@ export default class EditorTabs extends React.PureComponent<Props> {
           return;
         }
 
-        this.tabEls[this.props.currentModuleId].scrollIntoView();
+        this.tabEls[this.props.currentModuleId].scrollIntoView(false);
       }
     }
   }

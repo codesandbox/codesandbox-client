@@ -249,7 +249,7 @@ class DirectoryEntry extends React.PureComponent {
               id={id}
               title={title}
               depth={depth}
-              type="directory"
+              type={open ? 'directory-open' : 'directory'}
               root={root}
               isOpen={open}
               onClick={this.toggleOpen}

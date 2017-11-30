@@ -27,7 +27,7 @@ const Item = styled.div`
 const GitContainer = styled.div`
   display: inline-block;
   margin: 0 1rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.25rem;
 `;
 
 const UserLink = styled(Link)`
@@ -129,7 +129,6 @@ export default class Project extends React.PureComponent<
     const { title, description } = this.state;
     return (
       <div>
-        <WorkspaceSubtitle>Title</WorkspaceSubtitle>
         <WorkspaceInputContainer>
           <input
             value={title || ''}
@@ -137,9 +136,10 @@ export default class Project extends React.PureComponent<
             type="text"
             onBlur={this.updateSandboxInfo}
             onKeyUp={this.handleKeyUp}
+            placeholder="Title"
           />
         </WorkspaceInputContainer>
-        <WorkspaceSubtitle>Description</WorkspaceSubtitle>
+
         <WorkspaceInputContainer>
           <textarea
             value={description || ''}
@@ -147,7 +147,8 @@ export default class Project extends React.PureComponent<
             type="text"
             onBlur={this.updateSandboxInfo}
             onKeyUp={this.handleKeyUp}
-            rows="5"
+            rows="2"
+            placeholder="Description"
           />
         </WorkspaceInputContainer>
         {!!author && (

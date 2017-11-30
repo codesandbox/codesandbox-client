@@ -212,7 +212,7 @@ class Entry extends React.PureComponent<Props, State> {
               onCommit={this.handleRename}
             />
           ) : (
-            <EntryTitle title={title} />
+            <EntryTitle title={title} type={type} />
           )}
           {isNotSynced && !state && <NotSyncedIconWithMargin />}
           {state === '' && (

@@ -71,6 +71,7 @@ const Container = styled.div`
 
 const TabTitle = styled.div`
   padding-right: 0.5rem;
+  padding-left: 6px;
   white-space: nowrap;
 `;
 
@@ -147,7 +148,7 @@ export default class Tab extends React.PureComponent<Props, State> {
       >
         <EntryIcons
           isNotSynced={module.isNotSynced}
-          type={getType(module)}
+          type={getType(module.title, module.code)}
           error={module.errors && module.errors.length > 0}
         />
         <TabTitle>{module.title}</TabTitle>
