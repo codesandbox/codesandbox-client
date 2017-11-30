@@ -70,8 +70,8 @@ const fontFamilies = (...families) =>
 const CodeContainer = styled.div`
   position: relative;
   width: 100%;
+  height: 100%;
   z-index: 30;
-  flex: 1 1 auto;
 
   .margin-view-overlays {
     background: ${theme.background2()};
