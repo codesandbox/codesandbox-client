@@ -22,7 +22,6 @@ import userActionCreators from 'app/store/user/actions';
 import {
   findMainModule,
   findCurrentModule,
-  getModulePath,
   modulesFromSandboxSelector,
 } from 'app/store/entities/sandboxes/modules/selectors';
 import { directoriesFromSandboxSelector } from 'app/store/entities/sandboxes/directories/selectors';
@@ -156,7 +155,6 @@ class EditorPreview extends React.PureComponent<Props, State> {
       currentModuleId,
       mainModule
     );
-    const modulePath = getModulePath(modules, directories, currentModule.id);
 
     if (currentModule == null) return null;
 
@@ -182,9 +180,7 @@ class EditorPreview extends React.PureComponent<Props, State> {
           corrections={currentModule.corrections}
           code={currentModule.code}
           title={currentModule.title}
-          canSave={currentModule.isNotSynced}
           saveCode={this.saveCode}
-          modulePath={modulePath}
           preferences={preferences}
           modules={modules}
           directories={directories}

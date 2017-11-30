@@ -20,12 +20,9 @@ type Props = {
   errors: ?Array<ModuleError>,
   id: string,
   title: string,
-  modulePath: string,
   changeCode: (id: string, code: string) => Object,
   saveCode: () => void,
-  canSave: boolean,
   preferences: Preferences,
-  onlyViewMode: boolean,
   setCurrentModule: ?(sandboxId: string, moduleId: string) => void,
   sandboxId: string,
   modules: Array,
@@ -527,9 +524,6 @@ export default class CodeEditor extends React.Component<Props, State> {
 
   render() {
     const {
-      canSave,
-      onlyViewMode,
-      modulePath,
       preferences,
       modules,
       directories,

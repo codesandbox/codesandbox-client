@@ -12,7 +12,7 @@ type Props = {
   active: boolean,
   setCurrentModule: (moduleId: string) => void,
   closeTab: (position: number) => void,
-  moveTab: (oldPosition: number, position: number) => void,
+  moveTab: (oldPosition: number, position: number) => void, // eslint-disable-line react/no-unused-prop-types
   markNotDirty: () => void,
   tabCount: number,
 
@@ -104,9 +104,7 @@ function collectTarget(connectMonitor, monitor) {
 
 const entrySource = {
   canDrag: () => true,
-  beginDrag: (props: Props) => {
-    return { position: props.position };
-  },
+  beginDrag: (props: Props) => ({ position: props.position }),
 };
 
 const collectSource = (connect, monitor) => ({

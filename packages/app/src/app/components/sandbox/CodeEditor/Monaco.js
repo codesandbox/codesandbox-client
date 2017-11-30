@@ -36,12 +36,9 @@ type Props = {
   id: string,
   sandboxId: string,
   title: string,
-  modulePath: string,
   changeCode: (id: string, code: string) => Object,
   saveCode: ?() => void,
-  canSave: boolean,
   preferences: Preferences,
-  onlyViewMode: boolean,
   modules: Array<Module>,
   directories: Array<Directory>,
   dependencies: ?Object,
@@ -931,14 +928,7 @@ export default class CodeEditor extends React.Component<Props, State> {
   };
 
   render() {
-    const {
-      canSave,
-      modules,
-      directories,
-      onlyViewMode,
-      modulePath,
-      hideNavigation,
-    } = this.props;
+    const { modules, directories, hideNavigation } = this.props;
 
     const options = this.getEditorOptions();
 
