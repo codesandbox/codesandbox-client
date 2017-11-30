@@ -13,8 +13,8 @@ import getType from 'app/store/entities/sandboxes/modules/utils/get-type';
 
 const StyledCloseIcon = styled(CloseIcon)`
   transition: 0.1s ease opacity;
-  position: absolute;
-  right: 0.125rem;
+
+  float: right;
   opacity: 1;
   color: rgba(255, 255, 255, 0.9);
   margin-right: 0;
@@ -42,6 +42,7 @@ const Container = styled.div`
 
   padding: 0 1rem;
   padding-left: 0.75rem;
+  padding-right: 0.125rem;
   color: rgba(255, 255, 255, 0.5);
 
   svg {
