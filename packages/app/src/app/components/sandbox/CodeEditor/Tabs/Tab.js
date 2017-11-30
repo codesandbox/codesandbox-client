@@ -70,12 +70,12 @@ const Container = styled.div`
 `;
 
 const TabTitle = styled.div`
-  padding-right: 1rem;
+  padding-right: 0.5rem;
 `;
 
 const TabDir = styled.div`
   color: rgba(255, 255, 255, 0.3);
-  padding-right: 1.25rem;
+  padding-right: 0.5rem;
 `;
 
 type Props = {
