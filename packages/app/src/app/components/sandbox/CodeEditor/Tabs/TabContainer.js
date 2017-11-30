@@ -25,6 +25,8 @@ type Props = {
   position: number,
   dirty: boolean,
   dirName: ?string,
+
+  innerRef: ?Function,
 };
 
 class TabContainer extends React.PureComponent<Props> {
@@ -45,11 +47,12 @@ class TabContainer extends React.PureComponent<Props> {
       dirName,
       position,
       closeTab,
+      innerRef,
     } = this.props;
 
     return connectDropTarget(
       connectDragSource(
-        <span style={{ opacity: isDragging ? 0.8 : 1 }}>
+        <span ref={innerRef} style={{ opacity: isDragging ? 0.8 : 1 }}>
           <Tab
             active={active}
             dirty={dirty}

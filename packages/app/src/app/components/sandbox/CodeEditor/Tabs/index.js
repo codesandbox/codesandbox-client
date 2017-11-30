@@ -44,6 +44,26 @@ export default class EditorTabs extends React.PureComponent<Props> {
     window.removeEventListener('keydown', this.closeListener);
   }
 
+  componentDidUpdate(prevProps: Props) {
+    if (this.props.currentModuleId !== prevProps.currentModuleId) {
+      // We need to scroll to the tab
+      if (this.tabEls[this.props.currentModuleId]) {
+        const { width } = this.container.getBoundingClientRect();
+        const scroll = this.container.scrollLeft;
+        const { left } = this.tabEls[
+          this.props.currentModuleId
+        ].getBoundingClientRect();
+
+        if (left > scroll && left < scroll + width) {
+          // if it's already in view
+          return;
+        }
+
+        this.tabEls[this.props.currentModuleId].scrollIntoView();
+      }
+    }
+  }
+
   closeListener = e => {
     if ((e.ctrlKey || e.metaKey) && e.code === 'KeyW') {
       e.preventDefault();
@@ -73,6 +93,12 @@ export default class EditorTabs extends React.PureComponent<Props> {
     this.props.setCurrentModule(this.props.sandboxId, moduleId);
   };
 
+  container: HTMLElement;
+  tabEls = {};
+  tabEls: {
+    [moduleId: string]: HTMLElement,
+  };
+
   render() {
     const { tabs, modules, directories, currentModuleId } = this.props;
     const moduleObject = {};
@@ -92,7 +118,11 @@ export default class EditorTabs extends React.PureComponent<Props> {
     });
 
     return (
-      <Container>
+      <Container
+        innerRef={el => {
+          this.container = el;
+        }}
+      >
         {tabs
           .map(tab => ({ ...tab, module: moduleObject[tab.moduleId] }))
           .map((tab, i) => {
@@ -125,6 +155,9 @@ export default class EditorTabs extends React.PureComponent<Props> {
                 tabCount={tabs.length}
                 position={i}
                 dirty={tab.dirty}
+                innerRef={el => {
+                  this.tabEls[tab.module.id] = el;
+                }}
               />
             );
           })}

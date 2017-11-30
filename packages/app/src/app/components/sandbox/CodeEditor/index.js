@@ -56,7 +56,7 @@ export default (props: Props) => {
       }
 
       return (
-        <Margin top={2}>
+        <Margin style={{ overflow: 'auto' }} top={2}>
           <Centered horizontal vertical>
             <Title>This file is too big to edit</Title>
             <SubTitle>

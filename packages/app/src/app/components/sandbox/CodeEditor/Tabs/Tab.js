@@ -71,11 +71,13 @@ const Container = styled.div`
 
 const TabTitle = styled.div`
   padding-right: 0.5rem;
+  white-space: nowrap;
 `;
 
 const TabDir = styled.div`
   color: rgba(255, 255, 255, 0.3);
   padding-right: 0.5rem;
+  white-space: nowrap;
 `;
 
 type Props = {
