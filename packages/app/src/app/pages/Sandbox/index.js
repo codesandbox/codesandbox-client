@@ -32,12 +32,6 @@ type State = {
   currentId: ?string,
 };
 
-const Container = styled.div`
-  display: flex;
-  width: 100%;
-  flex-direction: column;
-`;
-
 const mapStateToProps = createSelector(sandboxesSelector, sandboxes => ({
   sandboxes,
 }));
@@ -145,11 +139,7 @@ class SandboxPage extends React.PureComponent<Props, State> {
         : 'Editor - CodeSandbox';
     }
 
-    return (
-      <Container>
-        <Editor match={match} sandbox={sandbox} />
-      </Container>
-    );
+    return <Editor match={match} sandbox={sandbox} />;
   }
 }
 

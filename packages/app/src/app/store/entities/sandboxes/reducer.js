@@ -149,6 +149,7 @@ function singleSandboxReducer(sandbox: Sandbox, action: Action): Sandbox {
         ...sandbox,
         currentModule: resetCurrentModule ? undefined : sandbox.currentModule,
         modules: sandbox.modules.filter(m => m !== action.moduleId),
+        tabs: sandbox.tabs.filter(t => t.moduleId !== action.moduleId),
         originalGitChanges: null,
       };
     }
