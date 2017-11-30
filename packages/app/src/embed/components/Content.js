@@ -35,6 +35,8 @@ const Tabs = styled.div`
 `;
 
 const Split = styled.div`
+  display: flex;
+  flex-direction: column;
   position: relative;
   width: ${props => (props.show ? `${props.size}%` : '0px')};
   max-width: ${props => (props.only ? '100%' : `${props.size}%`)};

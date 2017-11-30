@@ -20,7 +20,6 @@ import LinterWorker from 'worker-loader?name=monaco-linter.[hash].worker.js!./mo
 import TypingsFetcherWorker from 'worker-loader?name=monaco-typings-ata.[hash].worker.js!./monaco/workers/fetch-dependency-typings';
 /* eslint-enable import/no-webpack-loader-syntax */
 
-import Header from './Header';
 import MonacoEditor from './monaco/MonacoReactComponent';
 import FuzzySearch from './FuzzySearch/index';
 

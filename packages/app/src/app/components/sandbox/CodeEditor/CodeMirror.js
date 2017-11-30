@@ -11,7 +11,6 @@ import 'codemirror/addon/dialog/dialog';
 import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/tern/tern';
 
-import Header from './Header';
 import FuzzySearch from './FuzzySearch';
 
 const documentCache = {};
@@ -38,8 +37,7 @@ type Props = {
 const Container = styled.div`
   width: 100%;
   height: 100%;
-  display: flex;
-  flex-direction: column;
+  overflow: auto;
 `;
 
 const fadeInAnimation = keyframes`
@@ -556,7 +554,10 @@ export default class CodeEditor extends React.Component<Props, State> {
             />
           )}
           <div
-            style={{ height: '100%', fontSize: preferences.fontSize || 14 }}
+            style={{
+              height: '100%',
+              fontSize: preferences.fontSize || 14,
+            }}
             ref={this.getCodeMirror}
           />
         </CodeContainer>
