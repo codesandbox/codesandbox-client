@@ -59,7 +59,7 @@ const SVGIcon = styled.span`
   flex-shrink: 0;
 `;
 
-const getIcon = (type, error, root, open) => {
+const getIcon = (type, error) => {
   if (error) {
     return (
       <RedIcon>
@@ -73,14 +73,12 @@ const getIcon = (type, error, root, open) => {
 
 type Props = {
   type: string,
-  isOpen?: boolean,
-  root: ?boolean,
   error: boolean,
 };
-export default function EntryIcon({ type, root, error, isOpen }: Props) {
+export default function EntryIcon({ type, error }: Props) {
   return (
     <div style={{ display: 'inline-block', verticalAlign: 'middle' }}>
-      {getIcon(type, error, root, isOpen)}
+      {getIcon(type, error)}
     </div>
   );
 }
