@@ -2,11 +2,12 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import type { Module } from 'common/types';
+import type { Module, Directory } from 'common/types';
 
-import Tab from './Tab';
+import Tab from './TabContainer';
 
 const Container = styled.div`
+  display: flex;
   height: 2.5rem;
   flex: 0 0 2.5rem;
   color: rgba(255, 255, 255, 0.8);
@@ -14,6 +15,13 @@ const Container = styled.div`
   background-color: rgba(0, 0, 0, 0.3);
 
   overflow-x: auto;
+  overflow-y: hidden;
+
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    height: 2px;
+  }
 `;
 
 type Props = {
@@ -23,6 +31,7 @@ type Props = {
   markNotDirty: (sandboxId: string) => void,
   tabs: Array<{ moduleId: string }>,
   modules: Array<Module>,
+  directories: Array<Directory>,
   currentModuleId: string,
   sandboxId: string,
 };
@@ -65,31 +74,60 @@ export default class EditorTabs extends React.PureComponent<Props> {
   };
 
   render() {
-    const { tabs, modules, currentModuleId } = this.props;
+    const { tabs, modules, directories, currentModuleId } = this.props;
     const moduleObject = {};
+    // We keep this object to keep track if there are duplicate titles.
+    // In that case we need to show which directory the module is in.
+    const tabNamesObject = {};
 
     modules.forEach(m => {
       moduleObject[m.id] = m;
+    });
+
+    tabs.forEach(tab => {
+      const module = moduleObject[tab.moduleId];
+
+      tabNamesObject[module.title] = tabNamesObject[module.title] || [];
+      tabNamesObject[module.title].push(module.id);
     });
 
     return (
       <Container>
         {tabs
           .map(tab => ({ ...tab, module: moduleObject[tab.moduleId] }))
-          .map((tab, i) => (
-            <Tab
-              setCurrentModule={this.setCurrentModule}
-              active={currentModuleId === tab.module.id}
-              key={tab.module.id}
-              module={tab.module}
-              closeTab={this.closeTab}
-              moveTab={this.moveTab}
-              markNotDirty={this.markNotDirty}
-              tabCount={tabs.length}
-              position={i}
-              dirty={tab.dirty}
-            />
-          ))}
+          .map((tab, i) => {
+            const { module } = tab;
+            const modulesWithName = tabNamesObject[module.title];
+            let dirName = null;
+
+            if (modulesWithName.length > 1 && module.directoryShortid != null) {
+              const dir = directories.find(
+                d =>
+                  d.shortid === module.directoryShortid &&
+                  d.sourceId === module.sourceId
+              );
+
+              if (dir) {
+                dirName = dir.title;
+              }
+            }
+
+            return (
+              <Tab
+                setCurrentModule={this.setCurrentModule}
+                active={currentModuleId === tab.module.id}
+                key={tab.module.id}
+                module={tab.module}
+                closeTab={this.closeTab}
+                moveTab={this.moveTab}
+                markNotDirty={this.markNotDirty}
+                dirName={dirName}
+                tabCount={tabs.length}
+                position={i}
+                dirty={tab.dirty}
+              />
+            );
+          })}
       </Container>
     );
   }

@@ -167,6 +167,7 @@ class EditorPreview extends React.PureComponent<Props, State> {
         <Tabs
           tabs={sandbox.tabs}
           modules={modules}
+          directories={directories}
           currentModuleId={currentModule.id}
           sandboxId={sandbox.id}
           setCurrentModule={sandboxActions.setCurrentModule}
