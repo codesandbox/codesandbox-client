@@ -27,7 +27,7 @@ const Container = styled.div`
 const StyledFrame = styled.iframe`
   border-width: 0px;
   width: 100%;
-  height: 100%;
+  height: 100vh;
   min-height: 0;
   overflow: auto;
 `;

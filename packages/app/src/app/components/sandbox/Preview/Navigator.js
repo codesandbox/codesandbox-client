@@ -19,6 +19,7 @@ const Container = styled.div`
   line-height: 1;
   box-shadow: 0 1px 3px #ddd;
   height: 2.5rem;
+  min-height: 2.5rem;
   box-sizing: border-box;
 `;
 

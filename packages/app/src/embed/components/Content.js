@@ -23,6 +23,7 @@ const Container = styled.div`
 const Tabs = styled.div`
   display: flex;
   height: 2.5rem;
+  min-height: 2.5rem;
   background-color: rgba(0, 0, 0, 0.3);
   overflow-x: auto;
 
