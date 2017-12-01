@@ -2,7 +2,7 @@
 import { schema } from 'normalizr';
 import { getSandboxOptions } from 'common/url';
 
-import { findMainModule } from './modules/selectors';
+import { findMainModule, findCurrentModule } from './modules/selectors';
 import moduleEntity from './modules/entity';
 import directoryEntity from './directories/entity';
 import userEntity from '../users/entity';
@@ -18,25 +18,34 @@ export default new schema.Entity(
   {
     processStrategy: sandbox => {
       const {
-        currentModule = findMainModule(
-          sandbox.modules,
-          sandbox.directories,
-          sandbox.entry
-        ),
+        currentModule,
         initialPath,
         isInProjectView,
         isEditorScreen,
         isPreviewScreen,
       } = getSandboxOptions(document.location.href);
 
+      const mainModule = findMainModule(
+        sandbox.modules,
+        sandbox.directories,
+        sandbox.entry
+      );
+
+      const resolvedCurrentModule = findCurrentModule(
+        sandbox.modules,
+        sandbox.directories,
+        currentModule,
+        mainModule
+      );
+
       return {
         ...sandbox,
         isInProjectView,
         showEditor: !isPreviewScreen,
         showPreview: !isEditorScreen,
-        currentModule,
+        currentModule: resolvedCurrentModule,
         initialPath,
-        tabs: [currentModule]
+        tabs: [resolvedCurrentModule]
           .filter(x => x)
           .map(m => ({ moduleId: m.id, dirty: true })),
         forcedRenders: 0, // used to force renders
