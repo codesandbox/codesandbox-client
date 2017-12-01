@@ -1,10 +1,11 @@
 // @flow
 import * as React from 'react';
-import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { createSelector } from 'reselect';
+import { DragDropContext } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
 
 import type { Sandbox } from 'common/types';
 
@@ -28,12 +29,6 @@ type State = {
   error: ?string,
   currentId: ?string,
 };
-
-const Container = styled.div`
-  display: flex;
-  width: 100%;
-  flex-direction: column;
-`;
 
 const mapStateToProps = createSelector(sandboxesSelector, sandboxes => ({
   sandboxes,
@@ -140,11 +135,10 @@ class SandboxPage extends React.PureComponent<Props, State> {
         : 'Editor - CodeSandbox';
     }
 
-    return (
-      <Container>
-        <Editor match={match} sandbox={sandbox} />
-      </Container>
-    );
+    return <Editor match={match} sandbox={sandbox} />;
   }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(SandboxPage);
+
+export default DragDropContext(HTML5Backend)(
+  connect(mapStateToProps, mapDispatchToProps)(SandboxPage)
+);

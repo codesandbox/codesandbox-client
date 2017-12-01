@@ -103,7 +103,7 @@ export const getModuleParents = (
 
 export const modulesFromSandboxSelector = createSelector(
   modulesSelector,
-  (_, props) => props.sandbox.modules,
+  (_, props) => props.modules || props.sandbox.modules,
   (modules, ids) => ids.map(id => modules[id])
 );
 

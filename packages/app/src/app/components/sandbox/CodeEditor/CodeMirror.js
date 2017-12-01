@@ -11,7 +11,6 @@ import 'codemirror/addon/dialog/dialog';
 import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/tern/tern';
 
-import Header from './Header';
 import FuzzySearch from './FuzzySearch';
 
 const documentCache = {};
@@ -21,25 +20,22 @@ type Props = {
   errors: ?Array<ModuleError>,
   id: string,
   title: string,
-  modulePath: string,
   changeCode: (id: string, code: string) => Object,
   saveCode: () => void,
-  canSave: boolean,
   preferences: Preferences,
-  onlyViewMode: boolean,
   setCurrentModule: ?(sandboxId: string, moduleId: string) => void,
   sandboxId: string,
   modules: Array,
   directories: Array,
   hideNavigation: boolean,
   highlightedLines: ?Array<string>,
+  onlyViewMode: ?boolean,
 };
 
 const Container = styled.div`
   width: 100%;
   height: 100%;
-  display: flex;
-  flex-direction: column;
+  overflow: auto;
 `;
 
 const fadeInAnimation = keyframes`
@@ -228,7 +224,6 @@ export default class CodeEditor extends React.Component<Props, State> {
     return (
       nextProps.id !== this.props.id ||
       nextProps.errors !== this.props.errors ||
-      this.props.canSave !== nextProps.canSave ||
       this.props.preferences !== nextProps.preferences
     );
   }
@@ -529,9 +524,6 @@ export default class CodeEditor extends React.Component<Props, State> {
 
   render() {
     const {
-      canSave,
-      onlyViewMode,
-      modulePath,
       preferences,
       modules,
       directories,
@@ -541,13 +533,6 @@ export default class CodeEditor extends React.Component<Props, State> {
 
     return (
       <Container>
-        {!hideNavigation && (
-          <Header
-            saveComponent={canSave && !onlyViewMode && this.handleSaveCode}
-            prettify={!onlyViewMode && this.prettify}
-            path={modulePath}
-          />
-        )}
         <CodeContainer
           fontFamily={preferences.fontFamily}
           lineHeight={preferences.lineHeight}
@@ -563,7 +548,10 @@ export default class CodeEditor extends React.Component<Props, State> {
             />
           )}
           <div
-            style={{ height: '100%', fontSize: preferences.fontSize || 14 }}
+            style={{
+              height: '100%',
+              fontSize: preferences.fontSize || 14,
+            }}
             ref={this.getCodeMirror}
           />
         </CodeContainer>

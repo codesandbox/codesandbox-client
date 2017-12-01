@@ -4,7 +4,11 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import ConfirmLink from 'app/components/ConfirmLink';
 import GithubBadge from 'app/components/sandbox/GithubBadge';
-import { sandboxUrl, githubRepoUrl, profileUrl } from 'common/utils/url-generator';
+import {
+  sandboxUrl,
+  githubRepoUrl,
+  profileUrl,
+} from 'common/utils/url-generator';
 import UserWithAvatar from 'app/components/user/UserWithAvatar';
 import Stats from 'app/components/sandbox/Stats';
 import PrivacyStatus from 'app/components/sandbox/PrivacyStatus';
@@ -23,7 +27,7 @@ const Item = styled.div`
 const GitContainer = styled.div`
   display: inline-block;
   margin: 0 1rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.25rem;
 `;
 
 const UserLink = styled(Link)`
@@ -34,8 +38,7 @@ const UserLink = styled(Link)`
 `;
 
 const StatsContainer = styled.div`
-  border-top: 1px solid ${props => props.theme.background2};
-  padding: 1rem;
+  height: 2rem;
   font-size: 0.875rem;
   box-sizing: border-box;
   color: rgba(255, 255, 255, 0.8);
@@ -126,7 +129,6 @@ export default class Project extends React.PureComponent<
     const { title, description } = this.state;
     return (
       <div>
-        <WorkspaceSubtitle>Title</WorkspaceSubtitle>
         <WorkspaceInputContainer>
           <input
             value={title || ''}
@@ -134,9 +136,10 @@ export default class Project extends React.PureComponent<
             type="text"
             onBlur={this.updateSandboxInfo}
             onKeyUp={this.handleKeyUp}
+            placeholder="Title"
           />
         </WorkspaceInputContainer>
-        <WorkspaceSubtitle>Description</WorkspaceSubtitle>
+
         <WorkspaceInputContainer>
           <textarea
             value={description || ''}
@@ -144,7 +147,8 @@ export default class Project extends React.PureComponent<
             type="text"
             onBlur={this.updateSandboxInfo}
             onKeyUp={this.handleKeyUp}
-            rows="5"
+            rows="2"
+            placeholder="Description"
           />
         </WorkspaceInputContainer>
         {!!author && (

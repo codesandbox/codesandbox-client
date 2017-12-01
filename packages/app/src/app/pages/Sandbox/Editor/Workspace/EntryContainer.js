@@ -14,7 +14,9 @@ export const getContainerStyles = props => {
     font-size: 14px;
     padding: 0.4rem;
     padding-left: ${
-      props.depth != null ? `${props.depth + 1.5}rem` : 'calc(1rem - 2px)'
+      props.depth != null
+        ? `calc(${props.depth + 1}rem - 2px)`
+        : 'calc(1rem - 2px)'
     };
     padding-right: 3rem;
     color: rgba(255, 255, 255, 0.5);

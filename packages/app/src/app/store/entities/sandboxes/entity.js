@@ -1,6 +1,8 @@
 // @flow
 import { schema } from 'normalizr';
 import { getSandboxOptions } from 'common/url';
+
+import { findMainModule } from './modules/selectors';
 import moduleEntity from './modules/entity';
 import directoryEntity from './directories/entity';
 import userEntity from '../users/entity';
@@ -16,7 +18,11 @@ export default new schema.Entity(
   {
     processStrategy: sandbox => {
       const {
-        currentModule,
+        currentModule = findMainModule(
+          sandbox.modules,
+          sandbox.directories,
+          sandbox.entry
+        ),
         initialPath,
         isInProjectView,
         isEditorScreen,
@@ -30,6 +36,9 @@ export default new schema.Entity(
         showPreview: !isEditorScreen,
         currentModule,
         initialPath,
+        tabs: [currentModule]
+          .filter(x => x)
+          .map(m => ({ moduleId: m.id, dirty: true })),
         forcedRenders: 0, // used to force renders
       };
     },

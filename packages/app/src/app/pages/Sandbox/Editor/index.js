@@ -3,8 +3,6 @@ import * as React from 'react';
 import SplitPane from 'react-split-pane';
 import type { Sandbox } from 'common/types';
 
-import Fullscreen from 'common/components/flex/Fullscreen';
-
 import Workspace from './Workspace';
 
 import Content from './Content';
@@ -35,30 +33,28 @@ export default class ContentSplit extends React.PureComponent<Props, State> {
     const { sandbox, match } = this.props;
     const { resizing, workspaceHidden } = this.state;
     return (
-      <Fullscreen style={{ position: 'relative', overflow: 'hidden' }}>
-        <SplitPane
-          split="vertical"
-          defaultSize={18 * 16}
-          minSize={14 * 16}
-          style={{ top: 0 }}
-          onDragStarted={this.startResizing}
-          onDragFinished={this.stopResizing}
-          resizerStyle={{ visibility: workspaceHidden ? 'hidden' : 'visible' }}
-          pane1Style={{
-            visibility: workspaceHidden ? 'hidden' : 'visible',
-            maxWidth: workspaceHidden ? 0 : 'inherit',
-          }}
-        >
-          {!workspaceHidden && <Workspace sandbox={sandbox} />}
-          <Content
-            workspaceHidden={workspaceHidden}
-            toggleWorkspace={this.toggleWorkspace}
-            sandbox={sandbox}
-            resizing={resizing}
-            match={match}
-          />
-        </SplitPane>
-      </Fullscreen>
+      <SplitPane
+        split="vertical"
+        defaultSize={18 * 16}
+        minSize={14 * 16}
+        style={{ top: 0 }}
+        onDragStarted={this.startResizing}
+        onDragFinished={this.stopResizing}
+        resizerStyle={{ visibility: workspaceHidden ? 'hidden' : 'visible' }}
+        pane1Style={{
+          visibility: workspaceHidden ? 'hidden' : 'visible',
+          maxWidth: workspaceHidden ? 0 : 'inherit',
+        }}
+      >
+        {!workspaceHidden && <Workspace sandbox={sandbox} />}
+        <Content
+          workspaceHidden={workspaceHidden}
+          toggleWorkspace={this.toggleWorkspace}
+          sandbox={sandbox}
+          resizing={resizing}
+          match={match}
+        />
+      </SplitPane>
     );
   }
 }

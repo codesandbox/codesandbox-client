@@ -7,7 +7,6 @@ const ChildContainer = styled.div`
   position: relative;
   margin: 0;
   padding: 0;
-  border-bottom: 1px solid ${props => props.theme.background2};
   overflow: ${props => (props.open ? 'inherit' : 'hidden')};
   height: ${props => (props.open ? '100%' : 0)};
 
@@ -38,28 +37,38 @@ const ItemHeader = styled.div`
   display: flex;
   align-items: center;
   position: relative;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.75rem;
   box-sizing: border-box;
   vertical-align: middle;
-  height: calc(3rem - 1px);
+  height: 2.5rem;
   margin: 0;
+  font-size: 0.875rem;
   color: ${props => props.theme.white};
   cursor: pointer;
 `;
 
 const Title = styled.h3`
-  font-size: 1rem;
+  font-size: 0.875rem;
   margin: 0;
   font-weight: 400;
 `;
 
 const ExpandIconContainer = styled(ExpandIcon)`
   transition: 0.3s ease all;
+  font-size: 1rem;
+  margin-right: 0.5rem;
+
+  transform: rotateZ(${props => (props.open ? 0 : -90)}deg);
+`;
+
+const Actions = styled.div`
   position: absolute;
   right: 1rem;
-  font-size: 1rem;
+  top: 0;
+  bottom: 0;
 
-  transform: rotateZ(${props => (props.open ? 0 : 90)}deg);
+  display: flex;
+  align-items: center;
 `;
 
 type Props = {
@@ -71,9 +80,11 @@ type Props = {
   // this determines whether we need to keep the child component mounted when
   // the item is collapsed
   keepState: ?boolean,
+
+  actions: React.Element,
 };
 
-export default class WorkspaceItem extends React.PureComponent {
+export default class WorkspaceItem extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -81,19 +92,29 @@ export default class WorkspaceItem extends React.PureComponent {
     };
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    return (
+      nextState.open !== this.state.open ||
+      nextProps.disabled !== this.props.disabled ||
+      this.props.children !== nextProps.children
+    );
+  }
+
   props: Props;
 
   toggleOpen = () => this.setState({ open: !this.state.open });
 
   render() {
-    const { children, title, keepState, disabled } = this.props;
+    const { children, title, keepState, disabled, actions } = this.props;
     const { open } = this.state;
 
     return (
       <div>
         <ItemHeader onClick={this.toggleOpen}>
-          <Title>{title}</Title>
           <ExpandIconContainer open={open} />
+          <Title>{title}</Title>
+
+          {open && <Actions>{actions}</Actions>}
         </ItemHeader>
         <ChildContainer disabled={disabled} open={open}>
           {(keepState || open) && children}

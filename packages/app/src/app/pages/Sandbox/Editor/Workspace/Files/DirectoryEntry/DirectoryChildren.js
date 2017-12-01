@@ -73,7 +73,7 @@ export default class DirectoryChildren extends React.PureComponent<Props> {
         {modules.filter(x => x.directoryShortid === parentShortid).map(m => {
           const isActive = m.id === currentModuleId;
           const mainModule = m.id === mainModuleId;
-          const type = getType(m);
+          const type = getType(m.title, m.code);
 
           const hasError = m && m.errors.length;
 

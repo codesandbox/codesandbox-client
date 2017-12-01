@@ -19,7 +19,7 @@ import SettingsIcon from 'react-icons/lib/md/settings';
 import ShareIcon from 'react-icons/lib/md/share';
 import { Tooltip } from 'react-tippy';
 
-import type { Sandbox, CurrentUser } from 'common/types';
+import type { CurrentUser } from 'common/types';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 import userActionCreators from 'app/store/user/actions';
 import modalActionCreators from 'app/store/modal/actions';
@@ -33,11 +33,11 @@ import HeaderSearchBar from 'app/components/HeaderSearchBar';
 import UserMenu from 'app/containers/UserMenu';
 import Preferences from 'app/containers/Preferences';
 import NewSandbox from 'app/containers/modals/NewSandbox';
+import ShareModal from 'app/containers/modals/ShareModal';
 
 import Deployment from 'app/containers/Deployment';
 
 import Action from './Action';
-import ShareView from './ShareView';
 
 const Container = styled.div`
   display: flex;
@@ -94,7 +94,14 @@ const Chevron = styled.div`
 type Props = {
   toggleWorkspace: () => void,
   workspaceHidden: boolean,
-  sandbox: Sandbox,
+  modules: Array<string>,
+  directories: Array<string>,
+  sandboxId: string,
+  owned: string,
+  showEditor: boolean,
+  showPreview: boolean,
+  sandboxLiked: boolean,
+  sandboxLikeCount: number,
   sandboxActions: typeof sandboxActionCreators,
   userActions: typeof userActionCreators,
   modalActions: typeof modalActionCreators,
@@ -102,66 +109,90 @@ type Props = {
   canSave: boolean,
 };
 
-export default class Header extends React.PureComponent<Props> {
+const CHECKED_FIELDS = [
+  'workspaceHidden',
+  'sandboxId',
+  'owned',
+  'showEditor',
+  'showPreview',
+  'sandboxLiked',
+  'sandboxLikeCount',
+  'user',
+  'canSave',
+  'modules',
+  'directories',
+];
+
+export default class Header extends React.Component<Props> {
+  shouldComponentUpdate(nextProps: Props) {
+    return CHECKED_FIELDS.some(field => nextProps[field] !== this.props[field]);
+  }
+
   massUpdateModules = () => {
-    const { sandbox, sandboxActions } = this.props;
-    sandboxActions.massUpdateModules(sandbox.id);
+    const { sandboxId, sandboxActions } = this.props;
+    sandboxActions.massUpdateModules(sandboxId);
   };
 
   deploySandbox = () => {
-    const { sandbox } = this.props;
+    const { sandboxId } = this.props;
 
     this.props.modalActions.openModal({
       width: 600,
-      Body: <Deployment id={sandbox.id} />,
+      Body: <Deployment id={sandboxId} />,
     });
   };
 
   zipSandbox = () => {
-    const { sandbox, sandboxActions } = this.props;
-    sandboxActions.createZip(sandbox.id);
+    const { sandboxId, sandboxActions } = this.props;
+    sandboxActions.createZip(sandboxId);
   };
 
   forkSandbox = () => {
-    const { sandbox, sandboxActions } = this.props;
+    const { owned, sandboxId, sandboxActions } = this.props;
 
-    const shouldFork = sandbox.owned
+    const shouldFork = owned
       ? confirm('Do you want to fork your own sandbox?') // eslint-disable-line no-alert
       : true;
     if (shouldFork) {
-      sandboxActions.forkSandbox(sandbox.id);
+      sandboxActions.forkSandbox(sandboxId);
     }
   };
 
   openShareView = () => {
     this.props.modalActions.openModal({
       width: 900,
-      Body: <ShareView sandbox={this.props.sandbox} />,
+      Body: (
+        <ShareModal
+          modules={this.props.modules}
+          directories={this.props.directories}
+          id={this.props.sandboxId}
+        />
+      ),
     });
   };
 
   setEditorView = () => {
-    const { sandbox, sandboxActions } = this.props;
-    sandboxActions.setViewMode(sandbox.id, true, false);
+    const { sandboxId, sandboxActions } = this.props;
+    sandboxActions.setViewMode(sandboxId, true, false);
   };
 
   setMixedView = () => {
-    const { sandbox, sandboxActions } = this.props;
-    sandboxActions.setViewMode(sandbox.id, true, true);
+    const { sandboxId, sandboxActions } = this.props;
+    sandboxActions.setViewMode(sandboxId, true, true);
   };
 
   setPreviewView = () => {
-    const { sandbox, sandboxActions } = this.props;
-    sandboxActions.setViewMode(sandbox.id, false, true);
+    const { sandboxId, sandboxActions } = this.props;
+    sandboxActions.setViewMode(sandboxId, false, true);
   };
 
   toggleLike = () => {
-    const { sandbox, sandboxActions } = this.props;
+    const { sandboxId, sandboxLiked, sandboxActions } = this.props;
 
-    if (sandbox.userLiked) {
-      sandboxActions.unLikeSandbox(sandbox.id);
+    if (sandboxLiked) {
+      sandboxActions.unLikeSandbox(sandboxId);
     } else {
-      sandboxActions.likeSandbox(sandbox.id);
+      sandboxActions.likeSandbox(sandboxId);
     }
   };
 
@@ -181,7 +212,11 @@ export default class Header extends React.PureComponent<Props> {
 
   render() {
     const {
-      sandbox,
+      showEditor,
+      showPreview,
+      sandboxLiked,
+      sandboxLikeCount,
+      owned,
       userActions,
       user,
       toggleWorkspace,
@@ -194,8 +229,8 @@ export default class Header extends React.PureComponent<Props> {
         <ModeIcons
           small
           dropdown
-          showEditor={sandbox.showEditor}
-          showPreview={sandbox.showPreview}
+          showEditor={showEditor}
+          showPreview={showPreview}
           setMixedView={this.setMixedView}
           setEditorView={this.setEditorView}
           setPreviewView={this.setPreviewView}
@@ -212,17 +247,17 @@ export default class Header extends React.PureComponent<Props> {
             </Chevron>
           </Tooltip>
           {user.jwt &&
-            (sandbox.userLiked ? (
+            (sandboxLiked ? (
               <Action
                 tooltip="Undo like"
-                title={sandbox.likeCount}
+                title={sandboxLikeCount}
                 Icon={FullHeartIcon}
                 onClick={this.toggleLike}
               />
             ) : (
               <Action
                 tooltip="Like"
-                title={sandbox.likeCount}
+                title={sandboxLikeCount}
                 Icon={HeartIcon}
                 onClick={this.toggleLike}
               />
@@ -247,7 +282,7 @@ export default class Header extends React.PureComponent<Props> {
             onClick={this.zipSandbox}
           />
           {user.jwt &&
-            sandbox.owned && (
+            owned && (
               <Action
                 tooltip="Deploy sandbox"
                 title="Deploy"

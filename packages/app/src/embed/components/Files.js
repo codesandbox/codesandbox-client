@@ -5,10 +5,13 @@ import sortBy from 'lodash/sortBy';
 
 import type { Module, Directory } from 'common/types';
 import { isMainModule } from 'app/store/entities/sandboxes/modules/selectors';
+import getType from 'app/store/entities/sandboxes/modules/utils/get-type';
 
 import File from './File';
 
-const Container = styled.div`line-height: 1;`;
+const Container = styled.div`
+  line-height: 1;
+`;
 
 type Props = {
   modules: Array<Module>,
@@ -47,7 +50,7 @@ const Files = ({
             id={d.id}
             shortid={d.shortid}
             title={d.title}
-            type="directory"
+            type="directory-open"
             depth={depth}
             setCurrentModule={setCurrentModule}
           />
@@ -69,7 +72,7 @@ const Files = ({
           shortid={m.shortid}
           title={m.title}
           key={m.shortid}
-          type="module"
+          type={getType(m.title, m.code)}
           depth={depth}
           setCurrentModule={setCurrentModule}
           active={m.id === currentModule}

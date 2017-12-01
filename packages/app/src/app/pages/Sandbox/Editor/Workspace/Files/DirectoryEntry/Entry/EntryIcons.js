@@ -1,43 +1,65 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import ProjectIcon from 'react-icons/lib/go/file-code';
-import FunctionIcon from 'react-icons/lib/fa/code';
-import FolderIcon from 'react-icons/lib/md/keyboard-arrow-down';
-import DirectoryIcon from 'react-icons/lib/md/folder';
-import DirectoryOpenIcon from 'react-icons/lib/md/folder-open';
-import NotSyncedIcon from 'react-icons/lib/go/primitive-dot';
-import CSSIcon from 'react-icons/lib/fa/css3';
-import HTMLIcon from 'react-icons/lib/fa/html5';
 import ErrorIcon from 'react-icons/lib/md/error';
-import RawIcon from 'react-icons/lib/go/file-text';
-import ReactIcon from 'app/components/ReactIcon';
-import TypeScriptIcon from 'app/components/TypeScriptIcon';
 
-const NotSyncedIconWithMargin = styled(NotSyncedIcon)`
-  margin-left: -20px;
-  margin-right: 6px;
-  color: ${props => props.theme.templateColor || props.theme.secondary};
-`;
+import jsSvg from 'common/components/icons/js.svg';
+import tsSvg from 'common/components/icons/ts.svg';
+import cssSvg from 'common/components/icons/css.svg';
+import reactSvg from 'common/components/icons/react.svg';
+import folderSvg from 'common/components/icons/folder.svg';
+import folderOpenSvg from 'common/components/icons/folder-open.svg';
+import jsonSvg from 'common/components/icons/json.svg';
+import yarnSvg from 'common/components/icons/yarn.svg';
+import markdownSvg from 'common/components/icons/markdown.svg';
+import faviconSvg from 'common/components/icons/favicon.svg';
+import htmlSvg from 'common/components/icons/html.svg';
+import npmSvg from 'common/components/icons/npm.svg';
+import vueSvg from 'common/components/icons/vue.svg';
+import fileSvg from 'common/components/icons/file.svg';
+import svgSvg from 'common/components/icons/svg.svg';
+import imageSvg from 'common/components/icons/image.svg';
+
+const icons = {
+  directory: folderSvg,
+  'directory-open': folderOpenSvg,
+  react: reactSvg,
+  css: cssSvg,
+  json: jsonSvg,
+  yarn: yarnSvg,
+  md: markdownSvg,
+  favicon: faviconSvg,
+  html: htmlSvg,
+  npm: npmSvg,
+  vue: vueSvg,
+  js: jsSvg,
+  ts: tsSvg,
+  svg: svgSvg,
+  image: imageSvg,
+};
+
+function getIconSvg(type) {
+  return icons[type] || fileSvg;
+}
 
 const RedIcon = styled.span`
   color: ${props => props.theme.red};
 `;
 
-const StyledFolderIcon = styled.span`
-  svg {
-    transition: 0.3s ease transform;
-    margin-left: -20px;
-    margin-right: 6px;
-
-    transform: rotateZ(${props => (props.isOpen ? '0deg' : '-90deg')});
-  }
+const SVGIcon = styled.span`
+  background-image: url(${props => getIconSvg(props.type)});
+  background-size: 1rem;
+  background-position: 0;
+  background-repeat: no-repeat;
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  -webkit-font-smoothing: antialiased;
+  vertical-align: top;
+  flex-shrink: 0;
 `;
 
-const getIcon = (type, error, root, open) => {
-  if (root) {
-    return <ProjectIcon />;
-  }
+const getIcon = (type, error) => {
   if (error) {
     return (
       <RedIcon>
@@ -46,54 +68,17 @@ const getIcon = (type, error, root, open) => {
     );
   }
 
-  switch (type) {
-    case 'react':
-      return <ReactIcon />;
-    case 'js':
-    case 'json':
-    case 'function':
-      return <FunctionIcon />;
-    case 'directory':
-      return open ? <DirectoryOpenIcon /> : <DirectoryIcon />;
-    case 'css':
-      return <CSSIcon />;
-    case 'ts':
-      return <TypeScriptIcon />;
-    case 'html':
-      return <HTMLIcon />;
-    default:
-      return <RawIcon />;
-  }
+  return <SVGIcon type={type} />;
 };
 
 type Props = {
   type: string,
-  hasChildren: boolean,
-  isNotSynced: ?boolean,
-  isOpen?: boolean,
-  onOpen: () => void,
-  root: ?boolean,
   error: boolean,
 };
-export default function EntryIcon({
-  type,
-  root,
-  error,
-  hasChildren,
-  isNotSynced,
-  isOpen,
-  onOpen,
-}: Props) {
+export default function EntryIcon({ type, error }: Props) {
   return (
     <div style={{ display: 'inline-block', verticalAlign: 'middle' }}>
-      {isNotSynced && <NotSyncedIconWithMargin />}
-      {type === 'directory' &&
-        hasChildren && (
-          <StyledFolderIcon isOpen={isOpen} onClick={onOpen}>
-            <FolderIcon />
-          </StyledFolderIcon>
-        )}
-      {getIcon(type, error, root, isOpen)}
+      {getIcon(type, error)}
     </div>
   );
 }

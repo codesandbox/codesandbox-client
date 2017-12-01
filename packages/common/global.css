@@ -13,6 +13,8 @@ body {
   -webkit-text-size-adjust: 100%;
   height: 100%;
   background: #1c2022;
+
+  -ms-overflow-style: -ms-autohiding-scrollbar;
 }
 
 input {

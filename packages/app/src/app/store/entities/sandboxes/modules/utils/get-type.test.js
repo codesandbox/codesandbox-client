@@ -4,84 +4,45 @@ describe('modules', () => {
   describe('utils', () => {
     describe('get-type', () => {
       it('detects react with single quotes', () => {
-        const testModule = {
-          code: `import React, { PureComponent } from 'react';`,
-          title: 'test.js',
-        };
-
-        expect(getType(testModule)).toBe('react');
+        expect(
+          getType('test.js', `import React, { PureComponent } from 'react';`)
+        ).toBe('react');
       });
 
       it('detects react with double quotes', () => {
-        const testModule = {
-          code: `import React, { PureComponent } from "react";`,
-          title: 'test.js',
-        };
-
-        expect(getType(testModule)).toBe('react');
+        expect(
+          getType('test.js', `import React, { PureComponent } from "react";`)
+        ).toBe('react');
       });
 
       it("does't detect react with no extension", () => {
-        const testModule = {
-          code: `import React, { PureComponent } from "react";`,
-          title: 'test',
-        };
-
-        expect(getType(testModule)).toBe('raw');
+        expect(
+          getType('test', `import React, { PureComponent } from "react";`)
+        ).toBe('raw');
       });
 
       it('detects javascript with js', () => {
-        const testModule = {
-          code: ``,
-          title: 'test.js',
-        };
-
-        expect(getType(testModule)).toBe('js');
+        expect(getType('test.js', '')).toBe('js');
       });
 
       it('detects javascript with jsx', () => {
-        const testModule = {
-          code: ``,
-          title: 'test.jsx',
-        };
-
-        expect(getType(testModule)).toBe('js');
+        expect(getType('test.jsx', '')).toBe('js');
       });
 
       it('detects css', () => {
-        const testModule = {
-          code: ``,
-          title: 'test.css',
-        };
-
-        expect(getType(testModule)).toBe('css');
+        expect(getType('test.css', '')).toBe('css');
       });
 
       it('detects json', () => {
-        const testModule = {
-          code: ``,
-          title: 'test.json',
-        };
-
-        expect(getType(testModule)).toBe('json');
+        expect(getType('test.json', '')).toBe('json');
       });
 
       it('detects html', () => {
-        const testModule = {
-          code: ``,
-          title: 'test.html',
-        };
-
-        expect(getType(testModule)).toBe('html');
+        expect(getType('test.html', '')).toBe('html');
       });
 
       it('detects nothing', () => {
-        const testModule = {
-          code: ``,
-          title: 'test',
-        };
-
-        expect(getType(testModule)).toBe('raw');
+        expect(getType('test', '')).toBe('raw');
       });
     });
   });

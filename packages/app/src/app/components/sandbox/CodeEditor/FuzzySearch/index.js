@@ -4,6 +4,7 @@ import { sortBy, groupBy, flatten } from 'lodash';
 import Downshift from 'downshift';
 import matchSorter from 'match-sorter';
 import type { Module, Directory } from 'common/types';
+import NotSyncedIcon from 'react-icons/lib/go/primitive-dot';
 
 import { getModulePath } from 'app/store/entities/sandboxes/modules/selectors';
 import Input from 'app/components/Input';
@@ -53,13 +54,27 @@ const Entry = styled.div`
   cursor: pointer;
 
   ${({ isNotSynced }) =>
-    isNotSynced && css`padding-left: 2rem;`} color: rgba(255, 255, 255, 0.8);
+    isNotSynced &&
+    css`
+      padding-left: 2rem;
+    `};
+  color: rgba(255, 255, 255, 0.8);
 
   ${({ isActive }) =>
     isActive &&
     css`
       background-color: ${props => props.theme.secondary.clearer(0.7)};
     `};
+`;
+
+const NotSyncedIconWithMargin = styled(NotSyncedIcon)`
+  position: absolute;
+  left: 0.75rem;
+  top: 0;
+  color: ${props => props.theme.templateColor || props.theme.secondary};
+  vertical-align: middle;
+
+  margin-top: 6px;
 `;
 
 const CurrentModuleText = styled.div`
@@ -69,7 +84,9 @@ const CurrentModuleText = styled.div`
   color: ${props => props.theme.secondary};
 `;
 
-const Name = styled.span`margin: 0 0.5rem;`;
+const Name = styled.span`
+  margin: 0 0.5rem;
+`;
 
 const Path = styled.span`
   margin: 0 0.25rem;
@@ -173,9 +190,10 @@ export default class FuzzySearch extends React.PureComponent<Props> {
                     key={item.m.id}
                     isNotSynced={item.m.isNotSynced}
                   >
+                    {item.m.isNotSynced && <NotSyncedIconWithMargin />}
                     <EntryIcons
                       isNotSynced={item.m.isNotSynced}
-                      type={getType(item.m)}
+                      type={getType(item.m.title, item.m.code)}
                       error={item.m.errors && item.m.errors.length > 0}
                     />
                     <Name>{item.m.title}</Name>

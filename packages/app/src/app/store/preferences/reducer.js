@@ -35,7 +35,7 @@ const initialState: Preferences = Object.keys(keys).reduce(
   {
     autoCompleteEnabled: true,
     livePreviewEnabled: true,
-    prettifyOnSaveEnabled: false,
+    prettifyOnSaveEnabled: true,
     lintEnabled: true,
     instantPreviewEnabled: false,
     fontSize: 14,

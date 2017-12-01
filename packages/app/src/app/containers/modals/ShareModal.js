@@ -9,6 +9,7 @@ import {
   modulesFromSandboxSelector,
   getModulePath,
 } from 'app/store/entities/sandboxes/modules/selectors';
+import { singleSandboxSelector } from 'app/store/entities/sandboxes/selectors';
 import { directoriesFromSandboxSelector } from 'app/store/entities/sandboxes/directories/selectors';
 import {
   optionsToParameterizedUrl,
@@ -121,9 +122,10 @@ type Props = {
 const BUTTON_URL = 'https://codesandbox.io/static/img/play-codesandbox.svg';
 
 const mapStateToProps = createSelector(
+  singleSandboxSelector,
   modulesFromSandboxSelector,
   directoriesFromSandboxSelector,
-  (modules, directories) => ({ modules, directories })
+  (sandbox, modules, directories) => ({ modules, directories, sandbox })
 );
 class ShareView extends React.PureComponent {
   props: Props;

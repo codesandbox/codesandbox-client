@@ -16,7 +16,9 @@ import Alert from 'app/components/Alert';
 import Entry from './Entry';
 import DirectoryChildren from './DirectoryChildren';
 
-const EntryContainer = styled.div`position: relative;`;
+const EntryContainer = styled.div`
+  position: relative;
+`;
 
 const Overlay = styled.div`
   position: absolute;
@@ -57,6 +59,7 @@ type Props = {
   currentModuleId: ?string,
   isInProjectView: boolean,
   mainModuleId: string,
+  innerRef: ?Function,
 };
 type State = {
   creating: '' | 'module' | 'directory',
@@ -81,6 +84,12 @@ class DirectoryEntry extends React.PureComponent {
       creating: '',
       open: props.root || isParentOfModule,
     };
+  }
+
+  componentDidMount() {
+    if (this.props.innerRef) {
+      this.props.innerRef(this);
+    }
   }
 
   componentWillReceiveProps(nextProps, nextState) {
@@ -234,25 +243,27 @@ class DirectoryEntry extends React.PureComponent {
     return connectDropTarget(
       <div style={{ position: 'relative' }}>
         <Overlay isOver={isOver} />
-        <EntryContainer>
-          <Entry
-            id={id}
-            title={title}
-            depth={depth}
-            type="directory"
-            root={root}
-            isOpen={open}
-            onClick={this.toggleOpen}
-            renameValidator={this.validateDirectoryTitle}
-            rename={!root && this.renameDirectory}
-            onCreateModuleClick={this.onCreateModuleClick}
-            onCreateDirectoryClick={this.onCreateDirectoryClick}
-            deleteEntry={!root && this.deleteDirectory}
-            hasChildren={this.getChildren().length > 0}
-            openMenu={openMenu}
-            closeTree={this.closeTree}
-          />
-        </EntryContainer>
+        {!root && (
+          <EntryContainer>
+            <Entry
+              id={id}
+              title={title}
+              depth={depth}
+              type={open ? 'directory-open' : 'directory'}
+              root={root}
+              isOpen={open}
+              onClick={this.toggleOpen}
+              renameValidator={this.validateDirectoryTitle}
+              rename={!root && this.renameDirectory}
+              onCreateModuleClick={this.onCreateModuleClick}
+              onCreateDirectoryClick={this.onCreateDirectoryClick}
+              deleteEntry={!root && this.deleteDirectory}
+              hasChildren={this.getChildren().length > 0}
+              openMenu={openMenu}
+              closeTree={this.closeTree}
+            />
+          </EntryContainer>
+        )}
         <Opener open={open}>
           {creating === 'directory' && (
             <Entry

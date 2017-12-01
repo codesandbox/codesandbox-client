@@ -15,15 +15,17 @@ const Container = styled.div`
   display: flex;
   background-color: #f2f2f2;
   padding: 0.5rem;
-  flex: 0 0 3rem;
   align-items: center;
   line-height: 1;
   box-shadow: 0 1px 3px #ddd;
-  height: 3rem;
+  height: 2.5rem;
+  min-height: 2.5rem;
   box-sizing: border-box;
 `;
 
-const Icons = styled.div`display: flex;`;
+const Icons = styled.div`
+  display: flex;
+`;
 
 const Icon = styled.div`
   display: inline-block;
@@ -50,7 +52,9 @@ const AddressBarContainer = styled.div`
   margin: 0 0.5rem;
 `;
 
-const SwitchContainer = styled.div`flex: 0 0 3.5rem;`;
+const SwitchContainer = styled.div`
+  flex: 0 0 3.5rem;
+`;
 
 type Props = {
   url: string,

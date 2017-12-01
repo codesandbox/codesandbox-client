@@ -5,6 +5,7 @@ const Container = styled.div`
   position: relative;
   color: ${props => props.theme.gray.darken(0.2)()};
   vertical-align: middle;
+  font-size: 1rem;
 `;
 
 const InputContainer = styled.div`

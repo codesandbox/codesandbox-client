@@ -22,7 +22,6 @@ import userActionCreators from 'app/store/user/actions';
 import {
   findMainModule,
   findCurrentModule,
-  getModulePath,
   modulesFromSandboxSelector,
 } from 'app/store/entities/sandboxes/modules/selectors';
 import { directoriesFromSandboxSelector } from 'app/store/entities/sandboxes/directories/selectors';
@@ -32,6 +31,7 @@ import getTemplateDefinition from 'common/templates';
 import SplitPane from 'react-split-pane';
 
 import CodeEditor from 'app/components/sandbox/CodeEditor';
+import Tabs from 'app/components/sandbox/CodeEditor/Tabs';
 import Preview from 'app/components/sandbox/Preview';
 
 import showAlternativeComponent from 'app/hoc/show-alternative-component';
@@ -93,12 +93,15 @@ class EditorPreview extends React.PureComponent<Props, State> {
   };
 
   componentDidMount() {
-    window.onbeforeunload = () => {
+    window.onbeforeunload = e => {
       const { modules } = this.props;
       const notSynced = modules.some(m => m.isNotSynced);
 
       if (notSynced) {
-        return 'You have not saved all your modules, are you sure you want to close this tab?';
+        const returnMessage =
+          'You have not saved all your modules, are you sure you want to close this tab?';
+        e.returnValue = returnMessage;
+        return returnMessage;
       }
 
       return null;
@@ -152,7 +155,6 @@ class EditorPreview extends React.PureComponent<Props, State> {
       currentModuleId,
       mainModule
     );
-    const modulePath = getModulePath(modules, directories, currentModule.id);
 
     if (currentModule == null) return null;
 
@@ -160,6 +162,17 @@ class EditorPreview extends React.PureComponent<Props, State> {
 
     const EditorPane = (
       <FullSize>
+        <Tabs
+          tabs={sandbox.tabs}
+          modules={modules}
+          directories={directories}
+          currentModuleId={currentModule.id}
+          sandboxId={sandbox.id}
+          setCurrentModule={sandboxActions.setCurrentModule}
+          closeTab={sandboxActions.closeTab}
+          moveTab={sandboxActions.moveTab}
+          markNotDirty={sandboxActions.markTabsNotDirty}
+        />
         <CodeEditor
           changeCode={moduleActions.setCode}
           id={currentModule.id}
@@ -167,9 +180,7 @@ class EditorPreview extends React.PureComponent<Props, State> {
           corrections={currentModule.corrections}
           code={currentModule.code}
           title={currentModule.title}
-          canSave={currentModule.isNotSynced}
           saveCode={this.saveCode}
-          modulePath={modulePath}
           preferences={preferences}
           modules={modules}
           directories={directories}
@@ -217,10 +228,16 @@ class EditorPreview extends React.PureComponent<Props, State> {
           <Prompt
             when={notSynced}
             message={() =>
-              'You have not saved this sandbox, are you sure you want to navigate away?'}
+              'You have not saved this sandbox, are you sure you want to navigate away?'
+            }
           />
           <Header
-            sandbox={sandbox}
+            sandboxId={sandbox.id}
+            owned={sandbox.owned}
+            showEditor={sandbox.showEditor}
+            showPreview={sandbox.showPreview}
+            sandboxLiked={sandbox.userLiked}
+            sandboxLikeCount={sandbox.likeCount}
             sandboxActions={sandboxActions}
             userActions={userActions}
             modalActions={modalActions}
@@ -228,6 +245,8 @@ class EditorPreview extends React.PureComponent<Props, State> {
             workspaceHidden={workspaceHidden}
             toggleWorkspace={toggleWorkspace}
             canSave={notSynced}
+            modules={sandbox.modules}
+            directories={sandbox.directories}
           />
           <SplitPane
             onDragStarted={this.startResizing}
