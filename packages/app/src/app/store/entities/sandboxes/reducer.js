@@ -95,6 +95,10 @@ function singleSandboxReducer(sandbox: Sandbox, action: Action): Sandbox {
       return newSandbox;
     }
     case CLOSE_TAB: {
+      if (sandbox.tabs.length === 1) {
+        return sandbox;
+      }
+
       const tabPos = action.position;
       let currentModule = sandbox.currentModule;
       const tabModuleId = sandbox.tabs[tabPos].moduleId;
