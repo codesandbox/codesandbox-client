@@ -39,13 +39,11 @@ export default class SearchDependencies extends React.PureComponent {
   render() {
     const { searchState } = this.state;
     const showHits = searchState.query;
-    // Copied from https://github.com/yarnpkg/website/blob/956150946634b1e6ae8c3aebd3fd269744180738/scripts/sitemaps.js
-    // TODO: Use our own key
     return (
       <div>
         <InstantSearch
           appId="OFCNCOG2CU"
-          apiKey="f54e21fa3a2a0160595bb058179bfb1e"
+          apiKey="00383ecd8441ead30b1b0ff981c426f5"
           indexName="npm-search"
           searchState={searchState}
           onSearchStateChange={this.handleSearchStateChange}
