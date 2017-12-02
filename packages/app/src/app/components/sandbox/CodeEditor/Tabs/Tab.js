@@ -113,6 +113,13 @@ export default class Tab extends React.PureComponent<Props, State> {
     });
   };
 
+  onMouseDown = (e: MouseEvent) => {
+    if (e.button === 1) {
+      // Middle mouse button
+      this.closeTab(e);
+    }
+  };
+
   closeTab = (e: MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -143,6 +150,7 @@ export default class Tab extends React.PureComponent<Props, State> {
         isOver={isOver}
         onClick={onClick}
         onDoubleClick={onDoubleClick}
+        onMouseDown={this.onMouseDown}
         onMouseEnter={this.handleMouseEnter}
         onMouseLeave={this.handleMouseLeave}
       >
