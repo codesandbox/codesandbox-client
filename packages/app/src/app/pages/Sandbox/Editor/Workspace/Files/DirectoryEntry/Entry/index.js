@@ -41,6 +41,7 @@ type Props = {
   isInProjectView: boolean, // eslint-disable-line
   moduleHasError: boolean,
   closeTree: ?() => void, // eslint-disable-line
+  markTabsNotDirty: Function,
 };
 
 type State = {
@@ -174,6 +175,7 @@ class Entry extends React.PureComponent<Props, State> {
       onCreateDirectoryClick,
       deleteEntry,
       onClick,
+      markTabsNotDirty,
       rename,
       isNotSynced,
       isMainModule,
@@ -186,6 +188,7 @@ class Entry extends React.PureComponent<Props, State> {
       <div>
         <EntryContainer
           onClick={setCurrentModule ? this.setCurrentModule : onClick}
+          onDoubleClick={markTabsNotDirty}
           depth={depth}
           nameValidationError={error}
           active={active}
