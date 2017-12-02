@@ -220,6 +220,10 @@ class DirectoryEntry extends React.PureComponent {
     sandboxActions.setCurrentModule(sandboxId, moduleId);
   };
 
+  markTabsNotDirty = () => {
+    this.props.sandboxActions.markTabsNotDirty(this.props.sandboxId);
+  };
+
   render() {
     const {
       id,
@@ -291,6 +295,7 @@ class DirectoryEntry extends React.PureComponent {
             setCurrentModule={this.setCurrentModule}
             currentModuleId={currentModuleId}
             isInProjectView={isInProjectView}
+            markTabsNotDirty={this.markTabsNotDirty}
           />
           {creating === 'module' && (
             <Entry
