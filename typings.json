@@ -1,8 +1,0 @@
-{
-  "dependencies": {
-    "react-dom": "registry:npm/react-dom#15.0.1+20160826174104"
-  },
-  "globalDependencies": {
-    "react-dom": "registry:dt/react-dom#0.14.0+20160412154040"
-  }
-}

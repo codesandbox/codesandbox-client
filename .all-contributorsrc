@@ -67,7 +67,7 @@
       "login": "viankakrisna",
       "name": "Ade Viankakrisna Fadlil",
       "avatar_url": "https://avatars1.githubusercontent.com/u/9636410?v=4",
-      "profile": "https://musify.id",
+      "profile": "https://github.com/viankakrisna",
       "contributions": [
         "code"
       ]
@@ -197,6 +197,25 @@
       "contributions": [
         "bug",
         "code"
+      ]
+    }, {
+      "login": "duivvv",
+      "name": "Geoffrey Dhuyvetters",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/89046?v=4",
+      "profile": "https://github.com/duivvv",
+      "contributions": [
+        "design",
+        "code"
+      ]
+    },
+    {
+      "login": "nagamalli9999",
+      "name": "Eswar Yaganti",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/3381746?v=4",
+      "profile": "http://nyaganti.com",
+      "contributions": [
+        "code",
+        "infra"
       ]
     }
   ]
