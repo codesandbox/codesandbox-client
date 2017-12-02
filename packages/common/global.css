@@ -37,10 +37,6 @@ a {
   color: #6caedd;
 }
 
-::-webkit-scrollbar {
-  width: 0.5rem;
-}
-
 ::-webkit-scrollbar-thumb {
   transition: 0.3s ease all;
   border-color: transparent;

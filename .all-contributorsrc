@@ -208,6 +208,16 @@
         "code",
         "infra"
       ]
+    },
+    {
+      "login": "maciej-ka",
+      "name": "Maciej Kasprzyk",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/5403694?v=4",
+      "profile": "http://maciej-ka.github.io",
+      "contributions": [
+        "bug",
+        "code"
+      ]
     }
   ]
 }
