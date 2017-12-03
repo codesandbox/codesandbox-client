@@ -8,7 +8,7 @@ import Cube from '../../../components/Cube';
 import media from '../../../utils/media';
 import getScrollPos from '../../../utils/scroll';
 
-const RADIUS = 300;
+const RADIUS = 250;
 const Container = styled.div`
   flex: 2;
   position: relative;
