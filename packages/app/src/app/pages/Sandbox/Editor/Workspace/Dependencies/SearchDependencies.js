@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  InstantSearch,
-  Configure,
-  Hits,
-  SearchBox,
-} from 'react-instantsearch/dom';
+import { InstantSearch, Configure } from 'react-instantsearch/dom';
 import { connectAutoComplete } from 'react-instantsearch/connectors';
 import Downshift from 'downshift';
 
@@ -47,6 +42,7 @@ export default class SearchDependencies extends React.PureComponent {
         apiKey="00383ecd8441ead30b1b0ff981c426f5"
         indexName="npm-search"
       >
+        <Configure hitsPerPage={5} />
         <ConnectedAutoComplete
           onSelect={this.handleSelect}
           onHitClick={this.handleHitClick}
@@ -67,13 +63,8 @@ function RawAutoComplete({
   refine,
   currentRefinement,
 }) {
-  return [
-    <Configure key="configure" hitsPerPage={5} />,
-    <Downshift
-      key="downshift"
-      itemToString={hit => (hit ? hit.name : hit)}
-      onSelect={onSelect}
-    >
+  return (
+    <Downshift itemToString={hit => (hit ? hit.name : hit)} onSelect={onSelect}>
       {({ getInputProps, getItemProps, highlightedIndex }) => (
         <div>
           <input
@@ -105,8 +96,8 @@ function RawAutoComplete({
           )}
         </div>
       )}
-    </Downshift>,
-  ];
+    </Downshift>
+  );
 }
 
 const ConnectedAutoComplete = connectAutoComplete(RawAutoComplete);
