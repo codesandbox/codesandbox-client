@@ -2,11 +2,12 @@ import React from 'react';
 import { InstantSearch, Configure } from 'react-instantsearch/dom';
 import { connectAutoComplete } from 'react-instantsearch/connectors';
 import Downshift from 'downshift';
+import styled from 'styled-components';
+
+import DependencyHit from './DependencyHit';
 
 import 'app/pages/Search/Search.css';
 import './Dependencies.css';
-
-import DependencyHit from './DependencyHit';
 
 type Props = {
   onConfirm: (dependency: string, version: string) => Promise<boolean>,
@@ -53,6 +54,16 @@ export default class SearchDependencies extends React.PureComponent {
   }
 }
 
+const AutoCompleteInput = styled.input`
+  width: 100%;
+  box-sizing: border-box;
+  border: none;
+  outline: none;
+  background-color: ${props => props.theme.background};
+  color: ${props => props.theme.white};
+  padding: 1em;
+}`;
+
 function RawAutoComplete({
   /* Props */
   onSelect,
@@ -67,7 +78,7 @@ function RawAutoComplete({
     <Downshift itemToString={hit => (hit ? hit.name : hit)} onSelect={onSelect}>
       {({ getInputProps, getItemProps, highlightedIndex }) => (
         <div>
-          <input
+          <AutoCompleteInput
             {...getInputProps({
               value: currentRefinement,
               onChange(e) {

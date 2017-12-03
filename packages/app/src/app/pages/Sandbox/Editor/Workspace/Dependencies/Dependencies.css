@@ -5,12 +5,3 @@
    */
   background: transparent;
 }
-
-.ais-SearchBox__wrapper {
-  margin-bottom: 0;
-}
-
-.ais-SearchBox__input {
-  /* theme.background */
-  background: #24282a;
-}

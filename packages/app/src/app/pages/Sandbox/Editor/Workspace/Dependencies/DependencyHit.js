@@ -11,7 +11,7 @@ import GitHubLogo from '../Git/modals/GitHubLogo';
 const Container = styled.div`
   display: flex;
   background: ${props =>
-    props.highlighted ? props.theme.background : props.theme.background2};
+    props.highlighted ? props.theme.background3 : props.theme.background2};
   color: ${props => props.theme.white};
   cursor: pointer;
   &:not(:last-child) {
