@@ -3,7 +3,7 @@ import puppeteer from 'puppeteer';
 const SANDBOXES = [
   'new',
   'preact',
-  { id: 'vue', root: '#app' },
+  'vue',
   'svelte',
   'react-ts',
   'github/reactjs/redux/tree/master/examples/todomvc',
@@ -12,19 +12,17 @@ const SANDBOXES = [
   'github/faceyspacey/redux-first-router-codesandbox/tree/master',
   'mZRjw05yp',
   'pk1qjqpw67',
-  { id: 'o29j95wx9', root: '#app' },
-  { id: 'k3q1zjjml5', root: '#app' },
+  'o29j95wx9',
+  'k3q1zjjml5',
   'github/reactjs/redux/tree/master/examples/real-world',
-  { id: 'github/CompuIves/codesandbox-presentation', timeout: 60000 },
+  'github/CompuIves/codesandbox-presentation',
   'lp5rjr0z4z',
   'nOymMxyY',
 ];
 
 SANDBOXES.forEach(sandbox => {
   const id = sandbox.id || sandbox;
-  const root = sandbox.root || '#root';
   const threshold = sandbox.threshold || 0.01;
-  const timeout = sandbox.timeout || 30000;
   let browser = puppeteer.launch({
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
   });
@@ -39,12 +37,10 @@ SANDBOXES.forEach(sandbox => {
       async () => {
         browser = await browser;
         const page = await browser.newPage();
-        await page.goto('http://localhost:3001/#' + id);
-        await page.waitForSelector(root, { timeout });
+        await page.goto('http://localhost:3001/#' + id, {
+          waitUntil: 'networkidle0',
+        });
         await page.waitFor(2000);
-
-        // const html = await page.evaluate(() => document.body.innerHTML);
-        // expect(html).toMatchSnapshot(id.split('/').join('-'));
 
         const screenshot = await page.screenshot();
 
