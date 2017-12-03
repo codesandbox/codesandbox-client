@@ -4,10 +4,9 @@ import styled from 'styled-components';
 import PrettierIcon from 'react-icons/lib/md/brush';
 
 import type { Module, Directory } from 'common/types';
+import Tooltip from 'common/components/Tooltip';
 
 import Tab from './TabContainer';
-
-import Tooltip from 'common/components/Tooltip';
 
 const Container = styled.div`
   display: flex;

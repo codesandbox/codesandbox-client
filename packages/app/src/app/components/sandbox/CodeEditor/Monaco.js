@@ -869,7 +869,7 @@ export default class CodeEditor extends React.Component<Props, State> {
   getCode = () => this.editor.getValue();
 
   handleSaveCode = async () => {
-    const { saveCode, preferences } = this.props;
+    const { saveCode } = this.props;
 
     const { id } = this.props;
     this.props.changeCode(id, this.getCode());
