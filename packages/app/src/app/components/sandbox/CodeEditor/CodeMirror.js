@@ -296,21 +296,44 @@ export default class CodeEditor extends React.Component<Props, State> {
     const kind = title.match(/\.([^.]*)$/);
 
     if (kind) {
-      if (kind[1] === 'css') {
+      if (kind[1] === 'css' || kind[1] === 'scss' || kind[1] === 'less') {
         await System.import(
           /* webpackChunkName: 'codemirror-css' */ 'codemirror/mode/css/css'
         );
+        if (kind[1] === 'less') {
+          return 'text/x-less';
+        }
+        if (kind[1] === 'scss') {
+          return 'text/x-scss';
+        }
         return 'css';
       } else if (kind[1] === 'html' || kind[1] === 'vue') {
         await System.import(
           /* webpackChunkName: 'codemirror-html' */ 'codemirror/mode/htmlmixed/htmlmixed'
         );
+
+        if (kind[1] === 'vue') {
+          return 'text/x-vue';
+        }
+
         return 'htmlmixed';
       } else if (kind[1] === 'md') {
         await System.import(
           /* webpackChunkName: 'codemirror-markdown' */ 'codemirror/mode/markdown/markdown'
         );
         return 'markdown';
+      } else if (kind[1] === 'json') {
+        return 'application/json';
+      } else if (kind[1] === 'sass') {
+        await System.import(
+          /* webpackChunkName: 'codemirror-sass' */ 'codemirror/mode/sass/sass'
+        );
+        return 'sass';
+      } else if (kind[1] === 'styl') {
+        await System.import(
+          /* webpackChunkName: 'codemirror-sass' */ 'codemirror/mode/stylus/stylus'
+        );
+        return 'stylus';
       }
     }
 

@@ -1,10 +1,12 @@
 // @flow
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import PrettierIcon from 'react-icons/lib/md/brush';
 
 import type { Module, Directory } from 'common/types';
 import Tooltip from 'common/components/Tooltip';
+
+import { canPrettify } from 'app/store/entities/sandboxes/modules/utils/prettify';
 
 import Tab from './TabContainer';
 
@@ -43,6 +45,13 @@ const StyledPrettierIcon = styled(PrettierIcon)`
   &:hover {
     opacity: 1;
   }
+
+  ${props =>
+    props.disabled &&
+    css`
+      opacity: 0;
+      pointer-events: none;
+    `};
 `;
 
 const IconContainer = styled.div`
@@ -127,6 +136,14 @@ export default class EditorTabs extends React.PureComponent<Props> {
     this.props.prettifyModule(this.props.currentModuleId);
   };
 
+  canPrettify = (module: ?Module) => {
+    if (!module) {
+      return false;
+    }
+
+    return canPrettify(module.title);
+  };
+
   container: HTMLElement;
   tabEls = {};
   tabEls: {
@@ -150,6 +167,8 @@ export default class EditorTabs extends React.PureComponent<Props> {
       tabNamesObject[module.title] = tabNamesObject[module.title] || [];
       tabNamesObject[module.title].push(module.id);
     });
+
+    const currentModule = moduleObject[currentModuleId];
 
     return (
       <Container>
@@ -202,7 +221,10 @@ export default class EditorTabs extends React.PureComponent<Props> {
         </TabsContainer>
         <IconContainer>
           <Tooltip title="Prettify">
-            <StyledPrettierIcon onClick={this.prettifyModule} />
+            <StyledPrettierIcon
+              disabled={!this.canPrettify(currentModule)}
+              onClick={this.prettifyModule}
+            />
           </Tooltip>
         </IconContainer>
       </Container>

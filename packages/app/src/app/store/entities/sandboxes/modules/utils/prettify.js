@@ -1,15 +1,15 @@
 import { DEFAULT_PRETTIER_CONFIG } from 'app/store/preferences/reducer';
 
-function getParser(mode) {
-  if (mode === 'jsx') return 'babylon';
-  if (mode === 'json') return 'json';
-  if (mode === 'css') return 'postcss';
-  if (mode === 'html') return 'parse5';
-  if (mode === 'typescript') return 'typescript';
-  if (mode === 'graphql') return 'graphql';
+// function getParser(mode) {
+//   if (mode === 'jsx') return 'babylon';
+//   if (mode === 'json') return 'json';
+//   if (mode === 'css') return 'postcss';
+//   if (mode === 'html') return 'parse5';
+//   if (mode === 'typescript') return 'typescript';
+//   if (mode === 'graphql') return 'graphql';
 
-  return 'babylon';
-}
+//   return 'babylon';
+// }
 
 function getMode(title: string) {
   if (/\.jsx?$/.test(title)) {
@@ -43,6 +43,10 @@ function getMode(title: string) {
   return null;
 }
 
+export function canPrettify(title) {
+  return !!getMode(title);
+}
+
 let worker = null;
 
 export default function prettify(
@@ -65,21 +69,30 @@ export default function prettify(
       options: {
         ...DEFAULT_PRETTIER_CONFIG,
         ...prettierConfig,
-        parser: getParser(mode),
+        parser: mode,
       },
     });
 
+    let timeout = setTimeout(() => {
+      // If worker doesn't respond in time
+      resolve(code);
+    }, 5000);
+
     worker.onmessage = e => {
       const { formatted, text, error } = e.data;
-      if (text === code) {
-        if (error) {
-          console.error(error);
-          resolve(text);
-        }
-        if (formatted) {
-          resolve(formatted);
-        } else {
-          resolve(text);
+      if (timeout) {
+        clearTimeout(timeout);
+        timeout = null;
+        if (text === code) {
+          if (error) {
+            console.error(error);
+            resolve(text);
+          }
+          if (formatted) {
+            resolve(formatted);
+          } else {
+            resolve(text);
+          }
         }
       }
     };
