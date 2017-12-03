@@ -80,6 +80,9 @@ function RawAutoComplete({
         <div>
           <AutoCompleteInput
             {...getInputProps({
+              innerRef(ref) {
+                ref && ref.focus();
+              },
               value: currentRefinement,
               onChange(e) {
                 refine(e.target.value);
