@@ -10,8 +10,10 @@ import GitHubLogo from '../Git/modals/GitHubLogo';
 
 const Container = styled.div`
   display: flex;
-  background: ${props => props.theme.background2};
+  background: ${props =>
+    props.highlighted ? props.theme.background : props.theme.background2};
   color: ${props => props.theme.white};
+  cursor: pointer;
   &:not(:last-child) {
     border-bottom: 1px solid ${props => props.theme.background3};
   }
@@ -52,8 +54,10 @@ const IconLink = styled.a`
 `;
 
 type Props = {
+  highlighted: boolean,
   hit: Object,
   onClick: Function,
+  onVersionChange: Function,
 };
 
 type State = {
@@ -68,34 +72,18 @@ export default class DependencyHit extends React.PureComponent {
   props: Props;
   state = initialState;
 
-  handleClick = () => {
-    const { props, state } = this;
-    props.onClick(props.hit, state.selectedVersion);
-  };
-
-  handleKeyUp = e => {
-    const { key } = e;
-    if (key === 'Enter') {
-      this.handleClick();
-    }
-  };
-
   handleVersionChange = e => {
     const selectedVersion = e.target.value;
     this.setState({ selectedVersion });
+    this.props.onVersionChange(selectedVersion);
   };
 
   render() {
-    const { hit, onClick } = this.props;
+    const { highlighted, hit, onClick } = this.props;
     const versions = Object.keys(hit.versions);
     versions.reverse();
     return (
-      <Container
-        role="button"
-        tabIndex={0}
-        onClick={this.handleClick}
-        onKeyUp={this.handleKeyUp}
-      >
+      <Container highlighted={highlighted} onClick={onClick}>
         <Left>
           <Row>
             <Highlight attributeName="name" hit={hit} />
@@ -142,12 +130,6 @@ export default class DependencyHit extends React.PureComponent {
       </Container>
     );
   }
-}
-
-export function hitComponent(onClick) {
-  return ({ hit }) => {
-    return <DependencyHit hit={hit} onClick={onClick} />;
-  };
 }
 
 export function formatDownloads(downloads) {
