@@ -407,6 +407,14 @@ export default class CodeEditor extends React.Component<Props, State> {
       this.fetchDependencyTypings(nextDependencies);
     }
 
+    if (
+      this.editor &&
+      this.getCode() !== nextProps.code &&
+      this.props.id === nextProps.id
+    ) {
+      this.updateCode(nextProps.code);
+    }
+
     return (
       nextProps.sandboxId !== this.props.sandboxId ||
       nextProps.id !== this.props.id ||
@@ -491,6 +499,10 @@ export default class CodeEditor extends React.Component<Props, State> {
   }
 
   updateCode(code: string = '') {
+    if (!this.editor || !this.editor.getModel()) {
+      return;
+    }
+
     const pos = this.editor.getPosition();
     const lines = this.editor.getModel().getLinesContent();
     const lastLine = lines.length;
@@ -864,40 +876,9 @@ export default class CodeEditor extends React.Component<Props, State> {
 
   getCode = () => this.editor.getValue();
 
-  prettify = async () => {
-    const { id, title, preferences } = this.props;
-    const code = this.getCode();
-    const mode = await this.getMode(title);
-
-    if (
-      mode === 'javascript' ||
-      mode === 'typescript' ||
-      mode === 'json' ||
-      mode === 'css'
-    ) {
-      try {
-        const prettify = await import(/* webpackChunkName: 'prettier' */ 'app/utils/codemirror/prettify');
-        const newCode = await prettify.default(
-          code,
-          mode === 'javascript' ? 'jsx' : mode,
-          preferences.prettierConfig
-        );
-
-        if (newCode && newCode !== code) {
-          this.props.changeCode(id, newCode);
-          this.updateCode(newCode);
-        }
-      } catch (e) {
-        console.error(e);
-      }
-    }
-  };
-
   handleSaveCode = async () => {
-    const { saveCode, preferences } = this.props;
-    if (preferences.prettifyOnSaveEnabled) {
-      await this.prettify();
-    }
+    const { saveCode } = this.props;
+
     const { id } = this.props;
     this.props.changeCode(id, this.getCode());
     saveCode();

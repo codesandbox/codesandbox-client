@@ -27,7 +27,7 @@ self.onmessage = function(message) {
   try {
     var formatted = formatCode(message.data.text, options);
   } catch (e) {
-    self.postMessage({ error: e.message });
+    self.postMessage({ error: e.message, text: message.data.text });
     return;
   }
   var doc;
