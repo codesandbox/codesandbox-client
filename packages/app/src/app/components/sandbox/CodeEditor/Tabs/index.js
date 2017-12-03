@@ -1,10 +1,13 @@
 // @flow
 import React from 'react';
 import styled from 'styled-components';
+import PrettierIcon from 'react-icons/lib/md/brush';
 
 import type { Module, Directory } from 'common/types';
 
 import Tab from './TabContainer';
+
+import Tooltip from 'common/components/Tooltip';
 
 const Container = styled.div`
   display: flex;
@@ -13,6 +16,12 @@ const Container = styled.div`
   color: rgba(255, 255, 255, 0.8);
 
   background-color: rgba(0, 0, 0, 0.3);
+`;
+
+const TabsContainer = styled.div`
+  display: flex;
+  height: 2.5rem;
+  flex: 1 0 2.5rem;
 
   overflow-x: auto;
   overflow-y: hidden;
@@ -22,6 +31,27 @@ const Container = styled.div`
   &::-webkit-scrollbar {
     height: 2px;
   }
+`;
+
+const StyledPrettierIcon = styled(PrettierIcon)`
+  transition: 0.3s ease opacity;
+  width: 1.125rem;
+  height: 1.125rem;
+  cursor: pointer;
+
+  opacity: 0.6;
+
+  &:hover {
+    opacity: 1;
+  }
+`;
+
+const IconContainer = styled.div`
+  display: flex;
+  align-items: center;
+  float: right;
+  flex-shrink: 1;
+  padding: 0 0.75rem;
 `;
 
 type Props = {
@@ -34,6 +64,7 @@ type Props = {
   directories: Array<Directory>,
   currentModuleId: string,
   sandboxId: string,
+  prettifyModule: (id: string) => void,
 };
 
 export default class EditorTabs extends React.PureComponent<Props> {
@@ -93,6 +124,10 @@ export default class EditorTabs extends React.PureComponent<Props> {
     this.props.setCurrentModule(this.props.sandboxId, moduleId);
   };
 
+  prettifyModule = () => {
+    this.props.prettifyModule(this.props.currentModuleId);
+  };
+
   container: HTMLElement;
   tabEls = {};
   tabEls: {
@@ -118,49 +153,59 @@ export default class EditorTabs extends React.PureComponent<Props> {
     });
 
     return (
-      <Container
-        innerRef={el => {
-          this.container = el;
-        }}
-      >
-        {tabs
-          .map(tab => ({ ...tab, module: moduleObject[tab.moduleId] }))
-          .map((tab, i) => {
-            const { module } = tab;
-            const modulesWithName = tabNamesObject[module.title];
-            let dirName = null;
+      <Container>
+        <TabsContainer
+          innerRef={el => {
+            this.container = el;
+          }}
+        >
+          {tabs
+            .map(tab => ({ ...tab, module: moduleObject[tab.moduleId] }))
+            .map((tab, i) => {
+              const { module } = tab;
+              const modulesWithName = tabNamesObject[module.title];
+              let dirName = null;
 
-            if (modulesWithName.length > 1 && module.directoryShortid != null) {
-              const dir = directories.find(
-                d =>
-                  d.shortid === module.directoryShortid &&
-                  d.sourceId === module.sourceId
-              );
+              if (
+                modulesWithName.length > 1 &&
+                module.directoryShortid != null
+              ) {
+                const dir = directories.find(
+                  d =>
+                    d.shortid === module.directoryShortid &&
+                    d.sourceId === module.sourceId
+                );
 
-              if (dir) {
-                dirName = dir.title;
+                if (dir) {
+                  dirName = dir.title;
+                }
               }
-            }
 
-            return (
-              <Tab
-                setCurrentModule={this.setCurrentModule}
-                active={currentModuleId === tab.module.id}
-                key={tab.module.id}
-                module={tab.module}
-                closeTab={this.closeTab}
-                moveTab={this.moveTab}
-                markNotDirty={this.markNotDirty}
-                dirName={dirName}
-                tabCount={tabs.length}
-                position={i}
-                dirty={tab.dirty}
-                innerRef={el => {
-                  this.tabEls[tab.module.id] = el;
-                }}
-              />
-            );
-          })}
+              return (
+                <Tab
+                  setCurrentModule={this.setCurrentModule}
+                  active={currentModuleId === tab.module.id}
+                  key={tab.module.id}
+                  module={tab.module}
+                  closeTab={this.closeTab}
+                  moveTab={this.moveTab}
+                  markNotDirty={this.markNotDirty}
+                  dirName={dirName}
+                  tabCount={tabs.length}
+                  position={i}
+                  dirty={tab.dirty}
+                  innerRef={el => {
+                    this.tabEls[tab.module.id] = el;
+                  }}
+                />
+              );
+            })}
+        </TabsContainer>
+        <IconContainer>
+          <Tooltip title="Prettify">
+            <StyledPrettierIcon onClick={this.prettifyModule} />
+          </Tooltip>
+        </IconContainer>
       </Container>
     );
   }

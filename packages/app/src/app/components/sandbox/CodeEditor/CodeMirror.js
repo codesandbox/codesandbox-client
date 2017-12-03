@@ -224,6 +224,7 @@ export default class CodeEditor extends React.Component<Props, State> {
     return (
       nextProps.id !== this.props.id ||
       nextProps.errors !== this.props.errors ||
+      nextProps.code !== this.getCode() ||
       this.props.preferences !== nextProps.preferences
     );
   }
@@ -462,34 +463,8 @@ export default class CodeEditor extends React.Component<Props, State> {
 
   getCode = () => this.codemirror.getValue();
 
-  prettify = async () => {
-    const { id, title, preferences } = this.props;
-    const code = this.getCode();
-    const mode = await this.getMode(title);
-    if (mode === 'jsx' || mode === 'typescript' || mode === 'css') {
-      try {
-        const prettify = await import(/* webpackChunkName: 'prettier' */ 'app/utils/codemirror/prettify');
-        const newCode = await prettify.default(
-          code,
-          mode,
-          preferences.prettierConfig
-        );
-
-        if (newCode && newCode !== code) {
-          this.props.changeCode(id, newCode);
-          this.updateCodeMirrorCode(newCode);
-        }
-      } catch (e) {
-        console.error(e);
-      }
-    }
-  };
-
   handleSaveCode = async () => {
-    const { saveCode, preferences } = this.props;
-    if (preferences.prettifyOnSaveEnabled) {
-      await this.prettify();
-    }
+    const { saveCode } = this.props;
     const { id } = this.props;
     this.props.changeCode(id, this.getCode());
     saveCode();

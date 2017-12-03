@@ -172,6 +172,7 @@ class EditorPreview extends React.PureComponent<Props, State> {
           closeTab={sandboxActions.closeTab}
           moveTab={sandboxActions.moveTab}
           markNotDirty={sandboxActions.markTabsNotDirty}
+          prettifyModule={moduleActions.prettifyModule}
         />
         <CodeEditor
           changeCode={moduleActions.setCode}
