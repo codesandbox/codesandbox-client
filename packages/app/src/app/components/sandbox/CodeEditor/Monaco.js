@@ -495,6 +495,10 @@ export default class CodeEditor extends React.Component<Props, State> {
   }
 
   updateCode(code: string = '') {
+    if (!this.editor || !this.editor.getModel()) {
+      return;
+    }
+
     const pos = this.editor.getPosition();
     const lines = this.editor.getModel().getLinesContent();
     const lastLine = lines.length;
