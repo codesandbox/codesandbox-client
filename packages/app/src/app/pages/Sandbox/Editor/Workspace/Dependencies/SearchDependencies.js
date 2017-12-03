@@ -1,5 +1,5 @@
 import React from 'react';
-import { InstantSearch, Configure } from 'react-instantsearch/dom';
+import { InstantSearch, Configure, Pagination } from 'react-instantsearch/dom';
 import { connectAutoComplete } from 'react-instantsearch/connectors';
 import Downshift from 'downshift';
 import styled from 'styled-components';
@@ -13,17 +13,8 @@ type Props = {
   onConfirm: (dependency: string, version: string) => Promise<boolean>,
 };
 
-type State = {
-  searchState: Object,
-};
-
-const initialState: State = {
-  searchState: {},
-};
-
 export default class SearchDependencies extends React.PureComponent {
   props: Props;
-  state = initialState;
   hitToVersionMap = new Map();
 
   handleSelect = hit => {
@@ -36,7 +27,6 @@ export default class SearchDependencies extends React.PureComponent {
   };
 
   render() {
-    const { searchState } = this.state;
     return (
       <InstantSearch
         appId="OFCNCOG2CU"
@@ -49,6 +39,7 @@ export default class SearchDependencies extends React.PureComponent {
           onHitClick={this.handleHitClick}
           onHitVersionChange={this.handleHitVersionChange}
         />
+        <Pagination />
       </InstantSearch>
     );
   }
@@ -89,25 +80,23 @@ function RawAutoComplete({
               },
             })}
           />
-          {!!currentRefinement && (
-            <div>
-              {hits.map((hit, index) => (
-                <DependencyHit
-                  key={hit.name}
-                  {...getItemProps({
-                    item: hit,
-                    index,
-                    highlighted: highlightedIndex === index,
-                    hit: hit,
-                    /* Downshift supplies onClick */
-                    onVersionChange(version) {
-                      onHitVersionChange(hit, version);
-                    },
-                  })}
-                />
-              ))}
-            </div>
-          )}
+          <div>
+            {hits.map((hit, index) => (
+              <DependencyHit
+                key={hit.name}
+                {...getItemProps({
+                  item: hit,
+                  index,
+                  highlighted: highlightedIndex === index,
+                  hit: hit,
+                  /* Downshift supplies onClick */
+                  onVersionChange(version) {
+                    onHitVersionChange(hit, version);
+                  },
+                })}
+              />
+            ))}
+          </div>
         </div>
       )}
     </Downshift>
