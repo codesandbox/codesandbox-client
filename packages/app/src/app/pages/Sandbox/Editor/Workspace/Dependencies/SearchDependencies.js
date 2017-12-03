@@ -39,7 +39,6 @@ export default class SearchDependencies extends React.PureComponent {
           onHitClick={this.handleHitClick}
           onHitVersionChange={this.handleHitVersionChange}
         />
-        <Pagination />
       </InstantSearch>
     );
   }
@@ -80,6 +79,7 @@ function RawAutoComplete({
               },
             })}
           />
+          <Pagination />
           <div>
             {hits.map((hit, index) => (
               <DependencyHit
