@@ -3,32 +3,11 @@ import HomeIcon from 'react-icons/lib/io/home';
 import { Highlight } from 'react-instantsearch/dom';
 import styled from 'styled-components';
 
-import Tooltip from 'common/components/Tooltip';
 import Select from 'app/components/Select';
+import Tooltip from 'common/components/Tooltip';
 
 import GitHubLogo from '../Git/modals/GitHubLogo';
-
-function makeGitHubRepoUrl(repo) {
-  return `https://github.com/${repo.user}/${repo.project}`;
-}
-
-function stopPropagation(e) {
-  e.stopPropagation();
-}
-
-export function formatDownloads(downloads) {
-  if (downloads >= 1000000) {
-    const x = Math.floor(downloads / 100000);
-    const millions = x / 10;
-    return millions + 'M';
-  }
-  if (downloads >= 1000) {
-    const x = Math.floor(downloads / 100);
-    const thousands = x / 10;
-    return thousands + 'K';
-  }
-  return downloads.toString();
-}
+import formatDownloads from './formatDownloads';
 
 const Container = styled.div`
   display: flex;
@@ -94,6 +73,14 @@ export default class DependencyHit extends React.PureComponent {
   props: Props;
   state = initialState;
 
+  makeGitHubRepoUrl(repo) {
+    return `https://github.com/${repo.user}/${repo.project}`;
+  }
+
+  stopPropagation(e) {
+    e.stopPropagation();
+  }
+
   handleVersionChange = e => {
     const selectedVersion = e.target.value;
     this.setState({ selectedVersion });
@@ -119,10 +106,10 @@ export default class DependencyHit extends React.PureComponent {
             {hit.githubRepo && (
               <Tooltip title={`GitHub repository of ${hit.name}`}>
                 <IconLink
-                  href={makeGitHubRepoUrl(hit.githubRepo)}
+                  href={this.makeGitHubRepoUrl(hit.githubRepo)}
                   target="_blank"
                   rel="noreferrer noopener"
-                  onClick={stopPropagation}
+                  onClick={this.stopPropagation}
                 >
                   <GitHubLogo />
                 </IconLink>
@@ -134,14 +121,14 @@ export default class DependencyHit extends React.PureComponent {
                   href={hit.homepage}
                   target="_blank"
                   rel="noreferrer noopener"
-                  onClick={stopPropagation}
+                  onClick={this.stopPropagation}
                 >
                   <HomeIcon />
                 </IconLink>
               </Tooltip>
             )}
             <Select
-              onClick={stopPropagation}
+              onClick={this.stopPropagation}
               onChange={this.handleVersionChange}
               value={this.state.selectedVersion}
             >

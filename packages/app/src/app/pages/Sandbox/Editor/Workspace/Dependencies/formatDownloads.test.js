@@ -1,4 +1,4 @@
-import { formatDownloads } from './DependencyHit';
+import formatDownloads from './formatDownloads';
 
 describe('formatDownloads', () => {
   it('leaves numbers under 1000 unchanged', () => {

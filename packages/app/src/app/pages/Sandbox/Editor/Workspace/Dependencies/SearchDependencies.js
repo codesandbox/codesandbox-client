@@ -9,40 +9,6 @@ import 'app/pages/Search/Search.css';
 import DependencyHit from './DependencyHit';
 import './Dependencies.css';
 
-type Props = {
-  onConfirm: (dependency: string, version: string) => Promise<boolean>,
-};
-
-export default class SearchDependencies extends React.PureComponent {
-  props: Props;
-  hitToVersionMap = new Map();
-
-  handleSelect = hit => {
-    const version = this.hitToVersionMap.get(hit);
-    this.props.onConfirm(hit.name, version);
-  };
-
-  handleHitVersionChange = (hit, version) => {
-    this.hitToVersionMap.set(hit, version);
-  };
-
-  render() {
-    return (
-      <InstantSearch
-        appId="OFCNCOG2CU"
-        apiKey="00383ecd8441ead30b1b0ff981c426f5"
-        indexName="npm-search"
-      >
-        <Configure hitsPerPage={5} />
-        <ConnectedAutoComplete
-          onSelect={this.handleSelect}
-          onHitVersionChange={this.handleHitVersionChange}
-        />
-      </InstantSearch>
-    );
-  }
-}
-
 const AutoCompleteInput = styled.input`
   width: 100%;
   box-sizing: border-box;
@@ -110,3 +76,37 @@ function RawAutoComplete({
 }
 
 const ConnectedAutoComplete = connectAutoComplete(RawAutoComplete);
+
+type Props = {
+  onConfirm: (dependency: string, version: string) => Promise<boolean>,
+};
+
+export default class SearchDependencies extends React.PureComponent {
+  props: Props;
+  hitToVersionMap = new Map();
+
+  handleSelect = hit => {
+    const version = this.hitToVersionMap.get(hit);
+    this.props.onConfirm(hit.name, version);
+  };
+
+  handleHitVersionChange = (hit, version) => {
+    this.hitToVersionMap.set(hit, version);
+  };
+
+  render() {
+    return (
+      <InstantSearch
+        appId="OFCNCOG2CU"
+        apiKey="00383ecd8441ead30b1b0ff981c426f5"
+        indexName="npm-search"
+      >
+        <Configure hitsPerPage={5} />
+        <ConnectedAutoComplete
+          onSelect={this.handleSelect}
+          onHitVersionChange={this.handleHitVersionChange}
+        />
+      </InstantSearch>
+    );
+  }
+}
