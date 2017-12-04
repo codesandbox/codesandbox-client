@@ -198,7 +198,8 @@
         "bug",
         "code"
       ]
-    }, {
+    },
+    {
       "login": "duivvv",
       "name": "Geoffrey Dhuyvetters",
       "avatar_url": "https://avatars3.githubusercontent.com/u/89046?v=4",
@@ -216,6 +217,15 @@
       "contributions": [
         "code",
         "infra"
+      ]
+    },
+    {
+      "login": "tansongyang",
+      "name": "Frank Tan",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/9488719?v=4",
+      "profile": "https://github.com/tansongyang",
+      "contributions": [
+        "code"
       ]
     }
   ]
