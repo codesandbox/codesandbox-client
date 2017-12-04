@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 function noop() {}
 
-class MonacoEditor extends React.Component {
+class MonacoEditor extends React.PureComponent {
   constructor(props) {
     super(props);
     this.containerElement = undefined;

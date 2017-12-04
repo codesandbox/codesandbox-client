@@ -47,8 +47,8 @@ const Container = styled.div`
   background-color: ${props => props.theme.background};
   height: 100%;
   width: 100%;
-  overflow: auto;
   overflow-y: overlay;
+  overflow-x: auto;
 
   > div {
     ${fadeIn(0)};
@@ -138,9 +138,7 @@ class Workspace extends React.PureComponent<Props> {
               />
             </WorkspaceItem>
 
-            <WorkspaceItem defaultOpen keepState title="Files">
-              <Files sandbox={sandbox} sandboxActions={sandboxActions} />
-            </WorkspaceItem>
+            <Files sandbox={sandbox} sandboxActions={sandboxActions} />
 
             <WorkspaceItem title="Dependencies">
               <Dependencies
@@ -158,6 +156,8 @@ class Workspace extends React.PureComponent<Props> {
             </WorkspaceItem>
 
             {sandbox.owned &&
+              currentUser &&
+              currentUser.jwt &&
               !sandbox.git && (
                 <WorkspaceItem title="GitHub">
                   {currentUser.integrations.github ? ( // eslint-disable-line

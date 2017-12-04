@@ -4,6 +4,7 @@
 .*/node_modules/*
 
 [include]
+.*/node_modules/common*
 
 [libs]
 # This is were your own flow-typed libdefs go

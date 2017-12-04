@@ -24,6 +24,7 @@ type Props = {
   parentShortid: string,
   sandboxTemplate: string,
   mainModuleId: string,
+  markTabsNotDirty: ?Function,
 };
 
 export default class DirectoryChildren extends React.PureComponent<Props> {
@@ -47,6 +48,7 @@ export default class DirectoryChildren extends React.PureComponent<Props> {
       deleteEntry,
       currentModuleId,
       isInProjectView,
+      markTabsNotDirty,
     } = this.props;
 
     return (
@@ -68,12 +70,13 @@ export default class DirectoryChildren extends React.PureComponent<Props> {
               directories={directories}
               currentModuleId={currentModuleId}
               isInProjectView={isInProjectView}
+              markTabsNotDirty={markTabsNotDirty}
             />
           ))}
         {modules.filter(x => x.directoryShortid === parentShortid).map(m => {
           const isActive = m.id === currentModuleId;
           const mainModule = m.id === mainModuleId;
-          const type = getType(m);
+          const type = getType(m.title, m.code);
 
           const hasError = m && m.errors.length;
 
@@ -95,6 +98,7 @@ export default class DirectoryChildren extends React.PureComponent<Props> {
               isInProjectView={isInProjectView}
               isMainModule={mainModule}
               moduleHasError={hasError}
+              markTabsNotDirty={markTabsNotDirty}
             />
           );
         })}

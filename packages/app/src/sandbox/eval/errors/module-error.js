@@ -11,7 +11,5 @@ export default class ModuleError extends Error {
     this.message =
       err && typeof err === 'object' && err.message ? err.message : err;
     this.error = err;
-
-    Error.captureStackTrace(this, this.constructor);
   }
 }

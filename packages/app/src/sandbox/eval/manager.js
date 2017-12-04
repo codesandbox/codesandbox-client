@@ -52,6 +52,7 @@ export default class Manager {
       },
     },
   };
+  envVariables: { [envName: string]: string } = {};
   preset: Preset;
   externals: Externals;
   modules: ModuleObject;
@@ -140,7 +141,6 @@ export default class Manager {
     this.transpiledModules[module.path].module = module;
 
     const transpiledModule = new TranspiledModule(module, query);
-
     this.transpiledModules[module.path].tModules[query] = transpiledModule;
 
     return transpiledModule;
@@ -200,11 +200,29 @@ export default class Manager {
     delete this.transpiledModules[module.path];
   }
 
+  setEnvironmentVariables() {
+    if (this.transpiledModules['/.env'] && this.preset.hasDotEnv) {
+      const envCode = this.transpiledModules['/.env'].module.code;
+
+      this.envVariables = {};
+      try {
+        envCode.split('\n').forEach(envLine => {
+          const [name, ...val] = envLine.split('=');
+
+          this.envVariables[name] = val.join('=');
+        });
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }
+
   /**
    * Will transpile this module and all eventual children (requires) that go with it
    * @param {*} entry
    */
   transpileModules(entry: Module) {
+    this.setEnvironmentVariables();
     this.cachedPaths = {};
     const transpiledModule = this.getTranspiledModule(entry);
 
@@ -290,6 +308,9 @@ export default class Manager {
           extensions: defaultExtensions.map(ext => '.' + ext),
           isFile: this.isFile,
           readFileSync: this.readFileSync,
+          moduleDirectory: ['node_modules', this.envVariables.NODE_PATH].filter(
+            x => x
+          ),
         });
 
         this.cachedPaths[pathId] = resolvedPath;

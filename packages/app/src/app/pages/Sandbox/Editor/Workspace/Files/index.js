@@ -4,8 +4,6 @@ import { createSelector } from 'reselect';
 import { connect } from 'react-redux';
 
 import { sortBy } from 'lodash';
-import HTML5Backend from 'react-dnd-html5-backend';
-import { DragDropContext } from 'react-dnd';
 import {
   modulesFromSandboxSelector,
   findMainModule,
@@ -17,6 +15,9 @@ import type { Sandbox, Module, Directory } from 'common/types';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 
 import DirectoryEntry from './DirectoryEntry/index';
+import WorkspaceItem from '../WorkspaceItem';
+
+import EditIcons from './DirectoryEntry/Entry/EditIcons';
 
 type Props = {
   sandbox: Sandbox,
@@ -30,6 +31,8 @@ const mapStateToProps = createSelector(
   (modules, directories) => ({ modules, directories })
 );
 class Files extends React.PureComponent<Props> {
+  directory: typeof DirectoryEntry;
+
   deleteModule = id => {
     const { sandboxActions, sandbox } = this.props;
     if (sandbox) {
@@ -42,6 +45,16 @@ class Files extends React.PureComponent<Props> {
     if (sandbox) {
       sandboxActions.deleteDirectory(sandbox.id, id);
     }
+  };
+
+  createModule = () => {
+    // INCREDIBLY BAD PRACTICE! TODO: FIX THIS
+    this.directory.onCreateModuleClick();
+  };
+
+  createDirectory = () => {
+    // INCREDIBLY BAD PRACTICE! TODO: FIX THIS
+    this.directory.onCreateDirectoryClick();
   };
 
   render() {
@@ -58,21 +71,38 @@ class Files extends React.PureComponent<Props> {
     );
 
     return (
-      <DirectoryEntry
-        root
-        title={sandbox.title || 'Project'}
-        sandboxId={sandbox.id}
-        sandboxTemplate={sandbox.template}
-        mainModuleId={mainModule.id}
-        modules={sortBy(modules, 'title')}
-        directories={sortBy(directories, 'title')}
-        isInProjectView={sandbox.isInProjectView}
-        currentModuleId={currentModule.id}
-        id={null}
-        shortid={null}
-      />
+      <WorkspaceItem
+        defaultOpen
+        keepState
+        title="Files"
+        actions={
+          <EditIcons
+            hovering
+            onCreateFile={this.createModule}
+            onCreateDirectory={this.createDirectory}
+          />
+        }
+      >
+        <DirectoryEntry
+          root
+          innerRef={el => {
+            this.directory = el;
+          }}
+          title={sandbox.title || 'Project'}
+          sandboxId={sandbox.id}
+          sandboxTemplate={sandbox.template}
+          mainModuleId={mainModule.id}
+          modules={sortBy(modules, 'title')}
+          directories={sortBy(directories, 'title')}
+          isInProjectView={sandbox.isInProjectView}
+          currentModuleId={currentModule.id}
+          depth={-1}
+          id={null}
+          shortid={null}
+        />
+      </WorkspaceItem>
     );
   }
 }
 
-export default DragDropContext(HTML5Backend)(connect(mapStateToProps)(Files));
+export default connect(mapStateToProps)(Files);

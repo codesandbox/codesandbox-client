@@ -1,5 +1,5 @@
 /* @flow */
-import type { Module } from 'common/types';
+import isImage from 'common/utils/is-image';
 
 const reactRegex = /import.*from\s['|"]react['|"]/;
 export function hasReact(code: string) {
@@ -9,30 +9,52 @@ export function hasReact(code: string) {
 const cssRegex = /\.css$/;
 const jsonRegex = /\.json$/;
 const htmlRegex = /\.html$/;
+const mdRegex = /\.md$/;
+const vueRegex = /\.vue$/;
+const svgRegex = /\.svg$/;
 
-export function getMode(module: Module) {
-  if (cssRegex.test(module.title)) return 'css';
-  if (jsonRegex.test(module.title)) return 'json';
-  if (htmlRegex.test(module.title)) return 'html';
-  if (!module.title.includes('.')) return 'raw';
+export function getMode(title: string) {
+  if (title === 'favicon.ico') {
+    return 'favicon';
+  }
+
+  if (title === 'yarn.lock') {
+    return 'yarn';
+  }
+
+  if (title === 'package.json') {
+    return 'npm';
+  }
+
+  if (cssRegex.test(title)) return 'css';
+  if (jsonRegex.test(title)) return 'json';
+  if (htmlRegex.test(title)) return 'html';
+  if (mdRegex.test(title)) return 'md';
+  if (vueRegex.test(title)) return 'vue';
+  if (svgRegex.test(title)) return 'svg';
+  if (!title.includes('.')) return 'raw';
+
+  if (isImage(title)) {
+    return 'image';
+  }
 
   return '';
 }
 
 const jsRegex = /\.jsx?$/;
 const tsRegex = /\.tsx?$/;
-function isJS(module: Module) {
-  if (jsRegex.test(module.title)) return 'js';
-  if (tsRegex.test(module.title)) return 'ts';
+function isJS(title: string) {
+  if (jsRegex.test(title)) return 'js';
+  if (tsRegex.test(title)) return 'ts';
   return undefined;
 }
 
-export default function getType(module: Module) {
-  const isJSType = isJS(module);
+export default function getType(title: string, code: string) {
+  const isJSType = isJS(title);
   if (isJSType) {
-    if (hasReact(module.code || '')) return 'react';
+    if (hasReact(code || '')) return 'react';
     return isJSType;
   }
 
-  return getMode(module);
+  return getMode(title);
 }

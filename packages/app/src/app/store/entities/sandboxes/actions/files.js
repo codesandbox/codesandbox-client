@@ -15,6 +15,7 @@ import moduleActions from '../modules/actions';
 import { singleSandboxSelector } from '../selectors';
 import { normalizeResult } from '../../actions';
 import notificationActions from '../../../notifications/actions';
+import { preferencesSelector } from '../../../preferences/selectors';
 
 import { maybeForkSandbox } from './fork';
 
@@ -379,20 +380,30 @@ const saveModuleCode = (id: string, moduleId: string) => async (
   const { sourceId } = singleSandboxSelector(getState(), { id: sandboxId });
 
   // Maybe get new module of forked sandbox
-  const newModule = singleModuleSelector(getState(), {
+  let newModule = singleModuleSelector(getState(), {
     sourceId,
     shortid: module.shortid,
   });
   dispatch(moduleActions.setCode(newModule.id, module.code));
 
+  const preferences = preferencesSelector(getState());
+  if (preferences.prettifyOnSaveEnabled) {
+    await dispatch(moduleActions.prettifyModule(newModule.id));
+  }
+  // For refresh of code we refetch the module
+  newModule = singleModuleSelector(getState(), {
+    sourceId,
+    shortid: module.shortid,
+  });
+
   try {
     const { data } = await dispatch(
       doRequest(
         SAVE_MODULE_CODE_API_ACTIONS,
-        `sandboxes/${sandboxId}/modules/${module.shortid}`,
+        `sandboxes/${sandboxId}/modules/${newModule.shortid}`,
         {
           method: 'PUT',
-          body: { module: { code: module.code } },
+          body: { module: { code: newModule.code } },
         }
       )
     );
@@ -407,7 +418,9 @@ const saveModuleCode = (id: string, moduleId: string) => async (
 
       logError(
         new Error(
-          `Saving module went wrong, mismatch:\n\n${data.code}\n\nvs\n\n ${newModule.code}`
+          `Saving module went wrong, mismatch:\n\n${data.code}\n\nvs\n\n ${
+            newModule.code
+          }`
         )
       );
     } else {
@@ -427,8 +440,8 @@ const saveModuleCode = (id: string, moduleId: string) => async (
   return false;
 };
 /**
-   * Updates all modules in a sandbox at once (only the code)
-   */
+ * Updates all modules in a sandbox at once (only the code)
+ */
 const massUpdateModules = (id: string) => async (
   dispatch: Function,
   getState: Function

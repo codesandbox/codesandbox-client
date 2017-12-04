@@ -2,22 +2,25 @@
 import buildProcess from './utils/process';
 
 /* eslint-disable no-unused-vars */
-export default function(code: string, require: Function, exports: Object) {
-  const module = { exports: {} };
+export default function(
+  code: string,
+  require: Function,
+  module: Object,
+  env: Object = {}
+) {
+  const exports = module.exports;
+
   const global = window;
-  const process = buildProcess();
+  const process = buildProcess(env);
   window.global = global;
 
   try {
-    const newCode = `(function evaluate(require, module, exports, process, global) {${code}\n})`;
+    const newCode = `(function evaluate(require, module, exports, process, global) {${
+      code
+    }\n})`;
     (0, eval)(newCode)(require, module, exports, process, global); // eslint-disable-line no-eval
 
-    // Choose either the export of __esModule or node
-    return Object.keys(module.exports || {}).length > 0 ||
-      (module.exports || {}).constructor !== Object ||
-      (module.exports && !exports)
-      ? module.exports
-      : exports;
+    return module.exports;
   } catch (e) {
     e.isEvalError = true;
 

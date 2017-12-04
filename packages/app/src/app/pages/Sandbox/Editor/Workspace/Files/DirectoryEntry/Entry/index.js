@@ -7,6 +7,7 @@ import FileIcon from 'react-icons/lib/fa/file';
 import FolderIcon from 'react-icons/lib/fa/folder';
 import EditIcon from 'react-icons/lib/go/pencil';
 import DeleteIcon from 'react-icons/lib/go/trashcan';
+import NotSyncedIcon from 'react-icons/lib/go/primitive-dot';
 
 import theme from 'common/theme';
 
@@ -40,6 +41,7 @@ type Props = {
   isInProjectView: boolean, // eslint-disable-line
   moduleHasError: boolean,
   closeTree: ?() => void, // eslint-disable-line
+  markTabsNotDirty: Function,
 };
 
 type State = {
@@ -52,6 +54,14 @@ type State = {
 const Right = styled.div`
   position: absolute;
   right: 1rem;
+`;
+
+const NotSyncedIconWithMargin = styled(NotSyncedIcon)`
+  margin-left: 2px;
+  color: ${props => props.theme.templateColor || props.theme.secondary};
+  vertical-align: middle;
+
+  margin-top: 1.5px;
 `;
 
 class Entry extends React.PureComponent<Props, State> {
@@ -165,6 +175,7 @@ class Entry extends React.PureComponent<Props, State> {
       onCreateDirectoryClick,
       deleteEntry,
       onClick,
+      markTabsNotDirty,
       rename,
       isNotSynced,
       isMainModule,
@@ -177,6 +188,7 @@ class Entry extends React.PureComponent<Props, State> {
       <div>
         <EntryContainer
           onClick={setCurrentModule ? this.setCurrentModule : onClick}
+          onDoubleClick={markTabsNotDirty}
           depth={depth}
           nameValidationError={error}
           active={active}
@@ -205,6 +217,7 @@ class Entry extends React.PureComponent<Props, State> {
           ) : (
             <EntryTitle title={title} />
           )}
+          {isNotSynced && !state && <NotSyncedIconWithMargin />}
           {state === '' && (
             <Right>
               {isMainModule ? (

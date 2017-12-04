@@ -5,9 +5,10 @@ import Centered from 'common/components/flex/Centered';
 import Input from 'app/components/Input';
 import Button from 'app/components/buttons/Button';
 
-const Container = styled(Centered)`
+const Container = Centered.extend`
   height: 100%;
   color: rgba(255, 255, 255, 0.9);
+  overflow: auto;
 `;
 
 const Title = styled.div`

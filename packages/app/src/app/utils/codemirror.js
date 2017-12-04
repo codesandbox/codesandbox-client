@@ -34,7 +34,7 @@ export const getCodeMirror = (el, doc) => {
     foldGutter: true,
     gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
     lineNumbers: true,
-    lineWrapping: true,
+    lineWrapping: false,
     styleActiveLine: true,
     lint: false,
   });

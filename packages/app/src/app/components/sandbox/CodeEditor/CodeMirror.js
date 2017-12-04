@@ -11,7 +11,6 @@ import 'codemirror/addon/dialog/dialog';
 import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/tern/tern';
 
-import Header from './Header';
 import FuzzySearch from './FuzzySearch';
 
 const documentCache = {};
@@ -21,25 +20,22 @@ type Props = {
   errors: ?Array<ModuleError>,
   id: string,
   title: string,
-  modulePath: string,
   changeCode: (id: string, code: string) => Object,
   saveCode: () => void,
-  canSave: boolean,
   preferences: Preferences,
-  onlyViewMode: boolean,
   setCurrentModule: ?(sandboxId: string, moduleId: string) => void,
   sandboxId: string,
   modules: Array,
   directories: Array,
   hideNavigation: boolean,
   highlightedLines: ?Array<string>,
+  onlyViewMode: ?boolean,
 };
 
 const Container = styled.div`
   width: 100%;
   height: 100%;
-  display: flex;
-  flex-direction: column;
+  overflow: auto;
 `;
 
 const fadeInAnimation = keyframes`
@@ -228,7 +224,7 @@ export default class CodeEditor extends React.Component<Props, State> {
     return (
       nextProps.id !== this.props.id ||
       nextProps.errors !== this.props.errors ||
-      this.props.canSave !== nextProps.canSave ||
+      nextProps.code !== this.getCode() ||
       this.props.preferences !== nextProps.preferences
     );
   }
@@ -300,21 +296,44 @@ export default class CodeEditor extends React.Component<Props, State> {
     const kind = title.match(/\.([^.]*)$/);
 
     if (kind) {
-      if (kind[1] === 'css') {
+      if (kind[1] === 'css' || kind[1] === 'scss' || kind[1] === 'less') {
         await System.import(
           /* webpackChunkName: 'codemirror-css' */ 'codemirror/mode/css/css'
         );
+        if (kind[1] === 'less') {
+          return 'text/x-less';
+        }
+        if (kind[1] === 'scss') {
+          return 'text/x-scss';
+        }
         return 'css';
       } else if (kind[1] === 'html' || kind[1] === 'vue') {
         await System.import(
           /* webpackChunkName: 'codemirror-html' */ 'codemirror/mode/htmlmixed/htmlmixed'
         );
+
+        if (kind[1] === 'vue') {
+          return 'text/x-vue';
+        }
+
         return 'htmlmixed';
       } else if (kind[1] === 'md') {
         await System.import(
           /* webpackChunkName: 'codemirror-markdown' */ 'codemirror/mode/markdown/markdown'
         );
         return 'markdown';
+      } else if (kind[1] === 'json') {
+        return 'application/json';
+      } else if (kind[1] === 'sass') {
+        await System.import(
+          /* webpackChunkName: 'codemirror-sass' */ 'codemirror/mode/sass/sass'
+        );
+        return 'sass';
+      } else if (kind[1] === 'styl') {
+        await System.import(
+          /* webpackChunkName: 'codemirror-sass' */ 'codemirror/mode/stylus/stylus'
+        );
+        return 'stylus';
       }
     }
 
@@ -467,34 +486,8 @@ export default class CodeEditor extends React.Component<Props, State> {
 
   getCode = () => this.codemirror.getValue();
 
-  prettify = async () => {
-    const { id, title, preferences } = this.props;
-    const code = this.getCode();
-    const mode = await this.getMode(title);
-    if (mode === 'jsx' || mode === 'typescript' || mode === 'css') {
-      try {
-        const prettify = await import(/* webpackChunkName: 'prettier' */ 'app/utils/codemirror/prettify');
-        const newCode = await prettify.default(
-          code,
-          mode,
-          preferences.prettierConfig
-        );
-
-        if (newCode && newCode !== code) {
-          this.props.changeCode(id, newCode);
-          this.updateCodeMirrorCode(newCode);
-        }
-      } catch (e) {
-        console.error(e);
-      }
-    }
-  };
-
   handleSaveCode = async () => {
-    const { saveCode, preferences } = this.props;
-    if (preferences.prettifyOnSaveEnabled) {
-      await this.prettify();
-    }
+    const { saveCode } = this.props;
     const { id } = this.props;
     this.props.changeCode(id, this.getCode());
     saveCode();
@@ -529,9 +522,6 @@ export default class CodeEditor extends React.Component<Props, State> {
 
   render() {
     const {
-      canSave,
-      onlyViewMode,
-      modulePath,
       preferences,
       modules,
       directories,
@@ -541,13 +531,6 @@ export default class CodeEditor extends React.Component<Props, State> {
 
     return (
       <Container>
-        {!hideNavigation && (
-          <Header
-            saveComponent={canSave && !onlyViewMode && this.handleSaveCode}
-            prettify={!onlyViewMode && this.prettify}
-            path={modulePath}
-          />
-        )}
         <CodeContainer
           fontFamily={preferences.fontFamily}
           lineHeight={preferences.lineHeight}
@@ -563,7 +546,10 @@ export default class CodeEditor extends React.Component<Props, State> {
             />
           )}
           <div
-            style={{ height: '100%', fontSize: preferences.fontSize || 14 }}
+            style={{
+              height: '100%',
+              fontSize: preferences.fontSize || 14,
+            }}
             ref={this.getCodeMirror}
           />
         </CodeContainer>

@@ -33,16 +33,20 @@ export default class Preset {
   name: string;
   ignoredExtensions: Array<string>;
   alias: { [path: string]: string };
+  // Whether this preset supports .env files
+  hasDotEnv: boolean;
 
   constructor(
     name: string,
     ignoredExtensions: ?Array<string>,
-    alias: { [path: string]: string }
+    alias: { [path: string]: string },
+    { hasDotEnv }: { hasDotEnv: boolean } = {}
   ) {
     this.loaders = [];
     this.transpilers = new Set();
     this.name = name;
 
+    this.hasDotEnv = hasDotEnv || false;
     this.alias = alias || {};
     this.ignoredExtensions = ignoredExtensions || ['js', 'jsx', 'json'];
   }

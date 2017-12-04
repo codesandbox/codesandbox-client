@@ -105,10 +105,11 @@ const getCurrentUser = () => async (dispatch: Function, getState: Function) => {
 
 const signIn = (extraScopes: boolean = false) => (dispatch: Function) =>
   new Promise((resolve, reject) => {
+    const useExtraScopes = extraScopes === true;
     dispatch({
       type: SIGN_IN,
     });
-    const popup = openPopup(signInUrl(extraScopes), 'sign in');
+    const popup = openPopup(signInUrl(useExtraScopes), 'sign in');
 
     window.addEventListener('message', function onMessage(e) {
       if (e.data.type === 'signin') {

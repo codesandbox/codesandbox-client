@@ -20,7 +20,6 @@ import LinterWorker from 'worker-loader?name=monaco-linter.[hash].worker.js!./mo
 import TypingsFetcherWorker from 'worker-loader?name=monaco-typings-ata.[hash].worker.js!./monaco/workers/fetch-dependency-typings';
 /* eslint-enable import/no-webpack-loader-syntax */
 
-import Header from './Header';
 import MonacoEditor from './monaco/MonacoReactComponent';
 import FuzzySearch from './FuzzySearch/index';
 
@@ -37,12 +36,9 @@ type Props = {
   id: string,
   sandboxId: string,
   title: string,
-  modulePath: string,
   changeCode: (id: string, code: string) => Object,
   saveCode: ?() => void,
-  canSave: boolean,
   preferences: Preferences,
-  onlyViewMode: boolean,
   modules: Array<Module>,
   directories: Array<Directory>,
   dependencies: ?Object,
@@ -54,13 +50,10 @@ type Props = {
 
 const Container = styled.div`
   width: 100%;
-  height: 100%;
+  height: 100vh;
   z-index: 30;
-  display: flex;
-  flex-direction: column;
 `;
 
-/*
 const fontFamilies = (...families) =>
   families
     .filter(Boolean)
@@ -68,13 +61,12 @@ const fontFamilies = (...families) =>
       family => (family.indexOf(' ') !== -1 ? JSON.stringify(family) : family)
     )
     .join(', ');
-*/
 
 const CodeContainer = styled.div`
   position: relative;
   width: 100%;
+  height: 100%;
   z-index: 30;
-  flex: 1 1 auto;
 
   .margin-view-overlays {
     background: ${theme.background2()};
@@ -279,7 +271,10 @@ export default class CodeEditor extends React.Component<Props, State> {
     this.setupSyntaxWorker();
 
     if (this.props.preferences.lintEnabled) {
-      this.setupLintWorker();
+      // Delay this one, as initialization is very heavy
+      setTimeout(() => {
+        this.setupLintWorker();
+      }, 5000);
     }
 
     if (this.props.preferences.autoDownloadTypes) {
@@ -396,7 +391,7 @@ export default class CodeEditor extends React.Component<Props, State> {
       preferences.fontSize !== nextPref.fontSize ||
       preferences.lineHeight !== nextPref.lineHeight
     ) {
-      this.editor.updateOptions(this.getEditorOptions());
+      this.editor.updateOptions(this.getEditorOptions(nextProps));
     }
 
     const { dependencies } = this.props;
@@ -412,12 +407,19 @@ export default class CodeEditor extends React.Component<Props, State> {
       this.fetchDependencyTypings(nextDependencies);
     }
 
+    if (
+      this.editor &&
+      this.getCode() !== nextProps.code &&
+      this.props.id === nextProps.id
+    ) {
+      this.updateCode(nextProps.code);
+    }
+
     return (
       nextProps.sandboxId !== this.props.sandboxId ||
       nextProps.id !== this.props.id ||
       nextProps.errors !== this.props.errors ||
       nextProps.corrections !== this.props.corrections ||
-      this.props.canSave !== nextProps.canSave ||
       this.props.preferences !== nextProps.preferences
     );
   }
@@ -497,6 +499,10 @@ export default class CodeEditor extends React.Component<Props, State> {
   }
 
   updateCode(code: string = '') {
+    if (!this.editor || !this.editor.getModel()) {
+      return;
+    }
+
     const pos = this.editor.getPosition();
     const lines = this.editor.getModel().getLinesContent();
     const lastLine = lines.length;
@@ -870,57 +876,25 @@ export default class CodeEditor extends React.Component<Props, State> {
 
   getCode = () => this.editor.getValue();
 
-  prettify = async () => {
-    const { id, title, preferences } = this.props;
-    const code = this.getCode();
-    const mode = await this.getMode(title);
-
-    if (
-      mode === 'javascript' ||
-      mode === 'typescript' ||
-      mode === 'json' ||
-      mode === 'css'
-    ) {
-      try {
-        const prettify = await import(/* webpackChunkName: 'prettier' */ 'app/utils/codemirror/prettify');
-        const newCode = await prettify.default(
-          code,
-          mode === 'javascript' ? 'jsx' : mode,
-          preferences.prettierConfig
-        );
-
-        if (newCode && newCode !== code) {
-          this.props.changeCode(id, newCode);
-          this.updateCode(newCode);
-        }
-      } catch (e) {
-        console.error(e);
-      }
-    }
-  };
-
   handleSaveCode = async () => {
-    const { saveCode, preferences } = this.props;
-    if (preferences.prettifyOnSaveEnabled) {
-      await this.prettify();
-    }
+    const { saveCode } = this.props;
+
     const { id } = this.props;
     this.props.changeCode(id, this.getCode());
     saveCode();
   };
 
-  getEditorOptions = () => {
-    const { preferences, title } = this.props;
+  getEditorOptions = (props: Props) => {
+    const { preferences, title } = props;
     return {
       selectOnLineNumbers: true,
       fontSize: preferences.fontSize,
-      // Disable this because of a current issue in Windows:
-      // https://github.com/Microsoft/monaco-editor/issues/392
-      // fontFamily: fontFamilies(
-      //   preferences.fontFamily,
-      //   'Source Code Pro',
-      //   'monospace',
-      // ),
+      fontFamily: fontFamilies(
+        preferences.fontFamily,
+        'Source Code Pro',
+        'monospace'
+      ),
+      fontLigatures: true,
       minimap: {
         enabled: false,
       },
@@ -931,28 +905,12 @@ export default class CodeEditor extends React.Component<Props, State> {
   };
 
   render() {
-    const {
-      canSave,
-      modules,
-      directories,
-      onlyViewMode,
-      modulePath,
-      hideNavigation,
-    } = this.props;
+    const { modules, directories, hideNavigation } = this.props;
 
-    const options = this.getEditorOptions();
+    const options = this.getEditorOptions(this.props);
 
     return (
       <Container>
-        {!hideNavigation && (
-          <Header
-            saveComponent={
-              canSave && !onlyViewMode ? this.handleSaveCode : null
-            }
-            prettify={!onlyViewMode && this.prettify}
-            path={modulePath}
-          />
-        )}
         <CodeContainer hideNavigation={hideNavigation}>
           {this.state.fuzzySearchEnabled && (
             <FuzzySearch

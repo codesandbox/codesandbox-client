@@ -3,10 +3,10 @@
 exports[`modulesReducer can change the code of a module 1`] = `
 Object {
   "longid-module0": Object {
-    "code": "koekje",
+    "code": "import test from 'koekje'",
     "directoryShortid": null,
     "id": "longid-module0",
-    "isNotSynced": true,
+    "isNotSynced": false,
     "shortid": "shortid-module0",
     "title": "test-module0",
   },
@@ -42,7 +42,7 @@ Object {
 exports[`modulesReducer can set a module synced 1`] = `
 Object {
   "longid-module0": Object {
-    "code": "koekje",
+    "code": "import test from 'koekje'",
     "directoryShortid": null,
     "id": "longid-module0",
     "isNotSynced": false,

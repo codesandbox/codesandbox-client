@@ -59,7 +59,7 @@ module.exports = {
         exclude: [
           /eslint\.4\.1\.0\.min\.js$/,
           /typescriptServices\.js$/,
-          /babel-runtime\//,
+          new RegExp('babel-runtime\\' + path.sep),
         ],
         loader: 'happypack/loader',
       },
