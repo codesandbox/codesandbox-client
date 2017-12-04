@@ -1,0 +1,13 @@
+.ReactModal__Content div[class^='Modal__ModalBody'] {
+  /*
+   * app/src/app/containers/Modal.js sets ModalBody background to white.
+   * We don't want to risk messing up something else, so we fix that here.
+   */
+  background: transparent;
+}
+
+.ais-Pagination__root {
+  border-radius: 0;
+  display: flex;
+  justify-content: center;
+}
