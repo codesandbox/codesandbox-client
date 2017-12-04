@@ -17,8 +17,8 @@ const AutoCompleteInput = styled.input`
   background-color: ${props => props.theme.background2};
   font-weight: 600;
   color: ${props => props.theme.white};
-  padding: .75em 1em;
-}`;
+  padding: 0.75em 1em;
+`;
 
 type RawAutoCompleteProps = {
   onSelect: (hit: Object) => void,
