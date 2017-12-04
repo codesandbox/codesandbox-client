@@ -14,13 +14,15 @@ const AutoCompleteInput = styled.input`
   box-sizing: border-box;
   border: none;
   outline: none;
-  background-color: ${props => props.theme.background};
+  background-color: ${props => props.theme.background2};
+  font-weight: 600;
   color: ${props => props.theme.white};
-  padding: 1em;
+  padding: .75em 1em;
 }`;
 
 type RawAutoCompleteProps = {
   onSelect: (hit: Object) => void,
+  onManualSelect: (hit: string) => void,
   onHitVersionChange: (version: string) => void,
   hits: Array<Object>,
   refine: string,
@@ -29,6 +31,7 @@ type RawAutoCompleteProps = {
 
 function RawAutoComplete({
   onSelect,
+  onManualSelect,
   onHitVersionChange,
   hits,
   refine,
@@ -46,12 +49,20 @@ function RawAutoComplete({
                 }
               },
               value: currentRefinement,
+              placeholder: 'Search or enter npm dependency',
               onChange(e) {
                 refine(e.target.value);
+              },
+              onKeyUp(e) {
+                // If enter with no selection
+                if (e.keyCode === 13) {
+                  onManualSelect(e.target.value);
+                }
               },
             })}
           />
           <Pagination />
+
           <div>
             {hits.map((hit, index) => (
               <DependencyHit
@@ -90,6 +101,21 @@ export default class SearchDependencies extends React.PureComponent {
     this.props.onConfirm(hit.name, version);
   };
 
+  handleManualSelect = (hitName: string) => {
+    const isScoped = hitName.startsWith('@');
+    let version = 'latest';
+
+    const splittedName = hitName.split('@');
+
+    if (splittedName.length > (isScoped ? 2 : 1)) {
+      version = splittedName.pop();
+    }
+
+    const depName = splittedName.join('@');
+
+    this.props.onConfirm(depName, version);
+  };
+
   handleHitVersionChange = (hit, version) => {
     this.hitToVersionMap.set(hit, version);
   };
@@ -104,6 +130,7 @@ export default class SearchDependencies extends React.PureComponent {
         <Configure hitsPerPage={5} />
         <ConnectedAutoComplete
           onSelect={this.handleSelect}
+          onManualSelect={this.handleManualSelect}
           onHitVersionChange={this.handleHitVersionChange}
         />
       </InstantSearch>
