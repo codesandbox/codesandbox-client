@@ -8,7 +8,9 @@ import modalActionCreators from 'app/store/modal/actions';
 
 import SearchDependencies from './SearchDependencies';
 
-const ButtonContainer = styled.div`margin: 0.5rem 1rem;`;
+const ButtonContainer = styled.div`
+  margin: 0.5rem 1rem;
+`;
 
 type Props = {
   addDependency: (dependency: string, version: string) => Promise<boolean>,
