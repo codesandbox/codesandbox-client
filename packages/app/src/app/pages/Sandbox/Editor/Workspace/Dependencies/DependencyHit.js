@@ -8,6 +8,28 @@ import Select from 'app/components/Select';
 
 import GitHubLogo from '../Git/modals/GitHubLogo';
 
+function makeGitHubRepoUrl(repo) {
+  return `https://github.com/${repo.user}/${repo.project}`;
+}
+
+function stopPropagation(e) {
+  e.stopPropagation();
+}
+
+export function formatDownloads(downloads) {
+  if (downloads >= 1000000) {
+    const x = Math.floor(downloads / 100000);
+    const millions = x / 10;
+    return millions + 'M';
+  }
+  if (downloads >= 1000) {
+    const x = Math.floor(downloads / 100);
+    const thousands = x / 10;
+    return thousands + 'K';
+  }
+  return downloads.toString();
+}
+
 const Container = styled.div`
   display: flex;
   background: ${props =>
@@ -130,26 +152,4 @@ export default class DependencyHit extends React.PureComponent {
       </Container>
     );
   }
-}
-
-export function formatDownloads(downloads) {
-  if (downloads >= 1000000) {
-    const x = Math.floor(downloads / 100000);
-    const millions = x / 10;
-    return millions + 'M';
-  }
-  if (downloads >= 1000) {
-    const x = Math.floor(downloads / 100);
-    const thousands = x / 10;
-    return thousands + 'K';
-  }
-  return downloads.toString();
-}
-
-function makeGitHubRepoUrl(repo) {
-  return `https://github.com/${repo.user}/${repo.project}`;
-}
-
-function stopPropagation(e) {
-  e.stopPropagation();
 }

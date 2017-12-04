@@ -4,9 +4,9 @@ import { connectAutoComplete } from 'react-instantsearch/connectors';
 import Downshift from 'downshift';
 import styled from 'styled-components';
 
-import DependencyHit from './DependencyHit';
-
 import 'app/pages/Search/Search.css';
+
+import DependencyHit from './DependencyHit';
 import './Dependencies.css';
 
 type Props = {
@@ -36,7 +36,6 @@ export default class SearchDependencies extends React.PureComponent {
         <Configure hitsPerPage={5} />
         <ConnectedAutoComplete
           onSelect={this.handleSelect}
-          onHitClick={this.handleHitClick}
           onHitVersionChange={this.handleHitVersionChange}
         />
       </InstantSearch>
@@ -54,16 +53,21 @@ const AutoCompleteInput = styled.input`
   padding: 1em;
 }`;
 
+type RawAutoCompleteProps = {
+  onSelect: (hit: Object) => void,
+  onHitVersionChange: (version: string) => void,
+  hits: Array<Object>,
+  refine: string,
+  currentRefinement: Function,
+};
+
 function RawAutoComplete({
-  /* Props */
   onSelect,
-  onHitClick,
   onHitVersionChange,
-  /* From connectAutoComplete*/
   hits,
   refine,
   currentRefinement,
-}) {
+}: RawAutoCompleteProps) {
   return (
     <Downshift itemToString={hit => (hit ? hit.name : hit)} onSelect={onSelect}>
       {({ getInputProps, getItemProps, highlightedIndex }) => (
@@ -71,7 +75,9 @@ function RawAutoComplete({
           <AutoCompleteInput
             {...getInputProps({
               innerRef(ref) {
-                ref && ref.focus();
+                if (ref) {
+                  ref.focus();
+                }
               },
               value: currentRefinement,
               onChange(e) {
@@ -88,8 +94,8 @@ function RawAutoComplete({
                   item: hit,
                   index,
                   highlighted: highlightedIndex === index,
-                  hit: hit,
-                  /* Downshift supplies onClick */
+                  hit,
+                  // Downshift supplies onClick
                   onVersionChange(version) {
                     onHitVersionChange(hit, version);
                   },
