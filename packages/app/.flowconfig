@@ -30,6 +30,7 @@ node_modules/styled-components/flow-typed/inline-style-prefixer_vx.x.x.js
 [options]
 module.system.node.resolve_dirname=node_modules
 module.system.node.resolve_dirname=src
+module.system.node.resolve_dirname=packages
 
 # Yeah, we use this to ignore errors...
 # Just add it, if you have a different suppress_comment notation
