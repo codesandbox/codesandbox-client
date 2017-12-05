@@ -1,8 +1,14 @@
 import React from 'react';
-import { InstantSearch, Configure, Pagination } from 'react-instantsearch/dom';
+import {
+  InstantSearch,
+  Configure,
+  Pagination,
+  PoweredBy,
+} from 'react-instantsearch/dom';
 import { connectAutoComplete } from 'react-instantsearch/connectors';
 import Downshift from 'downshift';
 import styled from 'styled-components';
+import theme from 'common/theme';
 
 import 'app/pages/Search/Search.css';
 
@@ -133,6 +139,14 @@ export default class SearchDependencies extends React.PureComponent {
           onManualSelect={this.handleManualSelect}
           onHitVersionChange={this.handleHitVersionChange}
         />
+        <div
+          style={{
+            height: 40,
+            backgroundColor: theme.background2.darken(0.2)(),
+          }}
+        >
+          <PoweredBy />
+        </div>
       </InstantSearch>
     );
   }
