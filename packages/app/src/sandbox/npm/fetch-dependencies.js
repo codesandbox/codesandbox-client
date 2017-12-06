@@ -49,7 +49,6 @@ function callApi(url: string, method = 'GET') {
 async function requestPackager(url, method = 'GET') {
   let retries = 0;
 
-  dispatch(actions.notifications.show('Bundling dependencies...'));
   // eslint-disable-next-line no-constant-condition
   while (true) {
     debug(`Trying to call packager for ${retries} time`);
@@ -58,24 +57,10 @@ async function requestPackager(url, method = 'GET') {
 
       return manifest;
     } catch (e) {
-      const statusCode = e.response && e.response.status;
-
-      setScreen({ type: 'loading', text: 'Bundling Dependencies...' });
-
       // 403 status code means the bundler is still bundling
-      if (retries < RETRY_COUNT && statusCode === 403) {
+      if (retries < RETRY_COUNT) {
         retries += 1;
         await delay(1000 * 2); // eslint-disable-line no-await-in-loop
-      } else if (retries < RETRY_COUNT && statusCode === 500) {
-        dispatch(
-          actions.notifications.show(
-            'It seems like all packagers are busy, retrying in 10 seconds...',
-            'warning'
-          )
-        );
-
-        await delay(1000 * 2); // eslint-disable-line no-await-in-loop
-        retries += 1;
       } else {
         throw e;
       }
@@ -107,6 +92,8 @@ async function getDependencies(dependencies: Object) {
     );
     return bucketManifest;
   } catch (e) {
+    dispatch(actions.notifications.show('Bundling dependencies...'));
+
     // The dep has not been generated yet...
     const { url } = await requestPackager(
       `${PACKAGER_URL}/${dependencyUrl}`,
@@ -123,7 +110,10 @@ export default async function fetchDependencies(npmDependencies: Dependencies) {
     // New Packager flow
 
     try {
+      dispatch(actions.notifications.show('Downloading dependencies...'));
       const result = await getDependencies(npmDependencies);
+      setScreen({ type: 'loading', text: 'Transpiling...' });
+      dispatch(actions.notifications.show('Dependencies loaded!', 'success'));
 
       return result;
     } catch (e) {
