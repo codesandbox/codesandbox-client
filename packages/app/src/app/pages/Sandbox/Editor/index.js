@@ -37,7 +37,7 @@ export default class ContentSplit extends React.PureComponent<Props, State> {
         split="vertical"
         defaultSize={18 * 16}
         minSize={14 * 16}
-        style={{ top: 0 }}
+        style={{ position: 'fixed', top: 0, bottom: 0, left: 0, right: 0 }}
         onDragStarted={this.startResizing}
         onDragFinished={this.stopResizing}
         resizerStyle={{ visibility: workspaceHidden ? 'hidden' : 'visible' }}
