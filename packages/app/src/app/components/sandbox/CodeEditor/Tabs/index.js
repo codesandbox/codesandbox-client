@@ -161,7 +161,7 @@ export default class EditorTabs extends React.PureComponent<Props> {
       moduleObject[m.id] = m;
     });
 
-    tabs.forEach(tab => {
+    tabs.filter(tab => moduleObject[tab.moduleId]).forEach(tab => {
       const module = moduleObject[tab.moduleId];
 
       tabNamesObject[module.title] = tabNamesObject[module.title] || [];
@@ -179,6 +179,7 @@ export default class EditorTabs extends React.PureComponent<Props> {
         >
           {tabs
             .map(tab => ({ ...tab, module: moduleObject[tab.moduleId] }))
+            .filter(tab => tab.module)
             .map((tab, i) => {
               const { module } = tab;
               const modulesWithName = tabNamesObject[module.title];

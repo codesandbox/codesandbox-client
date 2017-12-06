@@ -18,12 +18,14 @@ export default new schema.Entity(
   {
     processStrategy: sandbox => {
       const {
-        currentModule,
+        currentModule: hrefCurrentModule,
         initialPath,
         isInProjectView,
         isEditorScreen,
         isPreviewScreen,
       } = getSandboxOptions(document.location.href);
+
+      const currentModule = hrefCurrentModule || sandbox.currentModule;
 
       const mainModule = findMainModule(
         sandbox.modules,

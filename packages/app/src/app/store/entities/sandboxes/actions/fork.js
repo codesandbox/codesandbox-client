@@ -3,7 +3,6 @@ import { values } from 'lodash';
 
 import { push } from 'react-router-redux';
 
-import type { Module, Directory } from 'common/types';
 import { sandboxUrl } from 'common/utils/url-generator';
 
 import { createAPIActions, doRequest } from '../../../api/actions';
@@ -15,35 +14,6 @@ import sandboxEntity from '../entity';
 import notificationActions from '../../../notifications/actions';
 
 export const FORK_SANDBOX_API_ACTIONS = createAPIActions('SANDBOX', 'FORK');
-
-/**
- * When you fork you get a 'copy' of the modules, these modules have the shortid
- * in common, so if we want to get the module that is equivalent we want to use
- * this
- */
-export const getEquivalentModule = (module: Module, modules: Array<Module>) => {
-  const newModule = modules.find(
-    m => m.id !== module.id && m.shortid === module.shortid
-  );
-
-  return newModule;
-};
-
-/**
- * When you fork you get a 'copy' of the directories, these directories have the shortid
- * in common, so if we want to get the directory that is equivalent we want to use
- * this
- */
-export const getEquivalentDirectory = (
-  directory: Directory,
-  directories: Array<Directory>
-) => {
-  const newDirectory = directories.find(
-    d => d.id !== directory.id && d.shortid === directory.shortid
-  );
-
-  return newDirectory;
-};
 
 export const forkSandbox = (id: string) => async (
   dispatch: Function,
@@ -57,7 +27,17 @@ export const forkSandbox = (id: string) => async (
 
   const currentSandbox = singleSandboxSelector(getState(), { id });
   if (currentSandbox) {
-    data.currentModule = currentSandbox.currentModule;
+    const currentModule = modulesSelector(getState())[
+      currentSandbox.currentModule
+    ];
+    if (currentModule) {
+      const equivalentModule = data.modules.find(
+        m => m.shortid === currentModule.shortid && m.sourceId === data.sourceId
+      );
+      if (equivalentModule) {
+        data.currentModule = equivalentModule.id;
+      }
+    }
   }
   data.forked = true;
 
@@ -73,7 +53,10 @@ export const forkSandbox = (id: string) => async (
     // Mark old modules as synced so there is no confirm when moving to new url
     dispatch(moduleActions.setModuleSynced(m.id));
 
-    const newModule = getEquivalentModule(m, modules) || m;
+    const newModule =
+      modules.find(
+        m2 => m2.shortid === m.shortid && m2.sourceId === data.sourceId
+      ) || m;
     dispatch(moduleActions.setCode(newModule.id, m.code));
   });
 

@@ -1,7 +1,7 @@
 // @flow
 import type { Sandbox } from 'common/types';
 import { moveItem } from 'common/utils/array';
-import { mapValues } from 'lodash';
+import { mapValues, omit } from 'lodash';
 
 import {
   SET_NPM_DEPENDENCIES,
@@ -311,10 +311,7 @@ export default function reducer(
         owned: false,
       }));
     case DELETE_SANDBOX_API_ACTIONS.SUCCESS:
-      return {
-        ...state,
-        [action.meta.id]: null,
-      };
+      return omit(state, action.meta.id);
 
     case SET_MODULE_SYNCED:
       return mapValues(state, s => ({
