@@ -39,6 +39,7 @@ SANDBOXES.forEach(sandbox => {
         const page = await browser.newPage();
         await page.goto('http://localhost:3001/#' + id, {
           waitUntil: 'networkidle0',
+          timeout: 60000,
         });
         await page.waitFor(2000);
 
