@@ -22,8 +22,12 @@ function detectOpera() {
   return navigator.userAgent.indexOf('Opera') > -1;
 }
 
+function detectOldBrowser() {
+  return typeof Map === 'undefined' || typeof Set === 'undefined';
+}
+
 export default function requirePolyfills() {
-  if (detectIE() || detectOpera()) {
+  if (detectIE() || detectOpera() || detectOldBrowser()) {
     return import(/* webpackChunkName: 'polyfills' */ 'babel-polyfill');
   }
 
