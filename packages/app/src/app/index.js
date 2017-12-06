@@ -1,7 +1,7 @@
 import React from 'react';
 import { AppContainer } from 'react-hot-loader';
 import { render } from 'react-dom';
-import { Provider } from 'react-redux';
+import { Provider as ReduxProvider } from 'react-redux';
 import { ThemeProvider } from 'styled-components';
 import { ConnectedRouter } from 'react-router-redux';
 import registerServiceWorker from 'common/registerServiceWorker';
@@ -10,6 +10,8 @@ import 'normalize.css';
 import notificationActions from 'app/store/notifications/actions';
 import 'common/global.css';
 import theme from 'common/theme';
+import { Provider } from 'mobx-react';
+import controller from './controller';
 
 import App from './pages/index';
 import './split-pane.css';
@@ -79,15 +81,17 @@ requirePolyfills().then(() => {
   const renderApp = RootComponent => {
     try {
       render(
-        <AppContainer>
-          <ThemeProvider theme={theme}>
-            <Provider store={store}>
-              <ConnectedRouter history={history}>
-                <RootComponent store={store} />
-              </ConnectedRouter>
-            </Provider>
-          </ThemeProvider>
-        </AppContainer>,
+        <Provider {...controller.provide()}>
+          <AppContainer>
+            <ThemeProvider theme={theme}>
+              <ReduxProvider store={store}>
+                <ConnectedRouter history={history}>
+                  <RootComponent store={store} />
+                </ConnectedRouter>
+              </ReduxProvider>
+            </ThemeProvider>
+          </AppContainer>
+        </Provider>,
         rootEl
       );
     } catch (e) {
