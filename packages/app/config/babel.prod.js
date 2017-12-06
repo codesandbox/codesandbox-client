@@ -10,6 +10,7 @@ module.exports = {
       {
         targets: {
           ie: 11,
+          chrome: 33,
           // We currently minify with uglify
           // Remove after https://github.com/mishoo/UglifyJS2/issues/448
           uglify: true,
