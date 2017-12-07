@@ -9,7 +9,9 @@ import BrowserProvider from './providers/Browser';
 import * as sequences from './sequences';
 import * as errors from './errors';
 import { subscribed, isLoggedIn } from './getters';
+
 import patron from './modules/patron';
+import editor from './modules/editor';
 
 export default Module({
   model,
@@ -44,6 +46,7 @@ export default Module({
   catch: [[errors.AuthenticationError, sequences.showAuthenticationError]],
   modules: {
     patron,
+    editor,
   },
   providers: {
     api: ApiProvider,
