@@ -312,16 +312,29 @@ export default class Preview extends React.PureComponent<Props, State> {
   };
 
   sendUrl = () => {
-    const { sandboxId } = this.state;
+    const { urlInAddressBar } = this.state;
+    const { sandboxId, preferences } = this.props;
 
-    const newUrl = parseUrl(frameUrl(sandboxId)).href;
+    let url;
 
-    document.getElementById('sandbox').src = newUrl;
+    const urlInAddressBarParsed = parseUrl(urlInAddressBar);
+
+    if (preferences.relativeUrlsEnabled) {
+      url =
+        parseUrl(frameUrl(sandboxId)).href +
+        urlInAddressBarParsed.path.substring(1);
+    } else {
+      url = urlInAddressBar;
+    }
+
+    console.log(url);
+
+    document.getElementById('sandbox').src = url;
 
     this.setState({
-      history: [newUrl],
+      history: [url],
       historyPosition: 0,
-      newUrl,
+      url,
     });
   };
 
