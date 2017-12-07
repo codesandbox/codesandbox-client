@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { listen, dispatch } from 'codesandbox-api';
 
 import { debounce } from 'lodash';
+import { parse as parseUrl } from 'url';
 
 import type { Module, Sandbox, Preferences, Directory } from 'common/types';
 
@@ -311,14 +312,16 @@ export default class Preview extends React.PureComponent<Props, State> {
   };
 
   sendUrl = () => {
-    const { urlInAddressBar } = this.state;
+    const { sandboxId } = this.state;
 
-    document.getElementById('sandbox').src = urlInAddressBar;
+    const newUrl = parseUrl(frameUrl(sandboxId)).href;
+
+    document.getElementById('sandbox').src = newUrl;
 
     this.setState({
-      history: [urlInAddressBar],
+      history: [newUrl],
       historyPosition: 0,
-      urlInAddressBar,
+      newUrl,
     });
   };
 
