@@ -55,6 +55,7 @@ const CodeContainer = styled.div`
   position: relative;
   overflow: auto;
   width: 100%;
+  height: 100%;
   flex: 1 1 auto;
   .CodeMirror {
     font-family: ${props =>
@@ -512,6 +513,7 @@ export default class CodeEditor extends React.Component<Props, State> {
 
   setCurrentModule = moduleId => {
     this.closeFuzzySearch();
+    this.codemirror.focus();
     if (this.props.setCurrentModule) {
       this.props.setCurrentModule(this.props.sandboxId, moduleId);
     }

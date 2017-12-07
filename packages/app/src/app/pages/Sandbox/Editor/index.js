@@ -10,6 +10,7 @@ import Content from './Content';
 type Props = {
   sandbox: Sandbox,
   match: Object,
+  zenMode: boolean,
 };
 
 type State = {
@@ -20,11 +21,39 @@ type State = {
 export default class ContentSplit extends React.PureComponent<Props, State> {
   state = {
     resizing: false,
-    workspaceHidden: false,
+    workspaceHidden: this.props.zenMode,
   };
 
   startResizing = () => this.setState({ resizing: true });
   stopResizing = () => this.setState({ resizing: false });
+
+  timeout: number;
+  shiftPressed: boolean;
+
+  handleKeyPress = (e: KeyboardEvent) => {
+    // Handle double shift press for toggling the workspace
+    if (e.keyCode === 16) {
+      if (!this.shiftPressed) {
+        this.shiftPressed = true;
+        if (this.timeout) {
+          clearTimeout(this.timeout);
+        }
+        this.timeout = setTimeout(() => {
+          this.shiftPressed = false;
+        }, 500);
+      } else {
+        this.toggleWorkspace();
+      }
+    }
+  };
+
+  componentDidMount() {
+    document.addEventListener('keydown', this.handleKeyPress);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleKeyPress);
+  }
 
   toggleWorkspace = () =>
     this.setState({ workspaceHidden: !this.state.workspaceHidden });
@@ -46,7 +75,9 @@ export default class ContentSplit extends React.PureComponent<Props, State> {
           maxWidth: workspaceHidden ? 0 : 'inherit',
         }}
       >
-        {!workspaceHidden && <Workspace sandbox={sandbox} />}
+        {!workspaceHidden && (
+          <Workspace zenMode={this.props.zenMode} sandbox={sandbox} />
+        )}
         <Content
           workspaceHidden={workspaceHidden}
           toggleWorkspace={this.toggleWorkspace}

@@ -417,6 +417,7 @@ export default class Preview extends React.PureComponent<Props, State> {
             isProjectView={isInProjectView}
             toggleProjectView={setProjectView && this.toggleProjectView}
             openNewWindow={this.openNewWindow}
+            zenMode={this.props.preferences.zenMode}
           />
         )}
 
@@ -433,6 +434,7 @@ export default class Preview extends React.PureComponent<Props, State> {
           evaluateCommand={this.evaluateInSandbox}
           sandboxId={sandboxId}
           shouldExpandDevTools={shouldExpandDevTools}
+          zenMode={this.props.preferences.zenMode}
         />
       </Container>
     );

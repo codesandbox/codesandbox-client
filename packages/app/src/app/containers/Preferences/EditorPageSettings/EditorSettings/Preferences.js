@@ -36,6 +36,15 @@ const Preferences = ({ preferences, preferencesActions }: Props) => {
     <Container>
       <PreferenceContainer>
         <PaddedPreference
+          title="Zen Mode"
+          type="boolean"
+          {...bindValue('zenMode')}
+        />
+        <Description>
+          Hide all distracting elements, perfect for lessons and presentations.
+        </Description>
+        <Rule />
+        <PaddedPreference
           title="Use CodeMirror"
           type="boolean"
           {...bindValue('codeMirror')}

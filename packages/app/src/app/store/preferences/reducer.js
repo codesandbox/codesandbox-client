@@ -1,10 +1,10 @@
 // @flow
 
 import type { Preferences } from 'common/types';
-import store from 'store/dist/store.modern';
 
 import { SET_PREFERENCES } from './actions';
 import * as keys from './keys';
+import { getKey } from './store';
 
 export const DEFAULT_PRETTIER_CONFIG = {
   printWidth: 80,
@@ -16,16 +16,6 @@ export const DEFAULT_PRETTIER_CONFIG = {
   bracketSpacing: true,
   jsxBracketSameLine: false,
 };
-
-function getKey<D: any>(key: string, defaultVal: D): ?D {
-  try {
-    const result = store.get(key);
-    return result === undefined ? defaultVal : result;
-  } catch (e) {
-    console.error(e);
-    return undefined;
-  }
-}
 
 const initialState: Preferences = Object.keys(keys).reduce(
   (res, key) =>
@@ -46,6 +36,7 @@ const initialState: Preferences = Object.keys(keys).reduce(
     codeMirror: false,
     autoDownloadTypes: true,
     newPackagerExperiment: false,
+    zenMode: false,
   }
 );
 
