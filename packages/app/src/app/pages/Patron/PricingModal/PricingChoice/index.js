@@ -72,7 +72,7 @@ export default inject('store', 'signals')(
     <Container>
       <Centered horizontal vertical={false}>
         <Title>Pay what you want</Title>
-        {store.subscribed && (
+        {store.isPatron && (
           <ThankYou
             price={store.user.subscription.amount}
             color={badges[badge].colors[0]}
@@ -101,8 +101,8 @@ export default inject('store', 'signals')(
             color={badges[badge].colors[0]}
           />
         </RangeContainer>
-        {store.isLoggedIn ? (
-          store.subscribed ? ( // eslint-disable-line no-nested-ternary
+        {store.isLoggedIn ? ( // eslint-disable-line no-nested-ternary
+          store.isPatron ? (
             <ChangeSubscription
               updateSubscription={() =>
                 signals.patron.updateSubscriptionClicked()

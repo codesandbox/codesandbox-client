@@ -33,6 +33,7 @@ export default Module({
     },
     connected: true,
     notifications: [],
+    currentModal: null,
   },
   getters: {
     subscribed,
@@ -42,6 +43,7 @@ export default Module({
     appMounted: sequences.loadApp,
     appUnmounted: sequences.unloadApp,
     connectionChanged: sequences.setConnection,
+    modalOpened: sequences.openModal,
   },
   catch: [[errors.AuthenticationError, sequences.showAuthenticationError]],
   modules: {

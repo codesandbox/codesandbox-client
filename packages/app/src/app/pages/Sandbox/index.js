@@ -2,6 +2,7 @@
 import * as React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { inject } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import { createSelector } from 'reselect';
 import { DragDropContext } from 'react-dnd';
@@ -69,6 +70,9 @@ class SandboxPage extends React.PureComponent<Props, State> {
   }
 
   fetchSandbox = (id: string) => {
+    this.props.signals.editor.sandboxChanged({
+      id: this.props.match.params.id,
+    });
     this.setState({ loading: true }, () => {
       this.props.sandboxActions
         .getById(id)
@@ -85,6 +89,9 @@ class SandboxPage extends React.PureComponent<Props, State> {
     const oldId = oldProps.match.params.id;
 
     if (newId != null && oldId != null && oldId !== newId) {
+      this.props.signals.editor.sandboxChanged({
+        id: this.props.match.params.id,
+      });
       const sandbox = this.props.sandboxes[newId];
       this.setState({ notFound: false }); // eslint-disable-line
       if (!sandbox || !sandbox.forked) {
@@ -171,6 +178,8 @@ class SandboxPage extends React.PureComponent<Props, State> {
   }
 }
 
-export default DragDropContext(HTML5Backend)(
-  connect(mapStateToProps, mapDispatchToProps)(SandboxPage)
+export default inject('signals')(
+  DragDropContext(HTML5Backend)(
+    connect(mapStateToProps, mapDispatchToProps)(SandboxPage)
+  )
 );

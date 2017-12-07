@@ -5,6 +5,7 @@ import { createSelector } from 'reselect';
 import { Prompt } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { inject } from 'mobx-react';
 import { preferencesSelector } from 'app/store/preferences/selectors';
 import type {
   Preferences,
@@ -104,6 +105,7 @@ class EditorPreview extends React.PureComponent<Props, State> {
   };
 
   componentDidMount() {
+    this.props.signals.editor.contentMounted();
     window.onbeforeunload = e => {
       const { modules } = this.props;
       const notSynced = modules.some(m => m.isNotSynced);
@@ -119,8 +121,14 @@ class EditorPreview extends React.PureComponent<Props, State> {
     };
   }
 
-  startResizing = () => this.setState({ resizing: true });
-  stopResizing = () => this.setState({ resizing: false });
+  startResizing = () => {
+    this.props.signals.editor.resizingStarted();
+    this.setState({ resizing: true });
+  };
+  stopResizing = () => {
+    this.props.signals.editor.resizingStopped();
+    this.setState({ resizing: false });
+  };
 
   saveCode = () => {
     const { sandbox, modules, directories, sandboxActions } = this.props;
@@ -129,6 +137,7 @@ class EditorPreview extends React.PureComponent<Props, State> {
     const { currentModule } = sandbox;
 
     // $FlowIssue
+    this.props.signals.editor.codeSaved();
     sandboxActions.saveModuleCode(sandbox.id, currentModule || mainModule.id);
   };
 
@@ -203,7 +212,10 @@ class EditorPreview extends React.PureComponent<Props, State> {
           />
         )}
         <CodeEditor
-          changeCode={moduleActions.setCode}
+          changeCode={(moduleId, code) => {
+            this.props.signals.editor.codeChanged({ moduleId, code });
+            moduleActions.setCode(moduleId, code);
+          }}
           id={currentModule.id}
           errors={currentModule.errors}
           corrections={currentModule.corrections}
@@ -317,5 +329,5 @@ class EditorPreview extends React.PureComponent<Props, State> {
 }
 
 export default showAlternativeComponent(Skeleton, ['sandbox'])(
-  connect(mapStateToProps, mapDispatchToProps)(EditorPreview)
+  inject('signals')(connect(mapStateToProps, mapDispatchToProps)(EditorPreview))
 );

@@ -1,3 +1,7 @@
 import { Module } from 'cerebral';
+import model from './model';
 
-export default Module({});
+export default Module({
+  model,
+  state: {},
+});

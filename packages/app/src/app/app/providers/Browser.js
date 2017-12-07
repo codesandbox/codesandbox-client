@@ -7,4 +7,7 @@ export default Provider({
   confirm(message) {
     return confirm(message); // eslint-disable-line no-alert
   },
+  onUnload(cb) {
+    window.onbeforeunload = cb;
+  },
 });

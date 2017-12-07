@@ -21,3 +21,5 @@ export const unloadApp = actions.stopListeningToConnectionChange;
 export const setConnection = set(state`connected`, props`connection`);
 
 export const showAuthenticationError = [];
+
+export const openModal = [set(state`currentModal`, props`modal`)];

@@ -32,7 +32,7 @@ export default inject('store')(({ store }) => {
 
   return (
     <Container>
-      <Badge subscribed={store.subscribed} badge={badge} />
+      <Badge subscribed={store.isPatron} badge={badge} />
       <Details>
         <PricingInfo />
         <PricingChoice badge={badge} />

@@ -32,4 +32,5 @@ export default {
   }),
   connected: types.boolean,
   notifications: types.array(types.model({})),
+  currentModal: types.maybe(types.string),
 };

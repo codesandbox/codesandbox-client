@@ -4,6 +4,7 @@ import { createSelector } from 'reselect';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { inject } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import styled, { ThemeProvider } from 'styled-components';
 
@@ -80,7 +81,7 @@ const mapStateToProps = createSelector(
   currentUserSelector,
   (preventTransition, users, author, isPatron, currentUser) => ({
     preventTransition,
-    user: users[author],
+    user: users[author], // Just use author
     isPatron,
     currentUser,
   })
@@ -93,7 +94,7 @@ const mapDispatchToProps = dispatch => ({
 
 class Workspace extends React.PureComponent<Props> {
   openPreferences = () => {
-    this.props.modalActions.openPreferences('Integrations');
+    this.props.signals.modalOpened({ modal: 'integrations' });
   };
 
   render() {
@@ -254,5 +255,5 @@ class Workspace extends React.PureComponent<Props> {
 const Skeleton = () => <Container />;
 
 export default showAlternativeComponent(Skeleton, ['sandbox'])(
-  connect(mapStateToProps, mapDispatchToProps)(Workspace)
+  inject('signals')(connect(mapStateToProps, mapDispatchToProps)(Workspace))
 );
