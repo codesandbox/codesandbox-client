@@ -234,6 +234,7 @@ export default class Cubes extends React.PureComponent {
 
           return (
             <SmallCube
+              title={t.template.niceName}
               cubeRef={el => {
                 this.els[t.template.name] = el;
               }}
