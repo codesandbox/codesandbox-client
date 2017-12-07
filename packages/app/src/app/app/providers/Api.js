@@ -21,4 +21,25 @@ export default Provider({
       })
       .then(response => camelizeKeys(response.result.data));
   },
+  post(path, body) {
+    return this.context.http
+      .post(API_ROOT + path, decamelizeKeys(body), {
+        headers: createHeaders(this.context),
+      })
+      .then(response => camelizeKeys(response.result.data));
+  },
+  patch(path, body) {
+    return this.context.http
+      .patch(API_ROOT + path, decamelizeKeys(body), {
+        headers: createHeaders(this.context),
+      })
+      .then(response => camelizeKeys(response.result.data));
+  },
+  delete(path, query) {
+    return this.context.http
+      .delete(API_ROOT + path, query, {
+        headers: createHeaders(this.context),
+      })
+      .then(response => camelizeKeys(response.result.data));
+  },
 });

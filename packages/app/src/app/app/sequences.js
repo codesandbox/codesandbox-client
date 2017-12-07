@@ -7,13 +7,17 @@ export const loadApp = [
   actions.listenToConnectionChange,
   when(state`jwt`),
   {
-    true: [actions.getUser, set(state`user`, props`user`)],
+    true: [
+      actions.getUser,
+      set(state`user`, props`user`),
+      actions.setPatronPrice,
+    ],
     false: [],
   },
 ];
 
-export const unloadApp = [actions.stopListeningToConnectionChange];
+export const unloadApp = actions.stopListeningToConnectionChange;
 
-export const setConnection = set(state`connection`, props`connection`);
+export const setConnection = set(state`connected`, props`connection`);
 
 export const showAuthenticationError = [];

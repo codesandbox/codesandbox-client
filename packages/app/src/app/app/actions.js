@@ -22,3 +22,10 @@ export function listenToConnectionChange({ connection }) {
 export function stopListeningToConnectionChange({ connection }) {
   connection.removeListener('connectionChanged');
 }
+
+export function setPatronPrice({ props, state }) {
+  state.set(
+    'patron.price',
+    props.user.subscription ? props.user.subscription.amount : 10
+  );
+}

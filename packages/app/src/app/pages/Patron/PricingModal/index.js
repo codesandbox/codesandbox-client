@@ -1,9 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
-
-import type { CurrentUser } from 'common/types';
-import { currentUserSelector } from 'app/store/user/selectors';
+import { inject } from 'mobx-react';
 
 import PricingInfo from './PricingInfo';
 import PricingChoice from './PricingChoice';
@@ -30,74 +27,16 @@ const Details = styled.div`
   }
 `;
 
-type Props = {
-  user: CurrentUser,
-};
+export default inject('store')(({ store }) => {
+  const badge = `patron-${store.patron.tier}`;
 
-const mapStateToProps = state => ({
-  user: currentUserSelector(state),
+  return (
+    <Container>
+      <Badge subscribed={store.subscribed} badge={badge} />
+      <Details>
+        <PricingInfo />
+        <PricingChoice badge={badge} />
+      </Details>
+    </Container>
+  );
 });
-class PricingModal extends React.PureComponent {
-  props: Props;
-
-  constructor(props) {
-    super(props);
-
-    const price = this.getPrice(props);
-
-    this.state = {
-      price,
-    };
-  }
-
-  getPrice = props =>
-    (props.user && props.user.subscription && props.user.subscription.amount) ||
-    10;
-
-  componentWillReceiveProps(nextProps) {
-    const currentPrice = this.getPrice(this.props);
-    const nextPrice = this.getPrice(nextProps);
-
-    if (nextPrice && currentPrice !== nextPrice) {
-      this.setState({ price: nextPrice });
-    }
-  }
-
-  setPrice = (price: number) => {
-    this.setState({ price });
-  };
-
-  getPatronTier = () => {
-    const { price } = this.state;
-
-    if (price >= 20) return 4;
-    if (price >= 15) return 3;
-    if (price >= 10) return 2;
-    return 1;
-  };
-
-  render() {
-    const { user } = this.props;
-    const { price } = this.state;
-    const tier = this.getPatronTier();
-    const badge = `patron-${tier}`;
-    const subscribed = Boolean(user && user.subscription);
-
-    return (
-      <Container>
-        <Badge subscribed={subscribed} badge={badge} />
-        <Details>
-          <PricingInfo />
-          <PricingChoice
-            user={user}
-            badge={badge}
-            price={price}
-            setPrice={this.setPrice}
-          />
-        </Details>
-      </Container>
-    );
-  }
-}
-
-export default connect(mapStateToProps)(PricingModal);

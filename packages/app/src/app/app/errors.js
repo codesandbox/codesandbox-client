@@ -6,5 +6,3 @@ export class AuthenticationError extends CerebralError {
     this.name = 'AuthenticationError';
   }
 }
-
-console.log(new AuthenticationError() instanceof Error);
