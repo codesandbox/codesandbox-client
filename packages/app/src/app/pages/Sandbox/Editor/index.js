@@ -27,6 +27,34 @@ export default class ContentSplit extends React.PureComponent<Props, State> {
   startResizing = () => this.setState({ resizing: true });
   stopResizing = () => this.setState({ resizing: false });
 
+  timeout: number;
+  shiftPressed: boolean;
+
+  handleKeyPress = (e: KeyboardEvent) => {
+    // Handle double shift press for toggling the workspace
+    if (e.keyCode === 16) {
+      if (!this.shiftPressed) {
+        this.shiftPressed = true;
+        if (this.timeout) {
+          clearTimeout(this.timeout);
+        }
+        this.timeout = setTimeout(() => {
+          this.shiftPressed = false;
+        }, 500);
+      } else {
+        this.toggleWorkspace();
+      }
+    }
+  };
+
+  componentDidMount() {
+    document.addEventListener('keydown', this.handleKeyPress);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleKeyPress);
+  }
+
   toggleWorkspace = () =>
     this.setState({ workspaceHidden: !this.state.workspaceHidden });
 
