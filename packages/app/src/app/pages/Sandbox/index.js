@@ -11,6 +11,7 @@ import type { Sandbox } from 'common/types';
 
 import { sandboxesSelector } from 'app/store/entities/sandboxes/selectors';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
+import { preferencesSelector } from 'app/store/preferences/selectors';
 
 import Title from 'app/components/text/Title';
 import SubTitle from 'app/components/text/SubTitle';
@@ -23,6 +24,7 @@ type Props = {
   sandboxes: { [id: string]: Sandbox },
   sandboxActions: typeof sandboxActionCreators,
   match: { params: { id: string } },
+  zenMode: boolean,
 };
 type State = {
   notFound: boolean,
@@ -30,9 +32,14 @@ type State = {
   currentId: ?string,
 };
 
-const mapStateToProps = createSelector(sandboxesSelector, sandboxes => ({
-  sandboxes,
-}));
+const mapStateToProps = createSelector(
+  sandboxesSelector,
+  preferencesSelector,
+  (sandboxes, preferences) => ({
+    sandboxes,
+    zenMode: preferences.zenMode,
+  })
+);
 const mapDispatchToProps = dispatch => ({
   sandboxActions: bindActionCreators(sandboxActionCreators, dispatch),
 });
@@ -91,7 +98,7 @@ class SandboxPage extends React.PureComponent<Props, State> {
   state = { notFound: false, currentId: null, loading: false };
 
   render() {
-    const { sandboxes, match } = this.props;
+    const { sandboxes, match, zenMode } = this.props;
     const { currentId } = this.state;
 
     if (this.state.loading) {
@@ -135,7 +142,7 @@ class SandboxPage extends React.PureComponent<Props, State> {
         : 'Editor - CodeSandbox';
     }
 
-    return <Editor match={match} sandbox={sandbox} />;
+    return <Editor match={match} zenMode={zenMode} sandbox={sandbox} />;
   }
 }
 

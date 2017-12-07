@@ -32,6 +32,7 @@ import SplitPane from 'react-split-pane';
 
 import CodeEditor from 'app/components/sandbox/CodeEditor';
 import Tabs from 'app/components/sandbox/CodeEditor/Tabs';
+import FilePath from 'app/components/sandbox/CodeEditor/FilePath';
 import Preview from 'app/components/sandbox/Preview';
 
 import showAlternativeComponent from 'app/hoc/show-alternative-component';
@@ -162,18 +163,28 @@ class EditorPreview extends React.PureComponent<Props, State> {
 
     const EditorPane = (
       <FullSize>
-        <Tabs
-          tabs={sandbox.tabs}
-          modules={modules}
-          directories={directories}
-          currentModuleId={currentModule.id}
-          sandboxId={sandbox.id}
-          setCurrentModule={sandboxActions.setCurrentModule}
-          closeTab={sandboxActions.closeTab}
-          moveTab={sandboxActions.moveTab}
-          markNotDirty={sandboxActions.markTabsNotDirty}
-          prettifyModule={moduleActions.prettifyModule}
-        />
+        {preferences.zenMode ? (
+          <FilePath
+            modules={modules}
+            directories={directories}
+            currentModule={currentModule}
+            workspaceHidden={workspaceHidden}
+            toggleWorkspace={toggleWorkspace}
+          />
+        ) : (
+          <Tabs
+            tabs={sandbox.tabs}
+            modules={modules}
+            directories={directories}
+            currentModuleId={currentModule.id}
+            sandboxId={sandbox.id}
+            setCurrentModule={sandboxActions.setCurrentModule}
+            closeTab={sandboxActions.closeTab}
+            moveTab={sandboxActions.moveTab}
+            markNotDirty={sandboxActions.markTabsNotDirty}
+            prettifyModule={moduleActions.prettifyModule}
+          />
+        )}
         <CodeEditor
           changeCode={moduleActions.setCode}
           id={currentModule.id}
@@ -248,6 +259,7 @@ class EditorPreview extends React.PureComponent<Props, State> {
             canSave={notSynced}
             modules={sandbox.modules}
             directories={sandbox.directories}
+            zenMode={preferences.zenMode}
           />
           <SplitPane
             onDragStarted={this.startResizing}

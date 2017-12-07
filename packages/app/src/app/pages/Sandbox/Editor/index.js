@@ -10,6 +10,7 @@ import Content from './Content';
 type Props = {
   sandbox: Sandbox,
   match: Object,
+  zenMode: boolean,
 };
 
 type State = {
@@ -20,7 +21,7 @@ type State = {
 export default class ContentSplit extends React.PureComponent<Props, State> {
   state = {
     resizing: false,
-    workspaceHidden: false,
+    workspaceHidden: this.props.zenMode,
   };
 
   startResizing = () => this.setState({ resizing: true });
@@ -46,7 +47,9 @@ export default class ContentSplit extends React.PureComponent<Props, State> {
           maxWidth: workspaceHidden ? 0 : 'inherit',
         }}
       >
-        {!workspaceHidden && <Workspace sandbox={sandbox} />}
+        {!workspaceHidden && (
+          <Workspace zenMode={this.props.zenMode} sandbox={sandbox} />
+        )}
         <Content
           workspaceHidden={workspaceHidden}
           toggleWorkspace={this.toggleWorkspace}

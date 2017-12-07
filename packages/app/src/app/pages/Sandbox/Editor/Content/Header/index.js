@@ -1,6 +1,6 @@
 // @flow
-import * as React from 'react';
-import styled from 'styled-components';
+import React, { Fragment } from 'react';
+import styled, { css } from 'styled-components';
 import Media from 'react-media';
 
 import Save from 'react-icons/lib/md/save';
@@ -54,6 +54,27 @@ const Container = styled.div`
   flex: 0 0 3rem;
   box-sizing: border-box;
   border-bottom: 1px solid ${props => props.theme.background2.darken(0.3)};
+
+  ${props =>
+    props.hoverShow &&
+    css`
+      position: absolute;
+      transition: 0.3s ease max-height;
+      top: 0;
+      left: 0;
+      right: 0;
+      opacity: 0;
+
+      max-height: 1rem;
+      overflow: hidden;
+      flex: 0 0 3rem;
+
+      &:hover {
+        position: relative;
+        max-height: 3rem;
+        opacity: 1;
+      }
+    `};
 `;
 
 const Right = styled.div`
@@ -94,6 +115,7 @@ const Chevron = styled.div`
 type Props = {
   toggleWorkspace: () => void,
   workspaceHidden: boolean,
+  zenMode: boolean,
   modules: Array<string>,
   directories: Array<string>,
   sandboxId: string,
@@ -111,6 +133,7 @@ type Props = {
 
 const CHECKED_FIELDS = [
   'workspaceHidden',
+  'zenMode',
   'sandboxId',
   'owned',
   'showEditor',
@@ -222,10 +245,11 @@ export default class Header extends React.Component<Props> {
       toggleWorkspace,
       workspaceHidden,
       canSave,
+      zenMode,
     } = this.props;
 
     return (
-      <Container>
+      <Container hoverShow={zenMode}>
         <ModeIcons
           small
           dropdown
@@ -235,143 +259,153 @@ export default class Header extends React.Component<Props> {
           setEditorView={this.setEditorView}
           setPreviewView={this.setPreviewView}
         />
-        <Left>
-          <Tooltip
-            title={workspaceHidden ? 'Open sidebar' : 'Collapse sidebar'}
-          >
-            <Chevron
-              workspaceHidden={workspaceHidden}
-              onClick={toggleWorkspace}
+        {zenMode ? (
+          <Left />
+        ) : (
+          <Left>
+            <Tooltip
+              title={workspaceHidden ? 'Open sidebar' : 'Collapse sidebar'}
             >
-              <ChevronLeft />
-            </Chevron>
-          </Tooltip>
-          {user.jwt &&
-            (sandboxLiked ? (
-              <Action
-                tooltip="Undo like"
-                title={sandboxLikeCount}
-                Icon={FullHeartIcon}
-                onClick={this.toggleLike}
-              />
-            ) : (
-              <Action
-                tooltip="Like"
-                title={sandboxLikeCount}
-                Icon={HeartIcon}
-                onClick={this.toggleLike}
-              />
-            ))}
-          <Action
-            onClick={this.forkSandbox}
-            tooltip="Fork sandbox"
-            title="Fork"
-            Icon={Fork}
-          />
-          <Action
-            onClick={canSave ? this.massUpdateModules : null}
-            placeholder={canSave ? false : 'All modules are saved'}
-            tooltip="Save sandbox"
-            title="Save"
-            Icon={Save}
-          />
-          <Action
-            tooltip="Download sandbox"
-            title="Download"
-            Icon={Download}
-            onClick={this.zipSandbox}
-          />
-          {user.jwt &&
-            owned && (
-              <Action
-                tooltip="Deploy sandbox"
-                title="Deploy"
-                Icon={NowIcon}
-                onClick={this.deploySandbox}
-              />
-            )}
-          <Action
-            tooltip="Share sandbox"
-            title="Share"
-            Icon={ShareIcon}
-            onClick={this.openShareView}
-          />
-        </Left>
-
-        <Right>
-          <Media query="(max-width: 1560px)">
-            {matches =>
-              matches ? (
+              <Chevron
+                workspaceHidden={workspaceHidden}
+                onClick={toggleWorkspace}
+              >
+                <ChevronLeft />
+              </Chevron>
+            </Tooltip>
+            {user.jwt &&
+              (sandboxLiked ? (
                 <Action
-                  href={searchUrl()}
-                  Icon={SearchIcon}
-                  tooltip="Search"
-                  title="Search"
+                  tooltip="Undo like"
+                  title={sandboxLikeCount}
+                  Icon={FullHeartIcon}
+                  onClick={this.toggleLike}
                 />
               ) : (
-                <div style={{ marginRight: '0.5rem', fontSize: '.875rem' }}>
-                  <HeaderSearchBar />
-                </div>
-              )
-            }
-          </Media>
+                <Action
+                  tooltip="Like"
+                  title={sandboxLikeCount}
+                  Icon={HeartIcon}
+                  onClick={this.toggleLike}
+                />
+              ))}
+            <Action
+              onClick={this.forkSandbox}
+              tooltip="Fork sandbox"
+              title="Fork"
+              Icon={Fork}
+            />
+            <Action
+              onClick={canSave ? this.massUpdateModules : null}
+              placeholder={canSave ? false : 'All modules are saved'}
+              tooltip="Save sandbox"
+              title="Save"
+              Icon={Save}
+            />
+            <Action
+              tooltip="Download sandbox"
+              title="Download"
+              Icon={Download}
+              onClick={this.zipSandbox}
+            />
+            {user.jwt &&
+              owned && (
+                <Action
+                  tooltip="Deploy sandbox"
+                  title="Deploy"
+                  Icon={NowIcon}
+                  onClick={this.deploySandbox}
+                />
+              )}
+            <Action
+              tooltip="Share sandbox"
+              title="Share"
+              Icon={ShareIcon}
+              onClick={this.openShareView}
+            />
+          </Left>
+        )}
 
-          {!user ||
-            (!user.subscription && (
+        <Right>
+          {!zenMode && (
+            <Fragment>
+              <Media query="(max-width: 1560px)">
+                {matches =>
+                  matches ? (
+                    <Action
+                      href={searchUrl()}
+                      Icon={SearchIcon}
+                      tooltip="Search"
+                      title="Search"
+                    />
+                  ) : (
+                    <div style={{ marginRight: '0.5rem', fontSize: '.875rem' }}>
+                      <HeaderSearchBar />
+                    </div>
+                  )
+                }
+              </Media>
+
+              {!user ||
+                (!user.subscription && (
+                  <Action
+                    href={patronUrl()}
+                    tooltip="Support CodeSandbox"
+                    Icon={PatronBadge}
+                    iconProps={{
+                      width: 16,
+                      height: 32,
+                      transform: 'scale(1.5, 1.5)',
+                    }}
+                  />
+                ))}
               <Action
-                href={patronUrl()}
-                tooltip="Support CodeSandbox"
-                Icon={PatronBadge}
-                iconProps={{
-                  width: 16,
-                  height: 32,
-                  transform: 'scale(1.5, 1.5)',
-                }}
+                href="https://twitter.com/CompuIves"
+                a
+                tooltip="Contact"
+                Icon={TwitterIcon}
               />
-            ))}
-          <Action
-            href="https://twitter.com/CompuIves"
-            a
-            tooltip="Contact"
-            Icon={TwitterIcon}
-          />
-          <Action
-            href="https://discord.gg/FGeubVt"
-            a
-            tooltip="Chat on Discord"
-            Icon={FeedbackIcon}
-          />
-          <Action
-            onClick={this.openNewSandbox}
-            tooltip="New Sandbox"
-            Icon={PlusIcon}
-          />
+              <Action
+                href="https://discord.gg/FGeubVt"
+                a
+                tooltip="Chat on Discord"
+                Icon={FeedbackIcon}
+              />
+              <Action
+                onClick={this.openNewSandbox}
+                tooltip="New Sandbox"
+                Icon={PlusIcon}
+              />
+            </Fragment>
+          )}
           <Action
             onClick={this.openPreferences}
             tooltip="Preferences"
             Icon={SettingsIcon}
           />
-          <Margin
-            style={{
-              zIndex: 20,
-              height: '100%',
-            }}
-            left={1}
-          >
-            {user.jwt ? (
-              <div style={{ fontSize: '.875rem', margin: '6px 0.5rem' }}>
-                <UserMenu small />
-              </div>
-            ) : (
-              <Action
-                onClick={userActions.signIn}
-                title="Sign in with Github"
-                Icon={GithubIcon}
-                highlight
-                unresponsive
-              />
-            )}
-          </Margin>
+          {!zenMode && (
+            <Margin
+              style={{
+                zIndex: 20,
+                height: '100%',
+              }}
+              left={1}
+            >
+              {user.jwt ? (
+                <div style={{ fontSize: '.875rem', margin: '6px 0.5rem' }}>
+                  <UserMenu small />
+                </div>
+              ) : (
+                <Action
+                  onClick={userActions.signIn}
+                  title="Sign in with Github"
+                  Icon={GithubIcon}
+                  highlight
+                  unresponsive
+                />
+              )}
+            </Margin>
+          )}
         </Right>
       </Container>
     );

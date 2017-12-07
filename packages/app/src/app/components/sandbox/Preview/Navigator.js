@@ -66,6 +66,7 @@ type Props = {
   openNewWindow: ?() => void,
   isProjectView: boolean,
   toggleProjectView: () => void,
+  zenMode: boolean,
 };
 
 export default ({
@@ -78,6 +79,7 @@ export default ({
   isProjectView,
   toggleProjectView,
   openNewWindow,
+  zenMode,
 }: Props) => (
   <Container>
     <Icons>
@@ -94,20 +96,22 @@ export default ({
     <AddressBarContainer>
       <AddressBar url={url} onChange={onChange} onConfirm={onConfirm} />
     </AddressBarContainer>
-    {openNewWindow && (
-      <Icon style={{ marginRight: '0.75rem' }} onClick={openNewWindow}>
-        <ExternalIcon />
-      </Icon>
-    )}
-    {toggleProjectView && (
-      <SwitchContainer>
-        <Tooltip
-          title={isProjectView ? 'Project View' : 'Current Module View'}
-          position="left"
-        >
-          <Switch right={isProjectView} onClick={toggleProjectView} />
-        </Tooltip>
-      </SwitchContainer>
-    )}
+    {!zenMode &&
+      openNewWindow && (
+        <Icon style={{ marginRight: '0.75rem' }} onClick={openNewWindow}>
+          <ExternalIcon />
+        </Icon>
+      )}
+    {!zenMode &&
+      toggleProjectView && (
+        <SwitchContainer>
+          <Tooltip
+            title={isProjectView ? 'Project View' : 'Current Module View'}
+            position="left"
+          >
+            <Switch right={isProjectView} onClick={toggleProjectView} />
+          </Tooltip>
+        </SwitchContainer>
+      )}
   </Container>
 );

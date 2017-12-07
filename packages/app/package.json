@@ -6,18 +6,15 @@
   "scripts": {
     "start": "cross-env LOCAL_SERVER=1 node scripts/start.js",
     "start:dev_api": "node scripts/start.js",
-    "start:test":
-      "cross-env LOCAL_SERVER=1 NODE_ENV=test node scripts/start.js",
+    "start:test": "cross-env LOCAL_SERVER=1 NODE_ENV=test node scripts/start.js",
     "build": "NODE_ENV=production node scripts/build.js",
     "test": "jest --env=jsdom",
     "test:watch": "jest --watch --env=jsdom",
-    "test:integrations":
-      "jest --config integration-tests/jest.config.json --env=jsdom --maxWorkers=2",
+    "test:integrations": "jest --config integration-tests/jest.config.json --env=jsdom --maxWorkers=2",
     "lint": "npm run lint:app && npm run lint:embed",
     "lint:app": "eslint src/app",
     "lint:embed": "eslint src/embed",
-    "integrations:start":
-      "docker run -v $(pwd):/app/ -it codesandbox/test yarn start:test",
+    "integrations:start": "docker run -v $(pwd):/app/ -it codesandbox/test yarn start:test",
     "typecheck": "flow check"
   },
   "devDependencies": {
@@ -143,12 +140,12 @@
     "postcss-selector-parser": "^2.2.3",
     "qs": "^6.5.0",
     "rc-slider": "^8.2.0",
-    "react": "16",
+    "react": "16.2.0",
     "react-addons-css-transition-group": "^15.6.0",
     "react-deep-force-update": "^2.0.1",
     "react-dnd": "^2.4.0",
     "react-dnd-html5-backend": "^2.4.1",
-    "react-dom": "16",
+    "react-dom": "16.2.0",
     "react-draggable-tabs": "^1.0.7",
     "react-error-overlay": "^1.0.10",
     "react-icons": "^2.2.7",
@@ -177,10 +174,19 @@
     "vue-template-es2015-compiler": "^1.6.0"
   },
   "jest": {
-    "roots": ["<rootDir>/src"],
-    "moduleDirectories": ["node_modules", "src"],
-    "testPathIgnorePatterns": ["/create-zip\\/.*\\/files/"],
-    "transformIgnorePatterns": ["node_modules/(?!(common))"],
+    "roots": [
+      "<rootDir>/src"
+    ],
+    "moduleDirectories": [
+      "node_modules",
+      "src"
+    ],
+    "testPathIgnorePatterns": [
+      "/create-zip\\/.*\\/files/"
+    ],
+    "transformIgnorePatterns": [
+      "node_modules/(?!(common))"
+    ],
     "moduleNameMapper": {
       "\\.css$": "<rootDir>/__mocks__/styleMock.js",
       "\\.html$": "<rootDir>/__mocks__/styleMock.js",

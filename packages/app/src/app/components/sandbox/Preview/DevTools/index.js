@@ -78,6 +78,7 @@ type Props = {
   setDragging: (dragging: boolean) => void,
   evaluateCommand: (cmd: string) => void,
   sandboxId: string,
+  zenMode: boolean,
   shouldExpandDevTools: ?boolean,
 };
 type State = {
@@ -303,7 +304,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
   node: HTMLElement;
 
   render() {
-    const { sandboxId } = this.props;
+    const { sandboxId, zenMode } = this.props;
     const { hidden, height, status } = this.state;
 
     const { actions, Content } = PANES[this.state.currentPane];
@@ -327,10 +328,12 @@ export default class DevTools extends React.PureComponent<Props, State> {
           {Object.keys(PANES).map(title => (
             <Tab key={title}>
               {title}
-              <Unread
-                status={status[title] ? status[title].type : 'info'}
-                unread={status[title] ? status[title].unread : 0}
-              />
+              {!zenMode && (
+                <Unread
+                  status={status[title] ? status[title].type : 'info'}
+                  unread={status[title] ? status[title].unread : 0}
+                />
+              )}
             </Tab>
           ))}
 
