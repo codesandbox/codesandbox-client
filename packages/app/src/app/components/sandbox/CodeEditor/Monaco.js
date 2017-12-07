@@ -410,6 +410,7 @@ export default class CodeEditor extends React.Component<Props, State> {
     if (
       this.editor &&
       this.getCode() !== nextProps.code &&
+      this.props.code !== nextProps.code &&
       this.props.id === nextProps.id
     ) {
       this.updateCode(nextProps.code);

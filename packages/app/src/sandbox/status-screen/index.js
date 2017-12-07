@@ -4,8 +4,6 @@
 
 import loadingHTML from './loading-screen.html';
 
-import SandboxError from '../errors/sandbox-error';
-
 type LoadingScreen = {
   type: 'loading',
   text: string,
