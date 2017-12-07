@@ -22,7 +22,8 @@ type Props = {
 };
 
 const CodeMirror = Loadable({
-  loader: () => import(/* webpackChunkName: 'codemirror' */ './CodeMirror'),
+  loader: () =>
+    import(/* webpackChunkName: 'codemirror-editor' */ './CodeMirror'),
   LoadingComponent: Loading,
 });
 

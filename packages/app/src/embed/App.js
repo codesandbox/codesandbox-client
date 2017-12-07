@@ -19,6 +19,13 @@ import Header from './components/Header';
 import Content from './components/Content';
 import Sidebar from './components/Sidebar';
 
+// Okay, this looks veeeery strange, we need this because Webpack has a bug currently
+// that makes it think we have core-js/es6/map available in embed, but we don't.
+// So we explicitly make sure that we have `core-js/es6/map` available by declaring
+// new Map.
+// eslint-disable-next-line
+new Map();
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
