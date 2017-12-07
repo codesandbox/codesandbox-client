@@ -59,6 +59,14 @@ const Preferences = ({ preferences, preferencesActions }: Props) => {
           {...bindValue('instantPreviewEnabled')}
         />
         <Description>Show preview on every keypress.</Description>
+        <Rule />
+        <PaddedPreference
+          title="Relative preview URLs"
+          type="boolean"
+          {...bindValue('relativeUrlsEnabled')}
+          tooltip="Relative URLs"
+        />
+        <Description>Relative preview address bar URLs</Description>
       </PreferenceContainer>
     </Container>
   );
