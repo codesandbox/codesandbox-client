@@ -1,10 +1,12 @@
 import * as React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import ChevronLeft from 'react-icons/lib/md/chevron-left';
+import ExitZen from 'react-icons/lib/md/fullscreen-exit';
 
 import { getModulePath } from 'app/store/entities/sandboxes/modules/selectors';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
 import getType from 'app/store/entities/sandboxes/modules/utils/get-type';
+import { withTooltip } from 'common/components/Tooltip';
 
 import type { Module, Directory } from 'common/types';
 
@@ -43,7 +45,31 @@ const Chevron = styled(ChevronLeft)`
 const FileName = styled.div`
   transition: 0.3s ease transform;
   transform: ${props => (props.hovering ? 'translateX(20px)' : 'none')};
+  flex: 1;
 `;
+
+const StyledExitZen = withTooltip(
+  styled(ExitZen)`
+    transition: 0.3s ease opacity;
+
+    opacity: 0;
+    cursor: pointer;
+    font-size: 1.25rem;
+
+    z-index: 10;
+
+    ${props =>
+      props.hovering &&
+      css`
+        opacity: 0.7;
+
+        &:hover {
+          opacity: 1;
+        }
+      `};
+  `,
+  { title: 'Close Zen Mode', style: { zIndex: 10 } }
+);
 
 type Props = {
   modules: Array<Module>,
@@ -51,6 +77,7 @@ type Props = {
   currentModule: Module,
   workspaceHidden: boolean,
   toggleWorkspace: Function,
+  exitZenMode: Function,
 };
 
 export default class FilePath extends React.Component<Props> {
@@ -73,6 +100,7 @@ export default class FilePath extends React.Component<Props> {
       directories,
       workspaceHidden,
       toggleWorkspace,
+      exitZenMode,
     } = this.props;
     const path = getModulePath(modules, directories, currentModule.id);
 
@@ -106,6 +134,8 @@ export default class FilePath extends React.Component<Props> {
             {directoryPath}
           </span>
         </FileName>
+
+        <StyledExitZen hovering={this.state.hovering} onClick={exitZenMode} />
       </Container>
     );
   }

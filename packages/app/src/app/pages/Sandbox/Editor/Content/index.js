@@ -18,6 +18,7 @@ import moduleActionCreators from 'app/store/entities/sandboxes/modules/actions';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 import modalActionCreators from 'app/store/modal/actions';
 import previewApiActionCreators from 'app/store/preview-actions-api/actions';
+import preferenceActionCreators from 'app/store/preferences/actions';
 import userActionCreators from 'app/store/user/actions';
 import {
   findMainModule,
@@ -54,6 +55,7 @@ type Props = {
   userActions: typeof userActionCreators,
   modalActions: typeof modalActionCreators,
   previewApiActions: typeof previewApiActionCreators,
+  preferenceActions: typeof preferenceActionCreators,
 };
 
 type State = {
@@ -87,6 +89,7 @@ const mapDispatchToProps = dispatch => ({
   userActions: bindActionCreators(userActionCreators, dispatch),
   modalActions: bindActionCreators(modalActionCreators, dispatch),
   previewApiActions: bindActionCreators(previewApiActionCreators, dispatch),
+  preferenceActions: bindActionCreators(preferenceActionCreators, dispatch),
 });
 class EditorPreview extends React.PureComponent<Props, State> {
   state = {
@@ -127,6 +130,10 @@ class EditorPreview extends React.PureComponent<Props, State> {
     if (sandbox.showEditor && !sandbox.showPreview) return '0%';
     if (!sandbox.showEditor && sandbox.showPreview) return '100%';
     return '50%';
+  };
+
+  exitZenMode = () => {
+    this.props.preferenceActions.setPreference({ zenMode: false });
   };
 
   render() {
@@ -170,6 +177,7 @@ class EditorPreview extends React.PureComponent<Props, State> {
             currentModule={currentModule}
             workspaceHidden={workspaceHidden}
             toggleWorkspace={toggleWorkspace}
+            exitZenMode={this.exitZenMode}
           />
         ) : (
           <Tabs
@@ -243,24 +251,25 @@ class EditorPreview extends React.PureComponent<Props, State> {
               'You have not saved this sandbox, are you sure you want to navigate away?'
             }
           />
-          <Header
-            sandboxId={sandbox.id}
-            owned={sandbox.owned}
-            showEditor={sandbox.showEditor}
-            showPreview={sandbox.showPreview}
-            sandboxLiked={sandbox.userLiked}
-            sandboxLikeCount={sandbox.likeCount}
-            sandboxActions={sandboxActions}
-            userActions={userActions}
-            modalActions={modalActions}
-            user={user}
-            workspaceHidden={workspaceHidden}
-            toggleWorkspace={toggleWorkspace}
-            canSave={notSynced}
-            modules={sandbox.modules}
-            directories={sandbox.directories}
-            zenMode={preferences.zenMode}
-          />
+          {!preferences.zenMode && (
+            <Header
+              sandboxId={sandbox.id}
+              owned={sandbox.owned}
+              showEditor={sandbox.showEditor}
+              showPreview={sandbox.showPreview}
+              sandboxLiked={sandbox.userLiked}
+              sandboxLikeCount={sandbox.likeCount}
+              sandboxActions={sandboxActions}
+              userActions={userActions}
+              modalActions={modalActions}
+              user={user}
+              workspaceHidden={workspaceHidden}
+              toggleWorkspace={toggleWorkspace}
+              canSave={notSynced}
+              modules={sandbox.modules}
+              directories={sandbox.directories}
+            />
+          )}
           <SplitPane
             onDragStarted={this.startResizing}
             onDragFinished={this.stopResizing}

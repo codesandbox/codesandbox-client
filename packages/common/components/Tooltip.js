@@ -1,6 +1,6 @@
 import { injectGlobal } from 'styled-components';
 import 'react-tippy/dist/tippy.css';
-import { Tooltip } from 'react-tippy';
+import { Tooltip, withTooltip } from 'react-tippy';
 
 // eslint-disable-next-line
 injectGlobal`
@@ -13,3 +13,4 @@ injectGlobal`
 `;
 
 export default Tooltip;
+export { withTooltip };
