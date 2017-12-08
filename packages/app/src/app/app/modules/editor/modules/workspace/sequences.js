@@ -10,11 +10,11 @@ export const changeValue = [
 export const updateSandboxInfo = [
   ensureOwnedSandbox,
   set(
-    state`editor.sandboxes.${props`sandbox.id`}.title`,
+    state`editor.sandboxes.${state`editor.currentId`}.title`,
     state`editor.workspace.project.title`
   ),
   set(
-    state`editor.sandboxes.${props`sandbox.id`}.description`,
+    state`editor.sandboxes.${state`editor.currentId`}.description`,
     state`editor.workspace.project.description`
   ),
   actions.updateSandbox,
