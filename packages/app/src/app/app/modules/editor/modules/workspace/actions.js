@@ -1,3 +1,18 @@
+export function updateSandbox({ api, state }) {
+  const sandboxId = state.get('editor.currentId');
+  const body = {
+    sandbox: {
+      title: state.get('editor.workspace.project.title'),
+      description: state.get('editor.workspace.project.description'),
+    },
+  };
+
+  return api
+    .put(`/sandboxes/${sandboxId}`, body)
+    .then(data => ({ data }))
+    .catch(error => ({ error }));
+}
+
 export function addNpmDependency({ api, state, props }) {
   const sandboxId = state.get('editor.currentId');
 

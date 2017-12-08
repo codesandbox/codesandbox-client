@@ -8,9 +8,17 @@ export const changeValue = [
 ];
 
 export const updateSandboxInfo = [
-  set(state`editor.workspace.project.title`, props`title`),
-  set(state`editor.workspace.project.description`, props`description`),
-]
+  ensureOwnedSandbox,
+  set(
+    state`editor.sandboxes.${props`sandbox.id`}.title`,
+    state`editor.workspace.project.title`
+  ),
+  set(
+    state`editor.sandboxes.${props`sandbox.id`}.description`,
+    state`editor.workspace.project.description`
+  ),
+  actions.updateSandbox,
+];
 
 export const toggleWorkspace = toggle(
   state`editor.workspace.isWorkspaceHidden`
