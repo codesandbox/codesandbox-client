@@ -1,120 +1,37 @@
 // @flow
 import * as React from 'react';
-import styled from 'styled-components';
-import { Link } from 'react-router-dom';
-import ConfirmLink from 'app/components/ConfirmLink';
-import GithubBadge from 'app/components/sandbox/GithubBadge';
+import { inject, observer } from 'mobx-react';
+
 import {
   sandboxUrl,
   githubRepoUrl,
   profileUrl,
 } from 'common/utils/url-generator';
+
 import UserWithAvatar from 'app/components/user/UserWithAvatar';
 import Stats from 'app/components/sandbox/Stats';
 import PrivacyStatus from 'app/components/sandbox/PrivacyStatus';
-import getTemplateDefinition from 'common/templates';
+import ConfirmLink from 'app/components/ConfirmLink';
+import GithubBadge from 'app/components/sandbox/GithubBadge';
 
+import getTemplateDefinition from 'common/templates';
 import type { User, GitInfo } from 'common/types';
 import WorkspaceInputContainer from '../WorkspaceInputContainer';
 import WorkspaceSubtitle from '../WorkspaceSubtitle';
 
-const Item = styled.div`
-  margin: 1rem;
-  margin-top: 0;
-  font-size: 0.875rem;
-`;
+import {
+  Item,
+  GitContainer,
+  UserLink,
+  StatsContainer,
+  PrivacyContainer,
+} from './elements';
 
-const GitContainer = styled.div`
-  display: inline-block;
-  margin: 0 1rem;
-  margin-bottom: 0.25rem;
-`;
-
-const UserLink = styled(Link)`
-  display: block;
-  text-decoration: none;
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 0.875rem;
-`;
-
-const StatsContainer = styled.div`
-  height: 2rem;
-  font-size: 0.875rem;
-  box-sizing: border-box;
-  color: rgba(255, 255, 255, 0.8);
-`;
-
-const PrivacyContainer = styled.div`
-  margin: 0 1rem;
-  font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.8);
-  margin-bottom: 1rem;
-`;
-
-type Props = {
-  id: string,
-  title: ?string,
-  description: string,
-  viewCount: number,
-  likeCount: number,
-  forkCount: number,
-  forkedSandbox: ?{ title: string, id: string },
-  updateSandboxInfo: (id: string, title: string, description: string) => any,
-  preventTransition: boolean,
-  author: ?User,
-  git: ?GitInfo,
-  privacy: number,
-  template: string,
-};
-
-export default class Project extends React.PureComponent<
-  Props,
-  {
-    title: ?string,
-    description: ?string,
-  }
-> {
-  constructor(props: Props) {
-    super(props);
-
-    this.state = {
-      title: props.title,
-      description: props.description,
-    };
-  }
-
-  setValue = (field: string) => (e: Event) => {
-    // $FlowIssue
-    this.setState({ [field]: e.target.value });
-  };
-
-  updateSandboxInfo = () => {
-    const { id, title: oldTitle, description: oldDescription } = this.props;
-    const { title, description } = this.state;
-
-    if (title !== oldTitle || description !== oldDescription) {
-      this.props.updateSandboxInfo(id, title || '', description || '');
-    }
-  };
-
-  handleKeyUp = (e: KeyboardEvent) => {
-    if (e.keyCode === 13) {
-      // Enter or escape
-      this.updateSandboxInfo();
-    }
-  };
-
-  componentWillReceiveProps = (nextProps: Props) => {
-    if (nextProps.title !== this.props.title) {
-      this.setState({ title: nextProps.title });
-    }
-    if (nextProps.description !== this.props.description) {
-      this.setState({ description: nextProps.description });
-    }
-  };
-
-  render() {
-    const {
+export default inject('store', 'signals')(
+  observer(
+    ({
+      store,
+      signals,
       id,
       forkedSandbox,
       viewCount,
@@ -125,28 +42,48 @@ export default class Project extends React.PureComponent<
       template,
       preventTransition,
       privacy,
-    } = this.props;
-    const { title, description } = this.state;
-    return (
+    }) => (
       <div>
         <WorkspaceInputContainer>
           <input
-            value={title || ''}
-            onChange={this.setValue('title')}
+            value={store.editor.workspace.project.title}
+            onChange={event => {
+              signals.editor.workspace.valueChanged({
+                field: 'title',
+                value: event.target.value,
+              });
+            }}
             type="text"
-            onBlur={this.updateSandboxInfo}
-            onKeyUp={this.handleKeyUp}
+            onBlur={() => {
+              signals.editor.workspace.updateSandboxInfo();
+            }}
+            onKeyUp={event => {
+              if (event.keyCode === 13) {
+                signals.editor.workspace.updateSandboxInfo();
+              }
+            }}
             placeholder="Title"
           />
         </WorkspaceInputContainer>
 
         <WorkspaceInputContainer>
           <textarea
-            value={description || ''}
-            onChange={this.setValue('description')}
+            value={store.editor.workspace.project.description}
+            onChange={event => {
+              signals.editor.workspace.valueChanged({
+                field: 'description',
+                value: event.target.value,
+              });
+            }}
             type="text"
-            onBlur={this.updateSandboxInfo}
-            onKeyUp={this.handleKeyUp}
+            onBlur={() => {
+              signals.editor.workspace.updateSandboxInfo();
+            }}
+            onKeyUp={event => {
+              if (event.keyCode === 13) {
+                signals.editor.workspace.updateSandboxInfo();
+              }
+            }}
             rows="2"
             placeholder="Description"
           />
@@ -227,6 +164,6 @@ export default class Project extends React.PureComponent<
           />
         </StatsContainer>
       </div>
-    );
-  }
-}
+    )
+  )
+);
