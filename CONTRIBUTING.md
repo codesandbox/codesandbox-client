@@ -63,7 +63,7 @@ To add yourself to the table of contributors on the `README.md`, please use the
 automated script as part of your PR:
 
 ```
-yarn run add-contributor
+yarn add-contributor
 ```
 
 Follow the prompt and commit `.all-contributorsrc` and `README.md` in the PR.
