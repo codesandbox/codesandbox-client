@@ -9,19 +9,9 @@ const client = algoliasearch(ALGOLIA_APPLICATION_ID, ALGOLIA_API_KEY);
 const index = client.initIndex(ALGOLIA_DEFAULT_INDEX);
 
 export function searchFacets(facet, query) {
-  return new Promise((resolve, reject) => {
-    index.searchForFacetValues(
-      { facetName: facet, facetQuery: query },
-      (err, content) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-
-        resolve(content);
-      }
-    );
-  });
+  return index.searchForFacetValues(
+    { facetName: facet, facetQuery: query }
+  );
 }
 
 export function search(query: string, filter: Object) {
