@@ -35,9 +35,6 @@ export default class ContentSplit extends React.PureComponent<Props, State> {
     if (e.keyCode === 16) {
       if (!this.shiftPressed) {
         this.shiftPressed = true;
-        if (this.timeout) {
-          clearTimeout(this.timeout);
-        }
         this.timeout = setTimeout(() => {
           this.shiftPressed = false;
         }, 500);
@@ -53,6 +50,9 @@ export default class ContentSplit extends React.PureComponent<Props, State> {
 
   componentWillUnmount() {
     document.removeEventListener('keydown', this.handleKeyPress);
+    if (this.timeout) {
+      clearTimeout(this.timeout);
+    }
   }
 
   toggleWorkspace = () =>
