@@ -728,6 +728,16 @@ export default class CodeEditor extends React.Component<Props, State> {
         this.handleSaveCode();
       }
     );
+
+    const quickCommandAction = this.editor.getAction(
+      'editor.action.quickCommand'
+    );
+    this.editor.addCommand(
+      this.monaco.KeyMod.CtrlCmd |
+        this.monaco.KeyMod.Shift |
+        this.monaco.KeyCode.KEY_P, // eslint-disable-line no-bitwise
+      quickCommandAction._run
+    );
   };
 
   disposeModules = (modules: Array<Module>) => {
