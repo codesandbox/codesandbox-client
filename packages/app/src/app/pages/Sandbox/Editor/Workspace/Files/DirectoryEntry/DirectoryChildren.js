@@ -3,9 +3,8 @@ import * as React from 'react';
 
 import type { Module, Directory } from 'common/types';
 
-import { validateTitle } from 'app/store/entities/sandboxes/modules/validator';
 import getType from 'app/store/entities/sandboxes/modules/utils/get-type';
-
+import validateTitle from './validateTitle';
 import Entry from './Entry';
 import DirectoryEntry from './';
 

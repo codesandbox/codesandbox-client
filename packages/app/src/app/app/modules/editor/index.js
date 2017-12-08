@@ -1,7 +1,12 @@
 import { Module } from 'cerebral';
 import model from './model';
 import * as sequences from './sequences';
-import { isAllModulesSynced, currentSandbox, currentModule } from './getters';
+import {
+  isAllModulesSynced,
+  currentSandbox,
+  currentModule,
+  mainModule,
+} from './getters';
 import { isModuleSynced } from './computed';
 
 import workspace from './modules/workspace';
@@ -13,16 +18,19 @@ export default Module({
     sandboxes: {},
     currentId: null,
     currentModuleShortid: null,
+    mainModuleShortid: null,
     isLoading: true,
     notFound: false,
     error: null,
     isResizing: false,
     changedModuleShortids: [],
+    tabs: [],
   },
   getters: {
     isAllModulesSynced,
     currentSandbox,
     currentModule,
+    mainModule,
   },
   computed: {
     isModuleSynced,
@@ -38,6 +46,8 @@ export default Module({
     createZipClicked: sequences.createZip,
     forkSandboxClicked: sequences.forceForkSandbox,
     likeSandboxToggled: sequences.toggleLikeSandbox,
+    moduleSelected: sequences.setCurrentModule,
+    moduleDoubleClicked: sequences.unsetDirtyTab,
   },
   modules: { workspace, preferences },
 });

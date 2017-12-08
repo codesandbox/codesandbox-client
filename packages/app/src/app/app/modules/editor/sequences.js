@@ -81,7 +81,9 @@ export const loadSandbox = [
         success: [
           set(state`editor.sandboxes.${props`sandbox.id`}`, props`sandbox`),
           set(state`editor.currentId`, props`sandbox.id`),
-          actions.setCurrentModuleId,
+          actions.setCurrentModuleShortid,
+          actions.setMainModuleShortid,
+          actions.setInitialTab,
         ],
         notFound: set(state`editor.notFound`, true),
         error: set(state`editor.error`, props`error.message`),
@@ -90,3 +92,7 @@ export const loadSandbox = [
     ],
   },
 ];
+
+export const setCurrentModule = [actions.addTab, actions.setCurrentModule];
+
+export const unsetDirtyTab = actions.unsetDirtyTab;

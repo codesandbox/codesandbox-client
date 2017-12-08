@@ -33,22 +33,9 @@ const mapStateToProps = createSelector(
 class Files extends React.PureComponent<Props> {
   directory: typeof DirectoryEntry;
 
-  deleteModule = id => {
-    const { sandboxActions, sandbox } = this.props;
-    if (sandbox) {
-      sandboxActions.deleteModule(sandbox.id, id);
-    }
-  };
-
-  deleteDirectory = id => {
-    const { sandboxActions, sandbox } = this.props;
-    if (sandbox) {
-      sandboxActions.deleteDirectory(sandbox.id, id);
-    }
-  };
-
   createModule = () => {
     // INCREDIBLY BAD PRACTICE! TODO: FIX THIS
+    // this.props.signals.workspace.moduleCreated()
     this.directory.onCreateModuleClick();
   };
 

@@ -30,10 +30,10 @@ const Directory = types.model({
 });
 
 const Module = types.model({
-  code: types.string,
+  code: types.maybe(types.string),
   directoryShortid: types.maybe(types.string),
   id: types.string,
-  isBinary: types.boolean,
+  isBinary: types.maybe(types.boolean),
   shortid: types.string,
   sourceId: types.string,
   title: types.string,
@@ -81,10 +81,18 @@ const Sandbox = types.model({
 export default {
   currentId: types.maybe(types.string),
   currentModuleShortid: types.maybe(types.string),
+  mainModuleShortid: types.maybe(types.string),
   sandboxes: types.map(Sandbox),
   isLoading: types.boolean,
   notFound: types.boolean,
   error: types.maybe(types.string),
   isResizing: types.boolean,
   changedModuleShortids: types.array(types.string),
+  tabs: types.array(
+    types.model({
+      type: types.string,
+      moduleId: types.string,
+      dirty: types.boolean,
+    })
+  ),
 };

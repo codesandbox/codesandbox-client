@@ -1,3 +1,59 @@
+export function unsetDirtyTab({ state }) {
+  const currentModule = state.get('editor.currentModule');
+  const tabs = state.get('editor.tabs');
+  const tabIndex = tabs.findIndex(tab => tab.moduleId === currentModule.id);
+
+  state.set(`editor.tabs.${tabIndex}.dirty`, false);
+}
+
+export function setInitialTab({ state }) {
+  const currentModule = state.get('editor.currentModule');
+  const newTab = {
+    type: 'MODULE',
+    moduleId: currentModule.id,
+    dirty: true,
+  };
+
+  state.set('editor.tabs', [newTab]);
+}
+
+export function addTab({ state, props }) {
+  const currentModule = state.get('editor.currentModule');
+  const newTab = {
+    type: 'MODULE',
+    moduleId: props.id,
+    dirty: true,
+  };
+  let tabs = state.get('editor.tabs');
+
+  const currentTabPos = tabs.findIndex(
+    tab => tab.moduleId === currentModule.id
+  );
+
+  if (tabs.length === 0) {
+    tabs = [newTab];
+  } else if (!tabs.some(tab => tab.moduleId === props.id)) {
+    const notDirtyTabs = tabs.filter(tab => !tab.dirty);
+
+    tabs = [
+      ...notDirtyTabs.slice(0, currentTabPos + 1),
+      newTab,
+      ...notDirtyTabs.slice(currentTabPos + 1),
+    ];
+  }
+
+  state.set('editor.tabs', tabs);
+}
+
+export function setCurrentModule({ props, state }) {
+  const sandbox = state.get('editor.currentSandbox');
+  const module = sandbox.modules.find(
+    moduleEntry => moduleEntry.id === props.id
+  );
+
+  state.set('editor.currentModuleShortid', module.shortid);
+}
+
 export function outputChangedModules({ state }) {
   const changedModuleShortids = state.get('editor.changedModuleShortids');
   const sandbox = state.get('editor.currentSandbox');
@@ -124,14 +180,24 @@ export function warnUnloadingContent({ browser, state }) {
   });
 }
 
-export function setCurrentModuleId({ utils, props, state }) {
-  const module = utils.resolveModule(
+export function setCurrentModuleShortid({ utils, props, state }) {
+  const module = utils.resolveMainModule(
     props.sandbox.entry,
     props.sandbox.modules,
     props.sandbox.directories
   );
 
   state.set('editor.currentModuleShortid', module.shortid);
+}
+
+export function setMainModuleShortid({ utils, props, state }) {
+  const module = utils.resolveMainModule(
+    props.sandbox.entry,
+    props.sandbox.modules,
+    props.sandbox.directories
+  );
+
+  state.set('editor.mainModuleShortid', module.shortid);
 }
 
 export function forkSandbox({ state, api }) {

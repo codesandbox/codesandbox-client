@@ -1,20 +1,43 @@
 import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
+import { inject } from 'mobx-react';
 import { bindActionCreators } from 'redux';
 import { DropTarget } from 'react-dnd';
 
 import type { Module, Directory } from 'common/types';
 
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
-import { validateTitle } from 'app/store/entities//sandboxes/modules/validator';
 import contextMenuActionCreators from 'app/store/context-menu/actions';
-import { getModuleParents } from 'app/store/entities/sandboxes/modules/selectors';
 import modalActionCreators from 'app/store/modal/actions';
 import Alert from 'app/components/Alert';
 
+import validateTitle from './validateTitle';
 import Entry from './Entry';
 import DirectoryChildren from './DirectoryChildren';
+
+function getModuleParents(
+  modules: Array<Module>,
+  directories: Array<Directory>,
+  id: string
+) {
+  const module = modules.find(moduleEntry => moduleEntry.id === id);
+
+  if (!module) return [];
+
+  let directory = directories.find(
+    directoryEntry => directoryEntry.shortid === module.directoryShortid
+  );
+  let directoryIds = [];
+  while (directory != null) {
+    directoryIds = [...directoryIds, directory.id];
+    directory = directories.find(
+      directoryEntry => directoryEntry.shortid === directory.directoryShortid
+    ); // eslint-disable-line
+  }
+
+  return directoryIds;
+}
 
 const EntryContainer = styled.div`
   position: relative;
@@ -118,17 +141,20 @@ class DirectoryEntry extends React.PureComponent {
       creating: 'module',
       open: true,
     });
+
     return true;
   };
 
   createModule = (_, title) => {
     const { sandboxId, shortid, sandboxActions } = this.props;
+    // this.props.signals.editor.workspace.moduleCreated({ title, directoryShortid: shortid })
     sandboxActions.createModule(sandboxId, title, shortid);
     this.resetState();
   };
 
   renameModule = (id, title) => {
     const { sandboxId, sandboxActions } = this.props;
+    // this.props.signals.editor.workspace.moduleRenamed({ id, title })
     sandboxActions.renameModule(sandboxId, id, title);
   };
 
@@ -136,6 +162,7 @@ class DirectoryEntry extends React.PureComponent {
     const { sandboxId, modules, sandboxActions, modalActions } = this.props;
     const module = modules.find(m => m.id === id);
 
+    this.props.signals.modalOpened({ modal: 'deleteModule' });
     modalActions.openModal({
       Body: (
         <Alert
@@ -150,6 +177,7 @@ class DirectoryEntry extends React.PureComponent {
           onCancel={modalActions.closeModal}
           onDelete={() => {
             modalActions.closeModal();
+            // this.props.signals.editor.workspace.moduleDeleted({ id })
             sandboxActions.deleteModule(sandboxId, id);
           }}
         />
@@ -167,17 +195,21 @@ class DirectoryEntry extends React.PureComponent {
 
   createDirectory = (_: string, title: string) => {
     const { sandboxId, shortid, sandboxActions } = this.props;
+    // this.props.signals.editor.workspace.directoryCreated({ title, directoryShortid: shortid })
     sandboxActions.createDirectory(sandboxId, title, shortid);
     this.resetState();
   };
 
   renameDirectory = (id, title) => {
     const { sandboxId, sandboxActions } = this.props;
+    // this.props.signals.editor.workspace.directoryRenamed({ title, id })
     sandboxActions.renameDirectory(sandboxId, id, title);
   };
 
   deleteDirectory = () => {
     const { id, title, sandboxId, sandboxActions } = this.props;
+
+    // this.props.signals.editor.workspace.directoryDeleted({ id })
 
     // eslint-disable-next-line no-alert
     const confirmed = confirm(
@@ -217,10 +249,12 @@ class DirectoryEntry extends React.PureComponent {
 
   setCurrentModule = (moduleId: string) => {
     const { sandboxId, sandboxActions } = this.props;
+    this.props.signals.editor.moduleSelected({ id: moduleId });
     sandboxActions.setCurrentModule(sandboxId, moduleId);
   };
 
   markTabsNotDirty = () => {
+    this.props.signals.editor.moduleDoubleClicked();
     this.props.sandboxActions.markTabsNotDirty(this.props.sandboxId);
   };
 
@@ -324,12 +358,20 @@ const entryTarget = {
     const sourceItem = monitor.getItem();
 
     if (sourceItem.directory) {
+      props.signals.editor.workspace.directoryMovedToDirectory({
+        directoryId: sourceItem.id,
+        directoryShortid: props.shortid,
+      });
       props.sandboxActions.moveDirectoryToDirectory(
         props.sandboxId,
         sourceItem.id,
         props.shortid
       );
     } else {
+      props.signals.editor.workspace.moduleMovedToDirectory({
+        moduleId: sourceItem.id,
+        directoryShortid: props.shortid,
+      });
       props.sandboxActions.moveModuleToDirectory(
         props.sandboxId,
         sourceItem.id,
@@ -360,6 +402,8 @@ function collectTarget(connectMonitor, monitor) {
   };
 }
 
-export default connect(null, mapDispatchToProps)(
-  DropTarget('ENTRY', entryTarget, collectTarget)(DirectoryEntry)
+export default inject('signals')(
+  connect(null, mapDispatchToProps)(
+    DropTarget('ENTRY', entryTarget, collectTarget)(DirectoryEntry)
+  )
 );

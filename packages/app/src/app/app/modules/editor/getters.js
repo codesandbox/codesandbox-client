@@ -11,3 +11,9 @@ export function currentModule() {
     module => module.shortid === this.currentModuleShortid
   );
 }
+
+export function mainModule() {
+  return this.currentSandbox.modules.find(
+    module => module.shortid === this.mainModuleShortid
+  );
+}
