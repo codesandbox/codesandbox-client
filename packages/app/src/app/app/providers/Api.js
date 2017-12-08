@@ -50,10 +50,14 @@ export default Provider({
       .then(response => camelizeKeys(response.result.data));
   },
   request(options) {
-    return this.context.http.request(
-      Object.assign(options, {
-        url: API_ROOT + options.url,
-      })
-    );
+    return this.context.http
+      .request(
+        Object.assign(options, {
+          url: API_ROOT + options.url,
+          body: options.body ? camelizeKeys(options.body) : null,
+          headers: createHeaders(this.context),
+        })
+      )
+      .then(response => camelizeKeys(response.result.data));
   },
 });

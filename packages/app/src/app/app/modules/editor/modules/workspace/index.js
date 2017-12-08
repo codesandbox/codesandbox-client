@@ -10,12 +10,15 @@ export default Module({
       description: '',
     },
     isWorkspaceHidden: false,
-    isProcessingNpmDependencies: false,
+    isProcessingDependencies: false,
   },
   signals: {
     valueChanged: sequences.changeValue,
     updateSandboxInfo: sequences.updateSandboxInfo,
     workspaceToggled: sequences.toggleWorkspace,
     npmDependencyAdded: sequences.addNpmDependency,
+    npmDependencyRemoved: sequences.removeNpmDependency,
+    externalResourceAdded: sequences.addExternalResource,
+    externalResourceRemoved: sequences.removeExternalResource,
   },
 });

@@ -6,5 +6,5 @@ export default {
     description: types.string,
   }),
   isWorkspaceHidden: types.boolean,
-  isProcessingNpmDependencies: types.boolean,
+  isProcessingDependencies: types.boolean,
 };

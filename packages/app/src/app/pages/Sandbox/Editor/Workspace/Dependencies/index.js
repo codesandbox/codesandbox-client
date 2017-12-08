@@ -54,10 +54,10 @@ export default inject('signals')(
       this.setState({
         processing: true,
       });
-      this.props.signals.editor.workspace.npmDependencyAdded({
+      /* this.props.signals.editor.workspace.npmDependencyAdded({
         name: realName,
         version: realVersion,
-      });
+      }); */
       try {
         await sandboxActions.addNPMDependency(sandboxId, realName, realVersion);
       } catch (e) {
@@ -73,6 +73,9 @@ export default inject('signals')(
       this.setState({
         processing: true,
       });
+      /* this.props.signals.editor.workspace.externalResourceAdded({
+        resource
+      }); */
       try {
         await sandboxActions.addExternalResource(sandboxId, resource);
       } catch (e) {
@@ -88,6 +91,8 @@ export default inject('signals')(
       this.setState({
         processing: true,
       });
+      // this.props.signals.editor.workspace.npmDependencyRemoved({ name })
+
       try {
         await sandboxActions.removeNPMDependency(sandboxId, name);
       } catch (e) {
@@ -103,6 +108,8 @@ export default inject('signals')(
       this.setState({
         processing: true,
       });
+      // this.props.signals.editor.workspace.externalResourceRemoved({ resource })
+
       try {
         await sandboxActions.removeExternalResource(sandboxId, resource);
       } catch (e) {

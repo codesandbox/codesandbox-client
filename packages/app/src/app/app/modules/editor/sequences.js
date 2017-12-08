@@ -13,6 +13,14 @@ export const forkSandbox = sequence('forkSandbox', [
   updateSandboxUrl(props`sandbox`),
 ]);
 
+export const ensureOwnedSandbox = sequence('ensureOwnedSandbox', [
+  when(state`editor.currentSandbox.owned`),
+  {
+    true: [],
+    false: forkSandbox,
+  },
+]);
+
 export const onUnload = actions.warnUnloadingContent;
 
 export const startResizing = set(state`editor.isResizing`, true);
@@ -52,11 +60,7 @@ export const saveChangedModules = [
 ];
 
 export const saveCode = [
-  when(state`editor.currentSandbox.owned`),
-  {
-    true: [],
-    false: forkSandbox,
-  },
+  ensureOwnedSandbox,
   when(state`editor.preferences.settings.prettifyOnSaveEnabled`),
   {
     true: [actions.prettifyCode, actions.setCode],
