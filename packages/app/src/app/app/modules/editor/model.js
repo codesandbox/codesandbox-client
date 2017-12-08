@@ -46,7 +46,20 @@ const Sandbox = types.model({
   entry: types.string,
   externalResources: types.array(types.string),
   forkCount: types.number,
-  forkedFromSandbox: types.maybe(types.string),
+  forkedFromSandbox: types.maybe(
+    types.model({
+      viewCount: types.number,
+      updatedAt: types.string,
+      title: types.maybe(types.string),
+      template: types.maybe(types.string),
+      privacy: types.number,
+      likeCount: types.number,
+      insertedAt: types.string,
+      id: types.string,
+      git: types.maybe(types.string),
+      forkCount: types.number,
+    })
+  ),
   git: types.maybe(types.string),
   id: types.string,
   likeCount: types.number,

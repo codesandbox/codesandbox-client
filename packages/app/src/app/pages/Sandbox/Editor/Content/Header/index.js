@@ -2,6 +2,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import Media from 'react-media';
+import { inject } from 'mobx-react';
 
 import Save from 'react-icons/lib/md/save';
 import Fork from 'react-icons/lib/go/repo-forked';
@@ -122,254 +123,284 @@ const CHECKED_FIELDS = [
   'directories',
 ];
 
-export default class Header extends React.Component<Props> {
-  shouldComponentUpdate(nextProps: Props) {
-    return CHECKED_FIELDS.some(field => nextProps[field] !== this.props[field]);
-  }
-
-  massUpdateModules = () => {
-    const { sandboxId, sandboxActions } = this.props;
-    sandboxActions.massUpdateModules(sandboxId);
-  };
-
-  deploySandbox = () => {
-    const { sandboxId } = this.props;
-
-    this.props.modalActions.openModal({
-      width: 600,
-      Body: <Deployment id={sandboxId} />,
-    });
-  };
-
-  zipSandbox = () => {
-    const { sandboxId, sandboxActions } = this.props;
-    sandboxActions.createZip(sandboxId);
-  };
-
-  forkSandbox = () => {
-    const { owned, sandboxId, sandboxActions } = this.props;
-
-    const shouldFork = owned
-      ? confirm('Do you want to fork your own sandbox?') // eslint-disable-line no-alert
-      : true;
-    if (shouldFork) {
-      sandboxActions.forkSandbox(sandboxId);
+export default inject('signals')(
+  class Header extends React.Component<Props> {
+    shouldComponentUpdate(nextProps: Props) {
+      return CHECKED_FIELDS.some(
+        field => nextProps[field] !== this.props[field]
+      );
     }
-  };
 
-  openShareView = () => {
-    this.props.modalActions.openModal({
-      width: 900,
-      Body: (
-        <ShareModal
-          modules={this.props.modules}
-          directories={this.props.directories}
-          id={this.props.sandboxId}
-        />
-      ),
-    });
-  };
+    massUpdateModules = () => {
+      const { sandboxId, sandboxActions } = this.props;
+      this.props.signals.editor.saveClicked();
+      sandboxActions.massUpdateModules(sandboxId);
+    };
 
-  setEditorView = () => {
-    const { sandboxId, sandboxActions } = this.props;
-    sandboxActions.setViewMode(sandboxId, true, false);
-  };
+    deploySandbox = () => {
+      const { sandboxId } = this.props;
 
-  setMixedView = () => {
-    const { sandboxId, sandboxActions } = this.props;
-    sandboxActions.setViewMode(sandboxId, true, true);
-  };
+      this.props.signals.modalOpened('deployment');
+      this.props.modalActions.openModal({
+        width: 600,
+        Body: <Deployment id={sandboxId} />,
+      });
+    };
 
-  setPreviewView = () => {
-    const { sandboxId, sandboxActions } = this.props;
-    sandboxActions.setViewMode(sandboxId, false, true);
-  };
+    zipSandbox = () => {
+      const { sandboxId, sandboxActions } = this.props;
+      this.props.signals.editor.createZipClicked();
+      // sandboxActions.createZip(sandboxId);
+    };
 
-  toggleLike = () => {
-    const { sandboxId, sandboxLiked, sandboxActions } = this.props;
+    forkSandbox = () => {
+      const { owned, sandboxId, sandboxActions } = this.props;
 
-    if (sandboxLiked) {
-      sandboxActions.unLikeSandbox(sandboxId);
-    } else {
-      sandboxActions.likeSandbox(sandboxId);
-    }
-  };
+      this.props.signals.editor.forkSandboxClicked();
 
-  openPreferences = () => {
-    this.props.modalActions.openPreferences();
-  };
+      return;
+      const shouldFork = owned
+        ? confirm('Do you want to fork your own sandbox?') // eslint-disable-line no-alert
+        : true;
+      if (shouldFork) {
+        sandboxActions.forkSandbox(sandboxId);
+      }
+    };
 
-  openNewSandbox = () => {
-    this.props.modalActions.openModal({
-      width: 900,
-      Body: <NewSandbox />,
-    });
-  };
+    openShareView = () => {
+      this.props.signals.modalOpened('shareModal');
+      this.props.modalActions.openModal({
+        width: 900,
+        Body: (
+          <ShareModal
+            modules={this.props.modules}
+            directories={this.props.directories}
+            id={this.props.sandboxId}
+          />
+        ),
+      });
+    };
 
-  render() {
-    const {
-      showEditor,
-      showPreview,
-      sandboxLiked,
-      sandboxLikeCount,
-      owned,
-      userActions,
-      user,
-      toggleWorkspace,
-      workspaceHidden,
-      canSave,
-    } = this.props;
+    setEditorView = () => {
+      const { sandboxId, sandboxActions } = this.props;
+      this.props.signals.editor.preferences.viewModeChanged({
+        showEditor: true,
+        showPreview: false,
+      });
+      sandboxActions.setViewMode(sandboxId, true, false);
+    };
 
-    return (
-      <Container>
-        <ModeIcons
-          small
-          dropdown
-          showEditor={showEditor}
-          showPreview={showPreview}
-          setMixedView={this.setMixedView}
-          setEditorView={this.setEditorView}
-          setPreviewView={this.setPreviewView}
-        />
-        <Left>
-          <Tooltip
-            title={workspaceHidden ? 'Open sidebar' : 'Collapse sidebar'}
-          >
-            <Chevron
-              workspaceHidden={workspaceHidden}
-              onClick={toggleWorkspace}
+    setMixedView = () => {
+      const { sandboxId, sandboxActions } = this.props;
+      this.props.signals.editor.preferences.viewModeChanged({
+        showEditor: true,
+        showPreview: true,
+      });
+      sandboxActions.setViewMode(sandboxId, true, true);
+    };
+
+    setPreviewView = () => {
+      const { sandboxId, sandboxActions } = this.props;
+      this.props.signals.editor.preferences.viewModeChanged({
+        showEditor: false,
+        showPreview: true,
+      });
+      sandboxActions.setViewMode(sandboxId, false, true);
+    };
+
+    toggleLike = () => {
+      const { sandboxId, sandboxLiked, sandboxActions } = this.props;
+
+      // this.props.signals.editor.likeSandboxToggled()
+
+      if (sandboxLiked) {
+        sandboxActions.unLikeSandbox(sandboxId);
+      } else {
+        sandboxActions.likeSandbox(sandboxId);
+      }
+    };
+
+    openPreferences = () => {
+      this.props.signals.modalOpened('preferences');
+      this.props.modalActions.openModal({
+        width: 900,
+        Body: <Preferences />,
+      });
+    };
+
+    openNewSandbox = () => {
+      this.props.signals.modalOpened('newSandbox');
+      this.props.modalActions.openModal({
+        width: 900,
+        Body: <NewSandbox />,
+      });
+    };
+
+    render() {
+      const {
+        showEditor,
+        showPreview,
+        sandboxLiked,
+        sandboxLikeCount,
+        owned,
+        userActions,
+        user,
+        toggleWorkspace,
+        workspaceHidden,
+        canSave,
+      } = this.props;
+
+      return (
+        <Container>
+          <ModeIcons
+            small
+            dropdown
+            showEditor={showEditor}
+            showPreview={showPreview}
+            setMixedView={this.setMixedView}
+            setEditorView={this.setEditorView}
+            setPreviewView={this.setPreviewView}
+          />
+          <Left>
+            <Tooltip
+              title={workspaceHidden ? 'Open sidebar' : 'Collapse sidebar'}
             >
-              <ChevronLeft />
-            </Chevron>
-          </Tooltip>
-          {user.jwt &&
-            (sandboxLiked ? (
-              <Action
-                tooltip="Undo like"
-                title={sandboxLikeCount}
-                Icon={FullHeartIcon}
-                onClick={this.toggleLike}
-              />
-            ) : (
-              <Action
-                tooltip="Like"
-                title={sandboxLikeCount}
-                Icon={HeartIcon}
-                onClick={this.toggleLike}
-              />
-            ))}
-          <Action
-            onClick={this.forkSandbox}
-            tooltip="Fork sandbox"
-            title="Fork"
-            Icon={Fork}
-          />
-          <Action
-            onClick={canSave ? this.massUpdateModules : null}
-            placeholder={canSave ? false : 'All modules are saved'}
-            tooltip="Save sandbox"
-            title="Save"
-            Icon={Save}
-          />
-          <Action
-            tooltip="Download sandbox"
-            title="Download"
-            Icon={Download}
-            onClick={this.zipSandbox}
-          />
-          {user.jwt &&
-            owned && (
-              <Action
-                tooltip="Deploy sandbox"
-                title="Deploy"
-                Icon={NowIcon}
-                onClick={this.deploySandbox}
-              />
-            )}
-          <Action
-            tooltip="Share sandbox"
-            title="Share"
-            Icon={ShareIcon}
-            onClick={this.openShareView}
-          />
-        </Left>
-
-        <Right>
-          <Media query="(max-width: 1560px)">
-            {matches =>
-              matches ? (
+              <Chevron
+                workspaceHidden={workspaceHidden}
+                onClick={toggleWorkspace}
+              >
+                <ChevronLeft />
+              </Chevron>
+            </Tooltip>
+            {user.jwt &&
+              (sandboxLiked ? (
                 <Action
-                  href={searchUrl()}
-                  Icon={SearchIcon}
-                  tooltip="Search"
-                  title="Search"
+                  tooltip="Undo like"
+                  title={sandboxLikeCount}
+                  Icon={FullHeartIcon}
+                  onClick={this.toggleLike}
                 />
               ) : (
-                <div style={{ marginRight: '0.5rem', fontSize: '.875rem' }}>
-                  <HeaderSearchBar />
-                </div>
-              )
-            }
-          </Media>
+                <Action
+                  tooltip="Like"
+                  title={sandboxLikeCount}
+                  Icon={HeartIcon}
+                  onClick={this.toggleLike}
+                />
+              ))}
+            <Action
+              onClick={this.forkSandbox}
+              tooltip="Fork sandbox"
+              title="Fork"
+              Icon={Fork}
+            />
+            <Action
+              onClick={canSave ? this.massUpdateModules : null}
+              placeholder={canSave ? false : 'All modules are saved'}
+              tooltip="Save sandbox"
+              title="Save"
+              Icon={Save}
+            />
+            <Action
+              tooltip="Download sandbox"
+              title="Download"
+              Icon={Download}
+              onClick={this.zipSandbox}
+            />
+            {user.jwt &&
+              owned && (
+                <Action
+                  tooltip="Deploy sandbox"
+                  title="Deploy"
+                  Icon={NowIcon}
+                  onClick={this.deploySandbox}
+                />
+              )}
+            <Action
+              tooltip="Share sandbox"
+              title="Share"
+              Icon={ShareIcon}
+              onClick={this.openShareView}
+            />
+          </Left>
 
-          {!user ||
-            (!user.subscription && (
-              <Action
-                href={patronUrl()}
-                tooltip="Support CodeSandbox"
-                Icon={PatronBadge}
-                iconProps={{
-                  width: 16,
-                  height: 32,
-                  transform: 'scale(1.5, 1.5)',
-                }}
-              />
-            ))}
-          <Action
-            href="https://twitter.com/CompuIves"
-            a
-            tooltip="Contact"
-            Icon={TwitterIcon}
-          />
-          <Action
-            href="https://discord.gg/FGeubVt"
-            a
-            tooltip="Chat on Discord"
-            Icon={FeedbackIcon}
-          />
-          <Action
-            onClick={this.openNewSandbox}
-            tooltip="New Sandbox"
-            Icon={PlusIcon}
-          />
-          <Action
-            onClick={this.openPreferences}
-            tooltip="Preferences"
-            Icon={SettingsIcon}
-          />
-          <Margin
-            style={{
-              zIndex: 20,
-              height: '100%',
-            }}
-            left={1}
-          >
-            {user.jwt ? (
-              <div style={{ fontSize: '.875rem', margin: '6px 0.5rem' }}>
-                <UserMenu small />
-              </div>
-            ) : (
-              <Action
-                onClick={userActions.signIn}
-                title="Sign in with Github"
-                Icon={GithubIcon}
-                highlight
-                unresponsive
-              />
-            )}
-          </Margin>
-        </Right>
-      </Container>
-    );
+          <Right>
+            <Media query="(max-width: 1560px)">
+              {matches =>
+                matches ? (
+                  <Action
+                    href={searchUrl()}
+                    Icon={SearchIcon}
+                    tooltip="Search"
+                    title="Search"
+                  />
+                ) : (
+                  <div style={{ marginRight: '0.5rem', fontSize: '.875rem' }}>
+                    <HeaderSearchBar />
+                  </div>
+                )
+              }
+            </Media>
+
+            {!user ||
+              (!user.subscription && (
+                <Action
+                  href={patronUrl()}
+                  tooltip="Support CodeSandbox"
+                  Icon={PatronBadge}
+                  iconProps={{
+                    width: 16,
+                    height: 32,
+                    transform: 'scale(1.5, 1.5)',
+                  }}
+                />
+              ))}
+            <Action
+              href="https://twitter.com/CompuIves"
+              a
+              tooltip="Contact"
+              Icon={TwitterIcon}
+            />
+            <Action
+              href="https://discord.gg/FGeubVt"
+              a
+              tooltip="Chat on Discord"
+              Icon={FeedbackIcon}
+            />
+            <Action
+              onClick={this.openNewSandbox}
+              tooltip="New Sandbox"
+              Icon={PlusIcon}
+            />
+            <Action
+              onClick={this.openPreferences}
+              tooltip="Preferences"
+              Icon={SettingsIcon}
+            />
+            <Margin
+              style={{
+                zIndex: 20,
+                height: '100%',
+              }}
+              left={1}
+            >
+              {user.jwt ? (
+                <div style={{ fontSize: '.875rem', margin: '6px 0.5rem' }}>
+                  <UserMenu small />
+                </div>
+              ) : (
+                <Action
+                  onClick={userActions.signIn}
+                  title="Sign in with Github"
+                  Icon={GithubIcon}
+                  highlight
+                  unresponsive
+                />
+              )}
+            </Margin>
+          </Right>
+        </Container>
+      );
+    }
   }
-}
+);

@@ -213,7 +213,7 @@ class EditorPreview extends React.PureComponent<Props, State> {
         )}
         <CodeEditor
           changeCode={(moduleId, code) => {
-            this.props.signals.editor.codeChanged({ moduleId, code });
+            this.props.signals.editor.codeChanged({ code });
             moduleActions.setCode(moduleId, code);
           }}
           id={currentModule.id}
@@ -287,7 +287,10 @@ class EditorPreview extends React.PureComponent<Props, State> {
               modalActions={modalActions}
               user={user}
               workspaceHidden={workspaceHidden}
-              toggleWorkspace={toggleWorkspace}
+              toggleWorkspace={() => {
+                this.props.signals.editor.workspace.workspaceToggled();
+                toggleWorkspace();
+              }}
               canSave={notSynced}
               modules={sandbox.modules}
               directories={sandbox.directories}

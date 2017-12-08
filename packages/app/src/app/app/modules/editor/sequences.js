@@ -1,12 +1,68 @@
+import { sequence } from 'cerebral';
 import { set, when } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 import * as actions from './actions';
+import { addNotification, updateSandboxUrl } from '../../factories';
 
-const forkSandbox = [
+export const forkSandbox = sequence('forkSandbox', [
   actions.forkSandbox,
   actions.moveModuleContent,
   set(state`editor.sandboxes.${props`sandbox.id`}`, props`sandbox`),
   set(state`editor.currentId`, props`sandbox.id`),
+  addNotification('Forked sandbox!', 'success'),
+  updateSandboxUrl(props`sandbox`),
+]);
+
+export const onUnload = actions.warnUnloadingContent;
+
+export const startResizing = set(state`editor.isResizing`, true);
+
+export const stopResizing = set(state`editor.isResizing`, false);
+
+export const createZip = actions.createZip;
+
+export const toggleLikeSandbox = [
+  when(state`editor.currentSandbox.userLiked`),
+  {
+    true: actions.unlikeSandbox,
+    false: actions.likeSandbox,
+  },
+];
+
+export const forceForkSandbox = [
+  when(state`editor.currentSandbox.owned`),
+  {
+    true: [
+      actions.confirmForkingOwnSandbox,
+      {
+        confirmed: forkSandbox,
+        cancelled: [],
+      },
+    ],
+    false: forkSandbox,
+  },
+];
+
+export const changeCode = [actions.setCode, actions.addChangedModule];
+
+export const saveChangedModules = [
+  actions.outputChangedModules,
+  actions.saveChangedModules,
+  set(state`editor.changedModuleShortids`, []),
+];
+
+export const saveCode = [
+  when(state`editor.currentSandbox.owned`),
+  {
+    true: [],
+    false: forkSandbox,
+  },
+  when(state`editor.preferences.settings.prettifyOnSaveEnabled`),
+  {
+    true: [actions.prettifyCode, actions.setCode],
+    false: [],
+  },
+  actions.saveModuleCode,
 ];
 
 export const loadSandbox = [
@@ -30,19 +86,3 @@ export const loadSandbox = [
     ],
   },
 ];
-
-export const onUnload = actions.warnUnloadingContent;
-
-export const startResizing = set(state`editor.isResizing`, true);
-
-export const stopResizing = set(state`editor.isResizing`, false);
-
-export const saveCode = [
-  when(state`editor.currentSandbox.owner`),
-  {
-    true: [],
-    false: forkSandbox,
-  },
-];
-
-export const changeCode = actions.setCode;

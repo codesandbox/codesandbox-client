@@ -17,3 +17,8 @@ export const addNotification = (
       endTime: now + timeAlive * 1000,
     });
   };
+
+export const updateSandboxUrl = sandbox =>
+  function updateSandboxUrl({ router, resolve }) {
+    router.updateSandboxUrl(resolve.value(sandbox));
+  };

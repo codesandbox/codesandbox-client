@@ -1,9 +1,11 @@
 import { Module } from 'cerebral';
 import model from './model';
 import * as sequences from './sequences';
-import workspace from './modules/workspace';
 import { isAllModulesSynced, currentSandbox, currentModule } from './getters';
 import { isModuleSynced } from './computed';
+
+import workspace from './modules/workspace';
+import preferences from './modules/preferences';
 
 export default Module({
   model,
@@ -32,6 +34,10 @@ export default Module({
     resizingStopped: sequences.stopResizing,
     codeSaved: sequences.saveCode,
     codeChanged: sequences.changeCode,
+    saveClicked: sequences.saveChangedModules,
+    createZipClicked: sequences.createZip,
+    forkSandboxClicked: sequences.forceForkSandbox,
+    likeSandboxToggled: sequences.toggleLikeSandbox,
   },
-  modules: { workspace },
+  modules: { workspace, preferences },
 });

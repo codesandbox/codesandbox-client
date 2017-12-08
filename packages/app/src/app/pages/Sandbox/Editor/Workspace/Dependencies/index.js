@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import styled from 'styled-components';
+import { inject } from 'mobx-react';
 
 import Margin from 'common/components/spacing/Margin';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
@@ -40,117 +41,122 @@ const Overlay = styled.div`
   user-select: none;
 `;
 
-export default class Dependencies extends React.PureComponent<Props, State> {
-  state = {
-    processing: false,
-  };
-
-  addDependency = async (name: string, version: ?string): Promise<void> => {
-    const { sandboxId, sandboxActions } = this.props;
-    const realVersion = version || 'latest';
-    const realName = name.toLowerCase();
-    this.setState({
-      processing: true,
-    });
-    try {
-      await sandboxActions.addNPMDependency(sandboxId, realName, realVersion);
-    } catch (e) {
-      console.error(e);
-    }
-    this.setState({
+export default inject('signals')(
+  class Dependencies extends React.PureComponent<Props, State> {
+    state = {
       processing: false,
-    });
-  };
+    };
 
-  addResource = async (resource: string) => {
-    const { sandboxId, sandboxActions } = this.props;
-    this.setState({
-      processing: true,
-    });
-    try {
-      await sandboxActions.addExternalResource(sandboxId, resource);
-    } catch (e) {
-      console.error(e);
-    }
-    this.setState({
-      processing: false,
-    });
-  };
+    addDependency = async (name: string, version: ?string): Promise<void> => {
+      const { sandboxId, sandboxActions } = this.props;
+      const realVersion = version || 'latest';
+      const realName = name.toLowerCase();
+      this.setState({
+        processing: true,
+      });
+      this.props.signals.editor.workspace.npmDependencyAdded({
+        name: realName,
+        version: realVersion,
+      });
+      try {
+        await sandboxActions.addNPMDependency(sandboxId, realName, realVersion);
+      } catch (e) {
+        console.error(e);
+      }
+      this.setState({
+        processing: false,
+      });
+    };
 
-  removeDependency = async (name: string) => {
-    const { sandboxId, sandboxActions } = this.props;
-    this.setState({
-      processing: true,
-    });
-    try {
-      await sandboxActions.removeNPMDependency(sandboxId, name);
-    } catch (e) {
-      console.error(e);
-    }
-    this.setState({
-      processing: false,
-    });
-  };
+    addResource = async (resource: string) => {
+      const { sandboxId, sandboxActions } = this.props;
+      this.setState({
+        processing: true,
+      });
+      try {
+        await sandboxActions.addExternalResource(sandboxId, resource);
+      } catch (e) {
+        console.error(e);
+      }
+      this.setState({
+        processing: false,
+      });
+    };
 
-  removeResource = async (resource: string) => {
-    const { sandboxId, sandboxActions } = this.props;
-    this.setState({
-      processing: true,
-    });
-    try {
-      await sandboxActions.removeExternalResource(sandboxId, resource);
-    } catch (e) {
-      console.error(e);
-    }
-    this.setState({
-      processing: false,
-    });
-  };
+    removeDependency = async (name: string) => {
+      const { sandboxId, sandboxActions } = this.props;
+      this.setState({
+        processing: true,
+      });
+      try {
+        await sandboxActions.removeNPMDependency(sandboxId, name);
+      } catch (e) {
+        console.error(e);
+      }
+      this.setState({
+        processing: false,
+      });
+    };
 
-  render() {
-    const {
-      npmDependencies = {},
-      externalResources = [],
-      processing: fetchingDependencies,
-    } = this.props;
-    const processing = fetchingDependencies || this.state.processing;
+    removeResource = async (resource: string) => {
+      const { sandboxId, sandboxActions } = this.props;
+      this.setState({
+        processing: true,
+      });
+      try {
+        await sandboxActions.removeExternalResource(sandboxId, resource);
+      } catch (e) {
+        console.error(e);
+      }
+      this.setState({
+        processing: false,
+      });
+    };
 
-    return (
-      <div>
-        {processing && (
-          <Overlay>We{"'"}re processing dependencies, please wait...</Overlay>
-        )}
-        <Margin bottom={0}>
-          <WorkspaceSubtitle>NPM Packages</WorkspaceSubtitle>
-          {(Object.keys(npmDependencies) || [])
-            .sort()
-            .map(dep => (
-              <VersionEntry
-                key={dep}
-                dependencies={npmDependencies}
-                dependency={dep}
-                onRemove={this.removeDependency}
-                onRefresh={this.addDependency}
-              />
-            ))}
-          <AddVersion
-            existingDependencies={Object.keys(npmDependencies)}
-            addDependency={this.addDependency}
-          />
-        </Margin>
+    render() {
+      const {
+        npmDependencies = {},
+        externalResources = [],
+        processing: fetchingDependencies,
+      } = this.props;
+      const processing = fetchingDependencies || this.state.processing;
+
+      return (
         <div>
-          <WorkspaceSubtitle>External Resources</WorkspaceSubtitle>
-          {(externalResources || [])
-            .map(resource => (
+          {processing && (
+            <Overlay>We{"'"}re processing dependencies, please wait...</Overlay>
+          )}
+          <Margin bottom={0}>
+            <WorkspaceSubtitle>NPM Packages</WorkspaceSubtitle>
+            {(Object.keys(npmDependencies) || [])
+              .sort()
+              .map(dep => (
+                <VersionEntry
+                  key={dep}
+                  dependencies={npmDependencies}
+                  dependency={dep}
+                  onRemove={this.removeDependency}
+                  onRefresh={this.addDependency}
+                />
+              ))}
+            <AddVersion
+              existingDependencies={Object.keys(npmDependencies)}
+              addDependency={this.addDependency}
+            />
+          </Margin>
+          <div>
+            <WorkspaceSubtitle>External Resources</WorkspaceSubtitle>
+            {(externalResources || []).map(resource => (
               <ExternalResource
                 key={resource}
                 resource={resource}
                 removeResource={this.removeResource}
               />
             ))}
-          <AddResource addResource={this.addResource} />
+            <AddResource addResource={this.addResource} />
+          </div>
         </div>
-      </div>
-    );
+      );
+    }
   }
-}
+);

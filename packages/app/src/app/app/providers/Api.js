@@ -35,11 +35,25 @@ export default Provider({
       })
       .then(response => camelizeKeys(response.result.data));
   },
+  put(path, body) {
+    return this.context.http
+      .put(API_ROOT + path, decamelizeKeys(body), {
+        headers: createHeaders(this.context),
+      })
+      .then(response => camelizeKeys(response.result.data));
+  },
   delete(path, query) {
     return this.context.http
       .delete(API_ROOT + path, query, {
         headers: createHeaders(this.context),
       })
       .then(response => camelizeKeys(response.result.data));
+  },
+  request(options) {
+    return this.context.http.request(
+      Object.assign(options, {
+        url: API_ROOT + options.url,
+      })
+    );
   },
 });

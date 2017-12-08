@@ -5,11 +5,13 @@ import * as sequences from './sequences';
 export default Module({
   model,
   state: {
-    isWorkspaceHidden: false,
-    isProcessingNpmDependencies: false,
+    settings: {
+      prettifyOnSaveEnabled: false,
+    },
+    showEditor: true,
+    showPreview: true,
   },
   signals: {
-    workspaceToggled: sequences.toggleWorkspace,
-    npmDependencyAdded: sequences.addNpmDependency,
+    viewModeChanged: sequences.changeViewMode,
   },
 });
