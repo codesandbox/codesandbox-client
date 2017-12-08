@@ -1,4 +1,4 @@
-import { set, toggle } from 'cerebral/operators';
+import { set, toggle, push } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 import * as actions from './actions';
 import { ensureOwnedSandbox } from '../../sequences';
@@ -66,4 +66,23 @@ export const removeExternalResource = [
     props`externalResources`
   ),
   set(state`editor.workspace.isProcessingDependencies`, false),
+];
+export const updateTag = [
+  set(state`editor.workspace.tags.tagName`, props`tagName`),
+];
+export const addTag = [
+  ensureOwnedSandbox,
+  push(
+    state`editor.sandboxes.${state`editor.currentId`}.tags`,
+    state`editor.workspace.tags.tagName`
+  ),
+  actions.addTag,
+  set(state`editor.sandboxes.${state`editor.currentId`}.tags`, props`data`),
+  set(state`editor.workspace.tags.tagName`, ''),
+];
+export const removeTag = [
+  ensureOwnedSandbox,
+  actions.removeTagFromState,
+  actions.removeTag,
+  set(state`editor.sandboxes.${state`editor.currentId`}.tags`, props`tags`),
 ];

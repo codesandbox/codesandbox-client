@@ -13,6 +13,34 @@ export function updateSandbox({ api, state }) {
     .catch(error => ({ error }));
 }
 
+export function addTag({ api, state }) {
+  const sandboxId = state.get('editor.currentId');
+  const tag = state.get('editor.workspace.tags.tagName');
+  const body = {
+    tag,
+  };
+  return api
+    .post(`/sandboxes/${sandboxId}/tags`, body)
+    .then(data => ({ data }));
+}
+
+export function removeTag({ api, props, state }) {
+  const { tag } = props;
+  const sandboxId = state.get('editor.currentId');
+  return api
+    .delete(`/sandboxes/${sandboxId}/tags/${tag}`)
+    .then(data => ({ tags: data }));
+}
+
+export function removeTagFromState({ props, state }) {
+  const { tag } = props;
+  const sandboxId = state.get('editor.currentId');
+  const tags = state.get(`editor.sandboxes.${sandboxId}.tags`);
+  const index = tags.indexOf(tag);
+  state.splice(`editor.sandboxes.${sandboxId}.tags`, index, 1);
+  return { tag };
+}
+
 export function addNpmDependency({ api, state, props }) {
   const sandboxId = state.get('editor.currentId');
 

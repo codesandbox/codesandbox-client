@@ -5,6 +5,9 @@ export default {
     title: types.string,
     description: types.string,
   }),
+  tags: types.model({
+    tagName: types.string,
+  }),
   isWorkspaceHidden: types.boolean,
   isProcessingDependencies: types.boolean,
 };

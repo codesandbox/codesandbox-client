@@ -9,11 +9,18 @@ export default Module({
       title: '',
       description: '',
     },
+    tags: {
+      tag: '',
+      tagName: '',
+    },
     isWorkspaceHidden: false,
     isProcessingDependencies: false,
   },
   signals: {
     valueChanged: sequences.changeValue,
+    tagChanged: sequences.updateTag,
+    tagAdded: sequences.addTag,
+    tagRemoved: sequences.removeTag,
     updateSandboxInfo: sequences.updateSandboxInfo,
     workspaceToggled: sequences.toggleWorkspace,
     npmDependencyAdded: sequences.addNpmDependency,
