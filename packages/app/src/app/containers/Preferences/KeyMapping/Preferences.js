@@ -89,7 +89,6 @@ class Preferences extends React.Component<Props> {
           this.setState({ error });
         } else {
           preferencesActions.setPreference({
-            ...preferences,
             keybindings: {
               ...preferences.keybindings,
               [name]: value,
