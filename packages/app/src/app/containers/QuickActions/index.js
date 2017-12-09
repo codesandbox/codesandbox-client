@@ -100,7 +100,7 @@ const mapDispatchToProps = dispatch => ({
   dispatch,
 });
 class QuickActions extends React.Component<Props> {
-  componentDidMount() {
+  updateGenie = () => {
     Object.keys(this.props.keybindings).forEach(bindingKey => {
       const quickAction = this.props.keybindings[bindingKey];
 
@@ -111,6 +111,14 @@ class QuickActions extends React.Component<Props> {
           this.props.dispatch(quickAction.action({ id: this.props.sandboxId })),
       });
     });
+  };
+
+  componentDidMount() {
+    this.updateGenie();
+  }
+
+  componentDidUpdate() {
+    this.updateGenie();
   }
 
   getItems = value => genie.getMatchingWishes(value);

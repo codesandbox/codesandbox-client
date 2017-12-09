@@ -14,10 +14,11 @@ const metaKey = isMac ? 'Meta' : 'Alt';
 
 export function normalizeKey(e: KeyboardEvent) {
   if (e.code.startsWith('Key')) {
-    const key = String.fromCharCode(e.keyCode);
+    const key = String.fromCharCode(e.keyCode).toUpperCase();
     if (key === ' ') {
       return 'Space';
     }
+    return key;
   }
 
   return e.key;
@@ -29,12 +30,14 @@ export function formatKey(key: string) {
       if (isMac) {
         return '⌘';
       }
-      return '⊞';
+      return 'Win';
     }
     case 'Control':
       return 'Ctrl';
     case ' ':
       return 'Space';
+    case 'Shift':
+      return '⇧';
     default:
       if (key.split('').length === 1) {
         return key.toUpperCase();
