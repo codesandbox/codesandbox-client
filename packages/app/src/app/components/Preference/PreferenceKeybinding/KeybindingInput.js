@@ -2,6 +2,8 @@ import React from 'react';
 
 import Input from 'app/components/Input';
 
+import { normalizeKey } from 'app/store/preferences/keybindings';
+
 type Props = {
   value: Array<string>,
   setValue: (Array<string>) => any,
@@ -26,14 +28,6 @@ function formatKey(key: string) {
     default:
       return key;
   }
-}
-
-function normalizeKey(e: KeyboardEvent) {
-  if (e.code.startsWith('Key')) {
-    return String.fromCharCode(e.keyCode);
-  }
-
-  return e.key;
 }
 
 function sortKeys(keys: Array<string>) {
