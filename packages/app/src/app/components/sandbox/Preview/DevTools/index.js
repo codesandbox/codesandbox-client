@@ -1,8 +1,6 @@
 // @flow
 import React from 'react';
-import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
 import { TweenMax, Elastic } from 'gsap';
 import store from 'store/dist/store.modern';
 import MinimizeIcon from 'react-icons/lib/fa/angle-up';

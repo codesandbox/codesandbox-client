@@ -41,7 +41,7 @@ class KeybindingManager extends React.Component<Props> {
   setBindings = () => {
     Mousetrap.reset();
     Object.keys(this.props.keybindings).forEach(k => {
-      const { bindings, action } = this.props.keybindings[k];
+      const { bindings, action } = this.props.keybindings[k]; // eslint-disable-line
       const stroke =
         bindings[0].join('+') +
         (bindings[1] && bindings[1].length ? ' ' + bindings[1].join('+') : '');
