@@ -9,3 +9,7 @@ export const workspaceHiddenSelector = createSelector(
   viewSelector,
   view => view.workspaceHidden
 );
+export const quickActionsOpenSelector = createSelector(
+  viewSelector,
+  view => view.quickActionsOpen
+);

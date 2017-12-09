@@ -15,6 +15,7 @@ import viewActionCreators from 'app/store/view/actions';
 import { preferencesSelector } from 'app/store/preferences/selectors';
 import { workspaceHiddenSelector } from 'app/store/view/selectors';
 import KeybindingManager from 'app/containers/KeybindingManager';
+import QuickActions from 'app/containers/QuickActions';
 
 import Title from 'app/components/text/Title';
 import SubTitle from 'app/components/text/SubTitle';
@@ -166,6 +167,7 @@ class SandboxPage extends React.PureComponent<Props, State> {
           setWorkspaceHidden={viewActions.setWorkspaceHidden}
         />
         <KeybindingManager sandboxId={currentId} />
+        <QuickActions sandboxId={currentId} />
       </React.Fragment>
     );
   }

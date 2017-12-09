@@ -31,7 +31,6 @@ import PatronBadge from '-!svg-react-loader!common/utils/badges/svg/patron-4.svg
 import Margin from 'common/components/spacing/Margin';
 import HeaderSearchBar from 'app/components/HeaderSearchBar';
 import UserMenu from 'app/containers/UserMenu';
-import Preferences from 'app/containers/Preferences';
 import NewSandbox from 'app/containers/modals/NewSandbox';
 import ShareModal from 'app/containers/modals/ShareModal';
 
@@ -197,10 +196,7 @@ export default class Header extends React.Component<Props> {
   };
 
   openPreferences = () => {
-    this.props.modalActions.openModal({
-      width: 900,
-      Body: <Preferences />,
-    });
+    this.props.modalActions.openPreferences();
   };
 
   openNewSandbox = () => {

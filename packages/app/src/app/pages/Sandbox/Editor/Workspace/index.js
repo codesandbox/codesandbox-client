@@ -24,7 +24,6 @@ import { tosUrl, privacyUrl } from 'common/utils/url-generator';
 
 import Button from 'app/components/buttons/Button';
 import Margin from 'common/components/spacing/Margin';
-import Preferences from 'app/containers/Preferences';
 
 import WorkspaceInputContainer from './WorkspaceInputContainer';
 import Files from './Files';
@@ -94,10 +93,7 @@ const mapDispatchToProps = dispatch => ({
 
 class Workspace extends React.PureComponent<Props> {
   openPreferences = () => {
-    this.props.modalActions.openModal({
-      width: 900,
-      Body: <Preferences initialPane="Integrations" />,
-    });
+    this.props.modalActions.openPreferences('Integrations');
   };
 
   render() {

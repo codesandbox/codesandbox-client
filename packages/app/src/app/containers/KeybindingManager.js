@@ -2,14 +2,15 @@ import React, { KeyboardEvent } from 'react';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
 
-import { KEYBINDINGS, normalizeKey } from 'app/store/preferences/keybindings';
-import { keybindingsSelector } from 'app/store/preferences/selectors';
+import { normalizeKey } from 'app/store/preferences/keybindings';
+import { userKeybindingsSelector } from 'app/store/preferences/selectors';
 import { modalSelector } from 'app/store/modal/selectors';
 
 type Props = {
   sandboxId: string,
   keybindings: {
     [key: string]: {
+      title: string,
       bindings: [Array<string>, ?Array<string>],
       action: Function,
     },
@@ -22,14 +23,9 @@ type Props = {
 };
 
 const mapStateToProps = createSelector(
-  keybindingsSelector,
+  userKeybindingsSelector,
   modalSelector,
-  (userKeybindings, modal) => {
-    const newBindings = { ...KEYBINDINGS };
-    Object.keys(userKeybindings).forEach(key => {
-      newBindings[key].bindings = userKeybindings[key];
-    });
-
+  (newBindings, modal) => {
     const bindingStrings = {};
 
     Object.keys(newBindings).forEach(key => {
@@ -57,6 +53,7 @@ const mapDispatchToProps = dispatch => ({
 class KeybindingManager extends React.Component<Props> {
   pressedComboKeys = [];
   pressedComboMetaKeys = [];
+  pressedSpecialKeys = [];
   checkedStrokes = this.props.bindingStrings;
 
   removeFromPressedComboKeys = (key: string) => {
@@ -80,6 +77,19 @@ class KeybindingManager extends React.Component<Props> {
       }
     }
 
+    // We also register special keys, sometimes key ups are not registered
+    // for special keys, so after every 2 seconds we clear the array
+    if (this.pressedSpecialKeys.indexOf(key) === -1) {
+      this.pressedSpecialKeys.push(key);
+
+      clearTimeout(this.specialTimeout);
+      this.specialTimeout = setTimeout(() => {
+        this.pressedSpecialKeys.forEach(k => {
+          this.removeFromPressedComboKeys(k);
+        });
+      }, 1500);
+    }
+
     // check match
     const match = this.checkCombosForPressedKeys();
 
@@ -91,6 +101,7 @@ class KeybindingManager extends React.Component<Props> {
     if (typeof match === 'string') {
       this.pressedComboKeys = [];
       this.pressedComboMetaKeys = [];
+      this.pressedSpecialKeys = [];
       this.checkedStrokes = this.props.bindingStrings;
 
       this.props.dispatch(

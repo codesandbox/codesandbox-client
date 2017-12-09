@@ -52,6 +52,7 @@ class Preferences extends React.Component<Props> {
     const valB1 = value[1] && [...value[1]].sort().join('');
     const alreadyExists = bindings.some(([b0, b1]) => {
       if (
+        b0 &&
         [...b0]
           .sort()
           .join('')

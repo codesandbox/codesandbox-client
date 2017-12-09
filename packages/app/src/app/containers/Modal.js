@@ -92,10 +92,12 @@ class ModalContainer extends React.PureComponent {
   props: Props;
 
   closeModal = e => {
-    if (!e || !e.defaultPrevented) {
-      const { modalActions } = this.props;
-      modalActions.closeModal();
+    const { modalActions, modal } = this.props;
+    if (e && e.keyCode && modal.preventEscapeClosing) {
+      return;
     }
+
+    modalActions.closeModal();
   };
 
   getStyles = (width = 400, top = 20) => ({
