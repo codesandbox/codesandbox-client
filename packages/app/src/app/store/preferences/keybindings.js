@@ -8,7 +8,7 @@ import {
 } from '../view/selectors';
 
 const isMac = !!navigator.platform.match(/(Mac|iPhone|iPod|iPad)/i);
-const metaKey = isMac ? 'Meta' : 'Ctrl';
+const metaKey = isMac ? 'Meta' : 'Alt';
 
 export const KEYBINDINGS = {
   'editor.workspace': {
