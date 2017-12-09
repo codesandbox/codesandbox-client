@@ -83,10 +83,12 @@ class KeybindingManager extends React.Component<Props> {
     // check match
     const match = this.checkCombosForPressedKeys();
 
-    if (typeof match === 'string') {
+    if (match != null) {
       e.preventDefault();
       e.stopPropagation();
+    }
 
+    if (typeof match === 'string') {
       this.pressedComboKeys = [];
       this.pressedComboMetaKeys = [];
       this.checkedStrokes = this.props.bindingStrings;
@@ -99,9 +101,13 @@ class KeybindingManager extends React.Component<Props> {
     } else if (typeof match === 'object') {
       this.checkedStrokes = match;
 
-      setTimeout(() => {
+      if (this.timeout) {
+        clearTimeout(this.timeout);
+      }
+
+      this.timeout = setTimeout(() => {
         this.checkedStrokes = this.props.bindingStrings;
-      }, 500);
+      }, 300);
     }
   };
 
