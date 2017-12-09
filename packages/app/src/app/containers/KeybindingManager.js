@@ -144,6 +144,10 @@ class KeybindingManager extends React.Component<Props> {
     document.removeEventListener('keyup', this.handleKeyUp);
   }
 
+  componentDidUpdate() {
+    this.checkedStrokes = this.props.bindingStrings;
+  }
+
   render() {
     return null;
   }
