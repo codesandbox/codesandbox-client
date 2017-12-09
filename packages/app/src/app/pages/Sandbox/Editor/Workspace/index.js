@@ -108,7 +108,6 @@ class Workspace extends React.PureComponent<Props> {
       currentUser,
       zenMode,
     } = this.props;
-    console.log(sandbox);
 
     return (
       <ThemeProvider

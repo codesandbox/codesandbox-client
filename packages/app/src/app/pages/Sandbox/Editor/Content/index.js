@@ -204,11 +204,26 @@ class EditorPreview extends React.PureComponent<Props, State> {
             directories={directories}
             currentModuleId={currentModule.id}
             sandboxId={sandbox.id}
-            setCurrentModule={sandboxActions.setCurrentModule}
-            closeTab={sandboxActions.closeTab}
-            moveTab={sandboxActions.moveTab}
-            markNotDirty={sandboxActions.markTabsNotDirty}
-            prettifyModule={moduleActions.prettifyModule}
+            setCurrentModule={(sandboxId, moduleId) => {
+              this.props.signals.editor.moduleSelected({ id: moduleId });
+              sandboxActions.setCurrentModule(sandboxId, moduleId);
+            }}
+            closeTab={(sandboxId, tabIndex) => {
+              this.props.signals.editor.tabClosed({ tabIndex });
+              sandboxActions.closeTab(sandboxId, tabIndex);
+            }}
+            moveTab={(sandboxId, prevIndex, nextIndex) => {
+              this.props.signals.editor.tabMoved({ prevIndex, nextIndex });
+              sandboxActions.moveTab(sandboxId, prevIndex, nextIndex);
+            }}
+            markNotDirty={sandboxId => {
+              this.props.signals.editor.moduleDoubleClicked();
+              sandboxActions.markTabsNotDirty(sandboxId);
+            }}
+            prettifyModule={moduleId => {
+              this.props.signals.editor.prettifyClicked({ moduleId });
+              moduleActions.prettifyModule(moduleId);
+            }}
           />
         )}
         <CodeEditor
@@ -227,8 +242,17 @@ class EditorPreview extends React.PureComponent<Props, State> {
           directories={directories}
           sandboxId={sandbox.id}
           dependencies={sandbox.npmDependencies}
-          setCurrentModule={sandboxActions.setCurrentModule}
-          addDependency={sandbox.owned && sandboxActions.addNPMDependency}
+          setCurrentModule={(sandboxId, moduleId) => {
+            this.props.signals.editor.moduleSelected({ id: moduleId });
+            sandboxActions.setCurrentModule(sandboxId, moduleId);
+          }}
+          addDependency={(id, name, version) => {
+            this.props.signals.editor.workspace.npmDependencyAdded({
+              name,
+              version,
+            });
+            sandbox.owned && sandboxActions.addNPMDependency(id, name, version);
+          }}
           template={sandbox.template}
         />
       </FullSize>
@@ -243,8 +267,11 @@ class EditorPreview extends React.PureComponent<Props, State> {
           module={currentModule}
           modules={modules}
           directories={directories}
-          addError={sandboxActions.addError}
-          clearErrors={moduleActions.clearErrors}
+          addError={sandboxActions.addError /* Does not exist?!? */}
+          clearErrors={() => {
+            this.props.signals.editor.errorsCleared();
+            moduleActions.clearErrors();
+          }}
           isInProjectView={Boolean(sandbox.isInProjectView)}
           externalResources={sandbox.externalResources}
           setProjectView={sandboxActions.setProjectView}

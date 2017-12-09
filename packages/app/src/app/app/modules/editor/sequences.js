@@ -4,6 +4,22 @@ import { state, props } from 'cerebral/tags';
 import * as actions from './actions';
 import { addNotification, updateSandboxUrl } from '../../factories';
 
+export const closeTab = actions.closeTab;
+
+export const clearErrors = set(state`editor.errors`, []);
+
+export const moveTab = actions.moveTab;
+
+export const onUnload = actions.warnUnloadingContent;
+
+export const startResizing = set(state`editor.isResizing`, true);
+
+export const stopResizing = set(state`editor.isResizing`, false);
+
+export const createZip = actions.createZip;
+
+export const prettifyCode = [actions.prettifyCode, actions.setCode];
+
 export const forkSandbox = sequence('forkSandbox', [
   actions.forkSandbox,
   actions.moveModuleContent,
@@ -20,14 +36,6 @@ export const ensureOwnedSandbox = sequence('ensureOwnedSandbox', [
     false: forkSandbox,
   },
 ]);
-
-export const onUnload = actions.warnUnloadingContent;
-
-export const startResizing = set(state`editor.isResizing`, true);
-
-export const stopResizing = set(state`editor.isResizing`, false);
-
-export const createZip = actions.createZip;
 
 export const toggleLikeSandbox = [
   when(state`editor.currentSandbox.userLiked`),

@@ -25,6 +25,8 @@ export default Module({
     isResizing: false,
     changedModuleShortids: [],
     tabs: [],
+    errors: [],
+    corrections: [],
   },
   getters: {
     isAllModulesSynced,
@@ -48,6 +50,10 @@ export default Module({
     likeSandboxToggled: sequences.toggleLikeSandbox,
     moduleSelected: sequences.setCurrentModule,
     moduleDoubleClicked: sequences.unsetDirtyTab,
+    tabClosed: sequences.closeTab,
+    tabMoved: sequences.moveTab,
+    prettifyClicked: sequences.prettifyCode,
+    errorsCleared: sequences.clearErrors,
   },
   modules: { workspace, preferences },
 });

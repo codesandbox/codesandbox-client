@@ -95,4 +95,6 @@ export default {
       dirty: types.boolean,
     })
   ),
+  errors: types.array(types.model({})),
+  corrections: types.array(types.model({})),
 };

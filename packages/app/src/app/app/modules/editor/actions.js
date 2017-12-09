@@ -1,3 +1,41 @@
+import { clone } from 'mobx-state-tree';
+
+export function moveTab({ state, props }) {
+  const tabs = state.get('editor.tabs');
+  const tab = clone(tabs[props.prevIndex]);
+
+  state.splice('editor.tabs', props.prevIndex, 1);
+  state.splice('editor.tabs', props.nextIndex, 0, tab);
+}
+
+export function closeTab({ state, props }) {
+  const sandbox = state.get('editor.currentSandbox');
+  const currentModule = state.get('editor.currentModule');
+  const tabs = state.get('editor.tabs');
+
+  if (tabs.length === 1) {
+    return;
+  }
+
+  const tabModuleId = tabs[props.tabIndex].moduleId;
+  const isActiveTab = currentModule.id === tabModuleId;
+
+  if (isActiveTab) {
+    const newTab =
+      props.tabIndex > 0 ? tabs[props.tabIndex - 1] : tabs[props.tabIndex + 1];
+
+    if (newTab) {
+      const newModule = sandbox.modules.find(
+        module => module.id === newTab.moduleId
+      );
+
+      state.set('editor.currentModuleShortid', newModule.shortid);
+    }
+  }
+
+  state.splice('editor.tabs', props.tabIndex, 1);
+}
+
 export function unsetDirtyTab({ state }) {
   const currentModule = state.get('editor.currentModule');
   const tabs = state.get('editor.tabs');
@@ -26,9 +64,7 @@ export function addTab({ state, props }) {
   };
   let tabs = state.get('editor.tabs');
 
-  const currentTabPos = tabs.findIndex(
-    tab => tab.moduleId === currentModule.id
-  );
+  const tabIndex = tabs.findIndex(tab => tab.moduleId === currentModule.id);
 
   if (tabs.length === 0) {
     tabs = [newTab];
@@ -36,9 +72,9 @@ export function addTab({ state, props }) {
     const notDirtyTabs = tabs.filter(tab => !tab.dirty);
 
     tabs = [
-      ...notDirtyTabs.slice(0, currentTabPos + 1),
+      ...notDirtyTabs.slice(0, tabIndex + 1),
       newTab,
-      ...notDirtyTabs.slice(currentTabPos + 1),
+      ...notDirtyTabs.slice(tabIndex + 1),
     ];
   }
 
