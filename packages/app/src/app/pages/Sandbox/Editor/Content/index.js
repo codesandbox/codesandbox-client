@@ -20,6 +20,8 @@ import modalActionCreators from 'app/store/modal/actions';
 import previewApiActionCreators from 'app/store/preview-actions-api/actions';
 import preferenceActionCreators from 'app/store/preferences/actions';
 import userActionCreators from 'app/store/user/actions';
+import viewActionCreators from 'app/store/view/actions';
+import { devToolsOpenSelector } from 'app/store/view/selectors';
 import {
   findMainModule,
   findCurrentModule,
@@ -45,6 +47,7 @@ import Skeleton from './Skeleton';
 type Props = {
   workspaceHidden: boolean,
   toggleWorkspace: () => void,
+  devToolsOpen: boolean,
   sandbox: Sandbox,
   user: CurrentUser,
   preferences: Preferences,
@@ -56,6 +59,7 @@ type Props = {
   modalActions: typeof modalActionCreators,
   previewApiActions: typeof previewApiActionCreators,
   preferenceActions: typeof preferenceActionCreators,
+  viewActions: typeof viewActionCreators,
 };
 
 type State = {
@@ -76,11 +80,13 @@ const mapStateToProps = createSelector(
   currentUserSelector,
   modulesFromSandboxSelector,
   directoriesFromSandboxSelector,
-  (preferences, user, modules, directories) => ({
+  devToolsOpenSelector,
+  (preferences, user, modules, directories, devToolsOpen) => ({
     preferences,
     user,
     modules,
     directories,
+    devToolsOpen,
   })
 );
 const mapDispatchToProps = dispatch => ({
@@ -90,6 +96,7 @@ const mapDispatchToProps = dispatch => ({
   modalActions: bindActionCreators(modalActionCreators, dispatch),
   previewApiActions: bindActionCreators(previewApiActionCreators, dispatch),
   preferenceActions: bindActionCreators(preferenceActionCreators, dispatch),
+  viewActions: bindActionCreators(viewActionCreators, dispatch),
 });
 class EditorPreview extends React.PureComponent<Props, State> {
   state = {
@@ -150,6 +157,8 @@ class EditorPreview extends React.PureComponent<Props, State> {
       workspaceHidden,
       toggleWorkspace,
       previewApiActions,
+      viewActions,
+      devToolsOpen,
     } = this.props;
 
     const mainModule = findMainModule(modules, directories, sandbox.entry);
@@ -234,6 +243,8 @@ class EditorPreview extends React.PureComponent<Props, State> {
           forcedRenders={sandbox.forcedRenders}
           inactive={this.state.resizing}
           entry={sandbox.entry}
+          setDevToolsOpen={viewActions.setDevToolsOpen}
+          devToolsOpen={devToolsOpen}
         />
       </FullSize>
     );

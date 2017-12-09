@@ -13,3 +13,4 @@ export const codeMirror = 'settings.codemirror';
 export const autoDownloadTypes = 'settings.autoDownloadTypes';
 export const newPackagerExperiment = 'settings.newPackagerExperiment';
 export const zenMode = 'settings.zenMode';
+export const keybindings = 'settings.keybindings';

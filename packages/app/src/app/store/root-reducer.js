@@ -9,6 +9,7 @@ import notificationsReducer from './notifications/reducer';
 import preferencesReducer from './preferences/reducer';
 import userReducer from './user/reducer';
 import connectionStatusReducer from './connection/reducer';
+import viewReducer from './view/reducer';
 
 export default combineReducers({
   entities: entityReducer,
@@ -19,4 +20,5 @@ export default combineReducers({
   preferences: preferencesReducer,
   router: routerReducer,
   user: userReducer,
+  view: viewReducer,
 });

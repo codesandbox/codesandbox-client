@@ -91,9 +91,11 @@ const mapDispatchToProps = dispatch => ({
 class ModalContainer extends React.PureComponent {
   props: Props;
 
-  closeModal = () => {
-    const { modalActions } = this.props;
-    modalActions.closeModal();
+  closeModal = e => {
+    if (!e || !e.defaultPrevented) {
+      const { modalActions } = this.props;
+      modalActions.closeModal();
+    }
   };
 
   getStyles = (width = 400, top = 20) => ({

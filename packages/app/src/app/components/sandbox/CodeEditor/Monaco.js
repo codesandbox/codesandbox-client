@@ -733,10 +733,10 @@ export default class CodeEditor extends React.Component<Props, State> {
       'editor.action.quickCommand'
     );
     this.editor.addCommand(
-      this.monaco.KeyMod.CtrlCmd |
-        this.monaco.KeyMod.Shift |
+      this.monaco.KeyMod.CtrlCmd | // eslint-disable-line no-bitwise
+      this.monaco.KeyMod.Shift | // eslint-disable-line no-bitwise
         this.monaco.KeyCode.KEY_P, // eslint-disable-line no-bitwise
-      quickCommandAction._run
+      quickCommandAction._run // eslint-disable-line no-underscore-dangle
     );
   };
 
