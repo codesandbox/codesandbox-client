@@ -6,6 +6,7 @@ import PreferenceSwitch from './PreferenceSwitch';
 import PreferenceDropdown from './PreferenceDropdown';
 import PreferenceNumber from './PreferenceNumber';
 import PreferenceText from './PreferenceText';
+import PreferenceKeybinding from './PreferenceKeybinding';
 
 const Container = styled.div`
   display: flex;
@@ -19,7 +20,7 @@ type Props = {
   value: any,
   setValue: (value: any) => any,
   tooltip: ?string,
-  type: 'boolean' | 'number' | 'string',
+  type: 'boolean' | 'number' | 'string' | 'keybinding',
   options: ?Array<string>,
 };
 
@@ -51,6 +52,17 @@ export default class Preference extends React.Component {
     if (type === 'dropdown') {
       return (
         <PreferenceDropdown
+          {...this.props}
+          options={this.props.options}
+          setValue={this.props.setValue}
+          value={value}
+        />
+      );
+    }
+
+    if (type === 'keybinding') {
+      return (
+        <PreferenceKeybinding
           {...this.props}
           options={this.props.options}
           setValue={this.props.setValue}

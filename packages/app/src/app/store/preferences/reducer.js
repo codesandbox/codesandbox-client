@@ -37,6 +37,7 @@ const initialState: Preferences = Object.keys(keys).reduce(
     autoDownloadTypes: true,
     newPackagerExperiment: false,
     zenMode: false,
+    keybindings: {},
   }
 );
 
