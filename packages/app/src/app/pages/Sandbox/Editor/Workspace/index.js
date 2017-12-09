@@ -94,10 +94,7 @@ const mapDispatchToProps = dispatch => ({
 
 class Workspace extends React.PureComponent<Props> {
   openPreferences = () => {
-    this.props.modalActions.openModal({
-      width: 900,
-      Body: <Preferences initialPane="Integrations" />,
-    });
+    this.props.modalActions.openPreferences('Integrations');
   };
 
   render() {

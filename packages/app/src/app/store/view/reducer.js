@@ -5,10 +5,12 @@ import * as preferenceActions from '../preferences/actions';
 type State = {
   devToolsOpen: boolean,
   workspaceHidden: boolean,
+  quickActionsOpen: boolean,
 };
 
 const initialState = {
   devToolsOpen: false,
+  quickActionsOpen: false,
   workspaceHidden: false,
 };
 
@@ -26,6 +28,11 @@ export default function reducer(
       return {
         ...state,
         workspaceHidden: action.workspaceHidden,
+      };
+    case actions.SET_QUICK_ACTIONS_OPEN:
+      return {
+        ...state,
+        quickActionsOpen: action.open,
       };
     case preferenceActions.SET_PREFERENCES:
       if (action.preferences.zenMode) {

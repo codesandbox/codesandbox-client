@@ -7,6 +7,8 @@ const initialState: Modal = {
   title: null,
   Body: null,
   width: null,
+  preventClosing: false,
+  preventEscapeClosing: false,
 };
 
 export default function(
@@ -20,6 +22,8 @@ export default function(
         title: action.title,
         Body: action.Body,
         width: action.width,
+        preventClosing: action.preventClosing,
+        preventEscapeClosing: action.preventEscapeClosing,
       };
     case CLOSE_MODAL:
       return {
@@ -28,6 +32,8 @@ export default function(
         Body: null,
         width: null,
         open: false,
+        preventClosing: false,
+        preventEscapeClosing: false,
       };
     default:
       return state;

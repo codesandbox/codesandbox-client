@@ -2,7 +2,7 @@ import React from 'react';
 
 import Input from 'app/components/Input';
 
-import { normalizeKey } from 'app/store/preferences/keybindings';
+import { normalizeKey, formatKey } from 'app/store/preferences/keybindings';
 
 type Props = {
   value: Array<string>,
@@ -13,22 +13,6 @@ type Props = {
 
 const SPECIAL_KEYS = ['Meta', 'Control', 'Alt', 'Shift', 'Enter', 'Backspace'];
 const IGNORED_KEYS = ['Backspace', 'Escape', 'CapsLock'];
-
-function formatKey(key: string) {
-  switch (key) {
-    case 'Meta': {
-      const isMac = !!navigator.platform.match(/(Mac|iPhone|iPod|iPad)/i);
-      if (isMac) {
-        return '⌘';
-      }
-      return '⊞';
-    }
-    case 'Control':
-      return 'Ctrl';
-    default:
-      return key;
-  }
-}
 
 function sortKeys(keys: Array<string>) {
   return keys.sort((a, b) => {

@@ -14,13 +14,15 @@ import HoverMenu from 'app/components/HoverMenu';
 import Relative from 'common/components/Relative';
 import Tooltip from 'common/components/Tooltip';
 
-import Preferences from 'app/containers/Preferences';
-
 import UserMenu from './UserMenu';
 
-const ClickableContainer = styled(Row)`cursor: pointer;`;
+const ClickableContainer = styled(Row)`
+  cursor: pointer;
+`;
 
-const ProfileImage = styled.img`border-radius: 2px;`;
+const ProfileImage = styled.img`
+  border-radius: 2px;
+`;
 
 const ProfileInfo = styled.div`
   font-weight: 400;
@@ -75,10 +77,7 @@ class User extends React.PureComponent<Props, State> {
   openMenu = () => this.setState({ menuOpen: true });
 
   openPreferences = () => {
-    this.props.modalActions.openModal({
-      width: 900,
-      Body: <Preferences />,
-    });
+    this.props.modalActions.openPreferences();
   };
 
   render() {

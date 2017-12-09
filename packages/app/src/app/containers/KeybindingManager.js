@@ -2,14 +2,15 @@ import React, { KeyboardEvent } from 'react';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
 
-import { KEYBINDINGS, normalizeKey } from 'app/store/preferences/keybindings';
-import { keybindingsSelector } from 'app/store/preferences/selectors';
+import { normalizeKey } from 'app/store/preferences/keybindings';
+import { userKeybindingsSelector } from 'app/store/preferences/selectors';
 import { modalSelector } from 'app/store/modal/selectors';
 
 type Props = {
   sandboxId: string,
   keybindings: {
     [key: string]: {
+      title: string,
       bindings: [Array<string>, ?Array<string>],
       action: Function,
     },
@@ -22,14 +23,9 @@ type Props = {
 };
 
 const mapStateToProps = createSelector(
-  keybindingsSelector,
+  userKeybindingsSelector,
   modalSelector,
-  (userKeybindings, modal) => {
-    const newBindings = { ...KEYBINDINGS };
-    Object.keys(userKeybindings).forEach(key => {
-      newBindings[key].bindings = userKeybindings[key];
-    });
-
+  (newBindings, modal) => {
     const bindingStrings = {};
 
     Object.keys(newBindings).forEach(key => {
