@@ -186,7 +186,7 @@
       "/create-zip\\/.*\\/files/"
     ],
     "transformIgnorePatterns": [
-      "node_modules/(?!(common))"
+      "node_modules/(?!(common|react-icons))"
     ],
     "moduleNameMapper": {
       "\\.css$": "<rootDir>/__mocks__/styleMock.js",
