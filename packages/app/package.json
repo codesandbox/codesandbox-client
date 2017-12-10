@@ -172,7 +172,8 @@
     "tern": "^0.21.0",
     "vue": "^2.5.2",
     "vue-template-compiler": "^2.5.2",
-    "vue-template-es2015-compiler": "^1.6.0"
+    "vue-template-es2015-compiler": "^1.6.0",
+    "react-show": "^1.1.2"
   },
   "jest": {
     "roots": [

@@ -2,13 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 
 import ExpandIcon from 'react-icons/lib/md/keyboard-arrow-down';
+import ReactShow from 'react-show';
 
 const ChildContainer = styled.div`
   position: relative;
   margin: 0;
   padding: 0;
-  overflow: ${props => (props.open ? 'inherit' : 'hidden')};
-  height: ${props => (props.open ? '100%' : 0)};
+  height: 100%;
 
   ${({ disabled }) =>
     disabled &&
@@ -116,9 +116,9 @@ export default class WorkspaceItem extends React.Component {
 
           {open && <Actions>{actions}</Actions>}
         </ItemHeader>
-        <ChildContainer disabled={disabled} open={open}>
-          {(keepState || open) && children}
-        </ChildContainer>
+        <ReactShow show={open} duration={250} unmountOnHide={!keepState}>
+          <ChildContainer disabled={disabled}>{children}</ChildContainer>
+        </ReactShow>
       </div>
     );
   }
