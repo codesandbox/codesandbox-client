@@ -8,7 +8,7 @@ const ChildContainer = styled.div`
   position: relative;
   margin: 0;
   padding: 0;
-  height: '100%';
+  height: 100%;
 
   ${({ disabled }) =>
     disabled &&
@@ -116,10 +116,8 @@ export default class WorkspaceItem extends React.Component {
 
           {open && <Actions>{actions}</Actions>}
         </ItemHeader>
-        <ReactShow show={open} duration={200}>
-          <ChildContainer disabled={disabled}>
-            {(keepState || open) && children}
-          </ChildContainer>
+        <ReactShow show={open} duration={250} unmountOnHide={!keepState}>
+          <ChildContainer disabled={disabled}>{children}</ChildContainer>
         </ReactShow>
       </div>
     );
