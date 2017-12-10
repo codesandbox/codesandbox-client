@@ -1,8 +1,14 @@
 import { sequence } from 'cerebral';
-import { set, when } from 'cerebral/operators';
+import { set, when, equals } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 import * as actions from './actions';
+
 import { addNotification, updateSandboxUrl } from '../../factories';
+
+export const setProjectView = set(
+  state`editor.isInProjectView`,
+  props`isInProjectView`
+);
 
 export const closeTab = actions.closeTab;
 
@@ -20,6 +26,12 @@ export const createZip = actions.createZip;
 
 export const prettifyCode = [actions.prettifyCode, actions.setCode];
 
+export const setCurrentModule = [actions.addTab, actions.setCurrentModule];
+
+export const unsetDirtyTab = actions.unsetDirtyTab;
+
+export const openDevtools = [function test() {}];
+
 export const forkSandbox = sequence('forkSandbox', [
   actions.forkSandbox,
   actions.moveModuleContent,
@@ -36,6 +48,17 @@ export const ensureOwnedSandbox = sequence('ensureOwnedSandbox', [
     false: forkSandbox,
   },
 ]);
+
+export const addNpmDependency = [
+  ensureOwnedSandbox,
+  set(state`editor.workspace.isProcessingDependencies`, true),
+  actions.addNpmDependency,
+  set(
+    state`editor.sandboxes.${state`editor.currentId`}.npmDependencies`,
+    props`npmDependencies`
+  ),
+  set(state`editor.workspace.isProcessingDependencies`, false),
+];
 
 export const toggleLikeSandbox = [
   when(state`editor.currentSandbox.userLiked`),
@@ -101,6 +124,30 @@ export const loadSandbox = [
   },
 ];
 
-export const setCurrentModule = [actions.addTab, actions.setCurrentModule];
-
-export const unsetDirtyTab = actions.unsetDirtyTab;
+export const handlePreviewAction = [
+  equals(props`action.action`),
+  {
+    notification: addNotification(
+      props`action.title`,
+      props`action.notificationType`,
+      props`action.timeAlive`
+    ),
+    'show-error': actions.addErrorFromPreview,
+    'show-correction': actions.addCorrectionFromPreview,
+    'source.module.rename': actions.renameModuleFromPreview,
+    'source.dependencies.add': [
+      set(props`name`, props`action.dependency`),
+      addNpmDependency,
+      actions.forceRender,
+    ],
+    'editor.open-module': [
+      actions.outputModuleIdFromActionPath,
+      when(props`id`),
+      {
+        true: setCurrentModule,
+        false: [],
+      },
+    ],
+    otherwise: [],
+  },
+];

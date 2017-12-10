@@ -45,7 +45,7 @@ type Props = {
   setProjectView: (id: string, isInProjectView: boolean) => any,
   module: Module,
   clearErrors: ?(sandboxId: string) => any,
-  sandboxActions: typeof sandboxActionCreators,
+  onNewWindow: () => any,
   noDelay?: boolean,
   hideNavigation?: boolean,
   setFrameHeight: ?(height: number) => any,
@@ -186,8 +186,8 @@ export default class Preview extends React.PureComponent<Props, State> {
   }
 
   openNewWindow = () => {
-    if (this.props.sandboxActions) {
-      this.props.sandboxActions.setViewMode(this.props.sandboxId, true, false);
+    if (this.props.onNewWindow) {
+      this.props.onNewWindow();
     }
     window.open(this.state.urlInAddressBar, '_blank');
   };

@@ -6,14 +6,14 @@ export const addNotification = (
   timeAlive = 2,
   buttons = []
 ) =>
-  function addNotification({ state }) {
+  function addNotification({ state, resolve }) {
     const now = Date.now();
 
     state.push('notifications', {
       id: now,
-      title,
-      notificationType,
-      buttons,
+      title: resolve.value(title),
+      notificationType: resolve.value(notificationType),
+      buttons: resolve.value(buttons),
       endTime: now + timeAlive * 1000,
     });
   };

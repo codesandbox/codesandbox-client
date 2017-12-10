@@ -27,6 +27,8 @@ export default Module({
     tabs: [],
     errors: [],
     corrections: [],
+    isInProjectView: false,
+    forceRender: 0,
   },
   getters: {
     isAllModulesSynced,
@@ -54,6 +56,9 @@ export default Module({
     tabMoved: sequences.moveTab,
     prettifyClicked: sequences.prettifyCode,
     errorsCleared: sequences.clearErrors,
+    projectViewChanged: sequences.setProjectView,
+    previewActionReceived: sequences.handlePreviewAction,
+    devtoolsOpened: sequences.openDevtools,
   },
   modules: { workspace, preferences },
 });

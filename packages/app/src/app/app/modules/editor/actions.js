@@ -1,5 +1,85 @@
 import { clone } from 'mobx-state-tree';
 
+export function forceRender({ state }) {
+  state.set('editor.forceRender', state.get('editor.forceRender') + 1);
+}
+
+export function addNpmDependency({ api, state, props }) {
+  const sandboxId = state.get('editor.currentId');
+
+  return api
+    .post(`/sandboxes/${sandboxId}/dependencies`, {
+      dependency: {
+        name: props.name,
+        version: props.version,
+      },
+    })
+    .then(data => ({ npmDependencies: data }));
+}
+
+export function outputModuleIdFromActionPath({ state, props, utils }) {
+  const sandbox = state.get('editor.currentSandbox');
+  const module = utils.resolveModule(
+    props.action.path.replace(/^\//, ''),
+    sandbox.modules,
+    sandbox.directories
+  );
+
+  return { id: module ? module.id : null };
+}
+
+export function renameModuleFromPreview({ state, props, utils }) {
+  const sandbox = state.get('editor.currentSandbox');
+  const module = utils.resolveModule(
+    props.action.path.replace(/^\//, ''),
+    sandbox.modules,
+    sandbox.directories
+  );
+
+  if (module) {
+    const moduleIndex = sandbox.modules.findIndex(
+      moduleEntry => moduleEntry.id === module.id
+    );
+
+    state.set(
+      `editor.sandboxes.${sandbox.id}.modules.${moduleIndex}.title`,
+      props.title
+    );
+  }
+}
+
+export function addErrorFromPreview({ state, props, utils }) {
+  const sandbox = state.get('editor.currentSandbox');
+  const errors = state.get('editor.errors');
+  const module = utils.resolveModule(
+    props.action.path.replace(/^\//, ''),
+    sandbox.modules,
+    sandbox.directories
+  );
+
+  if (module) {
+    if (!utils.isEqual(props.action.error, errors[0])) {
+      state.push('editor.errors', props.action.error);
+    }
+  }
+}
+
+export function addCorrectionFromPreview({ state, props, utils }) {
+  const sandbox = state.get('editor.currentSandbox');
+  const corrections = state.get('editor.corrections');
+  const module = utils.resolveModule(
+    props.action.path.replace(/^\//, ''),
+    sandbox.modules,
+    sandbox.directories
+  );
+
+  if (module) {
+    if (!utils.isEqual(props.action.correction, corrections[0])) {
+      state.push('editor.corrections', props.action.error);
+    }
+  }
+}
+
 export function moveTab({ state, props }) {
   const tabs = state.get('editor.tabs');
   const tab = clone(tabs[props.prevIndex]);
@@ -217,7 +297,7 @@ export function warnUnloadingContent({ browser, state }) {
 }
 
 export function setCurrentModuleShortid({ utils, props, state }) {
-  const module = utils.resolveMainModule(
+  const module = utils.resolveModule(
     props.sandbox.entry,
     props.sandbox.modules,
     props.sandbox.directories
@@ -227,7 +307,7 @@ export function setCurrentModuleShortid({ utils, props, state }) {
 }
 
 export function setMainModuleShortid({ utils, props, state }) {
-  const module = utils.resolveMainModule(
+  const module = utils.resolveModule(
     props.sandbox.entry,
     props.sandbox.modules,
     props.sandbox.directories

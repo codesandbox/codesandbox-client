@@ -1,5 +1,6 @@
 import { Provider } from 'cerebral';
-import resolveMainModule from 'common/sandbox/resolve-module';
+import resolveModule from 'common/sandbox/resolve-module';
+import { isEqual } from 'lodash';
 import prettify from './prettify';
 
 export default Provider({
@@ -10,7 +11,8 @@ export default Provider({
       this.context.state.get('editor.preferences.settings.prettierConfig')
     );
   },
-  resolveMainModule,
+  resolveModule,
+  isEqual,
   zipSandbox(sandbox) {
     return import(/* webpackChunkName: 'create-zip' */ './create-zip').then(
       module => {

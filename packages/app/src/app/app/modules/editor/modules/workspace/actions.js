@@ -199,19 +199,6 @@ export function removeTagFromState({ props, state }) {
   return { tag };
 }
 
-export function addNpmDependency({ api, state, props }) {
-  const sandboxId = state.get('editor.currentId');
-
-  return api
-    .post(`/sandboxes/${sandboxId}/dependencies`, {
-      dependency: {
-        name: props.name,
-        version: props.version,
-      },
-    })
-    .then(data => ({ npmDependencies: data }));
-}
-
 export function removeNpmDependency({ api, state, props }) {
   const sandboxId = state.get('editor.currentId');
 

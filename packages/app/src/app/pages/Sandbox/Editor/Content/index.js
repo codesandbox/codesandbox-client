@@ -274,15 +274,32 @@ class EditorPreview extends React.PureComponent<Props, State> {
           }}
           isInProjectView={Boolean(sandbox.isInProjectView)}
           externalResources={sandbox.externalResources}
-          setProjectView={sandboxActions.setProjectView}
+          setProjectView={(id, isInProjectView) => {
+            this.props.signals.editor.projectViewChanged({ isInProjectView });
+            sandboxActions.setProjectView(id, isInProjectView);
+          }}
           preferences={preferences}
-          sandboxActions={sandboxActions}
+          onNewWindow={() => {
+            this.props.signals.editor.preferences.viewModeChanged({
+              showEditor: true,
+              showPreview: false,
+            });
+            this.props.sandboxActions.setViewMode(sandbox.id, true, false);
+          }}
           dependencies={sandbox.npmDependencies}
-          runActionFromPreview={previewApiActions.executeAction}
+          runActionFromPreview={action => {
+            this.props.signals.editor.previewActionReceived({ action });
+            previewApiActions.executeAction(action);
+          }}
           forcedRenders={sandbox.forcedRenders}
           inactive={this.state.resizing}
           entry={sandbox.entry}
-          setDevToolsOpen={viewActions.setDevToolsOpen}
+          setDevToolsOpen={isOpen => {
+            // This seems to use internal state, this does not have any effect it seems.
+            // Should be refactored to only use external state
+            this.props.signals.editor.devtoolsOpened({ isOpen });
+            viewActions.setDevToolsOpen();
+          }}
           devToolsOpen={devToolsOpen}
         />
       </FullSize>

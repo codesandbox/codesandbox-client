@@ -24,17 +24,6 @@ export const toggleWorkspace = toggle(
   state`editor.workspace.isWorkspaceHidden`
 );
 
-export const addNpmDependency = [
-  ensureOwnedSandbox,
-  set(state`editor.workspace.isProcessingDependencies`, true),
-  actions.addNpmDependency,
-  set(
-    state`editor.sandboxes.${state`editor.currentId`}.npmDependencies`,
-    props`npmDependencies`
-  ),
-  set(state`editor.workspace.isProcessingDependencies`, false),
-];
-
 export const removeNpmDependency = [
   ensureOwnedSandbox,
   set(state`editor.workspace.isProcessingDependencies`, true),
@@ -121,6 +110,7 @@ export const moveModuleToDirectory = actions.moveModuleToDirectory;
 export const updateTag = [
   set(state`editor.workspace.tags.tagName`, props`tagName`),
 ];
+
 export const addTag = [
   ensureOwnedSandbox,
   push(
@@ -131,6 +121,7 @@ export const addTag = [
   set(state`editor.sandboxes.${state`editor.currentId`}.tags`, props`data`),
   set(state`editor.workspace.tags.tagName`, ''),
 ];
+
 export const removeTag = [
   ensureOwnedSandbox,
   actions.removeTagFromState,
