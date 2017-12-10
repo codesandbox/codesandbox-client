@@ -248,6 +248,7 @@ export default {
         `sandboxes/${sandboxId}/dependencies`,
         {
           method: 'POST',
+          shouldCamelize: false,
           body: {
             dependency: {
               name: realName,

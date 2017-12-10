@@ -52,5 +52,20 @@ export default (async function callApi(
   }
 
   const result = await axios(options);
-  return shouldCamelize ? camelizeKeys(result.data) : result.data;
+
+  const camelizedData = shouldCamelize
+    ? camelizeKeys(result.data)
+    : result.data;
+
+  // Quickfix to prevent underscored dependencies from being camelized.
+  // Never store data as keys in the future.
+  if (
+    camelizedData &&
+    camelizedData.data &&
+    camelizedData.data.npmDependencies
+  ) {
+    camelizedData.data.npmDependencies = result.data.data.npm_dependencies;
+  }
+
+  return camelizedData;
 });
