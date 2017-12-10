@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import PageContainer from '../components/PageContainer';
 import { Heading1 } from '../components/headings';
 
+import media from '../utils/media';
+
 const Container = styled.div`
   color: rgba(255, 255, 255, 0.9);
 `;
@@ -12,6 +14,14 @@ const Changelog = styled.article`
   display: flex;
 
   margin-bottom: 2rem;
+
+  ${media.phone`
+    flex-direction: column;
+
+    * {
+      flex: 1;
+    }
+  `};
 `;
 
 const Info = styled.div`
@@ -26,6 +36,15 @@ const ReleaseDate = styled.div`
   margin-top: 1.25rem;
   flex: 1;
   color: rgba(255, 255, 255, 0.7);
+
+  ${media.phone`
+    display: flex;
+    align-items: center;
+
+    p {
+      margin-bottom: 0;
+    }
+  `};
 `;
 
 const ChangelogTitle = styled.h2`
@@ -54,6 +73,8 @@ const GitHubUserContainer = styled.a`
 const GitHubUserImage = styled.img`
   width: 36px;
   height: 36px;
+  max-height: 36px;
+  max-width: 36px;
   border-radius: 2px;
   margin: 0;
   margin-right: 0.75rem;
@@ -115,9 +136,11 @@ export default ({ data }) => {
               <Changelog>
                 <ReleaseDate>
                   <p>{fields.date}</p>
-                  {frontmatter.authors.map(username => (
-                    <GitHubUser username={username} key={username} />
-                  ))}
+                  <div>
+                    {frontmatter.authors.map(username => (
+                      <GitHubUser username={username} key={username} />
+                    ))}
+                  </div>
                 </ReleaseDate>
 
                 <Info>
