@@ -1,6 +1,8 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 
+import Link from 'gatsby-link';
+
 import Logo from 'common/components/Logo';
 import MaxWidth from 'common/components/flex/MaxWidth';
 
@@ -71,6 +73,8 @@ const Item = styled.a`
   `};
 `;
 
+const ItemLink = Item.withComponent(Link);
+
 const Right = styled.div`
   display: flex;
   align-items: center;
@@ -120,7 +124,9 @@ export default class Navigation extends React.PureComponent {
       <MaxWidth width={1280}>
         <Container>
           <Left>
-            <StyledLogo title="CodeSandbox" width={50} height={50} />
+            <Link to="/">
+              <StyledLogo title="CodeSandbox" width={50} height={50} />
+            </Link>
           </Left>
           <Right>
             <Item
@@ -136,7 +142,8 @@ export default class Navigation extends React.PureComponent {
               rel="noopener noreferrer"
             >
               GitHub
-            </Item>{' '}
+            </Item>
+            <ItemLink to="/changelog">Recent Updates</ItemLink>
             <Item href="/s" rel="noopener noreferrer" button={!user}>
               Create Sandbox
             </Item>
