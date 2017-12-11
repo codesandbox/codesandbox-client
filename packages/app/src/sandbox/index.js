@@ -77,7 +77,12 @@ requirePolyfills().then(() => {
     window
       .fetch(host + `/api/v1/sandboxes/${id}`)
       .then(res => res.json())
-      .then(res => camelizeKeys(res))
+      .then(res => {
+        const camelized = camelizeKeys(res);
+        camelized.data.npmDependencies = res.data.npm_dependencies;
+
+        return camelized;
+      })
       .then(x => {
         const mainModule = findMainModule(
           x.data.modules,
