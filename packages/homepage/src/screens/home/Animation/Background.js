@@ -33,6 +33,14 @@ export default class Background extends React.PureComponent {
     svelte: '#202022',
   };
 
+  componentWillUnmount() {
+    if (this.canvas) {
+      this.canvas.destroy();
+    }
+
+    this.canvas = null;
+  }
+
   render() {
     const { template } = this.props;
 
