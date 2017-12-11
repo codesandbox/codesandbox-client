@@ -34,7 +34,7 @@ export default class HomePage extends React.PureComponent {
   render() {
     return (
       <div>
-        <TitleAndMetaTags title="CodeSandbox: Online Editor Tailored for Web Application Development" />
+        <TitleAndMetaTags title="CodeSandbox: Online Code Editor Tailored for Web Application Development" />
 
         <Animation />
         <NPMFeature />

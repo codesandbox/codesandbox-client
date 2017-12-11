@@ -42,9 +42,6 @@ class Html extends Component {
             name="viewport"
             content="width=device-width, initial-scale=1.0"
           />
-          <title>
-            CodeSandbox: Online Editor Tailored for Web Application Development
-          </title>
           <meta property="og:type" content="website" />
           <meta property="og:author" content="https://ivesvh.com" />
           <meta
