@@ -127,7 +127,7 @@ export const query = graphql`
   query Docs($slug: String!) {
     allMarkdownRemark(
       filter: { id: { regex: "/docs/" } }
-      sort: { fields: [fields___date], order: DESC }
+      sort: { fields: [fileAbsolutePath], order: ASC }
     ) {
       edges {
         node {
