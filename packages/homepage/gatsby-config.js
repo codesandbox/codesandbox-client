@@ -46,6 +46,9 @@ module.exports = {
               sizeByPixelDensity: true,
             },
           },
+          {
+            resolve: require.resolve(`./plugins/remark-sections`),
+          },
         ],
       },
     },
