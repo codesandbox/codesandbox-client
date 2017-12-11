@@ -224,7 +224,7 @@ export default class CodeEditor extends React.Component<Props, State> {
 
     return (
       nextProps.id !== this.props.id ||
-      nextProps.errors !== this.props.errors ||
+      nextProps.errors.length !== this.props.errors.length ||
       nextProps.code !== this.getCode() ||
       this.props.preferences !== nextProps.preferences
     );

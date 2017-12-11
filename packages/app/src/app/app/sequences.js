@@ -23,3 +23,7 @@ export const setConnection = set(state`connected`, props`connection`);
 export const showAuthenticationError = [];
 
 export const openModal = [set(state`currentModal`, props`modal`)];
+
+export const signIn = [];
+
+export const removeNotification = actions.removeNotification;

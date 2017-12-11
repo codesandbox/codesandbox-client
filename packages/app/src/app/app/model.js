@@ -31,6 +31,14 @@ export default {
     username: types.maybe(types.string),
   }),
   connected: types.boolean,
-  notifications: types.array(types.model({})),
+  notifications: types.array(
+    types.model({
+      buttons: types.array(types.string),
+      endTime: types.maybe(types.number),
+      id: types.number,
+      notificationType: types.string,
+      title: types.string,
+    })
+  ),
   currentModal: types.maybe(types.string),
 };

@@ -1,5 +1,14 @@
 import * as errors from './errors';
 
+export function removeNotification({ state, props }) {
+  const notifications = state.get('notifications');
+  const notificationToRemoveIndex = notifications.findIndex(
+    notification => notification.id === props.id
+  );
+
+  state.splice('notifications', notificationToRemoveIndex, 1);
+}
+
 export function getUser({ api }) {
   return api
     .get('/users/current')

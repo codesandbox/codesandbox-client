@@ -3,7 +3,7 @@ export function currentSandbox() {
 }
 
 export function isAllModulesSynced() {
-  return !this.changedModules.length;
+  return !this.changedModuleShortids.length;
 }
 
 export function currentModule() {

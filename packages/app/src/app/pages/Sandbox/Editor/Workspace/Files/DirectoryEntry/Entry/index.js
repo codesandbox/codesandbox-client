@@ -17,40 +17,6 @@ import EntryTitleInput from './EntryTitleInput';
 import EntryIcons from './EntryIcons';
 import EditIcons from './EditIcons';
 
-type Props = {
-  id: string,
-  title: string,
-  depth: number,
-  active: boolean,
-  isNotSynced: boolean,
-  type: string,
-  onCreateModuleClick: ?() => any,
-  onCreateDirectoryClick: ?() => any,
-  renameValidator: (id: string, title: string) => boolean,
-  rename: ?(id: string, title: string) => any,
-  deleteEntry: ?(id: string) => any,
-  onRenameCancel: () => any,
-  state: ?'' | 'editing' | 'creating',
-  isOpen: ?boolean,
-  onClick: Function,
-  openMenu: Function,
-  hasChildren: ?boolean,
-  setCurrentModule: (id: string) => any,
-  root: ?boolean,
-  isMainModule: boolean,
-  isInProjectView: boolean, // eslint-disable-line
-  moduleHasError: boolean,
-  closeTree: ?() => void, // eslint-disable-line
-  markTabsNotDirty: Function,
-};
-
-type State = {
-  state: '' | 'editing' | 'creating',
-  error: boolean,
-  selected: boolean,
-  hovering: boolean,
-};
-
 const Right = styled.div`
   position: absolute;
   right: 1rem;
@@ -64,8 +30,8 @@ const NotSyncedIconWithMargin = styled(NotSyncedIcon)`
   margin-top: 1.5px;
 `;
 
-class Entry extends React.PureComponent<Props, State> {
-  constructor(props: Props) {
+class Entry extends React.PureComponent {
+  constructor(props) {
     super(props);
     this.state = {
       state: props.state || '',
@@ -240,8 +206,8 @@ class Entry extends React.PureComponent<Props, State> {
 }
 
 const entrySource = {
-  canDrag: (props: Props) => !!props.id && !props.isMainModule,
-  beginDrag: (props: Props) => {
+  canDrag: props => !!props.id && !props.isMainModule,
+  beginDrag: props => {
     if (props.closeTree) props.closeTree();
     return { id: props.id, directory: props.type === 'directory' };
   },

@@ -20,10 +20,6 @@ import SettingsIcon from 'react-icons/lib/md/settings';
 import ShareIcon from 'react-icons/lib/md/share';
 import { Tooltip } from 'react-tippy';
 
-import type { CurrentUser } from 'common/types';
-import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
-import userActionCreators from 'app/store/user/actions';
-import modalActionCreators from 'app/store/modal/actions';
 import { searchUrl, patronUrl } from 'common/utils/url-generator';
 import ModeIcons from 'app/components/sandbox/ModeIcons';
 
@@ -91,316 +87,237 @@ const Chevron = styled.div`
   }
 `;
 
-type Props = {
-  toggleWorkspace: () => void,
-  workspaceHidden: boolean,
-  modules: Array<string>,
-  directories: Array<string>,
-  sandboxId: string,
-  owned: string,
-  showEditor: boolean,
-  showPreview: boolean,
-  sandboxLiked: boolean,
-  sandboxLikeCount: number,
-  sandboxActions: typeof sandboxActionCreators,
-  userActions: typeof userActionCreators,
-  modalActions: typeof modalActionCreators,
-  user: CurrentUser,
-  canSave: boolean,
-};
+function Header({ store, signals }) {
+  const preferences = store.editor.preferences;
+  const workspace = store.editor.workspace;
+  const sandbox = store.editor.currentSandbox;
 
-const CHECKED_FIELDS = [
-  'workspaceHidden',
-  'sandboxId',
-  'owned',
-  'showEditor',
-  'showPreview',
-  'sandboxLiked',
-  'sandboxLikeCount',
-  'user',
-  'canSave',
-  'modules',
-  'directories',
-];
-
-export default inject('signals')(
-  class Header extends React.Component<Props> {
-    shouldComponentUpdate(nextProps: Props) {
-      return CHECKED_FIELDS.some(
-        field => nextProps[field] !== this.props[field]
-      );
-    }
-
-    massUpdateModules = () => {
-      const { sandboxId, sandboxActions } = this.props;
-      this.props.signals.editor.saveClicked();
-      sandboxActions.massUpdateModules(sandboxId);
-    };
-
-    deploySandbox = () => {
-      const { sandboxId } = this.props;
-
-      this.props.signals.modalOpened('deployment');
-      this.props.modalActions.openModal({
-        width: 600,
-        Body: <Deployment id={sandboxId} />,
-      });
-    };
-
-    zipSandbox = () => {
-      const { sandboxId, sandboxActions } = this.props;
-      this.props.signals.editor.createZipClicked();
-      // sandboxActions.createZip(sandboxId);
-    };
-
-    forkSandbox = () => {
-      const { owned, sandboxId, sandboxActions } = this.props;
-
-      this.props.signals.editor.forkSandboxClicked();
-
-      return;
-      const shouldFork = owned
-        ? confirm('Do you want to fork your own sandbox?') // eslint-disable-line no-alert
-        : true;
-      if (shouldFork) {
-        sandboxActions.forkSandbox(sandboxId);
-      }
-    };
-
-    openShareView = () => {
-      this.props.signals.modalOpened('shareModal');
-      this.props.modalActions.openModal({
-        width: 900,
-        Body: (
-          <ShareModal
-            modules={this.props.modules}
-            directories={this.props.directories}
-            id={this.props.sandboxId}
-          />
-        ),
-      });
-    };
-
-    setEditorView = () => {
-      const { sandboxId, sandboxActions } = this.props;
-      this.props.signals.editor.preferences.viewModeChanged({
-        showEditor: true,
-        showPreview: false,
-      });
-      sandboxActions.setViewMode(sandboxId, true, false);
-    };
-
-    setMixedView = () => {
-      const { sandboxId, sandboxActions } = this.props;
-      this.props.signals.editor.preferences.viewModeChanged({
-        showEditor: true,
-        showPreview: true,
-      });
-      sandboxActions.setViewMode(sandboxId, true, true);
-    };
-
-    setPreviewView = () => {
-      const { sandboxId, sandboxActions } = this.props;
-      this.props.signals.editor.preferences.viewModeChanged({
-        showEditor: false,
-        showPreview: true,
-      });
-      sandboxActions.setViewMode(sandboxId, false, true);
-    };
-
-    toggleLike = () => {
-      const { sandboxId, sandboxLiked, sandboxActions } = this.props;
-
-      // this.props.signals.editor.likeSandboxToggled()
-
-      if (sandboxLiked) {
-        sandboxActions.unLikeSandbox(sandboxId);
-      } else {
-        sandboxActions.likeSandbox(sandboxId);
-      }
-    };
-
-    openPreferences = () => {
-      this.props.signals.modalOpened('preferences');
-      this.props.modalActions.openModal({
-        width: 900,
-        Body: <Preferences />,
-      });
-    };
-
-    openNewSandbox = () => {
-      this.props.signals.modalOpened('newSandbox');
-      this.props.modalActions.openModal({
-        width: 900,
-        Body: <NewSandbox />,
-      });
-    };
-
-    render() {
-      const {
-        showEditor,
-        showPreview,
-        sandboxLiked,
-        sandboxLikeCount,
-        owned,
-        userActions,
-        user,
-        toggleWorkspace,
-        workspaceHidden,
-        canSave,
-      } = this.props;
-
-      return (
-        <Container>
-          <ModeIcons
-            small
-            dropdown
-            showEditor={showEditor}
-            showPreview={showPreview}
-            setMixedView={this.setMixedView}
-            setEditorView={this.setEditorView}
-            setPreviewView={this.setPreviewView}
-          />
-          <Left>
-            <Tooltip
-              title={workspaceHidden ? 'Open sidebar' : 'Collapse sidebar'}
-            >
-              <Chevron
-                workspaceHidden={workspaceHidden}
-                onClick={toggleWorkspace}
-              >
-                <ChevronLeft />
-              </Chevron>
-            </Tooltip>
-            {user.jwt &&
-              (sandboxLiked ? (
-                <Action
-                  tooltip="Undo like"
-                  title={sandboxLikeCount}
-                  Icon={FullHeartIcon}
-                  onClick={this.toggleLike}
-                />
-              ) : (
-                <Action
-                  tooltip="Like"
-                  title={sandboxLikeCount}
-                  Icon={HeartIcon}
-                  onClick={this.toggleLike}
-                />
-              ))}
+  return (
+    <Container>
+      <ModeIcons
+        small
+        dropdown
+        showEditor={preferences.showEditor}
+        showPreview={preferences.showPreview}
+        setMixedView={() =>
+          signals.editor.preferences.viewModeChanged({
+            showEditor: true,
+            showPreview: true,
+          })
+        }
+        setEditorView={() =>
+          signals.editor.preferences.viewModeChanged({
+            showEditor: true,
+            showPreview: false,
+          })
+        }
+        setPreviewView={() =>
+          signals.editor.preferences.viewModeChanged({
+            showEditor: false,
+            showPreview: true,
+          })
+        }
+      />
+      <Left>
+        <Tooltip
+          title={
+            workspace.isWorkspaceHidden ? 'Open sidebar' : 'Collapse sidebar'
+          }
+        >
+          <Chevron
+            workspaceHidden={workspace.isWorkspaceHidden}
+            onClick={isOpen =>
+              signals.editor.workspace.workspaceToggled({ isOpen })
+            }
+          >
+            <ChevronLeft />
+          </Chevron>
+        </Tooltip>
+        {store.isLoggedIn &&
+          (sandbox.userLiked ? (
             <Action
-              onClick={this.forkSandbox}
-              tooltip="Fork sandbox"
-              title="Fork"
-              Icon={Fork}
+              tooltip="Undo like"
+              title={sandbox.likeCount}
+              Icon={FullHeartIcon}
+              onClick={() => signals.editor.likeSandboxToggled()}
             />
+          ) : (
             <Action
-              onClick={canSave ? this.massUpdateModules : null}
-              placeholder={canSave ? false : 'All modules are saved'}
-              tooltip="Save sandbox"
-              title="Save"
-              Icon={Save}
+              tooltip="Like"
+              title={sandbox.likeCount}
+              Icon={HeartIcon}
+              onClick={() => signals.editor.likeSandboxToggled()}
             />
+          ))}
+        <Action
+          onClick={() => signals.editor.forkSandboxClicked()}
+          tooltip="Fork sandbox"
+          title="Fork"
+          Icon={Fork}
+        />
+        <Action
+          onClick={
+            store.editor.isAllModulesSynced
+              ? null
+              : () => signals.editor.saveClicked()
+          }
+          placeholder={
+            store.editor.isAllModulesSynced ? 'All modules are saved' : false
+          }
+          tooltip="Save sandbox"
+          title="Save"
+          Icon={Save}
+        />
+        <Action
+          tooltip="Download sandbox"
+          title="Download"
+          Icon={Download}
+          onClick={() => signals.editor.createZipClicked()}
+        />
+        {store.isLoggedIn &&
+          sandbox.owned && (
             <Action
-              tooltip="Download sandbox"
-              title="Download"
-              Icon={Download}
-              onClick={this.zipSandbox}
+              tooltip="Deploy sandbox"
+              title="Deploy"
+              Icon={NowIcon}
+              onClick={() => this.props.signals.modalOpened('deployment')}
             />
-            {user.jwt &&
-              owned && (
-                <Action
-                  tooltip="Deploy sandbox"
-                  title="Deploy"
-                  Icon={NowIcon}
-                  onClick={this.deploySandbox}
-                />
-              )}
-            <Action
-              tooltip="Share sandbox"
-              title="Share"
-              Icon={ShareIcon}
-              onClick={this.openShareView}
-            />
-          </Left>
+          )}
+        <Action
+          tooltip="Share sandbox"
+          title="Share"
+          Icon={ShareIcon}
+          onClick={() => this.props.signals.modalOpened('shareModal')}
+        />
+      </Left>
 
-          <Right>
-            <Media query="(max-width: 1560px)">
-              {matches =>
-                matches ? (
-                  <Action
-                    href={searchUrl()}
-                    Icon={SearchIcon}
-                    tooltip="Search"
-                    title="Search"
-                  />
-                ) : (
-                  <div style={{ marginRight: '0.5rem', fontSize: '.875rem' }}>
-                    <HeaderSearchBar />
-                  </div>
-                )
-              }
-            </Media>
+      <Right>
+        <Media query="(max-width: 1560px)">
+          {matches =>
+            matches ? (
+              <Action
+                href={searchUrl()}
+                Icon={SearchIcon}
+                tooltip="Search"
+                title="Search"
+              />
+            ) : (
+              <div style={{ marginRight: '0.5rem', fontSize: '.875rem' }}>
+                <HeaderSearchBar />
+              </div>
+            )
+          }
+        </Media>
 
-            {!user ||
-              (!user.subscription && (
-                <Action
-                  href={patronUrl()}
-                  tooltip="Support CodeSandbox"
-                  Icon={PatronBadge}
-                  iconProps={{
-                    width: 16,
-                    height: 32,
-                    transform: 'scale(1.5, 1.5)',
-                  }}
-                />
-              ))}
+        {!store.isLoggedIn ||
+          (!store.isPatron && (
             <Action
-              href="https://twitter.com/CompuIves"
-              a
-              tooltip="Contact"
-              Icon={TwitterIcon}
-            />
-            <Action
-              href="https://discord.gg/FGeubVt"
-              a
-              tooltip="Chat on Discord"
-              Icon={FeedbackIcon}
-            />
-            <Action
-              onClick={this.openNewSandbox}
-              tooltip="New Sandbox"
-              Icon={PlusIcon}
-            />
-            <Action
-              onClick={this.openPreferences}
-              tooltip="Preferences"
-              Icon={SettingsIcon}
-            />
-            <Margin
-              style={{
-                zIndex: 20,
-                height: '100%',
+              href={patronUrl()}
+              tooltip="Support CodeSandbox"
+              Icon={PatronBadge}
+              iconProps={{
+                width: 16,
+                height: 32,
+                transform: 'scale(1.5, 1.5)',
               }}
-              left={1}
-            >
-              {user.jwt ? (
-                <div style={{ fontSize: '.875rem', margin: '6px 0.5rem' }}>
-                  <UserMenu small />
-                </div>
-              ) : (
-                <Action
-                  onClick={userActions.signIn}
-                  title="Sign in with Github"
-                  Icon={GithubIcon}
-                  highlight
-                  unresponsive
-                />
-              )}
-            </Margin>
-          </Right>
-        </Container>
-      );
-    }
+            />
+          ))}
+        <Action
+          href="https://twitter.com/CompuIves"
+          a
+          tooltip="Contact"
+          Icon={TwitterIcon}
+        />
+        <Action
+          href="https://discord.gg/FGeubVt"
+          a
+          tooltip="Chat on Discord"
+          Icon={FeedbackIcon}
+        />
+        <Action
+          onClick={() => signals.modalOpened('newSandbox')}
+          tooltip="New Sandbox"
+          Icon={PlusIcon}
+        />
+        <Action
+          onClick={() => signals.modalOpened('preferences')}
+          tooltip="Preferences"
+          Icon={SettingsIcon}
+        />
+        <Margin
+          style={{
+            zIndex: 20,
+            height: '100%',
+          }}
+          left={1}
+        >
+          {store.isLoggedIn ? (
+            <div style={{ fontSize: '.875rem', margin: '6px 0.5rem' }}>
+              <UserMenu small />
+            </div>
+          ) : (
+            <Action
+              onClick={() => signals.signInClicked()}
+              title="Sign in with Github"
+              Icon={GithubIcon}
+              highlight
+              unresponsive
+            />
+          )}
+        </Margin>
+      </Right>
+    </Container>
+  );
+}
+export default inject('signals', 'store')(Header);
+
+/*
+class Header extends React.Component {
+
+
+  deploySandbox = () => {
+    const { sandboxId } = this.props;
+
+    ;
+    this.props.modalActions.openModal({
+      width: 600,
+      Body: <Deployment id={sandboxId} />,
+    });
+  };
+
+  openShareView = () => {
+    ;
+    this.props.modalActions.openModal({
+      width: 900,
+      Body: (
+        <ShareModal
+          modules={this.props.modules}
+          directories={this.props.directories}
+          id={this.props.sandboxId}
+        />
+      ),
+    });
+  };
+
+
+  openPreferences = () => {
+    ;
+    this.props.modalActions.openModal({
+      width: 900,
+      Body: <Preferences />,
+    });
+  };
+
+  openNewSandbox = () => {
+    ;
+    this.props.modalActions.openModal({
+      width: 900,
+      Body: <NewSandbox />,
+    });
+  };
+
+  render() {
+
   }
-);
+}
+*/

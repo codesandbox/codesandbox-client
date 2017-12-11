@@ -1,28 +1,55 @@
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import { createSelector } from 'reselect';
+import React from 'react';
+import { inject, observer } from 'mobx-react';
+import styled, { css } from 'styled-components';
+import HeartIcon from 'react-icons/lib/fa/heart-o';
+import FullHeartIcon from 'react-icons/lib/fa/heart';
+import Tooltip from 'common/components/Tooltip';
 
-import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
-import { loggedInSelector } from 'app/store/user/selectors';
-import { singleSandboxSelector } from 'app/store/entities/sandboxes/selectors';
+const Container = styled.div`
+  display: inline-block;
+  transition: 0.3s ease all;
 
-import LikeHeart from './LikeHeart';
+  transform: scale(1);
 
-const mapStateToProps = createSelector(
-  loggedInSelector,
-  (state, props) => singleSandboxSelector(state, { id: props.sandboxId }),
-  (loggedIn, sandbox) => ({
-    loggedIn,
-    sandboxId: sandbox.id,
-    isLiked: sandbox.userLiked,
-  })
-);
-const mapDispatchToProps = dispatch => ({
-  likeSandbox: bindActionCreators(sandboxActionCreators.likeSandbox, dispatch),
-  unLikeSandbox: bindActionCreators(
-    sandboxActionCreators.unLikeSandbox,
-    dispatch
-  ),
-});
+  ${props =>
+    props.loggedIn &&
+    css`
+      cursor: pointer;
+      &:hover {
+        transform: scale(1.1);
+      }
+    `};
+`;
 
-export default connect(mapStateToProps, mapDispatchToProps)(LikeHeart);
+const MaybeTooltip = ({ loggedIn, ...props }) =>
+  loggedIn ? <Tooltip {...props} /> : <div {...props} />;
+
+function LikeHeart({ store, signals, className, colorless }) {
+  const sandbox = store.editor.currentSandbox;
+
+  return (
+    <Container loggedIn={store.isLoggedIn} className={className}>
+      <MaybeTooltip
+        loggedIn={store.isLoggedIn}
+        title={sandbox.userLiked ? 'Undo like' : 'Like'}
+      >
+        {sandbox.userLiked ? (
+          <FullHeartIcon
+            style={!colorless && { color: '#E01F4E' }}
+            onClick={
+              store.isLoggedIn ? signals.editor.likeSandboxToggled() : null
+            }
+          />
+        ) : (
+          <HeartIcon
+            onClick={
+              store.isLoggedIn ? signals.editor.likeSandboxToggled() : null
+            }
+          />
+        )}
+      </MaybeTooltip>
+    </Container>
+  );
+}
+
+export default inject('signals', 'store')(observer(LikeHeart));

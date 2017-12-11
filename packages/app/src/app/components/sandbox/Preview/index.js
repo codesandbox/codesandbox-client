@@ -2,15 +2,10 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { listen, dispatch } from 'codesandbox-api';
-
+import { inject } from 'mobx-react';
 import { debounce } from 'lodash';
 
-import type { Module, Sandbox, Preferences, Directory } from 'common/types';
-
 import { frameUrl } from 'common/utils/url-generator';
-import { getModulePath } from 'app/store/entities/sandboxes/modules/selectors';
-import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
-
 import shouldUpdate from './utils/should-update';
 
 import DevTools from './DevTools';
@@ -33,46 +28,8 @@ const StyledFrame = styled.iframe`
   overflow: auto;
 `;
 
-type Props = {
-  sandboxId: string,
-  template: string,
-  initialPath: ?string,
-  isInProjectView: boolean,
-  modules: Array<Module>,
-  directories: Array<Directory>,
-  externalResources: typeof Sandbox.externalResources,
-  preferences: Preferences,
-  setProjectView: (id: string, isInProjectView: boolean) => any,
-  module: Module,
-  clearErrors: ?(sandboxId: string) => any,
-  onNewWindow: () => any,
-  noDelay?: boolean,
-  hideNavigation?: boolean,
-  setFrameHeight: ?(height: number) => any,
-  dependencies: Object,
-  runActionFromPreview: (arg: Object) => any,
-  forcedRenders: ?number,
-  inactive: ?boolean,
-  shouldExpandDevTools: ?boolean,
-  entry: string,
-  devToolsOpen: ?boolean,
-  setDevToolsOpen: ?(open: boolean) => void,
-};
-
-type State = {
-  frameInitialized: boolean,
-  url: ?string,
-  history: Array<string>,
-  historyPosition: number,
-  urlInAddressBar: string,
-  dragging: boolean,
-};
-
-export default class Preview extends React.PureComponent<Props, State> {
-  initialPath: string;
-  frames: Array<HTMLIFrameElement>;
-
-  constructor(props: Props) {
+class Preview extends React.PureComponent {
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -100,7 +57,7 @@ export default class Preview extends React.PureComponent<Props, State> {
     noDelay: false,
   };
 
-  componentWillReceiveProps(nextProps: Props) {
+  componentWillReceiveProps(nextProps) {
     if (nextProps.sandboxId !== this.props.sandboxId) {
       const url = frameUrl(nextProps.sandboxId, this.initialPath);
       this.setState({
@@ -111,7 +68,7 @@ export default class Preview extends React.PureComponent<Props, State> {
     }
   }
 
-  componentDidUpdate(prevProps: Props) {
+  componentDidUpdate(prevProps) {
     if (prevProps.isInProjectView !== this.props.isInProjectView) {
       this.executeCodeImmediately();
       return;
@@ -193,9 +150,10 @@ export default class Preview extends React.PureComponent<Props, State> {
   };
 
   sendMessage = (message: Object) => {
+    const rawMessage = JSON.parse(JSON.stringify(message));
     this.frames.forEach(frame => {
       frame.postMessage(
-        { ...message, codesandbox: true },
+        { ...rawMessage, codesandbox: true },
         frameUrl(this.props.sandboxId)
       );
     });
@@ -257,13 +215,6 @@ export default class Preview extends React.PureComponent<Props, State> {
     this.setState({ dragging });
   };
 
-  getRenderedModule = () => {
-    const { modules, module, directories, entry, isInProjectView } = this.props;
-    return isInProjectView
-      ? '/' + entry
-      : getModulePath(modules, directories, module.id);
-  };
-
   executeCodeImmediately = (initialRender: boolean = false) => {
     const {
       modules,
@@ -286,7 +237,7 @@ export default class Preview extends React.PureComponent<Props, State> {
     if (preferences.forceRefresh && !initialRender) {
       this.handleRefresh();
     } else {
-      const renderedModule = this.getRenderedModule();
+      const renderedModule = this.props.module;
 
       if (!isInProjectView) {
         this.evaluateInSandbox(`history.pushState({}, null, '/')`);
@@ -454,3 +405,5 @@ export default class Preview extends React.PureComponent<Props, State> {
     );
   }
 }
+
+export default inject('signals')(Preview);

@@ -1,33 +1,13 @@
 // @flow
 import * as React from 'react';
 
-import type { Module, Directory } from 'common/types';
-
 import getType from 'app/store/entities/sandboxes/modules/utils/get-type';
 import validateTitle from './validateTitle';
 import Entry from './Entry';
 import DirectoryEntry from './';
 
-type Props = {
-  depth: number,
-  renameModule: (id: string, title: string) => boolean,
-  directories: Array<Directory>,
-  modules: Array<Module>,
-  openMenu: (event: Event) => any,
-  sandboxId: string,
-  deleteEntry: (id: string) => any,
-  setCurrentModule: (id: string) => any,
-  currentModuleId: ?string,
-  parentShortid: string,
-  isInProjectView: boolean,
-  parentShortid: string,
-  sandboxTemplate: string,
-  mainModuleId: string,
-  markTabsNotDirty: ?Function,
-};
-
-export default class DirectoryChildren extends React.PureComponent<Props> {
-  validateTitle = (id: string, title: string) => {
+export default class DirectoryChildren extends React.PureComponent {
+  validateTitle = (id, title) => {
     const { directories, modules } = this.props;
     return !!validateTitle(id, title, [...directories, ...modules]);
   };
@@ -48,6 +28,8 @@ export default class DirectoryChildren extends React.PureComponent<Props> {
       currentModuleId,
       isInProjectView,
       markTabsNotDirty,
+      errors,
+      corrections,
     } = this.props;
 
     return (
@@ -70,6 +52,8 @@ export default class DirectoryChildren extends React.PureComponent<Props> {
               currentModuleId={currentModuleId}
               isInProjectView={isInProjectView}
               markTabsNotDirty={markTabsNotDirty}
+              errors={errors}
+              corrections={corrections}
             />
           ))}
         {modules.filter(x => x.directoryShortid === parentShortid).map(m => {
@@ -77,7 +61,8 @@ export default class DirectoryChildren extends React.PureComponent<Props> {
           const mainModule = m.id === mainModuleId;
           const type = getType(m.title, m.code);
 
-          const hasError = m && m.errors.length;
+          const hasError =
+            m && errors.filter(error => error.moduleId === m.id).length;
 
           return (
             <Entry

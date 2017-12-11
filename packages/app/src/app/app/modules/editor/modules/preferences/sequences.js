@@ -7,6 +7,7 @@ export const changeViewMode = [
   set(state`editor.preferences.showPreview`, props`showPreview`),
 ];
 
+export const toggleDevtools = actions.toggleDevtools;
 export const changeItemIndex = [
   set(state`editor.preferences.itemIndex`, props`itemIndex`),
 ];

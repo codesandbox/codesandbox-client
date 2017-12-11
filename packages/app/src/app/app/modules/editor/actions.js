@@ -1,5 +1,78 @@
 import { clone } from 'mobx-state-tree';
 
+export function deleteSandbox() {
+  // TODO: waiting for modal
+}
+
+export function ensureValidPrivacy({ props, path }) {
+  const privacy = Number(props.privacy);
+
+  return Number.isNaN(privacy) ? path.invalid() : path.valid({ privacy });
+}
+
+export function updatePrivacy({ api, props, state }) {
+  const id = state.get('editor.currentId');
+
+  return api
+    .patch(`/sandboxes/${id}/privacy`, {
+      sandbox: {
+        privacy: props.privacy,
+      },
+    })
+    .then(() => undefined);
+}
+
+export function setUrlOptions({ state, router, utils }) {
+  const options = router.getSandboxOptions();
+
+  if (options.currentModule) {
+    const sandbox = state.get('editor.currentSandbox');
+    const module = utils.resolveModule(
+      options.currentModule,
+      sandbox.modules,
+      sandbox.directories
+    );
+
+    if (module) {
+      state.set('editor.currentModuleShortid');
+    }
+  }
+
+  state.merge(
+    'editor.preferences.showPreview',
+    options.isPreviewScreen || options.isSplitScreen
+  );
+  state.merge(
+    'editor.preferences.showEditor',
+    options.isEditorScreen || options.isSplitScreen
+  );
+
+  if (options.initialPath) state.set('editor.initialPath', options.initialPath);
+  if (options.fontSize)
+    state.set('editor.preferences.settings.fontSize', options.fontSize);
+  if (options.highlightedLines)
+    state.set('editor.highlightedLines', options.highlightedLines);
+  if (options.editorSize)
+    state.set('editor.preferences.settings.editorSize', options.editorSize);
+  if (options.hideNavigation)
+    state.set('editor.preferences.hideNavigation', options.hideNavigation);
+  if (options.isInProjectView)
+    state.set('editor.isInProjectView', options.isInProjectView);
+  if (options.autoResize)
+    state.set('editor.preferences.settings.autoResize', options.autoResize);
+  if (options.useCodeMirror)
+    state.set(
+      'editor.preferences.settings.useCodeMirror',
+      options.useCodeMirror
+    );
+  if (options.enableEslint)
+    state.set('editor.preferences.settings.enableEslint', options.enableEslint);
+  if (options.forceRefresh)
+    state.set('editor.preferences.settings.forceRefresh', options.forceRefresh);
+  if (options.expandDevTools)
+    state.set('editor.preferences.showConsole', options.expandDevTools);
+}
+
 export function forceRender({ state }) {
   state.set('editor.forceRender', state.get('editor.forceRender') + 1);
 }
@@ -50,17 +123,20 @@ export function renameModuleFromPreview({ state, props, utils }) {
 
 export function addErrorFromPreview({ state, props, utils }) {
   const sandbox = state.get('editor.currentSandbox');
-  const errors = state.get('editor.errors');
   const module = utils.resolveModule(
     props.action.path.replace(/^\//, ''),
     sandbox.modules,
     sandbox.directories
   );
+  const error = {
+    column: props.action.column,
+    line: props.action.line,
+    message: props.action.message,
+    title: props.action.title,
+  };
 
   if (module) {
-    if (!utils.isEqual(props.action.error, errors[0])) {
-      state.push('editor.errors', props.action.error);
-    }
+    state.push('editor.errors', error);
   }
 }
 

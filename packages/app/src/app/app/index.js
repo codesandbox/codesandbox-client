@@ -8,6 +8,7 @@ import JwtProvider from './providers/Jwt';
 import BrowserProvider from './providers/Browser';
 import RouterProvider from './providers/Router';
 import UtilsProvider from './providers/Utils';
+import ShortcutsProvider from './providers/Shortcuts';
 
 import * as sequences from './sequences';
 import * as errors from './errors';
@@ -46,6 +47,8 @@ export default Module({
     appUnmounted: sequences.unloadApp,
     connectionChanged: sequences.setConnection,
     modalOpened: sequences.openModal,
+    signInClicked: sequences.signIn,
+    notificationRemoved: sequences.removeNotification,
   },
   catch: [[errors.AuthenticationError, sequences.showAuthenticationError]],
   modules: {
@@ -60,5 +63,6 @@ export default Module({
     browser: BrowserProvider,
     router: RouterProvider,
     utils: UtilsProvider,
+    shortcuts: ShortcutsProvider,
   },
 });

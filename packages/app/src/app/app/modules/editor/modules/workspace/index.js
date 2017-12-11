@@ -22,7 +22,7 @@ export default Module({
     tagChanged: sequences.updateTag,
     tagAdded: sequences.addTag,
     tagRemoved: sequences.removeTag,
-    updateSandboxInfo: sequences.updateSandboxInfo,
+    sandboxInfoUpdated: sequences.updateSandboxInfo,
     workspaceToggled: sequences.toggleWorkspace,
     npmDependencyAdded: editorSequences.addNpmDependency,
     npmDependencyRemoved: sequences.removeNpmDependency,

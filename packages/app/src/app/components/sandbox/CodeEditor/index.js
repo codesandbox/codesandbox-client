@@ -40,7 +40,9 @@ export default (props: Props) => {
             code={module.code}
             title={module.title}
             id={module.id}
-            isNotSynced={module.isNotSynced}
+            isNotSynced={
+              props.changedModuleShortids.indexOf(module.shortid) >= 0
+            }
           />
         );
       }

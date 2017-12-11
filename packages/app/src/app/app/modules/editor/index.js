@@ -29,6 +29,9 @@ export default Module({
     corrections: [],
     isInProjectView: false,
     forceRender: 0,
+    initialPath: '/',
+    highlightedLines: [],
+    isUpdatingPrivacy: false,
   },
   getters: {
     isAllModulesSynced,
@@ -58,7 +61,8 @@ export default Module({
     errorsCleared: sequences.clearErrors,
     projectViewChanged: sequences.setProjectView,
     previewActionReceived: sequences.handlePreviewAction,
-    devtoolsOpened: sequences.openDevtools,
+    sandboxDeleted: sequences.deleteSandbox,
+    privacyUpdated: sequences.updatePrivacy,
   },
   modules: { workspace, preferences },
 });

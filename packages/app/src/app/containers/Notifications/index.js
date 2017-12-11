@@ -1,8 +1,7 @@
 // @flow
 import * as React from 'react';
-import { bindActionCreators } from 'redux';
 import styled, { injectGlobal } from 'styled-components';
-import { connect } from 'react-redux';
+import { inject, observer } from 'mobx-react';
 import { spring, Motion } from 'react-motion';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import notificationActionCreators from 'app/store/notifications/actions';
@@ -11,15 +10,6 @@ import Portal from 'app/components/Portal';
 import type { Notification } from 'common/types';
 
 import NotificationComponent from './Notification';
-
-type Props = {
-  notifications: Array<Notification>,
-  notificationActions: typeof notificationActionCreators,
-};
-
-type State = {
-  hovering: boolean,
-};
 
 // eslint-disable-next-line
 injectGlobal`
@@ -40,13 +30,7 @@ const NotificationContainer = styled.div`
   z-index: 41;
 `;
 
-const mapStateToProps = state => ({
-  notifications: state.notifications,
-});
-const mapDispatchToProps = dispatch => ({
-  notificationActions: bindActionCreators(notificationActionCreators, dispatch),
-});
-class Notifications extends React.PureComponent<Props, State> {
+class Notifications extends React.PureComponent {
   constructor() {
     super();
 
@@ -61,7 +45,7 @@ class Notifications extends React.PureComponent<Props, State> {
       if (!this.state.hovering) {
         const date = Date.now();
         requestAnimationFrame(() => {
-          this.props.notifications.forEach(n => {
+          this.props.store.notifications.forEach(n => {
             // Delete notification if time is up
             if (n.endTime < date) {
               this.closeNotification(n.id);
@@ -79,7 +63,7 @@ class Notifications extends React.PureComponent<Props, State> {
   }
 
   closeNotification = id => {
-    this.props.notificationActions.removeNotification(id);
+    this.props.signals.notificationRemoved({ id });
   };
 
   hoverOn = () => {
@@ -93,7 +77,8 @@ class Notifications extends React.PureComponent<Props, State> {
   interval: number;
 
   render() {
-    const { notifications } = this.props;
+    const notifications = this.props.store.notifications;
+
     return (
       <Portal>
         <div onMouseEnter={this.hoverOn} onMouseLeave={this.hoverOff}>
@@ -102,19 +87,24 @@ class Notifications extends React.PureComponent<Props, State> {
             transitionEnterTimeout={500}
             transitionLeaveTimeout={300}
           >
-            {notifications.map((n: Notification, i: number) => (
+            {notifications.map((notification, index) => (
               <Motion
-                key={n.id}
+                key={notification.id}
                 defaultStyle={{ y: -150 }}
-                style={{ y: spring(24 + 60 * (notifications.length - 1 - i)) }}
+                style={{
+                  y: spring(24 + 60 * (notifications.length - 1 - index)),
+                }}
               >
                 {({ y }) => (
-                  <NotificationContainer key={n.id} style={{ bottom: y }}>
+                  <NotificationContainer
+                    key={notification.id}
+                    style={{ bottom: y }}
+                  >
                     <NotificationComponent
-                      title={n.title}
-                      type={n.type}
-                      buttons={n.buttons}
-                      close={() => this.closeNotification(n.id)}
+                      title={notification.title}
+                      type={notification.type}
+                      buttons={notification.buttons}
+                      close={() => this.closeNotification(notification.id)}
                     />
                   </NotificationContainer>
                 )}
@@ -127,4 +117,4 @@ class Notifications extends React.PureComponent<Props, State> {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Notifications);
+export default inject('signals', 'store')(observer(Notifications));

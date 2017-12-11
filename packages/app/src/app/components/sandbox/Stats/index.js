@@ -25,10 +25,7 @@ type Props = {
 export default ({ viewCount, forkCount, likeCount, sandboxId }: Props) => (
   <Stats>
     <Stat Icon={<EyeIcon />} count={viewCount} />
-    <Stat
-      Icon={<LikeHeart colorless sandboxId={sandboxId} />}
-      count={likeCount}
-    />
+    <Stat Icon={<LikeHeart colorless />} count={likeCount} />
     <Stat Icon={<ForkIcon />} count={forkCount} />
   </Stats>
 );

@@ -1,25 +1,10 @@
 // @flow
 import * as React from 'react';
-import { createSelector } from 'reselect';
-
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import { inject } from 'mobx-react';
+import { inject, observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import styled, { ThemeProvider } from 'styled-components';
 
-import type { Sandbox, User, CurrentUser } from 'common/types';
-import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
-import modalActionCreators from 'app/store/modal/actions';
-import { modulesFromSandboxNotSavedSelector } from 'app/store/entities/sandboxes/modules/selectors';
-import { usersSelector } from 'app/store/entities/users/selectors';
-import {
-  currentUserSelector,
-  isPatronSelector,
-} from 'app/store/user/selectors';
 import getTemplateDefinition from 'common/templates';
-
-import showAlternativeComponent from 'app/hoc/show-alternative-component';
 import fadeIn from 'common/utils/animation/fade-in';
 import { tosUrl, privacyUrl } from 'common/utils/url-generator';
 
@@ -62,198 +47,96 @@ const TermsContainer = styled.div`
   font-size: 0.75rem;
 `;
 
-type Props = {
-  sandbox: Sandbox,
-  sandboxActions: typeof sandboxActionCreators,
-  modalActions: typeof modalActionCreators,
-  preventTransition: boolean,
-  user: User,
-  currentUser: CurrentUser,
-  isPatron: boolean,
-  zenMode: boolean,
-};
+function Workspace({ signals, store }) {
+  const sandbox = store.editor.currentSandbox;
+  const preferences = store.editor.preferences;
 
-const mapStateToProps = createSelector(
-  modulesFromSandboxNotSavedSelector,
-  usersSelector,
-  (_, props) => props.sandbox && props.sandbox.author,
-  isPatronSelector,
-  currentUserSelector,
-  (preventTransition, users, author, isPatron, currentUser) => ({
-    preventTransition,
-    user: users[author], // Just use author
-    isPatron,
-    currentUser,
-  })
-);
+  return (
+    <ThemeProvider
+      theme={{
+        templateColor: getTemplateDefinition(sandbox.template).color,
+      }}
+    >
+      <Container>
+        <div>
+          {!preferences.settings.zenMode && <Logo />}
+          {!preferences.settings.zenMode && (
+            <WorkspaceItem defaultOpen keepState title="Project">
+              <Project />
+            </WorkspaceItem>
+          )}
 
-const mapDispatchToProps = dispatch => ({
-  sandboxActions: bindActionCreators(sandboxActionCreators, dispatch),
-  modalActions: bindActionCreators(modalActionCreators, dispatch),
-});
+          <Files />
 
-class Workspace extends React.PureComponent<Props> {
-  openPreferences = () => {
-    this.props.signals.modalOpened({ modal: 'integrations' });
-  };
+          <WorkspaceItem title="Dependencies">
+            <Dependencies />
+          </WorkspaceItem>
 
-  render() {
-    const {
-      sandbox,
-      user,
-      preventTransition,
-      sandboxActions,
-      isPatron,
-      modalActions,
-      currentUser,
-      zenMode,
-    } = this.props;
-
-    return (
-      <ThemeProvider
-        theme={{
-          templateColor: getTemplateDefinition(sandbox.template).color,
-        }}
-      >
-        <Container>
-          <div>
-            {!zenMode && <Logo />}
-            {!zenMode && (
-              <WorkspaceItem defaultOpen keepState title="Project">
-                <Project
-                  updateSandboxInfo={sandboxActions.updateSandboxInfo}
-                  id={sandbox.id}
-                  title={sandbox.title}
-                  viewCount={sandbox.viewCount}
-                  likeCount={sandbox.likeCount}
-                  forkCount={sandbox.forkCount}
-                  git={sandbox.git}
-                  description={sandbox.description}
-                  forkedSandbox={sandbox.forkedFromSandbox}
-                  preventTransition={preventTransition}
-                  owned={sandbox.owned}
-                  author={user}
-                  privacy={sandbox.privacy}
-                  template={sandbox.template}
-                />
+          {!preferences.settings.zenMode &&
+            sandbox.owned &&
+            store.isLoggedIn &&
+            !sandbox.git && (
+              <WorkspaceItem title="GitHub">
+                {store.user.integrations.github ? ( // eslint-disable-line
+                  sandbox.originalGit ? (
+                    <Git />
+                  ) : (
+                    <CreateRepo />
+                  )
+                ) : (
+                  <div>
+                    <Margin
+                      margin={1}
+                      top={0}
+                      style={{ color: 'rgba(255, 255, 255, 0.8)' }}
+                    >
+                      You can create commits and open pull requests if you add
+                      GitHub to your integrations.
+                    </Margin>
+                    <WorkspaceInputContainer>
+                      <Button
+                        onClick={() =>
+                          signals.modalOpened({ modal: 'preferences' })
+                        }
+                        small
+                        block
+                      >
+                        Open Integrations
+                      </Button>
+                    </WorkspaceInputContainer>
+                  </div>
+                )}
               </WorkspaceItem>
             )}
 
-            <Files sandbox={sandbox} sandboxActions={sandboxActions} />
+          {!preferences.settings.zenMode &&
+            (sandbox.owned || sandbox.tags.length > 0) && (
+              <WorkspaceItem title="Tags">
+                <Tags />
+              </WorkspaceItem>
+            )}
 
-            <WorkspaceItem title="Dependencies">
-              <Dependencies
-                sandboxId={sandbox.id}
-                npmDependencies={sandbox.npmDependencies}
-                externalResources={sandbox.externalResources}
-                sandboxActions={sandboxActions}
-                processing={
-                  !!(
-                    sandbox.dependencyBundle &&
-                    sandbox.dependencyBundle.processing
-                  )
-                }
-              />
-            </WorkspaceItem>
-
-            {!zenMode &&
-              sandbox.owned &&
-              currentUser &&
-              currentUser.jwt &&
-              !sandbox.git && (
-                <WorkspaceItem title="GitHub">
-                  {currentUser.integrations.github ? ( // eslint-disable-line
-                    sandbox.originalGit ? (
-                      <Git
-                        sandboxId={sandbox.id}
-                        originalGit={sandbox.originalGit}
-                        gitChanges={sandbox.originalGitChanges}
-                        fetchGitChanges={sandboxActions.fetchGitChanges}
-                        createGitCommit={sandboxActions.createGitCommit}
-                        createGitPR={sandboxActions.createGitPR}
-                        openModal={modalActions.openModal}
-                        closeModal={modalActions.closeModal}
-                        user={currentUser}
-                        modulesNotSaved={preventTransition}
-                      />
-                    ) : (
-                      <CreateRepo
-                        sandboxId={sandbox.id}
-                        title={sandbox.title}
-                        exportToGithub={sandboxActions.exportToGithub}
-                        modulesNotSaved={preventTransition}
-                        openModal={modalActions.openModal}
-                        closeModal={modalActions.closeModal}
-                      />
-                    )
-                  ) : (
-                    <div>
-                      <Margin
-                        margin={1}
-                        top={0}
-                        style={{ color: 'rgba(255, 255, 255, 0.8)' }}
-                      >
-                        You can create commits and open pull requests if you add
-                        GitHub to your integrations.
-                      </Margin>
-                      <WorkspaceInputContainer>
-                        <Button onClick={this.openPreferences} small block>
-                          Open Integrations
-                        </Button>
-                      </WorkspaceInputContainer>
-                    </div>
-                  )}
-                </WorkspaceItem>
-              )}
-
-            {!zenMode &&
-              (sandbox.owned || sandbox.tags.length > 0) && (
-                <WorkspaceItem title="Tags">
-                  <Tags
-                    sandboxId={sandbox.id}
-                    addTag={sandboxActions.addTag}
-                    removeTag={sandboxActions.removeTag}
-                    isOwner={sandbox.owned}
-                    tags={sandbox.tags}
-                  />
-                </WorkspaceItem>
-              )}
-
-            {!zenMode &&
-              sandbox.owned && (
-                <WorkspaceItem title="Sandbox Actions">
-                  <SandboxActions
-                    id={sandbox.id}
-                    deleteSandbox={sandboxActions.deleteSandbox}
-                    newSandboxUrl={sandboxActions.newSandboxUrl}
-                    setSandboxPrivacy={sandboxActions.setSandboxPrivacy}
-                    isPatron={isPatron}
-                    privacy={sandbox.privacy}
-                  />
-                </WorkspaceItem>
-              )}
+          {!preferences.settings.zenMode &&
+            sandbox.owned && (
+              <WorkspaceItem title="Sandbox Actions">
+                <SandboxActions />
+              </WorkspaceItem>
+            )}
+        </div>
+        {!preferences.settings.zenMode && (
+          <div>
+            {!store.isPatron && !sandbox.owned && <Advertisement />}
+            <ConnectionNotice />
+            <TermsContainer>
+              By using CodeSandbox you agree to our{' '}
+              <Link to={tosUrl()}>Terms and Conditions</Link> and{' '}
+              <Link to={privacyUrl()}>Privacy Policy</Link>.
+            </TermsContainer>
           </div>
-
-          {!zenMode && (
-            <div>
-              {!isPatron && !sandbox.owned && <Advertisement />}
-              <ConnectionNotice />
-              <TermsContainer>
-                By using CodeSandbox you agree to our{' '}
-                <Link to={tosUrl()}>Terms and Conditions</Link> and{' '}
-                <Link to={privacyUrl()}>Privacy Policy</Link>.
-              </TermsContainer>
-            </div>
-          )}
-        </Container>
-      </ThemeProvider>
-    );
-  }
+        )}
+      </Container>
+    </ThemeProvider>
+  );
 }
 
-// The skeleton to show if sandbox doesn't exist
-const Skeleton = () => <Container />;
-
-export default showAlternativeComponent(Skeleton, ['sandbox'])(
-  inject('signals')(connect(mapStateToProps, mapDispatchToProps)(Workspace))
-);
+export default inject('signals', 'store')(observer(Workspace));

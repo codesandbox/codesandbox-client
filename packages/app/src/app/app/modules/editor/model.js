@@ -95,8 +95,18 @@ export default {
       dirty: types.boolean,
     })
   ),
-  errors: types.array(types.model({})),
+  errors: types.array(
+    types.model({
+      column: types.number,
+      line: types.number,
+      message: types.string,
+      title: types.string,
+    })
+  ),
   corrections: types.array(types.model({})),
   isInProjectView: types.boolean,
   forceRender: types.number,
+  initialPath: types.string,
+  highlightedLines: types.array(types.number),
+  isUpdatingPrivacy: types.boolean,
 };

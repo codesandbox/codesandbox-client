@@ -1,37 +1,9 @@
 // @flow
 import * as React from 'react';
 import styled, { ThemeProvider } from 'styled-components';
-import { createSelector } from 'reselect';
 import { Prompt } from 'react-router-dom';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import { inject } from 'mobx-react';
-import { preferencesSelector } from 'app/store/preferences/selectors';
-import type {
-  Preferences,
-  Sandbox,
-  CurrentUser,
-  Module,
-  Directory,
-} from 'common/types';
-import { currentUserSelector } from 'app/store/user/selectors';
-import moduleActionCreators from 'app/store/entities/sandboxes/modules/actions';
-import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
-import modalActionCreators from 'app/store/modal/actions';
-import previewApiActionCreators from 'app/store/preview-actions-api/actions';
-import preferenceActionCreators from 'app/store/preferences/actions';
-import userActionCreators from 'app/store/user/actions';
-import viewActionCreators from 'app/store/view/actions';
-import { devToolsOpenSelector } from 'app/store/view/selectors';
-import {
-  findMainModule,
-  findCurrentModule,
-  modulesFromSandboxSelector,
-} from 'app/store/entities/sandboxes/modules/selectors';
-import { directoriesFromSandboxSelector } from 'app/store/entities/sandboxes/directories/selectors';
-
+import { inject, observer } from 'mobx-react';
 import getTemplateDefinition from 'common/templates';
-
 import SplitPane from 'react-split-pane';
 
 import CodeEditor from 'app/components/sandbox/CodeEditor';
@@ -39,33 +11,9 @@ import Tabs from 'app/components/sandbox/CodeEditor/Tabs';
 import FilePath from 'app/components/sandbox/CodeEditor/FilePath';
 import Preview from 'app/components/sandbox/Preview';
 
-import showAlternativeComponent from 'app/hoc/show-alternative-component';
 import fadeIn from 'common/utils/animation/fade-in';
 
 import Header from './Header';
-import Skeleton from './Skeleton';
-
-type Props = {
-  workspaceHidden: boolean,
-  toggleWorkspace: () => void,
-  devToolsOpen: boolean,
-  sandbox: Sandbox,
-  user: CurrentUser,
-  preferences: Preferences,
-  modules: Array<Module>,
-  directories: Array<Directory>,
-  moduleActions: typeof moduleActionCreators,
-  sandboxActions: typeof sandboxActionCreators,
-  userActions: typeof userActionCreators,
-  modalActions: typeof modalActionCreators,
-  previewApiActions: typeof previewApiActionCreators,
-  preferenceActions: typeof preferenceActionCreators,
-  viewActions: typeof viewActionCreators,
-};
-
-type State = {
-  resizing: boolean,
-};
 
 const FullSize = styled.div`
   height: 100%;
@@ -76,183 +24,77 @@ const FullSize = styled.div`
   flex-direction: column;
 `;
 
-const mapStateToProps = createSelector(
-  preferencesSelector,
-  currentUserSelector,
-  modulesFromSandboxSelector,
-  directoriesFromSandboxSelector,
-  devToolsOpenSelector,
-  (preferences, user, modules, directories, devToolsOpen) => ({
-    preferences,
-    user,
-    modules,
-    directories,
-    devToolsOpen,
-  })
-);
-const mapDispatchToProps = dispatch => ({
-  moduleActions: bindActionCreators(moduleActionCreators, dispatch),
-  sandboxActions: bindActionCreators(sandboxActionCreators, dispatch),
-  userActions: bindActionCreators(userActionCreators, dispatch),
-  modalActions: bindActionCreators(modalActionCreators, dispatch),
-  previewApiActions: bindActionCreators(previewApiActionCreators, dispatch),
-  preferenceActions: bindActionCreators(preferenceActionCreators, dispatch),
-  viewActions: bindActionCreators(viewActionCreators, dispatch),
-});
-class EditorPreview extends React.PureComponent<Props, State> {
-  state = {
-    resizing: false,
-  };
-
+class EditorPreview extends React.Component {
   componentDidMount() {
     this.props.signals.editor.contentMounted();
-    window.onbeforeunload = e => {
-      const { modules } = this.props;
-      const notSynced = modules.some(m => m.isNotSynced);
-
-      if (notSynced) {
-        const returnMessage =
-          'You have not saved all your modules, are you sure you want to close this tab?';
-        e.returnValue = returnMessage;
-        return returnMessage;
-      }
-
-      return null;
-    };
   }
-
-  startResizing = () => {
-    this.props.signals.editor.resizingStarted();
-    this.setState({ resizing: true });
-  };
-  stopResizing = () => {
-    this.props.signals.editor.resizingStopped();
-    this.setState({ resizing: false });
-  };
-
-  saveCode = () => {
-    const { sandbox, modules, directories, sandboxActions } = this.props;
-
-    const mainModule = findMainModule(modules, directories, sandbox.entry);
-    const { currentModule } = sandbox;
-
-    // $FlowIssue
-    this.props.signals.editor.codeSaved();
-    sandboxActions.saveModuleCode(sandbox.id, currentModule || mainModule.id);
-  };
-
   getDefaultSize = () => {
-    const { sandbox } = this.props;
-    if (sandbox.showEditor && !sandbox.showPreview) return '0%';
-    if (!sandbox.showEditor && sandbox.showPreview) return '100%';
+    const preferences = this.props.preferences;
+    if (preferences.showEditor && !preferences.showPreview) return '0%';
+    if (!preferences.showEditor && preferences.showPreview) return '100%';
+
     return '50%';
   };
-
-  exitZenMode = () => {
-    this.props.preferenceActions.setPreference({ zenMode: false });
-  };
-
   render() {
-    const {
-      moduleActions,
-      sandboxActions,
-      sandbox,
-      modules,
-      directories,
-      preferences,
-      userActions,
-      modalActions,
-      user,
-      workspaceHidden,
-      toggleWorkspace,
-      previewApiActions,
-      viewActions,
-      devToolsOpen,
-    } = this.props;
-
-    const mainModule = findMainModule(modules, directories, sandbox.entry);
-    if (!mainModule) throw new Error('Cannot find main module');
-
-    const { currentModule: currentModuleId } = sandbox;
-
-    const currentModule = findCurrentModule(
-      modules,
-      directories,
-      currentModuleId,
-      mainModule
-    );
-
-    if (currentModule == null) return null;
-
-    const notSynced = modules.some(m => m.isNotSynced);
+    const { signals, store } = this.props;
+    const currentModule = store.editor.currentModule;
+    const notSynced = !store.editor.isAllModulesSynced;
+    const sandbox = store.editor.currentSandbox;
+    const preferences = store.editor.preferences;
 
     const EditorPane = (
       <FullSize>
-        {preferences.zenMode ? (
+        {preferences.settings.zenMode ? (
           <FilePath
-            modules={modules}
-            directories={directories}
+            modules={sandbox.modules}
+            directories={sandbox.directories}
             currentModule={currentModule}
-            workspaceHidden={workspaceHidden}
-            toggleWorkspace={toggleWorkspace}
-            exitZenMode={this.exitZenMode}
+            workspaceHidden={store.editor.workspace.isWorkspaceHidden}
+            toggleWorkspace={() => signals.editor.workspace.workspaceToggled()}
+            exitZenMode={
+              () => {} /* this.props.signals.editor.preferences.settingChanged({ zenMode }) */
+            }
           />
         ) : (
           <Tabs
-            tabs={sandbox.tabs}
-            modules={modules}
-            directories={directories}
+            tabs={store.editor.tabs}
+            modules={sandbox.modules}
+            directories={sandbox.directories}
             currentModuleId={currentModule.id}
             sandboxId={sandbox.id}
-            setCurrentModule={(sandboxId, moduleId) => {
-              this.props.signals.editor.moduleSelected({ id: moduleId });
-              sandboxActions.setCurrentModule(sandboxId, moduleId);
-            }}
-            closeTab={(sandboxId, tabIndex) => {
-              this.props.signals.editor.tabClosed({ tabIndex });
-              sandboxActions.closeTab(sandboxId, tabIndex);
-            }}
-            moveTab={(sandboxId, prevIndex, nextIndex) => {
-              this.props.signals.editor.tabMoved({ prevIndex, nextIndex });
-              sandboxActions.moveTab(sandboxId, prevIndex, nextIndex);
-            }}
-            markNotDirty={sandboxId => {
-              this.props.signals.editor.moduleDoubleClicked();
-              sandboxActions.markTabsNotDirty(sandboxId);
-            }}
-            prettifyModule={moduleId => {
-              this.props.signals.editor.prettifyClicked({ moduleId });
-              moduleActions.prettifyModule(moduleId);
-            }}
+            setCurrentModule={(_, moduleId) =>
+              signals.editor.moduleSelected({ id: moduleId })
+            }
+            closeTab={(_, tabIndex) => signals.editor.tabClosed({ tabIndex })}
+            moveTab={(_, prevIndex, nextIndex) =>
+              signals.editor.tabMoved({ prevIndex, nextIndex })
+            }
+            markNotDirty={() => signals.editor.moduleDoubleClicked()}
+            prettifyModule={moduleId =>
+              signals.editor.prettifyClicked({ moduleId })
+            }
           />
         )}
         <CodeEditor
-          changeCode={(moduleId, code) => {
-            this.props.signals.editor.codeChanged({ code });
-            moduleActions.setCode(moduleId, code);
-          }}
+          changeCode={(_, code) => signals.editor.codeChanged({ code })}
           id={currentModule.id}
-          errors={currentModule.errors}
-          corrections={currentModule.corrections}
+          errors={store.editor.errors}
+          corrections={store.editor.corrections}
           code={currentModule.code}
           title={currentModule.title}
-          saveCode={this.saveCode}
-          preferences={preferences}
-          modules={modules}
-          directories={directories}
+          saveCode={() => signals.editor.codeSaved()}
+          changedModuleShortids={store.editor.changedModuleShortids}
+          preferences={preferences.settings}
+          modules={sandbox.modules}
+          directories={sandbox.directories}
           sandboxId={sandbox.id}
-          dependencies={sandbox.npmDependencies}
-          setCurrentModule={(sandboxId, moduleId) => {
-            this.props.signals.editor.moduleSelected({ id: moduleId });
-            sandboxActions.setCurrentModule(sandboxId, moduleId);
-          }}
-          addDependency={(id, name, version) => {
-            this.props.signals.editor.workspace.npmDependencyAdded({
-              name,
-              version,
-            });
-            sandbox.owned && sandboxActions.addNPMDependency(id, name, version);
-          }}
+          dependencies={sandbox.npmDependencies.toJS()}
+          setCurrentModule={(_, moduleId) =>
+            signals.editor.moduleSelected({ id: moduleId })
+          }
+          addDependency={(_, name, version) =>
+            signals.editor.workspace.npmDependencyAdded({ name, version })
+          }
           template={sandbox.template}
         />
       </FullSize>
@@ -263,44 +105,34 @@ class EditorPreview extends React.PureComponent<Props, State> {
         <Preview
           sandboxId={sandbox.id}
           template={sandbox.template}
-          initialPath={sandbox.initialPath}
+          initialPath={store.editor.initialPath}
           module={currentModule}
-          modules={modules}
-          directories={directories}
-          addError={sandboxActions.addError /* Does not exist?!? */}
-          clearErrors={() => {
-            this.props.signals.editor.errorsCleared();
-            moduleActions.clearErrors();
-          }}
-          isInProjectView={Boolean(sandbox.isInProjectView)}
+          modules={sandbox.modules}
+          directories={sandbox.directories}
+          clearErrors={() => signals.editor.errorsCleared()}
+          isInProjectView={store.editor.isInProjectView}
           externalResources={sandbox.externalResources}
-          setProjectView={(id, isInProjectView) => {
-            this.props.signals.editor.projectViewChanged({ isInProjectView });
-            sandboxActions.setProjectView(id, isInProjectView);
-          }}
-          preferences={preferences}
-          onNewWindow={() => {
-            this.props.signals.editor.preferences.viewModeChanged({
+          setProjectView={(_, isInProjectView) =>
+            signals.editor.projectViewChanged({ isInProjectView })
+          }
+          preferences={preferences.settings}
+          onNewWindow={() =>
+            signals.editor.preferences.viewModeChanged({
               showEditor: true,
               showPreview: false,
-            });
-            this.props.sandboxActions.setViewMode(sandbox.id, true, false);
-          }}
+            })
+          }
           dependencies={sandbox.npmDependencies}
-          runActionFromPreview={action => {
-            this.props.signals.editor.previewActionReceived({ action });
-            previewApiActions.executeAction(action);
-          }}
-          forcedRenders={sandbox.forcedRenders}
-          inactive={this.state.resizing}
+          runActionFromPreview={action =>
+            signals.editor.previewActionReceived({ action })
+          }
+          forcedRenders={store.editor.forcedRenders}
+          inactive={store.editor.isResizing}
           entry={sandbox.entry}
-          setDevToolsOpen={isOpen => {
-            // This seems to use internal state, this does not have any effect it seems.
-            // Should be refactored to only use external state
-            this.props.signals.editor.devtoolsOpened({ isOpen });
-            viewActions.setDevToolsOpen();
-          }}
-          devToolsOpen={devToolsOpen}
+          setDevToolsOpen={isOpen =>
+            signals.editor.preferences.devtoolsOpened({ isOpen })
+          }
+          devToolsOpen={preferences.showDevtools}
         />
       </FullSize>
     );
@@ -318,55 +150,38 @@ class EditorPreview extends React.PureComponent<Props, State> {
               'You have not saved this sandbox, are you sure you want to navigate away?'
             }
           />
-          {!preferences.zenMode && (
-            <Header
-              sandboxId={sandbox.id}
-              owned={sandbox.owned}
-              showEditor={sandbox.showEditor}
-              showPreview={sandbox.showPreview}
-              sandboxLiked={sandbox.userLiked}
-              sandboxLikeCount={sandbox.likeCount}
-              sandboxActions={sandboxActions}
-              userActions={userActions}
-              modalActions={modalActions}
-              user={user}
-              workspaceHidden={workspaceHidden}
-              toggleWorkspace={() => {
-                this.props.signals.editor.workspace.workspaceToggled();
-                toggleWorkspace();
-              }}
-              canSave={notSynced}
-              modules={sandbox.modules}
-              directories={sandbox.directories}
-            />
-          )}
+          {!preferences.settings.zenMode && <Header />}
           <SplitPane
-            onDragStarted={this.startResizing}
-            onDragFinished={this.stopResizing}
+            onDragStarted={() => this.props.signals.editor.resizingStarted()}
+            onDragFinished={() => this.props.signals.editor.resizingStopped()}
             split="vertical"
             defaultSize="50%"
             minSize={360}
             style={{ position: 'static' }}
             resizerStyle={{
               visibility:
-                (!sandbox.showPreview && sandbox.showEditor) ||
-                (sandbox.showPreview && !sandbox.showEditor)
+                (!preferences.showPreview && preferences.showEditor) ||
+                (preferences.showPreview && !preferences.showEditor)
                   ? 'hidden'
                   : 'visible',
             }}
             pane1Style={{
-              display: sandbox.showEditor ? 'block' : 'none',
+              display: preferences.showEditor ? 'block' : 'none',
               minWidth:
-                !sandbox.showPreview && sandbox.showEditor ? '100%' : 'inherit',
+                !preferences.showPreview && preferences.showEditor
+                  ? '100%'
+                  : 'inherit',
             }}
             pane2Style={{
-              display: sandbox.showPreview ? 'block' : 'none',
+              display: preferences.showPreview ? 'block' : 'none',
               minWidth:
-                sandbox.showPreview && !sandbox.showEditor ? '100%' : 'inherit',
+                preferences.showPreview && !preferences.showEditor
+                  ? '100%'
+                  : 'inherit',
               height: '100%',
             }}
           >
-            {sandbox.showEditor && EditorPane}
+            {preferences.showEditor && EditorPane}
             {PreviewPane}
           </SplitPane>
         </FullSize>
@@ -375,6 +190,4 @@ class EditorPreview extends React.PureComponent<Props, State> {
   }
 }
 
-export default showAlternativeComponent(Skeleton, ['sandbox'])(
-  inject('signals')(connect(mapStateToProps, mapDispatchToProps)(EditorPreview))
-);
+export default inject('signals', 'store')(observer(EditorPreview));

@@ -1,4 +1,5 @@
 /* @flow */
+import { autorun } from 'mobx';
 import * as React from 'react';
 import styled from 'styled-components';
 import { debounce } from 'lodash';
@@ -204,6 +205,11 @@ export default class CodeEditor extends React.Component<Props, State> {
   typingsFetcherWorker: ?Worker;
   sizeProbeInterval: number;
 
+  componentDidMount() {
+    this.disposeErrors = autorun(() => {
+      // handleError(this.monaco, this.editor, nextErrors, nextCorrections);
+    });
+  }
   setupTypeWorker = () => {
     this.typingsFetcherWorker = new TypingsFetcherWorker();
 
@@ -419,8 +425,8 @@ export default class CodeEditor extends React.Component<Props, State> {
     return (
       nextProps.sandboxId !== this.props.sandboxId ||
       nextProps.id !== this.props.id ||
-      nextProps.errors !== this.props.errors ||
-      nextProps.corrections !== this.props.corrections ||
+      nextProps.errors.length !== this.props.errors.length ||
+      nextProps.corrections.length !== this.props.corrections.length ||
       this.props.preferences !== nextProps.preferences
     );
   }

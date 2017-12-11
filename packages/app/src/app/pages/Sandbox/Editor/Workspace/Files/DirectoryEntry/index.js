@@ -1,26 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
 import { inject } from 'mobx-react';
-import { bindActionCreators } from 'redux';
 import { DropTarget } from 'react-dnd';
-
-import type { Module, Directory } from 'common/types';
-
-import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
-import contextMenuActionCreators from 'app/store/context-menu/actions';
-import modalActionCreators from 'app/store/modal/actions';
 import Alert from 'app/components/Alert';
 
 import validateTitle from './validateTitle';
 import Entry from './Entry';
 import DirectoryChildren from './DirectoryChildren';
 
-function getModuleParents(
-  modules: Array<Module>,
-  directories: Array<Directory>,
-  id: string
-) {
+function getModuleParents(modules, directories, id) {
   const module = modules.find(moduleEntry => moduleEntry.id === id);
 
   if (!module) return [];
@@ -32,8 +20,8 @@ function getModuleParents(
   while (directory != null) {
     directoryIds = [...directoryIds, directory.id];
     directory = directories.find(
-      directoryEntry => directoryEntry.shortid === directory.directoryShortid
-    ); // eslint-disable-line
+      directoryEntry => directoryEntry.shortid === directory.directoryShortid // eslint-disable-line
+    );
   }
 
   return directoryIds;
@@ -58,39 +46,7 @@ const Opener = styled.div`
   overflow: hidden;
 `;
 
-const mapDispatchToProps = dispatch => ({
-  sandboxActions: bindActionCreators(sandboxActionCreators, dispatch),
-  openMenu: bindActionCreators(contextMenuActionCreators, dispatch).openMenu,
-  modalActions: bindActionCreators(modalActionCreators, dispatch),
-});
-type Props = {
-  id: string,
-  shortid: string,
-  sandboxId: string,
-  sandboxTemplate: string,
-  root: ?boolean,
-  title: string,
-  modules: Array<Module>,
-  directories: Array<Directory>,
-  sandboxId: string,
-  root: ?boolean,
-  siblings: Array<Module | Directory>,
-  depth: ?number,
-  openMenu: (e: Event) => void,
-  sandboxActions: typeof sandboxActionCreators,
-  modalActions: typeof modalActionCreators,
-  currentModuleId: ?string,
-  isInProjectView: boolean,
-  mainModuleId: string,
-  innerRef: ?Function,
-};
-type State = {
-  creating: '' | 'module' | 'directory',
-};
 class DirectoryEntry extends React.PureComponent {
-  props: Props;
-  state: State;
-
   constructor(props) {
     super(props);
 
@@ -275,6 +231,8 @@ class DirectoryEntry extends React.PureComponent {
       depth = 0,
       root,
       mainModuleId,
+      errors,
+      corrections,
     } = this.props;
     const { creating, open } = this.state;
 
@@ -330,6 +288,8 @@ class DirectoryEntry extends React.PureComponent {
             currentModuleId={currentModuleId}
             isInProjectView={isInProjectView}
             markTabsNotDirty={this.markTabsNotDirty}
+            errors={errors}
+            corrections={corrections}
           />
           {creating === 'module' && (
             <Entry
@@ -403,7 +363,5 @@ function collectTarget(connectMonitor, monitor) {
 }
 
 export default inject('signals')(
-  connect(null, mapDispatchToProps)(
-    DropTarget('ENTRY', entryTarget, collectTarget)(DirectoryEntry)
-  )
+  DropTarget('ENTRY', entryTarget, collectTarget)(DirectoryEntry)
 );

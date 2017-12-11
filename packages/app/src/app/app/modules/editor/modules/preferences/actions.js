@@ -6,7 +6,6 @@ export function toggleBadgeVisibility({ state, props }) {
     const currentVis = badge.visible;
     if (badge.id === id) {
       state.set(`user.badges.${index}.visible`, !currentVis);
-      return { id, visible: !currentVis };
     }
   });
 }
@@ -37,7 +36,9 @@ export function updatePaymentDetails({ api, props }) {
       token,
     },
   };
-  return api.patch('/users/current_user/payment_details', body).then(data => {
-    data;
-  });
+  return api.patch('/users/current_user/payment_details', body).then(data => ({data}));
+}
+
+export function toggleDevtools({ state, props }) {
+  state.set('editor.preferences.showDevtools', props.isOpen);
 }

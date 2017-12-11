@@ -30,7 +30,19 @@ export const setCurrentModule = [actions.addTab, actions.setCurrentModule];
 
 export const unsetDirtyTab = actions.unsetDirtyTab;
 
-export const openDevtools = [function test() {}];
+export const deleteSandbox = actions.deleteSandbox;
+
+export const updatePrivacy = [
+  actions.ensureValidPrivacy,
+  {
+    valid: [
+      set(state`editor.isUpdatingPrivacy`, true),
+      actions.updatePrivacy,
+      set(state`editor.isUpdatingPrivacy`, false),
+    ],
+    invalid: [],
+  },
+];
 
 export const forkSandbox = sequence('forkSandbox', [
   actions.forkSandbox,
@@ -115,6 +127,7 @@ export const loadSandbox = [
           actions.setCurrentModuleShortid,
           actions.setMainModuleShortid,
           actions.setInitialTab,
+          actions.setUrlOptions,
         ],
         notFound: set(state`editor.notFound`, true),
         error: set(state`editor.error`, props`error.message`),
