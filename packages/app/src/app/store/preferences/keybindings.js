@@ -60,7 +60,7 @@ export const KEYBINDINGS = {
   'editor.workspace': {
     title: 'Toggle Sidebar',
     type: 'View',
-    bindings: [['Shift'], ['Shift']],
+    bindings: [[metaKey], ['Shift']],
     action: () => (dispatch: Function, getState: Function) => {
       const workspaceHidden = workspaceHiddenSelector(getState());
       dispatch(viewActions.setWorkspaceHidden(!workspaceHidden));
