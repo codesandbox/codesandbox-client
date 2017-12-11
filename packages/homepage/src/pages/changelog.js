@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import PageContainer from '../components/PageContainer';
 import { Heading1 } from '../components/headings';
 
@@ -119,6 +120,7 @@ export default ({ data }) => {
 
   return (
     <Container>
+      <TitleAndMetaTags title="CodeSandbox - Recent Updates" />
       <PageContainer width={1024}>
         <Heading1>Recent Updates</Heading1>
         <Description>
