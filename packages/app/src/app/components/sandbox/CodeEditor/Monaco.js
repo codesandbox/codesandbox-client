@@ -626,7 +626,7 @@ export default class CodeEditor extends React.Component<Props, State> {
       module: hasNativeTypescript
         ? monaco.languages.typescript.ModuleKind.ES2015
         : monaco.languages.typescript.ModuleKind.System,
-      experimentalDecorators: !hasNativeTypescript,
+      experimentalDecorators: true,
       noEmit: true,
       allowJs: true,
       typeRoots: ['node_modules/@types'],
