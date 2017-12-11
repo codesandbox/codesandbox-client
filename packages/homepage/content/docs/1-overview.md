@@ -5,7 +5,7 @@ redirect_from:
   - "docs"
   - "docs/"
   - "docs/index.html"
-description: "Welcome to CodeSandbox! This documentation serves as a way for you to learn what CodeSandbox is and how to use it."
+description: "Welcome to CodeSandbox! This documentation serves as a way for you to learn what CodeSandbox is, how to use it and what its APIs are."
 ---
 
 ## What is CodeSandbox
@@ -41,11 +41,14 @@ make UI and UX as easy as possible.
 ### Empower Sharability and Discoverability
 
 The initial reason Ives wanted to build CodeSandbox was because of sharability.
-The JavaScript community is one of the most active communities out there,
+The JavaScript community is one of the most active communities out there;
 libraries and projects are shared everyday. Still, it was very hard to share a
-project you've built with, for example, Vue or React.
+project you've built with, for example, Vue or React. With CodeSandbox you can
+easily build, import or export your project and share a single URL.
 
 We also aim to make discoverability very easy: it should be easy to find
 examples if you're struggling with a library.
 
 ### Give a Local Editor Experience
+
+CodeSandbox works like your local editor.
