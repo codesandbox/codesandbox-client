@@ -1,8 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { preferencesSelector } from 'app/store/preferences/selectors';
-import preferencesActionCreators from 'app/store/preferences/actions';
+import { inject, observer } from 'mobx-react';
 import {
   Container,
   PreferenceContainer,
@@ -11,36 +8,16 @@ import {
   Rule,
 } from '../styles';
 
-type Props = {
-  preferencesActions: typeof preferencesActionCreators,
-  preferences: Object,
-};
-
-const mapDispatchToProps = dispatch => ({
-  preferencesActions: bindActionCreators(preferencesActionCreators, dispatch),
-});
-const mapStateToProps = state => ({
-  preferences: preferencesSelector(state),
-});
-class Prettier extends React.PureComponent {
-  props: Props;
-
-  constructor(props) {
-    super(props);
-
-    this.state = props.preferences.prettierConfig;
-  }
-
-  setPrettierOption = key => val => {
-    this.setState({ [key]: val }, () => {
-      this.props.preferencesActions.setPreference({
-        prettierConfig: this.state,
-      });
+export default inject('store', 'signals')(
+  observer(({ store, signals }) => {
+    const bindValue = name => ({
+      value: store.editor.preferences.settings.prettierConfig[name],
+      setValue: value =>
+        signals.editor.preferences.preferenceChanged({
+          name: `prettierConfig.${name}`,
+          value,
+        }),
     });
-  };
-
-  render() {
-    const state = this.state;
     return (
       <Container>
         <PreferenceContainer>
@@ -60,8 +37,7 @@ class Prettier extends React.PureComponent {
           <PaddedPreference
             title="Print width"
             type="number"
-            value={state.printWidth}
-            setValue={this.setPrettierOption('printWidth')}
+            {...bindValue('printWidth')}
           />
           <Description>
             Specify the line length that the printer will wrap on.
@@ -71,8 +47,7 @@ class Prettier extends React.PureComponent {
           <PaddedPreference
             title="Tab width"
             type="number"
-            value={state.tabWidth}
-            setValue={this.setPrettierOption('tabWidth')}
+            {...bindValue('tabWidth')}
           />
           <Description>
             Specify the number of spaces per indentation-level.
@@ -82,8 +57,7 @@ class Prettier extends React.PureComponent {
           <PaddedPreference
             title="Use tabs"
             type="boolean"
-            value={state.useTabs}
-            setValue={this.setPrettierOption('useTabs')}
+            {...bindValue('useTabs')}
           />
           <Description>Indent lines with tabs instead of spaces.</Description>
           <Rule />
@@ -91,8 +65,7 @@ class Prettier extends React.PureComponent {
           <PaddedPreference
             title="Semicolons"
             type="boolean"
-            value={state.semi}
-            setValue={this.setPrettierOption('semi')}
+            {...bindValue('semi')}
           />
           <Description>Print semicolons at the ends of statements.</Description>
           <Rule />
@@ -100,8 +73,7 @@ class Prettier extends React.PureComponent {
           <PaddedPreference
             title="Use single quotes"
             type="boolean"
-            value={state.singleQuote}
-            setValue={this.setPrettierOption('singleQuote')}
+            {...bindValue('singleQuote')}
           />
           <Description>
             Use {"'"}single{"'"} quotes instead of {'"'}double{'"'} quotes.
@@ -112,8 +84,7 @@ class Prettier extends React.PureComponent {
             title="Trailing commas"
             type="dropdown"
             options={['none', 'es5', 'all']}
-            value={state.trailingComma}
-            setValue={this.setPrettierOption('trailingComma')}
+            {...bindValue('traillingComma')}
           />
           <Description>Print trailing commas wherever possible.</Description>
           <Rule />
@@ -121,8 +92,7 @@ class Prettier extends React.PureComponent {
           <PaddedPreference
             title="Bracket spacing"
             type="boolean"
-            value={state.bracketSpacing}
-            setValue={this.setPrettierOption('bracketSpacing')}
+            {...bindValue('bracketSpacing')}
           />
           <Description>
             Print spaces between brackets in object literals.
@@ -132,8 +102,7 @@ class Prettier extends React.PureComponent {
           <PaddedPreference
             title="JSX Brackets"
             type="boolean"
-            value={state.jsxBracketSameLine}
-            setValue={this.setPrettierOption('jsxBracketSameLine')}
+            {...bindValue('jsxBracketSameLine')}
           />
           <Description>
             Put the `{'>'}` of a multi-line JSX element at the end of the last
@@ -142,7 +111,5 @@ class Prettier extends React.PureComponent {
         </PreferenceContainer>
       </Container>
     );
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Prettier);
+  })
+);

@@ -98,7 +98,7 @@ export default ({ menuItems, itemIndex, setItem }: Props) => (
     <Relative style={{ height: menuItems.length * ITEM_HEIGHT }}>
       {menuItems.map((item, i) => (
         <Item
-          onClick={() => setItem(i)}
+          onClick={() => setItem({ itemIndex: i })}
           key={item.title}
           selected={itemIndex === i}
           top={i * ITEM_HEIGHT}

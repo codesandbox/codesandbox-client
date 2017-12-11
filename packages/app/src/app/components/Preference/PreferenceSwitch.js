@@ -6,7 +6,7 @@ type Props = {
   setValue: boolean => any,
 };
 
-export default class PreferenceSwitch extends React.PureComponent {
+export default class PreferenceSwitch extends React.Component {
   props: Props;
   handleClick = () => {
     this.props.setValue(!this.props.value);

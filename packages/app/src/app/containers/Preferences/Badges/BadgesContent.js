@@ -10,24 +10,11 @@ import { currentUserSelector } from 'app/store/user/selectors';
 import Margin from 'common/components/spacing/Margin';
 import Badge from 'common/utils/badges/Badge';
 
-const mapDispatchToProps = dispatch => ({
-  userActions: bindActionCreators(userActionCreators, dispatch),
-});
-const mapStateToProps = state => ({
-  user: currentUserSelector(state),
-});
-class BadgesContent extends React.PureComponent<{
-  user: CurrentUser,
-  userActions: typeof userActionCreators,
-}> {
-  toggleVisibility = (badge: BadgeT) => {
-    this.props.userActions.setBadgeVisibility(badge.id, !badge.visible);
-  };
+import { inject, observer } from 'mobx-react';
 
-  render() {
-    const { user } = this.props;
-
-    const badgesCount = user.badges.length;
+export default inject('store', 'signals')(
+  observer(({ store, signals }) => {
+    const badgesCount = store.user.badges.length;
 
     return (
       <div>
@@ -36,10 +23,10 @@ class BadgesContent extends React.PureComponent<{
           You can click on the badges to toggle visibility.
         </strong>
         <Margin top={2}>
-          {user.badges.map(b => (
+          {store.user.badges.map(b => (
             <Badge
               tooltip={false}
-              onClick={this.toggleVisibility}
+              onClick={signals.editor.preferences.badgeVisibilityChanged}
               badge={b}
               size={128}
             />
@@ -47,7 +34,5 @@ class BadgesContent extends React.PureComponent<{
         </Margin>
       </div>
     );
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(BadgesContent);
+  })
+);

@@ -19,7 +19,7 @@ export default Provider({
       .get(API_ROOT + path, query, {
         headers: createHeaders(this.context),
       })
-      .then(response => camelizeKeys(response.result.data));
+      .then(response => camelizeKeys(response.result.data || response.result));
   },
   post(path, body) {
     return this.context.http
@@ -33,7 +33,7 @@ export default Provider({
       .patch(API_ROOT + path, decamelizeKeys(body), {
         headers: createHeaders(this.context),
       })
-      .then(response => camelizeKeys(response.result.data));
+      .then(response => camelizeKeys(response.result.data || response.result));
   },
   put(path, body) {
     return this.context.http

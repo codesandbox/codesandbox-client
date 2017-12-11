@@ -27,7 +27,6 @@ export default Module({
       username: null,
       avatarUrl: null,
       jwt: null,
-      subscription: null,
       badges: [],
       integrations: {
         zeit: null,

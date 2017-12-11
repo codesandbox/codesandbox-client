@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import { inject, observer } from 'mobx-react';
 
 import userActionCreators from 'app/store/user/actions';
 import SubscribeForm from 'app/components/user/SubscribeForm';
@@ -15,72 +14,61 @@ const Container = styled.div`
   color: rgba(255, 255, 255, 0.6);
 `;
 
-type Props = {
-  userActions: typeof userActionCreators,
-};
+export default inject('store', 'signals')(
+  observer(
+    class PaymentInfo extends React.Component {
+      componentDidMount() {
+        this.props.signals.editor.preferences.paymentDetailsRequested();
+      }
 
-const mapDispatchToProps = dispatch => ({
-  userActions: bindActionCreators(userActionCreators, dispatch),
-});
-class PaymentInfo extends React.PureComponent {
-  props: Props;
-  state = {
-    loading: true,
-    data: null,
-  };
+      updatePaymentDetails = token => {
+        this.props.signals.editor.preferences.paymentDetailsUpdated({ token });
+      };
 
-  componentDidMount() {
-    this.fetchPaymentDetails();
-  }
+      paymentDetails = () => {
+        const {
+          paymentDetails,
+          paymentDetailError,
+        } = this.props.store.editor.preferences;
 
-  fetchPaymentDetails = async () => {
-    try {
-      const data = await this.props.userActions.getPaymentDetails();
-      this.setState({ loading: false, data });
-    } catch (e) {
-      this.setState({ loading: false, error: e.message });
+        if (paymentDetailError)
+          return <div>An error occurred: {paymentDetailError}</div>;
+
+        return (
+          <div>
+            <Subheading>Current card</Subheading>
+            <Card
+              last4={paymentDetails.last4}
+              name={paymentDetails.name}
+              brand={paymentDetails.brand}
+            />
+
+            <Subheading style={{ marginTop: '2rem' }}>
+              Update card info
+            </Subheading>
+            <SubscribeForm
+              buttonName="Update"
+              loadingText="Updating Card Info..."
+              name={paymentDetails.name}
+              subscribe={this.updatePaymentDetails}
+            />
+          </div>
+        );
+      };
+
+      render() {
+        const { isLoadingPaymentDetails } = this.props.store.editor.preferences;
+        return (
+          <Container>
+            <Title>Payment Info</Title>
+            {isLoadingPaymentDetails ? (
+              <div>Loading payment details...</div>
+            ) : (
+              this.paymentDetails()
+            )}
+          </Container>
+        );
+      }
     }
-  };
-
-  updatePaymentDetails = async (token: string) => {
-    const data = await this.props.userActions.updatePaymentDetails(token);
-    this.setState({ loading: false, data });
-  };
-
-  paymentDetails = () => {
-    if (this.state.error)
-      return <div>An error occurred: {this.state.error}</div>;
-
-    const { data } = this.state;
-    return (
-      <div>
-        <Subheading>Current card</Subheading>
-        <Card last4={data.last4} name={data.name} brand={data.brand} />
-
-        <Subheading style={{ marginTop: '2rem' }}>Update card info</Subheading>
-        <SubscribeForm
-          buttonName="Update"
-          loadingText="Updating Card Info..."
-          name={data.name}
-          subscribe={this.updatePaymentDetails}
-        />
-      </div>
-    );
-  };
-
-  render() {
-    const { loading } = this.state;
-    return (
-      <Container>
-        <Title>Payment Info</Title>
-        {loading ? (
-          <div>Loading payment details...</div>
-        ) : (
-          this.paymentDetails()
-        )}
-      </Container>
-    );
-  }
-}
-
-export default connect(null, mapDispatchToProps)(PaymentInfo);
+  )
+);

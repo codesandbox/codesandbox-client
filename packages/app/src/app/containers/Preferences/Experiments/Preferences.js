@@ -1,39 +1,18 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import { inject, observer } from 'mobx-react';
 
-import { preferencesSelector } from 'app/store/preferences/selectors';
-import preferencesActionCreators from 'app/store/preferences/actions';
+import { Container, PreferenceContainer, Description } from '../styles';
 
-import {
-  Container,
-  PreferenceContainer,
-  // PaddedPreference,
-  Description,
-} from '../styles';
-
-type Props = {
-  preferencesActions: typeof preferencesActionCreators,
-  preferences: Object,
-};
-
-const mapDispatchToProps = dispatch => ({
-  preferencesActions: bindActionCreators(preferencesActionCreators, dispatch),
-});
-const mapStateToProps = state => ({
-  preferences: preferencesSelector(state),
-});
-// eslint-disable-next-line no-unused-vars arrow-body-style
-const Preferences = ({ preferences, preferencesActions }: Props) => {
-  // const bindValue = name => ({
-  //   value: preferences[name],
-  //   setValue: value =>
-  //     preferencesActions.setPreference({
-  //       [name]: value,
-  //     }),
-  // });
-
-  return (
+export default inject('store', 'signals')(
+  observer(({ store, signals }) => (
+    // const bindValue = name => ({
+    //   value: store.editor.preferences.settings.experiments[name],
+    //   setValue: value =>
+    //     signals.editor.preferences.preferenceChanged({
+    //       name: `experiments.${name}`,
+    //       value,
+    //     }),
+    // });
     <Container>
       <PreferenceContainer>
         <Description>
@@ -42,7 +21,5 @@ const Preferences = ({ preferences, preferencesActions }: Props) => {
         </Description>
       </PreferenceContainer>
     </Container>
-  );
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Preferences);
+  ))
+);

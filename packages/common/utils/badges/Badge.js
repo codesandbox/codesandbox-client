@@ -32,7 +32,7 @@ type Props = {
   tooltip: ?string,
 };
 
-export default class Badge extends React.PureComponent {
+export default class Badge extends React.Component {
   props: Props;
 
   handleClick = () => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
 
 import { currentUserSelector } from 'app/store/user/selectors';
@@ -37,98 +37,85 @@ const ContentContainer = styled.div`
   padding: 2rem;
 `;
 
-type Props = {
-  user: CurrentUser,
-  initialPane: ?string,
-};
+export default inject('store', 'signals')(
+  observer(
+    class Preferences extends React.Component {
+      constructor(props) {
+        super(props);
+        if (props.initialPane) {
+          const index = this.getItems()
+            .map(x => x.title)
+            .indexOf(props.initialPane);
 
-const mapStateToProps = state => ({
-  user: currentUserSelector(state),
-});
-class Preferences extends React.PureComponent {
-  props: Props;
+          props.signals.editor.preferences.itemIndexChanged({ index });
+        }
+      }
 
-  state = {
-    itemIndex: 0,
-  };
+      getItems = () => {
+        const hasSubscription = Boolean(this.props.store.user.subscription);
+        const signedIn = Boolean(this.props.store.isLoggedIn);
 
-  constructor(props: Props) {
-    super(props);
-
-    if (props.initialPane) {
-      this.state = {
-        itemIndex: this.getItems()
-          .map(x => x.title)
-          .indexOf(props.initialPane),
+        return [
+          {
+            title: 'Editor',
+            icon: <CodeIcon />,
+            content: <EditorSettings />,
+          },
+          {
+            title: 'Prettier Settings',
+            icon: <CodeFormatIcon />,
+            content: <CodeFormatting />,
+          },
+          {
+            title: 'Preview',
+            icon: <BrowserIcon />,
+            content: <PreviewSettings />,
+          },
+          {
+            title: 'Key Bindings',
+            icon: <KeyboardIcon />,
+            content: <KeyMapping />,
+          },
+          signedIn && {
+            title: 'Integrations',
+            icon: <IntegrationIcon />,
+            content: <Integrations />,
+          },
+          hasSubscription && {
+            title: 'Payment Info',
+            icon: <CreditCardIcon />,
+            content: <PaymentInfo />,
+          },
+          hasSubscription && {
+            title: 'Badges',
+            icon: <StarIcon />,
+            content: <Badges />,
+          },
+          {
+            title: 'Experiments',
+            icon: <FlaskIcon />,
+            content: <Experiments />,
+          },
+        ].filter(x => x);
       };
+
+      render() {
+        return (
+          <Container>
+            <SideNavigation
+              itemIndex={this.props.store.editor.preferences.itemIndex}
+              menuItems={this.getItems()}
+              setItem={this.props.signals.editor.preferences.itemIndexChanged}
+            />
+            <ContentContainer>
+              {
+                this.getItems()[this.props.store.editor.preferences.itemIndex]
+                  .content
+              }
+            </ContentContainer>
+          </Container>
+        );
+      }
     }
-  }
-
-  setItem = (index: number) => {
-    this.setState({ itemIndex: index });
-  };
-
-  getItems = () => {
-    const hasSubscription = Boolean(this.props.user.subscription);
-    const signedIn = Boolean(this.props.user.jwt);
-    return [
-      {
-        title: 'Editor',
-        icon: <CodeIcon />,
-        content: <EditorSettings />,
-      },
-      {
-        title: 'Prettier Settings',
-        icon: <CodeFormatIcon />,
-        content: <CodeFormatting />,
-      },
-      {
-        title: 'Preview',
-        icon: <BrowserIcon />,
-        content: <PreviewSettings />,
-      },
-      {
-        title: 'Key Bindings',
-        icon: <KeyboardIcon />,
-        content: <KeyMapping />,
-      },
-      signedIn && {
-        title: 'Integrations',
-        icon: <IntegrationIcon />,
-        content: <Integrations />,
-      },
-      hasSubscription && {
-        title: 'Payment Info',
-        icon: <CreditCardIcon />,
-        content: <PaymentInfo />,
-      },
-      hasSubscription && {
-        title: 'Badges',
-        icon: <StarIcon />,
-        content: <Badges />,
-      },
-      {
-        title: 'Experiments',
-        icon: <FlaskIcon />,
-        content: <Experiments />,
-      },
-    ].filter(x => x);
-  };
-
-  render() {
-    return (
-      <Container>
-        <SideNavigation
-          itemIndex={this.state.itemIndex}
-          menuItems={this.getItems()}
-          setItem={this.setItem}
-        />
-        <ContentContainer>
-          {this.getItems()[this.state.itemIndex].content}
-        </ContentContainer>
-      </Container>
-    );
-  }
-}
-
-export default connect(mapStateToProps)(Preferences);
+  )
+);
