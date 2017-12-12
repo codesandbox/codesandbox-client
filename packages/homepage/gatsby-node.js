@@ -73,7 +73,6 @@ exports.createPages = async ({ graphql, boundActionCreators }) => {
   // Redirect /index.html to root.
   createRedirect({
     fromPath: '/index.html',
-    redirectInBrowser: true,
     toPath: '/',
   });
 
@@ -148,7 +147,6 @@ exports.createPages = async ({ graphql, boundActionCreators }) => {
           redirectToSlugMap[fromPath] = slug;
           createRedirect({
             fromPath: `/${fromPath}`,
-            redirectInBrowser: true,
             toPath,
           });
         });
