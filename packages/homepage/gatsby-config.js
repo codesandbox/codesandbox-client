@@ -49,6 +49,7 @@ module.exports = {
           {
             resolve: require.resolve(`./plugins/remark-sections`),
           },
+          'gatsby-remark-autolink-headers',
         ],
       },
     },
