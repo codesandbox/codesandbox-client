@@ -1,6 +1,8 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import Link from 'gatsby-link';
+import slugify from 'common/utils/slugify';
+import theme from 'common/theme';
 
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import PageContainer from '../components/PageContainer';
@@ -20,7 +22,35 @@ const cardCSS = css`
 const Navigation = styled.nav`
   flex: 1;
 
+  margin-top: 2rem;
   margin-right: 1rem;
+
+  ul {
+    margin-left: 0;
+    list-style: none;
+  }
+
+  a {
+    text-decoration: none;
+  }
+`;
+
+const PrimaryNavigationLink = styled(Link)`
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.125rem;
+  font-weight: 500;
+`;
+
+const SecondaryNavigationLink = styled(Link)`
+  transition: 0.3s ease color;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1rem;
+  font-weight: 500;
+  margin-left: 1rem;
+
+  &:hover {
+    color: white;
+  }
 `;
 
 const Article = styled.div`
@@ -56,13 +86,38 @@ const DocumentationContent = styled.div`
     ${cardCSS};
   }
 
+  code {
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 0.2em 0.4em;
+    font-size: 85%;
+    margin: 0;
+    border-radius: 3px;
+  }
+
   *:last-child {
     margin-bottom: 0;
+  }
+
+  .anchor {
+    fill: ${props => props.theme.secondary};
+  }
+
+  .gatsby-highlight {
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 0.5rem;
+    border-radius: 4px;
+
+    code {
+      background-color: transparent;
+      padding: 0;
+      margin: 0;
+      font-size: 100%;
+    }
   }
 `;
 
 const NavigationItem = styled.li`
-  margin: 0;
+  margin-bottom: 1rem;
   padding: 0;
   border: 0;
 `;
@@ -95,16 +150,40 @@ export default ({ data }) => {
   const { edges: docs } = data.allMarkdownRemark;
   const { html, frontmatter } = data.markdownRemark;
 
+  const activeStyle = {
+    color: theme.secondary(),
+    fontWeight: 700,
+  };
+
   return (
     <Container>
       <TitleAndMetaTags title={`${frontmatter.title} - CodeSandbox`} />
       <PageContainer>
         <DocsContainer>
           <Navigation>
-            <ul style={{ listStyle: 'none' }}>
+            <ul>
               {docs.map(({ node }) => (
                 <NavigationItem key={node.frontmatter.title}>
-                  <Link to={node.fields.slug}>{node.frontmatter.title}</Link>
+                  <PrimaryNavigationLink
+                    to={node.fields.url}
+                    exact
+                    activeStyle={activeStyle}
+                  >
+                    {node.frontmatter.title}
+                  </PrimaryNavigationLink>
+                  <ul>
+                    {node.headings.map(({ value }) => (
+                      <li key={value}>
+                        <SecondaryNavigationLink
+                          to={node.fields.url + `#${slugify(value)}`}
+                          exact
+                          activeStyle={activeStyle}
+                        >
+                          {value}
+                        </SecondaryNavigationLink>
+                      </li>
+                    ))}
+                  </ul>
                 </NavigationItem>
               ))}
             </ul>
@@ -131,11 +210,15 @@ export const query = graphql`
     ) {
       edges {
         node {
+          headings(depth: h2) {
+            value
+          }
           frontmatter {
             title
           }
           fields {
             slug
+            url
           }
         }
       }

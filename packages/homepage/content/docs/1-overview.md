@@ -1,10 +1,7 @@
 ---
 title: "Overview"
 authors: ["CompuIves"]
-redirect_from:
-  - "docs"
-  - "docs/"
-  - "docs/index.html"
+url: /
 description: "Welcome to CodeSandbox! This documentation serves as a way for you to learn what CodeSandbox is, how to use it and what its APIs are."
 ---
 

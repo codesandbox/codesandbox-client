@@ -22,7 +22,7 @@ exports.onCreateNode = ({ node, boundActionCreators, getNode }) => {
   const { createNodeField } = boundActionCreators;
 
   if (node.internal.type === `MarkdownRemark`) {
-    const { redirect_from } = node.frontmatter;
+    const { url } = node.frontmatter;
     const { relativePath } = getNode(node.parent);
 
     if (relativePath.includes('changelog')) {
@@ -59,8 +59,8 @@ exports.onCreateNode = ({ node, boundActionCreators, getNode }) => {
     // Used by createPages() above to register redirects.
     createNodeField({
       node,
-      name: 'redirect',
-      value: redirect_from ? JSON.stringify(redirect_from) : '',
+      name: 'url',
+      value: url ? '/docs' + url : node.fields.slug,
     });
   }
 };
@@ -83,8 +83,8 @@ exports.createPages = async ({ graphql, boundActionCreators }) => {
           edges {
             node {
               fields {
-                redirect
                 slug
+                url
               }
             }
           }
@@ -99,10 +99,9 @@ exports.createPages = async ({ graphql, boundActionCreators }) => {
     throw Error(allMarkdown.errors);
   }
 
-  const redirectToSlugMap = {};
-
   allMarkdown.data.allMarkdownRemark.edges.forEach(edge => {
     const slug = edge.node.fields.slug;
+    const url = edge.node.fields.url;
 
     if (slug.includes('docs/')) {
       let template;
@@ -120,37 +119,7 @@ exports.createPages = async ({ graphql, boundActionCreators }) => {
         });
 
       // Register primary URL.
-      createArticlePage(slug);
-
-      // Register redirects as well if the markdown specifies them.
-      if (edge.node.fields.redirect) {
-        let redirect = JSON.parse(edge.node.fields.redirect);
-        if (!Array.isArray(redirect)) {
-          redirect = [redirect];
-        }
-
-        redirect.forEach(fromPath => {
-          if (redirectToSlugMap[fromPath] != null) {
-            console.error(
-              `Duplicate redirect detected from "${fromPath}" to:\n` +
-                `* ${redirectToSlugMap[fromPath]}\n` +
-                `* ${slug}\n`
-            );
-            process.exit(1);
-          }
-
-          // A leading "/" is required for redirects to work,
-          // But multiple leading "/" will break redirects.
-          // For more context see github.com/reactjs/reactjs.org/pull/194
-          const toPath = slug.startsWith('/') ? slug : `/${slug}`;
-
-          redirectToSlugMap[fromPath] = slug;
-          createRedirect({
-            fromPath: `/${fromPath}`,
-            toPath,
-          });
-        });
-      }
+      createArticlePage(url || slug);
     }
   });
 };
