@@ -11,6 +11,7 @@ import { isModuleSynced } from './computed';
 
 import workspace from './modules/workspace';
 import preferences from './modules/preferences';
+import deployment from './modules/deployment';
 
 export default Module({
   model,
@@ -64,5 +65,5 @@ export default Module({
     sandboxDeleted: sequences.deleteSandbox,
     privacyUpdated: sequences.updatePrivacy,
   },
-  modules: { workspace, preferences },
+  modules: { workspace, preferences, deployment },
 });

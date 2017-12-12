@@ -8,6 +8,7 @@ import JwtProvider from './providers/Jwt';
 import BrowserProvider from './providers/Browser';
 import RouterProvider from './providers/Router';
 import UtilsProvider from './providers/Utils';
+import JSZipProvider from './providers/JSZip';
 import ShortcutsProvider from './providers/Shortcuts';
 
 import * as sequences from './sequences';
@@ -59,6 +60,7 @@ export default Module({
     api: ApiProvider,
     connection: ConnectionProvider,
     jwt: JwtProvider,
+    jsZip: JSZipProvider,
     http: HttpProvider(),
     browser: BrowserProvider,
     router: RouterProvider,

@@ -76,13 +76,14 @@ export function createPackageJSON(
 ) {
   const name = slugify(sandbox.title || sandbox.id);
   const version = `0.0.${sandbox.version}`;
+  const npmDependencies = sandbox.npmDependencies.toJS();
 
   return JSON.stringify(
     {
       name,
       description: sandbox.description,
       version,
-      dependencies: { ...sandbox.npmDependencies, ...dependencies },
+      dependencies: { ...npmDependencies, ...dependencies },
       devDependencies,
       scripts,
       ...(extra || {}),
@@ -178,6 +179,15 @@ export async function createZip(
   }
 
   return null;
+}
+
+export async function getZip(
+  sandbox: Sandbox,
+  modules: Array<Module>,
+  directories: Array<Directory>
+) {
+  const file = await createZip(sandbox, modules, directories);
+  return { file };
 }
 
 export default (async function downloadZip(
