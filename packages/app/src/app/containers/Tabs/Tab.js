@@ -91,6 +91,7 @@ type Props = {
   dirName: ?string,
   tabCount: number,
   position: number,
+  hasError: boolean,
   closeTab: ?(pos: number) => void,
 };
 
@@ -139,6 +140,8 @@ export default class Tab extends React.PureComponent<Props, State> {
       module,
       dirName,
       tabCount,
+      hasError,
+      isNotSynced,
     } = this.props;
 
     const { hovering } = this.state;
@@ -155,13 +158,13 @@ export default class Tab extends React.PureComponent<Props, State> {
         onMouseLeave={this.handleMouseLeave}
       >
         <EntryIcons
-          isNotSynced={module.isNotSynced}
+          isNotSynced={isNotSynced}
           type={getType(module.title, module.code)}
-          error={module.errors && module.errors.length > 0}
+          error={hasError}
         />
         <TabTitle>{module.title}</TabTitle>
         {dirName && <TabDir>../{dirName}</TabDir>}
-        {this.props.closeTab && module.isNotSynced ? (
+        {this.props.closeTab && isNotSynced ? (
           <StyledNotSyncedIcon
             onClick={tabCount > 1 ? this.closeTab : null}
             show

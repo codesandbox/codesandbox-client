@@ -1,15 +1,10 @@
 /* @flow */
-import { autorun } from 'mobx';
+import { autorun, observe } from 'mobx';
 import * as React from 'react';
 import styled from 'styled-components';
+import { inject, observer } from 'mobx-react';
 import { debounce } from 'lodash';
-import type {
-  Preferences,
-  ModuleError,
-  ModuleCorrection,
-  Module,
-  Directory,
-} from 'common/types';
+
 import { getModulePath } from 'app/store/entities/sandboxes/modules/selectors';
 
 import theme from 'common/theme';
@@ -25,29 +20,6 @@ import MonacoEditor from './monaco/MonacoReactComponent';
 import FuzzySearch from './FuzzySearch/index';
 
 let modelCache = {};
-
-type State = {
-  fuzzySearchEnabled: boolean,
-};
-
-type Props = {
-  code: ?string,
-  errors: ?Array<ModuleError>,
-  corrections: Array<ModuleCorrection>,
-  id: string,
-  sandboxId: string,
-  title: string,
-  changeCode: (id: string, code: string) => Object,
-  saveCode: ?() => void,
-  preferences: Preferences,
-  modules: Array<Module>,
-  directories: Array<Directory>,
-  dependencies: ?Object,
-  setCurrentModule: ?(sandboxId: string, moduleId: string) => void,
-  template: string,
-  addDependency: ?(sandboxId: string, dependency: string) => void,
-  hideNavigation: boolean,
-};
 
 const Container = styled.div`
   width: 100%;
@@ -133,69 +105,7 @@ const CodeContainer = styled.div`
 const requireAMDModule = paths =>
   new Promise(resolve => window.require(paths, () => resolve()));
 
-const handleError = (
-  monaco,
-  editor,
-  nextErrors: ?Array<ModuleError>,
-  nextCorrections: Array<ModuleCorrection>
-) => {
-  if (!monaco) return;
-  if (nextErrors && nextErrors.length > 0) {
-    const errorMarkers = nextErrors
-      .map(error => {
-        if (error) {
-          return {
-            severity: monaco.Severity.Error,
-            startColumn: 1,
-            startLineNumber: error.line,
-            endColumn: error.column,
-            endLineNumber: error.line + 1,
-            message: error.message,
-          };
-        }
-
-        return null;
-      })
-      .filter(x => x);
-
-    monaco.editor.setModelMarkers(editor.getModel(), 'error', errorMarkers);
-  } else {
-    monaco.editor.setModelMarkers(editor.getModel(), 'error', []);
-  }
-
-  if (nextCorrections.length > 0) {
-    const correctionMarkers = nextCorrections
-      .map(correction => {
-        if (correction) {
-          return {
-            severity:
-              correction.severity === 'warning'
-                ? monaco.Severity.Warning
-                : monaco.Severity.Notice,
-            startColumn: correction.column,
-            startLineNumber: correction.line,
-            endColumn: 1,
-            endLineNumber: correction.line + 1,
-            message: correction.message,
-            source: correction.source,
-          };
-        }
-
-        return null;
-      })
-      .filter(x => x);
-
-    monaco.editor.setModelMarkers(
-      editor.getModel(),
-      'correction',
-      correctionMarkers
-    );
-  } else {
-    monaco.editor.setModelMarkers(editor.getModel(), 'correction', []);
-  }
-};
-
-export default class CodeEditor extends React.Component<Props, State> {
+class CodeEditor extends React.Component {
   state = {
     fuzzySearchEnabled: false,
   };
@@ -205,26 +115,333 @@ export default class CodeEditor extends React.Component<Props, State> {
   typingsFetcherWorker: ?Worker;
   sizeProbeInterval: number;
 
-  componentDidMount() {
-    this.disposeErrors = autorun(() => {
-      // handleError(this.monaco, this.editor, nextErrors, nextCorrections);
-    });
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.resizeEditor);
+    this.disposeModules(this.props.modules);
+    if (this.editor) {
+      this.editor.dispose();
+    }
+    if (this.syntaxWorker) {
+      this.syntaxWorker.terminate();
+    }
+    if (this.lintWorker) {
+      this.lintWorker.terminate();
+    }
+    if (this.typingsFetcherWorker) {
+      this.typingsFetcherWorker.terminate();
+    }
+    clearTimeout(this.sizeProbeInterval);
+
+    this.disposeErrorsHandler();
+    this.disposeCorrectionsHandler();
+    this.disposeModulesHandler();
+    this.disposePreferencesHandler();
+    this.disposeDependenciesHandler();
+    this.disposeSandboxChangeHandler();
+    this.disposeModuleChangeHandler();
   }
+  configureEditor = async (editor, monaco) => {
+    this.editor = editor;
+    this.monaco = monaco;
+
+    // eslint-disable-next-line no-underscore-dangle
+    window._cs = {
+      editor: this.editor,
+      monaco: this.monaco,
+    };
+
+    requestAnimationFrame(() => {
+      this.setupWorkers();
+      editor.onDidChangeModelContent(() => {
+        this.handleChange();
+      });
+    });
+
+    const hasNativeTypescript = this.hasNativeTypescript();
+
+    const compilerDefaults = {
+      jsxFactory: 'React.createElement',
+      reactNamespace: 'React',
+      jsx: monaco.languages.typescript.JsxEmit.React,
+      target: monaco.languages.typescript.ScriptTarget.ES2016,
+      allowNonTsExtensions: !hasNativeTypescript,
+      moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
+      module: hasNativeTypescript
+        ? monaco.languages.typescript.ModuleKind.ES2015
+        : monaco.languages.typescript.ModuleKind.System,
+      experimentalDecorators: !hasNativeTypescript,
+      noEmit: true,
+      allowJs: true,
+      typeRoots: ['node_modules/@types'],
+
+      forceConsistentCasingInFileNames: hasNativeTypescript,
+      noImplicitReturns: hasNativeTypescript,
+      noImplicitThis: hasNativeTypescript,
+      noImplicitAny: hasNativeTypescript,
+      strictNullChecks: hasNativeTypescript,
+      suppressImplicitAnyIndexErrors: hasNativeTypescript,
+      noUnusedLocals: hasNativeTypescript,
+    };
+
+    monaco.languages.typescript.typescriptDefaults.setMaximunWorkerIdleTime(-1);
+    monaco.languages.typescript.javascriptDefaults.setMaximunWorkerIdleTime(-1);
+    monaco.languages.typescript.typescriptDefaults.setCompilerOptions(
+      compilerDefaults
+    );
+    monaco.languages.typescript.javascriptDefaults.setCompilerOptions(
+      compilerDefaults
+    );
+
+    monaco.languages.typescript.typescriptDefaults.setEagerModelSync(true);
+    monaco.languages.typescript.javascriptDefaults.setEagerModelSync(true);
+
+    monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
+      noSemanticValidation: false,
+      noSyntaxValidation: !hasNativeTypescript,
+    });
+
+    const sandbox = this.props.store.editor.currentSandbox;
+    const currentModule = this.props.store.editor.currentModule;
+
+    await this.initializeModules(sandbox.modules);
+    await this.openNewModel(currentModule.id, currentModule.title);
+
+    this.addKeyCommands();
+    import(/* webpackChunkName: 'monaco-emmet' */ './monaco/enable-emmet').then(
+      enableEmmet => {
+        enableEmmet.default(editor, monaco, {});
+      }
+    );
+
+    window.addEventListener('resize', this.resizeEditor);
+    this.sizeProbeInterval = setInterval(this.resizeEditor.bind(this), 3000);
+
+    if (sandbox.npmDependencies.size) {
+      setTimeout(() => {
+        this.fetchDependencyTypings(sandbox.npmDependencies.toJS(), monaco);
+      }, 5000);
+    }
+
+    editor.addAction({
+      // An unique identifier of the contributed action.
+      id: 'fuzzy-search',
+
+      // A label of the action that will be presented to the user.
+      label: 'Open Module',
+
+      // An optional array of keybindings for the action.
+      keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_P], // eslint-disable-line no-bitwise
+
+      // A precondition for this action.
+      precondition: null,
+
+      // A rule to evaluate on top of the precondition in order to dispatch the keybindings.
+      keybindingContext: null,
+
+      contextMenuGroupId: 'navigation',
+
+      contextMenuOrder: 1.5,
+
+      // Method that will be executed when the action is triggered.
+      // @param editor The editor instance is passed in as a convinience
+      run: () => {
+        this.setState({
+          fuzzySearchEnabled: true,
+        });
+      },
+    });
+
+    this.disposeErrorsHandler = autorun(this.handleErrors);
+    this.disposeCorrectionsHandler = autorun(this.handleCorrections);
+    this.disposeModulesHandler = autorun(this.handleModules);
+    this.disposePreferencesHandler = autorun(this.handlePreferences);
+    this.disposeDependenciesHandler = autorun(this.handleDependencies);
+    this.disposeCodeHandler = autorun(this.handleCode);
+    this.disposeSandboxChangeHandler = observe(
+      this.props.store.editor,
+      'currentSandbox',
+      this.handleSandboxChange
+    );
+    this.disposeModuleChangeHandler = observe(
+      this.props.store.editor,
+      'currentModule',
+      this.handleModuleChange
+    );
+  };
+
+  handleModuleChange = change => {
+    this.swapDocuments({
+      currentId: change.oldValue.id,
+      nextId: change.newValue.id,
+      nextCode: change.newValue.code,
+      nextTitle: change.newValue.title,
+    });
+  };
+
+  handleSandboxChange = change => {
+    // Reset models, dispose old ones
+    this.disposeModules(change.oldValue.modules);
+
+    // Do in setTimeout, since disposeModules is async
+    setTimeout(() => {
+      // Initialize new models
+      this.initializeModules(change.newValue.modules).then(() => {
+        const currentModule = this.props.store.editor.currentModule;
+
+        this.openNewModel(currentModule.id, currentModule.title);
+      });
+    });
+  };
+
+  handleCode = () => {
+    const currentModule = this.props.store.editor.currentModule;
+
+    this.updateCode(currentModule.code);
+  };
+
+  handleDependencies = () => {
+    const dependencies = this.props.store.editor.currentSandbox.npmDependencies;
+    this.fetchDependencyTypings(dependencies.toJS());
+  };
+
+  handlePreferences = () => {
+    this.editor.updateOptions(this.getEditorOptions());
+  };
+
+  handleModules = () => {
+    // First check for path updates;
+    const sandbox = this.props.store.editor.currentSandbox;
+
+    sandbox.modules.forEach(module => {
+      if (modelCache[module.id] && modelCache[module.id].model) {
+        const path = getModulePath(
+          sandbox.modules,
+          sandbox.directories,
+          module.id
+        );
+
+        // Check for changed path, if that's
+        // the case create a new model with corresponding tag, ditch the other model
+        if (path !== modelCache[module.id].model.uri.path) {
+          const isCurrentlyOpened =
+            this.editor.getModel() === modelCache[module.id].model;
+
+          if (isCurrentlyOpened) {
+            // Unload model, we're going to dispose it
+            this.editor.setModel(null);
+          }
+
+          this.disposeModel(module.id);
+
+          this.createModel(module, sandbox.modules, sandbox.directories).then(
+            newModel => {
+              if (isCurrentlyOpened) {
+                // Open it again if it was open
+                this.editor.setModel(newModel);
+              }
+            }
+          );
+        }
+      }
+    });
+
+    // Also check for deleted modules
+    Object.keys(modelCache).forEach(moduleId => {
+      // This module got deleted, dispose it
+      if (!sandbox.modules.find(m => m.id === moduleId)) {
+        this.disposeModel(moduleId);
+      }
+    });
+  };
+
+  handleErrors = () => {
+    const errors = this.props.store.editor.errors;
+
+    if (errors.length > 0) {
+      const errorMarkers = errors
+        .map(error => {
+          if (error) {
+            return {
+              severity: this.monaco.Severity.Error,
+              startColumn: 1,
+              startLineNumber: error.line,
+              endColumn: error.column,
+              endLineNumber: error.line + 1,
+              message: error.message,
+            };
+          }
+
+          return null;
+        })
+        .filter(x => x);
+
+      this.monaco.editor.setModelMarkers(
+        this.editor.getModel(),
+        'error',
+        errorMarkers
+      );
+    } else {
+      this.monaco.editor.setModelMarkers(this.editor.getModel(), 'error', []);
+    }
+  };
+
+  handleCorrections = () => {
+    const corrections = this.props.store.editor.corrections;
+
+    if (corrections.length > 0) {
+      const correctionMarkers = corrections
+        .map(correction => {
+          if (correction) {
+            return {
+              severity:
+                correction.severity === 'warning'
+                  ? this.monaco.Severity.Warning
+                  : this.monaco.Severity.Notice,
+              startColumn: correction.column,
+              startLineNumber: correction.line,
+              endColumn: 1,
+              endLineNumber: correction.line + 1,
+              message: correction.message,
+              source: correction.source,
+            };
+          }
+
+          return null;
+        })
+        .filter(x => x);
+
+      this.monaco.editor.setModelMarkers(
+        this.editor.getModel(),
+        'correction',
+        correctionMarkers
+      );
+    } else {
+      this.monaco.editor.setModelMarkers(
+        this.editor.getModel(),
+        'correction',
+        []
+      );
+    }
+  };
+
   setupTypeWorker = () => {
     this.typingsFetcherWorker = new TypingsFetcherWorker();
 
     this.typingsFetcherWorker.addEventListener('message', event => {
       const { path, typings } = event.data;
+      const sandbox = this.props.store.editor.currentSandbox;
+      const dependencies = sandbox.npmDependencies.toJS();
 
       if (
         path.startsWith('node_modules/@types') &&
-        this.hasNativeTypescript() &&
-        this.props.addDependency != null
+        this.hasNativeTypescript()
       ) {
         const dependency = path.match(/node_modules\/(@types\/.*)\//)[1];
 
-        if (!Object.keys(this.props.dependencies).includes(dependency)) {
-          this.props.addDependency(this.props.sandboxId, dependency);
+        if (!Object.keys(dependencies).includes(dependency)) {
+          this.props.signals.editor.workspace.npmDependencyAdded({
+            name: dependency,
+          });
         }
       }
 
@@ -275,15 +492,16 @@ export default class CodeEditor extends React.Component<Props, State> {
 
   setupWorkers = () => {
     this.setupSyntaxWorker();
+    const preferences = this.props.store.editor.preferences.settings;
 
-    if (this.props.preferences.lintEnabled) {
+    if (preferences.lintEnabled) {
       // Delay this one, as initialization is very heavy
       setTimeout(() => {
         this.setupLintWorker();
       }, 5000);
     }
 
-    if (this.props.preferences.autoDownloadTypes) {
+    if (preferences.autoDownloadTypes) {
       this.setupTypeWorker();
     }
   };
@@ -301,7 +519,8 @@ export default class CodeEditor extends React.Component<Props, State> {
       },
     }));
 
-    const modelInfo = await this.getModelById(this.props.id);
+    const currentModule = this.props.store.editor.currentModule;
+    const modelInfo = await this.getModelById(currentModule.id);
 
     modelInfo.decorations = this.editor.deltaDecorations(
       modelInfo.decorations || [],
@@ -310,7 +529,9 @@ export default class CodeEditor extends React.Component<Props, State> {
   };
 
   updateLintWarnings = async (markers: Array<Object>) => {
-    const mode = await this.getMode(this.props.title);
+    const currentModule = this.props.store.editor.currentModule;
+
+    const mode = await this.getMode(currentModule.title);
     if (mode === 'javascript') {
       this.monaco.editor.setModelMarkers(
         this.editor.getModel(),
@@ -337,100 +558,6 @@ export default class CodeEditor extends React.Component<Props, State> {
     }
   };
 
-  shouldComponentUpdate(nextProps: Props, nextState: State) {
-    if (nextState.fuzzySearchEnabled !== this.state.fuzzySearchEnabled) {
-      return true;
-    }
-
-    // Don't update with sandbox id, this will duplicate all modules otherwise
-    if (
-      nextProps.sandboxId === this.props.sandboxId &&
-      nextProps.modules !== this.props.modules
-    ) {
-      // First check for path updates;
-      nextProps.modules.forEach(module => {
-        if (modelCache[module.id] && modelCache[module.id].model) {
-          const { modules, directories } = nextProps;
-          const path = getModulePath(modules, directories, module.id);
-
-          // Check for changed path, if that's
-          // the case create a new model with corresponding tag, ditch the other model
-          if (path !== modelCache[module.id].model.uri.path) {
-            const isCurrentlyOpened =
-              this.editor.getModel() === modelCache[module.id].model;
-
-            if (isCurrentlyOpened) {
-              // Unload model, we're going to dispose it
-              this.editor.setModel(null);
-            }
-
-            this.disposeModel(module.id);
-
-            this.createModel(
-              module,
-              nextProps.modules,
-              nextProps.directories
-            ).then(newModel => {
-              if (isCurrentlyOpened) {
-                // Open it again if it was open
-                this.editor.setModel(newModel);
-              }
-            });
-          }
-        }
-      });
-
-      // Also check for deleted modules
-      Object.keys(modelCache).forEach(moduleId => {
-        // This module got deleted, dispose it
-        if (!nextProps.modules.find(m => m.id === moduleId)) {
-          this.disposeModel(moduleId);
-        }
-      });
-    }
-
-    const { preferences } = this.props;
-    const { preferences: nextPref } = nextProps;
-
-    if (
-      preferences.fontFamily !== nextPref.fontFamily ||
-      preferences.fontSize !== nextPref.fontSize ||
-      preferences.lineHeight !== nextPref.lineHeight
-    ) {
-      this.editor.updateOptions(this.getEditorOptions(nextProps));
-    }
-
-    const { dependencies } = this.props;
-    const { dependencies: nextDependencies } = nextProps;
-
-    // Fetch new dependencies if added
-    if (
-      nextDependencies != null &&
-      dependencies != null &&
-      Object.keys(dependencies).join('') !==
-        Object.keys(nextDependencies).join('')
-    ) {
-      this.fetchDependencyTypings(nextDependencies);
-    }
-
-    if (
-      this.editor &&
-      this.getCode() !== nextProps.code &&
-      this.props.code !== nextProps.code &&
-      this.props.id === nextProps.id
-    ) {
-      this.updateCode(nextProps.code);
-    }
-
-    return (
-      nextProps.sandboxId !== this.props.sandboxId ||
-      nextProps.id !== this.props.id ||
-      nextProps.errors.length !== this.props.errors.length ||
-      nextProps.corrections.length !== this.props.corrections.length ||
-      this.props.preferences !== nextProps.preferences
-    );
-  }
-
   swapDocuments = async ({
     currentId,
     nextId,
@@ -441,75 +568,35 @@ export default class CodeEditor extends React.Component<Props, State> {
     nextCode: ?string,
     nextTitle: string,
   }) => {
-    if (nextId !== currentId && this.editor) {
-      const pos = this.editor.getPosition();
-      if (modelCache[currentId]) {
-        const currentModule = this.props.modules.find(m => m.id === currentId);
-        const path = getModulePath(
-          this.props.modules,
-          this.props.directories,
+    const pos = this.editor.getPosition();
+    if (modelCache[currentId]) {
+      const sandbox = this.props.store.editor.currentSandbox;
+      const currentModule = this.props.store.editor.currentModule;
+      const path = getModulePath(
+        sandbox.modules,
+        sandbox.directories,
+        currentId
+      );
+
+      modelCache[currentId].cursorPos = pos;
+      if (modelCache[currentId].lib) {
+        // We let Monaco know what the latest code is of this file by removing
+        // the old extraLib definition and defining a new one.
+        modelCache[currentId].lib.dispose();
+        modelCache[
           currentId
+        ].lib = this.monaco.languages.typescript.typescriptDefaults.addExtraLib(
+          currentModule.code,
+          `file://${path}`
         );
-
-        modelCache[currentId].cursorPos = pos;
-        if (modelCache[currentId].lib) {
-          // We let Monaco know what the latest code is of this file by removing
-          // the old extraLib definition and defining a new one.
-          modelCache[currentId].lib.dispose();
-          modelCache[
-            currentId
-          ].lib = this.monaco.languages.typescript.typescriptDefaults.addExtraLib(
-            currentModule.code,
-            `file://${path}`
-          );
-        }
       }
-
-      await this.openNewModel(nextId, nextTitle);
-      this.editor.focus();
     }
+
+    await this.openNewModel(nextId, nextTitle);
+    this.editor.focus();
   };
 
-  componentWillUpdate(nextProps: Props) {
-    const { id: currentId, sandboxId: currentSandboxId } = this.props;
-
-    const {
-      id: nextId,
-      code: nextCode,
-      errors: nextErrors,
-      corrections: nextCorrections,
-      title: nextTitle,
-      sandboxId: nextSandboxId,
-    } = nextProps;
-
-    if (nextSandboxId !== currentSandboxId) {
-      // Reset models, dispose old ones
-      this.disposeModules(this.props.modules);
-
-      // Do in setTimeout, since disposeModules is async
-      setTimeout(() => {
-        // Initialize new models
-        this.initializeModules(nextProps.modules).then(() => {
-          this.openNewModel(nextId, nextTitle);
-        });
-      });
-    } else {
-      this.swapDocuments({
-        currentId,
-        nextId,
-        nextCode,
-        nextTitle,
-      }).then(() => {
-        handleError(this.monaco, this.editor, nextErrors, nextCorrections);
-      });
-    }
-  }
-
   updateCode(code: string = '') {
-    if (!this.editor || !this.editor.getModel()) {
-      return;
-    }
-
     const pos = this.editor.getPosition();
     const lines = this.editor.getModel().getLinesContent();
     const lastLine = lines.length;
@@ -579,14 +666,18 @@ export default class CodeEditor extends React.Component<Props, State> {
 
   handleChange = () => {
     const newCode = this.editor.getModel().getValue();
-    this.props.changeCode(this.props.id, newCode);
+    const currentModule = this.props.store.editor.currentModule;
+    const title = currentModule.title;
 
-    this.syntaxHighlight(
-      newCode,
-      this.props.title,
-      this.editor.getModel().getVersionId()
-    );
-    this.lint(newCode, this.props.title, this.editor.getModel().getVersionId());
+    if (currentModule.code !== newCode) {
+      this.props.signals.editor.codeChanged({ code: newCode });
+      this.syntaxHighlight(
+        newCode,
+        title,
+        this.editor.getModel().getVersionId()
+      );
+      this.lint(newCode, title, this.editor.getModel().getVersionId());
+    }
   };
 
   editorWillMount = monaco => {
@@ -602,118 +693,9 @@ export default class CodeEditor extends React.Component<Props, State> {
   };
 
   hasNativeTypescript = () => {
-    const template = getTemplate(this.props.template);
+    const sandbox = this.props.store.editor.currentSandbox;
+    const template = getTemplate(sandbox.template);
     return template.sourceConfig && template.sourceConfig.typescript;
-  };
-
-  configureEditor = async (editor, monaco) => {
-    this.editor = editor;
-    this.monaco = monaco;
-
-    // eslint-disable-next-line no-underscore-dangle
-    window._cs = {
-      editor: this.editor,
-      monaco: this.monaco,
-    };
-
-    requestAnimationFrame(() => {
-      this.setupWorkers();
-    });
-
-    const hasNativeTypescript = this.hasNativeTypescript();
-
-    const compilerDefaults = {
-      jsxFactory: 'React.createElement',
-      reactNamespace: 'React',
-      jsx: monaco.languages.typescript.JsxEmit.React,
-      target: monaco.languages.typescript.ScriptTarget.ES2016,
-      allowNonTsExtensions: !hasNativeTypescript,
-      moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
-      module: hasNativeTypescript
-        ? monaco.languages.typescript.ModuleKind.ES2015
-        : monaco.languages.typescript.ModuleKind.System,
-      experimentalDecorators: true,
-      noEmit: true,
-      allowJs: true,
-      typeRoots: ['node_modules/@types'],
-
-      forceConsistentCasingInFileNames: hasNativeTypescript,
-      noImplicitReturns: hasNativeTypescript,
-      noImplicitThis: hasNativeTypescript,
-      noImplicitAny: hasNativeTypescript,
-      strictNullChecks: hasNativeTypescript,
-      suppressImplicitAnyIndexErrors: hasNativeTypescript,
-      noUnusedLocals: hasNativeTypescript,
-    };
-
-    monaco.languages.typescript.typescriptDefaults.setMaximunWorkerIdleTime(-1);
-    monaco.languages.typescript.javascriptDefaults.setMaximunWorkerIdleTime(-1);
-    monaco.languages.typescript.typescriptDefaults.setCompilerOptions(
-      compilerDefaults
-    );
-    monaco.languages.typescript.javascriptDefaults.setCompilerOptions(
-      compilerDefaults
-    );
-
-    monaco.languages.typescript.typescriptDefaults.setEagerModelSync(true);
-    monaco.languages.typescript.javascriptDefaults.setEagerModelSync(true);
-
-    monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
-      noSemanticValidation: false,
-      noSyntaxValidation: !hasNativeTypescript,
-    });
-
-    await this.initializeModules();
-    await this.openNewModel(this.props.id, this.props.title);
-
-    this.addKeyCommands();
-    import(/* webpackChunkName: 'monaco-emmet' */ './monaco/enable-emmet').then(
-      enableEmmet => {
-        enableEmmet.default(editor, monaco, {});
-      }
-    );
-
-    window.addEventListener('resize', this.resizeEditor);
-    this.sizeProbeInterval = setInterval(this.resizeEditor.bind(this), 3000);
-
-    if (this.props.dependencies) {
-      setTimeout(() => {
-        this.fetchDependencyTypings(this.props.dependencies, monaco);
-      }, 5000);
-    }
-
-    editor.addAction({
-      // An unique identifier of the contributed action.
-      id: 'fuzzy-search',
-
-      // A label of the action that will be presented to the user.
-      label: 'Open Module',
-
-      // An optional array of keybindings for the action.
-      keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_P], // eslint-disable-line no-bitwise
-
-      // A precondition for this action.
-      precondition: null,
-
-      // A rule to evaluate on top of the precondition in order to dispatch the keybindings.
-      keybindingContext: null,
-
-      contextMenuGroupId: 'navigation',
-
-      contextMenuOrder: 1.5,
-
-      // Method that will be executed when the action is triggered.
-      // @param editor The editor instance is passed in as a convinience
-      run: () => {
-        this.setState({
-          fuzzySearchEnabled: true,
-        });
-      },
-    });
-
-    editor.onDidChangeModelContent(() => {
-      this.handleChange();
-    });
   };
 
   closeFuzzySearch = () => {
@@ -736,7 +718,7 @@ export default class CodeEditor extends React.Component<Props, State> {
     );
   };
 
-  disposeModules = (modules: Array<Module>) => {
+  disposeModules = modules => {
     if (this.editor) {
       this.editor.setModel(null);
     }
@@ -750,35 +732,17 @@ export default class CodeEditor extends React.Component<Props, State> {
     modelCache = {};
   };
 
-  initializeModules = (modules: Array<Module> = this.props.modules) =>
+  initializeModules = modules =>
     Promise.all(modules.map(module => this.createModel(module, modules)));
 
   resizeEditor = () => {
     this.editor.layout();
   };
 
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.resizeEditor);
-    this.disposeModules(this.props.modules);
-    if (this.editor) {
-      this.editor.dispose();
-    }
-    if (this.syntaxWorker) {
-      this.syntaxWorker.terminate();
-    }
-    if (this.lintWorker) {
-      this.lintWorker.terminate();
-    }
-    if (this.typingsFetcherWorker) {
-      this.typingsFetcherWorker.terminate();
-    }
-    clearTimeout(this.sizeProbeInterval);
-  }
-
   createModel = async (
-    module: Module,
-    modules: Array<Module> = this.props.modules,
-    directories: Array<Directory> = this.props.directories
+    module,
+    modules = this.props.store.editor.currentSandbox.modules,
+    directories = this.props.store.editor.currentSandbox.directories
   ) => {
     // Remove the first slash, as this will otherwise create errors in monaco
     const path = getModulePath(modules, directories, module.id);
@@ -812,7 +776,8 @@ export default class CodeEditor extends React.Component<Props, State> {
   };
 
   getModelById = async (id: string) => {
-    const { modules } = this.props;
+    const modules = this.props.store.editor.currentSandbox.modules;
+
     if (!modelCache[id]) {
       const module = modules.find(m => m.id === id);
 
@@ -846,9 +811,7 @@ export default class CodeEditor extends React.Component<Props, State> {
 
   setCurrentModule = moduleId => {
     this.closeFuzzySearch();
-    if (this.props.setCurrentModule) {
-      this.props.setCurrentModule(this.props.sandboxId, moduleId);
-    }
+    this.props.signals.editor.moduleSelected({ id: moduleId });
   };
 
   openReference = data => {
@@ -884,20 +847,19 @@ export default class CodeEditor extends React.Component<Props, State> {
   getCode = () => this.editor.getValue();
 
   handleSaveCode = async () => {
-    const { saveCode } = this.props;
-
-    const { id } = this.props;
-    this.props.changeCode(id, this.getCode());
-    saveCode();
+    this.props.signals.editor.codeChanged({ code: this.getCode() });
+    this.props.signals.editor.codeSaved();
   };
 
-  getEditorOptions = (props: Props) => {
-    const { preferences, title } = props;
+  getEditorOptions = () => {
+    const settings = this.props.store.editor.preferences.settings;
+    const currentModule = this.props.store.editor.currentModule;
+
     return {
       selectOnLineNumbers: true,
-      fontSize: preferences.fontSize,
+      fontSize: settings.fontSize,
       fontFamily: fontFamilies(
-        preferences.fontFamily,
+        settings.fontFamily,
         'Source Code Pro',
         'monospace'
       ),
@@ -905,16 +867,18 @@ export default class CodeEditor extends React.Component<Props, State> {
       minimap: {
         enabled: false,
       },
-      ariaLabel: title,
+      ariaLabel: currentModule.title,
       formatOnPaste: true,
-      lineHeight: (preferences.lineHeight || 1.15) * preferences.fontSize,
+      lineHeight: (settings.lineHeight || 1.15) * settings.fontSize,
     };
   };
 
   render() {
-    const { modules, directories, hideNavigation } = this.props;
+    const { store, hideNavigation } = this.props;
 
-    const options = this.getEditorOptions(this.props);
+    const sandbox = store.editor.currentSandbox;
+    const currentModule = store.editor.currentModule;
+    const options = this.getEditorOptions();
 
     return (
       <Container>
@@ -923,9 +887,9 @@ export default class CodeEditor extends React.Component<Props, State> {
             <FuzzySearch
               closeFuzzySearch={this.closeFuzzySearch}
               setCurrentModule={this.setCurrentModule}
-              modules={modules}
-              directories={directories}
-              currentModuleId={this.props.id}
+              modules={sandbox.modules}
+              directories={sandbox.directories}
+              currentModuleId={currentModule.id}
             />
           )}
           <MonacoEditor
@@ -942,3 +906,28 @@ export default class CodeEditor extends React.Component<Props, State> {
     );
   }
 }
+
+export default inject('signals', 'store')(observer(CodeEditor));
+
+/*
+changeCode={(_, code) => signals.editor.codeChanged({ code })}
+id={currentModule.id}
+errors={store.editor.errors}
+corrections={store.editor.corrections}
+code={currentModule.code}
+title={currentModule.title}
+saveCode={() => signals.editor.codeSaved()}
+changedModuleShortids={store.editor.changedModuleShortids}
+preferences={preferences.settings}
+modules={sandbox.modules}
+directories={sandbox.directories}
+sandboxId={sandbox.id}
+dependencies={sandbox.npmDependencies.toJS()}
+setCurrentModule={(_, moduleId) =>
+  signals.editor.moduleSelected({ id: moduleId })
+}
+addDependency={(_, name, version) =>
+  signals.editor.workspace.npmDependencyAdded({ name, version })
+}
+template={sandbox.template}
+*/

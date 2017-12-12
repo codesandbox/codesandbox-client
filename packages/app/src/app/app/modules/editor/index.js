@@ -59,7 +59,7 @@ export default Module({
     tabMoved: sequences.moveTab,
     prettifyClicked: sequences.prettifyCode,
     errorsCleared: sequences.clearErrors,
-    projectViewChanged: sequences.setProjectView,
+    projectViewToggled: sequences.toggleProjectView,
     previewActionReceived: sequences.handlePreviewAction,
     sandboxDeleted: sequences.deleteSandbox,
     privacyUpdated: sequences.updatePrivacy,

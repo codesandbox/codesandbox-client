@@ -101,9 +101,18 @@ export default {
       line: types.number,
       message: types.string,
       title: types.string,
+      moduleId: types.string,
     })
   ),
-  corrections: types.array(types.model({})),
+  corrections: types.array(
+    types.model({
+      column: types.number,
+      line: types.number,
+      message: types.string,
+      source: types.string,
+      moduleId: types.string,
+    })
+  ),
   isInProjectView: types.boolean,
   forceRender: types.number,
   initialPath: types.string,

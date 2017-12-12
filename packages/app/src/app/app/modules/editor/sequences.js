@@ -1,14 +1,11 @@
 import { sequence } from 'cerebral';
-import { set, when, equals } from 'cerebral/operators';
+import { set, when, equals, toggle } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 import * as actions from './actions';
 
 import { addNotification, updateSandboxUrl } from '../../factories';
 
-export const setProjectView = set(
-  state`editor.isInProjectView`,
-  props`isInProjectView`
-);
+export const toggleProjectView = toggle(state`editor.isInProjectView`);
 
 export const closeTab = actions.closeTab;
 

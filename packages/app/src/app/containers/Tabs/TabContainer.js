@@ -48,6 +48,8 @@ class TabContainer extends React.PureComponent<Props> {
       position,
       closeTab,
       innerRef,
+      hasError,
+      isNotSynced,
     } = this.props;
 
     return connectDropTarget(
@@ -58,7 +60,9 @@ class TabContainer extends React.PureComponent<Props> {
             dirty={dirty}
             isOver={isOver}
             module={module}
+            isNotSynced={isNotSynced}
             dirName={dirName}
+            hasError={hasError}
             tabCount={tabCount}
             position={position}
             closeTab={closeTab}

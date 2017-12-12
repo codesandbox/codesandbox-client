@@ -2,7 +2,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import Media from 'react-media';
-import { inject } from 'mobx-react';
+import { inject, observer } from 'mobx-react';
 
 import Save from 'react-icons/lib/md/save';
 import Fork from 'react-icons/lib/go/repo-forked';
@@ -269,7 +269,8 @@ function Header({ store, signals }) {
     </Container>
   );
 }
-export default inject('signals', 'store')(Header);
+
+export default inject('signals', 'store')(observer(Header));
 
 /*
 class Header extends React.Component {

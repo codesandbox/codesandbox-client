@@ -4,7 +4,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import Preview from 'app/components/sandbox/Preview';
 import CodeEditor from 'app/components/sandbox/CodeEditor';
-import Tab from 'app/components/sandbox/CodeEditor/Tabs/Tab';
+import Tab from 'app/containers/Tabs/Tab';
 import {
   findCurrentModule,
   findMainModule,

@@ -6,8 +6,8 @@ import { inject, observer } from 'mobx-react';
 import getTemplateDefinition from 'common/templates';
 import SplitPane from 'react-split-pane';
 
+import Tabs from 'app/containers/Tabs';
 import CodeEditor from 'app/components/sandbox/CodeEditor';
-import Tabs from 'app/components/sandbox/CodeEditor/Tabs';
 import FilePath from 'app/components/sandbox/CodeEditor/FilePath';
 import Preview from 'app/components/sandbox/Preview';
 
@@ -56,84 +56,15 @@ class EditorPreview extends React.Component {
             }
           />
         ) : (
-          <Tabs
-            tabs={store.editor.tabs}
-            modules={sandbox.modules}
-            directories={sandbox.directories}
-            currentModuleId={currentModule.id}
-            sandboxId={sandbox.id}
-            setCurrentModule={(_, moduleId) =>
-              signals.editor.moduleSelected({ id: moduleId })
-            }
-            closeTab={(_, tabIndex) => signals.editor.tabClosed({ tabIndex })}
-            moveTab={(_, prevIndex, nextIndex) =>
-              signals.editor.tabMoved({ prevIndex, nextIndex })
-            }
-            markNotDirty={() => signals.editor.moduleDoubleClicked()}
-            prettifyModule={moduleId =>
-              signals.editor.prettifyClicked({ moduleId })
-            }
-          />
+          <Tabs />
         )}
-        <CodeEditor
-          changeCode={(_, code) => signals.editor.codeChanged({ code })}
-          id={currentModule.id}
-          errors={store.editor.errors}
-          corrections={store.editor.corrections}
-          code={currentModule.code}
-          title={currentModule.title}
-          saveCode={() => signals.editor.codeSaved()}
-          changedModuleShortids={store.editor.changedModuleShortids}
-          preferences={preferences.settings}
-          modules={sandbox.modules}
-          directories={sandbox.directories}
-          sandboxId={sandbox.id}
-          dependencies={sandbox.npmDependencies.toJS()}
-          setCurrentModule={(_, moduleId) =>
-            signals.editor.moduleSelected({ id: moduleId })
-          }
-          addDependency={(_, name, version) =>
-            signals.editor.workspace.npmDependencyAdded({ name, version })
-          }
-          template={sandbox.template}
-        />
+        <CodeEditor />
       </FullSize>
     );
 
     const PreviewPane = (
       <FullSize>
-        <Preview
-          sandboxId={sandbox.id}
-          template={sandbox.template}
-          initialPath={store.editor.initialPath}
-          module={currentModule}
-          modules={sandbox.modules}
-          directories={sandbox.directories}
-          clearErrors={() => signals.editor.errorsCleared()}
-          isInProjectView={store.editor.isInProjectView}
-          externalResources={sandbox.externalResources}
-          setProjectView={(_, isInProjectView) =>
-            signals.editor.projectViewChanged({ isInProjectView })
-          }
-          preferences={preferences.settings}
-          onNewWindow={() =>
-            signals.editor.preferences.viewModeChanged({
-              showEditor: true,
-              showPreview: false,
-            })
-          }
-          dependencies={sandbox.npmDependencies}
-          runActionFromPreview={action =>
-            signals.editor.previewActionReceived({ action })
-          }
-          forcedRenders={store.editor.forcedRenders}
-          inactive={store.editor.isResizing}
-          entry={sandbox.entry}
-          setDevToolsOpen={isOpen =>
-            signals.editor.preferences.devtoolsOpened({ isOpen })
-          }
-          devToolsOpen={preferences.showDevtools}
-        />
+        <Preview runActionFromPreview />
       </FullSize>
     );
 

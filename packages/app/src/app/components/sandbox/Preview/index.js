@@ -2,7 +2,8 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { listen, dispatch } from 'codesandbox-api';
-import { inject } from 'mobx-react';
+import { inject, observer } from 'mobx-react';
+import { observe, reaction } from 'mobx';
 import { debounce } from 'lodash';
 
 import { frameUrl } from 'common/utils/url-generator';
@@ -28,7 +29,7 @@ const StyledFrame = styled.iframe`
   overflow: auto;
 `;
 
-class Preview extends React.PureComponent {
+class Preview extends React.Component {
   constructor(props) {
     super(props);
 
@@ -45,10 +46,6 @@ class Preview extends React.PureComponent {
       this.executeCode = debounce(this.executeCode, 800);
     }
 
-    // we need a value that doesn't change when receiving `initialPath`
-    // from the query params, or the iframe will continue to be re-rendered
-    // when the user navigates the iframe app, which shows the loading screen
-    this.initialPath = props.initialPath;
     this.frames = [];
   }
 
@@ -57,95 +54,112 @@ class Preview extends React.PureComponent {
     noDelay: false,
   };
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.sandboxId !== this.props.sandboxId) {
-      const url = frameUrl(nextProps.sandboxId, this.initialPath);
-      this.setState({
-        history: [url],
-        historyPosition: 0,
-        urlInAddressBar: url,
-      });
-    }
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.isInProjectView !== this.props.isInProjectView) {
-      this.executeCodeImmediately();
-      return;
-    }
-
-    if (prevProps.forcedRenders !== this.props.forcedRenders) {
-      this.executeCodeImmediately();
-      return;
-    }
-
-    if (prevProps.externalResources !== this.props.externalResources) {
-      // Changed external resources
-      this.executeCodeImmediately();
-      return;
-    }
-
-    if (prevProps.dependencies !== this.props.dependencies) {
-      // Changed dependencies
-      this.executeCodeImmediately();
-      return;
-    }
-
-    if (prevProps.module.id !== this.props.module.id) {
-      if (prevProps.isInProjectView && this.props.isInProjectView) {
-        // If user only navigated while watching project
-        return;
-      }
-      this.executeCodeImmediately();
-      return;
-    }
-
-    if (prevProps.module.isNotSynced && !this.props.module.isNotSynced) {
-      // After save
-      this.executeCodeImmediately();
-      return;
-    }
-
-    // If the strucutre (filenames etc) changed
-    const structureChanged = shouldUpdate(
-      prevProps.modules,
-      prevProps.directories,
-      this.props.modules,
-      this.props.directories
-    );
-    if (
-      (prevProps.module.code !== this.props.module.code || structureChanged) &&
-      this.state.frameInitialized
-    ) {
-      if (this.props.preferences.livePreviewEnabled) {
-        if (
-          this.props.preferences.instantPreviewEnabled ||
-          prevProps.module.code === this.props.module.code
-        ) {
-          this.executeCodeImmediately();
-        } else {
-          this.executeCode();
-        }
-      }
-    }
-  }
-
-  listener: Function;
-
-  componentDidMount() {
-    this.listener = listen(this.handleMessage);
-  }
-
   componentWillUnmount() {
     if (this.listener) {
       this.listener();
     }
+    this.disposeHandleSandboxChange();
+    this.disposeHandleProjectViewChange();
+    this.disposeHandleForcedRenders();
+    this.disposeHandleExternalResources();
+    this.disposeHandleModuleChange();
+    this.disposeHandleModuleSyncedChange();
+    this.disposeHandleCodeChange();
+    this.disposeHandleStructureChange();
   }
 
-  openNewWindow = () => {
-    if (this.props.onNewWindow) {
-      this.props.onNewWindow();
+  componentDidMount() {
+    this.listener = listen(this.handleMessage);
+    this.disposeHandleSandboxChange = observe(
+      this.props.store.editor,
+      'currentSandbox',
+      this.handleSandboxChange
+    );
+    this.disposeHandleProjectViewChange = observe(
+      this.props.store.editor,
+      'isInProjectView',
+      this.handleExecuteCode
+    );
+    this.disposeHandleForcedRenders = observe(
+      this.props.store.editor,
+      'forceRender',
+      this.handleExecuteCode
+    );
+    this.disposeHandleExternalResources = observe(
+      this.props.store.editor.currentSandbox,
+      'externalResources',
+      this.handleExecuteCode
+    );
+    this.disposeHandleModuleChange = observe(
+      this.props.store.editor,
+      'currentModule',
+      this.handleExecuteCode
+    );
+    this.disposeHandleModuleSyncedChange = observe(
+      this.props.store.editor,
+      'isAllModulesSynced',
+      this.handleModuleSyncedChange
+    );
+    this.disposeHandleCodeChange = observe(
+      this.props.store.editor.currentModule,
+      'code',
+      this.handleCodeOrStructureChange
+    );
+    this.disposeHandleStructureChange = reaction(
+      this.detectStructureChange,
+      this.handleCodeOrStructureChange
+    );
+  }
+
+  detectStructureChange = () => {
+    const sandbox = this.props.store.editor.currentSandbox;
+
+    return sandbox.modules
+      .map(module => module.directoryShortid)
+      .concat(sandbox.directories.map(directory => directory.directoryShortid));
+  };
+
+  handleCodeOrStructureChange = () => {
+    const settings = this.props.store.editor.preferences.settings;
+    if (this.state.frameInitialized && settings.livePreviewEnabled) {
+      if (settings.instantPreviewEnabled) {
+        this.executeCodeImmediately();
+      } else {
+        this.executeCode();
+      }
     }
+  };
+
+  handleModuleSyncedChange = change => {
+    if (!change.oldValue && change.newValue) {
+      this.executeCodeImmediately();
+    }
+  };
+
+  handleExecuteCode = () => {
+    this.executeCodeImmediately();
+  };
+
+  handleSandboxChange = change => {
+    const url = frameUrl(
+      change.newValue.id,
+      this.props.store.editor.initialPath
+    );
+    this.setState({
+      history: [url],
+      historyPosition: 0,
+      urlInAddressBar: url,
+    });
+  };
+
+  listener: Function;
+
+  openNewWindow = () => {
+    this.props.signals.editor.preferences.viewModeChanged({
+      showEditor: true,
+      showPreview: false,
+    });
+
     window.open(this.state.urlInAddressBar, '_blank');
   };
 
@@ -154,7 +168,7 @@ class Preview extends React.PureComponent {
     this.frames.forEach(frame => {
       frame.postMessage(
         { ...rawMessage, codesandbox: true },
-        frameUrl(this.props.sandboxId)
+        frameUrl(this.props.store.editor.currentId)
       );
     });
   };
@@ -189,12 +203,12 @@ class Preview extends React.PureComponent {
             break;
           }
           case 'action': {
-            if (this.props.runActionFromPreview) {
-              this.props.runActionFromPreview({
+            this.props.signals.editor.previewActionReceived({
+              action: {
                 ...data,
                 sandboxId: this.props.sandboxId,
-              });
-            }
+              },
+            });
             break;
           }
           default: {
@@ -216,57 +230,43 @@ class Preview extends React.PureComponent {
   };
 
   executeCodeImmediately = (initialRender: boolean = false) => {
-    const {
-      modules,
-      directories,
-      externalResources,
-      preferences,
-      dependencies,
-      sandboxId,
-      isInProjectView,
-      runActionFromPreview,
-      template,
-    } = this.props;
-    if (preferences.clearConsoleEnabled) {
+    const settings = this.props.store.editor.preferences.settings;
+    const sandbox = this.props.store.editor.currentSandbox;
+
+    if (settings.clearConsoleEnabled) {
       console.clear(); // eslint-disable-line no-console
       dispatch({ type: 'clear-console' });
     }
 
     // Do it here so we can see the dependency fetching screen if needed
     this.clearErrors();
-    if (preferences.forceRefresh && !initialRender) {
+    if (settings.forceRefresh && !initialRender) {
       this.handleRefresh();
     } else {
-      const renderedModule = this.props.module;
+      const renderedModule = this.props.store.editor.currentModule;
 
-      if (!isInProjectView) {
+      if (!this.props.store.editor.isInProjectView) {
         this.evaluateInSandbox(`history.pushState({}, null, '/')`);
       }
 
-      // We convert the modules to a format the manager understands
-      const normalizedModules = modules.map(m => ({
-        path: getModulePath(modules, directories, m.id),
-        code: m.code,
-      }));
-
       this.sendMessage({
         type: 'compile',
-        version: 2,
-        entry: renderedModule,
-        dependencies,
-        modules: normalizedModules,
-        sandboxId,
-        externalResources,
-        template,
-        hasActions: !!runActionFromPreview,
+        module: renderedModule,
+        changedModule: renderedModule,
+        dependencies: sandbox.npmDependencies,
+        modules: sandbox.modules,
+        directories: sandbox.directories,
+        sandboxId: sandbox.id,
+        externalResources: sandbox.externalResources,
+        template: sandbox.template,
+        hasActions: !!this.props.runActionFromPreview,
+        isModuleView: !this.props.store.editor.isInProjectView,
       });
     }
   };
 
   clearErrors = () => {
-    if (this.props.clearErrors) {
-      this.props.clearErrors(this.props.sandboxId);
-    }
+    this.props.signals.editor.errorsCleared();
   };
 
   updateUrl = (url: string) => {
@@ -344,8 +344,7 @@ class Preview extends React.PureComponent {
   };
 
   toggleProjectView = () => {
-    const { setProjectView, isInProjectView, sandboxId } = this.props;
-    setProjectView(sandboxId, !isInProjectView);
+    this.props.signals.editor.projectViewToggled();
   };
 
   element: ?Element;
@@ -353,17 +352,11 @@ class Preview extends React.PureComponent {
   rootInstance: ?Object;
 
   render() {
-    const {
-      sandboxId,
-      isInProjectView,
-      setProjectView,
-      hideNavigation,
-      inactive,
-      shouldExpandDevTools,
-    } = this.props;
+    const { hideNavigation, store, inactive, signals } = this.props;
+    const sandbox = store.editor.currentSandbox;
     const { historyPosition, history, dragging, urlInAddressBar } = this.state;
-
-    const url = urlInAddressBar || frameUrl(sandboxId);
+    const preferences = store.editor.preferences;
+    const url = urlInAddressBar || frameUrl(sandbox.id);
 
     return (
       <Container>
@@ -377,28 +370,30 @@ class Preview extends React.PureComponent {
               historyPosition < history.length - 1 ? this.handleForward : null
             }
             onRefresh={this.handleRefresh}
-            isProjectView={isInProjectView}
-            toggleProjectView={setProjectView && this.toggleProjectView}
+            isProjectView={store.editor.isInProjectView}
+            toggleProjectView={this.toggleProjectView}
             openNewWindow={this.openNewWindow}
-            zenMode={this.props.preferences.zenMode}
+            zenMode={preferences.settings.zenMode}
           />
         )}
 
         <StyledFrame
           sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups allow-presentation"
-          src={frameUrl(sandboxId, this.initialPath)}
+          src={frameUrl(sandbox.id, this.initialPath)}
           id="sandbox"
-          title={sandboxId}
+          title={sandbox.id}
           hideNavigation={hideNavigation}
           style={{ pointerEvents: dragging || inactive ? 'none' : 'initial' }}
         />
         <DevTools
           setDragging={this.setDragging}
           evaluateCommand={this.evaluateInSandbox}
-          sandboxId={sandboxId}
-          shouldExpandDevTools={shouldExpandDevTools}
-          zenMode={this.props.preferences.zenMode}
-          devToolsOpen={this.props.devToolsOpen}
+          sandboxId={sandbox.id}
+          shouldExpandDevTools={preferences.showDevtools}
+          zenMode={preferences.zenMode}
+          devToolsOpen={isOpen => {
+            signals.editor.preferences.devtoolsOpened({ isOpen });
+          }}
           setDevToolsOpen={this.props.setDevToolsOpen}
         />
       </Container>
@@ -406,4 +401,4 @@ class Preview extends React.PureComponent {
   }
 }
 
-export default inject('signals')(Preview);
+export default inject('signals', 'store')(observer(Preview));

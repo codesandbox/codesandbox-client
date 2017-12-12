@@ -129,6 +129,7 @@ export function addErrorFromPreview({ state, props, utils }) {
     sandbox.directories
   );
   const error = {
+    moduleId: module.id,
     column: props.action.column,
     line: props.action.line,
     message: props.action.message,
@@ -142,17 +143,21 @@ export function addErrorFromPreview({ state, props, utils }) {
 
 export function addCorrectionFromPreview({ state, props, utils }) {
   const sandbox = state.get('editor.currentSandbox');
-  const corrections = state.get('editor.corrections');
   const module = utils.resolveModule(
     props.action.path.replace(/^\//, ''),
     sandbox.modules,
     sandbox.directories
   );
+  const correction = {
+    moduleId: module.id,
+    column: props.action.column,
+    line: props.action.line,
+    message: props.action.message,
+    source: props.action.source,
+  };
 
   if (module) {
-    if (!utils.isEqual(props.action.correction, corrections[0])) {
-      state.push('editor.corrections', props.action.error);
-    }
+    state.push('editor.corrections', correction);
   }
 }
 
@@ -310,14 +315,11 @@ export function saveChangedModules({ props, api, state }) {
     .then(() => undefined);
 }
 
-export function prettifyCode({ props, utils, state }) {
-  const sandbox = state.get('editor.currentSandbox');
-  const moduleToSave = sandbox.modules.find(
-    module => module.id === props.moduleId
-  );
+export function prettifyCode({ utils, state }) {
+  const currentModule = state.get('editor.currentModule');
 
   return utils
-    .prettify(moduleToSave.title, moduleToSave.code)
+    .prettify(currentModule.title, currentModule.code)
     .then(newCode => ({ code: newCode }));
 }
 

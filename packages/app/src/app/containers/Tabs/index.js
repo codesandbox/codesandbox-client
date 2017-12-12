@@ -2,13 +2,10 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import PrettierIcon from 'react-icons/lib/md/brush';
-
-import type { Module, Directory } from 'common/types';
+import { inject, observer } from 'mobx-react';
 import Tooltip from 'common/components/Tooltip';
-
 import { canPrettify } from 'app/store/entities/sandboxes/modules/utils/prettify';
-
-import Tab from './TabContainer';
+import TabContainer from './TabContainer';
 
 const Container = styled.div`
   display: flex;
@@ -62,20 +59,7 @@ const IconContainer = styled.div`
   padding: 0 0.75rem;
 `;
 
-type Props = {
-  setCurrentModule: (sandboxId: string, moduleId: string) => void,
-  closeTab: (sandboxId: string, moduleId: string) => void,
-  moveTab: (sandboxId: string, moduleId: string, position: number) => void,
-  markNotDirty: (sandboxId: string) => void,
-  tabs: Array<{ moduleId: string }>,
-  modules: Array<Module>,
-  directories: Array<Directory>,
-  currentModuleId: string,
-  sandboxId: string,
-  prettifyModule: (id: string) => void,
-};
-
-export default class EditorTabs extends React.PureComponent<Props> {
+class EditorTabs extends React.Component {
   componentWillMount() {
     window.addEventListener('keydown', this.closeListener);
   }
@@ -83,7 +67,7 @@ export default class EditorTabs extends React.PureComponent<Props> {
     window.removeEventListener('keydown', this.closeListener);
   }
 
-  componentDidUpdate(prevProps: Props) {
+  componentDidUpdate(prevProps) {
     if (this.props.currentModuleId !== prevProps.currentModuleId) {
       // We need to scroll to the tab
       if (this.tabEls[this.props.currentModuleId]) {
@@ -113,30 +97,33 @@ export default class EditorTabs extends React.PureComponent<Props> {
     }
   };
 
-  closeTab = (position: number) => {
-    this.props.closeTab(this.props.sandboxId, position);
+  closeTab = tabIndex => {
+    this.props.signals.editor.tabClosed({ tabIndex });
   };
 
-  moveTab = (moduleId: string, position: number) => {
-    this.props.moveTab(this.props.sandboxId, moduleId, position);
+  moveTab = (moduleId, nextIndex) => {
+    const prevIndex = this.props.store.editor.tabs.findIndex(
+      tab => tab.moduleId === moduleId
+    );
+    this.props.signals.editor.tabMoved({ prevIndex, nextIndex });
   };
 
   /**
    * Mark all tabs not dirty (not cursive)
    */
   markNotDirty = () => {
-    this.props.markNotDirty(this.props.sandboxId);
+    this.props.signals.editor.moduleDoubleClicked();
   };
 
-  setCurrentModule = (moduleId: string) => {
-    this.props.setCurrentModule(this.props.sandboxId, moduleId);
+  setCurrentModule = moduleId => {
+    this.props.signals.editor.moduleSelected({ id: moduleId });
   };
 
   prettifyModule = () => {
-    this.props.prettifyModule(this.props.currentModuleId);
+    this.props.signals.editor.prettifyClicked();
   };
 
-  canPrettify = (module: ?Module) => {
+  canPrettify = module => {
     if (!module) {
       return false;
     }
@@ -144,31 +131,29 @@ export default class EditorTabs extends React.PureComponent<Props> {
     return canPrettify(module.title);
   };
 
-  container: HTMLElement;
+  container;
   tabEls = {};
-  tabEls: {
-    [moduleId: string]: HTMLElement,
-  };
 
   render() {
-    const { tabs, modules, directories, currentModuleId } = this.props;
+    const { store } = this.props;
+    const sandbox = store.editor.currentSandbox;
     const moduleObject = {};
     // We keep this object to keep track if there are duplicate titles.
     // In that case we need to show which directory the module is in.
     const tabNamesObject = {};
 
-    modules.forEach(m => {
+    sandbox.modules.forEach(m => {
       moduleObject[m.id] = m;
     });
 
-    tabs.filter(tab => moduleObject[tab.moduleId]).forEach(tab => {
+    store.editor.tabs.filter(tab => moduleObject[tab.moduleId]).forEach(tab => {
       const module = moduleObject[tab.moduleId];
 
       tabNamesObject[module.title] = tabNamesObject[module.title] || [];
       tabNamesObject[module.title].push(module.id);
     });
 
-    const currentModule = moduleObject[currentModuleId];
+    const currentModule = store.editor.currentModule;
 
     return (
       <Container>
@@ -177,7 +162,7 @@ export default class EditorTabs extends React.PureComponent<Props> {
             this.container = el;
           }}
         >
-          {tabs
+          {store.editor.tabs
             .map(tab => ({ ...tab, module: moduleObject[tab.moduleId] }))
             .filter(tab => tab.module)
             .map((tab, i) => {
@@ -189,7 +174,7 @@ export default class EditorTabs extends React.PureComponent<Props> {
                 modulesWithName.length > 1 &&
                 module.directoryShortid != null
               ) {
-                const dir = directories.find(
+                const dir = sandbox.directories.find(
                   d =>
                     d.shortid === module.directoryShortid &&
                     d.sourceId === module.sourceId
@@ -201,18 +186,28 @@ export default class EditorTabs extends React.PureComponent<Props> {
               }
 
               return (
-                <Tab
+                <TabContainer
                   setCurrentModule={this.setCurrentModule}
-                  active={currentModuleId === tab.module.id}
+                  active={currentModule.id === tab.module.id}
                   key={tab.module.id}
                   module={tab.module}
+                  hasError={Boolean(
+                    store.editor.errors.filter(
+                      error => error.moduleId === tab.module.id
+                    ).length
+                  )}
                   closeTab={this.closeTab}
                   moveTab={this.moveTab}
                   markNotDirty={this.markNotDirty}
                   dirName={dirName}
-                  tabCount={tabs.length}
+                  tabCount={store.editor.tabs.length}
                   position={i}
                   dirty={tab.dirty}
+                  isNotSynced={Boolean(
+                    store.editor.changedModuleShortids.includes(
+                      tab.module.shortid
+                    )
+                  )}
                   innerRef={el => {
                     this.tabEls[tab.module.id] = el;
                   }}
@@ -232,3 +227,5 @@ export default class EditorTabs extends React.PureComponent<Props> {
     );
   }
 }
+
+export default inject('signals', 'store')(observer(EditorTabs));
