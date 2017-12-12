@@ -49,6 +49,9 @@ easily build, import or export your project and share a single URL.
 We also aim to make discoverability very easy: it should be easy to find
 examples if you're struggling with a library.
 
-### Give a Local Editor Experience
+### Work as a Local Editor
 
-CodeSandbox works like your local editor.
+We find it important to support the whole flow of development: from creation, to
+committing, to deployment. You should have your development environment
+everywhere, so you can work whenever you want. We make it possible to build a
+web application from start to finish, without leaving your browser.
