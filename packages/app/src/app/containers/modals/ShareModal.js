@@ -1,24 +1,16 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { createSelector } from 'reselect';
+import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
 import Files from 'embed/components/Files';
 import ModeIcons from 'app/components/sandbox/ModeIcons';
-import {
-  findMainModule,
-  modulesFromSandboxSelector,
-  getModulePath,
-} from 'app/store/entities/sandboxes/modules/selectors';
-import { singleSandboxSelector } from 'app/store/entities/sandboxes/selectors';
-import { directoriesFromSandboxSelector } from 'app/store/entities/sandboxes/directories/selectors';
+import { getModulePath } from 'app/store/entities/sandboxes/modules/selectors';
+
 import {
   optionsToParameterizedUrl,
   protocolAndHost,
   sandboxUrl,
   embedUrl,
 } from 'common/utils/url-generator';
-
-import type { Sandbox, Directory, Module } from 'common/types';
 
 import Preference from 'app/components/Preference';
 
@@ -112,24 +104,9 @@ const ButtonName = styled.div`
   margin-bottom: 0;
 `;
 
-type Props = {
-  sandbox: Sandbox,
-  modules: Array<Module>,
-  directories: Array<Directory>,
-  sendMessage: (message: string) => void,
-};
-
 const BUTTON_URL = 'https://codesandbox.io/static/img/play-codesandbox.svg';
 
-const mapStateToProps = createSelector(
-  singleSandboxSelector,
-  modulesFromSandboxSelector,
-  directoriesFromSandboxSelector,
-  (sandbox, modules, directories) => ({ modules, directories, sandbox })
-);
-class ShareView extends React.PureComponent {
-  props: Props;
-
+class ShareView extends React.Component {
   state = {
     showEditor: true,
     showPreview: true,
@@ -164,7 +141,8 @@ class ShareView extends React.PureComponent {
   clearDefaultModule = () => this.setState({ defaultModule: null });
 
   getOptionsUrl = () => {
-    const { sandbox, modules, directories } = this.props;
+    const sandbox = this.props.store.editor.currentSandbox;
+    const mainModule = this.props.store.editor.mainModule;
     const {
       defaultModule,
       showEditor,
@@ -181,9 +159,13 @@ class ShareView extends React.PureComponent {
 
     const options = {};
 
-    const mainModuleId = findMainModule(modules, directories, sandbox.entry).id;
+    const mainModuleId = mainModule.id;
     if (defaultModule && defaultModule !== mainModuleId) {
-      const modulePath = getModulePath(modules, directories, defaultModule);
+      const modulePath = getModulePath(
+        sandbox.modules,
+        sandbox.directories,
+        defaultModule
+      );
       options.module = modulePath;
     }
 
@@ -230,13 +212,13 @@ class ShareView extends React.PureComponent {
   };
 
   getEditorUrl = () => {
-    const { sandbox } = this.props;
+    const sandbox = this.props.store.editor.currentSandbox;
 
     return protocolAndHost() + sandboxUrl(sandbox) + this.getOptionsUrl();
   };
 
   getEmbedUrl = () => {
-    const { sandbox } = this.props;
+    const sandbox = this.props.store.editor.currentSandbox;
 
     return protocolAndHost() + embedUrl(sandbox) + this.getOptionsUrl();
   };
@@ -255,15 +237,14 @@ class ShareView extends React.PureComponent {
 
   // eslint-disable-next-line
   getButtonMarkdown = () => {
-    const { sandbox } = this.props;
-    return `[![Edit ${sandbox.title || sandbox.id}](${
-      BUTTON_URL
-    })](${this.getEditorUrl()})`;
+    const sandbox = this.props.store.editor.currentSandbox;
+    return `[![Edit ${sandbox.title ||
+      sandbox.id}](${BUTTON_URL})](${this.getEditorUrl()})`;
   };
 
   // eslint-disable-next-line
   getButtonHTML = () => {
-    const { sandbox } = this.props;
+    const sandbox = this.props.store.editor.currentSandbox;
     return `<a href="${this.getEditorUrl()}">
   <img alt="Edit ${sandbox.title || sandbox.id}" src="${BUTTON_URL}">
 </a>
@@ -297,7 +278,8 @@ class ShareView extends React.PureComponent {
   setFontSize = (fontSize: number) => [this.setState({ fontSize })];
 
   render() {
-    const { sandbox, modules, directories } = this.props;
+    const sandbox = this.props.store.editor.currentSandbox;
+    const mainModule = this.props.store.editor.mainModule;
 
     const {
       showEditor,
@@ -312,9 +294,7 @@ class ShareView extends React.PureComponent {
       expandDevTools,
     } = this.state;
 
-    const defaultModule =
-      this.state.defaultModule ||
-      findMainModule(modules, directories, sandbox.entry).id;
+    const defaultModule = this.state.defaultModule || mainModule.id;
 
     return (
       <ShareOptions>
@@ -402,9 +382,9 @@ class ShareView extends React.PureComponent {
 
               <FilesContainer>
                 <Files
-                  modules={modules}
+                  modules={sandbox.modules}
                   directoryId={null}
-                  directories={directories}
+                  directories={sandbox.directories}
                   currentModule={defaultModule}
                   setCurrentModule={this.setDefaultModule}
                 />
@@ -463,4 +443,4 @@ class ShareView extends React.PureComponent {
   }
 }
 
-export default connect(mapStateToProps)(ShareView);
+export default inject('store', 'signals')(observer(ShareView));

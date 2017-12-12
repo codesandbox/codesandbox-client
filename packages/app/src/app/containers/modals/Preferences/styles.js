@@ -20,7 +20,9 @@ export const Subheading = styled.div`
   text-transform: uppercase;
 `;
 
-export const PreferenceContainer = styled.div`padding-top: 0.5rem;`;
+export const PreferenceContainer = styled.div`
+  padding-top: 0.5rem;
+`;
 
 export const PaddedPreference = styled(Preference)`
   padding: 0;

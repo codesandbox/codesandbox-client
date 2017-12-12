@@ -34,7 +34,7 @@ export default {
   notifications: types.array(
     types.model({
       buttons: types.array(types.string),
-      endTime: types.maybe(types.number),
+      endTime: types.number,
       id: types.number,
       notificationType: types.string,
       title: types.string,

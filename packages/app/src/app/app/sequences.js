@@ -22,7 +22,9 @@ export const setConnection = set(state`connected`, props`connection`);
 
 export const showAuthenticationError = [];
 
-export const openModal = [set(state`currentModal`, props`modal`)];
+export const openModal = set(state`currentModal`, props`modal`);
+
+export const closeModal = set(state`currentModal`, null);
 
 export const signIn = [];
 

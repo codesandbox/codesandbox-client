@@ -2,9 +2,9 @@
 import * as React from 'react';
 import styled, { injectGlobal } from 'styled-components';
 import { inject, observer } from 'mobx-react';
+import { clone } from 'mobx-state-tree';
 import { spring, Motion } from 'react-motion';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import notificationActionCreators from 'app/store/notifications/actions';
 import Portal from 'app/components/Portal';
 
 import type { Notification } from 'common/types';
@@ -87,29 +87,33 @@ class Notifications extends React.PureComponent {
             transitionEnterTimeout={500}
             transitionLeaveTimeout={300}
           >
-            {notifications.map((notification, index) => (
-              <Motion
-                key={notification.id}
-                defaultStyle={{ y: -150 }}
-                style={{
-                  y: spring(24 + 60 * (notifications.length - 1 - index)),
-                }}
-              >
-                {({ y }) => (
-                  <NotificationContainer
-                    key={notification.id}
-                    style={{ bottom: y }}
-                  >
-                    <NotificationComponent
-                      title={notification.title}
-                      type={notification.type}
-                      buttons={notification.buttons}
-                      close={() => this.closeNotification(notification.id)}
-                    />
-                  </NotificationContainer>
-                )}
-              </Motion>
-            ))}
+            {notifications.map((originalNotification, index) => {
+              const notification = clone(originalNotification);
+
+              return (
+                <Motion
+                  key={notification.id}
+                  defaultStyle={{ y: -150 }}
+                  style={{
+                    y: spring(24 + 60 * (notifications.length - 1 - index)),
+                  }}
+                >
+                  {({ y }) => (
+                    <NotificationContainer
+                      key={notification.id}
+                      style={{ bottom: y }}
+                    >
+                      <NotificationComponent
+                        title={notification.title}
+                        type={notification.type}
+                        buttons={notification.buttons}
+                        close={() => this.closeNotification(notification.id)}
+                      />
+                    </NotificationContainer>
+                  )}
+                </Motion>
+              );
+            })}
           </ReactCSSTransitionGroup>
         </div>
       </Portal>

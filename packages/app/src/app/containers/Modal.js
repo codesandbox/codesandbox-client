@@ -1,12 +1,12 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import styled, { injectGlobal } from 'styled-components';
-import { bindActionCreators } from 'redux';
+import { inject, observer } from 'mobx-react';
 import Modal from 'react-modal';
-import type { Modal as ModalType } from 'common/types';
 
-import { modalSelector } from 'app/store/modal/selectors';
-import modalActionCreators from 'app/store/modal/actions';
+import Deployment from './modals/Deployment';
+import Share from './modals/ShareModal';
+import Preferences from './modals/Preferences';
+import NewSandbox from './modals/NewSandbox';
 
 const appElement = document.getElementById('modal');
 Modal.setAppElement(appElement);
@@ -58,11 +58,6 @@ injectGlobal`
   }
 `;
 
-type Props = {
-  modalActions: typeof modalActionCreators,
-  modal: ModalType,
-};
-
 const BaseModal = styled.div`
   background-color: ${props => props.theme.background3};
 `;
@@ -82,22 +77,31 @@ const ModalBody = styled.div`
   color: black;
 `;
 
-const mapStateToProps = state => ({
-  modal: modalSelector(state),
-});
-const mapDispatchToProps = dispatch => ({
-  modalActions: bindActionCreators(modalActionCreators, dispatch),
-});
-class ModalContainer extends React.PureComponent {
-  props: Props;
+const modals = {
+  deployment: {
+    width: 600,
+    Component: Deployment,
+  },
+  share: {
+    width: 900,
+    Component: Share,
+  },
+  preferences: {
+    width: 900,
+    Component: Preferences,
+  },
+  newSandbox: {
+    width: 900,
+    Component: NewSandbox,
+  },
+};
 
+class ModalContainer extends React.Component {
   closeModal = e => {
-    const { modalActions, modal } = this.props;
-    if (e && e.keyCode && modal.preventEscapeClosing) {
-      return;
+    if (!e || !e.defaultPrevented) {
+      const { signals } = this.props;
+      signals.modalClosed();
     }
-
-    modalActions.closeModal();
   };
 
   getStyles = (width = 400, top = 20) => ({
@@ -122,25 +126,31 @@ class ModalContainer extends React.PureComponent {
   });
 
   render() {
-    const { modal } = this.props;
+    const { store } = this.props;
+    const modal = store.currentModal ? modals[store.currentModal] : null;
+    const Component = modal ? modal.Component : null;
 
     return (
       <Modal
-        isOpen={modal.open}
-        onRequestClose={!modal.preventClosing && this.closeModal}
-        contentLabel={modal.title || 'Modal'}
-        style={this.getStyles(modal.width, modal.top)}
+        isOpen={Boolean(modal)}
+        onRequestClose={modal && !modal.preventClosing && this.closeModal}
+        contentLabel={(modal && modal.title) || 'Modal'}
+        style={
+          modal ? this.getStyles(modal.width, modal.top) : this.getStyles()
+        }
         closeTimeoutMS={CLOSE_TIMEOUT_MS}
       >
-        {modal.open && (
+        {modal ? (
           <BaseModal>
             {modal.title && <ModalTitle>{modal.title}</ModalTitle>}
-            <ModalBody>{modal.Body}</ModalBody>
+            <ModalBody>
+              <Component />
+            </ModalBody>
           </BaseModal>
-        )}
+        ) : null}
       </Modal>
     );
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ModalContainer);
+export default inject('signals', 'store')(observer(ModalContainer));

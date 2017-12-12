@@ -14,7 +14,7 @@ export const addNotification = (
       title: resolve.value(title),
       notificationType: resolve.value(notificationType),
       buttons: resolve.value(buttons),
-      endTime: now + timeAlive * 1000,
+      endTime: now + resolve.value(timeAlive) * 1000,
     });
   };
 

@@ -28,10 +28,6 @@ import PatronBadge from '-!svg-react-loader!common/utils/badges/svg/patron-4.svg
 import Margin from 'common/components/spacing/Margin';
 import HeaderSearchBar from 'app/components/HeaderSearchBar';
 import UserMenu from 'app/containers/UserMenu';
-import NewSandbox from 'app/containers/modals/NewSandbox';
-import ShareModal from 'app/containers/modals/ShareModal';
-
-import Deployment from 'app/containers/Deployment';
 
 import Action from './Action';
 
@@ -180,14 +176,16 @@ function Header({ store, signals }) {
               tooltip="Deploy sandbox"
               title="Deploy"
               Icon={NowIcon}
-              onClick={() => this.props.signals.modalOpened('deployment')}
+              onClick={() =>
+                this.props.signals.modalOpened({ modal: 'deployment' })
+              }
             />
           )}
         <Action
           tooltip="Share sandbox"
           title="Share"
           Icon={ShareIcon}
-          onClick={() => this.props.signals.modalOpened('shareModal')}
+          onClick={() => this.props.signals.modalOpened({ modal: 'share' })}
         />
       </Left>
 
@@ -235,12 +233,12 @@ function Header({ store, signals }) {
           Icon={FeedbackIcon}
         />
         <Action
-          onClick={() => signals.modalOpened('newSandbox')}
+          onClick={() => signals.modalOpened({ modal: 'newSandbox' })}
           tooltip="New Sandbox"
           Icon={PlusIcon}
         />
         <Action
-          onClick={() => signals.modalOpened('preferences')}
+          onClick={() => signals.modalOpened({ modal: 'preferences' })}
           tooltip="Preferences"
           Icon={SettingsIcon}
         />
@@ -271,54 +269,3 @@ function Header({ store, signals }) {
 }
 
 export default inject('signals', 'store')(observer(Header));
-
-/*
-class Header extends React.Component {
-
-
-  deploySandbox = () => {
-    const { sandboxId } = this.props;
-
-    ;
-    this.props.modalActions.openModal({
-      width: 600,
-      Body: <Deployment id={sandboxId} />,
-    });
-  };
-
-  openShareView = () => {
-    ;
-    this.props.modalActions.openModal({
-      width: 900,
-      Body: (
-        <ShareModal
-          modules={this.props.modules}
-          directories={this.props.directories}
-          id={this.props.sandboxId}
-        />
-      ),
-    });
-  };
-
-
-  openPreferences = () => {
-    ;
-    this.props.modalActions.openModal({
-      width: 900,
-      Body: <Preferences />,
-    });
-  };
-
-  openNewSandbox = () => {
-    ;
-    this.props.modalActions.openModal({
-      width: 900,
-      Body: <NewSandbox />,
-    });
-  };
-
-  render() {
-
-  }
-}
-*/

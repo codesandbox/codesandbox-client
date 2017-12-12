@@ -48,6 +48,7 @@ export default Module({
     appUnmounted: sequences.unloadApp,
     connectionChanged: sequences.setConnection,
     modalOpened: sequences.openModal,
+    modalClosed: sequences.closeModal,
     signInClicked: sequences.signIn,
     notificationRemoved: sequences.removeNotification,
   },
