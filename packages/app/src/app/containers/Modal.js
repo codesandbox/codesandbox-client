@@ -5,7 +5,7 @@ import Modal from 'react-modal';
 
 import Deployment from './modals/Deployment';
 import Share from './modals/ShareModal';
-import Preferences from './modals/Preferences';
+import Preferences from './Preferences';
 import NewSandbox from './modals/NewSandbox';
 
 const appElement = document.getElementById('modal');

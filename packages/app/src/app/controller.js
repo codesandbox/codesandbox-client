@@ -1,5 +1,5 @@
 import { Controller } from '@cerebral/mobx-state-tree';
-import app from './app';
+import newStore from './newStore';
 
 let Devtools = null;
 
@@ -7,7 +7,7 @@ if (process.env.NODE_ENV !== 'production') {
   Devtools = require('cerebral/devtools').default;
 }
 
-export default Controller(app, {
+export default Controller(newStore, {
   devtools: Devtools({
     host: 'localhost:8383',
   }),

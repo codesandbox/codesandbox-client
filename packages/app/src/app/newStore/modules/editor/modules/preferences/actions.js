@@ -36,7 +36,9 @@ export function updatePaymentDetails({ api, props }) {
       token,
     },
   };
-  return api.patch('/users/current_user/payment_details', body).then(data => ({data}));
+  return api
+    .patch('/users/current_user/payment_details', body)
+    .then(data => ({ data }));
 }
 
 export function toggleDevtools({ state, props }) {
