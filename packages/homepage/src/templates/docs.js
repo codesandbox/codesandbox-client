@@ -12,7 +12,6 @@ const Container = styled.div`
 `;
 
 const cardCSS = css`
-  position: relative;
   background-color: ${props => props.theme.background};
   padding: 1.5rem;
   box-shadow: 0 3px 3px rgba(0, 0, 0, 0.3);
@@ -158,6 +157,7 @@ const Edit = styled.a`
 
 const Heading = styled.div`
   ${cardCSS};
+  position: relative;
 
   background-image: linear-gradient(
     -45deg,
