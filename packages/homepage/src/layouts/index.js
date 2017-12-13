@@ -5,6 +5,7 @@ import styled, { ThemeProvider } from 'styled-components';
 import theme from 'common/theme';
 
 import Navigation from '../components/Navigation';
+import Footer from '../components/Footer';
 
 import './index.css';
 
@@ -26,6 +27,7 @@ const TemplateWrapper = ({ children }) => (
     <div>
       <Header />
       <div style={{ maxWidth: '100vw', overflowX: 'hidden' }}>{children()}</div>
+      <Footer />
     </div>
   </ThemeProvider>
 );

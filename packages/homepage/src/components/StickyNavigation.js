@@ -21,6 +21,13 @@ const Navigation = styled.nav`
       height: 100vh;
     `};
 
+  ${props =>
+    props.absoluteTop &&
+    css`
+      position: absolute;
+      top: ${props.absoluteTop}px;
+    `};
+
   ${media.phone`
     padding-bottom: 1rem;
     position: relative;
@@ -100,8 +107,15 @@ export default class StickyNavigation extends React.PureComponent<Props> {
   componentDidMount() {
     window.addEventListener('scroll', this.handleScroll);
     const { y } = getScrollPos(Date.now(), false);
-    this.top =
-      y + document.getElementById('navigation').getBoundingClientRect().top;
+
+    const { top, height } = document
+      .getElementById('navigation')
+      .getBoundingClientRect();
+
+    this.top = y + top;
+    this.height = height;
+    this.footerTop =
+      y + document.getElementById('footer').getBoundingClientRect().top;
   }
 
   componentWillUnmount() {
@@ -111,10 +125,15 @@ export default class StickyNavigation extends React.PureComponent<Props> {
   handleScroll = () => {
     const { y } = getScrollPos(Date.now(), false);
 
-    if (y > this.top && !this.state.fixed) {
-      this.setState({ fixed: true });
+    if (y + this.height + 32 > this.footerTop) {
+      this.setState({
+        absoluteTop: this.footerTop - 32 - this.height,
+        fixed: false,
+      });
+    } else if (y > this.top && !this.state.fixed) {
+      this.setState({ fixed: true, absoluteTop: null });
     } else if (y < this.top && this.state.fixed) {
-      this.setState({ fixed: false });
+      this.setState({ fixed: false, absoluteTop: null });
     }
   };
 
@@ -127,7 +146,11 @@ export default class StickyNavigation extends React.PureComponent<Props> {
     };
 
     return (
-      <Navigation fixed={this.state.fixed} id="navigation">
+      <Navigation
+        fixed={this.state.fixed}
+        absoluteTop={this.state.absoluteTop}
+        id="navigation"
+      >
         <ul>
           {docs.map(({ node }) => (
             <NavigationItem key={node.frontmatter.title}>

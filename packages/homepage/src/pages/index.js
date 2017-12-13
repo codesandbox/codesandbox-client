@@ -4,7 +4,6 @@ import Animation from '../screens/home/Animation';
 import NPMFeature from '../screens/home/NPMFeature';
 import CycleFeature from '../screens/home/CycleFeature';
 import ExtraFeatures from '../screens/home/ExtraFeatures';
-import Footer from '../screens/home/Footer';
 import RecentPublications from '../screens/home/RecentPublications';
 import Patron from '../screens/home/Patron';
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
@@ -42,7 +41,6 @@ export default class HomePage extends React.PureComponent {
         <ExtraFeatures />
         <RecentPublications sizes={this.props.data.publicationImages.edges} />
         <Patron />
-        <Footer />
       </div>
     );
   }

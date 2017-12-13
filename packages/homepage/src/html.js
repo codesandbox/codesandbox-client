@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import * as PropTypes from 'prop-types';
 import { TypographyStyle } from 'react-typography';
 import typography from './utils/typography';
 
@@ -12,13 +11,8 @@ if (process.env.NODE_ENV === `production`) {
   }
 }
 
-const propTypes = {
-  headComponents: PropTypes.node.isRequired,
-  body: PropTypes.node.isRequired,
-  postBodyComponents: PropTypes.node.isRequired,
-};
-
-class Html extends Component {
+// eslint-disable-next-line react/prefer-stateless-function
+export default class HTML extends Component {
   render() {
     let css;
     if (process.env.NODE_ENV === `production`) {
@@ -82,7 +76,3 @@ class Html extends Component {
     );
   }
 }
-
-Html.propTypes = propTypes;
-
-module.exports = Html;

@@ -9,6 +9,7 @@ import StickyNavigation from '../components/StickyNavigation';
 
 const Container = styled.div`
   color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 1rem;
 `;
 
 const cardCSS = css`

@@ -1,9 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import Link from 'gatsby-link';
+
 import MaxWidth from 'common/components/flex/MaxWidth';
 
-import media from '../../utils/media';
+import media from '../utils/media';
 
 const Container = styled.div`
   display: flex;
@@ -59,12 +61,14 @@ const Authors = styled.div`
 `;
 
 const Background = styled.div`
+  position: relative;
   background-color: ${props => props.theme.background2.darken(0.2)};
-  padding: 2rem;
+  padding: 1rem;
+  z-index: 100;
 `;
 
 export default () => (
-  <Background>
+  <Background id="footer">
     <MaxWidth width={1280}>
       <Container>
         <Column>
@@ -79,6 +83,12 @@ export default () => (
               <a href="/search" target="_blank" rel="noopener noreferrer">
                 Search
               </a>
+            </li>
+            <li>
+              <Link to="/changelog">Recent Updates</Link>
+            </li>
+            <li>
+              <Link to="/docs">Documentation</Link>
             </li>
             <li>
               <a href="/patron" target="_blank" rel="noopener noreferrer">
