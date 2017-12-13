@@ -1,35 +1,47 @@
 import React, { KeyboardEvent } from 'react';
-import { connect } from 'react-redux';
-import { createSelector } from 'reselect';
+import { inject } from 'mobx-react';
+import { KEYBINDINGS, normalizeKey } from 'app/store/preferences/keybindings';
 
-import { normalizeKey } from 'app/store/preferences/keybindings';
-import { userKeybindingsSelector } from 'app/store/preferences/selectors';
-import { modalSelector } from 'app/store/modal/selectors';
+class KeybindingManager extends React.Component {
+  constructor(props) {
+    super(props);
+    this.pressedComboKeys = [];
+    this.pressedComboMetaKeys = [];
+    this.pressedSpecialKeys = [];
+    this.setBindings();
+  }
+  setBindings() {
+    const bindings = this.getBindings();
 
-type Props = {
-  sandboxId: string,
-  keybindings: {
-    [key: string]: {
-      title: string,
-      bindings: [Array<string>, ?Array<string>],
-      action: Function,
-    },
-  },
-  bindingStrings: {
-    [combo: string]: string,
-  },
-  dispatch: Function,
-  modalOpen: boolean,
-};
-
-const mapStateToProps = createSelector(
-  userKeybindingsSelector,
-  modalSelector,
-  (newBindings, modal) => {
+    this.bindingStrings = bindings.bindingStrings;
+    this.keybindings = bindings.keybindings;
+    this.checkedStrokes = this.bindingStrings;
+  }
+  getBindings = () => {
+    const userBindings = this.props.store.editor.preferences.settings
+      .keybindings;
+    const userBindingsMap = userBindings.reduce(
+      (bindings, binding) =>
+        Object.assign(bindings, {
+          [binding.key]: binding.bindings,
+        }),
+      {}
+    );
+    const keybindings = Object.keys(KEYBINDINGS).reduce(
+      (currentBindings, key) =>
+        Object.assign(currentBindings, {
+          [key]: Object.assign(
+            {},
+            KEYBINDINGS[key],
+            key in userBindingsMap ? { bindings: userBindingsMap[key] } : {}
+          ),
+        }),
+      {}
+    );
     const bindingStrings = {};
 
-    Object.keys(newBindings).forEach(key => {
-      const binding = newBindings[key];
+    Object.keys(keybindings).forEach(key => {
+      const binding = keybindings[key];
 
       if (binding.bindings[0]) {
         const bindingString = binding.bindings[0].join('');
@@ -44,24 +56,15 @@ const mapStateToProps = createSelector(
       }
     });
 
-    return { keybindings: newBindings, bindingStrings, modalOpen: modal.open };
-  }
-);
-const mapDispatchToProps = dispatch => ({
-  dispatch,
-});
-class KeybindingManager extends React.Component<Props> {
-  pressedComboKeys = [];
-  pressedComboMetaKeys = [];
-  pressedSpecialKeys = [];
-  checkedStrokes = this.props.bindingStrings;
+    return { keybindings, bindingStrings };
+  };
 
-  removeFromPressedComboKeys = (key: string) => {
+  removeFromPressedComboKeys = key => {
     this.pressedComboKeys = this.pressedComboKeys.filter(x => x !== key);
   };
 
-  handleKeyDown = (e: KeyboardEvent) => {
-    if (this.props.modalOpen) {
+  handleKeyDown = e => {
+    if (this.props.store.currentModal) {
       return;
     }
 
@@ -102,13 +105,9 @@ class KeybindingManager extends React.Component<Props> {
       this.pressedComboKeys = [];
       this.pressedComboMetaKeys = [];
       this.pressedSpecialKeys = [];
-      this.checkedStrokes = this.props.bindingStrings;
+      this.checkedStrokes = this.bindingStrings;
 
-      this.props.dispatch(
-        this.props.keybindings[match].action({
-          id: this.props.sandboxId,
-        })
-      );
+      this.keybindings[match].action(this.props.signals);
     } else if (typeof match === 'object') {
       this.checkedStrokes = match;
 
@@ -117,7 +116,7 @@ class KeybindingManager extends React.Component<Props> {
       }
 
       this.timeout = setTimeout(() => {
-        this.checkedStrokes = this.props.bindingStrings;
+        this.checkedStrokes = this.bindingStrings;
       }, 300);
     }
   };
@@ -156,7 +155,7 @@ class KeybindingManager extends React.Component<Props> {
   }
 
   componentDidUpdate() {
-    this.checkedStrokes = this.props.bindingStrings;
+    this.setBindings();
   }
 
   render() {
@@ -164,4 +163,4 @@ class KeybindingManager extends React.Component<Props> {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(KeybindingManager);
+export default inject('signals', 'store')(KeybindingManager);

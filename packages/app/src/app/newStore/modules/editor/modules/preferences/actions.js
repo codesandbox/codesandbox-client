@@ -1,3 +1,22 @@
+export function changeKeybinding({ props, state }) {
+  const keybindings = state.get('editor.preferences.settings.keybindings');
+  const currentIndex = keybindings.findIndex(
+    binding => binding.key === props.name
+  );
+  const newBinding = { key: props.name, bindings: props.value };
+
+  if (currentIndex === -1) {
+    state.push('editor.preferences.settings.keybindings', newBinding);
+  } else {
+    state.splice(
+      'editor.preferences.settings.keybindings',
+      currentIndex,
+      1,
+      newBinding
+    );
+  }
+}
+
 export function toggleBadgeVisibility({ state, props }) {
   const { id } = props;
   const badges = state.get('user.badges');
@@ -39,8 +58,4 @@ export function updatePaymentDetails({ api, props }) {
   return api
     .patch('/users/current_user/payment_details', body)
     .then(data => ({ data }));
-}
-
-export function toggleDevtools({ state, props }) {
-  state.set('editor.preferences.showDevtools', props.isOpen);
 }

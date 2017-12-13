@@ -35,7 +35,7 @@ function LikeHeart({ store, signals, className, colorless }) {
       >
         {sandbox.userLiked ? (
           <FullHeartIcon
-            style={!colorless && { color: '#E01F4E' }}
+            style={colorless ? null : { color: '#E01F4E' }}
             onClick={
               store.isLoggedIn ? signals.editor.likeSandboxToggled() : null
             }

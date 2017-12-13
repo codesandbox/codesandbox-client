@@ -7,8 +7,6 @@ import { spring, Motion } from 'react-motion';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import Portal from 'app/components/Portal';
 
-import type { Notification } from 'common/types';
-
 import NotificationComponent from './Notification';
 
 // eslint-disable-next-line
@@ -30,7 +28,7 @@ const NotificationContainer = styled.div`
   z-index: 41;
 `;
 
-class Notifications extends React.PureComponent {
+class Notifications extends React.Component {
   constructor() {
     super();
 

@@ -18,7 +18,7 @@ export default Module({
       clearConsoleEnabled: false, // TODO: should be true
       autoDownloadTypes: true,
       codeMirror: false,
-      keybindings: {},
+      keybindings: [],
       newPackagerExperiment: false,
       prettierConfig: {
         printWidth: 80,
@@ -45,15 +45,17 @@ export default Module({
     itemIndex: 0,
     showEditor: true,
     showPreview: true,
-    showConsole: false,
+    showDevtools: false,
   },
   signals: {
     viewModeChanged: sequences.changeViewMode,
-    devtoolsOpened: sequences.toggleDevtools,
+    devtoolsToggled: sequences.toggleDevtools,
     itemIndexChanged: sequences.changeItemIndex,
     preferenceChanged: sequences.setPreference,
     badgeVisibilityChanged: sequences.setBadgeVisibility,
     paymentDetailsRequested: sequences.getPaymentDetails,
     paymentDetailsUpdated: sequences.updatePaymentDetails,
+    keybindingChanged: sequences.changeKeybinding,
+    zenModeToggled: sequences.toggleZenMode,
   },
 });

@@ -21,6 +21,7 @@ export default Module({
   model,
   state: {
     jwt: null,
+    isAuthenticating: false,
     user: {
       id: null,
       email: null,

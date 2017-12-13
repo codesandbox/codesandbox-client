@@ -89,7 +89,8 @@ class SandboxPage extends React.Component {
     return (
       <React.Fragment>
         <Editor match={match} />
-        {/* <KeybindingManager sandboxId={sandbox.id} /> Use shortcuts provider instead */}
+        <KeybindingManager />
+        <QuickActions />
       </React.Fragment>
     );
   }

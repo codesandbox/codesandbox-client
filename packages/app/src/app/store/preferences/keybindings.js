@@ -53,9 +53,8 @@ export const KEYBINDINGS = {
     title: 'Open Quick Actions',
     type: 'View',
     bindings: [[metaKey, 'Shift', 'P']],
-    action: () => (dispatch: Function, getState: Function) => {
-      const quickActionsOpen = quickActionsOpenSelector(getState());
-      dispatch(viewActions.setQuickActionsOpen(!quickActionsOpen));
+    action: signals => {
+      signals.editor.preferences.quickActionsOpened();
     },
   },
 
@@ -63,9 +62,8 @@ export const KEYBINDINGS = {
     title: 'Toggle Sidebar',
     type: 'View',
     bindings: [[metaKey], ['Shift']],
-    action: () => (dispatch: Function, getState: Function) => {
-      const workspaceHidden = workspaceHiddenSelector(getState());
-      dispatch(viewActions.setWorkspaceHidden(!workspaceHidden));
+    action: signals => {
+      signals.editor.workspace.workspaceToggled();
     },
   },
 
@@ -73,8 +71,11 @@ export const KEYBINDINGS = {
     title: 'Editor View',
     type: 'View',
     bindings: [[metaKey, 'K', 'E']],
-    action: ({ id }) => (dispatch: Function) => {
-      dispatch(sandboxActions.setViewMode(id, true, false));
+    action: signals => {
+      signals.editor.preferences.viewModeChanged({
+        showEditor: true,
+        showPreview: false,
+      });
     },
   },
 
@@ -82,8 +83,11 @@ export const KEYBINDINGS = {
     title: 'Preview View',
     type: 'View',
     bindings: [[metaKey, 'K', 'P']],
-    action: ({ id }) => (dispatch: Function) => {
-      dispatch(sandboxActions.setViewMode(id, false, true));
+    action: signals => {
+      signals.editor.preferences.viewModeChanged({
+        showEditor: false,
+        showPreview: true,
+      });
     },
   },
 
@@ -91,8 +95,11 @@ export const KEYBINDINGS = {
     title: 'Split View',
     type: 'View',
     bindings: [[metaKey, 'K', 'S']],
-    action: ({ id }) => (dispatch: Function) => {
-      dispatch(sandboxActions.setViewMode(id, true, true));
+    action: signals => {
+      signals.editor.preferences.viewModeChanged({
+        showEditor: true,
+        showPreview: true,
+      });
     },
   },
 
@@ -100,13 +107,8 @@ export const KEYBINDINGS = {
     title: 'Toggle Zen Mode',
     type: 'View',
     bindings: [[metaKey, 'K', 'Z']],
-    action: () => (dispatch: Function, getState: Function) => {
-      const currentZenMode = preferencesSelector(getState()).zenMode;
-      dispatch(
-        preferenceActions.setPreference({
-          zenMode: !currentZenMode,
-        })
-      );
+    action: signals => {
+      signals.editor.preferences.zenModeToggled();
     },
   },
 
@@ -114,9 +116,8 @@ export const KEYBINDINGS = {
     title: 'Toggle Console',
     type: 'View',
     bindings: [[metaKey, 'K', 'D']],
-    action: () => (dispatch: Function, getState: Function) => {
-      const devToolsOpen = devToolsOpenSelector(getState());
-      dispatch(viewActions.setDevToolsOpen(!devToolsOpen));
+    action: signals => {
+      signals.editor.preferences.devtoolsToggled();
     },
   },
 
@@ -124,8 +125,8 @@ export const KEYBINDINGS = {
     title: 'Open Preferences',
     type: 'View',
     bindings: [[metaKey, ',']],
-    action: () => (dispatch: Function) => {
-      dispatch(modalActions.openPreferences());
+    action: signals => {
+      signals.modalOpened({ name: 'preferences' });
     },
   },
 
@@ -133,8 +134,8 @@ export const KEYBINDINGS = {
     title: 'Add Dependency',
     type: 'Source',
     bindings: [],
-    action: ({ id }) => (dispatch: Function) => {
-      dispatch(modalActions.openSearchDependencies(id));
+    action: signals => {
+      signals.modalOpened({ name: 'searchDependencies' });
     },
   },
 

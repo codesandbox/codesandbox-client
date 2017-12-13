@@ -1,13 +1,18 @@
-import { set, when } from 'cerebral/operators';
+import { set, when, toggle } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 import * as actions from './actions';
+
+export const changeKeybinding = actions.changeKeybinding;
 
 export const changeViewMode = [
   set(state`editor.preferences.showEditor`, props`showEditor`),
   set(state`editor.preferences.showPreview`, props`showPreview`),
 ];
 
-export const toggleDevtools = actions.toggleDevtools;
+export const toggleZenMode = toggle(state`editor.preferences.settings.zenMode`);
+
+export const toggleDevtools = toggle(state`editor.preferences.showDevtools`);
+
 export const changeItemIndex = [
   set(state`editor.preferences.itemIndex`, props`itemIndex`),
 ];

@@ -3,6 +3,7 @@ import { state, props } from 'cerebral/tags';
 import * as actions from './actions';
 
 export const loadApp = [
+  set(state`isAuthenticating`, true),
   actions.setJwtFromStorage,
   actions.listenToConnectionChange,
   when(state`jwt`),
@@ -14,6 +15,7 @@ export const loadApp = [
     ],
     false: [],
   },
+  set(state`isAuthenticating`, false),
 ];
 
 export const unloadApp = actions.stopListeningToConnectionChange;

@@ -1,21 +1,15 @@
 // @flow
 import * as React from 'react';
 import styled from 'styled-components';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import { inject } from 'mobx-react';
+import { inject, observer } from 'mobx-react';
 import Loadable from 'react-loadable';
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
-import { createSelector } from 'reselect';
 
 import _debug from 'app/utils/debug';
 import Notifications from 'app/containers/Notifications';
 import ContextMenu from 'app/containers/ContextMenu';
 import Modal from 'app/containers/Modal';
 import Loading from 'app/components/Loading';
-import { loggedInSelector } from 'app/store/user/selectors';
-import userActionCreators from 'app/store/user/actions';
-import initializeConnectionManager from 'app/store/connection/actions';
 
 import Sandbox from './Sandbox';
 import NewSandbox from './NewSandbox';
@@ -77,40 +71,20 @@ const Terms = Loadable({
   LoadingComponent: Loading,
 });
 
-type Props = {
-  hasLogin: boolean,
-  userActions: typeof userActionCreators,
-  initializeConnectionManager: typeof initializeConnectionManager,
-};
-
-const mapStateToProps = createSelector(loggedInSelector, loggedIn => ({
-  hasLogin: loggedIn,
-}));
-const mapDispatchToProps = dispatch => ({
-  userActions: bindActionCreators(userActionCreators, dispatch),
-  initializeConnectionManager: bindActionCreators(
-    initializeConnectionManager,
-    dispatch
-  ),
-});
-class Routes extends React.PureComponent<Props> {
-  unlisten: () => void;
-
+class Routes extends React.Component {
   componentDidMount() {
     this.props.signals.appMounted();
-    this.unlisten = this.props.initializeConnectionManager();
-
-    if (this.props.hasLogin) {
-      this.props.userActions.getCurrentUser();
-    }
   }
 
   componentWillUnmount() {
-    if (this.unlisten) this.unlisten();
     this.props.signals.appUnmounted();
   }
 
   render() {
+    if (this.props.store.isAuthenticating) {
+      return <Container />;
+    }
+
     return (
       <Container>
         <Route
@@ -153,6 +127,4 @@ class Routes extends React.PureComponent<Props> {
   }
 }
 
-export default inject('signals')(
-  withRouter(connect(mapStateToProps, mapDispatchToProps)(Routes))
-);
+export default inject('signals')(withRouter(observer(Routes)));

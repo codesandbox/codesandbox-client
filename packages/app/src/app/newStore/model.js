@@ -2,6 +2,7 @@ import { types } from 'mobx-state-tree';
 
 export default {
   jwt: types.maybe(types.string),
+  isAuthenticating: types.boolean,
   user: types.model({
     avatarUrl: types.maybe(types.string),
     badges: types.array(

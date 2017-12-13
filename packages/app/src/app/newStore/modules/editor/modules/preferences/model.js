@@ -13,7 +13,12 @@ export default {
     clearConsoleEnabled: types.boolean,
     autoDownloadTypes: types.boolean,
     codeMirror: types.boolean,
-    keybindings: types.model({}),
+    keybindings: types.array(
+      types.model({
+        key: types.string,
+        bindings: types.array(types.maybe(types.array(types.string))),
+      })
+    ),
     newPackagerExperiment: types.boolean,
     prettierConfig: types.model({
       printWidth: types.number,
@@ -39,7 +44,7 @@ export default {
   itemIndex: types.number,
   showEditor: types.boolean,
   showPreview: types.boolean,
-  showConsole: types.boolean,
+  showDevtools: types.boolean,
   paymentDetailError: types.maybe(types.string),
   paymentDetails: types.maybe(
     types.model({

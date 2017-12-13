@@ -1,17 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { preferencesSelector } from 'app/store/preferences/selectors';
-import preferencesActionCreators from 'app/store/preferences/actions';
+import { inject, observer } from 'mobx-react';
 import { KEYBINDINGS } from 'app/store/preferences/keybindings';
 
 import { Container, PreferenceContainer, PaddedPreference } from '../styles';
-
-type Props = {
-  preferencesActions: typeof preferencesActionCreators,
-  preferences: Object,
-};
 
 const Rule = styled.hr`
   border: none;
@@ -28,20 +20,24 @@ const ErrorMessage = styled.div`
   font-weight: 500;
 `;
 
-const mapDispatchToProps = dispatch => ({
-  preferencesActions: bindActionCreators(preferencesActionCreators, dispatch),
-});
-const mapStateToProps = state => ({
-  preferences: preferencesSelector(state),
-});
-
-class Preferences extends React.Component<Props> {
+class Preferences extends React.Component {
   state = { error: null };
 
-  validateValue = (name, value) => {
-    const { preferences } = this.props;
+  getUserBindings = () => {
+    const keybindings = this.props.store.editor.preferences.settings
+      .keybindings;
 
-    const existingBindings = preferences.keybindings || {};
+    return keybindings.reduce(
+      (bindings, binding) =>
+        Object.assign(bindings, {
+          [binding.key]: binding.bindings,
+        }),
+      {}
+    );
+  };
+
+  validateValue = (name, value) => {
+    const existingBindings = this.getUserBindings();
     const keyBindingKeys = Object.keys(KEYBINDINGS).filter(k => k !== name);
 
     const bindings = keyBindingKeys.map(
@@ -79,32 +75,25 @@ class Preferences extends React.Component<Props> {
     return false;
   };
 
-  bindValue = name => {
-    const { preferencesActions, preferences } = this.props;
+  bindValue = name => ({
+    setValue: value => {
+      const error = this.validateValue(name, value);
 
-    return {
-      setValue: value => {
-        const error = this.validateValue(name, value);
-
-        if (error) {
-          this.setState({ error });
-        } else {
-          preferencesActions.setPreference({
-            keybindings: {
-              ...preferences.keybindings,
-              [name]: value,
-            },
-          });
-        }
-      },
-    };
-  };
+      if (error) {
+        this.setState({ error });
+      } else {
+        this.props.signals.editor.preferences.keybindingChanged({
+          name,
+          value,
+        });
+      }
+    },
+  });
 
   render() {
-    const { preferences } = this.props;
     const keyBindingKeys = Object.keys(KEYBINDINGS);
+    const existingBindings = this.getUserBindings();
 
-    const existingBindings = preferences.keybindings || {};
     return (
       <Container>
         <PreferenceContainer>
@@ -125,4 +114,4 @@ class Preferences extends React.Component<Props> {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Preferences);
+export default inject('signals', 'store')(observer(Preferences));
