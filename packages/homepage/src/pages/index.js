@@ -46,7 +46,7 @@ export default class HomePage extends React.PureComponent {
   }
 }
 
-export const query = graphql`
+export const pageQuery = graphql`
   query ImageSizesQuery {
     publicationImages: allImageSharp(
       filter: { id: { regex: "/RecentPublications/" } }
