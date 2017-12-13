@@ -6,7 +6,7 @@ description: "It's possible to embed a sandbox on Medium and other websites."
 
 ## What is an Embed?
 
-CodeSandbox has a separate application for the embed. This application is specifically built to be as small as possible. If you replace `s` in the URL of a sandbox to `embed` you have the embedded version of the sandbox. Example: https://codesandbox.io/**s**/new => https://codesandbox.io/**embed**/new.
+CodeSandbox has a separate application for the embed. This application is specifically built to be as small as possible. If you replace `s` in the URL of a sandbox to `embed` you have the embed version of the sandbox. Example: https://codesandbox.io/**s**/new => https://codesandbox.io/**embed**/new. Notice that the embed doesn't have all features of the full editor.
 
 ## Generate a URL
 
