@@ -56,10 +56,59 @@ $ codesandbox ./
 
 ## Define API
 
-Documentation often wants to be able to dynamically create a sandbox based on its code examples. We have a separate API endpoint for that. You can call this endpoint with a `GET` and with a `POST` request.
+We offer an API that allows you to programatically create a sandbox. This is most often useful in documentation: code examples can generate a sandbox on the fly. You can call the endpoint `https://codesandbox.io/api/v1/sandboxes/define` both with a a `GET` and with a `POST` request.
 
-Example implementation:
+### How it works
 
-<iframe src="https://codesandbox.io/embed/qzlp7nw34q?editorsize=70&fontsize=14" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+The API only needs one argument: `files`. This argument contains the files that will be in the sandbox, an example body would be:
 
-You can define a sandbox by creating a JSON file with
+```json
+{
+  "files": {
+    "index.js": {
+      "content": "console.log('hello!')",
+      "isBinary": false
+    },
+    "package.json": {
+      "content": {
+        "dependencies": {}
+      }
+    }
+  }
+}
+```
+
+Every request **requires** a `package.json`. This file can either be a string or an object. We determine all information of the sandbox from the files, like we do with the GitHub import.
+
+### GET Request
+
+It's very hard to send the JSON parameters with a GET request, there is a chance of unescaped characters and the URL hits its limit of ~2000 characters quickly. That's why we first compress the files to a compressed `lz-string`. We offer a utility function in the `codesandbox` dependency for this. Implementation would look like this:
+
+```js
+import { getParameters } from 'codesandbox/lib/api/define';
+
+const parameters = getParameters({
+  files: {
+    'index.js': {
+      content: "console.log('hello')",
+    },
+    'package.json': {
+      content: { dependencies: {} },
+    },
+  },
+});
+
+const url = `https://codesandbox.io/api/v1/sandboxes/define?parameters=${parameters}`;
+```
+
+#### Example Sandbox
+
+<iframe src="https://codesandbox.io/embed/6yznjvl7nw?editorsize=50&fontsize=14&hidenavigation=1" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+
+### POST Form
+
+You can do the exact same steps for a POST request, but instead of a URL you'd show a form. With a POST request you can create bigger sandboxes.
+
+#### Example Sandbox
+
+<iframe src="https://codesandbox.io/embed/qzlp7nw34q?editorsize=70&fontsize=14&hidenavigation=1" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>

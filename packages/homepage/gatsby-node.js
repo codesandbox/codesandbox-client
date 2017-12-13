@@ -25,6 +25,12 @@ exports.onCreateNode = ({ node, boundActionCreators, getNode }) => {
     const { url } = node.frontmatter;
     const { relativePath } = getNode(node.parent);
 
+    createNodeField({
+      node,
+      name: 'path',
+      value: relativePath,
+    });
+
     if (relativePath.includes('changelog')) {
       // The date portion comes from the file name: <date>-<title>.md
       const match = BLOG_POST_FILENAME_REGEX.exec(relativePath);

@@ -12,6 +12,7 @@ const Container = styled.div`
 `;
 
 const cardCSS = css`
+  position: relative;
   background-color: ${props => props.theme.background};
   padding: 1.5rem;
   box-shadow: 0 3px 3px rgba(0, 0, 0, 0.3);
@@ -64,6 +65,7 @@ const DocsContainer = styled.div`
 const DocumentationContent = styled.div`
   line-height: 1.4;
   color: rgba(255, 255, 255, 0.8);
+  font-feature-settings: normal;
 
   h2 {
     margin: 1.5rem 0;
@@ -86,12 +88,22 @@ const DocumentationContent = styled.div`
     ${cardCSS};
   }
 
+  iframe {
+    nargin-bottom: 1rem;
+  }
+
   code {
     background-color: rgba(0, 0, 0, 0.3);
     padding: 0.2em 0.4em;
     font-size: 85%;
     margin: 0;
     border-radius: 3px;
+  }
+
+  code,
+  pre {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, Courier New,
+      monospace;
   }
 
   *:last-child {
@@ -106,13 +118,52 @@ const DocumentationContent = styled.div`
     background-color: rgba(0, 0, 0, 0.3);
     padding: 0.5rem;
     border-radius: 4px;
+    margin-bottom: 1rem;
 
     code {
       background-color: transparent;
       padding: 0;
       margin: 0;
       font-size: 100%;
+      height: auto !important;
+      line-height: 20px;
+      white-space: pre-wrap;
+      word-break: break-word;
     }
+  }
+
+  .token.attr-name {
+    color: ${props => props.theme.secondary};
+  }
+
+  .token.tag {
+    color: #ec5f67;
+  }
+
+  .token.string {
+    color: #99c794;
+  }
+
+  .token.keyword {
+    color: ${props => props.theme.secondary};
+  }
+
+  .token.boolean,
+  .token.function {
+    color: #fac863;
+  }
+
+  .token.property,
+  .token.attribute {
+    color: ${props => props.theme.secondary};
+  }
+
+  .token.comment,
+  .token.block-comment,
+  .token.prolog,
+  .token.doctype,
+  .token.cdata {
+    color: #626466;
   }
 `;
 
@@ -120,6 +171,16 @@ const NavigationItem = styled.li`
   margin-bottom: 1rem;
   padding: 0;
   border: 0;
+`;
+
+const Edit = styled.a`
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1.125rem;
 `;
 
 const Heading = styled.div`
@@ -148,7 +209,7 @@ const Description = styled.p`
 
 export default ({ data }) => {
   const { edges: docs } = data.allMarkdownRemark;
-  const { html, frontmatter } = data.markdownRemark;
+  const { html, frontmatter, fields } = data.markdownRemark;
 
   const activeStyle = {
     color: theme.secondary(),
@@ -191,6 +252,15 @@ export default ({ data }) => {
           <Article>
             <Heading>
               <Title>{frontmatter.title}</Title>
+              <Edit
+                href={`https://github.com/CompuIves/codesandbox-client/tree/master/packages/homepage/content/${
+                  fields.path
+                }`}
+                target="_blank"
+                rel="noreferrer noopener"
+              >
+                Edit this page
+              </Edit>
               <Description>{frontmatter.description}</Description>
             </Heading>
 
@@ -231,6 +301,7 @@ export const query = graphql`
       }
       fields {
         slug
+        path
       }
     }
   }
