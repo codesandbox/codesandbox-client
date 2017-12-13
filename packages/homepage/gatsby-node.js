@@ -1,7 +1,9 @@
 const { createFilePath } = require('gatsby-source-filesystem');
+const { resolve } = require('path');
 
 // Parse date information out of post filename.
 const BLOG_POST_FILENAME_REGEX = /([0-9]+)\-([0-9]+)\-([0-9]+)\-(.+)\.md$/;
+const DOCUMENTATION_FILENAME_REGEX = /[0-9]+-(.*)\.md$/;
 
 function dateToLocalJSON(date) {
   function addZ(n) {
@@ -20,7 +22,14 @@ exports.onCreateNode = ({ node, boundActionCreators, getNode }) => {
   const { createNodeField } = boundActionCreators;
 
   if (node.internal.type === `MarkdownRemark`) {
+    const { url } = node.frontmatter;
     const { relativePath } = getNode(node.parent);
+
+    createNodeField({
+      node,
+      name: 'path',
+      value: relativePath,
+    });
 
     if (relativePath.includes('changelog')) {
       // The date portion comes from the file name: <date>-<title>.md
@@ -43,6 +52,80 @@ exports.onCreateNode = ({ node, boundActionCreators, getNode }) => {
         name: `slug`,
         value: slug,
       });
+    } else {
+      const match = DOCUMENTATION_FILENAME_REGEX.exec(relativePath);
+
+      createNodeField({
+        node,
+        name: `slug`,
+        value: `docs/${match[1]}`,
+      });
     }
+
+    // Used by createPages() above to register redirects.
+    createNodeField({
+      node,
+      name: 'url',
+      value: url ? '/docs' + url : node.fields.slug,
+    });
   }
+};
+
+exports.createPages = async ({ graphql, boundActionCreators }) => {
+  const { createPage, createRedirect } = boundActionCreators;
+
+  const docsTemplate = resolve(__dirname, './src/templates/docs.js');
+
+  // Redirect /index.html to root.
+  createRedirect({
+    fromPath: '/index.html',
+    toPath: '/',
+  });
+
+  const allMarkdown = await graphql(
+    `
+      {
+        allMarkdownRemark(limit: 1000) {
+          edges {
+            node {
+              fields {
+                slug
+                url
+              }
+            }
+          }
+        }
+      }
+    `
+  );
+
+  if (allMarkdown.errors) {
+    console.error(allMarkdown.errors);
+
+    throw Error(allMarkdown.errors);
+  }
+
+  allMarkdown.data.allMarkdownRemark.edges.forEach(edge => {
+    const slug = edge.node.fields.slug;
+    const url = edge.node.fields.url;
+
+    if (slug.includes('docs/')) {
+      let template;
+      if (slug.includes('docs/')) {
+        template = docsTemplate;
+      }
+
+      const createArticlePage = path =>
+        createPage({
+          path,
+          component: template,
+          context: {
+            slug,
+          },
+        });
+
+      // Register primary URL.
+      createArticlePage(url || slug);
+    }
+  });
 };

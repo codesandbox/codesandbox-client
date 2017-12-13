@@ -5,6 +5,8 @@ import Padding from 'common/components/spacing/Padding';
 
 export default ({ children, ...props }: { children: React.Node }) => (
   <MaxWidth {...props}>
-    <Padding top={8}>{children}</Padding>
+    <Padding top={8} bottom={1}>
+      {children}
+    </Padding>
   </MaxWidth>
 );

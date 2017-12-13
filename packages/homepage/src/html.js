@@ -45,10 +45,6 @@ class Html extends Component {
           <meta property="og:type" content="website" />
           <meta property="og:author" content="https://ivesvh.com" />
           <meta
-            property="og:title"
-            content="CodeSandbox: Online Editor Tailored for Web Application Development"
-          />
-          <meta
             property="og:description"
             content="CodeSandbox is an online editor with a focus on creating and sharing web application projects"
           />

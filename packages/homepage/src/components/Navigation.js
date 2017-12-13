@@ -48,9 +48,6 @@ const Item = styled.a`
   ${props =>
     props.button &&
     css`
-      ${media.phone`
-      display: none;
-    `};
       transition: 0.3s ease all;
       padding: 0.35rem 0.8rem;
       border-radius: 4px;
@@ -65,6 +62,14 @@ const Item = styled.a`
         transform: translateY(-3px);
         color: white;
       }
+    `};
+
+  ${props =>
+    props.hidePhone &&
+    css`
+      ${media.phone`
+      display: none;
+    `};
     `};
 
   ${media.phone`
@@ -143,12 +148,17 @@ export default class Navigation extends React.PureComponent {
             >
               GitHub
             </Item>
-            <ItemLink to="/changelog">Recent Updates</ItemLink>
-            <Item href="/s" rel="noopener noreferrer" button={!user}>
+            <ItemLink to="/changelog">Updates</ItemLink>
+            <ItemLink to="/docs">Docs</ItemLink>
+            <Item hidePhone href="/s" rel="noopener noreferrer" button={!user}>
               Create Sandbox
             </Item>
             {user && (
-              <Item href={`/u/${user.username}`} rel="noopener noreferrer">
+              <Item
+                hidePhone
+                href={`/u/${user.username}`}
+                rel="noopener noreferrer"
+              >
                 {user.username}
                 <Image alt={user.username} src={user.avatar_url} />
               </Item>

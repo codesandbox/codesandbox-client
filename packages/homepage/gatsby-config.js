@@ -46,6 +46,17 @@ module.exports = {
               sizeByPixelDensity: true,
             },
           },
+          {
+            resolve: require.resolve(`./plugins/remark-sections`),
+          },
+          'gatsby-remark-autolink-headers',
+          `gatsby-remark-prismjs`,
+          {
+            resolve: 'gatsby-plugin-nprogress',
+            options: {
+              color: '#6CAEDD',
+            },
+          },
         ],
       },
     },

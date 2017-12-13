@@ -11,7 +11,12 @@ import {
   getModulePath,
 } from 'app/store/entities/sandboxes/modules/selectors';
 
+import Fullscreen from 'common/components/flex/Fullscreen';
+import Centered from 'common/components/flex/Centered';
 import type { Sandbox, Module, ModuleError } from 'common/types';
+import theme from 'common/theme';
+
+import playSVG from './play.svg';
 
 const Container = styled.div`
   display: flex;
@@ -64,6 +69,7 @@ type Props = {
   forceRefresh: boolean,
   highlightedLines: Array<string>,
   expandDevTools: boolean,
+  runOnClick: boolean,
 };
 
 type State = {
@@ -90,6 +96,7 @@ export default class Content extends React.PureComponent<Props, State> {
       inInProjectView: false,
       codes: {},
       errors: [],
+      running: !props.runOnClick,
       tabs,
     };
   }
@@ -233,6 +240,28 @@ export default class Content extends React.PureComponent<Props, State> {
     this.setState({ tabs: this.state.tabs.filter((_, i) => i !== pos) });
   };
 
+  RunOnClick = () => (
+    <Fullscreen
+      style={{ backgroundColor: theme.primary(), cursor: 'pointer' }}
+      onClick={() => this.setState({ running: true })}
+    >
+      <Centered horizontal vertical>
+        <img width={170} height={170} src={playSVG} alt="Run Sandbox" />
+        <div
+          style={{
+            color: theme.red(),
+            fontSize: '2rem',
+            fontWeight: 700,
+            marginTop: 24,
+            textTransform: 'uppercase',
+          }}
+        >
+          Click to run
+        </div>
+      </Centered>
+    </Fullscreen>
+  );
+
   render() {
     const {
       sandbox,
@@ -265,6 +294,8 @@ export default class Content extends React.PureComponent<Props, State> {
     const alteredMainModule = alteredModules.find(m => m.id === mainModule.id);
 
     if (!alteredMainModule) throw new Error('Cannot find main module');
+
+    const { RunOnClick } = this;
 
     return (
       <Container>
@@ -333,27 +364,31 @@ export default class Content extends React.PureComponent<Props, State> {
             only={showPreview && !showEditor}
             size={100 - editorSize}
           >
-            <Preview
-              sandboxId={sandbox.id}
-              template={sandbox.template}
-              isInProjectView={isInProjectView}
-              modules={alteredModules}
-              directories={sandbox.directories}
-              externalResources={sandbox.externalResources}
-              module={alteredMainModule}
-              addError={this.addError}
-              clearErrors={this.clearErrors}
-              preferences={this.getPreferences()}
-              setProjectView={this.props.setProjectView}
-              hideNavigation={hideNavigation}
-              setFrameHeight={this.handleResize}
-              initialPath={this.props.initialPath}
-              errors={errors}
-              corrections={[]}
-              dependencies={sandbox.npmDependencies}
-              shouldExpandDevTools={expandDevTools}
-              entry={sandbox.entry}
-            />
+            {!this.state.running ? (
+              <RunOnClick />
+            ) : (
+              <Preview
+                sandboxId={sandbox.id}
+                template={sandbox.template}
+                isInProjectView={isInProjectView}
+                modules={alteredModules}
+                directories={sandbox.directories}
+                externalResources={sandbox.externalResources}
+                module={alteredMainModule}
+                addError={this.addError}
+                clearErrors={this.clearErrors}
+                preferences={this.getPreferences()}
+                setProjectView={this.props.setProjectView}
+                hideNavigation={hideNavigation}
+                setFrameHeight={this.handleResize}
+                initialPath={this.props.initialPath}
+                errors={errors}
+                corrections={[]}
+                dependencies={sandbox.npmDependencies}
+                shouldExpandDevTools={expandDevTools}
+                entry={sandbox.entry}
+              />
+            )}
           </Split>
         )}
       </Container>

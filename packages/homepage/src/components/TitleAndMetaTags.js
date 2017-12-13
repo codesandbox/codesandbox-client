@@ -5,6 +5,7 @@ export default ({ title }: { title: string }) => (
   <Helmet
     title={title}
     meta={[
+      { name: 'og:title', content: title },
       {
         name: 'description',
         content:
