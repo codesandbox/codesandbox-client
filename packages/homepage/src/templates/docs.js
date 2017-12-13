@@ -24,6 +24,10 @@ const Article = styled.div`
   flex: 3;
 
   padding-right: 1rem;
+
+  ${media.phone`
+    padding-right: 0;
+  `};
 `;
 
 const DocsContainer = styled.div`
