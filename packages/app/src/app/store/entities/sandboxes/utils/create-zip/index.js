@@ -4,7 +4,7 @@ import { saveAs } from 'file-saver';
 
 import type { Sandbox, Module, Directory } from 'common/types';
 import { react, reactTs, vue, preact, svelte } from 'common/templates/index';
-import { slugify } from 'common/utils/slugify';
+import slugify from 'common/utils/slugify';
 import resolveModule from 'common/sandbox/resolve-module';
 
 const CSSTag = (resource: string) =>

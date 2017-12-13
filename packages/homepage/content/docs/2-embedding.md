@@ -31,6 +31,7 @@ The options shown in the embed modal are not all options available. We need a ne
 | `eslint`         | Use eslint (increases embed size significantly).                              | `0`/`1`                              | `0`                                  |
 | `forcerefresh`   | Force a full refresh of frame after every edit.                               | `0`/`1`                              | `0`                                  |
 | `expanddevtools` | Start with the devtools (console) open.                                       | `0`/`1`                              | `0`                                  |
+| `runonclick`     | Only load the preview when the user says so.                                  | `0`/`1`                              | `0`                                  |
 | `view`           | Which view to open by default                                                 | `editor`/`split`/`preview`           | `split`, `preview` for small screens |
 | `module`         | Which module to open by default                                               | path to module (starting with `/`)   | entry path                           |
 | `initialpath`    | Which url to initially load in address bar                                    | string                               | `/`                                  |
