@@ -97,28 +97,23 @@ export default class StickyNavigation extends React.PureComponent<Props> {
     fixed: false,
   };
 
-  top = 0;
   componentDidMount() {
     window.addEventListener('scroll', this.handleScroll);
+    const { y } = getScrollPos(Date.now(), false);
+    this.top =
+      y + document.getElementById('navigation').getBoundingClientRect().top;
   }
 
   componentWillUnmount() {
     window.removeEventListener('scroll', this.handleScroll);
   }
 
-  handleScroll = e => {
+  handleScroll = () => {
     const { y } = getScrollPos(Date.now(), false);
-
     if (y > this.top && !this.state.fixed) {
       this.setState({ fixed: true });
     } else if (y < this.top && this.state.fixed) {
       this.setState({ fixed: false });
-    }
-  };
-
-  setTop = el => {
-    if (el) {
-      this.top = el.getBoundingClientRect().top;
     }
   };
 
@@ -131,7 +126,7 @@ export default class StickyNavigation extends React.PureComponent<Props> {
     };
 
     return (
-      <Navigation fixed={this.state.fixed} innerRef={this.setTop}>
+      <Navigation fixed={this.state.fixed} id="navigation">
         <ul>
           {docs.map(({ node }) => (
             <NavigationItem key={node.frontmatter.title}>
