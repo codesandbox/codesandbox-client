@@ -1,11 +1,11 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import Link from 'gatsby-link';
-import slugify from 'common/utils/slugify';
-import theme from 'common/theme';
+
+import media from '../utils/media';
 
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 import PageContainer from '../components/PageContainer';
+import StickyNavigation from '../components/StickyNavigation';
 
 const Container = styled.div`
   color: rgba(255, 255, 255, 0.9);
@@ -20,46 +20,17 @@ const cardCSS = css`
   margin-bottom: 1rem;
 `;
 
-const Navigation = styled.nav`
-  flex: 1;
-
-  margin-top: 2rem;
-  margin-right: 1rem;
-
-  ul {
-    margin-left: 0;
-    list-style: none;
-  }
-
-  a {
-    text-decoration: none;
-  }
-`;
-
-const PrimaryNavigationLink = styled(Link)`
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 1.125rem;
-  font-weight: 500;
-`;
-
-const SecondaryNavigationLink = styled(Link)`
-  transition: 0.3s ease color;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 1rem;
-  font-weight: 500;
-  margin-left: 1rem;
-
-  &:hover {
-    color: white;
-  }
-`;
-
 const Article = styled.div`
   flex: 3;
+
+  padding-right: 1rem;
 `;
 
 const DocsContainer = styled.div`
   display: flex;
+  ${media.phone`
+    flex-direction: column;
+  `};
 `;
 
 const DocumentationContent = styled.div`
@@ -86,6 +57,7 @@ const DocumentationContent = styled.div`
 
   section {
     ${cardCSS};
+    overflow-x: auto;
   }
 
   iframe {
@@ -167,20 +139,17 @@ const DocumentationContent = styled.div`
   }
 `;
 
-const NavigationItem = styled.li`
-  margin-bottom: 1rem;
-  padding: 0;
-  border: 0;
-`;
-
 const Edit = styled.a`
   position: absolute;
   top: 1.5rem;
   right: 1.5rem;
   color: white;
-  text-decoration: none;
   font-weight: 500;
   font-size: 1.125rem;
+
+  ${media.phone`
+    display: none;
+  `};
 `;
 
 const Heading = styled.div`
@@ -211,44 +180,19 @@ export default ({ data }) => {
   const { edges: docs } = data.allMarkdownRemark;
   const { html, frontmatter, fields } = data.markdownRemark;
 
-  const activeStyle = {
-    color: theme.secondary(),
-    fontWeight: 700,
-  };
-
   return (
-    <Container>
+    <Container style={{ overflowX: 'auto' }}>
       <TitleAndMetaTags title={`${frontmatter.title} - CodeSandbox`} />
-      <PageContainer>
+      <PageContainer style={{ overflowX: 'auto' }}>
         <DocsContainer>
-          <Navigation>
-            <ul>
-              {docs.map(({ node }) => (
-                <NavigationItem key={node.frontmatter.title}>
-                  <PrimaryNavigationLink
-                    to={node.fields.url}
-                    exact
-                    activeStyle={activeStyle}
-                  >
-                    {node.frontmatter.title}
-                  </PrimaryNavigationLink>
-                  <ul>
-                    {node.headings.map(({ value }) => (
-                      <li key={value}>
-                        <SecondaryNavigationLink
-                          to={node.fields.url + `#${slugify(value)}`}
-                          exact
-                          activeStyle={activeStyle}
-                        >
-                          {value}
-                        </SecondaryNavigationLink>
-                      </li>
-                    ))}
-                  </ul>
-                </NavigationItem>
-              ))}
-            </ul>
-          </Navigation>
+          <div
+            style={{
+              flex: 1,
+              minWidth: 250,
+            }}
+          >
+            <StickyNavigation docs={docs} />
+          </div>
           <Article>
             <Heading>
               <Title>{frontmatter.title}</Title>
