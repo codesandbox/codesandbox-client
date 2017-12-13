@@ -240,29 +240,27 @@ export default class Content extends React.PureComponent<Props, State> {
     this.setState({ tabs: this.state.tabs.filter((_, i) => i !== pos) });
   };
 
-  RunOnClick = () => {
-    return (
-      <Fullscreen
-        style={{ backgroundColor: theme.primary(), cursor: 'pointer' }}
-        onClick={() => this.setState({ running: true })}
-      >
-        <Centered horizontal vertical>
-          <img width={170} height={170} src={playSVG} alt="Run Sandbox" />
-          <div
-            style={{
-              color: theme.red(),
-              fontSize: '2rem',
-              fontWeight: 700,
-              marginTop: 24,
-              textTransform: 'uppercase',
-            }}
-          >
-            Click to run
-          </div>
-        </Centered>
-      </Fullscreen>
-    );
-  };
+  RunOnClick = () => (
+    <Fullscreen
+      style={{ backgroundColor: theme.primary(), cursor: 'pointer' }}
+      onClick={() => this.setState({ running: true })}
+    >
+      <Centered horizontal vertical>
+        <img width={170} height={170} src={playSVG} alt="Run Sandbox" />
+        <div
+          style={{
+            color: theme.red(),
+            fontSize: '2rem',
+            fontWeight: 700,
+            marginTop: 24,
+            textTransform: 'uppercase',
+          }}
+        >
+          Click to run
+        </div>
+      </Centered>
+    </Fullscreen>
+  );
 
   render() {
     const {
