@@ -1,5 +1,22 @@
 import * as errors from './errors';
 
+export function setStoredSettings({ state, settingsStore }) {
+  const settings = settingsStore.getAll();
+
+  if (settings.keybindings) {
+    settings.keybindings = Object.keys(settings.keybindings).reduce(
+      (value, key) =>
+        value.concat({
+          key,
+          bindings: settings.keybindings[key],
+        }),
+      []
+    );
+  }
+
+  state.merge('editor.preferences.settings', settings);
+}
+
 export function removeNotification({ state, props }) {
   const notifications = state.get('notifications');
   const notificationToRemoveIndex = notifications.findIndex(

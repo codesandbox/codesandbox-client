@@ -13,7 +13,7 @@ export default inject('store', 'signals')(
     const bindValue = name => ({
       value: store.editor.preferences.settings[name],
       setValue: value =>
-        signals.editor.preferences.preferenceChanged({
+        signals.editor.preferences.settingChanged({
           name,
           value,
         }),

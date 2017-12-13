@@ -2,7 +2,10 @@ import { set, when, toggle } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 import * as actions from './actions';
 
-export const changeKeybinding = actions.changeKeybinding;
+export const changeKeybinding = [
+  actions.changeKeybinding,
+  actions.storeKeybindings,
+];
 
 export const changeViewMode = [
   set(state`editor.preferences.showEditor`, props`showEditor`),
@@ -17,8 +20,9 @@ export const changeItemIndex = [
   set(state`editor.preferences.itemIndex`, props`itemIndex`),
 ];
 
-export const setPreference = [
+export const setSetting = [
   set(state`editor.preferences.settings.${props`name`}`, props`value`),
+  actions.storeSetting,
 ];
 
 export const setBadgeVisibility = [

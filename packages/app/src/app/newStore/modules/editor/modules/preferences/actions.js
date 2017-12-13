@@ -1,3 +1,14 @@
+export function storeSetting({ props, state, settingsStore }) {
+  if (props.name.split('.').length > 1) {
+    const prop = props.name.split('.')[0];
+    const value = state.get(`editor.preferences.settings.${prop}`);
+
+    settingsStore.set(prop, value);
+  } else {
+    settingsStore.set(props.name, props.value);
+  }
+}
+
 export function changeKeybinding({ props, state }) {
   const keybindings = state.get('editor.preferences.settings.keybindings');
   const currentIndex = keybindings.findIndex(
@@ -15,6 +26,19 @@ export function changeKeybinding({ props, state }) {
       newBinding
     );
   }
+}
+
+export function storeKeybindings({ state, settingsStore }) {
+  const keybindings = state.get('editor.preferences.settings.keybindings');
+  const value = keybindings.reduce(
+    (currentValue, binding) =>
+      Object.assign(currentValue, {
+        [binding.key]: binding.bindings,
+      }),
+    {}
+  );
+
+  settingsStore.set('keybindings', value);
 }
 
 export function toggleBadgeVisibility({ state, props }) {

@@ -12,6 +12,7 @@ export const loadApp = [
       actions.getUser,
       set(state`user`, props`user`),
       actions.setPatronPrice,
+      actions.setStoredSettings,
     ],
     false: [],
   },

@@ -51,7 +51,7 @@ export default Module({
     viewModeChanged: sequences.changeViewMode,
     devtoolsToggled: sequences.toggleDevtools,
     itemIndexChanged: sequences.changeItemIndex,
-    preferenceChanged: sequences.setPreference,
+    settingChanged: sequences.setSetting,
     badgeVisibilityChanged: sequences.setBadgeVisibility,
     paymentDetailsRequested: sequences.getPaymentDetails,
     paymentDetailsUpdated: sequences.updatePaymentDetails,

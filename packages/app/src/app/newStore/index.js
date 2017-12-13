@@ -9,6 +9,7 @@ import BrowserProvider from './providers/Browser';
 import RouterProvider from './providers/Router';
 import UtilsProvider from './providers/Utils';
 import JSZipProvider from './providers/JSZip';
+import SettingsStoreProvider from './providers/SettingsStore';
 
 import * as sequences from './sequences';
 import * as errors from './errors';
@@ -66,5 +67,6 @@ export default Module({
     browser: BrowserProvider,
     router: RouterProvider,
     utils: UtilsProvider,
+    settingsStore: SettingsStoreProvider,
   },
 });
