@@ -187,7 +187,7 @@ export default ({ data }) => {
   return (
     <Container style={{ overflowX: 'auto' }}>
       <TitleAndMetaTags title={`${frontmatter.title} - CodeSandbox`} />
-      <PageContainer style={{ overflowX: 'auto' }}>
+      <PageContainer>
         <DocsContainer>
           <div
             style={{

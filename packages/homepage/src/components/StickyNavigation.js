@@ -110,6 +110,7 @@ export default class StickyNavigation extends React.PureComponent<Props> {
 
   handleScroll = () => {
     const { y } = getScrollPos(Date.now(), false);
+
     if (y > this.top && !this.state.fixed) {
       this.setState({ fixed: true });
     } else if (y < this.top && this.state.fixed) {
