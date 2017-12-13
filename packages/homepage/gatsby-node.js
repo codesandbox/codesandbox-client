@@ -129,3 +129,13 @@ exports.createPages = async ({ graphql, boundActionCreators }) => {
     }
   });
 };
+
+exports.modifyWebpackConfig = ({ config }) => {
+  config.merge({
+    resolve: {
+      root: resolve(__dirname, './src'),
+      extensions: ['', '.js', '.jsx', '.json'],
+    },
+  });
+  return config;
+};
