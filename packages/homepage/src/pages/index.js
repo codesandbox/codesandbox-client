@@ -39,26 +39,9 @@ export default class HomePage extends React.Component {
         <NPMFeature />
         <CycleFeature />
         <ExtraFeatures />
-        <RecentPublications sizes={this.props.data.publicationImages.edges} />
+        <RecentPublications />
         <Patron />
       </div>
     );
   }
 }
-
-export const pageQuery = graphql`
-  query ImageSizesQuery {
-    publicationImages: allImageSharp(
-      filter: { id: { regex: "/RecentPublications/" } }
-    ) {
-      edges {
-        node {
-          id
-          sizes(maxWidth: 400) {
-            ...GatsbyImageSharpSizes
-          }
-        }
-      }
-    }
-  }
-`;
