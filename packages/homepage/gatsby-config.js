@@ -61,7 +61,6 @@ module.exports = {
       },
     },
     `gatsby-plugin-styled-components`,
-    `gatsby-plugin-react-next`,
     `gatsby-plugin-react-helmet`,
     {
       resolve: `gatsby-plugin-google-tagmanager`,
