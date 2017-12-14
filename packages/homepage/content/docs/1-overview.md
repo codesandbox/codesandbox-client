@@ -33,7 +33,7 @@ quickly noticed that other students at the university were using CodeSandbox to
 learn React, and we found this a great idea.
 
 We shifted our focus to make it as easy as possible to start a project, and to
-make UI and UX as easy as possible.
+make UI and UX very simple but useful.
 
 ### Empower Sharability and Discoverability
 

@@ -53,7 +53,7 @@ This embed is focused on being as light as possible:
 
 ### Code Example Embed
 
-You can also use CodeSandbox to show code examples, with highlighted lines. We recommend using CodeMirror for now for that:
+You can also use CodeSandbox to show code examples, with highlighted lines. This is only supported with the CodeMirror editor currently:
 
 `https://codesandbox.io/embed/new?codemirror=1&highlights=11,12,13,14`
 

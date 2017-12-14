@@ -82,7 +82,7 @@ Every request **requires** a `package.json`. This file can either be a string or
 
 ### GET Request
 
-It's very hard to send the JSON parameters with a GET request, there is a chance of unescaped characters and the URL hits its limit of ~2000 characters quickly. That's why we first compress the files to a compressed `lz-string`. We offer a utility function in the `codesandbox` dependency for this. Implementation would look like this:
+It's very hard to send the JSON parameters with a GET request, there is a chance of unescaped characters and the URL hits its limit of ~2000 characters quickly. That's why we first compress the files to a compressed `lz-string`. We offer a utility function in the `codesandbox` dependency for this. The implementation looks like this:
 
 ```js
 import { getParameters } from 'codesandbox/lib/api/define';
