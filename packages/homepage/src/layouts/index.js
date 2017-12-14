@@ -2,11 +2,10 @@ import React from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 
 import theme from 'common/theme';
+import '../css/global.css';
 
 import Navigation from '../components/Navigation';
 import Footer from '../components/Footer';
-
-import '../global.css';
 
 const Absolute = styled.div`
   position: absolute;

@@ -8,7 +8,7 @@ import RecentPublications from '../screens/home/RecentPublications';
 import Patron from '../screens/home/Patron';
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 
-export default class HomePage extends React.PureComponent {
+export default class HomePage extends React.Component {
   componentDidMount() {
     window.addEventListener('scroll', this.scrollCheck, false);
   }
@@ -18,7 +18,7 @@ export default class HomePage extends React.PureComponent {
   }
 
   scrollCheck = () => {
-    clearTimeout(this.timertimer);
+    clearTimeout(this.timer);
     if (!document.body.classList.contains('disable-hover')) {
       document.body.classList.add('disable-hover');
       window.scrolling = true;
