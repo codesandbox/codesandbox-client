@@ -106,7 +106,11 @@ export default class StickyNavigation extends React.PureComponent<Props> {
   };
 
   componentDidMount() {
-    window.addEventListener('scroll', this.handleScroll);
+    // To prevent jumping
+    setTimeout(() => {
+      window.addEventListener('scroll', this.handleScroll);
+      this.handleScroll();
+    }, 500);
     const { y } = getScrollPos(Date.now(), false);
 
     const { top, height } = document

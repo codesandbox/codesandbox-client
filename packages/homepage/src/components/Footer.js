@@ -67,6 +67,17 @@ const Background = styled.div`
   z-index: 100;
 `;
 
+const BasComponent = () => (
+  <a
+    id="bas"
+    href="https://www.linkedin.com/in/basbuursma/"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    Bas Buursma
+  </a>
+);
+
 export default () => (
   <Background id="footer">
     <MaxWidth width={1280}>
@@ -151,16 +162,7 @@ export default () => (
       </Container>
 
       <Authors>
-        By{' '}
-        <a
-          id="bas"
-          href="https://www.linkedin.com/in/basbuursma/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Bas Buursma
-        </a>{' '}
-        and{' '}
+        By <BasComponent /> and{' '}
         <a
           id="ives"
           href="https://twitter.com/CompuIves"
