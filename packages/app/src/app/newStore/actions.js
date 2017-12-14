@@ -1,4 +1,5 @@
 import * as errors from './errors';
+import { signInUrl } from 'common/utils/url-generator';
 
 export function siginInGithub({ browser, path, props }) {
   const { useExtraScopes } = props;
