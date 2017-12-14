@@ -30,7 +30,21 @@ export const openModal = set(state`currentModal`, props`modal`);
 
 export const closeModal = set(state`currentModal`, null);
 
-export const signIn = [];
+export const signIn = [
+  set(state`isAuthenticating`, true),
+  actions.signInGithub,
+  {
+    success: [
+      actions.getUser,
+      set(state`user`, props`user`),
+      actions.setPatronPrice,
+      actions.setStoredSettings,
+    ],
+    error: [],
+  },
+  set(state`currentModal`, null),
+  set(state`isAuthenticating`, false),
+];
 
 export const removeNotification = actions.removeNotification;
 
@@ -70,7 +84,7 @@ export const authorise = [
 
 export const signInGithub = [
   set(state`loading`, true),
-  actions.siginInGithub,
+  actions.signInGithub,
   {
     success: set(state`jwt`, props`jwt`),
     error: addNotification('Github Authentucation Error', 'error'),
