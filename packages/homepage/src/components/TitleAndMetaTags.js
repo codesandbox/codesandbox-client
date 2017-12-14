@@ -13,7 +13,7 @@ export default ({
       {
         name: 'description',
         content:
-          'CodeSandbox is an online editor with a focus on creating and sharing web application projects',
+          'CodeSandbox is an online code editor with a focus on creating and sharing web application projects',
       },
       {
         name: 'keywords',
