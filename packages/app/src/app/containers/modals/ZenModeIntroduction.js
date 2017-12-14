@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import { inject, observer } from 'mobx-react';
 
 import modalActionCreators from 'app/store/modal/actions';
 import Button from 'app/components/buttons/Button';
@@ -23,32 +22,27 @@ const Explanation = styled.p`
   margin-bottom: 2rem;
 `;
 
-const mapDispatchToProps = dispatch => ({
-  modalActions: bindActionCreators(modalActionCreators, dispatch),
-});
-const ZenModeIntroduction = ({
-  modalActions,
-}: {
-  modalActions: typeof modalActionCreators,
-}) => (
-  <Container>
-    <Heading>Zen Mode Explained</Heading>
-    <Explanation>
-      Zen Mode is perfect for giving instruction videos and presentations. You
-      can toggle the sidebar by double tapping <tt>shift</tt>. You can leave Zen
-      Mode by hovering over the file name above the editor and clicking the icon
-      on the right.
-    </Explanation>
+function ZenModeIntroduction({ signals }) {
+  return (
+    <Container>
+      <Heading>Zen Mode Explained</Heading>
+      <Explanation>
+        Zen Mode is perfect for giving instruction videos and presentations. You
+        can toggle the sidebar by double tapping <tt>shift</tt>. You can leave
+        Zen Mode by hovering over the file name above the editor and clicking
+        the icon on the right.
+      </Explanation>
 
-    <Row justifyContent="space-around">
-      <Button
-        style={{ marginRight: '.5rem' }}
-        onClick={modalActions.closeModal}
-      >
-        Close
-      </Button>
-    </Row>
-  </Container>
-);
-
-export default connect(null, mapDispatchToProps)(ZenModeIntroduction);
+      <Row justifyContent="space-around">
+        <Button
+          style={{ marginRight: '.5rem' }}
+          onClick={() => {
+            signals.closeModal();
+          }}
+        >
+          Close
+        </Button>
+      </Row>
+    </Container>
+  );
+}
