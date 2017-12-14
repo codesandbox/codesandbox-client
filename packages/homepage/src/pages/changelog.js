@@ -116,7 +116,7 @@ const GitHubUser = ({ username }) => (
 );
 
 // eslint-disable-next-line
-export default class Changelog extends React.Component {
+export default class ChangelogPage extends React.Component {
   render() {
     const { data } = this.props;
     const { edges: posts } = data.allMarkdownRemark;
