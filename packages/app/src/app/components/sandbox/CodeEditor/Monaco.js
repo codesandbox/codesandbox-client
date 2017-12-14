@@ -117,7 +117,7 @@ class CodeEditor extends React.Component {
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.resizeEditor);
-    this.disposeModules(this.props.modules);
+    this.disposeModules(this.props.store.editor.currentModule.modules);
     if (this.editor) {
       this.editor.dispose();
     }

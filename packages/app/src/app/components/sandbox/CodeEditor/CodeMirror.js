@@ -1,8 +1,9 @@
 // @flow
+import { autorun, observe } from 'mobx';
 import * as React from 'react';
+import { inject, observer } from 'mobx-react';
 import CodeMirror from 'codemirror';
 import styled, { keyframes } from 'styled-components';
-import type { Preferences, ModuleError } from 'common/types';
 
 import { getCodeMirror } from 'app/utils/codemirror';
 import theme from 'common/theme';
@@ -14,23 +15,6 @@ import 'codemirror/addon/tern/tern';
 import FuzzySearch from './FuzzySearch';
 
 const documentCache = {};
-
-type Props = {
-  code: ?string,
-  errors: ?Array<ModuleError>,
-  id: string,
-  title: string,
-  changeCode: (id: string, code: string) => Object,
-  saveCode: () => void,
-  preferences: Preferences,
-  setCurrentModule: ?(sandboxId: string, moduleId: string) => void,
-  sandboxId: string,
-  modules: Array,
-  directories: Array,
-  hideNavigation: boolean,
-  highlightedLines: ?Array<string>,
-  onlyViewMode: ?boolean,
-};
 
 const Container = styled.div`
   width: 100%;
@@ -167,204 +151,53 @@ const CodeContainer = styled.div`
   }
 `;
 
-const handleError = (
-  cm: typeof CodeMirror,
-  currentErrors: ?Array<ModuleError>,
-  nextErrors: ?Array<ModuleError>,
-  nextCode: ?string,
-  prevId: string,
-  nextId: string
-) => {
-  if (currentErrors && currentErrors.length > 0) {
-    cm
-      .getValue()
-      .split('\n')
-      .forEach((_, i) => {
-        cm.removeLineClass(i, 'background', 'cm-line-error');
-      });
-  }
-
-  if (nextErrors) {
-    nextErrors.forEach(error => {
-      const code = nextCode || '';
-      if (
-        error &&
-        (error.moduleId == null || error.moduleId === nextId) &&
-        error.line !== 0 &&
-        error.line <= code.split('\n').length
-      ) {
-        cm.addLineClass(error.line - 1, 'background', 'cm-line-error');
-      }
-    });
-  }
-};
-
-const highlightLines = (
-  cm: typeof CodeMirror,
-  highlightedLines: Array<string>
-) => {
-  highlightedLines.forEach(line => {
-    cm.addLineClass(+line - 1, 'background', 'cm-line-highlight');
-  });
-};
-
-type State = {
-  fuzzySearchEnabled: boolean,
-};
-
-export default class CodeEditor extends React.Component<Props, State> {
+class CodeEditor extends React.Component {
   state = {
     fuzzySearchEnabled: false,
   };
 
-  shouldComponentUpdate(nextProps: Props, nextState: State) {
-    if (nextState.fuzzySearchEnabled !== this.state.fuzzySearchEnabled) {
-      return true;
-    }
-
-    return (
-      nextProps.id !== this.props.id ||
-      nextProps.errors.length !== this.props.errors.length ||
-      nextProps.code !== this.getCode() ||
-      this.props.preferences !== nextProps.preferences
-    );
+  componentWillUnmount() {
+    this.disposeErrorsHandler();
+    this.disposeModuleHandler();
+    this.disposeSettingsHandler();
   }
 
-  swapDocuments = async ({
-    currentId,
-    nextId,
-    nextCode,
-    nextTitle,
-  }: {
-    currentId: string,
-    nextId: string,
-    nextCode: ?string,
-    nextTitle: string,
-  }) => {
-    if (nextId !== currentId || nextCode !== this.getCode()) {
-      if (!documentCache[nextId]) {
-        const mode = await this.getMode(nextTitle);
+  componentDidMount() {
+    this.initializeCodemirror().then(() => {
+      this.disposeErrorsHandler = autorun(this.handleErrors);
+      this.disposeModuleHandler = observe(
+        this.props.store.editor,
+        'currentModule',
+        this.swapDocuments
+      );
+      this.disposeSettingsHandler = autorun(this.handleSettings);
 
-        documentCache[nextId] = new CodeMirror.Doc(nextCode || '', mode);
-      }
-      documentCache[currentId] = this.codemirror.swapDoc(documentCache[nextId]);
-
-      this.updateCodeMirrorCode(nextCode || '');
-    }
-  };
-
-  componentWillUpdate(nextProps: Props) {
-    const cm = this.codemirror;
-    const { id: currentId, errors: currentErrors } = this.props;
-    const {
-      id: nextId,
-      code: nextCode,
-      errors: nextErrors,
-      title: nextTitle,
-    } = nextProps;
-
-    if (cm) {
-      this.swapDocuments({
-        currentId,
-        nextId,
-        nextCode,
-        nextTitle,
-      }).then(() => {
-        handleError(cm, currentErrors, nextErrors, nextCode, currentId, nextId);
-      });
-    }
-  }
-
-  updateCodeMirrorCode(code: string = '') {
-    const pos = this.codemirror.getCursor();
-    this.codemirror.setValue(code);
-    this.codemirror.setCursor(pos);
-  }
-
-  componentDidUpdate(prevProps: Props) {
-    if (this.codemirror) {
-      if (this.props.preferences !== prevProps.preferences) {
-        this.setCodeMirrorPreferences();
-      }
-
+      this.handleSettings();
       this.configureEmmet();
-    }
+    });
   }
 
-  getMode = async (title: string) => {
-    if (title == null) return 'jsx';
+  handleErrors = () => {
+    const errors = this.props.store.editor.errors;
+    const codeLines = this.codemirror.getValue().split('\n');
 
-    const kind = title.match(/\.([^.]*)$/);
+    codeLines.forEach((_, i) => {
+      this.codemirror.removeLineClass(i, 'background', 'cm-line-error');
+    });
 
-    if (kind) {
-      if (kind[1] === 'css' || kind[1] === 'scss' || kind[1] === 'less') {
-        await System.import(
-          /* webpackChunkName: 'codemirror-css' */ 'codemirror/mode/css/css'
+    errors.forEach(error => {
+      if (error.line !== 0 && error.line <= codeLines.length) {
+        this.codemirror.addLineClass(
+          error.line - 1,
+          'background',
+          'cm-line-error'
         );
-        if (kind[1] === 'less') {
-          return 'text/x-less';
-        }
-        if (kind[1] === 'scss') {
-          return 'text/x-scss';
-        }
-        return 'css';
-      } else if (kind[1] === 'html' || kind[1] === 'vue') {
-        await System.import(
-          /* webpackChunkName: 'codemirror-html' */ 'codemirror/mode/htmlmixed/htmlmixed'
-        );
-
-        if (kind[1] === 'vue') {
-          return 'text/x-vue';
-        }
-
-        return 'htmlmixed';
-      } else if (kind[1] === 'md') {
-        await System.import(
-          /* webpackChunkName: 'codemirror-markdown' */ 'codemirror/mode/markdown/markdown'
-        );
-        return 'markdown';
-      } else if (kind[1] === 'json') {
-        return 'application/json';
-      } else if (kind[1] === 'sass') {
-        await System.import(
-          /* webpackChunkName: 'codemirror-sass' */ 'codemirror/mode/sass/sass'
-        );
-        return 'sass';
-      } else if (kind[1] === 'styl') {
-        await System.import(
-          /* webpackChunkName: 'codemirror-sass' */ 'codemirror/mode/stylus/stylus'
-        );
-        return 'stylus';
       }
-    }
-
-    return 'jsx';
+    });
   };
 
-  getCodeMirror = async (el: Element) => {
-    const { code, id, title, highlightedLines } = this.props;
-    if (!this.props.onlyViewMode) {
-      CodeMirror.commands.save = this.handleSaveCode;
-    }
-    const mode = await this.getMode(title);
-    documentCache[id] = new CodeMirror.Doc(code || '', mode);
-
-    this.codemirror = getCodeMirror(el, documentCache[id]);
-
-    if (!this.props.onlyViewMode) {
-      this.codemirror.on('change', this.handleChange);
-      this.setCodeMirrorPreferences();
-    } else {
-      this.codemirror.setOption('readOnly', true);
-    }
-
-    if (highlightedLines) {
-      highlightLines(this.codemirror, highlightedLines);
-    }
-  };
-
-  setCodeMirrorPreferences = async () => {
-    const { preferences } = this.props;
+  handleSettings = async () => {
+    const settings = this.props.store.editor.preferences.settings;
 
     const defaultKeys = {
       'Cmd-/': cm => {
@@ -395,7 +228,7 @@ export default class CodeEditor extends React.Component<Props, State> {
       }
     };
 
-    if (preferences.autoCompleteEnabled) {
+    if (settings.autoCompleteEnabled) {
       const tern = await System.import(
         /* webpackChunkName: 'codemirror-tern' */ 'tern'
       );
@@ -456,7 +289,7 @@ export default class CodeEditor extends React.Component<Props, State> {
       this.codemirror.off('inputRead', showAutoComplete);
     }
 
-    if (preferences.vimMode) {
+    if (settings.vimMode) {
       await System.import(
         /* webpackChunkName: 'codemirror-vim' */ 'codemirror/keymap/vim'
       );
@@ -465,7 +298,7 @@ export default class CodeEditor extends React.Component<Props, State> {
       this.codemirror.setOption('keyMap', 'sublime');
     }
 
-    if (preferences.lintEnabled) {
+    if (settings.lintEnabled) {
       const initialized = 'eslint' in window;
       System.import(
         /* webpackChunkName: 'codemirror-eslint' */ 'app/utils/codemirror/eslint-lint'
@@ -479,19 +312,109 @@ export default class CodeEditor extends React.Component<Props, State> {
     }
   };
 
-  handleChange = (cm: any, change: any) => {
+  swapDocuments = async () => {
+    const currentModule = this.props.store.editor.currentModule;
+
+    if (!documentCache[currentModule.id]) {
+      const mode = await this.getMode(currentModule.title);
+
+      documentCache[currentModule.id] = new CodeMirror.Doc(
+        currentModule.code || '',
+        mode
+      );
+    }
+
+    this.codemirror.swapDoc(documentCache[currentModule.id]);
+
+    this.updateCodeMirrorCode(currentModule.code || '');
+    this.configureEmmet();
+  };
+
+  updateCodeMirrorCode(code: string = '') {
+    const pos = this.codemirror.getCursor();
+    this.codemirror.setValue(code);
+    this.codemirror.setCursor(pos);
+  }
+
+  getMode = async (title: string) => {
+    if (title == null) return 'jsx';
+
+    const kind = title.match(/\.([^.]*)$/);
+
+    if (kind) {
+      if (kind[1] === 'css' || kind[1] === 'scss' || kind[1] === 'less') {
+        await System.import(
+          /* webpackChunkName: 'codemirror-css' */ 'codemirror/mode/css/css'
+        );
+        if (kind[1] === 'less') {
+          return 'text/x-less';
+        }
+        if (kind[1] === 'scss') {
+          return 'text/x-scss';
+        }
+        return 'css';
+      } else if (kind[1] === 'html' || kind[1] === 'vue') {
+        await System.import(
+          /* webpackChunkName: 'codemirror-html' */ 'codemirror/mode/htmlmixed/htmlmixed'
+        );
+
+        if (kind[1] === 'vue') {
+          return 'text/x-vue';
+        }
+
+        return 'htmlmixed';
+      } else if (kind[1] === 'md') {
+        await System.import(
+          /* webpackChunkName: 'codemirror-markdown' */ 'codemirror/mode/markdown/markdown'
+        );
+        return 'markdown';
+      } else if (kind[1] === 'json') {
+        return 'application/json';
+      } else if (kind[1] === 'sass') {
+        await System.import(
+          /* webpackChunkName: 'codemirror-sass' */ 'codemirror/mode/sass/sass'
+        );
+        return 'sass';
+      } else if (kind[1] === 'styl') {
+        await System.import(
+          /* webpackChunkName: 'codemirror-sass' */ 'codemirror/mode/stylus/stylus'
+        );
+        return 'stylus';
+      }
+    }
+
+    return 'jsx';
+  };
+
+  initializeCodemirror = async () => {
+    const el = this.codemirrorElement;
+    const { code, id, title } = this.props.store.editor.currentModule;
+
+    if (!this.props.onlyViewMode) {
+      CodeMirror.commands.save = this.handleSaveCode;
+    }
+
+    const mode = await this.getMode(title);
+
+    documentCache[id] = new CodeMirror.Doc(code || '', mode);
+
+    this.codemirror = getCodeMirror(el, documentCache[id]);
+
+    this.codemirror.on('change', this.handleChange);
+    this.handleSettings();
+  };
+
+  handleChange = (cm, change) => {
     if (change.origin !== 'setValue') {
-      this.props.changeCode(this.props.id, cm.getValue());
+      this.props.signals.editor.codeChanged({ code: cm.getValue() });
     }
   };
 
   getCode = () => this.codemirror.getValue();
 
   handleSaveCode = async () => {
-    const { saveCode } = this.props;
-    const { id } = this.props;
-    this.props.changeCode(id, this.getCode());
-    saveCode();
+    this.props.signals.editor.codeChanged({ code: this.codemirror.getValue() });
+    this.props.signals.editor.codeSaved();
   };
 
   configureEmmet = async () => {
@@ -514,48 +437,44 @@ export default class CodeEditor extends React.Component<Props, State> {
   setCurrentModule = moduleId => {
     this.closeFuzzySearch();
     this.codemirror.focus();
-    if (this.props.setCurrentModule) {
-      this.props.setCurrentModule(this.props.sandboxId, moduleId);
-    }
+    this.props.signals.editor.moduleSelected({ id: moduleId });
   };
 
-  codemirror: typeof CodeMirror;
-  server: typeof CodeMirror.TernServer;
-
   render() {
-    const {
-      preferences,
-      modules,
-      directories,
-      id,
-      hideNavigation,
-    } = this.props;
+    const settings = this.props.store.editor.preferences.settings;
+    const sandbox = this.props.store.editor.currentSandbox;
+    const currentModule = this.props.store.editor.currentModule;
+    const { hideNavigation } = this.props;
 
     return (
       <Container>
         <CodeContainer
-          fontFamily={preferences.fontFamily}
-          lineHeight={preferences.lineHeight}
+          fontFamily={settings.fontFamily}
+          lineHeight={settings.lineHeight}
           hideNavigation={hideNavigation}
         >
           {this.state.fuzzySearchEnabled && (
             <FuzzySearch
               closeFuzzySearch={this.closeFuzzySearch}
               setCurrentModule={this.setCurrentModule}
-              modules={modules}
-              directories={directories}
-              currentModuleId={id}
+              modules={sandbox.modules}
+              directories={sandbox.directories}
+              currentModuleId={currentModule.id}
             />
           )}
           <div
             style={{
               height: '100%',
-              fontSize: preferences.fontSize || 14,
+              fontSize: settings.fontSize || 14,
             }}
-            ref={this.getCodeMirror}
+            ref={node => {
+              this.codemirrorElement = node;
+            }}
           />
         </CodeContainer>
       </Container>
     );
   }
 }
+
+export default inject('signals', 'store')(observer(CodeEditor));
