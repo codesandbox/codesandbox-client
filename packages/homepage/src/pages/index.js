@@ -33,7 +33,7 @@ export default class HomePage extends React.Component {
   render() {
     return (
       <div>
-        <TitleAndMetaTags title="CodeSandbox: Online Code Editor Tailored for Web Application Development" />
+        <TitleAndMetaTags />
 
         <Animation />
         <NPMFeature />

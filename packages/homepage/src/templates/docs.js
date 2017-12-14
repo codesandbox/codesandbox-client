@@ -181,45 +181,52 @@ const Description = styled.p`
   margin-bottom: 0.25rem;
 `;
 
-export default ({ data }) => {
-  const { edges: docs } = data.allMarkdownRemark;
-  const { html, frontmatter, fields } = data.markdownRemark;
+// eslint-disable-next-line
+export default class Docs extends React.Component {
+  render() {
+    const { data } = this.props;
 
-  return (
-    <Container style={{ overflowX: 'auto' }}>
-      <TitleAndMetaTags title={`${frontmatter.title} - CodeSandbox`} />
-      <PageContainer>
-        <DocsContainer>
-          <div
-            style={{
-              flex: 1,
-              minWidth: 250,
-            }}
-          >
-            <StickyNavigation docs={docs} />
-          </div>
-          <Article>
-            <Heading>
-              <Title>{frontmatter.title}</Title>
-              <Edit
-                href={`https://github.com/CompuIves/codesandbox-client/tree/master/packages/homepage/content/${
-                  fields.path
-                }`}
-                target="_blank"
-                rel="noreferrer noopener"
-              >
-                Edit this page
-              </Edit>
-              <Description>{frontmatter.description}</Description>
-            </Heading>
+    const { edges: docs } = data.allMarkdownRemark;
+    const { html, frontmatter, fields } = data.markdownRemark;
 
-            <DocumentationContent dangerouslySetInnerHTML={{ __html: html }} />
-          </Article>
-        </DocsContainer>
-      </PageContainer>
-    </Container>
-  );
-};
+    return (
+      <Container style={{ overflowX: 'auto' }}>
+        <TitleAndMetaTags title={`${frontmatter.title} - CodeSandbox`} />
+        <PageContainer>
+          <DocsContainer>
+            <div
+              style={{
+                flex: 1,
+                minWidth: 250,
+              }}
+            >
+              <StickyNavigation docs={docs} />
+            </div>
+            <Article>
+              <Heading>
+                <Title>{frontmatter.title}</Title>
+                <Edit
+                  href={`https://github.com/CompuIves/codesandbox-client/tree/master/packages/homepage/content/${
+                    fields.path
+                  }`}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                >
+                  Edit this page
+                </Edit>
+                <Description>{frontmatter.description}</Description>
+              </Heading>
+
+              <DocumentationContent
+                dangerouslySetInnerHTML={{ __html: html }}
+              />
+            </Article>
+          </DocsContainer>
+        </PageContainer>
+      </Container>
+    );
+  }
+}
 
 export const pageQuery = graphql`
   query Docs($slug: String!) {

@@ -1,7 +1,11 @@
 import React from 'react';
 import Helmet from 'react-helmet';
 
-export default ({ title }: { title: string }) => (
+export default ({
+  title = 'CodeSandbox: Online Code Editor Tailored for Web Application Development',
+}: {
+  title: string,
+}) => (
   <Helmet
     title={title}
     meta={[
