@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import { TypographyStyle } from 'react-typography';
-import typography from './utils/typography';
 
 let stylesStr;
 if (process.env.NODE_ENV === `production`) {
@@ -62,7 +60,6 @@ export default class HTML extends Component {
           />
           <meta property="twitter:image:width" content="1200" />
           <meta property="twitter:image:height" content="630" />
-          <TypographyStyle typography={typography} />
           {css}
         </head>
         <body>

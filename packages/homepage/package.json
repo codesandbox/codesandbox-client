@@ -24,11 +24,8 @@
     "gsap": "^1.20.3",
     "react-media": "^1.6.1",
     "react-transition-group": "^2.2.1",
-    "react-typography": "^0.16.5",
     "styled-components": "^2.2.4",
-    "three": "^0.87.1",
-    "typography": "^0.16.6",
-    "typography-breakpoint-constants": "^0.15.10"
+    "three": "^0.87.1"
   },
   "keywords": [
     "gatsby"
