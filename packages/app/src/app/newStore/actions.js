@@ -86,3 +86,35 @@ export function setPatronPrice({ props, state }) {
     props.user.subscription ? props.user.subscription.amount : 10
   );
 }
+
+export function signInZeit({ browser }) {
+  const popup = browser.openPopup('/auth/zeit', 'sign in');
+  return browser.waitForMessage('signin')
+    .then(data => {
+      popup.close();
+
+      return { code: data.code };
+    })
+}
+
+export function updateUserZeitDetails({ api, props }) {
+  const { code } = props;
+
+  return api.post(`users/current_user/integrations/zeit`, {
+    code
+  })
+}
+
+export function getZeitIntegrationDetails({ http, state, path }) {
+  const token = state.get(`user.integrations.zeit.token`);
+
+  return http.get('https://api.zeit.co/www/user', null, {
+      headers: { Authorization: `bearer ${token}` },
+    })
+    .then(response => path.success({ response }))
+    .catch(error => path.error({ error }));
+}
+
+export function signOutZeit({ api }) {
+  return api.delete(`users/current_user/integrations/zeit`).then(() => {});
+}

@@ -34,6 +34,30 @@ export const signIn = [];
 
 export const removeNotification = actions.removeNotification;
 
+export const getZeitUserDetails = [
+  set(state`isLoadingZeit`, true),
+  actions.getZeitIntegrationDetails,
+  {
+    success: [],
+    error: [addNotification('Could not authorize with ZEIT', 'error')],
+  },
+  set(state`isLoadingZeit`, true),
+];
+
+export const signInZeit = [
+  actions.signInZeit,
+  {
+    success: [
+      set(state`isLoadingZeit`, true),
+      set(state`user.integrations.zeit.token`, props`token`),
+      actions.updateUserZeitDetails
+    ],
+    error: [addNotification('Zeit Authentication Error', 'error')],
+  },
+  set(state`isLoadingZeit`, false),
+];
+
+export const signOutZeit = [actions.signOutZeit];
 export const getAuthToken = actions.getAuthToken;
 
 export const authorise = [

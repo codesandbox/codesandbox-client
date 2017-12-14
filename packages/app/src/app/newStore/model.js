@@ -46,4 +46,5 @@ export default {
   currentModal: types.maybe(types.string),
   isLoadingCLI: types.boolean,
   isLoadingGithub: types.boolean,
+  isLoadingZeit: types.boolean,
 };
