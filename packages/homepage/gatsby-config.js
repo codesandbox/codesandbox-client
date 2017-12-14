@@ -1,6 +1,7 @@
 module.exports = {
   siteMetadata: {
     title: `CodeSandbox`,
+    siteUrl: 'https://codesandbox.io',
   },
   plugins: [
     {
@@ -62,6 +63,7 @@ module.exports = {
     },
     `gatsby-plugin-styled-components`,
     `gatsby-plugin-react-helmet`,
+    `gatsby-plugin-sitemap`,
     {
       resolve: `gatsby-plugin-google-tagmanager`,
       options: {
