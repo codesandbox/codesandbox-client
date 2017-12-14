@@ -792,7 +792,7 @@ export default class CodeEditor extends React.Component<Props, State> {
       new this.monaco.Uri().with({ path, scheme: 'file' })
     );
 
-    model.updateOptions({ tabSize: 2 });
+    model.updateOptions({ tabSize: this.props.preferences.tabSize });
 
     modelCache[module.id] = modelCache[module.id] || {
       model: null,

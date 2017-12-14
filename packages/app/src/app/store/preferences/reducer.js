@@ -29,6 +29,7 @@ const initialState: Preferences = Object.keys(keys).reduce(
     lintEnabled: true,
     instantPreviewEnabled: false,
     fontSize: 14,
+    tabSize: 2,
     fontFamily: '',
     lineHeight: 1.15,
     clearConsoleEnabled: true,

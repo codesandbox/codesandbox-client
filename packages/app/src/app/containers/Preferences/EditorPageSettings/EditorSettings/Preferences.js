@@ -81,6 +81,12 @@ const Preferences = ({ preferences, preferencesActions }: Props) => {
         />
         <Rule />
         <PaddedPreference
+          title="Tab size"
+          type="number"
+          {...bindValue('tabSize')}
+        />
+        <Rule />
+        <PaddedPreference
           title="Font family"
           type="string"
           placeholder="Source Code Pro"
