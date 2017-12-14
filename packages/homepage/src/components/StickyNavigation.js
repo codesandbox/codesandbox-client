@@ -32,6 +32,7 @@ const Navigation = styled.nav`
     padding-bottom: 1rem;
     position: relative;
     padding-top: 0;
+    top: 0;
   `};
 
   overflow-y: auto;
