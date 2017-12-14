@@ -67,7 +67,11 @@ vuePreset.registerTranspiler(module => /\.jsx?$/.test(module.path), [
         'latest',
         'stage-2',
       ],
-      plugins: ['transform-runtime', 'transform-vue-jsx'],
+      plugins: [
+        'transform-runtime',
+        'transform-vue-jsx',
+        'transform-decorators-legacy',
+      ],
     },
   },
 ]);
