@@ -6,7 +6,7 @@ import '../css/typography.css';
 import '../css/global.css';
 
 import Navigation from '../components/Navigation';
-import Footer from '../components/Footer';
+// import Footer from '../components/Footer';
 
 const Absolute = styled.div`
   position: absolute;
@@ -22,7 +22,7 @@ const TemplateWrapper = ({ children }) => (
         <Navigation />
       </Absolute>
       <div style={{ maxWidth: '100vw', overflowX: 'hidden' }}>{children()}</div>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   </ThemeProvider>
 );
