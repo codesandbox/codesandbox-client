@@ -3,7 +3,7 @@ version: 2
 jobs:
   build-dependencies:
     docker:
-      - image: circleci/node:9.0
+      - image: circleci/node:9.2.1
     working_directory: ~/codesandbox-client
     steps:
       - checkout
@@ -31,7 +31,7 @@ jobs:
 
   build-prod:
     docker:
-      - image: circleci/node:9.0
+      - image: circleci/node:9.2.1
     working_directory: ~/codesandbox-client
     steps:
       - restore_cache:
@@ -76,7 +76,7 @@ jobs:
 
   test-jest:
     docker:
-      - image: circleci/node:9.0
+      - image: circleci/node:9.2.1
     working_directory: ~/codesandbox-client
     steps:
       - restore_cache:
@@ -87,7 +87,7 @@ jobs:
 
   lint:
     docker:
-      - image: circleci/node:9.0
+      - image: circleci/node:9.2.1
     working_directory: ~/codesandbox-client
     steps:
       - restore_cache:
@@ -98,7 +98,7 @@ jobs:
 
   deploy:
     docker:
-      - image: circleci/node:9.0
+      - image: circleci/node:9.2.1
     working_directory: ~/codesandbox-client
     steps:
       - restore_cache:
