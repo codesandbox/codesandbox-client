@@ -191,7 +191,10 @@ export default class Docs extends React.Component {
 
     return (
       <Container style={{ overflowX: 'auto' }}>
-        <TitleAndMetaTags title={`${frontmatter.title} - CodeSandbox`} />
+        <TitleAndMetaTags
+          title={`${frontmatter.title} - CodeSandbox`}
+          description={frontmatter.description}
+        />
         <PageContainer>
           <DocsContainer>
             <div

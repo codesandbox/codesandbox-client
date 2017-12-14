@@ -37,10 +37,6 @@ export default class HTML extends Component {
           <meta property="og:type" content="website" />
           <meta property="og:author" content="https://ivesvh.com" />
           <meta
-            property="og:description"
-            content="CodeSandbox is an online code editor with a focus on creating and sharing web application projects"
-          />
-          <meta
             property="og:image"
             content="https://codesandbox.io/static/img/banner.png"
           />
@@ -50,10 +46,6 @@ export default class HTML extends Component {
           <meta property="twitter:site" content="@CompuIves" />
           <meta property="twitter:creator" content="@CompuIves" />
           <meta property="twitter:title" content="CodeSandbox" />
-          <meta
-            property="twitter:description"
-            content="CodeSandbox is an online code editor with a focus on creating and sharing web application projects"
-          />
           <meta
             property="twitter:image:src"
             content="https://codesandbox.io/static/img/banner.png"
