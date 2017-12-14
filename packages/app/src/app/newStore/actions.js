@@ -73,6 +73,10 @@ export function setJwtFromStorage({ jwt, state }) {
   state.set('jwt', jwt.get() || null);
 }
 
+export function removeJwtFromStorage({ jwt }) {
+  jwt.reset();
+}
+
 export function listenToConnectionChange({ connection }) {
   connection.addListener('connectionChanged');
 }

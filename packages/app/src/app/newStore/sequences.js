@@ -1,4 +1,4 @@
-import { when, set } from 'cerebral/operators';
+import { when, set, toggle } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 import * as actions from './actions';
 import { addNotification } from './factories';
@@ -45,7 +45,19 @@ export const signIn = [
   set(state`currentModal`, null),
   set(state`isAuthenticating`, false),
 ];
-
+export const signOut = [
+  set(state`jwt`, null),
+  actions.removeJwtFromStorage,
+  set(state`user.id`, null),
+  set(state`user.email`, null),
+  set(state`user.name`, null),
+  set(state`user.username`, null),
+  set(state`user.avatarUrl`, null),
+  set(state`user.jwt`, null),
+  set(state`user.badges`, []),
+  set(state`user.integrations`, {}),
+];
+export const toggleUserMenu = [toggle(state`userMenuOpen`)];
 export const removeNotification = actions.removeNotification;
 
 export const getZeitUserDetails = [

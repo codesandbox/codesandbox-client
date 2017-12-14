@@ -3,6 +3,7 @@ import { types } from 'mobx-state-tree';
 export default {
   jwt: types.maybe(types.string),
   isAuthenticating: types.boolean,
+  userMenuOpen: types.boolean,
   authToken: types.maybe(types.string),
   error: types.maybe(types.string),
   user: types.model({

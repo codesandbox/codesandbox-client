@@ -31,7 +31,6 @@ export default Module({
       name: null,
       username: null,
       avatarUrl: null,
-      jwt: null,
       badges: [],
       integrations: {
         zeit: null,
@@ -41,6 +40,7 @@ export default Module({
     connected: true,
     notifications: [],
     currentModal: null,
+    userMenuOpen: false,
     isLoadingZeit: false,
     isLoadingCLI: false,
     isLoadingGithub: false,
@@ -56,6 +56,7 @@ export default Module({
     modalOpened: sequences.openModal,
     modalClosed: sequences.closeModal,
     signInClicked: sequences.signIn,
+    toggleUserMenuClicked: sequences.toggleUserMenu,
     notificationRemoved: sequences.removeNotification,
     zeitUserDetailsRequested: sequences.getZeitUserDetails,
     signInZeitClicked: sequences.signInZeit,
