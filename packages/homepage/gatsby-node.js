@@ -1,5 +1,5 @@
 const { createFilePath } = require('gatsby-source-filesystem');
-const { resolve } = require('path');
+const { resolve, dirname } = require('path');
 
 // Parse date information out of post filename.
 const BLOG_POST_FILENAME_REGEX = /([0-9]+)\-([0-9]+)\-([0-9]+)\-(.+)\.md$/;
@@ -138,5 +138,11 @@ exports.modifyWebpackConfig = ({ config }) => {
       extensions: ['', '.js', '.jsx', '.json'],
     },
   });
+
+  config._config.resolve.alias = {
+    react: dirname(require.resolve('react')),
+    'react-dom': dirname(require.resolve('react-dom')),
+  };
+
   return config;
 };
