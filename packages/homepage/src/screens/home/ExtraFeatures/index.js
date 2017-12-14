@@ -22,7 +22,7 @@ import OpenSource from './OpenSource';
 import ESLint from './ESLint';
 import Emmet from './Emmet';
 
-import { Background, Heading, SubHeading } from '../../../components/layout';
+import { Background, Heading, SubHeading } from '../../../components/style';
 
 import Feature from './Feature';
 

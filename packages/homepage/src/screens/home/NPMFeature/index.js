@@ -13,7 +13,7 @@ import EmbedAnimation from './EmbedAnimation';
 import EmbedIcon from './EmbedIcon';
 
 import media from '../../../utils/media';
-import { Background, Heading, SubHeading } from '../../../components/layout';
+import { Background, Heading, SubHeading } from '../../../components/style';
 
 const FeatureHeading = styled.h4`
   color: white;

@@ -2,6 +2,7 @@ import React from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 
 import theme from 'common/theme';
+import '../css/typography.css';
 import '../css/global.css';
 
 import Navigation from '../components/Navigation';
