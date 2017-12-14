@@ -1,27 +1,25 @@
-// @flow
 import * as React from 'react';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
+import { inject, observer } from 'mobx-react';
 
 import GithubIcon from 'react-icons/lib/go/mark-github';
-
-import userActionCreators from 'app/store/user/actions';
 import Button from 'app/components/buttons/Button';
 import Row from 'common/components/flex/Row';
 
-type Props = {
-  userActions: typeof userActionCreators,
-};
+function SignInButton(props) {
+  const { signals } = props;
+  return (
+    <Button
+      small
+      onClick={() => {
+        signals.signIn({ useExtraScopes: true });
+      }}
+      {...props}
+    >
+      <Row>
+        <GithubIcon style={{ marginRight: '0.5rem' }} /> Sign in with GitHub
+      </Row>
+    </Button>
+  );
+}
 
-const mapDispatchToProps = dispatch => ({
-  userActions: bindActionCreators(userActionCreators, dispatch),
-});
-const SignInButton = ({ userActions, ...props }: Props) => (
-  <Button small onClick={userActions.signIn} {...props}>
-    <Row>
-      <GithubIcon style={{ marginRight: '0.5rem' }} /> Sign in with GitHub
-    </Row>
-  </Button>
-);
-
-export default connect(null, mapDispatchToProps)(SignInButton);
+export default inject('store', 'signals')(observer(SignInButton));
