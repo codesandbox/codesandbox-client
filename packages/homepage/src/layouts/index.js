@@ -1,12 +1,11 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import styled, { ThemeProvider } from 'styled-components';
 
 import theme from 'common/theme';
+import '../css/global.css';
 
 import Navigation from '../components/Navigation';
-
-import './index.css';
+import Footer from '../components/Footer';
 
 const Absolute = styled.div`
   position: absolute;
@@ -15,23 +14,16 @@ const Absolute = styled.div`
   z-index: 20;
 `;
 
-const Header = () => (
-  <Absolute>
-    <Navigation />
-  </Absolute>
-);
-
 const TemplateWrapper = ({ children }) => (
   <ThemeProvider theme={theme}>
     <div>
-      <Header />
+      <Absolute>
+        <Navigation />
+      </Absolute>
       <div style={{ maxWidth: '100vw', overflowX: 'hidden' }}>{children()}</div>
+      <Footer />
     </div>
   </ThemeProvider>
 );
-
-TemplateWrapper.propTypes = {
-  children: PropTypes.func,
-};
 
 export default TemplateWrapper;

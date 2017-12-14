@@ -163,7 +163,7 @@ export default ({ data }) => {
   );
 };
 
-export const query = graphql`
+export const pageQuery = graphql`
   query Changelogs {
     allMarkdownRemark(
       filter: { id: { regex: "/changelog/" } }

@@ -79,6 +79,7 @@ exports.createPages = async ({ graphql, boundActionCreators }) => {
   // Redirect /index.html to root.
   createRedirect({
     fromPath: '/index.html',
+    redirectInBrowser: true,
     toPath: '/',
   });
 
@@ -128,4 +129,14 @@ exports.createPages = async ({ graphql, boundActionCreators }) => {
       createArticlePage(url || slug);
     }
   });
+};
+
+exports.modifyWebpackConfig = ({ config }) => {
+  config.merge({
+    resolve: {
+      root: resolve(__dirname, './src'),
+      extensions: ['', '.js', '.jsx', '.json'],
+    },
+  });
+  return config;
 };
