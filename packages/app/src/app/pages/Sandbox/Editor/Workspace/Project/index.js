@@ -43,11 +43,11 @@ function Project({ store, signals }) {
           }}
           type="text"
           onBlur={() => {
-            signals.editor.workspace.updateSandboxInfo();
+            signals.editor.workspace.sandboxInfoUpdated();
           }}
           onKeyUp={event => {
             if (event.keyCode === 13) {
-              signals.editor.workspace.updateSandboxInfo();
+              signals.editor.workspace.sandboxInfoUpdated();
             }
           }}
           placeholder="Title"
@@ -65,11 +65,11 @@ function Project({ store, signals }) {
           }}
           type="text"
           onBlur={() => {
-            signals.editor.workspace.updateSandboxInfo();
+            signals.editor.workspace.sandboxInfoUpdated();
           }}
           onKeyUp={event => {
             if (event.keyCode === 13) {
-              signals.editor.workspace.updateSandboxInfo();
+              signals.editor.workspace.sandboxInfoUpdated();
             }
           }}
           rows="2"

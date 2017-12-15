@@ -3,6 +3,8 @@ import { types } from 'mobx-state-tree';
 export default {
   jwt: types.maybe(types.string),
   isAuthenticating: types.boolean,
+  authToken: types.maybe(types.string),
+  error: types.maybe(types.string),
   user: types.model({
     avatarUrl: types.maybe(types.string),
     badges: types.array(
@@ -42,4 +44,6 @@ export default {
     })
   ),
   currentModal: types.maybe(types.string),
+  isLoadingCLI: types.boolean,
+  isLoadingGithub: types.boolean,
 };

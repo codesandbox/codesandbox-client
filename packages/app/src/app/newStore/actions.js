@@ -1,5 +1,36 @@
 import * as errors from './errors';
 
+export function siginInGithub({ browser, path, props }) {
+  const { useExtraScopes } = props;
+  const popup = browser.openPopup(
+    `/auth/github${useExtraScopes ? '?scope=user:email,public_repo' : ''}`,
+    'sign in'
+  );
+
+  return browser.waitForMessage('signin').then(data => {
+    const jwt = data.jwt;
+
+    popup.close();
+
+    if (jwt) {
+      return path.success({ jwt });
+    }
+
+    return path.error();
+  });
+}
+
+export function signOutGithub({ api }) {
+  return api.delete(`/users/current_user/integrations/github`);
+}
+
+export function getAuthToken({ api, path }) {
+  return api
+    .get('/auth/auth-token')
+    .then(token => path.success({ token }))
+    .catch(error => path.error({ error }));
+}
+
 export function setStoredSettings({ state, settingsStore }) {
   const settings = settingsStore.getAll();
 
