@@ -104,7 +104,7 @@ export default class EditorTabs extends React.PureComponent<Props> {
   }
 
   closeListener = e => {
-    if ((e.ctrlKey || e.metaKey) && e.code === 'KeyW') {
+    if ((e.ctrlKey || e.metaKey) && e.keyCode === 87) {
       e.preventDefault();
       const currentPos = this.props.tabs.findIndex(
         t => t.moduleId === this.props.currentModuleId
