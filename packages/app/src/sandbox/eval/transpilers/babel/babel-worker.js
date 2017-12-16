@@ -3,6 +3,7 @@
 import flatten from 'lodash/flatten';
 import dynamicImportPlugin from './plugins/babel-plugin-dynamic-import-node';
 import detective from './plugins/babel-plugin-detective';
+import infiniteLoops from './plugins/babel-plugin-transform-prevent-infinite-loops';
 
 import { buildWorkerError } from '../utils/worker-error-handler';
 import getDependencies from './get-require-statements';
@@ -27,6 +28,10 @@ declare var Babel: {
 
 Babel.registerPlugin('dynamic-import-node', dynamicImportPlugin);
 Babel.registerPlugin('babel-plugin-detective', detective);
+Babel.registerPlugin(
+  'babel-plugin-transform-prevent-infinite-loops',
+  infiniteLoops
+);
 
 self.addEventListener('message', async event => {
   const { code, path, config } = event.data;
@@ -51,6 +56,7 @@ self.addEventListener('message', async event => {
     ...config.plugins,
     'dynamic-import-node',
     ['babel-plugin-detective', { source: true, nodes: true }],
+    'babel-plugin-transform-prevent-infinite-loops',
   ];
 
   const customConfig = {
