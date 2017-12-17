@@ -6,6 +6,7 @@ const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HappyPack = require('happypack');
 const WatchMissingNodeModulesPlugin = require('../scripts/utils/WatchMissingNodeModulesPlugin');
+const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin');
 const env = require('./env');
 
 const babelDev = require('./babel.dev');
@@ -201,6 +202,13 @@ module.exports = {
         minifyCSS: true,
         minifyURLs: true,
       },
+    }),
+    new ScriptExtHtmlWebpackPlugin({
+      preload: {
+        test: /babel/,
+        chunks: 'async',
+      },
+      defaultAttribute: 'sync',
     }),
     // Makes some environment variables available to the JS code, for example:
     // if (process.env.NODE_ENV === 'development') { ... }. See `env.js`.
