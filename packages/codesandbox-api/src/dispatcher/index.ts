@@ -21,9 +21,9 @@ export function dispatch(message: Object) {
   if (isStandalone) return;
 
   if (window.opener) {
-    window.opener.postMessage(newMessage, host);
+    window.opener.postMessage(newMessage, '*');
   } else {
-    window.parent.postMessage(newMessage, host);
+    window.parent.postMessage(newMessage, '*');
   }
 }
 

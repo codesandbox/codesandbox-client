@@ -69,9 +69,7 @@ inject();
 async function compile({
   sandboxId,
   modules,
-  directories,
-  module,
-  changedModule,
+  path,
   externalResources,
   dependencies,
   hasActions,
@@ -90,33 +88,20 @@ async function compile({
   handleExternalResources(externalResources);
 
   try {
-    // We convert the modules to a format the manager understands
-    const managerModules = modules.map(m => ({
-      path: getModulePath(modules, directories, m.id),
-      code: m.code,
-    }));
-
     const [{ manifest, isNewCombination }] = await Promise.all([
       loadDependencies(dependencies),
-      updateManager(sandboxId, template, managerModules),
+      updateManager(sandboxId, template, modules),
     ]);
 
     // Just reset the whole packager if it's a new combination
     if (isNewCombination) {
       manager = null;
-      await updateManager(sandboxId, template, managerModules);
+      await updateManager(sandboxId, template, modules);
     }
 
     manager.setManifest(manifest);
 
-    const managerModulePathToTranspile = getModulePath(
-      modules,
-      directories,
-      module.id
-    );
-    const managerModuleToTranspile = managerModules.find(
-      m => m.path === managerModulePathToTranspile
-    );
+    const managerModuleToTranspile = modules.find(m => m.path === path);
 
     const t = Date.now();
     await manager.transpileModules(managerModuleToTranspile);
@@ -142,7 +127,7 @@ async function compile({
     } catch (e) {
       /* don't do anything with this error */
     }
-    const htmlModule = managerModules.find(
+    const htmlModule = modules.find(
       m => m.path === '/public/index.html' || m.path === '/index.html'
     );
     const html = htmlModule ? htmlModule.code : '<div id="root"></div>';
@@ -190,8 +175,8 @@ async function compile({
     console.log('Error in sandbox:');
     console.error(e);
 
-    e.module = e.module || changedModule;
-    e.fileName = e.fileName || getModulePath(modules, directories, e.module);
+    e.module = e.module;
+    e.fileName = e.fileName || path;
 
     const event = new Event('error');
     event.error = e;
@@ -203,9 +188,7 @@ async function compile({
 type Arguments = {
   sandboxId: string,
   modules: Array<Module>,
-  directories: Array<Directory>,
   module: Module,
-  changedModule: Module,
   externalResources: Array<string>,
   dependencies: Object,
   hasActions: boolean,

@@ -10,10 +10,10 @@
   "license": "MIT",
   "private": false,
   "devDependencies": {
-    "typescript": "^2.6.2",
-    "@storybook/react": "^3.2.17",
     "@storybook/addon-actions": "^3.2.17",
-    "@storybook/addon-links": "^3.2.17"
+    "@storybook/addon-links": "^3.2.17",
+    "@storybook/react": "^3.2.17",
+    "typescript": "^2.6.2"
   },
   "peerDependencies": {
     "react": "^16.0.0"
@@ -21,5 +21,8 @@
   "scripts": {
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
+  },
+  "dependencies": {
+    "codemirror": "^5.32.0"
   }
 }

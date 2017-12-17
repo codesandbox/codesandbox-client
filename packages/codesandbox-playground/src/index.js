@@ -1,11 +1,19 @@
 import React from 'react';
 
-export interface Props {
-  hello: string;
-}
+import CodeEditor from './components/CodeEditor';
+import Preview from './components/Preview';
 
-export default class Playground extends React.Component<Props> {
+export default class Playground extends React.Component {
+  static defaultProps = {
+    entry: 'index.js',
+  };
+
   render() {
-    return <div>Hey hai</div>;
+    return (
+      <div>
+        {/* <CodeEditor /> */}
+        <Preview />
+      </div>
+    );
   }
 }
