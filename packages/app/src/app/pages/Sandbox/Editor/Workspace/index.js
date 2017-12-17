@@ -96,7 +96,7 @@ function Workspace({ signals, store }) {
                     <WorkspaceInputContainer>
                       <Button
                         onClick={() =>
-                          signals.modalOpened({ modal: 'preferences' })
+                          signals.modalOpened({ name: 'preferences' })
                         }
                         small
                         block

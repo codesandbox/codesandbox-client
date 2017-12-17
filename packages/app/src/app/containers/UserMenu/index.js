@@ -8,7 +8,7 @@ import HoverMenu from 'app/components/HoverMenu';
 import Relative from 'common/components/Relative';
 import Tooltip from 'common/components/Tooltip';
 
-import UserMenu from './UserMenu';
+import UserMenuComponent from './UserMenu';
 
 const ClickableContainer = styled(Row)`
   cursor: pointer;

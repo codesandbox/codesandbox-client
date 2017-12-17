@@ -70,7 +70,7 @@ export const addNpmDependency = [
 ];
 
 export const toggleLikeSandbox = [
-  when(state`editor.currentSandbox.userLiked`),
+  when(state`editor.sandboxes.${props`id`}.userLiked`),
   {
     true: actions.unlikeSandbox,
     false: actions.likeSandbox,

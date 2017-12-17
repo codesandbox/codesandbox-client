@@ -1,19 +1,16 @@
 /* @flow */
 import * as React from 'react';
-import { connect } from 'react-redux';
+import { inject, observer } from 'mobx-react';
 import { Route, Switch } from 'react-router-dom';
-import { bindActionCreators } from 'redux';
-import { createSelector } from 'reselect';
 import styled from 'styled-components';
 
 import MaxWidth from 'common/components/flex/MaxWidth';
 import Fullscreen from 'common/components/flex/Fullscreen';
-import userActionCreators from 'app/store/entities/users/actions';
-import { currentUserSelector } from 'app/store/user/selectors';
-import type { User } from 'common/types';
 import Margin from 'common/components/spacing/Margin';
-import { usersSelector } from 'app/store/entities/users/selectors';
-import { profileSandboxesUrl, profileLikesUrl } from 'common/utils/url-generator';
+import {
+  profileSandboxesUrl,
+  profileLikesUrl,
+} from 'common/utils/url-generator';
 
 import NotFound from 'app/pages/NotFound';
 
@@ -21,14 +18,6 @@ import Header from './Header';
 import Navigation from './Navigation';
 import Showcase from './Showcase';
 import Sandboxes from './Sandboxes';
-
-type Props = {
-  userActions: typeof userActionCreators,
-  // eslint-disable-next-line
-  match: { params: { username: string }, url: string },
-  user: User,
-  isCurrentUser: boolean,
-};
 
 const Container = styled(Fullscreen)`
   color: white;
@@ -44,67 +33,32 @@ const Content = styled(Fullscreen)`
   flex: 0 0 70px;
 `;
 
-const mapStateToProps = createSelector(
-  usersSelector,
-  (_, props) => props.match.params.username,
-  currentUserSelector,
-  (users, username, currentUser) => {
-    const userId = Object.keys(users).find(
-      id => users[id].username === username
-    );
-    const user = users[userId];
-
-    const isCurrentUser =
-      currentUser && user && currentUser.username === user.username;
-
-    return { user, isCurrentUser };
-  }
-);
-const mapDispatchToProps = (dispatch: Function) => ({
-  userActions: bindActionCreators(userActionCreators, dispatch),
-});
-class Profile extends React.PureComponent<
-  Props,
-  {
-    notFound: boolean,
-  }
-> {
-  state: {
-    notFound: boolean,
-  } = {
-    notFound: false,
-  };
-
-  fetchUser = async (username: string) => {
-    try {
-      this.setState({ notFound: false });
-      await this.props.userActions.fetchUser(username);
-    } catch (e) {
-      this.setState({ notFound: true });
-    }
-  };
-
+class Profile extends React.Component {
   componentDidMount() {
     const { username } = this.props.match.params;
 
-    this.fetchUser(username);
+    this.props.signals.profile.profileMounted({ username });
   }
 
-  componentDidUpdate(prevProps: Props) {
-    const username = prevProps.match.params.username;
+  componentDidUpdate(prevProps) {
+    const prevUsername = prevProps.match.params.username;
+    const username = this.props.match.params.username;
 
-    if (username !== this.props.match.params.username && !this.props.user) {
-      this.fetchUser(this.props.match.params.username);
+    if (prevUsername !== username) {
+      this.props.signals.profile.profileMounted({ username });
     }
   }
 
   render() {
-    if (this.state.notFound) {
+    const { store, match } = this.props;
+
+    if (store.profile.notFound) {
       return <NotFound />;
     }
 
-    const { user, match, userActions, isCurrentUser } = this.props;
-    if (!user) return <div />;
+    if (!store.profile.current) return <div />;
+
+    const user = store.profile.current;
 
     document.title = `${user.name || user.username} - CodeSandbox`;
     return (
@@ -127,8 +81,8 @@ class Profile extends React.PureComponent<
                 exact
                 render={() => (
                   <Showcase
-                    isCurrentUser={isCurrentUser}
-                    id={user.showcasedSandboxShortid}
+                    isCurrentUser={store.profile.isProfileCurrentUser}
+                    sandbox={store.profile.showcasedSandbox}
                   />
                 )}
               />
@@ -137,13 +91,9 @@ class Profile extends React.PureComponent<
                 // eslint-disable-next-line
                 children={({ match }) => (
                   <Sandboxes
-                    username={user.username}
-                    fetchSandboxes={userActions.fetchAllSandboxes}
-                    sandboxes={user.sandboxes}
-                    isCurrentUser={isCurrentUser}
-                    sandboxCount={user.sandboxCount}
-                    baseUrl={profileSandboxesUrl(user.username)}
+                    source="currentSandboxes"
                     page={match.params.page && +match.params.page}
+                    baseUrl={profileSandboxesUrl(user.username)}
                   />
                 )}
               />
@@ -152,12 +102,9 @@ class Profile extends React.PureComponent<
                 // eslint-disable-next-line
                 children={({ match }) => (
                   <Sandboxes
-                    username={user.username}
-                    fetchSandboxes={userActions.fetchLikedSandboxes}
-                    sandboxes={user.likedSandboxes}
-                    sandboxCount={user.givenLikeCount}
-                    baseUrl={profileLikesUrl(user.username)}
+                    source="currentLikedSandboxes"
                     page={match.params.page && +match.params.page}
+                    baseUrl={profileLikesUrl(user.username)}
                   />
                 )}
               />
@@ -169,4 +116,4 @@ class Profile extends React.PureComponent<
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Profile);
+export default inject('signals', 'store')(observer(Profile));

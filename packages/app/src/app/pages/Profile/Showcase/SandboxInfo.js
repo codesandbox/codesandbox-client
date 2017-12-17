@@ -67,40 +67,24 @@ const PlayButtonContainer = styled(Link)`
   ${delayEffect(0.5)};
 `;
 
-type Props = {
-  id: string,
-  title: string,
-  description: string,
-  likeCount: number,
-  viewCount: number,
-  forkCount: number,
-};
-
-export default ({
-  id,
-  title,
-  description,
-  likeCount,
-  viewCount,
-  forkCount,
-}: Props) => (
+export default ({ sandbox }) => (
   <Container>
     <Row alignItems="center">
       <Title>
-        {title} <Like sandboxId={id} />
+        {sandbox.title || 'Undefined'} <Like sandbox={sandbox} />
       </Title>
     </Row>
     <Row alignItems="flex-start">
       <div style={{ flex: 6 }}>
-        <Description>{description}</Description>
+        <Description>{sandbox.description}</Description>
       </div>
       <Stats>
-        <PlayButtonContainer to={sandboxUrl({ id })}>
+        <PlayButtonContainer to={sandboxUrl({ id: sandbox.id })}>
           <PlayButton />
         </PlayButtonContainer>
-        <Stat name="likes" count={likeCount} />
-        <Stat name="views" count={viewCount} />
-        <Stat name="forks" count={forkCount} />
+        <Stat name="likes" count={sandbox.likeCount} />
+        <Stat name="views" count={sandbox.viewCount} />
+        <Stat name="forks" count={sandbox.forkCount} />
       </Stats>
     </Row>
   </Container>

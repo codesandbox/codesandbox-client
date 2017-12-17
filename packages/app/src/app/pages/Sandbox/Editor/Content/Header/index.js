@@ -177,7 +177,7 @@ function Header({ store, signals }) {
               title="Deploy"
               Icon={NowIcon}
               onClick={() =>
-                this.props.signals.modalOpened({ modal: 'deployment' })
+                this.props.signals.modalOpened({ name: 'deployment' })
               }
             />
           )}
@@ -185,7 +185,7 @@ function Header({ store, signals }) {
           tooltip="Share sandbox"
           title="Share"
           Icon={ShareIcon}
-          onClick={() => this.props.signals.modalOpened({ modal: 'share' })}
+          onClick={() => this.props.signals.modalOpened({ name: 'share' })}
         />
       </Left>
 
@@ -233,12 +233,12 @@ function Header({ store, signals }) {
           Icon={FeedbackIcon}
         />
         <Action
-          onClick={() => signals.modalOpened({ modal: 'newSandbox' })}
+          onClick={() => signals.modalOpened({ name: 'newSandbox' })}
           tooltip="New Sandbox"
           Icon={PlusIcon}
         />
         <Action
-          onClick={() => signals.modalOpened({ modal: 'preferences' })}
+          onClick={() => signals.modalOpened({ name: 'preferences' })}
           tooltip="Preferences"
           Icon={SettingsIcon}
         />

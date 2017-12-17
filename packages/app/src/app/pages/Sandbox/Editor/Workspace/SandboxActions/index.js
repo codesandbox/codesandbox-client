@@ -64,7 +64,7 @@ function SandboxActions({ store, signals }) {
             margin: '0.5rem 0.25rem',
             boxSizing: 'border-box',
           }}
-          onClick={() => signals.modalOpened({ modal: 'deleteSandbox' })}
+          onClick={() => signals.modalOpened({ name: 'deleteSandbox' })}
         >
           Delete Sandbox
         </Button>

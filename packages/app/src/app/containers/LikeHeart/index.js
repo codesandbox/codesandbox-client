@@ -1,5 +1,5 @@
 import React from 'react';
-import { inject, observer } from 'mobx-react';
+import { inject } from 'mobx-react';
 import styled, { css } from 'styled-components';
 import HeartIcon from 'react-icons/lib/fa/heart-o';
 import FullHeartIcon from 'react-icons/lib/fa/heart';
@@ -24,9 +24,7 @@ const Container = styled.div`
 const MaybeTooltip = ({ loggedIn, ...props }) =>
   loggedIn ? <Tooltip {...props} /> : <div {...props} />;
 
-function LikeHeart({ store, signals, className, colorless }) {
-  const sandbox = store.editor.currentSandbox;
-
+function LikeHeart({ sandbox, store, signals, className, colorless }) {
   return (
     <Container loggedIn={store.isLoggedIn} className={className}>
       <MaybeTooltip
@@ -37,13 +35,17 @@ function LikeHeart({ store, signals, className, colorless }) {
           <FullHeartIcon
             style={colorless ? null : { color: '#E01F4E' }}
             onClick={
-              store.isLoggedIn ? signals.editor.likeSandboxToggled() : null
+              store.isLoggedIn
+                ? () => signals.editor.likeSandboxToggled({ id: sandbox.id })
+                : null
             }
           />
         ) : (
           <HeartIcon
             onClick={
-              store.isLoggedIn ? signals.editor.likeSandboxToggled() : null
+              store.isLoggedIn
+                ? () => signals.editor.likeSandboxToggled({ id: sandbox.id })
+                : null
             }
           />
         )}
@@ -52,4 +54,4 @@ function LikeHeart({ store, signals, className, colorless }) {
   );
 }
 
-export default inject('signals', 'store')(observer(LikeHeart));
+export default inject('signals', 'store')(LikeHeart);

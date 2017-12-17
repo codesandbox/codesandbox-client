@@ -167,7 +167,7 @@ export default class Tab extends React.PureComponent<Props, State> {
         {this.props.closeTab && isNotSynced ? (
           <StyledNotSyncedIcon
             onClick={tabCount > 1 ? this.closeTab : null}
-            show
+            show={'true'}
           />
         ) : (
           <StyledCloseIcon

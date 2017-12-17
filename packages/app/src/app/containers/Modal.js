@@ -127,7 +127,7 @@ class ModalContainer extends React.Component {
 
   render() {
     const { store } = this.props;
-    const modal = store.currentModal ? modals[store.currentModal] : null;
+    const modal = store.currentModal ? modals[store.currentModal.name] : null;
     const Component = modal ? modal.Component : null;
 
     return (
@@ -144,7 +144,7 @@ class ModalContainer extends React.Component {
           <BaseModal>
             {modal.title && <ModalTitle>{modal.title}</ModalTitle>}
             <ModalBody>
-              <Component />
+              <Component {...modal.props || {}} />
             </ModalBody>
           </BaseModal>
         ) : null}

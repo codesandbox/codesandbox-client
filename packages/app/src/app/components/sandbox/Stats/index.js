@@ -15,17 +15,13 @@ const Stats = styled.div`
   height: 100%;
 `;
 
-type Props = {
-  viewCount: number,
-  forkCount: number,
-  likeCount: number,
-  sandboxId: string,
-};
-
-export default ({ viewCount, forkCount, likeCount, sandboxId }: Props) => (
+export default ({ sandbox }) => (
   <Stats>
-    <Stat Icon={<EyeIcon />} count={viewCount} />
-    <Stat Icon={<LikeHeart colorless />} count={likeCount} />
-    <Stat Icon={<ForkIcon />} count={forkCount} />
+    <Stat Icon={<EyeIcon />} count={sandbox.viewCount} />
+    <Stat
+      Icon={<LikeHeart sandbox={sandbox} colorless />}
+      count={sandbox.likeCount}
+    />
+    <Stat Icon={<ForkIcon />} count={sandbox.forkCount} />
   </Stats>
 );

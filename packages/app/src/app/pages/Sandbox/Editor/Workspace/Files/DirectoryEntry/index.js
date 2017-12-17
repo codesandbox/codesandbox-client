@@ -118,7 +118,7 @@ class DirectoryEntry extends React.PureComponent {
     const { sandboxId, modules, sandboxActions, modalActions } = this.props;
     const module = modules.find(m => m.id === id);
 
-    this.props.signals.modalOpened({ modal: 'deleteModule' });
+    this.props.signals.modalOpened({ name: 'deleteModule' });
     modalActions.openModal({
       Body: (
         <Alert

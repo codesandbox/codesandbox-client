@@ -17,6 +17,7 @@ import { isPatron, isLoggedIn } from './getters';
 
 import patron from './modules/patron';
 import editor from './modules/editor';
+import profile from './modules/profile';
 
 export default Module({
   model,
@@ -70,6 +71,7 @@ export default Module({
   modules: {
     patron,
     editor,
+    profile,
   },
   providers: {
     api: ApiProvider,

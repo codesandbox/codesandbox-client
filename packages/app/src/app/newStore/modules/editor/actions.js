@@ -268,23 +268,19 @@ export function confirmForkingOwnSandbox({ browser, path }) {
     : path.cancelled();
 }
 
-export function unlikeSandbox({ api, state }) {
-  const id = state.get('editor.currentId');
-
+export function unlikeSandbox({ api, props }) {
   return api.request({
     method: 'DELETE',
-    url: `/sandboxes/${id}/likes`,
+    url: `/sandboxes/${props.id}/likes`,
     body: {
-      id,
+      id: props.id,
     },
   });
 }
 
-export function likeSandbox({ api, state }) {
-  const id = state.get('editor.currentId');
-
-  return api.post(`/sandboxes/${id}/likes`, {
-    id,
+export function likeSandbox({ api, props }) {
+  return api.post(`/sandboxes/${props.id}/likes`, {
+    id: props.id,
   });
 }
 

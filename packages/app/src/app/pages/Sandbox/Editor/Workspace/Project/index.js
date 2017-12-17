@@ -144,12 +144,7 @@ function Project({ store, signals }) {
         </Item>
       </div>
       <StatsContainer>
-        <Stats
-          sandboxId={sandbox.id}
-          viewCount={sandbox.viewCount}
-          likeCount={sandbox.likeCount}
-          forkCount={sandbox.forkCount}
-        />
+        <Stats sandbox={sandbox} />
       </StatsContainer>
     </div>
   );

@@ -32,6 +32,13 @@ export function getAuthToken({ api, path }) {
     .catch(error => path.error({ error }));
 }
 
+export function setModal({ state, props }) {
+  state.set('currentModal', {
+    name: props.name,
+    props: props.props || null,
+  });
+}
+
 export function setStoredSettings({ state, settingsStore }) {
   const settings = settingsStore.getAll();
 
