@@ -98,7 +98,7 @@ requirePolyfills().then(() => {
         const data = {
           sandboxId: id,
           modules: normalizedModules,
-          entry: x.data.entry,
+          entry: '/' + x.data.entry,
           externalResources: x.data.externalResources,
           dependencies: x.data.npmDependencies,
           hasActions: false,
