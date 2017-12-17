@@ -294,6 +294,7 @@ export default class Preview extends React.PureComponent<Props, State> {
 
       this.sendMessage({
         type: 'compile',
+        version: 2,
         entry: renderedModule,
         dependencies,
         modules: normalizedModules,

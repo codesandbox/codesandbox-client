@@ -34,10 +34,15 @@ requirePolyfills().then(() => {
     dispatch({ type: 'initialized' });
   }
 
-  function handleMessage(data, source) {
+  async function handleMessage(data, source) {
     if (source) {
       if (data.type === 'compile') {
-        compile(data);
+        if (data.version === 2) {
+          compile(data);
+        } else {
+          const compileOld = await import('./compile-old').then(x => x.default);
+          compileOld(data);
+        }
       } else if (data.type === 'urlback') {
         history.back();
       } else if (data.type === 'urlforward') {
@@ -98,6 +103,7 @@ requirePolyfills().then(() => {
           dependencies: x.data.npmDependencies,
           hasActions: false,
           template: x.data.template,
+          version: 2,
         };
 
         compile(data);
