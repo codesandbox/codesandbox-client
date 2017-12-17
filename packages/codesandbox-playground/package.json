@@ -1,0 +1,25 @@
+{
+  "name": "codesandbox-playground",
+  "version": "1.0.0",
+  "description": "Embed any web application right in your website, plug and play.",
+  "main": "dist/codesandbox-playground.umd.js",
+  "module": "dist/codesandbox-playground.es5.js",
+  "typings": "dist/types/codesandbox-playground.d.ts",
+  "repository": "https://github.com/CompuIves/codesandbox-client/tree/master/packages/codesandbox-playground",
+  "author": "Ives van Hoorne <ives.v.h@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "devDependencies": {
+    "typescript": "^2.6.2",
+    "@storybook/react": "^3.2.17",
+    "@storybook/addon-actions": "^3.2.17",
+    "@storybook/addon-links": "^3.2.17"
+  },
+  "peerDependencies": {
+    "react": "^16.0.0"
+  },
+  "scripts": {
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
+  }
+}
