@@ -220,8 +220,8 @@ module.exports = {
                 );
 
               htmlPluginData.html = htmlPluginData.html.replace(
-                '</head>\n',
-                babelAssets.join('\n') + '\n</head>'
+                '</head>',
+                '\n' + babelAssets.join('\n') + '\n</head>'
               );
             }
             cb();
