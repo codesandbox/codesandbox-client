@@ -90,8 +90,8 @@ requirePolyfills().then(() => {
       })
       .then(x => {
         // We convert the modules to a format the manager understands
-        const normalizedModules = x.modules.map(m => ({
-          path: getModulePath(x.modules, x.directories, m.id),
+        const normalizedModules = x.data.modules.map(m => ({
+          path: getModulePath(x.data.modules, x.data.directories, m.id),
           code: m.code,
         }));
 
