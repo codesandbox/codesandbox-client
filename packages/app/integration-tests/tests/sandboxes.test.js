@@ -19,18 +19,17 @@ const SANDBOXES = [
   'lp5rjr0z4z',
   'nOymMxyY',
 ];
-
-SANDBOXES.forEach(sandbox => {
-  const id = sandbox.id || sandbox;
-  const threshold = sandbox.threshold || 0.01;
+describe('sandboxes', () => {
   let browser = puppeteer.launch({
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
   });
+  afterAll(() => {
+    browser.close();
+  });
 
-  describe('sandboxes', () => {
-    afterAll(() => {
-      browser.close();
-    });
+  SANDBOXES.forEach(sandbox => {
+    const id = sandbox.id || sandbox;
+    const threshold = sandbox.threshold || 0.01;
 
     it(
       `loads the sandbox with id '${id}'`,
