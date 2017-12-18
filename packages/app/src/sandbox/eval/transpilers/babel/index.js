@@ -16,7 +16,8 @@ class BabelTranspiler extends WorkerTranspiler {
 
   getWorker() {
     // We set these up in startup.js.
-    return window.babelworkers.pop();
+    const worker = window.babelworkers.pop();
+    return worker;
   }
 
   doTranspilation(code: string, loaderContext: LoaderContext) {

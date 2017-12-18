@@ -53,16 +53,12 @@ export default class WorkerTranspiler extends Transpiler {
       const worker = this.getWorker();
       const t = Date.now();
 
-      worker.onmessage = message => {
-        if (message && message.data === 'ready') {
-          debug(`Loaded '${this.name}' worker in ${Date.now() - t}ms`);
-          this.idleWorkers.push(worker);
+      debug(`Loaded '${this.name}' worker in ${Date.now() - t}ms`);
+      this.idleWorkers.push(worker);
 
-          this.executeRemainingTasks();
+      this.executeRemainingTasks();
 
-          resolve();
-        }
-      };
+      resolve();
 
       this.workers.push(worker);
     });
