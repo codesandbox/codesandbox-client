@@ -74,7 +74,6 @@
     "recursive-readdir": "^2.2.1",
     "rimraf": "^2.6.1",
     "run-sequence": "^1.2.2",
-    "script-ext-html-webpack-plugin": "^1.8.8",
     "strip-ansi": "3.0.1",
     "style-loader": "^0.18.2",
     "sw-precache-webpack-plugin": "^0.11.4",

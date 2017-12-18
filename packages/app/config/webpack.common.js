@@ -6,7 +6,6 @@ const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HappyPack = require('happypack');
 const WatchMissingNodeModulesPlugin = require('../scripts/utils/WatchMissingNodeModulesPlugin');
-const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin');
 const env = require('./env');
 
 const babelDev = require('./babel.dev');
@@ -203,13 +202,30 @@ module.exports = {
         minifyURLs: true,
       },
     }),
-    new ScriptExtHtmlWebpackPlugin({
-      preload: {
-        test: /babel/,
-        chunks: 'async',
-      },
-      defaultAttribute: 'sync',
-    }),
+    /**
+     * Inline the babel worker, lowers initialization time
+     */
+    function() {
+      const compiler = this;
+      compiler.plugin('compilation', function(compilation) {
+        compilation.plugin(
+          'html-webpack-plugin-before-html-processing',
+          function(htmlPluginData, cb) {
+            if (htmlPluginData.outputName === 'frame.html') {
+              const babelAssets = Object.keys(compilation.assets)
+                .filter(name => /babel-transpiler\..*\.worker\.js$/.test(name))
+                .map(assetName => `<link rel="preload" href="${assetName}">`);
+
+              htmlPluginData.html = htmlPluginData.html.replace(
+                '</head>\n',
+                babelAssets.join('\n') + '\n</head>'
+              );
+            }
+            cb();
+          }
+        );
+      });
+    },
     // Makes some environment variables available to the JS code, for example:
     // if (process.env.NODE_ENV === 'development') { ... }. See `env.js`.
     new webpack.DefinePlugin(env),
