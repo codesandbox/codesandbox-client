@@ -214,7 +214,10 @@ module.exports = {
             if (htmlPluginData.outputName === 'frame.html') {
               const babelAssets = Object.keys(compilation.assets)
                 .filter(name => /babel-transpiler\..*\.worker\.js$/.test(name))
-                .map(assetName => `<link rel="preload" href="${assetName}">`);
+                .map(
+                  assetName =>
+                    `<link rel="preload" as="script" href="${assetName}">`
+                );
 
               htmlPluginData.html = htmlPluginData.html.replace(
                 '</head>\n',
