@@ -118,4 +118,7 @@ export default {
   initialPath: types.string,
   highlightedLines: types.array(types.number),
   isUpdatingPrivacy: types.boolean,
+  showNewSandboxModal: types.boolean,
+  showShareModal: types.boolean,
+  showDeploymentModal: types.boolean,
 };

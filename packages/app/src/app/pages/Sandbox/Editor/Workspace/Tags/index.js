@@ -2,19 +2,22 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import Margin from 'common/components/spacing/Margin';
 import Button from 'app/components/buttons/Button';
-import Tags from 'app/components/sandbox/Tags';
+import TagsComponent from 'app/components/sandbox/Tags';
 
 import WorkspaceSubtitle from '../WorkspaceSubtitle';
 import WorkspaceInputContainer from '../WorkspaceInputContainer';
 
-export default inject('store', 'signals')(
-  observer(({ store, signals, tags, isOwner }) => (
+function Tags({ store, signals }) {
+  const tags = store.editor.currentSandbox.tags;
+  const isOwner = store.editor.currentSandbox.owned;
+
+  return (
     <div>
       {tags.length > 0 && (
         <div>
           <WorkspaceSubtitle>Tags</WorkspaceSubtitle>
           <div style={{ fontSize: '.875rem' }}>
-            <Tags
+            <TagsComponent
               tags={tags}
               removeTag={isOwner && signals.editor.workspace.tagRemoved}
             />
@@ -56,5 +59,7 @@ export default inject('store', 'signals')(
         </div>
       )}
     </div>
-  ))
-);
+  );
+}
+
+export default inject('store', 'signals')(observer(Tags));

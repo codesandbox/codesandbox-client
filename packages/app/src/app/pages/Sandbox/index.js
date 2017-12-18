@@ -30,7 +30,7 @@ class SandboxPage extends React.Component {
   }
 
   fetchSandbox = () => {
-    // Hack until new router in place, have to get user first
+    // HACK UNTIL CEREBRAL ROUTER
     setTimeout(() => {
       this.props.signals.editor.sandboxChanged({
         id: this.props.match.params.id,

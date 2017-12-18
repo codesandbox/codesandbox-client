@@ -159,6 +159,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
   }
 
   componentWillUnmount() {
+    this.updateStatus = () => {};
     document.removeEventListener('mouseup', this.handleMouseUp, false);
     document.removeEventListener('mousemove', this.handleMouseMove, false);
     document.removeEventListener('touchend', this.handleTouchEnd, false);

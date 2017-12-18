@@ -46,8 +46,8 @@ class Files extends React.Component {
           sandboxId={sandbox.id}
           sandboxTemplate={sandbox.template}
           mainModuleId={store.editor.mainModule.id}
-          modules={sortBy(sandbox.modules, 'title')}
-          directories={sortBy(sandbox.directories, 'title')}
+          modules={sortBy(sandbox.modules.toJS(), 'title')}
+          directories={sortBy(sandbox.directories.toJS(), 'title')}
           isInProjectView={store.editor.preferences.isInProjectView}
           currentModuleId={store.editor.currentModule.id}
           errors={store.editor.errors}

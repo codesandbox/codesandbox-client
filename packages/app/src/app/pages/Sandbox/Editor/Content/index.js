@@ -64,7 +64,7 @@ class EditorPreview extends React.Component {
 
     const PreviewPane = (
       <FullSize>
-        <Preview runActionFromPreview />
+        <Preview />
       </FullSize>
     );
 

@@ -1,8 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { inject, observer } from 'mobx-react';
+import { inject } from 'mobx-react';
 
-import modalActionCreators from 'app/store/modal/actions';
 import Button from 'app/components/buttons/Button';
 import Row from 'common/components/flex/Row';
 
@@ -46,3 +45,5 @@ function ZenModeIntroduction({ signals }) {
     </Container>
   );
 }
+
+export default inject('signals')(ZenModeIntroduction);

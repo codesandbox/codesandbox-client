@@ -2,6 +2,8 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
 
+import Modal from 'app/components/Modal';
+import Alert from 'app/components/Alert';
 import Button from 'app/components/buttons/Button';
 import WorkspaceInputContainer from '../WorkspaceInputContainer';
 import WorkspaceSubtitle from '../WorkspaceSubtitle';
@@ -64,11 +66,23 @@ function SandboxActions({ store, signals }) {
             margin: '0.5rem 0.25rem',
             boxSizing: 'border-box',
           }}
-          onClick={() => signals.modalOpened({ name: 'deleteSandbox' })}
+          onClick={() => signals.editor.workspace.deleteSandboxModalOpened()}
         >
           Delete Sandbox
         </Button>
       </WorkspaceInputContainer>
+      <Modal
+        isOpen={store.editor.workspace.showDeleteSandboxModal}
+        width={900}
+        onClose={() => signals.editor.workspace.deleteSandboxModalClosed()}
+      >
+        <Alert
+          title="Delete Sandbox"
+          body={<span>Are you sure you want to delete this sandbox?</span>}
+          onCancel={() => signals.editor.workspace.deleteSandboxModalClosed()}
+          onDelete={() => signals.editor.workspace.sandboxDeleted()}
+        />
+      </Modal>
     </div>
   );
 }

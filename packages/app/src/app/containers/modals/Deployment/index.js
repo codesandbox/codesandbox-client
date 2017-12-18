@@ -7,7 +7,6 @@ import Button from 'app/components/buttons/Button';
 import Centered from 'common/components/flex/Centered';
 import Margin from 'common/components/spacing/Margin';
 
-import Cube from './Cube';
 import {
   ButtonContainer,
   DeployAnimationContainer,

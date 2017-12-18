@@ -46,7 +46,7 @@ const Opener = styled.div`
   overflow: hidden;
 `;
 
-class DirectoryEntry extends React.PureComponent {
+class DirectoryEntry extends React.Component {
   constructor(props) {
     super(props);
 
@@ -102,43 +102,38 @@ class DirectoryEntry extends React.PureComponent {
   };
 
   createModule = (_, title) => {
-    const { sandboxId, shortid, sandboxActions } = this.props;
-    // this.props.signals.editor.workspace.moduleCreated({ title, directoryShortid: shortid })
-    sandboxActions.createModule(sandboxId, title, shortid);
+    const { shortid } = this.props;
+    this.props.signals.editor.workspace.moduleCreated({
+      title,
+      directoryShortid: shortid,
+    });
     this.resetState();
   };
 
   renameModule = (id, title) => {
-    const { sandboxId, sandboxActions } = this.props;
-    // this.props.signals.editor.workspace.moduleRenamed({ id, title })
-    sandboxActions.renameModule(sandboxId, id, title);
+    this.props.signals.editor.workspace.moduleRenamed({ id, title });
   };
 
-  deleteModule = (id: string) => {
-    const { sandboxId, modules, sandboxActions, modalActions } = this.props;
-    const module = modules.find(m => m.id === id);
-
-    this.props.signals.modalOpened({ name: 'deleteModule' });
-    modalActions.openModal({
-      Body: (
-        <Alert
-          title="Delete File"
-          body={
-            <span>
-              Are you sure you want to delete <b>{module.title}</b>?
-              <br />
-              The file will be permanently removed.
-            </span>
-          }
-          onCancel={modalActions.closeModal}
-          onDelete={() => {
-            modalActions.closeModal();
-            // this.props.signals.editor.workspace.moduleDeleted({ id })
-            sandboxActions.deleteModule(sandboxId, id);
-          }}
-        />
-      ),
-    });
+  deleteModule = id => {
+    this.props.signals.modalOpened({ name: 'deleteModule', props: { id } });
+    /*
+    <Alert
+      title="Delete File"
+      body={
+        <span>
+          Are you sure you want to delete <b>{module.title}</b>?
+          <br />
+          The file will be permanently removed.
+        </span>
+      }
+      onCancel={modalActions.closeModal}
+      onDelete={() => {
+        modalActions.closeModal();
+        // this.props.signals.editor.workspace.moduleDeleted({ id })
+        sandboxActions.deleteModule(sandboxId, id);
+      }}
+    />
+    */
   };
 
   onCreateDirectoryClick = () => {
@@ -150,32 +145,22 @@ class DirectoryEntry extends React.PureComponent {
   };
 
   createDirectory = (_: string, title: string) => {
-    const { sandboxId, shortid, sandboxActions } = this.props;
-    // this.props.signals.editor.workspace.directoryCreated({ title, directoryShortid: shortid })
-    sandboxActions.createDirectory(sandboxId, title, shortid);
+    const { shortid } = this.props;
+    this.props.signals.editor.workspace.directoryCreated({
+      title,
+      directoryShortid: shortid,
+    });
     this.resetState();
   };
 
   renameDirectory = (id, title) => {
-    const { sandboxId, sandboxActions } = this.props;
-    // this.props.signals.editor.workspace.directoryRenamed({ title, id })
-    sandboxActions.renameDirectory(sandboxId, id, title);
+    this.props.signals.editor.workspace.directoryRenamed({ title, id });
   };
 
   deleteDirectory = () => {
-    const { id, title, sandboxId, sandboxActions } = this.props;
+    const { id } = this.props;
 
-    // this.props.signals.editor.workspace.directoryDeleted({ id })
-
-    // eslint-disable-next-line no-alert
-    const confirmed = confirm(
-      `Are you sure you want to delete ${title} and all its children?`
-    );
-
-    if (confirmed) {
-      sandboxActions.deleteDirectory(sandboxId, id);
-    }
-    return true;
+    this.props.signals.editor.workspace.directoryDeleted({ id });
   };
 
   toggleOpen = () => this.setOpen(!this.state.open);
@@ -204,14 +189,11 @@ class DirectoryEntry extends React.PureComponent {
   };
 
   setCurrentModule = (moduleId: string) => {
-    const { sandboxId, sandboxActions } = this.props;
     this.props.signals.editor.moduleSelected({ id: moduleId });
-    sandboxActions.setCurrentModule(sandboxId, moduleId);
   };
 
   markTabsNotDirty = () => {
     this.props.signals.editor.moduleDoubleClicked();
-    this.props.sandboxActions.markTabsNotDirty(this.props.sandboxId);
   };
 
   render() {
@@ -322,21 +304,11 @@ const entryTarget = {
         directoryId: sourceItem.id,
         directoryShortid: props.shortid,
       });
-      props.sandboxActions.moveDirectoryToDirectory(
-        props.sandboxId,
-        sourceItem.id,
-        props.shortid
-      );
     } else {
       props.signals.editor.workspace.moduleMovedToDirectory({
         moduleId: sourceItem.id,
         directoryShortid: props.shortid,
       });
-      props.sandboxActions.moveModuleToDirectory(
-        props.sandboxId,
-        sourceItem.id,
-        props.shortid
-      );
     }
   },
 

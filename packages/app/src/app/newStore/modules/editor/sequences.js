@@ -5,6 +5,24 @@ import * as actions from './actions';
 
 import { addNotification, updateSandboxUrl } from '../../factories';
 
+export const openDeploymentModal = set(state`editor.showDeploymentModal`, true);
+
+export const closeDeploymentModal = set(
+  state`editor.showDeploymentModal`,
+  false
+);
+
+export const openShareModal = set(state`editor.showShareModal`, true);
+
+export const closeShareModal = set(state`editor.showShareModal`, false);
+
+export const openNewSandboxModal = set(state`editor.showNewSandboxModal`, true);
+
+export const closeNewSandboxModal = set(
+  state`editor.showNewSandboxModal`,
+  false
+);
+
 export const toggleProjectView = toggle(state`editor.isInProjectView`);
 
 export const closeTab = actions.closeTab;
@@ -26,8 +44,6 @@ export const prettifyCode = [actions.prettifyCode, actions.setCode];
 export const setCurrentModule = [actions.addTab, actions.setCurrentModule];
 
 export const unsetDirtyTab = actions.unsetDirtyTab;
-
-export const deleteSandbox = actions.deleteSandbox;
 
 export const updatePrivacy = [
   actions.ensureValidPrivacy,
@@ -59,6 +75,7 @@ export const ensureOwnedSandbox = sequence('ensureOwnedSandbox', [
 ]);
 
 export const addNpmDependency = [
+  set(state`editor.workspace.showSearchDependenciesModal`, false),
   ensureOwnedSandbox,
   set(state`editor.workspace.isProcessingDependencies`, true),
   actions.addNpmDependency,
@@ -125,6 +142,7 @@ export const loadSandbox = [
           actions.setMainModuleShortid,
           actions.setInitialTab,
           actions.setUrlOptions,
+          actions.setWorkspace,
         ],
         notFound: set(state`editor.notFound`, true),
         error: set(state`editor.error`, props`error.message`),

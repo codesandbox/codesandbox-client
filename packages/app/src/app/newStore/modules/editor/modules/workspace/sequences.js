@@ -2,6 +2,38 @@ import { set, toggle, push } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 import * as actions from './actions';
 import { ensureOwnedSandbox } from '../../sequences';
+import { addNotification } from '../../../../factories';
+
+export const showSearchDependenciesModal = set(
+  state`editor.workspace.showSearchDependenciesModal`,
+  true
+);
+
+export const hideSearchDependenciesModal = set(
+  state`editor.workspace.showSearchDependenciesModal`,
+  false
+);
+
+export const openDeleteSandboxModal = set(
+  state`editor.workspace.showDeleteSandboxModal`,
+  true
+);
+
+export const closeDeleteSandboxModal = set(
+  state`editor.workspace.showDeleteSandboxModal`,
+  false
+);
+
+export const deleteSandbox = [
+  actions.deleteSandbox,
+  addNotification('Sandbox deleted!', 'success'),
+  actions.redirectToNewSandbox,
+];
+
+export const openIntegrations = [
+  set(state`editor.preferences.itemIndex`, 4),
+  set(state`editor.preferences.showModal`, true),
+];
 
 export const changeValue = [
   set(state`editor.workspace.project.${props`field`}`, props`value`),

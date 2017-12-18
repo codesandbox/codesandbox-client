@@ -7,6 +7,9 @@ export default Provider({
   updateSandboxUrl(sandbox) {
     history.push(sandboxUrl(sandbox));
   },
+  redirectToNewSandbox() {
+    history.push('/s/new');
+  },
   getSandboxOptions() {
     return getSandboxOptions(document.location.href);
   },

@@ -1,3 +1,21 @@
+export function deleteSandbox({ api, state }) {
+  const id = state.get('editor.currentId');
+
+  return api
+    .request({
+      method: 'DELETE',
+      url: `/sandboxes/${id}`,
+      body: {
+        id,
+      },
+    })
+    .then(() => undefined);
+}
+
+export function redirectToNewSandbox({ router }) {
+  router.redirectToNewSandbox();
+}
+
 export function moveDirectoryToDirectory({ state, props }) {
   const sandbox = state.get('editor.currentSandbox');
   const directoryIndex = sandbox.directories.findIndex(

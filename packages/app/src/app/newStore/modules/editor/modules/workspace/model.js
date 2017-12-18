@@ -10,4 +10,6 @@ export default {
   }),
   isWorkspaceHidden: types.boolean,
   isProcessingDependencies: types.boolean,
+  showSearchDependenciesModal: types.boolean,
+  showDeleteSandboxModal: types.boolean,
 };

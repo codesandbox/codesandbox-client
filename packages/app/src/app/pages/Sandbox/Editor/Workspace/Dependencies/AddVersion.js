@@ -1,66 +1,41 @@
 import React from 'react';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
+import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
+import Modal from 'app/components/Modal';
 
 import Button from 'app/components/buttons/Button';
-import modalActionCreators from 'app/store/modal/actions';
-
 import SearchDependencies from './SearchDependencies';
 
 const ButtonContainer = styled.div`
   margin: 0.5rem 1rem;
 `;
 
-type Props = {
-  addDependency: (dependency: string, version: string) => Promise<boolean>,
-  modalActions: typeof modalActionCreators,
-};
-
-type State = {
-  processing: boolean,
-};
-
-const initialState: State = {
-  processing: false,
-};
-
-const mapDispatchToProps = dispatch => ({
-  modalActions: bindActionCreators(modalActionCreators, dispatch),
-});
-
-class AddVersion extends React.PureComponent {
-  props: Props;
-  state = initialState;
-
-  addDependency = async (name, version) => {
-    if (name) {
-      this.props.modalActions.closeModal();
-      this.setState({ processing: true });
-      await this.props.addDependency(name, version);
-      this.setState({ processing: false });
-    }
-  };
-
-  openModal = () => {
-    this.props.modalActions.openModal({
-      width: 600,
-      Body: <SearchDependencies onConfirm={this.addDependency} />,
-    });
-  };
-
-  render() {
-    const { processing } = this.state;
-    return (
-      <div style={{ position: 'relative' }}>
-        <ButtonContainer>
-          <Button disabled={processing} block small onClick={this.openModal}>
-            Add Package
-          </Button>
-        </ButtonContainer>
-      </div>
-    );
-  }
+function AddVersion({ store, signals }) {
+  return (
+    <div style={{ position: 'relative' }}>
+      <ButtonContainer>
+        <Button
+          disabled={store.editor.workspace.isProcessingDependencies}
+          block
+          small
+          onClick={() => signals.editor.workspace.showSearchDependenciesModal()}
+        >
+          Add Package
+        </Button>
+      </ButtonContainer>
+      <Modal
+        isOpen={store.editor.workspace.showSearchDependenciesModal}
+        width={600}
+        onClose={() => signals.editor.workspace.hideSearchDependenciesModal()}
+      >
+        <SearchDependencies
+          onConfirm={(name, version) =>
+            signals.editor.workspace.npmDependencyAdded({ name, version })
+          }
+        />
+      </Modal>
+    </div>
+  );
 }
 
-export default connect(null, mapDispatchToProps)(AddVersion);
+export default inject('signals', 'store')(observer(AddVersion));

@@ -1,7 +1,6 @@
 import * as errors from './errors';
-import { signInUrl } from 'common/utils/url-generator';
 
-export function siginInGithub({ browser, path, props }) {
+export function signInGithub({ browser, path, props }) {
   const { useExtraScopes } = props;
   const popup = browser.openPopup(
     `/auth/github${useExtraScopes ? '?scope=user:email,public_repo' : ''}`,
@@ -101,26 +100,26 @@ export function setPatronPrice({ props, state }) {
 
 export function signInZeit({ browser }) {
   const popup = browser.openPopup('/auth/zeit', 'sign in');
-  return browser.waitForMessage('signin')
-    .then(data => {
-      popup.close();
+  return browser.waitForMessage('signin').then(data => {
+    popup.close();
 
-      return { code: data.code };
-    })
+    return { code: data.code };
+  });
 }
 
 export function updateUserZeitDetails({ api, props }) {
   const { code } = props;
 
   return api.post(`users/current_user/integrations/zeit`, {
-    code
-  })
+    code,
+  });
 }
 
 export function getZeitIntegrationDetails({ http, state, path }) {
   const token = state.get(`user.integrations.zeit.token`);
 
-  return http.get('https://api.zeit.co/www/user', null, {
+  return http
+    .get('https://api.zeit.co/www/user', null, {
       headers: { Authorization: `bearer ${token}` },
     })
     .then(response => path.success({ response }))

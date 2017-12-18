@@ -1,10 +1,6 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
-
-import { currentUserSelector } from 'app/store/user/selectors';
-import type { CurrentUser } from 'common/types';
-
 import CodeIcon from 'react-icons/lib/fa/code';
 import CreditCardIcon from 'react-icons/lib/md/credit-card';
 import BrowserIcon from 'react-icons/lib/go/browser';

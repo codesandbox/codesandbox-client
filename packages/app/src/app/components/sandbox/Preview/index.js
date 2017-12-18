@@ -21,11 +21,6 @@ class Preview extends React.Component {
       'externalResources',
       this.handleExecuteCode.bind(this, preview)
     );
-    const disposeHandleModuleChange = observe(
-      this.props.store.editor,
-      'currentModule',
-      this.handleExecuteCode.bind(this, preview)
-    );
     const disposeHandleModuleSyncedChange = observe(
       this.props.store.editor,
       'isAllModulesSynced',
@@ -34,18 +29,17 @@ class Preview extends React.Component {
     const disposeHandleCodeChange = observe(
       this.props.store.editor.currentModule,
       'code',
-      this.handleCodeOrStructureChange.bind(this, preview)
+      this.handleCodeChange.bind(this, preview)
     );
     const disposeHandleStructureChange = reaction(
       this.detectStructureChange,
-      this.handleCodeOrStructureChange.bind(this, preview)
+      this.handleStructureChange.bind(this, preview)
     );
 
     return () => {
       disposeHandleProjectViewChange();
       disposeHandleForcedRenders();
       disposeHandleExternalResources();
-      disposeHandleModuleChange();
       disposeHandleModuleSyncedChange();
       disposeHandleCodeChange();
       disposeHandleStructureChange();
@@ -64,7 +58,18 @@ class Preview extends React.Component {
     );
   };
 
-  handleCodeOrStructureChange = preview => {
+  handleCodeChange = (preview, change) => {
+    const settings = this.props.store.editor.preferences.settings;
+    if (settings.livePreviewEnabled) {
+      if (settings.instantPreviewEnabled) {
+        preview.executeCodeImmediately();
+      } else {
+        preview.executeCode();
+      }
+    }
+  };
+
+  handleStructureChange = preview => {
     const settings = this.props.store.editor.preferences.settings;
     if (settings.livePreviewEnabled) {
       if (settings.instantPreviewEnabled) {
@@ -92,11 +97,13 @@ class Preview extends React.Component {
       <BasePreview
         onInitialized={this.onPreviewInitialized}
         sandbox={store.editor.currentSandbox}
-        currentModule={store.editor.currentModule}
+        currentModule={store.editor.mainModule}
         settings={store.editor.preferences.settings}
         initialPath={store.editor.initialPath}
         isInProjectView={store.editor.preferences.isInProjectView}
-        onClearErrors={() => signals.editor.errorsCleared()}
+        onClearErrors={() =>
+          store.editor.errors.length && signals.editor.errorsCleared()
+        }
         onAction={action => signals.editor.previewActionReceived({ action })}
         onOpenNewWindow={() =>
           this.props.signals.editor.preferences.viewModeChanged({

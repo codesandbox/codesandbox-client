@@ -2,6 +2,10 @@ import { set, when, toggle } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 import * as actions from './actions';
 
+export const openModal = set(state`editor.preferences.showModal`, true);
+
+export const closeModal = set(state`editor.preferences.showModal`, false);
+
 export const changeKeybinding = [
   actions.changeKeybinding,
   actions.storeKeybindings,

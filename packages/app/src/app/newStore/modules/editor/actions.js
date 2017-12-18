@@ -1,7 +1,11 @@
 import { clone } from 'mobx-state-tree';
 
-export function deleteSandbox() {
-  // TODO: waiting for modal
+export function setWorkspace({ state, props }) {
+  state.set('editor.workspace.project.title', props.sandbox.title || '');
+  state.set(
+    'editor.workspace.project.description',
+    props.sandbox.description || ''
+  );
 }
 
 export function ensureValidPrivacy({ props, path }) {

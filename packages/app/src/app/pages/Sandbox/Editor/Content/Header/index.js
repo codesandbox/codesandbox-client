@@ -4,6 +4,11 @@ import styled from 'styled-components';
 import Media from 'react-media';
 import { inject, observer } from 'mobx-react';
 
+import Modal from 'app/components/Modal';
+import Preferences from 'app/containers/Preferences';
+import NewSandbox from 'app/components/sandbox/NewSandbox';
+import ShareModal from 'app/containers/modals/ShareModal';
+import DeploymentModal from 'app/containers/modals/Deployment';
 import Save from 'react-icons/lib/md/save';
 import Fork from 'react-icons/lib/go/repo-forked';
 import Download from 'react-icons/lib/go/cloud-download';
@@ -176,17 +181,31 @@ function Header({ store, signals }) {
               tooltip="Deploy sandbox"
               title="Deploy"
               Icon={NowIcon}
-              onClick={() =>
-                this.props.signals.modalOpened({ name: 'deployment' })
-              }
-            />
+              onClick={() => signals.editor.deploymentModalOpened()}
+            >
+              <Modal
+                isOpen={store.editor.showDeploymentModal}
+                width={900}
+                onClose={() => signals.editor.deploymentModalClosed()}
+              >
+                <DeploymentModal />
+              </Modal>
+            </Action>
           )}
         <Action
           tooltip="Share sandbox"
           title="Share"
           Icon={ShareIcon}
-          onClick={() => this.props.signals.modalOpened({ name: 'share' })}
-        />
+          onClick={() => signals.editor.shareModalOpened()}
+        >
+          <Modal
+            isOpen={store.editor.showShareModal}
+            width={900}
+            onClose={() => signals.editor.shareModalClosed()}
+          >
+            <ShareModal />
+          </Modal>
+        </Action>
       </Left>
 
       <Right>
@@ -233,15 +252,31 @@ function Header({ store, signals }) {
           Icon={FeedbackIcon}
         />
         <Action
-          onClick={() => signals.modalOpened({ name: 'newSandbox' })}
+          onClick={() => signals.editor.newSandboxModalOpened()}
           tooltip="New Sandbox"
           Icon={PlusIcon}
-        />
+        >
+          <Modal
+            isOpen={store.editor.showNewSandboxModal}
+            width={900}
+            onClose={() => signals.editor.newSandboxModalClosed()}
+          >
+            <NewSandbox />
+          </Modal>
+        </Action>
         <Action
-          onClick={() => signals.modalOpened({ name: 'preferences' })}
+          onClick={() => signals.editor.preferences.modalOpened()}
           tooltip="Preferences"
           Icon={SettingsIcon}
-        />
+        >
+          <Modal
+            isOpen={store.editor.preferences.showModal}
+            width={900}
+            onClose={() => signals.editor.preferences.modalClosed()}
+          >
+            <Preferences />
+          </Modal>
+        </Action>
         <Margin
           style={{
             zIndex: 20,

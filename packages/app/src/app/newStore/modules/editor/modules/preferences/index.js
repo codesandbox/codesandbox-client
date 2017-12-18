@@ -46,6 +46,7 @@ export default Module({
     showEditor: true,
     showPreview: true,
     showDevtools: false,
+    showModal: false,
   },
   signals: {
     viewModeChanged: sequences.changeViewMode,
@@ -57,5 +58,7 @@ export default Module({
     paymentDetailsUpdated: sequences.updatePaymentDetails,
     keybindingChanged: sequences.changeKeybinding,
     zenModeToggled: sequences.toggleZenMode,
+    modalOpened: sequences.openModal,
+    modalClosed: sequences.closeModal,
   },
 });
