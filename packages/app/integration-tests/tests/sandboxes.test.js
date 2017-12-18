@@ -11,7 +11,7 @@ const SANDBOXES = [
   'vVoQVk78',
   'github/faceyspacey/redux-first-router-codesandbox/tree/master',
   'mZRjw05yp',
-  'pk1qjqpw67',
+
   'o29j95wx9',
   'k3q1zjjml5',
   'github/reactjs/redux/tree/master/examples/real-world',
