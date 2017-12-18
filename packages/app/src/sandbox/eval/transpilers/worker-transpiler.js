@@ -50,8 +50,8 @@ export default class WorkerTranspiler extends Transpiler {
 
   loadWorker() {
     return new Promise(resolve => {
-      const worker = this.getWorker();
       const t = Date.now();
+      const worker = this.getWorker();
 
       debug(`Loaded '${this.name}' worker in ${Date.now() - t}ms`);
       this.idleWorkers.push(worker);
