@@ -203,13 +203,13 @@ module.exports = {
         minifyURLs: true,
       },
     }),
-    // new ScriptExtHtmlWebpackPlugin({
-    //   preload: {
-    //     test: /babel/,
-    //     chunks: 'async',
-    //   },
-    //   defaultAttribute: 'sync',
-    // }),
+    new ScriptExtHtmlWebpackPlugin({
+      preload: {
+        test: /babel/,
+        chunks: 'async',
+      },
+      defaultAttribute: 'sync',
+    }),
     // Makes some environment variables available to the JS code, for example:
     // if (process.env.NODE_ENV === 'development') { ... }. See `env.js`.
     new webpack.DefinePlugin(env),
