@@ -3,6 +3,7 @@ const path = require('path');
 const paths = require('./paths');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
+const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HappyPack = require('happypack');
 const WatchMissingNodeModulesPlugin = require('../scripts/utils/WatchMissingNodeModulesPlugin');
@@ -24,6 +25,7 @@ module.exports = {
           require.resolve('./polyfills'),
           path.join(paths.sandboxSrc, 'index.js'),
         ],
+        'sandbox-startup': path.join(paths.sandboxSrc, 'startup.js'),
       }
     : {
         app: [
@@ -34,6 +36,7 @@ module.exports = {
           require.resolve('./polyfills'),
           path.join(paths.sandboxSrc, 'index.js'),
         ],
+        'sandbox-startup': path.join(paths.sandboxSrc, 'startup.js'),
         embed: [
           require.resolve('./polyfills'),
           path.join(paths.embedSrc, 'index.js'),
@@ -168,7 +171,7 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({
       inject: true,
-      chunks: ['common-sandbox', 'sandbox'],
+      chunks: ['sandbox-startup', 'common-sandbox', 'sandbox'],
       filename: 'frame.html',
       template: paths.sandboxHtml,
       minify: __PROD__ && {
@@ -202,33 +205,9 @@ module.exports = {
         minifyURLs: true,
       },
     }),
-    /**
-     * Inline the babel worker, lowers initialization time
-     */
-    function() {
-      const compiler = this;
-      compiler.plugin('compilation', function(compilation) {
-        compilation.plugin(
-          'html-webpack-plugin-before-html-processing',
-          function(htmlPluginData, cb) {
-            if (htmlPluginData.outputName === 'frame.html') {
-              const babelAssets = Object.keys(compilation.assets)
-                .filter(name => /babel-transpiler\..*\.worker\.js$/.test(name))
-                .map(
-                  assetName =>
-                    `<link rel="preload" as="script" href="${assetName}">`
-                );
-
-              htmlPluginData.html = htmlPluginData.html.replace(
-                '</head>',
-                '\n' + babelAssets.join('\n') + '\n</head>'
-              );
-            }
-            cb();
-          }
-        );
-      });
-    },
+    new ScriptExtHtmlWebpackPlugin({
+      inline: 'sandbox-startup',
+    }),
     // Makes some environment variables available to the JS code, for example:
     // if (process.env.NODE_ENV === 'development') { ... }. See `env.js`.
     new webpack.DefinePlugin(env),

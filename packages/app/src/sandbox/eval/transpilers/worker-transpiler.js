@@ -44,9 +44,13 @@ export default class WorkerTranspiler extends Transpiler {
     this.initialized = false;
   }
 
+  getWorker() {
+    return new this.Worker();
+  }
+
   loadWorker() {
     return new Promise(resolve => {
-      const worker = new this.Worker();
+      const worker = this.getWorker();
       const t = Date.now();
 
       worker.onmessage = message => {

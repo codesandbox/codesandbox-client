@@ -21,11 +21,6 @@ import {
 
 import loadDependencies from './npm';
 
-// Preload the babel loader
-import babelWorker from './eval/transpilers/babel';
-
-babelWorker.initialize();
-
 let initializedResizeListener = false;
 let manager: ?Manager = null;
 let actionsEnabled = false;
