@@ -32,7 +32,7 @@ SANDBOXES.forEach(sandbox => {
       browser.close();
     });
 
-    it.concurrent(
+    it(
       `loads the sandbox with id '${id}'`,
       async () => {
         browser = await browser;
@@ -51,8 +51,10 @@ SANDBOXES.forEach(sandbox => {
           },
           customSnapshotIdentifier: id.split('/').join('-'),
         });
+
+        await page.close();
       },
-      1000 * 60 * 10 // 10 minutes for all tests in total
+      1000 * 60 * 1
     );
   });
 });

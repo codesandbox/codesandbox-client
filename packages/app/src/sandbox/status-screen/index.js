@@ -10,16 +10,17 @@ type Screen = LoadingScreen;
 
 let currentScreen: ?Screen = null;
 let firstLoaded = null;
+const LOADING_SCREEN_ID = 'csb-loading-screen';
 
 export function resetScreen() {
-  if (document.getElementById('loading-screen')) {
+  if (document.getElementById(LOADING_SCREEN_ID)) {
     document.body.innerHTML = '';
     currentScreen = null;
   }
 }
 
 export default function setScreen(screen: Screen) {
-  if (document.getElementById('loading-screen')) {
+  if (document.getElementById(LOADING_SCREEN_ID)) {
     if (!firstLoaded && !currentScreen) {
       // Give the illusion of faster loading by showing the loader screen later
       firstLoaded = setTimeout(async () => {
