@@ -64,18 +64,6 @@ class BasePreview extends React.Component {
     this.listener = listen(this.handleMessage);
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.sandbox.id !== this.props.sandbox.id) {
-      this.handleSandboxChange();
-      if (this.diposeInitialize) {
-        this.diposeInitialize();
-        this.disposeInitialize = this.props.onInitialized(this);
-      }
-    } else {
-      this.executeCodeImmediately();
-    }
-  }
-
   openNewWindow = () => {
     if (this.props.onOpenNewWindow) {
       this.props.onOpenNewWindow();

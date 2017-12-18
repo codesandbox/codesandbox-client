@@ -35,6 +35,10 @@ class Preview extends React.Component {
       this.detectStructureChange,
       this.handleStructureChange.bind(this, preview)
     );
+    const disposeHandleSandboxChange = reaction(
+      () => this.props.store.editor.currentSandbox.id,
+      this.handleSandboxChange.bind(this, preview)
+    );
 
     return () => {
       disposeHandleProjectViewChange();
@@ -43,6 +47,7 @@ class Preview extends React.Component {
       disposeHandleModuleSyncedChange();
       disposeHandleCodeChange();
       disposeHandleStructureChange();
+      disposeHandleSandboxChange();
     };
   };
 
@@ -58,7 +63,11 @@ class Preview extends React.Component {
     );
   };
 
-  handleCodeChange = (preview, change) => {
+  handleSandboxChange = preview => {
+    preview.handleSandboxChange();
+  };
+
+  handleCodeChange = preview => {
     const settings = this.props.store.editor.preferences.settings;
     if (settings.livePreviewEnabled) {
       if (settings.instantPreviewEnabled) {

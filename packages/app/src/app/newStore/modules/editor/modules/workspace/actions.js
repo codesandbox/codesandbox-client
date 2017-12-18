@@ -1,3 +1,14 @@
+export function saveSandboxPrivacy({ api, state, props }) {
+  const id = state.get('editor.currentId');
+  return api
+    .patch(`/sandboxes/${id}/privacy`, {
+      sandbox: {
+        privacy: props.privacy,
+      },
+    })
+    .then(() => undefined);
+}
+
 export function deleteSandbox({ api, state }) {
   const id = state.get('editor.currentId');
 
@@ -62,19 +73,6 @@ export function removeDirectory({ state, props }) {
   );
 
   state.splice(`editor.sandboxes.${sandboxId}.directories`, directoryIndex, 1);
-}
-
-export function whenDeleteDirectory({ browser, state, path, props }) {
-  const sandbox = state.get('editor.currentSandbox');
-  const directory = sandbox.directories.find(
-    directoryEntry => directoryEntry.id === props.id
-  );
-
-  return browser.confirm(
-    `Are you sure you want to delete ${directory.title} and all its children?`
-  )
-    ? path.confirmed()
-    : path.cancelled();
 }
 
 export function saveNewDirectoryName({ api, state, props }) {

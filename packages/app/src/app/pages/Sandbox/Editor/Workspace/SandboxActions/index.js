@@ -45,13 +45,13 @@ function SandboxActions({ store, signals }) {
           <PrivacySelect
             value={sandbox.privacy}
             onChange={event =>
-              signals.editor.sandboxPrivacyChanged({
-                privacy: event.target.value,
+              signals.editor.workspace.sandboxPrivacyChanged({
+                privacy: Number(event.target.value),
               })
             }
           >
             <option value={0}>Public</option>
-            <option value={1}>Unlisted (only findable with url)</option>
+            <option value={1}>Unlisted (only available by url)</option>
             <option value={2}>Private</option>
           </PrivacySelect>
         </WorkspaceInputContainer>

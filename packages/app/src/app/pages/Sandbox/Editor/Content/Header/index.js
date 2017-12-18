@@ -140,14 +140,18 @@ function Header({ store, signals }) {
               tooltip="Undo like"
               title={sandbox.likeCount}
               Icon={FullHeartIcon}
-              onClick={() => signals.editor.likeSandboxToggled()}
+              onClick={() =>
+                signals.editor.likeSandboxToggled({ id: sandbox.id })
+              }
             />
           ) : (
             <Action
               tooltip="Like"
               title={sandbox.likeCount}
               Icon={HeartIcon}
-              onClick={() => signals.editor.likeSandboxToggled()}
+              onClick={() =>
+                signals.editor.likeSandboxToggled({ id: sandbox.id })
+              }
             />
           ))}
         <Action

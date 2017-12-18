@@ -46,7 +46,7 @@ class KeybindingManager extends React.Component {
       if (binding.bindings[0]) {
         const bindingString = binding.bindings[0].join('');
 
-        if (binding.bindings[1] && binding.bindings[1].length) {
+        if (binding.bindings.length === 2 && binding.bindings[1].length) {
           bindingStrings[bindingString] = {
             [binding.bindings[1].join('')]: key,
           };

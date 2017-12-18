@@ -44,5 +44,6 @@ export default Module({
     deleteSandboxModalOpened: sequences.openDeleteSandboxModal,
     deleteSandboxModalClosed: sequences.closeDeleteSandboxModal,
     sandboxDeleted: sequences.deleteSandbox,
+    sandboxPrivacyChanged: sequences.changeSandboxPrivacy,
   },
 });

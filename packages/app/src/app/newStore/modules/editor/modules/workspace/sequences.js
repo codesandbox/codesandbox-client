@@ -24,6 +24,14 @@ export const closeDeleteSandboxModal = set(
   false
 );
 
+export const changeSandboxPrivacy = [
+  actions.saveSandboxPrivacy,
+  set(
+    state`editor.sandboxes.${state`editor.currentId`}.privacy`,
+    props`privacy`
+  ),
+];
+
 export const deleteSandbox = [
   actions.deleteSandbox,
   addNotification('Sandbox deleted!', 'success'),
@@ -91,6 +99,7 @@ export const removeExternalResource = [
 
 export const deleteModule = [
   ensureOwnedSandbox,
+  set(state`editor.currentModuleShortid`, state`editor.mainModule.shortid`),
   actions.deleteModule,
   actions.removeModule,
 ];
@@ -128,11 +137,9 @@ export const renameDirectory = [
 
 export const deleteDirectory = [
   ensureOwnedSandbox,
-  actions.whenDeleteDirectory,
-  {
-    confirmed: [actions.deleteDirectory, actions.removeDirectory],
-    cancelled: [],
-  },
+  set(state`editor.currentModuleShortid`, state`editor.mainModule.shortid`),
+  actions.deleteDirectory,
+  actions.removeDirectory,
 ];
 
 export const moveDirectoryToDirectory = actions.moveDirectoryToDirectory;

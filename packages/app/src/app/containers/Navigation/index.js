@@ -80,7 +80,7 @@ function Navigation({ signals, store, title }) {
               </Tooltip>
             </Action>
           )}
-          <Action onClick={signals.openModal({ modal: 'newSandbox' })}>
+          <Action onClick={() => signals.editor.newSandboxModalOpened()}>
             <Tooltip position="bottom" title="New Sandbox">
               <PlusIcon height={35} />
             </Tooltip>

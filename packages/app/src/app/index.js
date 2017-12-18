@@ -86,7 +86,7 @@ requirePolyfills().then(() => {
             <ThemeProvider theme={theme}>
               <ReduxProvider store={store}>
                 <ConnectedRouter history={history}>
-                  <RootComponent store={store} />
+                  <RootComponent />
                 </ConnectedRouter>
               </ReduxProvider>
             </ThemeProvider>

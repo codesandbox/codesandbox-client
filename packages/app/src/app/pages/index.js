@@ -127,4 +127,4 @@ class Routes extends React.Component {
   }
 }
 
-export default inject('signals')(withRouter(observer(Routes)));
+export default inject('signals', 'store')(withRouter(observer(Routes)));

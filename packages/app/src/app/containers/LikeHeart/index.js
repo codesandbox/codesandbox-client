@@ -1,5 +1,5 @@
 import React from 'react';
-import { inject } from 'mobx-react';
+import { inject, observer } from 'mobx-react';
 import styled, { css } from 'styled-components';
 import HeartIcon from 'react-icons/lib/fa/heart-o';
 import FullHeartIcon from 'react-icons/lib/fa/heart';
@@ -54,4 +54,4 @@ function LikeHeart({ sandbox, store, signals, className, colorless }) {
   );
 }
 
-export default inject('signals', 'store')(LikeHeart);
+export default inject('signals', 'store')(observer(LikeHeart));

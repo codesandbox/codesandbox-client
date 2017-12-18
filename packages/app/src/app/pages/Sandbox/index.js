@@ -30,12 +30,9 @@ class SandboxPage extends React.Component {
   }
 
   fetchSandbox = () => {
-    // HACK UNTIL CEREBRAL ROUTER
-    setTimeout(() => {
-      this.props.signals.editor.sandboxChanged({
-        id: this.props.match.params.id,
-      });
-    }, 100);
+    this.props.signals.editor.sandboxChanged({
+      id: this.props.match.params.id,
+    });
   };
 
   componentDidUpdate(prevProps) {

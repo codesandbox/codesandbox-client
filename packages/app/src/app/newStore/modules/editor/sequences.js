@@ -1,5 +1,5 @@
 import { sequence } from 'cerebral';
-import { set, when, equals, toggle } from 'cerebral/operators';
+import { set, when, equals, toggle, increment } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 import * as actions from './actions';
 
@@ -89,9 +89,16 @@ export const addNpmDependency = [
 export const toggleLikeSandbox = [
   when(state`editor.sandboxes.${props`id`}.userLiked`),
   {
-    true: actions.unlikeSandbox,
-    false: actions.likeSandbox,
+    true: [
+      actions.unlikeSandbox,
+      increment(state`editor.sandboxes.${props`id`}.likeCount`, -1),
+    ],
+    false: [
+      actions.likeSandbox,
+      increment(state`editor.sandboxes.${props`id`}.likeCount`, 1),
+    ],
   },
+  toggle(state`editor.sandboxes.${props`id`}.userLiked`),
 ];
 
 export const forceForkSandbox = [

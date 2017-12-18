@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { inject } from 'mobx-react';
 import { DropTarget } from 'react-dnd';
+import Modal from 'app/components/Modal';
 import Alert from 'app/components/Alert';
 
 import validateTitle from './validateTitle';
@@ -62,6 +63,10 @@ class DirectoryEntry extends React.Component {
     this.state = {
       creating: '',
       open: props.root || isParentOfModule,
+      showDeleteDirectoryModal: false,
+      showDeleteModuleModal: false,
+      moduleToDeleteTitle: null,
+      moduleToDeleteId: null,
     };
   }
 
@@ -114,26 +119,12 @@ class DirectoryEntry extends React.Component {
     this.props.signals.editor.workspace.moduleRenamed({ id, title });
   };
 
-  deleteModule = id => {
-    this.props.signals.modalOpened({ name: 'deleteModule', props: { id } });
-    /*
-    <Alert
-      title="Delete File"
-      body={
-        <span>
-          Are you sure you want to delete <b>{module.title}</b>?
-          <br />
-          The file will be permanently removed.
-        </span>
-      }
-      onCancel={modalActions.closeModal}
-      onDelete={() => {
-        modalActions.closeModal();
-        // this.props.signals.editor.workspace.moduleDeleted({ id })
-        sandboxActions.deleteModule(sandboxId, id);
-      }}
-    />
-    */
+  deleteModule = (id, title) => {
+    this.setState({
+      showDeleteModuleModal: true,
+      moduleToDeleteId: id,
+      moduleToDeleteTitle: title,
+    });
   };
 
   onCreateDirectoryClick = () => {
@@ -157,10 +148,17 @@ class DirectoryEntry extends React.Component {
     this.props.signals.editor.workspace.directoryRenamed({ title, id });
   };
 
-  deleteDirectory = () => {
-    const { id } = this.props;
+  closeModals = () => {
+    this.setState({
+      showDeleteDirectoryModal: false,
+      showDeleteModuleModal: false,
+    });
+  };
 
-    this.props.signals.editor.workspace.directoryDeleted({ id });
+  deleteDirectory = () => {
+    this.setState({
+      showDeleteDirectoryModal: true,
+    });
   };
 
   toggleOpen = () => this.setOpen(!this.state.open);
@@ -240,6 +238,29 @@ class DirectoryEntry extends React.Component {
               openMenu={openMenu}
               closeTree={this.closeTree}
             />
+            <Modal
+              isOpen={this.state.showDeleteDirectoryModal}
+              onClose={this.closeModals}
+              width={400}
+            >
+              <Alert
+                title="Delete Directory"
+                body={
+                  <span>
+                    Are you sure you want to delete <b>{title}</b>?
+                    <br />
+                    The directory will be permanently removed.
+                  </span>
+                }
+                onCancel={this.closeModals}
+                onDelete={() => {
+                  this.setState({
+                    showDeleteDirectoryModal: false,
+                  });
+                  this.props.signals.editor.workspace.directoryDeleted({ id });
+                }}
+              />
+            </Modal>
           </EntryContainer>
         )}
         <Opener open={open}>
@@ -273,6 +294,32 @@ class DirectoryEntry extends React.Component {
             errors={errors}
             corrections={corrections}
           />
+          <Modal
+            isOpen={this.state.showDeleteModuleModal}
+            onClose={this.closeModals}
+            width={400}
+          >
+            <Alert
+              title="Delete File"
+              body={
+                <span>
+                  Are you sure you want to delete{' '}
+                  <b>{this.state.moduleToDeleteTitle}</b>?
+                  <br />
+                  The file will be permanently removed.
+                </span>
+              }
+              onCancel={this.closeModals}
+              onDelete={() => {
+                this.setState({
+                  showDeleteModuleModal: false,
+                });
+                this.props.signals.editor.workspace.moduleDeleted({
+                  id: this.state.moduleToDeleteId,
+                });
+              }}
+            />
+          </Modal>
           {creating === 'module' && (
             <Entry
               id=""

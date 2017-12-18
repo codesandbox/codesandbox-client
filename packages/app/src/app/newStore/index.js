@@ -23,7 +23,7 @@ export default Module({
   model,
   state: {
     jwt: null,
-    isAuthenticating: false,
+    isAuthenticating: true,
     authToken: null,
     error: null,
     user: {

@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { observer } from 'mobx-react';
 
 import EyeIcon from 'react-icons/lib/fa/eye';
 import ForkIcon from 'react-icons/lib/go/repo-forked';
@@ -15,7 +16,7 @@ const Stats = styled.div`
   height: 100%;
 `;
 
-export default ({ sandbox }) => (
+export default observer(({ sandbox }) => (
   <Stats>
     <Stat Icon={<EyeIcon />} count={sandbox.viewCount} />
     <Stat
@@ -24,4 +25,4 @@ export default ({ sandbox }) => (
     />
     <Stat Icon={<ForkIcon />} count={sandbox.forkCount} />
   </Stats>
-);
+));
