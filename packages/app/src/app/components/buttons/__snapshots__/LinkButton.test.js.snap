@@ -1,16 +1,36 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`LinkButton renders 1`] = `
+.c0 {
+  display: inline-block;
+  background-color: transparent;
+  color: #6CAEDD;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
 <button
-  className="sc-bdVaJa jcXfcN"
+  className="c0"
 >
   Test
 </button>
 `;
 
 exports[`LinkButton renders onClick 1`] = `
+.c0 {
+  display: inline-block;
+  background-color: transparent;
+  color: #6CAEDD;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
 <button
-  className="sc-bdVaJa jcXfcN"
+  className="c0"
   onClick={[Function]}
 >
   Test
