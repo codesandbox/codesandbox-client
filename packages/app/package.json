@@ -59,6 +59,7 @@
     "husky": "^0.14.3",
     "jest": "^21.2.1",
     "jest-image-snapshot": "^1.0.1",
+    "jest-junit": "^3.4.1",
     "jest-styled-components": "^4.9.0",
     "json-loader": "0.5.4",
     "object-assign": "^4.1.1",
