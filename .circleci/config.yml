@@ -71,7 +71,9 @@ jobs:
             sleep 6
             yarn test:integrations --ci --testResultsProcessor="jest-junit"
           environment:
-            JEST_JUNIT_OUTPUT: "reports/junit/js-test-results.xml"
+            JEST_JUNIT_OUTPUT: "/tmp/test-results/js-test-results.xml"
+      - store_test_results:
+          path: /tmp/test-results
       - store_artifacts:
           path: packages/app/integration-tests/tests/__image_snapshots__/__diff_output__
           destination: image_snapshot_diff
