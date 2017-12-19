@@ -1,45 +1,45 @@
 // @flow
-// This is the status screen handler, will show warnings, errors, loading screens
-// etc
-
-import loadingHTML from './loading-screen.html';
+// This is the loading screen
 
 type LoadingScreen = {
   type: 'loading',
   text: string,
 };
 
-type ErrorScreen = {
-  type: 'warning' | 'error',
-  action: {
-    title: string,
-    handler: Function,
-  },
-  title: string,
-  body: string,
-};
+type Screen = LoadingScreen;
 
-type Screen = LoadingScreen | ErrorScreen;
-
-let currentScreen: ?Screen = {
-  type: 'loading',
-  text: 'CodeSandbox',
-};
+let currentScreen: ?Screen = null;
+let firstLoaded = null;
+const LOADING_SCREEN_ID = 'csb-loading-screen';
 
 export function resetScreen() {
-  if (document.getElementById('loading-screen')) {
+  if (document.getElementById(LOADING_SCREEN_ID)) {
     document.body.innerHTML = '';
     currentScreen = null;
   }
 }
 
 export default function setScreen(screen: Screen) {
-  if (document.getElementById('loading-screen')) {
-    if (screen.type === 'loading') {
-      if (!currentScreen || currentScreen.type !== 'loading') {
-        document.body.innerHTML = loadingHTML;
+  if (document.getElementById(LOADING_SCREEN_ID)) {
+    if (!firstLoaded && !currentScreen) {
+      // Give the illusion of faster loading by showing the loader screen later
+      firstLoaded = setTimeout(async () => {
+        if (currentScreen) {
+          const loadingHtml = await import(/* webpackChunkName: 'loading-screen' */ './loading-screen.html');
+
+          if (currentScreen) {
+            document.body.innerHTML = loadingHtml;
+
+            document.getElementsByClassName('text').item(0).textContent =
+              currentScreen.text;
+          }
+        }
+      }, 500);
+    } else if (screen.type === 'loading') {
+      if (document.getElementsByClassName('text').item(0)) {
+        document.getElementsByClassName('text').item(0).textContent =
+          screen.text;
       }
-      document.getElementsByClassName('text').item(0).textContent = screen.text;
     }
   }
 

@@ -24,6 +24,7 @@ module.exports = {
           require.resolve('./polyfills'),
           path.join(paths.sandboxSrc, 'index.js'),
         ],
+        'sandbox-startup': path.join(paths.sandboxSrc, 'startup.js'),
       }
     : {
         app: [
@@ -34,6 +35,7 @@ module.exports = {
           require.resolve('./polyfills'),
           path.join(paths.sandboxSrc, 'index.js'),
         ],
+        'sandbox-startup': path.join(paths.sandboxSrc, 'startup.js'),
         embed: [
           require.resolve('./polyfills'),
           path.join(paths.embedSrc, 'index.js'),
@@ -168,7 +170,7 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({
       inject: true,
-      chunks: ['common-sandbox', 'sandbox'],
+      chunks: ['sandbox-startup', 'common-sandbox', 'sandbox'],
       filename: 'frame.html',
       template: paths.sandboxHtml,
       minify: __PROD__ && {

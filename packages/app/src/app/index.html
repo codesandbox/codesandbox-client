@@ -22,26 +22,28 @@
   <meta name="description" content="CodeSandbox is an online editor tailored for web applications.">
   <link rel="shortcut icon" href="./favicon.ico">
   <link rel="manifest" href="/manifest.json">
-  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Source+Code+Pro:500" rel="stylesheet">
+  <link rel="preload" as="font" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Source+Code+Pro:500" rel="stylesheet">
   <title>CodeSandbox</title>
+
+  <!-- AMD Loader for Monaco -->
+  <script rel="preload" src="/public/vs/loader.js"></script>
+
   <!-- Google Tag Manager -->
   <script>
     (function (w, d, s, l, i) {
       w[l] = w[l] || []; w[l].push({
         'gtm.start':
-        new Date().getTime(), event: 'gtm.js'
+          new Date().getTime(), event: 'gtm.js'
       }); var f = d.getElementsByTagName(s)[0],
         j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
           'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
     })(window, document, 'script', 'dataLayer', 'GTM-T3L6RFK');
   </script>
   <!-- End Google Tag Manager -->
-  <script src="https://cdn.ravenjs.com/3.17.0/raven.min.js" crossorigin="anonymous"></script>
+  <script async src="https://cdn.ravenjs.com/3.17.0/raven.min.js" crossorigin="anonymous"></script>
   <!-- <script async src="//cdn.headwayapp.co/widget.js"></script> -->
-  <script async src="https://js.stripe.com/v3/"></script>
 
-  <!-- AMD Loader for Monaco -->
-  <script src="/public/vs/loader.js"></script>
+  <script async rel="prefetch" src="https://js.stripe.com/v3/"></script>
 </head>
 
 <body style="margin: 0; padding: 0;">

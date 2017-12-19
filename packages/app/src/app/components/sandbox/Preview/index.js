@@ -8,8 +8,9 @@ import { debounce } from 'lodash';
 import type { Module, Sandbox, Preferences, Directory } from 'common/types';
 
 import { frameUrl } from 'common/utils/url-generator';
-import { findMainModule } from 'app/store/entities/sandboxes/modules/selectors';
+import { getModulePath } from 'app/store/entities/sandboxes/modules/selectors';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
+
 import shouldUpdate from './utils/should-update';
 
 import DevTools from './DevTools';
@@ -253,15 +254,14 @@ export default class Preview extends React.PureComponent<Props, State> {
   getRenderedModule = () => {
     const { modules, module, directories, entry, isInProjectView } = this.props;
     return isInProjectView
-      ? findMainModule(modules, directories, entry)
-      : module;
+      ? '/' + entry
+      : getModulePath(modules, directories, module.id);
   };
 
   executeCodeImmediately = (initialRender: boolean = false) => {
     const {
       modules,
       directories,
-      module,
       externalResources,
       preferences,
       dependencies,
@@ -286,18 +286,22 @@ export default class Preview extends React.PureComponent<Props, State> {
         this.evaluateInSandbox(`history.pushState({}, null, '/')`);
       }
 
+      // We convert the modules to a format the manager understands
+      const normalizedModules = modules.map(m => ({
+        path: getModulePath(modules, directories, m.id),
+        code: m.code,
+      }));
+
       this.sendMessage({
         type: 'compile',
-        module: renderedModule,
-        changedModule: module,
+        version: 2,
+        entry: renderedModule,
         dependencies,
-        modules,
-        directories,
+        modules: normalizedModules,
         sandboxId,
         externalResources,
         template,
         hasActions: !!runActionFromPreview,
-        isModuleView: !isInProjectView,
       });
     }
   };

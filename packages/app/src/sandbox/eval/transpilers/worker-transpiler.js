@@ -44,21 +44,21 @@ export default class WorkerTranspiler extends Transpiler {
     this.initialized = false;
   }
 
+  getWorker() {
+    return new this.Worker();
+  }
+
   loadWorker() {
     return new Promise(resolve => {
-      const worker = new this.Worker();
       const t = Date.now();
+      const worker = this.getWorker();
 
-      worker.onmessage = message => {
-        if (message && message.data === 'ready') {
-          debug(`Loaded '${this.name}' worker in ${Date.now() - t}ms`);
-          this.idleWorkers.push(worker);
+      debug(`Loaded '${this.name}' worker in ${Date.now() - t}ms`);
+      this.idleWorkers.push(worker);
 
-          this.executeRemainingTasks();
+      this.executeRemainingTasks();
 
-          resolve();
-        }
-      };
+      resolve();
 
       this.workers.push(worker);
     });

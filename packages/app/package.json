@@ -59,6 +59,7 @@
     "husky": "^0.14.3",
     "jest": "^21.2.1",
     "jest-image-snapshot": "^1.0.1",
+    "jest-junit": "^3.4.1",
     "jest-styled-components": "^4.9.0",
     "json-loader": "0.5.4",
     "object-assign": "^4.1.1",
@@ -159,12 +160,14 @@
     "react-redux": "^5.0.5",
     "react-router-dom": "^4.2.2",
     "react-router-redux": "next",
+    "react-show": "^1.1.2",
     "react-split-pane": "^0.1.63",
     "react-stripe-elements": "^1.2.0",
     "react-tippy": "^0.14.0",
     "redbox-react": "^1.4.3",
     "redux": "^3.7.1",
     "reselect": "^3.0.1",
+    "script-ext-html-webpack-plugin": "^1.8.8",
     "shelljs": "^0.7.8",
     "store": "^2.0.12",
     "styled-components": "^2.1.1",
@@ -172,8 +175,7 @@
     "tern": "^0.21.0",
     "vue": "^2.5.2",
     "vue-template-compiler": "^2.5.2",
-    "vue-template-es2015-compiler": "^1.6.0",
-    "react-show": "^1.1.2"
+    "vue-template-es2015-compiler": "^1.6.0"
   },
   "jest": {
     "roots": [
