@@ -47,6 +47,7 @@ exports[`File renders 1`] = `
   display: inline-block;
   -webkit-font-smoothing: antialiased;
   vertical-align: top;
+  -webkit-flex-shrink: 0;
   -ms-flex-negative: 0;
   flex-shrink: 0;
 }
@@ -151,6 +152,7 @@ exports[`File renders alternative 1`] = `
   display: inline-block;
   -webkit-font-smoothing: antialiased;
   vertical-align: top;
+  -webkit-flex-shrink: 0;
   -ms-flex-negative: 0;
   flex-shrink: 0;
 }
@@ -252,6 +254,7 @@ exports[`File renders as active 1`] = `
   display: inline-block;
   -webkit-font-smoothing: antialiased;
   vertical-align: top;
+  -webkit-flex-shrink: 0;
   -ms-flex-negative: 0;
   flex-shrink: 0;
 }
@@ -356,6 +359,7 @@ exports[`File renders directory 1`] = `
   display: inline-block;
   -webkit-font-smoothing: antialiased;
   vertical-align: top;
+  -webkit-flex-shrink: 0;
   -ms-flex-negative: 0;
   flex-shrink: 0;
 }

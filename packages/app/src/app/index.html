@@ -26,7 +26,18 @@
   <title>CodeSandbox</title>
 
   <!-- AMD Loader for Monaco -->
-  <script rel="preload" src="/public/vs/loader.js"></script>
+  <link data-name="vs/editor/editor.main" rel="stylesheet" href="/public/vs/editor/editor.main.css">
+  <script src="/public/vs/loader.js"></script>
+  <script>
+    window.require.config({
+      url: '/public/vs/loader.js',
+      paths: {
+        vs: '/public/vs',
+      },
+    });
+  </script>
+  <script src="/public/vs/editor/editor.main.nls.js"></script>
+  <script src="/public/vs/editor/editor.main.js"></script>
 
   <!-- Google Tag Manager -->
   <script>
