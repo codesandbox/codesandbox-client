@@ -76,8 +76,13 @@ function downloadDependency(depName: string, depVersion: string, path: string) {
     ''
   );
 
+  const isGitHub = depVersion.includes('/');
+  const url = isGitHub
+    ? `https://cdn.jsdelivr.net/gh/${depVersion}${relativePath}`
+    : `https://unpkg.com/${depName}@${depVersion}${relativePath}`;
+
   packages[path] = window
-    .fetch(`https://unpkg.com/${depName}@${depVersion}${relativePath}`)
+    .fetch(url)
     .then(x => {
       if (x.ok) {
         return x.text();

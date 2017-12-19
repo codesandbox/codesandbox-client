@@ -92,7 +92,7 @@ async function getDependencies(dependencies: Object) {
     );
     return bucketManifest;
   } catch (e) {
-    dispatch(actions.notifications.show('Bundling dependencies...'));
+    dispatch(actions.notifications.show('Resolving dependencies...'));
 
     // The dep has not been generated yet...
     const { url } = await requestPackager(
@@ -100,7 +100,6 @@ async function getDependencies(dependencies: Object) {
       'POST'
     );
 
-    setScreen({ type: 'loading', text: 'Downloading Dependencies...' });
     return requestPackager(`${BUCKET_URL}/${url}`);
   }
 }
