@@ -1,5 +1,6 @@
 // @flow
 // This is the loading screen
+import loadingHtml from './loading-screen.html';
 
 type LoadingScreen = {
   type: 'loading',
@@ -10,37 +11,64 @@ type Screen = LoadingScreen;
 
 let currentScreen: ?Screen = null;
 let firstLoaded = null;
-const LOADING_SCREEN_ID = 'csb-loading-screen';
+
+let iframeReference = null;
+
+function changeText(text: string) {
+  if (iframeReference) {
+    iframeReference.contentDocument
+      .getElementsByClassName('text')
+      .item(0).textContent = text;
+  }
+}
+
+function createOverlay() {
+  return new Promise(resolve => {
+    const iframe = document.createElement('iframe');
+
+    iframe.setAttribute(
+      'style',
+      `position: fixed; top: 0; left: 0; width: 100%; height: 100%; border: none; z-index: 2147483647;`
+    );
+
+    iframe.onload = () => {
+      iframe.contentDocument.body.innerHTML = loadingHtml;
+      iframeReference = iframe;
+
+      if (currentScreen) {
+        changeText(currentScreen.text);
+      }
+      resolve();
+    };
+
+    document.body.appendChild(iframe);
+  });
+}
 
 export function resetScreen() {
-  if (document.getElementById(LOADING_SCREEN_ID)) {
-    document.body.innerHTML = '';
-    currentScreen = null;
+  currentScreen = null;
+  try {
+    window.document.body.removeChild(iframeReference);
+    iframeReference = null;
+  } catch (e) {
+    /* nothing */
   }
 }
 
 export default function setScreen(screen: Screen) {
-  if (document.getElementById(LOADING_SCREEN_ID)) {
-    if (!firstLoaded && !currentScreen) {
+  if (!iframeReference && !currentScreen) {
+    if (!firstLoaded) {
       // Give the illusion of faster loading by showing the loader screen later
-      firstLoaded = setTimeout(async () => {
+      firstLoaded = setTimeout(() => {
         if (currentScreen) {
-          const loadingHtml = await import(/* webpackChunkName: 'loading-screen' */ './loading-screen.html');
-
-          if (currentScreen) {
-            document.body.innerHTML = loadingHtml;
-
-            document.getElementsByClassName('text').item(0).textContent =
-              currentScreen.text;
-          }
+          createOverlay();
         }
-      }, 500);
-    } else if (screen.type === 'loading') {
-      if (document.getElementsByClassName('text').item(0)) {
-        document.getElementsByClassName('text').item(0).textContent =
-          screen.text;
-      }
+      }, 600);
+    } else {
+      createOverlay(screen.text);
     }
+  } else if (screen.type === 'loading') {
+    changeText(screen.text);
   }
 
   currentScreen = screen;

@@ -124,7 +124,7 @@ async function getDependencies(dependencies: Object) {
     );
     return bucketManifest;
   } catch (e) {
-    dispatch(actions.notifications.show('Resolving dependencies...'));
+    setScreen({ type: 'loading', text: 'Resolving Dependencies...' });
 
     // The dep has not been generated yet...
     const { url } = await requestPackager(
@@ -141,10 +141,8 @@ export default async function fetchDependencies(npmDependencies: Dependencies) {
     // New Packager flow
 
     try {
-      dispatch(actions.notifications.show('Downloading dependencies...'));
       const result = await getDependencies(npmDependencies);
-      setScreen({ type: 'loading', text: 'Transpiling...' });
-      dispatch(actions.notifications.show('Dependencies loaded!', 'success'));
+      setScreen({ type: 'loading', text: 'Transpiling Modules...' });
 
       return result;
     } catch (e) {
