@@ -3,7 +3,8 @@ import * as pathUtils from 'common/utils/path';
 import resolve from 'browser-resolve';
 
 import type { Module } from '../entities/module';
-import Manager, { Manifest } from '../manager';
+import Manager from '../manager';
+import type { Manifest } from '../manager';
 
 import DependencyNotFoundError from '../../errors/dependency-not-found-error';
 import getDependencyName from '../utils/get-dependency-name';
@@ -76,8 +77,13 @@ function downloadDependency(depName: string, depVersion: string, path: string) {
     ''
   );
 
+  const isGitHub = /\//.test(depVersion);
+  const url = isGitHub
+    ? `https://cdn.jsdelivr.net/gh/${depVersion}${relativePath}`
+    : `https://unpkg.com/${depName}@${depVersion}${relativePath}`;
+
   packages[path] = window
-    .fetch(`https://unpkg.com/${depName}@${depVersion}${relativePath}`)
+    .fetch(url)
     .then(x => {
       if (x.ok) {
         return x.text();

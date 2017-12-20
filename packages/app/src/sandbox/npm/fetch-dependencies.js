@@ -13,6 +13,8 @@ type Dependencies = {
 const RETRY_COUNT = 60;
 const debug = _debug('cs:sandbox:packager');
 
+const host = process.env.CODESANDBOX_HOST;
+
 const VERSION = 1;
 
 const BUCKET_URL =
@@ -81,9 +83,39 @@ function dependenciesToBucketPath(dependencies: Object) {
     .join('%2B')}.json`;
 }
 
+async function getAbsoluteDependencies(dependencies: Object) {
+  const nonAbsoluteDependencies = Object.keys(dependencies).filter(dep => {
+    const version = dependencies[dep];
+
+    const isAbsolute = /^\d+\.\d+\.\d+$/.test(version);
+
+    return !isAbsolute && !/\//.test(version);
+  });
+
+  const newDependencies = { ...dependencies };
+
+  await Promise.all(
+    nonAbsoluteDependencies.map(async dep => {
+      try {
+        const data = await window
+          .fetch(`${host}/api/v1/dependencies/${dep}@${dependencies[dep]}`)
+          .then(x => x.json())
+          .then(x => x.data);
+
+        newDependencies[dep] = data.version;
+      } catch (e) {
+        /* ignore */
+      }
+    })
+  );
+
+  return newDependencies;
+}
+
 async function getDependencies(dependencies: Object) {
-  const dependencyUrl = dependenciesToQuery(dependencies);
-  const bucketDependencyUrl = dependenciesToBucketPath(dependencies);
+  const absoluteDependencies = await getAbsoluteDependencies(dependencies);
+  const dependencyUrl = dependenciesToQuery(absoluteDependencies);
+  const bucketDependencyUrl = dependenciesToBucketPath(absoluteDependencies);
 
   setScreen({ type: 'loading', text: 'Downloading Dependencies...' });
   try {
@@ -92,7 +124,7 @@ async function getDependencies(dependencies: Object) {
     );
     return bucketManifest;
   } catch (e) {
-    dispatch(actions.notifications.show('Bundling dependencies...'));
+    dispatch(actions.notifications.show('Resolving dependencies...'));
 
     // The dep has not been generated yet...
     const { url } = await requestPackager(
@@ -100,7 +132,6 @@ async function getDependencies(dependencies: Object) {
       'POST'
     );
 
-    setScreen({ type: 'loading', text: 'Downloading Dependencies...' });
     return requestPackager(`${BUCKET_URL}/${url}`);
   }
 }
