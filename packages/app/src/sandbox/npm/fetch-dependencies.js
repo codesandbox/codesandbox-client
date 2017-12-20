@@ -142,7 +142,7 @@ export default async function fetchDependencies(npmDependencies: Dependencies) {
 
     try {
       const result = await getDependencies(npmDependencies);
-      setScreen({ type: 'loading', text: 'Transpiling...' });
+      setScreen({ type: 'loading', text: 'Transpiling Modules...' });
 
       return result;
     } catch (e) {

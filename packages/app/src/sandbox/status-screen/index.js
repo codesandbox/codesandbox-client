@@ -22,7 +22,7 @@ function changeText(text: string) {
   }
 }
 
-function createOverlay(text: string) {
+function createOverlay() {
   return new Promise(resolve => {
     const iframe = document.createElement('iframe');
 
@@ -35,7 +35,9 @@ function createOverlay(text: string) {
       iframe.contentDocument.body.innerHTML = loadingHtml;
       iframeReference = iframe;
 
-      changeText(text);
+      if (currentScreen) {
+        changeText(currentScreen.text);
+      }
       resolve();
     };
 
@@ -59,7 +61,7 @@ export default function setScreen(screen: Screen) {
       // Give the illusion of faster loading by showing the loader screen later
       firstLoaded = setTimeout(() => {
         if (currentScreen) {
-          createOverlay(currentScreen.text);
+          createOverlay();
         }
       }, 600);
     } else {
