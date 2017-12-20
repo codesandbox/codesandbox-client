@@ -13,6 +13,8 @@ type Dependencies = {
 const RETRY_COUNT = 60;
 const debug = _debug('cs:sandbox:packager');
 
+const host = process.env.CODESANDBOX_HOST;
+
 const VERSION = 1;
 
 const BUCKET_URL =
@@ -96,7 +98,7 @@ async function getAbsoluteDependencies(dependencies: Object) {
     nonAbsoluteDependencies.map(async dep => {
       try {
         const data = await window
-          .fetch(`/api/v1/dependencies/${dep}@${dependencies[dep]}`)
+          .fetch(`${host}/api/v1/dependencies/${dep}@${dependencies[dep]}`)
           .then(x => x.json())
           .then(x => x.data);
 
