@@ -128,6 +128,12 @@ export default class Preview extends React.PureComponent<Props, State> {
       return;
     }
 
+    if (prevProps.dependencies !== this.props.dependencies) {
+      // Changed dependencies
+      this.executeCodeImmediately();
+      return;
+    }
+
     if (prevProps.module.id !== this.props.module.id) {
       if (prevProps.isInProjectView && this.props.isInProjectView) {
         // If user only navigated while watching project
