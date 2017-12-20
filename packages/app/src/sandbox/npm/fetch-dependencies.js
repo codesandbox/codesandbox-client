@@ -81,9 +81,39 @@ function dependenciesToBucketPath(dependencies: Object) {
     .join('%2B')}.json`;
 }
 
+async function getAbsoluteDependencies(dependencies: Object) {
+  const nonAbsoluteDependencies = Object.keys(dependencies).filter(dep => {
+    const version = dependencies[dep];
+
+    const isAbsolute = /^\d+\.\d+\.\d+$/.test(version);
+
+    return !isAbsolute && !/\//.test(version);
+  });
+
+  const newDependencies = { ...dependencies };
+
+  await Promise.all(
+    nonAbsoluteDependencies.map(async dep => {
+      try {
+        const data = await window
+          .fetch(`/api/v1/dependencies/${dep}@${dependencies[dep]}`)
+          .then(x => x.json())
+          .then(x => x.data);
+
+        newDependencies[dep] = data.version;
+      } catch (e) {
+        /* ignore */
+      }
+    })
+  );
+
+  return newDependencies;
+}
+
 async function getDependencies(dependencies: Object) {
-  const dependencyUrl = dependenciesToQuery(dependencies);
-  const bucketDependencyUrl = dependenciesToBucketPath(dependencies);
+  const absoluteDependencies = await getAbsoluteDependencies(dependencies);
+  const dependencyUrl = dependenciesToQuery(absoluteDependencies);
+  const bucketDependencyUrl = dependenciesToBucketPath(absoluteDependencies);
 
   setScreen({ type: 'loading', text: 'Downloading Dependencies...' });
   try {
