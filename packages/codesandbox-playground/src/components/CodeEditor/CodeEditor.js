@@ -1,5 +1,7 @@
 // @flow
 import * as React from 'react';
+import PropTypes from 'prop-types';
+
 import CodeMirror from 'codemirror';
 
 import 'codemirror/lib/codemirror.css';
@@ -14,11 +16,21 @@ import 'codemirror/addon/fold/foldcode';
 import 'codemirror/addon/fold/foldgutter';
 import 'codemirror/addon/fold/brace-fold';
 
+import './styles.css';
+
 export default class CodeEditor extends React.Component {
+  static propTypes = {
+    code: PropTypes.string.isRequired,
+    onChangeCode: PropTypes.func,
+  };
+
+  static defaultProps = {
+    onChangeCode: () => {},
+  };
+
   getCodeMirror = el => {
-    console.log('oke');
     this.codemirror = new CodeMirror(el, {
-      value: 'console.log("mama")',
+      value: this.props.code,
       theme: 'oceanic',
       keyMap: 'sublime',
       indentUnit: 2,
@@ -29,16 +41,22 @@ export default class CodeEditor extends React.Component {
       lineNumbers: true,
       lineWrapping: false,
       styleActiveLine: true,
-      lint: false,
+      mode: 'javascript',
     });
+
+    this.codemirror.on('change', this.handleChange);
+  };
+
+  handleChange = cm => {
+    this.props.onChangeCode(cm.getValue());
   };
 
   render() {
-    console.log('hey?');
     return (
       <div
         style={{
           height: '100%',
+          width: '100%',
         }}
         ref={this.getCodeMirror}
       />

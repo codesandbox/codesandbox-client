@@ -1,15 +1,10 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+
+import { filePropTypes } from '../../utils/prop-types';
 
 export default class Preview extends React.PureComponent {
   static propTypes = {
-    files: PropTypes.shape({
-      path: PropTypes.shape({
-        code: PropTypes.string.isRequired,
-      }),
-    }).isRequired,
-    dependencies: PropTypes.objectOf(PropTypes.string),
-    resources: PropTypes.arrayOf(PropTypes.string),
+    ...filePropTypes,
   };
 
   static defaultProps = {
@@ -18,7 +13,6 @@ export default class Preview extends React.PureComponent {
   };
 
   setupFrame = el => {
-    // listen(this.handleMessage);
     if (el) {
       this.frame = el;
       this.frame.onload = () => {
@@ -47,11 +41,11 @@ export default class Preview extends React.PureComponent {
     );
   };
 
-  handleMessage = (data, source) => {
-    // if (data.type === 'initialized') {
-    //   this.frame = source;
-    // }
-  };
+  componentDidUpdate(prevProps) {
+    if (this.props.files !== prevProps.files) {
+      this.sendCode();
+    }
+  }
 
   render() {
     return (

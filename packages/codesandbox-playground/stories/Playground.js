@@ -2,12 +2,12 @@ import React from 'react';
 
 import { storiesOf } from '@storybook/react';
 
-import Preview from '../src/components/Preview';
+import Playground from '../src/components/Playground';
 
-const stories = storiesOf('Preview', module);
+const stories = storiesOf('Playground', module);
 
 stories.add('with one file', () => (
-  <Preview
+  <Playground
     files={{
       '/index.js': {
         code: `document.body.innerHTML = \`<div>$\{require('uuid')()}</div>\``,
@@ -20,7 +20,7 @@ stories.add('with one file', () => (
 ));
 
 stories.add('with multiple files', () => (
-  <Preview
+  <Playground
     files={{
       '/index.js': {
         code: `
@@ -33,8 +33,19 @@ stories.add('with multiple files', () => (
         code: `export default "Hello from another file!"`,
       },
     }}
-    dependencies={{
-      uuid: 'latest',
+    dependencies={{}}
+  />
+));
+
+stories.add('with errors', () => (
+  <Playground
+    files={{
+      '/index.js': {
+        code: `
+throw new Error("I'm an error!");
+          `,
+      },
     }}
+    dependencies={{}}
   />
 ));
