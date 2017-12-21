@@ -1,23 +1,40 @@
 import React from 'react';
 
 import { storiesOf } from '@storybook/react';
-import { action } from '@storybook/addon-actions';
-import { linkTo } from '@storybook/addon-links';
 
-import { Button, Welcome } from '@storybook/react/demo';
+import Preview from '../src/components/Preview';
 
-import Playground from '../src';
+const stories = storiesOf('Preview', module);
 
-storiesOf('Welcome', module).add('to Storybook', () => (
-  <Welcome showApp={linkTo('Button')} />
+stories.add('with one file', () => (
+  <Preview
+    files={{
+      '/index.js': {
+        code: `document.body.innerHTML = \`<div>$\{require('uuid')()}</div>\``,
+      },
+    }}
+    dependencies={{
+      uuid: 'latest',
+    }}
+  />
 ));
 
-storiesOf('Button', module)
-  .add('with text', () => (
-    <Button onClick={action('clicked')}>Hello Button</Button>
-  ))
-  .add('with some emoji', () => (
-    <Button onClick={action('clicked')}>😀 😎 👍 💯</Button>
-  ));
+stories.add('with multiple files', () => (
+  <Preview
+    files={{
+      '/index.js': {
+        code: `
+            import Hello from './Hello.js';
 
-storiesOf('Playground', module).add('with text', () => <Playground />);
+            document.body.innerHTML = JSON.stringify(Hello);
+          `,
+      },
+      '/Hello.js': {
+        code: `export default "Hello from another file!"`,
+      },
+    }}
+    dependencies={{
+      uuid: 'latest',
+    }}
+  />
+));
