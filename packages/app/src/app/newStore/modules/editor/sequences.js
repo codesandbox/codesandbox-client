@@ -1,11 +1,15 @@
 import { sequence } from 'cerebral';
 import { set, when, equals, toggle, increment } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
+import { getZeitUserDetails } from 'app/newStore/sequences';
 import * as actions from './actions';
 
 import { addNotification, updateSandboxUrl } from '../../factories';
 
-export const openDeploymentModal = set(state`editor.showDeploymentModal`, true);
+export const openDeploymentModal = [
+  set(state`editor.showDeploymentModal`, true),
+  getZeitUserDetails,
+];
 
 export const closeDeploymentModal = set(
   state`editor.showDeploymentModal`,

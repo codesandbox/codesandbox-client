@@ -44,20 +44,23 @@ export default ({
   color,
   userInfo,
   loading,
-}) => (
-  <Container loading={loading}>
-    <IntegrationBlock bgColor={color}>
-      <Icon />
-      <Name>{name}</Name>
-    </IntegrationBlock>
-    {userInfo ? (
-      <DetailInfo
-        signOut={signOut}
-        heading="Signed in as"
-        info={userInfo.email || 'Loading...'}
-      />
-    ) : (
-      <DetailInfo signIn={signIn} heading="Enables" info={description} />
-    )}
-  </Container>
-);
+}) => {
+  console.log(description, loading, userInfo);
+  return (
+    <Container loading={loading}>
+      <IntegrationBlock bgColor={color}>
+        <Icon />
+        <Name>{name}</Name>
+      </IntegrationBlock>
+      {userInfo ? (
+        <DetailInfo
+          signOut={signOut}
+          heading="Signed in as"
+          info={userInfo.email || 'Loading...'}
+        />
+      ) : (
+        <DetailInfo signIn={signIn} heading="Enables" info={description} />
+      )}
+    </Container>
+  );
+};

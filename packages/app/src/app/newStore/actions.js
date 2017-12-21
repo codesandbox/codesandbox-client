@@ -120,7 +120,10 @@ export function getZeitIntegrationDetails({ http, state, path }) {
 
   return http
     .get('https://api.zeit.co/www/user', null, {
-      headers: { Authorization: `bearer ${token}` },
+      headers: {
+        Authorization: `bearer ${token}`,
+        'Content-Type': 'text/plain',
+      },
     })
     .then(response => path.success({ response }))
     .catch(error => path.error({ error }));

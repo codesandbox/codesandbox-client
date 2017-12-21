@@ -11,12 +11,8 @@ export default inject('store', 'signals')(
       description="Commiting & Pull Requests"
       Icon={GithubLogo}
       userInfo={store.user.integrations.github}
-      signOut={() => {
-        signals.signOutGithubClicked();
-      }}
-      signIn={() => {
-        signals.signInGithubClicked({ useExtraScopes: true });
-      }}
+      signOut={() => signals.signOutGithubClicked()}
+      signIn={() => signals.signInGithubClicked({ useExtraScopes: true })}
       loading={store.isLoadingGithub}
     />
   ))

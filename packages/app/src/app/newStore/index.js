@@ -45,6 +45,8 @@ export default Module({
     isLoadingZeit: false,
     isLoadingCLI: false,
     isLoadingGithub: false,
+    zeitInfo: null,
+    githubInfo: null,
   },
   getters: {
     isPatron,
@@ -59,7 +61,6 @@ export default Module({
     signInClicked: sequences.signIn,
     toggleUserMenuClicked: sequences.toggleUserMenu,
     notificationRemoved: sequences.removeNotification,
-    zeitUserDetailsRequested: sequences.getZeitUserDetails,
     signInZeitClicked: sequences.signInZeit,
     signOutZeitClicked: sequences.signOutZeit,
     authTokenRequested: sequences.getAuthToken,

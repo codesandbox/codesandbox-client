@@ -1,5 +1,6 @@
-import { set, when, toggle } from 'cerebral/operators';
+import { set, when, toggle, equals } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
+import { getZeitUserDetails } from 'app/newStore/sequences';
 import * as actions from './actions';
 
 export const openModal = set(state`editor.preferences.showModal`, true);
@@ -22,6 +23,10 @@ export const toggleDevtools = toggle(state`editor.preferences.showDevtools`);
 
 export const changeItemIndex = [
   set(state`editor.preferences.itemIndex`, props`itemIndex`),
+  equals(props`itemIndex`),
+  {
+    '4': getZeitUserDetails,
+  },
 ];
 
 export const setSetting = [

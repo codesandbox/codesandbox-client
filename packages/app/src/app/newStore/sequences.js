@@ -61,13 +61,19 @@ export const toggleUserMenu = [toggle(state`userMenuOpen`)];
 export const removeNotification = actions.removeNotification;
 
 export const getZeitUserDetails = [
-  set(state`isLoadingZeit`, true),
-  actions.getZeitIntegrationDetails,
+  when(state`zeitInfo`),
   {
-    success: [],
-    error: [addNotification('Could not authorize with ZEIT', 'error')],
+    true: [],
+    false: [
+      set(state`isLoadingZeit`, true),
+      actions.getZeitIntegrationDetails,
+      {
+        success: set(state`zeitInfo`, props`response.result.user`),
+        error: [addNotification('Could not authorize with ZEIT', 'error')],
+      },
+      set(state`isLoadingZeit`, false),
+    ],
   },
-  set(state`isLoadingZeit`, true),
 ];
 
 export const signInZeit = [
@@ -76,9 +82,9 @@ export const signInZeit = [
     success: [
       set(state`isLoadingZeit`, true),
       set(state`user.integrations.zeit.token`, props`token`),
-      actions.updateUserZeitDetails
+      actions.updateUserZeitDetails,
     ],
-    error: [addNotification('Zeit Authentication Error', 'error')],
+    error: addNotification('Zeit Authentication Error', 'error'),
   },
   set(state`isLoadingZeit`, false),
 ];

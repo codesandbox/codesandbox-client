@@ -11,7 +11,7 @@ export default inject('store', 'signals')(
       color="black"
       description="Deployments"
       Icon={ZeitLogo}
-      userInfo={store.user.integrations.zeit}
+      userInfo={store.zeitInfo}
       signOut={signals.signInZeitClicked}
       signIn={signals.signOutZeitClicked}
       loading={store.isLoadingZeit}
