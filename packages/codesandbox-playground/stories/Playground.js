@@ -23,11 +23,10 @@ stories.add('with multiple files', () => (
   <Playground
     files={{
       '/index.js': {
-        code: `
-            import Hello from './Hello.js';
+        code: `import Hello from './Hello.js';
 
-            document.body.innerHTML = JSON.stringify(Hello);
-          `,
+document.body.innerHTML = JSON.stringify(Hello);
+`,
       },
       '/Hello.js': {
         code: `export default "Hello from another file!"`,

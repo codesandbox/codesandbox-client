@@ -1,5 +1,5 @@
 // @flow
-import * as React from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import CodeMirror from 'codemirror';
@@ -52,14 +52,6 @@ export default class CodeEditor extends React.Component {
   };
 
   render() {
-    return (
-      <div
-        style={{
-          height: '100%',
-          width: '100%',
-        }}
-        ref={this.getCodeMirror}
-      />
-    );
+    return <div style={{ width: '100%' }} ref={this.getCodeMirror} />;
   }
 }

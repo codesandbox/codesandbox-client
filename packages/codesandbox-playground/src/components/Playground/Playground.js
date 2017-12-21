@@ -3,6 +3,7 @@ import { filePropTypes } from '../../utils/prop-types';
 
 import CodeEditor from '../CodeEditor';
 import Preview from '../Preview';
+import OpenInCodeSandbox from '../OpenInCodeSandbox';
 
 export default class Playground extends React.Component {
   static propTypes = {
@@ -31,23 +32,26 @@ export default class Playground extends React.Component {
   };
 
   render() {
-    const code = this.state.files[this.props.entry].code;
+    const entryCode = this.state.files[this.props.entry].code;
+    const updatedProps = {
+      ...this.props,
+      files: this.state.files,
+    };
 
     return (
-      <div>
+      <div style={{ position: 'relative' }}>
         <div
           style={{
-            height: '3rem',
             width: '100%',
             backgroundColor: '#1C2022',
             color: 'white',
           }}
         >
-          CodeSandbox
+          <OpenInCodeSandbox {...updatedProps} />
         </div>
         <div style={{ display: 'flex' }}>
-          <CodeEditor code={code} onChangeCode={this.handleChange} />
-          <Preview {...this.props} files={this.state.files} />
+          <CodeEditor code={entryCode} onChangeCode={this.handleChange} />
+          <Preview {...updatedProps} />
         </div>
       </div>
     );

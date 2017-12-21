@@ -8,4 +8,5 @@ export const filePropTypes = {
   }).isRequired,
   dependencies: PropTypes.objectOf(PropTypes.string),
   resources: PropTypes.arrayOf(PropTypes.string),
+  entry: PropTypes.string,
 };

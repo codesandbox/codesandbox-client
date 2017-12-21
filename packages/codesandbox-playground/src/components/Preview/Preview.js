@@ -10,6 +10,7 @@ export default class Preview extends React.PureComponent {
   static defaultProps = {
     dependencies: {},
     resources: [],
+    entry: '/index.js',
   };
 
   setupFrame = el => {
@@ -33,7 +34,7 @@ export default class Preview extends React.PureComponent {
         codesandbox: true,
         version: 2,
         modules,
-        entry: '/index.js',
+        entry: this.props.entry,
         externalResources: this.props.resources,
         dependencies: this.props.dependencies,
       },
@@ -42,7 +43,12 @@ export default class Preview extends React.PureComponent {
   };
 
   componentDidUpdate(prevProps) {
-    if (this.props.files !== prevProps.files) {
+    if (
+      this.props.files !== prevProps.files ||
+      this.props.resources !== prevProps.resources ||
+      this.props.dependencies !== prevProps.dependencies ||
+      this.props.entry !== prevProps.entry
+    ) {
       this.sendCode();
     }
   }
