@@ -2,13 +2,13 @@
 # yarn lockfile v1
 
 
-"@cerebral/http@^4.0.0-1512721944429":
-  version "4.0.0-1512721944429"
-  resolved "https://registry.yarnpkg.com/@cerebral/http/-/http-4.0.0-1512721944429.tgz#0be59200683acde196f04b5e46c086c806e90d59"
+"@cerebral/http@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@cerebral/http/-/http-4.0.0.tgz#db297749a1245411946a8a29ded343391f1f084c"
 
-"@cerebral/mobx-state-tree@^3.0.0-1512721944429":
-  version "3.0.0-1512721944429"
-  resolved "https://registry.yarnpkg.com/@cerebral/mobx-state-tree/-/mobx-state-tree-3.0.0-1512721944429.tgz#359bc59849de56c00b9f6bd1ba59ab2c1d84bc93"
+"@cerebral/mobx-state-tree@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@cerebral/mobx-state-tree/-/mobx-state-tree-3.0.0.tgz#bbe7c9e41a7b0024ceb54e1d10ef47efc165a8b9"
 
 "@emmetio/abbreviation@^0.6.0", "@emmetio/abbreviation@^0.6.1":
   version "0.6.3"
@@ -2647,12 +2647,12 @@ center-align@^0.1.1:
     align-text "^0.1.3"
     lazy-cache "^1.0.3"
 
-cerebral@^4.0.0-1512721944429:
-  version "4.0.0-1512721944429"
-  resolved "https://registry.yarnpkg.com/cerebral/-/cerebral-4.0.0-1512721944429.tgz#b47d32712a501c14fd15dd2905b8b4b94ef5245a"
+cerebral@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/cerebral/-/cerebral-4.0.0.tgz#4f51f3a73a96403cafaf8141a1dd824c4d22d5da"
   dependencies:
     es6-error "^4.0.2"
-    function-tree "^3.0.0-1512721944429"
+    function-tree "^3.0.0"
 
 chain-function@^1.0.0:
   version "1.0.0"
@@ -5702,9 +5702,9 @@ function-bind@^1.0.2, function-bind@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/function-bind/-/function-bind-1.1.1.tgz#a56899d3ea3c9bab874bb9773b7c5ede92f4895d"
 
-function-tree@^3.0.0-1512721944429:
-  version "3.0.0-1512721944429"
-  resolved "https://registry.yarnpkg.com/function-tree/-/function-tree-3.0.0-1512721944429.tgz#c76a85ea9ccf49d0ebbb559676b6c269719a3028"
+function-tree@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/function-tree/-/function-tree-3.0.0.tgz#218e121bc843684d0323468bb2fce7a5237d4293"
   dependencies:
     "@types/eventemitter3" "^1.2.0"
     chalk "^1.1.3"

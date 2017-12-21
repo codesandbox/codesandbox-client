@@ -2,6 +2,7 @@
 import * as React from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 import { Prompt } from 'react-router-dom';
+import { autorun, observe } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import getTemplateDefinition from 'common/templates';
 import SplitPane from 'react-split-pane';
@@ -35,6 +36,59 @@ class EditorPreview extends React.Component {
 
     return '50%';
   };
+  onInitialized = editor => {
+    const store = this.props.store;
+
+    const disposeErrorsHandler = autorun(() => {
+      editor.setErrors(store.editor.errors);
+    });
+    const disposeCorrectionsHandler = autorun(() => {
+      editor.setCorrections(store.editor.corrections);
+    });
+    const disposeModulesHandler = autorun(() => {
+      editor.updateModules(store.editor.currentSandbox);
+    });
+    const disposePreferencesHandler = autorun(() => {
+      editor.changeSettings(store.editor.preferences.settings);
+    });
+    const disposeDependenciesHandler = autorun(() => {
+      editor.changeDependencies(
+        store.editor.currentSandbox.npmDependencies.toJS()
+      );
+    });
+    const disposeCodeHandler = autorun(() => {
+      editor.changeCode(store.editor.currentModule.code);
+    });
+    const disposeSandboxChangeHandler = observe(
+      store.editor,
+      'currentSandbox',
+      change => {
+        editor.changeSandbox(
+          change.newValue,
+          store.editor.currentModule,
+          change.newValue.npmDependencies.toJS()
+        );
+      }
+    );
+    const disposeModuleChangeHandler = observe(
+      store.editor,
+      'currentModule',
+      change => {
+        editor.changeModule(change.newValue);
+      }
+    );
+
+    return () => {
+      disposeErrorsHandler();
+      disposeCorrectionsHandler();
+      disposeModulesHandler();
+      disposePreferencesHandler();
+      disposeDependenciesHandler();
+      disposeSandboxChangeHandler();
+      disposeModuleChangeHandler();
+      disposeCodeHandler();
+    };
+  };
   render() {
     const { signals, store } = this.props;
     const currentModule = store.editor.currentModule;
@@ -58,7 +112,21 @@ class EditorPreview extends React.Component {
         ) : (
           <Tabs />
         )}
-        <CodeEditor />
+        <CodeEditor
+          onInitialized={this.onInitialized}
+          sandbox={sandbox}
+          currentModule={currentModule}
+          dependencies={sandbox.npmDependencies.toJS()}
+          settings={preferences.settings}
+          onNpmDependencyAdded={name =>
+            signals.editor.workspace.onNpmDependencyAdded({ name })
+          }
+          onChange={code => signals.editor.codeChanged({ code })}
+          onModuleChange={moduleId =>
+            signals.editor.moduleSelected({ moduleId })
+          }
+          onSave={code => signals.editor.codeSaved({ code })}
+        />
       </FullSize>
     );
 

@@ -1,7 +1,5 @@
 // @flow
-import { autorun, observe } from 'mobx';
 import * as React from 'react';
-import { inject, observer } from 'mobx-react';
 import CodeMirror from 'codemirror';
 import styled, { keyframes } from 'styled-components';
 
@@ -151,34 +149,38 @@ const CodeContainer = styled.div`
   }
 `;
 
-class CodeEditor extends React.Component {
-  state = {
-    fuzzySearchEnabled: false,
-  };
-
+class CodemirrorEditor extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      fuzzySearchEnabled: false,
+    };
+    this.sandbox = props.sandbox;
+    this.currentModule = props.currentModule;
+    this.settings = props.settings;
+    this.dependencies = props.dependencies;
+  }
+  shouldComponentUpdate() {
+    return false;
+  }
   componentWillUnmount() {
-    this.disposeErrorsHandler();
-    this.disposeModuleHandler();
-    this.disposeSettingsHandler();
+    if (this.props.disposeInitializer) {
+      this.props.disposeInitializer();
+    }
   }
 
   componentDidMount() {
     this.initializeCodemirror().then(() => {
-      this.disposeErrorsHandler = autorun(this.handleErrors);
-      this.disposeModuleHandler = observe(
-        this.props.store.editor,
-        'currentModule',
-        this.swapDocuments
-      );
-      this.disposeSettingsHandler = autorun(this.handleSettings);
-
-      this.handleSettings();
+      this.changeSettings(this.settings);
       this.configureEmmet();
+
+      if (this.props.onInitialized) {
+        this.disposeInitializer = this.props.onInitialized(this);
+      }
     });
   }
 
-  handleErrors = () => {
-    const errors = this.props.store.editor.errors;
+  setErrors = errors => {
     const codeLines = this.codemirror.getValue().split('\n');
 
     codeLines.forEach((_, i) => {
@@ -196,9 +198,15 @@ class CodeEditor extends React.Component {
     });
   };
 
-  handleSettings = async () => {
-    const settings = this.props.store.editor.preferences.settings;
+  setCorrections = () => {};
 
+  changeSandbox = () => {};
+
+  updateModules = () => {};
+
+  changeDependencies = () => {};
+
+  changeSettings = async settings => {
     const defaultKeys = {
       'Cmd-/': cm => {
         cm.listSelections().forEach(() => {
@@ -206,7 +214,7 @@ class CodeEditor extends React.Component {
         });
       },
       'Cmd-P': () => {
-        this.setState({ fuzzySearchEnabled: true });
+        this.setState({ fuzzySearchEnabled: true }, () => this.forceUpdate());
       },
     };
 
@@ -310,14 +318,17 @@ class CodeEditor extends React.Component {
     } else {
       this.codemirror.setOption('lint', false);
     }
+
+    this.forceUpdate();
   };
 
-  swapDocuments = async () => {
-    const currentModule = this.props.store.editor.currentModule;
+  changeModule = async newModule => {
+    this.currentModule = newModule;
+
+    const currentModule = this.currentModule;
 
     if (!documentCache[currentModule.id]) {
       const mode = await this.getMode(currentModule.title);
-
       documentCache[currentModule.id] = new CodeMirror.Doc(
         currentModule.code || '',
         mode
@@ -326,11 +337,11 @@ class CodeEditor extends React.Component {
 
     this.codemirror.swapDoc(documentCache[currentModule.id]);
 
-    this.updateCodeMirrorCode(currentModule.code || '');
+    this.changeCode(currentModule.code || '');
     this.configureEmmet();
   };
 
-  updateCodeMirrorCode(code: string = '') {
+  changeCode(code: string = '') {
     const pos = this.codemirror.getCursor();
     this.codemirror.setValue(code);
     this.codemirror.setCursor(pos);
@@ -388,7 +399,7 @@ class CodeEditor extends React.Component {
 
   initializeCodemirror = async () => {
     const el = this.codemirrorElement;
-    const { code, id, title } = this.props.store.editor.currentModule;
+    const { code, id, title } = this.currentModule;
 
     if (!this.props.onlyViewMode) {
       CodeMirror.commands.save = this.handleSaveCode;
@@ -401,24 +412,25 @@ class CodeEditor extends React.Component {
     this.codemirror = getCodeMirror(el, documentCache[id]);
 
     this.codemirror.on('change', this.handleChange);
-    this.handleSettings();
+    this.changeSettings(this.settings);
   };
 
   handleChange = (cm, change) => {
-    if (change.origin !== 'setValue') {
-      this.props.signals.editor.codeChanged({ code: cm.getValue() });
+    if (change.origin !== 'setValue' && this.props.onChange) {
+      this.props.onChange(cm.getValue());
     }
   };
 
   getCode = () => this.codemirror.getValue();
 
   handleSaveCode = async () => {
-    this.props.signals.editor.codeChanged({ code: this.codemirror.getValue() });
-    this.props.signals.editor.codeSaved();
+    if (this.props.onSave) {
+      this.props.onSave(this.codemirror.getValue());
+    }
   };
 
   configureEmmet = async () => {
-    const { title } = this.props;
+    const { title } = this.currentModule;
     const mode = await this.getMode(title);
 
     const newMode = mode === 'htmlmixed' ? 'html' : mode;
@@ -431,20 +443,20 @@ class CodeEditor extends React.Component {
   };
 
   closeFuzzySearch = () => {
-    this.setState({ fuzzySearchEnabled: false });
+    this.setState({ fuzzySearchEnabled: false }, () => this.forceUpdate());
   };
 
   setCurrentModule = moduleId => {
     this.closeFuzzySearch();
     this.codemirror.focus();
-    this.props.signals.editor.moduleSelected({ id: moduleId });
+    if (this.props.onModuleChange) {
+      this.props.onModuleChange(moduleId);
+    }
   };
 
   render() {
-    const settings = this.props.store.editor.preferences.settings;
-    const sandbox = this.props.store.editor.currentSandbox;
-    const currentModule = this.props.store.editor.currentModule;
     const { hideNavigation } = this.props;
+    const { settings, sandbox, currentModule } = this;
 
     return (
       <Container>
@@ -477,4 +489,4 @@ class CodeEditor extends React.Component {
   }
 }
 
-export default inject('signals', 'store')(observer(CodeEditor));
+export default CodemirrorEditor;

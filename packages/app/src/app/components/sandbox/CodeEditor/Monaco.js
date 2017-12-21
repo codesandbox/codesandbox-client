@@ -1,10 +1,6 @@
-/* @flow */
-import { autorun, observe } from 'mobx';
 import * as React from 'react';
 import styled from 'styled-components';
-import { inject, observer } from 'mobx-react';
 import { debounce } from 'lodash';
-
 import { getModulePath } from 'app/store/entities/sandboxes/modules/selectors';
 
 import theme from 'common/theme';
@@ -16,7 +12,7 @@ import LinterWorker from 'worker-loader?name=monaco-linter.[hash].worker.js!./mo
 import TypingsFetcherWorker from 'worker-loader?name=monaco-typings-ata.[hash].worker.js!./monaco/workers/fetch-dependency-typings';
 /* eslint-enable import/no-webpack-loader-syntax */
 
-import MonacoEditor from './monaco/MonacoReactComponent';
+import MonacoEditorComponent from './monaco/MonacoReactComponent';
 import FuzzySearch from './FuzzySearch/index';
 
 let modelCache = {};
@@ -105,19 +101,28 @@ const CodeContainer = styled.div`
 const requireAMDModule = paths =>
   new Promise(resolve => window.require(paths, () => resolve()));
 
-class CodeEditor extends React.Component {
-  state = {
-    fuzzySearchEnabled: false,
-  };
+class MonacoEditor extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      fuzzySearchEnabled: false,
+    };
+    this.sandbox = props.sandbox;
+    this.currentModule = props.currentModule;
+    this.settings = props.settings;
+    this.dependencies = props.dependencies;
 
-  syntaxWorker: ?Worker;
-  lintWorker: ?Worker;
-  typingsFetcherWorker: ?Worker;
-  sizeProbeInterval: number;
-
+    this.syntaxWorker = null;
+    this.lintWorker = null;
+    this.typingsFetcherWorker = null;
+    this.sizeProbeInterval = null;
+  }
+  shouldComponentUpdate() {
+    return false;
+  }
   componentWillUnmount() {
     window.removeEventListener('resize', this.resizeEditor);
-    this.disposeModules(this.props.store.editor.currentModule.modules);
+    this.disposeModules(this.sandbox.modules);
     if (this.editor) {
       this.editor.dispose();
     }
@@ -132,13 +137,9 @@ class CodeEditor extends React.Component {
     }
     clearTimeout(this.sizeProbeInterval);
 
-    this.disposeErrorsHandler();
-    this.disposeCorrectionsHandler();
-    this.disposeModulesHandler();
-    this.disposePreferencesHandler();
-    this.disposeDependenciesHandler();
-    this.disposeSandboxChangeHandler();
-    this.disposeModuleChangeHandler();
+    if (this.disposeInitializer) {
+      this.disposeInitializer();
+    }
   }
   configureEditor = async (editor, monaco) => {
     this.editor = editor;
@@ -200,8 +201,8 @@ class CodeEditor extends React.Component {
       noSyntaxValidation: !hasNativeTypescript,
     });
 
-    const sandbox = this.props.store.editor.currentSandbox;
-    const currentModule = this.props.store.editor.currentModule;
+    const sandbox = this.sandbox;
+    const currentModule = this.currentModule;
 
     await this.initializeModules(sandbox.modules);
     await this.openNewModel(currentModule.id, currentModule.title);
@@ -216,9 +217,9 @@ class CodeEditor extends React.Component {
     window.addEventListener('resize', this.resizeEditor);
     this.sizeProbeInterval = setInterval(this.resizeEditor.bind(this), 3000);
 
-    if (sandbox.npmDependencies.size) {
+    if (Object.keys(this.dependencies)) {
       setTimeout(() => {
-        this.fetchDependencyTypings(sandbox.npmDependencies.toJS(), monaco);
+        this.fetchDependencyTypings(this.dependencies, monaco);
       }, 5000);
     }
 
@@ -245,73 +246,68 @@ class CodeEditor extends React.Component {
       // Method that will be executed when the action is triggered.
       // @param editor The editor instance is passed in as a convinience
       run: () => {
-        this.setState({
-          fuzzySearchEnabled: true,
-        });
+        this.setState(
+          {
+            fuzzySearchEnabled: true,
+          },
+          () => this.forceUpdate()
+        );
       },
     });
 
-    this.disposeErrorsHandler = autorun(this.handleErrors);
-    this.disposeCorrectionsHandler = autorun(this.handleCorrections);
-    this.disposeModulesHandler = autorun(this.handleModules);
-    this.disposePreferencesHandler = autorun(this.handlePreferences);
-    this.disposeDependenciesHandler = autorun(this.handleDependencies);
-    this.disposeCodeHandler = autorun(this.handleCode);
-    this.disposeSandboxChangeHandler = observe(
-      this.props.store.editor,
-      'currentSandbox',
-      this.handleSandboxChange
-    );
-    this.disposeModuleChangeHandler = observe(
-      this.props.store.editor,
-      'currentModule',
-      this.handleModuleChange
-    );
+    if (this.props.onInitialized) {
+      this.disposeInitializer = this.props.onInitialized(this);
+    }
   };
 
-  handleModuleChange = change => {
+  changeModule = newModule => {
+    const oldModule = this.currentModule;
+
+    this.currentModule = newModule;
     this.swapDocuments({
-      currentId: change.oldValue.id,
-      nextId: change.newValue.id,
-      nextCode: change.newValue.code,
-      nextTitle: change.newValue.title,
-    });
+      currentId: oldModule.id,
+      nextId: newModule.id,
+      nextTitle: newModule.title,
+    }).then(() => this.changeCode(newModule.code));
   };
 
-  handleSandboxChange = change => {
+  changeSandbox = (newSandbox, newCurrentModule, dependencies) => {
+    const oldSandbox = this.sandbox;
+
+    this.sandbox = newSandbox;
+    this.currentModule = newCurrentModule;
+    this.dependencies = dependencies;
+
     // Reset models, dispose old ones
-    this.disposeModules(change.oldValue.modules);
+    this.disposeModules(oldSandbox.modules);
 
     // Do in setTimeout, since disposeModules is async
     setTimeout(() => {
       // Initialize new models
-      this.initializeModules(change.newValue.modules).then(() => {
-        const currentModule = this.props.store.editor.currentModule;
-
-        this.openNewModel(currentModule.id, currentModule.title);
+      this.initializeModules(newSandbox.modules).then(() => {
+        this.openNewModel(newCurrentModule.id, newCurrentModule.title);
       });
     });
   };
 
-  handleCode = () => {
-    const currentModule = this.props.store.editor.currentModule;
-
-    this.updateCode(currentModule.code);
+  changeCode = code => {
+    if (code !== this.getCode()) {
+      this.updateCode(code);
+    }
   };
 
-  handleDependencies = () => {
-    const dependencies = this.props.store.editor.currentSandbox.npmDependencies;
-    this.fetchDependencyTypings(dependencies.toJS());
+  changeDependencies = dependencies => {
+    this.dependencies = dependencies;
+    this.fetchDependencyTypings(dependencies);
   };
 
-  handlePreferences = () => {
+  changeSettings = settings => {
+    this.settings = settings;
     this.editor.updateOptions(this.getEditorOptions());
+    this.forceUpdate();
   };
 
-  handleModules = () => {
-    // First check for path updates;
-    const sandbox = this.props.store.editor.currentSandbox;
-
+  updateModules = sandbox => {
     sandbox.modules.forEach(module => {
       if (modelCache[module.id] && modelCache[module.id].model) {
         const path = getModulePath(
@@ -354,9 +350,7 @@ class CodeEditor extends React.Component {
     });
   };
 
-  handleErrors = () => {
-    const errors = this.props.store.editor.errors;
-
+  setErrors = errors => {
     if (errors.length > 0) {
       const errorMarkers = errors
         .map(error => {
@@ -385,9 +379,7 @@ class CodeEditor extends React.Component {
     }
   };
 
-  handleCorrections = () => {
-    const corrections = this.props.store.editor.corrections;
-
+  setCorrections = corrections => {
     if (corrections.length > 0) {
       const correctionMarkers = corrections
         .map(correction => {
@@ -429,8 +421,8 @@ class CodeEditor extends React.Component {
 
     this.typingsFetcherWorker.addEventListener('message', event => {
       const { path, typings } = event.data;
-      const sandbox = this.props.store.editor.currentSandbox;
-      const dependencies = sandbox.npmDependencies.toJS();
+      const sandbox = this.sandbox;
+      const dependencies = sandbox.npmDependencies;
 
       if (
         path.startsWith('node_modules/@types') &&
@@ -438,8 +430,11 @@ class CodeEditor extends React.Component {
       ) {
         const dependency = path.match(/node_modules\/(@types\/.*)\//)[1];
 
-        if (!Object.keys(dependencies).includes(dependency)) {
-          this.props.signals.editor.workspace.npmDependencyAdded({
+        if (
+          !Object.keys(dependencies).includes(dependency) &&
+          this.props.onNpmDependencyAdded
+        ) {
+          this.props.onNpmDependencyAdded({
             name: dependency,
           });
         }
@@ -492,7 +487,7 @@ class CodeEditor extends React.Component {
 
   setupWorkers = () => {
     this.setupSyntaxWorker();
-    const preferences = this.props.store.editor.preferences.settings;
+    const preferences = this.settings;
 
     if (preferences.lintEnabled) {
       // Delay this one, as initialization is very heavy
@@ -519,7 +514,7 @@ class CodeEditor extends React.Component {
       },
     }));
 
-    const currentModule = this.props.store.editor.currentModule;
+    const currentModule = this.currentModule;
     const modelInfo = await this.getModelById(currentModule.id);
 
     modelInfo.decorations = this.editor.deltaDecorations(
@@ -529,7 +524,7 @@ class CodeEditor extends React.Component {
   };
 
   updateLintWarnings = async (markers: Array<Object>) => {
-    const currentModule = this.props.store.editor.currentModule;
+    const currentModule = this.currentModule;
 
     const mode = await this.getMode(currentModule.title);
     if (mode === 'javascript') {
@@ -570,8 +565,8 @@ class CodeEditor extends React.Component {
   }) => {
     const pos = this.editor.getPosition();
     if (modelCache[currentId]) {
-      const sandbox = this.props.store.editor.currentSandbox;
-      const currentModule = this.props.store.editor.currentModule;
+      const sandbox = this.sandbox;
+      const currentModule = this.currentModule;
       const path = getModulePath(
         sandbox.modules,
         sandbox.directories,
@@ -666,11 +661,13 @@ class CodeEditor extends React.Component {
 
   handleChange = () => {
     const newCode = this.editor.getModel().getValue();
-    const currentModule = this.props.store.editor.currentModule;
+    const currentModule = this.currentModule;
     const title = currentModule.title;
 
     if (currentModule.code !== newCode) {
-      this.props.signals.editor.codeChanged({ code: newCode });
+      if (this.props.onChange) {
+        this.props.onChange(newCode);
+      }
       this.syntaxHighlight(
         newCode,
         title,
@@ -693,13 +690,13 @@ class CodeEditor extends React.Component {
   };
 
   hasNativeTypescript = () => {
-    const sandbox = this.props.store.editor.currentSandbox;
+    const sandbox = this.sandbox;
     const template = getTemplate(sandbox.template);
     return template.sourceConfig && template.sourceConfig.typescript;
   };
 
   closeFuzzySearch = () => {
-    this.setState({ fuzzySearchEnabled: false });
+    this.setState({ fuzzySearchEnabled: false }, () => this.forceUpdate());
     this.editor.focus();
   };
 
@@ -741,8 +738,8 @@ class CodeEditor extends React.Component {
 
   createModel = async (
     module,
-    modules = this.props.store.editor.currentSandbox.modules,
-    directories = this.props.store.editor.currentSandbox.directories
+    modules = this.sandbox.modules,
+    directories = this.sandbox.directories
   ) => {
     // Remove the first slash, as this will otherwise create errors in monaco
     const path = getModulePath(modules, directories, module.id);
@@ -776,7 +773,7 @@ class CodeEditor extends React.Component {
   };
 
   getModelById = async (id: string) => {
-    const modules = this.props.store.editor.currentSandbox.modules;
+    const modules = this.sandbox.modules;
 
     if (!modelCache[id]) {
       const module = modules.find(m => m.id === id);
@@ -811,7 +808,12 @@ class CodeEditor extends React.Component {
 
   setCurrentModule = moduleId => {
     this.closeFuzzySearch();
-    this.props.signals.editor.moduleSelected({ id: moduleId });
+    this.changeModule(
+      this.sandbox.modules.find(module => module.id === moduleId)
+    );
+    if (this.props.onModuleChange) {
+      this.props.onModuleChange(moduleId);
+    }
   };
 
   openReference = data => {
@@ -847,13 +849,14 @@ class CodeEditor extends React.Component {
   getCode = () => this.editor.getValue();
 
   handleSaveCode = async () => {
-    this.props.signals.editor.codeChanged({ code: this.getCode() });
-    this.props.signals.editor.codeSaved();
+    if (this.props.onSave) {
+      this.props.onSave(this.getCode());
+    }
   };
 
   getEditorOptions = () => {
-    const settings = this.props.store.editor.preferences.settings;
-    const currentModule = this.props.store.editor.currentModule;
+    const settings = this.settings;
+    const currentModule = this.currentModule;
 
     return {
       selectOnLineNumbers: true,
@@ -874,10 +877,10 @@ class CodeEditor extends React.Component {
   };
 
   render() {
-    const { store, hideNavigation } = this.props;
+    const { hideNavigation } = this.props;
 
-    const sandbox = store.editor.currentSandbox;
-    const currentModule = store.editor.currentModule;
+    const sandbox = this.sandbox;
+    const currentModule = this.currentModule;
     const options = this.getEditorOptions();
 
     return (
@@ -892,7 +895,7 @@ class CodeEditor extends React.Component {
               currentModuleId={currentModule.id}
             />
           )}
-          <MonacoEditor
+          <MonacoEditorComponent
             width="100%"
             height="100%"
             theme="CodeSandbox"
@@ -907,27 +910,4 @@ class CodeEditor extends React.Component {
   }
 }
 
-export default inject('signals', 'store')(observer(CodeEditor));
-
-/*
-changeCode={(_, code) => signals.editor.codeChanged({ code })}
-id={currentModule.id}
-errors={store.editor.errors}
-corrections={store.editor.corrections}
-code={currentModule.code}
-title={currentModule.title}
-saveCode={() => signals.editor.codeSaved()}
-changedModuleShortids={store.editor.changedModuleShortids}
-preferences={preferences.settings}
-modules={sandbox.modules}
-directories={sandbox.directories}
-sandboxId={sandbox.id}
-dependencies={sandbox.npmDependencies.toJS()}
-setCurrentModule={(_, moduleId) =>
-  signals.editor.moduleSelected({ id: moduleId })
-}
-addDependency={(_, name, version) =>
-  signals.editor.workspace.npmDependencyAdded({ name, version })
-}
-template={sandbox.template}
-*/
+export default MonacoEditor;

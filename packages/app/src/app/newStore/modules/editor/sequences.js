@@ -125,6 +125,11 @@ export const saveChangedModules = [
 
 export const saveCode = [
   ensureOwnedSandbox,
+  when(props`code`),
+  {
+    true: actions.setCode,
+    false: [],
+  },
   when(state`editor.preferences.settings.prettifyOnSaveEnabled`),
   {
     true: [actions.prettifyCode, actions.setCode],
