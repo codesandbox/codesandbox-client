@@ -1,8 +1,10 @@
 import preferenceActions from './actions';
 import { preferencesSelector } from './selectors';
+import { singleSandboxSelector } from '../entities/sandboxes/selectors';
 import sandboxActions from '../entities/sandboxes/actions';
 import viewActions from '../view/actions';
 import modalActions from '../modal/actions';
+import moduleActions from '../entities/sandboxes/modules/actions';
 import {
   devToolsOpenSelector,
   workspaceHiddenSelector,
@@ -133,6 +135,18 @@ export const KEYBINDINGS = {
     bindings: [],
     action: ({ id }) => (dispatch: Function) => {
       dispatch(modalActions.openSearchDependencies(id));
+    },
+  },
+
+  'source.modules.prettify': {
+    title: 'Prettify Current File',
+    type: 'Source',
+    bindings: [],
+    action: ({ id }) => (dispatch: Function, getState: Function) => {
+      const sandbox = singleSandboxSelector(getState(), { id });
+      if (sandbox) {
+        dispatch(moduleActions.prettifyModule(sandbox.currentModule));
+      }
     },
   },
 };

@@ -70,6 +70,7 @@ const Entry = styled.div`
   align-items: center;
   font-size: 0.875rem;
   padding: 0.25rem 0.75rem;
+  min-height: 1.5rem;
   cursor: pointer;
 
   ${({ isActive }) =>
