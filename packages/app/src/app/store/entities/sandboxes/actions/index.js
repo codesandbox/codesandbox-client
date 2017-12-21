@@ -239,7 +239,7 @@ export default {
   ) => {
     const sandboxId = await dispatch(maybeForkSandbox(id));
 
-    const realVersion = version || 'latest';
+    const realVersion = version;
     const realName = dependency.toLowerCase();
 
     const result = await dispatch(
