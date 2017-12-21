@@ -3,10 +3,7 @@ import { isStandalone, listen, dispatch } from 'codesandbox-api';
 
 import registerServiceWorker from 'common/registerServiceWorker';
 import requirePolyfills from 'common/load-dynamic-polyfills';
-import {
-  findMainModule,
-  getModulePath,
-} from 'app/store/entities/sandboxes/modules/selectors';
+import { getModulePath } from 'app/store/entities/sandboxes/modules/selectors';
 
 import setupHistoryListeners from './url-listeners';
 import compile from './compile';
@@ -37,21 +34,15 @@ requirePolyfills().then(() => {
     dispatch({ type: 'initialized' });
   }
 
-  function handleMessage(data, source) {
+  async function handleMessage(data, source) {
     if (source) {
       if (data.type === 'compile') {
-        if (data.modules && data.directories) {
-          // We convert the modules to a format the manager understands
-          const normalizedModules = data.modules.map(m => ({
-            path: getModulePath(data.modules, data.directories, m.id),
-            code: m.code,
-          }));
-
-          data.modules = normalizedModules; // eslint-disable-line no-param-reassign
-          delete data.directories; // eslint-disable-line no-param-reassign
+        if (data.version === 2) {
+          compile(data);
+        } else {
+          const compileOld = await import('./compile-old').then(x => x.default);
+          compileOld(data);
         }
-
-        compile(data);
       } else if (data.type === 'urlback') {
         history.back();
       } else if (data.type === 'urlforward') {
@@ -98,27 +89,21 @@ requirePolyfills().then(() => {
         return camelized;
       })
       .then(x => {
-        const mainModule = findMainModule(
-          x.data.modules,
-          x.data.directories,
-          x.data.entry
-        );
-
         // We convert the modules to a format the manager understands
-        const normalizedModules = x.modules.map(m => ({
-          path: getModulePath(x.modules, x.directories, m.id),
+        const normalizedModules = x.data.modules.map(m => ({
+          path: getModulePath(x.data.modules, x.data.directories, m.id),
           code: m.code,
         }));
 
         const data = {
           sandboxId: id,
           modules: normalizedModules,
-          module: mainModule,
-          changedModule: mainModule,
+          entry: '/' + x.data.entry,
           externalResources: x.data.externalResources,
           dependencies: x.data.npmDependencies,
           hasActions: false,
           template: x.data.template,
+          version: 2,
         };
 
         compile(data);

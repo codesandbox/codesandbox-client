@@ -36,8 +36,6 @@ export default async function loadDependencies(dependencies: NPMDependencies) {
 
       const data = await fetchDependencies(dependenciesWithoutTypings);
       manifest = data;
-
-      setScreen({ type: 'loading', text: 'Downloading Dependencies...' });
     }
   } else {
     manifest = null;

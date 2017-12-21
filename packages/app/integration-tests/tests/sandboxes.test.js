@@ -11,7 +11,7 @@ const SANDBOXES = [
   'vVoQVk78',
   'github/faceyspacey/redux-first-router-codesandbox/tree/master',
   'mZRjw05yp',
-  'pk1qjqpw67',
+
   'o29j95wx9',
   'k3q1zjjml5',
   'github/reactjs/redux/tree/master/examples/real-world',
@@ -19,20 +19,19 @@ const SANDBOXES = [
   'lp5rjr0z4z',
   'nOymMxyY',
 ];
-
-SANDBOXES.forEach(sandbox => {
-  const id = sandbox.id || sandbox;
-  const threshold = sandbox.threshold || 0.01;
+describe('sandboxes', () => {
   let browser = puppeteer.launch({
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
   });
+  afterAll(() => {
+    browser.close();
+  });
 
-  describe('sandboxes', () => {
-    afterAll(() => {
-      browser.close();
-    });
+  SANDBOXES.forEach(sandbox => {
+    const id = sandbox.id || sandbox;
+    const threshold = sandbox.threshold || 0.01;
 
-    it.concurrent(
+    it(
       `loads the sandbox with id '${id}'`,
       async () => {
         browser = await browser;
@@ -51,8 +50,10 @@ SANDBOXES.forEach(sandbox => {
           },
           customSnapshotIdentifier: id.split('/').join('-'),
         });
+
+        await page.close();
       },
-      1000 * 60 * 10 // 10 minutes for all tests in total
+      1000 * 60 * 1
     );
   });
 });

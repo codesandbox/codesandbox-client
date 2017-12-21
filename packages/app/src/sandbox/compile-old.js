@@ -1,5 +1,7 @@
 import { dispatch, clearErrorTransformers } from 'codesandbox-api';
 
+import { getModulePath } from 'app/store/entities/sandboxes/modules/selectors';
+import type { Module, Directory } from 'common/types';
 import _debug from 'app/utils/debug';
 
 import initializeErrorTransformers from './errors/transformers';
@@ -62,7 +64,9 @@ inject();
 async function compile({
   sandboxId,
   modules,
-  entry,
+  directories,
+  module,
+  changedModule,
   externalResources,
   dependencies,
   hasActions,
@@ -81,20 +85,33 @@ async function compile({
   handleExternalResources(externalResources);
 
   try {
+    // We convert the modules to a format the manager understands
+    const managerModules = modules.map(m => ({
+      path: getModulePath(modules, directories, m.id),
+      code: m.code,
+    }));
+
     const [{ manifest, isNewCombination }] = await Promise.all([
       loadDependencies(dependencies),
-      updateManager(sandboxId, template, modules),
+      updateManager(sandboxId, template, managerModules),
     ]);
 
     // Just reset the whole packager if it's a new combination
     if (isNewCombination) {
       manager = null;
-      await updateManager(sandboxId, template, modules);
+      await updateManager(sandboxId, template, managerModules);
     }
 
     manager.setManifest(manifest);
 
-    const managerModuleToTranspile = modules.find(m => m.path === entry);
+    const managerModulePathToTranspile = getModulePath(
+      modules,
+      directories,
+      module.id
+    );
+    const managerModuleToTranspile = managerModules.find(
+      m => m.path === managerModulePathToTranspile
+    );
 
     const t = Date.now();
     await manager.transpileModules(managerModuleToTranspile);
@@ -120,8 +137,7 @@ async function compile({
     } catch (e) {
       /* don't do anything with this error */
     }
-
-    const htmlModule = modules.find(
+    const htmlModule = managerModules.find(
       m => m.path === '/public/index.html' || m.path === '/index.html'
     );
     const html = htmlModule ? htmlModule.code : '<div id="root"></div>';
@@ -169,8 +185,8 @@ async function compile({
     console.log('Error in sandbox:');
     console.error(e);
 
-    e.module = e.module;
-    e.fileName = e.fileName || entry;
+    e.module = e.module || changedModule;
+    e.fileName = e.fileName || getModulePath(modules, directories, e.module);
 
     const event = new Event('error');
     event.error = e;
@@ -181,14 +197,14 @@ async function compile({
 
 type Arguments = {
   sandboxId: string,
-  modules: Array<{
-    code: string,
-    path: string,
-  }>,
-  entry: string,
+  modules: Array<Module>,
+  directories: Array<Directory>,
+  module: Module,
+  changedModule: Module,
   externalResources: Array<string>,
   dependencies: Object,
   hasActions: boolean,
+  isModuleView: boolean,
   template: string,
 };
 

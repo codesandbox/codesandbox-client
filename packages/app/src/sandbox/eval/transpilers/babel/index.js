@@ -1,5 +1,4 @@
 // @flow
-import BabelWorker from 'worker-loader?name=babel-transpiler.[hash].worker.js!./babel-worker.js';
 
 import getBabelConfig from './babel-parser';
 import WorkerTranspiler from '../worker-transpiler';
@@ -12,7 +11,13 @@ class BabelTranspiler extends WorkerTranspiler {
   worker: Worker;
 
   constructor() {
-    super('babel-loader', BabelWorker, 2);
+    super('babel-loader', null, 3);
+  }
+
+  getWorker() {
+    // We set these up in startup.js.
+    const worker = window.babelworkers.pop();
+    return worker;
   }
 
   doTranspilation(code: string, loaderContext: LoaderContext) {

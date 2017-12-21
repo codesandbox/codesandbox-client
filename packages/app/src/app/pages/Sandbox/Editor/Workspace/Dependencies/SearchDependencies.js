@@ -103,7 +103,12 @@ export default class SearchDependencies extends React.PureComponent {
   hitToVersionMap = new Map();
 
   handleSelect = hit => {
-    const version = this.hitToVersionMap.get(hit);
+    let version = this.hitToVersionMap.get(hit);
+
+    if (!version && hit.tags) {
+      version = hit.tags.latest;
+    }
+
     this.props.onConfirm(hit.name, version);
   };
 

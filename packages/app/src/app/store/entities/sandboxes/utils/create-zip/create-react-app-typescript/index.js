@@ -87,7 +87,7 @@ export default function createZip(
           '@types/node': '^8.0.28',
         },
         {
-          'react-scripts-ts': '2.6.0',
+          'react-scripts-ts': '2.8.0',
         },
         {
           start: 'react-scripts-ts start',
