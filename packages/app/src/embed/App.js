@@ -226,7 +226,7 @@ export default class App extends React.PureComponent<{}, State> {
             isInProjectView={isInProjectView}
             setProjectView={this.setProjectView}
             sandbox={this.state.sandbox}
-            currentModule={this.getCurrentModuleFromPath().id}
+            currentModule={this.getCurrentModuleFromPath()}
             hideNavigation={this.state.hideNavigation}
             autoResize={this.state.autoResize}
             fontSize={this.state.fontSize}

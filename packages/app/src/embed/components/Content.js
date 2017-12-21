@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import styled from 'styled-components';
-import Preview from 'app/components/sandbox/Preview';
+import BasePreview from 'app/components/sandbox/Preview/BasePreview';
 import CodeEditor from 'app/components/sandbox/CodeEditor';
 import Tab from 'app/containers/Tabs/Tab';
 import {
@@ -89,7 +89,7 @@ export default class Content extends React.PureComponent<Props, State> {
     if (props.sandbox.modules.length <= 5) {
       tabs = [...props.sandbox.modules];
     } else {
-      tabs = [props.sandbox.modules.find(m => m.id === props.currentModule)];
+      tabs = [props.sandbox.modules.find(m => m.id === props.currentModule.id)];
     }
 
     this.state = {
@@ -102,16 +102,18 @@ export default class Content extends React.PureComponent<Props, State> {
   }
 
   componentWillReceiveProps(nextProps: Props) {
-    if (
-      this.props.currentModule !== nextProps.currentModule &&
-      !this.state.tabs.some(x => x.id === nextProps.currentModule)
-    ) {
-      this.setState({
-        tabs: [
-          ...this.state.tabs,
-          nextProps.sandbox.modules.find(m => m.id === nextProps.currentModule),
-        ],
-      });
+    if (this.props.currentModule !== nextProps.currentModule) {
+      if (!this.state.tabs.some(x => x.id === nextProps.currentModule.id)) {
+        this.setState({
+          tabs: [
+            ...this.state.tabs,
+            nextProps.sandbox.modules.find(
+              m => m.id === nextProps.currentModule.id
+            ),
+          ],
+        });
+      }
+      this.editor.changeModule(nextProps.currentModule);
     }
   }
 
@@ -159,14 +161,17 @@ export default class Content extends React.PureComponent<Props, State> {
     }
   };
 
-  setCode = (moduleId: string, code: string) => {
-    this.setState({
-      ...this.state,
-      codes: {
-        ...this.state.codes,
-        [moduleId]: code,
-      },
-    });
+  setCode = (code: string) => {
+    this.props.currentModule.code = code;
+    const settings = this.getPreferences();
+
+    if (settings.livePreviewEnabled) {
+      if (settings.instantPreviewEnabled) {
+        this.preview.executeCodeImmediately();
+      } else {
+        this.preview.executeCode();
+      }
+    }
   };
 
   addError = (moduleId: string, error: ModuleError) => {
@@ -183,33 +188,6 @@ export default class Content extends React.PureComponent<Props, State> {
         errors: [],
       });
     }
-  };
-
-  lastCodes = {};
-  lastAlteredModules = [];
-  /**
-   * This is a bit of a hack, we utilize custom memoization so we don't return
-   * a new array of new modules on each render, because map creates a new array
-   */
-  getAlteredModules = () => {
-    const { sandbox } = this.props;
-    const { codes } = this.state;
-    const codeChanged = this.lastCodes !== codes;
-
-    if (!codeChanged) {
-      return this.lastAlteredModules;
-    }
-
-    this.lastCodes = codes;
-
-    // $FlowIssue
-    const alteredModules = sandbox.modules.map((m: Module) => ({
-      ...m,
-      code: codes[m.id] || m.code,
-    }));
-
-    this.lastAlteredModules = alteredModules;
-    return alteredModules;
   };
 
   preferences = {
@@ -240,6 +218,15 @@ export default class Content extends React.PureComponent<Props, State> {
     this.setState({ tabs: this.state.tabs.filter((_, i) => i !== pos) });
   };
 
+  onCodeEditorInitialized = editor => {
+    this.editor = editor;
+    return () => {};
+  };
+
+  onPreviewInitialized = preview => {
+    this.preview = preview;
+    return () => {};
+  };
   RunOnClick = () => (
     <Fullscreen
       style={{ backgroundColor: theme.primary(), cursor: 'pointer' }}
@@ -277,8 +264,6 @@ export default class Content extends React.PureComponent<Props, State> {
 
     const { errors } = this.state;
 
-    const alteredModules = this.getAlteredModules();
-
     // $FlowIssue
     const mainModule: Module = findCurrentModule(
       sandbox.modules,
@@ -288,12 +273,6 @@ export default class Content extends React.PureComponent<Props, State> {
     );
 
     if (!mainModule) throw new Error('Cannot find main module');
-
-    // The altered module is the same module, but with updated code (based on)
-    // changes by the user. We need to use this to reflect changes
-    const alteredMainModule = alteredModules.find(m => m.id === mainModule.id);
-
-    if (!alteredMainModule) throw new Error('Cannot find main module');
 
     const { RunOnClick } = this;
 
@@ -321,7 +300,7 @@ export default class Content extends React.PureComponent<Props, State> {
                 return (
                   <Tab
                     key={module.id}
-                    active={module.id === currentModule}
+                    active={module.id === currentModule.id}
                     module={module}
                     onClick={() => this.setCurrentModule(null, module.id)}
                     tabCount={this.state.tabs.length}
@@ -334,6 +313,17 @@ export default class Content extends React.PureComponent<Props, State> {
             </Tabs>
 
             <CodeEditor
+              onInitialized={this.onCodeEditorInitialized}
+              currentModule={currentModule || mainModule}
+              sandbox={sandbox}
+              settings={this.getPreferences()}
+              dependencies={sandbox.npmDependencies}
+              canSave={false}
+              hideNavigation={hideNavigation}
+              onChange={this.setCode}
+              onModuleChange={this.setCurrentModule}
+            />
+            {/*
               code={alteredMainModule.code}
               id={alteredMainModule.id}
               title={alteredMainModule.title}
@@ -354,7 +344,7 @@ export default class Content extends React.PureComponent<Props, State> {
               canSave={false}
               corrections={[]}
               highlightedLines={highlightedLines}
-            />
+              */}
           </Split>
         )}
 
@@ -364,6 +354,30 @@ export default class Content extends React.PureComponent<Props, State> {
             only={showPreview && !showEditor}
             size={100 - editorSize}
           >
+            {!this.state.running ? (
+              <RunOnClick />
+            ) : (
+              <BasePreview
+                onInitialized={this.onPreviewInitialized}
+                sandbox={sandbox}
+                currentModule={mainModule}
+                settings={this.getPreferences()}
+                initialPath={this.props.initialPath}
+                isInProjectView={isInProjectView}
+                onClearErrors={() => {}} // store.editor.errors.length && signals.editor.errorsCleared()}
+                onAction={action => {}} // signals.editor.previewActionReceived({ action })}
+                onOpenNewWindow={() => {}}
+                /*
+                  this.props.signals.editor.preferences.viewModeChanged({
+                    showEditor: true,
+                    showPreview: false,
+                  })
+                }
+                */
+                showDevtools={expandDevTools}
+              />
+            )}
+            {/*
             {!this.state.running ? (
               <RunOnClick />
             ) : (
@@ -388,7 +402,7 @@ export default class Content extends React.PureComponent<Props, State> {
                 shouldExpandDevTools={expandDevTools}
                 entry={sandbox.entry}
               />
-            )}
+              */}
           </Split>
         )}
       </Container>
