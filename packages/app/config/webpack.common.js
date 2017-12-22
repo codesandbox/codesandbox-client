@@ -156,7 +156,7 @@ module.exports = {
       filename: 'app.html',
       template: paths.appHtml,
       minify: __PROD__ && {
-        removeComments: true,
+        removeComments: false,
         collapseWhitespace: true,
         removeRedundantAttributes: true,
         useShortDoctype: true,
