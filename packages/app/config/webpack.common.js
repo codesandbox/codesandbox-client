@@ -115,15 +115,6 @@ module.exports = {
           name: 'static/media/[name].[hash:8].[ext]',
         },
       },
-      // "html" loader is used to process template page (index.html) to resolve
-      // resources linked with <link href="./relative/path"> HTML tags.
-      {
-        test: /\.html$/,
-        loader: 'html-loader',
-        options: {
-          attrs: ['link:href'],
-        },
-      },
     ],
 
     noParse: [/eslint\.4\.1\.0\.min\.js$/, /typescriptServices\.js$/],

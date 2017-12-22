@@ -1,6 +1,6 @@
 // @flow
 // This is the loading screen
-import loadingHtml from './loading-screen.html';
+import loadingHtml from '!raw-loader!./loading-screen.html';
 
 type LoadingScreen = {
   type: 'loading',
