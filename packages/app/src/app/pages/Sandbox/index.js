@@ -152,9 +152,7 @@ class SandboxPage extends React.PureComponent<Props, State> {
     const sandbox = sandboxes[currentId];
 
     if (sandbox) {
-      document.title = sandbox.title
-        ? `${sandbox.title} - CodeSandbox`
-        : 'Editor - CodeSandbox';
+      document.title = `${sandbox.title || sandbox.id} - CodeSandbox`;
     }
 
     return (
