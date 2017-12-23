@@ -28,8 +28,7 @@ function createOverlay() {
 
     iframe.setAttribute(
       'style',
-      `position: fixed; top: 0; left: 0; width: 100%; height: 100%; border: none; z-index: ${2147483647 -
-        2};`
+      `position: fixed; top: 0; left: 0; width: 100%; height: 100%; border: none; z-index: 2147483647;`
     );
 
     iframe.onload = () => {
