@@ -76,52 +76,6 @@ class Entry extends React.PureComponent {
     return true; // To close it
   };
 
-  openContextMenu = (event: MouseEvent) => {
-    const {
-      isMainModule,
-      onCreateModuleClick,
-      onCreateDirectoryClick,
-      rename,
-      deleteEntry,
-    } = this.props;
-
-    if (isMainModule) {
-      return;
-    }
-
-    event.preventDefault();
-    this.setState({
-      selected: true,
-    });
-
-    const items = [
-      onCreateModuleClick && {
-        title: 'New Module',
-        action: onCreateModuleClick,
-        icon: FileIcon,
-      },
-      onCreateDirectoryClick && {
-        title: 'New Directory',
-        action: onCreateDirectoryClick,
-        icon: FolderIcon,
-      },
-      rename && {
-        title: 'Rename',
-        action: this.rename,
-        icon: EditIcon,
-      },
-      deleteEntry && {
-        title: 'Delete',
-        action: this.delete,
-        color: theme.red.darken(0.2)(),
-        icon: DeleteIcon,
-      },
-    ].filter(x => x);
-    this.props.openMenu(items, event.clientX, event.clientY, () => {
-      this.setState({ selected: false });
-    });
-  };
-
   setCurrentModule = () => this.props.setCurrentModule(this.props.id);
 
   onMouseEnter = () => this.setState({ hovering: true });
@@ -151,9 +105,33 @@ class Entry extends React.PureComponent {
     } = this.props;
     const { state, error, selected, hovering } = this.state;
 
+    const items = [
+      onCreateModuleClick && {
+        title: 'New Module',
+        action: onCreateModuleClick,
+        icon: FileIcon,
+      },
+      onCreateDirectoryClick && {
+        title: 'New Directory',
+        action: onCreateDirectoryClick,
+        icon: FolderIcon,
+      },
+      rename && {
+        title: 'Rename',
+        action: this.rename,
+        icon: EditIcon,
+      },
+      deleteEntry && {
+        title: 'Delete',
+        action: this.delete,
+        color: theme.red.darken(0.2)(),
+        icon: DeleteIcon,
+      },
+    ].filter(x => x);
+
     return connectDragSource(
       <div>
-        <ContextMenu>
+        <ContextMenu items={items}>
           <EntryContainer
             onClick={setCurrentModule ? this.setCurrentModule : onClick}
             onDoubleClick={markTabsNotDirty}
@@ -161,7 +139,6 @@ class Entry extends React.PureComponent {
             nameValidationError={error}
             active={active}
             editing={state === 'editing' || selected}
-            onContextMenu={this.openContextMenu}
             onMouseEnter={this.onMouseEnter}
             onMouseLeave={this.onMouseLeave}
             alternative={isMainModule}

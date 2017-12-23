@@ -56,8 +56,9 @@ class ContextMenu extends React.Component {
     };
   }
   onContextMenu = event => {
+    event.preventDefault();
     this.mousedown = window.addEventListener('mousedown', mousedownEvent => {
-      const { show } = this.props;
+      const { show } = this.state;
 
       if (show) {
         if (!this.el.contains(mousedownEvent.target)) {
@@ -67,7 +68,7 @@ class ContextMenu extends React.Component {
     });
 
     this.keydown = window.addEventListener('keydown', keydownEvent => {
-      const { show } = this.props;
+      const { show } = this.state;
       if (keydownEvent.keyCode === 27 && show) {
         // Escape
         this.close();
@@ -82,26 +83,26 @@ class ContextMenu extends React.Component {
   };
 
   close = () => {
-    window.removeEventListener(this.keydown);
-    window.removeEventListener(this.mousedown);
+    window.removeEventListener('keydown', this.keydown);
+    window.removeEventListener('mousedown', this.mousedown);
     this.setState({
       show: false,
     });
   };
 
   render() {
-    const { show, children, items } = this.props;
+    const { children, items } = this.props;
+    const { show, x, y } = this.state;
 
     return (
-      <div
-        ref={el => {
-          this.el = el;
-        }}
-        onContextMenu={this.onContextMenu}
-      >
+      <div onContextMenu={this.onContextMenu}>
         {children}
         <Portal>
-          <div>
+          <div
+            ref={el => {
+              this.el = el;
+            }}
+          >
             {show && (
               <Motion
                 defaultStyle={{ size: 0.75, opacity: 0.6 }}
@@ -113,8 +114,8 @@ class ContextMenu extends React.Component {
                 {({ size, opacity }) => (
                   <Container
                     style={{
-                      left: this.state.x,
-                      top: this.state.y,
+                      left: x,
+                      top: y,
                       transform: `scale(${size}, ${size})`,
                       opacity,
                     }}
@@ -122,9 +123,9 @@ class ContextMenu extends React.Component {
                     <div>
                       {items.map(item => (
                         <Item
-                          key={item.key}
+                          key={item.title}
                           color={item.color}
-                          onClick={() => item.onClick()}
+                          onClick={() => item.action() && this.close()}
                         >
                           {item.icon && <item.icon />}
                           {item.title}

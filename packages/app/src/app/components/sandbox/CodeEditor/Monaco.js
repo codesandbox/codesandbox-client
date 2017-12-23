@@ -487,16 +487,16 @@ class MonacoEditor extends React.Component {
 
   setupWorkers = () => {
     this.setupSyntaxWorker();
-    const preferences = this.settings;
+    const settings = this.settings;
 
-    if (preferences.lintEnabled) {
+    if (settings.lintEnabled) {
       // Delay this one, as initialization is very heavy
       setTimeout(() => {
         this.setupLintWorker();
       }, 5000);
     }
 
-    if (preferences.autoDownloadTypes) {
+    if (settings.autoDownloadTypes) {
       this.setupTypeWorker();
     }
   };
