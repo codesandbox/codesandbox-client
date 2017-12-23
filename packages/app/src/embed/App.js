@@ -137,7 +137,8 @@ export default class App extends React.PureComponent<{}, State> {
         .then(res => res.json())
         .then(camelizeKeys);
 
-      document.title = `${sandbox.title || sandbox.id} - CodeSandbox`;
+      document.title = `${response.data.title ||
+        response.data.id} - CodeSandbox`;
 
       this.setState({ sandbox: response.data });
     } catch (e) {
