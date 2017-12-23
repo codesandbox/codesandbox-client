@@ -162,6 +162,10 @@ async function compile({
       initializeResizeListener();
     }
 
+    if (typeof window.__puppeteer__ === 'function') {
+      window.__puppeteer__('done');
+    }
+
     dispatch({
       type: 'success',
     });
