@@ -1,13 +1,9 @@
 // @flow
 import * as React from 'react';
-import { bindActionCreators } from 'redux';
 import { spring, Motion } from 'react-motion';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
 import theme from 'common/theme';
 
-import type { ContextMenuState } from '../store/context-menu/reducer';
-import contextMenuActionCreators from '../store/context-menu/actions';
 import Portal from '../components/Portal';
 
 const Container = styled.div`
@@ -50,96 +46,100 @@ const Item = styled.div`
   }
 `;
 
-type Props = {
-  contextMenu: ContextMenuState,
-  contextMenuActions: typeof contextMenuActionCreators,
-};
+class ContextMenu extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      x: 0,
+      y: 0,
+      show: false,
+    };
+  }
+  onContextMenu = event => {
+    this.mousedown = window.addEventListener('mousedown', mousedownEvent => {
+      const { show } = this.props;
 
-const mapStateToProps = state => ({
-  contextMenu: state.contextMenu,
-});
-const mapDispatchToProps = dispatch => ({
-  contextMenuActions: bindActionCreators(contextMenuActionCreators, dispatch),
-});
-class ContextMenu extends React.PureComponent<Props> {
-  interval: number;
-
-  setup = el => {
-    this.mousedown = window.addEventListener('mousedown', event => {
-      const { contextMenu } = this.props;
-
-      if (contextMenu.show) {
-        if (!el.contains(event.target)) {
+      if (show) {
+        if (!this.el.contains(mousedownEvent.target)) {
           this.close();
         }
       }
     });
 
-    this.keydown = window.addEventListener('keydown', event => {
-      const { contextMenu } = this.props;
-      if (event.keyCode === 27 && contextMenu.show) {
+    this.keydown = window.addEventListener('keydown', keydownEvent => {
+      const { show } = this.props;
+      if (keydownEvent.keyCode === 27 && show) {
         // Escape
         this.close();
       }
     });
+
+    this.setState({
+      show: true,
+      x: event.clientX + 10,
+      y: event.clientY + 10,
+    });
   };
 
-  mousedown: ?Function;
-  keydown: ?Function;
-
-  componentWillUnmount() {
-    window.removeEventListener('mousedown', this.mousedown);
-    window.removeEventListener('keydown', this.keydown);
-  }
-
   close = () => {
-    const { contextMenu, contextMenuActions } = this.props;
-    if (contextMenu.onClose) contextMenu.onClose();
-    contextMenuActions.closeMenu();
+    window.removeEventListener(this.keydown);
+    window.removeEventListener(this.mousedown);
+    this.setState({
+      show: false,
+    });
   };
 
   render() {
-    const { contextMenu } = this.props;
+    const { show, children, items } = this.props;
+
     return (
-      <Portal>
-        <div ref={this.setup}>
-          {contextMenu.show && (
-            <Motion
-              defaultStyle={{ size: 0.75, opacity: 0.6 }}
-              style={{
-                size: spring(1, { stiffness: 200, damping: 26 }),
-                opacity: spring(1),
-              }}
-            >
-              {({ size, opacity }) => (
-                <Container
-                  style={{
-                    left: contextMenu.x + 10,
-                    top: contextMenu.y + 10,
-                    transform: `scale(${size}, ${size})`,
-                    opacity,
-                  }}
-                >
-                  <div>
-                    {contextMenu.items.map(item => (
-                      <Item
-                        key={item.title}
-                        color={item.color}
-                        onClick={() => item.action() && this.close()}
-                      >
-                        {item.icon && <item.icon />}
-                        {item.title}
-                      </Item>
-                    ))}
-                  </div>
-                </Container>
-              )}
-            </Motion>
-          )}
-        </div>
-      </Portal>
+      <div
+        ref={el => {
+          this.el = el;
+        }}
+        onContextMenu={this.onContextMenu}
+      >
+        {children}
+        <Portal>
+          <div>
+            {show && (
+              <Motion
+                defaultStyle={{ size: 0.75, opacity: 0.6 }}
+                style={{
+                  size: spring(1, { stiffness: 200, damping: 26 }),
+                  opacity: spring(1),
+                }}
+              >
+                {({ size, opacity }) => (
+                  <Container
+                    style={{
+                      left: this.state.x,
+                      top: this.state.y,
+                      transform: `scale(${size}, ${size})`,
+                      opacity,
+                    }}
+                  >
+                    <div>
+                      {items.map(item => (
+                        <Item
+                          key={item.key}
+                          color={item.color}
+                          onClick={() => item.onClick()}
+                        >
+                          {item.icon && <item.icon />}
+                          {item.title}
+                        </Item>
+                      ))}
+                    </div>
+                  </Container>
+                )}
+              </Motion>
+            )}
+          </div>
+        </Portal>
+      </div>
     );
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContextMenu);
+export default ContextMenu;

@@ -47,6 +47,12 @@ export default Module({
     isLoadingGithub: false,
     zeitInfo: null,
     githubInfo: null,
+    contextMenu: {
+      show: false,
+      items: [],
+      x: 0,
+      y: 0,
+    },
   },
   getters: {
     isPatron,

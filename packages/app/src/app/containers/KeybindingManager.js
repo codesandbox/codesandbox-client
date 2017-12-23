@@ -1,6 +1,6 @@
 import React, { KeyboardEvent } from 'react';
 import { inject } from 'mobx-react';
-import { KEYBINDINGS, normalizeKey } from 'app/store/preferences/keybindings';
+import { normalizeKey } from 'app/store/preferences/keybindings';
 
 class KeybindingManager extends React.Component {
   constructor(props) {
@@ -18,26 +18,7 @@ class KeybindingManager extends React.Component {
     this.checkedStrokes = this.bindingStrings;
   }
   getBindings = () => {
-    const userBindings = this.props.store.editor.preferences.settings
-      .keybindings;
-    const userBindingsMap = userBindings.reduce(
-      (bindings, binding) =>
-        Object.assign(bindings, {
-          [binding.key]: binding.bindings,
-        }),
-      {}
-    );
-    const keybindings = Object.keys(KEYBINDINGS).reduce(
-      (currentBindings, key) =>
-        Object.assign(currentBindings, {
-          [key]: Object.assign(
-            {},
-            KEYBINDINGS[key],
-            key in userBindingsMap ? { bindings: userBindingsMap[key] } : {}
-          ),
-        }),
-      {}
-    );
+    const keybindings = this.props.store.editor.preferences.keybindings;
     const bindingStrings = {};
 
     Object.keys(keybindings).forEach(key => {

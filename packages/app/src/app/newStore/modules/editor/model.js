@@ -121,4 +121,5 @@ export default {
   showNewSandboxModal: types.boolean,
   showShareModal: types.boolean,
   showDeploymentModal: types.boolean,
+  quickActionsOpen: types.boolean,
 };

@@ -1,6 +1,7 @@
 import { Module } from 'cerebral';
 import model from './model';
 import * as sequences from './sequences';
+import { keybindings } from './getters';
 
 export default Module({
   model,
@@ -47,6 +48,9 @@ export default Module({
     showPreview: true,
     showDevtools: false,
     showModal: false,
+  },
+  getters: {
+    keybindings,
   },
   signals: {
     viewModeChanged: sequences.changeViewMode,

@@ -36,6 +36,7 @@ export default Module({
     showNewSandboxModal: false,
     showShareModal: false,
     showDeploymentModal: false,
+    quickActionsOpen: false,
   },
   getters: {
     isAllModulesSynced,

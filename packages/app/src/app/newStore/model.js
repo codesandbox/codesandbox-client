@@ -61,4 +61,10 @@ export default {
       username: types.maybe(types.string),
     })
   ),
+  contextMenu: types.model({
+    show: types.boolean,
+    items: types.array(types.string),
+    x: types.number,
+    y: types.number,
+  }),
 };

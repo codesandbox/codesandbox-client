@@ -1,9 +1,8 @@
 import React from 'react';
 import { AppContainer } from 'react-hot-loader';
 import { render } from 'react-dom';
-import { Provider as ReduxProvider } from 'react-redux';
 import { ThemeProvider } from 'styled-components';
-import { ConnectedRouter } from 'react-router-redux';
+import { BrowserRouter as Router } from 'react-router-dom';
 import registerServiceWorker from 'common/registerServiceWorker';
 import requirePolyfills from 'common/load-dynamic-polyfills';
 import 'normalize.css';
@@ -84,11 +83,9 @@ requirePolyfills().then(() => {
         <Provider {...controller.provide()}>
           <AppContainer>
             <ThemeProvider theme={theme}>
-              <ReduxProvider store={store}>
-                <ConnectedRouter history={history}>
-                  <RootComponent />
-                </ConnectedRouter>
-              </ReduxProvider>
+              <Router>
+                <RootComponent />
+              </Router>
             </ThemeProvider>
           </AppContainer>
         </Provider>,

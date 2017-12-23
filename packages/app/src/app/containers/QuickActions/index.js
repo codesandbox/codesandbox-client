@@ -1,33 +1,11 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { connect } from 'react-redux';
-import { createSelector } from 'reselect';
+import { inject, observer } from 'mobx-react';
 import Downshift from 'downshift';
 import genie from 'geniejs/dist/geniejs.es';
 
-import { userKeybindingsSelector } from 'app/store/preferences/selectors';
-import { quickActionsOpenSelector } from 'app/store/view/selectors';
-import viewActions from 'app/store/view/actions';
 import Input from 'app/components/Input';
-
 import Keys from './Keys';
-
-type Props = {
-  sandboxId: string,
-  keybindings: {
-    [key: string]: {
-      title: string,
-      type: string,
-      bindings: [Array<string>, ?Array<string>],
-      action: Function,
-    },
-  },
-  bindingStrings: {
-    [combo: string]: string,
-  },
-  dispatch: Function,
-  quickActionsOpen: boolean,
-};
 
 const Container = styled.div`
   position: absolute;
@@ -89,27 +67,18 @@ const Keybindings = styled.div`
   float: right;
 `;
 
-const mapStateToProps = createSelector(
-  userKeybindingsSelector,
-  quickActionsOpenSelector,
-  (newBindings, quickActionsOpen) => ({
-    keybindings: newBindings,
-    quickActionsOpen,
-  })
-);
-const mapDispatchToProps = dispatch => ({
-  dispatch,
-});
-class QuickActions extends React.Component<Props> {
+class QuickActions extends React.Component {
   updateGenie = () => {
-    Object.keys(this.props.keybindings).forEach(bindingKey => {
-      const quickAction = this.props.keybindings[bindingKey];
+    const keybindings = this.props.store.editor.preferences.keybindings;
+
+    Object.keys(keybindings).forEach(bindingKey => {
+      const quickAction = keybindings[bindingKey];
 
       genie({
         magicWords: `${quickAction.type}: ${quickAction.title}`,
         id: bindingKey,
-        action: () =>
-          this.props.dispatch(quickAction.action({ id: this.props.sandboxId })),
+        action: () => this.props.signals.editor.quickActionTriggered(),
+        // this.props.dispatch(quickAction.action({ id: this.props.sandboxId })),
       });
     });
   };
@@ -131,7 +100,8 @@ class QuickActions extends React.Component<Props> {
   };
 
   closeQuickActions = () => {
-    this.props.dispatch(viewActions.setQuickActionsOpen(false));
+    this.props.signals.editor.quickActionsClosed();
+    // this.props.dispatch(viewActions.setQuickActionsOpen(false));
   };
 
   onChange = item => {
@@ -140,11 +110,11 @@ class QuickActions extends React.Component<Props> {
   };
 
   render() {
-    if (!this.props.quickActionsOpen) {
+    if (!this.props.store.editor.quickActionsOpen) {
       return null;
     }
 
-    const { keybindings } = this.props;
+    const keybindings = this.props.store.editor.preferences.keybindings;
 
     return (
       <Container>
@@ -214,4 +184,4 @@ class QuickActions extends React.Component<Props> {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(QuickActions);
+export default inject('signals', 'store')(observer(QuickActions));

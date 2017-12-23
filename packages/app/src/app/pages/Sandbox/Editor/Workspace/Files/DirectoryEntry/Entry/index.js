@@ -2,6 +2,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { DragSource } from 'react-dnd';
+import ContextMenu from 'app/containers/ContextMenu';
 
 import FileIcon from 'react-icons/lib/fa/file';
 import FolderIcon from 'react-icons/lib/fa/folder';
@@ -152,54 +153,56 @@ class Entry extends React.PureComponent {
 
     return connectDragSource(
       <div>
-        <EntryContainer
-          onClick={setCurrentModule ? this.setCurrentModule : onClick}
-          onDoubleClick={markTabsNotDirty}
-          depth={depth}
-          nameValidationError={error}
-          active={active}
-          editing={state === 'editing' || selected}
-          onContextMenu={this.openContextMenu}
-          onMouseEnter={this.onMouseEnter}
-          onMouseLeave={this.onMouseLeave}
-          alternative={isMainModule}
-          noTransition
-        >
-          <EntryIcons
-            isNotSynced={isNotSynced}
-            hasChildren={hasChildren}
-            isOpen={isOpen}
-            type={type}
-            root={root}
-            error={moduleHasError}
-          />
-          {state === 'editing' ? (
-            <EntryTitleInput
-              title={title}
-              onChange={this.handleValidateTitle}
-              onCancel={this.resetState}
-              onCommit={this.handleRename}
+        <ContextMenu>
+          <EntryContainer
+            onClick={setCurrentModule ? this.setCurrentModule : onClick}
+            onDoubleClick={markTabsNotDirty}
+            depth={depth}
+            nameValidationError={error}
+            active={active}
+            editing={state === 'editing' || selected}
+            onContextMenu={this.openContextMenu}
+            onMouseEnter={this.onMouseEnter}
+            onMouseLeave={this.onMouseLeave}
+            alternative={isMainModule}
+            noTransition
+          >
+            <EntryIcons
+              isNotSynced={isNotSynced}
+              hasChildren={hasChildren}
+              isOpen={isOpen}
+              type={type}
+              root={root}
+              error={moduleHasError}
             />
-          ) : (
-            <EntryTitle title={title} />
-          )}
-          {isNotSynced && !state && <NotSyncedIconWithMargin />}
-          {state === '' && (
-            <Right>
-              {isMainModule ? (
-                <span style={{ opacity: hovering ? 1 : 0 }}>main</span>
-              ) : (
-                <EditIcons
-                  hovering={hovering}
-                  onCreateFile={onCreateModuleClick}
-                  onCreateDirectory={onCreateDirectoryClick}
-                  onDelete={deleteEntry && this.delete}
-                  onEdit={rename && this.rename}
-                />
-              )}
-            </Right>
-          )}
-        </EntryContainer>
+            {state === 'editing' ? (
+              <EntryTitleInput
+                title={title}
+                onChange={this.handleValidateTitle}
+                onCancel={this.resetState}
+                onCommit={this.handleRename}
+              />
+            ) : (
+              <EntryTitle title={title} />
+            )}
+            {isNotSynced && !state && <NotSyncedIconWithMargin />}
+            {state === '' && (
+              <Right>
+                {isMainModule ? (
+                  <span style={{ opacity: hovering ? 1 : 0 }}>main</span>
+                ) : (
+                  <EditIcons
+                    hovering={hovering}
+                    onCreateFile={onCreateModuleClick}
+                    onCreateDirectory={onCreateDirectoryClick}
+                    onDelete={deleteEntry && this.delete}
+                    onEdit={rename && this.rename}
+                  />
+                )}
+              </Right>
+            )}
+          </EntryContainer>
+        </ContextMenu>
       </div>
     );
   }
