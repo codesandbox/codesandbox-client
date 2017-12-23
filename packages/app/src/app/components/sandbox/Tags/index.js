@@ -1,6 +1,5 @@
 /* @flow */
 import * as React from 'react';
-import styled from 'styled-components';
 
 import Margin from 'common/components/spacing/Margin';
 import { TagContainer } from './elements';

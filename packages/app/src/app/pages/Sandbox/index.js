@@ -3,8 +3,8 @@ import { inject, observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
-import KeybindingManager from 'app/containers/KeybindingManager';
-import QuickActions from 'app/containers/QuickActions';
+import KeybindingManager from 'app/pages/Sandbox/Editor/KeybindingManager';
+import QuickActions from 'app/pages/Sandbox/Editor/QuickActions';
 
 import Title from 'app/components/text/Title';
 import SubTitle from 'app/components/text/SubTitle';

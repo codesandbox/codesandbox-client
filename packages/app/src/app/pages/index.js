@@ -6,9 +6,7 @@ import Loadable from 'react-loadable';
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 
 import _debug from 'app/utils/debug';
-import Notifications from 'app/containers/Notifications';
-import ContextMenu from 'app/containers/ContextMenu';
-import Modal from 'app/containers/Modal';
+import Notifications from 'app/pages/common/Notifications';
 import Loading from 'app/components/Loading';
 
 import Sandbox from './Sandbox';
@@ -102,9 +100,7 @@ class Routes extends React.Component {
             return null;
           }}
         />
-        <Modal />
         <Notifications />
-        <ContextMenu />
         <Content>
           <Switch>
             <Route exact path="/" render={() => <Redirect to="/s/new" />} />

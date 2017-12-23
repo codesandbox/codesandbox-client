@@ -7,7 +7,7 @@ import Input from 'app/components/Input';
 import Centered from 'common/components/flex/Centered';
 import Relative from 'common/components/Relative';
 import SubscribeForm from 'app/components/user/SubscribeForm';
-import SignInButton from 'app/containers/SignInButton';
+import SignInButton from 'app/pages/common/SignInButton';
 import badges from 'common/utils/badges/patron-info';
 import Range from './Range';
 import ChangeSubscription from './ChangeSubscription';

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { NavLink, Switch, Route, Redirect } from 'react-router-dom';
 
-import Navigation from 'app/containers/Navigation';
+import Navigation from 'app/pages/common/Navigation';
 import Margin from 'common/components/spacing/Margin';
 import MaxWidth from 'common/components/flex/MaxWidth';
 import Centered from 'common/components/flex/Centered';

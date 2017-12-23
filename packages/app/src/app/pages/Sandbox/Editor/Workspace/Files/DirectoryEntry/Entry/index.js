@@ -2,7 +2,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { DragSource } from 'react-dnd';
-import ContextMenu from 'app/containers/ContextMenu';
+import ContextMenu from 'app/components/ContextMenu';
 
 import FileIcon from 'react-icons/lib/fa/file';
 import FolderIcon from 'react-icons/lib/fa/folder';

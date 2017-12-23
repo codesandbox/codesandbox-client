@@ -1,7 +1,7 @@
 import { when, set, toggle } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 import * as actions from './actions';
-import { addNotification } from './factories';
+import { addNotification as addNotificationFactory } from './factories';
 
 export const loadApp = [
   set(state`isAuthenticating`, true),
@@ -45,6 +45,7 @@ export const signIn = [
   set(state`currentModal`, null),
   set(state`isAuthenticating`, false),
 ];
+
 export const signOut = [
   set(state`jwt`, null),
   actions.removeJwtFromStorage,
@@ -57,8 +58,15 @@ export const signOut = [
   set(state`user.badges`, []),
   set(state`user.integrations`, {}),
 ];
+
 export const toggleUserMenu = [toggle(state`userMenuOpen`)];
+
 export const removeNotification = actions.removeNotification;
+
+export const addNotification = addNotificationFactory(
+  props`message`,
+  props`type`
+);
 
 export const getZeitUserDetails = [
   when(state`zeitInfo`),
@@ -69,7 +77,9 @@ export const getZeitUserDetails = [
       actions.getZeitIntegrationDetails,
       {
         success: set(state`zeitInfo`, props`response.result.user`),
-        error: [addNotification('Could not authorize with ZEIT', 'error')],
+        error: [
+          addNotificationFactory('Could not authorize with ZEIT', 'error'),
+        ],
       },
       set(state`isLoadingZeit`, false),
     ],
@@ -84,7 +94,7 @@ export const signInZeit = [
       set(state`user.integrations.zeit.token`, props`token`),
       actions.updateUserZeitDetails,
     ],
-    error: addNotification('Zeit Authentication Error', 'error'),
+    error: addNotificationFactory('Zeit Authentication Error', 'error'),
   },
   set(state`isLoadingZeit`, false),
 ];
@@ -105,7 +115,7 @@ export const signInGithub = [
   actions.signInGithub,
   {
     success: set(state`jwt`, props`jwt`),
-    error: addNotification('Github Authentucation Error', 'error'),
+    error: addNotificationFactory('Github Authentucation Error', 'error'),
   },
   set(state`isLoadingGithub`, false),
 ];

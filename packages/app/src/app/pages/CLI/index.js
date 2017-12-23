@@ -3,7 +3,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
 
-import Navigation from 'app/containers/Navigation';
+import Navigation from 'app/pages/common/Navigation';
 import Prompt from './Prompt';
 
 const Container = styled.div`

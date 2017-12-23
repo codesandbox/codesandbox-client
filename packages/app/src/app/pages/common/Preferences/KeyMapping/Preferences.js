@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
-import { KEYBINDINGS } from 'app/store/preferences/keybindings';
+import { KEYBINDINGS } from 'app/utils/keybindings';
 
 import { Container, PreferenceContainer, PaddedPreference } from '../styles';
 

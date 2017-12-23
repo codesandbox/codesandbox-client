@@ -6,7 +6,7 @@ import delayEffect from 'common/utils/animation/delay-effect';
 import Row from 'common/components/flex/Row';
 
 import Stat from 'app/components/Stat';
-import LikeHeart from 'app/containers/LikeHeart';
+import LikeHeart from 'app/pages/common/LikeHeart';
 import PlayButton from './PlayButton';
 
 const Container = styled.div`

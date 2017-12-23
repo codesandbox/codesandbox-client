@@ -1,11 +1,11 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 
-import IntegrationModal from 'app/containers/modals/IntegrationModal';
-import ZeitIntegration from 'app/containers/integrations/Zeit';
+import ZeitIntegration from 'app/pages/common/ZeitIntegration';
 import Button from 'app/components/buttons/Button';
 import Centered from 'common/components/flex/Centered';
 import Margin from 'common/components/spacing/Margin';
+import IntegrationModal from '../IntegrationModal';
 
 import {
   ButtonContainer,

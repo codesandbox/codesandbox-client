@@ -6,7 +6,6 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import registerServiceWorker from 'common/registerServiceWorker';
 import requirePolyfills from 'common/load-dynamic-polyfills';
 import 'normalize.css';
-import notificationActions from 'app/store/notifications/actions';
 import 'common/global.css';
 import theme from 'common/theme';
 import { Provider } from 'mobx-react';
@@ -14,9 +13,7 @@ import controller from './controller';
 
 import App from './pages/index';
 import './split-pane.css';
-import createStore from './store';
 import logError from './utils/error';
-import history from './utils/history';
 
 if (process.env.NODE_ENV === 'production') {
   try {
@@ -70,10 +67,11 @@ if (process.env.NODE_ENV === 'production') {
 requirePolyfills().then(() => {
   const rootEl = document.getElementById('root');
 
-  const store = createStore(history);
-
   const showNotification = (message, type) =>
-    store.dispatch(notificationActions.addNotification(message, type));
+    controller.getSignal('notificationAdded')({
+      type,
+      message,
+    });
 
   registerServiceWorker('/service-worker.js', showNotification);
 

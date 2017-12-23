@@ -7,13 +7,13 @@ import { inject, observer } from 'mobx-react';
 import getTemplateDefinition from 'common/templates';
 import SplitPane from 'react-split-pane';
 
-import Tabs from 'app/containers/Tabs';
 import CodeEditor from 'app/components/sandbox/CodeEditor';
 import FilePath from 'app/components/sandbox/CodeEditor/FilePath';
 import Preview from 'app/components/sandbox/Preview';
 
 import fadeIn from 'common/utils/animation/fade-in';
 
+import Tabs from './Tabs';
 import Header from './Header';
 
 const FullSize = styled.div`

@@ -66,6 +66,7 @@ export default Module({
     modalClosed: sequences.closeModal,
     signInClicked: sequences.signIn,
     toggleUserMenuClicked: sequences.toggleUserMenu,
+    notificationAdded: sequences.addNotification,
     notificationRemoved: sequences.removeNotification,
     signInZeitClicked: sequences.signInZeit,
     signOutZeitClicked: sequences.signOutZeit,

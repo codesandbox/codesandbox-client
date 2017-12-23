@@ -8,7 +8,7 @@ import MaxWidth from 'common/components/flex/MaxWidth';
 import Margin from 'common/components/spacing/Margin';
 import Row from 'common/components/flex/Row';
 
-import Navigation from 'app/containers/Navigation';
+import Navigation from 'app/pages/common/Navigation';
 import {
   ALGOLIA_API_KEY,
   ALGOLIA_APPLICATION_ID,

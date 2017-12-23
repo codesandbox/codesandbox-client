@@ -4,9 +4,8 @@ import { observer } from 'mobx-react';
 
 import EyeIcon from 'react-icons/lib/fa/eye';
 import ForkIcon from 'react-icons/lib/go/repo-forked';
-
+import LikeHeart from 'app/pages/common/LikeHeart';
 import Stat from './Stat';
-import LikeHeart from '../../../containers/LikeHeart/index';
 
 const Stats = styled.div`
   display: flex;

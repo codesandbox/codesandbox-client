@@ -2,7 +2,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import Navigation from 'app/containers/Navigation';
+import Navigation from 'app/pages/common/Navigation';
 import Centered from 'common/components/flex/Centered';
 import Title from 'app/components/text/Title';
 import SubTitle from 'app/components/text/SubTitle';

@@ -1,7 +1,7 @@
 import { Provider } from 'cerebral';
 import resolveModule from 'common/sandbox/resolve-module';
 import { isEqual } from 'lodash';
-import prettify from './prettify';
+import * as prettify from 'app/utils/prettify';
 
 export default Provider({
   prettify(fileName, code) {
@@ -26,11 +26,7 @@ export default Provider({
       module =>
         module
           .default(sandbox, sandbox.modules, sandbox.directories)
-          .then(file => {
-            console.log(file);
-
-            return { file };
-          })
+          .then(file => ({ file }))
     );
   },
 });

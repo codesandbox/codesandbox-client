@@ -10,11 +10,9 @@ import Logo from 'common/components/Logo';
 import Row from 'common/components/flex/Row';
 import Tooltip from 'common/components/Tooltip';
 import HeaderSearchBar from 'app/components/HeaderSearchBar';
-import SignInButton from 'app/containers/SignInButton';
-import NewSandbox from 'app/containers/modals/NewSandbox';
-
 import PatronBadge from '-!svg-react-loader!common/utils/badges/svg/patron-4.svg'; // eslint-disable-line import/no-webpack-loader-syntax
 
+import SignInButton from '../SignInButton';
 import UserMenu from '../UserMenu';
 
 const LogoWithBorder = styled(Logo)`

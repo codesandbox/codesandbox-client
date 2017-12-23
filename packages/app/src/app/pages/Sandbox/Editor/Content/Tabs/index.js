@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components';
 import PrettierIcon from 'react-icons/lib/md/brush';
 import { inject, observer } from 'mobx-react';
 import Tooltip from 'common/components/Tooltip';
-import { canPrettify } from 'app/store/entities/sandboxes/modules/utils/prettify';
+import { canPrettify } from 'app/utils/prettify';
 import TabContainer from './TabContainer';
 
 const Container = styled.div`

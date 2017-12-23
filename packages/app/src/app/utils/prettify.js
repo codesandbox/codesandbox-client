@@ -1,4 +1,13 @@
-import { DEFAULT_PRETTIER_CONFIG } from 'app/store/preferences/reducer';
+export const DEFAULT_PRETTIER_CONFIG = {
+  printWidth: 80,
+  tabWidth: 2,
+  useTabs: false,
+  semi: true,
+  singleQuote: false,
+  trailingComma: 'none',
+  bracketSpacing: true,
+  jsxBracketSameLine: false,
+};
 
 // function getParser(mode) {
 //   if (mode === 'jsx') return 'babylon';

@@ -7,7 +7,7 @@ import MaxWidth from 'common/components/flex/MaxWidth';
 import Margin from 'common/components/spacing/Margin';
 import Centered from 'common/components/flex/Centered';
 
-import Navigation from 'app/containers/Navigation';
+import Navigation from 'app/pages/common/Navigation';
 
 import PricingModal from './PricingModal';
 

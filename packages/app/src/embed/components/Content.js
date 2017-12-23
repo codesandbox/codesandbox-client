@@ -1,19 +1,11 @@
-// @flow
-
 import * as React from 'react';
 import styled from 'styled-components';
 import BasePreview from 'app/components/sandbox/Preview/BasePreview';
 import CodeEditor from 'app/components/sandbox/CodeEditor';
-import Tab from 'app/containers/Tabs/Tab';
-import {
-  findCurrentModule,
-  findMainModule,
-  getModulePath,
-} from 'app/store/entities/sandboxes/modules/selectors';
+import Tab from 'app/pages/Sandbox/Editor/Content/Tabs/Tab';
 
 import Fullscreen from 'common/components/flex/Fullscreen';
 import Centered from 'common/components/flex/Centered';
-import type { Sandbox, Module, ModuleError } from 'common/types';
 import theme from 'common/theme';
 
 import playSVG from './play.svg';
@@ -50,37 +42,8 @@ const Split = styled.div`
   height: 100%;
 `;
 
-type Props = {
-  sandbox: Sandbox,
-  currentModule: ?string,
-  showEditor: boolean,
-  showPreview: boolean,
-  isInProjectView: boolean,
-  hideNavigation: boolean,
-  autoResize: boolean,
-  fontSize: number,
-  initialPath: ?string,
-  setCurrentModule: (moduleId: string) => void,
-  setProjectView: (id: string, isInProjectView: boolean) => any,
-  useCodeMirror: boolean,
-  enableEslint: boolean,
-  isInProjectView: boolean,
-  editorSize: number,
-  forceRefresh: boolean,
-  highlightedLines: Array<string>,
-  expandDevTools: boolean,
-  runOnClick: boolean,
-};
-
-type State = {
-  isInProjectView: boolean,
-  codes: { [id: string]: string },
-  errors: Array<ModuleError>,
-  tabs: Array<Module>,
-};
-
-export default class Content extends React.PureComponent<Props, State> {
-  constructor(props: Props) {
+export default class Content extends React.PureComponent {
+  constructor(props) {
     super(props);
 
     let tabs = [];
@@ -101,7 +64,7 @@ export default class Content extends React.PureComponent<Props, State> {
     };
   }
 
-  componentWillReceiveProps(nextProps: Props) {
+  componentWillReceiveProps(nextProps) {
     if (this.props.currentModule !== nextProps.currentModule) {
       if (!this.state.tabs.some(x => x.id === nextProps.currentModule.id)) {
         this.setState({
@@ -174,7 +137,7 @@ export default class Content extends React.PureComponent<Props, State> {
     }
   };
 
-  addError = (moduleId: string, error: ModuleError) => {
+  addError = (moduleId, error) => {
     if (!this.state.errors.find(e => e.moduleId === error.moduleId)) {
       this.setState({
         errors: [...this.state.errors, error],
@@ -265,12 +228,7 @@ export default class Content extends React.PureComponent<Props, State> {
     const { errors } = this.state;
 
     // $FlowIssue
-    const mainModule: Module = findCurrentModule(
-      sandbox.modules,
-      sandbox.directories,
-      currentModule,
-      findMainModule(sandbox.modules, sandbox.directories, sandbox.entry)
-    );
+    const mainModule = currentModule;
 
     if (!mainModule) throw new Error('Cannot find main module');
 

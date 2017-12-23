@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import Navigation from 'app/containers/Navigation';
+import Navigation from 'app/pages/common/Navigation';
 import Padding from 'common/components/spacing/Padding';
 import Margin from 'common/components/spacing/Margin';
 import MaxWidth from 'common/components/flex/MaxWidth';
@@ -18,9 +18,13 @@ const Top = styled.div`
   justify-content: center;
 `;
 
-const FullWidthPadding = styled(Padding)`width: 100%;`;
+const FullWidthPadding = styled(Padding)`
+  width: 100%;
+`;
 
-const FullWidthMargin = styled(Margin)`width: 100%;`;
+const FullWidthMargin = styled(Margin)`
+  width: 100%;
+`;
 
 type Props = {
   user: User,

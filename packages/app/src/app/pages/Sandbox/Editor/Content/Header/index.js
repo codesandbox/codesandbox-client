@@ -5,10 +5,10 @@ import Media from 'react-media';
 import { inject, observer } from 'mobx-react';
 
 import Modal from 'app/components/Modal';
-import Preferences from 'app/containers/Preferences';
+import Preferences from 'app/pages/common/Preferences';
 import NewSandbox from 'app/components/sandbox/NewSandbox';
-import ShareModal from 'app/containers/modals/ShareModal';
-import DeploymentModal from 'app/containers/modals/Deployment';
+import ShareModal from 'app/pages/Sandbox/ShareModal';
+import DeploymentModal from 'app/pages/Sandbox/DeploymentModal';
 import Save from 'react-icons/lib/md/save';
 import Fork from 'react-icons/lib/go/repo-forked';
 import Download from 'react-icons/lib/go/cloud-download';
@@ -32,7 +32,7 @@ import ModeIcons from 'app/components/sandbox/ModeIcons';
 import PatronBadge from '-!svg-react-loader!common/utils/badges/svg/patron-4.svg'; // eslint-disable-line import/no-webpack-loader-syntax
 import Margin from 'common/components/spacing/Margin';
 import HeaderSearchBar from 'app/components/HeaderSearchBar';
-import UserMenu from 'app/containers/UserMenu';
+import UserMenu from 'app/pages/common/UserMenu';
 
 import Action from './Action';
 

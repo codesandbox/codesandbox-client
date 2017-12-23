@@ -2,7 +2,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
-import Navigation from 'app/containers/Navigation';
+import Navigation from 'app/pages/common/Navigation';
 import Centered from 'common/components/flex/Centered';
 import Title from 'app/components/text/Title';
 import SubTitle from 'app/components/text/SubTitle';
@@ -10,7 +10,10 @@ import MaxWidth from 'common/components/flex/MaxWidth';
 import Margin from 'common/components/spacing/Margin';
 import Input from 'app/components/Input';
 import Button from 'app/components/buttons/Button';
-import { gitHubToSandboxUrl, protocolAndHost } from 'common/utils/url-generator';
+import {
+  gitHubToSandboxUrl,
+  protocolAndHost,
+} from 'common/utils/url-generator';
 
 const Container = styled.div`
   height: 100%;
@@ -31,7 +34,9 @@ const Label = styled.label`
   color: rgba(255, 255, 255, 0.3);
 `;
 
-const Description = styled.div`margin-bottom: 1rem;`;
+const Description = styled.div`
+  margin-bottom: 1rem;
+`;
 
 const StyledInput = styled(Input)`
   font-size: 1.25rem;
