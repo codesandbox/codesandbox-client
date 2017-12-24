@@ -19,6 +19,17 @@ const SANDBOXES = [
   'lp5rjr0z4z',
   'nOymMxyY',
 ];
+
+function pageLoaded(page) {
+  return new Promise(async resolve => {
+    await page.exposeFunction('__puppeteer__', () => {
+      if (resolve) {
+        resolve();
+      }
+    });
+  });
+}
+
 describe('sandboxes', () => {
   let browser = puppeteer.launch({
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
@@ -36,10 +47,11 @@ describe('sandboxes', () => {
       async () => {
         browser = await browser;
         const page = await browser.newPage();
-        await page.goto('http://localhost:3001/#' + id, {
-          waitUntil: 'networkidle0',
+        const waitFunction = pageLoaded(page);
+        page.goto('http://localhost:3001/#' + id, {
           timeout: 60000,
         });
+        await waitFunction;
         await page.waitFor(2000);
 
         const screenshot = await page.screenshot();
