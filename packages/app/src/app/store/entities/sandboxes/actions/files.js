@@ -16,6 +16,7 @@ import { singleSandboxSelector } from '../selectors';
 import { normalizeResult } from '../../actions';
 import notificationActions from '../../../notifications/actions';
 import { preferencesSelector } from '../../../preferences/selectors';
+import preferencesActions from '../../../preferences/actions';
 
 import { maybeForkSandbox } from './fork';
 
@@ -387,9 +388,37 @@ const saveModuleCode = (id: string, moduleId: string) => async (
   dispatch(moduleActions.setCode(newModule.id, module.code));
 
   const preferences = preferencesSelector(getState());
+
+  // test if we are saving a root .prettierrc file
+  if (
+    newModule.title === '.prettierrc' &&
+    newModule.directoryShortid === null
+  ) {
+    let prettierConfig = null;
+    try {
+      prettierConfig = JSON.parse(module.code);
+    } catch (e) {
+      dispatch(
+        notificationActions.addNotification(
+          'Your Prettier config is not a valid JSON file',
+          'error'
+        )
+      );
+    }
+    // if we have a valid prettier config, we update the preferences with it
+    if (prettierConfig) {
+      dispatch(
+        preferencesActions.setPreference({
+          prettierConfig,
+        })
+      );
+    }
+  }
+
   if (preferences.prettifyOnSaveEnabled) {
     await dispatch(moduleActions.prettifyModule(newModule.id));
   }
+
   // For refresh of code we refetch the module
   newModule = singleModuleSelector(getState(), {
     sourceId,
