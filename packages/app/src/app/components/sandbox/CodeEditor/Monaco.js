@@ -310,8 +310,10 @@ class MonacoEditor extends React.Component {
     this.forceUpdate();
   };
 
-  updateModules = sandbox => {
-    this.sandbox.modules.forEach(module => {
+  updateModules = () => {
+    const sandbox = this.sandbox;
+
+    sandbox.modules.forEach(module => {
       if (modelCache[module.id] && modelCache[module.id].model) {
         const path = getModulePath(
           sandbox.modules,
