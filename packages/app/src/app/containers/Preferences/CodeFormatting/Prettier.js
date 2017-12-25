@@ -44,6 +44,19 @@ class Prettier extends React.PureComponent {
     return (
       <Container>
         <PreferenceContainer>
+          <Description>
+            This configuration can be overridden by a{' '}
+            <a
+              href="https://prettier.io/docs/en/configuration.html"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              .prettierrc
+            </a>{' '}
+            JSON file at the root of the sandbox.
+          </Description>
+          <Rule />
+
           <PaddedPreference
             title="Print width"
             type="number"

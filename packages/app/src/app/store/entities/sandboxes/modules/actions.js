@@ -1,7 +1,9 @@
 // @flow
 
-import { singleModuleSelector } from './selectors';
+import { singleModuleSelector, modulesFromSandboxSelector } from './selectors';
 import { preferencesSelector } from '../../../preferences/selectors';
+import { sandboxesSelector } from '../selectors';
+import notificationActions from '../../../notifications/actions';
 
 import prettify from './utils/prettify';
 
@@ -33,9 +35,43 @@ const setCode = (id: string, code: string, isNotSynced: boolean = true) => (
   dispatch(setModuleSynced(id, !isNotSynced));
 };
 
+const getPrettierConfigForModule = (
+  id: string,
+  dispatch: Function,
+  state: Object
+) => {
+  const sandboxes = sandboxesSelector(state);
+  const sandboxOfModule = Object.values(sandboxes).find(s =>
+    s.modules.includes(id)
+  );
+  if (!sandboxOfModule) return null;
+
+  const modules = modulesFromSandboxSelector(state, {
+    sandbox: sandboxOfModule,
+  });
+  const prettierRcModule = modules.find(
+    m => m.directoryShortid == null && m.title === '.prettierrc'
+  );
+  if (!prettierRcModule) return null;
+
+  // if we have found a config file, we try to parse it
+  try {
+    return JSON.parse(prettierRcModule.code);
+  } catch (e) {
+    dispatch(
+      notificationActions.addNotification(
+        'Your .prettierrc is not a valid JSON file',
+        'error'
+      )
+    );
+  }
+  return null;
+};
+
 const prettifyModule = (id: string) => async (dispatch, getState: Function) => {
   const module = singleModuleSelector(getState(), { id });
   const preferences = preferencesSelector(getState());
+  const prettierRcConfig = getPrettierConfigForModule(id, dispatch, getState());
 
   dispatch({
     type: PRETTIFY_MODULE,
@@ -46,7 +82,7 @@ const prettifyModule = (id: string) => async (dispatch, getState: Function) => {
     const newCode = await prettify(
       module.title,
       module.code,
-      preferences.prettierConfig
+      prettierRcConfig || preferences.prettierConfig
     );
 
     dispatch(setCode(id, newCode));
