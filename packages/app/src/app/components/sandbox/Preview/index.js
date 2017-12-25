@@ -155,10 +155,10 @@ class BasePreview extends React.Component {
   };
 
   getRenderedModule = () => {
-    const { sandbox, currentModule, entry, isInProjectView } = this.props;
+    const { sandbox, currentModule, isInProjectView } = this.props;
 
     return isInProjectView
-      ? '/' + entry
+      ? '/' + sandbox.entry
       : getModulePath(sandbox.modules, sandbox.directories, currentModule.id);
   };
 
@@ -280,8 +280,8 @@ class BasePreview extends React.Component {
   };
 
   toggleProjectView = () => {
-    if (this.props.onToggleProjetView) {
-      this.props.onToggleProjetView();
+    if (this.props.onToggleProjectView) {
+      this.props.onToggleProjectView();
     }
   };
 

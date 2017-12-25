@@ -7,7 +7,7 @@ class Preview extends React.Component {
   onPreviewInitialized = preview => {
     const disposeHandleProjectViewChange = reaction(
       () => this.props.store.editor.isInProjectView,
-      this.handleExecuteCode.bind(this, preview)
+      this.handleProjectView.bind(this, preview)
     );
     const disposeHandleForcedRenders = reaction(
       () => this.props.store.editor.forceRender,
@@ -93,6 +93,12 @@ class Preview extends React.Component {
     preview.executeCodeImmediately();
   };
 
+  handleProjectView = preview => {
+    this.forceUpdate(() => {
+      preview.executeCodeImmediately();
+    });
+  };
+
   render() {
     const { store, signals } = this.props;
 
@@ -100,10 +106,10 @@ class Preview extends React.Component {
       <BasePreview
         onInitialized={this.onPreviewInitialized}
         sandbox={store.editor.currentSandbox}
-        currentModule={store.editor.mainModule}
+        currentModule={store.editor.currentModule}
         settings={store.editor.preferences.settings}
         initialPath={store.editor.initialPath}
-        isInProjectView={store.editor.preferences.isInProjectView}
+        isInProjectView={store.editor.isInProjectView}
         onClearErrors={() =>
           store.editor.errors.length && signals.editor.errorsCleared()
         }
@@ -114,6 +120,7 @@ class Preview extends React.Component {
             showPreview: false,
           })
         }
+        onToggleProjectView={() => signals.editor.projectViewToggled()}
         showDevtools={store.editor.preferences.showDevtools}
       />
     );
