@@ -59,6 +59,8 @@ function initializeResizeListener() {
 }
 inject();
 
+let firstLoad = true;
+
 async function compile({
   sandboxId,
   modules,
@@ -81,18 +83,27 @@ async function compile({
   handleExternalResources(externalResources);
 
   try {
-    const [{ manifest, isNewCombination }] = await Promise.all([
-      loadDependencies(dependencies),
-      updateManager(sandboxId, template, modules),
-    ]);
+    const { manifest, isNewCombination } = await loadDependencies(
+      dependencies,
+      manager
+    );
 
-    // Just reset the whole packager if it's a new combination
-    if (isNewCombination) {
+    if (isNewCombination && !firstLoad) {
+      // Just reset the whole manager if it's a new combination
       manager = null;
-      await updateManager(sandboxId, template, modules);
     }
 
-    manager.setManifest(manifest);
+    await updateManager(sandboxId, template, modules);
+
+    if (firstLoad && manager) {
+      // We save the state of transpiled modules, and load it here again. Gives
+      // faster initial loads.
+      await manager.load();
+    }
+
+    if (isNewCombination) {
+      manager.setManifest(manifest);
+    }
 
     const managerModuleToTranspile = modules.find(m => m.path === entry);
 
@@ -169,6 +180,9 @@ async function compile({
     dispatch({
       type: 'success',
     });
+
+    firstLoad = false;
+    manager.save();
   } catch (e) {
     console.log('Error in sandbox:');
     console.error(e);

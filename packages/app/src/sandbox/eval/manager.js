@@ -1,11 +1,13 @@
 // @flow
-import { flattenDeep, uniq, values } from 'lodash';
+import { flattenDeep, uniq, values, mapValues } from 'lodash';
 import resolve from 'browser-resolve';
+import localforage from 'localforage';
 
 import * as pathUtils from 'common/utils/path';
 
 import type { Module } from './entities/module';
 import TranspiledModule from './transpiled-module';
+import type { SerializedTranspiledModule } from './transpiled-module';
 import Preset from './presets';
 import fetchModule, { getCombinedMetas } from './npm/fetch-npm-module';
 import coreLibraries from './npm/get-core-libraries';
@@ -56,8 +58,8 @@ export default class Manager {
   preset: Preset;
   externals: Externals;
   modules: ModuleObject;
-
   manifest: Manifest;
+  dependencies: Object;
 
   constructor(id: string, modules: Array<Module>, preset: Preset) {
     this.id = id;
@@ -465,5 +467,68 @@ export default class Manager {
     return Promise.all(
       transpiledModulesToUpdate.map(tModule => tModule.transpile(this))
     );
+  }
+
+  /**
+   * Generate a JSON structure out of this manager that can be used to load
+   * the manager later on. This is useful for faster initial loading.
+   */
+  save() {
+    try {
+      const serializedTModules = {};
+
+      Object.keys(this.transpiledModules).forEach(path => {
+        Object.keys(this.transpiledModules[path].tModules).forEach(query => {
+          const tModule = this.transpiledModules[path].tModules[query];
+          serializedTModules[tModule.getId()] = tModule.serialize();
+        });
+      });
+
+      localforage.setItem(this.id, serializedTModules);
+    } catch (e) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error(e);
+      }
+      this.clearCache();
+    }
+  }
+
+  async load() {
+    try {
+      const serializedTModulesRaw = await localforage.getItem(this.id);
+      if (serializedTModulesRaw) {
+        const serializedTModules: {
+          [id: string]: SerializedTranspiledModule,
+        } = serializedTModulesRaw;
+
+        const tModules: { [id: string]: TranspiledModule } = {};
+        // First create tModules for all the saved modules, so we have references
+        Object.keys(serializedTModules).forEach(id => {
+          const sTModule = serializedTModules[id];
+
+          const tModule = this.addTranspiledModule(
+            sTModule.module,
+            sTModule.query
+          );
+          tModules[id] = tModule;
+        });
+
+        Object.keys(tModules).forEach(id => {
+          const tModule = tModules[id];
+
+          tModule.load(serializedTModules[id], tModules);
+        });
+      }
+    } catch (e) {
+      /* Nothing */
+    }
+  }
+
+  clearCache() {
+    try {
+      localforage.clear();
+    } catch (ex) {
+      /* Fail silently */
+    }
   }
 }

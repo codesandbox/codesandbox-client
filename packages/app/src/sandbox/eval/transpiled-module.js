@@ -36,6 +36,26 @@ class ModuleSource {
   }
 }
 
+export type SerializedTranspiledModule = {
+  module: Module,
+  query: string,
+  source: ?ModuleSource,
+  assets: {
+    [name: string]: ModuleSource,
+  },
+  isEntry: boolean,
+  childModules: Array<string>,
+  /**
+   * All extra modules emitted by the loader
+   */
+  emittedAssets: Array<ModuleSource>,
+  initiators: Array<string>, // eslint-disable-line no-use-before-define
+  dependencies: Array<string>, // eslint-disable-line no-use-before-define
+  asyncDependencies: Array<Promise<string>>, // eslint-disable-line no-use-before-define
+  transpilationDependencies: Array<string>,
+  transpilationInitiators: Array<string>,
+};
+
 export type LoaderContext = {
   emitWarning: (warning: WarningStructure) => void,
   emitError: (error: Error) => void,
@@ -511,5 +531,68 @@ export default class TranspiledModule {
         t.transpiler.cleanModule(this.getLoaderContext(manager, t.options));
       });
     }
+  }
+
+  serialize(): SerializedTranspiledModule {
+    const serializableObject = {};
+
+    serializableObject.query = this.query;
+    serializableObject.assets = this.assets;
+    serializableObject.module = this.module;
+    serializableObject.emittedAssets = this.emittedAssets;
+    serializableObject.isEntry = this.isEntry;
+    serializableObject.source = this.source;
+    serializableObject.childModules = this.childModules.map(m => m.getId());
+    serializableObject.dependencies = Array.from(this.dependencies).map(m =>
+      m.getId()
+    );
+    serializableObject.initiators = Array.from(this.initiators).map(m =>
+      m.getId()
+    );
+    serializableObject.transpilationDependencies = Array.from(
+      this.transpilationDependencies
+    ).map(m => m.getId());
+    serializableObject.transpilationInitiators = Array.from(
+      this.transpilationInitiators
+    ).map(m => m.getId());
+
+    serializableObject.asyncDependencies = [];
+    // At this stage we know that all modules are already resolved and the promises
+    // are downloaded. So we can just handle this synchronously.
+    Array.from(this.asyncDependencies).forEach(m => {
+      m.then(x => {
+        serializableObject.asyncDependencies.push(x.getId());
+      });
+    });
+
+    return (serializableObject: SerializedTranspiledModule);
+  }
+
+  async load(
+    data: SerializedTranspiledModule,
+    state: { [id: string]: TranspiledModule }
+  ) {
+    this.query = data.query;
+    this.assets = data.assets;
+    this.module = data.module;
+    this.emittedAssets = data.emittedAssets;
+    this.isEntry = data.isEntry;
+    this.source = data.source;
+
+    data.dependencies.forEach((depId: string) => {
+      this.dependencies.add(state[depId]);
+    });
+    data.childModules.forEach((depId: string) => {
+      this.childModules.push(state[depId]);
+    });
+    data.initiators.forEach((depId: string) => {
+      this.initiators.add(state[depId]);
+    });
+    data.transpilationDependencies.forEach((depId: string) => {
+      this.transpilationDependencies.add(state[depId]);
+    });
+    data.asyncDependencies.forEach((depId: string) => {
+      this.asyncDependencies.push(Promise.resolve(state[depId]));
+    });
   }
 }
