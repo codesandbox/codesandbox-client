@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import Preview from 'app/components/sandbox/Preview/BasePreview';
+import Preview from 'app/components/sandbox/Preview';
 import delayEffect from 'common/utils/animation/delay-effect';
 import { findMainModule } from 'app/store/entities/sandboxes/modules/selectors';
 

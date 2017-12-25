@@ -9,7 +9,7 @@ import {
 } from 'common/utils/url-generator';
 
 import UserWithAvatar from 'app/components/user/UserWithAvatar';
-import Stats from 'app/components/sandbox/Stats';
+import Stats from 'app/pages/common/Stats';
 import PrivacyStatus from 'app/components/sandbox/PrivacyStatus';
 import ConfirmLink from 'app/components/ConfirmLink';
 import GithubBadge from 'app/components/sandbox/GithubBadge';

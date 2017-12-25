@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import BasePreview from 'app/components/sandbox/Preview/BasePreview';
+import BasePreview from 'app/components/sandbox/Preview';
 import CodeEditor from 'app/components/sandbox/CodeEditor';
 import Tab from 'app/pages/Sandbox/Editor/Content/Tabs/Tab';
 

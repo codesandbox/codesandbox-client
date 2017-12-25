@@ -2,16 +2,15 @@
 import * as React from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 import { Prompt } from 'react-router-dom';
-import { autorun, observe } from 'mobx';
+import { observe, reaction } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import getTemplateDefinition from 'common/templates';
 import SplitPane from 'react-split-pane';
 
 import CodeEditor from 'app/components/sandbox/CodeEditor';
 import FilePath from 'app/components/sandbox/CodeEditor/FilePath';
-import Preview from 'app/components/sandbox/Preview';
-
 import fadeIn from 'common/utils/animation/fade-in';
+import Preview from './Preview';
 
 import Tabs from './Tabs';
 import Header from './Header';
@@ -38,43 +37,79 @@ class EditorPreview extends React.Component {
   };
   onInitialized = editor => {
     const store = this.props.store;
+    let isChangingSandbox = false;
 
-    const disposeErrorsHandler = autorun(() => {
-      editor.setErrors(store.editor.errors);
-    });
-    const disposeCorrectionsHandler = autorun(() => {
-      editor.setCorrections(store.editor.corrections);
-    });
-    const disposeModulesHandler = autorun(() => {
-      editor.updateModules(store.editor.currentSandbox);
-    });
-    const disposePreferencesHandler = autorun(() => {
-      editor.changeSettings(store.editor.preferences.settings);
-    });
-    const disposeDependenciesHandler = autorun(() => {
-      editor.changeDependencies(
-        store.editor.currentSandbox.npmDependencies.toJS()
-      );
-    });
-    const disposeCodeHandler = autorun(() => {
-      editor.changeCode(store.editor.currentModule.code);
-    });
     const disposeSandboxChangeHandler = observe(
       store.editor,
       'currentSandbox',
       change => {
-        editor.changeSandbox(
-          change.newValue,
-          store.editor.currentModule,
-          change.newValue.npmDependencies.toJS()
-        );
+        isChangingSandbox = true;
+        editor
+          .changeSandbox(
+            change.newValue,
+            store.editor.currentModule,
+            change.newValue.npmDependencies.toJS()
+          )
+          .then(() => {
+            isChangingSandbox = false;
+          });
       }
     );
-    const disposeModuleChangeHandler = observe(
-      store.editor,
-      'currentModule',
-      change => {
-        editor.changeModule(change.newValue);
+    const disposeErrorsHandler = reaction(
+      () => store.editor.errors.map(error => error),
+      errors => {
+        editor.setErrors(errors);
+      }
+    );
+    const disposeCorrectionsHandler = reaction(
+      () => store.editor.corrections.map(correction => correction),
+      corrections => {
+        editor.setCorrections(corrections);
+      }
+    );
+    const disposeModulesHandler = reaction(
+      () => store.editor.currentSandbox.modules.length,
+      () => {
+        if (isChangingSandbox) {
+          return;
+        }
+        editor.updateModules();
+      }
+    );
+    const disposePreferencesHandler = reaction(
+      () => store.editor.preferences.settings,
+      newSettings => {
+        editor.changeSettings(newSettings);
+      },
+      {
+        compareStructural: true,
+      }
+    );
+    const disposeDependenciesHandler = reaction(
+      () => store.editor.currentSandbox.npmDependencies,
+      newNpmDependencies => {
+        editor.changeDependencies(newNpmDependencies.toJS());
+      },
+      {
+        compareStructural: true,
+      }
+    );
+    const disposeCodeHandler = reaction(
+      () => store.editor.currentModule.code,
+      newCode => {
+        if (isChangingSandbox) {
+          return;
+        }
+        editor.changeCode(newCode || '');
+      }
+    );
+    const disposeModuleChangeHandler = reaction(
+      () => store.editor.currentModule,
+      newModule => {
+        if (isChangingSandbox) {
+          return;
+        }
+        editor.changeModule(newModule);
       }
     );
 

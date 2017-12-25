@@ -271,26 +271,30 @@ class MonacoEditor extends React.Component {
     }).then(() => this.changeCode(newModule.code));
   };
 
-  changeSandbox = (newSandbox, newCurrentModule, dependencies) => {
-    const oldSandbox = this.sandbox;
+  changeSandbox = (newSandbox, newCurrentModule, dependencies) =>
+    new Promise(resolve => {
+      const oldSandbox = this.sandbox;
 
-    this.sandbox = newSandbox;
-    this.currentModule = newCurrentModule;
-    this.dependencies = dependencies;
+      this.sandbox = newSandbox;
+      this.currentModule = newCurrentModule;
+      this.dependencies = dependencies;
 
-    // Reset models, dispose old ones
-    this.disposeModules(oldSandbox.modules);
+      // Reset models, dispose old ones
+      this.disposeModules(oldSandbox.modules);
 
-    // Do in setTimeout, since disposeModules is async
-    setTimeout(() => {
-      // Initialize new models
-      this.initializeModules(newSandbox.modules).then(() => {
-        this.openNewModel(newCurrentModule.id, newCurrentModule.title);
+      // Do in setTimeout, since disposeModules is async
+      setTimeout(() => {
+        // Initialize new models
+        this.initializeModules(newSandbox.modules)
+          .then(() =>
+            this.openNewModel(newCurrentModule.id, newCurrentModule.title)
+          )
+          .then(resolve);
       });
     });
-  };
 
   changeCode = code => {
+    console.log('Change tha code!');
     if (code !== this.getCode()) {
       this.updateCode(code);
     }
@@ -308,7 +312,7 @@ class MonacoEditor extends React.Component {
   };
 
   updateModules = sandbox => {
-    sandbox.modules.forEach(module => {
+    this.sandbox.modules.forEach(module => {
       if (modelCache[module.id] && modelCache[module.id].model) {
         const path = getModulePath(
           sandbox.modules,
