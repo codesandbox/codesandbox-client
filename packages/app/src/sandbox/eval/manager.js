@@ -195,6 +195,9 @@ export default class Manager {
   }
 
   removeModule(module: Module) {
+    // Reset all cached paths
+    this.cachedPaths = {};
+
     const existingModule = this.transpiledModules[module.path];
 
     values(existingModule.tModules).forEach(m => m.dispose());
@@ -225,7 +228,6 @@ export default class Manager {
    */
   transpileModules(entry: Module) {
     this.setEnvironmentVariables();
-    this.cachedPaths = {};
     const transpiledModule = this.getTranspiledModule(entry);
 
     transpiledModule.setIsEntry(true);
@@ -428,9 +430,11 @@ export default class Manager {
       const mirrorModule = this.transpiledModules[module.path];
 
       if (!mirrorModule) {
+        this.cachedPaths = {};
         addedModules.push(module);
         this.addTranspiledModule(module);
       } else if (mirrorModule.module.code !== module.code) {
+        this.cachedPaths = {};
         updatedModules.push(module);
       }
     });
@@ -473,7 +477,7 @@ export default class Manager {
    * Generate a JSON structure out of this manager that can be used to load
    * the manager later on. This is useful for faster initial loading.
    */
-  save() {
+  async save() {
     try {
       const serializedTModules = {};
 
@@ -484,7 +488,10 @@ export default class Manager {
         });
       });
 
-      localforage.setItem(this.id, serializedTModules);
+      await localforage.setItem(this.id, {
+        transpiledModules: serializedTModules,
+        cachedPaths: this.cachedPaths,
+      });
     } catch (e) {
       if (process.env.NODE_ENV === 'development') {
         console.error(e);
@@ -495,11 +502,10 @@ export default class Manager {
 
   async load() {
     try {
-      const serializedTModulesRaw = await localforage.getItem(this.id);
-      if (serializedTModulesRaw) {
-        const serializedTModules: {
-          [id: string]: SerializedTranspiledModule,
-        } = serializedTModulesRaw;
+      const data = await localforage.getItem(this.id);
+      if (data) {
+        const { transpiledModules: serializedTModules, cachedPaths } = data;
+        this.cachedPaths = cachedPaths || {};
 
         const tModules: { [id: string]: TranspiledModule } = {};
         // First create tModules for all the saved modules, so we have references
@@ -520,7 +526,9 @@ export default class Manager {
         });
       }
     } catch (e) {
-      /* Nothing */
+      if (process.env.NODE_ENV === 'development') {
+        console.error(e);
+      }
     }
   }
 
@@ -528,7 +536,9 @@ export default class Manager {
     try {
       localforage.clear();
     } catch (ex) {
-      /* Fail silently */
+      if (process.env.NODE_ENV === 'development') {
+        console.error(e);
+      }
     }
   }
 }
