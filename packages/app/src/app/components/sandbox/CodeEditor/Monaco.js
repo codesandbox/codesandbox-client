@@ -294,7 +294,6 @@ class MonacoEditor extends React.Component {
     });
 
   changeCode = code => {
-    console.log('Change tha code!');
     if (code !== this.getCode()) {
       this.updateCode(code);
     }

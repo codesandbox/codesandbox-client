@@ -91,7 +91,7 @@ export default {
   tabs: types.array(
     types.model({
       type: types.string,
-      moduleId: types.string,
+      moduleShortid: types.string,
       dirty: types.boolean,
     })
   ),

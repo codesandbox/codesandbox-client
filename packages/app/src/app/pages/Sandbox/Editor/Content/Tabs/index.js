@@ -143,15 +143,17 @@ class EditorTabs extends React.Component {
     const tabNamesObject = {};
 
     sandbox.modules.forEach(m => {
-      moduleObject[m.id] = m;
+      moduleObject[m.shortid] = m;
     });
 
-    store.editor.tabs.filter(tab => moduleObject[tab.moduleId]).forEach(tab => {
-      const module = moduleObject[tab.moduleId];
+    store.editor.tabs
+      .filter(tab => moduleObject[tab.moduleShortid])
+      .forEach(tab => {
+        const module = moduleObject[tab.moduleShortid];
 
-      tabNamesObject[module.title] = tabNamesObject[module.title] || [];
-      tabNamesObject[module.title].push(module.id);
-    });
+        tabNamesObject[module.title] = tabNamesObject[module.title] || [];
+        tabNamesObject[module.title].push(module.shortid);
+      });
 
     const currentModule = store.editor.currentModule;
 
@@ -163,7 +165,7 @@ class EditorTabs extends React.Component {
           }}
         >
           {store.editor.tabs
-            .map(tab => ({ ...tab, module: moduleObject[tab.moduleId] }))
+            .map(tab => ({ ...tab, module: moduleObject[tab.moduleShortid] }))
             .filter(tab => tab.module)
             .map((tab, i) => {
               const { module } = tab;

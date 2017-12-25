@@ -204,7 +204,9 @@ export function closeTab({ state, props }) {
 export function unsetDirtyTab({ state }) {
   const currentModule = state.get('editor.currentModule');
   const tabs = state.get('editor.tabs');
-  const tabIndex = tabs.findIndex(tab => tab.moduleId === currentModule.id);
+  const tabIndex = tabs.findIndex(
+    tab => tab.moduleShortid === currentModule.shortid
+  );
 
   state.set(`editor.tabs.${tabIndex}.dirty`, false);
 }
@@ -213,7 +215,7 @@ export function setInitialTab({ state }) {
   const currentModule = state.get('editor.currentModule');
   const newTab = {
     type: 'MODULE',
-    moduleId: currentModule.id,
+    moduleShortid: currentModule.shortid,
     dirty: true,
   };
 
@@ -222,9 +224,12 @@ export function setInitialTab({ state }) {
 
 export function addTab({ state, props }) {
   const currentModule = state.get('editor.currentModule');
+  const modules = state.get('editor.currentSandbox.modules');
+  const shortid = modules.find(module => module.id === props.id).shortid;
+
   const newTab = {
     type: 'MODULE',
-    moduleId: props.id,
+    moduleShortid: shortid,
     dirty: true,
   };
   let tabs = state.get('editor.tabs');
@@ -233,7 +238,7 @@ export function addTab({ state, props }) {
 
   if (tabs.length === 0) {
     tabs = [newTab];
-  } else if (!tabs.some(tab => tab.moduleId === props.id)) {
+  } else if (!tabs.some(tab => tab.moduleShortid === shortid)) {
     const notDirtyTabs = tabs.filter(tab => !tab.dirty);
 
     tabs = [
