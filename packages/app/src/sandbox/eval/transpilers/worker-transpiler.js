@@ -64,11 +64,12 @@ export default class WorkerTranspiler extends Transpiler {
     });
   }
 
-  initialize() {
+  async initialize() {
+    this.initialized = true;
     if (this.workers.length === 0) {
-      for (let i = 0; i < this.workerCount; i += 1) {
-        this.loadWorker();
-      }
+      await Promise.all(
+        Array.from({ length: this.workerCount }, () => this.loadWorker())
+      );
     }
   }
 
@@ -145,13 +146,13 @@ export default class WorkerTranspiler extends Transpiler {
     worker.postMessage(message);
   }
 
-  queueTask(
+  async queueTask(
     message: any,
     loaderContext: LoaderContext,
     callback: (err: Error, message: Object) => void
   ) {
     if (!this.initialized) {
-      this.initialize();
+      await this.initialize();
     }
 
     const id = loaderContext._module.getId();

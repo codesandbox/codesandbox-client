@@ -17,7 +17,7 @@ class BabelTranspiler extends WorkerTranspiler {
   }
 
   async getWorker() {
-    while (!window.babelworkers) {
+    while (typeof window.babelworkers === 'undefined') {
       await delay(50); // eslint-disable-line
     }
     // We set these up in startup.js.

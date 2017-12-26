@@ -154,6 +154,7 @@ export default class TranspiledModule {
     this.resetCompilation();
     this.resetTranspilation();
     this.setIsEntry(false);
+    // this.hmrEnabled = false;
   }
 
   resetTranspilation() {
@@ -437,13 +438,7 @@ export default class TranspiledModule {
 
     this.asyncDependencies = [];
 
-    // if (this.isEntry && manager.webpackHMR) {
-    //   await manager.save();
-    //   location.reload();
-    //   return;
-    // }
-
-    return Promise.all(
+    await Promise.all(
       flattenDeep([
         ...Array.from(this.transpilationInitiators).map(t =>
           t.transpile(manager)
@@ -451,6 +446,10 @@ export default class TranspiledModule {
         ...Array.from(this.dependencies).map(t => t.transpile(manager)),
       ])
     );
+
+    if (typeof this.hmrEnabled === 'function') {
+      this.hmrEnabled();
+    }
   }
 
   getChildTranspiledModules(): Array<TranspiledModule> {
@@ -472,15 +471,29 @@ export default class TranspiledModule {
 
     const localModule = this.module;
 
-    if (this.compilation && manager.webpackHMR) {
-      return this.compilation.exports;
+    if (manager.webpackHMR) {
+      if (this.compilation) {
+        return this.compilation.exports;
+      } else if (this.isEntry && !this.hmrEnabled) {
+        location.reload();
+        return {};
+      }
     }
 
     this.compilation = {
       exports: {},
       hot: {
-        accept: () => {
-          this.hmrEnabled = true;
+        accept: (path: string, cb) => {
+          if (path) {
+            const tModule = manager.resolveTranspiledModule(
+              path,
+              this.module.path
+            );
+            tModule.hmrEnabled = cb;
+            console.log(tModule);
+          } else {
+            this.hmrEnabled = true;
+          }
           manager.webpackHMR = true;
         },
       },
