@@ -10,7 +10,7 @@ export default () => (
     <Title>
       Prettier Settings{' '}
       <a
-        href="https://github.com/prettier/prettier#options"
+        href="https://prettier.io/docs/en/options.html"
         target="_blank"
         rel="noopener noreferrer"
       >
