@@ -1,6 +1,6 @@
 import React, { KeyboardEvent } from 'react';
 import { inject } from 'mobx-react';
-import { normalizeKey } from 'app/store/preferences/keybindings';
+import { normalizeKey } from 'app/utils/keybindings';
 
 class KeybindingManager extends React.Component {
   constructor(props) {

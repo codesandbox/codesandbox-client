@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { formatKey } from 'app/store/preferences/keybindings';
+import { formatKey } from 'app/utils/keybindings';
 
 type Props = {
   bindings: Array<string>,

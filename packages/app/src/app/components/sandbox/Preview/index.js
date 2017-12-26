@@ -4,7 +4,7 @@ import { listen, dispatch } from 'codesandbox-api';
 import { debounce } from 'lodash';
 
 import { frameUrl } from 'common/utils/url-generator';
-import { getModulePath } from 'app/utils/modules';
+import { getModulePath } from 'common/sandbox/modules';
 
 import DevTools from './DevTools';
 import Navigator from './Navigator';

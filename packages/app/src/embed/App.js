@@ -10,10 +10,7 @@ import Title from 'app/components/text/Title';
 import SubTitle from 'app/components/text/SubTitle';
 import { getSandboxOptions } from 'common/url';
 
-import {
-  findCurrentModule,
-  findMainModule,
-} from 'app/store/entities/sandboxes/modules/selectors';
+import { findCurrentModule, findMainModule } from 'common/sandbox/modules';
 
 import Header from './components/Header';
 import Content from './components/Content';

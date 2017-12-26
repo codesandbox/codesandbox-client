@@ -1,4 +1,4 @@
-import resolveModule, { getModulesInDirectory } from './resolve-module';
+import { resolveModule, getModulesInDirectory } from './modules';
 
 describe('root', () => {
   test('it resolves root path', () => {

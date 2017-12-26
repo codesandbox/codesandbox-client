@@ -1,4 +1,4 @@
-import { KEYBINDINGS } from 'app/store/preferences/keybindings';
+import { KEYBINDINGS } from 'app/utils/keybindings';
 
 export function keybindings() {
   const userBindings = this.settings.keybindings;

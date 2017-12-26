@@ -1,7 +1,7 @@
 // @flow
 import * as React from 'react';
 
-import getType from 'app/store/entities/sandboxes/modules/utils/get-type';
+import getType from 'app/utils/get-type';
 import validateTitle from './validateTitle';
 import Entry from './Entry';
 import DirectoryEntry from './';

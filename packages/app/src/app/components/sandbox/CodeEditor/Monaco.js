@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { debounce } from 'lodash';
-import { getModulePath } from 'app/store/entities/sandboxes/modules/selectors';
+import { getModulePath } from 'common/sandbox/modules';
 
 import theme from 'common/theme';
 import getTemplate from 'common/templates';

@@ -4,7 +4,7 @@ import { saveAs } from 'file-saver';
 
 import type { Sandbox, Module, Directory } from 'common/types';
 import { react, reactTs, vue, preact, svelte } from 'common/templates/index';
-import resolveModule from 'common/sandbox/resolve-module';
+import { resolveModule } from 'common/sandbox/modules';
 
 const CSSTag = (resource: string) =>
   `<link rel="stylesheet" type="text/css" href="${resource}" media="all">`;

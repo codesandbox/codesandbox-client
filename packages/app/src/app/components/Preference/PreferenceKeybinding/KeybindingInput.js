@@ -2,7 +2,7 @@ import React from 'react';
 
 import Input from 'app/components/Input';
 
-import { normalizeKey, formatKey } from 'app/store/preferences/keybindings';
+import { normalizeKey, formatKey } from 'app/utils/keybindings';
 
 type Props = {
   value: Array<string>,

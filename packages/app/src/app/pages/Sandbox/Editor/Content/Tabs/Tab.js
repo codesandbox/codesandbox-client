@@ -9,7 +9,7 @@ import CloseIcon from 'react-icons/lib/go/x';
 import type { Module } from 'common/types';
 
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
-import getType from 'app/store/entities/sandboxes/modules/utils/get-type';
+import getType from 'app/utils/get-type';
 
 const StyledCloseIcon = styled(CloseIcon)`
   transition: 0.1s ease opacity;

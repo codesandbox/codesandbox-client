@@ -3,7 +3,7 @@ import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
 import Files from 'embed/components/Files';
 import ModeIcons from 'app/components/sandbox/ModeIcons';
-import { getModulePath } from 'app/store/entities/sandboxes/modules/selectors';
+import { getModulePath } from 'common/sandbox/modules';
 
 import {
   optionsToParameterizedUrl,
@@ -238,8 +238,9 @@ class ShareView extends React.Component {
   // eslint-disable-next-line
   getButtonMarkdown = () => {
     const sandbox = this.props.store.editor.currentSandbox;
-    return `[![Edit ${sandbox.title ||
-      sandbox.id}](${BUTTON_URL})](${this.getEditorUrl()})`;
+    return `[![Edit ${sandbox.title || sandbox.id}](${
+      BUTTON_URL
+    })](${this.getEditorUrl()})`;
   };
 
   // eslint-disable-next-line

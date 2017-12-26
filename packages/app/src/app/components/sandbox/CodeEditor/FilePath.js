@@ -3,9 +3,9 @@ import styled, { css } from 'styled-components';
 import ChevronLeft from 'react-icons/lib/md/chevron-left';
 import ExitZen from 'react-icons/lib/md/fullscreen-exit';
 
-import { getModulePath } from 'app/store/entities/sandboxes/modules/selectors';
+import { getModulePath } from 'common/sandbox/modules';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
-import getType from 'app/store/entities/sandboxes/modules/utils/get-type';
+import getType from 'app/utils/get-type';
 import { withTooltip } from 'common/components/Tooltip';
 
 import type { Module, Directory } from 'common/types';

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import Preview from 'app/components/sandbox/Preview';
 import delayEffect from 'common/utils/animation/delay-effect';
-import { findMainModule } from 'app/store/entities/sandboxes/modules/selectors';
+import { findMainModule } from 'common/sandbox/modules';
 
 const Container = styled.div`
   position: relative;

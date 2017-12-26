@@ -4,8 +4,8 @@ import styled from 'styled-components';
 import sortBy from 'lodash/sortBy';
 
 import type { Module, Directory } from 'common/types';
-import { isMainModule } from 'app/store/entities/sandboxes/modules/selectors';
-import getType from 'app/store/entities/sandboxes/modules/utils/get-type';
+import { isMainModule } from 'common/sandbox/modules';
+import getType from 'app/utils/get-type';
 
 import File from './File';
 

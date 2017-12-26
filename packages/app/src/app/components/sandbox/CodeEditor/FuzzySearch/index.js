@@ -6,11 +6,11 @@ import matchSorter from 'match-sorter';
 import type { Module, Directory } from 'common/types';
 import NotSyncedIcon from 'react-icons/lib/go/primitive-dot';
 
-import { getModulePath } from 'app/store/entities/sandboxes/modules/selectors';
+import { getModulePath } from 'common/sandbox/modules';
 import Input from 'app/components/Input';
 
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
-import getType from 'app/store/entities/sandboxes/modules/utils/get-type';
+import getType from 'app/utils/get-type';
 
 const Container = styled.div`
   position: absolute;
