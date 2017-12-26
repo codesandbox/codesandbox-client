@@ -1,4 +1,3 @@
-// @flow
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 
@@ -8,15 +7,14 @@ import {
   profileUrl,
 } from 'common/utils/url-generator';
 
-import UserWithAvatar from 'app/components/user/UserWithAvatar';
+import UserWithAvatar from 'app/components/UserWithAvatar';
 import Stats from 'app/pages/common/Stats';
-import PrivacyStatus from 'app/components/sandbox/PrivacyStatus';
+import PrivacyStatus from 'app/components/PrivacyStatus';
 import ConfirmLink from 'app/components/ConfirmLink';
-import GithubBadge from 'app/components/sandbox/GithubBadge';
+import GithubBadge from 'app/components/GithubBadge';
 
 import getTemplateDefinition from 'common/templates';
-import WorkspaceInputContainer from '../WorkspaceInputContainer';
-import WorkspaceSubtitle from '../WorkspaceSubtitle';
+import { WorkspaceInputContainer, WorkspaceSubtitle } from '../elements';
 
 import {
   Item,

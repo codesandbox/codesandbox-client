@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import BasePreview from 'app/components/sandbox/Preview';
-import CodeEditor from 'app/components/sandbox/CodeEditor';
+import BasePreview from 'app/components/Preview';
+import CodeEditor from 'app/components/CodeEditor';
 import Tab from 'app/pages/Sandbox/Editor/Content/Tabs/Tab';
 
 import Fullscreen from 'common/components/flex/Fullscreen';

@@ -6,8 +6,8 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import KeybindingManager from 'app/pages/Sandbox/Editor/KeybindingManager';
 import QuickActions from 'app/pages/Sandbox/Editor/QuickActions';
 
-import Title from 'app/components/text/Title';
-import SubTitle from 'app/components/text/SubTitle';
+import Title from 'app/components/Title';
+import SubTitle from 'app/components/SubTitle';
 import Centered from 'common/components/flex/Centered';
 
 import Editor from './Editor';

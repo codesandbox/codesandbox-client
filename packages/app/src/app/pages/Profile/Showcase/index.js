@@ -1,24 +1,17 @@
-// @flow
 import * as React from 'react';
-import styled from 'styled-components';
 import { inject } from 'mobx-react';
 import Column from 'common/components/flex/Column';
 import Centered from 'common/components/flex/Centered';
 import Margin from 'common/components/spacing/Margin';
-import Button from 'app/components/buttons/Button';
+import Button from 'app/components/Button';
 
 import SandboxInfo from './SandboxInfo';
 import ShowcasePreview from './ShowcasePreview';
 
-const ErrorTitle = styled.div`
-  font-size: 1.25rem;
-  color: rgba(255, 255, 255, 0.7);
-`;
+import { ErrorTitle } from './elements';
 
 class Showcase extends React.Component {
   openModal = () => {
-    this.props.signals.modalOpened({ name: 'selectSandbox' });
-
     /*
     modalActions.openModal({
       title: 'Select Showcase Sandbox',

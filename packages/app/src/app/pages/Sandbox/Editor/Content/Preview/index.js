@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import { reaction } from 'mobx';
-import BasePreview from 'app/components/sandbox/Preview';
+import BasePreview from 'app/components/Preview';
 
 class Preview extends React.Component {
   onPreviewInitialized = preview => {

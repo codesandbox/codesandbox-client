@@ -1,6 +1,4 @@
-// @flow
 import * as React from 'react';
-import styled from 'styled-components';
 import { DragSource } from 'react-dnd';
 import ContextMenu from 'app/components/ContextMenu';
 
@@ -8,28 +6,16 @@ import FileIcon from 'react-icons/lib/fa/file';
 import FolderIcon from 'react-icons/lib/fa/folder';
 import EditIcon from 'react-icons/lib/go/pencil';
 import DeleteIcon from 'react-icons/lib/go/trashcan';
-import NotSyncedIcon from 'react-icons/lib/go/primitive-dot';
 
 import theme from 'common/theme';
 
-import EntryContainer from '../../../EntryContainer';
+import { EntryContainer } from '../../../elements';
 import EntryTitle from './EntryTitle';
 import EntryTitleInput from './EntryTitleInput';
 import EntryIcons from './EntryIcons';
 import EditIcons from './EditIcons';
 
-const Right = styled.div`
-  position: absolute;
-  right: 1rem;
-`;
-
-const NotSyncedIconWithMargin = styled(NotSyncedIcon)`
-  margin-left: 2px;
-  color: ${props => props.theme.templateColor || props.theme.secondary};
-  vertical-align: middle;
-
-  margin-top: 1.5px;
-`;
+import { Right, NotSyncedIconWithMargin } from './elements';
 
 class Entry extends React.PureComponent {
   constructor(props) {
@@ -54,7 +40,7 @@ class Entry extends React.PureComponent {
     this.setState({ error: isInvalidTitle });
   };
 
-  handleRename = (title: string, force: ?boolean) => {
+  handleRename = (title, force) => {
     const { id } = this.props;
     const canRename = !this.handleValidateTitle(title);
     if (canRename && this.props.rename) {

@@ -1,12 +1,10 @@
-// @flow
 import * as React from 'react';
-import styled from 'styled-components';
 import Media from 'react-media';
 import { inject, observer } from 'mobx-react';
 
 import Modal from 'app/components/Modal';
 import Preferences from 'app/pages/common/Preferences';
-import NewSandbox from 'app/components/sandbox/NewSandbox';
+import NewSandbox from 'app/components/NewSandbox';
 import ShareModal from 'app/pages/Sandbox/ShareModal';
 import DeploymentModal from 'app/pages/Sandbox/DeploymentModal';
 import Save from 'react-icons/lib/md/save';
@@ -26,9 +24,8 @@ import ShareIcon from 'react-icons/lib/md/share';
 import { Tooltip } from 'react-tippy';
 
 import { searchUrl, patronUrl } from 'common/utils/url-generator';
-import ModeIcons from 'app/components/sandbox/ModeIcons';
+import ModeIcons from 'app/components/ModeIcons';
 
-// $FlowIssue
 import PatronBadge from '-!svg-react-loader!common/utils/badges/svg/patron-4.svg'; // eslint-disable-line import/no-webpack-loader-syntax
 import Margin from 'common/components/spacing/Margin';
 import HeaderSearchBar from 'app/components/HeaderSearchBar';
@@ -36,57 +33,7 @@ import UserMenu from 'app/pages/common/UserMenu';
 
 import Action from './Action';
 
-const Container = styled.div`
-  display: flex;
-  position: relative;
-  justify-content: space-between;
-  align-items: center;
-  background-color: ${props => props.theme.background2};
-  font-size: 1.2rem;
-  color: rgba(255, 255, 255, 0.7);
-  z-index: 40;
-  margin: 0;
-  height: 3rem;
-  font-weight: 400;
-  flex: 0 0 3rem;
-  box-sizing: border-box;
-  border-bottom: 1px solid ${props => props.theme.background2.darken(0.3)};
-`;
-
-const Right = styled.div`
-  display: flex;
-  align-items: center;
-  height: 100%;
-`;
-
-const Left = styled.div`
-  display: flex;
-  height: 100%;
-`;
-
-const Chevron = styled.div`
-  svg {
-    transition: 0.3s ease all;
-    font-size: 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 3rem;
-    margin-left: 0.5rem;
-    margin-right: 0.5rem;
-    z-index: 20;
-
-    cursor: pointer;
-    &:hover {
-      transform: rotateZ(
-        ${props => (props.workspaceHidden ? '135deg' : '45deg')}
-      );
-      color: white;
-    }
-
-    transform: rotateZ(${props => (props.workspaceHidden ? '180deg' : '0')});
-  }
-`;
+import { Container, Right, Left, Chevron } from './elements';
 
 function Header({ store, signals }) {
   const preferences = store.editor.preferences;

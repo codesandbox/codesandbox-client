@@ -1,8 +1,7 @@
 import React from 'react';
-import styled from 'styled-components';
 
-import Title from 'app/components/text/Title';
-import SubTitle from 'app/components/text/SubTitle';
+import Title from 'app/components/Title';
+import SubTitle from 'app/components/SubTitle';
 import MaxWidth from 'common/components/flex/MaxWidth';
 import Margin from 'common/components/spacing/Margin';
 import Centered from 'common/components/flex/Centered';
@@ -10,12 +9,7 @@ import Centered from 'common/components/flex/Centered';
 import Navigation from 'app/pages/common/Navigation';
 
 import PricingModal from './PricingModal';
-
-const Content = styled.div`
-  margin-top: 5%;
-  text-align: left;
-  color: white;
-`;
+import { Content } from './elements';
 
 export default function Patron() {
   document.title = 'Patron - CodeSandbox';

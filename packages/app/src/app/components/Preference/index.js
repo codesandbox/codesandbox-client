@@ -1,5 +1,4 @@
 import React from 'react';
-import styled from 'styled-components';
 import Tooltip from 'common/components/Tooltip';
 
 import PreferenceSwitch from './PreferenceSwitch';
@@ -7,27 +6,10 @@ import PreferenceDropdown from './PreferenceDropdown';
 import PreferenceNumber from './PreferenceNumber';
 import PreferenceText from './PreferenceText';
 import PreferenceKeybinding from './PreferenceKeybinding';
-
-const Container = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-type Props = {
-  className: ?string,
-  title: string,
-  value: any,
-  setValue: (value: any) => any,
-  tooltip: ?string,
-  type: 'boolean' | 'number' | 'string' | 'keybinding',
-  options: ?Array<string>,
-};
+import { Container } from './elements';
 
 export default class Preference extends React.Component {
-  props: Props;
-
-  getOptionComponent = (value: boolean | number | string) => {
+  getOptionComponent = value => {
     const { type } = this.props;
     if (type === 'boolean') {
       return (

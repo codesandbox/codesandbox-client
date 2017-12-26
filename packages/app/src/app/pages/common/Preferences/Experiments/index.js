@@ -1,12 +1,27 @@
 import React from 'react';
 
-import Preferences from './Preferences';
-import Title from '../MenuTitle';
+import {
+  Title,
+  SubContainer,
+  PreferenceContainer,
+  SubDescription,
+} from '../elements';
 
-export default () => (
-  <div>
-    <Title>Experiments</Title>
+function Experiments() {
+  return (
+    <div>
+      <Title>Experiments</Title>
 
-    <Preferences />
-  </div>
-);
+      <SubContainer>
+        <PreferenceContainer>
+          <SubDescription>
+            We have no experiments running currently! Tune in later to find some
+            new goodies to test.
+          </SubDescription>
+        </PreferenceContainer>
+      </SubContainer>
+    </div>
+  );
+}
+
+export default Experiments;

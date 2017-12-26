@@ -1,13 +1,7 @@
 import React from 'react';
-import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
 
-const Container = styled.div`
-  color: ${props => props.theme.red};
-  background-color: ${props => props.theme.redBackground};
-  padding: 1rem;
-  font-size: 0.75rem;
-`;
+import { Container } from './elements';
 
 function ConnectionNotice({ store }) {
   return (

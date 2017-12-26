@@ -1,32 +1,22 @@
 import React from 'react';
-import styled from 'styled-components';
 
 import ZeitIntegration from 'app/pages/common/ZeitIntegration';
 import GitHubIntegration from 'app/pages/common/GithubIntegration';
 
-import Title from '../MenuTitle';
+import { Container } from './elements';
+import { Title } from '../elements';
 
-const Container = styled.div`
-  > div {
-    margin: 0.5rem 0;
-  }
+function Integrations() {
+  return (
+    <div>
+      <Title>Integrations</Title>
 
-  &:first-child {
-    margin-top: 0;
-  }
+      <Container>
+        <ZeitIntegration />
+        <GitHubIntegration />
+      </Container>
+    </div>
+  );
+}
 
-  &:last-child {
-    margin-bottom: 0;
-  }
-`;
-
-export default () => (
-  <div>
-    <Title>Integrations</Title>
-
-    <Container>
-      <ZeitIntegration />
-      <GitHubIntegration />
-    </Container>
-  </div>
-);
+export default Integrations;

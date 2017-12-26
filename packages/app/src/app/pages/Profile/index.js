@@ -2,36 +2,22 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import { Route, Switch } from 'react-router-dom';
-import styled from 'styled-components';
 
 import MaxWidth from 'common/components/flex/MaxWidth';
-import Fullscreen from 'common/components/flex/Fullscreen';
 import Margin from 'common/components/spacing/Margin';
 import {
   profileSandboxesUrl,
   profileLikesUrl,
 } from 'common/utils/url-generator';
 
-import NotFound from 'app/pages/NotFound';
+import NotFound from 'app/pages/common/NotFound';
 
 import Header from './Header';
 import Navigation from './Navigation';
 import Showcase from './Showcase';
 import Sandboxes from './Sandboxes';
 
-const Container = styled(Fullscreen)`
-  color: white;
-
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  background-image: linear-gradient(-180deg, #282d2f 0%, #1d1f20 100%);
-`;
-
-const Content = styled(Fullscreen)`
-  border-top: 1px solid ${props => props.theme.background3};
-  flex: 0 0 70px;
-`;
+import { Container, Content } from './elements';
 
 class Profile extends React.Component {
   componentDidMount() {

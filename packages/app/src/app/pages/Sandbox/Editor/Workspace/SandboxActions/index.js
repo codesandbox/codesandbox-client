@@ -1,30 +1,12 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import styled from 'styled-components';
 
 import Modal from 'app/components/Modal';
 import Alert from 'app/components/Alert';
-import Button from 'app/components/buttons/Button';
-import WorkspaceInputContainer from '../WorkspaceInputContainer';
-import WorkspaceSubtitle from '../WorkspaceSubtitle';
+import Button from 'app/components/Button';
+import { WorkspaceInputContainer, WorkspaceSubtitle } from '../elements';
 
-const PrivacySelect = styled.select`
-  background-color: rgba(0, 0, 0, 0.3);
-  color: rgba(255, 255, 255, 0.8);
-  border-radius: 4px;
-  margin: 0.25rem;
-  margin-bottom: 1rem;
-  height: 2rem;
-  width: 100%;
-  border: none;
-  box-sizing: border-box;
-`;
-
-const PatronMessage = styled.div`
-  margin: 0.5rem 1rem;
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 0.875rem;
-`;
+import { PrivacySelect, PatronMessage } from './elements';
 
 function SandboxActions({ store, signals }) {
   const sandbox = store.editor.currentSandbox;

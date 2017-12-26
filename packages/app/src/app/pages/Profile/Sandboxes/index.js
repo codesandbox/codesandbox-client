@@ -1,27 +1,12 @@
-// @flow
 import * as React from 'react';
-import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
-import Button from 'app/components/buttons/Button';
-import SandboxList from 'app/components/sandbox/SandboxList';
+
+import Button from 'app/components/Button';
+import SandboxList from 'app/components/SandboxList';
+
+import { Navigation, Notice } from './elements';
 
 const PER_PAGE_COUNT = 15;
-
-const Navigation = styled.div`
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  padding-bottom: 2rem;
-`;
-
-const Notice = styled.div`
-  text-align: center;
-  color: rgba(255, 255, 255, 0.5);
-  padding: 2rem 0;
-  padding-bottom: 0;
-`;
 
 class Sandboxes extends React.Component {
   static defaultProps = {

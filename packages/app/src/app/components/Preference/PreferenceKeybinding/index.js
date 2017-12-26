@@ -1,19 +1,8 @@
 import React from 'react';
-
 import KeybindingInput from './KeybindingInput';
 
-type Props = {
-  value: {
-    firstStroke: Array<string>,
-    secondStroke: Array<string>,
-  },
-  setValue: Function,
-};
-
 export default class PreferenceKeybinding extends React.PureComponent {
-  props: Props;
-
-  setValue = (index: number) => (value: Array<string>) => {
+  setValue = index => value => {
     const result = [...this.props.value];
     result[index] = value;
 

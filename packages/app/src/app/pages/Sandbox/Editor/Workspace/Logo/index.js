@@ -1,7 +1,5 @@
-// @flow
 import * as React from 'react';
-import styled, { injectGlobal } from 'styled-components';
-
+import { injectGlobal } from 'styled-components';
 import GithubIcon from 'react-icons/lib/go/mark-github';
 
 import Relative from 'common/components/Relative';
@@ -9,38 +7,7 @@ import LogoIcon from 'common/components/Logo';
 import Tooltip from 'common/components/Tooltip';
 import theme from 'common/theme';
 
-const Container = styled.a`
-  display: flex;
-  position: relative;
-  align-items: center;
-  color: ${props => props.theme.white};
-  vertical-align: middle;
-  height: 3rem;
-  padding: 0 1rem;
-  box-sizing: border-box;
-  border-bottom: 1px solid ${props => props.theme.background2};
-  overflow: hidden;
-  text-decoration: none;
-`;
-
-const Title = styled.h1`
-  font-size: 1rem;
-  font-weight: 400;
-  margin: 0;
-  margin-left: 1rem;
-  color: white;
-`;
-
-const GithubContainer = styled.a`
-  position: absolute;
-  right: 1rem;
-  top: 0;
-  line-height: 3rem;
-  vertical-align: middle;
-  font-size: 1rem;
-  color: rgba(255, 255, 255, 0.8);
-  text-decoration: none;
-`;
+import { Container, Title, GithubContainer } from './elements';
 
 export default class Logo extends React.PureComponent<{}> {
   setupHeadway = el => {

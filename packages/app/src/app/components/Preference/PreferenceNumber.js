@@ -1,20 +1,7 @@
 import React from 'react';
-import styled from 'styled-components';
-
-import Input from 'app/components/Input';
-
-const StyledInput = styled(Input)`text-align: center;`;
-
-type Props = {
-  value: boolean,
-  setValue: boolean => any,
-  style: Object,
-  step: number,
-};
+import { StyledInput } from './elements';
 
 export default class PreferenceInput extends React.PureComponent {
-  props: Props;
-
   handleChange = e => {
     const value = e.target.value;
 
@@ -25,6 +12,7 @@ export default class PreferenceInput extends React.PureComponent {
 
   render() {
     const { value, style, step } = this.props;
+
     return (
       <StyledInput
         step={step}

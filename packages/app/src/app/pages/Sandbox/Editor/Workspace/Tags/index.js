@@ -1,11 +1,10 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import Margin from 'common/components/spacing/Margin';
-import Button from 'app/components/buttons/Button';
-import TagsComponent from 'app/components/sandbox/Tags';
+import Button from 'app/components/Button';
+import TagsComponent from 'app/components/Tags';
 
-import WorkspaceSubtitle from '../WorkspaceSubtitle';
-import WorkspaceInputContainer from '../WorkspaceInputContainer';
+import { WorkspaceInputContainer, WorkspaceSubtitle } from '../elements';
 
 function Tags({ store, signals }) {
   const tags = store.editor.currentSandbox.tags;

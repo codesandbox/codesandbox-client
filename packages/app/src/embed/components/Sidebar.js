@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import type { Sandbox } from 'common/types';
 import Padding from 'common/components/spacing/Padding';
-import EntryContainer from 'app/pages/Sandbox/Editor/Workspace/EntryContainer';
+import { EntryContainer } from 'app/pages/Sandbox/Editor/Workspace/elements';
 
 import EditorLink from './EditorLink';
 import Files from './Files';

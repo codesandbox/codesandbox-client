@@ -1,28 +1,19 @@
-// @flow
 import * as React from 'react';
-import styled, { ThemeProvider } from 'styled-components';
+import { ThemeProvider } from 'styled-components';
 import { Prompt } from 'react-router-dom';
 import { observe, reaction } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import getTemplateDefinition from 'common/templates';
 import SplitPane from 'react-split-pane';
 
-import CodeEditor from 'app/components/sandbox/CodeEditor';
-import FilePath from 'app/components/sandbox/CodeEditor/FilePath';
-import fadeIn from 'common/utils/animation/fade-in';
+import CodeEditor from 'app/components/CodeEditor';
+import FilePath from 'app/components/CodeEditor/FilePath';
 import Preview from './Preview';
 
 import Tabs from './Tabs';
 import Header from './Header';
 
-const FullSize = styled.div`
-  height: 100%;
-  width: 100%;
-
-  ${fadeIn(0)};
-  display: flex;
-  flex-direction: column;
-`;
+import { FullSize } from './elements';
 
 class EditorPreview extends React.Component {
   componentDidMount() {

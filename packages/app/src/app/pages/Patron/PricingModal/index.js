@@ -1,33 +1,14 @@
 import React from 'react';
-import styled from 'styled-components';
+
 import { inject } from 'mobx-react';
 
 import PricingInfo from './PricingInfo';
 import PricingChoice from './PricingChoice';
 import Badge from './Badge';
 
-const Container = styled.div`
-  margin: 8rem auto;
-  width: 940px;
-  padding: 1rem;
-  background-color: ${props => props.theme.background};
+import { Container, Details } from './elements';
 
-  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.25);
-  border-radius: 2px;
-`;
-
-const Details = styled.div`
-  display: flex;
-  flex-direction: row;
-
-  margin-top: 6rem;
-
-  > div {
-    flex: 1;
-  }
-`;
-
-export default inject('store')(({ store }) => {
+function PricingModal({ store }) {
   const badge = `patron-${store.patron.tier}`;
 
   return (
@@ -39,4 +20,6 @@ export default inject('store')(({ store }) => {
       </Details>
     </Container>
   );
-});
+}
+
+export default inject('store')(PricingModal);

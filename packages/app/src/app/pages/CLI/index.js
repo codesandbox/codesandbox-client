@@ -1,16 +1,10 @@
-// @flow
 import * as React from 'react';
-import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
 
 import Navigation from 'app/pages/common/Navigation';
-import Prompt from './Prompt';
 
-const Container = styled.div`
-  height: 100%;
-  width: 100%;
-  margin: 1rem;
-`;
+import Prompt from './Prompt';
+import { Container } from './elements';
 
 class CLI extends React.Component {
   componentDidMount() {

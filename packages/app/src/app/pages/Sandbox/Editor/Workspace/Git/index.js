@@ -1,75 +1,23 @@
-// @flow
 import React from 'react';
-import styled from 'styled-components';
 
 import Margin from 'common/components/spacing/Margin';
-import GithubBadge from 'app/components/sandbox/GithubBadge';
+import GithubBadge from 'app/components/GithubBadge';
 import { githubRepoUrl } from 'common/utils/url-generator';
-import Button from 'app/components/buttons/Button';
+import Button from 'app/components/Button';
 import Input from 'app/components/Input';
-import type { Sandbox, GitInfo, CurrentUser } from 'common/types';
 
 import TotalChanges from './TotalChanges';
-import CommitModal from './modals/Commit';
-import PRModal from './modals/PR';
-import WorkspaceSubtitle from '../WorkspaceSubtitle';
-import WorkspaceInputContainer from '../WorkspaceInputContainer';
+import CommitModal from './Commit';
+import PRModal from './PR';
+import { WorkspaceSubtitle, WorkspaceInputContainer } from '../elements';
 
-type Props = {
-  fetchGitChanges: (id: string) => Promise<any>,
-  createGitCommit: (id: string, message: string) => Promise<any>,
-  createGitPR: (id: string, message: string) => Promise<any>,
-  sandboxId: string,
-  gitChanges: $PropertyType<Sandbox, 'originalGitChanges'>,
-  originalGit: GitInfo,
-  openModal: (options: Object) => void,
-  closeModal: () => void,
-  user: CurrentUser,
-  modulesNotSaved: boolean,
-};
-
-const Container = styled.div`color: rgba(255, 255, 255, 0.8);`;
-
-const Buttons = styled.div`
-  display: flex;
-  margin: 1rem 0.125rem;
-
-  button {
-    margin: 0 0.875rem;
-  }
-`;
-
-const ErrorMessage = styled.div`
-  color: ${({ theme }) => theme.red};
-  margin: 1rem;
-  font-size: 0.875rem;
-`;
-
-const Notice = styled.div`
-  font-size: 0.75rem;
-  color: white;
-  padding: 0.125rem 0.2rem;
-  background-image: linear-gradient(
-    45deg,
-    ${({ theme }) => theme.secondary.darken(0.2)} 0%,
-    ${({ theme }) => theme.secondary.darken(0.1)} 100%
-  );
-  border-radius: 4px;
-  float: right;
-  margin-right: 2rem;
-`;
+import { Container, Buttons, ErrorMessage, Notice } from './elements';
 
 function hasWriteAccess(rights: 'none' | 'read' | 'write' | 'admin') {
   return rights === 'write' || rights === 'admin';
 }
 
-type State = {
-  showFetchButton: boolean,
-  fetching: boolean,
-  message: string,
-};
-
-export default class Git extends React.PureComponent<Props, State> {
+export default class Git extends React.PureComponent {
   state = {
     showFetchButton: false,
     fetching: false,
@@ -93,7 +41,7 @@ export default class Git extends React.PureComponent<Props, State> {
     this.fetchGitChanges();
   }
 
-  componentWillReceiveProps(nextProps: Props) {
+  componentWillReceiveProps(nextProps) {
     if (!nextProps.gitChanges && this.props.gitChanges) {
       this.setState({ showFetchButton: true });
     } else if (nextProps.gitChanges) {
@@ -152,7 +100,7 @@ export default class Git extends React.PureComponent<Props, State> {
     });
   };
 
-  changeMessage = (e: KeyboardEvent & { target: { value: string } }) => {
+  changeMessage = e => {
     this.setState({ message: e.target.value });
   };
 

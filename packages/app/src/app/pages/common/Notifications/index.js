@@ -1,32 +1,14 @@
-// @flow
 import * as React from 'react';
-import styled, { injectGlobal } from 'styled-components';
+
 import { inject, observer } from 'mobx-react';
 import { clone } from 'mobx-state-tree';
 import { spring, Motion } from 'react-motion';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import Portal from 'app/components/Portal';
 
-import NotificationComponent from './Notification';
+import Notification from './Notification';
 
-// eslint-disable-next-line
-injectGlobal`
-  .notifications-leave {
-    opacity: 1;
-  }
-
-  .notifications-leave.notifications-leave-active  {
-    transition: all 300ms ease;
-    opacity: 0.01;
-  }
-`;
-
-const NotificationContainer = styled.div`
-  position: fixed;
-  right: 24px;
-  bottom: 0;
-  z-index: 41;
-`;
+import { NotificationContainer } from './elements';
 
 class Notifications extends React.Component {
   constructor() {
@@ -101,7 +83,7 @@ class Notifications extends React.Component {
                       key={notification.id}
                       style={{ bottom: y }}
                     >
-                      <NotificationComponent
+                      <Notification
                         title={notification.title}
                         type={notification.type}
                         buttons={notification.buttons}

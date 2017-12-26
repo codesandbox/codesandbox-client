@@ -1,48 +1,16 @@
-// @flow
 import * as React from 'react';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import styled from 'styled-components';
-
-import type { CurrentUser } from 'common/types';
-import { currentUserSelector } from 'app/store/user/selectors';
-import currentUserActionCreators from 'app/store/user/actions';
-import modalActionCreators from 'app/store/modal/actions';
-import usersActionCreators from 'app/store/entities/users/actions';
-
+import { inject, observer } from 'mobx-react';
 import Sandbox from './Sandbox';
 
-const Padding = styled.div`
-  padding: 1rem;
-  text-align: center;
-`;
+import { Padding } from './elements';
 
-type Props = {
-  usersActions: typeof usersActionCreators,
-  currentUserActions: typeof currentUserActionCreators,
-  modalActions: typeof modalActionCreators,
-  user: CurrentUser,
-  showcaseSandboxId: string,
-};
-
-const mapStateToProps = state => ({
-  user: currentUserSelector(state),
-});
-const mapDispatchToProps = dispatch => ({
-  usersActions: bindActionCreators(usersActionCreators, dispatch),
-  currentUserActions: bindActionCreators(currentUserActionCreators, dispatch),
-  modalActions: bindActionCreators(modalActionCreators, dispatch),
-});
-class SelectSandbox extends React.PureComponent<Props> {
+class SelectSandbox extends React.Component {
   componentDidMount() {
-    this.props.currentUserActions.loadUserSandboxes();
+    // this.props.currentUserActions.loadUserSandboxes();
   }
 
-  setShowcasedSandbox = (id: string) => {
-    const { usersActions, modalActions, user } = this.props;
-
-    usersActions.setShowcasedSandboxId(user.username, id);
-    modalActions.closeModal();
+  setShowcasedSandbox = id => {
+    // usersActions.setShowcasedSandboxId(user.username, id);
   };
 
   render() {
@@ -67,4 +35,4 @@ class SelectSandbox extends React.PureComponent<Props> {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SelectSandbox);
+export default inject('signals', 'store')(observer(SelectSandbox));

@@ -1,17 +1,14 @@
-// @flow
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
-import styled, { ThemeProvider } from 'styled-components';
+import { ThemeProvider } from 'styled-components';
 
 import getTemplateDefinition from 'common/templates';
-import fadeIn from 'common/utils/animation/fade-in';
 import { tosUrl, privacyUrl } from 'common/utils/url-generator';
 
-import Button from 'app/components/buttons/Button';
+import Button from 'app/components/Button';
 import Margin from 'common/components/spacing/Margin';
 
-import WorkspaceInputContainer from './WorkspaceInputContainer';
 import Files from './Files';
 import Dependencies from './Dependencies';
 import Project from './Project';
@@ -24,28 +21,7 @@ import Advertisement from './Advertisement';
 import Git from './Git';
 import CreateRepo from './Git/CreateRepo';
 
-const Container = styled.div`
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  background-color: ${props => props.theme.background};
-  height: 100%;
-  width: 100%;
-  overflow-y: overlay;
-  overflow-x: auto;
-
-  > div {
-    ${fadeIn(0)};
-  }
-`;
-
-const TermsContainer = styled.div`
-  border-top: 1px solid rgba(0, 0, 0, 0.3);
-  padding: 1rem;
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 0.75rem;
-`;
+import { Container, TermsContainer, WorkspaceInputContainer } from './elements';
 
 function Workspace({ signals, store }) {
   const sandbox = store.editor.currentSandbox;

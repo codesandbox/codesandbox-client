@@ -1,11 +1,15 @@
 import React from 'react';
 
 import BadgesContent from './BadgesContent';
-import Title from '../MenuTitle';
+import { Title } from '../elements';
 
-export default () => (
-  <div>
-    <Title>Badges</Title>
-    <BadgesContent />
-  </div>
-);
+function Badges() {
+  return (
+    <div>
+      <Title>Badges</Title>
+      <BadgesContent />
+    </div>
+  );
+}
+
+export default Badges;

@@ -1,5 +1,4 @@
 import React from 'react';
-import styled from 'styled-components';
 import { inject } from 'mobx-react';
 import { DropTarget } from 'react-dnd';
 import Modal from 'app/components/Modal';
@@ -8,44 +7,8 @@ import Alert from 'app/components/Alert';
 import validateTitle from './validateTitle';
 import Entry from './Entry';
 import DirectoryChildren from './DirectoryChildren';
-
-function getModuleParents(modules, directories, id) {
-  const module = modules.find(moduleEntry => moduleEntry.id === id);
-
-  if (!module) return [];
-
-  let directory = directories.find(
-    directoryEntry => directoryEntry.shortid === module.directoryShortid
-  );
-  let directoryIds = [];
-  while (directory != null) {
-    directoryIds = [...directoryIds, directory.id];
-    directory = directories.find(
-      directoryEntry => directoryEntry.shortid === directory.directoryShortid // eslint-disable-line
-    );
-  }
-
-  return directoryIds;
-}
-
-const EntryContainer = styled.div`
-  position: relative;
-`;
-
-const Overlay = styled.div`
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: rgba(0, 0, 0, 0.3);
-  display: ${props => (props.isOver ? 'block' : 'none')};
-`;
-
-const Opener = styled.div`
-  height: ${props => (props.open ? '100%' : '0px')};
-  overflow: hidden;
-`;
+import getModuleParents from './getModuleParents';
+import { EntryContainer, Overlay, Opener } from './elements';
 
 class DirectoryEntry extends React.Component {
   constructor(props) {
@@ -135,7 +98,7 @@ class DirectoryEntry extends React.Component {
     return true;
   };
 
-  createDirectory = (_: string, title: string) => {
+  createDirectory = (_, title) => {
     const { shortid } = this.props;
     this.props.signals.editor.workspace.directoryCreated({
       title,
@@ -186,7 +149,7 @@ class DirectoryEntry extends React.Component {
     ];
   };
 
-  setCurrentModule = (moduleId: string) => {
+  setCurrentModule = moduleId => {
     this.props.signals.editor.moduleSelected({ id: moduleId });
   };
 

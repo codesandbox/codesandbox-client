@@ -1,29 +1,15 @@
 import * as React from 'react';
-import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
 
 import Margin from 'common/components/spacing/Margin';
-import WorkspaceSubtitle from '../WorkspaceSubtitle';
+import { WorkspaceSubtitle } from '../elements';
 
 import AddVersion from './AddVersion';
 import VersionEntry from './VersionEntry';
 import AddResource from './AddResource';
 import ExternalResource from './ExternalResource';
 
-const Overlay = styled.div`
-  position: absolute;
-  display: flex;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  color: white;
-  background-color: rgba(0, 0, 0, 0.2);
-  align-items: center;
-  text-align: center;
-  z-index: 20;
-  user-select: none;
-`;
+import { Overlay } from './elements';
 
 function Dependencies({ signals, store }) {
   const sandbox = store.editor.currentSandbox;

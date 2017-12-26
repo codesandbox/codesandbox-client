@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import styled from 'styled-components';
-import Entry from 'app/pages/Sandbox/Editor/Workspace/EntryContainer';
+import { EntryContainer as Entry } from 'app/pages/Sandbox/Editor/Workspace/elements';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
 import EntryTitle from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryTitle';
 

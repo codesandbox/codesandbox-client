@@ -1,10 +1,10 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import GithubLogo from 'react-icons/lib/go/mark-github';
-import Integration from 'app/components/user/Integration';
+import Integration from 'app/components/Integration';
 
-export default inject('store', 'signals')(
-  observer(({ store, signals }) => (
+function GithubIntegration({ store, signals }) {
+  return (
     <Integration
       name="GitHub"
       color="#4078c0"
@@ -15,5 +15,7 @@ export default inject('store', 'signals')(
       signIn={() => signals.signInGithubClicked({ useExtraScopes: true })}
       loading={store.isLoadingGithub}
     />
-  ))
-);
+  );
+}
+
+export default inject('store', 'signals')(observer(GithubIntegration));

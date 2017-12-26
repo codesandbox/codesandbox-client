@@ -2,10 +2,10 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 
 import ZeitLogo from 'app/components/ZeitLogo';
-import Integration from 'app/components/user/Integration';
+import Integration from 'app/components/Integration';
 
-export default inject('store', 'signals')(
-  observer(({ store, signals }) => (
+function ZeitIntegration({ store, signals }) {
+  return (
     <Integration
       name="ZEIT"
       color="black"
@@ -16,5 +16,7 @@ export default inject('store', 'signals')(
       signIn={signals.signOutZeitClicked}
       loading={store.isLoadingZeit}
     />
-  ))
-);
+  );
+}
+
+export default inject('store', 'signals')(observer(ZeitIntegration));

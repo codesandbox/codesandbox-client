@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import MenuIconSVG from 'react-icons/lib/md/menu';
 
 import type { Sandbox } from 'common/types';
-import ModeIcons from 'app/components/sandbox/ModeIcons';
+import ModeIcons from 'app/components/ModeIcons';
 import EditorLink from './EditorLink';
 
 const Container = styled.div`
@@ -37,7 +37,11 @@ const RightAligned = styled.div`
   justify-content: center;
 `;
 
-const Title = styled.div`@media (max-width: 450px) {display: none;}`;
+const Title = styled.div`
+  @media (max-width: 450px) {
+    display: none;
+  }
+`;
 
 type Props = {
   sandbox: Sandbox,

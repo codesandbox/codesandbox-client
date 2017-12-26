@@ -1,16 +1,7 @@
 import React from 'react';
-
 import Input from 'app/components/Input';
 
-type Props = {
-  value: boolean,
-  setValue: boolean => any,
-  placeholder: string,
-};
-
 export default class PreferenceText extends React.PureComponent {
-  props: Props;
-
   handleChange = e => {
     const value = e.target.value;
 
@@ -19,6 +10,7 @@ export default class PreferenceText extends React.PureComponent {
 
   render() {
     const { value, placeholder } = this.props;
+
     return (
       <Input
         style={{ width: '9rem' }}

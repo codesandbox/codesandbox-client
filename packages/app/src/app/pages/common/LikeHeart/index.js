@@ -1,25 +1,11 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import styled, { css } from 'styled-components';
+
 import HeartIcon from 'react-icons/lib/fa/heart-o';
 import FullHeartIcon from 'react-icons/lib/fa/heart';
 import Tooltip from 'common/components/Tooltip';
 
-const Container = styled.div`
-  display: inline-block;
-  transition: 0.3s ease all;
-
-  transform: scale(1);
-
-  ${props =>
-    props.loggedIn &&
-    css`
-      cursor: pointer;
-      &:hover {
-        transform: scale(1.1);
-      }
-    `};
-`;
+import { Container } from './elements';
 
 const MaybeTooltip = ({ loggedIn, ...props }) =>
   loggedIn ? <Tooltip {...props} /> : <div {...props} />;
