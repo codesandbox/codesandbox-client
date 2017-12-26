@@ -35,12 +35,23 @@ export function getCurrentManager(): ?Manager {
   return manager;
 }
 
-async function updateManager(sandboxId, template, managerModules) {
+let firstLoad = true;
+
+async function updateManager(sandboxId, template, managerModules, manifest) {
   if (!manager || manager.id !== sandboxId) {
-    manager = new Manager(sandboxId, managerModules, getPreset(template));
-  } else {
-    await manager.updateData(managerModules);
+    manager = new Manager(sandboxId, getPreset(template));
+    if (firstLoad) {
+      // We save the state of transpiled modules, and load it here again. Gives
+      // faster initial loads.
+      await manager.load();
+    }
   }
+
+  if (manifest) {
+    manager.setManifest(manifest);
+  }
+
+  await manager.updateData(managerModules);
 
   return manager;
 }
@@ -58,8 +69,6 @@ function initializeResizeListener() {
   initializedResizeListener = true;
 }
 inject();
-
-let firstLoad = true;
 
 async function compile({
   sandboxId,
@@ -83,27 +92,19 @@ async function compile({
   handleExternalResources(externalResources);
 
   try {
-    const { manifest, isNewCombination } = await loadDependencies(
-      dependencies,
-      manager
-    );
+    const { manifest, isNewCombination } = await loadDependencies(dependencies);
 
     if (isNewCombination && !firstLoad) {
       // Just reset the whole manager if it's a new combination
       manager = null;
     }
 
-    await updateManager(sandboxId, template, modules);
-
-    if (firstLoad && manager) {
-      // We save the state of transpiled modules, and load it here again. Gives
-      // faster initial loads.
-      await manager.load();
-    }
-
-    if (isNewCombination) {
-      manager.setManifest(manifest);
-    }
+    await updateManager(
+      sandboxId,
+      template,
+      modules,
+      isNewCombination && manifest
+    );
 
     const managerModuleToTranspile = modules.find(m => m.path === entry);
 
@@ -113,31 +114,32 @@ async function compile({
 
     resetScreen();
 
-    try {
-      const children = document.body.children;
-      // Do unmounting for react
-      if (manifest.dependencies.find(n => n.name === 'react-dom')) {
-        const reactDOMModule = manager.resolveModule('react-dom', '');
-        const reactDOM = manager.evaluateModule(reactDOMModule);
+    if (!manager.webpackHMR) {
+      try {
+        const children = document.body.children;
+        // Do unmounting for react
+        if (manifest.dependencies.find(n => n.name === 'react-dom')) {
+          const reactDOMModule = manager.resolveModule('react-dom', '');
+          const reactDOM = manager.evaluateModule(reactDOMModule);
 
-        reactDOM.unmountComponentAtNode(document.body);
+          reactDOM.unmountComponentAtNode(document.body);
 
-        for (let i = 0; i < children.length; i += 1) {
-          if (children[i].tagName === 'DIV') {
-            reactDOM.unmountComponentAtNode(children[i]);
+          for (let i = 0; i < children.length; i += 1) {
+            if (children[i].tagName === 'DIV') {
+              reactDOM.unmountComponentAtNode(children[i]);
+            }
           }
         }
+      } catch (e) {
+        /* don't do anything with this error */
       }
-    } catch (e) {
-      /* don't do anything with this error */
+
+      const htmlModule = modules.find(
+        m => m.path === '/public/index.html' || m.path === '/index.html'
+      );
+      const html = htmlModule ? htmlModule.code : '<div id="root"></div>';
+      document.body.innerHTML = html;
     }
-
-    const htmlModule = modules.find(
-      m => m.path === '/public/index.html' || m.path === '/index.html'
-    );
-    const html = htmlModule ? htmlModule.code : '<div id="root"></div>';
-
-    document.body.innerHTML = html;
 
     const tt = Date.now();
     const oldHTML = document.body.innerHTML;
@@ -186,6 +188,10 @@ async function compile({
   } catch (e) {
     console.log('Error in sandbox:');
     console.error(e);
+
+    if (manager) {
+      manager.clearCache();
+    }
 
     e.module = e.module;
     e.fileName = e.fileName || entry;

@@ -61,12 +61,12 @@ export default class Manager {
   manifest: Manifest;
   dependencies: Object;
 
-  constructor(id: string, modules: Array<Module>, preset: Preset) {
+  constructor(id: string, preset: Preset) {
     this.id = id;
     this.preset = preset;
     this.transpiledModules = {};
     this.cachedPaths = {};
-    modules.forEach(m => this.addModule(m));
+    // modules.forEach(m => this.addModule(m));
 
     if (process.env.NODE_ENV === 'development') {
       console.log(this);
@@ -195,7 +195,7 @@ export default class Manager {
   }
 
   removeModule(module: Module) {
-    // Reset all cached paths
+    // Reset all cached paths because file structure changed
     this.cachedPaths = {};
 
     const existingModule = this.transpiledModules[module.path];
@@ -430,10 +430,12 @@ export default class Manager {
       const mirrorModule = this.transpiledModules[module.path];
 
       if (!mirrorModule) {
+        // File structure changed, reset cached paths
         this.cachedPaths = {};
         addedModules.push(module);
         this.addTranspiledModule(module);
       } else if (mirrorModule.module.code !== module.code) {
+        // File structure changed, reset cached paths
         this.cachedPaths = {};
         updatedModules.push(module);
       }
@@ -450,6 +452,10 @@ export default class Manager {
     });
 
     const modulesToUpdate = uniq([...addedModules, ...updatedModules]);
+
+    // We eagerly transpile changed files,
+    // this way we don't have to traverse the whole
+    // dependency graph each time a file changes
 
     const tModulesToUpdate = modulesToUpdate.map(m =>
       this.getTranspiledModulesByModule(m).map(tModule => {
@@ -504,7 +510,13 @@ export default class Manager {
     try {
       const data = await localforage.getItem(this.id);
       if (data) {
-        const { transpiledModules: serializedTModules, cachedPaths } = data;
+        const {
+          transpiledModules: serializedTModules,
+          cachedPaths,
+        }: {
+          transpiledModules: { [id: string]: SerializedTranspiledModule },
+          cachedPaths: { [path: string]: string },
+        } = data;
         this.cachedPaths = cachedPaths || {};
 
         const tModules: { [id: string]: TranspiledModule } = {};
@@ -530,6 +542,7 @@ export default class Manager {
         console.error(e);
       }
     }
+    this.clearCache();
   }
 
   clearCache() {
@@ -537,7 +550,7 @@ export default class Manager {
       localforage.clear();
     } catch (ex) {
       if (process.env.NODE_ENV === 'development') {
-        console.error(e);
+        console.error(ex);
       }
     }
   }

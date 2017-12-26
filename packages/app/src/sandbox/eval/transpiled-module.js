@@ -151,24 +151,28 @@ export default class TranspiledModule {
     });
     this.childModules = [];
     this.emittedAssets = [];
-    this.setIsEntry(false);
     this.resetCompilation();
     this.resetTranspilation();
+    this.setIsEntry(false);
   }
 
   resetTranspilation() {
-    Array.from(this.transpilationInitiators)
-      .filter(t => t.source)
-      .forEach(dep => {
-        dep.resetTranspilation();
-      });
+    if (!this.hmrEnabled) {
+      Array.from(this.transpilationInitiators)
+        .filter(t => t.source)
+        .forEach(dep => {
+          dep.resetTranspilation();
+        });
+    }
     this.source = null;
     this.errors = [];
     this.warnings = [];
 
-    Array.from(this.dependencies).forEach(t => {
-      t.initiators.delete(this);
-    });
+    if (!this.hmrEnabled) {
+      Array.from(this.dependencies).forEach(t => {
+        t.initiators.delete(this);
+      });
+    }
     this.dependencies.clear();
     this.asyncDependencies = [];
   }
@@ -177,21 +181,25 @@ export default class TranspiledModule {
     if (this.compilation) {
       try {
         this.compilation = null;
-        Array.from(this.initiators)
-          .filter(t => t.compilation)
-          .forEach(dep => {
-            dep.resetCompilation();
-          });
+        if (!this.hmrEnabled) {
+          Array.from(this.initiators)
+            .filter(t => t.compilation)
+            .forEach(dep => {
+              dep.resetCompilation();
+            });
+        }
       } catch (e) {
         console.error(e);
       }
     }
 
-    Array.from(this.transpilationInitiators)
-      .filter(t => t.compilation)
-      .forEach(dep => {
-        dep.resetCompilation();
-      });
+    if (!this.hmrEnabled) {
+      Array.from(this.transpilationInitiators)
+        .filter(t => t.compilation)
+        .forEach(dep => {
+          dep.resetCompilation();
+        });
+    }
   }
 
   update(module: Module): TranspiledModule {
@@ -289,6 +297,9 @@ export default class TranspiledModule {
           } else {
             // Don't throw the error, we want to throw this error during evaluation
             // so we get the correct line as error
+            if (process.env.NODE_ENV === 'development') {
+              console.error(e);
+            }
           }
         }
       },
@@ -339,8 +350,6 @@ export default class TranspiledModule {
       return this;
     }
 
-    const transpilers = manager.preset.getLoaders(this.module, this.query);
-
     // Remove this module from the initiators of old deps, so we can populate a
     // fresh cache
     this.dependencies.forEach(tModule => {
@@ -361,6 +370,8 @@ export default class TranspiledModule {
 
       code = this.module.code;
     } else {
+      const transpilers = manager.preset.getLoaders(this.module, this.query);
+
       const t = Date.now();
       for (let i = 0; i < transpilers.length; i += 1) {
         const transpilerConfig = transpilers[i];
@@ -426,6 +437,12 @@ export default class TranspiledModule {
 
     this.asyncDependencies = [];
 
+    // if (this.isEntry && manager.webpackHMR) {
+    //   await manager.save();
+    //   location.reload();
+    //   return;
+    // }
+
     return Promise.all(
       flattenDeep([
         ...Array.from(this.transpilationInitiators).map(t =>
@@ -455,8 +472,18 @@ export default class TranspiledModule {
 
     const localModule = this.module;
 
+    if (this.compilation && manager.webpackHMR) {
+      return this.compilation.exports;
+    }
+
     this.compilation = {
       exports: {},
+      hot: {
+        accept: () => {
+          this.hmrEnabled = true;
+          manager.webpackHMR = true;
+        },
+      },
     };
     const transpiledModule = this;
 
