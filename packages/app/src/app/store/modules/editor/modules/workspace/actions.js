@@ -34,9 +34,9 @@ export function moveDirectoryToDirectory({ state, props }) {
   );
 
   state.set(
-    `editor.sandboxes.${
-      sandbox.id
-    }.directories.${directoryIndex}.directoryShortid`,
+    `editor.sandboxes.${sandbox.id}.directories.${
+      directoryIndex
+    }.directoryShortid`,
     props.directoryShortid
   );
 }

@@ -1,7 +1,7 @@
 import { sequence } from 'cerebral';
 import { set, when, equals, toggle, increment } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
-import { getZeitUserDetails } from 'app/newStore/sequences';
+import { getZeitUserDetails } from 'app/store/sequences';
 import * as actions from './actions';
 
 import { addNotification, updateSandboxUrl } from '../../factories';

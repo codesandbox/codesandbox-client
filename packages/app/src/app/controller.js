@@ -1,17 +1,17 @@
 import { Controller } from '@cerebral/mobx-state-tree';
-import newStore from './newStore';
+import store from './store';
 
 let Devtools = null;
 
 if (process.env.NODE_ENV !== 'production' || process.env.STAGING) {
-  Devtools = require('cerebral/devtools').default;
+  Devtools = require('cerebral/devtools').default; // eslint-disable-line
 }
 
-export default Controller(newStore, {
+export default Controller(store, {
   devtools:
     Devtools &&
     Devtools({
       host: 'localhost:8383',
-      reconnect: false
+      reconnect: false,
     }),
 });

@@ -1,6 +1,6 @@
 import { set, when, toggle, equals } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
-import { getZeitUserDetails } from 'app/newStore/sequences';
+import { getZeitUserDetails } from 'app/store/sequences';
 import * as actions from './actions';
 
 export const openModal = set(state`editor.preferences.showModal`, true);
