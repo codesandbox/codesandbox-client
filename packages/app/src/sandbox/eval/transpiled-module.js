@@ -181,13 +181,16 @@ export default class TranspiledModule {
   resetCompilation() {
     if (this.compilation) {
       try {
-        this.compilation = null;
         if (!this.hmrEnabled) {
+          this.compilation = null;
           Array.from(this.initiators)
             .filter(t => t.compilation)
             .forEach(dep => {
               dep.resetCompilation();
             });
+        } else {
+          console.log('changed', this.module);
+          this.changed = true;
         }
       } catch (e) {
         console.error(e);
@@ -447,9 +450,7 @@ export default class TranspiledModule {
       ])
     );
 
-    if (typeof this.hmrEnabled === 'function') {
-      this.hmrEnabled();
-    }
+    return this;
   }
 
   getChildTranspiledModules(): Array<TranspiledModule> {
@@ -472,15 +473,20 @@ export default class TranspiledModule {
     const localModule = this.module;
 
     if (manager.webpackHMR) {
-      if (this.compilation) {
-        return this.compilation.exports;
-      } else if (this.isEntry && !this.hmrEnabled) {
+      if (!this.compilation && this.isEntry && !this.hmrEnabled) {
         location.reload();
         return {};
       }
     }
 
-    this.compilation = {
+    if (this.compilation && !this.changed) {
+      return this.compilation.exports;
+    }
+
+    if (this.changed && this.hmrEnabled) {
+      console.log('hoooi');
+    }
+    this.compilation = this.compilation || {
       exports: {},
       hot: {
         accept: (path: string, cb) => {
@@ -526,16 +532,10 @@ export default class TranspiledModule {
           throw new Error(`${localModule.path} is importing itself`);
         }
 
-        // Check if this module has been evaluated before, if so return the exports
-        // of that compilation
-        const cache = requiredTranspiledModule.compilation;
-
-        return cache
-          ? cache.exports
-          : manager.evaluateTranspiledModule(requiredTranspiledModule, [
-              ...parentModules,
-              transpiledModule,
-            ]);
+        return manager.evaluateTranspiledModule(requiredTranspiledModule, [
+          ...parentModules,
+          transpiledModule,
+        ]);
       }
 
       const exports = evaluate(
@@ -544,6 +544,10 @@ export default class TranspiledModule {
         this.compilation,
         manager.envVariables
       );
+
+      if (typeof this.hmrEnabled === 'function') {
+        this.hmrEnabled();
+      }
 
       return exports;
     } catch (e) {

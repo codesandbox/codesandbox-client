@@ -1,5 +1,5 @@
 // @flow
-import { flattenDeep, uniq, values, mapValues } from 'lodash';
+import { flattenDeep, uniq, values } from 'lodash';
 import resolve from 'browser-resolve';
 import localforage from 'localforage';
 
@@ -151,9 +151,8 @@ export default class Manager {
   /**
    * Get Transpiled Module from the registry, if there is no transpiled module
    * in the registry it will create a new one
-   * @param {*} module
-   * @param {*} query A webpack like syntax (!url-loader)
-   * @param {*} string
+   * @param {Module} module
+   * @param {string} query A webpack like syntax (!url-loader)
    */
   getTranspiledModule(module: Module, query: string = ''): TranspiledModule {
     const moduleObject = this.transpiledModules[module.path];
@@ -476,6 +475,12 @@ export default class Manager {
 
     return Promise.all(
       transpiledModulesToUpdate.map(tModule => tModule.transpile(this))
+    ).then(ms =>
+      ms.filter(m => m.hmrEnabled).forEach(m => {
+        // We evaluate all modules that have webpack like HMR enabled (even if
+        // not in the dependency graph), because this is exactly what Webpack does as well.
+        m.evaluate(this, []);
+      })
     );
   }
 

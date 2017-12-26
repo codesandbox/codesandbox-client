@@ -2,13 +2,7 @@
 import type { Module, Directory } from 'common/types';
 
 // Fields to compare
-const MODULE_FIELDS = [
-  'directoryShortid',
-  'code',
-  'title',
-  'isNotSynced',
-  'isBinary',
-];
+const MODULE_FIELDS = ['directoryShortid', 'code', 'title', 'isBinary'];
 
 const DIRECTORY_FIELDS = ['title', 'directoryShortid', 'shortid'];
 
