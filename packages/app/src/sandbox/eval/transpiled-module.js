@@ -151,29 +151,33 @@ export default class TranspiledModule {
     });
     this.childModules = [];
     this.emittedAssets = [];
-    this.resetCompilation();
+    if (!this.hmrEnabled) {
+      this.resetCompilation();
+    } else {
+      this.changed = true;
+    }
     this.resetTranspilation();
     this.setIsEntry(false);
     // this.hmrEnabled = false;
   }
 
   resetTranspilation() {
+    this.source = null;
+    this.errors = [];
+    this.warnings = [];
+
+    // If this module is marked as HMR we won't traverse up the graph for transpilation
     if (!this.hmrEnabled) {
       Array.from(this.transpilationInitiators)
         .filter(t => t.source)
         .forEach(dep => {
           dep.resetTranspilation();
         });
-    }
-    this.source = null;
-    this.errors = [];
-    this.warnings = [];
-
-    if (!this.hmrEnabled) {
       Array.from(this.dependencies).forEach(t => {
         t.initiators.delete(this);
       });
     }
+
     this.dependencies.clear();
     this.asyncDependencies = [];
   }
@@ -181,29 +185,22 @@ export default class TranspiledModule {
   resetCompilation() {
     if (this.compilation) {
       try {
-        if (!this.hmrEnabled) {
-          this.compilation = null;
-          Array.from(this.initiators)
-            .filter(t => t.compilation)
-            .forEach(dep => {
-              dep.resetCompilation();
-            });
-        } else {
-          console.log('changed', this.module);
-          this.changed = true;
-        }
+        this.compilation = null;
+        Array.from(this.initiators)
+          .filter(t => t.compilation)
+          .forEach(dep => {
+            dep.resetCompilation();
+          });
       } catch (e) {
         console.error(e);
       }
     }
 
-    if (!this.hmrEnabled) {
-      Array.from(this.transpilationInitiators)
-        .filter(t => t.compilation)
-        .forEach(dep => {
-          dep.resetCompilation();
-        });
-    }
+    Array.from(this.transpilationInitiators)
+      .filter(t => t.compilation)
+      .forEach(dep => {
+        dep.resetCompilation();
+      });
   }
 
   update(module: Module): TranspiledModule {
