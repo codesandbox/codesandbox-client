@@ -483,9 +483,6 @@ export default class TranspiledModule {
       return this.compilation.exports;
     }
 
-    if (this.changed && this.hmrEnabled) {
-      console.log('hoooi');
-    }
     this.compilation = this.compilation || {
       exports: {},
       hot: {
@@ -496,7 +493,6 @@ export default class TranspiledModule {
               this.module.path
             );
             tModule.hmrEnabled = cb;
-            console.log(tModule);
           } else {
             this.hmrEnabled = true;
           }
