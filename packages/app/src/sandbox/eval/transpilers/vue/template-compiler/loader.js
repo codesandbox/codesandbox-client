@@ -1,14 +1,19 @@
 import transpile from 'vue-template-es2015-compiler';
 import * as compiler from 'vue-template-compiler';
+import vueHotReloadAPIRaw from '!raw-loader!vue-hot-reload-api';
 
 import { type LoaderContext } from '../../../transpiled-module';
 
 import transformRequire from './modules/transform-require';
 import transformSrcset from './modules/transform-srcset';
 
+const hotReloadAPIPath = '!noop-loader!/node_modules/vue-hot-reload-api.js';
 export default function(html: string, loaderContext: LoaderContext) {
+  loaderContext.emitModule(hotReloadAPIPath, vueHotReloadAPIRaw, '/', false);
+
   const options = loaderContext.options;
   const vueOptions = options.vueOptions || {};
+  const needsHotReload = true;
 
   const defaultModules = [
     transformRequire(options.transformRequire, loaderContext),
@@ -79,6 +84,25 @@ export default function(html: string, loaderContext: LoaderContext) {
 
     const exports = `{ render: render, staticRenderFns: staticRenderFns }`;
     code += `module.exports = ${exports}`;
+  }
+
+  // hot-reload
+  if (needsHotReload) {
+    const exportsName = vueOptions.esModule ? 'esExports' : 'module.exports';
+    code +=
+      '\nif (module.hot) {\n' +
+      '  module.hot.accept()\n' +
+      '  if (module.hot.data) {\n' +
+      '    require("' +
+      hotReloadAPIPath +
+      '")' +
+      '      .rerender("' +
+      options.id +
+      '", ' +
+      exportsName +
+      ')\n' +
+      '  }\n' +
+      '}';
   }
 
   return code;

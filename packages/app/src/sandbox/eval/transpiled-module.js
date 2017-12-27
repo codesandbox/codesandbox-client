@@ -50,9 +50,9 @@ export type SerializedTranspiledModule = {
    * All extra modules emitted by the loader
    */
   emittedAssets: Array<ModuleSource>,
-  initiators: Array<string>, // eslint-disable-line no-use-before-define
-  dependencies: Array<string>, // eslint-disable-line no-use-before-define
-  asyncDependencies: Array<Promise<string>>, // eslint-disable-line no-use-before-define
+  initiators: Array<string>,
+  dependencies: Array<string>,
+  asyncDependencies: Array<string>,
   transpilationDependencies: Array<string>,
   transpilationInitiators: Array<string>,
 };
@@ -63,7 +63,8 @@ export type LoaderContext = {
   emitModule: (
     title: string,
     code: string,
-    currentPath: string
+    currentPath: string,
+    overwrite: boolean
   ) => TranspiledModule, // eslint-disable-line no-use-before-define
   emitFile: (name: string, content: string, sourceMap: SourceMap) => void,
   options: {
@@ -88,6 +89,9 @@ export type LoaderContext = {
     }
   ) => Array<TranspiledModule>, // eslint-disable-line no-use-before-define
   _module: TranspiledModule, // eslint-disable-line no-use-before-define
+
+  // Remaining loaders after current loader
+  remainingRequest: string,
 };
 
 type Compilation = {
@@ -153,17 +157,17 @@ export default class TranspiledModule {
   }
 
   reset() {
-    this.childModules.forEach(m => {
-      m.reset();
-    });
-    this.childModules = [];
-    this.emittedAssets = [];
     // We don't reset the compilation if itself and its parents if HMR is
     // accepted for this module. We only mark it as changed so we can properly
     // handle the update in the evaluation.
     if (this.hmrConfig && this.hmrConfig.isHot()) {
       this.hmrConfig.setDirty(true);
     } else {
+      this.childModules.forEach(m => {
+        m.reset();
+      });
+      this.childModules = [];
+      this.emittedAssets = [];
       this.resetCompilation();
     }
     this.resetTranspilation();
@@ -237,7 +241,8 @@ export default class TranspiledModule {
       emitModule: (
         path: string,
         code: string,
-        directoryPath: string = pathUtils.dirname(this.module.path)
+        directoryPath: string = pathUtils.dirname(this.module.path),
+        overwrite?: boolean = true
       ) => {
         const queryPath = path.split('!');
         // pop() mutates queryPath, queryPath is now just the loaders
@@ -247,15 +252,26 @@ export default class TranspiledModule {
         const moduleCopy: ChildModule = {
           ...this.module,
           path: pathUtils.join(directoryPath, modulePath),
-          parent: this.module,
+          // parent: this.module,
           code,
         };
 
-        const transpiledModule = manager.addTranspiledModule(
-          moduleCopy,
-          queryPath.join('!')
-        );
-        this.childModules.push(transpiledModule);
+        let transpiledModule;
+        if (!overwrite) {
+          try {
+            transpiledModule = manager.resolveTranspiledModule(
+              moduleCopy.path,
+              queryPath.join('!')
+            );
+          } catch (e) {
+            /* Nothing is here, just continue */
+          }
+        }
+
+        transpiledModule =
+          transpiledModule ||
+          manager.addTranspiledModule(moduleCopy, queryPath.join('!'));
+        // this.childModules.push(transpiledModule);
 
         this.dependencies.add(transpiledModule);
         transpiledModule.initiators.add(this);
@@ -326,7 +342,7 @@ export default class TranspiledModule {
       },
       getModules: (): Array<Module> => manager.getModules(),
       options: {
-        context: '/',
+        context: pathUtils.dirname(this.module.path),
         ...transpilerOptions,
       },
       webpack: true,
@@ -387,6 +403,12 @@ export default class TranspiledModule {
           manager,
           transpilerConfig.options || {}
         );
+        loaderContext.remainingRequest = transpilers
+          .slice(i + 1)
+          .map(transpiler => transpiler.transpiler.name)
+          .concat([this.module.path])
+          .join('!');
+
         try {
           const {
             transpiledCode,
@@ -457,18 +479,6 @@ export default class TranspiledModule {
     return this;
   }
 
-  getChildTranspiledModules(): Array<TranspiledModule> {
-    return flattenDeep(
-      this.childModules.map(m => [m, ...m.getChildTranspiledModules()])
-    );
-  }
-
-  getChildModules(): Array<Module> {
-    return flattenDeep(
-      this.childModules.map(m => [m.module, ...m.getChildModules()])
-    );
-  }
-
   evaluate(manager: Manager) {
     if (this.source == null) {
       throw new Error(`${this.module.path} hasn't been transpiled yet.`);
@@ -498,6 +508,7 @@ export default class TranspiledModule {
     }
 
     this.compilation = {
+      id: this.getId(),
       exports: this.compilation ? this.compilation.exports : {},
       hot: {
         accept: (path: string | Array<string>, cb) => {
@@ -571,7 +582,7 @@ export default class TranspiledModule {
           localModule.path
         );
 
-        if (localModule === requiredTranspiledModule.module) {
+        if (transpiledModule === requiredTranspiledModule) {
           throw new Error(`${localModule.path} is importing itself`);
         }
 

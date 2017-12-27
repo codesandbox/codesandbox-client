@@ -91,7 +91,7 @@ async function compile({
   try {
     clearErrorTransformers();
     initializeErrorTransformers();
-    unmount();
+    unmount(manager && manager.webpackHMR);
   } catch (e) {
     console.error(e);
   }

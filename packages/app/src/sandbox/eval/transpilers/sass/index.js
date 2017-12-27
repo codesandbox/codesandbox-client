@@ -16,14 +16,14 @@ class SassTranspiler extends WorkerTranspiler {
   doTranspilation(code: string, loaderContext: LoaderContext) {
     const modules = loaderContext.getModules();
 
-    const sassModules = modules.filter(m => /\.s?[a|c]ss$/.test(m.path));
-    const files = sassModules.reduce(
+    const files = modules.reduce(
       (interMediateFiles, module) => ({
         ...interMediateFiles,
         [module.path]: module.code,
       }),
       {}
     );
+    // TODO fix file finding, make use of content
 
     return new Promise((resolve, reject) => {
       const path = loaderContext.path;

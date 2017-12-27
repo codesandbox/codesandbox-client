@@ -386,13 +386,18 @@ export default class Manager {
       throw new Error('Cannot resolve webpack path');
     }
 
-    const queryPath = path.split('!');
+    const queryPath = path.replace(/^!!/, '!').split('!');
     // pop() mutates queryPath, queryPath is now just the loaders
     const modulePath = queryPath.pop();
 
     const newPath = this.preset
       .getAliasedPath(modulePath)
       .replace(/.*\{\{sandboxRoot\}\}/, '');
+
+    if (newPath.startsWith('/') && !newPath.startsWith('/node_modules')) {
+      const module = this.transpiledModules[newPath];
+      return this.getTranspiledModule(module.module, queryPath.join('!'));
+    }
 
     const module = this.resolveModule(
       newPath,
