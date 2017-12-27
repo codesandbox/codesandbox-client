@@ -85,7 +85,7 @@ function DeploymentModal({ store, signals }) {
         ) : (
           <ButtonContainer deploying={store.editor.deployment.deploying}>
             <Button
-              onClick={signals.editor.deployment.deployClicked}
+              onClick={() => signals.editor.deployment.deployClicked()}
               disabled={!zeitSignedIn || store.editor.deployment.deploying}
             >
               Deploy Now
