@@ -139,10 +139,6 @@ export default class Preset {
 
     const finalTranspilers = [...transpilers, ...extraTranspilers];
 
-    if (finalTranspilers.length === 0) {
-      throw new Error(`No transpilers found for ${module.path}`);
-    }
-
     return finalTranspilers;
   }
 

@@ -142,7 +142,8 @@ async function compile({
       } catch (e) {
         /* don't do anything with this error */
       }
-
+    }
+    if (!manager.webpackHMR || firstLoad) {
       const htmlModule = modules.find(
         m => m.path === '/public/index.html' || m.path === '/index.html'
       );

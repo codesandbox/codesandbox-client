@@ -22,7 +22,9 @@ export default function(content: string, loaderContext) {
 
   const request = loaderUtils.stringifyRequest(
     loaderContext,
-    '!!' + loaderContext.remainingRequest
+    loaderContext._module.query.replace('vue-style-loader!', 'raw-loader!') +
+      '!' +
+      loaderContext.path
   );
 
   const id = JSON.stringify(hash(request));

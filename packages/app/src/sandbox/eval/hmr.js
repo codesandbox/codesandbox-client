@@ -6,16 +6,13 @@ export default class HMR {
   data: Object;
   type: ?'accept' | 'decline';
   dirty: boolean = false;
-
-  constructor(type?: 'accept' | 'decline', callback?: Function) {
-    this.type = type;
-    this.callback = callback;
-  }
+  selfAccepted: boolean = false;
 
   callDisposeHandler() {
     if (this.disposeHandler) {
       this.data = {};
       this.disposeHandler(this.data);
+      this.disposeHandler = null;
     }
   }
 
@@ -27,10 +24,18 @@ export default class HMR {
 
   setAcceptCallback(callback?: Function) {
     this.callback = callback;
+    this.setSelfAccepted(false);
   }
 
   setDisposeHandler(callback: Function) {
     this.disposeHandler = callback;
+  }
+
+  setSelfAccepted(selfAccepted: boolean) {
+    this.selfAccepted = selfAccepted;
+    if (selfAccepted) {
+      this.data = {};
+    }
   }
 
   setType(type: 'accept' | 'decline') {

@@ -18,5 +18,5 @@ export default function consoleResultToJSON(args: any[] | any) {
     ? args.map(mapConsoleResult)
     : mapConsoleResult(args);
 
-  return CircularJSON.stringify(mappedArgs);
+  return JSON.stringify(mappedArgs);
 }

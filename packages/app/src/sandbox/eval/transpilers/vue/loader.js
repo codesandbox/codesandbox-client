@@ -391,17 +391,34 @@ export default function(content: string, loaderContext: LoaderContext) {
     return 'export * from ' + getRequireString(type, part, index, scoped);
   }
 
+  function getFileName(type, part, index = 0) {
+    if (type === 'styles') {
+      return `./${fileName}:style:${index}.${part.lang || 'css'}`;
+    } else if (type === 'script') {
+      return `./${fileName}:script.${part.lang || 'js'}`;
+    } else if (type === 'template') {
+      return `./${fileName}:template.${part.lang || 'html'}`;
+    }
+
+    throw new Error(`Unknown vue type: "${type}"`);
+  }
+
   function getRequireString(type, part, index, scoped) {
     const rawPath =
       '!!' +
       // get loader string for pre-processors
       getLoaderString(type, part, index, scoped) +
-      // select the corresponding part from the vue file
+      // // select the corresponding part from the vue file
       getSelectorString(type, index || 0) +
       // the url to the actual vue file, including remaining requests
+      // getFileName(type, part, index);
       rawRequest;
+
+    // loaderContext.emitModule(rawPath, part.content, dirname(filePath), false);
+
     const depPath = loaderUtils.stringifyRequest(loaderContext, rawPath);
-    loaderContext.addDependency(rawPath);
+    loaderContext.addDependency(JSON.parse(depPath));
+
     return depPath;
   }
 

@@ -63,8 +63,8 @@ export type LoaderContext = {
   emitModule: (
     title: string,
     code: string,
-    currentPath: string,
-    overwrite: boolean
+    currentPath?: string,
+    overwrite?: boolean
   ) => TranspiledModule, // eslint-disable-line no-use-before-define
   emitFile: (name: string, content: string, sourceMap: SourceMap) => void,
   options: {
@@ -160,17 +160,14 @@ export default class TranspiledModule {
     // We don't reset the compilation if itself and its parents if HMR is
     // accepted for this module. We only mark it as changed so we can properly
     // handle the update in the evaluation.
-    if (this.hmrConfig && this.hmrConfig.isHot()) {
-      this.hmrConfig.setDirty(true);
-    } else {
-      this.childModules.forEach(m => {
-        m.reset();
-      });
-      this.childModules = [];
-      this.emittedAssets = [];
-      this.resetCompilation();
-    }
+
+    this.childModules.forEach(m => {
+      m.reset();
+    });
+    this.childModules = [];
+    this.emittedAssets = [];
     this.resetTranspilation();
+
     this.setIsEntry(false);
   }
 
@@ -181,7 +178,9 @@ export default class TranspiledModule {
         dep.resetTranspilation();
       });
 
+    this.previousSource = this.source;
     this.source = null;
+
     this.errors = [];
     this.warnings = [];
 
@@ -194,29 +193,33 @@ export default class TranspiledModule {
   }
 
   resetCompilation() {
-    if (this.compilation) {
-      try {
-        this.compilation = null;
-        Array.from(this.initiators)
-          .filter(t => t.compilation)
-          .forEach(dep => {
-            dep.resetCompilation();
-          });
-      } catch (e) {
-        console.error(e);
+    if (this.hmrConfig && this.hmrConfig.isHot()) {
+      this.hmrConfig.setDirty(true);
+    } else {
+      if (this.compilation) {
+        try {
+          this.compilation = null;
+          Array.from(this.initiators)
+            .filter(t => t.compilation)
+            .forEach(dep => {
+              dep.resetCompilation();
+            });
+        } catch (e) {
+          console.error(e);
+        }
       }
-    }
 
-    Array.from(this.transpilationInitiators)
-      .filter(t => t.compilation)
-      .forEach(dep => {
-        dep.resetCompilation();
-      });
+      Array.from(this.transpilationInitiators)
+        .filter(t => t.compilation)
+        .forEach(dep => {
+          dep.resetCompilation();
+        });
+    }
   }
 
   update(module: Module): TranspiledModule {
     this.module = module;
-    this.reset();
+    this.resetTranspilation();
 
     return this;
   }
@@ -248,11 +251,9 @@ export default class TranspiledModule {
         // pop() mutates queryPath, queryPath is now just the loaders
         const modulePath = queryPath.pop();
 
-        // Copy the module info, with new name
         const moduleCopy: ChildModule = {
-          ...this.module,
           path: pathUtils.join(directoryPath, modulePath),
-          // parent: this.module,
+          parent: this.module,
           code,
         };
 
@@ -263,6 +264,8 @@ export default class TranspiledModule {
               moduleCopy.path,
               queryPath.join('!')
             );
+
+            transpiledModule.update(moduleCopy);
           } catch (e) {
             /* Nothing is here, just continue */
           }
@@ -452,6 +455,13 @@ export default class TranspiledModule {
 
     this.source = new ModuleSource(this.module.path, code, finalSourceMap);
 
+    if (
+      !this.previousSource ||
+      this.previousSource.compiledCode !== this.source.compiledCode
+    ) {
+      this.resetCompilation();
+    }
+
     await Promise.all(
       this.asyncDependencies.map(async p => {
         try {
@@ -507,15 +517,18 @@ export default class TranspiledModule {
       this.hmrConfig.callDisposeHandler();
     }
 
-    this.compilation = {
+    const hotData = this.hmrConfig ? this.hmrConfig.data : undefined;
+
+    this.compilation = this.compilation || {
       id: this.getId(),
-      exports: this.compilation ? this.compilation.exports : {},
+      exports: {},
       hot: {
         accept: (path: string | Array<string>, cb) => {
           if (typeof path === 'undefined') {
             // Self mark hot
             this.hmrConfig = this.hmrConfig || new HMR();
             this.hmrConfig.setType('accept');
+            this.hmrConfig.setSelfAccepted(true);
           } else {
             const paths = typeof path === 'string' ? [path] : path;
 
@@ -534,7 +547,7 @@ export default class TranspiledModule {
         },
         decline: (path: string | Array<string>) => {
           if (typeof path === 'undefined') {
-            this.hmrConfig = this.hmrConfig || new HMR('decline');
+            this.hmrConfig = this.hmrConfig || new HMR();
             this.hmrConfig.setType('decline');
           } else {
             const paths = typeof path === 'string' ? [path] : path;
@@ -555,9 +568,15 @@ export default class TranspiledModule {
 
           this.hmrConfig.setDisposeHandler(cb);
         },
-        data: this.hmrConfig ? this.hmrConfig.data : undefined,
+        data: hotData,
       },
     };
+    this.compilation.hot.data = hotData;
+
+    // Reset export object while keeping references
+    // Object.keys(this.compilation.exports).forEach(key => {
+    //   delete this.compilation.exports[key];
+    // });
     const transpiledModule = this;
 
     try {
@@ -617,22 +636,24 @@ export default class TranspiledModule {
   }
 
   postEvaluate(manager: Manager) {
-    // For non cacheable transpilers we remove the cached evaluation
-    if (
-      manager.preset
-        .getLoaders(this.module, this.query)
-        .some(t => !t.transpiler.cacheable)
-    ) {
-      this.compilation = null;
-    }
+    if (!manager.webpackHMR) {
+      // For non cacheable transpilers we remove the cached evaluation
+      if (
+        manager.preset
+          .getLoaders(this.module, this.query)
+          .some(t => !t.transpiler.cacheable)
+      ) {
+        this.compilation = null;
+      }
 
-    // There are no other modules calling this module, so we run a function on
-    // all transpilers that clears side effects if there are any. Example:
-    // Remove CSS styles from the dom.
-    if (this.initiators.size === 0 && !this.isEntry) {
-      manager.preset.getLoaders(this.module, this.query).forEach(t => {
-        t.transpiler.cleanModule(this.getLoaderContext(manager, t.options));
-      });
+      // There are no other modules calling this module, so we run a function on
+      // all transpilers that clears side effects if there are any. Example:
+      // Remove CSS styles from the dom.
+      if (this.initiators.size === 0 && !this.isEntry) {
+        manager.preset.getLoaders(this.module, this.query).forEach(t => {
+          t.transpiler.cleanModule(this.getLoaderContext(manager, t.options));
+        });
+      }
     }
   }
 

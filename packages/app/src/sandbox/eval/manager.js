@@ -70,6 +70,7 @@ export default class Manager {
     // modules.forEach(m => this.addModule(m));
 
     if (process.env.NODE_ENV === 'development') {
+      window.manager = this;
       console.log(this);
     }
   }
@@ -386,7 +387,7 @@ export default class Manager {
       throw new Error('Cannot resolve webpack path');
     }
 
-    const queryPath = path.replace(/^!!/, '!').split('!');
+    const queryPath = path.split('!');
     // pop() mutates queryPath, queryPath is now just the loaders
     const modulePath = queryPath.pop();
 
@@ -492,7 +493,7 @@ export default class Manager {
     ).then(ms =>
       ms.filter(m => m.hmrConfig && m.hmrConfig.isHot()).forEach(m => {
         // We evaluate all modules that have webpack like HMR enabled (even if
-        // not in the dependency graph), because this is exactly what Webpack does as well.
+        // not in the dependency graph), because this is exactly what Webpack does.
         m.evaluate(this);
       })
     );
