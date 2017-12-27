@@ -59,7 +59,9 @@ export const signOut = [
   set(state`user.integrations`, {}),
 ];
 
-export const toggleUserMenu = [toggle(state`userMenuOpen`)];
+export const openUserMenu = set(state`userMenuOpen`, true);
+
+export const closeUserMenu = set(state`userMenuOpen`, false);
 
 export const removeNotification = actions.removeNotification;
 

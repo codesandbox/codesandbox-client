@@ -1,17 +1,7 @@
-// @flow
-import React from 'react';
 import styled, { css } from 'styled-components';
-import { ObjectInspector } from 'react-inspector';
-
 import theme from 'common/theme';
 
-import type { IMessage } from './';
-
-import formatMessageString from './format-message';
-import MessageIcon from './MessageIcon';
-import { IconContainer } from './styles';
-
-const inspectorTheme = {
+export const inspectorTheme = {
   BASE_FONT_FAMILY: 'Menlo, monospace',
   BASE_FONT_SIZE: '14px',
   BASE_LINE_HEIGHT: '18px',
@@ -74,7 +64,7 @@ function getTypeStyles(type: 'log' | 'info' | 'warn' | 'error') {
   }
 }
 
-const Container = styled.div`
+export const Container = styled.div`
   display: flex;
   flex-direction: row;
   border-bottom: 1px solid rgba(0, 0, 0, 0.3);
@@ -84,74 +74,9 @@ const Container = styled.div`
   ${props => getTypeStyles(props.logType)};
 `;
 
-const InnerItem = styled.div`
+export const InnerItem = styled.div`
   display: inline-block;
   padding: 0.4rem 0;
   padding-right: 1.5rem;
   vertical-align: top;
 `;
-
-function formatMessage(message: IMessage) {
-  const formattedResult = document.createElement('span');
-
-  formatMessageString(
-    message.arguments[0],
-    message.arguments.slice(1),
-    formattedResult
-  );
-
-  return formattedResult;
-}
-
-function getMessage(message: IMessage) {
-  if (message.type === 'return') {
-    return (
-      <InnerItem>
-        <ObjectInspector theme={inspectorTheme} data={message.arguments[0]} />
-      </InnerItem>
-    );
-  }
-
-  if (message.type === 'command') {
-    return <InnerItem>{message.arguments[0]}</InnerItem>;
-  }
-
-  if (
-    message.arguments.length > 0 &&
-    typeof message.arguments[0] === 'string' &&
-    message.arguments[0].indexOf('%') > -1
-  ) {
-    return (
-      <InnerItem
-        dangerouslySetInnerHTML={{
-          __html: formatMessage(message).outerHTML.replace(
-            /(?:\r\n|\r|\n)/g,
-            '<br />'
-          ),
-        }}
-      />
-    );
-  }
-
-  if (message.arguments.every(argument => typeof argument === 'string')) {
-    return <InnerItem>{message.arguments.join(' ')}</InnerItem>;
-  }
-
-  return message.arguments.map((m, i) => (
-    // eslint-disable-next-line react/no-array-index-key
-    <InnerItem key={i}>
-      <ObjectInspector theme={inspectorTheme} data={m} />
-    </InnerItem>
-  ));
-}
-
-export default ({ message }: { message: IMessage }) => (
-  <Container logType={message.logType}>
-    <div>
-      <IconContainer>
-        <MessageIcon type={message.type} logType={message.logType} />
-      </IconContainer>
-    </div>
-    <div>{getMessage(message)}</div>
-  </Container>
-);

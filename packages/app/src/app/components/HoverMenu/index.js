@@ -1,27 +1,16 @@
 import React from 'react';
 
 export default class HoverMenu extends React.PureComponent {
-  state = {
-    clicked: false,
-  };
-
-  handleDocumentClick = () => {
-    if (!this.state.clicked) {
-      this.props.onClose();
-    }
-  };
-
   componentDidMount() {
     document.addEventListener('click', this.handleDocumentClick);
   }
+  handleDocumentClick = () => {
+    this.props.onClose();
+  };
 
-  handleViewClick = () => {
-    // Prevent element from closing itself when you click on it
-    this.setState({ clicked: true });
-
-    setTimeout(() => {
-      this.setState({ clicked: false });
-    });
+  handleViewClick = event => {
+    event.stopPropagation();
+    this.props.onClose();
   };
 
   setOnclickListener = el => {
@@ -41,6 +30,6 @@ export default class HoverMenu extends React.PureComponent {
 
   render() {
     const { children } = this.props;
-    return <div ref={this.setOnclickListener}>{children}</div>;
+    return <div onClick={this.handleViewClick}>{children}</div>; // eslint-disable-line
   }
 }

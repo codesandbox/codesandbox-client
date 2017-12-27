@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import styled from 'styled-components';
+
 import { TweenMax, Elastic } from 'gsap';
 import store from 'store/dist/store.modern';
 import MinimizeIcon from 'react-icons/lib/fa/angle-up';
@@ -10,85 +10,7 @@ import Tooltip from 'common/components/Tooltip';
 import Unread from './Unread';
 import console from './Console';
 
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  background-color: ${props => props.theme.background2};
-`;
-
-const Header = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-  font-size: 0.875rem;
-  height: 2rem;
-  min-height: 2rem;
-  background-color: ${props => props.theme.background2};
-  color: rgba(255, 255, 255, 0.8);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
-
-  box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
-
-  cursor: row-resize;
-  flex-direction: row;
-`;
-
-const Tab = styled.div`
-  display: flex;
-  align-items: center;
-  height: calc(2rem - 1px);
-  padding: 0 1rem;
-  background-color: ${props => props.theme.background};
-  border-right: 1px solid rgba(0, 0, 0, 0.3);
-  border-bottom: 1px solid ${props => props.theme.background};
-
-  color: rgba(255, 255, 255, 0.8);
-  font-weight: 600;
-`;
-
-const Actions = styled.div`
-  position: absolute;
-  right: 1rem;
-  font-size: 1.125rem;
-
-  svg {
-    margin: 0 0.5rem;
-
-    transition: 0.3s ease all;
-
-    cursor: pointer;
-    color: rgba(255, 255, 255, 0.7);
-
-    &:hover {
-      color: white;
-    }
-  }
-`;
-
-export type Status = {
-  unread: number,
-  type: 'info' | 'warning' | 'error',
-};
-
-type Props = {
-  setDragging: (dragging: boolean) => void,
-  evaluateCommand: (cmd: string) => void,
-  sandboxId: string,
-  zenMode: boolean,
-  shouldExpandDevTools: ?boolean,
-  devToolsOpen: ?boolean,
-  setDevToolsOpen: ?(open: boolean) => void,
-};
-type State = {
-  status: { [title: string]: ?Status },
-  height: number,
-  mouseDown: boolean,
-  hidden: boolean,
-  startY: number,
-  startHeight: number,
-  currentPane: string,
-};
+import { Container, Header, Tab, Actions } from './elements';
 
 function unFocus(document, window) {
   if (document.selection) {
@@ -101,8 +23,7 @@ function unFocus(document, window) {
   }
 }
 
-function normalizeTouchEvent(event: TouchEvent): MouseEvent {
-  // $FlowIssue
+function normalizeTouchEvent(event) {
   return {
     ...event,
     clientX: event.touches[0].clientX,
@@ -112,7 +33,7 @@ function normalizeTouchEvent(event: TouchEvent): MouseEvent {
 
 const PANES = { [console.title]: console };
 
-export default class DevTools extends React.PureComponent<Props, State> {
+export default class DevTools extends React.PureComponent {
   state = {
     status: {},
     currentPane: PANES[Object.keys(PANES)[0]].title,
@@ -126,7 +47,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
     height: 2 * 16,
   };
 
-  componentWillReceiveProps(nextProps: Props) {
+  componentWillReceiveProps(nextProps) {
     if (nextProps.sandboxId !== this.props.sandboxId) {
       this.setState({
         status: {},
@@ -134,7 +55,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
     }
   }
 
-  componentDidUpdate(prevProps: Props, prevState: State) {
+  componentDidUpdate(prevProps, prevState) {
     if (
       this.props.devToolsOpen !== prevProps.devToolsOpen &&
       prevState.hidden === this.state.hidden
@@ -166,7 +87,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
     document.removeEventListener('touchmove', this.handleTouchMove, false);
   }
 
-  setHidden = (hidden: boolean) => {
+  setHidden = hidden => {
     if (!hidden) {
       return this.setState({
         status: {
@@ -214,13 +135,13 @@ export default class DevTools extends React.PureComponent<Props, State> {
     });
   };
 
-  handleTouchStart = (event: TouchEvent) => {
+  handleTouchStart = event => {
     if (event.touches && event.touches.length) {
       this.handleMouseDown(normalizeTouchEvent(event));
     }
   };
 
-  handleMouseDown = (event: Event & { clientX: number, clientY: number }) => {
+  handleMouseDown = event => {
     if (!this.state.mouseDown) {
       unFocus(document, window);
       this.setState({
@@ -232,11 +153,11 @@ export default class DevTools extends React.PureComponent<Props, State> {
     }
   };
 
-  handleTouchEnd = (event: TouchEvent) => {
+  handleTouchEnd = event => {
     this.handleMouseUp(event);
   };
 
-  handleMouseUp = (e: Event) => {
+  handleMouseUp = e => {
     if (this.state.mouseDown) {
       this.setState({ mouseDown: false });
       this.props.setDragging(false);
@@ -263,13 +184,13 @@ export default class DevTools extends React.PureComponent<Props, State> {
     }
   };
 
-  handleTouchMove = (event: TouchEvent) => {
+  handleTouchMove = event => {
     if (event.touches && event.touches.length) {
       this.handleMouseMove(normalizeTouchEvent(event));
     }
   };
 
-  handleMouseMove = (event: Event & { clientX: number, clientY: number }) => {
+  handleMouseMove = event => {
     if (this.state.mouseDown) {
       const newHeight =
         this.state.startHeight - (event.clientY - this.state.startY);
@@ -285,7 +206,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
     this.openDevTools();
   };
 
-  handleMinimizeClick = (e: MouseEvent) => {
+  handleMinimizeClick = e => {
     if (!this.state.hidden) {
       e.preventDefault();
       e.stopPropagation();
@@ -319,7 +240,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
     });
   };
 
-  node: HTMLElement;
+  node;
 
   render() {
     const { sandboxId, zenMode } = this.props;

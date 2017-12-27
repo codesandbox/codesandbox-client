@@ -1,6 +1,4 @@
-// @flow
 import React from 'react';
-import styled from 'styled-components';
 import { listen, dispatch } from 'codesandbox-api';
 
 import ClearIcon from 'react-icons/lib/md/clear-all';
@@ -9,47 +7,15 @@ import CircularJSON from 'circular-json';
 import Message from './Message';
 import Input from './Input';
 
-const Container = styled.div`
-  background-color: ${props => props.theme.background};
-  font-family: Menlo, monospace;
-  color: rgba(255, 255, 255, 0.8);
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-`;
+import { Container, Messages } from './elements';
 
-const Messages = styled.div`
-  height: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
-  white-space: pre-wrap;
-`;
-
-export type IMessage = {
-  type: 'message' | 'command' | 'return',
-  logType: 'log' | 'warn' | 'info' | 'error',
-  arguments: any[],
-};
-
-type Props = {
-  evaluateCommand: (c: string) => void,
-  updateStatus: (s: 'info' | 'warning' | 'error') => void,
-  hidden: boolean,
-  sandboxId: string,
-};
-
-type State = {
-  messages: Array<IMessage>,
-};
-
-class Console extends React.Component<Props, State> {
+class Console extends React.Component {
   state = {
     messages: [],
     scrollToBottom: true,
   };
 
-  listener: Function;
+  listener;
 
   componentDidMount() {
     this.listener = listen(this.handleMessage);
@@ -61,7 +27,7 @@ class Console extends React.Component<Props, State> {
     }
   }
 
-  handleMessage = (data: Object) => {
+  handleMessage = data => {
     switch (data.type) {
       case 'console': {
         const { method, args: jsonArgs } = data;
@@ -107,11 +73,7 @@ class Console extends React.Component<Props, State> {
     return 'error';
   };
 
-  addMessage(
-    message: 'log' | 'warn' | 'error',
-    args: Array<string | typeof undefined>,
-    type: 'message' | 'command' | 'return' = 'message'
-  ) {
+  addMessage(message, args, type) {
     this.props.updateStatus(this.getType(message));
 
     this.setState({
@@ -126,9 +88,9 @@ class Console extends React.Component<Props, State> {
     });
   }
 
-  list: ?HTMLElement;
+  list;
 
-  componentWillReceiveProps(nextProps: Props) {
+  componentWillReceiveProps(nextProps) {
     if (nextProps.sandboxId !== this.props.sandboxId) {
       this.clearConsole();
     }

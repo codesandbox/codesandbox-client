@@ -20,11 +20,7 @@ function UserMenu({ signals, store, small }) {
 
   return (
     <Relative>
-      <ClickableContainer
-        onClick={() => {
-          signals.toggleUserMenuClicked();
-        }}
-      >
+      <ClickableContainer onClick={() => signals.userMenuOpened()}>
         <ProfileInfo>
           {user.name && <Name>{user.name}</Name>}
           <Username main={!user.name}>{user.username}</Username>
@@ -40,11 +36,7 @@ function UserMenu({ signals, store, small }) {
         </Tooltip>
       </ClickableContainer>
       {userMenuOpen && (
-        <HoverMenu
-          onClose={() => {
-            signals.toggleUserMenuClicked();
-          }}
-        >
+        <HoverMenu onClose={() => signals.userMenuClosed()}>
           <Menu
             openPreferences={() => {
               signals.openModal({ modal: 'preferences' });

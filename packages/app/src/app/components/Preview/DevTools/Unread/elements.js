@@ -1,8 +1,6 @@
-// @flow
-import React from 'react';
 import styled from 'styled-components';
 
-const Container = styled.div`
+export const Container = styled.div`
   transition: 0.3s ease all;
   display: inline-flex;
   justify-content: center;
@@ -33,14 +31,3 @@ const Container = styled.div`
     return 'black';
   }};
 `;
-
-type Props = {
-  status: 'info' | 'warning' | 'error',
-  unread: number,
-};
-
-export default ({ status, unread }: Props) => (
-  <Container unread={unread} status={status}>
-    {unread}
-  </Container>
-);

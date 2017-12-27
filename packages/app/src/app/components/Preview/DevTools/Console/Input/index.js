@@ -1,39 +1,12 @@
 import React from 'react';
-import styled from 'styled-components';
 
 import ChevronRight from 'react-icons/lib/md/chevron-right';
 import theme from 'common/theme';
 
-import { IconContainer } from './styles';
+import { IconContainer } from '../elements';
+import { Container, Input } from './elements';
 
-const Container = styled.div`
-  position: relative;
-  height: 2rem;
-  min-height: 2rem;
-  width: 100%;
-  background-color: ${props => props.theme.background.darken(0.3)};
-
-  display: flex;
-  align-items: center;
-`;
-
-const Input = styled.input`
-  position: relative;
-  height: 1.5rem;
-  width: 100%;
-  background-color: ${props => props.theme.background.darken(0.3)};
-  border: none;
-  outline: none;
-  color: rgba(255, 255, 255, 0.8);
-  font-family: Menlo, monospace;
-  font-size: 13px;
-`;
-
-type Props = {
-  evaluateConsole: (command: string) => void,
-};
-
-export default class ConsoleInput extends React.PureComponent<Props> {
+export default class ConsoleInput extends React.PureComponent {
   state = {
     command: '',
     commandHistory: [],
