@@ -17,6 +17,7 @@ import resolveDependency from './loaders/dependency-resolver';
 import evaluate from './loaders/eval';
 
 import Manager from './manager';
+import HMR from './hmr';
 
 const debug = _debug('cs:compiler:transpiled-module');
 
@@ -116,6 +117,12 @@ export default class TranspiledModule {
   transpilationInitiators: Set<TranspiledModule>;
 
   /**
+   * Set how this module handles HMR. The default is undefined, which means
+   * that we handle the HMR like CodeSandbox does.
+   */
+  hmrConfig: ?HMR;
+
+  /**
    * Create a new TranspiledModule, a transpiled module is a module that contains
    * all info for transpilation and compilation. Note that there can be multiple
    * transpiled modules for 1 module, since a same module can have different loaders
@@ -151,32 +158,32 @@ export default class TranspiledModule {
     });
     this.childModules = [];
     this.emittedAssets = [];
-    if (!this.hmrEnabled) {
-      this.resetCompilation();
+    // We don't reset the compilation if itself and its parents if HMR is
+    // accepted for this module. We only mark it as changed so we can properly
+    // handle the update in the evaluation.
+    if (this.hmrConfig && this.hmrConfig.isHot()) {
+      this.hmrConfig.setDirty(true);
     } else {
-      this.changed = true;
+      this.resetCompilation();
     }
     this.resetTranspilation();
     this.setIsEntry(false);
-    // this.hmrEnabled = false;
   }
 
   resetTranspilation() {
+    Array.from(this.transpilationInitiators)
+      .filter(t => t.source)
+      .forEach(dep => {
+        dep.resetTranspilation();
+      });
+
     this.source = null;
     this.errors = [];
     this.warnings = [];
 
-    // If this module is marked as HMR we won't traverse up the graph for transpilation
-    if (!this.hmrEnabled) {
-      Array.from(this.transpilationInitiators)
-        .filter(t => t.source)
-        .forEach(dep => {
-          dep.resetTranspilation();
-        });
-      Array.from(this.dependencies).forEach(t => {
-        t.initiators.delete(this);
-      });
-    }
+    Array.from(this.dependencies).forEach(t => {
+      t.initiators.delete(this);
+    });
 
     this.dependencies.clear();
     this.asyncDependencies = [];
@@ -462,7 +469,7 @@ export default class TranspiledModule {
     );
   }
 
-  evaluate(manager: Manager, parentModules: Array<TranspiledModule>) {
+  evaluate(manager: Manager) {
     if (this.source == null) {
       throw new Error(`${this.module.path} hasn't been transpiled yet.`);
     }
@@ -470,31 +477,74 @@ export default class TranspiledModule {
     const localModule = this.module;
 
     if (manager.webpackHMR) {
-      if (!this.compilation && this.isEntry && !this.hmrEnabled) {
-        location.reload();
-        return {};
+      if (!this.compilation) {
+        const shouldReloadPage = this.hmrConfig
+          ? this.hmrConfig.isDeclined(this.isEntry)
+          : this.isEntry;
+
+        if (shouldReloadPage) {
+          location.reload();
+          return {};
+        }
+      } else if (!this.hmrConfig || !this.hmrConfig.isDirty()) {
+        return this.compilation.exports;
       }
     }
 
-    if (this.compilation && !this.changed) {
-      return this.compilation.exports;
+    if (this.hmrConfig) {
+      // Call module.hot.dispose handler
+      // https://webpack.js.org/api/hot-module-replacement/#dispose-or-adddisposehandler-
+      this.hmrConfig.callDisposeHandler();
     }
 
-    this.compilation = this.compilation || {
-      exports: {},
+    this.compilation = {
+      exports: this.compilation ? this.compilation.exports : {},
       hot: {
-        accept: (path: string, cb) => {
-          if (path) {
-            const tModule = manager.resolveTranspiledModule(
-              path,
-              this.module.path
-            );
-            tModule.hmrEnabled = cb;
+        accept: (path: string | Array<string>, cb) => {
+          if (typeof path === 'undefined') {
+            // Self mark hot
+            this.hmrConfig = this.hmrConfig || new HMR();
+            this.hmrConfig.setType('accept');
           } else {
-            this.hmrEnabled = true;
+            const paths = typeof path === 'string' ? [path] : path;
+
+            paths.forEach(p => {
+              const tModule = manager.resolveTranspiledModule(
+                p,
+                this.module.path
+              );
+
+              tModule.hmrConfig = tModule.hmrConfig || new HMR();
+              tModule.hmrConfig.setType('accept');
+              tModule.hmrConfig.setAcceptCallback(cb);
+            });
           }
-          manager.webpackHMR = true;
+          manager.enableWebpackHMR();
         },
+        decline: (path: string | Array<string>) => {
+          if (typeof path === 'undefined') {
+            this.hmrConfig = this.hmrConfig || new HMR('decline');
+            this.hmrConfig.setType('decline');
+          } else {
+            const paths = typeof path === 'string' ? [path] : path;
+
+            paths.forEach(p => {
+              const tModule = manager.resolveTranspiledModule(
+                p,
+                this.module.path
+              );
+              tModule.hmrConfig = tModule.hmrConfig || new HMR();
+              tModule.hmrConfig.setType('decline');
+            });
+          }
+          manager.enableWebpackHMR();
+        },
+        dispose: (cb: Function) => {
+          this.hmrConfig = this.hmrConfig || new HMR();
+
+          this.hmrConfig.setDisposeHandler(cb);
+        },
+        data: this.hmrConfig ? this.hmrConfig.data : undefined,
       },
     };
     const transpiledModule = this;
@@ -525,10 +575,13 @@ export default class TranspiledModule {
           throw new Error(`${localModule.path} is importing itself`);
         }
 
-        return manager.evaluateTranspiledModule(requiredTranspiledModule, [
-          ...parentModules,
-          transpiledModule,
-        ]);
+        // Check if this module has been evaluated before, if so return the exports
+        // of that compilation
+        const cache = requiredTranspiledModule.compilation;
+
+        return cache
+          ? cache.exports
+          : manager.evaluateTranspiledModule(requiredTranspiledModule);
       }
 
       const exports = evaluate(
@@ -538,8 +591,10 @@ export default class TranspiledModule {
         manager.envVariables
       );
 
-      if (typeof this.hmrEnabled === 'function') {
-        this.hmrEnabled();
+      const hmrConfig = this.hmrConfig;
+      if (hmrConfig && hmrConfig.isHot()) {
+        hmrConfig.setDirty(false);
+        hmrConfig.callAcceptCallback();
       }
 
       return exports;

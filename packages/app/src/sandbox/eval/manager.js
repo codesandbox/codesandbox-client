@@ -60,6 +60,7 @@ export default class Manager {
   modules: ModuleObject;
   manifest: Manifest;
   dependencies: Object;
+  webpackHMR: boolean = false;
 
   constructor(id: string, preset: Preset) {
     this.id = id;
@@ -116,18 +117,15 @@ export default class Manager {
     const transpiledModule = this.getTranspiledModule(module);
 
     // Run post evaluate first
-    const exports = this.evaluateTranspiledModule(transpiledModule, []);
+    const exports = this.evaluateTranspiledModule(transpiledModule);
 
     this.getTranspiledModules().forEach(t => t.postEvaluate(this));
 
     return exports;
   }
 
-  evaluateTranspiledModule(
-    transpiledModule: TranspiledModule,
-    parentModules: Array<TranspiledModule>
-  ) {
-    return transpiledModule.evaluate(this, parentModules);
+  evaluateTranspiledModule(transpiledModule: TranspiledModule) {
+    return transpiledModule.evaluate(this);
   }
 
   addModule(module: Module) {
@@ -150,7 +148,8 @@ export default class Manager {
 
   /**
    * Get Transpiled Module from the registry, if there is no transpiled module
-   * in the registry it will create a new one
+   * in the registry it will create a new one.
+   *
    * @param {Module} module
    * @param {string} query A webpack like syntax (!url-loader)
    */
@@ -282,6 +281,16 @@ export default class Manager {
     }
 
     return path;
+  }
+
+  /**
+   * Set the manager to use Webpack HMR, this changes how modules are hot reloaded
+   * and how the manager cleans up the website.
+   *
+   * @memberof Manager
+   */
+  enableWebpackHMR() {
+    this.webpackHMR = true;
   }
 
   // All paths are resolved at least twice: during transpilation and evaluation.
@@ -476,10 +485,10 @@ export default class Manager {
     return Promise.all(
       transpiledModulesToUpdate.map(tModule => tModule.transpile(this))
     ).then(ms =>
-      ms.filter(m => m.hmrEnabled).forEach(m => {
+      ms.filter(m => m.hmrConfig && m.hmrConfig.isHot()).forEach(m => {
         // We evaluate all modules that have webpack like HMR enabled (even if
         // not in the dependency graph), because this is exactly what Webpack does as well.
-        m.evaluate(this, []);
+        m.evaluate(this);
       })
     );
   }

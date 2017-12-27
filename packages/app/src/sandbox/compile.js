@@ -37,8 +37,16 @@ export function getCurrentManager(): ?Manager {
 
 let firstLoad = true;
 
-async function updateManager(sandboxId, template, managerModules, manifest) {
+async function updateManager(
+  sandboxId,
+  template,
+  managerModules,
+  manifest,
+  isNewCombination
+) {
+  let newManager = false;
   if (!manager || manager.id !== sandboxId) {
+    newManager = true;
     manager = new Manager(sandboxId, getPreset(template));
     if (firstLoad) {
       // We save the state of transpiled modules, and load it here again. Gives
@@ -47,7 +55,7 @@ async function updateManager(sandboxId, template, managerModules, manifest) {
     }
   }
 
-  if (manifest) {
+  if (isNewCombination || newManager) {
     manager.setManifest(manifest);
   }
 
@@ -103,7 +111,8 @@ async function compile({
       sandboxId,
       template,
       modules,
-      isNewCombination && manifest
+      manifest,
+      isNewCombination
     );
 
     const managerModuleToTranspile = modules.find(m => m.path === entry);
