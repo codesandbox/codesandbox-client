@@ -18,6 +18,13 @@ import { FullSize } from './elements';
 class EditorPreview extends React.Component {
   componentDidMount() {
     this.props.signals.editor.contentMounted();
+    this.disposeEditorChange = reaction(
+      () => this.props.store.editor.preferences.settings.codeMirror,
+      () => this.forceUpdate()
+    );
+  }
+  componentWillUnmount() {
+    this.disposeEditorChange();
   }
   getDefaultSize = () => {
     const preferences = this.props.preferences;
@@ -68,7 +75,15 @@ class EditorPreview extends React.Component {
       }
     );
     const disposePreferencesHandler = reaction(
-      () => store.editor.preferences.settings,
+      () => ({
+        fontFamily: store.editor.preferences.settings.fontFamily,
+        fontSize: store.editor.preferences.settings.fontSize,
+        lineHeight: store.editor.preferences.settings.lineHeight,
+        autoCompleteEnabled:
+          store.editor.preferences.settings.autoCompleteEnabled,
+        vimMode: store.editor.preferences.settings.vimMode,
+        lintEnabled: store.editor.preferences.settings.lintEnabled,
+      }),
       newSettings => {
         editor.changeSettings(newSettings);
       },
@@ -150,7 +165,14 @@ class EditorPreview extends React.Component {
           sandbox={sandbox}
           currentModule={currentModule}
           dependencies={sandbox.npmDependencies.toJS()}
-          settings={preferences.settings}
+          settings={{
+            fontFamily: preferences.settings.fontFamily,
+            fontSize: preferences.settings.fontSize,
+            lineHeight: preferences.settings.lineHeight,
+            autoCompleteEnabled: preferences.settings.autoCompleteEnabled,
+            vimMode: preferences.settings.vimMode,
+            lintEnabled: preferences.settings.lintEnabled,
+          }}
           onNpmDependencyAdded={name =>
             signals.editor.workspace.onNpmDependencyAdded({ name })
           }
