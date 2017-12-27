@@ -26,6 +26,7 @@ export const changeItemIndex = [
   equals(props`itemIndex`),
   {
     '4': getZeitUserDetails,
+    otherwise: [],
   },
 ];
 

@@ -42,14 +42,14 @@ export default class Badge extends React.Component {
   };
 
   render() {
-    const { badge, tooltip, size, onClick, ...props } = this.props;
+    const { visible, badge, tooltip, size, onClick, ...props } = this.props;
     const innerContent = (
       <Image
         {...props}
         width={size}
         src={getBadge(badge.id)}
         alt={badge.name}
-        visible={badge.visible}
+        visible={visible || badge.visible}
         onClick={this.handleClick}
       />
     );

@@ -24,7 +24,7 @@ export default class PreferenceKeybinding extends React.PureComponent {
         <KeybindingInput
           {...this.props}
           placeholder="Second"
-          value={value[1]}
+          value={value.length === 2 && value[1]}
           setValue={this.setValue(1)}
           disabled={!value[0] || value[0].length === 0}
         />

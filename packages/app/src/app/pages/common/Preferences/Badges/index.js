@@ -1,15 +1,34 @@
 import React from 'react';
+import { inject, observer } from 'mobx-react';
 
-import BadgesContent from './BadgesContent';
+import Margin from 'common/components/spacing/Margin';
+import Badge from 'common/utils/badges/Badge';
 import { Title } from '../elements';
 
-function Badges() {
+function Badges({ store, signals }) {
+  const badgesCount = store.user.badges.length;
+
   return (
     <div>
       <Title>Badges</Title>
-      <BadgesContent />
+      <strong>
+        You currently have {badgesCount} badge{badgesCount === 1 ? '' : 's'}.
+        You can click on the badges to toggle visibility.
+      </strong>
+      <Margin top={2}>
+        {store.user.badges.map(badge => (
+          <Badge
+            key={badge.id}
+            tooltip={false}
+            onClick={signals.editor.preferences.badgeVisibilityChanged}
+            badge={badge}
+            visible={badge.visible}
+            size={128}
+          />
+        ))}
+      </Margin>
     </div>
   );
 }
 
-export default Badges;
+export default inject('store', 'signals')(observer(Badges));
