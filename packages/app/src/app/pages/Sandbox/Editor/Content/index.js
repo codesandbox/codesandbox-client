@@ -77,12 +77,16 @@ class EditorPreview extends React.Component {
       }
     );
     const disposeDependenciesHandler = reaction(
-      () => store.editor.currentSandbox.npmDependencies,
+      () =>
+        store.editor.currentSandbox.npmDependencies.keys().reduce(
+          (dependencies, key) =>
+            Object.assign(dependencies, {
+              [key]: store.editor.currentSandbox.npmDependencies.get(key),
+            }),
+          {}
+        ),
       newNpmDependencies => {
-        editor.changeDependencies(newNpmDependencies.toJS());
-      },
-      {
-        compareStructural: true,
+        editor.changeDependencies(newNpmDependencies);
       }
     );
     const disposeCodeHandler = reaction(

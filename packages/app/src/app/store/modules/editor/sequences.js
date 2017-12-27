@@ -84,7 +84,7 @@ export const ensureOwnedSandbox = sequence('ensureOwnedSandbox', [
 ]);
 
 export const addNpmDependency = [
-  set(state`editor.workspace.searchDependenciesModalOpened`, false),
+  set(state`editor.workspace.showSearchDependenciesModal`, false),
   ensureOwnedSandbox,
   set(state`editor.workspace.isProcessingDependencies`, true),
   actions.addNpmDependency,

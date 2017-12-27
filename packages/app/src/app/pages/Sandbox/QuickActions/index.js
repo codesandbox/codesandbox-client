@@ -56,7 +56,7 @@ class QuickActions extends React.Component {
     this.closeQuickActions();
   };
 
-  itemToString = item => item.magicWords.join(', ');
+  itemToString = item => item && item.magicWords.join(', ');
 
   render() {
     if (!this.props.store.editor.quickActionsOpen) {

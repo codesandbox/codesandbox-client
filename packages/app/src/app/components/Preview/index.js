@@ -77,6 +77,10 @@ class BasePreview extends React.Component {
     );
   };
 
+  handleDependenciesChange = () => {
+    this.handleRefresh();
+  };
+
   handleMessage = (data: Object, source: HTMLIFrameElement) => {
     if (source) {
       if (data.type === 'initialized') {

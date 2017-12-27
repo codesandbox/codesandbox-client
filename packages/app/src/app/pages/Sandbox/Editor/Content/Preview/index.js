@@ -33,6 +33,11 @@ class Preview extends React.Component {
       () => this.props.store.editor.currentSandbox.id,
       this.handleSandboxChange.bind(this, preview)
     );
+    const disposeDependenciesHandler = reaction(
+      () =>
+        this.props.store.editor.currentSandbox.npmDependencies.keys().length,
+      this.handleDependenciesChange.bind(this, preview)
+    );
 
     return () => {
       disposeHandleProjectViewChange();
@@ -42,6 +47,7 @@ class Preview extends React.Component {
       disposeHandleCodeChange();
       disposeHandleStructureChange();
       disposeHandleSandboxChange();
+      disposeDependenciesHandler();
     };
   };
 
@@ -59,6 +65,10 @@ class Preview extends React.Component {
 
   handleSandboxChange = preview => {
     preview.handleSandboxChange();
+  };
+
+  handleDependenciesChange = preview => {
+    preview.handleDependenciesChange();
   };
 
   handleCodeChange = preview => {
