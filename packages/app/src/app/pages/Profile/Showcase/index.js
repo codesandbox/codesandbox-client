@@ -1,28 +1,37 @@
 import * as React from 'react';
-import { inject } from 'mobx-react';
+import { inject, observer } from 'mobx-react';
+
 import Column from 'common/components/flex/Column';
 import Centered from 'common/components/flex/Centered';
 import Margin from 'common/components/spacing/Margin';
 import Button from 'app/components/Button';
+import Modal from 'app/components/Modal';
 
 import SandboxInfo from './SandboxInfo';
 import ShowcasePreview from './ShowcasePreview';
+import SelectSandbox from './SelectSandbox';
 
 import { ErrorTitle } from './elements';
 
 class Showcase extends React.Component {
   openModal = () => {
-    /*
-    modalActions.openModal({
-      title: 'Select Showcase Sandbox',
-      width: 600,
-      Body: <SelectSandbox showcaseSandboxId={sandbox.id} />,
-    });
-    */
+    this.props.signals.profile.selectSandboxClicked();
   };
 
   render() {
-    const { sandbox, isCurrentUser } = this.props;
+    const { store, signals } = this.props;
+    const sandbox = store.profile.showcasedSandbox;
+    const isCurrentUser = store.profile.isProfileCurrentUser;
+
+    if (store.profile.isLoadingProfile) {
+      return (
+        <Centered vertical horizontal>
+          <Margin top={4}>
+            <ErrorTitle>Loading showcased sandbox...</ErrorTitle>
+          </Margin>
+        </Centered>
+      );
+    }
 
     if (!sandbox) {
       return (
@@ -56,9 +65,16 @@ class Showcase extends React.Component {
             </div>
           </Column>
         </Margin>
+        <Modal
+          isOpen={store.profile.showSelectSandboxModal}
+          onClose={() => signals.profile.selectSandboxClosed()}
+          width={600}
+        >
+          <SelectSandbox />
+        </Modal>
       </Column>
     );
   }
 }
 
-export default inject('signals', 'store')(Showcase);
+export default inject('signals', 'store')(observer(Showcase));

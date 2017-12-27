@@ -2,9 +2,33 @@ export function getUser({ api, props }) {
   return api.get(`/users/${props.username}`).then(data => ({ profile: data }));
 }
 
-export function getShowcasedSandbox({ api, props }) {
+export function deleteSandbox({ api, state, props }) {
+  const username = state.get('user.username');
+  const page = state.get('profile.currentSandboxesPage');
+  const sandboxId = state.get(
+    `profile.sandboxes.${username}.${page}.${props.sandboxToDeleteIndex}.id`
+  );
+
   return api
-    .get(`/sandboxes/${props.profile.showcasedSandboxShortid}`)
+    .request({
+      method: 'DELETE',
+      url: `/sandboxes/${sandboxId}`,
+      body: {
+        id: sandboxId,
+      },
+    })
+    .then(() => undefined);
+}
+
+export function getAllUserSandboxes({ api }) {
+  return api.get('/sandboxes').then(sandboxes => ({ sandboxes }));
+}
+
+export function getShowcasedSandbox({ api, state }) {
+  const profile = state.get('profile.current');
+
+  return api
+    .get(`/sandboxes/${profile.showcasedSandboxShortid}`)
     .then(data => ({ sandbox: data }));
 }
 
@@ -16,6 +40,16 @@ export function getSandboxes({ api, state, props }) {
       page: props.page,
     })
     .then(data => ({ sandboxes: data[props.page] }));
+}
+
+export function saveShowcasedSandbox({ api, props, state }) {
+  return api
+    .patch(`/users/${state.get('user.username')}`, {
+      user: {
+        showcasedSandboxShortid: props.id,
+      },
+    })
+    .then(() => undefined);
 }
 
 export function setSandboxes({ state, props }) {

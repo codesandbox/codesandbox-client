@@ -19,4 +19,8 @@ export const DeleteSandboxButton = styled(props => (
   &:hover {
     color: rgba(255, 255, 255, 1);
   }
+  &[disabled] {
+    opacity: 0.5;
+    cursor: default;
+  }
 `;

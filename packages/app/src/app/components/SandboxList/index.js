@@ -36,7 +36,7 @@ function SandboxList({ sandboxes, isCurrentUser, onDelete }) {
           <StatTitle>
             <ForkIcon />
           </StatTitle>
-          {isCurrentUser && <HeaderTitle />}
+          {isCurrentUser && onDelete && <HeaderTitle />}
         </tr>
       </thead>
       <Body>
@@ -51,13 +51,17 @@ function SandboxList({ sandboxes, isCurrentUser, onDelete }) {
             <StatBody>{s.likeCount}</StatBody>
             <StatBody>{s.viewCount}</StatBody>
             <StatBody>{s.forkCount}</StatBody>
-            {isCurrentUser && (
-              <StatBody
-                style={{ padding: '0.55rem 0.5rem', cursor: 'pointer' }}
-              >
-                <DeleteSandboxButton id={s.id} onDelete={onDelete} />
-              </StatBody>
-            )}
+            {isCurrentUser &&
+              onDelete && (
+                <StatBody
+                  style={{ padding: '0.55rem 0.5rem', cursor: 'pointer' }}
+                >
+                  <DeleteSandboxButton
+                    id={s.id}
+                    onDelete={id => onDelete(i, id)}
+                  />
+                </StatBody>
+              )}
           </SandboxRow>
         ))}
       </Body>

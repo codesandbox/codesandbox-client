@@ -4,35 +4,28 @@ import Sandbox from './Sandbox';
 
 import { Padding } from './elements';
 
-class SelectSandbox extends React.Component {
-  componentDidMount() {
-    // this.props.currentUserActions.loadUserSandboxes();
-  }
+function SelectSandbox({ store, signals }) {
+  if (store.profile.isLoadingSandboxes)
+    return <Padding>Loading sandboxes...</Padding>;
 
-  setShowcasedSandbox = id => {
-    // usersActions.setShowcasedSandboxId(user.username, id);
-  };
+  const currentShowcasedSandboxId =
+    store.profile.showcasedSandbox && store.profile.showcasedSandbox.id;
 
-  render() {
-    const { user, showcaseSandboxId } = this.props;
-
-    if (user.sandboxes == null) return <Padding>Loading sandboxes...</Padding>;
-
-    return (
-      <div>
-        {user.sandboxes
-          .filter(x => x)
-          .map(sandbox => (
-            <Sandbox
-              active={sandbox.id === showcaseSandboxId}
-              key={sandbox.id}
-              sandbox={sandbox}
-              setShowcasedSandbox={this.setShowcasedSandbox}
-            />
-          ))}
-      </div>
-    );
-  }
+  return (
+    <div>
+      {store.profile.userSandboxes
+        .filter(x => x)
+        .map(sandbox => (
+          <Sandbox
+            active={sandbox.id === currentShowcasedSandboxId}
+            key={sandbox.id}
+            sandbox={sandbox}
+            setShowcasedSandbox={id =>
+              signals.profile.newSandboxShowcaseSelected({ id })
+            }
+          />
+        ))}
+    </div>
+  );
 }
-
 export default inject('signals', 'store')(observer(SelectSandbox));

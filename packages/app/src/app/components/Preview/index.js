@@ -297,7 +297,9 @@ class BasePreview extends React.Component {
             }
             onRefresh={this.handleRefresh}
             isProjectView={isInProjectView}
-            toggleProjectView={this.toggleProjectView}
+            toggleProjectView={
+              this.props.onToggleProjectView && this.toggleProjectView
+            }
             openNewWindow={this.openNewWindow}
             zenMode={settings.zenMode}
           />

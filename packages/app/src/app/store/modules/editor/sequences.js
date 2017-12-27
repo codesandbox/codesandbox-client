@@ -148,9 +148,18 @@ export const saveCode = [
 ];
 
 export const loadSandbox = [
+  set(state`editor.error`, null),
   when(state`editor.sandboxes.${props`id`}`),
   {
-    true: set(state`editor.currentId`, props`id`),
+    true: [
+      set(state`editor.currentId`, props`id`),
+      set(props`sandbox`, state`editor.sandboxes.${props`id`}`),
+      actions.setCurrentModuleShortid,
+      actions.setMainModuleShortid,
+      actions.setInitialTab,
+      actions.setUrlOptions,
+      actions.setWorkspace,
+    ],
     false: [
       set(state`editor.isLoading`, true),
       set(state`editor.notFound`, false),

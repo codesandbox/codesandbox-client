@@ -62,16 +62,7 @@ class Profile extends React.Component {
         <MaxWidth width={1024}>
           <Margin horizontal={2} style={{ minHeight: '60vh' }}>
             <Switch>
-              <Route
-                path={match.url}
-                exact
-                render={() => (
-                  <Showcase
-                    isCurrentUser={store.profile.isProfileCurrentUser}
-                    sandbox={store.profile.showcasedSandbox}
-                  />
-                )}
-              />
+              <Route path={match.url} exact render={() => <Showcase />} />
               <Route
                 path={`${profileSandboxesUrl(user.username)}/:page?`}
                 // eslint-disable-next-line

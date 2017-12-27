@@ -39,6 +39,14 @@ const Module = types.model({
   title: types.string,
 });
 
+const Git = types.model({
+  branch: types.string,
+  commitSha: types.maybe(types.string),
+  path: types.string,
+  repo: types.string,
+  username: types.string,
+});
+
 const Sandbox = types.model({
   author: types.maybe(Author),
   description: types.maybe(types.string),
@@ -56,24 +64,16 @@ const Sandbox = types.model({
       likeCount: types.number,
       insertedAt: types.string,
       id: types.string,
-      git: types.maybe(types.string),
+      git: types.maybe(Git),
       forkCount: types.number,
     })
   ),
-  git: types.maybe(
-    types.model({
-      branch: types.string,
-      commitSha: types.maybe(types.string),
-      path: types.string,
-      repo: types.string,
-      username: types.string,
-    })
-  ),
+  git: types.maybe(Git),
   id: types.string,
   likeCount: types.number,
   modules: types.array(Module),
   npmDependencies: types.map(types.string),
-  originalGit: types.maybe(types.string),
+  originalGit: types.maybe(Git),
   originalGitCommitSha: types.maybe(types.string),
   owned: types.boolean,
   privacy: types.number,

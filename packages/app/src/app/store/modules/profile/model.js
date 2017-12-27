@@ -41,7 +41,10 @@ export default {
   isLoadingProfile: types.boolean,
   sandboxes: types.map(types.map(types.array(Sandbox))),
   likedSandboxes: types.map(types.map(types.array(Sandbox))),
+  userSandboxes: types.array(Sandbox),
   currentSandboxesPage: types.number,
   currentLikedSandboxesPage: types.number,
   isLoadingSandboxes: types.boolean,
+  showSelectSandboxModal: types.boolean,
+  sandboxToDeleteIndex: types.maybe(types.number),
 };
