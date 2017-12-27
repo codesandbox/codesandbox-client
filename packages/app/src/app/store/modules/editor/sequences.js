@@ -6,6 +6,10 @@ import * as actions from './actions';
 
 import { addNotification, updateSandboxUrl } from '../../factories';
 
+export const openQuickActions = set(state`editor.quickActionsOpen`, true);
+
+export const closeQuickActions = set(state`editor.quickActionsOpen`, false);
+
 export const openDeploymentModal = [
   set(state`editor.showDeploymentModal`, true),
   getZeitUserDetails,
@@ -80,7 +84,7 @@ export const ensureOwnedSandbox = sequence('ensureOwnedSandbox', [
 ]);
 
 export const addNpmDependency = [
-  set(state`editor.workspace.showSearchDependenciesModal`, false),
+  set(state`editor.workspace.searchDependenciesModalOpened`, false),
   ensureOwnedSandbox,
   set(state`editor.workspace.isProcessingDependencies`, true),
   actions.addNpmDependency,

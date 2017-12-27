@@ -41,7 +41,7 @@ export const KEYBINDINGS = {
     type: 'View',
     bindings: [[metaKey, 'Shift', 'P']],
     action: signals => {
-      signals.editor.preferences.quickActionsOpened();
+      signals.editor.quickActionsOpened();
     },
   },
 
@@ -113,7 +113,7 @@ export const KEYBINDINGS = {
     type: 'View',
     bindings: [[metaKey, ',']],
     action: signals => {
-      signals.modalOpened({ name: 'preferences' });
+      signals.editor.preferences.modalOpened();
     },
   },
 
@@ -122,7 +122,7 @@ export const KEYBINDINGS = {
     type: 'Source',
     bindings: [],
     action: signals => {
-      signals.modalOpened({ name: 'searchDependencies' });
+      signals.editor.workspace.searchDependenciesModalOpened();
     },
   },
 

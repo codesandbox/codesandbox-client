@@ -5,7 +5,7 @@ import { Highlight } from 'react-instantsearch/dom';
 
 import Tooltip from 'common/components/Tooltip';
 
-import GitHubLogo from '../../Git/GitHubLogo';
+import GitHubLogo from 'app/components/GitHubLogo';
 import formatDownloads from '../formatDownloads';
 
 import {

@@ -1,4 +1,4 @@
-import { when, set, toggle } from 'cerebral/operators';
+import { when, set } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 import * as actions from './actions';
 import { addNotification as addNotificationFactory } from './factories';

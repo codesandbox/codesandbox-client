@@ -3,15 +3,17 @@ import { inject, observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
-import KeybindingManager from 'app/pages/Sandbox/Editor/KeybindingManager';
-import QuickActions from 'app/pages/Sandbox/Editor/QuickActions';
+import KeybindingManager from 'app/pages/Sandbox/KeybindingManager';
+import QuickActions from 'app/pages/Sandbox/QuickActions';
 
+import Modal from 'app/components/Modal';
 import Title from 'app/components/Title';
 import SubTitle from 'app/components/SubTitle';
 import Centered from 'common/components/flex/Centered';
 
 import Editor from './Editor';
 import Skeleton from './Editor/Content/Skeleton';
+import SearchDependencies from './SearchDependencies';
 
 class SandboxPage extends React.Component {
   componentDidMount() {
@@ -42,7 +44,7 @@ class SandboxPage extends React.Component {
   }
 
   render() {
-    const { match, store } = this.props;
+    const { match, store, signals } = this.props;
 
     if (store.editor.isLoading) {
       return (
@@ -88,6 +90,19 @@ class SandboxPage extends React.Component {
         <Editor match={match} />
         <KeybindingManager />
         <QuickActions />
+        <Modal
+          isOpen={store.editor.workspace.showSearchDependenciesModal}
+          width={600}
+          onClose={() =>
+            signals.editor.workspace.searchDependenciesModalClosed()
+          }
+        >
+          <SearchDependencies
+            onConfirm={(name, version) =>
+              signals.editor.workspace.npmDependencyAdded({ name, version })
+            }
+          />
+        </Modal>
       </React.Fragment>
     );
   }

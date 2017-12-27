@@ -1,6 +1,7 @@
 import * as React from 'react';
 import SplitPane from 'react-split-pane';
 import { inject, observer } from 'mobx-react';
+
 import Workspace from './Workspace';
 import Content from './Content';
 

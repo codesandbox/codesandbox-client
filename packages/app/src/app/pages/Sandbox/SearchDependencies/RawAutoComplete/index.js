@@ -3,7 +3,7 @@ import Downshift from 'downshift';
 
 import { Pagination } from 'react-instantsearch/dom';
 
-import DependencyHit from '../../DependencyHit';
+import DependencyHit from '../DependencyHit';
 import { AutoCompleteInput } from './elements';
 
 function RawAutoComplete({

@@ -4,12 +4,12 @@ import * as actions from './actions';
 import { ensureOwnedSandbox } from '../../sequences';
 import { addNotification } from '../../../../factories';
 
-export const showSearchDependenciesModal = set(
+export const openSearchDependenciesModal = set(
   state`editor.workspace.showSearchDependenciesModal`,
   true
 );
 
-export const hideSearchDependenciesModal = set(
+export const closeSearchDependenciesModal = set(
   state`editor.workspace.showSearchDependenciesModal`,
   false
 );

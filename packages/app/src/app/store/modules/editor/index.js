@@ -73,6 +73,8 @@ export default Module({
     shareModalClosed: sequences.closeShareModal,
     deploymentModalOpened: sequences.openDeploymentModal,
     deploymentModalClosed: sequences.closeDeploymentModal,
+    quickActionsOpened: sequences.openQuickActions,
+    quickActionsClosed: sequences.closeQuickActions,
   },
   modules: { workspace, preferences, deployment },
 });

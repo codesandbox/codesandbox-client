@@ -18,6 +18,7 @@ import {
 class QuickActions extends React.Component {
   updateGenie = () => {
     const keybindings = this.props.store.editor.preferences.keybindings;
+    const signals = this.props.signals;
 
     Object.keys(keybindings).forEach(bindingKey => {
       const quickAction = keybindings[bindingKey];
@@ -25,8 +26,7 @@ class QuickActions extends React.Component {
       genie({
         magicWords: `${quickAction.type}: ${quickAction.title}`,
         id: bindingKey,
-        action: () => this.props.signals.editor.quickActionTriggered(),
-        // this.props.dispatch(quickAction.action({ id: this.props.sandboxId })),
+        action: () => quickAction.action(signals),
       });
     });
   };
@@ -49,13 +49,14 @@ class QuickActions extends React.Component {
 
   closeQuickActions = () => {
     this.props.signals.editor.quickActionsClosed();
-    // this.props.dispatch(viewActions.setQuickActionsOpen(false));
   };
 
   onChange = item => {
     genie.makeWish(item);
     this.closeQuickActions();
   };
+
+  itemToString = item => item.magicWords.join(', ');
 
   render() {
     if (!this.props.store.editor.quickActionsOpen) {
@@ -110,7 +111,8 @@ class QuickActions extends React.Component {
                       keybindings[item.id].bindings[0] && (
                         <Keybindings>
                           <Keys bindings={keybindings[item.id].bindings[0]} />
-                          {keybindings[item.id].bindings[1] &&
+                          {keybindings[item.id].bindings.length === 2 &&
+                            keybindings[item.id].bindings[1] &&
                             keybindings[item.id].bindings[1].length && (
                               <React.Fragment>
                                 {' - '}
