@@ -108,11 +108,11 @@ export default function(content: string, loaderContext: LoaderContext) {
   };
 
   const codeSandboxLoaders = {
-    less: ['vue-style-loader', 'less-loader'],
-    sass: ['vue-style-loader', 'sass-loader'],
-    scss: ['vue-style-loader', 'sass-loader'],
-    styl: ['vue-style-loader', 'stylus-loader'],
-    stylus: ['vue-style-loader', 'stylus-loader'],
+    less: ['vue-style-loader', 'css-loader', 'less-loader'],
+    sass: ['vue-style-loader', 'css-loader', 'sass-loader'],
+    scss: ['vue-style-loader', 'css-loader', 'sass-loader'],
+    styl: ['vue-style-loader', 'css-loader', 'stylus-loader'],
+    stylus: ['vue-style-loader', 'css-loader', 'stylus-loader'],
   };
 
   const loaders = Object.assign({}, defaultLoaders, codeSandboxLoaders);

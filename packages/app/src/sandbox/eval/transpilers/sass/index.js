@@ -23,6 +23,8 @@ class SassTranspiler extends WorkerTranspiler {
       }),
       {}
     );
+
+    files[loaderContext.path] = code;
     // TODO fix file finding, make use of content
 
     return new Promise((resolve, reject) => {
