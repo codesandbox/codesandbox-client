@@ -1,6 +1,6 @@
 import babelTranspiler from '../../transpilers/babel';
 import jsonTranspiler from '../../transpilers/json';
-import stylesTranspiler from '../../transpilers/css';
+import stylesTranspiler from '../../transpilers/style';
 import sassTranspiler from '../../transpilers/sass';
 import rawTranspiler from '../../transpilers/raw';
 import stylusTranspiler from '../../transpilers/stylus';

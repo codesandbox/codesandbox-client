@@ -103,7 +103,7 @@ export default function(content: string, loaderContext: LoaderContext) {
 
   const defaultLoaders = {
     html: templateCompilerPath + templateCompilerOptions,
-    css: styleLoaderPath + '!',
+    css: styleLoaderPath + '!' + 'css-loader' + cssLoaderOptions,
     js: 'babel-loader',
   };
 
@@ -183,9 +183,9 @@ export default function(content: string, loaderContext: LoaderContext) {
               : getRequireString('styles', style, i, style.scoped);
 
             output +=
-              `module.hot && module.hot.accept(['${
+              `module.hot && module.hot.accept([${
                 requirePath
-              }'], function () {\n` +
+              }], function () {\n` +
               // 1. check if style has been injected
               `  var oldLocals = cssModules["${moduleName}"]\n` +
               `  if (!oldLocals) return\n` +

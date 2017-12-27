@@ -22,18 +22,19 @@ export default function(content: string, loaderContext) {
 
   const request = loaderUtils.stringifyRequest(
     loaderContext,
-    loaderContext._module.query.replace('vue-style-loader!', 'raw-loader!') +
+    loaderContext._module.query.replace('vue-style-loader!', '') +
       '!' +
       loaderContext.path
   );
 
   const id = JSON.stringify(hash(request));
+  loaderContext.addDependency(JSON.parse(request));
 
   const shared = [
     '// style-loader: Adds some css to the DOM by adding a <style> tag',
     '',
     '// load the styles',
-    `var content = ${JSON.stringify(content)}`,
+    `var content = require(${request})`,
     // content list format is [id, css, media, sourceMap]
     "if(typeof content === 'string') content = [[module.id, content, '']];",
     'if(content.locals) module.exports = content.locals;',

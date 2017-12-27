@@ -4,6 +4,8 @@ import { flattenDeep } from 'lodash';
 import { actions, dispatch } from 'codesandbox-api';
 import _debug from 'app/utils/debug';
 
+import hashsum from 'hash-sum';
+
 import * as pathUtils from 'common/utils/path';
 
 import type { Module } from './entities/module';
@@ -218,8 +220,10 @@ export default class TranspiledModule {
   }
 
   update(module: Module): TranspiledModule {
-    this.module = module;
-    this.resetTranspilation();
+    if (this.module.path !== module.path || this.module.code !== module.code) {
+      this.module = module;
+      this.resetTranspilation();
+    }
 
     return this;
   }
@@ -451,7 +455,9 @@ export default class TranspiledModule {
 
     // Add the source of the file by default, this is important for source mapping
     // errors back to their origin
-    code = `${code}\n//# sourceURL=${location.origin}${this.module.path}`;
+    code = `${code}\n//# sourceURL=${location.origin}${this.module.path}${
+      this.query ? `?${hashsum(this.query)}` : ''
+    }`;
 
     this.source = new ModuleSource(this.module.path, code, finalSourceMap);
 

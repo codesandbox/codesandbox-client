@@ -1,7 +1,7 @@
 import babelTranspiler from '../../transpilers/babel';
 import typescriptTranspiler from '../../transpilers/typescript';
 import jsonTranspiler from '../../transpilers/json';
-import stylesTranspiler from '../../transpilers/css';
+import stylesTranspiler from '../../transpilers/style';
 import sassTranspiler from '../../transpilers/sass';
 import rawTranspiler from '../../transpilers/raw';
 import stylusTranspiler from '../../transpilers/stylus';
@@ -13,6 +13,7 @@ import vueTemplateTranspiler from '../../transpilers/vue/template-compiler';
 import vueStyleTranspiler from '../../transpilers/vue/style-compiler';
 import vueSelector from '../../transpilers/vue/selector';
 import vueStyleLoader from '../../transpilers/vue/style-loader';
+import cssLoader from '../../transpilers/vue/css-loader';
 import base64Transpiler from '../../transpilers/base64';
 
 import Preset from '../';
@@ -97,6 +98,7 @@ vuePreset.registerTranspiler(() => false, [
 vuePreset.registerTranspiler(() => false, [{ transpiler: vueStyleTranspiler }]);
 vuePreset.registerTranspiler(() => false, [{ transpiler: vueSelector }]);
 vuePreset.registerTranspiler(() => false, [{ transpiler: vueStyleLoader }]);
+vuePreset.registerTranspiler(() => false, [{ transpiler: cssLoader }]);
 
 vuePreset.registerTranspiler(module => /\.png$/.test(module.path), [
   { transpiler: binaryTranspiler },
