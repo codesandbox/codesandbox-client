@@ -395,11 +395,6 @@ export default class Manager {
       .getAliasedPath(modulePath)
       .replace(/.*\{\{sandboxRoot\}\}/, '');
 
-    if (newPath.startsWith('/') && !newPath.startsWith('/node_modules')) {
-      const module = this.transpiledModules[newPath];
-      return this.getTranspiledModule(module.module, queryPath.join('!'));
-    }
-
     const module = this.resolveModule(
       newPath,
       currentPath,
