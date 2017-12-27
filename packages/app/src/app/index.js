@@ -2,7 +2,8 @@ import React from 'react';
 import { AppContainer } from 'react-hot-loader';
 import { render } from 'react-dom';
 import { ThemeProvider } from 'styled-components';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { Router } from 'react-router-dom';
+import history from 'app/utils/history';
 import registerServiceWorker from 'common/registerServiceWorker';
 import requirePolyfills from 'common/load-dynamic-polyfills';
 import 'normalize.css';
@@ -81,7 +82,7 @@ requirePolyfills().then(() => {
         <Provider {...controller.provide()}>
           <AppContainer>
             <ThemeProvider theme={theme}>
-              <Router>
+              <Router history={history}>
                 <RootComponent />
               </Router>
             </ThemeProvider>

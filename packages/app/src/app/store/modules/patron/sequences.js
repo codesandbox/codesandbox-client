@@ -14,12 +14,20 @@ export const createSubscription = [
 export const updateSubscription = [
   actions.updateSubscription,
   set(state`user`, props`user`),
+  addNotification('Subscription updated, thanks for helping out!', 'success'),
 ];
 
 export const cancelSubscription = [
   actions.whenConfirmedCancelSubscription,
   {
-    true: [actions.cancelSubscription, set(state`user`, props`user`)],
+    true: [
+      actions.cancelSubscription,
+      set(state`user`, props`user`),
+      addNotification(
+        'Sorry to see you go, but thanks a bunch for the support this far!',
+        'success'
+      ),
+    ],
     false: [],
   },
 ];

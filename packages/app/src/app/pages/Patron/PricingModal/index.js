@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { inject } from 'mobx-react';
+import { inject, observer } from 'mobx-react';
 
 import PricingInfo from './PricingInfo';
 import PricingChoice from './PricingChoice';
@@ -22,4 +22,4 @@ function PricingModal({ store }) {
   );
 }
 
-export default inject('store')(PricingModal);
+export default inject('store')(observer(PricingModal));

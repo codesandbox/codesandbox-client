@@ -26,6 +26,7 @@ const createParticles = (amount: number, badge) =>
     .fill(0)
     .map((_, i) => (
       <Particle
+        key={`${i}_${badge}`} // eslint-disable-line
         className={`${badge}-particle particle hide`}
         i={i}
         deg={180 + (Math.floor(amount / 2) + i) * (360 / amount)}
@@ -33,7 +34,7 @@ const createParticles = (amount: number, badge) =>
       />
     ));
 
-export default class Particles extends React.PureComponent {
+export default class Particles extends React.Component {
   makeItRain = () => {
     const particleSelector = document.getElementsByClassName('particle');
     Array.forEach(particleSelector, hideElement);
