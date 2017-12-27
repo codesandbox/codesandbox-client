@@ -222,6 +222,11 @@ class MonacoEditor extends React.Component {
   changeCode = code => {
     if (code !== this.getCode()) {
       this.updateCode(code);
+      this.syntaxHighlight(
+        code,
+        this.currentModule.title,
+        this.editor.getModel().getVersionId()
+      );
     }
   };
 

@@ -1,7 +1,7 @@
 import { Provider } from 'cerebral';
 import { resolveModule } from 'common/sandbox/modules';
 import { isEqual } from 'lodash';
-import * as prettify from 'app/utils/prettify';
+import prettify from 'app/utils/prettify';
 
 export default Provider({
   prettify(fileName, code) {
