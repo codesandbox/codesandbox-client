@@ -33,7 +33,7 @@ export const closeNewSandboxModal = set(
 
 export const toggleProjectView = toggle(state`editor.isInProjectView`);
 
-export const closeTab = actions.closeTab;
+export const closeTab = [actions.closeTab, actions.setCurrentModuleByTab];
 
 export const clearErrors = set(state`editor.errors`, []);
 

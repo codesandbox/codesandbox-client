@@ -54,10 +54,7 @@ class EditorTabs extends React.Component {
     this.props.signals.editor.tabClosed({ tabIndex });
   };
 
-  moveTab = (moduleId, nextIndex) => {
-    const prevIndex = this.props.store.editor.tabs.findIndex(
-      tab => tab.moduleId === moduleId
-    );
+  moveTab = (prevIndex, nextIndex) => {
     this.props.signals.editor.tabMoved({ prevIndex, nextIndex });
   };
 

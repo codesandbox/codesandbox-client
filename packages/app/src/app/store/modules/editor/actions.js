@@ -14,6 +14,18 @@ export function ensureValidPrivacy({ props, path }) {
   return Number.isNaN(privacy) ? path.invalid() : path.valid({ privacy });
 }
 
+export function setCurrentModuleByTab({ state, props }) {
+  const index =
+    state.get('editor.tabs').length - 1 >= props.tabIndex
+      ? props.tabIndex
+      : props.tabIndex - 1;
+  const moduleShortid = state.get(
+    `editor.currentSandbox.modules.${index}.shortid`
+  );
+
+  state.set('editor.currentModuleShortid', moduleShortid);
+}
+
 export function updatePrivacy({ api, props, state }) {
   const id = state.get('editor.currentId');
 
