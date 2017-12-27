@@ -135,8 +135,11 @@ class EditorPreview extends React.Component {
             currentModule={currentModule}
             workspaceHidden={store.editor.workspace.isWorkspaceHidden}
             toggleWorkspace={() => signals.editor.workspace.workspaceToggled()}
-            exitZenMode={
-              () => {} /* this.props.signals.editor.preferences.settingChanged({ zenMode }) */
+            exitZenMode={() =>
+              this.props.signals.editor.preferences.settingChanged({
+                name: 'zenMode',
+                value: false,
+              })
             }
           />
         ) : (

@@ -24,12 +24,14 @@ export const Chevron = styled(ChevronLeft)`
   opacity: 0;
   cursor: pointer;
 
-  ${props => props.hovering && 'opacity: 1;'};
+  ${props => props.hovering === 'true' && 'opacity: 1;'};
 
-  transform: rotateZ(${props => (props.workspaceHidden ? '180deg' : '0')});
+  transform: rotateZ(
+    ${props => (props.workspacehidden === 'true' ? '180deg' : '0')}
+  );
   &:hover {
     transform: rotateZ(
-      ${props => (props.workspaceHidden ? '135deg' : '45deg')}
+      ${props => (props.workspacehidden === 'true' ? '135deg' : '45deg')}
     );
     color: white;
   }
@@ -52,7 +54,7 @@ export const StyledExitZen = withTooltip(
     z-index: 10;
 
     ${props =>
-      props.hovering &&
+      props.hovering === 'true' &&
       css`
         opacity: 0.7;
 

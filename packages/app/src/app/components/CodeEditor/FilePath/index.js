@@ -43,8 +43,8 @@ export default class FilePath extends React.Component {
       >
         <Chevron
           onClick={toggleWorkspace}
-          workspaceHidden={workspaceHidden}
-          hovering={!workspaceHidden || this.state.hovering}
+          workspacehidden={String(workspaceHidden)}
+          hovering={String(!workspaceHidden || this.state.hovering)}
         />
         <FileName hovering={!workspaceHidden || this.state.hovering}>
           <EntryIcons
@@ -60,7 +60,10 @@ export default class FilePath extends React.Component {
           </span>
         </FileName>
 
-        <StyledExitZen hovering={this.state.hovering} onClick={exitZenMode} />
+        <StyledExitZen
+          hovering={String(this.state.hovering)}
+          onClick={exitZenMode}
+        />
       </Container>
     );
   }
