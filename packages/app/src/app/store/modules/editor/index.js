@@ -12,6 +12,7 @@ import { isModuleSynced } from './computed';
 import workspace from './modules/workspace';
 import preferences from './modules/preferences';
 import deployment from './modules/deployment';
+import git from './modules/git';
 
 export default Module({
   model,
@@ -76,5 +77,5 @@ export default Module({
     quickActionsOpened: sequences.openQuickActions,
     quickActionsClosed: sequences.closeQuickActions,
   },
-  modules: { workspace, preferences, deployment },
+  modules: { workspace, preferences, deployment, git },
 });

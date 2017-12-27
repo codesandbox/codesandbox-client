@@ -26,7 +26,7 @@ export default Provider({
       .post(API_ROOT + path, decamelizeKeys(body), {
         headers: createHeaders(this.context),
       })
-      .then(response => camelizeKeys(response.result.data));
+      .then(response => camelizeKeys(response.result.data || response.result));
   },
   patch(path, body) {
     return this.context.http

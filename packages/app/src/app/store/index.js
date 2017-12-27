@@ -10,6 +10,7 @@ import RouterProvider from './providers/Router';
 import UtilsProvider from './providers/Utils';
 import JSZipProvider from './providers/JSZip';
 import SettingsStoreProvider from './providers/SettingsStore';
+import GitProvider from './providers/Git';
 
 import * as sequences from './sequences';
 import * as errors from './errors';
@@ -92,5 +93,6 @@ export default Module({
     router: RouterProvider,
     utils: UtilsProvider,
     settingsStore: SettingsStoreProvider,
+    git: GitProvider,
   },
 });

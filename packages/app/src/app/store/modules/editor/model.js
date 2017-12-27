@@ -60,7 +60,15 @@ const Sandbox = types.model({
       forkCount: types.number,
     })
   ),
-  git: types.maybe(types.string),
+  git: types.maybe(
+    types.model({
+      branch: types.string,
+      commitSha: types.maybe(types.string),
+      path: types.string,
+      repo: types.string,
+      username: types.string,
+    })
+  ),
   id: types.string,
   likeCount: types.number,
   modules: types.array(Module),

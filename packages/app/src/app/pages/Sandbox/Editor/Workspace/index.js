@@ -19,7 +19,7 @@ import Logo from './Logo';
 import ConnectionNotice from './ConnectionNotice';
 import Advertisement from './Advertisement';
 import Git from './Git';
-import CreateRepo from './Git/CreateRepo';
+import CreateRepo from './CreateRepo';
 
 import { Container, TermsContainer, WorkspaceInputContainer } from './elements';
 
