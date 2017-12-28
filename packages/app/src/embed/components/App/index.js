@@ -1,9 +1,7 @@
-// @flow
 import * as React from 'react';
-import styled, { ThemeProvider } from 'styled-components';
+import { ThemeProvider } from 'styled-components';
 import { camelizeKeys } from 'humps';
 
-import type { Sandbox } from 'common/types';
 import getTemplateDefinition from 'common/templates';
 import Centered from 'common/components/flex/Centered';
 import Title from 'app/components/Title';
@@ -12,9 +10,11 @@ import { getSandboxOptions } from 'common/url';
 
 import { findCurrentModule, findMainModule } from 'common/sandbox/modules';
 
-import Header from './components/Header';
-import Content from './components/Content';
-import Sidebar from './components/Sidebar';
+import Header from '../Header';
+import Content from '../Content';
+import Sidebar from '../Sidebar';
+
+import { Container, Fullscreen, Moving } from './elements';
 
 // Okay, this looks veeeery strange, we need this because Webpack has a bug currently
 // that makes it think we have core-js/es6/map available in embed, but we don't.
@@ -23,55 +23,7 @@ import Sidebar from './components/Sidebar';
 // eslint-disable-next-line
 new Map();
 
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: 100%;
-  color: white;
-`;
-
-const Fullscreen = styled.div`
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-`;
-
-const Moving = styled.div`
-  transition: 0.3s ease all;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  transform: translateX(${props => (props.sidebarOpen ? 250 : 0)}px);
-  box-shadow: -3px 3px 3px rgba(0, 0, 0, 0.5);
-`;
-
-type State = {
-  notFound: boolean,
-  sandbox: ?Sandbox,
-  showEditor: boolean,
-  showPreview: boolean,
-  isInProjectView: boolean,
-  currentModule: ?string,
-  sidebarOpen: boolean,
-  autoResize: boolean,
-  hideNavigation: boolean,
-  fontSize: number,
-  enableEslint: boolean,
-  useCodeMirror: boolean,
-  editorSize: number,
-  forceRefresh: boolean,
-  expandDevTools: boolean,
-  runOnClick: boolean,
-  highlightedLines: Array<string>,
-};
-
-export default class App extends React.PureComponent<{}, State> {
+export default class App extends React.PureComponent {
   constructor() {
     super();
 
@@ -126,7 +78,7 @@ export default class App extends React.PureComponent<{}, State> {
 
   getAppOrigin = () => location.origin.replace('embed.', '');
 
-  fetchSandbox = async (id: string) => {
+  fetchSandbox = async id => {
     try {
       const response = await fetch(
         `${this.getAppOrigin()}/api/v1/sandboxes/${id}`
@@ -159,12 +111,12 @@ export default class App extends React.PureComponent<{}, State> {
     this.setState({ showEditor: false, showPreview: true });
   setMixedView = () => this.setState({ showEditor: true, showPreview: true });
 
-  setCurrentModule = (id: string) => this.setState({ currentModule: id });
+  setCurrentModule = id => this.setState({ currentModule: id });
 
   toggleSidebar = () => this.setState({ sidebarOpen: !this.state.sidebarOpen });
 
-  setProjectView = (sandboxId: string, isOpen: boolean) =>
-    this.setState({ isInProjectView: isOpen });
+  setProjectView = (sandboxId, isOpen, cb) =>
+    this.setState({ isInProjectView: isOpen }, cb);
 
   getCurrentModuleFromPath = () => {
     const { sandbox, currentModule: currentModulePath } = this.state;

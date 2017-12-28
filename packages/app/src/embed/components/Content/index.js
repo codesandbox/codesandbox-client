@@ -1,5 +1,4 @@
 import * as React from 'react';
-import styled from 'styled-components';
 import BasePreview from 'app/components/Preview';
 import CodeEditor from 'app/components/CodeEditor';
 import Tab from 'app/pages/Sandbox/Editor/Content/Tabs/Tab';
@@ -8,39 +7,10 @@ import Fullscreen from 'common/components/flex/Fullscreen';
 import Centered from 'common/components/flex/Centered';
 import theme from 'common/theme';
 
+import { resolveModule, findMainModule } from 'common/sandbox/modules';
 import playSVG from './play.svg';
 
-const Container = styled.div`
-  display: flex;
-  position: relative;
-  background-color: ${props => props.theme.background2};
-  height: calc(100% - 2.5rem);
-`;
-
-const Tabs = styled.div`
-  display: flex;
-  height: 2.5rem;
-  min-height: 2.5rem;
-  background-color: rgba(0, 0, 0, 0.3);
-  overflow-x: auto;
-
-  -ms-overflow-style: none; // IE 10+
-  overflow: -moz-scrollbars-none; // Firefox
-
-  &::-webkit-scrollbar {
-    height: 2px; // Safari and Chrome
-  }
-`;
-
-const Split = styled.div`
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  width: ${props => (props.show ? `${props.size}%` : '0px')};
-  max-width: ${props => (props.only ? '100%' : `${props.size}%`)};
-  min-width: ${props => (props.only ? '100%' : `${props.size}%`)};
-  height: 100%;
-`;
+import { Container, Tabs, Split } from './elements';
 
 export default class Content extends React.PureComponent {
   constructor(props) {
@@ -56,12 +26,11 @@ export default class Content extends React.PureComponent {
     }
 
     this.state = {
-      inInProjectView: false,
-      codes: {},
-      errors: [],
       running: !props.runOnClick,
       tabs,
     };
+
+    this.errors = [];
   }
 
   componentWillReceiveProps(nextProps) {
@@ -81,14 +50,14 @@ export default class Content extends React.PureComponent {
   }
 
   componentDidMount() {
-    setTimeout(() => this.handleResize());
+    setTimeout(this.handleResize);
   }
 
-  setProjectView = (id: string, view: boolean) => {
+  setProjectView = (id, view) => {
     this.setState({ isInProjectView: view });
   };
 
-  handleResize = (height: number = 500) => {
+  handleResize = (height = 500) => {
     const extraOffset = (this.props.hideNavigation ? 3 * 16 : 6 * 16) + 16;
     if (this.props.autoResize) {
       window.parent.postMessage(
@@ -124,7 +93,7 @@ export default class Content extends React.PureComponent {
     }
   };
 
-  setCode = (code: string) => {
+  setCode = code => {
     this.props.currentModule.code = code;
     const settings = this.getPreferences();
 
@@ -137,19 +106,42 @@ export default class Content extends React.PureComponent {
     }
   };
 
-  addError = (moduleId, error) => {
-    if (!this.state.errors.find(e => e.moduleId === error.moduleId)) {
-      this.setState({
-        errors: [...this.state.errors, error],
-      });
+  handleAction = action => {
+    switch (action.action) {
+      case 'show-error':
+        return this.addError(action);
+      default:
+        return null;
+    }
+  };
+
+  addError = error => {
+    const module = resolveModule(
+      error.path.replace(/^\//, ''),
+      this.props.sandbox.modules,
+      this.props.sandbox.directories
+    );
+
+    if (module) {
+      this.errors = [
+        ...this.errors,
+        {
+          moduleId: module.id,
+          column: error.column,
+          line: error.line,
+          message: error.message,
+          title: error.title,
+        },
+      ];
+
+      this.editor.setErrors(this.errors);
     }
   };
 
   clearErrors = () => {
-    if (this.state.errors.length > 0) {
-      this.setState({
-        errors: [],
-      });
+    this.errors = [];
+    if (this.editor) {
+      this.editor.setErrors(this.errors);
     }
   };
 
@@ -168,11 +160,11 @@ export default class Content extends React.PureComponent {
     lineHeight: 1.4,
   });
 
-  setCurrentModule = (_: any, moduleId: string) => {
+  setCurrentModule = (_, moduleId) => {
     this.props.setCurrentModule(moduleId);
   };
 
-  closeTab = (pos: number) => {
+  closeTab = pos => {
     const newModule =
       this.state.tabs[pos - 1] ||
       this.state.tabs[pos + 1] ||
@@ -184,6 +176,12 @@ export default class Content extends React.PureComponent {
   onCodeEditorInitialized = editor => {
     this.editor = editor;
     return () => {};
+  };
+
+  onToggleProjectView = () => {
+    this.props.setProjectView(null, !this.props.isInProjectView, () =>
+      this.preview.handleRefresh()
+    );
   };
 
   onPreviewInitialized = preview => {
@@ -217,18 +215,16 @@ export default class Content extends React.PureComponent {
       sandbox,
       showEditor,
       showPreview,
-      isInProjectView,
       currentModule,
       hideNavigation,
+      isInProjectView,
       editorSize,
-      highlightedLines,
       expandDevTools,
     } = this.props;
 
-    const { errors } = this.state;
-
-    // $FlowIssue
-    const mainModule = currentModule;
+    const mainModule = isInProjectView
+      ? findMainModule(sandbox.modules, sandbox.directories, sandbox.entry)
+      : currentModule;
 
     if (!mainModule) throw new Error('Cannot find main module');
 
@@ -281,28 +277,6 @@ export default class Content extends React.PureComponent {
               onChange={this.setCode}
               onModuleChange={this.setCurrentModule}
             />
-            {/*
-              code={alteredMainModule.code}
-              id={alteredMainModule.id}
-              title={alteredMainModule.title}
-              modulePath={getModulePath(
-                alteredModules,
-                sandbox.directories,
-                alteredMainModule.id
-              )}
-              changeCode={this.setCode}
-              preferences={this.getPreferences()}
-              modules={sandbox.modules}
-              directories={sandbox.directories}
-              sandboxId={sandbox.id}
-              setCurrentModule={this.setCurrentModule}
-              template={sandbox.template}
-              dependencies={sandbox.npmDependencies}
-              hideNavigation={hideNavigation}
-              canSave={false}
-              corrections={[]}
-              highlightedLines={highlightedLines}
-              */}
           </Split>
         )}
 
@@ -322,45 +296,13 @@ export default class Content extends React.PureComponent {
                 settings={this.getPreferences()}
                 initialPath={this.props.initialPath}
                 isInProjectView={isInProjectView}
-                onClearErrors={() => {}} // store.editor.errors.length && signals.editor.errorsCleared()}
-                onAction={action => {}} // signals.editor.previewActionReceived({ action })}
-                onOpenNewWindow={() => {}}
-                /*
-                  this.props.signals.editor.preferences.viewModeChanged({
-                    showEditor: true,
-                    showPreview: false,
-                  })
-                }
-                */
+                onClearErrors={this.clearErrors}
+                onAction={this.handleAction}
+                onToggleProjectView={this.onToggleProjectView}
                 showDevtools={expandDevTools}
+                onResize={this.handleResize}
               />
             )}
-            {/*
-            {!this.state.running ? (
-              <RunOnClick />
-            ) : (
-              <Preview
-                sandboxId={sandbox.id}
-                template={sandbox.template}
-                isInProjectView={isInProjectView}
-                modules={alteredModules}
-                directories={sandbox.directories}
-                externalResources={sandbox.externalResources}
-                module={alteredMainModule}
-                addError={this.addError}
-                clearErrors={this.clearErrors}
-                preferences={this.getPreferences()}
-                setProjectView={this.props.setProjectView}
-                hideNavigation={hideNavigation}
-                setFrameHeight={this.handleResize}
-                initialPath={this.props.initialPath}
-                errors={errors}
-                corrections={[]}
-                dependencies={sandbox.npmDependencies}
-                shouldExpandDevTools={expandDevTools}
-                entry={sandbox.entry}
-              />
-              */}
           </Split>
         )}
       </Container>

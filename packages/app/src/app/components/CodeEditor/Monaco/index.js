@@ -582,7 +582,7 @@ class MonacoEditor extends React.Component {
     }
   };
 
-  lint = async (code: string, title: string, version: string) => {
+  lint = async (code, title, version) => {
     const mode = await this.getMode(title);
     if (mode === 'javascript') {
       if (this.lintWorker) {

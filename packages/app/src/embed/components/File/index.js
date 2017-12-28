@@ -1,28 +1,11 @@
-// @flow
-
 import * as React from 'react';
-import styled from 'styled-components';
 import { EntryContainer as Entry } from 'app/pages/Sandbox/Editor/Workspace/elements';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
 import EntryTitle from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryTitle';
 
-type Props = {
-  id: string,
-  shortid: string,
-  title: string,
-  type: 'directory-open' | string,
-  setCurrentModule: (shortid: string, id: string) => void,
-  depth: number,
-  active?: boolean,
-  alternative?: boolean,
-};
-const LeftOffset = styled.div`
-  display: flex;
-  flex-wrap: nowrap;
-  padding-left: ${props => props.depth}rem;
-`;
+import { LeftOffset } from './elements';
 
-export default class File extends React.PureComponent<Props> {
+export default class File extends React.PureComponent {
   static defaultProps = {
     active: false,
     alternative: false,

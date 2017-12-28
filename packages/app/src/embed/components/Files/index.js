@@ -1,30 +1,14 @@
-// @flow
 import * as React from 'react';
-import styled from 'styled-components';
 import sortBy from 'lodash/sortBy';
 
-import type { Module, Directory } from 'common/types';
 import { isMainModule } from 'common/sandbox/modules';
 import getType from 'app/utils/get-type';
 
-import File from './File';
+import File from '../File';
 
-const Container = styled.div`
-  line-height: 1;
-`;
+import { Container } from './elements';
 
-type Props = {
-  modules: Array<Module>,
-  directories: Array<Directory>,
-  directoryId: string,
-  depth: number,
-  currentModule: string,
-  setCurrentModule: (id: string, shortid: string) => any,
-  template: string,
-  entry: string,
-};
-
-const Files = ({
+function Files({
   modules,
   directories,
   directoryId,
@@ -33,7 +17,7 @@ const Files = ({
   setCurrentModule,
   template,
   entry,
-}: Props) => {
+}) {
   const childrenModules = modules.filter(
     m => m.directoryShortid === directoryId
   );
@@ -81,6 +65,6 @@ const Files = ({
       ))}
     </Container>
   );
-};
+}
 
 export default Files;
