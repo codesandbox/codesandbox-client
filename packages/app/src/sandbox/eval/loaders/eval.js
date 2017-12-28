@@ -15,10 +15,19 @@ export default function(
   window.global = global;
 
   try {
-    const newCode = `(function evaluate(require, module, exports, process, setImmediate, global) {${
+    const newCode = `(function evaluate(require, module, exports, process, setImmediate, Buffer, global) {${
       code
     }\n})`;
-    (0, eval)(newCode)(require, module, exports, process, setImmediate, global); // eslint-disable-line no-eval
+    // eslint-disable-next-line no-eval
+    (0, eval)(newCode)(
+      require,
+      module,
+      exports,
+      process,
+      setImmediate,
+      Buffer,
+      global
+    );
 
     return module.exports;
   } catch (e) {
