@@ -1,6 +1,8 @@
 import React from 'react';
+import { inject, observer } from 'mobx-react';
 
 import Margin from 'common/components/spacing/Margin';
+import Modal from 'app/components/Modal';
 import GithubBadge from 'app/components/GithubBadge';
 import { githubRepoUrl } from 'common/utils/url-generator';
 import Button from 'app/components/Button';
@@ -17,100 +19,35 @@ function hasWriteAccess(rights: 'none' | 'read' | 'write' | 'admin') {
   return rights === 'write' || rights === 'admin';
 }
 
-export default class Git extends React.PureComponent {
-  state = {
-    showFetchButton: false,
-    fetching: false,
-
-    message: '',
-  };
-
-  fetchGitChanges = async () => {
-    this.setState({ fetching: true, showFetchButton: false });
-
-    try {
-      await this.props.fetchGitChanges(this.props.sandboxId);
-    } catch (e) {
-      /* no */
-    }
-
-    this.setState({ fetching: false });
-  };
-
+class Git extends React.Component {
   componentDidMount() {
-    this.fetchGitChanges();
+    this.props.signals.editor.git.gitMounted();
   }
-
-  componentWillReceiveProps(nextProps) {
-    if (!nextProps.gitChanges && this.props.gitChanges) {
-      this.setState({ showFetchButton: true });
-    } else if (nextProps.gitChanges) {
-      this.setState({ showFetchButton: false });
-    }
-  }
-
   createCommit = () => {
-    const {
-      sandboxId,
-      createGitCommit,
-      closeModal,
-      user,
-      originalGit,
-    } = this.props;
-
-    const promise = createGitCommit(sandboxId, this.state.message);
-    this.props.openModal({
-      width: 400,
-      Body: (
-        <CommitModal
-          promise={promise}
-          username={originalGit.username}
-          repo={originalGit.repo}
-          branch={originalGit.branch}
-          closeModal={closeModal}
-          newUser={user.username}
-        />
-      ),
-    });
+    this.props.signals.editor.git.createCommitClicked();
   };
 
   createPR = () => {
-    const {
-      sandboxId,
-      closeModal,
-      createGitPR,
-      user,
-      originalGit,
-    } = this.props;
+    this.props.signals.editor.git.createPrClicked();
+  };
 
-    const promise = createGitPR(sandboxId, this.state.message);
-    this.props.openModal({
-      width: 400,
-      Body: (
-        <PRModal
-          promise={promise}
-          username={originalGit.username}
-          repo={originalGit.repo}
-          branch={originalGit.branch}
-          closeModal={closeModal}
-          newUser={user.username}
-        />
-      ),
-      preventClosing: true,
+  changeMessage = event => {
+    this.props.signals.editor.git.messageChanged({
+      message: event.target.value,
     });
   };
 
-  changeMessage = e => {
-    this.setState({ message: e.target.value });
-  };
-
   render() {
-    const { gitChanges, originalGit, modulesNotSaved } = this.props;
+    const { store, signals } = this.props;
+    const gitChanges = store.editor.git.originalGitChanges;
+    const originalGit = store.editor.currentSandbox.originalGit;
+    const modulesNotSaved = !store.editor.isAllModulesSynced;
     const changeCount = gitChanges
       ? gitChanges.added.length +
         gitChanges.modified.length +
         gitChanges.deleted.length
       : 0;
+
     return (
       <Container>
         <Notice>beta</Notice>
@@ -141,7 +78,7 @@ export default class Git extends React.PureComponent {
                   )}
                   <WorkspaceInputContainer>
                     <Input
-                      value={this.state.message}
+                      value={store.editor.git.message}
                       onChange={this.changeMessage}
                       placeholder="Commit message"
                       block
@@ -150,7 +87,7 @@ export default class Git extends React.PureComponent {
                   <Buttons>
                     {hasWriteAccess(gitChanges.rights) && (
                       <Button
-                        disabled={!this.state.message || modulesNotSaved}
+                        disabled={!store.editor.git.message || modulesNotSaved}
                         onClick={this.createCommit}
                         block
                         small
@@ -159,7 +96,7 @@ export default class Git extends React.PureComponent {
                       </Button>
                     )}
                     <Button
-                      disabled={!this.state.message || modulesNotSaved}
+                      disabled={!store.editor.git.message || modulesNotSaved}
                       onClick={this.createPR}
                       block
                       small
@@ -183,8 +120,8 @@ export default class Git extends React.PureComponent {
             </Margin>
           ) : (
             <Margin margin={1}>
-              {!this.state.fetching &&
-                this.state.showFetchButton && (
+              {!store.editor.git.isFetching &&
+                store.editor.git.showFetchButton && (
                   <a
                     style={{ cursor: 'pointer' }}
                     role="button"
@@ -194,11 +131,32 @@ export default class Git extends React.PureComponent {
                     Fetch Changes
                   </a>
                 )}
-              {this.state.fetching && <div>Fetching changes...</div>}
+              {store.editor.git.isFetching && <div>Fetching changes...</div>}
             </Margin>
           )}
         </Margin>
+        <Modal
+          isOpen={store.editor.git.showCreateCommitModal}
+          width={400}
+          onClose={() =>
+            !store.editor.git.isComitting &&
+            signals.editor.git.createCommitModalClosed()
+          }
+        >
+          <CommitModal />
+        </Modal>
+        <Modal
+          isOpen={store.editor.git.showPrModal}
+          width={400}
+          onClose={() =>
+            !store.editor.git.isCreatingPr && signals.editor.git.prModalClosed()
+          }
+        >
+          <PRModal />
+        </Modal>
       </Container>
     );
   }
 }
+
+export default inject('signals', 'store')(observer(Git));

@@ -1,5 +1,13 @@
 import { clone } from 'mobx-state-tree';
 
+export function getGitChanges({ api, state }) {
+  const id = state.get('editor.currentId');
+
+  return api
+    .get(`/sandboxes/${id}/git/diff`)
+    .then(gitChanges => ({ gitChanges }));
+}
+
 export function setWorkspace({ state, props }) {
   state.set('editor.workspace.project.title', props.sandbox.title || '');
   state.set(

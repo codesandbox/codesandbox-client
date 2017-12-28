@@ -31,6 +31,9 @@ export default Provider({
   onUnload(cb) {
     window.onbeforeunload = cb;
   },
+  openWindow(url) {
+    window.open(url, '_blank');
+  },
   openPopup(url, name) {
     return window.open(
       url,
