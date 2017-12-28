@@ -1,8 +1,12 @@
+import React from 'react';
 import styled, { css } from 'styled-components';
 import { EntryContainer } from '../../elements';
 
-// border-bottom: 1px solid ${({ color }) => color.clearer(0.7)};
-export const ChangeContainer = styled.div`
+function BaseChangeContainer({ color, ...props }) {
+  return <div {...props} />;
+}
+
+export const ChangeContainer = styled(BaseChangeContainer)`
   &:last-child {
     border-bottom: none;
   }

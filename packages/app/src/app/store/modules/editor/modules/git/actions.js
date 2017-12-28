@@ -1,3 +1,41 @@
+export function openPr({ state, browser }) {
+  const pr = state.get('editor.git.pr');
+  const user = state.get('user');
+  const git = state.get('editor.currentSandbox.forkedFromSandbox.git');
+
+  const url = `https://github.com/${git.username}/${git.repo}/compare/${
+    git.branch
+  }...${user.username}:${pr.newBranch}?expand=1`;
+
+  browser.openWindow(url);
+}
+
+export function createPr({ api, state }) {
+  const id = state.get('editor.currentId');
+
+  return api
+    .post(`/sandboxes/${id}/git/pr`, {
+      id,
+      message: state.get('editor.git.message'),
+    })
+    .then(pr => ({ pr }));
+}
+
+export function redirectToPr({ router, props }) {
+  router.updateSandboxUrl({ git: props.pr.git });
+}
+
+export function createCommit({ api, state }) {
+  const id = state.get('editor.currentId');
+
+  return api
+    .post(`/sandboxes/${id}/git/commit`, {
+      id,
+      message: state.get('editor.git.message'),
+    })
+    .then(commit => ({ commit }));
+}
+
 export function whenValidRepo({ state, path }) {
   const repoTitle = state.get('editor.git.repoTitle');
   const modulesNotSaved = !state.get('editor.isAllModulesSynced');

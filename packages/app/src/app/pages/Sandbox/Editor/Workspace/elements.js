@@ -1,3 +1,4 @@
+import React from 'react';
 import styled from 'styled-components';
 import fadeIn from 'common/utils/animation/fade-in';
 
@@ -70,7 +71,21 @@ export const getContainerStyles = props => {
   return styles;
 };
 
-export const EntryContainer = styled.span`
+function BaseEntryContainer({
+  color,
+  hideColor,
+  alternative,
+  depth,
+  active,
+  editing,
+  nameValidationError,
+  noTransition,
+  ...props
+}) {
+  return <span {...props} />;
+}
+
+export const EntryContainer = styled(BaseEntryContainer)`
   ${props => getContainerStyles(props)};
 `;
 

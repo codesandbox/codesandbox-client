@@ -139,10 +139,27 @@ export const forceForkSandbox = [
 
 export const changeCode = [actions.setCode, actions.addChangedModule];
 
+export const fetchGitChanges = [
+  set(state`editor.git.isFetching`, true),
+  actions.getGitChanges,
+  set(state`editor.git.originalGitChanges`, props`gitChanges`),
+  when(props`gitChanges`),
+  {
+    true: set(state`editor.git.showFetchButton`, false),
+    false: set(state`editor.git.showFetchButton`, true),
+  },
+  set(state`editor.git.isFetching`, false),
+];
+
 export const saveChangedModules = [
   actions.outputChangedModules,
   actions.saveChangedModules,
   set(state`editor.changedModuleShortids`, []),
+  when(state`editor.currentSandbox.forkedFromSandbox.git`),
+  {
+    true: fetchGitChanges,
+    false: [],
+  },
 ];
 
 export const saveCode = [
