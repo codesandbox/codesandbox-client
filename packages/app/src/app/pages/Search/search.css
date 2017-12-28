@@ -9,7 +9,7 @@
   background-color: rgba(0, 0, 0, 0.3);
   outline: none;
   border-radius: 4px;
-  border: 1px solid rgba(0, 0, 0, .1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
   color: white;
   padding: 0.5em;
   padding-left: 2em;
@@ -22,7 +22,7 @@
 }
 
 .ais-SearchBox__input:focus {
-  border-color: rgba(108, 174, 221, .5);
+  border-color: rgba(108, 174, 221, 0.5);
 }
 
 .ais-SearchBox__submit {
@@ -52,7 +52,7 @@
   margin-right: -4px;
   height: 100%;
   vertical-align: middle;
-  content: "" 2;
+  content: '' 2;
 }
 .ais-SearchBox__submit:hover,
 .ais-SearchBox__submit:active {
@@ -131,7 +131,7 @@
   color: rgba(255, 255, 255, 0.8);
   margin-top: 6px;
 }
-.ais-RefinementList__item input[type="checkbox"] {
+.ais-RefinementList__item input[type='checkbox'] {
   display: none;
 }
 .ais-RefinementList__item .ais-RefinementList__itemBox {
@@ -145,10 +145,11 @@
   outline: none;
   vertical-align: middle;
   margin-right: 8px;
-  -webkit-transition: all .15s ease;
-  transition: all .15s ease;
+  -webkit-transition: all 0.15s ease;
+  transition: all 0.15s ease;
 }
-.ais-RefinementList__item input[type="checkbox"]:checked
+.ais-RefinementList__item
+  input[type='checkbox']:checked
   ~ .ais-RefinementList__itemBox {
   background: #6caedd
     url("data:image/svg+xml;utf8,<svg viewBox='0 0 10 9' xmlns='http://www.w3.org/2000/svg'><path d='M1 4.88l2.378 2.435L9.046 1.6' stroke-width='1.6' stroke='%23FFF' fill='none' fill-rule='evenodd' stroke-linecap='round' stroke-linejoin='round'/></svg>")
@@ -157,7 +158,7 @@
   box-shadow: none;
 }
 .ais-RefinementList__item:hover .ais-RefinementList__itemBox {
-  box-shadow: inset 0 0 0 1px rgba(108, 174, 221, .3);
+  box-shadow: inset 0 0 0 1px rgba(108, 174, 221, 0.3);
 }
 
 .ais-RefinementList__itemLabel {
@@ -183,7 +184,7 @@
   border-radius: 2px;
   background-color: rgba(0, 0, 0, 0.2);
   float: right;
-  color: rgba(255, 255, 255, .2);
+  color: rgba(255, 255, 255, 0.2);
   font-weight: 500;
   font-size: 12px;
   padding: 3px 10px;
@@ -268,14 +269,15 @@
   font-size: 14px;
 }
 .ais-Pagination__item:hover {
-  background: rgba(108, 174, 221, .2);
+  background: rgba(108, 174, 221, 0.2);
 }
 
 .ais-Pagination__item.ais-Pagination__itemSelected.ais-Pagination__itemPage:hover {
   background: rgba(108, 174, 221, 1);
 }
 
-.ais-Pagination__item.ais-Pagination__itemSelected.ais-Pagination__itemPage:hover .ais-Pagination__itemLink.ais-Pagination__itemLinkSelected {
+.ais-Pagination__item.ais-Pagination__itemSelected.ais-Pagination__itemPage:hover
+  .ais-Pagination__itemLink.ais-Pagination__itemLinkSelected {
   color: white;
 }
 
