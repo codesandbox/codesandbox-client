@@ -22,6 +22,18 @@ function Prettier({ store, signals }) {
   return (
     <SubContainer>
       <PreferenceContainer>
+        <SubDescription>
+          This configuration can be overridden by a{' '}
+          <a
+            href="https://prettier.io/docs/en/configuration.html"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            .prettierrc
+          </a>{' '}
+          JSON file at the root of the sandbox.
+        </SubDescription>
+        <Rule />
         <PaddedPreference
           title="Print width"
           type="number"

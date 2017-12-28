@@ -1,6 +1,6 @@
 import { sequence } from 'cerebral';
 import { set, when, equals, toggle, increment } from 'cerebral/operators';
-import { state, props } from 'cerebral/tags';
+import { state, props, string } from 'cerebral/tags';
 import { getZeitUserDetails } from 'app/store/sequences';
 import * as actions from './actions';
 
@@ -47,7 +47,20 @@ export const stopResizing = set(state`editor.isResizing`, false);
 
 export const createZip = actions.createZip;
 
-export const prettifyCode = [actions.prettifyCode, actions.setCode];
+export const prettifyCode = [
+  actions.prettifyCode,
+  {
+    success: actions.setCode,
+    invalidPrettierSandboxConfig: addNotification(
+      'Invalid JSON in sandbox .prettierrc file',
+      'error'
+    ),
+    error: addNotification(
+      string`Something went wrong prettifying the code: "${props`error.message`}"`,
+      'error'
+    ),
+  },
+];
 
 export const setCurrentModule = [actions.addTab, actions.setCurrentModule];
 

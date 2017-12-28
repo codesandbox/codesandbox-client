@@ -4,12 +4,8 @@ import { isEqual } from 'lodash';
 import prettify from 'app/utils/prettify';
 
 export default Provider({
-  prettify(fileName, code) {
-    return prettify(
-      fileName,
-      code,
-      this.context.state.get('editor.preferences.settings.prettierConfig')
-    );
+  prettify(fileName, code, config) {
+    return prettify(fileName, code, config);
   },
   resolveModule,
   isEqual,

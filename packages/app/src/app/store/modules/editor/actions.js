@@ -332,12 +332,26 @@ export function saveChangedModules({ props, api, state }) {
     .then(() => undefined);
 }
 
-export function prettifyCode({ utils, state }) {
+export function prettifyCode({ utils, state, path }) {
   const currentModule = state.get('editor.currentModule');
+  const sandbox = state.get('editor.currentSandbox');
+  let config = state.get('editor.preferences.settings.prettierConfig');
+  const configFromSandbox = sandbox.modules.find(
+    module => module.directoryShortid == null && module.title === '.prettierrc'
+  );
+
+  if (configFromSandbox) {
+    try {
+      config = JSON.parse(configFromSandbox.code);
+    } catch (e) {
+      return path.invalidPrettierSandboxConfig();
+    }
+  }
 
   return utils
-    .prettify(currentModule.title, currentModule.code)
-    .then(newCode => ({ code: newCode }));
+    .prettify(currentModule.title, currentModule.code, config)
+    .then(newCode => path.success({ code: newCode }))
+    .catch(error => path.error({ error }));
 }
 
 export function saveModuleCode({ state, api }) {
