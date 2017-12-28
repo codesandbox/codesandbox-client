@@ -466,6 +466,7 @@ export default class TranspiledModule {
       this.previousSource.compiledCode !== this.source.compiledCode
     ) {
       this.resetCompilation();
+      manager.markHMRModuleDirty(this);
     }
 
     await Promise.all(
@@ -619,6 +620,8 @@ export default class TranspiledModule {
           ? cache.exports
           : manager.evaluateTranspiledModule(requiredTranspiledModule);
       }
+
+      console.log('evaluate', this);
 
       const exports = evaluate(
         this.source.compiledCode,

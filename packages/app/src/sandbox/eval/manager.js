@@ -61,12 +61,14 @@ export default class Manager {
   manifest: Manifest;
   dependencies: Object;
   webpackHMR: boolean = false;
+  dirtyModules: Set<TranspiledModule>;
 
   constructor(id: string, preset: Preset) {
     this.id = id;
     this.preset = preset;
     this.transpiledModules = {};
     this.cachedPaths = {};
+    this.dirtyModules = new Set();
     // modules.forEach(m => this.addModule(m));
 
     if (process.env.NODE_ENV === 'development') {
@@ -485,13 +487,16 @@ export default class Manager {
 
     return Promise.all(
       transpiledModulesToUpdate.map(tModule => tModule.transpile(this))
-    ).then(ms =>
-      ms.filter(m => m.hmrConfig && m.hmrConfig.isHot()).forEach(m => {
-        // We evaluate all modules that have webpack like HMR enabled (even if
-        // not in the dependency graph), because this is exactly what Webpack does.
+    ).then(() => {
+      this.dirtyModules.forEach(m => {
         m.evaluate(this);
-      })
-    );
+      });
+      this.dirtyModules.clear();
+    });
+  }
+
+  markHMRModuleDirty(t: TranpiledModule) {
+    this.dirtyModules.add(t);
   }
 
   /**
@@ -525,6 +530,7 @@ export default class Manager {
     try {
       const data = await localforage.getItem(this.id);
       if (data) {
+        this.clearCache();
         const {
           transpiledModules: serializedTModules,
           cachedPaths,
