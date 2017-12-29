@@ -27,6 +27,7 @@ class BasePreview extends React.Component {
     }
 
     this.frames = [];
+    this.devtools = null;
   }
 
   static defaultProps = {
@@ -272,6 +273,14 @@ class BasePreview extends React.Component {
     }
   };
 
+  toggleDevtools = showDevtools => {
+    if (showDevtools) {
+      this.devtools.openDevTools();
+    } else {
+      this.devtools.hideDevTools();
+    }
+  };
+
   render() {
     const {
       showNavigation,
@@ -314,6 +323,9 @@ class BasePreview extends React.Component {
           style={{ pointerEvents: dragging || inactive ? 'none' : 'initial' }}
         />
         <DevTools
+          ref={component => {
+            this.devtools = component;
+          }}
           setDragging={this.setDragging}
           evaluateCommand={this.evaluateInSandbox}
           sandboxId={sandbox.id}
