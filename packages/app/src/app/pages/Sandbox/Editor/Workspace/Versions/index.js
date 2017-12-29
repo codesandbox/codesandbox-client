@@ -1,7 +1,6 @@
 import * as React from 'react';
 
-import WorkspaceSubtitle from '../WorkspaceSubtitle';
-import EntryContainer from '../EntryContainer';
+import { WorkspaceSubtitle, EntryContainer } from '../elements';
 import PublishFields from './PublishFields';
 
 import { Description, VersionDate } from './elements';

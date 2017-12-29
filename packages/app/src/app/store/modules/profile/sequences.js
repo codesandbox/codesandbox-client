@@ -1,5 +1,5 @@
 import { sequence, parallel } from 'cerebral';
-import { set, when, wait } from 'cerebral/operators';
+import { set, when } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 import * as actions from './actions';
 
