@@ -71,21 +71,7 @@ export const getContainerStyles = props => {
   return styles;
 };
 
-function BaseEntryContainer({
-  color,
-  hideColor,
-  alternative,
-  depth,
-  active,
-  editing,
-  nameValidationError,
-  noTransition,
-  ...props
-}) {
-  return <span {...props} />;
-}
-
-export const EntryContainer = styled(BaseEntryContainer)`
+export const EntryContainer = styled.span`
   ${props => getContainerStyles(props)};
 `;
 

@@ -1,12 +1,7 @@
-import React from 'react';
 import styled, { css } from 'styled-components';
 import { EntryContainer } from '../../elements';
 
-function BaseChangeContainer({ color, ...props }) {
-  return <div {...props} />;
-}
-
-export const ChangeContainer = styled(BaseChangeContainer)`
+export const ChangeContainer = styled.div`
   &:last-child {
     border-bottom: none;
   }
