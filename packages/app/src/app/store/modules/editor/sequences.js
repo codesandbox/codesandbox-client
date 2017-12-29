@@ -79,6 +79,7 @@ export const updatePrivacy = [
 ];
 
 export const forkSandbox = sequence('forkSandbox', [
+  set(state`editor.isForkingSandbox`, true),
   actions.forkSandbox,
   actions.moveModuleContent,
   set(state`editor.sandboxes.${props`sandbox.id`}`, props`sandbox`),
@@ -86,6 +87,7 @@ export const forkSandbox = sequence('forkSandbox', [
   actions.setCurrentModuleShortid,
   addNotification('Forked sandbox!', 'success'),
   updateSandboxUrl(props`sandbox`),
+  set(state`editor.isForkingSandbox`, false),
 ]);
 
 export const ensureOwnedSandbox = sequence('ensureOwnedSandbox', [
@@ -152,6 +154,7 @@ export const fetchGitChanges = [
 ];
 
 export const saveChangedModules = [
+  ensureOwnedSandbox,
   actions.outputChangedModules,
   actions.saveChangedModules,
   set(state`editor.changedModuleShortids`, []),

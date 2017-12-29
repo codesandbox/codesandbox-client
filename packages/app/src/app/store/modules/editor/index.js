@@ -19,6 +19,7 @@ export default Module({
   state: {
     sandboxes: {},
     currentId: null,
+    isForkingSandbox: false,
     currentModuleShortid: null,
     mainModuleShortid: null,
     isLoading: true,
