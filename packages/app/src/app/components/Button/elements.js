@@ -1,19 +1,6 @@
-import React from 'react';
 import styled, { css, keyframes } from 'styled-components';
 import Link from 'react-router-dom/Link';
 import theme from 'common/theme';
-
-function ButtonBase({ small, block, primary, secondary, red, ...attr }) {
-  return <button {...attr} />;
-}
-
-function ABase({ small, block, primary, secondary, red, ...attr }) {
-  return <a {...attr} />; // eslint-disable-line
-}
-
-function LinkBase({ small, block, primary, secondary, red, ...attr }) {
-  return <Link {...attr} />; // eslint-disable-line
-}
 
 const getBackgroundColor = ({ disabled, red, secondary }) => {
   if (disabled) return `background: ${theme.background2.darken(0.1)()}`;
@@ -98,12 +85,12 @@ const styles = css`
   }`};
 `;
 
-export const LinkButton = styled(LinkBase)`
+export const LinkButton = styled(Link)`
   ${styles};
 `;
-export const AButton = styled(ABase)`
+export const AButton = styled.a`
   ${styles};
 `;
-export const Button = styled(ButtonBase)`
+export const Button = styled.button`
   ${styles};
 `;

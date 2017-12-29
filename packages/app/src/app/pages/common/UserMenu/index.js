@@ -39,7 +39,7 @@ function UserMenu({ signals, store, small }) {
         <HoverMenu onClose={() => signals.userMenuClosed()}>
           <Menu
             openPreferences={() => {
-              signals.openModal({ modal: 'preferences' });
+              signals.editor.preferences.modalOpened();
             }}
             signOut={() => {
               signals.signOut();
