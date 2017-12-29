@@ -5,8 +5,10 @@ export function createZip({ utils, state }) {
   const sandbox = state.get(`editor.sandboxes.${sandboxId}`);
   return utils.getZip(sandbox).then(result => ({ file: result.file }));
 }
+
 export function loadZip({ props, jsZip }) {
   const { file } = props;
+
   return jsZip.loadAsync(file).then(result => ({ contents: result }));
 }
 

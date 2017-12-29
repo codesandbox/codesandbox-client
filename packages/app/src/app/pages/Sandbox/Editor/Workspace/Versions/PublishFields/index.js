@@ -3,7 +3,7 @@ import * as React from 'react';
 import Button from 'app/components/Button';
 import Relative from 'common/components/Relative';
 
-import WorkspaceInputContainer from '../../WorkspaceInputContainer';
+import { WorkspaceInputContainer } from '../../elements';
 import { Inputs, Dot, ErrorMessage } from './elements';
 
 const initialState = {

@@ -3,6 +3,6 @@ import { Provider } from 'cerebral';
 
 export default Provider({
   loadAsync(file) {
-    return JSZip.loadAsync(file).then(file => file);
+    return JSZip.loadAsync(file);
   },
 });
