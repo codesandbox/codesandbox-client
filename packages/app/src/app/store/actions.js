@@ -55,6 +55,14 @@ export function setStoredSettings({ state, settingsStore }) {
   state.merge('editor.preferences.settings', settings);
 }
 
+export function setKeybindings({ state, keybindingManager }) {
+  keybindingManager.set(state.get('editor.preferences.settings.keybindings'));
+}
+
+export function startKeybindings({ keybindingManager }) {
+  keybindingManager.start();
+}
+
 export function removeNotification({ state, props }) {
   const notifications = state.get('notifications');
   const notificationToRemoveIndex = notifications.findIndex(

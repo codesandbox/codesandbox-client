@@ -40,29 +40,24 @@ export const KEYBINDINGS = {
     title: 'Open Quick Actions',
     type: 'View',
     bindings: [[metaKey, 'Shift', 'P']],
-    action: signals => {
-      signals.editor.quickActionsOpened();
-    },
+    signal: 'editor.quickActionsOpened',
   },
 
   'editor.workspace': {
     title: 'Toggle Sidebar',
     type: 'View',
     bindings: [[metaKey], ['Shift']],
-    action: signals => {
-      signals.editor.workspace.workspaceToggled();
-    },
+    signal: 'editor.workspace.workspaceToggled',
   },
 
   'editor.editor-mode': {
     title: 'Editor View',
     type: 'View',
     bindings: [[metaKey, 'K', 'E']],
-    action: signals => {
-      signals.editor.preferences.viewModeChanged({
-        showEditor: true,
-        showPreview: false,
-      });
+    signal: 'editor.preferences.viewModeChanged',
+    payload: {
+      showEditor: true,
+      showPreview: false,
     },
   },
 
@@ -70,11 +65,10 @@ export const KEYBINDINGS = {
     title: 'Preview View',
     type: 'View',
     bindings: [[metaKey, 'K', 'P']],
-    action: signals => {
-      signals.editor.preferences.viewModeChanged({
-        showEditor: false,
-        showPreview: true,
-      });
+    signal: 'editor.preferences.viewModeChanged',
+    payload: {
+      showEditor: false,
+      showPreview: true,
     },
   },
 
@@ -82,11 +76,10 @@ export const KEYBINDINGS = {
     title: 'Split View',
     type: 'View',
     bindings: [[metaKey, 'K', 'S']],
-    action: signals => {
-      signals.editor.preferences.viewModeChanged({
-        showEditor: true,
-        showPreview: true,
-      });
+    signal: 'editor.preferences.viewModeChanged',
+    payload: {
+      showEditor: true,
+      showPreview: true,
     },
   },
 
@@ -94,44 +87,34 @@ export const KEYBINDINGS = {
     title: 'Toggle Zen Mode',
     type: 'View',
     bindings: [[metaKey, 'K', 'Z']],
-    action: signals => {
-      signals.editor.preferences.zenModeToggled();
-    },
+    signal: 'editor.preferences.zenModeToggled',
   },
 
   'editor.toggle-console': {
     title: 'Toggle Console',
     type: 'View',
     bindings: [[metaKey, 'K', 'D']],
-    action: signals => {
-      signals.editor.preferences.devtoolsToggled();
-    },
+    signal: 'editor.preferences.devtoolsToggled',
   },
 
   'editor.open-preferences': {
     title: 'Open Preferences',
     type: 'View',
     bindings: [[metaKey, ',']],
-    action: signals => {
-      signals.editor.preferences.modalOpened();
-    },
+    signal: 'editor.preferences.modalOpened',
   },
 
   'source.dependencies.open': {
     title: 'Add Dependency',
     type: 'Source',
     bindings: [],
-    action: signals => {
-      signals.editor.workspace.searchDependenciesModalOpened();
-    },
+    signal: 'editor.workspace.searchDependenciesModalOpened',
   },
 
   'source.modules.prettify': {
     title: 'Prettify Current File',
     type: 'Source',
     bindings: [],
-    action: signals => {
-      signals.editor.prettifyClicked();
-    },
+    signal: 'editor.prettifyClicked',
   },
 };

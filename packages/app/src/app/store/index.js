@@ -11,6 +11,7 @@ import UtilsProvider from './providers/Utils';
 import JSZipProvider from './providers/JSZip';
 import SettingsStoreProvider from './providers/SettingsStore';
 import GitProvider from './providers/Git';
+import KeybindingManagerProvider from './providers/KeybindingManager';
 
 import * as sequences from './sequences';
 import * as errors from './errors';
@@ -94,5 +95,6 @@ export default Module({
     utils: UtilsProvider,
     settingsStore: SettingsStoreProvider,
     git: GitProvider,
+    keybindingManager: KeybindingManagerProvider,
   },
 });

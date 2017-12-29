@@ -3,7 +3,6 @@ import { inject, observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
-import KeybindingManager from 'app/pages/Sandbox/KeybindingManager';
 import QuickActions from 'app/pages/Sandbox/QuickActions';
 
 import Modal from 'app/components/Modal';
@@ -88,7 +87,6 @@ class SandboxPage extends React.Component {
     return (
       <React.Fragment>
         <Editor match={match} />
-        <KeybindingManager />
         <QuickActions />
         <Modal
           isOpen={store.editor.workspace.showSearchDependenciesModal}
