@@ -27,9 +27,7 @@ export function setCurrentModuleByTab({ state, props }) {
     state.get('editor.tabs').length - 1 >= props.tabIndex
       ? props.tabIndex
       : props.tabIndex - 1;
-  const moduleShortid = state.get(
-    `editor.currentSandbox.modules.${index}.shortid`
-  );
+  const moduleShortid = state.get(`editor.tabs.${index}.moduleShortid`);
 
   state.set('editor.currentModuleShortid', moduleShortid);
 }
