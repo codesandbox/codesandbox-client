@@ -2,14 +2,19 @@ import { set, when, toggle, equals } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 import { getZeitUserDetails } from 'app/store/sequences';
 import * as actions from './actions';
+import { setKeybindings, startKeybindings } from '../../../../actions';
 
 export const openModal = set(state`editor.preferences.showModal`, true);
 
-export const closeModal = set(state`editor.preferences.showModal`, false);
+export const closeModal = [
+  set(state`editor.preferences.showModal`, false),
+  startKeybindings,
+];
 
 export const changeKeybinding = [
   actions.changeKeybinding,
   actions.storeKeybindings,
+  setKeybindings,
 ];
 
 export const changeViewMode = [
@@ -27,6 +32,11 @@ export const changeItemIndex = [
   {
     '4': getZeitUserDetails,
     otherwise: [],
+  },
+  equals(props`itemIndex`),
+  {
+    '3': actions.pauseKeybindings,
+    otherwise: startKeybindings,
   },
 ];
 

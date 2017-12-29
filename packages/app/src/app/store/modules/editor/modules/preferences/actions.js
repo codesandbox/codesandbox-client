@@ -1,3 +1,7 @@
+export function pauseKeybindings({ keybindingManager }) {
+  keybindingManager.pause();
+}
+
 export function storeSetting({ props, state, settingsStore }) {
   if (props.name.split('.').length > 1) {
     const prop = props.name.split('.')[0];

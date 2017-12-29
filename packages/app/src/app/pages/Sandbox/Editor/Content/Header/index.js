@@ -74,9 +74,7 @@ function Header({ store, signals }) {
         >
           <Chevron
             workspaceHidden={workspace.isWorkspaceHidden}
-            onClick={isOpen =>
-              signals.editor.workspace.workspaceToggled({ isOpen })
-            }
+            onClick={() => signals.editor.workspace.workspaceToggled()}
           >
             <ChevronLeft />
           </Chevron>

@@ -199,7 +199,7 @@ class EditorPreview extends React.Component {
       >
         <FullSize>
           <Prompt
-            when={notSynced}
+            when={notSynced && !store.editor.isForkingSandbox}
             message={() =>
               'You have not saved this sandbox, are you sure you want to navigate away?'
             }

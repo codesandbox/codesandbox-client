@@ -38,6 +38,10 @@ class Preview extends React.Component {
         this.props.store.editor.currentSandbox.npmDependencies.keys().length,
       this.handleDependenciesChange.bind(this, preview)
     );
+    const disposeToggleDevtools = reaction(
+      () => this.props.store.editor.preferences.showDevtools,
+      this.handleToggleDevtools.bind(this, preview)
+    );
 
     return () => {
       disposeHandleProjectViewChange();
@@ -48,7 +52,12 @@ class Preview extends React.Component {
       disposeHandleStructureChange();
       disposeHandleSandboxChange();
       disposeDependenciesHandler();
+      disposeToggleDevtools();
     };
+  };
+
+  handleToggleDevtools = (preview, showDevtools) => {
+    preview.toggleDevtools(showDevtools);
   };
 
   detectStructureChange = () => {

@@ -13,10 +13,12 @@ export const loadApp = [
       actions.getUser,
       set(state`user`, props`user`),
       actions.setPatronPrice,
-      actions.setStoredSettings,
     ],
     false: [],
   },
+  actions.setStoredSettings,
+  actions.setKeybindings,
+  actions.startKeybindings,
   set(state`isAuthenticating`, false),
 ];
 
