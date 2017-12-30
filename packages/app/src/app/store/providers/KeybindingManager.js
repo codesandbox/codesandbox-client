@@ -6,13 +6,26 @@ const state = {
   keydownIndex: 0,
   pendingPrimaryBindings: [],
   pendingSecondaryBindings: [],
+  timeout: null,
 };
+
+function reset() {
+  state.keydownIndex = 0;
+  state.pendingPrimaryBindings = [];
+  state.pendingSecondaryBindings = [];
+}
 
 function handleKeyUp() {
   state.keydownIndex = 0;
 }
 
 function handleKeyDown(controller, e) {
+  if (state.timeout) {
+    clearTimeout(state.timeout);
+  }
+
+  state.timeout = setTimeout(reset, 1500);
+
   const key = normalizeKey(e);
 
   // First we check if we have any pending secondary bindings to identify
@@ -33,9 +46,7 @@ function handleKeyDown(controller, e) {
     if (secondaryBindingHit) {
       const keybinding = KEYBINDINGS[secondaryBindingHit.key];
 
-      state.keydownIndex = 0;
-      state.pendingPrimaryBindings = [];
-      state.pendingSecondaryBindings = [];
+      reset();
       e.preventDefault();
       e.stopPropagation();
 
@@ -56,7 +67,12 @@ function handleKeyDown(controller, e) {
   state.pendingPrimaryBindings = (state.keydownIndex === 0
     ? state.keybindings
     : state.pendingPrimaryBindings
-  ).filter(binding => binding.bindings[0][state.keydownIndex] === key);
+  ).filter(
+    binding =>
+      binding.bindings.length &&
+      binding.bindings[0] &&
+      binding.bindings[0][state.keydownIndex] === key
+  );
 
   // We find possibly multiple hits as secondary bindings might have the same primary binding. We
   // sort by bindings length to identify if a primary binding should trigger. It might happen that a
@@ -76,9 +92,7 @@ function handleKeyDown(controller, e) {
     if (binding.bindings.length === 1 || !binding.bindings[1]) {
       const keybinding = KEYBINDINGS[binding.key];
 
-      state.keydownIndex = 0;
-      state.pendingPrimaryBindings = [];
-      state.pendingSecondaryBindings = [];
+      reset();
       e.preventDefault();
       e.stopPropagation();
 

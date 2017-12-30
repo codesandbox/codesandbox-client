@@ -11,6 +11,7 @@ import Modal from 'app/components/Modal';
 import PatronBadge from '-!svg-react-loader!common/utils/badges/svg/patron-4.svg'; // eslint-disable-line import/no-webpack-loader-syntax
 
 import NewSandbox from 'app/components/NewSandbox';
+import Preferences from 'app/pages/common/Preferences';
 import SignInButton from '../SignInButton';
 import UserMenu from '../UserMenu';
 import { LogoWithBorder, Border, Title, Actions, Action } from './elements';
@@ -54,6 +55,13 @@ function Navigation({ signals, store, title }) {
           onClose={() => signals.editor.newSandboxModalClosed()}
         >
           <NewSandbox />
+        </Modal>
+        <Modal
+          isOpen={store.editor.preferences.showModal}
+          width={900}
+          onClose={() => signals.editor.preferences.modalClosed()}
+        >
+          <Preferences />
         </Modal>
       </Row>
     </Row>

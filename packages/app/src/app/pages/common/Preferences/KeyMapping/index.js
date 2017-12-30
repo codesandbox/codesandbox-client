@@ -35,7 +35,7 @@ class KeyMapping extends React.Component {
       id => existingBindings[id] || KEYBINDINGS[id].bindings
     );
 
-    const valB0 = [...value[0]].sort().join('');
+    const valB0 = [...(value[0] || [])].sort().join('');
     const valB1 = value[1] && [...value[1]].sort().join('');
     const alreadyExists = bindings.some(([b0, b1]) => {
       const valb0 = b0 && [...b0].sort().join('');
@@ -59,10 +59,6 @@ class KeyMapping extends React.Component {
 
   bindValue = name => ({
     setValue: value => {
-      if (!value[0]) {
-        return;
-      }
-
       const error = this.validateValue(name, value);
 
       if (error) {

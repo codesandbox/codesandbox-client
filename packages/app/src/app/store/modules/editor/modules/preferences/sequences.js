@@ -7,8 +7,14 @@ import { setKeybindings, startKeybindings } from '../../../../actions';
 export const openModal = set(state`editor.preferences.showModal`, true);
 
 export const closeModal = [
-  set(state`editor.preferences.showModal`, false),
-  startKeybindings,
+  equals(state`editor.preferences.itemIndex`),
+  {
+    '3': [],
+    otherwise: [
+      set(state`editor.preferences.showModal`, false),
+      startKeybindings,
+    ],
+  },
 ];
 
 export const changeKeybinding = [
