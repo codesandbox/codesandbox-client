@@ -2,8 +2,10 @@
 import { flattenDeep, uniq, values } from 'lodash';
 import resolve from 'browser-resolve';
 import localforage from 'localforage';
+import preval from 'babel-plugin-preval/macro';
 
 import * as pathUtils from 'common/utils/path';
+import _debug from 'app/utils/debug';
 
 import type { Module } from './entities/module';
 import TranspiledModule from './transpiled-module';
@@ -43,6 +45,18 @@ export type Manifest = {
 };
 
 const NODE_LIBS = ['dgram', 'fs', 'net', 'tls', 'child_process'];
+const VERSION = preval`module.exports = Date.now()`;
+const debug = _debug('cs:compiler:manager');
+
+localforage.config({
+  name: 'CodeSandboxApp',
+  storeName: 'sandboxes', // Should be alphanumeric, with underscores.
+  description:
+    'Cached transpilations of the sandboxes, for faster initialization time.',
+});
+
+// Prewarm store
+localforage.keys();
 
 export default class Manager {
   id: string;
@@ -63,13 +77,17 @@ export default class Manager {
   webpackHMR: boolean = false;
   dirtyModules: Set<TranspiledModule>;
 
-  constructor(id: string, preset: Preset) {
+  // List of modules that are being transpiled, to prevent duplicate jobs.
+  transpileJobs: { [transpiledModuleId: string]: true };
+
+  constructor(id: string, preset: Preset, modules: Array<Module>) {
     this.id = id;
     this.preset = preset;
     this.transpiledModules = {};
     this.cachedPaths = {};
     this.dirtyModules = new Set();
-    // modules.forEach(m => this.addModule(m));
+    this.transpileJobs = {};
+    modules.forEach(m => this.addModule(m));
 
     if (process.env.NODE_ENV === 'development') {
       window.manager = this;
@@ -114,14 +132,21 @@ export default class Manager {
 
       this.addModule(module);
     });
+    debug(`Loaded manifest.`);
   }
 
   evaluateModule(module: Module) {
+    // Evaluate all dirty modules cause by HMR transforms first too
+    this.dirtyModules.forEach(m => {
+      m.evaluate(this);
+    });
+    this.dirtyModules.clear();
+
     const transpiledModule = this.getTranspiledModule(module);
 
-    // Run post evaluate first
     const exports = this.evaluateTranspiledModule(transpiledModule);
 
+    // Run post evaluate
     this.getTranspiledModules().forEach(t => t.postEvaluate(this));
 
     return exports;
@@ -434,6 +459,8 @@ export default class Manager {
    * delete caches accordingly
    */
   updateData(modules: Array<Module>) {
+    this.transpileJobs = {};
+
     const addedModules = [];
     const updatedModules = [];
 
@@ -485,14 +512,15 @@ export default class Manager {
       ])
     );
 
+    debug(
+      `Generated update diff, updating ${
+        transpiledModulesToUpdate.length
+      } modules.`
+    );
+
     return Promise.all(
       transpiledModulesToUpdate.map(tModule => tModule.transpile(this))
-    ).then(() => {
-      this.dirtyModules.forEach(m => {
-        m.evaluate(this);
-      });
-      this.dirtyModules.clear();
-    });
+    );
   }
 
   markHMRModuleDirty(t: TranpiledModule) {
@@ -517,6 +545,7 @@ export default class Manager {
       await localforage.setItem(this.id, {
         transpiledModules: serializedTModules,
         cachedPaths: this.cachedPaths,
+        version: VERSION,
       });
     } catch (e) {
       if (process.env.NODE_ENV === 'development') {
@@ -534,29 +563,37 @@ export default class Manager {
         const {
           transpiledModules: serializedTModules,
           cachedPaths,
+          version,
         }: {
           transpiledModules: { [id: string]: SerializedTranspiledModule },
           cachedPaths: { [path: string]: string },
+          version: string,
         } = data;
-        this.cachedPaths = cachedPaths || {};
 
-        const tModules: { [id: string]: TranspiledModule } = {};
-        // First create tModules for all the saved modules, so we have references
-        Object.keys(serializedTModules).forEach(id => {
-          const sTModule = serializedTModules[id];
+        // Only use the cache if the cached version was cached with the same
+        // version of the compiler
+        if (version === VERSION) {
+          this.cachedPaths = cachedPaths || {};
 
-          const tModule = this.addTranspiledModule(
-            sTModule.module,
-            sTModule.query
-          );
-          tModules[id] = tModule;
-        });
+          const tModules: { [id: string]: TranspiledModule } = {};
+          // First create tModules for all the saved modules, so we have references
+          Object.keys(serializedTModules).forEach(id => {
+            const sTModule = serializedTModules[id];
 
-        Object.keys(tModules).forEach(id => {
-          const tModule = tModules[id];
+            const tModule = this.addTranspiledModule(
+              sTModule.module,
+              sTModule.query
+            );
+            tModules[id] = tModule;
+          });
 
-          tModule.load(serializedTModules[id], tModules);
-        });
+          Object.keys(tModules).forEach(id => {
+            const tModule = tModules[id];
+
+            tModule.load(serializedTModules[id], tModules);
+          });
+          debug(`Loaded cache.`);
+        }
       }
     } catch (e) {
       if (process.env.NODE_ENV === 'development') {

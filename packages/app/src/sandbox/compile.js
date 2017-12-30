@@ -47,10 +47,11 @@ async function updateManager(
   let newManager = false;
   if (!manager || manager.id !== sandboxId) {
     newManager = true;
-    manager = new Manager(sandboxId, getPreset(template));
+    manager = new Manager(sandboxId, getPreset(template), managerModules);
     if (firstLoad) {
       // We save the state of transpiled modules, and load it here again. Gives
       // faster initial loads.
+
       await manager.load();
     }
   }
@@ -58,9 +59,7 @@ async function updateManager(
   if (isNewCombination || newManager) {
     manager.setManifest(manifest);
   }
-
   await manager.updateData(managerModules);
-
   return manager;
 }
 
@@ -88,6 +87,7 @@ async function compile({
   isModuleView = false,
   template,
 }) {
+  const startTime = Date.now();
   try {
     clearErrorTransformers();
     initializeErrorTransformers();
@@ -106,6 +106,7 @@ async function compile({
       // Just reset the whole manager if it's a new combination
       manager = null;
     }
+    const t = Date.now();
 
     await updateManager(
       sandboxId,
@@ -117,8 +118,8 @@ async function compile({
 
     const managerModuleToTranspile = modules.find(m => m.path === entry);
 
-    const t = Date.now();
     await manager.transpileModules(managerModuleToTranspile);
+
     debug(`Transpilation time ${Date.now() - t}ms`);
 
     resetScreen();
@@ -188,6 +189,8 @@ async function compile({
     if (typeof window.__puppeteer__ === 'function') {
       window.__puppeteer__('done');
     }
+
+    debug(`Total time: ${Date.now() - startTime}ms`);
 
     dispatch({
       type: 'success',

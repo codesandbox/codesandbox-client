@@ -377,6 +377,13 @@ export default class TranspiledModule {
    * @param {*} manager
    */
   async transpile(manager: Manager) {
+    if (manager.transpileJobs[this.getId()]) {
+      // Is already being transpiled
+      return this;
+    }
+
+    manager.transpileJobs[this.getId()] = true;
+
     if (this.source) {
       return this;
     }
@@ -462,7 +469,7 @@ export default class TranspiledModule {
     this.source = new ModuleSource(this.module.path, code, finalSourceMap);
 
     if (
-      !this.previousSource ||
+      this.previousSource &&
       this.previousSource.compiledCode !== this.source.compiledCode
     ) {
       this.resetCompilation();
@@ -620,8 +627,6 @@ export default class TranspiledModule {
           ? cache.exports
           : manager.evaluateTranspiledModule(requiredTranspiledModule);
       }
-
-      console.log('evaluate', this);
 
       const exports = evaluate(
         this.source.compiledCode,
