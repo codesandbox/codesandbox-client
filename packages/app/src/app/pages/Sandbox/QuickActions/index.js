@@ -26,7 +26,14 @@ class QuickActions extends React.Component {
       genie({
         magicWords: `${quickAction.type}: ${quickAction.title}`,
         id: bindingKey,
-        action: () => quickAction.action(signals),
+        action: () => {
+          const signalPath = quickAction.signal.split('.');
+          const signal = signalPath.reduce(
+            (currentSignal, key) => currentSignal[key],
+            signals
+          );
+          signal(quickAction.payload || {});
+        },
       });
     });
   };
@@ -79,55 +86,57 @@ class QuickActions extends React.Component {
             selectedItem,
             inputValue,
             highlightedIndex,
-          }) => (
-            <div style={{ width: '100%' }}>
-              <InputContainer>
-                <Input
-                  {...getInputProps({
-                    innerRef: el => el && el.focus(),
-                    onKeyUp: this.handleKeyUp,
-                    // Timeout so the fuzzy handler can still select the module
-                    onBlur: () => setTimeout(this.closeQuickActions, 100),
-                  })}
-                />
-              </InputContainer>
+          }) => {
+            const inputProps = getInputProps({
+              innerRef: el => el && el.focus(),
+              onKeyUp: this.handleKeyUp,
+              // Timeout so the fuzzy handler can still select the module
+              onBlur: () => setTimeout(this.closeQuickActions, 100),
+            });
+            return (
+              <div style={{ width: '100%' }}>
+                <InputContainer>
+                  <Input {...inputProps} value={inputProps.value || ''} />
+                </InputContainer>
 
-              <Items>
-                {this.getItems(inputValue).map((item, index) => (
-                  <Entry
-                    {...getItemProps({
-                      item,
-                      index,
-                      isActive: highlightedIndex === index,
-                      isSelected: selectedItem === item,
-                    })}
-                    key={item.id}
-                  >
-                    <Title>
-                      {keybindings[item.id].type}: {keybindings[item.id].title}
-                    </Title>
+                <Items>
+                  {this.getItems(inputValue).map((item, index) => (
+                    <Entry
+                      {...getItemProps({
+                        item,
+                        index,
+                        isActive: highlightedIndex === index,
+                        isSelected: selectedItem === item,
+                      })}
+                      key={item.id}
+                    >
+                      <Title>
+                        {keybindings[item.id].type}:{' '}
+                        {keybindings[item.id].title}
+                      </Title>
 
-                    {keybindings[item.id].bindings &&
-                      keybindings[item.id].bindings[0] && (
-                        <Keybindings>
-                          <Keys bindings={keybindings[item.id].bindings[0]} />
-                          {keybindings[item.id].bindings.length === 2 &&
-                            keybindings[item.id].bindings[1] &&
-                            keybindings[item.id].bindings[1].length && (
-                              <React.Fragment>
-                                {' - '}
-                                <Keys
-                                  bindings={keybindings[item.id].bindings[1]}
-                                />
-                              </React.Fragment>
-                            )}
-                        </Keybindings>
-                      )}
-                  </Entry>
-                ))}
-              </Items>
-            </div>
-          )}
+                      {keybindings[item.id].bindings &&
+                        keybindings[item.id].bindings[0] && (
+                          <Keybindings>
+                            <Keys bindings={keybindings[item.id].bindings[0]} />
+                            {keybindings[item.id].bindings.length === 2 &&
+                              keybindings[item.id].bindings[1] &&
+                              keybindings[item.id].bindings[1].length && (
+                                <React.Fragment>
+                                  {' - '}
+                                  <Keys
+                                    bindings={keybindings[item.id].bindings[1]}
+                                  />
+                                </React.Fragment>
+                              )}
+                          </Keybindings>
+                        )}
+                    </Entry>
+                  ))}
+                </Items>
+              </div>
+            );
+          }}
         </Downshift>
       </Container>
     );

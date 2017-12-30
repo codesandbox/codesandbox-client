@@ -23,7 +23,11 @@ export default class SearchDependencies extends React.PureComponent {
     this.props.onConfirm(hit.name, version);
   };
 
-  handleManualSelect = (hitName: string) => {
+  handleManualSelect = hitName => {
+    if (!hitName) {
+      return;
+    }
+
     const isScoped = hitName.startsWith('@');
     let version = 'latest';
 

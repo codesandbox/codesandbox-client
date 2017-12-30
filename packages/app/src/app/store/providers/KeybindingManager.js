@@ -2,161 +2,139 @@ import { Provider } from 'cerebral';
 import { KEYBINDINGS, normalizeKey } from 'app/utils/keybindings';
 
 const state = {
-  bindingStrings: null,
   keybindings: null,
-  checkedStrokes: null,
-  pressedComboKeys: [],
-  pressedComboMetaKeys: [],
-  pressedSpecialKeys: [],
-  specialTimeout: null,
-  timeout: null,
-  signals: null,
+  keydownIndex: 0,
+  pendingPrimaryBindings: [],
+  pendingSecondaryBindings: [],
 };
 
-function removeFromPressedComboKeys(key) {
-  state.pressedComboKeys = state.pressedComboKeys.filter(x => x !== key);
-}
-
-function checkCombosForPressedKeys() {
-  const pressedComboKeysStr = state.pressedComboKeys.join('');
-
-  return state.checkedStrokes[pressedComboKeysStr];
-}
-
-function handleKeyUp(e) {
-  const key = normalizeKey(e);
-
-  removeFromPressedComboKeys(key);
-  if (state.pressedComboMetaKeys.length > 0) {
-    // if there are keys that were pressed while
-    // the meta key was pressed flush them
-    // because the keyup wasn't triggered for them
-    // @see http:// stackoverflow.com/questions/27380018/when-cmd-key-is-kept-pressed-keyup-is-not-triggered-for-any-other-key
-
-    state.pressedComboMetaKeys.forEach(metaKey =>
-      removeFromPressedComboKeys(metaKey)
-    );
-    state.pressedComboMetaKeys = [];
-  }
+function handleKeyUp() {
+  state.keydownIndex = 0;
 }
 
 function handleKeyDown(controller, e) {
   const key = normalizeKey(e);
 
-  if (state.pressedComboKeys.indexOf(key) === -1) {
-    state.pressedComboKeys.push(key);
-
-    // if the meta key is pressed
-    // register the keyCode also in seperate array
-    if (e.metaKey) {
-      state.pressedComboMetaKeys.push(key);
-    }
-  }
-
-  // We also register special keys, sometimes key ups are not registered
-  // for special keys, so after every 2 seconds we clear the array
-  if (state.pressedSpecialKeys.indexOf(key) === -1) {
-    state.pressedSpecialKeys.push(key);
-
-    clearTimeout(state.specialTimeout);
-    state.specialTimeout = setTimeout(() => {
-      state.pressedSpecialKeys.forEach(k => {
-        removeFromPressedComboKeys(k);
-      });
-    }, 1500);
-  }
-
-  // check match
-  const match = checkCombosForPressedKeys();
-
-  if (match != null) {
-    e.preventDefault();
-    e.stopPropagation();
-  }
-
-  if (typeof match === 'string') {
-    state.pressedComboKeys = [];
-    state.pressedComboMetaKeys = [];
-    state.pressedSpecialKeys = [];
-    state.checkedStrokes = state.bindingStrings;
-
-    controller.getSignal(state.keybindings[match].signal)(
-      state.keybindings[match].payload || {}
+  // First we check if we have any pending secondary bindings to identify
+  if (state.pendingSecondaryBindings.length) {
+    // We filter out any hits by verifying that the current key matches the next
+    // key in line for the pending bindings
+    state.pendingSecondaryBindings = state.pendingSecondaryBindings.filter(
+      binding => binding.bindings[1][state.keydownIndex] === key
     );
-  } else if (typeof match === 'object') {
-    state.checkedStrokes = match;
 
-    if (state.timeout) {
-      clearTimeout(state.timeout);
+    // We get a hit if the current key matches the last key in the binding
+    const secondaryBindingHit = state.pendingSecondaryBindings.find(
+      binding => binding.bindings[1][binding.bindings[1].length - 1] === key
+    );
+
+    // When we get a hit we grab the actual binding and trigger it, resetting the state.
+    // We also return from this function
+    if (secondaryBindingHit) {
+      const keybinding = KEYBINDINGS[secondaryBindingHit.key];
+
+      state.keydownIndex = 0;
+      state.pendingPrimaryBindings = [];
+      state.pendingSecondaryBindings = [];
+      e.preventDefault();
+      e.stopPropagation();
+
+      controller.getSignal(keybinding.signal)(keybinding.payload || {});
+
+      return;
+    }
+  }
+
+  // We do not want to make any analysis if multiple keys are pressed and
+  // there are no pending primary bindings
+  if (state.keydownIndex > 0 && !state.pendingPrimaryBindings.length) {
+    return;
+  }
+
+  // We filter out any hits on full list of bindings on first key down, or just move
+  // on filtering on existing pending bindings
+  state.pendingPrimaryBindings = (state.keydownIndex === 0
+    ? state.keybindings
+    : state.pendingPrimaryBindings
+  ).filter(binding => binding.bindings[0][state.keydownIndex] === key);
+
+  // We find possibly multiple hits as secondary bindings might have the same primary binding. We
+  // sort by bindings length to identify if a primary binding should trigger. It might happen that a
+  // user creates a primary binding that triggers something, but also same primary binding with a secondary
+  // binding which is invalid... we trigger the primary binding
+  const primaryBindingHits = state.pendingPrimaryBindings
+    .filter(
+      binding => binding.bindings[0][binding.bindings[0].length - 1] === key
+    )
+    .sort((a, b) => a.bindings.length < b.bindings.length);
+
+  // We move through the hits and trigger any primary binding, reset and return. Or we
+  // add it as a pending secondary binding
+  for (let x = 0; x < primaryBindingHits.length; x++) {
+    const binding = primaryBindingHits[x];
+
+    if (binding.bindings.length === 1 || !binding.bindings[1]) {
+      const keybinding = KEYBINDINGS[binding.key];
+
+      state.keydownIndex = 0;
+      state.pendingPrimaryBindings = [];
+      state.pendingSecondaryBindings = [];
+      e.preventDefault();
+      e.stopPropagation();
+
+      controller.getSignal(keybinding.signal)(keybinding.payload || {});
+
+      return;
     }
 
-    state.timeout = setTimeout(() => {
-      state.checkedStrokes = state.bindingStrings;
-    }, 300);
+    state.pendingSecondaryBindings = state.pendingSecondaryBindings.concat(
+      binding
+    );
+  }
+
+  // As long as we have pending primary bindings (and possibly secondary) we want to add to keydown
+  if (state.pendingPrimaryBindings.length) {
+    state.keydownIndex++;
+  } else {
+    state.keydownIndex = 0;
   }
 }
 
 let onKeyUp = null;
 let onKeyDown = null;
+let isStarted = false;
 
 export default Provider({
   set(userKeybindings = []) {
-    const userKeybindingsByKey = userKeybindings.reduce(
-      (bindings, binding) =>
-        Object.assign(bindings, {
-          [binding.key]: binding.bindings,
-        }),
-      {}
+    const keybindings = userKeybindings.concat(
+      Object.keys(KEYBINDINGS).reduce(
+        (currentKeybindings, key) =>
+          currentKeybindings.concat({
+            key,
+            bindings: KEYBINDINGS[key].bindings,
+          }),
+        []
+      )
     );
 
-    const keybindings = Object.keys(KEYBINDINGS).reduce(
-      (currentKeybindings, key) => {
-        const binding = Object.assign(
-          {},
-          KEYBINDINGS[key],
-          userKeybindingsByKey[key]
-            ? {
-                bindings: userKeybindingsByKey[key],
-              }
-            : {}
-        );
-
-        return Object.assign(currentKeybindings, {
-          [key]: binding,
-        });
-      },
-      {}
+    state.keybindings = keybindings.filter(
+      binding => binding.bindings && binding.bindings.length
     );
-
-    state.bindingStrings = {};
-
-    Object.keys(keybindings).forEach(key => {
-      const binding = keybindings[key];
-
-      if (binding.bindings[0]) {
-        const bindingString = binding.bindings[0].join('');
-
-        if (binding.bindings.length === 2 && binding.bindings[1].length) {
-          state.bindingStrings[bindingString] = {
-            [binding.bindings[1].join('')]: key,
-          };
-        } else {
-          state.bindingStrings[bindingString] = key;
-        }
-      }
-    });
-
-    state.keybindings = keybindings;
-    state.checkedStrokes = state.bindingStrings;
   },
   start() {
+    if (isStarted) {
+      return;
+    }
+
     onKeyDown = handleKeyDown.bind(null, this.context.controller);
     onKeyUp = handleKeyUp.bind(null);
-    document.addEventListener('keydown', onKeyDown);
-    document.addEventListener('keyup', onKeyUp);
+    window.addEventListener('keydown', onKeyDown);
+    window.addEventListener('keyup', onKeyUp);
+    isStarted = true;
   },
   pause() {
-    document.removeEventListener('keydown', onKeyDown);
-    document.removeEventListener('keyup', onKeyUp);
+    window.removeEventListener('keydown', onKeyDown);
+    window.removeEventListener('keyup', onKeyUp);
+    isStarted = false;
   },
 });

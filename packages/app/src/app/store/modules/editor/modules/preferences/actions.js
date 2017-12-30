@@ -18,7 +18,10 @@ export function changeKeybinding({ props, state }) {
   const currentIndex = keybindings.findIndex(
     binding => binding.key === props.name
   );
-  const newBinding = { key: props.name, bindings: props.value };
+  const newBinding = {
+    key: props.name,
+    bindings: JSON.parse(JSON.stringify(props.value)),
+  };
 
   if (currentIndex === -1) {
     state.push('editor.preferences.settings.keybindings', newBinding);

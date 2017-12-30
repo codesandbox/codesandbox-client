@@ -38,25 +38,16 @@ class KeyMapping extends React.Component {
     const valB0 = [...value[0]].sort().join('');
     const valB1 = value[1] && [...value[1]].sort().join('');
     const alreadyExists = bindings.some(([b0, b1]) => {
+      const valb0 = b0 && [...b0].sort().join('');
+      const valb1 = b1 && [...b1].sort().join('');
+
       if (
-        b0 &&
-        [...b0]
-          .sort()
-          .join('')
-          .startsWith(valB0)
+        (valb0 && valb0 === valB0 && valb1 && valb1 === valB1) ||
+        (valb0 && valb0 === valB0 && !valb1 && !valB1)
       ) {
         return true;
       }
-      if (
-        valB1 &&
-        b1 &&
-        [...b1]
-          .sort()
-          .join('')
-          .startsWith(valB1)
-      ) {
-        return true;
-      }
+
       return false;
     });
 
@@ -68,11 +59,16 @@ class KeyMapping extends React.Component {
 
   bindValue = name => ({
     setValue: value => {
+      if (!value[0]) {
+        return;
+      }
+
       const error = this.validateValue(name, value);
 
       if (error) {
         this.setState({ error });
       } else {
+        this.setState({ error: null });
         this.props.signals.editor.preferences.keybindingChanged({
           name,
           value,
