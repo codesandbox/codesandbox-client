@@ -201,15 +201,15 @@ export default class TranspiledModule {
       if (this.compilation) {
         try {
           this.compilation = null;
-          Array.from(this.initiators)
-            .filter(t => t.compilation)
-            .forEach(dep => {
-              dep.resetCompilation();
-            });
         } catch (e) {
           console.error(e);
         }
       }
+      Array.from(this.initiators)
+        .filter(t => t.compilation)
+        .forEach(dep => {
+          dep.resetCompilation();
+        });
 
       Array.from(this.transpilationInitiators)
         .filter(t => t.compilation)

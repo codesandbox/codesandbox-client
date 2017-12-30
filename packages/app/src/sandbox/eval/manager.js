@@ -137,10 +137,15 @@ export default class Manager {
 
   evaluateModule(module: Module) {
     // Evaluate all dirty modules cause by HMR transforms first too
-    this.dirtyModules.forEach(m => {
-      m.evaluate(this);
-    });
-    this.dirtyModules.clear();
+    // this.dirtyModules.forEach(m => {
+    //   m.evaluate(this);
+    // });
+    // this.dirtyModules.clear();
+
+    // TODO fix this
+    this.getTranspiledModules()
+      .filter(t => t.hmrConfig && t.hmrConfig.isDirty())
+      .forEach(t => t.evaluate(this));
 
     const transpiledModule = this.getTranspiledModule(module);
 
