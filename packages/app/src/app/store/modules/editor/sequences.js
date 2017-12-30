@@ -3,6 +3,7 @@ import { set, when, equals, toggle, increment } from 'cerebral/operators';
 import { state, props, string } from 'cerebral/tags';
 import { getZeitUserDetails } from 'app/store/sequences';
 import * as actions from './actions';
+import * as factories from './factories';
 
 import { addNotification, updateSandboxUrl } from '../../factories';
 
@@ -62,7 +63,7 @@ export const prettifyCode = [
   },
 ];
 
-export const setCurrentModule = [actions.addTab, actions.setCurrentModule];
+export const setCurrentModule = factories.setCurrentModule(props`id`);
 
 export const unsetDirtyTab = actions.unsetDirtyTab;
 

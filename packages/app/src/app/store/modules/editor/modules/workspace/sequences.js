@@ -2,6 +2,8 @@ import { set, toggle, push } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 import * as actions from './actions';
 import { loadSandbox, ensureOwnedSandbox } from '../../sequences';
+import { setCurrentModule } from '../../factories';
+import { closeTab } from '../../actions';
 import { addNotification } from '../../../../factories';
 
 export const openSearchDependenciesModal = set(
@@ -102,19 +104,49 @@ export const removeExternalResource = [
 
 export const deleteModule = [
   ensureOwnedSandbox,
-  set(state`editor.currentModuleShortid`, state`editor.mainModule.shortid`),
-  actions.deleteModule,
+  actions.whenModuleIsSelected,
+  {
+    true: setCurrentModule(state`editor.mainModule.id`),
+    false: [],
+  },
+  actions.whenCloseTab,
+  {
+    true: closeTab,
+    false: [],
+  },
   actions.removeModule,
+  actions.deleteModule,
+  {
+    success: [],
+    error: [
+      push(
+        state`editor.sandboxes.${state`editor.currentId`}.modules`,
+        props`removedModule`
+      ),
+      addNotification('Could not delete file', 'error'),
+    ],
+  },
 ];
 
 export const createModule = [
   ensureOwnedSandbox,
-  actions.saveNewModule,
+  actions.createOptimisticModule,
   push(
     state`editor.sandboxes.${state`editor.currentId`}.modules`,
-    props`newModule`
+    props`optimisticModule`
   ),
-  set(state`editor.currentModuleShortid`, props`newModule.shortid`),
+  actions.saveNewModule,
+  {
+    success: [
+      actions.updateOptimisticModule,
+      setCurrentModule(props`newModule.id`),
+    ],
+    error: [
+      actions.removeOptimisticModule,
+      setCurrentModule(state`editor.mainModule.shortid.id`),
+      addNotification('Unable to save new file', 'error'),
+    ],
+  },
 ];
 
 export const renameModule = [
@@ -125,11 +157,19 @@ export const renameModule = [
 
 export const createDirectory = [
   ensureOwnedSandbox,
-  actions.saveDirectory,
+  actions.createOptimisticDirectory,
   push(
     state`editor.sandboxes.${state`editor.currentId`}.directories`,
-    props`newDirectory`
+    props`optimisticDirectory`
   ),
+  actions.saveDirectory,
+  {
+    success: actions.updateOptimisticDirectory,
+    error: [
+      actions.removeOptimisticDirectory,
+      addNotification('Unable to save new directory', 'error'),
+    ],
+  },
 ];
 
 export const renameDirectory = [
@@ -141,13 +181,43 @@ export const renameDirectory = [
 export const deleteDirectory = [
   ensureOwnedSandbox,
   set(state`editor.currentModuleShortid`, state`editor.mainModule.shortid`),
-  actions.deleteDirectory,
   actions.removeDirectory,
+  actions.deleteDirectory,
+  {
+    success: [],
+    error: [
+      push(
+        state`editor.sandboxes.${state`editor.currentId`}.directories`,
+        props`removedDirectory`
+      ),
+      addNotification('Could not delete directory', 'error'),
+    ],
+  },
 ];
 
-export const moveDirectoryToDirectory = actions.moveDirectoryToDirectory;
+export const moveDirectoryToDirectory = [
+  actions.moveDirectoryToDirectory,
+  actions.saveNewDirectoryDirectoryShortid,
+  {
+    success: [],
+    error: [
+      actions.revertMoveDirectoryToDirectory,
+      addNotification('Could not save new directory location', 'error'),
+    ],
+  },
+];
 
-export const moveModuleToDirectory = actions.moveModuleToDirectory;
+export const moveModuleToDirectory = [
+  actions.moveModuleToDirectory,
+  actions.saveNewModuleDirectoryShortid,
+  {
+    success: [],
+    error: [
+      actions.revertMoveModuleToDirectory,
+      addNotification('Could not save new module location', 'error'),
+    ],
+  },
+];
 
 export const updateTag = [
   set(state`editor.workspace.tags.tagName`, props`tagName`),

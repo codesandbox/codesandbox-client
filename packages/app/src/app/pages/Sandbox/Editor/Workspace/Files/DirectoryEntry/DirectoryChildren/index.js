@@ -1,11 +1,11 @@
 import * as React from 'react';
-
+import { observer } from 'mobx-react';
 import getType from 'app/utils/get-type';
 import validateTitle from '../validateTitle';
 import Entry from '../Entry';
 import DirectoryEntry from '../';
 
-export default class DirectoryChildren extends React.Component {
+class DirectoryChildren extends React.Component {
   validateTitle = (id, title) => {
     const { directories, modules } = this.props;
     return !!validateTitle(id, title, [...directories, ...modules]);
@@ -89,3 +89,5 @@ export default class DirectoryChildren extends React.Component {
     );
   }
 }
+
+export default observer(DirectoryChildren);
