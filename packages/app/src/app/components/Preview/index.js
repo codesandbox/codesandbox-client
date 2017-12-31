@@ -66,8 +66,8 @@ class BasePreview extends React.Component {
     });
   };
 
-  handleSandboxChange = () => {
-    const url = frameUrl(this.props.sandbox.id, this.props.initialPath);
+  handleSandboxChange = newId => {
+    const url = frameUrl(newId, this.props.initialPath);
     this.setState(
       {
         history: [url],

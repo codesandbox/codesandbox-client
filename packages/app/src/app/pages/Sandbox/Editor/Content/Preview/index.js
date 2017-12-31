@@ -72,8 +72,8 @@ class Preview extends React.Component {
     );
   };
 
-  handleSandboxChange = preview => {
-    preview.handleSandboxChange();
+  handleSandboxChange = (preview, newId) => {
+    preview.handleSandboxChange(newId);
   };
 
   handleDependenciesChange = preview => {
