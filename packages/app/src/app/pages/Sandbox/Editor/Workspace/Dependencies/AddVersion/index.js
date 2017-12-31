@@ -10,12 +10,10 @@ function AddVersion({ store, signals }) {
     <div style={{ position: 'relative' }}>
       <ButtonContainer>
         <Button
-          disabled={store.editor.workspace.isProcessingDependencies}
+          disabled={store.workspace.isProcessingDependencies}
           block
           small
-          onClick={() =>
-            signals.editor.workspace.searchDependenciesModalOpened()
-          }
+          onClick={() => signals.workspace.searchDependenciesModalOpened()}
         >
           Add Package
         </Button>

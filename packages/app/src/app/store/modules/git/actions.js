@@ -1,5 +1,5 @@
 export function openPr({ state, browser }) {
-  const pr = state.get('editor.git.pr');
+  const pr = state.get('git.pr');
   const user = state.get('user');
   const git = state.get('editor.currentSandbox.forkedFromSandbox.git');
 
@@ -16,7 +16,7 @@ export function createPr({ api, state }) {
   return api
     .post(`/sandboxes/${id}/git/pr`, {
       id,
-      message: state.get('editor.git.message'),
+      message: state.get('git.message'),
     })
     .then(pr => ({ pr }));
 }
@@ -31,13 +31,13 @@ export function createCommit({ api, state }) {
   return api
     .post(`/sandboxes/${id}/git/commit`, {
       id,
-      message: state.get('editor.git.message'),
+      message: state.get('git.message'),
     })
     .then(commit => ({ commit }));
 }
 
 export function whenValidRepo({ state, path }) {
-  const repoTitle = state.get('editor.git.repoTitle');
+  const repoTitle = state.get('git.repoTitle');
   const modulesNotSaved = !state.get('editor.isAllModulesSynced');
 
   if (!repoTitle) {
@@ -63,7 +63,7 @@ export function exportSandboxToGithub({ state, git }) {
 
 export function saveGithubData({ api, state, props }) {
   const id = state.get('editor.currentId');
-  const name = state.get('editor.git.repoTitle');
+  const name = state.get('git.repoTitle');
 
   return api
     .post(`/sandboxes/${id}/git/repo/${name}`, props.githubData)

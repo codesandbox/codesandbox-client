@@ -9,18 +9,15 @@ import { Container } from './elements';
 
 class PaymentInfo extends React.Component {
   componentDidMount() {
-    this.props.signals.editor.preferences.paymentDetailsRequested();
+    this.props.signals.preferences.paymentDetailsRequested();
   }
 
   updatePaymentDetails = token => {
-    this.props.signals.editor.preferences.paymentDetailsUpdated({ token });
+    this.props.signals.preferences.paymentDetailsUpdated({ token });
   };
 
   paymentDetails = () => {
-    const {
-      paymentDetails,
-      paymentDetailError,
-    } = this.props.store.editor.preferences;
+    const { paymentDetails, paymentDetailError } = this.props.store.preferences;
 
     if (paymentDetailError)
       return <div>An error occurred: {paymentDetailError}</div>;
@@ -46,7 +43,7 @@ class PaymentInfo extends React.Component {
   };
 
   render() {
-    const { isLoadingPaymentDetails } = this.props.store.editor.preferences;
+    const { isLoadingPaymentDetails } = this.props.store.preferences;
     return (
       <Container>
         <Title>Payment Info</Title>

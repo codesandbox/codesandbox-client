@@ -57,7 +57,7 @@ class Showcase extends React.Component {
             <div style={{ flex: 2 }}>
               <ShowcasePreview
                 sandbox={sandbox}
-                settings={this.props.store.editor.preferences.settings}
+                settings={this.props.store.preferences.settings}
               />
             </div>
             <div style={{ flex: 1 }}>

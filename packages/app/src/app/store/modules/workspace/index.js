@@ -1,7 +1,7 @@
 import { Module } from 'cerebral';
 import model from './model';
 import * as sequences from './sequences';
-import * as editorSequences from '../../sequences';
+import { addNpmDependency } from '../../sequences';
 
 export default Module({
   model,
@@ -26,7 +26,7 @@ export default Module({
     tagRemoved: sequences.removeTag,
     sandboxInfoUpdated: sequences.updateSandboxInfo,
     workspaceToggled: sequences.toggleWorkspace,
-    npmDependencyAdded: editorSequences.addNpmDependency,
+    npmDependencyAdded: addNpmDependency,
     npmDependencyRemoved: sequences.removeNpmDependency,
     externalResourceAdded: sequences.addExternalResource,
     externalResourceRemoved: sequences.removeExternalResource,

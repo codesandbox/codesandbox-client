@@ -5,7 +5,7 @@ export function pauseKeybindings({ keybindingManager }) {
 export function storeSetting({ props, state, settingsStore }) {
   if (props.name.split('.').length > 1) {
     const prop = props.name.split('.')[0];
-    const value = state.get(`editor.preferences.settings.${prop}`);
+    const value = state.get(`preferences.settings.${prop}`);
 
     settingsStore.set(prop, value);
   } else {
@@ -14,7 +14,7 @@ export function storeSetting({ props, state, settingsStore }) {
 }
 
 export function changeKeybinding({ props, state }) {
-  const keybindings = state.get('editor.preferences.settings.keybindings');
+  const keybindings = state.get('preferences.settings.keybindings');
   const currentIndex = keybindings.findIndex(
     binding => binding.key === props.name
   );
@@ -24,10 +24,10 @@ export function changeKeybinding({ props, state }) {
   };
 
   if (currentIndex === -1) {
-    state.push('editor.preferences.settings.keybindings', newBinding);
+    state.push('preferences.settings.keybindings', newBinding);
   } else {
     state.splice(
-      'editor.preferences.settings.keybindings',
+      'preferences.settings.keybindings',
       currentIndex,
       1,
       newBinding
@@ -36,7 +36,7 @@ export function changeKeybinding({ props, state }) {
 }
 
 export function storeKeybindings({ state, settingsStore }) {
-  const keybindings = state.get('editor.preferences.settings.keybindings');
+  const keybindings = state.get('preferences.settings.keybindings');
   const value = keybindings.reduce(
     (currentValue, binding) =>
       Object.assign(currentValue, {

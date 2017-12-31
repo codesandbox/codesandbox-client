@@ -8,11 +8,7 @@ import {
   mainModule,
 } from './getters';
 import { isModuleSynced } from './computed';
-
-import workspace from './modules/workspace';
-import preferences from './modules/preferences';
-import deployment from './modules/deployment';
-import git from './modules/git';
+import { loadSandbox } from '../../sequences';
 
 export default Module({
   model,
@@ -50,7 +46,7 @@ export default Module({
     isModuleSynced,
   },
   signals: {
-    sandboxChanged: sequences.loadSandbox,
+    sandboxChanged: loadSandbox,
     contentMounted: sequences.onUnload,
     resizingStarted: sequences.startResizing,
     resizingStopped: sequences.stopResizing,
@@ -60,7 +56,7 @@ export default Module({
     createZipClicked: sequences.createZip,
     forkSandboxClicked: sequences.forceForkSandbox,
     likeSandboxToggled: sequences.toggleLikeSandbox,
-    moduleSelected: sequences.setCurrentModule,
+    moduleSelected: sequences.changeCurrentModule,
     moduleDoubleClicked: sequences.unsetDirtyTab,
     tabClosed: sequences.closeTab,
     tabMoved: sequences.moveTab,
@@ -78,5 +74,4 @@ export default Module({
     quickActionsOpened: sequences.openQuickActions,
     quickActionsClosed: sequences.closeQuickActions,
   },
-  modules: { workspace, preferences, deployment, git },
 });

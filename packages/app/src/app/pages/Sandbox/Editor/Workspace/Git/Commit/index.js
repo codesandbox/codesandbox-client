@@ -4,10 +4,10 @@ import Progress from '../Progress';
 
 function Commit({ store }) {
   const git = store.editor.currentSandbox.git;
-  const commit = store.editor.git.commit;
+  const commit = store.git.commit;
   let message;
 
-  if (store.editor.git.isComitting) {
+  if (store.git.isComitting) {
     message = <div>Comitting, please wait...</div>;
   } else if (commit.newBranch) {
     const newUrl = `https://github.com/${git.username}/${git.repo}/compare/${

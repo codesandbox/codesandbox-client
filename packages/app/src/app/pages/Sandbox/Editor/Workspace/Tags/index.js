@@ -18,7 +18,7 @@ function Tags({ store, signals }) {
           <div style={{ fontSize: '.875rem' }}>
             <TagsComponent
               tags={tags}
-              removeTag={isOwner && signals.editor.workspace.tagRemoved}
+              removeTag={isOwner && signals.workspace.tagRemoved}
             />
           </div>
         </div>
@@ -30,14 +30,14 @@ function Tags({ store, signals }) {
           <WorkspaceInputContainer>
             <input
               onChange={event => {
-                signals.editor.workspace.tagChanged({
+                signals.workspace.tagChanged({
                   tagName: event.target.value,
                 });
               }}
-              value={store.editor.workspace.tags.tagName}
+              value={store.workspace.tags.tagName}
               onKeyUp={event => {
                 if (event.keyCode === 13) {
-                  signals.editor.workspace.tagAdded();
+                  signals.workspace.tagAdded();
                 }
               }}
               placeholder="Add a tag"
@@ -46,7 +46,7 @@ function Tags({ store, signals }) {
           <Margin horizontal={1} vertical={0.5}>
             <Button
               onClick={() => {
-                signals.editor.workspace.tagAdded();
+                signals.workspace.tagAdded();
               }}
               disabled={tags.length >= 5}
               block

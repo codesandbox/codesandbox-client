@@ -89,15 +89,13 @@ class SandboxPage extends React.Component {
         <Editor match={match} />
         <QuickActions />
         <Modal
-          isOpen={store.editor.workspace.showSearchDependenciesModal}
+          isOpen={store.workspace.showSearchDependenciesModal}
           width={600}
-          onClose={() =>
-            signals.editor.workspace.searchDependenciesModalClosed()
-          }
+          onClose={() => signals.workspace.searchDependenciesModalClosed()}
         >
           <SearchDependencies
             onConfirm={(name, version) =>
-              signals.editor.workspace.npmDependencyAdded({ name, version })
+              signals.workspace.npmDependencyAdded({ name, version })
             }
           />
         </Modal>

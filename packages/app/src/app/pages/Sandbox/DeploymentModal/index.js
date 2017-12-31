@@ -44,12 +44,10 @@ function DeploymentModal({ store, signals }) {
       signedIn={zeitSignedIn}
     >
       <Centered horizontal>
-        {store.editor.deployment.deploying && (
+        {store.deployment.deploying && (
           <Margin top={1}>
             <DeployText>Deploying sandbox...</DeployText>
-            <DeployAnimationContainer
-              deploying={store.editor.deployment.deploying}
-            >
+            <DeployAnimationContainer deploying={store.deployment.deploying}>
               <StyledLogo width={70} height={70} />
               {[0, 1, 2, 3].map(i => <StyledCube key={i} i={i} size={20} />)}
               <StyledNowLogo backgroundColor="#24282A" />
@@ -57,17 +55,17 @@ function DeploymentModal({ store, signals }) {
           </Margin>
         )}
 
-        {store.editor.deployment.url ? (
+        {store.deployment.url ? (
           <Margin top={1} bottom={2}>
             <Centered horizontal>
               <DeployText>Deployed!</DeployText>
 
               <DeployedLink
-                href={store.editor.deployment.url}
+                href={store.deployment.url}
                 rel="nofollow noreferrer"
                 target="_blank"
               >
-                {store.editor.deployment.url}
+                {store.deployment.url}
               </DeployedLink>
 
               <DeploymentManagementNotice>
@@ -83,10 +81,10 @@ function DeploymentModal({ store, signals }) {
             </Centered>
           </Margin>
         ) : (
-          <ButtonContainer deploying={store.editor.deployment.deploying}>
+          <ButtonContainer deploying={store.deployment.deploying}>
             <Button
-              onClick={() => signals.editor.deployment.deployClicked()}
-              disabled={!zeitSignedIn || store.editor.deployment.deploying}
+              onClick={() => signals.deployment.deployClicked()}
+              disabled={!zeitSignedIn || store.deployment.deploying}
             >
               Deploy Now
             </Button>

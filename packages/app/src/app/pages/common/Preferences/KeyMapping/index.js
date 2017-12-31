@@ -15,8 +15,7 @@ class KeyMapping extends React.Component {
   state = { error: null };
 
   getUserBindings = () => {
-    const keybindings = this.props.store.editor.preferences.settings
-      .keybindings;
+    const keybindings = this.props.store.preferences.settings.keybindings;
 
     return keybindings.reduce(
       (bindings, binding) =>
@@ -65,7 +64,7 @@ class KeyMapping extends React.Component {
         this.setState({ error });
       } else {
         this.setState({ error: null });
-        this.props.signals.editor.preferences.keybindingChanged({
+        this.props.signals.preferences.keybindingChanged({
           name,
           value,
         });

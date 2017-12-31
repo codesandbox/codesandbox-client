@@ -1,21 +1,5 @@
 import { clone } from 'mobx-state-tree';
 
-export function getGitChanges({ api, state }) {
-  const id = state.get('editor.currentId');
-
-  return api
-    .get(`/sandboxes/${id}/git/diff`)
-    .then(gitChanges => ({ gitChanges }));
-}
-
-export function setWorkspace({ state, props }) {
-  state.set('editor.workspace.project.title', props.sandbox.title || '');
-  state.set(
-    'editor.workspace.project.description',
-    props.sandbox.description || ''
-  );
-}
-
 export function ensureValidPrivacy({ props, path }) {
   const privacy = Number(props.privacy);
 
@@ -44,72 +28,8 @@ export function updatePrivacy({ api, props, state }) {
     .then(() => undefined);
 }
 
-export function setUrlOptions({ state, router, utils }) {
-  const options = router.getSandboxOptions();
-
-  if (options.currentModule) {
-    const sandbox = state.get('editor.currentSandbox');
-    const module = utils.resolveModule(
-      options.currentModule,
-      sandbox.modules,
-      sandbox.directories
-    );
-
-    if (module) {
-      state.set('editor.currentModuleShortid');
-    }
-  }
-
-  state.merge(
-    'editor.preferences.showPreview',
-    options.isPreviewScreen || options.isSplitScreen
-  );
-  state.merge(
-    'editor.preferences.showEditor',
-    options.isEditorScreen || options.isSplitScreen
-  );
-
-  if (options.initialPath) state.set('editor.initialPath', options.initialPath);
-  if (options.fontSize)
-    state.set('editor.preferences.settings.fontSize', options.fontSize);
-  if (options.highlightedLines)
-    state.set('editor.highlightedLines', options.highlightedLines);
-  if (options.editorSize)
-    state.set('editor.preferences.settings.editorSize', options.editorSize);
-  if (options.hideNavigation)
-    state.set('editor.preferences.hideNavigation', options.hideNavigation);
-  if (options.isInProjectView)
-    state.set('editor.isInProjectView', options.isInProjectView);
-  if (options.autoResize)
-    state.set('editor.preferences.settings.autoResize', options.autoResize);
-  if (options.useCodeMirror)
-    state.set(
-      'editor.preferences.settings.useCodeMirror',
-      options.useCodeMirror
-    );
-  if (options.enableEslint)
-    state.set('editor.preferences.settings.enableEslint', options.enableEslint);
-  if (options.forceRefresh)
-    state.set('editor.preferences.settings.forceRefresh', options.forceRefresh);
-  if (options.expandDevTools)
-    state.set('editor.preferences.showConsole', options.expandDevTools);
-}
-
 export function forceRender({ state }) {
   state.set('editor.forceRender', state.get('editor.forceRender') + 1);
-}
-
-export function addNpmDependency({ api, state, props }) {
-  const sandboxId = state.get('editor.currentId');
-
-  return api
-    .post(`/sandboxes/${sandboxId}/dependencies`, {
-      dependency: {
-        name: props.name,
-        version: props.version,
-      },
-    })
-    .then(data => ({ npmDependencies: data }));
 }
 
 export function outputModuleIdFromActionPath({ state, props, utils }) {
@@ -191,29 +111,6 @@ export function moveTab({ state, props }) {
   state.splice('editor.tabs', props.nextIndex, 0, tab);
 }
 
-export function closeTab({ state, props }) {
-  const sandbox = state.get('editor.currentSandbox');
-  const currentModule = state.get('editor.currentModule');
-  const tabs = state.get('editor.tabs');
-  const tabModuleId = tabs[props.tabIndex].moduleId;
-  const isActiveTab = currentModule.id === tabModuleId;
-
-  if (isActiveTab) {
-    const newTab =
-      props.tabIndex > 0 ? tabs[props.tabIndex - 1] : tabs[props.tabIndex + 1];
-
-    if (newTab) {
-      const newModule = sandbox.modules.find(
-        module => module.id === newTab.moduleId
-      );
-
-      state.set('editor.currentModuleShortid', newModule.shortid);
-    }
-  }
-
-  state.splice('editor.tabs', props.tabIndex, 1);
-}
-
 export function unsetDirtyTab({ state }) {
   const currentModule = state.get('editor.currentModule');
   const tabs = state.get('editor.tabs');
@@ -222,17 +119,6 @@ export function unsetDirtyTab({ state }) {
   );
 
   state.set(`editor.tabs.${tabIndex}.dirty`, false);
-}
-
-export function setInitialTab({ state }) {
-  const currentModule = state.get('editor.currentModule');
-  const newTab = {
-    type: 'MODULE',
-    moduleShortid: currentModule.shortid,
-    dirty: true,
-  };
-
-  state.set('editor.tabs', [newTab]);
 }
 
 export function outputChangedModules({ state }) {
@@ -298,7 +184,7 @@ export function saveChangedModules({ props, api, state }) {
 export function prettifyCode({ utils, state, path }) {
   const currentModule = state.get('editor.currentModule');
   const sandbox = state.get('editor.currentSandbox');
-  let config = state.get('editor.preferences.settings.prettierConfig');
+  let config = state.get('preferences.settings.prettierConfig');
   const configFromSandbox = sandbox.modules.find(
     module => module.directoryShortid == null && module.title === '.prettierrc'
   );
@@ -340,19 +226,6 @@ export function getCurrentModuleId({ state }) {
   };
 }
 
-export function getSandbox({ props, api, path }) {
-  return api
-    .get(`/sandboxes/${props.id}`)
-    .then(data => path.success({ sandbox: data }))
-    .catch(error => {
-      if (error.response.status === 404) {
-        return path.notFound();
-      }
-
-      return path.error({ error });
-    });
-}
-
 export function warnUnloadingContent({ browser, state }) {
   browser.onUnload(event => {
     if (!state.get('editor.isAllModulesSynced')) {
@@ -366,49 +239,6 @@ export function warnUnloadingContent({ browser, state }) {
 
     return null;
   });
-}
-
-export function setCurrentModuleShortid({ utils, props, state }) {
-  const module = utils.resolveModule(
-    props.sandbox.entry,
-    props.sandbox.modules,
-    props.sandbox.directories
-  );
-
-  state.set('editor.currentModuleShortid', module.shortid);
-}
-
-export function setMainModuleShortid({ utils, props, state }) {
-  const module = utils.resolveModule(
-    props.sandbox.entry,
-    props.sandbox.modules,
-    props.sandbox.directories
-  );
-
-  state.set('editor.mainModuleShortid', module.shortid);
-}
-
-export function forkSandbox({ state, api }) {
-  return api
-    .post(`/sandboxes/${state.get('editor.currentId')}/fork`)
-    .then(data => ({ forkedSandbox: data }));
-}
-
-export function moveModuleContent({ props, state }) {
-  const currentSandbox = state.get('editor.currentSandbox');
-
-  return {
-    sandbox: Object.assign({}, props.forkedSandbox, {
-      modules: props.forkedSandbox.modules.map(module =>
-        Object.assign(module, {
-          code: currentSandbox.modules.find(
-            currentSandboxModule =>
-              currentSandboxModule.shortid === module.shortid
-          ).code,
-        })
-      ),
-    }),
-  };
 }
 
 export function setCode({ props, state }) {

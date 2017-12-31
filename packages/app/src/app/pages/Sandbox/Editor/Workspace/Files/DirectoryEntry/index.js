@@ -71,7 +71,7 @@ class DirectoryEntry extends React.Component {
 
   createModule = (_, title) => {
     const { shortid } = this.props;
-    this.props.signals.editor.workspace.moduleCreated({
+    this.props.signals.workspace.moduleCreated({
       title,
       directoryShortid: shortid,
     });
@@ -79,7 +79,7 @@ class DirectoryEntry extends React.Component {
   };
 
   renameModule = (id, title) => {
-    this.props.signals.editor.workspace.moduleRenamed({ id, title });
+    this.props.signals.workspace.moduleRenamed({ id, title });
   };
 
   deleteModule = (id, title) => {
@@ -100,7 +100,7 @@ class DirectoryEntry extends React.Component {
 
   createDirectory = (_, title) => {
     const { shortid } = this.props;
-    this.props.signals.editor.workspace.directoryCreated({
+    this.props.signals.workspace.directoryCreated({
       title,
       directoryShortid: shortid,
     });
@@ -108,7 +108,7 @@ class DirectoryEntry extends React.Component {
   };
 
   renameDirectory = (id, title) => {
-    this.props.signals.editor.workspace.directoryRenamed({ title, id });
+    this.props.signals.workspace.directoryRenamed({ title, id });
   };
 
   closeModals = () => {
@@ -220,7 +220,7 @@ class DirectoryEntry extends React.Component {
                   this.setState({
                     showDeleteDirectoryModal: false,
                   });
-                  this.props.signals.editor.workspace.directoryDeleted({ id });
+                  this.props.signals.workspace.directoryDeleted({ id });
                 }}
               />
             </Modal>
@@ -277,7 +277,7 @@ class DirectoryEntry extends React.Component {
                 this.setState({
                   showDeleteModuleModal: false,
                 });
-                this.props.signals.editor.workspace.moduleDeleted({
+                this.props.signals.workspace.moduleDeleted({
                   id: this.state.moduleToDeleteId,
                 });
               }}
@@ -310,12 +310,12 @@ const entryTarget = {
     const sourceItem = monitor.getItem();
 
     if (sourceItem.directory) {
-      props.signals.editor.workspace.directoryMovedToDirectory({
+      props.signals.workspace.directoryMovedToDirectory({
         directoryId: sourceItem.id,
         directoryShortid: props.shortid,
       });
     } else {
-      props.signals.editor.workspace.moduleMovedToDirectory({
+      props.signals.workspace.moduleMovedToDirectory({
         moduleId: sourceItem.id,
         directoryShortid: props.shortid,
       });

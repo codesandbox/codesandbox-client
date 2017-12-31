@@ -15,18 +15,14 @@ function ContentSplit({ signals, store, match }) {
       onDragStarted={() => signals.editor.resizingStarted()}
       onDragFinished={() => signals.editor.resizingStopped()}
       resizerStyle={{
-        visibility: store.editor.workspace.isWorkspaceHidden
-          ? 'hidden'
-          : 'visible',
+        visibility: store.workspace.isWorkspaceHidden ? 'hidden' : 'visible',
       }}
       pane1Style={{
-        visibility: store.editor.workspace.isWorkspaceHidden
-          ? 'hidden'
-          : 'visible',
-        maxWidth: store.editor.workspace.isWorkspaceHidden ? 0 : 'inherit',
+        visibility: store.workspace.isWorkspaceHidden ? 'hidden' : 'visible',
+        maxWidth: store.workspace.isWorkspaceHidden ? 0 : 'inherit',
       }}
     >
-      {!store.editor.workspace.isWorkspaceHidden && <Workspace />}
+      {!store.workspace.isWorkspaceHidden && <Workspace />}
       <Content match={match} />
     </SplitPane>
   );

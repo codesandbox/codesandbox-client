@@ -19,7 +19,7 @@ class EditorPreview extends React.Component {
   componentDidMount() {
     this.props.signals.editor.contentMounted();
     this.disposeEditorChange = reaction(
-      () => this.props.store.editor.preferences.settings.codeMirror,
+      () => this.props.store.preferences.settings.codeMirror,
       () => this.forceUpdate()
     );
   }
@@ -76,13 +76,12 @@ class EditorPreview extends React.Component {
     );
     const disposePreferencesHandler = reaction(
       () => ({
-        fontFamily: store.editor.preferences.settings.fontFamily,
-        fontSize: store.editor.preferences.settings.fontSize,
-        lineHeight: store.editor.preferences.settings.lineHeight,
-        autoCompleteEnabled:
-          store.editor.preferences.settings.autoCompleteEnabled,
-        vimMode: store.editor.preferences.settings.vimMode,
-        lintEnabled: store.editor.preferences.settings.lintEnabled,
+        fontFamily: store.preferences.settings.fontFamily,
+        fontSize: store.preferences.settings.fontSize,
+        lineHeight: store.preferences.settings.lineHeight,
+        autoCompleteEnabled: store.preferences.settings.autoCompleteEnabled,
+        vimMode: store.preferences.settings.vimMode,
+        lintEnabled: store.preferences.settings.lintEnabled,
       }),
       newSettings => {
         editor.changeSettings(newSettings);
@@ -139,7 +138,7 @@ class EditorPreview extends React.Component {
     const currentModule = store.editor.currentModule;
     const notSynced = !store.editor.isAllModulesSynced;
     const sandbox = store.editor.currentSandbox;
-    const preferences = store.editor.preferences;
+    const preferences = store.preferences;
 
     const EditorPane = (
       <FullSize>
@@ -148,10 +147,10 @@ class EditorPreview extends React.Component {
             modules={sandbox.modules}
             directories={sandbox.directories}
             currentModule={currentModule}
-            workspaceHidden={store.editor.workspace.isWorkspaceHidden}
-            toggleWorkspace={() => signals.editor.workspace.workspaceToggled()}
+            workspaceHidden={store.workspace.isWorkspaceHidden}
+            toggleWorkspace={() => signals.workspace.workspaceToggled()}
             exitZenMode={() =>
-              this.props.signals.editor.preferences.settingChanged({
+              this.props.signals.preferences.settingChanged({
                 name: 'zenMode',
                 value: false,
               })
@@ -174,7 +173,7 @@ class EditorPreview extends React.Component {
             lintEnabled: preferences.settings.lintEnabled,
           }}
           onNpmDependencyAdded={name =>
-            signals.editor.workspace.onNpmDependencyAdded({ name })
+            signals.workspace.onNpmDependencyAdded({ name })
           }
           onChange={code => signals.editor.codeChanged({ code })}
           onModuleChange={moduleId =>

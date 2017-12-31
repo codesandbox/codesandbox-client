@@ -43,18 +43,18 @@ export const KEYBINDINGS = {
     signal: 'editor.quickActionsOpened',
   },
 
-  'editor.workspace': {
+  workspace: {
     title: 'Toggle Sidebar',
     type: 'View',
     bindings: [[metaKey], ['Shift']],
-    signal: 'editor.workspace.workspaceToggled',
+    signal: 'workspace.workspaceToggled',
   },
 
   'editor.editor-mode': {
     title: 'Editor View',
     type: 'View',
     bindings: [[metaKey, 'K', 'E']],
-    signal: 'editor.preferences.viewModeChanged',
+    signal: 'preferences.viewModeChanged',
     payload: {
       showEditor: true,
       showPreview: false,
@@ -65,7 +65,7 @@ export const KEYBINDINGS = {
     title: 'Preview View',
     type: 'View',
     bindings: [[metaKey, 'K', 'P']],
-    signal: 'editor.preferences.viewModeChanged',
+    signal: 'preferences.viewModeChanged',
     payload: {
       showEditor: false,
       showPreview: true,
@@ -76,7 +76,7 @@ export const KEYBINDINGS = {
     title: 'Split View',
     type: 'View',
     bindings: [[metaKey, 'K', 'S']],
-    signal: 'editor.preferences.viewModeChanged',
+    signal: 'preferences.viewModeChanged',
     payload: {
       showEditor: true,
       showPreview: true,
@@ -87,28 +87,28 @@ export const KEYBINDINGS = {
     title: 'Toggle Zen Mode',
     type: 'View',
     bindings: [[metaKey, 'K', 'Z']],
-    signal: 'editor.preferences.zenModeToggled',
+    signal: 'preferences.zenModeToggled',
   },
 
   'editor.toggle-console': {
     title: 'Toggle Console',
     type: 'View',
     bindings: [[metaKey, 'K', 'D']],
-    signal: 'editor.preferences.devtoolsToggled',
+    signal: 'preferences.devtoolsToggled',
   },
 
   'editor.open-preferences': {
     title: 'Open Preferences',
     type: 'View',
     bindings: [[metaKey, ',']],
-    signal: 'editor.preferences.modalOpened',
+    signal: 'preferences.modalOpened',
   },
 
   'source.dependencies.open': {
     title: 'Add Dependency',
     type: 'Source',
     bindings: [],
-    signal: 'editor.workspace.searchDependenciesModalOpened',
+    signal: 'workspace.searchDependenciesModalOpened',
   },
 
   'source.modules.prettify': {

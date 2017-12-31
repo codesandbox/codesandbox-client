@@ -19,7 +19,7 @@ function Dependencies({ signals, store }) {
 
   return (
     <div>
-      {store.editor.workspace.isProcessingDependencies && (
+      {store.workspace.isProcessingDependencies && (
         <Overlay>We{"'"}re processing dependencies, please wait...</Overlay>
       )}
       <Margin bottom={0}>
@@ -32,10 +32,10 @@ function Dependencies({ signals, store }) {
               dependencies={npmDependencies}
               dependency={dep}
               onRemove={name =>
-                signals.editor.workspace.npmDependencyRemoved({ name })
+                signals.workspace.npmDependencyRemoved({ name })
               }
               onRefresh={(name, version) =>
-                signals.editor.workspace.npmDependencyAdded({
+                signals.workspace.npmDependencyAdded({
                   name,
                   version,
                 })
@@ -45,7 +45,7 @@ function Dependencies({ signals, store }) {
         <AddVersion
           existingDependencies={Object.keys(npmDependencies)}
           addDependency={(name, version) =>
-            signals.editor.workspace.npmDependencyAdded({
+            signals.workspace.npmDependencyAdded({
               name,
               version,
             })
@@ -59,7 +59,7 @@ function Dependencies({ signals, store }) {
             key={resource}
             resource={resource}
             removeResource={() =>
-              this.props.signals.editor.workspace.externalResourceRemoved({
+              this.props.signals.workspace.externalResourceRemoved({
                 resource,
               })
             }
@@ -67,7 +67,7 @@ function Dependencies({ signals, store }) {
         ))}
         <AddResource
           addResource={resource =>
-            signals.editor.workspace.externalResourceAdded({
+            signals.workspace.externalResourceAdded({
               resource,
             })
           }

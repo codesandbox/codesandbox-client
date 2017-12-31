@@ -345,8 +345,8 @@ export function updateSandbox({ api, state }) {
   const sandboxId = state.get('editor.currentId');
   const body = {
     sandbox: {
-      title: state.get('editor.workspace.project.title'),
-      description: state.get('editor.workspace.project.description'),
+      title: state.get('workspace.project.title'),
+      description: state.get('workspace.project.description'),
     },
   };
 
@@ -358,7 +358,7 @@ export function updateSandbox({ api, state }) {
 
 export function addTag({ api, state }) {
   const sandboxId = state.get('editor.currentId');
-  const tag = state.get('editor.workspace.tags.tagName');
+  const tag = state.get('workspace.tags.tagName');
   const body = {
     tag,
   };

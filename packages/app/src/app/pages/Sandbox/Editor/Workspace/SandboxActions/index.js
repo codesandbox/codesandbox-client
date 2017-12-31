@@ -27,7 +27,7 @@ function SandboxActions({ store, signals }) {
           <PrivacySelect
             value={sandbox.privacy}
             onChange={event =>
-              signals.editor.workspace.sandboxPrivacyChanged({
+              signals.workspace.sandboxPrivacyChanged({
                 privacy: Number(event.target.value),
               })
             }
@@ -48,21 +48,21 @@ function SandboxActions({ store, signals }) {
             margin: '0.5rem 0.25rem',
             boxSizing: 'border-box',
           }}
-          onClick={() => signals.editor.workspace.deleteSandboxModalOpened()}
+          onClick={() => signals.workspace.deleteSandboxModalOpened()}
         >
           Delete Sandbox
         </Button>
       </WorkspaceInputContainer>
       <Modal
-        isOpen={store.editor.workspace.showDeleteSandboxModal}
+        isOpen={store.workspace.showDeleteSandboxModal}
         width={900}
-        onClose={() => signals.editor.workspace.deleteSandboxModalClosed()}
+        onClose={() => signals.workspace.deleteSandboxModalClosed()}
       >
         <Alert
           title="Delete Sandbox"
           body={<span>Are you sure you want to delete this sandbox?</span>}
-          onCancel={() => signals.editor.workspace.deleteSandboxModalClosed()}
-          onDelete={() => signals.editor.workspace.sandboxDeleted()}
+          onCancel={() => signals.workspace.deleteSandboxModalClosed()}
+          onDelete={() => signals.workspace.sandboxDeleted()}
         />
       </Modal>
     </div>

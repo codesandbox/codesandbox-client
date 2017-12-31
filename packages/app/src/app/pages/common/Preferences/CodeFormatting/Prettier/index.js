@@ -11,9 +11,9 @@ import {
 
 function Prettier({ store, signals }) {
   const bindValue = name => ({
-    value: store.editor.preferences.settings.prettierConfig[name],
+    value: store.preferences.settings.prettierConfig[name],
     setValue: value =>
-      signals.editor.preferences.settingChanged({
+      signals.preferences.settingChanged({
         name: `prettierConfig.${name}`,
         value,
       }),
