@@ -71,7 +71,7 @@ class DirectoryEntry extends React.Component {
 
   createModule = (_, title) => {
     const { shortid } = this.props;
-    this.props.signals.workspace.moduleCreated({
+    this.props.signals.files.moduleCreated({
       title,
       directoryShortid: shortid,
     });
@@ -79,7 +79,7 @@ class DirectoryEntry extends React.Component {
   };
 
   renameModule = (id, title) => {
-    this.props.signals.workspace.moduleRenamed({ id, title });
+    this.props.signals.files.moduleRenamed({ id, title });
   };
 
   deleteModule = (id, title) => {
@@ -100,7 +100,7 @@ class DirectoryEntry extends React.Component {
 
   createDirectory = (_, title) => {
     const { shortid } = this.props;
-    this.props.signals.workspace.directoryCreated({
+    this.props.signals.files.directoryCreated({
       title,
       directoryShortid: shortid,
     });
@@ -108,7 +108,7 @@ class DirectoryEntry extends React.Component {
   };
 
   renameDirectory = (id, title) => {
-    this.props.signals.workspace.directoryRenamed({ title, id });
+    this.props.signals.files.directoryRenamed({ title, id });
   };
 
   closeModals = () => {
@@ -220,7 +220,7 @@ class DirectoryEntry extends React.Component {
                   this.setState({
                     showDeleteDirectoryModal: false,
                   });
-                  this.props.signals.workspace.directoryDeleted({ id });
+                  this.props.signals.files.directoryDeleted({ id });
                 }}
               />
             </Modal>
@@ -277,7 +277,7 @@ class DirectoryEntry extends React.Component {
                 this.setState({
                   showDeleteModuleModal: false,
                 });
-                this.props.signals.workspace.moduleDeleted({
+                this.props.signals.files.moduleDeleted({
                   id: this.state.moduleToDeleteId,
                 });
               }}
@@ -310,12 +310,12 @@ const entryTarget = {
     const sourceItem = monitor.getItem();
 
     if (sourceItem.directory) {
-      props.signals.workspace.directoryMovedToDirectory({
+      props.signals.files.directoryMovedToDirectory({
         directoryId: sourceItem.id,
         directoryShortid: props.shortid,
       });
     } else {
-      props.signals.workspace.moduleMovedToDirectory({
+      props.signals.files.moduleMovedToDirectory({
         moduleId: sourceItem.id,
         directoryShortid: props.shortid,
       });

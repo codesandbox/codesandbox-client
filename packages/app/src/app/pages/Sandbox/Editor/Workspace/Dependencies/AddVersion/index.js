@@ -1,16 +1,15 @@
 import React from 'react';
-import { inject, observer } from 'mobx-react';
+import { inject } from 'mobx-react';
 
 import Button from 'app/components/Button';
 
 import { ButtonContainer } from './elements';
 
-function AddVersion({ store, signals }) {
+function AddVersion({ signals }) {
   return (
     <div style={{ position: 'relative' }}>
       <ButtonContainer>
         <Button
-          disabled={store.workspace.isProcessingDependencies}
           block
           small
           onClick={() => signals.workspace.searchDependenciesModalOpened()}
@@ -22,4 +21,4 @@ function AddVersion({ store, signals }) {
   );
 }
 
-export default inject('signals', 'store')(observer(AddVersion));
+export default inject('signals')(AddVersion);

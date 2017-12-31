@@ -1,5 +1,5 @@
 import { sequence } from 'cerebral';
-import { when, set } from 'cerebral/operators';
+import { when, set, unset } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 import * as actions from './actions';
 import * as factories from './factories';
@@ -65,13 +65,17 @@ export const fetchGitChanges = [
 export const addNpmDependency = [
   set(state`workspace.showSearchDependenciesModal`, false),
   ensureOwnedSandbox,
-  set(state`workspace.isProcessingDependencies`, true),
+  actions.optimisticallyAddNpmDependency,
   actions.addNpmDependency,
-  set(
-    state`editor.sandboxes.${state`editor.currentId`}.npmDependencies`,
-    props`npmDependencies`
-  ),
-  set(state`workspace.isProcessingDependencies`, false),
+  {
+    success: [],
+    error: [
+      unset(
+        state`editor.sandboxes.${state`editor.currentId`}.npmDependencies.${props`name`}`
+      ),
+      factories.addNotification('Could not save dependency', 'error'),
+    ],
+  },
 ];
 
 export const loadApp = [

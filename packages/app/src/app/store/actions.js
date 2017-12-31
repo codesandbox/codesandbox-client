@@ -13,6 +13,15 @@ export function getSandbox({ props, api, path }) {
     });
 }
 
+export function optimisticallyAddNpmDependency({ state, props }) {
+  const id = state.get('editor.currentId');
+
+  state.set(
+    `editor.sandboxes.${id}.npmDependencies.${props.name}`,
+    props.version
+  );
+}
+
 export function setWorkspace({ state, props }) {
   state.set('workspace.project.title', props.sandbox.title || '');
   state.set('workspace.project.description', props.sandbox.description || '');
@@ -128,7 +137,7 @@ export function moveModuleContent({ props, state }) {
   };
 }
 
-export function addNpmDependency({ api, state, props }) {
+export function addNpmDependency({ api, state, props, path }) {
   const sandboxId = state.get('editor.currentId');
 
   return api
@@ -138,7 +147,8 @@ export function addNpmDependency({ api, state, props }) {
         version: props.version,
       },
     })
-    .then(data => ({ npmDependencies: data }));
+    .then(() => path.success())
+    .catch(error => path.error({ error }));
 }
 
 export function closeTabByIndex({ state, props }) {

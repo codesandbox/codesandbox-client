@@ -10,7 +10,6 @@ import EditIcons from './DirectoryEntry/Entry/EditIcons';
 class Files extends React.Component {
   createModule = () => {
     // INCREDIBLY BAD PRACTICE! TODO: FIX THIS
-    // this.props.signals.workspace.moduleCreated()
     this.directory.onCreateModuleClick();
   };
 

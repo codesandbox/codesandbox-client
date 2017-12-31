@@ -9,8 +9,6 @@ import VersionEntry from './VersionEntry';
 import AddResource from './AddResource';
 import ExternalResource from './ExternalResource';
 
-import { Overlay } from './elements';
-
 function Dependencies({ signals, store }) {
   const sandbox = store.editor.currentSandbox;
   const npmDependencies = sandbox.npmDependencies
@@ -19,9 +17,6 @@ function Dependencies({ signals, store }) {
 
   return (
     <div>
-      {store.workspace.isProcessingDependencies && (
-        <Overlay>We{"'"}re processing dependencies, please wait...</Overlay>
-      )}
       <Margin bottom={0}>
         <WorkspaceSubtitle>NPM Packages</WorkspaceSubtitle>
         {Object.keys(npmDependencies)

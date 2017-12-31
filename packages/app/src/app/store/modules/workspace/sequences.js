@@ -2,8 +2,7 @@ import { set, toggle, push } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 import * as actions from './actions';
 import { loadSandbox, ensureOwnedSandbox } from '../../sequences';
-import { closeTabByIndex } from '../../actions';
-import { addNotification, setCurrentModule } from '../../factories';
+import { addNotification } from '../../factories';
 
 export const openSearchDependenciesModal = set(
   state`workspace.showSearchDependenciesModal`,
@@ -68,150 +67,48 @@ export const toggleWorkspace = toggle(state`workspace.isWorkspaceHidden`);
 
 export const removeNpmDependency = [
   ensureOwnedSandbox,
-  set(state`workspace.isProcessingDependencies`, true),
+  actions.optimisticallyRemoveNpmDependency,
   actions.removeNpmDependency,
-  set(
-    state`editor.sandboxes.${state`editor.currentId`}.npmDependencies`,
-    props`npmDependencies`
-  ),
-  set(state`workspace.isProcessingDependencies`, false),
+  {
+    success: [],
+    error: [
+      set(
+        state`editor.sandboxes.${state`editor.currentId`}.npmDependencies.${props`removedNpmDependency.name`}`,
+        props`removedNpmDependency.version`
+      ),
+      addNotification('Could not remove NPM dependency', 'error'),
+    ],
+  },
 ];
 
 export const addExternalResource = [
   ensureOwnedSandbox,
-  set(state`workspace.isProcessingDependencies`, true),
-  actions.addExternalResource,
-  set(
+  push(
     state`editor.sandboxes.${state`editor.currentId`}.externalResources`,
-    props`externalResources`
+    props`resource`
   ),
-  set(state`workspace.isProcessingDependencies`, false),
+  actions.addExternalResource,
+  {
+    success: [],
+    error: [
+      actions.removeOptimisticExternalResource,
+      addNotification('Could not save external resource', 'error'),
+    ],
+  },
 ];
 
 export const removeExternalResource = [
   ensureOwnedSandbox,
-  set(state`workspace.isProcessingDependencies`, true),
+  actions.removeOptimisticExternalResource,
   actions.removeExternalResource,
-  set(
-    state`editor.sandboxes.${state`editor.currentId`}.externalResources`,
-    props`externalResources`
-  ),
-  set(state`workspace.isProcessingDependencies`, false),
-];
-
-export const deleteModule = [
-  ensureOwnedSandbox,
-  actions.whenModuleIsSelected,
-  {
-    true: setCurrentModule(state`editor.mainModule.id`),
-    false: [],
-  },
-  actions.whenCloseTab,
-  {
-    true: closeTabByIndex,
-    false: [],
-  },
-  actions.removeModule,
-  actions.deleteModule,
   {
     success: [],
     error: [
       push(
-        state`editor.sandboxes.${state`editor.currentId`}.modules`,
-        props`removedModule`
+        state`editor.sandboxes.${state`editor.currentId`}.externalResources`,
+        props`resource`
       ),
-      addNotification('Could not delete file', 'error'),
-    ],
-  },
-];
-
-export const createModule = [
-  ensureOwnedSandbox,
-  actions.createOptimisticModule,
-  push(
-    state`editor.sandboxes.${state`editor.currentId`}.modules`,
-    props`optimisticModule`
-  ),
-  actions.saveNewModule,
-  {
-    success: [
-      actions.updateOptimisticModule,
-      setCurrentModule(props`newModule.id`),
-    ],
-    error: [
-      actions.removeOptimisticModule,
-      setCurrentModule(state`editor.mainModule.shortid.id`),
-      addNotification('Unable to save new file', 'error'),
-    ],
-  },
-];
-
-export const renameModule = [
-  ensureOwnedSandbox,
-  actions.saveNewModuleName,
-  actions.renameModule,
-];
-
-export const createDirectory = [
-  ensureOwnedSandbox,
-  actions.createOptimisticDirectory,
-  push(
-    state`editor.sandboxes.${state`editor.currentId`}.directories`,
-    props`optimisticDirectory`
-  ),
-  actions.saveDirectory,
-  {
-    success: actions.updateOptimisticDirectory,
-    error: [
-      actions.removeOptimisticDirectory,
-      addNotification('Unable to save new directory', 'error'),
-    ],
-  },
-];
-
-export const renameDirectory = [
-  ensureOwnedSandbox,
-  actions.saveNewDirectoryName,
-  actions.renameDirectory,
-];
-
-export const deleteDirectory = [
-  ensureOwnedSandbox,
-  set(state`editor.currentModuleShortid`, state`editor.mainModule.shortid`),
-  actions.removeDirectory,
-  actions.deleteDirectory,
-  {
-    success: [],
-    error: [
-      push(
-        state`editor.sandboxes.${state`editor.currentId`}.directories`,
-        props`removedDirectory`
-      ),
-      addNotification('Could not delete directory', 'error'),
-    ],
-  },
-];
-
-export const moveDirectoryToDirectory = [
-  actions.moveDirectoryToDirectory,
-  actions.saveNewDirectoryDirectoryShortid,
-  {
-    success: [],
-    error: [
-      actions.revertMoveDirectoryToDirectory,
-      addNotification('Could not save new directory location', 'error'),
-    ],
-  },
-];
-
-export const moveModuleToDirectory = [
-  actions.moveModuleToDirectory,
-  actions.saveNewModuleDirectoryShortid,
-  {
-    success: [],
-    error: [
-      actions.revertMoveModuleToDirectory,
-      addNotification('Could not save new module location', 'error'),
+      addNotification('Could not save removal of external resource', 'error'),
     ],
   },
 ];
