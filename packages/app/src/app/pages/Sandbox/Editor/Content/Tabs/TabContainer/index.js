@@ -4,7 +4,7 @@ import { DragSource, DropTarget } from 'react-dnd';
 
 import Tab from '../Tab';
 
-class TabContainer extends React.PureComponent {
+class TabContainer extends React.Component {
   setCurrentModule = () => {
     this.props.setCurrentModule(this.props.module.id);
   };

@@ -12,9 +12,9 @@ import {
 
 function EditorSettings({ store, signals }) {
   const bindValue = name => ({
-    value: store.editor.preferences.settings[name],
+    value: store.preferences.settings[name],
     setValue: value =>
-      signals.editor.preferences.settingChanged({
+      signals.preferences.settingChanged({
         name,
         value,
       }),

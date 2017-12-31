@@ -20,7 +20,7 @@ function Badges({ store, signals }) {
           <Badge
             key={badge.id}
             tooltip={false}
-            onClick={signals.editor.preferences.badgeVisibilityChanged}
+            onClick={signals.preferences.badgeVisibilityChanged}
             badge={badge}
             visible={badge.visible}
             size={128}

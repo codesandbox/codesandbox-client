@@ -57,9 +57,9 @@ function Navigation({ signals, store, title }) {
           <NewSandbox />
         </Modal>
         <Modal
-          isOpen={store.editor.preferences.showModal}
+          isOpen={store.preferences.showModal}
           width={900}
-          onClose={() => signals.editor.preferences.modalClosed()}
+          onClose={() => signals.preferences.modalClosed()}
         >
           <Preferences />
         </Modal>

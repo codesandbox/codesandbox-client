@@ -39,7 +39,7 @@ class Preview extends React.Component {
       this.handleDependenciesChange.bind(this, preview)
     );
     const disposeToggleDevtools = reaction(
-      () => this.props.store.editor.preferences.showDevtools,
+      () => this.props.store.preferences.showDevtools,
       this.handleToggleDevtools.bind(this, preview)
     );
 
@@ -81,7 +81,7 @@ class Preview extends React.Component {
   };
 
   handleCodeChange = preview => {
-    const settings = this.props.store.editor.preferences.settings;
+    const settings = this.props.store.preferences.settings;
     if (settings.livePreviewEnabled) {
       if (settings.instantPreviewEnabled) {
         preview.executeCodeImmediately();
@@ -92,7 +92,7 @@ class Preview extends React.Component {
   };
 
   handleStructureChange = preview => {
-    const settings = this.props.store.editor.preferences.settings;
+    const settings = this.props.store.preferences.settings;
     if (settings.livePreviewEnabled) {
       if (settings.instantPreviewEnabled) {
         preview.executeCodeImmediately();
@@ -126,7 +126,7 @@ class Preview extends React.Component {
         onInitialized={this.onPreviewInitialized}
         sandbox={store.editor.currentSandbox}
         currentModule={store.editor.currentModule}
-        settings={store.editor.preferences.settings}
+        settings={store.preferences.settings}
         initialPath={store.editor.initialPath}
         isInProjectView={store.editor.isInProjectView}
         onClearErrors={() =>
@@ -134,13 +134,13 @@ class Preview extends React.Component {
         }
         onAction={action => signals.editor.previewActionReceived({ action })}
         onOpenNewWindow={() =>
-          this.props.signals.editor.preferences.viewModeChanged({
+          this.props.signals.preferences.viewModeChanged({
             showEditor: true,
             showPreview: false,
           })
         }
         onToggleProjectView={() => signals.editor.projectViewToggled()}
-        showDevtools={store.editor.preferences.showDevtools}
+        showDevtools={store.preferences.showDevtools}
       />
     );
   }

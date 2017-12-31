@@ -600,7 +600,10 @@ class MonacoEditor extends React.Component {
     const currentModule = this.currentModule;
     const title = currentModule.title;
 
-    if (currentModule.code !== newCode) {
+    if (
+      currentModule.code !== newCode &&
+      !(currentModule.code === null && newCode === '')
+    ) {
       if (this.props.onChange) {
         this.props.onChange(newCode);
       }

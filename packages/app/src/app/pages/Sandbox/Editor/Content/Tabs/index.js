@@ -120,6 +120,7 @@ class EditorTabs extends React.Component {
             .map((tab, i) => {
               const { module } = tab;
               const modulesWithName = tabNamesObject[module.title];
+              const id = tab.module.id;
               let dirName = null;
 
               if (
@@ -140,13 +141,12 @@ class EditorTabs extends React.Component {
               return (
                 <TabContainer
                   setCurrentModule={this.setCurrentModule}
-                  active={currentModule.id === tab.module.id}
-                  key={tab.module.id}
+                  active={currentModule.id === id}
+                  key={id}
                   module={tab.module}
                   hasError={Boolean(
-                    store.editor.errors.filter(
-                      error => error.moduleId === tab.module.id
-                    ).length
+                    store.editor.errors.filter(error => error.moduleId === id)
+                      .length
                   )}
                   closeTab={this.closeTab}
                   moveTab={this.moveTab}
@@ -161,7 +161,7 @@ class EditorTabs extends React.Component {
                     )
                   )}
                   innerRef={el => {
-                    this.tabEls[tab.module.id] = el;
+                    this.tabEls[id] = el;
                   }}
                 />
               );

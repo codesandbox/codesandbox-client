@@ -1,10 +1,16 @@
-import { sequence } from 'cerebral';
 import { set, when, equals, toggle, increment } from 'cerebral/operators';
 import { state, props, string } from 'cerebral/tags';
-import { getZeitUserDetails } from 'app/store/sequences';
 import * as actions from './actions';
+import { closeTabByIndex } from '../../actions';
+import {
+  getZeitUserDetails,
+  ensureOwnedSandbox,
+  forkSandbox,
+  fetchGitChanges,
+  addNpmDependency,
+} from '../../sequences';
 
-import { addNotification, updateSandboxUrl } from '../../factories';
+import { setCurrentModule, addNotification } from '../../factories';
 
 export const openQuickActions = set(state`editor.quickActionsOpen`, true);
 
@@ -33,7 +39,7 @@ export const closeNewSandboxModal = set(
 
 export const toggleProjectView = toggle(state`editor.isInProjectView`);
 
-export const closeTab = [actions.closeTab, actions.setCurrentModuleByTab];
+export const closeTab = [closeTabByIndex, actions.setCurrentModuleByTab];
 
 export const clearErrors = set(state`editor.errors`, []);
 
@@ -62,7 +68,7 @@ export const prettifyCode = [
   },
 ];
 
-export const setCurrentModule = [actions.addTab, actions.setCurrentModule];
+export const changeCurrentModule = setCurrentModule(props`id`);
 
 export const unsetDirtyTab = actions.unsetDirtyTab;
 
@@ -76,38 +82,6 @@ export const updatePrivacy = [
     ],
     invalid: [],
   },
-];
-
-export const forkSandbox = sequence('forkSandbox', [
-  set(state`editor.isForkingSandbox`, true),
-  actions.forkSandbox,
-  actions.moveModuleContent,
-  set(state`editor.sandboxes.${props`sandbox.id`}`, props`sandbox`),
-  set(state`editor.currentId`, props`sandbox.id`),
-  actions.setCurrentModuleShortid,
-  addNotification('Forked sandbox!', 'success'),
-  updateSandboxUrl(props`sandbox`),
-  set(state`editor.isForkingSandbox`, false),
-]);
-
-export const ensureOwnedSandbox = sequence('ensureOwnedSandbox', [
-  when(state`editor.currentSandbox.owned`),
-  {
-    true: [],
-    false: forkSandbox,
-  },
-]);
-
-export const addNpmDependency = [
-  set(state`editor.workspace.showSearchDependenciesModal`, false),
-  ensureOwnedSandbox,
-  set(state`editor.workspace.isProcessingDependencies`, true),
-  actions.addNpmDependency,
-  set(
-    state`editor.sandboxes.${state`editor.currentId`}.npmDependencies`,
-    props`npmDependencies`
-  ),
-  set(state`editor.workspace.isProcessingDependencies`, false),
 ];
 
 export const toggleLikeSandbox = [
@@ -141,18 +115,6 @@ export const forceForkSandbox = [
 
 export const changeCode = [actions.setCode, actions.addChangedModule];
 
-export const fetchGitChanges = [
-  set(state`editor.git.isFetching`, true),
-  actions.getGitChanges,
-  set(state`editor.git.originalGitChanges`, props`gitChanges`),
-  when(props`gitChanges`),
-  {
-    true: set(state`editor.git.showFetchButton`, false),
-    false: set(state`editor.git.showFetchButton`, true),
-  },
-  set(state`editor.git.isFetching`, false),
-];
-
 export const saveChangedModules = [
   ensureOwnedSandbox,
   actions.outputChangedModules,
@@ -172,47 +134,12 @@ export const saveCode = [
     true: actions.setCode,
     false: [],
   },
-  when(state`editor.preferences.settings.prettifyOnSaveEnabled`),
+  when(state`preferences.settings.prettifyOnSaveEnabled`),
   {
     true: [actions.prettifyCode, actions.setCode],
     false: [],
   },
   actions.saveModuleCode,
-];
-
-export const loadSandbox = [
-  set(state`editor.error`, null),
-  when(state`editor.sandboxes.${props`id`}`),
-  {
-    true: [
-      set(state`editor.currentId`, props`id`),
-      set(props`sandbox`, state`editor.sandboxes.${props`id`}`),
-      actions.setCurrentModuleShortid,
-      actions.setMainModuleShortid,
-      actions.setInitialTab,
-      actions.setUrlOptions,
-      actions.setWorkspace,
-    ],
-    false: [
-      set(state`editor.isLoading`, true),
-      set(state`editor.notFound`, false),
-      actions.getSandbox,
-      {
-        success: [
-          set(state`editor.sandboxes.${props`sandbox.id`}`, props`sandbox`),
-          set(state`editor.currentId`, props`sandbox.id`),
-          actions.setCurrentModuleShortid,
-          actions.setMainModuleShortid,
-          actions.setInitialTab,
-          actions.setUrlOptions,
-          actions.setWorkspace,
-        ],
-        notFound: set(state`editor.notFound`, true),
-        error: set(state`editor.error`, props`error.message`),
-      },
-      set(state`editor.isLoading`, false),
-    ],
-  },
 ];
 
 export const handlePreviewAction = [

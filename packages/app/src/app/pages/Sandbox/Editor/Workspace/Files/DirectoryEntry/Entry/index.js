@@ -76,7 +76,6 @@ class Entry extends React.PureComponent {
       type,
       active,
       setCurrentModule,
-      // $FlowIssue
       connectDragSource, // eslint-disable-line
       onCreateModuleClick,
       onCreateDirectoryClick,

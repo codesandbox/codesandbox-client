@@ -26,7 +26,7 @@ import {
 
 function Project({ store, signals }) {
   const sandbox = store.editor.currentSandbox;
-  const workspace = store.editor.workspace;
+  const workspace = store.workspace;
 
   return (
     <div>
@@ -34,18 +34,18 @@ function Project({ store, signals }) {
         <input
           value={workspace.project.title}
           onChange={event => {
-            signals.editor.workspace.valueChanged({
+            signals.workspace.valueChanged({
               field: 'title',
               value: event.target.value,
             });
           }}
           type="text"
           onBlur={() => {
-            signals.editor.workspace.sandboxInfoUpdated();
+            signals.workspace.sandboxInfoUpdated();
           }}
           onKeyUp={event => {
             if (event.keyCode === 13) {
-              signals.editor.workspace.sandboxInfoUpdated();
+              signals.workspace.sandboxInfoUpdated();
             }
           }}
           placeholder="Title"
@@ -56,18 +56,18 @@ function Project({ store, signals }) {
         <textarea
           value={workspace.project.description}
           onChange={event => {
-            signals.editor.workspace.valueChanged({
+            signals.workspace.valueChanged({
               field: 'description',
               value: event.target.value,
             });
           }}
           type="text"
           onBlur={() => {
-            signals.editor.workspace.sandboxInfoUpdated();
+            signals.workspace.sandboxInfoUpdated();
           }}
           onKeyUp={event => {
             if (event.keyCode === 13) {
-              signals.editor.workspace.sandboxInfoUpdated();
+              signals.workspace.sandboxInfoUpdated();
             }
           }}
           rows="2"

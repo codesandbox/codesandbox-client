@@ -1,7 +1,7 @@
 import { Module } from 'cerebral';
 import model from './model';
 import * as sequences from './sequences';
-import * as editorSequences from '../../sequences';
+import { addNpmDependency } from '../../sequences';
 
 export default Module({
   model,
@@ -15,7 +15,6 @@ export default Module({
       tagName: '',
     },
     isWorkspaceHidden: false,
-    isProcessingDependencies: false,
     showSearchDependenciesModal: false,
     showDeleteSandboxModal: false,
   },
@@ -26,18 +25,10 @@ export default Module({
     tagRemoved: sequences.removeTag,
     sandboxInfoUpdated: sequences.updateSandboxInfo,
     workspaceToggled: sequences.toggleWorkspace,
-    npmDependencyAdded: editorSequences.addNpmDependency,
+    npmDependencyAdded: addNpmDependency,
     npmDependencyRemoved: sequences.removeNpmDependency,
     externalResourceAdded: sequences.addExternalResource,
     externalResourceRemoved: sequences.removeExternalResource,
-    moduleCreated: sequences.createModule,
-    moduleRenamed: sequences.renameModule,
-    directoryCreated: sequences.createDirectory,
-    directoryRenamed: sequences.renameDirectory,
-    moduleMovedToDirectory: sequences.moveModuleToDirectory,
-    directoryMovedToDirectory: sequences.moveDirectoryToDirectory,
-    directoryDeleted: sequences.deleteDirectory,
-    moduleDeleted: sequences.deleteModule,
     searchDependenciesModalClosed: sequences.closeSearchDependenciesModal,
     searchDependenciesModalOpened: sequences.openSearchDependenciesModal,
     integrationsOpened: sequences.openIntegrations,

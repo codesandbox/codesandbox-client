@@ -25,7 +25,7 @@ import { Container, TermsContainer, WorkspaceInputContainer } from './elements';
 
 function Workspace({ signals, store }) {
   const sandbox = store.editor.currentSandbox;
-  const preferences = store.editor.preferences;
+  const preferences = store.preferences;
 
   return (
     <ThemeProvider
@@ -71,9 +71,7 @@ function Workspace({ signals, store }) {
                     </Margin>
                     <WorkspaceInputContainer>
                       <Button
-                        onClick={() =>
-                          signals.editor.workspace.integrationsOpened()
-                        }
+                        onClick={() => signals.workspace.integrationsOpened()}
                         small
                         block
                       >

@@ -10,7 +10,6 @@ import EditIcons from './DirectoryEntry/Entry/EditIcons';
 class Files extends React.Component {
   createModule = () => {
     // INCREDIBLY BAD PRACTICE! TODO: FIX THIS
-    // this.props.signals.workspace.moduleCreated()
     this.directory.onCreateModuleClick();
   };
 
@@ -47,7 +46,7 @@ class Files extends React.Component {
           mainModuleId={store.editor.mainModule.id}
           modules={sortBy(sandbox.modules.toJS(), 'title')}
           directories={sortBy(sandbox.directories.toJS(), 'title')}
-          isInProjectView={store.editor.preferences.isInProjectView}
+          isInProjectView={store.preferences.isInProjectView}
           currentModuleId={store.editor.currentModule.id}
           errors={store.editor.errors}
           corrections={store.editor.corrections}

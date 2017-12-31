@@ -76,15 +76,12 @@ class Preferences extends React.Component {
     return (
       <Container>
         <SideNavigation
-          itemIndex={this.props.store.editor.preferences.itemIndex}
+          itemIndex={this.props.store.preferences.itemIndex}
           menuItems={this.getItems()}
-          setItem={this.props.signals.editor.preferences.itemIndexChanged}
+          setItem={this.props.signals.preferences.itemIndexChanged}
         />
         <ContentContainer>
-          {
-            this.getItems()[this.props.store.editor.preferences.itemIndex]
-              .content
-          }
+          {this.getItems()[this.props.store.preferences.itemIndex].content}
         </ContentContainer>
       </Container>
     );

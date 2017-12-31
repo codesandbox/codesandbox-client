@@ -1,5 +1,5 @@
 import * as React from 'react';
-
+import { observer } from 'mobx-react';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
 import getType from 'app/utils/get-type';
 
@@ -11,7 +11,7 @@ import {
   TabDir,
 } from './elements';
 
-export default class Tab extends React.PureComponent {
+class Tab extends React.Component {
   state = { hovering: false };
 
   handleMouseEnter = () => {
@@ -26,7 +26,7 @@ export default class Tab extends React.PureComponent {
     });
   };
 
-  onMouseDown = (e: MouseEvent) => {
+  onMouseDown = e => {
     if (e.button === 1) {
       // Middle mouse button
       this.closeTab(e);
@@ -91,3 +91,5 @@ export default class Tab extends React.PureComponent {
     );
   }
 }
+
+export default observer(Tab);

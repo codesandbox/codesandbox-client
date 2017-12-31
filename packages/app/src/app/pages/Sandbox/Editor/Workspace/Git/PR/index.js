@@ -5,8 +5,8 @@ import Progress from '../Progress';
 function PR({ store }) {
   let result = null;
 
-  if (!store.editor.git.isCreatingPr) {
-    const pr = store.editor.git.pr;
+  if (!store.git.isCreatingPr) {
+    const pr = store.git.pr;
     const git = store.editor.currentSandbox.forkedFromSandbox.git;
     const newUrl = `https://github.com/${git.username}/${git.repo}/compare/${
       git.branch

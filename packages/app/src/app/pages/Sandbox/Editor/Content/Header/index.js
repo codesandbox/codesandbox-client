@@ -36,8 +36,8 @@ import Action from './Action';
 import { Container, Right, Left, Chevron } from './elements';
 
 function Header({ store, signals }) {
-  const preferences = store.editor.preferences;
-  const workspace = store.editor.workspace;
+  const preferences = store.preferences;
+  const workspace = store.workspace;
   const sandbox = store.editor.currentSandbox;
 
   return (
@@ -48,19 +48,19 @@ function Header({ store, signals }) {
         showEditor={preferences.showEditor}
         showPreview={preferences.showPreview}
         setMixedView={() =>
-          signals.editor.preferences.viewModeChanged({
+          signals.preferences.viewModeChanged({
             showEditor: true,
             showPreview: true,
           })
         }
         setEditorView={() =>
-          signals.editor.preferences.viewModeChanged({
+          signals.preferences.viewModeChanged({
             showEditor: true,
             showPreview: false,
           })
         }
         setPreviewView={() =>
-          signals.editor.preferences.viewModeChanged({
+          signals.preferences.viewModeChanged({
             showEditor: false,
             showPreview: true,
           })
@@ -74,7 +74,7 @@ function Header({ store, signals }) {
         >
           <Chevron
             workspaceHidden={workspace.isWorkspaceHidden}
-            onClick={() => signals.editor.workspace.workspaceToggled()}
+            onClick={() => signals.workspace.workspaceToggled()}
           >
             <ChevronLeft />
           </Chevron>
@@ -214,14 +214,14 @@ function Header({ store, signals }) {
           </Modal>
         </Action>
         <Action
-          onClick={() => signals.editor.preferences.modalOpened()}
+          onClick={() => signals.preferences.modalOpened()}
           tooltip="Preferences"
           Icon={SettingsIcon}
         >
           <Modal
-            isOpen={store.editor.preferences.showModal}
+            isOpen={store.preferences.showModal}
             width={900}
-            onClose={() => signals.editor.preferences.modalClosed()}
+            onClose={() => signals.preferences.modalClosed()}
           >
             <Preferences />
           </Modal>

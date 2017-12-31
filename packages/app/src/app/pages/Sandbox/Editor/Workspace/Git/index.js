@@ -21,25 +21,25 @@ function hasWriteAccess(rights: 'none' | 'read' | 'write' | 'admin') {
 
 class Git extends React.Component {
   componentDidMount() {
-    this.props.signals.editor.git.gitMounted();
+    this.props.signals.git.gitMounted();
   }
   createCommit = () => {
-    this.props.signals.editor.git.createCommitClicked();
+    this.props.signals.git.createCommitClicked();
   };
 
   createPR = () => {
-    this.props.signals.editor.git.createPrClicked();
+    this.props.signals.git.createPrClicked();
   };
 
   changeMessage = event => {
-    this.props.signals.editor.git.messageChanged({
+    this.props.signals.git.messageChanged({
       message: event.target.value,
     });
   };
 
   render() {
     const { store, signals } = this.props;
-    const gitChanges = store.editor.git.originalGitChanges;
+    const gitChanges = store.git.originalGitChanges;
     const originalGit = store.editor.currentSandbox.originalGit;
     const modulesNotSaved = !store.editor.isAllModulesSynced;
     const changeCount = gitChanges
@@ -78,7 +78,7 @@ class Git extends React.Component {
                   )}
                   <WorkspaceInputContainer>
                     <Input
-                      value={store.editor.git.message}
+                      value={store.git.message}
                       onChange={this.changeMessage}
                       placeholder="Commit message"
                       block
@@ -87,7 +87,7 @@ class Git extends React.Component {
                   <Buttons>
                     {hasWriteAccess(gitChanges.rights) && (
                       <Button
-                        disabled={!store.editor.git.message || modulesNotSaved}
+                        disabled={!store.git.message || modulesNotSaved}
                         onClick={this.createCommit}
                         block
                         small
@@ -96,7 +96,7 @@ class Git extends React.Component {
                       </Button>
                     )}
                     <Button
-                      disabled={!store.editor.git.message || modulesNotSaved}
+                      disabled={!store.git.message || modulesNotSaved}
                       onClick={this.createPR}
                       block
                       small
@@ -120,8 +120,8 @@ class Git extends React.Component {
             </Margin>
           ) : (
             <Margin margin={1}>
-              {!store.editor.git.isFetching &&
-                store.editor.git.showFetchButton && (
+              {!store.git.isFetching &&
+                store.git.showFetchButton && (
                   <a
                     style={{ cursor: 'pointer' }}
                     role="button"
@@ -131,26 +131,23 @@ class Git extends React.Component {
                     Fetch Changes
                   </a>
                 )}
-              {store.editor.git.isFetching && <div>Fetching changes...</div>}
+              {store.git.isFetching && <div>Fetching changes...</div>}
             </Margin>
           )}
         </Margin>
         <Modal
-          isOpen={store.editor.git.showCreateCommitModal}
+          isOpen={store.git.showCreateCommitModal}
           width={400}
           onClose={() =>
-            !store.editor.git.isComitting &&
-            signals.editor.git.createCommitModalClosed()
+            !store.git.isComitting && signals.git.createCommitModalClosed()
           }
         >
           <CommitModal />
         </Modal>
         <Modal
-          isOpen={store.editor.git.showPrModal}
+          isOpen={store.git.showPrModal}
           width={400}
-          onClose={() =>
-            !store.editor.git.isCreatingPr && signals.editor.git.prModalClosed()
-          }
+          onClose={() => !store.git.isCreatingPr && signals.git.prModalClosed()}
         >
           <PRModal />
         </Modal>

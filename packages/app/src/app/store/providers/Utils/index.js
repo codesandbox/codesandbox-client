@@ -3,7 +3,12 @@ import { resolveModule } from 'common/sandbox/modules';
 import { isEqual } from 'lodash';
 import prettify from 'app/utils/prettify';
 
+let nextOptimisticId = 0;
+
 export default Provider({
+  createOptimisticId() {
+    return 'OPTIMISTIC_' + nextOptimisticId++;
+  },
   prettify(fileName, code, config) {
     return prettify(fileName, code, config);
   },

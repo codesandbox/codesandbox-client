@@ -20,6 +20,11 @@ import { isPatron, isLoggedIn } from './getters';
 import patron from './modules/patron';
 import editor from './modules/editor';
 import profile from './modules/profile';
+import deployment from './modules/deployment';
+import git from './modules/git';
+import preferences from './modules/preferences';
+import workspace from './modules/workspace';
+import files from './modules/files';
 
 export default Module({
   model,
@@ -83,6 +88,11 @@ export default Module({
     patron,
     editor,
     profile,
+    deployment,
+    git,
+    preferences,
+    workspace,
+    files,
   },
   providers: {
     api: ApiProvider,

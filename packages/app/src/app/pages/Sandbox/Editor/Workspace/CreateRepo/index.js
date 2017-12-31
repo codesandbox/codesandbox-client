@@ -13,18 +13,18 @@ import { Container, Error } from './elements';
 
 class CreateRepo extends React.Component {
   updateRepoTitle = e => {
-    this.props.signals.editor.git.repoTitleChanged({ title: e.target.value });
+    this.props.signals.git.repoTitleChanged({ title: e.target.value });
   };
 
   createRepo = () => {
-    this.props.signals.editor.git.createRepoClicked();
+    this.props.signals.git.createRepoClicked();
   };
 
   render() {
     const { store } = this.props;
     const modulesNotSaved = !store.editor.isAllModulesSynced;
-    const repoTitle = store.editor.git.repoTitle;
-    const error = store.editor.git.error;
+    const repoTitle = store.git.repoTitle;
+    const error = store.git.error;
 
     return (
       <div>
@@ -48,8 +48,8 @@ class CreateRepo extends React.Component {
             Create Repository
           </Button>
         </Margin>
-        <Modal isOpen={store.editor.git.showExportedModal} width={600}>
-          <ExportGitHubModal isExported={store.editor.git.isExported} />
+        <Modal isOpen={store.git.showExportedModal} width={600}>
+          <ExportGitHubModal isExported={store.git.isExported} />
         </Modal>
       </div>
     );
