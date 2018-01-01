@@ -21,9 +21,12 @@ import angularPreset from './presets/angular-cli';
 import parcelPreset from './presets/parcel';
 import babelPreset from './presets/babel-repl';
 import cxjsPreset from './presets/cxjs';
+import reasonPreset from './presets/reason';
 import dojoPreset from './presets/dojo';
 
 export default function getPreset(template: string) {
+  return reasonPreset();
+
   switch (template) {
     case react.name:
       return reactPreset();
