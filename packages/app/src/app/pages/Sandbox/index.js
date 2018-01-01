@@ -15,7 +15,7 @@ import Skeleton from './Editor/Content/Skeleton';
 import SearchDependencies from './SearchDependencies';
 
 class SandboxPage extends React.Component {
-  componentDidMount() {
+  componentWillMount() {
     if (
       window.screen.availWidth < 800 &&
       !document.location.search.includes('from-embed')
@@ -36,7 +36,7 @@ class SandboxPage extends React.Component {
     });
   };
 
-  componentDidUpdate(prevProps) {
+  componentWillUpdate(prevProps) {
     if (prevProps.match.params.id !== this.props.match.params.id) {
       this.fetchSandbox();
     }
