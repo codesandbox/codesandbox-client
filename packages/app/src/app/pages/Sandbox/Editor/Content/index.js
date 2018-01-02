@@ -171,6 +171,7 @@ class EditorPreview extends React.Component {
             autoCompleteEnabled: preferences.settings.autoCompleteEnabled,
             vimMode: preferences.settings.vimMode,
             lintEnabled: preferences.settings.lintEnabled,
+            codeMirror: preferences.settings.codeMirror,
           }}
           onNpmDependencyAdded={name =>
             signals.workspace.onNpmDependencyAdded({ name })
