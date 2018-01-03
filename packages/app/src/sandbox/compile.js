@@ -162,10 +162,6 @@ async function compile({
       initializeResizeListener();
     }
 
-    if (typeof window.__puppeteer__ === 'function') {
-      window.__puppeteer__('done');
-    }
-
     dispatch({
       type: 'success',
     });
@@ -180,6 +176,10 @@ async function compile({
     event.error = e;
 
     window.dispatchEvent(event);
+  }
+
+  if (typeof window.__puppeteer__ === 'function') {
+    window.__puppeteer__('done');
   }
 }
 
