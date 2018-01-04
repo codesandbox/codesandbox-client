@@ -80,6 +80,8 @@ export default class Manager {
   // List of modules that are being transpiled, to prevent duplicate jobs.
   transpileJobs: { [transpiledModuleId: string]: true };
 
+  transpiledModulesByHash = {};
+
   constructor(id: string, preset: Preset, modules: Array<Module>) {
     this.id = id;
     this.preset = preset;
@@ -175,8 +177,13 @@ export default class Manager {
 
     const transpiledModule = new TranspiledModule(module, query);
     this.transpiledModules[module.path].tModules[query] = transpiledModule;
+    this.transpiledModulesByHash[transpiledModule.hash] = transpiledModule;
 
     return transpiledModule;
+  }
+
+  getTranspiledModuleByHash(hash: string) {
+    return this.transpiledModulesByHash[hash];
   }
 
   /**
@@ -222,6 +229,7 @@ export default class Manager {
   }
 
   removeTranspiledModule(tModule: TranspiledModule) {
+    delete this.transpiledModulesByHash[tModule.hash];
     delete this.transpiledModules[tModule.module.path].tModules[tModule.query];
   }
 
@@ -231,7 +239,10 @@ export default class Manager {
 
     const existingModule = this.transpiledModules[module.path];
 
-    values(existingModule.tModules).forEach(m => m.dispose());
+    values(existingModule.tModules).forEach(m => {
+      m.dispose();
+      this.removeTranspiledModule(m);
+    });
 
     delete this.transpiledModules[module.path];
   }

@@ -327,7 +327,8 @@ export default function(content: string, loaderContext: LoaderContext) {
         '")\n' +
         '  hotAPI.install(require("vue"), false)\n' +
         '  if (!hotAPI.compatible) return\n' +
-        '  module.hot.accept()\n' +
+        '  // Disabled module.hot for CodeSandbox\n' +
+        '  // module.hot.accept()\n' +
         '  if (!module.hot.data) {\n' +
         // initial insert
         '    hotAPI.createRecord("' +
@@ -389,18 +390,6 @@ export default function(content: string, loaderContext: LoaderContext) {
 
   function getNamedExport(type, part, index, scoped) {
     return 'export * from ' + getRequireString(type, part, index, scoped);
-  }
-
-  function getFileName(type, part, index = 0) {
-    if (type === 'styles') {
-      return `./${fileName}:style:${index}.${part.lang || 'css'}`;
-    } else if (type === 'script') {
-      return `./${fileName}:script.${part.lang || 'js'}`;
-    } else if (type === 'template') {
-      return `./${fileName}:template.${part.lang || 'html'}`;
-    }
-
-    throw new Error(`Unknown vue type: "${type}"`);
   }
 
   function getRequireString(type, part, index, scoped) {

@@ -122,6 +122,9 @@ export default class TranspiledModule {
   transpilationDependencies: Set<TranspiledModule>;
   transpilationInitiators: Set<TranspiledModule>;
 
+  // Unique identifier
+  hash: string;
+
   /**
    * Set how this module handles HMR. The default is undefined, which means
    * that we handle the HMR like CodeSandbox does.
@@ -148,6 +151,8 @@ export default class TranspiledModule {
     this.transpilationInitiators = new Set();
     this.initiators = new Set();
     this.isEntry = false;
+
+    this.hash = hashsum(`${this.module.path}:${this.query}`);
   }
 
   getId() {
@@ -463,7 +468,7 @@ export default class TranspiledModule {
     // Add the source of the file by default, this is important for source mapping
     // errors back to their origin
     code = `${code}\n//# sourceURL=${location.origin}${this.module.path}${
-      this.query ? `?${hashsum(this.query)}` : ''
+      this.query ? `?${this.hash}` : ''
     }`;
 
     this.source = new ModuleSource(this.module.path, code, finalSourceMap);
@@ -472,6 +477,7 @@ export default class TranspiledModule {
       this.previousSource &&
       this.previousSource.compiledCode !== this.source.compiledCode
     ) {
+      console.log(this);
       this.resetCompilation();
       manager.markHMRModuleDirty(this);
     }
