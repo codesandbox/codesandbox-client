@@ -138,13 +138,7 @@ export default class Manager {
   }
 
   evaluateModule(module: Module) {
-    // Evaluate all dirty modules cause by HMR transforms first too
-    // this.dirtyModules.forEach(m => {
-    //   m.evaluate(this);
-    // });
-    // this.dirtyModules.clear();
-
-    // TODO fix this
+    // Evaluate the *changed* HMR modules first
     this.getTranspiledModules()
       .filter(t => t.hmrConfig && t.hmrConfig.isDirty())
       .forEach(t => t.evaluate(this));
@@ -223,9 +217,7 @@ export default class Manager {
   }
 
   getTranspiledModules() {
-    const transpiledModuleValues = values(this.transpiledModules);
-
-    return flattenDeep(transpiledModuleValues.map(m => values(m.tModules)));
+    return values(this.transpiledModulesByHash);
   }
 
   removeTranspiledModule(tModule: TranspiledModule) {
@@ -240,7 +232,7 @@ export default class Manager {
     const existingModule = this.transpiledModules[module.path];
 
     values(existingModule.tModules).forEach(m => {
-      m.dispose();
+      m.dispose(this);
       this.removeTranspiledModule(m);
     });
 
@@ -268,12 +260,16 @@ export default class Manager {
    * Will transpile this module and all eventual children (requires) that go with it
    * @param {*} entry
    */
-  transpileModules(entry: Module) {
+  async transpileModules(entry: Module) {
     this.setEnvironmentVariables();
     const transpiledModule = this.getTranspiledModule(entry);
 
     transpiledModule.setIsEntry(true);
-    return transpiledModule.transpile(this);
+
+    const result = await transpiledModule.transpile(this);
+    this.getTranspiledModules().forEach(t => t.postTranspile(this));
+
+    return result;
   }
 
   clearCompiledCache() {

@@ -15,6 +15,12 @@ class SassTranspiler extends WorkerTranspiler {
 
   doTranspilation(code: string, loaderContext: LoaderContext) {
     const modules = loaderContext.getModules();
+    const extension =
+      typeof loaderContext.options.indentedSyntax === 'undefined'
+        ? 'scss'
+        : 'sass';
+
+    const customPath = loaderContext.path + '.' + extension;
 
     const files = modules.reduce(
       (interMediateFiles, module) => ({
@@ -24,11 +30,11 @@ class SassTranspiler extends WorkerTranspiler {
       {}
     );
 
-    files[loaderContext.path] = code;
+    files[customPath] = code;
     // TODO fix file finding, make use of content
 
     return new Promise((resolve, reject) => {
-      const path = loaderContext.path;
+      const path = customPath;
 
       this.queueTask(
         {

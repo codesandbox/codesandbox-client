@@ -14,7 +14,7 @@ self.window.document = {
   createElement: () => ({ appendChild: () => {} }),
   createTextNode: () => ({}),
   getElementsByTagName: () => [],
-  head: { appendChild: () => {} },
+  head: { appendChild: () => {}, removeChild: () => {} },
 };
 
 self.importScripts(['/static/js/less.min.js']);
@@ -36,19 +36,30 @@ self.addEventListener('message', event => {
 
   const filename = path.split('/').pop();
 
-  // register a custom importer callback
-  less
-    .render(code, { filename, plugins: [FileManager(context, files)] })
-    .then(({ css }) =>
-      self.postMessage({
-        type: 'compiled',
-        transpiledCode: css,
-      })
-    )
-    .catch(err =>
-      self.postMessage({
-        type: 'error',
-        error: buildWorkerError(err),
-      })
-    );
+  // Remove the linebreaks at the beginning of the file, it confuses less.
+  const cleanCode = code.replace(/^\n$/gm, '');
+  console.log(cleanCode, { filename });
+
+  try {
+    // register a custom importer callback
+    less
+      .render(cleanCode, { filename, plugins: [FileManager(context, files)] })
+      .then(({ css }) =>
+        self.postMessage({
+          type: 'compiled',
+          transpiledCode: css,
+        })
+      )
+      .catch(err =>
+        self.postMessage({
+          type: 'error',
+          error: buildWorkerError(err),
+        })
+      );
+  } catch (e) {
+    self.postMessage({
+      type: 'error',
+      error: buildWorkerError(e),
+    });
+  }
 });

@@ -159,8 +159,15 @@ export default class TranspiledModule {
     return `${this.module.path}:${this.query}`;
   }
 
-  dispose() {
+  dispose(manager: Manager) {
     this.reset();
+
+    // There are no other modules calling this module, so we run a function on
+    // all transpilers that clears side effects if there are any. Example:
+    // Remove CSS styles from the dom.
+    manager.preset.getLoaders(this.module, this.query).forEach(t => {
+      t.transpiler.cleanModule(this.getLoaderContext(manager, t.options));
+    });
   }
 
   reset() {
@@ -194,8 +201,12 @@ export default class TranspiledModule {
     Array.from(this.dependencies).forEach(t => {
       t.initiators.delete(this);
     });
+    Array.from(this.transpilationDependencies).forEach(t => {
+      t.transpilationInitiators.delete(this);
+    });
 
     this.dependencies.clear();
+    this.transpilationDependencies.clear();
     this.asyncDependencies = [];
   }
 
@@ -398,7 +409,11 @@ export default class TranspiledModule {
     this.dependencies.forEach(tModule => {
       tModule.initiators.delete(this);
     });
+    this.transpilationDependencies.forEach(tModule => {
+      tModule.transpilationInitiators.delete(this);
+    });
     this.dependencies.clear();
+    this.transpilationDependencies.clear();
     this.errors = [];
     this.warnings = [];
 
@@ -477,7 +492,6 @@ export default class TranspiledModule {
       this.previousSource &&
       this.previousSource.compiledCode !== this.source.compiledCode
     ) {
-      console.log(this);
       this.resetCompilation();
       manager.markHMRModuleDirty(this);
     }
@@ -655,6 +669,18 @@ export default class TranspiledModule {
     }
   }
 
+  postTranspile(manager: Manager) {
+    if (
+      this.initiators.size === 0 &&
+      this.transpilationInitiators.size === 0 &&
+      !this.isEntry
+    ) {
+      // Remove the module from the transpiler if it's not used anymore
+      debug(`Removing '${this.getId()} from manager.`);
+      manager.removeTranspiledModule(this);
+    }
+  }
+
   postEvaluate(manager: Manager) {
     if (!manager.webpackHMR) {
       // For non cacheable transpilers we remove the cached evaluation
@@ -664,15 +690,6 @@ export default class TranspiledModule {
           .some(t => !t.transpiler.cacheable)
       ) {
         this.compilation = null;
-      }
-
-      // There are no other modules calling this module, so we run a function on
-      // all transpilers that clears side effects if there are any. Example:
-      // Remove CSS styles from the dom.
-      if (this.initiators.size === 0 && !this.isEntry) {
-        manager.preset.getLoaders(this.module, this.query).forEach(t => {
-          t.transpiler.cleanModule(this.getLoaderContext(manager, t.options));
-        });
       }
     }
   }
@@ -735,6 +752,10 @@ export default class TranspiledModule {
     data.transpilationDependencies.forEach((depId: string) => {
       this.transpilationDependencies.add(state[depId]);
     });
+    data.transpilationInitiators.forEach((depId: string) => {
+      this.transpilationInitiators.add(state[depId]);
+    });
+
     data.asyncDependencies.forEach((depId: string) => {
       this.asyncDependencies.push(Promise.resolve(state[depId]));
     });

@@ -109,8 +109,8 @@ export default function(content: string, loaderContext: LoaderContext) {
 
   const codeSandboxLoaders = {
     less: ['vue-style-loader', 'css-loader', 'less-loader'],
-    sass: ['vue-style-loader', 'css-loader', 'sass-loader'],
     scss: ['vue-style-loader', 'css-loader', 'sass-loader'],
+    sass: ['vue-style-loader', 'css-loader', 'sass-loader?indentedSyntax'],
     styl: ['vue-style-loader', 'css-loader', 'stylus-loader'],
     stylus: ['vue-style-loader', 'css-loader', 'stylus-loader'],
   };
@@ -327,8 +327,7 @@ export default function(content: string, loaderContext: LoaderContext) {
         '")\n' +
         '  hotAPI.install(require("vue"), false)\n' +
         '  if (!hotAPI.compatible) return\n' +
-        '  // Disabled module.hot for CodeSandbox\n' +
-        '  // module.hot.accept()\n' +
+        '  module.hot.accept()\n' +
         '  if (!module.hot.data) {\n' +
         // initial insert
         '    hotAPI.createRecord("' +
@@ -525,7 +524,7 @@ export default function(content: string, loaderContext: LoaderContext) {
         } else if (lang === 'sass') {
           lang = 'sass?indentedSyntax';
         } else if (lang === 'scss') {
-          lang = 'sass';
+          lang = 'scss';
         }
       }
     }
