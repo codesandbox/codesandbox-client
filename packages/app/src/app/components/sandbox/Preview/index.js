@@ -307,6 +307,7 @@ export default class Preview extends React.PureComponent<Props, State> {
         sandboxId,
         externalResources,
         template,
+        isModuleView: !isInProjectView,
         hasActions: !!runActionFromPreview,
       });
     }
