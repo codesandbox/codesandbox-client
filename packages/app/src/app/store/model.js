@@ -6,38 +6,40 @@ export default {
   userMenuOpen: types.boolean,
   authToken: types.maybe(types.string),
   error: types.maybe(types.string),
-  user: types.model({
-    avatarUrl: types.maybe(types.string),
-    badges: types.array(
-      types.model({
-        id: types.string,
-        name: types.string,
-        visible: types.boolean,
-      })
-    ),
-    email: types.maybe(types.string),
-    id: types.maybe(types.string),
-    integrations: types.model({
-      github: types.maybe(
+  user: types.maybe(
+    types.model({
+      avatarUrl: types.maybe(types.string),
+      badges: types.array(
         types.model({
-          email: types.string,
+          id: types.string,
+          name: types.string,
+          visible: types.boolean,
         })
       ),
-      zeit: types.maybe(
+      email: types.maybe(types.string),
+      id: types.maybe(types.string),
+      integrations: types.model({
+        github: types.maybe(
+          types.model({
+            email: types.string,
+          })
+        ),
+        zeit: types.maybe(
+          types.model({
+            token: types.string,
+          })
+        ),
+      }),
+      name: types.maybe(types.string),
+      subscription: types.maybe(
         types.model({
-          token: types.string,
+          amount: types.number,
+          since: types.string,
         })
       ),
-    }),
-    name: types.maybe(types.string),
-    subscription: types.maybe(
-      types.model({
-        amount: types.number,
-        since: types.string,
-      })
-    ),
-    username: types.maybe(types.string),
-  }),
+      username: types.maybe(types.string),
+    })
+  ),
   connected: types.boolean,
   notifications: types.array(
     types.model({

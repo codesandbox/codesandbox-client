@@ -15,16 +15,18 @@ import {
   Icon,
 } from './elements';
 
-function SideNavigation({ menuItems, itemIndex, setItem }) {
+function SideNavigation({ menuItems, itemId, setItem }) {
+  const itemIndex = menuItems.findIndex(item => item.id === itemId);
+
   return (
     <Container>
       <Title>Preferences</Title>
       <Relative style={{ height: menuItems.length * ITEM_HEIGHT }}>
         {menuItems.map((item, i) => (
           <Item
-            onClick={() => setItem({ itemIndex: i })}
+            onClick={() => setItem({ itemId: item.id })}
             key={item.title}
-            selected={itemIndex === i}
+            selected={itemId === item.id}
             top={i * ITEM_HEIGHT}
           >
             <div style={{ height: ITEM_HEIGHT, marginRight: '0.5rem' }}>

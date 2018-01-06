@@ -7,9 +7,9 @@ import { setKeybindings, startKeybindings } from '../../actions';
 export const openModal = set(state`preferences.showModal`, true);
 
 export const closeModal = [
-  equals(state`preferences.itemIndex`),
+  equals(state`preferences.itemId`),
   {
-    '3': [],
+    keybindings: [],
     otherwise: [set(state`preferences.showModal`, false), startKeybindings],
   },
 ];
@@ -29,16 +29,16 @@ export const toggleZenMode = toggle(state`preferences.settings.zenMode`);
 
 export const toggleDevtools = toggle(state`preferences.showDevtools`);
 
-export const changeItemIndex = [
-  set(state`preferences.itemIndex`, props`itemIndex`),
-  equals(props`itemIndex`),
+export const changeItemId = [
+  set(state`preferences.itemId`, props`itemId`),
+  equals(props`itemId`),
   {
-    '4': getZeitUserDetails,
+    integrations: getZeitUserDetails,
     otherwise: [],
   },
-  equals(props`itemIndex`),
+  equals(props`itemId`),
   {
-    '3': actions.pauseKeybindings,
+    keybindings: actions.pauseKeybindings,
     otherwise: startKeybindings,
   },
 ];

@@ -1,5 +1,12 @@
 import { clone } from 'mobx-state-tree';
 
+export function setModuleSaved({ props, state }) {
+  const changedModuleShortids = state.get('editor.changedModuleShortids');
+  const indexToRemove = changedModuleShortids.indexOf(props.shortid);
+
+  state.splice('editor.changedModuleShortids', indexToRemove, 1);
+}
+
 export function ensureValidPrivacy({ props, path }) {
   const privacy = Number(props.privacy);
 
@@ -203,11 +210,10 @@ export function prettifyCode({ utils, state, path }) {
     .catch(error => path.error({ error }));
 }
 
-export function saveModuleCode({ state, api }) {
+export function saveModuleCode({ props, state, api }) {
   const sandbox = state.get('editor.currentSandbox');
-  const moduleShortid = state.get('editor.currentModuleShortid');
   const moduleToSave = sandbox.modules.find(
-    module => module.shortid === moduleShortid
+    module => module.shortid === props.moduleShortid
   );
 
   return api.put(`/sandboxes/${sandbox.id}/modules/${moduleToSave.shortid}`, {
@@ -243,7 +249,8 @@ export function warnUnloadingContent({ browser, state }) {
 
 export function setCode({ props, state }) {
   const currentId = state.get('editor.currentId');
-  const moduleShortid = state.get('editor.currentModuleShortid');
+  const moduleShortid =
+    props.moduleShortid || state.get('editor.currentModuleShortid');
   const moduleIndex = state
     .get('editor.currentSandbox')
     .modules.findIndex(module => module.shortid === moduleShortid);

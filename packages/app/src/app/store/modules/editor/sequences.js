@@ -140,6 +140,7 @@ export const saveCode = [
     false: [],
   },
   actions.saveModuleCode,
+  actions.setModuleSaved,
 ];
 
 export const handlePreviewAction = [

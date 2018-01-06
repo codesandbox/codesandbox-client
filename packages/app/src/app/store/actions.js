@@ -246,15 +246,11 @@ export function removeNotification({ state, props }) {
   state.splice('notifications', notificationToRemoveIndex, 1);
 }
 
-export function getUser({ api }) {
+export function getUser({ api, path }) {
   return api
     .get('/users/current')
-    .then(data => ({ user: data }))
-    .catch(error => {
-      throw new errors.AuthenticationError(
-        error.response.result.errors.join(',')
-      );
-    });
+    .then(data => path.success({ user: data }))
+    .catch(() => path.error());
 }
 
 export function setJwtFromStorage({ jwt, state }) {

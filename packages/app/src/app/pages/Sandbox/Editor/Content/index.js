@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ThemeProvider } from 'styled-components';
 import { Prompt } from 'react-router-dom';
-import { observe, reaction } from 'mobx';
+import { reaction } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import getTemplateDefinition from 'common/templates';
 import SplitPane from 'react-split-pane';
@@ -37,16 +37,15 @@ class EditorPreview extends React.Component {
     const store = this.props.store;
     let isChangingSandbox = false;
 
-    const disposeSandboxChangeHandler = observe(
-      store.editor,
-      'currentSandbox',
-      change => {
+    const disposeSandboxChangeHandler = reaction(
+      () => store.editor.currentSandbox,
+      newSandbox => {
         isChangingSandbox = true;
         editor
           .changeSandbox(
-            change.newValue,
+            newSandbox,
             store.editor.currentModule,
-            change.newValue.npmDependencies.toJS()
+            newSandbox.npmDependencies.toJS()
           )
           .then(() => {
             isChangingSandbox = false;
@@ -180,7 +179,12 @@ class EditorPreview extends React.Component {
           onModuleChange={moduleId =>
             signals.editor.moduleSelected({ moduleId })
           }
-          onSave={code => signals.editor.codeSaved({ code })}
+          onSave={code =>
+            signals.editor.codeSaved({
+              code,
+              moduleShortid: currentModule.shortid,
+            })
+          }
         />
       </FullSize>
     );

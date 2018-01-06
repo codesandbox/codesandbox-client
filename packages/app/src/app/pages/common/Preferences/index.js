@@ -25,46 +25,54 @@ import { Container, ContentContainer } from './elements';
 
 class Preferences extends React.Component {
   getItems = () => {
-    const hasSubscription = Boolean(this.props.store.user.subscription);
-    const signedIn = Boolean(this.props.store.isLoggedIn);
+    const hasSubscription = this.props.store.isPatron;
+    const signedIn = this.props.store.isLoggedIn;
 
     return [
       {
+        id: 'editor',
         title: 'Editor',
         icon: <CodeIcon />,
         content: <EditorSettings />,
       },
       {
+        id: 'prettierSettings',
         title: 'Prettier Settings',
         icon: <CodeFormatIcon />,
         content: <CodeFormatting />,
       },
       {
+        id: 'preview',
         title: 'Preview',
         icon: <BrowserIcon />,
         content: <PreviewSettings />,
       },
       {
+        id: 'keybindings',
         title: 'Key Bindings',
         icon: <KeyboardIcon />,
         content: <KeyMapping />,
       },
       signedIn && {
+        id: 'integrations',
         title: 'Integrations',
         icon: <IntegrationIcon />,
         content: <Integrations />,
       },
       hasSubscription && {
+        id: 'paymentInfo',
         title: 'Payment Info',
         icon: <CreditCardIcon />,
         content: <PaymentInfo />,
       },
       hasSubscription && {
+        id: 'badges',
         title: 'Badges',
         icon: <StarIcon />,
         content: <Badges />,
       },
       {
+        id: 'experiments',
         title: 'Experiments',
         icon: <FlaskIcon />,
         content: <Experiments />,
@@ -73,16 +81,19 @@ class Preferences extends React.Component {
   };
 
   render() {
+    const items = this.getItems();
+    const item = items.find(
+      currentItem => currentItem.id === this.props.store.preferences.itemId
+    );
+
     return (
       <Container>
         <SideNavigation
-          itemIndex={this.props.store.preferences.itemIndex}
-          menuItems={this.getItems()}
-          setItem={this.props.signals.preferences.itemIndexChanged}
+          itemId={this.props.store.preferences.itemId}
+          menuItems={items}
+          setItem={this.props.signals.preferences.itemIdChanged}
         />
-        <ContentContainer>
-          {this.getItems()[this.props.store.preferences.itemIndex].content}
-        </ContentContainer>
+        <ContentContainer>{item.content}</ContentContainer>
       </Container>
     );
   }
