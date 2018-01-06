@@ -12,6 +12,7 @@ class ModalComponent extends React.Component {
       backgroundColor: 'rgba(0, 0, 0, 0.75)',
       overflowY: 'auto',
       zIndex: 30,
+      transform: 'translate3d(0, 0, 0)',
     },
     content: {
       position: 'relative',

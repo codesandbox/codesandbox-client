@@ -41,7 +41,7 @@ export default {
     zenMode: types.boolean,
   }),
   isLoadingPaymentDetails: types.boolean,
-  itemIndex: types.number,
+  itemId: types.string,
   showEditor: types.boolean,
   showPreview: types.boolean,
   showDevtools: types.boolean,

@@ -43,7 +43,7 @@ export default Module({
     isLoadingPaymentDetails: true,
     paymentDetailError: null,
     paymentDetails: null,
-    itemIndex: 0,
+    itemId: 'editor',
     showEditor: true,
     showPreview: true,
     showDevtools: false,
@@ -55,7 +55,7 @@ export default Module({
   signals: {
     viewModeChanged: sequences.changeViewMode,
     devtoolsToggled: sequences.toggleDevtools,
-    itemIndexChanged: sequences.changeItemIndex,
+    itemIdChanged: sequences.changeItemId,
     settingChanged: sequences.setSetting,
     badgeVisibilityChanged: sequences.setBadgeVisibility,
     paymentDetailsRequested: sequences.getPaymentDetails,

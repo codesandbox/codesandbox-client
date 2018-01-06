@@ -42,7 +42,7 @@ export const deleteSandbox = [
 ];
 
 export const openIntegrations = [
-  set(state`preferences.itemIndex`, 4),
+  set(state`preferences.itemId`, 'integrations'),
   set(state`preferences.showModal`, true),
 ];
 
