@@ -86,8 +86,10 @@ export const loadApp = [
   {
     true: [
       actions.getUser,
-      set(state`user`, props`user`),
-      actions.setPatronPrice,
+      {
+        success: [set(state`user`, props`user`), actions.setPatronPrice],
+        error: [],
+      },
     ],
     false: [],
   },
