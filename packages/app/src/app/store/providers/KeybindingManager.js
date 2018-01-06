@@ -33,7 +33,9 @@ function handleKeyDown(controller, e) {
     // We filter out any hits by verifying that the current key matches the next
     // key in line for the pending bindings
     state.pendingSecondaryBindings = state.pendingSecondaryBindings.filter(
-      binding => binding.bindings[1][state.keydownIndex] === key
+      binding =>
+        binding.bindings.length > 1 &&
+        binding.bindings[1][state.keydownIndex] === key
     );
 
     // We get a hit if the current key matches the last key in the binding

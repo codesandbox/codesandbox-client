@@ -179,7 +179,12 @@ class EditorPreview extends React.Component {
           onModuleChange={moduleId =>
             signals.editor.moduleSelected({ moduleId })
           }
-          onSave={code => signals.editor.codeSaved({ code })}
+          onSave={code =>
+            signals.editor.codeSaved({
+              code,
+              moduleShortid: currentModule.shortid,
+            })
+          }
         />
       </FullSize>
     );
