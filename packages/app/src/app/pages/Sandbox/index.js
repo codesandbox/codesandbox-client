@@ -36,7 +36,7 @@ class SandboxPage extends React.Component {
     });
   };
 
-  componentWillUpdate(prevProps) {
+  componentDidUpdate(prevProps) {
     if (prevProps.match.params.id !== this.props.match.params.id) {
       this.fetchSandbox();
     }
