@@ -65,9 +65,11 @@ class Preview extends React.Component {
 
     return String(
       sandbox.modules
-        .map(module => module.directoryShortid)
+        .map(module => module.directoryShortid + module.title)
         .concat(
-          sandbox.directories.map(directory => directory.directoryShortid)
+          sandbox.directories.map(
+            directory => directory.directoryShortid + directory.title
+          )
         )
     );
   };
@@ -92,6 +94,7 @@ class Preview extends React.Component {
   };
 
   handleStructureChange = preview => {
+    console.log('Structure change!');
     const settings = this.props.store.preferences.settings;
     if (settings.livePreviewEnabled) {
       if (settings.instantPreviewEnabled) {
