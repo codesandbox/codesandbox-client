@@ -113,6 +113,8 @@ export default function(content: string, loaderContext: LoaderContext) {
     sass: ['vue-style-loader', 'css-loader', 'sass-loader?indentedSyntax'],
     styl: ['vue-style-loader', 'css-loader', 'stylus-loader'],
     stylus: ['vue-style-loader', 'css-loader', 'stylus-loader'],
+    ts: ['ts-loader'],
+    typescript: ['ts-loader'],
   };
 
   const loaders = Object.assign({}, defaultLoaders, codeSandboxLoaders);
