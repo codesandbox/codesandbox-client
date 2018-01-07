@@ -20,7 +20,12 @@ function Badges({ store, signals }) {
           <Badge
             key={badge.id}
             tooltip={false}
-            onClick={signals.preferences.badgeVisibilityChanged}
+            onClick={b =>
+              signals.preferences.setBadgeVisibility({
+                ...b,
+                visible: !b.visible,
+              })
+            }
             badge={badge}
             visible={badge.visible}
             size={128}

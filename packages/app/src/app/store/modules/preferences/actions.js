@@ -48,14 +48,13 @@ export function storeKeybindings({ state, settingsStore }) {
   settingsStore.set('keybindings', value);
 }
 
-export function toggleBadgeVisibility({ state, props }) {
-  const { id } = props;
+export function setBadgeVisibility({ state, props }) {
+  const { id, visible } = props;
   const badges = state.get('user.badges');
 
   badges.forEach((badge, index) => {
-    const currentVis = badge.visible;
     if (badge.id === id) {
-      state.set(`user.badges.${index}.visible`, !currentVis);
+      state.set(`user.badges.${index}.visible`, visible);
     }
   });
 }

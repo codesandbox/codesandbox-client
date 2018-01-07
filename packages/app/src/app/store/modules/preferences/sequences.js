@@ -49,7 +49,7 @@ export const setSetting = [
 ];
 
 export const setBadgeVisibility = [
-  actions.toggleBadgeVisibility,
+  actions.setBadgeVisibility,
   actions.updateBadgeInfo,
 ];
 
