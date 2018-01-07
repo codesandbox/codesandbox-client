@@ -284,8 +284,8 @@ export default class TranspiledModule {
         let transpiledModule;
         if (!overwrite) {
           try {
-            transpiledModule = manager.resolveTranspiledModule(
-              moduleCopy.path,
+            transpiledModule = manager.getTranspiledModule(
+              moduleCopy,
               queryPath.join('!')
             );
 

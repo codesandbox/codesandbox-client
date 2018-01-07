@@ -38,7 +38,6 @@ self.addEventListener('message', event => {
 
   // Remove the linebreaks at the beginning of the file, it confuses less.
   const cleanCode = code.replace(/^\n$/gm, '');
-  console.log(cleanCode, { filename });
 
   try {
     // register a custom importer callback
