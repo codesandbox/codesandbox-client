@@ -87,7 +87,6 @@ export default class Manager {
     this.preset = preset;
     this.transpiledModules = {};
     this.cachedPaths = {};
-    this.dirtyModules = new Set();
     this.transpileJobs = {};
     modules.forEach(m => this.addModule(m));
 
