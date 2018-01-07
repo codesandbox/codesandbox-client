@@ -207,9 +207,7 @@ export default class TranspiledModule {
     Array.from(this.dependencies).forEach(t => {
       t.initiators.delete(this);
     });
-    Array.from(this.transpilationDependencies).forEach(t => {
-      t.transpilationInitiators.delete(this);
-    });
+    // Don't do it for transpilation dependencies, since those cannot be traced back since we also reset transpilation of them.
 
     this.dependencies.clear();
     this.transpilationDependencies.clear();
@@ -682,7 +680,7 @@ export default class TranspiledModule {
     ) {
       // Remove the module from the transpiler if it's not used anymore
       debug(`Removing '${this.getId()} from manager.`);
-      this.dispose(manager);
+      // this.dispose(manager);
     }
   }
 
