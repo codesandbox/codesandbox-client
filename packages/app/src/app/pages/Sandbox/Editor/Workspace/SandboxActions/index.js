@@ -55,7 +55,7 @@ function SandboxActions({ store, signals }) {
       </WorkspaceInputContainer>
       <Modal
         isOpen={store.workspace.showDeleteSandboxModal}
-        width={900}
+        width={400}
         onClose={() => signals.workspace.deleteSandboxModalClosed()}
       >
         <Alert

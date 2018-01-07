@@ -5,7 +5,7 @@ export const Container = styled.div`
   flex-direction: column;
   background-color: ${props => props.theme.background};
   color: rgba(255, 255, 255, 0.8);
-  padding: 0.75rem;
+  padding: 1rem;
 `;
 
 export const Title = styled.div`
@@ -21,7 +21,7 @@ export const Title = styled.div`
 
 export const Text = styled.div`
   font-size: 14px;
-  font-weight: 0;
+  text-align: center;
 `;
 
 export const Buttons = styled.div`
