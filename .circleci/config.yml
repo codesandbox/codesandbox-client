@@ -8,19 +8,17 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: v2-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          keys:
+            - v2-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+            - v2-dependency-cache-{{ .Branch }}
+            - v2-dependency-cache
       - run:
           name: Install Dependencies
           command: yarn install
       - save_cache:
           key: v2-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
           paths:
-            - ./node_modules
-            - ./packages/app/node_modules
-            - ./packages/codesandbox-api/node_modules
-            - ./packages/common/node_modules
-            - ./packages/homepage/node_modules
-            - ~/.yarn-cache
+            - node_modules
       - run:
           name: Build
           command: yarn build:dependents
