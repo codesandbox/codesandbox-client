@@ -44,7 +44,9 @@ export const getSandboxOptions = (url: string) => {
   ) {
     const windowWidth =
       window.innerWidth || document.documentElement.clientWidth;
-    result.isPreviewScreen = windowWidth < 800;
+
+    result.isEditorScreen = windowWidth >= 800;
+    result.isPreviewScreen = true;
   }
 
   result.hideNavigation = url.includes('hidenavigation=1');

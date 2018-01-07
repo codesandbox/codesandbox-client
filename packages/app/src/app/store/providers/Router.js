@@ -11,6 +11,6 @@ export default Provider({
     history.push('/s/new');
   },
   getSandboxOptions() {
-    return getSandboxOptions(document.location.href);
+    return getSandboxOptions(decodeURIComponent(document.location.href));
   },
 });

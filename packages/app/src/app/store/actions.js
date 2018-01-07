@@ -35,19 +35,20 @@ export function setUrlOptions({ state, router, utils }) {
     const module = utils.resolveModule(
       options.currentModule,
       sandbox.modules,
-      sandbox.directories
+      sandbox.directories,
+      options.currentModule.directoryShortid
     );
 
     if (module) {
-      state.set('editor.currentModuleShortid');
+      state.set('editor.currentModuleShortid', module.shortid);
     }
   }
 
-  state.merge(
+  state.set(
     'preferences.showPreview',
     options.isPreviewScreen || options.isSplitScreen
   );
-  state.merge(
+  state.set(
     'preferences.showEditor',
     options.isEditorScreen || options.isSplitScreen
   );
