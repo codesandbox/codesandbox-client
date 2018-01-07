@@ -31,13 +31,13 @@ export function findBoilerplate(module: Module): any {
   const boilerplates = getBoilerplates();
   const boilerplate = boilerplates.find(b => {
     const regex = new RegExp(b.condition);
-    return regex.test(module.title);
+    return regex.test(module.path);
   });
 
   if (boilerplate == null) {
     throw new Error(
       `No boilerplate found for ${
-        module.title
+        module.path
       }, you can create one in the future`
     );
   }
