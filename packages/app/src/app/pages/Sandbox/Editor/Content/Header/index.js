@@ -134,7 +134,7 @@ function Header({ store, signals }) {
             >
               <Modal
                 isOpen={store.editor.showDeploymentModal}
-                width={900}
+                width={750}
                 onClose={() => signals.editor.deploymentModalClosed()}
               >
                 <DeploymentModal />
