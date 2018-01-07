@@ -478,6 +478,7 @@ export default class TranspiledModule {
           e.fileName = loaderContext.path;
           e.tModule = this;
           this.resetTranspilation();
+          manager.clearCache();
           throw e;
         }
         debug(`Transpiled '${this.getId()}' in ${Date.now() - t}ms`);
@@ -528,6 +529,10 @@ export default class TranspiledModule {
 
   evaluate(manager: Manager) {
     if (this.source == null) {
+      // This scenario only happens when we are in an inconsistent state, the quickest way to solve
+      // this state is to just hard reload everything.
+      manager.clearCache();
+      document.location.reload();
       throw new Error(`${this.module.path} hasn't been transpiled yet.`);
     }
 
