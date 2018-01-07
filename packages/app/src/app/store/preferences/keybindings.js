@@ -15,7 +15,7 @@ const isMac = !!navigator.platform.match(/(Mac|iPhone|iPod|iPad)/i);
 const metaKey = isMac ? 'Meta' : 'Alt';
 
 export function normalizeKey(e: KeyboardEvent) {
-  if (e.code.startsWith('Key')) {
+  if (e.key.split('').length === 1) {
     const key = String.fromCharCode(e.keyCode).toUpperCase();
     if (key === ' ') {
       return 'Space';
