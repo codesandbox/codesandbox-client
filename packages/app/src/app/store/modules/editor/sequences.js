@@ -136,7 +136,13 @@ export const saveCode = [
   },
   when(state`preferences.settings.prettifyOnSaveEnabled`),
   {
-    true: [actions.prettifyCode, actions.setCode],
+    true: [
+      actions.prettifyCode,
+      {
+        success: actions.setCode,
+        error: [],
+      },
+    ],
     false: [],
   },
   actions.saveModuleCode,
@@ -163,7 +169,7 @@ export const handlePreviewAction = [
       actions.outputModuleIdFromActionPath,
       when(props`id`),
       {
-        true: setCurrentModule,
+        true: setCurrentModule(props`id`),
         false: [],
       },
     ],
