@@ -158,8 +158,14 @@ async function compile({
     debug(`Evaluation time: ${Date.now() - tt}ms`);
     const domChanged = oldHTML !== document.body.innerHTML;
 
-    if (isModuleView && !domChanged && !module.title.endsWith('.html')) {
-      const isReact = module.code && module.code.includes('React');
+    if (
+      isModuleView &&
+      !domChanged &&
+      !managerModuleToTranspile.path.endsWith('.html')
+    ) {
+      const isReact =
+        managerModuleToTranspile.code &&
+        managerModuleToTranspile.code.includes('React');
 
       if (isReact) {
         // initiate boilerplates
@@ -171,7 +177,7 @@ async function compile({
           }
         }
 
-        const boilerplate = findBoilerplate(module);
+        const boilerplate = findBoilerplate(managerModuleToTranspile);
         if (boilerplate) {
           try {
             boilerplate.module.default(evalled);

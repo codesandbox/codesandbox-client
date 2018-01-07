@@ -161,7 +161,7 @@ export default class TranspiledModule {
 
   dispose(manager: Manager) {
     if (this.hmrConfig) {
-      // If this is a hot module we hot reload the application, same as Webpack v2.
+      // If this is a hot module we fully reload the application, same as Webpack v2.
       manager.markHardReload();
     }
 
@@ -684,8 +684,8 @@ export default class TranspiledModule {
       !this.isEntry
     ) {
       // Remove the module from the transpiler if it's not used anymore
-      debug(`Removing '${this.getId()} from manager.`);
-      // this.dispose(manager);
+      debug(`Removing '${this.getId()}' from manager.`);
+      this.dispose(manager);
     }
   }
 
