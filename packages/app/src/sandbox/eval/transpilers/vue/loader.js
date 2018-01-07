@@ -1,71 +1,74 @@
 // @flow
-/* eslint-disable import/no-webpack-loader-syntax, prefer-template, no-use-before-define */
+/* eslint-disable import/no-webpack-loader-syntax, prefer-template, no-use-before-define, no-shadow, operator-assignment, no-else-return */
+import querystring from 'querystring';
+
 import { basename, dirname } from 'common/utils/path';
 
 import componentNormalizerRaw from '!raw-loader!./component-normalizer';
+import vueHotReloadAPIRaw from '!raw-loader!vue-hot-reload-api';
 import type { LoaderContext } from '../../transpiled-module';
+import loaderUtils from '../utils/loader-utils';
 
 import genId from './utils/gen-id';
 import parse from './parser';
 
-const getStyleFileName = attrs => {
-  let extension = 'css';
+// When extracting parts from the source vue file, we want to apply the
+// loaders chained before vue-loader, but exclude some loaders that simply
+// produces side effects such as linting.
+function getRawRequest(loaderContext) {
+  return loaderUtils.getRemainingRequest(loaderContext);
+}
 
-  if (attrs.lang === 'scss') extension = 'scss';
-  if (attrs.lang === 'sass') extension = 'sass';
-  if (attrs.lang === 'styl') extension = 'styl';
-  if (attrs.lang === 'stylus') extension = 'styl';
-  if (attrs.lang === 'less') extension = 'less';
+const hotReloadAPIPath = '!noop-loader!/node_modules/vue-hot-reload-api.js';
+const styleLoaderPath = 'vue-style-loader';
+const templateCompilerPath = 'vue-template-compiler';
+const styleCompilerPath = 'vue-style-compiler';
+const selectorPath = 'vue-selector';
 
-  return attrs.module ? `module.${extension}` : extension;
+const defaultLang = {
+  template: 'html',
+  styles: 'css',
+  script: 'js',
 };
 
-const getStyleLoaders = (attrs, id, scoped) => {
-  let loader = `!style-loader`;
+const postcssExtensions = ['postcss', 'pcss', 'sugarss', 'sss'];
 
-  if (attrs.module) {
-    loader += `?${JSON.stringify({ module: true })}`;
+const rewriterInjectRE = /\b(css(?:-loader)?(?:\?[^!]+)?)(?:!|$)/;
+
+export default function(content: string, loaderContext: LoaderContext) {
+  // Emit the vue-hot-reload-api so it's available in the sandbox
+  loaderContext.emitModule(hotReloadAPIPath, vueHotReloadAPIRaw, '/', false);
+
+  const { path, _module } = loaderContext;
+  const query = loaderContext.options;
+  const options = Object.assign(
+    {
+      esModule: false,
+    },
+    this.vue,
+    query
+  );
+
+  // disable esModule in inject mode
+  // because import/export must be top-level
+  if (query.inject) {
+    options.esModule = false;
   }
 
-  loader += `!vue-style-compiler?${JSON.stringify({
-    id,
-    scoped: !!scoped,
-  })}`;
-
-  if (attrs.lang === 'scss') loader += '!sass-loader';
-  if (attrs.lang === 'sass') loader += '!sass-loader';
-  if (attrs.lang === 'styl' || attrs.lang === 'stylus')
-    loader += '!stylus-loader';
-  if (attrs.lang === 'less') loader += '!less-loader';
-
-  return loader;
-};
-
-const getScriptFileName = attrs => {
-  if (attrs.lang === 'js') return 'js';
-  if (attrs.lang === 'ts') return 'ts';
-  if (attrs.lang === 'typescript') return 'ts';
-
-  return 'js';
-};
-
-const getTemplateFileName = attrs => {
-  if (attrs.lang === 'pug') return 'pug';
-  if (attrs.lang === 'jade') return 'jade';
-
-  return 'html';
-};
-
-export default function(code: string, loaderContext: LoaderContext) {
-  const { path, options, _module } = loaderContext;
-  const moduleTitle = basename(_module.module.path);
+  const rawRequest = getRawRequest(loaderContext);
+  const filePath = _module.module.path;
+  const fileName = basename(filePath);
 
   const sourceRoot = dirname(path);
   const moduleId = 'data-v-' + genId(path, options.context, options.hashKey);
 
+  const cssLoaderOptions = '?sourceMap';
+
   let output = '';
-  const parts = parse(code, moduleTitle, false, sourceRoot);
-  const hasScoped = parts.styles.some(s => s.scoped);
+  const bustCache = true;
+
+  const parts = parse(content, fileName, false, sourceRoot);
+  const hasScoped = parts.styles.some(({ scoped }) => scoped);
   const templateAttrs =
     parts.template && parts.template.attrs && parts.template.attrs;
   const hasComment = templateAttrs && templateAttrs.comments;
@@ -77,7 +80,7 @@ export default function(code: string, loaderContext: LoaderContext) {
   );
   bubleTemplateOptions.transforms.stripWithFunctional = functionalTemplate;
 
-  const templateOptions =
+  const templateCompilerOptions =
     '?' +
     JSON.stringify({
       id: moduleId,
@@ -98,16 +101,45 @@ export default function(code: string, loaderContext: LoaderContext) {
           : undefined,
     });
 
+  const defaultLoaders = {
+    html: templateCompilerPath + templateCompilerOptions,
+    css: styleLoaderPath + '!' + 'css-loader' + cssLoaderOptions,
+    js: 'babel-loader',
+  };
+
+  const codeSandboxLoaders = {
+    less: ['vue-style-loader', 'css-loader', 'less-loader'],
+    scss: ['vue-style-loader', 'css-loader', 'sass-loader'],
+    sass: ['vue-style-loader', 'css-loader', 'sass-loader?indentedSyntax'],
+    styl: ['vue-style-loader', 'css-loader', 'stylus-loader'],
+    stylus: ['vue-style-loader', 'css-loader', 'stylus-loader'],
+    ts: ['ts-loader'],
+    typescript: ['ts-loader'],
+  };
+
+  const loaders = Object.assign({}, defaultLoaders, codeSandboxLoaders);
+  const preLoaders = {};
+  const postLoaders = {};
+
+  const needsHotReload = parts.script || parts.template;
+  if (needsHotReload) {
+    output += 'var disposed = false\n';
+  }
+
   let cssModules;
   if (parts.styles.length) {
     let styleInjectionCode = 'function injectStyle (ssrContext) {\n';
+    if (needsHotReload) {
+      styleInjectionCode += `  if (disposed) return\n`;
+    }
     parts.styles.forEach((style, i) => {
       // require style
-      const requireLocation = style.src
-        ? getRequireForImport('style', style, i, style.scoped)
-        : getRequire('style', style, i, style.scoped);
+      let requireString = style.src
+        ? getRequireForImport('styles', style, style.scoped)
+        : getRequire('styles', style, i, style.scoped);
 
-      const requireString = `require('${requireLocation}')`;
+      const hasStyleLoader = requireString.indexOf('style-loader') > -1;
+      const hasVueStyleLoader = requireString.indexOf('vue-style-loader') > -1;
 
       const invokeStyle = c => `  ${c}\n`;
 
@@ -116,19 +148,61 @@ export default function(code: string, loaderContext: LoaderContext) {
       if (moduleName) {
         if (!cssModules) {
           cssModules = {};
+          if (needsHotReload) {
+            output += `var cssModules = {}\n`;
+          }
         }
         if (moduleName in cssModules) {
           loaderContext.emitError(
             new Error('CSS module name "' + moduleName + '" is not unique!')
           );
-          styleInjectionCode += invokeStyle(requireLocation);
+          styleInjectionCode += invokeStyle(requireString);
         } else {
-          styleInjectionCode += invokeStyle(
-            'this["' + moduleName + '"] = ' + requireString
-          );
+          cssModules[moduleName] = true;
+
+          // `(vue-)style-loader` exposes the name-to-hash map directly
+          // `css-loader` exposes it in `.locals`
+          // add `.locals` if the user configured to not use style-loader.
+          if (!hasStyleLoader) {
+            requireString += '.locals';
+          }
+
+          if (!needsHotReload) {
+            styleInjectionCode += invokeStyle(
+              'this["' + moduleName + '"] = ' + requireString
+            );
+          } else {
+            // handle hot reload for CSS modules.
+            // we store the exported locals in an object and proxy to it by
+            // defining getters inside component instances' lifecycle hook.
+            /* prettier-ignore */
+            styleInjectionCode +=
+            invokeStyle(`cssModules["${moduleName}"] = ${requireString}`) +
+            `Object.defineProperty(this, "${moduleName}", { get: function () { return cssModules["${moduleName}"] }})\n`
+
+            const requirePath = style.src
+              ? getRequireForImportString('styles', style, style.scoped)
+              : getRequireString('styles', style, i, style.scoped);
+
+            output +=
+              `module.hot && module.hot.accept([${
+                requirePath
+              }], function () {\n` +
+              // 1. check if style has been injected
+              `  var oldLocals = cssModules["${moduleName}"]\n` +
+              `  if (!oldLocals) return\n` +
+              // 2. re-import (side effect: updates the <style>)
+              `  var newLocals = ${requireString}\n` +
+              // 3. compare new and old locals to see if selectors changed
+              `  if (JSON.stringify(newLocals) === JSON.stringify(oldLocals)) return\n` +
+              // 4. locals changed. Update and force re-render.
+              `  cssModules["${moduleName}"] = newLocals\n` +
+              `  require("${hotReloadAPIPath}").rerender("${moduleId}")\n` +
+              `})\n`;
+          }
         }
       } else {
-        styleInjectionCode += invokeStyle(`require('${requireLocation}')`);
+        styleInjectionCode += invokeStyle(requireString);
       }
     });
     styleInjectionCode += '}\n';
@@ -137,9 +211,10 @@ export default function(code: string, loaderContext: LoaderContext) {
 
   loaderContext.emitModule(
     // No extension, so no transpilation !noop
-    '!noop-loader!component-normalizer.js',
+    '!noop-loader!/node_modules/component-normalizer.js',
     componentNormalizerRaw,
-    '/'
+    '/',
+    false
   );
 
   // we require the component normalizer function, and call it like so:
@@ -152,35 +227,60 @@ export default function(code: string, loaderContext: LoaderContext) {
   //   moduleIdentifier (server only)
   // )
   output +=
-    "var normalizeComponent = require('!noop-loader!@/component-normalizer.js')\n";
+    "var normalizeComponent = require('!noop-loader!/node_modules/component-normalizer.js')\n";
+
   // <script>
   output += '  /* script */\n  ';
   const script = parts.script;
   if (script) {
-    const file = script.src
-      ? getRequireForImport('script', script)
-      : getRequire('script', script);
-
-    output += `var __vue_script__ = require('${file}')\n`;
+    if (options.esModule) {
+      output += script.src
+        ? getNamedExportForImport('script', script) +
+          '\n' +
+          getImportForImport('script', script)
+        : getNamedExport('script', script) +
+          '\n' +
+          getImport('script', script) +
+          '\n';
+    } else {
+      output +=
+        'var __vue_script__ = ' +
+        (script.src
+          ? getRequireForImport('script', script)
+          : getRequire('script', script)) +
+        '\n';
+    }
+    // inject loader interop
+    if (query.inject) {
+      output += '__vue_script__ = __vue_script__(injections)\n';
+    }
   } else {
     output += 'var __vue_script__ = null\n';
   }
 
   // <template>
-  output += '  /* template */\n  ';
+  output += '/* template */\n';
   const template = parts.template;
   if (template) {
-    const file = template.src
-      ? getRequireForImport('template', template)
-      : getTemplateRequire(templateOptions, template);
-
-    output += `var __vue_template__ = require('${file}')\n`;
+    if (options.esModule) {
+      output +=
+        (template.src
+          ? getImportForImport('template', template)
+          : getImport('template', template)) + '\n';
+    } else {
+      output +=
+        'var __vue_template__ = ' +
+        (template.src
+          ? getRequireForImport('template', template)
+          : getRequire('template', template)) +
+        '\n';
+    }
   } else {
     output += 'var __vue_template__ = null\n';
   }
 
   // template functional
-  output += '/* template functional */\n  ';
+  output += '/* template functional */\n';
   output +=
     'var __vue_template_functional__ = ' +
     (functionalTemplate ? 'true' : 'false') +
@@ -217,67 +317,304 @@ export default function(code: string, loaderContext: LoaderContext) {
 
   // add filename in dev
   output += 'Component.options.__file = ' + JSON.stringify(path) + '\n';
-  // check named exports
-  output +=
-    'if (Component.esModule && Object.keys(Component.esModule).some(function (key) {' +
-    'return key !== "default" && key.substr(0, 2) !== "__"' +
-    '})) {' +
-    'console.error("named exports are not supported in *.vue files.")' +
-    '}\n';
 
-  output += `module.exports = Component.exports;\n`;
+  if (!query.inject) {
+    // hot reload
+    if (needsHotReload) {
+      output +=
+        '\n/* hot reload */\n' +
+        'if (module.hot) {(function () {\n' +
+        '  var hotAPI = require("' +
+        hotReloadAPIPath +
+        '")\n' +
+        '  hotAPI.install(require("vue"), false)\n' +
+        '  if (!hotAPI.compatible) return\n' +
+        '  module.hot.accept()\n' +
+        '  if (!module.hot.data) {\n' +
+        // initial insert
+        '    hotAPI.createRecord("' +
+        moduleId +
+        '", Component.options)\n' +
+        '  } else {\n';
+      // update
+      if (cssModules) {
+        output +=
+          '    if (module.hot.data.cssModules && Object.keys(module.hot.data.cssModules) !== Object.keys(cssModules)) {\n' +
+          '      delete Component.options._Ctor\n' +
+          '    }\n';
+      }
+      output += `    hotAPI.${functionalTemplate ? 'rerender' : 'reload'}("${
+        moduleId
+      }", Component.options)\n  }\n`;
+      // dispose
+      output +=
+        '  module.hot.dispose(function (data) {\n' +
+        (cssModules ? '    data.cssModules = cssModules\n' : '') +
+        '    disposed = true\n' +
+        '  })\n';
+      output += '})()}\n';
+    }
 
+    // final export
+    if (options.esModule) {
+      output += '\nexport default Component.exports\n';
+    } else {
+      output += '\nmodule.exports = Component.exports\n';
+    }
+  } else {
+    // inject-loader support
+    output =
+      '\n/* dependency injection */\n' +
+      'module.exports = function (injections) {\n' +
+      output +
+      '\n' +
+      '\nreturn Component.exports\n}';
+  }
+
+  // done
   return output;
 
-  function getTemplateRequire(templateCompilerOptions, impt) {
-    const tModule = loaderContext.emitModule(
-      `!vue-template-compiler${templateCompilerOptions}!${
-        moduleTitle
-      }:template.vue.${getTemplateFileName(impt.attrs)}`,
-      impt.content
+  // --- helpers ---
+
+  function getRequire(type, part, index, scoped) {
+    return 'require(' + getRequireString(type, part, index, scoped) + ')';
+  }
+
+  function getImport(type, part, index, scoped) {
+    return (
+      'import __vue_' +
+      type +
+      '__ from ' +
+      getRequireString(type, part, index, scoped)
     );
-
-    return `${tModule.query}!./${basename(tModule.module.path)}`;
   }
 
-  function getRequireForImport(type, impt, i = 0, scoped) {
-    if (type === 'style') {
-      const styleCompiler = `${getStyleLoaders(
-        impt.attrs,
-        moduleId,
-        !!scoped
-      )}!${impt.src}`;
-
-      const tModule = loaderContext.addDependency(styleCompiler);
-
-      return `${tModule.query}!./${basename(tModule.module.path)}`;
-    } else if (type === 'script' || type === 'template') {
-      const tModule = loaderContext.addDependency(impt.src);
-
-      return `./${basename(tModule.module.path)}`;
-    }
-    return '';
+  function getNamedExport(type, part, index, scoped) {
+    return 'export * from ' + getRequireString(type, part, index, scoped);
   }
 
-  function getRequire(type, impt, i = 0, scoped) {
-    if (type === 'style') {
-      const styleCompiler = `${getStyleLoaders(
-        impt.attrs,
-        moduleId,
-        !!scoped
-      )}!${moduleTitle}:style-${i}.vue.${getStyleFileName(impt.attrs)}`;
+  function getRequireString(type, part, index, scoped) {
+    const rawPath =
+      '!!' +
+      // get loader string for pre-processors
+      getLoaderString(type, part, index, scoped) +
+      // // select the corresponding part from the vue file
+      getSelectorString(type, index || 0) +
+      // the url to the actual vue file, including remaining requests
+      // getFileName(type, part, index);
+      rawRequest;
 
-      const tModule = loaderContext.emitModule(styleCompiler, impt.content);
+    // loaderContext.emitModule(rawPath, part.content, dirname(filePath), false);
 
-      return `${tModule.query}!./${basename(tModule.module.path)}`;
-    } else if (type === 'script') {
-      const tModule = loaderContext.emitModule(
-        `${moduleTitle}:script.${getScriptFileName(impt.attrs)}`,
-        impt.content
-      );
+    const depPath = loaderUtils.stringifyRequest(loaderContext, rawPath);
+    loaderContext.addDependency(JSON.parse(depPath));
 
-      return `./${basename(tModule.module.path)}`;
+    return depPath;
+  }
+
+  function getRequireForImport(type, impt, scoped) {
+    return 'require(' + getRequireForImportString(type, impt, scoped) + ')';
+  }
+
+  function getImportForImport(type, impt, scoped) {
+    return (
+      'import __vue_' +
+      type +
+      '__ from ' +
+      getRequireForImportString(type, impt, scoped)
+    );
+  }
+
+  function getNamedExportForImport(type, impt, scoped) {
+    return 'export * from ' + getRequireForImportString(type, impt, scoped);
+  }
+
+  function getRequireForImportString(type, impt, scoped) {
+    return loaderUtils.stringifyRequest(
+      loaderContext,
+      '!!' + getLoaderString(type, impt, -1, scoped) + impt.src
+    );
+  }
+
+  function addCssModulesToLoader(loader, part, index) {
+    if (!part.module) return loader;
+    const option = options.cssModules || {};
+    const DEFAULT_OPTIONS = {
+      modules: true,
+    };
+    const OPTIONS = {
+      localIdentName: '[hash:base64]',
+      importLoaders: true,
+    };
+    return loader.replace(/((?:^|!)css(?:-loader)?)(\?[^!]*)?/, (m, $1, $2) => {
+      // $1: !css-loader
+      // $2: ?a=b
+      const query = loaderUtils.parseQuery($2 || '?');
+      Object.assign(query, OPTIONS, option, DEFAULT_OPTIONS);
+      if (index !== -1) {
+        // Note:
+        //   Class name is generated according to its filename.
+        //   Different <style> tags in the same .vue file may generate same names.
+        //   Append `_[index]` to class name to avoid this.
+        query.localIdentName += '_' + index;
+      }
+      return $1 + '?' + JSON.stringify(query);
+    });
+  }
+
+  function buildCustomBlockLoaderString(attrs) {
+    const noSrcAttrs = Object.assign({}, attrs);
+    delete noSrcAttrs.src;
+    const qs = querystring.stringify(noSrcAttrs);
+    return qs ? '?' + qs : qs;
+  }
+
+  // stringify an Array of loader objects
+  function stringifyLoaders(loaders) {
+    return loaders
+      .map(
+        obj =>
+          obj && typeof obj === 'object' && typeof obj.loader === 'string'
+            ? obj.loader +
+              (obj.options ? '?' + JSON.stringify(obj.options) : '')
+            : obj
+      )
+      .join('!');
+  }
+
+  function getLoaderString(type, part, index, scoped) {
+    let loader = getRawLoaderString(type, part, index, scoped);
+    const lang = getLangString(type, part);
+    if (preLoaders[lang]) {
+      loader = loader + ensureBang(preLoaders[lang]);
     }
-    return '';
+    if (postLoaders[lang]) {
+      loader = ensureBang(postLoaders[lang]) + loader;
+    }
+    return loader;
+  }
+
+  function getLangString(type, { lang }) {
+    if (type === 'script' || type === 'template' || type === 'styles') {
+      return lang || defaultLang[type];
+    } else {
+      return type;
+    }
+  }
+
+  function getRawLoaderString(type, part, index, scoped) {
+    let lang = part.lang || defaultLang[type];
+
+    let styleCompiler = '';
+    if (type === 'styles') {
+      // style compiler that needs to be applied for all styles
+      styleCompiler =
+        styleCompilerPath +
+        '?' +
+        JSON.stringify({
+          // a marker for vue-style-loader to know that this is an import from a vue file
+          vue: true,
+          id: moduleId,
+          scoped: !!scoped,
+          hasInlineConfig: !!query.postcss,
+        }) +
+        '!';
+      // normalize scss/sass/postcss if no specific loaders have been provided
+      if (!loaders[lang]) {
+        if (postcssExtensions.indexOf(lang) !== -1) {
+          lang = 'css';
+        } else if (lang === 'sass') {
+          lang = 'sass?indentedSyntax';
+        } else if (lang === 'scss') {
+          lang = 'scss';
+        }
+      }
+    }
+
+    let loader = loaders[lang];
+
+    const injectString =
+      type === 'script' && query.inject ? 'inject-loader!' : '';
+
+    if (loader != null) {
+      if (Array.isArray(loader)) {
+        loader = stringifyLoaders(loader);
+      } else if (typeof loader === 'object') {
+        loader = stringifyLoaders([loader]);
+      }
+      if (type === 'styles') {
+        // add css modules
+        loader = addCssModulesToLoader(loader, part, index);
+        // inject rewriter before css loader for extractTextPlugin use cases
+        if (rewriterInjectRE.test(loader)) {
+          loader = loader.replace(
+            rewriterInjectRE,
+            (m, $1) => ensureBang($1) + styleCompiler
+          );
+        } else {
+          loader = ensureBang(loader) + styleCompiler;
+        }
+      }
+      // if user defines custom loaders for html, add template compiler to it
+      if (type === 'template' && loader.indexOf(defaultLoaders.html) < 0) {
+        loader = defaultLoaders.html + '!' + loader;
+      }
+      return injectString + ensureBang(loader);
+    } else {
+      // unknown lang, infer the loader to be used
+      switch (type) {
+        case 'template':
+          return defaultLoaders.html + '!';
+        case 'styles':
+          loader = addCssModulesToLoader(defaultLoaders.css, part, index);
+          return loader + '!' + styleCompiler + ensureBang(ensureLoader(lang));
+        case 'script':
+          return injectString + ensureBang(ensureLoader(lang));
+        default:
+          loader = loaders[type];
+          if (Array.isArray(loader)) {
+            loader = stringifyLoaders(loader);
+          }
+          return ensureBang(loader + buildCustomBlockLoaderString(part.attrs));
+      }
+    }
+  }
+
+  // sass => sass-loader
+  // sass-loader => sass-loader
+  // sass?indentedSyntax!css => sass-loader?indentedSyntax!css-loader
+  function ensureLoader(lang) {
+    return lang
+      .split('!')
+      .map(loader =>
+        loader.replace(
+          /^([\w-]+)(\?.*)?/,
+          (_, name, query) =>
+            (/-loader$/.test(name) ? name : name + '-loader') + (query || '')
+        )
+      )
+      .join('!');
+  }
+
+  function getSelectorString(type, index) {
+    return (
+      selectorPath +
+      '?type=' +
+      (type === 'script' || type === 'template' || type === 'styles'
+        ? type
+        : 'customBlocks') +
+      '&index=' +
+      index +
+      (bustCache ? '&bustCache' : '') +
+      '!'
+    );
+  }
+
+  function ensureBang(loader) {
+    if (loader.charAt(loader.length - 1) !== '!') {
+      return loader + '!';
+    } else {
+      return loader;
+    }
   }
 }

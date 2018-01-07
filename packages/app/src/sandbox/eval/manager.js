@@ -1,11 +1,15 @@
 // @flow
 import { flattenDeep, uniq, values } from 'lodash';
 import resolve from 'browser-resolve';
+import localforage from 'localforage';
+import preval from 'babel-plugin-preval/macro';
 
 import * as pathUtils from 'common/utils/path';
+import _debug from 'app/utils/debug';
 
 import type { Module } from './entities/module';
 import TranspiledModule from './transpiled-module';
+import type { SerializedTranspiledModule } from './transpiled-module';
 import Preset from './presets';
 import fetchModule, { getCombinedMetas } from './npm/fetch-npm-module';
 import coreLibraries from './npm/get-core-libraries';
@@ -41,6 +45,18 @@ export type Manifest = {
 };
 
 const NODE_LIBS = ['dgram', 'fs', 'net', 'tls', 'child_process'];
+const VERSION = preval`module.exports = Date.now()`;
+const debug = _debug('cs:compiler:manager');
+
+localforage.config({
+  name: 'CodeSandboxApp',
+  storeName: 'sandboxes', // Should be alphanumeric, with underscores.
+  description:
+    'Cached transpilations of the sandboxes, for faster initialization time.',
+});
+
+// Prewarm store
+localforage.keys();
 
 export default class Manager {
   id: string;
@@ -56,17 +72,27 @@ export default class Manager {
   preset: Preset;
   externals: Externals;
   modules: ModuleObject;
-
   manifest: Manifest;
+  dependencies: Object;
+  webpackHMR: boolean = false;
+  hardReload: boolean = false;
 
-  constructor(id: string, modules: Array<Module>, preset: Preset) {
+  // List of modules that are being transpiled, to prevent duplicate jobs.
+  transpileJobs: { [transpiledModuleId: string]: true };
+
+  transpiledModulesByHash = {};
+
+  constructor(id: string, preset: Preset, modules: Array<Module>) {
     this.id = id;
     this.preset = preset;
     this.transpiledModules = {};
     this.cachedPaths = {};
+    this.dirtyModules = new Set();
+    this.transpileJobs = {};
     modules.forEach(m => this.addModule(m));
 
     if (process.env.NODE_ENV === 'development') {
+      window.manager = this;
       console.log(this);
     }
   }
@@ -108,24 +134,33 @@ export default class Manager {
 
       this.addModule(module);
     });
+    debug(`Loaded manifest.`);
   }
 
   evaluateModule(module: Module) {
+    if (this.hardReload) {
+      // Do a hard reload
+      document.location.reload();
+      return;
+    }
+
+    // Evaluate the *changed* HMR modules first
+    this.getTranspiledModules()
+      .filter(t => t.hmrConfig && t.hmrConfig.isDirty())
+      .forEach(t => t.evaluate(this));
+
     const transpiledModule = this.getTranspiledModule(module);
 
-    // Run post evaluate first
-    const exports = this.evaluateTranspiledModule(transpiledModule, []);
+    const exports = this.evaluateTranspiledModule(transpiledModule);
 
+    // Run post evaluate
     this.getTranspiledModules().forEach(t => t.postEvaluate(this));
 
     return exports;
   }
 
-  evaluateTranspiledModule(
-    transpiledModule: TranspiledModule,
-    parentModules: Array<TranspiledModule>
-  ) {
-    return transpiledModule.evaluate(this, parentModules);
+  evaluateTranspiledModule(transpiledModule: TranspiledModule) {
+    return transpiledModule.evaluate(this);
   }
 
   addModule(module: Module) {
@@ -142,16 +177,21 @@ export default class Manager {
 
     const transpiledModule = new TranspiledModule(module, query);
     this.transpiledModules[module.path].tModules[query] = transpiledModule;
+    this.transpiledModulesByHash[transpiledModule.hash] = transpiledModule;
 
     return transpiledModule;
   }
 
+  getTranspiledModuleByHash(hash: string) {
+    return this.transpiledModulesByHash[hash];
+  }
+
   /**
    * Get Transpiled Module from the registry, if there is no transpiled module
-   * in the registry it will create a new one
-   * @param {*} module
-   * @param {*} query A webpack like syntax (!url-loader)
-   * @param {*} string
+   * in the registry it will create a new one.
+   *
+   * @param {Module} module
+   * @param {string} query A webpack like syntax (!url-loader)
    */
   getTranspiledModule(module: Module, query: string = ''): TranspiledModule {
     const moduleObject = this.transpiledModules[module.path];
@@ -183,19 +223,24 @@ export default class Manager {
   }
 
   getTranspiledModules() {
-    const transpiledModuleValues = values(this.transpiledModules);
-
-    return flattenDeep(transpiledModuleValues.map(m => values(m.tModules)));
+    return values(this.transpiledModulesByHash);
   }
 
   removeTranspiledModule(tModule: TranspiledModule) {
+    delete this.transpiledModulesByHash[tModule.hash];
     delete this.transpiledModules[tModule.module.path].tModules[tModule.query];
   }
 
   removeModule(module: Module) {
+    // Reset all cached paths because file structure changed
+    this.cachedPaths = {};
+
     const existingModule = this.transpiledModules[module.path];
 
-    values(existingModule.tModules).forEach(m => m.dispose());
+    values(existingModule.tModules).forEach(m => {
+      m.dispose(this);
+      this.removeTranspiledModule(m);
+    });
 
     delete this.transpiledModules[module.path];
   }
@@ -221,13 +266,16 @@ export default class Manager {
    * Will transpile this module and all eventual children (requires) that go with it
    * @param {*} entry
    */
-  transpileModules(entry: Module) {
+  async transpileModules(entry: Module) {
     this.setEnvironmentVariables();
-    this.cachedPaths = {};
     const transpiledModule = this.getTranspiledModule(entry);
 
     transpiledModule.setIsEntry(true);
-    return transpiledModule.transpile(this);
+
+    const result = await transpiledModule.transpile(this);
+    this.getTranspiledModules().forEach(t => t.postTranspile(this));
+
+    return result;
   }
 
   clearCompiledCache() {
@@ -279,6 +327,16 @@ export default class Manager {
     }
 
     return path;
+  }
+
+  /**
+   * Set the manager to use Webpack HMR, this changes how modules are hot reloaded
+   * and how the manager cleans up the website.
+   *
+   * @memberof Manager
+   */
+  enableWebpackHMR() {
+    this.webpackHMR = true;
   }
 
   // All paths are resolved at least twice: during transpilation and evaluation.
@@ -419,6 +477,9 @@ export default class Manager {
    * delete caches accordingly
    */
   updateData(modules: Array<Module>) {
+    this.transpileJobs = {};
+    this.hardReload = false;
+
     const addedModules = [];
     const updatedModules = [];
 
@@ -426,9 +487,13 @@ export default class Manager {
       const mirrorModule = this.transpiledModules[module.path];
 
       if (!mirrorModule) {
+        // File structure changed, reset cached paths
+        this.cachedPaths = {};
         addedModules.push(module);
         this.addTranspiledModule(module);
       } else if (mirrorModule.module.code !== module.code) {
+        // File structure changed, reset cached paths
+        this.cachedPaths = {};
         updatedModules.push(module);
       }
     });
@@ -444,6 +509,10 @@ export default class Manager {
     });
 
     const modulesToUpdate = uniq([...addedModules, ...updatedModules]);
+
+    // We eagerly transpile changed files,
+    // this way we don't have to traverse the whole
+    // dependency graph each time a file changes
 
     const tModulesToUpdate = modulesToUpdate.map(m =>
       this.getTranspiledModulesByModule(m).map(tModule => {
@@ -462,8 +531,108 @@ export default class Manager {
       ])
     );
 
+    debug(
+      `Generated update diff, updating ${
+        transpiledModulesToUpdate.length
+      } modules.`
+    );
+
     return Promise.all(
       transpiledModulesToUpdate.map(tModule => tModule.transpile(this))
     );
+  }
+
+  /**
+   * Mark that the next evaluation should first have a location.reload() before
+   * continuing
+   */
+  markHardReload() {
+    this.hardReload = true;
+  }
+
+  /**
+   * Generate a JSON structure out of this manager that can be used to load
+   * the manager later on. This is useful for faster initial loading.
+   */
+  async save() {
+    try {
+      const serializedTModules = {};
+
+      Object.keys(this.transpiledModules).forEach(path => {
+        Object.keys(this.transpiledModules[path].tModules).forEach(query => {
+          const tModule = this.transpiledModules[path].tModules[query];
+          serializedTModules[tModule.getId()] = tModule.serialize();
+        });
+      });
+
+      await localforage.setItem(this.id, {
+        transpiledModules: serializedTModules,
+        cachedPaths: this.cachedPaths,
+        version: VERSION,
+      });
+    } catch (e) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error(e);
+      }
+      this.clearCache();
+    }
+  }
+
+  async load() {
+    try {
+      const data = await localforage.getItem(this.id);
+      if (data) {
+        this.clearCache();
+        const {
+          transpiledModules: serializedTModules,
+          cachedPaths,
+          version,
+        }: {
+          transpiledModules: { [id: string]: SerializedTranspiledModule },
+          cachedPaths: { [path: string]: string },
+          version: string,
+        } = data;
+
+        // Only use the cache if the cached version was cached with the same
+        // version of the compiler
+        if (version === VERSION) {
+          this.cachedPaths = cachedPaths || {};
+
+          const tModules: { [id: string]: TranspiledModule } = {};
+          // First create tModules for all the saved modules, so we have references
+          Object.keys(serializedTModules).forEach(id => {
+            const sTModule = serializedTModules[id];
+
+            const tModule = this.addTranspiledModule(
+              sTModule.module,
+              sTModule.query
+            );
+            tModules[id] = tModule;
+          });
+
+          Object.keys(tModules).forEach(id => {
+            const tModule = tModules[id];
+
+            tModule.load(serializedTModules[id], tModules);
+          });
+          debug(`Loaded cache.`);
+        }
+      }
+    } catch (e) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error(e);
+      }
+    }
+    this.clearCache();
+  }
+
+  clearCache() {
+    try {
+      localforage.clear();
+    } catch (ex) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error(ex);
+      }
+    }
   }
 }
