@@ -1,6 +1,6 @@
 import babelTranspiler from '../../transpilers/babel';
 import jsonTranspiler from '../../transpilers/json';
-import stylesTranspiler from '../../transpilers/css';
+import stylesTranspiler from '../../transpilers/style';
 import sassTranspiler from '../../transpilers/sass';
 import rawTranspiler from '../../transpilers/raw';
 import stylusTranspiler from '../../transpilers/stylus';
@@ -59,13 +59,13 @@ const cssModulesPaths = [
 ];
 
 const cssModulesRegex = extension =>
-  new RegExp(`^(${cssModulesPaths.join('|')})\/.*\.${extension}$`);
+  new RegExp(`^(${cssModulesPaths.join('|')})\\/.*\\.${extension}$`);
 
 const cssTypes = {
   css: [],
-  's[a|c]ss': [sassTranspiler],
-  less: [lessTranspiler],
-  styl: [stylusTranspiler],
+  's[a|c]ss': [{ transpiler: sassTranspiler }],
+  less: [{ transpiler: lessTranspiler }],
+  styl: [{ transpiler: stylusTranspiler }],
 };
 
 Object.keys(cssTypes).forEach(cssType => {
@@ -78,7 +78,7 @@ Object.keys(cssTypes).forEach(cssType => {
   );
 
   preactPreset.registerTranspiler(
-    module => new RegExp(`\.${cssType}$`).test(module.path),
+    module => new RegExp(`\\.${cssType}$`).test(module.path),
     [...cssTypes[cssType], { transpiler: stylesTranspiler }]
   );
 });

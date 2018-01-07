@@ -1,6 +1,6 @@
 import Preset from '../';
 
-import stylesTranspiler from '../../transpilers/css';
+import stylesTranspiler from '../../transpilers/style';
 import babelTranspiler from '../../transpilers/babel';
 import jsonTranspiler from '../../transpilers/json';
 import rawTranspiler from '../../transpilers/raw';

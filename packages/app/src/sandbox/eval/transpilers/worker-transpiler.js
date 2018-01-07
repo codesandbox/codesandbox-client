@@ -45,13 +45,13 @@ export default class WorkerTranspiler extends Transpiler {
   }
 
   getWorker() {
-    return new this.Worker();
+    return Promise.resolve(new this.Worker());
   }
 
   loadWorker() {
-    return new Promise(resolve => {
+    return new Promise(async resolve => {
       const t = Date.now();
-      const worker = this.getWorker();
+      const worker = await this.getWorker();
 
       debug(`Loaded '${this.name}' worker in ${Date.now() - t}ms`);
       this.idleWorkers.push(worker);
@@ -64,11 +64,12 @@ export default class WorkerTranspiler extends Transpiler {
     });
   }
 
-  initialize() {
+  async initialize() {
+    this.initialized = true;
     if (this.workers.length === 0) {
-      for (let i = 0; i < this.workerCount; i += 1) {
-        this.loadWorker();
-      }
+      await Promise.all(
+        Array.from({ length: this.workerCount }, () => this.loadWorker())
+      );
     }
   }
 
@@ -145,13 +146,13 @@ export default class WorkerTranspiler extends Transpiler {
     worker.postMessage(message);
   }
 
-  queueTask(
+  async queueTask(
     message: any,
     loaderContext: LoaderContext,
     callback: (err: Error, message: Object) => void
   ) {
     if (!this.initialized) {
-      this.initialize();
+      await this.initialize();
     }
 
     const id = loaderContext._module.getId();

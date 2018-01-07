@@ -181,6 +181,7 @@ class BasePreview extends React.Component {
         modules: normalizedModules,
         sandboxId: sandbox.id,
         externalResources: sandbox.externalResources,
+        isModuleView: !this.props.isInProjectView,
         template: sandbox.template,
         hasActions: !!this.props.onAction,
       });

@@ -1,7 +1,7 @@
 import babelTranspiler from '../../transpilers/babel';
 import typescriptTranspiler from '../../transpilers/typescript';
 import jsonTranspiler from '../../transpilers/json';
-import stylesTranspiler from '../../transpilers/css';
+import stylesTranspiler from '../../transpilers/style';
 import sassTranspiler from '../../transpilers/sass';
 import rawTranspiler from '../../transpilers/raw';
 import stylusTranspiler from '../../transpilers/stylus';
@@ -11,6 +11,9 @@ import binaryTranspiler from '../../transpilers/binary';
 import vueTranspiler from '../../transpilers/vue';
 import vueTemplateTranspiler from '../../transpilers/vue/template-compiler';
 import vueStyleTranspiler from '../../transpilers/vue/style-compiler';
+import vueSelector from '../../transpilers/vue/selector';
+import vueStyleLoader from '../../transpilers/vue/style-loader';
+import cssLoader from '../../transpilers/vue/css-loader';
 import base64Transpiler from '../../transpilers/base64';
 
 import Preset from '../';
@@ -57,23 +60,25 @@ function registerStyleTranspilers() {
   });
 }
 
-vuePreset.registerTranspiler(module => /\.jsx?$/.test(module.path), [
-  {
-    transpiler: babelTranspiler,
-    options: {
-      presets: [
-        // babel preset env starts with latest, then drops rules.
-        // We don't have env, so we just support latest
-        'latest',
-        'stage-2',
-      ],
-      plugins: [
-        'transform-runtime',
-        'transform-vue-jsx',
-        'transform-decorators-legacy',
-      ],
-    },
+const babelWithConfig = {
+  transpiler: babelTranspiler,
+  options: {
+    presets: [
+      // babel preset env starts with latest, then drops rules.
+      // We don't have env, so we just support latest
+      'latest',
+      'stage-2',
+    ],
+    plugins: [
+      'transform-runtime',
+      'transform-vue-jsx',
+      'transform-decorators-legacy',
+    ],
   },
+};
+
+vuePreset.registerTranspiler(module => /\.jsx?$/.test(module.path), [
+  babelWithConfig,
 ]);
 vuePreset.registerTranspiler(module => /\.tsx?$/.test(module.path), [
   { transpiler: typescriptTranspiler },
@@ -91,6 +96,9 @@ vuePreset.registerTranspiler(() => false, [
   { transpiler: vueTemplateTranspiler },
 ]);
 vuePreset.registerTranspiler(() => false, [{ transpiler: vueStyleTranspiler }]);
+vuePreset.registerTranspiler(() => false, [{ transpiler: vueSelector }]);
+vuePreset.registerTranspiler(() => false, [{ transpiler: vueStyleLoader }]);
+vuePreset.registerTranspiler(() => false, [{ transpiler: cssLoader }]);
 
 vuePreset.registerTranspiler(module => /\.png$/.test(module.path), [
   { transpiler: binaryTranspiler },

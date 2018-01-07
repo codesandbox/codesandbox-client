@@ -1,6 +1,6 @@
 import Preset from '../';
 
-import stylesTranspiler from '../../transpilers/css';
+import stylesTranspiler from '../../transpilers/style';
 import typescriptTranspiler from '../../transpilers/typescript';
 import jsonTranspiler from '../../transpilers/json';
 import rawTranspiler from '../../transpilers/raw';
