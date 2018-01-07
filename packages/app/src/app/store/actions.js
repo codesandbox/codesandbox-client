@@ -287,7 +287,7 @@ export function signInZeit({ browser }) {
 export function updateUserZeitDetails({ api, props }) {
   const { code } = props;
 
-  return api.post(`users/current_user/integrations/zeit`, {
+  return api.post(`/users/current_user/integrations/zeit`, {
     code,
   });
 }
@@ -307,5 +307,5 @@ export function getZeitIntegrationDetails({ http, state, path }) {
 }
 
 export function signOutZeit({ api }) {
-  return api.delete(`users/current_user/integrations/zeit`).then(() => {});
+  return api.delete(`/users/current_user/integrations/zeit`).then(() => {});
 }
