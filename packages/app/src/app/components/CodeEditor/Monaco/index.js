@@ -288,7 +288,10 @@ class MonacoEditor extends React.Component {
 
   setErrors = errors => {
     if (errors.length > 0) {
-      const errorMarkers = errors
+      const thisModuleErrors = errors.filter(
+        error => error.moduleId === this.currentModule.id
+      );
+      const errorMarkers = thisModuleErrors
         .map(error => {
           if (error) {
             return {
