@@ -1,5 +1,3 @@
-import * as errors from './errors';
-
 export function getSandbox({ props, api, path }) {
   return api
     .get(`/sandboxes/${props.id}`)
