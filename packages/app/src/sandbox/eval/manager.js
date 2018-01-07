@@ -75,7 +75,7 @@ export default class Manager {
   manifest: Manifest;
   dependencies: Object;
   webpackHMR: boolean = false;
-  dirtyModules: Set<TranspiledModule>;
+  hardReload: boolean = false;
 
   // List of modules that are being transpiled, to prevent duplicate jobs.
   transpileJobs: { [transpiledModuleId: string]: true };
@@ -138,6 +138,12 @@ export default class Manager {
   }
 
   evaluateModule(module: Module) {
+    if (this.hardReload) {
+      // Do a hard reload
+      document.location.reload();
+      return;
+    }
+
     // Evaluate the *changed* HMR modules first
     this.getTranspiledModules()
       .filter(t => t.hmrConfig && t.hmrConfig.isDirty())
@@ -472,6 +478,7 @@ export default class Manager {
    */
   updateData(modules: Array<Module>) {
     this.transpileJobs = {};
+    this.hardReload = false;
 
     const addedModules = [];
     const updatedModules = [];
@@ -535,8 +542,12 @@ export default class Manager {
     );
   }
 
-  markHMRModuleDirty(t: TranpiledModule) {
-    this.dirtyModules.add(t);
+  /**
+   * Mark that the next evaluation should first have a location.reload() before
+   * continuing
+   */
+  markHardReload() {
+    this.hardReload = true;
   }
 
   /**

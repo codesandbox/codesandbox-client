@@ -160,6 +160,11 @@ export default class TranspiledModule {
   }
 
   dispose(manager: Manager) {
+    if (this.hmrConfig) {
+      // If this is a hot module we hot reload the application, same as Webpack v2.
+      manager.markHardReload();
+    }
+
     this.reset();
 
     // There are no other modules calling this module, so we run a function on
@@ -168,6 +173,7 @@ export default class TranspiledModule {
     manager.preset.getLoaders(this.module, this.query).forEach(t => {
       t.transpiler.cleanModule(this.getLoaderContext(manager, t.options));
     });
+    manager.removeTranspiledModule(this);
   }
 
   reset() {
@@ -493,7 +499,6 @@ export default class TranspiledModule {
       this.previousSource.compiledCode !== this.source.compiledCode
     ) {
       this.resetCompilation();
-      manager.markHMRModuleDirty(this);
     }
 
     await Promise.all(
@@ -677,7 +682,7 @@ export default class TranspiledModule {
     ) {
       // Remove the module from the transpiler if it's not used anymore
       debug(`Removing '${this.getId()} from manager.`);
-      manager.removeTranspiledModule(this);
+      this.dispose(manager);
     }
   }
 
