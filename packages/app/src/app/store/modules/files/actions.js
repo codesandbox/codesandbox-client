@@ -296,7 +296,7 @@ export function saveNewModuleName({ api, state, props, path }) {
   const sandboxId = state.get('editor.currentId');
   const sandbox = state.get('editor.currentSandbox');
   const module = sandbox.modules.find(
-    moduleEntry => moduleEntry.id === props.id
+    moduleEntry => moduleEntry.shortid === props.moduleShortid
   );
 
   return api
@@ -310,7 +310,7 @@ export function saveNewModuleName({ api, state, props, path }) {
 export function renameModule({ state, props }) {
   const sandbox = state.get('editor.currentSandbox');
   const moduleIndex = sandbox.modules.findIndex(
-    moduleEntry => moduleEntry.id === props.id
+    moduleEntry => moduleEntry.shortid === props.moduleShortid
   );
   const oldTitle = state.get(
     `editor.sandboxes.${sandbox.id}.modules.${moduleIndex}.title`
