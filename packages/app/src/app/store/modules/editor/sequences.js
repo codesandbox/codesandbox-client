@@ -113,7 +113,11 @@ export const forceForkSandbox = [
   },
 ];
 
-export const changeCode = [actions.setCode, actions.addChangedModule];
+export const changeCode = [
+  actions.setCode,
+  actions.addChangedModule,
+  actions.unsetDirtyTab,
+];
 
 export const saveChangedModules = [
   ensureOwnedSandbox,
