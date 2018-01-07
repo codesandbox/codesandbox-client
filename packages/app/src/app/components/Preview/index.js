@@ -82,7 +82,7 @@ class BasePreview extends React.Component {
     this.handleRefresh();
   };
 
-  handleMessage = (data: Object, source: HTMLIFrameElement) => {
+  handleMessage = (data, source) => {
     if (source) {
       if (data.type === 'initialized') {
         if (this.frames.indexOf(source) === -1) {
@@ -138,7 +138,7 @@ class BasePreview extends React.Component {
     });
   };
 
-  setDragging = (dragging: boolean) => {
+  setDragging = dragging => {
     this.setState({ dragging });
   };
 
@@ -150,7 +150,7 @@ class BasePreview extends React.Component {
       : getModulePath(sandbox.modules, sandbox.directories, currentModule.id);
   };
 
-  executeCodeImmediately = (initialRender: boolean = false) => {
+  executeCodeImmediately = (initialRender = false) => {
     const settings = this.props.settings;
     const sandbox = this.props.sandbox;
 
@@ -193,7 +193,7 @@ class BasePreview extends React.Component {
     }
   };
 
-  updateUrl = (url: string) => {
+  updateUrl = url => {
     this.setState({ urlInAddressBar: url });
   };
 
@@ -246,14 +246,14 @@ class BasePreview extends React.Component {
     });
   };
 
-  evaluateInSandbox = (command: string) => {
+  evaluateInSandbox = command => {
     this.sendMessage({
       type: 'evaluate',
       command,
     });
   };
 
-  commitUrl = (url: string) => {
+  commitUrl = url => {
     const { history, historyPosition } = this.state;
 
     const currentHistory = history[historyPosition] || '';

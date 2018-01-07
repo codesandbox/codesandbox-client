@@ -32,7 +32,10 @@ export function getModulesInDirectory(
   }
 
   // Split path
-  const splitPath = path.replace(/^.\//, '').split('/');
+  const splitPath = path
+    .replace(/^.\//, '')
+    .split('/')
+    .filter(part => Boolean(part));
   const foundDirectoryShortid = splitPath.reduce(
     (dirId: ?string, pathPart: string, i: number) => {
       // Meaning this is the last argument, so the file
