@@ -5,9 +5,27 @@ import { debounce } from 'lodash';
 import { frameUrl } from 'common/utils/url-generator';
 import { getModulePath } from 'common/sandbox/modules';
 
-import DevTools from './DevTools';
 import Navigator from './Navigator';
 import { Container, StyledFrame } from './elements';
+
+let frames = [];
+
+function sendMessage(sandboxId: string, message: Object) {
+  const rawMessage = JSON.parse(JSON.stringify(message));
+  frames.forEach(frame => {
+    frame.postMessage(
+      { ...rawMessage, codesandbox: true },
+      frameUrl(sandboxId)
+    );
+  });
+}
+
+export function evaluateInSandbox(sandboxId, command) {
+  sendMessage(sandboxId, {
+    type: 'evaluate',
+    command,
+  });
+}
 
 class BasePreview extends React.Component {
   constructor(props) {
@@ -26,7 +44,7 @@ class BasePreview extends React.Component {
       this.executeCode = debounce(this.executeCode, 800);
     }
 
-    this.frames = [];
+    frames = [];
     this.devtools = null;
   }
 
@@ -56,16 +74,6 @@ class BasePreview extends React.Component {
     window.open(this.state.urlInAddressBar, '_blank');
   };
 
-  sendMessage = (message: Object) => {
-    const rawMessage = JSON.parse(JSON.stringify(message));
-    this.frames.forEach(frame => {
-      frame.postMessage(
-        { ...rawMessage, codesandbox: true },
-        frameUrl(this.props.sandbox.id)
-      );
-    });
-  };
-
   handleSandboxChange = newId => {
     const url = frameUrl(newId, this.props.initialPath);
     this.setState(
@@ -85,8 +93,8 @@ class BasePreview extends React.Component {
   handleMessage = (data, source) => {
     if (source) {
       if (data.type === 'initialized') {
-        if (this.frames.indexOf(source) === -1) {
-          this.frames.push(source);
+        if (frames.indexOf(source) === -1) {
+          frames.push(source);
         }
 
         if (!this.state.frameInitialized && this.props.onInitialized) {
@@ -165,7 +173,10 @@ class BasePreview extends React.Component {
       this.handleRefresh();
     } else {
       if (!this.props.isInProjectView) {
-        this.evaluateInSandbox(`history.pushState({}, null, '/')`);
+        evaluateInSandbox(
+          this.props.sandbox.id,
+          `history.pushState({}, null, '/')`
+        );
       }
 
       const normalizedModules = sandbox.modules.map(m => ({
@@ -173,7 +184,7 @@ class BasePreview extends React.Component {
         code: m.code,
       }));
 
-      this.sendMessage({
+      sendMessage(sandbox.id, {
         type: 'compile',
         version: 2,
         entry: this.getRenderedModule(),
@@ -224,7 +235,7 @@ class BasePreview extends React.Component {
   };
 
   handleBack = () => {
-    this.sendMessage({
+    sendMessage(this.props.sandbox.id, {
       type: 'urlback',
     });
 
@@ -236,7 +247,7 @@ class BasePreview extends React.Component {
   };
 
   handleForward = () => {
-    this.sendMessage({
+    sendMessage(this.props.sandbox.id, {
       type: 'urlforward',
     });
 
@@ -244,13 +255,6 @@ class BasePreview extends React.Component {
     this.setState({
       historyPosition: this.state.historyPosition + 1,
       urlInAddressBar: history[historyPosition + 1],
-    });
-  };
-
-  evaluateInSandbox = command => {
-    this.sendMessage({
-      type: 'evaluate',
-      command,
     });
   };
 
@@ -274,14 +278,6 @@ class BasePreview extends React.Component {
     }
   };
 
-  toggleDevtools = showDevtools => {
-    if (showDevtools) {
-      this.devtools.openDevTools();
-    } else {
-      this.devtools.hideDevTools();
-    }
-  };
-
   render() {
     const {
       showNavigation,
@@ -289,7 +285,6 @@ class BasePreview extends React.Component {
       sandbox,
       settings,
       isInProjectView,
-      showDevtools,
     } = this.props;
     const { historyPosition, history, dragging, urlInAddressBar } = this.state;
     const url = urlInAddressBar || frameUrl(sandbox.id);
@@ -321,19 +316,12 @@ class BasePreview extends React.Component {
           id="sandbox"
           title={sandbox.id}
           hideNavigation={!showNavigation}
-          style={{ pointerEvents: dragging || inactive ? 'none' : 'initial' }}
-        />
-        <DevTools
-          ref={component => {
-            this.devtools = component;
+          style={{
+            pointerEvents:
+              dragging || inactive || this.props.isResizing
+                ? 'none'
+                : 'initial',
           }}
-          setDragging={this.setDragging}
-          evaluateCommand={this.evaluateInSandbox}
-          sandboxId={sandbox.id}
-          shouldExpandDevTools={showDevtools}
-          zenMode={settings.zenMode}
-          devToolsOpen={this.props.onDevtoolsOpen}
-          setDevToolsOpen={this.props.setDevToolsOpen}
         />
       </Container>
     );

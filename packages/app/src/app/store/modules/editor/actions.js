@@ -260,3 +260,18 @@ export function setCode({ props, state }) {
     props.code
   );
 }
+
+export function setPreviewBounds({ props, state }) {
+  if (props.x != null) {
+    state.set(`editor.previewWindow.x`, props.x);
+  }
+  if (props.y != null) {
+    state.set(`editor.previewWindow.y`, props.y);
+  }
+  if (props.width != null) {
+    state.set(`editor.previewWindow.width`, props.width);
+  }
+  if (props.height != null) {
+    state.set(`editor.previewWindow.height`, props.height);
+  }
+}

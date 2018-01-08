@@ -4,9 +4,9 @@ import { Prompt } from 'react-router-dom';
 import { reaction } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import getTemplateDefinition from 'common/templates';
-import SplitPane from 'react-split-pane';
 
 import CodeEditor from 'app/components/CodeEditor';
+import DevTools from 'app/components/Preview/DevTools';
 import FilePath from 'app/components/CodeEditor/FilePath';
 import Preview from './Preview';
 
@@ -23,16 +23,25 @@ class EditorPreview extends React.Component {
       () => this.forceUpdate()
     );
   }
+
   componentWillUnmount() {
     this.disposeEditorChange();
   }
-  getDefaultSize = () => {
-    const preferences = this.props.preferences;
-    if (preferences.showEditor && !preferences.showPreview) return '0%';
-    if (!preferences.showEditor && preferences.showPreview) return '100%';
 
-    return '50%';
+  setDevToolsOpen = (open: boolean) => {
+    this.props.signals.preferences.setDevtoolsOpen({ open });
   };
+
+  handleToggleDevtools = showDevtools => {
+    if (this.devtools) {
+      if (showDevtools) {
+        this.devtools.openDevTools();
+      } else {
+        this.devtools.hideDevTools();
+      }
+    }
+  };
+
   onInitialized = editor => {
     const store = this.props.store;
     let isChangingSandbox = false;
@@ -120,6 +129,12 @@ class EditorPreview extends React.Component {
         editor.changeModule(newModule);
       }
     );
+    const disposeToggleDevtools = reaction(
+      () => this.props.store.preferences.showDevtools,
+      showDevtools => {
+        this.handleToggleDevtools(showDevtools);
+      }
+    );
 
     return () => {
       disposeErrorsHandler();
@@ -130,8 +145,10 @@ class EditorPreview extends React.Component {
       disposeSandboxChangeHandler();
       disposeModuleChangeHandler();
       disposeCodeHandler();
+      disposeToggleDevtools();
     };
   };
+
   render() {
     const { signals, store } = this.props;
     const currentModule = store.editor.currentModule;
@@ -139,61 +156,7 @@ class EditorPreview extends React.Component {
     const sandbox = store.editor.currentSandbox;
     const preferences = store.preferences;
 
-    const EditorPane = (
-      <FullSize>
-        {preferences.settings.zenMode ? (
-          <FilePath
-            modules={sandbox.modules}
-            directories={sandbox.directories}
-            currentModule={currentModule}
-            workspaceHidden={store.workspace.isWorkspaceHidden}
-            toggleWorkspace={() => signals.workspace.workspaceToggled()}
-            exitZenMode={() =>
-              this.props.signals.preferences.settingChanged({
-                name: 'zenMode',
-                value: false,
-              })
-            }
-          />
-        ) : (
-          <Tabs />
-        )}
-        <CodeEditor
-          onInitialized={this.onInitialized}
-          sandbox={sandbox}
-          currentModule={currentModule}
-          dependencies={sandbox.npmDependencies.toJS()}
-          settings={{
-            fontFamily: preferences.settings.fontFamily,
-            fontSize: preferences.settings.fontSize,
-            lineHeight: preferences.settings.lineHeight,
-            autoCompleteEnabled: preferences.settings.autoCompleteEnabled,
-            vimMode: preferences.settings.vimMode,
-            lintEnabled: preferences.settings.lintEnabled,
-            codeMirror: preferences.settings.codeMirror,
-          }}
-          onNpmDependencyAdded={name =>
-            signals.workspace.onNpmDependencyAdded({ name })
-          }
-          onChange={code => signals.editor.codeChanged({ code })}
-          onModuleChange={moduleId =>
-            signals.editor.moduleSelected({ moduleId })
-          }
-          onSave={code =>
-            signals.editor.codeSaved({
-              code,
-              moduleShortid: currentModule.shortid,
-            })
-          }
-        />
-      </FullSize>
-    );
-
-    const PreviewPane = (
-      <FullSize>
-        <Preview />
-      </FullSize>
-    );
+    const codeEditorWidthOffset = store.editor.previewWindow.x;
 
     return (
       <ThemeProvider
@@ -209,39 +172,66 @@ class EditorPreview extends React.Component {
             }
           />
           {!preferences.settings.zenMode && <Header />}
-          <SplitPane
-            onDragStarted={() => this.props.signals.editor.resizingStarted()}
-            onDragFinished={() => this.props.signals.editor.resizingStopped()}
-            split="vertical"
-            defaultSize="50%"
-            minSize={360}
-            style={{ position: 'static' }}
-            resizerStyle={{
-              visibility:
-                (!preferences.showPreview && preferences.showEditor) ||
-                (preferences.showPreview && !preferences.showEditor)
-                  ? 'hidden'
-                  : 'visible',
+          {preferences.settings.zenMode ? (
+            <FilePath
+              modules={sandbox.modules}
+              directories={sandbox.directories}
+              currentModule={currentModule}
+              workspaceHidden={store.workspace.isWorkspaceHidden}
+              toggleWorkspace={() => signals.workspace.workspaceToggled()}
+              exitZenMode={() =>
+                this.props.signals.preferences.settingChanged({
+                  name: 'zenMode',
+                  value: false,
+                })
+              }
+            />
+          ) : (
+            <Tabs />
+          )}
+          <div style={{ position: 'relative', display: 'flex', flex: 1 }}>
+            <CodeEditor
+              onInitialized={this.onInitialized}
+              sandbox={sandbox}
+              currentModule={currentModule}
+              dependencies={sandbox.npmDependencies.toJS()}
+              widthOffset={codeEditorWidthOffset}
+              settings={{
+                fontFamily: preferences.settings.fontFamily,
+                fontSize: preferences.settings.fontSize,
+                lineHeight: preferences.settings.lineHeight,
+                autoCompleteEnabled: preferences.settings.autoCompleteEnabled,
+                vimMode: preferences.settings.vimMode,
+                lintEnabled: preferences.settings.lintEnabled,
+                codeMirror: preferences.settings.codeMirror,
+              }}
+              onNpmDependencyAdded={name =>
+                signals.workspace.onNpmDependencyAdded({ name })
+              }
+              onChange={code => signals.editor.codeChanged({ code })}
+              onModuleChange={moduleId =>
+                signals.editor.moduleSelected({ moduleId })
+              }
+              onSave={code =>
+                signals.editor.codeSaved({
+                  code,
+                  moduleShortid: currentModule.shortid,
+                })
+              }
+            />
+            <Preview />
+          </div>
+
+          <DevTools
+            ref={component => {
+              this.devtools = component;
             }}
-            pane1Style={{
-              display: preferences.showEditor ? 'block' : 'none',
-              minWidth:
-                !preferences.showPreview && preferences.showEditor
-                  ? '100%'
-                  : 'inherit',
-            }}
-            pane2Style={{
-              display: preferences.showPreview ? 'block' : 'none',
-              minWidth:
-                preferences.showPreview && !preferences.showEditor
-                  ? '100%'
-                  : 'inherit',
-              height: '100%',
-            }}
-          >
-            {preferences.showEditor && EditorPane}
-            {PreviewPane}
-          </SplitPane>
+            setDragging={() => this.props.signals.editor.resizingStarted()}
+            sandboxId={sandbox.id}
+            shouldExpandDevTools={store.preferences.showDevtools}
+            zenMode={preferences.settings.zenMode}
+            setDevToolsOpen={this.setDevToolsOpen}
+          />
         </FullSize>
       </ThemeProvider>
     );

@@ -55,6 +55,7 @@ export default Module({
   signals: {
     viewModeChanged: sequences.changeViewMode,
     devtoolsToggled: sequences.toggleDevtools,
+    setDevtoolsOpen: sequences.setDevtoolsOpen,
     itemIdChanged: sequences.changeItemId,
     settingChanged: sequences.setSetting,
     setBadgeVisibility: sequences.setBadgeVisibility,

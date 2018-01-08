@@ -14,6 +14,7 @@ import { Container, Header, Tab, Actions } from './elements';
 
 function unFocus(document, window) {
   if (document.selection) {
+    // $FlowIssue
     document.selection.empty();
   } else {
     try {
@@ -23,7 +24,8 @@ function unFocus(document, window) {
   }
 }
 
-function normalizeTouchEvent(event) {
+function normalizeTouchEvent(event: TouchEvent): MouseEvent {
+  // $FlowIssue
   return {
     ...event,
     clientX: event.touches[0].clientX,
@@ -33,7 +35,31 @@ function normalizeTouchEvent(event) {
 
 const PANES = { [console.title]: console };
 
-export default class DevTools extends React.PureComponent {
+export type Status = {
+  unread: number,
+  type: 'info' | 'warning' | 'error',
+};
+
+type Props = {
+  setDragging: (dragging: boolean) => void,
+  evaluateCommand: (cmd: string) => void,
+  sandboxId: string,
+  zenMode: boolean,
+  shouldExpandDevTools: ?boolean,
+  devToolsOpen: ?boolean,
+  setDevToolsOpen: ?(open: boolean) => void,
+};
+type State = {
+  status: { [title: string]: ?Status },
+  height: number,
+  mouseDown: boolean,
+  hidden: boolean,
+  startY: number,
+  startHeight: number,
+  currentPane: string,
+};
+
+export default class DevTools extends React.PureComponent<Props, State> {
   state = {
     status: {},
     currentPane: PANES[Object.keys(PANES)[0]].title,
@@ -47,7 +73,7 @@ export default class DevTools extends React.PureComponent {
     height: 2 * 16,
   };
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps: Props) {
     if (nextProps.sandboxId !== this.props.sandboxId) {
       this.setState({
         status: {},
@@ -55,7 +81,7 @@ export default class DevTools extends React.PureComponent {
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps: Props, prevState: State) {
     if (
       this.props.devToolsOpen !== prevProps.devToolsOpen &&
       prevState.hidden === this.state.hidden
@@ -80,14 +106,15 @@ export default class DevTools extends React.PureComponent {
   }
 
   componentWillUnmount() {
-    this.updateStatus = () => {};
+    // eslint-disable-next-line no-unused-vars
+    this.updateStatus = (title: string) => {};
     document.removeEventListener('mouseup', this.handleMouseUp, false);
     document.removeEventListener('mousemove', this.handleMouseMove, false);
     document.removeEventListener('touchend', this.handleTouchEnd, false);
     document.removeEventListener('touchmove', this.handleTouchMove, false);
   }
 
-  setHidden = hidden => {
+  setHidden = (hidden: boolean) => {
     if (!hidden) {
       return this.setState({
         status: {
@@ -135,13 +162,13 @@ export default class DevTools extends React.PureComponent {
     });
   };
 
-  handleTouchStart = event => {
+  handleTouchStart = (event: TouchEvent) => {
     if (event.touches && event.touches.length) {
       this.handleMouseDown(normalizeTouchEvent(event));
     }
   };
 
-  handleMouseDown = event => {
+  handleMouseDown = (event: Event & { clientX: number, clientY: number }) => {
     if (!this.state.mouseDown) {
       unFocus(document, window);
       this.setState({
@@ -153,11 +180,11 @@ export default class DevTools extends React.PureComponent {
     }
   };
 
-  handleTouchEnd = event => {
+  handleTouchEnd = (event: TouchEvent) => {
     this.handleMouseUp(event);
   };
 
-  handleMouseUp = e => {
+  handleMouseUp = (e: Event) => {
     if (this.state.mouseDown) {
       this.setState({ mouseDown: false });
       this.props.setDragging(false);
@@ -184,13 +211,13 @@ export default class DevTools extends React.PureComponent {
     }
   };
 
-  handleTouchMove = event => {
+  handleTouchMove = (event: TouchEvent) => {
     if (event.touches && event.touches.length) {
       this.handleMouseMove(normalizeTouchEvent(event));
     }
   };
 
-  handleMouseMove = event => {
+  handleMouseMove = (event: Event & { clientX: number, clientY: number }) => {
     if (this.state.mouseDown) {
       const newHeight =
         this.state.startHeight - (event.clientY - this.state.startY);
@@ -206,7 +233,7 @@ export default class DevTools extends React.PureComponent {
     this.openDevTools();
   };
 
-  handleMinimizeClick = e => {
+  handleMinimizeClick = (e: MouseEvent) => {
     if (!this.state.hidden) {
       e.preventDefault();
       e.stopPropagation();
@@ -240,7 +267,7 @@ export default class DevTools extends React.PureComponent {
     });
   };
 
-  node;
+  node: HTMLElement;
 
   render() {
     const { sandboxId, zenMode } = this.props;

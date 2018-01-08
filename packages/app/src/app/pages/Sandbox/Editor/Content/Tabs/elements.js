@@ -7,7 +7,7 @@ export const Container = styled.div`
   flex: 0 0 2.5rem;
   color: rgba(255, 255, 255, 0.8);
 
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: ${({ theme }) => theme.background4};
 `;
 
 export const TabsContainer = styled.div`

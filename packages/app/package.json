@@ -156,6 +156,7 @@
     "react-dnd": "^2.4.0",
     "react-dnd-html5-backend": "^2.4.1",
     "react-dom": "16.2.0",
+    "react-draggable": "^3.0.4",
     "react-draggable-tabs": "^1.0.7",
     "react-error-overlay": "^1.0.10",
     "react-icons": "^2.2.7",
@@ -168,7 +169,7 @@
     "react-redux": "^5.0.5",
     "react-router-dom": "^4.2.2",
     "react-router-redux": "next",
-    "react-show": "^1.1.2",
+    "react-show": "^2.0.0",
     "react-split-pane": "^0.1.63",
     "react-stripe-elements": "^1.2.0",
     "react-tippy": "^0.14.0",
@@ -184,8 +185,7 @@
     "vue": "^2.5.2",
     "vue-hot-reload-api": "^2.2.4",
     "vue-template-compiler": "^2.5.2",
-    "vue-template-es2015-compiler": "^1.6.0",
-    "react-show": "^2.0.0"
+    "vue-template-es2015-compiler": "^1.6.0"
   },
   "jest": {
     "roots": [

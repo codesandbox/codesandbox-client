@@ -35,6 +35,12 @@ export default Module({
     showShareModal: false,
     showDeploymentModal: false,
     quickActionsOpen: false,
+    previewWindow: {
+      height: undefined,
+      width: undefined,
+      x: 0,
+      y: 0,
+    },
   },
   getters: {
     isAllModulesSynced,
@@ -73,5 +79,6 @@ export default Module({
     deploymentModalClosed: sequences.closeDeploymentModal,
     quickActionsOpened: sequences.openQuickActions,
     quickActionsClosed: sequences.closeQuickActions,
+    setPreviewBounds: sequences.setPreviewBounds,
   },
 });

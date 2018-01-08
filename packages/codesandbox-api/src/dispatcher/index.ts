@@ -37,7 +37,7 @@ let listenerId = 0;
  * @param callback Call this function to 'unlisten'
  */
 export function listen(callback: Callback): () => void {
-  const id = ++listenerId
+  const id = ++listenerId;
   listeners[id] = callback;
 
   return () => {

@@ -42,8 +42,14 @@ class MonacoEditor extends React.Component {
     this.lintWorker = null;
     this.typingsFetcherWorker = null;
     this.sizeProbeInterval = null;
+
+    this.resizeEditor = debounce(this.resizeEditor, 500);
   }
-  shouldComponentUpdate() {
+  shouldComponentUpdate(nextProps) {
+    if (this.props.widthOffset !== nextProps.widthOffset) {
+      this.widthOffset = nextProps.widthOffset;
+      this.resizeEditor();
+    }
     return false;
   }
   componentWillUnmount() {
@@ -675,7 +681,9 @@ class MonacoEditor extends React.Component {
     Promise.all(modules.map(module => this.createModel(module, modules)));
 
   resizeEditor = () => {
-    this.editor.layout();
+    this.forceUpdate(() => {
+      this.editor.layout();
+    });
   };
 
   createModel = async (
@@ -827,7 +835,15 @@ class MonacoEditor extends React.Component {
 
     return (
       <Container>
-        <CodeContainer hideNavigation={hideNavigation}>
+        <CodeContainer
+          widthOffset={this.props.widthOffset}
+          style={{
+            width: this.props.widthOffset
+              ? `calc(100% + ${this.props.widthOffset}px)`
+              : undefined,
+          }}
+          hideNavigation={hideNavigation}
+        >
           {this.state.fuzzySearchEnabled && (
             <FuzzySearch
               closeFuzzySearch={this.closeFuzzySearch}

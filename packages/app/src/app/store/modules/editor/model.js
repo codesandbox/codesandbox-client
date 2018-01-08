@@ -131,4 +131,10 @@ export default {
   showShareModal: types.boolean,
   showDeploymentModal: types.boolean,
   quickActionsOpen: types.boolean,
+  previewWindow: types.model({
+    width: types.maybe(types.number),
+    height: types.maybe(types.number),
+    x: types.maybe(types.number),
+    y: types.maybe(types.number),
+  }),
 };

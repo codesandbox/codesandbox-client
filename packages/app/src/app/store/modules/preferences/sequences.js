@@ -27,6 +27,10 @@ export const changeViewMode = [
 
 export const toggleZenMode = toggle(state`preferences.settings.zenMode`);
 
+export const setDevtoolsOpen = set(
+  state`preferences.showDevtools`,
+  props`open`
+);
 export const toggleDevtools = toggle(state`preferences.showDevtools`);
 
 export const changeItemId = [

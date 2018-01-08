@@ -3,7 +3,7 @@ import theme from 'common/theme';
 
 export const Container = styled.div`
   width: 100%;
-  height: 100vh;
+  height: 100%;
   z-index: 30;
 `;
 

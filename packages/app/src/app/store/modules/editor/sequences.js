@@ -180,3 +180,5 @@ export const handlePreviewAction = [
     otherwise: [],
   },
 ];
+
+export const setPreviewBounds = [actions.setPreviewBounds];

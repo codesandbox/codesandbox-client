@@ -1,7 +1,9 @@
 import * as React from 'react';
-import { inject, observer } from 'mobx-react';
 import { reaction } from 'mobx';
+import { inject, observer } from 'mobx-react';
+
 import BasePreview from 'app/components/Preview';
+import FlyingContainer from './FlyingContainer';
 
 class Preview extends React.Component {
   onPreviewInitialized = preview => {
@@ -38,10 +40,6 @@ class Preview extends React.Component {
         this.props.store.editor.currentSandbox.npmDependencies.keys().length,
       this.handleDependenciesChange.bind(this, preview)
     );
-    const disposeToggleDevtools = reaction(
-      () => this.props.store.preferences.showDevtools,
-      this.handleToggleDevtools.bind(this, preview)
-    );
 
     return () => {
       disposeHandleProjectViewChange();
@@ -52,12 +50,7 @@ class Preview extends React.Component {
       disposeHandleStructureChange();
       disposeHandleSandboxChange();
       disposeDependenciesHandler();
-      disposeToggleDevtools();
     };
-  };
-
-  handleToggleDevtools = (preview, showDevtools) => {
-    preview.toggleDevtools(showDevtools);
   };
 
   detectStructureChange = () => {
@@ -94,7 +87,6 @@ class Preview extends React.Component {
   };
 
   handleStructureChange = preview => {
-    console.log('Structure change!');
     const settings = this.props.store.preferences.settings;
     if (settings.livePreviewEnabled) {
       if (settings.instantPreviewEnabled) {
@@ -125,26 +117,29 @@ class Preview extends React.Component {
     const { store, signals } = this.props;
 
     return (
-      <BasePreview
-        onInitialized={this.onPreviewInitialized}
-        sandbox={store.editor.currentSandbox}
-        currentModule={store.editor.currentModule}
-        settings={store.preferences.settings}
-        initialPath={store.editor.initialPath}
-        isInProjectView={store.editor.isInProjectView}
-        onClearErrors={() =>
-          store.editor.errors.length && signals.editor.errorsCleared()
-        }
-        onAction={action => signals.editor.previewActionReceived({ action })}
-        onOpenNewWindow={() =>
-          this.props.signals.preferences.viewModeChanged({
-            showEditor: true,
-            showPreview: false,
-          })
-        }
-        onToggleProjectView={() => signals.editor.projectViewToggled()}
-        showDevtools={store.preferences.showDevtools}
-      />
+      <FlyingContainer>
+        <BasePreview
+          onInitialized={this.onPreviewInitialized}
+          sandbox={store.editor.currentSandbox}
+          currentModule={store.editor.currentModule}
+          settings={store.preferences.settings}
+          initialPath={store.editor.initialPath}
+          isInProjectView={store.editor.isInProjectView}
+          onClearErrors={() =>
+            store.editor.errors.length && signals.editor.errorsCleared()
+          }
+          onAction={action => signals.editor.previewActionReceived({ action })}
+          onOpenNewWindow={() =>
+            this.props.signals.preferences.viewModeChanged({
+              showEditor: true,
+              showPreview: false,
+            })
+          }
+          onToggleProjectView={() => signals.editor.projectViewToggled()}
+          showDevtools={store.preferences.showDevtools}
+          isResizing={store.editor.isResizing}
+        />
+      </FlyingContainer>
     );
   }
 }

@@ -4,7 +4,8 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  background-color: ${props => props.theme.background2};
+  z-index: 100;
+  background-color: ${props => props.theme.background4};
 `;
 
 export const Header = styled.div`
@@ -14,7 +15,7 @@ export const Header = styled.div`
   font-size: 0.875rem;
   height: 2rem;
   min-height: 2rem;
-  background-color: ${props => props.theme.background2};
+  background-color: ${props => props.theme.background4};
   color: rgba(255, 255, 255, 0.8);
   border-bottom: 1px solid rgba(0, 0, 0, 0.3);
 
