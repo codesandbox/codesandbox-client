@@ -118,6 +118,15 @@ export default class DependencyHit extends React.PureComponent {
 
   render() {
     const { highlighted, hit, onClick } = this.props;
+
+    if (!hit.versions) {
+      if (hit.version) {
+        hit.versions = [hit.version];
+      } else {
+        return null;
+      }
+    }
+
     const versions = Object.keys(hit.versions);
     versions.reverse();
 
