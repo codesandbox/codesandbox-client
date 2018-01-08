@@ -373,7 +373,7 @@ export default class Manager {
         this.cachedPaths[pathId] = resolvedPath;
       }
 
-      if (NODE_LIBS.includes(shimmedPath)) {
+      if (NODE_LIBS.includes(shimmedPath) || resolvedPath === '//empty.js') {
         return {
           path: pathUtils.join('/node_modules', resolvedPath),
           code: `// empty`,
