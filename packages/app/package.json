@@ -162,7 +162,7 @@
     "react-redux": "^5.0.5",
     "react-router-dom": "^4.2.2",
     "react-router-redux": "next",
-    "react-show": "^1.1.2",
+    "react-show": "^2.0.0",
     "react-split-pane": "^0.1.63",
     "react-stripe-elements": "^1.2.0",
     "react-tippy": "^0.14.0",
