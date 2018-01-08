@@ -35,6 +35,7 @@ export default class DeleteSandboxButtonContainer extends React.PureComponent<
   };
 
   render() {
-    return <DeleteSandboxButton {...this.props} onClick={this.deleteSandbox} />;
+    const { onDelete, ...props } = this.props;
+    return <DeleteSandboxButton {...props} onClick={this.deleteSandbox} />;
   }
 }
