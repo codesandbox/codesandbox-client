@@ -55,15 +55,7 @@ const styles = css`
   ${props => !props.disabled && `box-shadow: 0 3px 3px rgba(0, 0, 0, 0.5);`};
   width: ${props => (props.block ? '100%' : 'inherit')};
 
-  ${props => () => {
-    if (props.small) {
-      return `
-        padding: 0.5rem 0.75rem;
-        font-size: 0.875rem;
-      `;
-    }
-    return 'padding: 0.65rem 2.25rem;';
-  }} user-select: none;
+  user-select: none;
   text-decoration: none;
 
   ${props =>
@@ -86,25 +78,46 @@ const styles = css`
     box-shadow: 0 0 0 rgba(0, 0, 0, 0.5);
   }`};
 `;
-const LinkButton = styled(Link)`${styles};`;
-const AButton = styled.a`${styles};`;
-const Button = styled.button`${styles};`;
+const LinkButton = styled(Link)`
+  ${styles};
+`;
+const AButton = styled.a`
+  ${styles};
+`;
+const Button = styled.button`
+  ${styles};
+`;
 
 type Props = {
   [key: any]: any,
   to: ?string,
   href: ?string,
+  small: ?boolean,
+  style: ?any,
 };
 
-export default (props: Props) => {
+export default ({ small = false, style = {}, ...props }: Props) => {
   // Link
+
+  const newStyle = {
+    ...style,
+    ...(small
+      ? {
+          padding: '0.5rem 0.75rem',
+          fontSize: '0.875rem',
+        }
+      : {
+          padding: '0.65rem 2.25rem',
+        }),
+  };
+
   if (props.to) {
-    return <LinkButton {...props} />;
+    return <LinkButton style={newStyle} {...props} />;
   }
 
   if (props.href) {
-    return <AButton {...props} />;
+    return <AButton style={newStyle} {...props} />;
   }
 
-  return <Button {...props} />;
+  return <Button style={newStyle} {...props} />;
 };
