@@ -47,7 +47,7 @@ import Skeleton from './Skeleton';
 type Props = {
   workspaceHidden: boolean,
   toggleWorkspace: () => void,
-  devToolsOpen: boolean,
+  shouldExpandDevTools: boolean,
   sandbox: Sandbox,
   user: CurrentUser,
   preferences: Preferences,
@@ -158,7 +158,7 @@ class EditorPreview extends React.PureComponent<Props, State> {
       toggleWorkspace,
       previewApiActions,
       viewActions,
-      devToolsOpen,
+      shouldExpandDevTools,
     } = this.props;
 
     const mainModule = findMainModule(modules, directories, sandbox.entry);
@@ -244,7 +244,7 @@ class EditorPreview extends React.PureComponent<Props, State> {
           inactive={this.state.resizing}
           entry={sandbox.entry}
           setDevToolsOpen={viewActions.setDevToolsOpen}
-          devToolsOpen={devToolsOpen}
+          shouldExpandDevTools={shouldExpandDevTools}
         />
       </FullSize>
     );

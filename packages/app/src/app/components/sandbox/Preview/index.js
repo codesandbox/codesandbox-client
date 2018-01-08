@@ -55,7 +55,7 @@ type Props = {
   inactive: ?boolean,
   shouldExpandDevTools: ?boolean,
   entry: string,
-  devToolsOpen: ?boolean,
+  shouldExpandDevTools: ?boolean,
   setDevToolsOpen: ?(open: boolean) => void,
 };
 
@@ -448,7 +448,6 @@ export default class Preview extends React.PureComponent<Props, State> {
           sandboxId={sandboxId}
           shouldExpandDevTools={shouldExpandDevTools}
           zenMode={this.props.preferences.zenMode}
-          devToolsOpen={this.props.devToolsOpen}
           setDevToolsOpen={this.props.setDevToolsOpen}
         />
       </Container>
