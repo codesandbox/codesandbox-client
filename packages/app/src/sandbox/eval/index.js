@@ -1,5 +1,5 @@
 // @flow
-import { react, vue, svelte, preact } from 'common/templates';
+import { react, vue, svelte, preact, reactTs } from 'common/templates';
 
 import reactPreset from './presets/create-react-app';
 import reactTsPreset from './presets/create-react-app-typescript';
@@ -10,16 +10,16 @@ import sveltePreset from './presets/svelte';
 export default function getPreset(template: string) {
   switch (template) {
     case react.name:
-      return reactPreset;
-    case reactTsPreset.name:
-      return reactTsPreset;
+      return reactPreset();
+    case reactTs.name:
+      return reactTsPreset();
     case vue.name:
-      return vuePreset;
+      return vuePreset();
     case preact.name:
-      return preactPreset;
+      return preactPreset();
     case svelte.name:
-      return sveltePreset;
+      return sveltePreset();
     default:
-      return reactPreset;
+      return reactPreset();
   }
 }
