@@ -11695,7 +11695,7 @@ querystringify@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/querystringify/-/querystringify-1.0.0.tgz#6286242112c5b712fa654e526652bf6a13ff05cb"
 
-raf@^3.1.0:
+raf@^3.1.0, raf@^3.4.0:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/raf/-/raf-3.4.0.tgz#a28876881b4bc2ca9117d4138163ddb80f781575"
   dependencies:
@@ -12057,9 +12057,11 @@ react-router@^4.1.1, react-router@^4.2.0:
     prop-types "^15.5.4"
     warning "^3.0.0"
 
-react-show@^1.1.2:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/react-show/-/react-show-1.1.2.tgz#50f6c7c1f80e5303b254e429d4d33ba5721d1a10"
+react-show@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/react-show/-/react-show-2.0.0.tgz#3b33e7eea54a44233b50bf67d757fcfba2930de3"
+  dependencies:
+    raf "^3.4.0"
 
 react-side-effect@^1.1.0:
   version "1.1.3"
