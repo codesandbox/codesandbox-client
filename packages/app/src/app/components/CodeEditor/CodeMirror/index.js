@@ -22,8 +22,11 @@ class CodemirrorEditor extends React.Component {
     this.settings = props.settings;
     this.dependencies = props.dependencies;
   }
-  shouldComponentUpdate() {
-    return false;
+  shouldComponentUpdate(nextProps) {
+    return (
+      this.props.width !== nextProps.width ||
+      this.props.height !== nextProps.height
+    );
   }
   componentWillUnmount() {
     if (this.props.disposeInitializer) {
@@ -325,6 +328,10 @@ class CodemirrorEditor extends React.Component {
         <CodeContainer
           fontFamily={settings.fontFamily}
           lineHeight={settings.lineHeight}
+          style={{
+            width: this.props.width,
+            height: this.props.height,
+          }}
           hideNavigation={hideNavigation}
         >
           {this.state.fuzzySearchEnabled && (

@@ -24,16 +24,34 @@ import ShareIcon from 'react-icons/lib/md/share';
 import { Tooltip } from 'react-tippy';
 
 import { searchUrl, patronUrl } from 'common/utils/url-generator';
-import ModeIcons from 'app/components/ModeIcons';
 
 import PatronBadge from '-!svg-react-loader!common/utils/badges/svg/patron-4.svg'; // eslint-disable-line import/no-webpack-loader-syntax
 import Margin from 'common/components/spacing/Margin';
 import HeaderSearchBar from 'app/components/HeaderSearchBar';
 import UserMenu from 'app/pages/common/UserMenu';
 
+import Logo from './Logo';
 import Action from './Action';
 
 import { Container, Right, Left, Chevron } from './elements';
+
+// {store.isLoggedIn &&
+//   sandbox.owned && (
+//     <Action
+//       tooltip="Deploy sandbox"
+//       title="Deploy"
+//       Icon={NowIcon}
+//       onClick={() => signals.editor.deploymentModalOpened()}
+//     >
+//       <Modal
+//         isOpen={store.editor.showDeploymentModal}
+//         width={750}
+//         onClose={() => signals.editor.deploymentModalClosed()}
+//       >
+//         <DeploymentModal />
+//       </Modal>
+//     </Action>
+//   )}
 
 function Header({ store, signals }) {
   const preferences = store.preferences;
@@ -42,48 +60,19 @@ function Header({ store, signals }) {
 
   return (
     <Container>
-      <ModeIcons
-        small
-        dropdown
-        showEditor={preferences.showEditor}
-        showPreview={preferences.showPreview}
-        setMixedView={() =>
-          signals.preferences.viewModeChanged({
-            showEditor: true,
-            showPreview: true,
-          })
-        }
-        setEditorView={() =>
-          signals.preferences.viewModeChanged({
-            showEditor: true,
-            showPreview: false,
-          })
-        }
-        setPreviewView={() =>
-          signals.preferences.viewModeChanged({
-            showEditor: false,
-            showPreview: true,
-          })
-        }
-      />
       <Left>
+        <Logo />
+
         <Tooltip
           title={
             workspace.isWorkspaceHidden ? 'Open sidebar' : 'Collapse sidebar'
           }
-        >
-          <Chevron
-            workspaceHidden={workspace.isWorkspaceHidden}
-            onClick={() => signals.workspace.workspaceToggled()}
-          >
-            <ChevronLeft />
-          </Chevron>
-        </Tooltip>
+        />
         {store.isLoggedIn &&
           (sandbox.userLiked ? (
             <Action
               tooltip="Undo like"
-              title={sandbox.likeCount}
+              title="Like"
               Icon={FullHeartIcon}
               onClick={() =>
                 signals.editor.likeSandboxToggled({ id: sandbox.id })
@@ -92,7 +81,7 @@ function Header({ store, signals }) {
           ) : (
             <Action
               tooltip="Like"
-              title={sandbox.likeCount}
+              title="Like"
               Icon={HeartIcon}
               onClick={() =>
                 signals.editor.likeSandboxToggled({ id: sandbox.id })
@@ -118,29 +107,7 @@ function Header({ store, signals }) {
           title="Save"
           Icon={Save}
         />
-        <Action
-          tooltip="Download sandbox"
-          title="Download"
-          Icon={Download}
-          onClick={() => signals.editor.createZipClicked()}
-        />
-        {store.isLoggedIn &&
-          sandbox.owned && (
-            <Action
-              tooltip="Deploy sandbox"
-              title="Deploy"
-              Icon={NowIcon}
-              onClick={() => signals.editor.deploymentModalOpened()}
-            >
-              <Modal
-                isOpen={store.editor.showDeploymentModal}
-                width={750}
-                onClose={() => signals.editor.deploymentModalClosed()}
-              >
-                <DeploymentModal />
-              </Modal>
-            </Action>
-          )}
+
         <Action
           tooltip="Share sandbox"
           title="Share"

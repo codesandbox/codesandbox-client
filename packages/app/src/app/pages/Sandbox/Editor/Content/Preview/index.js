@@ -114,7 +114,7 @@ class Preview extends React.Component {
   };
 
   render() {
-    const { store, signals, width, height } = this.props;
+    const { store, signals } = this.props;
 
     return (
       <FlyingContainer>
@@ -145,7 +145,7 @@ class Preview extends React.Component {
               resize({
                 x: 0,
                 y: 0,
-                width: this.props.width / 2 - 32,
+                width: this.props.width / 2,
                 height: this.props.height - 32,
               })
             }

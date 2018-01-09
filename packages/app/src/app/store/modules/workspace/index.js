@@ -17,6 +17,7 @@ export default Module({
     isWorkspaceHidden: false,
     showSearchDependenciesModal: false,
     showDeleteSandboxModal: false,
+    openedWorkspaceItem: 'files',
   },
   signals: {
     valueChanged: sequences.changeValue,

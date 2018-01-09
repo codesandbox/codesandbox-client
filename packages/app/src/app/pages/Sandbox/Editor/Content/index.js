@@ -11,7 +11,6 @@ import FilePath from 'app/components/CodeEditor/FilePath';
 import Preview from './Preview';
 
 import Tabs from './Tabs';
-import Header from './Header';
 
 import { FullSize } from './elements';
 
@@ -195,7 +194,6 @@ class EditorPreview extends React.Component {
               'You have not saved this sandbox, are you sure you want to navigate away?'
             }
           />
-          {!preferences.settings.zenMode && <Header />}
           {preferences.settings.zenMode ? (
             <FilePath
               modules={sandbox.modules}

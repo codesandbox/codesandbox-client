@@ -13,6 +13,7 @@ export const Container = styled.div`
   height: 3rem;
   font-weight: 400;
   flex: 0 0 3rem;
+  width: 100%;
   box-sizing: border-box;
   border-bottom: 1px solid ${props => props.theme.background2.darken(0.3)};
 `;

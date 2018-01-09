@@ -11,4 +11,5 @@ export default {
   isWorkspaceHidden: types.boolean,
   showSearchDependenciesModal: types.boolean,
   showDeleteSandboxModal: types.boolean,
+  openedWorkspaceItem: types.string,
 };

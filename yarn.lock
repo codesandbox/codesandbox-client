@@ -12188,6 +12188,16 @@ react-split-pane@^0.1.63:
     prop-types "^15.5.10"
     react-style-proptype "^3.0.0"
 
+react-split-pane@^0.1.74:
+  version "0.1.74"
+  resolved "https://registry.yarnpkg.com/react-split-pane/-/react-split-pane-0.1.74.tgz#cf79fc98b51ab0763fdc778749b810a102b036ca"
+  dependencies:
+    "@types/inline-style-prefixer" "^3.0.0"
+    "@types/react" "^16.0.18"
+    inline-style-prefixer "^3.0.6"
+    prop-types "^15.5.10"
+    react-style-proptype "^3.0.0"
+
 react-stripe-elements@^1.2.0:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/react-stripe-elements/-/react-stripe-elements-1.2.1.tgz#1e385fe645494e492b79ae04f67658b1020cfa25"

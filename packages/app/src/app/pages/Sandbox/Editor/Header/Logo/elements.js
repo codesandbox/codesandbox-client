@@ -7,18 +7,22 @@ export const Container = styled.a`
   color: ${props => props.theme.white};
   vertical-align: middle;
   height: 3rem;
+  margin-right: 1rem;
+
   padding: 0 1rem;
   box-sizing: border-box;
-  border-bottom: 1px solid ${props => props.theme.background2};
+
   overflow: hidden;
   text-decoration: none;
 `;
 
-export const Title = styled.h1`
+export const Title = styled.span`
   font-size: 1rem;
   font-weight: 400;
   margin: 0;
   margin-left: 1rem;
+  padding-left: 1rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.3);
   color: white;
 `;
 

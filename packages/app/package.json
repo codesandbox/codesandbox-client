@@ -170,7 +170,7 @@
     "react-router-dom": "^4.2.2",
     "react-router-redux": "next",
     "react-show": "^2.0.0",
-    "react-split-pane": "^0.1.63",
+    "react-split-pane": "^0.1.74",
     "react-stripe-elements": "^1.2.0",
     "react-tippy": "^0.14.0",
     "redbox-react": "^1.4.3",
