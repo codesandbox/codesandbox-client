@@ -8,6 +8,8 @@ import ExternalIcon from 'react-icons/lib/md/open-in-new';
 import Switch from 'app/components/Switch';
 import Tooltip from 'common/components/Tooltip';
 
+import HorizontalAlign from './HorizontalAlign';
+import VerticalAlign from './VerticalAlign';
 import AddressBar from '../AddressBar';
 import {
   Container,
@@ -28,6 +30,8 @@ function Navigator({
   toggleProjectView,
   openNewWindow,
   zenMode,
+  alignRight,
+  alignBottom,
 }) {
   return (
     <Container>
@@ -45,10 +49,27 @@ function Navigator({
       <AddressBarContainer>
         <AddressBar url={url} onChange={onChange} onConfirm={onConfirm} />
       </AddressBarContainer>
+      {alignBottom && (
+        <Icon onClick={alignBottom}>
+          <Tooltip title="Align To Bottom">
+            <HorizontalAlign />
+          </Tooltip>
+        </Icon>
+      )}
+      {alignRight && (
+        <Icon onClick={alignRight}>
+          <Tooltip title="Align To Right">
+            <VerticalAlign />
+          </Tooltip>
+        </Icon>
+      )}
+
       {!zenMode &&
         openNewWindow && (
           <Icon style={{ marginRight: '0.75rem' }} onClick={openNewWindow}>
-            <ExternalIcon />
+            <Tooltip title="Open In A New Window">
+              <ExternalIcon />
+            </Tooltip>
           </Icon>
         )}
       {!zenMode &&

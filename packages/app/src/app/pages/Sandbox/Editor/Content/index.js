@@ -16,17 +16,31 @@ import Header from './Header';
 import { FullSize } from './elements';
 
 class EditorPreview extends React.Component {
+  state = { width: null, height: null };
+
   componentDidMount() {
     this.props.signals.editor.contentMounted();
     this.disposeEditorChange = reaction(
       () => this.props.store.preferences.settings.codeMirror,
       () => this.forceUpdate()
     );
+
+    window.addEventListener('resize', this.getBounds);
   }
 
   componentWillUnmount() {
     this.disposeEditorChange();
+    window.removeEventListener('resize', this.getBounds);
   }
+
+  getBounds = el => {
+    if (el) {
+      this.el = this.el || el;
+      const { width, height } = this.el.getBoundingClientRect();
+
+      this.setState({ width, height });
+    }
+  };
 
   setDevToolsOpen = (open: boolean) => {
     this.props.signals.preferences.setDevtoolsOpen({ open });
@@ -155,8 +169,18 @@ class EditorPreview extends React.Component {
     const notSynced = !store.editor.isAllModulesSynced;
     const sandbox = store.editor.currentSandbox;
     const preferences = store.preferences;
+    const { x, y, width } = store.editor.previewWindow;
 
-    const codeEditorWidthOffset = store.editor.previewWindow.x;
+    const windowRightSize = -x + width + 16;
+
+    const isVerticalMode = this.state.width
+      ? this.state.width / 4 > this.state.width - windowRightSize
+      : false;
+
+    const editorWidth = isVerticalMode
+      ? '100%'
+      : `calc(100% - ${windowRightSize}px)`;
+    const editorHeight = isVerticalMode ? `${y + 16}px` : '100%';
 
     return (
       <ThemeProvider
@@ -189,13 +213,21 @@ class EditorPreview extends React.Component {
           ) : (
             <Tabs />
           )}
-          <div style={{ position: 'relative', display: 'flex', flex: 1 }}>
+          <div
+            ref={this.getBounds}
+            style={{
+              position: 'relative',
+              display: 'flex',
+              flex: 1,
+            }}
+          >
             <CodeEditor
               onInitialized={this.onInitialized}
               sandbox={sandbox}
               currentModule={currentModule}
               dependencies={sandbox.npmDependencies.toJS()}
-              widthOffset={codeEditorWidthOffset}
+              width={editorWidth}
+              height={editorHeight}
               settings={{
                 fontFamily: preferences.settings.fontFamily,
                 fontSize: preferences.settings.fontSize,
@@ -219,7 +251,7 @@ class EditorPreview extends React.Component {
                 })
               }
             />
-            <Preview />
+            <Preview width={this.state.width} height={this.state.height} />
           </div>
 
           <DevTools

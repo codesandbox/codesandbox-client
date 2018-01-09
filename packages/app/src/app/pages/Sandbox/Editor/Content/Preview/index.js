@@ -114,31 +114,51 @@ class Preview extends React.Component {
   };
 
   render() {
-    const { store, signals } = this.props;
+    const { store, signals, width, height } = this.props;
 
     return (
       <FlyingContainer>
-        <BasePreview
-          onInitialized={this.onPreviewInitialized}
-          sandbox={store.editor.currentSandbox}
-          currentModule={store.editor.currentModule}
-          settings={store.preferences.settings}
-          initialPath={store.editor.initialPath}
-          isInProjectView={store.editor.isInProjectView}
-          onClearErrors={() =>
-            store.editor.errors.length && signals.editor.errorsCleared()
-          }
-          onAction={action => signals.editor.previewActionReceived({ action })}
-          onOpenNewWindow={() =>
-            this.props.signals.preferences.viewModeChanged({
-              showEditor: true,
-              showPreview: false,
-            })
-          }
-          onToggleProjectView={() => signals.editor.projectViewToggled()}
-          showDevtools={store.preferences.showDevtools}
-          isResizing={store.editor.isResizing}
-        />
+        {({ resize }) => (
+          <BasePreview
+            onInitialized={this.onPreviewInitialized}
+            sandbox={store.editor.currentSandbox}
+            currentModule={store.editor.currentModule}
+            settings={store.preferences.settings}
+            initialPath={store.editor.initialPath}
+            isInProjectView={store.editor.isInProjectView}
+            onClearErrors={() =>
+              store.editor.errors.length && signals.editor.errorsCleared()
+            }
+            onAction={action =>
+              signals.editor.previewActionReceived({ action })
+            }
+            onOpenNewWindow={() =>
+              this.props.signals.preferences.viewModeChanged({
+                showEditor: true,
+                showPreview: false,
+              })
+            }
+            onToggleProjectView={() => signals.editor.projectViewToggled()}
+            showDevtools={store.preferences.showDevtools}
+            isResizing={store.editor.isResizing}
+            alignRight={() =>
+              resize({
+                x: 0,
+                y: 0,
+                width: this.props.width / 2 - 32,
+                height: this.props.height - 32,
+              })
+            }
+            alignBottom={() =>
+              resize({
+                x: 0,
+                y: this.props.height / 2 - 32,
+                width: this.props.width - 32,
+                height: this.props.height / 2,
+              })
+            }
+          />
+        )}
       </FlyingContainer>
     );
   }

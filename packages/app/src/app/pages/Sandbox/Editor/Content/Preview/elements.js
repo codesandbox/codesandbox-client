@@ -79,4 +79,6 @@ export const ResizingNotice = styled.div`
   color: white;
   font-size: 1.125rem;
   padding: 0.5rem 1rem;
+
+  border-radius: 2px;
 `;

@@ -307,6 +307,8 @@ class BasePreview extends React.Component {
             }
             openNewWindow={this.openNewWindow}
             zenMode={settings.zenMode}
+            alignRight={this.props.alignRight}
+            alignBottom={this.props.alignBottom}
           />
         )}
 

@@ -28,6 +28,11 @@ const requireAMDModule = paths =>
   new Promise(resolve => window.require(paths, () => resolve()));
 
 class MonacoEditor extends React.Component {
+  static defaultProps = {
+    width: '100%',
+    height: '100%',
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -45,13 +50,17 @@ class MonacoEditor extends React.Component {
 
     this.resizeEditor = debounce(this.resizeEditor, 500);
   }
+
   shouldComponentUpdate(nextProps) {
-    if (this.props.widthOffset !== nextProps.widthOffset) {
-      this.widthOffset = nextProps.widthOffset;
+    if (
+      this.props.width !== nextProps.width ||
+      this.props.height !== nextProps.height
+    ) {
       this.resizeEditor();
     }
     return false;
   }
+
   componentWillUnmount() {
     window.removeEventListener('resize', this.resizeEditor);
     this.disposeModules(this.sandbox.modules);
@@ -838,9 +847,8 @@ class MonacoEditor extends React.Component {
         <CodeContainer
           widthOffset={this.props.widthOffset}
           style={{
-            width: this.props.widthOffset
-              ? `calc(100% + ${this.props.widthOffset}px)`
-              : undefined,
+            width: this.props.width,
+            height: this.props.height,
           }}
           hideNavigation={hideNavigation}
         >

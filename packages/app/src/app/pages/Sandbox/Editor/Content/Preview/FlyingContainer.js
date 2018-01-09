@@ -1,6 +1,8 @@
 import React, { MouseEvent } from 'react';
 import { inject, observer } from 'mobx-react';
 
+import { TweenMax, Elastic } from 'gsap';
+
 import Draggable from 'react-draggable';
 
 import {
@@ -16,28 +18,54 @@ import {
 } from './elements';
 
 class FlyingContainer extends React.Component {
-  state = { resizing: false };
+  state = { resizing: false, dragging: false };
 
   updateBounds = el => {
     if (el) {
       this.el = el;
+      const { width, height } = this.el.getBoundingClientRect();
+      this.initialWidth = width;
+      this.initialHeight = height;
+
+      this.props.signals.editor.setPreviewBounds({ width, height });
     }
   };
 
-  handleDrag = (e, data) => {
-    const { x, y } = data;
+  handleStartDrag = () => {
+    this.setState({ dragging: true });
+    this.setResizingStarted();
+  };
 
+  handleStopDrag = (e, data) => {
+    const { x, y } = data;
+    this.setState({ dragging: false });
+
+    // We only set the bounds in the global store on stop, otherwise there are
+    // other components constantly recalculating while dragging -> lag
     this.props.signals.editor.setPreviewBounds({ x, y });
+    this.setResizingStopped();
   };
 
   setResizingStarted = () => {
-    this.setState({ resizing: true });
     this.props.signals.editor.resizingStarted();
   };
 
   setResizingStopped = () => {
-    this.setState({ resizing: false });
     this.props.signals.editor.resizingStopped();
+  };
+
+  applyStateToStore = () => {
+    const { x, y, width, height } = this.state;
+    this.props.signals.editor.setPreviewBounds({ x, y, width, height });
+
+    this.setState({
+      dragging: false,
+      resizing: false,
+      x: null,
+      y: null,
+      width: null,
+      height: null,
+    });
   };
 
   handleHeightResize = (
@@ -50,6 +78,7 @@ class FlyingContainer extends React.Component {
     e.preventDefault();
     e.stopPropagation();
     this.setResizingStarted();
+    this.setState({ resizing: true });
 
     let lastX = e.clientX;
     let lastY = e.clientY;
@@ -60,17 +89,10 @@ class FlyingContainer extends React.Component {
       const deltaY = lastY - dragEvent.clientY;
       const deltaX = dragEvent.clientX - lastX;
 
-      let previewHeight = previewWindow.height;
-      if (!previewHeight) {
-        const { height } = this.el.getBoundingClientRect();
-        previewHeight = height;
-      }
-
-      let previewWidth = previewWindow.width;
-      if (!previewWidth) {
-        const { width } = this.el.getBoundingClientRect();
-        previewWidth = width;
-      }
+      const previewHeight = this.state.height || previewWindow.height;
+      const previewWidth = this.state.width || previewWindow.width;
+      const previewY = this.state.y || previewWindow.y;
+      const previewX = this.state.x || previewWindow.x;
 
       const newSizeY = changePositionY
         ? previewHeight + deltaY
@@ -89,18 +111,20 @@ class FlyingContainer extends React.Component {
       }
 
       if (changePositionY) {
-        const newPosY = previewWindow.y - deltaY;
+        const newPosY = previewY - deltaY;
 
         update.y = newPosY;
       }
 
       if (changePositionX) {
-        const newPosX = previewWindow.x + deltaX;
+        const newPosX = previewX + deltaX;
 
         update.x = newPosX;
       }
 
-      this.props.signals.editor.setPreviewBounds(update);
+      // First do local, only propagate to store when finished
+      this.setState(update);
+
       lastY = dragEvent.clientY;
       lastX = dragEvent.clientX;
     };
@@ -110,6 +134,7 @@ class FlyingContainer extends React.Component {
       document.removeEventListener('mouseup', handleMouseUp);
       this.setResizingStopped();
 
+      this.applyStateToStore();
       // We do this to force a recalculation of the iframe height, this doesn't
       // happen when pointer events are disabled and in turn disables scroll.
       // It's hacky, but it's to fix a bug in the browser.
@@ -126,34 +151,63 @@ class FlyingContainer extends React.Component {
     document.addEventListener('mouseup', handleMouseUp);
   };
 
+  resizeTo = ({ x, y, width, height }) => {
+    this.setState({ resizing: true }, () => {
+      const currentState = { ...this.props.store.editor.previewWindow };
+      TweenMax.to(currentState, 0.5, {
+        x,
+        y,
+        width: width == null ? this.initialWidth : width,
+        height: height == null ? this.initialHeight : height,
+        onUpdate: () => {
+          this.setState(currentState);
+        },
+        onComplete: () => {
+          this.applyStateToStore();
+        },
+        ease: Elastic.easeInOut.config(0.25, 1),
+      });
+    });
+  };
+
   render() {
     const { previewWindow } = this.props.store.editor;
 
+    const width = this.state.width || previewWindow.width;
+    const height = this.state.height || previewWindow.height;
+
     return (
       <Draggable
-        onStart={this.setResizingStarted}
-        onStop={this.setResizingStopped}
-        onDrag={this.handleDrag}
-        position={{
+        onStart={this.handleStartDrag}
+        onStop={this.handleStopDrag}
+        defaultPosition={{
           x: previewWindow.x,
           y: previewWindow.y,
         }}
+        position={
+          this.state.dragging
+            ? undefined
+            : {
+                x: this.state.x || previewWindow.x,
+                y: this.state.y || previewWindow.y,
+              }
+        }
       >
         <div
           style={{
-            position: 'relative',
-            boxSizing: 'border-box',
+            position: 'absolute',
+            right: '1rem',
+            top: '1rem',
+            bottom: '1rem',
+
             overflow: 'hidden',
             borderRadius: '4px',
-            width: previewWindow.width || '100%',
-            flex: previewWindow.width
-              ? `0 0 ${previewWindow.width}px`
-              : undefined,
-            height: previewWindow.height,
+            width: width || '50%',
+            flex: width ? `0 0 ${width}px` : undefined,
+            height,
             boxShadow: '0 3px 8px rgba(0, 0, 0, 0.5)',
             zIndex: 60,
             cursor: 'move',
-            margin: '1rem',
           }}
           ref={this.updateBounds}
         >
@@ -197,12 +251,12 @@ class FlyingContainer extends React.Component {
               this.handleHeightResize(e, true, true, true, false)
             }
           />
-          {this.props.children}
+          {this.props.children({ resize: this.resizeTo })}
 
           {this.state.resizing && (
             <ResizingNotice>
-              {Math.floor(previewWindow.width)} x{' '}
-              {Math.floor(previewWindow.height)}
+              {Math.floor(width)} x{' '}
+              {Math.floor(height - 48 /* navigation bar */)}
             </ResizingNotice>
           )}
         </div>
