@@ -37,5 +37,6 @@ export default Module({
     deleteSandboxModalClosed: sequences.closeDeleteSandboxModal,
     sandboxDeleted: sequences.deleteSandbox,
     sandboxPrivacyChanged: sequences.changeSandboxPrivacy,
+    setWorkspaceItem: sequences.setWorkspaceItem,
   },
 });

@@ -4,21 +4,20 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   width: 4rem;
-  height: 100%;
   flex: 0 0 4rem;
+  height: 100%;
   color: rgba(255, 255, 255, 0.6);
-
-  padding-top: 0.5rem;
 
   font-size: 1.5rem;
   align-items: center;
-
-  border-right-style: inset;
 `;
 
 export const IconContainer = styled.div`
-  transition: 0.3s ease color;
+  display: flex;
+  justify-content: center;
+  transition: 0.3s ease all;
   padding: 1rem 0;
+  width: 100%;
   cursor: pointer;
 
   &:hover {
@@ -29,5 +28,8 @@ export const IconContainer = styled.div`
     props.selected &&
     css`
       color: white;
+      background-color: ${props.theme.templateColor
+        ? props.theme.templateColor()
+        : props.theme.secondary()};
     `};
 `;

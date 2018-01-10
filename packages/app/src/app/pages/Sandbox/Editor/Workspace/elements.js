@@ -157,3 +157,13 @@ export const WorkspaceInputContainer = styled.div`
     color: ${props => props.theme.background2.lighten(2.9)};
   }
 `;
+
+export const ItemTitle = styled.div`
+  font-size: 1rem;
+  font-weight: 400;
+
+  margin: 1rem;
+  margin-bottom: 0.5rem;
+
+  color: rgba(255, 255, 255, 0.6);
+`;

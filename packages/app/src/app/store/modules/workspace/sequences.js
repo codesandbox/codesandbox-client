@@ -132,3 +132,7 @@ export const removeTag = [
   actions.removeTag,
   set(state`editor.sandboxes.${state`editor.currentId`}.tags`, props`tags`),
 ];
+
+export const setWorkspaceItem = [
+  set(state`workspace.openedWorkspaceItem`, props`item`),
+];

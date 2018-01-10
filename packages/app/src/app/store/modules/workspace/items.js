@@ -1,33 +1,31 @@
-import InfoIcon from 'react-icons/lib/md/info-outline';
-import FilesIcon from 'react-icons/lib/md/create';
-import GitHubIcon from 'react-icons/lib/go/mark-github';
-import RocketIcon from 'react-icons/lib/go/rocket';
-import SettingsIcon from 'react-icons/lib/go/settings';
-
 export default [
   {
-    id: 'info',
+    id: 'project',
     name: 'Project Info',
-    Icon: InfoIcon,
   },
   {
     id: 'files',
-    name: 'Files',
-    Icon: FilesIcon,
+    name: 'File Editor',
   },
   {
     id: 'github',
     name: 'GitHub',
-    Icon: GitHubIcon,
+    show: store =>
+      console.log(
+        store.isLoggedIn,
+        store.editor.currentSandbox,
+        store.editor.currentSandbox && store.editor.currentSandbox.git
+      ) ||
+      (store.isLoggedIn &&
+        store.editor.currentSandbox &&
+        !store.editor.currentSandbox.git),
   },
   {
     id: 'deploy',
     name: 'Deployment',
-    Icon: RocketIcon,
   },
   {
     id: 'config',
     name: 'Configurations',
-    Icon: SettingsIcon,
   },
 ];

@@ -9,7 +9,8 @@ export const Container = styled.a`
   height: 3rem;
   margin-right: 1rem;
 
-  padding: 0 1rem;
+  padding: 0 calc(1rem + 1px);
+
   box-sizing: border-box;
 
   overflow: hidden;
@@ -20,7 +21,7 @@ export const Title = styled.span`
   font-size: 1rem;
   font-weight: 400;
   margin: 0;
-  margin-left: 1rem;
+  margin-left: calc(1rem + 1px);
   padding-left: 1rem;
   border-left: 1px solid rgba(255, 255, 255, 0.3);
   color: white;

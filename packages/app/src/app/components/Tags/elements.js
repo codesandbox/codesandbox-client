@@ -2,7 +2,6 @@ import styled, { css } from 'styled-components';
 import CrossIcon from 'react-icons/lib/md/clear';
 
 export const TagContainer = styled.div`
-  margin: 0.75em;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;

@@ -39,7 +39,6 @@ function SandboxActions({ store, signals }) {
         </WorkspaceInputContainer>
       )}
 
-      <WorkspaceSubtitle>Delete Sandbox</WorkspaceSubtitle>
       <WorkspaceInputContainer>
         <Button
           small

@@ -5,9 +5,11 @@ import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/
 import getType from 'app/utils/get-type';
 import { getModulePath } from 'common/sandbox/modules';
 
+import CrossIcon from 'react-icons/lib/md/clear';
+
 import WorkspaceItem from '../WorkspaceItem';
 import { EntryContainer } from '../elements';
-import { Title, Dir } from './elements';
+import { Title, Dir, CrossIconContainer } from './elements';
 import SaveIcon from './SaveIcon';
 
 const OpenedTabs = ({ store, signals }) => {
@@ -22,11 +24,10 @@ const OpenedTabs = ({ store, signals }) => {
 
   return (
     <WorkspaceItem
-      defaultOpen
-      keepState
       title="Open Tabs"
       actions={
         <SaveIcon
+          disabled={store.editor.isAllModulesSynced}
           onClick={e => {
             if (e) {
               e.preventDefault();
@@ -37,7 +38,7 @@ const OpenedTabs = ({ store, signals }) => {
         />
       }
     >
-      {openModules.map(m => (
+      {openModules.map((m, i) => (
         <EntryContainer
           onClick={() => {
             signals.editor.moduleSelected({ id: m.id });
@@ -56,6 +57,20 @@ const OpenedTabs = ({ store, signals }) => {
               .replace('/', '')
               .replace(new RegExp(m.title + '$'), '')}
           </Dir>
+          {currentModuleShortid !== m.shortid && (
+            <CrossIconContainer
+              onClick={e => {
+                if (e) {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }
+
+                signals.editor.tabClosed({ tabIndex: i });
+              }}
+            >
+              <CrossIcon />
+            </CrossIconContainer>
+          )}
         </EntryContainer>
       ))}
     </WorkspaceItem>

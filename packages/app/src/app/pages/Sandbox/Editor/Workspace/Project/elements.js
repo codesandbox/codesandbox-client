@@ -25,6 +25,7 @@ export const StatsContainer = styled.div`
   font-size: 0.875rem;
   box-sizing: border-box;
   color: rgba(255, 255, 255, 0.8);
+  margin-left: 1rem;
 `;
 
 export const PrivacyContainer = styled.div`
@@ -32,4 +33,17 @@ export const PrivacyContainer = styled.div`
   font-size: 0.875rem;
   color: rgba(255, 255, 255, 0.8);
   margin-bottom: 1rem;
+`;
+
+export const Title = styled.div`
+  font-size: 1rem;
+  font-weight: 400;
+  color: white;
+  margin-bottom: 0.5rem;
+`;
+
+export const Description = styled.div`
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 0.5rem;
 `;

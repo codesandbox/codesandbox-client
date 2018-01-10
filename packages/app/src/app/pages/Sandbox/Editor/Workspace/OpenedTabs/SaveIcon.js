@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import Tooltip from 'common/components/Tooltip';
 import fadeIn from 'common/utils/animation/fade-in';
 
@@ -17,11 +17,22 @@ const Container = styled.div`
   &:hover {
     color: white;
   }
+
+  ${props =>
+    props.disabled &&
+    css`
+      color: rgba(255, 255, 255, 0.3);
+      cursor: initial;
+
+      &:hover {
+        color: rgba(255, 255, 255, 0.3);
+      }
+    `};
 `;
 
-export default ({ onClick }) => (
-  <Container onClick={onClick}>
-    <Tooltip title="Save All Modules">
+export default ({ onClick, disabled }) => (
+  <Container disabled={disabled} onClick={disabled ? undefined : onClick}>
+    <Tooltip title={disabled ? 'Everything is saved' : 'Save All Modules'}>
       <Save />
     </Tooltip>
   </Container>

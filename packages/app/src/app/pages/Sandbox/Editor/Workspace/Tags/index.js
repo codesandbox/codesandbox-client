@@ -1,64 +1,91 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import Margin from 'common/components/spacing/Margin';
+
 import Button from 'app/components/Button';
 import TagsComponent from 'app/components/Tags';
 
-import { WorkspaceInputContainer, WorkspaceSubtitle } from '../elements';
+import { WorkspaceInputContainer } from '../elements';
+import { PlusIcon } from './elements';
 
-function Tags({ store, signals }) {
-  const tags = store.editor.currentSandbox.tags;
-  const isOwner = store.editor.currentSandbox.owned;
+class Tags extends React.Component {
+  state = {
+    editing: false,
+  };
 
-  return (
-    <div>
-      {tags.length > 0 && (
-        <div>
-          <WorkspaceSubtitle>Tags</WorkspaceSubtitle>
-          <div style={{ fontSize: '.875rem' }}>
-            <TagsComponent
-              tags={tags}
-              removeTag={isOwner && signals.workspace.tagRemoved}
-            />
-          </div>
-        </div>
-      )}
+  startEditing = () => {
+    this.setState({ editing: true });
+  };
 
-      {isOwner && (
-        <div>
-          <WorkspaceSubtitle>Add up to 5 tags</WorkspaceSubtitle>
-          <WorkspaceInputContainer>
-            <input
-              onChange={event => {
-                signals.workspace.tagChanged({
-                  tagName: event.target.value,
-                });
+  addTag = () => {
+    this.props.signals.workspace.tagAdded();
+  };
+
+  render() {
+    const { store, signals } = this.props;
+
+    const tags = store.editor.currentSandbox.tags;
+    const isOwner = store.editor.currentSandbox.owned;
+
+    return (
+      <div>
+        {tags.length > 0 && (
+          <div>
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                fontSize: '.875rem',
+                alignItems: 'center',
+                margin: '.75rem',
+                marginTop: 0,
               }}
-              value={store.workspace.tags.tagName}
-              onKeyUp={event => {
-                if (event.keyCode === 13) {
-                  signals.workspace.tagAdded();
-                }
-              }}
-              placeholder="Add a tag"
-            />
-          </WorkspaceInputContainer>
-          <Margin horizontal={1} vertical={0.5}>
-            <Button
-              onClick={() => {
-                signals.workspace.tagAdded();
-              }}
-              disabled={tags.length >= 5}
-              block
-              small
             >
-              Add Tag
-            </Button>
-          </Margin>
-        </div>
-      )}
-    </div>
-  );
+              <TagsComponent
+                tags={tags}
+                removeTag={isOwner && signals.workspace.tagRemoved}
+              />
+              {tags.length < 5 &&
+                isOwner && <PlusIcon onClick={this.startEditing}>+</PlusIcon>}
+            </div>
+          </div>
+        )}
+
+        {isOwner &&
+          this.state.editing && (
+            <WorkspaceInputContainer>
+              <input
+                ref={el => {
+                  if (el) {
+                    el.focus();
+                  }
+                }}
+                onChange={event => {
+                  signals.workspace.tagChanged({
+                    tagName: event.target.value,
+                  });
+                }}
+                value={store.workspace.tags.tagName}
+                onKeyUp={event => {
+                  if (event.keyCode === 13) {
+                    this.addTag();
+                  }
+                }}
+                placeholder="Tag name"
+              />
+              <Button
+                onClick={this.addTag}
+                disabled={tags.length >= 5}
+                block
+                small
+                style={{ width: 64 }}
+              >
+                Add
+              </Button>
+            </WorkspaceInputContainer>
+          )}
+      </div>
+    );
+  }
 }
 
 export default inject('store', 'signals')(observer(Tags));

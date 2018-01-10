@@ -14,13 +14,21 @@ export function ensureValidPrivacy({ props, path }) {
 }
 
 export function setCurrentModuleByTab({ state, props }) {
-  const index =
-    state.get('editor.tabs').length - 1 >= props.tabIndex
-      ? props.tabIndex
-      : props.tabIndex - 1;
-  const moduleShortid = state.get(`editor.tabs.${index}.moduleShortid`);
+  const tabs = state.get('editor.tabs');
+  const currentModuleShortid = state.get(`editor.currentModuleShortid`);
+  const closedCurrentTab = !tabs.find(
+    t => t.moduleShortid === currentModuleShortid
+  );
 
-  state.set('editor.currentModuleShortid', moduleShortid);
+  if (closedCurrentTab) {
+    const index =
+      state.get('editor.tabs').length - 1 >= props.tabIndex
+        ? props.tabIndex
+        : props.tabIndex - 1;
+    const moduleShortid = state.get(`editor.tabs.${index}.moduleShortid`);
+
+    state.set('editor.currentModuleShortid', moduleShortid);
+  }
 }
 
 export function updatePrivacy({ api, props, state }) {
