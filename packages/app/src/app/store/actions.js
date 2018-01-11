@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 export function getSandbox({ props, api, path }) {
   return api
     .get(`/sandboxes/${props.id}`)
@@ -252,6 +254,11 @@ export function getUser({ api, path }) {
     .catch(() => path.error());
 }
 
+export function setJwtFromProps({ jwt, state, props }) {
+  jwt.set(props.jwt);
+  state.set('jwt', props.jwt);
+}
+
 export function setJwtFromStorage({ jwt, state }) {
   state.set('jwt', jwt.get() || null);
 }
@@ -275,37 +282,47 @@ export function setPatronPrice({ props, state }) {
   );
 }
 
-export function signInZeit({ browser }) {
+export function signInZeit({ browser, path }) {
   const popup = browser.openPopup('/auth/zeit', 'sign in');
   return browser.waitForMessage('signin').then(data => {
     popup.close();
 
-    return { code: data.code };
+    if (data && data.code) {
+      return path.success({ code: data.code });
+    }
+
+    return path.error();
   });
 }
 
-export function updateUserZeitDetails({ api, props }) {
+export function updateUserZeitDetails({ api, path, props }) {
   const { code } = props;
 
-  return api.post(`/users/current_user/integrations/zeit`, {
-    code,
-  });
+  return api
+    .post(`/users/current_user/integrations/zeit`, {
+      code,
+    })
+    .then(data => path.success({ user: data }))
+    .catch(error => path.error({ error }));
 }
 
 export function getZeitIntegrationDetails({ http, state, path }) {
   const token = state.get(`user.integrations.zeit.token`);
 
-  return http
-    .get('https://api.zeit.co/www/user', null, {
+  return axios
+    .get('https://api.zeit.co/www/user', {
       headers: {
         Authorization: `bearer ${token}`,
-        'Content-Type': 'text/plain',
       },
     })
-    .then(response => path.success({ response }))
+    .then(response => path.success({ response: response.data }))
     .catch(error => path.error({ error }));
 }
 
 export function signOutZeit({ api }) {
   return api.delete(`/users/current_user/integrations/zeit`).then(() => {});
+}
+
+export function signOutGithubIntegration({ api }) {
+  return api.delete(`/users/current_user/integrations/github`).then(() => {});
 }

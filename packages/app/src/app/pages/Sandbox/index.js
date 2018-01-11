@@ -9,6 +9,7 @@ import Modal from 'app/components/Modal';
 import Title from 'app/components/Title';
 import SubTitle from 'app/components/SubTitle';
 import Centered from 'common/components/flex/Centered';
+import Preferences from 'app/pages/common/Preferences';
 
 import Editor from './Editor';
 import Skeleton from './Editor/Content/Skeleton';
@@ -88,6 +89,13 @@ class SandboxPage extends React.Component {
       <React.Fragment>
         <Editor match={match} />
         <QuickActions />
+        <Modal
+          isOpen={store.preferences.showModal}
+          width={900}
+          onClose={() => signals.preferences.modalClosed()}
+        >
+          <Preferences />
+        </Modal>
         <Modal
           isOpen={store.workspace.showSearchDependenciesModal}
           width={600}

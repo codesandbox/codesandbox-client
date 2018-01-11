@@ -11,7 +11,7 @@ function ZeitIntegration({ store, signals }) {
       color="black"
       description="Deployments"
       Icon={ZeitLogo}
-      userInfo={store.zeitInfo}
+      userInfo={store.user.integrations.zeit}
       signIn={() => signals.signInZeitClicked()}
       signOut={() => signals.signOutZeitClicked()}
       loading={store.isLoadingZeit}

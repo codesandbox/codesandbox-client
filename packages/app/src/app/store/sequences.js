@@ -1,5 +1,5 @@
 import { sequence } from 'cerebral';
-import { when, set, unset } from 'cerebral/operators';
+import { when, set, unset, parallel } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 import * as actions from './actions';
 import * as factories from './factories';
@@ -16,7 +16,15 @@ export const closeModal = set(state`currentModal`, null);
 
 export const signOutGithub = [actions.signOutGithub, set(state`jwt`, null)];
 
-export const signOutZeit = [actions.signOutZeit];
+export const signOutZeit = [
+  actions.signOutZeit,
+  set(state`user.integrations.zeit`, null),
+];
+
+export const signOutGithubIntegration = [
+  actions.signOutGithubIntegration,
+  set(state`user.integrations.github`, null),
+];
 
 export const getAuthToken = actions.getAuthToken;
 
@@ -88,7 +96,12 @@ export const loadApp = [
       actions.getUser,
       {
         success: [set(state`user`, props`user`), actions.setPatronPrice],
-        error: [],
+        error: [
+          factories.addNotification(
+            'Something went wrong while signing in',
+            'error'
+          ),
+        ],
       },
     ],
     false: [],
@@ -103,12 +116,7 @@ export const signIn = [
   set(state`isAuthenticating`, true),
   actions.signInGithub,
   {
-    success: [
-      actions.getUser,
-      set(state`user`, props`user`),
-      actions.setPatronPrice,
-      actions.setStoredSettings,
-    ],
+    success: [actions.setJwtFromProps],
     error: [],
   },
   set(state`currentModal`, null),
@@ -129,14 +137,16 @@ export const signOut = [
 ];
 
 export const getZeitUserDetails = [
-  when(state`zeitInfo`),
+  when(state`user.integrations.zeit`, val => val && val.token && !val.email),
   {
-    true: [],
-    false: [
+    true: [
       set(state`isLoadingZeit`, true),
       actions.getZeitIntegrationDetails,
       {
-        success: set(state`zeitInfo`, props`response.result.user`),
+        success: set(
+          state`user.integrations.zeit.email`,
+          props`response.user.email`
+        ),
         error: factories.addNotification(
           'Could not authorize with ZEIT',
           'error'
@@ -144,23 +154,33 @@ export const getZeitUserDetails = [
       },
       set(state`isLoadingZeit`, false),
     ],
+    false: [],
   },
 ];
 
 export const signInZeit = [
+  set(state`isLoadingZeit`, true),
   actions.signInZeit,
   {
     success: [
-      set(state`isLoadingZeit`, true),
-      set(state`user.integrations.zeit.token`, props`token`),
+      ({ props: p, state: s }) =>
+        s.set(`user.integrations.zeit`, { token: p.code }),
+
       actions.updateUserZeitDetails,
+      {
+        success: set(state`user`, props`user`),
+        error: factories.addNotification(
+          'Could not authorize with ZEIT',
+          'error'
+        ),
+      },
     ],
-    error: factories.addNotification('Zeit Authentication Error', 'error'),
+    error: factories.addNotification('Could not authorize with ZEIT', 'error'),
   },
   set(state`isLoadingZeit`, false),
 ];
 
-export const authorise = [
+export const authorize = [
   actions.getAuthToken,
   {
     success: set(state`authToken`, props`token`),
@@ -169,11 +189,24 @@ export const authorise = [
 ];
 
 export const signInGithub = [
-  set(state`loading`, true),
+  set(state`isLoadingGithub`, true),
   actions.signInGithub,
   {
-    success: set(state`jwt`, props`jwt`),
-    error: factories.addNotification('Github Authentucation Error', 'error'),
+    success: [
+      set(state`jwt`, props`jwt`),
+      actions.getUser,
+      {
+        success: [
+          set(state`user`, props`user`),
+          actions.setPatronPrice,
+          actions.setStoredSettings,
+        ],
+        error: [
+          factories.addNotification('Github Authentication Error', 'error'),
+        ],
+      },
+    ],
+    error: factories.addNotification('Github Authentication Error', 'error'),
   },
   set(state`isLoadingGithub`, false),
 ];

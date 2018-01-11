@@ -41,8 +41,6 @@ export default Module({
     isLoadingZeit: false,
     isLoadingCLI: false,
     isLoadingGithub: false,
-    zeitInfo: null,
-    githubInfo: null,
     contextMenu: {
       show: false,
       items: [],
@@ -68,9 +66,10 @@ export default Module({
     signInZeitClicked: sequences.signInZeit,
     signOutZeitClicked: sequences.signOutZeit,
     authTokenRequested: sequences.getAuthToken,
-    requestAuthorisation: sequences.authorise,
+    requestAuthorisation: sequences.authorize,
     signInGithubClicked: sequences.signInGithub,
     signOutGithubClicked: sequences.signOutGithub,
+    signOutGithubIntegration: sequences.signOutGithubIntegration,
   },
   catch: [[errors.AuthenticationError, sequences.showAuthenticationError]],
   modules: {

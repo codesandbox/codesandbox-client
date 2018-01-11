@@ -21,11 +21,12 @@ export default {
       integrations: types.model({
         github: types.maybe(
           types.model({
-            email: types.string,
+            email: types.maybe(types.string),
           })
         ),
         zeit: types.maybe(
           types.model({
+            email: types.maybe(types.string),
             token: types.string,
           })
         ),
@@ -53,16 +54,6 @@ export default {
   isLoadingCLI: types.boolean,
   isLoadingGithub: types.boolean,
   isLoadingZeit: types.boolean,
-  zeitInfo: types.maybe(
-    types.model({
-      avatar: types.maybe(types.string),
-      billingChecked: types.boolean,
-      date: types.maybe(types.string),
-      email: types.string,
-      uid: types.string,
-      username: types.maybe(types.string),
-    })
-  ),
   contextMenu: types.model({
     show: types.boolean,
     items: types.array(types.string),

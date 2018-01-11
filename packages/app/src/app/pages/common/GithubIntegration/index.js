@@ -11,7 +11,7 @@ function GithubIntegration({ store, signals }) {
       description="Commiting & Pull Requests"
       Icon={GithubLogo}
       userInfo={store.user.integrations.github}
-      signOut={() => signals.signOutGithubClicked()}
+      signOut={() => signals.signOutGithubIntegration()}
       signIn={() => signals.signInGithubClicked({ useExtraScopes: true })}
       loading={store.isLoadingGithub}
     />

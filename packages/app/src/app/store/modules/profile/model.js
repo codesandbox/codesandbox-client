@@ -18,8 +18,8 @@ export default {
     types.model({
       viewCount: types.number,
       username: types.string,
-      subscriptionSince: types.string,
-      showcasedSandboxShortid: types.string,
+      subscriptionSince: types.maybe(types.string),
+      showcasedSandboxShortid: types.maybe(types.string),
       sandboxCount: types.number,
       receivedLikeCount: types.number,
       name: types.string,

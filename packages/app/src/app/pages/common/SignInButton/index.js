@@ -12,7 +12,7 @@ function SignInButton(props) {
     <Button
       small
       onClick={() => {
-        signals.signIn({ useExtraScopes: true });
+        signals.signInClicked();
       }}
       {...props}
     >

@@ -70,14 +70,6 @@ class Routes extends React.Component {
   }
 
   render() {
-    if (this.props.store.isAuthenticating) {
-      return (
-        <Centered horizontal vertical>
-          <Skeleton />
-        </Centered>
-      );
-    }
-
     return (
       <Container>
         <Route
