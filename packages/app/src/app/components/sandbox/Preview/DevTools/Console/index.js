@@ -90,6 +90,20 @@ class Console extends React.Component<Props, State> {
         }
         break;
       }
+      case 'test-result': {
+        const { result, error } = data;
+        const parsedJson = result ? CircularJSON.parse(result) : result;
+        if (!error) {
+          if (parsedJson) {
+            this.addMessage('log', [parsedJson], 'return');
+          } else {
+            this.addMessage('log', [undefined], 'return');
+          }
+        } else {
+          this.addMessage('error', [parsedJson]);
+        }
+        break;
+      }
       default: {
         break;
       }

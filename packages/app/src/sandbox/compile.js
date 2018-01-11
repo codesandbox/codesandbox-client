@@ -192,6 +192,38 @@ async function compile({
       initializeResizeListener();
     }
 
+    //Testing
+    console.log('Tests: Starting...');
+    const ttt = Date.now();
+    console.log('Tests: Scanning for valid test files...');
+    const testsToTranspile = modules.filter(m => {
+      console.log(m.path);
+      return m.path.endsWith('.spec.js');
+    });
+    console.log(`Tests: ${testsToTranspile.length} test files found`);
+
+    testsToTranspile.forEach(t => console.log(t.path));
+
+    console.log('Tests: Transpiling tests...');
+    for (let t of testsToTranspile) {
+      await manager.transpileModules(t);
+    }
+
+    debug(`Test Transpilation time ${Date.now() - ttt}ms`);
+
+    console.log('Tests: Running tests...');
+    //TODO need to introduce describe, it, test, jestMockFn in global scope
+    testsToTranspile.forEach(t => {
+      const evalledTests = manager.evaluateModule(t);
+    });
+
+    debug(`Test Evaluation time: ${Date.now() - tt}ms`);
+    dispatch({
+      type: 'test-result',
+      result: { status: 'pass' }, //this will be aggregated test results that console can parse
+    });
+    //End - Testing
+
     debug(`Total time: ${Date.now() - startTime}ms`);
 
     dispatch({
