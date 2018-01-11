@@ -8,6 +8,7 @@ import workspaceItems from 'app/store/modules/workspace/items';
 import Files from './items/Files';
 import ProjectInfo from './items/ProjectInfo';
 import GitHub from './items/GitHub';
+import Deployment from './items/Deployment';
 
 import ConnectionNotice from './ConnectionNotice';
 import Advertisement from './Advertisement';
@@ -18,6 +19,7 @@ const idToItem = {
   project: ProjectInfo,
   files: Files,
   github: GitHub,
+  deploy: Deployment,
 };
 
 function Workspace({ store }) {

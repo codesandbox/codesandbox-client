@@ -11,18 +11,14 @@ export default [
     id: 'github',
     name: 'GitHub',
     show: store =>
-      console.log(
-        store.isLoggedIn,
-        store.editor.currentSandbox,
-        store.editor.currentSandbox && store.editor.currentSandbox.git
-      ) ||
-      (store.isLoggedIn &&
-        store.editor.currentSandbox &&
-        !store.editor.currentSandbox.git),
+      store.isLoggedIn &&
+      store.editor.currentSandbox &&
+      !store.editor.currentSandbox.git,
   },
   {
     id: 'deploy',
     name: 'Deployment',
+    show: store => store.isLoggedIn,
   },
   {
     id: 'config',

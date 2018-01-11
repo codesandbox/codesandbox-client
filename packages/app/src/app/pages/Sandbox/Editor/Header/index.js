@@ -155,18 +155,7 @@ function Header({ store, signals }) {
               }}
             />
           ))}
-        <Action
-          href="https://twitter.com/CompuIves"
-          a
-          tooltip="Contact"
-          Icon={TwitterIcon}
-        />
-        <Action
-          href="https://discord.gg/FGeubVt"
-          a
-          tooltip="Chat on Discord"
-          Icon={FeedbackIcon}
-        />
+
         <Action
           onClick={() => signals.editor.newSandboxModalOpened()}
           tooltip="New Sandbox"
@@ -180,19 +169,21 @@ function Header({ store, signals }) {
             <NewSandbox />
           </Modal>
         </Action>
-        <Action
-          onClick={() => signals.preferences.modalOpened()}
-          tooltip="Preferences"
-          Icon={SettingsIcon}
-        >
-          <Modal
-            isOpen={store.preferences.showModal}
-            width={900}
-            onClose={() => signals.preferences.modalClosed()}
+        {!store.isLoggedIn && (
+          <Action
+            onClick={() => signals.preferences.modalOpened()}
+            tooltip="Preferences"
+            Icon={SettingsIcon}
           >
-            <Preferences />
-          </Modal>
-        </Action>
+            <Modal
+              isOpen={store.preferences.showModal}
+              width={900}
+              onClose={() => signals.preferences.modalClosed()}
+            >
+              <Preferences />
+            </Modal>
+          </Action>
+        )}
         <Margin
           style={{
             zIndex: 20,

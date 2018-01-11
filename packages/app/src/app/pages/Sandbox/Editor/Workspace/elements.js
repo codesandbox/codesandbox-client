@@ -167,3 +167,9 @@ export const ItemTitle = styled.div`
 
   color: rgba(255, 255, 255, 0.6);
 `;
+
+export const Description = styled.div`
+  margin: 0.5rem 1rem;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.8);
+`;
