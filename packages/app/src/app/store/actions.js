@@ -25,6 +25,7 @@ export function optimisticallyAddNpmDependency({ state, props }) {
 export function setWorkspace({ state, props }) {
   state.set('workspace.project.title', props.sandbox.title || '');
   state.set('workspace.project.description', props.sandbox.description || '');
+  state.set(`workspace.openedWorkspaceItem`, 'files');
 }
 
 export function setUrlOptions({ state, router, utils }) {

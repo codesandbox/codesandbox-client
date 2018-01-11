@@ -3,12 +3,12 @@ import { Provider } from 'cerebral';
 
 const API_ROOT = '/api/v1';
 
-function createHeaders({ state }) {
-  const jwt = state.get('jwt');
+function createHeaders({ state, jwt }) {
+  const foundJwt = state.get('jwt') || jwt.get();
 
-  return jwt
+  return foundJwt
     ? {
-        Authorization: `Bearer ${jwt}`,
+        Authorization: `Bearer ${foundJwt}`,
       }
     : {};
 }

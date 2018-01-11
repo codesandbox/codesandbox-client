@@ -50,7 +50,7 @@ export const createCommit = [
     false: [],
   },
   set(state`git.message`, ''),
-  set(state`git.gitChanges`, null),
+  set(state`git.originalGitChanges`, null),
 ];
 
 export const createPr = [

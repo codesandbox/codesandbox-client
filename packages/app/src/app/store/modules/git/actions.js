@@ -1,7 +1,7 @@
 export function openPr({ state, browser }) {
   const pr = state.get('git.pr');
   const user = state.get('user');
-  const git = state.get('editor.currentSandbox.forkedFromSandbox.git');
+  const git = state.get('editor.currentSandbox.originalGit');
 
   const url = `https://github.com/${git.username}/${git.repo}/compare/${
     git.branch

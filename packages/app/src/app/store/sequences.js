@@ -89,6 +89,7 @@ export const addNpmDependency = [
 export const loadApp = [
   set(state`isAuthenticating`, true),
   actions.setJwtFromStorage,
+  set(state`isAuthenticating`, false),
   actions.listenToConnectionChange,
   when(state`jwt`),
   {
@@ -109,7 +110,6 @@ export const loadApp = [
   actions.setStoredSettings,
   actions.setKeybindings,
   actions.startKeybindings,
-  set(state`isAuthenticating`, false),
 ];
 
 export const signIn = [
