@@ -53,15 +53,7 @@ const styles = css`
   ${props => !props.disabled && `box-shadow: 0 3px 3px rgba(0, 0, 0, 0.5);`};
   width: ${props => (props.block ? '100%' : 'inherit')};
 
-  ${props => () => {
-    if (props.small) {
-      return `
-        padding: 0.5rem 0.75rem;
-        font-size: 0.875rem;
-      `;
-    }
-    return 'padding: 0.65rem 2.25rem;';
-  }} user-select: none;
+  user-select: none;
   text-decoration: none;
 
   ${props =>

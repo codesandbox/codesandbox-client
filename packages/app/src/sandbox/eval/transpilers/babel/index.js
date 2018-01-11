@@ -11,9 +11,14 @@ import delay from '../../../utils/delay';
 // to support custom plugins
 class BabelTranspiler extends WorkerTranspiler {
   worker: Worker;
+  config: ?Object;
 
   constructor() {
     super('babel-loader', null, 3);
+  }
+
+  setBabelRc(config: Object) {
+    this.config = config;
   }
 
   async getWorker() {
@@ -30,7 +35,11 @@ class BabelTranspiler extends WorkerTranspiler {
       const path = loaderContext.path;
 
       // TODO get custom babel config back in
-      const babelConfig = getBabelConfig(loaderContext.options, path);
+      const babelConfig = getBabelConfig(
+        loaderContext.options,
+        path,
+        this.config || {}
+      );
 
       this.queueTask(
         {
