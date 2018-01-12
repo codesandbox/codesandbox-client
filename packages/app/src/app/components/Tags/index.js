@@ -1,7 +1,8 @@
 /* @flow */
 import * as React from 'react';
-
 import Margin from 'common/components/spacing/Margin';
+import Input from 'app/components/Input';
+
 import { TagContainer } from './elements';
 
 import Tag from './Tag';
@@ -14,6 +15,7 @@ function Tags({ tags, removeTag, align, ...props }) {
           <Tag removeTag={removeTag} tag={tag} />
         </Margin>
       ))}
+      <Input />
     </TagContainer>
   );
 }

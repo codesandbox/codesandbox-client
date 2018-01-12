@@ -121,7 +121,7 @@ export function getGitChanges({ api, state }) {
 
   return api
     .get(`/sandboxes/${id}/git/diff`)
-    .then(gitChanges => ({ gitChanges }));
+    .then(gitChanges => console.log(gitChanges) || { gitChanges });
 }
 
 export function forkSandbox({ state, api }) {
@@ -151,12 +151,18 @@ export function addNpmDependency({ api, state, props, path }) {
   const sandboxId = state.get('editor.currentId');
 
   return api
-    .post(`/sandboxes/${sandboxId}/dependencies`, {
-      dependency: {
-        name: props.name,
-        version: props.version,
+    .post(
+      `/sandboxes/${sandboxId}/dependencies`,
+      {
+        dependency: {
+          name: props.name,
+          version: props.version,
+        },
       },
-    })
+      {
+        shouldCamelize: false,
+      }
+    )
     .then(() => path.success())
     .catch(error => path.error({ error }));
 }

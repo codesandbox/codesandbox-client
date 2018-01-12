@@ -172,6 +172,7 @@
     "react-show": "^2.0.0",
     "react-split-pane": "^0.1.74",
     "react-stripe-elements": "^1.2.0",
+    "react-tagsinput": "^3.19.0",
     "react-tippy": "^0.14.0",
     "redbox-react": "^1.4.3",
     "redux": "^3.7.1",

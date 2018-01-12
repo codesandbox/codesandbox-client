@@ -55,7 +55,7 @@ export function updateSandbox({ api, state }) {
     .catch(error => ({ error }));
 }
 
-export function addTag({ api, state }) {
+export function addTag({ api, path, state }) {
   const sandboxId = state.get('editor.currentId');
   const tag = state.get('workspace.tags.tagName');
   const body = {
@@ -63,7 +63,8 @@ export function addTag({ api, state }) {
   };
   return api
     .post(`/sandboxes/${sandboxId}/tags`, body)
-    .then(data => ({ data }));
+    .then(data => path.success({ data }))
+    .catch(e => path.error({ error: e }));
 }
 
 export function removeTag({ api, props, state }) {
@@ -76,10 +77,9 @@ export function removeTag({ api, props, state }) {
 
 export function removeTagFromState({ props, state }) {
   const { tag } = props;
-  const sandboxId = state.get('editor.currentId');
-  const tags = state.get(`editor.sandboxes.${sandboxId}.tags`);
+  const tags = state.get(`editor.currentSandbox.tags`);
   const index = tags.indexOf(tag);
-  state.splice(`editor.sandboxes.${sandboxId}.tags`, index, 1);
+  state.splice(`editor.currentSandbox.tags`, index, 1);
   return { tag };
 }
 

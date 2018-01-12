@@ -10,7 +10,6 @@ export default Module({
     error: null,
     isExported: false,
     showExportedModal: false,
-    showFetchButton: false,
     isFetching: false,
     message: '',
     originalGitChanges: null,

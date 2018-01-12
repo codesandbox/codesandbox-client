@@ -60,11 +60,6 @@ export const fetchGitChanges = [
   set(state`git.isFetching`, true),
   actions.getGitChanges,
   set(state`git.originalGitChanges`, props`gitChanges`),
-  when(props`gitChanges`),
-  {
-    true: set(state`git.showFetchButton`, false),
-    false: set(state`git.showFetchButton`, true),
-  },
   set(state`git.isFetching`, false),
 ];
 

@@ -38,8 +38,7 @@ function ContentSplit({ signals, store, match }) {
           >
             <SplitPane
               split="vertical"
-              defaultSize={18 * 16}
-              minSize={14 * 16}
+              defaultSize={16 * 16}
               onDragStarted={() => signals.editor.resizingStarted()}
               onDragFinished={() => signals.editor.resizingStopped()}
               resizerStyle={{

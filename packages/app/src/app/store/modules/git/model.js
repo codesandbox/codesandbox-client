@@ -13,7 +13,6 @@ export default {
   error: types.maybe(types.string),
   isExported: types.boolean,
   showExportedModal: types.boolean,
-  showFetchButton: types.boolean,
   isFetching: types.boolean,
   message: types.string,
   originalGitChanges: types.maybe(

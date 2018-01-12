@@ -1,9 +1,11 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import workspaceItems from 'app/store/modules/workspace/items';
 
 import GitHubIcon from 'react-icons/lib/go/mark-github';
 import SettingsIcon from 'react-icons/lib/md/settings';
+
+import workspaceItems from 'app/store/modules/workspace/items';
+import Tooltip from 'common/components/Tooltip';
 
 import InfoIcon from './InfoIcon';
 import FilesIcon from './FileIcon';
@@ -22,7 +24,7 @@ const IDS_TO_ICONS = {
 const Navigation = ({ store, signals }) => (
   <Container>
     {workspaceItems.filter(w => !w.show || w.show(store)).map(item => {
-      const { id } = item;
+      const { id, name } = item;
       const Icon = IDS_TO_ICONS[id];
       return (
         <IconContainer
@@ -32,7 +34,9 @@ const Navigation = ({ store, signals }) => (
             signals.workspace.setWorkspaceItem({ item: id });
           }}
         >
-          <Icon />
+          <Tooltip position="right" title={name}>
+            <Icon />
+          </Tooltip>
         </IconContainer>
       );
     })}

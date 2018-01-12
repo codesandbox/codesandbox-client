@@ -85,7 +85,7 @@ class Notifications extends React.Component {
                     >
                       <Notification
                         title={notification.title}
-                        type={notification.type}
+                        type={notification.notificationType}
                         buttons={notification.buttons}
                         close={() => this.closeNotification(notification.id)}
                       />

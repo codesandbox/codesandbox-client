@@ -122,8 +122,13 @@ export const addTag = [
     state`workspace.tags.tagName`
   ),
   actions.addTag,
-  set(state`editor.sandboxes.${state`editor.currentId`}.tags`, props`data`),
-  set(state`workspace.tags.tagName`, ''),
+  {
+    success: [
+      set(state`editor.sandboxes.${state`editor.currentId`}.tags`, props`data`),
+      set(state`workspace.tags.tagName`, ''),
+    ],
+    error: [actions.removeTagFromState],
+  },
 ];
 
 export const removeTag = [

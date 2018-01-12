@@ -13,10 +13,10 @@ function SandboxActions({ store, signals }) {
 
   return (
     <div>
-      <WorkspaceSubtitle>Sandbox Privacy</WorkspaceSubtitle>
+      <WorkspaceSubtitle>Set Sandbox Privacy</WorkspaceSubtitle>
       {!store.isPatron && (
         <PatronMessage>
-          Private and unlisted Sandboxes are available as a{' '}
+          Having private and unlisted Sandboxes is available as a{' '}
           <a href="/patron" target="_blank">
             Patron
           </a>.
@@ -39,12 +39,12 @@ function SandboxActions({ store, signals }) {
         </WorkspaceInputContainer>
       )}
 
-      <WorkspaceInputContainer>
+      <WorkspaceInputContainer style={{ fontSize: '1rem' }}>
         <Button
-          small
           block
+          small
           style={{
-            margin: '0.5rem 0.25rem',
+            margin: '0.75rem 0.25rem',
             boxSizing: 'border-box',
           }}
           onClick={() => signals.workspace.deleteSandboxModalOpened()}
