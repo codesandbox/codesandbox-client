@@ -12,10 +12,11 @@ function Integration({
   color,
   userInfo,
   loading,
+  small = false,
 }) {
   return (
-    <Container loading={loading}>
-      <IntegrationBlock bgColor={color}>
+    <Container small={small} loading={loading}>
+      <IntegrationBlock small={small} bgColor={color}>
         <Icon />
         <Name>{name}</Name>
       </IntegrationBlock>

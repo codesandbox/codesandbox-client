@@ -14,8 +14,6 @@ export const openModal = actions.setModal;
 
 export const closeModal = set(state`currentModal`, null);
 
-export const signOutGithub = [actions.signOutGithub, set(state`jwt`, null)];
-
 export const signOutZeit = [
   actions.signOutZeit,
   set(state`user.integrations.zeit`, null),
@@ -116,7 +114,20 @@ export const signIn = [
   set(state`isAuthenticating`, true),
   actions.signInGithub,
   {
-    success: [actions.setJwtFromProps],
+    success: [
+      actions.setJwtFromProps,
+      actions.getUser,
+      {
+        success: [
+          set(state`user`, props`user`),
+          actions.setPatronPrice,
+          actions.setStoredSettings,
+        ],
+        error: [
+          factories.addNotification('Github Authentication Error', 'error'),
+        ],
+      },
+    ],
     error: [],
   },
   set(state`currentModal`, null),
@@ -124,6 +135,7 @@ export const signIn = [
 ];
 
 export const signOut = [
+  actions.signOut,
   set(state`jwt`, null),
   actions.removeJwtFromStorage,
   set(state`user.id`, null),
@@ -190,24 +202,7 @@ export const authorize = [
 
 export const signInGithub = [
   set(state`isLoadingGithub`, true),
-  actions.signInGithub,
-  {
-    success: [
-      set(state`jwt`, props`jwt`),
-      actions.getUser,
-      {
-        success: [
-          set(state`user`, props`user`),
-          actions.setPatronPrice,
-          actions.setStoredSettings,
-        ],
-        error: [
-          factories.addNotification('Github Authentication Error', 'error'),
-        ],
-      },
-    ],
-    error: factories.addNotification('Github Authentication Error', 'error'),
-  },
+  ...signIn,
   set(state`isLoadingGithub`, false),
 ];
 

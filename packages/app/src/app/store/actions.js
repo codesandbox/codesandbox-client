@@ -78,13 +78,21 @@ export function setUrlOptions({ state, router, utils }) {
 }
 
 export function setCurrentModuleShortid({ utils, props, state }) {
-  const module = utils.resolveModule(
-    props.sandbox.entry,
-    props.sandbox.modules,
-    props.sandbox.directories
-  );
+  const currentModuleShortid = state.get('editor.currentModuleShortid');
+  const sandbox = props.sandbox;
 
-  state.set('editor.currentModuleShortid', module.shortid);
+  // Only change the module shortid if it doesn't exist in the new sandbox
+  if (
+    sandbox.modules.map(m => m.shortid).indexOf(currentModuleShortid) === -1
+  ) {
+    const module = utils.resolveModule(
+      sandbox.entry,
+      sandbox.modules,
+      sandbox.directories
+    );
+
+    state.set('editor.currentModuleShortid', module.shortid);
+  }
 }
 
 export function setMainModuleShortid({ utils, props, state }) {
@@ -196,8 +204,8 @@ export function signInGithub({ browser, path, props }) {
   });
 }
 
-export function signOutGithub({ api }) {
-  return api.delete(`/users/current_user/integrations/github`);
+export function signOut({ api }) {
+  api.delete(`/users/signout`);
 }
 
 export function getAuthToken({ api, path }) {

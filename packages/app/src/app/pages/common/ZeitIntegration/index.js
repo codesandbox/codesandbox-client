@@ -4,10 +4,11 @@ import { inject, observer } from 'mobx-react';
 import ZeitLogo from 'app/components/ZeitLogo';
 import Integration from 'app/components/Integration';
 
-function ZeitIntegration({ store, signals }) {
+function ZeitIntegration({ store, signals, small }) {
   return (
     <Integration
       name="ZEIT"
+      small={small}
       color="black"
       description="Deployments"
       Icon={ZeitLogo}

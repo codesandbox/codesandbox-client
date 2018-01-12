@@ -28,7 +28,9 @@ class CreateRepo extends React.Component {
 
     return (
       <div>
-        <Container margin={1}>Export your sandbox to GitHub</Container>
+        <Container margin={1} top={0.5}>
+          Export Sandbox to GitHub
+        </Container>
         {modulesNotSaved && (
           <Error>Save your files first before exporting.</Error>
         )}

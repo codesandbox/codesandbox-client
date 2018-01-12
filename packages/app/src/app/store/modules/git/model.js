@@ -28,9 +28,10 @@ export default {
   commit: types.maybe(
     types.model({
       git: Git,
-      merge: types.boolean,
+      merge: types.maybe(types.boolean),
+      newBranch: types.maybe(types.string),
       sha: types.string,
-      url: types.string,
+      url: types.maybe(types.string),
     })
   ),
   pr: types.maybe(

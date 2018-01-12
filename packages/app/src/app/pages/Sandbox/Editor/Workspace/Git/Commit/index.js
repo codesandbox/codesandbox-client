@@ -3,7 +3,7 @@ import { inject, observer } from 'mobx-react';
 import Progress from '../Progress';
 
 function Commit({ store }) {
-  const git = store.editor.currentSandbox.git;
+  const git = store.editor.currentSandbox.originalGit;
   const commit = store.git.commit;
   let message;
 

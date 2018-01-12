@@ -14,11 +14,11 @@ function ButtonComponent({ small = false, style = {}, ...props }: Props) {
     ...style,
     ...(small
       ? {
-          padding: '0.5rem 0.75rem',
-          fontSize: '0.875rem',
+          padding: '0.5em 0.75em',
+          fontSize: '0.875em',
         }
       : {
-          padding: '0.65rem 2.25rem',
+          padding: '0.65em 2.25em',
         }),
   };
 

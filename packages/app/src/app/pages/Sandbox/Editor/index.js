@@ -1,10 +1,10 @@
 import * as React from 'react';
 import SplitPane from 'react-split-pane';
 import { inject, observer } from 'mobx-react';
-import Fullscreen from 'common/components/flex/Fullscreen';
-
+import { hot } from 'react-hot-loader';
 import { ThemeProvider } from 'styled-components';
 
+import Fullscreen from 'common/components/flex/Fullscreen';
 import getTemplateDefinition from 'common/templates';
 
 import Workspace from './Workspace';
@@ -64,4 +64,4 @@ function ContentSplit({ signals, store, match }) {
   );
 }
 
-export default inject('signals', 'store')(observer(ContentSplit));
+export default inject('signals', 'store')(observer(hot(module)(ContentSplit)));

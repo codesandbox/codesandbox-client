@@ -1,5 +1,4 @@
 import React from 'react';
-import { AppContainer } from 'react-hot-loader';
 import { render } from 'react-dom';
 import { ThemeProvider } from 'styled-components';
 import { Router } from 'react-router-dom';
@@ -78,31 +77,18 @@ requirePolyfills().then(() => {
 
   registerServiceWorker('/service-worker.js', showNotification);
 
-  const renderApp = RootComponent => {
-    try {
-      render(
-        <Provider {...controller.provide()}>
-          <AppContainer>
-            <ThemeProvider theme={theme}>
-              <Router history={history}>
-                <RootComponent />
-              </Router>
-            </ThemeProvider>
-          </AppContainer>
-        </Provider>,
-        rootEl
-      );
-    } catch (e) {
-      logError(e);
-    }
-  };
-
-  renderApp(App);
-
-  if (module.hot) {
-    module.hot.accept('./pages/index', () => {
-      const NextApp = require('./pages/index').default; // eslint-disable-line global-require
-      renderApp(NextApp);
-    });
+  try {
+    render(
+      <Provider {...controller.provide()}>
+        <ThemeProvider theme={theme}>
+          <Router history={history}>
+            <App />
+          </Router>
+        </ThemeProvider>
+      </Provider>,
+      rootEl
+    );
+  } catch (e) {
+    logError(e);
   }
 });

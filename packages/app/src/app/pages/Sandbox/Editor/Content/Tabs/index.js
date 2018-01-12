@@ -70,7 +70,11 @@ class EditorTabs extends React.Component {
   };
 
   prettifyModule = () => {
-    this.props.signals.editor.prettifyClicked();
+    const { currentSandbox } = this.props.store.editor;
+
+    this.props.signals.editor.prettifyClicked({
+      moduleShortid: currentSandbox.currentModuleShortid,
+    });
   };
 
   canPrettify = module => {

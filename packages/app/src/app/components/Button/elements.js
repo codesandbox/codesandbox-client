@@ -46,7 +46,7 @@ const styles = css`
   border-radius: 4px;
 
   box-sizing: border-box;
-  font-size: 1.125rem;
+  font-size: 1.125em;
   text-align: center;
   color: ${props => getColor(props)};
   font-weight: 400;

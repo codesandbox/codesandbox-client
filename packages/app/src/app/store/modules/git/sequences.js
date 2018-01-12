@@ -35,10 +35,11 @@ export const createRepo = [
 
 const whenDirectCommit = when(
   props`commit`,
-  commit => !commit.newBranch || !commit.merge
+  commit => !commit.newBranch && !commit.merge
 );
 
 export const createCommit = [
+  set(state`git.commit`, null),
   set(state`git.isComitting`, true),
   set(state`git.showCreateCommitModal`, true),
   actions.createCommit,
@@ -54,6 +55,7 @@ export const createCommit = [
 ];
 
 export const createPr = [
+  set(state`git.pr`, null),
   set(state`git.isCreatingPr`, true),
   set(state`git.showPrModal`, true),
   actions.createPr,

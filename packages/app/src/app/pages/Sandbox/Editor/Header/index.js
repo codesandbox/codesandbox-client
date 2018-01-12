@@ -35,24 +35,6 @@ import Action from './Action';
 
 import { Container, Right, Left, Chevron } from './elements';
 
-// {store.isLoggedIn &&
-//   sandbox.owned && (
-//     <Action
-//       tooltip="Deploy sandbox"
-//       title="Deploy"
-//       Icon={NowIcon}
-//       onClick={() => signals.editor.deploymentModalOpened()}
-//     >
-//       <Modal
-//         isOpen={store.editor.showDeploymentModal}
-//         width={750}
-//         onClose={() => signals.editor.deploymentModalClosed()}
-//       >
-//         <DeploymentModal />
-//       </Modal>
-//     </Action>
-//   )}
-
 function Header({ store, signals }) {
   const preferences = store.preferences;
   const workspace = store.workspace;
@@ -125,22 +107,9 @@ function Header({ store, signals }) {
       </Left>
 
       <Right>
-        <Media query="(max-width: 1560px)">
-          {matches =>
-            matches ? (
-              <Action
-                href={searchUrl()}
-                Icon={SearchIcon}
-                tooltip="Search"
-                title="Search"
-              />
-            ) : (
-              <div style={{ marginRight: '0.5rem', fontSize: '.875rem' }}>
-                <HeaderSearchBar />
-              </div>
-            )
-          }
-        </Media>
+        <div style={{ marginRight: '0.5rem', fontSize: '.875rem' }}>
+          <HeaderSearchBar />
+        </div>
 
         {!store.isLoggedIn ||
           (!store.isPatron && (

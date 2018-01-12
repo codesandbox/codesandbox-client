@@ -68,7 +68,7 @@ export default Module({
     authTokenRequested: sequences.getAuthToken,
     requestAuthorisation: sequences.authorize,
     signInGithubClicked: sequences.signInGithub,
-    signOutGithubClicked: sequences.signOutGithub,
+    signOutClicked: sequences.signOut,
     signOutGithubIntegration: sequences.signOutGithubIntegration,
   },
   catch: [[errors.AuthenticationError, sequences.showAuthenticationError]],

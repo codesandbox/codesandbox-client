@@ -3,6 +3,7 @@ import { inject, observer } from 'mobx-react';
 
 import Button from 'app/components/Button';
 
+import GithubIntegration from '../../../../../common/GithubIntegration';
 import Git from '../../Git';
 import CreateRepo from '../../CreateRepo';
 import { WorkspaceInputContainer, Description } from '../../elements';
@@ -26,15 +27,10 @@ const GitHub = ({ store, signals }) => {
         You can create commits and open pull requests if you add GitHub to your
         integrations.
       </Description>
-      <WorkspaceInputContainer>
-        <Button
-          onClick={() => signals.workspace.integrationsOpened()}
-          small
-          block
-        >
-          Open Integrations
-        </Button>
-      </WorkspaceInputContainer>
+
+      <div style={{ margin: '1rem' }}>
+        <GithubIntegration small />
+      </div>
     </div>
   );
 };

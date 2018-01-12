@@ -14,6 +14,7 @@ import Preferences from 'app/pages/common/Preferences';
 import Editor from './Editor';
 import Skeleton from './Editor/Content/Skeleton';
 import SearchDependencies from './SearchDependencies';
+import DeploymentModal from './DeploymentModal';
 
 class SandboxPage extends React.Component {
   componentWillMount() {
@@ -89,6 +90,14 @@ class SandboxPage extends React.Component {
       <React.Fragment>
         <Editor match={match} />
         <QuickActions />
+
+        <Modal
+          isOpen={store.editor.showDeploymentModal}
+          width={750}
+          onClose={() => signals.editor.deploymentModalClosed()}
+        >
+          <DeploymentModal />
+        </Modal>
         <Modal
           isOpen={store.preferences.showModal}
           width={900}

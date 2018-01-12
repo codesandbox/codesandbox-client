@@ -196,9 +196,11 @@ export function saveChangedModules({ props, api, state }) {
     .then(() => undefined);
 }
 
-export function prettifyCode({ utils, state, path }) {
-  const currentModule = state.get('editor.currentModule');
+export function prettifyCode({ utils, state, props, path }) {
   const sandbox = state.get('editor.currentSandbox');
+  const moduleToPrettify = sandbox.modules.find(
+    module => module.shortid === props.moduleShortid
+  );
   let config = state.get('preferences.settings.prettierConfig');
   const configFromSandbox = sandbox.modules.find(
     module => module.directoryShortid == null && module.title === '.prettierrc'
@@ -213,7 +215,7 @@ export function prettifyCode({ utils, state, path }) {
   }
 
   return utils
-    .prettify(currentModule.title, currentModule.code, config)
+    .prettify(moduleToPrettify.title, moduleToPrettify.code, config)
     .then(newCode => path.success({ code: newCode }))
     .catch(error => path.error({ error }));
 }
@@ -257,8 +259,7 @@ export function warnUnloadingContent({ browser, state }) {
 
 export function setCode({ props, state }) {
   const currentId = state.get('editor.currentId');
-  const moduleShortid =
-    props.moduleShortid || state.get('editor.currentModuleShortid');
+  const moduleShortid = props.moduleShortid;
   const moduleIndex = state
     .get('editor.currentSandbox')
     .modules.findIndex(module => module.shortid === moduleShortid);

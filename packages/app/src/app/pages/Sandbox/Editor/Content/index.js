@@ -238,7 +238,12 @@ class EditorPreview extends React.Component {
               onNpmDependencyAdded={name =>
                 signals.workspace.onNpmDependencyAdded({ name })
               }
-              onChange={code => signals.editor.codeChanged({ code })}
+              onChange={code =>
+                signals.editor.codeChanged({
+                  code,
+                  moduleShortid: currentModule.shortid,
+                })
+              }
               onModuleChange={moduleId =>
                 signals.editor.moduleSelected({ moduleId })
               }

@@ -42,7 +42,7 @@ function UserMenu({ signals, store, small }) {
               signals.preferences.modalOpened();
             }}
             signOut={() => {
-              signals.signOut();
+              signals.signOutClicked();
             }}
             username={user.username}
           />
