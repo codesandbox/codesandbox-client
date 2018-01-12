@@ -124,9 +124,15 @@ export const saveChangedModules = [
   actions.outputChangedModules,
   actions.saveChangedModules,
   set(state`editor.changedModuleShortids`, []),
-  when(state`editor.currentSandbox.forkedFromSandbox.git`),
+  when(state`editor.currentSandbox.originalGit`),
   {
-    true: fetchGitChanges,
+    true: [
+      when(state`workspace.openedWorkspaceItem`, item => item === 'github'),
+      {
+        true: fetchGitChanges,
+        false: [],
+      },
+    ],
     false: [],
   },
 ];
@@ -151,6 +157,17 @@ export const saveCode = [
   },
   actions.saveModuleCode,
   actions.setModuleSaved,
+  when(state`editor.currentSandbox.originalGit`),
+  {
+    true: [
+      when(state`workspace.openedWorkspaceItem`, item => item === 'github'),
+      {
+        true: fetchGitChanges,
+        false: [],
+      },
+    ],
+    false: [],
+  },
 ];
 
 export const handlePreviewAction = [

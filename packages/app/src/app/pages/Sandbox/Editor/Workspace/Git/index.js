@@ -64,7 +64,7 @@ class Git extends React.Component {
           <WorkspaceSubtitle>
             Changes ({gitChanges ? changeCount : '...'})
           </WorkspaceSubtitle>
-          {gitChanges ? (
+          {!store.git.isFetching && gitChanges ? (
             <Margin top={1}>
               <TotalChanges gitChanges={gitChanges} />
 
@@ -120,18 +120,7 @@ class Git extends React.Component {
             </Margin>
           ) : (
             <Margin margin={1}>
-              {!store.git.isFetching &&
-                store.git.showFetchButton && (
-                  <a
-                    style={{ cursor: 'pointer' }}
-                    role="button"
-                    tabIndex="0"
-                    onClick={this.fetchGitChanges}
-                  >
-                    Fetch Changes
-                  </a>
-                )}
-              {store.git.isFetching && <div>Fetching changes...</div>}
+              <div>Fetching changes...</div>
             </Margin>
           )}
         </Margin>
