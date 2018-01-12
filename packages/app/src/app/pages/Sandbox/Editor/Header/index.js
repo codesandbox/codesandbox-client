@@ -33,11 +33,9 @@ import UserMenu from 'app/pages/common/UserMenu';
 import Logo from './Logo';
 import Action from './Action';
 
-import { Container, Right, Left, Chevron } from './elements';
+import { Container, Right, Left } from './elements';
 
 function Header({ store, signals }) {
-  const preferences = store.preferences;
-  const workspace = store.workspace;
   const sandbox = store.editor.currentSandbox;
 
   return (
@@ -45,11 +43,6 @@ function Header({ store, signals }) {
       <Left>
         <Logo />
 
-        <Tooltip
-          title={
-            workspace.isWorkspaceHidden ? 'Open sidebar' : 'Collapse sidebar'
-          }
-        />
         {store.isLoggedIn &&
           (sandbox.userLiked ? (
             <Action

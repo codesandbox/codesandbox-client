@@ -14,7 +14,6 @@ export default Module({
       tag: '',
       tagName: '',
     },
-    isWorkspaceHidden: false,
     showSearchDependenciesModal: false,
     showDeleteSandboxModal: false,
     openedWorkspaceItem: 'files',
@@ -25,7 +24,6 @@ export default Module({
     tagAdded: sequences.addTag,
     tagRemoved: sequences.removeTag,
     sandboxInfoUpdated: sequences.updateSandboxInfo,
-    workspaceToggled: sequences.toggleWorkspace,
     npmDependencyAdded: addNpmDependency,
     npmDependencyRemoved: sequences.removeNpmDependency,
     externalResourceAdded: sequences.addExternalResource,
@@ -38,5 +36,6 @@ export default Module({
     sandboxDeleted: sequences.deleteSandbox,
     sandboxPrivacyChanged: sequences.changeSandboxPrivacy,
     setWorkspaceItem: sequences.setWorkspaceItem,
+    clearCurrentWorkspaceItem: sequences.clearCurrentWorkspaceItem,
   },
 });

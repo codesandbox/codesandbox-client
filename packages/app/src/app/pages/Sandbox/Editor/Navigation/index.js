@@ -26,12 +26,17 @@ const Navigation = ({ store, signals }) => (
     {workspaceItems.filter(w => !w.show || w.show(store)).map(item => {
       const { id, name } = item;
       const Icon = IDS_TO_ICONS[id];
+      const selected = id === store.workspace.openedWorkspaceItem;
       return (
         <IconContainer
           key={id}
-          selected={id === store.workspace.openedWorkspaceItem}
+          selected={selected}
           onClick={() => {
-            signals.workspace.setWorkspaceItem({ item: id });
+            if (selected) {
+              signals.workspace.setWorkspaceItem({ item: null });
+            } else {
+              signals.workspace.setWorkspaceItem({ item: id });
+            }
           }}
         >
           <Tooltip position="right" title={name}>

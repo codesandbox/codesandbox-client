@@ -27,6 +27,11 @@ function Workspace({ store }) {
   const preferences = store.preferences;
 
   const currentItem = store.workspace.openedWorkspaceItem;
+
+  if (!currentItem) {
+    return null;
+  }
+
   const Component = idToItem[currentItem];
 
   const item = workspaceItems.find(i => i.id === currentItem);

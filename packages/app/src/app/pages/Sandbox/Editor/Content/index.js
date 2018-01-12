@@ -35,6 +35,8 @@ class EditorPreview extends React.Component {
   getBounds = el => {
     if (el) {
       this.el = this.el || el;
+    }
+    if (this.el) {
       const { width, height } = this.el.getBoundingClientRect();
 
       this.setState({ width, height });
@@ -111,6 +113,17 @@ class EditorPreview extends React.Component {
         compareStructural: true,
       }
     );
+    const disposeResizeHandler = reaction(
+      () => [
+        store.preferences.settings.zenMode,
+        store.workspace.openedWorkspaceItem,
+      ],
+      () => {
+        setTimeout(() => {
+          this.getBounds();
+        });
+      }
+    );
     const disposeDependenciesHandler = reaction(
       () =>
         store.editor.currentSandbox.npmDependencies.keys().reduce(
@@ -159,6 +172,7 @@ class EditorPreview extends React.Component {
       disposeModuleChangeHandler();
       disposeCodeHandler();
       disposeToggleDevtools();
+      disposeResizeHandler();
     };
   };
 
@@ -199,8 +213,14 @@ class EditorPreview extends React.Component {
               modules={sandbox.modules}
               directories={sandbox.directories}
               currentModule={currentModule}
-              workspaceHidden={store.workspace.isWorkspaceHidden}
-              toggleWorkspace={() => signals.workspace.workspaceToggled()}
+              workspaceHidden={!store.workspace.openedWorkspaceItem}
+              toggleWorkspace={() => {
+                if (store.workspace.openedWorkspaceItem) {
+                  signals.workspace.clearCurrentWorkspaceItem();
+                } else {
+                  signals.workspace.setWorkspaceItem({ item: 'files' });
+                }
+              }}
               exitZenMode={() =>
                 this.props.signals.preferences.settingChanged({
                   name: 'zenMode',

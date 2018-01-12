@@ -121,7 +121,7 @@ export function getGitChanges({ api, state }) {
 
   return api
     .get(`/sandboxes/${id}/git/diff`)
-    .then(gitChanges => console.log(gitChanges) || { gitChanges });
+    .then(gitChanges => ({ gitChanges }));
 }
 
 export function forkSandbox({ state, api }) {

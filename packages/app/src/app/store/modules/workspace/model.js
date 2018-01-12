@@ -8,8 +8,8 @@ export default {
   tags: types.model({
     tagName: types.string,
   }),
-  isWorkspaceHidden: types.boolean,
+
   showSearchDependenciesModal: types.boolean,
   showDeleteSandboxModal: types.boolean,
-  openedWorkspaceItem: types.string,
+  openedWorkspaceItem: types.maybe(types.string),
 };

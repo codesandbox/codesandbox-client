@@ -13,6 +13,9 @@ import Header from './Header';
 import Navigation from './Navigation';
 
 function ContentSplit({ signals, store, match }) {
+  const hideNavigation =
+    store.preferences.settings.zenMode && !store.workspace.openedWorkspaceItem;
+
   return (
     <ThemeProvider
       theme={{
@@ -25,13 +28,13 @@ function ContentSplit({ signals, store, match }) {
         {!store.preferences.settings.zenMode && <Header />}
 
         <Fullscreen>
-          <Navigation />
+          {!hideNavigation && <Navigation />}
 
           <div
             style={{
               position: 'fixed',
-              left: '4rem',
-              top: '3rem',
+              left: hideNavigation ? 0 : '4rem',
+              top: store.preferences.settings.zenMode ? 0 : '3rem',
               right: 0,
               bottom: 0,
             }}
@@ -42,18 +45,18 @@ function ContentSplit({ signals, store, match }) {
               onDragStarted={() => signals.editor.resizingStarted()}
               onDragFinished={() => signals.editor.resizingStopped()}
               resizerStyle={{
-                visibility: store.workspace.isWorkspaceHidden
-                  ? 'hidden'
-                  : 'visible',
+                visibility: store.workspace.openedWorkspaceItem
+                  ? 'visible'
+                  : 'hidden',
               }}
               pane1Style={{
-                visibility: store.workspace.isWorkspaceHidden
-                  ? 'hidden'
-                  : 'visible',
-                maxWidth: store.workspace.isWorkspaceHidden ? 0 : 'inherit',
+                visibility: store.workspace.openedWorkspaceItem
+                  ? 'visible'
+                  : 'hidden',
+                maxWidth: store.workspace.openedWorkspaceItem ? 'inherit' : 0,
               }}
             >
-              {!store.workspace.isWorkspaceHidden && <Workspace />}
+              {store.workspace.openedWorkspaceItem && <Workspace />}
               <Content match={match} />
             </SplitPane>
           </div>
@@ -63,4 +66,4 @@ function ContentSplit({ signals, store, match }) {
   );
 }
 
-export default inject('signals', 'store')(observer(hot(module)(ContentSplit)));
+export default hot(module)(inject('signals', 'store')(observer(ContentSplit)));

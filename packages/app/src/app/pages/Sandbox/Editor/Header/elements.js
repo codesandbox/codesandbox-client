@@ -28,27 +28,3 @@ export const Left = styled.div`
   display: flex;
   height: 100%;
 `;
-
-export const Chevron = styled.div`
-  svg {
-    transition: 0.3s ease all;
-    font-size: 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 3rem;
-    margin-left: 0.5rem;
-    margin-right: 0.5rem;
-    z-index: 20;
-
-    cursor: pointer;
-    &:hover {
-      transform: rotateZ(
-        ${props => (props.workspaceHidden ? '135deg' : '45deg')}
-      );
-      color: white;
-    }
-
-    transform: rotateZ(${props => (props.workspaceHidden ? '180deg' : '0')});
-  }
-`;

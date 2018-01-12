@@ -63,8 +63,6 @@ export const updateSandboxInfo = [
   actions.updateSandbox,
 ];
 
-export const toggleWorkspace = toggle(state`workspace.isWorkspaceHidden`);
-
 export const removeNpmDependency = [
   ensureOwnedSandbox,
   actions.optimisticallyRemoveNpmDependency,
@@ -140,4 +138,8 @@ export const removeTag = [
 
 export const setWorkspaceItem = [
   set(state`workspace.openedWorkspaceItem`, props`item`),
+];
+
+export const clearCurrentWorkspaceItem = [
+  set(state`workspace.openedWorkspaceItem`, null),
 ];
