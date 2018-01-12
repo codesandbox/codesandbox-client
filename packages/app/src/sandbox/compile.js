@@ -196,11 +196,12 @@ async function compile({
     //Testing
     console.log('Tests: Starting...');
     const ttt = Date.now();
-    let testManager = new TestManager({ manager });
+    let testManager = manager.testManager;
     testManager.findTests(modules);
     await testManager.transpileTests();
     testManager.runTests();
-    let testResults = testManager.report();
+    let testResults = testManager.reportResults();
+    console.log(testResults);
     debug(`Test Evaluation time: ${Date.now() - tt}ms`);
     //TODO - Dispatch is not working
     dispatch({

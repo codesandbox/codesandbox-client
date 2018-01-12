@@ -1,22 +1,22 @@
 import expect from 'jest-matchers';
 import jestMock from 'jest-mock';
+import { getCurrentManager } from '../../compile';
 
 const describe = (name, fn) => {
   fn();
 };
 
 const test = (name, fn) => {
+  let testManager = getCurrentManager().testManager;
   let error = false;
   try {
     fn();
   } catch (Error) {
     error = true;
-    console.log(`❌ FAIL ${name}`);
-    return `❌ FAIL ${name}`;
+    testManager.addResult(`❌ FAIL ${name}`);
   } finally {
     if (!error) {
-      console.log(`✅ PASS ${name}`);
-      return `✅ PASS ${name}`;
+      testManager.addResult(`✅ PASS ${name}`);
     }
   }
 };

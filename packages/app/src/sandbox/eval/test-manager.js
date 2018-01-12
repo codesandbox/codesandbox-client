@@ -5,7 +5,7 @@ export default class TestManager {
   results: Array;
   manager: Manager;
 
-  constructor({ manager }) {
+  constructor(manager) {
     console.log('TM: Constructor');
     this.tests = [];
     this.results = [];
@@ -29,23 +29,22 @@ export default class TestManager {
   runTests() {
     console.log('TM: runTests');
     this.tests.forEach(t => {
-      const result = manager.evaluateModule(t);
-      // const result = this.executeModule(t.code); //TODO - need to find a way to execute a module and get result
-      this.results.push(result);
+      manager.evaluateModule(t);
     });
   }
 
-  executeModule(t) {
-    //TODO
+  addResult(result) {
+    console.log('TM: addResult', result);
+    this.results.push(result);
+  }
+
+  reportResults() {
+    console.log('TM: Report');
+    return this.results;
   }
 
   resetResults() {
     console.log('TM: resetResults');
     this.results = [];
-  }
-
-  report() {
-    console.log('TM: Report');
-    return this.results;
   }
 }
