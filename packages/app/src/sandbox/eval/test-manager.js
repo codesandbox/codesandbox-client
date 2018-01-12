@@ -22,14 +22,14 @@ export default class TestManager {
   async transpileTests() {
     console.log('TM: transpileTests');
     for (let t of this.tests) {
-      await manager.transpileModules(t);
+      await this.manager.transpileModules(t);
     }
   }
 
   runTests() {
     console.log('TM: runTests');
     this.tests.forEach(t => {
-      manager.evaluateModule(t);
+      this.manager.evaluateModule(t);
     });
   }
 
