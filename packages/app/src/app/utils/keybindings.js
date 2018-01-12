@@ -47,7 +47,7 @@ export const KEYBINDINGS = {
     title: 'Toggle Sidebar',
     type: 'View',
     bindings: [[metaKey], ['Shift']],
-    signal: 'workspace.clearCurentWorkspaceItem',
+    signal: 'workspace.clearCurrentWorkspaceItem',
   },
 
   'editor.editor-mode': {
