@@ -12,9 +12,11 @@ const test = (name, fn) => {
   } catch (Error) {
     error = true;
     console.log(`❌ FAIL ${name}`);
+    return `❌ FAIL ${name}`;
   } finally {
     if (!error) {
       console.log(`✅ PASS ${name}`);
+      return `✅ PASS ${name}`;
     }
   }
 };
