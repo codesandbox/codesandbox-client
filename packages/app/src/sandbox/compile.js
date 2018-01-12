@@ -197,6 +197,7 @@ async function compile({
     console.log('Tests: Starting...');
     const ttt = Date.now();
     let testManager = manager.testManager;
+    testManager.resetResults();
     testManager.findTests(modules);
     await testManager.transpileTests();
     testManager.runTests();
