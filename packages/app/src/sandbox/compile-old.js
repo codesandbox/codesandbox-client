@@ -1,6 +1,6 @@
 import { dispatch, clearErrorTransformers } from 'codesandbox-api';
 
-import { getModulePath } from 'app/store/entities/sandboxes/modules/selectors';
+import { getModulePath } from 'common/sandbox/modules';
 import type { Module, Directory } from 'common/types';
 import _debug from 'app/utils/debug';
 

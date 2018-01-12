@@ -1,13 +1,7 @@
 import React from 'react';
 import Switch from 'app/components/Switch';
 
-type Props = {
-  value: boolean,
-  setValue: boolean => any,
-};
-
-export default class PreferenceSwitch extends React.PureComponent {
-  props: Props;
+export default class PreferenceSwitch extends React.Component {
   handleClick = () => {
     this.props.setValue(!this.props.value);
   };

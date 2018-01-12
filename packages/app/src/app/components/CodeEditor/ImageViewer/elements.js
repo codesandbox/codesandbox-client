@@ -1,0 +1,44 @@
+import styled from 'styled-components';
+import Centered from 'common/components/flex/Centered';
+
+export const Container = Centered.extend`
+  height: 100%;
+  color: rgba(255, 255, 255, 0.9);
+  overflow: auto;
+`;
+
+export const Title = styled.div`
+  font-size: 2rem;
+  margin-top: 3rem;
+  margin: 1rem 0;
+`;
+
+export const SubTitle = styled.div`
+  font-size: 1.5rem;
+  color: rgba(255, 255, 255, 0.7);
+`;
+
+export const Image = styled.img`
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+
+  max-width: 80%;
+  max-height: 70%;
+`;
+
+export const MaxWidth = styled.form`
+  display: flex;
+  justify-content: centered;
+  flex-direction: row;
+  width: 80%;
+
+  input {
+    flex: 4;
+    font-size: 1.5rem;
+  }
+
+  button {
+    flex: 1;
+    margin-left: 1rem;
+  }
+`;

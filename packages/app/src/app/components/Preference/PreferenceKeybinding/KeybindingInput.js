@@ -1,20 +1,11 @@
 import React from 'react';
-
 import Input from 'app/components/Input';
-
-import { normalizeKey, formatKey } from 'app/store/preferences/keybindings';
-
-type Props = {
-  value: Array<string>,
-  setValue: (Array<string>) => any,
-  placeholder: string,
-  style: ?Object,
-};
+import { normalizeKey, formatKey } from 'app/utils/keybindings';
 
 const SPECIAL_KEYS = ['Meta', 'Control', 'Alt', 'Shift', 'Enter', 'Backspace'];
 const IGNORED_KEYS = ['Backspace', 'Escape', 'CapsLock'];
 
-function sortKeys(keys: Array<string>) {
+function sortKeys(keys) {
   return keys.sort((a, b) => {
     const isASpecial = SPECIAL_KEYS.indexOf(a) > -1;
     const isBSpecial = SPECIAL_KEYS.indexOf(b) > -1;
@@ -32,10 +23,8 @@ function sortKeys(keys: Array<string>) {
 }
 
 export default class KeybindingInput extends React.Component {
-  props: Props;
   state = {
     recording: false,
-
     recordedKeys: [],
   };
 

@@ -1,70 +1,31 @@
-// @flow
 import * as React from 'react';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import styled from 'styled-components';
-
-import type { CurrentUser } from 'common/types';
-import { currentUserSelector } from 'app/store/user/selectors';
-import currentUserActionCreators from 'app/store/user/actions';
-import modalActionCreators from 'app/store/modal/actions';
-import usersActionCreators from 'app/store/entities/users/actions';
-
+import { inject, observer } from 'mobx-react';
 import Sandbox from './Sandbox';
 
-const Padding = styled.div`
-  padding: 1rem;
-  text-align: center;
-`;
+import { Padding } from './elements';
 
-type Props = {
-  usersActions: typeof usersActionCreators,
-  currentUserActions: typeof currentUserActionCreators,
-  modalActions: typeof modalActionCreators,
-  user: CurrentUser,
-  showcaseSandboxId: string,
-};
+function SelectSandbox({ store, signals }) {
+  if (store.profile.isLoadingSandboxes)
+    return <Padding>Loading sandboxes...</Padding>;
 
-const mapStateToProps = state => ({
-  user: currentUserSelector(state),
-});
-const mapDispatchToProps = dispatch => ({
-  usersActions: bindActionCreators(usersActionCreators, dispatch),
-  currentUserActions: bindActionCreators(currentUserActionCreators, dispatch),
-  modalActions: bindActionCreators(modalActionCreators, dispatch),
-});
-class SelectSandbox extends React.PureComponent<Props> {
-  componentDidMount() {
-    this.props.currentUserActions.loadUserSandboxes();
-  }
+  const currentShowcasedSandboxId =
+    store.profile.showcasedSandbox && store.profile.showcasedSandbox.id;
 
-  setShowcasedSandbox = (id: string) => {
-    const { usersActions, modalActions, user } = this.props;
-
-    usersActions.setShowcasedSandboxId(user.username, id);
-    modalActions.closeModal();
-  };
-
-  render() {
-    const { user, showcaseSandboxId } = this.props;
-
-    if (user.sandboxes == null) return <Padding>Loading sandboxes...</Padding>;
-
-    return (
-      <div>
-        {user.sandboxes
-          .filter(x => x)
-          .map(sandbox => (
-            <Sandbox
-              active={sandbox.id === showcaseSandboxId}
-              key={sandbox.id}
-              sandbox={sandbox}
-              setShowcasedSandbox={this.setShowcasedSandbox}
-            />
-          ))}
-      </div>
-    );
-  }
+  return (
+    <div>
+      {store.profile.userSandboxes
+        .filter(x => x)
+        .map(sandbox => (
+          <Sandbox
+            active={sandbox.id === currentShowcasedSandboxId}
+            key={sandbox.id}
+            sandbox={sandbox}
+            setShowcasedSandbox={id =>
+              signals.profile.newSandboxShowcaseSelected({ id })
+            }
+          />
+        ))}
+    </div>
+  );
 }
-
-export default connect(mapStateToProps, mapDispatchToProps)(SelectSandbox);
+export default inject('signals', 'store')(observer(SelectSandbox));

@@ -21,7 +21,9 @@ export const getSandboxOptions = (url: string) => {
 
   const highlightMatch = url.match(/(\?|&)(highlights)=([^&]+)/);
   if (highlightMatch && highlightMatch[3]) {
-    result.highlightedLines = highlightMatch[3].split(',');
+    result.highlightedLines = highlightMatch[3]
+      .split(',')
+      .map(number => Number(number));
   }
 
   const editorSizeMatch = url.match(/(\?|&)(editorsize)=([^&]+)/);
@@ -42,7 +44,9 @@ export const getSandboxOptions = (url: string) => {
   ) {
     const windowWidth =
       window.innerWidth || document.documentElement.clientWidth;
-    result.isPreviewScreen = windowWidth < 800;
+
+    result.isEditorScreen = windowWidth >= 800;
+    result.isPreviewScreen = true;
   }
 
   result.hideNavigation = url.includes('hidenavigation=1');
