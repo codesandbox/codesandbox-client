@@ -2,15 +2,12 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 
 import Margin from 'common/components/spacing/Margin';
-import Modal from 'app/components/Modal';
 import GithubBadge from 'app/components/GithubBadge';
 import { githubRepoUrl } from 'common/utils/url-generator';
 import Button from 'app/components/Button';
 import Input from 'app/components/Input';
 
 import TotalChanges from './TotalChanges';
-import CommitModal from './Commit';
-import PRModal from './PR';
 import { WorkspaceSubtitle, WorkspaceInputContainer } from '../elements';
 
 import { Container, Buttons, ErrorMessage, Notice } from './elements';
@@ -135,22 +132,6 @@ class Git extends React.Component {
             </Margin>
           )}
         </Margin>
-        <Modal
-          isOpen={store.git.showCreateCommitModal}
-          width={400}
-          onClose={() =>
-            !store.git.isComitting && signals.git.createCommitModalClosed()
-          }
-        >
-          <CommitModal />
-        </Modal>
-        <Modal
-          isOpen={store.git.showPrModal}
-          width={400}
-          onClose={() => !store.git.isCreatingPr && signals.git.prModalClosed()}
-        >
-          <PRModal />
-        </Modal>
       </Container>
     );
   }

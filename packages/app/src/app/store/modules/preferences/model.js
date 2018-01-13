@@ -55,5 +55,4 @@ export default {
       name: types.string,
     })
   ),
-  showModal: types.boolean,
 };

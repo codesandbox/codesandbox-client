@@ -20,18 +20,13 @@ const getShowcasedSandbox = sequence('getShowcasedSandbox', [
   },
 ]);
 
-export const showDeleteSandboxModal = set(
-  state`profile.sandboxToDeleteIndex`,
-  props`index`
-);
-
-export const closeDeleteSandboxModal = set(
-  state`profile.sandboxToDeleteIndex`,
-  null
-);
+export const showDeleteSandboxModal = [
+  set(state`profile.sandboxToDeleteIndex`, props`index`),
+  set(state`currentModal`, 'deleteSandbox'),
+];
 
 export const openSelectSandboxModal = [
-  set(state`profile.showSelectSandboxModal`, true),
+  set(state`currentModal`, 'selectSandbox'),
   when(state`profile.userSandboxes`, sandboxes => sandboxes.length),
   {
     true: [],
@@ -43,11 +38,6 @@ export const openSelectSandboxModal = [
     ],
   },
 ];
-
-export const closeSelectSandboxModal = set(
-  state`profile.showSelectSandboxModal`,
-  false
-);
 
 export const loadProfile = [
   set(state`profile.isLoadingProfile`, true),

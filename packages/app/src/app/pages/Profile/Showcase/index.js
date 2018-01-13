@@ -9,7 +9,6 @@ import Modal from 'app/components/Modal';
 
 import SandboxInfo from './SandboxInfo';
 import ShowcasePreview from './ShowcasePreview';
-import SelectSandbox from './SelectSandbox';
 
 import { ErrorTitle } from './elements';
 
@@ -65,13 +64,6 @@ class Showcase extends React.Component {
             </div>
           </Column>
         </Margin>
-        <Modal
-          isOpen={store.profile.showSelectSandboxModal}
-          onClose={() => signals.profile.selectSandboxClosed()}
-          width={600}
-        >
-          <SelectSandbox />
-        </Modal>
       </Column>
     );
   }

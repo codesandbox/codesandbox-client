@@ -22,7 +22,6 @@ export default Module({
     currentSandboxesPage: 1,
     currentLikedSandboxesPage: 1,
     isLoadingSandboxes: false,
-    showSelectSandboxModal: false,
     sandboxToDeleteIndex: null,
   },
   getters: {
@@ -38,9 +37,7 @@ export default Module({
     likedSandboxesPageChanged: sequences.loadLikedSandboxes,
     selectSandboxClicked: sequences.openSelectSandboxModal,
     newSandboxShowcaseSelected: sequences.setNewSandboxShowcase,
-    selectSandboxClosed: sequences.closeSelectSandboxModal,
     deleteSandboxClicked: sequences.showDeleteSandboxModal,
-    deleteSandboxModalClosed: sequences.closeDeleteSandboxModal,
     sandboxDeleted: sequences.deleteSandbox,
   },
 });

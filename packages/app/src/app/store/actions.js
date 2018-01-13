@@ -205,10 +205,7 @@ export function getAuthToken({ api, path }) {
 }
 
 export function setModal({ state, props }) {
-  state.set('currentModal', {
-    name: props.name,
-    props: props.props || null,
-  });
+  state.set('currentModal', props.modal);
 }
 
 export function setStoredSettings({ state, settingsStore }) {

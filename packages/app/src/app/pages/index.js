@@ -9,6 +9,7 @@ import Notifications from 'app/pages/common/Notifications';
 import Loading from 'app/components/Loading';
 import Centered from 'common/components/flex/Centered';
 
+import Modals from './common/Modals';
 import Skeleton from './Sandbox/Editor/Content/Skeleton';
 import Sandbox from './Sandbox';
 import NewSandbox from './NewSandbox';
@@ -113,6 +114,7 @@ class Routes extends React.Component {
             <Route component={NotFound} />
           </Switch>
         </Content>
+        <Modals />
       </Container>
     );
   }

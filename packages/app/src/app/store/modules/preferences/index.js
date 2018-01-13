@@ -47,7 +47,6 @@ export default Module({
     showEditor: true,
     showPreview: true,
     showDevtools: false,
-    showModal: false,
   },
   getters: {
     keybindings,

@@ -36,7 +36,6 @@ export default Module({
     user: null,
     connected: true,
     notifications: [],
-    currentModal: null,
     userMenuOpen: false,
     isLoadingZeit: false,
     isLoadingCLI: false,
@@ -49,6 +48,7 @@ export default Module({
       x: 0,
       y: 0,
     },
+    currentModal: null,
   },
   getters: {
     isPatron,
