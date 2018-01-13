@@ -8,13 +8,15 @@ import styled from 'styled-components';
 import ChevronRight from 'react-icons/lib/md/chevron-right';
 import theme from 'common/theme'; // TODO: what's this theme for?
 
-import { IconContainer } from './styles';
-
 import MonacoEditor from 'app/components/sandbox/CodeEditor/monaco/MonacoReactComponent';
 
+import { IconContainer } from './styles';
+
 const Container = styled.div`
+  flex-shrink: 0;
+
   position: relative;
-  height: 2rem;
+  height: ${props => props.height}px;
   min-height: 2rem;
   width: 100%;
   background-color: ${props => props.theme.background.darken(0.3)};
@@ -29,7 +31,8 @@ type Props = {
 
 const InputWrapper = styled.div`
   position: relative;
-  height: 1.5rem;
+  /* height: 1.5rem; */
+  height: ${props => props.height}px;
   width: 100%;
   /* border: none; */
   /* outline: none; */
@@ -125,6 +128,8 @@ class ConsoleInput extends React.PureComponent<Props> {
     command: '',
     commandHistory: [],
     commandCursor: -1,
+
+    containerHeight: 20, // 36,// '2rem',
   };
 
   editorWillMount = monaco => {
@@ -166,26 +171,87 @@ class ConsoleInput extends React.PureComponent<Props> {
     });
   };
 
+  // TODO: keyboard handler, command
+
   editorDidMount = async (editor, monaco) => {
     console.log('editor:', editor);
 
+    editor.onDidChangeModelContent(e => {
+      // console.log(e);
+      const lineCount = editor.getModel().getLineCount();
+      // console.log(lineCount);
+      const lineHeight = 20;
+      const maxContainerHeight = 90;
+      this.setState({ containerHeight: Math.min(90, lineCount * 20) });
+      editor.layout();
+    });
+
+    editor.onKeyDown(e => {
+      // console.log(e);
+      e = e.browserEvent;
+      const { evaluateConsole } = this.props;
+
+      if (e.keyCode === 13) {
+        if (e.shiftKey) {
+          return;
+        }
+        e.preventDefault();
+        e.stopPropagation();
+        // Enter
+        const command = editor.getModel().getValue();
+        evaluateConsole(command);
+        editor.setValue('');
+        // evaluateConsole(this.state.command);
+        this.setState({
+          commandHistory: [command, ...this.state.commandHistory],
+        });
+      } else if (e.keyCode === 38) {
+        const newCursor = Math.min(
+          this.state.commandCursor + 1,
+          this.state.commandHistory.length - 1
+        );
+        // Up arrow
+        this.setState({
+          command: this.state.commandHistory[newCursor] || '',
+          commandCursor: newCursor,
+        });
+      } else if (e.keyCode === 40) {
+        const newCursor = Math.max(this.state.commandCursor - 1, -1);
+        // Down arrow
+        this.setState({
+          command: this.state.commandHistory[newCursor] || '',
+          commandCursor: newCursor,
+        });
+      }
+    });
+
+    /*
     // on Monaco editor scroll change, adjust the height
     editor.onDidScrollChange(e => {
       if (!e.scrollHeightChanged) {
         return;
       }
-      e.scrollHeight;
+      console.log(e.scrollHeight);
       console.log(e);
+
+      this.setState({
+        containerHeight: Math.min(90, e.scrollHeight)
+      });
+
+      // TODO
+      // set monaco editor height
+      editor.layout();
     });
+    */
   };
 
   render() {
     return (
-      <Container>
+      <Container height={this.state.containerHeight + 12}>
         <IconContainer style={{ color: theme.secondary() }}>
           <ChevronRight />
         </IconContainer>
-        <InputWrapper>
+        <InputWrapper height={this.state.containerHeight}>
           <MonacoEditor
             width="100%"
             height="100%"

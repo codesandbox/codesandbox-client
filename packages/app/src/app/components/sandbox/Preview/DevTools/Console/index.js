@@ -20,7 +20,7 @@ const Container = styled.div`
 `;
 
 const Messages = styled.div`
-  height: 100%;
+  flex-grow: 1;
   overflow-y: auto;
   overflow-x: hidden;
   white-space: pre-wrap;
