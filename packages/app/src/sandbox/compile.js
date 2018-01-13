@@ -6,6 +6,7 @@ import initializeErrorTransformers from './errors/transformers';
 import getPreset from './eval';
 import Manager from './eval/manager';
 import TestManager from './eval/test-manager';
+import transformJSON from './console/transform-json';
 
 import { resetScreen } from './status-screen';
 
@@ -202,12 +203,11 @@ async function compile({
     await testManager.transpileTests();
     testManager.runTests();
     let testResults = testManager.reportResults();
-    console.log(testResults);
     debug(`Test Evaluation time: ${Date.now() - tt}ms`);
-    //TODO - Dispatch is not working
+
     dispatch({
       type: 'test-result',
-      result: testResults,
+      result: transformJSON(testResults),
     });
     //End - Testing
 
