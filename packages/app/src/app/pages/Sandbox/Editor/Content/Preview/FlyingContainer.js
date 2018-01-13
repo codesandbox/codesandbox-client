@@ -52,6 +52,17 @@ class FlyingContainer extends React.Component {
 
   setResizingStopped = () => {
     this.props.signals.editor.resizingStopped();
+
+    // We do this to force a recalculation of the iframe height, this doesn't
+    // happen when pointer events are disabled and in turn disables scroll.
+    // It's hacky, but it's to fix a bug in the browser.
+    setTimeout(() => {
+      const { previewWindow } = this.props.store.editor;
+
+      this.props.signals.editor.setPreviewBounds({
+        height: previewWindow.height + 1,
+      });
+    });
   };
 
   applyStateToStore = () => {
@@ -135,16 +146,6 @@ class FlyingContainer extends React.Component {
       this.setResizingStopped();
 
       this.applyStateToStore();
-      // We do this to force a recalculation of the iframe height, this doesn't
-      // happen when pointer events are disabled and in turn disables scroll.
-      // It's hacky, but it's to fix a bug in the browser.
-      setTimeout(() => {
-        const { previewWindow } = this.props.store.editor;
-
-        this.props.signals.editor.setPreviewBounds({
-          height: previewWindow.height + 1,
-        });
-      });
     };
 
     document.addEventListener('mousemove', handleMouseMove);

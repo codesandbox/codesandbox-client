@@ -41,7 +41,7 @@ function Header({ store, signals }) {
   return (
     <Container>
       <Left>
-        <Logo />
+        <Logo title={sandbox.title} />
 
         {store.isLoggedIn &&
           (sandbox.userLiked ? (

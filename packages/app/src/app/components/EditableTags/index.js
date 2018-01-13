@@ -28,21 +28,21 @@ export default function(color) {
   .react-tagsinput-input {
     transition: 0.3s ease border-color;
 
-    background-color: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(0, 0, 0, 0.3);
+    background-color: rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.1);
     color: rgba(255,255,255,0.9);
     font-size: 13px;
     font-weight: 400;
     margin-bottom: 6px;
     margin-top: 1px;
     outline: none;
-    padding: 0.5em;
+    padding: 0.3em;
     border-radius: 4px;
     margin-left: .2rem;
     width: 80px;
 
     &:focus {
-      border-color: ${color.clearer(0.5)()};
+      border-color: ${color.clearer(0.3)()};
     }
   }
 
