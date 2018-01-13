@@ -201,8 +201,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
         // happen when pointer events are disabled and in turn disables scroll.
         // It's hacky, but it's to fix a bug in the browser.
         setTimeout(() => {
-          const height = this.state.height + 1;
-          this.setState({ height });
+          const height = this.state.height;
           if (height > 64) {
             store.set('devtools.height', height);
           }
