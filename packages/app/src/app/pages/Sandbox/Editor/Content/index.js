@@ -215,11 +215,7 @@ class EditorPreview extends React.Component {
               currentModule={currentModule}
               workspaceHidden={!store.workspace.openedWorkspaceItem}
               toggleWorkspace={() => {
-                if (store.workspace.openedWorkspaceItem) {
-                  signals.workspace.clearCurrentWorkspaceItem();
-                } else {
-                  signals.workspace.setWorkspaceItem({ item: 'files' });
-                }
+                signals.workspace.toggleCurrentWorkspaceItem();
               }}
               exitZenMode={() =>
                 this.props.signals.preferences.settingChanged({

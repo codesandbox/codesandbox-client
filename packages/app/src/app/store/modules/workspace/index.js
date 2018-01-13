@@ -36,6 +36,6 @@ export default Module({
     sandboxDeleted: sequences.deleteSandbox,
     sandboxPrivacyChanged: sequences.changeSandboxPrivacy,
     setWorkspaceItem: sequences.setWorkspaceItem,
-    clearCurrentWorkspaceItem: sequences.clearCurrentWorkspaceItem,
+    toggleCurrentWorkspaceItem: sequences.toggleCurrentWorkspaceItem,
   },
 });

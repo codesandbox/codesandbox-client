@@ -1,4 +1,4 @@
-import { set, toggle, push } from 'cerebral/operators';
+import { set, when, push } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 import * as actions from './actions';
 import { loadSandbox, ensureOwnedSandbox } from '../../sequences';
@@ -140,6 +140,10 @@ export const setWorkspaceItem = [
   set(state`workspace.openedWorkspaceItem`, props`item`),
 ];
 
-export const clearCurrentWorkspaceItem = [
-  set(state`workspace.openedWorkspaceItem`, null),
+export const toggleCurrentWorkspaceItem = [
+  when(state`workspace.openedWorkspaceItem`),
+  {
+    false: set(state`workspace.openedWorkspaceItem`, 'files'),
+    true: set(state`workspace.openedWorkspaceItem`, null),
+  },
 ];
