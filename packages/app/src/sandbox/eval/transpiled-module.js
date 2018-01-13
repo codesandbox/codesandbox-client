@@ -18,7 +18,7 @@ import type { WarningStructure } from './transpilers/utils/worker-warning-handle
 import resolveDependency from './loaders/dependency-resolver';
 import evaluate from './loaders/eval';
 
-import * as testGlobals from './testers/runner';
+import * as testGlobals from './tests/jest-lite';
 
 import Manager from './manager';
 import HMR from './hmr';

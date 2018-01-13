@@ -5,7 +5,7 @@ import _debug from 'app/utils/debug';
 import initializeErrorTransformers from './errors/transformers';
 import getPreset from './eval';
 import Manager from './eval/manager';
-import TestManager from './eval/test-manager';
+import TestRunner from './eval/tests/test-runner';
 import transformJSON from './console/transform-json';
 
 import { resetScreen } from './status-screen';
@@ -197,12 +197,12 @@ async function compile({
     //Testing
     console.log('Tests: Starting...');
     const ttt = Date.now();
-    let testManager = manager.testManager;
-    testManager.resetResults();
-    testManager.findTests(modules);
-    await testManager.transpileTests();
-    testManager.runTests();
-    let testResults = testManager.reportResults();
+    let testRunner = manager.testRunner;
+    testRunner.resetResults();
+    testRunner.findTests(modules);
+    await testRunner.transpileTests();
+    testRunner.runTests();
+    let testResults = testRunner.reportResults();
     debug(`Test Evaluation time: ${Date.now() - tt}ms`);
 
     dispatch({

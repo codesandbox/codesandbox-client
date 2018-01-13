@@ -16,7 +16,7 @@ import coreLibraries from './npm/get-core-libraries';
 import getDependencyName from './utils/get-dependency-name';
 import DependencyNotFoundError from '../errors/dependency-not-found-error';
 import ModuleNotFoundError from '../errors/module-not-found-error';
-import TestManager from './test-manager';
+import TestRunner from './tests/test-runner';
 
 type Externals = {
   [name: string]: string,
@@ -91,7 +91,7 @@ export default class Manager {
     this.cachedPaths = {};
     this.transpileJobs = {};
     modules.forEach(m => this.addModule(m));
-    this.testManager = new TestManager(this);
+    this.testRunner = new TestRunner(this);
 
     if (process.env.NODE_ENV === 'development') {
       window.manager = this;
