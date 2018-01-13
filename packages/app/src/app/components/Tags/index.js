@@ -10,7 +10,7 @@ function Tags({ tags, align, ...props }) {
   return (
     <TagContainer align={align || 'left'} {...props}>
       {tags.sort().map(tag => (
-        <Margin key={tag} vertical={0.5} horizontal={0.25}>
+        <Margin key={tag} vertical={0.5} horizontal={0.2}>
           <Tag tag={tag} />
         </Margin>
       ))}

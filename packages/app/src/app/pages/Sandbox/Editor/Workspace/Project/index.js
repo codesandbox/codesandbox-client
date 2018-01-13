@@ -211,12 +211,12 @@ class Project extends React.Component {
               onlyUnique
             />
           ) : (
-            <Tags tags={sandbox.tags} />
+            <Tags style={{ fontSize: 13 }} tags={sandbox.tags} />
           )}
         </Item>
 
         {sandbox.forkedFromSandbox && (
-          <Item>
+          <Item flex>
             <PropertyName>Forked From</PropertyName>
             <PropertyValue>
               <ConfirmLink
@@ -230,7 +230,7 @@ class Project extends React.Component {
             </PropertyValue>
           </Item>
         )}
-        <Item>
+        <Item flex>
           <PropertyName>Privacy</PropertyName>
           <PropertyValue>
             <PrivacyContainer>
@@ -238,7 +238,7 @@ class Project extends React.Component {
             </PrivacyContainer>
           </PropertyValue>
         </Item>
-        <Item>
+        <Item flex>
           <PropertyName>Template</PropertyName>
           <PropertyValue>
             <a

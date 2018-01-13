@@ -10,7 +10,7 @@ export default () => (
     <Project />
 
     <Files />
-    <WorkspaceItem title="Dependencies">
+    <WorkspaceItem defaultOpen title="Dependencies">
       <Dependencies />
     </WorkspaceItem>
   </div>

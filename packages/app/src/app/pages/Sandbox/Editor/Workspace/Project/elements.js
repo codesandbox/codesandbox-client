@@ -7,6 +7,8 @@ export const Item = styled.div`
   margin: 1rem;
   margin-top: 0;
   font-size: 0.875rem;
+
+  ${props => props.flex && 'display: flex'};
 `;
 
 export const UserLink = styled(Link)`
@@ -50,13 +52,14 @@ export const PropertyName = styled.span`
   margin-right: 0.5rem;
   width: 110px;
   text-transform: uppercase;
+  flex: 0 0 110px;
 `;
 
 export const PropertyValue = styled.span`
   display: inline-block;
   color: ${props => props.theme.templateColor};
   text-align: right;
-  float: right;
+  flex: 1;
 `;
 
 export const TemplateColor = styled.span`

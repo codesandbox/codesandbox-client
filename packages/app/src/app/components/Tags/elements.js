@@ -5,6 +5,8 @@ export const TagContainer = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  margin-left: -0.2rem;
+  margin-right: -0.2rem;
   ${props => props.align === 'right' && `justify-content: flex-end;`};
 `;
 
