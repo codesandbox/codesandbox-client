@@ -21,4 +21,4 @@ const test = (name, fn) => {
   }
 };
 
-export { describe, test as it, test, expect, jestMock };
+export { describe, test as it, test, expect, jestMock as jest };
