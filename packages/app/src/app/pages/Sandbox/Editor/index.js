@@ -13,15 +13,18 @@ import Header from './Header';
 import Navigation from './Navigation';
 
 function ContentSplit({ signals, store, match }) {
+  const sandbox = store.editor.currentSandbox;
+  const sandboxOwned = sandbox.owned;
+
   const hideNavigation =
-    store.preferences.settings.zenMode && !store.workspace.openedWorkspaceItem;
+    (store.preferences.settings.zenMode &&
+      !store.workspace.openedWorkspaceItem) ||
+    !sandboxOwned;
 
   return (
     <ThemeProvider
       theme={{
-        templateColor:
-          store.editor.currentSandbox &&
-          getTemplateDefinition(store.editor.currentSandbox.template).color,
+        templateColor: sandbox && getTemplateDefinition(sandbox.template).color,
       }}
     >
       <div style={{ width: '100%', height: '100%' }}>

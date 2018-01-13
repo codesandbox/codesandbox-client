@@ -6,7 +6,7 @@ import SandboxActions from '../../SandboxActions';
 
 const ProjectInfo = () => (
   <div>
-    <Project />
+    <Project editable />
 
     <SandboxActions />
   </div>

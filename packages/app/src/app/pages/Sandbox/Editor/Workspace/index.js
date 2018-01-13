@@ -9,6 +9,7 @@ import Files from './items/Files';
 import ProjectInfo from './items/ProjectInfo';
 import GitHub from './items/GitHub';
 import Deployment from './items/Deployment';
+import NotOwnedSandboxInfo from './items/NotOwnedSandboxInfo';
 
 import ConnectionNotice from './ConnectionNotice';
 import Advertisement from './Advertisement';
@@ -32,12 +33,12 @@ function Workspace({ store }) {
     return null;
   }
 
-  const Component = idToItem[currentItem];
+  const Component = sandbox.owned ? idToItem[currentItem] : NotOwnedSandboxInfo;
 
   const item = workspaceItems.find(i => i.id === currentItem);
   return (
     <Container>
-      <ItemTitle>{item.name}</ItemTitle>
+      {sandbox.owned && <ItemTitle>{item.name}</ItemTitle>}
       <div style={{ flex: 1 }}>
         <Component />
       </div>

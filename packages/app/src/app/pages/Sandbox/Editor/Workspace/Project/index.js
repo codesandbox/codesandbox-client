@@ -14,6 +14,7 @@ import PrivacyStatus from 'app/components/PrivacyStatus';
 import ConfirmLink from 'app/components/ConfirmLink';
 import GithubBadge from 'app/components/GithubBadge';
 import createEditableTags from 'app/components/EditableTags';
+import Tags from 'app/components/Tags';
 
 import getTemplateDefinition from 'common/templates';
 import { WorkspaceInputContainer } from '../elements';
@@ -84,7 +85,7 @@ class Project extends React.Component {
   };
 
   render() {
-    const { store, signals } = this.props;
+    const { store, signals, editable } = this.props;
     const sandbox = store.editor.currentSandbox;
     const workspace = store.workspace;
 
@@ -93,7 +94,7 @@ class Project extends React.Component {
     const EditableTags = createEditableTags(template.color);
 
     return (
-      <div style={{ marginBottom: '2rem' }}>
+      <div style={{ marginBottom: '1rem' }}>
         <Item style={{ marginTop: '.5rem' }}>
           {this.state.editingTitle ? (
             <WorkspaceInputContainer style={{ margin: '0 -0.25rem' }}>
@@ -123,7 +124,7 @@ class Project extends React.Component {
           ) : (
             <Title>
               {workspace.project.title || sandbox.title || sandbox.id}
-              <EditPen onClick={this.setTitleEditing} />
+              {editable && <EditPen onClick={this.setTitleEditing} />}
             </Title>
           )}
           {this.state.editingDescription ? (
@@ -163,8 +164,9 @@ class Project extends React.Component {
                 color: 'rgba(255, 255, 255, 0.7)',
               }}
             >
-              {sandbox.description || 'No description, create one!'}
-              <EditPen onClick={this.setDescriptionEditing} />
+              {sandbox.description ||
+                (editable ? 'No description, create one!' : '')}
+              {editable && <EditPen onClick={this.setDescriptionEditing} />}
             </Description>
           )}
         </Item>
@@ -195,18 +197,22 @@ class Project extends React.Component {
         </StatsContainer>
 
         <Item>
-          <EditableTags
-            value={sandbox.tags.toJSON()}
-            onChange={this.changeTags}
-            onChangeInput={value => {
-              signals.workspace.tagChanged({
-                tagName: value,
-              });
-            }}
-            inputValue={store.workspace.tags.tagName}
-            renderInput={this.renderInput}
-            onlyUnique
-          />
+          {editable ? (
+            <EditableTags
+              value={sandbox.tags.toJSON()}
+              onChange={this.changeTags}
+              onChangeInput={value => {
+                signals.workspace.tagChanged({
+                  tagName: value,
+                });
+              }}
+              inputValue={store.workspace.tags.tagName}
+              renderInput={this.renderInput}
+              onlyUnique
+            />
+          ) : (
+            <Tags tags={sandbox.tags} />
+          )}
         </Item>
 
         {sandbox.forkedFromSandbox && (
