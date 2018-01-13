@@ -10,7 +10,11 @@ import MaxWidth from 'common/components/flex/MaxWidth';
 import Margin from 'common/components/spacing/Margin';
 import Input from 'app/components/Input';
 import Button from 'app/components/buttons/Button';
-import { gitHubToSandboxUrl, protocolAndHost } from 'common/utils/url-generator';
+import {
+  gitHubRepoPattern,
+  gitHubToSandboxUrl,
+  protocolAndHost,
+} from 'common/utils/url-generator';
 
 const Container = styled.div`
   height: 100%;
@@ -31,7 +35,9 @@ const Label = styled.label`
   color: rgba(255, 255, 255, 0.3);
 `;
 
-const Description = styled.div`margin-bottom: 1rem;`;
+const Description = styled.div`
+  margin-bottom: 1rem;
+`;
 
 const StyledInput = styled(Input)`
   font-size: 1.25rem;
@@ -62,15 +68,22 @@ export default class GitHub extends React.PureComponent<{}, State> {
   updateUrl = e => {
     const url = e.target.value;
 
-    if (!url.includes('github.com')) {
+    if (!url) {
       this.setState({
         url,
-        error: "The URL should contain from 'github.com'.",
+        error: null,
+        transformedUrl: '',
+      });
+    } else if (!gitHubRepoPattern.test(url)) {
+      this.setState({
+        url,
+        error: 'The URL provided is not valid.',
+        transformedUrl: '',
       });
     } else {
       this.setState({
         url: e.target.value,
-        transformedUrl: getFullGitHubUrl(url),
+        transformedUrl: getFullGitHubUrl(url.trim()),
         error: null,
       });
     }
