@@ -3,7 +3,7 @@ import styled, { keyframes } from 'styled-components';
 import delayInEffect from 'common/utils/animation/delay-effect';
 import OpaqueLogo from 'app/components/OpaqueLogo';
 import GitHubLogo from 'app/components/GitHubLogo';
-import Cube from '../Cube';
+import Cube from './Cube';
 
 export const Container = styled.div`
   position: relative;

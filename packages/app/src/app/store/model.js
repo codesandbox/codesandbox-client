@@ -1,5 +1,10 @@
 import { types } from 'mobx-state-tree';
 
+const Modal = types.model({
+  name: types.string,
+  width: types.number,
+});
+
 export default {
   jwt: types.maybe(types.string),
   isAuthenticating: types.boolean,
@@ -69,4 +74,5 @@ export default {
     x: types.number,
     y: types.number,
   }),
+  currentModal: types.maybe(types.string),
 };

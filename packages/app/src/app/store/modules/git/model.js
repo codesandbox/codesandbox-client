@@ -12,7 +12,6 @@ export default {
   repoTitle: types.string,
   error: types.maybe(types.string),
   isExported: types.boolean,
-  showExportedModal: types.boolean,
   showFetchButton: types.boolean,
   isFetching: types.boolean,
   message: types.string,
@@ -24,7 +23,6 @@ export default {
       rights: types.string,
     })
   ),
-  showCreateCommitModal: types.boolean,
   commit: types.maybe(
     types.model({
       git: Git,
@@ -42,6 +40,5 @@ export default {
     })
   ),
   isCommiting: types.boolean,
-  showPrModal: types.boolean,
   isCreatingPr: types.boolean,
 };

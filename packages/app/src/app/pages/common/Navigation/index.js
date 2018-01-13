@@ -7,11 +7,8 @@ import PlusIcon from 'react-icons/lib/go/plus';
 import Row from 'common/components/flex/Row';
 import Tooltip from 'common/components/Tooltip';
 import HeaderSearchBar from 'app/components/HeaderSearchBar';
-import Modal from 'app/components/Modal';
 import PatronBadge from '-!svg-react-loader!common/utils/badges/svg/patron-4.svg'; // eslint-disable-line import/no-webpack-loader-syntax
 
-import NewSandbox from 'app/components/NewSandbox';
-import Preferences from 'app/pages/common/Preferences';
 import SignInButton from '../SignInButton';
 import UserMenu from '../UserMenu';
 import { LogoWithBorder, Border, Title, Actions, Action } from './elements';
@@ -42,27 +39,19 @@ function Navigation({ signals, store, title }) {
               </Tooltip>
             </Action>
           )}
-          <Action onClick={() => signals.editor.newSandboxModalOpened()}>
+          <Action
+            onClick={() =>
+              signals.modalOpened({
+                modal: 'newSandbox',
+              })
+            }
+          >
             <Tooltip position="bottom" title="New Sandbox">
               <PlusIcon height={35} />
             </Tooltip>
           </Action>
         </Actions>
         {user ? <UserMenu /> : <SignInButton />}
-        <Modal
-          isOpen={store.editor.showNewSandboxModal}
-          width={900}
-          onClose={() => signals.editor.newSandboxModalClosed()}
-        >
-          <NewSandbox />
-        </Modal>
-        <Modal
-          isOpen={store.preferences.showModal}
-          width={900}
-          onClose={() => signals.preferences.modalClosed()}
-        >
-          <Preferences />
-        </Modal>
       </Row>
     </Row>
   );

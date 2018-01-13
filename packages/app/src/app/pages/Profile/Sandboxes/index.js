@@ -108,18 +108,6 @@ class Sandboxes extends React.Component {
             )}
           </div>
         </Navigation>
-        <Modal
-          isOpen={store.profile.sandboxToDeleteIndex !== null}
-          onClose={() => signals.profile.deleteSandboxModalClosed()}
-          width={600}
-        >
-          <Alert
-            title="Delete Sandbox"
-            body={<span>Are you sure you want to delete this sandbox?</span>}
-            onCancel={() => signals.profile.deleteSandboxModalClosed()}
-            onDelete={() => signals.profile.sandboxDeleted()}
-          />
-        </Modal>
       </div>
     );
   }

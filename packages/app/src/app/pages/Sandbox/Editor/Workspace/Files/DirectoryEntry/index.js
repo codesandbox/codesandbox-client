@@ -78,8 +78,8 @@ class DirectoryEntry extends React.Component {
     this.resetState();
   };
 
-  renameModule = (id, title) => {
-    this.props.signals.files.moduleRenamed({ id, title });
+  renameModule = (moduleShortid, title) => {
+    this.props.signals.files.moduleRenamed({ moduleShortid, title });
   };
 
   deleteModule = (id, title) => {
