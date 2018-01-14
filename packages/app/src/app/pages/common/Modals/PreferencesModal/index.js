@@ -23,7 +23,7 @@ import KeyMapping from './KeyMapping';
 
 import { Container, ContentContainer } from './elements';
 
-class Preferences extends React.Component {
+class PreferencesModal extends React.Component {
   getItems = () => {
     const hasSubscription = this.props.store.isPatron;
     const signedIn = this.props.store.isLoggedIn;
@@ -99,4 +99,4 @@ class Preferences extends React.Component {
   }
 }
 
-export default inject('store', 'signals')(observer(Preferences));
+export default inject('store', 'signals')(observer(PreferencesModal));

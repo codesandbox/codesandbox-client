@@ -8,6 +8,8 @@ import _debug from 'app/utils/debug';
 import Notifications from 'app/pages/common/Notifications';
 import Loading from 'app/components/Loading';
 
+import Modals from './common/Modals';
+
 import Sandbox from './Sandbox';
 import NewSandbox from './NewSandbox';
 import { Container, Content } from './elements';
@@ -103,6 +105,7 @@ class Routes extends React.Component {
             <Route component={NotFound} />
           </Switch>
         </Content>
+        <Modals />
       </Container>
     );
   }

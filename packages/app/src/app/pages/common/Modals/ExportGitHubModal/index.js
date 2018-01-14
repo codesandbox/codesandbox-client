@@ -1,14 +1,14 @@
 import React from 'react';
 
-import Progress from '../../Git/Progress';
+import GitProgress from 'app/components/GitProgress';
 
-function ExportToGithub({ isExported }) {
+function ExportGitHubModal({ isExported }) {
   return (
-    <Progress
+    <GitProgress
       result={isExported ? <div>Exported to GitHub!</div> : null}
       message="Creating Repository..."
     />
   );
 }
 
-export default ExportToGithub;
+export default ExportGitHubModal;

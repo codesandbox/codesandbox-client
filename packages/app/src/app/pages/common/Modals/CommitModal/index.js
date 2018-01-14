@@ -1,8 +1,8 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import Progress from '../Progress';
+import GitProgress from 'app/components/GitProgress';
 
-function Commit({ store }) {
+function CommitModal({ store }) {
   const git = store.editor.currentSandbox.originalGit;
   const commit = store.git.commit;
   let message;
@@ -35,7 +35,7 @@ function Commit({ store }) {
     }
   }
 
-  return <Progress result={message} message="Creating Commit..." />;
+  return <GitProgress result={message} message="Creating Commit..." />;
 }
 
-export default inject('store')(observer(Commit));
+export default inject('store')(observer(CommitModal));

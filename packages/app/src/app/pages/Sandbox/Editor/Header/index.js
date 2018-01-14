@@ -2,11 +2,6 @@ import * as React from 'react';
 import Media from 'react-media';
 import { inject, observer } from 'mobx-react';
 
-import Modal from 'app/components/Modal';
-import Preferences from 'app/pages/common/Preferences';
-import NewSandbox from 'app/components/NewSandbox';
-import ShareModal from 'app/pages/Sandbox/ShareModal';
-import DeploymentModal from 'app/pages/Sandbox/DeploymentModal';
 import Save from 'react-icons/lib/md/save';
 import Fork from 'react-icons/lib/go/repo-forked';
 import Download from 'react-icons/lib/go/cloud-download';
@@ -89,16 +84,12 @@ function Header({ store, signals }) {
           tooltip="Share sandbox"
           title="Share"
           Icon={ShareIcon}
-          onClick={() => signals.editor.shareModalOpened()}
-        >
-          <Modal
-            isOpen={store.editor.showShareModal}
-            width={900}
-            onClose={() => signals.editor.shareModalClosed()}
-          >
-            <ShareModal />
-          </Modal>
-        </Action>
+          onClick={() =>
+            signals.modalOpened({
+              modal: 'share',
+            })
+          }
+        />
       </Left>
 
       <Right>
@@ -121,32 +112,24 @@ function Header({ store, signals }) {
           ))}
 
         <Action
-          onClick={() => signals.editor.newSandboxModalOpened()}
+          onClick={() =>
+            signals.modalOpened({
+              modal: 'newSandbox',
+            })
+          }
           tooltip="New Sandbox"
           Icon={PlusIcon}
-        >
-          <Modal
-            isOpen={store.editor.showNewSandboxModal}
-            width={900}
-            onClose={() => signals.editor.newSandboxModalClosed()}
-          >
-            <NewSandbox />
-          </Modal>
-        </Action>
+        />
         {!store.isLoggedIn && (
           <Action
-            onClick={() => signals.preferences.modalOpened()}
+            onClick={() =>
+              signals.modalOpened({
+                modal: 'preferences',
+              })
+            }
             tooltip="Preferences"
             Icon={SettingsIcon}
-          >
-            <Modal
-              isOpen={store.preferences.showModal}
-              width={900}
-              onClose={() => signals.preferences.modalClosed()}
-            >
-              <Preferences />
-            </Modal>
-          </Action>
+          />
         )}
         <Margin
           style={{

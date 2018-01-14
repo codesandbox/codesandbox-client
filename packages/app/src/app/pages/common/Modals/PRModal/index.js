@@ -1,8 +1,8 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import Progress from '../Progress';
+import GitProgress from 'app/components/GitProgress';
 
-function PR({ store }) {
+function PRModal({ store }) {
   let result = null;
 
   if (!store.git.isCreatingPr) {
@@ -26,8 +26,11 @@ function PR({ store }) {
   }
 
   return (
-    <Progress result={result} message="Forking Repository & Creating PR..." />
+    <GitProgress
+      result={result}
+      message="Forking Repository & Creating PR..."
+    />
   );
 }
 
-export default inject('store')(observer(PR));
+export default inject('store')(observer(PRModal));

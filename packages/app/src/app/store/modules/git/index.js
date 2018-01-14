@@ -13,11 +13,9 @@ export default Module({
     isFetching: false,
     message: '',
     originalGitChanges: null,
-    showCreateCommitModal: false,
     commit: null,
     pr: null,
     isCommiting: false,
-    showPrModal: false,
     isCreatingPr: false,
   },
   signals: {
@@ -26,8 +24,6 @@ export default Module({
     gitMounted: fetchGitChanges,
     createCommitClicked: sequences.createCommit,
     messageChanged: sequences.changeMessage,
-    createCommitModalClosed: sequences.closeCreateCommitModal,
-    prModalClosed: sequences.closePrModal,
     createPrClicked: sequences.createPr,
   },
 });

@@ -5,7 +5,7 @@ import ZeitIntegration from 'app/pages/common/ZeitIntegration';
 import Button from 'app/components/Button';
 import Centered from 'common/components/flex/Centered';
 import Margin from 'common/components/spacing/Margin';
-import IntegrationModal from '../IntegrationModal';
+import IntegrationModal from 'app/components/IntegrationModal';
 
 import {
   ButtonContainer,

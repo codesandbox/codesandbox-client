@@ -4,7 +4,7 @@ import Sandbox from './Sandbox';
 
 import { Padding } from './elements';
 
-function SelectSandbox({ store, signals }) {
+function SelectSandboxModal({ store, signals }) {
   if (store.profile.isLoadingSandboxes)
     return <Padding>Loading sandboxes...</Padding>;
 
@@ -28,4 +28,4 @@ function SelectSandbox({ store, signals }) {
     </div>
   );
 }
-export default inject('signals', 'store')(observer(SelectSandbox));
+export default inject('signals', 'store')(observer(SelectSandboxModal));

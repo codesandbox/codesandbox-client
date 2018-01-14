@@ -23,7 +23,6 @@ export default {
       rights: types.string,
     })
   ),
-  showCreateCommitModal: types.boolean,
   commit: types.maybe(
     types.model({
       git: Git,
@@ -42,6 +41,5 @@ export default {
     })
   ),
   isCommiting: types.boolean,
-  showPrModal: types.boolean,
   isCreatingPr: types.boolean,
 };

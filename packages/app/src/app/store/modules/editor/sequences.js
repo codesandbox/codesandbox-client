@@ -16,27 +16,6 @@ export const openQuickActions = set(state`editor.quickActionsOpen`, true);
 
 export const closeQuickActions = set(state`editor.quickActionsOpen`, false);
 
-export const openDeploymentModal = [
-  set(state`editor.showDeploymentModal`, true),
-  getZeitUserDetails,
-];
-
-export const closeDeploymentModal = set(
-  state`editor.showDeploymentModal`,
-  false
-);
-
-export const openShareModal = set(state`editor.showShareModal`, true);
-
-export const closeShareModal = set(state`editor.showShareModal`, false);
-
-export const openNewSandboxModal = set(state`editor.showNewSandboxModal`, true);
-
-export const closeNewSandboxModal = set(
-  state`editor.showNewSandboxModal`,
-  false
-);
-
 export const toggleProjectView = toggle(state`editor.isInProjectView`);
 
 export const closeTab = [closeTabByIndex, actions.setCurrentModuleByTab];

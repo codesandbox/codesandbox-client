@@ -4,13 +4,13 @@ import { getZeitUserDetails } from 'app/store/sequences';
 import * as actions from './actions';
 import { setKeybindings, startKeybindings } from '../../actions';
 
-export const openModal = set(state`preferences.showModal`, true);
+export const openModal = set(state`currentModal`, 'preferences');
 
 export const closeModal = [
   equals(state`preferences.itemId`),
   {
     keybindings: [],
-    otherwise: [set(state`preferences.showModal`, false), startKeybindings],
+    otherwise: [set(state`currentModal`, null), startKeybindings],
   },
 ];
 

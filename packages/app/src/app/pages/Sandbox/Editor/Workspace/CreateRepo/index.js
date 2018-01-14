@@ -4,10 +4,8 @@ import { inject, observer } from 'mobx-react';
 import Margin from 'common/components/spacing/Margin';
 import Input from 'app/components/Input';
 import Button from 'app/components/Button';
-import Modal from 'app/components/Modal';
 
 import { WorkspaceSubtitle, WorkspaceInputContainer } from '../elements';
-import ExportGitHubModal from './ExportToGithub';
 
 import { Container, Error } from './elements';
 
@@ -50,9 +48,6 @@ class CreateRepo extends React.Component {
             Create Repository
           </Button>
         </Margin>
-        <Modal isOpen={store.git.showExportedModal} width={600}>
-          <ExportGitHubModal isExported={store.git.isExported} />
-        </Modal>
       </div>
     );
   }

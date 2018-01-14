@@ -12,7 +12,11 @@ function AddVersion({ signals }) {
         <Button
           block
           small
-          onClick={() => signals.workspace.searchDependenciesModalOpened()}
+          onClick={() =>
+            signals.modalOpened({
+              modal: 'searchDependencies',
+            })
+          }
         >
           Add Package
         </Button>
