@@ -17,6 +17,7 @@ const Container = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
+  max-height: calc(100% - 2rem);
 `;
 
 const Messages = styled.div`
