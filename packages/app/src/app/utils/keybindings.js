@@ -102,13 +102,19 @@ export const KEYBINDINGS = {
     type: 'View',
     bindings: [[metaKey, ',']],
     signal: 'preferences.modalOpened',
+    payload: {
+      modal: 'preferences',
+    },
   },
 
   'source.dependencies.open': {
     title: 'Add Dependency',
     type: 'Source',
     bindings: [],
-    signal: 'workspace.searchDependenciesModalOpened',
+    signal: 'preferences.modalOpened',
+    payload: {
+      modal: 'searchDependencies',
+    },
   },
 
   'source.modules.prettify': {

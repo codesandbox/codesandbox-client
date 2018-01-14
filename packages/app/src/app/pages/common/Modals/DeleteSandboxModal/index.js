@@ -1,7 +1,7 @@
 import React from 'react';
 import Alert from 'app/components/Alert';
 
-function DeleteSandboxModal() {
+function DeleteSandboxModal({ signals }) {
   return (
     <Alert
       title="Delete Sandbox"

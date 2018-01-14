@@ -9,7 +9,5 @@ export default {
     tagName: types.string,
   }),
 
-  showSearchDependenciesModal: types.boolean,
-  showDeleteSandboxModal: types.boolean,
   openedWorkspaceItem: types.maybe(types.string),
 };

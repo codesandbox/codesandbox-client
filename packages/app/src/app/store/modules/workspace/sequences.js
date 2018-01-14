@@ -4,26 +4,6 @@ import * as actions from './actions';
 import { loadSandbox, ensureOwnedSandbox } from '../../sequences';
 import { addNotification } from '../../factories';
 
-export const openSearchDependenciesModal = set(
-  state`workspace.showSearchDependenciesModal`,
-  true
-);
-
-export const closeSearchDependenciesModal = set(
-  state`workspace.showSearchDependenciesModal`,
-  false
-);
-
-export const openDeleteSandboxModal = set(
-  state`workspace.showDeleteSandboxModal`,
-  true
-);
-
-export const closeDeleteSandboxModal = set(
-  state`workspace.showDeleteSandboxModal`,
-  false
-);
-
 export const changeSandboxPrivacy = [
   actions.saveSandboxPrivacy,
   set(
