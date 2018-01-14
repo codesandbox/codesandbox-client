@@ -90,7 +90,7 @@ class ConsoleInput extends React.PureComponent<Props> {
     this.editor.layout();
   };
 
-  editorDidMount = async (editor, monaco) => {
+  editorDidMount = async editor => {
     this.editor = editor;
 
     editor.onDidChangeModelContent(() => {
