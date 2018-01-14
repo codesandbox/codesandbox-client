@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import PrivacyStatus from 'app/components/sandbox/PrivacyStatus';
 import delayEffect from 'common/utils/animation/delay-effect';
 import { sandboxUrl } from 'common/utils/url-generator';
+import getDefinition from 'common/utils/templates';
 
 import type { SmallSandbox } from 'common/types';
 
@@ -100,6 +101,10 @@ export default ({ sandboxes, isCurrentUser, onDelete }: Props) => (
           </td>
           <td>{moment(s.insertedAt).format('ll')}</td>
           <td>{moment(s.updatedAt).format('ll')}</td>
+          <StatBody>
+            {getDefinition(s.template).Icon(35, 35) ||
+              getDefinition().Icon(35, 35)}
+          </StatBody>
           <StatBody>{s.likeCount}</StatBody>
           <StatBody>{s.viewCount}</StatBody>
           <StatBody>{s.forkCount}</StatBody>

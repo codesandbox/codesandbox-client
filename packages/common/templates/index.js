@@ -119,6 +119,7 @@ export default function getDefinition(
     | 'create-react-app'
     | 'vue-cli'
     | 'preact-cli'
+    | 'svelte'
     | 'create-react-app-typescript'
 ) {
   if (!theme) {

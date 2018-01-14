@@ -254,6 +254,17 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "radi-cho",
+      "name": "Radi Cho",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/12954909?v=4",
+      "profile": "https://github.com/RSG-Group",
+      "contributions": [
+        "bug",
+        "code",
+        "ideas"
+      ]
     }
   ]
 }
