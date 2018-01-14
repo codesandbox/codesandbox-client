@@ -93,28 +93,32 @@ export default ({ sandboxes, isCurrentUser, onDelete }: Props) => (
       </tr>
     </thead>
     <Body>
-      {sandboxes.map((s, i) => (
-        <SandboxRow index={i} key={s.id}>
-          <td>
-            <Link to={sandboxUrl(s)}>{s.title || s.id}</Link>
-            <PrivacyStatus privacy={s.privacy} asIcon />
-          </td>
-          <td>{moment(s.insertedAt).format('ll')}</td>
-          <td>{moment(s.updatedAt).format('ll')}</td>
-          <StatBody>
-            {getDefinition(s.template).Icon(35, 35) ||
-              getDefinition().Icon(35, 35)}
-          </StatBody>
-          <StatBody>{s.likeCount}</StatBody>
-          <StatBody>{s.viewCount}</StatBody>
-          <StatBody>{s.forkCount}</StatBody>
-          {isCurrentUser && (
-            <StatBody style={{ padding: '0.55rem 0.5rem', cursor: 'pointer' }}>
-              <DeleteSandboxButton id={s.id} onDelete={onDelete} />
+      {sandboxes.map((s, i) => {
+        const Icon = getDefinition(s.template).Icon || getDefinition().Icon;
+        return (
+          <SandboxRow index={i} key={s.id}>
+            <td>
+              <Link to={sandboxUrl(s)}>{s.title || s.id}</Link>
+              <PrivacyStatus privacy={s.privacy} asIcon />
+            </td>
+            <td>{moment(s.insertedAt).format('ll')}</td>
+            <td>{moment(s.updatedAt).format('ll')}</td>
+            <StatBody>
+              <Icon width={35} height={35} />
             </StatBody>
-          )}
-        </SandboxRow>
-      ))}
+            <StatBody>{s.likeCount}</StatBody>
+            <StatBody>{s.viewCount}</StatBody>
+            <StatBody>{s.forkCount}</StatBody>
+            {isCurrentUser && (
+              <StatBody
+                style={{ padding: '0.55rem 0.5rem', cursor: 'pointer' }}
+              >
+                <DeleteSandboxButton id={s.id} onDelete={onDelete} />
+              </StatBody>
+            )}
+          </SandboxRow>
+        );
+      })}
     </Body>
   </Table>
 );
