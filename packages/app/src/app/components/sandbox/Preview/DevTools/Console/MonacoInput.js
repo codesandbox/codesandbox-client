@@ -101,7 +101,7 @@ class ConsoleInput extends React.PureComponent<Props> {
   };
 
   editorDidMount = async (editor, monaco) => {
-    editor.onDidChangeModelContent(e => {
+    editor.onDidChangeModelContent(() => {
       const lineCount = editor.getModel().getLineCount();
       this.setState({
         editorHeight: Math.min(
@@ -112,8 +112,8 @@ class ConsoleInput extends React.PureComponent<Props> {
       editor.layout();
     });
 
-    editor.onKeyDown(e => {
-      e = e.browserEvent;
+    editor.onKeyDown(event => {
+      const e = event.browserEvent;
       const { evaluateConsole } = this.props;
 
       if (e.keyCode === 13) {
