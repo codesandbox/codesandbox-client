@@ -8,8 +8,8 @@ import Files from './items/Files';
 import ProjectInfo from './items/ProjectInfo';
 import GitHub from './items/GitHub';
 import Deployment from './items/Deployment';
+import ConfigurationFiles from './items/ConfigurationFiles';
 import NotOwnedSandboxInfo from './items/NotOwnedSandboxInfo';
-import DiscordLogo from './DiscordLogo';
 
 import ConnectionNotice from './ConnectionNotice';
 import Advertisement from './Advertisement';
@@ -21,6 +21,7 @@ const idToItem = {
   files: Files,
   github: GitHub,
   deploy: Deployment,
+  config: ConfigurationFiles,
 };
 
 function Workspace({ store }) {

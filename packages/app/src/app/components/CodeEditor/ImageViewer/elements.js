@@ -5,6 +5,7 @@ export const Container = Centered.extend`
   height: 100%;
   color: rgba(255, 255, 255, 0.9);
   overflow: auto;
+  padding: 1rem;
 `;
 
 export const Title = styled.div`

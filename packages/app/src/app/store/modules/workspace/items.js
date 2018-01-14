@@ -22,6 +22,6 @@ export default [
   },
   {
     id: 'config',
-    name: 'Configurations',
+    name: 'Configuration Files',
   },
 ];

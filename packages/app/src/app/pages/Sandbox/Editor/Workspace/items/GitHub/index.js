@@ -1,14 +1,12 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 
-import Button from 'app/components/Button';
-
 import GithubIntegration from '../../../../../common/GithubIntegration';
 import Git from '../../Git';
 import CreateRepo from '../../CreateRepo';
-import { WorkspaceInputContainer, Description } from '../../elements';
+import { Description } from '../../elements';
 
-const GitHub = ({ store, signals }) => {
+const GitHub = ({ store }) => {
   const sandbox = store.editor.currentSandbox;
 
   return store.user.integrations.github ? ( // eslint-disable-line

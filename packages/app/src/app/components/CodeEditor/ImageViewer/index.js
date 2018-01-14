@@ -15,15 +15,20 @@ export default class ImageViewer extends React.Component {
   };
 
   render() {
+    const { currentModule } = this.props;
+
     return (
-      <Container horizontal>
+      <Container
+        style={{ width: this.props.width, height: this.props.height }}
+        horizontal
+      >
         <Title>Image</Title>
         <SubTitle>
           We refer to these files by URL, you can edit this url to change the
           image.
         </SubTitle>
 
-        <Image src={this.props.code} alt={this.props.title} />
+        <Image src={currentModule.code} alt={currentModule.code} />
 
         <MaxWidth onSubmit={this.onSubmit}>
           <Input
@@ -31,9 +36,9 @@ export default class ImageViewer extends React.Component {
               this.input = el;
             }}
             onChange={this.changeCode}
-            value={this.props.code}
+            value={currentModule.code}
           />
-          <Button disabled={!this.props.isNotSynced} type="submit">
+          <Button disabled={!currentModule.isNotSynced} type="submit">
             Save
           </Button>
         </MaxWidth>
