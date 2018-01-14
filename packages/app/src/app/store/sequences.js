@@ -1,5 +1,5 @@
 import { sequence } from 'cerebral';
-import { when, set, unset, parallel } from 'cerebral/operators';
+import { when, set, unset, equals } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 import * as actions from './actions';
 import * as factories from './factories';
@@ -12,7 +12,19 @@ export const showAuthenticationError = [];
 
 export const openModal = actions.setModal;
 
-export const closeModal = set(state`currentModal`, null);
+export const closeModal = [
+  equals(state`currentModal`),
+  {
+    preferences: [
+      equals(state`preferences.itemId`),
+      {
+        keybindings: [],
+        otherwise: [set(state`currentModal`, null), actions.startKeybindings],
+      },
+    ],
+    otherwise: set(state`currentModal`, null),
+  },
+];
 
 export const signOutZeit = [
   actions.signOutZeit,

@@ -2,6 +2,12 @@ import { set } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 import { addNotification } from '../../factories';
 import * as actions from './actions';
+import { getZeitUserDetails } from '../../sequences';
+
+export const openDeployModal = [
+  set(state`currentModal`, 'deployment'),
+  getZeitUserDetails,
+];
 
 export const deploy = [
   set(state`deployment.deploying`, true),

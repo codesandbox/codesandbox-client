@@ -1,3 +1,5 @@
+import { SubscriptionError } from './errors';
+
 export function subscribe({ props, api, state }) {
   return api
     .post('/users/current_user/subscription', {
@@ -6,7 +8,10 @@ export function subscribe({ props, api, state }) {
         token: props.token,
       },
     })
-    .then(data => ({ user: data }));
+    .then(data => ({ user: data }))
+    .catch(error => {
+      throw new SubscriptionError(error.response.result);
+    });
 }
 
 export function updateSubscription({ api, state }) {
@@ -16,13 +21,19 @@ export function updateSubscription({ api, state }) {
         amount: state.get('patron.price'),
       },
     })
-    .then(data => ({ user: data }));
+    .then(data => ({ user: data }))
+    .catch(error => {
+      throw new SubscriptionError(error.response.result);
+    });
 }
 
 export function cancelSubscription({ api }) {
   return api
     .delete('/users/current_user/subscription')
-    .then(data => ({ user: data }));
+    .then(data => ({ user: data }))
+    .catch(error => {
+      throw new SubscriptionError(error.response.result);
+    });
 }
 
 export function whenConfirmedCancelSubscription({ browser, path }) {

@@ -62,7 +62,5 @@ export default Module({
     paymentDetailsUpdated: sequences.updatePaymentDetails,
     keybindingChanged: sequences.changeKeybinding,
     zenModeToggled: sequences.toggleZenMode,
-    modalOpened: sequences.openModal,
-    modalClosed: sequences.closeModal,
   },
 });

@@ -8,9 +8,9 @@ import QuickActions from 'app/pages/Sandbox/QuickActions';
 import Title from 'app/components/Title';
 import SubTitle from 'app/components/SubTitle';
 import Centered from 'common/components/flex/Centered';
+import Skeleton from 'app/components/Skeleton';
 
 import Editor from './Editor';
-import Skeleton from './Editor/Content/Skeleton';
 
 class SandboxPage extends React.Component {
   componentWillMount() {
@@ -45,9 +45,18 @@ class SandboxPage extends React.Component {
 
     if (store.editor.isLoading) {
       return (
-        <Centered horizontal vertical>
-          <Skeleton />
-        </Centered>
+        <Skeleton
+          titles={[
+            {
+              content: 'Loading sandbox...',
+              delay: 0,
+            },
+            {
+              content: 'Fetching git repository...',
+              delay: 2,
+            },
+          ]}
+        />
       );
     }
 
