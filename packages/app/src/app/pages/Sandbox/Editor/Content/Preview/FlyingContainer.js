@@ -257,7 +257,7 @@ class FlyingContainer extends React.Component {
           {this.state.resizing && (
             <ResizingNotice>
               {Math.floor(width)} x{' '}
-              {Math.floor(height - 48 /* navigation bar */)}
+              {Math.floor(height - 2.5 * 16 /* navigation bar */)}
             </ResizingNotice>
           )}
         </div>
