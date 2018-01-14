@@ -1,62 +1,55 @@
 import React from 'react';
-
+import { inject, observer } from 'mobx-react';
 import moment from 'moment';
-import logError from 'app/utils/error';
 
 import { SmallText, Buttons, StyledButton } from './elements';
 
-export default class ChangeSubscription extends React.PureComponent {
-  state = {
-    loading: false,
-  };
+function ChangeSubscription({ date, store, signals }) {
+  const isLoading = store.patron.isUpdatingSubscription;
+  const error = store.patron.error;
 
-  updateSubscription = async () => {
-    this.setState({ loading: true });
-    try {
-      await this.props.updateSubscription();
-    } catch (e) {
-      console.error(e);
-      logError(e);
-    }
-    this.setState({ loading: false });
-  };
-
-  cancelSubscription = async () => {
-    this.setState({ loading: true });
-    try {
-      await this.props.cancelSubscription();
-    } catch (e) {
-      console.error(e);
-      logError(e);
-    }
-    this.setState({ loading: false });
-  };
-
-  render() {
-    const { date } = this.props;
-
+  if (error) {
     return (
       <div>
+        There was a problem updating this subscription.
+        <SmallText>{error}</SmallText>
         <Buttons>
-          <StyledButton
-            disabled={this.state.loading}
-            onClick={this.cancelSubscription}
-            red
-          >
-            Cancel
-          </StyledButton>
-          <StyledButton
-            disabled={this.state.loading}
-            onClick={this.updateSubscription}
-          >
-            Update
+          <StyledButton onClick={() => signals.patron.tryAgainClicked()}>
+            Try again
           </StyledButton>
         </Buttons>
-        <SmallText>
-          You will be billed every <strong>{moment(date).format('Do')}</strong>{' '}
-          of the month, you can change or cancel your subscription at any time.
-        </SmallText>
       </div>
     );
   }
+
+  let buttons = (
+    <Buttons>
+      <StyledButton onClick={() => this.props.cancelSubscription()} red>
+        Cancel
+      </StyledButton>
+      <StyledButton onClick={() => this.props.updateSubscription()}>
+        Update
+      </StyledButton>
+    </Buttons>
+  );
+
+  if (isLoading) {
+    buttons = (
+      <Buttons>
+        <StyledButton disabled>Processing...</StyledButton>
+      </Buttons>
+    );
+  }
+
+  return (
+    <div>
+      {buttons}
+      <SmallText>
+        You will be billed every <strong>{moment(date).format('Do')}</strong> of
+        the month, you can change or cancel your subscription at any time.
+      </SmallText>
+    </div>
+  );
 }
+
+export default inject('store', 'signals')(observer(ChangeSubscription));

@@ -7,13 +7,17 @@ import Centered from 'common/components/flex/Centered';
 
 import { Header } from './elements';
 
-function Skeleton() {
+function Skeleton({ titles }) {
   return (
     <Fullscreen>
       <Header />
       <Centered horizontal vertical>
-        <Title delay={0.6}>Loading Sandbox...</Title>
-        <SubTitle delay={1}>Fetching git repository...</SubTitle>
+        <Title delay={titles[0].delay}>{titles[0].content}</Title>
+        {titles.slice(1).map((title, index) => (
+          <SubTitle key={String(index)} delay={title.delay}>
+            {title.content}
+          </SubTitle>
+        ))}
       </Centered>
     </Fullscreen>
   );

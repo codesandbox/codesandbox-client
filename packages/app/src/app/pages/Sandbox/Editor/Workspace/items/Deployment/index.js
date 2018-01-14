@@ -18,14 +18,7 @@ const Deployment = ({ signals, store }) => (
 
     {store.user.integrations.zeit ? (
       <WorkspaceInputContainer style={{ marginTop: '1rem' }}>
-        <Button
-          block
-          onClick={() =>
-            signals.modalOpened({
-              modal: 'deployment',
-            })
-          }
-        >
+        <Button block onClick={() => signals.deployment.deploySandboxClicked()}>
           Deploy Sandbox
         </Button>
       </WorkspaceInputContainer>

@@ -10,5 +10,6 @@ export default Module({
   },
   signals: {
     deployClicked: sequences.deploy,
+    deploySandboxClicked: sequences.openDeployModal,
   },
 });
