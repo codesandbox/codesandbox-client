@@ -91,11 +91,10 @@ export const Container = styled.div`
   }
 `;
 
-export const TermsContainer = styled.div`
-  border-top: 1px solid rgba(0, 0, 0, 0.3);
+export const ContactContainer = styled.div`
   padding: 1rem;
   color: rgba(255, 255, 255, 0.6);
-  font-size: 0.75rem;
+  font-size: 1.25rem;
 `;
 
 export const WorkspaceSubtitle = styled.h4`

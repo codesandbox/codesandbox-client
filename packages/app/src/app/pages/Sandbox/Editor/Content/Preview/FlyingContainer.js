@@ -197,9 +197,9 @@ class FlyingContainer extends React.Component {
         <div
           style={{
             position: 'absolute',
-            right: '1rem',
-            top: '1rem',
-            bottom: '1rem',
+            right: '.5rem',
+            top: '.5rem',
+            bottom: '.5rem',
 
             overflow: 'hidden',
             borderRadius: '4px',

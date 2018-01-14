@@ -69,19 +69,21 @@ function Header({ store, signals }) {
           title="Fork"
           Icon={Fork}
         />
-        <Action
-          onClick={
-            store.editor.isAllModulesSynced
-              ? null
-              : () => signals.editor.saveClicked()
-          }
-          placeholder={
-            store.editor.isAllModulesSynced ? 'All modules are saved' : false
-          }
-          tooltip="Save sandbox"
-          title="Save"
-          Icon={Save}
-        />
+        {(sandbox.owned || !store.editor.isAllModulesSynced) && (
+          <Action
+            onClick={
+              store.editor.isAllModulesSynced
+                ? null
+                : () => signals.editor.saveClicked()
+            }
+            placeholder={
+              store.editor.isAllModulesSynced ? 'All modules are saved' : false
+            }
+            tooltip="Save sandbox"
+            title="Save"
+            Icon={Save}
+          />
+        )}
 
         <Action
           tooltip="Share sandbox"

@@ -146,14 +146,14 @@ class Preview extends React.Component {
                 x: 0,
                 y: 0,
                 width: this.props.width / 2,
-                height: this.props.height - 32,
+                height: this.props.height - 16,
               })
             }
             alignBottom={() =>
               resize({
                 x: 0,
-                y: this.props.height / 2 - 32,
-                width: this.props.width - 32,
+                y: this.props.height / 2 - 16,
+                width: this.props.width - 16,
                 height: this.props.height / 2,
               })
             }

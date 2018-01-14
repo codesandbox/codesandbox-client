@@ -15,7 +15,7 @@ export default Module({
       instantPreviewEnabled: false,
       fontSize: 14,
       fontFamily: '',
-      lineHeight: 1.15,
+      lineHeight: 1.5,
       clearConsoleEnabled: false, // TODO: should be true
       autoDownloadTypes: true,
       codeMirror: false,

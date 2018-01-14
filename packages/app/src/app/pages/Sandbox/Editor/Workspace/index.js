@@ -1,20 +1,20 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
-import { Link } from 'react-router-dom';
 
-import { tosUrl, privacyUrl } from 'common/utils/url-generator';
 import workspaceItems from 'app/store/modules/workspace/items';
+import SocialInfo from 'app/components/SocialInfo';
 
 import Files from './items/Files';
 import ProjectInfo from './items/ProjectInfo';
 import GitHub from './items/GitHub';
 import Deployment from './items/Deployment';
 import NotOwnedSandboxInfo from './items/NotOwnedSandboxInfo';
+import DiscordLogo from './DiscordLogo';
 
 import ConnectionNotice from './ConnectionNotice';
 import Advertisement from './Advertisement';
 
-import { Container, TermsContainer, ItemTitle } from './elements';
+import { Container, ContactContainer, ItemTitle } from './elements';
 
 const idToItem = {
   project: ProjectInfo,
@@ -45,12 +45,10 @@ function Workspace({ store }) {
       {!preferences.settings.zenMode && (
         <div>
           {!store.isPatron && !sandbox.owned && <Advertisement />}
+          <ContactContainer>
+            <SocialInfo />
+          </ContactContainer>
           <ConnectionNotice />
-          <TermsContainer>
-            By using CodeSandbox you agree to our{' '}
-            <Link to={tosUrl()}>Terms and Conditions</Link> and{' '}
-            <Link to={privacyUrl()}>Privacy Policy</Link>.
-          </TermsContainer>
         </div>
       )}
     </Container>

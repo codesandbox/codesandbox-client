@@ -28,7 +28,7 @@ export const CodeContainer = styled.div`
   flex: 1 1 auto;
   .CodeMirror {
     font-family: ${props =>
-      fontFamilies(props.fontFamily, 'Source Code Pro', 'monospace')};
+      fontFamilies(props.fontFamily, 'Menlo', 'Source Code Pro', 'monospace')};
     line-height: ${props => props.lineHeight};
     background: ${theme.background2()};
     color: #e0e0e0;

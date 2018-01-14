@@ -21,6 +21,11 @@ export const CodeContainer = styled.div`
     background: ${theme.background2()};
   }
 
+  .monaco-editor .view-overlays .current-line {
+    border: none !important;
+    background-color: ${theme.background4()};
+  }
+
   .mtk5 {
     color: #99c794 !important;
   }

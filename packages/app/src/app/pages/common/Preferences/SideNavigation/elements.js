@@ -61,20 +61,9 @@ export const Selector = styled.div`
   transform: translateY(${props => props.offset + 1}px);
 `;
 
-export const SocialIcons = styled.div`
+export const SocialContainer = styled.div`
   position: absolute;
-  bottom: 2rem;
-  margin-top: 2rem;
-  margin-left: 2rem;
-`;
-
-export const Icon = styled.a`
-  display: inline-block;
-  color: rgba(255, 255, 255, 0.4);
-  font-size: 1.125rem;
-  margin-right: 0.5rem;
-
-  &:hover {
-    color: rgba(255, 255, 255, 0.6);
-  }
+  bottom: 2em;
+  margin-top: 2em;
+  margin-left: 2em;
 `;

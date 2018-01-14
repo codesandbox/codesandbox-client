@@ -1,18 +1,15 @@
 import React from 'react';
 
-import TwitterIcon from 'react-icons/lib/fa/twitter';
-import GithubIcon from 'react-icons/lib/fa/github';
-import FeedbackIcon from 'react-icons/lib/go/comment-discussion';
 import Relative from 'common/components/Relative';
+import SocialInfo from 'app/components/SocialInfo';
 
 import {
   Container,
+  SocialContainer,
   Title,
   ITEM_HEIGHT,
   Item,
   Selector,
-  SocialIcons,
-  Icon,
 } from './elements';
 
 function SideNavigation({ menuItems, itemId, setItem }) {
@@ -37,30 +34,9 @@ function SideNavigation({ menuItems, itemId, setItem }) {
         ))}
         <Selector offset={itemIndex * ITEM_HEIGHT} />
       </Relative>
-
-      <SocialIcons>
-        <Icon
-          href="https://twitter.com/codesandboxapp"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <TwitterIcon />
-        </Icon>
-        <Icon
-          href="https://github.com/CompuIves/codesandbox-client"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <GithubIcon />
-        </Icon>
-        <Icon
-          href="https://discord.gg/FGeubVt"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <FeedbackIcon />
-        </Icon>
-      </SocialIcons>
+      <SocialContainer>
+        <SocialInfo />
+      </SocialContainer>
     </Container>
   );
 }

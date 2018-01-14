@@ -822,6 +822,7 @@ class MonacoEditor extends React.Component {
       fontSize: settings.fontSize,
       fontFamily: fontFamilies(
         settings.fontFamily,
+        'Menlo',
         'Source Code Pro',
         'monospace'
       ),
@@ -831,7 +832,8 @@ class MonacoEditor extends React.Component {
       },
       ariaLabel: currentModule.title,
       formatOnPaste: true,
-      lineHeight: (settings.lineHeight || 1.15) * settings.fontSize,
+      lineHeight: (settings.lineHeight || 1.5) * settings.fontSize,
+      folding: true,
     };
   };
 
