@@ -29,6 +29,22 @@ const Container = styled.div`
   .monaco-editor-background {
     background-color: ${props => props.theme.background.darken(0.3)};
   }
+
+  /* The styles below are needed for CodeMirror mode */
+  .mtk1 {
+    color: #d4d4d4;
+  }
+  .monaco-editor .cursor {
+    background-color: #aeafad;
+    border-color: #aeafad;
+    color: #515052;
+  }
+  .monaco-editor .focused .selected-text {
+    background-color: #264f78;
+  }
+  .monaco-editor .selected-text {
+    background-color: #3a3d41;
+  }
 `;
 
 type Props = {
