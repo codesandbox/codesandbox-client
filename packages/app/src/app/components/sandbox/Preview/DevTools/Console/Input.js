@@ -6,6 +6,7 @@ import ChevronRight from 'react-icons/lib/md/chevron-right';
 import theme from 'common/theme';
 
 import MonacoEditor from 'app/components/sandbox/CodeEditor/monaco/MonacoReactComponent';
+import defineTheme from 'app/components/sandbox/CodeEditor/monaco/define-theme';
 
 import { IconContainer } from './styles';
 
@@ -28,6 +29,10 @@ const Container = styled.div`
 
   .monaco-editor-background {
     background-color: ${props => props.theme.background.darken(0.3)};
+  }
+
+  .react-monaco-editor-container {
+    overflow: visible !important;
   }
 
   /* The styles below are needed for CodeMirror mode */
@@ -61,7 +66,7 @@ const InputWrapper = styled.div`
 `;
 
 const monacoOptions = {
-  // language: 'javascript',
+  language: 'javascript',
   wordWrap: 'on',
   overviewRulerLanes: 0,
   glyphMargin: false,
@@ -95,7 +100,6 @@ class ConsoleInput extends React.PureComponent<Props> {
   sizeProbeInterval: number;
 
   state = {
-    command: '',
     commandHistory: [],
     commandCursor: -1,
 
@@ -192,6 +196,8 @@ class ConsoleInput extends React.PureComponent<Props> {
             width="100%"
             height={`calc(100% - ${CONSOLE_INPUT_PADDING}px)`}
             options={monacoOptions}
+            theme="CodeSandbox"
+            editorWillMount={defineTheme}
             editorDidMount={this.editorDidMount}
             openReference={noop}
           />
