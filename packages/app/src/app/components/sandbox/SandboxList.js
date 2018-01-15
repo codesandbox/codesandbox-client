@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import PrivacyStatus from 'app/components/sandbox/PrivacyStatus';
 import delayEffect from 'common/utils/animation/delay-effect';
 import { sandboxUrl } from 'common/utils/url-generator';
-import getDefinition from 'common/utils/templates';
+import getDefinition from 'common/templates';
 
 import type { SmallSandbox } from 'common/types';
 
