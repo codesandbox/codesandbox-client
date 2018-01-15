@@ -16,7 +16,7 @@ import coreLibraries from './npm/get-core-libraries';
 import getDependencyName from './utils/get-dependency-name';
 import DependencyNotFoundError from '../errors/dependency-not-found-error';
 import ModuleNotFoundError from '../errors/module-not-found-error';
-import TestRunner from './tests/test-runner';
+import TestRunner from './tests/jest-lite';
 
 type Externals = {
   [name: string]: string,

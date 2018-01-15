@@ -5,7 +5,7 @@ import _debug from 'app/utils/debug';
 import initializeErrorTransformers from './errors/transformers';
 import getPreset from './eval';
 import Manager from './eval/manager';
-import TestRunner from './eval/tests/test-runner';
+import TestRunner from './eval/tests/jest-lite';
 import transformJSON from './console/transform-json';
 
 import { resetScreen } from './status-screen';
