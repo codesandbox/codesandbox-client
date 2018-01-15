@@ -124,7 +124,7 @@ export default class TestRunner {
 
     summaryMessage += 'Tests: ';
     if (aggregatedResults.failedMessages) {
-      summaryMessage += `${aggregatedResults.failedMessages} failed, `;
+      summaryMessage += `${aggregatedResults.failedTests} failed, `;
     }
     if (aggregatedResults.passedTests) {
       summaryMessage += `${aggregatedResults.passedTests} passed, `;
