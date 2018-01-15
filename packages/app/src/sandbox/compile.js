@@ -195,19 +195,18 @@ async function compile({
     }
 
     //Testing
-    console.log('Tests: Starting...');
+    // console.log('Tests: Starting...');
     const ttt = Date.now();
     let testRunner = manager.testRunner;
-    testRunner.resetResults();
+    testRunner.initialize();
     testRunner.findTests(modules);
-    await testRunner.transpileTests();
-    testRunner.runTests();
-    let testResults = testRunner.reportResults();
+    await testRunner.runTests();
+    let aggregatedResults = testRunner.reportResults();
     debug(`Test Evaluation time: ${Date.now() - tt}ms`);
 
     dispatch({
       type: 'test-result',
-      result: transformJSON(testResults),
+      result: transformJSON(aggregatedResults),
     });
     //End - Testing
 

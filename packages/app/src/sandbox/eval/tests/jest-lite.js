@@ -3,20 +3,23 @@ import jestMock from 'jest-mock';
 import { getCurrentManager } from '../../compile';
 
 const describe = (name, fn) => {
+  const testRunner = getCurrentManager().testRunner;
+  testRunner.setCurrentDescribe(name);
   fn();
+  testRunner.resetCurrentDescribe(name);
 };
 
 const test = (name, fn) => {
-  let testRunner = getCurrentManager().testRunner;
+  const testRunner = getCurrentManager().testRunner;
   let error = false;
   try {
     fn();
   } catch (Error) {
     error = true;
-    testRunner.addResult(`❌ FAIL ${name}`);
+    testRunner.addResult({ status: 'fail', name });
   } finally {
     if (!error) {
-      testRunner.addResult(`✅ PASS ${name}`);
+      testRunner.addResult({ status: 'pass', name });
     }
   }
 };
