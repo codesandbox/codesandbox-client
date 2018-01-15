@@ -105,7 +105,7 @@ export default ({ sandboxes, isCurrentUser, onDelete }: Props) => (
             <td>{moment(s.insertedAt).format('ll')}</td>
             <td>{moment(s.updatedAt).format('ll')}</td>
             <StatBody>
-              <Icon width={35} height={35} />
+              <Icon width={30} height={30} />
             </StatBody>
             <StatBody>{s.likeCount}</StatBody>
             <StatBody>{s.viewCount}</StatBody>
