@@ -80,6 +80,7 @@ export default ({ sandboxes, isCurrentUser, onDelete }: Props) => (
         <HeaderTitle>Title</HeaderTitle>
         <HeaderTitle>Created</HeaderTitle>
         <HeaderTitle>Updated</HeaderTitle>
+        <StatTitle />
         <StatTitle>
           <FullHeartIcon />
         </StatTitle>
