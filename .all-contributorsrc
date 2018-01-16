@@ -256,12 +256,14 @@
       ]
     },
     {
-      "login": "xyc",
-      "name": "Xiaoyi Chen",
-      "avatar_url": "https://avatars3.githubusercontent.com/u/679275?v=4",
-      "profile": "https://twitter.com/chxy",
+      "login": "radi-cho",
+      "name": "Radi Cho",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/12954909?v=4",
+      "profile": "https://github.com/RSG-Group",
       "contributions": [
-        "code"
+        "bug",
+        "code",
+        "ideas"
       ]
     }
   ]

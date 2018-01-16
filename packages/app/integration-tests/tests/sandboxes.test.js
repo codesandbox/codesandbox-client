@@ -2,7 +2,7 @@ import puppeteer from 'puppeteer';
 
 const SANDBOXES = [
   'new',
-  'preact',
+  // 'preact',
   'vue',
   'svelte',
   'react-ts',
