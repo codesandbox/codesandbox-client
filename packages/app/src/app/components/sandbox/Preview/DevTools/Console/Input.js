@@ -35,20 +35,19 @@ const Container = styled.div`
     overflow: visible !important;
   }
 
-  /* The styles below are needed for CodeMirror mode */
-  .mtk1 {
-    color: #d4d4d4;
+  .mtk5 {
+    color: #99c794 !important;
   }
-  .monaco-editor .cursor {
-    background-color: #aeafad;
-    border-color: #aeafad;
-    color: #515052;
+  .mtk12.PropertyAssignment {
+    color: #99c794;
   }
-  .monaco-editor .focused .selected-text {
-    background-color: #264f78;
+  .mtk12.PropertyAssignment.PropertyAccessExpression {
+    color: #fac863;
   }
-  .monaco-editor .selected-text {
-    background-color: #3a3d41;
+  .Identifier.CallExpression
+    + .OpenParenToken.CallExpression
+    + .Identifier.CallExpression {
+    color: #fac863 !important;
   }
 `;
 
