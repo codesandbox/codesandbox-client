@@ -90,6 +90,26 @@ class Console extends React.Component<Props, State> {
         }
         break;
       }
+      case 'test-result': {
+        const { result, error } = data;
+
+        const aggregatedResults = result ? CircularJSON.parse(result) : result;
+        const { summaryMessage, failedMessages } = aggregatedResults;
+
+        if (!error) {
+          if (aggregatedResults) {
+            this.addMessage('log', [summaryMessage]);
+            failedMessages.forEach(t => {
+              this.addMessage('warn', [t]);
+            });
+          } else {
+            this.addMessage('warn', [undefined], 'return');
+          }
+        } else {
+          this.addMessage('error', [aggregatedResults]);
+        }
+        break;
+      }
       default: {
         break;
       }

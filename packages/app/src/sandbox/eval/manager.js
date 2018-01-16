@@ -16,6 +16,7 @@ import coreLibraries from './npm/get-core-libraries';
 import getDependencyName from './utils/get-dependency-name';
 import DependencyNotFoundError from '../errors/dependency-not-found-error';
 import ModuleNotFoundError from '../errors/module-not-found-error';
+import TestRunner from './tests/jest-lite';
 
 type Externals = {
   [name: string]: string,
@@ -77,6 +78,7 @@ export default class Manager {
   webpackHMR: boolean = false;
   hardReload: boolean = false;
   hmrStatus: 'idle' | 'check' | 'apply' | 'fail' = 'idle';
+  testRunner: TestRunner;
 
   // List of modules that are being transpiled, to prevent duplicate jobs.
   transpileJobs: { [transpiledModuleId: string]: true };
@@ -90,6 +92,7 @@ export default class Manager {
     this.cachedPaths = {};
     this.transpileJobs = {};
     modules.forEach(m => this.addModule(m));
+    this.testRunner = new TestRunner(this);
 
     if (process.env.NODE_ENV === 'development') {
       window.manager = this;
