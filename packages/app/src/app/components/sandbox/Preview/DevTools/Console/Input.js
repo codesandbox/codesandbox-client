@@ -112,15 +112,19 @@ class ConsoleInput extends React.PureComponent<Props> {
   editorDidMount = async editor => {
     this.editor = editor;
 
+    let lastLineCount = 1;
     editor.onDidChangeModelContent(() => {
       const lineCount = editor.getModel().getLineCount();
-      this.setState({
-        editorHeight: Math.min(
-          CONSOLE_INPUT_MAX_HEIGHT,
-          lineCount * CONSOLE_INPUT_LINE_HEIGHT
-        ),
-      });
-      this.resizeEditor();
+      if (lineCount !== lastLineCount) {
+        this.setState({
+          editorHeight: Math.min(
+            CONSOLE_INPUT_MAX_HEIGHT,
+            lineCount * CONSOLE_INPUT_LINE_HEIGHT
+          ),
+        });
+        this.resizeEditor();
+        lastLineCount = lineCount;
+      }
     });
 
     editor.onKeyDown(event => {
