@@ -72,13 +72,16 @@ export default class TestRunner {
     // console.log('TR: findTests');
     this.tests = modules.filter(m => {
       let matched = false;
-      if (m.path.includes('__tests__') && m.path.endsWith('.js')) {
+      if (
+        m.path.includes('__tests__') &&
+        (m.path.endsWith('.js') || m.path.endsWith('.ts'))
+      ) {
         matched = true;
       }
-      if (m.path.endsWith('.test.js')) {
+      if (m.path.endsWith('.test.js') || m.path.endsWith('.test.ts')) {
         matched = true;
       }
-      if (m.path.endsWith('.spec.js')) {
+      if (m.path.endsWith('.spec.js') || m.path.endsWith('.spec.ts')) {
         matched = true;
       }
       return matched;
@@ -136,6 +139,10 @@ export default class TestRunner {
     let summaryMessage = '';
     let failedMessages = [];
 
+    if (aggregatedResults.totalTestSuites === 0) {
+      return null;
+    }
+
     results.forEach(({ status, name, describe, path }) => {
       if (status === 'fail') {
         let message = `FAIL (${path}) `;
@@ -147,22 +154,26 @@ export default class TestRunner {
       }
     });
 
-    summaryMessage = '💁 Test Summary: \n\n';
+    let summaryEmoji =
+      aggregatedResults.totalTestSuites === aggregatedResults.passedTestSuites
+        ? '😎'
+        : '👻';
+    summaryMessage = `Test Summary: ${summaryEmoji}\n\n`;
     summaryMessage += 'Test Suites: ';
-    if (aggregatedResults.failedMessagesuites) {
-      summaryMessage += `${aggregatedResults.failedMessagesuites} failed, `;
+    if (aggregatedResults.failedTestSuites !== null) {
+      summaryMessage += `${aggregatedResults.failedTestSuites} failed, `;
     }
-    if (aggregatedResults.passedTestSuites) {
+    if (aggregatedResults.passedTestSuites !== null) {
       summaryMessage += `${aggregatedResults.passedTestSuites} passed, `;
     }
     summaryMessage += `${aggregatedResults.totalTestSuites} total`;
     summaryMessage += '\n';
 
     summaryMessage += 'Tests: ';
-    if (aggregatedResults.failedMessages) {
+    if (aggregatedResults.failedTests !== null) {
       summaryMessage += `${aggregatedResults.failedTests} failed, `;
     }
-    if (aggregatedResults.passedTests) {
+    if (aggregatedResults.passedTests !== null) {
       summaryMessage += `${aggregatedResults.passedTests} passed, `;
     }
     summaryMessage += `${aggregatedResults.totalTests} total`;
