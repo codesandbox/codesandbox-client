@@ -5,7 +5,6 @@ import _debug from 'app/utils/debug';
 import initializeErrorTransformers from './errors/transformers';
 import getPreset from './eval';
 import Manager from './eval/manager';
-import TestRunner from './eval/tests/jest-lite';
 import transformJSON from './console/transform-json';
 
 import { resetScreen } from './status-screen';
@@ -194,20 +193,20 @@ async function compile({
       initializeResizeListener();
     }
 
-    //Testing
+    // Testing
     const ttt = Date.now();
-    let testRunner = manager.testRunner;
+    const testRunner = manager.testRunner;
     testRunner.initialize();
     testRunner.findTests(modules);
     await testRunner.runTests();
-    let aggregatedResults = testRunner.reportResults();
+    const aggregatedResults = testRunner.reportResults();
     debug(`Test Evaluation time: ${Date.now() - ttt}ms`);
 
     dispatch({
       type: 'test-result',
       result: transformJSON(aggregatedResults),
     });
-    //End - Testing
+    // End - Testing
 
     debug(`Total time: ${Date.now() - startTime}ms`);
 
