@@ -23,7 +23,7 @@ CodeSandbox consists of several separate servers, some of which are open
 sourced.
 
 * Client: the web application
-* Server: the Phoenix API server
+* Server: the [Phoenix](https://github.com/phoenixframework/phoenix) API server
 * Nginx: Nginx config files
 * [Git Extractor](https://github.com/CompuIves/codesandbox-git-extractor):
   responsible for extracting the source from a GitHub repository
