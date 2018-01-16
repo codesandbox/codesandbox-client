@@ -30,14 +30,17 @@ export default class TestRunner {
   aggregatedResults: Object;
   currentDescribe: String;
   manager: Manager;
+  startTime: Date;
+  endTime: Date;
 
   constructor(manager) {
-    // console.log('TR: Constructor');
     this.tests = [];
     this.aggregatedResults = this._makeEmptyAggregatedResults();
     this.currentDescribe = '';
     this.currentPath = '';
     this.manager = manager;
+    this.startTime = Date.now();
+    this.endTime = Date.now();
   }
 
   _makeEmptyAggregatedResults() {
@@ -56,6 +59,8 @@ export default class TestRunner {
 
   initialize() {
     this.resetResults();
+    this.startTime = Date.now();
+    this.endTime = Date.now();
   }
 
   static testGlobals() {
@@ -69,7 +74,6 @@ export default class TestRunner {
   }
 
   findTests(modules) {
-    // console.log('TR: findTests');
     this.tests = modules.filter(m => {
       let matched = false;
       if (
@@ -89,14 +93,12 @@ export default class TestRunner {
   }
 
   async transpileTests() {
-    // console.log('TR: transpileTests');
     for (let t of this.tests) {
       await this.manager.transpileModules(t);
     }
   }
 
   async runTests() {
-    // console.log('TR: runTests');
     await this.transpileTests();
     this.tests.forEach(t => {
       this.setCurrentPath(t.path);
@@ -106,7 +108,6 @@ export default class TestRunner {
   }
 
   addResult({ status, name }) {
-    // console.log('TR: addResult');
     let describe = this.currentDescribe;
     let path = this.currentPath;
 
@@ -133,11 +134,11 @@ export default class TestRunner {
   }
 
   reportResults() {
-    // console.log('TR: Report');
     let aggregatedResults = this.aggregatedResults;
     let results = this.aggregatedResults.results;
     let summaryMessage = '';
     let failedMessages = [];
+    let summaryEmoji = '';
 
     if (aggregatedResults.totalTestSuites === 0) {
       return null;
@@ -154,7 +155,7 @@ export default class TestRunner {
       }
     });
 
-    let summaryEmoji =
+    summaryEmoji =
       aggregatedResults.totalTestSuites === aggregatedResults.passedTestSuites
         ? '😎'
         : '👻';
@@ -177,6 +178,11 @@ export default class TestRunner {
       summaryMessage += `${aggregatedResults.passedTests} passed, `;
     }
     summaryMessage += `${aggregatedResults.totalTests} total`;
+    summaryMessage += '\n';
+
+    this.endTime = Date.now();
+    this.duration = this.endTime - this.startTime;
+    summaryMessage += `Time: ${this.duration}ms`;
     summaryMessage += '\n';
 
     aggregatedResults.summaryMessage = summaryMessage;
