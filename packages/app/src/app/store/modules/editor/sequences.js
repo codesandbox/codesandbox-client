@@ -3,11 +3,10 @@ import { state, props, string } from 'cerebral/tags';
 import * as actions from './actions';
 import { closeTabByIndex } from '../../actions';
 import {
-  getZeitUserDetails,
   ensureOwnedSandbox,
   forkSandbox,
   fetchGitChanges,
-  addNpmDependency,
+  closeModal,
 } from '../../sequences';
 
 import { setCurrentModule, addNotification } from '../../factories';
@@ -148,6 +147,21 @@ export const saveCode = [
     false: [],
   },
 ];
+
+export const addNpmDependency = [
+  closeModal,
+  ensureOwnedSandbox,
+  actions.addNpmDependencyToPackage,
+  saveCode,
+];
+
+export const removeNpmDependency = [
+  ensureOwnedSandbox,
+  actions.removeNpmDependencyFromPackage,
+  saveCode,
+];
+
+export const updateSandboxPackage = [actions.updateSandboxPackage, saveCode];
 
 export const handlePreviewAction = [
   equals(props`action.action`),

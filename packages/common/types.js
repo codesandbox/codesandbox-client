@@ -30,8 +30,6 @@ export type Module = {
   isNotSynced: boolean,
   sourceId: string,
   isBinary: boolean,
-  errors: ?Array<ModuleError>,
-  corrections: Array<ModuleCorrection>,
 };
 
 export type Directory = {
@@ -120,26 +118,24 @@ export type Sandbox = {
   likeCount: number,
   forkCount: number,
   userLiked: boolean,
-  modules: Array<string | Module>,
-  currentModule: ?string,
-  isInProjectView: ?boolean,
-  initialPath?: string,
-  directories: Array<string | Directory>,
+  modules: Array<Module>,
+  directories: Array<Directory>,
   owned: boolean,
   npmDependencies: {
     [dep: string]: string,
   },
   externalResources: Array<string>,
-  isInProjectView: ?boolean,
   privacy: 0 | 1 | 2,
-  showEditor: ?boolean,
-  showPreview: ?boolean,
   author: ?User,
   forkedFromSandbox: ?{ title: string, id: string },
   git: ?GitInfo,
   tags: Array<string>,
-  sourceId: string, // This is the source it's assigned to, a source contains all dependencies, modules and directories
-  forcedRenders: number,
+  /**
+   * This is the source it's assigned to, a source contains all dependencies, modules and directories
+   *
+   * @type {string}
+   */
+  sourceId: string,
   template: string,
   entry: string,
   originalGit: ?GitInfo,

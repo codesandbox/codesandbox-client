@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 
+import VERSION from 'common/version';
+
 import workspaceItems from 'app/store/modules/workspace/items';
 import SocialInfo from 'app/components/SocialInfo';
 
@@ -47,7 +49,21 @@ function Workspace({ store }) {
         <div>
           {!store.isPatron && !sandbox.owned && <Advertisement />}
           <ContactContainer>
-            <SocialInfo />
+            <SocialInfo style={{ display: 'inline-block' }} />
+            <div
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                float: 'right',
+                fontSize: '.6rem',
+                height: 28,
+                verticalAlign: 'middle',
+                fontWeight: 600,
+                color: 'rgba(255, 255, 255, 0.3)',
+              }}
+            >
+              {VERSION}
+            </div>
           </ContactContainer>
           <ConnectionNotice />
         </div>

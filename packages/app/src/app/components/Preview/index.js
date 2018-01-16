@@ -179,17 +179,24 @@ class BasePreview extends React.Component {
         );
       }
 
-      const normalizedModules = sandbox.modules.map(m => ({
-        path: getModulePath(sandbox.modules, sandbox.directories, m.id),
-        code: m.code,
-      }));
+      const modulesObject = {};
+
+      sandbox.modules.forEach(m => {
+        const path = getModulePath(sandbox.modules, sandbox.directories, m.id);
+        modulesObject[path] = {
+          path: getModulePath(sandbox.modules, sandbox.directories, m.id),
+          code: m.code,
+        };
+      });
+
+      const extraModules = this.props.extraModules || {};
+      const modulesToSend = { ...extraModules, ...modulesObject };
 
       sendMessage(sandbox.id, {
         type: 'compile',
         version: 2,
-        entry: this.getRenderedModule(),
-        dependencies: sandbox.npmDependencies,
-        modules: normalizedModules,
+        entry: !this.props.isInProjectView && this.getRenderedModule(),
+        modules: modulesToSend,
         sandboxId: sandbox.id,
         externalResources: sandbox.externalResources,
         isModuleView: !this.props.isInProjectView,

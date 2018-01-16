@@ -1,5 +1,7 @@
 import { dispatch, clearErrorTransformers } from 'codesandbox-api';
 
+import { absolute } from 'common/utils/path';
+
 import _debug from 'app/utils/debug';
 
 import initializeErrorTransformers from './errors/transformers';
@@ -80,18 +82,17 @@ inject();
 async function compile({
   sandboxId,
   modules,
-  entry,
   externalResources,
-  dependencies,
   hasActions,
   isModuleView = false,
   template,
+  entry,
 }) {
   const startTime = Date.now();
   try {
     clearErrorTransformers();
     initializeErrorTransformers();
-    unmount(manager && manager.webpackHMR);
+    unmount(true);
   } catch (e) {
     console.error(e);
   }
@@ -100,7 +101,24 @@ async function compile({
   handleExternalResources(externalResources);
 
   try {
-    const { manifest, isNewCombination } = await loadDependencies(dependencies);
+    const packageJSON = modules['/package.json'];
+
+    if (!packageJSON) {
+      throw new Error('Could not find package.json');
+    }
+
+    let parsedPackageJSON = null;
+    try {
+      parsedPackageJSON = JSON.parse(packageJSON.code);
+    } catch (e) {
+      throw new Error('package.json has an invalid format: ' + e.message);
+    }
+
+    const { dependencies = {}, devDependencies = {} } = parsedPackageJSON;
+    const { manifest, isNewCombination } = await loadDependencies({
+      ...dependencies,
+      ...devDependencies,
+    });
 
     if (isNewCombination && !firstLoad) {
       // Just reset the whole manager if it's a new combination
@@ -116,7 +134,18 @@ async function compile({
       isNewCombination
     );
 
-    const managerModuleToTranspile = modules.find(m => m.path === entry);
+    const foundMain = entry || parsedPackageJSON.main || '/src/index.js';
+    const main = absolute(foundMain);
+
+    const managerModuleToTranspile = modules[main];
+
+    if (!managerModuleToTranspile) {
+      throw new Error(
+        `Could not find entry file: ${
+          main
+        }. You can specify one in package.json by defining a \`main\` property.`
+      );
+    }
 
     await manager.transpileModules(managerModuleToTranspile);
 
@@ -145,9 +174,9 @@ async function compile({
       }
     }
     if (!manager.webpackHMR || firstLoad) {
-      const htmlModule = modules.find(
-        m => m.path === '/public/index.html' || m.path === '/index.html'
-      );
+      const htmlModule =
+        modules['/public/index.html'] || modules['/index.html'];
+
       const html = htmlModule ? htmlModule.code : '<div id="root"></div>';
       document.body.innerHTML = html;
     }
@@ -198,7 +227,6 @@ async function compile({
       type: 'success',
     });
 
-    firstLoad = false;
     manager.save();
   } catch (e) {
     console.log('Error in sandbox:');
@@ -209,13 +237,14 @@ async function compile({
     }
 
     e.module = e.module;
-    e.fileName = e.fileName || entry;
+    e.fileName = e.fileName;
 
     const event = new Event('error');
     event.error = e;
 
     window.dispatchEvent(event);
   }
+  firstLoad = false;
 
   if (typeof window.__puppeteer__ === 'function') {
     window.__puppeteer__('done');
@@ -228,9 +257,8 @@ type Arguments = {
     code: string,
     path: string,
   }>,
-  entry: string,
+  entry: ?string,
   externalResources: Array<string>,
-  dependencies: Object,
   hasActions: boolean,
   template: string,
 };

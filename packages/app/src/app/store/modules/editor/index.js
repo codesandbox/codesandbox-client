@@ -6,6 +6,10 @@ import {
   currentSandbox,
   currentModule,
   mainModule,
+  currentPackageJSON,
+  currentPackageJSONCode,
+  currentParsedPackageJSON,
+  mainModuleShortid,
 } from './getters';
 import { isModuleSynced } from './computed';
 import { loadSandbox } from '../../sequences';
@@ -44,11 +48,16 @@ export default Module({
     currentSandbox,
     currentModule,
     mainModule,
+    currentPackageJSON,
+    currentPackageJSONCode,
+    currentParsedPackageJSON,
   },
   computed: {
     isModuleSynced,
   },
   signals: {
+    addNpmDependency: sequences.addNpmDependency,
+    npmDependencyRemoved: sequences.removeNpmDependency,
     sandboxChanged: loadSandbox,
     contentMounted: sequences.onUnload,
     resizingStarted: sequences.startResizing,

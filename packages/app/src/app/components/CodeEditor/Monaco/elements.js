@@ -23,7 +23,7 @@ export const CodeContainer = styled.div`
 
   .monaco-editor .view-overlays .current-line {
     border: none !important;
-    background-color: ${theme.background4()};
+    background-color: rgba(23, 25, 27, 1);
   }
 
   .mtk5 {

@@ -2,7 +2,7 @@
 import { flattenDeep, uniq, values } from 'lodash';
 import resolve from 'browser-resolve';
 import localforage from 'localforage';
-import preval from 'babel-plugin-preval/macro';
+import VERSION from 'common/version';
 
 import * as pathUtils from 'common/utils/path';
 import _debug from 'app/utils/debug';
@@ -45,7 +45,6 @@ export type Manifest = {
 };
 
 const NODE_LIBS = ['dgram', 'fs', 'net', 'tls', 'child_process'];
-const VERSION = preval`module.exports = Date.now()`;
 const debug = _debug('cs:compiler:manager');
 
 localforage.config({
@@ -82,13 +81,13 @@ export default class Manager {
 
   transpiledModulesByHash = {};
 
-  constructor(id: string, preset: Preset, modules: Array<Module>) {
+  constructor(id: string, preset: Preset, modules: { [path: string]: Module }) {
     this.id = id;
     this.preset = preset;
     this.transpiledModules = {};
     this.cachedPaths = {};
     this.transpileJobs = {};
-    modules.forEach(m => this.addModule(m));
+    Object.keys(modules).forEach(k => this.addModule(modules[k]));
 
     if (process.env.NODE_ENV === 'development') {
       window.manager = this;
@@ -475,14 +474,15 @@ export default class Manager {
    * Find all changed, added and deleted modules. Update trees and
    * delete caches accordingly
    */
-  updateData(modules: Array<Module>) {
+  updateData(modules: { [path: string]: Module }) {
     this.transpileJobs = {};
     this.hardReload = false;
 
     const addedModules = [];
     const updatedModules = [];
 
-    modules.forEach(module => {
+    Object.keys(modules).forEach(k => {
+      const module = modules[k];
       const mirrorModule = this.transpiledModules[module.path];
 
       if (!mirrorModule) {
@@ -500,7 +500,7 @@ export default class Manager {
     this.getModules().forEach(m => {
       if (
         !m.path.startsWith('/node_modules') &&
-        !modules.find(m2 => m2.path === m.path) &&
+        !modules[m.path] &&
         !m.parent // not an emitted module
       ) {
         this.removeModule(m);

@@ -4,8 +4,8 @@ import GithubIcon from 'react-icons/lib/fa/github';
 import { Icon } from './elements';
 import DiscordIcon from './DiscordLogo';
 
-export default () => (
-  <div>
+export default ({ ...props }) => (
+  <div {...props}>
     <Icon
       href="https://twitter.com/codesandboxapp"
       target="_blank"

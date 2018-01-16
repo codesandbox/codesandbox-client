@@ -1,16 +1,3 @@
-export function optimisticallyRemoveNpmDependency({ state, props }) {
-  const id = state.get('editor.currentId');
-  const currentVersion = state.get(
-    `editor.sandboxes.${id}.npmDependencies.${props.name}`
-  );
-
-  state.unset(`editor.sandboxes.${id}.npmDependencies.${props.name}`);
-
-  return {
-    removedNpmDependency: { name: props.name, version: currentVersion },
-  };
-}
-
 export function saveSandboxPrivacy({ api, state, props }) {
   const id = state.get('editor.currentId');
   return api
@@ -81,15 +68,6 @@ export function removeTagFromState({ props, state }) {
   const index = tags.indexOf(tag);
   state.splice(`editor.currentSandbox.tags`, index, 1);
   return { tag };
-}
-
-export function removeNpmDependency({ api, state, props, path }) {
-  const sandboxId = state.get('editor.currentId');
-
-  return api
-    .delete(`/sandboxes/${sandboxId}/dependencies/${props.name}`)
-    .then(() => path.success())
-    .catch(error => path.error({ error }));
 }
 
 export function removeOptimisticExternalResource({ state, props }) {

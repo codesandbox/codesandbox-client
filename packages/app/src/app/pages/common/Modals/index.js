@@ -1,10 +1,10 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import Modal from 'app/components/Modal';
+import NewSandbox from 'app/components/NewSandbox';
 
 import PreferencesModal from './PreferencesModal';
 import DeleteSandboxModal from './DeleteSandboxModal';
-import NewSandbox from 'app/components/NewSandbox';
 import ShareModal from './ShareModal';
 import DeploymentModal from './DeploymentModal';
 import ExportGitHubModal from './ExportGitHubModal';

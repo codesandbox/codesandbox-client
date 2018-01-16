@@ -5,7 +5,7 @@ import Button from 'app/components/Button';
 
 import { ButtonContainer } from './elements';
 
-function AddVersion({ signals }) {
+function AddVersion({ signals, children }) {
   return (
     <div style={{ position: 'relative' }}>
       <ButtonContainer>
@@ -18,7 +18,7 @@ function AddVersion({ signals }) {
             })
           }
         >
-          Add Package
+          {children}
         </Button>
       </ButtonContainer>
     </div>

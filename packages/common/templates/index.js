@@ -5,6 +5,8 @@ import SvelteIcon from 'common/components/logos/Svelte';
 
 import { decorateSelector } from '../theme';
 
+import configurations from './configuration';
+
 export const react = {
   name: 'create-react-app',
   niceName: 'React',
@@ -12,6 +14,7 @@ export const react = {
   shortid: 'new',
   Icon: ReactIcon,
   color: decorateSelector(() => '#6CAEDD'),
+  configurations,
 
   alterDeploymentData: apiData => ({
     ...apiData,
@@ -35,6 +38,7 @@ export const reactTs = {
   url: 'https://github.com/wmonk/create-react-app-typescript',
   shortid: 'react-ts',
   color: decorateSelector(() => '#009fff'),
+  configurations,
 
   sourceConfig: {
     typescript: true,
@@ -49,6 +53,7 @@ export const vue = {
   shortid: 'vue',
   Icon: VueIcon,
   color: decorateSelector(() => '#41B883'),
+  configurations,
 
   alterDeploymentData: apiData => ({
     ...apiData,
@@ -73,6 +78,7 @@ export const preact = {
   shortid: 'preact',
   Icon: PreactIcon,
   color: decorateSelector(() => '#AD78DC'),
+  configurations,
 
   alterDeploymentData: apiData => ({
     ...apiData,
@@ -97,6 +103,7 @@ export const svelte = {
   shortid: 'svelte',
   Icon: SvelteIcon,
   color: decorateSelector(() => '#AA1E1E'),
+  configurations,
 
   alterDeploymentData: apiData => ({
     ...apiData,

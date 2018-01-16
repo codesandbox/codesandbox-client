@@ -3,6 +3,7 @@ import { render } from 'react-dom';
 import { ThemeProvider } from 'styled-components';
 import { Router } from 'react-router-dom';
 import history from 'app/utils/history';
+import VERSION from 'common/version';
 import registerServiceWorker from 'common/registerServiceWorker';
 import requirePolyfills from 'common/load-dynamic-polyfills';
 import 'normalize.css';

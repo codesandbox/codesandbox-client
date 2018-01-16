@@ -1,4 +1,48 @@
+import { fromPairs, toPairs, sortBy } from 'lodash';
 import { clone } from 'mobx-state-tree';
+
+function sortObjectByKeys(object) {
+  return fromPairs(sortBy(toPairs(object), 0));
+}
+
+export function addNpmDependencyToPackage({ state, props }) {
+  const { parsed } = state.get('editor.currentParsedPackageJSON');
+
+  parsed.dependencies = parsed.dependencies || {};
+  parsed.dependencies[props.name] = props.version || 'latest';
+  parsed.dependencies = sortObjectByKeys(parsed.dependencies);
+
+  return {
+    code: JSON.stringify(parsed, null, 2),
+    moduleShortid: state.get(`editor.currentPackageJSON.shortid`),
+  };
+}
+
+export function removeNpmDependencyFromPackage({ state, props }) {
+  const { parsed } = state.get('editor.currentParsedPackageJSON');
+
+  delete parsed.dependencies[props.name];
+  parsed.dependencies = sortObjectByKeys(parsed.dependencies);
+
+  return {
+    code: JSON.stringify(parsed, null, 2),
+    moduleShortid: state.get(`editor.currentPackageJSON.shortid`),
+  };
+}
+
+export function updateSandboxPackage({ state }) {
+  const { parsed } = state.get('editor.currentParsedPackageJSON');
+  const sandbox = state.get('editor.currentSandbox');
+
+  parsed.keywords = sandbox.tags;
+  parsed.name = sandbox.title || sandbox.id;
+  parsed.description = sandbox.description;
+
+  return {
+    code: JSON.stringify(parsed, null, 2),
+    moduleShortid: state.get(`editor.currentPackageJSON.shortid`),
+  };
+}
 
 export function setModuleSaved({ props, state }) {
   const changedModuleShortids = state.get('editor.changedModuleShortids');

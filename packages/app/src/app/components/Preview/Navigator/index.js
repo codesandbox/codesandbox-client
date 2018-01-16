@@ -46,7 +46,11 @@ function Navigator({
           <RefreshIcon />
         </Icon>
       </Icons>
-      <AddressBarContainer>
+      <AddressBarContainer
+        onMouseDown={e => {
+          e.stopPropagation();
+        }}
+      >
         <AddressBar url={url} onChange={onChange} onConfirm={onConfirm} />
       </AddressBarContainer>
       {alignBottom && (

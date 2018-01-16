@@ -747,11 +747,11 @@ class MonacoEditor extends React.Component {
     const modelInfo = await this.getModelById(id);
     this.editor.setModel(modelInfo.model);
 
-    if (modelInfo.cursorPos) {
-      this.editor.setPosition(modelInfo.cursorPos);
-    }
-
     requestAnimationFrame(() => {
+      if (modelInfo.cursorPos) {
+        this.editor.setPosition(modelInfo.cursorPos);
+      }
+
       this.syntaxHighlight(
         modelInfo.model.getValue(),
         title,

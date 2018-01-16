@@ -40,7 +40,7 @@ export function createOptimisticModule({ state, props, utils }) {
     id: utils.createOptimisticId(),
     title: props.title,
     directoryShortid: props.directoryShortid || null,
-    code: '',
+    code: props.newCode || '',
     shortid: utils.createOptimisticId(),
     isBinary: false,
     sourceId: state.get('editor.currentSandbox.sourceId'),
@@ -286,7 +286,11 @@ export function saveNewModule({ api, state, props, path }) {
 
   return api
     .post(`/sandboxes/${sandboxId}/modules`, {
-      module: { title: props.title, directoryShortid: props.directoryShortid },
+      module: {
+        title: props.title,
+        directoryShortid: props.directoryShortid,
+        code: props.newCode || '',
+      },
     })
     .then(data => path.success({ newModule: data }))
     .catch(error => path.error({ error }));

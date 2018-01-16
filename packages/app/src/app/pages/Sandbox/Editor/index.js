@@ -27,7 +27,17 @@ function ContentSplit({ signals, store, match }) {
         templateColor: sandbox && getTemplateDefinition(sandbox.template).color,
       }}
     >
-      <div style={{ width: '100%', height: '100%' }}>
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          position: 'fixed',
+          left: 0,
+          right: 0,
+          top: 0,
+          bottom: 0,
+        }}
+      >
         {!store.preferences.settings.zenMode && <Header />}
 
         <Fullscreen>

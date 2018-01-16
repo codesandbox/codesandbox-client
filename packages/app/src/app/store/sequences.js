@@ -1,8 +1,15 @@
 import { sequence } from 'cerebral';
-import { when, set, unset, equals } from 'cerebral/operators';
+import { when, push, set, equals } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 import * as actions from './actions';
 import * as factories from './factories';
+
+import {
+  saveNewModule,
+  createOptimisticModule,
+  updateOptimisticModule,
+  removeOptimisticModule,
+} from './modules/files/actions';
 
 export const unloadApp = actions.stopListeningToConnectionChange;
 
@@ -11,6 +18,37 @@ export const setConnection = set(state`connected`, props`connection`);
 export const showAuthenticationError = [];
 
 export const openModal = actions.setModal;
+
+const whenPackageJSONExists = when(props`sandbox.modules`, modules =>
+  modules.find(m => m.directoryShortid == null && m.title === 'package.json')
+);
+
+export const ensurePackageJSON = [
+  when(props`sandbox.owned`),
+  {
+    true: [
+      whenPackageJSONExists,
+      {
+        true: [],
+        false: [
+          actions.createPackageJSON,
+          // TODO deduplicate this from files/sequences.js. There was a circular dependency problem
+          createOptimisticModule,
+          push(
+            state`editor.sandboxes.${state`editor.currentId`}.modules`,
+            props`optimisticModule`
+          ),
+          saveNewModule,
+          {
+            success: [updateOptimisticModule],
+            error: [removeOptimisticModule],
+          },
+        ],
+      },
+    ],
+    false: [],
+  },
+];
 
 export const closeModal = [
   equals(state`currentModal`),
@@ -57,6 +95,7 @@ export const forkSandbox = sequence('forkSandbox', [
   set(state`editor.currentId`, props`sandbox.id`),
   factories.addNotification('Forked sandbox!', 'success'),
   factories.updateSandboxUrl(props`sandbox`),
+  ensurePackageJSON,
   set(state`editor.isForkingSandbox`, false),
 ]);
 
@@ -73,22 +112,6 @@ export const fetchGitChanges = [
   actions.getGitChanges,
   set(state`git.originalGitChanges`, props`gitChanges`),
   set(state`git.isFetching`, false),
-];
-
-export const addNpmDependency = [
-  set(state`workspace.showSearchDependenciesModal`, false),
-  ensureOwnedSandbox,
-  actions.optimisticallyAddNpmDependency,
-  actions.addNpmDependency,
-  {
-    success: [],
-    error: [
-      unset(
-        state`editor.sandboxes.${state`editor.currentId`}.npmDependencies.${props`name`}`
-      ),
-      factories.addNotification('Could not save dependency', 'error'),
-    ],
-  },
 ];
 
 export const loadApp = [
@@ -239,6 +262,7 @@ export const loadSandbox = [
           actions.setInitialTab,
           actions.setUrlOptions,
           actions.setWorkspace,
+          ensurePackageJSON,
         ],
         notFound: set(state`editor.notFound`, true),
         error: set(state`editor.error`, props`error.message`),

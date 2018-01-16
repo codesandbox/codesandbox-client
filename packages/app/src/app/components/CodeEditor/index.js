@@ -6,9 +6,13 @@ import SubTitle from 'app/components/SubTitle';
 import Centered from 'common/components/flex/Centered';
 import Margin from 'common/components/spacing/Margin';
 import isImage from 'common/utils/is-image';
+import { getModulePath } from 'common/sandbox/modules';
+
+import getDefinition from 'common/templates';
 
 import Monaco from './Monaco';
 import ImageViewer from './ImageViewer';
+import Configuration from './Configuration';
 
 const CodeMirror = Loadable({
   loader: () =>
@@ -19,8 +23,20 @@ const CodeMirror = Loadable({
 function CodeEditor(props) {
   const settings = props.settings;
   const module = props.currentModule;
+  const sandbox = props.sandbox;
+  const template = getDefinition(sandbox.template);
 
   if (module) {
+    const modulePath = getModulePath(
+      sandbox.modules,
+      sandbox.directories,
+      module.id
+    );
+    const config = template.configurations[modulePath];
+    if (config && config.ui) {
+      return <Configuration {...props} config={config} />;
+    }
+
     if (module.isBinary) {
       if (isImage(module.title)) {
         return <ImageViewer {...props} />;

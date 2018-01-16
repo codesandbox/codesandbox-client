@@ -2,50 +2,71 @@ import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 
 import Margin from 'common/components/spacing/Margin';
-import { WorkspaceSubtitle } from '../elements';
+import { WorkspaceSubtitle, EntryContainer } from '../elements';
 
 import AddVersion from './AddVersion';
 import VersionEntry from './VersionEntry';
 import AddResource from './AddResource';
 import ExternalResource from './ExternalResource';
 
+import { ErrorMessage } from './elements';
+
 function Dependencies({ signals, store }) {
   const sandbox = store.editor.currentSandbox;
-  const npmDependencies = sandbox.npmDependencies
-    ? sandbox.npmDependencies.toJS()
-    : {};
+
+  const { parsed, error } = store.editor.currentParsedPackageJSON;
+
+  if (error) {
+    return (
+      <ErrorMessage>
+        We weren{"'"}t able to parse the package.json: {error.message};
+      </ErrorMessage>
+    );
+  }
+
+  const dependencies = parsed.dependencies || {};
+  const devDependencies = parsed.devDependencies || {};
 
   return (
     <div>
       <Margin bottom={0}>
-        <WorkspaceSubtitle>NPM Packages</WorkspaceSubtitle>
-        {Object.keys(npmDependencies)
+        <WorkspaceSubtitle>Dependencies</WorkspaceSubtitle>
+        {Object.keys(dependencies)
           .sort()
           .map(dep => (
             <VersionEntry
               key={dep}
-              dependencies={npmDependencies}
+              dependencies={dependencies}
               dependency={dep}
-              onRemove={name =>
-                signals.workspace.npmDependencyRemoved({ name })
-              }
+              onRemove={name => signals.editor.npmDependencyRemoved({ name })}
               onRefresh={(name, version) =>
-                signals.workspace.npmDependencyAdded({
+                signals.editor.addNpmDependency({
                   name,
                   version,
                 })
               }
             />
           ))}
-        <AddVersion
-          existingDependencies={Object.keys(npmDependencies)}
-          addDependency={(name, version) =>
-            signals.workspace.npmDependencyAdded({
-              name,
-              version,
-            })
-          }
-        />
+        {Object.keys(devDependencies).length > 0 && (
+          <WorkspaceSubtitle>Development Dependencies</WorkspaceSubtitle>
+        )}
+        {Object.keys(devDependencies)
+          .sort()
+          .map(dep => (
+            <VersionEntry
+              key={dep}
+              dependencies={devDependencies}
+              dependency={dep}
+              onRemove={name => signals.editor.npmDependencyRemoved({ name })}
+              onRefresh={(name, version) =>
+                signals.editor.addNpmDependency({
+                  name,
+                  version,
+                })
+              }
+            />
+          ))}
+        <AddVersion>Add Dependency</AddVersion>
       </Margin>
       <div>
         <WorkspaceSubtitle>External Resources</WorkspaceSubtitle>

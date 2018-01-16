@@ -1,7 +1,8 @@
 import { set, when, push } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 import * as actions from './actions';
-import { loadSandbox, ensureOwnedSandbox } from '../../sequences';
+import { ensureOwnedSandbox, loadSandbox } from '../../sequences';
+import { updateSandboxPackage } from './../editor/sequences';
 import { addNotification } from '../../factories';
 
 export const changeSandboxPrivacy = [
@@ -41,22 +42,7 @@ export const updateSandboxInfo = [
     state`workspace.project.description`
   ),
   actions.updateSandbox,
-];
-
-export const removeNpmDependency = [
-  ensureOwnedSandbox,
-  actions.optimisticallyRemoveNpmDependency,
-  actions.removeNpmDependency,
-  {
-    success: [],
-    error: [
-      set(
-        state`editor.sandboxes.${state`editor.currentId`}.npmDependencies.${props`removedNpmDependency.name`}`,
-        props`removedNpmDependency.version`
-      ),
-      addNotification('Could not remove NPM dependency', 'error'),
-    ],
-  },
+  updateSandboxPackage,
 ];
 
 export const addExternalResource = [
@@ -103,6 +89,7 @@ export const addTag = [
   {
     success: [
       set(state`editor.sandboxes.${state`editor.currentId`}.tags`, props`data`),
+      updateSandboxPackage,
       set(state`workspace.tags.tagName`, ''),
     ],
     error: [actions.removeTagFromState],
@@ -114,6 +101,7 @@ export const removeTag = [
   actions.removeTagFromState,
   actions.removeTag,
   set(state`editor.sandboxes.${state`editor.currentId`}.tags`, props`tags`),
+  updateSandboxPackage,
 ];
 
 export const setWorkspaceItem = [

@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+import { generateFileFromSandbox } from 'common/templates/configuration/package-json';
+
 export function getSandbox({ props, api, path }) {
   return api
     .get(`/sandboxes/${props.id}`)
@@ -145,26 +147,6 @@ export function moveModuleContent({ props, state }) {
       ),
     }),
   };
-}
-
-export function addNpmDependency({ api, state, props, path }) {
-  const sandboxId = state.get('editor.currentId');
-
-  return api
-    .post(
-      `/sandboxes/${sandboxId}/dependencies`,
-      {
-        dependency: {
-          name: props.name,
-          version: props.version,
-        },
-      },
-      {
-        shouldCamelize: false,
-      }
-    )
-    .then(() => path.success())
-    .catch(error => path.error({ error }));
 }
 
 export function closeTabByIndex({ state, props }) {
@@ -337,4 +319,13 @@ export function signOutZeit({ api }) {
 
 export function signOutGithubIntegration({ api }) {
   return api.delete(`/users/current_user/integrations/github`).then(() => {});
+}
+
+// If package.json doesn't exist we generate one.
+export function createPackageJSON({ props }) {
+  const { sandbox } = props;
+
+  const code = generateFileFromSandbox(sandbox);
+
+  return { newCode: code, title: 'package.json' };
 }

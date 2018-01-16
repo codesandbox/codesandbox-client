@@ -30,14 +30,18 @@ function callApi(url: string, method = 'GET') {
   return fetch(url, {
     method,
   })
-    .then(response => {
-      if (response.status >= 200 && response.status < 300) {
-        return Promise.resolve(response);
+    .then(async response => {
+      if (!response.ok) {
+        const error = new Error(response.statusText || response.status);
+
+        const message = await response.json();
+
+        error.response = message;
+        error.statusCode = response.status;
+        return Promise.reject(error);
       }
 
-      const error = new Error(response.statusText || response.status);
-      error.response = response;
-      return Promise.reject(error);
+      return Promise.resolve(response);
     })
     .then(response => response.json());
 }
@@ -59,6 +63,9 @@ async function requestPackager(url, method = 'GET') {
 
       return manifest;
     } catch (e) {
+      if (e.response && e.statusCode !== 504) {
+        throw new Error(e.response.error);
+      }
       // 403 status code means the bundler is still bundling
       if (retries < RETRY_COUNT) {
         retries += 1;

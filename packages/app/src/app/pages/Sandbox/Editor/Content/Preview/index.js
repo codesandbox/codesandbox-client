@@ -116,12 +116,18 @@ class Preview extends React.Component {
   render() {
     const { store, signals } = this.props;
 
+    const packageJSON = {
+      path: '/package.json',
+      code: store.editor.currentPackageJSONCode,
+    };
+
     return (
       <FlyingContainer>
         {({ resize }) => (
           <BasePreview
             onInitialized={this.onPreviewInitialized}
             sandbox={store.editor.currentSandbox}
+            extraModules={{ '/package.json': packageJSON }}
             currentModule={store.editor.currentModule}
             settings={store.preferences.settings}
             initialPath={store.editor.initialPath}
