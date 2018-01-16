@@ -8,6 +8,7 @@ import {
   reactTs,
   angular,
   babel,
+  dojo
 } from 'common/templates';
 
 import reactPreset from './presets/create-react-app';
@@ -18,6 +19,7 @@ import sveltePreset from './presets/svelte';
 import angularPreset from './presets/angular-cli';
 import parcelPreset from './presets/parcel';
 import babelPreset from './presets/babel-repl';
+import dojoPreset from './presets/dojo';
 
 export default function getPreset(template: string) {
   switch (template) {
@@ -37,6 +39,8 @@ export default function getPreset(template: string) {
       return parcelPreset();
     case babel.name:
       return babelPreset();
+    case dojo.name:
+      return dojoPreset();
     default:
       return reactPreset();
   }
