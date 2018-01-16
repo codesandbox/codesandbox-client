@@ -21,6 +21,7 @@ import TypingsFetcherWorker from 'worker-loader?name=monaco-typings-ata.[hash].w
 /* eslint-enable import/no-webpack-loader-syntax */
 
 import MonacoEditor from './monaco/MonacoReactComponent';
+import defineTheme from './monaco/define-theme';
 import FuzzySearch from './FuzzySearch/index';
 
 let modelCache = {};
@@ -583,18 +584,6 @@ export default class CodeEditor extends React.Component<Props, State> {
     this.lint(newCode, this.props.title, this.editor.getModel().getVersionId());
   };
 
-  editorWillMount = monaco => {
-    monaco.editor.defineTheme('CodeSandbox', {
-      base: 'vs-dark', // can also be vs-dark or hc-black
-      inherit: true, // can also be false to completely replace the builtin rules
-      rules: [
-        { token: 'comment', foreground: '626466' },
-        { token: 'keyword', foreground: '6CAEDD' },
-        { token: 'identifier', foreground: 'fac863' },
-      ],
-    });
-  };
-
   hasNativeTypescript = () => {
     const template = getTemplate(this.props.template);
     return template.sourceConfig && template.sourceConfig.typescript;
@@ -928,7 +917,7 @@ export default class CodeEditor extends React.Component<Props, State> {
             theme="CodeSandbox"
             options={options}
             editorDidMount={this.configureEditor}
-            editorWillMount={this.editorWillMount}
+            editorWillMount={defineTheme}
             openReference={this.openReference}
           />
         </CodeContainer>

@@ -17,10 +17,11 @@ const Container = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
+  max-height: calc(100% - 2rem);
 `;
 
 const Messages = styled.div`
-  height: 100%;
+  flex-grow: 1;
   overflow-y: auto;
   overflow-x: hidden;
   white-space: pre-wrap;
