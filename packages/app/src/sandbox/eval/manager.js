@@ -78,6 +78,7 @@ export default class Manager {
   webpackHMR: boolean = false;
   hardReload: boolean = false;
   hmrStatus: 'idle' | 'check' | 'apply' | 'fail' = 'idle';
+  testRunner: TestRunner;
 
   // List of modules that are being transpiled, to prevent duplicate jobs.
   transpileJobs: { [transpiledModuleId: string]: true };
