@@ -18,8 +18,6 @@ import type { WarningStructure } from './transpilers/utils/worker-warning-handle
 import resolveDependency from './loaders/dependency-resolver';
 import evaluate from './loaders/eval';
 
-import TestRunner from './tests/jest-lite';
-
 import Manager from './manager';
 import HMR from './hmr';
 
@@ -664,7 +662,7 @@ export default class TranspiledModule {
         require,
         this.compilation,
         manager.envVariables,
-        TestRunner.testGlobals()
+        manager.testRunner.testGlobals()
       );
 
       const hmrConfig = this.hmrConfig;
