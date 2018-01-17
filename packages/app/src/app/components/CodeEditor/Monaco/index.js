@@ -259,6 +259,8 @@ class MonacoEditor extends React.Component {
   updateModules = () => {
     const sandbox = this.sandbox;
 
+    console.log('updating modules');
+
     sandbox.modules.forEach(module => {
       if (modelCache[module.id] && modelCache[module.id].model) {
         const path = getModulePath(
@@ -625,6 +627,7 @@ class MonacoEditor extends React.Component {
       if (this.props.onChange) {
         this.props.onChange(newCode);
       }
+
       this.syntaxHighlight(
         newCode,
         title,
@@ -707,13 +710,14 @@ class MonacoEditor extends React.Component {
     // tends to lose type definitions if you don't touch a file for a while.
     // Related issue: https://github.com/Microsoft/monaco-editor/issues/461
     const lib = this.monaco.languages.typescript.typescriptDefaults.addExtraLib(
-      module.code,
+      module.code || '',
       `file://${path}`
     );
 
     const mode = await this.getMode(module.title);
+
     const model = this.monaco.editor.createModel(
-      module.code,
+      module.code || '',
       mode === 'javascript' ? 'typescript' : mode,
       new this.monaco.Uri().with({ path, scheme: 'file' })
     );

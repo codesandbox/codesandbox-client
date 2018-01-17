@@ -1,7 +1,7 @@
 // @flow
 
 import type { Sandbox } from 'common/types';
-import ui from './ui';
+// import ui from './ui';
 
 export function generateFileFromSandbox(sandbox: Sandbox) {
   const jsonFile = {};
@@ -19,10 +19,9 @@ export function generateFileFromSandbox(sandbox: Sandbox) {
 
 export default {
   title: 'package.json',
-  description:
-    "This file describes the overall configuration of your project. It's mainly used by npm to build a dependency tree, but it's also used by developers to quickly scan what your project contains.",
+  description: 'Describes the overall configuration of your project.',
   moreInfoUrl: 'https://docs.npmjs.com/files/package.json',
 
-  ui,
+  // ui,
   generateFileFromSandbox,
 };

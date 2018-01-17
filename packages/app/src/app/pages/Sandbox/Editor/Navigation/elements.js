@@ -10,6 +10,7 @@ export const Container = styled.div`
 
   font-size: 1.5rem;
   align-items: center;
+  border-right: 1px solid rgba(0, 0, 0, 0.3);
 `;
 
 export const IconContainer = styled.div`

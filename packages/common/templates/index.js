@@ -14,7 +14,13 @@ export const react = {
   shortid: 'new',
   Icon: ReactIcon,
   color: decorateSelector(() => '#6CAEDD'),
-  configurations,
+  configurations: {
+    '/package.json': configurations.packageJSON,
+    '/.prettierrc': configurations.prettierRC,
+    '/sandbox.config.json': {
+      description: 'Configuration for the sandbox itself',
+    },
+  },
 
   alterDeploymentData: apiData => ({
     ...apiData,

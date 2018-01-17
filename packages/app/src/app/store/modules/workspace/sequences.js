@@ -1,7 +1,7 @@
 import { set, when, push } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 import * as actions from './actions';
-import { ensureOwnedSandbox, loadSandbox } from '../../sequences';
+import { ensureOwnedSandbox, loadSandbox, closeModal } from '../../sequences';
 import { updateSandboxPackage } from './../editor/sequences';
 import { addNotification } from '../../factories';
 
@@ -14,6 +14,7 @@ export const changeSandboxPrivacy = [
 ];
 
 export const deleteSandbox = [
+  closeModal,
   actions.deleteSandbox,
   set(state`workspace.showDeleteSandboxModal`, false),
   addNotification('Sandbox deleted!', 'success'),

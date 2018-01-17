@@ -6,9 +6,8 @@ import SubTitle from 'app/components/SubTitle';
 import Centered from 'common/components/flex/Centered';
 import Margin from 'common/components/spacing/Margin';
 import isImage from 'common/utils/is-image';
-import { getModulePath } from 'common/sandbox/modules';
-
 import getDefinition from 'common/templates';
+import { getModulePath } from 'common/sandbox/modules';
 
 import Monaco from './Monaco';
 import ImageViewer from './ImageViewer';
@@ -23,10 +22,10 @@ const CodeMirror = Loadable({
 function CodeEditor(props) {
   const settings = props.settings;
   const module = props.currentModule;
-  const sandbox = props.sandbox;
-  const template = getDefinition(sandbox.template);
 
   if (module) {
+    const sandbox = props.sandbox;
+    const template = getDefinition(sandbox.template);
     const modulePath = getModulePath(
       sandbox.modules,
       sandbox.directories,

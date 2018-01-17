@@ -35,6 +35,7 @@ function handleKeyDown(controller, e) {
     state.pendingSecondaryBindings = state.pendingSecondaryBindings.filter(
       binding =>
         binding.bindings.length > 1 &&
+        binding.bindings[1].length > state.keydownIndex &&
         binding.bindings[1][state.keydownIndex] === key
     );
 
@@ -73,6 +74,7 @@ function handleKeyDown(controller, e) {
     binding =>
       binding.bindings.length &&
       binding.bindings[0] &&
+      binding.bindings[0].length > state.keydownIndex &&
       binding.bindings[0][state.keydownIndex] === key
   );
 

@@ -1,5 +1,7 @@
 import packageJSON from './package-json';
+import prettierRC from './prettierRC';
 
 export default {
-  '/package.json': packageJSON,
+  packageJSON,
+  prettierRC,
 };

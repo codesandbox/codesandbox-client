@@ -3,7 +3,9 @@ import { Container, Title, Description } from './elements';
 
 export default class Configuration extends React.PureComponent {
   render() {
-    const { config, width, height } = this.props;
+    const { config, currentModule, width, height } = this.props;
+
+    const { ConfigWizard } = config.ui;
 
     return (
       <Container style={{ width, height }}>
@@ -18,6 +20,8 @@ export default class Configuration extends React.PureComponent {
             More info...
           </a>
         </Description>
+
+        <ConfigWizard file={currentModule.code} />
       </Container>
     );
   }

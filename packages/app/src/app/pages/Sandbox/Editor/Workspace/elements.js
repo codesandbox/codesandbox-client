@@ -80,7 +80,6 @@ export const Container = styled.div`
   flex-direction: column;
   justify-content: space-between;
   background-color: ${props => props.theme.background};
-  border-left: 1px solid rgba(0, 0, 0, 0.3);
   height: 100%;
   width: 100%;
   overflow-y: overlay;

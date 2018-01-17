@@ -46,7 +46,7 @@ function ContentSplit({ signals, store, match }) {
           <div
             style={{
               position: 'fixed',
-              left: hideNavigation ? 0 : '4rem',
+              left: hideNavigation ? 0 : 'calc(4rem + 1px)',
               top: store.preferences.settings.zenMode ? 0 : '3rem',
               right: 0,
               bottom: 0,

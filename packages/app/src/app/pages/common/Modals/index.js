@@ -44,7 +44,7 @@ const modals = {
   },
   deleteSandbox: {
     Component: DeleteSandboxModal,
-    width: 900,
+    width: 400,
   },
   selectSandbox: {
     Component: SelectSandboxModal,

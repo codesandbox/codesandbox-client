@@ -65,15 +65,19 @@ class EditorPreview extends React.Component {
       () => store.editor.currentSandbox,
       newSandbox => {
         isChangingSandbox = true;
-        editor
-          .changeSandbox(
-            newSandbox,
-            store.editor.currentModule,
-            newSandbox.npmDependencies.toJS()
-          )
-          .then(() => {
-            isChangingSandbox = false;
-          });
+
+        // Put in a timeout so we allow the actions after the fork to execute first as well.
+        setTimeout(() => {
+          editor
+            .changeSandbox(
+              newSandbox,
+              store.editor.currentModule,
+              newSandbox.npmDependencies.toJS()
+            )
+            .then(() => {
+              isChangingSandbox = false;
+            });
+        });
       }
     );
     const disposeErrorsHandler = reaction(
@@ -88,15 +92,12 @@ class EditorPreview extends React.Component {
         editor.setCorrections(corrections);
       }
     );
-    const disposeModulesHandler = reaction(
-      () => store.editor.currentSandbox.modules.length,
-      () => {
-        if (isChangingSandbox) {
-          return;
-        }
-        editor.updateModules();
+    const disposeModulesHandler = reaction(this.detectStructureChange, () => {
+      if (isChangingSandbox) {
+        return;
       }
-    );
+      editor.updateModules();
+    });
     const disposePreferencesHandler = reaction(
       () => ({
         fontFamily: store.preferences.settings.fontFamily,
@@ -174,6 +175,20 @@ class EditorPreview extends React.Component {
       disposeToggleDevtools();
       disposeResizeHandler();
     };
+  };
+
+  detectStructureChange = () => {
+    const sandbox = this.props.store.editor.currentSandbox;
+
+    return String(
+      sandbox.modules
+        .map(module => module.directoryShortid + module.title)
+        .concat(
+          sandbox.directories.map(
+            directory => directory.directoryShortid + directory.title
+          )
+        )
+    );
   };
 
   render() {
