@@ -2,6 +2,7 @@ import { sequence, parallel } from 'cerebral';
 import { set, when } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 import * as actions from './actions';
+import { withLoadApp } from '../../factories';
 
 const shouldGetShowcasedSandbox = when(
   state`profile.current.showcasedSandboxShortid`,
@@ -39,7 +40,7 @@ export const openSelectSandboxModal = [
   },
 ];
 
-export const loadProfile = [
+export const loadProfile = withLoadApp([
   set(state`profile.isLoadingProfile`, true),
   set(state`profile.notFound`, false),
   actions.getUser,
@@ -47,7 +48,7 @@ export const loadProfile = [
   set(state`profile.currentProfileId`, props`profile.id`),
   getShowcasedSandbox,
   set(state`profile.isLoadingProfile`, false),
-];
+]);
 
 export const setNewSandboxShowcase = [
   set(state`profile.showSelectSandboxModal`, false),

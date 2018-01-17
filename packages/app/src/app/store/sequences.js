@@ -114,32 +114,6 @@ export const fetchGitChanges = [
   set(state`git.isFetching`, false),
 ];
 
-export const loadApp = [
-  set(state`isAuthenticating`, true),
-  actions.setJwtFromStorage,
-  set(state`isAuthenticating`, false),
-  actions.listenToConnectionChange,
-  when(state`jwt`),
-  {
-    true: [
-      actions.getUser,
-      {
-        success: [set(state`user`, props`user`), actions.setPatronPrice],
-        error: [
-          factories.addNotification(
-            'Something went wrong while signing in',
-            'error'
-          ),
-        ],
-      },
-    ],
-    false: [],
-  },
-  actions.setStoredSettings,
-  actions.setKeybindings,
-  actions.startKeybindings,
-];
-
 export const signIn = [
   set(state`isAuthenticating`, true),
   actions.signInGithub,
@@ -236,7 +210,11 @@ export const signInGithub = [
   set(state`isLoadingGithub`, false),
 ];
 
-export const loadSandbox = [
+export const loadSearch = factories.withLoadApp([]);
+
+export const loadTerms = factories.withLoadApp([]);
+
+export const loadSandbox = factories.withLoadApp([
   set(state`editor.error`, null),
   when(state`editor.sandboxes.${props`id`}`),
   {
@@ -270,4 +248,4 @@ export const loadSandbox = [
       set(state`editor.isLoading`, false),
     ],
   },
-];
+]);

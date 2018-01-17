@@ -1,11 +1,7 @@
 import { types } from 'mobx-state-tree';
 
-const Modal = types.model({
-  name: types.string,
-  width: types.number,
-});
-
 export default {
+  hasLoadedApp: types.boolean,
   jwt: types.maybe(types.string),
   isAuthenticating: types.boolean,
   userMenuOpen: types.boolean,

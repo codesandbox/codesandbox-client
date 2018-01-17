@@ -29,6 +29,7 @@ import files from './modules/files';
 export default Module({
   model,
   state: {
+    hasLoadedApp: false,
     jwt: null,
     isAuthenticating: true,
     authToken: null,
@@ -53,8 +54,9 @@ export default Module({
     isLoggedIn,
   },
   signals: {
-    appMounted: sequences.loadApp,
     appUnmounted: sequences.unloadApp,
+    searchMounted: sequences.loadSearch,
+    termsMounted: sequences.loadTerms,
     connectionChanged: sequences.setConnection,
     modalOpened: sequences.openModal,
     modalClosed: sequences.closeModal,

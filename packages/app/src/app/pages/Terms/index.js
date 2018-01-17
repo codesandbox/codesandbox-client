@@ -1,5 +1,6 @@
 import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
+import { inject } from 'mobx-react';
 
 import Navigation from 'app/pages/common/Navigation';
 import Margin from 'common/components/spacing/Margin';
@@ -12,45 +13,50 @@ import PrivacyPolicy from './PrivacyPolicy';
 
 import { Content, NavigationLink, LegalNavigation } from './elements';
 
-function Terms() {
-  return (
-    <MaxWidth>
-      <Margin margin={1.5}>
-        <Navigation title="Legal" />
-        <Content>
-          <Centered horizontal>
-            <MaxWidth width={1024}>
-              <LegalNavigation>
-                <NavigationLink
-                  to={tosUrl()}
-                  activeStyle={{
-                    color: 'white',
-                  }}
-                >
-                  TERMS AND CONDITIONS
-                </NavigationLink>
+class Terms extends React.Component {
+  componentDidMount() {
+    this.props.signals.termsMounted();
+  }
+  render() {
+    return (
+      <MaxWidth>
+        <Margin margin={1.5}>
+          <Navigation title="Legal" />
+          <Content>
+            <Centered horizontal>
+              <MaxWidth width={1024}>
+                <LegalNavigation>
+                  <NavigationLink
+                    to={tosUrl()}
+                    activeStyle={{
+                      color: 'white',
+                    }}
+                  >
+                    TERMS AND CONDITIONS
+                  </NavigationLink>
 
-                <NavigationLink
-                  to={privacyUrl()}
-                  activeStyle={{
-                    color: 'white',
-                  }}
-                >
-                  PRIVACY POLICY
-                </NavigationLink>
-              </LegalNavigation>
+                  <NavigationLink
+                    to={privacyUrl()}
+                    activeStyle={{
+                      color: 'white',
+                    }}
+                  >
+                    PRIVACY POLICY
+                  </NavigationLink>
+                </LegalNavigation>
 
-              <Switch>
-                <Route path="/legal/terms" component={TOS} />
-                <Route path="/legal/privacy" component={PrivacyPolicy} />
-                <Redirect to="/legal/terms" />
-              </Switch>
-            </MaxWidth>
-          </Centered>
-        </Content>
-      </Margin>
-    </MaxWidth>
-  );
+                <Switch>
+                  <Route path="/legal/terms" component={TOS} />
+                  <Route path="/legal/privacy" component={PrivacyPolicy} />
+                  <Redirect to="/legal/terms" />
+                </Switch>
+              </MaxWidth>
+            </Centered>
+          </Content>
+        </Margin>
+      </MaxWidth>
+    );
+  }
 }
 
-export default Terms;
+export default inject('signals')(Terms);

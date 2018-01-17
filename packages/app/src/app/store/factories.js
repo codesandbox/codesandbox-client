@@ -1,4 +1,7 @@
-import { sequence } from 'cerebral';
+import { sequence, parallel } from 'cerebral';
+import { set, when } from 'cerebral/operators';
+import { state, props } from 'cerebral/tags';
+import * as actions from './actions';
 
 export function addTabById(id) {
   // eslint-disable-next-line
@@ -72,4 +75,47 @@ export function updateSandboxUrl(sandbox) {
   return function updateSandboxUrl({ router, resolve }) {
     router.updateSandboxUrl(resolve.value(sandbox));
   };
+}
+
+export function withLoadApp(continueSequence) {
+  return sequence('loadApp', [
+    when(state`hasLoadedApp`),
+    {
+      true: continueSequence,
+      false: [
+        set(state`isAuthenticating`, true),
+        actions.setJwtFromStorage,
+        actions.listenToConnectionChange,
+        actions.setStoredSettings,
+        actions.setKeybindings,
+        actions.startKeybindings,
+        when(state`jwt`),
+        {
+          true: [
+            parallel([
+              sequence('loadUser', [
+                actions.getUser,
+                {
+                  success: [
+                    set(state`user`, props`user`),
+                    actions.setPatronPrice,
+                  ],
+                  error: [
+                    addNotification(
+                      'Your session seems to be expired, please log in again...',
+                      'error'
+                    ),
+                  ],
+                },
+              ]),
+              continueSequence,
+            ]),
+          ],
+          false: continueSequence,
+        },
+        set(state`hasLoadedApp`, true),
+        set(state`isAuthenticating`, false),
+      ],
+    },
+  ]);
 }
