@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import Input from 'app/components/Input';
+import Input from 'common/components/Input';
 import Centered from 'common/components/flex/Centered';
 
 export const Container = styled.div`

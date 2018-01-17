@@ -3,7 +3,7 @@ import { inject, observer } from 'mobx-react';
 import Downshift from 'downshift';
 import genie from 'geniejs/dist/geniejs.es';
 
-import Input from 'app/components/Input';
+import Input from 'common/components/Input';
 import Keys from './Keys';
 
 import {

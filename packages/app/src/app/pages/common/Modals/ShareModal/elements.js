@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import Preference from 'app/components/Preference';
+import Preference from 'common/components/Preference';
 
 export const FilesContainer = styled.div`
   max-height: 300px;

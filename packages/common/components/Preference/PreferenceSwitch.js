@@ -1,5 +1,5 @@
 import React from 'react';
-import Switch from 'app/components/Switch';
+import Switch from 'common/components/Switch';
 
 export default class PreferenceSwitch extends React.Component {
   handleClick = () => {

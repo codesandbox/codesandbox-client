@@ -3,7 +3,7 @@ import { sortBy, groupBy, flatten } from 'lodash';
 import Downshift from 'downshift';
 import matchSorter from 'match-sorter';
 import { getModulePath } from 'common/sandbox/modules';
-import Input from 'app/components/Input';
+import Input from 'common/components/Input';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
 import getType from 'app/utils/get-type';
 

@@ -1,13 +1,4 @@
-export const DEFAULT_PRETTIER_CONFIG = {
-  printWidth: 80,
-  tabWidth: 2,
-  useTabs: false,
-  semi: true,
-  singleQuote: false,
-  trailingComma: 'none',
-  bracketSpacing: true,
-  jsxBracketSameLine: false,
-};
+import DEFAULT_PRETTIER_CONFIG from 'common/prettify-default-config';
 
 // function getParser(mode) {
 //   if (mode === 'jsx') return 'babylon';

@@ -5,7 +5,7 @@ import RightIcon from 'react-icons/lib/fa/angle-right';
 import RefreshIcon from 'react-icons/lib/md/refresh';
 import ExternalIcon from 'react-icons/lib/md/open-in-new';
 
-import Switch from 'app/components/Switch';
+import Switch from 'common/components/Switch';
 import Tooltip from 'common/components/Tooltip';
 
 import HorizontalAlign from './HorizontalAlign';

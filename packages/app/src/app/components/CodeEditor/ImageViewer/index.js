@@ -1,17 +1,22 @@
+// @flow
 import React from 'react';
-import Input from 'app/components/Input';
+import Input from 'common/components/Input';
 import Button from 'app/components/Button';
 import { Container, Title, SubTitle, Image, MaxWidth } from './elements';
 
-export default class ImageViewer extends React.Component {
-  onSubmit = e => {
+import type { Props } from '../types';
+
+export default class ImageViewer extends React.Component<Props> {
+  onSubmit = (e: Event) => {
     e.preventDefault();
 
-    this.props.saveCode();
+    this.props.onSave(this.input.value);
   };
 
-  changeCode = e => {
-    this.props.changeCode(this.props.id, e.target.value);
+  input: HTMLInputElement;
+
+  changeCode = (e: Event & { target: { value: string } }) => {
+    this.props.onChange(e.target.value);
   };
 
   render() {

@@ -9,11 +9,8 @@ import { Container } from './elements';
 
 export default class Editor extends React.PureComponent {
   setUpCodeMirror = el => {
-    const { name, readOnly } = this.props;
-    const doc = new CodeMirror.Doc(
-      `ReactDOM.render(<${name || 'Component'} />, document.body);`,
-      'jsx'
-    );
+    const { code, readOnly } = this.props;
+    const doc = new CodeMirror.Doc(code, 'jsx');
     this.codemirror = getCodeMirror(el, doc);
     this.codemirror.setOption('lineNumbers', false);
     this.codemirror.setOption('readOnly', readOnly);

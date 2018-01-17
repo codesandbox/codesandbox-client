@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import Preference from 'app/components/Preference';
+import Preference from 'common/components/Preference';
 
 export const SubContainer = styled.div`
   color: ${props => props.theme.white};

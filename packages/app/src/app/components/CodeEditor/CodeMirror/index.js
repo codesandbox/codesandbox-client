@@ -1,5 +1,9 @@
+// @flow
+
 import * as React from 'react';
 import CodeMirror from 'codemirror';
+
+import type { ModuleError, Module } from 'common/types';
 import { getCodeMirror } from 'app/utils/codemirror';
 
 import 'codemirror/addon/dialog/dialog';
@@ -9,10 +13,23 @@ import 'codemirror/addon/tern/tern';
 import FuzzySearch from '../FuzzySearch';
 import { Container, CodeContainer } from './elements';
 
+import type { Props } from '../types';
+
+type State = { fuzzySearchEnabled: boolean };
+
 const documentCache = {};
 
-class CodemirrorEditor extends React.Component {
-  constructor(props) {
+class CodemirrorEditor extends React.Component<Props, State> {
+  codemirror: typeof CodeMirror;
+  codemirrorElement: ?HTMLDivElement;
+  server: $PropertyType<CodeMirror, 'TernServer'>;
+  sandbox: $PropertyType<Props, 'sandbox'>;
+  currentModule: $PropertyType<Props, 'currentModule'>;
+  settings: $PropertyType<Props, 'settings'>;
+  dependencies: $PropertyType<Props, 'dependencies'>;
+  disposeInitializer: ?() => void;
+
+  constructor(props: Props) {
     super(props);
     this.state = {
       fuzzySearchEnabled: false,
@@ -20,17 +37,18 @@ class CodemirrorEditor extends React.Component {
     this.sandbox = props.sandbox;
     this.currentModule = props.currentModule;
     this.settings = props.settings;
-    this.dependencies = props.dependencies;
   }
-  shouldComponentUpdate(nextProps) {
+
+  shouldComponentUpdate(nextProps: Props) {
     return (
       this.props.width !== nextProps.width ||
       this.props.height !== nextProps.height
     );
   }
+
   componentWillUnmount() {
-    if (this.props.disposeInitializer) {
-      this.props.disposeInitializer();
+    if (this.disposeInitializer) {
+      this.disposeInitializer();
     }
   }
 
@@ -45,7 +63,7 @@ class CodemirrorEditor extends React.Component {
     });
   }
 
-  setErrors = errors => {
+  setErrors = (errors: Array<ModuleError>) => {
     const codeLines = this.codemirror.getValue().split('\n');
 
     codeLines.forEach((_, i) => {
@@ -71,7 +89,7 @@ class CodemirrorEditor extends React.Component {
 
   changeDependencies = () => {};
 
-  changeSettings = async settings => {
+  changeSettings = async (settings: $PropertyType<Props, 'settings'>) => {
     const defaultKeys = {
       'Cmd-/': cm => {
         cm.listSelections().forEach(() => {
@@ -102,12 +120,8 @@ class CodemirrorEditor extends React.Component {
     };
 
     if (settings.autoCompleteEnabled) {
-      const tern = await System.import(
-        /* webpackChunkName: 'codemirror-tern' */ 'tern'
-      );
-      const defs = await System.import(
-        /* webpackChunkName: 'codemirror-tern-definitions' */ 'tern/defs/ecmascript.json'
-      );
+      const tern = await import(/* webpackChunkName: 'codemirror-tern' */ 'tern');
+      const defs = await import(/* webpackChunkName: 'codemirror-tern-definitions' */ 'tern/defs/ecmascript.json');
       window.tern = tern;
       this.server =
         this.server ||
@@ -163,9 +177,7 @@ class CodemirrorEditor extends React.Component {
     }
 
     if (settings.vimMode) {
-      await System.import(
-        /* webpackChunkName: 'codemirror-vim' */ 'codemirror/keymap/vim'
-      );
+      await import(/* webpackChunkName: 'codemirror-vim' */ 'codemirror/keymap/vim');
       this.codemirror.setOption('keyMap', 'vim');
     } else {
       this.codemirror.setOption('keyMap', 'sublime');
@@ -173,9 +185,7 @@ class CodemirrorEditor extends React.Component {
 
     if (settings.lintEnabled) {
       const initialized = 'eslint' in window;
-      System.import(
-        /* webpackChunkName: 'codemirror-eslint' */ 'app/utils/codemirror/eslint-lint'
-      )
+      import(/* webpackChunkName: 'codemirror-eslint' */ 'app/utils/codemirror/eslint-lint')
         .then(initializer => !initialized && initializer.default())
         .then(() => {
           this.codemirror.setOption('lint', true);
@@ -187,7 +197,7 @@ class CodemirrorEditor extends React.Component {
     this.forceUpdate();
   };
 
-  changeModule = async newModule => {
+  changeModule = async (newModule: Module) => {
     this.currentModule = newModule;
 
     const currentModule = this.currentModule;
@@ -219,9 +229,7 @@ class CodemirrorEditor extends React.Component {
 
     if (kind) {
       if (kind[1] === 'css' || kind[1] === 'scss' || kind[1] === 'less') {
-        await System.import(
-          /* webpackChunkName: 'codemirror-css' */ 'codemirror/mode/css/css'
-        );
+        await import(/* webpackChunkName: 'codemirror-css' */ 'codemirror/mode/css/css');
         if (kind[1] === 'less') {
           return 'text/x-less';
         }
@@ -230,9 +238,7 @@ class CodemirrorEditor extends React.Component {
         }
         return 'css';
       } else if (kind[1] === 'html' || kind[1] === 'vue') {
-        await System.import(
-          /* webpackChunkName: 'codemirror-html' */ 'codemirror/mode/htmlmixed/htmlmixed'
-        );
+        await import(/* webpackChunkName: 'codemirror-html' */ 'codemirror/mode/htmlmixed/htmlmixed');
 
         if (kind[1] === 'vue') {
           return 'text/x-vue';
@@ -240,21 +246,15 @@ class CodemirrorEditor extends React.Component {
 
         return 'htmlmixed';
       } else if (kind[1] === 'md') {
-        await System.import(
-          /* webpackChunkName: 'codemirror-markdown' */ 'codemirror/mode/markdown/markdown'
-        );
+        await import(/* webpackChunkName: 'codemirror-markdown' */ 'codemirror/mode/markdown/markdown');
         return 'markdown';
       } else if (kind[1] === 'json') {
         return 'application/json';
       } else if (kind[1] === 'sass') {
-        await System.import(
-          /* webpackChunkName: 'codemirror-sass' */ 'codemirror/mode/sass/sass'
-        );
+        await import(/* webpackChunkName: 'codemirror-sass' */ 'codemirror/mode/sass/sass');
         return 'sass';
       } else if (kind[1] === 'styl') {
-        await System.import(
-          /* webpackChunkName: 'codemirror-sass' */ 'codemirror/mode/stylus/stylus'
-        );
+        await import(/* webpackChunkName: 'codemirror-sass' */ 'codemirror/mode/stylus/stylus');
         return 'stylus';
       }
     }
@@ -280,7 +280,7 @@ class CodemirrorEditor extends React.Component {
     this.changeSettings(this.settings);
   };
 
-  handleChange = (cm, change) => {
+  handleChange = (cm: typeof CodeMirror, change: { origin: string }) => {
     if (change.origin !== 'setValue' && this.props.onChange) {
       this.props.onChange(cm.getValue());
     }
@@ -311,7 +311,7 @@ class CodemirrorEditor extends React.Component {
     this.setState({ fuzzySearchEnabled: false }, () => this.forceUpdate());
   };
 
-  setCurrentModule = moduleId => {
+  setCurrentModule = (moduleId: string) => {
     this.closeFuzzySearch();
     this.codemirror.focus();
     if (this.props.onModuleChange) {
@@ -328,10 +328,6 @@ class CodemirrorEditor extends React.Component {
         <CodeContainer
           fontFamily={settings.fontFamily}
           lineHeight={settings.lineHeight}
-          style={{
-            width: this.props.width,
-            height: this.props.height,
-          }}
           hideNavigation={hideNavigation}
         >
           {this.state.fuzzySearchEnabled && (

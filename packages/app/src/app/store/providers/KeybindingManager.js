@@ -1,5 +1,5 @@
 import { Provider } from 'cerebral';
-import { KEYBINDINGS, normalizeKey } from 'app/utils/keybindings';
+import { KEYBINDINGS, normalizeKey } from 'common/utils/keybindings';
 
 const state = {
   keybindings: null,
@@ -53,7 +53,12 @@ function handleKeyDown(controller, e) {
       e.preventDefault();
       e.stopPropagation();
 
-      controller.getSignal(keybinding.signal)(keybinding.payload || {});
+      const payload =
+        typeof keybinding.payload === 'function'
+          ? keybinding.payload(path => controller.getState(path))
+          : keybinding.payload || {};
+
+      controller.getSignal(keybinding.signal)(payload);
 
       return;
     }
@@ -100,7 +105,12 @@ function handleKeyDown(controller, e) {
       e.preventDefault();
       e.stopPropagation();
 
-      controller.getSignal(keybinding.signal)(keybinding.payload || {});
+      const payload =
+        typeof keybinding.payload === 'function'
+          ? keybinding.payload(path => controller.getState(path))
+          : keybinding.payload || {};
+
+      controller.getSignal(keybinding.signal)(payload);
 
       return;
     }

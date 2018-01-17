@@ -1,4 +1,6 @@
 import { clone } from 'mobx-state-tree';
+import { getModulePath } from 'common/sandbox/modules';
+import getDefinition from 'common/templates';
 
 export function whenModuleIsSelected({ state, props, path }) {
   const currentModule = state.get('editor.currentModule');
@@ -350,4 +352,42 @@ export function revertDirectoryName({ state, props }) {
     `editor.sandboxes.${sandbox.id}.directories.${directoryIndex}.title`,
     props.oldTitle
   );
+}
+
+export function setDefaultNewCode({ state, props }) {
+  if (!props.optimisticModule || props.optimisticModule.code) {
+    return {};
+  }
+
+  const sandbox = state.get('editor.currentSandbox');
+
+  const path = getModulePath(
+    sandbox.modules,
+    sandbox.directories,
+    props.optimisticModule.id
+  );
+
+  const template = getDefinition(sandbox.template);
+  const config = template.configurations[path];
+  if (config && config.generateFile) {
+    const code = config.generateFile(state);
+
+    const optimisticModuleIndex = sandbox.modules.findIndex(
+      module => module.shortid === props.optimisticModule.shortid
+    );
+
+    state.merge(
+      `editor.sandboxes.${sandbox.id}.modules.${optimisticModuleIndex}`,
+      {
+        code,
+      }
+    );
+
+    return {
+      newCode: code,
+      optimisticModule: { ...props.optimisticModule, code },
+    };
+  }
+
+  return {};
 }

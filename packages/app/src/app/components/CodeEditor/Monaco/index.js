@@ -1,8 +1,16 @@
+// @flow
 import * as React from 'react';
 import { debounce } from 'lodash';
 import { getModulePath } from 'common/sandbox/modules';
 
 import getTemplate from 'common/templates';
+import type {
+  Module,
+  Sandbox,
+  ModuleError,
+  ModuleCorrection,
+  Directory,
+} from 'common/types';
 
 /* eslint-disable import/no-webpack-loader-syntax */
 import SyntaxHighlightWorker from 'worker-loader?name=monaco-syntax-highlighter.[hash].worker.js!./workers/syntax-highlighter';
@@ -14,6 +22,11 @@ import MonacoEditorComponent from './MonacoReactComponent';
 import FuzzySearch from '../FuzzySearch';
 import { Container, CodeContainer } from './elements';
 import defineTheme from './define-theme';
+import type { Props } from '../types';
+
+type State = {
+  fuzzySearchEnabled: boolean,
+};
 
 let modelCache = {};
 
@@ -28,13 +41,25 @@ const fontFamilies = (...families) =>
 const requireAMDModule = paths =>
   new Promise(resolve => window.require(paths, () => resolve()));
 
-class MonacoEditor extends React.Component {
+class MonacoEditor extends React.Component<Props, State> {
   static defaultProps = {
     width: '100%',
     height: '100%',
   };
 
-  constructor(props) {
+  sandbox: $PropertyType<Props, 'sandbox'>;
+  currentModule: $PropertyType<Props, 'currentModule'>;
+  settings: $PropertyType<Props, 'settings'>;
+  dependencies: ?$PropertyType<Props, 'dependencies'>;
+  disposeInitializer: ?() => void;
+  syntaxWorker: ?Worker;
+  lintWorker: ?Worker;
+  typingsFetcherWorker: ?Worker;
+  sizeProbeInterval: ?number;
+  editor: any;
+  monaco: any;
+
+  constructor(props: Props) {
     super(props);
     this.state = {
       fuzzySearchEnabled: false,
@@ -52,7 +77,7 @@ class MonacoEditor extends React.Component {
     this.resizeEditor = debounce(this.resizeEditor, 500);
   }
 
-  shouldComponentUpdate(nextProps) {
+  shouldComponentUpdate(nextProps: Props) {
     if (
       this.props.width !== nextProps.width ||
       this.props.height !== nextProps.height
@@ -64,26 +89,29 @@ class MonacoEditor extends React.Component {
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.resizeEditor);
-    this.disposeModules(this.sandbox.modules);
-    if (this.editor) {
-      this.editor.dispose();
-    }
-    if (this.syntaxWorker) {
-      this.syntaxWorker.terminate();
-    }
-    if (this.lintWorker) {
-      this.lintWorker.terminate();
-    }
-    if (this.typingsFetcherWorker) {
-      this.typingsFetcherWorker.terminate();
-    }
-    clearTimeout(this.sizeProbeInterval);
+    // Make sure that everything has run before disposing, to prevent any inconsistensies
+    setTimeout(() => {
+      this.disposeModules(this.sandbox.modules);
+      if (this.editor) {
+        this.editor.dispose();
+      }
+      if (this.syntaxWorker) {
+        this.syntaxWorker.terminate();
+      }
+      if (this.lintWorker) {
+        this.lintWorker.terminate();
+      }
+      if (this.typingsFetcherWorker) {
+        this.typingsFetcherWorker.terminate();
+      }
+      clearTimeout(this.sizeProbeInterval);
+    });
 
     if (this.disposeInitializer) {
       this.disposeInitializer();
     }
   }
-  configureEditor = async (editor, monaco) => {
+  configureEditor = async (editor: any, monaco: any) => {
     this.editor = editor;
     this.monaco = monaco;
 
@@ -159,10 +187,13 @@ class MonacoEditor extends React.Component {
     window.addEventListener('resize', this.resizeEditor);
     this.sizeProbeInterval = setInterval(this.resizeEditor.bind(this), 3000);
 
-    if (Object.keys(this.dependencies)) {
-      setTimeout(() => {
-        this.fetchDependencyTypings(this.dependencies, monaco);
-      }, 5000);
+    const { dependencies } = this;
+    if (dependencies != null) {
+      if (Object.keys(dependencies)) {
+        setTimeout(() => {
+          this.fetchDependencyTypings(dependencies);
+        }, 5000);
+      }
     }
 
     editor.addAction({
@@ -202,7 +233,7 @@ class MonacoEditor extends React.Component {
     }
   };
 
-  changeModule = newModule => {
+  changeModule = (newModule: Module) => {
     const oldModule = this.currentModule;
 
     this.currentModule = newModule;
@@ -210,10 +241,14 @@ class MonacoEditor extends React.Component {
       currentId: oldModule.id,
       nextId: newModule.id,
       nextTitle: newModule.title,
-    }).then(() => this.changeCode(newModule.code));
+    }).then(() => this.changeCode(newModule.code || ''));
   };
 
-  changeSandbox = (newSandbox, newCurrentModule, dependencies) =>
+  changeSandbox = (
+    newSandbox: Sandbox,
+    newCurrentModule: Module,
+    dependencies: $PropertyType<Props, 'dependencies'>
+  ) =>
     new Promise(resolve => {
       const oldSandbox = this.sandbox;
 
@@ -235,7 +270,7 @@ class MonacoEditor extends React.Component {
       });
     });
 
-  changeCode = code => {
+  changeCode = (code: string) => {
     if (code !== this.getCode()) {
       this.updateCode(code);
       this.syntaxHighlight(
@@ -246,12 +281,16 @@ class MonacoEditor extends React.Component {
     }
   };
 
-  changeDependencies = dependencies => {
+  changeDependencies = (
+    dependencies: ?$PropertyType<Props, 'dependencies'>
+  ) => {
     this.dependencies = dependencies;
-    this.fetchDependencyTypings(dependencies);
+    if (dependencies) {
+      this.fetchDependencyTypings(dependencies);
+    }
   };
 
-  changeSettings = settings => {
+  changeSettings = (settings: $PropertyType<Props, 'settings'>) => {
     this.settings = settings;
     this.editor.updateOptions(this.getEditorOptions());
     this.forceUpdate();
@@ -304,7 +343,7 @@ class MonacoEditor extends React.Component {
     });
   };
 
-  setErrors = errors => {
+  setErrors = (errors: Array<ModuleError>) => {
     if (errors.length > 0) {
       const thisModuleErrors = errors.filter(
         error => error.moduleId === this.currentModule.id
@@ -336,7 +375,7 @@ class MonacoEditor extends React.Component {
     }
   };
 
-  setCorrections = corrections => {
+  setCorrections = (corrections: Array<ModuleCorrection>) => {
     if (corrections.length > 0) {
       const correctionMarkers = corrections
         .map(correction => {
@@ -391,9 +430,7 @@ class MonacoEditor extends React.Component {
           !Object.keys(dependencies).includes(dependency) &&
           this.props.onNpmDependencyAdded
         ) {
-          this.props.onNpmDependencyAdded({
-            name: dependency,
-          });
+          this.props.onNpmDependencyAdded(dependency);
         }
       }
 
@@ -403,10 +440,7 @@ class MonacoEditor extends React.Component {
         ]
       ) {
         requestAnimationFrame(() => {
-          this.monaco.languages.typescript.typescriptDefaults.addExtraLib(
-            typings,
-            `file:///${path}`
-          );
+          this.addLib(typings, path);
         });
       }
     });
@@ -419,8 +453,10 @@ class MonacoEditor extends React.Component {
       const { markers, version } = event.data;
 
       requestAnimationFrame(() => {
-        if (version === this.editor.getModel().getVersionId()) {
-          this.updateLintWarnings(markers);
+        if (this.editor.getModel()) {
+          if (version === this.editor.getModel().getVersionId()) {
+            this.updateLintWarnings(markers);
+          }
         }
       });
     });
@@ -435,8 +471,10 @@ class MonacoEditor extends React.Component {
       const { classifications, version } = event.data;
 
       requestAnimationFrame(() => {
-        if (version === this.editor.getModel().getVersionId()) {
-          this.updateDecorations(classifications);
+        if (this.editor.getModel()) {
+          if (version === this.editor.getModel().getVersionId()) {
+            this.updateDecorations(classifications);
+          }
         }
       });
     });
@@ -517,7 +555,6 @@ class MonacoEditor extends React.Component {
   }: {
     currentId: string,
     nextId: string,
-    nextCode: ?string,
     nextTitle: string,
   }) => {
     const pos = this.editor.getPosition();
@@ -535,12 +572,7 @@ class MonacoEditor extends React.Component {
         // We let Monaco know what the latest code is of this file by removing
         // the old extraLib definition and defining a new one.
         modelCache[currentId].lib.dispose();
-        modelCache[
-          currentId
-        ].lib = this.monaco.languages.typescript.typescriptDefaults.addExtraLib(
-          currentModule.code,
-          `file://${path}`
-        );
+        modelCache[currentId].lib = this.addLib(currentModule.code || '', path);
       }
     }
 
@@ -595,15 +627,17 @@ class MonacoEditor extends React.Component {
   syntaxHighlight = async (code: string, title: string, version: string) => {
     const mode = await this.getMode(title);
     if (mode === 'typescript' || mode === 'javascript') {
-      this.syntaxWorker.postMessage({
-        code,
-        title,
-        version,
-      });
+      if (this.syntaxWorker) {
+        this.syntaxWorker.postMessage({
+          code,
+          title,
+          version,
+        });
+      }
     }
   };
 
-  lint = async (code, title, version) => {
+  lint = async (code: string, title: string, version: number) => {
     const mode = await this.getMode(title);
     if (mode === 'javascript') {
       if (this.lintWorker) {
@@ -664,7 +698,7 @@ class MonacoEditor extends React.Component {
     );
   };
 
-  disposeModules = modules => {
+  disposeModules = (modules: Array<Module>) => {
     if (this.editor) {
       this.editor.setModel(null);
     }
@@ -678,7 +712,7 @@ class MonacoEditor extends React.Component {
     modelCache = {};
   };
 
-  initializeModules = modules =>
+  initializeModules = (modules: Array<Module>) =>
     Promise.all(modules.map(module => this.createModel(module, modules)));
 
   resizeEditor = () => {
@@ -687,10 +721,32 @@ class MonacoEditor extends React.Component {
     });
   };
 
+  addLib = (code: string, path: string) => {
+    const fullPath = `file://${path}`;
+
+    const existingLib = this.monaco.languages.typescript.typescriptDefaults.getExtraLibs()[
+      fullPath
+    ];
+    if (existingLib) {
+      existingLib.dispose();
+      requestAnimationFrame(() => {
+        this.monaco.languages.typescript.typescriptDefaults.addExtraLib(
+          module.code || '',
+          fullPath
+        );
+      });
+    } else {
+      this.monaco.languages.typescript.typescriptDefaults.addExtraLib(
+        module.code || '',
+        fullPath
+      );
+    }
+  };
+
   createModel = async (
-    module,
-    modules = this.sandbox.modules,
-    directories = this.sandbox.directories
+    module: Module,
+    modules: Array<Module> = this.sandbox.modules,
+    directories: Array<Directory> = this.sandbox.directories
   ) => {
     // Remove the first slash, as this will otherwise create errors in monaco
     const path = getModulePath(modules, directories, module.id);
@@ -698,10 +754,7 @@ class MonacoEditor extends React.Component {
     // We need to add this as a lib specifically to Monaco, because Monaco
     // tends to lose type definitions if you don't touch a file for a while.
     // Related issue: https://github.com/Microsoft/monaco-editor/issues/461
-    const lib = this.monaco.languages.typescript.typescriptDefaults.addExtraLib(
-      module.code || '',
-      `file://${path}`
-    );
+    const lib = this.addLib(module.code || '', path);
 
     const mode = await this.getMode(module.title);
 
@@ -730,7 +783,9 @@ class MonacoEditor extends React.Component {
     if (!modelCache[id]) {
       const module = modules.find(m => m.id === id);
 
-      await this.createModel(module);
+      if (module) {
+        await this.createModel(module);
+      }
     }
 
     return modelCache[id];
@@ -758,17 +813,29 @@ class MonacoEditor extends React.Component {
     });
   };
 
-  setCurrentModule = moduleId => {
+  setCurrentModule = (moduleId: string) => {
     this.closeFuzzySearch();
-    this.changeModule(
-      this.sandbox.modules.find(module => module.id === moduleId)
-    );
-    if (this.props.onModuleChange) {
-      this.props.onModuleChange(moduleId);
+
+    const module = this.sandbox.modules.find(m => m.id === moduleId);
+    if (module) {
+      this.changeModule(module);
+      if (this.props.onModuleChange) {
+        this.props.onModuleChange(moduleId);
+      }
     }
   };
 
-  openReference = data => {
+  openReference = (data: {
+    resource: { path: string },
+    options: {
+      selection: {
+        startLineNumber: number,
+        endLineNumber: number,
+        startColumn: number,
+        endColumn: number,
+      },
+    },
+  }) => {
     const foundModuleId = Object.keys(modelCache).find(
       mId => modelCache[mId].model.uri.path === data.resource.path
     );
@@ -839,14 +906,7 @@ class MonacoEditor extends React.Component {
 
     return (
       <Container>
-        <CodeContainer
-          widthOffset={this.props.widthOffset}
-          style={{
-            width: this.props.width,
-            height: this.props.height,
-          }}
-          hideNavigation={hideNavigation}
-        >
+        <CodeContainer hideNavigation={hideNavigation}>
           {this.state.fuzzySearchEnabled && (
             <FuzzySearch
               closeFuzzySearch={this.closeFuzzySearch}

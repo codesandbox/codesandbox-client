@@ -1,6 +1,6 @@
 import React from 'react';
-import Input from 'app/components/Input';
-import { normalizeKey, formatKey } from 'app/utils/keybindings';
+import Input from 'common/components/Input';
+import { normalizeKey, formatKey } from 'common/utils/keybindings';
 
 const SPECIAL_KEYS = ['Meta', 'Control', 'Alt', 'Shift', 'Enter', 'Backspace'];
 const IGNORED_KEYS = ['Backspace', 'Escape', 'CapsLock'];

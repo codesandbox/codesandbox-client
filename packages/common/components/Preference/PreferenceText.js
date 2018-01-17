@@ -1,5 +1,5 @@
 import React from 'react';
-import Input from 'app/components/Input';
+import Input from 'common/components/Input';
 
 export default class PreferenceText extends React.PureComponent {
   handleChange = e => {

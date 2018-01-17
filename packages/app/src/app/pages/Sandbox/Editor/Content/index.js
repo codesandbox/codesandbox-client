@@ -68,35 +68,43 @@ class EditorPreview extends React.Component {
 
         // Put in a timeout so we allow the actions after the fork to execute first as well.
         setTimeout(() => {
-          editor
-            .changeSandbox(
-              newSandbox,
-              store.editor.currentModule,
-              newSandbox.npmDependencies.toJS()
-            )
-            .then(() => {
-              isChangingSandbox = false;
-            });
+          if (editor.changeSandbox) {
+            editor
+              .changeSandbox(
+                newSandbox,
+                store.editor.currentModule,
+                newSandbox.npmDependencies.toJS()
+              )
+              .then(() => {
+                isChangingSandbox = false;
+              });
+          }
         });
       }
     );
     const disposeErrorsHandler = reaction(
       () => store.editor.errors.map(error => error),
       errors => {
-        editor.setErrors(errors);
+        if (editor.setErrors) {
+          editor.setErrors(errors);
+        }
       }
     );
     const disposeCorrectionsHandler = reaction(
       () => store.editor.corrections.map(correction => correction),
       corrections => {
-        editor.setCorrections(corrections);
+        if (editor.setCorrections) {
+          editor.setCorrections(corrections);
+        }
       }
     );
     const disposeModulesHandler = reaction(this.detectStructureChange, () => {
       if (isChangingSandbox) {
         return;
       }
-      editor.updateModules();
+      if (editor.updateModules) {
+        editor.updateModules();
+      }
     });
     const disposePreferencesHandler = reaction(
       () => ({
@@ -106,9 +114,12 @@ class EditorPreview extends React.Component {
         autoCompleteEnabled: store.preferences.settings.autoCompleteEnabled,
         vimMode: store.preferences.settings.vimMode,
         lintEnabled: store.preferences.settings.lintEnabled,
+        tabSize: store.preferences.settings.tabSize,
       }),
       newSettings => {
-        editor.changeSettings(newSettings);
+        if (editor.changeSettings) {
+          editor.changeSettings(newSettings);
+        }
       },
       {
         compareStructural: true,
@@ -125,17 +136,15 @@ class EditorPreview extends React.Component {
         });
       }
     );
-    const disposeDependenciesHandler = reaction(
-      () =>
-        store.editor.currentSandbox.npmDependencies.keys().reduce(
-          (dependencies, key) =>
-            Object.assign(dependencies, {
-              [key]: store.editor.currentSandbox.npmDependencies.get(key),
-            }),
-          {}
-        ),
-      newNpmDependencies => {
-        editor.changeDependencies(newNpmDependencies);
+    const disposePackageHandler = reaction(
+      () => store.editor.currentParsedPackageJSON,
+      ({ parsed }) => {
+        if (parsed) {
+          const { dependencies = {}, devDependencies = {} } = parsed;
+          if (editor.changeDependencies) {
+            editor.changeDependencies({ ...dependencies, ...devDependencies });
+          }
+        }
       }
     );
     const disposeCodeHandler = reaction(
@@ -144,7 +153,9 @@ class EditorPreview extends React.Component {
         if (isChangingSandbox) {
           return;
         }
-        editor.changeCode(newCode || '');
+        if (editor.changeCode) {
+          editor.changeCode(newCode || '');
+        }
       }
     );
     const disposeModuleChangeHandler = reaction(
@@ -153,7 +164,9 @@ class EditorPreview extends React.Component {
         if (isChangingSandbox) {
           return;
         }
-        editor.changeModule(newModule);
+        if (editor.changeModule) {
+          editor.changeModule(newModule);
+        }
       }
     );
     const disposeToggleDevtools = reaction(
@@ -168,7 +181,7 @@ class EditorPreview extends React.Component {
       disposeCorrectionsHandler();
       disposeModulesHandler();
       disposePreferencesHandler();
-      disposeDependenciesHandler();
+      disposePackageHandler();
       disposeSandboxChangeHandler();
       disposeModuleChangeHandler();
       disposeCodeHandler();
@@ -254,7 +267,6 @@ class EditorPreview extends React.Component {
               onInitialized={this.onInitialized}
               sandbox={sandbox}
               currentModule={currentModule}
-              dependencies={sandbox.npmDependencies.toJS()}
               width={editorWidth}
               height={editorHeight}
               settings={{

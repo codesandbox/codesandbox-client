@@ -1,5 +1,5 @@
 import React from 'react';
-import Select from 'app/components/Select';
+import Select from 'common/components/Select';
 
 export default class PreferenceInput extends React.PureComponent {
   handleChange = e => {

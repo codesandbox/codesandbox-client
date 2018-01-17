@@ -92,7 +92,6 @@ class Preview extends React.Component {
   };
 
   handleCodeChange = preview => {
-    console.log('woop');
     const settings = this.props.store.preferences.settings;
     if (settings.livePreviewEnabled) {
       if (settings.instantPreviewEnabled) {

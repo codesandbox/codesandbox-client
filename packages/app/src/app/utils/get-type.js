@@ -26,6 +26,10 @@ export function getMode(title: string) {
     return 'npm';
   }
 
+  if (title === '.prettierrc') {
+    return 'prettier';
+  }
+
   if (cssRegex.test(title)) return 'css';
   if (jsonRegex.test(title)) return 'json';
   if (htmlRegex.test(title)) return 'html';

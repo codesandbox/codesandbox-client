@@ -122,5 +122,18 @@ export const KEYBINDINGS = {
     type: 'Source',
     bindings: [],
     signal: 'editor.prettifyClicked',
+    payload: getState => ({
+      moduleShortid: getState('editor.currentModule.shortid'),
+    }),
+  },
+
+  'source.modules.save': {
+    title: 'Save Current File',
+    type: 'Source',
+    bindings: [[metaKey, 'S']],
+    signal: 'editor.codeSaved',
+    payload: getState => ({
+      moduleShortid: getState('editor.currentModule.shortid'),
+    }),
   },
 };

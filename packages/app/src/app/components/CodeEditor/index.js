@@ -1,3 +1,5 @@
+// @flow
+
 import React from 'react';
 import Loadable from 'react-loadable';
 import Loading from 'app/components/Loading';
@@ -7,11 +9,16 @@ import Centered from 'common/components/flex/Centered';
 import Margin from 'common/components/spacing/Margin';
 import isImage from 'common/utils/is-image';
 import getDefinition from 'common/templates';
+import type { Sandbox } from 'common/types';
 import { getModulePath } from 'common/sandbox/modules';
+import Tooltip from 'common/components/Tooltip';
+import UIIcon from 'react-icons/lib/md/dvr';
 
+import type { Props } from './types';
 import Monaco from './Monaco';
 import ImageViewer from './ImageViewer';
 import Configuration from './Configuration';
+import { Icons, Icon } from './elements';
 
 const CodeMirror = Loadable({
   loader: () =>
@@ -19,12 +26,50 @@ const CodeMirror = Loadable({
   LoadingComponent: Loading,
 });
 
-function CodeEditor(props) {
-  const settings = props.settings;
-  const module = props.currentModule;
+const getDependencies = (sandbox: Sandbox): ?{ [key: string]: string } => {
+  const packageJSON = sandbox.modules.find(
+    m => m.title === 'package.json' && m.directoryShortid != null
+  );
 
-  if (module) {
+  if (packageJSON != null) {
+    try {
+      const { dependencies = {}, devDependencies = {} } = JSON.parse(
+        packageJSON.code || ''
+      );
+
+      return {
+        ...dependencies,
+        ...devDependencies,
+      };
+    } catch (e) {
+      return null;
+    }
+  } else {
+    return sandbox.npmDependencies;
+  }
+};
+
+type State = {
+  showConfigUI: boolean,
+};
+
+export default class CodeEditor extends React.PureComponent<Props, State> {
+  state = {
+    showConfigUI: true,
+  };
+
+  toggleConfigUI = () => {
+    this.setState({ showConfigUI: !this.state.showConfigUI });
+  };
+
+  render() {
+    const props = this.props;
+
+    const settings = props.settings;
+    const module = props.currentModule;
     const sandbox = props.sandbox;
+    const dependencies = getDependencies(sandbox);
+
     const template = getDefinition(sandbox.template);
     const modulePath = getModulePath(
       sandbox.modules,
@@ -32,18 +77,29 @@ function CodeEditor(props) {
       module.id
     );
     const config = template.configurations[modulePath];
-    if (config && config.ui) {
-      return <Configuration {...props} config={config} />;
+    if (config && config.ui && this.state.showConfigUI) {
+      return (
+        <Configuration
+          {...props}
+          dependencies={dependencies}
+          config={config}
+          toggleConfigUI={this.toggleConfigUI}
+        />
+      );
     }
 
     if (module.isBinary) {
       if (isImage(module.title)) {
-        return <ImageViewer {...props} />;
+        return <ImageViewer {...props} dependencies={dependencies} />;
       }
 
       return (
         <Margin
-          style={{ overflow: 'auto', height: props.height, width: props.width }}
+          style={{
+            overflow: 'auto',
+            height: props.height,
+            width: props.width,
+          }}
           top={2}
         >
           <Centered horizontal vertical>
@@ -59,15 +115,30 @@ function CodeEditor(props) {
         </Margin>
       );
     }
-  }
 
-  // We are phasing towards Monaco, the only thing missing is vim mode. So use
-  // CodeMirror until we have proper support
-  if (settings.vimMode || settings.codeMirror) {
-    return <CodeMirror {...props} />;
-  }
+    const Editor =
+      settings.vimMode || settings.codeMirror ? CodeMirror : Monaco;
 
-  return <Monaco {...props} />;
+    return (
+      <div
+        style={{
+          height: props.height,
+          width: props.width,
+          position: 'relative',
+        }}
+      >
+        {config &&
+          config.ui && (
+            <Icons>
+              <Tooltip title="Switch to UI Configuration">
+                <Icon onClick={this.toggleConfigUI}>
+                  <UIIcon />
+                </Icon>
+              </Tooltip>
+            </Icons>
+          )}
+        <Editor {...props} dependencies={dependencies} />
+      </div>
+    );
+  }
 }
-
-export default CodeEditor;

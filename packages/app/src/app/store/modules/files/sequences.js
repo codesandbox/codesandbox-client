@@ -12,6 +12,7 @@ export const createModule = [
     state`editor.sandboxes.${state`editor.currentId`}.modules`,
     props`optimisticModule`
   ),
+  actions.setDefaultNewCode,
   actions.saveNewModule,
   {
     success: [

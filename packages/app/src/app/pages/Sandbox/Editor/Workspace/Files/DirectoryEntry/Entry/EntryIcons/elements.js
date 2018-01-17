@@ -16,6 +16,7 @@ import vueSvg from 'common/components/icons/vue.svg';
 import fileSvg from 'common/components/icons/file.svg';
 import svgSvg from 'common/components/icons/svg.svg';
 import imageSvg from 'common/components/icons/image.svg';
+import prettierSvg from 'common/components/icons/prettier.svg';
 
 const icons = {
   directory: folderSvg,
@@ -33,6 +34,7 @@ const icons = {
   ts: tsSvg,
   svg: svgSvg,
   image: imageSvg,
+  prettier: prettierSvg,
 };
 
 function getIconSvg(type) {
@@ -41,15 +43,17 @@ function getIconSvg(type) {
 
 export const RedIcon = styled.span`
   color: ${props => props.theme.red};
+  width: ${props => props.width}px;
+  height: ${props => props.height}px;
 `;
 
 export const SVGIcon = styled.span`
   background-image: url(${props => getIconSvg(props.type)});
-  background-size: 1rem;
+  background-size: ${props => props.width}px;
   background-position: 0;
   background-repeat: no-repeat;
-  width: 16px;
-  height: 16px;
+  width: ${props => props.width}px;
+  height: ${props => props.height}px;
   display: inline-block;
   -webkit-font-smoothing: antialiased;
   vertical-align: top;

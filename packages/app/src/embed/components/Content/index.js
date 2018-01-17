@@ -271,7 +271,6 @@ export default class Content extends React.PureComponent {
               currentModule={currentModule || mainModule}
               sandbox={sandbox}
               settings={this.getPreferences()}
-              dependencies={sandbox.npmDependencies}
               canSave={false}
               hideNavigation={hideNavigation}
               onChange={this.setCode}
