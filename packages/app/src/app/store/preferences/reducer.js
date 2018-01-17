@@ -46,7 +46,8 @@ const initialState: Preferences = Object.keys(keys).reduce(
     codeMirror: false,
     autoDownloadTypes: true,
     newPackagerExperiment: false,
-    relativeUrlsEnabled: false,
+    relativeUrlsEnabled: true, // TODO: SET IT TO FALSE BEFORE PROD, JUST FOR TESTING
+    relativeUrl: 'sandbox://',
   }
 );
 

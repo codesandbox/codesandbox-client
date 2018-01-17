@@ -64,9 +64,19 @@ const Preferences = ({ preferences, preferencesActions }: Props) => {
           title="Relative preview URLs"
           type="boolean"
           {...bindValue('relativeUrlsEnabled')}
-          tooltip="Relative URLs"
         />
-        <Description>Relative preview address bar URLs</Description>
+        <Description>Relative (shortened) preview URLs.</Description>
+        <Rule />
+        <PaddedPreference
+          title="Relative URL"
+          type="string"
+          placeholder="/"
+          {...bindValue('relativeUrl')}
+        />
+        <Description>
+          The relative (shortened) URL to be used. So for instance, the default
+          &apos;/&apos; URL will redirect &apos;/someUrl&apos; to{' '}
+        </Description>
       </PreferenceContainer>
     </Container>
   );

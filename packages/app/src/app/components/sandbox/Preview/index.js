@@ -77,7 +77,9 @@ export default class Preview extends React.PureComponent<Props, State> {
       frameInitialized: false,
       history: [],
       historyPosition: -1,
-      urlInAddressBar: frameUrl(props.sandboxId, props.initialPath || ''),
+      urlInAddressBar: props.preferences.relativeUrlsEnabled
+        ? props.preferences.relativeUrl
+        : frameUrl(props.sandboxId, props.initialPath || ''),
       url: null,
       dragging: false,
     };
@@ -312,10 +314,20 @@ export default class Preview extends React.PureComponent<Props, State> {
   };
 
   sendUrl = () => {
-    const { urlInAddressBar } = this.state;
+    let { urlInAddressBar } = this.state;
     const { sandboxId, preferences } = this.props;
 
     let url;
+
+    urlInAddressBar = urlInAddressBar.replace(/:(\/\/|\\\\)/, '/');
+
+    if (urlInAddressBar.indexOf('http') === -1) {
+      urlInAddressBar = 'http://' + urlInAddressBar;
+    }
+
+    if (!urlInAddressBar.endsWith('/')) {
+      urlInAddressBar += '/';
+    }
 
     const urlInAddressBarParsed = parseUrl(urlInAddressBar);
 
@@ -326,8 +338,6 @@ export default class Preview extends React.PureComponent<Props, State> {
     } else {
       url = urlInAddressBar;
     }
-
-    console.log(url);
 
     document.getElementById('sandbox').src = url;
 
@@ -413,10 +423,12 @@ export default class Preview extends React.PureComponent<Props, State> {
       hideNavigation,
       inactive,
       shouldExpandDevTools,
+      preferences,
     } = this.props;
     const { historyPosition, history, dragging, urlInAddressBar } = this.state;
 
-    const url = urlInAddressBar || frameUrl(sandboxId);
+    const url =
+      urlInAddressBar || preferences.relativeUrl || frameUrl(sandboxId);
 
     return (
       <Container>
