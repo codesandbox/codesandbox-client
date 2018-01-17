@@ -17,10 +17,11 @@ const Container = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
+  max-height: calc(100% - 2rem);
 `;
 
 const Messages = styled.div`
-  height: 100%;
+  flex-grow: 1;
   overflow-y: auto;
   overflow-x: hidden;
   white-space: pre-wrap;
@@ -86,6 +87,26 @@ class Console extends React.Component<Props, State> {
           }
         } else {
           this.addMessage('error', [parsedJson]);
+        }
+        break;
+      }
+      case 'test-result': {
+        const { result, error } = data;
+
+        const aggregatedResults = result ? CircularJSON.parse(result) : result;
+        const { summaryMessage, failedMessages } = aggregatedResults;
+
+        if (!error) {
+          if (aggregatedResults) {
+            this.addMessage('log', [summaryMessage]);
+            failedMessages.forEach(t => {
+              this.addMessage('warn', [t]);
+            });
+          } else {
+            this.addMessage('warn', [undefined], 'return');
+          }
+        } else {
+          this.addMessage('error', [aggregatedResults]);
         }
         break;
       }

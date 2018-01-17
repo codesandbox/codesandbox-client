@@ -245,6 +245,45 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "arthurdenner",
+      "name": "Arthur Denner",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/13774309?v=4",
+      "profile": "https://github.com/arthurdenner",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "radi-cho",
+      "name": "Radi Cho",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/12954909?v=4",
+      "profile": "https://github.com/RSG-Group",
+      "contributions": [
+        "bug",
+        "code",
+        "ideas"
+      ]
+    },
+    {
+      "login": "xyc",
+      "name": "Xiaoyi Chen",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/679275?v=4",
+      "profile": "https://twitter.com/chxy",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "gautamarora",
+      "name": "Gautam Arora",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/1215971?v=4",
+      "profile": "https://twitter.com/gautam",
+      "contributions": [
+        "code",
+        "ideas"
+      ]
     }
   ]
 }

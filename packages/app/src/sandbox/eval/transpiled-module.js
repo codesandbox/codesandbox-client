@@ -611,6 +611,7 @@ export default class TranspiledModule {
           this.hmrConfig.setDisposeHandler(cb);
         },
         data: hotData,
+        status: () => manager.hmrStatus,
       },
     };
     this.compilation.hot.data = hotData;
@@ -660,7 +661,8 @@ export default class TranspiledModule {
         this.source.compiledCode,
         require,
         this.compilation,
-        manager.envVariables
+        manager.envVariables,
+        manager.testRunner.testGlobals()
       );
 
       const hmrConfig = this.hmrConfig;
