@@ -2,8 +2,7 @@ import styled from 'styled-components';
 
 export default styled.select`
   transition: 0.3s ease border-color;
-  background: url(data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4.95 10'>%3cpath fill='white' d='M1.41 4.67l1.07-1.49 1.06 1.49H1.41zM3.54 5.33L2.48 6.82 1.41 5.33h2.13z'>%3c/path>%3c/svg>) no-repeat 95% 50%;
-  background-color: rgba(0, 0, 0, 0.3);
+  background: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciICB2aWV3Qm94PSIwIDAgNC45NSAxMCI+PHBhdGggZmlsbD0id2hpdGUiIGQ9Ik0xLjQxIDQuNjdsMS4wNy0xLjQ5IDEuMDYgMS40OUgxLjQxek0zLjU0IDUuMzNMMi40OCA2LjgyIDEuNDEgNS4zM2gyLjEzeiI+PC9wYXRoPjwvc3ZnPg==) no-repeat 90% 40%;  background-color: rgba(0, 0, 0, 0.3);
   color: white;
   border: none;
   outline: none;
