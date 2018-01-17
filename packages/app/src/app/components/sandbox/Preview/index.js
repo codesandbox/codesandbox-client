@@ -81,7 +81,7 @@ export default class Preview extends React.PureComponent<Props, State> {
       history: [],
       historyPosition: -1,
       urlInAddressBar: props.preferences.relativeUrlsEnabled
-        ? props.preferences.relativeUrl
+        ? props.preferences.relativeUrlPrefix
         : frameUrl(props.sandboxId, props.initialPath || ''),
       url: null,
       dragging: false,
@@ -441,7 +441,7 @@ export default class Preview extends React.PureComponent<Props, State> {
     const { historyPosition, history, dragging, urlInAddressBar } = this.state;
 
     const url =
-      urlInAddressBar || preferences.relativeUrl || frameUrl(sandboxId);
+      urlInAddressBar || preferences.relativeUrlPrefix || frameUrl(sandboxId);
 
     return (
       <Container>

@@ -38,7 +38,7 @@ const initialState: Preferences = Object.keys(keys).reduce(
     autoDownloadTypes: true,
     newPackagerExperiment: false,
     relativeUrlsEnabled: false,
-    relativeUrl: '/',
+    relativeUrlPrefix: '/',
     zenMode: false,
     keybindings: {},
   }

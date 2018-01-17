@@ -65,18 +65,18 @@ const Preferences = ({ preferences, preferencesActions }: Props) => {
           type="boolean"
           {...bindValue('relativeUrlsEnabled')}
         />
-        <Description>Relative (shortened) preview URLs.</Description>
+        <Description>Use relative (shortened) preview URLs.</Description>
         <Rule />
         <PaddedPreference
-          title="Relative URL"
+          title="Relative URL prefix"
           type="string"
           placeholder="/"
-          {...bindValue('relativeUrl')}
+          {...bindValue('relativeUrlPrefix')}
         />
         <Description>
-          The relative (shortened) URL to be used. For instance, the default
-          &apos;/&apos; relative URL will redirect &apos;/someUrl&apos; to
-          &apos;https://codesandbox.io/s/sandboxId&apos;
+          The relative (shortened) URL prefix to be used. For instance, the
+          default &apos;/&apos; prefix will redirect &apos;/someUrl&apos; to
+          &apos;sandboxId.codesandbox.dev&apos;
         </Description>
       </PreferenceContainer>
     </Container>
