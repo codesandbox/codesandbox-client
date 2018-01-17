@@ -94,10 +94,9 @@ class Console extends React.Component<Props, State> {
         const { result, error } = data;
 
         const aggregatedResults = result ? CircularJSON.parse(result) : result;
-        const { summaryMessage, failedMessages } = aggregatedResults;
-
         if (!error) {
           if (aggregatedResults) {
+            const { summaryMessage, failedMessages } = aggregatedResults;
             this.addMessage('log', [summaryMessage]);
             failedMessages.forEach(t => {
               this.addMessage('warn', [t]);
