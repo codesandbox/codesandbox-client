@@ -2,15 +2,17 @@ import styled from 'styled-components';
 
 export default styled.select`
   transition: 0.3s ease border-color;
-  background-color: rgba(0, 0, 0, 0.3);
+  background: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciICB2aWV3Qm94PSIwIDAgNC45NSAxMCI+PHBhdGggZmlsbD0id2hpdGUiIGQ9Ik0xLjQxIDQuNjdsMS4wNy0xLjQ5IDEuMDYgMS40OUgxLjQxek0zLjU0IDUuMzNMMi40OCA2LjgyIDEuNDEgNS4zM2gyLjEzeiI+PC9wYXRoPjwvc3ZnPg==) no-repeat 90% 40%;  background-color: rgba(0, 0, 0, 0.3);
+  color: white;
   border: none;
   outline: none;
   border-radius: 4px;
-  color: white;
+  padding: .2em 1em .2em .2em;
   width: inherit;
   box-sizing: border-box;
   font-weight: 300;
   height: 1.75em;
+  appearance: none;
 
   border: 1px solid
     ${props =>
