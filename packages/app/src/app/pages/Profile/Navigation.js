@@ -18,15 +18,17 @@ const NavigationLink = styled(NavLink)`
   color: rgba(255, 255, 255, 0.5);
   text-decoration: none;
 
-  ${({ border }) =>
-    border && `border-right: 1px solid rgba(255, 255, 255, 0.2)`};
-
-  ${delayEffect(0.2)}; &:hover {
+  ${delayEffect(0.2)};
+  &:hover {
     color: white;
   }
 `;
 
-const CenteredRow = styled(Row)`width: 100%;`;
+const CenteredRow = styled(Row)`
+  width: 100%;
+`;
+
+const borderStyle = { borderRight: '1px solid rgba(255, 255, 255, 0.2)' };
 
 export default ({
   username,
@@ -44,7 +46,7 @@ export default ({
         color: 'white',
       }}
       exact
-      border
+      style={borderStyle}
     >
       SHOWCASE
     </NavigationLink>
@@ -53,7 +55,7 @@ export default ({
       activeStyle={{
         color: 'white',
       }}
-      border
+      style={borderStyle}
     >
       SANDBOXES ({sandboxCount})
     </NavigationLink>

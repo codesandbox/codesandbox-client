@@ -24,6 +24,7 @@ module.exports = {
           require.resolve('./polyfills'),
           path.join(paths.sandboxSrc, 'index.js'),
         ],
+        'sandbox-startup': path.join(paths.sandboxSrc, 'startup.js'),
       }
     : {
         app: [
@@ -34,6 +35,7 @@ module.exports = {
           require.resolve('./polyfills'),
           path.join(paths.sandboxSrc, 'index.js'),
         ],
+        'sandbox-startup': path.join(paths.sandboxSrc, 'startup.js'),
         embed: [
           require.resolve('./polyfills'),
           path.join(paths.embedSrc, 'index.js'),
@@ -113,15 +115,6 @@ module.exports = {
           name: 'static/media/[name].[hash:8].[ext]',
         },
       },
-      // "html" loader is used to process template page (index.html) to resolve
-      // resources linked with <link href="./relative/path"> HTML tags.
-      {
-        test: /\.html$/,
-        loader: 'html-loader',
-        options: {
-          attrs: ['link:href'],
-        },
-      },
     ],
 
     noParse: [/eslint\.4\.1\.0\.min\.js$/, /typescriptServices\.js$/],
@@ -154,7 +147,7 @@ module.exports = {
       filename: 'app.html',
       template: paths.appHtml,
       minify: __PROD__ && {
-        removeComments: true,
+        removeComments: false,
         collapseWhitespace: true,
         removeRedundantAttributes: true,
         useShortDoctype: true,
@@ -168,7 +161,7 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({
       inject: true,
-      chunks: ['common-sandbox', 'sandbox'],
+      chunks: ['sandbox-startup', 'common-sandbox', 'sandbox'],
       filename: 'frame.html',
       template: paths.sandboxHtml,
       minify: __PROD__ && {

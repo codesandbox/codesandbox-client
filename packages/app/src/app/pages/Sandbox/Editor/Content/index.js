@@ -18,7 +18,10 @@ import moduleActionCreators from 'app/store/entities/sandboxes/modules/actions';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
 import modalActionCreators from 'app/store/modal/actions';
 import previewApiActionCreators from 'app/store/preview-actions-api/actions';
+import preferenceActionCreators from 'app/store/preferences/actions';
 import userActionCreators from 'app/store/user/actions';
+import viewActionCreators from 'app/store/view/actions';
+import { devToolsOpenSelector } from 'app/store/view/selectors';
 import {
   findMainModule,
   findCurrentModule,
@@ -32,6 +35,7 @@ import SplitPane from 'react-split-pane';
 
 import CodeEditor from 'app/components/sandbox/CodeEditor';
 import Tabs from 'app/components/sandbox/CodeEditor/Tabs';
+import FilePath from 'app/components/sandbox/CodeEditor/FilePath';
 import Preview from 'app/components/sandbox/Preview';
 
 import showAlternativeComponent from 'app/hoc/show-alternative-component';
@@ -43,6 +47,7 @@ import Skeleton from './Skeleton';
 type Props = {
   workspaceHidden: boolean,
   toggleWorkspace: () => void,
+  devToolsOpen: boolean,
   sandbox: Sandbox,
   user: CurrentUser,
   preferences: Preferences,
@@ -53,6 +58,8 @@ type Props = {
   userActions: typeof userActionCreators,
   modalActions: typeof modalActionCreators,
   previewApiActions: typeof previewApiActionCreators,
+  preferenceActions: typeof preferenceActionCreators,
+  viewActions: typeof viewActionCreators,
 };
 
 type State = {
@@ -73,11 +80,13 @@ const mapStateToProps = createSelector(
   currentUserSelector,
   modulesFromSandboxSelector,
   directoriesFromSandboxSelector,
-  (preferences, user, modules, directories) => ({
+  devToolsOpenSelector,
+  (preferences, user, modules, directories, devToolsOpen) => ({
     preferences,
     user,
     modules,
     directories,
+    devToolsOpen,
   })
 );
 const mapDispatchToProps = dispatch => ({
@@ -86,6 +95,8 @@ const mapDispatchToProps = dispatch => ({
   userActions: bindActionCreators(userActionCreators, dispatch),
   modalActions: bindActionCreators(modalActionCreators, dispatch),
   previewApiActions: bindActionCreators(previewApiActionCreators, dispatch),
+  preferenceActions: bindActionCreators(preferenceActionCreators, dispatch),
+  viewActions: bindActionCreators(viewActionCreators, dispatch),
 });
 class EditorPreview extends React.PureComponent<Props, State> {
   state = {
@@ -128,6 +139,10 @@ class EditorPreview extends React.PureComponent<Props, State> {
     return '50%';
   };
 
+  exitZenMode = () => {
+    this.props.preferenceActions.setPreference({ zenMode: false });
+  };
+
   render() {
     const {
       moduleActions,
@@ -142,6 +157,8 @@ class EditorPreview extends React.PureComponent<Props, State> {
       workspaceHidden,
       toggleWorkspace,
       previewApiActions,
+      viewActions,
+      devToolsOpen,
     } = this.props;
 
     const mainModule = findMainModule(modules, directories, sandbox.entry);
@@ -162,18 +179,29 @@ class EditorPreview extends React.PureComponent<Props, State> {
 
     const EditorPane = (
       <FullSize>
-        <Tabs
-          tabs={sandbox.tabs}
-          modules={modules}
-          directories={directories}
-          currentModuleId={currentModule.id}
-          sandboxId={sandbox.id}
-          setCurrentModule={sandboxActions.setCurrentModule}
-          closeTab={sandboxActions.closeTab}
-          moveTab={sandboxActions.moveTab}
-          markNotDirty={sandboxActions.markTabsNotDirty}
-          prettifyModule={moduleActions.prettifyModule}
-        />
+        {preferences.zenMode ? (
+          <FilePath
+            modules={modules}
+            directories={directories}
+            currentModule={currentModule}
+            workspaceHidden={workspaceHidden}
+            toggleWorkspace={toggleWorkspace}
+            exitZenMode={this.exitZenMode}
+          />
+        ) : (
+          <Tabs
+            tabs={sandbox.tabs}
+            modules={modules}
+            directories={directories}
+            currentModuleId={currentModule.id}
+            sandboxId={sandbox.id}
+            setCurrentModule={sandboxActions.setCurrentModule}
+            closeTab={sandboxActions.closeTab}
+            moveTab={sandboxActions.moveTab}
+            markNotDirty={sandboxActions.markTabsNotDirty}
+            prettifyModule={moduleActions.prettifyModule}
+          />
+        )}
         <CodeEditor
           changeCode={moduleActions.setCode}
           id={currentModule.id}
@@ -215,6 +243,8 @@ class EditorPreview extends React.PureComponent<Props, State> {
           forcedRenders={sandbox.forcedRenders}
           inactive={this.state.resizing}
           entry={sandbox.entry}
+          setDevToolsOpen={viewActions.setDevToolsOpen}
+          devToolsOpen={devToolsOpen}
         />
       </FullSize>
     );
@@ -232,23 +262,25 @@ class EditorPreview extends React.PureComponent<Props, State> {
               'You have not saved this sandbox, are you sure you want to navigate away?'
             }
           />
-          <Header
-            sandboxId={sandbox.id}
-            owned={sandbox.owned}
-            showEditor={sandbox.showEditor}
-            showPreview={sandbox.showPreview}
-            sandboxLiked={sandbox.userLiked}
-            sandboxLikeCount={sandbox.likeCount}
-            sandboxActions={sandboxActions}
-            userActions={userActions}
-            modalActions={modalActions}
-            user={user}
-            workspaceHidden={workspaceHidden}
-            toggleWorkspace={toggleWorkspace}
-            canSave={notSynced}
-            modules={sandbox.modules}
-            directories={sandbox.directories}
-          />
+          {!preferences.zenMode && (
+            <Header
+              sandboxId={sandbox.id}
+              owned={sandbox.owned}
+              showEditor={sandbox.showEditor}
+              showPreview={sandbox.showPreview}
+              sandboxLiked={sandbox.userLiked}
+              sandboxLikeCount={sandbox.likeCount}
+              sandboxActions={sandboxActions}
+              userActions={userActions}
+              modalActions={modalActions}
+              user={user}
+              workspaceHidden={workspaceHidden}
+              toggleWorkspace={toggleWorkspace}
+              canSave={notSynced}
+              modules={sandbox.modules}
+              directories={sandbox.directories}
+            />
+          )}
           <SplitPane
             onDragStarted={this.startResizing}
             onDragFinished={this.stopResizing}

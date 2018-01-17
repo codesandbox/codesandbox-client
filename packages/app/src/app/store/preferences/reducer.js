@@ -1,10 +1,10 @@
 // @flow
 
 import type { Preferences } from 'common/types';
-import store from 'store/dist/store.modern';
 
 import { SET_PREFERENCES } from './actions';
 import * as keys from './keys';
+import { getKey } from './store';
 
 export const DEFAULT_PRETTIER_CONFIG = {
   printWidth: 80,
@@ -17,16 +17,6 @@ export const DEFAULT_PRETTIER_CONFIG = {
   jsxBracketSameLine: false,
 };
 
-function getKey<D: any>(key: string, defaultVal: D): ?D {
-  try {
-    const result = store.get(key);
-    return result === undefined ? defaultVal : result;
-  } catch (e) {
-    console.error(e);
-    return undefined;
-  }
-}
-
 const initialState: Preferences = Object.keys(keys).reduce(
   (res, key) =>
     Object.assign(res, {
@@ -35,10 +25,11 @@ const initialState: Preferences = Object.keys(keys).reduce(
   {
     autoCompleteEnabled: true,
     livePreviewEnabled: true,
-    prettifyOnSaveEnabled: true,
+    prettifyOnSaveEnabled: false,
     lintEnabled: true,
     instantPreviewEnabled: false,
     fontSize: 14,
+    tabSize: 2,
     fontFamily: '',
     lineHeight: 1.15,
     clearConsoleEnabled: true,
@@ -48,6 +39,8 @@ const initialState: Preferences = Object.keys(keys).reduce(
     newPackagerExperiment: false,
     relativeUrlsEnabled: false,
     relativeUrl: '/',
+    zenMode: false,
+    keybindings: {},
   }
 );
 

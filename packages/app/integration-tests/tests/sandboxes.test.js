@@ -2,7 +2,7 @@ import puppeteer from 'puppeteer';
 
 const SANDBOXES = [
   'new',
-  'preact',
+  // 'preact',
   'vue',
   'svelte',
   'react-ts',
@@ -11,7 +11,7 @@ const SANDBOXES = [
   'vVoQVk78',
   'github/faceyspacey/redux-first-router-codesandbox/tree/master',
   'mZRjw05yp',
-  'pk1qjqpw67',
+
   'o29j95wx9',
   'k3q1zjjml5',
   'github/reactjs/redux/tree/master/examples/real-world',
@@ -20,27 +20,38 @@ const SANDBOXES = [
   'nOymMxyY',
 ];
 
-SANDBOXES.forEach(sandbox => {
-  const id = sandbox.id || sandbox;
-  const threshold = sandbox.threshold || 0.01;
+function pageLoaded(page) {
+  return new Promise(async resolve => {
+    await page.exposeFunction('__puppeteer__', () => {
+      if (resolve) {
+        resolve();
+      }
+    });
+  });
+}
+
+describe('sandboxes', () => {
   let browser = puppeteer.launch({
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
   });
+  afterAll(() => {
+    browser.close();
+  });
 
-  describe('sandboxes', () => {
-    afterAll(() => {
-      browser.close();
-    });
+  SANDBOXES.forEach(sandbox => {
+    const id = sandbox.id || sandbox;
+    const threshold = sandbox.threshold || 0.01;
 
-    it.concurrent(
+    it(
       `loads the sandbox with id '${id}'`,
       async () => {
         browser = await browser;
         const page = await browser.newPage();
-        await page.goto('http://localhost:3001/#' + id, {
-          waitUntil: 'networkidle0',
+        const waitFunction = pageLoaded(page);
+        page.goto('http://localhost:3001/#' + id, {
           timeout: 60000,
         });
+        await waitFunction;
         await page.waitFor(2000);
 
         const screenshot = await page.screenshot();
@@ -51,8 +62,10 @@ SANDBOXES.forEach(sandbox => {
           },
           customSnapshotIdentifier: id.split('/').join('-'),
         });
+
+        await page.close();
       },
-      1000 * 60 * 10 // 10 minutes for all tests in total
+      1000 * 60 * 1
     );
   });
 });

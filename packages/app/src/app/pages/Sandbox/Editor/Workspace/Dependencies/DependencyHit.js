@@ -88,13 +88,13 @@ type State = {
   selectedVersion: string,
 };
 
-const initialState: State = {
-  selectedVersion: '',
-};
-
 export default class DependencyHit extends React.PureComponent {
   props: Props;
-  state = initialState;
+  state: State = {
+    selectedVersion: this.props.hit.tags
+      ? this.props.hit.tags.latest || ''
+      : '',
+  };
 
   makeGitHubRepoUrl(repo) {
     return `https://github.com/${repo.user}/${repo.project}`;
@@ -118,6 +118,15 @@ export default class DependencyHit extends React.PureComponent {
 
   render() {
     const { highlighted, hit, onClick } = this.props;
+
+    if (!hit.versions) {
+      if (hit.version) {
+        hit.versions = [hit.version];
+      } else {
+        return null;
+      }
+    }
+
     const versions = Object.keys(hit.versions);
     versions.reverse();
 

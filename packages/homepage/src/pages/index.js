@@ -4,11 +4,11 @@ import Animation from '../screens/home/Animation';
 import NPMFeature from '../screens/home/NPMFeature';
 import CycleFeature from '../screens/home/CycleFeature';
 import ExtraFeatures from '../screens/home/ExtraFeatures';
-import Footer from '../screens/home/Footer';
 import RecentPublications from '../screens/home/RecentPublications';
 import Patron from '../screens/home/Patron';
+import TitleAndMetaTags from '../components/TitleAndMetaTags';
 
-export default class HomePage extends React.PureComponent {
+export default class HomePage extends React.Component {
   componentDidMount() {
     window.addEventListener('scroll', this.scrollCheck, false);
   }
@@ -18,7 +18,7 @@ export default class HomePage extends React.PureComponent {
   }
 
   scrollCheck = () => {
-    clearTimeout(this.timertimer);
+    clearTimeout(this.timer);
     if (!document.body.classList.contains('disable-hover')) {
       document.body.classList.add('disable-hover');
       window.scrolling = true;
@@ -33,31 +33,15 @@ export default class HomePage extends React.PureComponent {
   render() {
     return (
       <div>
+        <TitleAndMetaTags />
+
         <Animation />
         <NPMFeature />
         <CycleFeature />
         <ExtraFeatures />
-        <RecentPublications sizes={this.props.data.publicationImages.edges} />
+        <RecentPublications />
         <Patron />
-        <Footer />
       </div>
     );
   }
 }
-
-export const query = graphql`
-  query ImageSizesQuery {
-    publicationImages: allImageSharp(
-      filter: { id: { regex: "/RecentPublications/" } }
-    ) {
-      edges {
-        node {
-          id
-          sizes(maxWidth: 400) {
-            ...GatsbyImageSharpSizes
-          }
-        }
-      }
-    }
-  }
-`;

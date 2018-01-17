@@ -39,7 +39,19 @@ export default class SearchInput extends React.PureComponent {
 
   searchQuery = (query: string) => {
     searchFacets('npm_dependencies.dependency', query).then(res => {
-      this.setState({ hits: res.facetHits.slice(0, 3) });
+      const { facetHits } = res;
+
+      facetHits.sort((a, b) => {
+        if (a.value === query) {
+          return -1;
+        } else if (b.value === query) {
+          return 1;
+        }
+
+        return 0;
+      });
+
+      this.setState({ hits: facetHits.slice(0, 3) });
     });
   };
 

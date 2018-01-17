@@ -91,8 +91,12 @@ const mapDispatchToProps = dispatch => ({
 class ModalContainer extends React.PureComponent {
   props: Props;
 
-  closeModal = () => {
-    const { modalActions } = this.props;
+  closeModal = e => {
+    const { modalActions, modal } = this.props;
+    if (e && e.keyCode && modal.preventEscapeClosing) {
+      return;
+    }
+
     modalActions.closeModal();
   };
 

@@ -1,6 +1,10 @@
 // @flow
 import type { Sandbox } from 'common/types';
 
+export const gitHubRepoPattern = /(https?:\/\/)?((www.)?)github.com(\/\w+){2,}/;
+const gitHubPrefix = /(https?:\/\/)?((www.)?)github.com/;
+const dotGit = /(\.git)$/;
+
 const buildEncodedUri = (strings: Array<string>, ...values: Array<string>) =>
   strings[0] +
   values
@@ -115,7 +119,7 @@ export const optionsToParameterizedUrl = (options: Object) => {
 };
 
 export const gitHubToSandboxUrl = (githubUrl: string) =>
-  githubUrl.replace(/https?:\/\/(www.)?github.com/, '/s/github');
+  githubUrl.replace(gitHubPrefix, '/s/github').replace(dotGit, '');
 
 export const searchUrl = query => `/search${query ? `?query=${query}` : ''}`;
 export const patronUrl = () => `/patron`;

@@ -4,34 +4,34 @@ import SplitPane from 'react-split-pane';
 import type { Sandbox } from 'common/types';
 
 import Workspace from './Workspace';
-
 import Content from './Content';
 
 type Props = {
   sandbox: Sandbox,
   match: Object,
+  zenMode: boolean,
+  workspaceHidden: boolean,
+  setWorkspaceHidden: (hidden: boolean) => void,
 };
 
 type State = {
   resizing: boolean,
-  workspaceHidden: boolean,
 };
 
 export default class ContentSplit extends React.PureComponent<Props, State> {
   state = {
     resizing: false,
-    workspaceHidden: false,
   };
 
   startResizing = () => this.setState({ resizing: true });
   stopResizing = () => this.setState({ resizing: false });
 
   toggleWorkspace = () =>
-    this.setState({ workspaceHidden: !this.state.workspaceHidden });
+    this.props.setWorkspaceHidden(!this.props.workspaceHidden);
 
   render() {
-    const { sandbox, match } = this.props;
-    const { resizing, workspaceHidden } = this.state;
+    const { sandbox, match, workspaceHidden } = this.props;
+    const { resizing } = this.state;
     return (
       <SplitPane
         split="vertical"
@@ -46,7 +46,9 @@ export default class ContentSplit extends React.PureComponent<Props, State> {
           maxWidth: workspaceHidden ? 0 : 'inherit',
         }}
       >
-        {!workspaceHidden && <Workspace sandbox={sandbox} />}
+        {!workspaceHidden && (
+          <Workspace zenMode={this.props.zenMode} sandbox={sandbox} />
+        )}
         <Content
           workspaceHidden={workspaceHidden}
           toggleWorkspace={this.toggleWorkspace}

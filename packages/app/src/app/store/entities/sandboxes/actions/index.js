@@ -238,16 +238,21 @@ export default {
     dispatch: Function
   ) => {
     const sandboxId = await dispatch(maybeForkSandbox(id));
+
+    const realVersion = version;
+    const realName = dependency.toLowerCase();
+
     const result = await dispatch(
       doRequest(
         UPDATE_NPM_DEPENDENCY_ACTIONS,
         `sandboxes/${sandboxId}/dependencies`,
         {
           method: 'POST',
+          shouldCamelize: false,
           body: {
             dependency: {
-              name: dependency,
-              version,
+              name: realName,
+              version: realVersion,
             },
           },
         }

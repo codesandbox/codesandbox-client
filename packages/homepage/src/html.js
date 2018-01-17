@@ -1,7 +1,4 @@
 import React, { Component } from 'react';
-import * as PropTypes from 'prop-types';
-import { TypographyStyle } from 'react-typography';
-import typography from './utils/typography';
 
 let stylesStr;
 if (process.env.NODE_ENV === `production`) {
@@ -12,13 +9,8 @@ if (process.env.NODE_ENV === `production`) {
   }
 }
 
-const propTypes = {
-  headComponents: PropTypes.node.isRequired,
-  body: PropTypes.node.isRequired,
-  postBodyComponents: PropTypes.node.isRequired,
-};
-
-class Html extends Component {
+// eslint-disable-next-line react/prefer-stateless-function
+export default class HTML extends Component {
   render() {
     let css;
     if (process.env.NODE_ENV === `production`) {
@@ -42,19 +34,8 @@ class Html extends Component {
             name="viewport"
             content="width=device-width, initial-scale=1.0"
           />
-          <title>
-            CodeSandbox: Online Editor Tailored for Web Application Development
-          </title>
           <meta property="og:type" content="website" />
           <meta property="og:author" content="https://ivesvh.com" />
-          <meta
-            property="og:title"
-            content="CodeSandbox: Online Editor Tailored for Web Application Development"
-          />
-          <meta
-            property="og:description"
-            content="CodeSandbox is an online editor with a focus on creating and sharing web application projects"
-          />
           <meta
             property="og:image"
             content="https://codesandbox.io/static/img/banner.png"
@@ -66,16 +47,11 @@ class Html extends Component {
           <meta property="twitter:creator" content="@CompuIves" />
           <meta property="twitter:title" content="CodeSandbox" />
           <meta
-            property="twitter:description"
-            content="CodeSandbox is an online editor with a focus on creating and sharing web application projects"
-          />
-          <meta
             property="twitter:image:src"
             content="https://codesandbox.io/static/img/banner.png"
           />
           <meta property="twitter:image:width" content="1200" />
           <meta property="twitter:image:height" content="630" />
-          <TypographyStyle typography={typography} />
           {css}
         </head>
         <body>
@@ -89,7 +65,3 @@ class Html extends Component {
     );
   }
 }
-
-Html.propTypes = propTypes;
-
-module.exports = Html;

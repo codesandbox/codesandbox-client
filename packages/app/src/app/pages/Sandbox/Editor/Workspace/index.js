@@ -24,7 +24,6 @@ import { tosUrl, privacyUrl } from 'common/utils/url-generator';
 
 import Button from 'app/components/buttons/Button';
 import Margin from 'common/components/spacing/Margin';
-import Preferences from 'app/containers/Preferences';
 
 import WorkspaceInputContainer from './WorkspaceInputContainer';
 import Files from './Files';
@@ -70,6 +69,7 @@ type Props = {
   user: User,
   currentUser: CurrentUser,
   isPatron: boolean,
+  zenMode: boolean,
 };
 
 const mapStateToProps = createSelector(
@@ -93,10 +93,7 @@ const mapDispatchToProps = dispatch => ({
 
 class Workspace extends React.PureComponent<Props> {
   openPreferences = () => {
-    this.props.modalActions.openModal({
-      width: 900,
-      Body: <Preferences initialPane="Integrations" />,
-    });
+    this.props.modalActions.openPreferences('Integrations');
   };
 
   render() {
@@ -108,6 +105,7 @@ class Workspace extends React.PureComponent<Props> {
       isPatron,
       modalActions,
       currentUser,
+      zenMode,
     } = this.props;
 
     return (
@@ -118,25 +116,27 @@ class Workspace extends React.PureComponent<Props> {
       >
         <Container>
           <div>
-            <Logo />
-            <WorkspaceItem defaultOpen keepState title="Project">
-              <Project
-                updateSandboxInfo={sandboxActions.updateSandboxInfo}
-                id={sandbox.id}
-                title={sandbox.title}
-                viewCount={sandbox.viewCount}
-                likeCount={sandbox.likeCount}
-                forkCount={sandbox.forkCount}
-                git={sandbox.git}
-                description={sandbox.description}
-                forkedSandbox={sandbox.forkedFromSandbox}
-                preventTransition={preventTransition}
-                owned={sandbox.owned}
-                author={user}
-                privacy={sandbox.privacy}
-                template={sandbox.template}
-              />
-            </WorkspaceItem>
+            {!zenMode && <Logo />}
+            {!zenMode && (
+              <WorkspaceItem defaultOpen keepState title="Project">
+                <Project
+                  updateSandboxInfo={sandboxActions.updateSandboxInfo}
+                  id={sandbox.id}
+                  title={sandbox.title}
+                  viewCount={sandbox.viewCount}
+                  likeCount={sandbox.likeCount}
+                  forkCount={sandbox.forkCount}
+                  git={sandbox.git}
+                  description={sandbox.description}
+                  forkedSandbox={sandbox.forkedFromSandbox}
+                  preventTransition={preventTransition}
+                  owned={sandbox.owned}
+                  author={user}
+                  privacy={sandbox.privacy}
+                  template={sandbox.template}
+                />
+              </WorkspaceItem>
+            )}
 
             <Files sandbox={sandbox} sandboxActions={sandboxActions} />
 
@@ -155,7 +155,8 @@ class Workspace extends React.PureComponent<Props> {
               />
             </WorkspaceItem>
 
-            {sandbox.owned &&
+            {!zenMode &&
+              sandbox.owned &&
               currentUser &&
               currentUser.jwt &&
               !sandbox.git && (
@@ -204,41 +205,45 @@ class Workspace extends React.PureComponent<Props> {
                 </WorkspaceItem>
               )}
 
-            {(sandbox.owned || sandbox.tags.length > 0) && (
-              <WorkspaceItem title="Tags">
-                <Tags
-                  sandboxId={sandbox.id}
-                  addTag={sandboxActions.addTag}
-                  removeTag={sandboxActions.removeTag}
-                  isOwner={sandbox.owned}
-                  tags={sandbox.tags}
-                />
-              </WorkspaceItem>
-            )}
+            {!zenMode &&
+              (sandbox.owned || sandbox.tags.length > 0) && (
+                <WorkspaceItem title="Tags">
+                  <Tags
+                    sandboxId={sandbox.id}
+                    addTag={sandboxActions.addTag}
+                    removeTag={sandboxActions.removeTag}
+                    isOwner={sandbox.owned}
+                    tags={sandbox.tags}
+                  />
+                </WorkspaceItem>
+              )}
 
-            {sandbox.owned && (
-              <WorkspaceItem title="Sandbox Actions">
-                <SandboxActions
-                  id={sandbox.id}
-                  deleteSandbox={sandboxActions.deleteSandbox}
-                  newSandboxUrl={sandboxActions.newSandboxUrl}
-                  setSandboxPrivacy={sandboxActions.setSandboxPrivacy}
-                  isPatron={isPatron}
-                  privacy={sandbox.privacy}
-                />
-              </WorkspaceItem>
-            )}
+            {!zenMode &&
+              sandbox.owned && (
+                <WorkspaceItem title="Sandbox Actions">
+                  <SandboxActions
+                    id={sandbox.id}
+                    deleteSandbox={sandboxActions.deleteSandbox}
+                    newSandboxUrl={sandboxActions.newSandboxUrl}
+                    setSandboxPrivacy={sandboxActions.setSandboxPrivacy}
+                    isPatron={isPatron}
+                    privacy={sandbox.privacy}
+                  />
+                </WorkspaceItem>
+              )}
           </div>
 
-          <div>
-            {!isPatron && !sandbox.owned && <Advertisement />}
-            <ConnectionNotice />
-            <TermsContainer>
-              By using CodeSandbox you agree to our{' '}
-              <Link to={tosUrl()}>Terms and Conditions</Link> and{' '}
-              <Link to={privacyUrl()}>Privacy Policy</Link>.
-            </TermsContainer>
-          </div>
+          {!zenMode && (
+            <div>
+              {!isPatron && !sandbox.owned && <Advertisement />}
+              <ConnectionNotice />
+              <TermsContainer>
+                By using CodeSandbox you agree to our{' '}
+                <Link to={tosUrl()}>Terms and Conditions</Link> and{' '}
+                <Link to={privacyUrl()}>Privacy Policy</Link>.
+              </TermsContainer>
+            </div>
+          )}
         </Container>
       </ThemeProvider>
     );

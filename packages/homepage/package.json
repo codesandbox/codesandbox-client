@@ -6,41 +6,46 @@
   "dependencies": {
     "algoliasearch": "^3.24.5",
     "gatsby": "^1.9.73",
-    "gatsby-image": "^1.0.24",
     "gatsby-link": "^1.6.22",
     "gatsby-plugin-google-fonts": "^0.0.3",
     "gatsby-plugin-google-tagmanager": "^1.0.8",
+    "gatsby-plugin-nprogress": "^1.0.9",
     "gatsby-plugin-react-helmet": "^1.0.8",
-    "gatsby-plugin-sharp": "^1.6.21",
+    "gatsby-plugin-sharp": "^1.6.23",
+    "gatsby-plugin-sitemap": "^1.2.7",
     "gatsby-plugin-styled-components": "^1.0.5",
     "gatsby-react-router-scroll": "^1.0.3",
+    "gatsby-remark-autolink-headers": "^1.4.10",
+    "gatsby-remark-images": "^1.5.34",
+    "gatsby-remark-prismjs": "^1.2.11",
     "gatsby-source-filesystem": "^1.5.8",
-    "gatsby-transformer-sharp": "^1.6.14",
+    "gatsby-transformer-remark": "^1.7.24",
     "gsap": "^1.20.3",
     "react-media": "^1.6.1",
     "react-transition-group": "^2.2.1",
-    "react-typography": "^0.16.5",
-    "styled-components": "^2.2.2",
-    "three": "^0.87.1",
-    "typography": "^0.16.6",
-    "typography-breakpoint-constants": "^0.15.10"
+    "styled-components": "^2.2.4",
+    "three": "^0.87.1"
   },
-  "keywords": ["gatsby"],
+  "keywords": [
+    "gatsby"
+  ],
   "license": "MIT",
   "main": "n/a",
   "scripts": {
-    "patch":
-      "sed -i -e 's/if(c\\.initial) return;/if(!c||c.initial) return;/g' ../../node_modules/extract-text-webpack-plugin/index.js",
-    "build": "gatsby build",
+    "patch": "sed -i -e 's/if(c\\.initial) return;/if(!c||c.initial) return;/g' ../../node_modules/extract-text-webpack-plugin/index.js",
+    "build": "yarn patch && gatsby build",
     "start": "gatsby develop",
     "lint": "echo TODO && exit 0",
-    "format":
-      "prettier --trailing-comma es5 --no-semi --single-quote --write 'src/**/*.js'",
+    "format": "prettier --trailing-comma es5 --no-semi --single-quote --write 'src/**/*.js'",
     "test": "echo \"Todo: no test specified\" && exit 0"
   },
   "devDependencies": {
     "gatsby-cli": "^1.1.20",
-    "prettier": "^1.7.4"
+    "prettier": "^1.8.2"
   },
-  "browserslist": ["> 1%", "IE >= 11", "last 2 versions"]
+  "browserslist": [
+    "> 1%",
+    "IE >= 11",
+    "last 2 versions"
+  ]
 }

@@ -42,6 +42,7 @@ self.addEventListener('message', event => {
       noUnusedLocals: true,
       inlineSourceMap: true,
       inlineSources: true,
+      experimentalDecorators: true,
     },
   };
 

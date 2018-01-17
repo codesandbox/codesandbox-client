@@ -9,8 +9,9 @@ import { parse as parseUrl } from 'url';
 import type { Module, Sandbox, Preferences, Directory } from 'common/types';
 
 import { frameUrl } from 'common/utils/url-generator';
-import { findMainModule } from 'app/store/entities/sandboxes/modules/selectors';
+import { getModulePath } from 'app/store/entities/sandboxes/modules/selectors';
 import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
+
 import shouldUpdate from './utils/should-update';
 
 import DevTools from './DevTools';
@@ -55,6 +56,8 @@ type Props = {
   inactive: ?boolean,
   shouldExpandDevTools: ?boolean,
   entry: string,
+  devToolsOpen: ?boolean,
+  setDevToolsOpen: ?(open: boolean) => void,
 };
 
 type State = {
@@ -124,6 +127,12 @@ export default class Preview extends React.PureComponent<Props, State> {
 
     if (prevProps.externalResources !== this.props.externalResources) {
       // Changed external resources
+      this.executeCodeImmediately();
+      return;
+    }
+
+    if (prevProps.dependencies !== this.props.dependencies) {
+      // Changed dependencies
       this.executeCodeImmediately();
       return;
     }
@@ -254,15 +263,14 @@ export default class Preview extends React.PureComponent<Props, State> {
   getRenderedModule = () => {
     const { modules, module, directories, entry, isInProjectView } = this.props;
     return isInProjectView
-      ? findMainModule(modules, directories, entry)
-      : module;
+      ? '/' + entry
+      : getModulePath(modules, directories, module.id);
   };
 
   executeCodeImmediately = (initialRender: boolean = false) => {
     const {
       modules,
       directories,
-      module,
       externalResources,
       preferences,
       dependencies,
@@ -287,18 +295,23 @@ export default class Preview extends React.PureComponent<Props, State> {
         this.evaluateInSandbox(`history.pushState({}, null, '/')`);
       }
 
+      // We convert the modules to a format the manager understands
+      const normalizedModules = modules.map(m => ({
+        path: getModulePath(modules, directories, m.id),
+        code: m.code,
+      }));
+
       this.sendMessage({
         type: 'compile',
-        module: renderedModule,
-        changedModule: module,
+        version: 2,
+        entry: renderedModule,
         dependencies,
-        modules,
-        directories,
+        modules: normalizedModules,
         sandboxId,
         externalResources,
         template,
-        hasActions: !!runActionFromPreview,
         isModuleView: !isInProjectView,
+        hasActions: !!runActionFromPreview,
       });
     }
   };
@@ -445,6 +458,7 @@ export default class Preview extends React.PureComponent<Props, State> {
             isProjectView={isInProjectView}
             toggleProjectView={setProjectView && this.toggleProjectView}
             openNewWindow={this.openNewWindow}
+            zenMode={this.props.preferences.zenMode}
           />
         )}
 
@@ -461,6 +475,9 @@ export default class Preview extends React.PureComponent<Props, State> {
           evaluateCommand={this.evaluateInSandbox}
           sandboxId={sandboxId}
           shouldExpandDevTools={shouldExpandDevTools}
+          zenMode={this.props.preferences.zenMode}
+          devToolsOpen={this.props.devToolsOpen}
+          setDevToolsOpen={this.props.setDevToolsOpen}
         />
       </Container>
     );

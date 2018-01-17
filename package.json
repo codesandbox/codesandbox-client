@@ -14,7 +14,7 @@
     "start:dev_api":
       "lerna run start --parallel --ignore app & lerna run start:dev_api --scope app --stream",
     "test": "lerna run test",
-    "test:integrations": "lerna run test:integrations --scope app --stream",
+    "test:integrations": "lerna exec --scope app --stream -- yarn test:integrations",
     "lint": "lerna run lint",
     "add-contributor": "all-contributors add",
     "generate": "all-contributors generate",

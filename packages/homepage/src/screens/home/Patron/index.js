@@ -8,7 +8,7 @@ import Centered from 'common/components/flex/Centered';
 
 import media from '../../../utils/media';
 
-import { Heading, SubHeading } from '../../../components/layout';
+import { Heading, SubHeading } from '../../../components/style';
 
 const Container = styled.div`
   background-color: ${props => props.theme.primary};

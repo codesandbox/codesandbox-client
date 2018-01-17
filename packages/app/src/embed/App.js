@@ -70,6 +70,7 @@ type State = {
   editorSize: number,
   forceRefresh: boolean,
   expandDevTools: boolean,
+  runOnClick: boolean,
   highlightedLines: Array<string>,
 };
 
@@ -92,6 +93,7 @@ export default class App extends React.PureComponent<{}, State> {
       highlightedLines,
       forceRefresh,
       expandDevTools,
+      runOnClick,
     } = getSandboxOptions(document.location.href);
 
     this.state = {
@@ -111,6 +113,7 @@ export default class App extends React.PureComponent<{}, State> {
       editorSize,
       forceRefresh,
       expandDevTools,
+      runOnClick,
       highlightedLines: highlightedLines || [],
     };
   }
@@ -134,9 +137,9 @@ export default class App extends React.PureComponent<{}, State> {
         .then(res => res.json())
         .then(camelizeKeys);
 
-      document.title = response.data.title
-        ? `${response.data.title} - CodeSandbox`
-        : 'Embed - CodeSandbox';
+      document.title = `${response.data.title ||
+        response.data.id} - CodeSandbox`;
+
       this.setState({ sandbox: response.data });
     } catch (e) {
       this.setState({ notFound: true });
@@ -198,7 +201,7 @@ export default class App extends React.PureComponent<{}, State> {
       );
     }
 
-    const { showEditor, showPreview, isInProjectView } = this.state;
+    const { showEditor, showPreview, isInProjectView, runOnClick } = this.state;
 
     return (
       <ThemeProvider
@@ -235,6 +238,7 @@ export default class App extends React.PureComponent<{}, State> {
             highlightedLines={this.state.highlightedLines}
             forceRefresh={this.state.forceRefresh}
             expandDevTools={this.state.expandDevTools}
+            runOnClick={runOnClick}
           />
         </Container>
       </ThemeProvider>

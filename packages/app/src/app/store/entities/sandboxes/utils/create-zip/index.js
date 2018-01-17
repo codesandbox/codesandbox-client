@@ -4,6 +4,7 @@ import { saveAs } from 'file-saver';
 
 import type { Sandbox, Module, Directory } from 'common/types';
 import { react, reactTs, vue, preact, svelte } from 'common/templates/index';
+import slugify from 'common/utils/slugify';
 import resolveModule from 'common/sandbox/resolve-module';
 
 const CSSTag = (resource: string) =>
@@ -46,25 +47,6 @@ export function getIndexHtmlBody(
   }
 
   return `<div id="root"></div>`;
-}
-
-function slugify(text) {
-  const a = 'àáäâèéëêìíïîòóöôùúüûñçßÿœæŕśńṕẃǵǹḿǘẍźḧ·/_,:;';
-  const b = 'aaaaeeeeiiiioooouuuuncsyoarsnpwgnmuxzh------';
-  const p = new RegExp(a.split('').join('|'), 'g');
-
-  /* eslint-disable */
-  return text
-    .toString()
-    .toLowerCase()
-    .replace(/\s+/g, '-') // Replace spaces with -
-    .replace(p, c => b.charAt(a.indexOf(c))) // Replace special chars
-    .replace(/&/g, '-and-') // Replace & with 'and'
-    .replace(/[^\w\-]+/g, '') // Remove all non-word chars
-    .replace(/\-\-+/g, '-') // Replace multiple - with single -
-    .replace(/^-+/, '') // Trim - from start of text
-    .replace(/-+$/, ''); // Trim - from end of text
-  /* eslint-enable */
 }
 
 export function createPackageJSON(

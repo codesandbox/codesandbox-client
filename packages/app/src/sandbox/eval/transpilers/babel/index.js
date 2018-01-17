@@ -1,18 +1,33 @@
 // @flow
-import BabelWorker from 'worker-loader?name=babel-transpiler.[hash].worker.js!./babel-worker.js';
 
 import getBabelConfig from './babel-parser';
 import WorkerTranspiler from '../worker-transpiler';
 import { type LoaderContext } from '../../transpiled-module';
+
+import delay from '../../../utils/delay';
 
 // Right now this is in a worker, but when we're going to allow custom plugins
 // we need to move this out of the worker again, because the config needs
 // to support custom plugins
 class BabelTranspiler extends WorkerTranspiler {
   worker: Worker;
+  config: ?Object;
 
   constructor() {
-    super('babel-loader', BabelWorker, 2);
+    super('babel-loader', null, 3);
+  }
+
+  setBabelRc(config: Object) {
+    this.config = config;
+  }
+
+  async getWorker() {
+    while (typeof window.babelworkers === 'undefined') {
+      await delay(50); // eslint-disable-line
+    }
+    // We set these up in startup.js.
+    const worker = window.babelworkers.pop();
+    return worker;
   }
 
   doTranspilation(code: string, loaderContext: LoaderContext) {
@@ -20,7 +35,11 @@ class BabelTranspiler extends WorkerTranspiler {
       const path = loaderContext.path;
 
       // TODO get custom babel config back in
-      const babelConfig = getBabelConfig(loaderContext.options, path);
+      const babelConfig = getBabelConfig(
+        loaderContext.options,
+        path,
+        this.config || {}
+      );
 
       this.queueTask(
         {

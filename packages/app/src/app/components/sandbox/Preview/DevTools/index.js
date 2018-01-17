@@ -2,15 +2,12 @@
 import React from 'react';
 import styled from 'styled-components';
 import { TweenMax, Elastic } from 'gsap';
+import store from 'store/dist/store.modern';
+import MinimizeIcon from 'react-icons/lib/fa/angle-up';
 
 import Tooltip from 'common/components/Tooltip';
 
-import MinimizeIcon from 'react-icons/lib/fa/angle-up';
-
-import store from 'store/dist/store.modern';
-
 import Unread from './Unread';
-
 import console from './Console';
 
 const Container = styled.div`
@@ -78,7 +75,10 @@ type Props = {
   setDragging: (dragging: boolean) => void,
   evaluateCommand: (cmd: string) => void,
   sandboxId: string,
+  zenMode: boolean,
   shouldExpandDevTools: ?boolean,
+  devToolsOpen: ?boolean,
+  setDevToolsOpen: ?(open: boolean) => void,
 };
 type State = {
   status: { [title: string]: ?Status },
@@ -134,6 +134,19 @@ export default class DevTools extends React.PureComponent<Props, State> {
     }
   }
 
+  componentDidUpdate(prevProps: Props, prevState: State) {
+    if (
+      this.props.devToolsOpen !== prevProps.devToolsOpen &&
+      prevState.hidden === this.state.hidden
+    ) {
+      if (this.props.devToolsOpen === true && this.state.hidden) {
+        this.openDevTools();
+      } else if (this.props.devToolsOpen === false && !this.state.hidden) {
+        this.hideDevTools();
+      }
+    }
+  }
+
   componentDidMount() {
     document.addEventListener('mouseup', this.handleMouseUp, false);
     document.addEventListener('mousemove', this.handleMouseMove, false);
@@ -163,7 +176,12 @@ export default class DevTools extends React.PureComponent<Props, State> {
       });
     }
 
-    return this.setState({ hidden });
+    return this.setState({ hidden }, () => {
+      if (this.props.setDevToolsOpen) {
+        const { setDevToolsOpen } = this.props;
+        setTimeout(() => setDevToolsOpen(!this.state.hidden), 100);
+      }
+    });
   };
 
   updateStatus = (title: string) => (
@@ -303,7 +321,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
   node: HTMLElement;
 
   render() {
-    const { sandboxId } = this.props;
+    const { sandboxId, zenMode } = this.props;
     const { hidden, height, status } = this.state;
 
     const { actions, Content } = PANES[this.state.currentPane];
@@ -327,10 +345,12 @@ export default class DevTools extends React.PureComponent<Props, State> {
           {Object.keys(PANES).map(title => (
             <Tab key={title}>
               {title}
-              <Unread
-                status={status[title] ? status[title].type : 'info'}
-                unread={status[title] ? status[title].unread : 0}
-              />
+              {!zenMode && (
+                <Unread
+                  status={status[title] ? status[title].type : 'info'}
+                  unread={status[title] ? status[title].unread : 0}
+                />
+              )}
             </Tab>
           ))}
 

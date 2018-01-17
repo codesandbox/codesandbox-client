@@ -23,7 +23,6 @@ exports[`Button renders 1`] = `
   font-weight: 400;
   box-shadow: 0 3px 3px rgba(0,0,0,0.5);
   width: inherit;
-  padding: 0.65rem 2.25rem;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -58,6 +57,11 @@ exports[`Button renders 1`] = `
 
 <button
   className="c0"
+  style={
+    Object {
+      "padding": "0.65rem 2.25rem",
+    }
+  }
 >
   Test
 </button>
@@ -85,7 +89,6 @@ exports[`Button renders disabled 1`] = `
   color: rgb(69,79,84);
   font-weight: 400;
   width: inherit;
-  padding: 0.65rem 2.25rem;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -96,6 +99,11 @@ exports[`Button renders disabled 1`] = `
 <button
   className="c0"
   disabled={true}
+  style={
+    Object {
+      "padding": "0.65rem 2.25rem",
+    }
+  }
 >
   Test
 </button>
@@ -124,7 +132,6 @@ exports[`Button renders href 1`] = `
   font-weight: 400;
   box-shadow: 0 3px 3px rgba(0,0,0,0.5);
   width: inherit;
-  padding: 0.65rem 2.25rem;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -160,6 +167,11 @@ exports[`Button renders href 1`] = `
 <a
   className="c0"
   href="https://ivesvh.com"
+  style={
+    Object {
+      "padding": "0.65rem 2.25rem",
+    }
+  }
 >
   Test
 </a>
@@ -188,7 +200,6 @@ exports[`Button renders onClick 1`] = `
   font-weight: 400;
   box-shadow: 0 3px 3px rgba(0,0,0,0.5);
   width: inherit;
-  padding: 0.65rem 2.25rem;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -224,6 +235,11 @@ exports[`Button renders onClick 1`] = `
 <button
   className="c0"
   onClick={[Function]}
+  style={
+    Object {
+      "padding": "0.65rem 2.25rem",
+    }
+  }
 >
   Test
 </button>
@@ -252,8 +268,6 @@ exports[`Button renders properties 1`] = `
   font-weight: 400;
   box-shadow: 0 3px 3px rgba(0,0,0,0.5);
   width: inherit;
-  padding: 0.5rem 0.75rem;
-  font-size: 0.875rem;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -288,6 +302,12 @@ exports[`Button renders properties 1`] = `
 
 <button
   className="c0"
+  style={
+    Object {
+      "fontSize": "0.875rem",
+      "padding": "0.5rem 0.75rem",
+    }
+  }
 >
   Test
 </button>
@@ -316,7 +336,6 @@ exports[`Button renders secondary 1`] = `
   font-weight: 400;
   box-shadow: 0 3px 3px rgba(0,0,0,0.5);
   width: inherit;
-  padding: 0.65rem 2.25rem;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -351,6 +370,11 @@ exports[`Button renders secondary 1`] = `
 
 <button
   className="c0"
+  style={
+    Object {
+      "padding": "0.65rem 2.25rem",
+    }
+  }
 >
   Test
 </button>
@@ -379,7 +403,6 @@ exports[`Button renders to 1`] = `
   font-weight: 400;
   box-shadow: 0 3px 3px rgba(0,0,0,0.5);
   width: inherit;
-  padding: 0.65rem 2.25rem;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -416,6 +439,11 @@ exports[`Button renders to 1`] = `
   className="c0"
   href="https://ivesvh.com"
   onClick={[Function]}
+  style={
+    Object {
+      "padding": "0.65rem 2.25rem",
+    }
+  }
 >
   Test
 </a>

@@ -59,6 +59,8 @@ if (process.env.NODE_ENV === 'production') {
         /127\.0\.0\.1:4001\/isrunning/i, // Cacaoweb
         /webappstoolbarba\.texthelp\.com\//i,
         /metrics\.itunes\.apple\.com\.edgesuite\.net\//i,
+        // Monaco debuggers
+        'https://codesandbox.io/public/vs/language/typescript/lib/typescriptServices.js',
       ],
     }).install();
   } catch (error) {

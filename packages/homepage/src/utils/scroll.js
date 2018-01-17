@@ -1,7 +1,7 @@
 let cache = null;
 
-export default function getScrollPos(now = Date.now()) {
-  if (cache && now - cache.now < 100) {
+export default function getScrollPos(now = Date.now(), useCache = true) {
+  if (useCache && cache && now - cache.now < 100) {
     return cache.result;
   }
 

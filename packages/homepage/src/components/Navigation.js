@@ -1,6 +1,8 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 
+import Link from 'gatsby-link';
+
 import Logo from 'common/components/Logo';
 import MaxWidth from 'common/components/flex/MaxWidth';
 
@@ -46,9 +48,6 @@ const Item = styled.a`
   ${props =>
     props.button &&
     css`
-      ${media.phone`
-      display: none;
-    `};
       transition: 0.3s ease all;
       padding: 0.35rem 0.8rem;
       border-radius: 4px;
@@ -65,11 +64,21 @@ const Item = styled.a`
       }
     `};
 
+  ${props =>
+    props.hidePhone &&
+    css`
+      ${media.phone`
+      display: none;
+    `};
+    `};
+
   ${media.phone`
     font-size: 1rem;
     margin: 0 .5rem;
   `};
 `;
+
+const ItemLink = Item.withComponent(Link);
 
 const Right = styled.div`
   display: flex;
@@ -120,7 +129,9 @@ export default class Navigation extends React.PureComponent {
       <MaxWidth width={1280}>
         <Container>
           <Left>
-            <StyledLogo title="CodeSandbox" width={50} height={50} />
+            <Link to="/">
+              <StyledLogo title="CodeSandbox" width={50} height={50} />
+            </Link>
           </Left>
           <Right>
             <Item
@@ -136,12 +147,18 @@ export default class Navigation extends React.PureComponent {
               rel="noopener noreferrer"
             >
               GitHub
-            </Item>{' '}
-            <Item href="/s" rel="noopener noreferrer" button={!user}>
+            </Item>
+            <ItemLink to="/changelog">Updates</ItemLink>
+            <ItemLink to="/docs">Docs</ItemLink>
+            <Item hidePhone href="/s" rel="noopener noreferrer" button={!user}>
               Create Sandbox
             </Item>
             {user && (
-              <Item href={`/u/${user.username}`} rel="noopener noreferrer">
+              <Item
+                hidePhone
+                href={`/u/${user.username}`}
+                rel="noopener noreferrer"
+              >
                 {user.username}
                 <Image alt={user.username} src={user.avatar_url} />
               </Item>

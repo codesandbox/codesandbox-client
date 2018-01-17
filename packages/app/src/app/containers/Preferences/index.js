@@ -12,6 +12,7 @@ import StarIcon from 'react-icons/lib/go/star';
 import FlaskIcon from 'react-icons/lib/fa/flask';
 import CodeFormatIcon from 'react-icons/lib/fa/dedent';
 import IntegrationIcon from 'react-icons/lib/md/device-hub';
+import KeyboardIcon from 'react-icons/lib/go/keyboard';
 
 import SideNavigation from './SideNavigation';
 
@@ -22,6 +23,7 @@ import PaymentInfo from './PaymentInfo';
 import Integrations from './Integrations';
 import Badges from './Badges';
 import Experiments from './Experiments';
+import KeyMapping from './KeyMapping';
 
 const Container = styled.div`
   display: flex;
@@ -84,6 +86,11 @@ class Preferences extends React.PureComponent {
         title: 'Preview',
         icon: <BrowserIcon />,
         content: <PreviewSettings />,
+      },
+      {
+        title: 'Key Bindings',
+        icon: <KeyboardIcon />,
+        content: <KeyMapping />,
       },
       signedIn && {
         title: 'Integrations',
