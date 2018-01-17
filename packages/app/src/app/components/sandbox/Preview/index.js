@@ -319,19 +319,19 @@ export default class Preview extends React.PureComponent<Props, State> {
 
     let url;
 
-    urlInAddressBar = urlInAddressBar.replace(/:(\/\/|\\\\)/, '/');
-
-    if (urlInAddressBar.indexOf('http') === -1) {
-      urlInAddressBar = 'http://' + urlInAddressBar;
-    }
-
-    if (!urlInAddressBar.endsWith('/')) {
-      urlInAddressBar += '/';
-    }
-
-    const urlInAddressBarParsed = parseUrl(urlInAddressBar);
-
     if (preferences.relativeUrlsEnabled) {
+      urlInAddressBar = urlInAddressBar.replace(/:(\/\/|\\\\)/, '/');
+
+      if (urlInAddressBar.indexOf('http') === -1) {
+        urlInAddressBar = 'http://' + urlInAddressBar;
+      }
+
+      if (!urlInAddressBar.endsWith('/')) {
+        urlInAddressBar += '/';
+      }
+
+      const urlInAddressBarParsed = parseUrl(urlInAddressBar);
+
       url =
         parseUrl(frameUrl(sandboxId)).href +
         urlInAddressBarParsed.path.substring(1);
