@@ -7,6 +7,7 @@ import FlyingContainer from './FlyingContainer';
 
 class Preview extends React.Component {
   onPreviewInitialized = preview => {
+    let preventCodeExecution = false;
     const disposeHandleProjectViewChange = reaction(
       () => this.props.store.editor.isInProjectView,
       this.handleProjectView.bind(this, preview)
@@ -25,7 +26,21 @@ class Preview extends React.Component {
     );
     const disposeHandleCodeChange = reaction(
       () => this.props.store.editor.currentModule.code,
-      this.handleCodeChange.bind(this, preview)
+      () => {
+        if (preventCodeExecution) {
+          preventCodeExecution = false;
+          return;
+        }
+        this.handleCodeChange(preview);
+      }
+    );
+    const disposeHandleModuleChange = reaction(
+      () => this.props.store.editor.currentModule,
+      () => {
+        if (this.props.store.editor.isInProjectView) {
+          preventCodeExecution = true;
+        }
+      }
     );
     const disposeHandleStructureChange = reaction(
       this.detectStructureChange,
@@ -42,6 +57,7 @@ class Preview extends React.Component {
     );
 
     return () => {
+      disposeHandleModuleChange();
       disposeHandleProjectViewChange();
       disposeHandleForcedRenders();
       disposeHandleExternalResources();
@@ -76,6 +92,7 @@ class Preview extends React.Component {
   };
 
   handleCodeChange = preview => {
+    console.log('woop');
     const settings = this.props.store.preferences.settings;
     if (settings.livePreviewEnabled) {
       if (settings.instantPreviewEnabled) {
