@@ -90,7 +90,7 @@ export default class TestRunner {
 
   async transpileTests() {
     for (let t of this.tests) {
-      await this.manager.transpileModules(t, false);
+      await this.manager.transpileModules(t, true);
     }
   }
 
@@ -184,6 +184,10 @@ export default class TestRunner {
     aggregatedResults.summaryMessage = summaryMessage;
     aggregatedResults.failedMessages = failedMessages;
     return aggregatedResults;
+  }
+
+  reportError(error) {
+    return `Test Summary: 😢\nError: ${error.message}`;
   }
 
   resetResults() {
