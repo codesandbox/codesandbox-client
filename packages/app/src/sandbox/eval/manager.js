@@ -273,12 +273,12 @@ export default class Manager {
    * Will transpile this module and all eventual children (requires) that go with it
    * @param {*} entry
    */
-  async transpileModules(entry: Module) {
+  async transpileModules(entry: Module, isEntry: boolean = true) {
     this.hmrStatus = 'check';
     this.setEnvironmentVariables();
     const transpiledModule = this.getTranspiledModule(entry);
 
-    transpiledModule.setIsEntry(true);
+    transpiledModule.setIsEntry(isEntry);
 
     const result = await transpiledModule.transpile(this);
     this.getTranspiledModules().forEach(t => t.postTranspile(this));

@@ -193,20 +193,24 @@ async function compile({
       initializeResizeListener();
     }
 
-    // Testing
-    const ttt = Date.now();
-    const testRunner = manager.testRunner;
-    testRunner.initialize();
-    testRunner.findTests(modules);
-    await testRunner.runTests();
-    const aggregatedResults = testRunner.reportResults();
-    debug(`Test Evaluation time: ${Date.now() - ttt}ms`);
+    try {
+      // Testing
+      const ttt = Date.now();
+      const testRunner = manager.testRunner;
+      testRunner.initialize();
+      testRunner.findTests(modules);
+      await testRunner.runTests();
+      const aggregatedResults = testRunner.reportResults();
+      debug(`Test Evaluation time: ${Date.now() - ttt}ms`);
 
-    dispatch({
-      type: 'test-result',
-      result: transformJSON(aggregatedResults),
-    });
-    // End - Testing
+      dispatch({
+        type: 'test-result',
+        result: transformJSON(aggregatedResults),
+      });
+      // End - Testing
+    } catch (e) {
+      // Fail silently
+    }
 
     debug(`Total time: ${Date.now() - startTime}ms`);
 
