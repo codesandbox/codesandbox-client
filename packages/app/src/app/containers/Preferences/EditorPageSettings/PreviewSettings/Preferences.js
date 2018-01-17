@@ -74,12 +74,9 @@ const Preferences = ({ preferences, preferencesActions }: Props) => {
           {...bindValue('relativeUrl')}
         />
         <Description>
-          The relative (shortened) URL to be used. For instance, the default{
-            '/'
-          }{' '}
-          URL will redirect {'/someUrl'} to{
-            'https://codesandbox.io/s/sandboxId'
-          }
+          The relative (shortened) URL to be used. For instance, the default
+          &apos;/&apos; relative URL will redirect &apos;/someUrl&apos; to
+          &apos;https://codesandbox.io/s/sandboxId&apos;
         </Description>
       </PreferenceContainer>
     </Container>
