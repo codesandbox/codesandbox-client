@@ -284,6 +284,16 @@
         "code",
         "ideas"
       ]
+    },
+    {
+      "login": "haroenv",
+      "name": "Haroen Viaene",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/6270048?v=4",
+      "profile": "https://twitter.com/haroenv",
+      "contributions": [
+        "code",
+        "design"
+      ]
     }
   ]
 }
