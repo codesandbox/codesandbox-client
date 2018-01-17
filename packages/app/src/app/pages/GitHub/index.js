@@ -9,6 +9,7 @@ import Button from 'app/components/Button';
 import {
   gitHubToSandboxUrl,
   protocolAndHost,
+  gitHubRepoPattern,
 } from 'common/utils/url-generator';
 
 import {
@@ -33,15 +34,22 @@ export default class GitHub extends React.PureComponent {
   updateUrl = e => {
     const url = e.target.value;
 
-    if (!url.includes('github.com')) {
+    if (!url) {
       this.setState({
         url,
-        error: "The URL should contain from 'github.com'.",
+        error: null,
+        transformedUrl: '',
+      });
+    } else if (!gitHubRepoPattern.test(url)) {
+      this.setState({
+        url,
+        error: 'The URL provided is not valid.',
+        transformedUrl: '',
       });
     } else {
       this.setState({
         url: e.target.value,
-        transformedUrl: getFullGitHubUrl(url),
+        transformedUrl: getFullGitHubUrl(url.trim()),
         error: null,
       });
     }

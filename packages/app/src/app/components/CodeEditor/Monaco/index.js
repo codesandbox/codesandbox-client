@@ -13,6 +13,7 @@ import TypingsFetcherWorker from 'worker-loader?name=monaco-typings-ata.[hash].w
 import MonacoEditorComponent from './MonacoReactComponent';
 import FuzzySearch from '../FuzzySearch';
 import { Container, CodeContainer } from './elements';
+import defineTheme from './define-theme';
 
 let modelCache = {};
 
@@ -637,18 +638,6 @@ class MonacoEditor extends React.Component {
     }
   };
 
-  editorWillMount = monaco => {
-    monaco.editor.defineTheme('CodeSandbox', {
-      base: 'vs-dark', // can also be vs-dark or hc-black
-      inherit: true, // can also be false to completely replace the builtin rules
-      rules: [
-        { token: 'comment', foreground: '626466' },
-        { token: 'keyword', foreground: '6CAEDD' },
-        { token: 'identifier', foreground: 'fac863' },
-      ],
-    });
-  };
-
   hasNativeTypescript = () => {
     const sandbox = this.sandbox;
     const template = getTemplate(sandbox.template);
@@ -873,7 +862,7 @@ class MonacoEditor extends React.Component {
             theme="CodeSandbox"
             options={options}
             editorDidMount={this.configureEditor}
-            editorWillMount={this.editorWillMount}
+            editorWillMount={defineTheme}
             openReference={this.openReference}
           />
         </CodeContainer>

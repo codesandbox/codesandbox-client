@@ -12,6 +12,12 @@ import Input from './Input';
 
 import { Container, Messages } from './elements';
 
+export type IMessage = {
+  type: 'message' | 'command' | 'return',
+  logType: 'log' | 'warn' | 'info' | 'error',
+  arguments: any[],
+};
+
 class Console extends React.Component {
   state = {
     messages: [],
@@ -55,6 +61,25 @@ class Console extends React.Component {
           }
         } else {
           this.addMessage('error', [parsedJson]);
+        }
+        break;
+      }
+      case 'test-result': {
+        const { result, error } = data;
+
+        const aggregatedResults = result ? CircularJSON.parse(result) : result;
+        if (!error) {
+          if (aggregatedResults) {
+            const { summaryMessage, failedMessages } = aggregatedResults;
+            this.addMessage('log', [summaryMessage]);
+            failedMessages.forEach(t => {
+              this.addMessage('warn', [t]);
+            });
+          } else {
+            this.addMessage('warn', [undefined], 'return');
+          }
+        } else {
+          this.addMessage('error', [aggregatedResults]);
         }
         break;
       }

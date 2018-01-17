@@ -16,6 +16,7 @@ import coreLibraries from './npm/get-core-libraries';
 import getDependencyName from './utils/get-dependency-name';
 import DependencyNotFoundError from '../errors/dependency-not-found-error';
 import ModuleNotFoundError from '../errors/module-not-found-error';
+import TestRunner from './tests/jest-lite';
 
 type Externals = {
   [name: string]: string,
@@ -75,6 +76,8 @@ export default class Manager {
   dependencies: Object;
   webpackHMR: boolean = false;
   hardReload: boolean = false;
+  hmrStatus: 'idle' | 'check' | 'apply' | 'fail' = 'idle';
+  testRunner: TestRunner;
 
   // List of modules that are being transpiled, to prevent duplicate jobs.
   transpileJobs: { [transpiledModuleId: string]: true };
@@ -88,6 +91,7 @@ export default class Manager {
     this.cachedPaths = {};
     this.transpileJobs = {};
     Object.keys(modules).forEach(k => this.addModule(modules[k]));
+    this.testRunner = new TestRunner(this);
 
     if (process.env.NODE_ENV === 'development') {
       window.manager = this;
@@ -142,6 +146,8 @@ export default class Manager {
       return;
     }
 
+    this.hmrStatus = 'apply';
+
     // Evaluate the *changed* HMR modules first
     this.getTranspiledModules()
       .filter(t => t.hmrConfig && t.hmrConfig.isDirty())
@@ -153,6 +159,8 @@ export default class Manager {
 
     // Run post evaluate
     this.getTranspiledModules().forEach(t => t.postEvaluate(this));
+
+    this.hmrStatus = 'idle';
 
     return exports;
   }
@@ -265,6 +273,7 @@ export default class Manager {
    * @param {*} entry
    */
   async transpileModules(entry: Module) {
+    this.hmrStatus = 'check';
     this.setEnvironmentVariables();
     const transpiledModule = this.getTranspiledModule(entry);
 
@@ -546,6 +555,7 @@ export default class Manager {
    * continuing
    */
   markHardReload() {
+    this.hmrStatus = 'fail';
     this.hardReload = true;
   }
 
