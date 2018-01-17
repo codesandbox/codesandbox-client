@@ -1,4 +1,5 @@
 import React from 'react';
+import { inject } from 'mobx-react';
 import { InstantSearch, SearchBox, PoweredBy } from 'react-instantsearch/dom';
 import qs from 'qs';
 
@@ -36,7 +37,7 @@ const createURL = state => `?${qs.stringify(state)}`;
 const searchStateToUrl = (props, searchState) =>
   searchState ? `${props.location.pathname}${createURL(searchState)}` : '';
 
-export default class Search extends React.PureComponent {
+class Search extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = { searchState: qs.parse(props.location.search.slice(1)) };
@@ -52,6 +53,10 @@ export default class Search extends React.PureComponent {
 
   componentWillUnmount() {
     this.unlisten();
+  }
+
+  componentDidMount() {
+    this.props.signals.searchMounted();
   }
 
   onSearchStateChange = searchState => {
@@ -101,3 +106,5 @@ export default class Search extends React.PureComponent {
     );
   }
 }
+
+export default inject('signals')(Search);

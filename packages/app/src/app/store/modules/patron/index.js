@@ -14,6 +14,7 @@ export default Module({
     tier,
   },
   signals: {
+    patronMounted: sequences.loadPatron,
     priceChanged: sequences.changePrice,
     createSubscriptionClicked: sequences.createSubscription,
     updateSubscriptionClicked: sequences.updateSubscription,

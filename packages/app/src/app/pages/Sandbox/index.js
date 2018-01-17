@@ -45,18 +45,20 @@ class SandboxPage extends React.Component {
 
     if (store.editor.isLoading) {
       return (
-        <Skeleton
-          titles={[
-            {
-              content: 'Loading sandbox...',
-              delay: 0,
-            },
-            {
-              content: 'Fetching git repository...',
-              delay: 2,
-            },
-          ]}
-        />
+        <Centered horizontal vertical>
+          <Skeleton
+            titles={[
+              {
+                content: 'Loading sandbox...',
+                delay: 0,
+              },
+              {
+                content: 'Fetching git repository...',
+                delay: 2,
+              },
+            ]}
+          />
+        </Centered>
       );
     }
 

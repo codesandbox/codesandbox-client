@@ -9,7 +9,6 @@ import {
   currentPackageJSON,
   currentPackageJSONCode,
   currentParsedPackageJSON,
-  mainModuleShortid,
 } from './getters';
 import { isModuleSynced } from './computed';
 import { loadSandbox } from '../../sequences';

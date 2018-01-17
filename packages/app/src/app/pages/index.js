@@ -7,7 +7,6 @@ import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import _debug from 'app/utils/debug';
 import Notifications from 'app/pages/common/Notifications';
 import Loading from 'app/components/Loading';
-import Skeleton from 'app/components/Skeleton';
 
 import Modals from './common/Modals';
 import Sandbox from './Sandbox';
@@ -61,32 +60,11 @@ const Terms = Loadable({
 });
 
 class Routes extends React.Component {
-  componentDidMount() {
-    this.props.signals.appMounted();
-  }
-
   componentWillUnmount() {
     this.props.signals.appUnmounted();
   }
 
   render() {
-    if (this.props.store.isAuthenticating) {
-      return (
-        <Container>
-          <Content>
-            <Skeleton
-              titles={[
-                {
-                  content: 'Loading user...',
-                  delay: 0,
-                },
-              ]}
-            />
-          </Content>
-        </Container>
-      );
-    }
-
     return (
       <Container>
         <Route
