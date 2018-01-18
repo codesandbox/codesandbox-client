@@ -110,6 +110,10 @@ class MonacoEditor extends React.Component<Props, State> {
     if (this.disposeInitializer) {
       this.disposeInitializer();
     }
+
+    if (this.props.onUnMount) {
+      this.props.onUnMount();
+    }
   }
   configureEditor = async (editor: any, monaco: any) => {
     this.editor = editor;
@@ -298,8 +302,6 @@ class MonacoEditor extends React.Component<Props, State> {
 
   updateModules = () => {
     const sandbox = this.sandbox;
-
-    console.log('updating modules');
 
     sandbox.modules.forEach(module => {
       if (modelCache[module.id] && modelCache[module.id].model) {
