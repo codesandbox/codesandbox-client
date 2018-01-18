@@ -45,13 +45,19 @@ export default class Content extends React.PureComponent {
           ],
         });
       }
-      this.editor.changeModule(nextProps.currentModule);
+      if (this.editor) {
+        this.editor.changeModule(nextProps.currentModule);
+      }
     }
   }
 
   componentDidMount() {
     setTimeout(this.handleResize);
   }
+
+  onCodeEditorUnMount = () => {
+    this.editor = null;
+  };
 
   setProjectView = (id, view) => {
     this.setState({ isInProjectView: view });
@@ -275,6 +281,7 @@ export default class Content extends React.PureComponent {
               hideNavigation={hideNavigation}
               onChange={this.setCode}
               onModuleChange={this.setCurrentModule}
+              onUnMount={this.onCodeEditorUnMount}
             />
           </Split>
         )}
