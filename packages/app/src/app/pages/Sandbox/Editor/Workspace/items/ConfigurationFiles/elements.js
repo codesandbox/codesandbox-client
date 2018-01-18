@@ -5,12 +5,19 @@ export const FilesContainer = styled.div`
 `;
 
 export const File = styled.div`
+  transition: 0.3s ease background-color;
   padding: 1rem;
 
   border-top: 1px solid rgba(0, 0, 0, 0.3);
 
+  cursor: pointer;
+
   &:last-child {
     border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+  }
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.3);
   }
 `;
 

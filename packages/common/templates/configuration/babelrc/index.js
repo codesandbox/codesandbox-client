@@ -1,5 +1,6 @@
 export default {
   title: '.babelrc',
+  type: 'babel',
   description: 'Custom configuration for Babel, the transpiler we use.',
   moreInfoUrl: 'https://babeljs.io/docs/usage/babelrc/',
 

@@ -34,6 +34,10 @@ export function getMode(title: string) {
     return 'codesandbox';
   }
 
+  if (title === '.babelrc') {
+    return 'babel';
+  }
+
   if (cssRegex.test(title)) return 'css';
   if (jsonRegex.test(title)) return 'json';
   if (htmlRegex.test(title)) return 'html';

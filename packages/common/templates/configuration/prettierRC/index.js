@@ -3,6 +3,7 @@ import ui from './ui';
 
 export default {
   title: '.prettierrc',
+  type: 'prettier',
   description: 'Defines how all files will be prettified by Prettier.',
   moreInfoUrl: 'https://prettier.io/docs/en/configuration.html',
   ui,

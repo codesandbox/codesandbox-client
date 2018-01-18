@@ -91,9 +91,11 @@ export type LoaderContext = {
     }
   ) => Array<TranspiledModule>, // eslint-disable-line no-use-before-define
   _module: TranspiledModule, // eslint-disable-line no-use-before-define
+  getTranspiledModules: () => { [path: string]: TranspiledModule },
 
   // Remaining loaders after current loader
   remainingRequest: string,
+  template: string,
 };
 
 type Compilation = {
@@ -368,6 +370,7 @@ export default class TranspiledModule {
         return tModules;
       },
       getModules: (): Array<Module> => manager.getModules(),
+      getTranspiledModules: () => manager.transpiledModules,
       options: {
         context: pathUtils.dirname(this.module.path),
         ...transpilerOptions,
@@ -377,6 +380,7 @@ export default class TranspiledModule {
       target: 'web',
       _module: this,
       path: this.module.path,
+      template: manager.preset.name,
     };
   }
 

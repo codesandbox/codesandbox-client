@@ -1,4 +1,5 @@
 // @flow
+import getDefinition from 'common/templates';
 
 import getBabelConfig from './babel-parser';
 import WorkerTranspiler from '../worker-transpiler';
@@ -34,12 +35,31 @@ class BabelTranspiler extends WorkerTranspiler {
     return new Promise((resolve, reject) => {
       const path = loaderContext.path;
 
-      // TODO get custom babel config back in
-      const babelConfig = getBabelConfig(
+      let babelConfig = getBabelConfig(
         loaderContext.options,
         path,
         this.config || {}
       );
+
+      const template = getDefinition(loaderContext.template);
+      const babelConfigPath = Object.keys(template.configurations).find(
+        key => template.configurations[key].type === 'babel'
+      );
+
+      console.log(babelConfigPath);
+      if (babelConfigPath) {
+        const module = loaderContext.getTranspiledModules()[babelConfigPath];
+
+        if (module && module.module && module.module.code) {
+          try {
+            const parsedBabel = JSON.parse(module.module.code);
+
+            babelConfig = parsedBabel;
+          } catch (e) {
+            /* ignore */
+          }
+        }
+      }
 
       this.queueTask(
         {

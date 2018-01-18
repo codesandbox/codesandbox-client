@@ -19,6 +19,7 @@ export function generateFileFromSandbox(sandbox: Sandbox) {
 
 export default {
   title: 'package.json',
+  type: 'package',
   description: 'Describes the overall configuration of your project.',
   moreInfoUrl: 'https://docs.npmjs.com/files/package.json',
 

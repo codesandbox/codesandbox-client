@@ -106,8 +106,8 @@ export default {
   ),
   errors: types.array(
     types.model({
-      column: types.number,
-      line: types.number,
+      column: types.maybe(types.number),
+      line: types.maybe(types.number),
       message: types.string,
       title: types.string,
       moduleId: types.string,
@@ -115,8 +115,8 @@ export default {
   ),
   corrections: types.array(
     types.model({
-      column: types.number,
-      line: types.number,
+      column: types.maybe(types.number),
+      line: types.maybe(types.number),
       message: types.string,
       source: types.string,
       moduleId: types.string,
