@@ -92,8 +92,8 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
         <Margin
           style={{
             overflow: 'auto',
-            height: props.height,
-            width: props.width,
+            height: props.height || '100%',
+            width: props.width || '100%',
           }}
           top={2}
         >
@@ -117,8 +117,8 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     return (
       <div
         style={{
-          height: props.height,
-          width: props.width,
+          height: props.height || '100%',
+          width: props.width || '100%',
           position: 'relative',
         }}
       >
