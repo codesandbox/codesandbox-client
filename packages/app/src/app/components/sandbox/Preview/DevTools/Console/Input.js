@@ -22,6 +22,7 @@ const Container = styled.div`
   position: relative;
   height: ${props => props.height}px;
   min-height: 2rem;
+  max-height: 100%;
   width: 100%;
   background-color: ${props => props.theme.background.darken(0.3)};
   display: flex;
