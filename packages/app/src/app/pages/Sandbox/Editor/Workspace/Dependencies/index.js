@@ -2,7 +2,7 @@ import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 
 import Margin from 'common/components/spacing/Margin';
-import { WorkspaceSubtitle, EntryContainer } from '../elements';
+import { WorkspaceSubtitle } from '../elements';
 
 import AddVersion from './AddVersion';
 import VersionEntry from './VersionEntry';
@@ -25,7 +25,7 @@ function Dependencies({ signals, store }) {
   }
 
   const dependencies = parsed.dependencies || {};
-  const devDependencies = parsed.devDependencies || {};
+  // const devDependencies = parsed.devDependencies || {};
 
   return (
     <div>
@@ -47,7 +47,7 @@ function Dependencies({ signals, store }) {
               }
             />
           ))}
-        {Object.keys(devDependencies).length > 0 && (
+        {/* {Object.keys(devDependencies).length > 0 && (
           <WorkspaceSubtitle>Development Dependencies</WorkspaceSubtitle>
         )}
         {Object.keys(devDependencies)
@@ -65,7 +65,7 @@ function Dependencies({ signals, store }) {
                 })
               }
             />
-          ))}
+          ))} */}
         <AddVersion>Add Dependency</AddVersion>
       </Margin>
       <div>

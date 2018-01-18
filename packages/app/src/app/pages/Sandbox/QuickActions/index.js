@@ -32,7 +32,11 @@ class QuickActions extends React.Component {
             (currentSignal, key) => currentSignal[key],
             signals
           );
-          signal(quickAction.payload || {});
+          const payload =
+            typeof quickAction.payload === 'function'
+              ? quickAction.payload(this.props.store)
+              : quickAction.payload || {};
+          signal(payload);
         },
       });
     });

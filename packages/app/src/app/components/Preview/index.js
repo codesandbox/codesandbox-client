@@ -195,7 +195,7 @@ class BasePreview extends React.Component {
       sendMessage(sandbox.id, {
         type: 'compile',
         version: 2,
-        entry: !this.props.isInProjectView && this.getRenderedModule(),
+        entry: this.getRenderedModule(),
         modules: modulesToSend,
         sandboxId: sandbox.id,
         externalResources: sandbox.externalResources,

@@ -55,7 +55,7 @@ function handleKeyDown(controller, e) {
 
       const payload =
         typeof keybinding.payload === 'function'
-          ? keybinding.payload(path => controller.getState(path))
+          ? keybinding.payload(controller.getState())
           : keybinding.payload || {};
 
       controller.getSignal(keybinding.signal)(payload);
@@ -107,7 +107,7 @@ function handleKeyDown(controller, e) {
 
       const payload =
         typeof keybinding.payload === 'function'
-          ? keybinding.payload(path => controller.getState(path))
+          ? keybinding.payload(controller.getState())
           : keybinding.payload || {};
 
       controller.getSignal(keybinding.signal)(payload);

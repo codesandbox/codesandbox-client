@@ -60,5 +60,3 @@ export function currentParsedPackageJSON() {
 
   return { parsed, error };
 }
-
-export function mainModuleShortid() {}

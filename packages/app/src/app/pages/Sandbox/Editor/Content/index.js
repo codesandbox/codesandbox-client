@@ -140,9 +140,10 @@ class EditorPreview extends React.Component {
       () => store.editor.currentParsedPackageJSON,
       ({ parsed }) => {
         if (parsed) {
-          const { dependencies = {}, devDependencies = {} } = parsed;
+          const { dependencies = {} } = parsed;
+
           if (editor.changeDependencies) {
-            editor.changeDependencies({ ...dependencies, ...devDependencies });
+            editor.changeDependencies(dependencies);
           }
         }
       }

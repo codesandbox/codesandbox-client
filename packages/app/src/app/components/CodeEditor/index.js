@@ -33,14 +33,9 @@ const getDependencies = (sandbox: Sandbox): ?{ [key: string]: string } => {
 
   if (packageJSON != null) {
     try {
-      const { dependencies = {}, devDependencies = {} } = JSON.parse(
-        packageJSON.code || ''
-      );
+      const { dependencies = {} } = JSON.parse(packageJSON.code || '');
 
-      return {
-        ...dependencies,
-        ...devDependencies,
-      };
+      return dependencies;
     } catch (e) {
       return null;
     }

@@ -30,6 +30,10 @@ export function getMode(title: string) {
     return 'prettier';
   }
 
+  if (title === 'sandbox.config.json') {
+    return 'codesandbox';
+  }
+
   if (cssRegex.test(title)) return 'css';
   if (jsonRegex.test(title)) return 'json';
   if (htmlRegex.test(title)) return 'html';

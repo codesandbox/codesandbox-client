@@ -40,6 +40,44 @@ export function getCurrentManager(): ?Manager {
 
 let firstLoad = true;
 
+// TODO make devDependencies lazy loaded by the packager
+const WHITELISTED_DEV_DEPENDENCIES = [
+  'redux-devtools',
+  'redux-devtools-dock-monitor',
+  'redux-devtools-log-monitor',
+  'redux-logger',
+  'enzyme',
+  'react-addons-test-utils',
+  'react-test-renderer',
+  'identity-obj-proxy',
+];
+
+function getDependencies(parsedPackage) {
+  const { dependencies: d = {}, devDependencies = {} } = parsedPackage;
+
+  const returnedDependencies = { ...d };
+
+  Object.keys(devDependencies).forEach(dep => {
+    if (WHITELISTED_DEV_DEPENDENCIES.indexOf(dep) > -1) {
+      returnedDependencies[dep] = devDependencies[dep];
+    }
+  });
+
+  return returnedDependencies;
+}
+
+function getEntry(template) {
+  if (template === 'vue-cli') {
+    return 'src/main.js';
+  }
+
+  if (template === 'create-react-app-typescript') {
+    return 'src/index.ts';
+  }
+
+  return 'src/index.js';
+}
+
 async function updateManager(
   sandboxId,
   template,
@@ -115,11 +153,8 @@ async function compile({
       throw new Error('package.json has an invalid format: ' + e.message);
     }
 
-    const { dependencies = {}, devDependencies = {} } = parsedPackageJSON;
-    const { manifest, isNewCombination } = await loadDependencies({
-      ...dependencies,
-      ...devDependencies,
-    });
+    const dependencies = getDependencies(parsedPackageJSON);
+    const { manifest, isNewCombination } = await loadDependencies(dependencies);
 
     if (isNewCombination && !firstLoad) {
       // Just reset the whole manager if it's a new combination
@@ -135,7 +170,9 @@ async function compile({
       isNewCombination
     );
 
-    const foundMain = entry || parsedPackageJSON.main || '/src/index.js';
+    const foundMain = isModuleView
+      ? entry
+      : parsedPackageJSON.main || entry || getEntry(template);
     const main = absolute(foundMain);
 
     const managerModuleToTranspile = modules[main];

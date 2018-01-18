@@ -122,8 +122,8 @@ export const KEYBINDINGS = {
     type: 'Source',
     bindings: [],
     signal: 'editor.prettifyClicked',
-    payload: getState => ({
-      moduleShortid: getState('editor.currentModule.shortid'),
+    payload: state => ({
+      moduleShortid: state.editor.currentModule.shortid,
     }),
   },
 
@@ -132,8 +132,15 @@ export const KEYBINDINGS = {
     type: 'Source',
     bindings: [[metaKey, 'S']],
     signal: 'editor.codeSaved',
-    payload: getState => ({
-      moduleShortid: getState('editor.currentModule.shortid'),
+    payload: state => ({
+      moduleShortid: state.editor.currentModule.shortid,
     }),
+  },
+
+  'source.modules.save-all': {
+    title: 'Save All Modified Files',
+    type: 'Source',
+    bindings: [[metaKey, 'Shift', 'S']],
+    signal: 'editor.saveClicked',
   },
 };
