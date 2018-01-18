@@ -8,7 +8,7 @@
 
 // Based on https://repl.it/site/blog/infinite-loops.
 
-const MAX_ITERATIONS = 25000;
+const MAX_ITERATIONS = 100001;
 
 module.exports = ({ types: t, template }) => {
   // We set a global so that we can later fail the test
