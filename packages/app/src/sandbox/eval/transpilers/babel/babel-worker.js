@@ -1,20 +1,20 @@
 // @flow
 
 import flatten from 'lodash/flatten';
+
 import dynamicImportPlugin from './plugins/babel-plugin-dynamic-import-node';
 import detective from './plugins/babel-plugin-detective';
 import infiniteLoops from './plugins/babel-plugin-transform-prevent-infinite-loops';
 
 import { buildWorkerError } from '../utils/worker-error-handler';
 import getDependencies from './get-require-statements';
+import downloadPlugins from './download-plugin';
 
-self.importScripts([
-  'https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js',
-]);
+self.importScripts(['https://unpkg.com/@babel/standalone/babel.min.js']);
 
 self.postMessage('ready');
 
-declare var Babel: {
+export type IBabel = {
   transform: (
     code: string,
     config: Object
@@ -26,6 +26,8 @@ declare var Babel: {
   registerPlugin: (name: string, plugin: Function) => void,
 };
 
+declare var Babel: IBabel;
+
 Babel.registerPlugin('dynamic-import-node', dynamicImportPlugin);
 Babel.registerPlugin('babel-plugin-detective', detective);
 Babel.registerPlugin(
@@ -35,6 +37,10 @@ Babel.registerPlugin(
 
 self.addEventListener('message', async event => {
   const { code, path, config } = event.data;
+
+  await downloadPlugins(Babel, ['babel-plugin-preval'], {
+    'babel-plugin-preval': '1.6.3',
+  });
 
   if (
     flatten(config.plugins).indexOf('transform-vue-jsx') > -1 &&
@@ -82,6 +88,7 @@ self.addEventListener('message', async event => {
       transpiledCode: result.code,
     });
   } catch (e) {
+    console.error(e);
     e.message = e.message.replace('unknown', path);
     self.postMessage({
       type: 'error',

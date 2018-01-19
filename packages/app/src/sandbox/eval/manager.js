@@ -3,6 +3,7 @@ import { flattenDeep, uniq, values } from 'lodash';
 import resolve from 'browser-resolve';
 import localforage from 'localforage';
 import VERSION from 'common/version';
+import getDefinition from 'common/templates/index';
 
 import * as pathUtils from 'common/utils/path';
 import _debug from 'app/utils/debug';
@@ -74,15 +75,15 @@ export default class Manager {
   modules: ModuleObject;
   manifest: Manifest;
   dependencies: Object;
-  webpackHMR: boolean = false;
-  hardReload: boolean = false;
+  webpackHMR: boolean;
+  hardReload: boolean;
   hmrStatus: 'idle' | 'check' | 'apply' | 'fail' = 'idle';
   testRunner: TestRunner;
 
   // List of modules that are being transpiled, to prevent duplicate jobs.
   transpileJobs: { [transpiledModuleId: string]: true };
 
-  transpiledModulesByHash = {};
+  transpiledModulesByHash: { [hash: string]: TranspiledModule };
 
   constructor(id: string, preset: Preset, modules: { [path: string]: Module }) {
     this.id = id;
@@ -90,6 +91,10 @@ export default class Manager {
     this.transpiledModules = {};
     this.cachedPaths = {};
     this.transpileJobs = {};
+    this.webpackHMR = false;
+    this.hardReload = false;
+    this.hmrStatus = 'idle';
+    this.transpiledModulesByHash = {};
     Object.keys(modules).forEach(k => this.addModule(modules[k]));
     this.testRunner = new TestRunner(this);
 
@@ -97,6 +102,13 @@ export default class Manager {
       window.manager = this;
       console.log(this);
     }
+  }
+
+  resetAllModules() {
+    this.getTranspiledModules().forEach(t => {
+      t.resetTranspilation();
+      t.resetCompilation();
+    });
   }
 
   // Hoist these 2 functions to the top, since they get executed A LOT
@@ -487,18 +499,17 @@ export default class Manager {
     this.transpileJobs = {};
     this.hardReload = false;
 
-    const addedModules = [];
-    const updatedModules = [];
+    const addedModules: Array<Module> = [];
+    const updatedModules: Array<Module> = [];
 
     Object.keys(modules).forEach(k => {
-      const module = modules[k];
-      const mirrorModule = this.transpiledModules[module.path];
+      const module: Module = modules[k];
+      const mirrorModule = this.transpiledModules[k];
 
       if (!mirrorModule) {
         // File structure changed, reset cached paths
         this.cachedPaths = {};
         addedModules.push(module);
-        this.addTranspiledModule(module);
       } else if (mirrorModule.module.code !== module.code) {
         // File structure changed, reset cached paths
         this.cachedPaths = {};
@@ -516,20 +527,34 @@ export default class Manager {
       }
     });
 
-    const modulesToUpdate = uniq([...addedModules, ...updatedModules]);
+    addedModules.forEach(m => {
+      this.addTranspiledModule(m);
+    });
+
+    const modulesToUpdate: Array<Module> = uniq([
+      ...addedModules,
+      ...updatedModules,
+    ]);
+
+    // If there's an update to a config file we need to reset all transpilation,
+    // this is especially necessary when the config of a transpiler changes
+    const configFiles = getDefinition(this.preset.name).configurations;
+    if (modulesToUpdate.some(m => configFiles[m.path])) {
+      this.resetAllModules();
+    }
 
     // We eagerly transpile changed files,
     // this way we don't have to traverse the whole
     // dependency graph each time a file changes
 
-    const tModulesToUpdate = modulesToUpdate.map(m =>
-      this.getTranspiledModulesByModule(m).map(tModule => {
-        this.transpiledModules[m.path].module = m;
+    const tModulesToUpdate = modulesToUpdate.map(m => {
+      this.transpiledModules[m.path].module = m;
+      return this.getTranspiledModulesByModule(m).map(tModule => {
         tModule.update(m);
 
         return tModule;
-      })
-    );
+      });
+    });
 
     const transpiledModulesToUpdate = uniq(
       flattenDeep([

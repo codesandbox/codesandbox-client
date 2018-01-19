@@ -101,7 +101,7 @@ export const KEYBINDINGS = {
     title: 'Open Preferences',
     type: 'View',
     bindings: [[metaKey, ',']],
-    signal: 'preferences.modalOpened',
+    signal: 'modalOpened',
     payload: {
       modal: 'preferences',
     },
@@ -111,7 +111,7 @@ export const KEYBINDINGS = {
     title: 'Add Dependency',
     type: 'Source',
     bindings: [],
-    signal: 'preferences.modalOpened',
+    signal: 'modalOpened',
     payload: {
       modal: 'searchDependencies',
     },

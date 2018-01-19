@@ -620,10 +620,6 @@ export default class TranspiledModule {
     };
     this.compilation.hot.data = hotData;
 
-    // Reset export object while keeping references
-    // Object.keys(this.compilation.exports).forEach(key => {
-    //   delete this.compilation.exports[key];
-    // });
     const transpiledModule = this;
 
     try {
