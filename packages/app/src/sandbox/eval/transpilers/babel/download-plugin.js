@@ -83,7 +83,6 @@ export default async function downloadPlugins(
     const id = bundleId.match(/dll_bundle\((.*)\)/)[1];
     const func = global.dll_bundle(id);
 
-    console.log('registering', p, func);
     babel.registerPlugin(p, func.default ? func.default : func);
   });
 

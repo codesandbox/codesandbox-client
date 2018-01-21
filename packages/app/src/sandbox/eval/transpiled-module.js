@@ -1,6 +1,7 @@
 // @flow
 import { flattenDeep } from 'lodash';
 
+import type BrowserFS from 'codesandbox-browserfs';
 import { actions, dispatch } from 'codesandbox-api';
 import _debug from 'app/utils/debug';
 
@@ -18,7 +19,7 @@ import type { WarningStructure } from './transpilers/utils/worker-warning-handle
 import resolveDependency from './loaders/dependency-resolver';
 import evaluate from './loaders/eval';
 
-import Manager from './manager';
+import type Manager from './manager';
 import HMR from './hmr';
 
 const debug = _debug('cs:compiler:transpiled-module');
@@ -96,6 +97,7 @@ export type LoaderContext = {
   // Remaining loaders after current loader
   remainingRequest: string,
   template: string,
+  bfs: BrowserFS,
 };
 
 type Compilation = {
@@ -381,6 +383,7 @@ export default class TranspiledModule {
       _module: this,
       path: this.module.path,
       template: manager.preset.name,
+      bfs: manager.bfs,
     };
   }
 
@@ -625,6 +628,12 @@ export default class TranspiledModule {
     try {
       // eslint-disable-next-line no-inner-declarations
       function require(path: string) {
+        const bfsModule = manager.bfs.BFSRequire(path);
+
+        if (bfsModule) {
+          return bfsModule;
+        }
+
         // First check if there is an alias for the path, in that case
         // we must alter the path to it
         const aliasedPath = manager.preset.getAliasedPath(path);

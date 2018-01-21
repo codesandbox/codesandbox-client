@@ -1,3 +1,4 @@
+import type BrowserFS from 'codesandbox-browserfs';
 import _debug from 'app/utils/debug';
 
 import Transpiler from './';
@@ -48,10 +49,14 @@ export default class WorkerTranspiler extends Transpiler {
     return Promise.resolve(new this.Worker());
   }
 
-  loadWorker() {
+  loadWorker(bfs: BrowserFS) {
     return new Promise(async resolve => {
       const t = Date.now();
       const worker = await this.getWorker();
+
+      console.log('Attached ', worker);
+      // Register file system
+      bfs.FileSystem.WorkerFS.attachRemoteListener(worker);
 
       debug(`Loaded '${this.name}' worker in ${Date.now() - t}ms`);
       this.idleWorkers.push(worker);
@@ -64,11 +69,11 @@ export default class WorkerTranspiler extends Transpiler {
     });
   }
 
-  async initialize() {
+  async initialize(bfs: BrowserFS) {
     this.initialized = true;
     if (this.workers.length === 0) {
       await Promise.all(
-        Array.from({ length: this.workerCount }, () => this.loadWorker())
+        Array.from({ length: this.workerCount }, () => this.loadWorker(bfs))
       );
     }
   }
@@ -143,7 +148,7 @@ export default class WorkerTranspiler extends Transpiler {
         }
       }
     };
-    worker.postMessage(message);
+    worker.postMessage({ ...message, codesandbox: true });
   }
 
   async queueTask(
@@ -152,7 +157,7 @@ export default class WorkerTranspiler extends Transpiler {
     callback: (err: Error, message: Object) => void
   ) {
     if (!this.initialized) {
-      await this.initialize();
+      await this.initialize(loaderContext.bfs);
     }
 
     const id = loaderContext._module.getId();

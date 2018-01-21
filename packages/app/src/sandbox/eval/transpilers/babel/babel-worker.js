@@ -1,5 +1,4 @@
 // @flow
-
 import flatten from 'lodash/flatten';
 
 import dynamicImportPlugin from './plugins/babel-plugin-dynamic-import-node';
@@ -8,9 +7,58 @@ import infiniteLoops from './plugins/babel-plugin-transform-prevent-infinite-loo
 
 import { buildWorkerError } from '../utils/worker-error-handler';
 import getDependencies from './get-require-statements';
-import downloadPlugins from './download-plugin';
 
-self.importScripts(['https://unpkg.com/@babel/standalone/babel.min.js']);
+import { evaluateFromPath, clearCache } from './evaluate';
+
+self.BrowserFS = BrowserFS;
+
+let fsResolve = null;
+
+async function initializeBrowserFS() {
+  return new Promise(resolve => {
+    if (fsResolve) {
+      return resolve(fsResolve);
+    }
+
+    fsResolve = resolve;
+
+    BrowserFS.configure(
+      {
+        fs: 'AsyncMirror',
+        options: {
+          sync: { fs: 'InMemory' },
+          async: { fs: 'WorkerFS', options: { worker: self } },
+        },
+      },
+      e => {
+        if (e) {
+          console.error(e);
+          return;
+        }
+
+        resolve();
+        // BrowserFS is initialized and ready-to-use!
+      }
+    );
+    return;
+  });
+}
+
+function installPlugin(Babel, BFSRequire, plugin) {
+  const fs = BFSRequire('fs');
+  const evaluatedPlugin = evaluateFromPath(fs, BFSRequire, plugin);
+
+  Babel.registerPlugin(
+    plugin,
+    evaluatedPlugin.default ? evaluatedPlugin.default : evaluatedPlugin
+  );
+}
+
+self.importScripts(
+  process.env.NODE_ENV === 'development'
+    ? '/static/js/babel.6.26.js'
+    : '/static/js/babel.6.26.min.js'
+);
 
 self.postMessage('ready');
 
@@ -36,10 +84,18 @@ Babel.registerPlugin(
 );
 
 self.addEventListener('message', async event => {
+  if (!event.data.codesandbox) {
+    return;
+  }
+  await initializeBrowserFS();
+  clearCache();
+
   const { code, path, config } = event.data;
 
-  await downloadPlugins(Babel, ['babel-plugin-preval'], {
-    'babel-plugin-preval': '1.6.3',
+  config.plugins.filter(p => typeof p === 'string').forEach(p => {
+    if (!Babel.availablePlugins[p]) {
+      installPlugin(Babel, BrowserFS.BFSRequire, p);
+    }
   });
 
   if (
@@ -61,8 +117,8 @@ self.addEventListener('message', async event => {
   const plugins = [
     ...config.plugins,
     'dynamic-import-node',
-    ['babel-plugin-detective', { source: true, nodes: true }],
     'babel-plugin-transform-prevent-infinite-loops',
+    ['babel-plugin-detective', { source: true, nodes: true }],
   ];
 
   const customConfig = {

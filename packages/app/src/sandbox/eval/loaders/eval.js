@@ -9,11 +9,12 @@ export default function(
   env: Object = {},
   globals: Object = {}
 ) {
+  const g = typeof window === 'undefined' ? self : window;
   const exports = module.exports;
 
-  const global = window;
+  const global = g;
   const process = buildProcess(env);
-  window.global = global;
+  g.global = global;
 
   const globalsCode = ', ' + Object.keys(globals).join(', ');
   const globalsValues = Object.keys(globals).map(k => globals[k]);

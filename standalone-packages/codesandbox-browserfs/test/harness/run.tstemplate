@@ -1,0 +1,29 @@
+/**
+ * The template from which `run.ts` is generated.
+ *
+ * Why autogenerate run.ts?
+ * - Avoids hardcoding all test names. Now, adding a new test case is as simple as
+ *   dropping a new file into the repository.
+ * - Avoids hardcoding all backend factory names. (Ditto.)
+ *
+ * Previously, the code used RequireJS modules to dynamically grep for and require
+ * tests and factories. However, Browserify does not allow you to have dynamic module
+ * dependencies, as it prevents bundling. Thus, I compromised with this file.
+ * (It's also less hacky, as now things will be typechecked at bundle-time. :) )
+ */
+/*IMPORTS*/
+import runTests from './setup';
+import BackendFactory from './BackendFactory';
+
+// Will be replaced with arrays of hardcoded require statements for the various modules.
+const backends: BackendFactory[] = [/*FACTORIES*/],
+  tests: {
+    fs: {
+      [name: string]: {[name: string]: () => void};
+      all: {[name: string]: () => void};
+    };
+    general: {[name: string]: () => void};
+    emscripten: {[name: string]: (Module: any) => void};
+  } = {/*TESTS*/};
+
+runTests(tests, backends);

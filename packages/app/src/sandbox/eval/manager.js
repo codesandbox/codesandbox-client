@@ -2,6 +2,7 @@
 import { flattenDeep, uniq, values } from 'lodash';
 import resolve from 'browser-resolve';
 import localforage from 'localforage';
+
 import VERSION from 'common/version';
 import getDefinition from 'common/templates/index';
 
@@ -79,6 +80,7 @@ export default class Manager {
   hardReload: boolean;
   hmrStatus: 'idle' | 'check' | 'apply' | 'fail' = 'idle';
   testRunner: TestRunner;
+  bfs: typeof BrowserFS;
 
   // List of modules that are being transpiled, to prevent duplicate jobs.
   transpileJobs: { [transpiledModuleId: string]: true };
@@ -102,7 +104,35 @@ export default class Manager {
       window.manager = this;
       console.log(this);
     }
+
+    BrowserFS.configure(
+      {
+        fs: 'CodeSandboxFS',
+        options: {
+          manager: this.bfsWrapper,
+        },
+      },
+      () => {}
+    );
+
+    this.bfs = BrowserFS;
   }
+
+  bfsWrapper = {
+    getTranspiledModules: () => this.transpiledModules,
+    addModule: (module: Module) => {
+      this.addModule(module);
+    },
+    removeModule: (module: Module) => {
+      this.removeModule(module);
+    },
+    moveModule: (module: Module, newPath: string) => {
+      this.moveModule(module, newPath);
+    },
+    updateModule: (module: Module) => {
+      this.updateModule(module);
+    },
+  };
 
   resetAllModules() {
     this.getTranspiledModules().forEach(t => {
@@ -155,7 +185,7 @@ export default class Manager {
     if (this.hardReload) {
       // Do a hard reload
       document.location.reload();
-      return;
+      return {};
     }
 
     this.hmrStatus = 'apply';
@@ -261,6 +291,11 @@ export default class Manager {
     });
 
     delete this.transpiledModules[module.path];
+  }
+
+  moveModule(module: Module, newPath: string) {
+    this.removeModule(module);
+    this.addModule({ ...module, path: newPath });
   }
 
   setEnvironmentVariables() {
@@ -440,6 +475,15 @@ export default class Manager {
     ).then(module => this.getTranspiledModule(module));
   }
 
+  updateModule(m: Module) {
+    this.transpiledModules[m.path].module = m;
+    return this.getTranspiledModulesByModule(m).map(tModule => {
+      tModule.update(m);
+
+      return tModule;
+    });
+  }
+
   /**
    * Resolve the transpiled module from the path, note that the path can actually
    * include loaders. That's why we're focussing on first extracting this query
@@ -547,14 +591,7 @@ export default class Manager {
     // this way we don't have to traverse the whole
     // dependency graph each time a file changes
 
-    const tModulesToUpdate = modulesToUpdate.map(m => {
-      this.transpiledModules[m.path].module = m;
-      return this.getTranspiledModulesByModule(m).map(tModule => {
-        tModule.update(m);
-
-        return tModule;
-      });
-    });
+    const tModulesToUpdate = modulesToUpdate.map(m => this.updateModule(m));
 
     const transpiledModulesToUpdate = uniq(
       flattenDeep([

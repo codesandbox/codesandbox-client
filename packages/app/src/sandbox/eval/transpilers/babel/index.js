@@ -46,7 +46,6 @@ class BabelTranspiler extends WorkerTranspiler {
         key => template.configurations[key].type === 'babel'
       );
 
-      console.log(babelConfigPath);
       if (babelConfigPath) {
         const module = loaderContext.getTranspiledModules()[babelConfigPath];
 
@@ -61,11 +60,21 @@ class BabelTranspiler extends WorkerTranspiler {
         }
       }
 
+      const modules = loaderContext.getModules();
+      const files = modules.reduce(
+        (interMediateFiles, module) => ({
+          ...interMediateFiles,
+          [module.path]: module.code,
+        }),
+        {}
+      );
+
       this.queueTask(
         {
           code,
           config: babelConfig,
           path,
+          files,
         },
         loaderContext,
         (err, data) => {
