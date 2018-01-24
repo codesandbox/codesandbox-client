@@ -245,7 +245,11 @@ class MonacoEditor extends React.Component<Props, State> {
       currentId: oldModule.id,
       nextId: newModule.id,
       nextTitle: newModule.title,
-    }).then(() => this.changeCode(newModule.code || ''));
+    }).then(() => {
+      if (newModule === this.currentModule) {
+        this.changeCode(newModule.code || '');
+      }
+    });
   };
 
   changeSandbox = (
@@ -692,12 +696,13 @@ class MonacoEditor extends React.Component<Props, State> {
   };
 
   addKeyCommands = () => {
-    this.editor.addCommand(
-      this.monaco.KeyMod.CtrlCmd | this.monaco.KeyCode.KEY_S, // eslint-disable-line no-bitwise
-      () => {
-        this.handleSaveCode();
-      }
-    );
+    // Disabled, we now let keybinding manager handle this
+    // this.editor.addCommand(
+    //   this.monaco.KeyMod.CtrlCmd | this.monaco.KeyCode.KEY_S, // eslint-disable-line no-bitwise
+    //   () => {
+    //     this.handleSaveCode();
+    //   }
+    // );
   };
 
   disposeModules = (modules: Array<Module>) => {

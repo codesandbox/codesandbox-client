@@ -16,16 +16,16 @@ class MonacoEditor extends React.PureComponent {
     this.destroyMonaco();
   }
 
-  editorWillMount(monaco) {
+  editorWillMount = monaco => {
     const { editorWillMount } = this.props;
     editorWillMount(monaco);
-  }
+  };
 
-  editorDidMount(editor, monaco) {
+  editorDidMount = (editor, monaco) => {
     this.props.editorDidMount(editor, monaco);
-  }
+  };
 
-  afterViewInit() {
+  afterViewInit = () => {
     const context = this.props.context || window;
     if (context.monaco !== undefined) {
       this.initMonaco();
@@ -43,9 +43,9 @@ class MonacoEditor extends React.PureComponent {
     context.require(['vs/editor/editor.main'], () => {
       this.initMonaco();
     });
-  }
+  };
 
-  initMonaco() {
+  initMonaco = () => {
     const { theme, options } = this.props;
     const context = this.props.context || window;
     if (this.containerElement && typeof context.monaco !== 'undefined') {
@@ -65,13 +65,13 @@ class MonacoEditor extends React.PureComponent {
       // After initializing monaco editor
       this.editorDidMount(this.editor, context.monaco);
     }
-  }
+  };
 
-  destroyMonaco() {
+  destroyMonaco = () => {
     if (typeof this.editor !== 'undefined') {
       this.editor.dispose();
     }
-  }
+  };
 
   assignRef = component => {
     this.containerElement = component;

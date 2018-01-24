@@ -46,6 +46,8 @@ module.exports = {
     process: false,
     Buffer: false,
     setImmediate: false,
+    module: 'empty',
+    child_process: 'empty',
   },
   output: {
     path: paths.appBuild,

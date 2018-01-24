@@ -1,6 +1,8 @@
 // @flow
 import flatten from 'lodash/flatten';
 
+import delay from 'common/utils/delay';
+
 import dynamicImportPlugin from './plugins/babel-plugin-dynamic-import-node';
 import detective from './plugins/babel-plugin-detective';
 import infiniteLoops from './plugins/babel-plugin-transform-prevent-infinite-loops';
@@ -8,20 +10,14 @@ import infiniteLoops from './plugins/babel-plugin-transform-prevent-infinite-loo
 import { buildWorkerError } from '../utils/worker-error-handler';
 import getDependencies from './get-require-statements';
 
-import { evaluateFromPath, clearCache } from './evaluate';
+import { evaluateFromPath, resetCache } from './evaluate';
 
 self.BrowserFS = BrowserFS;
 
-let fsResolve = null;
+let fsInitialized = false;
 
 async function initializeBrowserFS() {
   return new Promise(resolve => {
-    if (fsResolve) {
-      return resolve(fsResolve);
-    }
-
-    fsResolve = resolve;
-
     BrowserFS.configure(
       {
         fs: 'AsyncMirror',
@@ -35,16 +31,21 @@ async function initializeBrowserFS() {
           console.error(e);
           return;
         }
-
+        fsInitialized = true;
         resolve();
         // BrowserFS is initialized and ready-to-use!
       }
     );
-    return;
   });
 }
 
-function installPlugin(Babel, BFSRequire, plugin) {
+async function installPlugin(Babel, BFSRequire, plugin) {
+  if (!fsInitialized) {
+    while (!fsInitialized) {
+      await delay(50); // eslint-disable-line
+    }
+  }
+
   const fs = BFSRequire('fs');
   const evaluatedPlugin = evaluateFromPath(fs, BFSRequire, plugin);
 
@@ -87,19 +88,18 @@ self.addEventListener('message', async event => {
   if (!event.data.codesandbox) {
     return;
   }
-  await initializeBrowserFS();
-  clearCache();
+
+  if (event.data.type === 'initialize-fs') {
+    initializeBrowserFS();
+    return;
+  }
+  resetCache();
 
   const { code, path, config } = event.data;
 
-  config.plugins.filter(p => typeof p === 'string').forEach(p => {
-    if (!Babel.availablePlugins[p]) {
-      installPlugin(Babel, BrowserFS.BFSRequire, p);
-    }
-  });
-
+  const flattenedPlugins = flatten(config.plugins);
   if (
-    flatten(config.plugins).indexOf('transform-vue-jsx') > -1 &&
+    flattenedPlugins.indexOf('transform-vue-jsx') > -1 &&
     Object.keys(Babel.availablePlugins).indexOf('transform-vue-jsx') === -1
   ) {
     const vuePlugin = await import(/* webpackChunkName: 'babel-plugin-transform-vue-jsx' */ 'babel-plugin-transform-vue-jsx');
@@ -107,26 +107,34 @@ self.addEventListener('message', async event => {
   }
 
   if (
-    flatten(config.plugins).indexOf('jsx-pragmatic') > -1 &&
+    flattenedPlugins.indexOf('jsx-pragmatic') > -1 &&
     Object.keys(Babel.availablePlugins).indexOf('jsx-pragmatic') === -1
   ) {
     const pragmaticPlugin = await import(/* webpackChunkName: 'babel-plugin-jsx-pragmatic' */ 'babel-plugin-jsx-pragmatic');
     Babel.registerPlugin('jsx-pragmatic', pragmaticPlugin);
   }
 
-  const plugins = [
-    ...config.plugins,
-    'dynamic-import-node',
-    'babel-plugin-transform-prevent-infinite-loops',
-    ['babel-plugin-detective', { source: true, nodes: true }],
-  ];
-
-  const customConfig = {
-    ...config,
-    plugins,
-  };
-
   try {
+    await Promise.all(
+      flattenedPlugins.filter(p => typeof p === 'string').map(async p => {
+        if (!Babel.availablePlugins[p]) {
+          await installPlugin(Babel, BrowserFS.BFSRequire, p);
+        }
+      })
+    );
+
+    const plugins = [
+      ...config.plugins,
+      'dynamic-import-node',
+      'babel-plugin-transform-prevent-infinite-loops',
+      ['babel-plugin-detective', { source: true, nodes: true }],
+    ];
+
+    const customConfig = {
+      ...config,
+      plugins,
+    };
+
     const result = Babel.transform(code, customConfig);
 
     const dependencies = getDependencies(detective.metadata(result));

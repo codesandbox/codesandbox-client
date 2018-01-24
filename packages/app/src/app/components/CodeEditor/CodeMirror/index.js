@@ -266,7 +266,9 @@ class CodemirrorEditor extends React.Component<Props, State> {
     const el = this.codemirrorElement;
     const { code, id, title } = this.currentModule;
 
-    if (!this.props.onlyViewMode) {
+    if (!this.props.onlyViewMode && this.props.settings.vimMode) {
+      // We let codemirror handle save when vim mode is enabled, because this allows
+      // us to have :w functionality
       CodeMirror.commands.save = this.handleSaveCode;
     }
 

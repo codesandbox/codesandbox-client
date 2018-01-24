@@ -1,5 +1,4 @@
 import * as React from 'react';
-import Media from 'react-media';
 import { inject, observer } from 'mobx-react';
 
 import Save from 'react-icons/lib/md/save';
@@ -7,18 +6,12 @@ import Fork from 'react-icons/lib/go/repo-forked';
 import Download from 'react-icons/lib/go/cloud-download';
 import PlusIcon from 'react-icons/lib/go/plus';
 import GithubIcon from 'react-icons/lib/go/mark-github';
-import ChevronLeft from 'react-icons/lib/md/chevron-left';
-import NowIcon from 'app/components/NowLogo';
 import HeartIcon from 'react-icons/lib/fa/heart-o';
 import FullHeartIcon from 'react-icons/lib/fa/heart';
-import TwitterIcon from 'react-icons/lib/fa/twitter';
-import SearchIcon from 'react-icons/lib/go/search';
-import FeedbackIcon from 'react-icons/lib/go/comment-discussion';
 import SettingsIcon from 'react-icons/lib/md/settings';
 import ShareIcon from 'react-icons/lib/md/share';
-import { Tooltip } from 'react-tippy';
 
-import { searchUrl, patronUrl } from 'common/utils/url-generator';
+import { patronUrl } from 'common/utils/url-generator';
 
 import PatronBadge from '-!svg-react-loader!common/utils/badges/svg/patron-4.svg'; // eslint-disable-line import/no-webpack-loader-syntax
 import Margin from 'common/components/spacing/Margin';
@@ -50,7 +43,6 @@ function Header({ store, signals }) {
             />
           ) : (
             <Action
-              tooltip="Like"
               title="Like"
               Icon={HeartIcon}
               onClick={() =>
@@ -60,7 +52,6 @@ function Header({ store, signals }) {
           ))}
         <Action
           onClick={() => signals.editor.forkSandboxClicked()}
-          tooltip="Fork sandbox"
           title="Fork"
           Icon={Fork}
         />
@@ -74,14 +65,12 @@ function Header({ store, signals }) {
             placeholder={
               store.editor.isAllModulesSynced ? 'All modules are saved' : false
             }
-            tooltip="Save sandbox"
             title="Save"
             Icon={Save}
           />
         )}
 
         <Action
-          tooltip="Share sandbox"
           title="Share"
           Icon={ShareIcon}
           onClick={() =>
@@ -117,7 +106,7 @@ function Header({ store, signals }) {
               modal: 'newSandbox',
             })
           }
-          tooltip="New Sandbox"
+          tooltip="Create New Sandbox"
           Icon={PlusIcon}
         />
         {!store.isLoggedIn && (

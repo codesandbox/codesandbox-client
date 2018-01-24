@@ -25,15 +25,16 @@ export default class WorkerTranspiler extends Transpiler {
     [id: string]: Task,
   };
   initialized: boolean;
-
   runningTasks: {
     [id: string]: (error: Error, message: Object) => void,
   };
+  hasFS: boolean;
 
   constructor(
     name: string,
     Worker: Worker,
-    workerCount = navigator.hardwareConcurrency
+    workerCount = navigator.hardwareConcurrency,
+    options: { hasFS: boolean } = {}
   ) {
     super(name);
 
@@ -43,6 +44,7 @@ export default class WorkerTranspiler extends Transpiler {
     this.idleWorkers = [];
     this.tasks = {};
     this.initialized = false;
+    this.hasFS = options.hasFS || false;
   }
 
   getWorker() {
@@ -54,9 +56,11 @@ export default class WorkerTranspiler extends Transpiler {
       const t = Date.now();
       const worker = await this.getWorker();
 
-      console.log('Attached ', worker);
-      // Register file system
-      bfs.FileSystem.WorkerFS.attachRemoteListener(worker);
+      if (this.hasFS) {
+        // Register file system that syncs with filesystem in manager
+        bfs.FileSystem.WorkerFS.attachRemoteListener(worker);
+        worker.postMessage({ type: 'initialize-fs', codesandbox: true });
+      }
 
       debug(`Loaded '${this.name}' worker in ${Date.now() - t}ms`);
       this.idleWorkers.push(worker);
@@ -148,7 +152,7 @@ export default class WorkerTranspiler extends Transpiler {
         }
       }
     };
-    worker.postMessage({ ...message, codesandbox: true });
+    worker.postMessage({ ...message, type: 'compile', codesandbox: true });
   }
 
   async queueTask(

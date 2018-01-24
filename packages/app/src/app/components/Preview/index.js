@@ -5,6 +5,8 @@ import { debounce } from 'lodash';
 import { frameUrl } from 'common/utils/url-generator';
 import { getModulePath } from 'common/sandbox/modules';
 
+import { generateFileFromSandbox } from 'common/templates/configuration/package-json';
+
 import Navigator from './Navigator';
 import { Container, StyledFrame } from './elements';
 
@@ -191,6 +193,13 @@ class BasePreview extends React.Component {
 
       const extraModules = this.props.extraModules || {};
       const modulesToSend = { ...extraModules, ...modulesObject };
+
+      if (!modulesToSend['/package.json']) {
+        modulesToSend['/package.json'] = {
+          code: generateFileFromSandbox(sandbox),
+          path: '/package.json',
+        };
+      }
 
       sendMessage(sandbox.id, {
         type: 'compile',

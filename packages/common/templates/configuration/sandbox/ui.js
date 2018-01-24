@@ -11,22 +11,22 @@ import {
 type Props = {
   file: string,
   updateFile: (code: string) => void,
+  saveCode: (code: string) => void,
 };
 
 class ConfigWizard extends React.Component<Props> {
   bindValue = (file: Object, property: string) => ({
     value: file[property],
     setValue: (value: any) => {
-      this.props.updateFile(
-        JSON.stringify(
-          {
-            ...file,
-            [property]: value,
-          },
-          null,
-          2
-        )
+      const code = JSON.stringify(
+        {
+          ...file,
+          [property]: value,
+        },
+        null,
+        2
       );
+      this.props.saveCode(code);
     },
   });
 

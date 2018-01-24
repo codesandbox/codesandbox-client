@@ -15,7 +15,7 @@ class BabelTranspiler extends WorkerTranspiler {
   config: ?Object;
 
   constructor() {
-    super('babel-loader', null, 3);
+    super('babel-loader', null, 3, { hasFS: true });
   }
 
   setBabelRc(config: Object) {

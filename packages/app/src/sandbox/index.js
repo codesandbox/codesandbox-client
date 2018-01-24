@@ -4,6 +4,7 @@ import { isStandalone, listen, dispatch } from 'codesandbox-api';
 import registerServiceWorker from 'common/registerServiceWorker';
 import requirePolyfills from 'common/load-dynamic-polyfills';
 import { getModulePath } from 'common/sandbox/modules';
+import { generateFileFromSandbox } from 'common/templates/configuration/package-json';
 
 import setupHistoryListeners from './url-listeners';
 import compile from './compile';
@@ -89,15 +90,27 @@ requirePolyfills().then(() => {
         return camelized;
       })
       .then(x => {
+        const moduleObject = {};
+
         // We convert the modules to a format the manager understands
-        const normalizedModules = x.data.modules.map(m => ({
-          path: getModulePath(x.data.modules, x.data.directories, m.id),
-          code: m.code,
-        }));
+        x.data.modules.forEach(m => {
+          const path = getModulePath(x.data.modules, x.data.directories, m.id);
+          moduleObject[path] = {
+            path,
+            code: m.code,
+          };
+        });
+
+        if (!moduleObject['/package.json']) {
+          moduleObject['/package.json'] = {
+            code: generateFileFromSandbox(x.data),
+            path: '/package.json',
+          };
+        }
 
         const data = {
           sandboxId: id,
-          modules: normalizedModules,
+          modules: moduleObject,
           entry: '/' + x.data.entry,
           externalResources: x.data.externalResources,
           dependencies: x.data.npmDependencies,

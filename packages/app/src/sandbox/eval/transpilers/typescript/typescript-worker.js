@@ -21,6 +21,7 @@ declare var ts: {
 
 self.addEventListener('message', event => {
   const { code, path } = event.data;
+
   const config = {
     fileName: path,
     reportDiagnostics: true,

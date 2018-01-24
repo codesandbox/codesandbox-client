@@ -47,7 +47,7 @@ export type Manifest = {
   },
 };
 
-const NODE_LIBS = ['dgram', 'fs', 'net', 'tls', 'child_process'];
+const NODE_LIBS = ['dgram', 'net', 'tls', 'fs', 'module', 'child_process'];
 const debug = _debug('cs:compiler:manager');
 
 localforage.config({
@@ -584,6 +584,7 @@ export default class Manager {
     // this is especially necessary when the config of a transpiler changes
     const configFiles = getDefinition(this.preset.name).configurations;
     if (modulesToUpdate.some(m => configFiles[m.path])) {
+      debug('Config file changed: resetting all modules...');
       this.resetAllModules();
     }
 

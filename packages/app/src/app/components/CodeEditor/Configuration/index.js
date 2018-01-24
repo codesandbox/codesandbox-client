@@ -70,7 +70,11 @@ export default class Configuration extends React.PureComponent<
           </a>
         </Description>
 
-        <ConfigWizard updateFile={this.updateFile} file={currentModule.code} />
+        <ConfigWizard
+          saveCode={this.props.onSave}
+          updateFile={this.updateFile}
+          file={currentModule.code}
+        />
       </Container>
     );
   }

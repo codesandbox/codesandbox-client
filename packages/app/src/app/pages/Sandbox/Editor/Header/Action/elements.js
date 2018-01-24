@@ -42,12 +42,6 @@ const styles = props =>
 
 export const Title = styled.span`
   padding-left: 0.5rem;
-  ${props =>
-    !props.unresponsive &&
-    `
-  @media (max-width: 1300px) {
-    display: none;
-  }`};
 `;
 
 export const Action = styled.div`

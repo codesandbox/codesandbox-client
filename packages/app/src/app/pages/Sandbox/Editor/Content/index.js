@@ -289,7 +289,7 @@ class EditorPreview extends React.Component {
                 })
               }
               onModuleChange={moduleId =>
-                signals.editor.moduleSelected({ moduleId })
+                signals.editor.moduleSelected({ id: moduleId })
               }
               onSave={code =>
                 signals.editor.codeSaved({
