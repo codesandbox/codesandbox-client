@@ -181,3 +181,12 @@ export type Modal = {
   title: ?string,
   Body: ?React.Element<any>,
 };
+
+export type Configuration = {
+  title: string,
+  type: string,
+  description: string,
+  moreInfoUrl: string,
+  generateFile?: (state: any) => string,
+  generateFileFromSandbox?: (sandbox: Sandbox) => string,
+};

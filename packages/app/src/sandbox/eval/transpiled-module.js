@@ -60,6 +60,7 @@ export type SerializedTranspiledModule = {
   transpilationInitiators: Array<string>,
 };
 
+/* eslint-disable no-use-before-define */
 export type LoaderContext = {
   emitWarning: (warning: WarningStructure) => void,
   emitError: (error: Error) => void,
@@ -68,7 +69,7 @@ export type LoaderContext = {
     code: string,
     currentPath?: string,
     overwrite?: boolean
-  ) => TranspiledModule, // eslint-disable-line no-use-before-define
+  ) => TranspiledModule,
   emitFile: (name: string, content: string, sourceMap: SourceMap) => void,
   options: {
     context: '/',
@@ -84,21 +85,22 @@ export type LoaderContext = {
     options: ?{
       isAbsolute: boolean,
     }
-  ) => ?TranspiledModule, // eslint-disable-line no-use-before-define
+  ) => ?TranspiledModule,
   addDependenciesInDirectory: (
     depPath: string,
     options: {
       isAbsolute: boolean,
     }
-  ) => Array<TranspiledModule>, // eslint-disable-line no-use-before-define
-  _module: TranspiledModule, // eslint-disable-line no-use-before-define
-  getTranspiledModules: () => { [path: string]: TranspiledModule },
+  ) => Array<TranspiledModule>,
+  _module: TranspiledModule,
+  getTranspiledModules: () => Array<TranspiledModule>,
 
   // Remaining loaders after current loader
   remainingRequest: string,
   template: string,
   bfs: BrowserFS,
 };
+/* eslint-enable */
 
 type Compilation = {
   exports: any,
@@ -107,6 +109,7 @@ type Compilation = {
 export default class TranspiledModule {
   module: Module;
   query: string;
+  previousSource: ?ModuleSource;
   source: ?ModuleSource;
   assets: {
     [name: string]: ModuleSource,
@@ -326,7 +329,7 @@ export default class TranspiledModule {
 
         return tModule;
       },
-      addDependency: (depPath: string, options) => {
+      addDependency: (depPath: string, options = {}) => {
         if (
           depPath.startsWith('babel-runtime') ||
           depPath.startsWith('codesandbox-api')
@@ -384,6 +387,7 @@ export default class TranspiledModule {
       path: this.module.path,
       template: manager.preset.name,
       bfs: manager.bfs,
+      remainingRequests: '', // will be filled during transpilation
     };
   }
 
@@ -431,11 +435,11 @@ export default class TranspiledModule {
     let code = this.module.code || '';
     let finalSourceMap = null;
 
-    if (this.module.requires) {
+    if (this.module.requires != null) {
       // We now know that this has been transpiled on the server, so we shortcut
       const loaderContext = this.getLoaderContext(manager, {});
       // These are precomputed requires, for npm dependencies
-      this.module.requires.forEach(loaderContext.addDependency);
+      this.module.requires.forEach(r => loaderContext.addDependency(r));
 
       code = this.module.code;
     } else {

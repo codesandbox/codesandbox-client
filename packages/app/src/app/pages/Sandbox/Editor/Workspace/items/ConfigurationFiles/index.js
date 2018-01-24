@@ -1,5 +1,8 @@
 import React from 'react';
 import getDefinition from 'common/templates';
+import { Module, Configuration } from 'common/types';
+import { resolveModule } from 'common/sandbox/modules';
+
 import { inject, observer } from 'mobx-react';
 
 import BookIcon from 'react-icons/lib/md/library-books';
@@ -7,13 +10,101 @@ import UIIcon from 'react-icons/lib/md/dvr';
 
 import Tooltip from 'common/components/Tooltip';
 
-import { Description } from '../../elements';
-import { FilesContainer, File, FileTitle, FileDescription } from './elements';
+import { Description, WorkspaceSubtitle } from '../../elements';
+import {
+  FilesContainer,
+  File,
+  FileTitle,
+  FileDescription,
+  CreateButton,
+} from './elements';
 
-const ConfigurationFiles = ({ store }) => {
-  const { configurations } = getDefinition(
-    store.editor.currentSandbox.template
+type FileConfigProps = {
+  path: string,
+  info: {
+    module?: Module,
+    config: Configuration,
+  },
+  createModule: (title: string) => void,
+};
+
+const FileConfig = ({
+  info,
+  path,
+  createModule,
+  openModule,
+}: FileConfigProps) => {
+  const { module, config } = info;
+  return (
+    <File
+      created={!!module}
+      key={path}
+      onClick={
+        openModule
+          ? () => {
+              openModule(module.id);
+            }
+          : undefined
+      }
+    >
+      <FileTitle>
+        {config.title}{' '}
+        <Tooltip title="More Info">
+          <a
+            href={config.moreInfoUrl}
+            target="_blank"
+            rel="noreferrer noopener"
+            title="Documentation"
+            style={{ marginLeft: '.25rem' }}
+          >
+            <BookIcon />
+          </a>
+        </Tooltip>
+        {config.ui && (
+          <Tooltip title="Editable with UI">
+            <UIIcon style={{ marginLeft: '.5rem' }} />
+          </Tooltip>
+        )}
+      </FileTitle>
+      <FileDescription>{config.description}</FileDescription>
+      {!module && (
+        <CreateButton
+          onClick={() => {
+            // TODO make this support nested paths (create dir etc)
+            createModule(info.config.title);
+          }}
+        >
+          Create File
+        </CreateButton>
+      )}
+    </File>
   );
+};
+
+const ConfigurationFiles = ({ store, signals }) => {
+  const sandbox = store.editor.currentSandbox;
+  const { configurations } = getDefinition(sandbox.template);
+
+  const createdPaths = {};
+  const restPaths = {};
+
+  Object.keys(configurations)
+    .sort()
+    .forEach(p => {
+      const config = configurations[p];
+
+      try {
+        const module = resolveModule(p, sandbox.modules, sandbox.directories);
+        createdPaths[p] = {
+          config,
+          module,
+        };
+      } catch (e) {
+        restPaths[p] = {
+          config,
+        };
+      }
+    });
 
   return (
     <div>
@@ -23,32 +114,34 @@ const ConfigurationFiles = ({ store }) => {
       </Description>
 
       <FilesContainer>
-        {Object.keys(configurations).map(path => {
-          const config = configurations[path];
+        <WorkspaceSubtitle>Existing Configurations</WorkspaceSubtitle>
+        {Object.keys(createdPaths).map(path => {
+          const info = createdPaths[path];
 
           return (
-            <File key={path}>
-              <FileTitle>
-                {config.title}{' '}
-                <Tooltip title="More Info">
-                  <a
-                    href={config.moreInfoUrl}
-                    target="_blank"
-                    rel="noreferrer noopener"
-                    title="Documentation"
-                    style={{ marginLeft: '.25rem' }}
-                  >
-                    <BookIcon />
-                  </a>
-                </Tooltip>
-                {config.ui && (
-                  <Tooltip title="Editable with UI">
-                    <UIIcon style={{ marginLeft: '.5rem' }} />
-                  </Tooltip>
-                )}
-              </FileTitle>
-              <FileDescription>{config.description}</FileDescription>
-            </File>
+            <FileConfig
+              openModule={id => {
+                signals.editor.moduleSelected({ id });
+              }}
+              path={path}
+              info={info}
+            />
+          );
+        })}
+        {Object.keys(restPaths).length && (
+          <WorkspaceSubtitle>Other Configurations</WorkspaceSubtitle>
+        )}
+        {Object.keys(restPaths).map(path => {
+          const info = restPaths[path];
+
+          return (
+            <FileConfig
+              createModule={title => {
+                signals.files.moduleCreated({ title });
+              }}
+              path={path}
+              info={info}
+            />
           );
         })}
       </FilesContainer>

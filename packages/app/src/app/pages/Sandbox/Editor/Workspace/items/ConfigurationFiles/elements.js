@@ -5,20 +5,24 @@ export const FilesContainer = styled.div`
 `;
 
 export const File = styled.div`
+  position: relative;
   transition: 0.3s ease background-color;
-  padding: 1rem;
+  padding: 0.75rem 1rem;
 
-  border-top: 1px solid rgba(0, 0, 0, 0.3);
+  ${props => props.created && `cursor: pointer`};
+  ${props => !props.created && `opacity: 0.9`};
+`;
 
+export const CreateButton = styled.button`
+  padding: 0.25rem 0.4rem;
+  background-color: ${props => props.theme.secondary};
+  border: none;
+  font-size: 0.75rem;
+  color: white;
+  border-radius: 2px;
+  font-weight: 600;
   cursor: pointer;
-
-  &:last-child {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
-  }
-
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.3);
-  }
+  margin-top: 0.75rem;
 `;
 
 export const FileTitle = styled.div`

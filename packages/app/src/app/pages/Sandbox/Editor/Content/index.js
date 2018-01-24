@@ -148,25 +148,19 @@ class EditorPreview extends React.Component {
         }
       }
     );
-    const disposeCodeHandler = reaction(
-      () => store.editor.currentModule.code,
-      newCode => {
+    const disposeModuleHandler = reaction(
+      () => [store.editor.currentModule, store.editor.currentModule.code],
+      () => {
         if (isChangingSandbox) {
           return;
         }
-        if (editor.changeCode) {
-          editor.changeCode(newCode || '');
-        }
-      }
-    );
-    const disposeModuleChangeHandler = reaction(
-      () => store.editor.currentModule,
-      newModule => {
-        if (isChangingSandbox) {
-          return;
-        }
-        if (editor.changeModule) {
+        const newModule = store.editor.currentModule;
+        const editorModule = editor.currentModule;
+
+        if (newModule !== editorModule && editor.changeModule) {
           editor.changeModule(newModule);
+        } else if (editor.changeCode) {
+          editor.changeCode(newModule.code || '');
         }
       }
     );
@@ -184,8 +178,7 @@ class EditorPreview extends React.Component {
       disposePreferencesHandler();
       disposePackageHandler();
       disposeSandboxChangeHandler();
-      disposeModuleChangeHandler();
-      disposeCodeHandler();
+      disposeModuleHandler();
       disposeToggleDevtools();
       disposeResizeHandler();
     };
