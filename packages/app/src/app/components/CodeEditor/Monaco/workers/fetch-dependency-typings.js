@@ -18,7 +18,7 @@ const getVersion = version => {
     return `^${match[1]}.x.x`;
   }
 
-  return `^${version}`;
+  return `${version}`;
 };
 
 /**

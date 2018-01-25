@@ -64,16 +64,17 @@ class EditorPreview extends React.Component {
     const disposeSandboxChangeHandler = reaction(
       () => store.editor.currentSandbox,
       newSandbox => {
-        isChangingSandbox = true;
+        isChangingSandbox = !editor.changeSandbox;
 
         // Put in a timeout so we allow the actions after the fork to execute first as well.
         setTimeout(() => {
           if (editor.changeSandbox) {
+            const { parsed } = store.editor.currentParsedPackageJSON;
             editor
               .changeSandbox(
                 newSandbox,
                 store.editor.currentModule,
-                newSandbox.npmDependencies.toJS()
+                parsed ? parsed.dependencies : newSandbox.npmDependencies.toJS()
               )
               .then(() => {
                 isChangingSandbox = false;
@@ -112,6 +113,7 @@ class EditorPreview extends React.Component {
         fontSize: store.preferences.settings.fontSize,
         lineHeight: store.preferences.settings.lineHeight,
         autoCompleteEnabled: store.preferences.settings.autoCompleteEnabled,
+        autoDownloadTypes: store.preferences.settings.autoDownloadTypes,
         vimMode: store.preferences.settings.vimMode,
         lintEnabled: store.preferences.settings.lintEnabled,
         tabSize: store.preferences.settings.tabSize,
@@ -138,7 +140,8 @@ class EditorPreview extends React.Component {
     );
     const disposePackageHandler = reaction(
       () => store.editor.currentParsedPackageJSON,
-      ({ parsed }) => {
+      () => {
+        const { parsed } = store.editor.currentParsedPackageJSON;
         if (parsed) {
           const { dependencies = {} } = parsed;
 
@@ -268,6 +271,7 @@ class EditorPreview extends React.Component {
                 fontSize: preferences.settings.fontSize,
                 lineHeight: preferences.settings.lineHeight,
                 autoCompleteEnabled: preferences.settings.autoCompleteEnabled,
+                autoDownloadTypes: preferences.settings.autoDownloadTypes,
                 vimMode: preferences.settings.vimMode,
                 lintEnabled: preferences.settings.lintEnabled,
                 codeMirror: preferences.settings.codeMirror,

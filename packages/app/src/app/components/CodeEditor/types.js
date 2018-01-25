@@ -11,6 +11,7 @@ export type Props = {
   onSave: (code: string) => void,
   settings: {
     autoCompleteEnabled: boolean,
+    autoDownloadTypes: boolean,
     codeMirror: boolean,
     fontFamily: string,
     fontSize: number,

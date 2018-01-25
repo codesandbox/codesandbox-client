@@ -144,7 +144,7 @@ class MonacoEditor extends React.Component<Props, State> {
       module: hasNativeTypescript
         ? monaco.languages.typescript.ModuleKind.ES2015
         : monaco.languages.typescript.ModuleKind.System,
-      experimentalDecorators: !hasNativeTypescript,
+      experimentalDecorators: true,
       noEmit: true,
       allowJs: true,
       typeRoots: ['node_modules/@types'],
@@ -446,7 +446,7 @@ class MonacoEditor extends React.Component<Props, State> {
         ]
       ) {
         requestAnimationFrame(() => {
-          this.addLib(typings, path);
+          this.addLib(typings, '/' + path);
         });
       }
     });
@@ -735,16 +735,13 @@ class MonacoEditor extends React.Component<Props, State> {
       fullPath
     ];
     if (existingLib) {
-      existingLib.dispose();
-      requestAnimationFrame(() => {
-        this.monaco.languages.typescript.typescriptDefaults.addExtraLib(
-          module.code || '',
-          fullPath
-        );
-      });
+      this.monaco.languages.typescript.typescriptDefaults.getExtraLibs()[
+        fullPath
+      ] =
+        code || '';
     } else {
       this.monaco.languages.typescript.typescriptDefaults.addExtraLib(
-        module.code || '',
+        code || '',
         fullPath
       );
     }

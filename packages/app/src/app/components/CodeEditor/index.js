@@ -28,7 +28,7 @@ const CodeMirror = Loadable({
 
 const getDependencies = (sandbox: Sandbox): ?{ [key: string]: string } => {
   const packageJSON = sandbox.modules.find(
-    m => m.title === 'package.json' && m.directoryShortid != null
+    m => m.title === 'package.json' && m.directoryShortid == null
   );
 
   if (packageJSON != null) {
@@ -37,6 +37,7 @@ const getDependencies = (sandbox: Sandbox): ?{ [key: string]: string } => {
 
       return dependencies;
     } catch (e) {
+      console.error(e);
       return null;
     }
   } else {
