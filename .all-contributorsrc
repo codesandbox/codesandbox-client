@@ -294,6 +294,15 @@
         "code",
         "design"
       ]
+    },
+    {
+      "login": "nicknisi",
+      "name": "Nick Nisi",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/293805?v=4",
+      "profile": "https://nicknisi.com",
+      "contributions": [
+        "code"
+      ]
     }
   ]
 }
