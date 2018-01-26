@@ -146,46 +146,54 @@ describe('TestRunner class', () => {
     });
 
     it('should start off with no test results', () => {
-      expect(testRunner.aggregatedResults.totalTests).toBe(0);
-      expect(testRunner.aggregatedResults.passedTests).toBe(0);
-      expect(testRunner.aggregatedResults.failedTests).toBe(0);
-      expect(testRunner.aggregatedResults.totalTestSuites).toBe(0);
-      expect(testRunner.aggregatedResults.passedTestSuites).toBe(0);
-      expect(testRunner.aggregatedResults.failedTestSuites).toBe(0);
+      expect(testRunner.aggregatedResults).toMatchObject({
+        failedTestSuites: 0,
+        passedTestSuites: 0,
+        totalTestSuites: 0,
+        failedTests: 0,
+        passedTests: 0,
+        totalTests: 0,
+      });
     });
 
     it('should add pass test results', () => {
       testRunner.addResult({ status: 'pass', name: 'foo' });
       testRunner.addResult({ status: 'pass', name: 'bar' });
-      expect(testRunner.aggregatedResults.totalTests).toBe(2);
-      expect(testRunner.aggregatedResults.passedTests).toBe(2);
-      expect(testRunner.aggregatedResults.failedTests).toBe(0);
-      expect(testRunner.aggregatedResults.totalTestSuites).toBe(1);
-      expect(testRunner.aggregatedResults.passedTestSuites).toBe(1);
-      expect(testRunner.aggregatedResults.failedTestSuites).toBe(0);
+      expect(testRunner.aggregatedResults).toMatchObject({
+        failedTestSuites: 0,
+        passedTestSuites: 1,
+        totalTestSuites: 1,
+        failedTests: 0,
+        passedTests: 2,
+        totalTests: 2,
+      });
     });
 
     it('should add fail test results', () => {
       testRunner.addResult({ status: 'fail', name: 'foo' });
       testRunner.addResult({ status: 'fail', name: 'bar' });
-      expect(testRunner.aggregatedResults.totalTests).toBe(2);
-      expect(testRunner.aggregatedResults.passedTests).toBe(0);
-      expect(testRunner.aggregatedResults.failedTests).toBe(2);
-      expect(testRunner.aggregatedResults.totalTestSuites).toBe(1);
-      expect(testRunner.aggregatedResults.passedTestSuites).toBe(0);
-      expect(testRunner.aggregatedResults.failedTestSuites).toBe(1);
+      expect(testRunner.aggregatedResults).toMatchObject({
+        failedTestSuites: 1,
+        passedTestSuites: 0,
+        totalTestSuites: 1,
+        failedTests: 2,
+        passedTests: 0,
+        totalTests: 2,
+      });
     });
 
     it('should add pass & fail test results', () => {
       testRunner.addResult({ status: 'pass', name: 'foo' });
       testRunner.addResult({ status: 'pass', name: 'bar' });
       testRunner.addResult({ status: 'fail', name: 'baz' });
-      expect(testRunner.aggregatedResults.totalTests).toBe(3);
-      expect(testRunner.aggregatedResults.passedTests).toBe(2);
-      expect(testRunner.aggregatedResults.failedTests).toBe(1);
-      expect(testRunner.aggregatedResults.totalTestSuites).toBe(1);
-      expect(testRunner.aggregatedResults.passedTestSuites).toBe(0);
-      expect(testRunner.aggregatedResults.failedTestSuites).toBe(1);
+      expect(testRunner.aggregatedResults).toMatchObject({
+        failedTestSuites: 1,
+        passedTestSuites: 0,
+        totalTestSuites: 1,
+        failedTests: 1,
+        passedTests: 2,
+        totalTests: 3,
+      });
     });
 
     it('should add pass & fail test results by suite', () => {
@@ -198,12 +206,14 @@ describe('TestRunner class', () => {
       testRunner.setCurrentPath('c.js');
       testRunner.addResult({ status: 'pass', name: 'foo' });
       testRunner.addResult({ status: 'fail', name: 'bar' });
-      expect(testRunner.aggregatedResults.totalTests).toBe(6);
-      expect(testRunner.aggregatedResults.passedTests).toBe(3);
-      expect(testRunner.aggregatedResults.failedTests).toBe(3);
-      expect(testRunner.aggregatedResults.totalTestSuites).toBe(3);
-      expect(testRunner.aggregatedResults.passedTestSuites).toBe(1);
-      expect(testRunner.aggregatedResults.failedTestSuites).toBe(2);
+      expect(testRunner.aggregatedResults).toMatchObject({
+        failedTestSuites: 2,
+        passedTestSuites: 1,
+        totalTestSuites: 3,
+        failedTests: 3,
+        passedTests: 3,
+        totalTests: 6,
+      });
     });
   });
 
@@ -223,7 +233,7 @@ describe('TestRunner class', () => {
       testRunner.addResult({ status: 'pass', name: 'bar' });
 
       let results = testRunner.reportResults();
-      let { summaryMessage, failesMessages } = results;
+      let { summaryMessage } = results;
 
       expect(results).not.toEqual(null);
       expect(summaryMessage).toMatch(/Test Summary: 😎/);
@@ -266,7 +276,7 @@ describe('TestRunner class', () => {
       testRunner.addResult({ status: 'fail', name: 'bar' });
 
       let results = testRunner.reportResults();
-      let { summaryMessage, failesMessages } = results;
+      let { summaryMessage } = results;
 
       expect(results).not.toEqual(null);
       expect(summaryMessage).toMatch(/Test Summary: 👻/);
@@ -281,7 +291,7 @@ describe('TestRunner class', () => {
       testRunner.addResult({ status: 'fail', name: 'bar' });
 
       let results = testRunner.reportResults();
-      let { summaryMessage, failedMessages } = results;
+      let { failedMessages } = results;
 
       expect(results).not.toEqual(null);
       expect(failedMessages[0]).toMatch(/FAIL/);
@@ -294,7 +304,7 @@ describe('TestRunner class', () => {
       testRunner.addResult({ status: 'fail', name: 'baz' });
 
       let results = testRunner.reportResults();
-      let { summaryMessage, failedMessages } = results;
+      let { failedMessages } = results;
 
       expect(results).not.toEqual(null);
       expect(failedMessages[0]).toMatch(/FAIL/);
@@ -307,7 +317,7 @@ describe('TestRunner class', () => {
       testRunner.addResult({ status: 'fail', name: 'baz' });
 
       let results = testRunner.reportResults();
-      let { summaryMessage, failesMessages } = results;
+      let { summaryMessage } = results;
 
       expect(results).not.toEqual(null);
       expect(summaryMessage).toMatch(/Test Summary: 👻/);
@@ -329,7 +339,7 @@ describe('TestRunner class', () => {
       testRunner.addResult({ status: 'fail', name: 'bar' });
 
       let results = testRunner.reportResults();
-      let { summaryMessage, failesMessages } = results;
+      let { summaryMessage } = results;
 
       expect(results).not.toEqual(null);
       expect(summaryMessage).toMatch(/Test Summary: 👻/);
@@ -341,17 +351,20 @@ describe('TestRunner class', () => {
   });
 
   describe('reportError', () => {
+    let testRunner;
+    beforeEach(() => {
+      testRunner = new TestRunner();
+    });
     it('should return well-formated error when message is not passed', () => {
-      let testRunner = new TestRunner();
-      expect(testRunner.reportError({})).toEqual(
-        `Test Summary: 😢\nError: something went wrong`
-      );
+      let error = testRunner.reportError({});
+      expect(error).toMatch(/Test Summary: 😢/);
+      expect(error).toMatch(/Error: something went wrong/);
     });
     it('should return well-formated error when message is passed', () => {
       let testRunner = new TestRunner();
-      expect(testRunner.reportError({ message: 'boom!' })).toEqual(
-        `Test Summary: 😢\nError: boom!`
-      );
+      let error = testRunner.reportError({ message: 'foo' });
+      expect(error).toMatch(/Test Summary: 😢/);
+      expect(error).toMatch(/Error: foo/);
     });
   });
 
