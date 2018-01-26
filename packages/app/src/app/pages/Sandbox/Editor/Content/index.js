@@ -64,7 +64,7 @@ class EditorPreview extends React.Component {
     const disposeSandboxChangeHandler = reaction(
       () => store.editor.currentSandbox,
       newSandbox => {
-        isChangingSandbox = !editor.changeSandbox;
+        isChangingSandbox = !!editor.changeSandbox;
 
         // Put in a timeout so we allow the actions after the fork to execute first as well.
         setTimeout(() => {

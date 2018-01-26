@@ -11,7 +11,6 @@ import {
 type Props = {
   file: string,
   updateFile: (code: string) => void,
-  saveCode: (code: string) => void,
 };
 
 class ConfigWizard extends React.Component<Props> {
@@ -26,7 +25,7 @@ class ConfigWizard extends React.Component<Props> {
         null,
         2
       );
-      this.props.saveCode(code);
+      this.props.updateFile(code);
     },
   });
 

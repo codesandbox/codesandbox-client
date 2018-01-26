@@ -60,21 +60,12 @@ class BabelTranspiler extends WorkerTranspiler {
         }
       }
 
-      const modules = loaderContext.getModules();
-      const files = modules.reduce(
-        (interMediateFiles, module) => ({
-          ...interMediateFiles,
-          [module.path]: module.code,
-        }),
-        {}
-      );
-
       this.queueTask(
         {
           code,
           config: babelConfig,
           path,
-          files,
+          sandboxOptions: loaderContext.options.sandboxOptions,
         },
         loaderContext,
         (err, data) => {

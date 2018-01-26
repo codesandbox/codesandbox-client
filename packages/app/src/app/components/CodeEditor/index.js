@@ -41,7 +41,8 @@ const getDependencies = (sandbox: Sandbox): ?{ [key: string]: string } => {
       return null;
     }
   } else {
-    return sandbox.npmDependencies;
+    // $FlowIssue
+    return sandbox.npmDependencies.toJS();
   }
 };
 

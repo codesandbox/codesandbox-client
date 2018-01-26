@@ -1,5 +1,5 @@
 // @flow
-import { flattenDeep, uniq, values } from 'lodash';
+import { flattenDeep, uniq, values, isEqual } from 'lodash';
 import resolve from 'browser-resolve';
 import localforage from 'localforage';
 
@@ -90,6 +90,11 @@ export default class Manager {
   // We can improve performance by almost 2x in this scenario if we cache the lookups
   cachedPaths: Map<string, string>;
 
+  sandboxOptions: {
+    infiniteLoopProtection: boolean,
+    hardReloadOnChange: boolean,
+  };
+
   constructor(id: string, preset: Preset, modules: { [path: string]: Module }) {
     this.id = id;
     this.preset = preset;
@@ -100,8 +105,10 @@ export default class Manager {
     this.hardReload = false;
     this.hmrStatus = 'idle';
     this.transpiledModulesByHash = {};
+
     Object.keys(modules).forEach(k => this.addModule(modules[k]));
     this.testRunner = new TestRunner(this);
+    this.updateSandboxOptions();
 
     if (process.env.NODE_ENV === 'development') {
       window.manager = this;
@@ -284,6 +291,10 @@ export default class Manager {
   }
 
   removeModule(module: Module) {
+    if (module.path === '/sandbox.config.json') {
+      this.resetSandboxOptions();
+    }
+
     // Reset all cached paths because file structure changed
     this.cachedPaths = new Map();
 
@@ -474,6 +485,10 @@ export default class Manager {
   }
 
   updateModule(m: Module) {
+    if (m.path === '/sandbox.config.json') {
+      this.updateSandboxOptions(m);
+    }
+
     this.transpiledModules[m.path].module = m;
     return this.getTranspiledModulesByModule(m).map(tModule => {
       tModule.update(m);
@@ -581,7 +596,8 @@ export default class Manager {
     // If there's an update to a config file we need to reset all transpilation,
     // this is especially necessary when the config of a transpiler changes
     const configFiles = getDefinition(this.preset.name).configurations;
-    if (modulesToUpdate.some(m => configFiles[m.path])) {
+    const configModulesUpdates = modulesToUpdate.some(m => configFiles[m.path]);
+    if (configModulesUpdates) {
       debug('Config file changed: resetting all modules...');
       this.resetAllModules();
     }
@@ -589,8 +605,11 @@ export default class Manager {
     // We eagerly transpile changed files,
     // this way we don't have to traverse the whole
     // dependency graph each time a file changes
-
     const tModulesToUpdate = modulesToUpdate.map(m => this.updateModule(m));
+
+    if (tModulesToUpdate.length > 0) {
+      this.hardReload = this.sandboxOptions.hardReloadOnChange;
+    }
 
     const transpiledModulesToUpdate = uniq(
       flattenDeep([
@@ -618,6 +637,44 @@ export default class Manager {
   markHardReload() {
     this.hmrStatus = 'fail';
     this.hardReload = true;
+  }
+
+  resetSandboxOptions() {
+    this.sandboxOptions = {
+      infiniteLoopProtection: true,
+      hardReloadOnChange: false,
+    };
+    this.resetAllModules();
+  }
+
+  updateSandboxOptions(config?: Module) {
+    let sandboxFile = config;
+
+    if (!sandboxFile) {
+      const tModule = this.transpiledModules['/sandbox.config.json'];
+      if (tModule) {
+        sandboxFile = tModule.module;
+      }
+    }
+    if (!sandboxFile) {
+      this.resetSandboxOptions();
+      return;
+    }
+
+    const code = sandboxFile.code;
+
+    try {
+      const c = JSON.parse(code);
+
+      if (!isEqual(c, this.sandboxOptions)) {
+        this.sandboxOptions = c;
+        this.resetAllModules();
+      }
+    } catch (e) {
+      e.message = 'We were not able to parse /sandbox.config.json';
+
+      throw e;
+    }
   }
 
   /**

@@ -5,7 +5,6 @@ import getType from 'app/utils/get-type';
 import Tooltip from 'common/components/Tooltip';
 
 import CodeIcon from 'react-icons/lib/md/code';
-import SaveIcon from 'react-icons/lib/md/save';
 
 import type { Props } from '../types';
 import { Container, Icon, Title, Description } from './elements';
@@ -70,11 +69,7 @@ export default class Configuration extends React.PureComponent<
           </a>
         </Description>
 
-        <ConfigWizard
-          saveCode={this.props.onSave}
-          updateFile={this.updateFile}
-          file={currentModule.code}
-        />
+        <ConfigWizard updateFile={this.updateFile} file={currentModule.code} />
       </Container>
     );
   }

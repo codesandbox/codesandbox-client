@@ -95,7 +95,7 @@ self.addEventListener('message', async event => {
   }
   resetCache();
 
-  const { code, path, config } = event.data;
+  const { code, path, sandboxOptions, config } = event.data;
 
   const flattenedPlugins = flatten(config.plugins);
   if (
@@ -126,9 +126,12 @@ self.addEventListener('message', async event => {
     const plugins = [
       ...config.plugins,
       'dynamic-import-node',
-      'babel-plugin-transform-prevent-infinite-loops',
       ['babel-plugin-detective', { source: true, nodes: true }],
     ];
+
+    if (sandboxOptions.infiniteLoopProtection) {
+      plugins.push('babel-plugin-transform-prevent-infinite-loops');
+    }
 
     const customConfig = {
       ...config,

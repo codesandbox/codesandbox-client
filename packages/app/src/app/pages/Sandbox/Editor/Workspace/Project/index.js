@@ -199,7 +199,7 @@ class Project extends React.Component {
         <Item>
           {editable ? (
             <EditableTags
-              value={sandbox.tags.toJSON()}
+              value={sandbox.tags.toJS()}
               onChange={this.changeTags}
               onChangeInput={value => {
                 signals.workspace.tagChanged({

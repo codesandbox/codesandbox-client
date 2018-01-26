@@ -355,6 +355,7 @@ export default class TranspiledModule {
           } else {
             // Don't throw the error, we want to throw this error during evaluation
             // so we get the correct line as error
+            // eslint-disable-next-line
             if (process.env.NODE_ENV === 'development') {
               console.error(e);
             }
@@ -378,6 +379,7 @@ export default class TranspiledModule {
       getTranspiledModules: () => manager.transpiledModules,
       options: {
         context: pathUtils.dirname(this.module.path),
+        sandboxOptions: manager.sandboxOptions,
         ...transpilerOptions,
       },
       webpack: true,

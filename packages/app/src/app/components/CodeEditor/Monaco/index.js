@@ -734,12 +734,9 @@ class MonacoEditor extends React.Component<Props, State> {
     const existingLib = this.monaco.languages.typescript.typescriptDefaults.getExtraLibs()[
       fullPath
     ];
-    if (existingLib) {
-      this.monaco.languages.typescript.typescriptDefaults.getExtraLibs()[
-        fullPath
-      ] =
-        code || '';
-    } else {
+    // Only add it if it has been added before, we don't care about the contents
+    // of the libs, only if they've been added.
+    if (!existingLib) {
       this.monaco.languages.typescript.typescriptDefaults.addExtraLib(
         code || '',
         fullPath
@@ -784,7 +781,7 @@ class MonacoEditor extends React.Component<Props, State> {
   getModelById = async (id: string) => {
     const modules = this.sandbox.modules;
 
-    if (!modelCache[id]) {
+    if (!modelCache[id] || !modelCache[id].model) {
       const module = modules.find(m => m.id === id);
 
       if (module) {
