@@ -384,7 +384,7 @@ export default class Manager {
 
       if (NODE_LIBS.includes(shimmedPath) || resolvedPath === '//empty.js') {
         return {
-          path: pathUtils.join('/node_modules', resolvedPath),
+          path: pathUtils.join('/node_modules', 'empty', 'index.js'),
           code: `// empty`,
           requires: [],
         };
@@ -392,6 +392,8 @@ export default class Manager {
 
       return this.transpiledModules[resolvedPath].module;
     } catch (e) {
+      delete this.cachedPaths[pathId];
+
       let connectedPath = /^(\w|@\w)/.test(shimmedPath)
         ? pathUtils.join('/node_modules', shimmedPath)
         : pathUtils.join(pathUtils.dirname(currentPath), shimmedPath);
