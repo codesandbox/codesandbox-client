@@ -175,7 +175,10 @@ export default class CodeSandboxFS extends SynchronousFileSystem
       }
     }
 
-    const stats = new Stats(FileType.FILE, moduleInfo.module.code.length);
+    const stats = new Stats(
+      FileType.FILE,
+      (moduleInfo.module.code || '').length
+    );
 
     return stats;
   }

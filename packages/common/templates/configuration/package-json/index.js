@@ -1,7 +1,7 @@
 // @flow
 
 import type { Sandbox } from 'common/types';
-// import ui from './ui';
+import type { ConfigurationFile } from '../types';
 
 export function generateFileFromSandbox(sandbox: Sandbox) {
   const jsonFile = {};
@@ -17,11 +17,17 @@ export function generateFileFromSandbox(sandbox: Sandbox) {
   return JSON.stringify(jsonFile, null, 2);
 }
 
-export default {
+const config: ConfigurationFile = {
   title: 'package.json',
   type: 'package',
   description: 'Describes the overall configuration of your project.',
   moreInfoUrl: 'https://docs.npmjs.com/files/package.json',
 
-  generateFileFromSandbox,
+  generateFileFromState: (state: any) => {
+    const sandbox = state.get('editor.currentSandbox');
+
+    return generateFileFromSandbox(sandbox);
+  },
 };
+
+export default config;

@@ -1,13 +1,13 @@
-export default {
+// @flow
+import type { ConfigurationFile } from '../types';
+
+const config: ConfigurationFile = {
   title: '.babelrc',
   type: 'babel',
   description: 'Custom configuration for Babel, the transpiler we use.',
   moreInfoUrl: 'https://babeljs.io/docs/usage/babelrc/',
 
-  generateFile: state => {
-    const currentSandbox = state.get('editor.currentSandbox');
-    const template = currentSandbox.template;
-
+  getDefaultCode: (template: string) => {
     if (template === 'preact-cli') {
       return JSON.stringify(
         {
@@ -54,3 +54,5 @@ export default {
     return '{}';
   },
 };
+
+export default config;

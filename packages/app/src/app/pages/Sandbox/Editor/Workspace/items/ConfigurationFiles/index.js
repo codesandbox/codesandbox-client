@@ -83,15 +83,15 @@ const FileConfig = ({
 
 const ConfigurationFiles = ({ store, signals }) => {
   const sandbox = store.editor.currentSandbox;
-  const { configurations } = getDefinition(sandbox.template);
+  const { configurationFiles } = getDefinition(sandbox.template);
 
   const createdPaths = {};
   const restPaths = {};
 
-  Object.keys(configurations)
+  Object.keys(configurationFiles)
     .sort()
     .forEach(p => {
-      const config = configurations[p];
+      const config = configurationFiles[p];
 
       try {
         const module = resolveModule(p, sandbox.modules, sandbox.directories);

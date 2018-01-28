@@ -151,6 +151,11 @@ export const saveCode = [
 export const addNpmDependency = [
   closeModal,
   ensureOwnedSandbox,
+  when(props`version`),
+  {
+    true: [],
+    false: [actions.getLatestVersion],
+  },
   actions.addNpmDependencyToPackage,
   saveCode,
 ];

@@ -765,7 +765,7 @@ class MonacoEditor extends React.Component<Props, State> {
       new this.monaco.Uri().with({ path, scheme: 'file' })
     );
 
-    model.updateOptions({ tabSize: this.props.settings.tabSize });
+    model.updateOptions({ tabWidth: this.props.settings.tabWidth });
 
     modelCache[module.id] = modelCache[module.id] || {
       model: null,

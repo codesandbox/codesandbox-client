@@ -190,3 +190,16 @@ export type Configuration = {
   generateFile?: (state: any) => string,
   generateFileFromSandbox?: (sandbox: Sandbox) => string,
 };
+
+export type PackageJSON = {
+  name: string,
+  description: string,
+  keywords: Array<string>,
+  main: string,
+  dependencies: {
+    [dep: string]: string,
+  },
+  devDependencies: {
+    [dep: string]: string,
+  },
+};

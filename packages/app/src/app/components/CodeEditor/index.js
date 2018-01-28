@@ -73,7 +73,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
       sandbox.directories,
       module.id
     );
-    const config = template.configurations[modulePath];
+    const config = template.configurationFiles[modulePath];
     if (config && config.ui && this.state.showConfigUI) {
       return (
         <Configuration

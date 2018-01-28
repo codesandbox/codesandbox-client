@@ -379,7 +379,7 @@ export default class TranspiledModule {
       getTranspiledModules: () => manager.transpiledModules,
       options: {
         context: pathUtils.dirname(this.module.path),
-        sandboxOptions: manager.sandboxOptions,
+        configurations: manager.configurations,
         ...transpilerOptions,
       },
       webpack: true,

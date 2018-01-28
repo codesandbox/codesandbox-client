@@ -6,6 +6,7 @@ import _debug from 'app/utils/debug';
 
 import initializeErrorTransformers from './errors/transformers';
 import getPreset from './eval';
+import parseConfigurations from './configurations';
 import Manager from './eval/manager';
 import transformJSON from './console/transform-json';
 
@@ -23,6 +24,7 @@ import {
 } from './boilerplates';
 
 import loadDependencies from './npm';
+import getDefinition from '../../../common/templates/index';
 
 let initializedResizeListener = false;
 let manager: ?Manager = null;
@@ -83,6 +85,7 @@ async function updateManager(
   template,
   managerModules,
   manifest,
+  configurations,
   isNewCombination
 ) {
   let newManager = false;
@@ -100,6 +103,7 @@ async function updateManager(
   if (isNewCombination || newManager) {
     manager.setManifest(manifest);
   }
+  manager.updateConfigurations(configurations);
   await manager.updateData(managerModules);
   return manager;
 }
@@ -140,18 +144,20 @@ async function compile({
   handleExternalResources(externalResources);
 
   try {
+    const templateDefinition = getDefinition(template);
+    const configurations = parseConfigurations(
+      template,
+      templateDefinition.configurationFiles,
+      modules
+    );
+
     const packageJSON = modules['/package.json'];
 
     if (!packageJSON) {
       throw new Error('Could not find package.json');
     }
 
-    let parsedPackageJSON = null;
-    try {
-      parsedPackageJSON = JSON.parse(packageJSON.code);
-    } catch (e) {
-      throw new Error('package.json has an invalid format: ' + e.message);
-    }
+    const parsedPackageJSON = configurations.package;
 
     const dependencies = getDependencies(parsedPackageJSON);
     const { manifest, isNewCombination } = await loadDependencies(dependencies);
@@ -167,6 +173,7 @@ async function compile({
       template,
       modules,
       manifest,
+      configurations,
       isNewCombination
     );
 

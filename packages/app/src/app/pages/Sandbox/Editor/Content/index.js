@@ -116,7 +116,7 @@ class EditorPreview extends React.Component {
         autoDownloadTypes: store.preferences.settings.autoDownloadTypes,
         vimMode: store.preferences.settings.vimMode,
         lintEnabled: store.preferences.settings.lintEnabled,
-        tabSize: store.preferences.settings.tabSize,
+        tabWidth: store.preferences.settings.tabWidth,
       }),
       newSettings => {
         if (editor.changeSettings) {
@@ -277,7 +277,7 @@ class EditorPreview extends React.Component {
                 codeMirror: preferences.settings.codeMirror,
               }}
               onNpmDependencyAdded={name =>
-                signals.workspace.onNpmDependencyAdded({ name })
+                signals.editor.addNpmDependency({ name, isDev: true })
               }
               onChange={code =>
                 signals.editor.codeChanged({

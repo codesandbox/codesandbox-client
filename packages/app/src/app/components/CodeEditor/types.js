@@ -18,7 +18,7 @@ export type Props = {
     lineHeight: number,
     lineEnabled: boolean,
     vimMode: boolean,
-    tabSize: number,
+    tabWidth: number,
   },
   height: string,
   width: string,

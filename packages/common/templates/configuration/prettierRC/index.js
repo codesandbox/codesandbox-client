@@ -1,13 +1,16 @@
+// @flow
 import DEFAULT_PRETTIER_CONFIG from 'common/prettify-default-config';
+
+import type { ConfigurationFile } from '../types';
 import ui from './ui';
 
-export default {
+const config: ConfigurationFile = {
   title: '.prettierrc',
   type: 'prettier',
   description: 'Defines how all files will be prettified by Prettier.',
   moreInfoUrl: 'https://prettier.io/docs/en/configuration.html',
   ui,
-  generateFile: state =>
+  generateFileFromState: state =>
     JSON.stringify(
       {
         ...DEFAULT_PRETTIER_CONFIG,
@@ -17,3 +20,5 @@ export default {
       2
     ),
 };
+
+export default config;

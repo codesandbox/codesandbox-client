@@ -368,9 +368,12 @@ export function setDefaultNewCode({ state, props }) {
   );
 
   const template = getDefinition(sandbox.template);
-  const config = template.configurations[path];
-  if (config && config.generateFile) {
-    const code = config.generateFile(state);
+  const config = template.configurationFiles[path];
+
+  if (config && (config.generateFileFromState || config.getDefaultCode)) {
+    const code = config.generateFileFromState
+      ? config.generateFileFromState(state)
+      : config.getDefaultCode(sandbox.template);
 
     const optimisticModuleIndex = sandbox.modules.findIndex(
       module => module.shortid === props.optimisticModule.shortid

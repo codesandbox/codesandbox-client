@@ -37,9 +37,13 @@ export default function(
 
     return module.exports;
   } catch (e) {
-    e.isEvalError = true;
+    let error = e;
+    if (typeof e === 'string') {
+      error = new Error(e);
+    }
+    error.isEvalError = true;
 
-    throw e;
+    throw error;
   }
 }
 /* eslint-enable no-unused-vars */

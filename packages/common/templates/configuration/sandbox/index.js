@@ -1,12 +1,14 @@
+// @flow
+import type { ConfigurationFile } from '../types';
 import ui from './ui';
 
-export default {
+const config: ConfigurationFile = {
   title: 'sandbox.config.json',
   type: 'sandbox',
   description: 'Configuration specific to the current sandbox.',
-  // moreInfoUrl: 'https://prettier.io/docs/en/configuration.html',
+  moreInfoUrl: 'https://codesandbox.io/docs/config-file',
   ui,
-  generateFile: () =>
+  getDefaultCode: () =>
     JSON.stringify(
       {
         infiniteLoopProtection: true,
@@ -16,3 +18,5 @@ export default {
       2
     ),
 };
+
+export default config;

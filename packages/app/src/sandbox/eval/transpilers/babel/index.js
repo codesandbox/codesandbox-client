@@ -15,7 +15,7 @@ class BabelTranspiler extends WorkerTranspiler {
   config: ?Object;
 
   constructor() {
-    super('babel-loader', null, 3, { hasFS: true });
+    super('babel-loader', null, 2, { hasFS: true });
   }
 
   setBabelRc(config: Object) {
@@ -41,31 +41,23 @@ class BabelTranspiler extends WorkerTranspiler {
         this.config || {}
       );
 
-      const template = getDefinition(loaderContext.template);
-      const babelConfigPath = Object.keys(template.configurations).find(
-        key => template.configurations[key].type === 'babel'
-      );
-
-      if (babelConfigPath) {
-        const module = loaderContext.getTranspiledModules()[babelConfigPath];
-
-        if (module && module.module && module.module.code) {
-          try {
-            const parsedBabel = JSON.parse(module.module.code);
-
-            babelConfig = parsedBabel;
-          } catch (e) {
-            /* ignore */
-          }
-        }
+      if (loaderContext.options.configurations.babel) {
+        babelConfig = loaderContext.options.configurations.babel;
       }
+
+      console.log({
+        code,
+        config: babelConfig,
+        path,
+        sandboxOptions: loaderContext.options.configurations.sandbox,
+      });
 
       this.queueTask(
         {
           code,
           config: babelConfig,
           path,
-          sandboxOptions: loaderContext.options.sandboxOptions,
+          sandboxOptions: loaderContext.options.configurations.sandbox,
         },
         loaderContext,
         (err, data) => {

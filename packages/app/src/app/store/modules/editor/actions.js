@@ -5,12 +5,22 @@ function sortObjectByKeys(object) {
   return fromPairs(sortBy(toPairs(object), 0));
 }
 
+export async function getLatestVersion({ props, api }) {
+  const { name } = props;
+
+  return api
+    .get(`/dependencies/${name}@latest`)
+    .then(({ version }) => ({ version }))
+    .catch(() => {});
+}
+
 export function addNpmDependencyToPackage({ state, props }) {
   const { parsed } = state.get('editor.currentParsedPackageJSON');
+  const type = props.isDev ? 'devDependencies' : 'dependencies';
 
-  parsed.dependencies = parsed.dependencies || {};
-  parsed.dependencies[props.name] = props.version || 'latest';
-  parsed.dependencies = sortObjectByKeys(parsed.dependencies);
+  parsed[type] = parsed[type] || {};
+  parsed[type][props.name] = props.version || 'latest';
+  parsed[type] = sortObjectByKeys(parsed[type]);
 
   return {
     code: JSON.stringify(parsed, null, 2),
