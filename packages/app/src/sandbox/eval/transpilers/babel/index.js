@@ -45,13 +45,6 @@ class BabelTranspiler extends WorkerTranspiler {
         babelConfig = loaderContext.options.configurations.babel;
       }
 
-      console.log({
-        code,
-        config: babelConfig,
-        path,
-        sandboxOptions: loaderContext.options.configurations.sandbox,
-      });
-
       this.queueTask(
         {
           code,
