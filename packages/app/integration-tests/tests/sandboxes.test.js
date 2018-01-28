@@ -18,6 +18,11 @@ const SANDBOXES = [
   'github/CompuIves/codesandbox-presentation',
   'lp5rjr0z4z',
   'nOymMxyY',
+  'y26rj99yov', // react transition
+  'X6npLXPRW', // react-table
+  '6w66jzw3mn', // material-design & preact
+  '4j7m47vlm4', // material-ui
+  'github/cssinjs/egghead/tree/master/from-sass-to-cssinjs/templates-and-variables', // postcss egghead
 ];
 
 function pageLoaded(page) {
@@ -42,7 +47,7 @@ describe('sandboxes', () => {
     const id = sandbox.id || sandbox;
     const threshold = sandbox.threshold || 0.01;
 
-    it(
+    it.concurrent(
       `loads the sandbox with id '${id}'`,
       async () => {
         browser = await browser;
@@ -65,7 +70,7 @@ describe('sandboxes', () => {
 
         await page.close();
       },
-      1000 * 60 * 1
+      1000 * 120 * 1
     );
   });
 });

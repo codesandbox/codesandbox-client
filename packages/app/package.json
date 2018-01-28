@@ -10,7 +10,7 @@
     "build": "NODE_ENV=production node scripts/build.js",
     "test": "jest --env=jsdom",
     "test:watch": "jest --watch --env=jsdom",
-    "test:integrations": "jest --config integration-tests/jest.config.json --env=jsdom --maxWorkers=2",
+    "test:integrations": "jest --config integration-tests/jest.config.json --maxWorkers=2",
     "lint": "npm run lint:app && npm run lint:embed",
     "lint:app": "eslint src/app",
     "lint:embed": "eslint src/embed",
