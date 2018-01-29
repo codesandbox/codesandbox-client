@@ -28,21 +28,21 @@ const Navigation = ({ store, signals }) => (
       const Icon = IDS_TO_ICONS[id];
       const selected = id === store.workspace.openedWorkspaceItem;
       return (
-        <IconContainer
-          key={id}
-          selected={selected}
-          onClick={() => {
-            if (selected) {
-              signals.workspace.setWorkspaceItem({ item: null });
-            } else {
-              signals.workspace.setWorkspaceItem({ item: id });
-            }
-          }}
-        >
-          <Tooltip position="right" title={name}>
+        <Tooltip position="right" title={name}>
+          <IconContainer
+            key={id}
+            selected={selected}
+            onClick={() => {
+              if (selected) {
+                signals.workspace.setWorkspaceItem({ item: null });
+              } else {
+                signals.workspace.setWorkspaceItem({ item: id });
+              }
+            }}
+          >
             <Icon />
-          </Tooltip>
-        </IconContainer>
+          </IconContainer>
+        </Tooltip>
       );
     })}
   </Container>

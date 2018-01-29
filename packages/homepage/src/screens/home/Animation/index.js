@@ -59,7 +59,7 @@ const Message = styled.div`
 export default class Animation extends React.PureComponent {
   state = {
     templates: [angular, vue, react, reactTs, preact, svelte].filter(
-      tem => tem.Icon
+      tem => tem.showOnHomePage
     ),
     templateIndex: 0,
     templateSelected: false,

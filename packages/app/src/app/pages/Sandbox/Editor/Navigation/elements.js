@@ -16,9 +16,10 @@ export const Container = styled.div`
 export const IconContainer = styled.div`
   display: flex;
   justify-content: center;
+  align-items: center;
   transition: 0.3s ease all;
-  padding: 1rem 0;
-  width: 100%;
+  height: 64px;
+  width: 64px;
   cursor: pointer;
 
   &:hover {
