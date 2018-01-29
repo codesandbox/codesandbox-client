@@ -113,7 +113,8 @@
     "prepublish": "npm run dist",
     "prepare": "npm run dist",
     "docs":
-      "typedoc --mode modules --out doc --excludePrivate --readme src/DOCS.md --name BrowserFS --module umd src"
+      "typedoc --mode modules --out doc --excludePrivate --readme src/DOCS.md --name BrowserFS --module umd src",
+    "install": "yarn install"
   },
   "dependencies": {
     "async": "^2.5.0",

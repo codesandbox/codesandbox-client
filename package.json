@@ -18,7 +18,8 @@
     "lint": "lerna run lint",
     "add-contributor": "all-contributors add",
     "generate": "all-contributors generate",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "postinstall": "lerna run install --scope codesandbox-browserfs"
   },
   "lint-staged": {
     "*.js": ["prettier --write --single-quote --trailing-comma es5", "git add"],
