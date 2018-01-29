@@ -23,11 +23,7 @@ const config: ConfigurationFile = {
   description: 'Describes the overall configuration of your project.',
   moreInfoUrl: 'https://docs.npmjs.com/files/package.json',
 
-  generateFileFromState: (state: any) => {
-    const sandbox = state.get('editor.currentSandbox');
-
-    return generateFileFromSandbox(sandbox);
-  },
+  generateFileFromSandbox,
 };
 
 export default config;

@@ -1,5 +1,4 @@
-import { resolveModule, getModulePath } from 'common/sandbox/modules';
-import { absolute } from 'common/utils/path';
+import { resolveModule } from 'common/sandbox/modules';
 import getDefinition from 'common/templates';
 import { generateFileFromSandbox } from 'common/templates/configuration/package-json';
 import parseConfigurations from 'common/templates/configuration/parse';
@@ -18,21 +17,30 @@ export function currentModule() {
   );
 }
 
-export function normalizedModules() {
-  const sandbox = this.currentSandbox;
+// Will be used in the future
+// export function normalizedModules() {
+//   const sandbox = this.currentSandbox;
 
-  const modulesObject = {};
+//   const modulesObject = {};
 
-  sandbox.modules.forEach(m => {
-    const path = getModulePath(sandbox.modules, sandbox.directories, m.id);
-    modulesObject[path] = {
-      path,
-      code: m.code,
-    };
-  });
+//   sandbox.modules.forEach(m => {
+//     const path = getModulePath(sandbox.modules, sandbox.directories, m.id);
+//     modulesObject[path] = {
+//       path,
+//       code: m.code,
+//     };
+//   });
 
-  return modulesObject;
-}
+//   return modulesObject;
+// }
+
+const resolveModuleWrapped = sandbox => (path: string) => {
+  try {
+    return resolveModule(path, sandbox.modules, sandbox.directories);
+  } catch (e) {
+    return undefined;
+  }
+};
 
 export function parsedConfigurations() {
   const sandbox = this.currentSandbox;
@@ -41,7 +49,8 @@ export function parsedConfigurations() {
   return parseConfigurations(
     sandbox.template,
     templateDefinition.configurationFiles,
-    this.normalizedModules
+    resolveModuleWrapped(sandbox),
+    sandbox
   );
 }
 
@@ -49,10 +58,12 @@ export function mainModule() {
   const sandbox = this.currentSandbox;
   const templateDefinition = getDefinition(sandbox.template);
 
+  const resolve = resolveModuleWrapped(sandbox);
+
   try {
     const nPath = templateDefinition
       .getEntries(this.parsedConfigurations)
-      .find(p => this.normalizedModules[p]);
+      .find(p => resolve(p));
 
     return resolveModule(
       nPath,

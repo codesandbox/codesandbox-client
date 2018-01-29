@@ -75,6 +75,7 @@ class MonacoEditor extends React.Component<Props, State> {
     this.sizeProbeInterval = null;
 
     this.resizeEditor = debounce(this.resizeEditor, 500);
+    this.commitLibChanges = debounce(this.commitLibChanges, 300);
   }
 
   shouldComponentUpdate(nextProps: Props) {
@@ -422,33 +423,27 @@ class MonacoEditor extends React.Component<Props, State> {
     this.typingsFetcherWorker = new TypingsFetcherWorker();
 
     this.typingsFetcherWorker.addEventListener('message', event => {
-      const { path, typings } = event.data;
       const sandbox = this.sandbox;
-      const dependencies = sandbox.npmDependencies;
+      const dependencies = this.dependencies || sandbox.npmDependencies;
 
-      if (
-        path.startsWith('node_modules/@types') &&
-        this.hasNativeTypescript()
-      ) {
-        const dependency = path.match(/node_modules\/(@types\/.*)\//)[1];
-
+      Object.keys(event.data).forEach((path: string) => {
+        const typings = event.data[path];
         if (
-          !Object.keys(dependencies).includes(dependency) &&
-          this.props.onNpmDependencyAdded
+          path.startsWith('node_modules/@types') &&
+          this.hasNativeTypescript()
         ) {
-          this.props.onNpmDependencyAdded(dependency);
-        }
-      }
+          const dependency = path.match(/node_modules\/(@types\/.*)\//)[1];
 
-      if (
-        !this.monaco.languages.typescript.typescriptDefaults.getExtraLibs()[
-          `file:///${path}`
-        ]
-      ) {
-        requestAnimationFrame(() => {
-          this.addLib(typings, '/' + path);
-        });
-      }
+          if (
+            !Object.keys(dependencies).includes(dependency) &&
+            this.props.onNpmDependencyAdded
+          ) {
+            this.props.onNpmDependencyAdded(dependency);
+          }
+        }
+
+        this.addLib(typings, '/' + path);
+      });
     });
   };
 
@@ -736,12 +731,27 @@ class MonacoEditor extends React.Component<Props, State> {
     ];
     // Only add it if it has been added before, we don't care about the contents
     // of the libs, only if they've been added.
+
     if (!existingLib) {
-      this.monaco.languages.typescript.typescriptDefaults.addExtraLib(
-        code || '',
+      // We add it manually, and commit the changes manually
+      // eslint-disable-next-line no-underscore-dangle
+      this.monaco.languages.typescript.typescriptDefaults._extraLibs[
         fullPath
-      );
+      ] = code;
+      this.commitLibChanges();
     }
+  };
+
+  /**
+   * We manually commit lib changes, because if do this for *every* change we will
+   * reload the whole TS worker & AST for every change. This method is debounced
+   * by 300ms.
+   */
+  commitLibChanges = () => {
+    // eslint-disable-next-line no-underscore-dangle
+    this.monaco.languages.typescript.typescriptDefaults._onDidChange.fire(
+      this.monaco.languages.typescript.typescriptDefaults
+    );
   };
 
   createModel = async (

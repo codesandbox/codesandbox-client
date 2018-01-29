@@ -8,7 +8,6 @@ import {
   mainModule,
   currentPackageJSON,
   currentPackageJSONCode,
-  normalizedModules,
   parsedConfigurations,
 } from './getters';
 import { isModuleSynced } from './computed';
@@ -50,7 +49,6 @@ export default Module({
     mainModule,
     currentPackageJSON,
     currentPackageJSONCode,
-    normalizedModules,
     parsedConfigurations,
   },
   computed: {

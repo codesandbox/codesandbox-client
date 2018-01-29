@@ -1,5 +1,6 @@
 // @flow
 import type { ComponentType } from 'react';
+import type { Sandbox } from 'common/types';
 
 export type ConfigurationFile = {
   title: string,
@@ -9,6 +10,7 @@ export type ConfigurationFile = {
 
   getDefaultCode?: (template: string) => string,
   generateFileFromState?: (state: any) => string,
+  generateFileFromSandbox?: (sandbox: Sandbox) => string,
 
   ui?: {
     ConfigWizard: ComponentType<{

@@ -19,6 +19,7 @@ import imageSvg from 'common/components/icons/image.svg';
 import prettierSvg from 'common/components/icons/prettier.svg';
 import codesandboxSvg from 'common/components/icons/codesandbox.svg';
 import babelSvg from 'common/components/icons/babel.svg';
+import sassSvg from 'common/components/icons/sass.svg';
 
 const icons = {
   directory: folderSvg,
@@ -39,6 +40,7 @@ const icons = {
   prettier: prettierSvg,
   codesandbox: codesandboxSvg,
   babel: babelSvg,
+  sass: sassSvg,
 };
 
 function getIconSvg(type) {

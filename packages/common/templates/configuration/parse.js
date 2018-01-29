@@ -1,5 +1,6 @@
 // @flow
 import type { ConfigurationFile } from 'common/templates/configuration/types';
+import type { Sandbox } from 'common/types';
 
 type Module = {
   path: string,
@@ -17,7 +18,8 @@ type ConfigurationFiles = {
 export default function parseConfigurations(
   template: string,
   configurationFiles: ConfigurationFiles,
-  modules: { [path: string]: Module }
+  resolveModule: (path: string) => { code: string },
+  sandbox?: Sandbox
 ) {
   const configurations = {};
 
@@ -25,7 +27,7 @@ export default function parseConfigurations(
 
   for (let i = 0; i < paths.length; i++) {
     const path = paths[i];
-    const module = modules[path];
+    const module = resolveModule(path);
     const configurationFile = configurationFiles[path];
 
     let code = null;
@@ -34,6 +36,8 @@ export default function parseConfigurations(
       code = module.code;
     } else if (configurationFile.getDefaultCode) {
       code = configurationFile.getDefaultCode(template);
+    } else if (sandbox && configurationFile.generateFileFromSandbox) {
+      code = configurationFile.generateFileFromSandbox(sandbox);
     }
 
     if (code) {

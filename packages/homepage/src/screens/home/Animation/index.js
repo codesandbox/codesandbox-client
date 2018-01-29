@@ -6,14 +6,7 @@ import Fullscreen from 'common/components/flex/Fullscreen';
 import Centered from 'common/components/flex/Centered';
 import Relative from 'common/components/Relative';
 
-import {
-  angular5,
-  vue,
-  react,
-  reactTs,
-  preact,
-  svelte,
-} from 'common/templates';
+import { angular, vue, react, reactTs, preact, svelte } from 'common/templates';
 
 import Background from './Background';
 import HomeTitle from './Title';
@@ -65,7 +58,7 @@ const Message = styled.div`
 
 export default class Animation extends React.PureComponent {
   state = {
-    templates: [angular5, vue, react, reactTs, preact, svelte].filter(
+    templates: [angular, vue, react, reactTs, preact, svelte].filter(
       tem => tem.Icon
     ),
     templateIndex: 0,

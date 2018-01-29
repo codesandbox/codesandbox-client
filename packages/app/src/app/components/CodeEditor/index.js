@@ -33,9 +33,18 @@ const getDependencies = (sandbox: Sandbox): ?{ [key: string]: string } => {
 
   if (packageJSON != null) {
     try {
-      const { dependencies = {} } = JSON.parse(packageJSON.code || '');
+      const { dependencies = {}, devDependencies = {} } = JSON.parse(
+        packageJSON.code || ''
+      );
 
-      return dependencies;
+      const usedDevDependencies = {};
+      Object.keys(devDependencies).forEach(d => {
+        if (d.startsWith('@types')) {
+          usedDevDependencies[d] = devDependencies[d];
+        }
+      });
+
+      return { ...dependencies, ...usedDevDependencies };
     } catch (e) {
       console.error(e);
       return null;

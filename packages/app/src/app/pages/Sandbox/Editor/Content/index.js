@@ -139,7 +139,7 @@ class EditorPreview extends React.Component {
       }
     );
     const disposePackageHandler = reaction(
-      () => store.editor.parsedConfigurations.package,
+      () => store.editor.parsedConfigurations,
       () => {
         const { parsed } = store.editor.parsedConfigurations.package;
         if (parsed) {
@@ -192,7 +192,7 @@ class EditorPreview extends React.Component {
 
     return String(
       sandbox.modules
-        .map(module => module.directoryShortid + module.title)
+        .map(module => module.id + module.directoryShortid + module.title)
         .concat(
           sandbox.directories.map(
             directory => directory.directoryShortid + directory.title
@@ -276,9 +276,11 @@ class EditorPreview extends React.Component {
                 lintEnabled: preferences.settings.lintEnabled,
                 codeMirror: preferences.settings.codeMirror,
               }}
-              onNpmDependencyAdded={name =>
-                signals.editor.addNpmDependency({ name, isDev: true })
-              }
+              onNpmDependencyAdded={name => {
+                if (sandbox.owned) {
+                  signals.editor.addNpmDependency({ name, isDev: true });
+                }
+              }}
               onChange={code =>
                 signals.editor.codeChanged({
                   code,

@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import path from 'path';
 
 self.importScripts([
@@ -8,17 +9,12 @@ const ROOT_URL = `https://unpkg.com/`;
 
 const loadedTypings = [];
 
-// Generate 1.2.3 to ^1.x.x
 const getVersion = version => {
-  const regex = /(\d*)\./;
-
-  const match = version.match(regex);
-
-  if (match) {
-    return `^${match[1]}.x.x`;
+  if (/^\d/.test(version)) {
+    return `^${version}`;
   }
 
-  return `${version}`;
+  return version;
 };
 
 /**
@@ -28,18 +24,15 @@ const getVersion = version => {
  * @param {string} typings Typings
  */
 const addLib = (virtualPath, typings, fetchedPaths) => {
-  fetchedPaths.push(virtualPath);
-  self.postMessage({
-    path: virtualPath,
-    typings,
-  });
+  fetchedPaths[virtualPath] = typings;
 };
 
-const fetchCache = {};
+const fetchCache = new Map();
 
 const doFetch = url => {
-  if (fetchCache[url]) {
-    return fetchCache[url];
+  const cached = fetchCache.get(url);
+  if (cached) {
+    return cached;
   }
 
   const promise = fetch(url)
@@ -54,7 +47,7 @@ const doFetch = url => {
     })
     .then(response => response.text());
 
-  fetchCache[url] = promise;
+  fetchCache.set(url, promise);
   return promise;
 };
 
@@ -137,30 +130,32 @@ const getFileTypes = (
 ) => {
   const virtualPath = path.join('node_modules', dependency, depPath);
 
-  if (fetchedPaths.includes(virtualPath)) return null;
+  if (fetchedPaths[virtualPath]) return null;
 
   return doFetch(`${depUrl}/${depPath}`).then(typings => {
-    if (fetchedPaths.includes(virtualPath)) return null;
+    if (fetchedPaths[virtualPath]) return null;
 
     addLib(virtualPath, typings, fetchedPaths);
 
     // Now find all require statements, so we can download those types too
-    return getRequireStatements(depPath, typings)
-      .filter(
-        // Don't add global deps
-        dep => dep.startsWith('.')
-      )
-      .map(relativePath => path.join(path.dirname(depPath), relativePath))
-      .map(relativePath => resolveAppropiateFile(fileMetaData, relativePath))
-      .forEach(nextDepPath =>
-        getFileTypes(
-          depUrl,
-          dependency,
-          nextDepPath,
-          fetchedPaths,
-          fileMetaData
+    return Promise.all(
+      getRequireStatements(depPath, typings)
+        .filter(
+          // Don't add global deps
+          dep => dep.startsWith('.')
         )
-      );
+        .map(relativePath => path.join(path.dirname(depPath), relativePath))
+        .map(relativePath => resolveAppropiateFile(fileMetaData, relativePath))
+        .map(nextDepPath =>
+          getFileTypes(
+            depUrl,
+            dependency,
+            nextDepPath,
+            fetchedPaths,
+            fileMetaData
+          )
+        )
+    );
   });
 };
 
@@ -179,48 +174,52 @@ function fetchFromTypings(dependency, version, fetchedPaths) {
         );
 
         // get all files in the specified directory
-        getFileMetaData(depUrl, types).then(fileData => {
+        return getFileMetaData(depUrl, types).then(fileData =>
           getFileTypes(
             depUrl,
             dependency,
             resolveAppropiateFile(fileData, types),
             fetchedPaths,
             fileData
-          );
-        });
-      } else {
-        throw new Error('No typings field in package.json');
+          )
+        );
       }
+
+      throw new Error('No typings field in package.json');
     });
 }
 
-function fetchAndAddDependencies(dependencies) {
-  const fetchedPaths = [];
-  Object.keys(dependencies).forEach(dep => {
-    try {
-      if (loadedTypings.indexOf(dep) === -1) {
-        fetchFromTypings(
-          dep,
-          getVersion(dependencies[dep]),
-          fetchedPaths
-        ).catch(() => {
-          // Not available in package.json, try checking in @types/
-          fetchFromDefinitelyTyped(dep, dependencies[dep], fetchedPaths).catch(
-            () => {
-              // Do nothing if it still can't be fetched
-            }
-          );
-        });
+async function fetchAndAddDependencies(dependencies) {
+  const fetchedPaths = {};
 
-        loadedTypings.push(dep);
+  const depNames = Object.keys(dependencies);
+
+  await Promise.all(
+    depNames.map(async dep => {
+      try {
+        if (loadedTypings.indexOf(dep) === -1) {
+          // eslint-disable-next-line no-await-in-loop
+          await fetchFromTypings(
+            dep,
+            getVersion(dependencies[dep]),
+            fetchedPaths
+          ).catch(() =>
+            // Not available in package.json, try checking in @types/
+            fetchFromDefinitelyTyped(dep, dependencies[dep], fetchedPaths)
+          );
+
+          loadedTypings.push(dep);
+        }
+      } catch (e) {
+        // Don't show these cryptic messages to users, because this is not vital
+        if (process.env.NODE_ENV === 'development') {
+          console.error(`Couldn't find typings for ${dep}`, e);
+        }
       }
-    } catch (e) {
-      // Don't show these cryptic messages to users, because this is not vital
-      if (process.env.NODE_ENV === 'development') {
-        console.error(`Couldn't find typings for ${dep}`, e);
-      }
-    }
-  });
+    })
+  );
+
+  self.postMessage(fetchedPaths);
 }
 
 self.addEventListener('message', event => {

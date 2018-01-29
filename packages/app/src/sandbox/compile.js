@@ -146,7 +146,7 @@ async function compile({
     const configurations = parseConfigurations(
       template,
       templateDefinition.configurationFiles,
-      modules
+      path => modules[path]
     );
 
     const errors = Object.keys(configurations)
@@ -192,11 +192,8 @@ async function compile({
     const foundMain = isModuleView
       ? entry
       : possibleEntries.find(p => modules[p]);
-    const main = absolute(foundMain);
 
-    const managerModuleToTranspile = modules[main];
-
-    if (!managerModuleToTranspile) {
+    if (!foundMain) {
       throw new Error(
         `Could not find entry file: ${
           possibleEntries[0]
@@ -204,6 +201,10 @@ async function compile({
       );
     }
 
+    const main = absolute(foundMain);
+    const managerModuleToTranspile = modules[main];
+
+    await manager.preset.setup(manager);
     await manager.transpileModules(managerModuleToTranspile);
 
     debug(`Transpilation time ${Date.now() - t}ms`);
@@ -277,6 +278,8 @@ async function compile({
         }
       }
     }
+
+    await manager.preset.teardown(manager);
 
     if (!initializedResizeListener) {
       initializeResizeListener();

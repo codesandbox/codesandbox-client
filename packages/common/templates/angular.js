@@ -57,10 +57,10 @@ class AngularTemplate extends Template {
 }
 
 export default new AngularTemplate(
-  'angular5',
+  'angular-cli',
   'Angular 5',
   'https://github.com/angular/angular',
-  'angular5',
+  'angular',
   ReactIcon,
   decorateSelector(() => '#DB1538'),
   {

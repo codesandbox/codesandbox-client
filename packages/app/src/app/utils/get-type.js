@@ -7,6 +7,7 @@ export function hasReact(code: string) {
 }
 
 const cssRegex = /\.css$/;
+const sassRegex = /\.s[a|c]ss$/;
 const jsonRegex = /\.json$/;
 const htmlRegex = /\.html$/;
 const mdRegex = /\.md$/;
@@ -44,6 +45,7 @@ export function getMode(title: string) {
   if (mdRegex.test(title)) return 'md';
   if (vueRegex.test(title)) return 'vue';
   if (svgRegex.test(title)) return 'svg';
+  if (sassRegex.test(title)) return 'sass';
   if (!title.includes('.')) return 'raw';
 
   if (isImage(title)) {

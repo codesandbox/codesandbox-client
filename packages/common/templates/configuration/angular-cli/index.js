@@ -13,6 +13,8 @@ const config: ConfigurationFile = {
       {
         apps: [
           {
+            root: 'src',
+            outDir: 'dist',
             index: 'index.html',
             main: 'main.ts',
             polyfills: 'polyfills.ts',

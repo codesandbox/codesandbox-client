@@ -370,10 +370,21 @@ export function setDefaultNewCode({ state, props }) {
   const template = getDefinition(sandbox.template);
   const config = template.configurationFiles[path];
 
-  if (config && (config.generateFileFromState || config.getDefaultCode)) {
-    const code = config.generateFileFromState
-      ? config.generateFileFromState(state)
-      : config.getDefaultCode(sandbox.template);
+  if (
+    config &&
+    (config.generateFileFromSandbox ||
+      config.getDefaultCode ||
+      config.generateFileFromState)
+  ) {
+    let code = '';
+
+    if (config.generateFileFromState) {
+      code = config.generateFileFromState(state);
+    } else if (config.generateFileFromSandbox) {
+      code = config.generateFileFromSandbox(sandbox);
+    } else {
+      code = config.getDefaultCode(sandbox.template);
+    }
 
     const optimisticModuleIndex = sandbox.modules.findIndex(
       module => module.shortid === props.optimisticModule.shortid

@@ -139,7 +139,7 @@ export type Sandbox = {
   template:
     | 'create-react-app'
     | 'create-react-app-typescript'
-    | 'angular5'
+    | 'angular-cli'
     | 'vue-cli'
     | 'preact-cli'
     | 'svelte',
@@ -186,15 +186,6 @@ export type Modal = {
   open: boolean,
   title: ?string,
   Body: ?React.Element<any>,
-};
-
-export type Configuration = {
-  title: string,
-  type: string,
-  description: string,
-  moreInfoUrl: string,
-  generateFile?: (state: any) => string,
-  generateFileFromSandbox?: (sandbox: Sandbox) => string,
 };
 
 export type PackageJSON = {
