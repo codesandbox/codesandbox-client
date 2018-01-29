@@ -1,12 +1,10 @@
 import { dispatch, clearErrorTransformers } from 'codesandbox-api';
-
 import { absolute } from 'common/utils/path';
-
 import _debug from 'app/utils/debug';
+import parseConfigurations from 'common/templates/configuration/parse';
 
 import initializeErrorTransformers from './errors/transformers';
 import getPreset from './eval';
-import parseConfigurations from './configurations';
 import Manager from './eval/manager';
 import transformJSON from './console/transform-json';
 
@@ -151,13 +149,25 @@ async function compile({
       modules
     );
 
+    const errors = Object.keys(configurations)
+      .map(c => configurations[c])
+      .filter(x => x.error);
+
+    if (errors.length) {
+      throw new Error(
+        `We weren't able to parse: '${errors[0].path}': ${
+          errors[0].error.message
+        }`
+      );
+    }
+
     const packageJSON = modules['/package.json'];
 
     if (!packageJSON) {
       throw new Error('Could not find package.json');
     }
 
-    const parsedPackageJSON = configurations.package;
+    const parsedPackageJSON = configurations.package.parsed;
 
     const dependencies = getDependencies(parsedPackageJSON);
     const { manifest, isNewCombination } = await loadDependencies(dependencies);
@@ -177,9 +187,11 @@ async function compile({
       isNewCombination
     );
 
+    const possibleEntries = templateDefinition.getEntries(configurations);
+
     const foundMain = isModuleView
       ? entry
-      : parsedPackageJSON.main || entry || getEntry(template);
+      : possibleEntries.find(p => modules[p]);
     const main = absolute(foundMain);
 
     const managerModuleToTranspile = modules[main];
@@ -187,7 +199,7 @@ async function compile({
     if (!managerModuleToTranspile) {
       throw new Error(
         `Could not find entry file: ${
-          main
+          possibleEntries[0]
         }. You can specify one in package.json by defining a \`main\` property.`
       );
     }
@@ -220,7 +232,11 @@ async function compile({
     }
     if (!manager.webpackHMR || firstLoad) {
       const htmlModule =
-        modules['/public/index.html'] || modules['/index.html'];
+        modules[
+          templateDefinition
+            .getHTMLEntries(configurations)
+            .find(p => modules[p])
+        ];
 
       const html = htmlModule ? htmlModule.code : '<div id="root"></div>';
       document.body.innerHTML = html;

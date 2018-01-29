@@ -1,6 +1,10 @@
 // @flow
 import type { ConfigurationFile } from 'common/templates/configuration/types';
-import type { Module } from './eval/entities/module';
+
+type Module = {
+  path: string,
+  code: string,
+};
 
 type ConfigurationFiles = {
   [path: string]: ConfigurationFile,
@@ -33,12 +37,22 @@ export default function parseConfigurations(
     }
 
     if (code) {
+      const baseObject = {
+        code,
+        path,
+      };
       try {
         const parsed = JSON.parse(code);
 
-        configurations[configurationFile.type] = parsed;
+        configurations[configurationFile.type] = {
+          ...baseObject,
+          parsed,
+        };
       } catch (e) {
-        throw new Error(`Could not parse config file '${path}': ${e.message}`);
+        configurations[configurationFile.type] = {
+          ...baseObject,
+          error: e,
+        };
       }
     }
   }

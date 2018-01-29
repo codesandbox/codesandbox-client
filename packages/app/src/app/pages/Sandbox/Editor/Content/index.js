@@ -69,7 +69,7 @@ class EditorPreview extends React.Component {
         // Put in a timeout so we allow the actions after the fork to execute first as well.
         setTimeout(() => {
           if (editor.changeSandbox) {
-            const { parsed } = store.editor.currentParsedPackageJSON;
+            const { parsed } = store.editor.parsedConfigurations.package;
             editor
               .changeSandbox(
                 newSandbox,
@@ -139,9 +139,9 @@ class EditorPreview extends React.Component {
       }
     );
     const disposePackageHandler = reaction(
-      () => store.editor.currentParsedPackageJSON,
+      () => store.editor.parsedConfigurations.package,
       () => {
-        const { parsed } = store.editor.currentParsedPackageJSON;
+        const { parsed } = store.editor.parsedConfigurations.package;
         if (parsed) {
           const { dependencies = {} } = parsed;
 

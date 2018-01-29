@@ -1,6 +1,8 @@
-import { resolveModule } from 'common/sandbox/modules';
+import { resolveModule, getModulePath } from 'common/sandbox/modules';
 import { absolute } from 'common/utils/path';
+import getDefinition from 'common/templates';
 import { generateFileFromSandbox } from 'common/templates/configuration/package-json';
+import parseConfigurations from 'common/templates/configuration/parse';
 
 export function currentSandbox() {
   return this.sandboxes.get(this.currentId);
@@ -16,14 +18,44 @@ export function currentModule() {
   );
 }
 
-export function mainModule() {
-  try {
-    const { parsed } = this.currentParsedPackageJSON;
+export function normalizedModules() {
+  const sandbox = this.currentSandbox;
 
-    const entry = absolute(parsed.main);
+  const modulesObject = {};
+
+  sandbox.modules.forEach(m => {
+    const path = getModulePath(sandbox.modules, sandbox.directories, m.id);
+    modulesObject[path] = {
+      path,
+      code: m.code,
+    };
+  });
+
+  return modulesObject;
+}
+
+export function parsedConfigurations() {
+  const sandbox = this.currentSandbox;
+  const templateDefinition = getDefinition(sandbox.template);
+
+  return parseConfigurations(
+    sandbox.template,
+    templateDefinition.configurationFiles,
+    this.normalizedModules
+  );
+}
+
+export function mainModule() {
+  const sandbox = this.currentSandbox;
+  const templateDefinition = getDefinition(sandbox.template);
+
+  try {
+    const nPath = templateDefinition
+      .getEntries(this.parsedConfigurations)
+      .find(p => this.normalizedModules[p]);
 
     return resolveModule(
-      entry,
+      nPath,
       this.currentSandbox.modules,
       this.currentSandbox.directories
     );
@@ -46,17 +78,4 @@ export function currentPackageJSONCode() {
   return this.currentPackageJSON
     ? this.currentPackageJSON.code
     : generateFileFromSandbox(this.currentSandbox);
-}
-
-export function currentParsedPackageJSON() {
-  let parsed = null;
-  let error = null;
-
-  try {
-    parsed = JSON.parse(this.currentPackageJSONCode);
-  } catch (e) {
-    error = e;
-  }
-
-  return { parsed, error };
 }

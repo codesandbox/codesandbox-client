@@ -8,7 +8,8 @@ import {
   mainModule,
   currentPackageJSON,
   currentPackageJSONCode,
-  currentParsedPackageJSON,
+  normalizedModules,
+  parsedConfigurations,
 } from './getters';
 import { isModuleSynced } from './computed';
 import { loadSandbox } from '../../sequences';
@@ -49,7 +50,8 @@ export default Module({
     mainModule,
     currentPackageJSON,
     currentPackageJSONCode,
-    currentParsedPackageJSON,
+    normalizedModules,
+    parsedConfigurations,
   },
   computed: {
     isModuleSynced,

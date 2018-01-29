@@ -186,7 +186,7 @@ class BasePreview extends React.Component {
       sandbox.modules.forEach(m => {
         const path = getModulePath(sandbox.modules, sandbox.directories, m.id);
         modulesObject[path] = {
-          path: getModulePath(sandbox.modules, sandbox.directories, m.id),
+          path,
           code: m.code,
         };
       });

@@ -681,7 +681,7 @@ class MonacoEditor extends React.Component<Props, State> {
   hasNativeTypescript = () => {
     const sandbox = this.sandbox;
     const template = getTemplate(sandbox.template);
-    return template.sourceConfig && template.sourceConfig.typescript;
+    return template.isTypescript;
   };
 
   closeFuzzySearch = () => {

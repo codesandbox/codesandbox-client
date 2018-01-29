@@ -136,7 +136,13 @@ export type Sandbox = {
    * @type {string}
    */
   sourceId: string,
-  template: string,
+  template:
+    | 'create-react-app'
+    | 'create-react-app-typescript'
+    | 'angular5'
+    | 'vue-cli'
+    | 'preact-cli'
+    | 'svelte',
   entry: string,
   originalGit: ?GitInfo,
   originalGitCommitSha: ?string,

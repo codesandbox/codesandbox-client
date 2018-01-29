@@ -14,13 +14,11 @@ import { ErrorMessage } from './elements';
 function Dependencies({ signals, store }) {
   const sandbox = store.editor.currentSandbox;
 
-  const { parsed, error } = store.editor.currentParsedPackageJSON;
+  const { parsed, error } = store.editor.parsedConfigurations.package;
 
   if (error) {
     return (
-      <ErrorMessage>
-        We weren{"'"}t able to parse the package.json: {error.message};
-      </ErrorMessage>
+      <ErrorMessage>We weren{"'"}t able to parse the package.json</ErrorMessage>
     );
   }
 

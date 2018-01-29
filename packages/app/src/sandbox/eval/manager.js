@@ -603,7 +603,7 @@ export default class Manager {
     const tModulesToUpdate = modulesToUpdate.map(m => this.updateModule(m));
 
     if (tModulesToUpdate.length > 0) {
-      this.hardReload = this.configurations.sandbox.hardReloadOnChange;
+      this.hardReload = this.configurations.sandbox.parsed.hardReloadOnChange;
     }
 
     const transpiledModulesToUpdate = uniq(
@@ -653,6 +653,7 @@ export default class Manager {
         transpiledModules: serializedTModules,
         cachedPaths: this.cachedPaths,
         version: VERSION,
+        configurations: this.configurations,
       });
     } catch (e) {
       if (process.env.NODE_ENV === 'development') {
@@ -671,10 +672,12 @@ export default class Manager {
           transpiledModules: serializedTModules,
           cachedPaths,
           version,
+          configurations,
         }: {
           transpiledModules: { [id: string]: SerializedTranspiledModule },
           cachedPaths: { _c: Map<string, string> },
           version: string,
+          configurations: Object,
         } = data;
 
         // Only use the cache if the cached version was cached with the same
@@ -682,6 +685,7 @@ export default class Manager {
         if (version === VERSION) {
           this.cachedPaths =
             cachedPaths && cachedPaths._c ? cachedPaths._c : new Map(); // eslint-disable-line no-underscore-dangle
+          this.configurations = configurations;
 
           const tModules: { [id: string]: TranspiledModule } = {};
           // First create tModules for all the saved modules, so we have references

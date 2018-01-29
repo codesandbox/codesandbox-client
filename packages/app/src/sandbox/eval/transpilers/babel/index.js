@@ -42,7 +42,7 @@ class BabelTranspiler extends WorkerTranspiler {
       );
 
       if (loaderContext.options.configurations.babel) {
-        babelConfig = loaderContext.options.configurations.babel;
+        babelConfig = loaderContext.options.configurations.babel.parsed;
       }
 
       this.queueTask(
@@ -50,7 +50,7 @@ class BabelTranspiler extends WorkerTranspiler {
           code,
           config: babelConfig,
           path,
-          sandboxOptions: loaderContext.options.configurations.sandbox,
+          sandboxOptions: loaderContext.options.configurations.sandbox.parsed,
         },
         loaderContext,
         (err, data) => {

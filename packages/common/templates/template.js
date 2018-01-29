@@ -1,15 +1,9 @@
 // @flow
 import type { ComponentType } from 'react';
-import type { PackageJSON } from 'common/types';
+
+import { absolute } from 'common/utils/path';
 import type { ConfigurationFile } from './configuration/types';
 import configurations from './configuration';
-
-import { packageMainResolver } from './resolvers/entry';
-
-type Module = {
-  code: string,
-  path: string,
-};
 
 type Options = {
   showOnHomePage?: boolean,
@@ -32,7 +26,7 @@ export default class Template {
   shortid: string;
   url: string;
   color: () => string;
-  Icon: ?ComponentType<*>;
+  Icon: ComponentType<*>;
 
   showOnHomePage: boolean;
   distDir: string;
@@ -46,6 +40,7 @@ export default class Template {
     niceName: string,
     url: string,
     shortid: string,
+    Icon: ComponentType<*>,
     color: Function,
     options: Options = {}
   ) {
@@ -54,6 +49,7 @@ export default class Template {
     this.url = url;
     this.shortid = shortid;
     this.color = color;
+    this.Icon = Icon;
 
     this.showOnHomePage = options.showOnHomePage || false;
     this.distDir = options.distDir || 'build';
@@ -65,12 +61,25 @@ export default class Template {
   }
 
   /**
-   * Get entry file to evaluate, differs per template
+   * Get possible entry files to evaluate, differs per template
    */
-  getEntry = (
-    modules: { [path: string]: Module },
-    parsedPackageJSON: PackageJSON
-  ) => [parsedPackageJSON.main, '/index.js', '/src/index.js'];
+  getEntries(configurationFiles: { [type: string]: Object }): Array<string> {
+    return [
+      configurationFiles.package &&
+        configurationFiles.package.parsed &&
+        configurationFiles.package.parsed.main &&
+        absolute(configurationFiles.package.parsed.main),
+      '/index.' + (this.isTypescript ? 'ts' : 'js'),
+      '/src/index.' + (this.isTypescript ? 'ts' : 'js'),
+    ].filter(x => x);
+  }
+
+  // eslint-disable-next-line no-unused-vars
+  getHTMLEntries(configurationFiles: {
+    [type: string]: Object,
+  }): Array<string> {
+    return ['/public/index.html', '/index.html'];
+  }
 
   /**
    * Alter the apiData to ZEIT for making deployment work

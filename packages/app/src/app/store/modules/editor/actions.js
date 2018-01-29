@@ -15,7 +15,7 @@ export async function getLatestVersion({ props, api }) {
 }
 
 export function addNpmDependencyToPackage({ state, props }) {
-  const { parsed } = state.get('editor.currentParsedPackageJSON');
+  const { parsed } = state.get('editor.parsedConfigurations.package');
   const type = props.isDev ? 'devDependencies' : 'dependencies';
 
   parsed[type] = parsed[type] || {};
@@ -29,7 +29,7 @@ export function addNpmDependencyToPackage({ state, props }) {
 }
 
 export function removeNpmDependencyFromPackage({ state, props }) {
-  const { parsed } = state.get('editor.currentParsedPackageJSON');
+  const { parsed } = state.get('editor.parsedConfigurations.package');
 
   delete parsed.dependencies[props.name];
   parsed.dependencies = sortObjectByKeys(parsed.dependencies);
@@ -41,7 +41,7 @@ export function removeNpmDependencyFromPackage({ state, props }) {
 }
 
 export function updateSandboxPackage({ state }) {
-  const { parsed } = state.get('editor.currentParsedPackageJSON');
+  const { parsed } = state.get('editor.parsedConfigurations.package');
   const sandbox = state.get('editor.currentSandbox');
 
   parsed.keywords = sandbox.tags;
