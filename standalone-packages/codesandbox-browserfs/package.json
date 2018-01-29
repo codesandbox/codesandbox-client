@@ -81,7 +81,7 @@
     "build:webpack-release": "webpack -p --config src/webpack.config.js",
     "watch:webpack-release": "webpack -w -p --config src/webpack.config.js",
     "build":
-      "yarn install && npm-run-all --parallel build:tsc build:scripts --sequential build:rollup --parallel build:webpack build:webpack-release",
+      "npm-run-all --parallel build:tsc build:scripts --sequential build:rollup --parallel build:webpack build:webpack-release",
     "start":
       "npm-run-all build --parallel watch:tsc watch:scripts watch:rollup watch:webpack watch:webpack-release",
     "test:build:tsc": "tsc -p test",
@@ -114,7 +114,7 @@
     "prepare": "npm run dist",
     "docs":
       "typedoc --mode modules --out doc --excludePrivate --readme src/DOCS.md --name BrowserFS --module umd src",
-    "install": "yarn install"
+    "install-dependencies": "yarn install"
   },
   "dependencies": {
     "async": "^2.5.0",
