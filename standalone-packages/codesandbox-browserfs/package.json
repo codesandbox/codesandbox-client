@@ -80,7 +80,7 @@
     "watch:webpack": "webpack -w --config src/webpack.config.js",
     "build:webpack-release": "webpack -p --config src/webpack.config.js",
     "watch:webpack-release": "webpack -w -p --config src/webpack.config.js",
-    "build":
+    "build:all":
       "npm-run-all --parallel build:tsc build:scripts --sequential build:rollup --parallel build:webpack build:webpack-release",
     "start":
       "npm-run-all build --parallel watch:tsc watch:scripts watch:rollup watch:webpack watch:webpack-release",
@@ -98,7 +98,7 @@
       "npm-run-all --parallel test:watch:tsc test:watch:rollup test:watch:rollup-worker test:watch:webpack",
     "dist:build:node": "tsc -p src/tsconfig.node.json",
     "script:make_dist": "node build/scripts/make_dist.js",
-    "dist": "npm-run-all build lint script:make_dist dist:build:node",
+    "build": "npm-run-all build:all lint script:make_dist dist:build:node",
     "script:make_fixture_loader": "node build/scripts/make_fixture_loader.js",
     "script:make_test_launcher": "node build/scripts/make_test_launcher.js",
     "script:make_zip_fixtures": "node build/scripts/make_zip_fixtures",
