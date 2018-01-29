@@ -1,5 +1,5 @@
 {
-  "name": "@codesandbox/browserfs",
+  "name": "codesandbox-browserfs",
   "version": "2.0.0",
   "description": "A filesystem in your browser!",
   "main": "build/browserfs.js",
