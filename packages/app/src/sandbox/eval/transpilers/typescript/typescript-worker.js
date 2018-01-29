@@ -43,7 +43,9 @@ self.addEventListener('message', event => {
       noUnusedLocals: true,
       inlineSourceMap: true,
       inlineSources: true,
+      emitDecoratorMetadata: true,
       experimentalDecorators: true,
+      lib: ['es2017', 'dom'],
     },
   };
 

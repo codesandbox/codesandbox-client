@@ -14,7 +14,7 @@ import { ErrorCode, ApiError } from '../core/api_error';
 
 export interface IModule {
   path: string;
-  code: string;
+  code: string | undefined;
 }
 
 export interface IManager {
@@ -211,7 +211,7 @@ export default class CodeSandboxFS extends SynchronousFileSystem
       throw ApiError.ENOENT(p);
     }
 
-    const { code } = moduleInfo.module;
+    const { code = '' } = moduleInfo.module;
     const buffer = Buffer.from(code);
     const stats = new Stats(FileType.FILE, buffer.length);
 

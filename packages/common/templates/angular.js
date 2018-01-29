@@ -68,5 +68,6 @@ export default new AngularTemplate(
       '/.angular-cli.json': configurations.angularCli,
     },
     isTypescript: true,
+    distDir: 'dist',
   }
 );

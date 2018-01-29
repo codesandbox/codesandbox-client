@@ -91,7 +91,7 @@ export default class Manager {
 
   // All paths are resolved at least twice: during transpilation and evaluation.
   // We can improve performance by almost 2x in this scenario if we cache the lookups
-  cachedPaths: Map<string, string>;
+  cachedPaths: { [path: string]: string };
 
   configurations: Configurations;
 
@@ -99,7 +99,7 @@ export default class Manager {
     this.id = id;
     this.preset = preset;
     this.transpiledModules = {};
-    this.cachedPaths = new Map();
+    this.cachedPaths = {};
     this.transpileJobs = {};
     this.webpackHMR = false;
     this.hardReload = false;
@@ -291,7 +291,7 @@ export default class Manager {
 
   removeModule(module: Module) {
     // Reset all cached paths because file structure changed
-    this.cachedPaths = new Map();
+    this.cachedPaths = {};
 
     const existingModule = this.transpiledModules[module.path];
 
@@ -412,7 +412,7 @@ export default class Manager {
     const shimmedPath = coreLibraries[aliasedPath] || aliasedPath;
 
     const pathId = path + currentPath;
-    const cachedPath = this.cachedPaths.get(pathId);
+    const cachedPath = this.cachedPaths[pathId];
     try {
       let resolvedPath;
 
@@ -429,7 +429,7 @@ export default class Manager {
           ),
         });
 
-        this.cachedPaths.set(pathId, resolvedPath);
+        this.cachedPaths[pathId] = resolvedPath;
       }
 
       if (NODE_LIBS.includes(shimmedPath) || resolvedPath === '//empty.js') {
@@ -568,11 +568,11 @@ export default class Manager {
 
       if (!mirrorModule) {
         // File structure changed, reset cached paths
-        this.cachedPaths = new Map();
+        this.cachedPaths = {};
         addedModules.push(module);
       } else if (mirrorModule.module.code !== module.code) {
         // File structure changed, reset cached paths
-        this.cachedPaths = new Map();
+        this.cachedPaths = {};
         updatedModules.push(module);
       }
     });
@@ -674,7 +674,7 @@ export default class Manager {
           configurations,
         }: {
           transpiledModules: { [id: string]: SerializedTranspiledModule },
-          cachedPaths: { _c: Map<string, string> },
+          cachedPaths: { [path: string]: string },
           version: string,
           configurations: Object,
         } = data;
@@ -682,8 +682,7 @@ export default class Manager {
         // Only use the cache if the cached version was cached with the same
         // version of the compiler
         if (version === VERSION) {
-          this.cachedPaths =
-            cachedPaths && cachedPaths._c ? cachedPaths._c : new Map(); // eslint-disable-line no-underscore-dangle
+          this.cachedPaths = cachedPaths;
           this.configurations = configurations;
 
           const tModules: { [id: string]: TranspiledModule } = {};
