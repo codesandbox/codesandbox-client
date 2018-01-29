@@ -4,7 +4,6 @@ import resolve from 'browser-resolve';
 import localforage from 'localforage';
 
 import VERSION from 'common/version';
-import getDefinition from 'common/templates/index';
 
 import * as pathUtils from 'common/utils/path';
 import _debug from 'app/utils/debug';
