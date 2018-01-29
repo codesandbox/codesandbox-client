@@ -36,12 +36,9 @@ export default class VersionEntry extends React.PureComponent {
   setVersionsForLatestPkg(pkg) {
     const that = this;
     fetch(`/api/v1/dependencies/${pkg}`)
-      .then(response => {
-        response.json().then(function(data) {
-          that.setState({ version: data.data.version });
-        });
-      })
-      .catch(err => console.err(err));
+      .then(response => response.json())
+      .then(data => that.setState({ version: data.data.version }))
+      .catch(err => console.err(err)); // eslint-disable-line no-console
   }
 
   componentWillMount() {
