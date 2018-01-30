@@ -79,7 +79,7 @@ class Console extends React.Component {
             this.addMessage('warn', [undefined], 'return');
           }
         } else {
-          this.addMessage('error', [aggregatedResults]);
+          this.addMessage('log', [error]);
         }
         break;
       }

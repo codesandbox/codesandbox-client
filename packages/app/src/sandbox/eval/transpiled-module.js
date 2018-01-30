@@ -132,6 +132,8 @@ export default class TranspiledModule {
   // Unique identifier
   hash: string;
 
+  isTestFile: boolean = false;
+
   /**
    * Set how this module handles HMR. The default is undefined, which means
    * that we handle the HMR like CodeSandbox does.
@@ -196,6 +198,7 @@ export default class TranspiledModule {
     this.resetTranspilation();
 
     this.setIsEntry(false);
+    this.setIsTestFile(false);
   }
 
   resetTranspilation() {
@@ -403,6 +406,15 @@ export default class TranspiledModule {
   }
 
   /**
+   * Mark if this is a test file. If this is a test file we know that we don't
+   * need to do any refresh or fixing when an error is thrown by the module. It's
+   * not a vital module after all.
+   */
+  setIsTestFile(isTestFile: boolean) {
+    this.isTestFile = isTestFile;
+  }
+
+  /**
    * Transpile the module, it takes in all loaders from the default loaders +
    * query string and passes the result from loader to loader. During transpilation
    * dependencies can be added, these dependencies will be transpiled concurrently
@@ -555,7 +567,7 @@ export default class TranspiledModule {
       if (!this.compilation) {
         const shouldReloadPage = this.hmrConfig
           ? this.hmrConfig.isDeclined(this.isEntry)
-          : this.isEntry;
+          : this.isEntry && !this.isTestFile;
 
         if (shouldReloadPage) {
           location.reload();

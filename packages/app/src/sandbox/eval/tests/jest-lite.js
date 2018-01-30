@@ -90,12 +90,14 @@ export default class TestRunner {
       .map(p => modules[p]);
   }
 
+  /* istanbul ignore next */
   async transpileTests() {
     for (let t of this.tests) {
-      await this.manager.transpileModules(t, false);
+      await this.manager.transpileModules(t, true);
     }
   }
 
+  /* istanbul ignore next */
   async runTests() {
     await this.transpileTests();
     this.tests.forEach(t => {
@@ -159,22 +161,14 @@ export default class TestRunner {
         : '👻';
     summaryMessage = `Test Summary: ${summaryEmoji}\n\n`;
     summaryMessage += 'Test Suites: ';
-    if (aggregatedResults.failedTestSuites !== null) {
-      summaryMessage += `${aggregatedResults.failedTestSuites} failed, `;
-    }
-    if (aggregatedResults.passedTestSuites !== null) {
-      summaryMessage += `${aggregatedResults.passedTestSuites} passed, `;
-    }
+    summaryMessage += `${aggregatedResults.failedTestSuites} failed, `;
+    summaryMessage += `${aggregatedResults.passedTestSuites} passed, `;
     summaryMessage += `${aggregatedResults.totalTestSuites} total`;
     summaryMessage += '\n';
 
     summaryMessage += 'Tests: ';
-    if (aggregatedResults.failedTests !== null) {
-      summaryMessage += `${aggregatedResults.failedTests} failed, `;
-    }
-    if (aggregatedResults.passedTests !== null) {
-      summaryMessage += `${aggregatedResults.passedTests} passed, `;
-    }
+    summaryMessage += `${aggregatedResults.failedTests} failed, `;
+    summaryMessage += `${aggregatedResults.passedTests} passed, `;
     summaryMessage += `${aggregatedResults.totalTests} total`;
     summaryMessage += '\n';
 
@@ -186,6 +180,10 @@ export default class TestRunner {
     aggregatedResults.summaryMessage = summaryMessage;
     aggregatedResults.failedMessages = failedMessages;
     return aggregatedResults;
+  }
+
+  reportError({ message = 'something went wrong' }) {
+    return `Test Summary: 😢\nError: ${message}`;
   }
 
   resetResults() {
