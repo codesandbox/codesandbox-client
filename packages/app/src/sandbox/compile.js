@@ -208,8 +208,11 @@ async function compile({
         result: transformJSON(aggregatedResults),
       });
       // End - Testing
-    } catch (e) {
-      // Fail silently
+    } catch (error) {
+      dispatch({
+        type: 'test-result',
+        error: manager.testRunner.reportError(error),
+      });
     }
 
     debug(`Total time: ${Date.now() - startTime}ms`);

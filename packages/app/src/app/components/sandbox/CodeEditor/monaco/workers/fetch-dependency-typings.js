@@ -169,15 +169,16 @@ function fetchFromMeta(dependency, version, fetchedPaths) {
   return doFetch(`${depUrl}/?meta`)
     .then(response => JSON.parse(response))
     .then(meta => {
-      const filterAndFlatten = files => files.reduce((paths, file) => {
-        if (file.type === 'directory') {
-          return paths.concat(filterAndFlatten(file.files));
-        }
-        if (/\.d\.ts$/.test(file.path)) {
-          paths.push(file.path);
-        }
-        return paths;
-      }, []);
+      const filterAndFlatten = files =>
+        files.reduce((paths, file) => {
+          if (file.type === 'directory') {
+            return paths.concat(filterAndFlatten(file.files));
+          }
+          if (/\.d\.ts$/.test(file.path)) {
+            paths.push(file.path);
+          }
+          return paths;
+        }, []);
 
       const dtsFiles = filterAndFlatten(meta.files);
 
@@ -187,11 +188,9 @@ function fetchFromMeta(dependency, version, fetchedPaths) {
 
       dtsFiles.forEach(file => {
         doFetch(`${depUrl}/${file}`)
-          .then(dtsFile => addLib(
-            `node_modules/${dependency}${file}`,
-            dtsFile,
-            fetchedPaths
-          ))
+          .then(dtsFile =>
+            addLib(`node_modules/${dependency}${file}`, dtsFile, fetchedPaths)
+          )
           .catch(() => {});
       });
     });
@@ -238,16 +237,18 @@ function fetchAndAddDependencies(dependencies) {
           fetchedPaths
         ).catch(() => {
           // not available in package.json, try checking meta for inline .d.ts files
-          fetchFromMeta(dep, getVersion(dependencies[dep]), fetchedPaths).catch(() => {
-            // Not available in package.json or inline from meta, try checking in @types/
-            fetchFromDefinitelyTyped(
-              dep,
-              dependencies[dep],
-              fetchedPaths
-            ).catch(() => {
-              // Do nothing if it still can't be fetched
-            });
-          });
+          fetchFromMeta(dep, getVersion(dependencies[dep]), fetchedPaths).catch(
+            () => {
+              // Not available in package.json or inline from meta, try checking in @types/
+              fetchFromDefinitelyTyped(
+                dep,
+                dependencies[dep],
+                fetchedPaths
+              ).catch(() => {
+                // Do nothing if it still can't be fetched
+              });
+            }
+          );
         });
 
         loadedTypings.push(dep);

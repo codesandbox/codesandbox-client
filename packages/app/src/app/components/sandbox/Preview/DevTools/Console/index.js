@@ -105,7 +105,7 @@ class Console extends React.Component<Props, State> {
             this.addMessage('warn', [undefined], 'return');
           }
         } else {
-          this.addMessage('error', [aggregatedResults]);
+          this.addMessage('log', [error]);
         }
         break;
       }
