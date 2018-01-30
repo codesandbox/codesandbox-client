@@ -91,7 +91,7 @@ export default class TestRunner {
   /* istanbul ignore next */
   async transpileTests() {
     for (let t of this.tests) {
-      await this.manager.transpileModules(t, true); //TODO - revert this to false before merge
+      await this.manager.transpileModules(t, true);
     }
   }
 

@@ -294,6 +294,25 @@
         "code",
         "design"
       ]
+    },
+    {
+      "login": "nicknisi",
+      "name": "Nick Nisi",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/293805?v=4",
+      "profile": "https://nicknisi.com",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Jakhotiya",
+      "name": "Abhishek Jakhotiya",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/9327315?v=4",
+      "profile": "https://github.com/Jakhotiya",
+      "contributions": [
+        "code",
+        "bug"
+      ]
     }
   ]
 }

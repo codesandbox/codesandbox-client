@@ -273,12 +273,13 @@ export default class Manager {
    * Will transpile this module and all eventual children (requires) that go with it
    * @param {*} entry
    */
-  async transpileModules(entry: Module, isEntry: boolean = true) {
+  async transpileModules(entry: Module, isTestFile: boolean = false) {
     this.hmrStatus = 'check';
     this.setEnvironmentVariables();
     const transpiledModule = this.getTranspiledModule(entry);
 
-    transpiledModule.setIsEntry(isEntry);
+    transpiledModule.setIsEntry(true);
+    transpiledModule.setIsTestFile(isTestFile);
 
     const result = await transpiledModule.transpile(this);
     this.getTranspiledModules().forEach(t => t.postTranspile(this));
@@ -384,7 +385,7 @@ export default class Manager {
 
       if (NODE_LIBS.includes(shimmedPath) || resolvedPath === '//empty.js') {
         return {
-          path: pathUtils.join('/node_modules', resolvedPath),
+          path: pathUtils.join('/node_modules', 'empty', 'index.js'),
           code: `// empty`,
           requires: [],
         };
@@ -392,6 +393,8 @@ export default class Manager {
 
       return this.transpiledModules[resolvedPath].module;
     } catch (e) {
+      delete this.cachedPaths[pathId];
+
       let connectedPath = /^(\w|@\w)/.test(shimmedPath)
         ? pathUtils.join('/node_modules', shimmedPath)
         : pathUtils.join(pathUtils.dirname(currentPath), shimmedPath);
