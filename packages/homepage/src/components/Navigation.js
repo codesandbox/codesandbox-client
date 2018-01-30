@@ -98,21 +98,23 @@ export default class Navigation extends React.PureComponent {
     user: null,
   };
 
-  fetchCurrentUser = () => {
-    const jwt = JSON.parse(localStorage.getItem('jwt'));
+  fetchCurrentUser = async () => {
+    try {
+      const jwt = JSON.parse(localStorage.getItem('jwt'));
 
-    const BASE =
-      process.env.NODE_ENV === 'development' ? 'https://codesandbox.dev' : '';
+      const BASE =
+        process.env.NODE_ENV === 'development' ? 'https://codesandbox.dev' : '';
 
-    window
-      .fetch(BASE + '/api/v1/users/current', {
-        headers: { Authorization: `Bearer ${jwt}` },
-      })
-      .then(x => x.json())
-      .then(({ data }) => this.setState({ user: data }))
-      .catch(() => {
-        /* do nothing */
-      });
+      const { data } = await window
+        .fetch(BASE + '/api/v1/users/current', {
+          headers: { Authorization: `Bearer ${jwt}` },
+        })
+        .then(x => x.json());
+
+      this.setState({ user: data });
+    } catch (e) {
+      // fail silently
+    }
   };
 
   componentDidMount() {
