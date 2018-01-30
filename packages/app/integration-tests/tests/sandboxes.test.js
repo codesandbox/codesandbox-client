@@ -6,7 +6,7 @@ const SANDBOXES = [
   'vue',
   'svelte',
   'react-ts',
-  'github/reactjs/redux/tree/master/examples/todomvc',
+  { id: 'github/reactjs/redux/tree/master/examples/todomvc', threshold: 0.04 },
   { id: 'jvlrl98xw3', threshold: 0.05 },
   'vVoQVk78',
   'github/faceyspacey/redux-first-router-codesandbox/tree/master',
@@ -19,7 +19,7 @@ const SANDBOXES = [
   'lp5rjr0z4z',
   'nOymMxyY',
   'y26rj99yov', // react transition
-  'X6npLXPRW', // react-table
+  { id: 'X6npLXPRW', threshold: 0.05 }, // react-table
   '6w66jzw3mn', // material-design & preact
   '4j7m47vlm4', // material-ui
   'github/cssinjs/egghead/tree/master/from-sass-to-cssinjs/templates-and-variables', // postcss egghead
