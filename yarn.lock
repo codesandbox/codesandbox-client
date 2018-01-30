@@ -1282,7 +1282,7 @@ babel-plugin-preval@^1.6.2:
     babylon "^6.18.0"
     require-from-string "^2.0.1"
 
-babel-plugin-styled-components@^1.5.0:
+babel-plugin-styled-components@1.5.0:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/babel-plugin-styled-components/-/babel-plugin-styled-components-1.5.0.tgz#4549f28a19fb05170aa9ee429b4de0eac2d2401d"
   dependencies:
@@ -8478,7 +8478,7 @@ jest-snapshot@^21.2.1:
     natural-compare "^1.4.0"
     pretty-format "^21.2.1"
 
-jest-styled-components@^4.11.0-1:
+jest-styled-components@4.11.0-1:
   version "4.11.0-1"
   resolved "https://registry.yarnpkg.com/jest-styled-components/-/jest-styled-components-4.11.0-1.tgz#a1d5653df0d8d579c67f90d0fb68f2f450f12234"
   dependencies:
