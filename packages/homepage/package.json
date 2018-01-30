@@ -23,7 +23,7 @@
     "gsap": "^1.20.3",
     "react-media": "^1.6.1",
     "react-transition-group": "^2.2.1",
-    "styled-components": "^2.2.4",
+    "styled-components": "^3.1.4",
     "three": "^0.87.1"
   },
   "keywords": [

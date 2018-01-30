@@ -172,7 +172,7 @@
     "script-ext-html-webpack-plugin": "^1.8.8",
     "shelljs": "^0.7.8",
     "store": "^2.0.12",
-    "styled-components": "^2.3.2",
+    "styled-components": "^3.1.4",
     "svg-react-loader": "^0.4.4",
     "tern": "^0.21.0",
     "vue": "^2.5.2",
