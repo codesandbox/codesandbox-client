@@ -229,6 +229,8 @@ async function fetchAndAddDependencies(dependencies) {
   await Promise.all(
     depNames.map(async dep => {
       try {
+        loadedTypings.push(dep);
+
         if (loadedTypings.indexOf(dep) === -1) {
           // eslint-disable-next-line no-await-in-loop
           await fetchFromTypings(
@@ -246,8 +248,6 @@ async function fetchAndAddDependencies(dependencies) {
               fetchFromDefinitelyTyped(dep, dependencies[dep], fetchedPaths)
             )
           );
-
-          loadedTypings.push(dep);
         }
       } catch (e) {
         // Don't show these cryptic messages to users, because this is not vital
