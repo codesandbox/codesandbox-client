@@ -92,7 +92,7 @@ export default class TestRunner {
 
   async transpileTests() {
     for (let t of this.tests) {
-      await this.manager.transpileModules(t);
+      await this.manager.transpileModules(t, false);
     }
   }
 

@@ -28,7 +28,6 @@ export default {
   _stream_readable: 'readable-stream/readable.js',
   _stream_transform: 'readable-stream/transform.js',
   _stream_writable: 'readable-stream/writable.js',
-  string_decoder: 'string_decoder/index.js',
   sys: 'util/util.js',
   timers: 'timers-browserify/main.js',
   tls: null,

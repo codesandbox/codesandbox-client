@@ -159,6 +159,38 @@ const getFileTypes = (
   });
 };
 
+function fetchFromMeta(dependency, version, fetchedPaths) {
+  const depUrl = `${ROOT_URL}${dependency}@${version}`;
+  return doFetch(`${depUrl}/?meta`)
+    .then(response => JSON.parse(response))
+    .then(meta => {
+      const filterAndFlatten = files =>
+        files.reduce((paths, file) => {
+          if (file.type === 'directory') {
+            return paths.concat(filterAndFlatten(file.files));
+          }
+          if (/\.d\.ts$/.test(file.path)) {
+            paths.push(file.path);
+          }
+          return paths;
+        }, []);
+
+      const dtsFiles = filterAndFlatten(meta.files);
+
+      if (dtsFiles.length === 0) {
+        throw new Error('No inline typings found.');
+      }
+
+      dtsFiles.forEach(file => {
+        doFetch(`${depUrl}/${file}`)
+          .then(dtsFile =>
+            addLib(`node_modules/${dependency}${file}`, dtsFile, fetchedPaths)
+          )
+          .catch(() => {});
+      });
+    });
+}
+
 function fetchFromTypings(dependency, version, fetchedPaths) {
   const depUrl = `${ROOT_URL}${dependency}@${version}`;
   return doFetch(`${depUrl}/package.json`)
@@ -204,8 +236,15 @@ async function fetchAndAddDependencies(dependencies) {
             getVersion(dependencies[dep]),
             fetchedPaths
           ).catch(() =>
-            // Not available in package.json, try checking in @types/
-            fetchFromDefinitelyTyped(dep, dependencies[dep], fetchedPaths)
+            // not available in package.json, try checking meta for inline .d.ts files
+            fetchFromMeta(
+              dep,
+              getVersion(dependencies[dep]),
+              fetchedPaths
+            ).catch(() =>
+              // Not available in package.json or inline from meta, try checking in @types/
+              fetchFromDefinitelyTyped(dep, dependencies[dep], fetchedPaths)
+            )
           );
 
           loadedTypings.push(dep);
