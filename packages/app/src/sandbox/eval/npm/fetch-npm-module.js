@@ -97,6 +97,8 @@ function downloadDependency(depName: string, depVersion: string, path: string) {
   return packages[path];
 }
 
+const requestedPaths = [];
+
 function resolvePath(
   path: string,
   currentPath: string,
@@ -129,16 +131,16 @@ function resolvePath(
           const depPath = p.replace('/node_modules/', '');
           const depName = getDependencyName(depPath);
 
-          // We don't try to download package.json, because we can assume that
-          // all package.json files have been included in the bundle sent by
-          // the packager.
-          if (depPath.endsWith('package.json')) {
+          // To prevent infinite loops we keep track of which dependencies have been requested before.
+          if (requestedPaths.includes(depPath)) {
             const err = new Error('Could not find ' + p);
             err.code = 'ENOENT';
 
             callback(err);
             return null;
           }
+
+          requestedPaths.push(depPath);
 
           // eslint-disable-next-line
           const subDepVersionVersionInfo = await findDependencyVersion(
