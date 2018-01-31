@@ -57,16 +57,9 @@ class Tests extends React.Component<Props, State> {
   handleMessage = data => {
     if (data.type === 'test') {
       switch (data.event) {
-        case 'file_start': {
+        case 'total_test_start': {
           this.currentDescribeBlocks = [];
-          this.setState(
-            immer(this.state, state => {
-              state.files[data.file] = {
-                fileName: data.file,
-                tests: {},
-              };
-            })
-          );
+          this.setState({ files: {} });
           break;
         }
         case 'file_end': {
@@ -85,7 +78,14 @@ class Tests extends React.Component<Props, State> {
 
           this.setState(
             immer(this.state, state => {
-              state.files[data.file].tests[testName.join('||||')] = {
+              if (!state.files[data.path]) {
+                state.files[data.path] = {
+                  tests: {},
+                  fileName: data.path,
+                };
+              }
+
+              state.files[data.path].tests[testName.join('||||')] = {
                 status: 'idle',
                 errors: [],
                 testName,
@@ -99,7 +99,8 @@ class Tests extends React.Component<Props, State> {
 
           this.setState(
             immer(this.state, state => {
-              const test = state.files[data.file].tests[testName.join('||||')];
+              const test =
+                state.files[data.test.path].tests[testName.join('||||')];
               test.status = 'running';
               test.running = true;
             })
@@ -111,7 +112,8 @@ class Tests extends React.Component<Props, State> {
 
           this.setState(
             immer(this.state, state => {
-              const test = state.files[data.file].tests[testName.join('||||')];
+              const test =
+                state.files[data.test.path].tests[testName.join('||||')];
               test.status = data.test.status;
               test.running = false;
               test.errors = data.test.errors;

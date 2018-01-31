@@ -8,12 +8,19 @@ import { makeDescribe } from 'jest-circus/build/utils';
 import {
   addEventHandler,
   setState,
+  dispatch as dispatchJest,
   ROOT_DESCRIBE_BLOCK_NAME,
 } from 'jest-circus/build/state';
 
 import type Manager from '../manager';
 import type { Module } from '../entities/module';
-import type { Event, TestEntry, DescribeBlock } from './types';
+import type {
+  Event,
+  TestEntry,
+  DescribeBlock,
+  TestName,
+  TestFn,
+} from './types';
 
 function resetTestState() {
   const ROOT_DESCRIBE_BLOCK = makeDescribe(ROOT_DESCRIBE_BLOCK_NAME);
@@ -48,11 +55,35 @@ export default class TestRunner {
     this.endTime = Date.now();
   }
 
-  testGlobals() {
+  testGlobals(module: Module) {
+    const test = (testName: TestName, fn?: TestFn) =>
+      dispatchJest({
+        fn,
+        name: 'add_test',
+        testName: `${module.path}:#:${testName}`,
+      });
+    const it = test;
+    test.skip = (testName: TestName, fn?: TestFn) =>
+      dispatchJest({
+        fn,
+        mode: 'skip',
+        name: 'add_test',
+        testName: `${module.path}:#:${testName}`,
+      });
+    test.only = (testName: TestName, fn: TestFn) =>
+      dispatchJest({
+        fn,
+        mode: 'only',
+        name: 'add_test',
+        testName: `${module.path}:#:${testName}`,
+      });
+
     return {
       ...jestTestHooks,
       expect,
       jest: jestMock,
+      test,
+      it,
     };
   }
 
@@ -95,19 +126,17 @@ export default class TestRunner {
 
   /* istanbul ignore next */
   async runTests() {
+    this.sendMessage('total_test_start');
     await this.transpileTests();
+    resetTestState();
 
     for (let i = 0; i < this.tests.length; i++) {
       const t = this.tests[i];
-      resetTestState();
-
-      this.filename = t.path;
-      this.sendMessage('file_start');
 
       this.manager.evaluateModule(t);
-      await run();
-      this.sendMessage('file_end');
     }
+    await run();
+    this.sendMessage('total_test_end');
   }
 
   errorToCodeSandbox(
@@ -151,8 +180,10 @@ export default class TestRunner {
   }
 
   testToCodeSandbox(test: TestEntry) {
+    const [path, name] = test.name.split(':#:');
     return {
-      name: test.name,
+      name,
+      path,
       duration: test.duration,
       status: test.status || 'running',
       errors: test.errors.map(this.errorToCodeSandbox),
@@ -160,7 +191,7 @@ export default class TestRunner {
     };
   }
 
-  handleMessage = (message: Event) => {
+  handleMessage = (message: Event, state) => {
     switch (message.name) {
       case 'test_start': {
         return this.sendMessage('test_start', {
@@ -182,8 +213,10 @@ export default class TestRunner {
         return this.sendMessage('describe_end');
       }
       case 'add_test': {
+        const [path, testName] = message.testName.split(':#:');
         return this.sendMessage('add_test', {
-          testName: message.testName,
+          testName,
+          path,
         });
       }
       default: {

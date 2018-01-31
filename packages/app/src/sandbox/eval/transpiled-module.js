@@ -689,7 +689,7 @@ export default class TranspiledModule {
         require,
         this.compilation,
         manager.envVariables,
-        manager.testRunner.testGlobals()
+        manager.testRunner.testGlobals(this.module)
       );
 
       const hmrConfig = this.hmrConfig;
