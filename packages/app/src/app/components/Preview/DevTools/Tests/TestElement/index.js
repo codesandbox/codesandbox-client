@@ -53,6 +53,10 @@ class TestElement extends Component<Props, State> {
     this._lastFile = file;
     this._lastStatus = Object.keys(file.tests).reduce((prev, next) => {
       const test = file.tests[next];
+      if (test.status !== 'idle' && prev === 'idle') {
+        return test.status;
+      }
+
       if (test.status === 'pass' || prev !== 'pass') {
         return prev;
       }
