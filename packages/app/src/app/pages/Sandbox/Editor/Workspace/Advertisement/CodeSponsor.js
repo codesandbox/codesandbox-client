@@ -7,8 +7,8 @@ type Props = {
 };
 
 export default ({ token, theme }: Props) => {
-  const pixelHref = `https://cs.berry.sh/l/${token}/pixel.png`;
-  const linkHref = `https://cs.berry.sh/c/${token}`;
+  const pixelHref = `https://codesponsor.io/t/l/${token}/pixel.png`;
+  const linkHref = `https://codesponsor.io/t/c/${token}/`;
 
   return (
     <div className={theme === 'dark' ? 'cs__wrapper dark' : 'cs__wrapper'}>
@@ -16,7 +16,7 @@ export default ({ token, theme }: Props) => {
       <a href={linkHref} className="cs__blurb" target="_blank" rel="noopener">
         <strong>Rollbar</strong>{' '}
         <span>
-          Real-time error monitoring, alerting, and analytics for developers{' '}
+          Real-time error monitoring, alerting, and analytics for software developers{' '}
           <span aria-label="rocket" role="img">
             🚀
           </span>
