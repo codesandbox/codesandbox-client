@@ -66,7 +66,7 @@ class TestElement extends Component<Props, State> {
       }
 
       return prev;
-    }, 'pass');
+    }, 'idle');
 
     return this._lastStatus;
   };
