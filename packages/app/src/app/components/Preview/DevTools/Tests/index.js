@@ -7,6 +7,7 @@ import immer from 'immer';
 import { Container, TestDetails, TestContainer } from './elements';
 
 import TestElement from './TestElement';
+import TestDetailsContent from './TestDetails';
 
 export type IMessage = {
   type: 'message' | 'command' | 'return',
@@ -18,19 +19,22 @@ export type Status = 'idle' | 'running' | 'pass' | 'fail';
 
 type Props = { hidden: boolean };
 
+export type Test = {
+  testName: Array<string>,
+  duration: ?number,
+  status: Status,
+  errors: Array<string>,
+};
+
 export type File = {
   fileName: string,
   tests: {
-    [testName: string]: {
-      testName: Array<string>,
-      duration: ?number,
-      status: Status,
-      errors: Array<string>,
-    },
+    [testName: string]: Test,
   },
 };
 
 type State = {
+  selectedFilePath: ?string,
   files: {
     [path: string]: File,
   },
@@ -39,6 +43,7 @@ type State = {
 class Tests extends React.Component<Props, State> {
   state = {
     files: {},
+    selectedFilePath: null,
   };
 
   listener: Function;
@@ -54,12 +59,19 @@ class Tests extends React.Component<Props, State> {
     }
   }
 
+  selectFile = (file: File) => {
+    this.setState({ selectedFilePath: file.fileName });
+  };
+
   handleMessage = data => {
     if (data.type === 'test') {
       switch (data.event) {
         case 'total_test_start': {
           this.currentDescribeBlocks = [];
-          this.setState({ files: {} });
+          this.setState({
+            files: {},
+            selectedFilePath: this.state.selectedFilePath,
+          });
           break;
         }
         case 'file_end': {
@@ -129,10 +141,58 @@ class Tests extends React.Component<Props, State> {
     }
   };
 
+  _lastFiles: {
+    [path: string]: {
+      file: File,
+      status: Status,
+    },
+  } = {};
+  getStatus = (file: ?File): Status => {
+    if (file == null) {
+      return 'idle';
+    }
+
+    const lastFile = this._lastFiles[file.fileName];
+
+    // Simple memoization
+    if (lastFile && file === lastFile.file && lastFile.status != null) {
+      return lastFile.status;
+    }
+
+    const tests = file.tests;
+    const status = Object.keys(tests).reduce((prev, next) => {
+      const test = tests[next];
+      if (test.status !== 'idle' && prev === 'idle') {
+        return test.status;
+      }
+
+      if (test.status === 'pass' || prev !== 'pass') {
+        return prev;
+      }
+
+      if (test.status === 'fail') {
+        return 'fail';
+      }
+
+      if (test.status === 'running') {
+        return 'running';
+      }
+
+      return prev;
+    }, 'idle');
+
+    this._lastFiles[file.fileName] = { file, status };
+
+    return status;
+  };
+
   render() {
     if (this.props.hidden) {
       return null;
     }
+
+    const { selectedFilePath } = this.state;
+    const selectedFile = this.state.files[selectedFilePath || ''];
 
     return (
       <Container>
@@ -148,10 +208,21 @@ class Tests extends React.Component<Props, State> {
           {Object.keys(this.state.files)
             .sort()
             .map(fileName => (
-              <TestElement file={this.state.files[fileName]} key={fileName} />
+              <TestElement
+                selectFile={this.selectFile}
+                selectedFile={selectedFile}
+                file={this.state.files[fileName]}
+                status={this.getStatus(this.state.files[fileName])}
+                key={fileName}
+              />
             ))}
         </TestContainer>
-        <TestDetails>Test Details</TestDetails>
+        <TestDetails>
+          <TestDetailsContent
+            status={this.getStatus(selectedFile)}
+            file={selectedFile}
+          />
+        </TestDetails>
       </Container>
     );
   }

@@ -1,28 +1,31 @@
 import styled, { css } from 'styled-components';
 
-import Check from 'react-icons/lib/go/check';
-import Cross from 'react-icons/lib/go/x';
-import DotIcon from 'react-icons/lib/go/primitive-dot';
-import LoadingBubbles from './LoadingBubbles';
-
 export const Container = styled.div`
   font-weight: 500;
   font-size: 0.875rem;
 `;
 
 export const FileData = styled.div`
-  transition: 0.3s ease background-color;
+  transition: 0.3s ease all;
   display: flex;
   align-items: center;
   font-size: 1rem;
   padding: 0.5rem 1rem;
+  border-left: 2px solid transparent;
+
   border-bottom: 1px solid rgba(0, 0, 0, 0.3);
 
   cursor: pointer;
 
   &:hover {
-    background-color: rgba(0, 0, 0, 0.3);
+    background-color: rgba(0, 0, 0, 0.2);
   }
+
+  ${props =>
+    props.selected &&
+    css`
+      border-left-color: ${props.theme.secondary.clearer};
+    `};
 `;
 
 export const Path = styled.span`
@@ -31,32 +34,6 @@ export const Path = styled.span`
 
 export const FileName = styled.span`
   color: rgba(255, 255, 255, 0.8);
-`;
-
-const iconStyles = css`
-  margin-right: 0.25rem;
-  font-size: 1.125em;
-  flex: 0 0 1.125em;
-`;
-
-export const Loading = styled(LoadingBubbles)`
-  ${iconStyles};
-  color: ${props => props.theme.secondary};
-`;
-
-export const Success = styled(Check)`
-  ${iconStyles};
-  color: ${props => props.theme.green};
-`;
-
-export const Fail = styled(Cross)`
-  ${iconStyles};
-  color: ${props => props.theme.red};
-`;
-
-export const Dot = styled(DotIcon)`
-  ${iconStyles};
-  color: rgba(255, 255, 255, 0.3);
 `;
 
 export const Tests = styled.div`
@@ -70,24 +47,11 @@ export const Tests = styled.div`
   }
 `;
 
-export const Test = styled.div`
-  display: flex;
-  align-items: center;
-  padding-left: 1rem;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-
-  background-color: #181b1d;
-
-  ${props =>
-    props.status === 'idle' &&
-    css`
-      color: rgba(255, 255, 255, 0.4);
-    `};
-`;
-
 export const Block = styled.div`
+  transition: 0.3s ease color;
   display: flex;
-  padding: 0.25rem 0.5rem;
+  padding: 0.25rem 0.4rem;
+  padding-left: 0.5rem;
   position: relative;
   margin-right: ${props => (props.last ? 0 : 12)}px;
   color: rgba(255, 255, 255, 0.5);
@@ -107,18 +71,71 @@ export const Block = styled.div`
     -moz-transform: rotate(45deg);
     -o-transform: rotate(45deg);
     -ms-transform: rotate(45deg);
-    border-right: 1px solid rgba(0, 0, 0, 0.3);
-    border-top: 1px solid rgba(0, 0, 0, 0.3);
+    border-right: 2px solid rgba(0, 0, 0, 0.2);
+    border-top: 2px solid rgba(0, 0, 0, 0.2);
     background-color: #181b1d;
     z-index: 1;
   }
 `;
 
 export const TestName = styled.div`
+  transition: 0.3s ease background-color;
   padding: 0.25rem;
   padding-left: 20px;
   background-color: ${props => props.theme.background2};
   color: rgba(255, 255, 255, 0.8);
   flex: auto;
   white-space: nowrap;
+`;
+
+export const Test = styled.div`
+  transition: 0.3s ease border-color;
+
+  display: flex;
+  align-items: center;
+  padding-left: 1rem;
+  cursor: pointer;
+
+  border-left: 2px solid transparent;
+
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  background-color: #181b1d;
+
+  ${props =>
+    props.status === 'idle' &&
+    css`
+      color: rgba(255, 255, 255, 0.4);
+    `};
+
+  &:hover {
+    border-left-color: ${props => props.theme.secondary.clearer(0.5)};
+    ${TestName} {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    ${Block} {
+      color: rgba(255, 255, 255, 0.8);
+    }
+  }
+
+  ${props =>
+    props.selected &&
+    css`
+      border-left-color: ${props.theme.secondary};
+      ${Block} {
+        color: rgba(255, 255, 255, 0.8);
+      }
+
+      ${TestName} {
+        font-weight: 500;
+        background-color: rgba(0, 0, 0, 0.1);
+      }
+
+      &:hover {
+        border-left-color: ${props.theme.secondary};
+        ${TestName} {
+          background-color: rgba(0, 0, 0, 0.1);
+        }
+      }
+    `};
 `;

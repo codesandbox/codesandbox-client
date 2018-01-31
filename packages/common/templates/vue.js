@@ -5,6 +5,15 @@ import Template from './template';
 import { decorateSelector } from '../theme';
 
 class VueTemplate extends Template {
+  getEntries(configurationFiles: { [type: string]: Object }) {
+    const entries = super.getEntries(configurationFiles);
+
+    entries.push('/src/main.js');
+    entries.push('/main.js');
+
+    return entries;
+  }
+
   // eslint-disable-next-line no-unused-vars
   getHTMLEntries(configurationFiles: {
     [type: string]: Object,

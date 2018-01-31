@@ -6,10 +6,6 @@ import type { File, Status } from '../';
 
 import {
   Container,
-  Success,
-  Fail,
-  Loading,
-  Dot,
   FileName,
   Path,
   Tests,
@@ -19,91 +15,45 @@ import {
   TestName,
 } from './elements';
 
+import { StatusElements } from '../elements';
+
 type Props = {
   file: File,
-};
-type State = {
-  isOpen: boolean,
-};
-
-const StatusElements = {
-  pass: Success,
-  fail: Fail,
-  running: Loading,
-  idle: Dot,
+  selectFile: (file: File) => void,
+  selectedFile: ?File,
+  status: Status,
 };
 
-class TestElement extends Component<Props, State> {
-  state = {
-    isOpen: false,
+class TestElement extends Component<Props> {
+  selectFile = () => {
+    this.props.selectFile(this.props.file);
   };
-
-  toggleOpen = () => {
-    this.setState({ isOpen: !this.state.isOpen });
-  };
-
-  _lastFile = null;
-  _lastStatus: Status | null = null;
-  getStatus = (file: File) => {
-    // Simple memoization
-    if (file === this._lastFile && this._lastStatus != null) {
-      return this._lastStatus;
-    }
-
-    this._lastFile = file;
-    this._lastStatus = Object.keys(file.tests).reduce((prev, next) => {
-      const test = file.tests[next];
-      if (test.status !== 'idle' && prev === 'idle') {
-        return test.status;
-      }
-
-      if (test.status === 'pass' || prev !== 'pass') {
-        return prev;
-      }
-
-      if (test.status === 'fail') {
-        return 'fail';
-      }
-
-      if (test.status === 'running') {
-        return 'running';
-      }
-
-      return prev;
-    }, 'idle');
-
-    return this._lastStatus;
-  };
-
-  componentWillReceiveProps(nextProps: Props) {
-    const status = this.getStatus(nextProps.file);
-
-    if (status === 'fail') {
-      this.setState({ isOpen: true });
-    }
-  }
 
   render() {
-    const { file } = this.props;
+    const { file, status } = this.props;
 
     const splittedPath = file.fileName.split('/');
     const fileName = splittedPath.pop();
 
     const testKeys = Object.keys(file.tests);
 
-    const status = this.getStatus(file);
-
     const StatusElement = StatusElements[status];
 
     return (
       <Container>
-        <FileData onClick={this.toggleOpen}>
+        <FileData
+          selected={this.props.selectedFile === this.props.file}
+          onClick={this.selectFile}
+        >
           <StatusElement />
           <Path>{splittedPath.join('/')}/</Path>
           <FileName>{fileName}</FileName>
         </FileData>
 
-        <ReactShow duration={300} show={this.state.isOpen}>
+        <ReactShow
+          duration={300}
+          show={this.props.selectedFile === this.props.file}
+        >
           <Tests>
             {testKeys.map(tName => {
               const test = file.tests[tName];
@@ -112,7 +62,7 @@ class TestElement extends Component<Props, State> {
               const testParts = [...test.testName];
               const testName = testParts.pop();
               return (
-                <Test key={tName}>
+                <Test selected={test === this.props.selectedFile} key={tName}>
                   <TestStatusElement />
                   {testParts.map((part, i) => (
                     <Block last={i === testParts.length - 1} key={part}>

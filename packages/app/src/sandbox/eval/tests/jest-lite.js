@@ -153,7 +153,7 @@ export default class TestRunner {
     return {
       message: error.message,
       stack: error.stack,
-      matcherResult: {
+      matcherResult: error.matcherResult && {
         actual: error.matcherResult.actual,
         expected: error.matcherResult.expected,
         name: error.matcherResult.name,
