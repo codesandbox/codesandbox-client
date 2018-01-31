@@ -1,37 +1,27 @@
 // @flow
+import { dispatch } from 'codesandbox-api';
 import expect from 'jest-matchers';
 import jestMock from 'jest-mock';
+import jestTestHooks from 'jest-circus';
+import run from 'jest-circus/build/run';
+import { addEventHandler, getState } from 'jest-circus/build/state';
+
+import type Manager from '../manager';
+import type { Module } from '../entities/module';
+import type { Event, TestEntry, DescribeBlock } from './types';
 
 export default class TestRunner {
-  tests: Array;
-  aggregatedResults: Object;
-  currentDescribe: String;
+  tests: Array<Module>;
   manager: Manager;
-  startTime: Date;
-  endTime: Date;
+  startTime: number;
+  endTime: number;
 
-  constructor(manager) {
-    this.tests = [];
-    this.aggregatedResults = this._makeEmptyAggregatedResults();
-    this.currentDescribe = '';
-    this.currentPath = '';
+  constructor(manager: Manager) {
     this.manager = manager;
     this.startTime = Date.now();
     this.endTime = Date.now();
-  }
 
-  _makeEmptyAggregatedResults() {
-    return {
-      failedTestSuites: 0,
-      failedTests: 0,
-      passedTestSuites: 0,
-      passedTests: 0,
-      totalTestSuites: 0,
-      totalTests: 0,
-      summaryMessage: '',
-      failedMessages: [],
-      results: [],
-    };
+    addEventHandler(this.handleMessage);
   }
 
   initialize() {
@@ -41,35 +31,14 @@ export default class TestRunner {
   }
 
   testGlobals() {
-    const describe = (name, fn) => {
-      this.setCurrentDescribe(name);
-      fn();
-      this.resetCurrentDescribe(name);
-    };
-
-    const test = (name, fn) => {
-      let error = false;
-      try {
-        fn();
-      } catch (Error) {
-        error = true;
-        this.addResult({ status: 'fail', name });
-      } finally {
-        if (!error) {
-          this.addResult({ status: 'pass', name });
-        }
-      }
-    };
     return {
-      describe,
-      test,
-      it: test,
+      ...jestTestHooks,
       expect,
       jest: jestMock,
     };
   }
 
-  findTests(modules) {
+  findTests(modules: { [path: string]: Module }) {
     this.tests = Object.keys(modules)
       .filter(path => {
         let matched = false;
@@ -97,116 +66,109 @@ export default class TestRunner {
     }
   }
 
+  sendMessage(event: string, message: any = {}) {
+    dispatch({
+      file: this.filename,
+      type: 'test',
+      event,
+      ...message,
+    });
+  }
+
   /* istanbul ignore next */
   async runTests() {
     await this.transpileTests();
-    this.tests.forEach(t => {
-      this.setCurrentPath(t.path);
+
+    for (let i = 0; i < this.tests.length; i++) {
+      const t = this.tests[i];
+
+      this.filename = t.path;
+      this.sendMessage('file_start');
+
       this.manager.evaluateModule(t);
-      this.resetCurrentPath();
-    });
+      const results = await run();
+      this.sendMessage('file_end');
+    }
   }
 
-  addResult({ status, name }) {
-    let describe = this.currentDescribe;
-    let path = this.currentPath;
-
-    this.aggregatedResults.results.push({ status, name, describe, path });
-
-    this.aggregatedResults.totalTests++;
-    if (status === 'pass') {
-      this.aggregatedResults.passedTests++;
-    } else {
-      this.aggregatedResults.failedTests++;
+  errorToCodeSandbox(
+    error: Error & {
+      matcherResult: {
+        actual: any,
+        expected: any,
+        name: string,
+        pass: boolean,
+        message: Function,
+      },
     }
-    let totalTestSuites = new Set();
-    let failedTestSuites = new Set();
-    this.aggregatedResults.results.forEach(({ status, path }) => {
-      totalTestSuites.add(path);
-      if (status === 'fail') {
-        failedTestSuites.add(path);
+  ) {
+    return {
+      message: error.message,
+      stack: error.stack,
+      matcherResult: {
+        actual: error.matcherResult.actual,
+        expected: error.matcherResult.expected,
+        name: error.matcherResult.name,
+        pass: error.matcherResult.pass,
+      },
+    };
+  }
+
+  getDescribeBlocks(test: TestEntry) {
+    let t: ?(TestEntry | DescribeBlock) = test;
+    const blocks = [];
+
+    // $FlowIssue
+    while (t.parent != null) {
+      blocks.push(t.parent.name);
+      // $FlowIssue
+      t = t.parent;
+    }
+
+    return blocks.reverse();
+  }
+
+  testToCodeSandbox(test: TestEntry) {
+    return {
+      name: test.name,
+      duration: test.duration,
+      status: test.status || 'running',
+      errors: test.errors.map(this.errorToCodeSandbox),
+      blocks: this.getDescribeBlocks(test),
+    };
+  }
+
+  handleMessage = (message: Event) => {
+    switch (message.name) {
+      case 'test_start': {
+        return this.sendMessage('test_start', {
+          test: this.testToCodeSandbox(message.test),
+        });
       }
-    });
-    this.aggregatedResults.totalTestSuites = totalTestSuites.size;
-    this.aggregatedResults.failedTestSuites = failedTestSuites.size;
-    this.aggregatedResults.passedTestSuites =
-      totalTestSuites.size - failedTestSuites.size;
-  }
-
-  reportResults() {
-    let aggregatedResults = this.aggregatedResults;
-    let results = this.aggregatedResults.results;
-    let summaryMessage = '';
-    let failedMessages = [];
-    let summaryEmoji = '';
-
-    if (aggregatedResults.totalTestSuites === 0) {
-      return null;
-    }
-
-    results.forEach(({ status, name, describe, path }) => {
-      if (status === 'fail') {
-        let message = `FAIL (${path}) `;
-        if (describe) {
-          message += `${describe} > `;
-        }
-        message += `${name}`;
-        failedMessages.push(message);
+      case 'test_failure':
+      case 'test_success': {
+        return this.sendMessage('test_end', {
+          test: this.testToCodeSandbox(message.test),
+        });
       }
-    });
-
-    summaryEmoji =
-      aggregatedResults.totalTestSuites === aggregatedResults.passedTestSuites
-        ? '😎'
-        : '👻';
-    summaryMessage = `Test Summary: ${summaryEmoji}\n\n`;
-    summaryMessage += 'Test Suites: ';
-    summaryMessage += `${aggregatedResults.failedTestSuites} failed, `;
-    summaryMessage += `${aggregatedResults.passedTestSuites} passed, `;
-    summaryMessage += `${aggregatedResults.totalTestSuites} total`;
-    summaryMessage += '\n';
-
-    summaryMessage += 'Tests: ';
-    summaryMessage += `${aggregatedResults.failedTests} failed, `;
-    summaryMessage += `${aggregatedResults.passedTests} passed, `;
-    summaryMessage += `${aggregatedResults.totalTests} total`;
-    summaryMessage += '\n';
-
-    this.endTime = Date.now();
-    this.duration = this.endTime - this.startTime;
-    summaryMessage += `Time: ${this.duration}ms`;
-    summaryMessage += '\n';
-
-    aggregatedResults.summaryMessage = summaryMessage;
-    aggregatedResults.failedMessages = failedMessages;
-    return aggregatedResults;
-  }
-
-  reportError({ message = 'something went wrong' }) {
-    return `Test Summary: 😢\nError: ${message}`;
-  }
-
-  resetResults() {
-    this.aggregatedResults = this._makeEmptyAggregatedResults();
-  }
-
-  setCurrentDescribe(name) {
-    if (this.currentDescribe) {
-      this.currentDescribe += ` > ${name}`;
-    } else {
-      this.currentDescribe += `${name}`;
+      case 'start_describe_definition': {
+        return this.sendMessage('describe_start', {
+          blockName: message.blockName,
+        });
+      }
+      case 'finish_describe_definition': {
+        return this.sendMessage('describe_end');
+      }
+      case 'add_test': {
+        return this.sendMessage('add_test', {
+          testName: message.testName,
+        });
+      }
+      default: {
+        break;
+      }
     }
-  }
+  };
 
-  resetCurrentDescribe() {
-    this.currentDescribe = '';
-  }
-
-  setCurrentPath(name) {
-    this.currentPath = name;
-  }
-
-  resetCurrentPath() {
-    this.currentPath = '';
-  }
+  resetResults = () => {};
 }

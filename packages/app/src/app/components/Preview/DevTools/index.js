@@ -9,6 +9,7 @@ import Tooltip from 'common/components/Tooltip';
 
 import Unread from './Unread';
 import console from './Console';
+import tests from './Tests';
 
 import { Container, Header, Tab, Actions } from './elements';
 
@@ -33,7 +34,7 @@ function normalizeTouchEvent(event: TouchEvent): MouseEvent {
   };
 }
 
-const PANES = { [console.title]: console };
+const PANES = { [console.title]: console, [tests.title]: tests };
 
 export type Status = {
   unread: number,
@@ -266,13 +267,17 @@ export default class DevTools extends React.PureComponent<Props, State> {
     });
   };
 
+  setPane = (title: string) => {
+    this.setState({ currentPane: title });
+  };
+
   node: HTMLElement;
 
   render() {
     const { sandboxId, zenMode } = this.props;
     const { hidden, height, status } = this.state;
 
-    const { actions, Content } = PANES[this.state.currentPane];
+    const { actions } = PANES[this.state.currentPane];
 
     return (
       <Container
@@ -291,7 +296,15 @@ export default class DevTools extends React.PureComponent<Props, State> {
           onMouseDown={this.handleMouseDown}
         >
           {Object.keys(PANES).map(title => (
-            <Tab key={title}>
+            <Tab
+              active={title === this.state.currentPane}
+              onClick={e => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.setPane(title);
+              }}
+              key={title}
+            >
               {title}
               {!zenMode && (
                 <Unread
@@ -327,12 +340,18 @@ export default class DevTools extends React.PureComponent<Props, State> {
             />
           </Actions>
         </Header>
-        <Content
-          hidden={hidden}
-          evaluateCommand={this.props.evaluateCommand}
-          updateStatus={this.updateStatus(this.state.currentPane)}
-          sandboxId={sandboxId}
-        />
+        {Object.keys(PANES).map(title => {
+          const { Content } = PANES[title];
+          return (
+            <Content
+              key={title}
+              hidden={hidden || title !== this.state.currentPane}
+              evaluateCommand={this.props.evaluateCommand}
+              updateStatus={this.updateStatus(this.state.currentPane)}
+              sandboxId={sandboxId}
+            />
+          );
+        })}
       </Container>
     );
   }

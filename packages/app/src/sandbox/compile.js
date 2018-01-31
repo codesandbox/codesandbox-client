@@ -292,19 +292,13 @@ async function compile({
       testRunner.initialize();
       testRunner.findTests(modules);
       await testRunner.runTests();
-      const aggregatedResults = testRunner.reportResults();
       debug(`Test Evaluation time: ${Date.now() - ttt}ms`);
 
-      dispatch({
-        type: 'test-result',
-        result: transformJSON(aggregatedResults),
-      });
       // End - Testing
     } catch (error) {
-      dispatch({
-        type: 'test-result',
-        error: manager.testRunner.reportError(error),
-      });
+      if (process.env.NODE_ENV === 'development') {
+        console.error(error);
+      }
     }
 
     debug(`Total time: ${Date.now() - startTime}ms`);

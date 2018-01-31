@@ -116,7 +116,7 @@ class EditorPreview extends React.Component {
         autoDownloadTypes: store.preferences.settings.autoDownloadTypes,
         vimMode: store.preferences.settings.vimMode,
         lintEnabled: store.preferences.settings.lintEnabled,
-        tabWidth: store.preferences.settings.tabWidth,
+        tabWidth: 2,
       }),
       newSettings => {
         if (editor.changeSettings) {

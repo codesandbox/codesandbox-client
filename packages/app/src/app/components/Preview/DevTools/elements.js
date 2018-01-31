@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
   display: flex;
@@ -30,12 +30,21 @@ export const Tab = styled.div`
   align-items: center;
   height: calc(2rem - 1px);
   padding: 0 1rem;
-  background-color: ${props => props.theme.background};
+  background-color: transparent;
   border-right: 1px solid rgba(0, 0, 0, 0.3);
-  border-bottom: 1px solid ${props => props.theme.background};
+  border-bottom: 1px solid transparent;
+
+  cursor: pointer;
 
   color: rgba(255, 255, 255, 0.8);
   font-weight: 600;
+
+  ${props =>
+    props.active &&
+    css`
+      background-color: ${props.theme.background};
+      border-bottom-color: ${props.theme.background};
+    `};
 `;
 
 export const Actions = styled.div`

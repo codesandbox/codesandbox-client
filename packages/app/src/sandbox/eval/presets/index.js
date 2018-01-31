@@ -192,9 +192,4 @@ export default class Preset {
 
     return `!${loaders.map(t => t.transpiler.name).join('!')}`;
   }
-
-  setup(
-    configurations: { [type: string]: ConfigurationFile },
-    evaluate: Function
-  ) {}
 }

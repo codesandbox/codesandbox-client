@@ -22,7 +22,8 @@
     "class-methods-use-this": 0,
     "no-console": ["error", { "allow": ["error"] }],
     "prefer-template": "off",
-    "no-plusplus": 0
+    "no-plusplus": 0,
+    "no-underscore-dangle": "off"
   },
   "settings": {
     "import/resolver": "webpack"
