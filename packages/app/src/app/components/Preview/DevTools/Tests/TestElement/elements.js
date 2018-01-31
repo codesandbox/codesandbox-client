@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components';
 
 import Check from 'react-icons/lib/go/check';
 import Cross from 'react-icons/lib/go/x';
-import ChevronRight from 'react-icons/lib/md/chevron-right';
+import DotIcon from 'react-icons/lib/go/primitive-dot';
 import LoadingBubbles from './LoadingBubbles';
 
 export const Container = styled.div`
@@ -33,11 +33,6 @@ export const FileName = styled.span`
   color: rgba(255, 255, 255, 0.8);
 `;
 
-export const Chevron = styled(ChevronRight)`
-  margin-right: 0.25rem;
-  margin-left: -0.25rem;
-`;
-
 const iconStyles = css`
   margin-right: 0.25rem;
   font-size: 1.125em;
@@ -57,6 +52,11 @@ export const Success = styled(Check)`
 export const Fail = styled(Cross)`
   ${iconStyles};
   color: ${props => props.theme.red};
+`;
+
+export const Dot = styled(DotIcon)`
+  ${iconStyles};
+  color: rgba(255, 255, 255, 0.3);
 `;
 
 export const Tests = styled.div`

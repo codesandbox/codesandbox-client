@@ -4,11 +4,29 @@ import expect from 'jest-matchers';
 import jestMock from 'jest-mock';
 import jestTestHooks from 'jest-circus';
 import run from 'jest-circus/build/run';
-import { addEventHandler, getState } from 'jest-circus/build/state';
+import { makeDescribe } from 'jest-circus/build/utils';
+import {
+  addEventHandler,
+  setState,
+  ROOT_DESCRIBE_BLOCK_NAME,
+} from 'jest-circus/build/state';
 
 import type Manager from '../manager';
 import type { Module } from '../entities/module';
 import type { Event, TestEntry, DescribeBlock } from './types';
+
+function resetTestState() {
+  const ROOT_DESCRIBE_BLOCK = makeDescribe(ROOT_DESCRIBE_BLOCK_NAME);
+  const INITIAL_STATE = {
+    currentDescribeBlock: ROOT_DESCRIBE_BLOCK,
+    expand: undefined,
+    hasFocusedTests: false,
+    rootDescribeBlock: ROOT_DESCRIBE_BLOCK,
+    testTimeout: 5000,
+  };
+
+  setState(INITIAL_STATE);
+}
 
 export default class TestRunner {
   tests: Array<Module>;
@@ -81,12 +99,13 @@ export default class TestRunner {
 
     for (let i = 0; i < this.tests.length; i++) {
       const t = this.tests[i];
+      resetTestState();
 
       this.filename = t.path;
       this.sendMessage('file_start');
 
       this.manager.evaluateModule(t);
-      const results = await run();
+      await run();
       this.sendMessage('file_end');
     }
   }
@@ -124,6 +143,9 @@ export default class TestRunner {
       // $FlowIssue
       t = t.parent;
     }
+
+    // Remove ROOT_DESCRIBE_BLOCK
+    blocks.pop();
 
     return blocks.reverse();
   }

@@ -42,7 +42,7 @@ class Tests extends React.Component<Props, State> {
   };
 
   listener: Function;
-  currentDescribeBlocks: Array<string> = ['ROOT_DESCRIBE_BLOCK'];
+  currentDescribeBlocks: Array<string> = [];
 
   componentDidMount() {
     this.listener = listen(this.handleMessage);
@@ -58,7 +58,7 @@ class Tests extends React.Component<Props, State> {
     if (data.type === 'test') {
       switch (data.event) {
         case 'file_start': {
-          this.currentDescribeBlocks = ['ROOT_DESCRIBE_BLOCK'];
+          this.currentDescribeBlocks = [];
           this.setState(
             immer(this.state, state => {
               state.files[data.file] = {
@@ -76,7 +76,7 @@ class Tests extends React.Component<Props, State> {
           this.currentDescribeBlocks.push(data.blockName);
           break;
         }
-        case 'describe_stop': {
+        case 'describe_end': {
           this.currentDescribeBlocks.pop();
           break;
         }
@@ -85,7 +85,7 @@ class Tests extends React.Component<Props, State> {
 
           this.setState(
             immer(this.state, state => {
-              state.files[data.file].tests[testName.join('>')] = {
+              state.files[data.file].tests[testName.join('||||')] = {
                 status: 'idle',
                 errors: [],
                 testName,
@@ -99,7 +99,7 @@ class Tests extends React.Component<Props, State> {
 
           this.setState(
             immer(this.state, state => {
-              const test = state.files[data.file].tests[testName.join('>')];
+              const test = state.files[data.file].tests[testName.join('||||')];
               test.status = 'running';
               test.running = true;
             })
@@ -111,7 +111,7 @@ class Tests extends React.Component<Props, State> {
 
           this.setState(
             immer(this.state, state => {
-              const test = state.files[data.file].tests[testName.join('>')];
+              const test = state.files[data.file].tests[testName.join('||||')];
               test.status = data.test.status;
               test.running = false;
               test.errors = data.test.errors;

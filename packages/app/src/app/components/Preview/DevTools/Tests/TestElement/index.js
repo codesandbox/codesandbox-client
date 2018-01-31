@@ -9,6 +9,7 @@ import {
   Success,
   Fail,
   Loading,
+  Dot,
   FileName,
   Path,
   Tests,
@@ -29,7 +30,7 @@ const StatusElements = {
   pass: Success,
   fail: Fail,
   running: Loading,
-  idle: Loading,
+  idle: Dot,
 };
 
 class TestElement extends Component<Props, State> {
@@ -104,9 +105,7 @@ class TestElement extends Component<Props, State> {
               const test = file.tests[tName];
 
               const TestStatusElement = StatusElements[test.status];
-              const testParts = test.testName.filter(
-                t => t !== 'ROOT_DESCRIBE_BLOCK'
-              );
+              const testParts = [...test.testName];
               const testName = testParts.pop();
               return (
                 <Test key={tName}>
