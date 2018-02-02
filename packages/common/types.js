@@ -167,6 +167,7 @@ export type Preferences = {
   prettierConfig: Object,
   autoDownloadTypes: ?boolean,
   newPackagerExperiment: ?boolean,
+  zenMode: ?boolean,
 };
 
 export type NotificationButton = {

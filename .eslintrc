@@ -23,7 +23,9 @@
     "no-console": ["error", { "allow": ["error"] }],
     "prefer-template": "off",
     "no-plusplus": 0,
-    "no-underscore-dangle": "off"
+    "no-underscore-dangle": "off",
+    "no-nested-ternary": "warn",
+    "react/require-default-props": "off"
   },
   "settings": {
     "import/resolver": "webpack"

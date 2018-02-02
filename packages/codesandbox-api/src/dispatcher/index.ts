@@ -45,7 +45,7 @@ export function listen(callback: Callback): () => void {
   };
 }
 
-function notifyListeners(data: Object, source?: MessageEvent['source']) {
+export function notifyListeners(data: Object, source?: MessageEvent['source']) {
   Object.keys(listeners).forEach(listenerId => {
     if (listeners[listenerId]) {
       listeners[listenerId](data, source);

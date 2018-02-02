@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 export const TestTitle = styled.div`
   display: flex;
@@ -9,6 +9,27 @@ export const TestTitle = styled.div`
   width: calc(100% + 0.25rem);
 
   padding: 1rem;
+`;
+
+export const Action = styled.div`
+  transition: 0.3s ease opacity;
+  margin-left: 0.5rem;
+  font-size: 1.125rem;
+  opacity: 0.7;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  &:last-child {
+    margin-right: 0.25rem;
+  }
+`;
+
+export const ErrorNotice = styled.div`
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 500;
 `;
 
 export const TestName = styled.span`
@@ -26,86 +47,9 @@ export const Blocks = styled.span`
   color: rgba(255, 255, 255, 0.7);
 `;
 
-export const TestDetails = styled.div`
-  display: flex;
-  flex: 1;
-  margin-left: 1rem;
-  font-size: 1rem;
-`;
-
-const baseTestStyles = css`
-  display: inline-flex;
-  font-weight: 500;
-  margin-left: 0.75rem;
-  align-items: center;
-  font-size: 0.875rem;
-`;
-
-export const PassedTests = styled.div`
-  ${baseTestStyles};
-  color: ${props => props.theme.green};
-`;
-
-export const FailedTests = styled.div`
-  ${baseTestStyles};
-  color: ${props => props.theme.red};
-`;
-
-export const TotalTests = styled.div`
-  ${baseTestStyles};
-  color: rgba(255, 255, 255, 0.5);
-`;
-
-export const RightSide = styled.div`
-  flex: 1;
-  text-align: right;
-`;
-
-export const ProgressBar = styled.div`
-  padding: 0 1rem;
-  box-sizing: border-box;
-  display: flex;
-  height: 3px;
-  width: 100%;
-  overflow: hidden;
-  border-radius: 1px;
-  margin-top: -1px;
-`;
-
-const baseBarStyles = css`
-  transition: 0.3s ease all;
-  border-radius: 1px;
-  height: 3px;
-  flex: ${props => props.count};
-  margin: 0 ${props => (props.count !== 0 ? 3 : -3)}px;
-
-  &:first-child {
-    margin-left: 0rem;
-  }
-
-  &:last-child {
-    margin-right: 0;
-  }
-`;
-
-export const SuccessBar = styled.div`
-  ${baseBarStyles};
-  background-color: ${props => props.theme.green};
-`;
-
-export const FailedBar = styled.div`
-  ${baseBarStyles};
-  background-color: ${props => props.theme.red};
-`;
-
-export const IdleBar = styled.div`
-  ${baseBarStyles};
-  background-color: rgba(255, 255, 255, 0.5);
-`;
-
 export const Tests = styled.div`
   padding: 1rem;
   box-sizing: border-box;
-  overflow-y: auto;
+  overflow-y: overlay;
   height: calc(100% - 2rem);
 `;

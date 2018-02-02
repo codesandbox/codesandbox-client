@@ -1,13 +1,13 @@
 import React from 'react';
 import IconBase from 'react-icons/IconBase';
 
-export default ({ className }) => (
+export default props => (
   <IconBase
-    className={className}
     width="1em"
     height="1em"
     viewBox="0 0 32 32"
     fill="#6CAEDD"
+    {...props}
   >
     <circle transform="translate(8 0)" cx={0} cy={16} r={0}>
       <animate

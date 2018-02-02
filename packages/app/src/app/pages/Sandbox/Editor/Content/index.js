@@ -14,6 +14,17 @@ import Tabs from './Tabs';
 
 import { FullSize } from './elements';
 
+const settings = store => ({
+  fontFamily: store.preferences.settings.fontFamily,
+  fontSize: store.preferences.settings.fontSize,
+  lineHeight: store.preferences.settings.lineHeight,
+  autoCompleteEnabled: store.preferences.settings.autoCompleteEnabled,
+  autoDownloadTypes: store.preferences.settings.autoDownloadTypes,
+  vimMode: store.preferences.settings.vimMode,
+  lintEnabled: store.preferences.settings.lintEnabled,
+  tabWidth: 2,
+});
+
 class EditorPreview extends React.Component {
   state = { width: null, height: null };
 
@@ -116,16 +127,7 @@ class EditorPreview extends React.Component {
       }
     });
     const disposePreferencesHandler = reaction(
-      () => ({
-        fontFamily: store.preferences.settings.fontFamily,
-        fontSize: store.preferences.settings.fontSize,
-        lineHeight: store.preferences.settings.lineHeight,
-        autoCompleteEnabled: store.preferences.settings.autoCompleteEnabled,
-        autoDownloadTypes: store.preferences.settings.autoDownloadTypes,
-        vimMode: store.preferences.settings.vimMode,
-        lintEnabled: store.preferences.settings.lintEnabled,
-        tabWidth: 2,
-      }),
+      () => settings(store),
       newSettings => {
         if (editor.changeSettings) {
           editor.changeSettings(newSettings);
@@ -275,16 +277,7 @@ class EditorPreview extends React.Component {
               currentModule={currentModule}
               width={editorWidth}
               height={editorHeight}
-              settings={{
-                fontFamily: preferences.settings.fontFamily,
-                fontSize: preferences.settings.fontSize,
-                lineHeight: preferences.settings.lineHeight,
-                autoCompleteEnabled: preferences.settings.autoCompleteEnabled,
-                autoDownloadTypes: preferences.settings.autoDownloadTypes,
-                vimMode: preferences.settings.vimMode,
-                lintEnabled: preferences.settings.lintEnabled,
-                codeMirror: preferences.settings.codeMirror,
-              }}
+              settings={settings(store)}
               onNpmDependencyAdded={name => {
                 if (sandbox.owned) {
                   signals.editor.addNpmDependency({ name, isDev: true });

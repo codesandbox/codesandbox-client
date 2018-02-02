@@ -356,7 +356,6 @@ export default class DevTools extends React.PureComponent<Props, State> {
             <Content
               key={title}
               hidden={hidden || title !== this.state.currentPane}
-              evaluateCommand={this.props.evaluateCommand}
               updateStatus={this.updateStatus(title)}
               sandboxId={sandboxId}
             />

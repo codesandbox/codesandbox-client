@@ -289,7 +289,6 @@ async function compile({
       // Testing
       const ttt = Date.now();
       const testRunner = manager.testRunner;
-      testRunner.initialize();
       testRunner.findTests(modules);
       await testRunner.runTests();
       debug(`Test Evaluation time: ${Date.now() - ttt}ms`);

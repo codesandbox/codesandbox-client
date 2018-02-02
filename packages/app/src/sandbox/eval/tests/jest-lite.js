@@ -1,5 +1,5 @@
 // @flow
-import { dispatch, actions } from 'codesandbox-api';
+import { dispatch, actions, listen } from 'codesandbox-api';
 import expect from 'jest-matchers';
 import jestMock from 'jest-mock';
 import jestTestHooks from 'jest-circus';
@@ -40,22 +40,16 @@ function resetTestState() {
 
 export default class TestRunner {
   tests: Array<Module>;
+  ranTests: Set<string>;
   manager: Manager;
-  startTime: number;
-  endTime: number;
+  watching: boolean = true;
 
   constructor(manager: Manager) {
     this.manager = manager;
-    this.startTime = Date.now();
-    this.endTime = Date.now();
+    this.ranTests = new Set();
 
     addEventHandler(this.handleMessage);
-  }
-
-  initialize() {
-    this.resetResults();
-    this.startTime = Date.now();
-    this.endTime = Date.now();
+    listen(this.handleCodeSandboxMessage);
   }
 
   testGlobals(module: Module) {
@@ -73,13 +67,14 @@ export default class TestRunner {
         name: 'add_test',
         testName: `${module.path}:#:${testName}`,
       });
-    test.only = (testName: TestName, fn: TestFn) =>
+    test.only = (testName: TestName, fn: TestFn) => {
       dispatchJest({
         fn,
         mode: 'only',
         name: 'add_test',
         testName: `${module.path}:#:${testName}`,
       });
+    };
 
     return {
       ...jestTestHooks,
@@ -91,6 +86,14 @@ export default class TestRunner {
   }
 
   findTests(modules: { [path: string]: Module }) {
+    if (this.tests) {
+      this.tests.forEach(t => {
+        if (!modules[t.path]) {
+          // A removed test
+          this.sendMessage('remove_file', { path: t.path });
+        }
+      });
+    }
     this.tests = Object.keys(modules)
       .filter(path => {
         let matched = false;
@@ -115,15 +118,23 @@ export default class TestRunner {
   async transpileTests() {
     return Promise.all(
       this.tests.map(async t => {
+        const tModule = this.manager.getTranspiledModule(t, '');
+        if (tModule.compilation && this.ranTests.has(t.path)) {
+          // We cached this test, don't run it again. We only run tests of changed
+          // files
+          return null;
+        }
+
         this.sendMessage('add_file', { path: t.path });
         try {
           await this.manager.transpileModules(t, true);
           return t;
         } catch (e) {
           const error = await this.errorToCodeSandbox(e);
-          this.sendMessage('transpilation_error', { path: t.path, error });
+          this.ranTests.delete(t.path);
+          this.sendMessage('file_error', { path: t.path, error });
 
-          return false;
+          return null;
         }
       })
     );
@@ -138,21 +149,32 @@ export default class TestRunner {
   }
 
   /* istanbul ignore next */
-  async runTests() {
+  async runTests(force: boolean = false) {
+    if (!this.watching && !force) {
+      return;
+    }
+
     this.sendMessage('total_test_start');
-    const tests = (await this.transpileTests()).filter(t => t);
+    // $FlowIssue
+    const tests: Array<Module> = (await this.transpileTests()).filter(t => t);
+
     resetTestState();
 
-    tests.forEach(async t => {
-      try {
-        this.manager.evaluateModule(t);
-      } catch (e) {
-        const error = await this.errorToCodeSandbox(e);
-        this.sendMessage('transpilation_error', { path: t.path, error });
-      }
-    });
+    await Promise.all(
+      tests.map(async t => {
+        try {
+          this.manager.evaluateModule(t);
+          this.ranTests.add(t.path);
+        } catch (e) {
+          this.ranTests.delete(t.path);
+          const error = await this.errorToCodeSandbox(e);
+          this.sendMessage('file_error', { path: t.path, error });
+        }
+      })
+    );
 
     await run();
+
     this.sendMessage('total_test_end');
   }
 
@@ -263,10 +285,24 @@ export default class TestRunner {
         });
       }
       default: {
-        break;
+        return null;
       }
     }
   };
 
-  resetResults = () => {};
+  handleCodeSandboxMessage = message => {
+    if (message) {
+      if (message.type === 'set-test-watching') {
+        this.watching = message.watching;
+      } else if (message.type === 'run-all-tests') {
+        this.ranTests.clear();
+        this.runTests(true);
+      } else if (message.type === 'run-tests') {
+        const path = message.path;
+
+        this.ranTests.delete(path);
+        this.runTests();
+      }
+    }
+  };
 }

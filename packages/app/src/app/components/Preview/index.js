@@ -1,5 +1,7 @@
+// @flow
 import * as React from 'react';
-import { listen, dispatch } from 'codesandbox-api';
+import type { Sandbox, Module, Preferences } from 'common/types';
+import { listen, notifyListeners } from 'codesandbox-api';
 import { debounce } from 'lodash';
 
 import { frameUrl } from 'common/utils/url-generator';
@@ -22,32 +24,72 @@ function sendMessage(sandboxId: string, message: Object) {
   });
 }
 
-export function evaluateInSandbox(sandboxId, command) {
-  sendMessage(sandboxId, {
-    type: 'evaluate',
-    command,
-  });
+export function dispatch(sandboxId: string, message: Object = {}) {
+  const finalMessage = {
+    type: event,
+    ...message,
+    codesandbox: true,
+  };
+  sendMessage(sandboxId, finalMessage);
+  notifyListeners(finalMessage, window);
 }
 
-class BasePreview extends React.Component {
-  constructor(props) {
+export function evaluateInSandbox(sandboxId: string, command: string) {
+  dispatch(sandboxId, { type: 'evalaute', command });
+}
+
+type Props = {
+  onInitialized: (preview: BasePreview) => void, // eslint-disable-line no-use-before-define
+  sandbox: Sandbox,
+  extraModules: { [path: string]: { code: string, path: string } },
+  currentModule: Module,
+  settings: Preferences,
+  initialPath: string,
+  isInProjectView: boolean,
+  onClearErrors: () => void,
+  onAction: (action: Object) => void,
+  onOpenNewWindow: () => void,
+  onToggleProjectView: () => void,
+  isResizing: boolean,
+  alignRight: () => void,
+  alignBottom: () => void,
+  onResize?: (height: number) => void,
+  showNavigation?: boolean,
+  inactive?: boolean,
+};
+
+type State = {
+  frameInitialized: boolean,
+  history: Array<string>,
+  historyPosition: number,
+  urlInAddressBar: string,
+  url: ?string,
+  dragging: boolean,
+};
+
+class BasePreview extends React.Component<Props, State> {
+  constructor(props: Props) {
     super(props);
 
     this.state = {
       frameInitialized: false,
       history: [],
       historyPosition: -1,
-      urlInAddressBar: frameUrl(props.sandboxId, props.initialPath || ''),
+      urlInAddressBar: frameUrl(props.sandbox.id, props.initialPath || ''),
       url: null,
       dragging: false,
     };
+
+    // we need a value that doesn't change when receiving `initialPath`
+    // from the query params, or the iframe will continue to be re-rendered
+    // when the user navigates the iframe app, which shows the loading screen
+    this.initialPath = props.initialPath;
 
     if (props.delay) {
       this.executeCode = debounce(this.executeCode, 800);
     }
 
     frames = [];
-    this.devtools = null;
   }
 
   static defaultProps = {
@@ -55,12 +97,16 @@ class BasePreview extends React.Component {
     delay: true,
   };
 
+  listener: ?Function;
+  disposeInitializer: ?Function;
+  initialPath: string;
+
   componentWillUnmount() {
     if (this.listener) {
       this.listener();
     }
-    if (this.diposeInitialize) {
-      this.diposeInitialize();
+    if (this.disposeInitializer) {
+      this.disposeInitializer();
     }
   }
 
@@ -76,7 +122,7 @@ class BasePreview extends React.Component {
     window.open(this.state.urlInAddressBar, '_blank');
   };
 
-  handleSandboxChange = newId => {
+  handleSandboxChange = (newId: string) => {
     const url = frameUrl(newId, this.props.initialPath);
     this.setState(
       {
@@ -92,7 +138,7 @@ class BasePreview extends React.Component {
     this.handleRefresh();
   };
 
-  handleMessage = (data, source) => {
+  handleMessage = (data: Object, source: any) => {
     if (source) {
       if (data.type === 'initialized') {
         if (frames.indexOf(source) === -1) {
@@ -100,7 +146,7 @@ class BasePreview extends React.Component {
         }
 
         if (!this.state.frameInitialized && this.props.onInitialized) {
-          this.diposeInitialize = this.props.onInitialized(this);
+          this.disposeInitializer = this.props.onInitialized(this);
         }
         this.setState({
           frameInitialized: true,
@@ -128,7 +174,7 @@ class BasePreview extends React.Component {
             if (this.props.onAction) {
               this.props.onAction({
                 ...data,
-                sandboxId: this.props.sandboxId,
+                sandboxId: this.props.sandbox.id,
               });
             }
 
@@ -148,7 +194,7 @@ class BasePreview extends React.Component {
     });
   };
 
-  setDragging = dragging => {
+  setDragging = (dragging: boolean) => {
     this.setState({ dragging });
   };
 
@@ -160,13 +206,13 @@ class BasePreview extends React.Component {
       : getModulePath(sandbox.modules, sandbox.directories, currentModule.id);
   };
 
-  executeCodeImmediately = (initialRender = false) => {
+  executeCodeImmediately = (initialRender: boolean = false) => {
     const settings = this.props.settings;
     const sandbox = this.props.sandbox;
 
     if (settings.clearConsoleEnabled) {
       console.clear(); // eslint-disable-line no-console
-      dispatch({ type: 'clear-console' });
+      dispatch(sandbox.id, { type: 'clear-console' });
     }
 
     // Do it here so we can see the dependency fetching screen if needed
@@ -221,13 +267,14 @@ class BasePreview extends React.Component {
     }
   };
 
-  updateUrl = url => {
+  updateUrl = (url: string) => {
     this.setState({ urlInAddressBar: url });
   };
 
   sendUrl = () => {
     const { urlInAddressBar } = this.state;
 
+    // $FlowIssue
     document.getElementById('sandbox').src = urlInAddressBar;
 
     this.setState({
@@ -241,6 +288,7 @@ class BasePreview extends React.Component {
     const { history, historyPosition } = this.state;
     const url = history[historyPosition];
 
+    // $FlowIssue
     document.getElementById('sandbox').src = url;
 
     this.setState({
@@ -274,7 +322,7 @@ class BasePreview extends React.Component {
     });
   };
 
-  commitUrl = url => {
+  commitUrl = (url: string) => {
     const { history, historyPosition } = this.state;
 
     const currentHistory = history[historyPosition] || '';
