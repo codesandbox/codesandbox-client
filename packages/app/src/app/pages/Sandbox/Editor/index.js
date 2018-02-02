@@ -2,6 +2,7 @@
 import * as React from 'react';
 import SplitPane from 'react-split-pane';
 import type { Sandbox } from 'common/types';
+import { getSandboxOptions } from 'common/url';
 
 import Workspace from './Workspace';
 import Content from './Content';
@@ -17,6 +18,8 @@ type Props = {
 type State = {
   resizing: boolean,
 };
+
+const { expandDevTools } = getSandboxOptions(window.location.href);
 
 export default class ContentSplit extends React.PureComponent<Props, State> {
   state = {
@@ -55,6 +58,7 @@ export default class ContentSplit extends React.PureComponent<Props, State> {
           sandbox={sandbox}
           resizing={resizing}
           match={match}
+          shouldExpandDevTools={expandDevTools}
         />
       </SplitPane>
     );
