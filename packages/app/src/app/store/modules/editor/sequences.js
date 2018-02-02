@@ -19,7 +19,11 @@ export const toggleProjectView = toggle(state`editor.isInProjectView`);
 
 export const closeTab = [closeTabByIndex, actions.setCurrentModuleByTab];
 
-export const clearErrors = set(state`editor.errors`, []);
+export const clearErrors = [
+  set(state`editor.errors`, []),
+  set(state`editor.corrections`, []),
+  set(state`editor.glyphs`, []),
+];
 
 export const moveTab = actions.moveTab;
 
@@ -178,6 +182,7 @@ export const handlePreviewAction = [
     ),
     'show-error': actions.addErrorFromPreview,
     'show-correction': actions.addCorrectionFromPreview,
+    'show-glyph': actions.addGlyphFromPreview,
     'source.module.rename': actions.renameModuleFromPreview,
     'source.dependencies.add': [
       set(props`name`, props`action.dependency`),

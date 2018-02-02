@@ -28,6 +28,7 @@ export default Module({
     changedModuleShortids: [],
     tabs: [],
     errors: [],
+    glyphs: [],
     corrections: [],
     isInProjectView: false,
     forceRender: 0,

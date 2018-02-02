@@ -152,6 +152,24 @@ export function addErrorFromPreview({ state, props, utils }) {
   }
 }
 
+export function addGlyphFromPreview({ state, props, utils }) {
+  const sandbox = state.get('editor.currentSandbox');
+  const module = utils.resolveModule(
+    props.action.path.replace(/^\//, ''),
+    sandbox.modules,
+    sandbox.directories
+  );
+  const glyph = {
+    moduleId: module.id,
+    line: props.action.line,
+    className: props.action.className,
+  };
+
+  if (module) {
+    state.push('editor.glyphs', glyph);
+  }
+}
+
 export function addCorrectionFromPreview({ state, props, utils }) {
   const sandbox = state.get('editor.currentSandbox');
   const module = utils.resolveModule(

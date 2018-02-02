@@ -17,17 +17,41 @@ export type IMessage = {
 
 export type Status = 'idle' | 'running' | 'pass' | 'fail';
 
-type Props = { hidden: boolean };
+type Props = {
+  hidden: boolean,
+  updateStatus: (type: 'warning' | 'error' | 'info' | 'clear') => void,
+};
+
+export type TestError = Error & {
+  matcherResult?: {
+    actual: any,
+    expected: any,
+    name: string,
+    pass: boolean,
+  },
+  mappedErrors?: Array<{
+    fileName: string,
+    _originalFunctionName: string,
+    _originalColumnNumber: number,
+    _originalLineNumber: number,
+    _originalScriptCode: Array<{
+      lineNumber: number,
+      content: string,
+      highlight: boolean,
+    }>,
+  }>,
+};
 
 export type Test = {
   testName: Array<string>,
   duration: ?number,
   status: Status,
-  errors: Array<string>,
+  errors: Array<TestError>,
 };
 
 export type File = {
   fileName: string,
+  transpilationError?: TestError,
   tests: {
     [testName: string]: Test,
   },
@@ -67,6 +91,7 @@ class Tests extends React.Component<Props, State> {
     if (data.type === 'test') {
       switch (data.event) {
         case 'total_test_start': {
+          this.props.updateStatus('clear');
           this.currentDescribeBlocks = [];
           this.setState({
             files: {},
@@ -74,7 +99,25 @@ class Tests extends React.Component<Props, State> {
           });
           break;
         }
-        case 'file_end': {
+        case 'add_file': {
+          this.setState(
+            immer(this.state, state => {
+              state.files[data.path] = {
+                tests: {},
+                fileName: data.path,
+              };
+            })
+          );
+          break;
+        }
+        case 'transpilation_error': {
+          this.setState(
+            immer(this.state, state => {
+              if (state.files[data.path]) {
+                state.files[data.path].transpilationError = data.error;
+              }
+            })
+          );
           break;
         }
         case 'describe_start': {
@@ -122,6 +165,12 @@ class Tests extends React.Component<Props, State> {
         case 'test_end': {
           const testName = [...data.test.blocks, data.test.name];
 
+          if (data.test.status === 'fail') {
+            this.props.updateStatus('error');
+          } else if (data.test.status === 'pass') {
+            this.props.updateStatus('info');
+          }
+
           this.setState(
             immer(this.state, state => {
               const test =
@@ -157,6 +206,10 @@ class Tests extends React.Component<Props, State> {
     // Simple memoization
     if (lastFile && file === lastFile.file && lastFile.status != null) {
       return lastFile.status;
+    }
+
+    if (file.transpilationError) {
+      return 'fail';
     }
 
     const tests = file.tests;

@@ -1,8 +1,8 @@
 // @flow
 import React from 'react';
-import type { Test } from '../';
+import type { Test } from '../../../';
 
-import { StatusElements } from '../elements';
+import { StatusElements } from '../../../elements';
 import { Block, TestName } from './elements';
 
 type Props = {
@@ -16,7 +16,7 @@ export default ({ test }: Props) => {
   const testName = testParts.pop();
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center' }}>
+    <div style={{ display: 'flex', flex: 1, alignItems: 'center' }}>
       <StatusElement />
       {testParts.map((part, i) => (
         <Block last={i === testParts.length - 1} key={part}>

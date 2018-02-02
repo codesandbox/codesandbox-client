@@ -30,6 +30,7 @@ export const TestContainer = Navigation.extend`
 export const TestDetails = styled.div`
   flex: 3;
   background-color: ${props => props.theme.background};
+  height: 100%;
 `;
 
 const iconStyles = css`

@@ -13,6 +13,34 @@ export const CodeContainer = styled.div`
   height: 100%;
   z-index: 30;
 
+  .jest-success {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:after {
+      content: '';
+      width: 50%;
+      height: 50%;
+      background-color: ${theme.green()};
+      border-radius: 50%;
+    }
+  }
+
+  .jest-error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:after {
+      content: '';
+      width: 50%;
+      height: 50%;
+      background-color: ${theme.red()};
+      border-radius: 50%;
+    }
+  }
+
   .margin-view-overlays {
     background: ${theme.background2()};
   }

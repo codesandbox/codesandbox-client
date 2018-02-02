@@ -1,5 +1,5 @@
 // @flow
-import { dispatch } from 'codesandbox-api';
+import { dispatch, actions } from 'codesandbox-api';
 import expect from 'jest-matchers';
 import jestMock from 'jest-mock';
 import jestTestHooks from 'jest-circus';
@@ -14,6 +14,9 @@ import {
 
 import type Manager from '../manager';
 import type { Module } from '../entities/module';
+
+import parse from '../../react-error-overlay/utils/parser';
+import map from '../../react-error-overlay/utils/mapper';
 import type {
   Event,
   TestEntry,
@@ -110,14 +113,24 @@ export default class TestRunner {
 
   /* istanbul ignore next */
   async transpileTests() {
-    for (let t of this.tests) {
-      await this.manager.transpileModules(t, true);
-    }
+    return Promise.all(
+      this.tests.map(async t => {
+        this.sendMessage('add_file', { path: t.path });
+        try {
+          await this.manager.transpileModules(t, true);
+          return t;
+        } catch (e) {
+          const error = await this.errorToCodeSandbox(e);
+          this.sendMessage('transpilation_error', { path: t.path, error });
+
+          return false;
+        }
+      })
+    );
   }
 
   sendMessage(event: string, message: any = {}) {
     dispatch({
-      file: this.filename,
       type: 'test',
       event,
       ...message,
@@ -127,21 +140,25 @@ export default class TestRunner {
   /* istanbul ignore next */
   async runTests() {
     this.sendMessage('total_test_start');
-    await this.transpileTests();
+    const tests = (await this.transpileTests()).filter(t => t);
     resetTestState();
 
-    for (let i = 0; i < this.tests.length; i++) {
-      const t = this.tests[i];
+    tests.forEach(async t => {
+      try {
+        this.manager.evaluateModule(t);
+      } catch (e) {
+        const error = await this.errorToCodeSandbox(e);
+        this.sendMessage('transpilation_error', { path: t.path, error });
+      }
+    });
 
-      this.manager.evaluateModule(t);
-    }
     await run();
     this.sendMessage('total_test_end');
   }
 
-  errorToCodeSandbox(
+  async errorToCodeSandbox(
     error: Error & {
-      matcherResult: {
+      matcherResult?: {
         actual: any,
         expected: any,
         name: string,
@@ -150,6 +167,9 @@ export default class TestRunner {
       },
     }
   ) {
+    const parsedError = parse(error);
+    const mappedErrors = await map(parsedError);
+
     return {
       message: error.message,
       stack: error.stack,
@@ -159,6 +179,7 @@ export default class TestRunner {
         name: error.matcherResult.name,
         pass: error.matcherResult.pass,
       },
+      mappedErrors,
     };
   }
 
@@ -179,29 +200,51 @@ export default class TestRunner {
     return blocks.reverse();
   }
 
-  testToCodeSandbox(test: TestEntry) {
+  async testToCodeSandbox(test: TestEntry) {
     const [path, name] = test.name.split(':#:');
+
+    const errors = await Promise.all(test.errors.map(this.errorToCodeSandbox));
     return {
       name,
       path,
       duration: test.duration,
       status: test.status || 'running',
-      errors: test.errors.map(this.errorToCodeSandbox),
+      errors,
       blocks: this.getDescribeBlocks(test),
     };
   }
 
-  handleMessage = (message: Event, state) => {
+  handleMessage = async (message: Event) => {
     switch (message.name) {
       case 'test_start': {
+        const test = await this.testToCodeSandbox(message.test);
         return this.sendMessage('test_start', {
-          test: this.testToCodeSandbox(message.test),
+          test,
         });
       }
       case 'test_failure':
       case 'test_success': {
+        const test = await this.testToCodeSandbox(message.test);
+
+        if (test.errors) {
+          test.errors.forEach(err => {
+            if (err.mappedErrors) {
+              const { mappedErrors } = err;
+              const mappedError = mappedErrors[0];
+
+              dispatch(
+                actions.error.show(err.name || 'Jest Error', err.message, {
+                  line: mappedError._originalLineNumber,
+                  column: mappedError._originalColumnNumber,
+                  path: test.path,
+                  payload: {},
+                })
+              );
+            }
+          });
+        }
         return this.sendMessage('test_end', {
-          test: this.testToCodeSandbox(message.test),
+          test,
         });
       }
       case 'start_describe_definition': {

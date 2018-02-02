@@ -419,6 +419,30 @@ class MonacoEditor extends React.Component<Props, State> {
     }
   };
 
+  setGlyphs = (glyphs: Array<{ line: number, className: string }>) => {
+    if (glyphs.length > 0) {
+      const glyphMarkers = glyphs
+        .map(glyph => {
+          if (glyph) {
+            return {
+              range: new this.monaco.Range(glyph.line, 1, glyph.line, 1),
+              options: {
+                isWholeLine: true,
+                glyphMarginClassName: glyph.className,
+              },
+            };
+          }
+
+          return null;
+        })
+        .filter(x => x);
+
+      this.editor.deltaDecorations([], glyphMarkers);
+    } else {
+      this.editor.deltaDecorations([], []);
+    }
+  };
+
   setupTypeWorker = () => {
     this.typingsFetcherWorker = new TypingsFetcherWorker();
 
@@ -905,6 +929,7 @@ class MonacoEditor extends React.Component<Props, State> {
       formatOnPaste: true,
       lineHeight: (settings.lineHeight || 1.5) * settings.fontSize,
       folding: true,
+      glyphMargin: true,
     };
   };
 

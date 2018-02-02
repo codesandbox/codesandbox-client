@@ -137,7 +137,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
   updateStatus = (title: string) => (
     status: 'warning' | 'error' | 'info' | 'clear'
   ) => {
-    if (!this.state.hidden) {
+    if (!this.state.hidden && this.state.currentPane === title) {
       return;
     }
 
@@ -155,6 +155,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
 
     this.setState({
       status: {
+        ...this.state.status,
         [title]: {
           type: newStatus,
           unread: currentStatus.unread + (status !== 'clear' ? 1 : 0),
@@ -268,7 +269,16 @@ export default class DevTools extends React.PureComponent<Props, State> {
   };
 
   setPane = (title: string) => {
-    this.setState({ currentPane: title });
+    this.setState({
+      currentPane: title,
+      status: {
+        ...this.state.status,
+        [title]: {
+          type: 'info',
+          unread: 0,
+        },
+      },
+    });
   };
 
   node: HTMLElement;
@@ -347,7 +357,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
               key={title}
               hidden={hidden || title !== this.state.currentPane}
               evaluateCommand={this.props.evaluateCommand}
-              updateStatus={this.updateStatus(this.state.currentPane)}
+              updateStatus={this.updateStatus(title)}
               sandboxId={sandboxId}
             />
           );

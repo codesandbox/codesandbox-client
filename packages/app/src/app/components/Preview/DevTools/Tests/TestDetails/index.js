@@ -20,30 +20,11 @@ import {
 import { StatusElements } from '../elements';
 
 import TestBlock from './TestBlock';
+import ErrorDetails from './ErrorDetails';
 
 type Props = {
   file: ?File,
   status: Status,
-};
-
-const niceStatus = (status: Status) => {
-  switch (status) {
-    case 'fail': {
-      return 'Failed';
-    }
-    case 'pass': {
-      return 'Success';
-    }
-    case 'idle': {
-      return 'Waiting...';
-    }
-    case 'running': {
-      return 'Running';
-    }
-    default: {
-      return 'Unknown Status';
-    }
-  }
 };
 
 export default ({ file, status }: Props) => {
@@ -77,19 +58,23 @@ export default ({ file, status }: Props) => {
   );
 
   return (
-    <div>
+    <div style={{ height: '100%' }}>
       <TestTitle>
         <Element />
         <Blocks>{parts.join('/')}/</Blocks>
         <TestName>{title}</TestName>
-        <TestDetails>
-          <PassedTests>{passedCount} passed</PassedTests>
-          <FailedTests>{failedCount} failed</FailedTests>
-          <TotalTests>{totalCount} total</TotalTests>
-          <RightSide>
-            <TotalTests>duration: {totalDuration}ms</TotalTests>
-          </RightSide>
-        </TestDetails>
+        {!file.transpilationError && (
+          <TestDetails>
+            <PassedTests>{passedCount} passed</PassedTests>
+            {failedCount !== 0 && (
+              <FailedTests>{failedCount} failed</FailedTests>
+            )}
+            <TotalTests>{totalCount} total</TotalTests>
+            <RightSide>
+              <TotalTests>duration: {totalDuration}ms</TotalTests>
+            </RightSide>
+          </TestDetails>
+        )}
       </TestTitle>
       <ProgressBar>
         <SuccessBar count={passedCount} />
@@ -97,13 +82,17 @@ export default ({ file, status }: Props) => {
         <IdleBar count={idleCount} />
       </ProgressBar>
 
-      <Tests style={{ overflowY: 'auto' }}>
-        {Object.keys(file.tests).map(tName => {
-          // $FlowIssue
-          const test = file.tests[tName];
-
-          return <TestBlock key={tName} test={test} />;
-        })}
+      <Tests>
+        {file.transpilationError ? (
+          <ErrorDetails path={file.fileName} error={file.transpilationError} />
+        ) : (
+          Object.keys(file.tests).map(tName => {
+            // $FlowIssue
+            const test = file.tests[tName];
+            // $FlowIssue
+            return <TestBlock key={tName} path={file.fileName} test={test} />;
+          })
+        )}
       </Tests>
     </div>
   );

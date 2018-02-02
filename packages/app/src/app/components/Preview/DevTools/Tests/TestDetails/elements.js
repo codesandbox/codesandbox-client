@@ -105,4 +105,7 @@ export const IdleBar = styled.div`
 
 export const Tests = styled.div`
   padding: 1rem;
+  box-sizing: border-box;
+  overflow-y: auto;
+  height: calc(100% - 2rem);
 `;

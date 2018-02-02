@@ -113,6 +113,13 @@ export default {
       moduleId: types.string,
     })
   ),
+  glyphs: types.array(
+    types.model({
+      line: types.number,
+      className: types.string,
+      moduleId: types.string,
+    })
+  ),
   corrections: types.array(
     types.model({
       column: types.maybe(types.number),

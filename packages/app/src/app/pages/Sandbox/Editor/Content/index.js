@@ -99,6 +99,14 @@ class EditorPreview extends React.Component {
         }
       }
     );
+    const disposeGlyphsHandler = reaction(
+      () => store.editor.glyphs.map(glyph => glyph),
+      glyphs => {
+        if (editor.setGlyphs) {
+          editor.setGlyphs(glyphs);
+        }
+      }
+    );
     const disposeModulesHandler = reaction(this.detectStructureChange, () => {
       if (isChangingSandbox) {
         return;
@@ -184,6 +192,7 @@ class EditorPreview extends React.Component {
       disposeModuleHandler();
       disposeToggleDevtools();
       disposeResizeHandler();
+      disposeGlyphsHandler();
     };
   };
 
