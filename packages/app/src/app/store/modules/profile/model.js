@@ -45,5 +45,5 @@ export default {
   currentSandboxesPage: types.number,
   currentLikedSandboxesPage: types.number,
   isLoadingSandboxes: types.boolean,
-  sandboxToDeleteIndex: types.maybe(types.number),
+  sandboxToDeleteId: types.maybe(types.string),
 };

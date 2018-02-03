@@ -22,8 +22,8 @@ const getShowcasedSandbox = sequence('getShowcasedSandbox', [
 ]);
 
 export const showDeleteSandboxModal = [
-  set(state`profile.sandboxToDeleteIndex`, props`index`),
-  set(state`currentModal`, 'deleteSandbox'),
+  set(state`profile.sandboxToDeleteId`, props`index`),
+  set(state`currentModal`, 'deleteProfileSandbox'),
 ];
 
 export const openSelectSandboxModal = [
@@ -91,9 +91,10 @@ export const loadLikedSandboxes = [
 
 export const deleteSandbox = [
   set(props`sandboxToDeleteIndex`, state`profile.sandboxToDeleteIndex`),
-  set(state`profile.sandboxToDeleteIndex`, null),
   set(state`profile.isLoadingSandboxes`, true),
+  set(state`currentModal`, null),
   actions.deleteSandbox,
+  set(state`profile.sandboxToDeleteId`, null),
   set(props`page`, state`profile.currentSandboxesPage`),
   set(props`force`, true),
   loadSandboxes,

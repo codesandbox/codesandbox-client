@@ -2,12 +2,8 @@ export function getUser({ api, props }) {
   return api.get(`/users/${props.username}`).then(data => ({ profile: data }));
 }
 
-export function deleteSandbox({ api, state, props }) {
-  const username = state.get('user.username');
-  const page = state.get('profile.currentSandboxesPage');
-  const sandboxId = state.get(
-    `profile.sandboxes.${username}.${page}.${props.sandboxToDeleteIndex}.id`
-  );
+export function deleteSandbox({ api, state }) {
+  const sandboxId = state.get(`profile.sandboxToDeleteId`);
 
   return api
     .request({
