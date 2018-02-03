@@ -29,7 +29,7 @@ class DirectoryEntry extends React.Component {
       showDeleteDirectoryModal: false,
       showDeleteModuleModal: false,
       moduleToDeleteTitle: null,
-      moduleToDeleteId: null,
+      moduleToDeleteShortid: null,
     };
   }
 
@@ -82,10 +82,10 @@ class DirectoryEntry extends React.Component {
     this.props.signals.files.moduleRenamed({ moduleShortid, title });
   };
 
-  deleteModule = (id, title) => {
+  deleteModule = (shortid, title) => {
     this.setState({
       showDeleteModuleModal: true,
-      moduleToDeleteId: id,
+      moduleToDeleteShortid: shortid,
       moduleToDeleteTitle: title,
     });
   };
@@ -220,7 +220,9 @@ class DirectoryEntry extends React.Component {
                   this.setState({
                     showDeleteDirectoryModal: false,
                   });
-                  this.props.signals.files.directoryDeleted({ id });
+                  this.props.signals.files.directoryDeleted({
+                    moduleShortid: shortid,
+                  });
                 }}
               />
             </Modal>
@@ -278,7 +280,7 @@ class DirectoryEntry extends React.Component {
                   showDeleteModuleModal: false,
                 });
                 this.props.signals.files.moduleDeleted({
-                  id: this.state.moduleToDeleteId,
+                  moduleShortid: this.state.moduleToDeleteShortid,
                 });
               }}
             />

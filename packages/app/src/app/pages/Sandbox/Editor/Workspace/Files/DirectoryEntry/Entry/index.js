@@ -50,9 +50,9 @@ class Entry extends React.PureComponent {
   };
 
   delete = () => {
-    const { id, title, deleteEntry } = this.props;
+    const { shortid, title, deleteEntry } = this.props;
     if (deleteEntry) {
-      return deleteEntry(id, title);
+      return deleteEntry(shortid, title);
     }
     return false;
   };

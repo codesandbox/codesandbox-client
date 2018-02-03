@@ -321,11 +321,13 @@ export function signOutGithubIntegration({ api }) {
   return api.delete(`/users/current_user/integrations/github`).then(() => {});
 }
 
-// If package.json doesn't exist we generate one.
 export function createPackageJSON({ props }) {
   const { sandbox } = props;
 
   const code = generateFileFromSandbox(sandbox);
 
-  return { newCode: code, title: 'package.json' };
+  return {
+    title: 'package.json',
+    newCode: code,
+  };
 }

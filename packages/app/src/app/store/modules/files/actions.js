@@ -5,7 +5,9 @@ import getDefinition from 'common/templates';
 export function whenModuleIsSelected({ state, props, path }) {
   const currentModule = state.get('editor.currentModule');
 
-  return currentModule.id === props.id ? path.true() : path.false();
+  return currentModule.shortid === props.moduleShortid
+    ? path.true()
+    : path.false();
 }
 
 export function saveNewDirectoryDirectoryShortid({ api, state, props, path }) {
@@ -193,7 +195,7 @@ export function removeDirectory({ state, props }) {
   const sandboxId = state.get('editor.currentId');
   const sandbox = state.get('editor.currentSandbox');
   const directoryIndex = sandbox.directories.findIndex(
-    directoryEntry => directoryEntry.id === props.id
+    directoryEntry => directoryEntry.shortid === props.moduleShortid
   );
   const removedDirectory = clone(sandbox.directories[directoryIndex]);
 
@@ -260,10 +262,12 @@ export function saveDirectory({ api, state, props, path }) {
 export function whenCloseTab({ state, props, path }) {
   const sandbox = state.get('editor.currentSandbox');
   const module = sandbox.modules.find(
-    moduleEntry => moduleEntry.id === props.id
+    moduleEntry => moduleEntry.shortid === props.moduleShortid
   );
   const tabs = state.get('editor.tabs');
-  const tabIndex = tabs.findIndex(tab => tab.moduleShortid === module.shortid);
+  const tabIndex = module
+    ? tabs.findIndex(tab => tab.moduleShortid === module.shortid)
+    : -1;
 
   return tabIndex >= 0 ? path.true({ tabIndex }) : path.false();
 }
@@ -272,7 +276,7 @@ export function removeModule({ state, props }) {
   const sandboxId = state.get('editor.currentId');
   const sandbox = state.get('editor.currentSandbox');
   const moduleIndex = sandbox.modules.findIndex(
-    moduleEntry => moduleEntry.id === props.id
+    moduleEntry => moduleEntry.shortid === props.moduleShortid
   );
   const moduleCopy = clone(sandbox.modules[moduleIndex]);
 
@@ -333,7 +337,7 @@ export function renameModule({ state, props }) {
 export function revertModuleName({ state, props }) {
   const sandbox = state.get('editor.currentSandbox');
   const moduleIndex = sandbox.modules.findIndex(
-    moduleEntry => moduleEntry.id === props.id
+    moduleEntry => moduleEntry.shortid === props.moduleShortid
   );
 
   state.set(

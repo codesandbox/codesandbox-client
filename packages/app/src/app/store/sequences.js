@@ -31,6 +31,10 @@ export const ensurePackageJSON = [
       {
         true: [],
         false: [
+          set(props`backupTitle`, props`title`),
+          set(props`backupCode`, props`newCode`),
+          set(props`backupModuleShortid`, props`moduleShortid`),
+          set(props`backupDirectoryShortid`, props`directoryShortid`),
           actions.createPackageJSON,
           // TODO deduplicate this from files/sequences.js. There was a circular dependency problem
           createOptimisticModule,
@@ -43,6 +47,10 @@ export const ensurePackageJSON = [
             success: [updateOptimisticModule],
             error: [removeOptimisticModule],
           },
+          set(props`title`, props`backupTitle`),
+          set(props`newCode`, props`backupCode`),
+          set(props`moduleShortid`, props`backupModuleShortid`),
+          set(props`directoryShortid`, props`backupDirectoryShortid`),
         ],
       },
     ],
