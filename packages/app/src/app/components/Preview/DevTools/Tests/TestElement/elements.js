@@ -134,9 +134,21 @@ export const Container = styled.div`
     props.selected &&
     css`
       border-left-color: ${props.theme.secondary};
+      background-color: rgba(0, 0, 0, 0.3);
+
+      ${Test} {
+        ${TestName} {
+          background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        ${Block} {
+          color: rgba(255, 255, 255, 0.8);
+        }
+      }
 
       &:hover {
         border-left-color: ${props.theme.secondary};
+        background-color: rgba(0, 0, 0, 0.3);
       }
     `};
 `;

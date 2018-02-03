@@ -32,7 +32,9 @@ const white = 'rgba(255, 255, 255, 0.8)';
 const formatDiffMessage = (error: TestError, path: string) => {
   let finalMessage: string = '';
   if (error.matcherResult) {
-    finalMessage = `<span style="color:rgba(255, 255, 255, 0.5);">${error.message
+    finalMessage = `<span style="color:rgba(255, 255, 255, 0.5);">${escapeHtml(
+      error.message
+    )
       .replace(/(expected)/m, `<span style="color:${theme.green()}">$1</span>`)
       .replace(/(received)/m, `<span style="color:${theme.red()}">$1</span>`)
       .replace(/(Difference:)/m, `<span style="color:${white}">$1</span>`)

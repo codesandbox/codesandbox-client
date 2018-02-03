@@ -308,7 +308,7 @@ class EditorPreview extends React.Component {
             sandboxId={sandbox.id}
             shouldExpandDevTools={store.preferences.showDevtools}
             zenMode={preferences.settings.zenMode}
-            setDevToolsOpen={() =>
+            setDevToolsOpen={open =>
               this.props.signals.preferences.setDevtoolsOpen({ open })
             }
           />

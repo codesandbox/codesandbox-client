@@ -74,7 +74,6 @@ export default ({
               <SyncIcon
                 style={{ color: watching ? 'white' : 'inherit' }}
                 onClick={toggleWatching}
-                active={watching}
               />
             </Tooltip>
             <Tooltip title="Run All Test">

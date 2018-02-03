@@ -5,6 +5,7 @@ import jestMock from 'jest-mock';
 import jestTestHooks from 'jest-circus';
 import run from 'jest-circus/build/run';
 import { makeDescribe } from 'jest-circus/build/utils';
+
 import {
   addEventHandler,
   setState,
@@ -180,13 +181,7 @@ export default class TestRunner {
 
   async errorToCodeSandbox(
     error: Error & {
-      matcherResult?: {
-        actual: any,
-        expected: any,
-        name: string,
-        pass: boolean,
-        message: Function,
-      },
+      matcherResult?: boolean,
     }
   ) {
     const parsedError = parse(error);
@@ -195,12 +190,7 @@ export default class TestRunner {
     return {
       message: error.message,
       stack: error.stack,
-      matcherResult: error.matcherResult && {
-        actual: error.matcherResult.actual,
-        expected: error.matcherResult.expected,
-        name: error.matcherResult.name,
-        pass: error.matcherResult.pass,
-      },
+      matcherResult: !!error.matcherResult,
       mappedErrors,
     };
   }
@@ -265,9 +255,14 @@ export default class TestRunner {
             }
           });
         }
-        return this.sendMessage('test_end', {
-          test,
-        });
+        try {
+          return this.sendMessage('test_end', {
+            test,
+          });
+        } catch (e) {
+          const error = await this.errorToCodeSandbox(e);
+          return this.sendMessage('file_error', { path: test.path, error });
+        }
       }
       case 'start_describe_definition': {
         return this.sendMessage('describe_start', {
@@ -290,7 +285,7 @@ export default class TestRunner {
     }
   };
 
-  handleCodeSandboxMessage = message => {
+  handleCodeSandboxMessage = (message: any) => {
     if (message) {
       if (message.type === 'set-test-watching') {
         this.watching = message.watching;

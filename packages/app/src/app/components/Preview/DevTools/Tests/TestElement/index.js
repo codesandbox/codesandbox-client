@@ -58,11 +58,11 @@ class TestElement extends Component<Props> {
     const StatusElement = StatusElements[status];
 
     return (
-      <Container selected={file === this.props.selectedFile}>
-        <FileData
-          selected={this.props.selectedFile === this.props.file}
-          onClick={this.selectFile}
-        >
+      <Container
+        onClick={this.selectFile}
+        selected={file === this.props.selectedFile}
+      >
+        <FileData selected={this.props.selectedFile === this.props.file}>
           <StatusElement />
           <Path>{splittedPath.join('/')}/</Path>
           <FileName>{fileName}</FileName>

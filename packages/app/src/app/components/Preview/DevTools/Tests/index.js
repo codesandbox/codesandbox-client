@@ -28,12 +28,7 @@ type Props = {
 };
 
 export type TestError = Error & {
-  matcherResult?: {
-    actual: any,
-    expected: any,
-    name: string,
-    pass: boolean,
-  },
+  matcherResult?: boolean,
   mappedErrors?: Array<{
     fileName: string,
     _originalFunctionName: string,
@@ -191,35 +186,37 @@ class Tests extends React.Component<Props, State> {
           break;
         }
         case 'test_start': {
-          const testName = [...data.test.blocks, data.test.name];
+          const test = data.test;
+          const testName = [...test.blocks, test.name];
 
           this.setState(
             immer(this.state, state => {
-              const test =
-                state.files[data.test.path].tests[testName.join('||||')];
-              test.status = 'running';
-              test.running = true;
+              const currentTest =
+                state.files[test.path].tests[testName.join('||||')];
+              currentTest.status = 'running';
+              currentTest.running = true;
             })
           );
           break;
         }
         case 'test_end': {
-          const testName = [...data.test.blocks, data.test.name];
+          const test = data.test;
+          const testName = [...test.blocks, test.name];
 
-          if (data.test.status === 'fail') {
+          if (test.status === 'fail') {
             this.props.updateStatus('error');
-          } else if (data.test.status === 'pass') {
+          } else if (test.status === 'pass') {
             this.props.updateStatus('info');
           }
 
           this.setState(
             immer(this.state, state => {
-              const test =
-                state.files[data.test.path].tests[testName.join('||||')];
-              test.status = data.test.status;
-              test.running = false;
-              test.errors = data.test.errors;
-              test.duration = data.test.duration;
+              const existingTest =
+                state.files[test.path].tests[testName.join('||||')];
+              existingTest.status = test.status;
+              existingTest.running = false;
+              existingTest.errors = test.errors;
+              existingTest.duration = test.duration;
             })
           );
           break;

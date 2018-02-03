@@ -28,9 +28,8 @@ const Navigation = ({ store, signals }) => (
       const Icon = IDS_TO_ICONS[id];
       const selected = id === store.workspace.openedWorkspaceItem;
       return (
-        <Tooltip position="right" title={name}>
+        <Tooltip key={id} position="right" title={name}>
           <IconContainer
-            key={id}
             selected={selected}
             onClick={() => {
               if (selected) {
