@@ -129,6 +129,11 @@ export default class TestRunner {
         this.sendMessage('add_file', { path: t.path });
         try {
           await this.manager.transpileModules(t, true);
+
+          if (!t.source) {
+            this.ranTests.delete(t.path);
+          }
+
           return t;
         } catch (e) {
           const error = await this.errorToCodeSandbox(e);
