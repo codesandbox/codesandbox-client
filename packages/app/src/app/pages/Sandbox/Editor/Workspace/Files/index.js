@@ -65,14 +65,7 @@ class Files extends React.PureComponent<Props> {
       if (!file) {
         return;
       }
-      console.log('files', file);
 
-      // const fileReader = new FileReader();
-      // fileReader.onload = (e) => {
-      //   console.log(e.target.result);
-      // }
-      //
-      // fileReader.readAsDataURL(file)
       const payload = new FormData();
       payload.append('type', 'file');
       payload.append('image', file);
@@ -85,8 +78,21 @@ class Files extends React.PureComponent<Props> {
         },
         body: payload,
       })
-        .then(response => response.json())
-        .then(json => console.log(json));
+        .then(response => {
+          if (response.status === 200 || response.status === 0) {
+            return response.json();
+          } else {
+            return Promise.reject(new Error(`Error uploading to imgur.`));
+          }
+        })
+        .then(json => {
+          const code = json.data.link;
+          const title = file.name;
+
+          // create the file with the title it was uploaded as
+          this.directory.createModule(undefined, title, true, code);
+        })
+        .catch(error => console.error(`Failed to upload image: ${error}`));
     };
     fileSelector.click();
   };
