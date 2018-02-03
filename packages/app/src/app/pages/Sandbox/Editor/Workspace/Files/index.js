@@ -80,7 +80,7 @@ class Files extends React.PureComponent<Props> {
         body: payload,
       })
         .then(response => {
-          if (response.status === 200 || response.status === 0) {
+          if (response.status === 200) {
             return response.json();
           }
           return Promise.reject(new Error(`Error uploading to imgur.`));
