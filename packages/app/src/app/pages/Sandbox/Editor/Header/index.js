@@ -3,7 +3,7 @@ import { inject, observer } from 'mobx-react';
 
 import Save from 'react-icons/lib/md/save';
 import Fork from 'react-icons/lib/go/repo-forked';
-import Download from 'react-icons/lib/go/cloud-download';
+import Download from 'react-icons/lib/md/file-download';
 import PlusIcon from 'react-icons/lib/go/plus';
 import GithubIcon from 'react-icons/lib/go/mark-github';
 import HeartIcon from 'react-icons/lib/fa/heart-o';
@@ -55,6 +55,17 @@ function Header({ store, signals }) {
           title="Fork"
           Icon={Fork}
         />
+
+        <Action
+          title="Share"
+          Icon={ShareIcon}
+          onClick={() =>
+            signals.modalOpened({
+              modal: 'share',
+            })
+          }
+        />
+
         {(sandbox.owned || !store.editor.isAllModulesSynced) && (
           <Action
             onClick={
@@ -65,19 +76,15 @@ function Header({ store, signals }) {
             placeholder={
               store.editor.isAllModulesSynced ? 'All modules are saved' : false
             }
-            title="Save"
+            tooltip="Save"
             Icon={Save}
           />
         )}
 
         <Action
-          title="Share"
-          Icon={ShareIcon}
-          onClick={() =>
-            signals.modalOpened({
-              modal: 'share',
-            })
-          }
+          tooltip="Download"
+          Icon={Download}
+          onClick={() => signals.editor.createZipClicked()}
         />
       </Left>
 
