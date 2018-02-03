@@ -72,6 +72,7 @@ function PricingChoice({ store, signals, badge }) {
                 subscribe={token =>
                   signals.patron.createSubscriptionClicked({ token })
                 }
+                isLoading={store.patron.isUpdatingSubscription}
                 name={store.user.name}
               />
               <Notice>

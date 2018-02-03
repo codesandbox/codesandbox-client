@@ -68,8 +68,10 @@ class CheckoutForm extends React.PureComponent {
   };
 
   render() {
-    const { buttonName, loadingText } = this.props;
-    const { errors, loading } = this.state;
+    const { buttonName, loadingText, isLoading } = this.props;
+    const { errors, loading: stateLoading } = this.state;
+
+    const loading = isLoading || stateLoading;
 
     return (
       <form onSubmit={this.handleSubmit}>
