@@ -60,6 +60,7 @@ class Files extends React.PureComponent<Props> {
   uploadImage = () => {
     const fileSelector = document.createElement('input');
     fileSelector.setAttribute('type', 'file');
+    fileSelector.setAttribute('accept', 'image/*');
     fileSelector.onchange = event => {
       const file = event.target.files[0];
       if (!file) {
