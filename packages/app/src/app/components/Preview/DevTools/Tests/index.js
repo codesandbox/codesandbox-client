@@ -348,19 +348,21 @@ class Tests extends React.Component<Props, State> {
             tests={tests}
           />
 
-          {Object.keys(this.state.files)
-            .sort()
-            .map(fileName => (
-              <TestElement
-                selectFile={this.selectFile}
-                selectedFile={selectedFile}
-                file={this.state.files[fileName]}
-                status={fileStatuses[fileName]}
-                key={fileName}
-                runTests={this.runTests}
-                openFile={this.openFile}
-              />
-            ))}
+          <div style={{ marginTop: '1rem' }}>
+            {Object.keys(this.state.files)
+              .sort()
+              .map(fileName => (
+                <TestElement
+                  selectFile={this.selectFile}
+                  selectedFile={selectedFile}
+                  file={this.state.files[fileName]}
+                  status={fileStatuses[fileName]}
+                  key={fileName}
+                  runTests={this.runTests}
+                  openFile={this.openFile}
+                />
+              ))}
+          </div>
         </TestContainer>
         <TestDetails>
           {selectedFile ? (

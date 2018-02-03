@@ -57,8 +57,8 @@ export default ({
       <Container>
         <Title>
           {running
-            ? 'Running Tests...'
-            : watching ? 'Watching Files...' : 'Idle'}
+            ? 'Running Test Suits...'
+            : watching ? 'Watching Test Suites...' : 'Test Suites'}
           <TestData>
             <TestSummaryText
               failedCount={fileTestFailCount}
@@ -70,14 +70,14 @@ export default ({
             <div style={{ fontSize: '.875rem' }}>
               {totalTestCount !== 0 && `${totalDuration}ms`}
             </div>
-            <Tooltip title="Toggle Watch for Changes">
+            <Tooltip title="Toggle File Watching">
               <SyncIcon
                 style={{ color: watching ? 'white' : 'inherit' }}
                 onClick={toggleWatching}
                 active={watching}
               />
             </Tooltip>
-            <Tooltip title="Run All Tests">
+            <Tooltip title="Run All Test">
               <PlayIcon onClick={runAllTests} />
             </Tooltip>
           </Actions>

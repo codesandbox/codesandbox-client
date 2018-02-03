@@ -7,7 +7,17 @@ import FileIcon from 'react-icons/lib/md/insert-drive-file';
 
 import type { File, Status } from '../';
 
-import { Container, FileName, Path, FileData, Actions } from './elements';
+import {
+  Container,
+  FileName,
+  Path,
+  Tests,
+  FileData,
+  Test,
+  Block,
+  TestName,
+  Actions,
+} from './elements';
 
 import { StatusElements } from '../elements';
 
@@ -43,10 +53,12 @@ class TestElement extends Component<Props> {
     const splittedPath = file.fileName.split('/');
     const fileName = splittedPath.pop();
 
+    const testKeys = Object.keys(file.tests);
+
     const StatusElement = StatusElements[status];
 
     return (
-      <Container>
+      <Container selected={file === this.props.selectedFile}>
         <FileData
           selected={this.props.selectedFile === this.props.file}
           onClick={this.selectFile}
@@ -63,6 +75,27 @@ class TestElement extends Component<Props> {
             </Tooltip>
           </Actions>
         </FileData>
+
+        <Tests>
+          {testKeys.filter(t => file.tests[t].status === 'fail').map(tName => {
+            const test = file.tests[tName];
+
+            const TestStatusElement = StatusElements[test.status];
+            const testParts = [...test.testName];
+            const testName = testParts.pop();
+            return (
+              <Test key={tName}>
+                <TestStatusElement />
+                {testParts.map((part, i) => (
+                  <Block last={i === testParts.length - 1} key={part}>
+                    <span style={{ zIndex: 10 }}>{part}</span>
+                  </Block>
+                ))}
+                <TestName>{testName}</TestName>
+              </Test>
+            );
+          })}
+        </Tests>
       </Container>
     );
   }
