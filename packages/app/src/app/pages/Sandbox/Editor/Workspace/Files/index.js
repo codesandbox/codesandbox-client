@@ -81,9 +81,8 @@ class Files extends React.PureComponent<Props> {
         .then(response => {
           if (response.status === 200 || response.status === 0) {
             return response.json();
-          } else {
-            return Promise.reject(new Error(`Error uploading to imgur.`));
           }
+          return Promise.reject(new Error(`Error uploading to imgur.`));
         })
         .then(json => {
           const code = json.data.link;

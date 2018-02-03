@@ -122,7 +122,6 @@ class DirectoryEntry extends React.PureComponent {
   };
 
   createModule = (_, title, isBinary, code) => {
-    console.log('createModule', title, isBinary, code);
     const { sandboxId, shortid, sandboxActions } = this.props;
     sandboxActions.createModule(sandboxId, title, shortid, isBinary, code);
     this.resetState();
