@@ -11,6 +11,7 @@ function SubscribeForm({
   loadingText = 'Creating Subscription...',
   buttonName = 'Subscribe',
   isLoading = false,
+  error,
 }) {
   return (
     <Container>
@@ -22,6 +23,7 @@ function SubscribeForm({
             subscribe={subscribe}
             name={name}
             isLoading={isLoading}
+            error={error}
           />
         </Elements>
       </StripeProvider>

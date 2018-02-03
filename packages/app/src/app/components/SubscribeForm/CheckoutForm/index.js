@@ -68,10 +68,12 @@ class CheckoutForm extends React.PureComponent {
   };
 
   render() {
-    const { buttonName, loadingText, isLoading } = this.props;
+    const { buttonName, loadingText, isLoading, error } = this.props;
     const { errors, loading: stateLoading } = this.state;
 
     const loading = isLoading || stateLoading;
+
+    const stripeError = errors.stripe || error;
 
     return (
       <form onSubmit={this.handleSubmit}>
@@ -87,7 +89,7 @@ class CheckoutForm extends React.PureComponent {
         </div>
 
         <Label>Card</Label>
-        {errors.stripe != null && <ErrorText>{errors.stripe}</ErrorText>}
+        {stripeError != null && <ErrorText>{stripeError}</ErrorText>}
         <CardContainer>
           <CardElement
             style={{ base: { color: 'white', fontWeight: '500' } }}

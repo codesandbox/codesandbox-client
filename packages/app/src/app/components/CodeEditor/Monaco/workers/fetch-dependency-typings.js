@@ -229,9 +229,8 @@ async function fetchAndAddDependencies(dependencies) {
   await Promise.all(
     depNames.map(async dep => {
       try {
-        loadedTypings.push(dep);
-
         if (loadedTypings.indexOf(dep) === -1) {
+          loadedTypings.push(dep);
           // eslint-disable-next-line no-await-in-loop
           await fetchFromTypings(
             dep,

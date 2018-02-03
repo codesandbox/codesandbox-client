@@ -3,7 +3,7 @@ import store from './store';
 
 let Devtools = null;
 
-if (process.env.NODE_ENV !== 'production' || process.env.STAGING) {
+if (process.env.NODE_ENV !== 'production') {
   Devtools = require('cerebral/devtools').default; // eslint-disable-line
 }
 

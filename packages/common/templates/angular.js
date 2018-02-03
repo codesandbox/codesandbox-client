@@ -2,7 +2,7 @@
 
 import { absolute, join } from 'common/utils/path';
 
-import ReactIcon from 'common/components/logos/React';
+import AngularIcon from 'common/components/logos/Angular';
 import Template from './template';
 import configurations from './configuration';
 import { decorateSelector } from '../theme';
@@ -61,8 +61,8 @@ export default new AngularTemplate(
   'Angular 5',
   'https://github.com/angular/angular',
   'angular',
-  ReactIcon,
-  decorateSelector(() => '#DB1538'),
+  AngularIcon,
+  decorateSelector(() => '#DD0031'),
   {
     extraConfigurations: {
       '/.angular-cli.json': configurations.angularCli,

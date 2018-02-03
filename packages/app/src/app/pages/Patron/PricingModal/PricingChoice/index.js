@@ -74,6 +74,7 @@ function PricingChoice({ store, signals, badge }) {
                 }
                 isLoading={store.patron.isUpdatingSubscription}
                 name={store.user.name}
+                error={store.patron.error}
               />
               <Notice>
                 You will be billed now and on the{' '}
