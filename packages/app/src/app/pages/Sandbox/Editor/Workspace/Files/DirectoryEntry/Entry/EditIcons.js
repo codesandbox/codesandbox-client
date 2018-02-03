@@ -5,6 +5,7 @@ import CrossIcon from 'react-icons/lib/md/clear';
 import EditIcon from 'react-icons/lib/go/pencil';
 import AddFileIcon from 'react-icons/lib/md/insert-drive-file';
 import AddDirectoryIcon from 'react-icons/lib/md/create-new-folder';
+import UploadImageIcon from 'react-icons/lib/md/file-upload';
 
 import fadeIn from 'common/utils/animation/fade-in';
 import Tooltip from 'common/components/Tooltip';
@@ -18,6 +19,7 @@ type Props = {
   onEdit: Function,
   onCreateFile: Function,
   onCreateDirectory: Function,
+  onUploadImage: Function,
 };
 
 const Container = styled.div`
@@ -41,6 +43,7 @@ export default ({
   onEdit,
   onCreateFile,
   onCreateDirectory,
+  onUploadImage,
 }: Props) => (
   <div className={className}>
     {hovering && (
@@ -49,6 +52,13 @@ export default ({
           <Tooltip title="Edit">
             <Icon onClick={handleClick(onEdit)}>
               <EditIcon />
+            </Icon>
+          </Tooltip>
+        )}
+        {onUploadImage && (
+          <Tooltip title="Upload Image">
+            <Icon onClick={handleClick(onUploadImage)}>
+              <UploadImageIcon />
             </Icon>
           </Tooltip>
         )}

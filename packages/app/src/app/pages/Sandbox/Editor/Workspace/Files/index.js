@@ -57,6 +57,40 @@ class Files extends React.PureComponent<Props> {
     this.directory.onCreateDirectoryClick();
   };
 
+  uploadImage = () => {
+    const fileSelector = document.createElement('input');
+    fileSelector.setAttribute('type', 'file');
+    fileSelector.onchange = event => {
+      const file = event.target.files[0];
+      if (!file) {
+        return;
+      }
+      console.log('files', file);
+
+      // const fileReader = new FileReader();
+      // fileReader.onload = (e) => {
+      //   console.log(e.target.result);
+      // }
+      //
+      // fileReader.readAsDataURL(file)
+      const payload = new FormData();
+      payload.append('type', 'file');
+      payload.append('image', file);
+
+      fetch('https://api.imgur.com/3/upload.json', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          Authorization: 'Client-ID dc708f3823b7756', // imgur specific
+        },
+        body: payload,
+      })
+        .then(response => response.json())
+        .then(json => console.log(json));
+    };
+    fileSelector.click();
+  };
+
   render() {
     const { sandbox, modules, directories } = this.props;
     if (sandbox == null) return null;
@@ -78,6 +112,7 @@ class Files extends React.PureComponent<Props> {
         actions={
           <EditIcons
             hovering
+            onUploadImage={this.uploadImage}
             onCreateFile={this.createModule}
             onCreateDirectory={this.createDirectory}
           />
