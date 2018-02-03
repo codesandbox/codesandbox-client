@@ -19,7 +19,16 @@ import Sandboxes from './Sandboxes';
 
 import { Container, Content } from './elements';
 
-class Profile extends React.Component {
+type Props = {
+  match: {
+    params: { username: string },
+    url: string,
+  },
+  signals: any,
+  store: any,
+};
+
+class Profile extends React.Component<Props> {
   componentDidMount() {
     const { username } = this.props.match.params;
 

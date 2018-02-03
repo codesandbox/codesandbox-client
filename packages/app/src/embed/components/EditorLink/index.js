@@ -1,4 +1,7 @@
+// @flow
+
 import React from 'react';
+import type { Sandbox } from 'common/types';
 
 import Logo from 'common/components/Logo';
 
@@ -6,7 +9,7 @@ import { sandboxUrl } from 'common/utils/url-generator';
 
 import { Text, EditText } from './elements';
 
-function EditorLink({ sandbox, small }) {
+function EditorLink({ sandbox, small }: { sandbox: Sandbox, small?: boolean }) {
   return (
     <EditText
       small={small}

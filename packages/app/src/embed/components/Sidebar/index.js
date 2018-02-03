@@ -1,4 +1,7 @@
+// @flow
 import React from 'react';
+
+import type { Sandbox } from 'common/types';
 
 import Padding from 'common/components/spacing/Padding';
 import { EntryContainer } from 'app/pages/Sandbox/Editor/Workspace/elements';
@@ -20,14 +23,23 @@ const getNormalizedUrl = (url: string) => `${url.replace(/\/$/g, '')}/`;
 
 function getName(resource: string) {
   if (resource.endsWith('.css') || resource.endsWith('.js')) {
-    return resource.match(/.*\/(.*)/)[1];
+    const match = resource.match(/.*\/(.*)/);
+    if (match && match[1]) {
+      return match[1];
+    }
   }
 
   // Add trailing / but no double one
   return getNormalizedUrl(resource);
 }
 
-function Sidebar({ sandbox, setCurrentModule, currentModule }) {
+type Props = {
+  sandbox: Sandbox,
+  setCurrentModule: (id: string) => void,
+  currentModule: string,
+};
+
+function Sidebar({ sandbox, setCurrentModule, currentModule }: Props) {
   return (
     <Container>
       <Item>

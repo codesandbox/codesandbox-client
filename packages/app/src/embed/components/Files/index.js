@@ -1,5 +1,9 @@
+// @flow
+
 import * as React from 'react';
 import sortBy from 'lodash/sortBy';
+
+import type { Module, Directory } from 'common/types';
 
 import { isMainModule } from 'common/sandbox/modules';
 import getType from 'app/utils/get-type';
@@ -7,6 +11,17 @@ import getType from 'app/utils/get-type';
 import File from '../File';
 
 import { Container } from './elements';
+
+type Props = {
+  modules: Array<Module>,
+  directories: Array<Directory>,
+  directoryId: ?string,
+  depth?: number,
+  currentModule: string,
+  setCurrentModule: (id: string) => void,
+  template: string,
+  entry: string,
+};
 
 function Files({
   modules,
@@ -17,7 +32,7 @@ function Files({
   setCurrentModule,
   template,
   entry,
-}) {
+}: Props) {
   const childrenModules = modules.filter(
     m => m.directoryShortid === directoryId
   );
@@ -56,7 +71,7 @@ function Files({
           shortid={m.shortid}
           title={m.title}
           key={m.shortid}
-          type={getType(m.title, m.code)}
+          type={getType(m.title, m.code || '')}
           depth={depth}
           setCurrentModule={setCurrentModule}
           active={m.id === currentModule}

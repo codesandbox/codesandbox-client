@@ -56,7 +56,13 @@ export const closeModal = [
     preferences: [
       equals(state`preferences.itemId`),
       {
-        keybindings: [],
+        keybindings: [
+          when(props`isKeyDown`),
+          {
+            true: [],
+            false: [set(state`currentModal`, null), actions.startKeybindings],
+          },
+        ],
         otherwise: [set(state`currentModal`, null), actions.startKeybindings],
       },
     ],

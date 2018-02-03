@@ -76,7 +76,10 @@ export function createPackageJSON(
 ) {
   const name = slugify(sandbox.title || sandbox.id);
   const version = `0.0.${sandbox.version}`;
-  const npmDependencies = sandbox.npmDependencies.toJS();
+  const npmDependencies =
+    typeof sandbox.npmDependencies.toJS === 'function'
+      ? sandbox.npmDependencies.toJS()
+      : sandbox.npmDependencies;
 
   return JSON.stringify(
     {

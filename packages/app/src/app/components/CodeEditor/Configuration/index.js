@@ -1,21 +1,31 @@
 // @flow
 import React from 'react';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
+import type { Module } from 'common/types';
 import getType from 'app/utils/get-type';
 import Tooltip from 'common/components/Tooltip';
 
 import CodeIcon from 'react-icons/lib/md/code';
 
-import type { Props } from '../types';
+import type { Props as EditorProps, Editor } from '../types';
 import { Container, Icon, Title, Description } from './elements';
 
-export default class Configuration extends React.PureComponent<
-  Props & {
-    config: Object,
-    toggleConfigUI: () => void,
-  }
-> {
+type Props = EditorProps & {
+  config: Object,
+  toggleConfigUI: () => void,
+};
+
+export default class Configuration extends React.PureComponent<Props>
+  implements Editor {
   disposeInitializer: ?() => void;
+
+  currentModule: Module;
+
+  constructor(props: Props) {
+    super(props);
+
+    this.currentModule = props.currentModule;
+  }
 
   componentDidMount() {
     if (this.props.onInitialized) {
@@ -29,16 +39,22 @@ export default class Configuration extends React.PureComponent<
     }
   }
 
-  changeCode() {
+  // eslint-disable-next-line
+  changeCode = (code: string) => {
     this.forceUpdate();
-  }
+  };
+
+  changeModule = (newModule: Module) => {
+    this.currentModule = newModule;
+  };
 
   updateFile = (code: string) => {
     this.props.onChange(code);
   };
 
   render() {
-    const { config, currentModule, width, height } = this.props;
+    const { config, width, height } = this.props;
+    const currentModule = this.currentModule;
 
     const { ConfigWizard } = config.ui;
 
@@ -48,7 +64,7 @@ export default class Configuration extends React.PureComponent<
           <EntryIcons
             width={32}
             height={32}
-            type={getType(currentModule.title, currentModule.code)}
+            type={getType(currentModule.title, currentModule.code || '')}
           />
           <Title>{config.title}</Title>
 

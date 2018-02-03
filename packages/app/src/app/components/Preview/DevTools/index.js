@@ -42,13 +42,12 @@ export type Status = {
 };
 
 type Props = {
-  setDragging: (dragging: boolean) => void,
-  evaluateCommand: (cmd: string) => void,
   sandboxId: string,
-  zenMode: boolean,
-  shouldExpandDevTools: ?boolean,
-  devToolsOpen: ?boolean,
-  setDevToolsOpen: ?(open: boolean) => void,
+  setDragging?: (dragging: boolean) => void,
+  zenMode?: boolean,
+  shouldExpandDevTools?: boolean,
+  devToolsOpen?: boolean,
+  setDevToolsOpen?: (open: boolean) => void,
 };
 type State = {
   status: { [title: string]: ?Status },
@@ -178,7 +177,9 @@ export default class DevTools extends React.PureComponent<Props, State> {
         startHeight: this.state.height,
         mouseDown: true,
       });
-      this.props.setDragging(true);
+      if (this.props.setDragging) {
+        this.props.setDragging(true);
+      }
     }
   };
 
@@ -189,7 +190,9 @@ export default class DevTools extends React.PureComponent<Props, State> {
   handleMouseUp = (e: Event) => {
     if (this.state.mouseDown) {
       this.setState({ mouseDown: false });
-      this.props.setDragging(false);
+      if (this.props.setDragging) {
+        this.props.setDragging(false);
+      }
 
       if (
         Math.abs(this.state.startHeight - this.state.height) < 30 &&

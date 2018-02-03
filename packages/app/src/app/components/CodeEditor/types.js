@@ -1,27 +1,51 @@
 // @flow
-import type { Module, Sandbox } from 'common/types';
+import type {
+  Module,
+  Sandbox,
+  ModuleError,
+  ModuleCorrection,
+} from 'common/types';
+
+export type Settings = {
+  autoCompleteEnabled: boolean,
+  autoDownloadTypes: boolean,
+  codeMirror: boolean,
+  fontFamily?: string,
+  fontSize: number,
+  lineHeight: number,
+  lintEnabled: boolean,
+  vimMode: boolean,
+  tabWidth: number,
+};
+
+export interface Editor {
+  changeSandbox?: (
+    sandbox: Sandbox,
+    newCurrentModule: Module,
+    dependencies: Object
+  ) => Promise<any>;
+  setErrors?: (errors: Array<ModuleError>) => any;
+  setCorrections?: (corrections: Array<ModuleCorrection>) => any;
+  setGlyphs?: (glyphs: Array<any>) => any;
+  updateModules?: () => any;
+  changeSettings?: (settings: Settings) => any;
+  changeDependencies?: (deps: Object) => any;
+  changeModule?: (module: Module) => any;
+  changeCode?: (code: string) => any;
+}
 
 export type Props = {
   currentModule: Module,
   sandbox: Sandbox,
   onChange: (code: string) => void,
-  onInitialized: (editor: any) => void,
+  onInitialized: (editor: Editor) => Function,
   onModuleChange: (moduleId: string) => void,
-  onNpmDependencyAdded: (name: string) => void,
-  onSave: (code: string) => void,
-  settings: {
-    autoCompleteEnabled: boolean,
-    autoDownloadTypes: boolean,
-    codeMirror: boolean,
-    fontFamily: string,
-    fontSize: number,
-    lineHeight: number,
-    lineEnabled: boolean,
-    vimMode: boolean,
-    tabWidth: number,
-  },
-  height: string,
-  width: string,
-  hideNavigation: ?boolean,
-  dependencies: ?{ [name: string]: string },
+  onNpmDependencyAdded?: (name: string) => void,
+  onSave?: (code: string) => void,
+  settings: Settings,
+  height?: string,
+  width?: string,
+  hideNavigation?: boolean,
+  dependencies?: ?{ [name: string]: string },
+  highlightedLines?: Array<number>,
 };

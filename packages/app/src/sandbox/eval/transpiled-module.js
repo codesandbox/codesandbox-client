@@ -104,6 +104,14 @@ export type LoaderContext = {
 
 type Compilation = {
   exports: any,
+  hot: {
+    accept: Function,
+    accept: (string | Array<string>, cb: Function) => void,
+    decline: (path: string | Array<string>) => void,
+    dispose: (cb: Function) => void,
+    data: Object,
+    status: string,
+  },
 };
 
 export default class TranspiledModule {
@@ -594,8 +602,11 @@ export default class TranspiledModule {
           if (typeof path === 'undefined') {
             // Self mark hot
             this.hmrConfig = this.hmrConfig || new HMR();
-            this.hmrConfig.setType('accept');
-            this.hmrConfig.setSelfAccepted(true);
+            if (this.hmrConfig) {
+              const hmrConfig = this.hmrConfig;
+              hmrConfig.setType('accept');
+              hmrConfig.setSelfAccepted(true);
+            }
           } else {
             const paths = typeof path === 'string' ? [path] : path;
 
@@ -606,8 +617,9 @@ export default class TranspiledModule {
               );
 
               tModule.hmrConfig = tModule.hmrConfig || new HMR();
-              tModule.hmrConfig.setType('accept');
-              tModule.hmrConfig.setAcceptCallback(cb);
+              const hmrConfig = tModule.hmrConfig;
+              hmrConfig.setType('accept');
+              hmrConfig.setAcceptCallback(cb);
             });
           }
           manager.enableWebpackHMR();

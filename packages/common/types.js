@@ -152,6 +152,7 @@ export type Sandbox = {
     deleted: Array<string>,
     rights: 'none' | 'read' | 'write' | 'admin',
   },
+  version: number,
 };
 
 export type Preferences = {

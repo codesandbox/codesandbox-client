@@ -6,7 +6,6 @@ import parseConfigurations from 'common/templates/configuration/parse';
 import initializeErrorTransformers from './errors/transformers';
 import getPreset from './eval';
 import Manager from './eval/manager';
-import transformJSON from './console/transform-json';
 
 import { resetScreen } from './status-screen';
 
@@ -39,6 +38,7 @@ export function getCurrentManager(): ?Manager {
 }
 
 let firstLoad = true;
+let hadError = false;
 
 // TODO make devDependencies lazy loaded by the packager
 const WHITELISTED_DEV_DEPENDENCIES = [
@@ -64,18 +64,6 @@ function getDependencies(parsedPackage) {
   });
 
   return returnedDependencies;
-}
-
-function getEntry(template) {
-  if (template === 'vue-cli') {
-    return 'src/main.js';
-  }
-
-  if (template === 'create-react-app-typescript') {
-    return 'src/index.ts';
-  }
-
-  return 'src/index.js';
 }
 
 async function updateManager(
@@ -133,10 +121,11 @@ async function compile({
   try {
     clearErrorTransformers();
     initializeErrorTransformers();
-    unmount(true);
+    unmount(!hadError);
   } catch (e) {
     console.error(e);
   }
+  hadError = false;
 
   actionsEnabled = hasActions;
   handleExternalResources(externalResources);
@@ -322,6 +311,8 @@ async function compile({
     event.error = e;
 
     window.dispatchEvent(event);
+
+    hadError = true;
   }
   firstLoad = false;
 

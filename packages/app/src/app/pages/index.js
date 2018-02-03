@@ -59,7 +59,11 @@ const Terms = Loadable({
   LoadingComponent: Loading,
 });
 
-class Routes extends React.Component {
+type Props = {
+  signals: any,
+};
+
+class Routes extends React.Component<Props> {
   componentWillUnmount() {
     this.props.signals.appUnmounted();
   }

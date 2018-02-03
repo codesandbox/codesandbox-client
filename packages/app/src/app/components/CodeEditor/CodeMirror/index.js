@@ -13,13 +13,22 @@ import 'codemirror/addon/tern/tern';
 import FuzzySearch from '../FuzzySearch';
 import { Container, CodeContainer } from './elements';
 
-import type { Props } from '../types';
+import type { Props, Editor } from '../types';
 
 type State = { fuzzySearchEnabled: boolean };
 
 const documentCache = {};
 
-class CodemirrorEditor extends React.Component<Props, State> {
+const highlightLines = (
+  cm: typeof CodeMirror,
+  highlightedLines: Array<number>
+) => {
+  highlightedLines.forEach(line => {
+    cm.addLineClass(+line - 1, 'background', 'cm-line-highlight');
+  });
+};
+
+class CodemirrorEditor extends React.Component<Props, State> implements Editor {
   codemirror: typeof CodeMirror;
   codemirrorElement: ?HTMLDivElement;
   server: $PropertyType<CodeMirror, 'TernServer'>;
@@ -80,14 +89,6 @@ class CodemirrorEditor extends React.Component<Props, State> {
       }
     });
   };
-
-  setCorrections = () => {};
-
-  changeSandbox = () => {};
-
-  updateModules = () => {};
-
-  changeDependencies = () => {};
 
   changeSettings = async (settings: $PropertyType<Props, 'settings'>) => {
     const defaultKeys = {
@@ -216,11 +217,11 @@ class CodemirrorEditor extends React.Component<Props, State> {
     this.configureEmmet();
   };
 
-  changeCode(code: string = '') {
+  changeCode = (code: string = '') => {
     const pos = this.codemirror.getCursor();
     this.codemirror.setValue(code);
     this.codemirror.setCursor(pos);
-  }
+  };
 
   getMode = async (title: string) => {
     if (title == null) return 'jsx';
@@ -278,6 +279,10 @@ class CodemirrorEditor extends React.Component<Props, State> {
 
     this.codemirror = getCodeMirror(el, documentCache[id]);
 
+    if (this.props.highlightedLines) {
+      highlightLines(this.codemirror, this.props.highlightedLines);
+    }
+
     this.codemirror.on('change', this.handleChange);
     this.changeSettings(this.settings);
   };
@@ -291,8 +296,9 @@ class CodemirrorEditor extends React.Component<Props, State> {
   getCode = () => this.codemirror.getValue();
 
   handleSaveCode = async () => {
-    if (this.props.onSave) {
-      this.props.onSave(this.codemirror.getValue());
+    const onSave = this.props.onSave;
+    if (onSave) {
+      onSave(this.codemirror.getValue());
     }
   };
 

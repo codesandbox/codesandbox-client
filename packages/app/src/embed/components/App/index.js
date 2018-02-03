@@ -1,8 +1,10 @@
+// @flow
 import * as React from 'react';
 import { ThemeProvider } from 'styled-components';
 import { camelizeKeys } from 'humps';
 
 import getTemplateDefinition from 'common/templates';
+import type { Module, Sandbox } from 'common/types';
 import Centered from 'common/components/flex/Centered';
 import Title from 'app/components/Title';
 import SubTitle from 'app/components/SubTitle';
@@ -20,10 +22,30 @@ import { Container, Fullscreen, Moving } from './elements';
 // that makes it think we have core-js/es6/map available in embed, but we don't.
 // So we explicitly make sure that we have `core-js/es6/map` available by declaring
 // new Map.
-// eslint-disable-next-line
-new Map();
+new Map(); // eslint-disable-line
 
-export default class App extends React.PureComponent {
+type State = {
+  notFound: boolean,
+  sandbox: ?Sandbox,
+  fontSize: number,
+  showEditor: boolean,
+  showPreview: boolean,
+  isInProjectView: boolean,
+  currentModule: string,
+  initialPath: string,
+  sidebarOpen: boolean,
+  autoResize: boolean,
+  hideNavigation: boolean,
+  enableEslint: boolean,
+  useCodeMirror: boolean,
+  editorSize: number,
+  forceRefresh: boolean,
+  expandDevTools: boolean,
+  runOnClick: boolean,
+  highlightedLines: Array<number>,
+};
+
+export default class App extends React.PureComponent<{}, State> {
   constructor() {
     super();
 
@@ -78,7 +100,7 @@ export default class App extends React.PureComponent {
 
   getAppOrigin = () => location.origin.replace('embed.', '');
 
-  fetchSandbox = async id => {
+  fetchSandbox = async (id: string) => {
     try {
       const response = await fetch(
         `${this.getAppOrigin()}/api/v1/sandboxes/${id}`
@@ -111,22 +133,25 @@ export default class App extends React.PureComponent {
     this.setState({ showEditor: false, showPreview: true });
   setMixedView = () => this.setState({ showEditor: true, showPreview: true });
 
-  setCurrentModule = id => this.setState({ currentModule: id });
+  setCurrentModule = (id: string) => this.setState({ currentModule: id });
 
   toggleSidebar = () => this.setState({ sidebarOpen: !this.state.sidebarOpen });
 
-  setProjectView = (sandboxId, isOpen, cb) =>
-    this.setState({ isInProjectView: isOpen }, cb);
+  // eslint-disable-next-line
+  setProjectView = (sandboxId?: ?string, isOpen: boolean, cb: Function) => {
+    return this.setState({ isInProjectView: isOpen }, cb);
+  };
 
-  getCurrentModuleFromPath = () => {
-    const { sandbox, currentModule: currentModulePath } = this.state;
-    if (!sandbox) return null;
+  getCurrentModuleFromPath = (sandbox: Sandbox): Module => {
+    const { currentModule: currentModulePath } = this.state;
 
-    return findCurrentModule(
-      sandbox.modules,
-      sandbox.directories,
-      currentModulePath,
-      findMainModule(sandbox.modules, sandbox.directories, sandbox.entry)
+    return (
+      findCurrentModule(
+        sandbox.modules,
+        sandbox.directories,
+        currentModulePath,
+        findMainModule(sandbox.modules, sandbox.directories, sandbox.entry)
+      ) || sandbox.modules[0]
     );
   };
 
@@ -142,7 +167,9 @@ export default class App extends React.PureComponent {
       );
     }
 
-    if (!this.state.sandbox) {
+    const sandbox = this.state.sandbox;
+
+    if (!sandbox) {
       return (
         <Centered vertical horizontal>
           <Title delay={0.3}>Loading Sandbox...</Title>
@@ -155,8 +182,7 @@ export default class App extends React.PureComponent {
     return (
       <ThemeProvider
         theme={{
-          templateColor: getTemplateDefinition(this.state.sandbox.template)
-            .color,
+          templateColor: getTemplateDefinition(sandbox.template).color,
         }}
       >
         <Container>
@@ -166,7 +192,7 @@ export default class App extends React.PureComponent {
             setEditorView={this.setEditorView}
             setPreviewView={this.setPreviewView}
             setMixedView={this.setMixedView}
-            sandbox={this.state.sandbox}
+            sandbox={sandbox}
             toggleSidebar={this.toggleSidebar}
           />
           <Content
@@ -174,8 +200,8 @@ export default class App extends React.PureComponent {
             showPreview={showPreview}
             isInProjectView={isInProjectView}
             setProjectView={this.setProjectView}
-            sandbox={this.state.sandbox}
-            currentModule={this.getCurrentModuleFromPath()}
+            sandbox={sandbox}
+            currentModule={this.getCurrentModuleFromPath(sandbox)}
             hideNavigation={this.state.hideNavigation}
             autoResize={this.state.autoResize}
             fontSize={this.state.fontSize}
@@ -195,13 +221,15 @@ export default class App extends React.PureComponent {
   };
 
   render() {
+    const sandbox = this.state.sandbox;
+
     return (
       <Fullscreen sidebarOpen={this.state.sidebarOpen}>
-        {this.state.sandbox && (
+        {sandbox && (
           <Sidebar
             setCurrentModule={this.setCurrentModule}
-            currentModule={this.getCurrentModuleFromPath().id}
-            sandbox={this.state.sandbox}
+            currentModule={this.getCurrentModuleFromPath(sandbox).id}
+            sandbox={sandbox}
           />
         )}
         <Moving sidebarOpen={this.state.sidebarOpen}>{this.content()}</Moving>

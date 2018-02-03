@@ -35,7 +35,7 @@ export function dispatch(sandboxId: string, message: Object = {}) {
 }
 
 export function evaluateInSandbox(sandboxId: string, command: string) {
-  dispatch(sandboxId, { type: 'evalaute', command });
+  dispatch(sandboxId, { type: 'evaluate', command });
 }
 
 type Props = {
@@ -56,6 +56,7 @@ type Props = {
   onResize?: (height: number) => void,
   showNavigation?: boolean,
   inactive?: boolean,
+  dragging?: boolean,
 };
 
 type State = {
@@ -64,7 +65,6 @@ type State = {
   historyPosition: number,
   urlInAddressBar: string,
   url: ?string,
-  dragging: boolean,
 };
 
 class BasePreview extends React.Component<Props, State> {
@@ -77,7 +77,6 @@ class BasePreview extends React.Component<Props, State> {
       historyPosition: -1,
       urlInAddressBar: frameUrl(props.sandbox.id, props.initialPath || ''),
       url: null,
-      dragging: false,
     };
 
     // we need a value that doesn't change when receiving `initialPath`
@@ -192,10 +191,6 @@ class BasePreview extends React.Component<Props, State> {
     requestAnimationFrame(() => {
       this.executeCodeImmediately();
     });
-  };
-
-  setDragging = (dragging: boolean) => {
-    this.setState({ dragging });
   };
 
   getRenderedModule = () => {
@@ -349,12 +344,13 @@ class BasePreview extends React.Component<Props, State> {
       sandbox,
       settings,
       isInProjectView,
+      dragging,
     } = this.props;
-    const { historyPosition, history, dragging, urlInAddressBar } = this.state;
+    const { historyPosition, history, urlInAddressBar } = this.state;
     const url = urlInAddressBar || frameUrl(sandbox.id);
 
     return (
-      <Container>
+      <Container style={{ flex: 1 }}>
         {showNavigation && (
           <Navigator
             url={decodeURIComponent(url)}

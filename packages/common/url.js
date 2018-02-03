@@ -43,7 +43,8 @@ export const getSandboxOptions = (url: string) => {
     !result.isSplitScreen
   ) {
     const windowWidth =
-      window.innerWidth || document.documentElement.clientWidth;
+      window.innerWidth ||
+      (document.documentElement ? document.documentElement.clientWidth : 0);
 
     result.isEditorScreen = windowWidth >= 800;
     result.isPreviewScreen = true;

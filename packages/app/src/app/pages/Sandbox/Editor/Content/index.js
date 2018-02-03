@@ -4,8 +4,10 @@ import { Prompt } from 'react-router-dom';
 import { reaction } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import getTemplateDefinition from 'common/templates';
+import type { ModuleError } from 'common/types';
 
 import CodeEditor from 'app/components/CodeEditor';
+import type { Editor } from 'app/components/CodeEditor/types';
 import DevTools from 'app/components/Preview/DevTools';
 import FilePath from 'app/components/CodeEditor/FilePath';
 import Preview from './Preview';
@@ -64,7 +66,7 @@ class EditorPreview extends React.Component {
     }
   };
 
-  onInitialized = editor => {
+  onInitialized = (editor: Editor) => {
     const store = this.props.store;
     let isChangingSandbox = false;
 
@@ -92,7 +94,7 @@ class EditorPreview extends React.Component {
     );
     const disposeErrorsHandler = reaction(
       () => store.editor.errors.map(error => error),
-      errors => {
+      (errors: ModuleError) => {
         if (editor.setErrors) {
           editor.setErrors(errors);
         }

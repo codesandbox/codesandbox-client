@@ -6,7 +6,12 @@ import { TagContainer } from './elements';
 
 import Tag from './Tag';
 
-function Tags({ tags, align, ...props }) {
+type Props = {
+  tags: Array<string>,
+  align?: 'right' | 'left',
+};
+
+function Tags({ tags, align, ...props }: Props) {
   return (
     <TagContainer align={align || 'left'} {...props}>
       {tags.sort().map(tag => (

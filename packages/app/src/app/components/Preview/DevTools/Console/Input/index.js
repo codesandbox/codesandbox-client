@@ -56,6 +56,12 @@ type Props = {
   evaluateConsole: (command: string) => void,
 };
 
+type State = {
+  editorHeight: number,
+  commandHistory: Array<string>,
+  commandCursor: number,
+};
+
 const InputWrapper = styled.div`
   position: relative;
   height: 100%;
@@ -96,7 +102,7 @@ function noop() {
   return Promise.resolve();
 }
 
-class ConsoleInput extends React.PureComponent<Props> {
+class ConsoleInput extends React.PureComponent<Props, State> {
   sizeProbeInterval: number;
 
   state = {
@@ -106,11 +112,13 @@ class ConsoleInput extends React.PureComponent<Props> {
     editorHeight: CONSOLE_INPUT_LINE_HEIGHT,
   };
 
+  editor: any;
+
   resizeEditor = () => {
     this.editor.layout();
   };
 
-  editorDidMount = async editor => {
+  editorDidMount = async (editor: any) => {
     this.editor = editor;
 
     let lastLineCount = 1;

@@ -89,7 +89,11 @@ export const KEYBINDINGS = {
     title: 'Toggle Zen Mode',
     type: 'View',
     bindings: [[metaKey, 'K', 'Z']],
-    signal: 'preferences.zenModeToggled',
+    signal: 'preferences.settingChanged',
+    payload: state => ({
+      name: 'zenMode',
+      value: !state.preferences.settings.zenMode,
+    }),
   },
 
   'editor.toggle-console': {

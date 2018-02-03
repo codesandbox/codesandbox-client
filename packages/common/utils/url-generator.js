@@ -58,7 +58,10 @@ export const embedUrl = (sandbox: Sandbox) => {
 };
 
 const stagingFrameUrl = (shortid: string, path: string) => {
-  const stagingHost = process.env.CODESANDBOX_HOST.split('//')[1];
+  const stagingHost = (process.env.CODESANDBOX_HOST
+    ? process.env.CODESANDBOX_HOST
+    : ''
+  ).split('//')[1];
   const segments = stagingHost.split('.');
   const first = segments.shift();
   return `${location.protocol}//${first}-${shortid}.${segments.join('.')}/${

@@ -4,18 +4,21 @@ import Input from 'common/components/Input';
 import Button from 'app/components/Button';
 import { Container, Title, SubTitle, Image, MaxWidth } from './elements';
 
-import type { Props } from '../types';
+import type { Props, Editor } from '../types';
 
-export default class ImageViewer extends React.Component<Props> {
+export default class ImageViewer extends React.Component<Props>
+  implements Editor {
   onSubmit = (e: Event) => {
     e.preventDefault();
 
-    this.props.onSave(this.input.value);
+    if (this.props.onSave) {
+      this.props.onSave(this.input.value);
+    }
   };
 
   input: HTMLInputElement;
 
-  changeCode = (e: Event & { target: { value: string } }) => {
+  doChangeCode = (e: Event & { target: { value: string } }) => {
     this.props.onChange(e.target.value);
   };
 
@@ -40,7 +43,7 @@ export default class ImageViewer extends React.Component<Props> {
             innerRef={el => {
               this.input = el;
             }}
-            onChange={this.changeCode}
+            onChange={this.doChangeCode}
             value={currentModule.code}
           />
           <Button disabled={!currentModule.isNotSynced} type="submit">

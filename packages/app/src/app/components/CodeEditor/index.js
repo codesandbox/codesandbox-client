@@ -50,8 +50,9 @@ const getDependencies = (sandbox: Sandbox): ?{ [key: string]: string } => {
       return null;
     }
   } else {
-    // $FlowIssue
-    return sandbox.npmDependencies.toJS();
+    return typeof sandbox.npmDependencies.toJS === 'function'
+      ? sandbox.npmDependencies.toJS()
+      : sandbox.npmDependencies;
   }
 };
 

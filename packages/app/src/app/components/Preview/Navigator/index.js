@@ -53,20 +53,22 @@ function Navigator({
       >
         <AddressBar url={url} onChange={onChange} onConfirm={onConfirm} />
       </AddressBarContainer>
-      {alignBottom && (
-        <Icon onClick={alignBottom}>
-          <Tooltip title="Align To Bottom">
-            <HorizontalAlign />
-          </Tooltip>
-        </Icon>
-      )}
-      {alignRight && (
-        <Icon onClick={alignRight}>
-          <Tooltip title="Align To Right">
-            <VerticalAlign />
-          </Tooltip>
-        </Icon>
-      )}
+      {!zenMode &&
+        alignBottom && (
+          <Icon onClick={alignBottom}>
+            <Tooltip title="Align To Bottom">
+              <HorizontalAlign />
+            </Tooltip>
+          </Icon>
+        )}
+      {!zenMode &&
+        alignRight && (
+          <Icon onClick={alignRight}>
+            <Tooltip title="Align To Right">
+              <VerticalAlign />
+            </Tooltip>
+          </Icon>
+        )}
 
       {!zenMode &&
         openNewWindow && (

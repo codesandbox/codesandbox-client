@@ -188,7 +188,7 @@ export const findMainModule = (
 export const findCurrentModule = (
   modules: Module[],
   directories: Directory[],
-  modulePath: ?string = '',
+  modulePath: string = '',
   mainModule: Module
 ): Module => {
   // cleanPath, encode and replace first /

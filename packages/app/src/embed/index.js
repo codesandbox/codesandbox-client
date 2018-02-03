@@ -1,3 +1,4 @@
+// @flow
 import React from 'react';
 import { render } from 'react-dom';
 import { ThemeProvider } from 'styled-components';
@@ -21,6 +22,7 @@ requirePolyfills().then(() => {
   }
 
   if (module.hot) {
+    // $FlowIssue
     module.hot.accept('./components/App', () => {
       const NextApp = require('./components/App').default; // eslint-disable-line global-require
       renderApp(NextApp);

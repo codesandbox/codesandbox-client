@@ -1,3 +1,4 @@
+// @flow
 import * as React from 'react';
 import { EntryContainer as Entry } from 'app/pages/Sandbox/Editor/Workspace/elements';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
@@ -5,16 +6,26 @@ import EntryTitle from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/
 
 import { LeftOffset } from './elements';
 
-export default class File extends React.PureComponent {
+type Props = {
+  id: string,
+  setCurrentModule: (id: string) => void,
+  title: string,
+  depth: number,
+  type: string,
+  active?: boolean,
+  alternative?: boolean,
+};
+
+export default class File extends React.PureComponent<Props> {
   static defaultProps = {
     active: false,
     alternative: false,
   };
 
   setCurrentModule = () => {
-    const { id, shortid, setCurrentModule } = this.props;
+    const { id, setCurrentModule } = this.props;
 
-    setCurrentModule(id, shortid);
+    setCurrentModule(id);
   };
 
   render() {

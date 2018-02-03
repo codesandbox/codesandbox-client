@@ -13,7 +13,7 @@ describe('TestRunner class', () => {
 
   describe('initialize', () => {
     it('should reset results', () => {
-      let testRunner = new TestRunner();
+      const testRunner = new TestRunner();
       expect(testRunner.aggregatedResults.totalTests).toBe(0);
       testRunner.addResult({ status: 'pass', name: 'foo' });
       expect(testRunner.aggregatedResults.totalTests).toBe(1);

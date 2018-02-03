@@ -1,7 +1,12 @@
+// @flow
 import * as React from 'react';
+import type { Sandbox, Module, ModuleError } from 'common/types';
 import BasePreview from 'app/components/Preview';
 import CodeEditor from 'app/components/CodeEditor';
+import type { Editor, Settings } from 'app/components/CodeEditor/types';
 import Tab from 'app/pages/Sandbox/Editor/Content/Tabs/Tab';
+
+import DevTools from 'app/components/Preview/DevTools';
 
 import Fullscreen from 'common/components/flex/Fullscreen';
 import Centered from 'common/components/flex/Centered';
@@ -12,40 +17,86 @@ import playSVG from './play.svg';
 
 import { Container, Tabs, Split } from './elements';
 
-export default class Content extends React.PureComponent {
-  constructor(props) {
+type EmbedError = {
+  column: number,
+  line: number,
+  message: string,
+  title: string,
+  payload?: Object,
+  severity: 'error' | 'warning',
+};
+
+type Props = {
+  showEditor: boolean,
+  showPreview: boolean,
+  isInProjectView: boolean,
+  setProjectView: (sandboxId?: ?string, isOpen: boolean, cb: Function) => void,
+  sandbox: Sandbox,
+  currentModule: Module,
+  hideNavigation: boolean,
+  autoResize: boolean,
+  fontSize?: number,
+  initialPath: string,
+  setCurrentModule: (moduleId: string) => void,
+  useCodeMirror: boolean,
+  enableEslint: boolean,
+  editorSize: number,
+  highlightedLines: Array<number>,
+  forceRefresh: boolean,
+  expandDevTools: boolean,
+  runOnClick: boolean,
+};
+
+type State = {
+  tabs: Array<Module>,
+  isInProjectView: boolean,
+  dragging: boolean,
+  running: boolean,
+};
+
+export default class Content extends React.PureComponent<Props, State> {
+  constructor(props: Props) {
     super(props);
 
     let tabs = [];
 
+    const module = props.sandbox.modules.find(
+      m => m.id === props.currentModule.id
+    );
     // Show all tabs if there are not many files
-    if (props.sandbox.modules.length <= 5) {
+    if (props.sandbox.modules.length <= 5 || !module) {
       tabs = [...props.sandbox.modules];
     } else {
-      tabs = [props.sandbox.modules.find(m => m.id === props.currentModule.id)];
+      tabs = [module];
     }
 
     this.state = {
       running: !props.runOnClick,
       tabs,
+      dragging: false,
+      isInProjectView: props.isInProjectView,
     };
 
     this.errors = [];
   }
 
-  componentWillReceiveProps(nextProps) {
+  errors: Array<ModuleError>;
+  editor: ?Editor;
+  preview: ?BasePreview;
+
+  componentWillReceiveProps(nextProps: Props) {
     if (this.props.currentModule !== nextProps.currentModule) {
       if (!this.state.tabs.some(x => x.id === nextProps.currentModule.id)) {
-        this.setState({
-          tabs: [
-            ...this.state.tabs,
-            nextProps.sandbox.modules.find(
-              m => m.id === nextProps.currentModule.id
-            ),
-          ],
-        });
+        const module = nextProps.sandbox.modules.find(
+          m => m.id === nextProps.currentModule.id
+        );
+        if (module) {
+          this.setState({
+            tabs: [...this.state.tabs, module],
+          });
+        }
       }
-      if (this.editor) {
+      if (this.editor && this.editor.changeModule) {
         this.editor.changeModule(nextProps.currentModule);
       }
     }
@@ -59,11 +110,11 @@ export default class Content extends React.PureComponent {
     this.editor = null;
   };
 
-  setProjectView = (id, view) => {
+  setProjectView = (id?: string, view: boolean) => {
     this.setState({ isInProjectView: view });
   };
 
-  handleResize = (height = 500) => {
+  handleResize = (height: number = 500) => {
     const extraOffset = (this.props.hideNavigation ? 3 * 16 : 6 * 16) + 16;
     if (this.props.autoResize) {
       window.parent.postMessage(
@@ -99,20 +150,22 @@ export default class Content extends React.PureComponent {
     }
   };
 
-  setCode = code => {
+  setCode = (code: string) => {
     this.props.currentModule.code = code;
     const settings = this.getPreferences();
 
-    if (settings.livePreviewEnabled) {
-      if (settings.instantPreviewEnabled) {
-        this.preview.executeCodeImmediately();
-      } else {
-        this.preview.executeCode();
+    if (this.preview) {
+      if (settings.livePreviewEnabled) {
+        if (settings.instantPreviewEnabled) {
+          this.preview.executeCodeImmediately();
+        } else {
+          this.preview.executeCode();
+        }
       }
     }
   };
 
-  handleAction = action => {
+  handleAction = (action: Object) => {
     switch (action.action) {
       case 'show-error':
         return this.addError(action);
@@ -121,7 +174,7 @@ export default class Content extends React.PureComponent {
     }
   };
 
-  addError = error => {
+  addError = (error: EmbedError & { path: string }) => {
     const module = resolveModule(
       error.path.replace(/^\//, ''),
       this.props.sandbox.modules,
@@ -137,16 +190,21 @@ export default class Content extends React.PureComponent {
           line: error.line,
           message: error.message,
           title: error.title,
+          type: 'compile',
+          payload: error.payload || {},
+          severity: error.severity || 'error',
         },
       ];
 
-      this.editor.setErrors(this.errors);
+      if (this.editor && this.editor.setErrors) {
+        this.editor.setErrors(this.errors);
+      }
     }
   };
 
   clearErrors = () => {
     this.errors = [];
-    if (this.editor) {
+    if (this.editor && this.editor.setErrors) {
       this.editor.setErrors(this.errors);
     }
   };
@@ -155,7 +213,7 @@ export default class Content extends React.PureComponent {
     livePreviewEnabled: true,
   };
 
-  getPreferences = () => ({
+  getPreferences = (): Settings => ({
     ...this.preferences,
     forceRefresh: this.props.forceRefresh,
     instantPreviewEnabled: !this.props.forceRefresh,
@@ -163,14 +221,17 @@ export default class Content extends React.PureComponent {
     autoDownloadTypes: true,
     lintEnabled: this.props.enableEslint,
     codeMirror: this.props.useCodeMirror,
-    lineHeight: 1.4,
+    lineHeight: 1.6,
+    autoCompleteEnabled: true,
+    vimMode: false,
+    tabWidth: 2,
   });
 
-  setCurrentModule = (_, moduleId) => {
+  setCurrentModule = (moduleId: string) => {
     this.props.setCurrentModule(moduleId);
   };
 
-  closeTab = pos => {
+  closeTab = (pos: number) => {
     const newModule =
       this.state.tabs[pos - 1] ||
       this.state.tabs[pos + 1] ||
@@ -179,21 +240,24 @@ export default class Content extends React.PureComponent {
     this.setState({ tabs: this.state.tabs.filter((_, i) => i !== pos) });
   };
 
-  onCodeEditorInitialized = editor => {
+  onCodeEditorInitialized = (editor: Editor) => {
     this.editor = editor;
     return () => {};
   };
 
   onToggleProjectView = () => {
-    this.props.setProjectView(null, !this.props.isInProjectView, () =>
-      this.preview.handleRefresh()
-    );
+    this.props.setProjectView(null, !this.props.isInProjectView, () => {
+      if (this.preview && this.preview.handleRefresh) {
+        this.preview.handleRefresh();
+      }
+    });
   };
 
-  onPreviewInitialized = preview => {
+  onPreviewInitialized = (preview: BasePreview) => {
     this.preview = preview;
     return () => {};
   };
+
   RunOnClick = () => (
     <Fullscreen
       style={{ backgroundColor: theme.primary(), cursor: 'pointer' }}
@@ -215,6 +279,10 @@ export default class Content extends React.PureComponent {
       </Centered>
     </Fullscreen>
   );
+
+  setDragging = (dragging: boolean) => {
+    this.setState({ dragging });
+  };
 
   render() {
     const {
@@ -252,9 +320,12 @@ export default class Content extends React.PureComponent {
                 let dirName = null;
 
                 if (tabsWithSameName.length > 1 && module.directoryShortid) {
-                  dirName = sandbox.directories.find(
+                  const dir = sandbox.directories.find(
                     d => d.shortid === module.directoryShortid
-                  ).title;
+                  );
+                  if (dir) {
+                    dirName = dir.title;
+                  }
                 }
 
                 return (
@@ -262,7 +333,7 @@ export default class Content extends React.PureComponent {
                     key={module.id}
                     active={module.id === currentModule.id}
                     module={module}
-                    onClick={() => this.setCurrentModule(null, module.id)}
+                    onClick={() => this.setCurrentModule(module.id)}
                     tabCount={this.state.tabs.length}
                     position={i}
                     closeTab={this.closeTab}
@@ -278,10 +349,10 @@ export default class Content extends React.PureComponent {
               sandbox={sandbox}
               settings={this.getPreferences()}
               canSave={false}
-              hideNavigation={hideNavigation}
               onChange={this.setCode}
               onModuleChange={this.setCurrentModule}
               onUnMount={this.onCodeEditorUnMount}
+              highlightedLines={this.props.highlightedLines}
             />
           </Split>
         )}
@@ -295,19 +366,34 @@ export default class Content extends React.PureComponent {
             {!this.state.running ? (
               <RunOnClick />
             ) : (
-              <BasePreview
-                onInitialized={this.onPreviewInitialized}
-                sandbox={sandbox}
-                currentModule={mainModule}
-                settings={this.getPreferences()}
-                initialPath={this.props.initialPath}
-                isInProjectView={isInProjectView}
-                onClearErrors={this.clearErrors}
-                onAction={this.handleAction}
-                onToggleProjectView={this.onToggleProjectView}
-                showDevtools={expandDevTools}
-                onResize={this.handleResize}
-              />
+              <div
+                style={{
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}
+              >
+                <BasePreview
+                  onInitialized={this.onPreviewInitialized}
+                  sandbox={sandbox}
+                  currentModule={mainModule}
+                  settings={this.getPreferences()}
+                  initialPath={this.props.initialPath}
+                  isInProjectView={isInProjectView}
+                  onClearErrors={this.clearErrors}
+                  onAction={this.handleAction}
+                  showNavigation={!hideNavigation}
+                  onToggleProjectView={this.onToggleProjectView}
+                  showDevtools={expandDevTools}
+                  onResize={this.handleResize}
+                  dragging={this.state.dragging}
+                />
+                <DevTools
+                  setDragging={this.setDragging}
+                  sandboxId={sandbox.id}
+                  shouldExpandDevTools={this.props.expandDevTools}
+                />
+              </div>
             )}
           </Split>
         )}

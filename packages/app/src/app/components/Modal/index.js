@@ -35,7 +35,7 @@ class ModalComponent extends React.Component {
     return (
       <Modal
         isOpen={isOpen}
-        onRequestClose={onClose}
+        onRequestClose={e => onClose(e.type === 'keydown')}
         contentLabel={title || 'Modal'}
         style={this.getStyles(width, top)}
         closeTimeoutMS={CLOSE_TIMEOUT_MS}

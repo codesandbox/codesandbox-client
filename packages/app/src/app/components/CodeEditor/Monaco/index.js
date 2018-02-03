@@ -22,7 +22,7 @@ import MonacoEditorComponent from './MonacoReactComponent';
 import FuzzySearch from '../FuzzySearch';
 import { Container, CodeContainer } from './elements';
 import defineTheme from './define-theme';
-import type { Props } from '../types';
+import type { Props, Editor } from '../types';
 
 type State = {
   fuzzySearchEnabled: boolean,
@@ -41,7 +41,7 @@ const fontFamilies = (...families) =>
 const requireAMDModule = paths =>
   new Promise(resolve => window.require(paths, () => resolve()));
 
-class MonacoEditor extends React.Component<Props, State> {
+class MonacoEditor extends React.Component<Props, State> implements Editor {
   static defaultProps = {
     width: '100%',
     height: '100%',
@@ -111,11 +111,8 @@ class MonacoEditor extends React.Component<Props, State> {
     if (this.disposeInitializer) {
       this.disposeInitializer();
     }
-
-    if (this.props.onUnMount) {
-      this.props.onUnMount();
-    }
   }
+
   configureEditor = async (editor: any, monaco: any) => {
     this.editor = editor;
     this.monaco = monaco;
@@ -445,6 +442,7 @@ class MonacoEditor extends React.Component<Props, State> {
 
   setupTypeWorker = () => {
     this.typingsFetcherWorker = new TypingsFetcherWorker();
+    const regex = /node_modules\/(@types\/.*)\//;
 
     this.typingsFetcherWorker.addEventListener('message', event => {
       const sandbox = this.sandbox;
@@ -456,13 +454,16 @@ class MonacoEditor extends React.Component<Props, State> {
           path.startsWith('node_modules/@types') &&
           this.hasNativeTypescript()
         ) {
-          const dependency = path.match(/node_modules\/(@types\/.*)\//)[1];
+          const match = path.match(regex);
+          if (match && match[1]) {
+            const dependency = match[1];
 
-          if (
-            !Object.keys(dependencies).includes(dependency) &&
-            this.props.onNpmDependencyAdded
-          ) {
-            this.props.onNpmDependencyAdded(dependency);
+            if (
+              !Object.keys(dependencies).includes(dependency) &&
+              this.props.onNpmDependencyAdded
+            ) {
+              this.props.onNpmDependencyAdded(dependency);
+            }
           }
         }
 
@@ -903,8 +904,9 @@ class MonacoEditor extends React.Component<Props, State> {
   getCode = () => this.editor.getValue();
 
   handleSaveCode = async () => {
-    if (this.props.onSave) {
-      this.props.onSave(this.getCode());
+    const onSave = this.props.onSave;
+    if (onSave) {
+      onSave(this.getCode() || '');
     }
   };
 
@@ -929,7 +931,7 @@ class MonacoEditor extends React.Component<Props, State> {
       formatOnPaste: true,
       lineHeight: (settings.lineHeight || 1.5) * settings.fontSize,
       folding: true,
-      glyphMargin: true,
+      glyphMargin: false,
     };
   };
 
