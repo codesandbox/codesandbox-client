@@ -94,6 +94,16 @@ class Tests extends React.Component<Props, State> {
     }
   }
 
+  componentWillReceiveProps(nextProps: Props) {
+    if (nextProps.sandboxId !== this.props.sandboxId) {
+      this.setState({
+        files: {},
+        selectedFilePath: null,
+        running: true,
+      });
+    }
+  }
+
   selectFile = (file: File) => {
     this.setState({
       selectedFilePath:
@@ -281,7 +291,7 @@ class Tests extends React.Component<Props, State> {
   runAllTests = () => {
     this.setState({ files: {} }, () => {
       dispatch(this.props.sandboxId, {
-        type: 'set-test-watching',
+        type: 'run-all-tests',
       });
     });
   };

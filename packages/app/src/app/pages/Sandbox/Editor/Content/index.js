@@ -54,10 +54,6 @@ class EditorPreview extends React.Component {
     }
   };
 
-  setDevToolsOpen = (open: boolean) => {
-    this.props.signals.preferences.setDevtoolsOpen({ open });
-  };
-
   handleToggleDevtools = showDevtools => {
     if (this.devtools) {
       if (showDevtools) {
@@ -310,7 +306,9 @@ class EditorPreview extends React.Component {
             sandboxId={sandbox.id}
             shouldExpandDevTools={store.preferences.showDevtools}
             zenMode={preferences.settings.zenMode}
-            setDevToolsOpen={this.setDevToolsOpen}
+            setDevToolsOpen={() =>
+              this.props.signals.preferences.setDevtoolsOpen({ open })
+            }
           />
         </FullSize>
       </ThemeProvider>

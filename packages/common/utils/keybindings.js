@@ -93,7 +93,7 @@ export const KEYBINDINGS = {
   },
 
   'editor.toggle-console': {
-    title: 'Toggle Console',
+    title: 'Toggle Dev Tools',
     type: 'View',
     bindings: [[metaKey, 'K', 'D']],
     signal: 'preferences.devtoolsToggled',
