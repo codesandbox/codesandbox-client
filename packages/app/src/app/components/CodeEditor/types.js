@@ -32,6 +32,8 @@ export interface Editor {
   changeDependencies?: (deps: Object) => any;
   changeModule?: (module: Module) => any;
   changeCode?: (code: string) => any;
+
+  currentModule?: Module;
 }
 
 export type Props = {

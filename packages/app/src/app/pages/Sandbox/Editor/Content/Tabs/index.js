@@ -1,16 +1,10 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 
-import Tooltip from 'common/components/Tooltip';
 import { canPrettify } from 'app/utils/prettify';
 import TabContainer from './TabContainer';
 
-import {
-  Container,
-  TabsContainer,
-  StyledPrettierIcon,
-  IconContainer,
-} from './elements';
+import { Container, TabsContainer, IconContainer } from './elements';
 
 class EditorTabs extends React.Component {
   componentWillMount() {
@@ -172,12 +166,12 @@ class EditorTabs extends React.Component {
             })}
         </TabsContainer>
         <IconContainer>
-          <Tooltip title="Prettify">
+          {/* <Tooltip title="Prettify">
             <StyledPrettierIcon
               disabled={!this.canPrettify(currentModule)}
               onClick={this.prettifyModule}
             />
-          </Tooltip>
+          </Tooltip> */}
         </IconContainer>
       </Container>
     );

@@ -1,3 +1,4 @@
+// @flow
 import * as React from 'react';
 import { ThemeProvider } from 'styled-components';
 import { Prompt } from 'react-router-dom';
@@ -27,8 +28,22 @@ const settings = store => ({
   tabWidth: 2,
 });
 
-class EditorPreview extends React.Component {
+type Props = {
+  signals: any,
+  store: any,
+};
+
+type State = {
+  width: ?number,
+  height: ?number,
+};
+
+class EditorPreview extends React.Component<Props, State> {
   state = { width: null, height: null };
+  interval: number;
+  disposeEditorChange: Function;
+  el: ?HTMLElement;
+  devtools: DevTools;
 
   componentDidMount() {
     this.props.signals.editor.contentMounted();
@@ -38,11 +53,16 @@ class EditorPreview extends React.Component {
     );
 
     window.addEventListener('resize', this.getBounds);
+
+    this.interval = setInterval(() => {
+      this.getBounds();
+    }, 5000);
   }
 
   componentWillUnmount() {
     this.disposeEditorChange();
     window.removeEventListener('resize', this.getBounds);
+    clearInterval(this.interval);
   }
 
   getBounds = el => {
@@ -94,7 +114,7 @@ class EditorPreview extends React.Component {
     );
     const disposeErrorsHandler = reaction(
       () => store.editor.errors.map(error => error),
-      (errors: ModuleError) => {
+      (errors: Array<ModuleError>) => {
         if (editor.setErrors) {
           editor.setErrors(errors);
         }
@@ -302,7 +322,9 @@ class EditorPreview extends React.Component {
 
           <DevTools
             ref={component => {
-              this.devtools = component;
+              if (component) {
+                this.devtools = component;
+              }
             }}
             setDragging={() => this.props.signals.editor.resizingStarted()}
             sandboxId={sandbox.id}

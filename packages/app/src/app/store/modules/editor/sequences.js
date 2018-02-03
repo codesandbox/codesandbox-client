@@ -38,7 +38,7 @@ export const createZip = actions.createZip;
 export const prettifyCode = [
   actions.prettifyCode,
   {
-    success: actions.setCode,
+    success: [actions.setCode, actions.addChangedModule],
     invalidPrettierSandboxConfig: addNotification(
       'Invalid JSON in sandbox .prettierrc file',
       'error'

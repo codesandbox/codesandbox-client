@@ -247,14 +247,12 @@ export function createZip({ utils, state }) {
   utils.zipSandbox(sandbox);
 }
 
-export function addChangedModule({ state }) {
-  const currentModuleShortid = state.get('editor.currentModuleShortid');
+export function addChangedModule({ state, props }) {
+  const moduleShortid =
+    props.moduleShortid || state.get('editor.currentModuleShortid');
 
-  if (
-    state.get('editor.changedModuleShortids').indexOf(currentModuleShortid) ===
-    -1
-  ) {
-    state.push('editor.changedModuleShortids', currentModuleShortid);
+  if (state.get('editor.changedModuleShortids').indexOf(moduleShortid) === -1) {
+    state.push('editor.changedModuleShortids', moduleShortid);
   }
 }
 
