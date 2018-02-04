@@ -38,8 +38,6 @@ expect.extend({
 });
 (expect: Object).addSnapshotSerializer = addSerializer;
 
-const MATCHERS_STATE = Symbol.for('$$jest-matchers-object');
-
 function resetTestState() {
   const ROOT_DESCRIBE_BLOCK = makeDescribe(ROOT_DESCRIBE_BLOCK_NAME);
   const INITIAL_STATE = {

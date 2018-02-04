@@ -27,8 +27,11 @@ import type {
   DescribeBlock,
 } from './types';
 
+const currentDescribeBlocks = [];
+
 const run = async (): Promise<TestResults> => {
   const { rootDescribeBlock } = getState();
+  currentDescribeBlocks.length = 0;
   dispatch({ name: 'run_start' });
   await _runTestsForDescribeBlock(rootDescribeBlock);
   dispatch({ name: 'run_finish' });
@@ -37,8 +40,11 @@ const run = async (): Promise<TestResults> => {
 
 const _setGlobalState = (test: TestEntry) => {
   const { testPath: currentTestPath } = expect.getState();
-  const [testPath, currentTestName] = test.name.split(':#:');
+  const [testPath, testName] = test.name.split(':#:');
 
+  // remove root block
+  const [, ...describeBlocks] = [...currentDescribeBlocks];
+  const currentTestName = describeBlocks.join(' ') + ' ' + testName;
   const update: {
     snapshotState?: SnapshotState,
     testPath?: string,
@@ -56,6 +62,7 @@ const _setGlobalState = (test: TestEntry) => {
 };
 
 const _runTestsForDescribeBlock = async (describeBlock: DescribeBlock) => {
+  currentDescribeBlocks.push(describeBlock.name);
   dispatch({ describeBlock, name: 'run_describe_start' });
   const { beforeAll, afterAll } = getAllHooksForDescribe(describeBlock);
 
@@ -73,11 +80,10 @@ const _runTestsForDescribeBlock = async (describeBlock: DescribeBlock) => {
     _callHook(hook);
   }
   dispatch({ describeBlock, name: 'run_describe_finish' });
+  currentDescribeBlocks.pop();
 };
 
 const _runTest = async (test: TestEntry): Promise<void> => {
-  _setGlobalState(test);
-
   const testContext = Object.create(null);
 
   const isSkipped =
@@ -120,6 +126,7 @@ const _callTest = async (
   if (!test.fn) {
     throw Error(`Tests with no 'fn' should have 'mode' set to 'skipped'`);
   }
+  _setGlobalState(test);
 
   return callAsyncFn(test.fn, testContext, { isHook: false, timeout })
     .then(() => dispatch({ name: 'test_success', test }))
