@@ -16,8 +16,8 @@ import {
 import type Manager from '../manager';
 import type { Module } from '../entities/module';
 
-import parse from '../../react-error-overlay/utils/parser';
-import map from '../../react-error-overlay/utils/mapper';
+import { parse } from '../../react-error-overlay/utils/parser';
+import { map } from '../../react-error-overlay/utils/mapper';
 import type {
   Event,
   TestEntry,

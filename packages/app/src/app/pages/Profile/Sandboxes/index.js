@@ -1,8 +1,6 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 
-import Alert from 'app/components/Alert';
-import Modal from 'app/components/Modal';
 import Button from 'app/components/Button';
 import SandboxList from 'app/components/SandboxList';
 
@@ -65,7 +63,7 @@ class Sandboxes extends React.Component {
   };
 
   render() {
-    const { store, source, signals, page, baseUrl } = this.props;
+    const { store, source, page, baseUrl } = this.props;
     const isProfileCurrentUser = store.profile.isProfileCurrentUser;
     const isLoadingSandboxes = store.profile.isLoadingSandboxes;
     const sandboxes = store.profile[source];

@@ -5,7 +5,6 @@ import Column from 'common/components/flex/Column';
 import Centered from 'common/components/flex/Centered';
 import Margin from 'common/components/spacing/Margin';
 import Button from 'app/components/Button';
-import Modal from 'app/components/Modal';
 
 import SandboxInfo from './SandboxInfo';
 import ShowcasePreview from './ShowcasePreview';
@@ -18,7 +17,7 @@ class Showcase extends React.Component {
   };
 
   render() {
-    const { store, signals } = this.props;
+    const { store } = this.props;
     const sandbox = store.profile.showcasedSandbox;
     const isCurrentUser = store.profile.isProfileCurrentUser;
 

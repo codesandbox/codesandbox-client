@@ -1,7 +1,6 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 
-import Alert from 'app/components/Alert';
 import Button from 'app/components/Button';
 import { WorkspaceInputContainer, WorkspaceSubtitle } from '../elements';
 

@@ -17,7 +17,7 @@ exports[`Button renders 1`] = `
   border: none;
   border-radius: 4px;
   box-sizing: border-box;
-  font-size: 1.125rem;
+  font-size: 1.125em;
   text-align: center;
   color: white;
   font-weight: 400;
@@ -59,7 +59,7 @@ exports[`Button renders 1`] = `
   className="c0"
   style={
     Object {
-      "padding": "0.65rem 2.25rem",
+      "padding": "0.65em 2.25em",
     }
   }
 >
@@ -84,7 +84,7 @@ exports[`Button renders disabled 1`] = `
   border: none;
   border-radius: 4px;
   box-sizing: border-box;
-  font-size: 1.125rem;
+  font-size: 1.125em;
   text-align: center;
   color: rgb(69,79,84);
   font-weight: 400;
@@ -101,7 +101,7 @@ exports[`Button renders disabled 1`] = `
   disabled={true}
   style={
     Object {
-      "padding": "0.65rem 2.25rem",
+      "padding": "0.65em 2.25em",
     }
   }
 >
@@ -126,7 +126,7 @@ exports[`Button renders href 1`] = `
   border: none;
   border-radius: 4px;
   box-sizing: border-box;
-  font-size: 1.125rem;
+  font-size: 1.125em;
   text-align: center;
   color: white;
   font-weight: 400;
@@ -169,7 +169,7 @@ exports[`Button renders href 1`] = `
   href="https://ivesvh.com"
   style={
     Object {
-      "padding": "0.65rem 2.25rem",
+      "padding": "0.65em 2.25em",
     }
   }
 >
@@ -194,7 +194,7 @@ exports[`Button renders onClick 1`] = `
   border: none;
   border-radius: 4px;
   box-sizing: border-box;
-  font-size: 1.125rem;
+  font-size: 1.125em;
   text-align: center;
   color: white;
   font-weight: 400;
@@ -237,7 +237,7 @@ exports[`Button renders onClick 1`] = `
   onClick={[Function]}
   style={
     Object {
-      "padding": "0.65rem 2.25rem",
+      "padding": "0.65em 2.25em",
     }
   }
 >
@@ -262,7 +262,7 @@ exports[`Button renders properties 1`] = `
   border: none;
   border-radius: 4px;
   box-sizing: border-box;
-  font-size: 1.125rem;
+  font-size: 1.125em;
   text-align: center;
   color: white;
   font-weight: 400;
@@ -304,8 +304,8 @@ exports[`Button renders properties 1`] = `
   className="c0"
   style={
     Object {
-      "fontSize": "0.875rem",
-      "padding": "0.5rem 0.75rem",
+      "fontSize": "0.875em",
+      "padding": "0.5em 0.75em",
     }
   }
 >
@@ -330,7 +330,7 @@ exports[`Button renders secondary 1`] = `
   border: 1px solid #56a0d6;
   border-radius: 4px;
   box-sizing: border-box;
-  font-size: 1.125rem;
+  font-size: 1.125em;
   text-align: center;
   color: #56a0d6;
   font-weight: 400;
@@ -372,7 +372,7 @@ exports[`Button renders secondary 1`] = `
   className="c0"
   style={
     Object {
-      "padding": "0.65rem 2.25rem",
+      "padding": "0.65em 2.25em",
     }
   }
 >
@@ -397,7 +397,7 @@ exports[`Button renders to 1`] = `
   border: none;
   border-radius: 4px;
   box-sizing: border-box;
-  font-size: 1.125rem;
+  font-size: 1.125em;
   text-align: center;
   color: white;
   font-weight: 400;
@@ -441,7 +441,7 @@ exports[`Button renders to 1`] = `
   onClick={[Function]}
   style={
     Object {
-      "padding": "0.65rem 2.25rem",
+      "padding": "0.65em 2.25em",
     }
   }
 >

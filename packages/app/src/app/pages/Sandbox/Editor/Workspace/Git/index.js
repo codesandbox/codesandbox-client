@@ -35,7 +35,7 @@ class Git extends React.Component {
   };
 
   render() {
-    const { store, signals } = this.props;
+    const { store } = this.props;
     const gitChanges = store.git.originalGitChanges;
     const originalGit = store.editor.currentSandbox.originalGit;
     const modulesNotSaved = !store.editor.isAllModulesSynced;

@@ -2,6 +2,7 @@ import { injectGlobal } from 'styled-components';
 import TagsInput from 'react-tagsinput';
 
 export default function(color) {
+  // eslint-disable-next-line
   injectGlobal`
   .react-tagsinput {
     display: flex;

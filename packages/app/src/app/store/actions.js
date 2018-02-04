@@ -300,7 +300,7 @@ export function updateUserZeitDetails({ api, path, props }) {
     .catch(error => path.error({ error }));
 }
 
-export function getZeitIntegrationDetails({ http, state, path }) {
+export function getZeitIntegrationDetails({ state, path }) {
   const token = state.get(`user.integrations.zeit.token`);
 
   return axios
