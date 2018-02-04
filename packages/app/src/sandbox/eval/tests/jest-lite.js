@@ -181,7 +181,9 @@ export default class TestRunner {
 
     await run();
 
-    this.sendMessage('total_test_end');
+    setTimeout(() => {
+      this.sendMessage('total_test_end');
+    });
   }
 
   async errorToCodeSandbox(
@@ -294,6 +296,10 @@ export default class TestRunner {
     if (message) {
       if (message.type === 'set-test-watching') {
         this.watching = message.watching;
+        if (message.watching === true) {
+          this.ranTests.clear();
+          this.runTests(true);
+        }
       } else if (message.type === 'run-all-tests') {
         this.ranTests.clear();
         this.runTests(true);

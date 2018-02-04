@@ -3,6 +3,7 @@
 import React from 'react';
 import { actions, listen } from 'codesandbox-api';
 import { dispatch } from 'app/components/Preview';
+import SplitPane from 'react-split-pane';
 
 import immer from 'immer';
 
@@ -24,7 +25,10 @@ export type Status = 'idle' | 'running' | 'pass' | 'fail';
 type Props = {
   hidden: boolean,
   sandboxId: string,
-  updateStatus: (type: 'warning' | 'error' | 'info' | 'clear') => void,
+  updateStatus: (
+    type: 'success' | 'warning' | 'error' | 'info' | 'clear',
+    count?: number
+  ) => void,
 };
 
 export type TestError = Error & {
@@ -110,6 +114,7 @@ class Tests extends React.Component<Props, State> {
     if (data.type === 'test') {
       switch (data.event) {
         case 'total_test_start': {
+          this.props.updateStatus('clear');
           this.setState({
             ...this.state,
             running: true,
@@ -121,6 +126,24 @@ class Tests extends React.Component<Props, State> {
             ...this.state,
             running: false,
           });
+
+          const files = Object.keys(this.state.files);
+          const failingTests = files.filter(
+            f => this.getStatus(this.state.files[f]) === 'fail'
+          ).length;
+          const passingTests = files.filter(
+            f => this.getStatus(this.state.files[f]) === 'pass'
+          ).length;
+
+          if (failingTests > 0) {
+            this.props.updateStatus('error', failingTests);
+          } else if (passingTests === files.length) {
+            this.props.updateStatus('success', passingTests);
+          } else {
+            // Not all tests are run
+            this.props.updateStatus('warning', files.length - passingTests);
+          }
+
           break;
         }
 
@@ -202,12 +225,6 @@ class Tests extends React.Component<Props, State> {
         case 'test_end': {
           const test = data.test;
           const testName = [...test.blocks, test.name];
-
-          if (test.status === 'fail') {
-            this.props.updateStatus('error');
-          } else if (test.status === 'pass') {
-            this.props.updateStatus('info');
-          }
 
           this.setState(
             immer(this.state, state => {
@@ -334,45 +351,47 @@ class Tests extends React.Component<Props, State> {
 
     return (
       <Container>
-        <TestContainer>
-          <TestSummary
-            running={this.state.running}
-            watching={this.state.watching}
-            toggleWatching={this.toggleWatching}
-            runAllTests={this.runAllTests}
-            fileStatuses={fileStatuses}
-            files={this.state.files}
-            tests={tests}
-          />
-
-          <div style={{ marginTop: '1rem' }}>
-            {Object.keys(this.state.files)
-              .sort()
-              .map(fileName => (
-                <TestElement
-                  selectFile={this.selectFile}
-                  selectedFile={selectedFile}
-                  file={this.state.files[fileName]}
-                  status={fileStatuses[fileName]}
-                  key={fileName}
-                  runTests={this.runTests}
-                  openFile={this.openFile}
-                />
-              ))}
-          </div>
-        </TestContainer>
-        <TestDetails>
-          {selectedFile ? (
-            <TestDetailsContent
-              status={this.getStatus(selectedFile)}
-              file={selectedFile}
-              openFile={this.openFile}
-              runTests={this.runTests}
+        <SplitPane split="vertical" defaultSize={500}>
+          <TestContainer>
+            <TestSummary
+              running={this.state.running}
+              watching={this.state.watching}
+              toggleWatching={this.toggleWatching}
+              runAllTests={this.runAllTests}
+              fileStatuses={fileStatuses}
+              files={this.state.files}
+              tests={tests}
             />
-          ) : (
-            <TestOverview tests={tests} openFile={this.openFile} />
-          )}
-        </TestDetails>
+
+            <div style={{ marginTop: '1rem' }}>
+              {Object.keys(this.state.files)
+                .sort()
+                .map(fileName => (
+                  <TestElement
+                    selectFile={this.selectFile}
+                    selectedFile={selectedFile}
+                    file={this.state.files[fileName]}
+                    status={fileStatuses[fileName]}
+                    key={fileName}
+                    runTests={this.runTests}
+                    openFile={this.openFile}
+                  />
+                ))}
+            </div>
+          </TestContainer>
+          <TestDetails>
+            {selectedFile ? (
+              <TestDetailsContent
+                status={this.getStatus(selectedFile)}
+                file={selectedFile}
+                openFile={this.openFile}
+                runTests={this.runTests}
+              />
+            ) : (
+              <TestOverview tests={tests} openFile={this.openFile} />
+            )}
+          </TestDetails>
+        </SplitPane>
       </Container>
     );
   }

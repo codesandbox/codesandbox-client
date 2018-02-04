@@ -43,7 +43,6 @@ export const IdleBar = Bar.extend`
 export const TestData = styled.div`
   flex: 1;
   font-size: 0.875rem;
-  margin-left: 1rem;
 `;
 
 export const Actions = styled.div`

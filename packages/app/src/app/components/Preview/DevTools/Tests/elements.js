@@ -17,15 +17,15 @@ export const Container = styled.div`
 
 export const Navigation = styled.div`
   flex: 2;
-  border-right: 1px solid rgba(0, 0, 0, 0.3);
 
   box-sizing: border-box;
   overflow-y: auto;
-  min-width: 450px;
+  min-width: 500px;
 `;
 
 export const TestContainer = Navigation.extend`
   background-color: ${props => props.theme.background2};
+  height: 100%;
 `;
 
 export const TestDetails = styled.div`

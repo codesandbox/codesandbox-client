@@ -134,7 +134,8 @@ export default class DevTools extends React.PureComponent<Props, State> {
   };
 
   updateStatus = (title: string) => (
-    status: 'warning' | 'error' | 'info' | 'clear'
+    status: 'success' | 'warning' | 'error' | 'info' | 'clear',
+    count?: number
   ) => {
     if (!this.state.hidden && this.state.currentPane === title) {
       return;
@@ -146,10 +147,21 @@ export default class DevTools extends React.PureComponent<Props, State> {
     };
     let newStatus = currentStatus.type;
 
-    if (status === 'warning' && newStatus !== 'error') {
+    if (
+      status === 'success' &&
+      (newStatus !== 'error' && newStatus !== 'warning')
+    ) {
+      newStatus = 'success';
+    } else if (status === 'warning' && newStatus !== 'error') {
       newStatus = 'warning';
     } else if (status === 'error') {
       newStatus = 'error';
+    }
+
+    let unread = currentStatus.unread + (status !== 'clear' ? 1 : 0);
+
+    if (count != null) {
+      unread = count;
     }
 
     this.setState({
@@ -157,7 +169,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
         ...this.state.status,
         [title]: {
           type: newStatus,
-          unread: currentStatus.unread + (status !== 'clear' ? 1 : 0),
+          unread,
         },
       },
     });

@@ -57,7 +57,7 @@ export default ({
       <Container>
         <Title>
           {running
-            ? 'Running Test Suits...'
+            ? 'Running Test Suites...'
             : watching ? 'Watching Test Suites...' : 'Test Suites'}
           <TestData>
             <TestSummaryText

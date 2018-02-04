@@ -26,6 +26,8 @@ export const Container = styled.div`
       return theme.primary.darken(0.3)();
     } else if (status === 'error') {
       return theme.red();
+    } else if (status === 'success') {
+      return theme.green();
     }
 
     return 'black';

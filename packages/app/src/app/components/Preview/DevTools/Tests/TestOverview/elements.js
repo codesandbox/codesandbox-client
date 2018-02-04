@@ -36,7 +36,7 @@ export const Tests = styled.div`
   padding: 1rem;
   box-sizing: border-box;
   overflow-y: overlay;
-  height: calc(100% - 2rem);
+  height: calc(100% - 4rem);
 `;
 
 export const HappyMessage = styled.div`
