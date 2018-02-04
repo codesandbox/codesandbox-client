@@ -114,6 +114,7 @@ class Tests extends React.Component<Props, State> {
     if (data.type === 'test') {
       switch (data.event) {
         case 'total_test_start': {
+          this.currentDescribeBlocks = [];
           this.props.updateStatus('clear');
           this.setState({
             ...this.state,

@@ -3,8 +3,14 @@ import { dispatch, actions, listen } from 'codesandbox-api';
 import expect from 'jest-matchers';
 import jestMock from 'jest-mock';
 import jestTestHooks from 'jest-circus';
-import run from 'jest-circus/build/run';
+import run from './run-circus';
 import { makeDescribe } from 'jest-circus/build/utils';
+
+import {
+  addSerializer,
+  toMatchSnapshot,
+  toThrowErrorMatchingSnapshot,
+} from 'jest-snapshot';
 
 import {
   addEventHandler,
@@ -26,6 +32,14 @@ import type {
   TestFn,
 } from './types';
 
+expect.extend({
+  toMatchSnapshot,
+  toThrowErrorMatchingSnapshot,
+});
+(expect: Object).addSnapshotSerializer = addSerializer;
+
+const MATCHERS_STATE = Symbol.for('$$jest-matchers-object');
+
 function resetTestState() {
   const ROOT_DESCRIBE_BLOCK = makeDescribe(ROOT_DESCRIBE_BLOCK_NAME);
   const INITIAL_STATE = {
@@ -35,6 +49,16 @@ function resetTestState() {
     rootDescribeBlock: ROOT_DESCRIBE_BLOCK,
     testTimeout: 5000,
   };
+
+  expect.setState({
+    assertionCalls: 0,
+    expectedAssertionsNumber: null,
+    isExpectingAssertions: false,
+    suppressedErrors: [],
+    testPath: null,
+    currentTestName: null,
+    snapshotState: null,
+  });
 
   setState(INITIAL_STATE);
 }
@@ -226,6 +250,7 @@ export default class TestRunner {
     const [path, name] = test.name.split(':#:');
 
     const errors = await Promise.all(test.errors.map(this.errorToCodeSandbox));
+
     return {
       name,
       path,
@@ -246,6 +271,15 @@ export default class TestRunner {
       }
       case 'test_failure':
       case 'test_success': {
+        const { suppressedErrors } = expect.getState();
+
+        if (suppressedErrors && suppressedErrors.length) {
+          /* eslint-disable no-param-reassign */
+          message.test.errors = suppressedErrors;
+          message.test.status = 'fail';
+          /* eslint-enable no-param-reassign */
+          expect.setState({ suppressedErrors: [] });
+        }
         const test = await this.testToCodeSandbox(message.test);
 
         if (test.errors) {

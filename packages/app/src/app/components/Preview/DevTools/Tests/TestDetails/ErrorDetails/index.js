@@ -16,6 +16,12 @@ const Container = styled.div`
   background-color: rgba(0, 0, 0, 0.5);
 
   white-space: pre-wrap;
+
+  border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+
+  &:last-child {
+    border-bottom: none;
+  }
 `;
 
 function escapeHtml(unsafe) {
