@@ -145,7 +145,11 @@ export default class TestRunner {
     return Promise.all(
       this.tests.map(async t => {
         const tModule = this.manager.getTranspiledModule(t, '');
-        if (tModule.source && this.ranTests.has(t.path)) {
+        if (
+          tModule.source &&
+          tModule.compilation &&
+          this.ranTests.has(t.path)
+        ) {
           // We cached this test, don't run it again. We only run tests of changed
           // files
           return null;

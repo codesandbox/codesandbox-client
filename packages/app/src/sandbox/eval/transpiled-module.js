@@ -80,23 +80,34 @@ export type LoaderContext = {
   target: string,
   path: string,
   getModules: () => Array<Module>,
+  addTranspilationDependency: (
+    depPath: string,
+    options: ?{
+      isAbsolute: boolean,
+    }
+  ) => void,
+  resolveTranspiledModule: (
+    depPath: string,
+    options: ?{
+      isAbsolute: boolean,
+    }
+  ) => TranspiledModule,
   addDependency: (
     depPath: string,
     options: ?{
       isAbsolute: boolean,
     }
-  ) => ?TranspiledModule,
+  ) => void,
   addDependenciesInDirectory: (
     depPath: string,
     options: {
       isAbsolute: boolean,
     }
-  ) => Array<TranspiledModule>,
+  ) => void,
   _module: TranspiledModule,
-  getTranspiledModules: () => Array<TranspiledModule>,
 
   // Remaining loaders after current loader
-  remainingRequest: string,
+  remainingRequests: string,
   template: string,
   bfs: BrowserFS,
 };
@@ -299,7 +310,8 @@ export default class TranspiledModule {
           code,
         };
 
-        let transpiledModule;
+        // $FlowIssue
+        let transpiledModule: TranspiledModule;
         if (!overwrite) {
           try {
             transpiledModule = manager.getTranspiledModule(
@@ -337,15 +349,13 @@ export default class TranspiledModule {
 
         this.transpilationDependencies.add(tModule);
         tModule.transpilationInitiators.add(this);
-
-        return tModule;
       },
       addDependency: (depPath: string, options = {}) => {
         if (
           depPath.startsWith('babel-runtime') ||
           depPath.startsWith('codesandbox-api')
         ) {
-          return null;
+          return;
         }
 
         try {
@@ -356,8 +366,6 @@ export default class TranspiledModule {
 
           this.dependencies.add(tModule);
           tModule.initiators.add(this);
-
-          return tModule;
         } catch (e) {
           if (e.type === 'module-not-found' && e.isDependency) {
             this.asyncDependencies.push(
@@ -383,11 +391,13 @@ export default class TranspiledModule {
           this.dependencies.add(tModule);
           tModule.initiators.add(this);
         });
-
-        return tModules;
       },
+      resolveTranspiledModule: (depPath: string, options = {}) =>
+        manager.resolveTranspiledModule(
+          depPath,
+          options.isAbsolute ? '/' : this.module.path
+        ),
       getModules: (): Array<Module> => manager.getModules(),
-      getTranspiledModules: () => manager.transpiledModules,
       options: {
         context: pathUtils.dirname(this.module.path),
         configurations: manager.configurations,
@@ -435,6 +445,7 @@ export default class TranspiledModule {
       return this;
     }
 
+    // eslint-disable-next-line
     manager.transpileJobs[this.getId()] = true;
 
     if (this.source) {
@@ -457,11 +468,12 @@ export default class TranspiledModule {
     let code = this.module.code || '';
     let finalSourceMap = null;
 
-    if (this.module.requires != null) {
+    const requires = this.module.requires;
+    if (requires != null) {
       // We now know that this has been transpiled on the server, so we shortcut
       const loaderContext = this.getLoaderContext(manager, {});
       // These are precomputed requires, for npm dependencies
-      this.module.requires.forEach(r => loaderContext.addDependency(r));
+      requires.forEach(r => loaderContext.addDependency(r));
 
       code = this.module.code;
     } else {
