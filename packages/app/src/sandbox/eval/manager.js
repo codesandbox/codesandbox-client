@@ -608,13 +608,21 @@ export default class Manager {
       this.hardReload = this.configurations.sandbox.parsed.hardReloadOnChange;
     }
 
-    const transpiledModulesToUpdate = uniq(
+    const allModulesToUpdate = uniq(
       flattenDeep([
         tModulesToUpdate,
         // All modules with errors
         this.getTranspiledModules().filter(t => t.errors.length > 0),
       ])
     );
+    const transpiledModulesToUpdate = allModulesToUpdate.filter(
+      m => !TestRunner.isTest(m.module.path)
+    );
+    // Reset test files, but don't transpile. We want to do that in the test runner
+    // so we can catch any errors
+    allModulesToUpdate
+      .filter(m => TestRunner.isTest(m.module.path))
+      .forEach(m => m.resetTranspilation());
 
     debug(
       `Generated update diff, updating ${

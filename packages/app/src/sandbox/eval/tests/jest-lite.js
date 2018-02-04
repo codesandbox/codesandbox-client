@@ -86,6 +86,24 @@ export default class TestRunner {
     };
   }
 
+  static isTest(path: string) {
+    let matched = false;
+
+    if (
+      path.includes('__tests__') &&
+      (path.endsWith('.js') || path.endsWith('.ts'))
+    ) {
+      matched = true;
+    }
+    if (path.endsWith('.test.js') || path.endsWith('.test.ts')) {
+      matched = true;
+    }
+    if (path.endsWith('.spec.js') || path.endsWith('.spec.ts')) {
+      matched = true;
+    }
+    return matched;
+  }
+
   findTests(modules: { [path: string]: Module }) {
     if (this.tests) {
       this.tests.forEach(t => {
@@ -96,22 +114,7 @@ export default class TestRunner {
       });
     }
     this.tests = Object.keys(modules)
-      .filter(path => {
-        let matched = false;
-        if (
-          path.includes('__tests__') &&
-          (path.endsWith('.js') || path.endsWith('.ts'))
-        ) {
-          matched = true;
-        }
-        if (path.endsWith('.test.js') || path.endsWith('.test.ts')) {
-          matched = true;
-        }
-        if (path.endsWith('.spec.js') || path.endsWith('.spec.ts')) {
-          matched = true;
-        }
-        return matched;
-      })
+      .filter(TestRunner.isTest)
       .map(p => modules[p]);
   }
 
@@ -120,7 +123,7 @@ export default class TestRunner {
     return Promise.all(
       this.tests.map(async t => {
         const tModule = this.manager.getTranspiledModule(t, '');
-        if (tModule.compilation && this.ranTests.has(t.path)) {
+        if (tModule.source && this.ranTests.has(t.path)) {
           // We cached this test, don't run it again. We only run tests of changed
           // files
           return null;
