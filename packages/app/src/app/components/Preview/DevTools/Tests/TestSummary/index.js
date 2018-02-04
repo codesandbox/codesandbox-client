@@ -74,7 +74,7 @@ export default ({
                 onClick={toggleWatching}
               />
             </Tooltip>
-            <Tooltip title="Run All Test">
+            <Tooltip title="Run All Tests">
               <PlayIcon onClick={runAllTests} />
             </Tooltip>
           </Actions>

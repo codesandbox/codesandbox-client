@@ -37,7 +37,6 @@ class TestElement extends Component<Props> {
 
   runTests = (e: MouseEvent) => {
     e.preventDefault();
-    e.stopPropagation();
     this.props.runTests(this.props.file);
   };
 
