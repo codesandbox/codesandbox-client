@@ -351,7 +351,7 @@ class Tests extends React.Component<Props, State> {
 
     return (
       <Container>
-        <SplitPane split="vertical" defaultSize={500}>
+        <SplitPane split="vertical" defaultSize={450}>
           <TestContainer>
             <TestSummary
               running={this.state.running}

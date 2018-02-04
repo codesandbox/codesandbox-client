@@ -56,9 +56,7 @@ export default ({
     <div>
       <Container>
         <Title>
-          {running
-            ? 'Running Test Suites...'
-            : watching ? 'Watching Test Suites...' : 'Test Suites'}
+          {running ? 'Running Test Suites...' : 'Test Suites'}
           <TestData>
             <TestSummaryText
               failedCount={fileTestFailCount}

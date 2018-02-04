@@ -20,7 +20,7 @@ export const Navigation = styled.div`
 
   box-sizing: border-box;
   overflow-y: auto;
-  min-width: 500px;
+  min-width: 450px;
 `;
 
 export const TestContainer = Navigation.extend`
