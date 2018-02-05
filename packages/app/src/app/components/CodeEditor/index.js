@@ -135,7 +135,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
         }}
       >
         {config &&
-          config.ui && (
+          (config.ui ? (
             <Icons>
               <Tooltip title="Switch to UI Configuration">
                 <Icon onClick={this.toggleConfigUI}>
@@ -143,7 +143,11 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
                 </Icon>
               </Tooltip>
             </Icons>
-          )}
+          ) : (
+            <Icons style={{ fontSize: '.875rem' }}>
+              Supported Configuration
+            </Icons>
+          ))}
         <Editor {...props} dependencies={dependencies} />
       </div>
     );

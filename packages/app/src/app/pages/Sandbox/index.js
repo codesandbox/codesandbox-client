@@ -69,7 +69,7 @@ class SandboxPage extends React.Component {
             We could not find the Sandbox you{"'"}re looking for...
             <br />
             <br />
-            <Link to="/s/new">Create Sandbox</Link>
+            <Link to="/s">Create Sandbox</Link>
           </Title>
         </Centered>
       );
@@ -82,7 +82,7 @@ class SandboxPage extends React.Component {
           <SubTitle>{store.editor.error}</SubTitle>
           <br />
           <br />
-          <Link to="/s/new">Create Sandbox</Link>
+          <Link to="/s">Create Sandbox</Link>
         </Centered>
       );
     }

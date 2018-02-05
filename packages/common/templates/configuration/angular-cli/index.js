@@ -26,6 +26,9 @@ const config: ConfigurationFile = {
       null,
       2
     ),
+
+  schema:
+    'https://raw.githubusercontent.com/angular/angular-cli/master/packages/@angular/cli/lib/config/schema.json',
 };
 
 export default config;

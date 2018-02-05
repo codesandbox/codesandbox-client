@@ -6,7 +6,8 @@ const config: ConfigurationFile = {
   title: 'sandbox.config.json',
   type: 'sandbox',
   description: 'Configuration specific to the current sandbox.',
-  moreInfoUrl: 'https://codesandbox.io/docs/config-file',
+  moreInfoUrl:
+    'https://codesandbox.io/docs/configuration#sandbox-configuration',
   ui,
   getDefaultCode: () =>
     JSON.stringify(

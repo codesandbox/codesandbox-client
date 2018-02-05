@@ -194,6 +194,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       if (Object.keys(dependencies)) {
         setTimeout(() => {
           this.fetchDependencyTypings(dependencies);
+          this.getConfigSchemas();
         }, 5000);
       }
     }
@@ -267,6 +268,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
       // Do in setTimeout, since disposeModules is async
       setTimeout(() => {
+        this.getConfigSchemas();
         // Initialize new models
         this.initializeModules(newSandbox.modules)
           .then(() =>
@@ -702,6 +704,56 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     const sandbox = this.sandbox;
     const template = getTemplate(sandbox.template);
     return template.isTypescript;
+  };
+
+  fetchedSchemas = {};
+  getConfigSchemas = async () => {
+    const sandbox = this.sandbox;
+    const template = getTemplate(sandbox.template);
+
+    const configurations = template.configurationFiles;
+    // $FlowIssue
+    const schemas: Array<{
+      fileName: string,
+      schema: Object,
+      uri: string,
+    }> = (await Promise.all(
+      Object.keys(configurations).map(async p => {
+        const config = configurations[p];
+
+        if (this.fetchedSchemas[config.title]) {
+          return null;
+        }
+
+        if (config.schema) {
+          try {
+            const schema = await fetch(config.schema).then(x => x.json());
+            return { fileName: config.title, schema, uri: config.schema };
+          } catch (e) {
+            return null;
+          }
+        }
+        return null;
+      })
+    )).filter(x => x);
+
+    const monacoSchemas = schemas.map(data => {
+      this.fetchedSchemas[data.fileName] = true;
+
+      return {
+        uri: data.uri,
+        fileMatch: [data.fileName],
+        schema: data.schema,
+      };
+    });
+
+    this.monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
+      validate: true,
+      schemas: [
+        ...this.monaco.languages.json.jsonDefaults._diagnosticsOptions,
+        ...monacoSchemas,
+      ],
+    });
   };
 
   closeFuzzySearch = () => {

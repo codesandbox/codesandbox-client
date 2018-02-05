@@ -153,7 +153,7 @@ class Preview extends React.Component<Props> {
   };
 
   handleModuleSyncedChange = (preview, change) => {
-    if (!change.oldValue && change.newValue) {
+    if (change) {
       preview.executeCodeImmediately();
     }
   };

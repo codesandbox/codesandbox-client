@@ -18,4 +18,6 @@ export type ConfigurationFile = {
       updateFile: (code: string) => void,
     }>,
   },
+
+  schema?: string,
 };

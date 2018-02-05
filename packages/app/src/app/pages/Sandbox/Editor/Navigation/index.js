@@ -2,7 +2,6 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 
 import GitHubIcon from 'react-icons/lib/go/mark-github';
-import SettingsIcon from 'react-icons/lib/md/settings';
 
 import workspaceItems from 'app/store/modules/workspace/items';
 import Tooltip from 'common/components/Tooltip';
@@ -10,6 +9,7 @@ import Tooltip from 'common/components/Tooltip';
 import InfoIcon from './InfoIcon';
 import FilesIcon from './FileIcon';
 import RocketIcon from './RocketIcon';
+import ConfigurationIcon from './ConfigurationIcon';
 
 import { Container, IconContainer } from './elements';
 
@@ -18,7 +18,7 @@ const IDS_TO_ICONS = {
   files: FilesIcon,
   github: GitHubIcon,
   deploy: RocketIcon,
-  config: SettingsIcon,
+  config: ConfigurationIcon,
 };
 
 const Navigation = ({ store, signals }) => (

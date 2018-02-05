@@ -58,7 +58,7 @@ const Message = styled.div`
 
 export default class Animation extends React.PureComponent {
   state = {
-    templates: [angular, vue, react, reactTs, preact, svelte].filter(
+    templates: [react, vue, angular, preact, reactTs, svelte].filter(
       tem => tem.showOnHomePage
     ),
     templateIndex: 0,

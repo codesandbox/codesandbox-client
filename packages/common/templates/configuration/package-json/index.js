@@ -24,6 +24,8 @@ const config: ConfigurationFile = {
   moreInfoUrl: 'https://docs.npmjs.com/files/package.json',
 
   generateFileFromSandbox,
+  schema:
+    'https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/package.json',
 };
 
 export default config;

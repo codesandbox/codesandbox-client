@@ -19,6 +19,8 @@ const config: ConfigurationFile = {
       null,
       2
     ),
+  schema:
+    'https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/prettierrc.json',
 };
 
 export default config;

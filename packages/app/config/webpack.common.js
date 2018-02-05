@@ -141,7 +141,13 @@ module.exports = {
       processGlobal: 'codesandbox-browserfs/dist/shims/process.js',
       bufferGlobal: 'codesandbox-browserfs/dist/shims/bufferGlobal.js',
       bfsGlobal: require.resolve(
-        '../../../standalone-packages/codesandbox-browserfs'
+        path.join(
+          '..',
+          '..',
+          '..',
+          'standalone-packages',
+          'codesandbox-browserfs'
+        )
       ),
     },
   },

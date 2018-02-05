@@ -53,6 +53,9 @@ const config: ConfigurationFile = {
 
     return '{}';
   },
+
+  schema:
+    'https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/babelrc.json',
 };
 
 export default config;

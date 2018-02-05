@@ -58,7 +58,7 @@ class AngularTemplate extends Template {
 
 export default new AngularTemplate(
   'angular-cli',
-  'Angular 5',
+  'Angular',
   'https://github.com/angular/angular',
   'angular',
   AngularIcon,
@@ -69,5 +69,6 @@ export default new AngularTemplate(
     },
     isTypescript: true,
     distDir: 'dist',
+    showOnHomePage: true,
   }
 );
