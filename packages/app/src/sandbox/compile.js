@@ -53,9 +53,13 @@ const WHITELISTED_DEV_DEPENDENCIES = [
 ];
 
 function getDependencies(parsedPackage) {
-  const { dependencies: d = {}, devDependencies = {} } = parsedPackage;
+  const {
+    dependencies: d = {},
+    peerDependencies = {},
+    devDependencies = {},
+  } = parsedPackage;
 
-  const returnedDependencies = { ...d };
+  const returnedDependencies = { ...d, ...peerDependencies };
 
   Object.keys(devDependencies).forEach(dep => {
     if (WHITELISTED_DEV_DEPENDENCIES.indexOf(dep) > -1) {
