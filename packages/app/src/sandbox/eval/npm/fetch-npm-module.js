@@ -120,6 +120,14 @@ function resolvePath(
       {
         filename: currentPath,
         extensions: defaultExtensions.map(ext => '.' + ext),
+        packageFilter: p => {
+          if (!p.main && p.module) {
+            // eslint-disable-next-line
+            p.main = p.module;
+          }
+
+          return p;
+        },
         moduleDirectory: [
           'node_modules',
           manager.envVariables.NODE_PATH,

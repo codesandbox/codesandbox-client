@@ -377,6 +377,14 @@ export default class Manager {
           extensions: defaultExtensions.map(ext => '.' + ext),
           isFile: this.isFile,
           readFileSync: this.readFileSync,
+          packageFilter: p => {
+            if (!p.main && p.module) {
+              // eslint-disable-next-line
+              p.main = p.module;
+            }
+
+            return p;
+          },
           moduleDirectory: ['node_modules', this.envVariables.NODE_PATH].filter(
             x => x
           ),
