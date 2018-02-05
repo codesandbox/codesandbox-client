@@ -50,14 +50,21 @@ function normalize(
   return fileObject;
 }
 
+function getUnpkgUrl(name: string, version: string) {
+  const nameWithoutAlias = name.replace(/\/\d*\.\d*\.\d*$/, '');
+
+  return `https://unpkg.com/${nameWithoutAlias}@${version}`;
+}
+
 function getMeta(name: string, version: string) {
-  const id = `${name}@${version}`;
+  const nameWithoutAlias = name.replace(/\/\d*\.\d*\.\d*$/, '');
+  const id = `${nameWithoutAlias}@${version}`;
   if (metas[id]) {
     return metas[id];
   }
 
   metas[id] = window
-    .fetch(`https://unpkg.com/${name}@${version}/?meta`)
+    .fetch(`https://unpkg.com/${nameWithoutAlias}@${version}/?meta`)
     .then(x => x.json());
 
   return metas[id];
@@ -76,9 +83,10 @@ function downloadDependency(depName: string, depVersion: string, path: string) {
   );
 
   const isGitHub = /\//.test(depVersion);
+
   const url = isGitHub
     ? `https://cdn.jsdelivr.net/gh/${depVersion}${relativePath}`
-    : `https://unpkg.com/${depName}@${depVersion}${relativePath}`;
+    : `${getUnpkgUrl(depName, depVersion)}${relativePath}`;
 
   packages[path] = window
     .fetch(url)
@@ -112,6 +120,14 @@ function resolvePath(
       {
         filename: currentPath,
         extensions: defaultExtensions.map(ext => '.' + ext),
+        packageFilter: p => {
+          if (!p.main && p.module) {
+            // eslint-disable-next-line
+            p.main = p.module;
+          }
+
+          return p;
+        },
         moduleDirectory: [
           'node_modules',
           manager.envVariables.NODE_PATH,
