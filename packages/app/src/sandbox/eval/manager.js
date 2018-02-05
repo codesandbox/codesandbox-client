@@ -322,7 +322,9 @@ export default class Manager {
     }
 
     const dependencyName = getDependencyName(path);
-    const previousDependencyName = getDependencyName(currentPath);
+    const previousDependencyName = getDependencyName(
+      currentPath.replace('/node_modules/', '')
+    );
 
     if (
       this.manifest.dependencyAliases[previousDependencyName] &&
