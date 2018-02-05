@@ -56,7 +56,7 @@ class EditorPreview extends React.Component<Props, State> {
 
     this.interval = setInterval(() => {
       this.getBounds();
-    }, 5000);
+    }, 1000);
   }
 
   componentWillUnmount() {

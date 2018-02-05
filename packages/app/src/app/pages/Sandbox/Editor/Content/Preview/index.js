@@ -14,7 +14,6 @@ type Props = {
 };
 
 class Preview extends React.Component<Props> {
-  resizeFunction: ?Function;
   onPreviewInitialized = preview => {
     let preventCodeExecution = false;
     const disposeHandleProjectViewChange = reaction(
@@ -102,7 +101,10 @@ class Preview extends React.Component<Props> {
           props.store.editor.previewWindow.width -
             props.store.editor.previewWindow.x
       ) {
-        newWidth = width - 16 + props.store.editor.previewWindow.x;
+        newWidth = Math.max(
+          64,
+          width - 16 + props.store.editor.previewWindow.x
+        );
       }
 
       let newHeight = props.store.editor.previewWindow.height;
@@ -112,7 +114,10 @@ class Preview extends React.Component<Props> {
           props.store.editor.previewWindow.height +
             props.store.editor.previewWindow.y
       ) {
-        newHeight = height - 16 - props.store.editor.previewWindow.y;
+        newHeight = Math.max(
+          64,
+          height - 16 - props.store.editor.previewWindow.y
+        );
       }
 
       props.signals.editor.setPreviewBounds({
@@ -178,52 +183,48 @@ class Preview extends React.Component<Props> {
 
     return (
       <FlyingContainer>
-        {({ resize }) => {
-          this.resizeFunction = resize;
-
-          return (
-            <BasePreview
-              onInitialized={this.onPreviewInitialized}
-              sandbox={store.editor.currentSandbox}
-              extraModules={{ '/package.json': packageJSON }}
-              currentModule={store.editor.currentModule}
-              settings={store.preferences.settings}
-              initialPath={store.editor.initialPath}
-              isInProjectView={store.editor.isInProjectView}
-              onClearErrors={() =>
-                store.editor.errors.length && signals.editor.errorsCleared()
-              }
-              onAction={action =>
-                signals.editor.previewActionReceived({ action })
-              }
-              onOpenNewWindow={() =>
-                this.props.signals.preferences.viewModeChanged({
-                  showEditor: true,
-                  showPreview: false,
-                })
-              }
-              onToggleProjectView={() => signals.editor.projectViewToggled()}
-              showDevtools={store.preferences.showDevtools}
-              isResizing={store.editor.isResizing}
-              alignRight={() =>
-                resize({
-                  x: 0,
-                  y: 0,
-                  width: (this.props.width || 0) / 2,
-                  height: (this.props.height || 0) - 16,
-                })
-              }
-              alignBottom={() =>
-                resize({
-                  x: 0,
-                  y: (this.props.height || 0) / 2 - 16,
-                  width: (this.props.width || 0) - 16,
-                  height: (this.props.height || 0) / 2,
-                })
-              }
-            />
-          );
-        }}
+        {({ resize }) => (
+          <BasePreview
+            onInitialized={this.onPreviewInitialized}
+            sandbox={store.editor.currentSandbox}
+            extraModules={{ '/package.json': packageJSON }}
+            currentModule={store.editor.currentModule}
+            settings={store.preferences.settings}
+            initialPath={store.editor.initialPath}
+            isInProjectView={store.editor.isInProjectView}
+            onClearErrors={() =>
+              store.editor.errors.length && signals.editor.errorsCleared()
+            }
+            onAction={action =>
+              signals.editor.previewActionReceived({ action })
+            }
+            onOpenNewWindow={() =>
+              this.props.signals.preferences.viewModeChanged({
+                showEditor: true,
+                showPreview: false,
+              })
+            }
+            onToggleProjectView={() => signals.editor.projectViewToggled()}
+            showDevtools={store.preferences.showDevtools}
+            isResizing={store.editor.isResizing}
+            alignRight={() =>
+              resize({
+                x: 0,
+                y: 0,
+                width: (this.props.width || 0) / 2,
+                height: (this.props.height || 0) - 16,
+              })
+            }
+            alignBottom={() =>
+              resize({
+                x: 0,
+                y: (this.props.height || 0) / 2 - 16,
+                width: (this.props.width || 0) - 16,
+                height: (this.props.height || 0) / 2,
+              })
+            }
+          />
+        )}
       </FlyingContainer>
     );
   }
