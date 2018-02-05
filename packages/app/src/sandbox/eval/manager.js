@@ -105,6 +105,7 @@ export default class Manager {
     this.hardReload = false;
     this.hmrStatus = 'idle';
     this.transpiledModulesByHash = {};
+    this.configurations = {};
 
     Object.keys(modules).forEach(k => this.addModule(modules[k]));
     this.testRunner = new TestRunner(this);
@@ -606,7 +607,7 @@ export default class Manager {
     // dependency graph each time a file changes
     const tModulesToUpdate = modulesToUpdate.map(m => this.updateModule(m));
 
-    if (tModulesToUpdate.length > 0) {
+    if (tModulesToUpdate.length > 0 && this.configurations.sandbox) {
       this.hardReload = this.configurations.sandbox.parsed.hardReloadOnChange;
     }
 
