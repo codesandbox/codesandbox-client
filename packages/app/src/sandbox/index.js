@@ -38,7 +38,7 @@ requirePolyfills().then(() => {
   async function handleMessage(data, source) {
     if (source) {
       if (data.type === 'compile') {
-        if (data.version === 2) {
+        if (data.version === 3) {
           compile(data);
         } else {
           const compileOld = await import('./compile-old').then(x => x.default);
@@ -116,7 +116,7 @@ requirePolyfills().then(() => {
           dependencies: x.data.npmDependencies,
           hasActions: false,
           template: x.data.template,
-          version: 2,
+          version: 3,
         };
 
         compile(data);

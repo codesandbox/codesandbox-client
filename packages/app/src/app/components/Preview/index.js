@@ -244,7 +244,7 @@ class BasePreview extends React.Component<Props, State> {
 
       sendMessage(sandbox.id, {
         type: 'compile',
-        version: 2,
+        version: 3,
         entry: this.getRenderedModule(),
         modules: modulesToSend,
         sandboxId: sandbox.id,
