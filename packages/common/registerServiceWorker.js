@@ -61,8 +61,6 @@ function registerValidSW(swUrl, sendNotification) {
                   'CodeSandbox received an update, refresh to see it!',
                   'notice'
                 );
-              } else {
-                document.location.reload();
               }
             } else {
               // At this point, everything has been precached.
