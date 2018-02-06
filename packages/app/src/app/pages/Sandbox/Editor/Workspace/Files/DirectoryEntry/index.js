@@ -107,8 +107,8 @@ class DirectoryEntry extends React.Component {
     this.resetState();
   };
 
-  renameDirectory = (id, title) => {
-    this.props.signals.files.directoryRenamed({ title, id });
+  renameDirectory = (directoryShortid, title) => {
+    this.props.signals.files.directoryRenamed({ title, directoryShortid });
   };
 
   closeModals = () => {
@@ -186,6 +186,7 @@ class DirectoryEntry extends React.Component {
           <EntryContainer>
             <Entry
               id={id}
+              shortid={shortid}
               title={title}
               depth={depth}
               type={open ? 'directory-open' : 'directory'}

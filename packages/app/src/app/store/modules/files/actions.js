@@ -208,7 +208,7 @@ export function saveNewDirectoryName({ api, state, props, path }) {
   const sandboxId = state.get('editor.currentId');
   const sandbox = state.get('editor.currentSandbox');
   const directory = sandbox.directories.find(
-    directoryEntry => directoryEntry.id === props.id
+    directoryEntry => directoryEntry.shortid === props.directoryShortid
   );
 
   return api
@@ -222,7 +222,7 @@ export function saveNewDirectoryName({ api, state, props, path }) {
 export function renameDirectory({ state, props }) {
   const sandbox = state.get('editor.currentSandbox');
   const directoryIndex = sandbox.directories.findIndex(
-    directoryEntry => directoryEntry.id === props.id
+    directoryEntry => directoryEntry.shortid === props.directoryShortid
   );
   const oldTitle = state.get(
     `editor.sandboxes.${sandbox.id}.directories.${directoryIndex}.title`
