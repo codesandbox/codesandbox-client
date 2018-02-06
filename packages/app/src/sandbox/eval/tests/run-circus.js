@@ -44,7 +44,10 @@ const _setGlobalState = (test: TestEntry) => {
 
   // remove root block
   const [, ...describeBlocks] = [...currentDescribeBlocks];
-  const currentTestName = describeBlocks.join(' ') + ' ' + testName;
+  const describeName =
+    describeBlocks.length > 0 ? describeBlocks.join(' ') + ' ' : '';
+
+  const currentTestName = describeName + testName;
   const update: {
     snapshotState?: SnapshotState,
     testPath?: string,
