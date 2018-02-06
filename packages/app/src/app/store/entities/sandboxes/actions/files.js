@@ -331,14 +331,16 @@ const deleteDirectory = (id: string, directoryId: string) => async (
 const createModule = (
   id: string,
   title: string,
-  directoryShortid: ?string
+  directoryShortid: ?string,
+  isBinary: ?boolean,
+  code: ?string
 ) => async (dispatch: Function) => {
   const sandboxId = await dispatch(maybeForkSandbox(id));
 
   const { data } = await dispatch(
     doRequest(CREATE_MODULE_API_ACTIONS, `sandboxes/${sandboxId}/modules`, {
       method: 'POST',
-      body: { module: { title, directoryShortid } },
+      body: { module: { title, directoryShortid, isBinary, code } },
     })
   );
 
