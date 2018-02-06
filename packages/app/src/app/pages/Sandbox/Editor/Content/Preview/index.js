@@ -96,10 +96,9 @@ class Preview extends React.Component<Props> {
     if (width && height) {
       let newWidth = props.store.editor.previewWindow.width;
       if (
-        width !== this.props.width &&
         width - 16 <
-          props.store.editor.previewWindow.width -
-            props.store.editor.previewWindow.x
+        props.store.editor.previewWindow.width -
+          props.store.editor.previewWindow.x
       ) {
         newWidth = Math.max(
           64,
@@ -109,10 +108,9 @@ class Preview extends React.Component<Props> {
 
       let newHeight = props.store.editor.previewWindow.height;
       if (
-        height !== this.props.height &&
         height - 16 <
-          props.store.editor.previewWindow.height +
-            props.store.editor.previewWindow.y
+        props.store.editor.previewWindow.height +
+          props.store.editor.previewWindow.y
       ) {
         newHeight = Math.max(
           64,
@@ -120,10 +118,12 @@ class Preview extends React.Component<Props> {
         );
       }
 
-      props.signals.editor.setPreviewBounds({
-        width: newWidth,
-        height: newHeight,
-      });
+      if (width !== this.props.width || height !== this.props.height) {
+        props.signals.editor.setPreviewBounds({
+          width: newWidth,
+          height: newHeight,
+        });
+      }
     }
   }
 
