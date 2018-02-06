@@ -159,6 +159,8 @@ export default class TranspiledModule {
    */
   hmrConfig: ?HMR;
 
+  hasMissingDependencies: boolean = false;
+
   /**
    * Create a new TranspiledModule, a transpiled module is a module that contains
    * all info for transpilation and compilation. Note that there can be multiple
@@ -194,6 +196,11 @@ export default class TranspiledModule {
     }
 
     this.reset();
+
+    // Reset parents
+    this.initiators.forEach(tModule => {
+      tModule.resetTranspilation();
+    });
 
     // There are no other modules calling this module, so we run a function on
     // all transpilers that clears side effects if there are any. Example:
@@ -378,6 +385,8 @@ export default class TranspiledModule {
             if (process.env.NODE_ENV === 'development') {
               console.error(e);
             }
+
+            this.hasMissingDependencies = true;
           }
         }
       },
@@ -452,6 +461,8 @@ export default class TranspiledModule {
       return this;
     }
 
+    this.hasMissingDependencies = false;
+
     // Remove this module from the initiators of old deps, so we can populate a
     // fresh cache
     this.dependencies.forEach(tModule => {
@@ -486,7 +497,7 @@ export default class TranspiledModule {
           manager,
           transpilerConfig.options || {}
         );
-        loaderContext.remainingRequest = transpilers
+        loaderContext.remainingRequests = transpilers
           .slice(i + 1)
           .map(transpiler => transpiler.transpiler.name)
           .concat([this.module.path])
@@ -524,6 +535,7 @@ export default class TranspiledModule {
           e.tModule = this;
           this.resetTranspilation();
           manager.clearCache();
+
           throw e;
         }
         debug(`Transpiled '${this.getId()}' in ${Date.now() - t}ms`);

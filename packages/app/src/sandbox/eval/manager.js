@@ -615,7 +615,12 @@ export default class Manager {
       flattenDeep([
         tModulesToUpdate,
         // All modules with errors
-        this.getTranspiledModules().filter(t => t.errors.length > 0),
+        this.getTranspiledModules().filter(t => {
+          if (t.hasMissingDependencies) {
+            t.resetTranspilation();
+          }
+          return t.errors.length > 0 || t.hasMissingDependencies;
+        }),
       ])
     );
     const transpiledModulesToUpdate = allModulesToUpdate.filter(
