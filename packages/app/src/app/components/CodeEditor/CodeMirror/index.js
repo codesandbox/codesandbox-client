@@ -9,9 +9,13 @@ import { getCodeMirror } from 'app/utils/codemirror';
 import 'codemirror/addon/dialog/dialog';
 import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/tern/tern';
+import 'codemirror/addon/lint/lint.css';
+import 'codemirror/addon/lint/lint';
 
 import FuzzySearch from '../FuzzySearch';
 import { Container, CodeContainer } from './elements';
+
+import LinterWorker from 'worker-loader?name=monaco-linter.[hash].worker.js!../Monaco/workers/linter';
 
 import type { Props, Editor } from '../types';
 
@@ -88,6 +92,46 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
         );
       }
     });
+  };
+
+  linterWorker: ?Worker;
+
+  validate = (code: string = '', updateLinting: Function) => {
+    if (code.trim() === '') {
+      updateLinting([]);
+      return;
+    }
+
+    const linterWorker = this.linterWorker;
+    if (linterWorker) {
+      linterWorker.postMessage({
+        code,
+        title: this.currentModule.title,
+        version: code,
+      });
+
+      linterWorker.onmessage = (event: MessageEvent) => {
+        // $FlowIssue
+        const { markers, version } = event.data;
+
+        if (version === code) {
+          updateLinting(
+            markers.map(error => ({
+              message: `eslint: ${error.message}`,
+              severity: error.severity === 2 ? 'warning' : 'error',
+              from: new CodeMirror.Pos(
+                error.startLineNumber - 1,
+                error.startColumn - 1
+              ),
+              to: new CodeMirror.Pos(
+                error.endLineNumber - 1,
+                error.endColumn - 1
+              ),
+            }))
+          );
+        }
+      };
+    }
   };
 
   changeSettings = async (settings: $PropertyType<Props, 'settings'>) => {
@@ -185,12 +229,13 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
     }
 
     if (settings.lintEnabled) {
-      const initialized = 'eslint' in window;
-      import(/* webpackChunkName: 'codemirror-eslint' */ 'app/utils/codemirror/eslint-lint')
-        .then(initializer => !initialized && initializer.default())
-        .then(() => {
-          this.codemirror.setOption('lint', true);
+      if (!this.linterWorker) {
+        this.linterWorker = new LinterWorker();
+        this.codemirror.setOption('lint', {
+          getAnnotations: this.validate,
+          async: true,
         });
+      }
     } else {
       this.codemirror.setOption('lint', false);
     }

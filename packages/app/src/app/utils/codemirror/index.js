@@ -36,7 +36,6 @@ export const getCodeMirror = (el, doc) => {
     lineNumbers: true,
     lineWrapping: false,
     styleActiveLine: true,
-    lint: false,
   });
 
   return cm;

@@ -8,7 +8,7 @@ import getTemplateDefinition from 'common/templates';
 import type { ModuleError } from 'common/types';
 
 import CodeEditor from 'app/components/CodeEditor';
-import type { Editor } from 'app/components/CodeEditor/types';
+import type { Editor, Settings } from 'app/components/CodeEditor/types';
 import DevTools from 'app/components/Preview/DevTools';
 import FilePath from 'app/components/CodeEditor/FilePath';
 import Preview from './Preview';
@@ -17,16 +17,18 @@ import Tabs from './Tabs';
 
 import { FullSize } from './elements';
 
-const settings = store => ({
-  fontFamily: store.preferences.settings.fontFamily,
-  fontSize: store.preferences.settings.fontSize,
-  lineHeight: store.preferences.settings.lineHeight,
-  autoCompleteEnabled: store.preferences.settings.autoCompleteEnabled,
-  autoDownloadTypes: store.preferences.settings.autoDownloadTypes,
-  vimMode: store.preferences.settings.vimMode,
-  lintEnabled: store.preferences.settings.lintEnabled,
-  tabWidth: 2,
-});
+const settings = store =>
+  ({
+    fontFamily: store.preferences.settings.fontFamily,
+    fontSize: store.preferences.settings.fontSize,
+    lineHeight: store.preferences.settings.lineHeight,
+    autoCompleteEnabled: store.preferences.settings.autoCompleteEnabled,
+    autoDownloadTypes: store.preferences.settings.autoDownloadTypes,
+    vimMode: store.preferences.settings.vimMode,
+    lintEnabled: store.preferences.settings.lintEnabled,
+    codeMirror: store.preferences.settings.codeMirror,
+    tabWidth: 2,
+  }: Settings);
 
 type Props = {
   signals: any,
