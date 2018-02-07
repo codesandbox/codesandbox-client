@@ -131,6 +131,11 @@ export default () => (
               </a>
             </li>
             <li>
+              <a href="/legal" target="_blank" rel="noopener noreferrer">
+                Legal
+              </a>
+            </li>
+            <li>
               <a href="mailto:hello@codesandbox.io">Contact Us</a>
             </li>
           </List>

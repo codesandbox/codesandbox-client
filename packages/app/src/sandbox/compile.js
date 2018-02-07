@@ -1,11 +1,11 @@
 import { dispatch, clearErrorTransformers } from 'codesandbox-api';
-
+import { absolute } from 'common/utils/path';
 import _debug from 'app/utils/debug';
+import parseConfigurations from 'common/templates/configuration/parse';
 
 import initializeErrorTransformers from './errors/transformers';
 import getPreset from './eval';
 import Manager from './eval/manager';
-import transformJSON from './console/transform-json';
 
 import { resetScreen } from './status-screen';
 
@@ -21,6 +21,7 @@ import {
 } from './boilerplates';
 
 import loadDependencies from './npm';
+import getDefinition from '../../../common/templates/index';
 
 let initializedResizeListener = false;
 let manager: ?Manager = null;
@@ -37,12 +38,44 @@ export function getCurrentManager(): ?Manager {
 }
 
 let firstLoad = true;
+let hadError = false;
+
+// TODO make devDependencies lazy loaded by the packager
+const WHITELISTED_DEV_DEPENDENCIES = [
+  'redux-devtools',
+  'redux-devtools-dock-monitor',
+  'redux-devtools-log-monitor',
+  'redux-logger',
+  'enzyme',
+  'react-addons-test-utils',
+  'react-test-renderer',
+  'identity-obj-proxy',
+];
+
+function getDependencies(parsedPackage) {
+  const {
+    dependencies: d = {},
+    peerDependencies = {},
+    devDependencies = {},
+  } = parsedPackage;
+
+  const returnedDependencies = { ...d, ...peerDependencies };
+
+  Object.keys(devDependencies).forEach(dep => {
+    if (WHITELISTED_DEV_DEPENDENCIES.indexOf(dep) > -1) {
+      returnedDependencies[dep] = devDependencies[dep];
+    }
+  });
+
+  return returnedDependencies;
+}
 
 async function updateManager(
   sandboxId,
   template,
   managerModules,
   manifest,
+  configurations,
   isNewCombination
 ) {
   let newManager = false;
@@ -60,6 +93,7 @@ async function updateManager(
   if (isNewCombination || newManager) {
     manager.setManifest(manifest);
   }
+  manager.updateConfigurations(configurations);
   await manager.updateData(managerModules);
   return manager;
 }
@@ -81,26 +115,54 @@ inject();
 async function compile({
   sandboxId,
   modules,
-  entry,
   externalResources,
-  dependencies,
   hasActions,
   isModuleView = false,
   template,
+  entry,
 }) {
   const startTime = Date.now();
   try {
     clearErrorTransformers();
     initializeErrorTransformers();
-    unmount(manager && manager.webpackHMR);
+    unmount(!hadError);
   } catch (e) {
     console.error(e);
   }
+  hadError = false;
 
   actionsEnabled = hasActions;
   handleExternalResources(externalResources);
 
   try {
+    const templateDefinition = getDefinition(template);
+    const configurations = parseConfigurations(
+      template,
+      templateDefinition.configurationFiles,
+      path => modules[path]
+    );
+
+    const errors = Object.keys(configurations)
+      .map(c => configurations[c])
+      .filter(x => x.error);
+
+    if (errors.length) {
+      throw new Error(
+        `We weren't able to parse: '${errors[0].path}': ${
+          errors[0].error.message
+        }`
+      );
+    }
+
+    const packageJSON = modules['/package.json'];
+
+    if (!packageJSON) {
+      throw new Error('Could not find package.json');
+    }
+
+    const parsedPackageJSON = configurations.package.parsed;
+
+    const dependencies = getDependencies(parsedPackageJSON);
     const { manifest, isNewCombination } = await loadDependencies(dependencies);
 
     if (isNewCombination && !firstLoad) {
@@ -114,11 +176,28 @@ async function compile({
       template,
       modules,
       manifest,
+      configurations,
       isNewCombination
     );
 
-    const managerModuleToTranspile = modules.find(m => m.path === entry);
+    const possibleEntries = templateDefinition.getEntries(configurations);
 
+    const foundMain = isModuleView
+      ? entry
+      : possibleEntries.find(p => modules[p]);
+
+    if (!foundMain) {
+      throw new Error(
+        `Could not find entry file: ${
+          possibleEntries[0]
+        }. You can specify one in package.json by defining a \`main\` property.`
+      );
+    }
+
+    const main = absolute(foundMain);
+    const managerModuleToTranspile = modules[main];
+
+    await manager.preset.setup(manager);
     await manager.transpileModules(managerModuleToTranspile);
 
     debug(`Transpilation time ${Date.now() - t}ms`);
@@ -146,9 +225,13 @@ async function compile({
       }
     }
     if (!manager.webpackHMR || firstLoad) {
-      const htmlModule = modules.find(
-        m => m.path === '/public/index.html' || m.path === '/index.html'
-      );
+      const htmlModule =
+        modules[
+          templateDefinition
+            .getHTMLEntries(configurations)
+            .find(p => modules[p])
+        ];
+
       const html = htmlModule ? htmlModule.code : '<div id="root"></div>';
       document.body.innerHTML = html;
     }
@@ -189,6 +272,8 @@ async function compile({
       }
     }
 
+    await manager.preset.teardown(manager);
+
     if (!initializedResizeListener) {
       initializeResizeListener();
     }
@@ -197,22 +282,15 @@ async function compile({
       // Testing
       const ttt = Date.now();
       const testRunner = manager.testRunner;
-      testRunner.initialize();
       testRunner.findTests(modules);
       await testRunner.runTests();
-      const aggregatedResults = testRunner.reportResults();
       debug(`Test Evaluation time: ${Date.now() - ttt}ms`);
 
-      dispatch({
-        type: 'test-result',
-        result: transformJSON(aggregatedResults),
-      });
       // End - Testing
     } catch (error) {
-      dispatch({
-        type: 'test-result',
-        error: manager.testRunner.reportError(error),
-      });
+      if (process.env.NODE_ENV === 'development') {
+        console.error(error);
+      }
     }
 
     debug(`Total time: ${Date.now() - startTime}ms`);
@@ -221,7 +299,6 @@ async function compile({
       type: 'success',
     });
 
-    firstLoad = false;
     manager.save();
   } catch (e) {
     console.log('Error in sandbox:');
@@ -232,13 +309,16 @@ async function compile({
     }
 
     e.module = e.module;
-    e.fileName = e.fileName || entry;
+    e.fileName = e.fileName;
 
     const event = new Event('error');
     event.error = e;
 
     window.dispatchEvent(event);
+
+    hadError = true;
   }
+  firstLoad = false;
 
   if (typeof window.__puppeteer__ === 'function') {
     window.__puppeteer__('done');
@@ -251,9 +331,8 @@ type Arguments = {
     code: string,
     path: string,
   }>,
-  entry: string,
+  entry: ?string,
   externalResources: Array<string>,
-  dependencies: Object,
   hasActions: boolean,
   template: string,
 };

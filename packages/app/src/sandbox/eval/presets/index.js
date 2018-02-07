@@ -3,6 +3,7 @@ import { orderBy } from 'lodash';
 import querystring from 'querystring';
 import type { Module } from '../entities/module';
 
+import type Manager from '../manager';
 import Transpiler from '../transpilers';
 
 export type TranspiledModule = Module & {
@@ -13,6 +14,8 @@ type TranspilerDefinition = {
   transpiler: Transpiler,
   options: ?Object,
 };
+
+type LifeCycleFunction = (manager: Manager) => void | Promise<*>;
 
 /**
  * This is essentially where it all comes together. The manager is responsible for
@@ -33,15 +36,33 @@ export default class Preset {
   transpilers: Set<Transpiler>;
   name: string;
   ignoredExtensions: Array<string>;
+  defaultAliases: { [path: string]: string };
   alias: { [path: string]: string };
   // Whether this preset supports .env files
   hasDotEnv: boolean;
+
+  /**
+   * Code to run before evaluating entry
+   */
+  setup: LifeCycleFunction;
+  /**
+   * Code to run after done
+   */
+  teardown: LifeCycleFunction;
 
   constructor(
     name: string,
     ignoredExtensions: ?Array<string>,
     alias: { [path: string]: string },
-    { hasDotEnv }: { hasDotEnv: boolean } = {}
+    {
+      hasDotEnv,
+      setup,
+      teardown,
+    }: {
+      hasDotEnv?: boolean,
+      setup?: LifeCycleFunction,
+      teardown?: LifeCycleFunction,
+    } = {}
   ) {
     this.loaders = [];
     this.transpilers = new Set();
@@ -49,8 +70,17 @@ export default class Preset {
 
     this.hasDotEnv = hasDotEnv || false;
     this.alias = alias || {};
+    this.defaultAliases = alias || {};
     this.ignoredExtensions = ignoredExtensions || ['js', 'jsx', 'json'];
+
+    const noop = () => {};
+    this.setup = setup || noop;
+    this.teardown = teardown || noop;
   }
+
+  setAdditionalAliases = (aliases: Object) => {
+    this.alias = { ...this.defaultAliases, ...aliases };
+  };
 
   /**
    * Checks if there is an alias given for the path, if there is it will return

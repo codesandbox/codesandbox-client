@@ -205,6 +205,10 @@ const TEMPLATE_SUPPORT = {
     css: ['Global', 'Modules'],
   },
   svelte: { loaders: [js, html, image], css: ['Global', 'Scoped', 'Modules'] },
+  'angular-cli': {
+    loaders: [ts, html, scss, sass, less, stylus, cssGlobal, image],
+    css: ['Global', 'Scoped'],
+  },
 };
 
 export default class Frameworks extends React.Component {

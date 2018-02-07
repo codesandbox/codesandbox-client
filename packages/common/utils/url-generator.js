@@ -23,12 +23,14 @@ export const host = () => {
 
 export const protocolAndHost = () => `${location.protocol}//${host()}`;
 
+export const newSandboxWizard = () => `/s`;
 export const newSandboxUrl = () => `/s/new`;
 export const newReactTypeScriptSandboxUrl = () => `/s/react-ts`;
 export const newPreactSandboxUrl = () => `/s/preact`;
 export const newVueSandboxUrl = () => `/s/vue`;
 export const importFromGitHubUrl = () => `/s/github`;
 export const newSvelteSandboxUrl = () => `/s/svelte`;
+export const newAngularSandboxUrl = () => `/s/angular`;
 export const uploadFromCliUrl = () => `/s/cli`;
 
 const sandboxGitUrl = (git: {
@@ -58,7 +60,10 @@ export const embedUrl = (sandbox: Sandbox) => {
 };
 
 const stagingFrameUrl = (shortid: string, path: string) => {
-  const stagingHost = process.env.CODESANDBOX_HOST.split('//')[1];
+  const stagingHost = (process.env.CODESANDBOX_HOST
+    ? process.env.CODESANDBOX_HOST
+    : ''
+  ).split('//')[1];
   const segments = stagingHost.split('.');
   const first = segments.shift();
   return `${location.protocol}//${first}-${shortid}.${segments.join('.')}/${

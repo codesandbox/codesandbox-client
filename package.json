@@ -5,24 +5,25 @@
   "private": true,
   "scripts": {
     "build": "yarn build:dependents && yarn build:prod",
-    "build:prod":
-      "lerna run build --scope app --scope homepage --parallel && gulp",
-    "build:dependents":
-      "lerna run build --ignore app --ignore homepage --parallel",
+    "build:prod": "lerna run build --scope app --scope homepage --parallel && gulp",
+    "build:dependents": "lerna run build --ignore app --ignore homepage --parallel",
     "start": "lerna run start --parallel",
     "start:test": "lerna run start:test --scope app --stream",
-    "start:dev_api":
-      "lerna run start --parallel --ignore app & lerna run start:dev_api --scope app --stream",
-    "test": "lerna run test",
+    "start:dev_api": "lerna run start --parallel --ignore app & lerna run start:dev_api --scope app --stream",
+    "test": "lerna run test --ignore codesandbox-browserfs",
     "test:integrations": "lerna exec --scope app --stream -- yarn test:integrations",
     "test:jest-lite": "lerna exec --scope app --stream -- yarn run test jest-lite --watch --coverage",
     "lint": "lerna run lint",
     "add-contributor": "all-contributors add",
     "generate": "all-contributors generate",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "postinstall": "lerna run install-dependencies --scope codesandbox-browserfs --stream"
   },
   "lint-staged": {
-    "*.js": ["prettier --write --single-quote --trailing-comma es5", "git add"],
+    "*.js": [
+      "prettier --write --single-quote --trailing-comma es5",
+      "git add"
+    ],
     "*.css": [
       "prettier --write --single-quote --trailing-comma es5",
       "git add"
@@ -32,7 +33,9 @@
       "git add"
     ]
   },
-  "workspaces": ["packages/**"],
+  "workspaces": [
+    "packages/**"
+  ],
   "devDependencies": {
     "all-contributors-cli": "^4.3.0",
     "babel-eslint": "^7.2.3",
@@ -45,6 +48,7 @@
     "eslint-plugin-import": "^2.3.0",
     "eslint-plugin-jsx-a11y": "^5.0.3",
     "eslint-plugin-react": "~7.4.0",
+    "flow-bin": "^0.64.0",
     "gulp": "^3.9.1",
     "lerna": "^2.5.1",
     "lint-staged": "^5.0.0",

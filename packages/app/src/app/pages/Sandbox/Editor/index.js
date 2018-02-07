@@ -1,62 +1,82 @@
-/* @flow */
 import * as React from 'react';
 import SplitPane from 'react-split-pane';
-import type { Sandbox } from 'common/types';
+import { inject, observer } from 'mobx-react';
+import { hot } from 'react-hot-loader';
+import { ThemeProvider } from 'styled-components';
+
+import Fullscreen from 'common/components/flex/Fullscreen';
+import getTemplateDefinition from 'common/templates';
 
 import Workspace from './Workspace';
 import Content from './Content';
+import Header from './Header';
+import Navigation from './Navigation';
 
-type Props = {
-  sandbox: Sandbox,
-  match: Object,
-  zenMode: boolean,
-  workspaceHidden: boolean,
-  setWorkspaceHidden: (hidden: boolean) => void,
-};
+function ContentSplit({ signals, store, match }) {
+  const sandbox = store.editor.currentSandbox;
+  const sandboxOwned = sandbox.owned;
 
-type State = {
-  resizing: boolean,
-};
+  const hideNavigation =
+    (store.preferences.settings.zenMode &&
+      !store.workspace.openedWorkspaceItem) ||
+    !sandboxOwned;
 
-export default class ContentSplit extends React.PureComponent<Props, State> {
-  state = {
-    resizing: false,
-  };
-
-  startResizing = () => this.setState({ resizing: true });
-  stopResizing = () => this.setState({ resizing: false });
-
-  toggleWorkspace = () =>
-    this.props.setWorkspaceHidden(!this.props.workspaceHidden);
-
-  render() {
-    const { sandbox, match, workspaceHidden } = this.props;
-    const { resizing } = this.state;
-    return (
-      <SplitPane
-        split="vertical"
-        defaultSize={18 * 16}
-        minSize={14 * 16}
-        style={{ position: 'fixed', top: 0, bottom: 0, left: 0, right: 0 }}
-        onDragStarted={this.startResizing}
-        onDragFinished={this.stopResizing}
-        resizerStyle={{ visibility: workspaceHidden ? 'hidden' : 'visible' }}
-        pane1Style={{
-          visibility: workspaceHidden ? 'hidden' : 'visible',
-          maxWidth: workspaceHidden ? 0 : 'inherit',
+  return (
+    <ThemeProvider
+      theme={{
+        templateColor: sandbox && getTemplateDefinition(sandbox.template).color,
+      }}
+    >
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          position: 'fixed',
+          left: 0,
+          right: 0,
+          top: 0,
+          bottom: 0,
         }}
       >
-        {!workspaceHidden && (
-          <Workspace zenMode={this.props.zenMode} sandbox={sandbox} />
-        )}
-        <Content
-          workspaceHidden={workspaceHidden}
-          toggleWorkspace={this.toggleWorkspace}
-          sandbox={sandbox}
-          resizing={resizing}
-          match={match}
-        />
-      </SplitPane>
-    );
-  }
+        {!store.preferences.settings.zenMode && <Header />}
+
+        <Fullscreen>
+          {!hideNavigation && <Navigation />}
+
+          <div
+            style={{
+              position: 'fixed',
+              left: hideNavigation ? 0 : 'calc(4rem + 1px)',
+              top: store.preferences.settings.zenMode ? 0 : '3rem',
+              right: 0,
+              bottom: 0,
+            }}
+          >
+            <SplitPane
+              split="vertical"
+              defaultSize={sandboxOwned ? 16 * 16 : 18 * 16}
+              onDragStarted={() => signals.editor.resizingStarted()}
+              onDragFinished={() => signals.editor.resizingStopped()}
+              resizerStyle={{
+                visibility: store.workspace.openedWorkspaceItem
+                  ? 'visible'
+                  : 'hidden',
+              }}
+              pane1Style={{
+                visibility: store.workspace.openedWorkspaceItem
+                  ? 'visible'
+                  : 'hidden',
+                maxWidth: store.workspace.openedWorkspaceItem ? 'inherit' : 0,
+              }}
+            >
+              {store.workspace.openedWorkspaceItem && <Workspace />}
+              <Content match={match} />
+            </SplitPane>
+          </div>
+        </Fullscreen>
+      </div>
+    </ThemeProvider>
+  );
 }
+
+export default hot(module)(inject('signals', 'store')(observer(ContentSplit)));

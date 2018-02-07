@@ -29,13 +29,14 @@ export default async function loadDependencies(dependencies: NPMDependencies) {
 
     if (loadedDependencyCombination !== depQuery) {
       isNewCombination = true;
-      // Mark that the last requested url is this
-      loadedDependencyCombination = depQuery;
-
-      setScreen({ type: 'loading', text: 'Bundling Dependencies...' });
 
       const data = await fetchDependencies(dependenciesWithoutTypings);
+
+      // Mark that the last requested url is this
+      loadedDependencyCombination = depQuery;
       manifest = data;
+
+      setScreen({ type: 'loading', text: 'Bundling Dependencies...' });
     }
   } else {
     manifest = null;

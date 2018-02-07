@@ -47,7 +47,7 @@ describe('sandboxes', () => {
     const id = sandbox.id || sandbox;
     const threshold = sandbox.threshold || 0.01;
 
-    it.concurrent(
+    it(
       `loads the sandbox with id '${id}'`,
       async () => {
         browser = await browser;

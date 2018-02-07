@@ -12,7 +12,9 @@ export default async (code: string, loaderContext: LoaderContext) => {
 
   return core
     .load(code, loaderContext.path, (dependencyPath: string) => {
-      const tModule = loaderContext.addDependency(dependencyPath);
+      loaderContext.addDependency(dependencyPath);
+
+      const tModule = loaderContext.resolveTranspiledModule(dependencyPath);
 
       return tModule.source ? tModule.source.compiledCode : tModule.module.code;
     })

@@ -1,253 +1,255 @@
 // @flow
 import * as React from 'react';
-import styled, { ThemeProvider } from 'styled-components';
-import { createSelector } from 'reselect';
+import { ThemeProvider } from 'styled-components';
 import { Prompt } from 'react-router-dom';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import { preferencesSelector } from 'app/store/preferences/selectors';
-import type {
-  Preferences,
-  Sandbox,
-  CurrentUser,
-  Module,
-  Directory,
-} from 'common/types';
-import { currentUserSelector } from 'app/store/user/selectors';
-import moduleActionCreators from 'app/store/entities/sandboxes/modules/actions';
-import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
-import modalActionCreators from 'app/store/modal/actions';
-import previewApiActionCreators from 'app/store/preview-actions-api/actions';
-import preferenceActionCreators from 'app/store/preferences/actions';
-import userActionCreators from 'app/store/user/actions';
-import viewActionCreators from 'app/store/view/actions';
-import { devToolsOpenSelector } from 'app/store/view/selectors';
-import {
-  findMainModule,
-  findCurrentModule,
-  modulesFromSandboxSelector,
-} from 'app/store/entities/sandboxes/modules/selectors';
-import { directoriesFromSandboxSelector } from 'app/store/entities/sandboxes/directories/selectors';
-
+import { reaction } from 'mobx';
+import { inject, observer } from 'mobx-react';
 import getTemplateDefinition from 'common/templates';
+import type { ModuleError } from 'common/types';
 
-import SplitPane from 'react-split-pane';
+import CodeEditor from 'app/components/CodeEditor';
+import type { Editor } from 'app/components/CodeEditor/types';
+import DevTools from 'app/components/Preview/DevTools';
+import FilePath from 'app/components/CodeEditor/FilePath';
+import Preview from './Preview';
 
-import CodeEditor from 'app/components/sandbox/CodeEditor';
-import Tabs from 'app/components/sandbox/CodeEditor/Tabs';
-import FilePath from 'app/components/sandbox/CodeEditor/FilePath';
-import Preview from 'app/components/sandbox/Preview';
+import Tabs from './Tabs';
 
-import showAlternativeComponent from 'app/hoc/show-alternative-component';
-import fadeIn from 'common/utils/animation/fade-in';
+import { FullSize } from './elements';
 
-import Header from './Header';
-import Skeleton from './Skeleton';
+const settings = store => ({
+  fontFamily: store.preferences.settings.fontFamily,
+  fontSize: store.preferences.settings.fontSize,
+  lineHeight: store.preferences.settings.lineHeight,
+  autoCompleteEnabled: store.preferences.settings.autoCompleteEnabled,
+  autoDownloadTypes: store.preferences.settings.autoDownloadTypes,
+  vimMode: store.preferences.settings.vimMode,
+  lintEnabled: store.preferences.settings.lintEnabled,
+  tabWidth: 2,
+});
 
 type Props = {
-  workspaceHidden: boolean,
-  toggleWorkspace: () => void,
-  devToolsOpen: boolean,
-  sandbox: Sandbox,
-  user: CurrentUser,
-  preferences: Preferences,
-  modules: Array<Module>,
-  directories: Array<Directory>,
-  moduleActions: typeof moduleActionCreators,
-  sandboxActions: typeof sandboxActionCreators,
-  userActions: typeof userActionCreators,
-  modalActions: typeof modalActionCreators,
-  previewApiActions: typeof previewApiActionCreators,
-  preferenceActions: typeof preferenceActionCreators,
-  viewActions: typeof viewActionCreators,
+  signals: any,
+  store: any,
 };
 
 type State = {
-  resizing: boolean,
+  width: ?number,
+  height: ?number,
 };
 
-const FullSize = styled.div`
-  height: 100%;
-  width: 100%;
-
-  ${fadeIn(0)};
-  display: flex;
-  flex-direction: column;
-`;
-
-const mapStateToProps = createSelector(
-  preferencesSelector,
-  currentUserSelector,
-  modulesFromSandboxSelector,
-  directoriesFromSandboxSelector,
-  devToolsOpenSelector,
-  (preferences, user, modules, directories, devToolsOpen) => ({
-    preferences,
-    user,
-    modules,
-    directories,
-    devToolsOpen,
-  })
-);
-const mapDispatchToProps = dispatch => ({
-  moduleActions: bindActionCreators(moduleActionCreators, dispatch),
-  sandboxActions: bindActionCreators(sandboxActionCreators, dispatch),
-  userActions: bindActionCreators(userActionCreators, dispatch),
-  modalActions: bindActionCreators(modalActionCreators, dispatch),
-  previewApiActions: bindActionCreators(previewApiActionCreators, dispatch),
-  preferenceActions: bindActionCreators(preferenceActionCreators, dispatch),
-  viewActions: bindActionCreators(viewActionCreators, dispatch),
-});
-class EditorPreview extends React.PureComponent<Props, State> {
-  state = {
-    resizing: false,
-  };
+class EditorPreview extends React.Component<Props, State> {
+  state = { width: null, height: null };
+  interval: number;
+  disposeEditorChange: Function;
+  el: ?HTMLElement;
+  devtools: DevTools;
 
   componentDidMount() {
-    window.onbeforeunload = e => {
-      const { modules } = this.props;
-      const notSynced = modules.some(m => m.isNotSynced);
+    this.props.signals.editor.contentMounted();
+    this.disposeEditorChange = reaction(
+      () => this.props.store.preferences.settings.codeMirror,
+      () => this.forceUpdate()
+    );
 
-      if (notSynced) {
-        const returnMessage =
-          'You have not saved all your modules, are you sure you want to close this tab?';
-        e.returnValue = returnMessage;
-        return returnMessage;
-      }
+    window.addEventListener('resize', this.getBounds);
 
-      return null;
-    };
+    this.interval = setInterval(() => {
+      this.getBounds();
+    }, 1000);
   }
 
-  startResizing = () => this.setState({ resizing: true });
-  stopResizing = () => this.setState({ resizing: false });
+  componentWillUnmount() {
+    this.disposeEditorChange();
+    window.removeEventListener('resize', this.getBounds);
+    clearInterval(this.interval);
+  }
 
-  saveCode = () => {
-    const { sandbox, modules, directories, sandboxActions } = this.props;
+  getBounds = el => {
+    if (el) {
+      this.el = this.el || el;
+    }
+    if (this.el) {
+      const { width, height } = this.el.getBoundingClientRect();
 
-    const mainModule = findMainModule(modules, directories, sandbox.entry);
-    const { currentModule } = sandbox;
-
-    // $FlowIssue
-    sandboxActions.saveModuleCode(sandbox.id, currentModule || mainModule.id);
+      if (width !== this.state.width || height !== this.state.height) {
+        this.setState({ width, height });
+      }
+    }
   };
 
-  getDefaultSize = () => {
-    const { sandbox } = this.props;
-    if (sandbox.showEditor && !sandbox.showPreview) return '0%';
-    if (!sandbox.showEditor && sandbox.showPreview) return '100%';
-    return '50%';
+  handleToggleDevtools = showDevtools => {
+    if (this.devtools) {
+      if (showDevtools) {
+        this.devtools.openDevTools();
+      } else {
+        this.devtools.hideDevTools();
+      }
+    }
   };
 
-  exitZenMode = () => {
-    this.props.preferenceActions.setPreference({ zenMode: false });
+  onInitialized = (editor: Editor) => {
+    const store = this.props.store;
+    let isChangingSandbox = false;
+
+    const disposeSandboxChangeHandler = reaction(
+      () => store.editor.currentSandbox,
+      newSandbox => {
+        isChangingSandbox = !!editor.changeSandbox;
+
+        // Put in a timeout so we allow the actions after the fork to execute first as well.
+        setTimeout(() => {
+          if (editor.changeSandbox) {
+            const { parsed } = store.editor.parsedConfigurations.package;
+            editor
+              .changeSandbox(
+                newSandbox,
+                store.editor.currentModule,
+                parsed ? parsed.dependencies : newSandbox.npmDependencies.toJS()
+              )
+              .then(() => {
+                isChangingSandbox = false;
+              });
+          }
+        });
+      }
+    );
+    const disposeErrorsHandler = reaction(
+      () => store.editor.errors.map(error => error),
+      (errors: Array<ModuleError>) => {
+        if (editor.setErrors) {
+          editor.setErrors(errors);
+        }
+      }
+    );
+    const disposeCorrectionsHandler = reaction(
+      () => store.editor.corrections.map(correction => correction),
+      corrections => {
+        if (editor.setCorrections) {
+          editor.setCorrections(corrections);
+        }
+      }
+    );
+    const disposeGlyphsHandler = reaction(
+      () => store.editor.glyphs.map(glyph => glyph),
+      glyphs => {
+        if (editor.setGlyphs) {
+          editor.setGlyphs(glyphs);
+        }
+      }
+    );
+    const disposeModulesHandler = reaction(this.detectStructureChange, () => {
+      if (isChangingSandbox) {
+        return;
+      }
+      if (editor.updateModules) {
+        editor.updateModules();
+      }
+    });
+    const disposePreferencesHandler = reaction(
+      () => settings(store),
+      newSettings => {
+        if (editor.changeSettings) {
+          editor.changeSettings(newSettings);
+        }
+      },
+      {
+        compareStructural: true,
+      }
+    );
+    const disposeResizeHandler = reaction(
+      () => [
+        store.preferences.settings.zenMode,
+        store.workspace.openedWorkspaceItem,
+      ],
+      () => {
+        setTimeout(() => {
+          this.getBounds();
+        });
+      }
+    );
+    const disposePackageHandler = reaction(
+      () => store.editor.parsedConfigurations,
+      () => {
+        const { parsed } = store.editor.parsedConfigurations.package;
+        if (parsed) {
+          const { dependencies = {} } = parsed;
+
+          if (editor.changeDependencies) {
+            editor.changeDependencies(dependencies);
+          }
+        }
+      }
+    );
+    const disposeModuleHandler = reaction(
+      () => [store.editor.currentModule, store.editor.currentModule.code],
+      () => {
+        if (isChangingSandbox) {
+          return;
+        }
+        const newModule = store.editor.currentModule;
+        const editorModule = editor.currentModule;
+
+        if (newModule !== editorModule && editor.changeModule) {
+          editor.changeModule(newModule);
+        } else if (editor.changeCode) {
+          editor.changeCode(newModule.code || '');
+        }
+      }
+    );
+    const disposeToggleDevtools = reaction(
+      () => this.props.store.preferences.showDevtools,
+      showDevtools => {
+        this.handleToggleDevtools(showDevtools);
+      }
+    );
+
+    return () => {
+      disposeErrorsHandler();
+      disposeCorrectionsHandler();
+      disposeModulesHandler();
+      disposePreferencesHandler();
+      disposePackageHandler();
+      disposeSandboxChangeHandler();
+      disposeModuleHandler();
+      disposeToggleDevtools();
+      disposeResizeHandler();
+      disposeGlyphsHandler();
+    };
+  };
+
+  detectStructureChange = () => {
+    const sandbox = this.props.store.editor.currentSandbox;
+
+    return String(
+      sandbox.modules
+        .map(module => module.id + module.directoryShortid + module.title)
+        .concat(
+          sandbox.directories.map(
+            directory => directory.directoryShortid + directory.title
+          )
+        )
+    );
   };
 
   render() {
-    const {
-      moduleActions,
-      sandboxActions,
-      sandbox,
-      modules,
-      directories,
-      preferences,
-      userActions,
-      modalActions,
-      user,
-      workspaceHidden,
-      toggleWorkspace,
-      previewApiActions,
-      viewActions,
-      devToolsOpen,
-    } = this.props;
+    const { signals, store } = this.props;
+    const currentModule = store.editor.currentModule;
+    const notSynced = !store.editor.isAllModulesSynced;
+    const sandbox = store.editor.currentSandbox;
+    const preferences = store.preferences;
+    const { x, y, width } = store.editor.previewWindow;
 
-    const mainModule = findMainModule(modules, directories, sandbox.entry);
-    if (!mainModule) throw new Error('Cannot find main module');
+    const windowRightSize = -x + width + 16;
 
-    const { currentModule: currentModuleId } = sandbox;
+    const isVerticalMode = this.state.width
+      ? this.state.width / 4 > this.state.width - windowRightSize
+      : false;
 
-    const currentModule = findCurrentModule(
-      modules,
-      directories,
-      currentModuleId,
-      mainModule
-    );
-
-    if (currentModule == null) return null;
-
-    const notSynced = modules.some(m => m.isNotSynced);
-
-    const EditorPane = (
-      <FullSize>
-        {preferences.zenMode ? (
-          <FilePath
-            modules={modules}
-            directories={directories}
-            currentModule={currentModule}
-            workspaceHidden={workspaceHidden}
-            toggleWorkspace={toggleWorkspace}
-            exitZenMode={this.exitZenMode}
-          />
-        ) : (
-          <Tabs
-            tabs={sandbox.tabs}
-            modules={modules}
-            directories={directories}
-            currentModuleId={currentModule.id}
-            sandboxId={sandbox.id}
-            setCurrentModule={sandboxActions.setCurrentModule}
-            closeTab={sandboxActions.closeTab}
-            moveTab={sandboxActions.moveTab}
-            markNotDirty={sandboxActions.markTabsNotDirty}
-            prettifyModule={moduleActions.prettifyModule}
-          />
-        )}
-        <CodeEditor
-          changeCode={moduleActions.setCode}
-          id={currentModule.id}
-          errors={currentModule.errors}
-          corrections={currentModule.corrections}
-          code={currentModule.code}
-          title={currentModule.title}
-          saveCode={this.saveCode}
-          preferences={preferences}
-          modules={modules}
-          directories={directories}
-          sandboxId={sandbox.id}
-          dependencies={sandbox.npmDependencies}
-          setCurrentModule={sandboxActions.setCurrentModule}
-          addDependency={sandbox.owned && sandboxActions.addNPMDependency}
-          template={sandbox.template}
-        />
-      </FullSize>
-    );
-
-    const PreviewPane = (
-      <FullSize>
-        <Preview
-          sandboxId={sandbox.id}
-          template={sandbox.template}
-          initialPath={sandbox.initialPath}
-          module={currentModule}
-          modules={modules}
-          directories={directories}
-          addError={sandboxActions.addError}
-          clearErrors={moduleActions.clearErrors}
-          isInProjectView={Boolean(sandbox.isInProjectView)}
-          externalResources={sandbox.externalResources}
-          setProjectView={sandboxActions.setProjectView}
-          preferences={preferences}
-          sandboxActions={sandboxActions}
-          dependencies={sandbox.npmDependencies}
-          runActionFromPreview={previewApiActions.executeAction}
-          forcedRenders={sandbox.forcedRenders}
-          inactive={this.state.resizing}
-          entry={sandbox.entry}
-          setDevToolsOpen={viewActions.setDevToolsOpen}
-          devToolsOpen={devToolsOpen}
-        />
-      </FullSize>
-    );
+    const editorWidth = isVerticalMode
+      ? '100%'
+      : `calc(100% - ${windowRightSize}px)`;
+    const editorHeight = isVerticalMode ? `${y + 16}px` : '100%';
 
     return (
       <ThemeProvider
@@ -257,65 +259,88 @@ class EditorPreview extends React.PureComponent<Props, State> {
       >
         <FullSize>
           <Prompt
-            when={notSynced}
+            when={notSynced && !store.editor.isForkingSandbox}
             message={() =>
               'You have not saved this sandbox, are you sure you want to navigate away?'
             }
           />
-          {!preferences.zenMode && (
-            <Header
-              sandboxId={sandbox.id}
-              owned={sandbox.owned}
-              showEditor={sandbox.showEditor}
-              showPreview={sandbox.showPreview}
-              sandboxLiked={sandbox.userLiked}
-              sandboxLikeCount={sandbox.likeCount}
-              sandboxActions={sandboxActions}
-              userActions={userActions}
-              modalActions={modalActions}
-              user={user}
-              workspaceHidden={workspaceHidden}
-              toggleWorkspace={toggleWorkspace}
-              canSave={notSynced}
+          {preferences.settings.zenMode ? (
+            <FilePath
               modules={sandbox.modules}
               directories={sandbox.directories}
+              currentModule={currentModule}
+              workspaceHidden={!store.workspace.openedWorkspaceItem}
+              toggleWorkspace={() => {
+                signals.workspace.toggleCurrentWorkspaceItem();
+              }}
+              exitZenMode={() =>
+                this.props.signals.preferences.settingChanged({
+                  name: 'zenMode',
+                  value: false,
+                })
+              }
             />
+          ) : (
+            <Tabs />
           )}
-          <SplitPane
-            onDragStarted={this.startResizing}
-            onDragFinished={this.stopResizing}
-            split="vertical"
-            defaultSize="50%"
-            minSize={360}
-            style={{ position: 'static' }}
-            resizerStyle={{
-              visibility:
-                (!sandbox.showPreview && sandbox.showEditor) ||
-                (sandbox.showPreview && !sandbox.showEditor)
-                  ? 'hidden'
-                  : 'visible',
-            }}
-            pane1Style={{
-              display: sandbox.showEditor ? 'block' : 'none',
-              minWidth:
-                !sandbox.showPreview && sandbox.showEditor ? '100%' : 'inherit',
-            }}
-            pane2Style={{
-              display: sandbox.showPreview ? 'block' : 'none',
-              minWidth:
-                sandbox.showPreview && !sandbox.showEditor ? '100%' : 'inherit',
-              height: '100%',
+          <div
+            ref={this.getBounds}
+            style={{
+              position: 'relative',
+              display: 'flex',
+              flex: 1,
+              marginTop: '2.5rem',
             }}
           >
-            {sandbox.showEditor && EditorPane}
-            {PreviewPane}
-          </SplitPane>
+            <CodeEditor
+              onInitialized={this.onInitialized}
+              sandbox={sandbox}
+              currentModule={currentModule}
+              width={editorWidth}
+              height={editorHeight}
+              settings={settings(store)}
+              onNpmDependencyAdded={name => {
+                if (sandbox.owned) {
+                  signals.editor.addNpmDependency({ name, isDev: true });
+                }
+              }}
+              onChange={code =>
+                signals.editor.codeChanged({
+                  code,
+                  moduleShortid: currentModule.shortid,
+                })
+              }
+              onModuleChange={moduleId =>
+                signals.editor.moduleSelected({ id: moduleId })
+              }
+              onSave={code =>
+                signals.editor.codeSaved({
+                  code,
+                  moduleShortid: currentModule.shortid,
+                })
+              }
+            />
+            <Preview width={this.state.width} height={this.state.height} />
+          </div>
+
+          <DevTools
+            ref={component => {
+              if (component) {
+                this.devtools = component;
+              }
+            }}
+            setDragging={() => this.props.signals.editor.resizingStarted()}
+            sandboxId={sandbox.id}
+            shouldExpandDevTools={store.preferences.showDevtools}
+            zenMode={preferences.settings.zenMode}
+            setDevToolsOpen={open =>
+              this.props.signals.preferences.setDevtoolsOpen({ open })
+            }
+          />
         </FullSize>
       </ThemeProvider>
     );
   }
 }
 
-export default showAlternativeComponent(Skeleton, ['sandbox'])(
-  connect(mapStateToProps, mapDispatchToProps)(EditorPreview)
-);
+export default inject('signals', 'store')(observer(EditorPreview));

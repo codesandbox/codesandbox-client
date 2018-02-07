@@ -1,10 +1,21 @@
 // @flow
 import { dispatch, actions } from 'codesandbox-api';
 
+import type TranspiledModule from '../eval/transpiled-module';
+
 import type { ErrorRecord } from '../react-error-overlay/utils/errorRegister';
 import { getCurrentManager } from '../compile';
 
-function buildErrorMessage(e) {
+type TModuleError = Error & {
+  hideLine?: boolean,
+  line?: number,
+  path?: Object,
+  severity?: string,
+  payload?: Object,
+  tModule?: TranspiledModule,
+};
+
+function buildErrorMessage(e: TModuleError) {
   const title = e.name;
   const message = e.message;
   let line = null;
@@ -69,27 +80,29 @@ function buildDynamicError(ref: ErrorRecord) {
 
   if (relevantFrame && manager) {
     const fileName = relevantFrame._originalFileName || relevantFrame.fileName;
-    const tModule = manager.resolveTranspiledModule(
-      fileName.replace(location.origin, ''),
-      '/'
-    );
+    if (fileName) {
+      const tModule = manager.resolveTranspiledModule(
+        fileName.replace(location.origin, ''),
+        '/'
+      );
 
-    if (tModule) {
-      const module = tModule.module;
-      return {
-        type: 'action',
-        action: 'show-error',
-        path: module.parent ? module.parent.path : module.path,
-        title: ref.error.name,
-        message: ref.error.message,
-        line: relevantFrame._originalLineNumber,
-        column: relevantFrame._originalColumnNumber,
-        payload: {},
-        severity: 'error',
-      };
+      if (tModule) {
+        const module = tModule.module;
+        return {
+          type: 'action',
+          action: 'show-error',
+          path: module.parent ? module.parent.path : module.path,
+          title: ref.error.name,
+          message: ref.error.message,
+          line: relevantFrame._originalLineNumber,
+          column: relevantFrame._originalColumnNumber,
+          payload: {},
+          severity: 'error',
+        };
+      }
     }
   } else {
-    const error = ref.error;
+    const error: TModuleError = ref.error;
     const tModule = error.tModule;
 
     if (tModule) {

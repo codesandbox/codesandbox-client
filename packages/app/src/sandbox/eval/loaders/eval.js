@@ -9,11 +9,12 @@ export default function(
   env: Object = {},
   globals: Object = {}
 ) {
+  const g = typeof window === 'undefined' ? self : window;
   const exports = module.exports;
 
-  const global = window;
+  const global = g;
   const process = buildProcess(env);
-  window.global = global;
+  g.global = global;
 
   const globalsCode = ', ' + Object.keys(globals).join(', ');
   const globalsValues = Object.keys(globals).map(k => globals[k]);
@@ -36,9 +37,13 @@ export default function(
 
     return module.exports;
   } catch (e) {
-    e.isEvalError = true;
+    let error = e;
+    if (typeof e === 'string') {
+      error = new Error(e);
+    }
+    error.isEvalError = true;
 
-    throw e;
+    throw error;
   }
 }
 /* eslint-enable no-unused-vars */

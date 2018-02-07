@@ -149,10 +149,14 @@ function switchError(offset) {
 function disposeCurrentView(force: boolean) {
   // CodeSandbox already resets this, only do this if force is on
   if (force) {
-    if (iframeReference === null) {
+    if (iframeReference == null) {
       return;
     }
-    window.document.body.removeChild(iframeReference);
+    try {
+      window.document.body.removeChild(iframeReference);
+    } catch (e) {
+      console.error(e);
+    }
   }
   iframeReference = null;
   additionalReference = null;

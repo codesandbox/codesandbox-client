@@ -2,7 +2,7 @@ import CodeMirror from 'codemirror';
 import 'codemirror/addon/lint/lint.css';
 import 'codemirror/addon/lint/lint';
 import fixer from 'eslint/lib/util/source-code-fixer';
-import delay from '../../store/services/delay';
+import delay from 'common/utils/delay';
 
 /* eslint-disable global-require */
 const allRules = {

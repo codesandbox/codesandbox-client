@@ -1,210 +1,353 @@
 // @flow
+import { dispatch, actions, listen } from 'codesandbox-api';
 import expect from 'jest-matchers';
 import jestMock from 'jest-mock';
+import jestTestHooks from 'jest-circus';
+import run from './run-circus';
+import { makeDescribe } from 'jest-circus/build/utils';
+
+import {
+  addSerializer,
+  toMatchSnapshot,
+  toThrowErrorMatchingSnapshot,
+} from 'jest-snapshot';
+
+import {
+  addEventHandler,
+  setState,
+  dispatch as dispatchJest,
+  ROOT_DESCRIBE_BLOCK_NAME,
+} from 'jest-circus/build/state';
+
+import type Manager from '../manager';
+import type { Module } from '../entities/module';
+
+import { parse } from '../../react-error-overlay/utils/parser';
+import { map } from '../../react-error-overlay/utils/mapper';
+import type {
+  Event,
+  TestEntry,
+  DescribeBlock,
+  TestName,
+  TestFn,
+} from './types';
+
+expect.extend({
+  toMatchSnapshot,
+  toThrowErrorMatchingSnapshot,
+});
+(expect: Object).addSnapshotSerializer = addSerializer;
+
+function resetTestState() {
+  const ROOT_DESCRIBE_BLOCK = makeDescribe(ROOT_DESCRIBE_BLOCK_NAME);
+  const INITIAL_STATE = {
+    currentDescribeBlock: ROOT_DESCRIBE_BLOCK,
+    expand: undefined,
+    hasFocusedTests: false,
+    rootDescribeBlock: ROOT_DESCRIBE_BLOCK,
+    testTimeout: 5000,
+  };
+
+  expect.setState({
+    assertionCalls: 0,
+    expectedAssertionsNumber: null,
+    isExpectingAssertions: false,
+    suppressedErrors: [],
+    testPath: null,
+    currentTestName: null,
+    snapshotState: null,
+  });
+
+  setState(INITIAL_STATE);
+}
 
 export default class TestRunner {
-  tests: Array;
-  aggregatedResults: Object;
-  currentDescribe: String;
+  tests: Array<Module>;
+  ranTests: Set<string>;
   manager: Manager;
-  startTime: Date;
-  endTime: Date;
+  watching: boolean = true;
 
-  constructor(manager) {
-    this.tests = [];
-    this.aggregatedResults = this._makeEmptyAggregatedResults();
-    this.currentDescribe = '';
-    this.currentPath = '';
+  constructor(manager: Manager) {
     this.manager = manager;
-    this.startTime = Date.now();
-    this.endTime = Date.now();
+    this.ranTests = new Set();
+
+    addEventHandler(this.handleMessage);
+    listen(this.handleCodeSandboxMessage);
   }
 
-  _makeEmptyAggregatedResults() {
+  testGlobals(module: Module) {
+    const test = (testName: TestName, fn?: TestFn) =>
+      dispatchJest({
+        fn,
+        name: 'add_test',
+        testName: `${module.path}:#:${testName}`,
+      });
+    const it = test;
+    test.skip = (testName: TestName, fn?: TestFn) =>
+      dispatchJest({
+        fn,
+        mode: 'skip',
+        name: 'add_test',
+        testName: `${module.path}:#:${testName}`,
+      });
+    test.only = (testName: TestName, fn: TestFn) => {
+      dispatchJest({
+        fn,
+        mode: 'only',
+        name: 'add_test',
+        testName: `${module.path}:#:${testName}`,
+      });
+    };
+
     return {
-      failedTestSuites: 0,
-      failedTests: 0,
-      passedTestSuites: 0,
-      passedTests: 0,
-      totalTestSuites: 0,
-      totalTests: 0,
-      summaryMessage: '',
-      failedMessages: [],
-      results: [],
-    };
-  }
-
-  initialize() {
-    this.resetResults();
-    this.startTime = Date.now();
-    this.endTime = Date.now();
-  }
-
-  testGlobals() {
-    const describe = (name, fn) => {
-      this.setCurrentDescribe(name);
-      fn();
-      this.resetCurrentDescribe(name);
-    };
-
-    const test = (name, fn) => {
-      let error = false;
-      try {
-        fn();
-      } catch (Error) {
-        error = true;
-        this.addResult({ status: 'fail', name });
-      } finally {
-        if (!error) {
-          this.addResult({ status: 'pass', name });
-        }
-      }
-    };
-    return {
-      describe,
-      test,
-      it: test,
+      ...jestTestHooks,
       expect,
       jest: jestMock,
+      test,
+      it,
     };
   }
 
-  findTests(modules) {
-    this.tests = modules.filter(m => {
-      let matched = false;
-      if (
-        m.path.includes('__tests__') &&
-        (m.path.endsWith('.js') || m.path.endsWith('.ts'))
-      ) {
-        matched = true;
-      }
-      if (m.path.endsWith('.test.js') || m.path.endsWith('.test.ts')) {
-        matched = true;
-      }
-      if (m.path.endsWith('.spec.js') || m.path.endsWith('.spec.ts')) {
-        matched = true;
-      }
-      return matched;
-    });
+  static isTest(path: string) {
+    let matched = false;
+
+    if (
+      path.includes('__tests__') &&
+      (path.endsWith('.js') || path.endsWith('.ts'))
+    ) {
+      matched = true;
+    }
+    if (path.endsWith('.test.js') || path.endsWith('.test.ts')) {
+      matched = true;
+    }
+    if (path.endsWith('.spec.js') || path.endsWith('.spec.ts')) {
+      matched = true;
+    }
+    return matched;
+  }
+
+  findTests(modules: { [path: string]: Module }) {
+    if (this.tests) {
+      this.tests.forEach(t => {
+        if (!modules[t.path]) {
+          // A removed test
+          this.sendMessage('remove_file', { path: t.path });
+        }
+      });
+    }
+    this.tests = Object.keys(modules)
+      .filter(TestRunner.isTest)
+      .map(p => modules[p]);
   }
 
   /* istanbul ignore next */
   async transpileTests() {
-    for (let t of this.tests) {
-      await this.manager.transpileModules(t, true);
-    }
+    return Promise.all(
+      this.tests.map(async t => {
+        const tModule = this.manager.getTranspiledModule(t, '');
+        if (
+          tModule.source &&
+          tModule.compilation &&
+          this.ranTests.has(t.path)
+        ) {
+          // We cached this test, don't run it again. We only run tests of changed
+          // files
+          return null;
+        }
+
+        this.sendMessage('add_file', { path: t.path });
+        try {
+          await this.manager.transpileModules(t, true);
+
+          if (!t.source) {
+            this.ranTests.delete(t.path);
+          }
+
+          return t;
+        } catch (e) {
+          const error = await this.errorToCodeSandbox(e);
+          this.ranTests.delete(t.path);
+          this.sendMessage('file_error', { path: t.path, error });
+
+          return null;
+        }
+      })
+    );
+  }
+
+  sendMessage(event: string, message: any = {}) {
+    dispatch({
+      type: 'test',
+      event,
+      ...message,
+    });
   }
 
   /* istanbul ignore next */
-  async runTests() {
-    await this.transpileTests();
-    this.tests.forEach(t => {
-      this.setCurrentPath(t.path);
-      this.manager.evaluateModule(t);
-      this.resetCurrentPath();
-    });
-  }
-
-  addResult({ status, name }) {
-    let describe = this.currentDescribe;
-    let path = this.currentPath;
-
-    this.aggregatedResults.results.push({ status, name, describe, path });
-
-    this.aggregatedResults.totalTests++;
-    if (status === 'pass') {
-      this.aggregatedResults.passedTests++;
-    } else {
-      this.aggregatedResults.failedTests++;
-    }
-    let totalTestSuites = new Set();
-    let failedTestSuites = new Set();
-    this.aggregatedResults.results.forEach(({ status, path }) => {
-      totalTestSuites.add(path);
-      if (status === 'fail') {
-        failedTestSuites.add(path);
-      }
-    });
-    this.aggregatedResults.totalTestSuites = totalTestSuites.size;
-    this.aggregatedResults.failedTestSuites = failedTestSuites.size;
-    this.aggregatedResults.passedTestSuites =
-      totalTestSuites.size - failedTestSuites.size;
-  }
-
-  reportResults() {
-    let aggregatedResults = this.aggregatedResults;
-    let results = this.aggregatedResults.results;
-    let summaryMessage = '';
-    let failedMessages = [];
-    let summaryEmoji = '';
-
-    if (aggregatedResults.totalTestSuites === 0) {
-      return null;
+  async runTests(force: boolean = false) {
+    if (!this.watching && !force) {
+      return;
     }
 
-    results.forEach(({ status, name, describe, path }) => {
-      if (status === 'fail') {
-        let message = `FAIL (${path}) `;
-        if (describe) {
-          message += `${describe} > `;
+    this.sendMessage('total_test_start');
+    // $FlowIssue
+    const tests: Array<Module> = (await this.transpileTests()).filter(t => t);
+
+    resetTestState();
+
+    await Promise.all(
+      tests.map(async t => {
+        try {
+          this.manager.evaluateModule(t);
+          this.ranTests.add(t.path);
+        } catch (e) {
+          this.ranTests.delete(t.path);
+          const error = await this.errorToCodeSandbox(e);
+          this.sendMessage('file_error', { path: t.path, error });
         }
-        message += `${name}`;
-        failedMessages.push(message);
-      }
+      })
+    );
+
+    await run();
+
+    setTimeout(() => {
+      this.sendMessage('total_test_end');
     });
-
-    summaryEmoji =
-      aggregatedResults.totalTestSuites === aggregatedResults.passedTestSuites
-        ? '😎'
-        : '👻';
-    summaryMessage = `Test Summary: ${summaryEmoji}\n\n`;
-    summaryMessage += 'Test Suites: ';
-    summaryMessage += `${aggregatedResults.failedTestSuites} failed, `;
-    summaryMessage += `${aggregatedResults.passedTestSuites} passed, `;
-    summaryMessage += `${aggregatedResults.totalTestSuites} total`;
-    summaryMessage += '\n';
-
-    summaryMessage += 'Tests: ';
-    summaryMessage += `${aggregatedResults.failedTests} failed, `;
-    summaryMessage += `${aggregatedResults.passedTests} passed, `;
-    summaryMessage += `${aggregatedResults.totalTests} total`;
-    summaryMessage += '\n';
-
-    this.endTime = Date.now();
-    this.duration = this.endTime - this.startTime;
-    summaryMessage += `Time: ${this.duration}ms`;
-    summaryMessage += '\n';
-
-    aggregatedResults.summaryMessage = summaryMessage;
-    aggregatedResults.failedMessages = failedMessages;
-    return aggregatedResults;
   }
 
-  reportError({ message = 'something went wrong' }) {
-    return `Test Summary: 😢\nError: ${message}`;
-  }
-
-  resetResults() {
-    this.aggregatedResults = this._makeEmptyAggregatedResults();
-  }
-
-  setCurrentDescribe(name) {
-    if (this.currentDescribe) {
-      this.currentDescribe += ` > ${name}`;
-    } else {
-      this.currentDescribe += `${name}`;
+  async errorToCodeSandbox(
+    error: Error & {
+      matcherResult?: boolean,
     }
+  ) {
+    const parsedError = parse(error);
+    const mappedErrors = await map(parsedError);
+
+    return {
+      message: error.message,
+      stack: error.stack,
+      matcherResult: !!error.matcherResult,
+      mappedErrors,
+    };
   }
 
-  resetCurrentDescribe() {
-    this.currentDescribe = '';
+  getDescribeBlocks(test: TestEntry) {
+    let t: ?(TestEntry | DescribeBlock) = test;
+    const blocks = [];
+
+    // $FlowIssue
+    while (t.parent != null) {
+      blocks.push(t.parent.name);
+      // $FlowIssue
+      t = t.parent;
+    }
+
+    // Remove ROOT_DESCRIBE_BLOCK
+    blocks.pop();
+
+    return blocks.reverse();
   }
 
-  setCurrentPath(name) {
-    this.currentPath = name;
+  async testToCodeSandbox(test: TestEntry) {
+    const [path, name] = test.name.split(':#:');
+
+    const errors = await Promise.all(test.errors.map(this.errorToCodeSandbox));
+
+    return {
+      name,
+      path,
+      duration: test.duration,
+      status: test.status || 'running',
+      errors,
+      blocks: this.getDescribeBlocks(test),
+    };
   }
 
-  resetCurrentPath() {
-    this.currentPath = '';
-  }
+  handleMessage = async (message: Event) => {
+    switch (message.name) {
+      case 'test_start': {
+        const test = await this.testToCodeSandbox(message.test);
+        return this.sendMessage('test_start', {
+          test,
+        });
+      }
+      case 'test_failure':
+      case 'test_success': {
+        const { suppressedErrors } = expect.getState();
+
+        if (suppressedErrors && suppressedErrors.length) {
+          /* eslint-disable no-param-reassign */
+          message.test.errors = suppressedErrors;
+          message.test.status = 'fail';
+          /* eslint-enable no-param-reassign */
+          expect.setState({ suppressedErrors: [] });
+        }
+        const test = await this.testToCodeSandbox(message.test);
+
+        if (test.errors) {
+          test.errors.forEach(err => {
+            if (err.mappedErrors) {
+              const { mappedErrors } = err;
+              const mappedError = mappedErrors[0];
+
+              dispatch(
+                actions.error.show(err.name || 'Jest Error', err.message, {
+                  line: mappedError._originalLineNumber,
+                  column: mappedError._originalColumnNumber,
+                  path: test.path,
+                  payload: {},
+                })
+              );
+            }
+          });
+        }
+        try {
+          return this.sendMessage('test_end', {
+            test,
+          });
+        } catch (e) {
+          const error = await this.errorToCodeSandbox(e);
+          return this.sendMessage('file_error', { path: test.path, error });
+        }
+      }
+      case 'start_describe_definition': {
+        return this.sendMessage('describe_start', {
+          blockName: message.blockName,
+        });
+      }
+      case 'finish_describe_definition': {
+        return this.sendMessage('describe_end');
+      }
+      case 'add_test': {
+        const [path, testName] = message.testName.split(':#:');
+        return this.sendMessage('add_test', {
+          testName,
+          path,
+        });
+      }
+      default: {
+        return null;
+      }
+    }
+  };
+
+  handleCodeSandboxMessage = (message: any) => {
+    if (message) {
+      if (message.type === 'set-test-watching') {
+        this.watching = message.watching;
+        if (message.watching === true) {
+          this.ranTests.clear();
+          this.runTests(true);
+        }
+      } else if (message.type === 'run-all-tests') {
+        this.ranTests.clear();
+        this.runTests(true);
+      } else if (message.type === 'run-tests') {
+        const path = message.path;
+
+        this.ranTests.delete(path);
+        this.runTests();
+      }
+    }
+  };
 }

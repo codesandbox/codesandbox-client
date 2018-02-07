@@ -1,93 +1,34 @@
-// @flow
 import * as React from 'react';
-import styled from 'styled-components';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import { inject, observer } from 'mobx-react';
 
-import type { CurrentUser } from 'common/types';
-
-import Navigation from 'app/containers/Navigation';
-
-import { currentUserSelector } from '../../store/user/selectors';
-import userActionCreators from '../../store/user/actions';
+import Navigation from 'app/pages/common/Navigation';
 
 import Prompt from './Prompt';
+import { Container } from './elements';
 
-const Container = styled.div`
-  height: 100%;
-  width: 100%;
-  margin: 1rem;
-`;
-
-type State = {
-  loading: boolean,
-  error: ?string,
-  token: string,
-};
-
-type Props = {
-  user: CurrentUser,
-  signIn: typeof userActionCreators.signIn,
-  getAuthToken: typeof userActionCreators.getAuthToken,
-};
-
-const mapStateToProps = state => ({
-  user: currentUserSelector(state),
-});
-const mapDispatchToProps = dispatch => ({
-  signIn: bindActionCreators(userActionCreators.signIn, dispatch),
-  getAuthToken: bindActionCreators(userActionCreators.getAuthToken, dispatch),
-});
-class CLI extends React.PureComponent<Props, State> {
-  state: State = {
-    loading: true,
-    token: '',
-    error: null,
-  };
-
+class CLI extends React.Component {
   componentDidMount() {
-    if (this.props.user.jwt) {
-      this.authorize();
+    if (this.props.store.user.jwt) {
+      this.props.signals.requestAuthorisation();
     }
   }
 
-  authorize = async () => {
-    const { getAuthToken } = this.props;
-    try {
-      const token = await getAuthToken();
-
-      this.setState({ token, loading: false });
-    } catch (e) {
-      this.setState({ error: e.message });
-    }
-  };
-
-  signIn = async () => {
-    try {
-      await this.props.signIn();
-      await this.authorize();
-    } catch (e) {
-      this.setState({ error: e.message });
-    }
-  };
-
   render() {
-    const { user } = this.props;
-    const { error, token, loading } = this.state;
+    const { user, authToken, isLoadingCLI, error } = this.props.store;
 
     return (
       <Container>
         <Navigation title="CLI Authorization" />
         <Prompt
           error={error}
-          token={token}
-          loading={loading}
+          token={authToken}
+          loading={isLoadingCLI}
           username={user && user.username}
-          signIn={this.signIn}
+          signIn={this.props.signals.sigin}
         />
       </Container>
     );
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CLI);
+export default inject('store', 'signals')(observer(CLI));

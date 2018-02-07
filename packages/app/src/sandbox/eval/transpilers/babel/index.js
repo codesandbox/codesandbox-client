@@ -1,4 +1,5 @@
 // @flow
+import getDefinition from 'common/templates';
 
 import getBabelConfig from './babel-parser';
 import WorkerTranspiler from '../worker-transpiler';
@@ -14,7 +15,7 @@ class BabelTranspiler extends WorkerTranspiler {
   config: ?Object;
 
   constructor() {
-    super('babel-loader', null, 3);
+    super('babel-loader', null, 2, { hasFS: true });
   }
 
   setBabelRc(config: Object) {
@@ -34,18 +35,22 @@ class BabelTranspiler extends WorkerTranspiler {
     return new Promise((resolve, reject) => {
       const path = loaderContext.path;
 
-      // TODO get custom babel config back in
-      const babelConfig = getBabelConfig(
+      let babelConfig = getBabelConfig(
         loaderContext.options,
         path,
         this.config || {}
       );
+
+      if (loaderContext.options.configurations.babel) {
+        babelConfig = loaderContext.options.configurations.babel.parsed;
+      }
 
       this.queueTask(
         {
           code,
           config: babelConfig,
           path,
+          sandboxOptions: loaderContext.options.configurations.sandbox.parsed,
         },
         loaderContext,
         (err, data) => {
