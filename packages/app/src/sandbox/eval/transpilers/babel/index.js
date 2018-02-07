@@ -41,7 +41,11 @@ class BabelTranspiler extends WorkerTranspiler {
         this.config || {}
       );
 
-      if (loaderContext.options.configurations.babel) {
+      if (
+        loaderContext.options.configurations &&
+        loaderContext.options.configurations.babel &&
+        loaderContext.options.configurations.babel.parsed
+      ) {
         babelConfig = loaderContext.options.configurations.babel.parsed;
       }
 
@@ -50,7 +54,10 @@ class BabelTranspiler extends WorkerTranspiler {
           code,
           config: babelConfig,
           path,
-          sandboxOptions: loaderContext.options.configurations.sandbox.parsed,
+          sandboxOptions:
+            loaderContext.options.configurations &&
+            loaderContext.options.configurations.sandbox &&
+            loaderContext.options.configurations.sandbox.parsed,
         },
         loaderContext,
         (err, data) => {
