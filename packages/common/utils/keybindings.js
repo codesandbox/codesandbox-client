@@ -1,7 +1,8 @@
 const isMac =
   typeof navigator !== 'undefined' &&
   !!navigator.platform.match(/(Mac|iPhone|iPod|iPad)/i);
-const metaKey = isMac ? 'Meta' : 'Ctrl';
+const metaKey = isMac ? 'Meta' : 'Alt';
+const metaOrCtrlKey = isMac ? 'Meta' : 'Control';
 
 export function normalizeKey(e: KeyboardEvent) {
   if (e.key.split('').length === 1) {
@@ -41,14 +42,14 @@ export const KEYBINDINGS = {
   'editor.open-quick-actions': {
     title: 'Open Quick Actions',
     type: 'View',
-    bindings: [[metaKey, 'Shift', 'P']],
+    bindings: [[metaOrCtrlKey, 'Shift', 'P']],
     signal: 'editor.quickActionsOpened',
   },
 
   workspace: {
     title: 'Toggle Sidebar',
     type: 'View',
-    bindings: [[metaKey], ['Shift']],
+    bindings: [[metaOrCtrlKey], ['Shift']],
     signal: 'workspace.toggleCurrentWorkspaceItem',
   },
 
@@ -106,7 +107,7 @@ export const KEYBINDINGS = {
   'editor.open-preferences': {
     title: 'Open Preferences',
     type: 'View',
-    bindings: [[metaKey, ',']],
+    bindings: [[metaOrCtrlKey, ',']],
     signal: 'modalOpened',
     payload: {
       modal: 'preferences',
@@ -136,7 +137,7 @@ export const KEYBINDINGS = {
   'source.modules.save': {
     title: 'Save Current File',
     type: 'Source',
-    bindings: [[metaKey, 'S']],
+    bindings: [[metaOrCtrlKey, 'S']],
     signal: 'editor.codeSaved',
     payload: state => ({
       moduleShortid: state.editor.currentModule.shortid,
@@ -146,7 +147,7 @@ export const KEYBINDINGS = {
   'source.modules.save-all': {
     title: 'Save All Modified Files',
     type: 'Source',
-    bindings: [[metaKey, 'Shift', 'S']],
+    bindings: [[metaOrCtrlKey, 'Shift', 'S']],
     signal: 'editor.saveClicked',
   },
 };
