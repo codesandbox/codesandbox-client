@@ -2,6 +2,10 @@ import styled, { css } from 'styled-components';
 import PrettierIcon from 'react-icons/lib/md/brush';
 
 export const Container = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
   display: flex;
   height: 2.5rem;
   flex: 0 0 2.5rem;

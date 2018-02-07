@@ -72,7 +72,9 @@ class EditorPreview extends React.Component<Props, State> {
     if (this.el) {
       const { width, height } = this.el.getBoundingClientRect();
 
-      this.setState({ width, height });
+      if (width !== this.state.width || height !== this.state.height) {
+        this.setState({ width, height });
+      }
     }
   };
 
@@ -287,6 +289,7 @@ class EditorPreview extends React.Component<Props, State> {
               position: 'relative',
               display: 'flex',
               flex: 1,
+              marginTop: '2.5rem',
             }}
           >
             <CodeEditor
