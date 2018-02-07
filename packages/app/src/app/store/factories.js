@@ -7,25 +7,28 @@ export function addTabById(id) {
   // eslint-disable-next-line
   return function addTabById({ state, resolve }) {
     const modules = state.get('editor.currentSandbox.modules');
-    const shortid = modules.find(module => module.id === resolve.value(id))
-      .shortid;
+    const m = modules.find(module => module.id === resolve.value(id));
 
-    const newTab = {
-      type: 'MODULE',
-      moduleShortid: shortid,
-      dirty: true,
-    };
-    const tabs = state.get('editor.tabs');
+    if (m) {
+      const { shortid } = m;
 
-    if (tabs.length === 0) {
-      state.push('editor.tabs', newTab);
-    } else if (!tabs.some(tab => tab.moduleShortid === shortid)) {
-      const dirtyTabIndex = tabs.findIndex(tab => tab.dirty);
+      const newTab = {
+        type: 'MODULE',
+        moduleShortid: shortid,
+        dirty: true,
+      };
+      const tabs = state.get('editor.tabs');
 
-      if (dirtyTabIndex >= 0) {
-        state.splice('editor.tabs', dirtyTabIndex, 1, newTab);
-      } else {
-        state.splice('editor.tabs', 0, 0, newTab);
+      if (tabs.length === 0) {
+        state.push('editor.tabs', newTab);
+      } else if (!tabs.some(tab => tab.moduleShortid === shortid)) {
+        const dirtyTabIndex = tabs.findIndex(tab => tab.dirty);
+
+        if (dirtyTabIndex >= 0) {
+          state.splice('editor.tabs', dirtyTabIndex, 1, newTab);
+        } else {
+          state.splice('editor.tabs', 0, 0, newTab);
+        }
       }
     }
   };
