@@ -26,7 +26,6 @@ function sendMessage(sandboxId: string, message: Object) {
 
 export function dispatch(sandboxId: string, message: Object = {}) {
   const finalMessage = {
-    type: event,
     ...message,
     codesandbox: true,
   };
