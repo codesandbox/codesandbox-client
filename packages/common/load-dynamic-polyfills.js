@@ -23,9 +23,18 @@ function detectOpera() {
 }
 
 export default function requirePolyfills() {
+  const promises = [];
+
   if (detectIE() || detectOpera()) {
-    return import(/* webpackChunkName: 'polyfills' */ 'babel-polyfill');
+    promises.push(import(/* webpackChunkName: 'polyfills' */ 'babel-polyfill'));
   }
 
-  return Promise.resolve();
+  if (typeof Error.captureStackTrace === 'undefined') {
+    promises.push(
+      /* webpackChunkName: 'error-polyfill' */
+      import('error-polyfill')
+    );
+  }
+
+  return Promise.all(promises);
 }
