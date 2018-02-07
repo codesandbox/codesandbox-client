@@ -15,6 +15,7 @@ import 'codemirror/addon/lint/lint';
 import FuzzySearch from '../FuzzySearch';
 import { Container, CodeContainer } from './elements';
 
+// eslint-disable-next-line
 import LinterWorker from 'worker-loader?name=monaco-linter.[hash].worker.js!../Monaco/workers/linter';
 
 import type { Props, Editor } from '../types';
