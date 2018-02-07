@@ -144,9 +144,7 @@ export async function createZip(
 
   let promise = null;
 
-  if (
-    modules.find(m => m.title === 'package.json' && m.directoryShortid == null)
-  ) {
+  if (directories.find(m => m.title === 'src' && m.directoryShortid == null)) {
     // This is a full project, with all files already in there. We need to create
     // a zip by just adding all existing files to it (downloading binaries too).
     promise = import(/* webpackChunkName: 'full-zip' */ './full').then(
