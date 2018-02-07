@@ -3,9 +3,9 @@ import styled from 'styled-components';
 
 import MaxWidth from 'common/components/flex/MaxWidth';
 
-import codesandbox2Image from './1-codesandbox2.png';
-import zeitTalkImage from './2-zeit-talk.jpg';
-import npmArticleImage from './3-npm-article.png';
+import npmArticleImage from './1-codesandbox2.5.png';
+import codesandbox2Image from './2-codesandbox2.png';
+import zeitTalkImage from './3-zeit-talk.jpg';
 
 import media from '../../../utils/media';
 
@@ -82,6 +82,12 @@ export default () => (
 
       <Items>
         <PublicationItem
+          title="CodeSandbox 2.5"
+          description="Announcing CodeSandbox 2.5. An editor redesign, Jest support, Babel Plugin support, a Cerebral rewrite and muuuuch more!"
+          url="https://medium.com/@compuives/announcing-codesandbox-2-5-be767d15ffd"
+          image={npmArticleImage}
+        />
+        <PublicationItem
           title="CodeSandbox 2.0"
           description="Announcing CodeSandbox 2.0. With GitHub commiting, a new homepage and support for static files."
           url="https://medium.com/@compuives/announcing-codesandbox-2-0-938cff3a0fcb"
@@ -92,12 +98,6 @@ export default () => (
           description="Ives explains how CodeSandbox came to be, how it works and what the future holds."
           url="https://www.youtube.com/watch?v=5lR29NsJKW8"
           image={zeitTalkImage}
-        />
-        <PublicationItem
-          title="NPM in the browser"
-          description="What we have done to make npm work in the browser, and what we will do in the future."
-          url="https://hackernoon.com/how-we-make-npm-packages-work-in-the-browser-announcing-the-new-packager-6ce16aa4cee6"
-          image={npmArticleImage}
         />
       </Items>
     </MaxWidth>
