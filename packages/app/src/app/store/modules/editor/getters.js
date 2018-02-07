@@ -1,7 +1,6 @@
-import { resolveModule } from 'common/sandbox/modules';
-import getDefinition from 'common/templates';
 import { generateFileFromSandbox } from 'common/templates/configuration/package-json';
-import parseConfigurations from 'common/templates/configuration/parse';
+import { parseConfigurations } from '../../utils/parse-configurations';
+import { mainModule as getMainModule } from '../../utils/main-module';
 
 export function currentSandbox() {
   return this.sandboxes.get(this.currentId);
@@ -34,47 +33,12 @@ export function currentModule() {
 //   return modulesObject;
 // }
 
-const resolveModuleWrapped = sandbox => (path: string) => {
-  try {
-    return resolveModule(path, sandbox.modules, sandbox.directories);
-  } catch (e) {
-    return undefined;
-  }
-};
-
 export function parsedConfigurations() {
-  const sandbox = this.currentSandbox;
-  const templateDefinition = getDefinition(sandbox.template);
-
-  return parseConfigurations(
-    sandbox.template,
-    templateDefinition.configurationFiles,
-    resolveModuleWrapped(sandbox),
-    sandbox
-  );
+  return parseConfigurations(this.currentSandbox);
 }
 
 export function mainModule() {
-  const sandbox = this.currentSandbox;
-  const templateDefinition = getDefinition(sandbox.template);
-
-  const resolve = resolveModuleWrapped(sandbox);
-
-  try {
-    const nPath = templateDefinition
-      .getEntries(this.parsedConfigurations)
-      .find(p => resolve(p));
-
-    return resolveModule(
-      nPath,
-      this.currentSandbox.modules,
-      this.currentSandbox.directories
-    );
-  } catch (e) {
-    return this.currentSandbox.modules.find(
-      module => module.shortid === this.mainModuleShortid
-    );
-  }
+  return getMainModule(this.currentSandbox, this.parsedConfigurations);
 }
 
 export function currentPackageJSON() {

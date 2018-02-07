@@ -2,6 +2,9 @@ import axios from 'axios';
 
 import { generateFileFromSandbox } from 'common/templates/configuration/package-json';
 
+import { parseConfigurations } from './utils/parse-configurations';
+import { mainModule } from './utils/main-module';
+
 export function getSandbox({ props, api, path }) {
   return api
     .get(`/sandboxes/${props.id}`)
@@ -79,7 +82,7 @@ export function setUrlOptions({ state, router, utils }) {
     state.set('preferences.showConsole', options.expandDevTools);
 }
 
-export function setCurrentModuleShortid({ utils, props, state }) {
+export function setCurrentModuleShortid({ props, state }) {
   const currentModuleShortid = state.get('editor.currentModuleShortid');
   const sandbox = props.sandbox;
 
@@ -87,22 +90,17 @@ export function setCurrentModuleShortid({ utils, props, state }) {
   if (
     sandbox.modules.map(m => m.shortid).indexOf(currentModuleShortid) === -1
   ) {
-    const module = utils.resolveModule(
-      sandbox.entry,
-      sandbox.modules,
-      sandbox.directories
-    );
+    const parsedConfigs = parseConfigurations(sandbox);
+    const module = mainModule(sandbox, parsedConfigs);
 
     state.set('editor.currentModuleShortid', module.shortid);
   }
 }
 
-export function setMainModuleShortid({ utils, props, state }) {
-  const module = utils.resolveModule(
-    props.sandbox.entry,
-    props.sandbox.modules,
-    props.sandbox.directories
-  );
+export function setMainModuleShortid({ props, state }) {
+  const sandbox = props.sandbox;
+  const parsedConfigs = parseConfigurations(sandbox);
+  const module = mainModule(sandbox, parsedConfigs);
 
   state.set('editor.mainModuleShortid', module.shortid);
 }
