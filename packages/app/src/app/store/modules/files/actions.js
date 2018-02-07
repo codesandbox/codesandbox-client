@@ -349,7 +349,7 @@ export function revertModuleName({ state, props }) {
 export function revertDirectoryName({ state, props }) {
   const sandbox = state.get('editor.currentSandbox');
   const directoryIndex = sandbox.directories.findIndex(
-    directory => directory.id === props.id
+    directory => directory.shortid === props.directoryShortid
   );
 
   state.set(
