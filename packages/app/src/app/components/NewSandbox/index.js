@@ -8,6 +8,7 @@ import {
   newReactTypeScriptSandboxUrl,
   newPreactSandboxUrl,
   newVueSandboxUrl,
+  newAngularSandboxUrl,
   newSvelteSandboxUrl,
   importFromGitHubUrl,
   uploadFromCliUrl,
@@ -17,6 +18,7 @@ import ReactIcon from 'common/components/logos/React';
 import PreactIcon from 'common/components/logos/Preact';
 import VueIcon from 'common/components/logos/Vue';
 import SvelteIcon from 'common/components/logos/Svelte';
+import AngularIcon from 'common/components/logos/Angular';
 
 import {
   Container,
@@ -49,12 +51,22 @@ function NewSandbox({ signals }) {
           href={newSandboxUrl()}
           onClick={() => signals.editor.newSandboxModalClosed()}
         />
+
         <Logo
-          Icon={ReactIcon}
+          Icon={VueIcon}
           width={50}
           height={50}
-          text="React TypeScript"
-          href={newReactTypeScriptSandboxUrl()}
+          text="Vue"
+          href={newVueSandboxUrl()}
+          onClick={() => signals.editor.newSandboxModalClosed()}
+        />
+
+        <Logo
+          Icon={AngularIcon}
+          width={50}
+          height={50}
+          text="Angular"
+          href={newAngularSandboxUrl()}
           onClick={() => signals.editor.newSandboxModalClosed()}
         />
         <Logo
@@ -66,14 +78,6 @@ function NewSandbox({ signals }) {
           onClick={() => signals.editor.newSandboxModalClosed()}
         />
         <Logo
-          Icon={VueIcon}
-          width={50}
-          height={50}
-          text="Vue"
-          href={newVueSandboxUrl()}
-          onClick={() => signals.editor.newSandboxModalClosed()}
-        />
-        <Logo
           Icon={SvelteIcon}
           width={50}
           height={50}
@@ -81,8 +85,14 @@ function NewSandbox({ signals }) {
           href={newSvelteSandboxUrl()}
           onClick={() => signals.editor.newSandboxModalClosed()}
         />
-      </RowContainer>
-      <RowContainer>
+        <Logo
+          Icon={ReactIcon}
+          width={50}
+          height={50}
+          text="React TypeScript"
+          href={newReactTypeScriptSandboxUrl()}
+          onClick={() => signals.editor.newSandboxModalClosed()}
+        />
         <Logo
           Icon={GithubIcon}
           width={50}

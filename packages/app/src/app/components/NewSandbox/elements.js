@@ -12,6 +12,7 @@ export const RowContainer = styled(Row)`
   justify-content: center;
   color: rgba(255, 255, 255, 0.8);
   padding-top: 1.5rem;
+  flex-wrap: wrap;
   &:last-of-type {
     padding-bottom: 1.5rem;
   }
