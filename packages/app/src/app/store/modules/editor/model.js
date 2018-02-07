@@ -12,7 +12,7 @@ const Author = types.model({
   forkedCount: types.number,
   givenLikeCount: types.number,
   id: types.string,
-  name: types.string,
+  name: types.maybe(types.string),
   receivedLikeCount: types.number,
   sandboxCount: types.number,
   showcasedSandboxShortid: types.string,
