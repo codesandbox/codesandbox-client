@@ -129,7 +129,7 @@ self.addEventListener('message', async event => {
       ['babel-plugin-detective', { source: true, nodes: true }],
     ];
 
-    if (sandboxOptions.infiniteLoopProtection) {
+    if (!sandboxOptions || sandboxOptions.infiniteLoopProtection) {
       plugins.push('babel-plugin-transform-prevent-infinite-loops');
     }
 
