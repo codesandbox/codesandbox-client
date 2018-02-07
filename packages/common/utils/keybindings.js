@@ -1,7 +1,7 @@
 const isMac =
   typeof navigator !== 'undefined' &&
   !!navigator.platform.match(/(Mac|iPhone|iPod|iPad)/i);
-const metaKey = isMac ? 'Meta' : 'Alt';
+const metaKey = isMac ? 'Meta' : 'Ctrl';
 
 export function normalizeKey(e: KeyboardEvent) {
   if (e.key.split('').length === 1) {
