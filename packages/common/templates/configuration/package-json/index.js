@@ -8,7 +8,7 @@ export function generateFileFromSandbox(sandbox: Sandbox) {
 
   jsonFile.name = sandbox.title || sandbox.id;
   jsonFile.version = '1.0.0';
-  jsonFile.description = sandbox.description;
+  jsonFile.description = sandbox.description || '';
   jsonFile.keywords = sandbox.tags;
   jsonFile.homepage = `https://codesandbox.io/s/${sandbox.id}`;
   jsonFile.main = sandbox.entry;
