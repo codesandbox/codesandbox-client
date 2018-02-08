@@ -28,12 +28,16 @@ function getMode(title: string) {
     return 'postcss';
   }
 
-  if (/\.scss$/.test(title)) {
+  if (/\.s[c|a]ss$/.test(title)) {
     return 'postcss';
   }
 
   if (/\.less$/.test(title)) {
     return 'postcss';
+  }
+
+  if (/\.vue$/.test(title)) {
+    return 'vue';
   }
 
   if (/\.gql$/.test(title)) {
