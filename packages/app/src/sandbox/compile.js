@@ -66,7 +66,7 @@ function getDependencies(parsedPackage) {
   const returnedDependencies = { ...peerDependencies };
 
   Object.keys(d).forEach(dep => {
-    if (BLACKLISTED_DEPENDENCIES.indexOf(dep) !== -1) {
+    if (BLACKLISTED_DEPENDENCIES.indexOf(dep) === -1) {
       returnedDependencies[dep] = d[dep];
     }
   });
