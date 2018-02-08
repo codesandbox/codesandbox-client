@@ -1,5 +1,6 @@
 // @flow
 import { dispatch, actions, listen } from 'codesandbox-api';
+import { react, reactTs } from 'common/templates';
 import expect from 'jest-matchers';
 import jestMock from 'jest-mock';
 import jestTestHooks from 'jest-circus';
@@ -73,6 +74,8 @@ export default class TestRunner {
 
     addEventHandler(this.handleMessage);
     listen(this.handleCodeSandboxMessage);
+
+    this.sendMessage('initialize_tests');
   }
 
   testGlobals(module: Module) {
@@ -190,6 +193,24 @@ export default class TestRunner {
     }
 
     this.sendMessage('total_test_start');
+
+    let testModule = null;
+
+    try {
+      if (this.manager.preset.name === react.name) {
+        testModule = this.manager.resolveModule('./src/setupTests.js', '/');
+      } else if (this.manager.preset.name === reactTs.name) {
+        testModule = this.manager.resolveModule('./src/setupTests.ts', '/');
+      }
+    } catch (e) {
+      /* ignore */
+    }
+
+    if (testModule) {
+      await this.manager.transpileModules(testModule, true);
+      this.manager.evaluateModule(testModule);
+    }
+
     // $FlowIssue
     const tests: Array<Module> = (await this.transpileTests()).filter(t => t);
 
