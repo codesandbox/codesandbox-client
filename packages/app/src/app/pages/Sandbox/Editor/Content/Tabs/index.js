@@ -2,9 +2,15 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 
 import { canPrettify } from 'app/utils/prettify';
+import Tooltip from 'common/components/Tooltip';
 import TabContainer from './TabContainer';
 
-import { Container, TabsContainer, IconContainer } from './elements';
+import {
+  Container,
+  TabsContainer,
+  IconContainer,
+  StyledPrettierIcon,
+} from './elements';
 
 class EditorTabs extends React.Component {
   componentWillMount() {
@@ -64,10 +70,8 @@ class EditorTabs extends React.Component {
   };
 
   prettifyModule = () => {
-    const { currentSandbox } = this.props.store.editor;
-
     this.props.signals.editor.prettifyClicked({
-      moduleShortid: currentSandbox.currentModuleShortid,
+      moduleShortid: this.props.store.editor.currentModuleShortid,
     });
   };
 
@@ -166,12 +170,12 @@ class EditorTabs extends React.Component {
             })}
         </TabsContainer>
         <IconContainer>
-          {/* <Tooltip title="Prettify">
+          <Tooltip title="Prettify">
             <StyledPrettierIcon
               disabled={!this.canPrettify(currentModule)}
               onClick={this.prettifyModule}
             />
-          </Tooltip> */}
+          </Tooltip>
         </IconContainer>
       </Container>
     );
