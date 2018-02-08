@@ -43,7 +43,13 @@ export default class VersionEntry extends React.PureComponent {
         onMouseEnter={this.onMouseEnter}
         onMouseLeave={this.onMouseLeave}
       >
-        <span>{dependency}</span>
+        <a
+          href={`https://www.npmjs.com/package/${dependency}`}
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          {dependency}
+        </a>
         <Version hovering={hovering}>{version}</Version>
         {hovering && (
           <IconArea>
