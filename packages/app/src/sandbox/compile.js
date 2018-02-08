@@ -52,6 +52,10 @@ const WHITELISTED_DEV_DEPENDENCIES = [
   'identity-obj-proxy',
 ];
 
+// Dependencies that we actually don't need, we will replace this by a dynamic
+// system in the future
+const BLACKLISTED_DEPENDENCIES = ['react-scripts'];
+
 function getDependencies(parsedPackage) {
   const {
     dependencies: d = {},
@@ -59,8 +63,13 @@ function getDependencies(parsedPackage) {
     devDependencies = {},
   } = parsedPackage;
 
-  const returnedDependencies = { ...d, ...peerDependencies };
+  const returnedDependencies = { ...peerDependencies };
 
+  Object.keys(d).forEach(dep => {
+    if (BLACKLISTED_DEPENDENCIES.indexOf(dep) !== -1) {
+      returnedDependencies[dep] = d[dep];
+    }
+  });
   Object.keys(devDependencies).forEach(dep => {
     if (WHITELISTED_DEV_DEPENDENCIES.indexOf(dep) > -1) {
       returnedDependencies[dep] = devDependencies[dep];
