@@ -1,4 +1,5 @@
-import React, { MouseEvent } from 'react';
+// @flow
+import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 
 import { TweenMax, Elastic } from 'gsap';
@@ -17,8 +18,35 @@ import {
   ResizingNotice,
 } from './elements';
 
-class FlyingContainer extends React.Component {
-  state = { resizing: false, dragging: false };
+type Props = {
+  signals: any,
+  store: any,
+  children: (funcs: { resize: Function }) => React.Node,
+  onPositionChange?: () => void,
+};
+
+type State = {
+  resizing: boolean,
+  dragging: boolean,
+  x: ?number,
+  y: ?number,
+  width: ?number,
+  height: ?number,
+};
+
+class FlyingContainer extends React.Component<Props, State> {
+  state = {
+    resizing: false,
+    dragging: false,
+    x: undefined,
+    y: undefined,
+    width: undefined,
+    height: undefined,
+  };
+
+  el: ?HTMLElement;
+  initialWidth: ?number;
+  initialHeight: ?number;
 
   updateBounds = el => {
     if (el) {
@@ -34,6 +62,10 @@ class FlyingContainer extends React.Component {
   handleStartDrag = () => {
     this.setState({ dragging: true });
     this.setResizingStarted();
+
+    if (this.props.onPositionChange) {
+      this.props.onPositionChange();
+    }
   };
 
   handleStopDrag = (e, data) => {
@@ -48,6 +80,10 @@ class FlyingContainer extends React.Component {
 
   setResizingStarted = () => {
     this.props.signals.editor.resizingStarted();
+
+    if (this.props.onPositionChange) {
+      this.props.onPositionChange();
+    }
   };
 
   setResizingStopped = () => {
@@ -115,10 +151,10 @@ class FlyingContainer extends React.Component {
       const update = {};
 
       if (vertical) {
-        update.height = newSizeY;
+        update.height = Math.max(48, newSizeY);
       }
       if (horizontal) {
-        update.width = newSizeX;
+        update.width = Math.max(48, newSizeX);
       }
 
       if (changePositionY) {

@@ -53,39 +53,6 @@ export const KEYBINDINGS = {
     signal: 'workspace.toggleCurrentWorkspaceItem',
   },
 
-  'editor.editor-mode': {
-    title: 'Editor View',
-    type: 'View',
-    bindings: [[metaKey, 'K', 'E']],
-    signal: 'preferences.viewModeChanged',
-    payload: {
-      showEditor: true,
-      showPreview: false,
-    },
-  },
-
-  'editor.preview-mode': {
-    title: 'Preview View',
-    type: 'View',
-    bindings: [[metaKey, 'K', 'P']],
-    signal: 'preferences.viewModeChanged',
-    payload: {
-      showEditor: false,
-      showPreview: true,
-    },
-  },
-
-  'editor.split-mode': {
-    title: 'Split View',
-    type: 'View',
-    bindings: [[metaKey, 'K', 'S']],
-    signal: 'preferences.viewModeChanged',
-    payload: {
-      showEditor: true,
-      showPreview: true,
-    },
-  },
-
   'editor.zen-mode': {
     title: 'Toggle Zen Mode',
     type: 'View',
