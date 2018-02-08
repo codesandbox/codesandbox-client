@@ -313,6 +313,15 @@
         "code",
         "bug"
       ]
+    },
+    {
+      "login": "tomkuehl",
+      "name": "Tom Kühl",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/14299145?v=4",
+      "profile": "http://twitter.com/tomkuehl_",
+      "contributions": [
+        "code"
+      ]
     }
   ]
 }
