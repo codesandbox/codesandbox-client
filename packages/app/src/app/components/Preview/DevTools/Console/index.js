@@ -54,11 +54,7 @@ class Console extends React.Component {
         const parsedJson = result ? CircularJSON.parse(result) : result;
 
         if (!error) {
-          if (parsedJson) {
-            this.addMessage('log', [parsedJson], 'return');
-          } else {
-            this.addMessage('log', [undefined], 'return');
-          }
+          this.addMessage('log', [parsedJson], 'return');
         } else {
           this.addMessage('error', [parsedJson]);
         }
