@@ -72,13 +72,15 @@ type State = {
   watching: boolean,
 };
 
+const INITIAL_STATE = {
+  files: {},
+  selectedFilePath: null,
+  running: true,
+  watching: true,
+};
+
 class Tests extends React.Component<Props, State> {
-  state = {
-    files: {},
-    selectedFilePath: null,
-    running: true,
-    watching: true,
-  };
+  state = INITIAL_STATE;
 
   listener: Function;
   currentDescribeBlocks: Array<string> = [];
@@ -113,6 +115,12 @@ class Tests extends React.Component<Props, State> {
   handleMessage = (data: Object) => {
     if (data.type === 'test') {
       switch (data.event) {
+        case 'initialize_tests': {
+          this.currentDescribeBlocks = [];
+          this.props.updateStatus('clear');
+          this.setState(INITIAL_STATE);
+          break;
+        }
         case 'total_test_start': {
           this.currentDescribeBlocks = [];
           this.props.updateStatus('clear');
