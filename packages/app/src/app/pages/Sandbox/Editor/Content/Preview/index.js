@@ -13,7 +13,15 @@ type Props = {
   signals: any,
 };
 
-class Preview extends React.Component<Props> {
+type State = {
+  aligned: ?'right' | 'bottom',
+};
+
+class Preview extends React.Component<Props, State> {
+  state = {
+    aligned: 'right',
+  };
+
   onPreviewInitialized = preview => {
     let preventCodeExecution = false;
     const disposeHandleProjectViewChange = reaction(
@@ -93,7 +101,20 @@ class Preview extends React.Component<Props> {
 
   componentWillReceiveProps(props: Props) {
     const { width, height } = props;
-    if (width && height) {
+
+    if (this.state.aligned) {
+      if (width !== this.props.width || height !== this.props.height) {
+        if (this.state.aligned === 'bottom') {
+          this.props.signals.editor.setPreviewBounds(
+            this.getBottomCoordinates(props)
+          );
+        } else {
+          this.props.signals.editor.setPreviewBounds(
+            this.getRightCoordinates(props)
+          );
+        }
+      }
+    } else if (width && height) {
       let newWidth = props.store.editor.previewWindow.width;
       if (
         width - 16 <
@@ -173,6 +194,24 @@ class Preview extends React.Component<Props> {
     });
   };
 
+  resetAlignment = () => {
+    this.setState({ aligned: null });
+  };
+
+  getBottomCoordinates = (props = this.props) => ({
+    x: 0,
+    y: (props.height || 0) / 2 - 16,
+    width: (props.width || 0) - 16,
+    height: (props.height || 0) / 2,
+  });
+
+  getRightCoordinates = (props = this.props) => ({
+    x: 0,
+    y: 0,
+    width: (props.width || 0) / 2,
+    height: (props.height || 0) - 16,
+  });
+
   render() {
     const { store, signals } = this.props;
 
@@ -182,7 +221,7 @@ class Preview extends React.Component<Props> {
     };
 
     return (
-      <FlyingContainer>
+      <FlyingContainer onPositionChange={this.resetAlignment}>
         {({ resize }) => (
           <BasePreview
             onInitialized={this.onPreviewInitialized}
@@ -207,22 +246,14 @@ class Preview extends React.Component<Props> {
             onToggleProjectView={() => signals.editor.projectViewToggled()}
             showDevtools={store.preferences.showDevtools}
             isResizing={store.editor.isResizing}
-            alignRight={() =>
-              resize({
-                x: 0,
-                y: 0,
-                width: (this.props.width || 0) / 2,
-                height: (this.props.height || 0) - 16,
-              })
-            }
-            alignBottom={() =>
-              resize({
-                x: 0,
-                y: (this.props.height || 0) / 2 - 16,
-                width: (this.props.width || 0) - 16,
-                height: (this.props.height || 0) / 2,
-              })
-            }
+            alignRight={() => {
+              resize(this.getRightCoordinates());
+              this.setState({ aligned: 'right' });
+            }}
+            alignBottom={() => {
+              resize(this.getBottomCoordinates());
+              this.setState({ aligned: 'bottom' });
+            }}
           />
         )}
       </FlyingContainer>
