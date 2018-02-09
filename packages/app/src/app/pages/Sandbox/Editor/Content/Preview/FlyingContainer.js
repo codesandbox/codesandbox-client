@@ -160,7 +160,7 @@ class FlyingContainer extends React.Component<Props, State> {
       if (changePositionY) {
         const newPosY = previewY - deltaY;
 
-        update.y = newPosY;
+        update.y = Math.max(-48, newPosY);
       }
 
       if (changePositionX) {
@@ -221,6 +221,7 @@ class FlyingContainer extends React.Component<Props, State> {
           x: previewWindow.x,
           y: previewWindow.y,
         }}
+        bounds={{ top: -48 }}
         position={
           this.state.dragging
             ? undefined
