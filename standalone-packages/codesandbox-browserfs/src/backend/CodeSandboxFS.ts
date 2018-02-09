@@ -198,7 +198,7 @@ export default class CodeSandboxFS extends SynchronousFileSystem
     };
     this.manager.addModule(module);
 
-    const buffer = Buffer.from(module.code);
+    const buffer = Buffer.from(module.code || '');
     const stats = new Stats(FileType.FILE, buffer.length);
 
     return new CodeSandboxFile(this, p, flag, stats, buffer);
@@ -212,7 +212,7 @@ export default class CodeSandboxFS extends SynchronousFileSystem
     }
 
     const { code = '' } = moduleInfo.module;
-    const buffer = Buffer.from(code);
+    const buffer = Buffer.from(code || '');
     const stats = new Stats(FileType.FILE, buffer.length);
 
     return new CodeSandboxFile(this, p, flag, stats, buffer);

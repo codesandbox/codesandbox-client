@@ -22,7 +22,7 @@ export default {
       showcasedSandboxShortid: types.maybe(types.string),
       sandboxCount: types.number,
       receivedLikeCount: types.number,
-      name: types.string,
+      name: types.maybe(types.string),
       id: types.string,
       givenLikeCount: types.number,
       forkedCount: types.number,

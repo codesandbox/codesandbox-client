@@ -134,21 +134,27 @@ export function renameModuleFromPreview({ state, props, utils }) {
 
 export function addErrorFromPreview({ state, props, utils }) {
   const sandbox = state.get('editor.currentSandbox');
-  const module = utils.resolveModule(
-    props.action.path.replace(/^\//, ''),
-    sandbox.modules,
-    sandbox.directories
-  );
-  const error = {
-    moduleId: module.id,
-    column: props.action.column,
-    line: props.action.line,
-    message: props.action.message,
-    title: props.action.title,
-  };
 
-  if (module) {
-    state.push('editor.errors', error);
+  try {
+    const module = utils.resolveModule(
+      props.action.path.replace(/^\//, ''),
+      sandbox.modules,
+      sandbox.directories
+    );
+
+    const error = {
+      moduleId: module.id,
+      column: props.action.column,
+      line: props.action.line,
+      message: props.action.message,
+      title: props.action.title,
+    };
+
+    if (module) {
+      state.push('editor.errors', error);
+    }
+  } catch (e) {
+    /* ignore, module not found */
   }
 }
 

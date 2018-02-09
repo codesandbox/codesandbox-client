@@ -49,7 +49,7 @@ function NewSandbox({ signals }) {
           height={50}
           text="React"
           href={newSandboxUrl()}
-          onClick={() => signals.editor.newSandboxModalClosed()}
+          onClick={() => signals.closeModal()}
         />
 
         <Logo
@@ -58,7 +58,7 @@ function NewSandbox({ signals }) {
           height={50}
           text="Vue"
           href={newVueSandboxUrl()}
-          onClick={() => signals.editor.newSandboxModalClosed()}
+          onClick={() => signals.closeModal()}
         />
 
         <Logo
@@ -67,7 +67,7 @@ function NewSandbox({ signals }) {
           height={50}
           text="Angular"
           href={newAngularSandboxUrl()}
-          onClick={() => signals.editor.newSandboxModalClosed()}
+          onClick={() => signals.closeModal()}
         />
         <Logo
           Icon={PreactIcon}
@@ -75,7 +75,7 @@ function NewSandbox({ signals }) {
           height={50}
           text="Preact"
           href={newPreactSandboxUrl()}
-          onClick={() => signals.editor.newSandboxModalClosed()}
+          onClick={() => signals.closeModal()}
         />
         <Logo
           Icon={SvelteIcon}
@@ -83,7 +83,7 @@ function NewSandbox({ signals }) {
           height={50}
           text="Svelte"
           href={newSvelteSandboxUrl()}
-          onClick={() => signals.editor.newSandboxModalClosed()}
+          onClick={() => signals.closeModal()}
         />
         <Logo
           Icon={ReactIcon}
@@ -91,7 +91,7 @@ function NewSandbox({ signals }) {
           height={50}
           text="React TypeScript"
           href={newReactTypeScriptSandboxUrl()}
-          onClick={() => signals.editor.newSandboxModalClosed()}
+          onClick={() => signals.closeModal()}
         />
         <Logo
           Icon={GithubIcon}
@@ -99,7 +99,7 @@ function NewSandbox({ signals }) {
           height={50}
           text="Import from Github"
           href={importFromGitHubUrl()}
-          onClick={() => signals.editor.newSandboxModalClosed()}
+          onClick={() => signals.closeModal()}
         />
         <Logo
           Icon={TerminalIcon}
@@ -107,7 +107,7 @@ function NewSandbox({ signals }) {
           height={50}
           text="Upload from CLI"
           href={uploadFromCliUrl()}
-          onClick={() => signals.editor.newSandboxModalClosed()}
+          onClick={() => signals.closeModal()}
         />
       </RowContainer>
     </Container>

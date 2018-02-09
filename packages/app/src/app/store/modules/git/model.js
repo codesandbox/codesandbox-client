@@ -3,7 +3,7 @@ import { types } from 'mobx-state-tree';
 const Git = types.model({
   branch: types.string,
   commitSha: types.string,
-  path: types.string,
+  path: types.maybe(types.string),
   repo: types.string,
   username: types.string,
 });

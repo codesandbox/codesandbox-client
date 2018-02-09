@@ -22,7 +22,7 @@ export const createRepo = [
       set(state`currentModal`, null),
       actions.redirectToGithubSandbox,
     ],
-    false: set(state`git.error`, props`error`),
+    error: set(state`git.error`, props`error`),
   },
 ];
 

@@ -43,9 +43,9 @@ class EditorTabs extends React.Component {
   closeListener = e => {
     if ((e.ctrlKey || e.metaKey) && e.keyCode === 87) {
       e.preventDefault();
-      const currentPos = this.props.tabs.findIndex(
-        t => t.moduleId === this.props.currentModuleId
-      );
+      const currentPos = this.props.tabs
+        .filter(x => x)
+        .findIndex(t => t.moduleId === this.props.currentModuleId);
       this.closeTab(currentPos);
     }
   };
