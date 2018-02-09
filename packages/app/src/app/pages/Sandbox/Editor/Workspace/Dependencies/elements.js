@@ -6,3 +6,11 @@ export const ErrorMessage = styled.div`
   padding-top: 0;
   font-size: 0.875rem;
 `;
+
+export const Link = styled.a.attrs({
+  rel: 'noopener noreferrer',
+  target: '_blank',
+})`
+  color: ${props => props.theme.templateColor || props.theme.secondary};
+  text-decoration: none;
+`;
