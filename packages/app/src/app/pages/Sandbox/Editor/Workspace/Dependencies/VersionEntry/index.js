@@ -3,7 +3,7 @@ import CrossIcon from 'react-icons/lib/md/clear';
 import RefreshIcon from 'react-icons/lib/md/refresh';
 
 import { EntryContainer, IconArea, Icon } from '../../elements';
-
+import { Link } from '../elements';
 import { Version } from './elements';
 
 export default class VersionEntry extends React.PureComponent {
@@ -43,13 +43,9 @@ export default class VersionEntry extends React.PureComponent {
         onMouseEnter={this.onMouseEnter}
         onMouseLeave={this.onMouseLeave}
       >
-        <a
-          href={`https://www.npmjs.com/package/${dependency}`}
-          rel="noopener noreferrer"
-          target="_blank"
-        >
+        <Link href={`https://www.npmjs.com/package/${dependency}`}>
           {dependency}
-        </a>
+        </Link>
         <Version hovering={hovering}>{version}</Version>
         {hovering && (
           <IconArea>

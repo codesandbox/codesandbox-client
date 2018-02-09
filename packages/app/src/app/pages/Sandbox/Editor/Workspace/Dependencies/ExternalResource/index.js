@@ -3,6 +3,7 @@ import React from 'react';
 import CrossIcon from 'react-icons/lib/md/clear';
 
 import { EntryContainer, IconArea, Icon } from '../../elements';
+import { Link } from '../elements';
 
 const getNormalizedUrl = (url: string) => `${url.replace(/\/$/g, '')}/`;
 
@@ -26,9 +27,7 @@ export default class ExternalResource extends React.PureComponent {
     const { resource } = this.props;
     return (
       <EntryContainer>
-        <a href={resource} rel="noopener noreferrer" target="_blank">
-          {getName(resource)}
-        </a>
+        <Link href={resource}>{getName(resource)}</Link>
         <IconArea>
           <Icon onClick={this.removeResource}>
             <CrossIcon />
