@@ -371,4 +371,7 @@ export default class TestRunner {
       }
     }
   };
+
+  // We stub this, because old versions of CodeSandbox still needs this
+  reportError = () => {};
 }
