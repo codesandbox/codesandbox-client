@@ -134,7 +134,7 @@ async function compile({
   try {
     clearErrorTransformers();
     initializeErrorTransformers();
-    unmount(!hadError);
+    unmount(manager && manager.webpackHMR ? true : hadError);
   } catch (e) {
     console.error(e);
   }

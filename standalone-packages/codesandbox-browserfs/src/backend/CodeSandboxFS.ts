@@ -145,8 +145,8 @@ export default class CodeSandboxFS extends SynchronousFileSystem
 
   public renameSync(oldPath: string, newPath: string) {
     const tModules = this.manager.getTranspiledModules();
-    const modulesWithPath = Object.keys(tModules).filter((p: string) =>
-      p.startsWith(oldPath)
+    const modulesWithPath = Object.keys(tModules).filter(
+      (p: string) => p.startsWith(oldPath) + '/' || p === oldPath
     );
 
     if (modulesWithPath.length === 0) {
@@ -165,7 +165,7 @@ export default class CodeSandboxFS extends SynchronousFileSystem
 
     if (!moduleInfo) {
       const modulesStartingWithPath = Object.keys(tModules).filter(
-        (pa: string) => pa.startsWith(p)
+        (pa: string) => pa.startsWith(p + '/') || pa === p
       );
 
       if (modulesStartingWithPath.length > 0) {
@@ -221,7 +221,7 @@ export default class CodeSandboxFS extends SynchronousFileSystem
   public rmdirSync(p: string) {
     const tModules = this.manager.getTranspiledModules();
     Object.keys(tModules)
-      .filter((pa: string) => pa.startsWith(p))
+      .filter((pa: string) => pa.startsWith(p + '/') || p === pa)
       .forEach((pa: string) => {
         const { module } = tModules[pa];
 
@@ -239,7 +239,9 @@ export default class CodeSandboxFS extends SynchronousFileSystem
 
     const p = path.endsWith('/') ? path : path + '/';
 
-    const pathsInDir = paths.filter((secondP: string) => secondP.startsWith(p));
+    const pathsInDir = paths.filter(
+      (secondP: string) => secondP.startsWith(p + '/') || secondP === p
+    );
     if (pathsInDir.length === 0) {
       return [];
     }
