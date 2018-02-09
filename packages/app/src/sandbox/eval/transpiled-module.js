@@ -584,7 +584,7 @@ export default class TranspiledModule {
     return this;
   }
 
-  evaluate(manager: Manager) {
+  evaluate(manager: Manager, { asUMD = false }: { asUMD: boolean } = {}) {
     if (this.source == null) {
       // This scenario only happens when we are in an inconsistent state, the quickest way to solve
       // this state is to just hard reload everything.
@@ -725,7 +725,8 @@ export default class TranspiledModule {
         require,
         this.compilation,
         manager.envVariables,
-        manager.testRunner.testGlobals(this.module)
+        manager.testRunner.testGlobals(this.module),
+        { asUMD }
       );
 
       const hmrConfig = this.hmrConfig;

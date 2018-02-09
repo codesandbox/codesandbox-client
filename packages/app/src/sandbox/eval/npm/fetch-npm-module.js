@@ -105,8 +105,6 @@ function downloadDependency(depName: string, depVersion: string, path: string) {
   return packages[path];
 }
 
-const requestedPaths = [];
-
 function resolvePath(
   path: string,
   currentPath: string,
@@ -148,15 +146,13 @@ function resolvePath(
           const depName = getDependencyName(depPath);
 
           // To prevent infinite loops we keep track of which dependencies have been requested before.
-          if (requestedPaths.includes(depPath)) {
+          if (!manager.transpiledModules[p] && !meta[p]) {
             const err = new Error('Could not find ' + p);
             err.code = 'ENOENT';
 
             callback(err);
             return null;
           }
-
-          requestedPaths.push(depPath);
 
           // eslint-disable-next-line
           const subDepVersionVersionInfo = await findDependencyVersion(

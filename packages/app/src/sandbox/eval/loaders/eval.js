@@ -7,7 +7,8 @@ export default function(
   require: Function,
   module: Object,
   env: Object = {},
-  globals: Object = {}
+  globals: Object = {},
+  { asUMD = false }: { asUMD: boolean } = {}
 ) {
   const g = typeof window === 'undefined' ? self : window;
   const exports = module.exports;
@@ -26,12 +27,12 @@ export default function(
     // eslint-disable-next-line no-eval
     (0, eval)(newCode).apply(this, [
       require,
-      module,
-      exports,
+      asUMD ? undefined : module,
+      asUMD ? undefined : exports,
       process,
       setImmediate,
       Buffer,
-      global,
+      asUMD ? undefined : global,
       ...globalsValues,
     ]);
 
