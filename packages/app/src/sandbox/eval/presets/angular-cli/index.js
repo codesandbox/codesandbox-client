@@ -47,15 +47,37 @@ export default function initialize() {
 
           const { styles = [], scripts = [] } = app;
 
-          await Promise.all(
-            [...styles, ...scripts].map(async p => {
-              const finalPath = absolute(join(app.root || 'src', p));
+          /* eslint-disable no-await-in-loop */
+          for (let i = 0; i < styles.length; i++) {
+            const p = styles[i];
+            const finalPath = absolute(join(app.root || 'src', p));
 
-              const module = manager.resolveModule(finalPath, '/');
-              await manager.transpileModules(module);
-              manager.evaluateModule(module);
+            const tModule = await manager.resolveTranspiledModuleAsync(
+              finalPath,
+              '/'
+            );
+
+            await tModule.transpile(manager);
+            tModule.setIsEntry(true);
+            tModule.evaluate(manager);
+          }
+          /* eslint-enable no-await-in-loop */
+
+          const scriptTModules = await Promise.all(
+            scripts.map(async p => {
+              const finalPath = absolute(join(app.root || 'src', p));
+              const tModule = await manager.resolveTranspiledModuleAsync(
+                finalPath,
+                '/'
+              );
+              tModule.setIsEntry(true);
+              return tModule.transpile(manager);
             })
           );
+
+          scriptTModules.forEach(t => {
+            t.evaluate(manager, { asUMD: true });
+          });
 
           if (
             app.environmentSource &&

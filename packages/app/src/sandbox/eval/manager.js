@@ -474,6 +474,7 @@ export default class Manager {
         this.manifest.dependencies.find(d => d.name === dependencyName) ||
         this.manifest.dependencyDependencies[dependencyName]
       ) {
+        this.downloadDependency(connectedPath, currentPath);
         throw new ModuleNotFoundError(connectedPath, true);
       } else {
         throw new DependencyNotFoundError(connectedPath);
@@ -501,6 +502,21 @@ export default class Manager {
       return tModule;
     });
   }
+
+  resolveTranspiledModuleAsync = async (
+    path: string,
+    currentPath: string
+  ): Promise<TranspiledModule> => {
+    try {
+      return this.resolveTranspiledModule(path, currentPath);
+    } catch (e) {
+      if (e.type === 'module-not-found' && e.isDependency) {
+        return this.downloadDependency(e.path, currentPath);
+      }
+
+      throw e;
+    }
+  };
 
   /**
    * Resolve the transpiled module from the path, note that the path can actually
