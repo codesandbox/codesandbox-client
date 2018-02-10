@@ -22,7 +22,7 @@ class CLI extends React.Component {
           token={authToken}
           loading={isLoadingCLI}
           username={user && user.username}
-          signIn={this.props.signals.sigin}
+          signIn={this.props.signals.signInClicked}
         />
       </Container>
     );
