@@ -11,12 +11,6 @@ class CLI extends React.Component {
     this.props.signals.cliMounted();
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.store.user == null && this.props.store.user != null) {
-      this.props.signals.requestAuthorisation();
-    }
-  }
-
   render() {
     const { user, authToken, isLoadingCLI, error } = this.props.store;
 
