@@ -1,4 +1,5 @@
 import React from 'react';
+import { inject } from 'mobx-react';
 
 import Navigation from 'app/pages/common/Navigation';
 
@@ -8,23 +9,29 @@ import Margin from 'common/components/spacing/Margin';
 import Title from 'app/components/Title';
 import NewSandbox from 'app/components/NewSandbox';
 
-function NewSandboxComponent() {
-  return (
-    <MaxWidth>
-      <Margin style={{ height: '100%' }} vertical={1.5} horizontal={1.5}>
-        <Navigation title="New Sandbox" />
+class NewSandboxComponent extends React.PureComponent {
+  componentDidMount() {
+    this.props.signals.sandboxPageMounted();
+  }
 
-        <Margin top={9}>
-          <Centered horizontal vertical>
-            <Title>New Sandbox</Title>
-            <Margin top={2}>
-              <NewSandbox />
-            </Margin>
-          </Centered>
+  render() {
+    return (
+      <MaxWidth>
+        <Margin style={{ height: '100%' }} vertical={1.5} horizontal={1.5}>
+          <Navigation title="New Sandbox" />
+
+          <Margin top={9}>
+            <Centered horizontal vertical>
+              <Title>New Sandbox</Title>
+              <Margin top={2}>
+                <NewSandbox />
+              </Margin>
+            </Centered>
+          </Margin>
         </Margin>
-      </Margin>
-    </MaxWidth>
-  );
+      </MaxWidth>
+    );
+  }
 }
 
-export default NewSandboxComponent;
+export default inject('signals')(NewSandboxComponent);

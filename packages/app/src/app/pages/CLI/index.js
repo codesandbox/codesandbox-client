@@ -8,7 +8,11 @@ import { Container } from './elements';
 
 class CLI extends React.Component {
   componentDidMount() {
-    if (this.props.store.user.jwt) {
+    this.props.signals.cliMounted();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.store.user == null && this.props.store.user != null) {
       this.props.signals.requestAuthorisation();
     }
   }

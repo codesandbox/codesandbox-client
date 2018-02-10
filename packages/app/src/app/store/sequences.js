@@ -228,6 +228,21 @@ export const loadSearch = factories.withLoadApp([]);
 
 export const loadTerms = factories.withLoadApp([]);
 
+export const loadCLI = [
+  factories.withLoadApp([]),
+  when(state`user`),
+  {
+    true: [authorize],
+    false: [],
+  },
+];
+
+export const loadCLIInstructions = factories.withLoadApp([]);
+
+export const loadSandboxPage = factories.withLoadApp([]);
+
+export const loadGitHubPage = factories.withLoadApp([]);
+
 export const loadSandbox = factories.withLoadApp([
   set(state`editor.error`, null),
   when(state`editor.sandboxes.${props`id`}`),

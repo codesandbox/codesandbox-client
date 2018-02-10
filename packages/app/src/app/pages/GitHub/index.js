@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import { inject } from 'mobx-react';
+
 import Navigation from 'app/pages/common/Navigation';
 import Title from 'app/components/Title';
 import SubTitle from 'app/components/SubTitle';
@@ -24,12 +26,16 @@ import {
 const getFullGitHubUrl = url =>
   `${protocolAndHost()}${gitHubToSandboxUrl(url)}`;
 
-export default class GitHub extends React.PureComponent {
+class GitHub extends React.PureComponent {
   state = {
     url: '',
     transformedUrl: '',
     error: null,
   };
+
+  componentDidMount() {
+    this.props.signals.githubPageMounted();
+  }
 
   updateUrl = e => {
     const url = e.target.value;
@@ -102,3 +108,5 @@ export default class GitHub extends React.PureComponent {
     );
   }
 }
+
+export default inject(['signals'])(GitHub);
