@@ -224,6 +224,15 @@ export const signInGithub = [
   set(state`isLoadingGithub`, false),
 ];
 
+export const signInCli = [
+  signIn,
+  when(state`user`),
+  {
+    true: [authorize],
+    false: [],
+  },
+];
+
 export const loadSearch = factories.withLoadApp([]);
 
 export const loadTerms = factories.withLoadApp([]);
