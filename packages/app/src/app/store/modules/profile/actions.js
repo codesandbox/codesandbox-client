@@ -13,7 +13,7 @@ export function deleteSandbox({ api, state }) {
         id: sandboxId,
       },
     })
-    .then(() => undefined);
+    .then(() => state.set(`profile.current.sandboxCount - 1`));
 }
 
 export function getAllUserSandboxes({ api }) {
