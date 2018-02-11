@@ -249,7 +249,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         this.changeCode(newModule.code || '');
       }
 
-      console.log('changeModule:errors: ', errors);
       if (errors) this.setErrors(errors);
     });
   };
