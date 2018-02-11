@@ -23,6 +23,8 @@ const SANDBOXES = [
   '6w66jzw3mn', // material-design & preact
   '4j7m47vlm4', // material-ui
   'github/cssinjs/egghead/tree/master/from-sass-to-cssinjs/templates-and-variables', // postcss egghead
+  'xp5qy8r93q', // babel example
+  'angular', // angular template
 ];
 
 function pageLoaded(page) {

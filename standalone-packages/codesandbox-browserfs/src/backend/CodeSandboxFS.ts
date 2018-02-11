@@ -165,7 +165,7 @@ export default class CodeSandboxFS extends SynchronousFileSystem
 
     if (!moduleInfo) {
       const modulesStartingWithPath = Object.keys(tModules).filter(
-        (pa: string) => pa.startsWith(p + '/') || pa === p
+        (pa: string) => pa.startsWith(p.endsWith('/') ? p : p + '/') || pa === p
       );
 
       if (modulesStartingWithPath.length > 0) {
@@ -239,9 +239,8 @@ export default class CodeSandboxFS extends SynchronousFileSystem
 
     const p = path.endsWith('/') ? path : path + '/';
 
-    const pathsInDir = paths.filter(
-      (secondP: string) => secondP.startsWith(p + '/') || secondP === p
-    );
+    const pathsInDir = paths.filter((secondP: string) => secondP.startsWith(p));
+
     if (pathsInDir.length === 0) {
       return [];
     }
