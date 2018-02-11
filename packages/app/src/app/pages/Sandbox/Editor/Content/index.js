@@ -240,7 +240,9 @@ class EditorPreview extends React.Component<Props, State> {
     const notSynced = !store.editor.isAllModulesSynced;
     const sandbox = store.editor.currentSandbox;
     const preferences = store.preferences;
-    const { x, y, width } = store.editor.previewWindow;
+    const { x, y, width, content } = store.editor.previewWindow;
+
+    const windowVisible = !!content;
 
     const windowRightSize = -x + width + 16;
 
@@ -248,10 +250,15 @@ class EditorPreview extends React.Component<Props, State> {
       ? this.state.width / 4 > this.state.width - windowRightSize
       : false;
 
-    const editorWidth = isVerticalMode
+    let editorWidth = isVerticalMode
       ? '100%'
       : `calc(100% - ${windowRightSize}px)`;
-    const editorHeight = isVerticalMode ? `${y + 16}px` : '100%';
+    let editorHeight = isVerticalMode ? `${y + 16}px` : '100%';
+
+    if (!windowVisible) {
+      editorWidth = '100%';
+      editorHeight = '100%';
+    }
 
     return (
       <ThemeProvider

@@ -10,6 +10,8 @@ import {
   TabsContainer,
   IconContainer,
   StyledPrettierIcon,
+  StyledWindowIcon,
+  Line,
 } from './elements';
 
 class EditorTabs extends React.Component {
@@ -109,6 +111,8 @@ class EditorTabs extends React.Component {
 
     const currentModule = store.editor.currentModule;
 
+    const previewVisible = !!store.editor.previewWindow.content;
+
     return (
       <Container>
         <TabsContainer
@@ -169,11 +173,28 @@ class EditorTabs extends React.Component {
               );
             })}
         </TabsContainer>
+
         <IconContainer>
           <Tooltip title="Prettify">
             <StyledPrettierIcon
               disabled={!this.canPrettify(currentModule)}
               onClick={this.prettifyModule}
+            />
+          </Tooltip>
+          <Line />
+
+          <Tooltip title={previewVisible ? 'Hide Browser' : 'Show Browser'}>
+            <StyledWindowIcon
+              onClick={() =>
+                previewVisible
+                  ? this.props.signals.editor.setPreviewContent({
+                      content: undefined,
+                    })
+                  : this.props.signals.editor.setPreviewContent({
+                      content: 'browser',
+                    })
+              }
+              active={previewVisible}
             />
           </Tooltip>
         </IconContainer>

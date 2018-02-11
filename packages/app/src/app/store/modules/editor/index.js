@@ -41,6 +41,7 @@ export default Module({
       width: undefined,
       x: 0,
       y: 0,
+      content: 'browser',
     },
   },
   getters: {
@@ -80,5 +81,6 @@ export default Module({
     quickActionsOpened: sequences.openQuickActions,
     quickActionsClosed: sequences.closeQuickActions,
     setPreviewBounds: sequences.setPreviewBounds,
+    setPreviewContent: sequences.setPreviewContent,
   },
 });

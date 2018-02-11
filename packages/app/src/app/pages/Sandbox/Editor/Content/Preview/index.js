@@ -220,6 +220,10 @@ class Preview extends React.Component<Props, State> {
       code: store.editor.currentPackageJSONCode,
     };
 
+    if (!store.editor.previewWindow.content) {
+      return null;
+    }
+
     return (
       <FlyingContainer onPositionChange={this.resetAlignment}>
         {({ resize }) => (

@@ -136,6 +136,7 @@ export default {
   isUpdatingPrivacy: types.boolean,
   quickActionsOpen: types.boolean,
   previewWindow: types.model({
+    content: types.maybe(types.string),
     width: types.maybe(types.number),
     height: types.maybe(types.number),
     x: types.maybe(types.number),
