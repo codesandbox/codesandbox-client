@@ -185,15 +185,15 @@ class EditorPreview extends React.Component<Props, State> {
     );
     const disposeModuleHandler = reaction(
       () => [store.editor.currentModule, store.editor.currentModule.code],
-      () => {
+      ([newModule]) => {
         if (isChangingSandbox) {
           return;
         }
-        const newModule = store.editor.currentModule;
         const editorModule = editor.currentModule;
 
         if (newModule !== editorModule && editor.changeModule) {
-          editor.changeModule(newModule);
+          const errors = store.editor.errors.map(e => e);
+          editor.changeModule(newModule, errors);
         } else if (editor.changeCode) {
           editor.changeCode(newModule.code || '');
         }
