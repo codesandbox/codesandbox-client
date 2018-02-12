@@ -110,7 +110,7 @@ export default {
       line: types.maybe(types.number),
       message: types.string,
       title: types.string,
-      moduleId: types.string,
+      moduleId: types.maybe(types.string),
     })
   ),
   glyphs: types.array(
@@ -126,7 +126,8 @@ export default {
       line: types.maybe(types.number),
       message: types.string,
       source: types.string,
-      moduleId: types.string,
+      moduleId: types.maybe(types.string),
+      severity: types.maybe(types.string),
     })
   ),
   isInProjectView: types.boolean,

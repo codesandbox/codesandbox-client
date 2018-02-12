@@ -98,6 +98,11 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
   linterWorker: ?Worker;
 
   validate = (code: string = '', updateLinting: Function) => {
+    if (!this.currentModule || !/\.jsx?$/.test(this.currentModule.title)) {
+      updateLinting([]);
+      return;
+    }
+
     if (code.trim() === '') {
       updateLinting([]);
       return;
@@ -232,6 +237,7 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
     if (settings.lintEnabled) {
       if (!this.linterWorker) {
         this.linterWorker = new LinterWorker();
+
         this.codemirror.setOption('lint', {
           getAnnotations: this.validate,
           async: true,
@@ -240,6 +246,8 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
     } else {
       this.codemirror.setOption('lint', false);
     }
+
+    this.codemirror.setOption('tabSize', this.props.settings.tabWidth);
 
     this.forceUpdate();
   };
@@ -251,6 +259,7 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
 
     if (!documentCache[currentModule.id]) {
       const mode = await this.getMode(currentModule.title);
+
       documentCache[currentModule.id] = new CodeMirror.Doc(
         currentModule.code || '',
         mode
@@ -288,7 +297,14 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
         await import(/* webpackChunkName: 'codemirror-html' */ 'codemirror/mode/htmlmixed/htmlmixed');
 
         if (kind[1] === 'vue') {
-          return 'text/x-vue';
+          await Promise.all([
+            import(/* webpackChunkName: 'codemirror-css' */ 'codemirror/mode/css/css'),
+            import(/* webpackChunkName: 'codemirror-sass' */ 'codemirror/mode/sass/sass'),
+            import(/* webpackChunkName: 'codemirror-stylus' */ 'codemirror/mode/stylus/stylus'),
+            import(/* webpackChunkName: 'codemirror-handlebars' */ 'codemirror/mode/handlebars/handlebars'),
+            import(/* webpackChunkName: 'codemirror-vue' */ 'codemirror/mode/vue/vue'),
+          ]);
+          return { name: 'vue' };
         }
 
         return 'htmlmixed';
@@ -301,7 +317,7 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
         await import(/* webpackChunkName: 'codemirror-sass' */ 'codemirror/mode/sass/sass');
         return 'sass';
       } else if (kind[1] === 'styl') {
-        await import(/* webpackChunkName: 'codemirror-sass' */ 'codemirror/mode/stylus/stylus');
+        await import(/* webpackChunkName: 'codemirror-stylus' */ 'codemirror/mode/stylus/stylus');
         return 'stylus';
       }
     }

@@ -386,6 +386,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   setCorrections = (corrections: Array<ModuleCorrection>) => {
     if (corrections.length > 0) {
       const correctionMarkers = corrections
+        .filter(correction => correction.moduleId === this.currentModule.id)
         .map(correction => {
           if (correction) {
             return {

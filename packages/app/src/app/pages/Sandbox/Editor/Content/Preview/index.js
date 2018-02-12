@@ -235,9 +235,7 @@ class Preview extends React.Component<Props, State> {
             settings={store.preferences.settings}
             initialPath={store.editor.initialPath}
             isInProjectView={store.editor.isInProjectView}
-            onClearErrors={() =>
-              store.editor.errors.length && signals.editor.errorsCleared()
-            }
+            onClearErrors={() => signals.editor.errorsCleared()}
             onAction={action =>
               signals.editor.previewActionReceived({ action })
             }

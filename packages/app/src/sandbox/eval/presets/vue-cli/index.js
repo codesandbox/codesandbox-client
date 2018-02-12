@@ -1,3 +1,7 @@
+import { dispatch, actions } from 'codesandbox-api';
+
+import type Manager from '../../manager';
+
 import babelTranspiler from '../../transpilers/babel';
 import typescriptTranspiler from '../../transpilers/typescript';
 import jsonTranspiler from '../../transpilers/json';
@@ -18,11 +22,58 @@ import base64Transpiler from '../../transpilers/base64';
 
 import Preset from '../';
 
+const getFileNameFromVm = vm => {
+  if (vm) {
+    const options =
+      typeof vm === 'function' && vm.cid != null
+        ? vm.options
+        : vm._isVue ? vm.$options || vm.constructor.options : vm || {};
+
+    return options.__file;
+  }
+};
+
 export default function initialize() {
-  const vuePreset = new Preset('vue-cli', ['vue', 'json', 'js'], {
-    '@': '{{sandboxRoot}}',
-    vue$: 'vue/dist/vue.common.js',
-  });
+  const vuePreset = new Preset(
+    'vue-cli',
+    ['vue', 'json', 'js'],
+    {
+      '@': '{{sandboxRoot}}',
+      vue$: 'vue/dist/vue.common.js',
+    },
+    {
+      setup: async (manager: Manager) => {
+        try {
+          const vueModule = manager.resolveTranspiledModule('vue', '/');
+
+          if (!vueModule.source) {
+            await vueModule.transpile(manager);
+          }
+          const Vue = vueModule.evaluate(manager);
+
+          if (Vue) {
+            Vue.config.warnHandler = (msg, vm, trace) => {
+              console.error('[Vue warn]: ' + msg + trace);
+
+              const file = getFileNameFromVm(vm);
+
+              dispatch(
+                actions.correction.show(msg, {
+                  line: 1,
+                  column: 1,
+                  path: file,
+                  severity: 'warning',
+                  source: 'Vue',
+                })
+              );
+            };
+          }
+        } catch (e) {
+          /* ignore */
+        }
+      },
+    }
+  );
 
   const sassWithConfig = {
     transpiler: sassTranspiler,

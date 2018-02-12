@@ -136,23 +136,25 @@ export function addErrorFromPreview({ state, props, utils }) {
   const sandbox = state.get('editor.currentSandbox');
 
   try {
-    const module = utils.resolveModule(
-      props.action.path.replace(/^\//, ''),
-      sandbox.modules,
-      sandbox.directories
-    );
+    let module = null;
+
+    if (props.action.path) {
+      module = utils.resolveModule(
+        props.action.path.replace(/^\//, ''),
+        sandbox.modules,
+        sandbox.directories
+      );
+    }
 
     const error = {
-      moduleId: module.id,
+      moduleId: module ? module.id : undefined,
       column: props.action.column,
       line: props.action.line,
       message: props.action.message,
       title: props.action.title,
     };
 
-    if (module) {
-      state.push('editor.errors', error);
-    }
+    state.push('editor.errors', error);
   } catch (e) {
     /* ignore, module not found */
   }
@@ -178,22 +180,26 @@ export function addGlyphFromPreview({ state, props, utils }) {
 
 export function addCorrectionFromPreview({ state, props, utils }) {
   const sandbox = state.get('editor.currentSandbox');
-  const module = utils.resolveModule(
-    props.action.path.replace(/^\//, ''),
-    sandbox.modules,
-    sandbox.directories
-  );
+
+  let module = null;
+
+  if (props.action.path) {
+    module = utils.resolveModule(
+      props.action.path.replace(/^\//, ''),
+      sandbox.modules,
+      sandbox.directories
+    );
+  }
   const correction = {
-    moduleId: module.id,
+    moduleId: module ? module.id : undefined,
     column: props.action.column,
     line: props.action.line,
     message: props.action.message,
     source: props.action.source,
+    severity: props.action.severity,
   };
 
-  if (module) {
-    state.push('editor.corrections', correction);
-  }
+  state.push('editor.corrections', correction);
 }
 
 export function moveTab({ state, props }) {
