@@ -2,6 +2,7 @@ import React from 'react';
 import HomeIcon from 'react-icons/lib/io/home';
 import SearchIcon from 'react-icons/lib/go/search';
 import { Highlight } from 'react-instantsearch/dom';
+import compareVersions from 'compare-versions';
 
 import Tooltip from 'common/components/Tooltip';
 
@@ -59,8 +60,9 @@ export default class DependencyHit extends React.PureComponent {
       }
     }
 
-    const versions = Object.keys(hit.versions);
-    versions.reverse();
+    const versions = Object.keys(hit.versions).sort((a: string, b: string) =>
+      compareVersions(b, a)
+    );
 
     return (
       <Container highlighted={highlighted} onClick={onClick}>
