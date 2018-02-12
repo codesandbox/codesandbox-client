@@ -185,8 +185,7 @@ class EditorPreview extends React.Component<Props, State> {
     );
     const disposeModuleHandler = reaction(
       () => [store.editor.currentModule, store.editor.currentModule.code],
-      ([newModule, _]) => {
-        // eslint-disable-line no-unused-vars
+      ([newModule]) => {
         if (isChangingSandbox) {
           return;
         }
