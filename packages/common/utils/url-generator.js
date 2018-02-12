@@ -1,7 +1,7 @@
 // @flow
 import type { Sandbox } from 'common/types';
 
-export const gitHubRepoPattern = /(https?:\/\/)?((www.)?)github.com(\/\w+){2,}/;
+export const gitHubRepoPattern = /(https?:\/\/)?((www.)?)github.com(\/[\w-]+){2,}/;
 const gitHubPrefix = /(https?:\/\/)?((www.)?)github.com/;
 const dotGit = /(\.git)$/;
 
