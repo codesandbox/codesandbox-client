@@ -148,6 +148,16 @@ module.exports = merge(commonConfig, {
           },
         },
         {
+          urlPattern: /api\/v1\/dependencies/,
+          handler: 'fastest',
+          options: {
+            cache: {
+              maxAgeSeconds: 60 * 60 * 24,
+              name: 'dependency-version-cache',
+            },
+          },
+        },
+        {
           // These should be dynamic, since it's not loaded from this domain
           // But from the root domain
           urlPattern: /codesandbox\.io\/static\/js\/(vendor|common|sandbox)/,

@@ -284,6 +284,53 @@
         "code",
         "ideas"
       ]
+    },
+    {
+      "login": "haroenv",
+      "name": "Haroen Viaene",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/6270048?v=4",
+      "profile": "https://twitter.com/haroenv",
+      "contributions": [
+        "code",
+        "design"
+      ]
+    },
+    {
+      "login": "nicknisi",
+      "name": "Nick Nisi",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/293805?v=4",
+      "profile": "https://nicknisi.com",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Jakhotiya",
+      "name": "Abhishek Jakhotiya",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/9327315?v=4",
+      "profile": "https://github.com/Jakhotiya",
+      "contributions": [
+        "code",
+        "bug"
+      ]
+    },
+    {
+      "login": "tomkuehl",
+      "name": "Tom Kühl",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/14299145?v=4",
+      "profile": "http://twitter.com/tomkuehl_",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "br1anchen",
+      "name": "br1anchen",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/1086461?v=4",
+      "profile": "https://github.com/br1anchen",
+      "contributions": [
+        "code"
+      ]
     }
   ]
 }

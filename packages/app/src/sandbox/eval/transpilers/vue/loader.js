@@ -431,10 +431,14 @@ export default function(content: string, loaderContext: LoaderContext) {
   }
 
   function getRequireForImportString(type, impt, scoped) {
-    return loaderUtils.stringifyRequest(
+    const depPath = loaderUtils.stringifyRequest(
       loaderContext,
       '!!' + getLoaderString(type, impt, -1, scoped) + impt.src
     );
+
+    loaderContext.addDependency(JSON.parse(depPath));
+
+    return depPath;
   }
 
   function addCssModulesToLoader(loader, part, index) {

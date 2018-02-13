@@ -21,7 +21,9 @@ export const getSandboxOptions = (url: string) => {
 
   const highlightMatch = url.match(/(\?|&)(highlights)=([^&]+)/);
   if (highlightMatch && highlightMatch[3]) {
-    result.highlightedLines = highlightMatch[3].split(',');
+    result.highlightedLines = highlightMatch[3]
+      .split(',')
+      .map(number => Number(number));
   }
 
   const editorSizeMatch = url.match(/(\?|&)(editorsize)=([^&]+)/);
@@ -41,8 +43,11 @@ export const getSandboxOptions = (url: string) => {
     !result.isSplitScreen
   ) {
     const windowWidth =
-      window.innerWidth || document.documentElement.clientWidth;
-    result.isPreviewScreen = windowWidth < 800;
+      window.innerWidth ||
+      (document.documentElement ? document.documentElement.clientWidth : 0);
+
+    result.isEditorScreen = windowWidth >= 800;
+    result.isPreviewScreen = true;
   }
 
   result.hideNavigation = url.includes('hidenavigation=1');
@@ -52,7 +57,11 @@ export const getSandboxOptions = (url: string) => {
   result.enableEslint = url.includes('eslint=1');
   result.forceRefresh = url.includes('forcerefresh=1');
   result.expandDevTools = url.includes('expanddevtools=1');
-  result.runOnClick = url.includes('runonclick=1');
+  result.runOnClick = url.includes('runonclick=0')
+    ? false
+    : url.includes('runonclick=1') ||
+      navigator.appVersion.indexOf('X11') !== -1 ||
+      navigator.appVersion.indexOf('Linux') !== -1;
 
   return result;
 };

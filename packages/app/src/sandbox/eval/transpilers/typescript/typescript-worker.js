@@ -21,6 +21,7 @@ declare var ts: {
 
 self.addEventListener('message', event => {
   const { code, path } = event.data;
+
   const config = {
     fileName: path,
     reportDiagnostics: true,
@@ -42,7 +43,9 @@ self.addEventListener('message', event => {
       noUnusedLocals: true,
       inlineSourceMap: true,
       inlineSources: true,
+      emitDecoratorMetadata: true,
       experimentalDecorators: true,
+      lib: ['es2017', 'dom'],
     },
   };
 

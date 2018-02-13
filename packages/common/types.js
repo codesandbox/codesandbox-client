@@ -30,8 +30,6 @@ export type Module = {
   isNotSynced: boolean,
   sourceId: string,
   isBinary: boolean,
-  errors: ?Array<ModuleError>,
-  corrections: Array<ModuleCorrection>,
 };
 
 export type Directory = {
@@ -120,27 +118,31 @@ export type Sandbox = {
   likeCount: number,
   forkCount: number,
   userLiked: boolean,
-  modules: Array<string | Module>,
-  currentModule: ?string,
-  isInProjectView: ?boolean,
-  initialPath?: string,
-  directories: Array<string | Directory>,
+  modules: Array<Module>,
+  directories: Array<Directory>,
   owned: boolean,
   npmDependencies: {
     [dep: string]: string,
   },
   externalResources: Array<string>,
-  isInProjectView: ?boolean,
   privacy: 0 | 1 | 2,
-  showEditor: ?boolean,
-  showPreview: ?boolean,
   author: ?User,
   forkedFromSandbox: ?{ title: string, id: string },
   git: ?GitInfo,
   tags: Array<string>,
-  sourceId: string, // This is the source it's assigned to, a source contains all dependencies, modules and directories
-  forcedRenders: number,
-  template: string,
+  /**
+   * This is the source it's assigned to, a source contains all dependencies, modules and directories
+   *
+   * @type {string}
+   */
+  sourceId: string,
+  template:
+    | 'create-react-app'
+    | 'create-react-app-typescript'
+    | 'angular-cli'
+    | 'vue-cli'
+    | 'preact-cli'
+    | 'svelte',
   entry: string,
   originalGit: ?GitInfo,
   originalGitCommitSha: ?string,
@@ -150,6 +152,7 @@ export type Sandbox = {
     deleted: Array<string>,
     rights: 'none' | 'read' | 'write' | 'admin',
   },
+  version: number,
 };
 
 export type Preferences = {
@@ -165,6 +168,7 @@ export type Preferences = {
   prettierConfig: Object,
   autoDownloadTypes: ?boolean,
   newPackagerExperiment: ?boolean,
+  zenMode: ?boolean,
 };
 
 export type NotificationButton = {
@@ -184,4 +188,17 @@ export type Modal = {
   open: boolean,
   title: ?string,
   Body: ?React.Element<any>,
+};
+
+export type PackageJSON = {
+  name: string,
+  description: string,
+  keywords: Array<string>,
+  main: string,
+  dependencies: {
+    [dep: string]: string,
+  },
+  devDependencies: {
+    [dep: string]: string,
+  },
 };

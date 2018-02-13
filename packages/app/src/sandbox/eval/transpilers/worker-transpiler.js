@@ -1,3 +1,4 @@
+import type BrowserFS from 'codesandbox-browserfs';
 import _debug from 'app/utils/debug';
 
 import Transpiler from './';
@@ -24,15 +25,16 @@ export default class WorkerTranspiler extends Transpiler {
     [id: string]: Task,
   };
   initialized: boolean;
-
   runningTasks: {
     [id: string]: (error: Error, message: Object) => void,
   };
+  hasFS: boolean;
 
   constructor(
     name: string,
     Worker: Worker,
-    workerCount = navigator.hardwareConcurrency
+    workerCount = navigator.hardwareConcurrency,
+    options: { hasFS: boolean } = {}
   ) {
     super(name);
 
@@ -42,16 +44,23 @@ export default class WorkerTranspiler extends Transpiler {
     this.idleWorkers = [];
     this.tasks = {};
     this.initialized = false;
+    this.hasFS = options.hasFS || false;
   }
 
   getWorker() {
     return Promise.resolve(new this.Worker());
   }
 
-  loadWorker() {
+  loadWorker(bfs: BrowserFS) {
     return new Promise(async resolve => {
       const t = Date.now();
       const worker = await this.getWorker();
+
+      if (this.hasFS) {
+        // Register file system that syncs with filesystem in manager
+        bfs.FileSystem.WorkerFS.attachRemoteListener(worker);
+        worker.postMessage({ type: 'initialize-fs', codesandbox: true });
+      }
 
       debug(`Loaded '${this.name}' worker in ${Date.now() - t}ms`);
       this.idleWorkers.push(worker);
@@ -64,11 +73,11 @@ export default class WorkerTranspiler extends Transpiler {
     });
   }
 
-  async initialize() {
+  async initialize(bfs: BrowserFS) {
     this.initialized = true;
     if (this.workers.length === 0) {
       await Promise.all(
-        Array.from({ length: this.workerCount }, () => this.loadWorker())
+        Array.from({ length: this.workerCount }, () => this.loadWorker(bfs))
       );
     }
   }
@@ -143,7 +152,7 @@ export default class WorkerTranspiler extends Transpiler {
         }
       }
     };
-    worker.postMessage(message);
+    worker.postMessage({ ...message, type: 'compile', codesandbox: true });
   }
 
   async queueTask(
@@ -152,7 +161,7 @@ export default class WorkerTranspiler extends Transpiler {
     callback: (err: Error, message: Object) => void
   ) {
     if (!this.initialized) {
-      await this.initialize();
+      await this.initialize(loaderContext.bfs);
     }
 
     const id = loaderContext._module.getId();
