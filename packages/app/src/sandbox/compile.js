@@ -241,7 +241,11 @@ async function compile({
             .find(p => modules[p])
         ];
 
-      const html = htmlModule ? htmlModule.code : '<div id="root"></div>';
+      const html = htmlModule
+        ? htmlModule.code
+        : template === 'vue-cli'
+          ? '<div id="app"></div>'
+          : '<div id="root"></div>';
       document.body.innerHTML = html;
     }
 
