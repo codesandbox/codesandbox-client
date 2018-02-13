@@ -60,10 +60,7 @@ export default class FilePath extends React.Component {
           </span>
         </FileName>
 
-        <StyledExitZen
-          hovering={String(this.state.hovering)}
-          onClick={exitZenMode}
-        />
+        <StyledExitZen onClick={exitZenMode} />
       </Container>
     );
   }

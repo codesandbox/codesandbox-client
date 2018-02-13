@@ -298,7 +298,7 @@ class EditorPreview extends React.Component<Props, State> {
               position: 'relative',
               display: 'flex',
               flex: 1,
-              marginTop: '2.5rem',
+              marginTop: preferences.settings.zenMode ? 0 : '2.5rem',
             }}
           >
             <CodeEditor

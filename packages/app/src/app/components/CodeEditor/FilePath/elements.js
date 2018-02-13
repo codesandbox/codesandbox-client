@@ -47,21 +47,15 @@ export const StyledExitZen = withTooltip(
   styled(ExitZen)`
     transition: 0.3s ease opacity;
 
-    opacity: 0;
     cursor: pointer;
     font-size: 1.25rem;
 
     z-index: 10;
+    opacity: 0.7;
 
-    ${props =>
-      props.hovering === 'true' &&
-      css`
-        opacity: 0.7;
-
-        &:hover {
-          opacity: 1;
-        }
-      `};
+    &:hover {
+      opacity: 1;
+    }
   `,
   { title: 'Close Zen Mode', style: { zIndex: 10 } }
 );
