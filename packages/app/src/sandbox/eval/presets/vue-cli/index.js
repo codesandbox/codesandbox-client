@@ -19,6 +19,7 @@ import vueSelector from '../../transpilers/vue/selector';
 import vueStyleLoader from '../../transpilers/vue/style-loader';
 import cssLoader from '../../transpilers/vue/css-loader';
 import base64Transpiler from '../../transpilers/base64';
+import pugTranspiler from '../../transpilers/pug';
 
 import Preset from '../';
 
@@ -166,6 +167,7 @@ export default function initialize() {
     { transpiler: noopTranspiler },
   ]);
   vuePreset.registerTranspiler(() => true, [{ transpiler: rawTranspiler }]);
+  vuePreset.registerTranspiler((m) => m.path.endsWith('pug'), [{ transpiler: pugTranspiler }]);
 
   return vuePreset;
 }

@@ -1,7 +1,6 @@
 import { buildWorkerError } from '../utils/worker-error-handler';
 
-self.importScripts(['https://unpkg.com/browserified-pug']);
-
+self.importScripts(['/static/js/browserified-pug.0.1.0.min.js']);
 self.postMessage('ready');
 
 
