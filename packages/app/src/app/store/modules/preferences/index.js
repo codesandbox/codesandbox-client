@@ -7,6 +7,7 @@ export default Module({
   model,
   state: {
     settings: {
+      connectDebugger: false,
       prettifyOnSaveEnabled: true,
       zenMode: false,
       autoCompleteEnabled: true,

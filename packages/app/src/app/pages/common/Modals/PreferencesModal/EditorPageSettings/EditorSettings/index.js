@@ -65,6 +65,22 @@ function EditorSettings({ store, signals }) {
           </SubDescription>
           <Rule />
           <PaddedPreference
+            title="Cerebral Debugger"
+            type="boolean"
+            {...bindValue('connectDebugger')}
+          />
+          <SubDescription>
+            <a
+              href="https://cerebraljs.com/docs/introduction/debugger.html#debugger-install"
+              target="_new"
+            >
+              Download Cerebral debugger
+            </a>{' '}
+            and create an app on port <b>8383</b>. Refresh Codesandbox and get
+            insight into how it works
+          </SubDescription>
+          <Rule />
+          <PaddedPreference
             title="VIM mode"
             type="boolean"
             {...bindValue('vimMode')}

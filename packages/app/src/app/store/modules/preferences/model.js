@@ -2,6 +2,7 @@ import { types } from 'mobx-state-tree';
 
 export default {
   settings: types.model({
+    connectDebugger: types.boolean,
     prettifyOnSaveEnabled: types.boolean,
     autoCompleteEnabled: types.boolean,
     livePreviewEnabled: types.boolean,

@@ -2,6 +2,7 @@ import store from 'store/dist/store.modern';
 import { Provider } from 'cerebral';
 
 const allowedKeys = {
+  connectDebugger: 'settings.connectDebugger',
   autoCompleteEnabled: 'settings.autocomplete',
   vimMode: 'settings.vimmode',
   livePreviewEnabled: 'settings.livepreview',
