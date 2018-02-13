@@ -266,14 +266,15 @@ class BasePreview extends React.Component<Props, State> {
   };
 
   sendUrl = () => {
-    const { urlInAddressBar } = this.state;
+    const { urlInAddressBar, history, historyPosition } = this.state;
+    const position = historyPosition + 1;
 
     // $FlowIssue
     document.getElementById('sandbox').src = urlInAddressBar;
 
     this.setState({
-      history: [urlInAddressBar],
-      historyPosition: 0,
+      history: [...history.slice(0, position), urlInAddressBar],
+      historyPosition: position,
       urlInAddressBar,
     });
   };
@@ -286,8 +287,6 @@ class BasePreview extends React.Component<Props, State> {
     document.getElementById('sandbox').src = url;
 
     this.setState({
-      history: [url],
-      historyPosition: 0,
       urlInAddressBar: url,
     });
   };
@@ -298,9 +297,15 @@ class BasePreview extends React.Component<Props, State> {
     });
 
     const { historyPosition, history } = this.state;
+    const position = historyPosition - 1;
+    const url = history[position];
+
+    // $FlowIssue
+    document.getElementById('sandbox').src = url;
+
     this.setState({
-      historyPosition: this.state.historyPosition - 1,
-      urlInAddressBar: history[historyPosition - 1],
+      historyPosition: position,
+      urlInAddressBar: url,
     });
   };
 
@@ -310,9 +315,15 @@ class BasePreview extends React.Component<Props, State> {
     });
 
     const { historyPosition, history } = this.state;
+    const position = historyPosition + 1;
+    const url = history[position];
+
+    // $FlowIssue
+    document.getElementById('sandbox').src = url;
+
     this.setState({
-      historyPosition: this.state.historyPosition + 1,
-      urlInAddressBar: history[historyPosition + 1],
+      historyPosition: position,
+      urlInAddressBar: url,
     });
   };
 
