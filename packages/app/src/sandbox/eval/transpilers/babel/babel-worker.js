@@ -72,10 +72,14 @@ export type IBabel = {
     code: string,
   },
   availablePlugins: { [key: string]: Function },
+  availablePresets: { [key: string]: Function },
   registerPlugin: (name: string, plugin: Function) => void,
+  registerPreset: (name: string, preset: Function) => void,
 };
 
 declare var Babel: IBabel;
+
+Babel.registerPreset('env', Babel.availablePresets.latest);
 
 Babel.registerPlugin('dynamic-import-node', dynamicImportPlugin);
 Babel.registerPlugin('babel-plugin-detective', detective);

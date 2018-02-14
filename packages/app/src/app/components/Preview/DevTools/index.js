@@ -10,6 +10,7 @@ import Tooltip from 'common/components/Tooltip';
 import Unread from './Unread';
 import console from './Console';
 import tests from './Tests';
+import problems from './Problems';
 
 import { Container, Header, Tab, Actions } from './elements';
 
@@ -34,7 +35,11 @@ function normalizeTouchEvent(event: TouchEvent): MouseEvent {
   };
 }
 
-const PANES = { [console.title]: console, [tests.title]: tests };
+const PANES = {
+  [console.title]: console,
+  [problems.title]: problems,
+  [tests.title]: tests,
+};
 
 export type Status = {
   unread: number,

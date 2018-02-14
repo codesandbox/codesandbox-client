@@ -3,6 +3,7 @@ import VueIcon from 'common/components/logos/Vue';
 
 import Template from './template';
 import { decorateSelector } from '../theme';
+import configurations from './configuration';
 
 class VueTemplate extends Template {
   getEntries(configurationFiles: { [type: string]: Object }) {
@@ -29,5 +30,11 @@ export default new VueTemplate(
   'vue',
   VueIcon,
   decorateSelector(() => '#41B883'),
-  { showOnHomePage: true, distDir: 'dist' }
+  {
+    showOnHomePage: true,
+    extraConfigurations: {
+      '/.babelrc': configurations.babelrc,
+    },
+    distDir: 'dist',
+  }
 );
