@@ -1,5 +1,6 @@
 import React from 'react';
-import { listen, dispatch, actions } from 'codesandbox-api';
+import { listen, actions } from 'codesandbox-api';
+import { dispatch } from 'app/components/Preview';
 import Tooltip from 'common/components/Tooltip';
 import FileIcon from 'react-icons/lib/md/insert-drive-file';
 

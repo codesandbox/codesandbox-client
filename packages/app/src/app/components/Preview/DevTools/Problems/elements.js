@@ -29,7 +29,6 @@ export const FileName = styled.span`
 
 export const Actions = styled.div`
   transition: 0.3s ease opacity;
-  opacity: 0;
   font-size: 1.125rem;
 
   color: white;
