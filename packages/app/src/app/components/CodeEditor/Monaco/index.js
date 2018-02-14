@@ -987,6 +987,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       lineHeight: (settings.lineHeight || 1.5) * settings.fontSize,
       folding: true,
       glyphMargin: false,
+      fixedOverflowWidgets: true,
     };
   };
 

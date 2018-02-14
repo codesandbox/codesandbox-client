@@ -8,7 +8,6 @@ export const Container = styled.div`
   background-color: ${props => props.theme.background2};
   font-size: 1.2rem;
   color: rgba(255, 255, 255, 0.7);
-  z-index: 40;
   margin: 0;
   height: 3rem;
   font-weight: 400;
