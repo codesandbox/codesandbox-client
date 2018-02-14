@@ -49,6 +49,12 @@ This embed is focused on being as light as possible:
 
 `https://codesandbox.io/embed/new?codemirror=1`
 
+Use this code to embed:
+
+`<iframe src="https://codesandbox.io/embed/new?codemirror=1" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>`
+
+That will give to a result like this:
+
 <iframe src="https://codesandbox.io/embed/new?codemirror=1" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 
 ### Code Example Embed
@@ -56,5 +62,11 @@ This embed is focused on being as light as possible:
 You can also use CodeSandbox to show code examples, with highlighted lines. This is only supported with the CodeMirror editor currently:
 
 `https://codesandbox.io/embed/new?codemirror=1&highlights=11,12,13,14`
+
+Use this code to embed:
+
+`<iframe src="https://codesandbox.io/embed/new?codemirror=1&highlights=11,12,13,14" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>`
+
+That will give to a result like this:
 
 <iframe src="https://codesandbox.io/embed/new?codemirror=1&highlights=11,12,13,14" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
