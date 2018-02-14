@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import ChevronLeft from 'react-icons/lib/md/chevron-left';
 import ExitZen from 'react-icons/lib/md/fullscreen-exit';
 import { withTooltip } from 'common/components/Tooltip';
