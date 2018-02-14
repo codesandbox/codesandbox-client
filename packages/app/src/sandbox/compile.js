@@ -130,6 +130,10 @@ async function compile({
   template,
   entry,
 }) {
+  dispatch({
+    type: 'start',
+  });
+
   const startTime = Date.now();
   try {
     clearErrorTransformers();

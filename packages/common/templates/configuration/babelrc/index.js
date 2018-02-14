@@ -35,16 +35,28 @@ const config: ConfigurationFile = {
       return JSON.stringify(
         {
           presets: [
-            // babel preset env starts with latest, then drops rules.
-            // We don't have env, so we just support latest
-            'latest',
+            [
+              'env',
+              {
+                modules: false,
+                targets: {
+                  browsers: ['> 1%', 'last 2 versions', 'not ie <= 8'],
+                },
+              },
+            ],
             'stage-2',
           ],
-          plugins: [
-            'transform-runtime',
-            'transform-vue-jsx',
-            'transform-decorators-legacy',
-          ],
+          plugins: ['transform-vue-jsx', 'transform-runtime'],
+          env: {
+            test: {
+              presets: ['env', 'stage-2'],
+              plugins: [
+                'transform-vue-jsx',
+                'transform-es2015-modules-commonjs',
+                'dynamic-import-node',
+              ],
+            },
+          },
         },
         null,
         2
