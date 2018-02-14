@@ -48,6 +48,7 @@ export type SerializedTranspiledModule = {
     [name: string]: ModuleSource,
   },
   isEntry: boolean,
+  isTestFile: boolean,
   childModules: Array<string>,
   /**
    * All extra modules emitted by the loader
@@ -181,6 +182,7 @@ export default class TranspiledModule {
     this.transpilationInitiators = new Set();
     this.initiators = new Set();
     this.isEntry = false;
+    this.isTestFile = false;
 
     this.hash = hashsum(`${this.module.path}:${this.query}`);
   }
@@ -776,6 +778,7 @@ export default class TranspiledModule {
     serializableObject.module = this.module;
     serializableObject.emittedAssets = this.emittedAssets;
     serializableObject.isEntry = this.isEntry;
+    serializableObject.isTestFile = this.isTestFile;
     serializableObject.source = this.source;
     serializableObject.childModules = this.childModules.map(m => m.getId());
     serializableObject.dependencies = Array.from(this.dependencies).map(m =>
@@ -812,6 +815,7 @@ export default class TranspiledModule {
     this.module = data.module;
     this.emittedAssets = data.emittedAssets;
     this.isEntry = data.isEntry;
+    this.isTestFile = data.isTestFile;
     this.source = data.source;
 
     data.dependencies.forEach((depId: string) => {
