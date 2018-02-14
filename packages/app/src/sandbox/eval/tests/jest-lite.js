@@ -146,7 +146,7 @@ export default class TestRunner {
   /* istanbul ignore next */
   async transpileTests() {
     return Promise.all(
-      this.tests.map(async t => {
+      (this.tests || []).map(async t => {
         const tModule = this.manager.getTranspiledModule(t, '');
         if (
           tModule.source &&
@@ -162,7 +162,7 @@ export default class TestRunner {
         try {
           await this.manager.transpileModules(t, true);
 
-          if (!t.source) {
+          if (!tModule.source) {
             this.ranTests.delete(t.path);
           }
 
@@ -209,6 +209,10 @@ export default class TestRunner {
     if (testModule) {
       await this.manager.transpileModules(testModule, true);
       this.manager.evaluateModule(testModule);
+    }
+
+    if (this.manager.modules) {
+      this.findTests(this.manager.modules);
     }
 
     // $FlowIssue

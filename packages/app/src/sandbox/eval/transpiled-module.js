@@ -607,7 +607,10 @@ export default class TranspiledModule {
           location.reload();
           return {};
         }
-      } else if (!this.hmrConfig || !this.hmrConfig.isDirty()) {
+      } else if (
+        !this.isTestFile &&
+        (!this.hmrConfig || !this.hmrConfig.isDirty())
+      ) {
         return this.compilation.exports;
       }
     }

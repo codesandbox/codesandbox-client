@@ -225,8 +225,17 @@ class Tests extends React.Component<Props, State> {
             immer(this.state, state => {
               const currentTest =
                 state.files[test.path].tests[testName.join('||||')];
-              currentTest.status = 'running';
-              currentTest.running = true;
+              if (!currentTest) {
+                state.files[test.path].tests[testName.join('||||')] = {
+                  status: 'running',
+                  running: true,
+                  testName,
+                  path: test.path,
+                };
+              } else {
+                currentTest.status = 'running';
+                currentTest.running = true;
+              }
             })
           );
           break;
@@ -239,10 +248,22 @@ class Tests extends React.Component<Props, State> {
             immer(this.state, state => {
               const existingTest =
                 state.files[test.path].tests[testName.join('||||')];
-              existingTest.status = test.status;
-              existingTest.running = false;
-              existingTest.errors = test.errors;
-              existingTest.duration = test.duration;
+
+              if (existingTest) {
+                existingTest.status = test.status;
+                existingTest.running = false;
+                existingTest.errors = test.errors;
+                existingTest.duration = test.duration;
+              } else {
+                state.files[test.path].tests[testName.join('||||')] = {
+                  status: test.status,
+                  running: false,
+                  errors: test.errors,
+                  duration: test.duration,
+                  testName,
+                  path: test.path,
+                };
+              }
             })
           );
           break;

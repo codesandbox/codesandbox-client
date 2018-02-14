@@ -107,6 +107,7 @@ export default class Manager {
     this.transpiledModulesByHash = {};
     this.configurations = {};
 
+    this.modules = modules;
     Object.keys(modules).forEach(k => this.addModule(modules[k]));
     this.testRunner = new TestRunner(this);
 
@@ -588,6 +589,8 @@ export default class Manager {
   updateData(modules: { [path: string]: Module }) {
     this.transpileJobs = {};
     this.hardReload = false;
+
+    this.modules = modules;
 
     const addedModules: Array<Module> = [];
     const updatedModules: Array<Module> = [];
