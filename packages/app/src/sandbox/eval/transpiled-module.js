@@ -741,6 +741,8 @@ export default class TranspiledModule {
     } catch (e) {
       e.tModule = e.tModule || transpiledModule;
 
+      this.resetCompilation();
+
       throw e;
     }
   }
