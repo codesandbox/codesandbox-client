@@ -15,7 +15,7 @@ const Author = types.model({
   name: types.maybe(types.string),
   receivedLikeCount: types.number,
   sandboxCount: types.number,
-  showcasedSandboxShortid: types.string,
+  showcasedSandboxShortid: types.maybe(types.string),
   subscriptionSince: types.maybe(types.string),
   username: types.string,
   viewCount: types.number,
