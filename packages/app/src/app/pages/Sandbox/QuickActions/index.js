@@ -17,7 +17,7 @@ import {
 
 class QuickActions extends React.Component {
   updateGenie = () => {
-    const keybindings = this.props.store.preferences.keybindings;
+    const keybindings = this.props.store.preferences.keybindings.get();
     const signals = this.props.signals;
 
     Object.keys(keybindings).forEach(bindingKey => {
@@ -74,7 +74,7 @@ class QuickActions extends React.Component {
       return null;
     }
 
-    const keybindings = this.props.store.preferences.keybindings;
+    const keybindings = this.props.store.preferences.keybindings.get();
 
     return (
       <Container>

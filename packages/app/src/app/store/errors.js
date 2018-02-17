@@ -1,4 +1,4 @@
-import { CerebralError } from 'cerebral';
+import { CerebralError } from '@cerebral/fluent';
 
 export class AuthenticationError extends CerebralError {
   constructor(message) {

@@ -1,4 +1,4 @@
-import { Provider } from 'cerebral';
+import { Provider } from '@cerebral/fluent';
 import store from 'store/dist/store.modern';
 
 export default Provider({

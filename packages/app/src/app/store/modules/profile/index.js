@@ -1,35 +1,32 @@
-import { Module } from 'cerebral';
-import model from './model';
+import { Module, Computed, Dictionary } from '@cerebral/fluent';
 import * as sequences from './sequences';
-import {
-  current,
-  isProfileCurrentUser,
-  showcasedSandbox,
-  currentSandboxes,
-  currentLikedSandboxes,
-} from './getters';
+import * as computed from './computed';
+import * as getters from './getters';
 
 export default Module({
-  model,
   state: {
-    profiles: {},
+    profiles: Dictionary({}),
     currentProfileId: null,
     notFound: false,
     isLoadingProfile: true,
-    sandboxes: {},
-    likedSandboxes: {},
+    sandboxes: Dictionary({}),
+    likedSandboxes: Dictionary({}),
     userSandboxes: [],
     currentSandboxesPage: 1,
     currentLikedSandboxesPage: 1,
     isLoadingSandboxes: false,
     sandboxToDeleteIndex: null,
-  },
-  getters: {
-    current,
-    isProfileCurrentUser,
-    showcasedSandbox,
-    currentSandboxes,
-    currentLikedSandboxes,
+    isProfileCurrentUser: Computed(computed.isProfileCurrentUser),
+    showcasedSandbox: Computed(computed.showcasedSandbox),
+    get current() {
+      return getters.current(this);
+    },
+    get currentSandboxes() {
+      return getters.currentSandboxes(this);
+    },
+    get currentLikedSandboxes() {
+      return getters.currentLikedSandboxes(this);
+    },
   },
   signals: {
     profileMounted: sequences.loadProfile,

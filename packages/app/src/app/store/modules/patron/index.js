@@ -1,17 +1,15 @@
-import { Module } from 'cerebral';
-import model from './model';
+import { Module } from '@cerebral/fluent';
 import * as sequences from './sequences';
-import { tier } from './getters';
+import * as getters from './getters';
 import { SubscriptionError } from './errors';
 
 export default Module({
-  model,
   state: {
     price: 10,
     isUpdatingSubscription: false,
-  },
-  getters: {
-    tier,
+    get tier() {
+      return getters.tier(this);
+    },
   },
   signals: {
     patronMounted: sequences.loadPatron,

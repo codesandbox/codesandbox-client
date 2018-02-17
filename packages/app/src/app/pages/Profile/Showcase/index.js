@@ -18,8 +18,8 @@ class Showcase extends React.Component {
 
   render() {
     const { store } = this.props;
-    const sandbox = store.profile.showcasedSandbox;
-    const isCurrentUser = store.profile.isProfileCurrentUser;
+    const sandbox = store.profile.showcasedSandbox.get();
+    const isCurrentUser = store.profile.isProfileCurrentUser.get();
 
     if (store.profile.isLoadingProfile) {
       return (

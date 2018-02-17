@@ -1,6 +1,5 @@
 import { fromPairs, toPairs, sortBy } from 'lodash';
 import slugify from 'common/utils/slugify';
-import { clone } from 'mobx-state-tree';
 
 function sortObjectByKeys(object) {
   return fromPairs(sortBy(toPairs(object), 0));
@@ -205,7 +204,7 @@ export function addCorrectionFromPreview({ state, props, utils }) {
 
 export function moveTab({ state, props }) {
   const tabs = state.get('editor.tabs');
-  const tab = clone(tabs[props.prevIndex]);
+  const tab = tabs[props.prevIndex];
 
   state.splice('editor.tabs', props.prevIndex, 1);
   state.splice('editor.tabs', props.nextIndex, 0, tab);

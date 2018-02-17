@@ -2,17 +2,17 @@ import { generateFileFromSandbox } from 'common/templates/configuration/package-
 import { parseConfigurations } from '../../utils/parse-configurations';
 import { mainModule as getMainModule } from '../../utils/main-module';
 
-export function currentSandbox() {
-  return this.sandboxes.get(this.currentId);
+export function currentSandbox(state) {
+  return state.sandboxes.get(state.currentId);
 }
 
-export function isAllModulesSynced() {
-  return !this.changedModuleShortids.length;
+export function isAllModulesSynced(state) {
+  return !state.changedModuleShortids.length;
 }
 
-export function currentModule() {
-  return this.currentSandbox.modules.find(
-    module => module.shortid === this.currentModuleShortid
+export function currentModule(state) {
+  return state.currentSandbox.modules.find(
+    module => module.shortid === state.currentModuleShortid
   );
 }
 
@@ -33,24 +33,24 @@ export function currentModule() {
 //   return modulesObject;
 // }
 
-export function parsedConfigurations() {
-  return parseConfigurations(this.currentSandbox);
+export function parsedConfigurations(state) {
+  return parseConfigurations(state.currentSandbox);
 }
 
-export function mainModule() {
-  return getMainModule(this.currentSandbox, this.parsedConfigurations);
+export function mainModule(state) {
+  return getMainModule(state.currentSandbox, state.parsedConfigurations);
 }
 
-export function currentPackageJSON() {
-  const module = this.currentSandbox.modules.find(
+export function currentPackageJSON(state) {
+  const module = state.currentSandbox.modules.find(
     m => m.directoryShortid == null && m.title === 'package.json'
   );
 
   return module;
 }
 
-export function currentPackageJSONCode() {
-  return this.currentPackageJSON
-    ? this.currentPackageJSON.code
-    : generateFileFromSandbox(this.currentSandbox);
+export function currentPackageJSONCode(state) {
+  return state.currentPackageJSON
+    ? state.currentPackageJSON.code
+    : generateFileFromSandbox(state.currentSandbox);
 }

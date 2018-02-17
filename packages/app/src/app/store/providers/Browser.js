@@ -1,4 +1,4 @@
-import { Provider } from 'cerebral';
+import { Provider } from '@cerebral/fluent';
 
 function getPopupOffset({ width, height }) {
   const wLeft = window.screenLeft ? window.screenLeft : window.screenX;

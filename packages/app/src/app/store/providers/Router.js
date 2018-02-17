@@ -1,4 +1,4 @@
-import { Provider } from 'cerebral';
+import { Provider } from '@cerebral/fluent';
 import { sandboxUrl } from 'common/utils/url-generator';
 import { getSandboxOptions } from 'common/url';
 import history from '../../utils/history';

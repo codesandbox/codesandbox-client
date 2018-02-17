@@ -1,5 +1,5 @@
 import store from 'store/dist/store.modern';
-import { Provider } from 'cerebral';
+import { Provider } from '@cerebral/fluent';
 
 const allowedKeys = {
   autoCompleteEnabled: 'settings.autocomplete',

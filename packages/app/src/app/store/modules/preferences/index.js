@@ -1,10 +1,8 @@
-import { Module } from 'cerebral';
-import model from './model';
+import { Module, Computed } from '@cerebral/fluent';
 import * as sequences from './sequences';
-import { keybindings } from './getters';
+import * as computed from './computed';
 
 export default Module({
-  model,
   state: {
     settings: {
       prettifyOnSaveEnabled: true,
@@ -47,9 +45,7 @@ export default Module({
     showEditor: true,
     showPreview: true,
     showDevtools: false,
-  },
-  getters: {
-    keybindings,
+    keybindings: Computed(computed.keybindings),
   },
   signals: {
     viewModeChanged: sequences.changeViewMode,

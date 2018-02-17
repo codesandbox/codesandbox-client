@@ -1,7 +1,6 @@
 import * as React from 'react';
 
 import { inject, observer } from 'mobx-react';
-import { clone } from 'mobx-state-tree';
 import { spring, Motion } from 'react-motion';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import Portal from 'app/components/Portal';
@@ -68,7 +67,7 @@ class Notifications extends React.Component {
             transitionLeaveTimeout={300}
           >
             {notifications.map((originalNotification, index) => {
-              const notification = clone(originalNotification);
+              const notification = originalNotification;
 
               return (
                 <Motion

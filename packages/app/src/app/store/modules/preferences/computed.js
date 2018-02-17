@@ -1,7 +1,7 @@
 import { KEYBINDINGS } from 'common/utils/keybindings';
 
-export function keybindings() {
-  const userBindings = this.settings.keybindings;
+export function keybindings(state) {
+  const userBindings = state.settings.keybindings;
   const userBindingsMap = userBindings.reduce(
     (bindings, binding) =>
       Object.assign(bindings, {
