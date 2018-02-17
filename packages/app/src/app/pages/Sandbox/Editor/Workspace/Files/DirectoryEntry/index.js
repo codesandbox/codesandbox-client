@@ -268,6 +268,256 @@ class DirectoryEntry extends React.Component {
             </div>
         );
     }
+<<<<<<< HEAD
+=======
+  }
+
+  resetState = () => this.setState({ creating: '' });
+
+  onCreateModuleClick = () => {
+    this.setState({
+      creating: 'module',
+      open: true,
+    });
+
+    return true;
+  };
+
+  createModule = (_, title) => {
+    const { shortid } = this.props;
+    this.props.signals.files.moduleCreated({
+      title,
+      directoryShortid: shortid,
+    });
+    this.resetState();
+  };
+
+  renameModule = (moduleShortid, title) => {
+    this.props.signals.files.moduleRenamed({ moduleShortid, title });
+  };
+
+  deleteModule = (shortid, title) => {
+    this.setState({
+      showDeleteModuleModal: true,
+      moduleToDeleteShortid: shortid,
+      moduleToDeleteTitle: title,
+    });
+  };
+
+  onCreateDirectoryClick = () => {
+    this.setState({
+      creating: 'directory',
+      open: true,
+    });
+    return true;
+  };
+
+  createDirectory = (_, title) => {
+    const { shortid } = this.props;
+    this.props.signals.files.directoryCreated({
+      title,
+      directoryShortid: shortid,
+    });
+    this.resetState();
+  };
+
+  renameDirectory = (directoryShortid, title) => {
+    this.props.signals.files.directoryRenamed({ title, directoryShortid });
+  };
+
+  closeModals = () => {
+    this.setState({
+      showDeleteDirectoryModal: false,
+      showDeleteModuleModal: false,
+    });
+  };
+
+  deleteDirectory = () => {
+    this.setState({
+      showDeleteDirectoryModal: true,
+    });
+  };
+
+  toggleOpen = () => this.setOpen(!this.state.open);
+  closeTree = () => this.setOpen(false);
+  setOpen = open => this.setState({ open });
+
+  validateModuleTitle = (_, title) => {
+    const { directories, modules, id } = this.props;
+    return validateTitle(id, title, [...directories, ...modules]);
+  };
+
+  validateDirectoryTitle = (id, title) => {
+    const { root, siblings } = this.props;
+    if (root) return false;
+
+    return validateTitle(id, title, siblings);
+  };
+
+  getChildren = () => {
+    const { modules, directories, shortid } = this.props;
+
+    return [
+      ...modules.filter(m => m.directoryShortid === shortid),
+      ...directories.filter(d => d.directoryShortid === shortid),
+    ];
+  };
+
+  setCurrentModule = moduleId => {
+    this.props.signals.editor.moduleSelected({ id: moduleId });
+  };
+
+  markTabsNotDirty = () => {
+    this.props.signals.editor.moduleDoubleClicked();
+  };
+
+  render() {
+    const {
+      id,
+      shortid,
+      sandboxId,
+      sandboxTemplate,
+      modules,
+      directories,
+      title,
+      openMenu,
+      currentModuleId,
+      connectDropTarget, // eslint-disable-line
+      isOver, // eslint-disable-line
+      isInProjectView,
+      depth = 0,
+      root,
+      mainModuleId,
+      errors,
+      corrections,
+      changedModuleShortids,
+    } = this.props;
+    const { creating, open } = this.state;
+
+    return connectDropTarget(
+      <div style={{ position: 'relative' }}>
+        <Overlay isOver={isOver} />
+        {!root && (
+          <EntryContainer>
+            <Entry
+              id={id}
+              shortid={shortid}
+              title={title}
+              depth={depth}
+              type={open ? 'directory-open' : 'directory'}
+              root={root}
+              isOpen={open}
+              onClick={this.toggleOpen}
+              renameValidator={this.validateDirectoryTitle}
+              rename={!root && this.renameDirectory}
+              onCreateModuleClick={this.onCreateModuleClick}
+              onCreateDirectoryClick={this.onCreateDirectoryClick}
+              deleteEntry={!root && this.deleteDirectory}
+              hasChildren={this.getChildren().length > 0}
+              openMenu={openMenu}
+              closeTree={this.closeTree}
+            />
+            <Modal
+              isOpen={this.state.showDeleteDirectoryModal}
+              onClose={this.closeModals}
+              width={400}
+            >
+              <Alert
+                title="Delete Directory"
+                body={
+                  <span>
+                    Are you sure you want to delete <b>{title}</b>?
+                    <br />
+                    The directory will be permanently removed.
+                  </span>
+                }
+                onCancel={this.closeModals}
+                onDelete={() => {
+                  this.setState({
+                    showDeleteDirectoryModal: false,
+                  });
+                  this.props.signals.files.directoryDeleted({
+                    moduleShortid: shortid,
+                  });
+                }}
+              />
+            </Modal>
+          </EntryContainer>
+        )}
+        <Opener open={open}>
+          {creating === 'directory' && (
+            <Entry
+              id=""
+              title=""
+              state="editing"
+              type="directory"
+              depth={depth + 1}
+              renameValidator={this.validateModuleTitle}
+              rename={this.createDirectory}
+              onRenameCancel={this.resetState}
+            />
+          )}
+          <DirectoryChildren
+            modules={modules}
+            directories={directories}
+            depth={depth}
+            renameModule={this.renameModule}
+            openMenu={openMenu}
+            sandboxId={sandboxId}
+            mainModuleId={mainModuleId}
+            sandboxTemplate={sandboxTemplate}
+            parentShortid={shortid}
+            deleteEntry={this.deleteModule}
+            setCurrentModule={this.setCurrentModule}
+            currentModuleId={currentModuleId}
+            isInProjectView={isInProjectView}
+            markTabsNotDirty={this.markTabsNotDirty}
+            errors={errors}
+            corrections={corrections}
+            changedModuleShortids={changedModuleShortids}
+          />
+          <Modal
+            isOpen={this.state.showDeleteModuleModal}
+            onClose={this.closeModals}
+            width={400}
+          >
+            <Alert
+              title="Delete File"
+              body={
+                <span>
+                  Are you sure you want to delete{' '}
+                  <b>{this.state.moduleToDeleteTitle}</b>?
+                  <br />
+                  The file will be permanently removed.
+                </span>
+              }
+              onCancel={this.closeModals}
+              onDelete={() => {
+                this.setState({
+                  showDeleteModuleModal: false,
+                });
+                this.props.signals.files.moduleDeleted({
+                  moduleShortid: this.state.moduleToDeleteShortid,
+                });
+              }}
+            />
+          </Modal>
+          {creating === 'module' && (
+            <Entry
+              id=""
+              title=""
+              state="editing"
+              depth={depth + 1}
+              renameValidator={this.validateModuleTitle}
+              rename={this.createModule}
+              onRenameCancel={this.resetState}
+            />
+          )}
+        </Opener>
+      </div>
+    );
+  }
+>>>>>>> Fixed bug related to changedModuleIds
 }
 
 const entryTarget = {

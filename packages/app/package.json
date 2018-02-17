@@ -244,6 +244,7 @@
       "\\.html$": "<rootDir>/__mocks__/styleMock.js",
       "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js"
     },
+<<<<<<< HEAD
     "devDependencies": {
         "autoprefixer": "^6.7.7",
 >>>>>>> Initial refactor
@@ -517,5 +518,10 @@
         "transform": {
             "^.+\\.js$": "babel-jest"
         }
+=======
+    "transform": {
+      "^.+\\.js$": "babel-jest"
+>>>>>>> Fixed bug related to changedModuleIds
     }
+  }
 }

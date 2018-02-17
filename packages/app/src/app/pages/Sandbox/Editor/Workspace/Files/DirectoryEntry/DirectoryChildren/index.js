@@ -11,6 +11,7 @@ class DirectoryChildren extends React.Component {
         return !!validateTitle(id, title, [ ...directories, ...modules ]);
     };
 
+<<<<<<< HEAD
     render() {
         const {
             depth = 0,
@@ -26,6 +27,58 @@ class DirectoryChildren extends React.Component {
         const { id: sandboxId, modules, directories, template: sandboxTemplate } = store.editor.currentSandbox;
         const { mainModule, currentModuleShortid, errors, corrections } = store.editor;
         const mainModuleId = mainModule.id;
+=======
+  render() {
+    const {
+      depth = 0,
+      renameModule,
+      openMenu,
+      setCurrentModule,
+      directories,
+      parentShortid,
+      sandboxId,
+      mainModuleId,
+      sandboxTemplate,
+      modules,
+      deleteEntry,
+      currentModuleId,
+      isInProjectView,
+      markTabsNotDirty,
+      errors,
+      corrections,
+      changedModuleShortids,
+    } = this.props;
+
+    return (
+      <div>
+        {directories
+          .filter(x => x.directoryShortid === parentShortid)
+          .map(dir => (
+            <DirectoryEntry
+              key={dir.id}
+              siblings={[...directories, ...modules]}
+              depth={depth + 1}
+              id={dir.id}
+              shortid={dir.shortid}
+              title={dir.title}
+              sandboxId={sandboxId}
+              sandboxTemplate={sandboxTemplate}
+              mainModuleId={mainModuleId}
+              modules={modules}
+              directories={directories}
+              currentModuleId={currentModuleId}
+              isInProjectView={isInProjectView}
+              markTabsNotDirty={markTabsNotDirty}
+              errors={errors}
+              corrections={corrections}
+              changedModuleShortids={changedModuleShortids}
+            />
+          ))}
+        {modules.filter(x => x.directoryShortid === parentShortid).map(m => {
+          const isActive = m.id === currentModuleId;
+          const mainModule = m.id === mainModuleId;
+          const type = getType(m.title, m.code);
+>>>>>>> Fixed bug related to changedModuleIds
 
 <<<<<<< HEAD
         return (
@@ -82,9 +135,7 @@ class DirectoryChildren extends React.Component {
               rename={mainModule ? undefined : renameModule}
               openMenu={openMenu}
               deleteEntry={mainModule ? undefined : deleteEntry}
-              isNotSynced={
-                false /* !this.props.store.editor.isModuleSynced(m.shortid) */
-              }
+              isNotSynced={changedModuleShortids.indexOf(m.shortid) >= 0}
               renameValidator={this.validateTitle}
               setCurrentModule={setCurrentModule}
               isInProjectView={isInProjectView}
