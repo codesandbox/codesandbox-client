@@ -27,6 +27,7 @@ class DirectoryChildren extends React.Component {
         const { mainModule, currentModuleShortid, errors, corrections } = store.editor;
         const mainModuleId = mainModule.id;
 
+<<<<<<< HEAD
         return (
             <div>
                 {sortBy(directories, 'title')
@@ -65,6 +66,38 @@ class DirectoryChildren extends React.Component {
             </div>
         );
     }
+=======
+          const hasError =
+            m && errors.filter(error => error.moduleId === m.id).length;
+
+          return (
+            <Entry
+              key={m.id}
+              id={m.id}
+              shortid={m.shortid}
+              title={m.title}
+              depth={depth + 1}
+              active={isActive}
+              type={type || 'function'}
+              rename={mainModule ? undefined : renameModule}
+              openMenu={openMenu}
+              deleteEntry={mainModule ? undefined : deleteEntry}
+              isNotSynced={
+                false /*!this.props.store.editor.isModuleSynced(m.shortid)*/
+              }
+              renameValidator={this.validateTitle}
+              setCurrentModule={setCurrentModule}
+              isInProjectView={isInProjectView}
+              isMainModule={mainModule}
+              moduleHasError={hasError}
+              markTabsNotDirty={markTabsNotDirty}
+            />
+          );
+        })}
+      </div>
+    );
+  }
+>>>>>>> Initial refactor
 }
 
 export default inject('store')(observer(DirectoryChildren));
