@@ -138,6 +138,15 @@ export function forkSandbox({ state, api }) {
     .then(data => ({ forkedSandbox: data }));
 }
 
+export function setForkedSandbox({ props, state }) {
+  state.editor.sandboxes.set(
+    props.sandbox.id,
+    Object.assign({}, props.sandbox, {
+      npmDependencies: Dictionary(props.sandbox.npmDependencies),
+    })
+  );
+}
+
 export function moveModuleContent({ props, state }) {
   const currentSandbox = state.get('editor.currentSandbox');
 

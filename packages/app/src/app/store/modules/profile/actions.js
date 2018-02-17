@@ -1,3 +1,5 @@
+import { Dictionary } from '@cerebral/fluent';
+
 export function getUser({ api, props }) {
   return api.get(`/users/${props.username}`).then(data => ({ profile: data }));
 }
@@ -52,9 +54,12 @@ export function setSandboxes({ state, props }) {
   const username = state.get('profile.current.username');
 
   if (!state.get(`profile.sandboxes.${username}`)) {
-    state.set(`profile.sandboxes.${username}`, {
-      [props.page]: props.sandboxes,
-    });
+    state.set(
+      `profile.sandboxes.${username}`,
+      Dictionary({
+        [props.page]: props.sandboxes,
+      })
+    );
   } else {
     state.set(`profile.sandboxes.${username}.${props.page}`, props.sandboxes);
   }
@@ -74,9 +79,12 @@ export function setLikedSandboxes({ state, props }) {
   const username = state.get('profile.current.username');
 
   if (!state.get(`profile.likedSandboxes.${username}`)) {
-    state.set(`profile.likedSandboxes.${username}`, {
-      [props.page]: props.sandboxes,
-    });
+    state.set(
+      `profile.likedSandboxes.${username}`,
+      Dictionary({
+        [props.page]: props.sandboxes,
+      })
+    );
   } else {
     state.set(
       `profile.likedSandboxes.${username}.${props.page}`,
