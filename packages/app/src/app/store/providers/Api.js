@@ -1,7 +1,7 @@
 import { values } from 'lodash';
 
 import { camelizeKeys, decamelizeKeys } from 'humps';
-import { Provider } from 'cerebral';
+import { Provider } from '@cerebral/fluent';
 import sendError from 'app/utils/error';
 import { addNotification } from '../factories';
 

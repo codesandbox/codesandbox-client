@@ -1,22 +1,11 @@
-import { Module } from 'cerebral';
-import model from './model';
+import { Module, Dictionary } from '@cerebral/fluent';
 import * as sequences from './sequences';
-import {
-  isAllModulesSynced,
-  currentSandbox,
-  currentModule,
-  mainModule,
-  currentPackageJSON,
-  currentPackageJSONCode,
-  parsedConfigurations,
-} from './getters';
-import { isModuleSynced } from './computed';
+import * as getters from './getters';
 import { loadSandbox } from '../../sequences';
 
 export default Module({
-  model,
   state: {
-    sandboxes: {},
+    sandboxes: Dictionary({}),
     currentId: null,
     isForkingSandbox: false,
     currentModuleShortid: null,
@@ -45,18 +34,27 @@ export default Module({
       y: 0,
       content: 'browser',
     },
-  },
-  getters: {
-    isAllModulesSynced,
-    currentSandbox,
-    currentModule,
-    mainModule,
-    currentPackageJSON,
-    currentPackageJSONCode,
-    parsedConfigurations,
-  },
-  computed: {
-    isModuleSynced,
+    get isAllModulesSynced() {
+      return getters.isAllModulesSynced(this);
+    },
+    get currentSandbox() {
+      return getters.currentSandbox(this);
+    },
+    get currentModule() {
+      return getters.currentModule(this);
+    },
+    get mainModule() {
+      return getters.mainModule(this);
+    },
+    get currentPackageJSON() {
+      return getters.currentPackageJSON(this);
+    },
+    get currentPackageJSONCode() {
+      return getters.currentPackageJSONCode(this);
+    },
+    get parsedConfigurations() {
+      return getters.parsedConfigurations(this);
+    },
   },
   signals: {
     addNpmDependency: sequences.addNpmDependency,

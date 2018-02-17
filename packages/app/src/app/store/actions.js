@@ -1,9 +1,17 @@
 import axios from 'axios';
-
+import { Dictionary } from '@cerebral/fluent';
 import { generateFileFromSandbox } from 'common/templates/configuration/package-json';
-
 import { parseConfigurations } from './utils/parse-configurations';
 import { mainModule } from './utils/main-module';
+
+export function addSandbox({ props, state }) {
+  state.editor.sandboxes.set(
+    props.sandbox.id,
+    Object.assign({}, props.sandbox, {
+      npmDependencies: Dictionary(props.sandbox.npmDependencies),
+    })
+  );
+}
 
 export function getSandbox({ props, api, path }) {
   return api

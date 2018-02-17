@@ -1,4 +1,4 @@
-import { Controller } from '@cerebral/mobx-state-tree';
+import { Controller } from '@cerebral/fluent';
 import store from './store';
 
 let Devtools = null;
@@ -8,6 +8,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 export default Controller(store, {
+  useLegacyStateApi: true,
   devtools:
     Devtools &&
     Devtools({

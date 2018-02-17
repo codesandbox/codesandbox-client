@@ -1,4 +1,4 @@
-import { Provider } from 'cerebral';
+import { Provider } from '@cerebral/fluent';
 import { KEYBINDINGS, normalizeKey } from 'common/utils/keybindings';
 
 const state = {

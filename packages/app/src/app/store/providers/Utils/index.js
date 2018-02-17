@@ -1,4 +1,4 @@
-import { Provider } from 'cerebral';
+import { Provider } from '@cerebral/fluent';
 import { resolveModule } from 'common/sandbox/modules';
 import { isEqual } from 'lodash';
 import prettify from 'app/utils/prettify';

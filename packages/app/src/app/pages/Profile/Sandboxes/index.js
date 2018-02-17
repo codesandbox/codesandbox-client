@@ -64,7 +64,7 @@ class Sandboxes extends React.Component {
 
   render() {
     const { store, source, page, baseUrl } = this.props;
-    const isProfileCurrentUser = store.profile.isProfileCurrentUser;
+    const isProfileCurrentUser = store.profile.isProfileCurrentUser.get();
     const isLoadingSandboxes = store.profile.isLoadingSandboxes;
     const sandboxes = store.profile[source];
 

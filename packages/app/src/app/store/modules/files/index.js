@@ -1,8 +1,7 @@
-import { Module } from 'cerebral';
+import { Module } from '@cerebral/fluent';
 import * as sequences from './sequences';
 
 export default Module({
-  model: {},
   state: {},
   signals: {
     moduleCreated: sequences.createModule,

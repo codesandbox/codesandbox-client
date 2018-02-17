@@ -9,7 +9,8 @@ function SelectSandboxModal({ store, signals }) {
     return <Padding>Loading sandboxes...</Padding>;
 
   const currentShowcasedSandboxId =
-    store.profile.showcasedSandbox && store.profile.showcasedSandbox.id;
+    store.profile.showcasedSandbox.get() &&
+    store.profile.showcasedSandbox.get().id;
 
   return (
     <div>

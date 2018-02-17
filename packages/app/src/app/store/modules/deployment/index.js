@@ -1,9 +1,7 @@
-import { Module } from 'cerebral';
-import model from './model';
+import { Module } from '@cerebral/fluent';
 import * as sequences from './sequences';
 
 export default Module({
-  model,
   state: {
     deploying: false,
     url: null,
