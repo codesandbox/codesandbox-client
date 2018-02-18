@@ -25,7 +25,7 @@ const enableEmmet = (editor, monaco) => {
     label: 'Emmet: Expand abbreviation',
 
     // An optional array of keybindings for the action.
-    keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.F10], // eslint-disable-line no-bitwise
+    keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_E], // eslint-disable-line no-bitwise
 
     // A precondition for this action.
     precondition: null,
