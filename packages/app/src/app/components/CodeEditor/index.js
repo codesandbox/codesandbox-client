@@ -131,7 +131,11 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
         style={{
           height: props.height || '100%',
           width: props.width || '100%',
-          position: 'relative',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
         }}
       >
         {config &&
