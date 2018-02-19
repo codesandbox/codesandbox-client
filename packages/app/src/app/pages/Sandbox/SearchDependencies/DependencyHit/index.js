@@ -60,9 +60,13 @@ export default class DependencyHit extends React.PureComponent {
       }
     }
 
-    const versions = Object.keys(hit.versions).sort((a: string, b: string) =>
-      compareVersions(b, a)
-    );
+    const versions = Object.keys(hit.versions).sort((a: string, b: string) => {
+      try {
+        return compareVersions(b, a);
+      } catch (e) {
+        return 0;
+      }
+    });
 
     return (
       <Container highlighted={highlighted} onClick={onClick}>
