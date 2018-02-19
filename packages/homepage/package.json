@@ -39,11 +39,7 @@
     "test": "echo \"Todo: no test specified\" && exit 0"
   },
   "devDependencies": {
-    "eslint-config-prettier": "^2.1.1",
-    "eslint-import-resolver-webpack": "^0.8.1",
-    "eslint-plugin-flowtype": "^2.34.0",
     "gatsby-cli": "^1.1.20",
-    "lerna": "^2.5.1",
     "prettier": "^1.8.2"
   },
   "browserslist": [
