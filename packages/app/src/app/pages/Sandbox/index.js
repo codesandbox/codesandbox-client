@@ -64,7 +64,7 @@ class SandboxPage extends React.Component {
 
     if (store.editor.notFound) {
       return (
-        <Centered horizontal vertical>
+        <Centered style={{ height: '100vh' }} horizontal vertical>
           <Title>
             We could not find the Sandbox you{"'"}re looking for...
             <br />
@@ -77,7 +77,7 @@ class SandboxPage extends React.Component {
 
     if (store.editor.error) {
       return (
-        <Centered horizontal vertical>
+        <Centered style={{ height: '100vh' }} horizontal vertical>
           <Title>An error occured when fetching the sandbox:</Title>
           <SubTitle>{store.editor.error}</SubTitle>
           <br />

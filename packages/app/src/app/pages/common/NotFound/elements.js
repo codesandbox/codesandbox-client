@@ -1,11 +1,6 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
   margin: auto;
   display: flex;
   align-items: center;
@@ -13,6 +8,7 @@ export const Container = styled.div`
   flex-direction: column;
   font-size: 1.5rem;
   color: white;
+  height: 100vh;
 `;
 
 export const Title = styled.h1`
