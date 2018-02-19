@@ -57,6 +57,7 @@ export const getSandboxOptions = (url: string) => {
   result.enableEslint = url.includes('eslint=1');
   result.forceRefresh = url.includes('forcerefresh=1');
   result.expandDevTools = url.includes('expanddevtools=1');
+  result.verticalMode = url.includes('verticallayout=1');
   result.runOnClick = url.includes('runonclick=0')
     ? false
     : url.includes('runonclick=1') ||

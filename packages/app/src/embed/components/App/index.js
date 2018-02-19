@@ -42,6 +42,7 @@ type State = {
   forceRefresh: boolean,
   expandDevTools: boolean,
   runOnClick: boolean,
+  verticalMode: boolean,
   highlightedLines: Array<number>,
 };
 
@@ -65,6 +66,7 @@ export default class App extends React.PureComponent<{}, State> {
       forceRefresh,
       expandDevTools,
       runOnClick,
+      verticalMode,
     } = getSandboxOptions(document.location.href);
 
     this.state = {
@@ -85,6 +87,7 @@ export default class App extends React.PureComponent<{}, State> {
       forceRefresh,
       expandDevTools,
       runOnClick,
+      verticalMode,
       highlightedLines: highlightedLines || [],
     };
   }
@@ -177,7 +180,13 @@ export default class App extends React.PureComponent<{}, State> {
       );
     }
 
-    const { showEditor, showPreview, isInProjectView, runOnClick } = this.state;
+    const {
+      showEditor,
+      verticalMode,
+      showPreview,
+      isInProjectView,
+      runOnClick,
+    } = this.state;
 
     return (
       <ThemeProvider
@@ -214,6 +223,7 @@ export default class App extends React.PureComponent<{}, State> {
             forceRefresh={this.state.forceRefresh}
             expandDevTools={this.state.expandDevTools}
             runOnClick={runOnClick}
+            verticalMode={verticalMode}
           />
         </Container>
       </ThemeProvider>

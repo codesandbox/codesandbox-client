@@ -6,21 +6,30 @@ description: "It's possible to embed a sandbox on Medium and other websites."
 
 ## What is an Embed?
 
-CodeSandbox has a separate application for the embed. This application is specifically built to be as small as possible. If you replace `s` in the URL of a sandbox to `embed` you have the embed version of the sandbox. Example: https://codesandbox.io/**s**/new => https://codesandbox.io/**embed**/new. Notice that the embed doesn't have all features of the full editor.
+CodeSandbox has a separate application for the embed. This application is
+specifically built to be as small as possible. If you replace `s` in the URL of
+a sandbox to `embed` you have the embed version of the sandbox. Example:
+https://codesandbox.io/**s**/new => https://codesandbox.io/**embed**/new. Notice
+that the embed doesn't have all features of the full editor.
 
 ## Generate a URL
 
-You can generate a URL clicking 'Share' in the header and selecting the options you want to have enabled.
+You can generate a URL clicking 'Share' in the header and selecting the options
+you want to have enabled.
 
 ![Share Button](./images/share-button.png)
 
 ## Embed on Medium
 
-You can easily embed on Medium by taking your sandbox URL (like https://codesandbox.io/s/new) and pasting it in a Medium article. It should automatically become an embed after you press enter.
+You can easily embed on Medium by taking your sandbox URL (like
+https://codesandbox.io/s/new) and pasting it in a Medium article. It should
+automatically become an embed after you press enter.
 
 ## Embed Options
 
-The options shown in the embed modal are not all options available. We need a new UI for the share model to reflect these options, in the meantime you can find them here.
+The options shown in the embed modal are not all options available. We need a
+new UI for the share model to reflect these options, in the meantime you can
+find them here.
 
 | Option           | Description                                                                   | Values                               | Default                              |
 | ---------------- | ----------------------------------------------------------------------------- | ------------------------------------ | ------------------------------------ |
@@ -38,6 +47,7 @@ The options shown in the embed modal are not all options available. We need a ne
 | `fontsize`       | Font size of editor                                                           | number (in px)                       | `14`                                 |
 | `highlights`     | Which lines to highlight (only works in CodeMirror)                           | comma separated list of line numbers |                                      |
 | `editorsize`     | Size in percentage of editor.                                                 | number                               | `50`                                 |
+| `verticallayout` | Whether to show the editor and preview vertically.                            | `0`/`1`                              | `0`                                  |
 
 ## Example Embeds
 
@@ -51,7 +61,10 @@ This embed is focused on being as light as possible:
 
 Use this code to embed:
 
-`<iframe src="https://codesandbox.io/embed/new?codemirror=1" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>`
+`<iframe src="https://codesandbox.io/embed/new?codemirror=1" style="width:100%;
+height:500px; border:0; border-radius: 4px; overflow:hidden;"
+sandbox="allow-modals allow-forms allow-popups allow-scripts
+allow-same-origin"></iframe>`
 
 That will give to a result like this:
 
@@ -59,13 +72,18 @@ That will give to a result like this:
 
 ### Code Example Embed
 
-You can also use CodeSandbox to show code examples, with highlighted lines. This is only supported with the CodeMirror editor currently:
+You can also use CodeSandbox to show code examples, with highlighted lines. This
+is only supported with the CodeMirror editor currently:
 
 `https://codesandbox.io/embed/new?codemirror=1&highlights=11,12,13,14`
 
 Use this code to embed:
 
-`<iframe src="https://codesandbox.io/embed/new?codemirror=1&highlights=11,12,13,14" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>`
+`<iframe
+src="https://codesandbox.io/embed/new?codemirror=1&highlights=11,12,13,14"
+style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;"
+sandbox="allow-modals allow-forms allow-popups allow-scripts
+allow-same-origin"></iframe>`
 
 That will give to a result like this:
 

@@ -45,6 +45,7 @@ type Props = {
   forceRefresh: boolean,
   expandDevTools: boolean,
   runOnClick: boolean,
+  verticalMode: boolean,
 };
 
 type State = {
@@ -294,6 +295,7 @@ export default class Content extends React.PureComponent<Props, State> {
       isInProjectView,
       editorSize,
       expandDevTools,
+      verticalMode,
     } = this.props;
 
     const mainModule = isInProjectView
@@ -305,12 +307,13 @@ export default class Content extends React.PureComponent<Props, State> {
     const { RunOnClick } = this;
 
     return (
-      <Container>
+      <Container style={{ flexDirection: verticalMode ? 'column' : 'row' }}>
         {showEditor && (
           <Split
             show={showEditor}
             only={showEditor && !showPreview}
             size={editorSize}
+            verticalMode={verticalMode}
           >
             <Tabs>
               {this.state.tabs.map((module, i) => {
@@ -365,6 +368,7 @@ export default class Content extends React.PureComponent<Props, State> {
             show={showPreview}
             only={showPreview && !showEditor}
             size={100 - editorSize}
+            verticalMode={verticalMode}
           >
             {!this.state.running ? (
               <RunOnClick />
