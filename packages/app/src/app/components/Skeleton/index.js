@@ -9,7 +9,7 @@ import { Header } from './elements';
 
 function Skeleton({ titles }) {
   return (
-    <Fullscreen>
+    <Fullscreen style={{ height: '100vh' }}>
       <Header />
       <Centered horizontal vertical>
         <Title delay={titles[0].delay}>{titles[0].content}</Title>

@@ -346,7 +346,11 @@ export default class Content extends React.PureComponent<Props, State> {
               })}
             </Tabs>
             <div
-              style={{ position: 'relative', width: '100%', height: '100%' }}
+              style={{
+                position: 'relative',
+                width: '100%',
+                height: '100%',
+              }}
             >
               <CodeEditor
                 onInitialized={this.onCodeEditorInitialized}

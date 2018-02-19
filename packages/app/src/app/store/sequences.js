@@ -283,7 +283,7 @@ export const loadSandbox = factories.withLoadApp([
         notFound: set(state`editor.notFound`, true),
         error: set(state`editor.error`, props`error.message`),
       },
-      set(state`editor.isLoading`, false),
     ],
   },
+  set(state`editor.isLoading`, false),
 ]);
