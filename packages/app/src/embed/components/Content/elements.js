@@ -27,8 +27,17 @@ export const Split = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
-  width: ${props => (props.show ? `${props.size}%` : '0px')};
-  max-width: ${props => (props.only ? '100%' : `${props.size}%`)};
-  min-width: ${props => (props.only ? '100%' : `${props.size}%`)};
+  ${props =>
+    (props.verticalMode ? 'height: ' : 'width: ') +
+    (props.show ? `${props.size}%` : '0px')};
+
+  ${props =>
+    (props.verticalMode ? 'max-height: ' : 'max-width: ') +
+    (props.only ? '100%' : `${props.size}%`)};
+
+  ${props =>
+    (props.verticalMode ? 'min-height: ' : 'min-width: ') +
+    (props.only ? '100%' : `${props.size}%`)};
+
   height: 100%;
 `;
