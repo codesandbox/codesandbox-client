@@ -68,6 +68,9 @@ function ContentSplit({ signals, store, match }) {
                   : 'hidden',
                 maxWidth: store.workspace.openedWorkspaceItem ? 'inherit' : 0,
               }}
+              pane2Style={{
+                height: '100%',
+              }}
             >
               {store.workspace.openedWorkspaceItem && <Workspace />}
               <Content match={match} />
