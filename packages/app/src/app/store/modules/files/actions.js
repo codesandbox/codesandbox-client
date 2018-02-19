@@ -12,10 +12,7 @@ export function whenModuleIsSelected({ state, props, path }) {
 
 export function saveNewDirectoryDirectoryShortid({ api, state, props, path }) {
   const sandboxId = state.get('editor.currentId');
-  const sandbox = state.get('editor.currentSandbox');
-  const shortid = sandbox.directories.find(
-    directory => directory.id === props.directoryId
-  ).shortid;
+  const shortid = props.shortid;
 
   return api
     .put(`/sandboxes/${sandboxId}/directories/${shortid}`, {
@@ -27,9 +24,7 @@ export function saveNewDirectoryDirectoryShortid({ api, state, props, path }) {
 
 export function saveNewModuleDirectoryShortid({ api, state, props, path }) {
   const sandboxId = state.get('editor.currentId');
-  const sandbox = state.get('editor.currentSandbox');
-  const shortid = sandbox.modules.find(module => module.id === props.moduleId)
-    .shortid;
+  const shortid = props.moduleShortid;
 
   return api
     .put(`/sandboxes/${sandboxId}/modules/${shortid}`, {
@@ -124,9 +119,9 @@ export function removeOptimisticDirectory({ state, props }) {
 export function moveDirectoryToDirectory({ state, props }) {
   const sandbox = state.get('editor.currentSandbox');
   const directoryIndex = sandbox.directories.findIndex(
-    directory => directory.id === props.directoryId
+    directory => directory.shortid === props.shortid
   );
-  const currentDirectortyShortid = state.get(
+  const currentDirectoryShortid = state.get(
     `editor.sandboxes.${sandbox.id}.directories.${
       directoryIndex
     }.directoryShortid`
@@ -139,39 +134,39 @@ export function moveDirectoryToDirectory({ state, props }) {
     props.directoryShortid
   );
 
-  return { currentDirectortyShortid };
+  return { currentDirectoryShortid };
 }
 
 export function revertMoveDirectoryToDirectory({ state, props }) {
   const sandbox = state.get('editor.currentSandbox');
   const directoryIndex = sandbox.directories.findIndex(
-    directory => directory.id === props.directoryId
+    directory => directory.shortid === props.shortid
   );
 
   state.set(
     `editor.sandboxes.${sandbox.id}.directories.${
       directoryIndex
     }.directoryShortid`,
-    props.currentDirectortyShortid
+    props.currentDirectoryShortid
   );
 }
 
 export function revertMoveModuleToDirectory({ state, props }) {
   const sandbox = state.get('editor.currentSandbox');
   const moduleIndex = sandbox.modules.findIndex(
-    module => module.id === props.moduleId
+    module => module.shortid === props.moduleShortid
   );
 
   state.set(
     `editor.sandboxes.${sandbox.id}.modules.${moduleIndex}.directoryShortid`,
-    props.currentDirectortyShortid
+    props.currentDirectoryShortid
   );
 }
 
 export function moveModuleToDirectory({ state, props }) {
   const sandbox = state.get('editor.currentSandbox');
   const moduleIndex = sandbox.modules.findIndex(
-    module => module.id === props.moduleId
+    module => module.shortid === props.moduleShortid
   );
 
   state.set(

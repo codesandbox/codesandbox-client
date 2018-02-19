@@ -174,7 +174,11 @@ const entrySource = {
   canDrag: props => !!props.id && !props.isMainModule,
   beginDrag: props => {
     if (props.closeTree) props.closeTree();
-    return { id: props.id, directory: props.type === 'directory' };
+    return {
+      id: props.id,
+      shortid: props.shortid,
+      directory: props.type === 'directory' || props.type === 'directory-open',
+    };
   },
 };
 
