@@ -20,7 +20,9 @@ const OpenedTabs = ({ store, signals }) => {
     moduleObject[m.shortid] = m;
   });
 
-  const openModules = store.editor.tabs.map(t => moduleObject[t.moduleShortid]);
+  const openModules = store.editor.tabs
+    .map(t => moduleObject[t.moduleShortid])
+    .filter(x => x);
 
   return (
     <WorkspaceItem
