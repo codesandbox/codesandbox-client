@@ -34,7 +34,10 @@
     ]
   },
   "workspaces": [
-    "packages/**"
+    "packages/homepage",
+    "packages/app",
+    "packages/common",
+    "packages/codesandbox-api"
   ],
   "devDependencies": {
     "all-contributors-cli": "^4.3.0",
