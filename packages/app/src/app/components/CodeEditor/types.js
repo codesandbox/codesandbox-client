@@ -30,7 +30,11 @@ export interface Editor {
   updateModules?: () => any;
   changeSettings?: (settings: Settings) => any;
   changeDependencies?: (deps: Object) => any;
-  changeModule?: (module: Module, errors?: Array<ModuleError>) => any;
+  changeModule?: (
+    module: Module,
+    errors?: Array<ModuleError>,
+    corrections?: Array<ModuleCorrection>
+  ) => any;
   changeCode?: (code: string) => any;
 
   currentModule?: Module;

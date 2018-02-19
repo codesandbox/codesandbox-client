@@ -236,7 +236,11 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     }
   };
 
-  changeModule = (newModule: Module, errors?: Array<ModuleError>) => {
+  changeModule = (
+    newModule: Module,
+    errors?: Array<ModuleError>,
+    corrections?: Array<ModuleCorrection>
+  ) => {
     const oldModule = this.currentModule;
 
     this.currentModule = newModule;
@@ -249,7 +253,13 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         this.changeCode(newModule.code || '');
       }
 
-      if (errors) this.setErrors(errors);
+      if (errors) {
+        this.setErrors(errors);
+      }
+
+      if (corrections) {
+        this.setCorrections(corrections);
+      }
     });
   };
 

@@ -191,9 +191,11 @@ class EditorPreview extends React.Component<Props, State> {
         }
         const editorModule = editor.currentModule;
 
-        if (newModule !== editorModule && editor.changeModule) {
+        const changeModule = editor.changeModule;
+        if (newModule !== editorModule && changeModule) {
           const errors = store.editor.errors.map(e => e);
-          editor.changeModule(newModule, errors);
+          const corrections = store.editor.corrections.map(e => e);
+          changeModule(newModule, errors, corrections);
         } else if (editor.changeCode) {
           editor.changeCode(newModule.code || '');
         }
