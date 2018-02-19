@@ -1,10 +1,6 @@
 import Linter from 'eslint/lib/linter';
 
 import monkeypatch from './monkeypatch-babel-eslint';
-import {
-  getConfig as getVueConfig,
-  getVerifyOptions as getVueVerifyOptions,
-} from './vue';
 
 /* eslint-disable global-require */
 const allRules = {
@@ -313,9 +309,10 @@ monkeypatch({}, defaultConfig.parserOptions);
 
 const linter = new Linter();
 
-linter.defineParser('babel-eslint', {
-  parse: require('babel-eslint').parseNoPatch, // eslint-disable-line global-require
-});
+linter.defineParser(
+  'babel-eslint',
+  require('babel-eslint') // eslint-disable-line global-require
+);
 
 linter.defineRules(allRules);
 
@@ -353,6 +350,11 @@ self.addEventListener('message', async event => {
   let options = { filename };
 
   if (template === 'vue-cli') {
+    const {
+      getConfig: getVueConfig,
+      getVerifyOptions: getVueVerifyOptions,
+    } = await import('./vue');
+
     config = await getVueConfig(linter);
     config.rules = {
       ...defaultConfig.rules,
