@@ -563,7 +563,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     const currentModule = this.currentModule;
 
     const mode = await this.getMode(currentModule.title);
-    if (mode === 'javascript') {
+    if (mode === 'javascript' || mode === 'vue') {
       this.monaco.editor.setModelMarkers(
         this.editor.getModel(),
         'eslint',
@@ -680,12 +680,13 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
   lint = async (code: string, title: string, version: number) => {
     const mode = await this.getMode(title);
-    if (mode === 'javascript') {
+    if (mode === 'javascript' || mode === 'vue') {
       if (this.lintWorker) {
         this.lintWorker.postMessage({
           code,
           title,
           version,
+          template: this.sandbox.template,
         });
       }
     }
