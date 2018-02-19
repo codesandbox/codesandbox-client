@@ -342,18 +342,21 @@ export default class Content extends React.PureComponent<Props, State> {
                 );
               })}
             </Tabs>
-
-            <CodeEditor
-              onInitialized={this.onCodeEditorInitialized}
-              currentModule={currentModule || mainModule}
-              sandbox={sandbox}
-              settings={this.getPreferences()}
-              canSave={false}
-              onChange={this.setCode}
-              onModuleChange={this.setCurrentModule}
-              onUnMount={this.onCodeEditorUnMount}
-              highlightedLines={this.props.highlightedLines}
-            />
+            <div
+              style={{ position: 'relative', width: '100%', height: '100%' }}
+            >
+              <CodeEditor
+                onInitialized={this.onCodeEditorInitialized}
+                currentModule={currentModule || mainModule}
+                sandbox={sandbox}
+                settings={this.getPreferences()}
+                canSave={false}
+                onChange={this.setCode}
+                onModuleChange={this.setCurrentModule}
+                onUnMount={this.onCodeEditorUnMount}
+                highlightedLines={this.props.highlightedLines}
+              />
+            </div>
           </Split>
         )}
 
