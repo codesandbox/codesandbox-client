@@ -9,30 +9,30 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v3-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
-            - v3-dependency-cache-{{ .Branch }}
-            - v3-dependency-cache
+            - v4-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+            - v4-dependency-cache-{{ .Branch }}
+            - v4-dependency-cache
       - restore_cache:
           keys:
-            - v3-standalone-dependency-cache-{{ .Branch }}-{{ checksum "standalone-packages/codesandbox-browserfs/yarn.lock" }}
-            - v3-standalone-dependency-cache-{{ .Branch }}
-            - v3-standalone-dependency-cache
+            - v4-standalone-dependency-cache-{{ .Branch }}-{{ checksum "standalone-packages/codesandbox-browserfs/yarn.lock" }}
+            - v4-standalone-dependency-cache-{{ .Branch }}
+            - v4-standalone-dependency-cache
       - run:
           name: Install Dependencies
           command: yarn install
       - save_cache:
-          key: v3-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          key: v4-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
           paths:
             - node_modules
       - save_cache:
-          key: v3-standalone-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          key: v4-standalone-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
           paths:
             - standalone-packages/codesandbox-browserfs/node_modules
       - run:
           name: Build
           command: yarn build:dependents
       - save_cache:
-          key: v3-repo-{{ .Environment.CIRCLE_SHA1 }}
+          key: v4-repo-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - ~/codesandbox-client
 
@@ -42,19 +42,19 @@ jobs:
     working_directory: ~/codesandbox-client
     steps:
       - restore_cache:
-          key: v3-repo-{{ .Environment.CIRCLE_SHA1 }}
+          key: v4-repo-{{ .Environment.CIRCLE_SHA1 }}
       # We do this to compare sizes from these builds with master
       - restore_cache:
-          key: v3-prod-app-build-cache-master
+          key: v4-prod-app-build-cache-master
       - run:
           name: Build Application
           command: yarn build:prod
       - save_cache:
-          key: v3-prod-app-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+          key: v4-prod-app-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - ./packages/app/www
       - save_cache:
-          key: v3-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+          key: v4-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - ./www
       - store_artifacts:
@@ -67,7 +67,7 @@ jobs:
     working_directory: ~/codesandbox-client
     steps:
       - restore_cache:
-          key: v3-repo-{{ .Environment.CIRCLE_SHA1 }}
+          key: v4-repo-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: Start Test Server
           command: yarn start:test
@@ -91,7 +91,7 @@ jobs:
     working_directory: ~/codesandbox-client
     steps:
       - restore_cache:
-          key: v3-repo-{{ .Environment.CIRCLE_SHA1 }}
+          key: v4-repo-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: Test
           command: yarn test --ci --testResultsProcessor="jest-junit"
@@ -104,7 +104,7 @@ jobs:
     working_directory: ~/codesandbox-client
     steps:
       - restore_cache:
-          key: v3-repo-{{ .Environment.CIRCLE_SHA1 }}
+          key: v4-repo-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: Lint
           command: yarn lint
@@ -115,9 +115,9 @@ jobs:
     working_directory: ~/codesandbox-client
     steps:
       - restore_cache:
-          key: v3-repo-{{ .Environment.CIRCLE_SHA1 }}
+          key: v4-repo-{{ .Environment.CIRCLE_SHA1 }}
       - restore_cache:
-          key: v3-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+          key: v4-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
       - add_ssh_keys:
           fingerprints:
             - "f7:f1:e6:60:96:24:d9:cd:1b:8b:c0:34:e7:ee:fa:82"
