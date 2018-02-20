@@ -1,12 +1,13 @@
 // @flow
 
 import type { Sandbox } from 'common/types';
+import slugify from 'common/utils/slugify';
 import type { ConfigurationFile } from '../types';
 
 export function generateFileFromSandbox(sandbox: Sandbox) {
   const jsonFile = {};
 
-  jsonFile.name = sandbox.title || sandbox.id;
+  jsonFile.name = slugify(sandbox.title || sandbox.id);
   jsonFile.version = '1.0.0';
   jsonFile.description = sandbox.description || '';
   jsonFile.keywords = sandbox.tags;

@@ -1,4 +1,5 @@
 import { fromPairs, toPairs, sortBy } from 'lodash';
+import slugify from 'common/utils/slugify';
 import { clone } from 'mobx-state-tree';
 
 function sortObjectByKeys(object) {
@@ -45,7 +46,7 @@ export function updateSandboxPackage({ state }) {
   const sandbox = state.get('editor.currentSandbox');
 
   parsed.keywords = sandbox.tags;
-  parsed.name = sandbox.title || sandbox.id;
+  parsed.name = slugify(sandbox.title || sandbox.id);
   parsed.description = sandbox.description;
 
   return {
