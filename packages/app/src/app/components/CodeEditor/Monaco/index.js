@@ -457,7 +457,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
   setupTypeWorker = () => {
     this.typingsFetcherWorker = new TypingsFetcherWorker();
-    const regex = /node_modules\/(@types\/.*)\//;
+    const regex = /node_modules\/(@types\/.*?)\//;
 
     this.typingsFetcherWorker.addEventListener('message', event => {
       const sandbox = this.sandbox;
