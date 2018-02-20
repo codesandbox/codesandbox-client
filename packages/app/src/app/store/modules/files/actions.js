@@ -122,15 +122,15 @@ export function moveDirectoryToDirectory({ state, props }) {
     directory => directory.shortid === props.shortid
   );
   const currentDirectoryShortid = state.get(
-    `editor.sandboxes.${sandbox.id}.directories.${
-      directoryIndex
-    }.directoryShortid`
+    `editor.sandboxes.${
+      sandbox.id
+    }.directories.${directoryIndex}.directoryShortid`
   );
 
   state.set(
-    `editor.sandboxes.${sandbox.id}.directories.${
-      directoryIndex
-    }.directoryShortid`,
+    `editor.sandboxes.${
+      sandbox.id
+    }.directories.${directoryIndex}.directoryShortid`,
     props.directoryShortid
   );
 
@@ -144,9 +144,9 @@ export function revertMoveDirectoryToDirectory({ state, props }) {
   );
 
   state.set(
-    `editor.sandboxes.${sandbox.id}.directories.${
-      directoryIndex
-    }.directoryShortid`,
+    `editor.sandboxes.${
+      sandbox.id
+    }.directories.${directoryIndex}.directoryShortid`,
     props.currentDirectoryShortid
   );
 }

@@ -1,6 +1,6 @@
 import Linter from 'eslint/lib/linter';
 
-import monkeypatch from './utils/monkeypatch-babel-eslint';
+import monkeypatch from './monkeypatch-babel-eslint';
 
 /* eslint-disable global-require */
 const allRules = {
@@ -104,7 +104,6 @@ const restrictedGlobals = [
 ];
 
 const defaultConfig = {
-  extends: ['prettier', 'prettier/react', 'prettier/flowtype', 'react-app'],
   parserOptions: {
     ecmaVersion: 8,
     sourceType: 'module',
@@ -310,9 +309,10 @@ monkeypatch({}, defaultConfig.parserOptions);
 
 const linter = new Linter();
 
-linter.defineParser('babel-eslint', {
-  parse: require('babel-eslint').parseNoPatch, // eslint-disable-line global-require
-});
+linter.defineParser(
+  'babel-eslint',
+  require('babel-eslint') // eslint-disable-line global-require
+);
 
 linter.defineRules(allRules);
 
@@ -343,10 +343,27 @@ function getSeverity(error) {
 }
 
 // Respond to message from parent thread
-self.addEventListener('message', event => {
-  const { code, version } = event.data;
+self.addEventListener('message', async event => {
+  const { code, version, title: filename, template } = event.data;
 
-  const validations = linter.verify(code, defaultConfig);
+  let config = defaultConfig;
+  let options = { filename };
+
+  if (template === 'vue-cli') {
+    const {
+      getConfig: getVueConfig,
+      getVerifyOptions: getVueVerifyOptions,
+    } = await import('./vue');
+
+    config = await getVueConfig(linter);
+    config.rules = {
+      ...defaultConfig.rules,
+      ...config.rules,
+    };
+    options = { ...options, ...getVueVerifyOptions(filename) };
+  }
+
+  const validations = linter.verify(code, config, options);
 
   const markers = validations.map(error => {
     const { line: startL, column: startCol } = getPos(error, true);
