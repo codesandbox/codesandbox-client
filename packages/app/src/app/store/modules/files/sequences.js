@@ -88,6 +88,7 @@ export const deleteDirectory = [
 ];
 
 export const moveDirectoryToDirectory = [
+  ensureOwnedSandbox,
   actions.moveDirectoryToDirectory,
   actions.saveNewDirectoryDirectoryShortid,
   {
@@ -100,6 +101,7 @@ export const moveDirectoryToDirectory = [
 ];
 
 export const moveModuleToDirectory = [
+  ensureOwnedSandbox,
   actions.moveModuleToDirectory,
   actions.saveNewModuleDirectoryShortid,
   {

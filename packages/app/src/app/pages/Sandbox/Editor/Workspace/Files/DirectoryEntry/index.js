@@ -314,12 +314,12 @@ const entryTarget = {
 
     if (sourceItem.directory) {
       props.signals.files.directoryMovedToDirectory({
-        directoryId: sourceItem.id,
+        shortid: sourceItem.shortid,
         directoryShortid: props.shortid,
       });
     } else {
       props.signals.files.moduleMovedToDirectory({
-        moduleId: sourceItem.id,
+        moduleShortid: sourceItem.shortid,
         directoryShortid: props.shortid,
       });
     }

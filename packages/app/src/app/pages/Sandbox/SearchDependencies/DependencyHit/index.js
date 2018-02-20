@@ -34,9 +34,7 @@ export default class DependencyHit extends React.PureComponent {
   }
 
   makeSearchUrl(hitName: string) {
-    return `https://codesandbox.io/search?refinementList%5Bnpm_dependencies.dependency%5D%5B0%5D=${
-      hitName
-    }&page=1`;
+    return `https://codesandbox.io/search?refinementList%5Bnpm_dependencies.dependency%5D%5B0%5D=${hitName}&page=1`;
   }
 
   stopPropagation(e) {
@@ -60,9 +58,13 @@ export default class DependencyHit extends React.PureComponent {
       }
     }
 
-    const versions = Object.keys(hit.versions).sort((a: string, b: string) =>
-      compareVersions(b, a)
-    );
+    const versions = Object.keys(hit.versions).sort((a: string, b: string) => {
+      try {
+        return compareVersions(b, a);
+      } catch (e) {
+        return 0;
+      }
+    });
 
     return (
       <Container highlighted={highlighted} onClick={onClick}>
