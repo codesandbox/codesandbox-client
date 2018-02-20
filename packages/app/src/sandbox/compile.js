@@ -54,7 +54,7 @@ const WHITELISTED_DEV_DEPENDENCIES = [
 
 // Dependencies that we actually don't need, we will replace this by a dynamic
 // system in the future
-const BLACKLISTED_DEPENDENCIES = ['react-scripts'];
+const BLACKLISTED_DEPENDENCIES = ['react-scripts', 'react-scripts-ts'];
 
 function getDependencies(parsedPackage) {
   const {
