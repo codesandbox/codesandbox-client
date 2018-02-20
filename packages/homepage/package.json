@@ -11,7 +11,6 @@
     "gatsby-plugin-google-tagmanager": "^1.0.8",
     "gatsby-plugin-nprogress": "^1.0.9",
     "gatsby-plugin-react-helmet": "^1.0.8",
-    "gatsby-plugin-sharp": "^1.6.23",
     "gatsby-plugin-sitemap": "^1.2.7",
     "gatsby-plugin-styled-components": "^2.0.5",
     "gatsby-react-router-scroll": "^1.0.3",

@@ -27,6 +27,7 @@ exports[`Button renders 1`] = `
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  -webkit-text-decoration: none;
   text-decoration: none;
   cursor: pointer;
 }
@@ -93,6 +94,7 @@ exports[`Button renders disabled 1`] = `
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  -webkit-text-decoration: none;
   text-decoration: none;
 }
 
@@ -136,6 +138,7 @@ exports[`Button renders href 1`] = `
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  -webkit-text-decoration: none;
   text-decoration: none;
   cursor: pointer;
 }
@@ -204,6 +207,7 @@ exports[`Button renders onClick 1`] = `
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  -webkit-text-decoration: none;
   text-decoration: none;
   cursor: pointer;
 }
@@ -272,6 +276,7 @@ exports[`Button renders properties 1`] = `
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  -webkit-text-decoration: none;
   text-decoration: none;
   cursor: pointer;
 }
@@ -340,6 +345,7 @@ exports[`Button renders secondary 1`] = `
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  -webkit-text-decoration: none;
   text-decoration: none;
   cursor: pointer;
 }
@@ -407,6 +413,7 @@ exports[`Button renders to 1`] = `
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  -webkit-text-decoration: none;
   text-decoration: none;
   cursor: pointer;
 }
