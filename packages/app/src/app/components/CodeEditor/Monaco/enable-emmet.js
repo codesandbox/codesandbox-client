@@ -1,9 +1,12 @@
 import { expand } from '@emmetio/expand-abbreviation';
+import enableCombiEmmet from './enable-combi-emmet';
 
 const enableEmmet = (editor, monaco) => {
   if (!editor) {
     throw new Error('Must provide monaco-editor instance.');
   }
+
+  enableCombiEmmet(editor, monaco);
 
   let cursor;
   let emmetText;
