@@ -220,7 +220,7 @@ class Project extends React.Component {
             <PropertyName>Forked From</PropertyName>
             <PropertyValue>
               <ConfirmLink
-                enabled={store.editor.isAllModulesSynced}
+                enabled={!store.editor.isAllModulesSynced}
                 message="You have unsaved changes. Are you sure you want to navigate away?"
                 to={sandboxUrl(sandbox.forkedFromSandbox)}
               >

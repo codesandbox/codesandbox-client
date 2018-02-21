@@ -68,6 +68,12 @@ class Routes extends React.Component<Props> {
     this.props.signals.appUnmounted();
   }
 
+  shouldComponentUpdate() {
+    // Without this the app won't update on route changes, we've tried using
+    // `withRouter`, but it caused the app to remount on every route change.
+    return true;
+  }
+
   render() {
     return (
       <Container>
