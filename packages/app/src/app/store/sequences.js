@@ -266,7 +266,6 @@ export const loadSandbox = factories.withLoadApp([
       actions.setWorkspace,
     ],
     false: [
-      set(state`editor.isLoading`, true),
       set(state`editor.notFound`, false),
       actions.getSandbox,
       {

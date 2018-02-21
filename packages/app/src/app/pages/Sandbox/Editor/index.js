@@ -82,4 +82,4 @@ function ContentSplit({ signals, store, match }) {
   );
 }
 
-export default hot(module)(inject('signals', 'store')(observer(ContentSplit)));
+export default inject('signals', 'store')(observer(ContentSplit));
