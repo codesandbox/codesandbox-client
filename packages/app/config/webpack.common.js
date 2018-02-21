@@ -25,9 +25,7 @@ const ESLINT_PLUGIN_VUE_INDEX = `module.exports = {
     .filter(filename => path.extname(filename) === '.js')
     .map(filename => {
       const ruleId = path.basename(filename, '.js');
-      return `        "${ruleId}": require("eslint-plugin-vue/lib/rules/${
-        filename
-      }"),`;
+      return `        "${ruleId}": require("eslint-plugin-vue/lib/rules/${filename}"),`;
     })
     .join('\n')}
   },
@@ -145,6 +143,15 @@ module.exports = {
           search: '[\\s\\S]+', // whole file.
           replace: 'module.exports = () => {}',
           flags: 'g',
+        },
+      },
+      // Remove dynamic require in jest circus
+      {
+        test: /format_node_assert_errors\.js/,
+        loader: 'string-replace-loader',
+        options: {
+          search: `assert = require.call(null, 'assert');`,
+          replace: `throw new Error('module assert not found')`,
         },
       },
       // JSON is not enabled by default in Webpack but both Node and Browserify
