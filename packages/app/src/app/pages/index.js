@@ -2,7 +2,7 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import Loadable from 'react-loadable';
-import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 
 import _debug from 'app/utils/debug';
 import Notifications from 'app/pages/common/Notifications';
@@ -110,4 +110,4 @@ class Routes extends React.Component<Props> {
   }
 }
 
-export default inject('signals', 'store')(withRouter(observer(Routes)));
+export default inject('signals', 'store')(observer(Routes));
