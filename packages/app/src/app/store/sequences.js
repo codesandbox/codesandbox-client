@@ -254,7 +254,6 @@ export const loadGitHubPage = factories.withLoadApp([]);
 
 export const loadSandbox = factories.withLoadApp([
   set(state`editor.error`, null),
-  set(state`editor.isLoading`, true),
   when(state`editor.sandboxes.${props`id`}`),
   {
     true: [
@@ -267,6 +266,7 @@ export const loadSandbox = factories.withLoadApp([
       actions.setWorkspace,
     ],
     false: [
+      set(state`editor.isLoading`, true),
       set(state`editor.notFound`, false),
       actions.getSandbox,
       {
