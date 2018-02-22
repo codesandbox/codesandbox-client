@@ -38,6 +38,7 @@ export interface Editor {
   changeCode?: (code: string) => any;
 
   currentModule?: Module;
+  setTSConfig?: (tsConfig: Object) => void;
 }
 
 export type Props = {
@@ -54,4 +55,5 @@ export type Props = {
   hideNavigation?: boolean,
   dependencies?: ?{ [name: string]: string },
   highlightedLines?: Array<number>,
+  tsconfig?: Object,
 };

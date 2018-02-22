@@ -51,6 +51,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   currentModule: $PropertyType<Props, 'currentModule'>;
   settings: $PropertyType<Props, 'settings'>;
   dependencies: ?$PropertyType<Props, 'dependencies'>;
+  tsconfig: ?$PropertyType<Props, 'tsconfig'>;
   disposeInitializer: ?() => void;
   syntaxWorker: ?Worker;
   lintWorker: ?Worker;
@@ -68,6 +69,8 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     this.currentModule = props.currentModule;
     this.settings = props.settings;
     this.dependencies = props.dependencies;
+
+    this.tsconfig = props.tsconfig;
 
     this.syntaxWorker = null;
     this.lintWorker = null;
@@ -130,48 +133,13 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       });
     });
 
-    const hasNativeTypescript = this.hasNativeTypescript();
-
-    const compilerDefaults = {
-      jsxFactory: 'React.createElement',
-      reactNamespace: 'React',
-      jsx: monaco.languages.typescript.JsxEmit.React,
-      target: monaco.languages.typescript.ScriptTarget.ES2016,
-      allowNonTsExtensions: !hasNativeTypescript,
-      moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
-      module: hasNativeTypescript
-        ? monaco.languages.typescript.ModuleKind.ES2015
-        : monaco.languages.typescript.ModuleKind.System,
-      experimentalDecorators: true,
-      noEmit: true,
-      allowJs: true,
-      typeRoots: ['node_modules/@types'],
-
-      forceConsistentCasingInFileNames: hasNativeTypescript,
-      noImplicitReturns: hasNativeTypescript,
-      noImplicitThis: hasNativeTypescript,
-      noImplicitAny: hasNativeTypescript,
-      strictNullChecks: hasNativeTypescript,
-      suppressImplicitAnyIndexErrors: hasNativeTypescript,
-      noUnusedLocals: hasNativeTypescript,
-    };
-
     monaco.languages.typescript.typescriptDefaults.setMaximunWorkerIdleTime(-1);
     monaco.languages.typescript.javascriptDefaults.setMaximunWorkerIdleTime(-1);
-    monaco.languages.typescript.typescriptDefaults.setCompilerOptions(
-      compilerDefaults
-    );
-    monaco.languages.typescript.javascriptDefaults.setCompilerOptions(
-      compilerDefaults
-    );
 
     monaco.languages.typescript.typescriptDefaults.setEagerModelSync(true);
     monaco.languages.typescript.javascriptDefaults.setEagerModelSync(true);
 
-    monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
-      noSemanticValidation: false,
-      noSyntaxValidation: !hasNativeTypescript,
-    });
+    this.setCompilerOptions();
 
     const sandbox = this.sandbox;
     const currentModule = this.currentModule;
@@ -234,6 +202,57 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     if (this.props.onInitialized) {
       this.disposeInitializer = this.props.onInitialized(this);
     }
+  };
+
+  setCompilerOptions = () => {
+    const hasNativeTypescript = this.hasNativeTypescript();
+    const existingConfig = this.tsconfig ? this.tsconfig.compilerOptions : {};
+
+    const compilerDefaults = {
+      jsxFactory: 'React.createElement',
+      reactNamespace: 'React',
+      jsx: this.monaco.languages.typescript.JsxEmit.React,
+      target: this.monaco.languages.typescript.ScriptTarget.ES2016,
+      allowNonTsExtensions: !hasNativeTypescript,
+      moduleResolution: this.monaco.languages.typescript.ModuleResolutionKind
+        .NodeJs,
+      module: hasNativeTypescript
+        ? this.monaco.languages.typescript.ModuleKind.ES2015
+        : this.monaco.languages.typescript.ModuleKind.System,
+      experimentalDecorators: true,
+      noEmit: true,
+      allowJs: true,
+      typeRoots: ['node_modules/@types'],
+
+      forceConsistentCasingInFileNames:
+        hasNativeTypescript && existingConfig.forceConsistentCasingInFileNames,
+      noImplicitReturns:
+        hasNativeTypescript && existingConfig.noImplicitReturns,
+      noImplicitThis: hasNativeTypescript && existingConfig.noImplicitThis,
+      noImplicitAny: hasNativeTypescript && existingConfig.noImplicitAny,
+      strictNullChecks: hasNativeTypescript && existingConfig.strictNullChecks,
+      suppressImplicitAnyIndexErrors:
+        hasNativeTypescript && existingConfig.suppressImplicitAnyIndexErrors,
+      noUnusedLocals: hasNativeTypescript && existingConfig.noUnusedLocals,
+    };
+
+    this.monaco.languages.typescript.typescriptDefaults.setCompilerOptions(
+      compilerDefaults
+    );
+    this.monaco.languages.typescript.javascriptDefaults.setCompilerOptions(
+      compilerDefaults
+    );
+
+    this.monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
+      noSemanticValidation: false,
+      noSyntaxValidation: !hasNativeTypescript,
+    });
+  };
+
+  setTSConfig = (config: Object) => {
+    this.tsconfig = config;
+
+    this.setCompilerOptions();
   };
 
   changeModule = (

@@ -15,10 +15,20 @@ class TypeScriptTranspiler extends WorkerTranspiler {
     return new Promise((resolve, reject) => {
       const path = loaderContext.path;
 
+      let foundConfig = loaderContext.options;
+      if (
+        loaderContext.options.configurations &&
+        loaderContext.options.configurations.typescript &&
+        loaderContext.options.configurations.typescript.parsed
+      ) {
+        foundConfig = loaderContext.options.configurations.typescript.parsed;
+      }
+
       this.queueTask(
         {
           code,
           path,
+          config: foundConfig,
         },
         loaderContext,
         (err, data) => {

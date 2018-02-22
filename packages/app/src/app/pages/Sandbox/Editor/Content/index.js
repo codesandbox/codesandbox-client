@@ -171,7 +171,7 @@ class EditorPreview extends React.Component<Props, State> {
       }
     );
     const disposePackageHandler = reaction(
-      () => store.editor.parsedConfigurations,
+      () => store.editor.parsedConfigurations.package,
       () => {
         const { parsed } = store.editor.parsedConfigurations.package;
         if (parsed) {
@@ -179,6 +179,19 @@ class EditorPreview extends React.Component<Props, State> {
 
           if (editor.changeDependencies) {
             editor.changeDependencies(dependencies);
+          }
+        }
+      }
+    );
+    const disposeTSConfigHandler = reaction(
+      () => store.editor.parsedConfigurations.typescript,
+      () => {
+        if (store.editor.parsedConfigurations.typescript) {
+          const { parsed } = store.editor.parsedConfigurations.typescript;
+          if (parsed) {
+            if (editor.setTSConfig) {
+              editor.setTSConfig(parsed);
+            }
           }
         }
       }
@@ -214,6 +227,7 @@ class EditorPreview extends React.Component<Props, State> {
       disposeModulesHandler();
       disposePreferencesHandler();
       disposePackageHandler();
+      disposeTSConfigHandler();
       disposeSandboxChangeHandler();
       disposeModuleHandler();
       disposeToggleDevtools();
@@ -329,6 +343,10 @@ class EditorPreview extends React.Component<Props, State> {
                   code,
                   moduleShortid: currentModule.shortid,
                 })
+              }
+              tsconfig={
+                store.editor.parsedConfigurations.typescript &&
+                store.editor.parsedConfigurations.typescript.parsed
               }
             />
             <Preview width={this.state.width} height={this.state.height} />

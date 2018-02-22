@@ -20,4 +20,5 @@ export type ConfigurationFile = {
   },
 
   schema?: string,
+  partialSupportDisclaimer?: string,
 };

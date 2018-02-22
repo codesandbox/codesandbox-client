@@ -12,7 +12,9 @@ const config: ConfigurationFile = {
   },
 
   schema:
-    'https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/babelrc.json',
+    'https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/eslintrc.json',
+
+  partialSupportDisclaimer: `We can only read preinstalled rules (all from eslint, react, prettier, import and vue plugins).`,
 };
 
 export default config;

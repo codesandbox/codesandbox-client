@@ -13,6 +13,7 @@ import type { Sandbox } from 'common/types';
 import { getModulePath } from 'common/sandbox/modules';
 import Tooltip from 'common/components/Tooltip';
 import UIIcon from 'react-icons/lib/md/dvr';
+import QuestionIcon from 'react-icons/lib/go/question';
 
 import type { Props } from './types';
 import Monaco from './Monaco';
@@ -149,7 +150,21 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
             </Icons>
           ) : (
             <Icons style={{ fontSize: '.875rem' }}>
-              Supported Configuration
+              {config.partialSupportDisclaimer ? (
+                <Tooltip
+                  position="bottom"
+                  title={config.partialSupportDisclaimer}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  Partially Supported Config{' '}
+                  <QuestionIcon style={{ marginLeft: '.5rem' }} />
+                </Tooltip>
+              ) : (
+                <div>Supported Configuration</div>
+              )}
             </Icons>
           ))}
         <Editor {...props} dependencies={dependencies} />

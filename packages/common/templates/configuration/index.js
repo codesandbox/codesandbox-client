@@ -4,6 +4,7 @@ import prettierRC from './prettierRC';
 import sandboxConfig from './sandbox';
 import babelrc from './babelrc';
 import angularCli from './angular-cli';
+import tsconfig from './tsconfig';
 
 const configs = {
   babelrc,
@@ -11,6 +12,7 @@ const configs = {
   prettierRC,
   sandboxConfig,
   angularCli,
+  tsconfig,
 };
 
 export default configs;

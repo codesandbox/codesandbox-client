@@ -2,7 +2,7 @@ import { buildWorkerError } from '../utils/worker-error-handler';
 import getDependencies from './get-require-statements';
 
 self.importScripts([
-  'https://cdnjs.cloudflare.com/ajax/libs/typescript/2.5.0/typescript.min.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/typescript/2.7.2/typescript.min.js',
 ]);
 
 self.postMessage('ready');
@@ -20,9 +20,9 @@ declare var ts: {
 };
 
 self.addEventListener('message', event => {
-  const { code, path } = event.data;
+  const { code, path, config } = event.data;
 
-  const config = {
+  const defaultConfig = {
     fileName: path,
     reportDiagnostics: true,
     compilerOptions: {
@@ -49,8 +49,19 @@ self.addEventListener('message', event => {
     },
   };
 
+  let finalConfig = defaultConfig;
+
+  if (config) {
+    finalConfig = { ...config };
+    finalConfig.compilerOptions = {
+      ...config.compilerOptions,
+      module: ts.ModuleKind.CommonJS,
+      moduleResolution: ts.ModuleResolutionKind.NodeJs,
+    };
+  }
+
   try {
-    const { outputText: compiledCode } = ts.transpileModule(code, config);
+    const { outputText: compiledCode } = ts.transpileModule(code, finalConfig);
 
     const sourceFile = ts.createSourceFile(
       path,
