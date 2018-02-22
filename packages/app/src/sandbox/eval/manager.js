@@ -475,7 +475,6 @@ export default class Manager {
         this.manifest.dependencies.find(d => d.name === dependencyName) ||
         this.manifest.dependencyDependencies[dependencyName]
       ) {
-        this.downloadDependency(connectedPath, currentPath);
         throw new ModuleNotFoundError(connectedPath, true);
       } else {
         throw new DependencyNotFoundError(connectedPath);
