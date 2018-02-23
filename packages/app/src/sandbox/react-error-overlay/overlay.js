@@ -146,18 +146,24 @@ function switchError(offset) {
   renderErrorByIndex(nextView);
 }
 
-function disposeCurrentView() {
-  // CodeSandbox already resets this
-  // if (iframeReference === null) {
-  //   return;
-  // }
-  // window.document.body.removeChild(iframeReference);
+function disposeCurrentView(force: boolean) {
+  // CodeSandbox already resets this, only do this if force is on
+  if (force) {
+    if (iframeReference == null) {
+      return;
+    }
+    try {
+      window.document.body.removeChild(iframeReference);
+    } catch (e) {
+      console.error(e);
+    }
+  }
   iframeReference = null;
   additionalReference = null;
 }
 
-function unmount() {
-  disposeCurrentView();
+function unmount(force: boolean) {
+  disposeCurrentView(force);
   drainErrors();
   errorReferences = [];
   currReferenceIndex = -1;

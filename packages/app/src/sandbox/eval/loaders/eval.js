@@ -6,25 +6,45 @@ export default function(
   code: string,
   require: Function,
   module: Object,
-  env: Object = {}
+  env: Object = {},
+  globals: Object = {},
+  { asUMD = false }: { asUMD: boolean } = {}
 ) {
+  const g = typeof window === 'undefined' ? self : window;
   const exports = module.exports;
 
-  const global = window;
+  const global = g;
   const process = buildProcess(env);
-  window.global = global;
+  g.global = global;
+
+  const globalsCode = ', ' + Object.keys(globals).join(', ');
+  const globalsValues = Object.keys(globals).map(k => globals[k]);
 
   try {
-    const newCode = `(function evaluate(require, module, exports, process, setImmediate, global) {${
-      code
-    }\n})`;
-    (0, eval)(newCode)(require, module, exports, process, setImmediate, global); // eslint-disable-line no-eval
+    const newCode = `(function evaluate(require, module, exports, process, setImmediate, Buffer, global${
+      globalsCode
+    }) {${code}\n})`;
+    // eslint-disable-next-line no-eval
+    (0, eval)(newCode).apply(this, [
+      require,
+      asUMD ? undefined : module,
+      asUMD ? undefined : exports,
+      process,
+      setImmediate,
+      Buffer,
+      asUMD ? undefined : global,
+      ...globalsValues,
+    ]);
 
     return module.exports;
   } catch (e) {
-    e.isEvalError = true;
+    let error = e;
+    if (typeof e === 'string') {
+      error = new Error(e);
+    }
+    error.isEvalError = true;
 
-    throw e;
+    throw error;
   }
 }
 /* eslint-enable no-unused-vars */

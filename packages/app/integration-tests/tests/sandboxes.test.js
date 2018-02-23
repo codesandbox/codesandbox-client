@@ -2,11 +2,11 @@ import puppeteer from 'puppeteer';
 
 const SANDBOXES = [
   'new',
-  'preact',
+  // 'preact',
   'vue',
   'svelte',
   'react-ts',
-  'github/reactjs/redux/tree/master/examples/todomvc',
+  { id: 'github/reactjs/redux/tree/master/examples/todomvc', threshold: 0.04 },
   { id: 'jvlrl98xw3', threshold: 0.05 },
   'vVoQVk78',
   'github/faceyspacey/redux-first-router-codesandbox/tree/master',
@@ -18,7 +18,25 @@ const SANDBOXES = [
   'github/CompuIves/codesandbox-presentation',
   'lp5rjr0z4z',
   'nOymMxyY',
+  'y26rj99yov', // react transition
+  { id: 'X6npLXPRW', threshold: 0.05 }, // react-table
+  '6w66jzw3mn', // material-design & preact
+  '4j7m47vlm4', // material-ui
+  'github/cssinjs/egghead/tree/master/from-sass-to-cssinjs/templates-and-variables', // postcss egghead
+  'xp5qy8r93q', // babel example
+  'angular', // angular template
 ];
+
+function pageLoaded(page) {
+  return new Promise(async resolve => {
+    await page.exposeFunction('__puppeteer__', () => {
+      if (resolve) {
+        resolve();
+      }
+    });
+  });
+}
+
 describe('sandboxes', () => {
   let browser = puppeteer.launch({
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
@@ -36,10 +54,11 @@ describe('sandboxes', () => {
       async () => {
         browser = await browser;
         const page = await browser.newPage();
-        await page.goto('http://localhost:3001/#' + id, {
-          waitUntil: 'networkidle0',
+        const waitFunction = pageLoaded(page);
+        page.goto('http://localhost:3001/#' + id, {
           timeout: 60000,
         });
+        await waitFunction;
         await page.waitFor(2000);
 
         const screenshot = await page.screenshot();
@@ -53,7 +72,7 @@ describe('sandboxes', () => {
 
         await page.close();
       },
-      1000 * 60 * 1
+      1000 * 120 * 1
     );
   });
 });

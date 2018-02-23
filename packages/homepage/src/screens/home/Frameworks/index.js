@@ -22,6 +22,7 @@ import FileType, {
   stylus,
   image,
   html,
+  pug,
   cssGlobal,
   vue,
 } from './icons';
@@ -197,7 +198,19 @@ const TEMPLATE_SUPPORT = {
     css: ['Global'],
   },
   'vue-cli': {
-    loaders: [js, ts, html, vue, scss, sass, less, stylus, cssGlobal, image],
+    loaders: [
+      js,
+      ts,
+      html,
+      vue,
+      scss,
+      sass,
+      less,
+      stylus,
+      pug,
+      cssGlobal,
+      image,
+    ],
     css: ['Global', 'Scoped', 'Modules'],
   },
   'preact-cli': {
@@ -205,6 +218,10 @@ const TEMPLATE_SUPPORT = {
     css: ['Global', 'Modules'],
   },
   svelte: { loaders: [js, html, image], css: ['Global', 'Scoped', 'Modules'] },
+  'angular-cli': {
+    loaders: [ts, html, scss, sass, less, stylus, cssGlobal, image],
+    css: ['Global', 'Scoped'],
+  },
 };
 
 export default class Frameworks extends React.Component {

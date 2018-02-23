@@ -1,6 +1,6 @@
 // @flow
 // This is the loading screen
-import loadingHtml from './loading-screen.html';
+import loadingHtml from '!raw-loader!./loading-screen.html';
 
 type LoadingScreen = {
   type: 'loading',
@@ -28,7 +28,7 @@ function createOverlay() {
 
     iframe.setAttribute(
       'style',
-      `position: fixed; top: 0; left: 0; width: 100%; height: 100%; border: none; z-index: 2147483647;`
+      `position: fixed; top: 0; left: 0; width: 100%; height: 100%; border: none; z-index: 214748366;`
     );
 
     iframe.onload = () => {

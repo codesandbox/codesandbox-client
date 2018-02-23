@@ -30,7 +30,6 @@ input {
 }
 
 #root {
-  height: 100%;
 }
 
 a {
@@ -39,6 +38,7 @@ a {
 
 ::-webkit-scrollbar {
   width: 0.5rem;
+  height: 0.5rem;
 }
 
 ::-webkit-scrollbar-thumb {

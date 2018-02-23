@@ -1,130 +1,61 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import styled from 'styled-components';
+import { inject, observer } from 'mobx-react';
 
-import Button from 'app/components/buttons/Button';
+import Button from 'app/components/Button';
+import { WorkspaceInputContainer, WorkspaceSubtitle } from '../elements';
 
-import modalActionCreators from 'app/store/modal/actions';
-import Alert from 'app/components/Alert';
+import { PrivacySelect, PatronMessage } from './elements';
 
-import WorkspaceInputContainer from '../WorkspaceInputContainer';
+function SandboxActions({ store, signals }) {
+  const sandbox = store.editor.currentSandbox;
 
-import WorkspaceSubtitle from '../WorkspaceSubtitle';
-
-const PrivacySelect = styled.select`
-  background-color: rgba(0, 0, 0, 0.3);
-  color: rgba(255, 255, 255, 0.8);
-  border-radius: 4px;
-  margin: 0.25rem;
-  margin-bottom: 1rem;
-  height: 2rem;
-  width: 100%;
-  border: none;
-  box-sizing: border-box;
-`;
-
-const PatronMessage = styled.div`
-  margin: 0.5rem 1rem;
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 0.875rem;
-`;
-
-const mapDispatchToProps = dispatch => ({
-  modalActions: bindActionCreators(modalActionCreators, dispatch),
-});
-
-type Props = {
-  id: string,
-  deleteSandbox: (id: string) => void,
-  newSandboxUrl: () => void,
-  setSandboxPrivacy: (id: string, privacy: number) => void,
-  isPatron: boolean,
-  privacy: 0 | 1 | 2,
-  modalActions: typeof modalActionCreators,
-};
-
-class SandboxSettings extends React.PureComponent {
-  props: Props;
-  state = {
-    loading: false,
-  };
-
-  handleDeleteSandbox = () => {
-    const { modalActions } = this.props;
-
-    modalActions.openModal({
-      Body: (
-        <Alert
-          title="Delete Sandbox"
-          body={<span>Are you sure you want to delete this sandbox?</span>}
-          onCancel={modalActions.closeModal}
-          onDelete={() => {
-            this.props.deleteSandbox(this.props.id);
-            this.props.newSandboxUrl();
-            modalActions.closeModal();
-          }}
-        />
-      ),
-    });
-  };
-
-  updateSandboxPrivacy = async ev => {
-    this.setState({ loading: true });
-
-    try {
-      const privacy = +ev.target.value;
-
-      if (!Number.isNaN(privacy)) {
-        await this.props.setSandboxPrivacy(this.props.id, privacy);
-      }
-    } catch (err) {
-      console.error(err);
-    }
-
-    this.setState({ loading: false });
-  };
-
-  render() {
-    const { isPatron, privacy } = this.props;
-    return (
-      <div>
-        <WorkspaceSubtitle>Sandbox Privacy</WorkspaceSubtitle>
-        {!isPatron && (
-          <PatronMessage>
-            Private and unlisted Sandboxes are available as a{' '}
-            <a href="/patron" target="_blank">
-              Patron
-            </a>.
-          </PatronMessage>
-        )}
-        {isPatron && (
-          <WorkspaceInputContainer>
-            <PrivacySelect value={privacy} onChange={this.updateSandboxPrivacy}>
-              <option value={0}>Public</option>
-              <option value={1}>Unlisted (only findable with url)</option>
-              <option value={2}>Private</option>
-            </PrivacySelect>
-          </WorkspaceInputContainer>
-        )}
-
-        <WorkspaceSubtitle>Delete Sandbox</WorkspaceSubtitle>
+  return (
+    <div>
+      <WorkspaceSubtitle>Set Sandbox Privacy</WorkspaceSubtitle>
+      {!store.isPatron && (
+        <PatronMessage>
+          Having private and unlisted Sandboxes is available as a{' '}
+          <a href="/patron" target="_blank">
+            Patron
+          </a>.
+        </PatronMessage>
+      )}
+      {store.isPatron && (
         <WorkspaceInputContainer>
-          <Button
-            small
-            block
-            style={{
-              margin: '0.5rem 0.25rem',
-              boxSizing: 'border-box',
-            }}
-            onClick={this.handleDeleteSandbox}
+          <PrivacySelect
+            value={sandbox.privacy}
+            onChange={event =>
+              signals.workspace.sandboxPrivacyChanged({
+                privacy: Number(event.target.value),
+              })
+            }
           >
-            Delete Sandbox
-          </Button>
+            <option value={0}>Public</option>
+            <option value={1}>Unlisted (only available by url)</option>
+            <option value={2}>Private</option>
+          </PrivacySelect>
         </WorkspaceInputContainer>
-      </div>
-    );
-  }
+      )}
+
+      <WorkspaceInputContainer style={{ fontSize: '1rem' }}>
+        <Button
+          block
+          small
+          style={{
+            margin: '0.75rem 0.25rem',
+            boxSizing: 'border-box',
+          }}
+          onClick={() =>
+            signals.modalOpened({
+              modal: 'deleteSandbox',
+            })
+          }
+        >
+          Delete Sandbox
+        </Button>
+      </WorkspaceInputContainer>
+    </div>
+  );
 }
 
-export default connect(undefined, mapDispatchToProps)(SandboxSettings);
+export default inject('signals', 'store')(observer(SandboxActions));

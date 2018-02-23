@@ -1,5 +1,6 @@
 const webpack = require('webpack');
 const path = require('path');
+const fs = require('fs');
 const paths = require('./paths');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
@@ -16,6 +17,22 @@ const __DEV__ = NODE_ENV === 'development'; // eslint-disable-line no-underscore
 const __PROD__ = NODE_ENV === 'production'; // eslint-disable-line no-underscore-dangle
 const __TEST__ = NODE_ENV === 'test'; // eslint-disable-line no-underscore-dangle
 const babelConfig = __DEV__ ? babelDev : babelProd;
+
+// Shim for `eslint-plugin-vue/lib/index.js`
+const ESLINT_PLUGIN_VUE_INDEX = `module.exports = {
+  rules: {${fs
+    .readdirSync('../../node_modules/eslint-plugin-vue/lib/rules')
+    .filter(filename => path.extname(filename) === '.js')
+    .map(filename => {
+      const ruleId = path.basename(filename, '.js');
+      return `        "${ruleId}": require("eslint-plugin-vue/lib/rules/${filename}"),`;
+    })
+    .join('\n')}
+  },
+  processors: {
+      ".vue": require("eslint-plugin-vue/lib/processor")
+  }
+}`;
 
 module.exports = {
   entry: __TEST__
@@ -43,7 +60,9 @@ module.exports = {
       },
   target: 'web',
   node: {
-    fs: 'empty',
+    process: false,
+    Buffer: false,
+    setImmediate: false,
     module: 'empty',
     child_process: 'empty',
   },
@@ -64,6 +83,76 @@ module.exports = {
           new RegExp('babel-runtime\\' + path.sep),
         ],
         loader: 'happypack/loader',
+      },
+
+      // `eslint-plugin-vue/lib/index.js` depends on `fs` module we cannot use in browsers, so needs shimming.
+      {
+        test: new RegExp(
+          `eslint-plugin-vue\\${path.sep}lib\\${path.sep}index\\.js$`
+        ),
+        loader: 'string-replace-loader',
+        options: {
+          search: '[\\s\\S]+', // whole file.
+          replace: ESLINT_PLUGIN_VUE_INDEX,
+          flags: 'g',
+        },
+      },
+      // `eslint` has some dynamic `require(...)`.
+      // Delete those.
+      {
+        test: new RegExp(
+          `eslint\\${path.sep}lib\\${path.sep}(?:linter|rules)\\.js$`
+        ),
+        loader: 'string-replace-loader',
+        options: {
+          search: '(?:\\|\\||(\\())\\s*require\\(.+?\\)',
+          replace: '$1',
+          flags: 'g',
+        },
+      },
+      // `vue-eslint-parser` has `require(parserOptions.parser || "espree")`.
+      // Modify it by a static importing.
+      {
+        test: /vue-eslint-parser/,
+        loader: 'string-replace-loader',
+        options: {
+          search: 'require(parserOptions.parser || "espree")',
+          replace:
+            '(parserOptions.parser === "babel-eslint" ? require("babel-eslint") : require("espree"))',
+        },
+      },
+      // Patch for `babel-eslint`
+      {
+        test: new RegExp(
+          `babel-eslint\\${path.sep}lib\\${path.sep}index\\.js$`
+        ),
+        loader: 'string-replace-loader',
+        options: {
+          search: '[\\s\\S]+', // whole file.
+          replace:
+            'module.exports.parseForESLint = require("./parse-with-scope")',
+          flags: 'g',
+        },
+      },
+      {
+        test: new RegExp(
+          `babel-eslint\\${path.sep}lib\\${path.sep}patch-eslint-scope\\.js$`
+        ),
+        loader: 'string-replace-loader',
+        options: {
+          search: '[\\s\\S]+', // whole file.
+          replace: 'module.exports = () => {}',
+          flags: 'g',
+        },
+      },
+      // Remove dynamic require in jest circus
+      {
+        test: /format_node_assert_errors\.js/,
+        loader: 'string-replace-loader',
+        options: {
+          search: `assert = require.call(null, 'assert');`,
+          replace: `throw new Error('module assert not found')`,
+        },
       },
       // JSON is not enabled by default in Webpack but both Node and Browserify
       // allow it implicitly so we also enable it.
@@ -115,28 +204,38 @@ module.exports = {
           name: 'static/media/[name].[hash:8].[ext]',
         },
       },
-      // "html" loader is used to process template page (index.html) to resolve
-      // resources linked with <link href="./relative/path"> HTML tags.
-      {
-        test: /\.html$/,
-        loader: 'html-loader',
-        options: {
-          attrs: ['link:href'],
-        },
-      },
     ],
 
-    noParse: [/eslint\.4\.1\.0\.min\.js$/, /typescriptServices\.js$/],
+    noParse: [
+      /eslint\.4\.1\.0\.min\.js$/,
+      /typescriptServices\.js$/,
+      /browserfs\.js/,
+    ],
   },
 
   resolve: {
     mainFields: ['browser', 'module', 'jsnext:main', 'main'],
-    modules: ['node_modules', 'src'],
+    modules: ['node_modules', 'src', 'standalone-packages'],
 
     extensions: ['.js', '.json'],
 
     alias: {
       moment: 'moment/moment.js',
+
+      fs: 'codesandbox-browserfs/dist/shims/fs.js',
+      buffer: 'codesandbox-browserfs/dist/shims/buffer.js',
+      path: 'codesandbox-browserfs/dist/shims/path.js',
+      processGlobal: 'codesandbox-browserfs/dist/shims/process.js',
+      bufferGlobal: 'codesandbox-browserfs/dist/shims/bufferGlobal.js',
+      bfsGlobal: require.resolve(
+        path.join(
+          '..',
+          '..',
+          '..',
+          'standalone-packages',
+          'codesandbox-browserfs'
+        )
+      ),
     },
   },
 
@@ -156,7 +255,7 @@ module.exports = {
       filename: 'app.html',
       template: paths.appHtml,
       minify: __PROD__ && {
-        removeComments: true,
+        removeComments: false,
         collapseWhitespace: true,
         removeRedundantAttributes: true,
         useShortDoctype: true,
@@ -211,6 +310,15 @@ module.exports = {
     // a plugin that prints an error when you attempt to do this.
     // See https://github.com/facebookincubator/create-react-app/issues/240
     new CaseSensitivePathsPlugin(),
+
+    // Expose BrowserFS, process, and Buffer globals.
+    // NOTE: If you intend to use BrowserFS in a script tag, you do not need
+    // to expose a BrowserFS global.
+    new webpack.ProvidePlugin({
+      BrowserFS: 'bfsGlobal',
+      process: 'processGlobal',
+      Buffer: 'bufferGlobal',
+    }),
 
     // With this plugin we override the load-rules of eslint, this function prevents
     // us from using eslint in the browser, therefore we need to stop it!

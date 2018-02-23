@@ -1,45 +1,23 @@
 import React from 'react';
-import styled from 'styled-components';
+import { inject } from 'mobx-react';
 import { InstantSearch, SearchBox, PoweredBy } from 'react-instantsearch/dom';
 import qs from 'qs';
 
-import Title from 'app/components/text/Title';
 import MaxWidth from 'common/components/flex/MaxWidth';
 import Margin from 'common/components/spacing/Margin';
 import Row from 'common/components/flex/Row';
 
-import Navigation from 'app/containers/Navigation';
+import Navigation from 'app/pages/common/Navigation';
 import {
   ALGOLIA_API_KEY,
   ALGOLIA_APPLICATION_ID,
   ALGOLIA_DEFAULT_INDEX,
 } from 'common/utils/config';
 
-import './Search.css';
+import './search.css';
 import Results from './Results';
 import Filters from './Filters';
-
-type Props = {
-  location: {
-    search: string,
-  },
-  history: {
-    listen: Function,
-    push: Function,
-  },
-};
-
-const Content = styled.div`
-  margin-top: 5%;
-  text-align: left;
-  color: white;
-`;
-
-const StyledTitle = styled(Title)`
-  display: inline-block;
-  text-align: left;
-  font-size: 2rem;
-`;
+import { Content, StyledTitle } from './elements';
 
 const SEARCHABLE_THINGS = [
   'dependency',
@@ -59,7 +37,7 @@ const createURL = state => `?${qs.stringify(state)}`;
 const searchStateToUrl = (props, searchState) =>
   searchState ? `${props.location.pathname}${createURL(searchState)}` : '';
 
-export default class Search extends React.PureComponent<Props> {
+class Search extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = { searchState: qs.parse(props.location.search.slice(1)) };
@@ -75,6 +53,10 @@ export default class Search extends React.PureComponent<Props> {
 
   componentWillUnmount() {
     this.unlisten();
+  }
+
+  componentDidMount() {
+    this.props.signals.searchMounted();
   }
 
   onSearchStateChange = searchState => {
@@ -124,3 +106,5 @@ export default class Search extends React.PureComponent<Props> {
     );
   }
 }
+
+export default inject('signals')(Search);

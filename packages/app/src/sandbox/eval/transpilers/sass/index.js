@@ -8,30 +8,24 @@ class SassTranspiler extends WorkerTranspiler {
   worker: Worker;
 
   constructor() {
-    super('sass-loader', SassWorker, 1);
+    super('sass-loader', SassWorker, 1, { hasFS: true });
 
     this.cacheable = false;
   }
 
   doTranspilation(code: string, loaderContext: LoaderContext) {
-    const modules = loaderContext.getModules();
+    const extension =
+      typeof loaderContext.options.indentedSyntax === 'undefined'
+        ? 'scss'
+        : 'sass';
 
-    const sassModules = modules.filter(m => /\.s?[a|c]ss$/.test(m.path));
-    const files = sassModules.reduce(
-      (interMediateFiles, module) => ({
-        ...interMediateFiles,
-        [module.path]: module.code,
-      }),
-      {}
-    );
+    const customPath = loaderContext.path + '.' + extension;
 
     return new Promise((resolve, reject) => {
-      const path = loaderContext.path;
-
       this.queueTask(
         {
-          files,
-          path,
+          code,
+          path: customPath,
         },
         loaderContext,
         (err, data) => {

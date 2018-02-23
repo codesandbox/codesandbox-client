@@ -1,6 +1,7 @@
 import { dispatch, clearErrorTransformers } from 'codesandbox-api';
-
+import { absolute } from 'common/utils/path';
 import _debug from 'app/utils/debug';
+import parseConfigurations from 'common/templates/configuration/parse';
 
 import initializeErrorTransformers from './errors/transformers';
 import getPreset from './eval';
@@ -20,6 +21,7 @@ import {
 } from './boilerplates';
 
 import loadDependencies from './npm';
+import getDefinition from '../../../common/templates/index';
 
 let initializedResizeListener = false;
 let manager: ?Manager = null;
@@ -35,13 +37,73 @@ export function getCurrentManager(): ?Manager {
   return manager;
 }
 
-async function updateManager(sandboxId, template, managerModules) {
+let firstLoad = true;
+let hadError = false;
+
+// TODO make devDependencies lazy loaded by the packager
+const WHITELISTED_DEV_DEPENDENCIES = [
+  'redux-devtools',
+  'redux-devtools-dock-monitor',
+  'redux-devtools-log-monitor',
+  'redux-logger',
+  'enzyme',
+  'react-addons-test-utils',
+  'react-test-renderer',
+  'identity-obj-proxy',
+];
+
+// Dependencies that we actually don't need, we will replace this by a dynamic
+// system in the future
+const BLACKLISTED_DEPENDENCIES = ['react-scripts', 'react-scripts-ts'];
+
+function getDependencies(parsedPackage) {
+  const {
+    dependencies: d = {},
+    peerDependencies = {},
+    devDependencies = {},
+  } = parsedPackage;
+
+  const returnedDependencies = { ...peerDependencies };
+
+  Object.keys(d).forEach(dep => {
+    if (BLACKLISTED_DEPENDENCIES.indexOf(dep) === -1) {
+      returnedDependencies[dep] = d[dep];
+    }
+  });
+  Object.keys(devDependencies).forEach(dep => {
+    if (WHITELISTED_DEV_DEPENDENCIES.indexOf(dep) > -1) {
+      returnedDependencies[dep] = devDependencies[dep];
+    }
+  });
+
+  return returnedDependencies;
+}
+
+async function updateManager(
+  sandboxId,
+  template,
+  managerModules,
+  manifest,
+  configurations,
+  isNewCombination
+) {
+  let newManager = false;
   if (!manager || manager.id !== sandboxId) {
-    manager = new Manager(sandboxId, managerModules, getPreset(template));
-  } else {
-    await manager.updateData(managerModules);
+    newManager = true;
+    manager = new Manager(sandboxId, getPreset(template), managerModules);
+    if (firstLoad) {
+      // We save the state of transpiled modules, and load it here again. Gives
+      // faster initial loads.
+
+      await manager.load();
+    }
   }
 
+  if (isNewCombination || newManager) {
+    manager.setManifest(manifest);
+  }
+  manager.updateConfigurations(configurations);
+  await manager.updateData(managerModules);
   return manager;
 }
 
@@ -62,71 +124,134 @@ inject();
 async function compile({
   sandboxId,
   modules,
-  entry,
   externalResources,
-  dependencies,
   hasActions,
   isModuleView = false,
   template,
+  entry,
 }) {
+  dispatch({
+    type: 'start',
+  });
+
+  const startTime = Date.now();
   try {
     clearErrorTransformers();
     initializeErrorTransformers();
-    unmount();
+    unmount(manager && manager.webpackHMR ? true : hadError);
   } catch (e) {
     console.error(e);
   }
+  hadError = false;
 
   actionsEnabled = hasActions;
   handleExternalResources(externalResources);
 
   try {
-    const [{ manifest, isNewCombination }] = await Promise.all([
-      loadDependencies(dependencies),
-      updateManager(sandboxId, template, modules),
-    ]);
+    const templateDefinition = getDefinition(template);
+    const configurations = parseConfigurations(
+      template,
+      templateDefinition.configurationFiles,
+      path => modules[path]
+    );
 
-    // Just reset the whole packager if it's a new combination
-    if (isNewCombination) {
-      manager = null;
-      await updateManager(sandboxId, template, modules);
+    const errors = Object.keys(configurations)
+      .map(c => configurations[c])
+      .filter(x => x.error);
+
+    if (errors.length) {
+      throw new Error(
+        `We weren't able to parse: '${errors[0].path}': ${
+          errors[0].error.message
+        }`
+      );
     }
 
-    manager.setManifest(manifest);
+    const packageJSON = modules['/package.json'];
 
-    const managerModuleToTranspile = modules.find(m => m.path === entry);
+    if (!packageJSON) {
+      throw new Error('Could not find package.json');
+    }
 
+    const parsedPackageJSON = configurations.package.parsed;
+
+    const dependencies = getDependencies(parsedPackageJSON);
+    const { manifest, isNewCombination } = await loadDependencies(dependencies);
+
+    if (isNewCombination && !firstLoad) {
+      // Just reset the whole manager if it's a new combination
+      manager = null;
+    }
     const t = Date.now();
+
+    await updateManager(
+      sandboxId,
+      template,
+      modules,
+      manifest,
+      configurations,
+      isNewCombination
+    );
+
+    const possibleEntries = templateDefinition.getEntries(configurations);
+
+    const foundMain = isModuleView
+      ? entry
+      : possibleEntries.find(p => modules[p]);
+
+    if (!foundMain) {
+      throw new Error(
+        `Could not find entry file: ${
+          possibleEntries[0]
+        }. You can specify one in package.json by defining a \`main\` property.`
+      );
+    }
+
+    const main = absolute(foundMain);
+    const managerModuleToTranspile = modules[main];
+
+    await manager.preset.setup(manager);
     await manager.transpileModules(managerModuleToTranspile);
+
     debug(`Transpilation time ${Date.now() - t}ms`);
 
     resetScreen();
 
-    try {
-      const children = document.body.children;
-      // Do unmounting for react
-      if (manifest.dependencies.find(n => n.name === 'react-dom')) {
-        const reactDOMModule = manager.resolveModule('react-dom', '');
-        const reactDOM = manager.evaluateModule(reactDOMModule);
+    if (!manager.webpackHMR) {
+      try {
+        const children = document.body.children;
+        // Do unmounting for react
+        if (manifest.dependencies.find(n => n.name === 'react-dom')) {
+          const reactDOMModule = manager.resolveModule('react-dom', '');
+          const reactDOM = manager.evaluateModule(reactDOMModule);
 
-        reactDOM.unmountComponentAtNode(document.body);
+          reactDOM.unmountComponentAtNode(document.body);
 
-        for (let i = 0; i < children.length; i += 1) {
-          if (children[i].tagName === 'DIV') {
-            reactDOM.unmountComponentAtNode(children[i]);
+          for (let i = 0; i < children.length; i += 1) {
+            if (children[i].tagName === 'DIV') {
+              reactDOM.unmountComponentAtNode(children[i]);
+            }
           }
         }
+      } catch (e) {
+        /* don't do anything with this error */
       }
-    } catch (e) {
-      /* don't do anything with this error */
     }
+    if (!manager.webpackHMR || firstLoad) {
+      const htmlModule =
+        modules[
+          templateDefinition
+            .getHTMLEntries(configurations)
+            .find(p => modules[p])
+        ];
 
-    const htmlModule = modules.find(
-      m => m.path === '/public/index.html' || m.path === '/index.html'
-    );
-    const html = htmlModule ? htmlModule.code : '<div id="root"></div>';
-
-    document.body.innerHTML = html;
+      const html = htmlModule
+        ? htmlModule.code
+        : template === 'vue-cli'
+          ? '<div id="app"></div>'
+          : '<div id="root"></div>';
+      document.body.innerHTML = html;
+    }
 
     const tt = Date.now();
     const oldHTML = document.body.innerHTML;
@@ -134,8 +259,14 @@ async function compile({
     debug(`Evaluation time: ${Date.now() - tt}ms`);
     const domChanged = oldHTML !== document.body.innerHTML;
 
-    if (isModuleView && !domChanged && !module.title.endsWith('.html')) {
-      const isReact = module.code && module.code.includes('React');
+    if (
+      isModuleView &&
+      !domChanged &&
+      !managerModuleToTranspile.path.endsWith('.html')
+    ) {
+      const isReact =
+        managerModuleToTranspile.code &&
+        managerModuleToTranspile.code.includes('React');
 
       if (isReact) {
         // initiate boilerplates
@@ -147,7 +278,7 @@ async function compile({
           }
         }
 
-        const boilerplate = findBoilerplate(module);
+        const boilerplate = findBoilerplate(managerModuleToTranspile);
         if (boilerplate) {
           try {
             boilerplate.module.default(evalled);
@@ -158,24 +289,56 @@ async function compile({
       }
     }
 
+    await manager.preset.teardown(manager);
+
     if (!initializedResizeListener) {
       initializeResizeListener();
     }
 
+    try {
+      // Testing
+      const ttt = Date.now();
+      const testRunner = manager.testRunner;
+      testRunner.findTests(modules);
+      await testRunner.runTests();
+      debug(`Test Evaluation time: ${Date.now() - ttt}ms`);
+
+      // End - Testing
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error(error);
+      }
+    }
+
+    debug(`Total time: ${Date.now() - startTime}ms`);
+
     dispatch({
       type: 'success',
     });
+
+    manager.save();
   } catch (e) {
     console.log('Error in sandbox:');
     console.error(e);
 
+    if (manager) {
+      manager.clearCache();
+    }
+
     e.module = e.module;
-    e.fileName = e.fileName || entry;
+    e.fileName = e.fileName;
 
     const event = new Event('error');
     event.error = e;
 
     window.dispatchEvent(event);
+
+    hadError = true;
+  }
+  firstLoad = false;
+
+  if (typeof window.__puppeteer__ === 'function') {
+    window.__puppeteer__('done');
   }
 }
 
@@ -185,9 +348,8 @@ type Arguments = {
     code: string,
     path: string,
   }>,
-  entry: string,
+  entry: ?string,
   externalResources: Array<string>,
-  dependencies: Object,
   hasActions: boolean,
   template: string,
 };

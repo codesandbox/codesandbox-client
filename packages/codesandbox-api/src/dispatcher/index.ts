@@ -37,14 +37,15 @@ let listenerId = 0;
  * @param callback Call this function to 'unlisten'
  */
 export function listen(callback: Callback): () => void {
-  listeners[++listenerId] = callback;
+  const id = ++listenerId;
+  listeners[id] = callback;
 
   return () => {
-    delete listeners[listenerId];
+    delete listeners[id];
   };
 }
 
-function notifyListeners(data: Object, source?: MessageEvent['source']) {
+export function notifyListeners(data: Object, source?: MessageEvent['source']) {
   Object.keys(listeners).forEach(listenerId => {
     if (listeners[listenerId]) {
       listeners[listenerId](data, source);

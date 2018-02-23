@@ -1,58 +1,35 @@
-// @flow
 import * as React from 'react';
-import styled from 'styled-components';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
+import { inject, observer } from 'mobx-react';
 
-import Button from 'app/components/buttons/Button';
-import type { PaginatedSandboxes } from 'common/types';
+import Button from 'app/components/Button';
+import SandboxList from 'app/components/SandboxList';
 
-import modalActionCreators from 'app/store/modal/actions';
-import Alert from 'app/components/Alert';
-
-import SandboxList from 'app/components/sandbox/SandboxList';
-import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
+import { Navigation, Notice } from './elements';
 
 const PER_PAGE_COUNT = 15;
 
-const Navigation = styled.div`
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  padding-bottom: 2rem;
-`;
-
-const Notice = styled.div`
-  text-align: center;
-  color: rgba(255, 255, 255, 0.5);
-  padding: 2rem 0;
-  padding-bottom: 0;
-`;
-
-type Props = {
-  page: number,
-  sandboxCount: number,
-  baseUrl: string,
-  username: string,
-  fetchSandboxes: Function,
-  sandboxes: PaginatedSandboxes,
-  sandboxActions: typeof sandboxActionCreators,
-  modalActions: typeof modalActionCreators,
-  isCurrentUser: boolean,
-};
-
-class Sandboxes extends React.PureComponent<Props> {
+class Sandboxes extends React.Component {
   static defaultProps = {
     page: 1,
   };
 
   fetch(force = false) {
-    const { fetchSandboxes, username, page, sandboxes } = this.props;
+    const { signals, source, store, page } = this.props;
 
-    if (force || !sandboxes || !sandboxes[page]) {
-      fetchSandboxes(username, page);
+    if (store.profile.isLoadingSandboxes) {
+      return;
+    }
+
+    if (force || !store.profile[source] || !store.profile[source].get(page)) {
+      switch (source) {
+        case 'currentSandboxes':
+          signals.profile.sandboxesPageChanged({ page });
+          break;
+        case 'currentLikedSandboxes':
+          signals.profile.likedSandboxesPageChanged({ page });
+          break;
+        default:
+      }
     }
   }
 
@@ -60,50 +37,52 @@ class Sandboxes extends React.PureComponent<Props> {
     this.fetch();
   }
 
-  componentDidUpdate() {
-    this.fetch();
+  componentDidUpdate(prevProps) {
+    if (
+      prevProps.page !== this.props.page ||
+      prevProps.source !== this.props.source
+    ) {
+      this.fetch();
+    }
   }
 
   getLastPage = () => {
-    const { sandboxCount } = this.props;
+    if (this.props.source === 'currentSandboxes') {
+      const { sandboxCount } = this.props.store.profile.current;
 
-    return Math.ceil(sandboxCount / PER_PAGE_COUNT);
+      return Math.ceil(sandboxCount / PER_PAGE_COUNT);
+    }
+
+    const { givenLikeCount } = this.props.store.profile.current;
+
+    return Math.ceil(givenLikeCount / PER_PAGE_COUNT);
   };
 
-  deleteSandbox = (id: string) => {
-    const { modalActions } = this.props;
-
-    modalActions.openModal({
-      Body: (
-        <Alert
-          title="Delete Sandbox"
-          body={<span>Are you sure you want to delete this sandbox?</span>}
-          onCancel={modalActions.closeModal}
-          onDelete={async () => {
-            await this.props.sandboxActions.deleteSandbox(id);
-            this.fetch(true);
-            modalActions.closeModal();
-          }}
-        />
-      ),
-    });
+  deleteSandbox = index => {
+    this.props.signals.profile.deleteSandboxClicked({ index });
   };
 
   render() {
-    const { sandboxes, isCurrentUser, page, baseUrl } = this.props;
-    if (!sandboxes || !sandboxes[page]) return <div />;
+    const { store, source, page, baseUrl } = this.props;
+    const isProfileCurrentUser = store.profile.isProfileCurrentUser;
+    const isLoadingSandboxes = store.profile.isLoadingSandboxes;
+    const sandboxes = store.profile[source];
+
+    if (isLoadingSandboxes || !sandboxes || !sandboxes.get(page))
+      return <div />;
+
     return (
       <div>
-        {isCurrentUser && (
+        {isProfileCurrentUser && (
           <Notice>
             You{"'"}re viewing your own profile, so you can see your private and
             unlisted sandboxes. Others can{"'"}t.
           </Notice>
         )}
         <SandboxList
-          isCurrentUser={isCurrentUser}
-          sandboxes={sandboxes[page]}
-          onDelete={this.deleteSandbox}
+          isCurrentUser={isProfileCurrentUser}
+          sandboxes={sandboxes.get(page)}
+          onDelete={source === 'currentSandboxes' && this.deleteSandbox}
         />
         <Navigation>
           <div>
@@ -132,9 +111,4 @@ class Sandboxes extends React.PureComponent<Props> {
   }
 }
 
-const mapDispatchToProps = dispatch => ({
-  sandboxActions: bindActionCreators(sandboxActionCreators, dispatch),
-  modalActions: bindActionCreators(modalActionCreators, dispatch),
-});
-
-export default connect(undefined, mapDispatchToProps)(Sandboxes);
+export default inject('signals', 'store')(observer(Sandboxes));

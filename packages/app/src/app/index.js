@@ -1,21 +1,20 @@
 import React from 'react';
-import { AppContainer } from 'react-hot-loader';
 import { render } from 'react-dom';
-import { Provider } from 'react-redux';
 import { ThemeProvider } from 'styled-components';
-import { ConnectedRouter } from 'react-router-redux';
+import { Router } from 'react-router-dom';
+import history from 'app/utils/history';
+import VERSION from 'common/version';
 import registerServiceWorker from 'common/registerServiceWorker';
 import requirePolyfills from 'common/load-dynamic-polyfills';
 import 'normalize.css';
-import notificationActions from 'app/store/notifications/actions';
 import 'common/global.css';
 import theme from 'common/theme';
+import { Provider } from 'mobx-react';
+import controller from './controller';
 
 import App from './pages/index';
 import './split-pane.css';
-import createStore from './store';
 import logError from './utils/error';
-import history from './utils/history';
 
 if (process.env.NODE_ENV === 'production') {
   try {
@@ -59,6 +58,8 @@ if (process.env.NODE_ENV === 'production') {
         /127\.0\.0\.1:4001\/isrunning/i, // Cacaoweb
         /webappstoolbarba\.texthelp\.com\//i,
         /metrics\.itunes\.apple\.com\.edgesuite\.net\//i,
+        // Monaco debuggers
+        'https://codesandbox.io/public/vs/language/typescript/lib/typescriptServices.js',
       ],
     }).install();
   } catch (error) {
@@ -69,38 +70,26 @@ if (process.env.NODE_ENV === 'production') {
 requirePolyfills().then(() => {
   const rootEl = document.getElementById('root');
 
-  const store = createStore(history);
-
   const showNotification = (message, type) =>
-    store.dispatch(notificationActions.addNotification(message, type));
+    controller.getSignal('notificationAdded')({
+      type,
+      message,
+    });
 
   registerServiceWorker('/service-worker.js', showNotification);
 
-  const renderApp = RootComponent => {
-    try {
-      render(
-        <AppContainer>
-          <ThemeProvider theme={theme}>
-            <Provider store={store}>
-              <ConnectedRouter history={history}>
-                <RootComponent store={store} />
-              </ConnectedRouter>
-            </Provider>
-          </ThemeProvider>
-        </AppContainer>,
-        rootEl
-      );
-    } catch (e) {
-      logError(e);
-    }
-  };
-
-  renderApp(App);
-
-  if (module.hot) {
-    module.hot.accept('./pages/index', () => {
-      const NextApp = require('./pages/index').default; // eslint-disable-line global-require
-      renderApp(NextApp);
-    });
+  try {
+    render(
+      <Provider {...controller.provide()}>
+        <ThemeProvider theme={theme}>
+          <Router history={history}>
+            <App />
+          </Router>
+        </ThemeProvider>
+      </Provider>,
+      rootEl
+    );
+  } catch (e) {
+    logError(e);
   }
 });
