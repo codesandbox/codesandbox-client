@@ -2,6 +2,7 @@
   "name": "codesandbox-playground",
   "version": "1.0.0",
   "description": "Embed any web application right in your website, plug and play.",
+  "source": "src/index.ts",
   "main": "dist/codesandbox-playground.umd.js",
   "module": "dist/codesandbox-playground.es5.js",
   "typings": "dist/types/codesandbox-playground.d.ts",
@@ -10,23 +11,29 @@
   "license": "MIT",
   "private": false,
   "devDependencies": {
-    "@storybook/addon-actions": "=3.2.18",
-    "@storybook/addon-knobs": "=3.2.18",
-    "@storybook/addon-links": "=3.2.18",
-    "@storybook/react": "=3.2.18",
-    "storybook-addon-jsx": "^5.1.0",
+    "@storybook/addon-actions": "=3.3.14",
+    "@storybook/addon-knobs": "=3.3.14",
+    "@storybook/addon-links": "=3.3.14",
+    "@storybook/react": "=3.3.14",
+    "@types/node": "^9.4.6",
+    "@types/prop-types": "^15.5.2",
+    "@types/react": "^16.0.38",
+    "@types/react-dom": "^16.0.4",
+    "@types/storybook__react": "^3.0.7",
+    "awesome-typescript-loader": "^3.4.1",
+    "microbundle": "^0.4.4",
+    "storybook-addon-jsx": "^5.3.0",
     "typescript": "^2.6.2"
   },
-  "peerDependencies": {
+  "optionalDependencies": {
     "react": "^16.0.0"
   },
   "scripts": {
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "build": "microbundle"
   },
   "dependencies": {
-    "codemirror": "^5.32.0",
-    "codesandbox": "^1.1.14",
-    "prop-types": "^15.6.0"
+    "codesandbox": "^1.1.20"
   }
 }

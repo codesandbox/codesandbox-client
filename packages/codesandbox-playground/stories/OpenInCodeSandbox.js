@@ -1,12 +1,14 @@
 import React from 'react';
+import JSXAddon from 'storybook-addon-jsx';
+import { storiesOf, setAddon } from '@storybook/react';
 
-import { storiesOf } from '@storybook/react';
+import OpenInCodeSandbox from '../src/components/OpenInCodeSandbox/index.ts';
 
-import OpenInCodeSandbox from '../src/components/OpenInCodeSandbox';
+setAddon(JSXAddon);
 
 const stories = storiesOf('Export To CodeSandbox', module);
 
-stories.add('with multiple files', () => (
+stories.addWithJSX('with multiple files', () => (
   <OpenInCodeSandbox
     files={{
       '/index.js': {
@@ -16,7 +18,7 @@ document.body.innerHTML = JSON.stringify(Hello);
 `,
       },
       '/Hello.js': {
-        code: `export default "Hello from another file!"`,
+        code: `export default \`Hello from another file, here's an ID: $\{require('uuid')()}!\``,
       },
     }}
     dependencies={{

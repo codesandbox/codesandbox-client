@@ -1,13 +1,10 @@
-import React from 'react';
-import { getParameters } from 'codesandbox/lib/api/define';
+import * as React from 'react';
 
-import { filePropTypes } from '../../utils/prop-types';
+import { IFileProps } from '../types';
 
-export default class OpenInCodeSandbox extends React.Component {
-  static propTypes = {
-    ...filePropTypes,
-  };
+const { getParameters } = require('codesandbox/lib/api/define');
 
+export default class OpenInCodeSandbox extends React.Component<IFileProps> {
   static defaultProps = {
     entry: '/index.js',
   };
@@ -20,14 +17,16 @@ export default class OpenInCodeSandbox extends React.Component {
       dependencies,
     };
 
-    paramFiles['/package.json'] = { code: JSON.stringify(packageJSON) };
+    paramFiles['/package.json'] = {
+      code: JSON.stringify(packageJSON, null, 2),
+    };
 
     const normalized = Object.keys(paramFiles).reduce(
       (prev, next) => ({
         ...prev,
         [next.replace('/', '')]: {
-          ...paramFiles[next],
           content: paramFiles[next].code,
+          isBinary: false,
         },
       }),
       {}

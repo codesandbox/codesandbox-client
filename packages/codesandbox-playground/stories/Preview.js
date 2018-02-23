@@ -1,48 +1,66 @@
 import React from 'react';
 
-import { storiesOf } from '@storybook/react';
+import { storiesOf, setAddon } from '@storybook/react';
+import JSXAddon from 'storybook-addon-jsx';
+import { withKnobs, text, object } from '@storybook/addon-knobs/react';
 
-import Preview from '../src/components/Preview';
+import Preview from '../src/components/Preview/index.ts';
+
+setAddon(JSXAddon);
 
 const stories = storiesOf('Preview', module);
 
-stories.add('with one file', () => (
+stories.addDecorator(withKnobs);
+
+stories.addWithJSX('with one file', () => (
   <Preview
     files={{
       '/index.js': {
-        code: `document.body.innerHTML = \`<div>$\{require('uuid')()}</div>\``,
+        code: text(
+          'code',
+          `document.body.innerHTML = \`<div>$\{require('uuid')()}</div>\``
+        ),
       },
     }}
-    dependencies={{
+    dependencies={object('dependencies', {
       uuid: 'latest',
-    }}
+    })}
   />
 ));
 
-stories.add('with multiple files', () => (
+stories.addWithJSX('with multiple files', () => (
   <Preview
     files={{
       '/index.js': {
-        code: `import Hello from './Hello.js';
+        code: text(
+          '/index.js code',
+          `import Hello from './Hello.js';
 
 document.body.innerHTML = JSON.stringify(Hello);
-`,
+`
+        ),
       },
       '/Hello.js': {
-        code: `export default "Hello from another file!"`,
+        code: text(
+          '/Hello.js code',
+          `export default "Hello from another file!"`
+        ),
       },
     }}
     dependencies={{}}
   />
 ));
 
-stories.add('with errors', () => (
+stories.addWithJSX('with errors', () => (
   <Preview
     files={{
       '/index.js': {
-        code: `
+        code: text(
+          '/index.js code',
+          `
 throw new Error("I'm an error!");
-          `,
+          `
+        ),
       },
     }}
     dependencies={{}}

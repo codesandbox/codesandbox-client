@@ -38,7 +38,8 @@
     "packages/homepage",
     "packages/app",
     "packages/common",
-    "packages/codesandbox-api"
+    "packages/codesandbox-api",
+    "packages/codesandbox-playground"
   ],
   "devDependencies": {
     "all-contributors-cli": "^4.3.0",
