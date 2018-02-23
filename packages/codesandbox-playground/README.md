@@ -8,11 +8,11 @@ Online code playgrounds are getting more popular: they provide an easy way to pl
 
 CodeSandbox came along, and still had a pretty basic bundler. However, as CodeSandbox got more popular its bundler got more advanced. Nowadays the bundler has comparable parity with Webpack, and it would be a shame if others couldn't use the functionality.
 
-This library acts as an interface with the bundler of CodeSandbox. It allows you to run any code on a web page, from Vue projects to React projects.
+This library acts as an interface with the bundler of CodeSandbox. It allows you to run any code on a web page, from Vue projects to React projects. With everything that CodeSandbox supports as well.
 
 ## So what can the bundler do?
 
-This is a list of features that the bundler supports, it may be outdated.
+This is a list of features that the bundler supports, the list may be outdated.
 
 1. Hot Module Reloading API (`module.hot`).
 2. npm dependencies
@@ -33,15 +33,18 @@ The Manager is a plain JavaScript implementation, you can use it by importing Ma
 import { Manager } from 'codesandbox-playground';
 
 // Let's say you want to show the preview on #preview
-const m = new Manager('#app', {
-  files: {
-    '/index.js': `console.log(require('uuid'))`,
-  },
-  dependencies: {
-    uuid: 'latest',
-  },
-  entry: '/index.js',
-});
+const m = new Manager(
+  '#app',
+  {
+    files: {
+      '/index.js': `console.log(require('uuid'))`,
+    },
+    dependencies: {
+      uuid: 'latest',
+    },
+    entry: '/index.js',
+  } /* you can give a third argument with extra options, described at the bottom */
+);
 
 // This will show the preview on the #preview element, you can now send new code
 // by calling 'sendCode(files, dependencies, entry)'. We will automatically determine
@@ -59,7 +62,7 @@ m.sendCode(
 
 ### As a React Component
 
-We included a React component you can use, implementation is fairly simple.
+We included a React component you can use, the implementation is fairly simple.
 
 ```jsx
 import Preview from 'codesandbox-playground/dist/components/Preview';
@@ -81,4 +84,4 @@ export default () => (
 );
 ```
 
-We will automatically update the preview as the code changes.
+We will automatically hot update the preview as the props update.
