@@ -31,7 +31,7 @@
   "scripts": {
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
-    "build": "microbundle"
+    "build": "microbundle && tsc"
   },
   "dependencies": {
     "codesandbox": "^1.1.20"

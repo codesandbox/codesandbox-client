@@ -12,11 +12,11 @@ export default class OpenInCodeSandbox extends React.Component<IFileProps> {
   getFileParameters = () => {
     const { files, dependencies } = this.props;
     const paramFiles = { ...files };
+
     const packageJSON = {
       main: this.props.entry,
       dependencies,
     };
-
     paramFiles['/package.json'] = {
       code: JSON.stringify(packageJSON, null, 2),
     };
