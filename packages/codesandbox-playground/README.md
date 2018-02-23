@@ -34,7 +34,7 @@ import { Manager } from 'codesandbox-playground';
 
 // Let's say you want to show the preview on #preview
 const m = new Manager(
-  '#app',
+  '#preview',
   {
     files: {
       '/index.js': `console.log(require('uuid'))`,
