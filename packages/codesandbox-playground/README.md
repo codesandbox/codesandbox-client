@@ -74,22 +74,13 @@ import Preview from 'codesandbox-playground/dist/components/Preview';
 const files = {
   '/index.js': {
     code: `
-    import preval from 'preval.macro';
-
-    console.log(preval);
+    console.log('hey')
   `,
-  },
-  '.babelrc': {
-    // used for babel config
-    code: `
-      {}
-    `,
   },
 };
 
 const dependencies = {
-  'babel-macros': 'latest',
-  'babel-plugin-preval': 'latest',
+  react: 'latest',
 };
 
 export default () => (
