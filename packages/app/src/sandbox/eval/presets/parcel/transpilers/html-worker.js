@@ -146,13 +146,14 @@ setupHTML();
 
   resources.forEach(resource => {
     const resourcePath = JSON.stringify(resource);
+    compiledCode += `\n`;
     compiledCode += `require(${resourcePath});`;
-    compiledCode += '\n';
     compiledCode += `
-      module.hot.accept(${resourcePath}, () => {
-        require(${resourcePath});
-      })
-    `;
+module.hot.accept(${resourcePath}, () => {
+  require(${resourcePath});
+})
+
+`;
   });
 
   compiledCode += 'module.hot.decline();';
