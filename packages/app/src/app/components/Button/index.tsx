@@ -1,15 +1,17 @@
-import React from 'react';
+import * as React from 'react';
 import { LinkButton, AButton, Button } from './elements';
 
 type Props = {
-  [key: any]: any,
-  to: ?string,
-  href: ?string,
-  small: ?boolean,
-  style: ?any,
+  to?: string
+  href?: string
+  small?: boolean
+  style?: any
+  disabled?: boolean
+  onClick?: () => void
+  red?: boolean
 };
 
-function ButtonComponent({ small = false, style = {}, ...props }: Props) {
+const ButtonComponent: React.StatelessComponent<Props> = ({ small = false, style = {}, ...props }) => {
   const newStyle = {
     ...style,
     ...(small

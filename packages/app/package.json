@@ -43,6 +43,8 @@
     "typecheck": "flow check"
   },
   "devDependencies": {
+    "@types/react": "^16.0.38",
+    "@types/react-dom": "^16.0.4",
     "autoprefixer": "^6.7.7",
     "babel-jest": "^21.2.0",
     "babel-loader": "7.1.1",
@@ -74,6 +76,7 @@
     "file-loader": "^0.11.1",
     "filesize": "^3.5.6",
     "flow-bin": "^0.57.3",
+    "fork-ts-checker-webpack-plugin": "^0.3.0",
     "fs-extra": "^2.1.2",
     "gulp-replace": "^0.5.4",
     "gzip-size": "3.0.0",
@@ -103,6 +106,7 @@
     "strip-ansi": "3.0.1",
     "style-loader": "^0.18.2",
     "sw-precache-webpack-plugin": "^0.11.4",
+    "ts-loader": "^3.5.0",
     "typescript": "^2.4.2",
     "uglifyjs-webpack-plugin": "^1.0.1",
     "url-loader": "^0.5.9",

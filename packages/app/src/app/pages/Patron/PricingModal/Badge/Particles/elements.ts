@@ -12,8 +12,14 @@ const particleAnimation = (deg: number) => keyframes`
   }
 `;
 
+type Props = {
+  deg: number
+  i: number
+  badge: string
+}
+
 export const Particle = styled.div`
-  animation: ${props => particleAnimation(props.deg, props.i)} 700ms ease;
+  animation: ${(props: Props) => particleAnimation(props.deg)} 700ms ease;
   position: absolute;
   top: 0;
   bottom: 20px;
@@ -23,7 +29,7 @@ export const Particle = styled.div`
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  ${props => {
+  ${(props: Props) => {
     const color =
       badges[props.badge].colors[props.i % badges[props.badge].colors.length];
 

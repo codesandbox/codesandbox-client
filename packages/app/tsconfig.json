@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "lib": ["es2015", "dom"],
+    "baseUrl": "./src",
+    "outDir": "build/dist",
+    "module": "esnext",
+    "target": "es5",
+    "sourceMap": true,
+    "allowJs": true,
+    "checkJs": false,
+    "strict": true,
+    "jsx": "react",
+    "moduleResolution": "node",
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitReturns": false,
+    "noImplicitThis": true,
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "suppressImplicitAnyIndexErrors": true,
+    "noUnusedLocals": true
+  },
+  "exclude": ["node_modules", "**/*.js"]
+}

@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 
 import Margin from 'common/components/spacing/Margin';
 

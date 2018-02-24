@@ -1,11 +1,11 @@
-import React from 'react';
+import * as React from 'react';
 
 import badges from 'common/utils/badges/patron-info';
 import { Particle } from './elements';
 
 const classNameRegex = /\shide/g;
 
-function showElement(el: HTMLElement) {
+function showElement(el: SVGElement) {
   if (el.nodeName === 'svg') {
     el.setAttribute('class', el.className.baseVal.replace(classNameRegex, ''));
   } else {
@@ -13,7 +13,7 @@ function showElement(el: HTMLElement) {
   }
 }
 
-function hideElement(el: HTMLElement) {
+function hideElement(el: SVGElement) {
   if (el.nodeName === 'svg') {
     el.setAttribute('class', `${el.className.baseVal} hide`);
   } else {
@@ -34,17 +34,24 @@ const createParticles = (amount: number, badge) =>
       />
     ));
 
-export default class Particles extends React.Component {
+
+type Props = {
+  badge: string
+  makeItRain: boolean
+}
+
+export default class Particles extends React.Component<Props> {
+  timeout?: NodeJS.Timer;
+
   makeItRain = () => {
     const particleSelector = document.getElementsByClassName('particle');
-    Array.forEach(particleSelector, hideElement);
+
+    Array.prototype.forEach.call(particleSelector, hideElement)
 
     requestAnimationFrame(() => {
-      Array.forEach(particleSelector, showElement);
+      Array.prototype.forEach.call(particleSelector, showElement)
     });
   };
-
-  timeout: ?number;
 
   shouldComponentUpdate(nextProps) {
     if (nextProps.badge !== this.props.badge) {
@@ -52,10 +59,10 @@ export default class Particles extends React.Component {
         `${nextProps.badge}-particle`
       );
 
-      Array.forEach(particleSelector, hideElement);
+      Array.prototype.forEach.call(particleSelector, hideElement)
 
       requestAnimationFrame(() => {
-        Array.forEach(particleSelector, showElement);
+        Array.prototype.forEach.call(particleSelector, showElement)
       });
 
       if (this.timeout) {
@@ -64,7 +71,7 @@ export default class Particles extends React.Component {
 
       this.timeout = setTimeout(() => {
         const allParticleSelector = document.getElementsByClassName('particle');
-        Array.forEach(allParticleSelector, hideElement);
+        Array.prototype.forEach.call(allParticleSelector, hideElement)
       }, 700);
     }
 

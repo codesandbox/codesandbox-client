@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 
 import Relative from 'common/components/Relative';
 import badges from 'common/utils/badges/patron-info';
@@ -8,7 +8,12 @@ import Particles from './Particles';
 
 import { BadgeContainer } from './elements';
 
-function Badge({ badge, subscribed }) {
+type Props = {
+  badge: string
+  subscribed: boolean
+}
+
+function Badge({ badge, subscribed }: Props) {
   const BadgeComponent = badges[badge].Badge;
 
   return (

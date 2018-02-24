@@ -1,5 +1,10 @@
-import React from 'react';
+declare var Raven: {
+  config (url: string, options: {})
+}
+
+import * as React from 'react';
 import { render } from 'react-dom';
+import { Container } from '@cerebral/fluent'
 import { ThemeProvider } from 'styled-components';
 import { Router } from 'react-router-dom';
 import history from 'app/utils/history';
@@ -12,7 +17,7 @@ import theme from 'common/theme';
 import { Provider } from 'mobx-react';
 import controller from './controller';
 
-import App from './pages/index';
+import App  from './pages'
 import './split-pane.css';
 import logError from './utils/error';
 
@@ -83,11 +88,13 @@ requirePolyfills().then(() => {
   try {
     render(
       <Provider store={controller.state} signals={controller.signals}>
-        <ThemeProvider theme={theme}>
-          <Router history={history}>
-            <App />
-          </Router>
-        </ThemeProvider>
+        <Container controller={controller}>
+          <ThemeProvider theme={theme}>
+            <Router history={history}>
+              <App />
+            </Router>
+          </ThemeProvider>
+        </Container>
       </Provider>,
       rootEl
     );

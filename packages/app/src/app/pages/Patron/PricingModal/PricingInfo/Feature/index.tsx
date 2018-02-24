@@ -1,8 +1,15 @@
-import React from 'react';
+import * as React from 'react';
 
 import { Container, Feature, Value } from './elements';
 
-function FeatureComponent({ disabled, feature, free, supporter }) {
+type Props = {
+  disabled?: boolean
+  feature?: string
+  free?: string
+  supporter?: string
+}
+
+function FeatureComponent({ disabled, feature, free, supporter }: Props) {
   return (
     <Container disabled={disabled}>
       <Feature>{feature}</Feature>

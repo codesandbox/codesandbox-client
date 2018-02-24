@@ -3,14 +3,19 @@ import * as sequences from './sequences';
 import * as getters from './getters';
 import { SubscriptionError } from './errors';
 
-export default Module({
-  state: {
-    price: 10,
-    isUpdatingSubscription: false,
-    get tier() {
-      return getters.tier(this);
-    },
+import { State } from './types'
+
+const state: State =  {
+  price: 10,
+  isUpdatingSubscription: false,
+  error: null,
+  get tier() {
+    return getters.tier(this);
   },
+}
+
+export default Module({
+  state,
   signals: {
     patronMounted: sequences.loadPatron,
     priceChanged: sequences.changePrice,

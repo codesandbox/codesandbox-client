@@ -32,6 +32,7 @@ import workspace from './modules/workspace';
 import files from './modules/files';
 import live from './modules/live';
 
+<<<<<<< HEAD:packages/app/src/app/store/index.js
 export default Module({
 <<<<<<< HEAD
     state: {
@@ -139,7 +140,40 @@ export default Module({
     get isLoggedIn() {
       return getters.isLoggedIn(this);
     },
+=======
+import { State } from './types'
+
+const state: State = {
+  hasLoadedApp: false,
+  jwt: null,
+  isAuthenticating: true,
+  authToken: null,
+  error: null,
+  user: null,
+  connected: true,
+  notifications: [],
+  userMenuOpen: false,
+  isLoadingZeit: false,
+  isLoadingCLI: false,
+  isLoadingGithub: false,
+  contextMenu: {
+    show: false,
+    items: [],
+    x: 0,
+    y: 0,
   },
+  currentModal: null,
+  get isPatron() {
+    return getters.isPatron(this);
+>>>>>>> Initial patron refactor of fluent step 2:packages/app/src/app/store/index.ts
+  },
+  get isLoggedIn() {
+    return getters.isLoggedIn(this);
+  },
+}
+
+export default Module({
+  state,
   signals: {
     appUnmounted: sequences.unloadApp,
     searchMounted: sequences.loadSearch,
@@ -181,7 +215,7 @@ export default Module({
     connection: ConnectionProvider,
     jwt: JwtProvider,
     jsZip: JSZipProvider,
-    http: HttpProvider(),
+    http: HttpProvider({}),
     browser: BrowserProvider,
     router: RouterProvider,
     utils: UtilsProvider,
