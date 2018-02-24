@@ -10,6 +10,7 @@ import Manager from './eval/manager';
 import { resetScreen } from './status-screen';
 
 import { inject, unmount } from './react-error-overlay/overlay';
+import createCodeSandboxOverlay from './codesandbox-overlay';
 import handleExternalResources from './external-resources';
 
 import defaultBoilerplates from './boilerplates/default-boilerplates';
@@ -129,6 +130,7 @@ async function compile({
   isModuleView = false,
   template,
   entry,
+  showOpenInCodeSandbox = true,
 }) {
   dispatch({
     type: 'start',
@@ -295,6 +297,10 @@ async function compile({
       initializeResizeListener();
     }
 
+    if (showOpenInCodeSandbox) {
+      createCodeSandboxOverlay(modules);
+    }
+
     try {
       // Testing
       const ttt = Date.now();
@@ -352,6 +358,7 @@ type Arguments = {
   externalResources: Array<string>,
   hasActions: boolean,
   template: string,
+  showOpenInCodeSandbox?: boolean,
 };
 
 const tasks: Array<Arguments> = [];

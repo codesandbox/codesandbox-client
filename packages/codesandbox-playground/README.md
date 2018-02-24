@@ -1,4 +1,4 @@
-# SandPacker
+# SandPack
 
 A bundler that completely works in the browser, utilizing browser APIs.
 
@@ -6,7 +6,7 @@ A bundler that completely works in the browser, utilizing browser APIs.
 
 Online code playgrounds are getting more popular: they provide an easy way to play with code without installation. Until a year ago it was very hard to play with bigger web applications in the browser; there was no bundler that was comparable with local bundlers and worked in the browser.
 
-CodeSandbox came along, and still had a pretty basic bundler. However, as CodeSandbox got more popular its bundler got more advanced. Nowadays the bundler has comparable parity with Webpack, and it would be a shame if others couldn't use the functionality.
+CodeSandbox came along, and still had a pretty basic bundler. However, as CodeSandbox got more popular its bundler got more advanced. Nowadays the bundler has comparable feature parity with Webpack, and it would be a shame if others couldn't use the functionality.
 
 This library acts as an interface with the bundler of CodeSandbox. It allows you to run any code on a web page, from Vue projects to React projects. With everything that CodeSandbox supports as well.
 
@@ -14,9 +14,9 @@ This library acts as an interface with the bundler of CodeSandbox. It allows you
 
 This is a list of features that the bundler supports, the list may be outdated.
 
-1. Hot Module Reloading API (`module.hot`).
+1. Hot Module Reloading API (`module.hot`)
 2. npm dependencies
-3. 17 transpilers
+3. Supports most common transpilers (vue, babel, typescript, css)
 4. Friendly error overlay
 5. Parallel transpiling
 6. On-demand transpiler loading
@@ -37,7 +37,9 @@ const m = new Manager(
   '#preview',
   {
     files: {
-      '/index.js': `console.log(require('uuid'))`,
+      '/index.js': {
+        code: `console.log(require('uuid'))`,
+      },
     },
     dependencies: {
       uuid: 'latest',
@@ -51,7 +53,9 @@ const m = new Manager(
 // how to hot update the preview.
 m.sendCode(
   {
-    '/index.js': `console.log('other code')`,
+    '/index.js': {
+      code: `console.log('other code')`,
+    },
   },
   {
     uuid: 'latest',
@@ -68,15 +72,24 @@ We included a React component you can use, the implementation is fairly simple.
 import Preview from 'codesandbox-playground/dist/components/Preview';
 
 const files = {
-  '/index.js': `
-    import uuid from 'uuid';
+  '/index.js': {
+    code: `
+    import preval from 'preval.macro';
 
-    console.log(uuid());
+    console.log(preval);
   `,
+  },
+  '.babelrc': {
+    // used for babel config
+    code: `
+      {}
+    `,
+  },
 };
 
 const dependencies = {
-  uuid: 'latest',
+  'babel-macros': 'latest',
+  'babel-plugin-preval': 'latest',
 };
 
 export default () => (

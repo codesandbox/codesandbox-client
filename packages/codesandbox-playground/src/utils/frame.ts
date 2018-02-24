@@ -15,11 +15,17 @@ export interface IDependencies {
   [depName: string]: string;
 }
 
+export interface IOptions {
+  showOpenInCodeSandbox?: boolean;
+  template?: string;
+}
+
 export function sendCode(
   frame: HTMLIFrameElement,
   files: IFiles,
   dependencies: IDependencies,
-  entry: string
+  entry: string,
+  options: IOptions = {}
 ) {
   const modules: IModules = Object.keys(files).reduce(
     (prev, next) => ({
@@ -33,11 +39,15 @@ export function sendCode(
   );
 
   modules['/package.json'] = {
-    code: JSON.stringify({
-      name: 'run',
-      main: entry,
-      dependencies,
-    }),
+    code: JSON.stringify(
+      {
+        name: 'run',
+        main: entry,
+        dependencies,
+      },
+      null,
+      2
+    ),
     path: '/package.json',
   };
 
@@ -50,7 +60,8 @@ export function sendCode(
       entry: entry,
       dependencies: dependencies,
       externalResources: [],
-      template: 'create-react-app',
+      template: options.template || 'create-react-app',
+      showOpenInCodeSandbox: options.showOpenInCodeSandbox || true,
     },
     '*'
   );

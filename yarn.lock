@@ -3728,7 +3728,7 @@ codemirror@^5.27.4:
   version "5.31.0"
   resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.31.0.tgz#ecf3d057eb74174147066bfc7c5f37b4c4e07df2"
 
-codesandbox-import-utils@=1.1.19:
+codesandbox-import-utils@=1.1.19, codesandbox-import-utils@^1.1.19:
   version "1.1.19"
   resolved "https://registry.yarnpkg.com/codesandbox-import-utils/-/codesandbox-import-utils-1.1.19.tgz#e9756c8f6b5df89e28131d73078420b629612342"
   dependencies:
