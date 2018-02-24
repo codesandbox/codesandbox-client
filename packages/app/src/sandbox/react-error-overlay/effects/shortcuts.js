@@ -28,7 +28,7 @@ function keyHandler(callback: ShortcutCallback, e: KeyboardEvent) {
 }
 
 function registerShortcuts(target: EventTarget, callback: ShortcutCallback) {
-  if (boundKeyHandler !== null) {
+  if (boundKeyHandler !== null && !window.hasReset) {
     return;
   }
   boundKeyHandler = keyHandler.bind(undefined, callback);

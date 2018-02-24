@@ -36,6 +36,7 @@ export default class Preset {
   transpilers: Set<Transpiler>;
   name: string;
   ignoredExtensions: Array<string>;
+  htmlDisabled: boolean;
   defaultAliases: { [path: string]: string };
   alias: { [path: string]: string };
   // Whether this preset supports .env files
@@ -58,10 +59,12 @@ export default class Preset {
       hasDotEnv,
       setup,
       teardown,
+      htmlDisabled,
     }: {
       hasDotEnv?: boolean,
       setup?: LifeCycleFunction,
       teardown?: LifeCycleFunction,
+      htmlDisabled?: boolean,
     } = {}
   ) {
     this.loaders = [];
@@ -76,6 +79,7 @@ export default class Preset {
     const noop = () => {};
     this.setup = setup || noop;
     this.teardown = teardown || noop;
+    this.htmlDisabled = htmlDisabled || false;
   }
 
   setAdditionalAliases = (aliases: Object) => {

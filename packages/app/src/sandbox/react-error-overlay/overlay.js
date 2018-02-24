@@ -318,6 +318,8 @@ function inject() {
       false
     );
   });
+
+  window.hasReset = false;
 }
 
 function uninject() {

@@ -1,6 +1,4 @@
 // @flow
-import getDefinition from 'common/templates';
-
 import getBabelConfig from './babel-parser';
 import WorkerTranspiler from '../worker-transpiler';
 import { type LoaderContext } from '../../transpiled-module';

@@ -1,4 +1,4 @@
-import { dispatch, clearErrorTransformers } from 'codesandbox-api';
+import { dispatch, reattach, clearErrorTransformers } from 'codesandbox-api';
 import { absolute } from 'common/utils/path';
 import _debug from 'app/utils/debug';
 import parseConfigurations from 'common/templates/configuration/parse';
@@ -121,6 +121,25 @@ function initializeResizeListener() {
 }
 inject();
 
+function overrideDocumentWrite() {
+  const oldClose = window.document.close;
+
+  window.document.close = function close(...args) {
+    try {
+      oldClose.call(document, args);
+    } catch (e) {
+      throw e;
+    } finally {
+      window.hasReset = true;
+      inject();
+      reattach();
+      overrideDocumentWrite();
+    }
+  };
+}
+
+overrideDocumentWrite();
+
 async function compile({
   sandboxId,
   modules,
@@ -142,6 +161,7 @@ async function compile({
   } catch (e) {
     console.error(e);
   }
+
   hadError = false;
 
   actionsEnabled = hasActions;
@@ -237,7 +257,7 @@ async function compile({
         /* don't do anything with this error */
       }
     }
-    if (!manager.webpackHMR || firstLoad) {
+    if ((!manager.webpackHMR || firstLoad) && !manager.preset.htmlDisabled) {
       const htmlModule =
         modules[
           templateDefinition
@@ -257,7 +277,8 @@ async function compile({
     const oldHTML = document.body.innerHTML;
     const evalled = manager.evaluateModule(managerModuleToTranspile);
     debug(`Evaluation time: ${Date.now() - tt}ms`);
-    const domChanged = oldHTML !== document.body.innerHTML;
+    const domChanged =
+      !manager.preset.htmlDisabled && oldHTML !== document.body.innerHTML;
 
     if (
       isModuleView &&
@@ -291,7 +312,7 @@ async function compile({
 
     await manager.preset.teardown(manager);
 
-    if (!initializedResizeListener) {
+    if (!initializedResizeListener && !manager.preset.htmlDisabled) {
       initializeResizeListener();
     }
 
@@ -325,13 +346,12 @@ async function compile({
       manager.clearCache();
     }
 
-    e.module = e.module;
-    e.fileName = e.fileName;
+    setTimeout(() => {
+      const event = new Event('error');
+      event.error = e;
 
-    const event = new Event('error');
-    event.error = e;
-
-    window.dispatchEvent(event);
+      window.dispatchEvent(event);
+    });
 
     hadError = true;
   }

@@ -32,7 +32,7 @@ function registerUnhandledRejection(
   target: EventTarget,
   callback: ErrorCallback
 ) {
-  if (boundRejectionHandler !== null) {
+  if (boundRejectionHandler !== null && !window.hasReset) {
     return;
   }
   boundRejectionHandler = rejectionHandler.bind(undefined, callback);

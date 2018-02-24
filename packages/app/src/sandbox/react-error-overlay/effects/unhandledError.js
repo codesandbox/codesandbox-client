@@ -28,7 +28,7 @@ function errorHandler(callback: ErrorCallback, e: Event): void {
 }
 
 function registerUnhandledError(target: EventTarget, callback: ErrorCallback) {
-  if (boundErrorHandler !== null) {
+  if (boundErrorHandler !== null && !window.hasReset) {
     return;
   }
   boundErrorHandler = errorHandler.bind(undefined, callback);
