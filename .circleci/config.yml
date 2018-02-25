@@ -10,7 +10,7 @@ jobs:
           fingerprints:
             - "f7:f1:e6:60:96:24:d9:cd:1b:8b:c0:34:e7:ee:fa:82"
       - deploy:
-          command: sh ./deploy.sh
+          command: ssh nginx@ssh.codesandbox.io "echo test; ls"
 
 workflows:
   version: 2
