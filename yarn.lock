@@ -10419,9 +10419,9 @@ monaco-typescript@CompuIves/monaco-typescript:
   version "2.2.0"
   resolved "https://codeload.github.com/CompuIves/monaco-typescript/tar.gz/eff3dd58fe3a6b15944838842aaf734910baa1d4"
 
-monaco-vue@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/monaco-vue/-/monaco-vue-0.1.0.tgz#e6879a4f0d7aba3fcf499a6401d51e8e147b6046"
+monaco-vue@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/monaco-vue/-/monaco-vue-0.2.1.tgz#d379a176d9534a5c0c41389090d249d400e2015f"
 
 move-concurrently@^1.0.1:
   version "1.0.1"

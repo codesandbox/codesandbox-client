@@ -147,7 +147,7 @@
     "mobx-state-tree": "^1.2.1",
     "moment": "^2.18.1",
     "monaco-editor": "CompuIves/codesandbox-monaco-editor",
-    "monaco-vue": "^0.1.0",
+    "monaco-vue": "^0.2.1",
     "normalize.css": "^5.0.0",
     "normalizr": "^3.2.3",
     "postcss": "^6.0.9",
