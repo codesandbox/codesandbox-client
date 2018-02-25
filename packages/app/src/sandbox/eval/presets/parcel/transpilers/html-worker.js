@@ -58,7 +58,7 @@ const META = {
 };
 
 self.addEventListener('message', async event => {
-  const { code, path } = event.data;
+  const { code } = event.data;
 
   const resources = [];
 
@@ -148,15 +148,7 @@ setupHTML();
     const resourcePath = JSON.stringify(resource);
     compiledCode += `\n`;
     compiledCode += `require(${resourcePath});`;
-    compiledCode += `
-module.hot.accept(${resourcePath}, () => {
-  require(${resourcePath});
-})
-
-`;
   });
-
-  compiledCode += 'module.hot.decline();';
 
   self.postMessage({
     type: 'compiled',

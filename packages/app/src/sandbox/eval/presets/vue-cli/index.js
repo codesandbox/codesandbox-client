@@ -127,8 +127,6 @@ export default function initialize() {
     ],
   };
 
-  babelTranspiler.setBabelRc(babelConfig);
-
   const babelWithConfig = {
     transpiler: babelTranspiler,
     options: babelConfig,
@@ -167,7 +165,9 @@ export default function initialize() {
     { transpiler: noopTranspiler },
   ]);
   vuePreset.registerTranspiler(() => true, [{ transpiler: rawTranspiler }]);
-  vuePreset.registerTranspiler((m) => m.path.endsWith('pug'), [{ transpiler: pugTranspiler }]);
+  vuePreset.registerTranspiler(m => m.path.endsWith('pug'), [
+    { transpiler: pugTranspiler },
+  ]);
 
   return vuePreset;
 }

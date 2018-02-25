@@ -32,12 +32,13 @@ function registerUnhandledRejection(
   target: EventTarget,
   callback: ErrorCallback
 ) {
-  if (boundRejectionHandler !== null && !window.hasReset) {
+  if (boundRejectionHandler !== null) {
+    // Always add the listener, in case we rewrote the window
+    // $FlowFixMe
+    target.addEventListener('unhandledrejection', boundRejectionHandler);
     return;
   }
   boundRejectionHandler = rejectionHandler.bind(undefined, callback);
-  // $FlowFixMe
-  target.addEventListener('unhandledrejection', boundRejectionHandler);
 }
 
 function unregisterUnhandledRejection(target: EventTarget) {

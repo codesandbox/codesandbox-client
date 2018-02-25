@@ -19,7 +19,12 @@ export default function initialize() {
   );
 
   parcelPreset.registerTranspiler(module => /\.jsx?$/.test(module.path), [
-    { transpiler: babelTranspiler },
+    {
+      transpiler: babelTranspiler,
+      options: {
+        dynamicCSSModules: true,
+      },
+    },
   ]);
 
   parcelPreset.registerTranspiler(module => /\.tsx?$/.test(module.path), [

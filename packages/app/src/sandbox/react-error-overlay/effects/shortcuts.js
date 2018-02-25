@@ -28,11 +28,11 @@ function keyHandler(callback: ShortcutCallback, e: KeyboardEvent) {
 }
 
 function registerShortcuts(target: EventTarget, callback: ShortcutCallback) {
-  if (boundKeyHandler !== null && !window.hasReset) {
+  if (boundKeyHandler !== null) {
+    target.addEventListener('keydown', boundKeyHandler);
     return;
   }
   boundKeyHandler = keyHandler.bind(undefined, callback);
-  target.addEventListener('keydown', boundKeyHandler);
 }
 
 function unregisterShortcuts(target: EventTarget) {

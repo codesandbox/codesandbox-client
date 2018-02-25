@@ -2,6 +2,8 @@ import { clone } from 'mobx-state-tree';
 import { getModulePath } from 'common/sandbox/modules';
 import getDefinition from 'common/templates';
 
+import { resolveModuleWrapped } from '../../utils/resolve-module-wrapped';
+
 export function whenModuleIsSelected({ state, props, path }) {
   const currentModule = state.get('editor.currentModule');
 
@@ -382,7 +384,9 @@ export function setDefaultNewCode({ state, props }) {
     } else if (config.generateFileFromSandbox) {
       code = config.generateFileFromSandbox(sandbox);
     } else {
-      code = config.getDefaultCode(sandbox.template);
+      const resolveModule = resolveModuleWrapped(sandbox);
+
+      code = config.getDefaultCode(sandbox.template, resolveModule);
     }
 
     const optimisticModuleIndex = sandbox.modules.findIndex(

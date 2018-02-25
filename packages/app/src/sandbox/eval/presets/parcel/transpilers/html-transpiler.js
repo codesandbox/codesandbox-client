@@ -7,6 +7,8 @@ import WorkerTranspiler from '../../../transpilers/worker-transpiler';
 class HTMLTranspiler extends WorkerTranspiler {
   constructor() {
     super('html-loader', HTMLWorker, 1);
+
+    this.HMREnabled = false;
   }
 
   doTranspilation(code: string, loaderContext: LoaderContext) {

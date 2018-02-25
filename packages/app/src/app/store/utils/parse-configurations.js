@@ -11,7 +11,6 @@ export function parseConfigurations(sandbox: Sandbox) {
   return parse(
     sandbox.template,
     templateDefinition.configurationFiles,
-    resolveModuleWrapped(sandbox),
-    sandbox
+    resolveModuleWrapped(sandbox)
   );
 }
