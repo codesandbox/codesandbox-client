@@ -7,13 +7,12 @@ import configurations from './configuration';
 
 export default new Template(
   'parcel',
-  'Parcel',
+  'Vanilla',
   'https://parceljs.org/',
   'parcel',
   PreactIcon,
   decorateSelector(() => '#dfb07a'),
   {
-    showOnHomePage: true,
     extraConfigurations: {
       '/.babelrc': configurations.babelrc,
       '/tsconfig.json': configurations.tsconfig,
