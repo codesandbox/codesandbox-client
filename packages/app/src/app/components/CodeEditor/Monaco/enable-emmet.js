@@ -46,11 +46,7 @@ const enableEmmet = (editor, monaco) => {
 
     // finally run expand to test the final result
     try {
-      expandText = expand(str, {
-        addons: {
-          jsx: true,
-        },
-      });
+      expandText = expand(str);
     } catch (e) {
       return '';
     }
