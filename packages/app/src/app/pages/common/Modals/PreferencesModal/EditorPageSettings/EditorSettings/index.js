@@ -55,6 +55,16 @@ function EditorSettings({ store, signals }) {
           </SubDescription>
           <Rule />
           <PaddedPreference
+            title="ESLint"
+            type="boolean"
+            tooltip="Made possible by ESLint"
+            {...bindValue('lintEnabled')}
+          />
+          <SubDescription>
+            Whether linting as you type should be enabled.
+          </SubDescription>
+          <Rule />
+          <PaddedPreference
             title="Prettify on save"
             type="boolean"
             tooltip="Made possible by Prettier"

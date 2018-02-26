@@ -331,6 +331,10 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
   changeSettings = (settings: $PropertyType<Props, 'settings'>) => {
     this.settings = settings;
+    if (settings.lintEnabled && !this.lintWorker) {
+      this.setupLintWorker();
+    }
+
     this.editor.updateOptions(this.getEditorOptions());
     this.forceUpdate();
   };
@@ -699,14 +703,16 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
   lint = async (code: string, title: string, version: number) => {
     const mode = await this.getMode(title);
-    if (mode === 'javascript' || mode === 'vue') {
-      if (this.lintWorker) {
-        this.lintWorker.postMessage({
-          code,
-          title,
-          version,
-          template: this.sandbox.template,
-        });
+    if (this.settings.lintEnabled) {
+      if (mode === 'javascript' || mode === 'vue') {
+        if (this.lintWorker) {
+          this.lintWorker.postMessage({
+            code,
+            title,
+            version,
+            template: this.sandbox.template,
+          });
+        }
       }
     }
   };
