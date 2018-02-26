@@ -13,6 +13,7 @@ export default new Template(
   PreactIcon,
   decorateSelector(() => '#dfb07a'),
   {
+    showOnHomePage: true,
     extraConfigurations: {
       '/.babelrc': configurations.babelrc,
       '/tsconfig.json': configurations.tsconfig,

@@ -222,6 +222,10 @@ const TEMPLATE_SUPPORT = {
     loaders: [ts, html, scss, sass, less, stylus, cssGlobal, image],
     css: ['Global', 'Scoped'],
   },
+  parcel: {
+    loaders: [js, ts, html, scss, sass, less, cssGlobal, stylus, image],
+    css: ['Global', 'Modules'],
+  },
 };
 
 export default class Frameworks extends React.Component {
