@@ -49,7 +49,7 @@ self.addEventListener('message', event => {
     },
   };
 
-  let finalConfig = defaultConfig;
+  let finalConfig = { ...defaultConfig };
 
   if (config) {
     finalConfig = { ...config };
@@ -57,6 +57,9 @@ self.addEventListener('message', event => {
       ...config.compilerOptions,
       module: ts.ModuleKind.CommonJS,
       moduleResolution: ts.ModuleResolutionKind.NodeJs,
+      inlineSourceMap: true,
+      inlineSources: true,
+      emitDecoratorMetadata: true,
     };
   }
 
