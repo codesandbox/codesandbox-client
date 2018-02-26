@@ -163,7 +163,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         setTimeout(() => {
           this.fetchDependencyTypings(dependencies);
           this.getConfigSchemas();
-        }, this.hasNativeTypescript() ? 0 : 5000);
+        }, this.hasNativeTypescript() ? 500 : 5000);
       }
     }
 
@@ -286,7 +286,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     newSandbox: Sandbox,
     newCurrentModule: Module,
     dependencies: $PropertyType<Props, 'dependencies'>
-  ) =>
+  ): Promise<null> =>
     new Promise(resolve => {
       const oldSandbox = this.sandbox;
 
@@ -482,32 +482,36 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     this.typingsFetcherWorker = new TypingsFetcherWorker();
     const regex = /node_modules\/(@types\/.*?)\//;
 
-    this.typingsFetcherWorker.addEventListener('message', event => {
-      const sandbox = this.sandbox;
-      const dependencies = this.dependencies || sandbox.npmDependencies;
+    this.fetchDependencyTypings(this.dependencies || {});
 
-      Object.keys(event.data).forEach((path: string) => {
-        const typings = event.data[path];
-        if (
-          path.startsWith('node_modules/@types') &&
-          this.hasNativeTypescript()
-        ) {
-          const match = path.match(regex);
-          if (match && match[1]) {
-            const dependency = match[1];
+    if (this.typingsFetcherWorker) {
+      this.typingsFetcherWorker.addEventListener('message', event => {
+        const sandbox = this.sandbox;
+        const dependencies = this.dependencies || sandbox.npmDependencies;
 
-            if (
-              !Object.keys(dependencies).includes(dependency) &&
-              this.props.onNpmDependencyAdded
-            ) {
-              this.props.onNpmDependencyAdded(dependency);
+        Object.keys(event.data).forEach((path: string) => {
+          const typings = event.data[path];
+          if (
+            path.startsWith('node_modules/@types') &&
+            this.hasNativeTypescript()
+          ) {
+            const match = path.match(regex);
+            if (match && match[1]) {
+              const dependency = match[1];
+
+              if (
+                !Object.keys(dependencies).includes(dependency) &&
+                this.props.onNpmDependencyAdded
+              ) {
+                this.props.onNpmDependencyAdded(dependency);
+              }
             }
           }
-        }
 
-        this.addLib(typings, '/' + path);
+          this.addLib(typings, '/' + path);
+        });
       });
-    });
+    }
   };
 
   setupLintWorker = () => {
