@@ -146,6 +146,7 @@ export async function createZip(
 
   if (
     sandbox.template !== vue.name &&
+    sandbox.template !== reactTs.name &&
     directories.find(m => m.title === 'src' && m.directoryShortid == null)
   ) {
     // This is a full project, with all files already in there. We need to create

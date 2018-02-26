@@ -8,46 +8,37 @@ import {
   createDirectoryWithFiles,
 } from '../';
 
-const getHTML = (modules, resources) =>
-  `<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="theme-color" content="#000000">
-  <!--
-    manifest.json provides metadata used when your web app is added to the
-    homescreen on Android. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/
-  -->
-  <link rel="manifest" href="%PUBLIC_URL%/manifest.json">
-  <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
-  <!--
-    Notice the use of %PUBLIC_URL% in the tags above.
-    It will be replaced with the URL of the \`public\` folder during the build.
-    Only files inside the \`public\` folder can be referenced from the HTML.
+/**
+ * Add necessary scripts to package.json if they don't exist
+ * @param {*} module
+ */
+function alterPackageJSON(module: Module) {
+  try {
+    const parsed = JSON.parse(module.code);
 
-    Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-    work correctly both with client-side routing and a non-root public URL.
-    Learn how to configure a non-root public URL by running \`npm run build\`.
-  -->
-  <title>React App</title>
-  ${resources.map(getResourceTag).join('\n')}
-</head>
-<body>
-  ${getIndexHtmlBody(modules)}
-  <!--
-    This HTML file is a template.
-    If you open it directly in the browser, you will see an empty page.
+    if (!parsed.scripts || !parsed.scripts.start) {
+      parsed.scripts = parsed.scripts || {};
 
-    You can add webfonts, meta tags, or analytics to this file.
-    The build step will place the bundled scripts into the <body> tag.
+      parsed.scripts.start = parsed.scripts.start || 'react-scripts-ts start';
+      parsed.scripts.build = parsed.scripts.build || 'react-scripts-ts build';
+      parsed.scripts.test =
+        parsed.scripts.test || 'react-scripts-ts test --env=jsdom';
+      parsed.scripts.eject = parsed.scripts.eject || 'react-scripts-ts eject';
+    }
 
-    To begin the development, run \`npm start\` or \`yarn start\`.
-    To create a production bundle, use \`npm run build\` or \`yarn build\`.
-  -->
-</body>
-</html>
-`;
+    if (
+      !parsed.dependencies ||
+      !parsed.dependencies['react-scripts-ts'] ||
+      (!parsed.devDependencies || !parsed.devDependencies['react-scripts-ts'])
+    ) {
+      parsed.dependencies['react-scripts-ts'] = '^2.13.0';
+    }
+
+    return { ...module, code: JSON.stringify(parsed, null, 2) };
+  } catch (e) {
+    return module;
+  }
+}
 
 export default function createZip(
   zip,
@@ -55,47 +46,24 @@ export default function createZip(
   modules: Array<Module>,
   directories: Array<Directory>
 ) {
-  return zip.loadAsync(files).then(async srcFolder => {
-    const src = srcFolder.folder('src');
-
+  return zip.loadAsync(files).then(async src => {
     await Promise.all(
       modules
         .filter(x => x.directoryShortid == null)
-        .filter(x => x.title !== 'index.html') // This will be included in the body
-        .map(x => createFile(x, src))
+        .filter(x => x.title !== 'yarn.lock' && x.title !== 'package-lock.json')
+        .map(x => {
+          if (x.title === 'package.json' && x.directoryShortid == null) {
+            createFile(alterPackageJSON(x), src);
+          } else {
+            createFile(x, src);
+          }
+        })
     );
 
     await Promise.all(
       directories
         .filter(x => x.directoryShortid == null)
         .map(x => createDirectoryWithFiles(modules, directories, x, src))
-    );
-
-    const publicFolder = zip.folder('public');
-
-    publicFolder.file(
-      'index.html',
-      getHTML(modules, sandbox.externalResources)
-    );
-
-    zip.file(
-      'package.json',
-      createPackageJSON(
-        sandbox,
-        {
-          '@types/jest': '^20.0.8',
-          '@types/node': '^8.0.28',
-        },
-        {
-          'react-scripts-ts': '2.6.0',
-        },
-        {
-          start: 'react-scripts-ts start',
-          build: 'react-scripts-ts build',
-          test: 'react-scripts-ts test --env=jsdom',
-          eject: 'react-scripts-ts eject',
-        }
-      )
     );
   });
 }
