@@ -60,6 +60,9 @@ self.addEventListener('message', event => {
     };
   }
 
+  finalConfig.fileName = path;
+  finalConfig.reportDiagnostics = true;
+
   try {
     const { outputText: compiledCode } = ts.transpileModule(code, finalConfig);
 
