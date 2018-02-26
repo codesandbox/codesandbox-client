@@ -1,12 +1,6 @@
 import type { Sandbox, Module, Directory } from 'common/types';
 import files from 'buffer-loader!./files.zip'; // eslint-disable-line import/no-webpack-loader-syntax
-import {
-  getResourceTag,
-  getIndexHtmlBody,
-  createPackageJSON,
-  createFile,
-  createDirectoryWithFiles,
-} from '../';
+import { createFile, createDirectoryWithFiles } from '../';
 
 /**
  * Add necessary scripts to package.json if they don't exist
@@ -53,10 +47,10 @@ export default function createZip(
         .filter(x => x.title !== 'yarn.lock' && x.title !== 'package-lock.json')
         .map(x => {
           if (x.title === 'package.json' && x.directoryShortid == null) {
-            createFile(alterPackageJSON(x), src);
-          } else {
-            createFile(x, src);
+            return createFile(alterPackageJSON(x), src);
           }
+
+          return createFile(x, src);
         })
     );
 
