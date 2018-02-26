@@ -51,10 +51,12 @@ const getExistingPath = async (fs, p) => {
   return existedFile;
 };
 
-const resolveSass = (fs, p, path) =>
-  new Promise((r, reject) => {
+const resolveSass = (fs, p, path) => {
+  const usedPath = p.startsWith('~') ? p.replace('~', '/node_modules/') : p;
+
+  return new Promise((r, reject) => {
     resolve(
-      p,
+      usedPath,
       {
         filename: path,
         extensions: ['.scss', '.css', '.sass'],
@@ -101,6 +103,7 @@ const resolveSass = (fs, p, path) =>
       }
     );
   });
+};
 
 function initializeBrowserFS() {
   return new Promise(res => {

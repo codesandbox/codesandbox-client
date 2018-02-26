@@ -13,7 +13,10 @@ class SassTranspiler extends WorkerTranspiler {
     this.cacheable = false;
   }
 
-  doTranspilation(code: string, loaderContext: LoaderContext) {
+  doTranspilation(
+    code: string,
+    loaderContext: LoaderContext
+  ): Promise<{ transpiledCode: string }> {
     const extension =
       typeof loaderContext.options.indentedSyntax === 'undefined'
         ? 'scss'
@@ -22,6 +25,11 @@ class SassTranspiler extends WorkerTranspiler {
     const customPath = loaderContext.path + '.' + extension;
 
     return new Promise((resolve, reject) => {
+      if (code === '' || code == null) {
+        resolve({ transpiledCode: '' });
+        return;
+      }
+
       this.queueTask(
         {
           code,
