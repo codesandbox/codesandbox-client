@@ -64,11 +64,11 @@ const Message = styled.div`
 `};
 `;
 
+const TEMPLATES = [parcel, react, vue, angular, preact, reactTs, svelte];
+
 export default class Animation extends React.PureComponent {
   state = {
-    templates: [react, vue, angular, preact, reactTs, svelte, parcel].filter(
-      tem => tem.showOnHomePage
-    ),
+    templates: TEMPLATES.filter(tem => tem.showOnHomePage && tem.showCube),
     templateIndex: 0,
     templateSelected: false,
     canvas: null,
@@ -136,7 +136,7 @@ export default class Animation extends React.PureComponent {
             applications, from prototype to deployment.
           </Message>
         </Centered>
-        <Frameworks templates={this.state.templates} />
+        <Frameworks templates={TEMPLATES.filter(tem => tem.showOnHomePage)} />
       </Relative>
     );
   }

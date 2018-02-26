@@ -1,7 +1,9 @@
+// @flow
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 
 import Margin from 'common/components/spacing/Margin';
+import getDefinition from 'common/templates';
 import { WorkspaceSubtitle } from '../elements';
 
 import AddVersion from './AddVersion';
@@ -24,6 +26,8 @@ function Dependencies({ signals, store }) {
 
   const dependencies = parsed.dependencies || {};
   // const devDependencies = parsed.devDependencies || {};
+
+  const templateDefinition = getDefinition(sandbox.template);
 
   return (
     <div>
@@ -66,27 +70,29 @@ function Dependencies({ signals, store }) {
           ))} */}
         <AddVersion>Add Dependency</AddVersion>
       </Margin>
-      <div>
-        <WorkspaceSubtitle>External Resources</WorkspaceSubtitle>
-        {(sandbox.externalResources || []).map(resource => (
-          <ExternalResource
-            key={resource}
-            resource={resource}
-            removeResource={() =>
-              this.props.signals.workspace.externalResourceRemoved({
+      {templateDefinition.externalResourcesEnabled && (
+        <div>
+          <WorkspaceSubtitle>External Resources</WorkspaceSubtitle>
+          {(sandbox.externalResources || []).map(resource => (
+            <ExternalResource
+              key={resource}
+              resource={resource}
+              removeResource={() =>
+                this.props.signals.workspace.externalResourceRemoved({
+                  resource,
+                })
+              }
+            />
+          ))}
+          <AddResource
+            addResource={resource =>
+              signals.workspace.externalResourceAdded({
                 resource,
               })
             }
           />
-        ))}
-        <AddResource
-          addResource={resource =>
-            signals.workspace.externalResourceAdded({
-              resource,
-            })
-          }
-        />
-      </div>
+        </div>
+      )}
     </div>
   );
 }

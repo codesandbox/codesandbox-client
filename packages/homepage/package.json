@@ -19,6 +19,7 @@
     "gatsby-remark-prismjs": "^1.2.11",
     "gatsby-source-filesystem": "^1.5.8",
     "gatsby-transformer-remark": "^1.7.24",
+    "gatsby-transformer-sharp": "^1.6.21",
     "gsap": "^1.20.3",
     "react-media": "^1.6.1",
     "react-transition-group": "^2.2.1",
@@ -40,7 +41,6 @@
   },
   "devDependencies": {
     "gatsby-cli": "^1.1.20",
-    "gatsby-transformer-sharp": "^1.6.20",
     "prettier": "^1.8.2"
   },
   "browserslist": [

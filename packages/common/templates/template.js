@@ -12,6 +12,8 @@ type Options = {
     [path: string]: ConfigurationFile,
   },
   isTypescript?: boolean,
+  externalResourcesEnabled?: boolean,
+  showCube?: boolean,
 };
 
 const defaultConfigurations = {
@@ -34,6 +36,8 @@ export default class Template {
     [path: string]: ConfigurationFile,
   };
   isTypescript: boolean;
+  externalResourcesEnabled: boolean;
+  showCube: boolean;
 
   constructor(
     name: string,
@@ -58,6 +62,12 @@ export default class Template {
       ...(options.extraConfigurations || {}),
     };
     this.isTypescript = options.isTypescript || false;
+    this.externalResourcesEnabled =
+      options.externalResourcesEnabled != null
+        ? options.externalResourcesEnabled
+        : true;
+
+    this.showCube = options.showCube != null ? options.showCube : true;
   }
 
   /**

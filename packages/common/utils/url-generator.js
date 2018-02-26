@@ -25,6 +25,7 @@ export const protocolAndHost = () => `${location.protocol}//${host()}`;
 
 export const newSandboxWizard = () => `/s`;
 export const newSandboxUrl = () => `/s/new`;
+export const parcelSandboxUrl = () => `/s/vanilla`;
 export const newReactTypeScriptSandboxUrl = () => `/s/react-ts`;
 export const newPreactSandboxUrl = () => `/s/preact`;
 export const newVueSandboxUrl = () => `/s/vue`;
@@ -66,9 +67,9 @@ const stagingFrameUrl = (shortid: string, path: string) => {
   ).split('//')[1];
   const segments = stagingHost.split('.');
   const first = segments.shift();
-  return `${location.protocol}//${first}-${shortid}.${segments.join('.')}/${
-    path
-  }`;
+  return `${location.protocol}//${first}-${shortid}.${segments.join(
+    '.'
+  )}/${path}`;
 };
 
 export const frameUrl = (shortid: string, append: string = '') => {
