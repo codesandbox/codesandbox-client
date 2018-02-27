@@ -1,6 +1,7 @@
 {
   "name": "common",
   "version": "1.0.0",
+  "private": true,
   "dependencies": {
     "react-tippy": "^0.14.0"
   }

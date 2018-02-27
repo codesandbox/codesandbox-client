@@ -1,6 +1,7 @@
 {
   "name": "homepage",
   "description": "CodeSandbox Homepage",
+  "private": true,
   "version": "1.0.0",
   "author": "Ives van Hoorne <ives.v.h@gmail.com>",
   "dependencies": {
