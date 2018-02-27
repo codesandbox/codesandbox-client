@@ -1,6 +1,5 @@
 import React from 'react';
-import { listen, actions } from 'codesandbox-api';
-import { dispatch } from 'app/components/Preview';
+import { listen, dispatch, actions } from 'codesandbox-api';
 import Tooltip from 'common/components/Tooltip';
 import FileIcon from 'react-icons/lib/md/insert-drive-file';
 
@@ -66,7 +65,7 @@ class Problems extends React.PureComponent<*, State> {
   };
 
   openFile = (path: string) => {
-    dispatch(this.props.sandboxId, actions.editor.openModule(path));
+    dispatch(actions.editor.openModule(path));
   };
 
   render() {

@@ -1,4 +1,4 @@
-# SandPack
+# Sandpack
 
 A bundler that completely works in the browser, utilizing browser APIs.
 
@@ -83,9 +83,7 @@ const dependencies = {
   react: 'latest',
 };
 
-export default () => (
-  <Preview files={files} dependencies={dependencies} entry="/index.js" />
-);
+export default () => <Preview files={files} dependencies={dependencies} entry="/index.js" />;
 ```
 
 We will automatically hot update the preview as the props update.

@@ -1,8 +1,7 @@
 // @flow
 /* eslint-disable no-param-reassign */
 import React from 'react';
-import { actions, listen } from 'codesandbox-api';
-import { dispatch } from 'app/components/Preview';
+import { actions, dispatch, listen } from 'codesandbox-api';
 import SplitPane from 'react-split-pane';
 
 import immer from 'immer';
@@ -325,7 +324,7 @@ class Tests extends React.Component<Props, State> {
   };
 
   toggleWatching = () => {
-    dispatch(this.props.sandboxId, {
+    dispatch({
       type: 'set-test-watching',
       watching: !this.state.watching,
     });
@@ -334,7 +333,7 @@ class Tests extends React.Component<Props, State> {
 
   runAllTests = () => {
     this.setState({ files: {} }, () => {
-      dispatch(this.props.sandboxId, {
+      dispatch({
         type: 'run-all-tests',
       });
     });
@@ -346,7 +345,7 @@ class Tests extends React.Component<Props, State> {
         state.files[file.fileName].tests = {};
       }),
       () => {
-        dispatch(this.props.sandboxId, {
+        dispatch({
           type: 'run-tests',
           path: file.fileName,
         });
@@ -355,7 +354,7 @@ class Tests extends React.Component<Props, State> {
   };
 
   openFile = (path: string) => {
-    dispatch(this.props.sandboxId, actions.editor.openModule(path));
+    dispatch(actions.editor.openModule(path));
   };
 
   render() {

@@ -1,7 +1,7 @@
 import * as React from 'react';
+import { Manager } from 'sandpack';
 
 import { IFileProps } from '../types';
-import { sendCode } from '../../utils/frame';
 
 export default class Preview extends React.PureComponent<IFileProps> {
   static defaultProps = {
@@ -10,30 +10,31 @@ export default class Preview extends React.PureComponent<IFileProps> {
     sandboxUrl: 'https://sandbox.codesandbox.io',
   };
 
-  frame?: HTMLIFrameElement;
+  manager?: Manager;
 
   setupFrame = (el: HTMLIFrameElement) => {
     if (el) {
-      this.frame = el;
-      this.frame.onload = () => {
-        this.sendCode();
-      };
+      this.manager = new Manager(
+        el,
+        {
+          dependencies: this.props.dependencies,
+          files: this.props.files,
+          entry: this.props.entry,
+        },
+        {
+          sandboxUrl: this.props.sandboxUrl,
+        }
+      );
     }
   };
 
   sendCode = () => {
-    if (this.frame) {
-      sendCode(
-        this.frame,
+    if (this.manager) {
+      this.manager.sendCode(
         this.props.files,
         this.props.dependencies,
         this.props.entry
       );
-
-      const modules = Object.keys(this.props.files).map(path => ({
-        ...this.props.files[path],
-        path,
-      }));
     }
   };
 
