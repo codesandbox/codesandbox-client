@@ -15,7 +15,6 @@ export default function(module) {
 
 export const TS = Object.assign(JS, {
   id: 'ts',
-  extension: '.ts',
   condition: '.tsx?$',
 })
 
