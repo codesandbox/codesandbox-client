@@ -13,6 +13,12 @@ export default function(module) {
 `,
 };
 
+export const TS = Object.assign(JS, {
+  id: 'ts',
+  extension: '.ts',
+  condition: '.tsx?$',
+})
+
 export const HTML = {
   id: 'html',
   extension: '.html',
@@ -24,4 +30,4 @@ export default function(module) {
 `,
 };
 
-export default [JS, HTML];
+export default [JS, TS, HTML];
