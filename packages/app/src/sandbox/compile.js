@@ -274,7 +274,7 @@ async function compile({
           try {
             await evalBoilerplates(defaultBoilerplates);
           } catch (e) {
-            console.log("Couldn't load all boilerplates");
+            console.log("Couldn't load all boilerplates: " + e.message);
           }
         }
 
