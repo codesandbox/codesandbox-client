@@ -1,64 +1,47 @@
 import * as React from 'react';
-import { Manager } from 'sandpack';
+import SandpackConsumer from '../SandpackConsumer';
 
-import { IFileProps } from '../types';
+export interface PreviewProps {
+  browser: HTMLIFrameElement;
+}
 
-export default class Preview extends React.PureComponent<IFileProps> {
-  static defaultProps = {
-    dependencies: {},
-    entry: '/index.js',
-    sandboxUrl: 'https://sandbox.codesandbox.io',
+class Preview extends React.PureComponent<PreviewProps> {
+  container?: HTMLDivElement;
+
+  setContainerElement = (el: HTMLDivElement) => {
+    this.container = el;
   };
 
-  manager?: Manager;
+  initializeFrame = () => {
+    const { browser } = this.props;
 
-  setupFrame = (el: HTMLIFrameElement) => {
-    if (el) {
-      this.manager = new Manager(
-        el,
-        {
-          dependencies: this.props.dependencies,
-          files: this.props.files,
-          entry: this.props.entry,
-        },
-        {
-          sandboxUrl: this.props.sandboxUrl,
-        }
-      );
+    if (browser && this.container) {
+      browser.style.width = '100%';
+      browser.style.height = '500px';
+      browser.style.visibility = 'visible';
+      browser.style.position = 'relative';
+
+      this.container.appendChild(browser);
     }
   };
 
-  sendCode = () => {
-    if (this.manager) {
-      this.manager.sendCode(
-        this.props.files,
-        this.props.dependencies,
-        this.props.entry
-      );
-    }
-  };
-
-  componentDidUpdate(prevProps: IFileProps) {
-    if (
-      this.props.files !== prevProps.files ||
-      this.props.dependencies !== prevProps.dependencies ||
-      this.props.entry !== prevProps.entry
-    ) {
-      this.sendCode();
+  componentDidUpdate(prevProps: PreviewProps) {
+    if (prevProps.browser !== this.props.browser) {
+      this.initializeFrame();
     }
   }
 
   render() {
+    return <div ref={this.setContainerElement} />;
+  }
+}
+
+export default class ContainerElement extends React.PureComponent {
+  render() {
     return (
-      <iframe
-        style={{
-          width: this.props.width || '100%',
-          height: this.props.height || '500px',
-          border: 'none',
-        }}
-        src={this.props.sandboxUrl}
-        ref={this.setupFrame}
-      />
+      <SandpackConsumer>
+        {state => <Preview browser={state.browserFrame} />}
+      </SandpackConsumer>
     );
   }
 }

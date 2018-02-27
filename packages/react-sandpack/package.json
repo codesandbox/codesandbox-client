@@ -31,7 +31,7 @@
     "semantic-release": "semantic-release",
     "semantic-release-prepare": "ts-node tools/semantic-release-prepare",
     "precommit": "lint-staged",
-    "storybook": "start-storybook"
+    "storybook": "start-storybook -p 9001 -c .storybook"
   },
   "lint-staged": {
     "{src,test}/**/*.ts": [
@@ -74,13 +74,18 @@
     "mapCoverage": true
   },
   "dependencies": {
-    "codesandbox-import-utils": "^1.1.21"
+    "codesandbox-import-utils": "^1.1.21",
+    "react-broadcast": "^0.6.2"
+  },
+  "peerDependencies": {
+    "react": "^16.0.0"
   },
   "devDependencies": {
     "@storybook/addon-knobs": "^3.3.14",
     "@storybook/react": "^3.3.14",
     "@types/jest": "^22.0.0",
     "@types/node": "^9.4.6",
+    "@types/react-broadcast": "^0.6.0",
     "awesome-typescript-loader": "^3.5.0",
     "colors": "^1.1.2",
     "commitizen": "^2.9.6",

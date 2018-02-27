@@ -609,6 +609,12 @@
   version "9.4.6"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-9.4.6.tgz#d8176d864ee48753d053783e4e463aec86b8d82e"
 
+"@types/react-broadcast@^0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@types/react-broadcast/-/react-broadcast-0.6.0.tgz#0f88160501d9656712b94316edd5d2a327d45c4b"
+  dependencies:
+    "@types/react" "*"
+
 "@types/react-router-dom@^4.2.2":
   version "4.2.4"
   resolved "https://registry.yarnpkg.com/@types/react-router-dom/-/react-router-dom-4.2.4.tgz#02c43274129ffe0ac42b348f7c8c4a9a4e127c8a"
@@ -14309,6 +14315,13 @@ react-addons-css-transition-group@^15.6.0:
   resolved "https://registry.yarnpkg.com/react-addons-css-transition-group/-/react-addons-css-transition-group-15.6.2.tgz#9e4376bcf40b5217d14ec68553081cee4b08a6d6"
   dependencies:
     react-transition-group "^1.2.0"
+
+react-broadcast@^0.6.2:
+  version "0.6.2"
+  resolved "https://registry.yarnpkg.com/react-broadcast/-/react-broadcast-0.6.2.tgz#9555c73b80ca5b2673830872e54f6bb3092cf8a9"
+  dependencies:
+    invariant "^2.2.1"
+    prop-types "^15.6.0"
 
 react-color@^2.11.4:
   version "2.13.8"

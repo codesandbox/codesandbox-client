@@ -1,4 +1,4 @@
-import { dispatch, registerFrame } from 'codesandbox-api';
+import { dispatch, listen, registerFrame } from 'codesandbox-api';
 
 export interface IManagerOptions {
   sandboxUrl?: string;
@@ -35,37 +35,42 @@ export default class PreviewManager {
   element: Element;
   iframe: HTMLIFrameElement;
   options: IManagerOptions;
+  listener?: Function;
 
   constructor(
     selector: string | HTMLIFrameElement,
     sandboxInfo: ISandboxInfo,
     options: IManagerOptions = {}
   ) {
-    let element = null;
+    this.options = options;
+
     if (typeof selector === 'string') {
       this.selector = selector;
-      element = document.querySelector(selector);
+      const element = document.querySelector(selector);
+
+      if (!element) {
+        throw new Error(`No element found for selector '${selector}'`);
+      }
+
+      this.element = element;
+      this.iframe = document.createElement('iframe');
+      this.initializeElement();
     } else {
-      element = selector;
+      this.element = selector;
+      this.iframe = selector;
     }
 
-    if (!element) {
-      throw new Error(`No element found for selector '${selector}'`);
-    }
+    this.listener = listen((message: any) => {
+      if (message.type === 'initialized') {
+        registerFrame(this.iframe.contentWindow);
 
-    this.element = element;
-    this.iframe = document.createElement('iframe');
-
-    this.options = options;
-    this.initializeElement();
-
-    registerFrame(this.iframe.contentWindow);
-
-    this.sendCode(
-      sandboxInfo.files,
-      sandboxInfo.dependencies,
-      sandboxInfo.entry
-    );
+        this.sendCode(
+          sandboxInfo.files,
+          sandboxInfo.dependencies,
+          sandboxInfo.entry
+        );
+      }
+    });
   }
 
   sendCode(files: IFiles, dependencies: IDependencies, entry: string) {

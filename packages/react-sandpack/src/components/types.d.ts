@@ -1,14 +1,20 @@
-export interface IFileProps {
-  files: {
-    [path: string]: {
-      code: string;
-    };
+export interface IFiles {
+  [path: string]: {
+    code: string;
   };
+}
+
+export interface IFileProps {
+  files: IFiles;
   entry: string;
   dependencies: {
-    [dep: string]: string;
+    [depName: string]: string;
   };
   width?: number | string;
   height?: number | string;
   sandboxUrl: string;
+}
+
+export interface ISandpackContext {
+  browserFrame: HTMLIFrameElement;
 }
