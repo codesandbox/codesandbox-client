@@ -148,11 +148,13 @@ function setupHTML() {
 setupHTML();
 `;
 
+  compiledCode += "window.addEventListener('load', function() {";
   resources.forEach(resource => {
     const resourcePath = JSON.stringify(resource);
     compiledCode += `\n`;
     compiledCode += `require(${resourcePath});`;
   });
+  compiledCode += '})';
 
   self.postMessage({
     type: 'compiled',
