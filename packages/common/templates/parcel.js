@@ -20,5 +20,6 @@ export default new Template(
       '/tsconfig.json': configurations.tsconfig,
     },
     externalResourcesEnabled: false,
+    distDir: 'dist',
   }
 );
