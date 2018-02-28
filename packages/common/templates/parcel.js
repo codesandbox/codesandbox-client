@@ -5,7 +5,18 @@ import Template from './template';
 import { decorateSelector } from '../theme';
 import configurations from './configuration';
 
-export default new Template(
+class ParcelTemplate extends Template {
+  getEntries() {
+    const entries = [];
+
+    entries.push('/index.html');
+    entries.push('/src/index.html');
+
+    return entries;
+  }
+}
+
+export default new ParcelTemplate(
   'parcel',
   'Vanilla',
   'https://parceljs.org/',
