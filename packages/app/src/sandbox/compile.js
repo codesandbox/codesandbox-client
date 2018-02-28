@@ -1,4 +1,4 @@
-import { dispatch, clearErrorTransformers } from 'codesandbox-api';
+import { dispatch, reattach, clearErrorTransformers } from 'codesandbox-api';
 import { absolute } from 'common/utils/path';
 import _debug from 'app/utils/debug';
 import parseConfigurations from 'common/templates/configuration/parse';
@@ -54,25 +54,140 @@ const WHITELISTED_DEV_DEPENDENCIES = [
 
 // Dependencies that we actually don't need, we will replace this by a dynamic
 // system in the future
-const BLACKLISTED_DEPENDENCIES = ['react-scripts', 'react-scripts-ts'];
+const PREINSTALLED_DEPENDENCIES = [
+  'node-lib-browser',
+  'babel-runtime',
+  'react-scripts',
+  'react-scripts-ts',
+  'parcel-bundler',
+  'babel-preset-env',
+  'babel-preset-latest',
+  'babel-preset-es2015',
+  'babel-preset-es2015-loose',
+  'babel-preset-es2016',
+  'babel-preset-es2017',
+  'babel-preset-react',
+  'babel-preset-stage-0',
+  'babel-preset-stage-1',
+  'babel-preset-stage-2',
+  'babel-preset-stage-3',
+  'babel-plugin-check-es2015-constants',
+  'babel-plugin-external-helpers',
+  'babel-plugin-inline-replace-variables',
+  'babel-plugin-syntax-async-functions',
+  'babel-plugin-syntax-async-generators',
+  'babel-plugin-syntax-class-constructor-call',
+  'babel-plugin-syntax-class-properties',
+  'babel-plugin-syntax-decorators',
+  'babel-plugin-syntax-do-expressions',
+  'babel-plugin-syntax-exponentiation-operator',
+  'babel-plugin-syntax-export-extensions',
+  'babel-plugin-syntax-flow',
+  'babel-plugin-syntax-function-bind',
+  'babel-plugin-syntax-function-sent',
+  'babel-plugin-syntax-jsx',
+  'babel-plugin-syntax-object-rest-spread',
+  'babel-plugin-syntax-trailing-function-commas',
+  'babel-plugin-transform-async-functions',
+  'babel-plugin-transform-async-to-generator',
+  'babel-plugin-transform-async-to-module-method',
+  'babel-plugin-transform-class-constructor-call',
+  'babel-plugin-transform-class-properties',
+  'babel-plugin-transform-decorators',
+  'babel-plugin-transform-decorators-legacy',
+  'babel-plugin-transform-do-expressions',
+  'babel-plugin-transform-es2015-arrow-functions',
+  'babel-plugin-transform-es2015-block-scoped-functions',
+  'babel-plugin-transform-es2015-block-scoping',
+  'babel-plugin-transform-es2015-classes',
+  'babel-plugin-transform-es2015-computed-properties',
+  'babel-plugin-transform-es2015-destructuring',
+  'babel-plugin-transform-es2015-duplicate-keys',
+  'babel-plugin-transform-es2015-for-of',
+  'babel-plugin-transform-es2015-function-name',
+  'babel-plugin-transform-es2015-instanceof',
+  'babel-plugin-transform-es2015-literals',
+  'babel-plugin-transform-es2015-modules-amd',
+  'babel-plugin-transform-es2015-modules-commonjs',
+  'babel-plugin-transform-es2015-modules-systemjs',
+  'babel-plugin-transform-es2015-modules-umd',
+  'babel-plugin-transform-es2015-object-super',
+  'babel-plugin-transform-es2015-parameters',
+  'babel-plugin-transform-es2015-shorthand-properties',
+  'babel-plugin-transform-es2015-spread',
+  'babel-plugin-transform-es2015-sticky-regex',
+  'babel-plugin-transform-es2015-template-literals',
+  'babel-plugin-transform-es2015-typeof-symbol',
+  'babel-plugin-transform-es2015-unicode-regex',
+  'babel-plugin-transform-es3-member-expression-literals',
+  'babel-plugin-transform-es3-property-literals',
+  'babel-plugin-transform-es5-property-mutators',
+  'babel-plugin-transform-eval',
+  'babel-plugin-transform-exponentiation-operator',
+  'babel-plugin-transform-export-extensions',
+  'babel-plugin-transform-flow-comments',
+  'babel-plugin-transform-flow-strip-types',
+  'babel-plugin-transform-function-bind',
+  'babel-plugin-transform-jscript',
+  'babel-plugin-transform-object-assign',
+  'babel-plugin-transform-object-rest-spread',
+  'babel-plugin-transform-object-set-prototype-of-to-assign',
+  'babel-plugin-transform-proto-to-assign',
+  'babel-plugin-transform-react-constant-elements',
+  'babel-plugin-transform-react-display-name',
+  'babel-plugin-transform-react-inline-elements',
+  'babel-plugin-transform-react-jsx',
+  'babel-plugin-transform-react-jsx-compat',
+  'babel-plugin-transform-react-jsx-self',
+  'babel-plugin-transform-react-jsx-source',
+  'babel-plugin-transform-regenerator',
+  'babel-plugin-transform-runtime',
+  'babel-plugin-transform-strict-mode',
+  'babel-plugin-undeclared-variables-check',
+  'babel-plugin-dynamic-import-node',
+  'babel-plugin-detective',
+  'babel-plugin-transform-prevent-infinite-loops',
+  'babel-plugin-transform-vue-jsx',
+  'babel-plugin-jsx-pragmatic',
+];
 
-function getDependencies(parsedPackage) {
+function getDependencies(parsedPackage, configurations) {
   const {
     dependencies: d = {},
     peerDependencies = {},
     devDependencies = {},
   } = parsedPackage;
 
-  const returnedDependencies = { ...peerDependencies };
+  const returnedDependencies = { ...peerDependencies, ...d };
 
-  Object.keys(d).forEach(dep => {
-    if (BLACKLISTED_DEPENDENCIES.indexOf(dep) === -1) {
-      returnedDependencies[dep] = d[dep];
+  const foundWhitelistedDevDependencies = [...WHITELISTED_DEV_DEPENDENCIES];
+
+  // Add all babel plugins/presets to whitelisted dependencies
+  if (configurations && configurations.babel && configurations.babel.parsed) {
+    (configurations.babel.parsed.presets || [])
+      .filter(p => typeof p === 'string')
+      .forEach(p => {
+        foundWhitelistedDevDependencies.push(p);
+        foundWhitelistedDevDependencies.push(`babel-preset-${p}`);
+      });
+
+    (configurations.babel.parsed.plugins || [])
+      .filter(p => typeof p === 'string')
+      .forEach(p => {
+        foundWhitelistedDevDependencies.push(p);
+        foundWhitelistedDevDependencies.push(`babel-plugin-${p}`);
+      });
+  }
+
+  Object.keys(devDependencies).forEach(dep => {
+    if (foundWhitelistedDevDependencies.indexOf(dep) > -1) {
+      returnedDependencies[dep] = devDependencies[dep];
     }
   });
-  Object.keys(devDependencies).forEach(dep => {
-    if (WHITELISTED_DEV_DEPENDENCIES.indexOf(dep) > -1) {
-      returnedDependencies[dep] = devDependencies[dep];
+
+  PREINSTALLED_DEPENDENCIES.forEach(dep => {
+    if (returnedDependencies[dep]) {
+      delete returnedDependencies[dep];
     }
   });
 
@@ -103,8 +218,7 @@ async function updateManager(
     manager.setManifest(manifest);
   }
   manager.updateConfigurations(configurations);
-  await manager.updateData(managerModules);
-  return manager;
+  return await manager.updateData(managerModules);
 }
 
 function initializeResizeListener() {
@@ -119,6 +233,24 @@ function initializeResizeListener() {
   });
   initializedResizeListener = true;
 }
+
+function overrideDocumentClose() {
+  const oldClose = window.document.close;
+
+  window.document.close = function close(...args) {
+    try {
+      oldClose.call(document, args);
+    } catch (e) {
+      throw e;
+    } finally {
+      inject();
+      reattach();
+    }
+  };
+}
+
+overrideDocumentClose();
+
 inject();
 
 async function compile({
@@ -142,6 +274,7 @@ async function compile({
   } catch (e) {
     console.error(e);
   }
+
   hadError = false;
 
   actionsEnabled = hasActions;
@@ -175,7 +308,7 @@ async function compile({
 
     const parsedPackageJSON = configurations.package.parsed;
 
-    const dependencies = getDependencies(parsedPackageJSON);
+    const dependencies = getDependencies(parsedPackageJSON, configurations);
     const { manifest, isNewCombination } = await loadDependencies(dependencies);
 
     if (isNewCombination && !firstLoad) {
@@ -237,7 +370,7 @@ async function compile({
         /* don't do anything with this error */
       }
     }
-    if (!manager.webpackHMR || firstLoad) {
+    if ((!manager.webpackHMR || firstLoad) && !manager.preset.htmlDisabled) {
       const htmlModule =
         modules[
           templateDefinition
@@ -257,7 +390,8 @@ async function compile({
     const oldHTML = document.body.innerHTML;
     const evalled = manager.evaluateModule(managerModuleToTranspile);
     debug(`Evaluation time: ${Date.now() - tt}ms`);
-    const domChanged = oldHTML !== document.body.innerHTML;
+    const domChanged =
+      !manager.preset.htmlDisabled && oldHTML !== document.body.innerHTML;
 
     if (
       isModuleView &&
@@ -291,7 +425,7 @@ async function compile({
 
     await manager.preset.teardown(manager);
 
-    if (!initializedResizeListener) {
+    if (!initializedResizeListener && !manager.preset.htmlDisabled) {
       initializeResizeListener();
     }
 
@@ -325,8 +459,9 @@ async function compile({
       manager.clearCache();
     }
 
-    e.module = e.module;
-    e.fileName = e.fileName;
+    if (firstLoad) {
+      inject();
+    }
 
     const event = new Event('error');
     event.error = e;

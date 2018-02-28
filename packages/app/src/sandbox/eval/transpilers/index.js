@@ -15,11 +15,13 @@ export default class Transpiler {
   };
   cacheable: boolean;
   name: string;
+  HMREnabled: boolean;
 
   constructor(name: string) {
     this.cachedResults = {};
     this.cacheable = true;
     this.name = name;
+    this.HMREnabled = true;
   }
 
   /* eslint-disable */

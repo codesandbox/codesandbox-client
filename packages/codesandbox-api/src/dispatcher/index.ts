@@ -53,10 +53,16 @@ export function notifyListeners(data: Object, source?: MessageEvent['source']) {
   });
 }
 
-// We now start listening so we can let our listeners know
-window.addEventListener('message', (e: MessageEvent) => {
+function eventListener(e: MessageEvent) {
   const { data } = e;
   if (data.codesandbox) {
     notifyListeners(data, e.source);
   }
-});
+}
+
+// We now start listening so we can let our listeners know
+window.addEventListener('message', eventListener);
+
+export function reattach() {
+  window.addEventListener('message', eventListener);
+}

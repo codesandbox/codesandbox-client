@@ -209,14 +209,18 @@ export default class Manager {
 
     const transpiledModule = this.getTranspiledModule(module);
 
-    const exports = this.evaluateTranspiledModule(transpiledModule);
+    try {
+      const exports = this.evaluateTranspiledModule(transpiledModule);
 
-    // Run post evaluate
-    this.getTranspiledModules().forEach(t => t.postEvaluate(this));
+      this.hmrStatus = 'idle';
 
-    this.hmrStatus = 'idle';
-
-    return exports;
+      return exports;
+    } catch (e) {
+      throw e;
+    } finally {
+      // Run post evaluate
+      this.getTranspiledModules().forEach(t => t.postEvaluate(this));
+    }
   }
 
   evaluateTranspiledModule(transpiledModule: TranspiledModule) {

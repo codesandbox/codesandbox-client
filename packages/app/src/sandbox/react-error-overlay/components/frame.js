@@ -290,7 +290,7 @@ function createFrame(
         const manager = getCurrentManager();
         if (manager) {
           const tModule = manager.resolveTranspiledModule(
-            sourceFileName.replace(location.origin, ''),
+            sourceFileName.replace(location.origin, '').replace('file://', ''),
             '/'
           );
 

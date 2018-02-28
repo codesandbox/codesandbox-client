@@ -5,6 +5,7 @@ import TerminalIcon from 'react-icons/lib/go/terminal';
 
 import {
   newSandboxUrl,
+  parcelSandboxUrl,
   newReactTypeScriptSandboxUrl,
   newPreactSandboxUrl,
   newVueSandboxUrl,
@@ -16,6 +17,7 @@ import {
 
 import ReactIcon from 'common/components/logos/React';
 import PreactIcon from 'common/components/logos/Preact';
+import ParcelIcon from 'common/components/logos/Parcel';
 import VueIcon from 'common/components/logos/Vue';
 import SvelteIcon from 'common/components/logos/Svelte';
 import AngularIcon from 'common/components/logos/Angular';
@@ -43,6 +45,15 @@ function NewSandbox({ signals }) {
   return (
     <Container>
       <RowContainer>
+        <Logo
+          Icon={ParcelIcon}
+          width={50}
+          height={50}
+          text="Vanilla"
+          href={parcelSandboxUrl()}
+          onClick={() => signals.closeModal()}
+        />
+
         <Logo
           Icon={ReactIcon}
           width={50}

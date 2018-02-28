@@ -29,20 +29,17 @@ const DEFAULT_BABEL_CONFIG = {
 /**
  * Parses the .babelrc if it exists, if it doesn't it will return a default config
  */
-export default function getBabelConfig(
-  config: Object = {},
-  path: string,
-  babelrc: Object
-) {
+export default function getBabelConfig(config: Object = {}, path: string) {
   let resolvedConfig = DEFAULT_BABEL_CONFIG;
 
   resolvedConfig = {
     ...resolvedConfig,
-    plugins: config.plugins || babelrc.plugins || resolvedConfig.plugins,
-    presets: config.presets || babelrc.presets || resolvedConfig.presets,
+    plugins: config.plugins != null ? config.plugins : resolvedConfig.plugins,
+    presets: config.presets != null ? config.presets : resolvedConfig.presets,
     sourceMaps: 'inline',
     sourceFileName: path,
     sourceMapTarget: `${path}:transpiled`,
+    filename: path,
   };
 
   return resolvedConfig;

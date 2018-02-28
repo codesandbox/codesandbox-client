@@ -29,10 +29,11 @@ function errorHandler(callback: ErrorCallback, e: Event): void {
 
 function registerUnhandledError(target: EventTarget, callback: ErrorCallback) {
   if (boundErrorHandler !== null) {
+    // Always add the listener, in case we rewrote the window
+    target.addEventListener('error', boundErrorHandler);
     return;
   }
   boundErrorHandler = errorHandler.bind(undefined, callback);
-  target.addEventListener('error', boundErrorHandler);
 }
 
 function unregisterUnhandledError(target: EventTarget) {

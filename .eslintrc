@@ -26,8 +26,5 @@
     "no-underscore-dangle": "off",
     "no-nested-ternary": "warn",
     "react/require-default-props": "off"
-  },
-  "settings": {
-    "import/resolver": "webpack"
   }
 }
