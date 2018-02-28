@@ -64,7 +64,11 @@ self.addEventListener('message', async event => {
 
   function addDependency(depPath: string) {
     if (!isUrl(depPath)) {
-      const assetPath = decodeURIComponent(depPath);
+      let assetPath = decodeURIComponent(depPath);
+      if (/^\w/.test(assetPath)) {
+        assetPath = `./${assetPath}`;
+      }
+
       self.postMessage({
         type: 'add-dependency',
         path: assetPath,
