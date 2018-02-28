@@ -148,13 +148,23 @@ function setupHTML() {
 setupHTML();
 `;
 
-  compiledCode += "window.addEventListener('load', function() {";
+  compiledCode += '\n';
+  compiledCode += 'function loadResources() {';
   resources.forEach(resource => {
     const resourcePath = JSON.stringify(resource);
     compiledCode += `\n`;
-    compiledCode += `require(${resourcePath});`;
+    compiledCode += `\trequire(${resourcePath});`;
   });
-  compiledCode += '})';
+  compiledCode += '\n}';
+
+  compiledCode += `
+if (document.readyState !== 'complete') {
+  window.addEventListener('load', function() { loadResources() });
+} else {
+  loadResources();
+}
+
+`;
 
   self.postMessage({
     type: 'compiled',
