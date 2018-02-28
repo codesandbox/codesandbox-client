@@ -97,7 +97,7 @@ async function updateManager(
     manager.setManifest(manifest);
   }
 
-  if (firstLoad) {
+  if (firstLoad && newManager) {
     // We save the state of transpiled modules, and load it here again. Gives
     // faster initial loads.
 
