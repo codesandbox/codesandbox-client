@@ -2,14 +2,19 @@ import * as React from 'react';
 
 import SandpackConsumer from '../SandpackConsumer';
 import Preview from '../Preview';
+import Navigator from '../Navigator';
 
-export default class BrowserPreview extends React.PureComponent {
+import cn from '../../utils/cn';
+
+export interface Props {}
+
+export default class BrowserPreview extends React.PureComponent<Props> {
   render() {
     return (
-      <div>
-        This is the navigation
+      <React.Fragment>
+        <Navigator />
         <Preview />
-      </div>
+      </React.Fragment>
     );
   }
 }

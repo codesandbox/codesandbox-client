@@ -65,8 +65,6 @@ class BasePreview extends React.Component<Props, State> {
     if (props.delay) {
       this.executeCode = debounce(this.executeCode, 800);
     }
-
-    frames = [];
   }
 
   static defaultProps = {

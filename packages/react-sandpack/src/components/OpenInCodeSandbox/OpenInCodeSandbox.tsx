@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { getParameters } from 'codesandbox-import-utils/lib/api/define';
-import { IFileProps } from '../types';
+import { IFileProps } from '../../types';
 
 export default class OpenInCodeSandbox extends React.Component<IFileProps> {
   static defaultProps = {

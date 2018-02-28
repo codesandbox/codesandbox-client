@@ -7,12 +7,6 @@ export interface IManagerOptions {
   template?: string;
 }
 
-export interface ISandboxInfo {
-  files: IFiles;
-  dependencies: IDependencies;
-  entry: string;
-}
-
 export interface IFiles {
   [path: string]: {
     code: string;
@@ -39,7 +33,7 @@ export default class PreviewManager {
 
   constructor(
     selector: string | HTMLIFrameElement,
-    sandboxInfo: ISandboxInfo,
+    files: IFiles,
     options: IManagerOptions = {}
   ) {
     this.options = options;
@@ -61,19 +55,23 @@ export default class PreviewManager {
     }
 
     this.listener = listen((message: any) => {
-      if (message.type === 'initialized') {
-        registerFrame(this.iframe.contentWindow);
+      switch (message.type) {
+        case 'initialized': {
+          if (this.iframe) {
+            registerFrame(this.iframe.contentWindow);
 
-        this.sendCode(
-          sandboxInfo.files,
-          sandboxInfo.dependencies,
-          sandboxInfo.entry
-        );
+            this.sendCode(files);
+          }
+          break;
+        }
+        default: {
+          // Do nothing
+        }
       }
     });
   }
 
-  sendCode(files: IFiles, dependencies: IDependencies, entry: string) {
+  sendCode(files: IFiles) {
     const modules: IModules = Object.keys(files).reduce(
       (prev, next) => ({
         ...prev,
@@ -85,26 +83,11 @@ export default class PreviewManager {
       {}
     );
 
-    modules['/package.json'] = {
-      code: JSON.stringify(
-        {
-          name: 'run',
-          main: entry,
-          dependencies,
-        },
-        null,
-        2
-      ),
-      path: '/package.json',
-    };
-
     dispatch({
       type: 'compile',
       codesandbox: true,
       version: 3,
       modules,
-      entry: entry,
-      dependencies: dependencies,
       externalResources: [],
       template: this.options.template || 'create-react-app',
       showOpenInCodeSandbox: true,

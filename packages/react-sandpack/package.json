@@ -20,8 +20,10 @@
   "scripts": {
     "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
     "prebuild": "rimraf dist",
-    "build": "tsc --module commonjs && rollup -c rollup.config.ts && typedoc --out docs --target es6 --theme minimal --mode file src",
-    "start": "rollup -c rollup.config.ts -w",
+    "build": "tsc --module commonjs && rollup -c rollup.config.ts && typedoc --out docs --target es6 --theme minimal --mode file src && gulp sass",
+    "start": "npm-run-all --parallel watch:**",
+    "watch:rollup": "rollup -c rollup.config.ts -w",
+    "watch:gulp": "gulp sass:watch",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:prod": "npm run lint && npm run test -- --coverage --no-cache",
@@ -75,7 +77,8 @@
   },
   "dependencies": {
     "codesandbox-import-utils": "^1.1.21",
-    "react-broadcast": "^0.6.2"
+    "react-broadcast": "^0.6.2",
+    "rollup-plugin-scss": "^0.4.0"
   },
   "peerDependencies": {
     "react": "^16.0.0"
@@ -92,10 +95,14 @@
     "coveralls": "^3.0.0",
     "cross-env": "^5.0.1",
     "cz-conventional-changelog": "^2.0.0",
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-sass": "^3.1.0",
     "husky": "^0.14.0",
     "jest": "^22.0.2",
     "lint-staged": "^7.0.0",
     "lodash.camelcase": "^4.3.0",
+    "npm-run-all": "^4.1.2",
     "prettier": "^1.4.4",
     "prompt": "^1.0.0",
     "replace-in-file": "^3.0.0-beta.2",
@@ -103,6 +110,7 @@
     "rollup": "^0.55.4",
     "rollup-plugin-commonjs": "^8.0.2",
     "rollup-plugin-node-resolve": "^3.0.0",
+    "rollup-plugin-sass": "^0.6.0",
     "rollup-plugin-sourcemaps": "^0.4.2",
     "rollup-plugin-typescript2": "^0.11.1",
     "semantic-release": "^12.4.1",

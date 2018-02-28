@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Subscriber } from 'react-broadcast';
 
-import { ISandpackContext } from '../types';
+import { ISandpackContext } from '../../types';
 
 export interface Props {
   children: (state: ISandpackContext) => React.ReactNode;

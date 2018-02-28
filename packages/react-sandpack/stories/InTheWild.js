@@ -7,6 +7,8 @@ import { withKnobs, text, object } from '@storybook/addon-knobs/react';
 import SandpackProvider from '../src/components/SandpackProvider/index.ts';
 import BrowserPreview from '../src/components/BrowserPreview/index.ts';
 
+import '../dist/styles.css';
+
 setAddon(JSXAddon);
 
 const stories = storiesOf('InTheWild', module);
@@ -26,6 +28,7 @@ stories.addWithJSX('with one file', () => (
     dependencies={object('dependencies', {
       uuid: 'latest',
     })}
+    entry="/index.js"
   >
     <BrowserPreview />
   </SandpackProvider>
