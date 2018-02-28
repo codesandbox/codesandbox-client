@@ -467,6 +467,17 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "mdxprograms",
+      "name": "Josh Waller",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/1900735?v=4",
+      "profile": "https://www.joshwaller.me",
+      "contributions": [
+        "bug",
+        "code",
+        "doc"
+      ]
     }
   ]
 }
