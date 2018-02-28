@@ -91,17 +91,19 @@ async function updateManager(
   if (!manager || manager.id !== sandboxId) {
     newManager = true;
     manager = new Manager(sandboxId, getPreset(template), managerModules);
-    if (firstLoad) {
-      // We save the state of transpiled modules, and load it here again. Gives
-      // faster initial loads.
-
-      await manager.load();
-    }
   }
 
   if (isNewCombination || newManager) {
     manager.setManifest(manifest);
   }
+
+  if (firstLoad) {
+    // We save the state of transpiled modules, and load it here again. Gives
+    // faster initial loads.
+
+    await manager.load();
+  }
+
   manager.updateConfigurations(configurations);
   await manager.updateData(managerModules);
   return manager;
