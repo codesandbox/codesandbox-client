@@ -18,6 +18,7 @@ import getDependencyName from './utils/get-dependency-name';
 import DependencyNotFoundError from '../errors/dependency-not-found-error';
 import ModuleNotFoundError from '../errors/module-not-found-error';
 import TestRunner from './tests/jest-lite';
+import dependenciesToQuery from '../npm/dependencies-to-query';
 
 type Externals = {
   [name: string]: string,
@@ -682,6 +683,20 @@ export default class Manager {
     this.hardReload = true;
   }
 
+  getDependencyQuery() {
+    if (!this.manifest || !this.manifest.dependencies) {
+      return '';
+    }
+
+    const normalizedDependencies = {};
+
+    this.manifest.dependencies.forEach(dep => {
+      normalizedDependencies[dep.name] = dep.version;
+    });
+
+    return dependenciesToQuery(normalizedDependencies);
+  }
+
   /**
    * Generate a JSON structure out of this manager that can be used to load
    * the manager later on. This is useful for faster initial loading.
@@ -697,11 +712,14 @@ export default class Manager {
         });
       });
 
+      const dependenciesQuery = this.getDependencyQuery();
+
       await localforage.setItem(this.id, {
         transpiledModules: serializedTModules,
         cachedPaths: this.cachedPaths,
         version: VERSION,
         configurations: this.configurations,
+        dependenciesQuery,
       });
     } catch (e) {
       if (process.env.NODE_ENV === 'development') {
@@ -721,16 +739,21 @@ export default class Manager {
           cachedPaths,
           version,
           configurations,
+          dependenciesQuery,
         }: {
           transpiledModules: { [id: string]: SerializedTranspiledModule },
           cachedPaths: { [path: string]: string },
           version: string,
           configurations: Object,
+          dependenciesQuery: string,
         } = data;
 
         // Only use the cache if the cached version was cached with the same
-        // version of the compiler
-        if (version === VERSION) {
+        // version of the compiler and dependencies haven't changed
+        if (
+          version === VERSION &&
+          dependenciesQuery === this.getDependencyQuery()
+        ) {
           this.cachedPaths = cachedPaths;
           this.configurations = configurations;
 
