@@ -319,7 +319,7 @@ async function compile({
     }
     const t = Date.now();
 
-    const updatedModules = await updateManager(
+    await updateManager(
       sandboxId,
       template,
       modules,
@@ -457,10 +457,6 @@ async function compile({
     }
 
     debug(`Total time: ${Date.now() - startTime}ms`);
-
-    dispatch({
-      type: 'success',
-    });
 
     manager.save();
   } catch (e) {
