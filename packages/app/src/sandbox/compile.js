@@ -220,7 +220,7 @@ async function updateManager(
   }
 
   manager.updateConfigurations(configurations);
-  return await manager.updateData(managerModules);
+  return manager.updateData(managerModules);
 }
 
 function initializeResizeListener() {
@@ -352,7 +352,14 @@ async function compile({
 
     resetScreen();
 
-    if (!manager.webpackHMR) {
+    const managerTranspiledModuleToTranspile = manager.getTranspiledModule(
+      managerModuleToTranspile
+    );
+
+    if (
+      !manager.webpackHMR &&
+      !managerTranspiledModuleToTranspile.compilation
+    ) {
       try {
         const children = document.body.children;
         // Do unmounting for react
@@ -372,20 +379,23 @@ async function compile({
         /* don't do anything with this error */
       }
     }
-    if ((!manager.webpackHMR || firstLoad) && !manager.preset.htmlDisabled) {
-      const htmlModule =
-        modules[
-          templateDefinition
-            .getHTMLEntries(configurations)
-            .find(p => modules[p])
-        ];
 
-      const html = htmlModule
-        ? htmlModule.code
-        : template === 'vue-cli'
-          ? '<div id="app"></div>'
-          : '<div id="root"></div>';
-      document.body.innerHTML = html;
+    if ((!manager.webpackHMR || firstLoad) && !manager.preset.htmlDisabled) {
+      if (!managerTranspiledModuleToTranspile.compilation) {
+        const htmlModule =
+          modules[
+            templateDefinition
+              .getHTMLEntries(configurations)
+              .find(p => modules[p])
+          ];
+
+        const html = htmlModule
+          ? htmlModule.code
+          : template === 'vue-cli'
+            ? '<div id="app"></div>'
+            : '<div id="root"></div>';
+        document.body.innerHTML = html;
+      }
     }
 
     const tt = Date.now();
@@ -447,10 +457,6 @@ async function compile({
     }
 
     debug(`Total time: ${Date.now() - startTime}ms`);
-
-    dispatch({
-      type: 'success',
-    });
 
     manager.save();
   } catch (e) {

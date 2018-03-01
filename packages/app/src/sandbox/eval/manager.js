@@ -194,7 +194,7 @@ export default class Manager {
     debug(`Loaded manifest.`);
   }
 
-  evaluateModule(module: Module) {
+  evaluateModule(module: Module, force: boolean = false) {
     if (this.hardReload) {
       // Do a hard reload
       document.location.reload();
@@ -209,6 +209,10 @@ export default class Manager {
       .forEach(t => t.evaluate(this));
 
     const transpiledModule = this.getTranspiledModule(module);
+
+    if (force && transpiledModule.compilation) {
+      transpiledModule.compilation = null;
+    }
 
     try {
       const exports = this.evaluateTranspiledModule(transpiledModule);
