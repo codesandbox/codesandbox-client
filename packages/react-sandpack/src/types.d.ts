@@ -17,4 +17,5 @@ export interface IFileProps {
 
 export interface ISandpackContext {
   browserFrame: HTMLIFrameElement;
+  sandboxUrl: string;
 }

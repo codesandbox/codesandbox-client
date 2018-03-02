@@ -18,13 +18,17 @@ export interface Props {
   };
   width?: number | string;
   height?: number | string;
-  sandboxUrl?: string;
+  sandboxUrl: string;
 }
 
 export default class SandpackProvider extends React.PureComponent<
   Props,
   State
 > {
+  static defaultProps = {
+    sandboxUrl: 'http://localhost:3001',
+  };
+
   manager?: Manager;
   iframe?: HTMLIFrameElement;
 
@@ -120,6 +124,7 @@ export default class SandpackProvider extends React.PureComponent<
           files,
           browserFrame: this.iframe,
           updateFiles: this.updateFiles,
+          sandboxUrl: this.props.sandboxUrl,
         }}
       >
         <div className="sandpack">
@@ -134,7 +139,7 @@ export default class SandpackProvider extends React.PureComponent<
               position: 'absolute',
               visibility: 'hidden',
             }}
-            src="http://localhost:3001"
+            src={this.props.sandboxUrl}
           />
           {children}
         </div>
