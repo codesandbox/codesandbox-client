@@ -19,7 +19,7 @@ import type { WarningStructure } from './transpilers/utils/worker-warning-handle
 import resolveDependency from './loaders/dependency-resolver';
 import evaluate from './loaders/eval';
 
-import type Manager from './manager';
+import type { default as Manager } from './manager';
 import HMR from './hmr';
 
 const debug = _debug('cs:compiler:transpiled-module');
@@ -97,12 +97,14 @@ export type LoaderContext = {
     depPath: string,
     options: ?{
       isAbsolute: boolean,
+      isEntry: boolean,
     }
   ) => void,
   addDependenciesInDirectory: (
     depPath: string,
     options: {
       isAbsolute: boolean,
+      isEntry: boolean,
     }
   ) => void,
   _module: TranspiledModule,
@@ -259,6 +261,7 @@ export default class TranspiledModule {
       if (this.compilation) {
         this.compilation = null;
       }
+
       Array.from(this.initiators)
         .filter(t => t.compilation)
         .forEach(dep => {
@@ -270,6 +273,16 @@ export default class TranspiledModule {
         .forEach(dep => {
           dep.resetCompilation();
         });
+
+      // If this is an entry we want all direct entries to be reset as well.
+      // Entries generally have side effects
+      if (this.isEntry) {
+        Array.from(this.dependencies)
+          .filter(t => t.compilation && t.isEntry)
+          .forEach(dep => {
+            dep.resetCompilation();
+          });
+      }
     }
   }
 
@@ -354,6 +367,10 @@ export default class TranspiledModule {
 
         this.transpilationDependencies.add(tModule);
         tModule.transpilationInitiators.add(this);
+
+        if (options.isEntry) {
+          tModule.setIsEntry(true);
+        }
       },
       addDependency: (depPath: string, options = {}) => {
         if (
@@ -371,6 +388,10 @@ export default class TranspiledModule {
 
           this.dependencies.add(tModule);
           tModule.initiators.add(this);
+
+          if (options.isEntry) {
+            tModule.setIsEntry(true);
+          }
         } catch (e) {
           if (e.type === 'module-not-found' && e.isDependency) {
             this.asyncDependencies.push(
@@ -388,7 +409,7 @@ export default class TranspiledModule {
           }
         }
       },
-      addDependenciesInDirectory: (folderPath: string, options) => {
+      addDependenciesInDirectory: (folderPath: string, options = {}) => {
         const tModules = manager.resolveTranspiledModulesInDirectory(
           folderPath,
           options && options.isAbsolute ? '/' : this.module.path
@@ -397,6 +418,10 @@ export default class TranspiledModule {
         tModules.forEach(tModule => {
           this.dependencies.add(tModule);
           tModule.initiators.add(this);
+
+          if (options.isEntry) {
+            tModule.setIsEntry(true);
+          }
         });
       },
       resolveTranspiledModule: (depPath: string, options = {}) =>
@@ -617,10 +642,8 @@ export default class TranspiledModule {
       ) {
         return this.compilation.exports;
       }
-    } else {
-      if (this.compilation && this.compilation.exports) {
-        return this.compilation.exports;
-      }
+    } else if (this.compilation && this.compilation.exports) {
+      return this.compilation.exports;
     }
 
     if (this.hmrConfig) {

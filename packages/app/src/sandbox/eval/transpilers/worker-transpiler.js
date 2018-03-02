@@ -125,10 +125,12 @@ export default class WorkerTranspiler extends Transpiler {
           if (data.isGlob) {
             loaderContext.addDependenciesInDirectory(data.path, {
               isAbsolute: data.isAbsolute,
+              isEntry: data.isEntry,
             });
           } else {
             loaderContext.addDependency(data.path, {
               isAbsolute: data.isAbsolute,
+              isEntry: data.isEntry,
             });
           }
           return;
@@ -137,6 +139,7 @@ export default class WorkerTranspiler extends Transpiler {
         if (data.type === 'add-transpilation-dependency') {
           loaderContext.addTranspilationDependency(data.path, {
             isAbsolute: data.isAbsolute,
+            isEntry: data.isEntry,
           });
           return;
         }

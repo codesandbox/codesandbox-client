@@ -11,7 +11,7 @@ class HTMLTranspiler extends WorkerTranspiler {
     this.HMREnabled = false;
   }
 
-  doTranspilation(code: string, loaderContext: LoaderContext) {
+  doTranspilation(code: string, loaderContext: LoaderContext): Promise<null> {
     return new Promise((resolve, reject) => {
       this.queueTask(
         {
