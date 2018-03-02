@@ -76,7 +76,13 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        include: [paths.src, paths.common, /@emmetio/, /jest-circus/],
+        include: [
+          paths.src,
+          paths.common,
+          /@emmetio/,
+          /jest-circus/,
+          /ansi-styles/,
+        ],
         exclude: [
           /eslint\.4\.1\.0\.min\.js$/,
           /typescriptServices\.js$/,
