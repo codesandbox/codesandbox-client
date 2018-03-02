@@ -18,6 +18,10 @@ const getHost = () => {
     return `http://${process.env.STAGING_BRANCH}.cs.lbogdan.tk`;
   }
 
+  if ('ROOT_URL' in process.env) {
+    return process.env.ROOT_URL;
+  }
+
   return 'https://codesandbox.io';
 };
 
