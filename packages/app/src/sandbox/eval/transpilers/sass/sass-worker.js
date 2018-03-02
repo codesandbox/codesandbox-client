@@ -147,7 +147,12 @@ self.addEventListener('message', async event => {
     const fs = BrowserFS.BFSRequire('fs');
 
     try {
-      const foundPath = await resolveSass(fs, request.current, path);
+      const currentPath =
+        request.previous === 'stdin'
+          ? path
+          : join(dirname(path), request.previous);
+
+      const foundPath = await resolveSass(fs, request.current, currentPath);
 
       self.postMessage({
         type: 'add-transpilation-dependency',
