@@ -23,7 +23,9 @@ import {
   ButtonName,
 } from './elements';
 
-const BUTTON_URL = 'https://codesandbox.io/static/img/play-codesandbox.svg';
+const BUTTON_URL = `${
+  process.env.CODESANDBOX_HOST
+}/static/img/play-codesandbox.svg`;
 
 class ShareView extends React.Component {
   state = {
