@@ -76,7 +76,7 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        include: [paths.src, paths.common, /@emmetio/],
+        include: [paths.src, paths.common, /@emmetio/, /jest-circus/],
         exclude: [
           /eslint\.4\.1\.0\.min\.js$/,
           /typescriptServices\.js$/,
@@ -152,6 +152,16 @@ module.exports = {
         options: {
           search: `assert = require.call(null, 'assert');`,
           replace: `throw new Error('module assert not found')`,
+        },
+      },
+      // Chalk doesn't have functionality in browser, so don't add it
+      {
+        test: /chalk/,
+        loader: 'string-replace-loader',
+        options: {
+          search: '[\\s\\S]+', // whole file.
+          replace: 'module.exports = () => {}',
+          flags: 'g',
         },
       },
       // JSON is not enabled by default in Webpack but both Node and Browserify
