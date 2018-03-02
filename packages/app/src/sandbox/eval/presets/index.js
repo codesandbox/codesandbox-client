@@ -142,7 +142,7 @@ export default class Preset {
    * Get transpilers from the given query, the query is webpack like:
    * eg. !babel-loader!./test.js
    */
-  getLoaders(module: Module, query: string = '') {
+  getLoaders(module: Module, query: string = ''): Array<TranspilerDefinition> {
     const loader = this.loaders.find(t => t.test(module));
 
     // Starting !, drop all transpilers
