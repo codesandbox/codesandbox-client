@@ -166,7 +166,7 @@ module.exports = {
         loader: 'string-replace-loader',
         options: {
           search: '[\\s\\S]+', // whole file.
-          replace: 'module.exports = () => {}',
+          replace: 'module.exports = {}',
           flags: 'g',
         },
       },
