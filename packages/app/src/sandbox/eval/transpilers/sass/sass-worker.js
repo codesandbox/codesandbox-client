@@ -144,23 +144,8 @@ self.addEventListener('message', async event => {
     }
   }
 
-  function getCurrentPath(previous, current) {
-    // Paths like ~/pok or /pok
-    if (!/^\w/.test(current)) {
-      return path;
-    }
-
-    if (previous === 'stdin') {
-      return path;
-    }
-
-    return join(dirname(previous), current);
-  }
-
   pathCaches.clear();
-
   Sass._path = '/';
-
   Sass.clearFiles();
 
   // register a custom importer callback
