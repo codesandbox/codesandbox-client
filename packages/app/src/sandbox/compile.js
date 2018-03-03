@@ -270,6 +270,7 @@ async function compile({
 
   const startTime = Date.now();
   try {
+    inject();
     clearErrorTransformers();
     initializeErrorTransformers();
     unmount(manager && manager.webpackHMR ? true : hadError);
