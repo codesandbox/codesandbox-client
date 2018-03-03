@@ -126,7 +126,7 @@ function initializeBrowserFS() {
 let fsInitialized = false;
 
 self.addEventListener('message', async event => {
-  const { code, path, codesandbox } = event.data;
+  const { code, path, indentedSyntax, codesandbox } = event.data;
 
   if (!codesandbox) {
     return;
@@ -186,7 +186,7 @@ self.addEventListener('message', async event => {
     code,
     {
       sourceMapEmbed: true,
-      indentedSyntax: path.endsWith('.sass'),
+      indentedSyntax,
     },
     result => {
       if (result.status === 0) {
