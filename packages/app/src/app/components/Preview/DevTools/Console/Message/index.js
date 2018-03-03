@@ -60,6 +60,9 @@ function getMessage(message) {
 
   if (message.arguments.every(argument => typeof argument === 'string')) {
     if (message.logType === 'error') {
+      /* This checks for error logTypes and shortens the message in the console by wrapping
+      it a <details /> tag and putting the first line in a <summary /> tag and the other lines
+      follow after that. This creates a nice collapsible error message */
       let otherErrorLines;
       const msgLine = message.arguments.join(' ');
       const firstLine = splitMessage(msgLine);
@@ -71,7 +74,7 @@ function getMessage(message) {
         <InnerItem>
           <details>
             <summary>{firstLine}</summary>
-            {otherErrorLines}
+            {otherErrorLines.join('\n\r')}
           </details>
         </InnerItem>
       );
