@@ -19,6 +19,15 @@ function formatMessage(message) {
   return formattedResult;
 }
 
+function splitMessage(message) {
+  const breakIndex = message.indexOf('\n');
+  // consider that there can be line without a break
+  if (breakIndex === -1) {
+    return message;
+  }
+  return message.substr(0, breakIndex);
+}
+
 function getMessage(message) {
   if (message.type === 'return') {
     return (
@@ -50,6 +59,24 @@ function getMessage(message) {
   }
 
   if (message.arguments.every(argument => typeof argument === 'string')) {
+    if (message.logType === 'error') {
+      let otherErrorLines;
+      const msgLine = message.arguments.join(' ');
+      const firstLine = splitMessage(msgLine);
+      const msgArray = msgLine.split('\n');
+      if (msgArray.length > 1) {
+        otherErrorLines = msgArray.slice(1);
+      }
+      return (
+        <InnerItem>
+          <details>
+            <summary>{firstLine}</summary>
+            {otherErrorLines}
+          </details>
+        </InnerItem>
+      );
+    }
+
     return <InnerItem>{message.arguments.join(' ')}</InnerItem>;
   }
 
