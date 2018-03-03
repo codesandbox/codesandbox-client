@@ -3,7 +3,9 @@ import { join, basename, absolute, dirname } from 'common/utils/path';
 import delay from 'common/utils/delay';
 
 self.importScripts([
-  'https://cdnjs.cloudflare.com/ajax/libs/sass.js/0.10.6/sass.sync.min.js',
+  process.env.NODE_ENV === 'production'
+    ? 'https://cdnjs.cloudflare.com/ajax/libs/sass.js/0.10.6/sass.sync.min.js'
+    : 'https://cdnjs.cloudflare.com/ajax/libs/sass.js/0.10.6/sass.sync.js',
 ]);
 
 self.postMessage('ready');
@@ -27,18 +29,17 @@ const existsPromise = (fs, file) =>
     });
   });
 
+const pathCaches = new Map();
 const getExistingPath = async (fs, p) => {
-  const underscoredPath = join(dirname(p), '_' + basename(p));
-  const possiblePaths = [
-    p,
-    `${p}.css`,
-    `${p}.scss`,
-    `${p}.sass`,
-    underscoredPath,
-    `${underscoredPath}.css`,
-    `${underscoredPath}.scss`,
-    `${underscoredPath}.sass`,
-  ];
+  if (p.endsWith('.json')) {
+    return false;
+  }
+
+  if (pathCaches.get(p)) {
+    return pathCaches.get(p);
+  }
+
+  const possiblePaths = Sass.getPathVariations(p);
 
   let existedFile = false;
 
@@ -47,6 +48,8 @@ const getExistingPath = async (fs, p) => {
       existedFile = await existsPromise(fs, possiblePaths[i]); // eslint-disable-line
     }
   }
+
+  pathCaches.set(p, existedFile);
 
   return existedFile;
 };
@@ -141,6 +144,25 @@ self.addEventListener('message', async event => {
     }
   }
 
+  function getCurrentPath(previous, current) {
+    // Paths like ~/pok or /pok
+    if (!/^\w/.test(current)) {
+      return path;
+    }
+
+    if (previous === 'stdin') {
+      return path;
+    }
+
+    return join(dirname(previous), current);
+  }
+
+  pathCaches.clear();
+
+  Sass._path = '/';
+
+  Sass.clearFiles();
+
   // register a custom importer callback
   Sass.importer(async (request, done) => {
     // eslint-disable-next-line
@@ -148,9 +170,7 @@ self.addEventListener('message', async event => {
 
     try {
       const currentPath =
-        request.previous === 'stdin'
-          ? path
-          : join(dirname(path), request.previous);
+        request.previous === 'stdin' ? path : request.previous;
 
       const foundPath = await resolveSass(fs, request.current, currentPath);
 
@@ -166,8 +186,10 @@ self.addEventListener('message', async event => {
           return;
         }
 
-        done({
-          content: data.toString(),
+        Sass.writeFile(foundPath, data.toString(), () => {
+          done({
+            path: foundPath,
+          });
         });
       });
     } catch (e) {

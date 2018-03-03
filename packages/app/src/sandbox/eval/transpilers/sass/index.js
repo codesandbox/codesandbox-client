@@ -17,12 +17,10 @@ class SassTranspiler extends WorkerTranspiler {
     code: string,
     loaderContext: LoaderContext
   ): Promise<{ transpiledCode: string }> {
-    const extension =
+    const indentedSyntax =
       typeof loaderContext.options.indentedSyntax === 'undefined'
         ? 'scss'
         : 'sass';
-
-    const customPath = loaderContext.path + '.' + extension;
 
     return new Promise((resolve, reject) => {
       if (code === '' || code == null) {
@@ -33,7 +31,8 @@ class SassTranspiler extends WorkerTranspiler {
       this.queueTask(
         {
           code,
-          path: customPath,
+          path: loaderContext.path,
+          indentedSyntax,
         },
         loaderContext,
         (err, data) => {
