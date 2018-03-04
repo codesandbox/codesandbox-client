@@ -6,15 +6,23 @@ import Navigator from '../Navigator';
 
 import cn from '../../utils/cn';
 
-export interface Props {}
+export interface Props {
+  className?: string;
+  style?: Object;
+}
 
 export default class BrowserPreview extends React.PureComponent<Props> {
   render() {
+    const { className, style } = this.props;
+
     return (
-      <React.Fragment>
+      <div
+        className={`${cn('BrowserPreview', 'container')} ${className}`}
+        style={style}
+      >
         <Navigator />
         <Preview />
-      </React.Fragment>
+      </div>
     );
   }
 }

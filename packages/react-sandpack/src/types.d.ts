@@ -1,7 +1,9 @@
+export interface IFile {
+  code: string;
+}
+
 export interface IFiles {
-  [path: string]: {
-    code: string;
-  };
+  [path: string]: IFile;
 }
 
 export interface IFileProps {
@@ -18,4 +20,8 @@ export interface IFileProps {
 export interface ISandpackContext {
   browserFrame: HTMLIFrameElement;
   sandboxUrl: string;
+  openedPath: string;
+  files: IFiles;
+  openFile: (path: string) => void;
+  updateFiles: (files: IFiles) => void;
 }

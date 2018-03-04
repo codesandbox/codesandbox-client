@@ -5,7 +5,9 @@ import JSXAddon from 'storybook-addon-jsx';
 import { withKnobs, text, object } from '@storybook/addon-knobs/react';
 
 import SandpackProvider from '../src/components/SandpackProvider/index.ts';
+import FileExplorer from '../src/components/FileExplorer/index.ts';
 import BrowserPreview from '../src/components/BrowserPreview/index.ts';
+import CodeEditor from '../src/components/CodeEditor/CodeMirror/index.ts';
 
 import '../dist/styles.css';
 
@@ -30,6 +32,10 @@ stories.addWithJSX('with one file', () => (
     })}
     entry="/index.js"
   >
-    <BrowserPreview />
+    <div style={{ display: 'flex', width: '100%', height: '100%' }}>
+      <FileExplorer />
+      <CodeEditor style={{ flex: 1, height: '100%' }} />
+      <BrowserPreview style={{ flex: 1, height: '100%' }} />
+    </div>
   </SandpackProvider>
 ));

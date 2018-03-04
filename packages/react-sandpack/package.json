@@ -76,8 +76,10 @@
     "mapCoverage": true
   },
   "dependencies": {
+    "codemirror": "^5.35.0",
     "codesandbox-import-utils": "^1.1.21",
     "react-broadcast": "^0.6.2",
+    "react-codemirror2": "^4.0.1",
     "rollup-plugin-scss": "^0.4.0"
   },
   "peerDependencies": {
@@ -86,6 +88,7 @@
   "devDependencies": {
     "@storybook/addon-knobs": "^3.3.14",
     "@storybook/react": "^3.3.14",
+    "@types/codemirror": "^0.0.55",
     "@types/jest": "^22.0.0",
     "@types/node": "^9.4.6",
     "@types/react-broadcast": "^0.6.0",
@@ -97,6 +100,7 @@
     "cz-conventional-changelog": "^2.0.0",
     "gulp": "^3.9.1",
     "gulp-concat": "^2.6.1",
+    "gulp-cssimport": "^6.0.1",
     "gulp-sass": "^3.1.0",
     "husky": "^0.14.0",
     "jest": "^22.0.2",

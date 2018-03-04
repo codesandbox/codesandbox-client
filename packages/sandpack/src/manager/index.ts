@@ -31,12 +31,15 @@ export default class PreviewManager {
   options: IManagerOptions;
   listener?: Function;
 
+  files: IFiles;
+
   constructor(
     selector: string | HTMLIFrameElement,
     files: IFiles,
     options: IManagerOptions = {}
   ) {
     this.options = options;
+    this.files = files;
 
     if (typeof selector === 'string') {
       this.selector = selector;
@@ -60,7 +63,7 @@ export default class PreviewManager {
           if (this.iframe) {
             registerFrame(this.iframe.contentWindow);
 
-            this.sendCode(files);
+            this.sendCode(this.files);
           }
           break;
         }
@@ -72,6 +75,8 @@ export default class PreviewManager {
   }
 
   sendCode(files: IFiles) {
+    this.files = files;
+
     const modules: IModules = Object.keys(files).reduce(
       (prev, next) => ({
         ...prev,

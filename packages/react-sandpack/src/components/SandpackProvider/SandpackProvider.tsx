@@ -7,6 +7,7 @@ import { IFileProps, IFiles } from '../../types';
 export interface State {
   files: IFiles;
   browserPath: string;
+  openedPath: string;
 }
 
 export interface Props {
@@ -42,6 +43,7 @@ export default class SandpackProvider extends React.PureComponent<
         props.entry
       ),
       browserPath: props.initialPath || '/',
+      openedPath: props.entry || '/index.js',
     };
   }
 
@@ -54,7 +56,7 @@ export default class SandpackProvider extends React.PureComponent<
   ) {
     const newFiles = { ...files };
 
-    if (!files['/package.json']) {
+    if (!newFiles['/package.json']) {
       if (!dependencies) {
         throw new Error(
           'No dependencies specified, please specify either a package.json or dependencies.'
@@ -67,7 +69,7 @@ export default class SandpackProvider extends React.PureComponent<
         );
       }
 
-      files['/package.json'] = {
+      newFiles['/package.json'] = {
         code: JSON.stringify(
           {
             name: 'run',
@@ -113,15 +115,21 @@ export default class SandpackProvider extends React.PureComponent<
     }
   }
 
+  openFile = (path: string) => {
+    this.setState({ openedPath: path });
+  };
+
   render() {
     const { children } = this.props;
-    const { files, browserPath } = this.state;
+    const { files, browserPath, openedPath } = this.state;
 
     return (
       <Broadcast
         channel="sandpack"
         value={{
           files,
+          openedPath,
+          openFile: this.openFile,
           browserFrame: this.iframe,
           updateFiles: this.updateFiles,
           sandboxUrl: this.props.sandboxUrl,
