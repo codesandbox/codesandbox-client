@@ -70,6 +70,11 @@ function getMessage(message) {
       if (msgArray.length > 1) {
         otherErrorLines = msgArray.slice(1);
       }
+
+      if (!otherErrorLines) {
+        return <InnerItem>{message.arguments.join(' ')}</InnerItem>;
+      }
+
       return (
         <InnerItem>
           <details>
