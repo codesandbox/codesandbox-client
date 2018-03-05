@@ -6,19 +6,50 @@ export interface IFiles {
   [path: string]: IFile;
 }
 
-export interface IFileProps {
-  files: IFiles;
-  entry: string;
-  dependencies: {
-    [depName: string]: string;
+export interface IModule {
+  code: string;
+  path: string;
+}
+
+export interface IModuleSource {
+  fileName: string;
+  compiledCode: string;
+  sourceMap: Object | undefined;
+}
+
+export interface ITranspiledModule {
+  module: IModule;
+  query: string;
+  source: IModuleSource | undefined;
+  assets: {
+    [name: string]: IModuleSource;
   };
-  width?: number | string;
-  height?: number | string;
-  sandboxUrl: string;
+  isEntry: boolean;
+  isTestFile: boolean;
+  childModules: Array<string>;
+  /**
+   * All extra modules emitted by the loader
+   */
+  emittedAssets: Array<IModuleSource>;
+  initiators: Array<string>;
+  dependencies: Array<string>;
+  asyncDependencies: Array<string>;
+  transpilationDependencies: Array<string>;
+  transpilationInitiators: Array<string>;
+}
+
+export interface IManagerState {
+  cachedPaths: {
+    [path: string]: string;
+  };
+  transpiledModules: {
+    [id: string]: ITranspiledModule;
+  };
 }
 
 export interface ISandpackContext {
   browserFrame: HTMLIFrameElement;
+  managerState: IManagerState | undefined;
   sandboxUrl: string;
   openedPath: string;
   files: IFiles;

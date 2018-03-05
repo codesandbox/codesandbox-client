@@ -1,13 +1,16 @@
 import * as React from 'react';
 import { Broadcast } from 'react-broadcast';
 import { Manager } from 'sandpack';
+import { listen } from 'codesandbox-api';
 
-import { IFile, IFiles } from '../../types';
+import { IFile, IFiles, IManagerState } from '../../types';
 
 export interface State {
   files: IFiles;
   browserPath: string;
   openedPath: string;
+  iframe: HTMLIFrameElement | null;
+  managerState: IManagerState | undefined;
 }
 
 export interface Props {
@@ -34,6 +37,7 @@ export default class SandpackProvider extends React.PureComponent<
 
   manager?: Manager;
   iframe?: HTMLIFrameElement;
+  listener: Function;
 
   constructor(props: Props) {
     super(props);
@@ -46,8 +50,18 @@ export default class SandpackProvider extends React.PureComponent<
       ),
       browserPath: props.initialPath || '/',
       openedPath: props.entry || '/index.js',
+      iframe: null,
+      managerState: undefined,
     };
+
+    this.listener = listen(this.handleMessage);
   }
+
+  handleMessage = (message: any) => {
+    if (message.type === 'success') {
+      this.setState({ managerState: message.state });
+    }
+  };
 
   createMissingPackageJSON(
     files: IFiles,
@@ -88,11 +102,21 @@ export default class SandpackProvider extends React.PureComponent<
   }
 
   setupFrame = (el: HTMLIFrameElement) => {
-    this.manager = new Manager(el, this.props.files, {
-      skipEval: this.props.skipEval,
-    });
+    this.manager = new Manager(
+      el,
+      this.createMissingPackageJSON(
+        this.props.files,
+        this.props.dependencies,
+        this.props.entry
+      ),
+      {
+        skipEval: this.props.skipEval,
+      }
+    );
 
     this.iframe = el;
+
+    this.setState({ iframe: el });
   };
 
   updateFiles = (files: IFiles) => {
@@ -119,13 +143,17 @@ export default class SandpackProvider extends React.PureComponent<
     }
   }
 
+  componentWillUnmount() {
+    this.listener();
+  }
+
   openFile = (path: string) => {
     this.setState({ openedPath: path });
   };
 
   render() {
     const { children } = this.props;
-    const { files, browserPath, openedPath } = this.state;
+    const { iframe, files, browserPath, openedPath, managerState } = this.state;
 
     return (
       <Broadcast
@@ -133,14 +161,17 @@ export default class SandpackProvider extends React.PureComponent<
         value={{
           files,
           openedPath,
+          managerState,
           openFile: this.openFile,
-          browserFrame: this.iframe,
+          browserFrame: iframe,
           updateFiles: this.updateFiles,
           sandboxUrl: this.props.sandboxUrl,
         }}
       >
         <div className="sandpack">
-          {/* We create a hidden iframe, the bundler will live in this. */}
+          {/* We create a hidden iframe, the bundler will live in this.
+            We expose this iframe to the Consumer, so other components can show the full
+            iframe for preview. An implementation can be found in `Preview` component. */}
           <iframe
             ref={this.setupFrame}
             style={{

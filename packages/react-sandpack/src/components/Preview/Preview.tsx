@@ -1,11 +1,13 @@
 import * as React from 'react';
+import { ISandpackContext } from '../../types';
 import SandpackConsumer from '../SandpackConsumer';
+import withSandpack from '../../utils/with-sandpack';
 
 export interface PreviewProps {
-  browser: HTMLIFrameElement;
+  sandpack: ISandpackContext;
 }
 
-class Preview extends React.PureComponent<PreviewProps> {
+class Preview extends React.Component<PreviewProps> {
   container?: HTMLDivElement;
 
   setContainerElement = (el: HTMLDivElement) => {
@@ -13,20 +15,20 @@ class Preview extends React.PureComponent<PreviewProps> {
   };
 
   initializeFrame = () => {
-    const { browser } = this.props;
+    const { browserFrame } = this.props.sandpack;
 
-    if (browser && this.container) {
-      browser.style.width = '100%';
-      browser.style.height = '500px';
-      browser.style.visibility = 'visible';
-      browser.style.position = 'relative';
+    if (browserFrame && this.container) {
+      browserFrame.style.width = '100%';
+      browserFrame.style.height = '500px';
+      browserFrame.style.visibility = 'visible';
+      browserFrame.style.position = 'relative';
 
-      this.container.appendChild(browser);
+      this.container.appendChild(browserFrame);
     }
   };
 
   componentDidUpdate(prevProps: PreviewProps) {
-    if (prevProps.browser !== this.props.browser) {
+    if (prevProps.sandpack.browserFrame !== this.props.sandpack.browserFrame) {
       this.initializeFrame();
     }
   }
@@ -36,12 +38,4 @@ class Preview extends React.PureComponent<PreviewProps> {
   }
 }
 
-export default class ContainerElement extends React.PureComponent {
-  render() {
-    return (
-      <SandpackConsumer>
-        {state => <Preview browser={state.browserFrame} />}
-      </SandpackConsumer>
-    );
-  }
-}
+export default withSandpack(Preview);

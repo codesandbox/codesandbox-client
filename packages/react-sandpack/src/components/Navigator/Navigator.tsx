@@ -1,13 +1,15 @@
 import * as React from 'react';
 import { listen, dispatch } from 'codesandbox-api';
-import RefreshIcon from './RefreshIcon';
+import classNames from 'classnames';
 
+import RefreshIcon from './RefreshIcon';
 import withSandpack from '../../utils/with-sandpack';
 import { ISandpackContext } from '../../types';
 import cn from '../../utils/cn';
 
 interface Props {
   sandpack: ISandpackContext;
+  className?: string;
 }
 
 interface State {
@@ -98,9 +100,13 @@ class Navigator extends React.Component<Props, State> {
 
   render() {
     const { browserPath } = this.state;
+    const { sandpack, className, ...props } = this.props;
 
     return (
-      <div className={cn('Navigator', 'container')}>
+      <div
+        className={classNames(className, cn('Navigator', 'container'))}
+        {...props}
+      >
         <button className={cn('Navigator', 'button')} onClick={this.onRefresh}>
           <RefreshIcon />
         </button>

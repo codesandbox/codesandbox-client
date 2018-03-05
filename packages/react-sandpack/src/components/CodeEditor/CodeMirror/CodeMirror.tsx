@@ -34,16 +34,15 @@ class CodeMirror extends React.PureComponent<Props> {
   };
 
   render() {
-    const { codeMirrorOptions, style = {}, className = '' } = this.props;
+    const { codeMirrorOptions, ...props } = this.props;
     const { openedPath, files } = this.props.sandpack;
 
     return (
       <CodeMirrorComponent
-        className={className}
-        style={style}
         codeMirrorOptions={codeMirrorOptions}
         onBeforeChange={this.onChange}
         value={files[openedPath].code}
+        {...props}
       />
     );
   }

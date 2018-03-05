@@ -8008,6 +8008,13 @@ gulp-filter@^5.0.0:
     multimatch "^2.0.0"
     streamfilter "^1.0.5"
 
+gulp-plugin-prettier@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/gulp-plugin-prettier/-/gulp-plugin-prettier-1.1.0.tgz#83ed9e8ef6549c273db18a1ef6446343191cf75c"
+  dependencies:
+    gulp-util "^3.0.8"
+    through2 "^2.0.3"
+
 gulp-postcss@^6.4.0:
   version "6.4.0"
   resolved "https://registry.yarnpkg.com/gulp-postcss/-/gulp-postcss-6.4.0.tgz#78a32e3c87aa6cdcec5ae1c905e196d478e8c5d5"

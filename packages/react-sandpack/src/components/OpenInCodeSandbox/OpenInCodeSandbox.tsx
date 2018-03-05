@@ -1,29 +1,16 @@
 import * as React from 'react';
 import { getParameters } from 'codesandbox-import-utils/lib/api/define';
-import { IFileProps } from '../../types';
+import { IFiles } from '../../types';
 
-export default class OpenInCodeSandbox extends React.Component<IFileProps> {
-  static defaultProps = {
-    entry: '/index.js',
-  };
+import SandpackConsumer from '../SandpackConsumer';
 
-  getFileParameters = () => {
-    const { files, dependencies } = this.props;
-    const paramFiles = { ...files };
-
-    const packageJSON = {
-      main: this.props.entry,
-      dependencies,
-    };
-    paramFiles['/package.json'] = {
-      code: JSON.stringify(packageJSON, null, 2),
-    };
-
-    const normalized = Object.keys(paramFiles).reduce(
+export default class OpenInCodeSandbox extends React.Component {
+  getFileParameters = (files: IFiles) => {
+    const normalized = Object.keys(files).reduce(
       (prev, next) => ({
         ...prev,
         [next.replace('/', '')]: {
-          content: paramFiles[next].code,
+          content: files[next].code,
           isBinary: false,
         },
       }),
@@ -34,21 +21,24 @@ export default class OpenInCodeSandbox extends React.Component<IFileProps> {
   };
 
   render() {
-    const { files, dependencies, ...props } = this.props;
     return (
-      <form
-        action="https://codesandbox.io/api/v1/sandboxes/define"
-        method="POST"
-        target="_blank"
-        {...props}
-      >
-        <input
-          type="hidden"
-          name="parameters"
-          value={this.getFileParameters()}
-        />
-        <input type="submit" value="Open in CodeSandbox" />
-      </form>
+      <SandpackConsumer>
+        {sandpack => (
+          <form
+            action="https://codesandbox.io/api/v1/sandboxes/define"
+            method="POST"
+            target="_blank"
+            {...this.props}
+          >
+            <input
+              type="hidden"
+              name="parameters"
+              value={this.getFileParameters(sandpack.files)}
+            />
+            <input type="submit" value="Open in CodeSandbox" />
+          </form>
+        )}
+      </SandpackConsumer>
     );
   }
 }

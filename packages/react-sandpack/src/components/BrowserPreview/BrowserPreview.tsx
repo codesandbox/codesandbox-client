@@ -13,12 +13,13 @@ export interface Props {
 
 export default class BrowserPreview extends React.PureComponent<Props> {
   render() {
-    const { className, style } = this.props;
+    const { className = '', style, ...props } = this.props;
 
     return (
       <div
         className={`${cn('BrowserPreview', 'container')} ${className}`}
         style={style}
+        {...props}
       >
         <Navigator />
         <Preview />

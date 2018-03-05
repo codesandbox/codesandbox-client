@@ -16,34 +16,11 @@ export interface State {
 }
 
 export default class TranspiledCodeView extends React.Component<Props, State> {
-  listener: Function;
-
-  constructor(props: Props) {
-    super(props);
-    this.listener = listen(this.handleMessage);
-
-    this.state = {
-      managerState: null,
-    };
-  }
-
-  componentWillUnmount() {
-    this.listener();
-  }
-
-  handleMessage = (message: any) => {
-    if (message.type === 'success') {
-      this.setState({ managerState: message.state });
-    }
-  };
-
   getTranspiledCode(sandpack: ISandpackContext) {
-    const { managerState } = this.state;
+    const { openedPath, managerState } = sandpack;
     if (managerState == null) {
       return null;
     }
-
-    const { openedPath } = sandpack;
 
     const tModule = managerState.transpiledModules[openedPath + ':'];
     if (tModule && tModule.source) {

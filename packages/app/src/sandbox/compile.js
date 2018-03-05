@@ -130,7 +130,7 @@ async function compile({
   isModuleView = false,
   template,
   entry,
-  showOpenInCodeSandbox = true,
+  showOpenInCodeSandbox = false,
   skipEval = false,
 }) {
   dispatch({

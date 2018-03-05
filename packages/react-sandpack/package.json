@@ -103,6 +103,7 @@
     "gulp": "^3.9.1",
     "gulp-concat": "^2.6.1",
     "gulp-cssimport": "^6.0.1",
+    "gulp-plugin-prettier": "^1.1.0",
     "gulp-sass": "^3.1.0",
     "husky": "^0.14.0",
     "jest": "^22.0.2",

@@ -12,13 +12,13 @@ export interface Props {
 
 export default class FileExplorer extends React.PureComponent<Props> {
   render() {
-    const { style, className = '' } = this.props;
+    const { className = '', ...props } = this.props;
     return (
       <SandpackConsumer>
         {sandpack => (
           <div
             className={`${className} ${cn('FileExplorer', 'container')}`}
-            style={style}
+            {...props}
           >
             <ModuleList
               selectFile={sandpack.openFile}

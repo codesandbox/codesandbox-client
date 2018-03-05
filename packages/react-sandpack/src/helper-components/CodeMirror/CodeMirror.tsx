@@ -32,7 +32,7 @@ export default class CodeMirror extends React.Component<Props> {
     return (
       <div
         className={`${cn('CodeMirror', 'container')} ${className}`}
-        style={{ ...style, position: 'relative' }}
+        style={style}
       >
         <Controlled
           options={{
