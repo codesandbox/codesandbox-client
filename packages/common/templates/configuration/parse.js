@@ -2,11 +2,6 @@
 import type { ConfigurationFile } from 'common/templates/configuration/types';
 import type { Sandbox } from 'common/types';
 
-type Module = {
-  path: string,
-  code: string,
-};
-
 type ConfigurationFiles = {
   [path: string]: ConfigurationFile,
 };
@@ -18,7 +13,7 @@ type ConfigurationFiles = {
 export default function parseConfigurations(
   template: string,
   configurationFiles: ConfigurationFiles,
-  resolveModule: (path: string) => { code: string },
+  resolveModule: (path: string) => ?{ code: string },
   sandbox?: Sandbox
 ) {
   const configurations = {};
@@ -35,7 +30,7 @@ export default function parseConfigurations(
     if (module) {
       code = module.code;
     } else if (configurationFile.getDefaultCode) {
-      code = configurationFile.getDefaultCode(template);
+      code = configurationFile.getDefaultCode(template, resolveModule);
     } else if (sandbox && configurationFile.generateFileFromSandbox) {
       code = configurationFile.generateFileFromSandbox(sandbox);
     }

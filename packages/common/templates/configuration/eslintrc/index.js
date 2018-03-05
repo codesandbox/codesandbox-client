@@ -7,7 +7,7 @@ const config: ConfigurationFile = {
   description: 'Configuration for the linter.',
   moreInfoUrl: 'https://eslint.org/docs/user-guide/configuring',
 
-  getDefaultCode: (template: string) => {
+  getDefaultCode: () => {
     return '{}';
   },
 

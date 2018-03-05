@@ -39,17 +39,17 @@ const Container = styled.div`
 
   display: flex;
   flex-direction: row;
-  height: 255px;
+  height: 320px;
   flex: 1;
 
   ${media.tablet`
     margin-top: 1rem;
-    height: 320px;
+    height: 390px;
   `};
 
   ${media.phone`
     margin-top: 1rem;
-    height: 280px;
+    height: 340px;
   `};
 `;
 
@@ -106,12 +106,20 @@ const IconContainer = styled.div`
 
   width: 128px;
   height: 128px;
+  img {
+    margin-bottom: 0;
+  }
 
   ${media.phone`
     width: 96px;
     height: 96px;
 
     svg {
+      width: 60px;
+      height: 60px;
+    }
+
+    img {
       width: 60px;
       height: 60px;
     }
@@ -196,6 +204,7 @@ const TEMPLATE_SUPPORT = {
   'create-react-app': {
     loaders: [js, ts, html, cssGlobal, image],
     css: ['Global'],
+    description: 'Used for React projects, based on: ',
   },
   'vue-cli': {
     loaders: [
@@ -212,15 +221,27 @@ const TEMPLATE_SUPPORT = {
       image,
     ],
     css: ['Global', 'Scoped', 'Modules'],
+    description: 'Used for Vue projects, based on: ',
   },
   'preact-cli': {
     loaders: [js, html, scss, sass, less, cssGlobal, stylus, image],
     css: ['Global', 'Modules'],
+    description: 'Used for Preact projects, based on: ',
   },
-  svelte: { loaders: [js, html, image], css: ['Global', 'Scoped', 'Modules'] },
+  svelte: {
+    loaders: [js, html, image],
+    css: ['Global', 'Scoped', 'Modules'],
+    description: 'Used for Preact projects, based on: ',
+  },
   'angular-cli': {
     loaders: [ts, html, scss, sass, less, stylus, cssGlobal, image],
     css: ['Global', 'Scoped'],
+    description: 'Used for Angular projects, based on: ',
+  },
+  parcel: {
+    loaders: [js, ts, html, scss, sass, less, cssGlobal, stylus, image],
+    css: ['Global', 'Modules'],
+    description: 'Used for any kind of project, based on: ',
   },
 };
 
@@ -282,6 +303,25 @@ export default class Frameworks extends React.Component {
               </TemplateName>
             </RollingText>
             <Padding style={{ width: '100%' }} top={1}>
+              <HeaderTitle>Description</HeaderTitle>
+              <div
+                style={{
+                  color: 'white',
+                  marginTop: '.25rem',
+                  fontSize: '.875rem',
+                }}
+              >
+                {TEMPLATE_SUPPORT[template.name].description}
+                <a
+                  href={template.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: template.color() }}
+                >
+                  {template.name}
+                </a>.
+              </div>
+
               <HeaderTitle>Supported Loaders</HeaderTitle>
               <TemplateIcons color={template.color}>
                 {TEMPLATE_SUPPORT[template.name].loaders.map((data, i) => (

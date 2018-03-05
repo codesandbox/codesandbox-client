@@ -18,6 +18,7 @@ import getDependencyName from './utils/get-dependency-name';
 import DependencyNotFoundError from '../errors/dependency-not-found-error';
 import ModuleNotFoundError from '../errors/module-not-found-error';
 import TestRunner from './tests/jest-lite';
+import dependenciesToQuery from '../npm/dependencies-to-query';
 
 type Externals = {
   [name: string]: string,
@@ -193,7 +194,7 @@ export default class Manager {
     debug(`Loaded manifest.`);
   }
 
-  evaluateModule(module: Module) {
+  evaluateModule(module: Module, force: boolean = false) {
     if (this.hardReload) {
       // Do a hard reload
       document.location.reload();
@@ -209,14 +210,22 @@ export default class Manager {
 
     const transpiledModule = this.getTranspiledModule(module);
 
-    const exports = this.evaluateTranspiledModule(transpiledModule);
+    if (force && transpiledModule.compilation) {
+      transpiledModule.compilation = null;
+    }
 
-    // Run post evaluate
-    this.getTranspiledModules().forEach(t => t.postEvaluate(this));
+    try {
+      const exports = this.evaluateTranspiledModule(transpiledModule);
 
-    this.hmrStatus = 'idle';
+      this.hmrStatus = 'idle';
 
-    return exports;
+      return exports;
+    } catch (e) {
+      throw e;
+    } finally {
+      // Run post evaluate
+      this.getTranspiledModules().forEach(t => t.postEvaluate(this));
+    }
   }
 
   evaluateTranspiledModule(transpiledModule: TranspiledModule) {
@@ -688,12 +697,29 @@ export default class Manager {
       });
     });
 
+    const dependenciesQuery = this.getDependencyQuery();
+
     return {
       transpiledModules: serializedTModules,
       cachedPaths: this.cachedPaths,
       version: VERSION,
       configurations: this.configurations,
+      dependenciesQuery,
     };
+  }
+
+  getDependencyQuery() {
+    if (!this.manifest || !this.manifest.dependencies) {
+      return '';
+    }
+
+    const normalizedDependencies = {};
+
+    this.manifest.dependencies.forEach(dep => {
+      normalizedDependencies[dep.name] = dep.version;
+    });
+
+    return dependenciesToQuery(normalizedDependencies);
   }
 
   /**
@@ -721,16 +747,21 @@ export default class Manager {
           cachedPaths,
           version,
           configurations,
+          dependenciesQuery,
         }: {
           transpiledModules: { [id: string]: SerializedTranspiledModule },
           cachedPaths: { [path: string]: string },
           version: string,
           configurations: Object,
+          dependenciesQuery: string,
         } = data;
 
         // Only use the cache if the cached version was cached with the same
-        // version of the compiler
-        if (version === VERSION) {
+        // version of the compiler and dependencies haven't changed
+        if (
+          version === VERSION &&
+          dependenciesQuery === this.getDependencyQuery()
+        ) {
           this.cachedPaths = cachedPaths;
           this.configurations = configurations;
 

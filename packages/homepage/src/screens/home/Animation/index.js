@@ -6,7 +6,15 @@ import Fullscreen from 'common/components/flex/Fullscreen';
 import Centered from 'common/components/flex/Centered';
 import Relative from 'common/components/Relative';
 
-import { angular, vue, react, reactTs, preact, svelte } from 'common/templates';
+import {
+  angular,
+  vue,
+  react,
+  reactTs,
+  preact,
+  svelte,
+  parcel,
+} from 'common/templates';
 
 import Background from './Background';
 import HomeTitle from './Title';
@@ -56,11 +64,11 @@ const Message = styled.div`
 `};
 `;
 
+const TEMPLATES = [parcel, react, vue, angular, preact, reactTs, svelte];
+
 export default class Animation extends React.PureComponent {
   state = {
-    templates: [react, vue, angular, preact, reactTs, svelte].filter(
-      tem => tem.showOnHomePage
-    ),
+    templates: TEMPLATES.filter(tem => tem.showOnHomePage && tem.showCube),
     templateIndex: 0,
     templateSelected: false,
     canvas: null,
@@ -128,7 +136,7 @@ export default class Animation extends React.PureComponent {
             applications, from prototype to deployment.
           </Message>
         </Centered>
-        <Frameworks templates={this.state.templates} />
+        <Frameworks templates={TEMPLATES.filter(tem => tem.showOnHomePage)} />
       </Relative>
     );
   }

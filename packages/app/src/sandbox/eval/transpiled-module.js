@@ -257,11 +257,7 @@ export default class TranspiledModule {
       this.hmrConfig.setDirty(true);
     } else {
       if (this.compilation) {
-        try {
-          this.compilation = null;
-        } catch (e) {
-          console.error(e);
-        }
+        this.compilation = null;
       }
       Array.from(this.initiators)
         .filter(t => t.compilation)
@@ -556,7 +552,15 @@ export default class TranspiledModule {
       this.previousSource &&
       this.previousSource.compiledCode !== this.source.compiledCode
     ) {
-      this.resetCompilation();
+      const hasHMR = manager.preset
+        .getLoaders(this.module, this.query)
+        .some(t => t.transpiler.HMREnabled);
+
+      if (!hasHMR) {
+        manager.clearCompiledCache();
+      } else {
+        this.resetCompilation();
+      }
     }
 
     await Promise.all(
@@ -611,6 +615,10 @@ export default class TranspiledModule {
         !this.isTestFile &&
         (!this.hmrConfig || !this.hmrConfig.isDirty())
       ) {
+        return this.compilation.exports;
+      }
+    } else {
+      if (this.compilation && this.compilation.exports) {
         return this.compilation.exports;
       }
     }

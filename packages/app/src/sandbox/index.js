@@ -25,7 +25,9 @@ function getId() {
     return document.location.host.match(re)[1];
   }
 
-  return document.location.host.match(/(.*)\.codesandbox/)[1];
+  const hostRegex = host.replace(/https?:\/\//, '').replace(/\./g, '\\.');
+  const sandboxRegex = new RegExp(`(.*)\\.${hostRegex}`);
+  return document.location.host.match(sandboxRegex)[1];
 }
 
 requirePolyfills().then(() => {

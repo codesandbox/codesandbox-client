@@ -5,8 +5,9 @@ import react from './react';
 import reactTs from './react-ts';
 import preact from './preact';
 import svelte from './svelte';
+import parcel from './parcel';
 
-export { angular, vue, react, reactTs, preact, svelte };
+export { angular, vue, react, reactTs, preact, svelte, parcel };
 
 export default function getDefinition(
   theme:
@@ -16,6 +17,7 @@ export default function getDefinition(
     | 'svelte'
     | 'create-react-app-typescript'
     | 'angular-cli'
+    | 'parcel'
 ) {
   switch (theme) {
     case react.name:
@@ -30,6 +32,8 @@ export default function getDefinition(
       return svelte;
     case angular.name:
       return angular;
+    case parcel.name:
+      return parcel;
     default:
       return react;
   }

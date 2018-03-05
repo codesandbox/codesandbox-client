@@ -65,8 +65,7 @@ function notifyFrames(message: Object) {
   });
 }
 
-// We now start listening so we can let our listeners know
-window.addEventListener('message', (e: MessageEvent) => {
+function eventListener(e: MessageEvent) {
   const { data } = e;
 
   if (
@@ -77,7 +76,7 @@ window.addEventListener('message', (e: MessageEvent) => {
   ) {
     notifyListeners(data, e.source);
   }
-});
+}
 
 /**
  * Register an window as a output the `dispatch` function can send messages to.
@@ -88,4 +87,11 @@ export function registerFrame(frame: Window) {
   if (bundlers.indexOf(frame) === -1) {
     bundlers.push(frame);
   }
+}
+
+// We now start listening so we can let our listeners know
+window.addEventListener('message', eventListener);
+
+export function reattach() {
+  window.addEventListener('message', eventListener);
 }

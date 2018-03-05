@@ -65,10 +65,9 @@ function buildDynamicError(ref: ErrorRecord) {
       return (
         manager &&
         !!manager.resolveTranspiledModule(
-          (r._originalFileName || r.fileName || '').replace(
-            location.origin,
-            ''
-          ),
+          (r._originalFileName || r.fileName || '')
+            .replace(location.origin, '')
+            .replace('file://', ''),
           '/'
         )
       );
@@ -82,7 +81,7 @@ function buildDynamicError(ref: ErrorRecord) {
     const fileName = relevantFrame._originalFileName || relevantFrame.fileName;
     if (fileName) {
       const tModule = manager.resolveTranspiledModule(
-        fileName.replace(location.origin, ''),
+        fileName.replace(location.origin, '').replace('file://', ''),
         '/'
       );
 

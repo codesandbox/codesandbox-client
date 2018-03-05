@@ -44,29 +44,34 @@ const unregisterReactStack = () => {
 };
 
 type ConsoleProxyCallback = (message: string, frames: ReactFrame[]) => void;
+
+let registered = false;
 const permanentRegister = function proxyConsole(
   type: string,
   callback: ConsoleProxyCallback
 ) {
-  if (typeof console !== 'undefined') {
-    const orig = console[type];
-    if (typeof orig === 'function') {
-      console[type] = function __stack_frame_overlay_proxy_console__() {
-        try {
-          const message = arguments[0];
-          if (typeof message === 'string') {
-            if (reactFrameStack.length > 0) {
-              callback(message, reactFrameStack[reactFrameStack.length - 1]);
+  if (!registered) {
+    registered = true;
+    if (typeof console !== 'undefined') {
+      const orig = console[type];
+      if (typeof orig === 'function') {
+        console[type] = function __stack_frame_overlay_proxy_console__() {
+          try {
+            const message = arguments[0];
+            if (typeof message === 'string') {
+              if (reactFrameStack.length > 0) {
+                callback(message, reactFrameStack[reactFrameStack.length - 1]);
+              }
             }
+          } catch (err) {
+            // Warnings must never crash. Rethrow with a clean stack.
+            setTimeout(function() {
+              throw err;
+            });
           }
-        } catch (err) {
-          // Warnings must never crash. Rethrow with a clean stack.
-          setTimeout(function() {
-            throw err;
-          });
-        }
-        return orig.apply(this, arguments);
-      };
+          return orig.apply(this, arguments);
+        };
+      }
     }
   }
 };
