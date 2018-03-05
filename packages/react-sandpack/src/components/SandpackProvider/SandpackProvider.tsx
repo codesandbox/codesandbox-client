@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Broadcast } from 'react-broadcast';
 import { Manager } from 'sandpack';
 
-import { IFileProps, IFiles } from '../../types';
+import { IFileProps, IFile, IFiles } from '../../types';
 
 export interface State {
   files: IFiles;

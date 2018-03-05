@@ -33,7 +33,7 @@ stories.addWithJSX('with one file', () => (
     entry="/index.js"
   >
     <div style={{ display: 'flex', width: '100%', height: '100%' }}>
-      <FileExplorer />
+      <FileExplorer style={{ width: 300 }} />
       <CodeEditor style={{ flex: 1, height: '100%' }} />
       <BrowserPreview style={{ flex: 1, height: '100%' }} />
     </div>

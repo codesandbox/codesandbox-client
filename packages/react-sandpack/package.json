@@ -76,6 +76,7 @@
     "mapCoverage": true
   },
   "dependencies": {
+    "classnames": "^2.2.5",
     "codemirror": "^5.35.0",
     "codesandbox-import-utils": "^1.1.21",
     "react-broadcast": "^0.6.2",
@@ -88,6 +89,7 @@
   "devDependencies": {
     "@storybook/addon-knobs": "^3.3.14",
     "@storybook/react": "^3.3.14",
+    "@types/classnames": "^2.2.3",
     "@types/codemirror": "^0.0.55",
     "@types/jest": "^22.0.0",
     "@types/node": "^9.4.6",

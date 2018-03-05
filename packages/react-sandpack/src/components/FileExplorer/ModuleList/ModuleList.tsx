@@ -7,10 +7,13 @@ export interface Props {
   prefixedPath: string;
   files: IFiles;
   selectFile: (path: string) => void;
+  openedPath: string;
 }
 
 export default class ModuleList extends React.PureComponent<Props> {
   render() {
+    const { openedPath } = this.props;
+
     const filesToShow: { path: string; code: string }[] = [];
     const directoriesToShow: { path: string }[] = [];
     const pathParts = this.props.prefixedPath.split('/');
@@ -44,6 +47,7 @@ export default class ModuleList extends React.PureComponent<Props> {
             key={file.path}
             selectFile={this.props.selectFile}
             path={file.path}
+            active={openedPath === file.path}
           />
         ))}
       </div>
