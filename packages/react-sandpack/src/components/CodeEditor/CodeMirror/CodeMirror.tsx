@@ -1,14 +1,12 @@
 import * as React from 'react';
-import { Controlled } from 'react-codemirror2';
+import { IInstance, Controlled } from 'react-codemirror2';
 import codemirror from 'codemirror';
 
 import withSandpack from '../../../utils/with-sandpack';
 import cn from '../../../utils/cn';
 import { ISandpackContext } from '../../../types';
 
-import 'codemirror/mode/javascript/javascript';
-import 'codemirror/mode/jsx/jsx';
-import 'codemirror/keymap/sublime';
+import CodeMirrorComponent from '../../../helper-components/CodeMirror';
 
 interface Props {
   sandpack: ISandpackContext;
@@ -22,7 +20,11 @@ class CodeMirror extends React.PureComponent<Props> {
     codeMirrorOptions: {},
   };
 
-  onChange = (editor: any, data: any, value: string) => {
+  onChange = (
+    editor: IInstance,
+    data: codemirror.EditorChange,
+    value: string
+  ) => {
     this.props.sandpack.updateFiles({
       ...this.props.sandpack.files,
       [this.props.sandpack.openedPath]: {
@@ -36,25 +38,13 @@ class CodeMirror extends React.PureComponent<Props> {
     const { openedPath, files } = this.props.sandpack;
 
     return (
-      <div
-        className={`${cn('CodeMirror', 'container')} ${className}`}
-        style={{ ...style, position: 'relative' }}
-      >
-        <Controlled
-          options={{
-            keyMap: 'sublime',
-            indentUnit: 2,
-            foldGutter: true,
-            gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
-            lineNumbers: true,
-            lineWrapping: false,
-            mode: 'jsx',
-            ...codeMirrorOptions,
-          }}
-          onBeforeChange={this.onChange}
-          value={files[openedPath].code}
-        />
-      </div>
+      <CodeMirrorComponent
+        className={className}
+        style={style}
+        codeMirrorOptions={codeMirrorOptions}
+        onBeforeChange={this.onChange}
+        value={files[openedPath].code}
+      />
     );
   }
 }

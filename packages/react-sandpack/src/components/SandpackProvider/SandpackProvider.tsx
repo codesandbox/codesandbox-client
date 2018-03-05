@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Broadcast } from 'react-broadcast';
 import { Manager } from 'sandpack';
 
-import { IFileProps, IFile, IFiles } from '../../types';
+import { IFile, IFiles } from '../../types';
 
 export interface State {
   files: IFiles;
@@ -20,6 +20,7 @@ export interface Props {
   width?: number | string;
   height?: number | string;
   sandboxUrl: string;
+  skipEval: boolean;
 }
 
 export default class SandpackProvider extends React.PureComponent<
@@ -28,6 +29,7 @@ export default class SandpackProvider extends React.PureComponent<
 > {
   static defaultProps = {
     sandboxUrl: 'http://localhost:3001',
+    skipEval: false,
   };
 
   manager?: Manager;
@@ -86,7 +88,9 @@ export default class SandpackProvider extends React.PureComponent<
   }
 
   setupFrame = (el: HTMLIFrameElement) => {
-    this.manager = new Manager(el, this.props.files);
+    this.manager = new Manager(el, this.props.files, {
+      skipEval: this.props.skipEval,
+    });
 
     this.iframe = el;
   };
@@ -99,7 +103,7 @@ export default class SandpackProvider extends React.PureComponent<
     }
   };
 
-  componentDidUpdate(props: IFileProps) {
+  componentDidUpdate(props: Props) {
     if (
       props.files !== this.props.files ||
       props.dependencies !== this.props.dependencies ||

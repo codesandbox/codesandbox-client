@@ -5,6 +5,7 @@ export interface IManagerOptions {
   width?: string;
   height?: string;
   template?: string;
+  skipEval?: boolean;
 }
 
 export interface IFiles {
@@ -30,6 +31,7 @@ export default class PreviewManager {
   iframe: HTMLIFrameElement;
   options: IManagerOptions;
   listener?: Function;
+  skipEval: boolean;
 
   files: IFiles;
 
@@ -56,6 +58,8 @@ export default class PreviewManager {
       this.element = selector;
       this.iframe = selector;
     }
+
+    this.skipEval = options.skipEval || false;
 
     this.listener = listen((message: any) => {
       switch (message.type) {
@@ -96,6 +100,7 @@ export default class PreviewManager {
       externalResources: [],
       template: this.options.template || 'create-react-app',
       showOpenInCodeSandbox: true,
+      skipEval: this.skipEval,
     });
   }
 

@@ -678,27 +678,31 @@ export default class Manager {
     this.hardReload = true;
   }
 
+  serialize() {
+    const serializedTModules = {};
+
+    Object.keys(this.transpiledModules).forEach(path => {
+      Object.keys(this.transpiledModules[path].tModules).forEach(query => {
+        const tModule = this.transpiledModules[path].tModules[query];
+        serializedTModules[tModule.getId()] = tModule.serialize();
+      });
+    });
+
+    return {
+      transpiledModules: serializedTModules,
+      cachedPaths: this.cachedPaths,
+      version: VERSION,
+      configurations: this.configurations,
+    };
+  }
+
   /**
    * Generate a JSON structure out of this manager that can be used to load
    * the manager later on. This is useful for faster initial loading.
    */
   async save() {
     try {
-      const serializedTModules = {};
-
-      Object.keys(this.transpiledModules).forEach(path => {
-        Object.keys(this.transpiledModules[path].tModules).forEach(query => {
-          const tModule = this.transpiledModules[path].tModules[query];
-          serializedTModules[tModule.getId()] = tModule.serialize();
-        });
-      });
-
-      await localforage.setItem(this.id, {
-        transpiledModules: serializedTModules,
-        cachedPaths: this.cachedPaths,
-        version: VERSION,
-        configurations: this.configurations,
-      });
+      await localforage.setItem(this.id, this.serialize());
     } catch (e) {
       if (process.env.NODE_ENV === 'development') {
         console.error(e);

@@ -131,6 +131,7 @@ async function compile({
   template,
   entry,
   showOpenInCodeSandbox = true,
+  skipEval = false,
 }) {
   dispatch({
     type: 'start',
@@ -217,75 +218,78 @@ async function compile({
 
     debug(`Transpilation time ${Date.now() - t}ms`);
 
-    resetScreen();
+    console.log(skipEval);
+    if (!skipEval) {
+      resetScreen();
 
-    if (!manager.webpackHMR) {
-      try {
-        const children = document.body.children;
-        // Do unmounting for react
-        if (manifest.dependencies.find(n => n.name === 'react-dom')) {
-          const reactDOMModule = manager.resolveModule('react-dom', '');
-          const reactDOM = manager.evaluateModule(reactDOMModule);
+      if (!manager.webpackHMR) {
+        try {
+          const children = document.body.children;
+          // Do unmounting for react
+          if (manifest.dependencies.find(n => n.name === 'react-dom')) {
+            const reactDOMModule = manager.resolveModule('react-dom', '');
+            const reactDOM = manager.evaluateModule(reactDOMModule);
 
-          reactDOM.unmountComponentAtNode(document.body);
+            reactDOM.unmountComponentAtNode(document.body);
 
-          for (let i = 0; i < children.length; i += 1) {
-            if (children[i].tagName === 'DIV') {
-              reactDOM.unmountComponentAtNode(children[i]);
+            for (let i = 0; i < children.length; i += 1) {
+              if (children[i].tagName === 'DIV') {
+                reactDOM.unmountComponentAtNode(children[i]);
+              }
             }
           }
+        } catch (e) {
+          /* don't do anything with this error */
         }
-      } catch (e) {
-        /* don't do anything with this error */
       }
-    }
-    if (!manager.webpackHMR || firstLoad) {
-      const htmlModule =
-        modules[
-          templateDefinition
-            .getHTMLEntries(configurations)
-            .find(p => modules[p])
-        ];
+      if (!manager.webpackHMR || firstLoad) {
+        const htmlModule =
+          modules[
+            templateDefinition
+              .getHTMLEntries(configurations)
+              .find(p => modules[p])
+          ];
 
-      const html = htmlModule
-        ? htmlModule.code
-        : template === 'vue-cli'
-          ? '<div id="app"></div>'
-          : '<div id="root"></div>';
-      document.body.innerHTML = html;
-    }
+        const html = htmlModule
+          ? htmlModule.code
+          : template === 'vue-cli'
+            ? '<div id="app"></div>'
+            : '<div id="root"></div>';
+        document.body.innerHTML = html;
+      }
 
-    const tt = Date.now();
-    const oldHTML = document.body.innerHTML;
-    const evalled = manager.evaluateModule(managerModuleToTranspile);
-    debug(`Evaluation time: ${Date.now() - tt}ms`);
-    const domChanged = oldHTML !== document.body.innerHTML;
+      const tt = Date.now();
+      const oldHTML = document.body.innerHTML;
+      const evalled = manager.evaluateModule(managerModuleToTranspile);
+      debug(`Evaluation time: ${Date.now() - tt}ms`);
+      const domChanged = oldHTML !== document.body.innerHTML;
 
-    if (
-      isModuleView &&
-      !domChanged &&
-      !managerModuleToTranspile.path.endsWith('.html')
-    ) {
-      const isReact =
-        managerModuleToTranspile.code &&
-        managerModuleToTranspile.code.includes('React');
+      if (
+        isModuleView &&
+        !domChanged &&
+        !managerModuleToTranspile.path.endsWith('.html')
+      ) {
+        const isReact =
+          managerModuleToTranspile.code &&
+          managerModuleToTranspile.code.includes('React');
 
-      if (isReact) {
-        // initiate boilerplates
-        if (getBoilerplates().length === 0) {
-          try {
-            await evalBoilerplates(defaultBoilerplates);
-          } catch (e) {
-            console.log("Couldn't load all boilerplates");
+        if (isReact) {
+          // initiate boilerplates
+          if (getBoilerplates().length === 0) {
+            try {
+              await evalBoilerplates(defaultBoilerplates);
+            } catch (e) {
+              console.log("Couldn't load all boilerplates");
+            }
           }
-        }
 
-        const boilerplate = findBoilerplate(managerModuleToTranspile);
-        if (boilerplate) {
-          try {
-            boilerplate.module.default(evalled);
-          } catch (e) {
-            console.error(e);
+          const boilerplate = findBoilerplate(managerModuleToTranspile);
+          if (boilerplate) {
+            try {
+              boilerplate.module.default(evalled);
+            } catch (e) {
+              console.error(e);
+            }
           }
         }
       }
@@ -320,6 +324,7 @@ async function compile({
 
     dispatch({
       type: 'success',
+      state: manager.serialize(),
     });
 
     manager.save();
@@ -359,6 +364,7 @@ type Arguments = {
   hasActions: boolean,
   template: string,
   showOpenInCodeSandbox?: boolean,
+  skipEval?: boolean,
 };
 
 const tasks: Array<Arguments> = [];
