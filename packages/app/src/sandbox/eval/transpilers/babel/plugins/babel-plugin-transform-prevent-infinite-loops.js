@@ -18,7 +18,7 @@ module.exports = ({ types: t, template }) => {
       global.infiniteLoopError = new RangeError(
         'Potential infinite loop: exceeded ' +
         MAX_ITERATIONS +
-        ' iterations.'
+        ' iterations. You can disable this check by creating a sandbox.config.json file.'
       );
       throw global.infiniteLoopError;
     }
