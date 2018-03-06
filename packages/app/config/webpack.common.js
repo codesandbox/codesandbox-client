@@ -13,9 +13,10 @@ const babelDev = require('./babel.dev');
 const babelProd = require('./babel.prod');
 
 const NODE_ENV = JSON.parse(env['process.env.NODE_ENV']);
+const SANDBOX_ONLY = !!process.env.SANDBOX_ONLY;
 const __DEV__ = NODE_ENV === 'development'; // eslint-disable-line no-underscore-dangle
 const __PROD__ = NODE_ENV === 'production'; // eslint-disable-line no-underscore-dangle
-const __TEST__ = NODE_ENV === 'test'; // eslint-disable-line no-underscore-dangle
+// const __TEST__ = NODE_ENV === 'test'; // eslint-disable-line no-underscore-dangle
 const babelConfig = __DEV__ ? babelDev : babelProd;
 
 // Shim for `eslint-plugin-vue/lib/index.js`
@@ -35,7 +36,7 @@ const ESLINT_PLUGIN_VUE_INDEX = `module.exports = {
 }`;
 
 module.exports = {
-  entry: __TEST__
+  entry: SANDBOX_ONLY
     ? {
         sandbox: [
           require.resolve('./polyfills'),

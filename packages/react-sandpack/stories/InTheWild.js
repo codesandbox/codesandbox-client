@@ -52,6 +52,35 @@ stories.addWithJSX('one file', () => (
   </SandpackProvider>
 ));
 
+stories.addWithJSX('subdirectories', () => (
+  <SandpackProvider
+    files={{
+      '/index.js': {
+        code: `document.body.innerHTML = \`<div>$\{require('uuid')()}</div>\``,
+      },
+      '/test/index.js': {
+        code: 'module.exports = "test"',
+      },
+    }}
+    dependencies={{ uuid: 'latest' }}
+    entry="/index.js"
+    skipEval
+  >
+    <div
+      style={{
+        display: 'flex',
+        width: '100vw',
+        height: '100vh',
+      }}
+    >
+      <FileExplorer style={{ width: 300 }} />
+
+      <CodeEditor style={{ width: '100%', overflowX: 'hidden' }} />
+      <TranspiledCodeView style={{ width: '100%', overflowX: 'hidden' }} />
+    </div>
+  </SandpackProvider>
+));
+
 stories.addWithJSX('transpiled view', () => (
   <SandpackProvider
     files={{

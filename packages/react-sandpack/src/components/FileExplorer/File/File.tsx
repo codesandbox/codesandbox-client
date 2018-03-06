@@ -5,13 +5,16 @@ import cn from '../../../utils/cn';
 
 export interface Props {
   path: string;
-  selectFile: (path: string) => void;
+  selectFile?: (path: string) => void;
   active?: boolean;
+  onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
 
 export default class File extends React.PureComponent<Props> {
   selectFile = () => {
-    this.props.selectFile(this.props.path);
+    if (this.props.selectFile) {
+      this.props.selectFile(this.props.path);
+    }
   };
 
   render() {
@@ -25,7 +28,10 @@ export default class File extends React.PureComponent<Props> {
     });
 
     return (
-      <div onClick={this.selectFile} className={className}>
+      <div
+        onClick={this.props.selectFile ? this.selectFile : this.props.onClick}
+        className={className}
+      >
         {fileName}
       </div>
     );

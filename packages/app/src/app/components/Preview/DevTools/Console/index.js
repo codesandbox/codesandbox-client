@@ -5,8 +5,6 @@ import ClearIcon from 'react-icons/lib/md/clear-all';
 
 import CircularJSON from 'circular-json';
 
-import { evaluateInSandbox } from 'app/components/Preview';
-
 import Message from './Message';
 import Input from './Input';
 
@@ -135,7 +133,7 @@ class Console extends React.Component {
     this.addMessage('log', [command], 'command');
 
     // TODO move everything of frames to store and this command too
-    evaluateInSandbox(this.props.sandboxId, command);
+    dispatch({ type: 'evaluate', command });
   };
 
   render() {

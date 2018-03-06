@@ -12,10 +12,6 @@ import { generateFileFromSandbox } from 'common/templates/configuration/package-
 import Navigator from './Navigator';
 import { Container, StyledFrame } from './elements';
 
-export function evaluateInSandbox(command: string) {
-  dispatch({ type: 'evaluate', command });
-}
-
 type Props = {
   onInitialized: (preview: BasePreview) => void, // eslint-disable-line no-use-before-define
   sandbox: Sandbox,
@@ -190,7 +186,10 @@ class BasePreview extends React.Component<Props, State> {
       this.handleRefresh();
     } else {
       if (!this.props.isInProjectView) {
-        evaluateInSandbox(`history.pushState({}, null, '/')`);
+        dispatch({
+          type: 'evaluate',
+          command: `history.pushState({}, null, '/')`,
+        });
       }
 
       const modulesObject = {};
