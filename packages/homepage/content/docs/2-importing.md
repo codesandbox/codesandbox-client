@@ -58,6 +58,17 @@ $ codesandbox ./
 
 We offer an API that allows you to programatically create a sandbox. This is most often useful in documentation: code examples can generate a sandbox on the fly. You can call the endpoint `https://codesandbox.io/api/v1/sandboxes/define` both with a a `GET` and with a `POST` request.
 
+### Supported Parameters
+
+We currently support three extra parameters
+
+| Query Parameter | Description                                                                          | Example Input               |
+| --------------- | ------------------------------------------------------------------------------------ | --------------------------- |
+| `parameters`    | Parameters used to define how the sandbox should be created.                         | Example below               |
+| `query`         | The query that will be used in the redirect url.                                     | `view=preview&runonclick=1` |
+| `embed`         | Whether we should redirect to the embed instead of the editor.                       | `1`                         |
+| `json`          | Instead of redirecting we will send a JSON reponse with `{"sandbox_id": sandboxId}`. | `1`                         |
+
 ### How it works
 
 The API only needs one argument: `files`. This argument contains the files that will be in the sandbox, an example body would be:
