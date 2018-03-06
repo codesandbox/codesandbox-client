@@ -6,7 +6,7 @@
   "scripts": {
     "build": "yarn build:dependents && yarn build:prod",
     "build:prod": "lerna run build --scope app --scope homepage --parallel && gulp",
-    "build:dependents": "lerna run build --ignore app --ignore homepage --parallel && lerna run build --scope sandpack --stream && lerna run build --scope react-sandpack --stream",
+    "build:dependents": "lerna run build --scope codesandbox-api --scope common --stream && lerna run build --scope sandpack --stream && lerna run build --scope react-sandpack --stream",
     "start": "lerna run build --scope codesandbox-browserfs --stream && lerna run start --parallel",
     "start:fast": "lerna run start --scope app --stream",
     "start:test": "lerna run start:test --scope app --stream",
