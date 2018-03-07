@@ -8,7 +8,8 @@
   "typings": "dist/types/sandpack.d.ts",
   "license": "SEE LICENSE.MD IN ROOT",
   "files": [
-    "dist"
+    "dist",
+    "sandpack"
   ],
   "author": "Ives van Hoorne <ives.v.h@gmail.com>",
   "repository": {
@@ -30,7 +31,7 @@
     "semantic-release": "semantic-release",
     "semantic-release-prepare": "ts-node tools/semantic-release-prepare",
     "precommit": "lint-staged",
-    "prepublishOnly": "lerna run build:sandbox --scope app --stream && rimraf sandpack && gulp copy-sandbox"
+    "prepublishOnly": "yarn build && lerna run build:sandbox --scope app --stream && rimraf sandpack && gulp copy-sandbox"
   },
   "lint-staged": {
     "{src,test}/**/*.ts": [
