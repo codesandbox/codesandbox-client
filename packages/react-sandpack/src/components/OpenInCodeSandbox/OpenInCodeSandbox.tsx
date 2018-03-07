@@ -6,7 +6,9 @@ import SandpackConsumer from '../SandpackConsumer';
 
 export default class OpenInCodeSandbox extends React.Component {
   getFileParameters = (files: IFiles) => {
-    const normalized = Object.keys(files).reduce(
+    const normalized: {
+      [path: string]: { content: string; isBinary: boolean };
+    } = Object.keys(files).reduce(
       (prev, next) => ({
         ...prev,
         [next.replace('/', '')]: {

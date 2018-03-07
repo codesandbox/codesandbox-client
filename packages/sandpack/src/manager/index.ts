@@ -134,13 +134,27 @@ export default class PreviewManager {
 
     const packageJSON = JSON.parse(files['/package.json'].code);
 
+    // TODO move this to a common format
+    const normalizedModules = Object.keys(files).reduce(
+      (prev, next) => ({
+        ...prev,
+        [next]: {
+          content: files[next].code,
+          path: next,
+        },
+      }),
+      {}
+    );
+
     dispatch({
       type: 'compile',
       codesandbox: true,
       version: 3,
       modules,
       externalResources: [],
-      template: this.sandboxInfo.template || getTemplate(packageJSON, files),
+      template:
+        this.sandboxInfo.template ||
+        getTemplate(packageJSON, normalizedModules),
       showOpenInCodeSandbox: true,
       skipEval: this.skipEval,
     });
