@@ -3865,24 +3865,15 @@ codemirror@^5.35.0:
   version "5.35.0"
   resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.35.0.tgz#280653d495455bc66aa87e6284292b02775ba878"
 
-codesandbox-import-utils@^1.1.19:
-  version "1.1.19"
-  resolved "https://registry.yarnpkg.com/codesandbox-import-utils/-/codesandbox-import-utils-1.1.19.tgz#e9756c8f6b5df89e28131d73078420b629612342"
-  dependencies:
-    istextorbinary "^2.2.1"
-    lz-string "^1.4.4"
+codesandbox-import-util-types@^1.2.3:
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/codesandbox-import-util-types/-/codesandbox-import-util-types-1.2.3.tgz#12a03690e410a3dfcdb62d8f05e7f651604c1b73"
 
-codesandbox-import-utils@^1.1.21:
-  version "1.1.21"
-  resolved "https://registry.yarnpkg.com/codesandbox-import-utils/-/codesandbox-import-utils-1.1.21.tgz#492b4eb92c4d143eb7cb43422942cc5caf41e3a7"
+codesandbox-import-utils@^1.2.3:
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/codesandbox-import-utils/-/codesandbox-import-utils-1.2.3.tgz#287d188cff88dad9d4c6751de473e9e91d9db622"
   dependencies:
-    istextorbinary "^2.2.1"
-    lz-string "^1.4.4"
-
-codesandbox-import-utils@^1.2.2:
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/codesandbox-import-utils/-/codesandbox-import-utils-1.2.2.tgz#de08fbae99d3ef68be49497ceb88ec463e8eb869"
-  dependencies:
+    codesandbox-import-util-types "^1.2.3"
     istextorbinary "^2.2.1"
     lz-string "^1.4.4"
 
