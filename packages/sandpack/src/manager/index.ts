@@ -56,7 +56,10 @@ export interface ISandboxInfo {
   template?: string;
 }
 
-const BUNDLER_URL = `https://sandpack-${version}.codesandbox.io`;
+const BUNDLER_URL =
+  process.env.CODESANDBOX_ENV === 'development'
+    ? 'http://localhost:3001'
+    : `https://sandpack-${version}.codesandbox.io`;
 
 export default class PreviewManager {
   selector: string | undefined;
