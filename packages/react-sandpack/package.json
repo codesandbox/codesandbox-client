@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "description": "",
   "keywords": [],
+  "license": "SEE LICENSE.MD IN ROOT",
   "main": "dist/react-sandpack.umd.js",
   "module": "dist/react-sandpack.es5.js",
   "typings": "dist/types/react-sandpack.d.ts",

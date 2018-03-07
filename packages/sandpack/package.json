@@ -6,6 +6,7 @@
   "main": "dist/sandpack.umd.js",
   "module": "dist/sandpack.es5.js",
   "typings": "dist/types/sandpack.d.ts",
+  "license": "SEE LICENSE.MD IN ROOT",
   "files": [
     "dist"
   ],
@@ -73,7 +74,8 @@
     "mapCoverage": true
   },
   "dependencies": {
-    "codesandbox-api": "^0.0.14"
+    "codesandbox-api": "^0.0.14",
+    "codesandbox-import-utils": "^1.2.2"
   },
   "devDependencies": {
     "@types/jest": "^22.0.0",

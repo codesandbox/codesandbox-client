@@ -8,7 +8,7 @@ Online code playgrounds are getting more popular: they provide an easy way to pl
 
 CodeSandbox came along, and still had a pretty basic bundler. However, as CodeSandbox got more popular its bundler got more advanced. Nowadays the bundler is used for all kinds of bigger web projects, and it would be a shame if others couldn't use the functionality.
 
-This library acts as an interface with the bundler of CodeSandbox. It allows you to run any code on a web page, from Vue projects to React projects to Parcel projects. With everything that CodeSandbox supports as well.
+This library acts as an interface with the bundler of CodeSandbox. It allows you to run any code on a web page, from Vue projects to React projects to Parcel projects. With everything that CodeSandbox supports client side as well.
 
 ## So what can this bundler do?
 
@@ -132,3 +132,59 @@ const App = () => (
 ```
 
 The above code will render a File Explorer, a working code editor and a preview with browser navigation. For more info about `react-sandpack` you can go here: https://github.com/CompuIves/codesandbox-client/tree/master/packages/react-sandpack.
+
+### SandboxInfo Argument
+
+The second argument in the constructor of `Manager` is all sandbox info. It has this structure:
+
+```ts
+{
+  /**
+   * Files, keys are paths.
+  **/
+  files: {
+    [path: string]: {
+      code: string
+    }
+  },
+  /**
+   * Dependencies, supports npm and GitHub dependencies
+  **/
+  dependencies?: {
+    [dependencyName: string]: string
+  },
+  /**
+   * Default file to evaluate
+  **/
+  entry?: string,
+  /**
+   * The sandbox template to use, this is inferred from the files and package.json if not specified
+  **/
+  template?: string
+}
+```
+
+### Options Argument
+
+```ts
+The third argument in the constructor of `Manager` is extra options. It has this structure:
+
+{
+  /**
+   * Location of the bundler. Defaults to `sandpack-${version}.codesandbox.io`
+   */
+  bundlerURL?: string;
+  /**
+   * Width of iframe.
+   */
+  width?: string;
+  /**
+   * Height of iframe.
+   */
+  height?: string;
+  /**
+   * If we should skip the third step: evaluation.
+   */
+  skipEval?: boolean;
+}
+```

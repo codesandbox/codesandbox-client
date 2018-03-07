@@ -2,21 +2,25 @@
 import { dispatch, listen, registerFrame } from 'codesandbox-api';
 import generatePackageJSON from '../utils/generate-package-json';
 
+import { getTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';
+
 const version = require('../../package.json').version;
 
 export interface IManagerOptions {
   /**
-   * Location of the bundler
+   * Location of the bundler.
    */
   bundlerURL?: string;
+  /**
+   * Width of iframe.
+   */
   width?: string;
+  /**
+   * Height of iframe.
+   */
   height?: string;
   /**
-   * What template we use, if not defined we infer the template from the dependencies or files.
-   */
-  template?: string;
-  /**
-   * If we should skip evaluation.
+   * If we should skip the third step: evaluation.
    */
   skipEval?: boolean;
 }
@@ -40,12 +44,17 @@ export interface IDependencies {
   [depName: string]: string;
 }
 
-export type ISandboxInfo = {
+export interface ISandboxInfo {
   files: IFiles;
   dependencies?: IDependencies;
   entry?: string;
+  /**
+   * What template we use, if not defined we infer the template from the dependencies or files.
+   *
+   * @type {string}
+   */
   template?: string;
-};
+}
 
 const BUNDLER_URL = `https://sandpack-${version}.codesandbox.io`;
 
@@ -120,13 +129,15 @@ export default class PreviewManager {
       {}
     );
 
+    const packageJSON = JSON.parse(files['/package.json'].code);
+
     dispatch({
       type: 'compile',
       codesandbox: true,
       version: 3,
       modules,
       externalResources: [],
-      template: this.options.template || 'create-react-app',
+      template: this.sandboxInfo.template || getTemplate(packageJSON, files),
       showOpenInCodeSandbox: true,
       skipEval: this.skipEval,
     });
