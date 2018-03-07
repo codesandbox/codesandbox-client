@@ -189,4 +189,6 @@ The third argument in the constructor of `Manager` is extra options. It has this
 }
 ```
 
-## Disclaimer
+## Open In CodeSandbox
+
+We show a "Open in CodeSandbox" button in the sandbox preview on the bottom right. This button allows everyone to create a sandbox from the code in the preview, open it in CodeSandbox and share their work more easily with others.
