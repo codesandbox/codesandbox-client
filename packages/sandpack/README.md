@@ -166,9 +166,9 @@ The second argument in the constructor of `Manager` is all sandbox info. It has 
 
 ### Options Argument
 
-```ts
 The third argument in the constructor of `Manager` is extra options. It has this structure:
 
+```ts
 {
   /**
    * Location of the bundler. Defaults to `sandpack-${version}.codesandbox.io`
@@ -188,3 +188,5 @@ The third argument in the constructor of `Manager` is extra options. It has this
   skipEval?: boolean;
 }
 ```
+
+## Disclaimer
