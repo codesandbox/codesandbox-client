@@ -60,6 +60,7 @@ module.exports = {
         ],
       },
   target: 'web',
+
   node: {
     process: false,
     Buffer: false,
@@ -67,6 +68,7 @@ module.exports = {
     module: 'empty',
     child_process: 'empty',
   },
+
   output: {
     path: paths.appBuild,
     pathinfo: true,
@@ -249,61 +251,84 @@ module.exports = {
         },
       ],
     }),
-    // Generates an `index.html` file with the <script> injected.
-    new HtmlWebpackPlugin({
-      inject: true,
-      chunks: ['common-sandbox', 'common', 'app'],
-      filename: 'app.html',
-      template: paths.appHtml,
-      minify: __PROD__ && {
-        removeComments: false,
-        collapseWhitespace: true,
-        removeRedundantAttributes: true,
-        useShortDoctype: true,
-        removeEmptyAttributes: true,
-        removeStyleLinkTypeAttributes: true,
-        keepClosingSlash: true,
-        minifyJS: true,
-        minifyCSS: true,
-        minifyURLs: true,
-      },
-    }),
-    new HtmlWebpackPlugin({
-      inject: true,
-      chunks: ['sandbox-startup', 'common-sandbox', 'sandbox'],
-      filename: 'frame.html',
-      template: paths.sandboxHtml,
-      minify: __PROD__ && {
-        removeComments: true,
-        collapseWhitespace: true,
-        removeRedundantAttributes: true,
-        useShortDoctype: true,
-        removeEmptyAttributes: true,
-        removeStyleLinkTypeAttributes: true,
-        keepClosingSlash: true,
-        minifyJS: true,
-        minifyCSS: true,
-        minifyURLs: true,
-      },
-    }),
-    new HtmlWebpackPlugin({
-      inject: true,
-      chunks: ['common-sandbox', 'common', 'embed'],
-      filename: 'embed.html',
-      template: path.join(paths.embedSrc, 'index.html'),
-      minify: __PROD__ && {
-        removeComments: true,
-        collapseWhitespace: true,
-        removeRedundantAttributes: true,
-        useShortDoctype: true,
-        removeEmptyAttributes: true,
-        removeStyleLinkTypeAttributes: true,
-        keepClosingSlash: true,
-        minifyJS: true,
-        minifyCSS: true,
-        minifyURLs: true,
-      },
-    }),
+    ...(SANDBOX_ONLY
+      ? [
+          new HtmlWebpackPlugin({
+            inject: true,
+            chunks: ['sandbox-startup', 'sandbox'],
+            filename: 'frame.html',
+            template: paths.sandboxHtml,
+            minify: __PROD__ && {
+              removeComments: true,
+              collapseWhitespace: true,
+              removeRedundantAttributes: true,
+              useShortDoctype: true,
+              removeEmptyAttributes: true,
+              removeStyleLinkTypeAttributes: true,
+              keepClosingSlash: true,
+              minifyJS: true,
+              minifyCSS: true,
+              minifyURLs: true,
+            },
+          }),
+        ]
+      : [
+          // Generates an `index.html` file with the <script> injected.
+          new HtmlWebpackPlugin({
+            inject: true,
+            chunks: ['common-sandbox', 'common', 'app'],
+            filename: 'app.html',
+            template: paths.appHtml,
+            minify: __PROD__ && {
+              removeComments: false,
+              collapseWhitespace: true,
+              removeRedundantAttributes: true,
+              useShortDoctype: true,
+              removeEmptyAttributes: true,
+              removeStyleLinkTypeAttributes: true,
+              keepClosingSlash: true,
+              minifyJS: true,
+              minifyCSS: true,
+              minifyURLs: true,
+            },
+          }),
+          new HtmlWebpackPlugin({
+            inject: true,
+            chunks: ['sandbox-startup', 'common-sandbox', 'sandbox'],
+            filename: 'frame.html',
+            template: paths.sandboxHtml,
+            minify: __PROD__ && {
+              removeComments: true,
+              collapseWhitespace: true,
+              removeRedundantAttributes: true,
+              useShortDoctype: true,
+              removeEmptyAttributes: true,
+              removeStyleLinkTypeAttributes: true,
+              keepClosingSlash: true,
+              minifyJS: true,
+              minifyCSS: true,
+              minifyURLs: true,
+            },
+          }),
+          new HtmlWebpackPlugin({
+            inject: true,
+            chunks: ['common-sandbox', 'common', 'embed'],
+            filename: 'embed.html',
+            template: path.join(paths.embedSrc, 'index.html'),
+            minify: __PROD__ && {
+              removeComments: true,
+              collapseWhitespace: true,
+              removeRedundantAttributes: true,
+              useShortDoctype: true,
+              removeEmptyAttributes: true,
+              removeStyleLinkTypeAttributes: true,
+              keepClosingSlash: true,
+              minifyJS: true,
+              minifyCSS: true,
+              minifyURLs: true,
+            },
+          }),
+        ]),
     // Makes some environment variables available to the JS code, for example:
     // if (process.env.NODE_ENV === 'development') { ... }. See `env.js`.
     new webpack.DefinePlugin(env),
@@ -323,10 +348,11 @@ module.exports = {
 
     // With this plugin we override the load-rules of eslint, this function prevents
     // us from using eslint in the browser, therefore we need to stop it!
-    new webpack.NormalModuleReplacementPlugin(
-      new RegExp(['eslint', 'lib', 'load-rules'].join(`\\${path.sep}`)),
-      path.join(paths.config, 'stubs/load-rules.compiled.js')
-    ),
+    !SANDBOX_ONLY &&
+      new webpack.NormalModuleReplacementPlugin(
+        new RegExp(['eslint', 'lib', 'load-rules'].join(`\\${path.sep}`)),
+        path.join(paths.config, 'stubs/load-rules.compiled.js')
+      ),
 
     // If you require a missing module and then `npm install` it, you still have
     // to restart the development server for Webpack to discover it. This plugin
@@ -356,23 +382,28 @@ module.exports = {
         },
       ].filter(x => x)
     ),
-    // We first create a common chunk between embed and app, to share components
-    // and dependencies.
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'common',
-      chunks: ['app', 'embed'],
-    }),
-    // Then we find all commonalities between sandbox and common, because sandbox
-    // is always loaded by embed and app.
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'common-sandbox',
-      chunks: ['common', 'sandbox'],
-    }),
-    new webpack.optimize.CommonsChunkPlugin({
-      async: true,
-      children: true,
-      minChunks: 2,
-    }),
+
+    ...(SANDBOX_ONLY
+      ? []
+      : [
+          // We first create a common chunk between embed and app, to share components
+          // and dependencies.
+          new webpack.optimize.CommonsChunkPlugin({
+            name: 'common',
+            chunks: ['app', 'embed'],
+          }),
+          // Then we find all commonalities between sandbox and common, because sandbox
+          // is always loaded by embed and app.
+          new webpack.optimize.CommonsChunkPlugin({
+            name: 'common-sandbox',
+            chunks: ['common', 'sandbox'],
+          }),
+          new webpack.optimize.CommonsChunkPlugin({
+            async: true,
+            children: true,
+            minChunks: 2,
+          }),
+        ]),
     new webpack.NamedModulesPlugin(),
-  ],
+  ].filter(Boolean),
 };
