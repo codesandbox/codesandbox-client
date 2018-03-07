@@ -806,6 +806,12 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
   fetchDependencyTypings = (dependencies: Object) => {
     if (this.typingsFetcherWorker) {
+      this.monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions(
+        {
+          noSemanticValidation: true,
+          noSyntaxValidation: !this.hasNativeTypescript(),
+        }
+      );
       this.typingsFetcherWorker.postMessage({ dependencies });
     }
   };
@@ -872,6 +878,11 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     this.monaco.languages.typescript.typescriptDefaults._onDidChange.fire(
       this.monaco.languages.typescript.typescriptDefaults
     );
+
+    this.monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
+      noSemanticValidation: false,
+      noSyntaxValidation: !this.hasNativeTypescript(),
+    });
   };
 
   createModel = async (

@@ -21,15 +21,7 @@
     "postinstall": "lerna run install-dependencies --scope codesandbox-browserfs --stream"
   },
   "lint-staged": {
-    "*.js": [
-      "prettier --write --single-quote --trailing-comma es5",
-      "git add"
-    ],
-    "*.css": [
-      "prettier --write --single-quote --trailing-comma es5",
-      "git add"
-    ],
-    "*.json": [
+    "*.{js,css,json}": [
       "prettier --write --single-quote --trailing-comma es5",
       "git add"
     ]
