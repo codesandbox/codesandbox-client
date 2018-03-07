@@ -3,6 +3,7 @@ import { inject, observer } from 'mobx-react';
 import Files from 'embed/components/Files';
 import ModeIcons from 'app/components/ModeIcons';
 import { getModulePath } from 'common/sandbox/modules';
+import QRCode from 'qrcode.react';
 
 import {
   optionsToParameterizedUrl,
@@ -159,9 +160,8 @@ class ShareView extends React.Component {
   // eslint-disable-next-line
   getButtonMarkdown = () => {
     const sandbox = this.props.store.editor.currentSandbox;
-    return `[![Edit ${sandbox.title || sandbox.id}](${
-      BUTTON_URL
-    })](${this.getEditorUrl()})`;
+    return `[![Edit ${sandbox.title ||
+      sandbox.id}](${BUTTON_URL})](${this.getEditorUrl()})`;
   };
 
   // eslint-disable-next-line
@@ -334,6 +334,18 @@ class ShareView extends React.Component {
                 value={this.getIframeScript()}
                 readOnly
               />
+              <LinkName>QR Code</LinkName>
+              <Inputs>
+                <ButtonContainer>
+                  <a href={this.getEmbedUrl()}>
+                    <QRCode
+                      value={this.getEmbedUrl()}
+                      size={'100%'}
+                      renderAs="svg"
+                    />
+                  </a>
+                </ButtonContainer>
+              </Inputs>
             </Inputs>
           </Column>
           <Column>
