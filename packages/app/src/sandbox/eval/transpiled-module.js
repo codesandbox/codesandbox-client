@@ -91,8 +91,16 @@ export type LoaderContext = {
     depPath: string,
     options: ?{
       isAbsolute: boolean,
+      ignoredExtensions?: Array<string>,
     }
   ) => TranspiledModule,
+  resolveTranspiledModuleAsync: (
+    depPath: string,
+    options: ?{
+      isAbsolute: boolean,
+      ignoredExtensions?: Array<string>,
+    }
+  ) => Promise<TranspiledModule>,
   addDependency: (
     depPath: string,
     options: ?{
@@ -427,7 +435,14 @@ export default class TranspiledModule {
       resolveTranspiledModule: (depPath: string, options = {}) =>
         manager.resolveTranspiledModule(
           depPath,
-          options.isAbsolute ? '/' : this.module.path
+          options.isAbsolute ? '/' : this.module.path,
+          options.ignoredExtensions
+        ),
+      resolveTranspiledModuleAsync: (depPath: string, options = {}) =>
+        manager.resolveTranspiledModuleAsync(
+          depPath,
+          options.isAbsolute ? '/' : this.module.path,
+          options.ignoredExtensions
         ),
       getModules: (): Array<Module> => manager.getModules(),
       options: {
