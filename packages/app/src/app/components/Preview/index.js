@@ -58,6 +58,8 @@ class BasePreview extends React.Component<Props, State> {
     // when the user navigates the iframe app, which shows the loading screen
     this.initialPath = props.initialPath;
 
+    this.listener = listen(this.handleMessage);
+
     if (props.delay) {
       this.executeCode = debounce(this.executeCode, 800);
     }
@@ -79,10 +81,6 @@ class BasePreview extends React.Component<Props, State> {
     if (this.disposeInitializer) {
       this.disposeInitializer();
     }
-  }
-
-  componentDidMount() {
-    this.listener = listen(this.handleMessage);
   }
 
   openNewWindow = () => {
