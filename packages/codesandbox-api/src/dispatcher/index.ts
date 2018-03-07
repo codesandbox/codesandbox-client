@@ -68,10 +68,13 @@ function notifyFrames(message: Object) {
 function eventListener(e: MessageEvent) {
   const { data } = e;
 
+  const testedHost = host || 'https://codesandbox.io';
+  const origin = testedHost.replace('https://', '').replace('http://', '');
+
   if (
     data.codesandbox &&
-    (e.origin.endsWith('.codesandbox.io') ||
-      e.origin.endsWith('/codesandbox.io') ||
+    (e.origin.endsWith(`.${origin}`) ||
+      e.origin.endsWith(`/${origin}`) ||
       process.env.NODE_ENV !== 'production')
   ) {
     notifyListeners(data, e.source);

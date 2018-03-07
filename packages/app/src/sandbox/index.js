@@ -7,7 +7,7 @@ import { getModulePath } from 'common/sandbox/modules';
 import { generateFileFromSandbox } from 'common/templates/configuration/package-json';
 
 import setupHistoryListeners from './url-listeners';
-import compile, { getCurrentManager } from './compile';
+import compile from './compile';
 import setupConsole from './console';
 import transformJSON from './console/transform-json';
 
