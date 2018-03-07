@@ -75,6 +75,7 @@ function eventListener(e: MessageEvent) {
     data.codesandbox &&
     (e.origin.endsWith(`.${origin}`) ||
       e.origin.endsWith(`/${origin}`) ||
+      process.env.STAGING ||
       process.env.NODE_ENV !== 'production')
   ) {
     notifyListeners(data, e.source);
