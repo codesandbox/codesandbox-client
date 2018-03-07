@@ -1,17 +1,32 @@
+/// <reference types="node" />
 import { dispatch, listen, registerFrame } from 'codesandbox-api';
+import generatePackageJSON from '../utils/generate-package-json';
+
+const version = require('../../package.json').version;
 
 export interface IManagerOptions {
-  sandboxUrl?: string;
+  /**
+   * Location of the bundler
+   */
+  bundlerURL?: string;
   width?: string;
   height?: string;
+  /**
+   * What template we use, if not defined we infer the template from the dependencies or files.
+   */
   template?: string;
+  /**
+   * If we should skip evaluation.
+   */
   skipEval?: boolean;
 }
 
+export interface IFile {
+  code: string;
+}
+
 export interface IFiles {
-  [path: string]: {
-    code: string;
-  };
+  [path: string]: IFile;
 }
 
 export interface IModules {
@@ -25,6 +40,15 @@ export interface IDependencies {
   [depName: string]: string;
 }
 
+export type ISandboxInfo = {
+  files: IFiles;
+  dependencies?: IDependencies;
+  entry?: string;
+  template?: string;
+};
+
+const BUNDLER_URL = `https://sandpack-${version}.codesandbox.io`;
+
 export default class PreviewManager {
   selector: string | undefined;
   element: Element;
@@ -32,16 +56,18 @@ export default class PreviewManager {
   options: IManagerOptions;
   listener?: Function;
   skipEval: boolean;
+  bundlerURL: string;
 
-  files: IFiles;
+  sandboxInfo: ISandboxInfo;
 
   constructor(
     selector: string | HTMLIFrameElement,
-    files: IFiles,
+    sandboxInfo: ISandboxInfo,
     options: IManagerOptions = {}
   ) {
     this.options = options;
-    this.files = files;
+    this.sandboxInfo = sandboxInfo;
+    this.bundlerURL = options.bundlerURL || BUNDLER_URL;
 
     if (typeof selector === 'string') {
       this.selector = selector;
@@ -67,7 +93,7 @@ export default class PreviewManager {
           if (this.iframe) {
             registerFrame(this.iframe.contentWindow);
 
-            this.sendCode(this.files);
+            this.updatePreview();
           }
           break;
         }
@@ -78,8 +104,10 @@ export default class PreviewManager {
     });
   }
 
-  sendCode(files: IFiles) {
-    this.files = files;
+  updatePreview(sandboxInfo = this.sandboxInfo) {
+    this.sandboxInfo = sandboxInfo;
+
+    const files = this.getFiles();
 
     const modules: IModules = Object.keys(files).reduce(
       (prev, next) => ({
@@ -104,9 +132,22 @@ export default class PreviewManager {
     });
   }
 
+  private getFiles() {
+    const { sandboxInfo } = this;
+
+    if (sandboxInfo.files['/package.json'] === undefined) {
+      return generatePackageJSON(
+        sandboxInfo.files,
+        sandboxInfo.dependencies,
+        sandboxInfo.entry
+      );
+    }
+
+    return this.sandboxInfo.files;
+  }
+
   private initializeElement() {
-    this.iframe.src =
-      this.options.sandboxUrl || 'https://sandbox.codesandbox.io';
+    this.iframe.src = this.bundlerURL;
     this.iframe.style.border = '0';
     this.iframe.style.width = this.options.width || '100%';
     this.iframe.style.height = this.options.height || '100%';

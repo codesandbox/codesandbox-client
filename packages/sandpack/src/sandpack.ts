@@ -1,3 +1,4 @@
 import Manager from './manager/index';
+import generatePackageJSON from './utils/generate-package-json';
 
-export { Manager };
+export { Manager, generatePackageJSON };

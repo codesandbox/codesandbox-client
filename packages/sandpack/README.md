@@ -1,39 +1,41 @@
 # Sandpack
 
-A bundler that completely works in the browser, utilizing browser APIs.
+A bundler that completely works in the browser and takes advantage of it.
 
 ## Why?
 
 Online code playgrounds are getting more popular: they provide an easy way to play with code without installation. Until a year ago it was very hard to play with bigger web applications in the browser; there was no bundler that was comparable with local bundlers and worked in the browser.
 
-CodeSandbox came along, and still had a pretty basic bundler. However, as CodeSandbox got more popular its bundler got more advanced. Nowadays the bundler has comparable feature parity with Webpack, and it would be a shame if others couldn't use the functionality.
+CodeSandbox came along, and still had a pretty basic bundler. However, as CodeSandbox got more popular its bundler got more advanced. Nowadays the bundler is used for all kinds of bigger web projects, and it would be a shame if others couldn't use the functionality.
 
-This library acts as an interface with the bundler of CodeSandbox. It allows you to run any code on a web page, from Vue projects to React projects. With everything that CodeSandbox supports as well.
+This library acts as an interface with the bundler of CodeSandbox. It allows you to run any code on a web page, from Vue projects to React projects to Parcel projects. With everything that CodeSandbox supports as well.
 
-## So what can the bundler do?
+## So what can this bundler do?
 
-This is a list of features that the bundler supports, the list may be outdated.
+This is a list of features that the bundler supports out of the box, the list may be outdated.
 
-1. Hot Module Reloading API (`module.hot`)
-2. npm dependencies
-3. Supports most common transpilers (vue, babel, typescript, css)
-4. Friendly error overlay
-5. Parallel transpiling
-6. On-demand transpiler loading
+1.  Hot Module Reloading API (`module.hot`)
+2.  npm dependencies
+3.  Most common transpilers (vue, babel, typescript, css, etc...)
+4.  Parallel transpiling
+5.  On-demand transpiler loading
+6.  Webpack loader syntax (`!raw-loader!./test.js`)
+7.  Friendly error overlay (using `create-react-app` overlay)
+8.  Transpilation result caching
 
 ## Example usage
 
-There are multiple ways to use the bundler. We provided two ways, but we're open to PRs to extend ways to use this!
+This repo serves as an interface to communicate with the bundler. The bundler itself is hosted on `sandpack-{version}.codesandbox.io` and is heavily cached by a CDN. We also included the necessary files under `bundler` if you want to host the bundler yourself.
 
 ### Using the Manager
 
-The Manager is a plain JavaScript implementation, you can use it by importing Manager.
+The Manager is a class implementation, you can use it by importing Manager.
 
 ```js
-import { Manager } from 'codesandbox-playground';
+import { Manager } from 'sandpack';
 
-// Let's say you want to show the preview on #preview
-const m = new Manager(
+// There are two ways of initializing a preview, you can give it either an iframe element or a selector of an element to create an iframe on.
+const manager = new Manager(
   '#preview',
   {
     files: {
@@ -41,49 +43,92 @@ const m = new Manager(
         code: `console.log(require('uuid'))`,
       },
     },
+    entry: '/index.js',
     dependencies: {
       uuid: 'latest',
     },
-    entry: '/index.js',
-  } /* you can give a third argument with extra options, described at the bottom */
+  } /* We support a third parameter for advanced options, you can find more info in the bottom */
 );
 
-// This will show the preview on the #preview element, you can now send new code
-// by calling 'sendCode(files, dependencies, entry)'. We will automatically determine
-// how to hot update the preview.
-m.sendCode(
-  {
+// When you make a change you can just run `updatePreview`, we'll automatically discover
+// which files have changed and hot reload them.
+manager.updatePreview({
+  files: {
     '/index.js': {
-      code: `console.log('other code')`,
+      code: `console.log('New Text!')`,
+    },
+    entry: '/index.js',
+    dependencies: {
+      uuid: 'latest',
     },
   },
+});
+```
+
+If you specify a `package.json` in the list of files we will use that as source of truth instead, we infer `dependencies` and `entry` from it:
+
+```js
+// We infer dependencies and the entry point from package.json
+const PACKAGE_JSON_CODE = JSON.stringify(
   {
-    uuid: 'latest',
+    title: 'test',
+    main: 'index.js',
+    dependencies: {
+      uuid: 'latest',
+    },
   },
-  '/index.js'
+  null,
+  2
 );
+
+// Give it either a selector or an iframe element as first argument, the second arguments are the files
+const manager = new Manager('#preview', {
+  files: {
+    '/index.js': {
+      code: `console.log(require('uuid'))`,
+    },
+    '/package.json': {
+      code: PACKAGE_JSON_CODE,
+    },
+  },
+});
 ```
 
 ### As a React Component
 
-We included a React component you can use, the implementation is fairly simple.
+We built another library called `react-sandpack` for usage with `sandpack`. This library provides basic React components for editors, including `FileExplorer`, `CodeEditor` and `BrowserPreview`. This serves as a library that makes it easier to build embeddable or full blown online code editors.
+
+An example implementation:
 
 ```jsx
-import Preview from 'codesandbox-playground/dist/components/Preview';
+import React from 'react';
+import { render } from 'react-dom';
+import {
+  FileExplorer,
+  CodeMirror,
+  BrowserPreview,
+  SandpackProvider,
+} from 'react-sandpack';
 
 const files = {
   '/index.js': {
-    code: `
-    console.log('hey')
-  `,
+    code: "document.body.innerHTML = `<div>${require('uuid')}</div>`",
   },
 };
 
 const dependencies = {
-  react: 'latest',
+  uuid: 'latest',
 };
 
-export default () => <Preview files={files} dependencies={dependencies} entry="/index.js" />;
+const App = () => (
+  <SandpackProvider files={files} dependencies={dependencies} entry="/index.js">
+    <div style={{ display: 'flex', width: '100%', height: '100%' }}>
+      <FileExplorer style={{ width: 300 }} />
+      <CodeMirror style={{ flex: 1 }} />
+      <BrowserPreview style={{ flex: 1 }} />
+    </div>
+  </SandpackProvider>
+);
 ```
 
-We will automatically hot update the preview as the props update.
+The above code will render a File Explorer, a working code editor and a preview with browser navigation. For more info about `react-sandpack` you can go here: https://github.com/CompuIves/codesandbox-client/tree/master/packages/react-sandpack.

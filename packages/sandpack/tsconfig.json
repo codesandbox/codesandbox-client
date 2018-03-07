@@ -11,7 +11,7 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "declarationDir": "dist/types",
-    "outDir": "dist/lib",
+    "outDir": "dist",
     "typeRoots": ["node_modules/@types"]
   },
   "include": ["src"]

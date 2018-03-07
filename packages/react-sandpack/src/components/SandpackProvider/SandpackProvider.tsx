@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Broadcast } from 'react-broadcast';
-import { Manager } from 'sandpack';
+import { Manager, generatePackageJSON } from 'sandpack';
 import { listen } from 'codesandbox-api';
 
 import { IFile, IFiles, IManagerState } from '../../types';
@@ -22,7 +22,7 @@ export interface Props {
   };
   width?: number | string;
   height?: number | string;
-  sandboxUrl: string;
+  bundlerURL?: string;
   skipEval: boolean;
 }
 
@@ -31,7 +31,6 @@ export default class SandpackProvider extends React.PureComponent<
   State
 > {
   static defaultProps = {
-    sandboxUrl: 'http://localhost:3001',
     skipEval: false,
   };
 
@@ -104,11 +103,13 @@ export default class SandpackProvider extends React.PureComponent<
   setupFrame = (el: HTMLIFrameElement) => {
     this.manager = new Manager(
       el,
-      this.createMissingPackageJSON(
-        this.props.files,
-        this.props.dependencies,
-        this.props.entry
-      ),
+      {
+        files: generatePackageJSON(
+          this.props.files,
+          this.props.dependencies,
+          this.props.entry
+        ),
+      },
       {
         skipEval: this.props.skipEval,
       }
@@ -123,7 +124,7 @@ export default class SandpackProvider extends React.PureComponent<
     this.setState({ files });
 
     if (this.manager) {
-      this.manager.sendCode(files);
+      this.manager.updatePreview({ files });
     }
   };
 
@@ -165,7 +166,7 @@ export default class SandpackProvider extends React.PureComponent<
           openFile: this.openFile,
           browserFrame: iframe,
           updateFiles: this.updateFiles,
-          sandboxUrl: this.props.sandboxUrl,
+          bundlerURL: this.manager ? this.manager.bundlerURL : undefined,
         }}
       >
         <div className="sandpack">
@@ -182,7 +183,7 @@ export default class SandpackProvider extends React.PureComponent<
               position: 'absolute',
               visibility: 'hidden',
             }}
-            src={this.props.sandboxUrl}
+            src={this.props.bundlerURL}
           />
           {children}
         </div>
