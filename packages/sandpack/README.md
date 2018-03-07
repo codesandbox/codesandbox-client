@@ -129,6 +129,8 @@ const App = () => (
     </div>
   </SandpackProvider>
 );
+
+render(<App />, document.getElementById('root'));
 ```
 
 The above code will render a File Explorer, a working code editor and a preview with browser navigation. We have many more components, like a Jest test view or a console. For more info about `react-sandpack` you can go here: https://github.com/CompuIves/codesandbox-client/tree/master/packages/react-sandpack.
