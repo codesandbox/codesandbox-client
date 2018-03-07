@@ -105,7 +105,7 @@ export default class WorkerTranspiler extends Transpiler {
   }
 
   executeTask({ message, loaderContext, callbacks }: Task, worker: Worker) {
-    worker.onmessage = newMessage => {
+    worker.onmessage = async newMessage => {
       const { data } = newMessage;
 
       if (data) {
@@ -118,6 +118,31 @@ export default class WorkerTranspiler extends Transpiler {
         if (data.type === 'warning') {
           loaderContext.emitWarning(data.warning);
           return;
+        }
+
+        if (data.type === 'resolve-async-transpiled-module') {
+          // This one is to add an asynchronous transpiled module
+
+          const { id, path, options } = data;
+
+          try {
+            const tModule = await loaderContext.resolveTranspiledModuleAsync(
+              path,
+              options
+            );
+            worker.postMessage({
+              type: 'resolve-async-transpiled-module-response',
+              id,
+              found: true,
+              path: tModule.module.path,
+            });
+          } catch (e) {
+            worker.postMessage({
+              type: 'resolve-async-transpiled-module-response',
+              id,
+              found: false,
+            });
+          }
         }
 
         if (data.type === 'add-dependency') {

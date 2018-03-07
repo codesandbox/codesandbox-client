@@ -191,9 +191,6 @@ function resolvePath(
       },
       (err, resolvedPath) => {
         if (err) {
-          if (process.env.NODE_ENV === 'development') {
-            console.error(err);
-          }
           return reject(err);
         }
 

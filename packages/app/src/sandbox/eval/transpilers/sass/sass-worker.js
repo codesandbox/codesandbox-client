@@ -1,5 +1,6 @@
 import resolve from 'browser-resolve';
-import { join, basename, absolute, dirname } from 'common/utils/path';
+import { absolute } from 'common/utils/path';
+import { extname } from 'path';
 import delay from 'common/utils/delay';
 
 self.importScripts([
@@ -18,14 +19,66 @@ declare var Sass: {
   registerPlugin: (name: string, plugin: Function) => void,
 };
 
+const resolveAsyncModule = (
+  path: string,
+  { ignoredExtensions }?: { ignoredExtensions?: Array<string> }
+) =>
+  new Promise((r, reject) => {
+    const sendId = Math.random() * 10000;
+    self.postMessage({
+      type: 'resolve-async-transpiled-module',
+      path,
+      id: sendId,
+      options: { isAbsolute: true, ignoredExtensions },
+    });
+
+    const resolveFunc = message => {
+      const { type, id, found } = message.data;
+
+      if (
+        type === 'resolve-async-transpiled-module-response' &&
+        id === sendId
+      ) {
+        if (found) {
+          r(message.data);
+        } else {
+          reject(message.data);
+        }
+        self.removeEventListener('message', resolveFunc);
+      }
+    };
+
+    self.addEventListener('message', resolveFunc);
+  });
+
+const SUPPORTED_EXTS = ['css', 'sass', 'scss'];
+
 const existsPromise = (fs, file) =>
   new Promise(r => {
-    fs.stat(file, (err, stats) => {
+    fs.stat(file, async (err, stats) => {
       if (err || stats.isDirectory()) {
-        return r(false);
-      }
+        if (stats && stats.isDirectory()) {
+          return r(false);
+        }
+        // We try to download it
+        try {
+          const { path } = await resolveAsyncModule(file, {
+            ignoredExtensions: SUPPORTED_EXTS,
+          });
 
-      return r(file);
+          const ext = extname(path).substr(1);
+
+          if (SUPPORTED_EXTS.indexOf(ext) === -1) {
+            return r(false);
+          }
+
+          r(path);
+        } catch (e) {
+          r(false);
+        }
+      } else {
+        return r(file);
+      }
     });
   });
 
@@ -157,7 +210,8 @@ self.addEventListener('message', async event => {
       const currentPath =
         request.previous === 'stdin' ? path : request.previous;
 
-      const foundPath = await resolveSass(fs, request.current, currentPath);
+      const foundPath =
+        request.path || (await resolveSass(fs, request.current, currentPath));
 
       self.postMessage({
         type: 'add-transpilation-dependency',
