@@ -31,8 +31,8 @@
     "packages/app",
     "packages/common",
     "packages/codesandbox-api",
-    "packages/sandpack",
-    "packages/react-sandpack"
+    "packages/smooshpack",
+    "packages/react-smooshpack"
   ],
   "devDependencies": {
     "all-contributors-cli": "^4.3.0",

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Broadcast } from 'react-broadcast';
-import { Manager, generatePackageJSON } from 'sandpack';
+import { Manager, generatePackageJSON } from 'smooshpack';
 import { listen } from 'codesandbox-api';
 
 import { IFile, IFiles, IManagerState } from '../../types';

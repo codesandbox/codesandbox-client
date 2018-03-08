@@ -35,7 +35,7 @@ function getConfig({ isUMD }) {
     watch: {
       include: 'src/**',
     },
-    external: isUMD ? ['react'] : id => id === 'react' || /codemirror/.test(id),
+    external: isUMD ? [] : id => id === 'react' || /codemirror/.test(id),
     plugins: [
       // Compile TypeScript files
       typescript({ useTsconfigDeclarationDir: true }),
