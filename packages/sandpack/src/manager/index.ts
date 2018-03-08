@@ -94,8 +94,8 @@ export default class PreviewManager {
     } else {
       this.element = selector;
       this.iframe = selector;
-      this.iframe.src = this.bundlerURL;
     }
+    this.iframe.src = this.bundlerURL;
 
     this.skipEval = options.skipEval || false;
 
