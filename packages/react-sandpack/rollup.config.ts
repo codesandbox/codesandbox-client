@@ -25,7 +25,7 @@ function getConfig({ isUMD }) {
     output: [
       isUMD
         ? {
-            file: getFileName(pkg.browser),
+            file: getFileName(pkg.main.replace('.js', '.umd.js')),
             name: camelCase(libraryName),
             format: 'umd',
           }
