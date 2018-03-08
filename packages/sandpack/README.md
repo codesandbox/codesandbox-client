@@ -1,5 +1,7 @@
 # Sandpack
 
+> DON'T USE THIS YET!
+
 A bundler that completely works in the browser and takes advantage of it.
 
 ## Why?

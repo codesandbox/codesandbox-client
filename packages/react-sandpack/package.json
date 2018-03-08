@@ -1,5 +1,5 @@
 {
-  "name": "react-quartzpack",
+  "name": "react-smooshpack",
   "version": "0.0.0",
   "description": "",
   "keywords": [],
@@ -78,7 +78,7 @@
     "react-broadcast": "^0.6.2",
     "react-codemirror2": "^4.0.1",
     "rollup-plugin-scss": "^0.4.0",
-    "quartzpack": "^0.0.0"
+    "smooshpack": "^0.0.0"
   },
   "peerDependencies": {
     "react": "^16.0.0"
