@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { listen, dispatch } from 'codesandbox-api';
-import classNames from 'classnames';
+import * as classNames from 'classnames';
 
 import RefreshIcon from './RefreshIcon';
 import withSandpack from '../../utils/with-sandpack';
