@@ -344,7 +344,7 @@ class ShareView extends React.Component {
                 <ButtonContainer>
                   <Button
                     onClick={this.toggleQRCode}
-                    small={true}
+                    small
                     style={{ width: '100%' }}
                   >
                     {showQRCode ? 'Hide' : 'Show'} QR Code
