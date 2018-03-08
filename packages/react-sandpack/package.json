@@ -77,7 +77,7 @@
     "react-broadcast": "^0.6.2",
     "react-codemirror2": "^4.0.1",
     "rollup-plugin-scss": "^0.4.0",
-    "smooshpack": "^0.0.2"
+    "smooshpack": "^0.0.7"
   },
   "peerDependencies": {
     "react": "^16.0.0"
