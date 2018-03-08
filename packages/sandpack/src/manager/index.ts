@@ -2,7 +2,9 @@
 import { dispatch, listen, registerFrame } from 'codesandbox-api';
 import { getTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';
 
-import generatePackageJSON from '../utils/generate-package-json';
+import generatePackageJSON, {
+  getPackageJSON,
+} from '../utils/generate-package-json';
 import version from '../version';
 
 export interface IManagerOptions {
@@ -133,11 +135,7 @@ export default class PreviewManager {
     );
 
     let packageJSON = JSON.parse(
-      generatePackageJSON(
-        this.sandboxInfo.files,
-        this.sandboxInfo.dependencies,
-        this.sandboxInfo.entry
-      )['/package.json'].code
+      getPackageJSON(this.sandboxInfo.dependencies, this.sandboxInfo.entry)
     );
     try {
       packageJSON = JSON.parse(files['/package.json'].code);

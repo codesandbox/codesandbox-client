@@ -1,5 +1,20 @@
 import { IFiles, IFile, IDependencies } from '../manager';
 
+export function getPackageJSON(
+  dependencies: IDependencies = {},
+  entry: string = '/index.js'
+) {
+  return JSON.stringify(
+    {
+      name: 'sandpack-project',
+      main: entry,
+      dependencies,
+    },
+    null,
+    2
+  );
+}
+
 export default function createMissingPackageJSON(
   files: IFiles,
   dependencies?: IDependencies,
@@ -21,15 +36,7 @@ export default function createMissingPackageJSON(
     }
 
     newFiles['/package.json'] = {
-      code: JSON.stringify(
-        {
-          name: 'run',
-          main: entry,
-          dependencies,
-        },
-        null,
-        2
-      ),
+      code: getPackageJSON(dependencies, entry),
     };
   }
 
