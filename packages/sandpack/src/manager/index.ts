@@ -132,10 +132,12 @@ export default class PreviewManager {
       {}
     );
 
-    let packageJSON = generatePackageJSON(
-      this.sandboxInfo.files,
-      this.sandboxInfo.dependencies,
-      this.sandboxInfo.entry
+    let packageJSON = JSON.parse(
+      generatePackageJSON(
+        this.sandboxInfo.files,
+        this.sandboxInfo.dependencies,
+        this.sandboxInfo.entry
+      )['/package.json'].code
     );
     try {
       packageJSON = JSON.parse(files['/package.json'].code);
