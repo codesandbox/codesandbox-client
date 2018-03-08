@@ -21,7 +21,7 @@
     "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
     "prebuild": "rimraf dist && rimraf es",
     "build":
-      "tsc --module commonjs && rollup -c rollup.config.ts && yarn build:min && typedoc --out docs --target es6 --theme minimal --mode file src && gulp build",
+      "tsc && rollup -c rollup.config.ts && yarn build:min && typedoc --out docs --target es6 --theme minimal --mode file src && gulp build",
     "build:min": "cross-env BUILD_MINIFY=1 rollup -c rollup.config.ts",
     "start": "npm-run-all --parallel watch:**",
     "watch:rollup": "rollup -c rollup.config.ts -w",

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { listen } from 'codesandbox-api';
 import { Controlled } from 'react-codemirror2';
 
-import * as classNames from 'classnames';
+import classNames from 'classnames';
 
 import { ISandpackContext } from '../../types';
 
