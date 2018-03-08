@@ -14,6 +14,8 @@ export interface State {
 }
 
 export interface Props {
+  className?: string;
+  style?: Object;
   files: IFiles;
   initialPath?: string;
   entry?: string;
@@ -169,7 +171,7 @@ export default class SandpackProvider extends React.PureComponent<
   };
 
   render() {
-    const { children } = this.props;
+    const { children, className, style } = this.props;
     const { iframe, files, browserPath, openedPath, managerState } = this.state;
 
     return (
@@ -185,7 +187,7 @@ export default class SandpackProvider extends React.PureComponent<
           bundlerURL: this.manager ? this.manager.bundlerURL : undefined,
         }}
       >
-        <div className="sandpack">
+        <div style={style} className={`${className ? className : ''} sandpack`}>
           {/* We create a hidden iframe, the bundler will live in this.
             We expose this iframe to the Consumer, so other components can show the full
             iframe for preview. An implementation can be found in `Preview` component. */}
