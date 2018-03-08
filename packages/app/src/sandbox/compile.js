@@ -383,57 +383,57 @@ async function compile({
           /* don't do anything with this error */
         }
       }
-    }
 
-    if ((!manager.webpackHMR || firstLoad) && !manager.preset.htmlDisabled) {
-      if (!managerTranspiledModuleToTranspile.compilation) {
-        const htmlModule =
-          modules[
-            templateDefinition
-              .getHTMLEntries(configurations)
-              .find(p => modules[p])
-          ];
+      if ((!manager.webpackHMR || firstLoad) && !manager.preset.htmlDisabled) {
+        if (!managerTranspiledModuleToTranspile.compilation) {
+          const htmlModule =
+            modules[
+              templateDefinition
+                .getHTMLEntries(configurations)
+                .find(p => modules[p])
+            ];
 
-        const html = htmlModule
-          ? htmlModule.code
-          : template === 'vue-cli'
-            ? '<div id="app"></div>'
-            : '<div id="root"></div>';
-        document.body.innerHTML = html;
+          const html = htmlModule
+            ? htmlModule.code
+            : template === 'vue-cli'
+              ? '<div id="app"></div>'
+              : '<div id="root"></div>';
+          document.body.innerHTML = html;
+        }
       }
-    }
 
-    const tt = Date.now();
-    const oldHTML = document.body.innerHTML;
-    const evalled = manager.evaluateModule(managerModuleToTranspile);
-    debug(`Evaluation time: ${Date.now() - tt}ms`);
-    const domChanged =
-      !manager.preset.htmlDisabled && oldHTML !== document.body.innerHTML;
+      const tt = Date.now();
+      const oldHTML = document.body.innerHTML;
+      const evalled = manager.evaluateModule(managerModuleToTranspile);
+      debug(`Evaluation time: ${Date.now() - tt}ms`);
+      const domChanged =
+        !manager.preset.htmlDisabled && oldHTML !== document.body.innerHTML;
 
-    if (
-      isModuleView &&
-      !domChanged &&
-      !managerModuleToTranspile.path.endsWith('.html')
-    ) {
-      const isReact =
-        managerModuleToTranspile.code &&
-        managerModuleToTranspile.code.includes('React');
+      if (
+        isModuleView &&
+        !domChanged &&
+        !managerModuleToTranspile.path.endsWith('.html')
+      ) {
+        const isReact =
+          managerModuleToTranspile.code &&
+          managerModuleToTranspile.code.includes('React');
 
-      if (isReact) {
-        // initiate boilerplates
-        if (getBoilerplates().length === 0) {
-          try {
-            await evalBoilerplates(defaultBoilerplates);
-          } catch (e) {
-            console.log("Couldn't load all boilerplates: " + e.message);
-          }
-
-          const boilerplate = findBoilerplate(managerModuleToTranspile);
-          if (boilerplate) {
+        if (isReact) {
+          // initiate boilerplates
+          if (getBoilerplates().length === 0) {
             try {
-              boilerplate.module.default(evalled);
+              await evalBoilerplates(defaultBoilerplates);
             } catch (e) {
-              console.error(e);
+              console.log("Couldn't load all boilerplates: " + e.message);
+            }
+
+            const boilerplate = findBoilerplate(managerModuleToTranspile);
+            if (boilerplate) {
+              try {
+                boilerplate.module.default(evalled);
+              } catch (e) {
+                console.error(e);
+              }
             }
           }
         }
@@ -467,9 +467,15 @@ async function compile({
 
     debug(`Total time: ${Date.now() - startTime}ms`);
 
+    const managerState = {
+      ...manager.serialize(),
+    };
+    delete managerState.cachedPaths;
+    managerState.entry = managerModuleToTranspile.path;
+
     dispatch({
       type: 'success',
-      state: manager.serialize(),
+      state: managerState,
     });
 
     manager.save();

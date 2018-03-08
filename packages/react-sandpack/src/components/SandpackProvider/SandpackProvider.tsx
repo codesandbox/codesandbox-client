@@ -24,6 +24,13 @@ export interface Props {
   height?: number | string;
   bundlerURL?: string;
   skipEval: boolean;
+  template?:
+    | 'create-react-app'
+    | 'create-react-app-typescript'
+    | 'parcel'
+    | 'vue-cli'
+    | 'angular-cli'
+    | 'preact-cli';
 }
 
 export default class SandpackProvider extends React.PureComponent<
@@ -109,6 +116,7 @@ export default class SandpackProvider extends React.PureComponent<
           this.props.dependencies,
           this.props.entry
         ),
+        template: this.props.template,
       },
       {
         skipEval: this.props.skipEval,
@@ -124,7 +132,7 @@ export default class SandpackProvider extends React.PureComponent<
     this.setState({ files });
 
     if (this.manager) {
-      this.manager.updatePreview({ files });
+      this.manager.updatePreview({ files, template: this.props.template });
     }
   };
 
@@ -132,7 +140,8 @@ export default class SandpackProvider extends React.PureComponent<
     if (
       props.files !== this.props.files ||
       props.dependencies !== this.props.dependencies ||
-      props.entry !== this.props.entry
+      props.entry !== this.props.entry ||
+      props.template !== this.props.template
     ) {
       const newFiles = this.createMissingPackageJSON(
         this.props.files,

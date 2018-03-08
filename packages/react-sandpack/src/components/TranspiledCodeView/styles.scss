@@ -1,0 +1,13 @@
+.sandpack-TranspiledCodeView__container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.sandpack-TranspiledCodeView__error {
+  font-family: Menlo, Source Code Pro, monospace;
+  background-color: #ba3537;
+  color: white;
+
+  padding: 0.5rem;
+}

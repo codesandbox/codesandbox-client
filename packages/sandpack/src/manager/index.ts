@@ -1,10 +1,9 @@
 /// <reference types="node" />
 import { dispatch, listen, registerFrame } from 'codesandbox-api';
-import generatePackageJSON from '../utils/generate-package-json';
-
 import { getTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';
 
-const version = require('../../package.json').version;
+import generatePackageJSON from '../utils/generate-package-json';
+import version from '../version';
 
 export interface IManagerOptions {
   /**
@@ -95,6 +94,7 @@ export default class PreviewManager {
     } else {
       this.element = selector;
       this.iframe = selector;
+      this.iframe.src = this.bundlerURL;
     }
 
     this.skipEval = options.skipEval || false;
@@ -175,7 +175,6 @@ export default class PreviewManager {
   }
 
   private initializeElement() {
-    this.iframe.src = this.bundlerURL;
     this.iframe.style.border = '0';
     this.iframe.style.width = this.options.width || '100%';
     this.iframe.style.height = this.options.height || '100%';

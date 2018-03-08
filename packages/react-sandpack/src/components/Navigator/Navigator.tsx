@@ -25,13 +25,11 @@ class Navigator extends React.Component<Props, State> {
     super(props);
     this.listener = listen(this.handleMessage);
 
-    let urlState = this.getUrlState(props.sandpack.sandboxUrl);
-
-    if (props.sandpack.browserFrame) {
-      urlState = this.getUrlState(props.sandpack.browserFrame.src);
-    }
-
-    this.state = urlState;
+    this.state = {
+      browserPath: '/',
+      baseUrl: '',
+      lastCommittedUrl: '/',
+    };
   }
 
   componentWillUnmount() {
@@ -41,7 +39,6 @@ class Navigator extends React.Component<Props, State> {
   handleMessage = (message: any) => {
     switch (message.type) {
       case 'urlchange': {
-        console.log(message);
         this.setState(this.getUrlState(message.url));
         break;
       }

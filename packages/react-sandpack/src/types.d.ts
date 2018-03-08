@@ -39,9 +39,7 @@ export interface ITranspiledModule {
 }
 
 export interface IManagerState {
-  cachedPaths: {
-    [path: string]: string;
-  };
+  entry: string;
   transpiledModules: {
     [id: string]: ITranspiledModule;
   };
@@ -52,6 +50,7 @@ export interface ISandpackContext {
   managerState: IManagerState | undefined;
   sandboxUrl: string;
   openedPath: string;
+  entry: string;
   files: IFiles;
   openFile: (path: string) => void;
   updateFiles: (files: IFiles) => void;

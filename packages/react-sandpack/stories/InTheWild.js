@@ -106,3 +106,57 @@ stories.addWithJSX('transpiled view', () => (
     </div>
   </SandpackProvider>
 ));
+
+stories.addWithJSX('babel', () => (
+  <SandpackProvider
+    files={{
+      '/index.js': {
+        code: `import React from 'react';`,
+      },
+      '/.babelrc': {
+        code: JSON.stringify(
+          {
+            presets: ['latest', 'stage-1'],
+            plugins: [
+              'transform-object-assign',
+              'transform-decorators-legacy',
+              [
+                'transform-react-jsx',
+                {
+                  pragma: 'h',
+                },
+              ],
+              [
+                'jsx-pragmatic',
+                {
+                  module: 'preact',
+                  export: 'h',
+                  import: 'h',
+                },
+              ],
+            ],
+          },
+          null,
+          2
+        ),
+      },
+    }}
+    dependencies={{}}
+    entry="/index.js"
+    template="preact-cli"
+    skipEval
+  >
+    <div
+      style={{
+        display: 'flex',
+        width: '100vw',
+        height: '100vh',
+      }}
+    >
+      <FileExplorer style={{ width: 300 }} />
+
+      <CodeEditor style={{ width: '100%', overflowX: 'hidden' }} />
+      <TranspiledCodeView style={{ width: '100%', overflowX: 'hidden' }} />
+    </div>
+  </SandpackProvider>
+));
