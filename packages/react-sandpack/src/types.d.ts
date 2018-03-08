@@ -46,11 +46,10 @@ export interface IManagerState {
 }
 
 export interface ISandpackContext {
-  browserFrame: HTMLIFrameElement;
+  browserFrame: HTMLIFrameElement | null;
   managerState: IManagerState | undefined;
-  sandboxUrl: string;
+  bundlerURL: string | undefined;
   openedPath: string;
-  entry: string;
   files: IFiles;
   openFile: (path: string) => void;
   updateFiles: (files: IFiles) => void;

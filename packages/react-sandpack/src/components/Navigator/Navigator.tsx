@@ -69,8 +69,10 @@ class Navigator extends React.Component<Props, State> {
   };
 
   commitUrl = () => {
-    this.props.sandpack.browserFrame.src =
-      this.state.baseUrl + this.state.browserPath;
+    if (this.props.sandpack.browserFrame) {
+      this.props.sandpack.browserFrame.src =
+        this.state.baseUrl + this.state.browserPath;
+    }
   };
 
   onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -92,7 +94,9 @@ class Navigator extends React.Component<Props, State> {
   };
 
   onRefresh = () => {
-    this.props.sandpack.browserFrame.src = this.state.lastCommittedUrl;
+    if (this.props.sandpack.browserFrame) {
+      this.props.sandpack.browserFrame.src = this.state.lastCommittedUrl;
+    }
   };
 
   render() {

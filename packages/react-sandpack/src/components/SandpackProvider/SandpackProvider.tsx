@@ -3,7 +3,7 @@ import { Broadcast } from 'react-broadcast';
 import { Manager, generatePackageJSON } from 'smooshpack';
 import { listen } from 'codesandbox-api';
 
-import { IFile, IFiles, IManagerState } from '../../types';
+import { IFile, IFiles, IManagerState, ISandpackContext } from '../../types';
 
 export interface State {
   files: IFiles;
@@ -34,7 +34,7 @@ export interface Props {
     | 'angular-cli'
     | 'preact-cli';
 
-  onFileChange?: (files: IFiles) => void;
+  onFileChange?: (files: IFiles, sandpack: ISandpackContext) => void;
 }
 
 export default class SandpackProvider extends React.PureComponent<
@@ -138,7 +138,7 @@ export default class SandpackProvider extends React.PureComponent<
     this.setState({ files });
 
     if (this.props.onFileChange) {
-      this.props.onFileChange(files);
+      this.props.onFileChange(files, this._getSandpackState());
     }
     if (this.manager) {
       this.manager.updatePreview({ files, template: this.props.template });
@@ -170,23 +170,25 @@ export default class SandpackProvider extends React.PureComponent<
     this.setState({ openedPath: path });
   };
 
+  _getSandpackState = (): ISandpackContext => {
+    const { iframe, files, browserPath, openedPath, managerState } = this.state;
+    return {
+      files,
+      openedPath,
+      managerState,
+      openFile: this.openFile,
+      browserFrame: iframe,
+      updateFiles: this.updateFiles,
+      bundlerURL: this.manager ? this.manager.bundlerURL : undefined,
+    };
+  };
+
   render() {
     const { children, className, style } = this.props;
     const { iframe, files, browserPath, openedPath, managerState } = this.state;
 
     return (
-      <Broadcast
-        channel="sandpack"
-        value={{
-          files,
-          openedPath,
-          managerState,
-          openFile: this.openFile,
-          browserFrame: iframe,
-          updateFiles: this.updateFiles,
-          bundlerURL: this.manager ? this.manager.bundlerURL : undefined,
-        }}
-      >
+      <Broadcast channel="sandpack" value={this._getSandpackState()}>
         <div style={style} className={`${className ? className : ''} sandpack`}>
           {/* We create a hidden iframe, the bundler will live in this.
             We expose this iframe to the Consumer, so other components can show the full
