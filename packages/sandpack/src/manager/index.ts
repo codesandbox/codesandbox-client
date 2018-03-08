@@ -132,7 +132,16 @@ export default class PreviewManager {
       {}
     );
 
-    const packageJSON = JSON.parse(files['/package.json'].code);
+    let packageJSON = generatePackageJSON(
+      this.sandboxInfo.files,
+      this.sandboxInfo.dependencies,
+      this.sandboxInfo.entry
+    );
+    try {
+      packageJSON = JSON.parse(files['/package.json'].code);
+    } catch (e) {
+      console.error('Could not parse package.json file: ' + e.message);
+    }
 
     // TODO move this to a common format
     const normalizedModules = Object.keys(files).reduce(
