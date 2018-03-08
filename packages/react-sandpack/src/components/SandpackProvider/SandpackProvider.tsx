@@ -23,7 +23,7 @@ export interface Props {
   width?: number | string;
   height?: number | string;
   bundlerURL?: string;
-  skipEval: boolean;
+  skipEval?: boolean;
   template?:
     | 'create-react-app'
     | 'create-react-app-typescript'
@@ -31,6 +31,8 @@ export interface Props {
     | 'vue-cli'
     | 'angular-cli'
     | 'preact-cli';
+
+  onFileChange?: (files: IFiles) => void;
 }
 
 export default class SandpackProvider extends React.PureComponent<
@@ -133,6 +135,9 @@ export default class SandpackProvider extends React.PureComponent<
   updateFiles = (files: IFiles) => {
     this.setState({ files });
 
+    if (this.props.onFileChange) {
+      this.props.onFileChange(files);
+    }
     if (this.manager) {
       this.manager.updatePreview({ files, template: this.props.template });
     }
