@@ -5,7 +5,6 @@
   "keywords": [],
   "license": "SEE LICENSE.MD IN ROOT",
   "main": "dist/react-sandpack.js",
-  "browser": "dist/react-sandpack.umd.js",
   "module": "es/react-sandpack.js",
   "jsnext:main": "es/react-sandpack.js",
   "typings": "dist/types/react-sandpack.d.ts",
