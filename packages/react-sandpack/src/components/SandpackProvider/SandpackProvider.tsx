@@ -108,24 +108,26 @@ export default class SandpackProvider extends React.PureComponent<
   }
 
   setupFrame = (el: HTMLIFrameElement) => {
-    this.manager = new Manager(
-      el,
-      {
-        files: generatePackageJSON(
-          this.props.files,
-          this.props.dependencies,
-          this.props.entry
-        ),
-        template: this.props.template,
-      },
-      {
-        skipEval: this.props.skipEval,
-      }
-    );
+    if (el) {
+      this.manager = new Manager(
+        el,
+        {
+          files: generatePackageJSON(
+            this.props.files,
+            this.props.dependencies,
+            this.props.entry
+          ),
+          template: this.props.template,
+        },
+        {
+          skipEval: this.props.skipEval,
+        }
+      );
 
-    this.iframe = el;
+      this.iframe = el;
 
-    this.setState({ iframe: el });
+      this.setState({ iframe: el });
+    }
   };
 
   updateFiles = (files: IFiles) => {
