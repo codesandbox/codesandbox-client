@@ -746,7 +746,10 @@ export default class TranspiledModule {
         // eslint-disable-line no-unused-vars
         if (/^(\w|@\w)/.test(aliasedPath) && !aliasedPath.includes('!')) {
           // So it must be a dependency
-          if (aliasedPath.startsWith('codesandbox-api'))
+          if (
+            aliasedPath.startsWith('codesandbox-api') ||
+            aliasedPath.startsWith('babel-runtime')
+          )
             return resolveDependency(aliasedPath, manager.externals);
         }
 

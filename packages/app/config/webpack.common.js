@@ -213,8 +213,20 @@ module.exports = {
       /eslint\.4\.1\.0\.min\.js$/,
       /typescriptServices\.js$/,
       /browserfs\.js/,
+      /browserfs\.min\.js/,
     ],
   },
+
+  externals: SANDBOX_ONLY
+    ? [
+        'react',
+        'react-dom',
+        'styled-components',
+        'html-entities',
+        'react-tippy',
+        'color-convert',
+      ]
+    : [],
 
   resolve: {
     mainFields: ['browser', 'module', 'jsnext:main', 'main'],
@@ -236,7 +248,9 @@ module.exports = {
           '..',
           '..',
           'standalone-packages',
-          'codesandbox-browserfs'
+          'codesandbox-browserfs',
+          'build',
+          __DEV__ ? 'browserfs.js' : 'browserfs.min.js'
         )
       ),
     },

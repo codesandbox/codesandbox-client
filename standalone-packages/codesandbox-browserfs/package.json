@@ -2,7 +2,7 @@
   "name": "codesandbox-browserfs",
   "version": "2.0.0",
   "description": "A filesystem in your browser!",
-  "main": "build/browserfs.js",
+  "main": "build/browserfs.min.js",
   "typings": "dist/browserfs",
   "keywords": ["filesystem", "node", "storage"],
   "homepage": "https://github.com/jvilk/BrowserFS",
