@@ -500,6 +500,8 @@ async function compile({
   }
   firstLoad = false;
 
+  dispatch({ type: 'done' });
+
   if (typeof window.__puppeteer__ === 'function') {
     window.__puppeteer__('done');
   }
