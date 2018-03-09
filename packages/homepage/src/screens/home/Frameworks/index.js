@@ -266,18 +266,22 @@ export default class Frameworks extends React.Component {
       <Pane width={1280}>
         <Flex>
           <Icons>
-            {templates.map(({ Icon }, i) => (
-              <IconContainer
-                key={i}
-                selected={templates[i] === template}
-                template={templates[i]}
-                onClick={() => {
-                  this.setTemplate(templates[i]);
-                }}
-              >
-                <Icon width={80} height={80} />
-              </IconContainer>
-            ))}
+            {templates.map(({ name }, i) => {
+              const TIcon = getIcon(name);
+
+              return (
+                <IconContainer
+                  key={i}
+                  selected={templates[i] === template}
+                  template={templates[i]}
+                  onClick={() => {
+                    this.setTemplate(templates[i]);
+                  }}
+                >
+                  <TIcon width={80} height={80} />
+                </IconContainer>
+              );
+            })}
           </Icons>
 
           <Intro style={{ marginRight: '2rem' }}>
