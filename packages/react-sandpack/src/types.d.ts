@@ -54,8 +54,8 @@ export interface IManagerState {
 }
 
 export interface ISandpackContext {
-  status: ManagerStatus;
   browserFrame: HTMLIFrameElement | null;
+  managerStatus: ManagerStatus;
   managerState: IManagerState | undefined;
   bundlerURL: string | undefined;
   openedPath: string;

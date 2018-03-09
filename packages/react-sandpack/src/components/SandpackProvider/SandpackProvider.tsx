@@ -223,7 +223,7 @@ export default class SandpackProvider extends React.PureComponent<
       openedPath,
       errors,
       managerState,
-      status,
+      managerStatus: status,
       openFile: this.openFile,
       getManagerTranspilerContext: this.getManagerTranspilerContext,
       browserFrame: iframe,
