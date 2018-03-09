@@ -198,6 +198,24 @@ The third argument in the constructor of `Manager` is extra options. It has this
 }
 ```
 
+## Why is the bundler hosted externally and not a simple `import`?
+
+We have three reasons to host the bundler of sandpack externally:
+
+### Security
+
+The bundler evaluates and transpiles all files in an iframe under a different subdomain. This is important, because it prevents attackers from tampering with cookies of the host domain when evaluating code.
+
+### Performance
+
+We heavily make use of Web Workers for transpilations. Almost all our transpilation happens in web workers, and there is no easy way yet to bundle this in a library.
+
+### Bundle Size
+
+Another reason to host the bundler externally is because of code splitting: we split all our transpilers away and load them on-demand. If a user doesn't use `sass` we won't load the transpiler. This wouldn't be possible if we would give one big JS file as the library.
+
+> I want to highlight that you can also host the bundler by yourself, all necessary files are in the `sandpack` folder.
+
 ## Open In CodeSandbox
 
-We show a "Open in CodeSandbox" button in the sandbox preview on the bottom right. This button allows everyone to create a sandbox from the code in the preview, open it in CodeSandbox and share their work more easily with others.
+We show an "Open in CodeSandbox" button in the sandbox preview on the bottom right. This button allows everyone to create a sandbox from the code in the preview, open it in CodeSandbox and share their work more easily with others.
