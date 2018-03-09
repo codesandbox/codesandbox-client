@@ -217,17 +217,6 @@ module.exports = {
     ],
   },
 
-  externals: SANDBOX_ONLY
-    ? [
-        'react',
-        'react-dom',
-        'styled-components',
-        'html-entities',
-        'react-tippy',
-        'color-convert',
-      ]
-    : [],
-
   resolve: {
     mainFields: ['browser', 'module', 'jsnext:main', 'main'],
     modules: ['node_modules', 'src', 'standalone-packages'],

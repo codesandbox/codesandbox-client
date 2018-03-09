@@ -1,6 +1,5 @@
 // @flow
 
-import ParcelIcon from 'common/components/logos/Parcel';
 import Template from './template';
 import { decorateSelector } from '../theme';
 import configurations from './configuration';
@@ -21,7 +20,6 @@ export default new ParcelTemplate(
   'Vanilla',
   'https://parceljs.org/',
   'vanilla',
-  ParcelIcon,
   decorateSelector(() => '#dfb07a'),
   {
     showOnHomePage: true,
