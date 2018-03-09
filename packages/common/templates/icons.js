@@ -35,6 +35,6 @@ export default function getIcon(
     case parcel.name:
       return Parcel;
     default:
-      return react;
+      return React;
   }
 }
