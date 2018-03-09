@@ -17,6 +17,14 @@ export interface IModuleSource {
   sourceMap: Object | undefined;
 }
 
+export interface IModuleError {
+  title: string;
+  message: string;
+  path: string;
+  line: number;
+  column: number;
+}
+
 export interface ITranspiledModule {
   module: IModule;
   query: string;
@@ -50,6 +58,7 @@ export interface ISandpackContext {
   managerState: IManagerState | undefined;
   bundlerURL: string | undefined;
   openedPath: string;
+  errors: Array<IModuleError>;
   files: IFiles;
   openFile: (path: string) => void;
   updateFiles: (files: IFiles) => void;

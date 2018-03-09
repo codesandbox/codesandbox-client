@@ -3,7 +3,13 @@ import { Broadcast } from 'react-broadcast';
 import { Manager, generatePackageJSON } from 'smooshpack';
 import { listen } from 'codesandbox-api';
 
-import { IFile, IFiles, IManagerState, ISandpackContext } from '../../types';
+import {
+  IFile,
+  IFiles,
+  IManagerState,
+  ISandpackContext,
+  IModuleError,
+} from '../../types';
 
 export interface State {
   files: IFiles;
@@ -11,6 +17,7 @@ export interface State {
   openedPath: string;
   iframe: HTMLIFrameElement | null;
   managerState: IManagerState | undefined;
+  errors: Array<IModuleError>;
 }
 
 export interface Props {
@@ -62,14 +69,20 @@ export default class SandpackProvider extends React.PureComponent<
       openedPath: props.entry || '/index.js',
       iframe: null,
       managerState: undefined,
+      errors: [],
     };
 
     this.listener = listen(this.handleMessage);
   }
 
-  handleMessage = (message: any) => {
-    if (message.type === 'success') {
-      this.setState({ managerState: message.state });
+  handleMessage = (m: any) => {
+    if (m.type === 'success') {
+      this.setState({ managerState: m.state, errors: [] });
+    } else if (m.type === 'action' && m.action === 'show-error') {
+      const { title, path, message, line, column } = m;
+      this.setState({
+        errors: [...this.state.errors, { title, path, message, line, column }],
+      });
     }
   };
 
@@ -171,10 +184,19 @@ export default class SandpackProvider extends React.PureComponent<
   };
 
   _getSandpackState = (): ISandpackContext => {
-    const { iframe, files, browserPath, openedPath, managerState } = this.state;
+    const {
+      iframe,
+      files,
+      browserPath,
+      openedPath,
+      managerState,
+      errors,
+    } = this.state;
+
     return {
       files,
       openedPath,
+      errors,
       managerState,
       openFile: this.openFile,
       browserFrame: iframe,
