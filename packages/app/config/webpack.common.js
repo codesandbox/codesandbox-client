@@ -384,7 +384,13 @@ module.exports = {
     ),
 
     ...(SANDBOX_ONLY
-      ? []
+      ? [
+          new webpack.optimize.CommonsChunkPlugin({
+            async: true,
+            children: true,
+            minChunks: 2,
+          }),
+        ]
       : [
           // We first create a common chunk between embed and app, to share components
           // and dependencies.
