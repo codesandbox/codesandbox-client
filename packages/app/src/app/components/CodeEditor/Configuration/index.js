@@ -2,6 +2,7 @@
 import React from 'react';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
 import type { Module } from 'common/types';
+import getUI from 'common/templates/configuration/ui';
 import getType from 'app/utils/get-type';
 import Tooltip from 'common/components/Tooltip';
 
@@ -56,7 +57,7 @@ export default class Configuration extends React.PureComponent<Props>
     const { config, width, height } = this.props;
     const currentModule = this.currentModule;
 
-    const { ConfigWizard } = config.ui;
+    const { ConfigWizard } = getUI(config.type);
 
     return (
       <Container style={{ width, height }}>

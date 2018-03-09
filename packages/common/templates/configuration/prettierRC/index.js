@@ -2,14 +2,12 @@
 import DEFAULT_PRETTIER_CONFIG from 'common/prettify-default-config';
 
 import type { ConfigurationFile } from '../types';
-import ui from './ui';
 
 const config: ConfigurationFile = {
   title: '.prettierrc',
   type: 'prettier',
   description: 'Defines how all files will be prettified by Prettier.',
   moreInfoUrl: 'https://prettier.io/docs/en/configuration.html',
-  ui,
   generateFileFromState: state =>
     JSON.stringify(
       {
