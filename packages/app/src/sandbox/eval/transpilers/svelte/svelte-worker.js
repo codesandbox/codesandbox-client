@@ -48,7 +48,7 @@ self.addEventListener('message', event => {
   //# sourceMappingURL=${map.toUrl()}`;
 
   self.postMessage({
-    type: 'compiled',
+    type: 'result',
     transpiledCode: withInlineSourcemap,
   });
 });

@@ -314,6 +314,8 @@ async function compile({
 
     const parsedPackageJSON = configurations.package.parsed;
 
+    dispatch({ type: 'status', status: 'installing-dependencies' });
+
     const dependencies = getDependencies(parsedPackageJSON, configurations);
     const { manifest, isNewCombination } = await loadDependencies(dependencies);
 
@@ -349,10 +351,14 @@ async function compile({
     const main = absolute(foundMain);
     const managerModuleToTranspile = modules[main];
 
+    dispatch({ type: 'status', status: 'transpiling' });
+
     await manager.preset.setup(manager);
     await manager.transpileModules(managerModuleToTranspile);
 
     debug(`Transpilation time ${Date.now() - t}ms`);
+
+    dispatch({ type: 'status', status: 'evaluating' });
 
     const managerTranspiledModuleToTranspile = manager.getTranspiledModule(
       managerModuleToTranspile
@@ -450,6 +456,8 @@ async function compile({
       createCodeSandboxOverlay(modules);
     }
 
+    dispatch({ type: 'status', status: 'running-tests' });
+
     try {
       // Testing
       const ttt = Date.now();
@@ -500,6 +508,7 @@ async function compile({
   }
   firstLoad = false;
 
+  dispatch({ type: 'status', status: 'idle' });
   dispatch({ type: 'done' });
 
   if (typeof window.__puppeteer__ === 'function') {

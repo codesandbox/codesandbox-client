@@ -54,6 +54,7 @@ export interface IManagerState {
 }
 
 export interface ISandpackContext {
+  status: ManagerStatus;
   browserFrame: HTMLIFrameElement | null;
   managerState: IManagerState | undefined;
   bundlerURL: string | undefined;
@@ -62,4 +63,13 @@ export interface ISandpackContext {
   files: IFiles;
   openFile: (path: string) => void;
   updateFiles: (files: IFiles) => void;
+  getManagerTranspilerContext: () => Promise<{ [transpiler: string]: Object }>;
 }
+
+export type ManagerStatus =
+  | 'initializing'
+  | 'installing-dependencies'
+  | 'transpiling'
+  | 'evaluating'
+  | 'running-tests'
+  | 'idle';

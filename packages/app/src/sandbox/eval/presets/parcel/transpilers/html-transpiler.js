@@ -17,6 +17,7 @@ class HTMLTranspiler extends WorkerTranspiler {
         {
           code,
         },
+        loaderContext._module.getId(),
         loaderContext,
         (err, data) => {
           if (err) {

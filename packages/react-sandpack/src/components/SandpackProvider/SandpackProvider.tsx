@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Broadcast } from 'react-broadcast';
 import { Manager, generatePackageJSON } from 'smooshpack';
-import { listen } from 'codesandbox-api';
+import { listen, dispatch } from 'codesandbox-api';
 
 import {
   IFile,
@@ -9,6 +9,7 @@ import {
   IManagerState,
   ISandpackContext,
   IModuleError,
+  ManagerStatus,
 } from '../../types';
 
 export interface State {
@@ -18,6 +19,7 @@ export interface State {
   iframe: HTMLIFrameElement | null;
   managerState: IManagerState | undefined;
   errors: Array<IModuleError>;
+  status: ManagerStatus;
 }
 
 export interface Props {
@@ -70,6 +72,7 @@ export default class SandpackProvider extends React.PureComponent<
       iframe: null,
       managerState: undefined,
       errors: [],
+      status: 'initializing',
     };
 
     this.listener = listen(this.handleMessage);
@@ -80,6 +83,8 @@ export default class SandpackProvider extends React.PureComponent<
       this.setState({ managerState: m.state });
     } else if (m.type === 'done') {
       this.setState({ errors: [] });
+    } else if (m.type === 'status') {
+      this.setState({ status: m.status });
     } else if (m.type === 'action' && m.action === 'show-error') {
       const { title, path, message, line, column } = m;
       this.setState({
@@ -185,6 +190,23 @@ export default class SandpackProvider extends React.PureComponent<
     this.setState({ openedPath: path });
   };
 
+  /**
+   * Get information about the transpilers that are currently registered to the
+   * preset
+   */
+  getManagerTranspilerContext = (): Promise<{ [transpiler: string]: Object }> =>
+    new Promise(resolve => {
+      const listener = listen((message: any) => {
+        if (message.type === 'transpiler-context') {
+          resolve(message.data);
+
+          listener();
+        }
+      });
+
+      dispatch({ type: 'get-transpiler-context' });
+    });
+
   _getSandpackState = (): ISandpackContext => {
     const {
       iframe,
@@ -193,6 +215,7 @@ export default class SandpackProvider extends React.PureComponent<
       openedPath,
       managerState,
       errors,
+      status,
     } = this.state;
 
     return {
@@ -200,7 +223,9 @@ export default class SandpackProvider extends React.PureComponent<
       openedPath,
       errors,
       managerState,
+      status,
       openFile: this.openFile,
+      getManagerTranspilerContext: this.getManagerTranspilerContext,
       browserFrame: iframe,
       updateFiles: this.updateFiles,
       bundlerURL: this.manager ? this.manager.bundlerURL : undefined,

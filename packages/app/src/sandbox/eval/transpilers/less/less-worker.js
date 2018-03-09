@@ -45,7 +45,7 @@ self.addEventListener('message', event => {
       .render(cleanCode, { filename, plugins: [FileManager(context, files)] })
       .then(({ css }) =>
         self.postMessage({
-          type: 'compiled',
+          type: 'result',
           transpiledCode: css,
         })
       )

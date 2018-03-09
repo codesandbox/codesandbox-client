@@ -142,6 +142,7 @@ export type IBabel = {
   availablePresets: { [key: string]: Function },
   registerPlugin: (name: string, plugin: Function) => void,
   registerPreset: (name: string, preset: Function) => void,
+  version: string,
 };
 
 declare var Babel: IBabel;
@@ -165,6 +166,18 @@ self.addEventListener('message', async event => {
     initializeBrowserFS();
     return;
   }
+
+  if (event.data.type === 'get-babel-context') {
+    self.postMessage({
+      type: 'result',
+      version: Babel.version,
+      availablePlugins: Object.keys(Babel.availablePlugins),
+      availablePresets: Object.keys(Babel.availablePresets),
+    });
+
+    return;
+  }
+
   resetCache();
 
   const { code, path, sandboxOptions, config, loaderOptions } = event.data;
@@ -252,7 +265,7 @@ self.addEventListener('message', async event => {
     });
 
     self.postMessage({
-      type: 'compiled',
+      type: 'result',
       transpiledCode: result.code,
     });
   } catch (e) {

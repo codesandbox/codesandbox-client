@@ -84,7 +84,6 @@ export default class Manager {
   hardReload: boolean;
   hmrStatus: 'idle' | 'check' | 'apply' | 'fail' = 'idle';
   testRunner: TestRunner;
-  bfs: typeof BrowserFS;
 
   // List of modules that are being transpiled, to prevent duplicate jobs.
   transpileJobs: { [transpiledModuleId: string]: true };
@@ -126,8 +125,6 @@ export default class Manager {
       },
       () => {}
     );
-
-    this.bfs = BrowserFS;
   }
 
   bfsWrapper = {
@@ -806,5 +803,26 @@ export default class Manager {
         console.error(ex);
       }
     }
+  }
+
+  /**
+   * Get information about all transpilers currently registered for this manager
+   */
+  async getTranspilerContext() {
+    const info = {};
+
+    const data = await Promise.all(
+      Array.from(this.preset.transpilers).map(t =>
+        t
+          .getTranspilerContext()
+          .then(context => ({ name: t.name, data: context }))
+      )
+    );
+
+    data.forEach(t => {
+      info[t.name] = t.data;
+    });
+
+    return info;
   }
 }

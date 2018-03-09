@@ -7,7 +7,7 @@ import { getModulePath } from 'common/sandbox/modules';
 import { generateFileFromSandbox } from 'common/templates/configuration/package-json';
 
 import setupHistoryListeners from './url-listeners';
-import compile from './compile';
+import compile, { getCurrentManager } from './compile';
 import setupConsole from './console';
 import transformJSON from './console/transform-json';
 
@@ -68,6 +68,21 @@ requirePolyfills().then(() => {
           });
         } catch (e) {
           console.error(e);
+        }
+      } else if (data.type === 'get-transpiler-context') {
+        const manager = getCurrentManager();
+
+        if (manager) {
+          const context = await manager.getTranspilerContext();
+          dispatch({
+            type: 'transpiler-context',
+            data: context,
+          });
+        } else {
+          dispatch({
+            type: 'transpiler-context',
+            data: {},
+          });
         }
       }
     }

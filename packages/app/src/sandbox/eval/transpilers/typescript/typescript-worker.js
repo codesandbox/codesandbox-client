@@ -88,7 +88,7 @@ self.addEventListener('message', event => {
     });
 
     self.postMessage({
-      type: 'compiled',
+      type: 'result',
       transpiledCode: compiledCode,
     });
   } catch (e) {

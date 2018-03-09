@@ -10,15 +10,11 @@ type TranspilerResult = {
 };
 
 export default class Transpiler {
-  cachedResults: {
-    [id: string]: TranspilerResult,
-  };
   cacheable: boolean;
   name: string;
   HMREnabled: boolean;
 
   constructor(name: string) {
-    this.cachedResults = {};
     this.cacheable = true;
     this.name = name;
     this.HMREnabled = true;
@@ -41,9 +37,18 @@ export default class Transpiler {
     code: string,
     loaderContext: LoaderContext
   ): Promise<TranspilerResult> {
-    return this.doTranspilation(code, loaderContext).then(result => {
-      this.cachedResults[code] = result;
-      return result;
+    return this.doTranspilation(code, loaderContext);
+  }
+
+  /**
+   * Get custom info of the current transpiler, this is open for implementation
+   * per transpiler
+   */
+  getTranspilerContext(): Promise<Object> {
+    return Promise.resolve({
+      name: this.name,
+      HMREnabled: this.HMREnabled,
+      cacheable: this.cacheable,
     });
   }
 }

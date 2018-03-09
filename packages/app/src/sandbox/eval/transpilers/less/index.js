@@ -35,6 +35,7 @@ class LessTranspiler extends WorkerTranspiler {
           files,
           path,
         },
+        loaderContext._module.getId(),
         loaderContext,
         (err, data) => {
           if (err) {

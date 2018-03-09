@@ -120,7 +120,6 @@ export type LoaderContext = {
   // Remaining loaders after current loader
   remainingRequests: string,
   template: string,
-  bfs: BrowserFS,
 };
 /* eslint-enable */
 
@@ -456,7 +455,6 @@ export default class TranspiledModule {
       _module: this,
       path: this.module.path,
       template: manager.preset.name,
-      bfs: manager.bfs,
       remainingRequests: '', // will be filled during transpilation
     };
   }
@@ -733,7 +731,7 @@ export default class TranspiledModule {
     try {
       // eslint-disable-next-line no-inner-declarations
       function require(path: string) {
-        const bfsModule = manager.bfs.BFSRequire(path);
+        const bfsModule = BrowserFS.BFSRequire(path);
 
         if (bfsModule) {
           return bfsModule;

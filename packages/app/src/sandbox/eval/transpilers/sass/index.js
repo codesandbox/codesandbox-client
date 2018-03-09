@@ -34,6 +34,7 @@ class SassTranspiler extends WorkerTranspiler {
           path: loaderContext.path,
           indentedSyntax,
         },
+        loaderContext._module.getId(),
         loaderContext,
         (err, data) => {
           if (err) {

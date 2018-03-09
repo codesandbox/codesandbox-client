@@ -20,6 +20,7 @@ class SvelteTranspiler extends WorkerTranspiler {
           code,
           path,
         },
+        loaderContext._module.getId(),
         loaderContext,
         (err, data) => {
           if (err) {

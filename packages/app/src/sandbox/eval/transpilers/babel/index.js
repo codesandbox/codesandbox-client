@@ -24,7 +24,7 @@ class BabelTranspiler extends WorkerTranspiler {
     return worker;
   }
 
-  doTranspilation(code: string, loaderContext: LoaderContext) {
+  doTranspilation(code: string, loaderContext: LoaderContext): Promise<void> {
     return new Promise((resolve, reject) => {
       const path = loaderContext.path;
 
@@ -50,6 +50,7 @@ class BabelTranspiler extends WorkerTranspiler {
             loaderContext.options.configurations.sandbox &&
             loaderContext.options.configurations.sandbox.parsed,
         },
+        loaderContext._module.getId(),
         loaderContext,
         (err, data) => {
           if (err) {
@@ -59,6 +60,30 @@ class BabelTranspiler extends WorkerTranspiler {
           }
 
           return resolve(data);
+        }
+      );
+    });
+  }
+
+  async getTranspilerContext() {
+    return new Promise(async resolve => {
+      const baseConfig = await super.getTranspilerContext();
+
+      this.queueTask(
+        {
+          type: 'get-babel-context',
+        },
+        'babelContext',
+        {},
+        (err, data) => {
+          const { version, availablePlugins, availablePresets } = data;
+
+          resolve({
+            ...baseConfig,
+            babelVersion: version,
+            availablePlugins,
+            availablePresets,
+          });
         }
       );
     });

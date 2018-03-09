@@ -30,6 +30,7 @@ class TypeScriptTranspiler extends WorkerTranspiler {
           path,
           config: foundConfig,
         },
+        loaderContext._module.getId(),
         loaderContext,
         (err, data) => {
           if (err) {

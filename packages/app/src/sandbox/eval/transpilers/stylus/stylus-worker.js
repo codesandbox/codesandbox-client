@@ -25,7 +25,7 @@ self.addEventListener('message', event => {
     }
 
     return self.postMessage({
-      type: 'compiled',
+      type: 'result',
       transpiledCode: css,
     });
   });
