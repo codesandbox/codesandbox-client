@@ -3,6 +3,8 @@ import { inject, observer } from 'mobx-react';
 import Files from 'embed/components/Files';
 import ModeIcons from 'app/components/ModeIcons';
 import { getModulePath } from 'common/sandbox/modules';
+import QRCode from 'qrcode.react';
+import Button from 'app/components/Button';
 
 import {
   optionsToParameterizedUrl,
@@ -40,6 +42,7 @@ class ShareView extends React.Component {
     useCodeMirror: false,
     enableEslint: false,
     expandDevTools: false,
+    showQRCode: false,
   };
 
   handleChange = e => this.setState({ message: e.target.value });
@@ -60,6 +63,8 @@ class ShareView extends React.Component {
   setDefaultModule = id => this.setState({ defaultModule: id });
 
   clearDefaultModule = () => this.setState({ defaultModule: null });
+
+  toggleQRCode = () => this.setState({ showQRCode: !this.state.showQRCode });
 
   getOptionsUrl = () => {
     const sandbox = this.props.store.editor.currentSandbox;
@@ -213,6 +218,7 @@ class ShareView extends React.Component {
       useCodeMirror,
       enableEslint,
       expandDevTools,
+      showQRCode,
     } = this.state;
 
     const defaultModule = this.state.defaultModule || mainModule.id;
@@ -333,6 +339,27 @@ class ShareView extends React.Component {
                 value={this.getIframeScript()}
                 readOnly
               />
+              <LinkName>QR Code</LinkName>
+              <Inputs>
+                <ButtonContainer>
+                  <Button
+                    onClick={this.toggleQRCode}
+                    small
+                    style={{ width: '100%' }}
+                  >
+                    {showQRCode ? 'Hide' : 'Show'} QR Code
+                  </Button>
+                  {showQRCode && (
+                    <Inputs>
+                      <QRCode
+                        value={this.getEmbedUrl()}
+                        size={'100%'}
+                        renderAs="svg"
+                      />
+                    </Inputs>
+                  )}
+                </ButtonContainer>
+              </Inputs>
             </Inputs>
           </Column>
           <Column>
