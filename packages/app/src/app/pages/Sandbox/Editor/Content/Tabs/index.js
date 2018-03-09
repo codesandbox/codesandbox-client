@@ -15,13 +15,6 @@ import {
 } from './elements';
 
 class EditorTabs extends React.Component {
-  componentWillMount() {
-    window.addEventListener('keydown', this.closeListener);
-  }
-  componentWillUnmount() {
-    window.removeEventListener('keydown', this.closeListener);
-  }
-
   componentDidUpdate(prevProps) {
     if (this.props.currentModuleId !== prevProps.currentModuleId) {
       // We need to scroll to the tab
@@ -41,16 +34,6 @@ class EditorTabs extends React.Component {
       }
     }
   }
-
-  closeListener = e => {
-    if ((e.ctrlKey || e.metaKey) && e.keyCode === 87) {
-      e.preventDefault();
-      const currentPos = this.props.tabs
-        .filter(x => x)
-        .findIndex(t => t.moduleId === this.props.currentModuleId);
-      this.closeTab(currentPos);
-    }
-  };
 
   closeTab = tabIndex => {
     this.props.signals.editor.tabClosed({ tabIndex });
