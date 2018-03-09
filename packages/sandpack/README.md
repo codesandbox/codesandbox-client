@@ -24,10 +24,11 @@ This is a list of features that the bundler supports out of the box, the list ma
 6.  Webpack loader syntax (`!raw-loader!./test.js`)
 7.  Friendly error overlay (using `create-react-app` overlay)
 8.  Transpilation result caching
+9.  HTML/CSS entry points
 
 ## Example usage
 
-This repo serves as an interface to communicate with the bundler. The bundler itself is hosted on `sandpack-{version}.codesandbox.io` and is heavily cached by a CDN. We also included the necessary files under `bundler` if you want to host the bundler yourself.
+This repo serves as an interface to communicate with the bundler. The bundler itself is hosted on `sandpack-{version}.codesandbox.io` and is heavily cached by a CDN. We also included the necessary files under `sandpack` if you want to host the bundler yourself.
 
 ### Using the Manager
 
@@ -36,7 +37,8 @@ The Manager is a class implementation, you can use it by importing Manager.
 ```js
 import { Manager } from 'sandpack';
 
-// There are two ways of initializing a preview, you can give it either an iframe element or a selector of an element to create an iframe on.
+// There are two ways of initializing a preview, you can give it either an
+// iframe element or a selector of an element to create an iframe on.
 const manager = new Manager(
   '#preview',
   {
@@ -189,7 +191,8 @@ The third argument in the constructor of `Manager` is extra options. It has this
    */
   height?: string;
   /**
-   * If we should skip the third step: evaluation.
+   * If we should skip the third step: evaluation. Useful if you only want to see
+   * transpiled results
    */
   skipEval?: boolean;
 }
