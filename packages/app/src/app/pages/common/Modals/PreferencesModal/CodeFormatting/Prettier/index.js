@@ -88,7 +88,7 @@ function Prettier({ store, signals }) {
           title="Trailing commas"
           type="dropdown"
           options={['none', 'es5', 'all']}
-          {...bindValue('traillingComma')}
+          {...bindValue('trailingComma')}
         />
         <SubDescription>
           Print trailing commas wherever possible.

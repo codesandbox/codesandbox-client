@@ -27,7 +27,9 @@ const settings = store =>
     vimMode: store.preferences.settings.vimMode,
     lintEnabled: store.preferences.settings.lintEnabled,
     codeMirror: store.preferences.settings.codeMirror,
-    tabWidth: store.preferences.settings.tabSize || 2,
+    tabWidth: store.preferences.settings.prettierConfig
+      ? store.preferences.settings.prettierConfig.tabWidth || 2
+      : 2,
   }: Settings);
 
 type Props = {
