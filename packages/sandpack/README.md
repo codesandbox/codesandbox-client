@@ -19,17 +19,17 @@ This is a list of features that the bundler supports out of the box, the list ma
 1.  Hot Module Reloading API (`module.hot`)
 2.  npm dependencies
 3.  Most common transpilers
-    a. Babel
-    b. TypeScript
-    c. Sass
-    d. Less
-    e. Stylus
-    f. PostCSS
-    g. CSS Modules
-    h. PostHTML
-    i. Pug
-    j. Svelte
-    k. Vue
+    * Babel
+    * TypeScript
+    * Sass
+    * Less
+    * Stylus
+    * PostCSS
+    * CSS Modules
+    * PostHTML
+    * Pug
+    * Svelte
+    * Vue
 4.  Parallel transpiling
 5.  On-demand transpiler loading
 6.  Webpack loader syntax (`!raw-loader!./test.js`)
