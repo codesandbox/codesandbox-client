@@ -68,7 +68,9 @@ function notifyFrames(message: Object) {
 function eventListener(e: MessageEvent) {
   const { data } = e;
 
-  notifyListeners(data, e.source);
+  if (data && data.codesandbox) {
+    notifyListeners(data, e.source);
+  }
 }
 
 /**

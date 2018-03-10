@@ -169,6 +169,10 @@ export default class PreviewManager {
     });
   }
 
+  public dispatch(message: Object) {
+    dispatch(message);
+  }
+
   private getFiles() {
     const { sandboxInfo } = this;
 

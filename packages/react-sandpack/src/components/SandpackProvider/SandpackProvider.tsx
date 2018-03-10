@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Broadcast } from 'react-broadcast';
 import { Manager, generatePackageJSON } from 'smooshpack';
-import { listen, dispatch } from 'codesandbox-api';
+import { listen } from 'codesandbox-api';
 
 import {
   IFile,
@@ -204,7 +204,9 @@ export default class SandpackProvider extends React.PureComponent<
         }
       });
 
-      dispatch({ type: 'get-transpiler-context' });
+      if (this.manager) {
+        this.manager.dispatch({ type: 'get-transpiler-context' });
+      }
     });
 
   _getSandpackState = (): ISandpackContext => {

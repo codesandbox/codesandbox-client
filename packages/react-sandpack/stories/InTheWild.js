@@ -5,6 +5,7 @@ import JSXAddon from 'storybook-addon-jsx';
 import { withKnobs } from '@storybook/addon-knobs/react';
 
 import SandpackProvider from '../src/components/SandpackProvider/index.ts';
+import SandpackConsumer from '../src/components/SandpackConsumer/index.ts';
 import FileExplorer from '../src/components/FileExplorer/index.ts';
 import BrowserPreview from '../src/components/BrowserPreview/index.ts';
 import TranspiledCodeView from '../src/components/TranspiledCodeView/index.ts';
@@ -48,6 +49,10 @@ stories.addWithJSX('one file', () => (
           overflow: 'hidden',
         }}
       />
+
+      <SandpackConsumer>
+        {sandpack => console.log(sandpack) || <div />}
+      </SandpackConsumer>
     </div>
   </SandpackProvider>
 ));
