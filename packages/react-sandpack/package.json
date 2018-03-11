@@ -1,6 +1,6 @@
 {
   "name": "react-smooshpack",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "description": "",
   "keywords": [],
   "license": "SEE LICENSE.MD IN ROOT",
@@ -9,6 +9,7 @@
   "jsnext:main": "es/react-sandpack.js",
   "typings": "dist/types/react-sandpack.d.ts",
   "files": ["dist", "es"],
+  "sideEffects": false,
   "author": "Ives van Hoorne <ives.v.h@gmail.com>",
   "repository": {
     "type": "git",
