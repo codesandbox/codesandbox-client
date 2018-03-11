@@ -6,10 +6,10 @@ import sandboxUI from './sandbox/ui';
 
 export default function getUI(configType: string) {
   switch (configType) {
-    case configs.prettier.type: {
+    case configs.prettierRC.type: {
       return prettierUI;
     }
-    case configs.sandbox.type: {
+    case configs.sandboxConfig.type: {
       return sandboxUI;
     }
     default: {

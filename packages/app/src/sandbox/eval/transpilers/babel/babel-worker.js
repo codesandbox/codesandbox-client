@@ -147,7 +147,7 @@ export type IBabel = {
 
 declare var Babel: IBabel;
 
-Babel.registerPreset('env', Babel.availablePresets.latest);
+let loadedTranspilerURL = null;
 
 Babel.registerPlugin('dynamic-import-node', dynamicImportPlugin);
 Babel.registerPlugin('babel-plugin-detective', detective);
@@ -180,24 +180,52 @@ self.addEventListener('message', async event => {
 
   resetCache();
 
-  const { code, path, sandboxOptions, config, loaderOptions } = event.data;
+  const {
+    code,
+    path,
+    babelTranspilerOptions,
+    sandboxOptions,
+    config,
+    loaderOptions,
+  } = event.data;
+
+  const { disableCodeSandboxPlugins } = loaderOptions;
 
   const flattenedPresets = flatten(config.presets);
   const flattenedPlugins = flatten(config.plugins);
-  if (
-    flattenedPlugins.indexOf('transform-vue-jsx') > -1 &&
-    Object.keys(Babel.availablePlugins).indexOf('transform-vue-jsx') === -1
-  ) {
-    const vuePlugin = await import(/* webpackChunkName: 'babel-plugin-transform-vue-jsx' */ 'babel-plugin-transform-vue-jsx');
-    Babel.registerPlugin('transform-vue-jsx', vuePlugin);
-  }
 
   if (
-    flattenedPlugins.indexOf('jsx-pragmatic') > -1 &&
-    Object.keys(Babel.availablePlugins).indexOf('jsx-pragmatic') === -1
+    babelTranspilerOptions &&
+    babelTranspilerOptions.babelURL &&
+    babelTranspilerOptions.babelURL !== loadedTranspilerURL
   ) {
-    const pragmaticPlugin = await import(/* webpackChunkName: 'babel-plugin-jsx-pragmatic' */ 'babel-plugin-jsx-pragmatic');
-    Babel.registerPlugin('jsx-pragmatic', pragmaticPlugin);
+    self.importScripts([babelTranspilerOptions.babelURL]);
+    loadedTranspilerURL = babelTranspilerOptions.babelURL;
+  }
+
+  if (!disableCodeSandboxPlugins) {
+    if (
+      flattenedPresets.indexOf('env') > -1 &&
+      Object.keys(Babel.availablePresets).indexOf('env') === -1
+    ) {
+      Babel.registerPreset('env', Babel.availablePresets.latest);
+    }
+
+    if (
+      flattenedPlugins.indexOf('transform-vue-jsx') > -1 &&
+      Object.keys(Babel.availablePlugins).indexOf('transform-vue-jsx') === -1
+    ) {
+      const vuePlugin = await import(/* webpackChunkName: 'babel-plugin-transform-vue-jsx' */ 'babel-plugin-transform-vue-jsx');
+      Babel.registerPlugin('transform-vue-jsx', vuePlugin);
+    }
+
+    if (
+      flattenedPlugins.indexOf('jsx-pragmatic') > -1 &&
+      Object.keys(Babel.availablePlugins).indexOf('jsx-pragmatic') === -1
+    ) {
+      const pragmaticPlugin = await import(/* webpackChunkName: 'babel-plugin-jsx-pragmatic' */ 'babel-plugin-jsx-pragmatic');
+      Babel.registerPlugin('jsx-pragmatic', pragmaticPlugin);
+    }
   }
 
   try {
@@ -235,17 +263,21 @@ self.addEventListener('message', async event => {
         })
     );
 
-    const plugins = [...config.plugins, 'dynamic-import-node'];
+    const plugins = [...config.plugins];
 
-    if (loaderOptions.dynamicCSSModules) {
-      plugins.push('dynamic-css-modules');
+    if (!disableCodeSandboxPlugins) {
+      plugins.push('dynamic-import-node');
+
+      if (loaderOptions.dynamicCSSModules) {
+        plugins.push('dynamic-css-modules');
+      }
+
+      if (!sandboxOptions || sandboxOptions.infiniteLoopProtection) {
+        plugins.push('babel-plugin-transform-prevent-infinite-loops');
+      }
     }
 
     plugins.push(['babel-plugin-detective', { source: true, nodes: true }]);
-
-    if (!sandboxOptions || sandboxOptions.infiniteLoopProtection) {
-      plugins.push('babel-plugin-transform-prevent-infinite-loops');
-    }
 
     const customConfig = {
       ...config,

@@ -7,6 +7,7 @@ import {
   preact,
   reactTs,
   angular,
+  babel,
 } from 'common/templates';
 
 import reactPreset from './presets/create-react-app';
@@ -16,6 +17,7 @@ import preactPreset from './presets/preact-cli';
 import sveltePreset from './presets/svelte';
 import angularPreset from './presets/angular-cli';
 import parcelPreset from './presets/parcel';
+import babelPreset from './presets/babel-repl';
 
 export default function getPreset(template: string) {
   switch (template) {
@@ -33,6 +35,8 @@ export default function getPreset(template: string) {
       return angularPreset();
     case parcel.name:
       return parcelPreset();
+    case babel.name:
+      return babelPreset();
     default:
       return reactPreset();
   }

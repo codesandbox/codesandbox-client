@@ -53,14 +53,7 @@ const WHITELISTED_DEV_DEPENDENCIES = [
   'identity-obj-proxy',
 ];
 
-// Dependencies that we actually don't need, we will replace this by a dynamic
-// system in the future
-const PREINSTALLED_DEPENDENCIES = [
-  'node-lib-browser',
-  'babel-runtime',
-  'react-scripts',
-  'react-scripts-ts',
-  'parcel-bundler',
+const BABEL_DEPENDENCIES = [
   'babel-preset-env',
   'babel-preset-latest',
   'babel-preset-es2015',
@@ -72,6 +65,16 @@ const PREINSTALLED_DEPENDENCIES = [
   'babel-preset-stage-1',
   'babel-preset-stage-2',
   'babel-preset-stage-3',
+];
+
+// Dependencies that we actually don't need, we will replace this by a dynamic
+// system in the future
+const PREINSTALLED_DEPENDENCIES = [
+  'node-lib-browser',
+  'babel-runtime',
+  'react-scripts',
+  'react-scripts-ts',
+  'parcel-bundler',
   'babel-plugin-check-es2015-constants',
   'babel-plugin-external-helpers',
   'babel-plugin-inline-replace-variables',
@@ -154,7 +157,7 @@ const PREINSTALLED_DEPENDENCIES = [
   'flow-bin',
 ];
 
-function getDependencies(parsedPackage, configurations) {
+function getDependencies(parsedPackage, templateDefinition, configurations) {
   const {
     dependencies: d = {},
     peerDependencies = {},
@@ -188,7 +191,15 @@ function getDependencies(parsedPackage, configurations) {
     }
   });
 
-  PREINSTALLED_DEPENDENCIES.forEach(dep => {
+  let preinstalledDependencies = PREINSTALLED_DEPENDENCIES;
+  if (templateDefinition.name !== 'babel-repl') {
+    preinstalledDependencies = [
+      ...preinstalledDependencies,
+      ...BABEL_DEPENDENCIES,
+    ];
+  }
+
+  preinstalledDependencies.forEach(dep => {
     if (returnedDependencies[dep]) {
       delete returnedDependencies[dep];
     }
@@ -318,7 +329,11 @@ async function compile({
 
     dispatch({ type: 'status', status: 'installing-dependencies' });
 
-    const dependencies = getDependencies(parsedPackageJSON, configurations);
+    const dependencies = getDependencies(
+      parsedPackageJSON,
+      templateDefinition,
+      configurations
+    );
     const { manifest, isNewCombination } = await loadDependencies(dependencies);
 
     if (isNewCombination && !firstLoad) {

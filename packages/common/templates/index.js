@@ -1,13 +1,14 @@
 // @flow
 import angular from './angular';
-import vue from './vue';
+import babel from './babel';
+import parcel from './parcel';
+import preact from './preact';
 import react from './react';
 import reactTs from './react-ts';
-import preact from './preact';
 import svelte from './svelte';
-import parcel from './parcel';
+import vue from './vue';
 
-export { angular, vue, react, reactTs, preact, svelte, parcel };
+export { angular, babel, vue, react, reactTs, preact, svelte, parcel };
 
 export default function getDefinition(
   theme:
@@ -34,6 +35,8 @@ export default function getDefinition(
       return angular;
     case parcel.name:
       return parcel;
+    case babel.name:
+      return babel;
     default:
       return react;
   }

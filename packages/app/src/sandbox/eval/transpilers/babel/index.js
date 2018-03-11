@@ -45,6 +45,11 @@ class BabelTranspiler extends WorkerTranspiler {
           config: babelConfig,
           path,
           loaderOptions: loaderContext.options,
+
+          babelTranspilerOptions:
+            loaderContext.options.configurations &&
+            loaderContext.options.configurations.babelTranspiler &&
+            loaderContext.options.configurations.babelTranspiler.parsed,
           sandboxOptions:
             loaderContext.options.configurations &&
             loaderContext.options.configurations.sandbox &&

@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { listen } from 'codesandbox-api';
+
 import { storiesOf, setAddon } from '@storybook/react';
 import JSXAddon from 'storybook-addon-jsx';
 import { withKnobs } from '@storybook/addon-knobs/react';
@@ -14,6 +16,8 @@ import CodeEditor from '../src/components/CodeEditor/CodeMirror/index.ts';
 import '../dist/styles.css';
 
 setAddon(JSXAddon);
+
+listen(console.log);
 
 const stories = storiesOf('InTheWild', module);
 
@@ -118,37 +122,25 @@ stories.addWithJSX('babel', () => (
       '/index.js': {
         code: `import React from 'react';`,
       },
+      '/babel-transpiler.json': {
+        code: `{ "babelURL": "https://ives.cool" }`,
+      },
       '/.babelrc': {
         code: JSON.stringify(
           {
-            presets: ['latest', 'stage-1'],
-            plugins: [
-              'transform-object-assign',
-              'transform-decorators-legacy',
-              [
-                'transform-react-jsx',
-                {
-                  pragma: 'h',
-                },
-              ],
-              [
-                'jsx-pragmatic',
-                {
-                  module: 'preact',
-                  export: 'h',
-                  import: 'h',
-                },
-              ],
-            ],
+            presets: ['env'],
+            plugins: [],
           },
           null,
           2
         ),
       },
     }}
-    dependencies={{}}
+    dependencies={{
+      'babel-preset-env': 'latest',
+    }}
     entry="/index.js"
-    template="preact-cli"
+    template="babel-repl"
     skipEval
   >
     <div

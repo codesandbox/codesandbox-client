@@ -81,7 +81,7 @@ export default class SandpackProvider extends React.PureComponent<
   handleMessage = (m: any) => {
     if (m.type === 'success') {
       this.setState({ managerState: m.state });
-    } else if (m.type === 'done') {
+    } else if (m.type === 'start') {
       this.setState({ errors: [] });
     } else if (m.type === 'status') {
       this.setState({ status: m.status });
