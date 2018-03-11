@@ -55,12 +55,15 @@ function ContentSplit({ signals, store, match }) {
             <SplitPane
               split="vertical"
               defaultSize={sandboxOwned ? 16 * 16 : 18 * 16}
+              minSize={0}
               onDragStarted={() => signals.editor.resizingStarted()}
               onDragFinished={() => signals.editor.resizingStopped()}
-              resizerStyle={{
-                visibility: store.workspace.openedWorkspaceItem
-                  ? 'visible'
-                  : 'hidden',
+              onChange={size => {
+                if (size > 0 && !store.workspace.openedWorkspaceItem) {
+                  signals.workspace.setWorkspaceItem({ item: 'files' });
+                } else if (size === 0 && store.workspace.openedWorkspaceItem) {
+                  signals.workspace.setWorkspaceItem({ item: null });
+                }
               }}
               pane1Style={{
                 visibility: store.workspace.openedWorkspaceItem

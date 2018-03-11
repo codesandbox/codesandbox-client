@@ -53,6 +53,18 @@ export const KEYBINDINGS = {
     signal: 'workspace.toggleCurrentWorkspaceItem',
   },
 
+  'editor.close-tab': {
+    title: 'Close Current Tab',
+    type: 'View',
+    bindings: [['Control', 'W']],
+    signal: 'editor.tabClosed',
+    payload: state => ({
+      tabIndex: state.editor.tabs
+        .filter(x => x)
+        .findIndex(t => t.moduleId === state.currentModuleId),
+    }),
+  },
+
   'editor.zen-mode': {
     title: 'Toggle Zen Mode',
     type: 'View',

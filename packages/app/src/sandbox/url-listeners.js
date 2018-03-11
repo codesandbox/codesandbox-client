@@ -37,6 +37,7 @@ export default function setupHistoryListeners() {
           const oldURL = document.location.href;
           origHistoryProto.replaceState.call(window.history, state, '', url);
           const newURL = document.location.href;
+          sendUrlChange(newURL);
           if (newURL.indexOf('#') === -1) {
             window.dispatchEvent(new PopStateEvent('popstate', { state }));
           } else {
