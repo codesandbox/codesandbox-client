@@ -11,7 +11,6 @@ export function generateFileFromSandbox(sandbox: Sandbox) {
   jsonFile.version = '1.0.0';
   jsonFile.description = sandbox.description || '';
   jsonFile.keywords = sandbox.tags;
-  jsonFile.homepage = `https://codesandbox.io/s/${sandbox.id}`;
   jsonFile.main = sandbox.entry;
   jsonFile.dependencies = sandbox.npmDependencies;
 
