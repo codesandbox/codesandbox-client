@@ -191,8 +191,8 @@ self.addEventListener('message', async event => {
 
   const { disableCodeSandboxPlugins } = loaderOptions;
 
-  const flattenedPresets = flatten(config.presets);
-  const flattenedPlugins = flatten(config.plugins);
+  const flattenedPresets = flatten(config.presets || []);
+  const flattenedPlugins = flatten(config.plugins || []);
 
   if (
     babelTranspilerOptions &&
@@ -263,7 +263,7 @@ self.addEventListener('message', async event => {
         })
     );
 
-    const plugins = [...config.plugins];
+    const plugins = [...(config.plugins || [])];
 
     if (!disableCodeSandboxPlugins) {
       plugins.push('dynamic-import-node');
