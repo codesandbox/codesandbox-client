@@ -10,6 +10,7 @@ export const openDeployModal = [
 ];
 
 export const deploy = [
+  set(state`deployment.url`, null),
   set(state`deployment.deploying`, true),
   actions.createZip,
   actions.loadZip,
