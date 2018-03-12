@@ -1,6 +1,6 @@
 {
   "name": "smooshpack",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "description": "",
   "keywords": [],
   "main": "dist/sandpack.umd.js",
@@ -74,7 +74,7 @@
     "mapCoverage": true
   },
   "dependencies": {
-    "codesandbox-api": "^0.0.17",
+    "codesandbox-api": "^0.0.18",
     "codesandbox-import-utils": "^1.2.3"
   },
   "devDependencies": {
