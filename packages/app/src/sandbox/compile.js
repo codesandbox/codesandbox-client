@@ -299,6 +299,7 @@ async function compile({
   actionsEnabled = hasActions;
   handleExternalResources(externalResources);
 
+  let managerModuleToTranspile = null;
   try {
     const templateDefinition = getDefinition(template);
     const configurations = parseConfigurations(
@@ -373,7 +374,7 @@ async function compile({
     }
 
     const main = absolute(foundMain);
-    const managerModuleToTranspile = modules[main];
+    managerModuleToTranspile = modules[main];
 
     dispatch({ type: 'status', status: 'transpiling' });
 
@@ -499,15 +500,8 @@ async function compile({
 
     debug(`Total time: ${Date.now() - startTime}ms`);
 
-    const managerState = {
-      ...manager.serialize(),
-    };
-    delete managerState.cachedPaths;
-    managerState.entry = managerModuleToTranspile.path;
-
     dispatch({
       type: 'success',
-      state: managerState,
     });
 
     manager.save();
@@ -529,6 +523,21 @@ async function compile({
     window.dispatchEvent(event);
 
     hadError = true;
+  } finally {
+    if (manager) {
+      const managerState = {
+        ...manager.serialize(),
+      };
+      delete managerState.cachedPaths;
+      managerState.entry = managerModuleToTranspile
+        ? managerModuleToTranspile.path
+        : null;
+
+      dispatch({
+        type: 'state',
+        state: managerState,
+      });
+    }
   }
   firstLoad = false;
 

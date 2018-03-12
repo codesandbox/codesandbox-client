@@ -138,7 +138,6 @@ stories.addWithJSX('babel', () => (
     }}
     entry="/index.js"
     template="babel-repl"
-    skipEval
   >
     <div
       style={{

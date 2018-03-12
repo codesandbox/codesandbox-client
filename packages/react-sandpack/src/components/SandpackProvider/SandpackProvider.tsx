@@ -79,7 +79,7 @@ export default class SandpackProvider extends React.PureComponent<
   }
 
   handleMessage = (m: any) => {
-    if (m.type === 'success') {
+    if (m.type === 'state') {
       this.setState({ managerState: m.state });
     } else if (m.type === 'start') {
       this.setState({ errors: [] });
@@ -131,6 +131,12 @@ export default class SandpackProvider extends React.PureComponent<
     return newFiles;
   }
 
+  getOptions = () => {
+    return {
+      skipEval: this.props.skipEval,
+    };
+  };
+
   setupFrame = (el: HTMLIFrameElement) => {
     if (el) {
       this.manager = new Manager(
@@ -143,9 +149,7 @@ export default class SandpackProvider extends React.PureComponent<
           ),
           template: this.props.template,
         },
-        {
-          skipEval: this.props.skipEval,
-        }
+        this.getOptions()
       );
 
       this.iframe = el;
@@ -179,6 +183,10 @@ export default class SandpackProvider extends React.PureComponent<
       );
 
       this.updateFiles(newFiles);
+    }
+
+    if (this.manager && this.props.skipEval !== props.skipEval) {
+      this.manager.updateOptions(this.getOptions());
     }
   }
 

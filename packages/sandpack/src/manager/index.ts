@@ -2,6 +2,8 @@
 import { dispatch, listen, registerFrame } from 'codesandbox-api';
 import { getTemplate } from 'codesandbox-import-utils/lib/create-sandbox/templates';
 
+import isEqual from 'lodash.isequal';
+
 import generatePackageJSON, {
   getPackageJSON,
 } from '../utils/generate-package-json';
@@ -68,7 +70,6 @@ export default class PreviewManager {
   iframe: HTMLIFrameElement;
   options: IManagerOptions;
   listener?: Function;
-  skipEval: boolean;
   bundlerURL: string;
 
   sandboxInfo: ISandboxInfo;
@@ -99,8 +100,6 @@ export default class PreviewManager {
     }
     this.iframe.src = this.bundlerURL;
 
-    this.skipEval = options.skipEval || false;
-
     this.listener = listen((message: any) => {
       switch (message.type) {
         case 'initialized': {
@@ -116,6 +115,13 @@ export default class PreviewManager {
         }
       }
     });
+  }
+
+  updateOptions(options: IManagerOptions) {
+    if (!isEqual(this.options, options)) {
+      this.options = options;
+      this.updatePreview();
+    }
   }
 
   updatePreview(sandboxInfo = this.sandboxInfo) {
@@ -165,7 +171,7 @@ export default class PreviewManager {
         this.sandboxInfo.template ||
         getTemplate(packageJSON, normalizedModules),
       showOpenInCodeSandbox: true,
-      skipEval: this.skipEval,
+      skipEval: this.options.skipEval || false,
     });
   }
 

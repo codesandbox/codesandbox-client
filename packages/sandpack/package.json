@@ -76,10 +76,12 @@
   },
   "dependencies": {
     "codesandbox-api": "^0.0.18",
-    "codesandbox-import-utils": "^1.2.3"
+    "codesandbox-import-utils": "^1.2.3",
+    "lodash.isequal": "^4.5.0"
   },
   "devDependencies": {
     "@types/jest": "^22.0.0",
+    "@types/lodash.isequal": "^4.5.2",
     "@types/node": "^9.3.0",
     "colors": "^1.1.2",
     "commitizen": "^2.9.6",
