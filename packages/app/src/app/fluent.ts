@@ -1,9 +1,11 @@
 import { IContext, IBranchContext, SequenceFactory, SequenceWithPropsFactory, ConnectFactory } from '@cerebral/fluent'
 import { State as StoreState } from './store/types'
 import { State as PatronState } from './store/modules/patron/types'
+import { State as ProfileState } from './store/modules/profile/types'
 
 export type State = StoreState & {
   patron: PatronState
+  profile: ProfileState
 }
 
 // Create an interface where you compose your providers together

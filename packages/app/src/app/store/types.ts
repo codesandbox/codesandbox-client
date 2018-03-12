@@ -5,6 +5,7 @@ export type Badge = {
 }
 
 export type User = {
+  id: string
   avatarUrl: string
   badges: Badge[]
   email: string

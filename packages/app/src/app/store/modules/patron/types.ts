@@ -4,3 +4,9 @@ export type State = {
   tier: number
   error: string
 }
+
+export type SubscriptionErrorResult = {
+  errors: {
+    detail: string[]
+  }
+}
