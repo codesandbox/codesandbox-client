@@ -217,6 +217,9 @@ module.exports = {
     ],
   },
 
+  // To make jsonlint work
+  externals: ['file', 'system'],
+
   resolve: {
     mainFields: ['browser', 'module', 'jsnext:main', 'main'],
     modules: ['node_modules', 'src', 'standalone-packages'],

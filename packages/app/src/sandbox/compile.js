@@ -312,11 +312,15 @@ async function compile({
       .filter(x => x.error);
 
     if (errors.length) {
-      throw new Error(
+      const e = new Error(
         `We weren't able to parse: '${errors[0].path}': ${
           errors[0].error.message
         }`
       );
+
+      e.fileName = errors[0].path;
+
+      throw e;
     }
 
     const packageJSON = modules['/package.json'];

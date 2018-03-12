@@ -2,6 +2,8 @@
 import type { ConfigurationFile } from 'common/templates/configuration/types';
 import type { Sandbox } from 'common/types';
 
+import { parse } from 'jsonlint';
+
 type ConfigurationFiles = {
   [path: string]: ConfigurationFile,
 };
@@ -41,7 +43,7 @@ export default function parseConfigurations(
         path,
       };
       try {
-        const parsed = JSON.parse(code);
+        const parsed = parse(code);
 
         configurations[configurationFile.type] = {
           ...baseObject,

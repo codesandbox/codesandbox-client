@@ -45,7 +45,11 @@ class BabelTranspiler extends WorkerTranspiler {
         foundConfig = loaderContext.options.configurations.babel.parsed;
       }
 
-      const babelConfig = getBabelConfig(foundConfig, path);
+      const babelConfig = getBabelConfig(
+        foundConfig,
+        loaderContext.options,
+        path
+      );
 
       this.queueTask(
         {
