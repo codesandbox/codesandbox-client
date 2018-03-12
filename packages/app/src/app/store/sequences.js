@@ -268,6 +268,10 @@ export const loadSandbox = factories.withLoadApp([
     false: [
       set(state`editor.isLoading`, true),
       set(state`editor.notFound`, false),
+      // Only reset changed modules if sandbox wasn't in memory, otherwise a fork
+      // can mark real changed modules as unchanged
+      set(state`editor.changedModuleShortids`, []),
+
       actions.getSandbox,
       {
         success: [
