@@ -1,12 +1,13 @@
 {
   "name": "smooshpack",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "description": "",
   "keywords": [],
   "main": "dist/sandpack.umd.js",
   "module": "dist/sandpack.es5.js",
   "typings": "dist/types/sandpack.d.ts",
   "license": "SEE LICENSE.MD IN ROOT",
+  "sideEffects": false,
   "files": [
     "dist",
     "sandpack"
