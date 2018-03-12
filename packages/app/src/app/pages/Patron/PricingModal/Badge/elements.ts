@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from 'app/styled-components';
 
 export const BadgeContainer = styled.div`
   position: absolute;

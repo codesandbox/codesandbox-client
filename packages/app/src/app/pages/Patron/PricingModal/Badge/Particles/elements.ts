@@ -1,4 +1,4 @@
-import styled, { css, keyframes } from 'styled-components';
+import styled, { css, keyframes, component } from 'app/styled-components';
 import badges from 'common/utils/badges/patron-info';
 
 const particleAnimation = (deg: number) => keyframes`
@@ -12,14 +12,12 @@ const particleAnimation = (deg: number) => keyframes`
   }
 `;
 
-type Props = {
+export const Particle = styled(component<{
   deg: number
   i: number
   badge: string
-}
-
-export const Particle = styled.div`
-  animation: ${(props: Props) => particleAnimation(props.deg)} 700ms ease;
+}>())`
+  animation: ${(props) => particleAnimation(props.deg)} 700ms ease;
   position: absolute;
   top: 0;
   bottom: 20px;
@@ -29,7 +27,7 @@ export const Particle = styled.div`
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  ${(props: Props) => {
+  ${(props) => {
     const color =
       badges[props.badge].colors[props.i % badges[props.badge].colors.length];
 

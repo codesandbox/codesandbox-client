@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from 'app/styled-components';
 import Fullscreen from 'common/components/flex/Fullscreen';
 
 export const Container = styled(Fullscreen)`

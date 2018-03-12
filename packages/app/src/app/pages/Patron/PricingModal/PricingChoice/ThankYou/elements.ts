@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from 'app/styled-components';
 import delay from 'common/utils/animation/delay-effect';
 
 export const Title = styled.div`

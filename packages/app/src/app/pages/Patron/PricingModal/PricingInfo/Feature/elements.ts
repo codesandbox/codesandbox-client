@@ -1,16 +1,14 @@
-import styled, { css } from 'styled-components';
+import styled, { css, component } from 'app/styled-components';
 
-type ContainerProps = {
+export const Container = styled(component<{
   disabled: boolean
-}
-
-export const Container = styled.tr`
+}>('tr'))`
   margin: 1rem 0;
   font-size: 1.125rem;
   font-weight: 400;
   color: rgba(255, 255, 255, 0.8);
 
-  ${(props: ContainerProps) =>
+  ${(props) =>
     props.disabled &&
     css`
       opacity: 0.5;
@@ -23,16 +21,15 @@ export const Feature = styled.td`
   padding-right: 2rem;
 `;
 
-type ValueProps = {
-  supporter?: boolean
-}
 
-export const Value = styled.td`
+export const Value = styled(component<{
+  supporter?: boolean
+}>('td'))`
   text-align: center;
   padding: 0 2rem;
   font-weight: 300;
 
-  ${(props: ValueProps) =>
+  ${(props) =>
     props.supporter &&
     css`
       background-color: rgba(0, 0, 0, 0.3);

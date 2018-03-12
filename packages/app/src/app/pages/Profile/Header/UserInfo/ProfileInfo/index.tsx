@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 
 import Row from 'common/components/flex/Row';
 import Column from 'common/components/flex/Column';
@@ -8,7 +8,14 @@ import PatronStar from 'app/components/PatronStar';
 
 import { ProfileImage, Name, Username, IconWrapper } from './elements';
 
-function ProfileInfo({ username, subscriptionSince, name, avatarUrl }) {
+type Props = {
+  username: string
+  subscriptionSince: string
+  name: string
+  avatarUrl: string
+}
+
+const ProfileInfo: React.SFC<Props> = ({ username, subscriptionSince, name, avatarUrl }) => {
   return (
     <Row style={{ flex: 1 }}>
       <ProfileImage alt={username} height={175} width={175} src={avatarUrl} />

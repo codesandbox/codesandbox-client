@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from 'app/styled-components';
 import Input from 'common/components/Input';
 import SignInButton from 'app/pages/common/SignInButton';
 

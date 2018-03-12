@@ -32,7 +32,7 @@ type Profile = {
   username: string
   subscriptionSince: string
   showcasedSandboxShortid: string
-  sandboxcount: number
+  sandboxCount: number
   receivedLikeCount: number
   name: string
   id: string

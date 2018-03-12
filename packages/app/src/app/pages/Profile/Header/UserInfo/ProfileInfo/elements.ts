@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { component } from 'app/styled-components';
 import GithubIcon from 'react-icons/lib/go/mark-github';
 import delayEffect from 'common/utils/animation/delay-effect';
 
@@ -21,7 +21,9 @@ export const Name = styled.div`
   margin-bottom: 0.25rem;
 `;
 
-export const Username = styled.div`
+export const Username = styled(component<{
+  main: boolean
+}>())`
   ${delayEffect(0.15)};
   display: flex;
   align-items: center;
