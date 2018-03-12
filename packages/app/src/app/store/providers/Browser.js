@@ -35,11 +35,14 @@ export default Provider({
     window.open(url, '_blank');
   },
   openPopup(url, name) {
-    return window.open(
+    const popup = window.open(
       url,
       name,
       `scrollbars=no,toolbar=no,location=no,titlebar=no,directories=no,status=no,menubar=no, ${getPopupDimensions()}`
     );
+    return {
+      close: () => popup.close(),
+    };
   },
   waitForMessage(type) {
     return new Promise(resolve => {
