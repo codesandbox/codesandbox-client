@@ -338,6 +338,9 @@ async function compile({
 
     if (isNewCombination && !firstLoad) {
       // Just reset the whole manager if it's a new combination
+      if (manager) {
+        manager.dispose();
+      }
       manager = null;
     }
     const t = Date.now();

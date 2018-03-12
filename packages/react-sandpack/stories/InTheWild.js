@@ -122,9 +122,6 @@ stories.addWithJSX('babel', () => (
       '/index.js': {
         code: `import React from 'react';`,
       },
-      '/babel-transpiler.json': {
-        code: `{ "babelURL": "https://ives.cool" }`,
-      },
       '/.babelrc': {
         code: JSON.stringify(
           {

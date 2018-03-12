@@ -23,6 +23,8 @@ export default class Transpiler {
   /* eslint-disable */
   initialize() {}
 
+  dispose() {}
+
   cleanModule(loaderContext: LoaderContext) {}
 
   doTranspilation(

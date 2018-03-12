@@ -795,6 +795,14 @@ export default class Manager {
     this.clearCache();
   }
 
+  dispose() {
+    if (this.preset) {
+      this.preset.transpilers.forEach(t => {
+        t.dispose();
+      });
+    }
+  }
+
   clearCache() {
     try {
       localforage.clear();

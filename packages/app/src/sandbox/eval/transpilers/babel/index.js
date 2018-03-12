@@ -1,4 +1,6 @@
 // @flow
+import BabelWorker from 'worker-loader?name=babel-transpiler.[hash].worker.js!./babel-worker.js';
+
 import getBabelConfig from './babel-parser';
 import WorkerTranspiler from '../worker-transpiler';
 import { type LoaderContext } from '../../transpiled-module';
@@ -12,16 +14,22 @@ class BabelTranspiler extends WorkerTranspiler {
   worker: Worker;
 
   constructor() {
-    super('babel-loader', null, 2, { hasFS: true });
+    super('babel-loader', BabelWorker, 2, { hasFS: true });
   }
+
+  startupWorkersInitialized = false;
 
   async getWorker() {
     while (typeof window.babelworkers === 'undefined') {
       await delay(50); // eslint-disable-line
     }
+
+    if (window.babelworkers.length === 0) {
+      return super.getWorker();
+    }
+
     // We set these up in startup.js.
-    const worker = window.babelworkers.pop();
-    return worker;
+    return window.babelworkers.pop();
   }
 
   doTranspilation(code: string, loaderContext: LoaderContext): Promise<void> {
@@ -44,7 +52,7 @@ class BabelTranspiler extends WorkerTranspiler {
           code,
           config: babelConfig,
           path,
-          loaderOptions: loaderContext.options,
+          loaderOptions: loaderContext.options || {},
 
           babelTranspilerOptions:
             loaderContext.options.configurations &&
