@@ -2,7 +2,6 @@ import * as React from 'react';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { sandboxUrl } from 'common/utils/url-generator';
-import getDefinition from 'common/templates';
 import getIcon from 'common/templates/icons';
 import { SmallSandbox } from 'common/types';
 
