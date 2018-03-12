@@ -110,6 +110,7 @@ export function withLoadApp(continueSequence) {
                       'Your session seems to be expired, please log in again...',
                       'error'
                     ),
+                    actions.removeJwtFromStorage,
                   ],
                 },
               ]),
