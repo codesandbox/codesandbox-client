@@ -1,6 +1,6 @@
 {
   "name": "smooshpack",
-  "version": "0.0.21",
+  "version": "0.0.22",
   "description": "",
   "keywords": [],
   "main": "dist/sandpack.umd.js",
