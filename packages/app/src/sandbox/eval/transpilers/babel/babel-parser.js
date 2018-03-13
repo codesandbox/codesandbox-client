@@ -30,8 +30,8 @@ const DEFAULT_BABEL_CONFIG = {
  * Parses the .babelrc if it exists, if it doesn't it will return a default config
  */
 export default function getBabelConfig(
-  config?: Object,
-  loaderOptions,
+  config: ?Object,
+  loaderOptions: Object,
   path: string
 ) {
   const resolvedConfig = config || DEFAULT_BABEL_CONFIG;
