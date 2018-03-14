@@ -60,7 +60,7 @@ We offer an API that allows you to programatically create a sandbox. This is mos
 
 ### Supported Parameters
 
-We currently support three extra parameters
+We currently support three extra parameters. The query accepts the same options as the [embed options](https://codesandbox.io/docs/embedding/#embed-options).
 
 | Query Parameter | Description                                                                          | Example Input               |
 | --------------- | ------------------------------------------------------------------------------------ | --------------------------- |
