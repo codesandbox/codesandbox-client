@@ -90,6 +90,10 @@ class BabelTranspiler extends WorkerTranspiler {
       this.queueTask(
         {
           type: 'get-babel-context',
+          babelTranspilerOptions:
+            manager.configurations &&
+            manager.configurations.babelTranspiler &&
+            manager.configurations.babelTranspiler.parsed,
         },
         'babelContext',
         {},
