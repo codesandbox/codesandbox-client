@@ -160,6 +160,27 @@ function registerCodeSandboxPlugins() {
   );
 }
 
+function loadCustomTranspiler(babelTranspilerOptions) {
+  if (
+    babelTranspilerOptions &&
+    babelTranspilerOptions.babelURL &&
+    babelTranspilerOptions.babelURL !== loadedTranspilerURL
+  ) {
+    self.importScripts(babelTranspilerOptions.babelURL);
+    registerCodeSandboxPlugins();
+    loadedTranspilerURL = babelTranspilerOptions.babelURL;
+  }
+
+  if (
+    babelTranspilerOptions &&
+    babelTranspilerOptions.babelEnvUrl &&
+    babelTranspilerOptions.babelEnvUrl !== loadedEnvURL
+  ) {
+    self.importScripts(babelTranspilerOptions.babelEnvUrl);
+    loadedEnvURL = babelTranspilerOptions.babelEnvUrl;
+  }
+}
+
 registerCodeSandboxPlugins();
 
 self.addEventListener('message', async event => {
@@ -173,6 +194,7 @@ self.addEventListener('message', async event => {
   }
 
   if (event.data.type === 'get-babel-context') {
+    loadCustomTranspiler(event.data.babelTranspilerOptions);
     self.postMessage({
       type: 'result',
       version: Babel.version,
@@ -196,27 +218,10 @@ self.addEventListener('message', async event => {
 
   const { disableCodeSandboxPlugins } = loaderOptions;
 
+  loadCustomTranspiler(babelTranspilerOptions);
+
   const flattenedPresets = flatten(config.presets || []);
   const flattenedPlugins = flatten(config.plugins || []);
-
-  if (
-    babelTranspilerOptions &&
-    babelTranspilerOptions.babelURL &&
-    babelTranspilerOptions.babelURL !== loadedTranspilerURL
-  ) {
-    self.importScripts([babelTranspilerOptions.babelURL]);
-    registerCodeSandboxPlugins();
-    loadedTranspilerURL = babelTranspilerOptions.babelURL;
-  }
-
-  if (
-    babelTranspilerOptions &&
-    babelTranspilerOptions.babelEnvUrl &&
-    babelTranspilerOptions.babelEnvUrl !== loadedEnvURL
-  ) {
-    self.importScripts([babelTranspilerOptions.babelEnvUrl]);
-    loadedEnvURL = babelTranspilerOptions.babelEnvUrl;
-  }
 
   if (!disableCodeSandboxPlugins) {
     if (

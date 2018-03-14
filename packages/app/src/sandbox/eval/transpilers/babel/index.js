@@ -4,6 +4,7 @@ import BabelWorker from 'worker-loader?name=babel-transpiler.[hash].worker.js!./
 import getBabelConfig from './babel-parser';
 import WorkerTranspiler from '../worker-transpiler';
 import { type LoaderContext } from '../../transpiled-module';
+import type { default as Manager } from '../../manager';
 
 import delay from '../../../utils/delay';
 
@@ -82,9 +83,9 @@ class BabelTranspiler extends WorkerTranspiler {
     });
   }
 
-  async getTranspilerContext() {
+  async getTranspilerContext(manager: Manager) {
     return new Promise(async resolve => {
-      const baseConfig = await super.getTranspilerContext();
+      const baseConfig = await super.getTranspilerContext(manager);
 
       this.queueTask(
         {
@@ -100,6 +101,10 @@ class BabelTranspiler extends WorkerTranspiler {
             babelVersion: version,
             availablePlugins,
             availablePresets,
+            babelTranspilerOptions:
+              manager.configurations &&
+              manager.configurations.babelTranspiler &&
+              manager.configurations.babelTranspiler.parsed,
           });
         }
       );

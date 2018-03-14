@@ -2,6 +2,7 @@
 
 import type { SourceMap } from './utils/get-source-map';
 import { type LoaderContext } from '../transpiled-module';
+import type { default as Manager } from '../manager';
 
 type TranspilerResult = {
   transpiledCode: string,
@@ -46,7 +47,7 @@ export default class Transpiler {
    * Get custom info of the current transpiler, this is open for implementation
    * per transpiler
    */
-  getTranspilerContext(): Promise<Object> {
+  getTranspilerContext(manager: Manager): Promise<Object> {
     return Promise.resolve({
       name: this.name,
       HMREnabled: this.HMREnabled,

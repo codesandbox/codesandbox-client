@@ -822,7 +822,7 @@ export default class Manager {
     const data = await Promise.all(
       Array.from(this.preset.transpilers).map(t =>
         t
-          .getTranspilerContext()
+          .getTranspilerContext(this)
           .then(context => ({ name: t.name, data: context }))
       )
     );
