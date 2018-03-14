@@ -148,14 +148,19 @@ export type IBabel = {
 declare var Babel: IBabel;
 
 let loadedTranspilerURL = null;
+let loadedEnvURL = null;
 
-Babel.registerPlugin('dynamic-import-node', dynamicImportPlugin);
-Babel.registerPlugin('babel-plugin-detective', detective);
-Babel.registerPlugin('dynamic-css-modules', dynamicCSSModules);
-Babel.registerPlugin(
-  'babel-plugin-transform-prevent-infinite-loops',
-  infiniteLoops
-);
+function registerCodeSandboxPlugins() {
+  Babel.registerPlugin('dynamic-import-node', dynamicImportPlugin);
+  Babel.registerPlugin('babel-plugin-detective', detective);
+  Babel.registerPlugin('dynamic-css-modules', dynamicCSSModules);
+  Babel.registerPlugin(
+    'babel-plugin-transform-prevent-infinite-loops',
+    infiniteLoops
+  );
+}
+
+registerCodeSandboxPlugins();
 
 self.addEventListener('message', async event => {
   if (!event.data.codesandbox) {
@@ -200,7 +205,17 @@ self.addEventListener('message', async event => {
     babelTranspilerOptions.babelURL !== loadedTranspilerURL
   ) {
     self.importScripts([babelTranspilerOptions.babelURL]);
+    registerCodeSandboxPlugins();
     loadedTranspilerURL = babelTranspilerOptions.babelURL;
+  }
+
+  if (
+    babelTranspilerOptions &&
+    babelTranspilerOptions.babelEnvUrl &&
+    babelTranspilerOptions.babelEnvUrl !== loadedEnvURL
+  ) {
+    self.importScripts([babelTranspilerOptions.babelEnvUrl]);
+    loadedEnvURL = babelTranspilerOptions.babelEnvUrl;
   }
 
   if (!disableCodeSandboxPlugins) {
