@@ -87,13 +87,15 @@ class BabelTranspiler extends WorkerTranspiler {
     return new Promise(async resolve => {
       const baseConfig = await super.getTranspilerContext(manager);
 
+      const babelTranspilerOptions =
+        manager.configurations &&
+        manager.configurations.babelTranspiler &&
+        manager.configurations.babelTranspiler.parsed;
+
       this.queueTask(
         {
           type: 'get-babel-context',
-          babelTranspilerOptions:
-            manager.configurations &&
-            manager.configurations.babelTranspiler &&
-            manager.configurations.babelTranspiler.parsed,
+          babelTranspilerOptions,
         },
         'babelContext',
         {},
@@ -105,10 +107,7 @@ class BabelTranspiler extends WorkerTranspiler {
             babelVersion: version,
             availablePlugins,
             availablePresets,
-            babelTranspilerOptions:
-              manager.configurations &&
-              manager.configurations.babelTranspiler &&
-              manager.configurations.babelTranspiler.parsed,
+            babelTranspilerOptions,
           });
         }
       );
