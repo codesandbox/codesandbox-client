@@ -3,6 +3,14 @@ import { state, props } from 'cerebral/tags';
 import { ensureOwnedSandbox } from '../../sequences';
 import { setCurrentModule, addNotification } from '../../factories';
 import { closeTabByIndex } from '../../actions';
+import {
+  sendModuleCreated,
+  sendModuleDeleted,
+  sendModuleUpdated,
+  sendDirectoryCreated,
+  sendDirectoryDeleted,
+  sendDirectoryUpdated,
+} from '../live/actions';
 import * as actions from './actions';
 
 export const createModule = [
@@ -18,6 +26,8 @@ export const createModule = [
     success: [
       actions.updateOptimisticModule,
       setCurrentModule(props`newModule.id`),
+      set(props`moduleShortid`, props`newModule.shortid`),
+      sendModuleCreated,
     ],
     error: [
       actions.removeOptimisticModule,
@@ -32,7 +42,7 @@ export const renameModule = [
   actions.renameModule,
   actions.saveNewModuleName,
   {
-    success: [],
+    success: [sendModuleUpdated],
     error: [
       actions.revertModuleName,
       addNotification('Could not rename file', 'error'),
@@ -45,7 +55,7 @@ export const renameDirectory = [
   actions.renameDirectory,
   actions.saveNewDirectoryName,
   {
-    success: [],
+    success: [sendDirectoryUpdated],
     error: [
       actions.revertDirectoryName,
       addNotification('Could not rename file', 'error'),
@@ -62,7 +72,11 @@ export const createDirectory = [
   ),
   actions.saveDirectory,
   {
-    success: actions.updateOptimisticDirectory,
+    success: [
+      actions.updateOptimisticDirectory,
+      set(props`directoryShortid`, props`newDirectory.shortid`),
+      sendDirectoryCreated,
+    ],
     error: [
       actions.removeOptimisticDirectory,
       addNotification('Unable to save new directory', 'error'),
@@ -76,7 +90,7 @@ export const deleteDirectory = [
   actions.removeDirectory,
   actions.deleteDirectory,
   {
-    success: [],
+    success: [sendDirectoryDeleted],
     error: [
       push(
         state`editor.sandboxes.${state`editor.currentId`}.directories`,
@@ -92,7 +106,10 @@ export const moveDirectoryToDirectory = [
   actions.moveDirectoryToDirectory,
   actions.saveNewDirectoryDirectoryShortid,
   {
-    success: [],
+    success: [
+      set(props`directoryShortid`, props`shortid`),
+      sendDirectoryUpdated,
+    ],
     error: [
       actions.revertMoveDirectoryToDirectory,
       addNotification('Could not save new directory location', 'error'),
@@ -105,7 +122,7 @@ export const moveModuleToDirectory = [
   actions.moveModuleToDirectory,
   actions.saveNewModuleDirectoryShortid,
   {
-    success: [],
+    success: [sendModuleUpdated],
     error: [
       actions.revertMoveModuleToDirectory,
       addNotification('Could not save new module location', 'error'),
@@ -128,7 +145,7 @@ export const deleteModule = [
   actions.removeModule,
   actions.deleteModule,
   {
-    success: [],
+    success: [sendModuleDeleted],
     error: [
       push(
         state`editor.sandboxes.${state`editor.currentId`}.modules`,

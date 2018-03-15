@@ -222,7 +222,7 @@ class DirectoryEntry extends React.Component {
                     showDeleteDirectoryModal: false,
                   });
                   this.props.signals.files.directoryDeleted({
-                    moduleShortid: shortid,
+                    directoryShortid: shortid,
                   });
                 }}
               />

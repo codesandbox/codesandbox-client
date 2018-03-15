@@ -11,6 +11,7 @@ import UtilsProvider from './providers/Utils';
 import JSZipProvider from './providers/JSZip';
 import SettingsStoreProvider from './providers/SettingsStore';
 import GitProvider from './providers/Git';
+import LiveProvider from './providers/Live';
 import KeybindingManagerProvider from './providers/KeybindingManager';
 
 import * as sequences from './sequences';
@@ -25,6 +26,7 @@ import git from './modules/git';
 import preferences from './modules/preferences';
 import workspace from './modules/workspace';
 import files from './modules/files';
+import live from './modules/live';
 
 export default Module({
   model,
@@ -88,6 +90,7 @@ export default Module({
     preferences,
     workspace,
     files,
+    live,
   },
   providers: {
     api: ApiProvider,
@@ -101,5 +104,6 @@ export default Module({
     settingsStore: SettingsStoreProvider,
     git: GitProvider,
     keybindingManager: KeybindingManagerProvider,
+    live: LiveProvider,
   },
 });

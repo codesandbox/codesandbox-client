@@ -36,7 +36,6 @@ export interface Editor {
     corrections?: Array<ModuleCorrection>
   ) => any;
   changeCode?: (code: string) => any;
-
   currentModule?: Module;
   setTSConfig?: (tsConfig: Object) => void;
 }
@@ -56,4 +55,5 @@ export type Props = {
   dependencies?: ?{ [name: string]: string },
   highlightedLines?: Array<number>,
   tsconfig?: Object,
+  readOnly?: boolean,
 };

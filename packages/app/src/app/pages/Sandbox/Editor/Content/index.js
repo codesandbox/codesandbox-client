@@ -326,6 +326,7 @@ class EditorPreview extends React.Component<Props, State> {
               width={editorWidth}
               height={editorHeight}
               settings={settings(store)}
+              readOnly={store.live.isLive && !store.live.isCurrentEditor}
               onNpmDependencyAdded={name => {
                 if (sandbox.owned) {
                   signals.editor.addNpmDependency({ name, isDev: true });

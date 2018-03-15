@@ -41,7 +41,7 @@ class Preview extends React.Component<Props, State> {
       this.handleModuleSyncedChange.bind(this, preview)
     );
     const disposeHandleCodeChange = reaction(
-      () => this.props.store.editor.currentModule.code,
+      () => this.props.store.editor.currentSandbox.modules.map(m => m.code),
       () => {
         if (preventCodeExecution) {
           preventCodeExecution = false;

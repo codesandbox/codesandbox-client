@@ -88,6 +88,10 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     ) {
       this.resizeEditor();
     }
+
+    if (this.props.readOnly !== nextProps.readOnly && this.editor) {
+      this.editor.updateOptions({ readOnly: !!nextProps.readOnly });
+    }
     return false;
   }
 
@@ -1040,6 +1044,8 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       folding: true,
       glyphMargin: false,
       fixedOverflowWidgets: true,
+
+      readOnly: !!this.props.readOnly,
     };
   };
 

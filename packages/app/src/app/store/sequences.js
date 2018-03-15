@@ -252,18 +252,22 @@ export const loadSandboxPage = factories.withLoadApp([]);
 
 export const loadGitHubPage = factories.withLoadApp([]);
 
+export const setSandbox = [
+  set(state`editor.currentId`, props`sandbox.id`),
+  actions.setCurrentModuleShortid,
+  actions.setMainModuleShortid,
+  actions.setInitialTab,
+  actions.setUrlOptions,
+  actions.setWorkspace,
+];
+
 export const loadSandbox = factories.withLoadApp([
   set(state`editor.error`, null),
   when(state`editor.sandboxes.${props`id`}`),
   {
     true: [
-      set(state`editor.currentId`, props`id`),
       set(props`sandbox`, state`editor.sandboxes.${props`id`}`),
-      actions.setCurrentModuleShortid,
-      actions.setMainModuleShortid,
-      actions.setInitialTab,
-      actions.setUrlOptions,
-      actions.setWorkspace,
+      setSandbox,
     ],
     false: [
       set(state`editor.isLoading`, true),
@@ -276,12 +280,7 @@ export const loadSandbox = factories.withLoadApp([
       {
         success: [
           set(state`editor.sandboxes.${props`sandbox.id`}`, props`sandbox`),
-          set(state`editor.currentId`, props`sandbox.id`),
-          actions.setCurrentModuleShortid,
-          actions.setMainModuleShortid,
-          actions.setInitialTab,
-          actions.setUrlOptions,
-          actions.setWorkspace,
+          setSandbox,
           ensurePackageJSON,
         ],
         notFound: set(state`editor.notFound`, true),

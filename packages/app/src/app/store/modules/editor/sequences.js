@@ -2,6 +2,7 @@ import { set, when, equals, toggle, increment } from 'cerebral/operators';
 import { state, props, string } from 'cerebral/tags';
 import * as actions from './actions';
 import { closeTabByIndex } from '../../actions';
+import { sendCode, sendModuleSaved } from '../live/actions';
 import {
   ensureOwnedSandbox,
   forkSandbox,
@@ -42,21 +43,6 @@ export const startResizing = set(state`editor.isResizing`, true);
 export const stopResizing = set(state`editor.isResizing`, false);
 
 export const createZip = actions.createZip;
-
-export const prettifyCode = [
-  actions.prettifyCode,
-  {
-    success: [actions.setCode, actions.addChangedModule],
-    invalidPrettierSandboxConfig: addNotification(
-      'Invalid JSON in sandbox .prettierrc file',
-      'error'
-    ),
-    error: addNotification(
-      string`Something went wrong prettifying the code: "${props`error.message`}"`,
-      'error'
-    ),
-  },
-];
 
 export const changeCurrentModule = setCurrentModule(props`id`);
 
@@ -107,6 +93,7 @@ export const changeCode = [
   actions.setCode,
   actions.addChangedModule,
   actions.unsetDirtyTab,
+  sendCode,
 ];
 
 export const saveChangedModules = [
@@ -158,6 +145,7 @@ export const saveCode = [
     ],
     false: [],
   },
+  sendModuleSaved,
 ];
 
 export const addNpmDependency = [
@@ -213,4 +201,19 @@ export const setPreviewBounds = [actions.setPreviewBounds];
 
 export const setPreviewContent = [
   set(state`editor.previewWindow.content`, props`content`),
+];
+
+export const prettifyCode = [
+  actions.prettifyCode,
+  {
+    success: [changeCode],
+    invalidPrettierSandboxConfig: addNotification(
+      'Invalid JSON in sandbox .prettierrc file',
+      'error'
+    ),
+    error: addNotification(
+      string`Something went wrong prettifying the code: "${props`error.message`}"`,
+      'error'
+    ),
+  },
 ];

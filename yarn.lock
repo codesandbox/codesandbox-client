@@ -11471,6 +11471,10 @@ performance-now@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/performance-now/-/performance-now-2.1.0.tgz#6309f4e0e5fa913ec1c69307ae364b4b377c9e7b"
 
+phoenix@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/phoenix/-/phoenix-1.3.0.tgz#1df2c27f986ee295e37c9983ec28ebac1d7f4a3e"
+
 pify@^2.0.0, pify@^2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/pify/-/pify-2.3.0.tgz#ed141a6ac043a849ea588498e7dca8b15330e90c"
