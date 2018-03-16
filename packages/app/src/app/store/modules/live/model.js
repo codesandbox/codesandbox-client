@@ -3,6 +3,7 @@ import { types } from 'mobx-state-tree';
 export default {
   isLive: types.boolean,
   isLoading: types.boolean,
+  receivingCode: types.boolean,
   error: types.maybe(types.string),
   isOwner: types.boolean,
   roomInfo: types.maybe(

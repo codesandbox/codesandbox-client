@@ -2,7 +2,7 @@ import { set, when, equals, toggle, increment } from 'cerebral/operators';
 import { state, props, string } from 'cerebral/tags';
 import * as actions from './actions';
 import { closeTabByIndex } from '../../actions';
-import { sendCode, sendModuleSaved } from '../live/actions';
+import { sendModuleSaved } from '../live/actions';
 import {
   ensureOwnedSandbox,
   forkSandbox,
@@ -93,7 +93,6 @@ export const changeCode = [
   actions.setCode,
   actions.addChangedModule,
   actions.unsetDirtyTab,
-  sendCode,
 ];
 
 export const saveChangedModules = [

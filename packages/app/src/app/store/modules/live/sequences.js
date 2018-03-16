@@ -1,4 +1,4 @@
-import { set, equals, push } from 'cerebral/operators';
+import { set, push, when, equals } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 
 import * as factories from '../../factories';
@@ -138,6 +138,17 @@ export const handleMessage = [
         ],
       },
     ],
+    operation: [
+      when(
+        props`data.userId`,
+        state`user.id`,
+        (givenId, localId) => givenId === localId
+      ),
+      {
+        true: actions.acknowledgeOperation,
+        false: actions.receiveTransformation,
+      },
+    ],
     otherwise: [],
   },
 ];
@@ -147,3 +158,21 @@ export const createLive = [
   actions.createRoom,
   initializeLive,
 ];
+
+export const sendTransform = [actions.sendTransform];
+
+export const applyTransformation = [
+  actions.setReceivingStatus,
+  when(
+    state`editor.currentModuleShortid`,
+    props`moduleShortid`,
+    (s1, s2) => s1 === s2
+  ),
+  {
+    true: [push(state`editor.operationsToApply`, props`operation`)],
+    false: [actions.applyTransformation, changeCode],
+  },
+  actions.unSetReceivingStatus,
+];
+
+export const unSetReceivingStatus = [actions.unSetReceivingStatus];

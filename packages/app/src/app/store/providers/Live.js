@@ -1,6 +1,6 @@
 import { Provider } from 'cerebral';
 import { Socket } from 'phoenix';
-import { camelizeKeys, decamelizeKeys } from 'humps';
+import { camelizeKeys } from 'humps';
 
 import { host } from 'common/utils/url-generator';
 
@@ -12,7 +12,7 @@ export default Provider({
     const { state, jwt } = this.context;
     const token = state.get('jwt') || jwt.get();
 
-    socket = new Socket(`wss://${host()}/socket`, {
+    socket = new Socket(`wss://${location.host}/socket`, {
       params: {
         guardian_token: token,
       },
@@ -39,6 +39,11 @@ export default Provider({
     };
   },
   send(event: string, payload: Object) {
-    channel.push(event, payload);
+    return new Promise((resolve, reject) => {
+      channel
+        .push(event, payload)
+        .receive('ok', resolve)
+        .receive('error', reject);
+    });
   },
 });

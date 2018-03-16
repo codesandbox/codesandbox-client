@@ -1,5 +1,6 @@
 // @flow
 import * as React from 'react';
+import { TextOperation } from 'ot';
 import { debounce } from 'lodash';
 import { getModulePath } from 'common/sandbox/modules';
 
@@ -27,6 +28,25 @@ import type { Props, Editor } from '../types';
 type State = {
   fuzzySearchEnabled: boolean,
 };
+
+function indexToLineAndColumn(lines, index) {
+  let offset = 0;
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    if (offset + line.length + 1 > index) {
+      return {
+        lineNumber: i + 1,
+        column: index - offset + 1,
+      };
+    }
+
+    // + 1 is for the linebreak character which is not included
+    offset += line.length + 1;
+  }
+
+  // +2 for column, because +1 for Monaco and +1 for linebreak
+  return { lineNumber: lines.length, column: lines[lines.length - 1] + 2 };
+}
 
 let modelCache = {};
 
@@ -59,6 +79,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   sizeProbeInterval: ?number;
   editor: any;
   monaco: any;
+  receivingCode: ?boolean = false;
 
   constructor(props: Props) {
     super(props);
@@ -203,6 +224,59 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       },
     });
 
+    editor.onDidChangeModelContent(({ changes }) => {
+      const { isLive, sendTransforms, onCodeReceived } = this.props;
+
+      if (isLive && sendTransforms && !this.receivingCode) {
+        let code = this.currentModule.code || '';
+        const t = changes
+          .map(change => {
+            const startPos = change.range.getStartPosition();
+            const lines = code.split('\n');
+            let index = 0;
+            const totalLength = code.length;
+            let currentLine = 0;
+
+            while (currentLine + 1 < startPos.lineNumber) {
+              index += lines[currentLine].length;
+              index += 1; // Linebreak character
+              currentLine += 1;
+            }
+
+            index += startPos.column - 1;
+
+            const operation = new TextOperation();
+            if (index) {
+              operation.retain(index);
+            }
+
+            if (change.rangeLength > 0) {
+              // Deletion
+              operation.delete(change.rangeLength);
+
+              index += change.rangeLength;
+            }
+            if (change.text) {
+              // Insertion
+              operation.insert(change.text);
+            }
+
+            operation.retain(Math.max(0, totalLength - index));
+
+            if (changes.length > 1) {
+              code = operation.apply(code);
+            }
+
+            return operation;
+          })
+          .reduce((prev, next) => prev.compose(next));
+
+        sendTransforms(t);
+      } else if (onCodeReceived) {
+        onCodeReceived();
+      }
+    });
+
     if (this.props.onInitialized) {
       this.disposeInitializer = this.props.onInitialized(this);
     }
@@ -251,6 +325,10 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       noSemanticValidation: false,
       noSyntaxValidation: !hasNativeTypescript,
     });
+  };
+
+  setReceivingCode = (receiving: boolean) => {
+    this.receivingCode = receiving;
   };
 
   setTSConfig = (config: Object) => {
@@ -321,7 +399,54 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         this.currentModule.title,
         this.editor.getModel().getVersionId()
       );
+      this.lint(
+        code,
+        this.currentModule.title,
+        this.editor.getModel().getVersionId()
+      );
     }
+  };
+
+  applyOperations = ops => {
+    const monacoEditOperations = [];
+
+    ops.forEach(operation => {
+      const lines = this.editor.getModel().getLinesContent();
+
+      let index = 0;
+      for (let i = 0; i < operation.ops.length; i++) {
+        let op = operation.ops[i];
+        if (TextOperation.isRetain(op)) {
+          index += op;
+        } else if (TextOperation.isInsert(op)) {
+          const { lineNumber, column } = indexToLineAndColumn(lines, index);
+          monacoEditOperations.push({
+            range: new this.monaco.Range(
+              lineNumber,
+              column,
+              lineNumber,
+              column
+            ),
+            text: op,
+          });
+          index += op.length;
+        } else if (TextOperation.isDelete(op)) {
+          const from = indexToLineAndColumn(lines, index);
+          const to = indexToLineAndColumn(lines, index - op);
+          monacoEditOperations.push({
+            range: new this.monaco.Range(
+              from.lineNumber,
+              from.column,
+              to.lineNumber,
+              to.column
+            ),
+            text: '',
+          });
+        }
+      }
+    });
+
+    this.editor.getModel().applyEdits(monacoEditOperations);
   };
 
   changeDependencies = (

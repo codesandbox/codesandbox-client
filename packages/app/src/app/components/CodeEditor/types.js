@@ -38,6 +38,8 @@ export interface Editor {
   changeCode?: (code: string) => any;
   currentModule?: Module;
   setTSConfig?: (tsConfig: Object) => void;
+  setReceivingCode?: (receivingCode: boolean) => void;
+  applyOperations?: (operations: Array<any>) => void;
 }
 
 export type Props = {
@@ -56,4 +58,8 @@ export type Props = {
   highlightedLines?: Array<number>,
   tsconfig?: Object,
   readOnly?: boolean,
+  isLive: boolean,
+  sendTransforms?: (transform: any) => void,
+  receivingCode?: boolean,
+  onCodeReceived?: () => void,
 };

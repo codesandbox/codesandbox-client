@@ -30,6 +30,7 @@ export default Module({
     errors: [],
     glyphs: [],
     corrections: [],
+    operationsToApply: [],
     isInProjectView: false,
     forceRender: 0,
     initialPath: '/',

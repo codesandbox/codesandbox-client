@@ -1,3 +1,5 @@
+import { TextOperation } from 'ot';
+
 export function createRoom({ api, props }) {
   const id = props.sandboxId;
 
@@ -34,14 +36,17 @@ export function initializeLiveState({ props, state }) {
   state.set('live.error', null);
 }
 
-export function sendCurrentState({ state, live }) {
+export function sendCurrentState({ state, ot, live }) {
   const liveSandboxId = state.get('live.roomInfo.sandboxId');
   const sandbox = state.get(`editor.sandboxes.${liveSandboxId}`);
   const changedModuleShortids = state.get(`editor.changedModuleShortids`);
   const currentModuleShortid = state.get(`editor.currentModuleShortid`);
   const tabs = state.get(`editor.tabs`);
 
+  const otData = ot.getData();
+
   live.send('state', {
+    otData,
     sandbox,
     changedModuleShortids,
     currentModuleShortid,
@@ -49,13 +54,17 @@ export function sendCurrentState({ state, live }) {
   });
 }
 
-export function consumeState({ props }) {
+export function consumeState({ props, ot }) {
   const {
     sandbox,
     changedModuleShortids,
     tabs,
     currentModuleShortid,
+    otData,
   } = props.data;
+
+  ot.consumeData(otData);
+
   return {
     sandbox,
     changedModuleShortids,
@@ -94,11 +103,6 @@ function sendModuleInfo(
       live.send(event, message);
     }
   }
-}
-
-export function sendCode(context) {
-  const { moduleShortid } = context.props;
-  sendModuleInfo(context, 'code', 'module', moduleShortid);
 }
 
 export function sendModuleSaved(context) {
@@ -180,4 +184,39 @@ export function updateModule({ props, state }) {
     `editor.sandboxes.${sandbox.id}.modules.${moduleIndex}`,
     props.module
   );
+}
+
+export function sendTransform({ ot, props }) {
+  ot.applyClient(props.moduleShortid, props.operation);
+}
+
+export function receiveTransformation({ ot, props }) {
+  ot.applyServer(props.data.moduleShortid, props.data.operation);
+}
+
+export function applyTransformation({ props, state }) {
+  const sandbox = state.get('editor.currentSandbox');
+  const module = sandbox.modules.find(
+    moduleEntry => moduleEntry.shortid === props.moduleShortid
+  );
+
+  const op = TextOperation.fromJSON(props.operation);
+
+  const code = op.apply(module.code);
+
+  return { code };
+}
+
+export function setReceivingStatus({ state }) {
+  state.set('live.receivingCode', true);
+}
+
+export function unSetReceivingStatus({ state }) {
+  state.set('live.receivingCode', false);
+}
+
+export function acknowledgeOperation({ props, ot }) {
+  const { moduleShortid } = props.data;
+
+  ot.serverAck(moduleShortid);
 }

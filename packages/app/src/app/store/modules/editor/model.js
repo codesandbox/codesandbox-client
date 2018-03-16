@@ -97,6 +97,9 @@ export default {
   error: types.maybe(types.string),
   isResizing: types.boolean,
   changedModuleShortids: types.array(types.string),
+  operationsToApply: types.array(
+    types.array(types.union(types.string, types.number))
+  ),
   tabs: types.array(
     types.model({
       type: types.string,

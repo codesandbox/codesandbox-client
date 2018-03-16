@@ -8,8 +8,9 @@ export default Module({
   model,
   state: {
     isLive: false,
-    isLoading: true,
+    isLoading: false,
     isOwner: false,
+    receivingCode: false,
   },
   getters: {
     isCurrentEditor,
@@ -18,5 +19,9 @@ export default Module({
     roomJoined: sequences.initializeLive,
     createLiveClicked: sequences.createLive,
     liveMessageReceived: sequences.handleMessage,
+    onTransformMade: sequences.sendTransform,
+    applyTransformation: sequences.applyTransformation,
+    onCodeReceived: sequences.unSetReceivingStatus,
+    onOperationsApplied: sequences.onOperationsApplied,
   },
 });

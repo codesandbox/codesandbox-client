@@ -3,6 +3,7 @@ import * as React from 'react';
 import { ThemeProvider } from 'styled-components';
 import { Prompt } from 'react-router-dom';
 import { reaction } from 'mobx';
+import { TextOperation } from 'ot';
 import { inject, observer } from 'mobx-react';
 import getTemplateDefinition from 'common/templates';
 import type { ModuleError } from 'common/types';
@@ -198,6 +199,31 @@ class EditorPreview extends React.Component<Props, State> {
         }
       }
     );
+    const disposeLiveHandler = reaction(
+      () => store.live.receivingCode,
+      () => {
+        if (editor.setReceivingCode) {
+          editor.setReceivingCode(store.live.receivingCode);
+        }
+      }
+    );
+
+    const disposeOperationsToApplyHandler = reaction(
+      () => store.editor.operationsToApply.map(x => x),
+      () => {
+        if (editor.applyOperations) {
+          editor.applyOperations(
+            store.editor.operationsToApply.map(TextOperation.fromJSON)
+          );
+
+          this.props.signals.live.onOperationsApplied();
+        } else {
+          console.log('not applying; setting code manually');
+          // TODO apply logic itself and call `editor.changeCode` manually
+        }
+      }
+    );
+    console.log(disposeOperationsToApplyHandler);
     const disposeModuleHandler = reaction(
       () => [store.editor.currentModule, store.editor.currentModule.code],
       ([newModule]) => {
@@ -235,6 +261,8 @@ class EditorPreview extends React.Component<Props, State> {
       disposeToggleDevtools();
       disposeResizeHandler();
       disposeGlyphsHandler();
+      disposeLiveHandler();
+      disposeOperationsToApplyHandler();
     };
   };
 
@@ -250,6 +278,15 @@ class EditorPreview extends React.Component<Props, State> {
           )
         )
     );
+  };
+
+  sendTransforms = operation => {
+    const currentModuleShortid = this.props.store.editor.currentModuleShortid;
+
+    this.props.signals.live.onTransformMade({
+      moduleShortid: currentModuleShortid,
+      operation: operation.toJSON(),
+    });
   };
 
   render() {
@@ -326,7 +363,13 @@ class EditorPreview extends React.Component<Props, State> {
               width={editorWidth}
               height={editorHeight}
               settings={settings(store)}
-              readOnly={store.live.isLive && !store.live.isCurrentEditor}
+              sendTransforms={this.sendTransforms}
+              readOnly={
+                false
+                //  (store.live.isLive && !store.live.isCurrentEditor)
+              }
+              isLive={store.live.isLive}
+              onCodeReceived={signals.live.onCodeReceived}
               onNpmDependencyAdded={name => {
                 if (sandbox.owned) {
                   signals.editor.addNpmDependency({ name, isDev: true });
