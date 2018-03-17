@@ -40,6 +40,7 @@ export interface Editor {
   setTSConfig?: (tsConfig: Object) => void;
   setReceivingCode?: (receivingCode: boolean) => void;
   applyOperation?: (operation: any) => void;
+  updateUserSelections?: (selections: any) => void;
 }
 
 export type Props = {
@@ -62,4 +63,5 @@ export type Props = {
   sendTransforms?: (transform: any) => void,
   receivingCode?: boolean,
   onCodeReceived?: () => void,
+  onSelectionChanged: (d: { selection: any, moduleShortid: string }) => void,
 };

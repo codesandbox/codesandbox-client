@@ -24,6 +24,12 @@ export const initializeLive = factories.withLoadApp([
   },
 ]);
 
+const isOwnMessage = when(
+  props`data.userId`,
+  state`user.id`,
+  (givenId, localId) => givenId === localId
+);
+
 export const handleMessage = [
   equals(props`event`),
   {
@@ -31,12 +37,16 @@ export const handleMessage = [
       set(state`live.roomInfo.users`, props`data.users`),
       flow.isCurrentEditor,
       {
-        true: [actions.sendCurrentState, set(state`live.isLoading`, false)],
+        true: [
+          actions.addUserMetadata,
+          actions.sendCurrentState,
+          set(state`live.isLoading`, false),
+        ],
         false: [],
       },
     ],
     state: [
-      flow.isCurrentEditor,
+      isOwnMessage,
       {
         true: [],
         false: [
@@ -47,6 +57,7 @@ export const handleMessage = [
             state`editor.changedModuleShortids`,
             props`changedModuleShortids`
           ),
+          set(state`live.roomInfo`, props`roomInfo`),
           // Whether this is first load
           equals(state`live.isLoading`),
           {
@@ -63,19 +74,8 @@ export const handleMessage = [
         ],
       },
     ],
-    code: [
-      flow.isCurrentEditor,
-      {
-        true: [],
-        false: [
-          actions.consumeModule,
-          set(props`code`, props`module.code`),
-          changeCode,
-        ],
-      },
-    ],
     'module:saved': [
-      flow.isCurrentEditor,
+      isOwnMessage,
       {
         true: [],
         false: [
@@ -87,7 +87,7 @@ export const handleMessage = [
       },
     ],
     'module:created': [
-      flow.isCurrentEditor,
+      isOwnMessage,
       {
         true: [],
         false: [
@@ -97,21 +97,21 @@ export const handleMessage = [
       },
     ],
     'module:updated': [
-      flow.isCurrentEditor,
+      isOwnMessage,
       {
         true: [],
         false: [actions.consumeModule, actions.updateModule],
       },
     ],
     'module:deleted': [
-      flow.isCurrentEditor,
+      isOwnMessage,
       {
         true: [],
         false: [actions.consumeModule, removeModule],
       },
     ],
     'directory:created': [
-      flow.isCurrentEditor,
+      isOwnMessage,
       {
         true: [],
         false: [
@@ -121,14 +121,14 @@ export const handleMessage = [
       },
     ],
     'directory:updated': [
-      flow.isCurrentEditor,
+      isOwnMessage,
       {
         true: [],
         false: [actions.consumeModule, actions.updateDirectory],
       },
     ],
     'directory:deleted': [
-      flow.isCurrentEditor,
+      isOwnMessage,
       {
         true: [],
         false: [
@@ -138,12 +138,15 @@ export const handleMessage = [
         ],
       },
     ],
+    'user:selection': [
+      isOwnMessage,
+      {
+        true: [],
+        false: [actions.updateSelection, actions.sendSelectionToEditor],
+      },
+    ],
     operation: [
-      when(
-        props`data.userId`,
-        state`user.id`,
-        (givenId, localId) => givenId === localId
-      ),
+      isOwnMessage,
       {
         true: actions.acknowledgeOperation,
         false: actions.receiveTransformation,
@@ -152,6 +155,8 @@ export const handleMessage = [
     otherwise: [],
   },
 ];
+
+export const sendSelection = [actions.sendSelection];
 
 export const createLive = [
   set(state`live.isOwner`, true),

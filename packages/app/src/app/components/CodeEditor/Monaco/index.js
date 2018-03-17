@@ -3,6 +3,7 @@ import * as React from 'react';
 import { TextOperation } from 'ot';
 import { debounce } from 'lodash';
 import { getModulePath } from 'common/sandbox/modules';
+import { css } from 'glamor';
 
 import getTemplate from 'common/templates';
 import type {
@@ -46,6 +47,50 @@ function indexToLineAndColumn(lines, index) {
 
   // +2 for column, because +1 for Monaco and +1 for linebreak
   return { lineNumber: lines.length, column: lines[lines.length - 1] + 2 };
+}
+
+const fadeIn = css.keyframes('fadeIn', {
+  // optional name
+  '0%': { opacity: 0 },
+  '100%': { opacity: 1 },
+});
+
+function lineAndColumnToIndex(lines, lineNumber, column) {
+  let currentLine = 0;
+  let index = 0;
+
+  while (currentLine + 1 < lineNumber) {
+    index += lines[currentLine].length;
+    index += 1; // Linebreak character
+    currentLine += 1;
+  }
+
+  index += column - 1;
+
+  return index;
+}
+
+function getSelection(lines, selection) {
+  const startSelection = lineAndColumnToIndex(
+    lines,
+    selection.startLineNumber,
+    selection.startColumn
+  );
+  const endSelection = lineAndColumnToIndex(
+    lines,
+    selection.endLineNumber,
+    selection.endColumn
+  );
+
+  return {
+    selection:
+      startSelection === endSelection ? [] : [startSelection, endSelection],
+    cursorPosition: lineAndColumnToIndex(
+      lines,
+      selection.positionLineNumber,
+      selection.positionColumn
+    ),
+  };
 }
 
 let modelCache = {};
@@ -232,6 +277,32 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       }
     });
 
+    editor.onDidChangeCursorSelection(selectionChange => {
+      const { onSelectionChanged, isLive } = this.props;
+      // Reason 3 is update by mouse or arrow keys
+      if (
+        isLive &&
+        (selectionChange.reason === 3 ||
+          /* alt + shift + arrow keys */ selectionChange.source ===
+            'moveWordCommand' ||
+          /* click inside a selection */ selectionChange.source === 'api') &&
+        onSelectionChanged
+      ) {
+        const lines = editor.getModel().getLinesContent();
+        const data = {
+          primary: getSelection(lines, selectionChange.selection),
+          secondary: selectionChange.secondarySelections.map(s =>
+            getSelection(lines, s)
+          ),
+        };
+
+        onSelectionChanged({
+          selection: data,
+          moduleShortid: this.currentModule.shortid,
+        });
+      }
+    });
+
     if (this.props.onInitialized) {
       this.disposeInitializer = this.props.onInitialized(this);
     }
@@ -350,17 +421,12 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         .map(change => {
           const startPos = change.range.getStartPosition();
           const lines = code.split('\n');
-          let index = 0;
           const totalLength = code.length;
-          let currentLine = 0;
-
-          while (currentLine + 1 < startPos.lineNumber) {
-            index += lines[currentLine].length;
-            index += 1; // Linebreak character
-            currentLine += 1;
-          }
-
-          index += startPos.column - 1;
+          let index = lineAndColumnToIndex(
+            lines,
+            startPos.lineNumber,
+            startPos.column
+          );
 
           const operation = new TextOperation();
           if (index) {
@@ -393,6 +459,149 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       onCodeReceived();
     }
     this.changes = { code: '', changes: [] };
+  };
+
+  userClassesGenerated = {};
+  userSelectionDecorations = {};
+  userSelections = [];
+  updateUserSelections = (
+    userSelections: Array<{
+      userId: string,
+      name: string,
+      selection: any,
+      color: Array<number>,
+    }>
+  ) => {
+    this.userSelections = userSelections;
+    const lines = this.editor.getModel().getLinesContent();
+
+    userSelections.forEach(data => {
+      const decorations = [];
+      const { selection, color, userId, name } = data;
+
+      if (selection) {
+        const addCursor = (position, className) => {
+          const cursorPos = indexToLineAndColumn(lines, position);
+
+          decorations.push({
+            range: new this.monaco.Range(
+              cursorPos.lineNumber,
+              cursorPos.column,
+              cursorPos.lineNumber,
+              cursorPos.column
+            ),
+            options: {
+              className: this.userClassesGenerated[className],
+            },
+          });
+        };
+
+        const addSelection = (start, end, className) => {
+          const from = indexToLineAndColumn(lines, start);
+          const to = indexToLineAndColumn(lines, end);
+
+          decorations.push({
+            range: new this.monaco.Range(
+              from.lineNumber,
+              from.column,
+              to.lineNumber,
+              to.column
+            ),
+            options: {
+              className: this.userClassesGenerated[className],
+            },
+          });
+        };
+
+        const cursorClassName = userId + '-cursor';
+        const secondaryCursorClassName = userId + '-secondary-cursor';
+        const selectionClassName = userId + '-selection';
+        const secondarySelectionClassName = userId + '-secondary-selection';
+
+        if (!this.userClassesGenerated[cursorClassName]) {
+          this.userClassesGenerated[cursorClassName] = `${css({
+            backgroundColor: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.8)`,
+            width: '2px !important',
+            cursor: 'text',
+            zIndex: 30,
+            ':hover': {
+              ':before': {
+                animation: `${fadeIn} 0.3s`,
+                animationFillMode: 'forwards',
+                opacity: 0,
+                content: name,
+                position: 'absolute',
+                top: -20,
+                backgroundColor: `rgb(${color[0]}, ${color[1]}, ${color[2]})`,
+                zIndex: 20,
+                color:
+                  color[0] + color[1] + color[2] > 500
+                    ? 'rgba(0, 0, 0, 0.8)'
+                    : 'white',
+                padding: '2px 6px',
+                borderRadius: 2,
+                borderBottomLeftRadius: 0,
+                fontSize: '.875rem',
+                fontWeight: 800,
+              },
+            },
+          })}`;
+        }
+
+        if (!this.userClassesGenerated[secondaryCursorClassName]) {
+          this.userClassesGenerated[secondaryCursorClassName] = `${css({
+            backgroundColor: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.6)`,
+            width: '2px !important',
+          })}`;
+        }
+
+        if (!this.userClassesGenerated[selectionClassName]) {
+          this.userClassesGenerated[selectionClassName] = `${css({
+            backgroundColor: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.3)`,
+            borderRadius: '3px',
+          })}`;
+        }
+
+        if (!this.userClassesGenerated[secondarySelectionClassName]) {
+          this.userClassesGenerated[secondarySelectionClassName] = `${css({
+            backgroundColor: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.2)`,
+            borderRadius: '3px',
+          })}`;
+        }
+
+        addCursor(selection.primary.cursorPosition, cursorClassName);
+        if (selection.primary.selection.length) {
+          addSelection(
+            selection.primary.selection[0],
+            selection.primary.selection[1],
+            selectionClassName
+          );
+        }
+
+        if (selection.secondary.length) {
+          selection.secondary.forEach(s => {
+            addCursor(s.cursorPosition, secondaryCursorClassName);
+
+            if (s.selection.length) {
+              addSelection(
+                s.selection[0],
+                s.selection[1],
+                secondarySelectionClassName
+              );
+            }
+          });
+        }
+      }
+
+      this.userSelectionDecorations[
+        this.currentModule.shortid + userId
+      ] = this.editor.deltaDecorations(
+        this.userSelectionDecorations[this.currentModule.shortid + userId] ||
+          [],
+        decorations,
+        userId
+      );
+    });
   };
 
   changeSandbox = (
@@ -458,6 +667,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
               column
             ),
             text: op,
+            forceMoveMarkers: true,
           },
         ]);
         index += op.length;

@@ -30,10 +30,36 @@ export function initializeLiveState({ props, state }) {
     roomId: props.roomId,
     sandboxId: props.sandboxId,
     editorUserId: props.editorUserId,
+    usersMetadata: {},
     users: [],
   });
   state.set('live.isLive', true);
   state.set('live.error', null);
+}
+
+const COLORS = [
+  [230, 103, 103],
+  [84, 109, 229],
+  [241, 144, 102],
+  [61, 193, 211],
+  [245, 205, 121],
+  [196, 69, 105],
+  [247, 143, 179],
+  [61, 193, 211],
+];
+
+export function addUserMetadata({ props, state }) {
+  const usersMetadata = state.get('live.roomInfo.usersMetadata');
+  const users = props.data.users;
+
+  users.forEach((user, i) => {
+    if (!usersMetadata[user.id]) {
+      state.set(`live.roomInfo.usersMetadata.${user.id}`, {
+        color: COLORS[i % (COLORS.length - 1)],
+        selections: {},
+      });
+    }
+  });
 }
 
 export function sendCurrentState({ state, ot, live }) {
@@ -42,6 +68,7 @@ export function sendCurrentState({ state, ot, live }) {
   const changedModuleShortids = state.get(`editor.changedModuleShortids`);
   const currentModuleShortid = state.get(`editor.currentModuleShortid`);
   const tabs = state.get(`editor.tabs`);
+  const roomInfo = state.get(`live.roomInfo`);
 
   const otData = ot.getData();
 
@@ -51,6 +78,7 @@ export function sendCurrentState({ state, ot, live }) {
     changedModuleShortids,
     currentModuleShortid,
     tabs,
+    roomInfo,
   });
 }
 
@@ -61,6 +89,7 @@ export function consumeState({ props, ot }) {
     tabs,
     currentModuleShortid,
     otData,
+    roomInfo,
   } = props.data;
 
   ot.consumeData(otData);
@@ -70,7 +99,58 @@ export function consumeState({ props, ot }) {
     changedModuleShortids,
     tabs,
     currentModuleShortid,
+    roomInfo,
   };
+}
+
+export function sendSelection({ props, state, live }) {
+  const userId = state.get('user.id');
+  const moduleShortid = props.moduleShortid;
+  const selection = props.selection;
+
+  state.set(
+    `live.roomInfo.usersMetadata.${userId}.selections.${moduleShortid}`,
+    selection
+  );
+
+  live.send('user:selection', {
+    userId,
+    moduleShortid,
+    selection,
+  });
+}
+
+export function updateSelection({ props, state }) {
+  const userId = props.data.userId;
+  const moduleShortid = props.data.moduleShortid;
+  const selection = props.data.selection;
+
+  state.set(
+    `live.roomInfo.usersMetadata.${userId}.selections.${moduleShortid}`,
+    selection
+  );
+}
+
+export function sendSelectionToEditor({ props, state }) {
+  const userId = props.data.userId;
+  const moduleShortid = props.data.moduleShortid;
+  const selection = props.data.selection;
+
+  if (
+    moduleShortid === state.get('editor.currentModuleShortid') &&
+    userId !== state.get('user.id')
+  ) {
+    const user = state
+      .get('live.roomInfo.users')
+      .find(user => user.id === userId);
+
+    state.push('editor.pendingUserSelections', {
+      userId,
+      name: user.username,
+      selection,
+      color: state.get(`live.roomInfo.usersMetadata.${userId}.color`).toJS(),
+    });
+  }
 }
 
 function sendModuleInfo(

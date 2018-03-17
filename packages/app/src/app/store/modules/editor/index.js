@@ -31,6 +31,7 @@ export default Module({
     glyphs: [],
     corrections: [],
     pendingOperation: null,
+    pendingUserSelections: [],
     isInProjectView: false,
     forceRender: 0,
     initialPath: '/',

@@ -23,5 +23,6 @@ export default Module({
     applyTransformation: sequences.applyTransformation,
     onCodeReceived: sequences.unSetReceivingStatus,
     onOperationApplied: sequences.clearPendingOperation,
+    onSelectionChanged: sequences.sendSelection,
   },
 });

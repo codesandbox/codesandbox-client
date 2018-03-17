@@ -2,7 +2,7 @@
 import * as React from 'react';
 import { ThemeProvider } from 'styled-components';
 import { Prompt } from 'react-router-dom';
-import { reaction } from 'mobx';
+import { reaction, autorun } from 'mobx';
 import { TextOperation } from 'ot';
 import { inject, observer } from 'mobx-react';
 import getTemplateDefinition from 'common/templates';
@@ -228,6 +228,14 @@ class EditorPreview extends React.Component<Props, State> {
       }
     );
 
+    const disposeLiveSelectionHandler = autorun(() => {
+      if (store.editor.pendingUserSelections) {
+        if (editor.updateUserSelections) {
+          editor.updateUserSelections(store.editor.pendingUserSelections);
+        }
+      }
+    });
+
     const disposeModuleHandler = reaction(
       () => [store.editor.currentModule, store.editor.currentModule.code],
       ([newModule]) => {
@@ -267,6 +275,7 @@ class EditorPreview extends React.Component<Props, State> {
       disposeGlyphsHandler();
       disposeLiveHandler();
       disposePendingOperationHandler();
+      disposeLiveSelectionHandler();
     };
   };
 
@@ -374,6 +383,7 @@ class EditorPreview extends React.Component<Props, State> {
               }
               isLive={store.live.isLive}
               onCodeReceived={signals.live.onCodeReceived}
+              onSelectionChanged={signals.live.onSelectionChanged}
               onNpmDependencyAdded={name => {
                 if (sandbox.owned) {
                   signals.editor.addNpmDependency({ name, isDev: true });

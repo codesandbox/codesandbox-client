@@ -1,4 +1,5 @@
 import { types } from 'mobx-state-tree';
+import { UserSelection } from '../live/model';
 
 const Author = types.model({
   avatarUrl: types.string,
@@ -99,6 +100,14 @@ export default {
   changedModuleShortids: types.array(types.string),
   pendingOperation: types.maybe(
     types.array(types.union(types.string, types.number))
+  ),
+  pendingUserSelections: types.array(
+    types.model({
+      userId: types.string,
+      name: types.string,
+      selection: UserSelection,
+      color: types.array(types.number),
+    })
   ),
   tabs: types.array(
     types.model({
