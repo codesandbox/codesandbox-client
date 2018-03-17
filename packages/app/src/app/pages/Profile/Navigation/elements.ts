@@ -1,10 +1,12 @@
-import styled from 'styled-components';
-import { NavLink } from 'react-router-dom';
+import styled, { component } from 'app/styled-components';
+import { NavLink, NavLinkProps } from 'react-router-dom';
 
 import Row from 'common/components/flex/Row';
 import delayEffect from 'common/utils/animation/delay-effect';
 
-export const NavigationLink = styled(NavLink)`
+export const NavigationLink = styled(component<{
+  border?: string
+}, NavLinkProps>(NavLink))`
   transition: 0.3s ease all;
 
   display: block;

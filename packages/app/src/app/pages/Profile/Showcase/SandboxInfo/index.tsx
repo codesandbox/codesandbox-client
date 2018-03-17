@@ -1,9 +1,10 @@
-import React from 'react';
+import * as React from 'react';
 
 import { sandboxUrl } from 'common/utils/url-generator';
 import Row from 'common/components/flex/Row';
 import Stat from 'app/components/Stat';
 
+// @ts-ignore
 import SvgButton from './play-button.svg';
 import {
   Container,

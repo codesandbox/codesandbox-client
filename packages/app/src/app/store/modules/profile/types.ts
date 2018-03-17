@@ -21,13 +21,13 @@ export type Sandbox = {
   viewCount: number
 }
 
-type Badge = {
+export type Badge = {
   visible: boolean
   name: string
   id: string
 }
 
-type Profile = {
+export type Profile = {
   viewCount: number
   username: string
   subscriptionSince: string

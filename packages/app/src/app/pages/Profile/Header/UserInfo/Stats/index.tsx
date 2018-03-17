@@ -1,11 +1,20 @@
-import React from 'react';
+import * as React from 'react';
 
 import Stat from 'app/components/Stat';
 
 import Badges from './Badges';
 import { Container, Stats } from './elements';
 
-function StatsComponent({ viewCount, likeCount, forkCount, badges }) {
+import { Badge } from 'app/store/modules/profile/types'
+
+type Props = {
+  viewCount: number
+  likeCount: number
+  forkCount: number
+  badges: Badge[]
+}
+
+const StatsComponent: React.SFC<Props> = ({ viewCount, likeCount, forkCount, badges }) => {
   return (
     <Container>
       <Badges badges={badges} />

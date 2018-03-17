@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from 'app/styled-components';
 import Padding from 'common/components/spacing/Padding';
 import Margin from 'common/components/spacing/Margin';
 

@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from 'app/styled-components';
 import delayEffect from 'common/utils/animation/delay-effect';
 import { Link } from 'react-router-dom';
 import LikeHeart from 'app/pages/common/LikeHeart';

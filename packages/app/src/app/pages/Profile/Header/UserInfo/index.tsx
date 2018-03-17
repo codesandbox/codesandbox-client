@@ -5,7 +5,13 @@ import Row from 'common/components/flex/Row';
 import ProfileInfo from './ProfileInfo';
 import Stats from './Stats';
 
-function UserInfo({ user }) {
+import { Profile } from 'app/store/modules/profile/types'
+
+type Props = {
+  user: Profile
+}
+
+const UserInfo: React.SFC<Props> = ({ user }) => {
   return (
     <Row>
       <ProfileInfo

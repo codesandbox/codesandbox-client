@@ -50,10 +50,23 @@ const {
   ThemeProvider
 } = styledComponents as ThemedStyledComponentsModule<ThemeInterface>;
 
+const allowedDomProps = [
+  'className',
+  'style'
+]
 
+function filterProps (props) {
+  return Object.keys(props).reduce((currentProps, key) => {
+    if (allowedDomProps.indexOf(key) >= 0) {
+      currentProps[key] = props[key]
+    }
 
-export function component<Props> (component?: string | React.ComponentClass<Props> | React.StatelessComponent<Props>): React.StatelessComponent<ComponentProps<Props>> {
-  return props => React.createElement(component || 'div', props, props.children)
+    return currentProps
+  }, {})  as any
+}
+
+export function component<Props, ExtendedProps = {}> (component: string | React.ComponentClass<ExtendedProps> | React.StatelessComponent<ExtendedProps> = 'div'): React.StatelessComponent<ComponentProps<Props & ExtendedProps>> {
+  return props => React.createElement(component, typeof component === 'string' ? filterProps(props) : props, props.children)
 }
 
 export { css, injectGlobal, keyframes, ThemeProvider };

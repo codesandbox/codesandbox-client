@@ -29,7 +29,7 @@ import {
 type Props = {
   sandboxes: Sandbox[],
   isCurrentUser: boolean,
-  onDelete: (id: string) => void,
+  onDelete?: (id: string) => void,
 };
 
 const SandboxList: React.SFC<Props> =  ({ sandboxes, isCurrentUser, onDelete }) => (
@@ -49,7 +49,7 @@ const SandboxList: React.SFC<Props> =  ({ sandboxes, isCurrentUser, onDelete }) 
         <StatTitle>
           <ForkIcon />
         </StatTitle>
-        {isCurrentUser && <HeaderTitle />}
+        {isCurrentUser && onDelete && <HeaderTitle />}
       </tr>
     </thead>
     <Body>
@@ -69,7 +69,7 @@ const SandboxList: React.SFC<Props> =  ({ sandboxes, isCurrentUser, onDelete }) 
             <StatBody>{s.likeCount}</StatBody>
             <StatBody>{s.viewCount}</StatBody>
             <StatBody>{s.forkCount}</StatBody>
-            {isCurrentUser && (
+            {isCurrentUser && onDelete && (
               <StatBody
                 style={{ padding: '0.55rem 0.5rem', cursor: 'pointer' }}
               >

@@ -1,6 +1,8 @@
-import styled, { css } from 'styled-components';
+import styled, { css, component } from 'app/styled-components';
 
-export const Container = styled.div`
+export const Container = styled(component<{
+    loggedIn: boolean
+}>())`
   display: inline-block;
   transition: 0.3s ease all;
 

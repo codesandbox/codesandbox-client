@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 
 import Navigation from 'app/pages/common/Navigation';
 import MaxWidth from 'common/components/flex/MaxWidth';
@@ -6,7 +6,13 @@ import MaxWidth from 'common/components/flex/MaxWidth';
 import UserInfo from './UserInfo';
 import { Top, FullWidthPadding, FullWidthMargin } from './elements';
 
-export default class Header extends React.PureComponent {
+import { Profile } from 'app/store/modules/profile/types'
+
+type Props = {
+  user: Profile
+}
+
+export default class Header extends React.PureComponent<Props> {
   render() {
     const { user } = this.props;
     return (

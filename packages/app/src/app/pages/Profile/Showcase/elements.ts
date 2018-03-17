@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from 'app/styled-components';
 
 export const ErrorTitle = styled.div`
   font-size: 1.25rem;

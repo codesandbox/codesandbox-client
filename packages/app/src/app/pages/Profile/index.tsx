@@ -14,7 +14,7 @@ import NotFound from 'app/pages/common/NotFound';
 import Header from './Header';
 import Navigation from './Navigation';
 import Showcase from './Showcase';
-import Sandboxes from './Sandboxes';
+import Sandboxes, { Source } from './Sandboxes';
 
 import { Container, Content } from './elements';
 
@@ -82,7 +82,7 @@ export default connect<Props>()
                     // eslint-disable-next-line
                     children={({ match }) => (
                       <Sandboxes
-                        source="currentSandboxes"
+                        source={Source.currentSandboxes}
                         page={match.params.page && +match.params.page}
                         baseUrl={profileSandboxesUrl(user.username)}
                       />
@@ -93,7 +93,7 @@ export default connect<Props>()
                     // eslint-disable-next-line
                     children={({ match }) => (
                       <Sandboxes
-                        source="currentLikedSandboxes"
+                        source={Source.currentLikedSandoxes}
                         page={match.params.page && +match.params.page}
                         baseUrl={profileLikesUrl(user.username)}
                       />
