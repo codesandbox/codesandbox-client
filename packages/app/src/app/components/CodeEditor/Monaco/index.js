@@ -148,11 +148,11 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     await this.openNewModel(currentModule.id, currentModule.title);
 
     this.addKeyCommands();
-    import(/* webpackChunkName: 'monaco-emmet' */ './enable-emmet').then(
-      enableEmmet => {
-        enableEmmet.default(editor, monaco, {});
-      }
-    );
+    // import(/* webpackChunkName: 'monaco-emmet' */ './enable-emmet').then(
+    //   enableEmmet => {
+    //     enableEmmet.default(editor, monaco, {});
+    //   }
+    // );
 
     window.addEventListener('resize', this.resizeEditor);
     this.sizeProbeInterval = setInterval(this.resizeEditor.bind(this), 3000);

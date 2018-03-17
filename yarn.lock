@@ -10413,15 +10413,9 @@ moment@^2.18.1:
   version "2.19.2"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.19.2.tgz#8a7f774c95a64550b4c7ebd496683908f9419dbe"
 
-monaco-editor@CompuIves/codesandbox-monaco-editor:
-  version "0.9.0"
-  resolved "https://codeload.github.com/CompuIves/codesandbox-monaco-editor/tar.gz/e4e1efb582934ffd8fb135b1cfa1af82cdbc85e3"
-  dependencies:
-    monaco-typescript CompuIves/monaco-typescript
-
-monaco-typescript@CompuIves/monaco-typescript:
-  version "2.2.0"
-  resolved "https://codeload.github.com/CompuIves/monaco-typescript/tar.gz/eff3dd58fe3a6b15944838842aaf734910baa1d4"
+monaco-editor@^0.11.1:
+  version "0.11.1"
+  resolved "https://registry.yarnpkg.com/monaco-editor/-/monaco-editor-0.11.1.tgz#17066de2e1399dcedb095045f5737b0f99f43750"
 
 monaco-vue@^0.2.1:
   version "0.2.1"
