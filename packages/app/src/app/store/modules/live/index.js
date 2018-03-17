@@ -22,6 +22,6 @@ export default Module({
     onTransformMade: sequences.sendTransform,
     applyTransformation: sequences.applyTransformation,
     onCodeReceived: sequences.unSetReceivingStatus,
-    onOperationsApplied: sequences.onOperationsApplied,
+    onOperationApplied: sequences.clearPendingOperation,
   },
 });

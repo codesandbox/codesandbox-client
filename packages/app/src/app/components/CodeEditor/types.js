@@ -39,7 +39,7 @@ export interface Editor {
   currentModule?: Module;
   setTSConfig?: (tsConfig: Object) => void;
   setReceivingCode?: (receivingCode: boolean) => void;
-  applyOperations?: (operations: Array<any>) => void;
+  applyOperation?: (operation: any) => void;
 }
 
 export type Props = {

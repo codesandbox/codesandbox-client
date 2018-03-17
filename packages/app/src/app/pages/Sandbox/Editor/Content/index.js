@@ -208,22 +208,26 @@ class EditorPreview extends React.Component<Props, State> {
       }
     );
 
-    const disposeOperationsToApplyHandler = reaction(
-      () => store.editor.operationsToApply.map(x => x),
+    const disposePendingOperationHandler = reaction(
+      () =>
+        store.editor.pendingOperation &&
+        store.editor.pendingOperation.map(x => x),
       () => {
-        if (editor.applyOperations) {
-          editor.applyOperations(
-            store.editor.operationsToApply.map(TextOperation.fromJSON)
-          );
+        if (store.editor.pendingOperation) {
+          if (editor.applyOperation) {
+            editor.applyOperation(
+              TextOperation.fromJSON(store.editor.pendingOperation)
+            );
 
-          this.props.signals.live.onOperationsApplied();
-        } else {
-          console.log('not applying; setting code manually');
-          // TODO apply logic itself and call `editor.changeCode` manually
+            this.props.signals.live.onOperationApplied();
+          } else {
+            console.log('not applying; setting code manually');
+            // TODO apply logic itself and call `editor.changeCode` manually
+          }
         }
       }
     );
-    console.log(disposeOperationsToApplyHandler);
+
     const disposeModuleHandler = reaction(
       () => [store.editor.currentModule, store.editor.currentModule.code],
       ([newModule]) => {
@@ -262,7 +266,7 @@ class EditorPreview extends React.Component<Props, State> {
       disposeResizeHandler();
       disposeGlyphsHandler();
       disposeLiveHandler();
-      disposeOperationsToApplyHandler();
+      disposePendingOperationHandler();
     };
   };
 

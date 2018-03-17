@@ -169,10 +169,17 @@ export const applyTransformation = [
     (s1, s2) => s1 === s2
   ),
   {
-    true: [push(state`editor.operationsToApply`, props`operation`)],
+    true: [
+      actions.computePendingOperation,
+      set(state`editor.pendingOperation`, props`pendingOperation`),
+    ],
     false: [actions.applyTransformation, changeCode],
   },
   actions.unSetReceivingStatus,
 ];
 
 export const unSetReceivingStatus = [actions.unSetReceivingStatus];
+
+export const clearPendingOperation = [
+  set(state`editor.pendingOperation`, null),
+];

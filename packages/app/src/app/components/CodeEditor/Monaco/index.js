@@ -228,52 +228,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       const { isLive, sendTransforms, onCodeReceived } = this.props;
 
       if (isLive && sendTransforms && !this.receivingCode) {
-        let code = this.currentModule.code || '';
-        const t = changes
-          .map(change => {
-            const startPos = change.range.getStartPosition();
-            const lines = code.split('\n');
-            let index = 0;
-            const totalLength = code.length;
-            let currentLine = 0;
-
-            while (currentLine + 1 < startPos.lineNumber) {
-              index += lines[currentLine].length;
-              index += 1; // Linebreak character
-              currentLine += 1;
-            }
-
-            index += startPos.column - 1;
-
-            const operation = new TextOperation();
-            if (index) {
-              operation.retain(index);
-            }
-
-            if (change.rangeLength > 0) {
-              // Deletion
-              operation.delete(change.rangeLength);
-
-              index += change.rangeLength;
-            }
-            if (change.text) {
-              // Insertion
-              operation.insert(change.text);
-            }
-
-            operation.retain(Math.max(0, totalLength - index));
-
-            if (changes.length > 1) {
-              code = operation.apply(code);
-            }
-
-            return operation;
-          })
-          .reduce((prev, next) => prev.compose(next));
-
-        sendTransforms(t);
-      } else if (onCodeReceived) {
-        onCodeReceived();
+        this.addChangesOperation(changes);
       }
     });
 
@@ -364,6 +319,82 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     });
   };
 
+  changes = { code: '', changes: [] };
+  changeTimeout: ?TimeoutID;
+  /**
+   * Throttle the changes and handle them after a desired amount of time as one array of changes
+   */
+  addChangesOperation = (changes: Array<any>) => {
+    if (!this.changes.code) {
+      this.changes.code = this.currentModule.code || '';
+    }
+
+    changes.forEach(change => {
+      this.changes.changes.push(change);
+    });
+
+    if (this.changeTimeout) {
+      clearTimeout(this.changeTimeout);
+    }
+    this.changeTimeout = setTimeout(() => {
+      this.sendChangeOperations();
+    }, 10);
+  };
+
+  sendChangeOperations = () => {
+    const { sendTransforms, isLive, onCodeReceived } = this.props;
+
+    if (sendTransforms && this.changes.changes) {
+      let code = this.changes.code;
+      const t = this.changes.changes
+        .map(change => {
+          const startPos = change.range.getStartPosition();
+          const lines = code.split('\n');
+          let index = 0;
+          const totalLength = code.length;
+          let currentLine = 0;
+
+          while (currentLine + 1 < startPos.lineNumber) {
+            index += lines[currentLine].length;
+            index += 1; // Linebreak character
+            currentLine += 1;
+          }
+
+          index += startPos.column - 1;
+
+          const operation = new TextOperation();
+          if (index) {
+            operation.retain(index);
+          }
+
+          if (change.rangeLength > 0) {
+            // Deletion
+            operation.delete(change.rangeLength);
+
+            index += change.rangeLength;
+          }
+          if (change.text) {
+            // Insertion
+            operation.insert(change.text);
+          }
+
+          operation.retain(Math.max(0, totalLength - index));
+
+          if (this.changes.changes.length > 1) {
+            code = operation.apply(code);
+          }
+
+          return operation;
+        })
+        .reduce((prev, next) => prev.compose(next));
+
+      sendTransforms(t);
+    } else if (!isLive && onCodeReceived) {
+      onCodeReceived();
+    }
+    this.changes = { code: '', changes: [] };
+  };
+
   changeSandbox = (
     newSandbox: Sandbox,
     newCurrentModule: Module,
@@ -407,20 +438,19 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     }
   };
 
-  applyOperations = ops => {
-    const monacoEditOperations = [];
-
-    ops.forEach(operation => {
-      const lines = this.editor.getModel().getLinesContent();
-
-      let index = 0;
-      for (let i = 0; i < operation.ops.length; i++) {
-        let op = operation.ops[i];
-        if (TextOperation.isRetain(op)) {
-          index += op;
-        } else if (TextOperation.isInsert(op)) {
-          const { lineNumber, column } = indexToLineAndColumn(lines, index);
-          monacoEditOperations.push({
+  applyOperation = (operation: any) => {
+    let index = 0;
+    for (let i = 0; i < operation.ops.length; i++) {
+      const op = operation.ops[i];
+      if (TextOperation.isRetain(op)) {
+        index += op;
+      } else if (TextOperation.isInsert(op)) {
+        const { lineNumber, column } = indexToLineAndColumn(
+          this.editor.getModel().getLinesContent(),
+          index
+        );
+        this.editor.getModel().applyEdits([
+          {
             range: new this.monaco.Range(
               lineNumber,
               column,
@@ -428,12 +458,15 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
               column
             ),
             text: op,
-          });
-          index += op.length;
-        } else if (TextOperation.isDelete(op)) {
-          const from = indexToLineAndColumn(lines, index);
-          const to = indexToLineAndColumn(lines, index - op);
-          monacoEditOperations.push({
+          },
+        ]);
+        index += op.length;
+      } else if (TextOperation.isDelete(op)) {
+        const lines = this.editor.getModel().getLinesContent();
+        const from = indexToLineAndColumn(lines, index);
+        const to = indexToLineAndColumn(lines, index - op);
+        this.editor.getModel().applyEdits([
+          {
             range: new this.monaco.Range(
               from.lineNumber,
               from.column,
@@ -441,12 +474,10 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
               to.column
             ),
             text: '',
-          });
-        }
+          },
+        ]);
       }
-    });
-
-    this.editor.getModel().applyEdits(monacoEditOperations);
+    }
   };
 
   changeDependencies = (
@@ -770,6 +801,9 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         // the old extraLib definition and defining a new one.
         modelCache[currentId].lib.dispose();
         modelCache[currentId].lib = this.addLib(currentModule.code || '', path);
+
+        // Reset changes
+        this.changes = { code: '', changes: [] };
       }
     }
 

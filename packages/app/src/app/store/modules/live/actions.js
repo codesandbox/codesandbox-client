@@ -220,3 +220,17 @@ export function acknowledgeOperation({ props, ot }) {
 
   ot.serverAck(moduleShortid);
 }
+
+export function computePendingOperation({ props, state }) {
+  const existingPendingOperation = state.get('editor.pendingOperation');
+
+  if (!existingPendingOperation) {
+    return { pendingOperation: props.operation };
+  }
+
+  const newPendingOperation = TextOperation.fromJSON(existingPendingOperation)
+    .compose(TextOperation.fromJSON(props.operation))
+    .toJSON();
+
+  return { pendingOperation: newPendingOperation };
+}
