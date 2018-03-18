@@ -55,6 +55,12 @@ const fadeIn = css.keyframes('fadeIn', {
   '100%': { opacity: 1 },
 });
 
+const fadeOut = css.keyframes('fadeOut', {
+  // optional name
+  '0%': { opacity: 1 },
+  '100%': { opacity: 0 },
+});
+
 function lineAndColumnToIndex(lines, lineNumber, column) {
   let currentLine = 0;
   let index = 0;
@@ -145,6 +151,10 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
     this.resizeEditor = debounce(this.resizeEditor, 500);
     this.commitLibChanges = debounce(this.commitLibChanges, 300);
+    this.onSelectionChangedDebounced = debounce(
+      this.onSelectionChangedDebounced,
+      500
+    );
   }
 
   shouldComponentUpdate(nextProps: Props) {
@@ -270,7 +280,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     });
 
     editor.onDidChangeModelContent(({ changes }) => {
-      const { isLive, sendTransforms, onCodeReceived } = this.props;
+      const { isLive, sendTransforms } = this.props;
 
       if (isLive && sendTransforms && !this.receivingCode) {
         this.addChangesOperation(changes);
@@ -278,16 +288,11 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     });
 
     editor.onDidChangeCursorSelection(selectionChange => {
+      // TODO: add another debounced action to send the current data. So we can
+      // have the correct cursor pos no matter what
       const { onSelectionChanged, isLive } = this.props;
       // Reason 3 is update by mouse or arrow keys
-      if (
-        isLive &&
-        (selectionChange.reason === 3 ||
-          /* alt + shift + arrow keys */ selectionChange.source ===
-            'moveWordCommand' ||
-          /* click inside a selection */ selectionChange.source === 'api') &&
-        onSelectionChanged
-      ) {
+      if (isLive) {
         const lines = editor.getModel().getLinesContent();
         const data = {
           primary: getSelection(lines, selectionChange.selection),
@@ -295,11 +300,25 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
             getSelection(lines, s)
           ),
         };
-
-        onSelectionChanged({
-          selection: data,
-          moduleShortid: this.currentModule.shortid,
-        });
+        if (
+          (selectionChange.reason === 3 ||
+            /* alt + shift + arrow keys */ selectionChange.source ===
+              'moveWordCommand' ||
+            /* click inside a selection */ selectionChange.source === 'api') &&
+          onSelectionChanged
+        ) {
+          onSelectionChanged({
+            selection: data,
+            moduleShortid: this.currentModule.shortid,
+          });
+        } else {
+          // This is just on typing, we send a debounced selection update as a
+          // safeguard to make sure we are in sync
+          this.onSelectionChangedDebounced({
+            selection: data,
+            moduleShortid: this.currentModule.shortid,
+          });
+        }
       }
     });
 
@@ -388,6 +407,12 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         this.setCorrections(corrections);
       }
     });
+  };
+
+  onSelectionChangedDebounced = data => {
+    if (this.props.onSelectionChanged) {
+      this.props.onSelectionChanged(data);
+    }
   };
 
   changes = { code: '', changes: [] };
@@ -519,30 +544,41 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         const secondarySelectionClassName = userId + '-secondary-selection';
 
         if (!this.userClassesGenerated[cursorClassName]) {
+          const nameStyles = {
+            content: name,
+            position: 'absolute',
+            top: -17,
+            backgroundColor: `rgb(${color[0]}, ${color[1]}, ${color[2]})`,
+            zIndex: 20,
+            color:
+              color[0] + color[1] + color[2] > 500
+                ? 'rgba(0, 0, 0, 0.8)'
+                : 'white',
+            padding: '2px 4px',
+            borderRadius: 2,
+            borderBottomLeftRadius: 0,
+            fontSize: '.75rem',
+            fontWeight: 600,
+          };
           this.userClassesGenerated[cursorClassName] = `${css({
             backgroundColor: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.8)`,
             width: '2px !important',
+            marginLeft: -1,
             cursor: 'text',
             zIndex: 30,
+            ':before': {
+              animation: `${fadeOut} 0.3s`,
+              animationDelay: '1s',
+              animationFillMode: 'forwards',
+              opacity: 1,
+              ...nameStyles,
+            },
             ':hover': {
               ':before': {
                 animation: `${fadeIn} 0.3s`,
                 animationFillMode: 'forwards',
                 opacity: 0,
-                content: name,
-                position: 'absolute',
-                top: -20,
-                backgroundColor: `rgb(${color[0]}, ${color[1]}, ${color[2]})`,
-                zIndex: 20,
-                color:
-                  color[0] + color[1] + color[2] > 500
-                    ? 'rgba(0, 0, 0, 0.8)'
-                    : 'white',
-                padding: '2px 6px',
-                borderRadius: 2,
-                borderBottomLeftRadius: 0,
-                fontSize: '.875rem',
-                fontWeight: 800,
+                ...nameStyles,
               },
             },
           })}`;
@@ -552,6 +588,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
           this.userClassesGenerated[secondaryCursorClassName] = `${css({
             backgroundColor: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.6)`,
             width: '2px !important',
+            marginLeft: -1,
           })}`;
         }
 
@@ -559,6 +596,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
           this.userClassesGenerated[selectionClassName] = `${css({
             backgroundColor: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.3)`,
             borderRadius: '3px',
+            minWidth: 7.6,
           })}`;
         }
 
@@ -566,6 +604,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
           this.userClassesGenerated[secondarySelectionClassName] = `${css({
             backgroundColor: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.2)`,
             borderRadius: '3px',
+            minWidth: 7.6,
           })}`;
         }
 
