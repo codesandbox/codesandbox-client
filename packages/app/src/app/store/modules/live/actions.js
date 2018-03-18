@@ -1,4 +1,5 @@
 import { TextOperation } from 'ot';
+import { camelizeKeys } from 'humps';
 
 export function createRoom({ api, props }) {
   const id = props.sandboxId;
@@ -17,8 +18,8 @@ export function connect({ live }) {
 export function joinChannel({ props, live, path }) {
   return live
     .joinChannel(props.roomId)
-    .then(res => path.success(res))
-    .catch(res => path.error(res));
+    .then(res => path.success(camelizeKeys(res)))
+    .catch(res => path.error(camelizeKeys(res)));
 }
 
 export function listen({ props, live }) {
@@ -50,13 +51,14 @@ const COLORS = [
 
 export function addUserMetadata({ props, state }) {
   const usersMetadata = state.get('live.roomInfo.usersMetadata');
-  const users = props.data.users;
+  const users = props.users;
 
   users.forEach((user, i) => {
-    if (!usersMetadata[user.id]) {
+    if (!usersMetadata.get(user.id)) {
       state.set(`live.roomInfo.usersMetadata.${user.id}`, {
         color: COLORS[i % (COLORS.length - 1)],
-        selections: {},
+        selection: null,
+        currentModuleShortid: state.get('editor.currentModuleShortid'),
       });
     }
   });
@@ -109,9 +111,10 @@ export function sendSelection({ props, state, live }) {
   const selection = props.selection;
 
   state.set(
-    `live.roomInfo.usersMetadata.${userId}.selections.${moduleShortid}`,
-    selection
+    `live.roomInfo.usersMetadata.${userId}.currentModuleShortid`,
+    moduleShortid
   );
+  state.set(`live.roomInfo.usersMetadata.${userId}.selection`, selection);
 
   live.send('user:selection', {
     userId,
@@ -120,29 +123,68 @@ export function sendSelection({ props, state, live }) {
   });
 }
 
+export function consumeUserEnteredState({ props }) {
+  const users = camelizeKeys(props.data.users);
+
+  return { users };
+}
+
 export function updateSelection({ props, state }) {
   const userId = props.data.userId;
   const moduleShortid = props.data.moduleShortid;
   const selection = props.data.selection;
 
   state.set(
-    `live.roomInfo.usersMetadata.${userId}.selections.${moduleShortid}`,
-    selection
+    `live.roomInfo.usersMetadata.${userId}.currentModuleShortid`,
+    moduleShortid
   );
+  state.set(`live.roomInfo.usersMetadata.${userId}.selection`, selection);
+
+  return {
+    userId,
+    moduleShortid,
+    selection,
+  };
+}
+
+export function getSelectionsForCurrentModule({ state }) {
+  const selections = [];
+  const moduleShortid = state.get('editor.currentModuleShortid');
+
+  state.get('live.roomInfo.usersMetadata').forEach((user, userId) => {
+    if (
+      userId === state.get('user.id') ||
+      user.currentModuleShortid !== moduleShortid
+    ) {
+      return;
+    }
+
+    const userInfo = state
+      .get(`live.roomInfo.users`)
+      .find(u => u.id === userId);
+    if (user.selection) {
+      selections.push({
+        userId,
+        color: user.color.toJS(),
+        name: userInfo.username,
+        selection: user.selection.toJSON(),
+      });
+    }
+  });
+
+  return { selections };
 }
 
 export function sendSelectionToEditor({ props, state }) {
-  const userId = props.data.userId;
-  const moduleShortid = props.data.moduleShortid;
-  const selection = props.data.selection;
+  const userId = props.userId;
+  const moduleShortid = props.moduleShortid;
+  const selection = props.selection;
 
   if (
     moduleShortid === state.get('editor.currentModuleShortid') &&
     userId !== state.get('user.id')
   ) {
-    const user = state
-      .get('live.roomInfo.users')
-      .find(user => user.id === userId);
+    const user = state.get('live.roomInfo.users').find(u => u.id === userId);
 
     state.push('editor.pendingUserSelections', {
       userId,
@@ -236,6 +278,27 @@ export function sendDirectoryUpdated(context) {
     'directory',
     context.props.directoryShortid
   );
+}
+
+export function sendChangeCurrentModule({ props, state, live }) {
+  const module = state
+    .get('editor.currentSandbox.modules')
+    .find(m => m.id === props.id);
+
+  live.send('user:current-module', {
+    moduleShortid: module.shortid,
+  });
+}
+
+export function clearUserSelections({ props, state }) {
+  state.set(
+    `live.roomInfo.usersMetadata.${props.data.user_id}.selection`,
+    null
+  );
+  state.push('editor.pendingUserSelections', {
+    userId: props.data.user_id,
+    selection: null,
+  });
 }
 
 export function consumeModule({ props }) {

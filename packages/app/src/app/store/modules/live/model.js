@@ -11,7 +11,8 @@ export const UserSelection = types.model({
 });
 
 const UserMetadata = types.model({
-  selections: types.map(UserSelection),
+  selection: types.maybe(UserSelection),
+  currentModuleShortid: types.string,
   color: types.array(types.number),
 });
 

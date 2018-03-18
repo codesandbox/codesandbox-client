@@ -25,16 +25,22 @@ export const initializeLive = factories.withLoadApp([
 ]);
 
 const isOwnMessage = when(
-  props`data.userId`,
+  props`data.user_id`,
   state`user.id`,
   (givenId, localId) => givenId === localId
 );
+
+export const applySelectionsForModule = [
+  actions.getSelectionsForCurrentModule,
+  set(state`editor.pendingUserSelections`, props`selections`),
+];
 
 export const handleMessage = [
   equals(props`event`),
   {
     'user:entered': [
-      set(state`live.roomInfo.users`, props`data.users`),
+      actions.consumeUserEnteredState,
+      set(state`live.roomInfo.users`, props`users`),
       flow.isCurrentEditor,
       {
         true: [
@@ -71,6 +77,7 @@ export const handleMessage = [
             ],
             false: [],
           },
+          applySelectionsForModule,
         ],
       },
     ],
@@ -145,6 +152,19 @@ export const handleMessage = [
         false: [actions.updateSelection, actions.sendSelectionToEditor],
       },
     ],
+    'user:current-module': [
+      isOwnMessage,
+      {
+        true: [],
+        false: [
+          set(
+            state`live.roomInfo.usersMetadata.${props`data.user_id`}.currentModuleShortid`,
+            props`data.moduleShortid`
+          ),
+          actions.clearUserSelections,
+        ],
+      },
+    ],
     operation: [
       isOwnMessage,
       {
@@ -187,4 +207,8 @@ export const unSetReceivingStatus = [actions.unSetReceivingStatus];
 
 export const clearPendingOperation = [
   set(state`editor.pendingOperation`, null),
+];
+
+export const clearPendingUserSelections = [
+  set(state`editor.pendingUserSelections`, []),
 ];

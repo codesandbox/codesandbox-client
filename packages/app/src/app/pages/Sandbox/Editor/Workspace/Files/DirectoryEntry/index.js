@@ -1,5 +1,5 @@
 import React from 'react';
-import { inject } from 'mobx-react';
+import { inject, observer } from 'mobx-react';
 import { DropTarget } from 'react-dnd';
 import Modal from 'app/components/Modal';
 import Alert from 'app/components/Alert';
@@ -14,7 +14,9 @@ class DirectoryEntry extends React.Component {
   constructor(props) {
     super(props);
 
-    const { id, modules, directories, currentModuleId } = this.props;
+    const { id, store } = this.props;
+    const { modules, directories } = store.editor.currentSandbox;
+    const currentModuleId = store.editor.currentModule.id;
     const currentModuleParents = getModuleParents(
       modules,
       directories,
@@ -42,9 +44,12 @@ class DirectoryEntry extends React.Component {
   componentWillReceiveProps(nextProps, nextState) {
     if (
       !nextState.open &&
-      this.props.currentModuleId !== nextProps.currentModuleId
+      this.props.store.editor.currentModule !==
+        nextProps.store.editor.currentModule
     ) {
-      const { id, modules, directories, currentModuleId } = nextProps;
+      const { id, store } = nextProps;
+      const { modules, directories } = store.editor.currentSandbox;
+      const currentModuleId = store.editor.currentModule.id;
       const currentModuleParents = getModuleParents(
         modules,
         directories,
@@ -129,7 +134,8 @@ class DirectoryEntry extends React.Component {
   setOpen = open => this.setState({ open });
 
   validateModuleTitle = (_, title) => {
-    const { directories, modules, id } = this.props;
+    const { store, id } = this.props;
+    const { directories, modules } = store.editor.currentSandbox;
     return validateTitle(id, title, [...directories, ...modules]);
   };
 
@@ -141,11 +147,15 @@ class DirectoryEntry extends React.Component {
   };
 
   getChildren = () => {
-    const { modules, directories, shortid } = this.props;
+    const { shortid } = this.props;
 
     return [
-      ...modules.filter(m => m.directoryShortid === shortid),
-      ...directories.filter(d => d.directoryShortid === shortid),
+      ...this.props.store.editor.currentSandbox.modules.filter(
+        m => m.directoryShortid === shortid
+      ),
+      ...this.props.store.editor.currentSandbox.directories.filter(
+        d => d.directoryShortid === shortid
+      ),
     ];
   };
 
@@ -161,23 +171,18 @@ class DirectoryEntry extends React.Component {
     const {
       id,
       shortid,
-      sandboxId,
-      sandboxTemplate,
-      modules,
-      directories,
-      title,
-      openMenu,
-      currentModuleId,
       connectDropTarget, // eslint-disable-line
       isOver, // eslint-disable-line
-      isInProjectView,
       depth = 0,
       root,
-      mainModuleId,
-      errors,
-      corrections,
+      store,
     } = this.props;
     const { creating, open } = this.state;
+    const currentSandbox = store.editor.currentSandbox;
+
+    const title = root
+      ? 'Project'
+      : currentSandbox.directories.find(m => m.id === id).title;
 
     return connectDropTarget(
       <div style={{ position: 'relative' }}>
@@ -199,7 +204,6 @@ class DirectoryEntry extends React.Component {
               onCreateDirectoryClick={this.onCreateDirectoryClick}
               deleteEntry={!root && this.deleteDirectory}
               hasChildren={this.getChildren().length > 0}
-              openMenu={openMenu}
               closeTree={this.closeTree}
             />
             <Modal
@@ -243,22 +247,12 @@ class DirectoryEntry extends React.Component {
             />
           )}
           <DirectoryChildren
-            modules={modules}
-            directories={directories}
             depth={depth}
             renameModule={this.renameModule}
-            openMenu={openMenu}
-            sandboxId={sandboxId}
-            mainModuleId={mainModuleId}
-            sandboxTemplate={sandboxTemplate}
             parentShortid={shortid}
             deleteEntry={this.deleteModule}
             setCurrentModule={this.setCurrentModule}
-            currentModuleId={currentModuleId}
-            isInProjectView={isInProjectView}
             markTabsNotDirty={this.markTabsNotDirty}
-            errors={errors}
-            corrections={corrections}
           />
           <Modal
             isOpen={this.state.showDeleteModuleModal}
@@ -347,6 +341,6 @@ function collectTarget(connectMonitor, monitor) {
   };
 }
 
-export default inject('signals')(
-  DropTarget('ENTRY', entryTarget, collectTarget)(DirectoryEntry)
+export default inject('signals', 'store')(
+  DropTarget('ENTRY', entryTarget, collectTarget)(observer(DirectoryEntry))
 );

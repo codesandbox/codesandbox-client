@@ -1,8 +1,5 @@
 import { Provider } from 'cerebral';
 import { Socket } from 'phoenix';
-import { camelizeKeys } from 'humps';
-
-import { host } from 'common/utils/url-generator';
 
 let socket = null;
 let channel = null;
@@ -26,14 +23,14 @@ export default Provider({
     return new Promise((resolve, reject) => {
       channel
         .join()
-        .receive('ok', resp => resolve(camelizeKeys(resp)))
-        .receive('error', resp => reject(camelizeKeys(resp)));
+        .receive('ok', resp => resolve(resp))
+        .receive('error', resp => reject(resp));
     });
   },
   listen(signalPath) {
     const signal = this.context.controller.getSignal(signalPath);
     channel.onMessage = (event: any, data: any) => {
-      signal({ event, data: camelizeKeys(data) });
+      signal({ event, data });
 
       return data;
     };

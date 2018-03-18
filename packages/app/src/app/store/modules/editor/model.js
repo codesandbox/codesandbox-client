@@ -104,9 +104,9 @@ export default {
   pendingUserSelections: types.array(
     types.model({
       userId: types.string,
-      name: types.string,
-      selection: UserSelection,
-      color: types.array(types.number),
+      name: types.maybe(types.string),
+      selection: types.maybe(UserSelection),
+      color: types.maybe(types.array(types.number)),
     })
   ),
   tabs: types.array(

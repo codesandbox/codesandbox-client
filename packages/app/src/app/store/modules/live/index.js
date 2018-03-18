@@ -24,5 +24,6 @@ export default Module({
     onCodeReceived: sequences.unSetReceivingStatus,
     onOperationApplied: sequences.clearPendingOperation,
     onSelectionChanged: sequences.sendSelection,
+    onSelectionDecorationsApplied: sequences.clearPendingUserSelections,
   },
 });

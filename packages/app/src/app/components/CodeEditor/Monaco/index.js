@@ -488,19 +488,38 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
   userClassesGenerated = {};
   userSelectionDecorations = {};
-  userSelections = [];
   updateUserSelections = (
-    userSelections: Array<{
-      userId: string,
-      name: string,
-      selection: any,
-      color: Array<number>,
-    }>
+    userSelections: Array<
+      | {
+          userId: string,
+          selection: null,
+        }
+      | {
+          userId: string,
+          name: string,
+          selection: any,
+          color: Array<number>,
+        }
+    >
   ) => {
-    this.userSelections = userSelections;
     const lines = this.editor.getModel().getLinesContent();
 
     userSelections.forEach(data => {
+      if (data.selection === null) {
+        const { userId } = data;
+
+        const decorationId = this.currentModule.shortid + userId;
+        this.userSelectionDecorations[
+          decorationId
+        ] = this.editor.deltaDecorations(
+          this.userSelectionDecorations[decorationId] || [],
+          [],
+          data.userId
+        );
+
+        return;
+      }
+
       const decorations = [];
       const { selection, color, userId, name } = data;
 
@@ -559,11 +578,12 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
             borderBottomLeftRadius: 0,
             fontSize: '.75rem',
             fontWeight: 600,
+            userSelect: 'none',
+            pointerEvents: 'none',
           };
           this.userClassesGenerated[cursorClassName] = `${css({
             backgroundColor: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.8)`,
             width: '2px !important',
-            marginLeft: -1,
             cursor: 'text',
             zIndex: 30,
             ':before': {
@@ -588,7 +608,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
           this.userClassesGenerated[secondaryCursorClassName] = `${css({
             backgroundColor: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.6)`,
             width: '2px !important',
-            marginLeft: -1,
           })}`;
         }
 
@@ -632,14 +651,17 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         }
       }
 
-      this.userSelectionDecorations[
-        this.currentModule.shortid + userId
-      ] = this.editor.deltaDecorations(
-        this.userSelectionDecorations[this.currentModule.shortid + userId] ||
-          [],
-        decorations,
-        userId
-      );
+      // Allow new model to attach in case it's attaching
+      requestAnimationFrame(() => {
+        const decorationId = this.currentModule.shortid + userId;
+        this.userSelectionDecorations[
+          decorationId
+        ] = this.editor.deltaDecorations(
+          this.userSelectionDecorations[decorationId] || [],
+          decorations,
+          userId
+        );
+      });
     });
   };
 

@@ -10,7 +10,7 @@ import {
   currentPackageJSONCode,
   parsedConfigurations,
 } from './getters';
-import { isModuleSynced } from './computed';
+import { isModuleSynced, getType } from './computed';
 import { loadSandbox } from '../../sequences';
 
 export default Module({
@@ -57,6 +57,7 @@ export default Module({
   },
   computed: {
     isModuleSynced,
+    getType,
   },
   signals: {
     addNpmDependency: sequences.addNpmDependency,

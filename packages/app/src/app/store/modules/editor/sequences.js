@@ -2,7 +2,11 @@ import { set, when, equals, toggle, increment } from 'cerebral/operators';
 import { state, props, string } from 'cerebral/tags';
 import * as actions from './actions';
 import { closeTabByIndex } from '../../actions';
-import { sendModuleSaved } from '../live/actions';
+import {
+  sendModuleSaved,
+  getSelectionsForCurrentModule,
+  sendChangeCurrentModule,
+} from '../live/actions';
 import {
   ensureOwnedSandbox,
   forkSandbox,
@@ -44,7 +48,18 @@ export const stopResizing = set(state`editor.isResizing`, false);
 
 export const createZip = actions.createZip;
 
-export const changeCurrentModule = setCurrentModule(props`id`);
+export const changeCurrentModule = [
+  setCurrentModule(props`id`),
+  equals(state`live.isLive`),
+  {
+    true: [
+      getSelectionsForCurrentModule,
+      set(state`editor.pendingUserSelections`, props`selections`),
+      sendChangeCurrentModule,
+    ],
+    false: [],
+  },
+];
 
 export const unsetDirtyTab = actions.unsetDirtyTab;
 
