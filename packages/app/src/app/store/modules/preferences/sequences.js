@@ -61,5 +61,6 @@ export const getPaymentDetails = [
 export const updatePaymentDetails = [
   set(state`preferences.isLoadingPaymentDetails`, true),
   actions.updatePaymentDetails,
+  set(state`preferences.paymentDetails`, props`data`),
   set(state`preferences.isLoadingPaymentDetails`, false),
 ];
