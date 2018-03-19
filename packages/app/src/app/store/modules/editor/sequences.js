@@ -6,6 +6,7 @@ import {
   sendModuleSaved,
   getSelectionsForCurrentModule,
   sendChangeCurrentModule,
+  setReceivingStatus,
 } from '../live/actions';
 import {
   ensureOwnedSandbox,
@@ -49,6 +50,7 @@ export const stopResizing = set(state`editor.isResizing`, false);
 export const createZip = actions.createZip;
 
 export const changeCurrentModule = [
+  setReceivingStatus,
   setCurrentModule(props`id`),
   equals(state`live.isLive`),
   {

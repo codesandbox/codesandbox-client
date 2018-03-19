@@ -405,6 +405,13 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       if (corrections) {
         this.setCorrections(corrections);
       }
+
+      if (this.props.onCodeReceived) {
+        // Whenever the user changes a module we set up a state that defines
+        // that the changes of code are not sent to live users. We need to reset
+        // this state when we're doing changing modules
+        this.props.onCodeReceived();
+      }
     });
   };
 

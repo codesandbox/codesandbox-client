@@ -133,7 +133,7 @@ export function sendSelection({ props, state, live }) {
   });
 }
 
-export function consumeUserEnteredState({ props }) {
+export function consumeUserState({ props }) {
   const users = camelizeKeys(props.data.users);
 
   return { users };
@@ -397,6 +397,18 @@ export function getUserJoinedNotification({ props }) {
   const user = props.data.users.find(u => u.id === props.data.joined_user_id);
 
   return { message: `${user.username} joined the live session!` };
+}
+
+export function getUserLeftNotification({ props, state }) {
+  const users = state.get(`live.roomInfo.users`);
+  if (users) {
+    const user = users.find(u => u.id === props.data.left_user_id);
+    if (user) {
+      return { message: `${user.username} left the live session.` };
+    }
+  }
+
+  return { message: 'Someone left the live session' };
 }
 
 export function sendMode({ props, live }) {

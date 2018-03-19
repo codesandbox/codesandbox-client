@@ -11,6 +11,7 @@ export default Module({
     isLoading: false,
     isOwner: false,
     receivingCode: false,
+    reconnecting: false,
   },
   getters: {
     isCurrentEditor,

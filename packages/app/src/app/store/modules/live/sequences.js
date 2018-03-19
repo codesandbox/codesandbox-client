@@ -1,4 +1,4 @@
-import { set, push, when, equals } from 'cerebral/operators';
+import { unset, set, push, when, equals } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 
 import * as factories from '../../factories';
@@ -45,11 +45,23 @@ export const changeMode = [
 export const handleMessage = [
   equals(props`event`),
   {
+    join: [
+      set(props`message`, 'Connected to Live!'),
+      factories.addNotification(props`message`, 'success'),
+      set(state`live.reconnecting`, false),
+    ],
     'user:entered': [
-      actions.consumeUserEnteredState,
+      actions.consumeUserState,
       set(state`live.roomInfo.users`, props`users`),
-      actions.getUserJoinedNotification,
-      factories.addNotification(props`message`, 'notice'),
+      set(props`data.user_id`, props`data.joined_user_id`),
+      isOwnMessage,
+      {
+        false: [
+          actions.getUserJoinedNotification,
+          factories.addNotification(props`message`, 'notice'),
+        ],
+        true: [],
+      },
       equals(state`live.isOwner`),
       {
         true: [
@@ -59,6 +71,13 @@ export const handleMessage = [
         ],
         false: [],
       },
+    ],
+    'user:left': [
+      actions.getUserLeftNotification,
+      factories.addNotification(props`message`, 'notice'),
+      actions.consumeUserState,
+      set(state`live.roomInfo.users`, props`users`),
+      unset(state`live.roomInfo.usersMetadata.${props`data.left_user_id`}`),
     ],
     state: [
       isOwnMessage,
@@ -199,6 +218,20 @@ export const handleMessage = [
       {
         true: actions.acknowledgeOperation,
         false: actions.receiveTransformation,
+      },
+    ],
+    'connection-loss': [
+      equals(state`live.reconnecting`),
+      {
+        false: [
+          set(
+            props`message`,
+            'We lost connection with the live server, reconnecting...'
+          ),
+          factories.addNotification(props`message`, 'error'),
+          set(state`live.reconnecting`, true),
+        ],
+        true: [],
       },
     ],
     otherwise: [],

@@ -30,7 +30,10 @@ export default Provider({
   listen(signalPath) {
     const signal = this.context.controller.getSignal(signalPath);
     channel.onMessage = (event: any, data: any) => {
-      signal({ event, data });
+      const alteredEvent =
+        data == null && event === 'phx_err' ? 'connection-loss' : event;
+
+      signal({ event: alteredEvent, data: data == null ? {} : data });
 
       return data;
     };

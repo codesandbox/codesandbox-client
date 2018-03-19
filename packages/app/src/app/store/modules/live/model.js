@@ -22,6 +22,7 @@ export default {
   receivingCode: types.boolean,
   error: types.maybe(types.string),
   isOwner: types.boolean,
+  reconnecting: types.boolean,
   roomInfo: types.maybe(
     types.model({
       startTime: types.maybe(types.number),
