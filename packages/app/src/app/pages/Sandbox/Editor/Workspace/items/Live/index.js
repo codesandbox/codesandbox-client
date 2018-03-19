@@ -17,9 +17,12 @@ const Live = ({ signals, store }) => {
       {store.live.isLive ? (
         <LiveInfo
           setMode={signals.live.onModeChanged}
+          addEditor={signals.live.onAddEditorClicked}
+          removeEditor={signals.live.onRemoveEditorClicked}
           isOwner={store.live.isOwner}
           roomInfo={store.live.roomInfo}
           ownerId={store.editor.currentSandbox.author.id}
+          currentUserId={store.user.id}
         />
       ) : (
         <React.Fragment>

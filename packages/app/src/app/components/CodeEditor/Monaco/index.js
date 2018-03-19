@@ -1381,7 +1381,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     requestAnimationFrame(() => {
       if (modelInfo.cursorPos) {
         this.editor.setPosition(modelInfo.cursorPos);
-        this.editor.revealPositionInCenter(modelInfo.cursorPos);
+        this.editor.revealPosition(modelInfo.cursorPos);
       }
 
       this.syntaxHighlight(

@@ -8,7 +8,6 @@ import { changeCode } from '../editor/sequences';
 import { setModuleSaved } from '../editor/actions';
 import { removeModule, removeDirectory } from '../files/sequences';
 import * as actions from './actions';
-import * as flow from './flow';
 
 export const initializeLive = factories.withLoadApp([
   set(state`live.isLoading`, true),
@@ -67,8 +66,6 @@ export const handleMessage = [
         true: [],
         false: [
           actions.consumeState,
-          set(state`editor.sandboxes.${props`sandbox.id`}`, props`sandbox`),
-          setSandbox,
           set(
             state`editor.changedModuleShortids`,
             props`changedModuleShortids`
@@ -78,6 +75,8 @@ export const handleMessage = [
           equals(state`live.isLoading`),
           {
             true: [
+              set(state`editor.sandboxes.${props`sandbox.id`}`, props`sandbox`),
+              setSandbox,
               set(state`editor.tabs`, props`tabs`),
               set(
                 state`editor.currentModuleShortid`,
@@ -179,6 +178,22 @@ export const handleMessage = [
         false: [set(state`live.roomInfo.mode`, props`data.mode`)],
       },
     ],
+    'live:add-editor': [
+      isOwnMessage,
+      {
+        false: [
+          push(state`live.roomInfo.editorIds`, props`data.editor_user_id`),
+        ],
+        true: [],
+      },
+    ],
+    'live:remove-editor': [
+      isOwnMessage,
+      {
+        false: [actions.removeEditorFromState],
+        true: [],
+      },
+    ],
     operation: [
       isOwnMessage,
       {
@@ -225,4 +240,14 @@ export const clearPendingOperation = [
 
 export const clearPendingUserSelections = [
   set(state`editor.pendingUserSelections`, []),
+];
+
+export const addEditor = [
+  push(state`live.roomInfo.editorIds`, props`userId`),
+  actions.addEditor,
+];
+
+export const removeEditor = [
+  actions.removeEditorFromState,
+  actions.removeEditor,
 ];

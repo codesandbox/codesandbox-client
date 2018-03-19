@@ -155,9 +155,12 @@ export const getModulePath = (
   let path = '/';
   while (directory != null) {
     path = `/${directory.title}${path}`;
+    const lastDirectoryShortid = directory.directoryShortid;
     directory = findByShortid(directories, directory.directoryShortid);
 
-    if (!directory && directory.directoryShortid) {
+    // In this case it couldn't find the parent directory of this dir, so probably
+    // deleted. we just return '' in that case
+    if (!directory && lastDirectoryShortid) {
       return '';
     }
   }

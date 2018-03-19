@@ -2,7 +2,7 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 
 import GitHubIcon from 'react-icons/lib/go/mark-github';
-import LiveIcon from 'react-icons/lib/md/cast-connected';
+import LiveIcon from 'react-icons/lib/md/wifi-tethering';
 
 import getWorkspaceItems from 'app/store/modules/workspace/items';
 import Tooltip from 'common/components/Tooltip';

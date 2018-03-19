@@ -125,7 +125,9 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     }
 
     const Editor =
-      settings.vimMode || settings.codeMirror ? CodeMirror : Monaco;
+      (settings.vimMode || settings.codeMirror) && !props.isLive
+        ? CodeMirror
+        : Monaco;
 
     return (
       <div

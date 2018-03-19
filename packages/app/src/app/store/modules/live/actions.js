@@ -35,6 +35,7 @@ export function initializeLiveState({ props, state }) {
     mode: props.mode,
     usersMetadata: {},
     users: [],
+    startTime: Date.now(),
   });
   state.set('live.isLive', true);
   state.set('live.error', null);
@@ -402,4 +403,25 @@ export function sendMode({ props, live }) {
   live.send('live:mode', {
     mode: props.mode,
   });
+}
+
+export function addEditor({ props, live }) {
+  live.send('live:add-editor', {
+    editor_user_id: props.userId,
+  });
+}
+
+export function removeEditor({ props, live }) {
+  live.send('live:remove-editor', {
+    editor_user_id: props.userId,
+  });
+}
+
+export function removeEditorFromState({ props, state }) {
+  const userId = props.userId || props.data.editor_user_id;
+
+  const editors = state.get('live.roomInfo.editorIds');
+  const newEditors = editors.filter(id => id !== userId);
+
+  state.set('live.roomInfo.editorIds', newEditors);
 }

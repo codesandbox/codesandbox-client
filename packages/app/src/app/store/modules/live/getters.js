@@ -6,7 +6,9 @@ export function isCurrentEditor() {
   return (
     user &&
     this.isLive &&
-    (this.roomInfo.mode === 'open' || this.roomInfo.editorUserId === user.id)
+    (this.roomInfo.mode === 'open' ||
+      this.isOwner ||
+      (user && this.roomInfo.editorIds.indexOf(user.id) > 0))
   );
 }
 
@@ -17,8 +19,10 @@ export function liveUsersByModule() {
     return {};
   }
 
+  const currentUser = getParent(this).user.id;
+
   this.roomInfo.usersMetadata.forEach((user, userId) => {
-    if (userId !== getParent(this).user.id) {
+    if (currentUser && userId !== currentUser.id) {
       usersByModule[user.currentModuleShortid] =
         usersByModule[user.currentModuleShortid] || [];
       usersByModule[user.currentModuleShortid].push(user.color);

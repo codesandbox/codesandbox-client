@@ -65,6 +65,10 @@ export default class LiveButton extends React.PureComponent {
     }
   }
 
+  componentWillUnmount() {
+    clearInterval(this.timer);
+  }
+
   startHovering = () => {
     this.setState({ hovering: true });
   };

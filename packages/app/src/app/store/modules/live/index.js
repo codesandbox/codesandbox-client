@@ -27,5 +27,7 @@ export default Module({
     onSelectionChanged: sequences.sendSelection,
     onSelectionDecorationsApplied: sequences.clearPendingUserSelections,
     onModeChanged: sequences.changeMode,
+    onAddEditorClicked: sequences.addEditor,
+    onRemoveEditorClicked: sequences.removeEditor,
   },
 });

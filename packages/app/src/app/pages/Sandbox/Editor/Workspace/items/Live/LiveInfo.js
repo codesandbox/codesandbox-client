@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { observer } from 'mobx-react';
+import { sortBy } from 'lodash';
 
 import RecordIcon from 'react-icons/lib/md/fiber-manual-record';
 import Input from 'common/components/Input';
@@ -8,12 +9,9 @@ import Margin from 'common/components/spacing/Margin';
 import delay from 'common/utils/animation/delay-effect';
 
 import User from './User';
+import Countdown from './Countdown';
 
-import {
-  Description,
-  WorkspaceInputContainer,
-  WorkspaceSubtitle,
-} from '../../elements';
+import { Description } from '../../elements';
 
 const Container = styled.div`
   ${delay()};
@@ -26,23 +24,14 @@ const Title = styled.div`
   font-weight: 800;
   display: flex;
   align-items: center;
-  justify-content: center;
   vertical-align: middle;
 
-  padding-bottom: 1rem;
+  padding: 0.5rem 1rem;
+  padding-top: 0;
 
   svg {
     margin-right: 0.25rem;
   }
-`;
-
-const Separator = styled.hr`
-  height: 1px;
-  width: 100%;
-
-  background-color: rgba(255, 255, 255, 0.1);
-  border: none;
-  outline: none;
 `;
 
 const StyledInput = styled(Input)`
@@ -62,6 +51,7 @@ const SubTitle = styled.div`
 
 const Users = styled.div`
   padding: 0.25rem 1rem;
+  padding-top: 0;
   color: rgba(255, 255, 255, 0.8);
 `;
 
@@ -83,16 +73,19 @@ const Mode = styled.button`
   border: none;
   outline: none;
   background-color: transparent;
-  cursor: pointer;
+  cursor: ${props => (props.onClick ? 'pointer' : 'inherit')};
   color: white;
   opacity: ${props => (props.selected ? 1 : 0.6)};
   margin: 0.25rem 0;
 
   z-index: 3;
 
+  ${props =>
+    props.onClick &&
+    `
   &:hover {
     opacity: 1;
-  }
+  }`};
 `;
 
 const ModeDetails = styled.div`
@@ -123,15 +116,42 @@ class LiveInfo extends React.Component {
   };
 
   render() {
-    const { roomInfo, isOwner, ownerId, setMode } = this.props;
+    const {
+      roomInfo,
+      isOwner,
+      ownerId,
+      setMode,
+      addEditor,
+      removeEditor,
+      currentUserId,
+    } = this.props;
 
     const owner = roomInfo.users.find(u => u.id === ownerId);
-    const otherUsers = roomInfo.users.filter(x => x.id !== ownerId);
+
+    const editors = sortBy(
+      roomInfo.users.filter(
+        u => roomInfo.editorIds.indexOf(u.id) > -1 && u.id !== ownerId
+      ),
+      'username'
+    );
+    const otherUsers = sortBy(
+      roomInfo.users.filter(
+        u => u.id !== ownerId && roomInfo.editorIds.indexOf(u.id) === -1
+      ),
+      'username'
+    );
 
     return (
       <Container>
         <Title>
-          <RecordIcon /> {isOwner ? "You've gone live!" : 'You are live!'}
+          <div style={{ flex: 1, display: 'flex', alignItems: 'center' }}>
+            <RecordIcon /> {isOwner ? "You've gone live!" : 'You are live!'}
+          </div>
+          <div>
+            {roomInfo.startTime != null && (
+              <Countdown time={roomInfo.startTime} />
+            )}
+          </div>
         </Title>
         <Description>
           Share this link with others to invite them to the session:
@@ -141,37 +161,62 @@ class LiveInfo extends React.Component {
           value={`https://codesandbox.io/live/${roomInfo.roomId}`}
         />
 
-        {isOwner && (
-          <Margin top={1}>
-            <SubTitle>Live Mode</SubTitle>
-            <ModeSelect>
-              <ModeSelector i={roomInfo.mode === 'open' ? 0 : 1} />
-              <Mode
-                onClick={() => setMode({ mode: 'open' })}
-                selected={roomInfo.mode === 'open'}
-              >
-                <div>Open</div>
-                <ModeDetails>Everyone can edit</ModeDetails>
-              </Mode>
-              <Mode
-                onClick={() => setMode({ mode: 'classroom' })}
-                selected={roomInfo.mode === 'classroom'}
-              >
-                <div>Classroom</div>
-                <ModeDetails>Fine grained control over editors</ModeDetails>
-              </Mode>
-            </ModeSelect>
-          </Margin>
-        )}
+        <Margin top={1}>
+          <SubTitle>Live Mode</SubTitle>
+          <ModeSelect>
+            <ModeSelector i={roomInfo.mode === 'open' ? 0 : 1} />
+            <Mode
+              onClick={isOwner ? () => setMode({ mode: 'open' }) : undefined}
+              selected={roomInfo.mode === 'open'}
+            >
+              <div>Open</div>
+              <ModeDetails>Everyone can edit</ModeDetails>
+            </Mode>
+            <Mode
+              onClick={
+                isOwner ? () => setMode({ mode: 'classroom' }) : undefined
+              }
+              selected={roomInfo.mode === 'classroom'}
+            >
+              <div>Classroom</div>
+              <ModeDetails>Take control over who can edit</ModeDetails>
+            </Mode>
+          </ModeSelect>
+        </Margin>
 
         {owner && (
           <Margin top={1}>
             <SubTitle>Owner</SubTitle>
             <Users>
-              <User user={owner} roomInfo={roomInfo} type="Sandbox Owner" />
+              <User
+                currentUserId={currentUserId}
+                user={owner}
+                roomInfo={roomInfo}
+                type="Owner"
+              />
             </Users>
           </Margin>
         )}
+
+        {editors.length > 0 &&
+          roomInfo.mode === 'classroom' && (
+            <Margin top={1}>
+              <SubTitle>Editors</SubTitle>
+              <Users>
+                {editors.map(user => (
+                  <User
+                    currentUserId={currentUserId}
+                    key={user.id}
+                    showSwitch={isOwner && roomInfo.mode === 'classroom'}
+                    user={user}
+                    roomInfo={roomInfo}
+                    onClick={() => removeEditor({ userId: user.id })}
+                    type="Editor"
+                  />
+                ))}
+              </Users>
+            </Margin>
+          )}
 
         <Margin top={1}>
           <SubTitle>Users</SubTitle>
@@ -180,12 +225,14 @@ class LiveInfo extends React.Component {
             {otherUsers.length ? (
               otherUsers.map(user => (
                 <User
+                  currentUserId={currentUserId}
                   key={user.id}
-                  showSwitch={roomInfo.mode === 'classroom'}
-                  switchOn={false}
+                  showSwitch={isOwner && roomInfo.mode === 'classroom'}
                   user={user}
                   roomInfo={roomInfo}
+                  onClick={() => addEditor({ userId: user.id })}
                   type="Spectator"
+                  showPlusIcon
                 />
               ))
             ) : (
