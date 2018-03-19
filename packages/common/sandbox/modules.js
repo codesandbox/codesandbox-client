@@ -156,6 +156,10 @@ export const getModulePath = (
   while (directory != null) {
     path = `/${directory.title}${path}`;
     directory = findByShortid(directories, directory.directoryShortid);
+
+    if (!directory && directory.directoryShortid) {
+      return '';
+    }
   }
   return `${path}${module.title}`;
 };

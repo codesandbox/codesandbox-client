@@ -57,7 +57,6 @@ export default Module({
   },
   computed: {
     isModuleSynced,
-    getType,
   },
   signals: {
     addNpmDependency: sequences.addNpmDependency,

@@ -25,8 +25,9 @@ export default {
   roomInfo: types.maybe(
     types.model({
       roomId: types.string,
+      mode: types.string,
       sandboxId: types.string,
-      editorUserId: types.string,
+      editorIds: types.array(types.string),
       usersMetadata: types.map(UserMetadata),
       users: types.array(
         types.model({

@@ -84,10 +84,14 @@ export const createDirectory = [
   },
 ];
 
-export const deleteDirectory = [
-  ensureOwnedSandbox,
+export const removeDirectory = [
   set(state`editor.currentModuleShortid`, state`editor.mainModule.shortid`),
   actions.removeDirectory,
+];
+
+export const deleteDirectory = [
+  ensureOwnedSandbox,
+  removeDirectory,
   actions.deleteDirectory,
   {
     success: [sendDirectoryDeleted],
@@ -130,7 +134,7 @@ export const moveModuleToDirectory = [
   },
 ];
 
-export const deleteModule = [
+export const removeModule = [
   ensureOwnedSandbox,
   actions.whenModuleIsSelected,
   {
@@ -143,6 +147,10 @@ export const deleteModule = [
     false: [],
   },
   actions.removeModule,
+];
+
+export const deleteModule = [
+  removeModule,
   actions.deleteModule,
   {
     success: [sendModuleDeleted],

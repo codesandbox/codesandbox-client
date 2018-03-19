@@ -1,5 +1,6 @@
 import { TextOperation } from 'ot';
 import { camelizeKeys } from 'humps';
+import { sortBy } from 'lodash';
 
 export function createRoom({ api, props }) {
   const id = props.sandboxId;
@@ -30,7 +31,8 @@ export function initializeLiveState({ props, state }) {
   state.set('live.roomInfo', {
     roomId: props.roomId,
     sandboxId: props.sandboxId,
-    editorUserId: props.editorUserId,
+    editorIds: props.editorIds,
+    mode: props.mode,
     usersMetadata: {},
     users: [],
   });
@@ -38,25 +40,32 @@ export function initializeLiveState({ props, state }) {
   state.set('live.error', null);
 }
 
+let colorIndex = 0;
 const COLORS = [
-  [230, 103, 103],
-  [84, 109, 229],
-  [241, 144, 102],
-  [61, 193, 211],
-  [245, 205, 121],
-  [196, 69, 105],
-  [247, 143, 179],
-  [61, 193, 211],
+  [230, 103, 103], // rgb(230, 103, 103)
+  [84, 109, 229], // rgb(84, 109, 229)
+  [106, 176, 76], // rgb(106, 176, 76)
+  [241, 144, 102], // rgb(241, 144, 102)
+  [245, 205, 121], // rgb(245, 205, 121)
+  [48, 51, 107], // rgb(48, 51, 107)
+  [196, 69, 105], // rgb(196, 69, 105)
+  [247, 143, 179], // rgb(247, 143, 179)
+  [225, 95, 65], // rgb(225, 95, 65)
+  [87, 75, 144], // rgb(87, 75, 144)
+  [255, 56, 56], // rgb(255, 56, 56)
+  [197, 108, 240], // rgb(197, 108, 240)
+  [6, 82, 221], // rgb(6, 82, 221)
+  [164, 74, 63], // rgb(164, 74, 63)
 ];
 
 export function addUserMetadata({ props, state }) {
   const usersMetadata = state.get('live.roomInfo.usersMetadata');
   const users = props.users;
 
-  users.forEach((user, i) => {
+  sortBy(users, 'id').forEach((user, i) => {
     if (!usersMetadata.get(user.id)) {
       state.set(`live.roomInfo.usersMetadata.${user.id}`, {
-        color: COLORS[i % (COLORS.length - 1)],
+        color: COLORS[colorIndex++ % COLORS.length],
         selection: null,
         currentModuleShortid: state.get('editor.currentModuleShortid'),
       });
@@ -285,6 +294,11 @@ export function sendChangeCurrentModule({ props, state, live }) {
     .get('editor.currentSandbox.modules')
     .find(m => m.id === props.id);
 
+  state.set(
+    `live.roomInfo.usersMetadata.${state.get('user.id')}.currentModuleShortid`,
+    module.shortid
+  );
+
   live.send('user:current-module', {
     moduleShortid: module.shortid,
   });
@@ -334,7 +348,7 @@ export function sendTransform({ ot, props }) {
 }
 
 export function receiveTransformation({ ot, props }) {
-  ot.applyServer(props.data.moduleShortid, props.data.operation);
+  ot.applyServer(props.data.module_shortid, props.data.operation);
 }
 
 export function applyTransformation({ props, state }) {
@@ -345,7 +359,7 @@ export function applyTransformation({ props, state }) {
 
   const op = TextOperation.fromJSON(props.operation);
 
-  const code = op.apply(module.code);
+  const code = op.apply(module.code || '');
 
   return { code };
 }
@@ -359,7 +373,7 @@ export function unSetReceivingStatus({ state }) {
 }
 
 export function acknowledgeOperation({ props, ot }) {
-  const { moduleShortid } = props.data;
+  const { module_shortid: moduleShortid } = props.data;
 
   ot.serverAck(moduleShortid);
 }
@@ -376,4 +390,16 @@ export function computePendingOperation({ props, state }) {
     .toJSON();
 
   return { pendingOperation: newPendingOperation };
+}
+
+export function getUserJoinedNotification({ props }) {
+  const user = props.data.users.find(u => u.id === props.data.joined_user_id);
+
+  return { message: `${user.username} joined the live session!` };
+}
+
+export function sendMode({ props, live }) {
+  live.send('live:mode', {
+    mode: props.mode,
+  });
 }

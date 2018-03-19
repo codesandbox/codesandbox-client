@@ -15,7 +15,12 @@ const Live = ({ signals, store }) => {
   return (
     <div>
       {store.live.isLive ? (
-        <LiveInfo isOwner={store.live.isOwner} roomInfo={store.live.roomInfo} />
+        <LiveInfo
+          setMode={signals.live.onModeChanged}
+          isOwner={store.live.isOwner}
+          roomInfo={store.live.roomInfo}
+          ownerId={store.editor.currentSandbox.author.id}
+        />
       ) : (
         <React.Fragment>
           <Description style={{ marginBottom: '1rem' }}>

@@ -2,7 +2,7 @@ import { Module } from 'cerebral';
 import model from './model';
 
 import * as sequences from './sequences';
-import { isCurrentEditor } from './getters';
+import { isCurrentEditor, liveUsersByModule } from './getters';
 
 export default Module({
   model,
@@ -14,6 +14,7 @@ export default Module({
   },
   getters: {
     isCurrentEditor,
+    liveUsersByModule,
   },
   signals: {
     roomJoined: sequences.initializeLive,
@@ -25,5 +26,6 @@ export default Module({
     onOperationApplied: sequences.clearPendingOperation,
     onSelectionChanged: sequences.sendSelection,
     onSelectionDecorationsApplied: sequences.clearPendingUserSelections,
+    onModeChanged: sequences.changeMode,
   },
 });

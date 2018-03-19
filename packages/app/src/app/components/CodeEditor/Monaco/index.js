@@ -208,7 +208,13 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
     requestAnimationFrame(() => {
       this.setupWorkers();
-      editor.onDidChangeModelContent(() => {
+      editor.onDidChangeModelContent(({ changes }) => {
+        const { isLive, sendTransforms } = this.props;
+
+        if (isLive && sendTransforms && !this.receivingCode) {
+          this.addChangesOperation(changes);
+        }
+
         this.handleChange();
       });
     });
@@ -279,14 +285,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       },
     });
 
-    editor.onDidChangeModelContent(({ changes }) => {
-      const { isLive, sendTransforms } = this.props;
-
-      if (isLive && sendTransforms && !this.receivingCode) {
-        this.addChangesOperation(changes);
-      }
-    });
-
     editor.onDidChangeCursorSelection(selectionChange => {
       // TODO: add another debounced action to send the current data. So we can
       // have the correct cursor pos no matter what
@@ -307,6 +305,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
             /* click inside a selection */ selectionChange.source === 'api') &&
           onSelectionChanged
         ) {
+          this.onSelectionChangedDebounced.cancel();
           onSelectionChanged({
             selection: data,
             moduleShortid: this.currentModule.shortid,
@@ -415,7 +414,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     }
   };
 
-  changes = { code: '', changes: [] };
+  changes = { moduleShortid: null, code: '', changes: [] };
   changeTimeout: ?TimeoutID;
   /**
    * Throttle the changes and handle them after a desired amount of time as one array of changes
@@ -423,6 +422,9 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   addChangesOperation = (changes: Array<any>) => {
     if (!this.changes.code) {
       this.changes.code = this.currentModule.code || '';
+    }
+    if (!this.changes.moduleShortid) {
+      this.changes.moduleShortid = this.currentModule.shortid;
     }
 
     changes.forEach(change => {
@@ -440,7 +442,11 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   sendChangeOperations = () => {
     const { sendTransforms, isLive, onCodeReceived } = this.props;
 
-    if (sendTransforms && this.changes.changes) {
+    if (
+      sendTransforms &&
+      this.changes.changes &&
+      this.changes.moduleShortid === this.currentModule.shortid
+    ) {
       let code = this.changes.code;
       const t = this.changes.changes
         .map(change => {
@@ -483,7 +489,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     } else if (!isLive && onCodeReceived) {
       onCodeReceived();
     }
-    this.changes = { code: '', changes: [] };
+    this.changes = { moduleShortid: null, code: '', changes: [] };
   };
 
   userClassesGenerated = {};
@@ -580,6 +586,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
             fontWeight: 600,
             userSelect: 'none',
             pointerEvents: 'none',
+            width: 'max-content',
           };
           this.userClassesGenerated[cursorClassName] = `${css({
             backgroundColor: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.8)`,

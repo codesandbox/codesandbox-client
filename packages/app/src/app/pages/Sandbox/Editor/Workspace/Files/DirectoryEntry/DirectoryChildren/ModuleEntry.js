@@ -31,11 +31,14 @@ class ModuleEntry extends React.Component {
       error => error.moduleId === module.id
     ).length;
 
+    const liveUsers = store.live.liveUsersByModule[module.shortid] || [];
+
     return (
       <Entry
         id={module.id}
         shortid={module.shortid}
         title={module.title}
+        rightColors={liveUsers.map(([a, b, c]) => `rgb(${a}, ${b}, ${c})`)}
         depth={depth + 1}
         active={isActive}
         type={type || 'function'}

@@ -67,6 +67,12 @@ export const getContainerStyles = props => {
     `;
   }
 
+  if (props.rightColors) {
+    styles += `
+      border-right: 2px solid ${props.rightColors[0]};
+    `;
+  }
+
   return styles;
 };
 

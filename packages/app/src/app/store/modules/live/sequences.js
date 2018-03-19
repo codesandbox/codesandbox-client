@@ -6,7 +6,7 @@ import { setSandbox } from '../../sequences';
 
 import { changeCode } from '../editor/sequences';
 import { setModuleSaved } from '../editor/actions';
-import { removeModule, removeDirectory } from '../files/actions';
+import { removeModule, removeDirectory } from '../files/sequences';
 import * as actions from './actions';
 import * as flow from './flow';
 
@@ -35,13 +35,23 @@ export const applySelectionsForModule = [
   set(state`editor.pendingUserSelections`, props`selections`),
 ];
 
+export const changeMode = [
+  equals(state`live.isOwner`),
+  {
+    true: [set(state`live.roomInfo.mode`, props`mode`), actions.sendMode],
+    false: [],
+  },
+];
+
 export const handleMessage = [
   equals(props`event`),
   {
     'user:entered': [
       actions.consumeUserEnteredState,
       set(state`live.roomInfo.users`, props`users`),
-      flow.isCurrentEditor,
+      actions.getUserJoinedNotification,
+      factories.addNotification(props`message`, 'notice'),
+      equals(state`live.isOwner`),
       {
         true: [
           actions.addUserMetadata,
@@ -88,6 +98,7 @@ export const handleMessage = [
         false: [
           actions.consumeModule,
           set(props`shortid`, props`moduleShortid`),
+          set(props`code`, props`module.code`),
           changeCode,
           setModuleSaved,
         ],
@@ -138,11 +149,7 @@ export const handleMessage = [
       isOwnMessage,
       {
         true: [],
-        false: [
-          actions.consumeModule,
-          set(props`directoryShortid`, props`moduleShortid`),
-          removeDirectory,
-        ],
+        false: [actions.consumeModule, removeDirectory],
       },
     ],
     'user:selection': [
@@ -163,6 +170,13 @@ export const handleMessage = [
           ),
           actions.clearUserSelections,
         ],
+      },
+    ],
+    'live:mode': [
+      isOwnMessage,
+      {
+        true: [],
+        false: [set(state`live.roomInfo.mode`, props`data.mode`)],
       },
     ],
     operation: [
