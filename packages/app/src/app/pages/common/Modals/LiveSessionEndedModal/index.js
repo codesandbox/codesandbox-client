@@ -6,29 +6,28 @@ import Row from 'common/components/flex/Row';
 
 import { Container, Heading, Explanation } from './elements';
 
-function ZenModeIntroduction({ signals }) {
+function LiveModeEnded({ signals }) {
   return (
     <Container>
-      <Heading>Zen Mode Explained</Heading>
+      <Heading>The Live session has ended</Heading>
       <Explanation>
-        Zen Mode is perfect for giving instruction videos and presentations. You
-        can toggle the sidebar by double tapping <tt>shift</tt>. You can leave
-        Zen Mode by hovering over the file name above the editor and clicking
-        the icon on the right.
+        The host has ended the live session, you can continue working by forking
+        the sandbox or by creating a new sandbox.
       </Explanation>
 
       <Row justifyContent="space-around">
+        <Button href="/s">Create Sandbox</Button>
         <Button
-          style={{ marginRight: '.5rem' }}
           onClick={() => {
+            signals.editor.forkSandboxClicked();
             signals.modalClosed();
           }}
         >
-          Close
+          Fork Sandbox
         </Button>
       </Row>
     </Container>
   );
 }
 
-export default inject('signals')(ZenModeIntroduction);
+export default inject('signals')(LiveModeEnded);

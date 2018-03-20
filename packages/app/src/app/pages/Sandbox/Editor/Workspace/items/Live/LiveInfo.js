@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { observer } from 'mobx-react';
+import { inject, observer } from 'mobx-react';
 import { sortBy } from 'lodash';
 
 import RecordIcon from 'react-icons/lib/md/fiber-manual-record';
@@ -254,4 +254,4 @@ class LiveInfo extends React.Component {
   }
 }
 
-export default observer(LiveInfo);
+export default inject('store')(observer(LiveInfo));

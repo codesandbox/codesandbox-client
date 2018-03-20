@@ -1,6 +1,5 @@
 import { TextOperation } from 'ot';
 import { camelizeKeys } from 'humps';
-import { sortBy } from 'lodash';
 
 export function createRoom({ api, props }) {
   const id = props.sandboxId;
@@ -14,6 +13,10 @@ export function createRoom({ api, props }) {
 
 export function connect({ live }) {
   return live.connect();
+}
+
+export function disconnect({ live }) {
+  return live.disconnect();
 }
 
 export function joinChannel({ props, live, path }) {
@@ -63,7 +66,7 @@ export function addUserMetadata({ props, state }) {
   const usersMetadata = state.get('live.roomInfo.usersMetadata');
   const users = props.users;
 
-  sortBy(users, 'id').forEach((user, i) => {
+  users.forEach(user => {
     if (!usersMetadata.get(user.id)) {
       state.set(`live.roomInfo.usersMetadata.${user.id}`, {
         color: COLORS[colorIndex++ % COLORS.length],
@@ -306,14 +309,16 @@ export function sendChangeCurrentModule({ props, state, live }) {
 }
 
 export function clearUserSelections({ props, state }) {
-  state.set(
-    `live.roomInfo.usersMetadata.${props.data.user_id}.selection`,
-    null
-  );
-  state.push('editor.pendingUserSelections', {
-    userId: props.data.user_id,
-    selection: null,
-  });
+  if (state.get(`live.roomInfo.usersMetadata.${props.data.user_id}`)) {
+    state.set(
+      `live.roomInfo.usersMetadata.${props.data.user_id}.selection`,
+      null
+    );
+    state.push('editor.pendingUserSelections', {
+      userId: props.data.user_id,
+      selection: null,
+    });
+  }
 }
 
 export function consumeModule({ props }) {

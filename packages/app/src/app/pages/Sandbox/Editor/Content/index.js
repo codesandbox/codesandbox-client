@@ -218,12 +218,23 @@ class EditorPreview extends React.Component<Props, State> {
             editor.applyOperation(
               TextOperation.fromJSON(store.editor.pendingOperation)
             );
-
-            this.props.signals.live.onOperationApplied();
           } else {
-            console.log('not applying; setting code manually');
-            // TODO apply logic itself and call `editor.changeCode` manually
+            try {
+              if (editor.currentModule) {
+                const operation = TextOperation.fromJSON(
+                  store.editor.pendingOperation
+                );
+
+                this.props.signals.editor.codeChanged({
+                  code: operation.apply(editor.currentModule.code || ''),
+                  moduleShortid: editor.currentModule.shortid,
+                });
+              }
+            } catch (e) {
+              console.error(e);
+            }
           }
+          this.props.signals.live.onOperationApplied();
         }
       }
     );

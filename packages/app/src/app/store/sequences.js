@@ -1,5 +1,5 @@
 import { sequence } from 'cerebral';
-import { when, push, set, equals } from 'cerebral/operators';
+import { when, push, unset, set, equals } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 import * as actions from './actions';
 import * as factories from './factories';
@@ -252,7 +252,25 @@ export const loadSandboxPage = factories.withLoadApp([]);
 
 export const loadGitHubPage = factories.withLoadApp([]);
 
+export const resetLive = [
+  set(state`live.isLive`, false),
+  set(state`live.error`, null),
+  set(state`live.isLoading`, false),
+  unset(state`live.roomInfo`),
+];
+
 export const setSandbox = [
+  when(state`live.isLoading`),
+  {
+    true: [],
+    false: [
+      when(state`live.isLive`),
+      {
+        true: resetLive,
+        false: [],
+      },
+    ],
+  },
   set(state`editor.currentId`, props`sandbox.id`),
   actions.setCurrentModuleShortid,
   actions.setMainModuleShortid,

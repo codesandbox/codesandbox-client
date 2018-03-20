@@ -13,6 +13,7 @@ import PRModal from './PRModal';
 import SelectSandboxModal from './SelectSandboxModal';
 import SearchDependenciesModal from './SearchDependenciesModal';
 import DeleteProfileSandboxModal from './DeleteProfileSandboxModal';
+import LiveSessionEndedModal from './LiveSessionEndedModal';
 
 const modals = {
   preferences: {
@@ -57,6 +58,10 @@ const modals = {
   },
   searchDependencies: {
     Component: SearchDependenciesModal,
+    width: 600,
+  },
+  liveSessionEnded: {
+    Component: LiveSessionEndedModal,
     width: 600,
   },
 };

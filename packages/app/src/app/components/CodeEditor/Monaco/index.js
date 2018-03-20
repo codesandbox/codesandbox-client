@@ -518,10 +518,10 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     const lines = this.editor.getModel().getLinesContent();
 
     userSelections.forEach(data => {
-      if (data.selection === null) {
-        const { userId } = data;
+      const { userId } = data;
 
-        const decorationId = this.currentModule.shortid + userId;
+      const decorationId = this.currentModule.shortid + userId;
+      if (data.selection === null) {
         this.userSelectionDecorations[
           decorationId
         ] = this.editor.deltaDecorations(
@@ -534,7 +534,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       }
 
       const decorations = [];
-      const { selection, color, userId, name } = data;
+      const { selection, color, name } = data;
 
       if (selection) {
         const addCursor = (position, className) => {
@@ -570,10 +570,11 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
           });
         };
 
-        const cursorClassName = userId + '-cursor';
-        const secondaryCursorClassName = userId + '-secondary-cursor';
-        const selectionClassName = userId + '-selection';
-        const secondarySelectionClassName = userId + '-secondary-selection';
+        const prefix = color.join('-') + userId;
+        const cursorClassName = prefix + '-cursor';
+        const secondaryCursorClassName = prefix + '-secondary-cursor';
+        const selectionClassName = prefix + '-selection';
+        const secondarySelectionClassName = prefix + '-secondary-selection';
 
         if (!this.userClassesGenerated[cursorClassName]) {
           const nameStyles = {
@@ -667,7 +668,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
       // Allow new model to attach in case it's attaching
       requestAnimationFrame(() => {
-        const decorationId = this.currentModule.shortid + userId;
         this.userSelectionDecorations[
           decorationId
         ] = this.editor.deltaDecorations(

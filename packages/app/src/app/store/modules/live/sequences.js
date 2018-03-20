@@ -2,7 +2,7 @@ import { unset, set, push, when, equals } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 
 import * as factories from '../../factories';
-import { setSandbox } from '../../sequences';
+import { setSandbox, openModal } from '../../sequences';
 
 import { changeCode } from '../editor/sequences';
 import { setModuleSaved } from '../editor/actions';
@@ -75,6 +75,8 @@ export const handleMessage = [
     'user:left': [
       actions.getUserLeftNotification,
       factories.addNotification(props`message`, 'notice'),
+      set(props`data.user_id`, props`data.left_user_id`),
+      actions.clearUserSelections,
       actions.consumeUserState,
       set(state`live.roomInfo.users`, props`users`),
       unset(state`live.roomInfo.usersMetadata.${props`data.left_user_id`}`),
@@ -233,6 +235,11 @@ export const handleMessage = [
         ],
         true: [],
       },
+    ],
+    disconnect: [
+      actions.disconnect,
+      set(props`modal`, 'liveSessionEnded'),
+      openModal,
     ],
     otherwise: [],
   },

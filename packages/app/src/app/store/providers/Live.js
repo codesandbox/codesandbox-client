@@ -17,6 +17,14 @@ export default Provider({
 
     socket.connect();
   },
+  disconnect() {
+    return new Promise((resolve, reject) => {
+      channel
+        .leave()
+        .receive('ok', resp => resolve(resp))
+        .receive('error', resp => reject(resp));
+    });
+  },
   joinChannel(roomId: string) {
     channel = socket.channel(`live:${roomId}`, {});
 
