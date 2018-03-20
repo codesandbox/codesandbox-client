@@ -41,7 +41,7 @@ You can find the source of our git extractor [here](https://github.com/codesandb
 
 ## Export with CLI
 
-You can export a local project to CodeSandbox by using our [CLI](https://github.com/codesandbox-app/cli).
+You can export a local project to CodeSandbox by using our [CLI](https://github.com/codesandbox-app/codesandbox-importers/tree/master/packages/cli).
 
 You can install our CLI by running `npm install -g codesandbox`. Then you can export a project by running `codesandbox {directory}`.
 
