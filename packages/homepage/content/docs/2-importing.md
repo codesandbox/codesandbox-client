@@ -131,3 +131,31 @@ If you want to define a new sandbox without getting it rendered, you can add `?j
 This is useful, for instance, if you need to create a new sandbox programatically, so you can then embed it on your site (See Embed documentation).
 
 Both `get` and `post` requests are supported.
+
+## Import Using React-Codesandboxer
+
+Import from a single file from a git repository, along with supplemental files and dependencies. Using this creates an easy way to upload an example instead of an entire git repository.
+
+### How it works
+
+Below the surface, react-codesandboxer fetches the files it needs from github or bitbucket, using a single file that will be rendered as the 'example' as an entry point, then uses the Define API to upload the necessary files into a new `create-react-app` sandbox.
+
+Check out the [react-codesandboxer docs](https://github.com/noviny/react-codesandboxer) for information on how to implement it.
+
+```jsx
+import React, { Component } from 'react';
+import CodeSandboxer from 'react-codesandboxer';
+
+export default () => (
+  <CodeSandboxer
+    examplePath="examples/file.js"
+    gitInfo={{
+      account: 'noviny',
+      repository: 'react-codesandboxer',
+      host: 'github',
+    }}
+  >
+    {() => <button type="submit">Upload to CodeSandbox</button>}
+  </CodeSandboxer>
+);
+```
