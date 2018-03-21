@@ -2,7 +2,7 @@ import * as React from 'react';
 import IconBase from 'react-icons/IconBase';
 
 type Props = {
-  className: string
+  className?: string
   backgroundColor: string
 }
 

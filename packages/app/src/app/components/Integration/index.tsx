@@ -4,7 +4,7 @@ import DetailInfo from './DetailInfo';
 import { Container, IntegrationBlock, Name } from './elements';
 
 type Props = {
-  Icon: React.ComponentClass
+  Icon: React.ComponentClass<any> | React.SFC<any>
   name: string
   signOut: () => void
   signIn: () => void

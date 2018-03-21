@@ -1,9 +1,9 @@
 import * as React from 'react';
 
-type Props = {
+export type Props = {
   width: number
   height: number
-  className: string
+  className?: string
 }
 
 const OpaqueLogo: React.SFC<Props> = ({ width = 35, height = 35, className }) => {

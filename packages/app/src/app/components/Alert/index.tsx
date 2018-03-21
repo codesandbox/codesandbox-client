@@ -5,7 +5,7 @@ import { Container, Title, Text, Buttons } from './elements';
 
 type Props = {
   title: string
-  body: string
+  body: string | React.ReactNode
   onCancel: () => void
   onDelete: () => void
 }

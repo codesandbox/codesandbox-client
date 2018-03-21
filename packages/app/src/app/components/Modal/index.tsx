@@ -9,9 +9,9 @@ Modal.setAppElement(appElement);
 type Props = {
   isOpen: boolean
   width: number
-  top: number
+  top?: number
   onClose: (isKeyDown: boolean) => void
-  title: string
+  title?: string
 }
 
 class ModalComponent extends React.Component<Props> {

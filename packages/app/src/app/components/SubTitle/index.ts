@@ -7,7 +7,7 @@ export default styled.h2`
   text-align: center;
 =======
 export default styled(component<{
-  delay: number
+  delay?: number
 }>('h2'))`
   ${props =>
     props.delay != null && delayEffect(props.delay || 0)} text-align: center;

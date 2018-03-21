@@ -10,8 +10,8 @@ type Props = {
   subscribe: (token: string) => void
   loadingText: string
   buttonName: string
-  isLoading: boolean
-  error: any
+  isLoading?: boolean
+  error?: any
 }
 
 const SubscribeForm: React.SFC<Props> = ({

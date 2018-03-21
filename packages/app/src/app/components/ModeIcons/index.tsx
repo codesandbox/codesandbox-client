@@ -12,7 +12,7 @@ import {
 type Props = {
   showEditor: boolean
   showPreview: boolean
-  dropdown: boolean
+  dropdown?: boolean
   setMixedView: () => void
   setEditorView: () => void
   setPreviewView: () => void

@@ -16,8 +16,8 @@ import {
 type Props = {
   title: string
   name: string
-  subtitle: string
-  Integration: React.ComponentClass
+  subtitle: string | React.ReactNode
+  Integration: React.ComponentClass<any> | React.SFC<any>
   signedIn: boolean
 }
 
