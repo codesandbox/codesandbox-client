@@ -26,6 +26,11 @@ export default Provider({
       TextOperation.fromJSON(operation)
     );
   },
+  serverReconnect() {
+    modules.forEach(client => {
+      client.serverReconnect();
+    });
+  },
   serverAck(moduleShortid: string) {
     getClient(moduleShortid, this.context).serverAck();
   },

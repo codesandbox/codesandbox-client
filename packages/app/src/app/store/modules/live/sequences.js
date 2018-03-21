@@ -2,7 +2,7 @@ import { unset, set, push, when, equals } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 
 import * as factories from '../../factories';
-import { setSandbox, openModal } from '../../sequences';
+import { setSandbox, openModal, resetLive } from '../../sequences';
 
 import { changeCode } from '../editor/sequences';
 import { setModuleSaved } from '../editor/actions';
@@ -48,6 +48,11 @@ export const handleMessage = [
     join: [
       set(props`message`, 'Connected to Live!'),
       factories.addNotification(props`message`, 'success'),
+      when(state`live.reconnecting`),
+      {
+        true: [actions.resendOutboundOTTransforms],
+        false: [],
+      },
       set(state`live.reconnecting`, false),
     ],
     'user:entered': [
@@ -240,6 +245,7 @@ export const handleMessage = [
       actions.disconnect,
       set(props`modal`, 'liveSessionEnded'),
       openModal,
+      resetLive,
     ],
     otherwise: [],
   },

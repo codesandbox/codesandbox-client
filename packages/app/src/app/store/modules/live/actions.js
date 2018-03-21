@@ -442,3 +442,7 @@ export function removeEditorFromState({ props, state }) {
 
   state.set('live.roomInfo.editorIds', newEditors);
 }
+
+export function resendOutboundOTTransforms({ ot }) {
+  ot.serverReconnect();
+}
