@@ -101,6 +101,7 @@ export const handleMessage = [
           equals(state`live.isLoading`),
           {
             true: [
+              actions.consumeOTData,
               set(state`editor.sandboxes.${props`sandbox.id`}`, props`sandbox`),
               setSandbox,
               set(state`editor.tabs`, props`tabs`),

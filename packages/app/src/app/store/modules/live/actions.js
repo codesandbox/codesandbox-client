@@ -107,15 +107,18 @@ export function consumeState({ props, ot }) {
     roomInfo,
   } = props.data;
 
-  ot.consumeData(otData);
-
   return {
     sandbox,
     changedModuleShortids,
     tabs,
     currentModuleShortid,
     roomInfo,
+    otData,
   };
+}
+
+export function consumeOTData({ props, ot }) {
+  ot.consumeData(props.otData);
 }
 
 export function sendSelection({ props, state, live }) {

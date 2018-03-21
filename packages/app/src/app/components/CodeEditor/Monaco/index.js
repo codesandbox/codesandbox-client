@@ -45,8 +45,11 @@ function indexToLineAndColumn(lines, index) {
     offset += line.length + 1;
   }
 
-  // +2 for column, because +1 for Monaco and +1 for linebreak
-  return { lineNumber: lines.length, column: lines[lines.length - 1] + 2 };
+  // +2 for column (length is already a +1), because +1 for Monaco and +1 for linebreak
+  return {
+    lineNumber: lines.length,
+    column: (lines[lines.length - 1] || '').length + 1,
+  };
 }
 
 const fadeIn = css.keyframes('fadeIn', {
@@ -291,7 +294,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       const { onSelectionChanged, isLive } = this.props;
       // Reason 3 is update by mouse or arrow keys
       if (isLive) {
-        const lines = editor.getModel().getLinesContent();
+        const lines = editor.getModel().getLinesContent() || [];
         const data = {
           primary: getSelection(lines, selectionChange.selection),
           secondary: selectionChange.secondarySelections.map(s =>
@@ -515,7 +518,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         }
     >
   ) => {
-    const lines = this.editor.getModel().getLinesContent();
+    const lines = this.editor.getModel().getLinesContent() || [];
 
     userSelections.forEach(data => {
       const { userId } = data;
@@ -730,7 +733,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         index += op;
       } else if (TextOperation.isInsert(op)) {
         const { lineNumber, column } = indexToLineAndColumn(
-          this.editor.getModel().getLinesContent(),
+          this.editor.getModel().getLinesContent() || [],
           index
         );
         this.editor.getModel().applyEdits([
@@ -747,7 +750,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         ]);
         index += op.length;
       } else if (TextOperation.isDelete(op)) {
-        const lines = this.editor.getModel().getLinesContent();
+        const lines = this.editor.getModel().getLinesContent() || [];
         const from = indexToLineAndColumn(lines, index);
         const to = indexToLineAndColumn(lines, index - op);
         this.editor.getModel().applyEdits([
@@ -1098,9 +1101,9 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
   updateCode(code: string = '') {
     const pos = this.editor.getPosition();
-    const lines = this.editor.getModel().getLinesContent();
+    const lines = this.editor.getModel().getLinesContent() || [];
     const lastLine = lines.length;
-    const lastLineColumn = lines[lines.length - 1].length;
+    const lastLineColumn = (lines[lines.length - 1] || '').length;
     const editOperation = {
       identifier: {
         major: 1,

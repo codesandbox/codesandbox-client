@@ -124,6 +124,7 @@ class LiveInfo extends React.Component {
       addEditor,
       removeEditor,
       currentUserId,
+      reconnecting,
     } = this.props;
 
     const owner = roomInfo.users.find(u => u.id === ownerId);
@@ -145,7 +146,13 @@ class LiveInfo extends React.Component {
       <Container>
         <Title>
           <div style={{ flex: 1, display: 'flex', alignItems: 'center' }}>
-            <RecordIcon /> {isOwner ? "You've gone live!" : 'You are live!'}
+            {reconnecting ? (
+              'Reconnecting...'
+            ) : (
+              <React.Fragment>
+                <RecordIcon /> {isOwner ? "You've gone live!" : 'You are live!'}
+              </React.Fragment>
+            )}
           </div>
           <div>
             {roomInfo.startTime != null && (

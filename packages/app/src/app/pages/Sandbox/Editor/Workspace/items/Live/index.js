@@ -21,6 +21,7 @@ const Live = ({ signals, store }) => (
         roomInfo={store.live.roomInfo}
         ownerId={store.editor.currentSandbox.author.id}
         currentUserId={store.user.id}
+        reconnecting={store.live.reconnecting}
       />
     ) : (
       <React.Fragment>
