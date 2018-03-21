@@ -24,20 +24,26 @@ class BabelTranspiler extends WorkerTranspiler {
     return worker;
   }
 
-  doTranspilation(code: string, loaderContext: LoaderContext) {
+  doTranspilation(code: string, loaderContext: LoaderContext): Promise<void> {
     return new Promise((resolve, reject) => {
       const path = loaderContext.path;
+      const configs = loaderContext.options.configurations;
 
       let foundConfig = loaderContext.options;
-      if (
-        loaderContext.options.configurations &&
-        loaderContext.options.configurations.babel &&
-        loaderContext.options.configurations.babel.parsed
-      ) {
-        foundConfig = loaderContext.options.configurations.babel.parsed;
+      if (configs && configs.babel && configs.babel.parsed) {
+        foundConfig = configs.babel.parsed;
       }
 
-      const babelConfig = getBabelConfig(foundConfig, path);
+      const babelConfig = getBabelConfig(
+        foundConfig,
+        loaderContext.options,
+        path
+      );
+
+      const isV7 = !!(
+        configs.package.parsed.devDependencies &&
+        configs.package.parsed.devDependencies['@vue/cli-plugin-babel']
+      );
 
       this.queueTask(
         {
@@ -45,10 +51,8 @@ class BabelTranspiler extends WorkerTranspiler {
           config: babelConfig,
           path,
           loaderOptions: loaderContext.options,
-          sandboxOptions:
-            loaderContext.options.configurations &&
-            loaderContext.options.configurations.sandbox &&
-            loaderContext.options.configurations.sandbox.parsed,
+          sandboxOptions: configs && configs.sandbox && configs.sandbox.parsed,
+          version: isV7 ? 7 : 6,
         },
         loaderContext,
         (err, data) => {

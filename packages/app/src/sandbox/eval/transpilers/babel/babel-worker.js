@@ -12,10 +12,15 @@ import { buildWorkerError } from '../utils/worker-error-handler';
 import getDependencies from './get-require-statements';
 
 import { evaluateFromPath, resetCache } from './evaluate';
+import {
+  getPrefixedPluginName,
+  getPrefixedPresetName,
+} from './get-prefixed-name';
 
 self.BrowserFS = BrowserFS;
 
 let fsInitialized = false;
+let babel7Loaded = false;
 
 async function initializeBrowserFS() {
   return new Promise(resolve => {
@@ -48,7 +53,7 @@ async function waitForFs() {
   }
 }
 
-async function installPlugin(Babel, BFSRequire, plugin, currentPath) {
+async function installPlugin(Babel, BFSRequire, plugin, currentPath, isV7) {
   await waitForFs();
 
   const fs = BFSRequire('fs');
@@ -65,10 +70,12 @@ async function installPlugin(Babel, BFSRequire, plugin, currentPath) {
       Babel.availablePresets
     );
   } catch (e) {
+    const prefixedName = getPrefixedPluginName(plugin, isV7);
+
     evaluatedPlugin = evaluateFromPath(
       fs,
       BFSRequire,
-      `babel-plugin-${plugin}`,
+      prefixedName,
       currentPath,
       Babel.availablePlugins,
       Babel.availablePresets
@@ -85,7 +92,7 @@ async function installPlugin(Babel, BFSRequire, plugin, currentPath) {
   );
 }
 
-async function installPreset(Babel, BFSRequire, preset, currentPath) {
+async function installPreset(Babel, BFSRequire, preset, currentPath, isV7) {
   await waitForFs();
 
   const fs = BFSRequire('fs');
@@ -102,10 +109,12 @@ async function installPreset(Babel, BFSRequire, preset, currentPath) {
       Babel.availablePresets
     );
   } catch (e) {
+    const prefixedName = getPrefixedPresetName(preset, isV7);
+
     evaluatedPreset = evaluateFromPath(
       fs,
       BFSRequire,
-      `babel-preset-${preset}`,
+      prefixedName,
       currentPath,
       Babel.availablePlugins,
       Babel.availablePresets
@@ -167,7 +176,38 @@ self.addEventListener('message', async event => {
   }
   resetCache();
 
-  const { code, path, sandboxOptions, config, loaderOptions } = event.data;
+  const {
+    code,
+    path,
+    sandboxOptions,
+    config,
+    loaderOptions,
+    version,
+  } = event.data;
+
+  console.log(config);
+
+  const isV7 = version === 7;
+
+  if (isV7 && !babel7Loaded) {
+    babel7Loaded = true;
+
+    self.importScripts(
+      process.env.NODE_ENV === 'development'
+        ? '/static/js/babel.7.00-beta.js'
+        : '/static/js/babel.7.00-beta.min.js'
+    );
+
+    Babel.registerPreset('env', Babel.availablePresets.latest);
+
+    Babel.registerPlugin('dynamic-import-node', dynamicImportPlugin);
+    Babel.registerPlugin('babel-plugin-detective', detective);
+    Babel.registerPlugin('dynamic-css-modules', dynamicCSSModules);
+    Babel.registerPlugin(
+      'babel-plugin-transform-prevent-infinite-loops',
+      infiniteLoops
+    );
+  }
 
   const flattenedPresets = flatten(config.presets);
   const flattenedPlugins = flatten(config.plugins);
@@ -192,10 +232,11 @@ self.addEventListener('message', async event => {
       flattenedPlugins
         .filter(p => typeof p === 'string')
         .map(p => p.replace('babel-plugin-', ''))
+        .map(p => p.replace('@babel/plugin-', ''))
         .map(async p => {
           if (!Babel.availablePlugins[p]) {
             try {
-              await installPlugin(Babel, BrowserFS.BFSRequire, p, path);
+              await installPlugin(Babel, BrowserFS.BFSRequire, p, path, isV7);
             } catch (e) {
               throw new Error(
                 `Could not find/install babel plugin '${p}': ${e.message}`
@@ -209,10 +250,11 @@ self.addEventListener('message', async event => {
       flattenedPresets
         .filter(p => typeof p === 'string')
         .map(p => p.replace('babel-preset-', ''))
+        .map(p => p.replace('@babel/preset-', ''))
         .map(async p => {
           if (!Babel.availablePresets[p]) {
             try {
-              await installPreset(Babel, BrowserFS.BFSRequire, p, path);
+              await installPreset(Babel, BrowserFS.BFSRequire, p, path, isV7);
             } catch (e) {
               throw new Error(
                 `Could not find/install babel preset '${p}': ${e.message}`
@@ -222,7 +264,7 @@ self.addEventListener('message', async event => {
         })
     );
 
-    const plugins = [...config.plugins, 'dynamic-import-node'];
+    const plugins = [...(config.plugins || []), 'dynamic-import-node'];
 
     if (loaderOptions.dynamicCSSModules) {
       plugins.push('dynamic-css-modules');
@@ -256,6 +298,7 @@ self.addEventListener('message', async event => {
       transpiledCode: result.code,
     });
   } catch (e) {
+    debugger;
     console.error(e);
     e.message = e.message.replace('unknown', path);
     self.postMessage({

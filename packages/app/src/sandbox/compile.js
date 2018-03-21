@@ -40,6 +40,10 @@ export function getCurrentManager(): ?Manager {
 let firstLoad = true;
 let hadError = false;
 
+const DEPENDENCY_ALIASES = {
+  '@vue/cli-plugin-babel': '@vue/babel-preset-app',
+};
+
 // TODO make devDependencies lazy loaded by the packager
 const WHITELISTED_DEV_DEPENDENCIES = [
   'redux-devtools',
@@ -150,6 +154,8 @@ const PREINSTALLED_DEPENDENCIES = [
   'babel-plugin-transform-vue-jsx',
   'babel-plugin-jsx-pragmatic',
 
+  '@babel/core',
+
   'flow-bin',
 ];
 
@@ -169,21 +175,32 @@ function getDependencies(parsedPackage, configurations) {
     (configurations.babel.parsed.presets || [])
       .filter(p => typeof p === 'string')
       .forEach(p => {
+        const [first, ...parts] = p.split('/');
+        const prefixedName = p.startsWith('@')
+          ? first + '/babel-preset-' + parts.join('/')
+          : `babel-preset-${p}`;
+
         foundWhitelistedDevDependencies.push(p);
-        foundWhitelistedDevDependencies.push(`babel-preset-${p}`);
+        foundWhitelistedDevDependencies.push(prefixedName);
       });
 
     (configurations.babel.parsed.plugins || [])
       .filter(p => typeof p === 'string')
       .forEach(p => {
+        const [first, ...parts] = p.split('/');
+        const prefixedName = p.startsWith('@')
+          ? first + '/babel-plugin-' + parts.join('/')
+          : `babel-plugin-${p}`;
+
         foundWhitelistedDevDependencies.push(p);
-        foundWhitelistedDevDependencies.push(`babel-plugin-${p}`);
+        foundWhitelistedDevDependencies.push(prefixedName);
       });
   }
 
   Object.keys(devDependencies).forEach(dep => {
-    if (foundWhitelistedDevDependencies.indexOf(dep) > -1) {
-      returnedDependencies[dep] = devDependencies[dep];
+    const usedDep = DEPENDENCY_ALIASES[dep] || dep;
+    if (foundWhitelistedDevDependencies.indexOf(usedDep) > -1) {
+      returnedDependencies[usedDep] = devDependencies[dep];
     }
   });
 
