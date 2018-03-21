@@ -1,4 +1,5 @@
-# [CodeSandbox](https://codesandbox.io) [![Chat](https://img.shields.io/badge/chat-on%20discord-7289da.svg)](https://discord.gg/KE3TbEZ) [![All Contributors](https://img.shields.io/badge/all_contributors-51-orange.svg?style=flat-square)](#contributors) [![Build Status](https://travis-ci.org/CompuIves/codesandbox-client.svg?branch=master)](https://travis-ci.org/CompuIves/codesandbox-client) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com) [![first-timers-only Friendly](https://img.shields.io/badge/first--timers--only-friendly-blue.svg)](http://www.firsttimersonly.com/)
+# [CodeSandbox](https://codesandbox.io) 
+[![Chat](https://img.shields.io/badge/chat-on%20discord-7289da.svg)](https://discord.gg/KE3TbEZ) [![All Contributors](https://img.shields.io/badge/all_contributors-51-orange.svg?style=flat-square)](#contributors) [![Build Status](https://travis-ci.org/CompuIves/codesandbox-client.svg?branch=master)](https://travis-ci.org/CompuIves/codesandbox-client) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com) [![first-timers-only Friendly](https://img.shields.io/badge/first--timers--only-friendly-blue.svg)](http://www.firsttimersonly.com/) [![Backers on Open Collective](https://opencollective.com/codesandbox/backers/badge.svg)](#backers) [![Sponsors on Open Collective](https://opencollective.com/codesandbox/sponsors/badge.svg)](#sponsors) 
 
 An online code editor tailored for web applications.
 
@@ -46,3 +47,33 @@ Thanks goes to these wonderful people
 | [<img src="https://avatars0.githubusercontent.com/u/1820292?v=4" width="100px;"/><br /><sub><b>Michel Weststrate</b></sub>](https://twitter.com/mweststrate)<br />[💻](https://github.com/CompuIves/codesandbox-client/commits?author=mweststrate "Code") | [<img src="https://avatars0.githubusercontent.com/u/52824?v=4" width="100px;"/><br /><sub><b>Oleg</b></sub>](https://kof.github.io)<br />[💻](https://github.com/CompuIves/codesandbox-client/commits?author=kof "Code") | [<img src="https://avatars0.githubusercontent.com/u/1127037?v=4" width="100px;"/><br /><sub><b>Paul Sherman</b></sub>](https://www.pshrmn.com)<br />[🐛](https://github.com/CompuIves/codesandbox-client/issues?q=author%3Apshrmn "Bug reports") [💻](https://github.com/CompuIves/codesandbox-client/commits?author=pshrmn "Code") | [<img src="https://avatars2.githubusercontent.com/u/9244507?v=4" width="100px;"/><br /><sub><b>Ro Savage</b></sub>](https://github.com/ro-savage)<br />[💻](https://github.com/CompuIves/codesandbox-client/commits?author=ro-savage "Code") | [<img src="https://avatars3.githubusercontent.com/u/13242392?v=4" width="100px;"/><br /><sub><b>Sam Denty</b></sub>](https://samdd.me)<br />[💻](https://github.com/CompuIves/codesandbox-client/commits?author=samdenty99 "Code") | [<img src="https://avatars1.githubusercontent.com/u/3087225?v=4" width="100px;"/><br /><sub><b>Zephraph</b></sub>](https://github.com/zephraph)<br />[💻](https://github.com/CompuIves/codesandbox-client/commits?author=zephraph "Code") | [<img src="https://avatars1.githubusercontent.com/u/1900735?v=4" width="100px;"/><br /><sub><b>Josh Waller</b></sub>](https://www.joshwaller.me)<br />[🐛](https://github.com/CompuIves/codesandbox-client/issues?q=author%3Amdxprograms "Bug reports") [💻](https://github.com/CompuIves/codesandbox-client/commits?author=mdxprograms "Code") [📖](https://github.com/CompuIves/codesandbox-client/commits?author=mdxprograms "Documentation") |
 | [<img src="https://avatars0.githubusercontent.com/u/1195863?v=4" width="100px;"/><br /><sub><b>Joe Ng'ethe</b></sub>](http://joey.co.ke)<br />[💻](https://github.com/CompuIves/codesandbox-client/commits?author=joeynimu "Code") | [<img src="https://avatars0.githubusercontent.com/u/576935?v=4" width="100px;"/><br /><sub><b>Carles Codony</b></sub>](https://github.com/bitblitter)<br />[💻](https://github.com/CompuIves/codesandbox-client/commits?author=bitblitter "Code") |
 <!-- ALL-CONTRIBUTORS-LIST:END -->
+
+## Contributors
+
+This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
+<a href="graphs/contributors"><img src="https://opencollective.com/codesandbox/contributors.svg?width=890&button=false" /></a>
+
+
+## Backers
+
+Thank you to all our backers! 🙏 [[Become a backer](https://opencollective.com/codesandbox#backer)]
+
+<a href="https://opencollective.com/codesandbox#backers" target="_blank"><img src="https://opencollective.com/codesandbox/backers.svg?width=890"></a>
+
+
+## Sponsors
+
+Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [[Become a sponsor](https://opencollective.com/codesandbox#sponsor)]
+
+<a href="https://opencollective.com/codesandbox/sponsor/0/website" target="_blank"><img src="https://opencollective.com/codesandbox/sponsor/0/avatar.svg"></a>
+<a href="https://opencollective.com/codesandbox/sponsor/1/website" target="_blank"><img src="https://opencollective.com/codesandbox/sponsor/1/avatar.svg"></a>
+<a href="https://opencollective.com/codesandbox/sponsor/2/website" target="_blank"><img src="https://opencollective.com/codesandbox/sponsor/2/avatar.svg"></a>
+<a href="https://opencollective.com/codesandbox/sponsor/3/website" target="_blank"><img src="https://opencollective.com/codesandbox/sponsor/3/avatar.svg"></a>
+<a href="https://opencollective.com/codesandbox/sponsor/4/website" target="_blank"><img src="https://opencollective.com/codesandbox/sponsor/4/avatar.svg"></a>
+<a href="https://opencollective.com/codesandbox/sponsor/5/website" target="_blank"><img src="https://opencollective.com/codesandbox/sponsor/5/avatar.svg"></a>
+<a href="https://opencollective.com/codesandbox/sponsor/6/website" target="_blank"><img src="https://opencollective.com/codesandbox/sponsor/6/avatar.svg"></a>
+<a href="https://opencollective.com/codesandbox/sponsor/7/website" target="_blank"><img src="https://opencollective.com/codesandbox/sponsor/7/avatar.svg"></a>
+<a href="https://opencollective.com/codesandbox/sponsor/8/website" target="_blank"><img src="https://opencollective.com/codesandbox/sponsor/8/avatar.svg"></a>
+<a href="https://opencollective.com/codesandbox/sponsor/9/website" target="_blank"><img src="https://opencollective.com/codesandbox/sponsor/9/avatar.svg"></a>
+
+
