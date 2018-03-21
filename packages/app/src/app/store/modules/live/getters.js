@@ -13,7 +13,11 @@ export function liveUsersByModule() {
     return {};
   }
 
-  const currentUser = getParent(this).user.id;
+  const currentUser = getParent(this).user;
+
+  if (!currentUser) {
+    return {};
+  }
 
   this.roomInfo.usersMetadata.forEach((user, userId) => {
     if (currentUser && userId !== currentUser.id) {
