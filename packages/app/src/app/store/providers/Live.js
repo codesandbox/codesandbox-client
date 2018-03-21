@@ -46,7 +46,7 @@ export default Provider({
       const alteredEvent = disconnected ? 'connection-loss' : event;
 
       const _isOwnMessage = Boolean(
-        data._messageId && sentMessages.delete(data._messageId)
+        data && data._messageId && sentMessages.delete(data._messageId)
       );
 
       signal({
