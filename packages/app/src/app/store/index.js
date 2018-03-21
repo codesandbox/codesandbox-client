@@ -17,7 +17,7 @@ import KeybindingManagerProvider from './providers/KeybindingManager';
 
 import * as sequences from './sequences';
 import * as errors from './errors';
-import { isPatron, isLoggedIn } from './getters';
+import { isPatron, isLoggedIn, hasLogIn } from './getters';
 
 import patron from './modules/patron';
 import editor from './modules/editor';
@@ -55,6 +55,7 @@ export default Module({
   getters: {
     isPatron,
     isLoggedIn,
+    hasLogIn,
   },
   signals: {
     appUnmounted: sequences.unloadApp,

@@ -401,7 +401,7 @@ export function computePendingOperation({ props, state }) {
 export function getUserJoinedNotification({ props }) {
   const user = props.data.users.find(u => u.id === props.data.joined_user_id);
 
-  return { message: `${user.username} joined the live session!` };
+  return { message: `${user.username} joined the live session.` };
 }
 
 export function getUserLeftNotification({ props, state }) {

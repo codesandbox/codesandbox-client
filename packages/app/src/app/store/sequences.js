@@ -164,6 +164,7 @@ export const signOut = [
   set(state`user.jwt`, null),
   set(state`user.badges`, []),
   set(state`user.integrations`, {}),
+  unset(state`user`),
 ];
 
 export const getZeitUserDetails = [

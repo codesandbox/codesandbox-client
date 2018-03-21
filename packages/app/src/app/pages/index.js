@@ -104,7 +104,7 @@ class Routes extends React.Component<Props> {
             <Route exact path="/s/cli" component={CliInstructions} />
             <Route exact path="/s" component={NewSandbox} />
             <Route path="/s/:id*" component={Sandbox} />
-            <Route path="/l/:id" component={Live} />
+            <Route path="/live/:id" component={Live} />
             <Route path="/signin/:jwt?" component={SignIn} />
             <Route path="/u/:username" component={Profile} />
             <Route path="/search" component={Search} />
