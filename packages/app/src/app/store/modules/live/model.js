@@ -26,6 +26,7 @@ export default {
   roomInfo: types.maybe(
     types.model({
       startTime: types.maybe(types.number),
+      connectionCount: types.number,
       roomId: types.string,
       mode: types.string,
       sandboxId: types.string,

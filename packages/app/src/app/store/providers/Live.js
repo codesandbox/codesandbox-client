@@ -1,6 +1,10 @@
 import { Provider } from 'cerebral';
 import { Socket } from 'phoenix';
+import uuid from 'uuid';
 
+const identifier = uuid.v4();
+let messageIndex = 0;
+const sentMessages = new Map();
 let socket = null;
 let channel = null;
 
@@ -41,12 +45,24 @@ export default Provider({
       const disconnected = data == null && event === 'phx_error';
       const alteredEvent = disconnected ? 'connection-loss' : event;
 
-      signal({ event: alteredEvent, data: data == null ? {} : data });
+      const _isOwnMessage = Boolean(
+        data._messageId && sentMessages.delete(data._messageId)
+      );
+
+      signal({
+        event: alteredEvent,
+        _isOwnMessage,
+        data: data == null ? {} : data,
+      });
 
       return data;
     };
   },
   send(event: string, payload: Object) {
+    const _messageId = identifier + messageIndex++;
+    payload._messageId = _messageId;
+    sentMessages.set(_messageId, payload);
+
     return new Promise((resolve, reject) => {
       channel
         .push(event, payload)

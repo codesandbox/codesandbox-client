@@ -3,6 +3,7 @@ import model from './model';
 
 import * as sequences from './sequences';
 import { isCurrentEditor, liveUsersByModule } from './getters';
+import { isEditor } from './computed';
 
 export default Module({
   model,
@@ -12,6 +13,9 @@ export default Module({
     isOwner: false,
     receivingCode: false,
     reconnecting: false,
+  },
+  computed: {
+    isEditor,
   },
   getters: {
     isCurrentEditor,

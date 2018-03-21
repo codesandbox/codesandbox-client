@@ -32,6 +32,7 @@ export function listen({ props, live }) {
 
 export function initializeLiveState({ props, state }) {
   state.set('live.roomInfo', {
+    connectionCount: 1,
     roomId: props.roomId,
     sandboxId: props.sandboxId,
     editorIds: props.editorIds,
@@ -170,7 +171,8 @@ export function getSelectionsForCurrentModule({ state }) {
   state.get('live.roomInfo.usersMetadata').forEach((user, userId) => {
     if (
       userId === state.get('user.id') ||
-      user.currentModuleShortid !== moduleShortid
+      user.currentModuleShortid !== moduleShortid ||
+      !state.get('live.isEditor')(userId)
     ) {
       return;
     }
@@ -178,6 +180,7 @@ export function getSelectionsForCurrentModule({ state }) {
     const userInfo = state
       .get(`live.roomInfo.users`)
       .find(u => u.id === userId);
+
     if (user.selection) {
       selections.push({
         userId,
@@ -198,7 +201,7 @@ export function sendSelectionToEditor({ props, state }) {
 
   if (
     moduleShortid === state.get('editor.currentModuleShortid') &&
-    userId !== state.get('user.id')
+    state.get('live.isEditor')(userId)
   ) {
     const user = state.get('live.roomInfo.users').find(u => u.id === userId);
 

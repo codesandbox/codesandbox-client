@@ -28,7 +28,9 @@ export default class Countdown extends React.PureComponent {
 
     const hours = Math.floor(delta / 1000 / 60 / 60);
     const minutes = Math.floor((delta - hours * 1000 * 60 * 60) / 1000 / 60);
-    const seconds = Math.floor((delta - minutes * 1000 * 60) / 1000);
+    const seconds = Math.floor(
+      (delta - hours * 1000 * 60 * 60 - minutes * 1000 * 60) / 1000
+    );
 
     return { hours: pad(hours), minutes: pad(minutes), seconds: pad(seconds) };
   };

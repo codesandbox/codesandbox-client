@@ -3,13 +3,7 @@ import { getParent } from 'mobx-state-tree';
 export function isCurrentEditor() {
   const user = getParent(this).user;
 
-  return (
-    user &&
-    this.isLive &&
-    (this.roomInfo.mode === 'open' ||
-      this.isOwner ||
-      (user && this.roomInfo.editorIds.indexOf(user.id) > 0))
-  );
+  return user && this.isEditor(user.id);
 }
 
 export function liveUsersByModule() {

@@ -1,4 +1,4 @@
-import { unset, set, push, when, equals } from 'cerebral/operators';
+import { unset, set, concat, push, when, equals } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 
 import * as factories from '../../factories';
@@ -23,15 +23,11 @@ export const initializeLive = factories.withLoadApp([
   },
 ]);
 
-const isOwnMessage = when(
-  props`data.user_id`,
-  state`user.id`,
-  (givenId, localId) => givenId === localId
-);
+const isOwnMessage = when(props`_isOwnMessage`);
 
 export const applySelectionsForModule = [
   actions.getSelectionsForCurrentModule,
-  set(state`editor.pendingUserSelections`, props`selections`),
+  concat(state`editor.pendingUserSelections`, props`selections`),
 ];
 
 export const changeMode = [
@@ -58,6 +54,7 @@ export const handleMessage = [
     'user:entered': [
       actions.consumeUserState,
       set(state`live.roomInfo.users`, props`users`),
+      set(state`live.roomInfo.connectionCount`, props`data.connection_count`),
       set(props`data.user_id`, props`data.joined_user_id`),
       isOwnMessage,
       {
@@ -84,10 +81,17 @@ export const handleMessage = [
       actions.clearUserSelections,
       actions.consumeUserState,
       set(state`live.roomInfo.users`, props`users`),
-      unset(state`live.roomInfo.usersMetadata.${props`data.left_user_id`}`),
+      set(state`live.roomInfo.connectionCount`, props`data.connection_count`),
+      when(props`data.multiple_connections`),
+      {
+        true: [],
+        false: unset(
+          state`live.roomInfo.usersMetadata.${props`data.left_user_id`}`
+        ),
+      },
     ],
     state: [
-      isOwnMessage,
+      when(state`live.isOwner`),
       {
         true: [],
         false: [
@@ -204,6 +208,10 @@ export const handleMessage = [
         true: [],
         false: [set(state`live.roomInfo.mode`, props`data.mode`)],
       },
+      // Reset user selections, because we can maybe see more (or see less) selections.
+      // In classroom mode you only see selections of editors.
+      actions.clearUserSelections,
+      applySelectionsForModule,
     ],
     'live:add-editor': [
       isOwnMessage,
