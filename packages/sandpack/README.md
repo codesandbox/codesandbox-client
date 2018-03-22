@@ -230,11 +230,11 @@ We heavily make use of Web Workers for transpilations. Almost all our transpilat
 
 Another reason to host the bundler externally is because of code splitting: we split all our transpilers away and load them on-demand. If a user doesn't use `sass` we won't load the transpiler. This wouldn't be possible if we would give one big JS file as the library.
 
-> I want to highlight that you can also host the bundler by yourself, all necessary files are in the `sandpack` folder.
-
 ### Offline Support
 
 The bundler is backed by a Service Worker that downloads all transpilers in the background and caches npm dependencies. This helps with performance and allows you to use the bundler offline.
+
+> I want to highlight that you can also host the bundler by yourself, all necessary files are in the `sandpack` folder.
 
 ## Open In CodeSandbox
 
