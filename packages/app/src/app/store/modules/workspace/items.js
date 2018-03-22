@@ -31,11 +31,13 @@ const LIVE = {
 export default function getItems(store) {
   if (
     store.live.isLive &&
-    (store.live.isOwner ||
+    !(
+      store.live.isOwner ||
       (store.user &&
         store.currentSandbox &&
         store.currentSandbox.author &&
-        store.currentSandbox.author.id !== store.user.id))
+        store.currentSandbox.author.id === store.user.id)
+    )
   ) {
     return [FILES, LIVE];
   }
