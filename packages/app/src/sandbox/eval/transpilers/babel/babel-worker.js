@@ -217,7 +217,12 @@ self.addEventListener('message', async event => {
     config,
     loaderOptions,
     version,
+    type,
   } = event.data;
+
+  if (type !== 'compile') {
+    return;
+  }
 
   if (version === 7 && !babel7Loaded) {
     babel7Loaded = true;
