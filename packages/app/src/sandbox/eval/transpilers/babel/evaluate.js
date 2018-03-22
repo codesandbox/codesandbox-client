@@ -18,6 +18,11 @@ export default function evaluate(
   availablePresets
 ) {
   const require = (requirePath: string) => {
+    if (requirePath === 'assert') {
+      return () => {};
+    }
+    console.log(path, requirePath);
+
     if (requirePath === 'require-from-string') {
       return (newCode: string) =>
         evaluate(
@@ -38,14 +43,16 @@ export default function evaluate(
 
     const plugin =
       availablePlugins[requirePath] ||
-      availablePlugins[requirePath.replace('babel-plugin-', '')];
+      availablePlugins[requirePath.replace('babel-plugin-', '')] ||
+      availablePlugins[requirePath.replace('@babel/plugin-', '')];
     if (plugin) {
       return plugin;
     }
 
     const preset =
       availablePresets[requirePath] ||
-      availablePresets[requirePath.replace('babel-preset-', '')];
+      availablePresets[requirePath.replace('babel-preset-', '')] ||
+      availablePresets[requirePath.replace('@babel/preset-', '')];
     if (preset) {
       return preset;
     }
@@ -59,16 +66,24 @@ export default function evaluate(
     const resolvedCode = fs.readFileSync(resolvedPath).toString();
     const id = hashsum(resolvedCode + resolvedPath);
 
-    cache[id] =
-      cache[id] ||
-      evaluate(
-        fs,
-        BFSRequire,
-        resolvedCode,
-        resolvedPath,
-        availablePlugins,
-        availablePresets
-      );
+    console.log(cache);
+    console.log(id);
+    console.log(cache[id]);
+
+    if (cache[id]) {
+      return cache[id];
+    }
+
+    cache[id] = {};
+
+    cache[id] = evaluate(
+      fs,
+      BFSRequire,
+      resolvedCode,
+      resolvedPath,
+      availablePlugins,
+      availablePresets
+    );
 
     return cache[id];
   };

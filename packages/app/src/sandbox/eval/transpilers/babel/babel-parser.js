@@ -44,7 +44,6 @@ export default function getBabelConfig(
     ...resolvedConfig,
     sourceMaps: 'inline',
     sourceFileName: path,
-    sourceMapTarget: `${path}:transpiled`,
     filename: path,
   };
 }
