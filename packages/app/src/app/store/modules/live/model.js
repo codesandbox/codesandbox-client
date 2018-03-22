@@ -27,6 +27,7 @@ export default {
     types.model({
       startTime: types.maybe(types.number),
       connectionCount: types.number,
+      ownerId: types.string,
       roomId: types.string,
       mode: types.string,
       sandboxId: types.string,

@@ -34,9 +34,9 @@ export default function getItems(store) {
     !(
       store.live.isOwner ||
       (store.user &&
-        store.currentSandbox &&
-        store.currentSandbox.author &&
-        store.currentSandbox.author.id === store.user.id)
+        store.live &&
+        store.live.roomInfo &&
+        store.live.roomInfo.ownerId === store.user.id)
     )
   ) {
     return [FILES, LIVE];

@@ -19,7 +19,7 @@ const Live = ({ signals, store }) => (
         removeEditor={signals.live.onRemoveEditorClicked}
         isOwner={store.live.isOwner}
         roomInfo={store.live.roomInfo}
-        ownerId={store.editor.currentSandbox.author.id}
+        ownerId={store.live.roomInfo.ownerId}
         currentUserId={store.user.id}
         reconnecting={store.live.reconnecting}
       />
