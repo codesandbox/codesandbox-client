@@ -153,6 +153,13 @@ export const getModulePath = (
 
   let directory = findByShortid(directories, module.directoryShortid);
   let path = '/';
+
+  if (directory == null && module.directoryShortid) {
+    // Parent got deleted, return '';
+
+    return '';
+  }
+
   while (directory != null) {
     path = `/${directory.title}${path}`;
     const lastDirectoryShortid = directory.directoryShortid;

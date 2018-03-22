@@ -127,10 +127,12 @@ export const handleMessage = [
         true: [],
         false: [
           actions.consumeModule,
+          actions.setReceivingStatus,
           set(props`shortid`, props`moduleShortid`),
           set(props`code`, props`module.code`),
           changeCode,
           setModuleSaved,
+          actions.unSetReceivingStatus,
         ],
       },
     ],

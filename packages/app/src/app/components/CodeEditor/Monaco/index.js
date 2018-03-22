@@ -397,6 +397,9 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       nextId: newModule.id,
       nextTitle: newModule.title,
     }).then(() => {
+      // Mark as receiving code so we don't send operations to others because
+      // of a module switch
+      this.receivingCode = true;
       if (newModule === this.currentModule) {
         this.changeCode(newModule.code || '');
       }
@@ -414,6 +417,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         // that the changes of code are not sent to live users. We need to reset
         // this state when we're doing changing modules
         this.props.onCodeReceived();
+        this.receivingCode = false;
       }
     });
   };
@@ -797,6 +801,12 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
           sandbox.directories,
           module.id
         );
+
+        if (path === '') {
+          // Parent dir got deleted
+          this.disposeModel(module.id);
+          return;
+        }
 
         // Check for changed path, if that's
         // the case create a new model with corresponding tag, ditch the other model

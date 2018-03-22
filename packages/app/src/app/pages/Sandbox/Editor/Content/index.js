@@ -269,6 +269,7 @@ class EditorPreview extends React.Component<Props, State> {
           const corrections = store.editor.corrections.map(e => e);
           changeModule(newModule, errors, corrections);
         } else if (editor.changeCode) {
+          // Only code changed from outside the editor
           editor.changeCode(newModule.code || '');
         }
       }
