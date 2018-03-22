@@ -85,7 +85,7 @@ export default class WorkerTranspiler extends Transpiler {
   dispose() {
     this.workers.forEach(w => w.terminate());
     this.initialized = false;
-    this.tasks.length = 0;
+    this.tasks = {};
     this.workers.length = 0;
     this.idleWorkers.length = 0;
   }
