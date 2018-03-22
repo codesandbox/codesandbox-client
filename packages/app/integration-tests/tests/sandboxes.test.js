@@ -7,11 +7,9 @@ const SANDBOXES = [
   'svelte',
   'react-ts',
   { id: 'github/reactjs/redux/tree/master/examples/todomvc', threshold: 0.04 },
-  { id: 'jvlrl98xw3', threshold: 0.05, waitFor: 6000 },
   'vVoQVk78',
   'github/faceyspacey/redux-first-router-codesandbox/tree/master',
   'mZRjw05yp',
-
   'o29j95wx9',
   'k3q1zjjml5',
   'github/reactjs/redux/tree/master/examples/real-world',
