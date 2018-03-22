@@ -125,16 +125,34 @@ stories.addWithJSX('babel', () => (
       '/.babelrc': {
         code: JSON.stringify(
           {
-            presets: ['env'],
             plugins: [],
+            presets: [
+              'typescript',
+              [
+                '@babel/preset-env',
+                {
+                  targets: {},
+                  forceAllTransforms: false,
+                  shippedProposals: false,
+                  useBuiltIns: false,
+                },
+              ],
+            ],
+            sourceMaps: false,
           },
           null,
           2
         ),
       },
+      '/babel-transpiler.json': {
+        code: JSON.stringify({
+          babelURL:
+            'https://7358-24560307-gh.circle-artifacts.com/0/home/circleci/babel/packages/babel-standalone/babel.js',
+        }),
+      },
     }}
     dependencies={{
-      'babel-preset-env': 'latest',
+      '@babel/preset-env': 'latest',
     }}
     entry="/index.js"
     template="babel-repl"

@@ -219,9 +219,7 @@ self.addEventListener('message', async event => {
     version,
   } = event.data;
 
-  const isV7 = version === 7;
-
-  if (isV7 && !babel7Loaded) {
+  if (version === 7 && !babel7Loaded) {
     babel7Loaded = true;
 
     loadCustomTranspiler(
@@ -273,39 +271,56 @@ self.addEventListener('message', async event => {
 
   try {
     await Promise.all(
-      flattenedPlugins
-        .filter(p => typeof p === 'string')
-        .map(p => p.replace('babel-plugin-', ''))
-        .map(p => p.replace('@babel/plugin-', ''))
-        .map(async p => {
-          if (!Babel.availablePlugins[p]) {
-            try {
-              await installPlugin(Babel, BrowserFS.BFSRequire, p, path, isV7);
-            } catch (e) {
-              throw new Error(
-                `Could not find/install babel plugin '${p}': ${e.message}`
-              );
-            }
+      flattenedPlugins.filter(p => typeof p === 'string').map(async p => {
+        const normalizedName = p
+          .replace('babel-plugin-', '')
+          .replace('@babel/plugin-', '');
+        if (
+          !Babel.availablePlugins[normalizedName] &&
+          !Babel.availablePlugins[p]
+        ) {
+          try {
+            await installPlugin(
+              Babel,
+              BrowserFS.BFSRequire,
+              p,
+              path,
+              !Babel.version.startsWith('6')
+            );
+          } catch (e) {
+            throw new Error(
+              `Could not find/install babel plugin '${p}': ${e.message}`
+            );
           }
-        })
+        }
+      })
     );
 
     await Promise.all(
-      flattenedPresets
-        .filter(p => typeof p === 'string')
-        .map(p => p.replace('babel-preset-', ''))
-        .map(p => p.replace('@babel/preset-', ''))
-        .map(async p => {
-          if (!Babel.availablePresets[p]) {
-            try {
-              await installPreset(Babel, BrowserFS.BFSRequire, p, path, isV7);
-            } catch (e) {
-              throw new Error(
-                `Could not find/install babel preset '${p}': ${e.message}`
-              );
-            }
+      flattenedPresets.filter(p => typeof p === 'string').map(async p => {
+        const normalizedName = p
+          .replace('babel-preset-', '')
+          .replace('@babel/preset-', '');
+
+        if (
+          !Babel.availablePresets[normalizedName] &&
+          !Babel.availablePresets[p]
+        ) {
+          try {
+            await installPreset(
+              Babel,
+              BrowserFS.BFSRequire,
+              p,
+              path,
+              !Babel.version.startsWith('6')
+            );
+          } catch (e) {
+            throw new Error(
+              `Could not find/install babel preset '${p}': ${e.message}`
+            );
           }
-        })
+        }
+      })
     );
 
     const plugins = [...(config.plugins || [])];
@@ -346,7 +361,6 @@ self.addEventListener('message', async event => {
       transpiledCode: result.code,
     });
   } catch (e) {
-    debugger;
     console.error(e);
     e.message = e.message.replace('unknown', path);
     self.postMessage({

@@ -21,7 +21,6 @@ export default function evaluate(
     if (requirePath === 'assert') {
       return () => {};
     }
-    console.log(path, requirePath);
 
     if (requirePath === 'require-from-string') {
       return (newCode: string) =>
@@ -65,10 +64,6 @@ export default function evaluate(
 
     const resolvedCode = fs.readFileSync(resolvedPath).toString();
     const id = hashsum(resolvedCode + resolvedPath);
-
-    console.log(cache);
-    console.log(id);
-    console.log(cache[id]);
 
     if (cache[id]) {
       return cache[id];

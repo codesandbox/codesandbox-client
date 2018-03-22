@@ -38,10 +38,7 @@ class BabelTranspiler extends WorkerTranspiler {
       const path = loaderContext.path;
       const configs = loaderContext.options.configurations;
 
-      let foundConfig = loaderContext.options;
-      if (configs && configs.babel && configs.babel.parsed) {
-        foundConfig = configs.babel.parsed;
-      }
+      const foundConfig = configs.babel && configs.babel.parsed;
 
       const babelConfig = getBabelConfig(
         foundConfig,
