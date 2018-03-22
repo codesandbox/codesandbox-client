@@ -40,11 +40,9 @@ class BabelTranspiler extends WorkerTranspiler {
 
       const foundConfig = configs.babel && configs.babel.parsed;
 
-      const babelConfig = getBabelConfig(
-        foundConfig,
-        loaderContext.options,
-        path
-      );
+      const loaderOptions = loaderContext.options || {};
+
+      const babelConfig = getBabelConfig(foundConfig, loaderOptions, path);
 
       const isV7 = !!(
         configs.package.parsed.devDependencies &&
@@ -56,7 +54,7 @@ class BabelTranspiler extends WorkerTranspiler {
           code,
           config: babelConfig,
           path,
-          loaderOptions: loaderContext.options || {},
+          loaderOptions,
           babelTranspilerOptions:
             configs &&
             configs.babelTranspiler &&
