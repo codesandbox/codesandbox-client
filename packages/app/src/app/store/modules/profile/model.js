@@ -2,7 +2,15 @@ import { types } from 'mobx-state-tree';
 
 const Sandbox = types.model({
   forkCount: types.number,
-  git: types.maybe(types.string),
+  git: types.maybe(
+    types.model({
+      username: types.string,
+      repo: types.string,
+      path: types.maybe(types.string),
+      commitSha: types.string,
+      branch: types.string,
+    })
+  ),
   id: types.string,
   insertedAt: types.string,
   likeCount: types.number,

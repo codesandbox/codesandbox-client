@@ -7,11 +7,9 @@ const SANDBOXES = [
   'svelte',
   'react-ts',
   { id: 'github/reactjs/redux/tree/master/examples/todomvc', threshold: 0.04 },
-  { id: 'jvlrl98xw3', threshold: 0.05 },
   'vVoQVk78',
   'github/faceyspacey/redux-first-router-codesandbox/tree/master',
   'mZRjw05yp',
-
   'o29j95wx9',
   'k3q1zjjml5',
   'github/reactjs/redux/tree/master/examples/real-world',
@@ -25,6 +23,10 @@ const SANDBOXES = [
   'github/cssinjs/egghead/tree/master/from-sass-to-cssinjs/templates-and-variables', // postcss egghead
   'xp5qy8r93q', // babel example
   'angular', // angular template
+  // Sass importing
+  '2ppkvzx570', // nested imports
+  'rl2m3xklyo', // node_modules import
+  'vanilla',
 ];
 
 function pageLoaded(page) {
@@ -59,7 +61,7 @@ describe('sandboxes', () => {
           timeout: 60000,
         });
         await waitFunction;
-        await page.waitFor(2000);
+        await page.waitFor(sandbox.waitFor || 2000);
 
         const screenshot = await page.screenshot();
 

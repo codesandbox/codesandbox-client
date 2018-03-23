@@ -7,6 +7,7 @@ import { getZeitUserDetails } from '../../sequences';
 export const openDeployModal = [
   set(state`currentModal`, 'deployment'),
   getZeitUserDetails,
+  set(state`deployment.url`, null),
 ];
 
 export const deploy = [

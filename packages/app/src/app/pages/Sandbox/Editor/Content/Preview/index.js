@@ -19,7 +19,7 @@ type State = {
 
 class Preview extends React.Component<Props, State> {
   state = {
-    aligned: 'right',
+    aligned: window.innerHeight > window.innerWidth ? 'bottom' : 'right',
   };
 
   onPreviewInitialized = preview => {

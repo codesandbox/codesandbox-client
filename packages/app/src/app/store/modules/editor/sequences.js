@@ -17,7 +17,15 @@ export const closeQuickActions = set(state`editor.quickActionsOpen`, false);
 
 export const toggleProjectView = toggle(state`editor.isInProjectView`);
 
-export const closeTab = [closeTabByIndex, actions.setCurrentModuleByTab];
+const hasEnoughTabs = when(state`editor.tabs`, tabs => tabs.length > 1);
+
+export const closeTab = [
+  hasEnoughTabs,
+  {
+    false: [],
+    true: [closeTabByIndex, actions.setCurrentModuleByTab],
+  },
+];
 
 export const clearErrors = [
   set(state`editor.errors`, []),
