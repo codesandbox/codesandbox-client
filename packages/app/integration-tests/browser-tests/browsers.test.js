@@ -17,12 +17,14 @@ function getDriver(capabilities) {
 }
 
 function testPageWitCapabilities(capabilities) {
-  const driver = getDriver(getCapabilities(capabilities));
-  // Test if a sandbox can be loaded on IE11
-  return driver.get('http://localhost:3002/#new').then(async () => {
-    const element = webdriver.By.css('h1');
-    await driver.wait(webdriver.until.elementLocated(element), 60000);
-    driver.quit();
+  return webdriver.promise.createFlow(() => {
+    const driver = getDriver(getCapabilities(capabilities));
+    // Test if a sandbox can be loaded on IE11
+    return driver.get('http://localhost:3002/#new').then(async () => {
+      const element = webdriver.By.css('h1');
+      await driver.wait(webdriver.until.elementLocated(element), 60000);
+      driver.quit();
+    });
   });
 }
 
