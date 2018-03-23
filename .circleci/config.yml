@@ -73,8 +73,9 @@ jobs:
           command: yarn start:test
           background: true
       - run:
-          name: Setup Browserstack local env
-          command: ./packages/app/integration-tests/BrowserStackLocal --key $BROWSER_STACK_KEY
+          name: Setup BrowserStack local environment
+          command: ./codesandbox-client/packages/app/integration-tests/BrowserStackLocal --key $BROWSER_STACK_KEY
+          background: true
       - run:
           name: Test Integrations
           command: |
