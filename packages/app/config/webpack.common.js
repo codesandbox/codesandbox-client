@@ -87,12 +87,26 @@ module.exports = {
 
       // Transpile node dependencies, node deps are often not transpiled for IE11
       {
-        test: [/ansi-styles/, /jest/],
-        include: [paths.appNodeModules],
+        test: [/\/node_modules\/.*ansi-styles/, /\/node_modules\/.*jest/],
         loader: 'babel-loader',
         query: {
-          presets: ['env', 'react'],
-          plugins: ['transform-class-properties'],
+          presets: [
+            [
+              'env',
+              {
+                targets: {
+                  ie: 11,
+                },
+              },
+            ],
+            'react',
+          ],
+          plugins: [
+            'transform-async-to-generator',
+            'transform-object-rest-spread',
+            'transform-class-properties',
+            'transform-runtime',
+          ],
         },
       },
 
