@@ -51,7 +51,7 @@ describe('browser-tests', () => {
       const capabilities = {
         browserName: 'iPhone',
         platform: 'MAC',
-        device: 'iPhone 5S',
+        device: 'iPhone 6',
       };
 
       await testPageWitCapabilities(capabilities);
