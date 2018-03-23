@@ -49,9 +49,8 @@ describe('browser-tests', () => {
     async () => {
       // Input capabilities
       const capabilities = {
-        browserName: 'iPhone',
-        platform: 'MAC',
-        device: 'iPhone 6',
+        os_version: '9.1',
+        device: 'iPhone 6S',
       };
 
       await testPageWitCapabilities(capabilities);
