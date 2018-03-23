@@ -36,7 +36,7 @@ describe('browser-tests', () => {
         browser_version: '11.0',
         os: 'Windows',
         os_version: '10',
-        resolution: '1280x1024',
+        resolution: '1024x768',
       };
 
       await testPageWitCapabilities(capabilities);
@@ -49,7 +49,8 @@ describe('browser-tests', () => {
     async () => {
       // Input capabilities
       const capabilities = {
-        os_version: '9.1',
+        browserName: 'iPhone',
+        platform: 'MAC',
         device: 'iPhone 6S',
       };
 
