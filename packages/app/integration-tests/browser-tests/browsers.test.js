@@ -44,7 +44,7 @@ describe('browser-tests', () => {
     130000
   );
 
-  test(
+  test.skip(
     'ios',
     async () => {
       // Input capabilities
