@@ -27,65 +27,85 @@ function testPageWitCapabilities(capabilities) {
 }
 
 describe('browser-tests', () => {
-  test('ie11', async () => {
-    // Input capabilities
-    const capabilities = {
-      browserName: 'IE',
-      browser_version: '11.0',
-      os: 'Windows',
-      os_version: '10',
-      resolution: '1280x1024',
-    };
+  test(
+    'ie11',
+    async () => {
+      // Input capabilities
+      const capabilities = {
+        browserName: 'IE',
+        browser_version: '11.0',
+        os: 'Windows',
+        os_version: '10',
+        resolution: '1280x1024',
+      };
 
-    await testPageWitCapabilities(capabilities);
-  });
+      await testPageWitCapabilities(capabilities);
+    },
+    65000
+  );
 
-  test('ios', async () => {
-    // Input capabilities
-    const capabilities = {
-      browserName: 'iPhone',
-      platform: 'MAC',
-      device: 'iPhone 5S',
-    };
+  test(
+    'ios',
+    async () => {
+      // Input capabilities
+      const capabilities = {
+        browserName: 'iPhone',
+        platform: 'MAC',
+        device: 'iPhone 5S',
+      };
 
-    await testPageWitCapabilities(capabilities);
-  });
+      await testPageWitCapabilities(capabilities);
+    },
+    65000
+  );
 
-  test('firefox', async () => {
-    // Input capabilities
-    const capabilities = {
-      browserName: 'Firefox',
-      browser_version: '58.0',
-      os: 'Windows',
-      os_version: '10',
-      resolution: '1024x768',
-    };
+  test(
+    'firefox',
+    async () => {
+      // Input capabilities
+      const capabilities = {
+        browserName: 'Firefox',
+        browser_version: '58.0',
+        os: 'Windows',
+        os_version: '10',
+        resolution: '1024x768',
+      };
 
-    await testPageWitCapabilities(capabilities);
-  });
+      await testPageWitCapabilities(capabilities);
+    },
+    65000
+  );
 
-  test('safari', async () => {
-    // Input capabilities
-    const capabilities = {
-      browserName: 'Safari',
-      browser_version: '10.0',
-      os: 'OS X',
-      os_version: 'Sierra',
-      resolution: '1024x768',
-    };
+  test(
+    'safari',
+    async () => {
+      // Input capabilities
+      const capabilities = {
+        browserName: 'Safari',
+        browser_version: '10.0',
+        os: 'OS X',
+        os_version: 'Sierra',
+        resolution: '1024x768',
+      };
 
-    await testPageWitCapabilities(capabilities);
-  });
+      await testPageWitCapabilities(capabilities);
+    },
+    65000
+  );
 
-  test('android', async () => {
-    // Input capabilities
-    const capabilities = {
-      browserName: 'android',
-      device: 'Samsung Galaxy S8',
-      realMobile: 'true',
-      os_version: '7.0',
-    };
+  test(
+    'android',
+    async () => {
+      // Input capabilities
+      const capabilities = {
+        browserName: 'android',
+        device: 'Samsung Galaxy S8',
+        realMobile: 'true',
+        os_version: '7.0',
+      };
 
-    await testPageWitCapabilities(capabilities);
-  });
+      await testPageWitCapabilities(capabilities);
+    },
+    65000
+  );
 });
