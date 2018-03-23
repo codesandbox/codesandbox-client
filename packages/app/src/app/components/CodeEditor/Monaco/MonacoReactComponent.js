@@ -84,7 +84,7 @@ class MonacoEditor extends React.PureComponent {
    * and send the correct ones to the editor
    */
   iPadFixListener = e => {
-    if (this.containerElement && e && e.key) {
+    if (this.containerElement && e && e.keyCode === 0 && e.key) {
       switch (e.key) {
         case 'UIKeyInputUpArrow':
           this.containerElement.dispatchEvent(
