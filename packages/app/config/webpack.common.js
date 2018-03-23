@@ -76,13 +76,24 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        include: [paths.src, paths.common, /@emmetio/, /jest/, /ansi-styles/],
+        include: [paths.src, paths.common, /@emmetio/],
         exclude: [
           /eslint\.4\.1\.0\.min\.js$/,
           /typescriptServices\.js$/,
           new RegExp('babel-runtime\\' + path.sep),
         ],
         loader: 'happypack/loader',
+      },
+
+      // Transpile node dependencies, node deps are often not transpiled for IE11
+      {
+        test: [/ansi-styles/, /jest/],
+        include: [paths.appNodeModules],
+        loader: 'babel-loader',
+        query: {
+          presets: ['env', 'react'],
+          plugins: ['transform-class-properties'],
+        },
       },
 
       // `eslint-plugin-vue/lib/index.js` depends on `fs` module we cannot use in browsers, so needs shimming.
@@ -152,16 +163,6 @@ module.exports = {
         options: {
           search: `assert = require.call(null, 'assert');`,
           replace: `throw new Error('module assert not found')`,
-        },
-      },
-      // Chalk doesn't have functionality in browser, so don't add it
-      {
-        test: /chalk/,
-        loader: 'string-replace-loader',
-        options: {
-          search: '[\\s\\S]+', // whole file.
-          replace: 'module.exports = {}',
-          flags: 'g',
         },
       },
       // JSON is not enabled by default in Webpack but both Node and Browserify
