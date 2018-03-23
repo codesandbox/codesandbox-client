@@ -102,6 +102,38 @@ const config: ConfigurationFile = {
       return JSON.stringify({ presets, plugins }, null, 2);
     }
 
+    if (template === 'cxjs') {
+      return JSON.stringify(
+        {
+          presets: [
+            [
+              'cx-env',
+              {
+                targets: {
+                  chrome: 50,
+                  ie: 11,
+                  ff: 30,
+                  edge: 12,
+                  safari: 9,
+                },
+                modules: false,
+                loose: true,
+                useBuiltIns: true,
+                cx: {
+                  imports: {
+                    useSrc: true,
+                  },
+                },
+              },
+            ],
+          ],
+          plugins: [],
+        },
+        null,
+        2
+      );
+    }
+
     return JSON.stringify({ presets: [], plugins: [] }, null, 2);
   },
 

@@ -11,6 +11,7 @@ import {
   newVueSandboxUrl,
   newAngularSandboxUrl,
   newSvelteSandboxUrl,
+  newCxJSSandboxUrl,
   importFromGitHubUrl,
   uploadFromCliUrl,
 } from 'common/utils/url-generator';
@@ -21,6 +22,7 @@ import ParcelIcon from 'common/components/logos/Parcel';
 import VueIcon from 'common/components/logos/Vue';
 import SvelteIcon from 'common/components/logos/Svelte';
 import AngularIcon from 'common/components/logos/Angular';
+import CxJSIcon from 'common/components/logos/CxJS';
 
 import {
   Container,
@@ -103,6 +105,14 @@ function NewSandbox({ signals }) {
           text="React TypeScript"
           href={newReactTypeScriptSandboxUrl()}
           onClick={() => signals.modalClosed()}
+        />
+        <Logo
+          Icon={CxJSIcon}
+          width={50}
+          height={50}
+          text="CxJS"
+          href={newCxJSSandboxUrl()}
+          onClick={() => signals.closeModal()}
         />
         <Logo
           Icon={GithubIcon}
