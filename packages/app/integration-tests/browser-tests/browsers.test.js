@@ -1,11 +1,16 @@
 const webdriver = require('selenium-webdriver');
 
+const hash = require('child_process')
+  .execSync('git rev-parse --short HEAD')
+  .toString();
+
 function getCapabilities(browserInfo) {
   return {
     ...browserInfo,
     'browserstack.user': process.env.BROWSER_STACK_USER,
     'browserstack.key': process.env.BROWSER_STACK_KEY,
     'browserstack.local': 'true',
+    build: hash,
   };
 }
 
