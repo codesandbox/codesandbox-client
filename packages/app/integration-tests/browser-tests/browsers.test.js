@@ -41,7 +41,7 @@ describe('browser-tests', () => {
 
       await testPageWitCapabilities(capabilities);
     },
-    65000
+    130000
   );
 
   test(
@@ -50,13 +50,14 @@ describe('browser-tests', () => {
       // Input capabilities
       const capabilities = {
         browserName: 'iPhone',
-        platform: 'MAC',
-        device: 'iPhone 6S',
+        device: 'iPhone SE',
+        realMobile: 'true',
+        os_version: '11.2',
       };
 
       await testPageWitCapabilities(capabilities);
     },
-    65000
+    130000
   );
 
   test(
@@ -73,7 +74,7 @@ describe('browser-tests', () => {
 
       await testPageWitCapabilities(capabilities);
     },
-    65000
+    130000
   );
 
   test(
@@ -90,7 +91,7 @@ describe('browser-tests', () => {
 
       await testPageWitCapabilities(capabilities);
     },
-    65000
+    130000
   );
 
   test(
@@ -106,6 +107,6 @@ describe('browser-tests', () => {
 
       await testPageWitCapabilities(capabilities);
     },
-    65000
+    130000
   );
 });
