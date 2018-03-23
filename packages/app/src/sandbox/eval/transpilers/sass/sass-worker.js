@@ -82,14 +82,14 @@ const existsPromise = (fs, file) =>
     });
   });
 
-const pathCaches = new Map();
+let pathCaches = {};
 const getExistingPath = async (fs, p) => {
   if (p.endsWith('.json')) {
     return false;
   }
 
-  if (pathCaches.get(p)) {
-    return pathCaches.get(p);
+  if (pathCaches[p]) {
+    return pathCaches[p];
   }
 
   const possiblePaths = Sass.getPathVariations(p);
@@ -102,7 +102,7 @@ const getExistingPath = async (fs, p) => {
     }
   }
 
-  pathCaches.set(p, existedFile);
+  pathCaches[p] = existedFile;
 
   return existedFile;
 };
@@ -197,7 +197,7 @@ self.addEventListener('message', async event => {
     }
   }
 
-  pathCaches.clear();
+  pathCaches = {};
   Sass._path = '/';
   Sass.clearFiles();
 

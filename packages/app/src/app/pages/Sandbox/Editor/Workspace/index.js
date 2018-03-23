@@ -61,6 +61,7 @@ function Workspace({ store }) {
                 fontWeight: 600,
                 color: 'rgba(255, 255, 255, 0.3)',
               }}
+              className="codesandbox-version"
             >
               {VERSION}
             </div>
