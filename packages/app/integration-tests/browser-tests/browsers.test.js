@@ -27,7 +27,7 @@ function testPageWitCapabilities(capabilities) {
 }
 
 describe('browser-tests', () => {
-  test(
+  test.concurrent(
     'ie11',
     async () => {
       // Input capabilities
@@ -44,7 +44,7 @@ describe('browser-tests', () => {
     65000
   );
 
-  test(
+  test.concurrent(
     'ios',
     async () => {
       // Input capabilities
@@ -59,7 +59,7 @@ describe('browser-tests', () => {
     65000
   );
 
-  test(
+  test.concurrent(
     'firefox',
     async () => {
       // Input capabilities
@@ -76,7 +76,7 @@ describe('browser-tests', () => {
     65000
   );
 
-  test(
+  test.concurrent(
     'safari',
     async () => {
       // Input capabilities
@@ -93,7 +93,7 @@ describe('browser-tests', () => {
     65000
   );
 
-  test(
+  test.concurrent(
     'android',
     async () => {
       // Input capabilities
