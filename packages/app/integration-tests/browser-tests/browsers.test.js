@@ -17,19 +17,17 @@ function getDriver(capabilities) {
 }
 
 function testPageWitCapabilities(capabilities) {
-  return webdriver.promise.createFlow(() => {
-    const driver = getDriver(getCapabilities(capabilities));
-    // Test if a sandbox can be loaded on IE11
-    return driver.get('http://localhost:3002/#new').then(async () => {
-      const element = webdriver.By.css('h1');
-      await driver.wait(webdriver.until.elementLocated(element), 60000);
-      driver.quit();
-    });
+  const driver = getDriver(getCapabilities(capabilities));
+  // Test if a sandbox can be loaded on IE11
+  return driver.get('http://localhost:3002/#new').then(async () => {
+    const element = webdriver.By.css('h1');
+    await driver.wait(webdriver.until.elementLocated(element), 60000);
+    driver.quit();
   });
 }
 
 describe('browser-tests', () => {
-  test.concurrent(
+  test(
     'ie11',
     async () => {
       // Input capabilities
@@ -46,7 +44,7 @@ describe('browser-tests', () => {
     65000
   );
 
-  test.concurrent(
+  test(
     'ios',
     async () => {
       // Input capabilities
@@ -60,7 +58,7 @@ describe('browser-tests', () => {
     65000
   );
 
-  test.concurrent(
+  test(
     'firefox',
     async () => {
       // Input capabilities
@@ -77,7 +75,7 @@ describe('browser-tests', () => {
     65000
   );
 
-  test.concurrent(
+  test(
     'safari',
     async () => {
       // Input capabilities
@@ -94,7 +92,7 @@ describe('browser-tests', () => {
     65000
   );
 
-  test.concurrent(
+  test(
     'android',
     async () => {
       // Input capabilities
