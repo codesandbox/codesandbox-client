@@ -15,6 +15,7 @@ import NotOwnedSandboxInfo from './items/NotOwnedSandboxInfo';
 
 import ConnectionNotice from './ConnectionNotice';
 import Advertisement from './Advertisement';
+import DowntimeNotice from './DowntimeNotice';
 
 import { Container, ContactContainer, ItemTitle } from './elements';
 
@@ -66,6 +67,7 @@ function Workspace({ store }) {
               {VERSION}
             </div>
           </ContactContainer>
+          <DowntimeNotice />
           <ConnectionNotice />
         </div>
       )}
