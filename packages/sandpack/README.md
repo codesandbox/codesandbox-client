@@ -18,25 +18,13 @@ This is a list of features that the bundler supports out of the box, the list ma
 
 1.  Hot Module Reloading API (`module.hot`)
 2.  npm dependencies
-3.  Most common transpilers
-    * Babel
-    * TypeScript
-    * Sass
-    * Less
-    * Stylus
-    * PostCSS
-    * CSS Modules
-    * PostHTML
-    * Pug
-    * Svelte
-    * Vue
+3.  Most common transpilers (vue, babel, typescript, css, etc...)
 4.  Parallel transpiling
 5.  On-demand transpiler loading
 6.  Webpack loader syntax (`!raw-loader!./test.js`)
 7.  Friendly error overlay (using `create-react-app` overlay)
 8.  Transpilation result caching
 9.  HTML/CSS entry points
-10. Jest testing built in
 
 ## Example usage
 
@@ -153,10 +141,6 @@ The above code will render a File Explorer, a working code editor and a preview 
 
 > It would be really cool if we would have more libraries that uses this library as a basis. Like `vue-sandpack` and `angular-sandpack`. Or even a library that just exposes components that use `sandpack`.
 
-## Manager Arguments
-
-You can instantiate a manager by giving these arguments.
-
 ### SandboxInfo Argument
 
 The second argument in the constructor of `Manager` is all sandbox info. It has this structure:
@@ -230,12 +214,8 @@ We heavily make use of Web Workers for transpilations. Almost all our transpilat
 
 Another reason to host the bundler externally is because of code splitting: we split all our transpilers away and load them on-demand. If a user doesn't use `sass` we won't load the transpiler. This wouldn't be possible if we would give one big JS file as the library.
 
-### Offline Support
-
-The bundler is backed by a Service Worker that downloads all transpilers in the background and caches npm dependencies. This helps with performance and allows you to use the bundler offline.
-
 > I want to highlight that you can also host the bundler by yourself, all necessary files are in the `sandpack` folder.
 
 ## Open In CodeSandbox
 
-We show an "Open in CodeSandbox" button in the sandbox preview on the bottom right. This button allows everyone to create a sandbox from the code in the preview, open it in CodeSandbox and share their work more easily with others. We encourage you to keep this button, or offer an alternative way to open the code in CodeSandbox (you can get the URL in CodeSandbox by calling `manager.getCodeSandboxURL`).
+We show an "Open in CodeSandbox" button in the sandbox preview on the bottom right. This button allows everyone to create a sandbox from the code in the preview, open it in CodeSandbox and share their work more easily with others.

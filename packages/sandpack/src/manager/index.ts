@@ -179,6 +179,39 @@ export default class PreviewManager {
     dispatch(message);
   }
 
+  /**
+   * Get the URL of the contents of the current sandbox
+   */
+  public getCodeSandboxURL() {
+    const files = this.getFiles();
+
+    const paramFiles = Object.keys(files).reduce(
+      (prev, next) => ({
+        ...prev,
+        [next.replace('/', '')]: {
+          content: files[next].code,
+          isBinary: false,
+        },
+      }),
+      {}
+    );
+
+    return fetch('https://codesandbox.io/api/v1/sandboxes/define', {
+      method: 'POST',
+      body: JSON.stringify({ files: paramFiles }),
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(x => x.json())
+      .then((res: { sandbox_id: string }) => ({
+        sandboxId: res.sandbox_id,
+        editorUrl: `https://codesandbox.io/s/${res.sandbox_id}`,
+        embedUrl: `https://codesandbox.io/embed/${res.sandbox_id}`,
+      }));
+  }
+
   private getFiles() {
     const { sandboxInfo } = this;
 
