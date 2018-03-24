@@ -126,11 +126,17 @@ You can do the exact same steps for a POST request, but instead of a URL you'd s
 
 ### Define without render
 
-If you want to define a new sandbox without getting it rendered, you can add `?json=1` to the request. For instance `https://codesandbox.io/api/v1/sandboxes/define?json=1`. Instead of the render, the result will be json data providing you with the `id` of the new sandbox.
+If you want to define a new sandbox without getting it rendered, you can add `?json=1` to the request. For instance `https://codesandbox.io/api/v1/sandboxes/define?json=1`. Instead of the render, the result will be json data providing you with the `sandbox_id` of the new sandbox.
 
 This is useful, for instance, if you need to create a new sandbox programatically, so you can then embed it on your site (See Embed documentation).
 
 Both `get` and `post` requests are supported.
+
+### XHR Request
+
+You can also create a sandbox using an XHR request, like using `fetch`. An example sandbox of that is here:
+
+<iframe src="https://codesandbox.io/embed/9loovqj5oy?editorsize=70&fontsize=14&hidenavigation=1&runonclick=1" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 
 ## Import Using React-Codesandboxer
 
