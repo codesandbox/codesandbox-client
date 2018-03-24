@@ -204,7 +204,7 @@ The manager instance has several helper functions you can call.
 
 #### `updatePreview`
 
-Send new files or options to the preview. It will automatically hot update the preview with the new files and options. Accepts a single argument `sandboxInfo` of type `SandboxInfo`.
+Send new sandbox info, like files and dependencies, to the preview. It will automatically hot update the preview with the new files and options. Accepts a single argument `sandboxInfo` of type `SandboxInfo`.
 
 #### `updateOptions`
 
