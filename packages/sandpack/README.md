@@ -198,6 +198,34 @@ The third argument in the constructor of `Manager` is extra options. It has this
 }
 ```
 
+### Manager functions
+
+The manager instance has several helper functions you can call.
+
+#### `updatePreview`
+
+Send new files or options to the preview. It will automatically hot update the preview with the new files and options. Accepts a single argument `sandboxInfo` of type `SandboxInfo`.
+
+#### `updateOptions`
+
+Updates the given options and updates the preview. Accepts a single argument `options` of type `Options`.
+
+#### `dispatch`
+
+Dispatch an event to the sandbox preview and all other listeners. Accepts a single argument, which is the data to send. This is used heavily by the manager and `react-sandpack` to communicate with the bundler.
+
+#### `getCodeSandboxURL`
+
+Create a sandbox from the current files and return an object in this form:
+
+```js
+{
+  sandboxId: sandbox_id,
+  editorUrl: `https://codesandbox.io/s/${sandbox_id}`,
+  embedUrl: `https://codesandbox.io/embed/${sandbox_id}`,
+}
+```
+
 ## Why is the bundler hosted externally and not a simple `import`?
 
 We have three reasons to host the bundler of sandpack externally:
