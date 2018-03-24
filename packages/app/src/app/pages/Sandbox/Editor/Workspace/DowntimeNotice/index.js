@@ -2,8 +2,6 @@ import React from 'react';
 
 import { Container } from './elements';
 
-const DOWNTIME_TIME = 1521853200000;
-
 const pad = t => {
   if (`${t}`.length === 1) {
     return `0${t}`;
