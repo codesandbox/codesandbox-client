@@ -113,7 +113,7 @@ jobs:
           name: Lint
           command: yarn lint
 
-  deploy:
+  create-docker-image:
     docker:
       - image: circleci/node:9.2.1
     working_directory: ~/codesandbox-client
@@ -143,7 +143,7 @@ workflows:
       - build-prod:
           requires:
             - build-dependencies
-      - deploy:
+      - create-docker-image:
           filters:
             branches:
               only: master
