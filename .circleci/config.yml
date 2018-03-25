@@ -119,17 +119,12 @@ jobs:
     working_directory: ~/codesandbox-client
     steps:
       - restore_cache:
-          key: v4-repo-{{ .Environment.CIRCLE_SHA1 }}
-      - restore_cache:
           key: v4-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
-      - add_ssh_keys:
-          fingerprints:
-            - "f7:f1:e6:60:96:24:d9:cd:1b:8b:c0:34:e7:ee:fa:82"
       - run:
-          name: Add key to known_hosts
-          command: echo "ssh.codesandbox.io ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBKyKbuMPJSETTyPRRJVOeC5I8j7wyUMW8HYheg7cN71eKTuw55tkoygxI59BvNi/CAyCnRT5LnxZhvrq9nSlPYc=" >> ~/.ssh/known_hosts
+          name: Docker Sign In
+          command: docker login -u $DOCKER_USER -p $DOCKER_PWD
       - deploy:
-          command: sh ./deploy.sh
+          command: sh ./create-docker.sh
 
 workflows:
   version: 2
@@ -148,8 +143,7 @@ workflows:
       - build-prod:
           requires:
             - build-dependencies
-      - hold:
-          type: approval
+      - deploy:
           filters:
             branches:
               only: master
@@ -158,9 +152,3 @@ workflows:
             - lint
             - test-integrations
             - test-jest
-      - deploy:
-          filters:
-            branches:
-              only: master
-          requires:
-            - hold
