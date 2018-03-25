@@ -114,8 +114,7 @@ jobs:
           command: yarn lint
 
   create-docker-image:
-    docker:
-      - image: docker:18.03
+    machine: true
     working_directory: ~/codesandbox-client
     steps:
       - restore_cache:
