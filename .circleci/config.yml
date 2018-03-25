@@ -115,7 +115,7 @@ jobs:
 
   create-docker-image:
     docker:
-      - image: circleci/node:9.2.1
+      - image: docker:18.03
     working_directory: ~/codesandbox-client
     steps:
       - restore_cache:
