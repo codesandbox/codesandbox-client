@@ -122,8 +122,20 @@ jobs:
       - run:
           name: Docker Sign In
           command: echo $DOCKER_PWD | docker login -u $DOCKER_USER --password-stdin
+      - run:
+          name: Create Dockerfile
+          command: |
+            cat > Dockerfile <<EOF
+            FROM busybox:1.28.1
+            WORKDIR /codesandbox
+            COPY www /codesandbox
+            EOF
+      - run:
+          name: Create Image
+          command: docker build -t codesandbox/client:$CIRCLE_SHA1 .
       - deploy:
-          command: sh ./create-docker.sh
+          name: Push Image
+          command: docker push codesandbox/client:$CIRCLE_SHA1
 
 workflows:
   version: 2
