@@ -132,10 +132,10 @@ jobs:
             EOF
       - run:
           name: Create Image
-          command: docker build -t codesandbox/client:$CIRCLE_SHA1 .
+          command: docker build -t codesandbox/client:${CIRCLE_SHA1:0:7} .
       - deploy:
           name: Push Image
-          command: docker push codesandbox/client:$CIRCLE_SHA1
+          command: docker push codesandbox/client:${CIRCLE_SHA1:0:7}
 
 workflows:
   version: 2
