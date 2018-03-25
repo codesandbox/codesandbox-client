@@ -5,7 +5,8 @@ echo "Creating temp Dockerfile"
 touch Dockerfile
 cat > Dockerfile <<EOF
 FROM busybox:1.28.1
-COPY /www /codesandbox
+WORKDIR /codesandbox
+COPY www /codesandbox
 EOF
 echo "Building image"
 docker build -t codesandbox/client:$CIRCLE_SHA1 .

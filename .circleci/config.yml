@@ -122,7 +122,7 @@ jobs:
           key: v4-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: Docker Sign In
-          command: docker login -u $DOCKER_USER -p $DOCKER_PWD
+          command: echo $DOCKER_PWD | docker login -u $DOCKER_USER --password-stdin
       - deploy:
           command: sh ./create-docker.sh
 
