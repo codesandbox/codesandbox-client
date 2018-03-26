@@ -215,6 +215,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         const { isLive, sendTransforms } = this.props;
 
         if (isLive && sendTransforms && !this.receivingCode) {
+          console.log(changes);
           this.addChangesOperation(changes);
         }
 
@@ -435,7 +436,10 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
    */
   addChangesOperation = (changes: Array<any>) => {
     // Module changed in the meantime
-    if (this.changes.moduleShortid !== this.currentModule.shortid) {
+    if (
+      this.changes.moduleShortid &&
+      this.changes.moduleShortid !== this.currentModule.shortid
+    ) {
       this.sendChangeOperations();
     }
 
@@ -453,62 +457,77 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     if (this.changeTimeout) {
       clearTimeout(this.changeTimeout);
     }
-    this.changeTimeout = setTimeout(() => {
-      this.sendChangeOperations();
-    }, 10);
+
+    this.sendChangeOperations();
   };
 
-  sendChangeOperations = () => {
+  sendChangeOperations = (retry: boolean = false) => {
     const { sendTransforms, isLive, onCodeReceived } = this.props;
 
-    if (
-      sendTransforms &&
-      this.changes.changes &&
-      this.changes.moduleShortid === this.currentModule.shortid
-    ) {
-      let code = this.changes.code;
-      const t = this.changes.changes
-        .map(change => {
-          const startPos = change.range.getStartPosition();
-          const lines = code.split('\n');
-          const totalLength = code.length;
-          let index = lineAndColumnToIndex(
-            lines,
-            startPos.lineNumber,
-            startPos.column
-          );
+    try {
+      if (
+        sendTransforms &&
+        this.changes.changes &&
+        this.changes.moduleShortid === this.currentModule.shortid
+      ) {
+        let code = this.changes.code;
+        const t = this.changes.changes
+          .map(change => {
+            const startPos = change.range.getStartPosition();
+            const lines = code.split('\n');
+            const totalLength = code.length;
+            let index = lineAndColumnToIndex(
+              lines,
+              startPos.lineNumber,
+              startPos.column
+            );
 
-          const operation = new TextOperation();
-          if (index) {
-            operation.retain(index);
-          }
+            const operation = new TextOperation();
+            if (index) {
+              operation.retain(index);
+            }
 
-          if (change.rangeLength > 0) {
-            // Deletion
-            operation.delete(change.rangeLength);
+            if (change.rangeLength > 0) {
+              // Deletion
+              operation.delete(change.rangeLength);
 
-            index += change.rangeLength;
-          }
-          if (change.text) {
-            // Insertion
-            operation.insert(change.text);
-          }
+              index += change.rangeLength;
+            }
+            if (change.text) {
+              // Insertion
+              operation.insert(change.text);
+            }
 
-          operation.retain(Math.max(0, totalLength - index));
+            operation.retain(Math.max(0, totalLength - index));
 
-          if (this.changes.changes.length > 1) {
-            code = operation.apply(code);
-          }
+            if (this.changes.changes.length > 1) {
+              code = operation.apply(code);
+            }
 
-          return operation;
-        })
-        .reduce((prev, next) => prev.compose(next));
+            return operation;
+          })
+          .reduce((prev, next) => prev.compose(next));
 
-      sendTransforms(t);
-    } else if (!isLive && onCodeReceived) {
-      onCodeReceived();
+        sendTransforms(t);
+      } else if (!isLive && onCodeReceived) {
+        onCodeReceived();
+      }
+      this.changes = { moduleShortid: null, code: '', changes: [] };
+    } catch (e) {
+      if (retry) {
+        throw e;
+      }
+
+      console.error(e);
+      // This can happen on undo, Monaco sends a huge list of operations
+      // that all apply to the same code and causes the `compose` function
+      // to throw. The solution is to wait for the new code and try again. That's why
+      // we call this function again in a timeout
+
+      setTimeout(() => {
+        this.sendChangeOperations(true);
+      }, 10);
     }
-    this.changes = { moduleShortid: null, code: '', changes: [] };
   };
 
   userClassesGenerated = {};
