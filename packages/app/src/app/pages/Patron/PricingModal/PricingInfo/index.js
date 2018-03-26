@@ -18,9 +18,13 @@ function PricingInfo() {
           </tr>
         </thead>
         <tbody>
+          <Feature
+            feature="CodeSandbox Live"
+            free="Disabled"
+            supporter="Enabled"
+          />
           <Feature feature="Private Sandboxes" free="No" supporter="Yes" />
           <Feature feature="Sandbox Limit" free="50" supporter="Unlimited" />
-          <Feature feature="Live" free="Disabled" supporter="Enabled" />
           <Feature
             disabled
             feature="Static File Hosting"
