@@ -259,7 +259,7 @@ export const handleMessage = [
       when(state`live.roomInfo.ownerId`, `live.user.id`, (i1, i2) => i1 === i2),
       {
         true: [],
-        false: [set(state`live.editor.currentSandbox.owned`, false)],
+        false: [set(state`editor.currentSandbox.owned`, false)],
       },
       resetLive,
     ],
