@@ -572,6 +572,10 @@ export default class TranspiledModule {
           e.fileName = loaderContext.path;
           e.tModule = this;
           this.resetTranspilation();
+
+          // Compilation should also be reset, since the code will be different now
+          // we don't have a transpilation.
+          this.resetCompilation();
           manager.clearCache();
 
           throw e;

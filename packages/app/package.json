@@ -152,6 +152,8 @@
     "monaco-vue": "^0.2.1",
     "normalize.css": "^5.0.0",
     "normalizr": "^3.2.3",
+    "ot": "^0.0.15",
+    "phoenix": "^1.3.0",
     "postcss": "^6.0.9",
     "postcss-selector-parser": "^2.2.3",
     "posthtml": "^0.11.3",

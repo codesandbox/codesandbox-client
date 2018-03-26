@@ -20,6 +20,10 @@ const SignIn = Loadable({
     import(/* webpackChunkName: 'page-sign-in' */ './common/SignIn'),
   LoadingComponent: Loading,
 });
+const Live = Loadable({
+  loader: () => import(/* webpackChunkName: 'page-sign-in' */ './Live'),
+  LoadingComponent: Loading,
+});
 const ZeitSignIn = Loadable({
   loader: () => import(/* webpackChunkName: 'page-zeit' */ './common/ZeitAuth'),
   LoadingComponent: Loading,
@@ -100,6 +104,7 @@ class Routes extends React.Component<Props> {
             <Route exact path="/s/cli" component={CliInstructions} />
             <Route exact path="/s" component={NewSandbox} />
             <Route path="/s/:id*" component={Sandbox} />
+            <Route path="/live/:id" component={Live} />
             <Route path="/signin/:jwt?" component={SignIn} />
             <Route path="/u/:username" component={Profile} />
             <Route path="/search" component={Search} />

@@ -87,6 +87,7 @@ class Entry extends React.PureComponent {
       isMainModule,
       moduleHasError,
       root,
+      rightColors,
     } = this.props;
     const { state, error, selected, hovering } = this.state;
 
@@ -127,6 +128,7 @@ class Entry extends React.PureComponent {
             onMouseEnter={this.onMouseEnter}
             onMouseLeave={this.onMouseLeave}
             alternative={isMainModule}
+            rightColors={rightColors}
             noTransition
           >
             <EntryIcons

@@ -10,7 +10,7 @@ import {
   currentPackageJSONCode,
   parsedConfigurations,
 } from './getters';
-import { isModuleSynced } from './computed';
+import { isModuleSynced, getType } from './computed';
 import { loadSandbox } from '../../sequences';
 
 export default Module({
@@ -30,6 +30,8 @@ export default Module({
     errors: [],
     glyphs: [],
     corrections: [],
+    pendingOperation: null,
+    pendingUserSelections: [],
     isInProjectView: false,
     forceRender: 0,
     initialPath: '/',

@@ -2,7 +2,8 @@
 import * as React from 'react';
 import { ThemeProvider } from 'styled-components';
 import { Prompt } from 'react-router-dom';
-import { reaction } from 'mobx';
+import { reaction, autorun } from 'mobx';
+import { TextOperation } from 'ot';
 import { inject, observer } from 'mobx-react';
 import getTemplateDefinition from 'common/templates';
 import type { ModuleError } from 'common/types';
@@ -198,6 +199,68 @@ class EditorPreview extends React.Component<Props, State> {
         }
       }
     );
+    const disposeLiveHandler = reaction(
+      () => store.live.receivingCode,
+      () => {
+        if (editor.setReceivingCode) {
+          editor.setReceivingCode(store.live.receivingCode);
+        }
+      }
+    );
+
+    const disposePendingOperationHandler = reaction(
+      () =>
+        store.editor.pendingOperation &&
+        store.editor.pendingOperation.map(x => x),
+      () => {
+        if (store.editor.pendingOperation) {
+          if (editor.setReceivingCode) {
+            editor.setReceivingCode(true);
+          }
+          if (editor.applyOperation) {
+            editor.applyOperation(
+              TextOperation.fromJSON(store.editor.pendingOperation)
+            );
+          } else {
+            try {
+              if (editor.currentModule) {
+                const operation = TextOperation.fromJSON(
+                  store.editor.pendingOperation
+                );
+
+                this.props.signals.editor.codeChanged({
+                  code: operation.apply(editor.currentModule.code || ''),
+                  moduleShortid: editor.currentModule.shortid,
+                });
+              }
+            } catch (e) {
+              console.error(e);
+            }
+          }
+          if (editor.setReceivingCode) {
+            editor.setReceivingCode(false);
+          }
+          this.props.signals.live.onOperationApplied();
+        }
+      }
+    );
+
+    const updateUserSelections = () => {
+      if (store.editor.pendingUserSelections) {
+        if (editor.updateUserSelections) {
+          requestAnimationFrame(() => {
+            editor.updateUserSelections(store.editor.pendingUserSelections);
+            this.props.signals.live.onSelectionDecorationsApplied();
+          });
+        }
+      }
+    };
+    const disposeLiveSelectionHandler = reaction(
+      () => store.editor.pendingUserSelections.map(x => x),
+      updateUserSelections
+    );
+    updateUserSelections();
+
     const disposeModuleHandler = reaction(
       () => [store.editor.currentModule, store.editor.currentModule.code],
       ([newModule]) => {
@@ -212,6 +275,7 @@ class EditorPreview extends React.Component<Props, State> {
           const corrections = store.editor.corrections.map(e => e);
           changeModule(newModule, errors, corrections);
         } else if (editor.changeCode) {
+          // Only code changed from outside the editor
           editor.changeCode(newModule.code || '');
         }
       }
@@ -235,6 +299,9 @@ class EditorPreview extends React.Component<Props, State> {
       disposeToggleDevtools();
       disposeResizeHandler();
       disposeGlyphsHandler();
+      disposeLiveHandler();
+      disposePendingOperationHandler();
+      disposeLiveSelectionHandler();
     };
   };
 
@@ -250,6 +317,15 @@ class EditorPreview extends React.Component<Props, State> {
           )
         )
     );
+  };
+
+  sendTransforms = operation => {
+    const currentModuleShortid = this.props.store.editor.currentModuleShortid;
+
+    this.props.signals.live.onTransformMade({
+      moduleShortid: currentModuleShortid,
+      operation: operation.toJSON(),
+    });
   };
 
   render() {
@@ -326,6 +402,11 @@ class EditorPreview extends React.Component<Props, State> {
               width={editorWidth}
               height={editorHeight}
               settings={settings(store)}
+              sendTransforms={this.sendTransforms}
+              readOnly={store.live.isLive && !store.live.isCurrentEditor}
+              isLive={store.live.isLive}
+              onCodeReceived={signals.live.onCodeReceived}
+              onSelectionChanged={signals.live.onSelectionChanged}
               onNpmDependencyAdded={name => {
                 if (sandbox.owned) {
                   signals.editor.addNpmDependency({ name, isDev: true });

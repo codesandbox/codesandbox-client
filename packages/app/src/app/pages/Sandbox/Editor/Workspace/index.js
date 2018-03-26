@@ -3,12 +3,13 @@ import { inject, observer } from 'mobx-react';
 
 import VERSION from 'common/version';
 
-import workspaceItems from 'app/store/modules/workspace/items';
+import getWorkspaceItems from 'app/store/modules/workspace/items';
 import SocialInfo from 'app/components/SocialInfo';
 
 import Files from './items/Files';
 import ProjectInfo from './items/ProjectInfo';
 import GitHub from './items/GitHub';
+import Live from './items/Live';
 import Deployment from './items/Deployment';
 import ConfigurationFiles from './items/ConfigurationFiles';
 import NotOwnedSandboxInfo from './items/NotOwnedSandboxInfo';
@@ -25,6 +26,7 @@ const idToItem = {
   github: GitHub,
   deploy: Deployment,
   config: ConfigurationFiles,
+  live: Live,
 };
 
 function Workspace({ store }) {
@@ -39,7 +41,7 @@ function Workspace({ store }) {
 
   const Component = sandbox.owned ? idToItem[currentItem] : NotOwnedSandboxInfo;
 
-  const item = workspaceItems.find(i => i.id === currentItem);
+  const item = getWorkspaceItems(store).find(i => i.id === currentItem);
   return (
     <Container>
       {sandbox.owned && <ItemTitle>{item.name}</ItemTitle>}
