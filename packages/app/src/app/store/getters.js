@@ -11,5 +11,5 @@ export function isLoggedIn() {
 }
 
 export function hasLogIn() {
-  return !!store.get('jwt');
+  return !!this.jwt || !!store.get('jwt');
 }

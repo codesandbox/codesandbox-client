@@ -214,6 +214,9 @@ class EditorPreview extends React.Component<Props, State> {
         store.editor.pendingOperation.map(x => x),
       () => {
         if (store.editor.pendingOperation) {
+          if (editor.setReceivingCode) {
+            editor.setReceivingCode(true);
+          }
           if (editor.applyOperation) {
             editor.applyOperation(
               TextOperation.fromJSON(store.editor.pendingOperation)
@@ -233,6 +236,9 @@ class EditorPreview extends React.Component<Props, State> {
             } catch (e) {
               console.error(e);
             }
+          }
+          if (editor.setReceivingCode) {
+            editor.setReceivingCode(false);
           }
           this.props.signals.live.onOperationApplied();
         }

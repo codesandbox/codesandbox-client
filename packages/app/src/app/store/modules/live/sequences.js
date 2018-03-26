@@ -256,6 +256,11 @@ export const handleMessage = [
       actions.disconnect,
       set(props`modal`, 'liveSessionEnded'),
       openModal,
+      when(state`live.roomInfo.ownerId`, `live.user.id`, (i1, i2) => i1 === i2),
+      {
+        true: [],
+        false: [set(state`live.editor.currentSandbox.owned`, false)],
+      },
       resetLive,
     ],
     otherwise: [],
@@ -273,7 +278,6 @@ export const createLive = [
 export const sendTransform = [actions.sendTransform];
 
 export const applyTransformation = [
-  actions.setReceivingStatus,
   when(
     state`editor.currentModuleShortid`,
     props`moduleShortid`,

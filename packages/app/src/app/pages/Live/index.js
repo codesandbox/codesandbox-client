@@ -129,6 +129,8 @@ class LivePage extends React.Component {
   render() {
     const { match, store } = this.props;
 
+    store.user;
+
     const content = this.getContent();
 
     if (content) {

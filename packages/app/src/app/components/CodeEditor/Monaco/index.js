@@ -412,12 +412,12 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         this.setCorrections(corrections);
       }
 
+      this.receivingCode = false;
       if (this.props.onCodeReceived) {
         // Whenever the user changes a module we set up a state that defines
         // that the changes of code are not sent to live users. We need to reset
         // this state when we're doing changing modules
         this.props.onCodeReceived();
-        this.receivingCode = false;
       }
     });
   };
@@ -434,6 +434,11 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
    * Throttle the changes and handle them after a desired amount of time as one array of changes
    */
   addChangesOperation = (changes: Array<any>) => {
+    // Module changed in the meantime
+    if (this.changes.moduleShortid !== this.currentModule.shortid) {
+      this.sendChangeOperations();
+    }
+
     if (!this.changes.code) {
       this.changes.code = this.currentModule.code || '';
     }

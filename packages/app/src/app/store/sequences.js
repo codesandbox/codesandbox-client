@@ -11,6 +11,8 @@ import {
   removeOptimisticModule,
 } from './modules/files/actions';
 
+import { disconnect } from './modules/live/actions';
+
 export const unloadApp = actions.stopListeningToConnectionChange;
 
 export const setConnection = set(state`connected`, props`connection`);
@@ -153,6 +155,12 @@ export const signIn = [
 ];
 
 export const signOut = [
+  set(state`workspace.openedWorkspaceItem`, 'files'),
+  when(state`live.isLive`),
+  {
+    true: disconnect,
+    false: [],
+  },
   actions.signOut,
   set(state`jwt`, null),
   actions.removeJwtFromStorage,
