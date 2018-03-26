@@ -10,7 +10,7 @@ import {
   currentPackageJSONCode,
   parsedConfigurations,
 } from './getters';
-import { isModuleSynced, getType } from './computed';
+import { isModuleSynced } from './computed';
 import { loadSandbox } from '../../sequences';
 
 export default Module({

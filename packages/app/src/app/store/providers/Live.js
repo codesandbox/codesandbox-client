@@ -60,6 +60,7 @@ export default Provider({
   },
   send(event: string, payload: Object) {
     const _messageId = identifier + messageIndex++;
+    // eslint-disable-next-line
     payload._messageId = _messageId;
     sentMessages.set(_messageId, payload);
 

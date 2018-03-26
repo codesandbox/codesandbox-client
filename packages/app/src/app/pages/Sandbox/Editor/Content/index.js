@@ -2,7 +2,7 @@
 import * as React from 'react';
 import { ThemeProvider } from 'styled-components';
 import { Prompt } from 'react-router-dom';
-import { reaction, autorun } from 'mobx';
+import { reaction } from 'mobx';
 import { TextOperation } from 'ot';
 import { inject, observer } from 'mobx-react';
 import getTemplateDefinition from 'common/templates';

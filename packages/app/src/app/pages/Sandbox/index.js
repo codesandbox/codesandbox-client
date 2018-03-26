@@ -7,7 +7,6 @@ import QuickActions from 'app/pages/Sandbox/QuickActions';
 
 import Navigation from 'app/pages/common/Navigation';
 import Title from 'app/components/Title';
-import SubTitle from 'app/components/SubTitle';
 import Centered from 'common/components/flex/Centered';
 import Fullscreen from 'common/components/flex/Fullscreen';
 import Padding from 'common/components/spacing/Padding';
@@ -44,7 +43,7 @@ class SandboxPage extends React.Component {
   }
 
   getContent() {
-    const { match, store } = this.props;
+    const { store } = this.props;
 
     if (store.editor.isLoading) {
       return (
@@ -79,7 +78,7 @@ class SandboxPage extends React.Component {
             404 Not Found
           </div>
           <Title style={{ fontSize: '1.25rem' }}>
-            We could not find the sandbox you're looking for
+            We could not find the sandbox you{"'"}re looking for
           </Title>
           <br />
           <Link to="/s">Create Sandbox</Link>

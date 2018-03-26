@@ -215,7 +215,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         const { isLive, sendTransforms } = this.props;
 
         if (isLive && sendTransforms && !this.receivingCode) {
-          console.log(changes);
           this.addChangesOperation(changes);
         }
 
@@ -430,7 +429,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   };
 
   changes = { moduleShortid: null, code: '', changes: [] };
-  changeTimeout: ?TimeoutID;
   /**
    * Throttle the changes and handle them after a desired amount of time as one array of changes
    */
@@ -453,10 +451,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     changes.forEach(change => {
       this.changes.changes.push(change);
     });
-
-    if (this.changeTimeout) {
-      clearTimeout(this.changeTimeout);
-    }
 
     this.sendChangeOperations();
   };

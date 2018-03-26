@@ -99,7 +99,7 @@ export function sendCurrentState({ state, ot, live }) {
   });
 }
 
-export function consumeState({ props, ot }) {
+export function consumeState({ props }) {
   const {
     sandbox,
     changedModuleShortids,

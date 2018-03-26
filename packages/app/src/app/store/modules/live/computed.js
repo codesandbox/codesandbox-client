@@ -1,5 +1,3 @@
-import { getParent } from 'mobx-state-tree';
-
 export function isEditor(userId) {
   return (
     this.isLive &&
