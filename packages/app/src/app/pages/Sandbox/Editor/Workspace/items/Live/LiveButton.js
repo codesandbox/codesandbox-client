@@ -61,6 +61,7 @@ export default class LiveButton extends React.PureComponent {
       clearInterval(this.timer);
       this.timer = null;
 
+      // eslint-disable-next-line
       this.setState({ showIcon: true });
     }
   }
