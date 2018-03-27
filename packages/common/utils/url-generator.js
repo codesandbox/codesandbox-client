@@ -76,7 +76,7 @@ export const frameUrl = (shortid: string, append: string = '') => {
   const path = append.indexOf('/') === 0 ? append.substr(1) : append;
 
   if (process.env.LOCAL_SERVER) {
-    return `http://localhost:3001/${path}`;
+    return `http://localhost:3002/${path}`;
   }
 
   if (process.env.STAGING) {

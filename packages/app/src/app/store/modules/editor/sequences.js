@@ -3,6 +3,12 @@ import { state, props, string } from 'cerebral/tags';
 import * as actions from './actions';
 import { closeTabByIndex } from '../../actions';
 import {
+  sendModuleSaved,
+  getSelectionsForCurrentModule,
+  sendChangeCurrentModule,
+  setReceivingStatus,
+} from '../live/actions';
+import {
   ensureOwnedSandbox,
   forkSandbox,
   fetchGitChanges,
@@ -43,22 +49,19 @@ export const stopResizing = set(state`editor.isResizing`, false);
 
 export const createZip = actions.createZip;
 
-export const prettifyCode = [
-  actions.prettifyCode,
+export const changeCurrentModule = [
+  setReceivingStatus,
+  setCurrentModule(props`id`),
+  equals(state`live.isLive`),
   {
-    success: [actions.setCode, actions.addChangedModule],
-    invalidPrettierSandboxConfig: addNotification(
-      'Invalid JSON in sandbox .prettierrc file',
-      'error'
-    ),
-    error: addNotification(
-      string`Something went wrong prettifying the code: "${props`error.message`}"`,
-      'error'
-    ),
+    true: [
+      getSelectionsForCurrentModule,
+      set(state`editor.pendingUserSelections`, props`selections`),
+      sendChangeCurrentModule,
+    ],
+    false: [],
   },
 ];
-
-export const changeCurrentModule = setCurrentModule(props`id`);
 
 export const unsetDirtyTab = actions.unsetDirtyTab;
 
@@ -158,6 +161,7 @@ export const saveCode = [
     ],
     false: [],
   },
+  sendModuleSaved,
 ];
 
 export const addNpmDependency = [
@@ -213,4 +217,19 @@ export const setPreviewBounds = [actions.setPreviewBounds];
 
 export const setPreviewContent = [
   set(state`editor.previewWindow.content`, props`content`),
+];
+
+export const prettifyCode = [
+  actions.prettifyCode,
+  {
+    success: [changeCode],
+    invalidPrettierSandboxConfig: addNotification(
+      'Invalid JSON in sandbox .prettierrc file',
+      'error'
+    ),
+    error: addNotification(
+      string`Something went wrong prettifying the code: "${props`error.message`}"`,
+      'error'
+    ),
+  },
 ];

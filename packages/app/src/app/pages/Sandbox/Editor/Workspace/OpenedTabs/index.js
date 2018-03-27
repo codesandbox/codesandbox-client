@@ -50,7 +50,7 @@ const OpenedTabs = ({ store, signals }) => {
         >
           <EntryIcons
             isNotSynced={m.isNotSynced}
-            type={getType(m.title, m.code)}
+            type={getType(m.title)}
             error={m.errors && m.errors.length > 0}
           />
           <Title>{m.title}</Title>

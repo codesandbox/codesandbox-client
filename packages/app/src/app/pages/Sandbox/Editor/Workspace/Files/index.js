@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 
-import { sortBy } from 'lodash';
 import DirectoryEntry from './DirectoryEntry/index';
 import WorkspaceItem from '../WorkspaceItem';
 
@@ -22,6 +21,16 @@ class Files extends React.Component {
     const store = this.props.store;
     const sandbox = store.editor.currentSandbox;
 
+    const openedModulesByUsers = {};
+
+    // if (store.live.isLive) {
+    //   store.live.usersMetadata.forEach(user => {
+    //     openedModulesByUsers[user.currentModuleShortid] =
+    //       openedModulesByUsers[user.currentModuleShortid] || [];
+    //     openedModulesByUsers[user.currentModuleShortid].push(user.color);
+    //   });
+    // }
+
     return (
       <WorkspaceItem
         defaultOpen
@@ -41,15 +50,7 @@ class Files extends React.Component {
             this.directory = el;
           }}
           title={sandbox.title || 'Project'}
-          sandboxId={sandbox.id}
-          sandboxTemplate={sandbox.template}
-          mainModuleId={store.editor.mainModule.id}
-          modules={sortBy(sandbox.modules.toJS(), 'title')}
-          directories={sortBy(sandbox.directories.toJS(), 'title')}
-          isInProjectView={store.preferences.isInProjectView}
-          currentModuleId={store.editor.currentModule.id}
-          errors={store.editor.errors}
-          corrections={store.editor.corrections}
+          openedModulesByUsers={openedModulesByUsers}
           depth={-1}
           id={null}
           shortid={null}

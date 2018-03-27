@@ -126,8 +126,42 @@ You can do the exact same steps for a POST request, but instead of a URL you'd s
 
 ### Define without render
 
-If you want to define a new sandbox without getting it rendered, you can add `?json=1` to the request. For instance `https://codesandbox.io/api/v1/sandboxes/define?json=1`. Instead of the render, the result will be json data providing you with the `id` of the new sandbox.
+If you want to define a new sandbox without getting it rendered, you can add `?json=1` to the request. For instance `https://codesandbox.io/api/v1/sandboxes/define?json=1`. Instead of the render, the result will be json data providing you with the `sandbox_id` of the new sandbox.
 
 This is useful, for instance, if you need to create a new sandbox programatically, so you can then embed it on your site (See Embed documentation).
 
 Both `get` and `post` requests are supported.
+
+### XHR Request
+
+You can also create a sandbox using an XHR request, like using `fetch`. An example sandbox of that is here:
+
+<iframe src="https://codesandbox.io/embed/9loovqj5oy?editorsize=70&fontsize=14&hidenavigation=1&runonclick=1" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+
+## Import Using React-Codesandboxer
+
+Import from a single file from a git repository, along with supplemental files and dependencies. Using this creates an easy way to upload an example instead of an entire git repository.
+
+### How it works
+
+Below the surface, react-codesandboxer fetches the files it needs from github or bitbucket, using a single file that will be rendered as the 'example' as an entry point, then uses the Define API to upload the necessary files into a new `create-react-app` sandbox.
+
+Check out the [react-codesandboxer docs](https://github.com/noviny/react-codesandboxer) for information on how to implement it.
+
+```jsx
+import React, { Component } from 'react';
+import CodeSandboxer from 'react-codesandboxer';
+
+export default () => (
+  <CodeSandboxer
+    examplePath="examples/file.js"
+    gitInfo={{
+      account: 'noviny',
+      repository: 'react-codesandboxer',
+      host: 'github',
+    }}
+  >
+    {() => <button type="submit">Upload to CodeSandbox</button>}
+  </CodeSandboxer>
+);
+```

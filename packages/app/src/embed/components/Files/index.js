@@ -71,7 +71,7 @@ function Files({
           shortid={m.shortid}
           title={m.title}
           key={m.shortid}
-          type={getType(m.title, m.code || '')}
+          type={getType(m.title)}
           depth={depth}
           setCurrentModule={setCurrentModule}
           active={m.id === currentModule}

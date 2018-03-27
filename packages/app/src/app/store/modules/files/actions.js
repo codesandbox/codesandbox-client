@@ -192,7 +192,7 @@ export function removeDirectory({ state, props }) {
   const sandboxId = state.get('editor.currentId');
   const sandbox = state.get('editor.currentSandbox');
   const directoryIndex = sandbox.directories.findIndex(
-    directoryEntry => directoryEntry.shortid === props.moduleShortid
+    directoryEntry => directoryEntry.shortid === props.directoryShortid
   );
   const removedDirectory = clone(sandbox.directories[directoryIndex]);
 

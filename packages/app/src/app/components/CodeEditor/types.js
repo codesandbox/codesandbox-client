@@ -36,9 +36,11 @@ export interface Editor {
     corrections?: Array<ModuleCorrection>
   ) => any;
   changeCode?: (code: string) => any;
-
   currentModule?: Module;
   setTSConfig?: (tsConfig: Object) => void;
+  setReceivingCode?: (receivingCode: boolean) => void;
+  applyOperation?: (operation: any) => void;
+  updateUserSelections?: (selections: any) => void;
 }
 
 export type Props = {
@@ -56,4 +58,10 @@ export type Props = {
   dependencies?: ?{ [name: string]: string },
   highlightedLines?: Array<number>,
   tsconfig?: Object,
+  readOnly?: boolean,
+  isLive: boolean,
+  sendTransforms?: (transform: any) => void,
+  receivingCode?: boolean,
+  onCodeReceived?: () => void,
+  onSelectionChanged: (d: { selection: any, moduleShortid: string }) => void,
 };

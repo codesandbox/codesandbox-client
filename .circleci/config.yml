@@ -73,9 +73,13 @@ jobs:
           command: yarn start:test
           background: true
       - run:
+          name: Setup BrowserStack local environment
+          command: ./packages/app/integration-tests/BrowserStackLocal --key $BROWSER_STACK_KEY
+          background: true
+      - run:
           name: Test Integrations
           command: |
-            sleep 6
+            sleep 10
             yarn test:integrations --ci --testResultsProcessor="jest-junit"
           environment:
             JEST_JUNIT_OUTPUT: "/tmp/test-results/js-test-results.xml"
@@ -109,23 +113,29 @@ jobs:
           name: Lint
           command: yarn lint
 
-  deploy:
-    docker:
-      - image: circleci/node:9.2.1
+  create-docker-image:
+    machine: true
     working_directory: ~/codesandbox-client
     steps:
       - restore_cache:
-          key: v4-repo-{{ .Environment.CIRCLE_SHA1 }}
-      - restore_cache:
           key: v4-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
-      - add_ssh_keys:
-          fingerprints:
-            - "f7:f1:e6:60:96:24:d9:cd:1b:8b:c0:34:e7:ee:fa:82"
       - run:
-          name: Add key to known_hosts
-          command: echo "ssh.codesandbox.io ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBKyKbuMPJSETTyPRRJVOeC5I8j7wyUMW8HYheg7cN71eKTuw55tkoygxI59BvNi/CAyCnRT5LnxZhvrq9nSlPYc=" >> ~/.ssh/known_hosts
+          name: Docker Sign In
+          command: echo $DOCKER_PWD | docker login -u $DOCKER_USER --password-stdin
+      - run:
+          name: Create Dockerfile
+          command: |
+            cat > Dockerfile <<EOF
+            FROM busybox:1.28.1
+            WORKDIR /codesandbox
+            COPY www /codesandbox
+            EOF
+      - run:
+          name: Create Image
+          command: docker build -t codesandbox/client:${CIRCLE_SHA1:0:7} .
       - deploy:
-          command: sh ./deploy.sh
+          name: Push Image
+          command: docker push codesandbox/client:${CIRCLE_SHA1:0:7}
 
 workflows:
   version: 2
@@ -144,8 +154,7 @@ workflows:
       - build-prod:
           requires:
             - build-dependencies
-      - hold:
-          type: approval
+      - create-docker-image:
           filters:
             branches:
               only: master
@@ -154,9 +163,3 @@ workflows:
             - lint
             - test-integrations
             - test-jest
-      - deploy:
-          filters:
-            branches:
-              only: master
-          requires:
-            - hold

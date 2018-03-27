@@ -174,6 +174,11 @@ export async function createZip(
     promise = import(/* webpackChunkName: 'svelte-zip' */ './svelte').then(
       generator => generator.default(zip, sandbox, modules, directories)
     );
+  } else {
+    // If no specific zip generator is found we will default to the full generator
+    promise = import(/* webpackChunkName: 'full-zip' */ './full').then(
+      generator => generator.default(zip, sandbox, modules, directories)
+    );
   }
 
   if (promise) {
