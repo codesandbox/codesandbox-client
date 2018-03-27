@@ -84,7 +84,7 @@ function Sidebar({ sandbox, setCurrentModule, currentModule }: Props) {
       <Item>
         <Title>Dependencies</Title>
 
-        <Subtitle>npm Dependencies</Subtitle>
+        <Subtitle>npm dependencies</Subtitle>
         {Object.keys(npmDependencies).map(dep => (
           <EntryContainer key={dep}>
             {dep}
