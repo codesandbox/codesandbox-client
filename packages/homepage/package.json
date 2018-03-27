@@ -15,6 +15,7 @@
     "gatsby-plugin-styled-components": "^2.0.5",
     "gatsby-react-router-scroll": "^1.0.3",
     "gatsby-remark-autolink-headers": "^1.4.10",
+    "gatsby-remark-embed-youtube": "^0.0.7",
     "gatsby-remark-images": "^1.5.34",
     "gatsby-remark-prismjs": "^1.2.11",
     "gatsby-source-filesystem": "^1.5.8",
