@@ -2,20 +2,12 @@
 import path from 'path';
 
 self.importScripts([
-  'https://cdnjs.cloudflare.com/ajax/libs/typescript/2.4.2/typescript.min.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/typescript/2.7.2/typescript.min.js',
 ]);
 
-const ROOT_URL = `https://unpkg.com/`;
+const ROOT_URL = `https://cdn.jsdelivr.net/`;
 
 const loadedTypings = [];
-
-const getVersion = version => {
-  if (/^\d/.test(version)) {
-    return `^${version}`;
-  }
-
-  return version;
-};
 
 /**
  * Send the typings library to the editor, the editor can then add them to the
@@ -52,7 +44,11 @@ const doFetch = url => {
 };
 
 const fetchFromDefinitelyTyped = (dependency, version, fetchedPaths) =>
-  doFetch(`${ROOT_URL}@types/${dependency}/index.d.ts`).then(typings => {
+  doFetch(
+    `${ROOT_URL}npm/@types/${dependency
+      .replace('@', '')
+      .replace(/\//g, '__')}/index.d.ts`
+  ).then(typings => {
     addLib(
       `node_modules/@types/${dependency}/index.d.ts`,
       typings,
@@ -93,6 +89,16 @@ const getRequireStatements = (title: string, code: string) => {
   return requires;
 };
 
+const tempTransformFiles = files => {
+  const finalObj = {};
+
+  files.forEach(d => {
+    finalObj[d.name] = d;
+  });
+
+  return finalObj;
+};
+
 const transformFiles = dir =>
   dir.files
     ? dir.files.reduce((prev, next) => {
@@ -104,10 +110,13 @@ const transformFiles = dir =>
       }, {})
     : {};
 
-const getFileMetaData = (depUrl, depPath) =>
-  doFetch(`${depUrl}/${path.dirname(depPath)}/?meta`)
+const getFileMetaData = (dependency, version, depPath) =>
+  doFetch(
+    `https://data.jsdelivr.com/v1/package/npm/${dependency}@${version}/flat`
+  )
     .then(response => JSON.parse(response))
-    .then(transformFiles);
+    .then(response => response.files.filter(f => f.name.startsWith(depPath)))
+    .then(tempTransformFiles);
 
 const resolveAppropiateFile = (fileMetaData, relativePath) => {
   const absolutePath = `/${relativePath}`;
@@ -160,17 +169,14 @@ const getFileTypes = (
 };
 
 function fetchFromMeta(dependency, version, fetchedPaths) {
-  const depUrl = `${ROOT_URL}${dependency}@${version}`;
-  return doFetch(`${depUrl}/?meta`)
+  const depUrl = `https://data.jsdelivr.com/v1/package/npm/${dependency}@${version}/flat`;
+  return doFetch(depUrl)
     .then(response => JSON.parse(response))
     .then(meta => {
       const filterAndFlatten = files =>
         files.reduce((paths, file) => {
-          if (file.type === 'directory') {
-            return paths.concat(filterAndFlatten(file.files));
-          }
-          if (/\.d\.ts$/.test(file.path)) {
-            paths.push(file.path);
+          if (/\.d\.ts$/.test(file.name)) {
+            paths.push(file.name);
           }
           return paths;
         }, []);
@@ -182,7 +188,7 @@ function fetchFromMeta(dependency, version, fetchedPaths) {
       }
 
       dtsFiles.forEach(file => {
-        doFetch(`${depUrl}/${file}`)
+        doFetch(`https://cdn.jsdelivr.net/npm/${dependency}@${version}${file}`)
           .then(dtsFile =>
             addLib(`node_modules/${dependency}${file}`, dtsFile, fetchedPaths)
           )
@@ -192,7 +198,7 @@ function fetchFromMeta(dependency, version, fetchedPaths) {
 }
 
 function fetchFromTypings(dependency, version, fetchedPaths) {
-  const depUrl = `${ROOT_URL}${dependency}@${version}`;
+  const depUrl = `${ROOT_URL}npm/${dependency}@${version}`;
   return doFetch(`${depUrl}/package.json`)
     .then(response => JSON.parse(response))
     .then(packageJSON => {
@@ -206,7 +212,7 @@ function fetchFromTypings(dependency, version, fetchedPaths) {
         );
 
         // get all files in the specified directory
-        return getFileMetaData(depUrl, types).then(fileData =>
+        return getFileMetaData(dependency, version, types).then(fileData =>
           getFileTypes(
             depUrl,
             dependency,
@@ -231,20 +237,20 @@ async function fetchAndAddDependencies(dependencies) {
       try {
         if (loadedTypings.indexOf(dep) === -1) {
           loadedTypings.push(dep);
+
+          const depVersion = await doFetch(
+            `https://data.jsdelivr.com/v1/package/resolve/npm/${dep}@${
+              dependencies[dep]
+            }`
+          )
+            .then(x => JSON.parse(x))
+            .then(x => x.version);
           // eslint-disable-next-line no-await-in-loop
-          await fetchFromTypings(
-            dep,
-            getVersion(dependencies[dep]),
-            fetchedPaths
-          ).catch(() =>
+          await fetchFromTypings(dep, depVersion, fetchedPaths).catch(() =>
             // not available in package.json, try checking meta for inline .d.ts files
-            fetchFromMeta(
-              dep,
-              getVersion(dependencies[dep]),
-              fetchedPaths
-            ).catch(() =>
+            fetchFromMeta(dep, depVersion, fetchedPaths).catch(() =>
               // Not available in package.json or inline from meta, try checking in @types/
-              fetchFromDefinitelyTyped(dep, dependencies[dep], fetchedPaths)
+              fetchFromDefinitelyTyped(dep, depVersion, fetchedPaths)
             )
           );
         }
