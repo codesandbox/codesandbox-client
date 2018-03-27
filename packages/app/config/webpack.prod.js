@@ -70,6 +70,10 @@ module.exports = merge(commonConfig, {
       // Don't precache sourcemaps (they're large) and build asset manifest:
       staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
       maximumFileSizeToCacheInBytes: 5242880,
+
+      // We need to keep the old assets available until the sandbox has
+      // loaded them.
+      skipWaiting: false,
       runtimeCaching: [
         {
           urlPattern: /api\/v1\/sandboxes/,
