@@ -42,6 +42,13 @@ const DocumentationContent = styled.div`
   color: rgba(255, 255, 255, 0.8);
   font-feature-settings: normal;
 
+  iframe {
+    display: block;
+    margin: auto;
+    border: 0;
+    outline: 0;
+  }
+
   h2 {
     margin: 1.5rem 0;
     font-weight: 400;

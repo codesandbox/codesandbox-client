@@ -172,7 +172,6 @@ export default class StickyNavigation extends React.PureComponent<Props> {
                     <SecondaryNavigationLink
                       to={`${node.fields.url}#${slugify(value)}`}
                       exact
-                      activeStyle={activeStyle}
                     >
                       {value}
                     </SecondaryNavigationLink>

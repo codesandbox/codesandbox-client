@@ -57,6 +57,5 @@ export const createPr = [
   wait(3000),
   actions.openPr,
   set(state`git.message`, ''),
-  set(state`currentModal`, null),
   actions.redirectToPr,
 ];
