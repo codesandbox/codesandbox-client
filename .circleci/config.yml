@@ -155,9 +155,6 @@ workflows:
           requires:
             - build-dependencies
       - create-docker-image:
-          filters:
-            branches:
-              only: master
           requires:
             - build-prod
             - lint
