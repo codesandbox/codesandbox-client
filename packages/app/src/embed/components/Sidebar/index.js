@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import * as React from 'react';
 
 import type { Sandbox } from 'common/types';
 
@@ -40,6 +40,20 @@ type Props = {
 };
 
 function Sidebar({ sandbox, setCurrentModule, currentModule }: Props) {
+  const packageJSON = sandbox.modules.find(
+    m => m.title === 'package.json' && m.directoryShortid == null
+  );
+
+  let npmDependencies = sandbox.npmDependencies;
+
+  if (packageJSON) {
+    try {
+      npmDependencies = JSON.parse(packageJSON.code).dependencies;
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
   return (
     <Container>
       <Item>
@@ -70,22 +84,30 @@ function Sidebar({ sandbox, setCurrentModule, currentModule }: Props) {
       <Item>
         <Title>Dependencies</Title>
 
-        <Subtitle>NPM Dependencies</Subtitle>
-        {Object.keys(sandbox.npmDependencies).map(dep => (
+        <Subtitle>npm Dependencies</Subtitle>
+        {Object.keys(npmDependencies).map(dep => (
           <EntryContainer key={dep}>
             {dep}
-            <Version>{sandbox.npmDependencies[dep]}</Version>
+            <Version>{npmDependencies[dep]}</Version>
           </EntryContainer>
         ))}
 
-        <Subtitle>External Resources</Subtitle>
-        {sandbox.externalResources.map(dep => (
-          <EntryContainer key={dep}>
-            <a href={dep} rel="nofollow noopener noreferrer" target="_blank">
-              {getName(dep)}
-            </a>
-          </EntryContainer>
-        ))}
+        {sandbox.externalResources.length > 0 && (
+          <React.Fragment>
+            <Subtitle>External Resources</Subtitle>
+            {sandbox.externalResources.map(dep => (
+              <EntryContainer key={dep}>
+                <a
+                  href={dep}
+                  rel="nofollow noopener noreferrer"
+                  target="_blank"
+                >
+                  {getName(dep)}
+                </a>
+              </EntryContainer>
+            ))}
+          </React.Fragment>
+        )}
       </Item>
 
       <Item hover>
