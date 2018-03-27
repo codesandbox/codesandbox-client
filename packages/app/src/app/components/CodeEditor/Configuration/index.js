@@ -64,7 +64,7 @@ export default class Configuration extends React.PureComponent<Props>
           <EntryIcons
             width={32}
             height={32}
-            type={getType(currentModule.title, currentModule.code || '')}
+            type={getType(currentModule.title)}
           />
           <Title>{config.title}</Title>
 

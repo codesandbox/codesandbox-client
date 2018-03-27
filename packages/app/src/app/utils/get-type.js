@@ -63,10 +63,10 @@ function isJS(title: string) {
   return undefined;
 }
 
-export default function getType(title: string, code: string) {
+export default function getType(title: string) {
   const isJSType = isJS(title);
   if (isJSType) {
-    if (hasReact(code || '')) return 'react';
+    // if (hasReact(code || '')) return 'react';
     return isJSType;
   }
 

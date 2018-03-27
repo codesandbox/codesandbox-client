@@ -25,7 +25,7 @@ class ModuleEntry extends React.Component {
 
     const isActive = module.shortid === currentModuleShortid;
     const isMainModule = module.id === mainModuleId;
-    const type = getType(module.title, module.code);
+    const type = getType(module.title);
 
     const hasError = store.editor.errors.filter(
       error => error.moduleId === module.id
