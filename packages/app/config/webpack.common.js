@@ -65,8 +65,6 @@ module.exports = {
   target: 'web',
 
   node: {
-    process: false,
-    Buffer: false,
     setImmediate: false,
     module: 'empty',
     child_process: 'empty',
