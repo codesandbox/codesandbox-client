@@ -51,14 +51,14 @@ export default class WorkerTranspiler extends Transpiler {
     return Promise.resolve(new this.Worker());
   }
 
-  loadWorker(bfs: BrowserFS) {
+  loadWorker() {
     return new Promise(async resolve => {
       const t = Date.now();
       const worker = await this.getWorker();
 
       if (this.hasFS) {
         // Register file system that syncs with filesystem in manager
-        bfs.FileSystem.WorkerFS.attachRemoteListener(worker);
+        BrowserFS.FileSystem.WorkerFS.attachRemoteListener(worker);
         worker.postMessage({ type: 'initialize-fs', codesandbox: true });
       }
 
@@ -73,17 +73,20 @@ export default class WorkerTranspiler extends Transpiler {
     });
   }
 
-  async initialize(bfs: BrowserFS) {
+  async initialize() {
     this.initialized = true;
     if (this.workers.length === 0) {
       await Promise.all(
-        Array.from({ length: this.workerCount }, () => this.loadWorker(bfs))
+        Array.from({ length: this.workerCount }, () => this.loadWorker())
       );
     }
   }
 
   dispose() {
     this.workers.forEach(w => w.terminate());
+    this.initialized = false;
+    this.tasks = {};
+    this.workers.length = 0;
     this.idleWorkers.length = 0;
   }
 
@@ -170,29 +173,29 @@ export default class WorkerTranspiler extends Transpiler {
         }
 
         // Means the transpile task has been completed
-        if (data.type === 'compiled') {
+        if (data.type === 'result') {
           this.runCallbacks(callbacks, null, data);
         }
 
-        if (data.type === 'error' || data.type === 'compiled') {
+        if (data.type === 'error' || data.type === 'result') {
           this.idleWorkers.push(worker);
           this.executeRemainingTasks();
         }
       }
     };
-    worker.postMessage({ ...message, type: 'compile', codesandbox: true });
+    worker.postMessage({ type: 'compile', codesandbox: true, ...message });
   }
 
   async queueTask(
     message: any,
+    id: string,
     loaderContext: LoaderContext,
     callback: (err: Error, message: Object) => void
   ) {
     if (!this.initialized) {
-      await this.initialize(loaderContext.bfs);
+      await this.initialize();
     }
 
-    const id = loaderContext._module.getId();
     if (!this.tasks[id]) {
       this.tasks[id] = {
         message,
@@ -204,5 +207,15 @@ export default class WorkerTranspiler extends Transpiler {
     this.tasks[id].callbacks.push(callback);
 
     this.executeRemainingTasks();
+  }
+
+  async getTranspilerContext() {
+    return super.getTranspilerContext().then(x => ({
+      ...x,
+      worker: true,
+      hasFS: this.hasFS,
+      workerCount: this.workerCount,
+      initialized: !!this.initialized,
+    }));
   }
 }

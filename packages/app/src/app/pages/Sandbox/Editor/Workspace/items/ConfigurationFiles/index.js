@@ -1,5 +1,6 @@
 import React from 'react';
 import getDefinition from 'common/templates';
+import getUI from 'common/templates/configuration/ui';
 import { Module, Configuration } from 'common/types';
 import { resolveModule } from 'common/sandbox/modules';
 
@@ -60,7 +61,7 @@ const FileConfig = ({
             <BookIcon />
           </a>
         </Tooltip>
-        {config.ui && (
+        {getUI(config.type) && (
           <Tooltip title="Editable with UI">
             <UIIcon style={{ marginLeft: '.5rem' }} />
           </Tooltip>

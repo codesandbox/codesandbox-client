@@ -1,7 +1,6 @@
 // @flow
 import { flattenDeep } from 'lodash';
 
-import type BrowserFS from 'codesandbox-browserfs';
 import { actions, dispatch } from 'codesandbox-api';
 import _debug from 'app/utils/debug';
 
@@ -120,7 +119,6 @@ export type LoaderContext = {
   // Remaining loaders after current loader
   remainingRequests: string,
   template: string,
-  bfs: BrowserFS,
 };
 /* eslint-enable */
 
@@ -456,7 +454,6 @@ export default class TranspiledModule {
       _module: this,
       path: this.module.path,
       template: manager.preset.name,
-      bfs: manager.bfs,
       remainingRequests: '', // will be filled during transpilation
     };
   }
@@ -737,7 +734,7 @@ export default class TranspiledModule {
     try {
       // eslint-disable-next-line no-inner-declarations
       function require(path: string) {
-        const bfsModule = manager.bfs.BFSRequire(path);
+        const bfsModule = BrowserFS.BFSRequire(path);
 
         if (bfsModule) {
           return bfsModule;
@@ -751,8 +748,8 @@ export default class TranspiledModule {
         if (/^(\w|@\w)/.test(aliasedPath) && !aliasedPath.includes('!')) {
           // So it must be a dependency
           if (
-            aliasedPath.startsWith('babel-runtime') ||
-            aliasedPath.startsWith('codesandbox-api')
+            aliasedPath.startsWith('codesandbox-api') ||
+            aliasedPath.startsWith('babel-runtime')
           )
             return resolveDependency(aliasedPath, manager.externals);
         }

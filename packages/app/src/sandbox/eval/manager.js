@@ -84,7 +84,6 @@ export default class Manager {
   hardReload: boolean;
   hmrStatus: 'idle' | 'check' | 'apply' | 'fail' = 'idle';
   testRunner: TestRunner;
-  bfs: typeof BrowserFS;
 
   // List of modules that are being transpiled, to prevent duplicate jobs.
   transpileJobs: { [transpiledModuleId: string]: true };
@@ -126,8 +125,6 @@ export default class Manager {
       },
       () => {}
     );
-
-    this.bfs = BrowserFS;
   }
 
   bfsWrapper = {
@@ -692,6 +689,27 @@ export default class Manager {
     this.hardReload = true;
   }
 
+  serialize() {
+    const serializedTModules = {};
+
+    Object.keys(this.transpiledModules).forEach(path => {
+      Object.keys(this.transpiledModules[path].tModules).forEach(query => {
+        const tModule = this.transpiledModules[path].tModules[query];
+        serializedTModules[tModule.getId()] = tModule.serialize();
+      });
+    });
+
+    const dependenciesQuery = this.getDependencyQuery();
+
+    return {
+      transpiledModules: serializedTModules,
+      cachedPaths: this.cachedPaths,
+      version: VERSION,
+      configurations: this.configurations,
+      dependenciesQuery,
+    };
+  }
+
   getDependencyQuery() {
     if (!this.manifest || !this.manifest.dependencies) {
       return '';
@@ -712,24 +730,7 @@ export default class Manager {
    */
   async save() {
     try {
-      const serializedTModules = {};
-
-      Object.keys(this.transpiledModules).forEach(path => {
-        Object.keys(this.transpiledModules[path].tModules).forEach(query => {
-          const tModule = this.transpiledModules[path].tModules[query];
-          serializedTModules[tModule.getId()] = tModule.serialize();
-        });
-      });
-
-      const dependenciesQuery = this.getDependencyQuery();
-
-      await localforage.setItem(this.id, {
-        transpiledModules: serializedTModules,
-        cachedPaths: this.cachedPaths,
-        version: VERSION,
-        configurations: this.configurations,
-        dependenciesQuery,
-      });
+      await localforage.setItem(this.id, this.serialize());
     } catch (e) {
       if (process.env.NODE_ENV === 'development') {
         console.error(e);
@@ -794,6 +795,14 @@ export default class Manager {
     this.clearCache();
   }
 
+  dispose() {
+    if (this.preset) {
+      this.preset.transpilers.forEach(t => {
+        t.dispose();
+      });
+    }
+  }
+
   clearCache() {
     try {
       localforage.clear();
@@ -802,5 +811,26 @@ export default class Manager {
         console.error(ex);
       }
     }
+  }
+
+  /**
+   * Get information about all transpilers currently registered for this manager
+   */
+  async getTranspilerContext() {
+    const info = {};
+
+    const data = await Promise.all(
+      Array.from(this.preset.transpilers).map(t =>
+        t
+          .getTranspilerContext(this)
+          .then(context => ({ name: t.name, data: context }))
+      )
+    );
+
+    data.forEach(t => {
+      info[t.name] = t.data;
+    });
+
+    return info;
   }
 }

@@ -1,6 +1,7 @@
 {
   "name": "homepage",
   "description": "CodeSandbox Homepage",
+  "private": true,
   "version": "1.0.0",
   "author": "Ives van Hoorne <ives.v.h@gmail.com>",
   "dependencies": {
@@ -12,7 +13,7 @@
     "gatsby-plugin-nprogress": "^1.0.9",
     "gatsby-plugin-react-helmet": "^1.0.8",
     "gatsby-plugin-sitemap": "^1.2.7",
-    "gatsby-plugin-styled-components": "^2.0.5",
+    "gatsby-plugin-styled-components": "^2.0.9",
     "gatsby-react-router-scroll": "^1.0.3",
     "gatsby-remark-autolink-headers": "^1.4.10",
     "gatsby-remark-embed-youtube": "^0.0.7",
@@ -22,9 +23,12 @@
     "gatsby-transformer-remark": "^1.7.24",
     "gatsby-transformer-sharp": "^1.6.21",
     "gsap": "^1.20.3",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
     "react-media": "^1.6.1",
+    "react-router-dom": "^4.2.2",
     "react-transition-group": "^2.2.1",
-    "styled-components": "^3.1.4",
+    "styled-components": "^3.2.1",
     "three": "^0.87.1"
   },
   "keywords": [

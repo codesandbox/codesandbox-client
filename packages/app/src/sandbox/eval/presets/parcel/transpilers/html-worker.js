@@ -168,7 +168,7 @@ if (document.readyState !== 'complete') {
 `;
 
   self.postMessage({
-    type: 'compiled',
+    type: 'result',
     transpiledCode: compiledCode,
   });
 });

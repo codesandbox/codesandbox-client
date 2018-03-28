@@ -245,7 +245,7 @@ self.addEventListener('message', async event => {
     result => {
       if (result.status === 0) {
         self.postMessage({
-          type: 'compiled',
+          type: 'result',
           transpiledCode: result.text,
         });
       } else {

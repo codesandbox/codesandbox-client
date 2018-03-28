@@ -1,5 +1,5 @@
 // @flow
-import TypeScriptWorker from 'worker-loader?name=typescript-transpiler.[hash].worker.js!./typescript-worker.js';
+import TypeScriptWorker from 'worker-loader?publicPath=/&name=typescript-transpiler.[hash].worker.js!./typescript-worker.js';
 
 import WorkerTranspiler from '../worker-transpiler';
 import { type LoaderContext } from '../../transpiled-module';
@@ -30,6 +30,7 @@ class TypeScriptTranspiler extends WorkerTranspiler {
           path,
           config: foundConfig,
         },
+        loaderContext._module.getId(),
         loaderContext,
         (err, data) => {
           if (err) {

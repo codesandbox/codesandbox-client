@@ -57,25 +57,25 @@ function buildErrorMessage(e: TModuleError) {
   };
 }
 
+const wrappedResolveModule = (manager, path) => {
+  try {
+    return manager && manager.resolveTranspiledModule(path, '/');
+  } catch (e) {
+    return null;
+  }
+};
+
 function buildDynamicError(ref: ErrorRecord) {
   const manager = getCurrentManager();
 
-  const relevantFrame = ref.enhancedFrames.find(r => {
-    try {
-      return (
-        manager &&
-        !!manager.resolveTranspiledModule(
-          (r._originalFileName || r.fileName || '')
-            .replace(location.origin, '')
-            .replace('file://', ''),
-          '/'
-        )
-      );
-    } catch (e) {
-      /* don't do anything */
-      return false;
-    }
-  });
+  const relevantFrame = ref.enhancedFrames.find(r =>
+    wrappedResolveModule(
+      manager,
+      (r._originalFileName || r.fileName || '')
+        .replace(location.origin, '')
+        .replace('file://', '')
+    )
+  );
 
   if (relevantFrame && manager) {
     const fileName = relevantFrame._originalFileName || relevantFrame.fileName;
@@ -102,11 +102,19 @@ function buildDynamicError(ref: ErrorRecord) {
     }
   } else {
     const error: TModuleError = ref.error;
-    const tModule = error.tModule;
+    const tModule =
+      error.tModule ||
+      wrappedResolveModule(
+        manager,
+        (error.fileName || '')
+          .replace(location.origin, '')
+          .replace('file://', '')
+      );
 
     if (tModule) {
       const newError = {
         ...buildErrorMessage(error),
+        path: error.fileName,
         type: 'action',
         action: 'show-error',
       };
@@ -121,6 +129,7 @@ function buildDynamicError(ref: ErrorRecord) {
 /* eslint-disable no-underscore-dangle */
 export default function showError(ref: ErrorRecord) {
   const errorToSend = buildDynamicError(ref);
+
   if (errorToSend) {
     dispatch(
       actions.error.show(errorToSend.title, errorToSend.message, {
@@ -130,5 +139,13 @@ export default function showError(ref: ErrorRecord) {
         payload: errorToSend.payload,
       })
     );
+  } else {
+    // Show based on error
+    actions.error.show(ref.error.name, ref.error.message, {
+      line: ref.error.lineNumber,
+      column: ref.error.columnNumber,
+      path: ref.error.fileName,
+      payload: {},
+    });
   }
 }

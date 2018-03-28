@@ -1,0 +1,115 @@
+{
+  "name": "smooshpack",
+  "version": "0.0.29",
+  "description": "",
+  "keywords": [],
+  "main": "dist/sandpack.umd.js",
+  "module": "dist/sandpack.es5.js",
+  "typings": "dist/types/sandpack.d.ts",
+  "license": "SEE LICENSE.MD IN ROOT",
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "sandpack"
+  ],
+  "author": "Ives van Hoorne <ives.v.h@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "scripts": {
+    "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
+    "prebuild": "rimraf dist",
+    "build": "tsc --module commonjs && rollup -c rollup.config.ts && typedoc --out docs --target es6 --theme minimal --mode file src",
+    "start": "rollup -c rollup.config.ts -w",
+    "test:prod": "npm run lint && npm run test -- --coverage --no-cache",
+    "deploy-docs": "ts-node tools/gh-pages-publish",
+    "report-coverage": "cat ./coverage/lcov.info | coveralls",
+    "commit": "git-cz",
+    "semantic-release": "semantic-release",
+    "semantic-release-prepare": "ts-node tools/semantic-release-prepare",
+    "precommit": "lint-staged",
+    "prepublishOnly": "yarn build && lerna run build:sandbox --scope app --stream && rimraf sandpack && gulp copy-sandbox"
+  },
+  "lint-staged": {
+    "{src,test}/**/*.ts": [
+      "prettier --write --no-semi --single-quote",
+      "git add"
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-conventional-changelog"
+    },
+    "validate-commit-msg": {
+      "types": "conventional-commit-types",
+      "helpMessage": "Use \"npm run commit\" instead, we use conventional-changelog format :) (https://github.com/commitizen/cz-cli)"
+    }
+  },
+  "jest": {
+    "transform": {
+      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/test/"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 90,
+        "functions": 95,
+        "lines": 95,
+        "statements": 95
+      }
+    },
+    "collectCoverage": true,
+    "mapCoverage": true
+  },
+  "dependencies": {
+    "codesandbox-api": "^0.0.18",
+    "codesandbox-import-utils": "^1.2.3",
+    "lodash.isequal": "^4.5.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^22.0.0",
+    "@types/lodash.isequal": "^4.5.2",
+    "@types/node": "^9.3.0",
+    "colors": "^1.1.2",
+    "commitizen": "^2.9.6",
+    "coveralls": "^3.0.0",
+    "cross-env": "^5.0.1",
+    "cz-conventional-changelog": "^2.0.0",
+    "gulp": "^3.9.1",
+    "husky": "^0.14.0",
+    "jest": "^22.0.2",
+    "lint-staged": "^7.0.0",
+    "lodash.camelcase": "^4.3.0",
+    "prettier": "^1.4.4",
+    "prompt": "^1.0.0",
+    "replace-in-file": "^3.0.0-beta.2",
+    "rimraf": "^2.6.2",
+    "rollup": "^0.55.4",
+    "rollup-plugin-commonjs": "^8.0.2",
+    "rollup-plugin-node-resolve": "^3.0.0",
+    "rollup-plugin-sourcemaps": "^0.4.2",
+    "rollup-plugin-typescript2": "^0.11.1",
+    "semantic-release": "^12.4.1",
+    "ts-jest": "^22.0.0",
+    "ts-node": "^4.1.0",
+    "tslint": "^5.8.0",
+    "tslint-config-prettier": "^1.1.0",
+    "tslint-config-standard": "^7.0.0",
+    "typedoc": "^0.10.0",
+    "typescript": "^2.6.2",
+    "validate-commit-msg": "^2.12.2"
+  }
+}

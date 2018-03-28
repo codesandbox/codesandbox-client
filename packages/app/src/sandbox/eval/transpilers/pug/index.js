@@ -1,5 +1,5 @@
 // @flow
-import PugWorker from 'worker-loader?name=pug-transpiler.[hash].worker.js!./pug-worker.js';
+import PugWorker from 'worker-loader?publicPath=/&name=pug-transpiler.[hash].worker.js!./pug-worker.js';
 
 import WorkerTranspiler from '../worker-transpiler';
 import { type LoaderContext } from '../../transpiled-module';
@@ -22,6 +22,7 @@ class PugTranspiler extends WorkerTranspiler {
           code,
           path,
         },
+        loaderContext._module.getId(),
         loaderContext,
         (err, data) => {
           if (err) {

@@ -1,7 +1,10 @@
 // @flow
+import BabelWorker from 'worker-loader?publicPath=/&name=babel-transpiler.[hash].worker.js!./worker/index.js';
+
 import getBabelConfig from './babel-parser';
 import WorkerTranspiler from '../worker-transpiler';
 import { type LoaderContext } from '../../transpiled-module';
+import type { default as Manager } from '../../manager';
 
 import delay from '../../../utils/delay';
 
@@ -12,44 +15,54 @@ class BabelTranspiler extends WorkerTranspiler {
   worker: Worker;
 
   constructor() {
-    super('babel-loader', null, 2, { hasFS: true });
+    super('babel-loader', BabelWorker, 2, { hasFS: true });
   }
+
+  startupWorkersInitialized = false;
 
   async getWorker() {
     while (typeof window.babelworkers === 'undefined') {
       await delay(50); // eslint-disable-line
     }
+
+    if (window.babelworkers.length === 0) {
+      return super.getWorker();
+    }
+
     // We set these up in startup.js.
-    const worker = window.babelworkers.pop();
-    return worker;
+    return window.babelworkers.pop();
   }
 
-  doTranspilation(code: string, loaderContext: LoaderContext) {
+  doTranspilation(code: string, loaderContext: LoaderContext): Promise<void> {
     return new Promise((resolve, reject) => {
       const path = loaderContext.path;
+      const configs = loaderContext.options.configurations;
 
-      let foundConfig = loaderContext.options;
-      if (
-        loaderContext.options.configurations &&
-        loaderContext.options.configurations.babel &&
-        loaderContext.options.configurations.babel.parsed
-      ) {
-        foundConfig = loaderContext.options.configurations.babel.parsed;
-      }
+      const foundConfig = configs.babel && configs.babel.parsed;
 
-      const babelConfig = getBabelConfig(foundConfig, path);
+      const loaderOptions = loaderContext.options || {};
+
+      const babelConfig = getBabelConfig(foundConfig, loaderOptions, path);
+
+      const isV7 = !!(
+        configs.package.parsed.devDependencies &&
+        configs.package.parsed.devDependencies['@vue/cli-plugin-babel']
+      );
 
       this.queueTask(
         {
           code,
           config: babelConfig,
           path,
-          loaderOptions: loaderContext.options,
-          sandboxOptions:
-            loaderContext.options.configurations &&
-            loaderContext.options.configurations.sandbox &&
-            loaderContext.options.configurations.sandbox.parsed,
+          loaderOptions,
+          babelTranspilerOptions:
+            configs &&
+            configs.babelTranspiler &&
+            configs.babelTranspiler.parsed,
+          sandboxOptions: configs && configs.sandbox && configs.sandbox.parsed,
+          version: isV7 ? 7 : 6,
         },
+        loaderContext._module.getId(),
         loaderContext,
         (err, data) => {
           if (err) {
@@ -59,6 +72,37 @@ class BabelTranspiler extends WorkerTranspiler {
           }
 
           return resolve(data);
+        }
+      );
+    });
+  }
+
+  async getTranspilerContext(manager: Manager) {
+    return new Promise(async resolve => {
+      const baseConfig = await super.getTranspilerContext(manager);
+
+      const babelTranspilerOptions =
+        manager.configurations &&
+        manager.configurations.babelTranspiler &&
+        manager.configurations.babelTranspiler.parsed;
+
+      this.queueTask(
+        {
+          type: 'get-babel-context',
+          babelTranspilerOptions,
+        },
+        'babelContext',
+        {},
+        (err, data) => {
+          const { version, availablePlugins, availablePresets } = data;
+
+          resolve({
+            ...baseConfig,
+            babelVersion: version,
+            availablePlugins,
+            availablePresets,
+            babelTranspilerOptions,
+          });
         }
       );
     });

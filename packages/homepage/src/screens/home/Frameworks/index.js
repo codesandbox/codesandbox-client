@@ -7,6 +7,7 @@ import Centered from 'common/components/flex/Centered';
 import Padding from 'common/components/spacing/Padding';
 
 import theme from 'common/theme';
+import getIcon from 'common/templates/icons';
 
 import LoadInView from '../../../components/LoadInView';
 import RollingText from '../../../components/RollingText';
@@ -259,23 +260,28 @@ export default class Frameworks extends React.Component {
   render() {
     const { templates } = this.props;
     const template = templates[this.state.templateIndex];
+    const TemplateIcon = getIcon(template.name);
 
     return (
       <Pane width={1280}>
         <Flex>
           <Icons>
-            {templates.map(({ Icon }, i) => (
-              <IconContainer
-                key={i}
-                selected={templates[i] === template}
-                template={templates[i]}
-                onClick={() => {
-                  this.setTemplate(templates[i]);
-                }}
-              >
-                <Icon width={80} height={80} />
-              </IconContainer>
-            ))}
+            {templates.map(({ name }, i) => {
+              const TIcon = getIcon(name);
+
+              return (
+                <IconContainer
+                  key={i}
+                  selected={templates[i] === template}
+                  template={templates[i]}
+                  onClick={() => {
+                    this.setTemplate(templates[i]);
+                  }}
+                >
+                  <TIcon width={80} height={80} />
+                </IconContainer>
+              );
+            })}
           </Icons>
 
           <Intro style={{ marginRight: '2rem' }}>
@@ -298,7 +304,7 @@ export default class Frameworks extends React.Component {
               updateCheck={template}
             >
               <TemplateName color={template.color}>
-                <template.Icon width={96} height={96} />
+                <TemplateIcon width={96} height={96} />
                 <h4>{template.niceName}</h4>
               </TemplateName>
             </RollingText>

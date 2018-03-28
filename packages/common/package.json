@@ -1,7 +1,11 @@
 {
   "name": "common",
   "version": "1.0.0",
+  "private": true,
   "dependencies": {
-    "react-tippy": "^0.14.0"
+    "image-extensions": "^1.1.0",
+    "jsonlint": "^1.6.3",
+    "react-tippy": "^0.14.0",
+    "styled-components": "^3.2.1"
   }
 }

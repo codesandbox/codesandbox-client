@@ -131,7 +131,7 @@ exports.createPages = async ({ graphql, boundActionCreators }) => {
   });
 };
 
-exports.modifyWebpackConfig = ({ config }) => {
+exports.modifyWebpackConfig = ({ config, stage }) => {
   config.merge({
     resolve: {
       root: resolve(__dirname, './src'),
@@ -143,6 +143,21 @@ exports.modifyWebpackConfig = ({ config }) => {
     react: dirname(require.resolve('react')),
     'react-dom': dirname(require.resolve('react-dom')),
   };
+
+  const timestamp = Date.now();
+  switch (stage) {
+    case 'build-javascript':
+      config.merge({
+        output: {
+          filename: `[name]-${timestamp}-[chunkhash].js`,
+          chunkFilename: `[name]-${timestamp}-[chunkhash].js`,
+        },
+      });
+
+      break;
+    default:
+      break;
+  }
 
   return config;
 };

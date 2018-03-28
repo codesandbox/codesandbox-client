@@ -2,7 +2,7 @@ import * as React from 'react';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { sandboxUrl } from 'common/utils/url-generator';
-import getDefinition from 'common/templates';
+import getIcon from 'common/templates/icons';
 import { SmallSandbox } from 'common/types';
 
 import FullHeartIcon from 'react-icons/lib/fa/heart';
@@ -49,7 +49,7 @@ export default ({ sandboxes, isCurrentUser, onDelete }: Props) => (
     </thead>
     <Body>
       {sandboxes.map((s, i) => {
-        const Icon = getDefinition(s.template).Icon || getDefinition().Icon;
+        const Icon = getIcon(s.template.name);
         return (
           <SandboxRow index={i} key={s.id}>
             <td>

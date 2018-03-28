@@ -1,13 +1,16 @@
 {
   "name": "codesandbox-browserfs",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A filesystem in your browser!",
-  "main": "build/browserfs.js",
+  "main": "build/browserfs.min.js",
   "typings": "dist/browserfs",
-  "keywords": ["filesystem", "node", "storage"],
+  "keywords": [
+    "filesystem",
+    "node",
+    "storage"
+  ],
   "homepage": "https://github.com/jvilk/BrowserFS",
-  "author":
-    "John Vilk <jvilk@cs.umass.edu> (http://people.cs.umass.edu/~jvilk)",
+  "author": "John Vilk <jvilk@cs.umass.edu> (http://people.cs.umass.edu/~jvilk)",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -28,16 +31,16 @@
     "@types/body-parser": "^1.16.4",
     "@types/express": "^4.0.36",
     "@types/filesystem": "0.0.28",
-    "@types/mocha": "^2.2.41",
     "@types/isomorphic-fetch": "^0.0.34",
+    "@types/mocha": "^2.2.41",
     "@types/node": "~7.0",
     "@types/rimraf": "~0.0.28",
     "archiver": "^2.0.0",
     "async-es": "^2.5.0",
     "bfs-path": "~0.1.2",
     "bfs-process": "~0.1.6",
-    "buffer": "^5.0.7",
     "body-parser": "^1.17.2",
+    "buffer": "^5.0.7",
     "detect-browsers": "~2.0.0",
     "dropbox": "^2.5.7",
     "express": "^4.15.3",
@@ -80,10 +83,8 @@
     "watch:webpack": "webpack -w --config src/webpack.config.js",
     "build:webpack-release": "webpack -p --config src/webpack.config.js",
     "watch:webpack-release": "webpack -w -p --config src/webpack.config.js",
-    "build:all":
-      "npm-run-all --parallel build:tsc build:scripts --sequential build:rollup --parallel build:webpack build:webpack-release",
-    "start":
-      "npm-run-all build --parallel watch:tsc watch:scripts watch:rollup watch:webpack watch:webpack-release",
+    "build:all": "npm-run-all --parallel build:tsc build:scripts --sequential build:rollup --parallel build:webpack build:webpack-release",
+    "start": "npm-run-all build --parallel watch:tsc watch:scripts watch:rollup watch:webpack watch:webpack-release",
     "test:build:tsc": "tsc -p test",
     "test:watch:tsc": "tsc --watch -p test",
     "test:build:rollup": "rollup -c test/rollup.config.js",
@@ -92,26 +93,20 @@
     "test:watch:rollup-worker": "rollup -w -c test/rollup.worker.config.js",
     "test:build:webpack": "webpack --config test/webpack.config.js",
     "test:watch:webpack": "webpack -w --config test/webpack.config.js",
-    "test:build":
-      "npm-run-all test:build:tsc --parallel test:build:rollup test:build:rollup-worker --sequential test:build:webpack",
-    "test:watch":
-      "npm-run-all --parallel test:watch:tsc test:watch:rollup test:watch:rollup-worker test:watch:webpack",
+    "test:build": "npm-run-all test:build:tsc --parallel test:build:rollup test:build:rollup-worker --sequential test:build:webpack",
+    "test:watch": "npm-run-all --parallel test:watch:tsc test:watch:rollup test:watch:rollup-worker test:watch:webpack",
     "dist:build:node": "tsc -p src/tsconfig.node.json",
     "script:make_dist": "node build/scripts/make_dist.js",
     "build": "npm-run-all build:all lint script:make_dist dist:build:node",
     "script:make_fixture_loader": "node build/scripts/make_fixture_loader.js",
     "script:make_test_launcher": "node build/scripts/make_test_launcher.js",
     "script:make_zip_fixtures": "node build/scripts/make_zip_fixtures",
-    "script:make_http_index":
-      "node build/scripts/make_http_index.js test/fixtures/httpdownloadfs/listings.json",
+    "script:make_http_index": "node build/scripts/make_http_index.js test/fixtures/httpdownloadfs/listings.json",
     "test:karma": "karma start karma.config.js",
-    "test:prepare":
-      "npm-run-all build:scripts script:make_fixture_loader script:make_test_launcher test:build script:make_zip_fixtures script:make_http_index",
+    "test:prepare": "npm-run-all build:scripts script:make_fixture_loader script:make_test_launcher test:build script:make_zip_fixtures script:make_http_index",
     "test": "npm-run-all test:prepare test:karma",
-    "watch-test":
-      "npm-run-all test:prepare --parallel watch:scripts test:watch test:karma",
-    "docs":
-      "typedoc --mode modules --out doc --excludePrivate --readme src/DOCS.md --name BrowserFS --module umd src",
+    "watch-test": "npm-run-all test:prepare --parallel watch:scripts test:watch test:karma",
+    "docs": "typedoc --mode modules --out doc --excludePrivate --readme src/DOCS.md --name BrowserFS --module umd src",
     "install-dependencies": "yarn install"
   },
   "dependencies": {

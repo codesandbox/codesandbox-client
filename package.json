@@ -6,7 +6,7 @@
   "scripts": {
     "build": "yarn build:dependents && yarn build:prod",
     "build:prod": "lerna run build --scope app --scope homepage --parallel && gulp",
-    "build:dependents": "lerna run build --ignore app --ignore homepage --parallel",
+    "build:dependents": "lerna run build --scope codesandbox-api --scope common --scope codesandbox-browserfs --stream && lerna run build --scope smooshpack --stream && lerna run build --scope react-smooshpack --stream",
     "start": "lerna run build --scope codesandbox-browserfs --stream && lerna run start --parallel",
     "start:fast": "lerna run start --scope app --stream",
     "start:test": "lerna run start:test --scope app --stream",
@@ -30,7 +30,9 @@
     "packages/homepage",
     "packages/app",
     "packages/common",
-    "packages/codesandbox-api"
+    "packages/codesandbox-api",
+    "packages/sandpack",
+    "packages/react-sandpack"
   ],
   "devDependencies": {
     "all-contributors-cli": "^4.3.0",

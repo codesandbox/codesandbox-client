@@ -2,7 +2,6 @@
 
 import { absolute, join } from 'common/utils/path';
 
-import AngularIcon from 'common/components/logos/Angular';
 import Template from './template';
 import configurations from './configuration';
 import { decorateSelector } from '../theme';
@@ -61,7 +60,6 @@ export default new AngularTemplate(
   'Angular',
   'https://github.com/angular/angular',
   'angular',
-  AngularIcon,
   decorateSelector(() => '#DD0031'),
   {
     extraConfigurations: {

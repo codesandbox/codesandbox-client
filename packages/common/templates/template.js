@@ -1,6 +1,4 @@
 // @flow
-import type { ComponentType } from 'react';
-
 import { absolute } from 'common/utils/path';
 import type { ConfigurationFile } from './configuration/types';
 import configurations from './configuration';
@@ -28,7 +26,6 @@ export default class Template {
   shortid: string;
   url: string;
   color: () => string;
-  Icon: ComponentType<*>;
 
   showOnHomePage: boolean;
   distDir: string;
@@ -44,7 +41,6 @@ export default class Template {
     niceName: string,
     url: string,
     shortid: string,
-    Icon: ComponentType<*>,
     color: Function,
     options: Options = {}
   ) {
@@ -53,7 +49,6 @@ export default class Template {
     this.url = url;
     this.shortid = shortid;
     this.color = color;
-    this.Icon = Icon;
 
     this.showOnHomePage = options.showOnHomePage || false;
     this.distDir = options.distDir || 'build';
