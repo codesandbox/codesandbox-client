@@ -378,7 +378,7 @@ module.exports = {
     new webpack.ProvidePlugin({
       // Only use our local dev version of browserfs when in dev mode
       ...(__DEV__ && !SANDBOX_ONLY ? { BrowserFS: 'bfsGlobal' } : {}),
-      process: 'processGlobal',
+      // process: 'processGlobal',
       Buffer: 'bufferGlobal',
     }),
 
