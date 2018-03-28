@@ -1,4 +1,5 @@
 // @flow
+
 import flatten from 'lodash/flatten';
 
 import delay from 'common/utils/delay';
@@ -17,7 +18,7 @@ import {
   getPrefixedPresetName,
 } from './get-prefixed-name';
 
-self.importScripts('https://cdn.jsdelivr.net/npm/codesandbox-browserfs');
+self.importScripts('/static/browserfs/browserfs.min.js');
 self.BrowserFS = BrowserFS;
 
 let fsInitialized = false;

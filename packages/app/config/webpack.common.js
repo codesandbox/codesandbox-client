@@ -260,7 +260,6 @@ module.exports = {
 
       fs: 'codesandbox-browserfs/dist/shims/fs.js',
       buffer: 'codesandbox-browserfs/dist/shims/buffer.js',
-      path: 'codesandbox-browserfs/dist/shims/path.js',
       processGlobal: 'codesandbox-browserfs/dist/shims/process.js',
       bufferGlobal: 'codesandbox-browserfs/dist/shims/bufferGlobal.js',
       bfsGlobal: require.resolve(
@@ -415,6 +414,10 @@ module.exports = {
         {
           from: 'static',
           to: 'static',
+        },
+        {
+          from: '../../standalone-packages/codesandbox-browserfs/dist',
+          to: 'static/browserfs',
         },
       ].filter(x => x)
     ),

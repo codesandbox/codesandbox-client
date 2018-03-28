@@ -8,7 +8,7 @@ self.importScripts([
     ? 'https://cdnjs.cloudflare.com/ajax/libs/sass.js/0.10.6/sass.sync.min.js'
     : 'https://cdnjs.cloudflare.com/ajax/libs/sass.js/0.10.6/sass.sync.js',
 ]);
-self.importScripts('https://cdn.jsdelivr.net/npm/codesandbox-browserfs');
+self.importScripts('/static/browserfs/browserfs.min.js');
 
 self.postMessage('ready');
 
