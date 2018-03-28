@@ -1,1 +1,1 @@
-module.exports = require('./inherits.js');
+module.exports = require("./inherits.js");

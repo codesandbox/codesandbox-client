@@ -1,1 +1,1 @@
-module.exports = require('./typeof.js');
+module.exports = require("./typeof.js");

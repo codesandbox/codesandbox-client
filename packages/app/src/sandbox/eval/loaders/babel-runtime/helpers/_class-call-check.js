@@ -1,1 +1,1 @@
-module.exports = require('./classCallCheck.js');
+module.exports = require("./classCallCheck.js");

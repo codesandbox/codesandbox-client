@@ -1,1 +1,1 @@
-module.exports = require('./extends.js');
+module.exports = require("./extends.js");

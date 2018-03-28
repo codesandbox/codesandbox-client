@@ -1,1 +1,1 @@
-module.exports = require('./objectDestructuringEmpty.js');
+module.exports = require("./objectDestructuringEmpty.js");

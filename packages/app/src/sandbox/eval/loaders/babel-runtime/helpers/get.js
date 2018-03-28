@@ -1,20 +1,16 @@
-'use strict';
+"use strict";
 
 exports.__esModule = true;
 
-var _getPrototypeOf = require('../core-js/object/get-prototype-of');
+var _getPrototypeOf = require("../core-js/object/get-prototype-of");
 
 var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
 
-var _getOwnPropertyDescriptor = require('../core-js/object/get-own-property-descriptor');
+var _getOwnPropertyDescriptor = require("../core-js/object/get-own-property-descriptor");
 
-var _getOwnPropertyDescriptor2 = _interopRequireDefault(
-  _getOwnPropertyDescriptor
-);
+var _getOwnPropertyDescriptor2 = _interopRequireDefault(_getOwnPropertyDescriptor);
 
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = function get(object, property, receiver) {
   if (object === null) object = Function.prototype;
@@ -28,7 +24,7 @@ exports.default = function get(object, property, receiver) {
     } else {
       return get(parent, property, receiver);
     }
-  } else if ('value' in desc) {
+  } else if ("value" in desc) {
     return desc.value;
   } else {
     var getter = desc.get;

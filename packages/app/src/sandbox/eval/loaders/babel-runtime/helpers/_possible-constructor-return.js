@@ -1,1 +1,1 @@
-module.exports = require('./possibleConstructorReturn.js');
+module.exports = require("./possibleConstructorReturn.js");

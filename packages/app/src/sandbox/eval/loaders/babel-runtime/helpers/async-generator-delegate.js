@@ -1,1 +1,1 @@
-module.exports = require('./asyncGeneratorDelegate.js');
+module.exports = require("./asyncGeneratorDelegate.js");

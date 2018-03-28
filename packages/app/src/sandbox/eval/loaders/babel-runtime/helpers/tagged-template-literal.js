@@ -1,1 +1,1 @@
-module.exports = require('./taggedTemplateLiteral.js');
+module.exports = require("./taggedTemplateLiteral.js");

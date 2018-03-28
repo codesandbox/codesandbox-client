@@ -1,1 +1,1 @@
-module.exports = require('./toArray.js');
+module.exports = require("./toArray.js");

@@ -1,1 +1,1 @@
-module.exports = require('./slicedToArrayLoose.js');
+module.exports = require("./slicedToArrayLoose.js");

@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 exports.__esModule = true;
-exports.default = typeof global === 'undefined' ? self : global;
+exports.default = typeof global === "undefined" ? self : global;

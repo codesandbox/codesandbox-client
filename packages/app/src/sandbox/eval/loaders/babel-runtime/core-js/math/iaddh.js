@@ -1,4 +1,1 @@
-module.exports = {
-  default: require('core-js/library/fn/math/iaddh'),
-  __esModule: true,
-};
+module.exports = { "default": require("core-js/library/fn/math/iaddh"), __esModule: true };

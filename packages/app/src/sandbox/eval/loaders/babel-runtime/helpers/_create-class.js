@@ -1,1 +1,1 @@
-module.exports = require('./createClass.js');
+module.exports = require("./createClass.js");

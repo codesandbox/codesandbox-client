@@ -1,1 +1,1 @@
-module.exports = require('./defineProperty.js');
+module.exports = require("./defineProperty.js");

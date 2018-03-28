@@ -1,1 +1,1 @@
-module.exports = require('./selfGlobal.js');
+module.exports = require("./selfGlobal.js");

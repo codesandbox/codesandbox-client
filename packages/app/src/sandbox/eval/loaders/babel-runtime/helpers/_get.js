@@ -1,1 +1,1 @@
-module.exports = require('./get.js');
+module.exports = require("./get.js");

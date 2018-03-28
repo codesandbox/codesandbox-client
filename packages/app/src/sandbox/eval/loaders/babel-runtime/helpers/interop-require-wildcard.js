@@ -1,1 +1,1 @@
-module.exports = require('./interopRequireWildcard.js');
+module.exports = require("./interopRequireWildcard.js");

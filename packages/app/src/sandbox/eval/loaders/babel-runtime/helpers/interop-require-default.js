@@ -1,1 +1,1 @@
-module.exports = require('./interopRequireDefault.js');
+module.exports = require("./interopRequireDefault.js");

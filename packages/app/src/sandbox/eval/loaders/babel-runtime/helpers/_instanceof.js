@@ -1,1 +1,1 @@
-module.exports = require('./instanceof.js');
+module.exports = require("./instanceof.js");

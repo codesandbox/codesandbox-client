@@ -1,1 +1,1 @@
-module.exports = require('./objectWithoutProperties.js');
+module.exports = require("./objectWithoutProperties.js");

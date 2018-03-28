@@ -1,1 +1,1 @@
-module.exports = require('./newArrowCheck.js');
+module.exports = require("./newArrowCheck.js");

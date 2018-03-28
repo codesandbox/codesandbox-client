@@ -1,8 +1,8 @@
-'use strict';
+"use strict";
 
 exports.__esModule = true;
 
-exports.default = function(obj, keys) {
+exports.default = function (obj, keys) {
   var target = {};
 
   for (var i in obj) {
