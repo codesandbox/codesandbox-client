@@ -1,5 +1,4 @@
 // @flow
-
 import flatten from 'lodash/flatten';
 
 import delay from 'common/utils/delay';
@@ -9,7 +8,7 @@ import detective from './plugins/babel-plugin-detective';
 import infiniteLoops from './plugins/babel-plugin-transform-prevent-infinite-loops';
 import dynamicCSSModules from './plugins/babel-plugin-dynamic-css-modules';
 
-import { buildWorkerError } from '../utils/worker-error-handler';
+import { buildWorkerError } from '../../utils/worker-error-handler';
 import getDependencies from './get-require-statements';
 
 import { evaluateFromPath, resetCache } from './evaluate';
@@ -17,9 +16,6 @@ import {
   getPrefixedPluginName,
   getPrefixedPresetName,
 } from './get-prefixed-name';
-
-self.importScripts('/static/browserfs/browserfs.min.js');
-self.BrowserFS = BrowserFS;
 
 let fsInitialized = false;
 

@@ -8,6 +8,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HappyPack = require('happypack');
 const WatchMissingNodeModulesPlugin = require('../scripts/utils/WatchMissingNodeModulesPlugin');
 const env = require('./env');
+const getHost = require('./host');
 
 const babelDev = require('./babel.dev');
 const babelProd = require('./babel.prod');
@@ -18,6 +19,8 @@ const __DEV__ = NODE_ENV === 'development'; // eslint-disable-line no-underscore
 const __PROD__ = NODE_ENV === 'production'; // eslint-disable-line no-underscore-dangle
 // const __TEST__ = NODE_ENV === 'test'; // eslint-disable-line no-underscore-dangle
 const babelConfig = __DEV__ ? babelDev : babelProd;
+
+console.log(getHost() + '/');
 
 // Shim for `eslint-plugin-vue/lib/index.js`
 const ESLINT_PLUGIN_VUE_INDEX = `module.exports = {
@@ -72,7 +75,7 @@ module.exports = {
   output: {
     path: paths.appBuild,
     pathinfo: true,
-    publicPath: '/',
+    publicPath: getHost() + '/',
   },
 
   module: {
@@ -236,6 +239,13 @@ module.exports = {
           name: 'static/media/[name].[hash:8].[ext]',
         },
       },
+      {
+        loader: 'worker-loader',
+        options: {
+          // To make workers load from their own domain
+          publicPath: '/',
+        },
+      },
     ],
 
     noParse: [
@@ -260,8 +270,7 @@ module.exports = {
 
       fs: 'codesandbox-browserfs/dist/shims/fs.js',
       buffer: 'codesandbox-browserfs/dist/shims/buffer.js',
-      // path: 'codesandbox-browserfs/dist/shims/path.js',
-      // processGlobal: 'codesandbox-browserfs/dist/shims/process.js',
+      processGlobal: 'codesandbox-browserfs/dist/shims/process.js',
       bufferGlobal: 'codesandbox-browserfs/dist/shims/bufferGlobal.js',
       bfsGlobal: require.resolve(
         path.join(
@@ -378,7 +387,7 @@ module.exports = {
     new webpack.ProvidePlugin({
       // Only use our local dev version of browserfs when in dev mode
       ...(__DEV__ && !SANDBOX_ONLY ? { BrowserFS: 'bfsGlobal' } : {}),
-      // process: 'processGlobal',
+      process: 'processGlobal',
       Buffer: 'bufferGlobal',
     }),
 

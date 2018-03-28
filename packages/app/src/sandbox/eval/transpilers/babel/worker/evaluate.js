@@ -1,7 +1,7 @@
 import resolve from 'browser-resolve';
 import hashsum from 'hash-sum';
 import type FSType from 'fs';
-import evaluateCode from '../../loaders/eval';
+import evaluateCode from '../../../loaders/eval';
 
 let cache = {};
 

@@ -1,5 +1,5 @@
 // @flow
-import BabelWorker from 'worker-loader?name=babel-transpiler.[hash].worker.js!./babel-worker.js';
+import BabelWorker from 'worker-loader?name=babel-transpiler.[hash].worker.js!./worker/index.js';
 
 import getBabelConfig from './babel-parser';
 import WorkerTranspiler from '../worker-transpiler';
