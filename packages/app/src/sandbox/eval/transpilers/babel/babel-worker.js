@@ -17,7 +17,7 @@ import {
   getPrefixedPresetName,
 } from './get-prefixed-name';
 
-self.importScripts('https://cdn.jsdelivr.net/npm/codesandbox-browserfs@2.0.1');
+self.importScripts('https://cdn.jsdelivr.net/npm/codesandbox-browserfs');
 self.BrowserFS = BrowserFS;
 
 let fsInitialized = false;
