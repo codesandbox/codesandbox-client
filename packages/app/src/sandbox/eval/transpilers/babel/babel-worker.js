@@ -2,6 +2,7 @@
 import flatten from 'lodash/flatten';
 
 import delay from 'common/utils/delay';
+import BrowserFS from 'codesandbox-browserfs/dist/node';
 
 import dynamicImportPlugin from './plugins/babel-plugin-dynamic-import-node';
 import detective from './plugins/babel-plugin-detective';
@@ -18,9 +19,12 @@ import {
 } from './get-prefixed-name';
 
 self.BrowserFS = BrowserFS;
+self.fs = BrowserFS.BFSRequire('fs');
+self.Buffer = BrowserFS.BFSRequire('buffer').Buffer;
+self.path = BrowserFS.BFSRequire('path');
+self.process = BrowserFS.BFSRequire('process');
 
 let fsInitialized = false;
-let babel7Loaded = false;
 
 async function initializeBrowserFS() {
   return new Promise(resolve => {
@@ -224,18 +228,6 @@ self.addEventListener('message', async event => {
     return;
   }
 
-  if (version === 7 && !babel7Loaded) {
-    babel7Loaded = true;
-
-    loadCustomTranspiler(
-      process.env.NODE_ENV === 'development'
-        ? '/static/js/babel.7.00-beta.js'
-        : '/static/js/babel.7.00-beta.min.js'
-    );
-  }
-
-  resetCache();
-
   const { disableCodeSandboxPlugins } = loaderOptions;
 
   const babelUrl = babelTranspilerOptions && babelTranspilerOptions.babelURL;
@@ -244,7 +236,15 @@ self.addEventListener('message', async event => {
 
   if (babelUrl || babelEnvUrl) {
     loadCustomTranspiler(babelUrl, babelEnvUrl);
+  } else if (version === 7) {
+    loadCustomTranspiler(
+      process.env.NODE_ENV === 'development'
+        ? '/static/js/babel.7.00-beta.js'
+        : '/static/js/babel.7.00-beta.min.js'
+    );
   }
+
+  resetCache();
 
   const flattenedPresets = flatten(config.presets || []);
   const flattenedPlugins = flatten(config.plugins || []);
