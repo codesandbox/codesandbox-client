@@ -382,9 +382,8 @@ module.exports = {
     // to expose a BrowserFS global.
     new webpack.ProvidePlugin({
       // Only use our local dev version of browserfs when in dev mode
-      ...(__DEV__ && !SANDBOX_ONLY ? { BrowserFS: 'bfsGlobal' } : {}),
-      process: 'processGlobal',
-      Buffer: 'bufferGlobal',
+      // process: 'processGlobal',
+      // Buffer: 'bufferGlobal',
     }),
 
     // With this plugin we override the load-rules of eslint, this function prevents
