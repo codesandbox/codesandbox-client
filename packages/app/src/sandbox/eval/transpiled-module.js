@@ -633,6 +633,9 @@ export default class TranspiledModule {
 
   evaluate(manager: Manager, { asUMD = false }: { asUMD: boolean } = {}) {
     if (this.source == null) {
+      if (this.module.path === '/node_modules/empty/index.js') {
+        return {};
+      }
       // This scenario only happens when we are in an inconsistent state, the quickest way to solve
       // this state is to just hard reload everything.
       manager.clearCache();
