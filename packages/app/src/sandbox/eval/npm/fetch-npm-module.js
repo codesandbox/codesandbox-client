@@ -30,6 +30,10 @@ export function getCombinedMetas() {
   return combinedMetas;
 }
 
+export function setCombinedMetas(givenCombinedMetas: Meta) {
+  combinedMetas = givenCombinedMetas;
+}
+
 function normalize(
   depName: string,
   files: MetaFiles,

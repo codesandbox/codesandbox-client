@@ -12,7 +12,10 @@ import type { Module } from './entities/module';
 import TranspiledModule from './transpiled-module';
 import type { SerializedTranspiledModule } from './transpiled-module';
 import Preset from './presets';
-import fetchModule, { getCombinedMetas } from './npm/fetch-npm-module';
+import fetchModule, {
+  getCombinedMetas,
+  setCombinedMetas,
+} from './npm/fetch-npm-module';
 import coreLibraries from './npm/get-core-libraries';
 import getDependencyName from './utils/get-dependency-name';
 import DependencyNotFoundError from '../errors/dependency-not-found-error';
@@ -422,7 +425,7 @@ export default class Manager {
     const aliasedPath = this.getAliasedDependencyPath(path, currentPath);
     const shimmedPath = coreLibraries[aliasedPath] || aliasedPath;
 
-    const pathId = path + currentPath;
+    const pathId = shimmedPath + currentPath;
     const cachedPath = this.cachedPaths[pathId];
     try {
       let resolvedPath;
@@ -706,6 +709,7 @@ export default class Manager {
       cachedPaths: this.cachedPaths,
       version: VERSION,
       configurations: this.configurations,
+      meta: getCombinedMetas(),
       dependenciesQuery,
     };
   }
@@ -750,12 +754,14 @@ export default class Manager {
           version,
           configurations,
           dependenciesQuery,
+          meta,
         }: {
           transpiledModules: { [id: string]: SerializedTranspiledModule },
           cachedPaths: { [path: string]: string },
           version: string,
           configurations: Object,
           dependenciesQuery: string,
+          meta: any,
         } = data;
 
         // Only use the cache if the cached version was cached with the same
@@ -764,6 +770,8 @@ export default class Manager {
           version === VERSION &&
           dependenciesQuery === this.getDependencyQuery()
         ) {
+          setCombinedMetas(meta);
+
           this.cachedPaths = cachedPaths;
           this.configurations = configurations;
 
