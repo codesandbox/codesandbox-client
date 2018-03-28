@@ -260,7 +260,8 @@ module.exports = {
 
       fs: 'codesandbox-browserfs/dist/shims/fs.js',
       buffer: 'codesandbox-browserfs/dist/shims/buffer.js',
-      processGlobal: 'codesandbox-browserfs/dist/shims/process.js',
+      // path: 'codesandbox-browserfs/dist/shims/path.js',
+      // processGlobal: 'codesandbox-browserfs/dist/shims/process.js',
       bufferGlobal: 'codesandbox-browserfs/dist/shims/bufferGlobal.js',
       bfsGlobal: require.resolve(
         path.join(
