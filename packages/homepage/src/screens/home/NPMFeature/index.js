@@ -35,12 +35,8 @@ const FeatureDescription = styled.p`
 
 const FeatureContainer = styled.div`
   display: flex;
-  /* flex-direction: ${({ right }) => (right ? 'row-reverse' : 'row')}; */
 
   margin-bottom: 1rem;
-
-
-  /* text-align: ${({ right }) => (right ? 'right' : 'left')}; */
 
   svg {
     margin-right: 1rem;
