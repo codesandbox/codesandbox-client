@@ -90,7 +90,11 @@ module.exports = {
 
       // Transpile node dependencies, node deps are often not transpiled for IE11
       {
-        test: [/\/node_modules\/.*ansi-styles/, /\/node_modules\/.*jest/],
+        test: [
+          /\/node_modules\/.*ansi-styles/,
+          /\/node_modules\/.*chalk/,
+          /\/node_modules\/.*jest/,
+        ],
         loader: 'babel-loader',
         query: {
           presets: [
