@@ -1,7 +1,6 @@
 // @flow
 import { flattenDeep } from 'lodash';
 
-import BrowserFS from 'codesandbox-browserfs/dist/node';
 import { actions, dispatch } from 'codesandbox-api';
 import _debug from 'app/utils/debug';
 

@@ -2,7 +2,6 @@
 import flatten from 'lodash/flatten';
 
 import delay from 'common/utils/delay';
-import BrowserFS from 'codesandbox-browserfs/dist/node';
 
 import dynamicImportPlugin from './plugins/babel-plugin-dynamic-import-node';
 import detective from './plugins/babel-plugin-detective';
@@ -18,11 +17,8 @@ import {
   getPrefixedPresetName,
 } from './get-prefixed-name';
 
+self.importScripts('https://cdn.jsdelivr.net/npm/codesandbox-browserfs@2.0.1');
 self.BrowserFS = BrowserFS;
-self.fs = BrowserFS.BFSRequire('fs');
-self.Buffer = BrowserFS.BFSRequire('buffer').Buffer;
-self.path = BrowserFS.BFSRequire('path');
-self.process = BrowserFS.BFSRequire('process');
 
 let fsInitialized = false;
 

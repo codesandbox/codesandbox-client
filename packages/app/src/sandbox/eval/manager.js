@@ -2,7 +2,6 @@
 import { flattenDeep, uniq, values, isEqual } from 'lodash';
 import resolve from 'browser-resolve';
 import localforage from 'localforage';
-import BrowserFS from 'codesandbox-browserfs/dist/node';
 
 import VERSION from 'common/version';
 

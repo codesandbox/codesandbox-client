@@ -257,6 +257,23 @@ module.exports = {
 
     alias: {
       moment: 'moment/moment.js',
+
+      fs: 'codesandbox-browserfs/dist/shims/fs.js',
+      buffer: 'codesandbox-browserfs/dist/shims/buffer.js',
+      path: 'codesandbox-browserfs/dist/shims/path.js',
+      processGlobal: 'codesandbox-browserfs/dist/shims/process.js',
+      bufferGlobal: 'codesandbox-browserfs/dist/shims/bufferGlobal.js',
+      bfsGlobal: require.resolve(
+        path.join(
+          '..',
+          '..',
+          '..',
+          'standalone-packages',
+          'codesandbox-browserfs',
+          'build',
+          __DEV__ ? 'browserfs.js' : 'browserfs.min.js'
+        )
+      ),
     },
   },
 
@@ -354,6 +371,16 @@ module.exports = {
     // a plugin that prints an error when you attempt to do this.
     // See https://github.com/facebookincubator/create-react-app/issues/240
     new CaseSensitivePathsPlugin(),
+
+    // Expose BrowserFS, process, and Buffer globals.
+    // NOTE: If you intend to use BrowserFS in a script tag, you do not need
+    // to expose a BrowserFS global.
+    new webpack.ProvidePlugin({
+      // Only use our local dev version of browserfs when in dev mode
+      ...(__DEV__ ? { BrowserFS: 'bfsGlobal' } : {}),
+      process: 'processGlobal',
+      Buffer: 'bufferGlobal',
+    }),
 
     // With this plugin we override the load-rules of eslint, this function prevents
     // us from using eslint in the browser, therefore we need to stop it!
