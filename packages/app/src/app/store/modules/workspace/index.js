@@ -1,5 +1,6 @@
 import { Module } from '@cerebral/fluent';
 import * as sequences from './sequences';
+import { items } from './computed';
 
 export default Module({
   state: {
@@ -12,6 +13,7 @@ export default Module({
       tagName: '',
     },
     openedWorkspaceItem: 'files',
+    items,
   },
   signals: {
     valueChanged: sequences.changeValue,

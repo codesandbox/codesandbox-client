@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { inject } from 'mobx-react';
+import { connect } from 'app/fluent';
 import GithubIcon from 'react-icons/lib/go/mark-github';
 import TerminalIcon from 'react-icons/lib/go/terminal';
 
@@ -41,6 +41,7 @@ function Logo({ Icon, width, height, text, href, onClick }) {
   );
 }
 
+<<<<<<< HEAD
 function NewSandbox({ signals }) {
   return (
     <Container>
@@ -124,5 +125,94 @@ function NewSandbox({ signals }) {
     </Container>
   );
 }
+=======
+export default connect()
+  .with(({ signals }) => ({
+    closeModal: signals.closeModal
+  }))
+  .to(
+    function NewSandbox({ closeModal }) {
+      return (
+        <Container>
+          <RowContainer>
+            <Logo
+              Icon={ParcelIcon}
+              width={50}
+              height={50}
+              text="Vanilla"
+              href={parcelSandboxUrl()}
+              onClick={() => closeModal()}
+            />
 
-export default inject('signals')(NewSandbox);
+            <Logo
+              Icon={ReactIcon}
+              width={50}
+              height={50}
+              text="React"
+              href={newSandboxUrl()}
+              onClick={() => closeModal()}
+            />
+
+            <Logo
+              Icon={VueIcon}
+              width={50}
+              height={50}
+              text="Vue"
+              href={newVueSandboxUrl()}
+              onClick={() => closeModal()}
+            />
+>>>>>>> More refactoring and changed to tslint
+
+            <Logo
+              Icon={AngularIcon}
+              width={50}
+              height={50}
+              text="Angular"
+              href={newAngularSandboxUrl()}
+              onClick={() => closeModal()}
+            />
+            <Logo
+              Icon={PreactIcon}
+              width={50}
+              height={50}
+              text="Preact"
+              href={newPreactSandboxUrl()}
+              onClick={() => closeModal()}
+            />
+            <Logo
+              Icon={SvelteIcon}
+              width={50}
+              height={50}
+              text="Svelte"
+              href={newSvelteSandboxUrl()}
+              onClick={() => closeModal()}
+            />
+            <Logo
+              Icon={ReactIcon}
+              width={50}
+              height={50}
+              text="React TypeScript"
+              href={newReactTypeScriptSandboxUrl()}
+              onClick={() => closeModal()}
+            />
+            <Logo
+              Icon={GithubIcon}
+              width={50}
+              height={50}
+              text="Import from Github"
+              href={importFromGitHubUrl()}
+              onClick={() => closeModal()}
+            />
+            <Logo
+              Icon={TerminalIcon}
+              width={50}
+              height={50}
+              text="Upload from CLI"
+              href={uploadFromCliUrl()}
+              onClick={() => closeModal()}
+            />
+          </RowContainer>
+        </Container>
+      );
+    }
+  )

@@ -4,7 +4,7 @@
     "baseUrl": "./src",
     "outDir": "build/dist",
     "module": "esnext",
-    "target": "es5",
+    "target": "es2016",
     "sourceMap": true,
     "allowJs": true,
     "checkJs": false,

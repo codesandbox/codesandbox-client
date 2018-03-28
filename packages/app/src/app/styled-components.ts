@@ -31,7 +31,7 @@ export interface ThemeInterface {
   green: ColorAdjuster
   redBackground: ColorAdjuster
   red: ColorAdjuster
-  templateColor: string
+  templateColor: () => string
 }
 
 export type ThemeProps<Props> = Props & {

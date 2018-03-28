@@ -59,15 +59,17 @@ export type Props = {
   settings: Settings
   currentModule: Module
   sandbox: Sandbox
-  highlightedLines: number[]
-  onlyViewMode: boolean
+  highlightedLines?: number[]
+  onlyViewMode?: boolean
   hideNavigation?: boolean
-  width?: number
-  height?: number
+  width?: number | string
+  height?: number | string
   onInitialized?: (component: React.Component) => () => void
   onChange?: (code: string) => void
   onSave?: (code: string) => void
   onModuleChange?: (moduleId: string) => void
+  onNpmDependencyAdded?: (name: string) => void
+  tsconfig: any
 }
 
 type State = {

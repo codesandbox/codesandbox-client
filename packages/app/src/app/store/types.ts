@@ -1,3 +1,11 @@
+export type NotificationType = 'error' | 'warning' | 'success'
+
+export  type NotificationButton = {
+  title: string
+  type: NotificationType
+  action: () => void
+}
+
 export type Badge = {
   id: string
   name: string
@@ -27,10 +35,10 @@ export type User = {
 }
 
 export type Notification = {
-  buttons: string[]
+  buttons: NotificationButton[]
   endTime: number
   id: number
-  notificationType: string
+  notificationType: NotificationType
   title: string
 }
 
