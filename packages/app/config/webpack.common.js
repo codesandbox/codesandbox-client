@@ -20,7 +20,7 @@ const __PROD__ = NODE_ENV === 'production'; // eslint-disable-line no-underscore
 // const __TEST__ = NODE_ENV === 'test'; // eslint-disable-line no-underscore-dangle
 const babelConfig = __DEV__ ? babelDev : babelProd;
 
-console.log(getHost() + '/');
+const publicPath = getHost() + '/';
 
 // Shim for `eslint-plugin-vue/lib/index.js`
 const ESLINT_PLUGIN_VUE_INDEX = `module.exports = {
@@ -75,7 +75,7 @@ module.exports = {
   output: {
     path: paths.appBuild,
     pathinfo: true,
-    publicPath: getHost() + '/',
+    publicPath,
   },
 
   module: {
@@ -239,13 +239,6 @@ module.exports = {
           name: 'static/media/[name].[hash:8].[ext]',
         },
       },
-      {
-        loader: 'worker-loader',
-        options: {
-          // To make workers load from their own domain
-          publicPath: '/',
-        },
-      },
     ],
 
     noParse: [
@@ -302,6 +295,7 @@ module.exports = {
             chunks: ['sandbox-startup', 'sandbox'],
             filename: 'frame.html',
             template: paths.sandboxHtml,
+            publicPath,
             minify: __PROD__ && {
               removeComments: true,
               collapseWhitespace: true,
@@ -323,6 +317,7 @@ module.exports = {
             chunks: ['common-sandbox', 'common', 'app'],
             filename: 'app.html',
             template: paths.appHtml,
+            publicPath,
             minify: __PROD__ && {
               removeComments: false,
               collapseWhitespace: true,
@@ -341,6 +336,7 @@ module.exports = {
             chunks: ['sandbox-startup', 'common-sandbox', 'sandbox'],
             filename: 'frame.html',
             template: paths.sandboxHtml,
+            publicPath,
             minify: __PROD__ && {
               removeComments: true,
               collapseWhitespace: true,

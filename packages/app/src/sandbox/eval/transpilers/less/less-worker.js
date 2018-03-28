@@ -17,7 +17,9 @@ self.window.document = {
   head: { appendChild: () => {}, removeChild: () => {} },
 };
 
-self.importScripts(['/static/js/less.min.js']);
+self.importScripts(
+  `${process.env.CODESANDBOX_HOST || ''}/static/js/less.min.js']`
+);
 
 self.postMessage('ready');
 

@@ -130,8 +130,8 @@ async function installPreset(Babel, BFSRequire, preset, currentPath, isV7) {
 
 self.importScripts(
   process.env.NODE_ENV === 'development'
-    ? '/static/js/babel.6.26.js'
-    : '/static/js/babel.6.26.min.js'
+    ? `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.6.26.js`
+    : `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.6.26.min.js`
 );
 
 self.postMessage('ready');
@@ -232,8 +232,9 @@ self.addEventListener('message', async event => {
   } else if (version === 7) {
     loadCustomTranspiler(
       process.env.NODE_ENV === 'development'
-        ? '/static/js/babel.7.00-beta.js'
-        : '/static/js/babel.7.00-beta.min.js'
+        ? `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.00-beta.js`
+        : `${process.env.CODESANDBOX_HOST ||
+            ''}/static/js/babel.7.00-beta.min.js`
     );
   }
 
