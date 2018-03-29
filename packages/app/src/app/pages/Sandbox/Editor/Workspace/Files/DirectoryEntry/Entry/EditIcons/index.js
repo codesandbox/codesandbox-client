@@ -33,7 +33,7 @@ function EditIcons({
 
   return (
     <div className={className}>
-      {hovering && (
+      {(hovering || (window.__isTouch && active)) && (
         <Container>
           {onEdit && (
             <Tooltip title="Edit">
