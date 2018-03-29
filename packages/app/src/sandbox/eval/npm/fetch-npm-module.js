@@ -30,6 +30,10 @@ export function getCombinedMetas() {
   return combinedMetas;
 }
 
+export function setCombinedMetas(givenCombinedMetas: Meta) {
+  combinedMetas = givenCombinedMetas;
+}
+
 function normalize(
   depName: string,
   files: MetaFiles,
@@ -313,7 +317,7 @@ export default async function fetchModule(
 
   if (foundPath === '//empty.js') {
     return {
-      path: '//empty.js',
+      path: '/node_modules/empty/index.js',
       code: 'module.exports = {};',
       requires: [],
     };
