@@ -6,7 +6,7 @@ import { Container, Item } from './elements';
 
 type Item = {
   title: string
-  color: string
+  color?: string
   icon?: React.ComponentClass
   action: () => void
 }

@@ -1,9 +1,15 @@
-import React from 'react';
+import * as React from 'react';
 
 import PatronStar from '../PatronStar';
 import { CenteredText, AuthorName, Image } from './elements';
 
-function UserWithAvatar({ avatarUrl, username, subscriptionSince, ...props }) {
+export type Props = {
+  avatarUrl: string
+  username: string
+  subscriptionSince?: string
+}
+
+const UserWithAvatar: React.SFC<Props> = ({ avatarUrl, username, subscriptionSince, ...props }) => {
   return (
     <CenteredText {...props}>
       <Image src={avatarUrl} alt={username} />

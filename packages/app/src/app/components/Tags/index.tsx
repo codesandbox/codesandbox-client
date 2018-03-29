@@ -6,8 +6,9 @@ import { TagContainer } from './elements';
 import Tag from './Tag';
 
 type Props = {
-  tags: Array<string>,
-  align?: 'right' | 'left',
+  tags: string[]
+  style?: {}
+  align?: 'right' | 'left'
 };
 
 const Tags: React.SFC<Props> = ({ tags, align, ...props }) => {

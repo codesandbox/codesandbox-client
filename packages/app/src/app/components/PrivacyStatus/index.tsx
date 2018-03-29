@@ -5,7 +5,7 @@ import { StyledUnlisted, StyledPrivate, Icon } from './elements';
 
 type Props = {
   privacy: number
-  asIcon: boolean
+  asIcon?: boolean
 }
 
 const PrivacyStatus: React.SFC<Props> = ({ privacy, asIcon }) => {
