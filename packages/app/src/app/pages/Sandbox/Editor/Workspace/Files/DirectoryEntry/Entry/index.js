@@ -161,6 +161,7 @@ class Entry extends React.PureComponent {
                     onCreateDirectory={onCreateDirectoryClick}
                     onDelete={deleteEntry && this.delete}
                     onEdit={rename && this.rename}
+                    active={active}
                   />
                 )}
               </Right>
