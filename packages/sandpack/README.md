@@ -18,7 +18,7 @@ This is a list of features that the bundler supports out of the box, the list ma
 
 1.  Hot Module Reloading API (`module.hot`)
 2.  npm dependencies
-3.  Most common transpilers (vue, babel, typescript, css, etc...)
+3.  Most common transpilers (vue, babel, typescript, css, scss, less, stylus, parcel, etc...)
 4.  Parallel transpiling
 5.  On-demand transpiler loading
 6.  Webpack loader syntax (`!raw-loader!./test.js`)
@@ -241,6 +241,10 @@ We heavily make use of Web Workers for transpilations. Almost all our transpilat
 ### Bundle Size
 
 Another reason to host the bundler externally is because of code splitting: we split all our transpilers away and load them on-demand. If a user doesn't use `sass` we won't load the transpiler. This wouldn't be possible if we would give one big JS file as the library.
+
+### Offline Support
+
+We use Service Workers to download all transpilers in the background, so the next time a user visits your website they don't have to download the bundler anymore and it can be used offline. This is possible because we host the service worker externally.
 
 > I want to highlight that you can also host the bundler by yourself, all necessary files are in the `sandpack` folder.
 
