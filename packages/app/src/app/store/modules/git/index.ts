@@ -1,9 +1,9 @@
 import { Module } from '@cerebral/fluent';
 import * as sequences from './sequences';
 import { fetchGitChanges } from '../../sequences';
+import { State } from './types';
 
-export default Module({
-  state: {
+const state: State = {
     repoTitle: '',
     error: null,
     isExported: false,
@@ -14,14 +14,19 @@ export default Module({
     commit: null,
     pr: null,
     isCommiting: false,
-    isCreatingPr: false,
-  },
-  signals: {
+    isCreatingPr: false
+};
+
+const signals = {
     repoTitleChanged: sequences.changeRepoTitle,
     createRepoClicked: sequences.createRepo,
     gitMounted: fetchGitChanges,
     createCommitClicked: sequences.createCommit,
     messageChanged: sequences.changeMessage,
-    createPrClicked: sequences.createPr,
-  },
+    createPrClicked: sequences.createPr
+};
+
+export default Module<State, typeof signals>({
+    state,
+    signals
 });

@@ -25,7 +25,7 @@ export type Pr = {
 export type State = {
     repoTitle: string;
     error: string;
-    isExported: string;
+    isExported: boolean;
     showExportedModal: boolean;
     isFetching: boolean;
     message: string;
