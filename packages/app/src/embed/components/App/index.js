@@ -137,7 +137,23 @@ export default class App extends React.PureComponent<{}, State> {
     this.setState({ showEditor: false, showPreview: true });
   setMixedView = () => this.setState({ showEditor: true, showPreview: true });
 
-  setCurrentModule = (id: string) => this.setState({ currentModule: id });
+  setCurrentModule = (id: string) => {
+    const newState: {
+      currentModule: string,
+      showEditor?: boolean,
+      showPreview?: boolean,
+    } = { currentModule: id };
+
+    if (!this.state.showEditor) {
+      newState.showEditor = true;
+      if (this.state.showPreview) {
+        // Means that the user was only looking at preview, which suggests that the screen is small.
+        newState.showPreview = false;
+      }
+    }
+
+    this.setState(newState);
+  };
 
   toggleSidebar = () => this.setState({ sidebarOpen: !this.state.sidebarOpen });
 
