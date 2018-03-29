@@ -1,8 +1,13 @@
-import React from 'react';
+import * as React from 'react';
 
 import { CenteredText } from './elements';
 
-function Stat({ Icon, count }) {
+type Props = {
+  Icon: React.ComponentClass
+  count: number
+}
+
+const Stat: React.SFC<Props> = ({ Icon, count }) => {
   return (
     <CenteredText style={{ fontSize: '.875rem' }}>
       <Icon />

@@ -1,10 +1,17 @@
-import React from 'react';
+import * as React from 'react';
 
 import { RefinementList } from 'react-instantsearch/dom';
 
 import { Container, Title } from './elements';
 
-function Filter({ title, attributeName, operator, noSearch }) {
+type Props = {
+  title: string
+  attributeName: string
+  operator: string
+  noSearch?: boolean
+}
+
+const Filter: React.SFC<Props> = ({ title, attributeName, operator, noSearch }) => {
   return (
     <Container>
       <Title>{title}</Title>

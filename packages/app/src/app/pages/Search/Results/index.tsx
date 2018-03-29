@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 
 import { Hits, Pagination } from 'react-instantsearch/dom';
 import Centered from 'common/components/flex/Centered';
@@ -8,7 +8,7 @@ import SandboxCard from '../SandboxCard';
 
 import { Container } from './elements';
 
-function Results() {
+const Results: React.SFC<{}> = () => {
   return (
     <Container>
       <ResultInfo />

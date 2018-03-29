@@ -1,18 +1,18 @@
-import styled from 'styled-components';
+import styled from 'app/styled-components';
 import { NavLink } from 'react-router-dom';
 
 export const Content = styled.div`
-  margin-top: 5%;
-  text-align: left;
-  color: rgba(255, 255, 255, 0.7);
+    margin-top: 5%;
+    text-align: left;
+    color: rgba(255, 255, 255, 0.7);
 
-  h1 {
-    color: rgba(255, 255, 255, 0.9);
-  }
+    h1 {
+        color: rgba(255, 255, 255, 0.9);
+    }
 
-  h2 {
-    color: rgba(255, 255, 255, 0.9);
-  }
+    h2 {
+        color: rgba(255, 255, 255, 0.9);
+    }
 `;
 
 export const NavigationLink = styled(NavLink)`
@@ -33,11 +33,11 @@ export const NavigationLink = styled(NavLink)`
 `;
 
 export const LegalNavigation = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  font-size: 1.25rem;
-  color: white;
-  width: 100%;
-  margin-bottom: 3rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    font-size: 1.25rem;
+    color: white;
+    width: 100%;
+    margin-bottom: 3rem;
 `;

@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 
 export default () => (
   <div>
@@ -6,7 +6,7 @@ export default () => (
     <div id="ppBody">
       <div className="innerText">
         This privacy policy has been compiled to better serve those who are
-        concerned with how their {"'"}Personally Identifiable Information{"'"}{' '}
+        concerned with how their {'\''}Personally Identifiable Information{'\''}{' '}
         (PII) is being used online. PII, as described in US privacy law and
         information security, is information that can be used on its own or with
         other information to identify, contact, or locate a single person, or to
@@ -98,13 +98,13 @@ export default () => (
 
       <div className="grayText">
         <h2>
-          Do we use {"'"}cookies{"'"}?
+          Do we use {'\''}cookies{'\''}?
         </h2>
       </div>
       <div className="innerText">
         Yes. Cookies are small files that a site or its service provider
-        transfers to your computer{"'"}s hard drive through your Web browser (if
-        you allow) that enables the site{"'"}s or service provider{"'"}s systems
+        transfers to your computer{'\''}s hard drive through your Web browser (if
+        you allow) that enables the site{'\''}s or service provider{'\''}s systems
         to recognize your browser and capture and remember certain information.
         For instance, we use cookies to help us remember and process the items
         in your shopping cart. They are also used to help us understand your
@@ -118,7 +118,7 @@ export default () => (
       </div>
       <div className="innerText">
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>•</strong> Understand and save
-        user{"'"}s preferences for future visits.
+        user{'\''}s preferences for future visits.
       </div>
       <div className="innerText">
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>•</strong> Compile aggregate data
@@ -130,13 +130,13 @@ export default () => (
         <br />You can choose to have your computer warn you each time a cookie
         is being sent, or you can choose to turn off all cookies. You do this
         through your browser settings. Since browser is a little different, look
-        at your browser{"'"}s Help Menu to learn the correct way to modify your
+        at your browser{'\''}s Help Menu to learn the correct way to modify your
         cookies.<br />
       </div>
       <div className="innerText">
         If you turn cookies off, Some of the features that make your site
-        experience more efficient may not function properly.It won{"'"}t affect
-        the user{"'"}s experience that make your site experience more efficient
+        experience more efficient may not function properly.It won{'\''}t affect
+        the user{'\''}s experience that make your site experience more efficient
         and may not function properly.
       </div>
       <div className="grayText">
@@ -148,9 +148,9 @@ export default () => (
         notice. This does not include website hosting partners and other parties
         who assist us in operating our website, conducting our business, or
         serving our users, so long as those parties agree to keep this
-        information confidential. We may also release information when it{"'"}s
+        information confidential. We may also release information when it{'\''}s
         release is appropriate to comply with the law, enforce our site
-        policies, or protect ours or others{"'"} rights, property or safety.{' '}
+        policies, or protect ours or others{'\''} rights, property or safety.{' '}
         <br />
         <br /> However, non-personally identifiable visitor information may be
         provided to other parties for marketing, advertising, or other uses.{' '}
@@ -170,7 +170,7 @@ export default () => (
         <h2>Google</h2>
       </div>
       <div className="innerText">
-        Google{"'"}s advertising requirements can be summed up by Google{"'"}s
+        Google{'\''}s advertising requirements can be summed up by Google{'\''}s
         Advertising Principles. They are put in place to provide a positive
         experience for users.
         https://support.google.com/adwordspolicy/answer/1316548?hl=en <br />
@@ -181,7 +181,7 @@ export default () => (
       </div>
       <div className="innerText">
         <br />Google, as a third-party vendor, uses cookies to serve ads on our
-        site. Google{"'"}s use of the DART cookie enables it to serve ads to our
+        site. Google{'\''}s use of the DART cookie enables it to serve ads to our
         users based on previous visits to our site and other sites on the
         Internet. Users may opt-out of the use of the DART cookie by visiting
         the Google Ad and Content Network privacy policy.<br />
@@ -216,7 +216,7 @@ export default () => (
       </div>
       <div className="innerText">
         CalOPPA is the first state law in the nation to require commercial
-        websites and online services to post a privacy policy. The law{"'"}s
+        websites and online services to post a privacy policy. The law{'\''}s
         reach stretches well beyond California to require any person or company
         in the United States (and conceivably the world) that operates websites
         collecting Personally Identifiable Information from California consumers
@@ -235,7 +235,7 @@ export default () => (
         our website.<br />
       </div>
       <div className="innerText">
-        Our Privacy Policy link includes the word {"'"}Privacy{"'"} and can
+        Our Privacy Policy link includes the word {'\''}Privacy{'\''} and can
         easily be found on the page specified above.
       </div>
       <div className="innerText">
@@ -264,7 +264,7 @@ export default () => (
         <h2>Does our site allow third-party behavioral tracking?</h2>
       </div>
       <div className="innerText">
-        It{"'"}s also important to note that we do not allow third-party
+        It{'\''}s also important to note that we do not allow third-party
         behavioral tracking
       </div>
       <div className="blueText">
@@ -272,11 +272,11 @@ export default () => (
       </div>
       <div className="innerText">
         When it comes to the collection of personal information from children
-        under the age of 13 years old, the Children{"'"}s Online Privacy
+        under the age of 13 years old, the Children{'\''}s Online Privacy
         Protection Act (COPPA) puts parents in control. The Federal Trade
-        Commission, United States{"'"} consumer protection agency, enforces the
+        Commission, United States{'\''} consumer protection agency, enforces the
         COPPA Rule, which spells out what operators of websites and online
-        services must do to protect children{"'"}s privacy and safety online.<br />
+        services must do to protect children{'\''}s privacy and safety online.<br />
         <br />
       </div>
       <div className="innerText">

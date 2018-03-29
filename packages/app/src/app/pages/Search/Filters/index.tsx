@@ -1,8 +1,8 @@
-import React from 'react';
+import * as React from 'react';
 
 import Filter from './Filter';
 
-function Filters() {
+const Filters: React.SFC<{}> = () => {
   return (
     <div style={{ flex: 1 }}>
       <Filter

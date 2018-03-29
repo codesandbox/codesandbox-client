@@ -1,9 +1,9 @@
-import React from 'react';
+import * as React from 'react';
 import { Stats, ClearAll } from 'react-instantsearch/dom';
 
 import { ClearAllContainer } from './elements';
 
-function ResultInfo() {
+const ResultInfo: React.SFC<{}> = () => {
   return (
     <div style={{ marginBottom: '1rem', fontSize: '.875rem' }}>
       <Stats />

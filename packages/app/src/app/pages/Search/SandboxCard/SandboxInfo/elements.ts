@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from 'app/styled-components';
 import UserWithAvatar from 'app/components/UserWithAvatar';
 
 export const CenteredText = styled.div`
