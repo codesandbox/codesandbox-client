@@ -383,7 +383,9 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
 
   setCurrentModule = (moduleId: string) => {
     this.closeFuzzySearch();
-    this.codemirror.focus();
+    if (!window.__isTouch) {
+      this.codemirror.focus();
+    }
     if (this.props.onModuleChange) {
       this.props.onModuleChange(moduleId);
     }
