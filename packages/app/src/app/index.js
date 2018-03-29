@@ -67,6 +67,8 @@ if (process.env.NODE_ENV === 'production') {
   }
 }
 
+window.__isTouch = !matchMedia('(pointer:fine)').matches;
+
 requirePolyfills().then(() => {
   const rootEl = document.getElementById('root');
 

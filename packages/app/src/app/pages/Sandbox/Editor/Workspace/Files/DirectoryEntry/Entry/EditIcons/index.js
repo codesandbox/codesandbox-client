@@ -24,6 +24,10 @@ function EditIcons({
   onCreateFile,
   onCreateDirectory,
 }) {
+  if (window.__isTouch) {
+    return null;
+  }
+
   return (
     <div className={className}>
       {hovering && (
