@@ -16,18 +16,19 @@ import Editor from './Editor';
 
 class SandboxPage extends React.Component {
   componentWillMount() {
-    if (
-      window.screen.availWidth < 800 &&
-      !document.location.search.includes('from-embed')
-    ) {
-      const addedSign = document.location.search ? '&' : '?';
-      document.location.href =
-        document.location.href.replace('/s/', '/embed/') +
-        addedSign +
-        'codemirror=1';
-    } else {
-      this.fetchSandbox();
+    if (window.screen.availWidth < 800) {
+      if (!document.location.search.includes('from-embed')) {
+        const addedSign = document.location.search ? '&' : '?';
+        document.location.href =
+          document.location.href.replace('/s/', '/embed/') +
+          addedSign +
+          'codemirror=1';
+      } else {
+        this.props.signals.preferences.codeMirrorForced();
+      }
     }
+
+    this.fetchSandbox();
   }
 
   fetchSandbox = () => {
