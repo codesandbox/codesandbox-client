@@ -36,7 +36,8 @@ const state: State = {
         tabWidth: 2,
         trailingComma: 'none',
         useTabs: false,
-        vimMode: false
+        vimMode: false,
+        forceRefresh: false
     },
     isLoadingPaymentDetails: true,
     paymentDetailError: null,

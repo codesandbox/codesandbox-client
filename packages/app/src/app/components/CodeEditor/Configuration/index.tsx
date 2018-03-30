@@ -9,54 +9,55 @@ import getType from 'app/utils/get-type';
 import Tooltip from 'common/components/Tooltip';
 import CodeIcon from 'react-icons/lib/md/code';
 import { Container, Icon, Title, Description } from './elements';
-import { Module } from 'app/store/modules/editor/types'
-import { Props as CodeEditorProps } from '../'
+import { Module } from 'app/store/modules/editor/types';
+import { Props as CodeEditorProps } from '../';
 
 type Props = CodeEditorProps & {
-  config: any // TODO: Created from some util
-  toggleConfigUI: () => void
-  dependencies: any
+    config: any; // TODO: Created from some util
+    toggleConfigUI: () => void;
+    dependencies: any;
 };
 
 export default class Configuration extends React.PureComponent<Props> {
-  disposeInitializer?: () => void;
-  currentModule: Module;
+    disposeInitializer?: () => void;
+    currentModule: Module;
 
-  constructor(props: Props) {
-    super(props);
+    constructor(props: Props) {
+        super(props);
 
-    this.currentModule = props.currentModule;
-  }
-
-  componentDidMount() {
-    if (this.props.onInitialized) {
-      this.disposeInitializer = this.props.onInitialized(this);
+        this.currentModule = props.currentModule;
     }
-  }
 
-  componentWillUnmount() {
-    if (this.disposeInitializer) {
-      this.disposeInitializer();
+    componentDidMount() {
+        if (this.props.onInitialized) {
+            this.disposeInitializer = this.props.onInitialized(this);
+        }
     }
-  }
 
-  // eslint-disable-next-line
-  changeCode = (code: string) => {
-    this.forceUpdate();
-  };
+    componentWillUnmount() {
+        if (this.disposeInitializer) {
+            this.disposeInitializer();
+        }
+    }
 
-  changeModule = (newModule: Module) => {
-    this.currentModule = newModule;
-  };
+    // eslint-disable-next-line
+    changeCode = (code: string) => {
+        this.forceUpdate();
+    };
 
-  updateFile = (code: string) => {
-    this.props.onChange(code);
-  };
+    changeModule = (newModule: Module) => {
+        this.currentModule = newModule;
+    };
 
-  render() {
-    const { config, width, height } = this.props;
-    const currentModule = this.currentModule;
+    updateFile = (code: string) => {
+        this.props.onChange(code);
+    };
 
+    render() {
+        const { config, width, height } = this.props;
+        const currentModule = this.currentModule;
+
+<<<<<<< HEAD
     const { ConfigWizard } = getUI(config.type);
 
     return (
@@ -68,26 +69,31 @@ export default class Configuration extends React.PureComponent<Props> {
             type={getType(currentModule.title)}
           />
           <Title>{config.title}</Title>
+=======
+        const { ConfigWizard } = config.ui;
 
-          <Tooltip title="Show Code">
-            <Icon onClick={this.props.toggleConfigUI}>
-              <CodeIcon />
-            </Icon>
-          </Tooltip>
-        </div>
-        <Description>
-          {config.description}{' '}
-          <a
-            href={config.moreInfoUrl}
-            target="_blank"
-            rel="noreferrer noopener"
-          >
-            More info...
-          </a>
-        </Description>
+        return (
+            <Container style={{ width, height }}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <EntryIcons width={32} height={32} type={getType(currentModule.title, currentModule.code || '')} />
+                    <Title>{config.title}</Title>
+>>>>>>> more fixes
 
-        <ConfigWizard updateFile={this.updateFile} file={currentModule.code} />
-      </Container>
-    );
-  }
+                    <Tooltip title="Show Code">
+                        <Icon onClick={this.props.toggleConfigUI}>
+                            <CodeIcon />
+                        </Icon>
+                    </Tooltip>
+                </div>
+                <Description>
+                    {config.description}{' '}
+                    <a href={config.moreInfoUrl} target="_blank" rel="noreferrer noopener">
+                        More info...
+                    </a>
+                </Description>
+
+                <ConfigWizard updateFile={this.updateFile} file={currentModule.code} />
+            </Container>
+        );
+    }
 }

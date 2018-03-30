@@ -28,7 +28,7 @@ import {
 } from './elements';
 
 type Props = {
-    editable: boolean;
+    editable?: boolean;
 };
 
 type State = {

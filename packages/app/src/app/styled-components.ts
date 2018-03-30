@@ -1,6 +1,5 @@
 import * as React from 'react';
 import * as styledComponents from 'styled-components';
-import { ThemedStyledComponentsModule } from 'styled-components';
 
 type ColorAdjuster = {
     (): string;
@@ -17,7 +16,7 @@ type ColorAdjuster = {
     rotate(n: number): ColorAdjuster;
 };
 
-export interface ThemeInterface {
+export interface IThemeInterface {
     background: ColorAdjuster;
     background2: ColorAdjuster;
     background3: ColorAdjuster;
@@ -35,7 +34,7 @@ export interface ThemeInterface {
 }
 
 export type ThemeProps<Props> = Props & {
-    theme: ThemeInterface;
+    theme: IThemeInterface;
 };
 
 type ComponentProps<Props> = ThemeProps<Props> & {
@@ -48,7 +47,7 @@ const {
     injectGlobal,
     keyframes,
     ThemeProvider
-} = styledComponents as ThemedStyledComponentsModule<ThemeInterface>;
+} = styledComponents as styledComponents.ThemedStyledComponentsModule<IThemeInterface>;
 
 const allowedDomProps = [ 'className', 'style' ];
 

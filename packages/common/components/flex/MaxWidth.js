@@ -16,15 +16,7 @@ const InnerContainer = styled.div`
   max-width: ${props => props.width}px;
 `;
 
-export default ({
-  children,
-  width = 1280,
-  className,
-}: {
-  children: React.CElement,
-  width: number,
-  className: string,
-}) => (
+export default ({ children, width = 1280, className }) => (
   <Container>
     <InnerContainer className={className} width={width}>
       {children}

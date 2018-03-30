@@ -18,76 +18,181 @@ import EditIcons from './EditIcons';
 import { Right, NotSyncedIconWithMargin } from './elements';
 
 type Props = {
-  id: string
-  title: string
-  shortid: string
-  depth: number
-  isOpen: boolean
-  hasChildren: boolean
-  type: string
-  active: boolean
-  connectDragSource: ConnectDragSource,
-  isNotSynced: boolean
-  isMainModule: boolean
-  moduleHasError: boolean
-  root: boolean
-  onCreateDirectoryClick: () => void
-  onClick: () => void
-  markTabsNotDirty: () => void
-  onCreateModuleClick: () => void
-  onRenameCancel: () => void
-  renameValidator: (id: string, title: string) => boolean
-  rename: (shortid: string, title: string) => void
-  deleteEntry: (shortid: string, title: string) => void
-  setCurrentModule: (id: string) => void
-}
+    id: string;
+    title: string;
+    shortid: string;
+    depth: number;
+    isOpen: boolean;
+    hasChildren: boolean;
+    type: string;
+    active: boolean;
+    connectDragSource: ConnectDragSource;
+    isNotSynced: boolean;
+    isMainModule: boolean;
+    moduleHasError: boolean;
+    root: boolean;
+    onCreateDirectoryClick: () => void;
+    onClick: () => void;
+    markTabsNotDirty: () => void;
+    onCreateModuleClick: () => void;
+    onRenameCancel: () => void;
+    renameValidator: (id: string, title: string) => boolean;
+    rename: (shortid: string, title: string) => void;
+    deleteEntry: (shortid: string, title: string) => void;
+    setCurrentModule: (id: string) => void;
+};
 
 type State = {
-  state: string
-  error: boolean
-  selected: boolean
-  hovering: boolean
-}
+    state: string;
+    error: boolean;
+    selected: boolean;
+    hovering: boolean;
+};
 
 class Entry extends React.PureComponent<Props, State> {
-  constructor(props) {
-    super(props);
-    this.state = {
-      state: props.state || '',
-      error: false,
-      selected: false,
-      hovering: false,
+    constructor(props) {
+        super(props);
+        this.state = {
+            state: props.state || '',
+            error: false,
+            selected: false,
+            hovering: false
+        };
+    }
+
+    resetState = () => {
+        if (this.props.onRenameCancel) {
+            this.props.onRenameCancel();
+        }
+        this.setState({ state: '', error: false });
     };
-  }
 
-  resetState = () => {
-    if (this.props.onRenameCancel) {
-      this.props.onRenameCancel();
+    handleValidateTitle = (title) => {
+        const isInvalidTitle = this.props.renameValidator(this.props.id, title);
+        this.setState({ error: isInvalidTitle });
+    };
+
+    handleRename = (title, force) => {
+        const { shortid } = this.props;
+        const canRename = !this.handleValidateTitle(title);
+        if (canRename && this.props.rename) {
+            this.props.rename(shortid, title);
+            this.resetState();
+        } else if (force) {
+            this.resetState();
+        }
+    };
+
+    delete = () => {
+        const { shortid, title, deleteEntry } = this.props;
+        if (deleteEntry) {
+            return deleteEntry(shortid, title);
+        }
+        return false;
+    };
+
+    rename = () => {
+        this.setState({ state: 'editing' });
+        return true; // To close it
+    };
+
+    setCurrentModule = () => this.props.setCurrentModule(this.props.id);
+
+    onMouseEnter = () => this.setState({ hovering: true });
+    onMouseLeave = () => this.setState({ hovering: false });
+
+    render() {
+        const {
+            title,
+            depth,
+            type,
+            active,
+            setCurrentModule,
+            connectDragSource,
+            onCreateModuleClick,
+            onCreateDirectoryClick,
+            deleteEntry,
+            onClick,
+            markTabsNotDirty,
+            rename,
+            isNotSynced,
+            isMainModule,
+            moduleHasError
+        } = this.props;
+        const { state, error, selected, hovering } = this.state;
+
+        const items = [
+            onCreateModuleClick && {
+                title: 'New Module',
+                action: onCreateModuleClick,
+                icon: FileIcon
+            },
+            onCreateDirectoryClick && {
+                title: 'New Directory',
+                action: onCreateDirectoryClick,
+                icon: FolderIcon
+            },
+            rename && {
+                title: 'Rename',
+                action: this.rename,
+                icon: EditIcon
+            },
+            deleteEntry && {
+                title: 'Delete',
+                action: this.delete,
+                color: theme.red.darken(0.2)(),
+                icon: DeleteIcon
+            }
+        ].filter((x) => x);
+
+        return connectDragSource(
+            <div>
+                <ContextMenu items={items}>
+                    <EntryContainer
+                        onClick={setCurrentModule ? this.setCurrentModule : onClick}
+                        onDoubleClick={markTabsNotDirty}
+                        depth={depth}
+                        nameValidationError={error}
+                        active={active}
+                        editing={state === 'editing' || selected}
+                        onMouseEnter={this.onMouseEnter}
+                        onMouseLeave={this.onMouseLeave}
+                        alternative={isMainModule}
+                        noTransition
+                    >
+                        <EntryIcons type={type} error={moduleHasError} />
+                        {state === 'editing' ? (
+                            <EntryTitleInput
+                                title={title}
+                                onChange={this.handleValidateTitle}
+                                onCancel={this.resetState}
+                                onCommit={this.handleRename}
+                            />
+                        ) : (
+                            <EntryTitle title={title} />
+                        )}
+                        {isNotSynced && !state && <NotSyncedIconWithMargin />}
+                        {state === '' && (
+                            <Right>
+                                {isMainModule ? (
+                                    <span style={{ opacity: hovering ? 1 : 0 }}>main</span>
+                                ) : (
+                                    <EditIcons
+                                        hovering={hovering}
+                                        onCreateFile={onCreateModuleClick}
+                                        onCreateDirectory={onCreateDirectoryClick}
+                                        onDelete={deleteEntry && this.delete}
+                                        onEdit={rename && this.rename}
+                                    />
+                                )}
+                            </Right>
+                        )}
+                    </EntryContainer>
+                </ContextMenu>
+            </div>
+        );
     }
-    this.setState({ state: '', error: false });
-  };
-
-  handleValidateTitle = title => {
-    const isInvalidTitle = this.props.renameValidator(this.props.id, title);
-    this.setState({ error: isInvalidTitle });
-  };
-
-  handleRename = (title, force) => {
-    const { shortid } = this.props;
-    const canRename = !this.handleValidateTitle(title);
-    if (canRename && this.props.rename) {
-      this.props.rename(shortid, title);
-      this.resetState();
-    } else if (force) {
-      this.resetState();
-    }
-  };
-
-  delete = () => {
-    const { shortid, title, deleteEntry } = this.props;
-    if (deleteEntry) {
-      return deleteEntry(shortid, title);
-    }
+<<<<<<< HEAD
     return false;
   };
 
@@ -202,25 +307,27 @@ class Entry extends React.PureComponent<Props, State> {
       </div>
     );
   }
+=======
+>>>>>>> more fixes
 }
 
 const entrySource = {
-  canDrag: props => !!props.id && !props.isMainModule,
-  beginDrag: props => {
-    if (props.closeTree) {
-      props.closeTree();
+    canDrag: (props) => !!props.id && !props.isMainModule,
+    beginDrag: (props) => {
+        if (props.closeTree) {
+            props.closeTree();
+        }
+        return {
+            id: props.id,
+            shortid: props.shortid,
+            directory: props.type === 'directory' || props.type === 'directory-open'
+        };
     }
-    return {
-      id: props.id,
-      shortid: props.shortid,
-      directory: props.type === 'directory' || props.type === 'directory-open',
-    };
-  },
 };
 
 const collectSource = (connect, monitor) => ({
-  connectDragSource: connect.dragSource(),
-  isDragging: monitor.isDragging(),
+    connectDragSource: connect.dragSource(),
+    isDragging: monitor.isDragging()
 });
 
 export default DragSource('ENTRY', entrySource, collectSource)(Entry);

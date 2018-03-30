@@ -6,20 +6,22 @@ import GitHubLogo from 'app/components/GitHubLogo';
 import Cube from './Cube';
 
 export const Container = styled.div`
-  position: relative;
-  background-color: ${props => props.theme.background};
+    position: relative;
+    background-color: ${(props) => props.theme.background};
 
-  text-align: center;
+    text-align: center;
 
-  font-size: 1.125rem;
-  padding: 1rem 2rem;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.8);
+    font-size: 1.125rem;
+    padding: 1rem 2rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.8);
 `;
 
-export const DeployAnimationContainer = styled(component<{
-  deploying: boolean
-}>())`
+export const DeployAnimationContainer = styled(
+    component<{
+        deploying: boolean;
+    }>()
+)`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -53,12 +55,12 @@ const cubeAnimation = keyframes`
 }
 `;
 
-export const StyledCube = styled(component<{
-  i: number
-  size: number
-  noAnimation: boolean
-  className: string
-}>(Cube))`
+export const StyledCube = styled(
+    component<{
+        i: number;
+        size: number;
+    }>(Cube)
+)`
   position: absolute;
   animation: ${cubeAnimation} 2s ease-in infinite;
   animation-delay: ${({ i }) => i * 0.5}s;
@@ -72,14 +74,14 @@ export const StyledLogo = styled(OpaqueLogo)`
 `;
 
 export const DeployText = styled.div`
-  ${delayInEffect()};
-  margin-top: 2rem;
-  margin-bottom: 2rem;
-  font-size: 1.125rem;
+    ${delayInEffect()};
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    font-size: 1.125rem;
 `;
 
 export const Result = styled.div`
-  ${delayInEffect(0.25)};
-  font-size: 1.125rem;
-  margin-bottom: 1rem;
+    ${delayInEffect(0.25)};
+    font-size: 1.125rem;
+    margin-bottom: 1rem;
 `;

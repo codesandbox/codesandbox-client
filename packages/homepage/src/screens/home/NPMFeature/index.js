@@ -109,74 +109,74 @@ const Feature = ({ right, title, Icon, iconSize, children }) => (
   </section>
 );
 
+export default () => <div>hello</div>;
+/*
 export default () => (
-  <Background>
-    <MaxWidth width={1280}>
-      <Centered horizontal>
-        <Heading>Share in a single click</Heading>
-        <SubHeading>
-          Say goodbye to the days where you had to create a zip file just to
-          share your code. Now you can copy the link and share away!
-        </SubHeading>
-      </Centered>
+    <Background>
+        <MaxWidth width={1280}>
+            <Centered horizontal>
+                <Heading>Share in a single click</Heading>
+                <SubHeading>
+                    Say goodbye to the days where you had to create a zip file just to share your code. Now you can copy
+                    the link and share away!
+                </SubHeading>
+            </Centered>
 
-      <FeatureMargin>
-        <FeatureRow>
-          <Column flex={1} style={{ width: '100%' }}>
-            <ExtraSpacing>
-              <SearchInput />
-            </ExtraSpacing>
-          </Column>
+            <FeatureMargin>
+                <FeatureRow>
+                    <Column flex={1} style={{ width: '100%' }}>
+                        <ExtraSpacing>
+                            <SearchInput />
+                        </ExtraSpacing>
+                    </Column>
 
-          <Column flex={1}>
-            <ExtraSpacing>
-              <Feature Icon={NPMIcon} iconSize={42} title="NPM Support">
-                Think of any npm dependency you want to use, we probably support
-                it! You can install a new dependency within seconds. <br />
-                <Link
-                  href="https://hackernoon.com/how-we-make-npm-packages-work-in-the-browser-announcing-the-new-packager-6ce16aa4cee6"
-                  rel="noreferrer noopener"
-                  target="_blank"
-                >
-                  Learn how it works.
-                </Link>
-              </Feature>
+                    <Column flex={1}>
+                        <ExtraSpacing>
+                            <Feature Icon={NPMIcon} iconSize={42} title="NPM Support">
+                                Think of any npm dependency you want to use, we probably support it! You can install a
+                                new dependency within seconds. <br />
+                                <Link
+                                    href="https://hackernoon.com/how-we-make-npm-packages-work-in-the-browser-announcing-the-new-packager-6ce16aa4cee6"
+                                    rel="noreferrer noopener"
+                                    target="_blank"
+                                >
+                                    Learn how it works.
+                                </Link>
+                            </Feature>
 
-              <Feature Icon={SearchIcon} title="Search & Discovery">
-                Want to know how a library works? You can easily browse through
-                the{' '}
-                <Link href="https://codesandbox.io/search" target="_blank">
-                  80,000+ created sandboxes
-                </Link>{' '}
-                on CodeSandbox. We want this to be a platform where everyone can
-                easily learn and share.
-              </Feature>
-            </ExtraSpacing>
-          </Column>
-        </FeatureRow>
-      </FeatureMargin>
+                            <Feature Icon={SearchIcon} title="Search & Discovery">
+                                Want to know how a library works? You can easily browse through the{' '}
+                                <Link href="https://codesandbox.io/search" target="_blank">
+                                    80,000+ created sandboxes
+                                </Link>{' '}
+                                on CodeSandbox. We want this to be a platform where everyone can easily learn and share.
+                            </Feature>
+                        </ExtraSpacing>
+                    </Column>
+                </FeatureRow>
+            </FeatureMargin>
 
-      <FeatureMargin>
-        <FeatureRow alignItems="flex-start">
-          <Column flex={1} style={{ width: '100%' }}>
-            <ExtraSpacing>
-              <Feature right Icon={EmbedIcon} iconSize={42} title="Embedding">
-                We built a lightweight version of CodeSandbox for embeds, this
-                allows you to embed your sandbox anywhere. Viewers can even play
-                with the code in the embed, without leaving the website. We
-                offer many customization options to make sure you can show the
-                embed exactly the way you want.
-              </Feature>
-            </ExtraSpacing>
-          </Column>
+            <FeatureMargin>
+                <FeatureRow alignItems="flex-start">
+                    <Column flex={1} style={{ width: '100%' }}>
+                        <ExtraSpacing>
+                            <Feature right Icon={EmbedIcon} iconSize={42} title="Embedding">
+                                We built a lightweight version of CodeSandbox for embeds, this allows you to embed your
+                                sandbox anywhere. Viewers can even play with the code in the embed, without leaving the
+                                website. We offer many customization options to make sure you can show the embed exactly
+                                the way you want.
+                            </Feature>
+                        </ExtraSpacing>
+                    </Column>
 
-          <Column flex={1}>
-            <ExtraSpacing>
-              <EmbedAnimation />
-            </ExtraSpacing>
-          </Column>
-        </FeatureRow>
-      </FeatureMargin>
-    </MaxWidth>
-  </Background>
+                    <Column flex={1}>
+                        <ExtraSpacing>
+                            <EmbedAnimation />
+                        </ExtraSpacing>
+                    </Column>
+                </FeatureRow>
+            </FeatureMargin>
+        </MaxWidth>
+    </Background>
 );
+*/

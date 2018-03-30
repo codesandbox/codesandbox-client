@@ -1,14 +1,6 @@
 import React from 'react';
 
-export default ({
-  width = 35,
-  height = 35,
-  className,
-}: {
-  width: number,
-  height: number,
-  className: ?string,
-}) => (
+export default ({ width = 35, height = 35, className }) => (
   <svg
     className={className}
     width={`${width}px`}

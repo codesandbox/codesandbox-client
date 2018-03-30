@@ -1,25 +1,18 @@
-// @flow
-import type { Module, Directory } from 'common/types';
-
-const compareTitle = (
-  original: string,
-  test: string,
-  ignoredExtensions: Array<string>
-) => {
+const compareTitle = (original, test, ignoredExtensions) => {
   if (original === test) return true;
 
   return ignoredExtensions.some(ext => original === `${test}.${ext}`);
 };
 
-const throwError = (path: string) => {
+const throwError = path => {
   throw new Error(`Cannot find module in ${path}`);
 };
 
 export function getModulesInDirectory(
-  _path: ?string,
-  modules: Array<Module>,
-  directories: Array<Directory>,
-  _startdirectoryShortid: ?string = undefined
+  _path,
+  modules,
+  directories,
+  _startdirectoryShortid
 ) {
   if (!_path) return throwError('');
 
@@ -36,33 +29,30 @@ export function getModulesInDirectory(
     .replace(/^.\//, '')
     .split('/')
     .filter(part => Boolean(part));
-  const foundDirectoryShortid = splitPath.reduce(
-    (dirId: ?string, pathPart: string, i: number) => {
-      // Meaning this is the last argument, so the file
-      if (i === splitPath.length - 1) return dirId;
+  const foundDirectoryShortid = splitPath.reduce((dirId, pathPart, i) => {
+    // Meaning this is the last argument, so the file
+    if (i === splitPath.length - 1) return dirId;
 
-      if (pathPart === '..') {
-        // Find the parent
-        const dir = directories.find(d => d.shortid === dirId);
-        if (dir == null) throwError(path);
+    if (pathPart === '..') {
+      // Find the parent
+      const dir = directories.find(d => d.shortid === dirId);
+      if (dir == null) throwError(path);
 
-        return dir.directoryShortid;
-      }
+      return dir.directoryShortid;
+    }
 
-      const directoriesInDirectory = directories.filter(
-        // eslint-disable-next-line eqeqeq
-        m => m.directoryShortid == dirId
-      );
-      const nextDirectory = directoriesInDirectory.find(d =>
-        compareTitle(d.title, pathPart, [])
-      );
+    const directoriesInDirectory = directories.filter(
+      // eslint-disable-next-line eqeqeq
+      m => m.directoryShortid == dirId
+    );
+    const nextDirectory = directoriesInDirectory.find(d =>
+      compareTitle(d.title, pathPart, [])
+    );
 
-      if (nextDirectory == null) throwError(path);
+    if (nextDirectory == null) throwError(path);
 
-      return nextDirectory.shortid;
-    },
-    startdirectoryShortid
-  );
+    return nextDirectory.shortid;
+  }, startdirectoryShortid);
 
   const lastPath = splitPath[splitPath.length - 1];
   const modulesInFoundDirectory = modules.filter(
@@ -82,12 +72,12 @@ export function getModulesInDirectory(
  * Convert the module path to a module
  */
 export const resolveModule = (
-  path: ?string,
-  modules: Array<Module>,
-  directories: Array<Directory>,
-  startdirectoryShortid: ?string = undefined,
-  ignoredExtensions: Array<string> = ['js', 'jsx', 'json']
-): Module => {
+  path,
+  modules,
+  directories,
+  startdirectoryShortid,
+  ignoredExtensions = ['js', 'jsx', 'json']
+) => {
   const {
     modules: modulesInFoundDirectory,
     lastPath,
@@ -134,19 +124,15 @@ export const resolveModule = (
   return throwError(path);
 };
 
-function findById(entities: Array<Module | Directory>, id: string) {
+function findById(entities, id) {
   return entities.find(e => e.id === id);
 }
 
-function findByShortid(entities: Array<Module | Directory>, shortid: ?string) {
+function findByShortid(entities, shortid) {
   return entities.find(e => e.shortid === shortid);
 }
 
-export const getModulePath = (
-  modules: Array<Module>,
-  directories: Array<Directory>,
-  id: string
-) => {
+export const getModulePath = (modules, directories, id) => {
   const module = findById(modules, id);
 
   if (!module) return '';
@@ -175,21 +161,17 @@ export const getModulePath = (
 };
 
 export const isMainModule = (
-  module: Module,
-  modules: Module[],
-  directories: Directory[],
-  entry: string = 'index.js'
+  module,
+  modules,
+  directories,
+  entry = 'index.js'
 ) => {
   const path = getModulePath(modules, directories, module.id);
 
   return path.replace('/', '') === entry;
 };
 
-export const findMainModule = (
-  modules: Module[],
-  directories: Directory[],
-  entry: string = 'index.js'
-) => {
+export const findMainModule = (modules, directories, entry = 'index.js') => {
   try {
     const module = resolveModule(entry, modules, directories);
 
@@ -200,11 +182,11 @@ export const findMainModule = (
 };
 
 export const findCurrentModule = (
-  modules: Module[],
-  directories: Directory[],
-  modulePath: string = '',
-  mainModule: Module
-): Module => {
+  modules,
+  directories,
+  modulePath = '',
+  mainModule
+) => {
   // cleanPath, encode and replace first /
   const cleanPath = decodeURIComponent(modulePath).replace('/', '');
   let foundModule = null;

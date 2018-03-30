@@ -8,6 +8,8 @@ import RecentPublications from '../screens/home/RecentPublications';
 import Patron from '../screens/home/Patron';
 import TitleAndMetaTags from '../components/TitleAndMetaTags';
 
+console.log(NPMFeature);
+
 export default class HomePage extends React.Component {
   componentDidMount() {
     window.addEventListener('scroll', this.scrollCheck, false);

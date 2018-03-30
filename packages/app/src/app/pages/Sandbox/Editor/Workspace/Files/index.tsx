@@ -13,7 +13,7 @@ export default connect()
         changedModuleShortids: state.editor.changedModuleShortids,
         mainModule: state.editor.mainModule,
         currentModule: state.editor.currentModule,
-        isInProjectView: state.preferences.isInProjectView,
+        isInProjectView: state.editor.isInProjectView,
         errors: state.editor.errors,
         corrections: state.editor.corrections
     }))
@@ -46,7 +46,7 @@ export default connect()
                         <WorkspaceItem
                             defaultOpen
                             keepState
-                            title='Files'
+                            title="Files"
                             actions={
                                 <EditIcons
                                     hovering

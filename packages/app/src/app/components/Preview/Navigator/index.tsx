@@ -1,3 +1,4 @@
+
 import * as React from 'react';
 
 import LeftIcon from 'react-icons/lib/fa/angle-left';
@@ -11,28 +12,22 @@ import Tooltip from 'common/components/Tooltip';
 import HorizontalAlign from './HorizontalAlign';
 import VerticalAlign from './VerticalAlign';
 import AddressBar from '../AddressBar';
-import {
-  Container,
-  Icons,
-  Icon,
-  AddressBarContainer,
-  SwitchContainer,
-} from './elements';
+import { Container, Icons, Icon, AddressBarContainer, SwitchContainer } from './elements';
 
 type Props = {
-  url: string
-  onChange: () => void
-  onConfirm: () => void
-  onBack: () => void
-  onForward: () => void
-  onRefresh: () => void
-  isProjectView: boolean
-  toggleProjectView: () => void
-  openNewWindow: () => void
-  zenMode: boolean
-  alignRight: () => void
-  alignBottom: () => void
-}
+  url: string;
+  onChange: (url: string) => void;
+  onConfirm: () => void;
+  onBack: () => void;
+  onForward: () => void;
+  onRefresh: () => void;
+  isProjectView: boolean;
+  toggleProjectView: () => void;
+  openNewWindow: () => void;
+  zenMode: boolean;
+  alignRight: () => void;
+  alignBottom: () => void;
+};
 
 const Navigator: React.SFC<Props> = ({
   url,
@@ -46,10 +41,10 @@ const Navigator: React.SFC<Props> = ({
   openNewWindow,
   zenMode,
   alignRight,
-  alignBottom,
+  alignBottom
 }) => {
   return (
-    <Container className="flying-container-handler" style={{ cursor: 'move' }}>
+    <Container>
       <Icons>
         <Icon disabled={!onBack} onClick={onBack}>
           <LeftIcon />
@@ -62,7 +57,7 @@ const Navigator: React.SFC<Props> = ({
         </Icon>
       </Icons>
       <AddressBarContainer
-        onMouseDown={e => {
+        onMouseDown={(e) => {
           e.stopPropagation();
         }}
       >
@@ -96,16 +91,13 @@ const Navigator: React.SFC<Props> = ({
       {!zenMode &&
         toggleProjectView && (
           <SwitchContainer>
-            <Tooltip
-              title={isProjectView ? 'Project View' : 'Current Module View'}
-              position="left"
-            >
+            <Tooltip title={isProjectView ? 'Project View' : 'Current Module View'} position="left">
               <Switch right={isProjectView} onClick={toggleProjectView} />
             </Tooltip>
           </SwitchContainer>
         )}
     </Container>
   );
-}
+};
 
 export default Navigator;

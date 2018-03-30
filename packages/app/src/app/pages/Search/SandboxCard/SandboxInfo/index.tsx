@@ -7,7 +7,7 @@ import ForkIcon from 'react-icons/lib/go/repo-forked';
 import GithubBadge from 'app/components/GithubBadge';
 import Stat from './Stat';
 import { CenteredText, UpdatedAt, Stats, StyledUser } from './elements';
-import { Git } from 'app/store/modules/git/types';
+import { Git } from 'app/store/types';
 
 type Props = {
     author: {

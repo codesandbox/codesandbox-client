@@ -10,21 +10,22 @@ import Tooltip from 'common/components/Tooltip';
 import { Icon } from '../../../../elements';
 import { Container } from './elements';
 
-const handleClick = func => e => {
-  e.preventDefault();
-  e.stopPropagation();
-  func();
+const handleClick = (func) => (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    func();
 };
 
 type Props = {
-  className?: string
-  hovering: boolean
-  onDelete: () => void
-  onEdit: () => void
-  onCreateFile: () => void
-  onCreateDirectory: () => void
-}
+    className?: string;
+    hovering: boolean;
+    onDelete?: () => void;
+    onEdit?: () => void;
+    onCreateFile?: () => void;
+    onCreateDirectory?: () => void;
+};
 
+<<<<<<< HEAD
 const EditIcons: React.SFC<Props> = ({
   className,
   hovering,
@@ -82,5 +83,45 @@ const EditIcons: React.SFC<Props> = ({
     </div>
   );
 }
+=======
+const EditIcons: React.SFC<Props> = ({ className, hovering, onDelete, onEdit, onCreateFile, onCreateDirectory }) => {
+    return (
+        <div className={className}>
+            {hovering && (
+                <Container>
+                    {onEdit && (
+                        <Tooltip title="Edit">
+                            <Icon onClick={handleClick(onEdit)}>
+                                <EditIcon />
+                            </Icon>
+                        </Tooltip>
+                    )}
+                    {onCreateFile && (
+                        <Tooltip title="New File">
+                            <Icon onClick={handleClick(onCreateFile)}>
+                                <AddFileIcon />
+                            </Icon>
+                        </Tooltip>
+                    )}
+                    {onCreateDirectory && (
+                        <Tooltip title="New Directory">
+                            <Icon onClick={handleClick(onCreateDirectory)}>
+                                <AddDirectoryIcon />
+                            </Icon>
+                        </Tooltip>
+                    )}
+                    {onDelete && (
+                        <Tooltip title="Delete">
+                            <Icon onClick={handleClick(onDelete)}>
+                                <CrossIcon />
+                            </Icon>
+                        </Tooltip>
+                    )}
+                </Container>
+            )}
+        </div>
+    );
+};
+>>>>>>> more fixes
 
 export default EditIcons;

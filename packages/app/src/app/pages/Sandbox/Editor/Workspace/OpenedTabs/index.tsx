@@ -40,7 +40,7 @@ export default connect()
 
         return (
             <WorkspaceItem
-                title='Open Tabs'
+                title="Open Tabs"
                 actions={
                     <SaveIcon
                         disabled={isAllModulesSynced}
