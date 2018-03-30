@@ -7,12 +7,11 @@ import configurations from './configuration';
 
 class CxJSTemplate extends Template {
   getEntries() {
-    const entries = [];
+    return ['/app/index.js', '/src/index.js', '/index.html'];
+  }
 
-    entries.push('/src/index.js');
-    entries.push('/app/index.js');
-
-    return entries;
+  getHTMLEntries() {
+    return ['/app/index.html', '/src/index.html', '/index.html'];
   }
 }
 

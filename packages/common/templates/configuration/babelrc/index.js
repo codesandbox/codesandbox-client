@@ -107,7 +107,7 @@ const config: ConfigurationFile = {
         {
           presets: [
             [
-              'cx-env',
+              'env',
               {
                 targets: {
                   chrome: 50,
@@ -119,15 +119,13 @@ const config: ConfigurationFile = {
                 modules: false,
                 loose: true,
                 useBuiltIns: true,
-                cx: {
-                  imports: {
-                    useSrc: true,
-                  },
-                },
               },
             ],
           ],
-          plugins: [],
+          plugins: [
+            ['transform-cx-jsx'],
+            ['transform-react-jsx', { pragma: 'VDOM.createElement' }],
+          ],
         },
         null,
         2

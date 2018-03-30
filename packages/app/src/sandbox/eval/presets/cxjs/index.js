@@ -14,7 +14,7 @@ export default function initialize() {
     'cxjs',
     ['js', 'jsx', 'ts', 'tsx', 'json', 'less', 'scss', 'sass', 'styl', 'css'],
     {},
-    { htmlDisabled: true }
+    {}
   );
 
   cxjsPreset.registerTranspiler(module => /\.jsx?$/.test(module.path), [
