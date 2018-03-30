@@ -11,7 +11,7 @@ const Container = styled.div`
   border-top-width: 1px;
 
   &:first-child {
-    border-top: 0;
+    border-top-width: 0;
   }
 
   ${media.fromTablet`
