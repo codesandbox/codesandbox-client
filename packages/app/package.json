@@ -95,8 +95,8 @@
         "worker-loader": "1.1.0"
     },
     "dependencies": {
-        "@cerebral/fluent": "^1.0.0-1520517968119",
-        "@cerebral/http": "^5.0.0-1520517968119",
+        "@cerebral/fluent": "^1.0.0",
+        "@cerebral/http": "^4.2.0",
         "@emmetio/codemirror-plugin": "^0.3.5",
         "axios": "^0.16.2",
         "babel-helper-vue-jsx-merge-props": "^2.0.2",
@@ -115,7 +115,7 @@
         "babel-standalone": "^6.25.0",
         "base64-loader": "^1.0.0",
         "browser-resolve": "CompuIves/node-browser-resolve",
-        "cerebral": "^5.0.0-1520517968119",
+        "cerebral": "^4.2.0",
         "circular-json": "^0.4.0",
         "codemirror": "^5.27.4",
         "codesandbox-api": "^0.0.18",
