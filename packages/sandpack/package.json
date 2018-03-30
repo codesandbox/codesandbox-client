@@ -1,6 +1,6 @@
 {
   "name": "smooshpack",
-  "version": "0.0.31",
+  "version": "0.0.32",
   "description": "",
   "keywords": [],
   "main": "dist/sandpack.umd.js",
@@ -23,7 +23,7 @@
   "scripts": {
     "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
     "prebuild": "rimraf dist",
-    "build": "tsc --module commonjs && rollup -c rollup.config.ts && typedoc --out docs --target es6 --theme minimal --mode file src",
+    "build": "tsc --module commonjs && rollup -c rollup.config.ts && typedoc --out docs --target es6 --theme minimal --ignoreCompilerErrors --mode file src",
     "start": "rollup -c rollup.config.ts -w",
     "test:prod": "npm run lint && npm run test -- --coverage --no-cache",
     "deploy-docs": "ts-node tools/gh-pages-publish",
@@ -99,6 +99,7 @@
     "rimraf": "^2.6.2",
     "rollup": "^0.55.4",
     "rollup-plugin-commonjs": "^8.0.2",
+    "rollup-plugin-json": "^2.3.0",
     "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-plugin-sourcemaps": "^0.4.2",
     "rollup-plugin-typescript2": "^0.11.1",
@@ -108,7 +109,7 @@
     "tslint": "^5.8.0",
     "tslint-config-prettier": "^1.1.0",
     "tslint-config-standard": "^7.0.0",
-    "typedoc": "^0.10.0",
+    "typedoc": "^0.11.1",
     "typescript": "^2.6.2",
     "validate-commit-msg": "^2.12.2"
   }

@@ -1,1 +1,3 @@
-export default require('../package.json').version;
+import { version } from '../package.json';
+
+export default version;
