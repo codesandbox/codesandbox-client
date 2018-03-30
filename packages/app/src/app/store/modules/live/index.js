@@ -1,12 +1,8 @@
-import { Module } from 'cerebral';
-import model from './model';
-
+import { Module, Computed } from '@cerebral/fluent';
+import * as computed from './computed';
 import * as sequences from './sequences';
-import { isCurrentEditor, liveUsersByModule } from './getters';
-import { isEditor } from './computed';
 
 export default Module({
-  model,
   state: {
     isLive: false,
     isLoading: false,
@@ -15,13 +11,9 @@ export default Module({
     reconnecting: false,
     notificationsHidden: false,
     followingUserId: null,
-  },
-  computed: {
-    isEditor,
-  },
-  getters: {
-    isCurrentEditor,
-    liveUsersByModule,
+    isEditor: Computed(computed.isEditor),
+    isCurrentEditor: Computed(computed.isCurrentEditor),
+    liveUsersByModule: Computed(computed.liveUsersByModule),
   },
   signals: {
     roomJoined: sequences.initializeLive,
