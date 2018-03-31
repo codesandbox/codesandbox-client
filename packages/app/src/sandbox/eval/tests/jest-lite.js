@@ -4,7 +4,6 @@ import { react, reactTs } from 'common/templates';
 import expect from 'jest-matchers';
 import jestMock from 'jest-mock';
 import jestTestHooks from 'jest-circus';
-import run from './run-circus';
 import { makeDescribe } from 'jest-circus/build/utils';
 
 import {
@@ -20,11 +19,12 @@ import {
   ROOT_DESCRIBE_BLOCK_NAME,
 } from 'jest-circus/build/state';
 
-import type Manager from '../manager';
-import type { Module } from '../entities/module';
-
+import run from './run-circus';
 import { parse } from '../../react-error-overlay/utils/parser';
 import { map } from '../../react-error-overlay/utils/mapper';
+
+import type Manager from '../manager';
+import type { Module } from '../entities/module';
 import type {
   Event,
   TestEntry,
@@ -112,6 +112,14 @@ export default class TestRunner {
   }
 
   static isTest(path: string) {
+    const endsWith = [
+      '.test.js',
+      '.test.ts',
+      '.test.tsx',
+      '.spec.js',
+      '.spec.ts',
+      '.spec.tsx',
+    ];
     let matched = false;
 
     if (
@@ -120,12 +128,8 @@ export default class TestRunner {
     ) {
       matched = true;
     }
-    if (path.endsWith('.test.js') || path.endsWith('.test.ts')) {
-      matched = true;
-    }
-    if (path.endsWith('.spec.js') || path.endsWith('.spec.ts')) {
-      matched = true;
-    }
+    matched = endsWith.map(ext => path.endsWith(ext));
+
     return matched;
   }
 

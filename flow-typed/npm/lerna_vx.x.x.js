@@ -1,4 +1,4 @@
-// flow-typed signature: c65d228b9890997d59ebc68664dc23b5
+// flow-typed signature: 1c41818d58cd55413d152d5fab9c1ada
 // flow-typed version: <<STUB>>/lerna_v^2.5.1/flow_v0.64.0
 
 /**
@@ -154,6 +154,10 @@ declare module 'lerna/lib/utils/splitVersion' {
   declare module.exports: any;
 }
 
+declare module 'lerna/lib/utils/ValidationError' {
+  declare module.exports: any;
+}
+
 declare module 'lerna/lib/utils/writeLogFile' {
   declare module.exports: any;
 }
@@ -261,6 +265,9 @@ declare module 'lerna/lib/utils/output.js' {
 }
 declare module 'lerna/lib/utils/splitVersion.js' {
   declare module.exports: $Exports<'lerna/lib/utils/splitVersion'>;
+}
+declare module 'lerna/lib/utils/ValidationError.js' {
+  declare module.exports: $Exports<'lerna/lib/utils/ValidationError'>;
 }
 declare module 'lerna/lib/utils/writeLogFile.js' {
   declare module.exports: $Exports<'lerna/lib/utils/writeLogFile'>;
