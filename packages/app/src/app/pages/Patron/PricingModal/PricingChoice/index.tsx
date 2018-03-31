@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { connect } from 'app/fluent';
+import { connect, WithCerebral } from 'app/fluent';
 import * as moment from 'moment';
 
 import Centered from 'common/components/flex/Centered';
@@ -13,74 +13,61 @@ import ThankYou from './ThankYou';
 import { Title } from '../elements';
 import { Container, PriceInput, Month, Currency, Notice, RangeContainer, StyledSignInButton } from './elements';
 
-type Props = {
+type Props = WithCerebral & {
     badge: string;
 };
 
-export default connect<Props>()
-    .with(({ state, signals }) => ({
-        ...state.patron,
-        isPatron: state.isPatron,
-        userName: state.user.name,
-        isLoggedIn: state.isLoggedIn,
-        subscription: { ...state.user.subscription },
-        signals: { ...signals.patron }
-    }))
-    .to(function PricingChoice({
-        error,
-        userName,
-        isPatron,
-        isLoggedIn,
-        subscription,
-        price,
-        isUpdatingSubscription,
-        signals,
-        badge
-    }) {
-        return (
-            <Container>
-                <Centered horizontal vertical={false}>
-                    <Title>Pay what you want</Title>
-                    {isPatron && <ThankYou price={subscription.amount} color={badges[badge].colors[0]} />}
-                    <Relative>
-                        <Currency>$</Currency>
-                        <PriceInput
-                            onChange={(event) => signals.priceChanged({ price: Number(event.target.value) })}
-                            value={price}
-                            type="number"
+const PricingChoice: React.SFC<Props> = ({ store, signals, badge }) => {
+    return (
+        <Container>
+            <Centered horizontal vertical={false}>
+                <Title>Pay what you want</Title>
+                {store.isPatron && <ThankYou price={store.user.subscription.amount} color={badges[badge].colors[0]} />}
+                <Relative>
+                    <Currency>$</Currency>
+                    <PriceInput
+                        onChange={(event) => signals.patron.priceChanged({ price: Number(event.target.value) })}
+                        value={store.patron.price}
+                        type="number"
+                    />
+                    <Month>/month</Month>
+                </Relative>
+                <RangeContainer>
+                    <Range
+                        onChange={(value) => signals.patron.priceChanged({ price: Number(value) })}
+                        min={5}
+                        max={50}
+                        step={1}
+                        value={store.patron.price}
+                        color={badges[badge].colors[0]}
+                    />
+                </RangeContainer>
+                {store.isLoggedIn ? store.isPatron ? ( // eslint-disable-line no-nested-ternary
+                    <ChangeSubscription
+                        updateSubscription={() => signals.patron.updateSubscriptionClicked()}
+                        cancelSubscription={() => signals.patron.cancelSubscriptionClicked()}
+                        date={store.user.subscription.since}
+                    />
+                ) : (
+                    <Centered style={{ marginTop: '2rem' }} horizontal>
+                        <SubscribeForm
+                            subscribe={(token) => signals.patron.createSubscriptionClicked({ token })}
+                            isLoading={store.patron.isUpdatingSubscription}
+                            name={store.user.name}
+                            error={store.patron.error}
                         />
-                        <Month>/month</Month>
-                    </Relative>
-                    <RangeContainer>
-                        <Range
-                            onChange={(value) => signals.priceChanged({ price: Number(value) })}
-                            min={5}
-                            max={50}
-                            step={1}
-                            value={price}
-                            color={badges[badge].colors[0]}
-                        />
-                    </RangeContainer>
-                    {isLoggedIn ? isPatron ? ( // eslint-disable-line no-nested-ternary
-                        <ChangeSubscription />
-                    ) : (
-                        <Centered style={{ marginTop: '2rem' }} horizontal>
-                            <SubscribeForm
-                                subscribe={(token) => signals.createSubscriptionClicked({ token })}
-                                isLoading={isUpdatingSubscription}
-                                name={userName}
-                                error={error}
-                            />
-                            <Notice>
-                                You will be billed now and on the{' '}
-                                <strong style={{ color: 'white' }}>{moment().format('Do')}</strong> of each month
-                                thereafter. You can cancel or change your subscription at any time.
-                            </Notice>
-                        </Centered>
-                    ) : (
-                        <StyledSignInButton />
-                    )}
-                </Centered>
-            </Container>
-        );
-    });
+                        <Notice>
+                            You will be billed now and on the{' '}
+                            <strong style={{ color: 'white' }}>{moment().format('Do')}</strong> of each month
+                            thereafter. You can cancel or change your subscription at any time.
+                        </Notice>
+                    </Centered>
+                ) : (
+                    <StyledSignInButton />
+                )}
+            </Centered>
+        </Container>
+    );
+};
+
+export default connect<Props>()(PricingChoice);

@@ -1,117 +1,105 @@
 import * as React from 'react';
-import { connect } from 'app/fluent';
+import { connect, WithCerebral } from 'app/fluent';
 
 import { KEYBINDINGS } from 'common/utils/keybindings';
-import {
-  Title,
-  SubDescription,
-  SubContainer,
-  PreferenceContainer,
-  PaddedPreference,
-} from '../elements';
+import { Title, SubDescription, SubContainer, PreferenceContainer, PaddedPreference } from '../elements';
 import { Rule, ErrorMessage } from './elements';
 
-export default connect()
-  .with(({ state, signals }) => ({
-    keybindings: state.preferences.settings.keybindings,
-    keybindingChanged: signals.preferences.keybindingChanged
-  }))
-  .toClass(props =>
-    class KeyMapping extends React.Component<typeof props> {
-      state = { error: null };
+type Props = WithCerebral;
 
-      getUserBindings = () => {
-        const keybindings = this.props.keybindings;
+class KeyMapping extends React.Component<Props> {
+    state = { error: null };
+
+    getUserBindings = () => {
+        const keybindings = this.props.store.preferences.settings.keybindings;
 
         return keybindings.reduce(
-          (bindings, binding) =>
-            Object.assign(bindings, {
-              [binding.key]: binding.bindings,
-            }),
-          {}
+            (bindings, binding) =>
+                // tslint:disable-next-line
+                Object.assign(bindings, {
+                    [binding.key]: binding.bindings
+                }),
+            {}
         );
-      };
+    };
 
-      validateValue = (name, value) => {
+    validateValue = (name, value) => {
         const existingBindings = this.getUserBindings();
-        const keyBindingKeys = Object.keys(KEYBINDINGS).filter(k => k !== name);
+        const keyBindingKeys = Object.keys(KEYBINDINGS).filter((k) => k !== name);
 
-        const bindings = keyBindingKeys.map(
-          id => existingBindings[id] || KEYBINDINGS[id].bindings
-        );
+        const bindings = keyBindingKeys.map((id) => existingBindings[id] || KEYBINDINGS[id].bindings);
 
-        const valB0 = [...(value[0] || [])].sort().join('');
-        const valB1 = value[1] && [...value[1]].sort().join('');
-        const alreadyExists = bindings.some(([b0, b1]) => {
-          const valb0 = b0 && [...b0].sort().join('');
-          const valb1 = b1 && [...b1].sort().join('');
+        const valB0 = [ ...(value[0] || []) ].sort().join('');
+        const valB1 = value[1] && [ ...value[1] ].sort().join('');
+        const alreadyExists = bindings.some(([ b0, b1 ]) => {
+            const valb0 = b0 && [ ...b0 ].sort().join('');
+            const valb1 = b1 && [ ...b1 ].sort().join('');
 
-          if (
-            (valb0 && valb0 === valB0 && valb1 && valb1 === valB1) ||
-            (valb0 && valb0 === valB0 && !valb1 && !valB1)
-          ) {
-            return true;
-          }
+            if (
+                (valb0 && valb0 === valB0 && valb1 && valb1 === valB1) ||
+                (valb0 && valb0 === valB0 && !valb1 && !valB1)
+            ) {
+                return true;
+            }
 
-          return false;
+            return false;
         });
 
         if (alreadyExists) {
-          return 'Another keymap already contains this keystroke.';
+            return 'Another keymap already contains this keystroke.';
         }
         return false;
-      };
+    };
 
-      bindValue = name => ({
-        setValue: value => {
-          const error = this.validateValue(name, value);
+    bindValue = (name) => ({
+        setValue: (value) => {
+            const error = this.validateValue(name, value);
 
-          if (error) {
-            this.setState({ error });
-          } else {
-            this.setState({ error: null });
-            this.props.keybindingChanged({
-              name,
-              value,
-            });
-          }
-        },
-      });
+            if (error) {
+                this.setState({ error });
+            } else {
+                this.setState({ error: null });
+                this.props.signals.preferences.keybindingChanged({
+                    name,
+                    value
+                });
+            }
+        }
+    });
 
-      render() {
+    render() {
         const keyBindingKeys = Object.keys(KEYBINDINGS);
         const existingBindings = this.getUserBindings();
 
         return (
-          <div>
-            <Title style={{ marginBottom: 1 }}>Key Bindings</Title>
-            <SubDescription>
-              Record CodeSandbox specific keybindings here. You can cancel a
-              recording by pressing ESCAPE, you can confirm by pressing ENTER and
-              you can delete a mapping by pressing BACKSPACE.
-              <p>
-                The second input can be specified for a <em>sequence</em> of
-                actions, like double tapping shift.
-              </p>
-            </SubDescription>
+            <div>
+                <Title style={{ marginBottom: 1 }}>Key Bindings</Title>
+                <SubDescription>
+                    Record CodeSandbox specific keybindings here. You can cancel a recording by pressing ESCAPE, you can
+                    confirm by pressing ENTER and you can delete a mapping by pressing BACKSPACE.
+                    <p>
+                        The second input can be specified for a <em>sequence</em> of actions, like double tapping shift.
+                    </p>
+                </SubDescription>
 
-            <SubContainer>
-              <PreferenceContainer>
-                {keyBindingKeys.map((id, i) => [
-                  <PaddedPreference
-                    key={id}
-                    title={KEYBINDINGS[id].title}
-                    value={existingBindings[id] || KEYBINDINGS[id].bindings}
-                    type="keybinding"
-                    {...this.bindValue(id)}
-                  />,
-                  i !== keyBindingKeys.length - 1 && <Rule key={id + 'rule'} />,
-                ])}
-                <ErrorMessage>{this.state.error}</ErrorMessage>
-              </PreferenceContainer>
-            </SubContainer>
-          </div>
+                <SubContainer>
+                    <PreferenceContainer>
+                        {keyBindingKeys.map((id, i) => [
+                            <PaddedPreference
+                                key={id}
+                                title={KEYBINDINGS[id].title}
+                                value={existingBindings[id] || KEYBINDINGS[id].bindings}
+                                type="keybinding"
+                                {...this.bindValue(id)}
+                            />,
+                            i !== keyBindingKeys.length - 1 && <Rule key={id + 'rule'} />
+                        ])}
+                        <ErrorMessage>{this.state.error}</ErrorMessage>
+                    </PreferenceContainer>
+                </SubContainer>
+            </div>
         );
-      }
     }
-  )
+}
+
+export default connect<Props>()(KeyMapping);

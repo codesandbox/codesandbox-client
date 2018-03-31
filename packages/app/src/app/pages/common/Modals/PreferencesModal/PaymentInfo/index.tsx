@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { connect } from 'app/fluent';
+import { connect, WithCerebral } from 'app/fluent';
 
 import SubscribeForm from 'app/components/SubscribeForm';
 
@@ -7,61 +7,49 @@ import Card from './Card';
 import { Title, Subheading } from '../elements';
 import { Container } from './elements';
 
-export default connect()
-    .with(({ state, signals }) => ({
-        isLoadingPaymentDetails: state.preferences.isLoadingPaymentDetails,
-        paymentDetails: state.preferences.paymentDetails,
-        paymentDetailError: state.preferences.paymentDetailError,
-        paymentDetailsRequested: signals.preferences.paymentDetailsRequested,
-        paymentDetailsUpdated: signals.preferences.paymentDetailsUpdated
-    }))
-    .toClass(
-        (props) =>
-            class PaymentInfo extends React.Component<typeof props> {
-                componentDidMount() {
-                    this.props.paymentDetailsRequested();
-                }
+type Props = WithCerebral;
 
-                updatePaymentDetails = (token) => {
-                    this.props.paymentDetailsUpdated({ token });
-                };
+class PaymentInfo extends React.Component<Props> {
+    componentDidMount() {
+        this.props.signals.preferences.paymentDetailsRequested();
+    }
 
-                paymentDetails = () => {
-                    const { paymentDetails, paymentDetailError } = this.props;
+    updatePaymentDetails = (token) => {
+        this.props.signals.preferences.paymentDetailsUpdated({ token });
+    };
 
-                    if (paymentDetailError) {
-                        return <div>An error occurred: {paymentDetailError}</div>;
-                    }
+    paymentDetails = () => {
+        const { paymentDetails, paymentDetailError } = this.props.store.preferences;
 
-                    return (
-                        <div>
-                            <Subheading>Current card</Subheading>
-                            <Card
-                                last4={paymentDetails.last4}
-                                name={paymentDetails.name}
-                                brand={paymentDetails.brand}
-                            />
+        if (paymentDetailError) {
+            return <div>An error occurred: {paymentDetailError}</div>;
+        }
 
-                            <Subheading style={{ marginTop: '2rem' }}>Update card info</Subheading>
-                            <SubscribeForm
-                                buttonName="Update"
-                                loadingText="Updating Card Info..."
-                                name={paymentDetails.name}
-                                subscribe={this.updatePaymentDetails}
-                            />
-                        </div>
-                    );
-                };
+        return (
+            <div>
+                <Subheading>Current card</Subheading>
+                <Card last4={paymentDetails.last4} name={paymentDetails.name} brand={paymentDetails.brand} />
 
-                render() {
-                    const { isLoadingPaymentDetails } = this.props;
+                <Subheading style={{ marginTop: '2rem' }}>Update card info</Subheading>
+                <SubscribeForm
+                    buttonName="Update"
+                    loadingText="Updating Card Info..."
+                    name={paymentDetails.name}
+                    subscribe={this.updatePaymentDetails}
+                />
+            </div>
+        );
+    };
 
-                    return (
-                        <Container>
-                            <Title>Payment Info</Title>
-                            {isLoadingPaymentDetails ? <div>Loading payment details...</div> : this.paymentDetails()}
-                        </Container>
-                    );
-                }
-            }
-    );
+    render() {
+        const { isLoadingPaymentDetails } = this.props.store.preferences;
+        return (
+            <Container>
+                <Title>Payment Info</Title>
+                {isLoadingPaymentDetails ? <div>Loading payment details...</div> : this.paymentDetails()}
+            </Container>
+        );
+    }
+}
+
+export default connect<Props>()(PaymentInfo);

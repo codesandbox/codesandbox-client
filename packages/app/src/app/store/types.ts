@@ -88,4 +88,5 @@ export type State = {
     currentModal: string;
     isPatron: boolean;
     isLoggedIn: boolean;
+    hasLogIn: boolean;
 };

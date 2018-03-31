@@ -3,9 +3,12 @@ import HomeIcon from 'react-icons/lib/io/home';
 import SearchIcon from 'react-icons/lib/go/search';
 import { Highlight } from 'react-instantsearch/dom';
 import compareVersions from 'compare-versions';
+
 import Tooltip from 'common/components/Tooltip';
+
 import GitHubLogo from 'app/components/GitHubLogo';
 import formatDownloads from '../formatDownloads';
+
 import {
     Container,
     Left,
@@ -20,11 +23,12 @@ import {
 } from './elements';
 
 export type Hit = {
+    name: string;
     tags?: {
         latest: string;
     };
-    versions: string[];
     version: string;
+    versions: string[];
     downloadsLast30Days: number;
     license: string;
     description: string;
@@ -34,51 +38,27 @@ export type Hit = {
     };
     githubRepo: string;
     homepage: string;
-    name: string;
 };
 
 type Props = {
     hit: Hit;
-    highlighted?: boolean;
+    highlighted: boolean;
     onClick: () => void;
     onVersionChange: (version: string) => void;
 };
 
-type State = {};
+type State = {
+    selectedVersion: string;
+};
 
 export default class DependencyHit extends React.PureComponent<Props, State> {
     state = {
         selectedVersion: this.props.hit.tags ? this.props.hit.tags.latest || '' : ''
     };
 
-<<<<<<< HEAD
-  makeGitHubRepoUrl(repo) {
-    return `https://github.com/${repo.user}/${repo.project}`;
-  }
-
-  makeSearchUrl(hitName: string) {
-    return `${
-      process.env.CODESANDBOX_HOST
-    }/search?refinementList%5Bnpm_dependencies.dependency%5D%5B0%5D=${hitName}&page=1`;
-  }
-
-  stopPropagation(e) {
-    e.stopPropagation();
-  }
-
-  handleVersionChange = e => {
-    const selectedVersion = e.target.value;
-    this.setState({ selectedVersion });
-    this.props.onVersionChange(selectedVersion);
-  };
-
-  render() {
-    const { highlighted, hit, onClick } = this.props;
-=======
     makeGitHubRepoUrl(repo) {
         return `https://github.com/${repo.user}/${repo.project}`;
     }
->>>>>>> LAst components
 
     makeSearchUrl(hitName: string) {
         return `${process.env

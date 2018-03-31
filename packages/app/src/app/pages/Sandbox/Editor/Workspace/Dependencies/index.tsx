@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { connect } from 'app/fluent';
+import { connect, WithCerebral } from 'app/fluent';
 
 import Margin from 'common/components/spacing/Margin';
 import getDefinition from 'common/templates';
@@ -12,74 +12,83 @@ import ExternalResource from './ExternalResource';
 
 import { ErrorMessage } from './elements';
 
-export default connect()
-    .with(({ state, signals }) => ({
-        sandbox: state.editor.currentSandbox,
-        parsedConfigurations: state.editor.parsedConfigurations,
-        npmDependencyRemoved: signals.editor.npmDependencyRemoved,
-        addNpmDependency: signals.editor.addNpmDependency,
-        externalResourceAdded: signals.workspace.externalResourceAdded,
-        externalResourceRemoved: signals.workspace.externalResourceRemoved
-    }))
-    .to(function Dependencies({
-        sandbox,
-        parsedConfigurations,
-        npmDependencyRemoved,
-        addNpmDependency,
-        externalResourceRemoved,
-        externalResourceAdded
-    }) {
-        const { parsed, error } = parsedConfigurations.package;
+type Props = WithCerebral;
 
-        if (error) {
-            return <ErrorMessage>We weren{''}t able to parse the package.json</ErrorMessage>;
-        }
+const Dependencies: React.SFC<Props> = ({ signals, store }) => {
+    const sandbox = store.editor.currentSandbox;
 
-        const dependencies = parsed.dependencies || {};
-        // const devDependencies = parsed.devDependencies || {};
+    const { parsed, error } = store.editor.parsedConfigurations.package;
 
-        const templateDefinition = getDefinition(sandbox.template);
+    if (error) {
+        return <ErrorMessage>We weren{"'"}t able to parse the package.json</ErrorMessage>;
+    }
 
-        return (
-            <div>
-                <Margin bottom={0}>
-                    <WorkspaceSubtitle>Dependencies</WorkspaceSubtitle>
-                    {Object.keys(dependencies).sort().map((dep) => (
-                        <VersionEntry
-                            key={dep}
-                            dependencies={dependencies}
-                            dependency={dep}
-                            onRemove={(name) => npmDependencyRemoved({ name })}
-                            onRefresh={(name, version) =>
-                                addNpmDependency({
-                                    name,
-                                    version
-                                })}
-                        />
-                    ))}
-                    <AddVersion>Add Dependency</AddVersion>
-                </Margin>
-                {templateDefinition.externalResourcesEnabled && (
-                    <div>
-                        <WorkspaceSubtitle>External Resources</WorkspaceSubtitle>
-                        {(sandbox.externalResources || []).map((resource) => (
-                            <ExternalResource
-                                key={resource}
-                                resource={resource}
-                                removeResource={() =>
-                                    externalResourceRemoved({
-                                        resource
-                                    })}
-                            />
-                        ))}
-                        <AddResource
-                            addResource={(resource) =>
-                                externalResourceAdded({
+    const dependencies = parsed.dependencies || {};
+    // const devDependencies = parsed.devDependencies || {};
+
+    const templateDefinition = getDefinition(sandbox.template);
+
+    return (
+        <div>
+            <Margin bottom={0}>
+                <WorkspaceSubtitle>Dependencies</WorkspaceSubtitle>
+                {Object.keys(dependencies).sort().map((dep) => (
+                    <VersionEntry
+                        key={dep}
+                        dependencies={dependencies}
+                        dependency={dep}
+                        onRemove={(name) => signals.editor.npmDependencyRemoved({ name })}
+                        onRefresh={(name, version) =>
+                            signals.editor.addNpmDependency({
+                                name,
+                                version
+                            })}
+                    />
+                ))}
+                {/* {Object.keys(devDependencies).length > 0 && (
+          <WorkspaceSubtitle>Development Dependencies</WorkspaceSubtitle>
+        )}
+        {Object.keys(devDependencies)
+          .sort()
+          .map(dep => (
+            <VersionEntry
+              key={dep}
+              dependencies={devDependencies}
+              dependency={dep}
+              onRemove={name => signals.editor.npmDependencyRemoved({ name })}
+              onRefresh={(name, version) =>
+                signals.editor.addNpmDependency({
+                  name,
+                  version,
+                })
+              }
+            />
+          ))} */}
+                <AddVersion>Add Dependency</AddVersion>
+            </Margin>
+            {templateDefinition.externalResourcesEnabled && (
+                <div>
+                    <WorkspaceSubtitle>External Resources</WorkspaceSubtitle>
+                    {(sandbox.externalResources || []).map((resource) => (
+                        <ExternalResource
+                            key={resource}
+                            resource={resource}
+                            removeResource={() =>
+                                signals.workspace.externalResourceRemoved({
                                     resource
                                 })}
                         />
-                    </div>
-                )}
-            </div>
-        );
-    });
+                    ))}
+                    <AddResource
+                        addResource={(resource) =>
+                            signals.workspace.externalResourceAdded({
+                                resource
+                            })}
+                    />
+                </div>
+            )}
+        </div>
+    );
+};
+
+export default connect<Props>()(Dependencies);

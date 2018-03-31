@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { connect } from 'app/fluent';
+import { connect, WithCerebral } from 'app/fluent';
 
 import Save from 'react-icons/lib/md/save';
 import Fork from 'react-icons/lib/go/repo-forked';
@@ -24,145 +24,109 @@ import Action from './Action';
 
 import { Container, Right, Left } from './elements';
 
-export default connect()
-  .with(({ state, signals }) => ({
-    sandbox: state.editor.currentSandbox,
-    isLoggedIn: state.isLoggedIn,
-    isPatron: state.isPatron,
-    isAllModulesSynced: state.editor.isAllModulesSynced,
-    signals: {
-      likeSandboxToggled: signals.editor.likeSandboxToggled,
-      forkSandboxClicked: signals.editor.forkSandboxClicked,
-      modalOpened: signals.modalOpened,
-      saveClicked: signals.editor.saveClicked,
-      createZipClicked: signals.editor.createZipClicked,
-      signInClicked: signals.signInClicked
-    }
-  }))
-  .to(
-    function Header({ sandbox, isLoggedIn, isPatron, isAllModulesSynced, signals }) {
-      return (
+type Props = WithCerebral;
+
+const Header: React.SFC<Props> = ({ store, signals }) => {
+    const sandbox = store.editor.currentSandbox;
+
+    return (
         <Container>
-          <Left>
-            <Logo title={sandbox.title} />
+            <Left>
+                <Logo title={sandbox.title} />
 
-            {isLoggedIn &&
-              (sandbox.userLiked ? (
+                {store.isLoggedIn &&
+                    (sandbox.userLiked ? (
+                        <Action
+                            tooltip="Undo like"
+                            title="Like"
+                            Icon={FullHeartIcon}
+                            onClick={() => signals.editor.likeSandboxToggled({ id: sandbox.id })}
+                        />
+                    ) : (
+                        <Action
+                            title="Like"
+                            Icon={HeartIcon}
+                            onClick={() => signals.editor.likeSandboxToggled({ id: sandbox.id })}
+                        />
+                    ))}
+                <Action onClick={() => signals.editor.forkSandboxClicked()} title="Fork" Icon={Fork} />
+
                 <Action
-                  tooltip="Undo like"
-                  title="Like"
-                  Icon={FullHeartIcon}
-                  onClick={() =>
-                    signals.likeSandboxToggled({ id: sandbox.id })
-                  }
+                    title="Share"
+                    Icon={ShareIcon}
+                    onClick={() =>
+                        signals.modalOpened({
+                            modal: 'share'
+                        })}
                 />
-              ) : (
-                <Action
-                  title="Like"
-                  Icon={HeartIcon}
-                  onClick={() =>
-                    signals.likeSandboxToggled({ id: sandbox.id })
-                  }
-                />
-              ))}
-            <Action
-              onClick={() => signals.forkSandboxClicked()}
-              title="Fork"
-              Icon={Fork}
-            />
 
-            <Action
-              title="Share"
-              Icon={ShareIcon}
-              onClick={() =>
-                signals.modalOpened({
-                  modal: 'share',
-                })
-              }
-            />
+                {(sandbox.owned || !store.editor.isAllModulesSynced) && (
+                    <Action
+                        onClick={store.editor.isAllModulesSynced ? null : () => signals.editor.saveClicked()}
+                        placeholder={store.editor.isAllModulesSynced ? 'All modules are saved' : null}
+                        tooltip="Save"
+                        Icon={Save}
+                    />
+                )}
 
-            {(sandbox.owned || !isAllModulesSynced) && (
-              <Action
-                onClick={
-                  isAllModulesSynced
-                    ? null
-                    : () => signals.saveClicked()
-                }
-                placeholder={
-                  isAllModulesSynced ? 'All modules are saved' : null
-                }
-                tooltip="Save"
-                Icon={Save}
-              />
-            )}
+                <Action tooltip="Download" Icon={Download} onClick={() => signals.editor.createZipClicked()} />
+            </Left>
 
-            <Action
-              tooltip="Download"
-              Icon={Download}
-              onClick={() => signals.createZipClicked()}
-            />
-          </Left>
-
-          <Right>
-            <div style={{ marginRight: '0.5rem', fontSize: '.875rem' }}>
-              <HeaderSearchBar />
-            </div>
-
-            {!isLoggedIn ||
-              (!isPatron && (
-                <Action
-                  href={patronUrl()}
-                  tooltip="Support CodeSandbox"
-                  Icon={PatronBadge}
-                  iconProps={{
-                    width: 16,
-                    height: 32,
-                    transform: 'scale(1.5, 1.5)',
-                  }}
-                />
-              ))}
-
-            <Action
-              onClick={() =>
-                signals.modalOpened({
-                  modal: 'newSandbox',
-                })
-              }
-              tooltip="Create New Sandbox"
-              Icon={PlusIcon}
-            />
-            {!isLoggedIn && (
-              <Action
-                onClick={() =>
-                  signals.modalOpened({
-                    modal: 'preferences',
-                  })
-                }
-                tooltip="Preferences"
-                Icon={SettingsIcon}
-              />
-            )}
-            <Margin
-              style={{
-                zIndex: 20,
-                height: '100%',
-              }}
-              left={1}
-            >
-              {isLoggedIn ? (
-                <div style={{ fontSize: '.875rem', margin: '6px 0.5rem' }}>
-                  <UserMenu small />
+            <Right>
+                <div style={{ marginRight: '0.5rem', fontSize: '.875rem' }}>
+                    <HeaderSearchBar />
                 </div>
-              ) : (
+
+                {!store.isLoggedIn ||
+                    (!store.isPatron && (
+                        <Action
+                            href={patronUrl()}
+                            tooltip="Support CodeSandbox"
+                            Icon={PatronBadge}
+                            iconProps={{
+                                width: 16,
+                                height: 32,
+                                transform: 'scale(1.5, 1.5)'
+                            }}
+                        />
+                    ))}
+
                 <Action
-                  onClick={() => signals.signInClicked()}
-                  title="Sign in with Github"
-                  Icon={GithubIcon}
+                    onClick={() =>
+                        signals.modalOpened({
+                            modal: 'newSandbox'
+                        })}
+                    tooltip="Create New Sandbox"
+                    Icon={PlusIcon}
                 />
-              )}
-            </Margin>
-          </Right>
+                {!store.isLoggedIn && (
+                    <Action
+                        onClick={() =>
+                            signals.modalOpened({
+                                modal: 'preferences'
+                            })}
+                        tooltip="Preferences"
+                        Icon={SettingsIcon}
+                    />
+                )}
+                <Margin
+                    style={{
+                        zIndex: 20,
+                        height: '100%'
+                    }}
+                    left={1}
+                >
+                    {store.isLoggedIn ? (
+                        <div style={{ fontSize: '.875rem', margin: '6px 0.5rem' }}>
+                            <UserMenu small />
+                        </div>
+                    ) : (
+                        <Action onClick={() => signals.signInClicked()} title="Sign in with Github" Icon={GithubIcon} />
+                    )}
+                </Margin>
+            </Right>
         </Container>
-      );
-    }
-  )
+    );
+};
+
+export default connect<Props>()(Header);

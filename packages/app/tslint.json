@@ -6,6 +6,8 @@
     "no-submodule-imports": false,
     "object-literal-sort-keys": false,
     "interface-over-type-literal": false,
-    "member-access": false
+    "member-access": false,
+    "interface-name": false,
+    "prefer-for-of": false
   }
 }

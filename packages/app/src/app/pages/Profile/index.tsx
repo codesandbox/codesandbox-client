@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { connect } from 'app/fluent';
+import { connect, WithCerebral } from 'app/fluent';
 import { Route, Switch, RouteComponentProps } from 'react-router-dom';
 
 import MaxWidth from 'common/components/flex/MaxWidth';
@@ -11,96 +11,89 @@ import NotFound from 'app/pages/common/NotFound';
 import Header from './Header';
 import Navigation from './Navigation';
 import Showcase from './Showcase';
-import Sandboxes, { Source } from './Sandboxes';
+import Sandboxes from './Sandboxes';
 
 import { Container, Content } from './elements';
 
-type Props = RouteComponentProps<{ username: string }>;
+type Props = WithCerebral &
+    RouteComponentProps<{
+        username: string;
+    }>;
 
-export default connect<Props>()
-    .with(({ state, signals }) => ({
-        notFound: state.profile.notFound,
-        user: state.profile.current,
-        profileMounted: signals.profile.profileMounted
-    }))
-    .toClass(
-        (props) =>
-            class Profile extends React.Component<typeof props> {
-                componentDidMount() {
-                    const { username } = this.props.match.params;
+class Profile extends React.Component<Props> {
+    componentDidMount() {
+        const { username } = this.props.match.params;
 
-                    this.props.profileMounted({ username });
-                }
+        this.props.signals.profile.profileMounted({ username });
+    }
 
-                componentDidUpdate(prevProps) {
-                    const prevUsername = prevProps.match.params.username;
-                    const username = this.props.match.params.username;
+    componentDidUpdate(prevProps) {
+        const prevUsername = prevProps.match.params.username;
+        const username = this.props.match.params.username;
 
-                    if (prevUsername !== username) {
-                        this.props.profileMounted({ username });
-                    }
-                }
+        if (prevUsername !== username) {
+            this.props.signals.profile.profileMounted({ username });
+        }
+    }
 
-                render() {
-                    const { match, notFound, user } = this.props;
+    render() {
+        const { store, match } = this.props;
 
-                    if (notFound) {
-                        return <NotFound />;
-                    }
+        if (store.profile.notFound) {
+            return <NotFound />;
+        }
 
-                    if (!user) {
-                        return <div />;
-                    }
+        if (!store.profile.current) {
+            return <div />;
+        }
 
-                    document.title = `${user.name || user.username} - CodeSandbox`;
+        const user = store.profile.current;
 
-                    return (
-                        <Container>
-                            <Header user={user} />
-                            <Content>
-                                <MaxWidth>
-                                    <Navigation
-                                        username={user.username}
-                                        sandboxCount={user.sandboxCount}
-                                        likeCount={user.givenLikeCount}
+        document.title = `${user.name || user.username} - CodeSandbox`;
+        return (
+            <Container>
+                <Header user={user} />
+                <Content>
+                    <MaxWidth>
+                        <Navigation
+                            username={user.username}
+                            sandboxCount={user.sandboxCount}
+                            likeCount={user.givenLikeCount}
+                        />
+                    </MaxWidth>
+                </Content>
+                <MaxWidth width={1024}>
+                    <Margin horizontal={2} style={{ minHeight: '60vh' }}>
+                        <Switch>
+                            <Route path={match.url} exact render={() => <Showcase />} />
+                            <Route
+                                path={`${profileSandboxesUrl(user.username)}/:page?`}
+                                // eslint-disable-next-line
+                                children={(childrenProps) => (
+                                    <Sandboxes
+                                        source="currentSandboxes"
+                                        page={childrenProps.match.params.page && +childrenProps.match.params.page}
+                                        baseUrl={profileSandboxesUrl(user.username)}
                                     />
-                                </MaxWidth>
-                            </Content>
-                            <MaxWidth width={1024}>
-                                <Margin horizontal={2} style={{ minHeight: '60vh' }}>
-                                    <Switch>
-                                        <Route path={match.url} exact render={() => <Showcase />} />
-                                        <Route
-                                            path={`${profileSandboxesUrl(user.username)}/:page?`}
-                                            children={(childrenProps) => (
-                                                <Sandboxes
-                                                    source={Source.currentSandboxes}
-                                                    page={
-                                                        childrenProps.match.params.page &&
-                                                        +childrenProps.match.params.page
-                                                    }
-                                                    baseUrl={profileSandboxesUrl(user.username)}
-                                                />
-                                            )}
-                                        />
-                                        <Route
-                                            path={`${profileLikesUrl(user.username)}/:page?`}
-                                            children={(childrenProps) => (
-                                                <Sandboxes
-                                                    source={Source.currentLikedSandoxes}
-                                                    page={
-                                                        childrenProps.match.params.page &&
-                                                        +childrenProps.match.params.page
-                                                    }
-                                                    baseUrl={profileLikesUrl(user.username)}
-                                                />
-                                            )}
-                                        />
-                                    </Switch>
-                                </Margin>
-                            </MaxWidth>
-                        </Container>
-                    );
-                }
-            }
-    );
+                                )}
+                            />
+                            <Route
+                                path={`${profileLikesUrl(user.username)}/:page?`}
+                                // eslint-disable-next-line
+                                children={(childrenProps) => (
+                                    <Sandboxes
+                                        source="currentLikedSandboxes"
+                                        page={childrenProps.match.params.page && +childrenProps.match.params.page}
+                                        baseUrl={profileLikesUrl(user.username)}
+                                    />
+                                )}
+                            />
+                        </Switch>
+                    </Margin>
+                </MaxWidth>
+            </Container>
+        );
+    }
+}
+
+export default connect<Props>()(Profile);

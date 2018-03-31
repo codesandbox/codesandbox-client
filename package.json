@@ -1,44 +1,52 @@
 {
-  "name": "codesandbox",
-  "version": "0.1.0",
-  "license": "MIT",
-  "private": true,
-  "scripts": {
-    "build": "yarn build:dependents && yarn build:prod",
-    "build:prod": "lerna run build --scope app --scope homepage --parallel && gulp",
-    "build:dependents": "lerna run build --scope codesandbox-api --scope common --scope codesandbox-browserfs --stream && lerna run build --scope smooshpack --stream && lerna run build --scope react-smooshpack --stream",
-    "start": "lerna run build --scope codesandbox-browserfs --stream && lerna run start --parallel",
-    "start:fast": "lerna run start --scope app --stream",
-    "start:test": "lerna run start:test --scope app --stream",
-    "start:dev_api": "lerna run start --parallel --ignore app & lerna run start:dev_api --scope app --stream",
-    "test": "lerna run test --ignore codesandbox-browserfs",
-    "test:integrations": "lerna exec --scope app --stream -- yarn test:integrations",
-    "test:jest-lite": "lerna exec --scope app --stream -- yarn run test jest-lite --watch --coverage",
-    "lint": "lerna run lint",
-    "add-contributor": "all-contributors add",
-    "generate": "all-contributors generate",
-    "precommit": "lint-staged",
-    "postinstall": "lerna run install-dependencies --scope codesandbox-browserfs --stream"
-  },
-  "lint-staged": {
-    "*.{js,css,json}": [
-      "prettier --write --single-quote --trailing-comma es5",
-      "git add"
-    ]
-  },
-  "workspaces": [
-    "packages/homepage",
-    "packages/app",
-    "packages/common",
-    "packages/codesandbox-api",
-    "packages/sandpack",
-    "packages/react-sandpack"
-  ],
-  "devDependencies": {
-    "all-contributors-cli": "^4.3.0",
-    "gulp": "^3.9.1",
-    "lerna": "^2.5.1",
-    "lint-staged": "^5.0.0",
-    "prettier": "^1.8.2"
-  }
+    "name": "codesandbox",
+    "version": "0.1.0",
+    "license": "MIT",
+    "private": true,
+    "scripts": {
+        "build": "yarn build:dependents && yarn build:prod",
+        "build:prod": "lerna run build --scope app --scope homepage --parallel && gulp",
+        "build:dependents": "lerna run build --scope codesandbox-api --scope common --scope codesandbox-browserfs --stream && lerna run build --scope smooshpack --stream && lerna run build --scope react-smooshpack --stream",
+        "start": "lerna run build --scope codesandbox-browserfs --stream && lerna run start --parallel",
+        "start:fast": "lerna run start --scope app --stream",
+        "start:test": "lerna run start:test --scope app --stream",
+        "start:dev_api": "lerna run start --parallel --ignore app & lerna run start:dev_api --scope app --stream",
+        "test": "lerna run test --ignore codesandbox-browserfs",
+        "test:integrations": "lerna exec --scope app --stream -- yarn test:integrations",
+        "test:jest-lite": "lerna exec --scope app --stream -- yarn run test jest-lite --watch --coverage",
+        "lint": "lerna run lint",
+        "add-contributor": "all-contributors add",
+        "generate": "all-contributors generate",
+        "precommit": "lint-staged",
+        "postinstall": "lerna run install-dependencies --scope codesandbox-browserfs --stream"
+    },
+    "lint-staged": {
+        "*.{js,css,json}": [ "prettier --write --single-quote --trailing-comma es5", "git add" ]
+    },
+    "workspaces": [
+        "packages/homepage",
+        "packages/app",
+        "packages/common",
+        "packages/codesandbox-api",
+        "packages/sandpack",
+        "packages/react-sandpack"
+    ],
+    "devDependencies": {
+        "all-contributors-cli": "^4.3.0",
+        "babel-eslint": "^8.2.1",
+        "eslint": "CompuIves/eslint#add/define-parser",
+        "eslint-config-airbnb": "^15.0.1",
+        "eslint-config-prettier": "^2.1.1",
+        "eslint-import-resolver-webpack": "^0.8.1",
+        "eslint-loader": "^1.7.1",
+        "eslint-plugin-flowtype": "^2.34.0",
+        "eslint-plugin-import": "^2.3.0",
+        "eslint-plugin-jsx-a11y": "^5.0.3",
+        "eslint-plugin-react": "~7.4.0",
+        "flow-bin": "^0.64.0",
+        "gulp": "^3.9.1",
+        "lerna": "^2.5.1",
+        "lint-staged": "^5.0.0",
+        "prettier": "^1.8.2"
+    }
 }

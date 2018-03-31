@@ -266,11 +266,19 @@ export const resetLive = [
   set(state`live.isLive`, false),
   set(state`live.error`, null),
   set(state`live.isLoading`, false),
+<<<<<<< HEAD
   set(state`live.isOwner`, false),
   set(state`live.roomInfo`, undefined),
 ];
 
 export const setSandbox = [
+=======
+  unset(state`live.roomInfo`),
+];
+
+export const setSandbox = [
+  actions.addSandbox,
+>>>>>>> refactor done, checking if everything works
   when(state`live.isLoading`),
   {
     true: [],
@@ -287,7 +295,10 @@ export const setSandbox = [
   actions.setMainModuleShortid,
   actions.setInitialTab,
   actions.setUrlOptions,
+<<<<<<< HEAD
   actions.setSandboxConfigOptions,
+=======
+>>>>>>> refactor done, checking if everything works
   actions.setWorkspace,
 ];
 
@@ -295,16 +306,21 @@ export const loadSandbox = factories.withLoadApp([
   set(state`editor.error`, null),
   when(state`editor.sandboxes.${props`id`}`),
   {
+<<<<<<< HEAD
     true: [
       set(props`sandbox`, state`editor.sandboxes.${props`id`}`),
       setSandbox,
     ],
+=======
+    true: setSandbox,
+>>>>>>> refactor done, checking if everything works
     false: [
       set(state`editor.isLoading`, true),
       set(state`editor.notFound`, false),
       // Only reset changed modules if sandbox wasn't in memory, otherwise a fork
       // can mark real changed modules as unchanged
       set(state`editor.changedModuleShortids`, []),
+<<<<<<< HEAD
 
       actions.getSandbox,
       {
@@ -313,6 +329,11 @@ export const loadSandbox = factories.withLoadApp([
           setSandbox,
           ensurePackageJSON,
         ],
+=======
+      actions.getSandbox,
+      {
+        success: [setSandbox, ensurePackageJSON],
+>>>>>>> refactor done, checking if everything works
         notFound: set(state`editor.notFound`, true),
         error: set(state`editor.error`, props`error.message`),
       },

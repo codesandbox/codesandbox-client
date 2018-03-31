@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "lib": ["es2015", "dom"],
+    "lib": ["es2016", "es2016.array.include", "dom"],
     "baseUrl": "./src",
     "outDir": "build/dist",
     "module": "esnext",

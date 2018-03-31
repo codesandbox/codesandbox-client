@@ -1,3 +1,8 @@
+declare global {
+    interface Window {
+        __isTouch: boolean;
+    }
+}
 import * as React from 'react';
 
 import CrossIcon from 'react-icons/lib/md/clear';
@@ -23,10 +28,11 @@ type Props = {
     onEdit?: () => void;
     onCreateFile?: () => void;
     onCreateDirectory?: () => void;
+    active?: boolean;
 };
 
-<<<<<<< HEAD
 const EditIcons: React.SFC<Props> = ({
+<<<<<<< HEAD
   className,
   hovering,
   onDelete,
@@ -85,9 +91,25 @@ const EditIcons: React.SFC<Props> = ({
 }
 =======
 const EditIcons: React.SFC<Props> = ({ className, hovering, onDelete, onEdit, onCreateFile, onCreateDirectory }) => {
+=======
+    className,
+    hovering,
+    onDelete,
+    onEdit,
+    onCreateFile,
+    onCreateDirectory,
+    active
+}) => {
+    // Phones need double click if we show elements on click, that's why we only want
+    // to show these edit icons when the user clicks and hasn't activated the module
+    if (window.__isTouch && !active) {
+        return null;
+    }
+
+>>>>>>> refactor done, checking if everything works
     return (
         <div className={className}>
-            {hovering && (
+            {(hovering || (window.__isTouch && active)) && (
                 <Container>
                     {onEdit && (
                         <Tooltip title="Edit">
@@ -122,6 +144,5 @@ const EditIcons: React.SFC<Props> = ({ className, hovering, onDelete, onEdit, on
         </div>
     );
 };
->>>>>>> more fixes
 
 export default EditIcons;

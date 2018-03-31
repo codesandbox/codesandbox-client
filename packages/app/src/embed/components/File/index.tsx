@@ -32,7 +32,7 @@ export default class File extends React.PureComponent<Props> {
         const { title, depth, type, active, alternative } = this.props;
         return (
             <div>
-                <Entry alternative={alternative} active={active} onClick={this.setCurrentModule} type={type}>
+                <Entry alternative={alternative} active={active} onClick={this.setCurrentModule}>
                     <LeftOffset depth={depth}>
                         <EntryIcons type={type} />
                         <EntryTitle title={title} />

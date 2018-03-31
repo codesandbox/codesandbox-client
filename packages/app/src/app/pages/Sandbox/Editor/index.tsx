@@ -1,6 +1,7 @@
 import * as React from 'react';
 import SplitPane from 'react-split-pane';
-import { connect } from 'app/fluent';
+import { connect, WithCerebral } from 'app/fluent';
+import { hot } from 'react-hot-loader';
 import { ThemeProvider } from 'styled-components';
 
 import Fullscreen from 'common/components/flex/Fullscreen';
@@ -11,72 +12,75 @@ import Content from './Content';
 import Header from './Header';
 import Navigation from './Navigation';
 
-export default connect()
-    .with(({ state, signals }) => ({
-        sandbox: state.editor.currentSandbox,
-        zenMode: state.preferences.settings.zenMode,
-        openedWorkspaceItem: state.workspace.openedWorkspaceItem,
-        resizingStarted: signals.editor.resizingStarted,
-        resizingStopped: signals.editor.resizingStopped
-    }))
-    .to(function ContentSplit({ sandbox, openedWorkspaceItem, zenMode, resizingStarted, resizingStopped }) {
-        const sandboxOwned = sandbox.owned;
+type Props = WithCerebral;
 
-        const hideNavigation = (zenMode && !openedWorkspaceItem) || !sandboxOwned;
+const ContentSplit: React.SFC<Props> = ({ signals, store }) => {
+    const sandbox = store.editor.currentSandbox;
+    const sandboxOwned = sandbox.owned;
 
-        return (
-            <ThemeProvider
-                theme={{
-                    templateColor: sandbox && getTemplateDefinition(sandbox.template).color
+    const hideNavigation =
+        (store.preferences.settings.zenMode && !store.workspace.openedWorkspaceItem) || !sandboxOwned;
+
+    return (
+        <ThemeProvider
+            theme={{
+                templateColor: sandbox && getTemplateDefinition(sandbox.template).color
+            }}
+        >
+            <div
+                style={{
+                    width: '100%',
+                    height: '100%',
+                    position: 'fixed',
+                    left: 0,
+                    right: 0,
+                    top: 0,
+                    bottom: 0
                 }}
             >
-                <div
-                    style={{
-                        width: '100%',
-                        height: '100%',
-                        position: 'fixed',
-                        left: 0,
-                        right: 0,
-                        top: 0,
-                        bottom: 0
-                    }}
-                >
-                    {!zenMode && <Header />}
+                {!store.preferences.settings.zenMode && <Header />}
 
-                    <Fullscreen>
-                        {!hideNavigation && <Navigation />}
+                <Fullscreen>
+                    {!hideNavigation && <Navigation />}
 
-                        <div
-                            style={{
-                                position: 'fixed',
-                                left: hideNavigation ? 0 : 'calc(4rem + 1px)',
-                                top: zenMode ? 0 : '3rem',
-                                right: 0,
-                                bottom: 0
+                    <div
+                        style={{
+                            position: 'fixed',
+                            left: hideNavigation ? 0 : 'calc(4rem + 1px)',
+                            top: store.preferences.settings.zenMode ? 0 : '3rem',
+                            right: 0,
+                            bottom: 0
+                        }}
+                    >
+                        <SplitPane
+                            split="vertical"
+                            defaultSize={sandboxOwned ? 16 * 16 : 18 * 16}
+                            minSize={0}
+                            onDragStarted={() => signals.editor.resizingStarted()}
+                            onDragFinished={() => signals.editor.resizingStopped()}
+                            onChange={(size) => {
+                                if (size > 0 && !store.workspace.openedWorkspaceItem) {
+                                    signals.workspace.setWorkspaceItem({ item: 'files' });
+                                } else if (size === 0 && store.workspace.openedWorkspaceItem) {
+                                    signals.workspace.setWorkspaceItem({ item: null });
+                                }
+                            }}
+                            pane1Style={{
+                                visibility: store.workspace.openedWorkspaceItem ? 'visible' : 'hidden',
+                                maxWidth: store.workspace.openedWorkspaceItem ? 'inherit' : 0
+                            }}
+                            pane2Style={{
+                                height: '100%'
                             }}
                         >
-                            <SplitPane
-                                split="vertical"
-                                defaultSize={sandboxOwned ? 16 * 16 : 18 * 16}
-                                onDragStarted={() => resizingStarted()}
-                                onDragFinished={() => resizingStopped()}
-                                resizerStyle={{
-                                    visibility: openedWorkspaceItem ? 'visible' : 'hidden'
-                                }}
-                                pane1Style={{
-                                    visibility: openedWorkspaceItem ? 'visible' : 'hidden',
-                                    maxWidth: openedWorkspaceItem ? 'inherit' : 0
-                                }}
-                                pane2Style={{
-                                    height: '100%'
-                                }}
-                            >
-                                {openedWorkspaceItem && <Workspace />}
-                                <Content />
-                            </SplitPane>
-                        </div>
-                    </Fullscreen>
-                </div>
-            </ThemeProvider>
-        );
-    });
+                            {store.workspace.openedWorkspaceItem && <Workspace />}
+                            <Content />
+                        </SplitPane>
+                    </div>
+                </Fullscreen>
+            </div>
+        </ThemeProvider>
+    );
+};
+
+export default hot(module)(connect<Props>()(ContentSplit));

@@ -1,9 +1,18 @@
-<<<<<<< HEAD
 // @flow
-=======
->>>>>>> more fixes
 import { absolute } from 'common/utils/path';
+import type { ConfigurationFile } from './configuration/types';
 import configurations from './configuration';
+
+type Options = {
+  showOnHomePage?: boolean,
+  distDir?: string,
+  extraConfigurations?: {
+    [path: string]: ConfigurationFile,
+  },
+  isTypescript?: boolean,
+  externalResourcesEnabled?: boolean,
+  showCube?: boolean,
+};
 
 const defaultConfigurations = {
   '/package.json': configurations.packageJSON,
@@ -12,29 +21,21 @@ const defaultConfigurations = {
 };
 
 export default class Template {
-<<<<<<< HEAD
   name: string;
   niceName: string;
   shortid: string;
   url: string;
   color: () => string;
-=======
-  name;
-  niceName;
-  shortid;
-  url;
-  color;
-  Icon;
->>>>>>> more fixes
 
-  showOnHomePage;
-  distDir;
-  configurationFiles;
-  isTypescript;
-  externalResourcesEnabled;
-  showCube;
+  showOnHomePage: boolean;
+  distDir: string;
+  configurationFiles: {
+    [path: string]: ConfigurationFile,
+  };
+  isTypescript: boolean;
+  externalResourcesEnabled: boolean;
+  showCube: boolean;
 
-<<<<<<< HEAD
   constructor(
     name: string,
     niceName: string,
@@ -43,9 +44,6 @@ export default class Template {
     color: Function,
     options: Options = {}
   ) {
-=======
-  constructor(name, niceName, url, shortid, Icon, color, options) {
->>>>>>> more fixes
     this.name = name;
     this.niceName = niceName;
     this.url = url;
@@ -70,7 +68,7 @@ export default class Template {
   /**
    * Get possible entry files to evaluate, differs per template
    */
-  getEntries(configurationFiles) {
+  getEntries(configurationFiles: { [type: string]: Object }): Array<string> {
     return [
       configurationFiles.package &&
         configurationFiles.package.parsed &&
@@ -82,14 +80,16 @@ export default class Template {
   }
 
   // eslint-disable-next-line no-unused-vars
-  getHTMLEntries(configurationFiles) {
+  getHTMLEntries(configurationFiles: {
+    [type: string]: Object,
+  }): Array<string> {
     return ['/public/index.html', '/index.html'];
   }
 
   /**
    * Alter the apiData to ZEIT for making deployment work
    */
-  alterDeploymentData = apiData => ({
+  alterDeploymentData = (apiData: any) => ({
     ...apiData,
     package: {
       ...apiData.package,

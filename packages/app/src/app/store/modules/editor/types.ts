@@ -1,4 +1,6 @@
 import { Dictionary } from '@cerebral/fluent';
+import { UserSelection } from '../live/types';
+import { Git } from 'app/store/types';
 
 export type Badge = {
     id: string;
@@ -39,14 +41,6 @@ export type Module = {
     title: string;
 };
 
-export type Git = {
-    branch: string;
-    commitSha: string;
-    path: string;
-    repo: string;
-    username: string;
-};
-
 export type ForkedSandbox = {
     viewCount: number;
     updatedAt: string;
@@ -60,8 +54,6 @@ export type ForkedSandbox = {
     forkCount: number;
 };
 
-export type NPMDependencies = Dictionary<string>;
-
 export type Sandbox = {
     author: Author;
     description: string;
@@ -74,7 +66,7 @@ export type Sandbox = {
     id: string;
     likeCount: number;
     modules: Module[];
-    npmDependencies: NPMDependencies;
+    npmDependencies: Dictionary<string>;
     originalGit: Git;
     originalGitCommitSha: string;
     owned: boolean;
@@ -86,6 +78,15 @@ export type Sandbox = {
     userLiked: boolean;
     version: number;
     viewCount: number;
+};
+
+export type PendingOperation = string | number;
+
+export type PendingUserSelection = {
+    userId: string;
+    name: string;
+    selection: UserSelection;
+    color: number[];
 };
 
 export type Tab = {
@@ -117,14 +118,6 @@ export type Correction = {
     severity: string;
 };
 
-export type PreviewWindow = {
-    content: string;
-    width: number;
-    height: number;
-    x: number;
-    y: number;
-};
-
 export type State = {
     currentId: string;
     currentModuleShortid: string;
@@ -136,6 +129,8 @@ export type State = {
     error: string;
     isResizing: boolean;
     changedModuleShortids: string[];
+    pendingOperation: PendingOperation[];
+    pendingUserSelections: PendingUserSelection[];
     tabs: Tab[];
     errors: SandboxError[];
     glyphs: Glyph[];
@@ -146,7 +141,13 @@ export type State = {
     highlightedLines: number[];
     isUpdatingPrivacy: boolean;
     quickActionsOpen: boolean;
-    previewWindow: PreviewWindow;
+    previewWindow: {
+        content: string;
+        width: number;
+        height: number;
+        x: number;
+        y: number;
+    };
     isAllModulesSynced: boolean;
     currentSandbox: Sandbox;
     currentModule: Module;

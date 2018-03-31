@@ -6,7 +6,6 @@ import { getModulePath } from 'common/sandbox/modules';
 import Input from 'common/components/Input';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
 import getType from 'app/utils/get-type';
-
 import { Module, Directory } from 'app/store/modules/editor/types';
 
 import {
@@ -20,11 +19,17 @@ import {
     Path
 } from './elements';
 
+type ModulePath = {
+    m: Module;
+    path: string;
+    depth: number;
+};
+
 type Props = {
     modules: Module[];
     directories: Directory[];
     currentModuleId: string;
-    setCurrentModule: (id: string) => void;
+    setCurrentModule: (moduleId: string) => void;
     closeFuzzySearch: () => void;
 };
 
@@ -34,7 +39,7 @@ export default class FuzzySearch extends React.PureComponent<Props> {
 
     componentWillMount() {
         const { modules, directories } = this.props;
-        const modulePathData = modules.map((m) => {
+        const modulePathData: ModulePath[] = modules.map((m) => {
             const path = getModulePath(modules, directories, m.id);
             return {
                 m,
@@ -43,7 +48,7 @@ export default class FuzzySearch extends React.PureComponent<Props> {
             };
         });
 
-        const groupedPaths = groupBy(modulePathData, (n) => n.depth) as { m: any; path: any; depth: any };
+        const groupedPaths = groupBy(modulePathData, (n) => n.depth);
         const sortedPaths = values(groupedPaths).map((group) => sortBy(group, (n) => n.path));
         const flattenedPaths = flatten(sortedPaths);
 
@@ -74,57 +79,6 @@ export default class FuzzySearch extends React.PureComponent<Props> {
         }
     };
 
-<<<<<<< HEAD
-  render() {
-    const { currentModuleId } = this.props;
-    return (
-      <Container>
-        <Downshift
-          defaultHighlightedIndex={0}
-          defaultIsOpen
-          onChange={this.onChange}
-          itemToString={this.itemToString}
-        >
-          {({
-            getInputProps,
-            getItemProps,
-            selectedItem,
-            inputValue,
-            highlightedIndex,
-          }) => (
-            <div style={{ width: '100%' }}>
-              <InputContainer>
-                <Input
-                  {...getInputProps({
-                    innerRef: el => el && el.focus(),
-                    onKeyUp: this.handleKeyUp,
-                    // Timeout so the fuzzy handler can still select the module
-                    onBlur: () => setTimeout(this.props.closeFuzzySearch, 100),
-                  })}
-                />
-              </InputContainer>
-              <Items>
-                {this.getItems(inputValue).map((item, index) => (
-                  <Entry
-                    {...getItemProps({
-                      item,
-                      index,
-                      isActive: highlightedIndex === index,
-                      isSelected: selectedItem === item,
-                    })}
-                    key={item.m.id}
-                    isNotSynced={item.m.isNotSynced}
-                  >
-                    {item.m.isNotSynced && <NotSyncedIconWithMargin />}
-                    <EntryIcons
-                      isNotSynced={item.m.isNotSynced}
-                      type={getType(item.m.title)}
-                      error={item.m.errors && item.m.errors.length > 0}
-                    />
-                    <Name>{item.m.title}</Name>
-                    {item.m.title !== this.itemToString(item) && (
-                      <Path>{this.itemToString(item)}</Path>
-=======
     render() {
         const { currentModuleId } = this.props;
         return (
@@ -161,7 +115,7 @@ export default class FuzzySearch extends React.PureComponent<Props> {
                                     >
                                         {item.m.isNotSynced && <NotSyncedIconWithMargin />}
                                         <EntryIcons
-                                            type={getType(item.m.title, item.m.code)}
+                                            type={getType(item.m.title)}
                                             error={item.m.errors && item.m.errors.length > 0}
                                         />
                                         <Name>{item.m.title}</Name>
@@ -175,7 +129,6 @@ export default class FuzzySearch extends React.PureComponent<Props> {
                                 ))}
                             </Items>
                         </div>
->>>>>>> more fixes
                     )}
                 </Downshift>
             </Container>

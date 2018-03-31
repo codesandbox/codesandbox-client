@@ -1,15 +1,10 @@
-<<<<<<< HEAD
 // @flow
-=======
-import VueIcon from 'common/components/logos/Vue';
-
->>>>>>> more fixes
 import Template from './template';
 import { decorateSelector } from '../theme';
 import configurations from './configuration';
 
 class VueTemplate extends Template {
-  getEntries(configurationFiles) {
+  getEntries(configurationFiles: { [type: string]: Object }) {
     const entries = super.getEntries(configurationFiles);
 
     entries.push('/src/main.js');
@@ -19,7 +14,9 @@ class VueTemplate extends Template {
   }
 
   // eslint-disable-next-line no-unused-vars
-  getHTMLEntries(configurationFiles) {
+  getHTMLEntries(configurationFiles: {
+    [type: string]: Object,
+  }): Array<string> {
     return ['/static/index.html', '/index.html'];
   }
 }

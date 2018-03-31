@@ -1,67 +1,53 @@
 import * as React from 'react';
-import { connect } from 'app/fluent';
+import { connect, WithCerebral } from 'app/fluent';
 
 import HoverMenu from 'app/components/HoverMenu';
 import Relative from 'common/components/Relative';
 import Tooltip from 'common/components/Tooltip';
 
 import Menu from './Menu';
-import {
-  ClickableContainer,
-  ProfileImage,
-  ProfileInfo,
-  Name,
-  Username,
-} from './elements';
+import { ClickableContainer, ProfileImage, ProfileInfo, Name, Username } from './elements';
 
-type Props = {
-  small?: boolean
-}
+type Props = WithCerebral & {
+    small?: boolean;
+};
 
-export default connect<Props>()
-  .with(({ state, signals }) => ({
-    user: state.user,
-    userMenuOpen: state.userMenuOpen,
-    userMenuOpened: signals.userMenuOpened,
-    userMenuClosed: signals.userMenuClosed,
-    modalOpened: signals.modalOpened,
-    signOutClicked: signals.signOutClicked
-  }))
-  .to(
-    function UserMenu({ user, userMenuOpen, small, userMenuOpened, userMenuClosed, modalOpened, signOutClicked }) {
-      const smallImage = small || false;
+const UserMenu: React.SFC<Props> = ({ signals, store, small }) => {
+    const smallImage = small || false;
+    const { user, userMenuOpen } = store;
 
-      return (
+    return (
         <Relative>
-          <ClickableContainer onClick={() => userMenuOpened()}>
-            <ProfileInfo>
-              {user.name && <Name>{user.name}</Name>}
-              <Username main={!user.name}>{user.username}</Username>
-            </ProfileInfo>
+            <ClickableContainer onClick={() => signals.userMenuOpened()}>
+                <ProfileInfo>
+                    {user.name && <Name>{user.name}</Name>}
+                    <Username main={!user.name}>{user.username}</Username>
+                </ProfileInfo>
 
-            <Tooltip title="User Menu">
-              <ProfileImage
-                alt={user.username}
-                width={smallImage ? 35 : 40}
-                height={smallImage ? 35 : 40}
-                src={user.avatarUrl}
-              />
-            </Tooltip>
-          </ClickableContainer>
-          {userMenuOpen && (
-            <HoverMenu onClose={() => userMenuClosed()}>
-              <Menu
-                openPreferences={() => {
-                  modalOpened({ modal: 'preferences' });
-                }}
-                signOut={() => {
-                  signOutClicked();
-                }}
-                username={user.username}
-              />
-            </HoverMenu>
-          )}
+                <Tooltip title="User Menu">
+                    <ProfileImage
+                        alt={user.username}
+                        width={smallImage ? 35 : 40}
+                        height={smallImage ? 35 : 40}
+                        src={user.avatarUrl}
+                    />
+                </Tooltip>
+            </ClickableContainer>
+            {userMenuOpen && (
+                <HoverMenu onClose={() => signals.userMenuClosed()}>
+                    <Menu
+                        openPreferences={() => {
+                            signals.modalOpened({ modal: 'preferences' });
+                        }}
+                        signOut={() => {
+                            signals.signOutClicked();
+                        }}
+                        username={user.username}
+                    />
+                </HoverMenu>
+            )}
         </Relative>
-      );
-    }
-  )
+    );
+};
+
+export default connect<Props>()(UserMenu);

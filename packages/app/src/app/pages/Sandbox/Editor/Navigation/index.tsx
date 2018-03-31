@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { connect } from 'app/fluent';
+import { connect, WithCerebral } from 'app/fluent';
 
 import GitHubIcon from 'react-icons/lib/go/mark-github';
+import LiveIcon from 'react-icons/lib/md/wifi-tethering';
 import Tooltip from 'common/components/Tooltip';
 
 import InfoIcon from './InfoIcon';
@@ -16,39 +17,36 @@ const IDS_TO_ICONS = {
     files: FilesIcon,
     github: GitHubIcon,
     deploy: RocketIcon,
-    config: ConfigurationIcon
+    config: ConfigurationIcon,
+    live: LiveIcon
 };
 
-export default connect()
-    .with(({ state, signals }) => ({
-        workspaceItems: state.workspace.items.get(),
-        openedWorkspaceItem: state.workspace.openedWorkspaceItem,
-        setWorkspaceItem: signals.workspace.setWorkspaceItem
-    }))
-    .to(function Navigation({ workspaceItems, openedWorkspaceItem, setWorkspaceItem }) {
-        return (
-            <Container>
-                {workspaceItems.filter((w) => !w.show).map((item) => {
-                    const { id, name } = item;
-                    const Icon = IDS_TO_ICONS[id];
-                    const selected = id === openedWorkspaceItem;
-                    return (
-                        <Tooltip key={id} position="right" title={name}>
-                            <IconContainer
-                                selected={selected}
-                                onClick={() => {
-                                    if (selected) {
-                                        setWorkspaceItem({ item: null });
-                                    } else {
-                                        setWorkspaceItem({ item: id });
-                                    }
-                                }}
-                            >
-                                <Icon />
-                            </IconContainer>
-                        </Tooltip>
-                    );
-                })}
-            </Container>
-        );
-    });
+type Props = WithCerebral;
+
+const Navigation: React.SFC<Props> = ({ store, signals }) => (
+    <Container>
+        {store.workspace.items.get().filter((w) => typeof w.show === 'undefined' || w.show).map((item) => {
+            const { id, name } = item;
+            const Icon = IDS_TO_ICONS[id];
+            const selected = id === store.workspace.openedWorkspaceItem;
+            return (
+                <Tooltip key={id} position="right" title={name}>
+                    <IconContainer
+                        selected={selected}
+                        onClick={() => {
+                            if (selected) {
+                                signals.workspace.setWorkspaceItem({ item: null });
+                            } else {
+                                signals.workspace.setWorkspaceItem({ item: id });
+                            }
+                        }}
+                    >
+                        <Icon />
+                    </IconContainer>
+                </Tooltip>
+            );
+        })}
+    </Container>
+);
+
+export default connect<Props>()(Navigation);

@@ -26,7 +26,9 @@ const publicPath = SANDBOX_ONLY || __DEV__ ? '/' : getHost() + '/';
 // Shim for `eslint-plugin-vue/lib/index.js`
 const ESLINT_PLUGIN_VUE_INDEX = `module.exports = {
   rules: {${fs
-    .readdirSync('../../node_modules/eslint-plugin-vue/lib/rules')
+    .readdirSync(
+      path.join(path.dirname(require.resolve('eslint-plugin-vue')), 'rules')
+    )
     .filter(filename => path.extname(filename) === '.js')
     .map(filename => {
       const ruleId = path.basename(filename, '.js');
@@ -461,10 +463,6 @@ module.exports = {
           }),
         ]),
     new webpack.NamedModulesPlugin(),
-<<<<<<< HEAD
-  ].filter(Boolean),
-=======
     new ForkTsCheckerWebpackPlugin(),
-  ],
->>>>>>> Initial patron refactor of fluent step 2
+  ].filter(Boolean),
 };

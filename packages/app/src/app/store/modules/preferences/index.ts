@@ -59,10 +59,11 @@ const signals = {
     paymentDetailsRequested: sequences.getPaymentDetails,
     paymentDetailsUpdated: sequences.updatePaymentDetails,
     keybindingChanged: sequences.changeKeybinding,
-    zenModeToggled: sequences.toggleZenMode
+    zenModeToggled: sequences.toggleZenMode,
+    codeMirrorForced: sequences.forceCodeMirror
 };
 
-export default Module<State, typeof signals>({
+export default Module({
     state,
     signals
 });

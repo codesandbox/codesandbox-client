@@ -16,7 +16,9 @@ export type Sandbox = {
     insertedAt: string;
     likeCount: number;
     privacy: number;
-    template: string;
+    template: {
+        name: string;
+    };
     title: string;
     updatedAt: string;
     viewCount: number;

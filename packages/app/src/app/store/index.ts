@@ -16,11 +16,7 @@ import KeybindingManagerProvider from './providers/KeybindingManager';
 
 import * as sequences from './sequences';
 import * as errors from './errors';
-<<<<<<< HEAD
-import { isPatron, isLoggedIn, hasLogIn } from './getters';
-=======
 import * as getters from './getters';
->>>>>>> Initial refactor
 
 import patron from './modules/patron';
 import editor from './modules/editor';
@@ -32,89 +28,9 @@ import workspace from './modules/workspace';
 import files from './modules/files';
 import live from './modules/live';
 
-<<<<<<< HEAD:packages/app/src/app/store/index.js
-export default Module({
-<<<<<<< HEAD
-    state: {
-        hasLoadedApp: false,
-        jwt: null,
-        isAuthenticating: true,
-        authToken: null,
-        error: null,
-        user: null,
-        connected: true,
-        notifications: [],
-        userMenuOpen: false,
-        isLoadingZeit: false,
-        isLoadingCLI: false,
-        isLoadingGithub: false,
-        contextMenu: {
-            show: false,
-            items: [],
-            x: 0,
-            y: 0
-        },
-        currentModal: null
-    },
-    getters: {
-        isPatron,
-        isLoggedIn,
-        hasLogIn
-    },
-    signals: {
-        appUnmounted: sequences.unloadApp,
-        searchMounted: sequences.loadSearch,
-        termsMounted: sequences.loadTerms,
-        sandboxPageMounted: sequences.loadSandboxPage,
-        cliMounted: sequences.loadCLI,
-        cliInstructionsMounted: sequences.loadCLIInstructions,
-        githubPageMounted: sequences.loadGitHubPage,
-        connectionChanged: sequences.setConnection,
-        modalOpened: sequences.openModal,
-        modalClosed: sequences.closeModal,
-        signInClicked: sequences.signIn,
-        signInCliClicked: sequences.signInCli,
-        userMenuOpened: sequences.openUserMenu,
-        userMenuClosed: sequences.closeUserMenu,
-        notificationAdded: sequences.addNotification,
-        notificationRemoved: sequences.removeNotification,
-        signInZeitClicked: sequences.signInZeit,
-        signOutZeitClicked: sequences.signOutZeit,
-        authTokenRequested: sequences.getAuthToken,
-        requestAuthorisation: sequences.authorize,
-        signInGithubClicked: sequences.signInGithub,
-        signOutClicked: sequences.signOut,
-        signOutGithubIntegration: sequences.signOutGithubIntegration
-    },
-    catch: [ [ errors.AuthenticationError, sequences.showAuthenticationError ] ],
-    modules: {
-        patron,
-        editor,
-        profile,
-        deployment,
-        git,
-        preferences,
-        workspace,
-        files,
-        live
-    },
-    providers: {
-        api: ApiProvider,
-        connection: ConnectionProvider,
-        jwt: JwtProvider,
-        jsZip: JSZipProvider,
-        http: HttpProvider(),
-        browser: BrowserProvider,
-        router: RouterProvider,
-        utils: UtilsProvider,
-        settingsStore: SettingsStoreProvider,
-        git: GitProvider,
-        keybindingManager: KeybindingManagerProvider,
-        live: LiveProvider,
-        ot: OTProvider
-    }
-=======
-  state: {
+import { State } from './types';
+
+const state: State = {
     hasLoadedApp: false,
     jwt: null,
     isAuthenticating: true,
@@ -128,53 +44,24 @@ export default Module({
     isLoadingCLI: false,
     isLoadingGithub: false,
     contextMenu: {
-      show: false,
-      items: [],
-      x: 0,
-      y: 0,
+        show: false,
+        items: [],
+        x: 0,
+        y: 0
     },
     currentModal: null,
     get isPatron() {
-      return getters.isPatron(this);
+        return getters.isPatron(this);
     },
     get isLoggedIn() {
-      return getters.isLoggedIn(this);
+        return getters.isLoggedIn(this);
     },
-=======
-import { State } from './types'
+    get hasLogIn() {
+        return getters.hasLogIn(this);
+    }
+};
 
-const state: State = {
-  hasLoadedApp: false,
-  jwt: null,
-  isAuthenticating: true,
-  authToken: null,
-  error: null,
-  user: null,
-  connected: true,
-  notifications: [],
-  userMenuOpen: false,
-  isLoadingZeit: false,
-  isLoadingCLI: false,
-  isLoadingGithub: false,
-  contextMenu: {
-    show: false,
-    items: [],
-    x: 0,
-    y: 0,
-  },
-  currentModal: null,
-  get isPatron() {
-    return getters.isPatron(this);
->>>>>>> Initial patron refactor of fluent step 2:packages/app/src/app/store/index.ts
-  },
-  get isLoggedIn() {
-    return getters.isLoggedIn(this);
-  },
-}
-
-export default Module({
-  state,
-  signals: {
+const signals = {
     appUnmounted: sequences.unloadApp,
     searchMounted: sequences.loadSearch,
     termsMounted: sequences.loadTerms,
@@ -197,31 +84,37 @@ export default Module({
     requestAuthorisation: sequences.authorize,
     signInGithubClicked: sequences.signInGithub,
     signOutClicked: sequences.signOut,
-    signOutGithubIntegration: sequences.signOutGithubIntegration,
-  },
-  catch: [[errors.AuthenticationError, sequences.showAuthenticationError]],
-  modules: {
-    patron,
-    editor,
-    profile,
-    deployment,
-    git,
-    preferences,
-    workspace,
-    files,
-  },
-  providers: {
-    api: ApiProvider,
-    connection: ConnectionProvider,
-    jwt: JwtProvider,
-    jsZip: JSZipProvider,
-    http: HttpProvider({}),
-    browser: BrowserProvider,
-    router: RouterProvider,
-    utils: UtilsProvider,
-    settingsStore: SettingsStoreProvider,
-    git: GitProvider,
-    keybindingManager: KeybindingManagerProvider,
-  },
->>>>>>> Initial refactor
+    signOutGithubIntegration: sequences.signOutGithubIntegration
+};
+
+export default Module<State, typeof signals>({
+    state,
+    signals,
+    catch: [ [ errors.AuthenticationError, sequences.showAuthenticationError ] ],
+    modules: {
+        patron,
+        editor,
+        profile,
+        deployment,
+        git,
+        preferences,
+        workspace,
+        files,
+        live
+    },
+    providers: {
+        api: ApiProvider,
+        connection: ConnectionProvider,
+        jwt: JwtProvider,
+        jsZip: JSZipProvider,
+        http: HttpProvider({}),
+        browser: BrowserProvider,
+        router: RouterProvider,
+        utils: UtilsProvider,
+        settingsStore: SettingsStoreProvider,
+        git: GitProvider,
+        keybindingManager: KeybindingManagerProvider,
+        live: LiveProvider,
+        ot: OTProvider
+    }
 });

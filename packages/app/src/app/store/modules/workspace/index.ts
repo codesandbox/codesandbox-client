@@ -1,4 +1,4 @@
-import { Module } from '@cerebral/fluent';
+import { Computed, Module } from '@cerebral/fluent';
 import * as sequences from './sequences';
 import { items } from './computed';
 import { State } from './types';
@@ -13,7 +13,7 @@ const state: State = {
         tagName: ''
     },
     openedWorkspaceItem: 'files',
-    items
+    items: Computed(items)
 };
 
 const signals = {

@@ -1,9 +1,5 @@
-<<<<<<< HEAD
 // @flow
 
-=======
-import ParcelIcon from 'common/components/logos/Parcel';
->>>>>>> more fixes
 import Template from './template';
 import { decorateSelector } from '../theme';
 import configurations from './configuration';

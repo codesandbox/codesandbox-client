@@ -1,19 +1,11 @@
 import * as React from 'react';
-import { connect } from 'app/fluent';
+import { connect, WithCerebral } from 'app/fluent';
 import SearchDependencies from 'app/pages/Sandbox/SearchDependencies';
 
-export default connect()
-  .with(({ signals }) => ({
-    addNpmDependency: signals.editor.addNpmDependency
-  }))
-  .to(
-    function SearchDependenciesModal({ addNpmDependency }) {
-      return (
-        <SearchDependencies
-          onConfirm={(name, version) =>
-            addNpmDependency({ name, version })
-          }
-        />
-      );
-    }
-  )
+type Props = WithCerebral;
+
+const SearchDependenciesModal: React.SFC<Props> = ({ signals }) => {
+    return <SearchDependencies onConfirm={(name, version) => signals.editor.addNpmDependency({ name, version })} />;
+};
+
+export default connect<Props>()(SearchDependenciesModal);

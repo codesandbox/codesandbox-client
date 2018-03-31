@@ -1,9 +1,4 @@
-<<<<<<< HEAD
 // @flow
-=======
-import ReactIcon from 'common/components/logos/React';
-
->>>>>>> more fixes
 import Template from './template';
 import { decorateSelector } from '../theme';
 

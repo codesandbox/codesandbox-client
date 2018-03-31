@@ -1,33 +1,26 @@
 import * as React from 'react';
-import { connect } from 'app/fluent'
+import { connect, WithCerebral } from 'app/fluent';
 import GithubLogo from 'react-icons/lib/go/mark-github';
 import Integration from 'app/components/Integration';
 
-type Props = {
-  small?: boolean
-}
+type Props = WithCerebral & {
+    small?: boolean;
+};
 
-export default connect<Props>()
-  .with(({ state, signals }) => ({
-    isLoadingGithub: state.isLoadingGithub,
-    githubIntegration: state.user.integrations.github,
-    signOutGithubIntegration: signals.signOutGithubIntegration,
-    signInGithubClicked: signals.signInGithubClicked
-  }))
-  .to(
-    function GithubIntegration({ isLoadingGithub, githubIntegration, signOutGithubIntegration, signInGithubClicked, small }) {
-      return (
+const GithubIntegration: React.SFC<Props> = ({ store, signals, small }) => {
+    return (
         <Integration
-          name="GitHub"
-          color="#4078c0"
-          description={small ? 'Commits & PRs' : 'Commiting & Pull Requests'}
-          Icon={GithubLogo}
-          small={small}
-          userInfo={githubIntegration}
-          signOut={() => signOutGithubIntegration()}
-          signIn={() => signInGithubClicked({ useExtraScopes: true })}
-          loading={isLoadingGithub}
+            name="GitHub"
+            color="#4078c0"
+            description={small ? 'Commits & PRs' : 'Commiting & Pull Requests'}
+            Icon={GithubLogo}
+            small={small}
+            userInfo={store.user.integrations.github}
+            signOut={() => signals.signOutGithubIntegration()}
+            signIn={() => signals.signInGithubClicked({ useExtraScopes: true })}
+            loading={store.isLoadingGithub}
         />
-      );
-    }
-  )
+    );
+};
+
+export default connect<Props>()(GithubIntegration);

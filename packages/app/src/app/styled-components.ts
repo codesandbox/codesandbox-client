@@ -49,7 +49,7 @@ const {
     ThemeProvider
 } = styledComponents as styledComponents.ThemedStyledComponentsModule<IThemeInterface>;
 
-const allowedDomProps = [ 'className', 'style' ];
+const allowedDomProps = [ 'className', 'style', 'onClick', 'onMouseEnter', 'onMouseLeave', 'onDoubleClick' ];
 
 function filterProps(props) {
     return Object.keys(props).reduce((currentProps, key) => {
@@ -62,10 +62,10 @@ function filterProps(props) {
 }
 
 export function component<Props, ExtendedProps = {}>(
-    comp: string | React.ComponentClass<ExtendedProps> | React.StatelessComponent<ExtendedProps> = 'div'
+    comp: string | React.ComponentClass<ExtendedProps> | React.StatelessComponent<ExtendedProps> = 'div',
+    passProps: boolean = false
 ): React.StatelessComponent<ComponentProps<Props & ExtendedProps>> {
-    return (props) =>
-        React.createElement(comp, typeof component === 'string' ? filterProps(props) : props, props.children);
+    return (props) => React.createElement(comp, passProps ? props : filterProps(props), props.children);
 }
 
 export { css, injectGlobal, keyframes, ThemeProvider };

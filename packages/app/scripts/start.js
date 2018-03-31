@@ -95,21 +95,19 @@ function setupCompiler(port, protocol) {
     // We use stats.toJson({}, true) to make output more compact and readable:
     // https://github.com/facebookincubator/create-react-app/issues/401#issuecomment-238291901
     var json = stats.toJson({}, true);
-    var formattedErrors = json.errors.map(
-      message => 'Error in ' + formatMessage(message)
-    );
+    var formattedErrors = json.errors
+      .concat(
+        json.children.reduce((currentChildrenErrors, child) => {
+          return currentChildrenErrors.concat(child.errors);
+        }, [])
+      )
+      .map(message => 'Error in ' + formatMessage(message));
     var formattedWarnings = json.warnings.map(
       message => 'Warning in ' + formatMessage(message)
     );
     if (hasErrors) {
       console.log(chalk.red('Failed to compile.'));
       console.log();
-      if (formattedErrors.some(isLikelyASyntaxError)) {
-        // If there are any syntax errors, show just them.
-        // This prevents a confusing ESLint parsing error
-        // preceding a much more useful Babel syntax error.
-        formattedErrors = formattedErrors.filter(isLikelyASyntaxError);
-      }
       formattedErrors.forEach(message => {
         console.log(message);
         console.log();

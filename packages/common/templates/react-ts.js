@@ -1,9 +1,5 @@
-<<<<<<< HEAD
 // @flow
 
-=======
-import ReactIcon from 'common/components/logos/React';
->>>>>>> more fixes
 import configurations from './configuration';
 
 import Template from './template';

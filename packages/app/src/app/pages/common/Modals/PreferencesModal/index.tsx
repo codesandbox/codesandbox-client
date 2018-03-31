@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { connect } from 'app/fluent';
+import { connect, WithCerebral } from 'app/fluent';
 
 import CodeIcon from 'react-icons/lib/fa/code';
 import CreditCardIcon from 'react-icons/lib/md/credit-card';
@@ -23,87 +23,80 @@ import KeyMapping from './KeyMapping';
 
 import { Container, ContentContainer } from './elements';
 
-export default connect()
-  .with(({ state, signals }) => ({
-    isPatron: state.isPatron,
-    isLoggedIn: state.isLoggedIn,
-    itemId: state.preferences.itemId,
-    itemIdChanged: signals.preferences.itemIdChanged
-  }))
-  .toClass(props =>
-    class PreferencesModal extends React.Component<typeof props> {
-      getItems = () => {
-        const hasSubscription = this.props.isPatron;
-        const signedIn = this.props.isLoggedIn;
+type Props = WithCerebral;
+
+class PreferencesModal extends React.Component<Props> {
+    getItems = () => {
+        const hasSubscription = this.props.store.isPatron;
+        const signedIn = this.props.store.isLoggedIn;
 
         return [
-          {
-            id: 'editor',
-            title: 'Editor',
-            icon: <CodeIcon />,
-            content: <EditorSettings />,
-          },
-          {
-            id: 'prettierSettings',
-            title: 'Prettier Settings',
-            icon: <CodeFormatIcon />,
-            content: <CodeFormatting />,
-          },
-          {
-            id: 'preview',
-            title: 'Preview',
-            icon: <BrowserIcon />,
-            content: <PreviewSettings />,
-          },
-          {
-            id: 'keybindings',
-            title: 'Key Bindings',
-            icon: <KeyboardIcon />,
-            content: <KeyMapping />,
-          },
-          signedIn && {
-            id: 'integrations',
-            title: 'Integrations',
-            icon: <IntegrationIcon />,
-            content: <Integrations />,
-          },
-          hasSubscription && {
-            id: 'paymentInfo',
-            title: 'Payment Info',
-            icon: <CreditCardIcon />,
-            content: <PaymentInfo />,
-          },
-          hasSubscription && {
-            id: 'badges',
-            title: 'Badges',
-            icon: <StarIcon />,
-            content: <Badges />,
-          },
-          {
-            id: 'experiments',
-            title: 'Experiments',
-            icon: <FlaskIcon />,
-            content: <Experiments />,
-          },
-        ].filter(x => x);
-      };
+            {
+                id: 'editor',
+                title: 'Editor',
+                icon: <CodeIcon />,
+                content: <EditorSettings />
+            },
+            {
+                id: 'prettierSettings',
+                title: 'Prettier Settings',
+                icon: <CodeFormatIcon />,
+                content: <CodeFormatting />
+            },
+            {
+                id: 'preview',
+                title: 'Preview',
+                icon: <BrowserIcon />,
+                content: <PreviewSettings />
+            },
+            {
+                id: 'keybindings',
+                title: 'Key Bindings',
+                icon: <KeyboardIcon />,
+                content: <KeyMapping />
+            },
+            signedIn && {
+                id: 'integrations',
+                title: 'Integrations',
+                icon: <IntegrationIcon />,
+                content: <Integrations />
+            },
+            hasSubscription && {
+                id: 'paymentInfo',
+                title: 'Payment Info',
+                icon: <CreditCardIcon />,
+                content: <PaymentInfo />
+            },
+            hasSubscription && {
+                id: 'badges',
+                title: 'Badges',
+                icon: <StarIcon />,
+                content: <Badges />
+            },
+            {
+                id: 'experiments',
+                title: 'Experiments',
+                icon: <FlaskIcon />,
+                content: <Experiments />
+            }
+        ].filter((x) => x);
+    };
 
-      render() {
+    render() {
         const items = this.getItems();
-        const item = items.find(
-          currentItem => currentItem.id === this.props.itemId
-        );
+        const item = items.find((currentItem) => currentItem.id === this.props.store.preferences.itemId);
 
         return (
-          <Container>
-            <SideNavigation
-              itemId={this.props.itemId}
-              menuItems={items}
-              setItem={this.props.itemIdChanged}
-            />
-            <ContentContainer>{item.content}</ContentContainer>
-          </Container>
+            <Container>
+                <SideNavigation
+                    itemId={this.props.store.preferences.itemId}
+                    menuItems={items}
+                    setItem={this.props.signals.preferences.itemIdChanged}
+                />
+                <ContentContainer>{item.content}</ContentContainer>
+            </Container>
         );
-      }
     }
-  )
+}
+
+export default connect<Props>()(PreferencesModal);

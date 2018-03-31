@@ -2,380 +2,424 @@ import * as React from 'react';
 import { ThemeProvider } from 'styled-components';
 import { Prompt } from 'react-router-dom';
 import { reaction } from 'mobx';
-import { connect } from 'app/fluent';
+import { TextOperation } from 'ot';
+import { connect, WithCerebral } from 'app/fluent';
 import getTemplateDefinition from 'common/templates';
+import { SandboxError, Module } from 'app/store/modules/editor/types';
 
 import CodeEditor from 'app/components/CodeEditor';
 import DevTools from 'app/components/Preview/DevTools';
 import FilePath from 'app/components/CodeEditor/FilePath';
 import Preview from './Preview';
-
 import Tabs from './Tabs';
 
 import { FullSize } from './elements';
+
+const settings = (store) => ({
+    fontFamily: store.preferences.settings.fontFamily,
+    fontSize: store.preferences.settings.fontSize,
+    lineHeight: store.preferences.settings.lineHeight,
+    autoCompleteEnabled: store.preferences.settings.autoCompleteEnabled,
+    autoDownloadTypes: store.preferences.settings.autoDownloadTypes,
+    vimMode: store.preferences.settings.vimMode,
+    lintEnabled: store.preferences.settings.lintEnabled,
+    codeMirror: store.preferences.settings.codeMirror,
+    tabWidth: store.preferences.settings.prettierConfig ? store.preferences.settings.prettierConfig.tabWidth || 2 : 2
+});
+
+type Props = WithCerebral & {};
 
 type State = {
     width?: number;
     height?: number;
 };
 
-export default connect()
-    .with(({ state, signals }) => ({
-        currentSandbox: state.editor.currentSandbox,
-        currentModule: state.editor.currentModule,
-        isAllModulesSynced: state.editor.isAllModulesSynced,
-        isForkingSandbox: state.editor.isForkingSandbox,
-        zenMode: state.preferences.settings.zenMode,
-        showDevtools: state.preferences.showDevtools,
-        previewWindow: state.editor.previewWindow,
-        workspace: state.workspace,
-        editor: state.editor,
-        preferences: state.preferences,
-        openedWorkspaceItem: state.workspace.openedWorkspaceItem,
-        errors: state.editor.errors,
-        corrections: state.editor.corrections,
-        glyphs: state.editor.glyphs,
-        parsedConfigurations: state.editor.parsedConfigurations,
-        settings: state.preferences.settings,
-        contentMounted: signals.editor.contentMounted,
-        toggleCurrentWorkspaceItem: signals.workspace.toggleCurrentWorkspaceItem,
-        settingChanged: signals.preferences.settingChanged,
-        addNpmDependency: signals.editor.addNpmDependency,
-        codeChanged: signals.editor.codeChanged,
-        moduleSelected: signals.editor.moduleSelected,
-        codeSaved: signals.editor.codeSaved,
-        resizingStarted: signals.editor.resizingStarted,
-        setDevtoolsOpen: signals.preferences.setDevtoolsOpen
-    }))
-    .toClass(
-        (props) =>
-            class EditorPreview extends React.Component<typeof props, State> {
-                state: State = { width: null, height: null };
-                interval: NodeJS.Timer;
-                disposeEditorChange: () => void;
-                el?: HTMLElement;
-                devtools: DevTools;
+class EditorPreview extends React.Component<Props, State> {
+    state: State = { width: null, height: null };
+    interval: NodeJS.Timer;
+    disposeEditorChange: () => void;
+    el?: HTMLElement;
+    devtools: any;
 
-                componentDidMount() {
-                    this.props.contentMounted();
-                    this.disposeEditorChange = reaction(() => this.props.settings.codeMirror, () => this.forceUpdate());
+    componentDidMount() {
+        this.props.signals.editor.contentMounted();
+        this.disposeEditorChange = reaction(
+            () => this.props.store.preferences.settings.codeMirror,
+            () => this.forceUpdate()
+        );
 
-                    window.addEventListener('resize', this.getBounds);
+        window.addEventListener('resize', this.getBounds);
 
-                    this.interval = setInterval(() => {
-                        this.getBounds();
-                    }, 1000);
-                }
+        this.interval = setInterval(() => {
+            this.getBounds();
+        }, 1000);
+    }
 
-                componentWillUnmount() {
-                    this.disposeEditorChange();
-                    window.removeEventListener('resize', this.getBounds);
-                    clearInterval(this.interval);
-                }
+    componentWillUnmount() {
+        this.disposeEditorChange();
+        window.removeEventListener('resize', this.getBounds);
+        clearInterval(this.interval);
+    }
 
-                getBounds = (el?) => {
-                    if (el) {
-                        this.el = this.el || el;
-                    }
-                    if (this.el) {
-                        const { width, height } = this.el.getBoundingClientRect();
+    getBounds = (el?) => {
+        if (el) {
+            this.el = this.el || el;
+        }
+        if (this.el) {
+            const { width, height } = this.el.getBoundingClientRect();
 
-                        if (width !== this.state.width || height !== this.state.height) {
-                            this.setState({ width, height });
-                        }
-                    }
-                };
+            if (width !== this.state.width || height !== this.state.height) {
+                this.setState({ width, height });
+            }
+        }
+    };
 
-                handleToggleDevtools = (showDevtools) => {
-                    if (this.devtools) {
-                        if (showDevtools) {
-                            this.devtools.openDevTools();
-                        } else {
-                            this.devtools.hideDevTools();
-                        }
-                    }
-                };
+    handleToggleDevtools = (showDevtools) => {
+        if (this.devtools) {
+            if (showDevtools) {
+                this.devtools.openDevTools();
+            } else {
+                this.devtools.hideDevTools();
+            }
+        }
+    };
 
-                onInitialized = (codeEditor) => {
-                    const {
-                        preferences,
-                        workspace,
-                        editor,
-                        parsedConfigurations,
-                        currentModule,
-                        errors,
-                        corrections,
-                        glyphs,
-                        settings
-                    } = this.props;
-                    let isChangingSandbox = false;
+    onInitialized = (editor: any) => {
+        const store = this.props.store;
+        let isChangingSandbox = false;
 
-                    const disposeSandboxChangeHandler = reaction(
-                        () => editor.currentSandbox,
-                        (newSandbox) => {
-                            isChangingSandbox = !!codeEditor.changeSandbox;
+        const disposeSandboxChangeHandler = reaction(
+            () => store.editor.currentSandbox,
+            (newSandbox) => {
+                isChangingSandbox = !!editor.changeSandbox;
 
-                            // Put in a timeout so we allow the actions after the fork to execute first as well.
-                            setTimeout(() => {
-                                if (codeEditor.changeSandbox) {
-                                    const { parsed } = parsedConfigurations.package;
-                                    codeEditor
-                                        .changeSandbox(
-                                            newSandbox,
-                                            currentModule,
-                                            parsed ? parsed.dependencies : newSandbox.npmDependencies.toJS()
-                                        )
-                                        .then(() => {
-                                            isChangingSandbox = false;
-                                        });
-                                }
-                            });
-                        }
-                    );
-                    const disposeErrorsHandler = reaction(
-                        () => errors.map((error) => error),
-                        (newErrors) => {
-                            if (codeEditor.setErrors) {
-                                codeEditor.setErrors(newErrors);
-                            }
-                        }
-                    );
-                    const disposeCorrectionsHandler = reaction(
-                        () => corrections.map((correction) => correction),
-                        (newCorrections) => {
-                            if (codeEditor.setCorrections) {
-                                codeEditor.setCorrections(newCorrections);
-                            }
-                        }
-                    );
-                    const disposeGlyphsHandler = reaction(
-                        () => glyphs.map((glyph) => glyph),
-                        (newGlyphs) => {
-                            if (codeEditor.setGlyphs) {
-                                codeEditor.setGlyphs(newGlyphs);
-                            }
-                        }
-                    );
-                    const disposeModulesHandler = reaction(this.detectStructureChange, () => {
-                        if (isChangingSandbox) {
-                            return;
-                        }
-                        if (codeEditor.updateModules) {
-                            codeEditor.updateModules();
-                        }
-                    });
-                    const disposePreferencesHandler = reaction(
-                        () => ({ ...settings }),
-                        (newSettings) => {
-                            if (codeEditor.changeSettings) {
-                                codeEditor.changeSettings(newSettings);
-                            }
-                        },
-                        {
-                            compareStructural: true
-                        }
-                    );
-                    const disposeResizeHandler = reaction(
-                        () => [ settings.zenMode, workspace.openedWorkspaceItem ],
-                        () => {
-                            setTimeout(() => {
-                                this.getBounds();
-                            });
-                        }
-                    );
-                    const disposePackageHandler = reaction(
-                        () => parsedConfigurations.package,
-                        () => {
-                            const { parsed } = parsedConfigurations.package;
-                            if (parsed) {
-                                const { dependencies = {} } = parsed;
-
-                                if (codeEditor.changeDependencies) {
-                                    codeEditor.changeDependencies(dependencies);
-                                }
-                            }
-                        }
-                    );
-                    const disposeTSConfigHandler = reaction(
-                        () => parsedConfigurations.typescript,
-                        () => {
-                            if (parsedConfigurations.typescript) {
-                                const { parsed } = parsedConfigurations.typescript;
-                                if (parsed) {
-                                    if (codeEditor.setTSConfig) {
-                                        codeEditor.setTSConfig(parsed);
-                                    }
-                                }
-                            }
-                        }
-                    );
-                    const disposeModuleHandler = reaction(
-                        () => [ editor.currentModule, editor.currentModule.code ],
-                        ([ newModule ]) => {
-                            if (isChangingSandbox) {
-                                return;
-                            }
-                            const editorModule = editor.currentModule;
-
-                            const changeModule = codeEditor.changeModule;
-                            if (newModule !== editorModule && changeModule) {
-                                const trackedErrors = errors.map((e) => e);
-                                const trackedCorrections = corrections.map((e) => e);
-                                changeModule(newModule, trackedErrors, trackedCorrections);
-                            } else if (codeEditor.changeCode) {
-                                codeEditor.changeCode((newModule as typeof editor.currentModule).code || '');
-                            }
-                        }
-                    );
-                    const disposeToggleDevtools = reaction(
-                        () => preferences.showDevtools,
-                        (showDevtools) => {
-                            this.handleToggleDevtools(showDevtools);
-                        }
-                    );
-
-                    return () => {
-                        disposeErrorsHandler();
-                        disposeCorrectionsHandler();
-                        disposeModulesHandler();
-                        disposePreferencesHandler();
-                        disposePackageHandler();
-                        disposeTSConfigHandler();
-                        disposeSandboxChangeHandler();
-                        disposeModuleHandler();
-                        disposeToggleDevtools();
-                        disposeResizeHandler();
-                        disposeGlyphsHandler();
-                    };
-                };
-
-                detectStructureChange = () => {
-                    const sandbox = this.props.currentSandbox;
-
-                    return String(
-                        sandbox.modules
-                            .map((module) => module.id + module.directoryShortid + module.title)
-                            .concat(
-                                sandbox.directories.map((directory) => directory.directoryShortid + directory.title)
+                // Put in a timeout so we allow the actions after the fork to execute first as well.
+                setTimeout(() => {
+                    if (editor.changeSandbox) {
+                        const { parsed } = store.editor.parsedConfigurations.package;
+                        editor
+                            .changeSandbox(
+                                newSandbox,
+                                store.editor.currentModule,
+                                parsed ? parsed.dependencies : newSandbox.npmDependencies.toJS()
                             )
-                    );
-                };
-
-                render() {
-                    const {
-                        currentModule,
-                        isAllModulesSynced,
-                        zenMode,
-                        settings,
-                        parsedConfigurations,
-                        showDevtools,
-                        isForkingSandbox,
-                        openedWorkspaceItem
-                    } = this.props;
-                    const notSynced = !isAllModulesSynced;
-                    const sandbox = this.props.currentSandbox;
-                    const { x, y, width, content } = this.props.previewWindow;
-
-                    const windowVisible = !!content;
-
-                    const windowRightSize = -x + width + 16;
-
-                    const isVerticalMode = this.state.width
-                        ? this.state.width / 4 > this.state.width - windowRightSize
-                        : false;
-
-                    let editorWidth = isVerticalMode ? '100%' : `calc(100% - ${windowRightSize}px)`;
-                    let editorHeight = isVerticalMode ? `${y + 16}px` : '100%';
-
-                    if (!windowVisible) {
-                        editorWidth = '100%';
-                        editorHeight = '100%';
+                            .then(() => {
+                                isChangingSandbox = false;
+                            });
                     }
-
-                    return (
-                        <ThemeProvider
-                            theme={{
-                                templateColor: getTemplateDefinition(sandbox.template).color
-                            }}
-                        >
-                            <FullSize>
-                                <Prompt
-                                    when={notSynced && !isForkingSandbox}
-                                    message={() =>
-                                        'You have not saved this sandbox, are you sure you want to navigate away?'}
-                                />
-                                {zenMode ? (
-                                    <FilePath
-                                        modules={sandbox.modules}
-                                        directories={sandbox.directories}
-                                        currentModule={currentModule}
-                                        workspaceHidden={!openedWorkspaceItem}
-                                        toggleWorkspace={() => {
-                                            this.props.toggleCurrentWorkspaceItem();
-                                        }}
-                                        exitZenMode={() =>
-                                            this.props.settingChanged({
-                                                name: 'zenMode',
-                                                value: false
-                                            })}
-                                    />
-                                ) : (
-                                    <Tabs />
-                                )}
-                                <div
-                                    ref={this.getBounds}
-                                    style={{
-                                        position: 'relative',
-                                        display: 'flex',
-                                        flex: 1,
-                                        marginTop: zenMode ? 0 : '2.5rem'
-                                    }}
-                                >
-                                    <CodeEditor
-                                        onInitialized={this.onInitialized}
-                                        sandbox={sandbox}
-                                        currentModule={currentModule}
-                                        width={editorWidth}
-                                        height={editorHeight}
-                                        settings={settings}
-                                        onNpmDependencyAdded={(name) => {
-                                            if (sandbox.owned) {
-                                                this.props.addNpmDependency({ name, isDev: true });
-                                            }
-                                        }}
-                                        onChange={(code) =>
-                                            this.props.codeChanged({
-                                                code,
-                                                moduleShortid: currentModule.shortid
-                                            })}
-                                        onModuleChange={(moduleId) => this.props.moduleSelected({ id: moduleId })}
-                                        onSave={(code) =>
-                                            this.props.codeSaved({
-                                                code,
-                                                moduleShortid: currentModule.shortid
-                                            })}
-                                        tsconfig={
-                                            parsedConfigurations.typescript && parsedConfigurations.typescript.parsed
-                                        }
-                                    />
-                                    <Preview width={this.state.width} height={this.state.height} />
-                                </div>
-
-                                <DevTools
-                                    ref={(component) => {
-                                        if (component) {
-                                            this.devtools = component;
-                                        }
-                                    }}
-                                    setDragging={() => this.props.resizingStarted()}
-                                    sandboxId={sandbox.id}
-                                    shouldExpandDevTools={showDevtools}
-                                    zenMode={zenMode}
-                                    setDevToolsOpen={(open) => this.props.setDevtoolsOpen({ open })}
-                                />
-                            </FullSize>
-                        </ThemeProvider>
-                    );
+                });
+            }
+        );
+        const disposeErrorsHandler = reaction(
+            () => store.editor.errors.map((error) => error),
+            (errors: SandboxError[]) => {
+                if (editor.setErrors) {
+                    editor.setErrors(errors);
                 }
             }
-    );
+        );
+        const disposeCorrectionsHandler = reaction(
+            () => store.editor.corrections.map((correction) => correction),
+            (corrections) => {
+                if (editor.setCorrections) {
+                    editor.setCorrections(corrections);
+                }
+            }
+        );
+        const disposeGlyphsHandler = reaction(
+            () => store.editor.glyphs.map((glyph) => glyph),
+            (glyphs) => {
+                if (editor.setGlyphs) {
+                    editor.setGlyphs(glyphs);
+                }
+            }
+        );
+        const disposeModulesHandler = reaction(this.detectStructureChange, () => {
+            if (isChangingSandbox) {
+                return;
+            }
+            if (editor.updateModules) {
+                editor.updateModules();
+            }
+        });
+        const disposePreferencesHandler = reaction(
+            () => settings(store),
+            (newSettings) => {
+                if (editor.changeSettings) {
+                    editor.changeSettings(newSettings);
+                }
+            },
+            {
+                compareStructural: true
+            }
+        );
+        const disposeResizeHandler = reaction(
+            () => [ store.preferences.settings.zenMode, store.workspace.openedWorkspaceItem ],
+            () => {
+                setTimeout(() => {
+                    this.getBounds();
+                });
+            }
+        );
+        const disposePackageHandler = reaction(
+            () => store.editor.parsedConfigurations.package,
+            () => {
+                const { parsed } = store.editor.parsedConfigurations.package;
+                if (parsed) {
+                    const { dependencies = {} } = parsed;
+
+                    if (editor.changeDependencies) {
+                        editor.changeDependencies(dependencies);
+                    }
+                }
+            }
+        );
+        const disposeTSConfigHandler = reaction(
+            () => store.editor.parsedConfigurations.typescript,
+            () => {
+                if (store.editor.parsedConfigurations.typescript) {
+                    const { parsed } = store.editor.parsedConfigurations.typescript;
+                    if (parsed) {
+                        if (editor.setTSConfig) {
+                            editor.setTSConfig(parsed);
+                        }
+                    }
+                }
+            }
+        );
+        const disposeLiveHandler = reaction(
+            () => store.live.receivingCode,
+            () => {
+                if (editor.setReceivingCode) {
+                    editor.setReceivingCode(store.live.receivingCode);
+                }
+            }
+        );
+
+        const disposePendingOperationHandler = reaction(
+            () => store.editor.pendingOperation && store.editor.pendingOperation.map((x) => x),
+            () => {
+                if (store.editor.pendingOperation) {
+                    if (editor.setReceivingCode) {
+                        editor.setReceivingCode(true);
+                    }
+                    if (editor.applyOperation) {
+                        editor.applyOperation(TextOperation.fromJSON(store.editor.pendingOperation));
+                    } else {
+                        try {
+                            if (editor.currentModule) {
+                                const operation = TextOperation.fromJSON(store.editor.pendingOperation);
+
+                                this.props.signals.editor.codeChanged({
+                                    code: operation.apply(editor.currentModule.code || ''),
+                                    moduleShortid: editor.currentModule.shortid
+                                });
+                            }
+                        } catch (e) {
+                            // tslint:disable-next-line
+                            console.error(e);
+                        }
+                    }
+                    if (editor.setReceivingCode) {
+                        editor.setReceivingCode(false);
+                    }
+                    this.props.signals.live.onOperationApplied();
+                }
+            }
+        );
+
+        const updateUserSelections = () => {
+            if (store.editor.pendingUserSelections) {
+                if (editor.updateUserSelections) {
+                    requestAnimationFrame(() => {
+                        editor.updateUserSelections(store.editor.pendingUserSelections);
+                        this.props.signals.live.onSelectionDecorationsApplied();
+                    });
+                }
+            }
+        };
+        const disposeLiveSelectionHandler = reaction(
+            () => store.editor.pendingUserSelections.map((x) => x),
+            updateUserSelections
+        );
+        updateUserSelections();
+
+        const disposeModuleHandler = reaction(
+            () => [ store.editor.currentModule, store.editor.currentModule.code ],
+            (result) => {
+                const newModule = result[0] as Module;
+                if (isChangingSandbox) {
+                    return;
+                }
+                const editorModule = editor.currentModule;
+
+                const changeModule = editor.changeModule;
+                if (newModule !== editorModule && changeModule) {
+                    const errors = store.editor.errors.map((e) => e);
+                    const corrections = store.editor.corrections.map((e) => e);
+                    changeModule(newModule, errors, corrections);
+                } else if (editor.changeCode) {
+                    // Only code changed from outside the editor
+                    editor.changeCode(newModule.code || '');
+                }
+            }
+        );
+        const disposeToggleDevtools = reaction(
+            () => this.props.store.preferences.showDevtools,
+            (showDevtools) => {
+                this.handleToggleDevtools(showDevtools);
+            }
+        );
+
+        return () => {
+            disposeErrorsHandler();
+            disposeCorrectionsHandler();
+            disposeModulesHandler();
+            disposePreferencesHandler();
+            disposePackageHandler();
+            disposeTSConfigHandler();
+            disposeSandboxChangeHandler();
+            disposeModuleHandler();
+            disposeToggleDevtools();
+            disposeResizeHandler();
+            disposeGlyphsHandler();
+            disposeLiveHandler();
+            disposePendingOperationHandler();
+            disposeLiveSelectionHandler();
+        };
+    };
+
+    detectStructureChange = () => {
+        const sandbox = this.props.store.editor.currentSandbox;
+
+        return String(
+            sandbox.modules
+                .map((module) => module.id + module.directoryShortid + module.title)
+                .concat(sandbox.directories.map((directory) => directory.directoryShortid + directory.title))
+        );
+    };
+
+    sendTransforms = (operation) => {
+        const currentModuleShortid = this.props.store.editor.currentModuleShortid;
+
+        this.props.signals.live.onTransformMade({
+            moduleShortid: currentModuleShortid,
+            operation: operation.toJSON()
+        });
+    };
+
+    render() {
+        const { signals, store } = this.props;
+        const currentModule = store.editor.currentModule;
+        const notSynced = !store.editor.isAllModulesSynced;
+        const sandbox = store.editor.currentSandbox;
+        const preferences = store.preferences;
+        const { x, y, width, content } = store.editor.previewWindow;
+
+        const windowVisible = !!content;
+
+        const windowRightSize = -x + width + 16;
+
+        const isVerticalMode = this.state.width ? this.state.width / 4 > this.state.width - windowRightSize : false;
+
+        let editorWidth = isVerticalMode ? '100%' : `calc(100% - ${windowRightSize}px)`;
+        let editorHeight = isVerticalMode ? `${y + 16}px` : '100%';
+
+        if (!windowVisible) {
+            editorWidth = '100%';
+            editorHeight = '100%';
+        }
+
+        return (
+            <ThemeProvider
+                theme={{
+                    templateColor: getTemplateDefinition(sandbox.template).color
+                }}
+            >
+                <FullSize>
+                    <Prompt
+                        when={notSynced && !store.editor.isForkingSandbox}
+                        message={() => 'You have not saved this sandbox, are you sure you want to navigate away?'}
+                    />
+                    {preferences.settings.zenMode ? (
+                        <FilePath
+                            modules={sandbox.modules}
+                            directories={sandbox.directories}
+                            currentModule={currentModule}
+                            workspaceHidden={!store.workspace.openedWorkspaceItem}
+                            toggleWorkspace={() => {
+                                signals.workspace.toggleCurrentWorkspaceItem();
+                            }}
+                            exitZenMode={() =>
+                                this.props.signals.preferences.settingChanged({
+                                    name: 'zenMode',
+                                    value: false
+                                })}
+                        />
+                    ) : (
+                        <Tabs />
+                    )}
+                    <div
+                        ref={this.getBounds}
+                        style={{
+                            position: 'relative',
+                            display: 'flex',
+                            flex: 1,
+                            marginTop: preferences.settings.zenMode ? 0 : '2.5rem'
+                        }}
+                    >
+                        <CodeEditor
+                            onInitialized={this.onInitialized}
+                            sandbox={sandbox}
+                            currentModule={currentModule}
+                            width={editorWidth}
+                            height={editorHeight}
+                            settings={settings(store)}
+                            sendTransforms={this.sendTransforms}
+                            readOnly={store.live.isLive && !store.live.isCurrentEditor}
+                            isLive={store.live.isLive}
+                            onCodeReceived={signals.live.onCodeReceived}
+                            onSelectionChanged={signals.live.onSelectionChanged}
+                            onNpmDependencyAdded={(name) => {
+                                if (sandbox.owned) {
+                                    signals.editor.addNpmDependency({ name, isDev: true });
+                                }
+                            }}
+                            onChange={(code) =>
+                                signals.editor.codeChanged({
+                                    code,
+                                    moduleShortid: currentModule.shortid
+                                })}
+                            onModuleChange={(moduleId) => signals.editor.moduleSelected({ id: moduleId })}
+                            onSave={(code) =>
+                                signals.editor.codeSaved({
+                                    code,
+                                    moduleShortid: currentModule.shortid
+                                })}
+                            tsconfig={
+                                store.editor.parsedConfigurations.typescript &&
+                                store.editor.parsedConfigurations.typescript.parsed
+                            }
+                        />
+                        <Preview width={this.state.width} height={this.state.height} />
+                    </div>
+
+                    <DevTools
+                        ref={(component) => {
+                            if (component) {
+                                this.devtools = component;
+                            }
+                        }}
+                        setDragging={() => this.props.signals.editor.resizingStarted()}
+                        sandboxId={sandbox.id}
+                        shouldExpandDevTools={store.preferences.showDevtools}
+                        zenMode={preferences.settings.zenMode}
+                        setDevToolsOpen={(open) => this.props.signals.preferences.setDevtoolsOpen({ open })}
+                    />
+                </FullSize>
+            </ThemeProvider>
+        );
+    }
+}
+
+export default connect<Props>()(EditorPreview);

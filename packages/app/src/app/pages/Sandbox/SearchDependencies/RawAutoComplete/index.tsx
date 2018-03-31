@@ -1,9 +1,8 @@
 import * as React from 'react';
 import Downshift from 'downshift';
 import { Pagination } from 'react-instantsearch/dom';
-import DependencyHit from '../DependencyHit';
+import DependencyHit, { Hit } from '../DependencyHit';
 import { AutoCompleteInput } from './elements';
-import { Hit } from '../DependencyHit';
 
 type Props = {
     onSelect: () => void;

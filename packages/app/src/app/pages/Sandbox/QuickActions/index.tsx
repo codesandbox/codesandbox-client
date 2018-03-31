@@ -1,156 +1,133 @@
 import * as React from 'react';
-import { connect } from 'app/fluent';
+import { connect, WithCerebral } from 'app/fluent';
 import Downshift from 'downshift';
 import genie from 'geniejs/dist/geniejs.es';
 
 import Input from 'common/components/Input';
 import Keys from './Keys';
 
-import {
-  Container,
-  Items,
-  InputContainer,
-  Entry,
-  Title,
-  Keybindings,
-} from './elements';
+import { Container, Items, InputContainer, Entry, Title, Keybindings } from './elements';
 
-export default connect()
-  .with(({ state, signals }) => ({
-    keybindings: state.preferences.keybindings.get(),
-    store: state,
-    signals
-  }))
-  .toClass(props =>
-    class QuickActions extends React.Component<typeof props> {
-      updateGenie = () => {
-        const keybindings = this.props.keybindings
+type Props = WithCerebral;
 
-        Object.keys(keybindings).forEach(bindingKey => {
-          const quickAction = keybindings[bindingKey];
-          const signals = this.props.signals
+class QuickActions extends React.Component<Props> {
+    updateGenie = () => {
+        const keybindings = this.props.store.preferences.keybindings;
+        const signals = this.props.signals;
 
-          genie({
-            magicWords: `${quickAction.type}: ${quickAction.title}`,
-            id: bindingKey,
-            action: () => {
-              const signalPath = quickAction.signal.split('.');
-              const signal = signalPath.reduce(
-                (currentSignal, key) => currentSignal[key],
-                signals
-              );
-              const payload =
-                typeof quickAction.payload === 'function'
-                  ? quickAction.payload(this.props.store)
-                  : quickAction.payload || {};
-              signal(payload);
-            },
-          });
+        Object.keys(keybindings).forEach((bindingKey) => {
+            const quickAction = keybindings[bindingKey];
+
+            genie({
+                magicWords: `${quickAction.type}: ${quickAction.title}`,
+                id: bindingKey,
+                action: () => {
+                    const signalPath = quickAction.signal.split('.');
+                    const signal = signalPath.reduce((currentSignal, key) => currentSignal[key], signals);
+                    const payload =
+                        typeof quickAction.payload === 'function'
+                            ? quickAction.payload(this.props.store)
+                            : quickAction.payload || {};
+                    signal(payload);
+                }
+            });
         });
-      };
+    };
 
-      componentDidMount() {
+    componentDidMount() {
         this.updateGenie();
-      }
+    }
 
-      componentDidUpdate() {
+    componentDidUpdate() {
         this.updateGenie();
-      }
+    }
 
-      getItems = value => genie.getMatchingWishes(value);
+    getItems = (value) => genie.getMatchingWishes(value);
 
-      handleKeyUp = e => {
+    handleKeyUp = (e) => {
         if (e.keyCode === 27) {
-          this.closeQuickActions();
+            this.closeQuickActions();
         }
-      };
+    };
 
-      closeQuickActions = () => {
+    closeQuickActions = () => {
         this.props.signals.editor.quickActionsClosed();
-      };
+    };
 
-      onChange = item => {
+    onChange = (item) => {
         genie.makeWish(item);
         this.closeQuickActions();
-      };
+    };
 
-      itemToString = item => item && item.magicWords.join(', ');
+    itemToString = (item) => item && item.magicWords.join(', ');
 
-      render() {
+    render() {
         if (!this.props.store.editor.quickActionsOpen) {
-          return null;
+            return null;
         }
 
-        const keybindings = this.props.store.preferences.keybindings.get();
+        const keybindings = this.props.store.preferences.keybindings;
 
         return (
-          <Container>
-            <Downshift
-              defaultHighlightedIndex={0}
-              defaultIsOpen
-              onChange={this.onChange}
-              itemToString={this.itemToString}
-            >
-              {({
-                getInputProps,
-                getItemProps,
-                selectedItem,
-                inputValue,
-                highlightedIndex,
-              }) => {
-                const inputProps = getInputProps({
-                  ref: el => el && el.focus(),
-                  onKeyUp: this.handleKeyUp,
-                  // Timeout so the fuzzy handler can still select the module
-                  onBlur: () => setTimeout(this.closeQuickActions, 100),
-                });
-                return (
-                  <div style={{ width: '100%' }}>
-                    <InputContainer>
-                      <Input {...inputProps} value={inputProps.value || ''} />
-                    </InputContainer>
+            <Container>
+                <Downshift
+                    defaultHighlightedIndex={0}
+                    defaultIsOpen
+                    onChange={this.onChange}
+                    itemToString={this.itemToString}
+                >
+                    {({ getInputProps, getItemProps, selectedItem, inputValue, highlightedIndex }) => {
+                        const inputProps = getInputProps({
+                            ref: (el) => el && el.focus(),
+                            onKeyUp: this.handleKeyUp,
+                            // Timeout so the fuzzy handler can still select the module
+                            onBlur: () => setTimeout(this.closeQuickActions, 100)
+                        });
+                        return (
+                            <div style={{ width: '100%' }}>
+                                <InputContainer>
+                                    <Input {...inputProps} value={inputProps.value || ''} />
+                                </InputContainer>
 
-                    <Items>
-                      {this.getItems(inputValue).map((item, index) => (
-                        <Entry
-                          {...getItemProps({
-                            item,
-                            index,
-                            isActive: highlightedIndex === index,
-                            isSelected: selectedItem === item,
-                          })}
-                          key={item.id}
-                        >
-                          <Title>
-                            {keybindings[item.id].type}:{' '}
-                            {keybindings[item.id].title}
-                          </Title>
+                                <Items>
+                                    {this.getItems(inputValue).map((item, index) => (
+                                        <Entry
+                                            {...getItemProps({
+                                                item,
+                                                index,
+                                                isActive: highlightedIndex === index,
+                                                isSelected: selectedItem === item
+                                            })}
+                                            key={item.id}
+                                        >
+                                            <Title>
+                                                {keybindings[item.id].type}: {keybindings[item.id].title}
+                                            </Title>
 
-                          {keybindings[item.id].bindings &&
-                            keybindings[item.id].bindings[0] && (
-                              <Keybindings>
-                                <Keys bindings={keybindings[item.id].bindings[0]} />
-                                {keybindings[item.id].bindings.length === 2 &&
-                                  keybindings[item.id].bindings[1] &&
-                                  keybindings[item.id].bindings[1].length && (
-                                    <React.Fragment>
-                                      {' - '}
-                                      <Keys
-                                        bindings={keybindings[item.id].bindings[1]}
-                                      />
-                                    </React.Fragment>
-                                  )}
-                              </Keybindings>
-                            )}
-                        </Entry>
-                      ))}
-                    </Items>
-                  </div>
-                );
-              }}
-            </Downshift>
-          </Container>
+                                            {keybindings[item.id].bindings &&
+                                            keybindings[item.id].bindings[0] && (
+                                                <Keybindings>
+                                                    <Keys bindings={keybindings[item.id].bindings[0]} />
+                                                    {keybindings[item.id].bindings.length === 2 &&
+                                                    keybindings[item.id].bindings[1] &&
+                                                    keybindings[item.id].bindings[1].length && (
+                                                        <React.Fragment>
+                                                            {' - '}
+                                                            <Keys bindings={keybindings[item.id].bindings[1]} />
+                                                        </React.Fragment>
+                                                    )}
+                                                </Keybindings>
+                                            )}
+                                        </Entry>
+                                    ))}
+                                </Items>
+                            </div>
+                        );
+                    }}
+                </Downshift>
+            </Container>
         );
-      }
     }
-  )
+}
+
+export default connect<Props>()(QuickActions);

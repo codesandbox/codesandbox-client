@@ -1,9 +1,5 @@
-<<<<<<< HEAD
 // @flow
 
-=======
-import PreactIcon from 'common/components/logos/Preact';
->>>>>>> more fixes
 import Template from './template';
 import { decorateSelector } from '../theme';
 import configurations from './configuration';

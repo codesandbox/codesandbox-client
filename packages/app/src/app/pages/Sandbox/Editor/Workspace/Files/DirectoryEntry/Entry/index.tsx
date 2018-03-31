@@ -20,26 +20,25 @@ import { Right, NotSyncedIconWithMargin } from './elements';
 type Props = {
     id: string;
     title: string;
+    state: string;
     shortid: string;
     depth: number;
-    isOpen: boolean;
-    hasChildren: boolean;
     type: string;
     active: boolean;
-    connectDragSource: ConnectDragSource;
+    connectDragSource: ConnectDragSource; // eslint-disable-line
     isNotSynced: boolean;
     isMainModule: boolean;
     moduleHasError: boolean;
-    root: boolean;
+    rightColors: string[];
+    setCurrentModule: (id: string) => void;
+    onCreateModuleClick: () => void;
     onCreateDirectoryClick: () => void;
     onClick: () => void;
     markTabsNotDirty: () => void;
-    onCreateModuleClick: () => void;
+    rename: (shortid: string, title: string) => void;
     onRenameCancel: () => void;
     renameValidator: (id: string, title: string) => boolean;
-    rename: (shortid: string, title: string) => void;
     deleteEntry: (shortid: string, title: string) => void;
-    setCurrentModule: (id: string) => void;
 };
 
 type State = {
@@ -108,7 +107,7 @@ class Entry extends React.PureComponent<Props, State> {
             type,
             active,
             setCurrentModule,
-            connectDragSource,
+            connectDragSource, // eslint-disable-line
             onCreateModuleClick,
             onCreateDirectoryClick,
             deleteEntry,
@@ -117,7 +116,8 @@ class Entry extends React.PureComponent<Props, State> {
             rename,
             isNotSynced,
             isMainModule,
-            moduleHasError
+            moduleHasError,
+            rightColors
         } = this.props;
         const { state, error, selected, hovering } = this.state;
 
@@ -158,6 +158,7 @@ class Entry extends React.PureComponent<Props, State> {
                         onMouseEnter={this.onMouseEnter}
                         onMouseLeave={this.onMouseLeave}
                         alternative={isMainModule}
+                        rightColors={rightColors}
                         noTransition
                     >
                         <EntryIcons type={type} error={moduleHasError} />
@@ -183,6 +184,7 @@ class Entry extends React.PureComponent<Props, State> {
                                         onCreateDirectory={onCreateDirectoryClick}
                                         onDelete={deleteEntry && this.delete}
                                         onEdit={rename && this.rename}
+                                        active={active}
                                     />
                                 )}
                             </Right>
@@ -192,6 +194,7 @@ class Entry extends React.PureComponent<Props, State> {
             </div>
         );
     }
+<<<<<<< HEAD
 <<<<<<< HEAD
     return false;
   };
@@ -309,6 +312,8 @@ class Entry extends React.PureComponent<Props, State> {
   }
 =======
 >>>>>>> more fixes
+=======
+>>>>>>> refactor done, checking if everything works
 }
 
 const entrySource = {

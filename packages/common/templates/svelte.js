@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 // @flow
-=======
-import SvelteIcon from 'common/components/logos/Svelte';
->>>>>>> more fixes
 import Template from './template';
 import { decorateSelector } from '../theme';
 

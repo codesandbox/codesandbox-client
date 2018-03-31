@@ -1,11 +1,5 @@
-<<<<<<< HEAD:packages/app/src/app/components/Preview/DevTools/Problems/index.js
-import React from 'react';
-import { listen, dispatch, actions } from 'codesandbox-api';
-=======
 import * as React from 'react';
-import { listen, actions } from 'codesandbox-api';
-import { dispatch } from 'app/components/Preview';
->>>>>>> refactor components to TS:packages/app/src/app/components/Preview/DevTools/Problems/index.tsx
+import { listen, dispatch, actions } from 'codesandbox-api';
 import Tooltip from 'common/components/Tooltip';
 import FileIcon from 'react-icons/lib/md/insert-drive-file';
 
@@ -13,8 +7,7 @@ import { Container, File, Path, FileName, Actions } from './elements';
 import Message from '../Console/Message';
 
 type Props = {
-    updateStatus: (type: string) => void;
-    sandboxId: string;
+    updateStatus: (status: string) => void;
     hidden: boolean;
 };
 
@@ -33,18 +26,8 @@ class Problems extends React.PureComponent<Props, State> {
         this.listener = listen(this.handleMessage);
     }
 
-<<<<<<< HEAD
-  openFile = (path: string) => {
-    dispatch(actions.editor.openModule(path));
-  };
-
-  render() {
-    if (this.props.hidden) {
-      return null;
-=======
     componentWillUnmount() {
         this.listener();
->>>>>>> more fixes
     }
 
     handleMessage = (data) => {
@@ -81,7 +64,7 @@ class Problems extends React.PureComponent<Props, State> {
     };
 
     openFile = (path: string) => {
-        dispatch(this.props.sandboxId, actions.editor.openModule(path));
+        dispatch(actions.editor.openModule(path));
     };
 
     render() {

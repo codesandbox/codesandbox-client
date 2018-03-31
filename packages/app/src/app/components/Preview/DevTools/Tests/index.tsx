@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> refactor done, checking if everything works
 import * as React from 'react';
 import { actions, dispatch, listen } from 'codesandbox-api';
 import SplitPane from 'react-split-pane';
@@ -52,6 +55,38 @@ export type File = {
   };
 };
 
+export type TestError = Error & {
+    matcherResult?: boolean;
+    mappedErrors?: Array<{
+        fileName: string;
+        _originalFunctionName: string;
+        _originalColumnNumber: number;
+        _originalLineNumber: number;
+        _originalScriptCode: Array<{
+            lineNumber: number;
+            content: string;
+            highlight: boolean;
+        }>;
+    }>;
+};
+
+export type Test = {
+    testName: string[];
+    duration?: number;
+    status: Status;
+    errors: TestError[];
+    running: boolean;
+    path: string;
+};
+
+export type File = {
+    fileName: string;
+    fileError?: TestError;
+    tests: {
+        [testName: string]: Test;
+    };
+};
+
 type State = {
   selectedFilePath?: string;
   files: {
@@ -69,6 +104,7 @@ const INITIAL_STATE = {
 };
 
 class Tests extends React.Component<Props, State> {
+<<<<<<< HEAD
   state = INITIAL_STATE;
   listener: () => void;
   currentDescribeBlocks: string[] = [];
@@ -78,6 +114,21 @@ class Tests extends React.Component<Props, State> {
       status: Status;
     };
   } = {};
+=======
+    state = INITIAL_STATE;
+    listener: () => void;
+    currentDescribeBlocks: string[] = [];
+    lastFiles: {
+        [path: string]: {
+            file: File;
+            status: Status;
+        };
+    } = {};
+
+    componentDidMount() {
+        this.listener = listen(this.handleMessage);
+    }
+>>>>>>> refactor done, checking if everything works
 
   componentDidMount() {
     this.listener = listen(this.handleMessage);
@@ -105,6 +156,7 @@ class Tests extends React.Component<Props, State> {
     });
   };
 
+<<<<<<< HEAD
   handleMessage = (data: any) => {
     if (data.type === 'test') {
       switch (data.event) {
@@ -122,6 +174,169 @@ class Tests extends React.Component<Props, State> {
             running: true
           });
           break;
+=======
+    handleMessage = (data: any) => {
+        if (data.type === 'test') {
+            switch (data.event) {
+                case 'initialize_tests': {
+                    this.currentDescribeBlocks = [];
+                    this.props.updateStatus('clear');
+                    this.setState(INITIAL_STATE);
+                    break;
+                }
+                case 'total_test_start': {
+                    this.currentDescribeBlocks = [];
+                    this.props.updateStatus('clear');
+                    this.setState({
+                        ...this.state,
+                        running: true
+                    });
+                    break;
+                }
+                case 'total_test_end': {
+                    this.setState({
+                        ...this.state,
+                        running: false
+                    });
+
+                    const files = Object.keys(this.state.files);
+                    const failingTests = files.filter((f) => this.getStatus(this.state.files[f]) === Status.FAIL)
+                        .length;
+                    const passingTests = files.filter((f) => this.getStatus(this.state.files[f]) === Status.PASS)
+                        .length;
+
+                    if (failingTests > 0) {
+                        this.props.updateStatus('error', failingTests);
+                    } else if (passingTests === files.length) {
+                        this.props.updateStatus('success', passingTests);
+                    } else {
+                        // Not all tests are run
+                        this.props.updateStatus('warning', files.length - passingTests);
+                    }
+
+                    break;
+                }
+
+                case 'add_file': {
+                    this.setState(
+                        immer(this.state, (state) => {
+                            state.files[data.path] = {
+                                tests: {},
+                                fileName: data.path
+                            };
+                        })
+                    );
+                    break;
+                }
+                case 'remove_file': {
+                    this.setState(
+                        immer(this.state, (state) => {
+                            if (state.files[data.path]) {
+                                delete state.files[data.path];
+                            }
+                        })
+                    );
+                    break;
+                }
+                case 'file_error': {
+                    this.setState(
+                        immer(this.state, (state) => {
+                            if (state.files[data.path]) {
+                                state.files[data.path].fileError = data.error;
+                            }
+                        })
+                    );
+                    break;
+                }
+                case 'describe_start': {
+                    this.currentDescribeBlocks.push(data.blockName);
+                    break;
+                }
+                case 'describe_end': {
+                    this.currentDescribeBlocks.pop();
+                    break;
+                }
+                case 'add_test': {
+                    const testName = [ ...this.currentDescribeBlocks, data.testName ];
+
+                    this.setState(
+                        immer(this.state, (state) => {
+                            if (!state.files[data.path]) {
+                                state.files[data.path] = {
+                                    tests: {},
+                                    fileName: data.path
+                                };
+                            }
+
+                            state.files[data.path].tests[testName.join('||||')] = {
+                                status: Status.IDLE,
+                                errors: [],
+                                testName,
+                                path: data.path
+                            };
+                        })
+                    );
+                    break;
+                }
+                case 'test_start': {
+                    const test = data.test;
+                    const testName = [ ...test.blocks, test.name ];
+
+                    this.setState(
+                        immer(this.state, (state) => {
+                            const currentTest = state.files[test.path].tests[testName.join('||||')];
+                            if (!currentTest) {
+                                state.files[test.path].tests[testName.join('||||')] = {
+                                    status: Status.RUNNING,
+                                    running: true,
+                                    testName,
+                                    path: test.path
+                                };
+                            } else {
+                                currentTest.status = Status.RUNNING;
+                                currentTest.running = true;
+                            }
+                        })
+                    );
+                    break;
+                }
+                case 'test_end': {
+                    const test = data.test;
+                    const testName = [ ...test.blocks, test.name ];
+
+                    this.setState(
+                        immer(this.state, (state) => {
+                            const existingTest = state.files[test.path].tests[testName.join('||||')];
+
+                            if (existingTest) {
+                                existingTest.status = test.status;
+                                existingTest.running = false;
+                                existingTest.errors = test.errors;
+                                existingTest.duration = test.duration;
+                            } else {
+                                state.files[test.path].tests[testName.join('||||')] = {
+                                    status: test.status,
+                                    running: false,
+                                    errors: test.errors,
+                                    duration: test.duration,
+                                    testName,
+                                    path: test.path
+                                };
+                            }
+                        })
+                    );
+                    break;
+                }
+                default: {
+                    break;
+                }
+            }
+        }
+    };
+    getStatus = (file?: File): Status => {
+        if (file == null) {
+            return Status.IDLE;
+>>>>>>> refactor done, checking if everything works
         }
         case 'total_test_end': {
           this.setState({
@@ -147,6 +362,7 @@ class Tests extends React.Component<Props, State> {
           break;
         }
 
+<<<<<<< HEAD
         case 'add_file': {
           this.setState(
             immer(this.state, (state) => {
@@ -157,6 +373,10 @@ class Tests extends React.Component<Props, State> {
             })
           );
           break;
+=======
+        if (file.fileError) {
+            return Status.FAIL;
+>>>>>>> refactor done, checking if everything works
         }
         case 'remove_file': {
           this.setState(
@@ -189,6 +409,7 @@ class Tests extends React.Component<Props, State> {
         case 'add_test': {
           const testName = [...this.currentDescribeBlocks, data.testName];
 
+<<<<<<< HEAD
           this.setState(
             immer(this.state, (state) => {
               if (!state.files[data.path]) {
@@ -269,6 +490,29 @@ class Tests extends React.Component<Props, State> {
     }
 
     const lastFile = this.lastFiles[file.fileName];
+=======
+        const tests = file.tests;
+        const status = Object.keys(tests).reduce((prev, next) => {
+            const test = tests[next];
+            if (test.status !== Status.IDLE && prev === Status.IDLE) {
+                return test.status;
+            }
+
+            if (test.status === Status.PASS || prev !== Status.PASS) {
+                return prev;
+            }
+
+            if (test.status === Status.FAIL) {
+                return Status.FAIL;
+            }
+
+            if (test.status === Status.RUNNING) {
+                return Status.RUNNING;
+            }
+
+            return prev;
+        }, Status.IDLE) as Status;
+>>>>>>> refactor done, checking if everything works
 
     // Simple memoization
     if (lastFile && file === lastFile.file && lastFile.status != null) {
@@ -279,6 +523,7 @@ class Tests extends React.Component<Props, State> {
       return Status.FAIL;
     }
 
+<<<<<<< HEAD
     const tests = file.tests;
     const status = Object.keys(tests).reduce((prev, next) => {
       const test = tests[next];
@@ -339,6 +584,54 @@ class Tests extends React.Component<Props, State> {
   openFile = (path: string) => {
     dispatch(actions.editor.openModule(path));
   };
+=======
+    toggleWatching = () => {
+        dispatch({
+            type: 'set-test-watching',
+            watching: !this.state.watching
+        });
+        this.setState({ watching: !this.state.watching });
+    };
+
+    runAllTests = () => {
+        this.setState({ files: {} }, () => {
+            dispatch({
+                type: 'run-all-tests'
+            });
+        });
+    };
+
+    runTests = (file: File) => {
+        this.setState(
+            immer(this.state, (state) => {
+                state.files[file.fileName].tests = {};
+            }),
+            () => {
+                dispatch({
+                    type: 'run-tests',
+                    path: file.fileName
+                });
+            }
+        );
+    };
+
+    openFile = (path: string) => {
+        dispatch(actions.editor.openModule(path));
+    };
+
+    render() {
+        if (this.props.hidden) {
+            return null;
+        }
+
+        const { selectedFilePath } = this.state;
+        const selectedFile = this.state.files[selectedFilePath || ''];
+
+        const fileStatuses = {};
+        Object.keys(this.state.files).forEach((path) => {
+            fileStatuses[path] = this.getStatus(this.state.files[path]);
+        });
+>>>>>>> refactor done, checking if everything works
 
   render() {
     if (this.props.hidden) {

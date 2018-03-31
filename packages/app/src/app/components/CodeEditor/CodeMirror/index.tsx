@@ -1,9 +1,12 @@
+declare global {
+    interface Window {
+        tern: any;
+    }
+}
 import * as React from 'react';
-import CodeMirror, { TernServer } from 'codemirror';
+import * as CodeMirror from 'codemirror';
 import { getCodeMirror } from 'app/utils/codemirror';
-import { Settings } from 'app/store/modules/preferences/types';
-import { Sandbox, Module, NPMDependencies, SandboxError } from 'app/store/modules/editor/types';
-import { Props as CodeEditorProps } from '../';
+
 import 'codemirror/addon/dialog/dialog';
 import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/tern/tern';
@@ -12,40 +15,53 @@ import 'codemirror/addon/lint/lint';
 
 import FuzzySearch from '../FuzzySearch';
 import { Container, CodeContainer } from './elements';
+import { Sandbox, Module, SandboxError } from 'app/store/modules/editor/types';
+import { Settings } from 'app/store/modules/preferences/types';
 
-// eslint-disable-next-line
-<<<<<<< HEAD:packages/app/src/app/components/CodeEditor/CodeMirror/index.js
-import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash].worker.js!../Monaco/workers/linter';
-=======
+// tslint:disable-next-line
 // @ts-ignore
-import LinterWorker from 'worker-loader?name=monaco-linter.[hash].worker.js!../Monaco/workers/linter';
->>>>>>> refactor components to TS:packages/app/src/app/components/CodeEditor/CodeMirror/index.tsx
+import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash].worker.js!../Monaco/workers/linter';
 
 const documentCache = {};
 
-const highlightLines = (cm: typeof CodeMirror, highlightedLines: number[]) => {
+const highlightLines = (cm: CodeMirror.Editor, highlightedLines: number[]) => {
     highlightedLines.forEach((line) => {
         cm.addLineClass(+line - 1, 'background', 'cm-line-highlight');
     });
 };
 
-export type Props = CodeEditorProps;
+type NPMDependencies = {
+    [name: string]: string;
+};
+
+type Props = {
+    sandbox: Sandbox;
+    currentModule: Module;
+    onlyViewMode: boolean;
+    highlightedLines: number[];
+    settings: Settings;
+    width?: number;
+    height?: number;
+    onInitialized: (editor: CodemirrorEditor) => () => void;
+    onChange: (code: string) => void;
+    onSave: (code: string) => void;
+    onModuleChange: (moduleId: string) => void;
+};
 
 type State = {
     fuzzySearchEnabled: boolean;
 };
 
 class CodemirrorEditor extends React.Component<Props, State> {
-    codemirror: typeof CodeMirror;
-    codemirrorElement: HTMLDivElement;
-    server: TernServer;
-    sandbox: Sandbox; // TODO: Use from state store when ready
+    codemirror: CodeMirror.Editor;
+    codemirrorElement?: HTMLDivElement;
+    server: any;
+    sandbox: Sandbox;
     currentModule: Module;
     settings: Settings;
     dependencies: NPMDependencies;
     disposeInitializer?: () => void;
     linterWorker?: Worker;
-
     constructor(props: Props) {
         super(props);
         this.state = {
@@ -91,7 +107,7 @@ class CodemirrorEditor extends React.Component<Props, State> {
         });
     };
 
-    validate = (code: string = '', updateLinting: (array: string[]) => void) => {
+    validate = (code: string = '', updateLinting: (lints: string[]) => void) => {
         if (!this.currentModule || !/\.jsx?$/.test(this.currentModule.title)) {
             updateLinting([]);
             return;
@@ -158,13 +174,11 @@ class CodemirrorEditor extends React.Component<Props, State> {
         if (settings.autoCompleteEnabled) {
             const tern = await import(/* webpackChunkName: 'codemirror-tern' */ 'tern');
             // @ts-ignore
-            // tslint:disable-next-line
             const defs = await import(/* webpackChunkName: 'codemirror-tern-definitions' */ 'tern/defs/ecmascript.json');
-            // @ts-ignore
             window.tern = tern;
             this.server =
                 this.server ||
-                new CodeMirror.TernServer({
+                new (CodeMirror as any).TernServer({
                     defs: [ defs ]
                 });
             this.codemirror.on('cursorActivity', updateArgHints);
@@ -216,6 +230,7 @@ class CodemirrorEditor extends React.Component<Props, State> {
                         try {
                             cm.execCommand('emmetExpandAbbreviation');
                         } catch (e) {
+                            // tslint:disable-next-line
                             console.error(e);
                         }
                     }
@@ -272,9 +287,9 @@ class CodemirrorEditor extends React.Component<Props, State> {
     };
 
     changeCode = (code: string = '') => {
-        const pos = this.codemirror.getCursor();
+        const pos = (this.codemirror as any).getCursor();
         this.codemirror.setValue(code);
-        this.codemirror.setCursor(pos);
+        (this.codemirror as any).setCursor(pos);
     };
 
     getMode = async (title: string) => {
@@ -333,7 +348,7 @@ class CodemirrorEditor extends React.Component<Props, State> {
         if (!this.props.onlyViewMode && this.props.settings.vimMode) {
             // We let codemirror handle save when vim mode is enabled, because this allows
             // us to have :w functionality
-            CodeMirror.commands.save = this.handleSaveCode;
+            (CodeMirror as any).commands.save = this.handleSaveCode;
         }
 
         const mode = await this.getMode(title);
@@ -350,7 +365,7 @@ class CodemirrorEditor extends React.Component<Props, State> {
         this.changeSettings(this.settings);
     };
 
-    handleChange = (cm: typeof CodeMirror, change: { origin: string }) => {
+    handleChange = (cm: CodeMirror.Editor, change: { origin: string }) => {
         if (change.origin !== 'setValue' && this.props.onChange) {
             this.props.onChange(cm.getValue());
         }
@@ -384,45 +399,31 @@ class CodemirrorEditor extends React.Component<Props, State> {
 
     setCurrentModule = (moduleId: string) => {
         this.closeFuzzySearch();
-        this.codemirror.focus();
+        if (!window.__isTouch) {
+            this.codemirror.focus();
+        }
         if (this.props.onModuleChange) {
             this.props.onModuleChange(moduleId);
         }
     };
 
-<<<<<<< HEAD
-  setCurrentModule = (moduleId: string) => {
-    this.closeFuzzySearch();
-    if (!window.__isTouch) {
-      this.codemirror.focus();
-    }
-    if (this.props.onModuleChange) {
-      this.props.onModuleChange(moduleId);
-=======
     render() {
-        const { hideNavigation } = this.props;
-        const { settings, sandbox, currentModule } = this;
-
         return (
             <Container>
-                <CodeContainer
-                    fontFamily={settings.fontFamily}
-                    lineHeight={settings.lineHeight}
-                    hideNavigation={hideNavigation}
-                >
+                <CodeContainer fontFamily={this.settings.fontFamily} lineHeight={this.settings.lineHeight}>
                     {this.state.fuzzySearchEnabled && (
                         <FuzzySearch
                             closeFuzzySearch={this.closeFuzzySearch}
                             setCurrentModule={this.setCurrentModule}
-                            modules={sandbox.modules}
-                            directories={sandbox.directories}
-                            currentModuleId={currentModule.id}
+                            modules={this.sandbox.modules}
+                            directories={this.sandbox.directories}
+                            currentModuleId={this.currentModule.id}
                         />
                     )}
                     <div
                         style={{
                             height: '100%',
-                            fontSize: settings.fontSize || 14
+                            fontSize: this.settings.fontSize || 14
                         }}
                         ref={(node) => {
                             this.codemirrorElement = node;
@@ -431,7 +432,6 @@ class CodemirrorEditor extends React.Component<Props, State> {
                 </CodeContainer>
             </Container>
         );
->>>>>>> more fixes
     }
 }
 

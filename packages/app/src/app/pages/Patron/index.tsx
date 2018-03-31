@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { connect } from 'app/fluent'
+import { connect, WithCerebral } from 'app/fluent';
 
 import Title from 'app/components/Title';
 import SubTitle from 'app/components/SubTitle';
@@ -12,41 +12,36 @@ import Navigation from 'app/pages/common/Navigation';
 import PricingModal from './PricingModal';
 import { Content } from './elements';
 
-export default connect()
-  .with(({ signals }) => ({
-    onMount: signals.patron.patronMounted
-  }))
-  .toClass(props =>
-    class Patron extends React.Component<typeof props> {
-      componentDidMount() {
-        this.props.onMount()
-      }
-      render() {
+type Props = WithCerebral;
+
+class Patron extends React.Component<Props> {
+    componentDidMount() {
+        this.props.signals.patron.patronMounted();
+    }
+    render() {
         document.title = 'Patron - CodeSandbox';
         return (
-          <MaxWidth>
-            <Margin vertical={1.5} horizontal={1.5}>
-              {
-                // @ts-ignore
-                <Navigation title="Become a Patron" />
-              }
-              <Content>
-                <MaxWidth width={1024}>
-                  <Title>Become a CodeSandbox Patron!</Title>
-                  <SubTitle>
-                    You can support us by paying a monthly amount of your choice.
-                    <br />
-                    The money goes to all expenses of CodeSandbox.
-                  </SubTitle>
+            <MaxWidth>
+                <Margin vertical={1.5} horizontal={1.5}>
+                    <Navigation title="Become a Patron" />
+                    <Content>
+                        <MaxWidth width={1024}>
+                            <Title>Become a CodeSandbox Patron!</Title>
+                            <SubTitle>
+                                You can support us by paying a monthly amount of your choice.
+                                <br />
+                                The money goes to all expenses of CodeSandbox.
+                            </SubTitle>
 
-                  <Centered horizontal>
-                    <PricingModal />
-                  </Centered>
-                </MaxWidth>
-              </Content>
-            </Margin>
-          </MaxWidth>
+                            <Centered horizontal>
+                                <PricingModal />
+                            </Centered>
+                        </MaxWidth>
+                    </Content>
+                </Margin>
+            </MaxWidth>
         );
-      }
     }
-  )
+}
+
+export default connect<Props>()(Patron);

@@ -18,23 +18,14 @@ export function dispatch(message: Object) {
 
     const newMessage = { ...message, codesandbox: true };
     notifyListeners(newMessage);
-<<<<<<< HEAD
     notifyFrames(newMessage);
-=======
->>>>>>> more fixes
 
     if (isStandalone) return;
 
     if (window.opener) {
-<<<<<<< HEAD
         window.opener.postMessage(newMessage, '*');
     } else {
         window.parent.postMessage(newMessage, '*');
-=======
-        window.opener.postMessage(newMessage, host);
-    } else {
-        window.parent.postMessage(newMessage, host);
->>>>>>> more fixes
     }
 }
 
@@ -62,7 +53,6 @@ export function notifyListeners(data: Object, source?: MessageEvent['source']) {
             listeners[listenerId](data, source);
         }
     });
-<<<<<<< HEAD
 }
 
 function notifyFrames(message: Object) {
@@ -72,13 +62,10 @@ function notifyFrames(message: Object) {
             frame.postMessage({ ...rawMessage, codesandbox: true }, '*');
         }
     });
-=======
->>>>>>> more fixes
 }
 
 function eventListener(e: MessageEvent) {
     const { data } = e;
-<<<<<<< HEAD
 
     if (data && data.codesandbox) {
         notifyListeners(data, e.source);
@@ -94,11 +81,6 @@ export function registerFrame(frame: Window) {
     if (bundlers.indexOf(frame) === -1) {
         bundlers.push(frame);
     }
-=======
-    if (data.codesandbox) {
-        notifyListeners(data, e.source);
-    }
->>>>>>> more fixes
 }
 
 // We now start listening so we can let our listeners know

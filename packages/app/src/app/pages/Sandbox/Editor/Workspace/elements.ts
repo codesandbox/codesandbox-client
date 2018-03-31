@@ -19,7 +19,6 @@ export const getContainerStyles = (props) => {
     border-left: 2px solid transparent;
     cursor: pointer;
     user-select: none;
-
     &:hover {
       ${props.active || props.editing
           ? ''
@@ -28,7 +27,6 @@ export const getContainerStyles = (props) => {
         color: ${theme.background.lighten(5)()};
         border-color: ${color.darken(0.4)()};
       `}
-
       > div {
         opacity: 1 !important;
       }
@@ -57,17 +55,13 @@ export const getContainerStyles = (props) => {
     `;
     }
 
-<<<<<<< HEAD
-  if (props.rightColors) {
-    styles += `
+    if (props.rightColors) {
+        styles += `
       border-right: 2px solid ${props.rightColors[0]};
     `;
-  }
+    }
 
-  return styles;
-=======
     return styles;
->>>>>>> more fixes
 };
 
 export const EntryContainer = styled(
@@ -76,18 +70,16 @@ export const EntryContainer = styled(
         onDoubleClick?: () => void;
         onMouseEnter?: () => void;
         onMouseLeave?: () => void;
-        nameValidationError?: boolean;
-        depth?: number;
         color?: string;
-        alternative?: boolean;
-        noTransition?: boolean;
+        depth?: number;
         active?: boolean;
         editing?: boolean;
-        type?: string;
+        nameValidationError?: boolean;
+        rightColors?: string[];
+        alternative?: boolean;
+        noTransition?: boolean;
     }>('span')
-)`
-  ${(props) => getContainerStyles(props)};
-`;
+)`${(props) => getContainerStyles(props)};`;
 
 export const Container = styled.div`
     position: absolute;
@@ -99,7 +91,6 @@ export const Container = styled.div`
     width: 100%;
     overflow-y: overlay;
     overflow-x: auto;
-
     > div {
         ${fadeIn(0)};
     }
@@ -141,45 +132,43 @@ export const IconArea = styled.div`
 
 export const WorkspaceInputContainer = styled(
     component<{
-        style?: {};
         errorMessage?: string;
+        style?: {};
     }>()
 )`
-  display: inline-block;
-  display: flex;
-  overflow: visible;
-  font-size: 0.875rem;
-  margin: 0.5rem 0.75rem;
-  input,
-  textarea {
-    transition: 0.3s ease background-color, 0.3s ease border-color;
-    font-family: inherit;
-    margin: 0 0.25rem;
-    padding: 0.25rem;
-    width: 100%;
-    outline: none;
-    border: none;
-    border-radius: 2px;
-    background-color: ${(props) =>
-        props.errorMessage ? props.theme.redBackground.clearer(0.5) : 'rgba(0, 0, 0, 0.2)'};
-    color: ${(props) => (props.errorMessage ? props.theme.red : props.theme.white)};
-    border: 1px solid transparent;
-    &:focus {
-      border-color: ${(props) => props.theme.secondary.clearer(0.5)};
+    display: inline-block;
+    display: flex;
+    overflow: visible;
+    font-size: 0.875rem;
+    margin: 0.5rem 0.75rem;
+    input,
+    textarea {
+        transition: 0.3s ease background-color, 0.3s ease border-color;
+        font-family: inherit;
+        margin: 0 0.25rem;
+        padding: 0.25rem;
+        width: 100%;
+        outline: none;
+        border: none;
+        border-radius: 2px;
+        background-color: ${(props) =>
+            props.errorMessage ? props.theme.redBackground.clearer(0.5) : 'rgba(0, 0, 0, 0.2)'};
+        color: ${(props) => (props.errorMessage ? props.theme.red : props.theme.white)};
+        border: 1px solid transparent;
+        &:focus {
+            border-color: ${(props) => props.theme.secondary.clearer(0.5)};
+        }
     }
-  }
-  input::-webkit-input-placeholder {
-    color: ${(props) => props.theme.background2.lighten(2.9)};
-  }
+    input::-webkit-input-placeholder {
+        color: ${(props) => props.theme.background2.lighten(2.9)};
+    }
 `;
 
 export const ItemTitle = styled.div`
     font-size: 1rem;
     font-weight: 400;
-
     margin: 1rem;
     margin-bottom: 0.5rem;
-
     color: ${(props) => props.theme.templateColor || props.theme.secondary};
 `;
 

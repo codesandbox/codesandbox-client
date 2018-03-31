@@ -1,32 +1,29 @@
 import * as React from 'react';
-import { connect } from 'app/fluent';
+import { connect, WithCerebral } from 'app/fluent';
 
 import Button from 'app/components/Button';
 
 import { ButtonContainer } from './elements';
 
-export default connect()
-  .with(({ signals }) => ({
-    modalOpened: signals.modalOpened
-  }))
-  .to(
-    function AddVersion({ modalOpened, children }) {
-      return (
+type Props = WithCerebral;
+
+const AddVersion: React.SFC<Props> = ({ signals, children }) => {
+    return (
         <div style={{ position: 'relative' }}>
-          <ButtonContainer>
-            <Button
-              block
-              small
-              onClick={() =>
-                modalOpened({
-                  modal: 'searchDependencies',
-                })
-              }
-            >
-              {children}
-            </Button>
-          </ButtonContainer>
+            <ButtonContainer>
+                <Button
+                    block
+                    small
+                    onClick={() =>
+                        signals.modalOpened({
+                            modal: 'searchDependencies'
+                        })}
+                >
+                    {children}
+                </Button>
+            </ButtonContainer>
         </div>
-      );
-    }
-  )
+    );
+};
+
+export default connect<Props>()(AddVersion);
