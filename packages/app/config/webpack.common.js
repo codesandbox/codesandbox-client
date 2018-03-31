@@ -20,7 +20,7 @@ const __PROD__ = NODE_ENV === 'production'; // eslint-disable-line no-underscore
 // const __TEST__ = NODE_ENV === 'test'; // eslint-disable-line no-underscore-dangle
 const babelConfig = __DEV__ ? babelDev : babelProd;
 
-const publicPath = SANDBOX_ONLY ? '/' : getHost() + '/';
+const publicPath = SANDBOX_ONLY || __DEV__ ? '/' : getHost() + '/';
 
 // Shim for `eslint-plugin-vue/lib/index.js`
 const ESLINT_PLUGIN_VUE_INDEX = `module.exports = {
