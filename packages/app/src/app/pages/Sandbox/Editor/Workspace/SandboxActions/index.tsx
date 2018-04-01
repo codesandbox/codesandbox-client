@@ -6,9 +6,7 @@ import { WorkspaceInputContainer, WorkspaceSubtitle } from '../elements';
 
 import { PrivacySelect, PatronMessage } from './elements';
 
-type Props = WithCerebral;
-
-const SandboxActions: React.SFC<Props> = ({ store, signals }) => {
+const SandboxActions: React.SFC<WithCerebral> = ({ store, signals }) => {
     const sandbox = store.editor.currentSandbox;
 
     return (
@@ -58,4 +56,4 @@ const SandboxActions: React.SFC<Props> = ({ store, signals }) => {
     );
 };
 
-export default connect<Props>()(SandboxActions);
+export default connect()(SandboxActions);

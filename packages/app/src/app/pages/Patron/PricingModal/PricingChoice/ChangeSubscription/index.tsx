@@ -4,11 +4,13 @@ import * as moment from 'moment';
 
 import { SmallText, Buttons, StyledButton } from './elements';
 
-type Props = WithCerebral & {
+type ExternalProps = {
     date: string;
     cancelSubscription: () => void;
     updateSubscription: () => void;
 };
+
+type Props = ExternalProps & WithCerebral;
 
 const ChangeSubscription: React.SFC<Props> = ({ date, store, signals, cancelSubscription, updateSubscription }) => {
     const isLoading = store.patron.isUpdatingSubscription;
@@ -54,4 +56,4 @@ const ChangeSubscription: React.SFC<Props> = ({ date, store, signals, cancelSubs
     );
 };
 
-export default connect<Props>()(ChangeSubscription);
+export default connect<ExternalProps>()(ChangeSubscription);

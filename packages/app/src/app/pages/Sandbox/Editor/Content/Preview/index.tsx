@@ -5,10 +5,12 @@ import { connect, WithCerebral } from 'app/fluent';
 import BasePreview from 'app/components/Preview';
 import FlyingContainer from './FlyingContainer';
 
-type Props = WithCerebral & {
+type ExternalProps = {
     width?: number;
     height?: number;
 };
+
+type Props = ExternalProps & WithCerebral;
 
 type State = {
     aligned?: 'right' | 'bottom';
@@ -233,4 +235,4 @@ class Preview extends React.Component<Props, State> {
     }
 }
 
-export default connect<Props>()(Preview);
+export default connect<ExternalProps>()(Preview);

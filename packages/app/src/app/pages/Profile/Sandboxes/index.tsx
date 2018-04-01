@@ -8,11 +8,13 @@ import { Navigation, Notice } from './elements';
 
 const PER_PAGE_COUNT = 15;
 
-type Props = WithCerebral & {
+type ExternalProps = {
     source: 'currentSandboxes' | 'currentLikedSandboxes';
     page: number;
     baseUrl: string;
 };
+
+type Props = ExternalProps & WithCerebral;
 
 class Sandboxes extends React.Component<Props> {
     static defaultProps = {
@@ -107,4 +109,4 @@ class Sandboxes extends React.Component<Props> {
     }
 }
 
-export default connect<Props>()(Sandboxes);
+export default connect<ExternalProps>()(Sandboxes);

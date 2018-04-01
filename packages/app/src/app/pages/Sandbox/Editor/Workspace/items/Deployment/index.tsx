@@ -5,9 +5,7 @@ import Button from 'app/components/Button';
 import ZeitIntegration from '../../../../../common/ZeitIntegration';
 import { Description, WorkspaceInputContainer } from '../../elements';
 
-type Props = WithCerebral;
-
-const Deployment: React.SFC<Props> = ({ signals, store }) => (
+const Deployment: React.SFC<WithCerebral> = ({ signals, store }) => (
     <div>
         <Description>
             You can deploy a production version of your sandbox using{' '}
@@ -31,4 +29,4 @@ const Deployment: React.SFC<Props> = ({ signals, store }) => (
     </div>
 );
 
-export default connect<Props>()(Deployment);
+export default connect()(Deployment);

@@ -15,9 +15,11 @@ import SignInButton from '../SignInButton';
 import UserMenu from '../UserMenu';
 import { LogoWithBorder, Border, Title, Actions, Action } from './elements';
 
-type Props = WithCerebral & {
+type ExternalProps = {
     title?: string;
 };
+
+type Props = ExternalProps & WithCerebral;
 
 const Navigation: React.SFC<Props> = ({ signals, store, title }) => {
     const { user, isPatron } = store;
@@ -61,4 +63,4 @@ const Navigation: React.SFC<Props> = ({ signals, store, title }) => {
         </Row>
     );
 };
-export default connect<Props>()(Navigation);
+export default connect<ExternalProps>()(Navigation);

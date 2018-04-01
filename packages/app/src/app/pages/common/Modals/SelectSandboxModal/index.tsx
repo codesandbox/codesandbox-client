@@ -4,9 +4,7 @@ import Sandbox from './Sandbox';
 
 import { Padding } from './elements';
 
-type Props = WithCerebral;
-
-const SelectSandboxModal: React.SFC<Props> = ({ store, signals }) => {
+const SelectSandboxModal: React.SFC<WithCerebral> = ({ store, signals }) => {
     if (store.profile.isLoadingSandboxes) {
         return <Padding>Loading sandboxes...</Padding>;
     }
@@ -29,4 +27,4 @@ const SelectSandboxModal: React.SFC<Props> = ({ store, signals }) => {
         </div>
     );
 };
-export default connect<Props>()(SelectSandboxModal);
+export default connect()(SelectSandboxModal);

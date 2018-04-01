@@ -24,9 +24,7 @@ import Action from './Action';
 
 import { Container, Right, Left } from './elements';
 
-type Props = WithCerebral;
-
-const Header: React.SFC<Props> = ({ store, signals }) => {
+const Header: React.SFC<WithCerebral> = ({ store, signals }) => {
     const sandbox = store.editor.currentSandbox;
 
     return (
@@ -129,4 +127,4 @@ const Header: React.SFC<Props> = ({ store, signals }) => {
     );
 };
 
-export default connect<Props>()(Header);
+export default connect()(Header);

@@ -12,9 +12,7 @@ import Navigation from 'app/pages/common/Navigation';
 import PricingModal from './PricingModal';
 import { Content } from './elements';
 
-type Props = WithCerebral;
-
-class Patron extends React.Component<Props> {
+class Patron extends React.Component<WithCerebral> {
     componentDidMount() {
         this.props.signals.patron.patronMounted();
     }
@@ -44,4 +42,4 @@ class Patron extends React.Component<Props> {
     }
 }
 
-export default connect<Props>()(Patron);
+export default connect()(Patron);

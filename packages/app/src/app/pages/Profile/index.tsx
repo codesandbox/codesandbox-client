@@ -15,10 +15,11 @@ import Sandboxes from './Sandboxes';
 
 import { Container, Content } from './elements';
 
-type Props = WithCerebral &
-    RouteComponentProps<{
-        username: string;
-    }>;
+type ExternalProps = RouteComponentProps<{
+    username: string;
+}>;
+
+type Props = ExternalProps & WithCerebral;
 
 class Profile extends React.Component<Props> {
     componentDidMount() {
@@ -96,4 +97,4 @@ class Profile extends React.Component<Props> {
     }
 }
 
-export default connect<Props>()(Profile);
+export default connect<ExternalProps>()(Profile);

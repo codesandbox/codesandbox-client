@@ -5,9 +5,7 @@ import { KEYBINDINGS } from 'common/utils/keybindings';
 import { Title, SubDescription, SubContainer, PreferenceContainer, PaddedPreference } from '../elements';
 import { Rule, ErrorMessage } from './elements';
 
-type Props = WithCerebral;
-
-class KeyMapping extends React.Component<Props> {
+class KeyMapping extends React.Component<WithCerebral> {
     state = { error: null };
 
     getUserBindings = () => {
@@ -102,4 +100,4 @@ class KeyMapping extends React.Component<Props> {
     }
 }
 
-export default connect<Props>()(KeyMapping);
+export default connect()(KeyMapping);

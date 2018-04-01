@@ -10,7 +10,7 @@ import DirectoryChildren from './DirectoryChildren';
 import getModuleParents from './getModuleParents';
 import { EntryContainer, Overlay, Opener } from './elements';
 
-type Props = WithCerebral & {
+type ExternalProps = {
     id: string;
     shortid: string;
     root?: boolean;
@@ -19,6 +19,8 @@ type Props = WithCerebral & {
     depth: number;
     innerRef?: (entry: DirectoryEntry) => void;
 };
+
+type Props = ExternalProps & WithCerebral;
 
 type State = {
     creating: string;
@@ -344,4 +346,4 @@ function collectTarget(connectMonitor, monitor) {
     };
 }
 
-export default connect<Props>()(DropTarget('ENTRY', entryTarget, collectTarget)(DirectoryEntry));
+export default connect<ExternalProps>()(DropTarget('ENTRY', entryTarget, collectTarget)(DirectoryEntry));

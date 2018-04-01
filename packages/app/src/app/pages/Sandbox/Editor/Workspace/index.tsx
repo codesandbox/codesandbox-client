@@ -28,9 +28,7 @@ const idToItem = {
     live: Live
 };
 
-type Props = WithCerebral;
-
-const Workspace: React.SFC<Props> = ({ store }) => {
+const Workspace: React.SFC<WithCerebral> = ({ store }) => {
     const sandbox = store.editor.currentSandbox;
     const preferences = store.preferences;
 
@@ -78,4 +76,4 @@ const Workspace: React.SFC<Props> = ({ store }) => {
     );
 };
 
-export default connect<Props>()(Workspace);
+export default connect()(Workspace);

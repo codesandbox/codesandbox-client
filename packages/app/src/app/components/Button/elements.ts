@@ -1,24 +1,35 @@
 import styled, { css, keyframes, ThemeProps } from 'app/styled-components';
 import Link from 'react-router-dom/Link';
-import { Props } from './'
+import { Props } from './';
 
 const getBackgroundColor = ({ theme, disabled, red, secondary }: ThemeProps<Props>) => {
-  if (disabled) return `background: ${theme.background2.darken(0.1)()}`;
-  if (secondary) return `background: #3A4B5D`;
-  if (red)
-    return `background-image: linear-gradient(270deg, #F27777, #400000);`;
-  return `background-image: linear-gradient(270deg, #fed29d, #A58B66, #7abae8, #56a0d6);`;
+    if (disabled) {
+        return `background: ${theme.background2.darken(0.1)()}`;
+    }
+    if (secondary) {
+        return `background: #3A4B5D`;
+    }
+    if (red) {
+        return `background-image: linear-gradient(270deg, #F27777, #400000);`;
+    }
+    return `background-image: linear-gradient(270deg, #fed29d, #A58B66, #7abae8, #56a0d6);`;
 };
 
 const getColor = ({ theme, disabled, secondary }: ThemeProps<Props>) => {
-  if (disabled) return theme.background2.lighten(1.5)();
-  if (secondary) return `#56a0d6`;
-  return 'white';
+    if (disabled) {
+        return theme.background2.lighten(1.5)();
+    }
+    if (secondary) {
+        return `#56a0d6`;
+    }
+    return 'white';
 };
 
 const getBorder = ({ secondary }: ThemeProps<Props>) => {
-  if (secondary) return `1px solid #56a0d6`;
-  return 'none';
+    if (secondary) {
+        return `1px solid #56a0d6`;
+    }
+    return 'none';
 };
 
 const forward = keyframes`
@@ -32,33 +43,33 @@ const backward = keyframes`
 `;
 
 const styles = css`
-  transition: 0.3s ease all;
-  animation-name: ${backward};
-  animation-duration: 300ms;
-  animation-timing-function: ease;
+    transition: 0.3s ease all;
+    animation-name: ${backward};
+    animation-duration: 300ms;
+    animation-timing-function: ease;
 
-  border: none;
-  outline: none;
-  ${(props: ThemeProps<Props>) => getBackgroundColor(props)};
-  background-size: 720%;
+    border: none;
+    outline: none;
+    ${(props: ThemeProps<Props>) => getBackgroundColor(props)};
+    background-size: 720%;
 
-  border: ${props => getBorder(props)};
-  border-radius: 4px;
+    border: ${(props) => getBorder(props)};
+    border-radius: 4px;
 
-  box-sizing: border-box;
-  font-size: 1.125em;
-  text-align: center;
-  color: ${props => getColor(props)};
-  font-weight: 400;
-  ${props => !props.disabled && `box-shadow: 0 3px 3px rgba(0, 0, 0, 0.5);`};
-  width: ${props => (props.block ? '100%' : 'inherit')};
+    box-sizing: border-box;
+    font-size: 1.125em;
+    text-align: center;
+    color: ${(props) => getColor(props)};
+    font-weight: 400;
+    ${(props) => !props.disabled && `box-shadow: 0 3px 3px rgba(0, 0, 0, 0.5);`};
+    width: ${(props) => (props.block ? '100%' : 'inherit')};
 
-  user-select: none;
-  text-decoration: none;
+    user-select: none;
+    text-decoration: none;
 
-  ${props =>
-    !props.disabled &&
-    `
+    ${(props) =>
+        !props.disabled &&
+        `
   cursor: pointer;
   &:hover {
     animation-name: ${forward};
@@ -80,9 +91,5 @@ const styles = css`
 export const LinkButton = styled(Link)`
   ${styles};
 `;
-export const AButton = styled.a`
-  ${styles};
-`;
-export const Button = styled.button`
-  ${styles};
-`;
+export const AButton = styled.a`${styles};`;
+export const Button = styled.button`${styles};`;

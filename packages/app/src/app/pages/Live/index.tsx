@@ -170,4 +170,4 @@ class LivePage extends React.Component<Props> {
     }
 }
 
-export default DragDropContext(HTML5Backend)(connect<Props>()(LivePage));
+export default connect()(DragDropContext(HTML5Backend)(LivePage));

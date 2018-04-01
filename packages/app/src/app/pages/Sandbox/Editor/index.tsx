@@ -12,9 +12,7 @@ import Content from './Content';
 import Header from './Header';
 import Navigation from './Navigation';
 
-type Props = WithCerebral;
-
-const ContentSplit: React.SFC<Props> = ({ signals, store }) => {
+const ContentSplit: React.SFC<WithCerebral> = ({ signals, store }) => {
     const sandbox = store.editor.currentSandbox;
     const sandboxOwned = sandbox.owned;
 
@@ -83,4 +81,4 @@ const ContentSplit: React.SFC<Props> = ({ signals, store }) => {
     );
 };
 
-export default hot(module)(connect<Props>()(ContentSplit));
+export default hot(module)(connect()(ContentSplit));

@@ -11,11 +11,13 @@ import { Sandbox } from 'app/store/modules/editor/types';
 
 const MaybeTooltip = ({ loggedIn, ...props }) => (loggedIn ? <Tooltip {...props} /> : <div {...props} />);
 
-type Props = WithCerebral & {
+type ExternalProps = {
     sandbox: Sandbox;
     className?: string;
     colorless?: boolean;
 };
+
+type Props = ExternalProps & WithCerebral;
 
 const LikeHeart: React.SFC<Props> = ({ sandbox, store, signals, className, colorless }) => {
     return (
@@ -36,4 +38,4 @@ const LikeHeart: React.SFC<Props> = ({ sandbox, store, signals, className, color
     );
 };
 
-export default connect<Props>()(LikeHeart);
+export default connect<ExternalProps>()(LikeHeart);

@@ -8,9 +8,7 @@ import Keys from './Keys';
 
 import { Container, Items, InputContainer, Entry, Title, Keybindings } from './elements';
 
-type Props = WithCerebral;
-
-class QuickActions extends React.Component<Props> {
+class QuickActions extends React.Component<WithCerebral> {
     updateGenie = () => {
         const keybindings = this.props.store.preferences.keybindings;
         const signals = this.props.signals;
@@ -131,4 +129,4 @@ class QuickActions extends React.Component<Props> {
     }
 }
 
-export default connect<Props>()(QuickActions);
+export default connect()(QuickActions);

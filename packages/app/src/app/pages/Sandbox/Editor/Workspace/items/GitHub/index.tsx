@@ -6,9 +6,7 @@ import Git from '../../Git';
 import CreateRepo from '../../CreateRepo';
 import { Description } from '../../elements';
 
-type Props = WithCerebral;
-
-const GitHub: React.SFC<Props> = ({ store }) => {
+const GitHub: React.SFC<WithCerebral> = ({ store }) => {
     const sandbox = store.editor.currentSandbox;
 
     return store.user.integrations.github ? sandbox.originalGit ? ( // eslint-disable-line
@@ -28,4 +26,4 @@ const GitHub: React.SFC<Props> = ({ store }) => {
     );
 };
 
-export default connect<Props>()(GitHub);
+export default connect()(GitHub);

@@ -10,9 +10,7 @@ import Margin from 'common/components/spacing/Margin';
 
 import { Container, Content, Code } from './elements';
 
-type Props = WithCerebral;
-
-class CliInstructions extends React.PureComponent<Props> {
+class CliInstructions extends React.PureComponent<WithCerebral> {
     componentDidMount() {
         this.props.signals.cliInstructionsMounted();
     }
@@ -42,4 +40,4 @@ class CliInstructions extends React.PureComponent<Props> {
     }
 }
 
-export default connect<Props>()(CliInstructions);
+export default connect()(CliInstructions);

@@ -27,9 +27,11 @@ import {
     PropertyName
 } from './elements';
 
-type Props = WithCerebral & {
+type ExternalProps = {
     editable?: boolean;
 };
+
+type Props = ExternalProps & WithCerebral;
 
 type State = {
     editingTitle: boolean;
@@ -255,4 +257,4 @@ class Project extends React.Component<Props, State> {
     }
 }
 
-export default connect<Props>()(Project);
+export default connect<ExternalProps>()(Project);

@@ -74,9 +74,7 @@ const FileConfig: React.SFC<FileConfigProps> = ({ info, path, createModule, open
     );
 };
 
-type Props = WithCerebral;
-
-const ConfigurationFiles: React.SFC<Props> = ({ store, signals }) => {
+const ConfigurationFiles: React.SFC<WithCerebral> = ({ store, signals }) => {
     const sandbox = store.editor.currentSandbox;
     const { configurationFiles } = getDefinition(sandbox.template);
 
@@ -142,4 +140,4 @@ const ConfigurationFiles: React.SFC<Props> = ({ store, signals }) => {
     );
 };
 
-export default connect<Props>()(ConfigurationFiles);
+export default connect()(ConfigurationFiles);

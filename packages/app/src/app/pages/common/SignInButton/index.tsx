@@ -5,9 +5,7 @@ import GithubIcon from 'react-icons/lib/go/mark-github';
 import Button from 'app/components/Button';
 import Row from 'common/components/flex/Row';
 
-type Props = WithCerebral;
-
-const SignInButton: React.SFC<Props> = (props) => {
+const SignInButton: React.SFC<WithCerebral> = (props) => {
     const { signals } = props;
 
     return (
@@ -25,4 +23,4 @@ const SignInButton: React.SFC<Props> = (props) => {
     );
 };
 
-export default connect<Props>()(SignInButton);
+export default connect()(SignInButton);

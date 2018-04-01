@@ -33,6 +33,7 @@ export const TabsContainer = styled.div`
 
 export const StyledPrettierIcon = styled<{
     disabled: boolean;
+    onClick: () => void;
 }>(PrettierIcon)`
   transition: 0.3s ease opacity;
   width: 1.125rem;
@@ -73,6 +74,7 @@ export const Line = styled.div`
 export const StyledWindowIcon = styled<{
     active: boolean;
     disabled?: boolean;
+    onClick: () => void;
 }>(({ active, ...rest }) => <WindowIcon {...rest} />)`
   transition: 0.3s ease opacity;
   width: 1.25rem;

@@ -8,13 +8,11 @@ import Notification from './Notification';
 
 import { NotificationContainer } from './elements';
 
-type Props = WithCerebral;
-
 type State = {
     hovering: boolean;
 };
 
-class Notifications extends React.Component<Props, State> {
+class Notifications extends React.Component<WithCerebral, State> {
     state: State = {
         hovering: false
     };
@@ -96,4 +94,4 @@ class Notifications extends React.Component<Props, State> {
     }
 }
 
-export default connect<Props>()(Notifications);
+export default connect()(Notifications);

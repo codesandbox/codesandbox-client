@@ -5,7 +5,7 @@ import validateTitle from '../validateTitle';
 import ModuleEntry from './ModuleEntry';
 import DirectoryEntry from '../';
 
-type Props = WithCerebral & {
+type ExternalProps = {
     depth: number;
     renameModule: (id: string, title: string) => void;
     setCurrentModule: (id: string) => void;
@@ -13,6 +13,8 @@ type Props = WithCerebral & {
     deleteEntry: (id: string, title: string) => void;
     markTabsNotDirty: () => void;
 };
+
+type Props = ExternalProps & WithCerebral;
 
 class DirectoryChildren extends React.Component<Props> {
     validateTitle = (id, title) => {
@@ -53,4 +55,4 @@ class DirectoryChildren extends React.Component<Props> {
     }
 }
 
-export default connect<Props>()(DirectoryChildren);
+export default connect<ExternalProps>()(DirectoryChildren);

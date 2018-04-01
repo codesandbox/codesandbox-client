@@ -6,9 +6,7 @@ import Row from 'common/components/flex/Row';
 
 import { Container, Heading, Explanation } from './elements';
 
-type Props = WithCerebral;
-
-const ZenModeIntroduction: React.SFC<Props> = ({ signals }) => {
+const ZenModeIntroduction: React.SFC<WithCerebral> = ({ signals }) => {
     return (
         <Container>
             <Heading>Zen Mode Explained</Heading>
@@ -32,4 +30,4 @@ const ZenModeIntroduction: React.SFC<Props> = ({ signals }) => {
     );
 };
 
-export default connect<Props>()(ZenModeIntroduction);
+export default connect()(ZenModeIntroduction);

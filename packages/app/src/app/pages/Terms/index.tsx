@@ -13,9 +13,7 @@ import PrivacyPolicy from './PrivacyPolicy';
 
 import { Content, NavigationLink, LegalNavigation } from './elements';
 
-type Props = WithCerebral;
-
-class Terms extends React.Component<Props> {
+class Terms extends React.Component<WithCerebral> {
     componentDidMount() {
         this.props.signals.termsMounted();
     }
@@ -61,4 +59,4 @@ class Terms extends React.Component<Props> {
     }
 }
 
-export default connect<Props>()(Terms);
+export default connect()(Terms);

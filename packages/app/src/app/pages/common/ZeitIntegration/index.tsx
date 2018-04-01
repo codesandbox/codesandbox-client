@@ -4,9 +4,11 @@ import { connect, WithCerebral } from 'app/fluent';
 import ZeitLogo from 'app/components/ZeitLogo';
 import Integration from 'app/components/Integration';
 
-type Props = WithCerebral & {
+type ExternalProps = {
     small?: boolean;
 };
+
+type Props = ExternalProps & WithCerebral;
 
 const ZeitIntegration: React.SFC<Props> = ({ store, signals, small }) => {
     return (
@@ -24,4 +26,4 @@ const ZeitIntegration: React.SFC<Props> = ({ store, signals, small }) => {
     );
 };
 
-export default connect<Props>()(ZeitIntegration);
+export default connect<ExternalProps>()(ZeitIntegration);

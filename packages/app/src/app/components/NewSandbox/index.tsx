@@ -44,9 +44,7 @@ const Logo: React.SFC<LogoProps> = ({ Icon, width, height, text, href, onClick }
     );
 };
 
-type Props = WithCerebral & {};
-
-const NewSandbox: React.SFC<Props> = ({ signals }) => {
+const NewSandbox: React.SFC<WithCerebral> = ({ signals }) => {
     return (
         <Container>
             <RowContainer>
@@ -130,4 +128,4 @@ const NewSandbox: React.SFC<Props> = ({ signals }) => {
     );
 };
 
-export default connect<Props>()(NewSandbox);
+export default connect()(NewSandbox);

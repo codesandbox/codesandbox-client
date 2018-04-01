@@ -9,9 +9,7 @@ import { WorkspaceSubtitle, WorkspaceInputContainer } from '../elements';
 
 import { Container, Error } from './elements';
 
-type Props = WithCerebral;
-
-class CreateRepo extends React.Component<Props> {
+class CreateRepo extends React.Component<WithCerebral> {
     updateRepoTitle = (e) => {
         this.props.signals.git.repoTitleChanged({ title: e.target.value });
     };
@@ -53,4 +51,4 @@ class CreateRepo extends React.Component<Props> {
     }
 }
 
-export default connect<Props>()(CreateRepo);
+export default connect()(CreateRepo);

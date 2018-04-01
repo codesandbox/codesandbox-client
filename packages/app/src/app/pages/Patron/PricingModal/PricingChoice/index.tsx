@@ -13,9 +13,11 @@ import ThankYou from './ThankYou';
 import { Title } from '../elements';
 import { Container, PriceInput, Month, Currency, Notice, RangeContainer, StyledSignInButton } from './elements';
 
-type Props = WithCerebral & {
+type ExternalProps = {
     badge: string;
 };
+
+type Props = ExternalProps & WithCerebral;
 
 const PricingChoice: React.SFC<Props> = ({ store, signals, badge }) => {
     return (
@@ -70,4 +72,4 @@ const PricingChoice: React.SFC<Props> = ({ store, signals, badge }) => {
     );
 };
 
-export default connect<Props>()(PricingChoice);
+export default connect<ExternalProps>()(PricingChoice);

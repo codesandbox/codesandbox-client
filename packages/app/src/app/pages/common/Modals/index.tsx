@@ -66,9 +66,7 @@ const modals = {
     }
 };
 
-type Props = WithCerebral;
-
-const Modals: React.SFC<Props> = ({ store, signals }) => {
+const Modals: React.SFC<WithCerebral> = ({ store, signals }) => {
     const modal = store.currentModal && modals[store.currentModal];
 
     return (
@@ -82,4 +80,4 @@ const Modals: React.SFC<Props> = ({ store, signals }) => {
     );
 };
 
-export default connect<Props>()(Modals);
+export default connect()(Modals);

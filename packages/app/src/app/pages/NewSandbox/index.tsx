@@ -9,9 +9,7 @@ import Margin from 'common/components/spacing/Margin';
 import Title from 'app/components/Title';
 import NewSandbox from 'app/components/NewSandbox';
 
-type Props = WithCerebral;
-
-class NewSandboxComponent extends React.PureComponent<Props> {
+class NewSandboxComponent extends React.PureComponent<WithCerebral> {
     componentDidMount() {
         this.props.signals.sandboxPageMounted();
     }
@@ -36,4 +34,4 @@ class NewSandboxComponent extends React.PureComponent<Props> {
     }
 }
 
-export default connect<Props>()(NewSandboxComponent);
+export default connect()(NewSandboxComponent);

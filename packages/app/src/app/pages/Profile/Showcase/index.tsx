@@ -11,9 +11,7 @@ import ShowcasePreview from './ShowcasePreview';
 
 import { ErrorTitle } from './elements';
 
-type Props = WithCerebral;
-
-class Showcase extends React.Component<Props> {
+class Showcase extends React.Component<WithCerebral> {
     openModal = () => {
         this.props.signals.profile.selectSandboxClicked();
     };
@@ -67,4 +65,4 @@ class Showcase extends React.Component<Props> {
     }
 }
 
-export default connect<Props>()(Showcase);
+export default connect()(Showcase);

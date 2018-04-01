@@ -6,9 +6,7 @@ import Navigation from 'app/pages/common/Navigation';
 import Prompt from './Prompt';
 import { Container } from './elements';
 
-type Props = WithCerebral;
-
-class CLI extends React.Component<Props> {
+class CLI extends React.Component<WithCerebral> {
     componentDidMount() {
         this.props.signals.cliMounted();
     }
@@ -31,4 +29,4 @@ class CLI extends React.Component<Props> {
     }
 }
 
-export default connect<Props>()(CLI);
+export default connect()(CLI);

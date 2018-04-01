@@ -27,14 +27,12 @@ const settings = (store) => ({
     tabWidth: store.preferences.settings.prettierConfig ? store.preferences.settings.prettierConfig.tabWidth || 2 : 2
 });
 
-type Props = WithCerebral & {};
-
 type State = {
     width?: number;
     height?: number;
 };
 
-class EditorPreview extends React.Component<Props, State> {
+class EditorPreview extends React.Component<WithCerebral, State> {
     state: State = { width: null, height: null };
     interval: NodeJS.Timer;
     disposeEditorChange: () => void;
@@ -420,4 +418,4 @@ class EditorPreview extends React.Component<Props, State> {
     }
 }
 
-export default connect<Props>()(EditorPreview);
+export default connect()(EditorPreview);

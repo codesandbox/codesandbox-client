@@ -18,9 +18,7 @@ import {
     DeploymentManagementNotice
 } from './elements';
 
-type Props = WithCerebral;
-
-const DeploymentModal: React.SFC<Props> = ({ store, signals }) => {
+const DeploymentModal: React.SFC<WithCerebral> = ({ store, signals }) => {
     const { user } = store;
 
     const zeitSignedIn = Boolean(user.integrations.zeit);
@@ -85,4 +83,4 @@ const DeploymentModal: React.SFC<Props> = ({ store, signals }) => {
     );
 };
 
-export default connect<Props>()(DeploymentModal);
+export default connect()(DeploymentModal);

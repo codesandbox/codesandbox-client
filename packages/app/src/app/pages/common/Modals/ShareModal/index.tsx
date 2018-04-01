@@ -23,9 +23,11 @@ import {
 
 const BUTTON_URL = `${process.env.CODESANDBOX_HOST}/static/img/play-codesandbox.svg`;
 
-type Props = WithCerebral & {
+type ExternalProps = {
     sendMessage: (message: string) => void;
 };
+
+type Props = ExternalProps & WithCerebral;
 
 type State = {
     showEditor: boolean;
@@ -372,4 +374,4 @@ class ShareView extends React.Component<Props, State> {
     }
 }
 
-export default connect<Props>()(ShareView);
+export default connect<ExternalProps>()(ShareView);

@@ -8,9 +8,7 @@ import LiveButton from './LiveButton';
 
 import { Description, WorkspaceInputContainer, WorkspaceSubtitle } from '../../elements';
 
-type Props = WithCerebral;
-
-const Live: React.SFC<Props> = ({ signals, store }) => (
+const Live: React.SFC<WithCerebral> = ({ signals, store }) => (
     <div>
         {store.live.isLive ? (
             <LiveInfo
@@ -62,4 +60,4 @@ const Live: React.SFC<Props> = ({ signals, store }) => (
     </div>
 );
 
-export default connect<Props>()(Live);
+export default connect()(Live);

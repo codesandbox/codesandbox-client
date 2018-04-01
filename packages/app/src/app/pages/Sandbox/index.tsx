@@ -14,10 +14,11 @@ import Skeleton from 'app/components/Skeleton';
 
 import Editor from './Editor';
 
-type Props = WithCerebral &
-    RouteComponentProps<{
-        id: string;
-    }>;
+type ExternalProps = RouteComponentProps<{
+    id: string;
+}>;
+
+type Props = ExternalProps & WithCerebral;
 
 class SandboxPage extends React.Component<Props> {
     componentWillMount() {
@@ -151,4 +152,4 @@ class SandboxPage extends React.Component<Props> {
     }
 }
 
-export default DragDropContext(HTML5Backend)(connect<Props>()(SandboxPage));
+export default connect<ExternalProps>()(DragDropContext(HTML5Backend)(SandboxPage));

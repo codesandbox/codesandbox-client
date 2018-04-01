@@ -12,9 +12,7 @@ import ExternalResource from './ExternalResource';
 
 import { ErrorMessage } from './elements';
 
-type Props = WithCerebral;
-
-const Dependencies: React.SFC<Props> = ({ signals, store }) => {
+const Dependencies: React.SFC<WithCerebral> = ({ signals, store }) => {
     const sandbox = store.editor.currentSandbox;
 
     const { parsed, error } = store.editor.parsedConfigurations.package;
@@ -91,4 +89,4 @@ const Dependencies: React.SFC<Props> = ({ signals, store }) => {
     );
 };
 
-export default connect<Props>()(Dependencies);
+export default connect()(Dependencies);

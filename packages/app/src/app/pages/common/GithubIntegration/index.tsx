@@ -3,11 +3,13 @@ import { connect, WithCerebral } from 'app/fluent';
 import GithubLogo from 'react-icons/lib/go/mark-github';
 import Integration from 'app/components/Integration';
 
-type Props = WithCerebral & {
+type ExternalProps = {
     small?: boolean;
 };
 
-const GithubIntegration: React.SFC<Props> = ({ store, signals, small }) => {
+type Props = ExternalProps & WithCerebral;
+
+const GithubIntegration: React.SFC<Props & WithCerebral> = ({ store, signals, small }) => {
     return (
         <Integration
             name="GitHub"
@@ -23,4 +25,4 @@ const GithubIntegration: React.SFC<Props> = ({ store, signals, small }) => {
     );
 };
 
-export default connect<Props>()(GithubIntegration);
+export default connect<ExternalProps>()(GithubIntegration);

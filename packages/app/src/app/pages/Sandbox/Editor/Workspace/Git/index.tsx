@@ -16,9 +16,7 @@ function hasWriteAccess(rights: 'none' | 'read' | 'write' | 'admin') {
     return rights === 'write' || rights === 'admin';
 }
 
-type Props = WithCerebral;
-
-class Git extends React.Component<Props> {
+class Git extends React.Component<WithCerebral> {
     componentDidMount() {
         this.props.signals.git.gitMounted();
     }
@@ -122,4 +120,4 @@ class Git extends React.Component<Props> {
     }
 }
 
-export default connect<Props>()(Git);
+export default connect()(Git);

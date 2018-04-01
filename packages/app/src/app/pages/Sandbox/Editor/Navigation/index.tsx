@@ -21,9 +21,7 @@ const IDS_TO_ICONS = {
     live: LiveIcon
 };
 
-type Props = WithCerebral;
-
-const Navigation: React.SFC<Props> = ({ store, signals }) => (
+const Navigation: React.SFC<WithCerebral> = ({ store, signals }) => (
     <Container>
         {store.workspace.items.get().filter((w) => typeof w.show === 'undefined' || w.show).map((item) => {
             const { id, name } = item;
@@ -49,4 +47,4 @@ const Navigation: React.SFC<Props> = ({ store, signals }) => (
     </Container>
 );
 
-export default connect<Props>()(Navigation);
+export default connect()(Navigation);

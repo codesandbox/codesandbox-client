@@ -23,9 +23,7 @@ import KeyMapping from './KeyMapping';
 
 import { Container, ContentContainer } from './elements';
 
-type Props = WithCerebral;
-
-class PreferencesModal extends React.Component<Props> {
+class PreferencesModal extends React.Component<WithCerebral> {
     getItems = () => {
         const hasSubscription = this.props.store.isPatron;
         const signedIn = this.props.store.isLoggedIn;
@@ -99,4 +97,4 @@ class PreferencesModal extends React.Component<Props> {
     }
 }
 
-export default connect<Props>()(PreferencesModal);
+export default connect()(PreferencesModal);

@@ -2,9 +2,7 @@ import * as React from 'react';
 import { connect, WithCerebral } from 'app/fluent';
 import GitProgress from 'app/components/GitProgress';
 
-type Props = WithCerebral;
-
-const CommitModal: React.SFC<Props> = ({ store }) => {
+const CommitModal: React.SFC<WithCerebral> = ({ store }) => {
     const git = store.editor.currentSandbox.originalGit;
     const commit = store.git.commit;
     let message;
@@ -37,4 +35,4 @@ const CommitModal: React.SFC<Props> = ({ store }) => {
     return <GitProgress result={message} message="Creating Commit..." />;
 };
 
-export default connect<Props>()(CommitModal);
+export default connect()(CommitModal);

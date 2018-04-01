@@ -65,9 +65,7 @@ const Terms = Loadable({
     LoadingComponent: Loading
 });
 
-type Props = WithCerebral;
-
-class Routes extends React.Component<Props> {
+class Routes extends React.Component<WithCerebral> {
     componentWillUnmount() {
         this.props.signals.appUnmounted();
     }
@@ -119,4 +117,4 @@ class Routes extends React.Component<Props> {
     }
 }
 
-export default connect<Props>()(Routes);
+export default connect()(Routes);

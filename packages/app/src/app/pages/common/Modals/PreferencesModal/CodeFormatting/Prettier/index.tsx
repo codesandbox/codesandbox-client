@@ -3,9 +3,7 @@ import { connect, WithCerebral } from 'app/fluent';
 
 import { SubContainer, PreferenceContainer, PaddedPreference, SubDescription, Rule } from '../../elements';
 
-type Props = WithCerebral;
-
-const Prettier: React.SFC<Props> = ({ store, signals }) => {
+const Prettier: React.SFC<WithCerebral> = ({ store, signals }) => {
     const bindValue = (name) => ({
         value: store.preferences.settings.prettierConfig[name],
         setValue: (value) =>
@@ -71,4 +69,4 @@ const Prettier: React.SFC<Props> = ({ store, signals }) => {
     );
 };
 
-export default connect<Props>()(Prettier);
+export default connect()(Prettier);

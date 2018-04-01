@@ -8,9 +8,11 @@ import Tooltip from 'common/components/Tooltip';
 import Menu from './Menu';
 import { ClickableContainer, ProfileImage, ProfileInfo, Name, Username } from './elements';
 
-type Props = WithCerebral & {
+type ExternalProps = {
     small?: boolean;
 };
+
+type Props = ExternalProps & WithCerebral;
 
 const UserMenu: React.SFC<Props> = ({ signals, store, small }) => {
     const smallImage = small || false;
@@ -50,4 +52,4 @@ const UserMenu: React.SFC<Props> = ({ signals, store, small }) => {
     );
 };
 
-export default connect<Props>()(UserMenu);
+export default connect<ExternalProps>()(UserMenu);

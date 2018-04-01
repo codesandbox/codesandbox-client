@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { IContext, IBranchContext, SequenceFactory, SequenceWithPropsFactory } from '@cerebral/fluent';
 import { inject, observer, IReactComponent } from 'mobx-react';
 import { State as StoreState } from './store/types';
@@ -34,13 +35,13 @@ export type BranchContext<Paths, Props = {}> = IBranchContext<Paths, Props> & Pr
 
 // This function is used to connect components to Cerebral
 export type WithCerebral = {
-    store?: State;
-    signals?: any;
+    store: State;
+    signals: any;
 };
 
 export const connect = <Props>() => {
-    return (Component: IReactComponent<Props>): IReactComponent<Props> =>
-        inject('store', 'signals')(observer(Component));
+    return (Component: React.ComponentType<Props & WithCerebral>): React.ComponentType<Props> => (props: Props) =>
+        React.createElement(inject('store', 'signals')(observer(Component)), props as Props & WithCerebral);
 };
 
 // This function is used to define sequences

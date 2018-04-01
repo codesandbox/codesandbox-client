@@ -27,7 +27,8 @@ const createURL = (state) => `?${qs.stringify(state)}`;
 const searchStateToUrl = (props, searchState) =>
     searchState ? `${props.location.pathname}${createURL(searchState)}` : '';
 
-type Props = WithCerebral & RouteComponentProps<{}>;
+type ExternalProps = RouteComponentProps<{}>;
+type Props = ExternalProps & WithCerebral;
 
 type State = {
     searchState: string;
@@ -102,4 +103,4 @@ class Search extends React.PureComponent<Props, State> {
     }
 }
 
-export default connect<Props>()(Search);
+export default connect<ExternalProps>()(Search);

@@ -5,9 +5,7 @@ import Margin from 'common/components/spacing/Margin';
 import Badge from 'common/utils/badges/Badge';
 import { Title } from '../elements';
 
-type Props = WithCerebral;
-
-const Badges: React.SFC<Props> = ({ store, signals }) => {
+const Badges: React.SFC<WithCerebral> = ({ store, signals }) => {
     const badgesCount = store.user.badges.length;
 
     return (
@@ -37,4 +35,4 @@ const Badges: React.SFC<Props> = ({ store, signals }) => {
     );
 };
 
-export default connect<Props>()(Badges);
+export default connect()(Badges);

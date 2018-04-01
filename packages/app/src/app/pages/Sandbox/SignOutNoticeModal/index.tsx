@@ -6,9 +6,7 @@ import Row from 'common/components/flex/Row';
 
 import { Container, Heading, Explanation } from './elements';
 
-type Props = WithCerebral;
-
-const SignOutNotice: React.SFC<Props> = ({ signals }) => {
+const SignOutNotice: React.SFC<WithCerebral> = ({ signals }) => {
     return (
         <Container>
             <Heading>You have been signed out</Heading>
@@ -42,4 +40,4 @@ const SignOutNotice: React.SFC<Props> = ({ signals }) => {
     );
 };
 
-export default connect<Props>()(SignOutNotice);
+export default connect()(SignOutNotice);

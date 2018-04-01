@@ -3,9 +3,7 @@ import { connect, WithCerebral } from 'app/fluent';
 
 import { Container } from './elements';
 
-type Props = WithCerebral;
-
-const ConnectionNotice: React.SFC<Props> = ({ store }) => {
+const ConnectionNotice: React.SFC<WithCerebral> = ({ store }) => {
     return (
         !store.connected && (
             <Container>
@@ -16,4 +14,4 @@ const ConnectionNotice: React.SFC<Props> = ({ store }) => {
     );
 };
 
-export default connect<Props>()(ConnectionNotice);
+export default connect()(ConnectionNotice);

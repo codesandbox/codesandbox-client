@@ -8,9 +8,7 @@ import Badge from './Badge';
 
 import { Container, Details } from './elements';
 
-type Props = WithCerebral;
-
-const PricingModal: React.SFC<Props> = ({ store }) => {
+const PricingModal: React.SFC<WithCerebral> = ({ store }) => {
     const badge = `patron-${store.patron.tier}`;
 
     return (
@@ -24,4 +22,4 @@ const PricingModal: React.SFC<Props> = ({ store }) => {
     );
 };
 
-export default connect<Props>()(PricingModal);
+export default connect()(PricingModal);

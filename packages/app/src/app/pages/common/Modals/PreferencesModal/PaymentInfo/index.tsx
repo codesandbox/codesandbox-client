@@ -7,9 +7,7 @@ import Card from './Card';
 import { Title, Subheading } from '../elements';
 import { Container } from './elements';
 
-type Props = WithCerebral;
-
-class PaymentInfo extends React.Component<Props> {
+class PaymentInfo extends React.Component<WithCerebral> {
     componentDidMount() {
         this.props.signals.preferences.paymentDetailsRequested();
     }
@@ -52,4 +50,4 @@ class PaymentInfo extends React.Component<Props> {
     }
 }
 
-export default connect<Props>()(PaymentInfo);
+export default connect()(PaymentInfo);

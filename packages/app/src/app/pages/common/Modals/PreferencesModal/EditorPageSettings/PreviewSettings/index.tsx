@@ -3,9 +3,7 @@ import { connect, WithCerebral } from 'app/fluent';
 
 import { Title, SubContainer, PreferenceContainer, PaddedPreference, SubDescription, Rule } from '../../elements';
 
-type Props = WithCerebral;
-
-const PreviewSettings: React.SFC<Props> = ({ store, signals }) => {
+const PreviewSettings: React.SFC<WithCerebral> = ({ store, signals }) => {
     const bindValue = (name) => ({
         value: store.preferences.settings[name],
         setValue: (value) =>
@@ -45,4 +43,4 @@ const PreviewSettings: React.SFC<Props> = ({ store, signals }) => {
     );
 };
 
-export default connect<Props>()(PreviewSettings);
+export default connect()(PreviewSettings);

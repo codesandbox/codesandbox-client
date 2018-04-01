@@ -7,9 +7,11 @@ import TabContainer from './TabContainer';
 
 import { Container, TabsContainer, IconContainer, StyledPrettierIcon, StyledWindowIcon, Line } from './elements';
 
-type Props = WithCerebral & {
+type ExternalProps = {
     currentModuleId?: string;
 };
+
+type Props = ExternalProps & WithCerebral;
 
 class EditorTabs extends React.Component<Props> {
     container;
@@ -166,4 +168,4 @@ class EditorTabs extends React.Component<Props> {
     }
 }
 
-export default connect<Props>()(EditorTabs);
+export default connect<ExternalProps>()(EditorTabs);

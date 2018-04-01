@@ -14,15 +14,13 @@ import { Container, Content, Label, Description, StyledInput, ErrorMessage } fro
 
 const getFullGitHubUrl = (url) => `${protocolAndHost()}${gitHubToSandboxUrl(url)}`;
 
-type Props = WithCerebral;
-
 type State = {
     url: string;
     transformedUrl: string;
     error: string;
 };
 
-class GitHub extends React.PureComponent<Props, State> {
+class GitHub extends React.PureComponent<WithCerebral, State> {
     state: State = {
         url: '',
         transformedUrl: '',
@@ -100,4 +98,4 @@ class GitHub extends React.PureComponent<Props, State> {
     }
 }
 
-export default connect<Props>()(GitHub);
+export default connect()(GitHub);

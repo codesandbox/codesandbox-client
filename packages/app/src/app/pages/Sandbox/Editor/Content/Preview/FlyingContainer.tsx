@@ -17,12 +17,14 @@ import {
     ResizingNotice
 } from './elements';
 
-type Props = WithCerebral & {
+type ExternalProps = {
     children: (
         funcs: { resize: (size: { x: number; y: number; width: number; height: number }) => void }
     ) => React.ReactNode;
     onPositionChange?: () => void;
 };
+
+type Props = ExternalProps & WithCerebral;
 
 type State = {
     resizing?: boolean;
@@ -267,4 +269,4 @@ class FlyingContainer extends React.Component<Props, State> {
     }
 }
 
-export default connect<Props>()(FlyingContainer);
+export default connect<ExternalProps>()(FlyingContainer);

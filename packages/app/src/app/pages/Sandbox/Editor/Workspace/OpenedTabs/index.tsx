@@ -12,9 +12,7 @@ import { EntryContainer } from '../elements';
 import { Title, Dir, CrossIconContainer } from './elements';
 import SaveIcon from './SaveIcon';
 
-type Props = WithCerebral;
-
-const OpenedTabs: React.SFC<Props> = ({ store, signals }) => {
+const OpenedTabs: React.SFC<WithCerebral> = ({ store, signals }) => {
     const sandbox = store.editor.currentSandbox;
     const currentModuleShortid = store.editor.currentModuleShortid;
     const moduleObject = {};
@@ -75,4 +73,4 @@ const OpenedTabs: React.SFC<Props> = ({ store, signals }) => {
     );
 };
 
-export default connect<Props>()(OpenedTabs);
+export default connect()(OpenedTabs);

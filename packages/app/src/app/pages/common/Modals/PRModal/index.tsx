@@ -2,9 +2,7 @@ import * as React from 'react';
 import { connect, WithCerebral } from 'app/fluent';
 import GitProgress from 'app/components/GitProgress';
 
-type Props = WithCerebral;
-
-const PRModal: React.SFC<Props> = ({ store }) => {
+const PRModal: React.SFC<WithCerebral> = ({ store }) => {
     let result = null;
 
     if (!store.git.isCreatingPr) {
@@ -28,4 +26,4 @@ const PRModal: React.SFC<Props> = ({ store }) => {
     return <GitProgress result={result} message="Forking Repository & Creating PR..." />;
 };
 
-export default connect<Props>()(PRModal);
+export default connect()(PRModal);

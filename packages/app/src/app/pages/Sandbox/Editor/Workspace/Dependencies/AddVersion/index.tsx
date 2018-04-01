@@ -5,9 +5,7 @@ import Button from 'app/components/Button';
 
 import { ButtonContainer } from './elements';
 
-type Props = WithCerebral;
-
-const AddVersion: React.SFC<Props> = ({ signals, children }) => {
+const AddVersion: React.SFC<WithCerebral> = ({ signals, children }) => {
     return (
         <div style={{ position: 'relative' }}>
             <ButtonContainer>
@@ -26,4 +24,4 @@ const AddVersion: React.SFC<Props> = ({ signals, children }) => {
     );
 };
 
-export default connect<Props>()(AddVersion);
+export default connect()(AddVersion);

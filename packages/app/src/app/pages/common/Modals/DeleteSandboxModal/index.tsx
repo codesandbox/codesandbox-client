@@ -2,9 +2,7 @@ import * as React from 'react';
 import Alert from 'app/components/Alert';
 import { connect, WithCerebral } from 'app/fluent';
 
-type Props = WithCerebral;
-
-const DeleteSandboxModal: React.SFC<Props> = ({ signals }) => {
+const DeleteSandboxModal: React.SFC<WithCerebral> = ({ signals }) => {
     return (
         <Alert
             title="Delete Sandbox"
@@ -15,4 +13,4 @@ const DeleteSandboxModal: React.SFC<Props> = ({ signals }) => {
     );
 };
 
-export default connect<Props>()(DeleteSandboxModal);
+export default connect()(DeleteSandboxModal);
