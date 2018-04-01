@@ -40,8 +40,8 @@ export type WithCerebral = {
 };
 
 export const connect = <Props>() => {
-    return (Component: React.ComponentType<Props & WithCerebral>): React.ComponentType<Props> => (props: Props) =>
-        React.createElement(inject('store', 'signals')(observer(Component)), props as Props & WithCerebral);
+    return (Component: React.ComponentType<Props & WithCerebral>): React.ComponentType<Props> =>
+        inject('store', 'signals')(observer(Component)) as any;
 };
 
 // This function is used to define sequences
