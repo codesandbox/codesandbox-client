@@ -1,4 +1,4 @@
-import styled, { keyframes, component } from 'app/styled-components';
+import styled, { keyframes } from 'app/styled-components';
 
 const fadeInAnimation = keyframes`
   0%   { background-color: #374140; }

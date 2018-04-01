@@ -152,4 +152,4 @@ class SandboxPage extends React.Component<Props> {
     }
 }
 
-export default connect<ExternalProps>()(DragDropContext(HTML5Backend)(SandboxPage));
+export default DragDropContext(HTML5Backend)(connect<ExternalProps>()(SandboxPage));
