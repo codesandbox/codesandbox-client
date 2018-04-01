@@ -184,7 +184,6 @@
     "react-split-pane": "^0.1.74",
     "react-stripe-elements": "^1.2.0",
     "react-tagsinput": "^3.19.0",
-    "sharp": "^0.20.1",
     "shelljs": "^0.7.8",
     "store": "^2.0.12",
     "string-replace-loader": "^1.3.0",
