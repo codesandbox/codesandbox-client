@@ -199,6 +199,7 @@ module.exports = merge(commonConfig, {
             cache: {
               maxEntries: 300,
               name: 'unpkg-dep-cache',
+              maxAgeSeconds: 60 * 60 * 24 * 7,
             },
           },
         },
@@ -209,6 +210,7 @@ module.exports = merge(commonConfig, {
             cache: {
               maxEntries: 300,
               name: 'jsdelivr-dep-cache',
+              maxAgeSeconds: 60 * 60 * 24 * 7,
             },
           },
         },
@@ -219,6 +221,7 @@ module.exports = merge(commonConfig, {
             cache: {
               maxEntries: 50,
               name: 'cloudflare-cache',
+              maxAgeSeconds: 60 * 60 * 24 * 7,
             },
           },
         },
