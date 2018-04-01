@@ -6,7 +6,6 @@ export type Props = {
     className?: string;
 };
 
-// tslint:disable
 const OpaqueLogo: React.SFC<Props> = ({ width = 35, height = 35, className }) => {
     return (
         <svg x="0px" y="0px" className={className} width={`${width}px`} height={`${height}px`} viewBox="0 0 747 833">

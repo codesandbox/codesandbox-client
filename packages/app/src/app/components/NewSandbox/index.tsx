@@ -25,7 +25,7 @@ import AngularIcon from 'common/components/logos/Angular';
 import { Container, RowContainer, LogoContainer, Text, LogoLink } from './elements';
 
 type LogoProps = {
-    Icon: React.ComponentClass<{ width: number; height: number }>;
+    Icon: React.ComponentType<{ width: number; height: number }>;
     width: number;
     height: number;
     text: string;

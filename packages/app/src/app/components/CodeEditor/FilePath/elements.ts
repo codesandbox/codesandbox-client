@@ -19,6 +19,7 @@ export const Container = styled.div`
 export const Chevron = styled<{
     hovering: string;
     workspacehidden: string;
+    onClick: () => void;
 }>(ChevronLeft)`
   transition: 0.3s ease all;
   position: absolute;

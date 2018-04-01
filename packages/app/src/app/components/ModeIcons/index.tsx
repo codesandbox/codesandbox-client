@@ -1,188 +1,167 @@
 import * as React from 'react';
 import Tooltip from 'common/components/Tooltip';
-import {
-  Tooltips,
-  ViewIcon,
-  Hover,
-  SubMode,
-  EditorIcon,
-  PreviewIcon,
-} from './elements';
+import { Tooltips, ViewIcon, Hover, SubMode, EditorIcon, PreviewIcon } from './elements';
 
 type Props = {
-  showEditor: boolean
-  showPreview: boolean
-  dropdown?: boolean
-  setMixedView: () => void
-  setEditorView: () => void
-  setPreviewView: () => void
-}
+    showEditor: boolean;
+    showPreview: boolean;
+    dropdown?: boolean;
+    setMixedView: () => void;
+    setEditorView: () => void;
+    setPreviewView: () => void;
+};
 
-function getCurrentMode ({
-  showEditor,
-  showPreview,
-  setMixedView,
-  setEditorView,
-  setPreviewView,
-}: Props) {
-  const both = (
-    <Tooltip title="Show Split view">
-      <ViewIcon onClick={setMixedView} active={showEditor && showPreview}>
-        <EditorIcon half />
-        <PreviewIcon half />
-      </ViewIcon>
-    </Tooltip>
-  );
+function getCurrentMode({ showEditor, showPreview, setMixedView, setEditorView, setPreviewView }: Props) {
+    const both = (
+        <Tooltip title="Show Split view">
+            <ViewIcon onClick={setMixedView} active={showEditor && showPreview}>
+                <EditorIcon half />
+                <PreviewIcon half />
+            </ViewIcon>
+        </Tooltip>
+    );
 
-  const editor = (
-    <Tooltip title="Show Editor view">
-      <ViewIcon onClick={setEditorView} active={showEditor && !showPreview}>
-        <EditorIcon />
-      </ViewIcon>
-    </Tooltip>
-  );
+    const editor = (
+        <Tooltip title="Show Editor view">
+            <ViewIcon onClick={setEditorView} active={showEditor && !showPreview}>
+                <EditorIcon />
+            </ViewIcon>
+        </Tooltip>
+    );
 
-  const preview = (
-    <Tooltip title="Show Preview view">
-      <ViewIcon onClick={setPreviewView} active={!showEditor && showPreview}>
-        <PreviewIcon />
-      </ViewIcon>
-    </Tooltip>
-  );
+    const preview = (
+        <Tooltip title="Show Preview view">
+            <ViewIcon onClick={setPreviewView} active={!showEditor && showPreview}>
+                <PreviewIcon />
+            </ViewIcon>
+        </Tooltip>
+    );
 
-  if (showEditor && !showPreview)
-    return { currentMode: editor, otherModes: [both, preview] };
-  if (!showEditor && showPreview)
-    return { currentMode: preview, otherModes: [editor, both] };
+    if (showEditor && !showPreview) {
+        return { currentMode: editor, otherModes: [ both, preview ] };
+    }
+    if (!showEditor && showPreview) {
+        return { currentMode: preview, otherModes: [ editor, both ] };
+    }
 
-  return { currentMode: both, otherModes: [editor, preview] };
+    return { currentMode: both, otherModes: [ editor, preview ] };
 }
 
 type State = {
-  hovering: boolean
-  showSubmodes: boolean
-  currentMode: any
-  otherModes: any
-}
+    hovering: boolean;
+    showSubmodes: boolean;
+    currentMode: any;
+    otherModes: any;
+};
 
 export default class ModeIcons extends React.PureComponent<Props, State> {
-  constructor(props) {
-    super(props);
+    constructor(props) {
+        super(props);
 
-    const { currentMode, otherModes } = getCurrentMode(this.props);
+        const { currentMode, otherModes } = getCurrentMode(this.props);
 
-    this.state = {
-      hovering: false,
-      showSubmodes: false,
-      currentMode,
-      otherModes,
+        this.state = {
+            hovering: false,
+            showSubmodes: false,
+            currentMode,
+            otherModes
+        };
+    }
+
+    onMouseEnter = () => {
+        this.setState({
+            showSubmodes: true,
+            hovering: true
+        });
     };
-  }
 
-  onMouseEnter = () => {
-    this.setState({
-      showSubmodes: true,
-      hovering: true,
-    });
-  };
+    onMouseLeave = () => {
+        this.setState({
+            hovering: false
+        });
+    };
 
-  onMouseLeave = () => {
-    this.setState({
-      hovering: false,
-    });
-  };
+    onAnimationEnd = () => {
+        const { currentMode, otherModes } = getCurrentMode(this.props);
 
-  onAnimationEnd = () => {
-    const { currentMode, otherModes } = getCurrentMode(this.props);
+        if (!this.state.hovering) {
+            this.setState({
+                showSubmodes: false,
+                currentMode,
+                otherModes
+            });
+        }
+    };
 
-    if (!this.state.hovering) {
-      this.setState({
-        showSubmodes: false,
-        currentMode,
-        otherModes,
-      });
-    }
-  };
+    componentWillReceiveProps(nextProps) {
+        const { currentMode, otherModes } = getCurrentMode(nextProps);
 
-  componentWillReceiveProps(nextProps) {
-    const { currentMode, otherModes } = getCurrentMode(nextProps);
-
-    if (!this.state.hovering) {
-      this.setState({
-        currentMode,
-        otherModes,
-      });
-    } else {
-      this.setState({
-        currentMode,
-      });
-    }
-  }
-
-  render() {
-    const {
-      showEditor,
-      showPreview,
-      setEditorView,
-      setMixedView,
-      setPreviewView,
-      dropdown,
-    } = this.props;
-
-    const { hovering, showSubmodes, currentMode, otherModes } = this.state;
-
-    if (dropdown) {
-      return (
-        <Tooltips>
-          <Hover onMouseLeave={this.onMouseLeave}>
-            {showSubmodes && (
-              <SubMode
-                onClick={this.onMouseLeave}
-                onAnimationEnd={this.onAnimationEnd}
-                hovering={hovering}
-                i={0}
-              >
-                {otherModes[0]}
-              </SubMode>
-            )}
-            <div onMouseEnter={this.onMouseEnter}>{currentMode}</div>
-            {showSubmodes && (
-              <SubMode
-                onClick={this.onMouseLeave}
-                onAnimationEnd={this.onAnimationEnd}
-                hovering={hovering}
-                i={1}
-              >
-                {otherModes[1]}
-              </SubMode>
-            )}
-          </Hover>
-        </Tooltips>
-      );
+        if (!this.state.hovering) {
+            this.setState({
+                currentMode,
+                otherModes
+            });
+        } else {
+            this.setState({
+                currentMode
+            });
+        }
     }
 
-    return (
-      <Tooltips>
-        <Tooltip title="Show Editor view">
-          <ViewIcon onClick={setEditorView} active={showEditor && !showPreview}>
-            <EditorIcon />
-          </ViewIcon>
-        </Tooltip>
-        <Tooltip title="Show Split view">
-          <ViewIcon onClick={setMixedView} active={showEditor && showPreview}>
-            <EditorIcon half />
-            <PreviewIcon half />
-          </ViewIcon>
-        </Tooltip>
-        <Tooltip title="Show Preview view">
-          <ViewIcon
-            onClick={setPreviewView}
-            active={!showEditor && showPreview}
-          >
-            <PreviewIcon />
-          </ViewIcon>
-        </Tooltip>
-      </Tooltips>
-    );
-  }
+    render() {
+        const { showEditor, showPreview, setEditorView, setMixedView, setPreviewView, dropdown } = this.props;
+
+        const { hovering, showSubmodes, currentMode, otherModes } = this.state;
+
+        if (dropdown) {
+            return (
+                <Tooltips>
+                    <Hover onMouseLeave={this.onMouseLeave}>
+                        {showSubmodes && (
+                            <SubMode
+                                onClick={this.onMouseLeave}
+                                onAnimationEnd={this.onAnimationEnd}
+                                hovering={hovering}
+                                i={0}
+                            >
+                                {otherModes[0]}
+                            </SubMode>
+                        )}
+                        <div onMouseEnter={this.onMouseEnter}>{currentMode}</div>
+                        {showSubmodes && (
+                            <SubMode
+                                onClick={this.onMouseLeave}
+                                onAnimationEnd={this.onAnimationEnd}
+                                hovering={hovering}
+                                i={1}
+                            >
+                                {otherModes[1]}
+                            </SubMode>
+                        )}
+                    </Hover>
+                </Tooltips>
+            );
+        }
+
+        return (
+            <Tooltips>
+                <Tooltip title="Show Editor view">
+                    <ViewIcon onClick={setEditorView} active={showEditor && !showPreview}>
+                        <EditorIcon />
+                    </ViewIcon>
+                </Tooltip>
+                <Tooltip title="Show Split view">
+                    <ViewIcon onClick={setMixedView} active={showEditor && showPreview}>
+                        <EditorIcon half />
+                        <PreviewIcon half />
+                    </ViewIcon>
+                </Tooltip>
+                <Tooltip title="Show Preview view">
+                    <ViewIcon onClick={setPreviewView} active={!showEditor && showPreview}>
+                        <PreviewIcon />
+                    </ViewIcon>
+                </Tooltip>
+            </Tooltips>
+        );
+    }
 }

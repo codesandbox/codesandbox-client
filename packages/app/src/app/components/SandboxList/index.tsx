@@ -22,6 +22,7 @@ type Props = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 const SandboxList: React.SFC<Props> =  ({ sandboxes, isCurrentUser, onDelete }) => (
   <Table>
     <thead>
@@ -73,6 +74,9 @@ const SandboxList: React.SFC<Props> =  ({ sandboxes, isCurrentUser, onDelete }) 
   </Table>
 =======
 export const SandboxList: React.SFC<Props> = ({ sandboxes, isCurrentUser, onDelete }: Props) => (
+=======
+export const SandboxList: React.SFC<Props> = ({ sandboxes, isCurrentUser, onDelete }) => (
+>>>>>>> cleaned some components
     <Table>
         <thead>
             <tr style={{ height: '3rem' }}>

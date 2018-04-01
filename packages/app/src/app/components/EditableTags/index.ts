@@ -2,8 +2,8 @@ import { injectGlobal } from 'app/styled-components';
 import TagsInput from 'react-tagsinput';
 
 export default function(color) {
-  // eslint-disable-next-line
-  injectGlobal`
+    // tslint:disable-next-line
+    injectGlobal`
   .react-tagsinput {
     display: flex;
     flex-wrap: row;
@@ -58,5 +58,5 @@ export default function(color) {
   }
 `;
 
-  return TagsInput;
+    return TagsInput;
 }
