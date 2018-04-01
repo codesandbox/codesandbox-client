@@ -13,6 +13,7 @@ export default Module({
     isOwner: false,
     receivingCode: false,
     reconnecting: false,
+    notificationsHidden: false,
   },
   computed: {
     isEditor,
@@ -34,5 +35,7 @@ export default Module({
     onModeChanged: sequences.changeMode,
     onAddEditorClicked: sequences.addEditor,
     onRemoveEditorClicked: sequences.removeEditor,
+    onSessionCloseClicked: sequences.closeSession,
+    onToggleNotificationsHidden: sequences.toggleNotificationsHidden,
   },
 });

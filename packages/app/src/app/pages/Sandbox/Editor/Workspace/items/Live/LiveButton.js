@@ -79,7 +79,12 @@ export default class LiveButton extends React.PureComponent {
   };
 
   render() {
-    const { onClick, isLoading } = this.props;
+    const {
+      onClick,
+      isLoading,
+      showIcon = true,
+      message = 'Go Live',
+    } = this.props;
 
     if (isLoading) {
       return <LoadingDiv>Creating Session</LoadingDiv>;
@@ -91,8 +96,12 @@ export default class LiveButton extends React.PureComponent {
         onMouseLeave={this.stopHovering}
         onClick={onClick}
       >
-        <AnimatedRecordIcon style={{ opacity: this.state.showIcon ? 1 : 0 }} />{' '}
-        Go Live
+        {showIcon && (
+          <AnimatedRecordIcon
+            style={{ opacity: this.state.showIcon ? 1 : 0 }}
+          />
+        )}{' '}
+        {message}
       </Button>
     );
   }

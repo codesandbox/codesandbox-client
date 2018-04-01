@@ -52,29 +52,6 @@ function indexToLineAndColumn(lines, index) {
   };
 }
 
-function getOffsetAt(text: string, position: IPosition) {
-  let offset = 0;
-  let currentLine = 1;
-  let currentColumn = 1;
-  for (let i = 0; i < text.length; i++) {
-    if (
-      currentLine === position.lineNumber &&
-      currentColumn === position.column
-    ) {
-      return offset;
-    }
-
-    if (text[i] === '\n') {
-      currentLine++;
-      currentColumn = 1;
-    } else {
-      currentColumn++;
-    }
-    offset++;
-  }
-  return offset;
-}
-
 const fadeIn = css.keyframes('fadeIn', {
   // optional name
   '0%': { opacity: 0 },
@@ -460,21 +437,15 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       const otOperation = new TextOperation();
       // TODO: add a comment explaining what "delta" is
       let delta = 0;
-      this.updatedCode = this.updatedCode || this.currentModule.code;
+      this.updatedCode = this.updatedCode || this.currentModule.code || '';
       // eslint-disable-next-line no-restricted-syntax
       for (const change of [...changeEvent.changes].reverse()) {
-        const cursorStartPosition = {
-          lineNumber: change.range.startLineNumber,
-          column: change.range.startColumn,
-        };
-
-        // Note: can't use IModel.getOffsetAt since the model's value
-        // will already have these changes applied to it. We need the offset
-        // relative to the text before the changes happened.
-        // TODO: add a `cache` param to getOffsetAt so it can store line offsets,
-        // this is O(n^2) right now.
         const cursorStartOffset =
-          getOffsetAt(this.updatedCode, cursorStartPosition) + delta;
+          lineAndColumnToIndex(
+            this.updatedCode.split('\n'),
+            change.range.startLineNumber,
+            change.range.startColumn
+          ) + delta;
 
         const retain = cursorStartOffset - otOperation.targetLength;
         if (retain > 0) {
