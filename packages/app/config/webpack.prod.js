@@ -71,9 +71,6 @@ module.exports = merge(commonConfig, {
       staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
       maximumFileSizeToCacheInBytes: 5242880,
 
-      // We need to keep the old assets available until the sandbox has
-      // loaded them.
-      skipWaiting: false,
       runtimeCaching: [
         {
           urlPattern: /api\/v1\/sandboxes/,
@@ -164,8 +161,8 @@ module.exports = merge(commonConfig, {
         {
           // These should be dynamic, since it's not loaded from this domain
           // But from the root domain
-          urlPattern: /codesandbox\.io\/static\/js\/(vendor|common|sandbox)/,
-          handler: 'networkFirst',
+          urlPattern: /codesandbox\.io\/static\/js\//,
+          handler: 'fastest',
           options: {
             cache: {
               name: 'static-root-cache',
