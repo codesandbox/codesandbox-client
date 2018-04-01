@@ -12,7 +12,5 @@ export default function({
   const bottomMargin = [bottom, vertical, margin].find(s => s != null) || 0;
   const leftMargin = [left, horizontal, margin].find(s => s != null) || 0;
 
-  return `${topMargin}rem ${rightMargin}rem ${bottomMargin}rem ${
-    leftMargin
-  }rem`;
+  return `${topMargin}rem ${rightMargin}rem ${bottomMargin}rem ${leftMargin}rem`;
 }

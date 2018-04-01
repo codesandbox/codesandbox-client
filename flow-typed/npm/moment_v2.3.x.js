@@ -67,13 +67,12 @@ declare class moment$LocaleData {
   isPM(date: string): boolean;
   meridiem(hours: number, minutes: number, isLower: boolean): string;
   calendar(
-    key:
-      | 'sameDay'
-      | 'nextDay'
-      | 'lastDay'
-      | 'nextWeek'
-      | 'prevWeek'
-      | 'sameElse',
+    key: | 'sameDay'
+    | 'nextDay'
+    | 'lastDay'
+    | 'nextWeek'
+    | 'prevWeek'
+    | 'sameElse',
     moment: moment$Moment
   ): string;
   relativeTime(
