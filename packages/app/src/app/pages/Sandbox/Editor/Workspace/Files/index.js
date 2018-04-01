@@ -1,52 +1,12 @@
-// @flow
 import * as React from 'react';
-import { createSelector } from 'reselect';
-import { connect } from 'react-redux';
-
-import { sortBy } from 'lodash';
-import {
-  modulesFromSandboxSelector,
-  findMainModule,
-  findCurrentModule,
-} from 'app/store/entities/sandboxes/modules/selectors';
-import { directoriesFromSandboxSelector } from 'app/store/entities/sandboxes/directories/selectors';
-
-import type { Sandbox, Module, Directory } from 'common/types';
-import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
+import { inject, observer } from 'mobx-react';
 
 import DirectoryEntry from './DirectoryEntry/index';
 import WorkspaceItem from '../WorkspaceItem';
 
 import EditIcons from './DirectoryEntry/Entry/EditIcons';
 
-type Props = {
-  sandbox: Sandbox,
-  modules: Array<Module>,
-  directories: Array<Directory>,
-  sandboxActions: typeof sandboxActionCreators,
-};
-const mapStateToProps = createSelector(
-  modulesFromSandboxSelector,
-  directoriesFromSandboxSelector,
-  (modules, directories) => ({ modules, directories })
-);
-class Files extends React.PureComponent<Props> {
-  directory: typeof DirectoryEntry;
-
-  deleteModule = id => {
-    const { sandboxActions, sandbox } = this.props;
-    if (sandbox) {
-      sandboxActions.deleteModule(sandbox.id, id);
-    }
-  };
-
-  deleteDirectory = id => {
-    const { sandboxActions, sandbox } = this.props;
-    if (sandbox) {
-      sandboxActions.deleteDirectory(sandbox.id, id);
-    }
-  };
-
+class Files extends React.Component {
   createModule = () => {
     // INCREDIBLY BAD PRACTICE! TODO: FIX THIS
     this.directory.onCreateModuleClick();
@@ -58,17 +18,18 @@ class Files extends React.PureComponent<Props> {
   };
 
   render() {
-    const { sandbox, modules, directories } = this.props;
-    if (sandbox == null) return null;
+    const store = this.props.store;
+    const sandbox = store.editor.currentSandbox;
 
-    const mainModule = findMainModule(modules, directories, sandbox.entry);
-    const { currentModule: currentModuleId } = sandbox;
-    const currentModule = findCurrentModule(
-      modules,
-      directories,
-      currentModuleId,
-      mainModule
-    );
+    const openedModulesByUsers = {};
+
+    // if (store.live.isLive) {
+    //   store.live.usersMetadata.forEach(user => {
+    //     openedModulesByUsers[user.currentModuleShortid] =
+    //       openedModulesByUsers[user.currentModuleShortid] || [];
+    //     openedModulesByUsers[user.currentModuleShortid].push(user.color);
+    //   });
+    // }
 
     return (
       <WorkspaceItem
@@ -89,13 +50,7 @@ class Files extends React.PureComponent<Props> {
             this.directory = el;
           }}
           title={sandbox.title || 'Project'}
-          sandboxId={sandbox.id}
-          sandboxTemplate={sandbox.template}
-          mainModuleId={mainModule.id}
-          modules={sortBy(modules, 'title')}
-          directories={sortBy(directories, 'title')}
-          isInProjectView={sandbox.isInProjectView}
-          currentModuleId={currentModule.id}
+          openedModulesByUsers={openedModulesByUsers}
           depth={-1}
           id={null}
           shortid={null}
@@ -105,4 +60,4 @@ class Files extends React.PureComponent<Props> {
   }
 }
 
-export default connect(mapStateToProps)(Files);
+export default inject('signals', 'store')(observer(Files));

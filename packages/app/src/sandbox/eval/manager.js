@@ -1,8 +1,9 @@
 // @flow
-import { flattenDeep, uniq, values } from 'lodash';
+import { flattenDeep, uniq, values, isEqual } from 'lodash';
 import resolve from 'browser-resolve';
 import localforage from 'localforage';
-import preval from 'babel-plugin-preval/macro';
+
+import VERSION from 'common/version';
 
 import * as pathUtils from 'common/utils/path';
 import _debug from 'app/utils/debug';
@@ -11,12 +12,16 @@ import type { Module } from './entities/module';
 import TranspiledModule from './transpiled-module';
 import type { SerializedTranspiledModule } from './transpiled-module';
 import Preset from './presets';
-import fetchModule, { getCombinedMetas } from './npm/fetch-npm-module';
+import fetchModule, {
+  getCombinedMetas,
+  setCombinedMetas,
+} from './npm/fetch-npm-module';
 import coreLibraries from './npm/get-core-libraries';
 import getDependencyName from './utils/get-dependency-name';
 import DependencyNotFoundError from '../errors/dependency-not-found-error';
 import ModuleNotFoundError from '../errors/module-not-found-error';
 import TestRunner from './tests/jest-lite';
+import dependenciesToQuery from '../npm/dependencies-to-query';
 
 type Externals = {
   [name: string]: string,
@@ -24,6 +29,10 @@ type Externals = {
 
 type ModuleObject = {
   [path: string]: Module,
+};
+
+type Configurations = {
+  [type: string]: Object,
 };
 
 export type Manifest = {
@@ -45,8 +54,7 @@ export type Manifest = {
   },
 };
 
-const NODE_LIBS = ['dgram', 'fs', 'net', 'tls', 'child_process'];
-const VERSION = preval`module.exports = Date.now()`;
+const NODE_LIBS = ['dgram', 'net', 'tls', 'fs', 'module', 'child_process'];
 const debug = _debug('cs:compiler:manager');
 
 localforage.config({
@@ -75,29 +83,74 @@ export default class Manager {
   modules: ModuleObject;
   manifest: Manifest;
   dependencies: Object;
-  webpackHMR: boolean = false;
-  hardReload: boolean = false;
+  webpackHMR: boolean;
+  hardReload: boolean;
   hmrStatus: 'idle' | 'check' | 'apply' | 'fail' = 'idle';
   testRunner: TestRunner;
 
   // List of modules that are being transpiled, to prevent duplicate jobs.
   transpileJobs: { [transpiledModuleId: string]: true };
+  transpiledModulesByHash: { [hash: string]: TranspiledModule };
 
-  transpiledModulesByHash = {};
+  // All paths are resolved at least twice: during transpilation and evaluation.
+  // We can improve performance by almost 2x in this scenario if we cache the lookups
+  cachedPaths: { [path: string]: string };
 
-  constructor(id: string, preset: Preset, modules: Array<Module>) {
+  configurations: Configurations;
+
+  constructor(id: string, preset: Preset, modules: { [path: string]: Module }) {
     this.id = id;
     this.preset = preset;
     this.transpiledModules = {};
     this.cachedPaths = {};
     this.transpileJobs = {};
-    modules.forEach(m => this.addModule(m));
+    this.webpackHMR = false;
+    this.hardReload = false;
+    this.hmrStatus = 'idle';
+    this.transpiledModulesByHash = {};
+    this.configurations = {};
+
+    this.modules = modules;
+    Object.keys(modules).forEach(k => this.addModule(modules[k]));
     this.testRunner = new TestRunner(this);
 
     if (process.env.NODE_ENV === 'development') {
       window.manager = this;
       console.log(this);
     }
+
+    BrowserFS.configure(
+      {
+        fs: 'CodeSandboxFS',
+        options: {
+          manager: this.bfsWrapper,
+        },
+      },
+      () => {}
+    );
+  }
+
+  bfsWrapper = {
+    getTranspiledModules: () => this.transpiledModules,
+    addModule: (module: Module) => {
+      this.addModule(module);
+    },
+    removeModule: (module: Module) => {
+      this.removeModule(module);
+    },
+    moveModule: (module: Module, newPath: string) => {
+      this.moveModule(module, newPath);
+    },
+    updateModule: (module: Module) => {
+      this.updateModule(module);
+    },
+  };
+
+  resetAllModules() {
+    this.getTranspiledModules().forEach(t => {
+      t.resetTranspilation();
+      t.resetCompilation();
+    });
   }
 
   // Hoist these 2 functions to the top, since they get executed A LOT
@@ -110,6 +163,7 @@ export default class Manager {
     }
 
     const err = new Error('Could not find ' + p);
+    // $FlowIssue
     err.code = 'ENOENT';
 
     throw err;
@@ -140,11 +194,11 @@ export default class Manager {
     debug(`Loaded manifest.`);
   }
 
-  evaluateModule(module: Module) {
+  evaluateModule(module: Module, force: boolean = false) {
     if (this.hardReload) {
       // Do a hard reload
       document.location.reload();
-      return;
+      return {};
     }
 
     this.hmrStatus = 'apply';
@@ -156,14 +210,22 @@ export default class Manager {
 
     const transpiledModule = this.getTranspiledModule(module);
 
-    const exports = this.evaluateTranspiledModule(transpiledModule);
+    if (force && transpiledModule.compilation) {
+      transpiledModule.compilation = null;
+    }
 
-    // Run post evaluate
-    this.getTranspiledModules().forEach(t => t.postEvaluate(this));
+    try {
+      const exports = this.evaluateTranspiledModule(transpiledModule);
 
-    this.hmrStatus = 'idle';
+      this.hmrStatus = 'idle';
 
-    return exports;
+      return exports;
+    } catch (e) {
+      throw e;
+    } finally {
+      // Run post evaluate
+      this.getTranspiledModules().forEach(t => t.postEvaluate(this));
+    }
   }
 
   evaluateTranspiledModule(transpiledModule: TranspiledModule) {
@@ -252,6 +314,11 @@ export default class Manager {
     delete this.transpiledModules[module.path];
   }
 
+  moveModule(module: Module, newPath: string) {
+    this.removeModule(module);
+    this.addModule({ ...module, path: newPath });
+  }
+
   setEnvironmentVariables() {
     if (this.transpiledModules['/.env'] && this.preset.hasDotEnv) {
       const envCode = this.transpiledModules['/.env'].module.code;
@@ -273,12 +340,13 @@ export default class Manager {
    * Will transpile this module and all eventual children (requires) that go with it
    * @param {*} entry
    */
-  async transpileModules(entry: Module, isEntry: boolean = true) {
+  async transpileModules(entry: Module, isTestFile: boolean = false) {
     this.hmrStatus = 'check';
     this.setEnvironmentVariables();
     const transpiledModule = this.getTranspiledModule(entry);
 
-    transpiledModule.setIsEntry(isEntry);
+    transpiledModule.setIsEntry(true);
+    transpiledModule.setIsTestFile(isTestFile);
 
     const result = await transpiledModule.transpile(this);
     this.getTranspiledModules().forEach(t => t.postTranspile(this));
@@ -321,7 +389,9 @@ export default class Manager {
     }
 
     const dependencyName = getDependencyName(path);
-    const previousDependencyName = getDependencyName(currentPath);
+    const previousDependencyName = getDependencyName(
+      currentPath.replace('/node_modules/', '')
+    );
 
     if (
       this.manifest.dependencyAliases[previousDependencyName] &&
@@ -347,12 +417,6 @@ export default class Manager {
     this.webpackHMR = true;
   }
 
-  // All paths are resolved at least twice: during transpilation and evaluation.
-  // We can improve performance by almost 2x in this scenario if we cache the lookups
-  cachedPaths: {
-    [path: string]: string,
-  } = {};
-
   resolveModule(
     path: string,
     currentPath: string,
@@ -361,7 +425,7 @@ export default class Manager {
     const aliasedPath = this.getAliasedDependencyPath(path, currentPath);
     const shimmedPath = coreLibraries[aliasedPath] || aliasedPath;
 
-    const pathId = path + currentPath;
+    const pathId = shimmedPath + currentPath;
     const cachedPath = this.cachedPaths[pathId];
     try {
       let resolvedPath;
@@ -374,6 +438,14 @@ export default class Manager {
           extensions: defaultExtensions.map(ext => '.' + ext),
           isFile: this.isFile,
           readFileSync: this.readFileSync,
+          packageFilter: p => {
+            if (!p.main && p.module) {
+              // eslint-disable-next-line
+              p.main = p.module;
+            }
+
+            return p;
+          },
           moduleDirectory: ['node_modules', this.envVariables.NODE_PATH].filter(
             x => x
           ),
@@ -384,7 +456,7 @@ export default class Manager {
 
       if (NODE_LIBS.includes(shimmedPath) || resolvedPath === '//empty.js') {
         return {
-          path: pathUtils.join('/node_modules', resolvedPath),
+          path: pathUtils.join('/node_modules', 'empty', 'index.js'),
           code: `// empty`,
           requires: [],
         };
@@ -392,6 +464,8 @@ export default class Manager {
 
       return this.transpiledModules[resolvedPath].module;
     } catch (e) {
+      delete this.cachedPaths[pathId];
+
       let connectedPath = /^(\w|@\w)/.test(shimmedPath)
         ? pathUtils.join('/node_modules', shimmedPath)
         : pathUtils.join(pathUtils.dirname(currentPath), shimmedPath);
@@ -417,17 +491,42 @@ export default class Manager {
     }
   }
 
-  async downloadDependency(
+  downloadDependency(
     path: string,
-    currentPath: string
+    currentPath: string,
+    ignoredExtensions: Array<string> = this.preset.ignoredExtensions
   ): Promise<TranspiledModule> {
-    return fetchModule(
-      path,
-      currentPath,
-      this,
-      this.preset.ignoredExtensions
-    ).then(module => this.getTranspiledModule(module));
+    return fetchModule(path, currentPath, this, ignoredExtensions).then(
+      module => this.getTranspiledModule(module)
+    );
   }
+
+  updateModule(m: Module) {
+    this.transpiledModules[m.path].module = m;
+    return this.getTranspiledModulesByModule(m).map(tModule => {
+      tModule.update(m);
+
+      return tModule;
+    });
+  }
+
+  resolveTranspiledModuleAsync = (
+    path: string,
+    currentPath: string,
+    ignoredExtensions?: Array<string>
+  ): Promise<TranspiledModule> => {
+    try {
+      return Promise.resolve(
+        this.resolveTranspiledModule(path, currentPath, ignoredExtensions)
+      );
+    } catch (e) {
+      if (e.type === 'module-not-found' && e.isDependency) {
+        return this.downloadDependency(e.path, currentPath, ignoredExtensions);
+      }
+
+      throw e;
+    }
+  };
 
   /**
    * Resolve the transpiled module from the path, note that the path can actually
@@ -435,7 +534,11 @@ export default class Manager {
    * @param {*} path
    * @param {*} currentPath
    */
-  resolveTranspiledModule(path: string, currentPath: string): TranspiledModule {
+  resolveTranspiledModule(
+    path: string,
+    currentPath: string,
+    ignoredExtensions?: Array<string>
+  ): TranspiledModule {
     if (path.startsWith('webpack:')) {
       throw new Error('Cannot resolve webpack path');
     }
@@ -451,7 +554,7 @@ export default class Manager {
     const module = this.resolveModule(
       newPath,
       currentPath,
-      this.preset.ignoredExtensions
+      ignoredExtensions || this.preset.ignoredExtensions
     );
 
     return this.getTranspiledModule(module, queryPath.join('!'));
@@ -480,25 +583,39 @@ export default class Manager {
       );
   }
 
+  updateConfigurations(configurations: Configurations) {
+    const configsUpdated = this.configurations
+      ? !isEqual(configurations, this.configurations)
+      : false;
+
+    if (configsUpdated) {
+      this.resetAllModules();
+    }
+
+    this.configurations = configurations;
+  }
+
   /**
    * Find all changed, added and deleted modules. Update trees and
    * delete caches accordingly
    */
-  updateData(modules: Array<Module>) {
+  updateData(modules: { [path: string]: Module }) {
     this.transpileJobs = {};
     this.hardReload = false;
 
-    const addedModules = [];
-    const updatedModules = [];
+    this.modules = modules;
 
-    modules.forEach(module => {
-      const mirrorModule = this.transpiledModules[module.path];
+    const addedModules: Array<Module> = [];
+    const updatedModules: Array<Module> = [];
+
+    Object.keys(modules).forEach(k => {
+      const module: Module = modules[k];
+      const mirrorModule = this.transpiledModules[k];
 
       if (!mirrorModule) {
         // File structure changed, reset cached paths
         this.cachedPaths = {};
         addedModules.push(module);
-        this.addTranspiledModule(module);
       } else if (mirrorModule.module.code !== module.code) {
         // File structure changed, reset cached paths
         this.cachedPaths = {};
@@ -509,35 +626,51 @@ export default class Manager {
     this.getModules().forEach(m => {
       if (
         !m.path.startsWith('/node_modules') &&
-        !modules.find(m2 => m2.path === m.path) &&
+        !modules[m.path] &&
         !m.parent // not an emitted module
       ) {
         this.removeModule(m);
       }
     });
 
-    const modulesToUpdate = uniq([...addedModules, ...updatedModules]);
+    addedModules.forEach(m => {
+      this.addTranspiledModule(m);
+    });
+
+    const modulesToUpdate: Array<Module> = uniq([
+      ...addedModules,
+      ...updatedModules,
+    ]);
 
     // We eagerly transpile changed files,
     // this way we don't have to traverse the whole
     // dependency graph each time a file changes
+    const tModulesToUpdate = modulesToUpdate.map(m => this.updateModule(m));
 
-    const tModulesToUpdate = modulesToUpdate.map(m =>
-      this.getTranspiledModulesByModule(m).map(tModule => {
-        this.transpiledModules[m.path].module = m;
-        tModule.update(m);
+    if (tModulesToUpdate.length > 0 && this.configurations.sandbox) {
+      this.hardReload = this.configurations.sandbox.parsed.hardReloadOnChange;
+    }
 
-        return tModule;
-      })
-    );
-
-    const transpiledModulesToUpdate = uniq(
+    const allModulesToUpdate = uniq(
       flattenDeep([
         tModulesToUpdate,
         // All modules with errors
-        this.getTranspiledModules().filter(t => t.errors.length > 0),
+        this.getTranspiledModules().filter(t => {
+          if (t.hasMissingDependencies) {
+            t.resetTranspilation();
+          }
+          return t.errors.length > 0 || t.hasMissingDependencies;
+        }),
       ])
     );
+    const transpiledModulesToUpdate = allModulesToUpdate.filter(
+      m => !TestRunner.isTest(m.module.path)
+    );
+    // Reset test files, but don't transpile. We want to do that in the test runner
+    // so we can catch any errors
+    allModulesToUpdate
+      .filter(m => TestRunner.isTest(m.module.path))
+      .forEach(m => m.resetTranspilation());
 
     debug(
       `Generated update diff, updating ${
@@ -559,26 +692,49 @@ export default class Manager {
     this.hardReload = true;
   }
 
+  serialize() {
+    const serializedTModules = {};
+
+    Object.keys(this.transpiledModules).forEach(path => {
+      Object.keys(this.transpiledModules[path].tModules).forEach(query => {
+        const tModule = this.transpiledModules[path].tModules[query];
+        serializedTModules[tModule.getId()] = tModule.serialize();
+      });
+    });
+
+    const dependenciesQuery = this.getDependencyQuery();
+
+    return {
+      transpiledModules: serializedTModules,
+      cachedPaths: this.cachedPaths,
+      version: VERSION,
+      configurations: this.configurations,
+      meta: getCombinedMetas(),
+      dependenciesQuery,
+    };
+  }
+
+  getDependencyQuery() {
+    if (!this.manifest || !this.manifest.dependencies) {
+      return '';
+    }
+
+    const normalizedDependencies = {};
+
+    this.manifest.dependencies.forEach(dep => {
+      normalizedDependencies[dep.name] = dep.version;
+    });
+
+    return dependenciesToQuery(normalizedDependencies);
+  }
+
   /**
    * Generate a JSON structure out of this manager that can be used to load
    * the manager later on. This is useful for faster initial loading.
    */
   async save() {
     try {
-      const serializedTModules = {};
-
-      Object.keys(this.transpiledModules).forEach(path => {
-        Object.keys(this.transpiledModules[path].tModules).forEach(query => {
-          const tModule = this.transpiledModules[path].tModules[query];
-          serializedTModules[tModule.getId()] = tModule.serialize();
-        });
-      });
-
-      await localforage.setItem(this.id, {
-        transpiledModules: serializedTModules,
-        cachedPaths: this.cachedPaths,
-        version: VERSION,
-      });
+      await localforage.setItem(this.id, this.serialize());
     } catch (e) {
       if (process.env.NODE_ENV === 'development') {
         console.error(e);
@@ -596,16 +752,28 @@ export default class Manager {
           transpiledModules: serializedTModules,
           cachedPaths,
           version,
+          configurations,
+          dependenciesQuery,
+          meta,
         }: {
           transpiledModules: { [id: string]: SerializedTranspiledModule },
           cachedPaths: { [path: string]: string },
           version: string,
+          configurations: Object,
+          dependenciesQuery: string,
+          meta: any,
         } = data;
 
         // Only use the cache if the cached version was cached with the same
-        // version of the compiler
-        if (version === VERSION) {
-          this.cachedPaths = cachedPaths || {};
+        // version of the compiler and dependencies haven't changed
+        if (
+          version === VERSION &&
+          dependenciesQuery === this.getDependencyQuery()
+        ) {
+          setCombinedMetas(meta);
+
+          this.cachedPaths = cachedPaths;
+          this.configurations = configurations;
 
           const tModules: { [id: string]: TranspiledModule } = {};
           // First create tModules for all the saved modules, so we have references
@@ -635,6 +803,14 @@ export default class Manager {
     this.clearCache();
   }
 
+  dispose() {
+    if (this.preset) {
+      this.preset.transpilers.forEach(t => {
+        t.dispose();
+      });
+    }
+  }
+
   clearCache() {
     try {
       localforage.clear();
@@ -643,5 +819,26 @@ export default class Manager {
         console.error(ex);
       }
     }
+  }
+
+  /**
+   * Get information about all transpilers currently registered for this manager
+   */
+  async getTranspilerContext() {
+    const info = {};
+
+    const data = await Promise.all(
+      Array.from(this.preset.transpilers).map(t =>
+        t
+          .getTranspilerContext(this)
+          .then(context => ({ name: t.name, data: context }))
+      )
+    );
+
+    data.forEach(t => {
+      info[t.name] = t.data;
+    });
+
+    return info;
   }
 }

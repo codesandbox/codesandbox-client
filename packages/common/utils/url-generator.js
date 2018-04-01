@@ -1,7 +1,7 @@
 // @flow
 import type { Sandbox } from 'common/types';
 
-export const gitHubRepoPattern = /(https?:\/\/)?((www.)?)github.com(\/\w+){2,}/;
+export const gitHubRepoPattern = /(https?:\/\/)?((www.)?)github.com(\/[\w-]+){2,}/;
 const gitHubPrefix = /(https?:\/\/)?((www.)?)github.com/;
 const dotGit = /(\.git)$/;
 
@@ -23,12 +23,15 @@ export const host = () => {
 
 export const protocolAndHost = () => `${location.protocol}//${host()}`;
 
+export const newSandboxWizard = () => `/s`;
 export const newSandboxUrl = () => `/s/new`;
+export const parcelSandboxUrl = () => `/s/vanilla`;
 export const newReactTypeScriptSandboxUrl = () => `/s/react-ts`;
 export const newPreactSandboxUrl = () => `/s/preact`;
 export const newVueSandboxUrl = () => `/s/vue`;
 export const importFromGitHubUrl = () => `/s/github`;
 export const newSvelteSandboxUrl = () => `/s/svelte`;
+export const newAngularSandboxUrl = () => `/s/angular`;
 export const uploadFromCliUrl = () => `/s/cli`;
 
 const sandboxGitUrl = (git: {
@@ -58,19 +61,22 @@ export const embedUrl = (sandbox: Sandbox) => {
 };
 
 const stagingFrameUrl = (shortid: string, path: string) => {
-  const stagingHost = process.env.CODESANDBOX_HOST.split('//')[1];
+  const stagingHost = (process.env.CODESANDBOX_HOST
+    ? process.env.CODESANDBOX_HOST
+    : ''
+  ).split('//')[1];
   const segments = stagingHost.split('.');
   const first = segments.shift();
-  return `${location.protocol}//${first}-${shortid}.${segments.join('.')}/${
-    path
-  }`;
+  return `${location.protocol}//${first}-${shortid}.${segments.join(
+    '.'
+  )}/${path}`;
 };
 
 export const frameUrl = (shortid: string, append: string = '') => {
   const path = append.indexOf('/') === 0 ? append.substr(1) : append;
 
   if (process.env.LOCAL_SERVER) {
-    return `http://localhost:3001/${path}`;
+    return `http://localhost:3002/${path}`;
   }
 
   if (process.env.STAGING) {

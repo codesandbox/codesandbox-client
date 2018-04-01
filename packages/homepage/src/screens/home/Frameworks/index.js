@@ -7,6 +7,7 @@ import Centered from 'common/components/flex/Centered';
 import Padding from 'common/components/spacing/Padding';
 
 import theme from 'common/theme';
+import getIcon from 'common/templates/icons';
 
 import LoadInView from '../../../components/LoadInView';
 import RollingText from '../../../components/RollingText';
@@ -22,6 +23,7 @@ import FileType, {
   stylus,
   image,
   html,
+  pug,
   cssGlobal,
   vue,
 } from './icons';
@@ -38,17 +40,17 @@ const Container = styled.div`
 
   display: flex;
   flex-direction: row;
-  height: 255px;
+  height: 320px;
   flex: 1;
 
   ${media.tablet`
     margin-top: 1rem;
-    height: 320px;
+    height: 390px;
   `};
 
   ${media.phone`
     margin-top: 1rem;
-    height: 280px;
+    height: 340px;
   `};
 `;
 
@@ -105,12 +107,20 @@ const IconContainer = styled.div`
 
   width: 128px;
   height: 128px;
+  img {
+    margin-bottom: 0;
+  }
 
   ${media.phone`
     width: 96px;
     height: 96px;
 
     svg {
+      width: 60px;
+      height: 60px;
+    }
+
+    img {
       width: 60px;
       height: 60px;
     }
@@ -195,16 +205,45 @@ const TEMPLATE_SUPPORT = {
   'create-react-app': {
     loaders: [js, ts, html, cssGlobal, image],
     css: ['Global'],
+    description: 'Used for React projects, based on: ',
   },
   'vue-cli': {
-    loaders: [js, ts, html, vue, scss, sass, less, stylus, cssGlobal, image],
+    loaders: [
+      js,
+      ts,
+      html,
+      vue,
+      scss,
+      sass,
+      less,
+      stylus,
+      pug,
+      cssGlobal,
+      image,
+    ],
     css: ['Global', 'Scoped', 'Modules'],
+    description: 'Used for Vue projects, based on: ',
   },
   'preact-cli': {
     loaders: [js, html, scss, sass, less, cssGlobal, stylus, image],
     css: ['Global', 'Modules'],
+    description: 'Used for Preact projects, based on: ',
   },
-  svelte: { loaders: [js, html, image], css: ['Global', 'Scoped', 'Modules'] },
+  svelte: {
+    loaders: [js, html, image],
+    css: ['Global', 'Scoped', 'Modules'],
+    description: 'Used for Preact projects, based on: ',
+  },
+  'angular-cli': {
+    loaders: [ts, html, scss, sass, less, stylus, cssGlobal, image],
+    css: ['Global', 'Scoped'],
+    description: 'Used for Angular projects, based on: ',
+  },
+  parcel: {
+    loaders: [js, ts, html, scss, sass, less, cssGlobal, stylus, image],
+    css: ['Global', 'Modules'],
+    description: 'Used for any kind of project, based on: ',
+  },
 };
 
 export default class Frameworks extends React.Component {
@@ -221,23 +260,28 @@ export default class Frameworks extends React.Component {
   render() {
     const { templates } = this.props;
     const template = templates[this.state.templateIndex];
+    const TemplateIcon = getIcon(template.name);
 
     return (
       <Pane width={1280}>
         <Flex>
           <Icons>
-            {templates.map(({ Icon }, i) => (
-              <IconContainer
-                key={i}
-                selected={templates[i] === template}
-                template={templates[i]}
-                onClick={() => {
-                  this.setTemplate(templates[i]);
-                }}
-              >
-                <Icon width={80} height={80} />
-              </IconContainer>
-            ))}
+            {templates.map(({ name }, i) => {
+              const TIcon = getIcon(name);
+
+              return (
+                <IconContainer
+                  key={i}
+                  selected={templates[i] === template}
+                  template={templates[i]}
+                  onClick={() => {
+                    this.setTemplate(templates[i]);
+                  }}
+                >
+                  <TIcon width={80} height={80} />
+                </IconContainer>
+              );
+            })}
           </Icons>
 
           <Intro style={{ marginRight: '2rem' }}>
@@ -260,11 +304,30 @@ export default class Frameworks extends React.Component {
               updateCheck={template}
             >
               <TemplateName color={template.color}>
-                <template.Icon width={96} height={96} />
+                <TemplateIcon width={96} height={96} />
                 <h4>{template.niceName}</h4>
               </TemplateName>
             </RollingText>
             <Padding style={{ width: '100%' }} top={1}>
+              <HeaderTitle>Description</HeaderTitle>
+              <div
+                style={{
+                  color: 'white',
+                  marginTop: '.25rem',
+                  fontSize: '.875rem',
+                }}
+              >
+                {TEMPLATE_SUPPORT[template.name].description}
+                <a
+                  href={template.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: template.color() }}
+                >
+                  {template.name}
+                </a>.
+              </div>
+
               <HeaderTitle>Supported Loaders</HeaderTitle>
               <TemplateIcons color={template.color}>
                 {TEMPLATE_SUPPORT[template.name].loaders.map((data, i) => (

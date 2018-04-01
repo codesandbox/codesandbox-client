@@ -1,5 +1,5 @@
 // @flow
-import SvelteWorker from 'worker-loader?name=svelte-transpiler.[hash].worker.js!./svelte-worker.js';
+import SvelteWorker from 'worker-loader?publicPath=/&name=svelte-transpiler.[hash].worker.js!./svelte-worker.js';
 
 import WorkerTranspiler from '../worker-transpiler';
 import { type LoaderContext } from '../../transpiled-module';
@@ -20,6 +20,7 @@ class SvelteTranspiler extends WorkerTranspiler {
           code,
           path,
         },
+        loaderContext._module.getId(),
         loaderContext,
         (err, data) => {
           if (err) {

@@ -1,7 +1,4 @@
 // @flow
-// import loadModule from '../../';
-
-const CUSTOM_BABEL_CONFIG_ENABLED = false;
 
 const DEFAULT_BABEL_CONFIG = {
   presets: ['es2015', 'react', 'stage-0'],
@@ -29,61 +26,24 @@ const DEFAULT_BABEL_CONFIG = {
   ],
 };
 
-// const resolvePlugin = (plugin: string) => {
-//   try {
-//     return loadModule(plugin);
-//   } catch (e) {
-//     return loadModule(`babel-plugin-${plugin}`);
-//   }
-// };
-
-/**
- * Rewrite the plugin strings to actual dependencies of a babel config
- */
-// function rewritePlugins(plugins: ?Array<string | Array<string>>) {
-//   if (plugins == null) return [];
-
-//   return plugins.map(dependency => {
-//     if (typeof dependency === 'string') {
-//       return resolvePlugin(dependency);
-//     } else if (Array.isArray(dependency)) {
-//       const newDependency = [...dependency];
-//       newDependency[0] = resolvePlugin(dependency[0]);
-
-//       return newDependency;
-//     }
-
-//     throw new Error(
-//       `Could not parse babel plugin: '${JSON.stringify(dependency)}'`,
-//     );
-//   });
-// }
-
 /**
  * Parses the .babelrc if it exists, if it doesn't it will return a default config
  */
 export default function getBabelConfig(
-  config: Object = {},
-  path: string,
-  babelrc: Object
+  config: ?Object,
+  loaderOptions: Object,
+  path: string
 ) {
-  let resolvedConfig = DEFAULT_BABEL_CONFIG;
+  const resolvedConfig = config || DEFAULT_BABEL_CONFIG;
 
-  // if (config && CUSTOM_BABEL_CONFIG_ENABLED) {
-  //   resolvedConfig = {
-  //     ...config,
-  //     plugins: rewritePlugins(config.plugins),
-  //   };
-  // }
+  if (loaderOptions.disableCodeSandboxPlugins) {
+    return resolvedConfig;
+  }
 
-  resolvedConfig = {
+  return {
     ...resolvedConfig,
-    plugins: config.plugins || babelrc.plugins || resolvedConfig.plugins,
-    presets: config.presets || babelrc.presets || resolvedConfig.presets,
     sourceMaps: 'inline',
     sourceFileName: path,
-    sourceMapTarget: `${path}:transpiled`,
+    filename: path,
   };
-
-  return resolvedConfig;
 }

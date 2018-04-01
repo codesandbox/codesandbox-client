@@ -7,6 +7,7 @@ import * as editor from './editor';
 import * as source from './source';
 import * as error from './error';
 import * as correction from './correction';
+import * as glyph from './glyph';
 
 export interface Action {
   type: 'action';
@@ -19,4 +20,5 @@ export const actions = {
   source,
   error,
   correction,
+  glyph,
 };

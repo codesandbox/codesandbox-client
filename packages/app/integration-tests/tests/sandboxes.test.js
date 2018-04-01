@@ -6,18 +6,27 @@ const SANDBOXES = [
   'vue',
   'svelte',
   'react-ts',
-  'github/reactjs/redux/tree/master/examples/todomvc',
-  { id: 'jvlrl98xw3', threshold: 0.05 },
+  { id: 'github/reactjs/redux/tree/master/examples/todomvc', threshold: 0.04 },
   'vVoQVk78',
   'github/faceyspacey/redux-first-router-codesandbox/tree/master',
   'mZRjw05yp',
-
   'o29j95wx9',
   'k3q1zjjml5',
   'github/reactjs/redux/tree/master/examples/real-world',
   'github/CompuIves/codesandbox-presentation',
   'lp5rjr0z4z',
   'nOymMxyY',
+  'y26rj99yov', // react transition
+  { id: 'X6npLXPRW', threshold: 0.05 }, // react-table
+  '6w66jzw3mn', // material-design & preact
+  '4j7m47vlm4', // material-ui
+  'github/cssinjs/egghead/tree/master/from-sass-to-cssinjs/templates-and-variables', // postcss egghead
+  'xp5qy8r93q', // babel example
+  'angular', // angular template
+  // Sass importing
+  '2ppkvzx570', // nested imports
+  'rl2m3xklyo', // node_modules import
+  'vanilla',
 ];
 
 function pageLoaded(page) {
@@ -48,11 +57,11 @@ describe('sandboxes', () => {
         browser = await browser;
         const page = await browser.newPage();
         const waitFunction = pageLoaded(page);
-        page.goto('http://localhost:3001/#' + id, {
+        page.goto('http://localhost:3002/#' + id, {
           timeout: 60000,
         });
         await waitFunction;
-        await page.waitFor(2000);
+        await page.waitFor(sandbox.waitFor || 2000);
 
         const screenshot = await page.screenshot();
 
@@ -65,7 +74,7 @@ describe('sandboxes', () => {
 
         await page.close();
       },
-      1000 * 60 * 1
+      1000 * 120 * 1
     );
   });
 });

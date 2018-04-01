@@ -3,10 +3,11 @@ import { isStandalone, listen, dispatch } from 'codesandbox-api';
 
 import registerServiceWorker from 'common/registerServiceWorker';
 import requirePolyfills from 'common/load-dynamic-polyfills';
-import { getModulePath } from 'app/store/entities/sandboxes/modules/selectors';
+import { getModulePath } from 'common/sandbox/modules';
+import { generateFileFromSandbox } from 'common/templates/configuration/package-json';
 
 import setupHistoryListeners from './url-listeners';
-import compile from './compile';
+import compile, { getCurrentManager } from './compile';
 import setupConsole from './console';
 import transformJSON from './console/transform-json';
 
@@ -24,7 +25,9 @@ function getId() {
     return document.location.host.match(re)[1];
   }
 
-  return document.location.host.match(/(.*)\.codesandbox/)[1];
+  const hostRegex = host.replace(/https?:\/\//, '').replace(/\./g, '\\.');
+  const sandboxRegex = new RegExp(`(.*)\\.${hostRegex}`);
+  return document.location.host.match(sandboxRegex)[1];
 }
 
 requirePolyfills().then(() => {
@@ -37,7 +40,7 @@ requirePolyfills().then(() => {
   async function handleMessage(data, source) {
     if (source) {
       if (data.type === 'compile') {
-        if (data.version === 2) {
+        if (data.version === 3) {
           compile(data);
         } else {
           const compileOld = await import('./compile-old').then(x => x.default);
@@ -66,6 +69,21 @@ requirePolyfills().then(() => {
         } catch (e) {
           console.error(e);
         }
+      } else if (data.type === 'get-transpiler-context') {
+        const manager = getCurrentManager();
+
+        if (manager) {
+          const context = await manager.getTranspilerContext();
+          dispatch({
+            type: 'transpiler-context',
+            data: context,
+          });
+        } else {
+          dispatch({
+            type: 'transpiler-context',
+            data: {},
+          });
+        }
       }
     }
   }
@@ -89,21 +107,33 @@ requirePolyfills().then(() => {
         return camelized;
       })
       .then(x => {
+        const moduleObject = {};
+
         // We convert the modules to a format the manager understands
-        const normalizedModules = x.data.modules.map(m => ({
-          path: getModulePath(x.data.modules, x.data.directories, m.id),
-          code: m.code,
-        }));
+        x.data.modules.forEach(m => {
+          const path = getModulePath(x.data.modules, x.data.directories, m.id);
+          moduleObject[path] = {
+            path,
+            code: m.code,
+          };
+        });
+
+        if (!moduleObject['/package.json']) {
+          moduleObject['/package.json'] = {
+            code: generateFileFromSandbox(x.data),
+            path: '/package.json',
+          };
+        }
 
         const data = {
           sandboxId: id,
-          modules: normalizedModules,
+          modules: moduleObject,
           entry: '/' + x.data.entry,
           externalResources: x.data.externalResources,
           dependencies: x.data.npmDependencies,
           hasActions: false,
           template: x.data.template,
-          version: 2,
+          version: 3,
         };
 
         compile(data);

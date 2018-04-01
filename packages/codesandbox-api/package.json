@@ -1,6 +1,6 @@
 {
   "name": "codesandbox-api",
-  "version": "0.0.14",
+  "version": "0.0.18",
   "description": "",
   "keywords": [],
   "main": "dist/codesandbox.umd.js",

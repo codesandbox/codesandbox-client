@@ -1,5 +1,5 @@
 // @flow
-import TypeScriptWorker from 'worker-loader?name=typescript-transpiler.[hash].worker.js!./typescript-worker.js';
+import TypeScriptWorker from 'worker-loader?publicPath=/&name=typescript-transpiler.[hash].worker.js!./typescript-worker.js';
 
 import WorkerTranspiler from '../worker-transpiler';
 import { type LoaderContext } from '../../transpiled-module';
@@ -15,11 +15,22 @@ class TypeScriptTranspiler extends WorkerTranspiler {
     return new Promise((resolve, reject) => {
       const path = loaderContext.path;
 
+      let foundConfig = loaderContext.options;
+      if (
+        loaderContext.options.configurations &&
+        loaderContext.options.configurations.typescript &&
+        loaderContext.options.configurations.typescript.parsed
+      ) {
+        foundConfig = loaderContext.options.configurations.typescript.parsed;
+      }
+
       this.queueTask(
         {
           code,
           path,
+          config: foundConfig,
         },
+        loaderContext._module.getId(),
         loaderContext,
         (err, data) => {
           if (err) {

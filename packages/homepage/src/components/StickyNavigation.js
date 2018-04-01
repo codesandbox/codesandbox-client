@@ -170,9 +170,8 @@ export default class StickyNavigation extends React.PureComponent<Props> {
                 {node.headings.map(({ value }) => (
                   <li key={value}>
                     <SecondaryNavigationLink
-                      to={node.fields.url + `#${slugify(value)}`}
+                      to={`${node.fields.url}#${slugify(value)}`}
                       exact
-                      activeStyle={activeStyle}
                     >
                       {value}
                     </SecondaryNavigationLink>

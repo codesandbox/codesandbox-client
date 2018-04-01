@@ -7,13 +7,15 @@ export default function(
   require: Function,
   module: Object,
   env: Object = {},
-  globals: Object = {}
+  globals: Object = {},
+  { asUMD = false }: { asUMD: boolean } = {}
 ) {
+  const g = typeof window === 'undefined' ? self : window;
   const exports = module.exports;
 
-  const global = window;
+  const global = g;
   const process = buildProcess(env);
-  window.global = global;
+  g.global = global;
 
   const globalsCode = ', ' + Object.keys(globals).join(', ');
   const globalsValues = Object.keys(globals).map(k => globals[k]);
@@ -25,20 +27,24 @@ export default function(
     // eslint-disable-next-line no-eval
     (0, eval)(newCode).apply(this, [
       require,
-      module,
-      exports,
+      asUMD ? undefined : module,
+      asUMD ? undefined : exports,
       process,
       setImmediate,
       Buffer,
-      global,
+      asUMD ? undefined : global,
       ...globalsValues,
     ]);
 
     return module.exports;
   } catch (e) {
-    e.isEvalError = true;
+    let error = e;
+    if (typeof e === 'string') {
+      error = new Error(e);
+    }
+    error.isEvalError = true;
 
-    throw e;
+    throw error;
   }
 }
 /* eslint-enable no-unused-vars */

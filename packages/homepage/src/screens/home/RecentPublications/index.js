@@ -3,9 +3,9 @@ import styled from 'styled-components';
 
 import MaxWidth from 'common/components/flex/MaxWidth';
 
-import codesandbox2Image from './1-codesandbox2.png';
-import zeitTalkImage from './2-zeit-talk.jpg';
-import npmArticleImage from './3-npm-article.png';
+import liveImage from './codesandbox-live.png';
+import codeSandbox25Image from './codesandbox-2.5.png';
+import parcelImage from './parcel.png';
 
 import media from '../../../utils/media';
 
@@ -19,8 +19,16 @@ const Title = styled.h3`
   font-weight: 200;
   font-size: 2rem;
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 0.5rem;
   color: white;
+`;
+
+const SubTitle = styled.h4`
+  font-weight: 200;
+  font-size: 1.25rem;
+  text-align: center;
+  margin-bottom: 3.5rem;
+  color: rgba(255, 255, 255, 0.8);
 `;
 
 const Items = styled.div`
@@ -79,25 +87,36 @@ export default () => (
   <Container>
     <MaxWidth width={1280}>
       <Title>Recent Publications</Title>
-
-      <Items>
+      <SubTitle>
+        You can follow{' '}
+        <a
+          href="https://medium.com/@compuives/"
+          target="_blank"
+          rel="noreferrer noopener"
+          style={{ textDecoration: 'none' }}
+        >
+          our blog
+        </a>{' '}
+        to stay up to date with new publications.
+      </SubTitle>
+      <Items style={{ marginBottom: '2rem' }}>
         <PublicationItem
-          title="CodeSandbox 2.0"
-          description="Announcing CodeSandbox 2.0. With GitHub commiting, a new homepage and support for static files."
-          url="https://medium.com/@compuives/announcing-codesandbox-2-0-938cff3a0fcb"
-          image={codesandbox2Image}
+          title="CodeSandbox Live"
+          description="Real time code collaboration in the browser. From now on you can open up your sandbox for live editing with others."
+          url="https://medium.com/@compuives/introducing-codesandbox-live-real-time-code-collaboration-in-the-browser-6d508cfc70c9"
+          image={liveImage}
         />
         <PublicationItem
-          title="The Journey of CodeSandbox"
-          description="Ives explains how CodeSandbox came to be, how it works and what the future holds."
-          url="https://www.youtube.com/watch?v=5lR29NsJKW8"
-          image={zeitTalkImage}
+          title="Vanilla Template"
+          description="Introducing the Vanilla template: a template based on Parcel for any kind of web project you like to create."
+          url="https://hackernoon.com/introducing-the-vanilla-template-to-codesandbox-32244b58acec"
+          image={parcelImage}
         />
         <PublicationItem
-          title="NPM in the browser"
-          description="What we have done to make npm work in the browser, and what we will do in the future."
-          url="https://hackernoon.com/how-we-make-npm-packages-work-in-the-browser-announcing-the-new-packager-6ce16aa4cee6"
-          image={npmArticleImage}
+          title="CodeSandbox 2.5"
+          description="Announcing CodeSandbox 2.5. An editor redesign, Jest support, Babel Plugin support, a Cerebral rewrite and muuuuch more!"
+          url="https://medium.com/@compuives/announcing-codesandbox-2-5-be767d15ffd"
+          image={codeSandbox25Image}
         />
       </Items>
     </MaxWidth>

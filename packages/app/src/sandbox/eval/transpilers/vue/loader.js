@@ -115,6 +115,7 @@ export default function(content: string, loaderContext: LoaderContext) {
     stylus: ['vue-style-loader', 'css-loader', 'stylus-loader'],
     ts: ['ts-loader'],
     typescript: ['ts-loader'],
+    pug: ['pug-loader'],
   };
 
   const loaders = Object.assign({}, defaultLoaders, codeSandboxLoaders);
@@ -430,10 +431,14 @@ export default function(content: string, loaderContext: LoaderContext) {
   }
 
   function getRequireForImportString(type, impt, scoped) {
-    return loaderUtils.stringifyRequest(
+    const depPath = loaderUtils.stringifyRequest(
       loaderContext,
       '!!' + getLoaderString(type, impt, -1, scoped) + impt.src
     );
+
+    loaderContext.addDependency(JSON.parse(depPath));
+
+    return depPath;
   }
 
   function addCssModulesToLoader(loader, part, index) {

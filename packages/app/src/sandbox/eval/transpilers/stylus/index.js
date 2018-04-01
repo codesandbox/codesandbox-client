@@ -1,5 +1,5 @@
 // @flow
-import StylusWorker from 'worker-loader?name=stylus-transpiler.[hash].worker.js!./stylus-worker.js';
+import StylusWorker from 'worker-loader?publicPath=/&name=stylus-transpiler.[hash].worker.js!./stylus-worker.js';
 
 import WorkerTranspiler from '../worker-transpiler';
 import { type LoaderContext } from '../../transpiled-module';
@@ -22,6 +22,7 @@ class StylusTranspiler extends WorkerTranspiler {
           code,
           path,
         },
+        loaderContext._module.getId(),
         loaderContext,
         (err, data) => {
           if (err) {

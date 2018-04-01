@@ -3,5 +3,5 @@ import React from 'react';
 import CodeSponsor from './CodeSponsor';
 
 export default () => (
-  <CodeSponsor token="4c558242-bb75-49a4-9b6f-5b393bcc78ed" theme="dark" />
+  <CodeSponsor token="a2bc283fb2c6e5c878cf6141edb03f09" theme="dark" />
 );

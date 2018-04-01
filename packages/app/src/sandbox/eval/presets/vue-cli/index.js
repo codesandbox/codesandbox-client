@@ -1,3 +1,7 @@
+import { dispatch, actions } from 'codesandbox-api';
+
+import type Manager from '../../manager';
+
 import babelTranspiler from '../../transpilers/babel';
 import typescriptTranspiler from '../../transpilers/typescript';
 import jsonTranspiler from '../../transpilers/json';
@@ -15,14 +19,62 @@ import vueSelector from '../../transpilers/vue/selector';
 import vueStyleLoader from '../../transpilers/vue/style-loader';
 import cssLoader from '../../transpilers/vue/css-loader';
 import base64Transpiler from '../../transpilers/base64';
+import pugTranspiler from '../../transpilers/pug';
 
 import Preset from '../';
 
+const getFileNameFromVm = vm => {
+  if (vm) {
+    const options =
+      typeof vm === 'function' && vm.cid != null
+        ? vm.options
+        : vm._isVue ? vm.$options || vm.constructor.options : vm || {};
+
+    return options.__file;
+  }
+};
+
 export default function initialize() {
-  const vuePreset = new Preset('vue-cli', ['vue', 'json', 'js'], {
-    '@': '{{sandboxRoot}}',
-    vue$: 'vue/dist/vue.common.js',
-  });
+  const vuePreset = new Preset(
+    'vue-cli',
+    ['vue', 'json', 'js'],
+    {
+      '@': '{{sandboxRoot}}',
+      vue$: 'vue/dist/vue.common.js',
+    },
+    {
+      setup: async (manager: Manager) => {
+        try {
+          const vueModule = manager.resolveTranspiledModule('vue', '/');
+
+          if (!vueModule.source) {
+            await vueModule.transpile(manager);
+          }
+          const Vue = vueModule.evaluate(manager);
+
+          if (Vue) {
+            Vue.config.warnHandler = (msg, vm, trace) => {
+              console.error('[Vue warn]: ' + msg + trace);
+
+              const file = getFileNameFromVm(vm);
+
+              dispatch(
+                actions.correction.show(msg, {
+                  line: 1,
+                  column: 1,
+                  path: file,
+                  severity: 'warning',
+                  source: 'Vue',
+                })
+              );
+            };
+          }
+        } catch (e) {
+          /* ignore */
+        }
+      },
+    }
+  );
 
   const sassWithConfig = {
     transpiler: sassTranspiler,
@@ -61,29 +113,8 @@ export default function initialize() {
     });
   }
 
-  const babelConfig = {
-    presets: [
-      // babel preset env starts with latest, then drops rules.
-      // We don't have env, so we just support latest
-      'latest',
-      'stage-2',
-    ],
-    plugins: [
-      'transform-runtime',
-      'transform-vue-jsx',
-      'transform-decorators-legacy',
-    ],
-  };
-
-  babelTranspiler.setBabelRc(babelConfig);
-
-  const babelWithConfig = {
-    transpiler: babelTranspiler,
-    options: babelConfig,
-  };
-
   vuePreset.registerTranspiler(module => /\.jsx?$/.test(module.path), [
-    babelWithConfig,
+    { transpiler: babelTranspiler },
   ]);
   vuePreset.registerTranspiler(module => /\.tsx?$/.test(module.path), [
     { transpiler: typescriptTranspiler },
@@ -115,6 +146,9 @@ export default function initialize() {
     { transpiler: noopTranspiler },
   ]);
   vuePreset.registerTranspiler(() => true, [{ transpiler: rawTranspiler }]);
+  vuePreset.registerTranspiler(m => m.path.endsWith('pug'), [
+    { transpiler: pugTranspiler },
+  ]);
 
   return vuePreset;
 }

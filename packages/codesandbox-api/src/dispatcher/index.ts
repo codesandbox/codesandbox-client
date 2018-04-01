@@ -1,6 +1,8 @@
 // import * as debug from 'debug';
 import host from './host';
 
+const bundlers: Window[] = [];
+
 // Whether the tab has a connection with the editor
 export const isStandalone =
   typeof window === 'undefined' || (!window.opener && window.parent === window);
@@ -17,13 +19,14 @@ export function dispatch(message: Object) {
 
   const newMessage = { ...message, codesandbox: true };
   notifyListeners(newMessage);
+  notifyFrames(newMessage);
 
   if (isStandalone) return;
 
   if (window.opener) {
-    window.opener.postMessage(newMessage, host);
+    window.opener.postMessage(newMessage, '*');
   } else {
-    window.parent.postMessage(newMessage, host);
+    window.parent.postMessage(newMessage, '*');
   }
 }
 
@@ -37,14 +40,15 @@ let listenerId = 0;
  * @param callback Call this function to 'unlisten'
  */
 export function listen(callback: Callback): () => void {
-  listeners[++listenerId] = callback;
+  const id = ++listenerId;
+  listeners[id] = callback;
 
   return () => {
-    delete listeners[listenerId];
+    delete listeners[id];
   };
 }
 
-function notifyListeners(data: Object, source?: MessageEvent['source']) {
+export function notifyListeners(data: Object, source?: MessageEvent['source']) {
   Object.keys(listeners).forEach(listenerId => {
     if (listeners[listenerId]) {
       listeners[listenerId](data, source);
@@ -52,10 +56,37 @@ function notifyListeners(data: Object, source?: MessageEvent['source']) {
   });
 }
 
-// We now start listening so we can let our listeners know
-window.addEventListener('message', (e: MessageEvent) => {
+function notifyFrames(message: Object) {
+  const rawMessage = JSON.parse(JSON.stringify(message));
+  bundlers.forEach(frame => {
+    if (frame) {
+      frame.postMessage({ ...rawMessage, codesandbox: true }, '*');
+    }
+  });
+}
+
+function eventListener(e: MessageEvent) {
   const { data } = e;
-  if (data.codesandbox) {
+
+  if (data && data.codesandbox) {
     notifyListeners(data, e.source);
   }
-});
+}
+
+/**
+ * Register an window as a output the `dispatch` function can send messages to.
+ *
+ * @param frame
+ */
+export function registerFrame(frame: Window) {
+  if (bundlers.indexOf(frame) === -1) {
+    bundlers.push(frame);
+  }
+}
+
+// We now start listening so we can let our listeners know
+window.addEventListener('message', eventListener);
+
+export function reattach() {
+  window.addEventListener('message', eventListener);
+}

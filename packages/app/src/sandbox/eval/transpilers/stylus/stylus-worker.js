@@ -1,6 +1,8 @@
 import { buildWorkerError } from '../utils/worker-error-handler';
 
-self.importScripts(['/static/js/stylus.min.js']);
+self.importScripts(
+  `${process.env.CODESANDBOX_HOST || ''}/static/js/stylus.min.js`
+);
 
 self.postMessage('ready');
 
@@ -25,7 +27,7 @@ self.addEventListener('message', event => {
     }
 
     return self.postMessage({
-      type: 'compiled',
+      type: 'result',
       transpiledCode: css,
     });
   });

@@ -2,7 +2,7 @@ import { buildWorkerError } from '../utils/worker-error-handler';
 import getDependencies from './get-require-statements';
 
 self.importScripts([
-  'https://cdnjs.cloudflare.com/ajax/libs/typescript/2.5.0/typescript.min.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/typescript/2.7.2/typescript.min.js',
 ]);
 
 self.postMessage('ready');
@@ -20,8 +20,9 @@ declare var ts: {
 };
 
 self.addEventListener('message', event => {
-  const { code, path } = event.data;
-  const config = {
+  const { code, path, config } = event.data;
+
+  const defaultConfig = {
     fileName: path,
     reportDiagnostics: true,
     compilerOptions: {
@@ -42,12 +43,31 @@ self.addEventListener('message', event => {
       noUnusedLocals: true,
       inlineSourceMap: true,
       inlineSources: true,
+      emitDecoratorMetadata: true,
       experimentalDecorators: true,
+      lib: ['es2017', 'dom'],
     },
   };
 
+  let finalConfig = { ...defaultConfig };
+
+  if (config) {
+    finalConfig = { ...config };
+    finalConfig.compilerOptions = {
+      ...config.compilerOptions,
+      module: ts.ModuleKind.CommonJS,
+      moduleResolution: ts.ModuleResolutionKind.NodeJs,
+      inlineSourceMap: true,
+      inlineSources: true,
+      emitDecoratorMetadata: true,
+    };
+  }
+
+  finalConfig.fileName = path;
+  finalConfig.reportDiagnostics = true;
+
   try {
-    const { outputText: compiledCode } = ts.transpileModule(code, config);
+    const { outputText: compiledCode } = ts.transpileModule(code, finalConfig);
 
     const sourceFile = ts.createSourceFile(
       path,
@@ -68,7 +88,7 @@ self.addEventListener('message', event => {
     });
 
     self.postMessage({
-      type: 'compiled',
+      type: 'result',
       transpiledCode: compiledCode,
     });
   } catch (e) {

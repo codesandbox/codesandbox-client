@@ -1,77 +1,22 @@
 import React from 'react';
-import styled from 'styled-components';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import { inject, observer } from 'mobx-react';
 import { DropTarget } from 'react-dnd';
-
-import type { Module, Directory } from 'common/types';
-
-import sandboxActionCreators from 'app/store/entities/sandboxes/actions';
-import { validateTitle } from 'app/store/entities//sandboxes/modules/validator';
-import contextMenuActionCreators from 'app/store/context-menu/actions';
-import { getModuleParents } from 'app/store/entities/sandboxes/modules/selectors';
-import modalActionCreators from 'app/store/modal/actions';
+import Modal from 'app/components/Modal';
 import Alert from 'app/components/Alert';
 
+import validateTitle from './validateTitle';
 import Entry from './Entry';
 import DirectoryChildren from './DirectoryChildren';
+import getModuleParents from './getModuleParents';
+import { EntryContainer, Overlay, Opener } from './elements';
 
-const EntryContainer = styled.div`
-  position: relative;
-`;
-
-const Overlay = styled.div`
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: rgba(0, 0, 0, 0.3);
-  display: ${props => (props.isOver ? 'block' : 'none')};
-`;
-
-const Opener = styled.div`
-  height: ${props => (props.open ? '100%' : '0px')};
-  overflow: hidden;
-`;
-
-const mapDispatchToProps = dispatch => ({
-  sandboxActions: bindActionCreators(sandboxActionCreators, dispatch),
-  openMenu: bindActionCreators(contextMenuActionCreators, dispatch).openMenu,
-  modalActions: bindActionCreators(modalActionCreators, dispatch),
-});
-type Props = {
-  id: string,
-  shortid: string,
-  sandboxId: string,
-  sandboxTemplate: string,
-  root: ?boolean,
-  title: string,
-  modules: Array<Module>,
-  directories: Array<Directory>,
-  sandboxId: string,
-  root: ?boolean,
-  siblings: Array<Module | Directory>,
-  depth: ?number,
-  openMenu: (e: Event) => void,
-  sandboxActions: typeof sandboxActionCreators,
-  modalActions: typeof modalActionCreators,
-  currentModuleId: ?string,
-  isInProjectView: boolean,
-  mainModuleId: string,
-  innerRef: ?Function,
-};
-type State = {
-  creating: '' | 'module' | 'directory',
-};
-class DirectoryEntry extends React.PureComponent {
-  props: Props;
-  state: State;
-
+class DirectoryEntry extends React.Component {
   constructor(props) {
     super(props);
 
-    const { id, modules, directories, currentModuleId } = this.props;
+    const { id, store } = this.props;
+    const { modules, directories } = store.editor.currentSandbox;
+    const currentModuleId = store.editor.currentModule.id;
     const currentModuleParents = getModuleParents(
       modules,
       directories,
@@ -83,6 +28,10 @@ class DirectoryEntry extends React.PureComponent {
     this.state = {
       creating: '',
       open: props.root || isParentOfModule,
+      showDeleteDirectoryModal: false,
+      showDeleteModuleModal: false,
+      moduleToDeleteTitle: null,
+      moduleToDeleteShortid: null,
     };
   }
 
@@ -95,9 +44,12 @@ class DirectoryEntry extends React.PureComponent {
   componentWillReceiveProps(nextProps, nextState) {
     if (
       !nextState.open &&
-      this.props.currentModuleId !== nextProps.currentModuleId
+      this.props.store.editor.currentModule !==
+        nextProps.store.editor.currentModule
     ) {
-      const { id, modules, directories, currentModuleId } = nextProps;
+      const { id, store } = nextProps;
+      const { modules, directories } = store.editor.currentSandbox;
+      const currentModuleId = store.editor.currentModule.id;
       const currentModuleParents = getModuleParents(
         modules,
         directories,
@@ -118,42 +70,28 @@ class DirectoryEntry extends React.PureComponent {
       creating: 'module',
       open: true,
     });
+
     return true;
   };
 
   createModule = (_, title) => {
-    const { sandboxId, shortid, sandboxActions } = this.props;
-    sandboxActions.createModule(sandboxId, title, shortid);
+    const { shortid } = this.props;
+    this.props.signals.files.moduleCreated({
+      title,
+      directoryShortid: shortid,
+    });
     this.resetState();
   };
 
-  renameModule = (id, title) => {
-    const { sandboxId, sandboxActions } = this.props;
-    sandboxActions.renameModule(sandboxId, id, title);
+  renameModule = (moduleShortid, title) => {
+    this.props.signals.files.moduleRenamed({ moduleShortid, title });
   };
 
-  deleteModule = (id: string) => {
-    const { sandboxId, modules, sandboxActions, modalActions } = this.props;
-    const module = modules.find(m => m.id === id);
-
-    modalActions.openModal({
-      Body: (
-        <Alert
-          title="Delete File"
-          body={
-            <span>
-              Are you sure you want to delete <b>{module.title}</b>?
-              <br />
-              The file will be permanently removed.
-            </span>
-          }
-          onCancel={modalActions.closeModal}
-          onDelete={() => {
-            modalActions.closeModal();
-            sandboxActions.deleteModule(sandboxId, id);
-          }}
-        />
-      ),
+  deleteModule = (shortid, title) => {
+    this.setState({
+      showDeleteModuleModal: true,
+      moduleToDeleteShortid: shortid,
+      moduleToDeleteTitle: title,
     });
   };
 
@@ -165,29 +103,30 @@ class DirectoryEntry extends React.PureComponent {
     return true;
   };
 
-  createDirectory = (_: string, title: string) => {
-    const { sandboxId, shortid, sandboxActions } = this.props;
-    sandboxActions.createDirectory(sandboxId, title, shortid);
+  createDirectory = (_, title) => {
+    const { shortid } = this.props;
+    this.props.signals.files.directoryCreated({
+      title,
+      directoryShortid: shortid,
+    });
     this.resetState();
   };
 
-  renameDirectory = (id, title) => {
-    const { sandboxId, sandboxActions } = this.props;
-    sandboxActions.renameDirectory(sandboxId, id, title);
+  renameDirectory = (directoryShortid, title) => {
+    this.props.signals.files.directoryRenamed({ title, directoryShortid });
+  };
+
+  closeModals = () => {
+    this.setState({
+      showDeleteDirectoryModal: false,
+      showDeleteModuleModal: false,
+    });
   };
 
   deleteDirectory = () => {
-    const { id, title, sandboxId, sandboxActions } = this.props;
-
-    // eslint-disable-next-line no-alert
-    const confirmed = confirm(
-      `Are you sure you want to delete ${title} and all its children?`
-    );
-
-    if (confirmed) {
-      sandboxActions.deleteDirectory(sandboxId, id);
-    }
-    return true;
+    this.setState({
+      showDeleteDirectoryModal: true,
+    });
   };
 
   toggleOpen = () => this.setOpen(!this.state.open);
@@ -195,7 +134,8 @@ class DirectoryEntry extends React.PureComponent {
   setOpen = open => this.setState({ open });
 
   validateModuleTitle = (_, title) => {
-    const { directories, modules, id } = this.props;
+    const { store, id } = this.props;
+    const { directories, modules } = store.editor.currentSandbox;
     return validateTitle(id, title, [...directories, ...modules]);
   };
 
@@ -207,42 +147,42 @@ class DirectoryEntry extends React.PureComponent {
   };
 
   getChildren = () => {
-    const { modules, directories, shortid } = this.props;
+    const { shortid } = this.props;
 
     return [
-      ...modules.filter(m => m.directoryShortid === shortid),
-      ...directories.filter(d => d.directoryShortid === shortid),
+      ...this.props.store.editor.currentSandbox.modules.filter(
+        m => m.directoryShortid === shortid
+      ),
+      ...this.props.store.editor.currentSandbox.directories.filter(
+        d => d.directoryShortid === shortid
+      ),
     ];
   };
 
-  setCurrentModule = (moduleId: string) => {
-    const { sandboxId, sandboxActions } = this.props;
-    sandboxActions.setCurrentModule(sandboxId, moduleId);
+  setCurrentModule = moduleId => {
+    this.props.signals.editor.moduleSelected({ id: moduleId });
   };
 
   markTabsNotDirty = () => {
-    this.props.sandboxActions.markTabsNotDirty(this.props.sandboxId);
+    this.props.signals.editor.moduleDoubleClicked();
   };
 
   render() {
     const {
       id,
       shortid,
-      sandboxId,
-      sandboxTemplate,
-      modules,
-      directories,
-      title,
-      openMenu,
-      currentModuleId,
       connectDropTarget, // eslint-disable-line
       isOver, // eslint-disable-line
-      isInProjectView,
       depth = 0,
       root,
-      mainModuleId,
+      store,
     } = this.props;
     const { creating, open } = this.state;
+    const currentSandbox = store.editor.currentSandbox;
+
+    const title = root
+      ? 'Project'
+      : currentSandbox.directories.find(m => m.id === id).title;
 
     return connectDropTarget(
       <div style={{ position: 'relative' }}>
@@ -251,6 +191,7 @@ class DirectoryEntry extends React.PureComponent {
           <EntryContainer>
             <Entry
               id={id}
+              shortid={shortid}
               title={title}
               depth={depth}
               type={open ? 'directory-open' : 'directory'}
@@ -263,9 +204,33 @@ class DirectoryEntry extends React.PureComponent {
               onCreateDirectoryClick={this.onCreateDirectoryClick}
               deleteEntry={!root && this.deleteDirectory}
               hasChildren={this.getChildren().length > 0}
-              openMenu={openMenu}
               closeTree={this.closeTree}
             />
+            <Modal
+              isOpen={this.state.showDeleteDirectoryModal}
+              onClose={this.closeModals}
+              width={400}
+            >
+              <Alert
+                title="Delete Directory"
+                body={
+                  <span>
+                    Are you sure you want to delete <b>{title}</b>?
+                    <br />
+                    The directory will be permanently removed.
+                  </span>
+                }
+                onCancel={this.closeModals}
+                onDelete={() => {
+                  this.setState({
+                    showDeleteDirectoryModal: false,
+                  });
+                  this.props.signals.files.directoryDeleted({
+                    directoryShortid: shortid,
+                  });
+                }}
+              />
+            </Modal>
           </EntryContainer>
         )}
         <Opener open={open}>
@@ -282,21 +247,39 @@ class DirectoryEntry extends React.PureComponent {
             />
           )}
           <DirectoryChildren
-            modules={modules}
-            directories={directories}
             depth={depth}
             renameModule={this.renameModule}
-            openMenu={openMenu}
-            sandboxId={sandboxId}
-            mainModuleId={mainModuleId}
-            sandboxTemplate={sandboxTemplate}
             parentShortid={shortid}
             deleteEntry={this.deleteModule}
             setCurrentModule={this.setCurrentModule}
-            currentModuleId={currentModuleId}
-            isInProjectView={isInProjectView}
             markTabsNotDirty={this.markTabsNotDirty}
           />
+          <Modal
+            isOpen={this.state.showDeleteModuleModal}
+            onClose={this.closeModals}
+            width={400}
+          >
+            <Alert
+              title="Delete File"
+              body={
+                <span>
+                  Are you sure you want to delete{' '}
+                  <b>{this.state.moduleToDeleteTitle}</b>?
+                  <br />
+                  The file will be permanently removed.
+                </span>
+              }
+              onCancel={this.closeModals}
+              onDelete={() => {
+                this.setState({
+                  showDeleteModuleModal: false,
+                });
+                this.props.signals.files.moduleDeleted({
+                  moduleShortid: this.state.moduleToDeleteShortid,
+                });
+              }}
+            />
+          </Modal>
           {creating === 'module' && (
             <Entry
               id=""
@@ -324,17 +307,15 @@ const entryTarget = {
     const sourceItem = monitor.getItem();
 
     if (sourceItem.directory) {
-      props.sandboxActions.moveDirectoryToDirectory(
-        props.sandboxId,
-        sourceItem.id,
-        props.shortid
-      );
+      props.signals.files.directoryMovedToDirectory({
+        shortid: sourceItem.shortid,
+        directoryShortid: props.shortid,
+      });
     } else {
-      props.sandboxActions.moveModuleToDirectory(
-        props.sandboxId,
-        sourceItem.id,
-        props.shortid
-      );
+      props.signals.files.moduleMovedToDirectory({
+        moduleShortid: sourceItem.shortid,
+        directoryShortid: props.shortid,
+      });
     }
   },
 
@@ -360,6 +341,6 @@ function collectTarget(connectMonitor, monitor) {
   };
 }
 
-export default connect(null, mapDispatchToProps)(
-  DropTarget('ENTRY', entryTarget, collectTarget)(DirectoryEntry)
+export default inject('signals', 'store')(
+  DropTarget('ENTRY', entryTarget, collectTarget)(observer(DirectoryEntry))
 );
