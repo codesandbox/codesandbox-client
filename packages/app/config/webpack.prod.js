@@ -136,7 +136,7 @@ module.exports = merge(commonConfig, {
       navigateFallbackWhitelist: [/^(?!\/__).*/],
       // Don't precache sourcemaps (they're large) and build asset manifest:
       staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
-      maximumFileSizeToCacheInBytes: 10485760,
+      maximumFileSizeToCacheInBytes: 5242880,
       runtimeCaching: [
         {
           urlPattern: /api\/v1\/sandboxes/,
@@ -165,6 +165,8 @@ module.exports = merge(commonConfig, {
           handler: 'fastest',
           options: {
             cache: {
+              // A day
+              maxAgeSeconds: 60 * 60 * 24,
               name: 'static-root-cache',
             },
           },
@@ -181,22 +183,11 @@ module.exports = merge(commonConfig, {
           },
         },
         {
-          urlPattern: /webpack-dll-prod\.herokuapp\.com/,
-          handler: 'fastest',
-          options: {
-            cache: {
-              maxEntries: 100,
-              maxAgeSeconds: 60 * 60 * 24,
-              name: 'packager-cache',
-            },
-          },
-        },
-        {
           urlPattern: /https:\/\/d1jyvh0kxilfa7\.cloudfront\.net/,
           handler: 'fastest',
           options: {
             cache: {
-              maxEntries: 200,
+              maxAgeSeconds: 60 * 60 * 24 * 7,
               name: 'dependency-files-cache',
             },
           },
@@ -212,10 +203,21 @@ module.exports = merge(commonConfig, {
           },
         },
         {
+          urlPattern: /jsdelivr\.(com|net)/,
+          handler: 'cacheFirst',
+          options: {
+            cache: {
+              maxEntries: 300,
+              name: 'jsdelivr-dep-cache',
+            },
+          },
+        },
+        {
           urlPattern: /cloudflare\.com/,
           handler: 'cacheFirst',
           options: {
             cache: {
+              maxEntries: 50,
               name: 'cloudflare-cache',
             },
           },
