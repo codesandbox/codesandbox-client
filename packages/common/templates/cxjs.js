@@ -1,6 +1,5 @@
 // @flow
 
-import CxJSIcon from 'common/components/logos/CxJS';
 import Template from './template';
 import { decorateSelector } from '../theme';
 import configurations from './configuration';
@@ -20,7 +19,6 @@ export default new CxJSTemplate(
   'CxJS',
   'https://cxjs.io/',
   'cxjs',
-  CxJSIcon,
   decorateSelector(() => '#11689f'),
   {
     showOnHomePage: true,
