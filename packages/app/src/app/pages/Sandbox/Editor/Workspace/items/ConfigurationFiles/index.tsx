@@ -108,11 +108,12 @@ const ConfigurationFiles: React.SFC<Props> = ({ store, signals }) => {
 
             <FilesContainer>
                 <WorkspaceSubtitle>Existing Configurations</WorkspaceSubtitle>
-                {Object.keys(createdPaths).map((path) => {
+                {Object.keys(createdPaths).map((path, index) => {
                     const info = createdPaths[path];
 
                     return (
                         <FileConfig
+                            key={index}
                             openModule={(id) => {
                                 signals.editor.moduleSelected({ id });
                             }}
@@ -122,11 +123,12 @@ const ConfigurationFiles: React.SFC<Props> = ({ store, signals }) => {
                     );
                 })}
                 {Object.keys(restPaths).length && <WorkspaceSubtitle>Other Configurations</WorkspaceSubtitle>}
-                {Object.keys(restPaths).map((path) => {
+                {Object.keys(restPaths).map((path, index) => {
                     const info = restPaths[path];
 
                     return (
                         <FileConfig
+                            key={index}
                             createModule={(title) => {
                                 signals.files.moduleCreated({ title });
                             }}

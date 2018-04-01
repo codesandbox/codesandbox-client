@@ -229,14 +229,12 @@ class EditorPreview extends React.Component<Props, State> {
         );
 
         const updateUserSelections = () => {
-            if (store.editor.pendingUserSelections) {
-                if (editor.updateUserSelections) {
-                    requestAnimationFrame(() => {
-                        editor.updateUserSelections(store.editor.pendingUserSelections);
-                        this.props.signals.live.onSelectionDecorationsApplied();
-                    });
+            requestAnimationFrame(() => {
+                if (store.editor.pendingUserSelections.length) {
+                    editor.updateUserSelections(store.editor.pendingUserSelections);
+                    this.props.signals.live.onSelectionDecorationsApplied();
                 }
-            }
+            });
         };
         const disposeLiveSelectionHandler = reaction(
             () => store.editor.pendingUserSelections.map((x) => x),

@@ -1,12 +1,12 @@
-import styled, { component } from 'app/styled-components';
+import styled from 'app/styled-components';
 import delayEffect from 'common/utils/animation/delay-effect';
 
-export default styled(
-    component<{
+export default styled<
+    {
         delay?: number;
-        style?: {};
-    }>('h1')
-)`
+    },
+    'h1'
+>('h1')`
   ${(props) => props.delay != null && delayEffect(props.delay || 0)};
   color: white;
   font-size: 2.5rem;

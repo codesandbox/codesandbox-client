@@ -27,7 +27,8 @@ const RawAutoComplete: React.SFC<Props> = ({
                 <div>
                     <AutoCompleteInput
                         {...getInputProps({
-                            ref(ref) {
+                            // @ts-ignore
+                            innerRef(ref) {
                                 if (ref) {
                                     ref.focus();
                                 }

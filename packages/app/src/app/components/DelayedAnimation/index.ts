@@ -1,8 +1,11 @@
-import styled, { component } from 'app/styled-components';
+import styled from 'app/styled-components';
 import delayEffect from 'common/utils/animation/delay-effect';
 
-export default styled(component<{
-  delay?: number
-}>())`
-  ${props => delayEffect(props.delay || 0)};
+export default styled<
+    {
+        delay?: number;
+    },
+    'div'
+>('div')`
+  ${(props) => delayEffect(props.delay || 0)};
 `;

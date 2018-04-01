@@ -1,12 +1,13 @@
-import styled, { component } from 'app/styled-components';
+import styled from 'app/styled-components';
 import { Link } from 'react-router-dom';
 import getTemplateDefinition from 'common/templates';
 
-export const Container = styled(
-    component<{
+export const Container = styled<
+    {
         template: string;
-    }>()
-)`
+    },
+    'div'
+>('div')`
     transition: 0.3s ease all;
 
     position: relative;

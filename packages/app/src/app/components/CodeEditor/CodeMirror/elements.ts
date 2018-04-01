@@ -14,12 +14,13 @@ export const Container = styled.div`
     overflow: auto;
 `;
 
-export const CodeContainer = styled(
-    component<{
+export const CodeContainer = styled<
+    {
         fontFamily: string;
         lineHeight: number;
-    }>()
-)`
+    },
+    'div'
+>('div')`
   position: relative;
   overflow: auto;
   width: 100%;

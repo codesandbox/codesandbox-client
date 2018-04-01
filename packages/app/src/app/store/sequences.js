@@ -108,7 +108,8 @@ export const forkSandbox = sequence('forkSandbox', [
   set(state`editor.isForkingSandbox`, true),
   actions.forkSandbox,
   actions.moveModuleContent,
-  set(state`editor.sandboxes.${props`sandbox.id`}`, props`sandbox`),
+  set(props`sandbox`, props`forkedSandbox`),
+  actions.addSandbox,
   set(state`editor.currentId`, props`sandbox.id`),
   factories.addNotification('Forked sandbox!', 'success'),
   factories.updateSandboxUrl(props`sandbox`),
@@ -276,9 +277,13 @@ export const setSandbox = [
   unset(state`live.roomInfo`),
 ];
 
+<<<<<<< HEAD
 export const setSandbox = [
   actions.addSandbox,
 >>>>>>> refactor done, checking if everything works
+=======
+export const setSandbox = sequence('setSandbox', [
+>>>>>>> Refactored to correct styled typing and refactored live components
   when(state`live.isLoading`),
   {
     true: [],
@@ -290,7 +295,7 @@ export const setSandbox = [
       },
     ],
   },
-  set(state`editor.currentId`, props`sandbox.id`),
+  set(state`editor.currentId`, props`id`),
   actions.setCurrentModuleShortid,
   actions.setMainModuleShortid,
   actions.setInitialTab,
@@ -300,20 +305,26 @@ export const setSandbox = [
 =======
 >>>>>>> refactor done, checking if everything works
   actions.setWorkspace,
-];
+]);
 
 export const loadSandbox = factories.withLoadApp([
   set(state`editor.error`, null),
   when(state`editor.sandboxes.${props`id`}`),
   {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> Refactored to correct styled typing and refactored live components
     true: [
       set(props`sandbox`, state`editor.sandboxes.${props`id`}`),
       setSandbox,
     ],
+<<<<<<< HEAD
 =======
     true: setSandbox,
 >>>>>>> refactor done, checking if everything works
+=======
+>>>>>>> Refactored to correct styled typing and refactored live components
     false: [
       set(state`editor.isLoading`, true),
       set(state`editor.notFound`, false),
@@ -332,8 +343,12 @@ export const loadSandbox = factories.withLoadApp([
 =======
       actions.getSandbox,
       {
+<<<<<<< HEAD
         success: [setSandbox, ensurePackageJSON],
 >>>>>>> refactor done, checking if everything works
+=======
+        success: [actions.addSandbox, setSandbox, ensurePackageJSON],
+>>>>>>> Refactored to correct styled typing and refactored live components
         notFound: set(state`editor.notFound`, true),
         error: set(state`editor.error`, props`error.message`),
       },

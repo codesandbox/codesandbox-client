@@ -78,7 +78,8 @@ class QuickActions extends React.Component<Props> {
                 >
                     {({ getInputProps, getItemProps, selectedItem, inputValue, highlightedIndex }) => {
                         const inputProps = getInputProps({
-                            ref: (el) => el && el.focus(),
+                            // @ts-ignore
+                            innerRef: (el) => el && el.focus(),
                             onKeyUp: this.handleKeyUp,
                             // Timeout so the fuzzy handler can still select the module
                             onBlur: () => setTimeout(this.closeQuickActions, 100)

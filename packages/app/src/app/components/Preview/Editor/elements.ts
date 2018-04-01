@@ -1,8 +1,11 @@
-import styled, { component } from 'app/styled-components';
+import styled from 'app/styled-components';
 
-export const Container = styled(component<{
-  readOnly: boolean
-}>())`
+export const Container = styled<
+    {
+        readOnly: boolean;
+    },
+    'div'
+>('div')`
   text-align: left;
   color: white;
 
@@ -15,11 +18,9 @@ export const Container = styled(component<{
     font-size: 15px;
   }
   .cm-s-oceanic div.CodeMirror-selected {
-    background: ${props =>
-      props.readOnly ? 'inherit' : 'rgba(255, 255, 255, 0.1)'};
+    background: ${(props) => (props.readOnly ? 'inherit' : 'rgba(255, 255, 255, 0.1)')};
   }
   .cm-s-oceanic .CodeMirror-activeline-background {
-    background: ${props =>
-      props.readOnly ? 'inherit' : 'rgba(255, 255, 255, 0.1)'};
+    background: ${(props) => (props.readOnly ? 'inherit' : 'rgba(255, 255, 255, 0.1)')};
   }
 `;

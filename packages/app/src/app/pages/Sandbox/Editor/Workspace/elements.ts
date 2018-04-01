@@ -1,4 +1,4 @@
-import styled, { component } from 'app/styled-components';
+import styled from 'app/styled-components';
 import fadeIn from 'common/utils/animation/fade-in';
 
 export const getContainerStyles = (props) => {
@@ -64,22 +64,18 @@ export const getContainerStyles = (props) => {
     return styles;
 };
 
-export const EntryContainer = styled(
-    component<{
-        onClick?: () => void;
-        onDoubleClick?: () => void;
-        onMouseEnter?: () => void;
-        onMouseLeave?: () => void;
-        color?: string;
-        depth?: number;
-        active?: boolean;
-        editing?: boolean;
-        nameValidationError?: boolean;
-        rightColors?: string[];
-        alternative?: boolean;
-        noTransition?: boolean;
-    }>('span')
-)`${(props) => getContainerStyles(props)};`;
+export type EntryContainerProps = {
+    color?: string;
+    depth?: number;
+    active?: boolean;
+    editing?: boolean;
+    nameValidationError?: boolean;
+    rightColors?: string[];
+    alternative?: boolean;
+    noTransition?: boolean;
+};
+
+export const EntryContainer = styled<EntryContainerProps, 'span'>('span')`${(props) => getContainerStyles(props)};`;
 
 export const Container = styled.div`
     position: absolute;
@@ -130,12 +126,12 @@ export const IconArea = styled.div`
     ${fadeIn(0)};
 `;
 
-export const WorkspaceInputContainer = styled(
-    component<{
+export const WorkspaceInputContainer = styled<
+    {
         errorMessage?: string;
-        style?: {};
-    }>()
-)`
+    },
+    'div'
+>('div')`
     display: inline-block;
     display: flex;
     overflow: visible;

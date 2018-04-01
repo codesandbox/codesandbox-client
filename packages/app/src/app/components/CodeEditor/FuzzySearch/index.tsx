@@ -94,7 +94,8 @@ export default class FuzzySearch extends React.PureComponent<Props> {
                             <InputContainer>
                                 <Input
                                     {...getInputProps({
-                                        ref: (el) => el && el.focus(),
+                                        // @ts-ignore
+                                        innerRef: (el) => el && el.focus(),
                                         onKeyUp: this.handleKeyUp,
                                         // Timeout so the fuzzy handler can still select the module
                                         onBlur: () => setTimeout(this.props.closeFuzzySearch, 100)

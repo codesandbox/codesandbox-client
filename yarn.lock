@@ -9059,8 +9059,8 @@ is-alphanumerical@^1.0.0:
     is-decimal "^1.0.0"
 
 is-array-buffer@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/is-array-buffer/-/is-array-buffer-1.0.0.tgz#f32497a0509d109423f472003f98bab6a8ea34cb"
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/is-array-buffer/-/is-array-buffer-1.0.1.tgz#a4fac0cf325c1fad3f713e2b109eb241a907cf27"
 
 is-arrayish@^0.2.1:
   version "0.2.1"
@@ -10913,8 +10913,8 @@ lint-staged@^5.0.0:
     stringify-object "^3.2.0"
 
 lint-staged@^7.0.0:
-  version "7.0.1"
-  resolved "https://registry.yarnpkg.com/lint-staged/-/lint-staged-7.0.1.tgz#064321d79c2ab55808602f84f4ff94f52d872fd5"
+  version "7.0.2"
+  resolved "https://registry.yarnpkg.com/lint-staged/-/lint-staged-7.0.2.tgz#c99f6800e0525fa9c16f04c13ebe137edfd4fcd7"
   dependencies:
     app-root-path "^2.0.1"
     chalk "^2.3.1"
@@ -17197,7 +17197,7 @@ style-loader@^0.20.3:
     loader-utils "^1.1.0"
     schema-utils "^0.4.5"
 
-styled-components@^3.2.1:
+styled-components@^3.2.1, styled-components@^3.2.5:
   version "3.2.5"
   resolved "https://registry.yarnpkg.com/styled-components/-/styled-components-3.2.5.tgz#b5d5d7d618ab240ff10602b5ca5886b8db3d0a0d"
   dependencies:

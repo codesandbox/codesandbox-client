@@ -1,13 +1,12 @@
-import styled, { css, component } from 'app/styled-components';
+import * as React from 'react';
+import styled, { css } from 'app/styled-components';
 import NotSyncedIcon from 'react-icons/lib/go/primitive-dot';
 import CloseIcon from 'react-icons/lib/go/x';
 
-export const StyledCloseIcon = styled(
-    component<{
-        show: boolean;
-        onClick: (e: React.MouseEvent<HTMLElement>) => void;
-    }>(CloseIcon)
-)`
+export const StyledCloseIcon = styled<{
+    show: boolean;
+    onClick: (event: React.MouseEvent<HTMLElement>) => void;
+}>(({ show, ...rest }) => <CloseIcon {...rest} />)`
   transition: 0.1s ease opacity;
 
   float: right;
@@ -16,19 +15,18 @@ export const StyledCloseIcon = styled(
   margin-right: 0;
 
   ${(props) =>
-      !props.show &&
-      css`
-          pointer-events: none;
-          opacity: 0;
-      `};
+      props.show
+          ? null
+          : css`
+                pointer-events: none;
+                opacity: 0;
+            `};
 `;
 
-export const StyledNotSyncedIcon = styled(
-    component<{
-        show: boolean;
-        onClick: (e: React.MouseEvent<HTMLElement>) => void;
-    }>(NotSyncedIcon)
-)`
+export const StyledNotSyncedIcon = styled<{
+    show: boolean;
+    onClick: (event: React.MouseEvent<HTMLElement>) => void;
+}>(({ show, ...rest }) => <NotSyncedIcon {...rest} />)`
 transition: 0.1s ease opacity;
 
 float: right;
@@ -44,18 +42,14 @@ ${(props) =>
     `};
 `;
 
-export const Container = styled(
-    component<{
+export const Container = styled<
+    {
         isOver: boolean;
         active: boolean;
         dirty: boolean;
-        onClick: () => void;
-        onDoubleClick: (e: React.MouseEvent<HTMLElement>) => void;
-        onMouseDown: (e: React.MouseEvent<HTMLElement>) => void;
-        onMouseEnter: (e: React.MouseEvent<HTMLElement>) => void;
-        onMouseLeave: (e: React.MouseEvent<HTMLElement>) => void;
-    }>()
-)`
+    },
+    'div'
+>('div')`
   position: relative;
   display: inline-flex;
   justify-content: center;

@@ -1,9 +1,9 @@
-import styled, { keyframes, component } from 'app/styled-components';
-
+import styled, { keyframes } from 'app/styled-components';
+import * as React from 'react';
 import delayInEffect from 'common/utils/animation/delay-effect';
 import OpaqueLogo from 'app/components/OpaqueLogo';
 import GitHubLogo from 'app/components/GitHubLogo';
-import Cube from './Cube';
+import Cube, { Props as CubeProps } from './Cube';
 
 export const Container = styled.div`
     position: relative;
@@ -17,11 +17,12 @@ export const Container = styled.div`
     color: rgba(255, 255, 255, 0.8);
 `;
 
-export const DeployAnimationContainer = styled(
-    component<{
+export const DeployAnimationContainer = styled<
+    {
         deploying: boolean;
-    }>()
-)`
+    },
+    'div'
+>('div')`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -55,12 +56,11 @@ const cubeAnimation = keyframes`
 }
 `;
 
-export const StyledCube = styled(
-    component<{
+export const StyledCube = styled<
+    {
         i: number;
-        size: number;
-    }>(Cube)
-)`
+    } & CubeProps
+>(({ i, ...rest }) => <Cube {...rest} />)`
   position: absolute;
   animation: ${cubeAnimation} 2s ease-in infinite;
   animation-delay: ${({ i }) => i * 0.5}s;

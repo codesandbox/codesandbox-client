@@ -1,26 +1,25 @@
-import styled, { component } from 'app/styled-components';
+import styled from 'app/styled-components';
 import ChevronLeft from 'react-icons/lib/md/chevron-left';
 import ExitZen from 'react-icons/lib/md/fullscreen-exit';
 import { withTooltip } from 'common/components/Tooltip';
 
 export const Container = styled.div`
-  background-color: rgba(0, 0, 0, 0.3);
-  height: 2.5rem;
-  flex: 0 0 2.5rem;
+    background-color: rgba(0, 0, 0, 0.3);
+    height: 2.5rem;
+    flex: 0 0 2.5rem;
 
-  display: flex;
-  align-items: center;
-  font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    font-size: 0.875rem;
 
-  color: rgba(255, 255, 255, 0.8);
-  padding: 0 0.5rem;
+    color: rgba(255, 255, 255, 0.8);
+    padding: 0 0.5rem;
 `;
 
-export const Chevron = styled(component<{
-  hovering: string
-  workspacehidden: string
-  onClick: () => void
-}>(ChevronLeft))`
+export const Chevron = styled<{
+    hovering: string;
+    workspacehidden: string;
+}>(ChevronLeft)`
   transition: 0.3s ease all;
   position: absolute;
   font-size: 1rem;
@@ -28,29 +27,32 @@ export const Chevron = styled(component<{
   opacity: 0;
   cursor: pointer;
 
-  ${props => props.hovering === 'true' && 'opacity: 1;'};
+  ${(props) => props.hovering === 'true' && 'opacity: 1;'};
 
   transform: rotateZ(
-    ${props => (props.workspacehidden === 'true' ? '180deg' : '0')}
+    ${(props) => (props.workspacehidden === 'true' ? '180deg' : '0')}
   );
   &:hover {
     transform: rotateZ(
-      ${props => (props.workspacehidden === 'true' ? '135deg' : '45deg')}
+      ${(props) => (props.workspacehidden === 'true' ? '135deg' : '45deg')}
     );
     color: white;
   }
 `;
 
-export const FileName = styled(component<{
-  hovering: boolean
-}>())`
+export const FileName = styled<
+    {
+        hovering: boolean;
+    },
+    'div'
+>('div')`
   transition: 0.3s ease transform;
-  transform: ${props => (props.hovering ? 'translateX(20px)' : 'none')};
+  transform: ${(props) => (props.hovering ? 'translateX(20px)' : 'none')};
   flex: 1;
 `;
 
 export const StyledExitZen = withTooltip(
-  styled(ExitZen)`
+    styled(ExitZen)`
     transition: 0.3s ease opacity;
 
     cursor: pointer;
@@ -63,5 +65,5 @@ export const StyledExitZen = withTooltip(
       opacity: 1;
     }
   `,
-  { title: 'Close Zen Mode', style: { zIndex: 10 } }
+    { title: 'Close Zen Mode', style: { zIndex: 10 } }
 );

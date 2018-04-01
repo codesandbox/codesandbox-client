@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { Cube, Sides, Side } from './elements';
 
-type Props = {
+export type Props = {
     size?: number;
     noAnimation?: boolean;
     className?: string;

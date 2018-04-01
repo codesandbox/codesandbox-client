@@ -7,7 +7,7 @@ import Centered from 'common/components/flex/Centered';
 
 type Title = {
     delay: number;
-    content: string;
+    content: string | React.ReactNode;
 };
 
 type Props = {

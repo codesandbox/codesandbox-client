@@ -1,18 +1,18 @@
-import styled, { component } from 'app/styled-components';
+import styled from 'app/styled-components';
 import delayEffect from 'common/utils/animation/delay-effect';
 
 export const HeaderTitle = styled.th`
-  font-weight: 400;
-  text-align: left;
-  padding: 0.5rem;
-  color: rgba(255, 255, 255, 0.9);
+    font-weight: 400;
+    text-align: left;
+    padding: 0.5rem;
+    color: rgba(255, 255, 255, 0.9);
 `;
 
 export const Table = styled.table`
-  ${delayEffect(0.2)};
-  width: 100%;
-  border-spacing: 0;
-  margin-bottom: 2rem;
+    ${delayEffect(0.2)};
+    width: 100%;
+    border-spacing: 0;
+    margin-bottom: 2rem;
 `;
 
 export const StatTitle = styled(HeaderTitle)`
@@ -21,34 +21,37 @@ export const StatTitle = styled(HeaderTitle)`
 `;
 
 export const StatBody = styled.td`
-  width: 2rem;
-  text-align: center;
+    width: 2rem;
+    text-align: center;
 `;
 
 export const Body = styled.tbody`
-  margin-top: 3rem;
-  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.5);
-  color: rgba(255, 255, 255, 0.7);
-  background: ${props => props.theme.background2};
+    margin-top: 3rem;
+    box-shadow: 0 3px 3px rgba(0, 0, 0, 0.5);
+    color: rgba(255, 255, 255, 0.7);
+    background: ${(props) => props.theme.background2};
 
-  td {
-    border: none;
-    padding: 1rem 0.5rem;
-    margin: 0;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-  }
+    td {
+        border: none;
+        padding: 1rem 0.5rem;
+        margin: 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    }
 `;
 
-export const SandboxRow = styled(component<{
-  index: number
-}>('tr'))`
+export const SandboxRow = styled<
+    {
+        index: number;
+    },
+    'tr'
+>('tr')`
   transition: 0.3s ease all;
-  ${props => delayEffect(0.25 + props.index * 0.05, false)};
+  ${(props) => delayEffect(0.25 + props.index * 0.05, false)};
   border: none;
   margin: 0;
 
   &:hover {
-    background-color: ${props => props.theme.primary.clearer(0.9)};
+    background-color: ${(props) => props.theme.primary.clearer(0.9)};
     color: rgba(255, 255, 255, 0.9);
   }
 `;

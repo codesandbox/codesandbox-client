@@ -1,4 +1,4 @@
-import styled, { component } from 'app/styled-components';
+import styled from 'app/styled-components';
 
 // @ts-ignore
 import jsSvg from 'common/components/icons/js.svg';
@@ -42,46 +42,47 @@ import babelSvg from 'common/components/icons/babel.svg';
 import sassSvg from 'common/components/icons/sass.svg';
 
 const icons = {
-  'directory': folderSvg,
-  'directory-open': folderOpenSvg,
-  'react': reactSvg,
-  'css': cssSvg,
-  'json': jsonSvg,
-  'yarn': yarnSvg,
-  'md': markdownSvg,
-  'favicon': faviconSvg,
-  'html': htmlSvg,
-  'npm': npmSvg,
-  'vue': vueSvg,
-  'js': jsSvg,
-  'ts': tsSvg,
-  'svg': svgSvg,
-  'image': imageSvg,
-  'prettier': prettierSvg,
-  'codesandbox': codesandboxSvg,
-  'babel': babelSvg,
-  'sass': sassSvg,
+    directory: folderSvg,
+    'directory-open': folderOpenSvg,
+    react: reactSvg,
+    css: cssSvg,
+    json: jsonSvg,
+    yarn: yarnSvg,
+    md: markdownSvg,
+    favicon: faviconSvg,
+    html: htmlSvg,
+    npm: npmSvg,
+    vue: vueSvg,
+    js: jsSvg,
+    ts: tsSvg,
+    svg: svgSvg,
+    image: imageSvg,
+    prettier: prettierSvg,
+    codesandbox: codesandboxSvg,
+    babel: babelSvg,
+    sass: sassSvg
 };
 
 function getIconSvg(type) {
-  return icons[type] || fileSvg;
+    return icons[type] || fileSvg;
 }
 
-export const RedIcon = styled.span`
-  color: ${props => props.theme.red};
-`;
+export const RedIcon = styled.span`color: ${(props) => props.theme.red};`;
 
-export const SVGIcon = styled(component<{
-  type: string
-  width: number
-  height: number
-}>('span'))`
-  background-image: url(${props => getIconSvg(props.type)});
-  background-size: ${props => props.width}px;
+export const SVGIcon = styled<
+    {
+        type: string;
+        width: number;
+        height: number;
+    },
+    'span'
+>('span')`
+  background-image: url(${(props) => getIconSvg(props.type)});
+  background-size: ${(props) => props.width}px;
   background-position: 0;
   background-repeat: no-repeat;
-  width: ${props => props.width}px;
-  height: ${props => props.height}px;
+  width: ${(props) => props.width}px;
+  height: ${(props) => props.height}px;
   display: inline-block;
   -webkit-font-smoothing: antialiased;
   vertical-align: top;
