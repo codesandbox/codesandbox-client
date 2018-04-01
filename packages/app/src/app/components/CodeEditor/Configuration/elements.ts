@@ -1,4 +1,4 @@
-import styled, { css, component } from 'app/styled-components';
+import styled, { css } from 'app/styled-components';
 
 export const Container = styled.div`
     padding: 1rem;

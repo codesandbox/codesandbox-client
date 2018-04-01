@@ -48,6 +48,8 @@ export const ActionA = styled.a`${styles} text-decoration: none;`;
 
 export const ActionTooltip = styled<{
     disabledAction?: boolean;
+    title: string;
+    hideOnClick?: boolean;
 }>(Tooltip)`
   ${styles} ${(props) =>
     props.disabledAction &&

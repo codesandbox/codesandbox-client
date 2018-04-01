@@ -2,7 +2,7 @@ import * as React from 'react';
 import IconBase from 'react-icons/IconBase';
 
 export type Props = {
-    className: string;
+    className?: string;
 };
 
 const ZeitLogo: React.SFC<Props> = ({ className }) => {
