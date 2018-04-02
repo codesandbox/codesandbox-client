@@ -14,6 +14,7 @@ import SelectSandboxModal from './SelectSandboxModal';
 import SearchDependenciesModal from './SearchDependenciesModal';
 import DeleteProfileSandboxModal from './DeleteProfileSandboxModal';
 import LiveSessionEndedModal from './LiveSessionEndedModal';
+import UploadModal from './UploadModal';
 
 const modals = {
   preferences: {
@@ -62,6 +63,10 @@ const modals = {
   },
   liveSessionEnded: {
     Component: LiveSessionEndedModal,
+    width: 600,
+  },
+  uploading: {
+    Component: UploadModal,
     width: 600,
   },
 };

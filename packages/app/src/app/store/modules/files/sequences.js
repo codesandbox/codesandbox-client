@@ -1,8 +1,8 @@
 import { push, set } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
-import { ensureOwnedSandbox } from '../../sequences';
+import { ensureOwnedSandbox, closeModal } from '../../sequences';
 import { setCurrentModule, addNotification } from '../../factories';
-import { closeTabByIndex } from '../../actions';
+import { closeTabByIndex, setModal } from '../../actions';
 import {
   sendModuleCreated,
   sendModuleDeleted,
@@ -38,16 +38,19 @@ export const createModule = [
 ];
 
 export const uploadFile = [
+  set(props`modal`, 'uploading'),
+  setModal,
   actions.uploadFile,
   {
     success: [
       set(props`newCode`, props`uploadedFile.url`),
       set(props`title`, props`name`),
       set(props`isBinary`, true),
-      ...createModule,
+      createModule,
     ],
     error: [addNotification('Unable to upload file', 'error')],
   },
+  closeModal,
 ];
 
 export const renameModule = [
