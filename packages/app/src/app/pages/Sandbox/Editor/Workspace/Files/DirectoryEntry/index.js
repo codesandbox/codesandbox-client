@@ -134,7 +134,7 @@ class DirectoryEntry extends React.Component {
 
   readImageFile = (imageFile, callback) => {
     const reader = new FileReader();
-    reader.onload = function(e) {
+    reader.onload = e => {
       callback(e.target.result);
     };
     reader.readAsDataURL(imageFile);
