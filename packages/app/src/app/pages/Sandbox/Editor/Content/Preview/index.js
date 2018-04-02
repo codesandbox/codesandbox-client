@@ -220,12 +220,10 @@ class Preview extends React.Component<Props, State> {
       code: store.editor.currentPackageJSONCode,
     };
 
-    if (!store.editor.previewWindow.content) {
-      return null;
-    }
+    const hide = !store.editor.previewWindow.content;
 
     return (
-      <FlyingContainer onPositionChange={this.resetAlignment}>
+      <FlyingContainer hide={hide} onPositionChange={this.resetAlignment}>
         {({ resize }) => (
           <BasePreview
             onInitialized={this.onPreviewInitialized}
@@ -239,6 +237,7 @@ class Preview extends React.Component<Props, State> {
             onAction={action =>
               signals.editor.previewActionReceived({ action })
             }
+            hide={hide}
             onOpenNewWindow={() =>
               this.props.signals.preferences.viewModeChanged({
                 showEditor: true,

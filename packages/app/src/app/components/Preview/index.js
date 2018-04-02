@@ -31,6 +31,7 @@ type Props = {
   showNavigation?: boolean,
   inactive?: boolean,
   dragging?: boolean,
+  hide: boolean,
 };
 
 type State = {
@@ -315,9 +316,14 @@ class BasePreview extends React.Component<Props, State> {
       settings,
       isInProjectView,
       dragging,
+      hide,
     } = this.props;
     const { historyPosition, history, urlInAddressBar } = this.state;
     const url = urlInAddressBar || frameUrl(sandbox.id);
+
+    if (hide) {
+      return null;
+    }
 
     return (
       <Container style={{ flex: 1 }}>
