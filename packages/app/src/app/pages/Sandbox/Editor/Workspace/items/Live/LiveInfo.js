@@ -7,11 +7,13 @@ import RecordIcon from 'react-icons/lib/md/fiber-manual-record';
 import Input from 'common/components/Input';
 import Margin from 'common/components/spacing/Margin';
 import delay from 'common/utils/animation/delay-effect';
+import Switch from 'common/components/Switch';
 
 import User from './User';
 import Countdown from './Countdown';
+import LiveButton from './LiveButton';
 
-import { Description } from '../../elements';
+import { Description, WorkspaceInputContainer } from '../../elements';
 
 const Container = styled.div`
   ${delay()};
@@ -110,6 +112,20 @@ const ModeSelector = styled.div`
   transform: translateY(${props => props.i * 55}px);
 `;
 
+const PreferencesContainer = styled.div`
+  margin: 1rem;
+  display: flex;
+`;
+
+const Preference = styled.div`
+  flex: 1;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.8);
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+`;
+
 class LiveInfo extends React.Component {
   select = e => {
     e.target.select();
@@ -125,6 +141,9 @@ class LiveInfo extends React.Component {
       removeEditor,
       currentUserId,
       reconnecting,
+      onSessionCloseClicked,
+      notificationsHidden,
+      toggleNotificationsHidden,
     } = this.props;
 
     const owner = roomInfo.users.find(u => u.id === ownerId);
@@ -167,6 +186,31 @@ class LiveInfo extends React.Component {
           onFocus={this.select}
           value={`https://codesandbox.io/live/${roomInfo.roomId}`}
         />
+
+        {isOwner && (
+          <WorkspaceInputContainer>
+            <LiveButton
+              message="Stop Session"
+              onClick={onSessionCloseClicked}
+              showIcon={false}
+            />
+          </WorkspaceInputContainer>
+        )}
+
+        <Margin top={1}>
+          <SubTitle>Preferences</SubTitle>
+
+          <PreferencesContainer>
+            <Preference>Hide notifications</Preference>
+            <Switch
+              right={notificationsHidden}
+              onClick={toggleNotificationsHidden}
+              small
+              offMode
+              secondary
+            />
+          </PreferencesContainer>
+        </Margin>
 
         <Margin top={1}>
           <SubTitle>Live Mode</SubTitle>

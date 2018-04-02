@@ -24,6 +24,9 @@ const Live = ({ signals, store }) => (
         ownerId={store.live.roomInfo.ownerId}
         currentUserId={store.user.id}
         reconnecting={store.live.reconnecting}
+        onSessionCloseClicked={signals.live.onSessionCloseClicked}
+        notificationsHidden={store.live.notificationsHidden}
+        toggleNotificationsHidden={signals.live.onToggleNotificationsHidden}
       />
     ) : (
       <React.Fragment>

@@ -13,11 +13,13 @@ export default Provider({
     const { state, jwt } = this.context;
     const token = state.get('jwt') || jwt.get();
 
-    socket = new Socket(`wss://${location.host}/socket`, {
-      params: {
-        guardian_token: token,
-      },
-    });
+    socket =
+      socket ||
+      new Socket(`wss://${location.host}/socket`, {
+        params: {
+          guardian_token: token,
+        },
+      });
 
     socket.connect();
   },
@@ -25,7 +27,14 @@ export default Provider({
     return new Promise((resolve, reject) => {
       channel
         .leave()
-        .receive('ok', resp => resolve(resp))
+        .receive('ok', resp => {
+          channel.onMessage = d => d;
+          channel = null;
+          sentMessages.clear();
+          messageIndex = 0;
+
+          return resolve(resp);
+        })
         .receive('error', resp => reject(resp));
     });
   },

@@ -1,4 +1,12 @@
-import { unset, set, concat, push, when, equals } from 'cerebral/operators';
+import {
+  unset,
+  set,
+  concat,
+  push,
+  when,
+  equals,
+  toggle,
+} from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 
 import * as factories from '../../factories';
@@ -38,6 +46,18 @@ export const changeMode = [
   },
 ];
 
+export const closeSession = [
+  equals(state`live.isOwner`),
+  {
+    true: [actions.disconnect, resetLive],
+    false: [],
+  },
+];
+
+export const toggleNotificationsHidden = [
+  toggle(state`live.notificationsHidden`),
+];
+
 export const handleMessage = [
   equals(props`event`),
   {
@@ -59,8 +79,14 @@ export const handleMessage = [
       isOwnMessage,
       {
         false: [
-          actions.getUserJoinedNotification,
-          factories.addNotification(props`message`, 'notice'),
+          equals(state`live.notificationsHidden`),
+          {
+            false: [
+              actions.getUserJoinedNotification,
+              factories.addNotification(props`message`, 'notice'),
+            ],
+            true: [],
+          },
         ],
         true: [],
       },
@@ -75,8 +101,14 @@ export const handleMessage = [
       },
     ],
     'user:left': [
-      actions.getUserLeftNotification,
-      factories.addNotification(props`message`, 'notice'),
+      equals(state`live.notificationsHidden`),
+      {
+        true: [],
+        false: [
+          actions.getUserLeftNotification,
+          factories.addNotification(props`message`, 'notice'),
+        ],
+      },
       set(props`data.user_id`, props`data.left_user_id`),
       actions.clearUserSelections,
       actions.consumeUserState,

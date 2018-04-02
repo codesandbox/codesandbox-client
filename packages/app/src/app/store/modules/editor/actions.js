@@ -298,7 +298,11 @@ export function prettifyCode({ utils, state, props, path }) {
   }
 
   return utils
-    .prettify(moduleToPrettify.title, moduleToPrettify.code, config)
+    .prettify(
+      moduleToPrettify.title,
+      () => (moduleToPrettify ? moduleToPrettify.code : ''),
+      config
+    )
     .then(newCode => path.success({ code: newCode }))
     .catch(error => path.error({ error }));
 }

@@ -211,11 +211,11 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
     requestAnimationFrame(() => {
       this.setupWorkers();
-      editor.onDidChangeModelContent(({ changes }) => {
+      editor.onDidChangeModelContent(e => {
         const { isLive, sendTransforms } = this.props;
 
         if (isLive && sendTransforms && !this.receivingCode) {
-          this.addChangesOperation(changes);
+          this.sendChangeOperations(e);
         }
 
         this.handleChange();
@@ -418,6 +418,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         // that the changes of code are not sent to live users. We need to reset
         // this state when we're doing changing modules
         this.props.onCodeReceived();
+        this.updatedCode = '';
       }
     });
   };
@@ -428,99 +429,53 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     }
   };
 
-  changes = { moduleShortid: null, code: '', changes: [] };
-  /**
-   * Throttle the changes and handle them after a desired amount of time as one array of changes
-   */
-  addChangesOperation = (changes: Array<any>) => {
-    // Module changed in the meantime
-    if (
-      this.changes.moduleShortid &&
-      this.changes.moduleShortid !== this.currentModule.shortid
-    ) {
-      this.sendChangeOperations();
-    }
-
-    if (!this.changes.code) {
-      this.changes.code = this.currentModule.code || '';
-    }
-    if (!this.changes.moduleShortid) {
-      this.changes.moduleShortid = this.currentModule.shortid;
-    }
-
-    changes.forEach(change => {
-      this.changes.changes.push(change);
-    });
-
-    this.sendChangeOperations();
-  };
-
-  sendChangeOperations = (retry: boolean = false) => {
+  updatedCode = '';
+  sendChangeOperations = changeEvent => {
     const { sendTransforms, isLive, onCodeReceived } = this.props;
 
-    try {
-      if (
-        sendTransforms &&
-        this.changes.changes &&
-        this.changes.moduleShortid === this.currentModule.shortid
-      ) {
-        let code = this.changes.code;
-        const t = this.changes.changes
-          .map(change => {
-            const startPos = change.range.getStartPosition();
-            const lines = code.split('\n');
-            const totalLength = code.length;
-            let index = lineAndColumnToIndex(
-              lines,
-              startPos.lineNumber,
-              startPos.column
-            );
+    if (sendTransforms && changeEvent.changes) {
+      const otOperation = new TextOperation();
+      // TODO: add a comment explaining what "delta" is
+      let delta = 0;
+      this.updatedCode = this.updatedCode || this.currentModule.code || '';
+      // eslint-disable-next-line no-restricted-syntax
+      for (const change of [...changeEvent.changes].reverse()) {
+        const cursorStartOffset =
+          lineAndColumnToIndex(
+            this.updatedCode.split('\n'),
+            change.range.startLineNumber,
+            change.range.startColumn
+          ) + delta;
 
-            const operation = new TextOperation();
-            if (index) {
-              operation.retain(index);
-            }
+        const retain = cursorStartOffset - otOperation.targetLength;
+        if (retain > 0) {
+          otOperation.retain(retain);
+        }
 
-            if (change.rangeLength > 0) {
-              // Deletion
-              operation.delete(change.rangeLength);
+        if (change.rangeLength > 0) {
+          otOperation.delete(change.rangeLength);
+          delta -= change.rangeLength;
+        }
 
-              index += change.rangeLength;
-            }
-            if (change.text) {
-              // Insertion
-              operation.insert(change.text);
-            }
-
-            operation.retain(Math.max(0, totalLength - index));
-
-            if (this.changes.changes.length > 1) {
-              code = operation.apply(code);
-            }
-
-            return operation;
-          })
-          .reduce((prev, next) => prev.compose(next));
-
-        sendTransforms(t);
-      } else if (!isLive && onCodeReceived) {
-        onCodeReceived();
-      }
-      this.changes = { moduleShortid: null, code: '', changes: [] };
-    } catch (e) {
-      if (retry) {
-        throw e;
+        if (change.text) {
+          otOperation.insert(change.text);
+          delta += change.text.length;
+        }
       }
 
-      console.error(e);
-      // This can happen on undo, Monaco sends a huge list of operations
-      // that all apply to the same code and causes the `compose` function
-      // to throw. The solution is to wait for the new code and try again. That's why
-      // we call this function again in a timeout
+      const remaining = this.updatedCode.length - otOperation.baseLength;
+      if (remaining > 0) {
+        otOperation.retain(remaining);
+      }
+      this.updatedCode = otOperation.apply(this.updatedCode);
 
-      setTimeout(() => {
-        this.sendChangeOperations(true);
-      }, 10);
+      sendTransforms(otOperation);
+
+      requestAnimationFrame(() => {
+        this.updatedCode = '';
+      });
+    } else if (!isLive && onCodeReceived) {
+      onCodeReceived();
     }
   };
 
@@ -748,6 +703,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   };
 
   applyOperation = (operation: any) => {
+    this.updatedCode = '';
     let index = 0;
     for (let i = 0; i < operation.ops.length; i++) {
       const op = operation.ops[i];
