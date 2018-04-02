@@ -49,7 +49,7 @@ export default ({ sandboxes, isCurrentUser, onDelete }: Props) => (
     </thead>
     <Body>
       {sandboxes.map((s, i) => {
-        const Icon = getIcon(s.template.name);
+        const Icon = getIcon(s.template);
         return (
           <SandboxRow index={i} key={s.id}>
             <td>
