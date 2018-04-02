@@ -55,21 +55,21 @@ let worker = null;
 
 export default function prettify(
   title,
-  code,
+  getCode,
   prettierConfig = DEFAULT_PRETTIER_CONFIG
 ) {
   const mode = getMode(title);
 
   worker = worker || new Worker('/static/js/prettier/worker.js');
 
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
     if (!mode) {
-      resolve(code);
+      reject({ error: 'No mode found for prettify' });
       return;
     }
 
     worker.postMessage({
-      text: code,
+      text: getCode(),
       options: {
         ...DEFAULT_PRETTIER_CONFIG,
         ...prettierConfig,
@@ -79,7 +79,7 @@ export default function prettify(
 
     let timeout = setTimeout(() => {
       // If worker doesn't respond in time
-      resolve(code);
+      reject({ error: 'Prettify timeout' });
     }, 5000);
 
     worker.onmessage = e => {
@@ -87,15 +87,13 @@ export default function prettify(
       if (timeout) {
         clearTimeout(timeout);
         timeout = null;
-        if (text === code) {
+        if (text === getCode()) {
           if (error) {
             console.error(error);
-            resolve(text);
+            reject({ error });
           }
           if (formatted) {
             resolve(formatted);
-          } else {
-            resolve(text);
           }
         }
       }

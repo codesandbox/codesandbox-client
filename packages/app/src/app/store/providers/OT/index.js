@@ -51,4 +51,7 @@ export default Provider({
       getClient(moduleShortid, this.context, revision);
     });
   },
+  reset() {
+    modules.clear();
+  },
 });

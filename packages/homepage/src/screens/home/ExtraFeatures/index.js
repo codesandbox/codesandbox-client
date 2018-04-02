@@ -40,7 +40,7 @@ export default () => (
       <Centered horizontal>
         <Heading>There{"'"}s more</Heading>
         <SubHeading>
-          This was just the tip of the iceberg. There are many more things to
+          This is just the tip of the iceberg. There are many more things to
           explore, if you are missing anything you can always open an issue on{' '}
           <a
             style={{ color: 'white' }}

@@ -79,7 +79,7 @@ jobs:
       - run:
           name: Test Integrations
           command: |
-            sleep 10
+            sleep 15
             yarn test:integrations --ci --testResultsProcessor="jest-junit"
           environment:
             JEST_JUNIT_OUTPUT: "/tmp/test-results/js-test-results.xml"

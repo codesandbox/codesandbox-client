@@ -265,7 +265,8 @@ export const resetLive = [
   set(state`live.isLive`, false),
   set(state`live.error`, null),
   set(state`live.isLoading`, false),
-  unset(state`live.roomInfo`),
+  set(state`live.isOwner`, false),
+  set(state`live.roomInfo`, undefined),
 ];
 
 export const setSandbox = [
