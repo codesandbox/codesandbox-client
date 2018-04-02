@@ -53,6 +53,7 @@ type Props = {
   shouldExpandDevTools?: boolean,
   devToolsOpen?: boolean,
   setDevToolsOpen?: (open: boolean) => void,
+  view?: 'browser' | 'console' | 'tests',
 };
 type State = {
   status: { [title: string]: ?Status },
@@ -65,18 +66,33 @@ type State = {
 };
 
 export default class DevTools extends React.PureComponent<Props, State> {
-  state = {
-    status: {},
-    currentPane: PANES[Object.keys(PANES)[0]].title,
+  constructor(props: Props) {
+    super(props);
 
-    mouseDown: false,
-    startY: 0,
-    startHeight: 0,
+    const hasView = props.view && props.view !== 'browser';
 
-    hidden: true,
+    let currentPane = PANES[Object.keys(PANES)[0]].title;
+    if (hasView) {
+      if (props.view === 'tests') {
+        currentPane = tests.title;
+      } else if (props.view === 'console') {
+        currentPane = console.title;
+      }
+    }
 
-    height: 2 * 16,
-  };
+    this.state = {
+      status: {},
+      currentPane,
+
+      mouseDown: false,
+      startY: 0,
+      startHeight: 0,
+
+      hidden: !hasView,
+
+      height: hasView ? 5000 : 2 * 16,
+    };
+  }
 
   componentWillReceiveProps(nextProps: Props) {
     if (nextProps.sandboxId !== this.props.sandboxId) {
@@ -316,7 +332,6 @@ export default class DevTools extends React.PureComponent<Props, State> {
         }}
         style={{
           height,
-          minHeight: height,
           position: 'relative',
           display: 'flex',
         }}
