@@ -129,7 +129,7 @@ const ConfigurationFiles = ({ store, signals }) => {
             />
           );
         })}
-        {Object.keys(restPaths).length && (
+        {!!Object.keys(restPaths).length && (
           <WorkspaceSubtitle>Other Configurations</WorkspaceSubtitle>
         )}
         {Object.keys(restPaths).map(path => {
