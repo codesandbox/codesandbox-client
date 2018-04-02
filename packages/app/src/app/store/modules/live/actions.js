@@ -15,8 +15,9 @@ export function connect({ live }) {
   return live.connect();
 }
 
-export function disconnect({ live }) {
-  return live.disconnect();
+export function disconnect({ live, ot }) {
+  ot.reset();
+  live.disconnect();
 }
 
 export function joinChannel({ props, live, path }) {
