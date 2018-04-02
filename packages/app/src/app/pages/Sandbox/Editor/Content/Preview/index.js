@@ -5,6 +5,8 @@ import { inject, observer } from 'mobx-react';
 
 import BasePreview from 'app/components/Preview';
 import FlyingContainer from './FlyingContainer';
+import Tests from './DevTools/Tests';
+import Console from './DevTools/Console';
 
 type Props = {
   width: ?number,
@@ -214,49 +216,76 @@ class Preview extends React.Component<Props, State> {
 
   render() {
     const { store, signals } = this.props;
+    const content = store.editor.previewWindow.content;
 
     const packageJSON = {
       path: '/package.json',
       code: store.editor.currentPackageJSONCode,
     };
 
-    const hide = !store.editor.previewWindow.content;
+    const hide = content !== 'browser';
+    const completelyHidden = !content;
 
     return (
-      <FlyingContainer hide={hide} onPositionChange={this.resetAlignment}>
-        {({ resize }) => (
-          <BasePreview
-            onInitialized={this.onPreviewInitialized}
-            sandbox={store.editor.currentSandbox}
-            extraModules={{ '/package.json': packageJSON }}
-            currentModule={store.editor.currentModule}
-            settings={store.preferences.settings}
-            initialPath={store.editor.initialPath}
-            isInProjectView={store.editor.isInProjectView}
-            onClearErrors={() => signals.editor.errorsCleared()}
-            onAction={action =>
-              signals.editor.previewActionReceived({ action })
+      <FlyingContainer
+        hide={completelyHidden}
+        onPositionChange={this.resetAlignment}
+      >
+        {({ resize }) => {
+          const alignRight = e => {
+            if (e) {
+              e.preventDefault();
+              e.stopPropagation();
             }
-            hide={hide}
-            onOpenNewWindow={() =>
-              this.props.signals.preferences.viewModeChanged({
-                showEditor: true,
-                showPreview: false,
-              })
+            resize(this.getRightCoordinates());
+            this.setState({ aligned: 'right' });
+          };
+          const alignBottom = e => {
+            if (e) {
+              e.preventDefault();
+              e.stopPropagation();
             }
-            onToggleProjectView={() => signals.editor.projectViewToggled()}
-            showDevtools={store.preferences.showDevtools}
-            isResizing={store.editor.isResizing}
-            alignRight={() => {
-              resize(this.getRightCoordinates());
-              this.setState({ aligned: 'right' });
-            }}
-            alignBottom={() => {
-              resize(this.getBottomCoordinates());
-              this.setState({ aligned: 'bottom' });
-            }}
-          />
-        )}
+            resize(this.getBottomCoordinates());
+            this.setState({ aligned: 'bottom' });
+          };
+
+          return (
+            <React.Fragment>
+              {content === 'tests' && (
+                <Tests alignRight={alignRight} alignBottom={alignBottom} />
+              )}
+              {content === 'console' && (
+                <Console alignRight={alignRight} alignBottom={alignBottom} />
+              )}
+              <BasePreview
+                onInitialized={this.onPreviewInitialized}
+                sandbox={store.editor.currentSandbox}
+                extraModules={{ '/package.json': packageJSON }}
+                currentModule={store.editor.currentModule}
+                settings={store.preferences.settings}
+                initialPath={store.editor.initialPath}
+                isInProjectView={store.editor.isInProjectView}
+                onClearErrors={() => signals.editor.errorsCleared()}
+                onAction={action =>
+                  signals.editor.previewActionReceived({ action })
+                }
+                hide={hide}
+                noPreview={completelyHidden}
+                onOpenNewWindow={() =>
+                  this.props.signals.preferences.viewModeChanged({
+                    showEditor: true,
+                    showPreview: false,
+                  })
+                }
+                onToggleProjectView={() => signals.editor.projectViewToggled()}
+                showDevtools={store.preferences.showDevtools}
+                isResizing={store.editor.isResizing}
+                alignRight={alignRight}
+                alignBottom={alignBottom}
+              />
+            </React.Fragment>
+          );
+        }}
       </FlyingContainer>
     );
   }

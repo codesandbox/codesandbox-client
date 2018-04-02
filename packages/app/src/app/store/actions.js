@@ -82,6 +82,16 @@ export function setUrlOptions({ state, router, utils }) {
     state.set('preferences.showConsole', options.expandDevTools);
 }
 
+export const setSandboxConfigOptions = ({ state }) => {
+  const config = state.get('editor.parsedConfigurations.sandbox');
+
+  if (config && config.parsed) {
+    const view = config.parsed.view;
+
+    state.set('editor.previewWindow.content', view);
+  }
+};
+
 export function setCurrentModuleShortid({ props, state }) {
   const currentModuleShortid = state.get('editor.currentModuleShortid');
   const sandbox = props.sandbox;

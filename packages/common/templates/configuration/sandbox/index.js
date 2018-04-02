@@ -12,6 +12,7 @@ const config: ConfigurationFile = {
       {
         infiniteLoopProtection: true,
         hardReloadOnChange: false,
+        view: 'browser',
       },
       null,
       2

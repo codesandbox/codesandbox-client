@@ -12,10 +12,9 @@ import CodeEditor from 'app/components/CodeEditor';
 import type { Editor, Settings } from 'app/components/CodeEditor/types';
 import DevTools from 'app/components/Preview/DevTools';
 import FilePath from 'app/components/CodeEditor/FilePath';
+
 import Preview from './Preview';
-
 import Tabs from './Tabs';
-
 import { FullSize } from './elements';
 
 const settings = store =>

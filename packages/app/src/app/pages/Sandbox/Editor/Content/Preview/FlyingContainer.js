@@ -23,6 +23,7 @@ type Props = {
   store: any,
   children: (funcs: { resize: Function }) => React.Node,
   onPositionChange?: () => void,
+  hide?: boolean,
 };
 
 type State = {
@@ -218,6 +219,7 @@ class FlyingContainer extends React.Component<Props, State> {
       <Draggable
         onStart={this.handleStartDrag}
         onStop={this.handleStopDrag}
+        handle=".flying-container-handler"
         defaultPosition={{
           x: previewWindow.x,
           y: previewWindow.y,
@@ -246,7 +248,6 @@ class FlyingContainer extends React.Component<Props, State> {
             height,
             boxShadow: hide ? 'none' : '0 3px 8px rgba(0, 0, 0, 0.5)',
             zIndex: 60,
-            cursor: 'move',
 
             visiblity: hide ? 'hidden' : undefined,
             pointerEvents: hide ? 'none' : undefined,
