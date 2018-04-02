@@ -152,17 +152,13 @@ class Tests extends React.Component<Props, State> {
             f => this.getStatus(this.state.files[f]) === 'pass'
           ).length;
 
-          if (failingTests > 0) {
-            if (this.props.updateStatus) {
+          if (this.props.updateStatus) {
+            if (failingTests > 0) {
               this.props.updateStatus('error', failingTests);
-            }
-          } else if (passingTests === files.length) {
-            if (this.props.updateStatus) {
+            } else if (passingTests === files.length) {
               this.props.updateStatus('success', passingTests);
-            }
-          } else {
-            // Not all tests are run
-            if (this.props.updateStatus) {
+            } else {
+              // Not all tests are run
               this.props.updateStatus('warning', files.length - passingTests);
             }
           }
