@@ -37,6 +37,19 @@ export const createModule = [
   },
 ];
 
+export const uploadFile = [
+  actions.uploadFile,
+  {
+    success: [
+      set(props`newCode`, props`uploadedFile.url`),
+      set(props`title`, props`name`),
+      set(props`isBinary`, true),
+      ...createModule,
+    ],
+    error: [addNotification('Unable to upload file', 'error')],
+  },
+];
+
 export const renameModule = [
   ensureOwnedSandbox,
   actions.renameModule,

@@ -17,6 +17,11 @@ class Files extends React.Component {
     this.directory.onCreateDirectoryClick();
   };
 
+  uploadFile = () => {
+    // INCREDIBLY BAD PRACTICE! TODO: FIX THIS
+    this.directory.onUploadFileClick();
+  };
+
   render() {
     const store = this.props.store;
     const sandbox = store.editor.currentSandbox;
@@ -41,6 +46,7 @@ class Files extends React.Component {
             hovering
             onCreateFile={this.createModule}
             onCreateDirectory={this.createDirectory}
+            onUploadFile={this.uploadFile}
           />
         }
       >

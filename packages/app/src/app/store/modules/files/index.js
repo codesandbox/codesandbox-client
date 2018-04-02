@@ -5,6 +5,7 @@ export default Module({
   model: {},
   state: {},
   signals: {
+    fileUploaded: sequences.uploadFile,
     moduleCreated: sequences.createModule,
     moduleRenamed: sequences.renameModule,
     directoryCreated: sequences.createDirectory,

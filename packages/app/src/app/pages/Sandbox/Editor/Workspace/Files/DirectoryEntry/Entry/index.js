@@ -6,6 +6,7 @@ import FileIcon from 'react-icons/lib/fa/file';
 import FolderIcon from 'react-icons/lib/fa/folder';
 import EditIcon from 'react-icons/lib/go/pencil';
 import DeleteIcon from 'react-icons/lib/go/trashcan';
+import UploadFileIcon from 'react-icons/lib/md/file-upload';
 
 import theme from 'common/theme';
 
@@ -79,6 +80,7 @@ class Entry extends React.PureComponent {
       connectDragSource, // eslint-disable-line
       onCreateModuleClick,
       onCreateDirectoryClick,
+      onUploadFileClick,
       deleteEntry,
       onClick,
       markTabsNotDirty,
@@ -101,6 +103,11 @@ class Entry extends React.PureComponent {
         title: 'New Directory',
         action: onCreateDirectoryClick,
         icon: FolderIcon,
+      },
+      onUploadFileClick && {
+        title: 'Upload File',
+        action: onUploadFileClick,
+        icon: UploadFileIcon,
       },
       rename && {
         title: 'Rename',
@@ -159,6 +166,7 @@ class Entry extends React.PureComponent {
                     hovering={hovering}
                     onCreateFile={onCreateModuleClick}
                     onCreateDirectory={onCreateDirectoryClick}
+                    onUploadFile={onUploadFileClick}
                     onDelete={deleteEntry && this.delete}
                     onEdit={rename && this.rename}
                     active={active}

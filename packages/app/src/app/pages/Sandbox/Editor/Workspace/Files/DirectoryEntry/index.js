@@ -112,6 +112,35 @@ class DirectoryEntry extends React.Component {
     this.resetState();
   };
 
+  onUploadFileClick = () => {
+    const fileSelector = document.createElement('input');
+    fileSelector.setAttribute('type', 'file');
+    fileSelector.setAttribute('accept', 'image/*');
+    fileSelector.onchange = event => {
+      const file = event.target.files[0];
+      if (!file) {
+        return;
+      }
+
+      this.readImageFile(file, base64Image => {
+        this.props.signals.files.fileUploaded({
+          content: base64Image,
+          name: file.name,
+        });
+      });
+    };
+
+    fileSelector.click();
+  };
+
+  readImageFile = (imageFile, callback) => {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      callback(e.target.result);
+    };
+    reader.readAsDataURL(imageFile);
+  };
+
   renameDirectory = (directoryShortid, title) => {
     this.props.signals.files.directoryRenamed({ title, directoryShortid });
   };
@@ -202,6 +231,7 @@ class DirectoryEntry extends React.Component {
               rename={!root && this.renameDirectory}
               onCreateModuleClick={this.onCreateModuleClick}
               onCreateDirectoryClick={this.onCreateDirectoryClick}
+              onUploadFileClick={this.onUploadFileClick}
               deleteEntry={!root && this.deleteDirectory}
               hasChildren={this.getChildren().length > 0}
               closeTree={this.closeTree}
