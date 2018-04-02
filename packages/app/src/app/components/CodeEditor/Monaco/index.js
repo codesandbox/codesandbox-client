@@ -327,6 +327,18 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     if (this.props.onInitialized) {
       this.disposeInitializer = this.props.onInitialized(this);
     }
+
+    // TODO remove this as soon as we solve the keybinding issues
+    editor.addCommand(
+      // eslint-disable-next-line
+      this.monaco.KeyMod.CtrlCmd | this.monaco.KeyCode.KEY_S,
+      () => {
+        const { onSave } = this.props;
+        if (onSave) {
+          onSave(this.getCode());
+        }
+      }
+    );
   };
 
   setCompilerOptions = () => {
