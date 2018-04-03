@@ -7,7 +7,7 @@ const getBackgroundColor = ({ disabled, red, secondary }) => {
   if (secondary) return `background: #3A4B5D`;
   if (red)
     return `background-image: linear-gradient(270deg, #F27777, #400000);`;
-  return `background-image: linear-gradient(270deg, #fed29d, #A58B66, #7abae8, #56a0d6);`;
+  return `background-image: linear-gradient(270deg, #b06203, #56a0d6);`;
 };
 
 const getColor = ({ disabled, secondary }) => {
