@@ -164,7 +164,10 @@ class EditorTabs extends React.Component {
         </TabsContainer>
 
         <IconContainer>
-          <Tooltip title="Prettify">
+          <Tooltip
+            style={{ display: 'inline-flex', alignItems: 'center' }}
+            title="Prettify"
+          >
             <StyledPrettierIcon
               disabled={!this.canPrettify(currentModule)}
               onClick={this.prettifyModule}
