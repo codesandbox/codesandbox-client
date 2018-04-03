@@ -25,5 +25,5 @@ export default new DojoTemplate(
   'dojo2',
   DojoIcon,
   decorateSelector(() => '#D3471C'),
-  { showOnHomePage: true }
+  { showOnHomePage: true, isTypeScript: true }
 );
