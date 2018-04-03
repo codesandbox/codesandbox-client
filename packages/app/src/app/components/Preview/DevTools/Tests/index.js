@@ -24,7 +24,8 @@ export type Status = 'idle' | 'running' | 'pass' | 'fail';
 type Props = {
   hidden: boolean,
   sandboxId: string,
-  updateStatus: (
+  standalone?: boolean,
+  updateStatus?: (
     type: 'success' | 'warning' | 'error' | 'info' | 'clear',
     count?: number
   ) => void,
@@ -86,6 +87,10 @@ class Tests extends React.Component<Props, State> {
 
   componentDidMount() {
     this.listener = listen(this.handleMessage);
+
+    if (this.props.standalone) {
+      this.runAllTests();
+    }
   }
 
   componentWillUnmount() {
@@ -116,13 +121,17 @@ class Tests extends React.Component<Props, State> {
       switch (data.event) {
         case 'initialize_tests': {
           this.currentDescribeBlocks = [];
-          this.props.updateStatus('clear');
+          if (this.props.updateStatus) {
+            this.props.updateStatus('clear');
+          }
           this.setState(INITIAL_STATE);
           break;
         }
         case 'total_test_start': {
           this.currentDescribeBlocks = [];
-          this.props.updateStatus('clear');
+          if (this.props.updateStatus) {
+            this.props.updateStatus('clear');
+          }
           this.setState({
             ...this.state,
             running: true,
@@ -143,13 +152,15 @@ class Tests extends React.Component<Props, State> {
             f => this.getStatus(this.state.files[f]) === 'pass'
           ).length;
 
-          if (failingTests > 0) {
-            this.props.updateStatus('error', failingTests);
-          } else if (passingTests === files.length) {
-            this.props.updateStatus('success', passingTests);
-          } else {
-            // Not all tests are run
-            this.props.updateStatus('warning', files.length - passingTests);
+          if (this.props.updateStatus) {
+            if (failingTests > 0) {
+              this.props.updateStatus('error', failingTests);
+            } else if (passingTests === files.length) {
+              this.props.updateStatus('success', passingTests);
+            } else {
+              // Not all tests are run
+              this.props.updateStatus('warning', files.length - passingTests);
+            }
           }
 
           break;

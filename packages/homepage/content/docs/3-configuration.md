@@ -20,7 +20,8 @@ Some configuration files can be configured using a UI. This UI will generate a c
 
 A sandbox can be configured too, you can do this with `sandbox.config.json`. We support these options:
 
-| Option                   | Description                                                                                       | Possible Values | Default Value |
-| ------------------------ | ------------------------------------------------------------------------------------------------- | --------------- | ------------- |
-| `infiniteLoopProtection` | Whether we should throw an error if we detect an infinite loop                                    | `true`/`false`  | `true`        |
-| `hardReloadOnChange`     | Whether we should refresh the sandbox page on every change, good for sandboxes with global state. | `true`/`false`  | `false`       |
+| Option                   | Description                                                                                       | Possible Values             | Default Value |
+| ------------------------ | ------------------------------------------------------------------------------------------------- | --------------------------- | ------------- |
+| `infiniteLoopProtection` | Whether we should throw an error if we detect an infinite loop                                    | `true`/`false`              | `true`        |
+| `hardReloadOnChange`     | Whether we should refresh the sandbox page on every change, good for sandboxes with global state. | `true`/`false`              | `false`       |
+| `view`                   | Which view to show by default as the preview when opening the sandbox.                            | `browser`/`console`/`tests` | `browser`     |

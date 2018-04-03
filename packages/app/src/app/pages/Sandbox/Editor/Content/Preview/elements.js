@@ -3,9 +3,10 @@ import fadeIn from 'common/utils/animation/fade-in';
 
 const Resizer = styled.div`
   position: absolute;
+  z-index: 20;
 `;
 
-const width = 4;
+const width = 8;
 
 export const TopResizer = Resizer.extend`
   top: -${width / 2}px;
