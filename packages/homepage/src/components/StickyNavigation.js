@@ -3,6 +3,7 @@ import styled, { css } from 'styled-components';
 import theme from 'common/theme';
 
 import Link from 'gatsby-link';
+import { Route } from 'react-router-dom';
 import slugify from 'common/utils/slugify';
 
 import media from '../utils/media';
@@ -11,7 +12,7 @@ import getScrollPos from '../utils/scroll';
 const Navigation = styled.nav`
   padding-top: 2rem;
   margin-right: 1rem;
-  width: 250px;
+  width: 300px;
 
   ${props =>
     props.fixed &&
@@ -166,18 +167,24 @@ export default class StickyNavigation extends React.PureComponent<Props> {
               >
                 {node.frontmatter.title}
               </PrimaryNavigationLink>
-              <ul>
-                {node.headings.map(({ value }) => (
-                  <li key={value}>
-                    <SecondaryNavigationLink
-                      to={`${node.fields.url}#${slugify(value)}`}
-                      exact
-                    >
-                      {value}
-                    </SecondaryNavigationLink>
-                  </li>
-                ))}
-              </ul>
+              <Route
+                path={node.fields.url}
+                exact
+                render={() => (
+                  <ul>
+                    {node.headings.map(({ value }) => (
+                      <li key={value}>
+                        <SecondaryNavigationLink
+                          to={`${node.fields.url}#${slugify(value)}`}
+                          exact
+                        >
+                          {value}
+                        </SecondaryNavigationLink>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              />
             </NavigationItem>
           ))}
         </ul>
