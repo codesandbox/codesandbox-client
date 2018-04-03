@@ -35,3 +35,9 @@ A failed test looks like this in the Test View:
 And will also show squiggles in the editor:
 
 ![Test Squiggles](./images/jest-squiggles.png)
+
+## Test Example
+
+Here's an example sandbox running Jest tests:
+
+<iframe src="https://codesandbox.io/embed/n9m2w9q8x0?view=preview" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
