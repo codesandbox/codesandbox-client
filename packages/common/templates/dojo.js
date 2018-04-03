@@ -1,7 +1,5 @@
 // @flow
 
-// import configurations from './configuration';
-import DojoIcon from 'common/components/logos/Dojo';
 import Template from './template';
 import { decorateSelector } from '../theme';
 
@@ -23,7 +21,6 @@ export default new DojoTemplate(
   'Dojo 2',
   'https://github.com/dojo/cli-create-app',
   'dojo2',
-  DojoIcon,
   decorateSelector(() => '#D3471C'),
   { showOnHomePage: true, isTypeScript: true }
 );
