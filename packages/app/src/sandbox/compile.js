@@ -457,7 +457,10 @@ async function compile({
 
       const tt = Date.now();
       const oldHTML = document.body.innerHTML;
-      const evalled = manager.evaluateModule(managerModuleToTranspile, true);
+      const evalled = manager.evaluateModule(
+        managerModuleToTranspile,
+        isModuleView
+      );
       debug(`Evaluation time: ${Date.now() - tt}ms`);
       const domChanged =
         !manager.preset.htmlDisabled && oldHTML !== document.body.innerHTML;
