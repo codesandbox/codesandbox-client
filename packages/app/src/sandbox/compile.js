@@ -410,7 +410,7 @@ async function compile({
 
       if (
         !manager.webpackHMR &&
-        !(managerTranspiledModuleToTranspile.compilation || isModuleView)
+        (!managerTranspiledModuleToTranspile.compilation || isModuleView)
       ) {
         try {
           const children = document.body.children;
