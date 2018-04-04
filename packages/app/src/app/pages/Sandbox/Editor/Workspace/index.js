@@ -6,6 +6,8 @@ import VERSION from 'common/version';
 import getWorkspaceItems from 'app/store/modules/workspace/items';
 import SocialInfo from 'app/components/SocialInfo';
 
+import Input from 'common/components/Input';
+
 import Files from './items/Files';
 import ProjectInfo from './items/ProjectInfo';
 import GitHub from './items/GitHub';
@@ -16,6 +18,7 @@ import NotOwnedSandboxInfo from './items/NotOwnedSandboxInfo';
 
 import ConnectionNotice from './ConnectionNotice';
 import Advertisement from './Advertisement';
+import WorkspaceItem from './WorkspaceItem';
 // import DowntimeNotice from './DowntimeNotice';
 
 import { Container, ContactContainer, ItemTitle } from './elements';
@@ -48,6 +51,54 @@ function Workspace({ store }) {
       <div style={{ flex: 1 }}>
         <Component />
       </div>
+      <WorkspaceItem title="Chat">
+        <div
+          style={{
+            minHeight: 200,
+            maxHeight: 400,
+            padding: '0 1rem',
+            color: 'white',
+            fontSize: '.875rem',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          <div style={{ height: '100%', flex: 1 }}>
+            <div
+              style={{
+                color: 'rgb(230, 103, 103)',
+                fontWeight: 600,
+                marginBottom: '0.25rem',
+              }}
+            >
+              Ives van Hoorne
+            </div>
+            <div
+              style={{
+                color: 'rgba(255, 255, 255, 0.7)',
+                fontWeight: 400,
+                marginBottom: '.25rem',
+              }}
+            >
+              I think we should make the colors a bit brighter
+            </div>
+            <div
+              style={{
+                color: 'rgba(255, 255, 255, 0.7)',
+                fontWeight: 400,
+                marginBottom: '.25rem',
+              }}
+            >
+              Or at least less bold
+            </div>
+          </div>
+          <Input
+            textarea
+            placeholder="Send a message..."
+            style={{ width: '100%', marginTop: '0.5rem' }}
+          />
+        </div>
+      </WorkspaceItem>
       {!preferences.settings.zenMode && (
         <div>
           {!store.isPatron && !sandbox.owned && <Advertisement />}

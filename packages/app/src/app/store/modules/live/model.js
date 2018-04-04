@@ -41,6 +41,13 @@ export default {
           avatarUrl: types.string,
         })
       ),
+      chats: types.array(
+        types.model({
+          userId: types.string,
+          date: types.number,
+          message: types.string,
+        })
+      ),
     })
   ),
 };

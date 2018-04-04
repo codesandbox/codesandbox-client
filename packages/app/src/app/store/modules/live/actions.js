@@ -42,6 +42,7 @@ export function initializeLiveState({ props, state }) {
     usersMetadata: {},
     users: [],
     startTime: Date.now(),
+    chats: [],
   });
   state.set('live.isLive', true);
   state.set('live.error', null);
