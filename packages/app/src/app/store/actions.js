@@ -88,7 +88,9 @@ export const setSandboxConfigOptions = ({ state }) => {
   if (config && config.parsed) {
     const view = config.parsed.view;
 
-    state.set('editor.previewWindow.content', view);
+    if (view) {
+      state.set('editor.previewWindow.content', view);
+    }
   }
 };
 
