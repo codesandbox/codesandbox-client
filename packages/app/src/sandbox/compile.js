@@ -410,7 +410,7 @@ async function compile({
 
       if (
         !manager.webpackHMR &&
-        !managerTranspiledModuleToTranspile.compilation
+        !(managerTranspiledModuleToTranspile.compilation || isModuleView)
       ) {
         try {
           const children = document.body.children;
@@ -429,11 +429,16 @@ async function compile({
           }
         } catch (e) {
           /* don't do anything with this error */
+
+          if (process.env.NODE_ENV === 'development') {
+            console.error('Problem while cleaning up');
+            console.error(e);
+          }
         }
       }
 
       if ((!manager.webpackHMR || firstLoad) && !manager.preset.htmlDisabled) {
-        if (!managerTranspiledModuleToTranspile.compilation) {
+        if (!managerTranspiledModuleToTranspile.compilation || isModuleView) {
           const htmlModule =
             modules[
               templateDefinition
@@ -452,7 +457,7 @@ async function compile({
 
       const tt = Date.now();
       const oldHTML = document.body.innerHTML;
-      const evalled = manager.evaluateModule(managerModuleToTranspile);
+      const evalled = manager.evaluateModule(managerModuleToTranspile, true);
       debug(`Evaluation time: ${Date.now() - tt}ms`);
       const domChanged =
         !manager.preset.htmlDisabled && oldHTML !== document.body.innerHTML;
@@ -466,7 +471,7 @@ async function compile({
           managerModuleToTranspile.code &&
           managerModuleToTranspile.code.includes('React');
 
-        if (isReact) {
+        if (isReact && evalled) {
           // initiate boilerplates
           if (getBoilerplates().length === 0) {
             try {
@@ -474,14 +479,15 @@ async function compile({
             } catch (e) {
               console.log("Couldn't load all boilerplates: " + e.message);
             }
+          }
 
-            const boilerplate = findBoilerplate(managerModuleToTranspile);
-            if (boilerplate) {
-              try {
-                boilerplate.module.default(evalled);
-              } catch (e) {
-                console.error(e);
-              }
+          const boilerplate = findBoilerplate(managerModuleToTranspile);
+
+          if (boilerplate) {
+            try {
+              boilerplate.module.default(evalled);
+            } catch (e) {
+              console.error(e);
             }
           }
         }

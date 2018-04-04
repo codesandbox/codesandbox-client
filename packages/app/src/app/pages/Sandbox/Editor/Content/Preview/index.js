@@ -25,7 +25,6 @@ class Preview extends React.Component<Props, State> {
   };
 
   onPreviewInitialized = preview => {
-    let preventCodeExecution = false;
     const disposeHandleProjectViewChange = reaction(
       () => this.props.store.editor.isInProjectView,
       this.handleProjectView.bind(this, preview)
@@ -43,20 +42,17 @@ class Preview extends React.Component<Props, State> {
       this.handleModuleSyncedChange.bind(this, preview)
     );
     const disposeHandleCodeChange = reaction(
-      () => this.props.store.editor.currentSandbox.modules.map(m => m.code),
+      () =>
+        String(this.props.store.editor.currentSandbox.modules.map(m => m.code)),
       () => {
-        if (preventCodeExecution) {
-          preventCodeExecution = false;
-          return;
-        }
         this.handleCodeChange(preview);
       }
     );
     const disposeHandleModuleChange = reaction(
       () => this.props.store.editor.currentModule,
       () => {
-        if (this.props.store.editor.isInProjectView) {
-          preventCodeExecution = true;
+        if (!this.props.store.editor.isInProjectView) {
+          this.handleCodeChange(preview);
         }
       }
     );
