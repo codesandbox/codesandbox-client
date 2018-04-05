@@ -86,6 +86,7 @@ class Chat extends React.Component {
                         color,
                         fontWeight: 600,
                         marginBottom: '0.25rem',
+                        marginTop: '0.25rem',
                       }}
                     >
                       {name}
@@ -120,11 +121,17 @@ class Chat extends React.Component {
           )}
         </Messages>
         <AutosizeTextArea
+          useCacheForDOMMeasurements
           value={this.state.value}
           onChange={this.handleChange}
           placeholder="Send a message..."
-          style={{ width: '100%', minHeight: 26, marginTop: '0.5rem' }}
+          style={{
+            width: '100%',
+            minHeight: this.state.height,
+            marginTop: '0.5rem',
+          }}
           onKeyDown={this.handleKeyDown}
+          onHeightChange={height => this.setState({ height })}
         />
       </Container>
     );
