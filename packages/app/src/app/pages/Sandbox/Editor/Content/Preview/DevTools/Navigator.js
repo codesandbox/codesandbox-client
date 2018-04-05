@@ -1,8 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import VerticalAlign from 'app/src/app/components/Preview/Navigator/VerticalAlign';
-import HorizontalAlign from 'app/src/app/components/Preview/Navigator/HorizontalAlign';
+import Tooltip from 'common/components/Tooltip';
 
 const Container = styled.div`
   display: flex;
@@ -24,7 +23,7 @@ const Title = styled.div`
   flex: 1;
 `;
 
-const Icons = styled.div`
+const Actions = styled.div`
   z-index: 20;
   svg {
     transition: 0.3s ease color;
@@ -37,12 +36,15 @@ const Icons = styled.div`
   }
 `;
 
-export default ({ title, alignBottom, alignRight }) => (
+export default ({ title, actions }) => (
   <Container className="flying-container-handler">
     <Title>{title}</Title>
-    <Icons>
-      <HorizontalAlign onClick={alignBottom} />
-      <VerticalAlign onClick={alignRight} />
-    </Icons>
+    <Actions>
+      {actions.map(({ title: actionTitle, onClick, Icon }) => (
+        <Tooltip title={actionTitle} key={actionTitle}>
+          <Icon onClick={onClick} key={actionTitle} />
+        </Tooltip>
+      ))}
+    </Actions>
   </Container>
 );
