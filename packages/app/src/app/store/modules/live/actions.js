@@ -39,9 +39,14 @@ export function initializeLiveState({ props, state }) {
     sandboxId: props.sandboxId,
     editorIds: props.editorIds,
     mode: props.mode,
+    chatEnabled: props.chatEnabled,
     usersMetadata: {},
     users: [],
     startTime: Date.now(),
+    chat: {
+      messages: [],
+      users: {},
+    },
   });
   state.set('live.isLive', true);
   state.set('live.error', null);
@@ -453,4 +458,39 @@ export function removeEditorFromState({ props, state }) {
 
 export function resendOutboundOTTransforms({ ot }) {
   ot.serverReconnect();
+}
+
+export function receiveChat({ props, state }) {
+  let name = state.get(`live.roomInfo.chat.users.${props.data.user_id}`);
+  if (!name) {
+    const user = state
+      .get(`live.roomInfo.users`)
+      .find(u => u.id === props.data.user_id);
+
+    if (user) {
+      state.set(
+        `live.roomInfo.chat.users.${props.data.user_id}`,
+        user.username
+      );
+      name = user.username;
+    } else {
+      name = 'Unknown User';
+    }
+  }
+
+  state.push('live.roomInfo.chat.messages', {
+    userId: props.data.user_id,
+    message: props.data.message,
+    date: props.data.date,
+  });
+}
+
+export function sendChat({ live, props }) {
+  live.send('chat', {
+    message: props.message,
+  });
+}
+
+export function sendChatEnabled({ live, props }) {
+  live.send('live:chat_enabled', { enabled: props.enabled });
 }

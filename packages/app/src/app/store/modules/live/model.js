@@ -31,6 +31,7 @@ export default {
       ownerId: types.string,
       roomId: types.string,
       mode: types.string,
+      chatEnabled: types.boolean,
       sandboxId: types.string,
       editorIds: types.array(types.string),
       usersMetadata: types.map(UserMetadata),
@@ -41,6 +42,18 @@ export default {
           avatarUrl: types.string,
         })
       ),
+      chat: types.model({
+        messages: types.array(
+          types.model({
+            userId: types.string,
+            date: types.number,
+            message: types.string,
+          })
+        ),
+        // We keep a separate map if user_id -> username for the case when
+        // a user disconnects. We still need to keep track of the name.
+        users: types.map(types.string),
+      }),
     })
   ),
 };

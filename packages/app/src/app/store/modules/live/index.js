@@ -37,5 +37,7 @@ export default Module({
     onRemoveEditorClicked: sequences.removeEditor,
     onSessionCloseClicked: sequences.closeSession,
     onToggleNotificationsHidden: sequences.toggleNotificationsHidden,
+    onSendChat: sequences.sendChat,
+    onChatEnabledChange: sequences.setChatEnabled,
   },
 });

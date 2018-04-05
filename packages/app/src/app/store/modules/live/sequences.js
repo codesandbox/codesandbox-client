@@ -247,6 +247,13 @@ export const handleMessage = [
       actions.clearUserSelections,
       applySelectionsForModule,
     ],
+    'live:chat_enabled': [
+      isOwnMessage,
+      {
+        true: [],
+        false: [set(state`live.roomInfo.chatEnabled`, props`data.enabled`)],
+      },
+    ],
     'live:add-editor': [
       isOwnMessage,
       {
@@ -294,6 +301,10 @@ export const handleMessage = [
         false: [set(state`editor.currentSandbox.owned`, false)],
       },
       resetLive,
+    ],
+    chat: [actions.receiveChat],
+    notification: [
+      factories.addNotification(props`data.message`, props`data.type`),
     ],
     otherwise: [],
   },
@@ -343,4 +354,17 @@ export const addEditor = [
 export const removeEditor = [
   actions.removeEditorFromState,
   actions.removeEditor,
+];
+
+export const sendChat = [actions.sendChat];
+
+export const setChatEnabled = [
+  equals(state`live.isOwner`),
+  {
+    true: [
+      set(state`live.roomInfo.chatEnabled`, props`enabled`),
+      actions.sendChatEnabled,
+    ],
+    false: [],
+  },
 ];

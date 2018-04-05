@@ -144,6 +144,8 @@ class LiveInfo extends React.Component {
       onSessionCloseClicked,
       notificationsHidden,
       toggleNotificationsHidden,
+      chatEnabled,
+      toggleChatEnabled,
     } = this.props;
 
     const owner = roomInfo.users.find(u => u.id === ownerId);
@@ -200,6 +202,18 @@ class LiveInfo extends React.Component {
         <Margin top={1}>
           <SubTitle>Preferences</SubTitle>
 
+          {isOwner && (
+            <PreferencesContainer>
+              <Preference>Chat enabled</Preference>
+              <Switch
+                right={chatEnabled}
+                onClick={toggleChatEnabled}
+                small
+                offMode
+                secondary
+              />
+            </PreferencesContainer>
+          )}
           <PreferencesContainer>
             <Preference>Hide notifications</Preference>
             <Switch
