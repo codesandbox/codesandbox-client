@@ -60,6 +60,7 @@ class Chat extends React.Component {
   render() {
     const { store } = this.props;
     const { messages, users } = store.live.roomInfo.chat;
+    const currentUserId = store.user.id;
     const usersMetadata = store.live.roomInfo.usersMetadata;
 
     return (
@@ -76,7 +77,7 @@ class Chat extends React.Component {
                 ? `rgb(${metadata.color[0]}, ${metadata.color[1]}, ${
                     metadata.color[2]
                   })`
-                : '#aaa';
+                : '#636363';
               const name = users.get(message.userId);
               return (
                 <div key={message.date}>
@@ -86,10 +87,12 @@ class Chat extends React.Component {
                         color,
                         fontWeight: 600,
                         marginBottom: '0.25rem',
-                        marginTop: '0.25rem',
+                        marginTop: '0.5rem',
                       }}
                     >
                       {name}
+                      {currentUserId === message.userId && ' (You)'}
+                      {!metadata && ' (left)'}
                     </div>
                   )}
                   <div
