@@ -91,7 +91,7 @@ class Chat extends React.Component {
                       }}
                     >
                       {name}
-                      {currentUserId === message.userId && ' (You)'}
+                      {currentUserId === message.userId && ' (you)'}
                       {!metadata && ' (left)'}
                     </div>
                   )}
