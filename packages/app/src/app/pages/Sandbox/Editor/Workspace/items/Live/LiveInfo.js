@@ -202,16 +202,18 @@ class LiveInfo extends React.Component {
         <Margin top={1}>
           <SubTitle>Preferences</SubTitle>
 
-          <PreferencesContainer>
-            <Preference>Chat enabled</Preference>
-            <Switch
-              right={chatEnabled}
-              onClick={toggleChatEnabled}
-              small
-              offMode
-              secondary
-            />
-          </PreferencesContainer>
+          {isOwner && (
+            <PreferencesContainer>
+              <Preference>Chat enabled</Preference>
+              <Switch
+                right={chatEnabled}
+                onClick={toggleChatEnabled}
+                small
+                offMode
+                secondary
+              />
+            </PreferencesContainer>
+          )}
           <PreferencesContainer>
             <Preference>Hide notifications</Preference>
             <Switch
