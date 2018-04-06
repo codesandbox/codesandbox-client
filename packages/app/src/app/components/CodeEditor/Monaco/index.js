@@ -430,7 +430,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         // that the changes of code are not sent to live users. We need to reset
         // this state when we're doing changing modules
         this.props.onCodeReceived();
-        this.updatedCode = '';
+        this.liveOperationCode = '';
       }
     });
   };
@@ -441,7 +441,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     }
   };
 
-  updatedCode = '';
+  liveOperationCode = '';
   sendChangeOperations = changeEvent => {
     const { sendTransforms, isLive, onCodeReceived } = this.props;
 
@@ -449,12 +449,14 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       const otOperation = new TextOperation();
       // TODO: add a comment explaining what "delta" is
       let delta = 0;
-      this.updatedCode = this.updatedCode || this.currentModule.code || '';
+
+      this.liveOperationCode =
+        this.liveOperationCode || this.currentModule.code || '';
       // eslint-disable-next-line no-restricted-syntax
       for (const change of [...changeEvent.changes].reverse()) {
         const cursorStartOffset =
           lineAndColumnToIndex(
-            this.updatedCode.split('\n'),
+            this.liveOperationCode.split('\n'),
             change.range.startLineNumber,
             change.range.startColumn
           ) + delta;
@@ -475,16 +477,16 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         }
       }
 
-      const remaining = this.updatedCode.length - otOperation.baseLength;
+      const remaining = this.liveOperationCode.length - otOperation.baseLength;
       if (remaining > 0) {
         otOperation.retain(remaining);
       }
-      this.updatedCode = otOperation.apply(this.updatedCode);
+      this.liveOperationCode = otOperation.apply(this.liveOperationCode);
 
       sendTransforms(otOperation);
 
       requestAnimationFrame(() => {
-        this.updatedCode = '';
+        this.liveOperationCode = '';
       });
     } else if (!isLive && onCodeReceived) {
       onCodeReceived();
@@ -715,7 +717,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   };
 
   applyOperation = (operation: any) => {
-    this.updatedCode = '';
+    this.liveOperationCode = '';
     let index = 0;
     for (let i = 0; i < operation.ops.length; i++) {
       const op = operation.ops[i];
@@ -1109,6 +1111,11 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       range: new this.monaco.Range(0, 0, lastLine + 1, lastLineColumn),
       forceMoveMarkers: false,
     };
+
+    // For the live operation we need to send the operation based on the old code,
+    // that's why we set the 'liveOperationCode' to the last code so the operation
+    // will be applied on that code instead of `currentModule.code`
+    this.liveOperationCode = this.getCode();
 
     this.editor.getModel().pushEditOperations([], [editOperation], null);
     this.editor.setPosition(pos);
