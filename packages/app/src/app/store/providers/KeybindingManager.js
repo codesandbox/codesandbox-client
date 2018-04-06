@@ -23,6 +23,9 @@ function handleKeyDown(controller, e) {
   if (state.timeout) {
     clearTimeout(state.timeout);
   }
+  if (e.defaultPrevented) {
+    return;
+  }
 
   state.timeout = setTimeout(reset, 1500);
 

@@ -212,7 +212,7 @@ class EditorPreview extends React.Component<Props, State> {
         store.editor.pendingOperation &&
         store.editor.pendingOperation.map(x => x),
       () => {
-        if (store.editor.pendingOperation) {
+        if (store.editor.pendingOperation && store.live.isLive) {
           if (editor.setReceivingCode) {
             editor.setReceivingCode(true);
           }
@@ -247,10 +247,14 @@ class EditorPreview extends React.Component<Props, State> {
     const updateUserSelections = () => {
       if (store.editor.pendingUserSelections) {
         if (editor.updateUserSelections) {
-          requestAnimationFrame(() => {
-            editor.updateUserSelections(store.editor.pendingUserSelections);
+          if (store.live.isLive) {
+            requestAnimationFrame(() => {
+              editor.updateUserSelections(store.editor.pendingUserSelections);
+              this.props.signals.live.onSelectionDecorationsApplied();
+            });
+          } else {
             this.props.signals.live.onSelectionDecorationsApplied();
-          });
+          }
         }
       }
     };
