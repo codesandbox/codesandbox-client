@@ -9,6 +9,13 @@ import Margin from 'common/components/spacing/Margin';
 import delay from 'common/utils/animation/delay-effect';
 import Switch from 'common/components/Switch';
 
+import Tooltip from 'common/components/Tooltip';
+
+import AddIcon from 'react-icons/lib/md/add';
+import RemoveIcon from 'react-icons/lib/md/remove';
+import FollowIcon from 'react-icons/lib/ti/user-add';
+import UnFollowIcon from 'react-icons/lib/ti/user-delete';
+
 import User from './User';
 import Countdown from './Countdown';
 import LiveButton from './LiveButton';
@@ -126,6 +133,16 @@ const Preference = styled.div`
   font-size: 0.875rem;
 `;
 
+const IconContainer = styled.div`
+  transition: 0.3s ease color;
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+
+  &:hover {
+    color: white;
+  }
+`;
+
 class LiveInfo extends React.Component {
   select = e => {
     e.target.select();
@@ -146,6 +163,8 @@ class LiveInfo extends React.Component {
       toggleNotificationsHidden,
       chatEnabled,
       toggleChatEnabled,
+      setFollowing,
+      followingUserId,
     } = this.props;
 
     const owner = roomInfo.users.find(u => u.id === ownerId);
@@ -258,6 +277,25 @@ class LiveInfo extends React.Component {
                 user={owner}
                 roomInfo={roomInfo}
                 type="Owner"
+                sideView={
+                  owner.id !== currentUserId && (
+                    <IconContainer>
+                      {followingUserId === owner.id ? (
+                        <Tooltip title="Stop following">
+                          <UnFollowIcon
+                            onClick={() => setFollowing({ userId: null })}
+                          />
+                        </Tooltip>
+                      ) : (
+                        <Tooltip title="Follow along">
+                          <FollowIcon
+                            onClick={() => setFollowing({ userId: owner.id })}
+                          />
+                        </Tooltip>
+                      )}
+                    </IconContainer>
+                  )
+                }
               />
             </Users>
           </Margin>
@@ -272,11 +310,44 @@ class LiveInfo extends React.Component {
                   <User
                     currentUserId={currentUserId}
                     key={user.id}
-                    showSwitch={isOwner && roomInfo.mode === 'classroom'}
                     user={user}
                     roomInfo={roomInfo}
-                    onClick={() => removeEditor({ userId: user.id })}
                     type="Editor"
+                    sideView={
+                      <React.Fragment>
+                        {user.id !== currentUserId && (
+                          <IconContainer>
+                            {followingUserId === user.id ? (
+                              <Tooltip title="Stop following">
+                                <UnFollowIcon
+                                  onClick={() => setFollowing({ userId: null })}
+                                />
+                              </Tooltip>
+                            ) : (
+                              <Tooltip title="Follow along">
+                                <FollowIcon
+                                  onClick={() =>
+                                    setFollowing({ userId: user.id })
+                                  }
+                                />
+                              </Tooltip>
+                            )}
+                          </IconContainer>
+                        )}
+                        {isOwner &&
+                          roomInfo.mode === 'classroom' && (
+                            <IconContainer style={{ marginLeft: '0.25rem' }}>
+                              <Tooltip title={'Make spectator'}>
+                                <RemoveIcon
+                                  onClick={() =>
+                                    removeEditor({ userId: user.id })
+                                  }
+                                />
+                              </Tooltip>
+                            </IconContainer>
+                          )}
+                      </React.Fragment>
+                    }
                   />
                 ))}
               </Users>
@@ -292,12 +363,43 @@ class LiveInfo extends React.Component {
                 <User
                   currentUserId={currentUserId}
                   key={user.id}
-                  showSwitch={isOwner && roomInfo.mode === 'classroom'}
                   user={user}
                   roomInfo={roomInfo}
-                  onClick={() => addEditor({ userId: user.id })}
                   type="Spectator"
-                  showPlusIcon
+                  sideView={
+                    <React.Fragment>
+                      {roomInfo.mode !== 'classroom' &&
+                        user.id !== currentUserId && (
+                          <IconContainer>
+                            {followingUserId === user.id ? (
+                              <Tooltip title="Stop following">
+                                <UnFollowIcon
+                                  onClick={() => setFollowing({ userId: null })}
+                                />
+                              </Tooltip>
+                            ) : (
+                              <Tooltip title="Follow along">
+                                <FollowIcon
+                                  onClick={() =>
+                                    setFollowing({ userId: user.id })
+                                  }
+                                />
+                              </Tooltip>
+                            )}
+                          </IconContainer>
+                        )}
+                      {isOwner &&
+                        roomInfo.mode === 'classroom' && (
+                          <IconContainer style={{ marginLeft: '0.25rem' }}>
+                            <Tooltip title={'Make editor'}>
+                              <AddIcon
+                                onClick={() => addEditor({ userId: user.id })}
+                              />
+                            </Tooltip>
+                          </IconContainer>
+                        )}
+                    </React.Fragment>
+                  }
                 />
               ))
             ) : (

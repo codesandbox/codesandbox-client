@@ -33,6 +33,8 @@ const Live = ({ signals, store }) => (
             enabled: !store.live.roomInfo.chatEnabled,
           });
         }}
+        setFollowing={signals.live.onFollow}
+        followingUserId={store.live.followingUserId}
       />
     ) : (
       <React.Fragment>

@@ -316,6 +316,16 @@ export function sendChangeCurrentModule({ props, state, live }) {
     module.shortid
   );
 
+  const followingUserId = state.get('live.followingUserId');
+  if (followingUserId) {
+    const user = state.get('live.roomInfo.usersMetadata').get(followingUserId);
+
+    if (user && user.currentModuleShortid !== module.shortid) {
+      // Reset following as this is a user change module action
+      state.set('live.followingUserId', null);
+    }
+  }
+
   live.send('user:current-module', {
     moduleShortid: module.shortid,
   });
@@ -493,4 +503,17 @@ export function sendChat({ live, props }) {
 
 export function sendChatEnabled({ live, props }) {
   live.send('live:chat_enabled', { enabled: props.enabled });
+}
+
+export function getModuleIdFromShortid({ props, state }) {
+  const moduleShortid = props.moduleShortid;
+  const modules = state.get('editor.currentSandbox.modules');
+
+  const module = modules.find(m => m.shortid === moduleShortid);
+
+  if (module) {
+    return { id: module.id };
+  }
+
+  return {};
 }

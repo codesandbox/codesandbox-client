@@ -24,6 +24,7 @@ export default {
   isOwner: types.boolean,
   reconnecting: types.boolean,
   notificationsHidden: types.boolean,
+  followingUserId: types.maybe(types.string),
   roomInfo: types.maybe(
     types.model({
       startTime: types.maybe(types.number),

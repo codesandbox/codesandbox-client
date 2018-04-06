@@ -12,7 +12,7 @@ import { state, props } from 'cerebral/tags';
 import * as factories from '../../factories';
 import { setSandbox, openModal, resetLive } from '../../sequences';
 
-import { changeCode } from '../editor/sequences';
+import { changeCode, changeCurrentModule } from '../editor/sequences';
 import { setModuleSaved } from '../editor/actions';
 import { removeModule, removeDirectory } from '../files/sequences';
 import * as actions from './actions';
@@ -233,6 +233,23 @@ export const handleMessage = [
             props`data.moduleShortid`
           ),
           actions.clearUserSelections,
+
+          when(
+            state`live.followingUserId`,
+            props`data.user_id`,
+            props`data.moduleShortid`,
+            state`editor.currentModuleShortid`,
+            (followingId, userId, moduleShortid, currentModuleShortid) =>
+              followingId === userId && moduleShortid !== currentModuleShortid
+          ),
+          {
+            true: [
+              set(props`moduleShortid`, props`data.moduleShortid`),
+              actions.getModuleIdFromShortid,
+              changeCurrentModule,
+            ],
+            false: [],
+          },
         ],
       },
     ],
@@ -295,7 +312,11 @@ export const handleMessage = [
       actions.disconnect,
       set(props`modal`, 'liveSessionEnded'),
       openModal,
-      when(state`live.roomInfo.ownerId`, `live.user.id`, (i1, i2) => i1 === i2),
+      when(
+        state`live.roomInfo.ownerId`,
+        state`live.user.id`,
+        (i1, i2) => i1 === i2
+      ),
       {
         true: [],
         false: [set(state`editor.currentSandbox.owned`, false)],
@@ -310,7 +331,13 @@ export const handleMessage = [
   },
 ];
 
-export const sendSelection = [actions.sendSelection];
+export const sendSelection = [
+  equals(state`live.isCurrentEditor`),
+  {
+    true: [actions.sendSelection],
+    false: [],
+  },
+];
 
 export const createLive = [
   set(state`live.isOwner`, true),
@@ -368,3 +395,5 @@ export const setChatEnabled = [
     false: [],
   },
 ];
+
+export const setFollowing = [set(state`live.followingUserId`, props`userId`)];

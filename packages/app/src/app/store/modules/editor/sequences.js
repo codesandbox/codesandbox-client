@@ -55,9 +55,15 @@ export const changeCurrentModule = [
   equals(state`live.isLive`),
   {
     true: [
-      getSelectionsForCurrentModule,
-      set(state`editor.pendingUserSelections`, props`selections`),
-      sendChangeCurrentModule,
+      equals(state`live.isCurrentEditor`),
+      {
+        true: [
+          getSelectionsForCurrentModule,
+          set(state`editor.pendingUserSelections`, props`selections`),
+          sendChangeCurrentModule,
+        ],
+        false: [],
+      },
     ],
     false: [],
   },

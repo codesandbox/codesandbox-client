@@ -4,11 +4,6 @@ import { observer } from 'mobx-react';
 
 import delay from 'common/utils/animation/delay-effect';
 
-import Tooltip from 'common/components/Tooltip';
-
-import AddIcon from 'react-icons/lib/md/add';
-import RemoveIcon from 'react-icons/lib/md/remove';
-
 const Status = styled.div`
   font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.6);
@@ -45,28 +40,10 @@ const UserName = styled.div`
   font-size: 0.875rem;
 `;
 
-const IconContainer = styled.div`
-  transition: 0.3s ease color;
-  color: rgba(255, 255, 255, 0.8);
-  cursor: pointer;
-
-  &:hover {
-    color: white;
-  }
-`;
-
 // eslint-disable-next-line
 class User extends React.Component {
   render() {
-    const {
-      user,
-      type,
-      onClick,
-      showPlusIcon,
-      showSwitch,
-      roomInfo,
-      currentUserId,
-    } = this.props;
+    const { user, type, sideView, roomInfo, currentUserId } = this.props;
 
     const metaData = roomInfo.usersMetadata.get(user.id);
     const [r, g, b] = metaData
@@ -91,17 +68,7 @@ class User extends React.Component {
             </Status>
           )}
         </div>
-        {showSwitch && (
-          <IconContainer>
-            <Tooltip title={showPlusIcon ? 'Make editor' : 'Make spectator'}>
-              {showPlusIcon ? (
-                <AddIcon onClick={onClick} />
-              ) : (
-                <RemoveIcon onClick={onClick} />
-              )}
-            </Tooltip>
-          </IconContainer>
-        )}
+        {sideView}
       </UserContainer>
     );
   }

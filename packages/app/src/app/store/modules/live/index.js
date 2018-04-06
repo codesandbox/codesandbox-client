@@ -14,6 +14,7 @@ export default Module({
     receivingCode: false,
     reconnecting: false,
     notificationsHidden: false,
+    followingUserId: null,
   },
   computed: {
     isEditor,
@@ -39,5 +40,6 @@ export default Module({
     onToggleNotificationsHidden: sequences.toggleNotificationsHidden,
     onSendChat: sequences.sendChat,
     onChatEnabledChange: sequences.setChatEnabled,
+    onFollow: sequences.setFollowing,
   },
 });
