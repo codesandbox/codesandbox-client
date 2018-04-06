@@ -24,16 +24,17 @@ function EditIcons({
   onCreateFile,
   onCreateDirectory,
   active,
+  forceShow,
 }) {
   // Phones need double click if we show elements on click, that's why we only want
   // to show these edit icons when the user clicks and hasn't activated the module
-  if (window.__isTouch && !active) {
+  if (window.__isTouch && !active && !forceShow) {
     return null;
   }
 
   return (
     <div className={className}>
-      {(hovering || (window.__isTouch && active)) && (
+      {(hovering || (window.__isTouch && active) || forceShow) && (
         <Container>
           {onEdit && (
             <Tooltip title="Edit">

@@ -162,6 +162,7 @@ class Entry extends React.PureComponent {
                     onDelete={deleteEntry && this.delete}
                     onEdit={rename && this.rename}
                     active={active}
+                    forceShow={window.__isTouch && type === 'directory-open'}
                   />
                 )}
               </Right>
