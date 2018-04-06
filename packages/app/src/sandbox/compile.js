@@ -415,7 +415,10 @@ async function compile({
         try {
           const children = document.body.children;
           // Do unmounting for react
-          if (manifest.dependencies.find(n => n.name === 'react-dom')) {
+          if (
+            manifest &&
+            manifest.dependencies.find(n => n.name === 'react-dom')
+          ) {
             const reactDOMModule = manager.resolveModule('react-dom', '');
             const reactDOM = manager.evaluateModule(reactDOMModule);
 
