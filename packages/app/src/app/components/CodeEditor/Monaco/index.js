@@ -456,7 +456,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       for (const change of [...changeEvent.changes].reverse()) {
         const cursorStartOffset =
           lineAndColumnToIndex(
-            this.liveOperationCode.split('\n'),
+            this.liveOperationCode.split(/\r?\n/),
             change.range.startLineNumber,
             change.range.startColumn
           ) + delta;
