@@ -85,7 +85,7 @@ export default class Manager {
   dependencies: Object;
   webpackHMR: boolean;
   hardReload: boolean;
-  hmrStatus: 'idle' | 'check' | 'apply' | 'fail' = 'idle';
+  hmrStatus: 'idle' | 'check' | 'apply' | 'fail' | 'dispose' = 'idle';
   testRunner: TestRunner;
 
   // List of modules that are being transpiled, to prevent duplicate jobs.
@@ -200,8 +200,6 @@ export default class Manager {
       document.location.reload();
       return {};
     }
-
-    this.hmrStatus = 'apply';
 
     // Evaluate the *changed* HMR modules first
     this.getTranspiledModules()
