@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`transformJSON transforms arrays of numbers properly 1`] = `"[12,46]"`;
+
+exports[`transformJSON transforms arrays of objects properly 1`] = `"[{\\"key1\\":\\"Hello\\",\\"key2\\":\\"World\\"},{\\"key1\\":\\"Bonjour\\",\\"key2\\":\\"Le\\",\\"key3\\":\\"Monde\\"}]"`;
+
+exports[`transformJSON transforms arrays of objects properly 2`] = `"[{\\"a\\":12,\\"b\\":46},{\\"c\\":\\"Hello\\",\\"d\\":\\"World\\"},{\\"fn1\\":\\"function hello(a) {\\\\n        return a + 1;\\\\n      }\\",\\"fn2\\":\\"function fn2(b) {return b + 1;}\\"}]"`;
+
+exports[`transformJSON transforms arrays of strings properly 1`] = `"[\\"Hello world\\",\\"Bonjour le monde\\"]"`;
+
+exports[`transformJSON transforms arrays with functions properly 1`] = `"[\\"function hello(a) {\\\\n      return a + 1;\\\\n    }\\",\\"function (b) {return b + 1;}\\"]"`;
+
+exports[`transformJSON transforms arrow functions properly 1`] = `"\\"function fn(a) {return a + 1;}\\""`;
+
+exports[`transformJSON transforms arrow functions properly 2`] = `"\\"function fn2(a) {\\\\n      var b = 2;\\\\n      return a + b;\\\\n    }\\""`;
+
+exports[`transformJSON transforms named functions properly 1`] = `"\\"function hello(a) {\\\\n      return a + 1;\\\\n    }\\""`;
+
+exports[`transformJSON transforms numbers properly 1`] = `"12"`;
+
+exports[`transformJSON transforms objects properly 1`] = `"{\\"key1\\":\\"Hello\\",\\"key2\\":12}"`;
+
+exports[`transformJSON transforms objects with functions properly 1`] = `"{\\"fn1\\":\\"function hello(a) {\\\\n        return a + 1;\\\\n      }\\",\\"fn2\\":\\"function fn2(b) {return b + 1;}\\"}"`;
+
+exports[`transformJSON transforms strings properly 1`] = `"\\"Hello world\\""`;
