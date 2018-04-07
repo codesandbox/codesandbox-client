@@ -127,8 +127,12 @@ self.addEventListener('message', async event => {
           const result = addDependency(node.attrs[attr]);
 
           if (result) {
-            node.tag = false;
-            node.content = [];
+            if (node.tag === 'link' || node.tag === 'script') {
+              node.tag = false;
+              node.content = [];
+            } else {
+              node.attrs[attr] = result;
+            }
           }
         }
       }

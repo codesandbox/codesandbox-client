@@ -4,6 +4,7 @@
       "webpack": {
         "config": "config/webpack.common.js"
       }
-    }
+    },
+    "import/external-module-folders": ["src", "node_modules"]
   }
 }

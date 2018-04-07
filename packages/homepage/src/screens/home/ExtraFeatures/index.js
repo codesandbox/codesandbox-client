@@ -15,12 +15,16 @@ import Private from 'react-icons/lib/md/visibility-off';
 import GitHubIcon from 'react-icons/lib/go/mark-github';
 import Prettify from 'react-icons/lib/md/brush';
 import DevTools from 'react-icons/lib/go/terminal';
+import LiveIcon from 'react-icons/lib/md/wifi-tethering';
+import KeyboardIcon from 'react-icons/lib/md/keyboard';
 
+import Jest from './Jest';
 import VSCode from './VSCode';
 import TypeScript from './TypeScript';
 import OpenSource from './OpenSource';
 import ESLint from './ESLint';
 import Emmet from './Emmet';
+import ConfigurationIcon from './ConfigurationIcon';
 
 import { Background, Heading, SubHeading } from '../../../components/style';
 
@@ -55,22 +59,40 @@ export default () => (
 
       <Features>
         <Feature
+          Icon={LiveIcon}
+          title="Live Collaboration"
+          patron
+          description="Edit sandboxes together in real time, Google Docs style. Use Classroom Mode to control who can make edits."
+        />
+        <Feature
+          Icon={Jest}
+          title="Jest Integration"
+          description="We automatically run Jest tests and show the results with an intuitive UI."
+        />
+        <Feature
+          Icon={KeyboardIcon}
+          title="Keybindings and Quick Actions"
+          description="Use Keybindings and Quick Actions to execute commonly used actions more quickly."
+        />
+        <Feature
+          Icon={ConfigurationIcon}
+          title="Configuration UI"
+          description="We show a UI for configuration files so you don't have to look up how the configuration is structured."
+        />
+        <Feature
           Icon={GitHubIcon}
-          newFeature
           title="Export to GitHub"
           description="All sandboxes can easily be exported to a GitHub repository."
         />
         <Feature
           Icon={StaticFile}
-          newFeature
           title="Static File Hosting"
           description="The development server will serve all files statically from the public folder, depending on the template."
         />
         <Feature
           Icon={DevTools}
-          newFeature
           title="Integrated DevTools"
-          description="The preview window has integrated DevTools, like a console. There are more DevTools underway."
+          description="The preview window has integrated DevTools, like a console, test view and a problem viewer."
         />
         <Feature
           Icon={Private}

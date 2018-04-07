@@ -12,10 +12,9 @@ import CodeEditor from 'app/components/CodeEditor';
 import type { Editor, Settings } from 'app/components/CodeEditor/types';
 import DevTools from 'app/components/Preview/DevTools';
 import FilePath from 'app/components/CodeEditor/FilePath';
+
 import Preview from './Preview';
-
 import Tabs from './Tabs';
-
 import { FullSize } from './elements';
 
 const settings = store =>
@@ -213,7 +212,7 @@ class EditorPreview extends React.Component<Props, State> {
         store.editor.pendingOperation &&
         store.editor.pendingOperation.map(x => x),
       () => {
-        if (store.editor.pendingOperation) {
+        if (store.editor.pendingOperation && store.live.isLive) {
           if (editor.setReceivingCode) {
             editor.setReceivingCode(true);
           }
@@ -248,10 +247,14 @@ class EditorPreview extends React.Component<Props, State> {
     const updateUserSelections = () => {
       if (store.editor.pendingUserSelections) {
         if (editor.updateUserSelections) {
-          requestAnimationFrame(() => {
-            editor.updateUserSelections(store.editor.pendingUserSelections);
+          if (store.live.isLive) {
+            requestAnimationFrame(() => {
+              editor.updateUserSelections(store.editor.pendingUserSelections);
+              this.props.signals.live.onSelectionDecorationsApplied();
+            });
+          } else {
             this.props.signals.live.onSelectionDecorationsApplied();
-          });
+          }
         }
       }
     };

@@ -31,6 +31,8 @@ type Props = {
   showNavigation?: boolean,
   inactive?: boolean,
   dragging?: boolean,
+  hide: boolean,
+  noPreview: boolean,
 };
 
 type State = {
@@ -315,12 +317,19 @@ class BasePreview extends React.Component<Props, State> {
       settings,
       isInProjectView,
       dragging,
+      hide,
+      noPreview,
     } = this.props;
     const { historyPosition, history, urlInAddressBar } = this.state;
     const url = urlInAddressBar || frameUrl(sandbox.id);
 
+    if (noPreview) {
+      // Means that preview is open in another tab definitely
+      return null;
+    }
+
     return (
-      <Container style={{ flex: 1 }}>
+      <Container style={{ flex: 1, display: hide ? 'none' : undefined }}>
         {showNavigation && (
           <Navigator
             url={decodeURIComponent(url)}
