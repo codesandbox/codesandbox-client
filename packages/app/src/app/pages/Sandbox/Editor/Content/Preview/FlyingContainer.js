@@ -48,6 +48,8 @@ class FlyingContainer extends React.Component<Props, State> {
   el: ?HTMLElement;
   initialWidth: ?number;
   initialHeight: ?number;
+  lastX: ?number;
+  lastY: ?number;
 
   updateBounds = el => {
     if (el) {
@@ -63,14 +65,18 @@ class FlyingContainer extends React.Component<Props, State> {
   handleStartDrag = () => {
     this.setState({ dragging: true });
     this.setResizingStarted();
+
+    this.lastX = this.props.store.editor.previewWindow.x;
+    this.lastY = this.props.store.editor.previewWindow.y;
   };
 
   handleStopDrag = (e, data) => {
-    const { x, y, deltaX, deltaY } = data;
-    const delta = deltaX + deltaY;
+    const { x, y } = data;
+    const posChanged = x !== this.lastX || y !== this.lastY;
+
     this.setState({ dragging: false });
 
-    this.setResizingStopped(delta);
+    this.setResizingStopped(posChanged);
 
     // We only set the bounds in the global store on stop, otherwise there are
     // other components constantly recalculating while dragging -> lag
@@ -81,10 +87,10 @@ class FlyingContainer extends React.Component<Props, State> {
     this.props.signals.editor.resizingStarted();
   };
 
-  setResizingStopped = (delta = -1) => {
+  setResizingStopped = (posChanged = true) => {
     this.props.signals.editor.resizingStopped();
 
-    if (delta !== 0) {
+    if (posChanged) {
       if (this.props.onPositionChange) {
         this.props.onPositionChange();
       }
