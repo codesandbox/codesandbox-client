@@ -36,6 +36,7 @@ export default class HTML extends Component {
           />
           <meta property="og:type" content="website" />
           <meta property="og:author" content="https://ivesvh.com" />
+          <meta name="theme-color" content="#6CAEDD" />
           <meta
             property="og:image"
             content="https://codesandbox.io/static/img/banner.png"
