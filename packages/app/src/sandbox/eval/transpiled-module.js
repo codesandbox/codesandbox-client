@@ -598,7 +598,7 @@ export default class TranspiledModule {
         .some(t => t.transpiler.HMREnabled);
 
       if (!hasHMR) {
-        document.location.reload();
+        manager.markHardReload();
       } else {
         this.resetCompilation();
       }

@@ -72,7 +72,6 @@ self.addEventListener('message', async event => {
       self.postMessage({
         type: 'add-dependency',
         path: assetPath,
-        isEntry: true,
       });
 
       resources.push(assetPath);
