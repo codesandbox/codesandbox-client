@@ -141,7 +141,7 @@ function setupCompiler(port, protocol) {
 }
 
 function openBrowser(port, protocol) {
-  const url = protocol + '://localhost:' + port + '/s/new';
+  const url = protocol + '://localhost:' + port + '/s';
   if (process.platform === 'darwin') {
     try {
       // Try our best to reuse existing tab
