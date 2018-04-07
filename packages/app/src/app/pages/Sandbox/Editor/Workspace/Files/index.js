@@ -44,6 +44,7 @@ class Files extends React.Component {
         actions={
           <EditIcons
             hovering
+            forceShow={window.__isTouch}
             onCreateFile={this.createModule}
             onCreateDirectory={this.createDirectory}
             onUploadFile={this.uploadFile}

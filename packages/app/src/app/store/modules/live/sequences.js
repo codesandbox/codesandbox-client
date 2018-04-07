@@ -12,7 +12,7 @@ import { state, props } from 'cerebral/tags';
 import * as factories from '../../factories';
 import { setSandbox, openModal, resetLive } from '../../sequences';
 
-import { changeCode } from '../editor/sequences';
+import { changeCode, changeCurrentModule } from '../editor/sequences';
 import { setModuleSaved } from '../editor/actions';
 import { removeModule, removeDirectory } from '../files/sequences';
 import * as actions from './actions';
@@ -233,6 +233,23 @@ export const handleMessage = [
             props`data.moduleShortid`
           ),
           actions.clearUserSelections,
+
+          when(
+            state`live.followingUserId`,
+            props`data.user_id`,
+            props`data.moduleShortid`,
+            state`editor.currentModuleShortid`,
+            (followingId, userId, moduleShortid, currentModuleShortid) =>
+              followingId === userId && moduleShortid !== currentModuleShortid
+          ),
+          {
+            true: [
+              set(props`moduleShortid`, props`data.moduleShortid`),
+              actions.getModuleIdFromShortid,
+              changeCurrentModule,
+            ],
+            false: [],
+          },
         ],
       },
     ],
@@ -246,6 +263,13 @@ export const handleMessage = [
       // In classroom mode you only see selections of editors.
       actions.clearUserSelections,
       applySelectionsForModule,
+    ],
+    'live:chat_enabled': [
+      isOwnMessage,
+      {
+        true: [],
+        false: [set(state`live.roomInfo.chatEnabled`, props`data.enabled`)],
+      },
     ],
     'live:add-editor': [
       isOwnMessage,
@@ -288,18 +312,32 @@ export const handleMessage = [
       actions.disconnect,
       set(props`modal`, 'liveSessionEnded'),
       openModal,
-      when(state`live.roomInfo.ownerId`, `live.user.id`, (i1, i2) => i1 === i2),
+      when(
+        state`live.roomInfo.ownerId`,
+        state`live.user.id`,
+        (i1, i2) => i1 === i2
+      ),
       {
         true: [],
         false: [set(state`editor.currentSandbox.owned`, false)],
       },
       resetLive,
     ],
+    chat: [actions.receiveChat],
+    notification: [
+      factories.addNotification(props`data.message`, props`data.type`),
+    ],
     otherwise: [],
   },
 ];
 
-export const sendSelection = [actions.sendSelection];
+export const sendSelection = [
+  equals(state`live.isCurrentEditor`),
+  {
+    true: [actions.sendSelection],
+    false: [],
+  },
+];
 
 export const createLive = [
   set(state`live.isOwner`, true),
@@ -344,3 +382,18 @@ export const removeEditor = [
   actions.removeEditorFromState,
   actions.removeEditor,
 ];
+
+export const sendChat = [actions.sendChat];
+
+export const setChatEnabled = [
+  equals(state`live.isOwner`),
+  {
+    true: [
+      set(state`live.roomInfo.chatEnabled`, props`enabled`),
+      actions.sendChatEnabled,
+    ],
+    false: [],
+  },
+];
+
+export const setFollowing = [set(state`live.followingUserId`, props`userId`)];

@@ -27,6 +27,14 @@ const Live = ({ signals, store }) => (
         onSessionCloseClicked={signals.live.onSessionCloseClicked}
         notificationsHidden={store.live.notificationsHidden}
         toggleNotificationsHidden={signals.live.onToggleNotificationsHidden}
+        chatEnabled={store.live.roomInfo.chatEnabled}
+        toggleChatEnabled={() => {
+          signals.live.onChatEnabledChange({
+            enabled: !store.live.roomInfo.chatEnabled,
+          });
+        }}
+        setFollowing={signals.live.onFollow}
+        followingUserId={store.live.followingUserId}
       />
     ) : (
       <React.Fragment>

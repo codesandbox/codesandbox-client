@@ -306,6 +306,18 @@ export default class Content extends React.PureComponent<Props, State> {
 
     const { RunOnClick } = this;
 
+    const sandboxConfig = sandbox.modules.find(
+      x => x.directoryShortid == null && x.title === 'sandbox.config.json'
+    );
+    let view = 'browser';
+    if (sandboxConfig) {
+      try {
+        view = JSON.parse(sandboxConfig.code || '').view || 'browser';
+      } catch (e) {
+        /* swallow */
+      }
+    }
+
     return (
       <Container style={{ flexDirection: verticalMode ? 'column' : 'row' }}>
         {showEditor && (
@@ -403,6 +415,7 @@ export default class Content extends React.PureComponent<Props, State> {
                   setDragging={this.setDragging}
                   sandboxId={sandbox.id}
                   shouldExpandDevTools={this.props.expandDevTools}
+                  view={view}
                 />
               </div>
             )}

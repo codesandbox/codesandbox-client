@@ -666,9 +666,13 @@ export default class TranspiledModule {
     }
 
     if (this.hmrConfig) {
+      /* eslint-disable no-param-reassign */
+      manager.hmrStatus = 'dispose';
       // Call module.hot.dispose handler
       // https://webpack.js.org/api/hot-module-replacement/#dispose-or-adddisposehandler-
       this.hmrConfig.callDisposeHandler();
+      manager.hmrStatus = 'idle';
+      /* eslint-enable */
     }
 
     const hotData = this.hmrConfig ? this.hmrConfig.data : undefined;
@@ -784,11 +788,15 @@ export default class TranspiledModule {
         { asUMD }
       );
 
+      /* eslint-disable no-param-reassign */
+      manager.hmrStatus = 'apply';
       const hmrConfig = this.hmrConfig;
       if (hmrConfig && hmrConfig.isHot()) {
         hmrConfig.setDirty(false);
         hmrConfig.callAcceptCallback();
       }
+      manager.hmrStatus = 'idle';
+      /* eslint-enable */
 
       return exports;
     } catch (e) {
