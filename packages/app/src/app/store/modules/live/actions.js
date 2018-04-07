@@ -517,3 +517,18 @@ export function getModuleIdFromShortid({ props, state }) {
 
   return {};
 }
+
+export function getCurrentModuleIdOfUser({ props, state }) {
+  const userId = props.userId;
+  const usersMetadata = state.get('live.roomInfo.usersMetadata');
+
+  const user = usersMetadata.get(userId);
+
+  if (user) {
+    return {
+      moduleShortid: user.currentModuleShortid,
+    };
+  }
+
+  return {};
+}

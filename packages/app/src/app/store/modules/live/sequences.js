@@ -396,4 +396,12 @@ export const setChatEnabled = [
   },
 ];
 
-export const setFollowing = [set(state`live.followingUserId`, props`userId`)];
+export const setFollowing = [
+  set(state`live.followingUserId`, props`userId`),
+  actions.getCurrentModuleIdOfUser,
+  when(props`moduleShortid`),
+  {
+    true: [actions.getModuleIdFromShortid, changeCurrentModule],
+    false: [],
+  },
+];
