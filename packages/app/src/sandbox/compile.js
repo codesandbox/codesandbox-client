@@ -40,6 +40,7 @@ export function getCurrentManager(): ?Manager {
 
 let firstLoad = true;
 let hadError = false;
+let lastHTML = '';
 
 const DEPENDENCY_ALIASES = {
   '@vue/cli-plugin-babel': '@vue/babel-preset-app',
@@ -441,20 +442,29 @@ async function compile({
       }
 
       if ((!manager.webpackHMR || firstLoad) && !manager.preset.htmlDisabled) {
-        if (!managerTranspiledModuleToTranspile.compilation || isModuleView) {
-          const htmlModule =
-            modules[
-              templateDefinition
-                .getHTMLEntries(configurations)
-                .find(p => modules[p])
-            ];
+        const htmlModulePath = templateDefinition
+          .getHTMLEntries(configurations)
+          .find(p => modules[p]);
+        const htmlModule = modules[htmlModulePath];
 
-          const html = htmlModule
-            ? htmlModule.code
-            : template === 'vue-cli'
-              ? '<div id="app"></div>'
-              : '<div id="root"></div>';
-          document.body.innerHTML = html;
+        const html = htmlModule
+          ? htmlModule.code
+          : template === 'vue-cli'
+            ? '<div id="app"></div>'
+            : '<div id="root"></div>';
+
+        if (html !== lastHTML) {
+          // Only set this body if the server hasn't set it already or the
+          // html is not a full html file
+          document.open('text/html');
+          document.write(html.replace(/%PUBLIC_URL%/g, ''));
+          document.close();
+
+          if (manager) {
+            manager.clearCompiledCache();
+          }
+
+          lastHTML = html;
         }
       }
 
