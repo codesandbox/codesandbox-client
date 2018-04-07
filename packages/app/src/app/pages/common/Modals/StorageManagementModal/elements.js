@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-  background-color: ${props => props.theme.background2};
+  background-color: ${props => props.theme.background};
   width: 100%;
   padding-bottom: 2rem;
 `;
@@ -10,13 +10,6 @@ export const JustifiedArea = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-`;
-
-export const OffsetJustifiedArea = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 0.3rem 0.5rem;
 `;
 
 export const Title = styled.h2`
@@ -54,25 +47,4 @@ export const Rule = styled.hr`
   margin: 1rem 2rem;
 
   background-color: rgba(255, 255, 255, 0.1);
-`;
-
-export const SubContainer = styled.div`
-  margin: 0rem 2rem;
-  height: 15rem;
-  overflow-y: auto;
-  background-color: ${props => props.theme.background};
-`;
-
-export const ItemTitle = styled.h4`
-  color: rgba(255, 255, 255, 0.8);
-  font-weight: 500;
-  font-size: 0.875rem;
-  margin: 0;
-`;
-
-export const ItemDate = styled.h4`
-  color: rgba(255, 255, 255, 0.6);
-  font-weight: 700;
-  font-size: 0.875rem;
-  margin: 0;
 `;
