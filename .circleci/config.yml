@@ -24,6 +24,12 @@ jobs:
           key: v6-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
           paths:
             - node_modules
+            - packages/app/node_modules
+            - packages/codesandbox-api/node_modules
+            - packages/common/node_modules
+            - packages/homepage/node_modules
+            - packages/react-sandpack/node_modules
+            - packages/sandpack/node_modules
       - save_cache:
           key: v6-standalone-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
           paths:
