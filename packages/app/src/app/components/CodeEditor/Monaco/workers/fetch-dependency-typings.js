@@ -212,7 +212,11 @@ function fetchFromTypings(dependency, version, fetchedPaths) {
         );
 
         // get all files in the specified directory
-        return getFileMetaData(dependency, version, types).then(fileData =>
+        return getFileMetaData(
+          dependency,
+          version,
+          path.join('/', path.dirname(types))
+        ).then(fileData =>
           getFileTypes(
             depUrl,
             dependency,
