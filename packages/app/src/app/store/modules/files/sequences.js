@@ -62,6 +62,7 @@ export const uploadFile = [
       set(props`newCode`, props`uploadedFile.url`),
       set(props`title`, props`name`),
       set(props`isBinary`, true),
+      set(state`uploadedFiles`, null),
       createModule,
     ],
     error: [addNotification('Unable to upload file', props`error`)],

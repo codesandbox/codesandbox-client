@@ -14,7 +14,7 @@ class FilesList extends React.Component {
   }
 
   render() {
-    const files = this.props.model.uploadedFiles || [];
+    const files = this.props.store.uploadedFiles || [];
 
     return (
       <Table>
