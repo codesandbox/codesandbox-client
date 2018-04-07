@@ -51,6 +51,7 @@ export default Module({
       y: 0,
     },
     currentModal: null,
+    uploadedFiles: null,
   },
   getters: {
     isPatron,

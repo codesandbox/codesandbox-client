@@ -13,6 +13,22 @@ import {
 } from '../live/actions';
 import * as actions from './actions';
 
+export const getUploadedFiles = [
+  actions.getUploadedFiles,
+  {
+    success: [set(state`uploadedFiles`, props`uploadedFiles`)],
+    error: [addNotification('Unable to get uploaded files', 'error')],
+  },
+];
+
+export const deleteUploadedFile = [
+  actions.deleteUploadedFile,
+  {
+    success: [set(state`uploadedFiles`, props`uploadedFiles`)],
+    error: [addNotification('Unable to delete uploaded file', 'error')],
+  },
+];
+
 export const createModule = [
   ensureOwnedSandbox,
   actions.createOptimisticModule,
