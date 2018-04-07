@@ -63,33 +63,36 @@ class FlyingContainer extends React.Component<Props, State> {
   handleStartDrag = () => {
     this.setState({ dragging: true });
     this.setResizingStarted();
-
-    if (this.props.onPositionChange) {
-      this.props.onPositionChange();
-    }
   };
 
   handleStopDrag = (e, data) => {
-    const { x, y } = data;
+    const { x, y, deltaX, deltaY } = data;
+    const delta = deltaX + deltaY;
     this.setState({ dragging: false });
+
+    this.setResizingStopped(delta);
 
     // We only set the bounds in the global store on stop, otherwise there are
     // other components constantly recalculating while dragging -> lag
     this.props.signals.editor.setPreviewBounds({ x, y });
-    this.setResizingStopped();
   };
 
   setResizingStarted = () => {
     this.props.signals.editor.resizingStarted();
+  };
 
-    if (this.props.onPositionChange) {
-      this.props.onPositionChange();
+  setResizingStopped = (delta = -1) => {
+    this.props.signals.editor.resizingStopped();
+
+    if (delta !== 0) {
+      if (this.props.onPositionChange) {
+        this.props.onPositionChange();
+      }
+      this.fixPreviewInteractivity();
     }
   };
 
-  setResizingStopped = () => {
-    this.props.signals.editor.resizingStopped();
-
+  fixPreviewInteractivity = () => {
     // We do this to force a recalculation of the iframe height, this doesn't
     // happen when pointer events are disabled and in turn disables scroll.
     // It's hacky, but it's to fix a bug in the browser.
