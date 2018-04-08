@@ -12,7 +12,6 @@ import Input from './Input';
 import { Container, Messages } from './elements';
 
 export type Message = {
-<<<<<<< HEAD
   type: 'message' | 'command' | 'return';
   logType: 'log' | 'warn' | 'info' | 'error';
   arguments: any[];
@@ -36,47 +35,11 @@ class Console extends React.Component<Props, State> {
   };
   listener;
   list;
-=======
-    type: 'message' | 'command' | 'return';
-    logType: 'log' | 'warn' | 'info' | 'error';
-    arguments: any[];
-};
-
-type Props = {
-    sandboxId: string;
-    hidden: boolean;
-    updateStatus: (type: string) => void;
-};
-
-type State = {
-    messages: Message[];
-    scrollToBottom: boolean;
-};
-
-class Console extends React.Component<Props, State> {
-    state = {
-        messages: [],
-        scrollToBottom: true
-    };
-    listener;
-    list;
-
-    componentDidMount() {
-        this.listener = listen(this.handleMessage);
-    }
-
-    componentWillUnmount() {
-        if (this.listener) {
-            this.listener();
-        }
-    }
->>>>>>> refactor done, checking if everything works
 
   componentDidMount() {
     this.listener = listen(this.handleMessage);
   }
 
-<<<<<<< HEAD
   componentWillUnmount() {
     if (this.listener) {
       this.listener();
@@ -104,11 +67,6 @@ class Console extends React.Component<Props, State> {
           this.addMessage('log', [parsedJson], 'return');
         } else {
           this.addMessage('error', [parsedJson]);
-=======
-    getType = (message: 'info' | 'log' | 'warn' | 'error') => {
-        if (message === 'log' || message === 'info') {
-            return 'info';
->>>>>>> refactor done, checking if everything works
         }
         break;
       }
@@ -137,28 +95,9 @@ class Console extends React.Component<Props, State> {
     }
   };
 
-<<<<<<< HEAD
   getType = (message: 'info' | 'log' | 'warn' | 'error') => {
     if (message === 'log' || message === 'info') {
       return 'info';
-=======
-        return 'error';
-    };
-
-    addMessage(message, args, type?) {
-        this.props.updateStatus(this.getType(message));
-
-        this.setState({
-            messages: [
-                ...this.state.messages,
-                {
-                    type,
-                    logType: message,
-                    arguments: args
-                }
-            ]
-        });
->>>>>>> refactor done, checking if everything works
     }
 
     if (message === 'warn') {
@@ -200,7 +139,6 @@ class Console extends React.Component<Props, State> {
     }
   }
 
-<<<<<<< HEAD
   evaluateConsole = (command: string) => {
     this.addMessage('log', [command], 'command');
 
@@ -211,29 +149,6 @@ class Console extends React.Component<Props, State> {
   render() {
     if (this.props.hidden) {
       return null;
-=======
-        // TODO move everything of frames to store and this command too
-        dispatch({ type: 'evaluate', command });
-    };
-
-    render() {
-        if (this.props.hidden) {
-            return null;
-        }
-
-        return (
-            <Container>
-                <Messages
-                    innerRef={(el) => {
-                        this.list = el;
-                    }}
-                >
-                    {this.state.messages.map((mes, i) => <Message key={i} message={mes} />)}
-                </Messages>
-                <Input evaluateConsole={this.evaluateConsole} />
-            </Container>
-        );
->>>>>>> refactor done, checking if everything works
     }
 
     return (

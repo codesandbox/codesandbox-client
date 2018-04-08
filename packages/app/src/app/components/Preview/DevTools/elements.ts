@@ -1,21 +1,13 @@
+
 import styled, { css } from 'app/styled-components';
 
 export const Container = styled.div`
-<<<<<<< HEAD
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-
-  max-height: 100%;
-  z-index: 100;
-  background-color: ${props => props.theme.background4};
-=======
     display: flex;
     flex-direction: column;
     width: 100%;
+    max-height: 100%;
     z-index: 100;
     background-color: ${(props) => props.theme.background4};
->>>>>>> Refactored to correct styled typing and refactored live components
 `;
 
 export const Header = styled.div`
@@ -28,19 +20,17 @@ export const Header = styled.div`
     background-color: ${(props) => props.theme.background4};
     color: rgba(255, 255, 255, 0.8);
     border-bottom: 1px solid rgba(0, 0, 0, 0.3);
-
     box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
-
     cursor: row-resize;
     flex-direction: row;
 `;
 
 export const Tab = styled<
-    {
-        active: boolean;
-    },
-    'div'
->('div')`
+  {
+    active: boolean;
+  },
+  'div'
+  >('div') `
   display: flex;
   align-items: center;
   height: calc(2rem - 1px);
@@ -48,15 +38,12 @@ export const Tab = styled<
   background-color: transparent;
   border-right: 1px solid rgba(0, 0, 0, 0.3);
   border-bottom: 1px solid transparent;
-
   cursor: pointer;
-
   color: rgba(255, 255, 255, 0.8);
   font-weight: 600;
-
   ${(props) =>
-      props.active &&
-      css`
+    props.active &&
+    css`
           background-color: ${props.theme.background};
           border-bottom-color: ${props.theme.background};
       `};
@@ -66,15 +53,11 @@ export const Actions = styled.div`
     position: absolute;
     right: 1rem;
     font-size: 1.125rem;
-
     svg {
         margin: 0 0.5rem;
-
         transition: 0.3s ease all;
-
         cursor: pointer;
         color: rgba(255, 255, 255, 0.7);
-
         &:hover {
             color: white;
         }

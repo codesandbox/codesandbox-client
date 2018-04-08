@@ -1,3 +1,4 @@
+
 import * as React from 'react';
 import * as moment from 'moment';
 import { Link } from 'react-router-dom';
@@ -16,14 +17,12 @@ import { Sandbox } from 'app/store/modules/profile/types';
 import { HeaderTitle, Table, StatTitle, StatBody, Body, SandboxRow } from './elements';
 
 type Props = {
-    sandboxes: Sandbox[];
-    isCurrentUser: boolean;
-    onDelete: (id: string) => void;
+  sandboxes: Sandbox[];
+  isCurrentUser: boolean;
+  onDelete: (id: string) => void;
 };
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-const SandboxList: React.SFC<Props> =  ({ sandboxes, isCurrentUser, onDelete }) => (
+export const SandboxList: React.SFC<Props> = ({ sandboxes, isCurrentUser, onDelete }) => (
   <Table>
     <thead>
       <tr style={{ height: '3rem' }}>
@@ -40,12 +39,12 @@ const SandboxList: React.SFC<Props> =  ({ sandboxes, isCurrentUser, onDelete }) 
         <StatTitle>
           <ForkIcon />
         </StatTitle>
-        {isCurrentUser && onDelete && <HeaderTitle />}
+        {isCurrentUser && <HeaderTitle />}
       </tr>
     </thead>
     <Body>
       {sandboxes.map((s, i) => {
-        const Icon = getIcon(s.template);
+        const Icon = getIcon(s.template.name);
         return (
           <SandboxRow index={i} key={s.id}>
             <td>
@@ -60,10 +59,8 @@ const SandboxList: React.SFC<Props> =  ({ sandboxes, isCurrentUser, onDelete }) 
             <StatBody>{s.likeCount}</StatBody>
             <StatBody>{s.viewCount}</StatBody>
             <StatBody>{s.forkCount}</StatBody>
-            {isCurrentUser && onDelete && (
-              <StatBody
-                style={{ padding: '0.55rem 0.5rem', cursor: 'pointer' }}
-              >
+            {isCurrentUser && (
+              <StatBody style={{ padding: '0.55rem 0.5rem', cursor: 'pointer' }}>
                 <DeleteSandboxButton id={s.id} onDelete={onDelete} />
               </StatBody>
             )}
@@ -72,58 +69,6 @@ const SandboxList: React.SFC<Props> =  ({ sandboxes, isCurrentUser, onDelete }) 
       })}
     </Body>
   </Table>
-=======
-export const SandboxList: React.SFC<Props> = ({ sandboxes, isCurrentUser, onDelete }: Props) => (
-=======
-export const SandboxList: React.SFC<Props> = ({ sandboxes, isCurrentUser, onDelete }) => (
->>>>>>> cleaned some components
-    <Table>
-        <thead>
-            <tr style={{ height: '3rem' }}>
-                <HeaderTitle>Title</HeaderTitle>
-                <HeaderTitle>Created</HeaderTitle>
-                <HeaderTitle>Updated</HeaderTitle>
-                <StatTitle />
-                <StatTitle>
-                    <FullHeartIcon />
-                </StatTitle>
-                <StatTitle>
-                    <EyeIcon />
-                </StatTitle>
-                <StatTitle>
-                    <ForkIcon />
-                </StatTitle>
-                {isCurrentUser && <HeaderTitle />}
-            </tr>
-        </thead>
-        <Body>
-            {sandboxes.map((s, i) => {
-                const Icon = getIcon(s.template.name);
-                return (
-                    <SandboxRow index={i} key={s.id}>
-                        <td>
-                            <Link to={sandboxUrl(s)}>{s.title || s.id}</Link>
-                            <PrivacyStatus privacy={s.privacy} asIcon />
-                        </td>
-                        <td>{moment(s.insertedAt).format('ll')}</td>
-                        <td>{moment(s.updatedAt).format('ll')}</td>
-                        <StatBody>
-                            <Icon width={30} height={30} />
-                        </StatBody>
-                        <StatBody>{s.likeCount}</StatBody>
-                        <StatBody>{s.viewCount}</StatBody>
-                        <StatBody>{s.forkCount}</StatBody>
-                        {isCurrentUser && (
-                            <StatBody style={{ padding: '0.55rem 0.5rem', cursor: 'pointer' }}>
-                                <DeleteSandboxButton id={s.id} onDelete={onDelete} />
-                            </StatBody>
-                        )}
-                    </SandboxRow>
-                );
-            })}
-        </Body>
-    </Table>
->>>>>>> refactor done, checking if everything works
 );
 
 export default SandboxList;
