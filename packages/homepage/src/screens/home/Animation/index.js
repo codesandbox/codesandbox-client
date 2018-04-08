@@ -15,6 +15,7 @@ import {
   svelte,
   parcel,
   cxjs,
+  dojo,
 } from 'common/templates';
 
 import Background from './Background';
@@ -65,7 +66,17 @@ const Message = styled.div`
 `};
 `;
 
-const TEMPLATES = [parcel, react, vue, angular, preact, reactTs, svelte, cxjs];
+const TEMPLATES = [
+  parcel,
+  react,
+  vue,
+  angular,
+  preact,
+  reactTs,
+  svelte,
+  cxjs,
+  dojo,
+];
 
 export default class Animation extends React.PureComponent {
   state = {

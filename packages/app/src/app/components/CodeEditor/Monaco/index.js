@@ -4,6 +4,7 @@ import { TextOperation } from 'ot';
 import { debounce } from 'lodash';
 import { getModulePath } from 'common/sandbox/modules';
 import { css } from 'glamor';
+import { listen } from 'codesandbox-api';
 
 import getTemplate from 'common/templates';
 import type {
@@ -158,6 +159,8 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       this.onSelectionChangedDebounced,
       500
     );
+
+    this.setupTranspilationListener();
   }
 
   shouldComponentUpdate(nextProps: Props) {
@@ -197,6 +200,18 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     if (this.disposeInitializer) {
       this.disposeInitializer();
     }
+  }
+
+  setupTranspilationListener() {
+    listen(({ type, code, path }) => {
+      if (type === 'add-extra-lib') {
+        const dtsPath = `${path}.d.ts`;
+        this.monaco.languages.typescript.typescriptDefaults._extraLibs[
+          `file:///${dtsPath}`
+        ] = code;
+        this.commitLibChanges();
+      }
+    });
   }
 
   configureEditor = async (editor: any, monaco: any) => {

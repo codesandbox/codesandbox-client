@@ -9,6 +9,7 @@ import {
   angular,
   cxjs,
   babel,
+  dojo,
 } from 'common/templates';
 
 import reactPreset from './presets/create-react-app';
@@ -20,6 +21,7 @@ import angularPreset from './presets/angular-cli';
 import parcelPreset from './presets/parcel';
 import babelPreset from './presets/babel-repl';
 import cxjsPreset from './presets/cxjs';
+import dojoPreset from './presets/dojo';
 
 export default function getPreset(template: string) {
   switch (template) {
@@ -41,6 +43,8 @@ export default function getPreset(template: string) {
       return babelPreset();
     case cxjs.name:
       return cxjsPreset();
+    case dojo.name:
+      return dojoPreset();
     default:
       return reactPreset();
   }

@@ -8,8 +8,20 @@ import reactTs from './react-ts';
 import svelte from './svelte';
 import vue from './vue';
 import cxjs from './cxjs';
+import dojo from './dojo';
 
-export { angular, babel, vue, react, reactTs, preact, svelte, parcel, cxjs };
+export {
+  angular,
+  babel,
+  vue,
+  react,
+  reactTs,
+  preact,
+  svelte,
+  parcel,
+  dojo,
+  cxjs,
+};
 
 export default function getDefinition(
   theme:
@@ -21,6 +33,7 @@ export default function getDefinition(
     | 'angular-cli'
     | 'parcel'
     | 'cxjs'
+    | '@dojo/cli-create-app'
 ) {
   switch (theme) {
     case react.name:
@@ -41,6 +54,8 @@ export default function getDefinition(
       return babel;
     case cxjs.name:
       return cxjs;
+    case dojo.name:
+      return dojo;
     default:
       return react;
   }
