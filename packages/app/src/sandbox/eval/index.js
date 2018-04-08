@@ -7,6 +7,7 @@ import {
   preact,
   reactTs,
   angular,
+  cxjs,
   babel,
 } from 'common/templates';
 
@@ -18,6 +19,7 @@ import sveltePreset from './presets/svelte';
 import angularPreset from './presets/angular-cli';
 import parcelPreset from './presets/parcel';
 import babelPreset from './presets/babel-repl';
+import cxjsPreset from './presets/cxjs';
 
 export default function getPreset(template: string) {
   switch (template) {
@@ -37,6 +39,8 @@ export default function getPreset(template: string) {
       return parcelPreset();
     case babel.name:
       return babelPreset();
+    case cxjs.name:
+      return cxjsPreset();
     default:
       return reactPreset();
   }
