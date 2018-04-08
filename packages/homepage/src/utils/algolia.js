@@ -9,9 +9,7 @@ const client = algoliasearch(ALGOLIA_APPLICATION_ID, ALGOLIA_API_KEY);
 const index = client.initIndex(ALGOLIA_DEFAULT_INDEX);
 
 export function searchFacets(facet, query) {
-  return index.searchForFacetValues(
-    { facetName: facet, facetQuery: query }
-  );
+  return index.searchForFacetValues({ facetName: facet, facetQuery: query });
 }
 
 export function search(query: string, filter: Object) {
