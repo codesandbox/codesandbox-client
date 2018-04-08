@@ -16,7 +16,7 @@ const state: State = {
   followingUserId: null,
   isEditor: Computed(computed.isEditor),
   isCurrentEditor: Computed(computed.isCurrentEditor),
-  liveUsersByModule: Computed(computed.liveUsersByModule)
+  liveUsersByModule: Computed(computed.liveUsersByModule),
 };
 
 const signals = {
@@ -37,5 +37,9 @@ const signals = {
   onSendChat: sequences.sendChat,
   onChatEnabledChange: sequences.setChatEnabled,
   onFollow: sequences.setFollowing,
-},
+};
+
+export default Module({
+  state,
+  signals,
 });

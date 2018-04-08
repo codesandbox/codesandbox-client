@@ -8,22 +8,27 @@ import { Settings } from 'app/store/modules/preferences/types';
 import { Container } from './elements';
 
 type Props = {
-    sandbox: Sandbox;
-    settings: Settings;
+  sandbox: Sandbox;
+  settings: Settings;
 };
 
 class ShowcasePreview extends React.PureComponent<Props> {
-    render() {
-        const sandbox = this.props.sandbox;
-        const parsedConfigs = parseConfigurations(sandbox);
-        const module = mainModule(sandbox, parsedConfigs);
+  render() {
+    const { sandbox } = this.props;
+    const parsedConfigs = parseConfigurations(sandbox);
+    const module = mainModule(sandbox, parsedConfigs);
 
-        return (
-            <Container>
-                <Preview sandbox={sandbox} currentModule={module} settings={this.props.settings} isInProjectView />
-            </Container>
-        );
-    }
+    return (
+      <Container>
+        <Preview
+          sandbox={sandbox}
+          currentModule={module}
+          settings={this.props.settings}
+          isInProjectView
+        />
+      </Container>
+    );
+  }
 }
 
 export default ShowcasePreview;

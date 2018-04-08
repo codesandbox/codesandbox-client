@@ -4,14 +4,10 @@
       "webpack": {
         "config": "config/webpack.common.js"
       }
-<<<<<<< HEAD
     },
-    "import/external-module-folders": ["src", "node_modules"]
-=======
-    }
-  },
-  "rules": {
-    "import/extensions": 0
->>>>>>> turn off import extension rule
+    "import/external-module-folders": [
+      "src",
+      "node_modules"
+    ]
   }
 }

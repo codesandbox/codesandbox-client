@@ -1,4 +1,3 @@
-
 import * as React from 'react';
 import { DragSource, ConnectDragSource } from 'react-dnd';
 import ContextMenu from 'app/components/ContextMenu';
@@ -26,7 +25,7 @@ type Props = {
   depth: number;
   type: string;
   active: boolean;
-  connectDragSource: ConnectDragSource; // eslint-disable-line
+  connectDragSource: ConnectDragSource;
   isNotSynced: boolean;
   isMainModule: boolean;
   moduleHasError: boolean;
@@ -56,7 +55,7 @@ class Entry extends React.PureComponent<Props, State> {
       state: props.state || '',
       error: false,
       selected: false,
-      hovering: false
+      hovering: false,
     };
   }
 
@@ -67,7 +66,7 @@ class Entry extends React.PureComponent<Props, State> {
     this.setState({ state: '', error: false });
   };
 
-  handleValidateTitle = (title) => {
+  handleValidateTitle = title => {
     const isInvalidTitle = this.props.renameValidator(this.props.id, title);
     this.setState({ error: isInvalidTitle });
   };
@@ -78,9 +77,7 @@ class Entry extends React.PureComponent<Props, State> {
     if (canRename && this.props.rename) {
       this.props.rename(shortid, title);
       this.resetState();
-    } else if (force) {
-      this.resetState();
-    }
+    } else if (force) this.resetState();
   };
 
   delete = () => {
@@ -108,7 +105,7 @@ class Entry extends React.PureComponent<Props, State> {
       type,
       active,
       setCurrentModule,
-      connectDragSource, // eslint-disable-line
+      connectDragSource,
       onCreateModuleClick,
       onCreateDirectoryClick,
       deleteEntry,
@@ -118,7 +115,7 @@ class Entry extends React.PureComponent<Props, State> {
       isNotSynced,
       isMainModule,
       moduleHasError,
-      rightColors
+      rightColors,
     } = this.props;
     const { state, error, selected, hovering } = this.state;
 
@@ -126,25 +123,25 @@ class Entry extends React.PureComponent<Props, State> {
       onCreateModuleClick && {
         title: 'New Module',
         action: onCreateModuleClick,
-        icon: FileIcon
+        icon: FileIcon,
       },
       onCreateDirectoryClick && {
         title: 'New Directory',
         action: onCreateDirectoryClick,
-        icon: FolderIcon
+        icon: FolderIcon,
       },
       rename && {
         title: 'Rename',
         action: this.rename,
-        icon: EditIcon
+        icon: EditIcon,
       },
       deleteEntry && {
         title: 'Delete',
         action: this.delete,
         color: theme.red.darken(0.2)(),
-        icon: DeleteIcon
-      }
-    ].filter((x) => x);
+        icon: DeleteIcon,
+      },
+    ].filter(x => x);
 
     return connectDragSource(
       <div>
@@ -171,23 +168,24 @@ class Entry extends React.PureComponent<Props, State> {
                 onCommit={this.handleRename}
               />
             ) : (
-                <EntryTitle title={title} />
-              )}
+              <EntryTitle title={title} />
+            )}
             {isNotSynced && !state && <NotSyncedIconWithMargin />}
             {state === '' && (
               <Right>
                 {isMainModule ? (
                   <span style={{ opacity: hovering ? 1 : 0 }}>main</span>
                 ) : (
-                    <EditIcons
-                      hovering={hovering}
-                      onCreateFile={onCreateModuleClick}
-                      onCreateDirectory={onCreateDirectoryClick}
-                      onDelete={deleteEntry && this.delete}
-                      onEdit={rename && this.rename}
-                      active={active}
-                    />
-                  )}
+                  <EditIcons
+                    hovering={hovering}
+                    onCreateFile={onCreateModuleClick}
+                    onCreateDirectory={onCreateDirectoryClick}
+                    onDelete={deleteEntry && this.delete}
+                    onEdit={rename && this.rename}
+                    active={active}
+                    forceShow={window.__isTouch && type === 'directory-open'}
+                  />
+                )}
               </Right>
             )}
           </EntryContainer>
@@ -198,22 +196,20 @@ class Entry extends React.PureComponent<Props, State> {
 }
 
 const entrySource = {
-  canDrag: (props) => !!props.id && !props.isMainModule,
-  beginDrag: (props) => {
-    if (props.closeTree) {
-      props.closeTree();
-    }
+  canDrag: props => !!props.id && !props.isMainModule,
+  beginDrag: props => {
+    if (props.closeTree) props.closeTree();
     return {
       id: props.id,
       shortid: props.shortid,
-      directory: props.type === 'directory' || props.type === 'directory-open'
+      directory: props.type === 'directory' || props.type === 'directory-open',
     };
-  }
+  },
 };
 
 const collectSource = (connect, monitor) => ({
   connectDragSource: connect.dragSource(),
-  isDragging: monitor.isDragging()
+  isDragging: monitor.isDragging(),
 });
 
 export default DragSource('ENTRY', entrySource, collectSource)(Entry);

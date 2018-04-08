@@ -1,9 +1,3 @@
-
-declare global {
-  interface Window {
-    __isTouch: boolean;
-  }
-}
 import * as React from 'react';
 
 import CrossIcon from 'react-icons/lib/md/clear';
@@ -16,13 +10,19 @@ import Tooltip from 'common/components/Tooltip';
 import { Icon } from '../../../../elements';
 import { Container } from './elements';
 
-const handleClick = (func) => (e) => {
+declare global {
+  interface Window {
+    __isTouch: boolean;
+  }
+}
+
+const handleClick = func => e => {
   e.preventDefault();
   e.stopPropagation();
   func();
 };
 
-type Props = {
+type TEditIcons = React.SFC<{
   className?: string;
   hovering: boolean;
   onDelete?: () => void;
@@ -30,26 +30,28 @@ type Props = {
   onCreateFile?: () => void;
   onCreateDirectory?: () => void;
   active?: boolean;
-};
+  forceShow?: boolean;
+}>;
 
-const EditIcons: React.SFC<Props> = ({
+const EditIcons: TEditIcons = ({
   className,
   hovering,
   onDelete,
   onEdit,
   onCreateFile,
   onCreateDirectory,
-  active
+  active,
+  forceShow,
 }) => {
   // Phones need double click if we show elements on click, that's why we only want
   // to show these edit icons when the user clicks and hasn't activated the module
-  if (window.__isTouch && !active) {
+  if (window.__isTouch && !active && !forceShow) {
     return null;
   }
 
   return (
     <div className={className}>
-      {(hovering || (window.__isTouch && active)) && (
+      {(hovering || (window.__isTouch && active) || forceShow) && (
         <Container>
           {onEdit && (
             <Tooltip title="Edit">

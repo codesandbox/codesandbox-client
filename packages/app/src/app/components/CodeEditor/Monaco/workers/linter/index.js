@@ -30,7 +30,7 @@ const allRules = {
   'jsx-a11y/aria-role': require('eslint-plugin-jsx-a11y/lib/rules/aria-role'),
   'jsx-a11y/aria-unsupported-elements': require('eslint-plugin-jsx-a11y/lib/rules/aria-unsupported-elements'),
   'jsx-a11y/heading-has-content': require('eslint-plugin-jsx-a11y/lib/rules/heading-has-content'),
-  'jsx-a11y/href-no-hash': require('eslint-plugin-jsx-a11y/lib/rules/href-no-hash'),
+  'anchor-is-valid': require('eslint-plugin-jsx-a11y/lib/rules/anchor-is-valid'),
   'jsx-a11y/iframe-has-title': require('eslint-plugin-jsx-a11y/lib/rules/iframe-has-title'),
   'jsx-a11y/img-redundant-alt': require('eslint-plugin-jsx-a11y/lib/rules/img-redundant-alt'),
   'jsx-a11y/no-access-key': require('eslint-plugin-jsx-a11y/lib/rules/no-access-key'),

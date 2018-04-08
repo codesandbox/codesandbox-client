@@ -1,9 +1,9 @@
-
 import * as React from 'react';
 import * as moment from 'moment';
 import { Link } from 'react-router-dom';
 import { sandboxUrl } from 'common/utils/url-generator';
 import getIcon from 'common/templates/icons';
+import { Sandbox } from 'app/store/modules/profile/types';
 
 import FullHeartIcon from 'react-icons/lib/fa/heart';
 import EyeIcon from 'react-icons/lib/fa/eye';
@@ -12,17 +12,26 @@ import ForkIcon from 'react-icons/lib/go/repo-forked';
 import DeleteSandboxButton from '../DeleteSandboxButton';
 import PrivacyStatus from '../PrivacyStatus';
 
-import { Sandbox } from 'app/store/modules/profile/types';
+import {
+  HeaderTitle,
+  Table,
+  StatTitle,
+  StatBody,
+  Body,
+  SandboxRow,
+} from './elements';
 
-import { HeaderTitle, Table, StatTitle, StatBody, Body, SandboxRow } from './elements';
-
-type Props = {
+type TSandboxList = React.SFC<{
   sandboxes: Sandbox[];
   isCurrentUser: boolean;
   onDelete: (id: string) => void;
-};
+}>;
 
-export const SandboxList: React.SFC<Props> = ({ sandboxes, isCurrentUser, onDelete }) => (
+export const SandboxList: TSandboxList = ({
+  sandboxes,
+  isCurrentUser,
+  onDelete,
+}) => (
   <Table>
     <thead>
       <tr style={{ height: '3rem' }}>
@@ -44,7 +53,7 @@ export const SandboxList: React.SFC<Props> = ({ sandboxes, isCurrentUser, onDele
     </thead>
     <Body>
       {sandboxes.map((s, i) => {
-        const Icon = getIcon(s.template.name);
+        const Icon = getIcon(s.template);
         return (
           <SandboxRow index={i} key={s.id}>
             <td>
@@ -60,7 +69,9 @@ export const SandboxList: React.SFC<Props> = ({ sandboxes, isCurrentUser, onDele
             <StatBody>{s.viewCount}</StatBody>
             <StatBody>{s.forkCount}</StatBody>
             {isCurrentUser && (
-              <StatBody style={{ padding: '0.55rem 0.5rem', cursor: 'pointer' }}>
+              <StatBody
+                style={{ padding: '0.55rem 0.5rem', cursor: 'pointer' }}
+              >
                 <DeleteSandboxButton id={s.id} onDelete={onDelete} />
               </StatBody>
             )}
