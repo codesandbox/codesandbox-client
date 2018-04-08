@@ -235,7 +235,7 @@ export function setStoredSettings({ state, settingsStore }) {
 }
 
 export function setKeybindings({ state, keybindingManager }) {
-  keybindingManager.set(state.get('preferences.settings.keybindings'));
+  keybindingManager.set(state.get('preferences.settings.keybindings').toJSON());
 }
 
 export function startKeybindings({ keybindingManager }) {
