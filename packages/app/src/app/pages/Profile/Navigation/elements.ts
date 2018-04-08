@@ -5,9 +5,9 @@ import Row from 'common/components/flex/Row';
 import delayEffect from 'common/utils/animation/delay-effect';
 
 export const NavigationLink = styled<
-    {
-        border?: string;
-    } & NavLinkProps
+  {
+    border?: string;
+  } & NavLinkProps
 >(NavLink)`
   transition: 0.3s ease all;
 

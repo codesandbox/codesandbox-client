@@ -1,4 +1,3 @@
-
 import * as React from 'react';
 import { listen, dispatch } from 'codesandbox-api';
 
@@ -31,7 +30,7 @@ type State = {
 class Console extends React.Component<Props, State> {
   state = {
     messages: [],
-    scrollToBottom: true
+    scrollToBottom: true,
   };
   listener;
   list;
@@ -46,7 +45,7 @@ class Console extends React.Component<Props, State> {
     }
   }
 
-  handleMessage = (data) => {
+  handleMessage = data => {
     switch (data.type) {
       case 'console': {
         const { method, args: jsonArgs } = data;
@@ -78,7 +77,7 @@ class Console extends React.Component<Props, State> {
           if (aggregatedResults) {
             const { summaryMessage, failedMessages } = aggregatedResults;
             this.addMessage('log', [summaryMessage]);
-            failedMessages.forEach((t) => {
+            failedMessages.forEach(t => {
               this.addMessage('warn', [t]);
             });
           } else {
@@ -116,9 +115,9 @@ class Console extends React.Component<Props, State> {
         {
           type,
           logType: message,
-          arguments: args
-        }
-      ]
+          arguments: args,
+        },
+      ],
     });
   }
 
@@ -154,11 +153,13 @@ class Console extends React.Component<Props, State> {
     return (
       <Container>
         <Messages
-          innerRef={(el) => {
+          innerRef={el => {
             this.list = el;
           }}
         >
-          {this.state.messages.map((mes, i) => <Message key={i} message={mes} />)}
+          {this.state.messages.map((mes, i) => (
+            <Message key={i} message={mes} />
+          ))}
         </Messages>
         <Input evaluateConsole={this.evaluateConsole} />
       </Container>
@@ -175,7 +176,7 @@ export default {
       onClick: () => {
         dispatch({ type: 'clear-console' });
       },
-      Icon: ClearIcon
-    }
-  ]
+      Icon: ClearIcon,
+    },
+  ],
 };

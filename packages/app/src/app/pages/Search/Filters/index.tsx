@@ -19,6 +19,6 @@ const Filters: React.SFC<{}> = () => {
       <Filter title="Tags" operator="or" attributeName="tags" />
     </div>
   );
-}
+};
 
 export default Filters;

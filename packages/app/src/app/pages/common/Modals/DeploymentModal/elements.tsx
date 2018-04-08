@@ -25,21 +25,22 @@ const cubeAnimation = keyframes`
 `;
 
 export const ButtonContainer = styled<
-    {
-        deploying: boolean;
-    },
-    'div'
+  {
+    deploying: boolean;
+  },
+  'div'
 >('div')`
   margin: 2rem 4rem;
   margin-bottom: 3rem;
-  ${delayInEffect()} ${({ deploying }) => deploying && delayOutEffect(0, false)};
+  ${delayInEffect()} ${({ deploying }) =>
+    deploying && delayOutEffect(0, false)};
 `;
 
 export const DeployAnimationContainer = styled<
-    {
-        deploying: boolean;
-    },
-    'div'
+  {
+    deploying: boolean;
+  },
+  'div'
 >('div')`
   display: flex;
   justify-content: center;
@@ -60,9 +61,9 @@ export const StyledNowLogo = styled(NowLogo)`
 `;
 
 export const StyledCube = styled<
-    {
-        i: number;
-    } & CubeProps
+  {
+    i: number;
+  } & CubeProps
 >(({ i, ...rest }) => <Cube {...rest} />)`
   position: absolute;
   animation: ${cubeAnimation} 2s ease-in infinite;
@@ -77,18 +78,18 @@ export const StyledLogo = styled(OpaqueLogo)`
 `;
 
 export const DeployText = styled.div`
-    ${delayInEffect()};
-    margin-bottom: 1.5rem;
-    font-size: 1.125rem;
+  ${delayInEffect()};
+  margin-bottom: 1.5rem;
+  font-size: 1.125rem;
 `;
 
 export const DeployedLink = styled.a`
-    ${delayInEffect(0.25)};
-    font-size: 1.25rem;
+  ${delayInEffect(0.25)};
+  font-size: 1.25rem;
 `;
 
 export const DeploymentManagementNotice = styled.div`
-    ${delayInEffect(0.45)};
-    font-size: 0.75rem;
-    margin-top: 1rem;
+  ${delayInEffect(0.45)};
+  font-size: 0.75rem;
+  margin-top: 1rem;
 `;

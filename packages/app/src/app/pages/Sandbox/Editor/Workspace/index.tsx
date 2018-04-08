@@ -20,60 +20,60 @@ import Advertisement from './Advertisement';
 import { Container, ContactContainer, ItemTitle } from './elements';
 
 const idToItem = {
-    project: ProjectInfo,
-    files: Files,
-    github: GitHub,
-    deploy: Deployment,
-    config: ConfigurationFiles,
-    live: Live
+  project: ProjectInfo,
+  files: Files,
+  github: GitHub,
+  deploy: Deployment,
+  config: ConfigurationFiles,
+  live: Live,
 };
 
 const Workspace: React.SFC<WithCerebral> = ({ store }) => {
-    const sandbox = store.editor.currentSandbox;
-    const preferences = store.preferences;
+  const sandbox = store.editor.currentSandbox;
+  const preferences = store.preferences;
 
-    const currentItem = store.workspace.openedWorkspaceItem;
+  const currentItem = store.workspace.openedWorkspaceItem;
 
-    if (!currentItem) {
-        return null;
-    }
+  if (!currentItem) {
+    return null;
+  }
 
-    const Component = sandbox.owned ? idToItem[currentItem] : NotOwnedSandboxInfo;
+  const Component = sandbox.owned ? idToItem[currentItem] : NotOwnedSandboxInfo;
 
-    const item = store.workspace.items.get().find((i) => i.id === currentItem);
-    return (
-        <Container>
-            {sandbox.owned && <ItemTitle>{item.name}</ItemTitle>}
-            <div style={{ flex: 1 }}>
-                <Component />
+  const item = store.workspace.items.get().find(i => i.id === currentItem);
+  return (
+    <Container>
+      {sandbox.owned && <ItemTitle>{item.name}</ItemTitle>}
+      <div style={{ flex: 1 }}>
+        <Component />
+      </div>
+      {!preferences.settings.zenMode && (
+        <div>
+          {!store.isPatron && !sandbox.owned && <Advertisement />}
+          <ContactContainer>
+            <SocialInfo style={{ display: 'inline-block' }} />
+            <div
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                float: 'right',
+                fontSize: '.6rem',
+                height: 28,
+                verticalAlign: 'middle',
+                fontWeight: 600,
+                color: 'rgba(255, 255, 255, 0.3)',
+              }}
+              className="codesandbox-version"
+            >
+              {VERSION}
             </div>
-            {!preferences.settings.zenMode && (
-                <div>
-                    {!store.isPatron && !sandbox.owned && <Advertisement />}
-                    <ContactContainer>
-                        <SocialInfo style={{ display: 'inline-block' }} />
-                        <div
-                            style={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                float: 'right',
-                                fontSize: '.6rem',
-                                height: 28,
-                                verticalAlign: 'middle',
-                                fontWeight: 600,
-                                color: 'rgba(255, 255, 255, 0.3)'
-                            }}
-                            className="codesandbox-version"
-                        >
-                            {VERSION}
-                        </div>
-                    </ContactContainer>
-                    {/* <DowntimeNotice /> */}
-                    <ConnectionNotice />
-                </div>
-            )}
-        </Container>
-    );
+          </ContactContainer>
+          {/* <DowntimeNotice /> */}
+          <ConnectionNotice />
+        </div>
+      )}
+    </Container>
+  );
 };
 
 export default connect()(Workspace);

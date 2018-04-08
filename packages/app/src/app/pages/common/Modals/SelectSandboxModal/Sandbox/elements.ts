@@ -1,10 +1,10 @@
 import styled from 'app/styled-components';
 
 export const Button = styled<
-    {
-        active: boolean;
-    },
-    'button'
+  {
+    active: boolean;
+  },
+  'button'
 >('button')`
   display: flex;
   justify-content: space-between;
@@ -13,17 +13,19 @@ export const Button = styled<
   height: 100%;
   outline: none;
   border: none;
-  background-color: ${(props) => (props.active ? '#eee' : 'white')};
+  background-color: ${props => (props.active ? '#eee' : 'white')};
   padding: 1rem;
   color: rgba(0, 0, 0, 0.9);
   border-bottom: 1px solid #ddd;
   text-align: left;
-  ${(props) => props.active && 'font-weight: 600'};
-  cursor: ${(props) => (props.active ? 'default' : 'pointer')};
+  ${props => props.active && 'font-weight: 600'};
+  cursor: ${props => (props.active ? 'default' : 'pointer')};
 
   &:hover {
     background-color: #eee;
   }
 `;
 
-export const Date = styled.div`color: rgba(0, 0, 0, 0.6);`;
+export const Date = styled.div`
+  color: rgba(0, 0, 0, 0.6);
+`;

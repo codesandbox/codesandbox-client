@@ -15,141 +15,152 @@ import Skeleton from 'app/components/Skeleton';
 import Editor from './Editor';
 
 type ExternalProps = RouteComponentProps<{
-    id: string;
+  id: string;
 }>;
 
 type Props = ExternalProps & WithCerebral;
 
 class SandboxPage extends React.Component<Props> {
-    componentWillMount() {
-        if (window.screen.availWidth < 800) {
-            if (!document.location.search.includes('from-embed')) {
-                const addedSign = document.location.search ? '&' : '?';
-                document.location.href = document.location.href.replace('/s/', '/embed/') + addedSign + 'codemirror=1';
-            } else {
-                this.props.signals.preferences.codeMirrorForced();
-            }
-        }
-
-        this.fetchSandbox();
+  componentWillMount() {
+    if (window.screen.availWidth < 800) {
+      if (!document.location.search.includes('from-embed')) {
+        const addedSign = document.location.search ? '&' : '?';
+        document.location.href =
+          document.location.href.replace('/s/', '/embed/') +
+          addedSign +
+          'codemirror=1';
+      } else {
+        this.props.signals.preferences.codeMirrorForced();
+      }
     }
 
-    fetchSandbox = () => {
-        this.props.signals.editor.sandboxChanged({
-            id: this.props.match.params.id
-        });
-    };
+    this.fetchSandbox();
+  }
 
-    componentDidUpdate(prevProps) {
-        if (prevProps.match.params.id !== this.props.match.params.id) {
-            this.fetchSandbox();
-        }
+  fetchSandbox = () => {
+    this.props.signals.editor.sandboxChanged({
+      id: this.props.match.params.id,
+    });
+  };
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.match.params.id !== this.props.match.params.id) {
+      this.fetchSandbox();
+    }
+  }
+
+  getContent() {
+    const { store } = this.props;
+
+    if (store.editor.isLoading) {
+      return (
+        <React.Fragment>
+          <Skeleton
+            titles={[
+              {
+                content: 'Loading Sandbox',
+                delay: 0,
+              },
+              {
+                content: 'Fetching git repository...',
+                delay: 2,
+              },
+            ]}
+          />
+        </React.Fragment>
+      );
     }
 
-    getContent() {
-        const { store } = this.props;
-
-        if (store.editor.isLoading) {
-            return (
-                <React.Fragment>
-                    <Skeleton
-                        titles={[
-                            {
-                                content: 'Loading Sandbox',
-                                delay: 0
-                            },
-                            {
-                                content: 'Fetching git repository...',
-                                delay: 2
-                            }
-                        ]}
-                    />
-                </React.Fragment>
-            );
-        }
-
-        if (store.editor.notFound) {
-            return (
-                <React.Fragment>
-                    <div
-                        style={{
-                            fontWeight: 300,
-                            color: 'rgba(255, 255, 255, 0.5)',
-                            marginBottom: '1rem',
-                            fontSize: '1.5rem'
-                        }}
-                    >
-                        404 Not Found
-                    </div>
-                    <Title style={{ fontSize: '1.25rem' }}>We could not find the sandbox you{"'"}re looking for</Title>
-                    <br />
-                    <Link to="/s">Create Sandbox</Link>
-                </React.Fragment>
-            );
-        }
-
-        if (store.editor.error) {
-            return (
-                <React.Fragment>
-                    <div
-                        style={{
-                            fontWeight: 300,
-                            color: 'rgba(255, 255, 255, 0.5)',
-                            marginBottom: '1rem',
-                            fontSize: '1.5rem'
-                        }}
-                    >
-                        Something went wrong
-                    </div>
-                    <Title style={{ fontSize: '1.25rem' }}>{store.editor.error}</Title>
-                    <br />
-                    <Link to="/s">Create Sandbox</Link>
-                </React.Fragment>
-            );
-        }
-
-        return null;
+    if (store.editor.notFound) {
+      return (
+        <React.Fragment>
+          <div
+            style={{
+              fontWeight: 300,
+              color: 'rgba(255, 255, 255, 0.5)',
+              marginBottom: '1rem',
+              fontSize: '1.5rem',
+            }}
+          >
+            404 Not Found
+          </div>
+          <Title style={{ fontSize: '1.25rem' }}>
+            We could not find the sandbox you{"'"}re looking for
+          </Title>
+          <br />
+          <Link to="/s">Create Sandbox</Link>
+        </React.Fragment>
+      );
     }
 
-    render() {
-        const { store } = this.props;
-
-        const content = this.getContent();
-
-        if (content) {
-            return (
-                <Fullscreen>
-                    <Padding
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            width: '100vw',
-                            height: '100vh'
-                        }}
-                        margin={1}
-                    >
-                        <Navigation title="Sandbox Editor" />
-                        <Centered style={{ flex: 1, width: '100%', height: '100%' }} horizontal vertical>
-                            {content}
-                        </Centered>
-                    </Padding>
-                </Fullscreen>
-            );
-        }
-
-        const sandbox = store.editor.currentSandbox;
-
-        if (sandbox) {
-            document.title = `${sandbox.title || sandbox.id} - CodeSandbox`;
-        }
-
-        return (
-            <React.Fragment>
-                <Editor />
-                <QuickActions />
-            </React.Fragment>
-        );
+    if (store.editor.error) {
+      return (
+        <React.Fragment>
+          <div
+            style={{
+              fontWeight: 300,
+              color: 'rgba(255, 255, 255, 0.5)',
+              marginBottom: '1rem',
+              fontSize: '1.5rem',
+            }}
+          >
+            Something went wrong
+          </div>
+          <Title style={{ fontSize: '1.25rem' }}>{store.editor.error}</Title>
+          <br />
+          <Link to="/s">Create Sandbox</Link>
+        </React.Fragment>
+      );
     }
+
+    return null;
+  }
+
+  render() {
+    const { store } = this.props;
+
+    const content = this.getContent();
+
+    if (content) {
+      return (
+        <Fullscreen>
+          <Padding
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              width: '100vw',
+              height: '100vh',
+            }}
+            margin={1}
+          >
+            <Navigation title="Sandbox Editor" />
+            <Centered
+              style={{ flex: 1, width: '100%', height: '100%' }}
+              horizontal
+              vertical
+            >
+              {content}
+            </Centered>
+          </Padding>
+        </Fullscreen>
+      );
+    }
+
+    const sandbox = store.editor.currentSandbox;
+
+    if (sandbox) {
+      document.title = `${sandbox.title || sandbox.id} - CodeSandbox`;
+    }
+
+    return (
+      <React.Fragment>
+        <Editor />
+        <QuickActions />
+      </React.Fragment>
+    );
+  }
 }
 
-export default DragDropContext(HTML5Backend)(connect<ExternalProps>()(SandboxPage));
+export default DragDropContext(HTML5Backend)(
+  connect<ExternalProps>()(SandboxPage)
+);

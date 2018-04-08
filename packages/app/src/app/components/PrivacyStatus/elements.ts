@@ -9,6 +9,12 @@ const iconStyles = css`
   margin-bottom: 0.2rem;
 `;
 
-export const StyledUnlisted = styled(Unlisted)`${iconStyles}`;
-export const StyledPrivate = styled(Private)`${iconStyles}`;
-export const Icon = styled(Question)`${iconStyles}`;
+export const StyledUnlisted = styled(Unlisted)`
+  ${iconStyles};
+`;
+export const StyledPrivate = styled(Private)`
+  ${iconStyles};
+`;
+export const Icon = styled(Question)`
+  ${iconStyles};
+`;

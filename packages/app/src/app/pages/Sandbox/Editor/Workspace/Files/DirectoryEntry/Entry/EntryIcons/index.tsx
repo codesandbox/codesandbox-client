@@ -29,7 +29,9 @@ const EntryIcon: React.SFC<Props> = ({
   height = 16,
   error,
 }) => (
-    <div style={{ display: 'inline-block', verticalAlign: 'middle' }}>{getIcon(type, error, width, height)}</div>
-  );
+  <div style={{ display: 'inline-block', verticalAlign: 'middle' }}>
+    {getIcon(type, error, width, height)}
+  </div>
+);
 
 export default EntryIcon;

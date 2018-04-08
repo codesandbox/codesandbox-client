@@ -1,27 +1,32 @@
 import * as React from 'react';
-import { ConnectDragSource, ConnectDropTarget, DragSource, DropTarget } from 'react-dnd';
-import { Module } from 'app/store/modules/editor/types'
+import {
+  ConnectDragSource,
+  ConnectDropTarget,
+  DragSource,
+  DropTarget,
+} from 'react-dnd';
+import { Module } from 'app/store/modules/editor/types';
 
 import Tab from '../Tab';
 
 type Props = {
-  setCurrentModule: (id: string) => void
-  module: Module
-  connectDragSource: ConnectDragSource,
-  connectDropTarget: ConnectDropTarget
-  isOver: boolean
-  active: boolean
-  tabCount: number
-  isDragging: boolean
-  dirty: boolean
-  dirName: string
-  position: number
-  closeTab: () => void
-  innerRef: (node: HTMLElement) => void
-  hasError: boolean
-  isNotSynced: boolean
-  markNotDirty: () => void
-}
+  setCurrentModule: (id: string) => void;
+  module: Module;
+  connectDragSource: ConnectDragSource;
+  connectDropTarget: ConnectDropTarget;
+  isOver: boolean;
+  active: boolean;
+  tabCount: number;
+  isDragging: boolean;
+  dirty: boolean;
+  dirName: string;
+  position: number;
+  closeTab: () => void;
+  innerRef: (node: HTMLElement) => void;
+  hasError: boolean;
+  isNotSynced: boolean;
+  markNotDirty: () => void;
+};
 
 class TabContainer extends React.Component<Props> {
   setCurrentModule = () => {

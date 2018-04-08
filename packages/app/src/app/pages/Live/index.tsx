@@ -19,155 +19,164 @@ import Editor from '../Sandbox/Editor';
 import BlinkingDot from './BlinkingDot';
 
 type Props = WithCerebral &
-    RouteComponentProps<{
-        id: string;
-    }>;
+  RouteComponentProps<{
+    id: string;
+  }>;
 
 class LivePage extends React.Component<Props> {
-    loggedIn = this.props.store.hasLogIn;
+  loggedIn = this.props.store.hasLogIn;
 
-    componentWillMount() {
-        this.initializeLive();
+  componentWillMount() {
+    this.initializeLive();
+  }
+
+  initializeLive = () => {
+    if (this.props.store.hasLogIn) {
+      this.loggedIn = true;
+      this.props.signals.live.roomJoined({
+        roomId: this.props.match.params.id,
+      });
+    }
+  };
+
+  componentDidUpdate(prevProps) {
+    if (
+      prevProps.match.params.id !== this.props.match.params.id ||
+      (this.props.store.hasLogIn && !this.loggedIn)
+    ) {
+      this.initializeLive();
+    }
+  }
+
+  getContent = () => {
+    const { store } = this.props;
+
+    if (!store.hasLogIn) {
+      return (
+        <React.Fragment>
+          <div
+            style={{
+              fontWeight: 300,
+              color: 'rgba(255, 255, 255, 0.5)',
+              marginBottom: '1rem',
+              fontSize: '1.5rem',
+            }}
+          >
+            Sign in required
+          </div>
+          <Title style={{ fontSize: '1.25rem' }}>
+            You need to sign in to join this session
+          </Title>
+          <br />
+          <div>
+            <SignInButton />
+          </div>
+        </React.Fragment>
+      );
     }
 
-    initializeLive = () => {
-        if (this.props.store.hasLogIn) {
-            this.loggedIn = true;
-            this.props.signals.live.roomJoined({
-                roomId: this.props.match.params.id
-            });
-        }
-    };
-
-    componentDidUpdate(prevProps) {
-        if (prevProps.match.params.id !== this.props.match.params.id || (this.props.store.hasLogIn && !this.loggedIn)) {
-            this.initializeLive();
-        }
-    }
-
-    getContent = () => {
-        const { store } = this.props;
-
-        if (!store.hasLogIn) {
-            return (
-                <React.Fragment>
-                    <div
-                        style={{
-                            fontWeight: 300,
-                            color: 'rgba(255, 255, 255, 0.5)',
-                            marginBottom: '1rem',
-                            fontSize: '1.5rem'
-                        }}
-                    >
-                        Sign in required
-                    </div>
-                    <Title style={{ fontSize: '1.25rem' }}>You need to sign in to join this session</Title>
-                    <br />
-                    <div>
-                        <SignInButton />
-                    </div>
-                </React.Fragment>
-            );
-        }
-
-        if (store.live.error) {
-            if (store.live.error === 'room not found') {
-                return (
-                    <React.Fragment>
-                        <div
-                            style={{
-                                fontWeight: 300,
-                                color: 'rgba(255, 255, 255, 0.5)',
-                                marginBottom: '1rem',
-                                fontSize: '1.5rem'
-                            }}
-                        >
-                            Something went wrong
-                        </div>
-                        <Title style={{ fontSize: '1.25rem' }}>
-                            It seems like this session doesn{"'"}t exist or has been closed
-                        </Title>
-                        <br />
-                        <Link to="/s">Create Sandbox</Link>
-                    </React.Fragment>
-                );
-            }
-
-            return (
-                <React.Fragment>
-                    <Title>An error occured while connecting to the live session:</Title>
-                    <SubTitle>{store.live.error}</SubTitle>
-                    <br />
-                    <br />
-                    <Link to="/s">Create Sandbox</Link>
-                </React.Fragment>
-            );
-        }
-
-        if (store.live.isLoading || !store.editor.currentSandbox) {
-            return (
-                <React.Fragment>
-                    <Skeleton
-                        titles={[
-                            {
-                                content: <BlinkingDot />,
-                                delay: 0
-                            },
-                            {
-                                content: 'Joining Live Session...',
-                                delay: 0.5
-                            }
-                        ]}
-                    />
-                </React.Fragment>
-            );
-        }
-
-        return null;
-    };
-
-    render() {
-        const { store } = this.props;
-
-        // tslint:disable-next-line
-        store.user; // Force observer call
-
-        const content = this.getContent();
-
-        if (content) {
-            return (
-                <Fullscreen>
-                    <Padding
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            width: '100vw',
-                            height: '100vh'
-                        }}
-                        margin={1}
-                    >
-                        <Navigation title="Live Session" />
-                        <Centered style={{ flex: 1, width: '100%', height: '100%' }} horizontal vertical>
-                            {content}
-                        </Centered>
-                    </Padding>
-                </Fullscreen>
-            );
-        }
-
-        const sandbox = store.editor.currentSandbox;
-
-        if (sandbox) {
-            document.title = `${sandbox.title || sandbox.id} - CodeSandbox`;
-        }
-
+    if (store.live.error) {
+      if (store.live.error === 'room not found') {
         return (
-            <React.Fragment>
-                <Editor />
-                <QuickActions />
-            </React.Fragment>
+          <React.Fragment>
+            <div
+              style={{
+                fontWeight: 300,
+                color: 'rgba(255, 255, 255, 0.5)',
+                marginBottom: '1rem',
+                fontSize: '1.5rem',
+              }}
+            >
+              Something went wrong
+            </div>
+            <Title style={{ fontSize: '1.25rem' }}>
+              It seems like this session doesn{"'"}t exist or has been closed
+            </Title>
+            <br />
+            <Link to="/s">Create Sandbox</Link>
+          </React.Fragment>
         );
+      }
+
+      return (
+        <React.Fragment>
+          <Title>An error occured while connecting to the live session:</Title>
+          <SubTitle>{store.live.error}</SubTitle>
+          <br />
+          <br />
+          <Link to="/s">Create Sandbox</Link>
+        </React.Fragment>
+      );
     }
+
+    if (store.live.isLoading || !store.editor.currentSandbox) {
+      return (
+        <React.Fragment>
+          <Skeleton
+            titles={[
+              {
+                content: <BlinkingDot />,
+                delay: 0,
+              },
+              {
+                content: 'Joining Live Session...',
+                delay: 0.5,
+              },
+            ]}
+          />
+        </React.Fragment>
+      );
+    }
+
+    return null;
+  };
+
+  render() {
+    const { store } = this.props;
+
+    // tslint:disable-next-line
+    store.user; // Force observer call
+
+    const content = this.getContent();
+
+    if (content) {
+      return (
+        <Fullscreen>
+          <Padding
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              width: '100vw',
+              height: '100vh',
+            }}
+            margin={1}
+          >
+            <Navigation title="Live Session" />
+            <Centered
+              style={{ flex: 1, width: '100%', height: '100%' }}
+              horizontal
+              vertical
+            >
+              {content}
+            </Centered>
+          </Padding>
+        </Fullscreen>
+      );
+    }
+
+    const sandbox = store.editor.currentSandbox;
+
+    if (sandbox) {
+      document.title = `${sandbox.title || sandbox.id} - CodeSandbox`;
+    }
+
+    return (
+      <React.Fragment>
+        <Editor />
+        <QuickActions />
+      </React.Fragment>
+    );
+  }
 }
 
 export default connect()(DragDropContext(HTML5Backend)(LivePage));

@@ -6,20 +6,25 @@ const fadeInAnimation = keyframes`
 `;
 
 const fontFamilies = (...families) =>
-    families.filter(Boolean).map((family) => (family.indexOf(' ') !== -1 ? JSON.stringify(family) : family)).join(', ');
+  families
+    .filter(Boolean)
+    .map(
+      family => (family.indexOf(' ') !== -1 ? JSON.stringify(family) : family)
+    )
+    .join(', ');
 
 export const Container = styled.div`
-    width: 100%;
-    height: 100%;
-    overflow: auto;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
 `;
 
 export const CodeContainer = styled<
-    {
-        fontFamily: string;
-        lineHeight: number;
-    },
-    'div'
+  {
+    fontFamily: string;
+    lineHeight: number;
+  },
+  'div'
 >('div')`
   position: relative;
   overflow: auto;
@@ -27,9 +32,10 @@ export const CodeContainer = styled<
   height: 100%;
   flex: 1 1 auto;
   .CodeMirror {
-    font-family: ${(props) => fontFamilies(props.fontFamily, 'Menlo', 'Source Code Pro', 'monospace')};
-    line-height: ${(props) => props.lineHeight};
-    background: ${(props) => props.theme.background2()};
+    font-family: ${props =>
+      fontFamilies(props.fontFamily, 'Menlo', 'Source Code Pro', 'monospace')};
+    line-height: ${props => props.lineHeight};
+    background: ${props => props.theme.background2()};
     color: #e0e0e0;
     height: 100%;
     font-weight: 500;
@@ -48,7 +54,7 @@ export const CodeContainer = styled<
     background: #65737e;
   }
   .CodeMirror-gutters {
-    background: ${(props) => props.theme.background2()};
+    background: ${props => props.theme.background2()};
     border-right: 0px;
   }
   .CodeMirror-guttermarker {
@@ -79,17 +85,17 @@ export const CodeContainer = styled<
     color: #aa759f;
   }
   span.cm-keyword {
-    color: ${(props) => props.theme.secondary()};
+    color: ${props => props.theme.secondary()};
   }
   span.cm-string {
     color: #99c794;
   }
 
   span.cm-variable {
-    color: ${(props) => props.theme.primary.darken(0.1)()};
+    color: ${props => props.theme.primary.darken(0.1)()};
   }
   span.cm-variable-2 {
-    color: ${(props) => props.theme.secondary()};
+    color: ${props => props.theme.secondary()};
   }
   span.cm-def {
     color: #fac863;

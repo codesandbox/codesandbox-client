@@ -2,8 +2,8 @@ import styled from 'app/styled-components';
 import { Link } from 'react-router-dom';
 import Tooltip from 'common/components/Tooltip';
 
-const styles = (props) =>
-    `
+const styles = props =>
+  `
   display: flex !important;
   transition: 0.3s ease all;
   flex-direction: row;
@@ -17,7 +17,8 @@ const styles = (props) =>
   box-sizing: inherit;
   border-bottom: 2px solid transparent;
   z-index: 1;
-  ${props.highlight
+  ${
+    props.highlight
       ? `
       background-color: ${props.theme.secondary.darken(0.1)()};
       color: white;
@@ -31,27 +32,36 @@ const styles = (props) =>
 
     &:hover {
       color: rgba(255,255,255, 1);
-      border-color: ${props.hideBottomHighlight ? 'transparent' : props.theme.secondary()}
+      border-color: ${
+        props.hideBottomHighlight ? 'transparent' : props.theme.secondary()
+      }
     }
-  `}
+  `
+  }
 `;
 
-export const Title = styled.span`padding-left: 0.5rem;`;
+export const Title = styled.span`
+  padding-left: 0.5rem;
+`;
 
-export const Action = styled.div`${styles};`;
+export const Action = styled.div`
+  ${styles};
+`;
 
 export const ActionLink = styled(Link)`
   ${styles} text-decoration: none;
 `;
 
-export const ActionA = styled.a`${styles} text-decoration: none;`;
+export const ActionA = styled.a`
+  ${styles} text-decoration: none;
+`;
 
 export const ActionTooltip = styled<{
-    disabledAction?: boolean;
-    title: string;
-    hideOnClick?: boolean;
+  disabledAction?: boolean;
+  title: string;
+  hideOnClick?: boolean;
 }>(Tooltip)`
-  ${styles} ${(props) =>
+  ${styles} ${props =>
     props.disabledAction &&
     `
     color: rgba(255,255,255,0.3);
@@ -64,8 +74,8 @@ export const ActionTooltip = styled<{
 `;
 
 export const IconContainer = styled.div`
-    display: flex;
-    align-items: center;
-    height: 100%;
-    padding: 0 0.75rem;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 0.75rem;
 `;

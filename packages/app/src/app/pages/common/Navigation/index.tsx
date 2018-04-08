@@ -16,51 +16,52 @@ import UserMenu from '../UserMenu';
 import { LogoWithBorder, Border, Title, Actions, Action } from './elements';
 
 type ExternalProps = {
-    title?: string;
+  title?: string;
 };
 
 type Props = ExternalProps & WithCerebral;
 
 const Navigation: React.SFC<Props> = ({ signals, store, title }) => {
-    const { user, isPatron } = store;
+  const { user, isPatron } = store;
 
-    return (
-        <Row justifyContent="space-between">
-            <Row>
-                <a href="/">
-                    <LogoWithBorder height={40} width={40} />
-                </a>
-                <Border />
-                <Title>{title}</Title>
-            </Row>
-            <Row>
-                <Actions>
-                    <Action>
-                        <HeaderSearchBar />
-                    </Action>
-                    {!isPatron && (
-                        <Action>
-                            <Tooltip position="bottom" title="Support CodeSandbox">
-                                <Link to={patronUrl()}>
-                                    <PatronBadge width={40} height={40} />
-                                </Link>
-                            </Tooltip>
-                        </Action>
-                    )}
-                    <Action
-                        onClick={() =>
-                            signals.modalOpened({
-                                modal: 'newSandbox'
-                            })}
-                    >
-                        <Tooltip position="bottom" title="New Sandbox">
-                            <PlusIcon height={35} />
-                        </Tooltip>
-                    </Action>
-                </Actions>
-                {user ? <UserMenu /> : <SignInButton />}
-            </Row>
-        </Row>
-    );
+  return (
+    <Row justifyContent="space-between">
+      <Row>
+        <a href="/">
+          <LogoWithBorder height={40} width={40} />
+        </a>
+        <Border />
+        <Title>{title}</Title>
+      </Row>
+      <Row>
+        <Actions>
+          <Action>
+            <HeaderSearchBar />
+          </Action>
+          {!isPatron && (
+            <Action>
+              <Tooltip position="bottom" title="Support CodeSandbox">
+                <Link to={patronUrl()}>
+                  <PatronBadge width={40} height={40} />
+                </Link>
+              </Tooltip>
+            </Action>
+          )}
+          <Action
+            onClick={() =>
+              signals.modalOpened({
+                modal: 'newSandbox',
+              })
+            }
+          >
+            <Tooltip position="bottom" title="New Sandbox">
+              <PlusIcon height={35} />
+            </Tooltip>
+          </Action>
+        </Actions>
+        {user ? <UserMenu /> : <SignInButton />}
+      </Row>
+    </Row>
+  );
 };
 export default connect<ExternalProps>()(Navigation);

@@ -1,10 +1,10 @@
 import styled from 'app/styled-components';
 
 export const InputContainer = styled<
-    {
-        errorMessage?: string;
-    },
-    'div'
+  {
+    errorMessage?: string;
+  },
+  'div'
 >('div')`
   display: inline-block;
   overflow: auto;
@@ -14,14 +14,17 @@ export const InputContainer = styled<
     position: absolute;
     top: 0.1rem;
     bottom: 0.1rem;
-    border: 1px solid ${(props) => props.theme.primary};
+    border: 1px solid ${props => props.theme.primary};
     outline: none;
-    background-color: ${(props) =>
-        props.errorMessage ? props.theme.redBackground.clearer(0.5) : 'rgba(0, 0, 0, 0.2)'};
+    background-color: ${props =>
+      props.errorMessage
+        ? props.theme.redBackground.clearer(0.5)
+        : 'rgba(0, 0, 0, 0.2)'};
     margin: 0.2rem;
     padding-left: 0.25rem;
     margin-left: 0.25rem;
-    color: ${(props) => (props.errorMessage ? props.theme.red : props.theme.white)};
+    color: ${props =>
+      props.errorMessage ? props.theme.red : props.theme.white};
 
     &:focus {
       border: none;

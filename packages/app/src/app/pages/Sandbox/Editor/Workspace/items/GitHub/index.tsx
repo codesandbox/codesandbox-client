@@ -7,23 +7,26 @@ import CreateRepo from '../../CreateRepo';
 import { Description } from '../../elements';
 
 const GitHub: React.SFC<WithCerebral> = ({ store }) => {
-    const sandbox = store.editor.currentSandbox;
+  const sandbox = store.editor.currentSandbox;
 
-    return store.user.integrations.github ? sandbox.originalGit ? ( // eslint-disable-line
-        <Git />
+  return store.user.integrations.github ? (
+    sandbox.originalGit ? ( // eslint-disable-line
+      <Git />
     ) : (
-        <CreateRepo />
-    ) : (
-        <div>
-            <Description style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
-                You can create commits and open pull requests if you add GitHub to your integrations.
-            </Description>
+      <CreateRepo />
+    )
+  ) : (
+    <div>
+      <Description style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+        You can create commits and open pull requests if you add GitHub to your
+        integrations.
+      </Description>
 
-            <div style={{ margin: '1rem' }}>
-                <GithubIntegration small />
-            </div>
-        </div>
-    );
+      <div style={{ margin: '1rem' }}>
+        <GithubIntegration small />
+      </div>
+    </div>
+  );
 };
 
 export default connect()(GitHub);

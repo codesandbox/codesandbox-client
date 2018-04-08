@@ -5,16 +5,21 @@ import Stat from 'app/components/Stat';
 import Badges from './Badges';
 import { Container, Stats } from './elements';
 
-import { Badge } from 'app/store/modules/profile/types'
+import { Badge } from 'app/store/modules/profile/types';
 
 type Props = {
-  viewCount: number
-  likeCount: number
-  forkCount: number
-  badges: Badge[]
-}
+  viewCount: number;
+  likeCount: number;
+  forkCount: number;
+  badges: Badge[];
+};
 
-const StatsComponent: React.SFC<Props> = ({ viewCount, likeCount, forkCount, badges }) => {
+const StatsComponent: React.SFC<Props> = ({
+  viewCount,
+  likeCount,
+  forkCount,
+  badges,
+}) => {
   return (
     <Container>
       <Badges badges={badges} />
@@ -26,6 +31,6 @@ const StatsComponent: React.SFC<Props> = ({ viewCount, likeCount, forkCount, bad
       </Stats>
     </Container>
   );
-}
+};
 
 export default StatsComponent;

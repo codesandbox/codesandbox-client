@@ -18,6 +18,6 @@ const Results: React.SFC<{}> = () => {
       </Centered>
     </Container>
   );
-}
+};
 
 export default Results;

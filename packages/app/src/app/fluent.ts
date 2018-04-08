@@ -1,5 +1,10 @@
 import * as React from 'react';
-import { IContext, IBranchContext, SequenceFactory, SequenceWithPropsFactory } from '@cerebral/fluent';
+import {
+  IContext,
+  IBranchContext,
+  SequenceFactory,
+  SequenceWithPropsFactory,
+} from '@cerebral/fluent';
 import { inject, observer } from 'mobx-react';
 import { State as StoreState } from './store/types';
 import { State as PatronState } from './store/modules/patron/types';
@@ -12,36 +17,39 @@ import { State as DeploymentState } from './store/modules/deployment/types';
 import { State as LiveState } from './store/modules/live/types';
 
 export type State = StoreState & {
-    patron: PatronState;
-    profile: ProfileState;
-    editor: EditorState;
-    preferences: PreferencesState;
-    workspace: WorkspaceState;
-    git: GitState;
-    deployment: DeploymentState;
-    live: LiveState;
+  patron: PatronState;
+  profile: ProfileState;
+  editor: EditorState;
+  preferences: PreferencesState;
+  workspace: WorkspaceState;
+  git: GitState;
+  deployment: DeploymentState;
+  live: LiveState;
 };
 
 // Create an interface where you compose your providers together
 interface Providers {
-    state: State;
+  state: State;
 }
 
 // Create a type used with your sequences and actions
 export type Context<Props = {}> = IContext<Props> & Providers;
 
 // This type is used when you define actions that returns a path
-export type BranchContext<Paths, Props = {}> = IBranchContext<Paths, Props> & Providers;
+export type BranchContext<Paths, Props = {}> = IBranchContext<Paths, Props> &
+  Providers;
 
 // This function is used to connect components to Cerebral
 export type WithCerebral = {
-    store: State;
-    signals: any;
+  store: State;
+  signals: any;
 };
 
 export const connect = <Props>() => {
-    return (Component: React.ComponentType<Props & WithCerebral>): React.ComponentType<Props> =>
-        inject('store', 'signals')(observer(Component)) as any;
+  return (
+    Component: React.ComponentType<Props & WithCerebral>
+  ): React.ComponentType<Props> =>
+    inject('store', 'signals')(observer(Component)) as any;
 };
 
 // This function is used to define sequences

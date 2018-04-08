@@ -2,9 +2,12 @@ import { State as RootState } from 'app/fluent';
 import { State } from './types';
 
 export function isProfileCurrentUser(state: State, root: RootState) {
-    return root.user && root.user.id === state.currentProfileId;
+  return root.user && root.user.id === state.currentProfileId;
 }
 
 export function showcasedSandbox(state: State, root: RootState) {
-    return state.current.showcasedSandboxShortid && root.editor.sandboxes.get(state.current.showcasedSandboxShortid);
+  return (
+    state.current.showcasedSandboxShortid &&
+    root.editor.sandboxes.get(state.current.showcasedSandboxShortid)
+  );
 }

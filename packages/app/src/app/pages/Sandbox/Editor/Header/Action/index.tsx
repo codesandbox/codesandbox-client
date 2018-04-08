@@ -12,17 +12,17 @@ import {
 } from './elements';
 
 type Props = {
-  onClick?: () => void
-  href?: string
-  Icon: React.StatelessComponent
-  title?: string
-  tooltip?: string
-  placeholder?: string
-  moreInfo?: string
-  a?: string
-  iconProps?: {}
-  iconContainerProps?: {}
-}
+  onClick?: () => void;
+  href?: string;
+  Icon: React.StatelessComponent;
+  title?: string;
+  tooltip?: string;
+  placeholder?: string;
+  moreInfo?: string;
+  a?: string;
+  iconProps?: {};
+  iconContainerProps?: {};
+};
 
 const ActionComponent: React.SFC<Props> = ({
   onClick,
@@ -48,9 +48,7 @@ const ActionComponent: React.SFC<Props> = ({
       >
         <IconContainer onClick={onClick} {...iconContainerProps}>
           <Icon {...iconProps} />
-          {title !== undefined && (
-            <Title>{title}</Title>
-          )}
+          {title !== undefined && <Title>{title}</Title>}
           {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
         </IconContainer>
         {children}
@@ -62,9 +60,7 @@ const ActionComponent: React.SFC<Props> = ({
       <Action {...props}>
         <IconContainer onClick={onClick} {...iconContainerProps}>
           <Icon {...iconProps} />
-          {title !== undefined && (
-            <Title>{title}</Title>
-          )}
+          {title !== undefined && <Title>{title}</Title>}
           {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
         </IconContainer>
         {children}
@@ -78,9 +74,7 @@ const ActionComponent: React.SFC<Props> = ({
         <ActionTooltip title={placeholder || tooltip}>
           <IconContainer {...iconContainerProps}>
             <Icon {...iconProps} />
-            {title !== undefined && (
-              <Title>{title}</Title>
-            )}
+            {title !== undefined && <Title>{title}</Title>}
             {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
           </IconContainer>
         </ActionTooltip>
@@ -95,9 +89,7 @@ const ActionComponent: React.SFC<Props> = ({
         <ActionTooltip title={placeholder || tooltip}>
           <IconContainer>
             <Icon {...iconProps} />
-            {title !== undefined && (
-              <Title>{title}</Title>
-            )}
+            {title !== undefined && <Title>{title}</Title>}
             {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
           </IconContainer>
         </ActionTooltip>
@@ -110,14 +102,12 @@ const ActionComponent: React.SFC<Props> = ({
     <ActionLink to={href} {...props}>
       <IconContainer {...iconContainerProps}>
         <Icon {...iconProps} />
-        {title !== undefined && (
-          <Title>{title}</Title>
-        )}
+        {title !== undefined && <Title>{title}</Title>}
         {moreInfo && <MoreInfoIcon style={{ fontSize: '1.1rem' }} />}
       </IconContainer>
       {children}
     </ActionLink>
   );
-}
+};
 
 export default ActionComponent;

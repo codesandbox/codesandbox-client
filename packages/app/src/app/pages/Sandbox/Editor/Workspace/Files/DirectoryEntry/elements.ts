@@ -1,12 +1,14 @@
 import styled from 'app/styled-components';
 
-export const EntryContainer = styled.div`position: relative;`;
+export const EntryContainer = styled.div`
+  position: relative;
+`;
 
 export const Overlay = styled<
-    {
-        isOver: boolean;
-    },
-    'div'
+  {
+    isOver: boolean;
+  },
+  'div'
 >('div')`
   position: absolute;
   top: 0;
@@ -14,15 +16,15 @@ export const Overlay = styled<
   left: 0;
   right: 0;
   background-color: rgba(0, 0, 0, 0.3);
-  display: ${(props) => (props.isOver ? 'block' : 'none')};
+  display: ${props => (props.isOver ? 'block' : 'none')};
 `;
 
 export const Opener = styled<
-    {
-        open: boolean;
-    },
-    'div'
+  {
+    open: boolean;
+  },
+  'div'
 >('div')`
-  height: ${(props) => (props.open ? '100%' : '0px')};
+  height: ${props => (props.open ? '100%' : '0px')};
   overflow: hidden;
 `;

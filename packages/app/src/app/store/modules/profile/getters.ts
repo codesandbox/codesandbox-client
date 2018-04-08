@@ -1,4 +1,4 @@
-import { State } from './types'
+import { State } from './types';
 
 export function current(state: State) {
   return state.profiles.get(state.currentProfileId);

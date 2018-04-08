@@ -6,13 +6,13 @@ import ForkIcon from 'react-icons/lib/go/repo-forked';
 import LikeHeart from 'app/pages/common/LikeHeart';
 import Stat from './Stat';
 
-import { Sandbox } from 'app/store/modules/editor/types'
+import { Sandbox } from 'app/store/modules/editor/types';
 
 import { Stats } from './elements';
 
 type Props = {
-  sandbox: Sandbox
-}
+  sandbox: Sandbox;
+};
 
 const StatsComponent: React.SFC<Props> = ({ sandbox }) => {
   return (
@@ -25,6 +25,6 @@ const StatsComponent: React.SFC<Props> = ({ sandbox }) => {
       <Stat Icon={<ForkIcon />} count={sandbox.forkCount} />
     </Stats>
   );
-}
+};
 
 export default observer(StatsComponent);

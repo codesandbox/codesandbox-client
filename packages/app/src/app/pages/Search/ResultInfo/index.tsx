@@ -12,6 +12,6 @@ const ResultInfo: React.SFC<{}> = () => {
       </ClearAllContainer>
     </div>
   );
-}
+};
 
 export default ResultInfo;

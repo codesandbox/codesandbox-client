@@ -8,94 +8,111 @@ import SubTitle from 'app/components/SubTitle';
 import MaxWidth from 'common/components/flex/MaxWidth';
 import Margin from 'common/components/spacing/Margin';
 import Button from 'app/components/Button';
-import { gitHubToSandboxUrl, protocolAndHost, gitHubRepoPattern } from 'common/utils/url-generator';
+import {
+  gitHubToSandboxUrl,
+  protocolAndHost,
+  gitHubRepoPattern,
+} from 'common/utils/url-generator';
 
-import { Container, Content, Label, Description, StyledInput, ErrorMessage } from './elements';
+import {
+  Container,
+  Content,
+  Label,
+  Description,
+  StyledInput,
+  ErrorMessage,
+} from './elements';
 
-const getFullGitHubUrl = (url) => `${protocolAndHost()}${gitHubToSandboxUrl(url)}`;
+const getFullGitHubUrl = url =>
+  `${protocolAndHost()}${gitHubToSandboxUrl(url)}`;
 
 type State = {
-    url: string;
-    transformedUrl: string;
-    error: string;
+  url: string;
+  transformedUrl: string;
+  error: string;
 };
 
 class GitHub extends React.PureComponent<WithCerebral, State> {
-    state: State = {
-        url: '',
+  state: State = {
+    url: '',
+    transformedUrl: '',
+    error: null,
+  };
+
+  componentDidMount() {
+    this.props.signals.githubPageMounted();
+  }
+
+  updateUrl = e => {
+    const url = e.target.value;
+
+    if (!url) {
+      this.setState({
+        url,
+        error: null,
         transformedUrl: '',
-        error: null
-    };
-
-    componentDidMount() {
-        this.props.signals.githubPageMounted();
+      });
+    } else if (!gitHubRepoPattern.test(url)) {
+      this.setState({
+        url,
+        error: 'The URL provided is not valid.',
+        transformedUrl: '',
+      });
+    } else {
+      this.setState({
+        url: e.target.value,
+        transformedUrl: getFullGitHubUrl(url.trim()),
+        error: null,
+      });
     }
+  };
 
-    updateUrl = (e) => {
-        const url = e.target.value;
+  render() {
+    const { url, transformedUrl, error } = this.state;
+    return (
+      <MaxWidth>
+        <Margin vertical={1.5} horizontal={1.5}>
+          <Container>
+            <Navigation title="GitHub Import" />
 
-        if (!url) {
-            this.setState({
-                url,
-                error: null,
-                transformedUrl: ''
-            });
-        } else if (!gitHubRepoPattern.test(url)) {
-            this.setState({
-                url,
-                error: 'The URL provided is not valid.',
-                transformedUrl: ''
-            });
-        } else {
-            this.setState({
-                url: e.target.value,
-                transformedUrl: getFullGitHubUrl(url.trim()),
-                error: null
-            });
-        }
-    };
+            <Content vertical horizontal>
+              <Description>
+                <Title>Import from GitHub</Title>
+                <SubTitle>
+                  Enter the URL to your GitHub repository to generate a URL to
+                  your sandbox. The sandbox will stay in sync with your
+                  repository.
+                </SubTitle>
+              </Description>
 
-    render() {
-        const { url, transformedUrl, error } = this.state;
-        return (
-            <MaxWidth>
-                <Margin vertical={1.5} horizontal={1.5}>
-                    <Container>
-                        <Navigation title="GitHub Import" />
+              <Label htmlFor="githuburl">
+                URL to GitHub Repository (supports branches and paths too)
+              </Label>
+              <StyledInput
+                name="githuburl"
+                value={url}
+                onChange={this.updateUrl}
+                placeholder="Insert GitHub URL..."
+              />
 
-                        <Content vertical horizontal>
-                            <Description>
-                                <Title>Import from GitHub</Title>
-                                <SubTitle>
-                                    Enter the URL to your GitHub repository to generate a URL to your sandbox. The
-                                    sandbox will stay in sync with your repository.
-                                </SubTitle>
-                            </Description>
+              {error !== null && <ErrorMessage>{error}</ErrorMessage>}
 
-                            <Label htmlFor="githuburl">
-                                URL to GitHub Repository (supports branches and paths too)
-                            </Label>
-                            <StyledInput
-                                name="githuburl"
-                                value={url}
-                                onChange={this.updateUrl}
-                                placeholder="Insert GitHub URL..."
-                            />
+              <Label htmlFor="sandboxurl">Converted Sandbox URL</Label>
+              <StyledInput
+                name="sandboxurl"
+                value={transformedUrl}
+                placeholder="The Sandbox URL"
+              />
 
-                            {error !== null && <ErrorMessage>{error}</ErrorMessage>}
-
-                            <Label htmlFor="sandboxurl">Converted Sandbox URL</Label>
-                            <StyledInput name="sandboxurl" value={transformedUrl} placeholder="The Sandbox URL" />
-
-                            <Button disabled={!transformedUrl} to={gitHubToSandboxUrl(url)}>
-                                Open Sandbox
-                            </Button>
-                        </Content>
-                    </Container>
-                </Margin>
-            </MaxWidth>
-        );
-    }
+              <Button disabled={!transformedUrl} to={gitHubToSandboxUrl(url)}>
+                Open Sandbox
+              </Button>
+            </Content>
+          </Container>
+        </Margin>
+      </MaxWidth>
+    );
+  }
 }
 
 export default connect()(GitHub);

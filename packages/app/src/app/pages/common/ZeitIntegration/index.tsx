@@ -5,25 +5,25 @@ import ZeitLogo from 'app/components/ZeitLogo';
 import Integration from 'app/components/Integration';
 
 type ExternalProps = {
-    small?: boolean;
+  small?: boolean;
 };
 
 type Props = ExternalProps & WithCerebral;
 
 const ZeitIntegration: React.SFC<Props> = ({ store, signals, small }) => {
-    return (
-        <Integration
-            name="ZEIT"
-            small={small}
-            color="black"
-            description="Deployments"
-            Icon={ZeitLogo}
-            userInfo={store.user.integrations.zeit}
-            signIn={() => signals.signInZeitClicked()}
-            signOut={() => signals.signOutZeitClicked()}
-            loading={store.isLoadingZeit}
-        />
-    );
+  return (
+    <Integration
+      name="ZEIT"
+      small={small}
+      color="black"
+      description="Deployments"
+      Icon={ZeitLogo}
+      userInfo={store.user.integrations.zeit}
+      signIn={() => signals.signInZeitClicked()}
+      signOut={() => signals.signOutZeitClicked()}
+      loading={store.isLoadingZeit}
+    />
+  );
 };
 
 export default connect<ExternalProps>()(ZeitIntegration);

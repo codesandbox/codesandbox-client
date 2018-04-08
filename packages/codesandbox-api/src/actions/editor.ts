@@ -5,10 +5,7 @@ export interface OpenModuleAction extends Action {
   lineNumber: number;
 }
 
-export function openModule(
-  id: string,
-  lineNumber: number = 1
-): OpenModuleAction {
+export function openModule(id: string, lineNumber: number = 1): OpenModuleAction {
   // TODO automatically add type: 'action', maybe do this after conversion to TS
   return {
     type: 'action',

@@ -1,5 +1,5 @@
 import { CerebralError } from '@cerebral/fluent';
-import { SubscriptionErrorResult } from './types'
+import { SubscriptionErrorResult } from './types';
 
 export class SubscriptionError extends CerebralError {
   constructor(result: SubscriptionErrorResult) {

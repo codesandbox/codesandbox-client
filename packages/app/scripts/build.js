@@ -97,9 +97,9 @@ function printFileSizes(stats, previousSizeMap) {
 // Create the production build and print the deployment instructions.
 function build(previousSizeMap) {
   console.log(
-    `Creating a ${process.env.NODE_ENV === 'production'
-      ? 'production'
-      : 'development'} build...`
+    `Creating a ${
+      process.env.NODE_ENV === 'production' ? 'production' : 'development'
+    } build...`
   );
   webpack(config).run((err, stats) => {
     if (err) {

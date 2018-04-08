@@ -6,11 +6,11 @@ import MaxWidth from 'common/components/flex/MaxWidth';
 import UserInfo from './UserInfo';
 import { Top, FullWidthPadding, FullWidthMargin } from './elements';
 
-import { Profile } from 'app/store/modules/profile/types'
+import { Profile } from 'app/store/modules/profile/types';
 
 type Props = {
-  user: Profile
-}
+  user: Profile;
+};
 
 export default class Header extends React.PureComponent<Props> {
   render() {

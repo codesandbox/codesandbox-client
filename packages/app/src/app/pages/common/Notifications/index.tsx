@@ -9,89 +9,92 @@ import Notification from './Notification';
 import { NotificationContainer } from './elements';
 
 type State = {
-    hovering: boolean;
+  hovering: boolean;
 };
 
 class Notifications extends React.Component<WithCerebral, State> {
-    state: State = {
-        hovering: false
-    };
-    interval: NodeJS.Timer;
-    componentDidMount() {
-        this.interval = setInterval(() => {
-            // Only if user is not hovering
-            if (!this.state.hovering) {
-                const date = Date.now();
-                requestAnimationFrame(() => {
-                    this.props.store.notifications.forEach((n) => {
-                        // Delete notification if time is up
-                        if (n.endTime < date) {
-                            this.closeNotification(n.id);
-                        }
-                    });
-                });
+  state: State = {
+    hovering: false,
+  };
+  interval: NodeJS.Timer;
+  componentDidMount() {
+    this.interval = setInterval(() => {
+      // Only if user is not hovering
+      if (!this.state.hovering) {
+        const date = Date.now();
+        requestAnimationFrame(() => {
+          this.props.store.notifications.forEach(n => {
+            // Delete notification if time is up
+            if (n.endTime < date) {
+              this.closeNotification(n.id);
             }
-        }, 3000);
+          });
+        });
+      }
+    }, 3000);
+  }
+
+  componentWillUnmount() {
+    if (this.interval) {
+      clearInterval(this.interval);
     }
+  }
 
-    componentWillUnmount() {
-        if (this.interval) {
-            clearInterval(this.interval);
-        }
-    }
+  closeNotification = id => {
+    this.props.signals.notificationRemoved({ id });
+  };
 
-    closeNotification = (id) => {
-        this.props.signals.notificationRemoved({ id });
-    };
+  hoverOn = () => {
+    this.setState({ hovering: true });
+  };
 
-    hoverOn = () => {
-        this.setState({ hovering: true });
-    };
+  hoverOff = () => {
+    this.setState({ hovering: false });
+  };
 
-    hoverOff = () => {
-        this.setState({ hovering: false });
-    };
+  render() {
+    const notifications = this.props.store.notifications;
 
-    render() {
-        const notifications = this.props.store.notifications;
+    return (
+      <Portal>
+        <div onMouseEnter={this.hoverOn} onMouseLeave={this.hoverOff}>
+          <ReactCSSTransitionGroup
+            transitionName="notifications"
+            transitionEnterTimeout={500}
+            transitionLeaveTimeout={300}
+          >
+            {notifications.map((originalNotification, index) => {
+              const notification = originalNotification;
 
-        return (
-            <Portal>
-                <div onMouseEnter={this.hoverOn} onMouseLeave={this.hoverOff}>
-                    <ReactCSSTransitionGroup
-                        transitionName="notifications"
-                        transitionEnterTimeout={500}
-                        transitionLeaveTimeout={300}
+              return (
+                <Motion
+                  key={notification.id}
+                  defaultStyle={{ y: -150 }}
+                  style={{
+                    y: spring(24 + 60 * (notifications.length - 1 - index)),
+                  }}
+                >
+                  {({ y }) => (
+                    <NotificationContainer
+                      key={notification.id}
+                      style={{ bottom: y }}
                     >
-                        {notifications.map((originalNotification, index) => {
-                            const notification = originalNotification;
-
-                            return (
-                                <Motion
-                                    key={notification.id}
-                                    defaultStyle={{ y: -150 }}
-                                    style={{
-                                        y: spring(24 + 60 * (notifications.length - 1 - index))
-                                    }}
-                                >
-                                    {({ y }) => (
-                                        <NotificationContainer key={notification.id} style={{ bottom: y }}>
-                                            <Notification
-                                                title={notification.title}
-                                                type={notification.notificationType}
-                                                buttons={notification.buttons}
-                                                close={() => this.closeNotification(notification.id)}
-                                            />
-                                        </NotificationContainer>
-                                    )}
-                                </Motion>
-                            );
-                        })}
-                    </ReactCSSTransitionGroup>
-                </div>
-            </Portal>
-        );
-    }
+                      <Notification
+                        title={notification.title}
+                        type={notification.notificationType}
+                        buttons={notification.buttons}
+                        close={() => this.closeNotification(notification.id)}
+                      />
+                    </NotificationContainer>
+                  )}
+                </Motion>
+              );
+            })}
+          </ReactCSSTransitionGroup>
+        </div>
+      </Portal>
+    );
+  }
 }
 
 export default connect()(Notifications);

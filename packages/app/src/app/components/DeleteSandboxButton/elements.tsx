@@ -4,14 +4,14 @@ import DeleteIcon from 'react-icons/lib/md/delete';
 import Tooltip from 'common/components/Tooltip';
 
 const DeleteButton: React.SFC<{
-  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void
+  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }> = props => (
   <Tooltip title="Delete Sandbox">
     <button {...props}>
       <DeleteIcon />
     </button>
   </Tooltip>
-)
+);
 
 export const DeleteSandboxButton = styled(DeleteButton)`
   font-size: 1.2em;

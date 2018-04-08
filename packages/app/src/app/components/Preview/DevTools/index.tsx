@@ -1,4 +1,3 @@
-
 import * as React from 'react';
 
 import { TweenMax, Elastic } from 'gsap';
@@ -31,14 +30,14 @@ function normalizeTouchEvent(event: TouchEvent) {
   return {
     ...event,
     clientX: event.touches[0].clientX,
-    clientY: event.touches[0].clientY
+    clientY: event.touches[0].clientY,
   };
 }
 
 const PANES = {
   [console.title]: console,
   [problems.title]: problems,
-  [tests.title]: tests
+  [tests.title]: tests,
 };
 
 type Action = {
@@ -82,19 +81,22 @@ export default class DevTools extends React.PureComponent<Props, State> {
 
     hidden: true,
 
-    height: 2 * 16
+    height: 2 * 16,
   };
   node: HTMLElement;
   componentWillReceiveProps(nextProps: Props) {
     if (nextProps.sandboxId !== this.props.sandboxId) {
       this.setState({
-        status: {}
+        status: {},
       });
     }
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {
-    if (this.props.devToolsOpen !== prevProps.devToolsOpen && prevState.hidden === this.state.hidden) {
+    if (
+      this.props.devToolsOpen !== prevProps.devToolsOpen &&
+      prevState.hidden === this.state.hidden
+    ) {
       if (this.props.devToolsOpen === true && this.state.hidden) {
         this.openDevTools();
       } else if (this.props.devToolsOpen === false && !this.state.hidden) {
@@ -130,9 +132,9 @@ export default class DevTools extends React.PureComponent<Props, State> {
       return this.setState({
         status: {
           ...this.state.status,
-          [this.state.currentPane]: null
+          [this.state.currentPane]: null,
         },
-        hidden: false
+        hidden: false,
       });
     }
 
@@ -154,11 +156,14 @@ export default class DevTools extends React.PureComponent<Props, State> {
 
     const currentStatus = (status !== 'clear' && this.state.status[title]) || {
       unread: 0,
-      type: 'info'
+      type: 'info',
     };
     let newStatus = currentStatus.type;
 
-    if (status === 'success' && (newStatus !== 'error' && newStatus !== 'warning')) {
+    if (
+      status === 'success' &&
+      (newStatus !== 'error' && newStatus !== 'warning')
+    ) {
       newStatus = 'success';
     } else if (status === 'warning' && newStatus !== 'error') {
       newStatus = 'warning';
@@ -177,9 +182,9 @@ export default class DevTools extends React.PureComponent<Props, State> {
         ...this.state.status,
         [title]: {
           type: newStatus,
-          unread
-        }
-      }
+          unread,
+        },
+      },
     });
   };
 
@@ -195,7 +200,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
       this.setState({
         startY: event.clientY,
         startHeight: this.state.height,
-        mouseDown: true
+        mouseDown: true,
       });
       if (this.props.setDragging) {
         this.props.setDragging(true);
@@ -214,7 +219,10 @@ export default class DevTools extends React.PureComponent<Props, State> {
         this.props.setDragging(false);
       }
 
-      if (Math.abs(this.state.startHeight - this.state.height) < 30 && this.state.hidden) {
+      if (
+        Math.abs(this.state.startHeight - this.state.height) < 30 &&
+        this.state.hidden
+      ) {
         e.preventDefault();
         e.stopPropagation();
         this.handleClick();
@@ -240,10 +248,11 @@ export default class DevTools extends React.PureComponent<Props, State> {
 
   handleMouseMove = (event: Event & { clientX: number; clientY: number }) => {
     if (this.state.mouseDown) {
-      const newHeight = this.state.startHeight - (event.clientY - this.state.startY);
+      const newHeight =
+        this.state.startHeight - (event.clientY - this.state.startY);
 
       this.setState({
-        height: Math.max(32, newHeight)
+        height: Math.max(32, newHeight),
       });
       this.setHidden(newHeight < 64);
     }
@@ -271,7 +280,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
       onUpdate: () => {
         this.setState(heightObject);
       },
-      ease: Elastic.easeOut.config(0.25, 1)
+      ease: Elastic.easeOut.config(0.25, 1),
     });
   };
 
@@ -283,7 +292,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
       onUpdate: () => {
         this.setState(heightObject);
       },
-      ease: Elastic.easeOut.config(0.25, 1)
+      ease: Elastic.easeOut.config(0.25, 1),
     });
   };
 
@@ -294,9 +303,9 @@ export default class DevTools extends React.PureComponent<Props, State> {
         ...this.state.status,
         [title]: {
           type: 'info',
-          unread: 0
-        }
-      }
+          unread: 0,
+        },
+      },
     });
   };
 
@@ -308,21 +317,24 @@ export default class DevTools extends React.PureComponent<Props, State> {
 
     return (
       <Container
-        innerRef={(el) => {
+        innerRef={el => {
           this.node = el;
         }}
         style={{
           height,
           minHeight: height,
           position: 'relative',
-          display: 'flex'
+          display: 'flex',
         }}
       >
-        <Header onTouchStart={this.handleTouchStart} onMouseDown={this.handleMouseDown}>
-          {Object.keys(PANES).map((title) => (
+        <Header
+          onTouchStart={this.handleTouchStart}
+          onMouseDown={this.handleMouseDown}
+        >
+          {Object.keys(PANES).map(title => (
             <Tab
               active={title === this.state.currentPane}
-              onClick={(e) => {
+              onClick={e => {
                 e.preventDefault();
                 e.stopPropagation();
                 this.setPane(title);
@@ -341,10 +353,14 @@ export default class DevTools extends React.PureComponent<Props, State> {
 
           <Actions>
             {(actions as Action[]).map(({ title, onClick, Icon }) => (
-              <Tooltip style={{ pointerEvents: hidden ? 'none' : 'initial' }} title={title} key={title}>
+              <Tooltip
+                style={{ pointerEvents: hidden ? 'none' : 'initial' }}
+                title={title}
+                key={title}
+              >
                 <Icon
                   style={{
-                    opacity: hidden ? 0 : 1
+                    opacity: hidden ? 0 : 1,
                   }}
                   onClick={onClick}
                   key={title}
@@ -355,12 +371,12 @@ export default class DevTools extends React.PureComponent<Props, State> {
             <MinimizeIcon
               onMouseDown={hidden ? undefined : this.handleMinimizeClick}
               style={{
-                transform: hidden ? `rotateZ(0deg)` : `rotateZ(180deg)`
+                transform: hidden ? `rotateZ(0deg)` : `rotateZ(180deg)`,
               }}
             />
           </Actions>
         </Header>
-        {Object.keys(PANES).map((title) => {
+        {Object.keys(PANES).map(title => {
           const { Content } = PANES[title];
           return (
             <Content

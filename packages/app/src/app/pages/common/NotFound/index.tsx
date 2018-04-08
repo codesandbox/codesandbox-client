@@ -17,6 +17,6 @@ const NotFound: React.SFC = () => {
       </Buttons>
     </Container>
   );
-}
+};
 
 export default NotFound;

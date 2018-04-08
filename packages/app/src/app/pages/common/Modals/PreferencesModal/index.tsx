@@ -24,77 +24,79 @@ import KeyMapping from './KeyMapping';
 import { Container, ContentContainer } from './elements';
 
 class PreferencesModal extends React.Component<WithCerebral> {
-    getItems = () => {
-        const hasSubscription = this.props.store.isPatron;
-        const signedIn = this.props.store.isLoggedIn;
+  getItems = () => {
+    const hasSubscription = this.props.store.isPatron;
+    const signedIn = this.props.store.isLoggedIn;
 
-        return [
-            {
-                id: 'editor',
-                title: 'Editor',
-                icon: <CodeIcon />,
-                content: <EditorSettings />
-            },
-            {
-                id: 'prettierSettings',
-                title: 'Prettier Settings',
-                icon: <CodeFormatIcon />,
-                content: <CodeFormatting />
-            },
-            {
-                id: 'preview',
-                title: 'Preview',
-                icon: <BrowserIcon />,
-                content: <PreviewSettings />
-            },
-            {
-                id: 'keybindings',
-                title: 'Key Bindings',
-                icon: <KeyboardIcon />,
-                content: <KeyMapping />
-            },
-            signedIn && {
-                id: 'integrations',
-                title: 'Integrations',
-                icon: <IntegrationIcon />,
-                content: <Integrations />
-            },
-            hasSubscription && {
-                id: 'paymentInfo',
-                title: 'Payment Info',
-                icon: <CreditCardIcon />,
-                content: <PaymentInfo />
-            },
-            hasSubscription && {
-                id: 'badges',
-                title: 'Badges',
-                icon: <StarIcon />,
-                content: <Badges />
-            },
-            {
-                id: 'experiments',
-                title: 'Experiments',
-                icon: <FlaskIcon />,
-                content: <Experiments />
-            }
-        ].filter((x) => x);
-    };
+    return [
+      {
+        id: 'editor',
+        title: 'Editor',
+        icon: <CodeIcon />,
+        content: <EditorSettings />,
+      },
+      {
+        id: 'prettierSettings',
+        title: 'Prettier Settings',
+        icon: <CodeFormatIcon />,
+        content: <CodeFormatting />,
+      },
+      {
+        id: 'preview',
+        title: 'Preview',
+        icon: <BrowserIcon />,
+        content: <PreviewSettings />,
+      },
+      {
+        id: 'keybindings',
+        title: 'Key Bindings',
+        icon: <KeyboardIcon />,
+        content: <KeyMapping />,
+      },
+      signedIn && {
+        id: 'integrations',
+        title: 'Integrations',
+        icon: <IntegrationIcon />,
+        content: <Integrations />,
+      },
+      hasSubscription && {
+        id: 'paymentInfo',
+        title: 'Payment Info',
+        icon: <CreditCardIcon />,
+        content: <PaymentInfo />,
+      },
+      hasSubscription && {
+        id: 'badges',
+        title: 'Badges',
+        icon: <StarIcon />,
+        content: <Badges />,
+      },
+      {
+        id: 'experiments',
+        title: 'Experiments',
+        icon: <FlaskIcon />,
+        content: <Experiments />,
+      },
+    ].filter(x => x);
+  };
 
-    render() {
-        const items = this.getItems();
-        const item = items.find((currentItem) => currentItem.id === this.props.store.preferences.itemId);
+  render() {
+    const items = this.getItems();
+    const item = items.find(
+      currentItem => currentItem.id === this.props.store.preferences.itemId
+    );
 
-        return (
-            <Container>
-                <SideNavigation
-                    itemId={this.props.store.preferences.itemId}
-                    menuItems={items}
-                    setItem={this.props.signals.preferences.itemIdChanged}
-                />
-                <ContentContainer>{item.content}</ContentContainer>
-            </Container>
-        );
-    }
+    return (
+      <Container>
+        <SideNavigation
+          itemId={this.props.store.preferences.itemId}
+          menuItems={items}
+          setItem={this.props.signals.preferences.itemIdChanged}
+        />
+        <ContentContainer>{item.content}</ContentContainer>
+      </Container>
+    );
+  }
 }
 
 export default connect()(PreferencesModal);

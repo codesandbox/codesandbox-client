@@ -11,8 +11,10 @@ const reverseShowAnimationKeyframes = keyframes`
 `;
 
 const showAnimation = (delay: number = 0, reverse: boolean = true) =>
-    `
-    animation: ${reverse ? reverseShowAnimationKeyframes : showAnimationKeyframes} 0.3s;
+  `
+    animation: ${
+      reverse ? reverseShowAnimationKeyframes : showAnimationKeyframes
+    } 0.3s;
     animation-delay: ${delay}s;
     animation-fill-mode: forwards;
     opacity: 0;
@@ -29,29 +31,31 @@ const reverseHideAnimationKeyframes = keyframes`
 `;
 
 const hideAnimation = (delay: number = 0, reverse: boolean = true) =>
-    `
-    animation: ${reverse ? reverseHideAnimationKeyframes : hideAnimationKeyframes} 0.3s;
+  `
+    animation: ${
+      reverse ? reverseHideAnimationKeyframes : hideAnimationKeyframes
+    } 0.3s;
     animation-delay: ${delay}s;
     animation-fill-mode: forwards;
     opacity: 1;
   `;
 
 export const Tooltips = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
 `;
 
 export const ViewIcon = styled<
-    {
-        active: boolean;
-    },
-    'div'
+  {
+    active: boolean;
+  },
+  'div'
 >('div')`
   height: 1.75rem;
   transition: 0.3s ease all;
@@ -70,7 +74,7 @@ export const ViewIcon = styled<
     bottom: 0;
     top: 0;
     background-color: rgba(0, 0, 0, 0.3);
-    opacity: ${(props) => (props.active ? 0 : 1)};
+    opacity: ${props => (props.active ? 0 : 1)};
     border-radius: 2px;
     overflow: hidden;
   }
@@ -80,33 +84,36 @@ export const ViewIcon = styled<
 `;
 
 export const Hover = styled.div`
-    position: relative;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    z-index: 200;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
 `;
 
 export const SubMode = styled<
-    {
-        hovering: boolean;
-        i: number;
-    },
-    'div'
+  {
+    hovering: boolean;
+    i: number;
+  },
+  'div'
 >('div')`
-  ${(props) =>
-      props.hovering ? showAnimation(props.i * 0.05, props.i === 1) : hideAnimation(props.i * 0.05, props.i === 1)};
+  ${props =>
+    props.hovering
+      ? showAnimation(props.i * 0.05, props.i === 1)
+      : hideAnimation(props.i * 0.05, props.i === 1)};
 `;
 
 const Icon = styled<
-    {
-        half?: boolean;
-    },
-    'div'
+  {
+    half?: boolean;
+  },
+  'div'
 >('div')`
   display: inline-block;
-  width: ${({ half }) => (half ? `calc(1.5rem - 1px)` : `3rem`)}; /* 1px is for the middle border */
+  width: ${({ half }) =>
+    half ? `calc(1.5rem - 1px)` : `3rem`}; /* 1px is for the middle border */
   border: 1px solid rgba(0, 0, 0, 0.1);
   height: 100%;
 `;

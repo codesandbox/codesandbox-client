@@ -1,4 +1,4 @@
 export type State = {
-    deploying: boolean;
-    url: string;
+  deploying: boolean;
+  url: string;
 };

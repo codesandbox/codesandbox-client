@@ -46,7 +46,7 @@ export const CodeContainer = styled.div`
   }
 
   .margin-view-overlays {
-    background: ${props=> props.theme.background2()};
+    background: ${props => props.theme.background2()};
   }
 
   .monaco-editor.vs-dark .monaco-editor-background {

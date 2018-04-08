@@ -11,10 +11,10 @@ import PatronBadge from 'common/utils/badges/PatronBadge';
 import { Container, Item, Icon } from './elements';
 
 type Props = {
-  username: string
-  openPreferences: () => void
-  signOut: () => void
-}
+  username: string;
+  openPreferences: () => void;
+  signOut: () => void;
+};
 
 const Menu: React.SFC<Props> = ({ username, openPreferences, signOut }) => {
   return (
@@ -45,6 +45,6 @@ const Menu: React.SFC<Props> = ({ username, openPreferences, signOut }) => {
       </Item>
     </Container>
   );
-}
+};
 
 export default Menu;

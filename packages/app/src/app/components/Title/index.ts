@@ -2,12 +2,12 @@ import styled from 'app/styled-components';
 import delayEffect from 'common/utils/animation/delay-effect';
 
 export default styled<
-    {
-        delay?: number;
-    },
-    'h1'
+  {
+    delay?: number;
+  },
+  'h1'
 >('h1')`
-  ${(props) => props.delay != null && delayEffect(props.delay || 0)};
+  ${props => props.delay != null && delayEffect(props.delay || 0)};
   color: white;
   font-size: 2.5rem;
   font-weight: 300;

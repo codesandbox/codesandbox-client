@@ -9,9 +9,9 @@ import Particles from './Particles';
 import { BadgeContainer } from './elements';
 
 type Props = {
-  badge: string
-  subscribed: boolean
-}
+  badge: string;
+  subscribed: boolean;
+};
 
 function Badge({ badge, subscribed }: Props) {
   const BadgeComponent = badges[badge].Badge;

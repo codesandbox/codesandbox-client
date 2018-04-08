@@ -1,9 +1,5 @@
 // Errors
-export {
-  transformError,
-  clearErrorTransformers,
-  registerErrorTransformer,
-} from './errors';
+export { transformError, clearErrorTransformers, registerErrorTransformer } from './errors';
 
 // Actions
 export * from './actions';

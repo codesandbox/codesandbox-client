@@ -10,28 +10,28 @@ import Title from 'app/components/Title';
 import NewSandbox from 'app/components/NewSandbox';
 
 class NewSandboxComponent extends React.PureComponent<WithCerebral> {
-    componentDidMount() {
-        this.props.signals.sandboxPageMounted();
-    }
+  componentDidMount() {
+    this.props.signals.sandboxPageMounted();
+  }
 
-    render() {
-        return (
-            <MaxWidth>
-                <Margin style={{ height: '100%' }} vertical={1.5} horizontal={1.5}>
-                    <Navigation title="New Sandbox" />
+  render() {
+    return (
+      <MaxWidth>
+        <Margin style={{ height: '100%' }} vertical={1.5} horizontal={1.5}>
+          <Navigation title="New Sandbox" />
 
-                    <Margin top={9}>
-                        <Centered horizontal vertical>
-                            <Title>New Sandbox</Title>
-                            <Margin top={2}>
-                                <NewSandbox />
-                            </Margin>
-                        </Centered>
-                    </Margin>
-                </Margin>
-            </MaxWidth>
-        );
-    }
+          <Margin top={9}>
+            <Centered horizontal vertical>
+              <Title>New Sandbox</Title>
+              <Margin top={2}>
+                <NewSandbox />
+              </Margin>
+            </Centered>
+          </Margin>
+        </Margin>
+      </MaxWidth>
+    );
+  }
 }
 
 export default connect()(NewSandboxComponent);

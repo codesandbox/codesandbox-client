@@ -18,7 +18,7 @@ export interface NotificationAction extends Action {
 export function show(
   title: string,
   notificationType: 'notice' | 'warning' | 'error' | 'success' = 'notice',
-  timeAlive: number = 2,
+  timeAlive: number = 2
 ): NotificationAction {
   // TODO automatically add type: 'action', maybe do this after conversion to TS
   return {

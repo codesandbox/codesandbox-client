@@ -4,8 +4,8 @@ import NotSyncedIcon from 'react-icons/lib/go/primitive-dot';
 import CloseIcon from 'react-icons/lib/go/x';
 
 export const StyledCloseIcon = styled<{
-    show: boolean;
-    onClick: (event: React.MouseEvent<HTMLElement>) => void;
+  show: boolean;
+  onClick: (event: React.MouseEvent<HTMLElement>) => void;
 }>(({ show, ...rest }) => <CloseIcon {...rest} />)`
   transition: 0.1s ease opacity;
 
@@ -14,41 +14,41 @@ export const StyledCloseIcon = styled<{
   color: rgba(255, 255, 255, 0.9);
   margin-right: 0;
 
-  ${(props) =>
-      props.show
-          ? null
-          : css`
-                pointer-events: none;
-                opacity: 0;
-            `};
+  ${props =>
+    props.show
+      ? null
+      : css`
+          pointer-events: none;
+          opacity: 0;
+        `};
 `;
 
 export const StyledNotSyncedIcon = styled<{
-    show: boolean;
-    onClick: (event: React.MouseEvent<HTMLElement>) => void;
+  show: boolean;
+  onClick: (event: React.MouseEvent<HTMLElement>) => void;
 }>(({ show, ...rest }) => <NotSyncedIcon {...rest} />)`
-transition: 0.1s ease opacity;
+  transition: 0.1s ease opacity;
 
-float: right;
-opacity: 1;
-color: rgba(255, 255, 255, 0.9);
-margin-right: 0;
+  float: right;
+  opacity: 1;
+  color: rgba(255, 255, 255, 0.9);
+  margin-right: 0;
 
-${(props) =>
+  ${props =>
     !props.show &&
     css`
-        pointer-events: none;
-        opacity: 0;
+      pointer-events: none;
+      opacity: 0;
     `};
 `;
 
 export const Container = styled<
-    {
-        isOver: boolean;
-        active: boolean;
-        dirty: boolean;
-    },
-    'div'
+  {
+    isOver: boolean;
+    active: boolean;
+    dirty: boolean;
+  },
+  'div'
 >('div')`
   position: relative;
   display: inline-flex;
@@ -71,25 +71,33 @@ export const Container = styled<
     margin-right: 0.5rem;
   }
 
-  ${(props) => props.isOver && css`background-color: ${props.theme.background2.lighten(0.2)};`};
-  ${(props) =>
-      props.active &&
-      css`
-          background-color: ${props.theme.background2};
-          border-color: ${props.theme.secondary};
-          color: white;
-      `};
-  ${(props) => props.dirty && css`font-style: italic;`};
+  ${props =>
+    props.isOver &&
+    css`
+      background-color: ${props.theme.background2.lighten(0.2)};
+    `};
+  ${props =>
+    props.active &&
+    css`
+      background-color: ${props.theme.background2};
+      border-color: ${props.theme.secondary};
+      color: white;
+    `};
+  ${props =>
+    props.dirty &&
+    css`
+      font-style: italic;
+    `};
 `;
 
 export const TabTitle = styled.div`
-    padding-right: 0.5rem;
-    padding-left: 6px;
-    white-space: nowrap;
+  padding-right: 0.5rem;
+  padding-left: 6px;
+  white-space: nowrap;
 `;
 
 export const TabDir = styled.div`
-    color: rgba(255, 255, 255, 0.3);
-    padding-right: 0.5rem;
-    white-space: nowrap;
+  color: rgba(255, 255, 255, 0.3);
+  padding-right: 0.5rem;
+  white-space: nowrap;
 `;

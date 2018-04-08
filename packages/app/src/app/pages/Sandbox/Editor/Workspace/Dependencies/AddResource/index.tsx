@@ -10,12 +10,12 @@ const initialState = {
 };
 
 type Props = {
-  addResource: (name: string) => void
-}
+  addResource: (name: string) => void;
+};
 
 type State = {
-  name: string
-}
+  name: string;
+};
 
 export default class AddVersion extends React.PureComponent<Props, State> {
   state: State = initialState;

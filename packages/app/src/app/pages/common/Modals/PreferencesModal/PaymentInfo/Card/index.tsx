@@ -3,10 +3,10 @@ import * as React from 'react';
 import { Highlight, Container } from './elements';
 
 export type Props = {
-  brand: string
-  last4: string
-  name: string
-}
+  brand: string;
+  last4: string;
+  name: string;
+};
 
 const Card: React.SFC<Props> = ({ brand, last4, name }) => {
   return (
@@ -21,6 +21,6 @@ const Card: React.SFC<Props> = ({ brand, last4, name }) => {
       </div>
     </Container>
   );
-}
+};
 
 export default Card;

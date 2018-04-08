@@ -4,14 +4,14 @@ import CloseIcon from 'react-icons/lib/md/close';
 import InfoIcon from 'react-icons/lib/md/info';
 import ErrorIcon from 'react-icons/lib/md/error';
 import WarningIcon from 'react-icons/lib/md/warning';
-import { NotificationType, NotificationButton } from 'app/store/types'
+import { NotificationType, NotificationButton } from 'app/store/types';
 import {
   Container,
   Content,
   Title,
   Buttons,
   Button,
-  CloseIconHandler
+  CloseIconHandler,
 } from './elements';
 
 function getIcon(type) {
@@ -21,13 +21,18 @@ function getIcon(type) {
 }
 
 type Props = {
-  title: string
-  type: NotificationType
-  buttons: NotificationButton[]
-  close: () => void
-}
+  title: string;
+  type: NotificationType;
+  buttons: NotificationButton[];
+  close: () => void;
+};
 
-const  Notification: React.SFC<Props> = ({ title, type, buttons = [], close }) => {
+const Notification: React.SFC<Props> = ({
+  title,
+  type,
+  buttons = [],
+  close,
+}) => {
   return (
     <Container type={type}>
       <CloseIconHandler>
@@ -46,6 +51,6 @@ const  Notification: React.SFC<Props> = ({ title, type, buttons = [], close }) =
       </Buttons>
     </Container>
   );
-}
+};
 
 export default Notification;

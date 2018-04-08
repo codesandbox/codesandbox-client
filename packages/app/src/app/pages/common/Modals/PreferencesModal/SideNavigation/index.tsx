@@ -13,16 +13,16 @@ import {
 } from './elements';
 
 export type Item = {
-  id: string
-  title: string
-  icon: React.ReactNode
-}
+  id: string;
+  title: string;
+  icon: React.ReactNode;
+};
 
 export type Props = {
-  menuItems: Item[]
-  itemId: string
-  setItem: (props: { itemId: string }) => void
-}
+  menuItems: Item[];
+  itemId: string;
+  setItem: (props: { itemId: string }) => void;
+};
 
 const SideNavigation: React.SFC<Props> = ({ menuItems, itemId, setItem }) => {
   const itemIndex = menuItems.findIndex(item => item.id === itemId);
@@ -51,6 +51,6 @@ const SideNavigation: React.SFC<Props> = ({ menuItems, itemId, setItem }) => {
       </SocialContainer>
     </Container>
   );
-}
+};
 
 export default SideNavigation;

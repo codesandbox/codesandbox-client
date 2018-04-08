@@ -5,11 +5,11 @@ import Row from 'common/components/flex/Row';
 import ProfileInfo from './ProfileInfo';
 import Stats from './Stats';
 
-import { Profile } from 'app/store/modules/profile/types'
+import { Profile } from 'app/store/modules/profile/types';
 
 type Props = {
-  user: Profile
-}
+  user: Profile;
+};
 
 const UserInfo: React.SFC<Props> = ({ user }) => {
   return (
@@ -28,6 +28,6 @@ const UserInfo: React.SFC<Props> = ({ user }) => {
       />
     </Row>
   );
-}
+};
 
 export default UserInfo;

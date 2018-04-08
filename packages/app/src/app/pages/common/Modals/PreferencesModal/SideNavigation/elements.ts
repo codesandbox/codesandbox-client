@@ -1,35 +1,35 @@
 import styled, { css } from 'app/styled-components';
 
 export const Container = styled.div`
-    flex: 1;
-    background-color: ${(props) => props.theme.background2};
-    width: 100%;
-    padding-bottom: 5rem;
+  flex: 1;
+  background-color: ${props => props.theme.background2};
+  width: 100%;
+  padding-bottom: 5rem;
 `;
 
 export const Title = styled.h2`
-    font-weight: 500;
-    padding: 2rem;
-    margin-top: 0 !important;
-    font-size: 1.125rem;
-    margin: 0;
-    text-transform: uppercase;
+  font-weight: 500;
+  padding: 2rem;
+  margin-top: 0 !important;
+  font-size: 1.125rem;
+  margin: 0;
+  text-transform: uppercase;
 `;
 
 export const ITEM_HEIGHT = 36;
 
 export const Item = styled<
-    {
-        top: number;
-        selected: boolean;
-    },
-    'div'
+  {
+    top: number;
+    selected: boolean;
+  },
+  'div'
 >('div')`
   display: flex;
   align-items: center;
   transition: 0.3s ease all;
   position: absolute;
-  top: ${(props) => props.top}px;
+  top: ${props => props.top}px;
   left: 0;
   right: 0;
   height: ${ITEM_HEIGHT - 2}px;
@@ -40,23 +40,23 @@ export const Item = styled<
   z-index: 1;
   cursor: pointer;
   border-radius: 4px;
-  color: ${(props) => (props.selected ? 'white' : 'rgba(255, 255, 255, 0.4)')};
+  color: ${props => (props.selected ? 'white' : 'rgba(255, 255, 255, 0.4)')};
 
-  ${(props) =>
-      !props.selected &&
-      css`
-          &:hover {
-              color: rgba(255, 255, 255, 0.6);
-              background-color: ${(styleProps) => styleProps.theme.background};
-          }
-      `};
+  ${props =>
+    !props.selected &&
+    css`
+      &:hover {
+        color: rgba(255, 255, 255, 0.6);
+        background-color: ${styleProps => styleProps.theme.background};
+      }
+    `};
 `;
 
 export const Selector = styled<
-    {
-        offset: number;
-    },
-    'div'
+  {
+    offset: number;
+  },
+  'div'
 >('div')`
   transition: 0.2s ease all;
   position: absolute;
@@ -66,15 +66,15 @@ export const Selector = styled<
   height: ${ITEM_HEIGHT - 2}px;
   border-radius: 4px;
   z-index: 0;
-  background-color: ${(props) => props.theme.secondary};
+  background-color: ${props => props.theme.secondary};
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.25);
 
-  transform: translateY(${(props) => props.offset + 1}px);
+  transform: translateY(${props => props.offset + 1}px);
 `;
 
 export const SocialContainer = styled.div`
-    position: absolute;
-    bottom: 2em;
-    margin-top: 2em;
-    margin-left: 2em;
+  position: absolute;
+  bottom: 2em;
+  margin-top: 2em;
+  margin-left: 2em;
 `;

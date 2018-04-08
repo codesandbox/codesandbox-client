@@ -31,14 +31,7 @@ export interface CorrectionAction extends Action {
  */
 export function show(
   message: string,
-  {
-    line,
-    column,
-    path,
-    payload,
-    severity = 'warning',
-    source = '',
-  }: CorrectionOptions = {
+  { line, column, path, payload, severity = 'warning', source = '' }: CorrectionOptions = {
     path: '',
     severity: 'warning',
     source: '',

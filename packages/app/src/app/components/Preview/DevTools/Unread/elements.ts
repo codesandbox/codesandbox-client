@@ -1,11 +1,11 @@
 import styled from 'app/styled-components';
 
 export const Container = styled<
-    {
-        unread: number;
-        status: string;
-    },
-    'div'
+  {
+    unread: number;
+    status: string;
+  },
+  'div'
 >('div')`
   transition: 0.3s ease all;
   display: inline-flex;
@@ -19,22 +19,23 @@ export const Container = styled<
   height: 16px;
   width: 16px;
 
-  color: ${({ unread }) => (unread === 0 ? `rgba(255, 255, 255, 0.4)` : 'white')};
+  color: ${({ unread }) =>
+    unread === 0 ? `rgba(255, 255, 255, 0.4)` : 'white'};
   background-color: ${({ status, unread, theme }) => {
-      if (unread === 0) {
-          return 'rgba(255, 255, 255, 0.2)';
-      }
+    if (unread === 0) {
+      return 'rgba(255, 255, 255, 0.2)';
+    }
 
-      if (status === 'info') {
-          return theme.secondary();
-      } else if (status === 'warning') {
-          return theme.primary.darken(0.3)();
-      } else if (status === 'error') {
-          return theme.red();
-      } else if (status === 'success') {
-          return theme.green();
-      }
+    if (status === 'info') {
+      return theme.secondary();
+    } else if (status === 'warning') {
+      return theme.primary.darken(0.3)();
+    } else if (status === 'error') {
+      return theme.red();
+    } else if (status === 'success') {
+      return theme.green();
+    }
 
-      return 'black';
+    return 'black';
   }};
 `;

@@ -13,33 +13,33 @@ import PricingModal from './PricingModal';
 import { Content } from './elements';
 
 class Patron extends React.Component<WithCerebral> {
-    componentDidMount() {
-        this.props.signals.patron.patronMounted();
-    }
-    render() {
-        document.title = 'Patron - CodeSandbox';
-        return (
-            <MaxWidth>
-                <Margin vertical={1.5} horizontal={1.5}>
-                    <Navigation title="Become a Patron" />
-                    <Content>
-                        <MaxWidth width={1024}>
-                            <Title>Become a CodeSandbox Patron!</Title>
-                            <SubTitle>
-                                You can support us by paying a monthly amount of your choice.
-                                <br />
-                                The money goes to all expenses of CodeSandbox.
-                            </SubTitle>
+  componentDidMount() {
+    this.props.signals.patron.patronMounted();
+  }
+  render() {
+    document.title = 'Patron - CodeSandbox';
+    return (
+      <MaxWidth>
+        <Margin vertical={1.5} horizontal={1.5}>
+          <Navigation title="Become a Patron" />
+          <Content>
+            <MaxWidth width={1024}>
+              <Title>Become a CodeSandbox Patron!</Title>
+              <SubTitle>
+                You can support us by paying a monthly amount of your choice.
+                <br />
+                The money goes to all expenses of CodeSandbox.
+              </SubTitle>
 
-                            <Centered horizontal>
-                                <PricingModal />
-                            </Centered>
-                        </MaxWidth>
-                    </Content>
-                </Margin>
+              <Centered horizontal>
+                <PricingModal />
+              </Centered>
             </MaxWidth>
-        );
-    }
+          </Content>
+        </Margin>
+      </MaxWidth>
+    );
+  }
 }
 
 export default connect()(Patron);

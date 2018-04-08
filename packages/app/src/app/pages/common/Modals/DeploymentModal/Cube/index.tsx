@@ -2,12 +2,16 @@ import * as React from 'react';
 import { Cube, Sides, Side } from './elements';
 
 export type Props = {
-  size?: number
-  noAnimation?: boolean
-  className?: string
-}
+  size?: number;
+  noAnimation?: boolean;
+  className?: string;
+};
 
-const CubeComponent: React.SFC<Props> = ({ size = 150, noAnimation, className }) => {
+const CubeComponent: React.SFC<Props> = ({
+  size = 150,
+  noAnimation,
+  className,
+}) => {
   return (
     <Cube className={className} size={size}>
       <Sides noAnimation={noAnimation} size={size}>
@@ -20,6 +24,6 @@ const CubeComponent: React.SFC<Props> = ({ size = 150, noAnimation, className })
       </Sides>
     </Cube>
   );
-}
+};
 
 export default CubeComponent;

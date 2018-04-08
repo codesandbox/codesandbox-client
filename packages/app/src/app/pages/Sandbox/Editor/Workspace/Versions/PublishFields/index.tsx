@@ -17,13 +17,13 @@ const DUPLICATE_VERSION_INFO =
   'You cannot publish a version that already exists.';
 
 type Version = {
-  version: string
-}
+  version: string;
+};
 
 type Props = {
-  versions?: Version[]
-  publishVersion?: (version: string) => void
-}
+  versions?: Version[];
+  publishVersion?: (version: string) => void;
+};
 
 export default class PublishFields extends React.PureComponent<Props> {
   state = initialState;
@@ -32,13 +32,11 @@ export default class PublishFields extends React.PureComponent<Props> {
   minor;
   patch;
 
-  getVersion = (
-    {
-      major = this.state.major,
-      minor = this.state.minor,
-      patch = this.state.patch,
-    } = {}
-  ) => `${major}.${minor}.${patch}`;
+  getVersion = ({
+    major = this.state.major,
+    minor = this.state.minor,
+    patch = this.state.patch,
+  } = {}) => `${major}.${minor}.${patch}`;
 
   isDuplicateVersion = (version = this.getVersion()) =>
     !!this.props.versions.find(v => v.version === version);
@@ -47,7 +45,7 @@ export default class PublishFields extends React.PureComponent<Props> {
     if (e.keyCode === 190) {
       // dot
       if (this.minor != null) {
-        this.minor.focus()
+        this.minor.focus();
       }
     }
   };
@@ -56,7 +54,7 @@ export default class PublishFields extends React.PureComponent<Props> {
     if (e.keyCode === 190) {
       // dot
       if (this.patch != null) {
-        this.patch.focus()
+        this.patch.focus();
       }
     } else if (e.keyCode === 8) {
       // backspace

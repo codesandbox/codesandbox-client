@@ -3,11 +3,11 @@ import * as React from 'react';
 import { Container, Feature, Value } from './elements';
 
 type Props = {
-  disabled?: boolean
-  feature?: string
-  free?: string
-  supporter?: string
-}
+  disabled?: boolean;
+  feature?: string;
+  free?: string;
+  supporter?: string;
+};
 
 function FeatureComponent({ disabled, feature, free, supporter }: Props) {
   return (

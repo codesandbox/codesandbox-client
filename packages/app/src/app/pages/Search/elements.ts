@@ -2,9 +2,9 @@ import styled from 'app/styled-components';
 import Title from 'app/components/Title';
 
 export const Content = styled.div`
-    margin-top: 5%;
-    text-align: left;
-    color: white;
+  margin-top: 5%;
+  text-align: left;
+  color: white;
 `;
 
 export const StyledTitle = styled(Title)`

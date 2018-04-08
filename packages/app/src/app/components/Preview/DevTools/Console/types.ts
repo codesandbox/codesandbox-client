@@ -1,1 +1,1 @@
-export type LogType = 'log' | 'info' | 'warn' | 'error' | 'warning'
+export type LogType = 'log' | 'info' | 'warn' | 'error' | 'warning';

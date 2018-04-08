@@ -9,18 +9,18 @@ function select(el?: HTMLInputElement) {
 }
 
 type Props = {
-  title: string
-  onChange: (value: string) => void
-  onCommit: (value: string, bool?: boolean) => void
-  onCancel: () => void
-}
+  title: string;
+  onChange: (value: string) => void;
+  onCommit: (value: string, bool?: boolean) => void;
+  onCancel: () => void;
+};
 
 type State = {
-  currentValue: string
-}
+  currentValue: string;
+};
 
 export default class EntryTitleInput extends React.PureComponent<Props, State> {
-  state: State
+  state: State;
   constructor(props: Props) {
     super(props);
 

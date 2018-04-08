@@ -6,39 +6,43 @@ import EntryTitle from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/
 import { LeftOffset } from './elements';
 
 type Props = {
-    id: string;
-    setCurrentModule: (id: string) => void;
-    title: string;
-    depth: number;
-    type: string;
-    active?: boolean;
-    alternative?: boolean;
-    shortid?: string;
+  id: string;
+  setCurrentModule: (id: string) => void;
+  title: string;
+  depth: number;
+  type: string;
+  active?: boolean;
+  alternative?: boolean;
+  shortid?: string;
 };
 
 export default class File extends React.PureComponent<Props> {
-    static defaultProps = {
-        active: false,
-        alternative: false
-    };
+  static defaultProps = {
+    active: false,
+    alternative: false,
+  };
 
-    setCurrentModule = () => {
-        const { id, setCurrentModule } = this.props;
+  setCurrentModule = () => {
+    const { id, setCurrentModule } = this.props;
 
-        setCurrentModule(id);
-    };
+    setCurrentModule(id);
+  };
 
-    render() {
-        const { title, depth, type, active, alternative } = this.props;
-        return (
-            <div>
-                <Entry alternative={alternative} active={active} onClick={this.setCurrentModule}>
-                    <LeftOffset depth={depth}>
-                        <EntryIcons type={type} />
-                        <EntryTitle title={title} />
-                    </LeftOffset>
-                </Entry>
-            </div>
-        );
-    }
+  render() {
+    const { title, depth, type, active, alternative } = this.props;
+    return (
+      <div>
+        <Entry
+          alternative={alternative}
+          active={active}
+          onClick={this.setCurrentModule}
+        >
+          <LeftOffset depth={depth}>
+            <EntryIcons type={type} />
+            <EntryTitle title={title} />
+          </LeftOffset>
+        </Entry>
+      </div>
+    );
+  }
 }

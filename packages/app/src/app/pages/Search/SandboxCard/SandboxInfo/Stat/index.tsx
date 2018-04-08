@@ -3,9 +3,9 @@ import * as React from 'react';
 import { CenteredText } from './elements';
 
 type Props = {
-  Icon: React.ComponentClass
-  count: number
-}
+  Icon: React.ComponentClass;
+  count: number;
+};
 
 const Stat: React.SFC<Props> = ({ Icon, count }) => {
   return (
@@ -22,6 +22,6 @@ const Stat: React.SFC<Props> = ({ Icon, count }) => {
       </span>
     </CenteredText>
   );
-}
+};
 
 export default Stat;

@@ -1,4 +1,3 @@
-
 import * as React from 'react';
 
 import LeftIcon from 'react-icons/lib/fa/angle-left';
@@ -12,7 +11,13 @@ import Tooltip from 'common/components/Tooltip';
 import HorizontalAlign from './HorizontalAlign';
 import VerticalAlign from './VerticalAlign';
 import AddressBar from '../AddressBar';
-import { Container, Icons, Icon, AddressBarContainer, SwitchContainer } from './elements';
+import {
+  Container,
+  Icons,
+  Icon,
+  AddressBarContainer,
+  SwitchContainer,
+} from './elements';
 
 type Props = {
   url: string;
@@ -41,7 +46,7 @@ const Navigator: React.SFC<Props> = ({
   openNewWindow,
   zenMode,
   alignRight,
-  alignBottom
+  alignBottom,
 }) => {
   return (
     <Container>
@@ -57,7 +62,7 @@ const Navigator: React.SFC<Props> = ({
         </Icon>
       </Icons>
       <AddressBarContainer
-        onMouseDown={(e) => {
+        onMouseDown={e => {
           e.stopPropagation();
         }}
       >
@@ -91,7 +96,10 @@ const Navigator: React.SFC<Props> = ({
       {!zenMode &&
         toggleProjectView && (
           <SwitchContainer>
-            <Tooltip title={isProjectView ? 'Project View' : 'Current Module View'} position="left">
+            <Tooltip
+              title={isProjectView ? 'Project View' : 'Current Module View'}
+              position="left"
+            >
               <Switch right={isProjectView} onClick={toggleProjectView} />
             </Tooltip>
           </SwitchContainer>

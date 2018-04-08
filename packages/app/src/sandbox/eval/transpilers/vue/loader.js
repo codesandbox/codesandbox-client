@@ -186,9 +186,7 @@ export default function(content: string, loaderContext: LoaderContext) {
               : getRequireString('styles', style, i, style.scoped);
 
             output +=
-              `module.hot && module.hot.accept([${
-                requirePath
-              }], function () {\n` +
+              `module.hot && module.hot.accept([${requirePath}], function () {\n` +
               // 1. check if style has been injected
               `  var oldLocals = cssModules["${moduleName}"]\n` +
               `  if (!oldLocals) return\n` +
@@ -344,9 +342,9 @@ export default function(content: string, loaderContext: LoaderContext) {
           '      delete Component.options._Ctor\n' +
           '    }\n';
       }
-      output += `    hotAPI.${functionalTemplate ? 'rerender' : 'reload'}("${
-        moduleId
-      }", Component.options)\n  }\n`;
+      output += `    hotAPI.${
+        functionalTemplate ? 'rerender' : 'reload'
+      }("${moduleId}", Component.options)\n  }\n`;
       // dispose
       output +=
         '  module.hot.dispose(function (data) {\n' +

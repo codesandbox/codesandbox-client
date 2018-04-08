@@ -11,8 +11,8 @@ import RawAutoComplete from './RawAutoComplete';
 const ConnectedAutoComplete = connectAutoComplete(RawAutoComplete);
 
 type Props = {
-  onConfirm: (name: string, version: string) => void
-}
+  onConfirm: (name: string, version: string) => void;
+};
 
 export default class SearchDependencies extends React.PureComponent<Props> {
   hitToVersionMap = new Map();

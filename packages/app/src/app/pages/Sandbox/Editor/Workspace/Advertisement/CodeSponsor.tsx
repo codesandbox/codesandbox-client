@@ -2,8 +2,8 @@ import * as React from 'react';
 import './CodeSponsor.css';
 
 type Props = {
-  token: string,
-  theme: 'dark' | 'light',
+  token: string;
+  theme: 'dark' | 'light';
 };
 
 const CodeSponsor: React.SFC<Props> = ({ token, theme }: Props) => {
@@ -16,7 +16,8 @@ const CodeSponsor: React.SFC<Props> = ({ token, theme }: Props) => {
       <a href={linkHref} className="cs__blurb" target="_blank" rel="noopener">
         <strong>Rollbar</strong>{' '}
         <span>
-          Real-time error monitoring, alerting, and analytics for software developers{' '}
+          Real-time error monitoring, alerting, and analytics for software
+          developers{' '}
           <span aria-label="rocket" role="img">
             🚀
           </span>
@@ -27,4 +28,4 @@ const CodeSponsor: React.SFC<Props> = ({ token, theme }: Props) => {
   );
 };
 
-export default CodeSponsor
+export default CodeSponsor;

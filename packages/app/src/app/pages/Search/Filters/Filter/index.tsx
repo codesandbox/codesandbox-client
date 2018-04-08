@@ -5,13 +5,18 @@ import { RefinementList } from 'react-instantsearch/dom';
 import { Container, Title } from './elements';
 
 type Props = {
-  title: string
-  attributeName: string
-  operator: string
-  noSearch?: boolean
-}
+  title: string;
+  attributeName: string;
+  operator: string;
+  noSearch?: boolean;
+};
 
-const Filter: React.SFC<Props> = ({ title, attributeName, operator, noSearch }) => {
+const Filter: React.SFC<Props> = ({
+  title,
+  attributeName,
+  operator,
+  noSearch,
+}) => {
   return (
     <Container>
       <Title>{title}</Title>
@@ -23,6 +28,6 @@ const Filter: React.SFC<Props> = ({ title, attributeName, operator, noSearch }) 
       />
     </Container>
   );
-}
+};
 
 export default Filter;

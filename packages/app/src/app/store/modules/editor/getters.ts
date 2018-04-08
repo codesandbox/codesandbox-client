@@ -1,7 +1,7 @@
 import { generateFileFromSandbox } from 'common/templates/configuration/package-json';
 import { parseConfigurations } from '../../utils/parse-configurations';
 import { mainModule as getMainModule } from '../../utils/main-module';
-import { State } from './types'
+import { State } from './types';
 
 export function currentSandbox(state: State) {
   return state.sandboxes.get(state.currentId);

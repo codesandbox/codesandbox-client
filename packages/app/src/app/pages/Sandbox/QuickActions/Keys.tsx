@@ -3,7 +3,7 @@ import styled from 'app/styled-components';
 import { formatKey } from 'common/utils/keybindings';
 
 type Props = {
-  bindings: string[]
+  bindings: string[];
 };
 
 const Key = styled.div`
@@ -19,5 +19,8 @@ const Key = styled.div`
   color: rgba(255, 255, 255, 0.9);
 `;
 
-export default ({ bindings }: Props) =>
-<React.Fragment>{bindings.map(key => <Key key={key}>{formatKey(key)}</Key>)}</React.Fragment>
+export default ({ bindings }: Props) => (
+  <React.Fragment>
+    {bindings.map(key => <Key key={key}>{formatKey(key)}</Key>)}
+  </React.Fragment>
+);
