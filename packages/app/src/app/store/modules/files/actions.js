@@ -64,16 +64,34 @@ export function createOptimisticDirectory({ state, props, utils }) {
 
 export function updateOptimisticModule({ state, props }) {
   const sandbox = state.get('editor.currentSandbox');
-  const optimisticModuleIndex = sandbox.modules.findIndex(
+  let optimisticModuleIndex = sandbox.modules.findIndex(
     module => module.shortid === props.optimisticModule.shortid
   );
 
-  state.merge(
-    `editor.sandboxes.${sandbox.id}.modules.${optimisticModuleIndex}`,
-    {
-      id: props.newModule.id,
-      shortid: props.newModule.shortid,
-    }
+  const existingModule = state.get(
+    `editor.sandboxes.${sandbox.id}.modules.${optimisticModuleIndex}`
+  );
+  const newModule = {
+    ...existingModule,
+    id: props.newModule.id,
+    shortid: props.newModule.shortid,
+  };
+
+  state.push(`editor.sandboxes.${sandbox.id}.modules`, newModule);
+
+  if (
+    state.get('editor.currentModuleShortid') === props.optimisticModule.shortid
+  ) {
+    state.set(`editor.currentModuleShortid`, props.newModule.shortid);
+  }
+
+  optimisticModuleIndex = sandbox.modules.findIndex(
+    module => module.shortid === props.optimisticModule.shortid
+  );
+  state.splice(
+    `editor.sandboxes.${sandbox.id}.modules`,
+    optimisticModuleIndex,
+    1
   );
 }
 
