@@ -1,4 +1,3 @@
-/* eslint:disable no-use-before-define */
 // In production, we register a service worker to serve assets from local cache.
 
 // This lets the app load faster on subsequent visits in production, and gives
@@ -35,25 +34,7 @@ export default function register(swUrl, sendNotification) {
     window.addEventListener('load', () => {
       if (!isLocalhost && !isHttp) {
         // It's neither localhost nor http. Just register service worker
-        if ('storage' in navigator && 'estimate' in navigator.storage) {
-          navigator.storage.estimate().then(({ usage, quota }) => {
-            console.log(`Using ${usage} out of ${quota} bytes.`);
-
-            // The quota will be exceeded in this case, because static assets are cloned
-            if (quota < usage * 1.5) {
-              console.log('Purging all caches to make room for new version...');
-              self.caches.keys().then(names => {
-                names.forEach(name => {
-                  caches.delete(name);
-                });
-
-                registerValidSW(swUrl, sendNotification);
-              });
-            } else {
-              registerValidSW(swUrl, sendNotification);
-            }
-          });
-        }
+        registerValidSW(swUrl, sendNotification);
       } else if (isLocalhost) {
         // This is running on localhost. Lets check if a service worker still exists or not.
         checkValidServiceWorker(swUrl);
@@ -68,7 +49,6 @@ function registerValidSW(swUrl, sendNotification) {
     .then(registration => {
       registration.onupdatefound = () => {
         const installingWorker = registration.installing;
-
         installingWorker.onstatechange = () => {
           if (installingWorker.state === 'installed') {
             if (navigator.serviceWorker.controller) {
@@ -92,6 +72,35 @@ function registerValidSW(swUrl, sendNotification) {
                   'success'
                 );
               }
+            }
+          } else if (installingWorker.state === 'redundant') {
+            if ('storage' in navigator && 'estimate' in navigator.storage) {
+              navigator.storage.estimate().then(results => {
+                const percentUsed = results.usage / results.quota * 100;
+                // Let's assume that if we're using 95% of our quota, then this failure
+                // was due to quota exceeded errors.
+                // TODO: Hardcoding a threshold stinks.
+                if (percentUsed >= 0.95) {
+                  // Get rid of the existing SW so that we're not stuck
+                  // with the previously cached content.
+                  registration.unregister();
+
+                  // Let's assume that we have some way of doing this without inadvertantly
+                  // blowing away storage being used on the origin by something other than
+                  // our service worker.
+                  // I don't think that the Clear-Site-Data: header helps here, unfortunately.
+                  self.caches.keys().then(names => {
+                    names.forEach(name => {
+                      self.caches.delete(name);
+                    });
+                  });
+
+                  // TODO clear indexeddb
+                }
+              });
+            } else {
+              // What about browsers that don't support navigator.storage.estimate()?
+              // There's no way of guessing why the service worker is redundant.
             }
           }
         };
