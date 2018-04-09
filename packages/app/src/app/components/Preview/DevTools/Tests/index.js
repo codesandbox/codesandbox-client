@@ -233,6 +233,13 @@ class Tests extends React.Component<Props, State> {
 
           this.setState(
             immer(this.state, state => {
+              if (!state.files[data.path]) {
+                state.files[data.path] = {
+                  tests: {},
+                  fileName: data.path,
+                };
+              }
+
               const currentTest =
                 state.files[test.path].tests[testName.join('||||')];
               if (!currentTest) {
