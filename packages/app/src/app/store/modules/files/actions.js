@@ -15,18 +15,14 @@ export function whenModuleIsSelected({ state, props, path }) {
 export function getUploadedFiles({ api, path }) {
   return api
     .get('/users/current_user/uploads')
-    .then(data => path.success({ uploadedFiles: data }))
+    .then(data => path.success({ uploadedFilesInfo: data }))
     .catch(error => path.error({ error }));
 }
 
-export function deleteUploadedFile({ api, state, props, path }) {
+export function deleteUploadedFile({ api, props, path }) {
   return api
     .delete(`/users/current_user/uploads/${props.id}`)
-    .then(() =>
-      path.success({
-        uploadedFiles: state.uploadedFiles.filter(f => f.id !== props.id),
-      })
-    )
+    .then(() => path.success())
     .catch(error => path.error({ error }));
 }
 

@@ -14,17 +14,25 @@ import {
 import * as actions from './actions';
 
 export const getUploadedFiles = [
+  set(props`modal`, 'storageManagement'),
+  setModal,
   actions.getUploadedFiles,
   {
-    success: [set(state`uploadedFiles`, props`uploadedFiles`)],
-    error: [addNotification('Unable to get uploaded files', 'error')],
+    success: [
+      set(state`uploadedFiles`, props`uploadedFilesInfo.uploads`),
+      set(state`maxStorage`, props`uploadedFilesInfo.maxSize`),
+      set(state`usedStorage`, props`uploadedFilesInfo.currentSize`),
+    ],
+    error: [
+      addNotification('Unable to get uploaded files information', 'error'),
+    ],
   },
 ];
 
 export const deleteUploadedFile = [
   actions.deleteUploadedFile,
   {
-    success: [set(state`uploadedFiles`, props`uploadedFiles`)],
+    success: [set(state`uploadedFiles`, null), getUploadedFiles],
     error: [addNotification('Unable to delete uploaded file', 'error')],
   },
 ];

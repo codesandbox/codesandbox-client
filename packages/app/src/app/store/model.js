@@ -67,10 +67,12 @@ export default {
       types.model({
         id: types.identifier(),
         url: types.string,
-        object_size: types.number,
+        objectSize: types.number,
         name: types.string,
         path: types.string,
       })
     )
   ),
+  maxStorage: types.number,
+  usedStorage: types.number,
 };
