@@ -218,7 +218,9 @@ export function unsetDirtyTab({ state }) {
     tab => tab.moduleShortid === currentModule.shortid
   );
 
-  state.set(`editor.tabs.${tabIndex}.dirty`, false);
+  if (tabIndex !== -1) {
+    state.set(`editor.tabs.${tabIndex}.dirty`, false);
+  }
 }
 
 export function outputChangedModules({ state }) {
