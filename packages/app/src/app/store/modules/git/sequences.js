@@ -4,6 +4,13 @@ import * as actions from './actions';
 
 export const changeRepoTitle = set(state`git.repoTitle`, props`title`);
 
+export const changeSubject = set(state`git.subject`, props`subject`);
+
+export const changeDescription = set(
+  state`git.description`,
+  props`description`
+);
+
 export const changeMessage = set(state`git.message`, props`message`);
 
 export const createRepo = [
@@ -43,6 +50,8 @@ export const createCommit = [
     true: [wait(1000), set(state`currentModal`, null)],
     false: [],
   },
+  set(state`git.subject`, ''),
+  set(state`git.description`, ''),
   set(state`git.message`, ''),
   set(state`git.originalGitChanges`, null),
 ];
@@ -56,6 +65,8 @@ export const createPr = [
   set(state`git.isCreatingPr`, false),
   wait(3000),
   actions.openPr,
+  set(state`git.subject`, ''),
+  set(state`git.description`, ''),
   set(state`git.message`, ''),
   actions.redirectToPr,
 ];
