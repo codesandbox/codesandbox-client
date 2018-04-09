@@ -73,7 +73,7 @@ export const uploadFile = [
       set(state`uploadedFiles`, null),
       createModule,
     ],
-    error: [addNotification('Unable to upload file', props`error`)],
+    error: [addNotification('Unable to upload file', 'error')],
   },
   closeModal,
 ];
