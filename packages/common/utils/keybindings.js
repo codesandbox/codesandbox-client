@@ -5,15 +5,19 @@ const metaKey = isMac ? 'Meta' : 'Alt';
 const metaOrCtrlKey = isMac ? 'Meta' : 'Control';
 
 export function normalizeKey(e: KeyboardEvent) {
-  if (e.key.split('').length === 1) {
-    const key = String.fromCharCode(e.keyCode).toUpperCase();
-    if (key === ' ') {
-      return 'Space';
+  if (e.key) {
+    if (e.key.split('').length === 1) {
+      const key = String.fromCharCode(e.keyCode).toUpperCase();
+      if (key === ' ') {
+        return 'Space';
+      }
+      return key;
     }
-    return key;
+
+    return e.key;
   }
 
-  return e.key;
+  return undefined;
 }
 
 export function formatKey(key: string) {
