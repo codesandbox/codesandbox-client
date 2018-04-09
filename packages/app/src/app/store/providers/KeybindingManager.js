@@ -137,19 +137,21 @@ let isStarted = false;
 
 export default Provider({
   set(userKeybindings = []) {
-    const keybindings = userKeybindings.concat(
-      Object.keys(KEYBINDINGS).reduce(
-        (currentKeybindings, key) =>
-          currentKeybindings.concat({
-            key,
-            bindings: KEYBINDINGS[key].bindings,
-          }),
-        []
-      )
-    );
+    const keybindings = [...userKeybindings];
+
+    Object.keys(KEYBINDINGS).forEach(bindingName => {
+      if (keybindings.find(x => x.key === bindingName)) {
+        return;
+      }
+
+      keybindings.push({
+        key: bindingName,
+        bindings: KEYBINDINGS[bindingName].bindings,
+      });
+    });
 
     state.keybindings = keybindings.filter(
-      binding => binding.bindings && binding.bindings.length
+      binding => binding.bindings && binding.bindings.filter(Boolean).length
     );
   },
   start() {

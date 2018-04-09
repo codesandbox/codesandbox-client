@@ -107,6 +107,7 @@ export default class Manager {
     this.webpackHMR = false;
     this.hardReload = false;
     this.hmrStatus = 'idle';
+    this.isFirstLoad = true;
     this.transpiledModulesByHash = {};
     this.configurations = {};
 
@@ -195,7 +196,7 @@ export default class Manager {
   }
 
   evaluateModule(module: Module, force: boolean = false) {
-    if (this.hardReload) {
+    if (this.hardReload && !this.isFirstLoad) {
       // Do a hard reload
       document.location.reload();
       return {};
@@ -600,6 +601,7 @@ export default class Manager {
   updateData(modules: { [path: string]: Module }) {
     this.transpileJobs = {};
     this.hardReload = false;
+    this.isFirstLoad = false;
 
     this.modules = modules;
 

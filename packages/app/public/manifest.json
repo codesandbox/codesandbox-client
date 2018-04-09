@@ -9,7 +9,7 @@
       "type": "image/png"
     }
   ],
-  "start_url": "/s/new?utm_source=homescreen",
+  "start_url": "/s/?utm_source=homescreen",
   "display": "standalone",
   "theme_color": "#6CAEDD",
   "background_color": "#1C2022"

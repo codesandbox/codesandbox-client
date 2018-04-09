@@ -49,7 +49,7 @@ export const KEYBINDINGS = {
   workspace: {
     title: 'Toggle Sidebar',
     type: 'View',
-    bindings: [[metaOrCtrlKey], ['Shift']],
+    bindings: [],
     signal: 'workspace.toggleCurrentWorkspaceItem',
   },
 

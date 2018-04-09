@@ -72,7 +72,6 @@ self.addEventListener('message', async event => {
       self.postMessage({
         type: 'add-dependency',
         path: assetPath,
-        isEntry: true,
       });
 
       resources.push(assetPath);
@@ -158,7 +157,8 @@ setupHTML();
   resources.forEach(resource => {
     const resourcePath = JSON.stringify(resource);
     compiledCode += `\n`;
-    compiledCode += `\trequire(${resourcePath});`;
+    compiledCode += `\trequire(${resourcePath});\n`;
+    compiledCode += `\tmodule.hot.accept(${resourcePath});`;
   });
   compiledCode += '\n}';
 

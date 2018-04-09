@@ -444,7 +444,13 @@ class EditorPreview extends React.Component<Props, State> {
                 this.devtools = component;
               }
             }}
-            setDragging={() => this.props.signals.editor.resizingStarted()}
+            setDragging={dragging => {
+              if (dragging) {
+                this.props.signals.editor.resizingStarted();
+              } else {
+                this.props.signals.editor.resizingStopped();
+              }
+            }}
             sandboxId={sandbox.id}
             shouldExpandDevTools={store.preferences.showDevtools}
             zenMode={preferences.settings.zenMode}

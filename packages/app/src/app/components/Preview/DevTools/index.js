@@ -235,9 +235,6 @@ export default class DevTools extends React.PureComponent<Props, State> {
         e.stopPropagation();
         this.handleClick();
       } else {
-        // We do this to force a recalculation of the iframe height, this doesn't
-        // happen when pointer events are disabled and in turn disables scroll.
-        // It's hacky, but it's to fix a bug in the browser.
         setTimeout(() => {
           const height = this.state.height;
           if (height > 64) {

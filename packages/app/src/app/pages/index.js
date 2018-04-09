@@ -99,7 +99,7 @@ class Routes extends React.Component<Props> {
         <Notifications />
         <Content>
           <Switch>
-            <Route exact path="/" render={() => <Redirect to="/s/new" />} />
+            <Route exact path="/" render={() => <Redirect to="/s" />} />
             <Route exact path="/s/github" component={GitHub} />
             <Route exact path="/s/cli" component={CliInstructions} />
             <Route exact path="/s" component={NewSandbox} />

@@ -141,7 +141,7 @@ function setupCompiler(port, protocol) {
 }
 
 function openBrowser(port, protocol) {
-  const url = protocol + '://localhost:' + port + '/s/new';
+  const url = protocol + '://localhost:' + port + '/s';
   if (process.platform === 'darwin') {
     try {
       // Try our best to reuse existing tab
@@ -186,7 +186,12 @@ function addMiddleware(devServer, index) {
     })
   );
   if (process.env.LOCAL_SERVER) {
-    devServer.use(cors());
+    devServer.use(
+      cors({
+        origin: ['http://localhost:3000', 'http://localhost:3002'],
+        credentials: true,
+      })
+    );
     devServer.use(
       '/api',
       proxy({

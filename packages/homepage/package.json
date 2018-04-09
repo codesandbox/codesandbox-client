@@ -38,7 +38,8 @@
   "main": "n/a",
   "scripts": {
     "patch": "sed -i -e 's/if(c\\.initial) return;/if(!c||c.initial) return;/g' ../../node_modules/extract-text-webpack-plugin/index.js",
-    "build": "yarn patch && gatsby build",
+    "build": "yarn patch && gatsby build && yarn remove-styles",
+    "remove-styles": "rimraf public/styles.css",
     "start": "gatsby develop",
     "lint": "echo TODO && exit 0",
     "format": "prettier --trailing-comma es5 --no-semi --single-quote --write 'src/**/*.js'",
@@ -46,7 +47,8 @@
   },
   "devDependencies": {
     "gatsby-cli": "^1.1.20",
-    "prettier": "^1.8.2"
+    "prettier": "^1.8.2",
+    "rimraf": "^2.6.2"
   },
   "browserslist": [
     "> 1%",
