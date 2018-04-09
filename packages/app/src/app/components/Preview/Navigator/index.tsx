@@ -30,8 +30,8 @@ export type Props = {
   toggleProjectView: () => void;
   openNewWindow: () => void;
   zenMode: boolean;
-  alignRight: () => void;
-  alignBottom: () => void;
+  alignRight: (e: React.MouseEvent<HTMLElement>) => void;
+  alignBottom: (e: React.MouseEvent<HTMLElement>) => void;
 };
 
 const Navigator: React.SFC<Props> = ({

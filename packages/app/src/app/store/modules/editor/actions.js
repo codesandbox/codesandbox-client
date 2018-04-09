@@ -345,7 +345,7 @@ export function warnUnloadingContent({ browser, state }) {
 
 export function setCode({ props, state }) {
   const currentId = state.get('editor.currentId');
-  const moduleShortid = props.moduleShortid;
+  const { moduleShortid } = props;
   const moduleIndex = state
     .get('editor.currentSandbox')
     .modules.findIndex(module => module.shortid === moduleShortid);
