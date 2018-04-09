@@ -1,3 +1,4 @@
+/* eslint:disable no-use-before-define */
 // In production, we register a service worker to serve assets from local cache.
 
 // This lets the app load faster on subsequent visits in production, and gives
@@ -34,7 +35,25 @@ export default function register(swUrl, sendNotification) {
     window.addEventListener('load', () => {
       if (!isLocalhost && !isHttp) {
         // It's neither localhost nor http. Just register service worker
-        registerValidSW(swUrl, sendNotification);
+        if ('storage' in navigator && 'estimate' in navigator.storage) {
+          navigator.storage.estimate().then(({ usage, quota }) => {
+            console.log(`Using ${usage} out of ${quota} bytes.`);
+
+            // The quota will be exceeded in this case, because static assets are cloned
+            if (quota < usage * 1.5) {
+              console.log('Purging all caches to make room for new version...');
+              self.caches.keys().then(names => {
+                names.forEach(name => {
+                  caches.delete(name);
+                });
+
+                registerValidSW(swUrl, sendNotification);
+              });
+            } else {
+              registerValidSW(swUrl, sendNotification);
+            }
+          });
+        }
       } else if (isLocalhost) {
         // This is running on localhost. Lets check if a service worker still exists or not.
         checkValidServiceWorker(swUrl);
@@ -49,20 +68,6 @@ function registerValidSW(swUrl, sendNotification) {
     .then(registration => {
       registration.onupdatefound = () => {
         const installingWorker = registration.installing;
-
-        installingWorker.onerror = () => {
-          // If there's an error we purge all caches, the error is likely
-          // from a QuotaExceeded (no disk space) and we want the newest update
-          // regardless
-          console.log(
-            'Got an error while installing service worker, purging all caches...'
-          );
-          self.caches.keys().then(names => {
-            names.forEach(name => {
-              caches.delete(name);
-            });
-          });
-        };
 
         installingWorker.onstatechange = () => {
           if (installingWorker.state === 'installed') {
