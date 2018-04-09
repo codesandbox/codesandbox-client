@@ -20,7 +20,9 @@ function FilesList({ files, deleteFile }) {
         {sortBy(files, 'name').map((f, i) => (
           <FileRow index={i} key={f.id}>
             <td>
-              <a href={f.url}>{f.name}</a>
+              <a target="_blank" rel="noreferrer noopener" href={f.url}>
+                {f.name}
+              </a>
             </td>
             <td>{moment(f.insertedAt).format('ll')}</td>
             <td>{filesize(f.objectSize)}</td>
