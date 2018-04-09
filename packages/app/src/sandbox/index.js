@@ -9,7 +9,7 @@ import { generateFileFromSandbox } from 'common/templates/configuration/package-
 import setupHistoryListeners from './url-listeners';
 import compile, { getCurrentManager } from './compile';
 import setupConsole from './console';
-import transformJSON from './console/transform-json';
+import { Encode } from 'console-feed'
 
 const host = process.env.CODESANDBOX_HOST;
 
@@ -64,7 +64,7 @@ requirePolyfills().then(() => {
           dispatch({
             type: 'eval-result',
             error,
-            result: transformJSON(result),
+            result: Encode(result),
           });
         } catch (e) {
           console.error(e);

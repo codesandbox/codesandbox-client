@@ -3,8 +3,10 @@ import { listen, dispatch, actions } from 'codesandbox-api';
 import Tooltip from 'common/components/Tooltip';
 import FileIcon from 'react-icons/lib/md/insert-drive-file';
 
+import { Console } from 'console-feed';
+import { inspectorTheme } from '../Console/elements';
+
 import { Container, File, Path, FileName, Actions } from './elements';
-import Message from '../Console/Message';
 
 type State = {
   corrections: {
@@ -47,7 +49,7 @@ class Problems extends React.PureComponent<*, State> {
 
       const newMessages = [
         ...(this.state.corrections[path] || []),
-        { type: 'error', message: data.message },
+        { method: 'error', data: [data.message] },
       ];
 
       this.setState({
@@ -87,7 +89,10 @@ class Problems extends React.PureComponent<*, State> {
         {root && (
           <div>
             <File>Root</File>
-            {root.map((message, i) => (
+            {/*
+              What's going on here?
+              */
+            /* {root.map((message, i) => (
               <Message
                 message={{
                   logType: message.type,
@@ -96,7 +101,7 @@ class Problems extends React.PureComponent<*, State> {
                 // eslint-disable-next-line react/no-array-index-key
                 key={i}
               />
-            ))}
+            ))} */}
           </div>
         )}
         {files.map(file => {
@@ -114,16 +119,11 @@ class Problems extends React.PureComponent<*, State> {
                   </Tooltip>
                 </Actions>
               </File>
-              {this.state.corrections[file].map((message, i) => (
-                <Message
-                  message={{
-                    logType: message.type,
-                    arguments: [message.message],
-                  }}
-                  // eslint-disable-next-line react/no-array-index-key
-                  key={i}
-                />
-              ))}
+              <Console
+                logs={this.state.corrections[file]}
+                variant="dark"
+                styles={inspectorTheme}
+              />
             </div>
           );
         })}
