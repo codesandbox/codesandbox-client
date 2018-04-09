@@ -1,5 +1,4 @@
 import * as React from 'react';
-
 import { TweenMax, Elastic } from 'gsap';
 import store from 'store/dist/store.modern';
 import MinimizeIcon from 'react-icons/lib/fa/angle-up';
@@ -19,47 +18,81 @@ function unFocus(document, window) {
   } else {
     try {
       window.getSelection().removeAllRanges();
-      // eslint-disable-next-line no-empty
-    } catch (e) {}
+    } catch (e) { } // eslint-disable-line
   }
 }
 
-function normalizeTouchEvent(event: TouchEvent) {
-  return {
-    ...event,
-    clientX: event.touches[0].clientX,
-    clientY: event.touches[0].clientY,
-  };
+interface NormalizedTouchEvent extends TouchEvent {
+  clientX: number;
+  clientY: number;
+}
+
+interface NormalizedReactTouchEvent extends React.TouchEvent<HTMLElement> {
+  clientX: number;
+  clientY: number;
+}
+
+function normalizeTouchEvent(cb): (event: TouchEvent) => any {
+  return event =>
+    cb({
+      ...event,
+      clientX: event.touches[0].clientX,
+      clientY: event.touches[0].clientY,
+    } as NormalizedTouchEvent);
+}
+
+function normalizeReactTouchEvent(
+  cb
+): (event: React.TouchEvent<HTMLElement>) => any {
+  return event =>
+    cb({
+      ...event,
+      clientX: event.touches[0].clientX,
+      clientY: event.touches[0].clientY,
+    } as NormalizedReactTouchEvent);
 }
 
 const PANES = {
   [console.title]: console,
   [problems.title]: problems,
   [tests.title]: tests,
+} as {
+  [paneType: string]: {
+    title: string;
+    Content: React.ComponentType<any>;
+    actions: {
+      title: string;
+      onClick: () => void;
+      Icon: React.ComponentType<any>;
+    }[];
+  };
 };
 
-type Action = {
-  title: string;
-  onClick: () => void;
-  Icon: React.ComponentClass<{ style: {}; onClick: () => void }>;
-};
+enum StatusType {
+  Success = 'success',
+  Warning = 'warning',
+  Error = 'error',
+  Info = 'info',
+  Clear = 'clear',
+}
 
 export type Status = {
   unread: number;
-  type: 'info' | 'warning' | 'error';
+  type: StatusType;
 };
 
-export type Props = {
+type Props = {
   sandboxId: string;
   setDragging?: (dragging: boolean) => void;
   zenMode?: boolean;
   shouldExpandDevTools?: boolean;
   devToolsOpen?: boolean;
   setDevToolsOpen?: (open: boolean) => void;
+  view?: 'browser' | 'console' | 'tests';
 };
 
 type State = {
-  status?: { [title: string]: Status };
+  status: { [title: string]: Status };
   height: number;
   mouseDown: boolean;
   hidden: boolean;
@@ -69,19 +102,34 @@ type State = {
 };
 
 export default class DevTools extends React.PureComponent<Props, State> {
-  state = {
-    status: {},
-    currentPane: PANES[Object.keys(PANES)[0]].title,
+  constructor(props: Props) {
+    super(props);
 
-    mouseDown: false,
-    startY: 0,
-    startHeight: 0,
+    const hasView = props.view && props.view !== 'browser';
 
-    hidden: true,
+    let currentPane = PANES[Object.keys(PANES)[0]].title;
+    if (hasView) {
+      if (props.view === 'tests') {
+        currentPane = tests.title;
+      } else if (props.view === 'console') {
+        currentPane = console.title;
+      }
+    }
 
-    height: 2 * 16,
-  };
-  node: HTMLElement;
+    this.state = {
+      status: {},
+      currentPane,
+
+      mouseDown: false,
+      startY: 0,
+      startHeight: 0,
+
+      hidden: !hasView,
+
+      height: hasView ? 5000 : 2 * 16,
+    };
+  }
+
   componentWillReceiveProps(nextProps: Props) {
     if (nextProps.sandboxId !== this.props.sandboxId) {
       this.setState({
@@ -106,8 +154,18 @@ export default class DevTools extends React.PureComponent<Props, State> {
   componentDidMount() {
     document.addEventListener('mouseup', this.handleMouseUp, false);
     document.addEventListener('mousemove', this.handleMouseMove, false);
-    document.addEventListener('touchend', this.handleTouchEnd, false);
-    document.addEventListener('touchmove', this.handleTouchMove, false);
+    document.addEventListener(
+      'touchend',
+      // @ts-ignore, f*** typing
+      normalizeTouchEvent(this.handleMouseUp),
+      false
+    );
+    document.addEventListener(
+      'touchmove',
+      // @ts-ignore, f*** typing
+      normalizeTouchEvent(this.handleTouchMove),
+      false
+    );
 
     if (this.props.shouldExpandDevTools) {
       this.openDevTools();
@@ -115,12 +173,21 @@ export default class DevTools extends React.PureComponent<Props, State> {
   }
 
   componentWillUnmount() {
-    // eslint-disable-next-line no-unused-vars
-    this.updateStatus = (title: string) => {};
+    this.updateStatus = () => () => null;
     document.removeEventListener('mouseup', this.handleMouseUp, false);
     document.removeEventListener('mousemove', this.handleMouseMove, false);
-    document.removeEventListener('touchend', this.handleTouchEnd, false);
-    document.removeEventListener('touchmove', this.handleTouchMove, false);
+    document.removeEventListener(
+      'touchend',
+      // @ts-ignore, f*** typing
+      normalizeTouchEvent(this.handleTouchEnd),
+      false
+    );
+    document.removeEventListener(
+      'touchmove',
+      // @ts-ignore, f*** typing
+      normalizeTouchEvent(this.handleTouchMove),
+      false
+    );
   }
 
   setHidden = (hidden: boolean) => {
@@ -142,32 +209,38 @@ export default class DevTools extends React.PureComponent<Props, State> {
     });
   };
 
-  updateStatus: (id: string) => void = (title: string) => (
-    status: 'success' | 'warning' | 'error' | 'info' | 'clear',
+  updateStatus = (title: string) => (
+    statusType: StatusType,
     count?: number
   ) => {
     if (!this.state.hidden && this.state.currentPane === title) {
       return;
     }
 
-    const currentStatus = (status !== 'clear' && this.state.status[title]) || {
+    const currentStatus = (statusType !== StatusType.Clear &&
+      this.state.status[title]) || {
       unread: 0,
-      type: 'info',
+      type: StatusType.Info,
     };
-    let newStatus = currentStatus.type;
+    let newStatusType = currentStatus.type;
 
     if (
-      status === 'success' &&
-      (newStatus !== 'error' && newStatus !== 'warning')
+      statusType === StatusType.Success &&
+      (newStatusType !== StatusType.Error &&
+        newStatusType !== StatusType.Warning)
     ) {
-      newStatus = 'success';
-    } else if (status === 'warning' && newStatus !== 'error') {
-      newStatus = 'warning';
-    } else if (status === 'error') {
-      newStatus = 'error';
+      newStatusType = StatusType.Success;
+    } else if (
+      statusType === StatusType.Warning &&
+      newStatusType !== StatusType.Error
+    ) {
+      newStatusType = StatusType.Warning;
+    } else if (status === StatusType.Error) {
+      newStatusType = StatusType.Error;
     }
 
-    let unread = currentStatus.unread + (status !== 'clear' ? 1 : 0);
+    let unread =
+      currentStatus.unread + (statusType !== StatusType.Clear ? 1 : 0);
 
     if (count != null) {
       unread = count;
@@ -177,20 +250,20 @@ export default class DevTools extends React.PureComponent<Props, State> {
       status: {
         ...this.state.status,
         [title]: {
-          type: newStatus,
+          type: newStatusType,
           unread,
         },
       },
     });
   };
 
-  handleTouchStart = (event: any) => {
-    if (event.touches && event.touches.length) {
-      this.handleMouseDown(normalizeTouchEvent(event));
-    }
-  };
-
-  handleMouseDown = (event: any) => {
+  handleMouseDown = (
+    event:
+      | MouseEvent
+      | React.MouseEvent<HTMLElement>
+      | NormalizedTouchEvent
+      | NormalizedReactTouchEvent
+  ) => {
     if (!this.state.mouseDown) {
       unFocus(document, window);
       this.setState({
@@ -204,11 +277,9 @@ export default class DevTools extends React.PureComponent<Props, State> {
     }
   };
 
-  handleTouchEnd = (event: any) => {
-    this.handleMouseUp(event);
-  };
-
-  handleMouseUp = (e: Event) => {
+  handleMouseUp = (
+    e: MouseEvent | NormalizedTouchEvent | NormalizedReactTouchEvent
+  ) => {
     if (this.state.mouseDown) {
       this.setState({ mouseDown: false });
       if (this.props.setDragging) {
@@ -223,9 +294,6 @@ export default class DevTools extends React.PureComponent<Props, State> {
         e.stopPropagation();
         this.handleClick();
       } else {
-        // We do this to force a recalculation of the iframe height, this doesn't
-        // happen when pointer events are disabled and in turn disables scroll.
-        // It's hacky, but it's to fix a bug in the browser.
         setTimeout(() => {
           const { height } = this.state;
           if (height > 64) {
@@ -233,12 +301,6 @@ export default class DevTools extends React.PureComponent<Props, State> {
           }
         }, 50);
       }
-    }
-  };
-
-  handleTouchMove = (event: any) => {
-    if (event.touches && event.touches.length) {
-      this.handleMouseMove(normalizeTouchEvent(event));
     }
   };
 
@@ -298,12 +360,14 @@ export default class DevTools extends React.PureComponent<Props, State> {
       status: {
         ...this.state.status,
         [title]: {
-          type: 'info',
+          type: StatusType.Info,
           unread: 0,
         },
       },
     });
   };
+
+  node: HTMLElement;
 
   render() {
     const { sandboxId, zenMode } = this.props;
@@ -318,13 +382,12 @@ export default class DevTools extends React.PureComponent<Props, State> {
         }}
         style={{
           height,
-          minHeight: height,
           position: 'relative',
           display: 'flex',
         }}
       >
         <Header
-          onTouchStart={this.handleTouchStart}
+          onTouchStart={normalizeReactTouchEvent(this.handleMouseDown)}
           onMouseDown={this.handleMouseDown}
         >
           {Object.keys(PANES).map(title => (
@@ -348,7 +411,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
           ))}
 
           <Actions>
-            {(actions as Action[]).map(({ title, onClick, Icon }) => (
+            {actions.map(({ title, onClick, Icon }) => (
               <Tooltip
                 style={{ pointerEvents: hidden ? 'none' : 'initial' }}
                 title={title}
@@ -378,7 +441,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
             <Content
               key={title}
               hidden={hidden || title !== this.state.currentPane}
-              updateStatus={this.updateStatus}
+              updateStatus={this.updateStatus(title)}
               sandboxId={sandboxId}
             />
           );

@@ -17,6 +17,7 @@ import { Status } from './types';
 export type Props = {
   hidden: boolean;
   sandboxId: string;
+  standalone?: boolean;
   updateStatus: (
     type: 'success' | 'warning' | 'error' | 'info' | 'clear',
     count?: number
@@ -75,7 +76,7 @@ class Tests extends React.Component<Props, State> {
   state = INITIAL_STATE;
   listener: () => void;
   currentDescribeBlocks: string[] = [];
-  lastFiles: {
+  _lastFiles: {
     [path: string]: {
       file: File;
       status: Status;
@@ -84,6 +85,9 @@ class Tests extends React.Component<Props, State> {
 
   componentDidMount() {
     this.listener = listen(this.handleMessage);
+    if (this.props.standalone) {
+      this.runAllTests();
+    }
   }
 
   componentWillUnmount() {
@@ -114,13 +118,17 @@ class Tests extends React.Component<Props, State> {
       switch (data.event) {
         case 'initialize_tests': {
           this.currentDescribeBlocks = [];
-          this.props.updateStatus('clear');
+          if (this.props.updateStatus) {
+            this.props.updateStatus('clear');
+          }
           this.setState(INITIAL_STATE);
           break;
         }
         case 'total_test_start': {
           this.currentDescribeBlocks = [];
-          this.props.updateStatus('clear');
+          if (this.props.updateStatus) {
+            this.props.updateStatus('clear');
+          }
           this.setState({
             ...this.state,
             running: true,
@@ -141,11 +149,11 @@ class Tests extends React.Component<Props, State> {
             f => this.getStatus(this.state.files[f]) === Status.PASS
           ).length;
 
-          if (failingTests > 0) {
+          if (this.props.updateStatus && failingTests > 0) {
             this.props.updateStatus('error', failingTests);
-          } else if (passingTests === files.length) {
+          } else if (this.props.updateStatus && passingTests === files.length) {
             this.props.updateStatus('success', passingTests);
-          } else {
+          } else if (this.props.updateStatus) {
             // Not all tests are run
             this.props.updateStatus('warning', files.length - passingTests);
           }
@@ -276,7 +284,7 @@ class Tests extends React.Component<Props, State> {
       return Status.IDLE;
     }
 
-    const lastFile = this.lastFiles[file.fileName];
+    const lastFile = this._lastFiles[file.fileName];
 
     // Simple memoization
     if (lastFile && file === lastFile.file && lastFile.status != null) {
@@ -309,7 +317,7 @@ class Tests extends React.Component<Props, State> {
       return prev;
     }, Status.IDLE) as Status;
 
-    this.lastFiles[file.fileName] = { file, status };
+    this._lastFiles[file.fileName] = { file, status };
 
     return status;
   };

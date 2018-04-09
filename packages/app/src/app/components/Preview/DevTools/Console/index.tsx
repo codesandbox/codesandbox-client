@@ -105,7 +105,9 @@ class Console extends React.Component<Props, State> {
   };
 
   addMessage(message, args, type?) {
-    this.props.updateStatus(this.getType(message));
+    if (this.props.updateStatus) {
+      this.props.updateStatus(this.getType(message));
+    }
 
     this.setState({
       messages: [
@@ -126,7 +128,9 @@ class Console extends React.Component<Props, State> {
   }
 
   clearConsole = () => {
-    this.props.updateStatus('clear');
+    if (this.props.updateStatus) {
+      this.props.updateStatus('clear');
+    }
     this.setState({ messages: [] });
   };
 
