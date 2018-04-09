@@ -13,7 +13,6 @@ export default Module({
     isFetching: false,
     subject: '',
     description: '',
-    message: '',
     originalGitChanges: null,
     commit: null,
     pr: null,
@@ -27,7 +26,6 @@ export default Module({
     createCommitClicked: sequences.createCommit,
     subjectChanged: sequences.changeSubject,
     descriptionChanged: sequences.changeDescription,
-    messageChanged: sequences.changeMessage,
     createPrClicked: sequences.createPr,
   },
 });

@@ -11,8 +11,6 @@ export const changeDescription = set(
   props`description`
 );
 
-export const changeMessage = set(state`git.message`, props`message`);
-
 export const createRepo = [
   actions.whenValidRepo,
   {
@@ -52,7 +50,6 @@ export const createCommit = [
   },
   set(state`git.subject`, ''),
   set(state`git.description`, ''),
-  set(state`git.message`, ''),
   set(state`git.originalGitChanges`, null),
 ];
 
@@ -67,6 +64,5 @@ export const createPr = [
   actions.openPr,
   set(state`git.subject`, ''),
   set(state`git.description`, ''),
-  set(state`git.message`, ''),
   actions.redirectToPr,
 ];

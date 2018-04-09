@@ -16,7 +16,6 @@ export default {
   isFetching: types.boolean,
   subject: types.string,
   description: types.string,
-  message: types.string,
   originalGitChanges: types.maybe(
     types.model({
       added: types.array(types.string),

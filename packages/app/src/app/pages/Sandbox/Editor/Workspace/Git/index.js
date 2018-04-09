@@ -82,9 +82,7 @@ class Git extends React.Component {
                   <WorkspaceSubtitle
                     style={{
                       color:
-                        store.git.subject.length > 72
-                          ? `#F27777`
-                          : `rgb(84,99,98)`,
+                        store.git.subject.length > 72 ? `#F27777` : `#556362`,
                       textAlign: 'right',
                     }}
                   >
