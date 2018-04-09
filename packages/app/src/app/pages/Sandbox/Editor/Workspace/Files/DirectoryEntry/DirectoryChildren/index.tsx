@@ -14,12 +14,10 @@ type ExternalProps = {
   markTabsNotDirty: () => void;
 };
 
-type Props = ExternalProps & WithCerebral;
+export type Props = ExternalProps & WithCerebral;
 
 class DirectoryChildren extends React.Component<Props> {
-  validateTitle = (id, title) => {
-    return !!validateTitle(id, title);
-  };
+  validateTitle = (id, title) => !!validateTitle(id, title);
 
   render() {
     const {

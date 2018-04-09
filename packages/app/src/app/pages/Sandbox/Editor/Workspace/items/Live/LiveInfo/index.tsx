@@ -3,10 +3,11 @@ import { sortBy } from 'lodash';
 import { observer } from 'mobx-react';
 import RecordIcon from 'react-icons/lib/md/fiber-manual-record';
 import Margin from 'common/components/spacing/Margin';
+import { RoomInfo } from 'app/store/modules/live/types';
 import User from '../User';
 import Countdown from '../Countdown';
 import { Description } from '../../../elements';
-import { RoomInfo } from 'app/store/modules/live/types';
+
 import {
   Container,
   Title,
@@ -19,7 +20,7 @@ import {
   ModeSelector,
 } from './elements';
 
-type Props = {
+export type Props = {
   roomInfo: RoomInfo;
   isOwner: boolean;
   ownerId: string;

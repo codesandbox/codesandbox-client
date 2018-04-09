@@ -20,7 +20,7 @@ function getIcon(type) {
   return <InfoIcon />;
 }
 
-type Props = {
+export type Props = {
   title: string;
   type: NotificationType;
   buttons: NotificationButton[];
@@ -32,25 +32,23 @@ const Notification: React.SFC<Props> = ({
   type,
   buttons = [],
   close,
-}) => {
-  return (
-    <Container type={type}>
-      <CloseIconHandler>
-        <CloseIcon onClick={close} />
-      </CloseIconHandler>
-      <Content>
-        {getIcon(type)}&nbsp;&nbsp;
-        <Title>{title}</Title>
-      </Content>
-      <Buttons>
-        {buttons.map(button => (
-          <Button key={button.title} type={type} onClick={button.action}>
-            {button.title}
-          </Button>
-        ))}
-      </Buttons>
-    </Container>
-  );
-};
+}) => (
+  <Container type={type}>
+    <CloseIconHandler>
+      <CloseIcon onClick={close} />
+    </CloseIconHandler>
+    <Content>
+      {getIcon(type)}&nbsp;&nbsp;
+      <Title>{title}</Title>
+    </Content>
+    <Buttons>
+      {buttons.map(button => (
+        <Button key={button.title} type={type} onClick={button.action}>
+          {button.title}
+        </Button>
+      ))}
+    </Buttons>
+  </Container>
+);
 
 export default Notification;

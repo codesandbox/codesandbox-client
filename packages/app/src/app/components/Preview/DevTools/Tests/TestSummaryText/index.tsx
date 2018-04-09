@@ -7,7 +7,7 @@ import {
   RightSide,
 } from './elements';
 
-type Props = {
+export type Props = {
   failedCount: number;
   passedCount: number;
   totalCount: number;

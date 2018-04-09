@@ -10,7 +10,7 @@ import RawAutoComplete from './RawAutoComplete';
 
 const ConnectedAutoComplete = connectAutoComplete(RawAutoComplete);
 
-type Props = {
+export type Props = {
   onConfirm: (name: string, version: string) => void;
 };
 

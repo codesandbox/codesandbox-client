@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
-type Props = {
+export type Props = {
   enabled: boolean;
   message: string;
   to: string;

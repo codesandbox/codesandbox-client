@@ -4,7 +4,7 @@ import Button from 'app/components/Button';
 import { Container, Title, SubTitle, Image, MaxWidth } from './elements';
 import { Props as CodeEditorProps } from '../';
 
-type Props = CodeEditorProps & {
+export type Props = CodeEditorProps & {
   dependencies: any;
 };
 

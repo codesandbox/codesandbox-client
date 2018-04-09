@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { Container, InputContainer } from './elements';
 
-type Props = {
+export type Props = {
   onChange: (value: string) => void;
   onConfirm: () => void;
   url: string;
 };
 
-export default class extends React.PureComponent<Props> {
+export default class AddressBar extends React.PureComponent<Props> {
   input: HTMLInputElement;
   onChange = evt => {
     const { onChange } = this.props;

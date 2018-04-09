@@ -25,12 +25,12 @@ const ButtonComponent: React.SFC<Props> = ({
     ...style,
     ...(small
       ? {
-          padding: '0.5em 0.75em',
-          fontSize: '0.875em',
-        }
+        padding: '0.5em 0.75em',
+        fontSize: '0.875em',
+      }
       : {
-          padding: '0.65em 2.25em',
-        }),
+        padding: '0.65em 2.25em',
+      }),
   };
 
   // Link

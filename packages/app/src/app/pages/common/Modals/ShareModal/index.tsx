@@ -34,7 +34,7 @@ type ExternalProps = {
   sendMessage: (message: string) => void;
 };
 
-type Props = ExternalProps & WithCerebral;
+export type Props = ExternalProps & WithCerebral;
 
 type State = {
   showEditor: boolean;
@@ -91,8 +91,8 @@ class ShareView extends React.Component<Props, State> {
   toggleQRCode = () => this.setState({ showQRCode: !this.state.showQRCode });
 
   getOptionsUrl = () => {
-    const sandbox = this.props.store.editor.currentSandbox;
-    const mainModule = this.props.store.editor.mainModule;
+    const { currentSandbox: sandbox, mainModule } = this.props.store.editor;
+
     const {
       defaultModule,
       showEditor,
@@ -228,8 +228,7 @@ class ShareView extends React.Component<Props, State> {
   setFontSize = (fontSize: number) => [this.setState({ fontSize })];
 
   render() {
-    const sandbox = this.props.store.editor.currentSandbox;
-    const mainModule = this.props.store.editor.mainModule;
+    const { currentSandbox: sandbox, mainModule } = this.props.store.editor;
 
     const {
       showEditor,
@@ -377,7 +376,7 @@ class ShareView extends React.Component<Props, State> {
                     <Inputs>
                       <QRCode
                         value={this.getEmbedUrl()}
-                        size={'100%'}
+                        size="100%"
                         renderAs="svg"
                       />
                     </Inputs>

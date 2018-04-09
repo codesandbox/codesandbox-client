@@ -7,8 +7,8 @@ import PlusIcon from 'react-icons/lib/go/plus';
 import Row from 'common/components/flex/Row';
 import Tooltip from 'common/components/Tooltip';
 import HeaderSearchBar from 'app/components/HeaderSearchBar';
-// tslint:disable-next-line
 // @ts-ignore
+// eslint-disable-next-line
 import PatronBadge from '-!svg-react-loader!common/utils/badges/svg/patron-4.svg';
 
 import SignInButton from '../SignInButton';
@@ -19,7 +19,7 @@ type ExternalProps = {
   title?: string;
 };
 
-type Props = ExternalProps & WithCerebral;
+export type Props = ExternalProps & WithCerebral;
 
 const Navigation: React.SFC<Props> = ({ signals, store, title }) => {
   const { user, isPatron } = store;

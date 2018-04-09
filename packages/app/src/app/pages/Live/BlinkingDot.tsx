@@ -12,7 +12,7 @@ const DotContainer = styled.div`
   }
 `;
 
-type Props = {};
+export type Props = {};
 
 type State = {
   showing: boolean;

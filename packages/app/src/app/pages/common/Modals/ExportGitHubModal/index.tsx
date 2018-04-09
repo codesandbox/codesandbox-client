@@ -6,13 +6,11 @@ export type Props = {
   isExported: boolean;
 };
 
-const ExportGitHubModal: React.SFC<Props> = ({ isExported }) => {
-  return (
-    <GitProgress
-      result={isExported ? <div>Exported to GitHub!</div> : null}
-      message="Creating Repository..."
-    />
-  );
-};
+const ExportGitHubModal: React.SFC<Props> = ({ isExported }) => (
+  <GitProgress
+    result={isExported ? <div>Exported to GitHub!</div> : null}
+    message="Creating Repository..."
+  />
+);
 
 export default ExportGitHubModal;

@@ -35,7 +35,7 @@ type ExternalProps = {
   editable?: boolean;
 };
 
-type Props = ExternalProps & WithCerebral;
+export type Props = ExternalProps & WithCerebral;
 
 type State = {
   editingTitle: boolean;
@@ -98,7 +98,7 @@ class Project extends React.Component<Props, State> {
   render() {
     const { store, signals, editable } = this.props;
     const sandbox = store.editor.currentSandbox;
-    const workspace = store.workspace;
+    const { workspace } = store;
 
     const template = getTemplateDefinition(sandbox.template);
 

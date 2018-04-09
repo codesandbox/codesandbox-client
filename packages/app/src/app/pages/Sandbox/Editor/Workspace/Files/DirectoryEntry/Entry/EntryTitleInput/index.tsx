@@ -8,7 +8,7 @@ function select(el?: HTMLInputElement) {
   }
 }
 
-type Props = {
+export type Props = {
   title: string;
   onChange: (value: string) => void;
   onCommit: (value: string, bool?: boolean) => void;

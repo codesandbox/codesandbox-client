@@ -9,7 +9,7 @@ import {
   PreviewIcon,
 } from './elements';
 
-type Props = {
+export type Props = {
   showEditor: boolean;
   showPreview: boolean;
   dropdown?: boolean;

@@ -11,7 +11,7 @@ import {
   TabDir,
 } from './elements';
 
-type Props = {
+export type Props = {
   active: boolean;
   dirty: boolean;
   isOver: boolean;

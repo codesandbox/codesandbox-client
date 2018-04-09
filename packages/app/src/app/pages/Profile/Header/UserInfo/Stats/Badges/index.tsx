@@ -7,20 +7,18 @@ import { patronUrl } from 'common/utils/url-generator';
 
 import { Badge } from 'app/store/modules/profile/types';
 
-type Props = {
+export type Props = {
   badges: Badge[];
 };
 
-const Badges: React.SFC<Props> = ({ badges }) => {
-  return (
-    <Margin right={2}>
-      <Link to={patronUrl()}>
-        {badges.map(badge => (
-          <BadgeComponent key={badge.id} badge={badge} size={64} />
-        ))}
-      </Link>
-    </Margin>
-  );
-};
+const Badges: React.SFC<Props> = ({ badges }) => (
+  <Margin right={2}>
+    <Link to={patronUrl()}>
+      {badges.map(badge => (
+        <BadgeComponent key={badge.id} badge={badge} size={64} />
+      ))}
+    </Link>
+  </Margin>
+);
 
 export default Badges;

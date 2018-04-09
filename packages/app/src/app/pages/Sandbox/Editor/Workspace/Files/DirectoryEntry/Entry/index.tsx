@@ -17,7 +17,7 @@ import EditIcons from './EditIcons';
 
 import { Right, NotSyncedIconWithMargin } from './elements';
 
-type Props = {
+export type Props = {
   id: string;
   title: string;
   state: string;

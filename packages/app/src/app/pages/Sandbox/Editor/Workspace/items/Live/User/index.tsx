@@ -14,7 +14,7 @@ import {
   IconContainer,
 } from './elements';
 
-type Props = {
+export type Props = {
   user: LiveUser;
   type: string;
   showPlusIcon?: boolean;
@@ -24,55 +24,51 @@ type Props = {
   onClick?: () => void;
 };
 
-class User extends React.Component<Props> {
-  render() {
-    const {
-      user,
-      type,
-      onClick,
-      showPlusIcon,
-      showSwitch,
-      roomInfo,
-      currentUserId,
-    } = this.props;
+const User: React.SFC<Props> = ({
+  user,
+  type,
+  onClick,
+  showPlusIcon,
+  showSwitch,
+  roomInfo,
+  currentUserId,
+}) => {
+  const metaData = roomInfo.usersMetadata.get(user.id);
+  const [r, g, b] = metaData
+    ? roomInfo.usersMetadata.get(user.id).color
+    : [0, 0, 0];
 
-    const metaData = roomInfo.usersMetadata.get(user.id);
-    const [r, g, b] = metaData
-      ? roomInfo.usersMetadata.get(user.id).color
-      : [0, 0, 0];
+  const isCurrentUser = user.id === currentUserId;
 
-    const isCurrentUser = user.id === currentUserId;
-
-    return (
-      <UserContainer isCurrentUser={isCurrentUser}>
-        <ProfileImage
-          src={user.avatarUrl}
-          alt={user.username}
-          borderColor={`rgba(${r}, ${g}, ${b}, 0.7)`}
-        />
-        <div style={{ flex: 1 }}>
-          <UserName>{user.username}</UserName>
-          {type && (
-            <Status>
-              {type}
-              {isCurrentUser && ' (you)'}
-            </Status>
-          )}
-        </div>
-        {showSwitch && (
-          <IconContainer>
-            <Tooltip title={showPlusIcon ? 'Make editor' : 'Make spectator'}>
-              {showPlusIcon ? (
-                <AddIcon onClick={onClick} />
-              ) : (
-                <RemoveIcon onClick={onClick} />
-              )}
-            </Tooltip>
-          </IconContainer>
+  return (
+    <UserContainer isCurrentUser={isCurrentUser}>
+      <ProfileImage
+        src={user.avatarUrl}
+        alt={user.username}
+        borderColor={`rgba(${r}, ${g}, ${b}, 0.7)`}
+      />
+      <div style={{ flex: 1 }}>
+        <UserName>{user.username}</UserName>
+        {type && (
+          <Status>
+            {type}
+            {isCurrentUser && ' (you)'}
+          </Status>
         )}
-      </UserContainer>
-    );
-  }
-}
+      </div>
+      {showSwitch && (
+        <IconContainer>
+          <Tooltip title={showPlusIcon ? 'Make editor' : 'Make spectator'}>
+            {showPlusIcon ? (
+              <AddIcon onClick={onClick} />
+            ) : (
+              <RemoveIcon onClick={onClick} />
+            )}
+          </Tooltip>
+        </IconContainer>
+      )}
+    </UserContainer>
+  );
+};
 
 export default observer(User);

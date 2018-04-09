@@ -20,7 +20,7 @@ function getName(resource: string) {
   return getNormalizedUrl(resource);
 }
 
-type Props = {
+export type Props = {
   resource: string;
   removeResource: (resource: string) => void;
 };

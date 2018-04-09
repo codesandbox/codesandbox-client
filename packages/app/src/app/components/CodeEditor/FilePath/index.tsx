@@ -9,7 +9,7 @@ import {
 } from 'app/store/modules/editor/types';
 import { Container, Chevron, FileName, StyledExitZen } from './elements';
 
-type Props = {
+export type Props = {
   currentModule: Module;
   errors?: SandboxError[];
   modules: Module[];

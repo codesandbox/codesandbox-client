@@ -6,7 +6,7 @@ import { CLOSE_TIMEOUT_MS, BaseModal, ModalTitle, ModalBody } from './elements';
 const appElement = document.getElementById('modal');
 Modal.setAppElement(appElement);
 
-type Props = {
+export type Props = {
   isOpen: boolean;
   width: number;
   top?: number;

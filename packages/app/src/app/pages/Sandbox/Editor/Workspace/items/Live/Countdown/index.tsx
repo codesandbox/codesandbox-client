@@ -8,7 +8,7 @@ const pad = t => {
   return `${t}`;
 };
 
-type Props = {
+export type Props = {
   time: number;
 };
 

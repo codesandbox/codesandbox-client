@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Button, LoadingDiv, AnimatedRecordIcon } from './elements';
 
-type Props = {
+export type Props = {
   isLoading: boolean;
   onClick: () => void;
 };

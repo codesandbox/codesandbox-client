@@ -18,7 +18,7 @@ type ExternalProps = {
   small?: boolean;
 };
 
-type Props = ExternalProps & WithCerebral;
+export type Props = ExternalProps & WithCerebral;
 
 const UserMenu: React.SFC<Props> = ({ signals, store, small }) => {
   const smallImage = small || false;

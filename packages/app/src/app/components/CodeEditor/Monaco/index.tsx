@@ -141,7 +141,7 @@ type UserSelections = Array<{
   color: number[];
 }>;
 
-type Props = {
+export type Props = {
   sandbox: Sandbox;
   currentModule: Module;
   settings: Settings;

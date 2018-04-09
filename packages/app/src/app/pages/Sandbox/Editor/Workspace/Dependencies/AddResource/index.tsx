@@ -9,7 +9,7 @@ const initialState = {
   name: '',
 };
 
-type Props = {
+export type Props = {
   addResource: (name: string) => void;
 };
 

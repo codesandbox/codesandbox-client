@@ -10,7 +10,7 @@ type ExternalProps = {
   updateSubscription: () => void;
 };
 
-type Props = ExternalProps & WithCerebral;
+export type Props = ExternalProps & WithCerebral;
 
 const ChangeSubscription: React.SFC<Props> = ({
   date,
@@ -20,7 +20,7 @@ const ChangeSubscription: React.SFC<Props> = ({
   updateSubscription,
 }) => {
   const isLoading = store.patron.isUpdatingSubscription;
-  const error = store.patron.error;
+  const { error } = store.patron;
 
   if (error) {
     return (

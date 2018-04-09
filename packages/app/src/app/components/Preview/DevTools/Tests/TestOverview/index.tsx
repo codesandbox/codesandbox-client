@@ -8,7 +8,7 @@ import TestSummaryText from '../TestSummaryText';
 import TestProgressBar from '../TestProgressBar';
 import TestBlock from '../TestDetails/TestBlock';
 
-type Props = {
+export type Props = {
   tests: Test[];
   openFile: (path: string) => void;
 };

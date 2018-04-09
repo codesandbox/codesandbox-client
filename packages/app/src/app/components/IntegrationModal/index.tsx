@@ -13,7 +13,7 @@ import {
   DisabledOverlay,
 } from './elements';
 
-type Props = {
+export type Props = {
   title: string;
   name: string;
   subtitle: string | React.ReactNode;
@@ -21,48 +21,34 @@ type Props = {
   signedIn: boolean;
 };
 
-type State = {
-  deploying: boolean;
-  url: string;
-};
+const IntegrationModal: React.SFC<Props> = ({
+  title,
+  children,
+  name,
+  subtitle,
+  Integration,
+  signedIn,
+}) => (
+  <Container>
+    <Header>
+      <Title>{title}</Title>
+      <PoweredBy>{subtitle}</PoweredBy>
+    </Header>
+    <div>
+      <Centered horizontal>
+        <Margin margin={2}>
+          <Integration />
+        </Margin>
+      </Centered>
+      <Division />
+      <Relative>
+        {!signedIn && (
+          <DisabledOverlay>Sign in to {name} to continue</DisabledOverlay>
+        )}
+        {children}
+      </Relative>
+    </div>
+  </Container>
+);
 
-export default class IntegrationModal extends React.Component<Props, State> {
-  state = {
-    deploying: false,
-    url: null,
-  };
-
-  render() {
-    const {
-      title,
-      children,
-      name,
-      subtitle,
-      Integration,
-      signedIn,
-    } = this.props;
-
-    return (
-      <Container>
-        <Header>
-          <Title>{title}</Title>
-          <PoweredBy>{subtitle}</PoweredBy>
-        </Header>
-        <div>
-          <Centered horizontal>
-            <Margin margin={2}>
-              <Integration />
-            </Margin>
-          </Centered>
-          <Division />
-          <Relative>
-            {!signedIn && (
-              <DisabledOverlay>Sign in to {name} to continue</DisabledOverlay>
-            )}
-            {children}
-          </Relative>
-        </div>
-      </Container>
-    );
-  }
-}
+export default IntegrationModal;

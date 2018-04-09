@@ -3,7 +3,7 @@ import DetailInfo from './DetailInfo';
 
 import { Container, IntegrationBlock, Name } from './elements';
 
-type Props = {
+export type Props = {
   Icon: React.ComponentType;
   name: string;
   signOut: () => void;
@@ -27,24 +27,22 @@ const Integration: React.SFC<Props> = ({
   userInfo,
   loading,
   small = false,
-}) => {
-  return (
-    <Container small={small} loading={loading}>
-      <IntegrationBlock small={small} bgColor={color}>
-        <Icon />
-        <Name>{name}</Name>
-      </IntegrationBlock>
-      {userInfo ? (
-        <DetailInfo
-          signOut={signOut}
-          heading="Signed in as"
-          info={userInfo.email || 'Loading...'}
-        />
-      ) : (
-        <DetailInfo signIn={signIn} heading="Enables" info={description} />
-      )}
-    </Container>
-  );
-};
+}) => (
+  <Container small={small} loading={loading}>
+    <IntegrationBlock small={small} bgColor={color}>
+      <Icon />
+      <Name>{name}</Name>
+    </IntegrationBlock>
+    {userInfo ? (
+      <DetailInfo
+        signOut={signOut}
+        heading="Signed in as"
+        info={userInfo.email || 'Loading...'}
+      />
+    ) : (
+      <DetailInfo signIn={signIn} heading="Enables" info={description} />
+    )}
+  </Container>
+);
 
 export default Integration;

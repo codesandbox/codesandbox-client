@@ -1,7 +1,7 @@
 import * as React from 'react';
 import './CodeSponsor.css';
 
-type Props = {
+export type Props = {
   token: string;
   theme: 'dark' | 'light';
 };

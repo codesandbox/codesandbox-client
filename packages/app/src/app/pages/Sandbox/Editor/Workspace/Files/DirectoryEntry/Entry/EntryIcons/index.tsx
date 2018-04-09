@@ -16,7 +16,7 @@ const getIcon = (type, error, width, height) => {
   return <SVGIcon type={type} width={width} height={height} />;
 };
 
-type Props = {
+export type Props = {
   type: string;
   width?: number;
   height?: number;

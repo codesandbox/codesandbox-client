@@ -12,7 +12,9 @@ import {
   WorkspaceSubtitle,
 } from '../../elements';
 
-const Live: React.SFC<WithCerebral> = ({ signals, store }) => (
+export type Props = WithCerebral;
+
+const Live: React.SFC<Props> = ({ signals, store }) => (
   <div>
     {store.live.isLive ? (
       <LiveInfo

@@ -39,7 +39,7 @@ const searchStateToUrl = (props, searchState) =>
   searchState ? `${props.location.pathname}${createURL(searchState)}` : '';
 
 type ExternalProps = RouteComponentProps<{}>;
-type Props = ExternalProps & WithCerebral;
+export type Props = ExternalProps & WithCerebral;
 
 type State = {
   searchState: string;

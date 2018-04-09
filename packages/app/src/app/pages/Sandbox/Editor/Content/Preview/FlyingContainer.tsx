@@ -28,7 +28,7 @@ type ExternalProps = {
   onPositionChange?: () => void;
 };
 
-type Props = ExternalProps & WithCerebral;
+export type Props = ExternalProps & WithCerebral;
 
 type State = {
   resizing?: boolean;

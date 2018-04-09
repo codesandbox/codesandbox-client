@@ -7,7 +7,7 @@ import { getCodeMirror } from 'app/utils/codemirror';
 
 import { Container } from './elements';
 
-type Props = {
+export type Props = {
   readOnly: boolean;
   code: string;
   onChange: (code: string) => void;

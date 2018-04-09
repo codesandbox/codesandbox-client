@@ -14,7 +14,7 @@ type ExternalProps = {
   baseUrl: string;
 };
 
-type Props = ExternalProps & WithCerebral;
+export type Props = ExternalProps & WithCerebral;
 
 class Sandboxes extends React.Component<Props> {
   static defaultProps = {
@@ -77,7 +77,7 @@ class Sandboxes extends React.Component<Props> {
   render() {
     const { store, source, page, baseUrl } = this.props;
     const isProfileCurrentUser = store.profile.isProfileCurrentUser.get();
-    const isLoadingSandboxes = store.profile.isLoadingSandboxes;
+    const { isLoadingSandboxes } = store.profile;
     const sandboxes = store.profile[source];
 
     if (isLoadingSandboxes || !sandboxes || !sandboxes.get(String(page))) {

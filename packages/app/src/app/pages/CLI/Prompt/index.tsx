@@ -8,7 +8,7 @@ import { Container, Buttons, TokenContainer } from './elements';
 
 const select = event => event.target.select();
 
-type Props = {
+export type Props = {
   error: string;
   token: string;
   loading: boolean;

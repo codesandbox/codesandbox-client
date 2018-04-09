@@ -8,19 +8,17 @@ export type Props = {
   name: string;
 };
 
-const Card: React.SFC<Props> = ({ brand, last4, name }) => {
-  return (
-    <Container>
-      <div>
-        <Highlight>{brand}</Highlight> ending in ****<Highlight>
-          {last4}
-        </Highlight>
-      </div>
-      <div>
-        <Highlight>{name}</Highlight>
-      </div>
-    </Container>
-  );
-};
+const Card: React.SFC<Props> = ({ brand, last4, name }) => (
+  <Container>
+    <div>
+      <Highlight>{brand}</Highlight> ending in ****<Highlight>
+        {last4}
+      </Highlight>
+    </div>
+    <div>
+      <Highlight>{name}</Highlight>
+    </div>
+  </Container>
+);
 
 export default Card;

@@ -40,7 +40,7 @@ export type Hit = {
   homepage: string;
 };
 
-type Props = {
+export type Props = {
   hit: Hit;
   highlighted: boolean;
   onClick: () => void;

@@ -5,13 +5,13 @@ import FullHeartIcon from 'react-icons/lib/fa/heart';
 import EyeIcon from 'react-icons/lib/fa/eye';
 import ForkIcon from 'react-icons/lib/go/repo-forked';
 import GithubBadge from 'app/components/GithubBadge';
+import { Git } from 'app/store/types';
 import Stat from './Stat';
 import { CenteredText, UpdatedAt, Stats, StyledUser } from './elements';
-import { Git } from 'app/store/types';
 
-type Props = {
+export type Props = {
   author: {
-    avatar_url: string;
+    avatar_url: string; // eslint-disable-line
     username: string;
   };
   updatedAt: number;
@@ -28,23 +28,21 @@ const SandboxInfo: React.SFC<Props> = ({
   forkCount,
   likeCount,
   git,
-}) => {
-  return (
-    <CenteredText>
-      {author && (
-        <StyledUser avatarUrl={author.avatar_url} username={author.username} />
-      )}
-      {git && <GithubBadge username={git.username} repo={git.repo} />}
+}) => (
+  <CenteredText>
+    {author && (
+      <StyledUser avatarUrl={author.avatar_url} username={author.username} />
+    )}
+    {git && <GithubBadge username={git.username} repo={git.repo} />}
 
-      <UpdatedAt>{moment(updatedAt * 1000).fromNow()}</UpdatedAt>
+    <UpdatedAt>{moment(updatedAt * 1000).fromNow()}</UpdatedAt>
 
-      <Stats>
-        <Stat Icon={EyeIcon} count={viewCount} />
-        <Stat Icon={FullHeartIcon} count={likeCount} />
-        <Stat Icon={ForkIcon} count={forkCount} />
-      </Stats>
-    </CenteredText>
-  );
-};
+    <Stats>
+      <Stat Icon={EyeIcon} count={viewCount} />
+      <Stat Icon={FullHeartIcon} count={likeCount} />
+      <Stat Icon={ForkIcon} count={forkCount} />
+    </Stats>
+  </CenteredText>
+);
 
 export default SandboxInfo;

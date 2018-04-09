@@ -22,7 +22,7 @@ type ExternalProps = RouteComponentProps<{
   username: string;
 }>;
 
-type Props = ExternalProps & WithCerebral;
+export type Props = ExternalProps & WithCerebral;
 
 class Profile extends React.Component<Props> {
   componentDidMount() {
@@ -33,7 +33,7 @@ class Profile extends React.Component<Props> {
 
   componentDidUpdate(prevProps) {
     const prevUsername = prevProps.match.params.username;
-    const username = this.props.match.params.username;
+    const { username } = this.props.match.params;
 
     if (prevUsername !== username) {
       this.props.signals.profile.profileMounted({ username });

@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import * as React from 'react';
 import { actions, dispatch, listen } from 'codesandbox-api';
 import SplitPane from 'react-split-pane';
@@ -13,7 +14,7 @@ import TestOverview from './TestOverview';
 
 import { Status } from './types';
 
-type Props = {
+export type Props = {
   hidden: boolean;
   sandboxId: string;
   updateStatus: (
@@ -214,7 +215,7 @@ class Tests extends React.Component<Props, State> {
           break;
         }
         case 'test_start': {
-          const test = data.test;
+          const { test } = data;
           const testName = [...test.blocks, test.name];
 
           this.setState(
@@ -237,7 +238,7 @@ class Tests extends React.Component<Props, State> {
           break;
         }
         case 'test_end': {
-          const test = data.test;
+          const { test } = data;
           const testName = [...test.blocks, test.name];
 
           this.setState(
@@ -286,7 +287,7 @@ class Tests extends React.Component<Props, State> {
       return Status.FAIL;
     }
 
-    const tests = file.tests;
+    const { tests } = file;
     const status = Object.keys(tests).reduce((prev, next) => {
       const test = tests[next];
       if (test.status !== Status.IDLE && prev === Status.IDLE) {

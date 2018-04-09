@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { Container, Feature, Value } from './elements';
 
-type Props = {
+export type Props = {
   disabled?: boolean;
   feature?: string;
   free?: string;

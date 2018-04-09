@@ -1,10 +1,8 @@
 import * as React from 'react';
 
-function noop() {
-  return;
-}
+function noop() {}
 
-type Props = {
+export type Props = {
   editorWillMount: (monacoInstance: any) => void;
   editorDidMount: (editorInstance: any, monacoInstance: any) => void;
   openReference: (model: any) => void;

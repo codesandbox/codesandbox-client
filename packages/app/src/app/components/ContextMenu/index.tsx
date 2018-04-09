@@ -11,7 +11,7 @@ type Item = {
   action: () => void;
 };
 
-type Props = {
+export type Props = {
   items: Item[];
 };
 

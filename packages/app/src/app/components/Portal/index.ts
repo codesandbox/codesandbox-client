@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-type Props = {
+export type Props = {
   children: React.ReactElement<any>;
 };
 

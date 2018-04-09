@@ -6,7 +6,7 @@ import { EntryContainer, IconArea, Icon } from '../../elements';
 import { Link } from '../elements';
 import { Version } from './elements';
 
-type Props = {
+export type Props = {
   dependencies: {
     [name: string]: string;
   };

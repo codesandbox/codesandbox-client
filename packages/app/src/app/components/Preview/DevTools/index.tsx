@@ -20,9 +20,7 @@ function unFocus(document, window) {
     try {
       window.getSelection().removeAllRanges();
       // eslint-disable-next-line no-empty
-    } catch (e) {
-      return;
-    }
+    } catch (e) {}
   }
 }
 
@@ -51,7 +49,7 @@ export type Status = {
   type: 'info' | 'warning' | 'error';
 };
 
-type Props = {
+export type Props = {
   sandboxId: string;
   setDragging?: (dragging: boolean) => void;
   zenMode?: boolean;
@@ -118,9 +116,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
 
   componentWillUnmount() {
     // eslint-disable-next-line no-unused-vars
-    this.updateStatus = (title: string) => {
-      return;
-    };
+    this.updateStatus = (title: string) => {};
     document.removeEventListener('mouseup', this.handleMouseUp, false);
     document.removeEventListener('mousemove', this.handleMouseMove, false);
     document.removeEventListener('touchend', this.handleTouchEnd, false);
@@ -231,7 +227,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
         // happen when pointer events are disabled and in turn disables scroll.
         // It's hacky, but it's to fix a bug in the browser.
         setTimeout(() => {
-          const height = this.state.height;
+          const { height } = this.state;
           if (height > 64) {
             store.set('devtools.height', height);
           }

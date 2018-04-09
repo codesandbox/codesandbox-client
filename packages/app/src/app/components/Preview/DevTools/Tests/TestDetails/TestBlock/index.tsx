@@ -1,14 +1,12 @@
 import * as React from 'react';
 import FileIcon from 'react-icons/lib/md/insert-drive-file';
 import Tooltip from 'common/components/Tooltip';
-
+import { Test } from 'app/components/Preview/DevTools/Tests/types';
 import { BlockHeader, Container, Actions } from './elements';
 import TestName from './TestName';
 import ErrorDetails from '../ErrorDetails';
 
-import { Test } from 'app/components/Preview/DevTools/Tests/types';
-
-type Props = {
+export type Props = {
   test: Test;
   openFile?: (path: string) => void;
 };

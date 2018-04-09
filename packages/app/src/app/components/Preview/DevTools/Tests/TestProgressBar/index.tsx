@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ProgressBar, FailedBar, SuccessBar, IdleBar } from './elements';
 
-type Props = {
+export type Props = {
   failedCount: number;
   passedCount: number;
   idleCount: number;

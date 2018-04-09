@@ -96,7 +96,7 @@ function getMessage(message) {
   ));
 }
 
-type Props = {
+export type Props = {
   message: {
     type?: string;
     logType: LogType;
@@ -104,17 +104,15 @@ type Props = {
   };
 };
 
-const Message: React.SFC<Props> = ({ message }) => {
-  return (
-    <Container logType={message.logType}>
-      <div>
-        <IconContainer>
-          <MessageIcon type={message.type} logType={message.logType} />
-        </IconContainer>
-      </div>
-      <div>{getMessage(message)}</div>
-    </Container>
-  );
-};
+const Message: React.SFC<Props> = ({ message }) => (
+  <Container logType={message.logType}>
+    <div>
+      <IconContainer>
+        <MessageIcon type={message.type} logType={message.logType} />
+      </IconContainer>
+    </div>
+    <div>{getMessage(message)}</div>
+  </Container>
+);
 
 export default Message;

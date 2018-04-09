@@ -19,7 +19,7 @@ import {
   SwitchContainer,
 } from './elements';
 
-type Props = {
+export type Props = {
   url: string;
   onChange: (url: string) => void;
   onConfirm: () => void;
@@ -47,65 +47,63 @@ const Navigator: React.SFC<Props> = ({
   zenMode,
   alignRight,
   alignBottom,
-}) => {
-  return (
-    <Container>
-      <Icons>
-        <Icon disabled={!onBack} onClick={onBack}>
-          <LeftIcon />
+}) => (
+  <Container>
+    <Icons>
+      <Icon disabled={!onBack} onClick={onBack}>
+        <LeftIcon />
+      </Icon>
+      <Icon disabled={!onForward} onClick={onForward}>
+        <RightIcon />
+      </Icon>
+      <Icon onClick={onRefresh}>
+        <RefreshIcon />
+      </Icon>
+    </Icons>
+    <AddressBarContainer
+      onMouseDown={e => {
+        e.stopPropagation();
+      }}
+    >
+      <AddressBar url={url} onChange={onChange} onConfirm={onConfirm} />
+    </AddressBarContainer>
+    {!zenMode &&
+      alignBottom && (
+        <Icon onClick={alignBottom}>
+          <Tooltip title="Align To Bottom">
+            <HorizontalAlign />
+          </Tooltip>
         </Icon>
-        <Icon disabled={!onForward} onClick={onForward}>
-          <RightIcon />
+      )}
+    {!zenMode &&
+      alignRight && (
+        <Icon onClick={alignRight}>
+          <Tooltip title="Align To Right">
+            <VerticalAlign />
+          </Tooltip>
         </Icon>
-        <Icon onClick={onRefresh}>
-          <RefreshIcon />
-        </Icon>
-      </Icons>
-      <AddressBarContainer
-        onMouseDown={e => {
-          e.stopPropagation();
-        }}
-      >
-        <AddressBar url={url} onChange={onChange} onConfirm={onConfirm} />
-      </AddressBarContainer>
-      {!zenMode &&
-        alignBottom && (
-          <Icon onClick={alignBottom}>
-            <Tooltip title="Align To Bottom">
-              <HorizontalAlign />
-            </Tooltip>
-          </Icon>
-        )}
-      {!zenMode &&
-        alignRight && (
-          <Icon onClick={alignRight}>
-            <Tooltip title="Align To Right">
-              <VerticalAlign />
-            </Tooltip>
-          </Icon>
-        )}
+      )}
 
-      {!zenMode &&
-        openNewWindow && (
-          <Icon style={{ marginRight: '0.75rem' }} onClick={openNewWindow}>
-            <Tooltip title="Open In A New Window">
-              <ExternalIcon />
-            </Tooltip>
-          </Icon>
-        )}
-      {!zenMode &&
-        toggleProjectView && (
-          <SwitchContainer>
-            <Tooltip
-              title={isProjectView ? 'Project View' : 'Current Module View'}
-              position="left"
-            >
-              <Switch right={isProjectView} onClick={toggleProjectView} />
-            </Tooltip>
-          </SwitchContainer>
-        )}
-    </Container>
-  );
-};
+    {!zenMode &&
+      openNewWindow && (
+        <Icon style={{ marginRight: '0.75rem' }} onClick={openNewWindow}>
+          <Tooltip title="Open In A New Window">
+            <ExternalIcon />
+          </Tooltip>
+        </Icon>
+      )}
+    {!zenMode &&
+      toggleProjectView && (
+        <SwitchContainer>
+          <Tooltip
+            title={isProjectView ? 'Project View' : 'Current Module View'}
+            position="left"
+          >
+            <Switch right={isProjectView} onClick={toggleProjectView} />
+          </Tooltip>
+        </SwitchContainer>
+      )}
+  </Container>
+);
 
 export default Navigator;

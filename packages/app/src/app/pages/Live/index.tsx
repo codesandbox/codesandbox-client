@@ -18,7 +18,7 @@ import SignInButton from 'app/pages/common/SignInButton';
 import Editor from '../Sandbox/Editor';
 import BlinkingDot from './BlinkingDot';
 
-type Props = WithCerebral &
+export type Props = WithCerebral &
   RouteComponentProps<{
     id: string;
   }>;

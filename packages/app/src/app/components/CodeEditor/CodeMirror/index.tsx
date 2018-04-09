@@ -1,8 +1,3 @@
-declare global {
-  interface Window {
-    tern: any;
-  }
-}
 import * as React from 'react';
 import * as CodeMirror from 'codemirror';
 import { getCodeMirror } from 'app/utils/codemirror';
@@ -13,14 +8,21 @@ import 'codemirror/addon/tern/tern';
 import 'codemirror/addon/lint/lint.css';
 import 'codemirror/addon/lint/lint';
 
-import FuzzySearch from '../FuzzySearch';
-import { Container, CodeContainer } from './elements';
 import { Sandbox, Module, SandboxError } from 'app/store/modules/editor/types';
 import { Settings } from 'app/store/modules/preferences/types';
 
-// tslint:disable-next-line
+import FuzzySearch from '../FuzzySearch';
+import { Container, CodeContainer } from './elements';
+
 // @ts-ignore
+// eslint-disable-next-line
 import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash].worker.js!../Monaco/workers/linter';
+
+declare global {
+  interface Window {
+    tern: any;
+  }
+}
 
 const documentCache = {};
 
@@ -34,7 +36,7 @@ type NPMDependencies = {
   [name: string]: string;
 };
 
-type Props = {
+export type Props = {
   sandbox: Sandbox;
   currentModule: Module;
   onlyViewMode: boolean;
@@ -125,7 +127,7 @@ class CodemirrorEditor extends React.Component<Props, State> {
       return;
     }
 
-    const linterWorker = this.linterWorker;
+    const { linterWorker } = this;
     if (linterWorker) {
       linterWorker.postMessage({
         code,
@@ -288,7 +290,7 @@ class CodemirrorEditor extends React.Component<Props, State> {
   changeModule = async (newModule: Module) => {
     this.currentModule = newModule;
 
-    const currentModule = this.currentModule;
+    const { currentModule } = this;
 
     if (!documentCache[currentModule.id]) {
       const mode = await this.getMode(currentModule.title);
@@ -393,7 +395,7 @@ class CodemirrorEditor extends React.Component<Props, State> {
   getCode = () => this.codemirror.getValue();
 
   handleSaveCode = async () => {
-    const onSave = this.props.onSave;
+    const { onSave } = this.props;
     if (onSave) {
       onSave(this.codemirror.getValue());
     }

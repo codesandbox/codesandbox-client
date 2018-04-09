@@ -9,7 +9,7 @@ import {
   Actions,
 } from './elements';
 
-type Props = {
+export type Props = {
   defaultOpen?: boolean;
   disabled?: boolean;
   title: string;

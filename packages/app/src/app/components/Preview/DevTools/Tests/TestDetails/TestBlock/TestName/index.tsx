@@ -1,10 +1,9 @@
 import * as React from 'react';
-
+import { Test } from 'app/components/Preview/DevTools/Tests/types';
 import { StatusElements } from '../../../elements';
 import { Block, TestNameWrapper } from './elements';
-import { Test } from 'app/components/Preview/DevTools/Tests/types';
 
-type Props = {
+export type Props = {
   test: Test;
 };
 

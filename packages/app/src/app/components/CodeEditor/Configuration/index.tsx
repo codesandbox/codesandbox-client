@@ -3,11 +3,11 @@ import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/
 import getUI from 'common/templates/configuration/ui';
 import getType from 'app/utils/get-type';
 import Tooltip from 'common/components/Tooltip';
+import { Module } from 'app/store/modules/editor/types';
 import CodeIcon from 'react-icons/lib/md/code';
 import { Container, Icon, Title, Description } from './elements';
-import { Module } from 'app/store/modules/editor/types';
 
-type Props = {
+export type Props = {
   onInitialized?: (configuration: Configuration) => () => void;
   currentModule: Module;
   config: any;
@@ -55,7 +55,7 @@ export default class Configuration extends React.PureComponent<Props> {
 
   render() {
     const { config, width, height } = this.props;
-    const currentModule = this.currentModule;
+    const { currentModule } = this;
 
     const { ConfigWizard } = getUI(config.type);
 

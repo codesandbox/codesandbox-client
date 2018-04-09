@@ -6,7 +6,7 @@ import FileIcon from 'react-icons/lib/md/insert-drive-file';
 import { Container, File, Path, FileName, Actions } from './elements';
 import Message from '../Console/Message';
 
-type Props = {
+export type Props = {
   updateStatus: (status: string) => void;
   hidden: boolean;
 };
@@ -82,7 +82,7 @@ class Problems extends React.PureComponent<Props, State> {
       .sort()
       .filter(x => x !== 'root');
 
-    const root = (this.state.corrections as any).root;
+    const { root } = this.state.corrections as any;
 
     return (
       <Container>

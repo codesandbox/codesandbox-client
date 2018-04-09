@@ -5,7 +5,7 @@ import Button from 'app/components/Button';
 
 import { CardContainer, NameInput, ErrorText, Label } from './elements';
 
-type Props = {
+export type Props = {
   name: string;
   subscribe: (token: string) => void;
   stripe: any;

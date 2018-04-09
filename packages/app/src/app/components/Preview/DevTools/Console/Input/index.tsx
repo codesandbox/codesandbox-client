@@ -19,7 +19,7 @@ const CONSOLE_INPUT_PADDING =
 const CONSOLE_INPUT_LINE_HEIGHT = 20;
 const CONSOLE_INPUT_MAX_HEIGHT = 110;
 
-type Props = {
+export type Props = {
   evaluateConsole: (command: string) => void;
 };
 
@@ -114,7 +114,7 @@ class ConsoleInput extends React.PureComponent<Props, State> {
         });
       } else if (e.keyCode === 38) {
         // Up arrow
-        const lineNumber = editor.getPosition().lineNumber;
+        const { lineNumber } = editor.getPosition();
         if (lineNumber !== 1) {
           return;
         }
@@ -129,7 +129,7 @@ class ConsoleInput extends React.PureComponent<Props, State> {
         });
       } else if (e.keyCode === 40) {
         // Down arrow
-        const lineNumber = editor.getPosition().lineNumber;
+        const { lineNumber } = editor.getPosition();
         const lineCount = editor.getModel().getLineCount();
         if (lineNumber !== lineCount) {
           return;

@@ -25,7 +25,7 @@ type ModulePath = {
   depth: number;
 };
 
-type Props = {
+export type Props = {
   modules: Module[];
   directories: Directory[];
   currentModuleId: string;

@@ -8,22 +8,20 @@ type ExternalProps = {
   small?: boolean;
 };
 
-type Props = ExternalProps & WithCerebral;
+export type Props = ExternalProps & WithCerebral;
 
-const ZeitIntegration: React.SFC<Props> = ({ store, signals, small }) => {
-  return (
-    <Integration
-      name="ZEIT"
-      small={small}
-      color="black"
-      description="Deployments"
-      Icon={ZeitLogo}
-      userInfo={store.user.integrations.zeit}
-      signIn={() => signals.signInZeitClicked()}
-      signOut={() => signals.signOutZeitClicked()}
-      loading={store.isLoadingZeit}
-    />
-  );
-};
+const ZeitIntegration: React.SFC<Props> = ({ store, signals, small }) => (
+  <Integration
+    name="ZEIT"
+    small={small}
+    color="black"
+    description="Deployments"
+    Icon={ZeitLogo}
+    userInfo={store.user.integrations.zeit}
+    signIn={() => signals.signInZeitClicked()}
+    signOut={() => signals.signOutZeitClicked()}
+    loading={store.isLoadingZeit}
+  />
+);
 
 export default connect<ExternalProps>()(ZeitIntegration);

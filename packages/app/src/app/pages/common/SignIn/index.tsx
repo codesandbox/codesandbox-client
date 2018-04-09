@@ -10,7 +10,7 @@ import {
   newSandboxUrl,
 } from 'common/utils/url-generator';
 
-type Props = RouteComponentProps<{
+export type Props = RouteComponentProps<{
   jwt: string;
 }>;
 

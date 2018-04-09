@@ -20,7 +20,7 @@ type Version = {
   version: string;
 };
 
-type Props = {
+export type Props = {
   versions?: Version[];
   publishVersion?: (version: string) => void;
 };

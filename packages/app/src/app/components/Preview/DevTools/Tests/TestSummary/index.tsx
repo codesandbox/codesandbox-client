@@ -23,7 +23,7 @@ import {
 
 import TestSummaryText from '../TestSummaryText';
 
-type Props = {
+export type Props = {
   files: { [path: string]: File };
   fileStatuses: { [path: string]: Status };
   running: boolean;

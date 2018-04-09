@@ -6,7 +6,7 @@ import WarningIcon from 'react-icons/lib/md/warning';
 import ErrorIcon from 'react-icons/lib/md/error';
 import { LogType } from '../types';
 
-type Props = {
+export type Props = {
   type: string;
   logType: LogType;
 };

@@ -10,7 +10,7 @@ type ExternalProps = {
   height?: number;
 };
 
-type Props = ExternalProps & WithCerebral;
+export type Props = ExternalProps & WithCerebral;
 
 type State = {
   aligned?: 'right' | 'bottom';

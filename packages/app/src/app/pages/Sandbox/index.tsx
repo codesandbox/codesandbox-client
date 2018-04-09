@@ -18,7 +18,7 @@ type ExternalProps = RouteComponentProps<{
   id: string;
 }>;
 
-type Props = ExternalProps & WithCerebral;
+export type Props = ExternalProps & WithCerebral;
 
 class SandboxPage extends React.Component<Props> {
   componentWillMount() {

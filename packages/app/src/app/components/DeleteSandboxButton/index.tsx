@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { DeleteSandboxButton } from './elements';
 
-type Props = {
+export type Props = {
   id: string;
   onDelete: (id: string) => void;
 };

@@ -4,7 +4,7 @@ import { RefinementList } from 'react-instantsearch/dom';
 
 import { Container, Title } from './elements';
 
-type Props = {
+export type Props = {
   title: string;
   attributeName: string;
   operator: string;
@@ -16,18 +16,16 @@ const Filter: React.SFC<Props> = ({
   attributeName,
   operator,
   noSearch,
-}) => {
-  return (
-    <Container>
-      <Title>{title}</Title>
-      <RefinementList
-        withSearchBox={!noSearch}
-        showMore={!noSearch}
-        operator={operator}
-        attributeName={attributeName}
-      />
-    </Container>
-  );
-};
+}) => (
+  <Container>
+    <Title>{title}</Title>
+    <RefinementList
+      withSearchBox={!noSearch}
+      showMore={!noSearch}
+      operator={operator}
+      attributeName={attributeName}
+    />
+  </Container>
+);
 
 export default Filter;

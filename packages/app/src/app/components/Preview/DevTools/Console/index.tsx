@@ -16,7 +16,7 @@ export type Message = {
   arguments: any[];
 };
 
-type Props = {
+export type Props = {
   sandboxId: string;
   hidden: boolean;
   updateStatus: (type: string) => void;
@@ -24,13 +24,11 @@ type Props = {
 
 type State = {
   messages: Message[];
-  scrollToBottom: boolean;
 };
 
 class Console extends React.Component<Props, State> {
   state = {
     messages: [],
-    scrollToBottom: true,
   };
   listener;
   list;
@@ -158,7 +156,7 @@ class Console extends React.Component<Props, State> {
           }}
         >
           {this.state.messages.map((mes, i) => (
-            <Message key={i} message={mes} />
+            <Message key={i/*eslint-disable-line*/} message={mes} />
           ))}
         </Messages>
         <Input evaluateConsole={this.evaluateConsole} />

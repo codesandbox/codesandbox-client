@@ -8,7 +8,7 @@ import Particles from './Particles';
 
 import { BadgeContainer } from './elements';
 
-type Props = {
+export type Props = {
   badge: string;
   subscribed: boolean;
 };

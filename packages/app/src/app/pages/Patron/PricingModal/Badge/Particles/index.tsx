@@ -34,7 +34,7 @@ const createParticles = (amount: number, badge) =>
       />
     ));
 
-type Props = {
+export type Props = {
   badge: string;
   makeItRain: boolean;
 };

@@ -22,7 +22,7 @@ type ExternalProps = {
   currentModuleId?: string;
 };
 
-type Props = ExternalProps & WithCerebral;
+export type Props = ExternalProps & WithCerebral;
 
 class EditorTabs extends React.Component<Props> {
   componentDidUpdate(prevProps) {

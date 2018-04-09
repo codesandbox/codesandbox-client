@@ -20,7 +20,7 @@ type ExternalProps = {
   innerRef?: (entry: DirectoryEntry) => void;
 };
 
-type Props = ExternalProps & WithCerebral;
+export type Props = ExternalProps & WithCerebral;
 
 type State = {
   creating: string;
@@ -200,7 +200,7 @@ class DirectoryEntry extends React.Component<Props, State> {
       store,
     } = this.props;
     const { creating, open } = this.state;
-    const currentSandbox = store.editor.currentSandbox;
+    const { currentSandbox } = store.editor;
 
     const title = root
       ? 'Project'

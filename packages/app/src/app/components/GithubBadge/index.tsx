@@ -9,27 +9,25 @@ const DivOrA = ({ href, ...props }) =>
     <div {...props} />
   );
 
-type Props = {
+export type Props = {
   username: string;
   repo: string;
   url?: string;
   branch?: string;
 };
 
-const GithubBadge: React.SFC<Props> = ({ username, repo, url, branch }) => {
-  return (
-    <DivOrA href={url}>
-      <BorderRadius hasUrl={!!url}>
-        <Icon>
-          <GithubIcon />
-        </Icon>
-        <Text>
-          {username}/{repo}
-          {branch && branch !== 'master' ? `@${branch}` : ''}
-        </Text>
-      </BorderRadius>
-    </DivOrA>
-  );
-};
+const GithubBadge: React.SFC<Props> = ({ username, repo, url, branch }) => (
+  <DivOrA href={url}>
+    <BorderRadius hasUrl={!!url}>
+      <Icon>
+        <GithubIcon />
+      </Icon>
+      <Text>
+        {username}/{repo}
+        {branch && branch !== 'master' ? `@${branch}` : ''}
+      </Text>
+    </BorderRadius>
+  </DivOrA>
+);
 
 export default GithubBadge;

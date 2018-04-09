@@ -20,7 +20,7 @@ import {
 
 import { StatusElements } from '../elements';
 
-type Props = {
+export type Props = {
   file: File;
   selectFile: (file: File) => void;
   selectedFile?: File;

@@ -21,7 +21,7 @@ import ErrorDetails from './ErrorDetails';
 import TestSummaryText from '../TestSummaryText';
 import TestProgressBar from '../TestProgressBar';
 
-type Props = {
+export type Props = {
   file: File;
   status: Status;
   openFile: (path: string) => void;

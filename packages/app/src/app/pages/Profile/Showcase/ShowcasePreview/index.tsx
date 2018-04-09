@@ -7,7 +7,7 @@ import { Sandbox } from 'app/store/modules/editor/types';
 import { Settings } from 'app/store/modules/preferences/types';
 import { Container } from './elements';
 
-type Props = {
+export type Props = {
   sandbox: Sandbox;
   settings: Settings;
 };

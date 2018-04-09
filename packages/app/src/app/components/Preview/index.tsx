@@ -10,7 +10,7 @@ import { Settings } from 'app/store/modules/preferences/types';
 import Navigator from './Navigator';
 import { Container, StyledFrame } from './elements';
 
-type Props = {
+export type Props = {
   onInitialized?: (preview: BasePreview) => () => void;
   sandbox: Sandbox;
   extraModules?: { [path: string]: { code: string; path: string } };

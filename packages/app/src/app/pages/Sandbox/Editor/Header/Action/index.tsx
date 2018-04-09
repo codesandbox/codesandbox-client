@@ -11,7 +11,7 @@ import {
   IconContainer,
 } from './elements';
 
-type Props = {
+export type Props = {
   onClick?: () => void;
   href?: string;
   Icon: React.StatelessComponent;

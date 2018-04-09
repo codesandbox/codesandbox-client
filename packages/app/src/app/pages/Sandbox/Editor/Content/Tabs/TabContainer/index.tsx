@@ -9,7 +9,7 @@ import { Module } from 'app/store/modules/editor/types';
 
 import Tab from '../Tab';
 
-type Props = {
+export type Props = {
   setCurrentModule: (id: string) => void;
   module: Module;
   connectDragSource: ConnectDragSource;

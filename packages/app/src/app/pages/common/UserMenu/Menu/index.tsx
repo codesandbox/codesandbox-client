@@ -10,41 +10,39 @@ import PatronBadge from 'common/utils/badges/PatronBadge';
 
 import { Container, Item, Icon } from './elements';
 
-type Props = {
+export type Props = {
   username: string;
   openPreferences: () => void;
   signOut: () => void;
 };
 
-const Menu: React.SFC<Props> = ({ username, openPreferences, signOut }) => {
-  return (
-    <Container>
-      <Link style={{ textDecoration: 'none' }} to={profileUrl(username)}>
-        <Item>
-          <Icon>
-            <UserIcon />
-          </Icon>My Profile
-        </Item>
-      </Link>
-      <Item onClick={openPreferences}>
+const Menu: React.SFC<Props> = ({ username, openPreferences, signOut }) => (
+  <Container>
+    <Link style={{ textDecoration: 'none' }} to={profileUrl(username)}>
+      <Item>
         <Icon>
-          <SettingsIcon />
-        </Icon>Preferences
+          <UserIcon />
+        </Icon>My Profile
       </Item>
-      <Link style={{ textDecoration: 'none' }} to={patronUrl()}>
-        <Item>
-          <Icon>
-            <PatronBadge style={{ width: 24, margin: '-6px -5px' }} size={24} />
-          </Icon>Patron Page
-        </Item>
-      </Link>
-      <Item onClick={signOut}>
+    </Link>
+    <Item onClick={openPreferences}>
+      <Icon>
+        <SettingsIcon />
+      </Icon>Preferences
+    </Item>
+    <Link style={{ textDecoration: 'none' }} to={patronUrl()}>
+      <Item>
         <Icon>
-          <ExitIcon />
-        </Icon>Sign out
+          <PatronBadge style={{ width: 24, margin: '-6px -5px' }} size={24} />
+        </Icon>Patron Page
       </Item>
-    </Container>
-  );
-};
+    </Link>
+    <Item onClick={signOut}>
+      <Icon>
+        <ExitIcon />
+      </Icon>Sign out
+    </Item>
+  </Container>
+);
 
 export default Menu;
