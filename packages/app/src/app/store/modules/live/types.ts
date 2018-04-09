@@ -35,7 +35,7 @@ export type RoomInfo = {
 };
 
 export type LiveUserByModule = {
-  [moduleId: string]: LiveUser[];
+  [moduleId: string]: string[];
 };
 
 export type State = {

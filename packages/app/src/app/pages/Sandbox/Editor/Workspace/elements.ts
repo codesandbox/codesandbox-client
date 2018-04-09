@@ -8,8 +8,8 @@ export const getContainerStyles = props => {
     (props.alternative
       ? theme.primary
       : theme.templateColor || theme.secondary);
-  let styles = `
-    ${styleProps => styleProps.noTransition || 'transition: 0.3s ease all;'}
+  let styles = `${styleProps =>
+    styleProps.noTransition ? 'transition: 0.3s ease all;' : null}
     position: relative;
     display: flex;
     font-size: 14px;
