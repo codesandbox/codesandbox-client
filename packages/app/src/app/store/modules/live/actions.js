@@ -154,9 +154,7 @@ export function consumeUserState({ props }) {
 }
 
 export function updateSelection({ props, state }) {
-  const userId = props.data.userId;
-  const moduleShortid = props.data.moduleShortid;
-  const selection = props.data.selection;
+  const { userId, moduleShortid, selection } = props.data.userId;
 
   state.set(
     `live.roomInfo.usersMetadata.${userId}.currentModuleShortid`,

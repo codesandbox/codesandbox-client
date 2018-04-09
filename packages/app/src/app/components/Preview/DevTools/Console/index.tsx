@@ -10,7 +10,7 @@ import Input from './Input';
 
 import { Container, Messages } from './elements';
 
-export type Message = {
+export type IMessage = {
   type: 'message' | 'command' | 'return';
   logType: 'log' | 'warn' | 'info' | 'error';
   arguments: any[];
@@ -23,7 +23,7 @@ export type Props = {
 };
 
 type State = {
-  messages: Message[];
+  messages: IMessage[];
 };
 
 class Console extends React.Component<Props, State> {

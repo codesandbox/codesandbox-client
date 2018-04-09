@@ -1,19 +1,10 @@
 import { State as RootState } from 'app/fluent';
 import { State } from './types';
 
-export function isEditor(state: State, rootState: RootState) {
-  return (
-    state.isLive &&
-    (state.roomInfo.mode === 'open' ||
-      state.roomInfo.ownerId === rootState.user.id ||
-      state.roomInfo.editorIds.indexOf(rootState.user.id) > 0)
-  );
-}
-
 export function isCurrentEditor(state: State, rootState: RootState) {
-  const user = rootState.user;
+  const { user } = rootState;
 
-  return user && state.isEditor.get();
+  return user && state.isEditor(user.id);
 }
 
 export function liveUsersByModule(state: State, rootState: RootState) {

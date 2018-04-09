@@ -48,7 +48,7 @@ export type State = {
   notificationsHidden: boolean;
   followingUserId: string;
   roomInfo: RoomInfo;
-  isEditor: ComputedValue<boolean>;
+  isEditor: (userId: string) => boolean;
   isCurrentEditor: ComputedValue<boolean>;
   liveUsersByModule: ComputedValue<LiveUserByModule>;
 };

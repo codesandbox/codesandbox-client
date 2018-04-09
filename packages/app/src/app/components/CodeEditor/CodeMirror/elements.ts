@@ -1,4 +1,5 @@
 import styled, { keyframes } from 'app/styled-components';
+import theme from 'common/theme';
 
 const fadeInAnimation = keyframes`
   0%   { background-color: #374140; }
@@ -35,7 +36,7 @@ export const CodeContainer = styled<
     font-family: ${props =>
       fontFamilies(props.fontFamily, 'Menlo', 'Source Code Pro', 'monospace')};
     line-height: ${props => props.lineHeight};
-    background: ${props => props.theme.background2()};
+    background: ${theme.background2()};
     color: #e0e0e0;
     height: 100%;
     font-weight: 500;
@@ -54,7 +55,7 @@ export const CodeContainer = styled<
     background: #65737e;
   }
   .CodeMirror-gutters {
-    background: ${props => props.theme.background2()};
+    background: ${theme.background2()};
     border-right: 0px;
   }
   .CodeMirror-guttermarker {
@@ -85,17 +86,17 @@ export const CodeContainer = styled<
     color: #aa759f;
   }
   span.cm-keyword {
-    color: ${props => props.theme.secondary()};
+    color: ${theme.secondary()};
   }
   span.cm-string {
     color: #99c794;
   }
 
   span.cm-variable {
-    color: ${props => props.theme.primary.darken(0.1)()};
+    color: ${theme.primary.darken(0.1)()};
   }
   span.cm-variable-2 {
-    color: ${props => props.theme.secondary()};
+    color: ${theme.secondary()};
   }
   span.cm-def {
     color: #fac863;

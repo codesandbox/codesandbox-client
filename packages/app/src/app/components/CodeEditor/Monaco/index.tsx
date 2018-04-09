@@ -25,6 +25,7 @@ import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash].w
 // eslint-disable-next-line
 import TypingsFetcherWorker from 'worker-loader?publicPath=/&name=monaco-typings-ata.[hash].worker.js!./workers/fetch-dependency-typings';
 
+import { Editor, NPMDependencies } from '../types';
 import MonacoEditorComponent from './MonacoReactComponent';
 import FuzzySearch from '../FuzzySearch';
 import { Container, CodeContainer } from './elements';
@@ -125,10 +126,6 @@ const fontFamilies = (...families) =>
 const requireAMDModule = paths =>
   new Promise(resolve => window.require(paths, () => resolve()));
 
-type NPMDependencies = {
-  [name: string]: string;
-};
-
 type Selection = {
   selection: UserSelection;
   moduleShortid: string;
@@ -165,7 +162,11 @@ type State = {
   fuzzySearchEnabled: boolean;
 };
 
-class MonacoEditor extends React.Component<Props, State> {
+interface Debounced extends Cancelable {
+  (data?: any): void;
+}
+
+class MonacoEditor extends React.Component<Props, State> implements Editor {
   static defaultProps = {
     width: '100%',
     height: '100%',
@@ -184,9 +185,9 @@ class MonacoEditor extends React.Component<Props, State> {
   editor: any;
   monaco: any;
   receivingCode?: boolean = false;
-  resizeEditorDebounce: Cancelable;
-  commitLibChangesDebounce: Cancelable;
-  onSelectionChangedDebounce: Cancelable;
+  resizeEditorDebounced: Debounced;
+  commitLibChangesDebounced: Debounced;
+  onSelectionChangedDebounced: Debounced;
   changes: {
     code: string;
     changes: any[];
@@ -208,9 +209,9 @@ class MonacoEditor extends React.Component<Props, State> {
     this.typingsFetcherWorker = null;
     this.sizeProbeInterval = null;
 
-    this.resizeEditorDebounce = debounce(this.resizeEditor, 500);
-    this.commitLibChanges = debounce(this.commitLibChanges, 300);
-    this.onSelectionChangedDebounce = debounce(this.onSelectionChanged, 500);
+    this.resizeEditorDebounced = debounce(this.resizeEditor, 500);
+    this.commitLibChangesDebounced = debounce(this.commitLibChanges, 300);
+    this.onSelectionChangedDebounced = debounce(this.onSelectionChanged, 500);
   }
 
   shouldComponentUpdate(nextProps: Props) {
@@ -218,7 +219,7 @@ class MonacoEditor extends React.Component<Props, State> {
       this.props.width !== nextProps.width ||
       this.props.height !== nextProps.height
     ) {
-      this.resizeEditor();
+      this.resizeEditorDebounced();
     }
 
     if (this.props.readOnly !== nextProps.readOnly && this.editor) {
@@ -228,7 +229,7 @@ class MonacoEditor extends React.Component<Props, State> {
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.resizeEditor);
+    window.removeEventListener('resize', this.resizeEditorDebounced);
     // Make sure that everything has run before disposing, to prevent any inconsistensies
     setTimeout(() => {
       this.disposeModules(this.sandbox.modules);
@@ -295,8 +296,11 @@ class MonacoEditor extends React.Component<Props, State> {
       }
     );
 
-    window.addEventListener('resize', this.resizeEditor);
-    this.sizeProbeInterval = setInterval(this.resizeEditor.bind(this), 3000);
+    window.addEventListener('resize', this.resizeEditorDebounced);
+    this.sizeProbeInterval = setInterval(
+      this.resizeEditorDebounced.bind(this),
+      3000
+    );
 
     const { dependencies } = this;
     if (dependencies != null) {
@@ -360,7 +364,7 @@ class MonacoEditor extends React.Component<Props, State> {
             /* click inside a selection */ selectionChange.source === 'api') &&
           onSelectionChanged
         ) {
-          this.onSelectionChangedDebounce.cancel();
+          this.onSelectionChangedDebounced.cancel();
           onSelectionChanged({
             selection: data,
             moduleShortid: this.currentModule.shortid,
@@ -368,7 +372,7 @@ class MonacoEditor extends React.Component<Props, State> {
         } else {
           // This is just on typing, we send a debounced selection update as a
           // safeguard to make sure we are in sync
-          this.onSelectionChanged({
+          this.onSelectionChangedDebounced({
             selection: data,
             moduleShortid: this.currentModule.shortid,
           });
@@ -1352,7 +1356,7 @@ class MonacoEditor extends React.Component<Props, State> {
       this.monaco.languages.typescript.typescriptDefaults._extraLibs[
         fullPath
       ] = code;
-      this.commitLibChanges();
+      this.commitLibChangesDebounced();
     }
   };
 

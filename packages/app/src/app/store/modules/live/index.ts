@@ -1,6 +1,7 @@
 import { Module, Computed } from '@cerebral/fluent';
 import * as computed from './computed';
 import * as sequences from './sequences';
+import * as getters from './getters';
 
 import { State } from './types';
 
@@ -14,7 +15,9 @@ const state: State = {
   reconnecting: false,
   notificationsHidden: false,
   followingUserId: null,
-  isEditor: Computed(computed.isEditor),
+  get isEditor() {
+    return getters.isEditor(this);
+  },
   isCurrentEditor: Computed(computed.isCurrentEditor),
   liveUsersByModule: Computed(computed.liveUsersByModule),
 };

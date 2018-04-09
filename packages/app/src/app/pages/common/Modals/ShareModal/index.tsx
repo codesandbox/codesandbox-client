@@ -73,7 +73,6 @@ class ShareView extends React.Component<Props, State> {
 
   handleSend = () => {
     if (this.state.message !== '') {
-      // this.toggle();
       this.props.sendMessage(this.state.message);
       this.setState({ message: '' });
     }

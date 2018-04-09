@@ -11,6 +11,7 @@ import 'codemirror/addon/lint/lint';
 import { Sandbox, Module, SandboxError } from 'app/store/modules/editor/types';
 import { Settings } from 'app/store/modules/preferences/types';
 
+import { Editor } from '../types';
 import FuzzySearch from '../FuzzySearch';
 import { Container, CodeContainer } from './elements';
 
@@ -54,7 +55,7 @@ type State = {
   fuzzySearchEnabled: boolean;
 };
 
-class CodemirrorEditor extends React.Component<Props, State> {
+class CodemirrorEditor extends React.Component<Props, State> implements Editor {
   codemirror: CodeMirror.Editor;
   codemirrorElement?: HTMLDivElement;
   server: any;
