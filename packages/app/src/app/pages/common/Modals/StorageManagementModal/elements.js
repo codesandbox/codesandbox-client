@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 export const Container = styled.div`
   background-color: ${props => props.theme.background};
@@ -40,6 +40,14 @@ export const Description = styled.div`
   font-size: 0.875rem;
 `;
 
+export const SubDescription = styled.div`
+  margin: 0;
+  padding-left: 2rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1rem;
+`;
+
 export const Rule = styled.hr`
   border: none;
   height: 1px;
@@ -47,4 +55,23 @@ export const Rule = styled.hr`
   margin: 1rem 2rem;
 
   background-color: rgba(255, 255, 255, 0.1);
+`;
+
+const loadingAnimation = keyframes`
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+`;
+
+export const LoadingAnimationContainer = styled.div`
+  margin: auto;
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid black;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: ${loadingAnimation} 2s linear infinite;
 `;

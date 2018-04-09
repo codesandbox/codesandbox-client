@@ -42,7 +42,7 @@ function UserMenu({ signals, store, small }) {
               signals.modalOpened({ modal: 'preferences' });
             }}
             openStorageManagement={() => {
-              signals.modalOpened({ modal: 'storageManagement' });
+              signals.files.gotUploadedFiles();
             }}
             signOut={() => {
               signals.signOutClicked();
