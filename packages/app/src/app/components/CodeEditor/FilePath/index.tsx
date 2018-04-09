@@ -11,7 +11,7 @@ import { Container, Chevron, FileName, StyledExitZen } from './elements';
 
 export type Props = {
   currentModule: Module;
-  errors?: SandboxError[];
+  errors: SandboxError[];
   modules: Module[];
   directories: Directory[];
   workspaceHidden: boolean;

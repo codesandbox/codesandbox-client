@@ -321,7 +321,7 @@ class EditorPreview extends React.Component<WithCerebral, State> {
 
   render() {
     const { signals, store } = this.props;
-    const { currentModule } = store.editor;
+    const { currentModule, errors } = store.editor;
     const notSynced = !store.editor.isAllModulesSynced;
     const sandbox = store.editor.currentSandbox;
     const { preferences } = store;
@@ -362,6 +362,7 @@ class EditorPreview extends React.Component<WithCerebral, State> {
             <FilePath
               modules={sandbox.modules}
               directories={sandbox.directories}
+              errors={errors}
               currentModule={currentModule}
               workspaceHidden={!store.workspace.openedWorkspaceItem}
               toggleWorkspace={() => {
