@@ -11,9 +11,9 @@ export type UserSelection = {
 };
 
 export type UserMetadata = {
-  selection: UserSelection;
+  selection: UserSelection | undefined;
   currentModuleShortid: string;
-  color?: number[];
+  color: number[] | undefined;
 };
 
 export type LiveUser = {
@@ -22,8 +22,14 @@ export type LiveUser = {
   avatarUrl: string;
 };
 
+export type LiveMessage = {
+  userId: string;
+  date: number;
+  message: string;
+};
+
 export type RoomInfo = {
-  startTime: number;
+  startTime: number | undefined;
   connectionCount: number;
   ownerId: string;
   roomId: string;
@@ -32,6 +38,13 @@ export type RoomInfo = {
   editorIds: string[];
   usersMetadata: Dictionary<UserMetadata>;
   users: LiveUser[];
+  chatEnabled: boolean;
+  chat: {
+    messages: LiveMessage[];
+    // We keep a separate map if user_id -> username for the case when
+    // a user disconnects. We still need to keep track of the name.
+    users: string[];
+  };
 };
 
 export type LiveUserByModule = {
@@ -42,11 +55,11 @@ export type State = {
   isLive: boolean;
   isLoading: boolean;
   receivingCode: boolean;
-  error: string;
+  error: string | undefined;
   isOwner: boolean;
   reconnecting: boolean;
   notificationsHidden: boolean;
-  followingUserId: string;
+  followingUserId: string | null;
   roomInfo: RoomInfo;
   isEditor: (userId: string) => boolean;
   isCurrentEditor: ComputedValue<boolean>;
