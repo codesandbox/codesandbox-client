@@ -233,10 +233,10 @@ class Tests extends React.Component<Props, State> {
 
           this.setState(
             immer(this.state, state => {
-              if (!state.files[data.path]) {
-                state.files[data.path] = {
+              if (!state.files[test.path]) {
+                state.files[test.path] = {
                   tests: {},
-                  fileName: data.path,
+                  fileName: test.path,
                 };
               }
 
