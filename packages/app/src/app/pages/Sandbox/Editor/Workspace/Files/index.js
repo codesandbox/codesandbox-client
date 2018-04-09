@@ -47,7 +47,7 @@ class Files extends React.Component {
             forceShow={window.__isTouch}
             onCreateFile={this.createModule}
             onCreateDirectory={this.createDirectory}
-            onUploadFile={this.uploadFile}
+            onUploadFile={store.isLoggedIn ? this.uploadFile : undefined}
           />
         }
       >
