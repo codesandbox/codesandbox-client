@@ -17,18 +17,17 @@ import {
   ResizingNotice,
 } from './elements';
 
+type ResizeCallback = (
+  values: { x: number; y: number; width: number; height: number }
+) => void;
+
 type ExternalProps = {
-  children: (
-    funcs: {
-      resize: (
-        size: { x: number; y: number; width: number; height: number }
-      ) => void;
-    }
-  ) => React.ReactNode;
+  children: (funcs: { resize: ResizeCallback }) => React.ReactNode;
   onPositionChange?: () => void;
+  hide?: boolean;
 };
 
-export type Props = ExternalProps & WithCerebral;
+type Props = ExternalProps & WithCerebral;
 
 type State = {
   resizing?: boolean;
@@ -52,6 +51,8 @@ class FlyingContainer extends React.Component<Props, State> {
   el?: HTMLElement;
   initialWidth?: number;
   initialHeight?: number;
+  lastX?: number;
+  lastY?: number;
 
   updateBounds = el => {
     if (el) {
@@ -68,32 +69,39 @@ class FlyingContainer extends React.Component<Props, State> {
     this.setState({ dragging: true });
     this.setResizingStarted();
 
-    if (this.props.onPositionChange) {
-      this.props.onPositionChange();
-    }
+    this.lastX = this.props.store.editor.previewWindow.x;
+    this.lastY = this.props.store.editor.previewWindow.y;
   };
 
   handleStopDrag = (e, data) => {
     const { x, y } = data;
+    const posChanged = x !== this.lastX || y !== this.lastY;
+
     this.setState({ dragging: false });
+
+    this.setResizingStopped(posChanged);
 
     // We only set the bounds in the global store on stop, otherwise there are
     // other components constantly recalculating while dragging -> lag
     this.props.signals.editor.setPreviewBounds({ x, y });
-    this.setResizingStopped();
   };
 
   setResizingStarted = () => {
     this.props.signals.editor.resizingStarted();
+  };
 
-    if (this.props.onPositionChange) {
-      this.props.onPositionChange();
+  setResizingStopped = (posChanged = true) => {
+    this.props.signals.editor.resizingStopped();
+
+    if (posChanged) {
+      if (this.props.onPositionChange) {
+        this.props.onPositionChange();
+      }
+      this.fixPreviewInteractivity();
     }
   };
 
-  setResizingStopped = () => {
-    this.props.signals.editor.resizingStopped();
-
+  fixPreviewInteractivity = () => {
     // We do this to force a recalculation of the iframe height, this doesn't
     // happen when pointer events are disabled and in turn disables scroll.
     // It's hacky, but it's to fix a bug in the browser.
@@ -121,7 +129,7 @@ class FlyingContainer extends React.Component<Props, State> {
   };
 
   handleHeightResize = (
-    e: React.MouseEvent<HTMLDivElement>,
+    e: React.MouseEvent<HTMLElement>,
     vertical: boolean,
     horizontal: boolean,
     changePositionY: boolean,
@@ -213,6 +221,7 @@ class FlyingContainer extends React.Component<Props, State> {
   };
 
   render() {
+    const { hide } = this.props;
     const { previewWindow } = this.props.store.editor;
 
     const width = this.state.width || previewWindow.width;
@@ -222,6 +231,7 @@ class FlyingContainer extends React.Component<Props, State> {
       <Draggable
         onStart={this.handleStartDrag}
         onStop={this.handleStopDrag}
+        handle=".flying-container-handler"
         defaultPosition={{
           x: previewWindow.x,
           y: previewWindow.y,
@@ -248,9 +258,11 @@ class FlyingContainer extends React.Component<Props, State> {
             width: width || '50%',
             flex: width ? `0 0 ${width}px` : undefined,
             height,
-            boxShadow: '0 3px 8px rgba(0, 0, 0, 0.5)',
+            boxShadow: hide ? 'none' : '0 3px 8px rgba(0, 0, 0, 0.5)',
             zIndex: 60,
-            cursor: 'move',
+
+            visiblity: hide ? 'hidden' : undefined,
+            pointerEvents: hide ? 'none' : undefined,
           }}
           ref={this.updateBounds}
         >

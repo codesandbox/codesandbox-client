@@ -85,7 +85,7 @@ class EditorPreview extends React.Component<WithCerebral, State> {
   };
 
   onInitialized = (editor: any) => {
-    const store = this.props.store;
+    const { store } = this.props;
     let isChangingSandbox = false;
 
     const disposeSandboxChangeHandler = reaction(
@@ -260,7 +260,7 @@ class EditorPreview extends React.Component<WithCerebral, State> {
         }
         const editorModule = editor.currentModule;
 
-        const changeModule = editor.changeModule;
+        const { changeModule } = editor;
         if (newModule !== editorModule && changeModule) {
           const errors = store.editor.errors.map(e => e);
           const corrections = store.editor.corrections.map(e => e);
@@ -311,7 +311,7 @@ class EditorPreview extends React.Component<WithCerebral, State> {
   };
 
   sendTransforms = operation => {
-    const currentModuleShortid = this.props.store.editor.currentModuleShortid;
+    const { currentModuleShortid } = this.props.store.editor;
 
     this.props.signals.live.onTransformMade({
       moduleShortid: currentModuleShortid,
@@ -321,10 +321,10 @@ class EditorPreview extends React.Component<WithCerebral, State> {
 
   render() {
     const { signals, store } = this.props;
-    const currentModule = store.editor.currentModule;
+    const { currentModule } = store.editor;
     const notSynced = !store.editor.isAllModulesSynced;
     const sandbox = store.editor.currentSandbox;
-    const preferences = store.preferences;
+    const { preferences } = store;
     const { x, y, width, content } = store.editor.previewWindow;
 
     const windowVisible = !!content;

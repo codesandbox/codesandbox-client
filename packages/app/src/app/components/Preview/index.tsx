@@ -24,8 +24,8 @@ export type Props = {
   onOpenNewWindow?: () => void;
   onToggleProjectView?: () => void;
   isResizing?: boolean;
-  alignRight?: () => void;
-  alignBottom?: () => void;
+  alignRight?: (event: React.MouseEvent<HTMLElement>) => void;
+  alignBottom?: (event: React.MouseEvent<HTMLElement>) => void;
   onResize?: (height: number) => void;
   showNavigation?: boolean;
   inactive?: boolean;
