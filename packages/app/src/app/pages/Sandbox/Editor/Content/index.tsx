@@ -3,43 +3,39 @@ import { ThemeProvider } from 'styled-components';
 import { Prompt } from 'react-router-dom';
 import { reaction } from 'mobx';
 import { TextOperation } from 'ot';
-import { connect, WithCerebral } from 'app/fluent';
+import { connect, WithCerebral, State as StoreState } from 'app/fluent';
 import getTemplateDefinition from 'common/templates';
-import { SandboxError, Module } from 'app/store/modules/editor/types';
-
 import CodeEditor from 'app/components/CodeEditor';
+import { Editor } from 'app/components/CodeEditor/types';
 import DevTools from 'app/components/Preview/DevTools';
 import FilePath from 'app/components/CodeEditor/FilePath';
+import { Settings } from 'app/store/modules/preferences/types';
+import { SandboxError, Module } from 'app/store/modules/editor/types';
+
 import Preview from './Preview';
 import Tabs from './Tabs';
-
 import { FullSize } from './elements';
 
-const settings = store => ({
-  fontFamily: store.preferences.settings.fontFamily,
-  fontSize: store.preferences.settings.fontSize,
-  lineHeight: store.preferences.settings.lineHeight,
-  autoCompleteEnabled: store.preferences.settings.autoCompleteEnabled,
-  autoDownloadTypes: store.preferences.settings.autoDownloadTypes,
-  vimMode: store.preferences.settings.vimMode,
-  lintEnabled: store.preferences.settings.lintEnabled,
-  codeMirror: store.preferences.settings.codeMirror,
+const settings = (store: StoreState): Settings => ({
+  ...store.preferences.settings,
   tabWidth: store.preferences.settings.prettierConfig
     ? store.preferences.settings.prettierConfig.tabWidth || 2
     : 2,
 });
+
+type Props = WithCerebral;
 
 type State = {
   width?: number;
   height?: number;
 };
 
-class EditorPreview extends React.Component<WithCerebral, State> {
-  state: State = { width: null, height: null };
+class EditorPreview extends React.Component<Props, State> {
+  state = { width: null, height: null };
   interval: NodeJS.Timer;
-  disposeEditorChange: () => void;
+  disposeEditorChange: Function;
   el?: HTMLElement;
-  devtools: any;
+  devtools: DevTools;
 
   componentDidMount() {
     this.props.signals.editor.contentMounted();
@@ -84,7 +80,7 @@ class EditorPreview extends React.Component<WithCerebral, State> {
     }
   };
 
-  onInitialized = (editor: any) => {
+  onInitialized = (editor: Editor) => {
     const { store } = this.props;
     let isChangingSandbox = false;
 
@@ -204,7 +200,7 @@ class EditorPreview extends React.Component<WithCerebral, State> {
         store.editor.pendingOperation &&
         store.editor.pendingOperation.map(x => x),
       () => {
-        if (store.editor.pendingOperation) {
+        if (store.editor.pendingOperation && store.live.isLive) {
           if (editor.setReceivingCode) {
             editor.setReceivingCode(true);
           }
@@ -225,7 +221,6 @@ class EditorPreview extends React.Component<WithCerebral, State> {
                 });
               }
             } catch (e) {
-              // tslint:disable-next-line
               console.error(e);
             }
           }
@@ -238,12 +233,16 @@ class EditorPreview extends React.Component<WithCerebral, State> {
     );
 
     const updateUserSelections = () => {
-      requestAnimationFrame(() => {
-        if (store.editor.pendingUserSelections.length) {
-          editor.updateUserSelections(store.editor.pendingUserSelections);
+      if (store.editor.pendingUserSelections && editor.updateUserSelections) {
+        if (store.live.isLive) {
+          requestAnimationFrame(() => {
+            editor.updateUserSelections(store.editor.pendingUserSelections);
+            this.props.signals.live.onSelectionDecorationsApplied();
+          });
+        } else {
           this.props.signals.live.onSelectionDecorationsApplied();
         }
-      });
+      }
     };
     const disposeLiveSelectionHandler = reaction(
       () => store.editor.pendingUserSelections.map(x => x),
@@ -253,8 +252,8 @@ class EditorPreview extends React.Component<WithCerebral, State> {
 
     const disposeModuleHandler = reaction(
       () => [store.editor.currentModule, store.editor.currentModule.code],
-      result => {
-        const newModule = result[0] as Module;
+      results => {
+        const newModule = results[0] as Module;
         if (isChangingSandbox) {
           return;
         }
@@ -360,9 +359,9 @@ class EditorPreview extends React.Component<WithCerebral, State> {
           />
           {preferences.settings.zenMode ? (
             <FilePath
+              errors={errors}
               modules={sandbox.modules}
               directories={sandbox.directories}
-              errors={errors}
               currentModule={currentModule}
               workspaceHidden={!store.workspace.openedWorkspaceItem}
               toggleWorkspace={() => {
@@ -433,7 +432,13 @@ class EditorPreview extends React.Component<WithCerebral, State> {
                 this.devtools = component;
               }
             }}
-            setDragging={() => this.props.signals.editor.resizingStarted()}
+            setDragging={dragging => {
+              if (dragging) {
+                this.props.signals.editor.resizingStarted();
+              } else {
+                this.props.signals.editor.resizingStopped();
+              }
+            }}
             sandboxId={sandbox.id}
             shouldExpandDevTools={store.preferences.showDevtools}
             zenMode={preferences.settings.zenMode}

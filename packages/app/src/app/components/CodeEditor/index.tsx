@@ -18,6 +18,7 @@ import Monaco from './Monaco';
 import ImageViewer from './ImageViewer';
 import Configuration from './Configuration';
 import { Icons, Icon } from './elements';
+import { Editor as EditorType } from './types';
 
 const CodeMirror = Loadable({
   loader: () =>
@@ -67,7 +68,7 @@ export type Props = {
   hideNavigation?: boolean;
   width?: number | string;
   height?: number | string;
-  onInitialized?: (component: React.Component) => () => void;
+  onInitialized?: (editor: EditorType) => () => void;
   onChange?: (code: string) => void;
   onSave?: (code: string) => void;
   onModuleChange?: (moduleId: string) => void;
@@ -168,24 +169,24 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
               </Tooltip>
             </Icons>
           ) : (
-            <Icons style={{ fontSize: '.875rem' }}>
-              {config.partialSupportDisclaimer ? (
-                <Tooltip
-                  position="bottom"
-                  title={config.partialSupportDisclaimer}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                  }}
-                >
-                  Partially Supported Config{' '}
-                  <QuestionIcon style={{ marginLeft: '.5rem' }} />
-                </Tooltip>
-              ) : (
-                <div>Supported Configuration</div>
-              )}
-            </Icons>
-          ))}
+              <Icons style={{ fontSize: '.875rem' }}>
+                {config.partialSupportDisclaimer ? (
+                  <Tooltip
+                    position="bottom"
+                    title={config.partialSupportDisclaimer}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                  >
+                    Partially Supported Config{' '}
+                    <QuestionIcon style={{ marginLeft: '.5rem' }} />
+                  </Tooltip>
+                ) : (
+                    <div>Supported Configuration</div>
+                  )}
+              </Icons>
+            ))}
         <Editor {...this.props} dependencies={dependencies} />
       </div>
     );

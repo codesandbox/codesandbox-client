@@ -1,6 +1,14 @@
 import { TextOperation } from 'ot';
 import { camelizeKeys } from 'humps';
 
+export function clearPendingUserSelections({ state }) {
+  const pendingUserSelections = state.get('editor.pendingUserSelections');
+
+  if (pendingUserSelections.length) {
+    state.set('editor.pendingUserSelections', []);
+  }
+}
+
 export function createRoom({ api, props }) {
   const id = props.sandboxId;
 

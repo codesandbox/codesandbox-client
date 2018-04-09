@@ -369,9 +369,7 @@ export const clearPendingOperation = [
   set(state`editor.pendingOperation`, null),
 ];
 
-export const clearPendingUserSelections = [
-  set(state`editor.pendingUserSelections`, []),
-];
+export const clearPendingUserSelections = [actions.clearPendingUserSelections];
 
 export const addEditor = [
   push(state`live.roomInfo.editorIds`, props`userId`),

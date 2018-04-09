@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { observer } from 'mobx-react';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
 import getType from 'app/utils/get-type';
 import { Module } from 'app/store/modules/editor/types';
@@ -107,4 +108,4 @@ class Tab extends React.Component<Props, State> {
   }
 }
 
-export default Tab;
+export default observer(Tab);
