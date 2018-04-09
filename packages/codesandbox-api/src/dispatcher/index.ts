@@ -30,7 +30,7 @@ export function dispatch(message: Object) {
   }
 }
 
-export type Callback = (message: Object, source?: any) => void;
+export type Callback = (message: Object, source?: Window) => void;
 
 const listeners: { [id: string]: Callback } = {};
 let listenerId = 0;
@@ -59,7 +59,7 @@ export function notifyListeners(data: Object, source?: MessageEvent['source']) {
 function notifyFrames(message: Object) {
   const rawMessage = JSON.parse(JSON.stringify(message));
   bundlers.forEach(frame => {
-    if (frame) {
+    if (frame && frame.postMessage) {
       frame.postMessage({ ...rawMessage, codesandbox: true }, '*');
     }
   });
