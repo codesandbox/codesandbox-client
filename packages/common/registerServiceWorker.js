@@ -49,6 +49,21 @@ function registerValidSW(swUrl, sendNotification) {
     .then(registration => {
       registration.onupdatefound = () => {
         const installingWorker = registration.installing;
+
+        installingWorker.onerror = () => {
+          // If there's an error we purge all caches, the error is likely
+          // from a QuotaExceeded (no disk space) and we want the newest update
+          // regardless
+          console.log(
+            'Got an error while installing service worker, purging all caches...'
+          );
+          self.caches.keys().then(names => {
+            names.forEach(name => {
+              caches.delete(name);
+            });
+          });
+        };
+
         installingWorker.onstatechange = () => {
           if (installingWorker.state === 'installed') {
             if (navigator.serviceWorker.controller) {
