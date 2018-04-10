@@ -62,4 +62,17 @@ export default {
     y: types.number,
   }),
   currentModal: types.maybe(types.string),
+  uploadedFiles: types.maybe(
+    types.array(
+      types.model({
+        id: types.identifier(),
+        url: types.string,
+        objectSize: types.number,
+        name: types.string,
+        path: types.string,
+      })
+    )
+  ),
+  maxStorage: types.number,
+  usedStorage: types.number,
 };
