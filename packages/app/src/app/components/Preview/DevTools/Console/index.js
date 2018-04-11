@@ -43,7 +43,7 @@ class Console extends React.Component {
         switch (method) {
           case 'clear': {
             // If the event was done by the packager
-            const hideMessage = args[0] === '__internal__';
+            const hideMessage = args && args[0] === '__internal__';
 
             this.clearConsole(hideMessage);
             break;
