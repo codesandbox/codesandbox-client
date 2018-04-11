@@ -171,13 +171,13 @@ class Console extends React.Component {
   };
 
   componentDidUpdate() {
-    if (this.list) {
-      this.scrollToBottom();
-    }
+    this.scrollToBottom();
   }
 
   scrollToBottom = () => {
-    this.list.scrollTop = this.list.scrollHeight;
+    if (this.list) {
+      this.list.scrollTop = this.list.scrollHeight;
+    }
   };
 
   evaluateConsole = (command: string) => {

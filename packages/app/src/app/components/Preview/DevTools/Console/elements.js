@@ -20,6 +20,7 @@ export const Messages = styled.div`
 
   > div {
     overflow-y: auto;
+    overflow-x: hidden;
   }
 `;
 
