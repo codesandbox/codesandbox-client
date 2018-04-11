@@ -10,6 +10,14 @@ function mapConsoleResult(arg: any) {
     return arg.toString();
   }
 
+  // for objects, we recursively call mapConsoleResult on each item
+  if (typeof arg === 'object') {
+    return Object.entries(arg).reduce((obj, [key, value]) => {
+      obj[key] = mapConsoleResult(value); // eslint-disable-line no-param-reassign
+      return obj;
+    }, {});
+  }
+
   return arg;
 }
 
