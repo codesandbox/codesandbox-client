@@ -284,10 +284,16 @@ export const handleMessage = [
       },
     ],
     operation: [
-      isOwnMessage,
+      state`live.isLoading`,
       {
-        true: actions.acknowledgeOperation,
-        false: actions.receiveTransformation,
+        false: [
+          isOwnMessage,
+          {
+            true: actions.acknowledgeOperation,
+            false: actions.receiveTransformation,
+          },
+        ],
+        true: [],
       },
     ],
     'connection-loss': [
