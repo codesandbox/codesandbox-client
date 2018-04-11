@@ -235,7 +235,7 @@ export const saveCode = [
       },
     ],
   },
-
+  actions.setModuleType,
   actions.saveModuleCode,
   {
     success: [

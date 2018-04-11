@@ -49,6 +49,7 @@ const Module = types.model({
   title: types.string,
   insertedAt: types.string,
   updatedAt: types.string,
+  type: types.maybe(types.string),
 });
 
 const Git = types.model({

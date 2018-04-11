@@ -141,6 +141,7 @@ export const setSandbox = [
       actions.setInitialTab,
       actions.setUrlOptions,
       actions.setWorkspace,
+      actions.setModuleTypes,
       set(state`editor.workspaceConfigCode`, ''),
 
       resetServerState,

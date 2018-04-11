@@ -13,6 +13,8 @@ import {
   moveDevToolsTab as moveDevToolsTabUtil,
   closeDevToolsTab as closeDevToolsTabUtil,
 } from 'app/pages/Sandbox/Editor/Content/utils';
+// eslint-disable-next-line import/extensions
+import getType from 'app/utils/get-type.ts';
 
 function sortObjectByKeys(object) {
   return fromPairs(sortBy(toPairs(object), 0));
@@ -374,6 +376,17 @@ export function consumeRenameModuleFromPreview({ state, props, utils }) {
     };
   }
   return {};
+}
+
+export function setModuleType({ state, props }) {
+  const sandbox = state.get('editor.currentSandbox');
+  const moduleIndex = state
+    .get('editor.currentSandbox')
+    .modules.findIndex(module => module.shortid === props.moduleShortid);
+  const module = sandbox.modules[moduleIndex];
+  const { title, code } = module;
+  const type = getType(title, code);
+  state.set(`editor.sandboxes.${sandbox.id}.modules.${moduleIndex}.type`, type);
 }
 
 export function addErrorFromPreview({ state, props }) {

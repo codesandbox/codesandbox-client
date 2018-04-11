@@ -52,6 +52,7 @@ export type Module = {
   updatedAt: string;
   path?: string;
   now?: any;
+  _type?: string;
 };
 
 export type Directory = {

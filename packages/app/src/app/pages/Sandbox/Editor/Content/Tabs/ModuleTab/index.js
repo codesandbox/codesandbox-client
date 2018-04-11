@@ -1,7 +1,5 @@
 import React from 'react';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
-// eslint-disable-next-line import/extensions
-import getType from 'app/utils/get-type.ts';
 
 import { StyledNotSyncedIcon } from './elements';
 import { TabTitle, TabDir, StyledCloseIcon } from '../Tab/elements';
@@ -62,7 +60,7 @@ export default class ModuleTab extends React.PureComponent {
           <React.Fragment>
             <EntryIcons
               isNotSynced={isNotSynced}
-              type={getType(module.title)}
+              type={module._type}
               error={hasError}
             />
             <TabTitle>{module.title}</TabTitle>

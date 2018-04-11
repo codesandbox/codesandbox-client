@@ -2,7 +2,6 @@ import React from 'react';
 import { TextOperation } from 'ot';
 import { Module } from '@codesandbox/common/lib/types';
 import getUI from '@codesandbox/common/lib/templates/configuration/ui';
-import getType from 'app/utils/get-type';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
 import Tooltip from '@codesandbox/common/lib/components/Tooltip';
 import { ConfigurationFile } from '@codesandbox/common/lib/templates/configuration/types';
@@ -93,11 +92,7 @@ export default class Configuration extends React.PureComponent<Props>
     return (
       <Container style={{ width, height }}>
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <EntryIcons
-            width={32}
-            height={32}
-            type={getType(currentModule.title)}
-          />
+          <EntryIcons width={32} height={32} type={currentModule.type} />
           <Title>{config.title}</Title>
 
           <Tooltip content="Show Code">

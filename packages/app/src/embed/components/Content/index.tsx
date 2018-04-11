@@ -12,8 +12,6 @@ import CodeEditor from 'app/components/CodeEditor';
 import { Editor, Settings } from 'app/components/CodeEditor/types';
 import Tab from 'app/pages/Sandbox/Editor/Content/Tabs/Tab';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
-// eslint-disable-next-line import/extensions
-import getType from 'app/utils/get-type.ts';
 
 import getTemplate from '@codesandbox/common/lib/templates';
 
@@ -482,7 +480,7 @@ export default class Content extends React.PureComponent<Props, State> {
                     {({ hovering, closeTab }) => (
                       // TODO deduplicate this
                       <React.Fragment>
-                        <EntryIcons type={getType(module.title)} />
+                        <EntryIcons type={module._type} />
                         <TabTitle>{module.title}</TabTitle>
                         {dirName && (
                           <TabDir>

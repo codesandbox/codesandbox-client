@@ -1,7 +1,5 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-// eslint-disable-next-line import/extensions
-import getType from 'app/utils/get-type.ts';
 import validateTitle from '../validateTitle';
 import Entry from '../Entry';
 
@@ -28,7 +26,6 @@ class ModuleEntry extends React.Component {
 
     const isActive = module.shortid === currentModuleShortid;
     const isMainModule = module.id === mainModuleId;
-    const type = getType(module.title);
 
     const currentPath = getModulePath(module.id);
 
@@ -48,7 +45,7 @@ class ModuleEntry extends React.Component {
         rightColors={liveUsers.map(([a, b, c]) => `rgb(${a}, ${b}, ${c})`)}
         depth={depth + 1}
         active={isActive}
-        type={type || 'function'}
+        type={module.type || 'function'}
         rename={renameModule}
         deleteEntry={deleteEntry}
         isNotSynced={isNotSynced}

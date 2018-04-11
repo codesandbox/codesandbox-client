@@ -104,6 +104,7 @@ export const createModule = [
     props`optimisticModule`
   ),
   actions.setDefaultNewCode,
+  actions.setModuleType,
   actions.saveNewModule,
   {
     success: [
@@ -144,11 +145,13 @@ export const uploadFiles = [
 export const renameModule = [
   ensureOwnedEditable,
   actions.renameModule,
+  actions.setModuleType,
   actions.saveNewModuleName,
   {
     success: [sendModuleUpdated],
     error: [
       actions.revertModuleName,
+      actions.setModuleType,
       addNotification('Could not rename file', 'error'),
     ],
   },

@@ -1,5 +1,10 @@
 import isImage from '@codesandbox/common/lib/utils/is-image';
 
+const reactRegex = /import.*from\s['|"]react['|"]/;
+export function hasReact(code: string) {
+  return reactRegex.test(code);
+}
+
 const svgRegex = /\.svg$/;
 
 type regexCasesMap = {
@@ -91,6 +96,18 @@ export function getMode(title: string = '') {
   return titleArr[titleArr.length - 1];
 }
 
-export default function getType(title: string) {
+function getJSType(title: string) {
+  if (regexCasesMap.react.test(title)) return 'jsx';
+  if (regexCasesMap.typescript.test(title)) return 'ts';
+  if (regexCasesMap.javascript.test(title)) return 'js';
+  return undefined;
+}
+
+export default function getType(title: string, code: string) {
+  const isJSType = getJSType(title);
+  if (isJSType) {
+    if (hasReact(code || '')) return 'react';
+    return isJSType;
+  }
   return getMode(title);
 }

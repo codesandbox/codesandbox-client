@@ -11,6 +11,8 @@ import {
   sandboxUrl,
   editorUrl,
 } from '@codesandbox/common/lib/utils/url-generator';
+// eslint-disable-next-line import/extensions
+import getType from 'app/utils/get-type.ts';
 
 import { parseConfigurations } from './utils/parse-configurations';
 import { mainModule, defaultOpenedModule } from './utils/main-module';
@@ -92,6 +94,15 @@ export function setWorkspace({ controller, state, props }) {
   const items = getItems(controller.getState());
   const defaultItem = items.find(i => i.defaultOpen) || items[0];
   state.set(`workspace.openedWorkspaceItem`, defaultItem.id);
+}
+
+export function setModuleTypes({ state }) {
+  const sandbox = state.get('editor.currentSandbox');
+  sandbox.modules.forEach((module, idx) => {
+    const { title, code } = module;
+    const type = getType(title, code);
+    state.set(`editor.sandboxes.${sandbox.id}.modules.${idx}.type`, type);
+  });
 }
 
 export function setUrlOptions({ state, router, utils }) {

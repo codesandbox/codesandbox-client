@@ -8,6 +8,8 @@ import type { Module, Sandbox } from '@codesandbox/common/lib/types';
 import Centered from '@codesandbox/common/lib/components/flex/Centered';
 import Title from 'app/components/Title';
 import SubTitle from 'app/components/SubTitle';
+// eslint-disable-next-line import/extensions
+import getType from 'app/utils/get-type.ts';
 import { getSandboxOptions } from '@codesandbox/common/lib/url';
 
 import {
@@ -173,6 +175,11 @@ export default class App extends React.PureComponent<
 
         document.title = `${response.data.title ||
           response.data.id} - CodeSandbox`;
+
+        response.data.modules.forEach(module => {
+          const { title, code } = module;
+          module._type = getType(title, code);
+        });
 
         this.setState({ sandbox: response.data });
       } catch (e) {
