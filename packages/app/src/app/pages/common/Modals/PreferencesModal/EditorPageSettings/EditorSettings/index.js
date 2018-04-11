@@ -79,6 +79,9 @@ function EditorSettings({ store, signals }) {
             type="boolean"
             {...bindValue('vimMode')}
           />
+          <SubDescription>
+            This will override Use CodeMirror setting as Monaco doesn{"'"}t have a VIM mode yet.
+          </SubDescription>
           <Rule />
           <PaddedPreference
             title="Font size"
