@@ -57,7 +57,7 @@ requirePolyfills().then(() => {
           // Attempt to wrap command in parentheses, fixing issues
           // where directly returning objects results in unexpected
           // behaviour.
-          if (data.command.charAt(0) === '{') {
+          if (data.command && data.command.charAt(0) === '{') {
             try {
               const wrapped = `(${data.command})`;
               // `new Function` is used to validate Javascript syntax
