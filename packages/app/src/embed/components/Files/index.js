@@ -6,7 +6,6 @@ import sortBy from 'lodash/sortBy';
 import type { Module, Directory } from 'common/types';
 
 import { isMainModule } from 'common/sandbox/modules';
-import getType from 'app/utils/get-type';
 
 import File from '../File';
 
@@ -71,7 +70,7 @@ function Files({
           shortid={m.shortid}
           title={m.title}
           key={m.shortid}
-          type={getType(m.title)}
+          type={m.type || ''}
           depth={depth}
           setCurrentModule={setCurrentModule}
           active={m.id === currentModule}

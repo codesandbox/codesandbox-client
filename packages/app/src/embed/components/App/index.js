@@ -8,6 +8,7 @@ import type { Module, Sandbox } from 'common/types';
 import Centered from 'common/components/flex/Centered';
 import Title from 'app/components/Title';
 import SubTitle from 'app/components/SubTitle';
+import getType from 'app/utils/get-type';
 import { getSandboxOptions } from 'common/url';
 
 import { findCurrentModule, findMainModule } from 'common/sandbox/modules';
@@ -115,7 +116,13 @@ export default class App extends React.PureComponent<{}, State> {
       document.title = `${response.data.title ||
         response.data.id} - CodeSandbox`;
 
-      this.setState({ sandbox: response.data });
+      const data = response.data;
+      data.modules.forEach((module, index) => {
+        const { title, code } = module;
+        data.modules[index].type = getType(title, code);
+      });
+
+      this.setState({ sandbox: data });
     } catch (e) {
       this.setState({ notFound: true });
     }

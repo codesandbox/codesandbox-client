@@ -30,6 +30,7 @@ export type Module = {
   isNotSynced: boolean,
   sourceId: string,
   isBinary: boolean,
+  type?: string,
 };
 
 export type Directory = {
