@@ -16,6 +16,7 @@ export type Props = {
   href?: string;
   Icon: React.StatelessComponent;
   title?: string;
+  highlight?: boolean
   tooltip?: string;
   placeholder?: string;
   moreInfo?: string;

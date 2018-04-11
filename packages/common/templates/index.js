@@ -9,7 +9,16 @@ import vue from './vue';
 
 export { angular, babel, vue, react, reactTs, preact, svelte, parcel };
 
-export default function getDefinition(theme) {
+export default function getDefinition(
+  theme /*:
+    | 'create-react-app'
+    | 'vue-cli'
+    | 'preact-cli'
+    | 'svelte'
+    | 'create-react-app-typescript'
+    | 'angular-cli'
+    | 'parcel'*/
+) {
   switch (theme) {
     case react.name:
       return react;

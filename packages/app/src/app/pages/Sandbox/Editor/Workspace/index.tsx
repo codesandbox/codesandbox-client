@@ -1,3 +1,4 @@
+
 import * as React from 'react';
 import { connect, WithCerebral } from 'app/fluent';
 
@@ -15,6 +16,8 @@ import NotOwnedSandboxInfo from './items/NotOwnedSandboxInfo';
 
 import ConnectionNotice from './ConnectionNotice';
 import Advertisement from './Advertisement';
+import WorkspaceItem from './WorkspaceItem';
+import Chat from './Chat';
 // import DowntimeNotice from './DowntimeNotice';
 
 import { Container, ContactContainer, ItemTitle } from './elements';
@@ -28,7 +31,9 @@ const idToItem = {
   live: Live,
 };
 
-const Workspace: React.SFC<WithCerebral> = ({ store }) => {
+type TWorkspace = React.SFC<WithCerebral>
+
+const Workspace: TWorkspace = ({ store }) => {
   const sandbox = store.editor.currentSandbox;
   const preferences = store.preferences;
 
@@ -44,9 +49,15 @@ const Workspace: React.SFC<WithCerebral> = ({ store }) => {
   return (
     <Container>
       {sandbox.owned && <ItemTitle>{item.name}</ItemTitle>}
-      <div style={{ flex: 1 }}>
+      <div style={{ flex: 1, overflowY: 'auto' }}>
         <Component />
       </div>
+      {store.live.isLive &&
+        store.live.roomInfo.chatEnabled && (
+          <WorkspaceItem defaultOpen title="Chat">
+            <Chat />
+          </WorkspaceItem>
+        )}
       {!preferences.settings.zenMode && (
         <div>
           {!store.isPatron && !sandbox.owned && <Advertisement />}
@@ -74,6 +85,6 @@ const Workspace: React.SFC<WithCerebral> = ({ store }) => {
       )}
     </Container>
   );
-};
+}
 
 export default connect()(Workspace);

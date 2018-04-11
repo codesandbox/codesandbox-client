@@ -1,12 +1,14 @@
+
 import * as React from 'react';
+import { connect, WithCerebral } from 'app/fluent';
 
 import DirectoryEntry from './DirectoryEntry/index';
 import WorkspaceItem from '../WorkspaceItem';
 
 import EditIcons from './DirectoryEntry/Entry/EditIcons';
 
-class Files extends React.Component {
-  directory: any;
+class Files extends React.Component<WithCerebral> {
+  directory
   createModule = () => {
     // INCREDIBLY BAD PRACTICE! TODO: FIX THIS
     this.directory.onCreateModuleClick();
@@ -17,7 +19,17 @@ class Files extends React.Component {
     this.directory.onCreateDirectoryClick();
   };
 
+  uploadFile = () => {
+    // INCREDIBLY BAD PRACTICE! TODO: FIX THIS
+    this.directory.onUploadFileClick();
+  };
+
   render() {
+    const store = this.props.store;
+    const sandbox = store.editor.currentSandbox;
+
+    const openedModulesByUsers = {};
+
     // if (store.live.isLive) {
     //   store.live.usersMetadata.forEach(user => {
     //     openedModulesByUsers[user.currentModuleShortid] =
@@ -34,6 +46,7 @@ class Files extends React.Component {
         actions={
           <EditIcons
             hovering
+            forceShow={window.__isTouch}
             onCreateFile={this.createModule}
             onCreateDirectory={this.createDirectory}
           />
@@ -53,4 +66,4 @@ class Files extends React.Component {
   }
 }
 
-export default Files;
+export default connect()(Files);

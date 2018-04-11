@@ -1,29 +1,22 @@
-import React from 'react';
-import styled from 'styled-components';
+import * as React from 'react';
+
 import { sortBy, takeRight } from 'lodash';
-import { inject, observer } from 'mobx-react';
+import { connect, WithCerebral } from 'app/fluent';
 
 import AutosizeTextArea from 'common/components/AutosizeTextArea';
 
-const Container = styled.div`
-  min-height: 200px;
-  max-height: 300px;
-  padding: 0 1rem;
-  color: white;
-  font-size: 0.875rem;
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-`;
+import { Container, Messages } from './elements'
 
-const Messages = styled.div`
-  height: 100%;
-  flex: 1;
-`;
+type State = {
+  value: string
+  height: number
+}
 
-class Chat extends React.Component {
+class Chat extends React.Component<WithCerebral, State> {
+  messages: HTMLDivElement
   state = {
     value: '',
+    height: null
   };
 
   handleKeyDown = (e: KeyboardEvent) => {
@@ -75,8 +68,8 @@ class Chat extends React.Component {
               const metadata = usersMetadata.get(message.userId);
               const color = metadata
                 ? `rgb(${metadata.color[0]}, ${metadata.color[1]}, ${
-                    metadata.color[2]
-                  })`
+                metadata.color[2]
+                })`
                 : '#636363';
               const name = users.get(message.userId);
               return (
@@ -113,15 +106,15 @@ class Chat extends React.Component {
               );
             })
           ) : (
-            <div
-              style={{
-                fontStyle: 'italic',
-                color: 'rgba(255, 255, 255, 0.5)',
-              }}
-            >
-              No messages, start sending some!
+              <div
+                style={{
+                  fontStyle: 'italic',
+                  color: 'rgba(255, 255, 255, 0.5)',
+                }}
+              >
+                No messages, start sending some!
             </div>
-          )}
+            )}
         </Messages>
         <AutosizeTextArea
           useCacheForDOMMeasurements
@@ -141,4 +134,4 @@ class Chat extends React.Component {
   }
 }
 
-export default inject('signals', 'store')(observer(Chat));
+export default connect()(Chat);

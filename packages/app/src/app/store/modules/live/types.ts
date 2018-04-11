@@ -43,7 +43,7 @@ export type RoomInfo = {
     messages: LiveMessage[];
     // We keep a separate map if user_id -> username for the case when
     // a user disconnects. We still need to keep track of the name.
-    users: string[];
+    users: Dictionary<string>;
   };
 };
 

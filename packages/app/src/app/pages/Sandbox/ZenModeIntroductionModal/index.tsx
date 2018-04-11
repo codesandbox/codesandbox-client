@@ -12,7 +12,7 @@ const ZenModeIntroduction: React.SFC<WithCerebral> = ({ signals }) => {
       <Heading>Zen Mode Explained</Heading>
       <Explanation>
         Zen Mode is perfect for giving instruction videos and presentations. You
-        can toggle the sidebar by double tapping <b>shift</b>. You can leave Zen
+        can toggle the sidebar by double tapping <kbd>shift</kbd>. You can leave Zen
         Mode by hovering over the file name above the editor and clicking the
         icon on the right.
       </Explanation>

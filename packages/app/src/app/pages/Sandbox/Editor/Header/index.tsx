@@ -30,7 +30,7 @@ const Header: React.SFC<WithCerebral> = ({ store, signals }) => {
   return (
     <Container>
       <Left>
-        <Logo title={sandbox.title} />
+        <Logo />
 
         {store.isLoggedIn &&
           (sandbox.userLiked ? (
@@ -43,14 +43,14 @@ const Header: React.SFC<WithCerebral> = ({ store, signals }) => {
               }
             />
           ) : (
-            <Action
-              title="Like"
-              Icon={HeartIcon}
-              onClick={() =>
-                signals.editor.likeSandboxToggled({ id: sandbox.id })
-              }
-            />
-          ))}
+              <Action
+                title="Like"
+                Icon={HeartIcon}
+                onClick={() =>
+                  signals.editor.likeSandboxToggled({ id: sandbox.id })
+                }
+              />
+            ))}
         <Action
           onClick={() => signals.editor.forkSandboxClicked()}
           title="Fork"
@@ -140,12 +140,13 @@ const Header: React.SFC<WithCerebral> = ({ store, signals }) => {
               <UserMenu small />
             </div>
           ) : (
-            <Action
-              onClick={() => signals.signInClicked()}
-              title="Sign in with Github"
-              Icon={GithubIcon}
-            />
-          )}
+              <Action
+                onClick={() => signals.signInClicked()}
+                title="Sign in with Github"
+                Icon={GithubIcon}
+                highlight
+              />
+            )}
         </Margin>
       </Right>
     </Container>
