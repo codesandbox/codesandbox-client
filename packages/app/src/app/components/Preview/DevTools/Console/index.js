@@ -19,7 +19,7 @@ class Console extends React.Component {
   state = {
     messages: [],
     scrollToBottom: true,
-    initialClear: true
+    initialClear: true,
   };
 
   listener;
@@ -58,8 +58,8 @@ class Console extends React.Component {
       case 'clear-console': {
         if (this.state.initialClear) {
           this.setState({
-            initialClear: false
-          })
+            initialClear: false,
+          });
         } else {
           this.clearConsole();
         }
@@ -71,7 +71,7 @@ class Console extends React.Component {
         const decoded = Decode(result);
 
         if (!error) {
-          this.addMessage('return', [decoded]);
+          this.addMessage('result', [decoded]);
         } else {
           this.addMessage('error', [decoded]);
         }

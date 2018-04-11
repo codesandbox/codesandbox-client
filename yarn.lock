@@ -4337,15 +4337,14 @@ console-control-strings@^1.0.0, console-control-strings@~1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/console-control-strings/-/console-control-strings-1.1.0.tgz#3d7cf4464db6446ea644bf4b39507f9851008e8e"
 
-console-feed@^2.2.2:
-  version "2.2.2"
-  resolved "https://registry.yarnpkg.com/console-feed/-/console-feed-2.2.2.tgz#4bbe604f5ce7fdba2552ce1615ad800dfd394f16"
+console-feed@^2.5.0:
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/console-feed/-/console-feed-2.5.0.tgz#127d12d3d9d81a09a27c026fa4942b7fa29d21fa"
   dependencies:
     classnames "^2.2.5"
     lodash "^4.17.5"
     react-inspector "^2.2.2"
     react-jss "^8.4.0"
-    replicator "^1.0.1"
 
 console-stream@^0.1.1:
   version "0.1.1"
@@ -16119,10 +16118,6 @@ replacestream@^4.0.0:
     escape-string-regexp "^1.0.3"
     object-assign "^4.0.1"
     readable-stream "^2.0.2"
-
-replicator@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/replicator/-/replicator-1.0.1.tgz#8b382b4ebb871cdbb98e2306ff352ae409d484a9"
 
 request-promise-core@1.1.1:
   version "1.1.1"
