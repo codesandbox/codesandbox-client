@@ -17,6 +17,10 @@ export const Messages = styled.div`
   overflow-y: auto;
   overflow-x: hidden;
   white-space: pre-wrap;
+
+  > div {
+    overflow-y: auto;
+  }
 `;
 
 export const IconContainer = styled.div`

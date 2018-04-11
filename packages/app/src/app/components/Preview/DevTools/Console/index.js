@@ -1,5 +1,6 @@
 import React from 'react';
 import { listen, dispatch } from 'codesandbox-api';
+import { debounce } from 'lodash';
 import update from 'immutability-helper';
 
 import ClearIcon from 'react-icons/lib/md/clear-all';
@@ -23,6 +24,12 @@ class Console extends React.Component {
   };
 
   listener;
+
+  constructor(props) {
+    super(props);
+
+    this.scrollToBottom = debounce(this.scrollToBottom, 1 / 60);
+  }
 
   componentDidMount() {
     this.listener = listen(this.handleMessage);
@@ -165,9 +172,13 @@ class Console extends React.Component {
 
   componentDidUpdate() {
     if (this.list) {
-      this.list.scrollTop = this.list.scrollHeight;
+      this.scrollToBottom();
     }
   }
+
+  scrollToBottom = () => {
+    this.list.scrollTop = this.list.scrollHeight;
+  };
 
   evaluateConsole = (command: string) => {
     this.addMessage('command', [command]);
