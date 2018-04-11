@@ -9,7 +9,7 @@ import { generateFileFromSandbox } from 'common/templates/configuration/package-
 import setupHistoryListeners from './url-listeners';
 import compile, { getCurrentManager } from './compile';
 import setupConsole from './console';
-import transformJSON from './console/transform-json';
+import { Encode } from 'console-feed';
 
 const host = process.env.CODESANDBOX_HOST;
 
@@ -54,6 +54,20 @@ requirePolyfills().then(() => {
         let result = null;
         let error = false;
         try {
+          // Attempt to wrap command in parentheses, fixing issues
+          // where directly returning objects results in unexpected
+          // behaviour.
+          if (data.command && data.command.charAt(0) === '{') {
+            try {
+              const wrapped = `(${data.command})`;
+              // `new Function` is used to validate Javascript syntax
+              const validate = new Function(wrapped);
+              data.command = wrapped;
+            } catch (e) {
+              // We shouldn't wrap the expression
+            }
+          }
+
           result = (0, eval)(data.command); // eslint-disable-line no-eval
         } catch (e) {
           result = e;
@@ -64,7 +78,7 @@ requirePolyfills().then(() => {
           dispatch({
             type: 'eval-result',
             error,
-            result: transformJSON(result),
+            result: Encode(result),
           });
         } catch (e) {
           console.error(e);
