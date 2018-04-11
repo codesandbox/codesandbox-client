@@ -9,7 +9,7 @@ import { generateFileFromSandbox } from 'common/templates/configuration/package-
 import setupHistoryListeners from './url-listeners';
 import compile, { getCurrentManager } from './compile';
 import setupConsole from './console';
-import { Encode } from 'console-feed'
+import { Encode } from 'console-feed';
 
 const host = process.env.CODESANDBOX_HOST;
 
@@ -54,6 +54,16 @@ requirePolyfills().then(() => {
         let result = null;
         let error = false;
         try {
+          // Attempt to wrap command in parentheses, fixing issues
+          // where directly returning objects results in unexpected
+          // behaviour.
+          try {
+            const wrapped = `(${data.command})`;
+            // `new Function` is used to validate Javascript syntax
+            const validate = new Function(wrapped);
+            data.command = wrapped;
+          } catch (e) {}
+
           result = (0, eval)(data.command); // eslint-disable-line no-eval
         } catch (e) {
           result = e;
