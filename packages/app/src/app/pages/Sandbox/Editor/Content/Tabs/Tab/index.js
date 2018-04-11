@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
-import getType from 'app/utils/get-type';
 
 import {
   StyledCloseIcon,
@@ -71,7 +70,7 @@ class Tab extends React.Component {
       >
         <EntryIcons
           isNotSynced={isNotSynced}
-          type={getType(module.title)}
+          type={module.type}
           error={hasError}
         />
         <TabTitle>{module.title}</TabTitle>

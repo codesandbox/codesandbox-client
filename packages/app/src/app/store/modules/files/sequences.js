@@ -45,6 +45,7 @@ export const createModule = [
     props`optimisticModule`
   ),
   actions.setDefaultNewCode,
+  actions.setModuleType,
   actions.saveNewModule,
   {
     success: [
@@ -81,11 +82,13 @@ export const uploadFile = [
 export const renameModule = [
   ensureOwnedSandbox,
   actions.renameModule,
+  actions.setModuleType,
   actions.saveNewModuleName,
   {
     success: [sendModuleUpdated],
     error: [
       actions.revertModuleName,
+      actions.setModuleType,
       addNotification('Could not rename file', 'error'),
     ],
   },

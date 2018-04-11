@@ -1,6 +1,5 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import getType from 'app/utils/get-type';
 import validateTitle from '../validateTitle';
 import Entry from '../Entry';
 
@@ -25,7 +24,6 @@ class ModuleEntry extends React.Component {
 
     const isActive = module.shortid === currentModuleShortid;
     const isMainModule = module.id === mainModuleId;
-    const type = getType(module.title);
 
     const hasError = store.editor.errors.filter(
       error => error.moduleId === module.id
@@ -41,7 +39,7 @@ class ModuleEntry extends React.Component {
         rightColors={liveUsers.map(([a, b, c]) => `rgb(${a}, ${b}, ${c})`)}
         depth={depth + 1}
         active={isActive}
-        type={type || 'function'}
+        type={module.type || 'function'}
         rename={isMainModule ? undefined : renameModule}
         deleteEntry={isMainModule ? undefined : deleteEntry}
         isNotSynced={!store.editor.isModuleSynced(module.shortid)}

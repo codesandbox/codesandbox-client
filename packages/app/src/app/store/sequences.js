@@ -288,6 +288,7 @@ export const setSandbox = [
   actions.setUrlOptions,
   actions.setSandboxConfigOptions,
   actions.setWorkspace,
+  actions.setModuleTypes,
 ];
 
 export const loadSandbox = factories.withLoadApp([

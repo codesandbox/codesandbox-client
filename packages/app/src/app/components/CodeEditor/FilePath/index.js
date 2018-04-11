@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { getModulePath } from 'common/sandbox/modules';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
-import getType from 'app/utils/get-type';
 
 import { Container, Chevron, FileName, StyledExitZen } from './elements';
 
@@ -49,7 +48,7 @@ export default class FilePath extends React.Component {
         <FileName hovering={!workspaceHidden || this.state.hovering}>
           <EntryIcons
             isNotSynced={currentModule.isNotSynced}
-            type={getType(currentModule.title)}
+            type={currentModule.type}
             error={currentModule.errors && currentModule.errors.length > 0}
           />
           <span style={{ marginLeft: '0.25rem' }}>{fileName}</span>

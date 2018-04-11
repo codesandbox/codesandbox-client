@@ -5,7 +5,6 @@ import matchSorter from 'match-sorter';
 import { getModulePath } from 'common/sandbox/modules';
 import Input from 'common/components/Input';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
-import getType from 'app/utils/get-type';
 
 import {
   Container,
@@ -109,7 +108,7 @@ export default class FuzzySearch extends React.PureComponent {
                     {item.m.isNotSynced && <NotSyncedIconWithMargin />}
                     <EntryIcons
                       isNotSynced={item.m.isNotSynced}
-                      type={getType(item.m.title)}
+                      type={item.m.type}
                       error={item.m.errors && item.m.errors.length > 0}
                     />
                     <Name>{item.m.title}</Name>

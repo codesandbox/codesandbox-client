@@ -1,5 +1,5 @@
 import axios from 'axios';
-
+import getType from 'app/utils/get-type';
 import { generateFileFromSandbox } from 'common/templates/configuration/package-json';
 
 import { parseConfigurations } from './utils/parse-configurations';
@@ -31,6 +31,15 @@ export function setWorkspace({ state, props }) {
   state.set('workspace.project.title', props.sandbox.title || '');
   state.set('workspace.project.description', props.sandbox.description || '');
   state.set(`workspace.openedWorkspaceItem`, 'files');
+}
+
+export function setModuleTypes({ state }) {
+  const sandbox = state.get('editor.currentSandbox');
+  sandbox.modules.forEach((module, idx) => {
+    const { title, code } = module;
+    const type = getType(title, code);
+    state.set(`editor.sandboxes.${sandbox.id}.modules.${idx}.type`, type);
+  });
 }
 
 export function setUrlOptions({ state, router, utils }) {

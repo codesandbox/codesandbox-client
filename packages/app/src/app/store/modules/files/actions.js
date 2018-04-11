@@ -1,6 +1,7 @@
 import { clone } from 'mobx-state-tree';
 import { getModulePath } from 'common/sandbox/modules';
 import getDefinition from 'common/templates';
+import getType from 'app/utils/get-type';
 
 import { resolveModuleWrapped } from '../../utils/resolve-module-wrapped';
 
@@ -372,6 +373,17 @@ export function renameModule({ state, props }) {
   );
 
   return { oldTitle };
+}
+
+export function setModuleType({ state, props }) {
+  const sandbox = state.get('editor.currentSandbox');
+  const moduleIndex = sandbox.modules.findIndex(
+    moduleEntry => moduleEntry.shortid === props.moduleShortid
+  );
+  const module = sandbox.modules[moduleIndex];
+  const { title, code } = module;
+  const type = getType(title, code);
+  state.set(`editor.sandboxes.${sandbox.id}.modules.${moduleIndex}.type`, type);
 }
 
 export function revertModuleName({ state, props }) {

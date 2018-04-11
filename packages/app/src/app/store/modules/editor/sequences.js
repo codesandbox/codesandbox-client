@@ -154,6 +154,7 @@ export const saveCode = [
     ],
     false: [],
   },
+  actions.setModuleType,
   actions.saveModuleCode,
   actions.setModuleSaved,
   when(state`editor.currentSandbox.originalGit`),

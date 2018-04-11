@@ -3,7 +3,6 @@ import React from 'react';
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
 import type { Module } from 'common/types';
 import getUI from 'common/templates/configuration/ui';
-import getType from 'app/utils/get-type';
 import Tooltip from 'common/components/Tooltip';
 
 import CodeIcon from 'react-icons/lib/md/code';
@@ -62,11 +61,7 @@ export default class Configuration extends React.PureComponent<Props>
     return (
       <Container style={{ width, height }}>
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <EntryIcons
-            width={32}
-            height={32}
-            type={getType(currentModule.title)}
-          />
+          <EntryIcons width={32} height={32} type={currentModule.type} />
           <Title>{config.title}</Title>
 
           <Tooltip title="Show Code">

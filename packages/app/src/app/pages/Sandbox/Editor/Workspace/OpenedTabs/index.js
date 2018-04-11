@@ -2,7 +2,6 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 
 import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
-import getType from 'app/utils/get-type';
 import { getModulePath } from 'common/sandbox/modules';
 
 import CrossIcon from 'react-icons/lib/md/clear';
@@ -50,7 +49,7 @@ const OpenedTabs = ({ store, signals }) => {
         >
           <EntryIcons
             isNotSynced={m.isNotSynced}
-            type={getType(m.title)}
+            type={m.type}
             error={m.errors && m.errors.length > 0}
           />
           <Title>{m.title}</Title>

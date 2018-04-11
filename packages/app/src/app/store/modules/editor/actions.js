@@ -1,6 +1,7 @@
 import { fromPairs, toPairs, sortBy } from 'lodash';
 import slugify from 'common/utils/slugify';
 import { clone } from 'mobx-state-tree';
+import getType from 'app/utils/get-type';
 
 function sortObjectByKeys(object) {
   return fromPairs(sortBy(toPairs(object), 0));
@@ -131,6 +132,17 @@ export function renameModuleFromPreview({ state, props, utils }) {
       props.title
     );
   }
+}
+
+export function setModuleType({ state, props }) {
+  const sandbox = state.get('editor.currentSandbox');
+  const moduleIndex = state
+    .get('editor.currentSandbox')
+    .modules.findIndex(module => module.shortid === props.moduleShortid);
+  const module = sandbox.modules[moduleIndex];
+  const { title, code } = module;
+  const type = getType(title, code);
+  state.set(`editor.sandboxes.${sandbox.id}.modules.${moduleIndex}.type`, type);
 }
 
 export function addErrorFromPreview({ state, props, utils }) {
