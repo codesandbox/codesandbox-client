@@ -33,7 +33,7 @@ class Problems extends React.PureComponent<*, State> {
 
       const newMessages = [
         ...(this.state.corrections[path] || []),
-        { type: 'warn', message: data.message },
+        { method: 'warn', data: [data.message] },
       ];
 
       this.setState({
@@ -89,19 +89,7 @@ class Problems extends React.PureComponent<*, State> {
         {root && (
           <div>
             <File>Root</File>
-            {/*
-              What's going on here?
-              */
-            /* {root.map((message, i) => (
-              <Message
-                message={{
-                  logType: message.type,
-                  arguments: [message.message],
-                }}
-                // eslint-disable-next-line react/no-array-index-key
-                key={i}
-              />
-            ))} */}
+            <Console logs={root} variant="dark" styles={inspectorTheme} />
           </div>
         )}
         {files.map(file => {
