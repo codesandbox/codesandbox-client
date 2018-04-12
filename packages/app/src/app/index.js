@@ -79,7 +79,7 @@ requirePolyfills().then(() => {
     });
 
   registerServiceWorker('/service-worker.js', {
-    onUpdate: () => {
+    onUpdated: () => {
       controller.getSignal('setUpdateStatus')({ status: 'available' });
     },
     onInstalled: () => {

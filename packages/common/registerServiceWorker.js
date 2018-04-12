@@ -20,7 +20,7 @@ const isLocalhost = Boolean(
 
 const isHttp = Boolean(window.location.protocol === 'http:');
 
-export default function register(swUrl, { onUpdate, onInstalled }) {
+export default function register(swUrl, { onUpdated, onInstalled }) {
   if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
     // The URL constructor is available in all browsers that support SW.
     const publicUrl = new URL(process.env.PUBLIC_URL, window.location);
@@ -34,7 +34,7 @@ export default function register(swUrl, { onUpdate, onInstalled }) {
     window.addEventListener('load', () => {
       if (!isLocalhost && !isHttp) {
         // It's neither localhost nor http. Just register service worker
-        registerValidSW(swUrl, { onUpdate, onInstalled });
+        registerValidSW(swUrl, { onUpdated, onInstalled });
       } else if (isLocalhost) {
         // This is running on localhost. Lets check if a service worker still exists or not.
         checkValidServiceWorker(swUrl);
@@ -43,7 +43,7 @@ export default function register(swUrl, { onUpdate, onInstalled }) {
   }
 }
 
-function registerValidSW(swUrl, { onUpdate, onInstalled }) {
+function registerValidSW(swUrl, { onUpdated, onInstalled }) {
   navigator.serviceWorker
     .register(swUrl)
     .then(registration => {
@@ -56,8 +56,8 @@ function registerValidSW(swUrl, { onUpdate, onInstalled }) {
               // the fresh content will have been added to the cache.
               // It's the perfect time to display a "New content is
               // available; please refresh." message in your web app.
-              if (onUpdate) {
-                onUpdate();
+              if (onUpdated) {
+                onUpdated();
               }
             } else {
               // At this point, everything has been precached.
