@@ -84,7 +84,7 @@ requirePolyfills().then(() => {
     },
     onInstalled: () => {
       showNotification(
-        'CodeSandbox has been installed, it now works offline.',
+        'CodeSandbox has been installed, it now works offline!',
         'success'
       );
     },
