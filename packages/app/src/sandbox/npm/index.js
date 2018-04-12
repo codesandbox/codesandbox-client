@@ -36,7 +36,7 @@ export default async function loadDependencies(dependencies: NPMDependencies) {
       loadedDependencyCombination = depQuery;
       manifest = data;
 
-      setScreen({ type: 'loading', text: 'Bundling Dependencies...' });
+      setScreen({ type: 'loading', text: 'Transpiling Modules...' });
     }
   } else {
     manifest = null;
