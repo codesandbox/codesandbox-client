@@ -8,6 +8,7 @@ let transpileBeforeExec = false;
 
 export const resetCache = () => {
   cache = {};
+  transpileBeforeExec = false;
 };
 
 export default function evaluate(
