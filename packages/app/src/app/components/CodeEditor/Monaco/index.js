@@ -371,6 +371,8 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       suppressImplicitAnyIndexErrors:
         hasNativeTypescript && existingConfig.suppressImplicitAnyIndexErrors,
       noUnusedLocals: hasNativeTypescript && existingConfig.noUnusedLocals,
+
+      newLine: this.monaco.languages.typescript.NewLineKind.LineFeed,
     };
 
     this.monaco.languages.typescript.typescriptDefaults.setCompilerOptions(
@@ -1180,10 +1182,13 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     const currentModule = this.currentModule;
     const title = currentModule.title;
 
-    if (
-      currentModule.code !== newCode &&
-      !(currentModule.code === null && newCode === '')
-    ) {
+    const codeEquals =
+      (currentModule.code == null && newCode === '') ||
+      (currentModule.code != null &&
+        currentModule.code.replace(/\r\n/g, '\n') ===
+          newCode.replace(/\r\n/g, '\n'));
+
+    if (!codeEquals) {
       if (this.props.onChange) {
         this.props.onChange(newCode);
       }
@@ -1494,7 +1499,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       folding: true,
       glyphMargin: false,
       fixedOverflowWidgets: true,
-
       readOnly: !!this.props.readOnly,
     };
   };
