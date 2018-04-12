@@ -230,7 +230,11 @@ class DirectoryEntry extends React.Component {
               rename={!root && this.renameDirectory}
               onCreateModuleClick={this.onCreateModuleClick}
               onCreateDirectoryClick={this.onCreateDirectoryClick}
-              onUploadFileClick={this.onUploadFileClick}
+              onUploadFileClick={
+                this.props.store.isLoggedIn &&
+                currentSandbox.privacy === 0 &&
+                this.onUploadFileClick
+              }
               deleteEntry={!root && this.deleteDirectory}
               hasChildren={this.getChildren().length > 0}
               closeTree={this.closeTree}
