@@ -51,7 +51,6 @@ class Files extends React.Component {
             this.directory = el;
           }}
           title={sandbox.title || 'Project'}
-          openedModulesByUsers={openedModulesByUsers}
           depth={-1}
           id={null}
           shortid={null}
