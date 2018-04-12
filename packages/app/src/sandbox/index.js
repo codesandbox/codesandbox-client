@@ -31,7 +31,7 @@ function getId() {
 }
 
 requirePolyfills().then(() => {
-  registerServiceWorker('/sandbox-service-worker.js');
+  registerServiceWorker('/sandbox-service-worker.js', {});
 
   function sendReady() {
     dispatch({ type: 'initialized' });

@@ -78,7 +78,17 @@ requirePolyfills().then(() => {
       message,
     });
 
-  registerServiceWorker('/service-worker.js', showNotification);
+  registerServiceWorker('/service-worker.js', {
+    onUpdate: () => {
+      controller.getSignal('setUpdateStatus')({ status: 'available' });
+    },
+    onInstalled: () => {
+      showNotification(
+        'CodeSandbox has been installed, it now works offline.',
+        'success'
+      );
+    },
+  });
 
   try {
     render(
