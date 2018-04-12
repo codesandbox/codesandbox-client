@@ -31,7 +31,7 @@ jobs:
             - packages/react-sandpack/node_modules
             - packages/sandpack/node_modules
       - save_cache:
-          key: v7-standalone-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          key: v7-standalone-dependency-cache-{{ .Branch }}-{{ checksum "standalone-packages/codesandbox-browserfs/yarn.lock" }}
           paths:
             - standalone-packages/codesandbox-browserfs/node_modules
       - run:
