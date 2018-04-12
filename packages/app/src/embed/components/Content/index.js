@@ -226,6 +226,7 @@ export default class Content extends React.PureComponent<Props, State> {
     autoCompleteEnabled: true,
     vimMode: false,
     tabWidth: 2,
+    enableLigatures: false,
   });
 
   setCurrentModule = (moduleId: string) => {

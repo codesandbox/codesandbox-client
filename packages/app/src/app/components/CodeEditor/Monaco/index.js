@@ -1484,7 +1484,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         'Source Code Pro',
         'monospace'
       ),
-      fontLigatures: true,
+      fontLigatures: settings.enableLigatures,
       minimap: {
         enabled: false,
       },

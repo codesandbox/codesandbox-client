@@ -30,6 +30,7 @@ const settings = store =>
     tabWidth: store.preferences.settings.prettierConfig
       ? store.preferences.settings.prettierConfig.tabWidth || 2
       : 2,
+    enableLigatures: store.preferences.settings.enableLigatures,
   }: Settings);
 
 type Props = {

@@ -39,6 +39,7 @@ export default Module({
       trailingComma: 'none',
       useTabs: false,
       vimMode: false,
+      enableLigatures: false,
     },
     isLoadingPaymentDetails: true,
     paymentDetailError: null,

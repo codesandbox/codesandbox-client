@@ -39,6 +39,7 @@ export default {
     useTabs: types.boolean,
     vimMode: types.boolean,
     zenMode: types.boolean,
+    enableLigatures: types.boolean,
   }),
   isLoadingPaymentDetails: types.boolean,
   itemId: types.string,
