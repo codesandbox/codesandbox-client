@@ -4337,12 +4337,12 @@ console-control-strings@^1.0.0, console-control-strings@~1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/console-control-strings/-/console-control-strings-1.1.0.tgz#3d7cf4464db6446ea644bf4b39507f9851008e8e"
 
-console-feed@^2.5.0:
-  version "2.5.0"
-  resolved "https://registry.yarnpkg.com/console-feed/-/console-feed-2.5.0.tgz#127d12d3d9d81a09a27c026fa4942b7fa29d21fa"
+console-feed@^2.7.3:
+  version "2.7.3"
+  resolved "https://registry.yarnpkg.com/console-feed/-/console-feed-2.7.3.tgz#e448f51e0d5f159962e599bc0f665db341ee35d8"
   dependencies:
     classnames "^2.2.5"
-    lodash "^4.17.5"
+    linkifyjs "^2.1.6"
     react-inspector "^2.2.2"
     react-jss "^8.4.0"
 
@@ -10836,6 +10836,10 @@ jpeg-js@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/jpeg-js/-/jpeg-js-0.2.0.tgz#53e448ec9d263e683266467e9442d2c5a2ef5482"
 
+jquery@^3.3.1:
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.3.1.tgz#958ce29e81c9790f31be7792df5d4d95fc57fbca"
+
 js-base64@^2.1.8, js-base64@^2.1.9:
   version "2.4.3"
   resolved "https://registry.yarnpkg.com/js-base64/-/js-base64-2.4.3.tgz#2e545ec2b0f2957f41356510205214e98fad6582"
@@ -11365,6 +11369,14 @@ liftoff@^2.2.0:
 linked-list@0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/linked-list/-/linked-list-0.1.0.tgz#798b0ff97d1b92a4fd08480f55aea4e9d49d37bf"
+
+linkifyjs@^2.1.6:
+  version "2.1.6"
+  resolved "https://registry.yarnpkg.com/linkifyjs/-/linkifyjs-2.1.6.tgz#f1cc88a86ff8863196615857fd47eb193c0a26cb"
+  optionalDependencies:
+    jquery "^3.3.1"
+    react "^16.2.0"
+    react-dom "^16.2.0"
 
 lint-staged@^4.0.0:
   version "4.3.0"
