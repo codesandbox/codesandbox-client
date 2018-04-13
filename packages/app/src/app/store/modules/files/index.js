@@ -5,6 +5,7 @@ export default Module({
   model: {},
   state: {},
   signals: {
+    addedFileToSandbox: sequences.addFileToSandbox,
     gotUploadedFiles: sequences.getUploadedFiles,
     deletedUploadedFile: sequences.deleteUploadedFile,
     fileUploaded: sequences.uploadFile,
