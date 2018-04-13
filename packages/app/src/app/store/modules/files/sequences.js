@@ -66,7 +66,6 @@ export const addFileToSandbox = [
   set(props`title`, props`name`),
   set(props`isBinary`, true),
   closeModal,
-  set(state`uploadedFiles`, null),
   createModule,
 ];
 
