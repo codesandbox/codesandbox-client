@@ -48,6 +48,7 @@ export default Module({
     showEditor: true,
     showPreview: true,
     showDevtools: false,
+    runOnClick: false,
   },
   getters: {
     keybindings,

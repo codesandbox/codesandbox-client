@@ -436,7 +436,12 @@ class EditorPreview extends React.Component<Props, State> {
                 store.editor.parsedConfigurations.typescript.parsed
               }
             />
-            <Preview width={this.state.width} height={this.state.height} />
+
+            <Preview
+              runOnClick={this.props.store.preferences.runOnClick}
+              width={this.state.width}
+              height={this.state.height}
+            />
           </div>
 
           <DevTools

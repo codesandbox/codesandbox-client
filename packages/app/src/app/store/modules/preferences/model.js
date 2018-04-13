@@ -56,4 +56,5 @@ export default {
       name: types.string,
     })
   ),
+  runOnClick: types.maybe(types.boolean),
 };
