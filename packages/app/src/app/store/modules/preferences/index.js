@@ -39,7 +39,7 @@ export default Module({
       trailingComma: 'none',
       useTabs: false,
       vimMode: false,
-      enableLigatures: true,
+      enableLigatures: navigator.platform.indexOf('Win') > -1,
     },
     isLoadingPaymentDetails: true,
     paymentDetailError: null,
