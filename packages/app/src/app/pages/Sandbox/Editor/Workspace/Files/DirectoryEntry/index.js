@@ -125,6 +125,7 @@ class DirectoryEntry extends React.Component {
         this.props.signals.files.fileUploaded({
           content: base64Image,
           name: file.name,
+          directoryShortid: this.props.shortid,
         });
       });
     };
