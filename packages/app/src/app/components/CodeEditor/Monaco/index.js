@@ -1178,15 +1178,18 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   };
 
   handleChange = () => {
-    const newCode = this.editor.getModel().getValue();
+    const newCode = this.editor.getModel().getValue() || '';
     const currentModule = this.currentModule;
     const title = currentModule.title;
 
+    const oldCode = this.currentModule.code || '';
+
     const codeEquals =
-      (currentModule.code == null && newCode === '') ||
-      (currentModule.code != null &&
-        currentModule.code.replace(/\r\n/g, '\n') ===
-          newCode.replace(/\r\n/g, '\n'));
+      oldCode.replace(/\r\n/g, '\n') === newCode.replace(/\r\n/g, '\n');
+
+    console.log(
+      oldCode.replace(/\r\n/g, '\n') === newCode.replace(/\r\n/g, '\n')
+    );
 
     if (!codeEquals) {
       if (this.props.onChange) {
