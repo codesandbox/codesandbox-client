@@ -1187,10 +1187,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     const codeEquals =
       oldCode.replace(/\r\n/g, '\n') === newCode.replace(/\r\n/g, '\n');
 
-    console.log(
-      oldCode.replace(/\r\n/g, '\n') === newCode.replace(/\r\n/g, '\n')
-    );
-
     if (!codeEquals) {
       if (this.props.onChange) {
         this.props.onChange(newCode);

@@ -284,7 +284,7 @@ export const handleMessage = [
       },
     ],
     operation: [
-      state`live.isLoading`,
+      equals(state`live.isLoading`),
       {
         false: [
           isOwnMessage,
