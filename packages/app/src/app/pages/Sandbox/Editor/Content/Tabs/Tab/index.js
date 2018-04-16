@@ -64,6 +64,7 @@ class Tab extends React.Component {
     if (!hovering && !isNotSynced) {
       return <StyledNotSyncedIcon show={undefined} />;
     }
+    return <StyledNotSyncedIcon show={undefined} />;
   };
 
   render() {
