@@ -134,13 +134,14 @@ class Navigator extends React.Component<Props, State> {
     const { sandpack } = this.props;
 
     if (backwardNavigationStack.length > 0) {
-      const currUrl =
+      const newCurrUrl =
         backwardNavigationStack[backwardNavigationStack.length - 1];
       if (sandpack.browserFrame) {
-        sandpack.browserFrame.src = currUrl;
+        const currUrl = sandpack.browserFrame.src;
+        sandpack.browserFrame.src = newCurrUrl;
 
-        const baseUrl = this.getBaseUrl(currUrl);
-        const browserPath = currUrl.replace(baseUrl, '') || '/';
+        const baseUrl = this.getBaseUrl(newCurrUrl);
+        const browserPath = newCurrUrl.replace(baseUrl, '') || '/';
 
         this.setState(prevState => ({
           backwardNavigationStack: prevState.backwardNavigationStack.slice(
@@ -151,7 +152,7 @@ class Navigator extends React.Component<Props, State> {
             ...prevState.forwardNavigationStack,
             currUrl,
           ],
-          lastCommittedUrl: currUrl,
+          lastCommittedUrl: newCurrUrl,
           browserPath,
         }));
       }
@@ -163,12 +164,14 @@ class Navigator extends React.Component<Props, State> {
     const { sandpack } = this.props;
 
     if (forwardNavigationStack.length > 0) {
-      const currUrl = forwardNavigationStack[forwardNavigationStack.length - 1];
+      const newCurrUrl =
+        forwardNavigationStack[forwardNavigationStack.length - 1];
       if (sandpack.browserFrame) {
+        const currUrl = sandpack.browserFrame.src;
         sandpack.browserFrame.src = currUrl;
 
-        const baseUrl = this.getBaseUrl(currUrl);
-        const browserPath = currUrl.replace(baseUrl, '') || '/';
+        const baseUrl = this.getBaseUrl(newCurrUrl);
+        const browserPath = newCurrUrl.replace(baseUrl, '') || '/';
 
         this.setState(prevState => ({
           backwardNavigationStack: [
@@ -176,7 +179,7 @@ class Navigator extends React.Component<Props, State> {
             currUrl,
           ],
           forwardNavigationStack: prevState.forwardNavigationStack.slice(0, -1),
-          lastCommittedUrl: currUrl,
+          lastCommittedUrl: newCurrUrl,
           browserPath,
         }));
       }
