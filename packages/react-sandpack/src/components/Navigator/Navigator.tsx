@@ -46,6 +46,7 @@ class Navigator extends React.Component<Props, State> {
   handleMessage = (message: any) => {
     switch (message.type) {
       case 'urlchange': {
+        console.log('urlchange');
         this.setState(this.getUrlState(message.url));
         break;
       }
@@ -168,7 +169,7 @@ class Navigator extends React.Component<Props, State> {
         forwardNavigationStack[forwardNavigationStack.length - 1];
       if (sandpack.browserFrame) {
         const currUrl = sandpack.browserFrame.src;
-        sandpack.browserFrame.src = currUrl;
+        sandpack.browserFrame.src = newCurrUrl;
 
         const baseUrl = this.getBaseUrl(newCurrUrl);
         const browserPath = newCurrUrl.replace(baseUrl, '') || '/';
