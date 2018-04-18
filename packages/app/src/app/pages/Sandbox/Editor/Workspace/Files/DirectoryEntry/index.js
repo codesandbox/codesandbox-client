@@ -1,6 +1,7 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { DropTarget } from 'react-dnd';
+import { reaction } from 'mobx';
 import Modal from 'app/components/Modal';
 import Alert from 'app/components/Alert';
 
@@ -15,19 +16,10 @@ class DirectoryEntry extends React.Component {
     super(props);
 
     const { id, store } = this.props;
-    const { modules, directories } = store.editor.currentSandbox;
-    const currentModuleId = store.editor.currentModule.id;
-    const currentModuleParents = getModuleParents(
-      modules,
-      directories,
-      currentModuleId
-    );
-
-    const isParentOfModule = currentModuleParents.includes(id);
 
     this.state = {
       creating: '',
-      open: props.root || isParentOfModule,
+      open: props.root || store.editor.shouldDirectoryBeOpen(id),
       showDeleteDirectoryModal: false,
       showDeleteModuleModal: false,
       moduleToDeleteTitle: null,
@@ -39,27 +31,22 @@ class DirectoryEntry extends React.Component {
     if (this.props.innerRef) {
       this.props.innerRef(this);
     }
+
+    this.openListener = reaction(
+      () => this.props.store.editor.currentModuleShortid,
+      () => {
+        if (!this.state.open) {
+          const { id, store } = this.props;
+
+          this.setState({ open: store.editor.shouldDirectoryBeOpen(id) });
+        }
+      }
+    );
   }
 
-  componentWillReceiveProps(nextProps, nextState) {
-    if (
-      !nextState.open &&
-      this.props.store.editor.currentModule !==
-        nextProps.store.editor.currentModule
-    ) {
-      const { id, store } = nextProps;
-      const { modules, directories } = store.editor.currentSandbox;
-      const currentModuleId = store.editor.currentModule.id;
-      const currentModuleParents = getModuleParents(
-        modules,
-        directories,
-        currentModuleId
-      );
-
-      const isParentOfModule = currentModuleParents.includes(id);
-      if (isParentOfModule) {
-        this.setState({ open: isParentOfModule });
-      }
+  componentWillUnmount() {
+    if (this.openListener) {
+      this.openListener();
     }
   }
 
