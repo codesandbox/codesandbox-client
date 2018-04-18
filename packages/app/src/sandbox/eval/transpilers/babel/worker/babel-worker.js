@@ -67,6 +67,8 @@ async function installPlugin(Babel, BFSRequire, plugin, currentPath, isV7) {
       Babel.availablePresets
     );
   } catch (e) {
+    console.warn('First time compiling ' + plugin + ' went wrong, got:');
+    console.warn(e);
     const prefixedName = getPrefixedPluginName(plugin, isV7);
 
     evaluatedPlugin = evaluateFromPath(
@@ -77,6 +79,8 @@ async function installPlugin(Babel, BFSRequire, plugin, currentPath, isV7) {
       Babel.availablePlugins,
       Babel.availablePresets
     );
+
+    console.log('Second try succeeded');
   }
 
   if (!evaluatedPlugin) {
