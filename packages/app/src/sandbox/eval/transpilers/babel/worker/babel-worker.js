@@ -195,7 +195,7 @@ self.addEventListener('message', async event => {
     const transpilerOptions = event.data.babelTranspilerOptions;
     loadCustomTranspiler(
       transpilerOptions && transpilerOptions.babelURL,
-      transpilerOptions && transpilerOptions.babelEnvUrl
+      transpilerOptions && transpilerOptions.babelEnvURL
     );
     self.postMessage({
       type: 'result',
@@ -225,7 +225,7 @@ self.addEventListener('message', async event => {
 
   const babelUrl = babelTranspilerOptions && babelTranspilerOptions.babelURL;
   const babelEnvUrl =
-    babelTranspilerOptions && babelTranspilerOptions.babelEnvUrl;
+    babelTranspilerOptions && babelTranspilerOptions.babelEnvURL;
 
   if (babelUrl || babelEnvUrl) {
     loadCustomTranspiler(babelUrl, babelEnvUrl);
