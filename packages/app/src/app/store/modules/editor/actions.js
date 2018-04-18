@@ -113,7 +113,7 @@ export function outputModuleIdFromActionPath({ state, props, utils }) {
   return { id: module ? module.id : null };
 }
 
-export function renameModuleFromPreview({ state, props, utils }) {
+export function consumeRenameModuleFromPreview({ state, props, utils }) {
   const sandbox = state.get('editor.currentSandbox');
   const module = utils.resolveModule(
     props.action.path.replace(/^\//, ''),
@@ -122,15 +122,12 @@ export function renameModuleFromPreview({ state, props, utils }) {
   );
 
   if (module) {
-    const moduleIndex = sandbox.modules.findIndex(
-      moduleEntry => moduleEntry.id === module.id
-    );
-
-    state.set(
-      `editor.sandboxes.${sandbox.id}.modules.${moduleIndex}.title`,
-      props.title
-    );
+    return {
+      moduleShortid: module.shortid,
+      title: props.action.title,
+    };
   }
+  return {};
 }
 
 export function addErrorFromPreview({ state, props, utils }) {

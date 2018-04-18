@@ -4,7 +4,7 @@ import { basename } from 'common/utils/path';
 
 function findRawModule(module) {
   const rawModule = Array.from(module.dependencies).find(
-    m => !/\.([\w]{2}|[\w]{3})$/.test(m.module.title)
+    m => !/\.([\w]{2}|[\w]{3})$/.test(m.module.path)
   );
 
   if (rawModule) {
@@ -30,7 +30,11 @@ function findRawModule(module) {
  * @returns
  */
 export default function(error: Error, module) {
-  if (error.message.includes('Invalid tag: import React')) {
+  if (
+    error.message.includes(
+      "Failed to execute 'createElement' on 'Document': The tag name provided "
+    )
+  ) {
     const result = findRawModule(module);
 
     if (result) {
