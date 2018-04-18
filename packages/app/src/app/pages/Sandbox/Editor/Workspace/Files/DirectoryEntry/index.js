@@ -8,7 +8,6 @@ import Alert from 'app/components/Alert';
 import validateTitle from './validateTitle';
 import Entry from './Entry';
 import DirectoryChildren from './DirectoryChildren';
-import getModuleParents from './getModuleParents';
 import { EntryContainer, Overlay, Opener } from './elements';
 
 class DirectoryEntry extends React.Component {
