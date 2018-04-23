@@ -4,6 +4,7 @@ import { DropTarget } from 'react-dnd';
 import { reaction } from 'mobx';
 import Modal from 'app/components/Modal';
 import Alert from 'app/components/Alert';
+import { MAX_FILE_SIZE } from 'codesandbox-import-utils/lib/is-text';
 
 import validateTitle from './validateTitle';
 import Entry from './Entry';
@@ -102,31 +103,53 @@ class DirectoryEntry extends React.Component {
     const fileSelector = document.createElement('input');
     fileSelector.setAttribute('type', 'file');
     fileSelector.setAttribute('multiple', 'true');
-    fileSelector.onchange = event => {
-      const file = event.target.files[0];
-      if (!file) {
-        return;
-      }
+    fileSelector.onchange = async event => {
+      const files = await Promise.all(
+        Array.from(event.target.files)
+          .filter(Boolean)
+          .map(async file => {
+            const dataURI = await this.readDataURL(file);
 
-      this.readDataURL(file, base64Image => {
-        this.props.signals.files.fileUploaded({
-          content: base64Image,
-          name: file.name,
-          directoryShortid: this.props.shortid,
-        });
+            if (
+              (/\.(j|t)sx?$/.test(file.name) ||
+                file.type.startsWith('text/') ||
+                file.type === 'application/json') &&
+              dataURI.length < MAX_FILE_SIZE
+            ) {
+              const text = atob(dataURI.replace(/^.*base64,/, ''));
+              return {
+                code: text,
+                name: file.name,
+                directoryShortid: this.props.shortid,
+                isBinary: false,
+              };
+            }
+            return {
+              content: dataURI,
+              name: file.name,
+              directoryShortid: this.props.shortid,
+              isBinary: true,
+            };
+          })
+      );
+
+      this.props.signals.files.filesUploaded({
+        files,
+        directoryShortid: this.props.shortid,
       });
     };
 
     fileSelector.click();
   };
 
-  readDataURL = (imageFile, callback) => {
-    const reader = new FileReader();
-    reader.onload = e => {
-      callback(e.target.result);
-    };
-    reader.readAsDataURL(imageFile);
-  };
+  readDataURL = imageFile =>
+    new Promise(resolve => {
+      const reader = new FileReader();
+      reader.onload = e => {
+        resolve(e.target.result);
+      };
+      reader.readAsDataURL(imageFile);
+    });
 
   renameDirectory = (directoryShortid, title) => {
     this.props.signals.files.directoryRenamed({ title, directoryShortid });

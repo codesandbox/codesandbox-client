@@ -1,6 +1,8 @@
 import { clone } from 'mobx-state-tree';
 import { getModulePath } from 'common/sandbox/modules';
 import getDefinition from 'common/templates';
+import { chunk } from 'lodash';
+import generateShortid from 'shortid';
 
 import { resolveModuleWrapped } from '../../utils/resolve-module-wrapped';
 
@@ -10,6 +12,31 @@ export function whenModuleIsSelected({ state, props, path }) {
   return currentModule.shortid === props.moduleShortid
     ? path.true()
     : path.false();
+}
+
+export function massCreateModules({ state, props, api, path }) {
+  const { directories, modules, directoryShortid } = props;
+  const sandboxId = state.get('editor.currentId');
+  const sandbox = state.get('editor.currentSandbox');
+
+  return api
+    .post(`/sandboxes/${sandboxId}/modules/mcreate`, {
+      directoryShortid,
+      modules,
+      directories,
+    })
+    .then(data => {
+      state.concat(`editor.sandboxes.${sandbox.id}.modules`, data.modules);
+      state.concat(
+        `editor.sandboxes.${sandbox.id}.directories`,
+        data.directories
+      );
+      return path.success(data);
+    })
+    .catch(error => {
+      console.error(error);
+      return path.error({ error });
+    });
 }
 
 export function getUploadedFiles({ api, path }) {
@@ -26,14 +53,55 @@ export function deleteUploadedFile({ api, props, path }) {
     .catch(error => path.error({ error }));
 }
 
-export function uploadFile({ api, props, path }) {
-  return api
-    .post('/users/current_user/uploads', {
-      content: props.content,
-      name: props.name,
-    })
-    .then(data => path.success({ uploadedFile: data }))
-    .catch(error => path.error({ error }));
+export async function uploadFiles({ api, props, path }) {
+  const chunkedFiles = chunk(props.files, 5);
+
+  const modules = [];
+
+  try {
+    // eslint-disable-next-line
+    for (const files of chunkedFiles) {
+      // eslint-disable-next-line no-await-in-loop
+      await Promise.all(
+        files.map(async file => {
+          if (!file.isBinary) {
+            modules.push({
+              shortid: generateShortid(),
+              code: file.code,
+              title: file.name,
+              isBinary: false,
+              directoryShortid: file.directoryShortid,
+            });
+          } else {
+            await api
+              .post('/users/current_user/uploads', {
+                content: file.content,
+                name: file.name,
+              })
+              .then(data => {
+                modules.push({
+                  shortid: generateShortid(),
+                  code: data.url,
+                  title: file.name,
+                  isBinary: true,
+                  directoryShortid: file.directoryShortid,
+                });
+              })
+              .catch(e => {
+                e.message = `Error uploading ${file.name}: ${e.message}`;
+
+                throw e;
+              });
+          }
+        })
+      );
+    }
+
+    return path.success({ modules, directories: [] });
+  } catch (error) {
+    console.error(error);
+    return path.error({ error: error.message });
+  }
 }
 
 export function saveNewDirectoryDirectoryShortid({ api, state, props, path }) {

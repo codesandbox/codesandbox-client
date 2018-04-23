@@ -69,19 +69,20 @@ export const addFileToSandbox = [
   createModule,
 ];
 
-export const uploadFile = [
+export const uploadFiles = [
   set(props`modal`, 'uploading'),
   setModal,
-  actions.uploadFile,
+  actions.uploadFiles,
   {
     success: [
-      set(props`newCode`, props`uploadedFile.url`),
-      set(props`title`, props`name`),
-      set(props`isBinary`, true),
       set(state`uploadedFiles`, null),
-      createModule,
+      actions.massCreateModules,
+      {
+        success: [],
+        error: [],
+      },
     ],
-    error: [addNotification('Unable to upload file', 'error')],
+    error: [addNotification(props`error`, 'error')],
   },
   closeModal,
 ];
