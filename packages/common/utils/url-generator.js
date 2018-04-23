@@ -34,7 +34,8 @@ export const newVueSandboxUrl = () => `/s/vue`;
 export const importFromGitHubUrl = () => `/s/github`;
 export const newSvelteSandboxUrl = () => `/s/svelte`;
 export const newAngularSandboxUrl = () => `/s/angular`;
-export const newCxJSSandboxUrl = () => `/s/cxjs`;
+export const newCxJSSandboxUrl = () =>
+  `/s/github/codaxy/cxjs-codesandbox-template`;
 export const uploadFromCliUrl = () => `/s/cli`;
 
 const sandboxGitUrl = (git: {

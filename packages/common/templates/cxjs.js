@@ -18,7 +18,7 @@ export default new CxJSTemplate(
   'cxjs',
   'CxJS',
   'https://cxjs.io/',
-  'cxjs',
+  'github/codaxy/cxjs-codesandbox-template',
   decorateSelector(() => '#11689f'),
   {
     showOnHomePage: true,

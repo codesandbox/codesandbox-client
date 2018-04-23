@@ -22,7 +22,7 @@ export default new DojoTemplate(
   '@dojo/cli-create-app',
   'Dojo 2',
   'https://github.com/dojo/cli-create-app',
-  'dojo2',
+  'github/dojo/dojo-codesandbox-template',
   decorateSelector(() => '#D3471C'),
   { showOnHomePage: true, isTypeScript: true }
 );
