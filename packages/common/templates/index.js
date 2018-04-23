@@ -7,8 +7,9 @@ import react from './react';
 import reactTs from './react-ts';
 import svelte from './svelte';
 import vue from './vue';
+import cxjs from './cxjs';
 
-export { angular, babel, vue, react, reactTs, preact, svelte, parcel };
+export { angular, babel, vue, react, reactTs, preact, svelte, parcel, cxjs };
 
 export default function getDefinition(
   theme:
@@ -19,6 +20,7 @@ export default function getDefinition(
     | 'create-react-app-typescript'
     | 'angular-cli'
     | 'parcel'
+    | 'cxjs'
 ) {
   switch (theme) {
     case react.name:
@@ -37,6 +39,8 @@ export default function getDefinition(
       return parcel;
     case babel.name:
       return babel;
+    case cxjs.name:
+      return cxjs;
     default:
       return react;
   }
