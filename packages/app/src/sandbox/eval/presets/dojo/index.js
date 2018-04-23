@@ -7,6 +7,8 @@ import jsonTranspiler from '../../transpilers/json';
 import stylesTranspiler from '../../transpilers/style';
 import babelTranspiler from '../../transpilers/babel';
 
+import ModuleNotFoundError from '../../../errors/module-not-found-error';
+
 export default function initialize() {
   const preset = new Preset(
     '@dojo/cli-create-app',
@@ -15,13 +17,21 @@ export default function initialize() {
     {
       setup: async manager => {
         const stylesPath = absolute(join('src', 'main.css'));
-        const tModule = await manager.resolveTranspiledModuleAsync(
-          stylesPath,
-          '/'
-        );
-        await tModule.transpile(manager);
-        tModule.setIsEntry(true);
-        tModule.evaluate(manager);
+        try {
+          const tModule = await manager.resolveTranspiledModuleAsync(
+            stylesPath,
+            '/'
+          );
+          await tModule.transpile(manager);
+          tModule.setIsEntry(true);
+          tModule.evaluate(manager);
+        } catch (e) {
+          if (e instanceof ModuleNotFoundError) {
+            // Do nothing
+          } else {
+            throw e;
+          }
+        }
       },
     }
   );
