@@ -101,13 +101,14 @@ class DirectoryEntry extends React.Component {
   onUploadFileClick = () => {
     const fileSelector = document.createElement('input');
     fileSelector.setAttribute('type', 'file');
+    fileSelector.setAttribute('multiple', 'true');
     fileSelector.onchange = event => {
       const file = event.target.files[0];
       if (!file) {
         return;
       }
 
-      this.readImageFile(file, base64Image => {
+      this.readDataURL(file, base64Image => {
         this.props.signals.files.fileUploaded({
           content: base64Image,
           name: file.name,
@@ -119,7 +120,7 @@ class DirectoryEntry extends React.Component {
     fileSelector.click();
   };
 
-  readImageFile = (imageFile, callback) => {
+  readDataURL = (imageFile, callback) => {
     const reader = new FileReader();
     reader.onload = e => {
       callback(e.target.result);
