@@ -22,7 +22,6 @@ export default new CxJSTemplate(
   decorateSelector(() => '#11689f'),
   {
     showOnHomePage: true,
-    showCube: false,
     extraConfigurations: {
       '/.babelrc': configurations.babelrc,
       '/tsconfig.json': configurations.tsconfig,
