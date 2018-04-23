@@ -7,8 +7,6 @@ import jsonTranspiler from '../../transpilers/json';
 import stylesTranspiler from '../../transpilers/style';
 import babelTranspiler from '../../transpilers/babel';
 
-import ModuleNotFoundError from '../../../errors/module-not-found-error';
-
 export default function initialize() {
   const preset = new Preset(
     '@dojo/cli-create-app',
@@ -26,7 +24,7 @@ export default function initialize() {
           tModule.setIsEntry(true);
           tModule.evaluate(manager);
         } catch (e) {
-          if (e instanceof ModuleNotFoundError) {
+          if (e.type === 'module-not-found') {
             // Do nothing
           } else {
             throw e;
