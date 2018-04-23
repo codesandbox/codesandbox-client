@@ -212,6 +212,11 @@ const TEMPLATE_SUPPORT = {
     css: ['Global', 'Scoped', 'Modules'],
     description: 'Used for Dojo 2 projects, based on: ',
   },
+  cxjs: {
+    loaders: [ts, html, cssGlobal, scss, sass, less, stylus, image],
+    css: ['Global', 'Scoped', 'Modules'],
+    description: 'Used for CxJS projects, based on: ',
+  },
   'vue-cli': {
     loaders: [
       js,
