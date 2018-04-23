@@ -51,6 +51,10 @@ export default Module({
       y: 0,
     },
     currentModal: null,
+    uploadedFiles: null,
+    maxStorage: 0,
+    usedStorage: 0,
+    updateStatus: null,
   },
   getters: {
     isPatron,
@@ -81,6 +85,7 @@ export default Module({
     signInGithubClicked: sequences.signInGithub,
     signOutClicked: sequences.signOut,
     signOutGithubIntegration: sequences.signOutGithubIntegration,
+    setUpdateStatus: sequences.setUpdateStatus,
   },
   catch: [[errors.AuthenticationError, sequences.showAuthenticationError]],
   modules: {

@@ -4,6 +4,7 @@ import CrossIcon from 'react-icons/lib/md/clear';
 import EditIcon from 'react-icons/lib/go/pencil';
 import AddFileIcon from 'react-icons/lib/md/insert-drive-file';
 import AddDirectoryIcon from 'react-icons/lib/md/create-new-folder';
+import UploadFileIcon from 'react-icons/lib/md/file-upload';
 
 import Tooltip from 'common/components/Tooltip';
 
@@ -24,6 +25,7 @@ function EditIcons({
   onCreateFile,
   onCreateDirectory,
   active,
+  onUploadFile,
   forceShow,
 }) {
   // Phones need double click if we show elements on click, that's why we only want
@@ -40,6 +42,13 @@ function EditIcons({
             <Tooltip title="Edit">
               <Icon onClick={handleClick(onEdit)}>
                 <EditIcon />
+              </Icon>
+            </Tooltip>
+          )}
+          {onUploadFile && (
+            <Tooltip title="Upload File">
+              <Icon onClick={handleClick(onUploadFile)}>
+                <UploadFileIcon />
               </Icon>
             </Tooltip>
           )}

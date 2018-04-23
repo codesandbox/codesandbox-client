@@ -505,6 +505,26 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "mdugue",
+      "name": "Manuel Dugué",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/894149?v=4",
+      "profile": "http://manueldugue.de",
+      "contributions": [
+        "bug",
+        "code"
+      ]
+    },
+    {
+      "login": "DemianD",
+      "name": "Demian Dekoninck",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/5346497?v=4",
+      "profile": "https://dem.be",
+      "contributions": [
+        "code"
+      ]
     }
-  ]
+  ],
+  "repoType": "github"
 }

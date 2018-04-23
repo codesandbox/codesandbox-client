@@ -366,7 +366,7 @@ export function updateModule({ props, state }) {
     moduleEntry => moduleEntry.shortid === props.moduleShortid
   );
 
-  state.set(
+  state.merge(
     `editor.sandboxes.${sandbox.id}.modules.${moduleIndex}`,
     props.module
   );

@@ -5,7 +5,7 @@ import _debug from 'app/utils/debug';
 import initializeErrorTransformers from './errors/transformers';
 import getPreset from './eval';
 import Manager from './eval/manager';
-import transformJSON from './console/transform-json';
+import { Encode } from 'console-feed'
 
 import { resetScreen } from './status-screen';
 
@@ -205,7 +205,7 @@ async function compile({
 
       dispatch({
         type: 'test-result',
-        result: transformJSON(aggregatedResults),
+        result: Encode(aggregatedResults),
       });
       // End - Testing
     } catch (error) {

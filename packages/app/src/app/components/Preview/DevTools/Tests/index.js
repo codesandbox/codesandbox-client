@@ -42,7 +42,7 @@ export type TestError = Error & {
       lineNumber: number,
       content: string,
       highlight: boolean,
-    }>,
+    }> | null,
   }>,
 };
 
@@ -233,6 +233,13 @@ class Tests extends React.Component<Props, State> {
 
           this.setState(
             immer(this.state, state => {
+              if (!state.files[test.path]) {
+                state.files[test.path] = {
+                  tests: {},
+                  fileName: test.path,
+                };
+              }
+
               const currentTest =
                 state.files[test.path].tests[testName.join('||||')];
               if (!currentTest) {

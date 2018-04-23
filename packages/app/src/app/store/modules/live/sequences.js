@@ -159,12 +159,8 @@ export const handleMessage = [
         true: [],
         false: [
           actions.consumeModule,
-          actions.setReceivingStatus,
           set(props`shortid`, props`moduleShortid`),
-          set(props`code`, props`module.code`),
-          changeCode,
           setModuleSaved,
-          actions.unSetReceivingStatus,
         ],
       },
     ],
@@ -288,10 +284,16 @@ export const handleMessage = [
       },
     ],
     operation: [
-      isOwnMessage,
+      equals(state`live.isLoading`),
       {
-        true: actions.acknowledgeOperation,
-        false: actions.receiveTransformation,
+        false: [
+          isOwnMessage,
+          {
+            true: actions.acknowledgeOperation,
+            false: actions.receiveTransformation,
+          },
+        ],
+        true: [],
       },
     ],
     'connection-loss': [

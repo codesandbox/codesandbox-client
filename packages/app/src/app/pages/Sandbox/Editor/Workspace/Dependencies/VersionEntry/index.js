@@ -26,8 +26,20 @@ export default class VersionEntry extends React.PureComponent {
     }
   }
 
-  handleRemove = () => this.props.onRemove(this.props.dependency);
-  handleRefresh = () => this.props.onRefresh(this.props.dependency);
+  handleRemove = e => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    this.props.onRemove(this.props.dependency);
+  };
+  handleRefresh = e => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    this.props.onRefresh(this.props.dependency);
+  };
   onMouseEnter = () => this.setState({ hovering: true });
   onMouseLeave = () => this.setState({ hovering: false });
 

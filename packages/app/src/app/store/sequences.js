@@ -319,3 +319,5 @@ export const loadSandbox = factories.withLoadApp([
   },
   set(state`editor.isLoading`, false),
 ]);
+
+export const setUpdateStatus = [set(state`updateStatus`, props`status`)];

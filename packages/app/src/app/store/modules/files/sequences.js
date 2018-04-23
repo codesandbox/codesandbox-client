@@ -1,8 +1,8 @@
 import { push, set } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
-import { ensureOwnedSandbox } from '../../sequences';
+import { ensureOwnedSandbox, closeModal } from '../../sequences';
 import { setCurrentModule, addNotification } from '../../factories';
-import { closeTabByIndex } from '../../actions';
+import { closeTabByIndex, setModal } from '../../actions';
 import {
   sendModuleCreated,
   sendModuleDeleted,
@@ -12,6 +12,30 @@ import {
   sendDirectoryUpdated,
 } from '../live/actions';
 import * as actions from './actions';
+
+export const getUploadedFiles = [
+  set(props`modal`, 'storageManagement'),
+  setModal,
+  actions.getUploadedFiles,
+  {
+    success: [
+      set(state`uploadedFiles`, props`uploadedFilesInfo.uploads`),
+      set(state`maxStorage`, props`uploadedFilesInfo.maxSize`),
+      set(state`usedStorage`, props`uploadedFilesInfo.currentSize`),
+    ],
+    error: [
+      addNotification('Unable to get uploaded files information', 'error'),
+    ],
+  },
+];
+
+export const deleteUploadedFile = [
+  actions.deleteUploadedFile,
+  {
+    success: [set(state`uploadedFiles`, null), getUploadedFiles],
+    error: [addNotification('Unable to delete uploaded file', 'error')],
+  },
+];
 
 export const createModule = [
   ensureOwnedSandbox,
@@ -35,6 +59,23 @@ export const createModule = [
       addNotification('Unable to save new file', 'error'),
     ],
   },
+];
+
+export const uploadFile = [
+  set(props`modal`, 'uploading'),
+  setModal,
+  actions.uploadFile,
+  {
+    success: [
+      set(props`newCode`, props`uploadedFile.url`),
+      set(props`title`, props`name`),
+      set(props`isBinary`, true),
+      set(state`uploadedFiles`, null),
+      createModule,
+    ],
+    error: [addNotification('Unable to upload file', 'error')],
+  },
+  closeModal,
 ];
 
 export const renameModule = [

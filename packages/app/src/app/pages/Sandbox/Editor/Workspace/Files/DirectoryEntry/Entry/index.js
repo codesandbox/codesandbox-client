@@ -2,10 +2,11 @@ import * as React from 'react';
 import { DragSource } from 'react-dnd';
 import ContextMenu from 'app/components/ContextMenu';
 
-import FileIcon from 'react-icons/lib/fa/file';
-import FolderIcon from 'react-icons/lib/fa/folder';
+import AddFileIcon from 'react-icons/lib/md/insert-drive-file';
+import AddDirectoryIcon from 'react-icons/lib/md/create-new-folder';
 import EditIcon from 'react-icons/lib/go/pencil';
 import DeleteIcon from 'react-icons/lib/go/trashcan';
+import UploadFileIcon from 'react-icons/lib/md/file-upload';
 
 import theme from 'common/theme';
 
@@ -79,6 +80,7 @@ class Entry extends React.PureComponent {
       connectDragSource, // eslint-disable-line
       onCreateModuleClick,
       onCreateDirectoryClick,
+      onUploadFileClick,
       deleteEntry,
       onClick,
       markTabsNotDirty,
@@ -93,14 +95,19 @@ class Entry extends React.PureComponent {
 
     const items = [
       onCreateModuleClick && {
-        title: 'New Module',
+        title: 'Create File',
         action: onCreateModuleClick,
-        icon: FileIcon,
+        icon: AddFileIcon,
       },
       onCreateDirectoryClick && {
-        title: 'New Directory',
+        title: 'Create Directory',
         action: onCreateDirectoryClick,
-        icon: FolderIcon,
+        icon: AddDirectoryIcon,
+      },
+      onUploadFileClick && {
+        title: 'Upload File',
+        action: onUploadFileClick,
+        icon: UploadFileIcon,
       },
       rename && {
         title: 'Rename',
@@ -159,6 +166,7 @@ class Entry extends React.PureComponent {
                     hovering={hovering}
                     onCreateFile={onCreateModuleClick}
                     onCreateDirectory={onCreateDirectoryClick}
+                    onUploadFile={onUploadFileClick}
                     onDelete={deleteEntry && this.delete}
                     onEdit={rename && this.rename}
                     active={active}

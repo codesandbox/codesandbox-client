@@ -4,9 +4,11 @@ import type FSType from 'fs';
 import evaluateCode from '../../../loaders/eval';
 
 let cache = {};
+let transpileBeforeExec = false;
 
 export const resetCache = () => {
   cache = {};
+  transpileBeforeExec = false;
 };
 
 export default function evaluate(
@@ -19,6 +21,11 @@ export default function evaluate(
 ) {
   const require = (requirePath: string) => {
     if (requirePath === 'assert') {
+      return () => {};
+    }
+
+    if (requirePath === 'babel-register') {
+      transpileBeforeExec = true;
       return () => {};
     }
 
@@ -62,7 +69,7 @@ export default function evaluate(
       moduleDirectory: ['node_modules'],
     });
 
-    const resolvedCode = fs.readFileSync(resolvedPath).toString();
+    let resolvedCode = fs.readFileSync(resolvedPath).toString();
     const id = hashsum(resolvedCode + resolvedPath);
 
     if (cache[id]) {
@@ -70,6 +77,12 @@ export default function evaluate(
     }
 
     cache[id] = {};
+
+    if (transpileBeforeExec) {
+      const { code: transpiledCode } = Babel.transform(resolvedCode);
+
+      resolvedCode = transpiledCode;
+    }
 
     cache[id] = evaluate(
       fs,

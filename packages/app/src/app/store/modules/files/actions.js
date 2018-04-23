@@ -12,6 +12,30 @@ export function whenModuleIsSelected({ state, props, path }) {
     : path.false();
 }
 
+export function getUploadedFiles({ api, path }) {
+  return api
+    .get('/users/current_user/uploads')
+    .then(data => path.success({ uploadedFilesInfo: data }))
+    .catch(error => path.error({ error }));
+}
+
+export function deleteUploadedFile({ api, props, path }) {
+  return api
+    .delete(`/users/current_user/uploads/${props.id}`)
+    .then(() => path.success())
+    .catch(error => path.error({ error }));
+}
+
+export function uploadFile({ api, props, path }) {
+  return api
+    .post('/users/current_user/uploads', {
+      content: props.content,
+      name: props.name,
+    })
+    .then(data => path.success({ uploadedFile: data }))
+    .catch(error => path.error({ error }));
+}
+
 export function saveNewDirectoryDirectoryShortid({ api, state, props, path }) {
   const sandboxId = state.get('editor.currentId');
   const shortid = props.shortid;
@@ -43,7 +67,7 @@ export function createOptimisticModule({ state, props, utils }) {
     directoryShortid: props.directoryShortid || null,
     code: props.newCode || '',
     shortid: utils.createOptimisticId(),
-    isBinary: false,
+    isBinary: props.isBinary === undefined ? false : props.isBinary,
     sourceId: state.get('editor.currentSandbox.sourceId'),
   };
 
@@ -311,6 +335,7 @@ export function saveNewModule({ api, state, props, path }) {
         title: props.title,
         directoryShortid: props.directoryShortid,
         code: props.newCode || '',
+        isBinary: props.isBinary === undefined ? false : props.isBinary,
       },
     })
     .then(data => path.success({ newModule: data }))

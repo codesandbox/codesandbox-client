@@ -4,20 +4,23 @@ import theme from 'common/theme';
 export const Container = styled.div`
   position: fixed;
 
-  font-size: 0.875rem;
-  background-color: ${() => theme.background2.lighten(0.2)()};
-  color: ${() => theme.background2.lighten(3)()};
+  font-size: 0.75rem;
+  background-color: ${() => theme.background4()};
+  color: rgba(255, 255, 255, 0.6);
   box-shadow: -1px 3px 4px rgba(0, 0, 0, 0.3);
   border-radius: 3px;
   z-index: 20;
   overflow: hidden;
 
   transform-origin: 0% 0%;
+  font-weight: 600;
 `;
 
 export const Item = styled.div`
-  transition: 0.3s ease all;
-  padding: 0.75rem 1rem;
+  transition: 0.2s ease all;
+  display: flex;
+  align-items: center;
+  padding: 0.6rem 1rem;
 
   border-bottom: 1px solid ${() => theme.background2()};
   border-left: 2px solid transparent;
@@ -26,7 +29,8 @@ export const Item = styled.div`
   min-width: 10rem;
 
   svg {
-    margin-right: 0.5rem;
+    margin-right: 0.75rem;
+    font-size: 0.75rem;
   }
 
   &:last-child {

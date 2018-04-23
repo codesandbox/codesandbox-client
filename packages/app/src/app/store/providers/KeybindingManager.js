@@ -31,6 +31,10 @@ function handleKeyDown(controller, e) {
 
   const key = normalizeKey(e);
 
+  if (!key) {
+    return;
+  }
+
   // First we check if we have any pending secondary bindings to identify
   if (state.pendingSecondaryBindings.length) {
     // We filter out any hits by verifying that the current key matches the next

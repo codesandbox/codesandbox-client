@@ -157,7 +157,9 @@ export default async function fetchDependencies(npmDependencies: Dependencies) {
 
       return result;
     } catch (e) {
-      e.message = `Could not fetch dependencies: ${e.message}`;
+      e.message = `Could not fetch dependencies, please try again in a couple seconds: ${
+        e.message
+      }`;
       dispatch(actions.notifications.show(e.message, 'error'));
 
       throw e;
