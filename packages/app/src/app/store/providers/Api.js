@@ -78,7 +78,6 @@ function handleResponse(response, { shouldCamelize = true } = {}) {
     camelizedData.data.npmDependencies = response.result.data.npm_dependencies;
   }
 
-  camelizedData.data.template = '@dojo/cli-create-app';
   return camelizedData.data ? camelizedData.data : camelizedData;
 }
 
