@@ -1376,6 +1376,8 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
       return model;
     }
+
+    return undefined;
   };
 
   getModelById = async (id: string) => {
