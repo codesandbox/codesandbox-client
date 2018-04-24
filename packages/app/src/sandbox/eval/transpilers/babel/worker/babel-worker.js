@@ -350,7 +350,7 @@ self.addEventListener('message', async event => {
       { source: true, nodes: true, generated: true },
     ]);
 
-    const customConfig = path.startsWith('/node_modules')
+    const customConfig = /^\/node_modules/.test(path)
       ? {
           plugins: [
             version === 7
