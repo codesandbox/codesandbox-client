@@ -1,5 +1,7 @@
 # [CodeSandbox](https://codesandbox.io) [![Chat](https://img.shields.io/badge/chat-on%20discord-7289da.svg)](https://discord.gg/KE3TbEZ) [![All Contributors](https://img.shields.io/badge/all_contributors-54-orange.svg?style=flat-square)](#contributors) [![CircleCI](https://circleci.com/gh/CompuIves/codesandbox-client.svg?style=svg)](https://circleci.com/gh/CompuIves/codesandbox-client) [![BrowserStack Status](https://www.browserstack.com/automate/badge.svg?badge_key=cVJuczlJWUtqWXhIbFN1ZjVQekF4NzNsd3phNEZRaGlWU0pHYVVkdGRFWT0tLXFtTVhaOWRySmN0ZG5QVDNDQ0g5Z0E9PQ==--79fe3eae4f149a400d396c9b12d3988f685785cf)](https://www.browserstack.com/automate/public-build/cVJuczlJWUtqWXhIbFN1ZjVQekF4NzNsd3phNEZRaGlWU0pHYVVkdGRFWT0tLXFtTVhaOWRySmN0ZG5QVDNDQ0g5Z0E9PQ==--79fe3eae4f149a400d396c9b12d3988f685785cf) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com) [![first-timers-only Friendly](https://img.shields.io/badge/first--timers--only-friendly-blue.svg)](http://www.firsttimersonly.com/)
 
+![Banner](https://codesandbox.io/static/img/banner.png)
+
 An online code editor tailored for web applications.
 
 This project was bootstrapped with
