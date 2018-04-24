@@ -99,7 +99,12 @@ export default function evaluate(
   // require.resolve is often used in .babelrc configs to resolve the correct plugin path,
   // we want to return a function for that, because our babelrc configs don't really understand
   // strings as plugins.
-  require.resolve = require;
+  require.resolve = requirePath => requirePath;
+  // resolve.sync(requirePath, {
+  //   filename: path,
+  //   extensions: ['.js', '.json'],
+  //   moduleDirectory: ['node_modules'],
+  // });
 
   const module = {
     id: path,
@@ -112,7 +117,9 @@ export default function evaluate(
   }
   finalCode += `\n//# sourceURL=${location.origin}${path}`;
 
-  evaluateCode(finalCode, require, module);
+  evaluateCode(finalCode, require, module, {
+    VUE_CLI_BABEL_TRANSPILE_MODULES: true,
+  });
 
   return module.exports;
 }

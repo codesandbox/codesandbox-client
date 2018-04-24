@@ -18,6 +18,7 @@ import {
 } from './get-prefixed-name';
 
 let fsInitialized = false;
+let lastConfig = null;
 
 async function initializeBrowserFS() {
   return new Promise(resolve => {
@@ -242,7 +243,11 @@ self.addEventListener('message', async event => {
     );
   }
 
-  resetCache();
+  const stringifiedConfig = JSON.stringify(babelTranspilerOptions);
+  if (lastConfig !== stringifiedConfig) {
+    resetCache();
+    lastConfig = stringifiedConfig;
+  }
 
   const flattenedPresets = flatten(config.presets || []);
   const flattenedPlugins = flatten(config.plugins || []);
@@ -340,12 +345,27 @@ self.addEventListener('message', async event => {
       }
     }
 
-    plugins.push(['babel-plugin-detective', { source: true, nodes: true }]);
+    plugins.push([
+      'babel-plugin-detective',
+      { source: true, nodes: true, generated: true },
+    ]);
 
-    const customConfig = {
-      ...config,
-      plugins,
-    };
+    const customConfig = path.startsWith('/node_modules')
+      ? {
+          plugins: [
+            version === 7
+              ? 'transform-modules-commonjs'
+              : 'transform-es2015-modules-commonjs',
+            [
+              'babel-plugin-detective',
+              { source: true, nodes: true, generated: true },
+            ],
+          ],
+        }
+      : {
+          ...config,
+          plugins,
+        };
 
     const result = Babel.transform(code, customConfig);
 
