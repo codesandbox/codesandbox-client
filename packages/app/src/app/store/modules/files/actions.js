@@ -117,8 +117,22 @@ export async function uploadFiles({ api, props, path }) {
       return dir;
     });
 
+    const relativeModules = modules.map(m => {
+      if (m.directoryShortid == null) {
+        return {
+          ...m,
+          directoryShortid: props.directoryShortid,
+        };
+      }
+
+      return m;
+    });
+
     // Proceed to give the data for `massCreateModules`
-    return path.success({ modules, directories: relativeDirectories });
+    return path.success({
+      modules: relativeModules,
+      directories: relativeDirectories,
+    });
   } catch (error) {
     console.error(error);
     return path.error({ error: error.message });
