@@ -2,7 +2,8 @@ import { clone } from 'mobx-state-tree';
 import { getModulePath } from 'common/sandbox/modules';
 import getDefinition from 'common/templates';
 import { chunk } from 'lodash';
-import generateShortid from 'shortid';
+import { MAX_FILE_SIZE } from 'codesandbox-import-utils/lib/is-text';
+import denormalize from 'codesandbox-import-utils/lib/create-sandbox/denormalize';
 
 import { resolveModuleWrapped } from '../../utils/resolve-module-wrapped';
 
@@ -17,7 +18,6 @@ export function whenModuleIsSelected({ state, props, path }) {
 export function massCreateModules({ state, props, api, path }) {
   const { directories, modules, directoryShortid } = props;
   const sandboxId = state.get('editor.currentId');
-  const sandbox = state.get('editor.currentSandbox');
 
   return api
     .post(`/sandboxes/${sandboxId}/modules/mcreate`, {
@@ -25,14 +25,9 @@ export function massCreateModules({ state, props, api, path }) {
       modules,
       directories,
     })
-    .then(data => {
-      state.concat(`editor.sandboxes.${sandbox.id}.modules`, data.modules);
-      state.concat(
-        `editor.sandboxes.${sandbox.id}.directories`,
-        data.directories
-      );
-      return path.success(data);
-    })
+    .then(data =>
+      path.success({ modules: data.modules, directories: data.directories })
+    )
     .catch(error => {
       console.error(error);
       return path.error({ error });
@@ -54,41 +49,49 @@ export function deleteUploadedFile({ api, props, path }) {
 }
 
 export async function uploadFiles({ api, props, path }) {
-  const chunkedFiles = chunk(props.files, 5);
-
-  const modules = [];
+  const parsedFiles = {};
+  // We first create chunks so we don't overload the server with 100 multiple
+  // upload requests
+  const filePaths = Object.keys(props.files);
+  const chunkedFilePaths = chunk(filePaths, 5);
 
   try {
-    // eslint-disable-next-line
-    for (const files of chunkedFiles) {
-      // eslint-disable-next-line no-await-in-loop
+    // We traverse all files and upload them when necessary, then add them to the
+    // parsedFiles object
+    /* eslint-disable no-restricted-syntax no-await-in-loop */
+    for (const filePathsChunk of chunkedFilePaths) {
       await Promise.all(
-        files.map(async file => {
-          if (!file.isBinary) {
-            modules.push({
-              shortid: generateShortid(),
-              code: file.code,
-              title: file.name,
+        filePathsChunk.map(async filePath => {
+          const file = props.files[filePath];
+          const dataURI = file.dataURI;
+
+          if (
+            (/\.(j|t)sx?$/.test(filePath) ||
+              /\.json?$/.test(filePath) ||
+              /\.html?$/.test(filePath) ||
+              file.type.startsWith('text/') ||
+              file.type === 'application/json') &&
+            dataURI.length < MAX_FILE_SIZE
+          ) {
+            const text = atob(dataURI.replace(/^.*base64,/, ''));
+            parsedFiles[filePath] = {
+              content: text,
               isBinary: false,
-              directoryShortid: file.directoryShortid,
-            });
+            };
           } else {
             await api
               .post('/users/current_user/uploads', {
-                content: file.content,
-                name: file.name,
+                content: dataURI,
+                name: filePath,
               })
               .then(data => {
-                modules.push({
-                  shortid: generateShortid(),
-                  code: data.url,
-                  title: file.name,
+                parsedFiles[filePath] = {
+                  content: data.url,
                   isBinary: true,
-                  directoryShortid: file.directoryShortid,
-                });
+                };
               })
               .catch(e => {
-                e.message = `Error uploading ${file.name}: ${e.message}`;
+                e.message = `Error uploading ${filePath}: ${e.message}`;
 
                 throw e;
               });
@@ -96,8 +99,26 @@ export async function uploadFiles({ api, props, path }) {
         })
       );
     }
+    /* eslint-enable */
 
-    return path.success({ modules, directories: [] });
+    // We create a module format that CodeSandbox understands
+    const { modules, directories } = denormalize(parsedFiles);
+
+    // If the directory was dropped in a subdirectory we need to shift all
+    // the root directories to that directory
+    const relativeDirectories = directories.map(dir => {
+      if (dir.directoryShortid == null) {
+        return {
+          ...dir,
+          directoryShortid: props.directoryShortid,
+        };
+      }
+
+      return dir;
+    });
+
+    // Proceed to give the data for `massCreateModules`
+    return path.success({ modules, directories: relativeDirectories });
   } catch (error) {
     console.error(error);
     return path.error({ error: error.message });

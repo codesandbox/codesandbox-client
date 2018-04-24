@@ -4,13 +4,38 @@ import { DropTarget } from 'react-dnd';
 import { reaction } from 'mobx';
 import Modal from 'app/components/Modal';
 import Alert from 'app/components/Alert';
-import { MAX_FILE_SIZE } from 'codesandbox-import-utils/lib/is-text';
+import { NativeTypes } from 'react-dnd-html5-backend';
 
 import validateTitle from './validateTitle';
 import Entry from './Entry';
 import DirectoryChildren from './DirectoryChildren';
 import { EntryContainer, Overlay, Opener } from './elements';
 
+const readDataURL = imageFile =>
+  new Promise(resolve => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      resolve(e.target.result);
+    };
+    reader.readAsDataURL(imageFile);
+  });
+
+const getFiles = async files => {
+  const returnedFiles = {};
+  await Promise.all(
+    Array.from(files)
+      .filter(Boolean)
+      .map(async file => {
+        const dataURI = await readDataURL(file);
+        returnedFiles[file.path || file.name] = {
+          dataURI,
+          type: file.type,
+        };
+      })
+  );
+
+  return returnedFiles;
+};
 class DirectoryEntry extends React.Component {
   constructor(props) {
     super(props);
@@ -104,34 +129,7 @@ class DirectoryEntry extends React.Component {
     fileSelector.setAttribute('type', 'file');
     fileSelector.setAttribute('multiple', 'true');
     fileSelector.onchange = async event => {
-      const files = await Promise.all(
-        Array.from(event.target.files)
-          .filter(Boolean)
-          .map(async file => {
-            const dataURI = await this.readDataURL(file);
-
-            if (
-              (/\.(j|t)sx?$/.test(file.name) ||
-                file.type.startsWith('text/') ||
-                file.type === 'application/json') &&
-              dataURI.length < MAX_FILE_SIZE
-            ) {
-              const text = atob(dataURI.replace(/^.*base64,/, ''));
-              return {
-                code: text,
-                name: file.name,
-                directoryShortid: this.props.shortid,
-                isBinary: false,
-              };
-            }
-            return {
-              content: dataURI,
-              name: file.name,
-              directoryShortid: this.props.shortid,
-              isBinary: true,
-            };
-          })
-      );
+      const files = await getFiles(event.target.files);
 
       this.props.signals.files.filesUploaded({
         files,
@@ -141,15 +139,6 @@ class DirectoryEntry extends React.Component {
 
     fileSelector.click();
   };
-
-  readDataURL = imageFile =>
-    new Promise(resolve => {
-      const reader = new FileReader();
-      reader.onload = e => {
-        resolve(e.target.result);
-      };
-      reader.readAsDataURL(imageFile);
-    });
 
   renameDirectory = (directoryShortid, title) => {
     this.props.signals.files.directoryRenamed({ title, directoryShortid });
@@ -349,8 +338,16 @@ const entryTarget = {
     if (!monitor.isOver({ shallow: true })) return;
 
     const sourceItem = monitor.getItem();
+    if (sourceItem.dirContent) {
+      sourceItem.dirContent.then(async droppedFiles => {
+        const files = await getFiles(droppedFiles);
 
-    if (sourceItem.directory) {
+        props.signals.files.filesUploaded({
+          files,
+          directoryShortid: props.shortid,
+        });
+      });
+    } else if (sourceItem.directory) {
       props.signals.files.directoryMovedToDirectory({
         shortid: sourceItem.shortid,
         directoryShortid: props.shortid,
@@ -386,5 +383,7 @@ function collectTarget(connectMonitor, monitor) {
 }
 
 export default inject('signals', 'store')(
-  DropTarget('ENTRY', entryTarget, collectTarget)(observer(DirectoryEntry))
+  DropTarget(['ENTRY', NativeTypes.FILE], entryTarget, collectTarget)(
+    observer(DirectoryEntry)
+  )
 );
