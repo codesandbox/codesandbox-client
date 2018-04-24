@@ -95,7 +95,6 @@ module.exports = {
           /\/node_modules\/.*ansi-styles/,
           /\/node_modules\/.*chalk/,
           /\/node_modules\/.*jest/,
-          /\/node_modules\/.*console-feed/,
         ],
         loader: 'babel-loader',
         query: {
