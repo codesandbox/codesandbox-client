@@ -4,12 +4,38 @@ import { DropTarget } from 'react-dnd';
 import { reaction } from 'mobx';
 import Modal from 'app/components/Modal';
 import Alert from 'app/components/Alert';
+import { NativeTypes } from 'react-dnd-html5-backend';
 
 import validateTitle from './validateTitle';
 import Entry from './Entry';
 import DirectoryChildren from './DirectoryChildren';
 import { EntryContainer, Overlay, Opener } from './elements';
 
+const readDataURL = imageFile =>
+  new Promise(resolve => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      resolve(e.target.result);
+    };
+    reader.readAsDataURL(imageFile);
+  });
+
+const getFiles = async files => {
+  const returnedFiles = {};
+  await Promise.all(
+    Array.from(files)
+      .filter(Boolean)
+      .map(async file => {
+        const dataURI = await readDataURL(file);
+        returnedFiles[file.path || file.name] = {
+          dataURI,
+          type: file.type,
+        };
+      })
+  );
+
+  return returnedFiles;
+};
 class DirectoryEntry extends React.Component {
   constructor(props) {
     super(props);
@@ -101,30 +127,17 @@ class DirectoryEntry extends React.Component {
   onUploadFileClick = () => {
     const fileSelector = document.createElement('input');
     fileSelector.setAttribute('type', 'file');
-    fileSelector.onchange = event => {
-      const file = event.target.files[0];
-      if (!file) {
-        return;
-      }
+    fileSelector.setAttribute('multiple', 'true');
+    fileSelector.onchange = async event => {
+      const files = await getFiles(event.target.files);
 
-      this.readImageFile(file, base64Image => {
-        this.props.signals.files.fileUploaded({
-          content: base64Image,
-          name: file.name,
-          directoryShortid: this.props.shortid,
-        });
+      this.props.signals.files.filesUploaded({
+        files,
+        directoryShortid: this.props.shortid,
       });
     };
 
     fileSelector.click();
-  };
-
-  readImageFile = (imageFile, callback) => {
-    const reader = new FileReader();
-    reader.onload = e => {
-      callback(e.target.result);
-    };
-    reader.readAsDataURL(imageFile);
   };
 
   renameDirectory = (directoryShortid, title) => {
@@ -325,8 +338,16 @@ const entryTarget = {
     if (!monitor.isOver({ shallow: true })) return;
 
     const sourceItem = monitor.getItem();
+    if (sourceItem.dirContent) {
+      sourceItem.dirContent.then(async droppedFiles => {
+        const files = await getFiles(droppedFiles);
 
-    if (sourceItem.directory) {
+        props.signals.files.filesUploaded({
+          files,
+          directoryShortid: props.shortid,
+        });
+      });
+    } else if (sourceItem.directory) {
       props.signals.files.directoryMovedToDirectory({
         shortid: sourceItem.shortid,
         directoryShortid: props.shortid,
@@ -362,5 +383,7 @@ function collectTarget(connectMonitor, monitor) {
 }
 
 export default inject('signals', 'store')(
-  DropTarget('ENTRY', entryTarget, collectTarget)(observer(DirectoryEntry))
+  DropTarget(['ENTRY', NativeTypes.FILE], entryTarget, collectTarget)(
+    observer(DirectoryEntry)
+  )
 );

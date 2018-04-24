@@ -105,7 +105,7 @@ class Entry extends React.PureComponent {
         icon: AddDirectoryIcon,
       },
       onUploadFileClick && {
-        title: 'Upload File',
+        title: 'Upload Files',
         action: onUploadFileClick,
         icon: UploadFileIcon,
       },

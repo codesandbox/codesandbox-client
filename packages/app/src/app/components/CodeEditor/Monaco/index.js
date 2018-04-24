@@ -236,7 +236,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     await this.initializeModules(sandbox.modules);
     await this.openNewModel(currentModule.id, currentModule.title);
 
-    this.addKeyCommands();
     import(/* webpackChunkName: 'monaco-emmet' */ './enable-emmet').then(
       enableEmmet => {
         enableEmmet.default(editor, monaco, {});
@@ -1274,16 +1273,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     }
   };
 
-  addKeyCommands = () => {
-    // Disabled, we now let keybinding manager handle this
-    // this.editor.addCommand(
-    //   this.monaco.KeyMod.CtrlCmd | this.monaco.KeyCode.KEY_S, // eslint-disable-line no-bitwise
-    //   () => {
-    //     this.handleSaveCode();
-    //   }
-    // );
-  };
-
   disposeModules = (modules: Array<Module>) => {
     if (this.editor) {
       this.editor.setModel(null);
@@ -1350,31 +1339,34 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   ) => {
     // Remove the first slash, as this will otherwise create errors in monaco
     const path = getModulePath(modules, directories, module.id);
+    if (path) {
+      // We need to add this as a lib specifically to Monaco, because Monaco
+      // tends to lose type definitions if you don't touch a file for a while.
+      // Related issue: https://github.com/Microsoft/monaco-editor/issues/461
+      const lib = this.addLib(module.code || '', path);
 
-    // We need to add this as a lib specifically to Monaco, because Monaco
-    // tends to lose type definitions if you don't touch a file for a while.
-    // Related issue: https://github.com/Microsoft/monaco-editor/issues/461
-    const lib = this.addLib(module.code || '', path);
+      const mode = await this.getMode(module.title);
 
-    const mode = await this.getMode(module.title);
+      const model = this.monaco.editor.createModel(
+        module.code || '',
+        mode === 'javascript' ? 'typescript' : mode,
+        new this.monaco.Uri().with({ path, scheme: 'file' })
+      );
 
-    const model = this.monaco.editor.createModel(
-      module.code || '',
-      mode === 'javascript' ? 'typescript' : mode,
-      new this.monaco.Uri().with({ path, scheme: 'file' })
-    );
+      model.updateOptions({ tabSize: this.props.settings.tabWidth });
 
-    model.updateOptions({ tabSize: this.props.settings.tabWidth });
+      modelCache[module.id] = modelCache[module.id] || {
+        model: null,
+        decorations: [],
+        cursorPos: null,
+      };
+      modelCache[module.id].model = model;
+      modelCache[module.id].lib = lib;
 
-    modelCache[module.id] = modelCache[module.id] || {
-      model: null,
-      decorations: [],
-      cursorPos: null,
-    };
-    modelCache[module.id].model = model;
-    modelCache[module.id].lib = lib;
+      return model;
+    }
 
-    return model;
+    return undefined;
   };
 
   getModelById = async (id: string) => {

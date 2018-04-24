@@ -1,6 +1,9 @@
 import { clone } from 'mobx-state-tree';
 import { getModulePath } from 'common/sandbox/modules';
 import getDefinition from 'common/templates';
+import { chunk } from 'lodash';
+import { MAX_FILE_SIZE } from 'codesandbox-import-utils/lib/is-text';
+import denormalize from 'codesandbox-import-utils/lib/create-sandbox/denormalize';
 
 import { resolveModuleWrapped } from '../../utils/resolve-module-wrapped';
 
@@ -10,6 +13,25 @@ export function whenModuleIsSelected({ state, props, path }) {
   return currentModule.shortid === props.moduleShortid
     ? path.true()
     : path.false();
+}
+
+export function massCreateModules({ state, props, api, path }) {
+  const { directories, modules, directoryShortid } = props;
+  const sandboxId = state.get('editor.currentId');
+
+  return api
+    .post(`/sandboxes/${sandboxId}/modules/mcreate`, {
+      directoryShortid,
+      modules,
+      directories,
+    })
+    .then(data =>
+      path.success({ modules: data.modules, directories: data.directories })
+    )
+    .catch(error => {
+      console.error(error);
+      return path.error({ error });
+    });
 }
 
 export function getUploadedFiles({ api, path }) {
@@ -26,14 +48,81 @@ export function deleteUploadedFile({ api, props, path }) {
     .catch(error => path.error({ error }));
 }
 
-export function uploadFile({ api, props, path }) {
-  return api
-    .post('/users/current_user/uploads', {
-      content: props.content,
-      name: props.name,
-    })
-    .then(data => path.success({ uploadedFile: data }))
-    .catch(error => path.error({ error }));
+export async function uploadFiles({ api, props, path }) {
+  const parsedFiles = {};
+  // We first create chunks so we don't overload the server with 100 multiple
+  // upload requests
+  const filePaths = Object.keys(props.files);
+  const chunkedFilePaths = chunk(filePaths, 5);
+
+  try {
+    // We traverse all files and upload them when necessary, then add them to the
+    // parsedFiles object
+    /* eslint-disable no-restricted-syntax no-await-in-loop */
+    for (const filePathsChunk of chunkedFilePaths) {
+      await Promise.all(
+        filePathsChunk.map(async filePath => {
+          const file = props.files[filePath];
+          const dataURI = file.dataURI;
+
+          if (
+            (/\.(j|t)sx?$/.test(filePath) ||
+              /\.json?$/.test(filePath) ||
+              /\.html?$/.test(filePath) ||
+              file.type.startsWith('text/') ||
+              file.type === 'application/json') &&
+            dataURI.length < MAX_FILE_SIZE
+          ) {
+            const text = atob(dataURI.replace(/^.*base64,/, ''));
+            parsedFiles[filePath] = {
+              content: text,
+              isBinary: false,
+            };
+          } else {
+            await api
+              .post('/users/current_user/uploads', {
+                content: dataURI,
+                name: filePath,
+              })
+              .then(data => {
+                parsedFiles[filePath] = {
+                  content: data.url,
+                  isBinary: true,
+                };
+              })
+              .catch(e => {
+                e.message = `Error uploading ${filePath}: ${e.message}`;
+
+                throw e;
+              });
+          }
+        })
+      );
+    }
+    /* eslint-enable */
+
+    // We create a module format that CodeSandbox understands
+    const { modules, directories } = denormalize(parsedFiles);
+
+    // If the directory was dropped in a subdirectory we need to shift all
+    // the root directories to that directory
+    const relativeDirectories = directories.map(dir => {
+      if (dir.directoryShortid == null) {
+        return {
+          ...dir,
+          directoryShortid: props.directoryShortid,
+        };
+      }
+
+      return dir;
+    });
+
+    // Proceed to give the data for `massCreateModules`
+    return path.success({ modules, directories: relativeDirectories });
+  } catch (error) {
+    console.error(error);
+    return path.error({ error: error.message });
+  }
 }
 
 export function saveNewDirectoryDirectoryShortid({ api, state, props, path }) {

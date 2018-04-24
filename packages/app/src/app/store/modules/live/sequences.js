@@ -174,6 +174,19 @@ export const handleMessage = [
         ],
       },
     ],
+    'module:mass-created': [
+      isOwnMessage,
+      {
+        true: [],
+        false: [
+          concat(state`editor.currentSandbox.modules`, props`data.modules`),
+          concat(
+            state`editor.currentSandbox.directories`,
+            props`data.directories`
+          ),
+        ],
+      },
+    ],
     'module:updated': [
       isOwnMessage,
       {

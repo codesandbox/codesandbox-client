@@ -1,4 +1,4 @@
-import { push, set } from 'cerebral/operators';
+import { push, set, concat } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 import { ensureOwnedSandbox, closeModal } from '../../sequences';
 import { setCurrentModule, addNotification } from '../../factories';
@@ -7,6 +7,7 @@ import {
   sendModuleCreated,
   sendModuleDeleted,
   sendModuleUpdated,
+  sendMassModuleCreated,
   sendDirectoryCreated,
   sendDirectoryDeleted,
   sendDirectoryUpdated,
@@ -26,6 +27,19 @@ export const getUploadedFiles = [
     error: [
       addNotification('Unable to get uploaded files information', 'error'),
     ],
+  },
+];
+
+export const massCreateModules = [
+  ensureOwnedSandbox,
+  actions.massCreateModules,
+  {
+    success: [
+      concat(state`editor.currentSandbox.modules`, props`modules`),
+      concat(state`editor.currentSandbox.directories`, props`directories`),
+      sendMassModuleCreated,
+    ],
+    error: [],
   },
 ];
 
@@ -69,19 +83,13 @@ export const addFileToSandbox = [
   createModule,
 ];
 
-export const uploadFile = [
+export const uploadFiles = [
   set(props`modal`, 'uploading'),
   setModal,
-  actions.uploadFile,
+  actions.uploadFiles,
   {
-    success: [
-      set(props`newCode`, props`uploadedFile.url`),
-      set(props`title`, props`name`),
-      set(props`isBinary`, true),
-      set(state`uploadedFiles`, null),
-      createModule,
-    ],
-    error: [addNotification('Unable to upload file', 'error')],
+    success: [set(state`uploadedFiles`, null), massCreateModules],
+    error: [addNotification(props`error`, 'error')],
   },
   closeModal,
 ];
