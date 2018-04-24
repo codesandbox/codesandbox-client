@@ -7,6 +7,7 @@ import {
   sendModuleCreated,
   sendModuleDeleted,
   sendModuleUpdated,
+  sendMassModuleCreated,
   sendDirectoryCreated,
   sendDirectoryDeleted,
   sendDirectoryUpdated,
@@ -36,6 +37,7 @@ export const massCreateModules = [
     success: [
       concat(state`editor.currentSandbox.modules`, props`modules`),
       concat(state`editor.currentSandbox.directories`, props`directories`),
+      sendMassModuleCreated,
     ],
     error: [],
   },

@@ -236,7 +236,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     await this.initializeModules(sandbox.modules);
     await this.openNewModel(currentModule.id, currentModule.title);
 
-    this.addKeyCommands();
     import(/* webpackChunkName: 'monaco-emmet' */ './enable-emmet').then(
       enableEmmet => {
         enableEmmet.default(editor, monaco, {});
@@ -1272,16 +1271,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       );
       this.typingsFetcherWorker.postMessage({ dependencies });
     }
-  };
-
-  addKeyCommands = () => {
-    // Disabled, we now let keybinding manager handle this
-    // this.editor.addCommand(
-    //   this.monaco.KeyMod.CtrlCmd | this.monaco.KeyCode.KEY_S, // eslint-disable-line no-bitwise
-    //   () => {
-    //     this.handleSaveCode();
-    //   }
-    // );
   };
 
   disposeModules = (modules: Array<Module>) => {
