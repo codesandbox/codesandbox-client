@@ -26,10 +26,9 @@ function PricingInfo() {
           <Feature feature="Private Sandboxes" free="No" supporter="Yes" />
           <Feature feature="Sandbox Limit" free="50" supporter="Unlimited" />
           <Feature
-            disabled
             feature="Static File Hosting"
-            free="10Mb"
-            supporter="1Gb"
+            free="20Mb"
+            supporter="500Mb"
           />
         </tbody>
       </table>
