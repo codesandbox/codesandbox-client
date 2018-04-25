@@ -16,6 +16,10 @@ import { ErrorMessage } from './elements';
 function Dependencies({ signals, store }) {
   const sandbox = store.editor.currentSandbox;
 
+  if (!store.editor.parsedConfigurations.package) {
+    return <ErrorMessage>Unable to find package.json</ErrorMessage>;
+  }
+
   const { parsed, error } = store.editor.parsedConfigurations.package;
 
   if (error) {
