@@ -46,6 +46,11 @@ export function setUrlOptions({ state, router, utils }) {
     );
 
     if (module) {
+      state.push('editor.tabs', {
+        type: 'module',
+        moduleShortid: module.shortid,
+        dirty: false,
+      });
       state.set('editor.currentModuleShortid', module.shortid);
     }
   }

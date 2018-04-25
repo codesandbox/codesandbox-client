@@ -222,19 +222,6 @@ export function updateOptimisticModule({ state, props }) {
   );
 }
 
-export function removeOptimisticModule({ state, props }) {
-  const sandbox = state.get('editor.currentSandbox');
-  const optimisticModuleIndex = sandbox.modules.findIndex(
-    module => module.shortid === props.optimisticModule.shortid
-  );
-
-  state.splice(
-    `editor.sandboxes.${sandbox.id}.modules`,
-    optimisticModuleIndex,
-    1
-  );
-}
-
 export function updateOptimisticDirectory({ state, props }) {
   const sandbox = state.get('editor.currentSandbox');
   const optimisticDirectoryIndex = sandbox.directories.findIndex(

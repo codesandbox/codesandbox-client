@@ -30,6 +30,21 @@ export const getUploadedFiles = [
   },
 ];
 
+export const removeModule = [
+  ensureOwnedSandbox,
+  actions.whenModuleIsSelected,
+  {
+    true: setCurrentModule(state`editor.mainModule.id`),
+    false: [],
+  },
+  actions.whenCloseTab,
+  {
+    true: closeTabByIndex,
+    false: [],
+  },
+  actions.removeModule,
+];
+
 export const massCreateModules = [
   ensureOwnedSandbox,
   actions.massCreateModules,
@@ -68,7 +83,8 @@ export const createModule = [
       sendModuleCreated,
     ],
     error: [
-      actions.removeOptimisticModule,
+      set(props`moduleShortid`, props`optimisticModule.shortid`),
+      removeModule,
       setCurrentModule(state`editor.mainModule.shortid.id`),
       addNotification('Unable to save new file', 'error'),
     ],
@@ -189,21 +205,6 @@ export const moveModuleToDirectory = [
       addNotification('Could not save new module location', 'error'),
     ],
   },
-];
-
-export const removeModule = [
-  ensureOwnedSandbox,
-  actions.whenModuleIsSelected,
-  {
-    true: setCurrentModule(state`editor.mainModule.id`),
-    false: [],
-  },
-  actions.whenCloseTab,
-  {
-    true: closeTabByIndex,
-    false: [],
-  },
-  actions.removeModule,
 ];
 
 export const deleteModule = [
