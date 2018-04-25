@@ -30,6 +30,7 @@ const settings = store =>
     tabWidth: store.preferences.settings.prettierConfig
       ? store.preferences.settings.prettierConfig.tabWidth || 2
       : 2,
+    enableLigatures: store.preferences.settings.enableLigatures,
   }: Settings);
 
 type Props = {
@@ -435,7 +436,12 @@ class EditorPreview extends React.Component<Props, State> {
                 store.editor.parsedConfigurations.typescript.parsed
               }
             />
-            <Preview width={this.state.width} height={this.state.height} />
+
+            <Preview
+              runOnClick={this.props.store.preferences.runOnClick}
+              width={this.state.width}
+              height={this.state.height}
+            />
           </div>
 
           <DevTools

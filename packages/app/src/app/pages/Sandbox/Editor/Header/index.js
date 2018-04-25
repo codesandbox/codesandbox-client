@@ -17,13 +17,16 @@ import PatronBadge from '-!svg-react-loader!common/utils/badges/svg/patron-4.svg
 import Margin from 'common/components/spacing/Margin';
 import HeaderSearchBar from 'app/components/HeaderSearchBar';
 import UserMenu from 'app/pages/common/UserMenu';
+import theme from 'common/theme';
 
 import Logo from './Logo';
 import Action from './Action';
 
 import { Container, Right, Left } from './elements';
 
-function Header({ store, signals }) {
+import UpdateFound from './UpdateFound';
+
+const Header = ({ store, signals }) => {
   const sandbox = store.editor.currentSandbox;
 
   return (
@@ -93,6 +96,18 @@ function Header({ store, signals }) {
           <HeaderSearchBar />
         </div>
 
+        {store.updateStatus === 'available' && (
+          <Action
+            onClick={() => document.location.reload()}
+            Icon={UpdateFound}
+            style={{
+              color: theme.green(),
+              fontSize: '1rem',
+            }}
+            tooltip="Update Available! Click to Refresh."
+          />
+        )}
+
         {!store.isLoggedIn ||
           (!store.isPatron && (
             <Action
@@ -151,6 +166,6 @@ function Header({ store, signals }) {
       </Right>
     </Container>
   );
-}
+};
 
 export default inject('signals', 'store')(observer(Header));

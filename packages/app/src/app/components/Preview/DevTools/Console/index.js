@@ -1,14 +1,14 @@
 import React from 'react';
 import { listen, dispatch } from 'codesandbox-api';
+import { debounce } from 'lodash';
+import update from 'immutability-helper';
 
 import ClearIcon from 'react-icons/lib/md/clear-all';
+import { Decode, Console as ConsoleFeed } from 'console-feed';
 
-import CircularJSON from 'circular-json';
-
-import Message from './Message';
 import Input from './Input';
 
-import { Container, Messages } from './elements';
+import { Container, Messages, inspectorTheme } from './elements';
 
 export type IMessage = {
   type: 'message' | 'command' | 'return',
@@ -20,9 +20,16 @@ class Console extends React.Component {
   state = {
     messages: [],
     scrollToBottom: true,
+    initialClear: true,
   };
 
   listener;
+
+  constructor(props) {
+    super(props);
+
+    this.scrollToBottom = debounce(this.scrollToBottom, 1 / 60);
+  }
 
   componentDidMount() {
     this.listener = listen(this.handleMessage);
@@ -37,31 +44,50 @@ class Console extends React.Component {
   handleMessage = data => {
     switch (data.type) {
       case 'console': {
-        const { method, args: jsonArgs } = data;
-        const args = CircularJSON.parse(jsonArgs);
-        this.addMessage(method, args);
+        const message = Decode(data.log);
+        const { method, data: args } = message;
+
+        switch (method) {
+          case 'clear': {
+            // If the event was done by the packager
+            const hideMessage = args && args[0] === '__internal__';
+
+            this.clearConsole(hideMessage);
+            break;
+          }
+          default: {
+            this.addMessage(method, args);
+            break;
+          }
+        }
         break;
       }
       case 'clear-console': {
-        this.clearConsole();
+        if (this.state.initialClear) {
+          this.setState({
+            initialClear: false,
+          });
+        } else {
+          this.clearConsole();
+        }
         break;
       }
       case 'eval-result': {
         const { result, error } = data;
 
-        const parsedJson = result ? CircularJSON.parse(result) : result;
+        const decoded = Decode(result);
 
         if (!error) {
-          this.addMessage('log', [parsedJson], 'return');
+          this.addMessage('result', [decoded]);
         } else {
-          this.addMessage('error', [parsedJson]);
+          this.addMessage('error', [decoded]);
         }
         break;
       }
       case 'test-result': {
         const { result, error } = data;
 
-        const aggregatedResults = result ? CircularJSON.parse(result) : result;
+        const aggregatedResults = Decode(result);
         if (!error) {
           if (aggregatedResults) {
             const { summaryMessage, failedMessages } = aggregatedResults;
@@ -70,10 +96,10 @@ class Console extends React.Component {
               this.addMessage('warn', [t]);
             });
           } else {
-            this.addMessage('warn', [undefined], 'return');
+            this.addMessage('warn', [undefined]);
           }
         } else {
-          this.addMessage('log', [error]);
+          this.addMessage('error', [error]);
         }
         break;
       }
@@ -95,46 +121,67 @@ class Console extends React.Component {
     return 'error';
   };
 
-  addMessage(message, args, type) {
+  addMessage(method, data) {
     if (this.props.updateStatus) {
-      this.props.updateStatus(this.getType(message));
+      this.props.updateStatus(this.getType(method));
     }
 
-    this.setState({
-      messages: [
-        ...this.state.messages,
-        {
-          type,
-          logType: message,
-          arguments: args,
+    this.setState(state =>
+      update(state, {
+        messages: {
+          $push: [
+            {
+              method,
+              data,
+            },
+          ],
         },
-      ],
-    });
+      })
+    );
   }
 
   list;
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.sandboxId !== this.props.sandboxId) {
-      this.clearConsole();
+      this.clearConsole(true);
     }
   }
 
-  clearConsole = () => {
+  clearConsole = (nothing: boolean) => {
     if (this.props.updateStatus) {
       this.props.updateStatus('clear');
     }
-    this.setState({ messages: [] });
+
+    const messages = nothing
+      ? []
+      : [
+          {
+            method: 'log',
+            data: [
+              '%cConsole was cleared',
+              'font-style: italic; color: rgba(255, 255, 255, 0.3)',
+            ],
+          },
+        ];
+
+    this.setState({
+      messages,
+    });
   };
 
   componentDidUpdate() {
+    this.scrollToBottom();
+  }
+
+  scrollToBottom = () => {
     if (this.list) {
       this.list.scrollTop = this.list.scrollHeight;
     }
-  }
+  };
 
   evaluateConsole = (command: string) => {
-    this.addMessage('log', [command], 'command');
+    this.addMessage('command', [command]);
 
     // TODO move everything of frames to store and this command too
     dispatch({ type: 'evaluate', command });
@@ -152,10 +199,11 @@ class Console extends React.Component {
             this.list = el;
           }}
         >
-          {/* eslint-disable react/no-array-index-key */}
-          {this.state.messages.map((mes, i) => (
-            <Message key={i} message={mes} />
-          ))}
+          <ConsoleFeed
+            logs={this.state.messages}
+            variant="dark"
+            styles={inspectorTheme}
+          />
         </Messages>
         <Input evaluateConsole={this.evaluateConsole} />
       </Container>

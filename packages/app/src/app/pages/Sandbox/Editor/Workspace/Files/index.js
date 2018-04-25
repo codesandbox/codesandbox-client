@@ -17,19 +17,14 @@ class Files extends React.Component {
     this.directory.onCreateDirectoryClick();
   };
 
+  uploadFile = () => {
+    // INCREDIBLY BAD PRACTICE! TODO: FIX THIS
+    this.directory.onUploadFileClick();
+  };
+
   render() {
     const store = this.props.store;
     const sandbox = store.editor.currentSandbox;
-
-    const openedModulesByUsers = {};
-
-    // if (store.live.isLive) {
-    //   store.live.usersMetadata.forEach(user => {
-    //     openedModulesByUsers[user.currentModuleShortid] =
-    //       openedModulesByUsers[user.currentModuleShortid] || [];
-    //     openedModulesByUsers[user.currentModuleShortid].push(user.color);
-    //   });
-    // }
 
     return (
       <WorkspaceItem
@@ -42,6 +37,11 @@ class Files extends React.Component {
             forceShow={window.__isTouch}
             onCreateFile={this.createModule}
             onCreateDirectory={this.createDirectory}
+            onUploadFile={
+              store.isLoggedIn && sandbox.privacy === 0
+                ? this.uploadFile
+                : undefined
+            }
           />
         }
       >
@@ -51,7 +51,6 @@ class Files extends React.Component {
             this.directory = el;
           }}
           title={sandbox.title || 'Project'}
-          openedModulesByUsers={openedModulesByUsers}
           depth={-1}
           id={null}
           shortid={null}

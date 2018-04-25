@@ -1,4 +1,8 @@
 import getTemplate from 'common/templates';
+import { omit } from 'lodash/fp';
+
+// We'll omit the homepage-value from package.json as it creates wrong assumptions over the now deployment evironment.
+const omitHomepage = omit('homepage');
 
 export function createZip({ utils, state }) {
   const sandboxId = state.get('editor.currentId');
@@ -27,7 +31,7 @@ export async function createApiData({ props, state }) {
     }
   }
 
-  apiData.package = JSON.parse(apiData['package.json']);
+  apiData.package = omitHomepage(JSON.parse(apiData['package.json']));
   // We force the sandbox id, so ZEIT will always group the deployments to a
   // single sandbox
   apiData.package.name = `csb-${sandbox.id}`;

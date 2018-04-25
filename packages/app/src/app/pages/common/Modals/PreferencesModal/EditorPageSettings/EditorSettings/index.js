@@ -79,6 +79,10 @@ function EditorSettings({ store, signals }) {
             type="boolean"
             {...bindValue('vimMode')}
           />
+          <SubDescription>
+            This will override Use CodeMirror setting as Monaco doesn{"'"}t have
+            a VIM mode yet.
+          </SubDescription>
           <Rule />
           <PaddedPreference
             title="Font size"
@@ -92,6 +96,22 @@ function EditorSettings({ store, signals }) {
             placeholder="Source Code Pro"
             {...bindValue('fontFamily')}
           />
+          <Rule />
+          <PaddedPreference
+            title="Font ligatures enabled"
+            type="boolean"
+            {...bindValue('enableLigatures')}
+          />
+          <SubDescription>
+            Whether we should enable{' '}
+            <a
+              href="https://en.wikipedia.org/wiki/Typographic_ligature"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              font ligatures
+            </a>.
+          </SubDescription>
           <Rule />
           <PaddedPreference
             title="Line height"

@@ -4,7 +4,11 @@ import { IFiles } from '../../types';
 
 import SandpackConsumer from '../SandpackConsumer';
 
-export default class OpenInCodeSandbox extends React.Component {
+export interface Props {
+  render?: () => React.ReactNode;
+}
+
+export default class OpenInCodeSandbox extends React.Component<Props> {
   getFileParameters = (files: IFiles) => {
     const normalized: {
       [path: string]: { content: string; isBinary: boolean };
@@ -22,7 +26,17 @@ export default class OpenInCodeSandbox extends React.Component {
     return getParameters({ files: normalized });
   };
 
+  renderButton() {
+    if (typeof this.props.render === 'function') {
+      return this.props.render();
+    }
+
+    return <input type="submit" value="Open in CodeSandbox" />;
+  }
+
   render() {
+    const { render, ...props } = this.props;
+
     return (
       <SandpackConsumer>
         {sandpack => (
@@ -30,14 +44,14 @@ export default class OpenInCodeSandbox extends React.Component {
             action="https://codesandbox.io/api/v1/sandboxes/define"
             method="POST"
             target="_blank"
-            {...this.props}
+            {...props}
           >
             <input
               type="hidden"
               name="parameters"
               value={this.getFileParameters(sandpack.files)}
             />
-            <input type="submit" value="Open in CodeSandbox" />
+            {this.renderButton()}
           </form>
         )}
       </SandpackConsumer>

@@ -5,6 +5,10 @@ export default Module({
   model: {},
   state: {},
   signals: {
+    addedFileToSandbox: sequences.addFileToSandbox,
+    gotUploadedFiles: sequences.getUploadedFiles,
+    deletedUploadedFile: sequences.deleteUploadedFile,
+    filesUploaded: sequences.uploadFiles,
     moduleCreated: sequences.createModule,
     moduleRenamed: sequences.renameModule,
     directoryCreated: sequences.createDirectory,

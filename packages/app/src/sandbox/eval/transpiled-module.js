@@ -766,10 +766,6 @@ export default class TranspiledModule {
           localModule.path
         );
 
-        if (transpiledModule === requiredTranspiledModule) {
-          throw new Error(`${localModule.path} is importing itself`);
-        }
-
         // Check if this module has been evaluated before, if so return the exports
         // of that compilation
         const cache = requiredTranspiledModule.compilation;
