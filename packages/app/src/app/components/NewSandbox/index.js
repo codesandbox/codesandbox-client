@@ -10,6 +10,7 @@ import {
   newPreactSandboxUrl,
   newVueSandboxUrl,
   newAngularSandboxUrl,
+  newDojoSandboxUrl,
   newSvelteSandboxUrl,
   importFromGitHubUrl,
   uploadFromCliUrl,
@@ -21,6 +22,7 @@ import ParcelIcon from 'common/components/logos/Parcel';
 import VueIcon from 'common/components/logos/Vue';
 import SvelteIcon from 'common/components/logos/Svelte';
 import AngularIcon from 'common/components/logos/Angular';
+import DojoIcon from 'common/components/logos/Dojo';
 
 import {
   Container,
@@ -79,6 +81,14 @@ function NewSandbox({ signals }) {
           text="Angular"
           href={newAngularSandboxUrl()}
           onClick={() => signals.modalClosed()}
+        />
+        <Logo
+          Icon={DojoIcon}
+          width={50}
+          height={50}
+          text="Dojo 2"
+          href={newDojoSandboxUrl()}
+          onClick={() => signals.closeModal()}
         />
         <Logo
           Icon={PreactIcon}

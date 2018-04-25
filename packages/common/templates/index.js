@@ -7,8 +7,9 @@ import react from './react';
 import reactTs from './react-ts';
 import svelte from './svelte';
 import vue from './vue';
+import dojo from './dojo';
 
-export { angular, babel, vue, react, reactTs, preact, svelte, parcel };
+export { angular, babel, vue, react, reactTs, preact, svelte, parcel, dojo };
 
 export default function getDefinition(
   theme:
@@ -19,6 +20,7 @@ export default function getDefinition(
     | 'create-react-app-typescript'
     | 'angular-cli'
     | 'parcel'
+    | '@dojo/cli-create-app'
 ) {
   switch (theme) {
     case react.name:
@@ -37,6 +39,8 @@ export default function getDefinition(
       return parcel;
     case babel.name:
       return babel;
+    case dojo.name:
+      return dojo;
     default:
       return react;
   }
