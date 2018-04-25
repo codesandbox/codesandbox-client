@@ -126,7 +126,6 @@ jobs:
     steps:
       - restore_cache:
           key: v8-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
-      - setup_remote_docker
       - run:
           name: Docker Sign In
           command: "if [ -n $DOCKER_USER ]; then echo $DOCKER_PWD | docker login -u $DOCKER_USER --password-stdin; else exit 0; fi"
