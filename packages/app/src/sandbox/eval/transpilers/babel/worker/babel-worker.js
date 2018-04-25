@@ -275,6 +275,14 @@ self.addEventListener('message', async event => {
       const pragmaticPlugin = await import(/* webpackChunkName: 'babel-plugin-jsx-pragmatic' */ 'babel-plugin-jsx-pragmatic');
       Babel.registerPlugin('jsx-pragmatic', pragmaticPlugin);
     }
+	
+	if (
+      flattenedPlugins.indexOf('transform-cx-jsx') > -1 &&
+      Object.keys(Babel.availablePlugins).indexOf('transform-cx-jsx') === -1
+    ) {
+      const cxJsxPlugin = await import(/* webpackChunkName: 'transform-cx-jsx' */ 'babel-plugin-transform-cx-jsx');
+      Babel.registerPlugin('transform-cx-jsx', cxJsxPlugin);
+    }
   }
 
   try {

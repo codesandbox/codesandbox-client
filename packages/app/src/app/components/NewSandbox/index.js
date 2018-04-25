@@ -10,7 +10,9 @@ import {
   newPreactSandboxUrl,
   newVueSandboxUrl,
   newAngularSandboxUrl,
+  newDojoSandboxUrl,
   newSvelteSandboxUrl,
+  newCxJSSandboxUrl,
   importFromGitHubUrl,
   uploadFromCliUrl,
 } from 'common/utils/url-generator';
@@ -21,6 +23,8 @@ import ParcelIcon from 'common/components/logos/Parcel';
 import VueIcon from 'common/components/logos/Vue';
 import SvelteIcon from 'common/components/logos/Svelte';
 import AngularIcon from 'common/components/logos/Angular';
+import CxJSIcon from 'common/components/logos/CxJS';
+import DojoIcon from 'common/components/logos/Dojo';
 
 import {
   Container,
@@ -53,7 +57,6 @@ function NewSandbox({ signals }) {
           href={parcelSandboxUrl()}
           onClick={() => signals.modalClosed()}
         />
-
         <Logo
           Icon={ReactIcon}
           width={50}
@@ -62,7 +65,6 @@ function NewSandbox({ signals }) {
           href={newSandboxUrl()}
           onClick={() => signals.modalClosed()}
         />
-
         <Logo
           Icon={VueIcon}
           width={50}
@@ -71,7 +73,6 @@ function NewSandbox({ signals }) {
           href={newVueSandboxUrl()}
           onClick={() => signals.modalClosed()}
         />
-
         <Logo
           Icon={AngularIcon}
           width={50}
@@ -103,6 +104,22 @@ function NewSandbox({ signals }) {
           text="React TypeScript"
           href={newReactTypeScriptSandboxUrl()}
           onClick={() => signals.modalClosed()}
+        />
+        <Logo
+          Icon={DojoIcon}
+          width={50}
+          height={50}
+          text="Dojo 2"
+          href={newDojoSandboxUrl()}
+          onClick={() => signals.closeModal()}
+        />
+        <Logo
+          Icon={CxJSIcon}
+          width={50}
+          height={50}
+          text="CxJS"
+          href={newCxJSSandboxUrl()}
+          onClick={() => signals.closeModal()}
         />
         <Logo
           Icon={GithubIcon}

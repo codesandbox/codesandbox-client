@@ -102,6 +102,36 @@ const config: ConfigurationFile = {
       return JSON.stringify({ presets, plugins }, null, 2);
     }
 
+    if (template === 'cxjs') {
+      return JSON.stringify(
+        {
+          presets: [
+            [
+              'env',
+              {
+                targets: {
+                  chrome: 50,
+                  ie: 11,
+                  ff: 30,
+                  edge: 12,
+                  safari: 9,
+                },
+                modules: false,
+                loose: true,
+                useBuiltIns: true,
+              },
+            ],
+          ],
+          plugins: [
+            ['transform-cx-jsx'],
+            ['transform-react-jsx', { pragma: 'VDOM.createElement' }],
+          ],
+        },
+        null,
+        2
+      );
+    }
+
     return JSON.stringify({ presets: [], plugins: [] }, null, 2);
   },
 
