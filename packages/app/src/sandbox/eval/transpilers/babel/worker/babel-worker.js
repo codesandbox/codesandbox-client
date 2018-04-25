@@ -350,22 +350,23 @@ self.addEventListener('message', async event => {
       { source: true, nodes: true, generated: true },
     ]);
 
-    const customConfig = /^\/node_modules/.test(path)
-      ? {
-          plugins: [
-            version === 7
-              ? 'transform-modules-commonjs'
-              : 'transform-es2015-modules-commonjs',
-            [
-              'babel-plugin-detective',
-              { source: true, nodes: true, generated: true },
+    const customConfig =
+      /^\/node_modules/.test(path) && /\.js$/.test(path)
+        ? {
+            plugins: [
+              version === 7
+                ? 'transform-modules-commonjs'
+                : 'transform-es2015-modules-commonjs',
+              [
+                'babel-plugin-detective',
+                { source: true, nodes: true, generated: true },
+              ],
             ],
-          ],
-        }
-      : {
-          ...config,
-          plugins,
-        };
+          }
+        : {
+            ...config,
+            plugins,
+          };
 
     const result = Babel.transform(code, customConfig);
 
