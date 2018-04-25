@@ -111,7 +111,7 @@ function NewSandbox({ signals }) {
           height={50}
           text="Dojo 2"
           href={newDojoSandboxUrl()}
-          onClick={() => signals.closeModal()}
+          onClick={() => signals.modalClosed()}
         />
         <Logo
           Icon={CxJSIcon}
@@ -119,7 +119,7 @@ function NewSandbox({ signals }) {
           height={50}
           text="CxJS"
           href={newCxJSSandboxUrl()}
-          onClick={() => signals.closeModal()}
+          onClick={() => signals.modalClosed()}
         />
         <Logo
           Icon={GithubIcon}
