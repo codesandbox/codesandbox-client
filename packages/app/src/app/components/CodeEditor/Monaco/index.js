@@ -135,6 +135,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   editor: any;
   monaco: any;
   receivingCode: ?boolean = false;
+  transpilationListener: ?Function;
 
   constructor(props: Props) {
     super(props);
@@ -160,7 +161,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       500
     );
 
-    this.setupTranspilationListener();
+    this.transpilationListener = this.setupTranspilationListener();
   }
 
   shouldComponentUpdate(nextProps: Props) {
@@ -194,6 +195,9 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       if (this.typingsFetcherWorker) {
         this.typingsFetcherWorker.terminate();
       }
+      if (this.transpilationListener) {
+        this.transpilationListener();
+      }
       clearTimeout(this.sizeProbeInterval);
     });
 
@@ -203,7 +207,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   }
 
   setupTranspilationListener() {
-    listen(({ type, code, path }) => {
+    return listen(({ type, code, path }) => {
       if (type === 'add-extra-lib') {
         const dtsPath = `${path}.d.ts`;
         this.monaco.languages.typescript.typescriptDefaults._extraLibs[
