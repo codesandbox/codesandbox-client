@@ -57,7 +57,6 @@ function NewSandbox({ signals }) {
           href={parcelSandboxUrl()}
           onClick={() => signals.modalClosed()}
         />
-
         <Logo
           Icon={ReactIcon}
           width={50}
@@ -66,7 +65,6 @@ function NewSandbox({ signals }) {
           href={newSandboxUrl()}
           onClick={() => signals.modalClosed()}
         />
-
         <Logo
           Icon={VueIcon}
           width={50}
@@ -75,7 +73,6 @@ function NewSandbox({ signals }) {
           href={newVueSandboxUrl()}
           onClick={() => signals.modalClosed()}
         />
-
         <Logo
           Icon={AngularIcon}
           width={50}
@@ -83,14 +80,6 @@ function NewSandbox({ signals }) {
           text="Angular"
           href={newAngularSandboxUrl()}
           onClick={() => signals.modalClosed()}
-        />
-        <Logo
-          Icon={DojoIcon}
-          width={50}
-          height={50}
-          text="Dojo 2"
-          href={newDojoSandboxUrl()}
-          onClick={() => signals.closeModal()}
         />
         <Logo
           Icon={PreactIcon}
@@ -115,6 +104,14 @@ function NewSandbox({ signals }) {
           text="React TypeScript"
           href={newReactTypeScriptSandboxUrl()}
           onClick={() => signals.modalClosed()}
+        />
+        <Logo
+          Icon={DojoIcon}
+          width={50}
+          height={50}
+          text="Dojo 2"
+          href={newDojoSandboxUrl()}
+          onClick={() => signals.closeModal()}
         />
         <Logo
           Icon={CxJSIcon}
