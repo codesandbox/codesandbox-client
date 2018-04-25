@@ -115,8 +115,8 @@ export default class Manager {
     Object.keys(modules).forEach(k => this.addModule(modules[k]));
     this.testRunner = new TestRunner(this);
 
+    window.manager = this;
     if (process.env.NODE_ENV === 'development') {
-      window.manager = this;
       console.log(this);
     }
 
@@ -446,7 +446,7 @@ export default class Manager {
             return p;
           },
           moduleDirectory: ['node_modules', this.envVariables.NODE_PATH].filter(
-            x => x
+            Boolean
           ),
         });
 
