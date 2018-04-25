@@ -7,9 +7,11 @@ export default (manager: Object) => {
 
   backend.handleTopDropCapture = e => {
     orgTopDropCapture.call(backend, e);
-    backend.currentNativeSource.item.dirContent = getFilesFromDragEvent(e, {
-      recursive: true,
-    }); // returns a promise
+    if (backend.currentNativeSource) {
+      backend.currentNativeSource.item.dirContent = getFilesFromDragEvent(e, {
+        recursive: true,
+      }); // returns a promise
+    }
   };
 
   return backend;
