@@ -5,7 +5,7 @@ import _debug from 'app/utils/debug';
 import initializeErrorTransformers from './errors/transformers';
 import getPreset from './eval';
 import Manager from './eval/manager';
-import { Encode } from 'console-feed'
+import { Encode } from 'console-feed';
 
 import { resetScreen } from './status-screen';
 

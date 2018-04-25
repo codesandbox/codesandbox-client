@@ -14,7 +14,8 @@ export default {
   isExported: types.boolean,
   showExportedModal: types.boolean,
   isFetching: types.boolean,
-  message: types.string,
+  subject: types.string,
+  description: types.string,
   originalGitChanges: types.maybe(
     types.model({
       added: types.array(types.string),

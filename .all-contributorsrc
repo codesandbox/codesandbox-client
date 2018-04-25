@@ -524,6 +524,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "Saeris",
+      "name": "Drake Costa",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/3144549?v=4",
+      "profile": "http://www.saeris.io",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "repoType": "github"

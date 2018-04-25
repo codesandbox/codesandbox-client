@@ -10,13 +10,19 @@ export function openPr({ state, browser }) {
   browser.openWindow(url);
 }
 
+function createCommitMessage(state) {
+  const subject = state.get('git.subject');
+  const description = state.get('git.description');
+  return `${subject}${description.length ? `\n\n${description}` : ``}`;
+}
+
 export function createPr({ api, state }) {
   const id = state.get('editor.currentId');
 
   return api
     .post(`/sandboxes/${id}/git/pr`, {
       id,
-      message: state.get('git.message'),
+      message: createCommitMessage(state),
     })
     .then(pr => ({ pr }));
 }
@@ -27,11 +33,10 @@ export function redirectToPr({ router, props }) {
 
 export function createCommit({ api, state }) {
   const id = state.get('editor.currentId');
-
   return api
     .post(`/sandboxes/${id}/git/commit`, {
       id,
-      message: state.get('git.message'),
+      message: createCommitMessage(state),
     })
     .then(commit => ({ commit }));
 }
