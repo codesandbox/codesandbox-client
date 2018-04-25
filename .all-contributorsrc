@@ -533,6 +533,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "mstijak",
+      "name": "Marko Stijak",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/433394?v=4",
+      "profile": "https://cxjs.io/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "repoType": "github"
