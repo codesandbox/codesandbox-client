@@ -239,7 +239,7 @@ self.addEventListener('message', async event => {
       process.env.NODE_ENV === 'development'
         ? `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.00-beta.js`
         : `${process.env.CODESANDBOX_HOST ||
-            ''}/static/js/babel.7.00-beta.min.js`
+            ''}/static/js/babel.7.00-beta-1.min.js`
     );
   }
 
@@ -275,8 +275,8 @@ self.addEventListener('message', async event => {
       const pragmaticPlugin = await import(/* webpackChunkName: 'babel-plugin-jsx-pragmatic' */ 'babel-plugin-jsx-pragmatic');
       Babel.registerPlugin('jsx-pragmatic', pragmaticPlugin);
     }
-	
-	if (
+
+    if (
       flattenedPlugins.indexOf('transform-cx-jsx') > -1 &&
       Object.keys(Babel.availablePlugins).indexOf('transform-cx-jsx') === -1
     ) {
