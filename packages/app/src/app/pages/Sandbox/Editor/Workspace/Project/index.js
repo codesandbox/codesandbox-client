@@ -29,12 +29,17 @@ import {
   EditPen,
   PropertyValue,
   PropertyName,
+  AlignLeft,
 } from './elements';
+
+import Switch from 'common/components/Switch';
+import Tooltip from 'common/components/Tooltip';
 
 class Project extends React.Component {
   state = {
     editingTitle: false,
     editingDescription: false,
+    markedAsTemplate: false,
   };
 
   setTitleEditing = () => {
@@ -74,6 +79,14 @@ class Project extends React.Component {
     });
   };
 
+  toggleSetAsTemplate = () => {
+    this.setState(({ markedAsTemplate }) => {
+      const nextState = { markedAsTemplate: !markedAsTemplate };
+      this.props.signals.workspace.toggleMarkAsTemplate(nextState);
+      return nextState;
+    });
+  };
+
   renderInput = props => {
     const { onChange, value, addTag, ...other } = props;
 
@@ -85,6 +98,7 @@ class Project extends React.Component {
   };
 
   render() {
+    const { markedAsTemplate } = this.state;
     const { store, signals, editable } = this.props;
     const sandbox = store.editor.currentSandbox;
     const workspace = store.workspace;
@@ -250,6 +264,21 @@ class Project extends React.Component {
               {sandbox.template}
             </a>
           </PropertyValue>
+        </Item>
+        <Item flex>
+          <PropertyName
+            style={{ display: 'flex', alignItems: 'center', flex: 3 }}
+          >
+            Mark as template
+          </PropertyName>
+          <AlignLeft>
+            <PropertyValue>
+              <Switch
+                right={markedAsTemplate}
+                onClick={this.toggleSetAsTemplate}
+              />
+            </PropertyValue>
+          </AlignLeft>
         </Item>
       </div>
     );

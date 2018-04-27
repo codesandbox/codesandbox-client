@@ -116,3 +116,12 @@ export const toggleCurrentWorkspaceItem = [
     true: set(state`workspace.openedWorkspaceItem`, null),
   },
 ];
+
+export const toggleMarkAsTemplate = [
+  actions.toggleMarkAsTemplate,
+  when(state`workspace.toggleMarkAsTemplate`),
+  {
+    false: set(state`workspace.toggleMarkAsTemplate`, false),
+    true: set(state`workspace.toggleMarkAsTemplate`, true),
+  },
+];

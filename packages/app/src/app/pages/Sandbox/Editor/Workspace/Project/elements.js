@@ -76,3 +76,7 @@ export const EditPen = styled(EditPenIcon)`
     color: white;
   }
 `;
+
+export const AlignLeft = styled.div`
+  margin-left: auto;
+`;

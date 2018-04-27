@@ -28,5 +28,6 @@ export default Module({
     sandboxPrivacyChanged: sequences.changeSandboxPrivacy,
     setWorkspaceItem: sequences.setWorkspaceItem,
     toggleCurrentWorkspaceItem: sequences.toggleCurrentWorkspaceItem,
+    toggleMarkAsTemplate: sequences.toggleMarkAsTemplate,
   },
 });
