@@ -33,7 +33,6 @@ import {
 } from './elements';
 
 import Switch from 'common/components/Switch';
-import Tooltip from 'common/components/Tooltip';
 
 class Project extends React.Component {
   state = {

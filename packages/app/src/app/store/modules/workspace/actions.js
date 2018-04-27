@@ -111,7 +111,6 @@ export function removeExternalResource({ api, state, props, path }) {
 
 export function toggleMarkAsTemplate({ api, state, props, path }) {
   const sandboxId = state.get('editor.currentId');
-  debugger;
   return api
     .post(`/sandboxes/${sandboxId}/template`, {
       template: props.markedAsTemplate,
