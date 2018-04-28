@@ -15,7 +15,7 @@ const black = '#293238',
   lightRed = '#fccfcf',
   yellow = '#fbf5b4',
   yellowTransparent = 'rgba(251, 245, 180, 0.3)',
-  white = '#F4F4F4';
+  whiteTranslucent = 'rgba(244, 244, 244, 0.9)';
 
 const iframeStyle = {
   position: 'fixed',
@@ -32,7 +32,7 @@ const overlayStyle = {
   height: '100%',
   'box-sizing': 'border-box',
   'text-align': 'center',
-  'background-color': white,
+  'background-color': whiteTranslucent,
   '-webkit-font-smoothing': 'antialiased',
   '-moz-font-smoothing': 'antialiased',
   '-moz-osx-font-smoothing': 'grayscale',
