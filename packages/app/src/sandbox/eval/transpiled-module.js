@@ -775,12 +775,17 @@ export default class TranspiledModule {
           : manager.evaluateTranspiledModule(requiredTranspiledModule);
       }
 
+      const globals = manager.testRunner.testGlobals(this.module);
+
+      globals.__dirname = pathUtils.dirname(this.module.path);
+      globals.__filename = this.module.path;
+
       const exports = evaluate(
         this.source.compiledCode,
         require,
         this.compilation,
         manager.envVariables,
-        manager.testRunner.testGlobals(this.module),
+        globals,
         { asUMD }
       );
 
