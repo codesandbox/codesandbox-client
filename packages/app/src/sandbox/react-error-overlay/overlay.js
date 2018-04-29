@@ -162,8 +162,8 @@ function disposeCurrentView(force: boolean) {
   additionalReference = null;
 }
 
-function unmount(force: boolean = false) {
-  disposeCurrentView(true);
+function unmount(force: boolean = true) {
+  disposeCurrentView(force);
   drainErrors();
   errorReferences = [];
   currReferenceIndex = -1;
