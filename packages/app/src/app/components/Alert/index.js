@@ -12,7 +12,7 @@ function Alert({ title, body, onCancel, onDelete }) {
         <Button small block secondary onClick={onCancel}>
           Cancel
         </Button>
-        <Button small block primary onClick={onDelete}>
+        <Button small block danger onClick={onDelete}>
           Delete
         </Button>
       </Buttons>
