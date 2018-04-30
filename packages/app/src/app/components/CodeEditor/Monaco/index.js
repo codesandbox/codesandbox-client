@@ -1495,6 +1495,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       fontSize: settings.fontSize,
       fontFamily: fontFamilies(
         settings.fontFamily,
+        'dm',
         'Menlo',
         'Source Code Pro',
         'monospace'
