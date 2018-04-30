@@ -60,9 +60,11 @@ export const createPr = [
   actions.createPr,
   set(state`git.pr`, props`pr`),
   set(state`git.isCreatingPr`, false),
+  actions.setPRURL,
   wait(3000),
   actions.openPr,
   set(state`git.subject`, ''),
   set(state`git.description`, ''),
+  set(state`git.originalGitChanges`, null),
   actions.redirectToPr,
 ];
