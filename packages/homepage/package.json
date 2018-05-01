@@ -37,8 +37,7 @@
   "license": "MIT",
   "main": "n/a",
   "scripts": {
-    "patch": "sed -i -e 's/if(c\\.initial) return;/if(!c||c.initial) return;/g' ../../node_modules/extract-text-webpack-plugin/index.js",
-    "build": "yarn patch && gatsby build && yarn remove-styles",
+    "build": "gatsby build && yarn remove-styles",
     "remove-styles": "rimraf public/styles.css",
     "start": "gatsby develop",
     "lint": "echo TODO && exit 0",
