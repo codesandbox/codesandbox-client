@@ -79,10 +79,6 @@ jobs:
           command: yarn start:test
           background: true
       - run:
-          name: Setup BrowserStack local environment
-          command: ./packages/app/integration-tests/BrowserStackLocal --key $BROWSER_STACK_KEY
-          background: true
-      - run:
           name: Test Integrations
           command: |
             sleep 15
