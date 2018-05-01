@@ -123,7 +123,7 @@ jobs:
           key: v8-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: Docker Sign In
-          command: "if [ -n $DOCKER_USER ]; then echo $DOCKER_PWD | docker login -u $DOCKER_USER --password-stdin; else exit 0; fi"
+          command: "[ -n \"$DOCKER_USER\" ] && echo $DOCKER_PWD | docker login -u $DOCKER_USER --password-stdin || true"
       - run:
           name: Create Dockerfile
           command: |
@@ -134,10 +134,10 @@ jobs:
             EOF
       - run:
           name: Create Image
-          command: docker build -t codesandbox/client:${CIRCLE_SHA1:0:7} .
+          command: "[ -n \"$DOCKER_USER\" ] && docker build -t codesandbox/client:${CIRCLE_SHA1:0:7} . || true"
       - deploy:
           name: Push Image
-          command: "if [ -n $DOCKER_USER ]; then docker push codesandbox/client:${CIRCLE_SHA1:0:7}; else exit 0; fi"
+          command: "[ -n \"$DOCKER_USER\" ] && docker push codesandbox/client:${CIRCLE_SHA1:0:7} || true"
 
 workflows:
   version: 2
