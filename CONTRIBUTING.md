@@ -29,6 +29,9 @@ To install the project you need to have `yarn` and `node`
 2. `yarn` to install dependencies
 3. `yarn start` to start the app
 
+*NOTE*: you can access the editor at `localhost:3000` and the homepage and docs
+at `localhost:8000`.
+
 > Tip: Keep your `master` branch pointing at the original repository and make
 > pull requests from branches on your fork. To do this, run:
 >

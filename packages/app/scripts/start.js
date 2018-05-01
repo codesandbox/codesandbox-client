@@ -120,6 +120,10 @@ function setupCompiler(port, protocol) {
     if (hasWarnings) {
       console.log(chalk.yellow('Compiled with warnings.'));
       console.log();
+      console.log('The app is running at:');
+      console.log();
+      console.log('  ' + chalk.cyan(protocol + '://localhost:' + port + '/'));
+      console.log();
       formattedWarnings.forEach(message => {
         console.log(message);
         console.log();
