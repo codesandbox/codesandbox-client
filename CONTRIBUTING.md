@@ -6,8 +6,9 @@ The CodeSandbox client is currently divided in to 5 parts. We use `lerna` to sha
 
 - `app`: The editor, the search, profile page, the embed and the sandbox.
 - `homepage`: The Gatsby website of the homepage.
-- `codesandbox-api`: The npm package that's responsible for communication between the sandbox and the editor.
 - `common`: All common parts between these packages, reusable JS.
+- `codesandbox-api`: The npm package that's responsible for communication between the sandbox and the editor.
+- `codesandbox-browserfs`: An in-browser file system that emulates the Node JS file system API and supports storing and retrieving files from various backends. Forked from [https://github.com/jvilk/BrowserFS](https://github.com/jvilk/BrowserFS), with an additional [CodeSandbox backend](https://github.com/CompuIves/codesandbox-client/blob/master/standalone-packages/codesandbox-browserfs/src/backend/CodeSandboxFS.ts).
 
 This version of CodeSandbox is using the production server as source of truth, this is specified by the environment variable `LOCAL_SERVER`. It's not yet possible to sign in using this version, I haven't figured out how to handle this yet.
 
@@ -27,7 +28,10 @@ To install the project you need to have `yarn` and `node`
    cd codesandbox-client
    ```
 2. `yarn` to install dependencies
-3. `yarn start` to start the app
+3. `yarn dev` to start the app
+   * this builds the dependencies (`codesandbox-api` and `codesandbox-browserfs`) and runs the `app` development environment, available on [http://localhost:3000/s/new](http://localhost:3000/s/new)
+   * on subsequent runs you can also bypass dependencies building and use `yarn dev:fast`
+   * if you want to work on the homepage, start it with `yarn dev:home`, it will be available on [http://localhost:8000/](http://localhost:8000/)
 
 > Tip: Keep your `master` branch pointing at the original repository and make
 > pull requests from branches on your fork. To do this, run:
