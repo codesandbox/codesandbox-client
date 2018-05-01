@@ -36,7 +36,7 @@ jobs:
             - standalone-packages/codesandbox-browserfs/node_modules
       - run:
           name: Build
-          command: yarn build:dependents
+          command: yarn build:deps
       - save_cache:
           key: v8-repo-{{ .Environment.CIRCLE_SHA1 }}
           paths:
