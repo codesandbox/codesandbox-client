@@ -36,7 +36,6 @@
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.6.0",
     "babel-preset-react": "^6.24.1",
-    "babili-webpack-plugin": "^0.1.1",
     "buffer-loader": "^0.0.1",
     "case-sensitive-paths-webpack-plugin": "^2.0.0",
     "chalk": "1.1.3",
