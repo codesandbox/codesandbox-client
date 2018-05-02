@@ -46,7 +46,7 @@ function EditIcons({
             </Tooltip>
           )}
           {onUploadFile && (
-            <Tooltip title="Upload File">
+            <Tooltip title="Upload Files">
               <Icon onClick={handleClick(onUploadFile)}>
                 <UploadFileIcon />
               </Icon>

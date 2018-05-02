@@ -41,6 +41,31 @@ class Tab extends React.Component {
     }
   };
 
+  renderTabStatus = () => {
+    const { isNotSynced, tabCount } = this.props;
+    const { hovering } = this.state;
+
+    if (hovering && isNotSynced && tabCount === 1) {
+      return <StyledNotSyncedIcon show={'true'} />;
+    }
+    if (hovering && isNotSynced && tabCount > 1) {
+      return <StyledCloseIcon onClick={this.closeTab} show={'true'} />;
+    }
+    if (hovering && tabCount === 1) {
+      return <StyledCloseIcon onClick={this.closeTab} show={undefined} />;
+    }
+    if (hovering && tabCount > 1) {
+      return <StyledCloseIcon onClick={this.closeTab} show={'true'} />;
+    }
+    if (!hovering && isNotSynced) {
+      return <StyledNotSyncedIcon show={'true'} />;
+    }
+    if (!hovering && !isNotSynced) {
+      return <StyledNotSyncedIcon show={undefined} />;
+    }
+    return <StyledNotSyncedIcon show={undefined} />;
+  };
+
   render() {
     const {
       active,
@@ -50,12 +75,9 @@ class Tab extends React.Component {
       onDoubleClick,
       module,
       dirName,
-      tabCount,
       hasError,
       isNotSynced,
     } = this.props;
-
-    const { hovering } = this.state;
 
     return (
       <Container
@@ -75,17 +97,8 @@ class Tab extends React.Component {
         />
         <TabTitle>{module.title}</TabTitle>
         {dirName && <TabDir>../{dirName}</TabDir>}
-        {this.props.closeTab && isNotSynced ? (
-          <StyledNotSyncedIcon
-            onClick={tabCount > 1 ? this.closeTab : null}
-            show={'true'}
-          />
-        ) : (
-          <StyledCloseIcon
-            onClick={this.closeTab}
-            show={tabCount > 1 && (active || hovering) ? 'true' : undefined}
-          />
-        )}
+
+        {this.renderTabStatus()}
       </Container>
     );
   }

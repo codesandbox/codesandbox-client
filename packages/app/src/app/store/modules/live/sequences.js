@@ -159,12 +159,8 @@ export const handleMessage = [
         true: [],
         false: [
           actions.consumeModule,
-          actions.setReceivingStatus,
           set(props`shortid`, props`moduleShortid`),
-          set(props`code`, props`module.code`),
-          changeCode,
           setModuleSaved,
-          actions.unSetReceivingStatus,
         ],
       },
     ],
@@ -175,6 +171,19 @@ export const handleMessage = [
         false: [
           actions.consumeModule,
           push(state`editor.currentSandbox.modules`, props`module`),
+        ],
+      },
+    ],
+    'module:mass-created': [
+      isOwnMessage,
+      {
+        true: [],
+        false: [
+          concat(state`editor.currentSandbox.modules`, props`data.modules`),
+          concat(
+            state`editor.currentSandbox.directories`,
+            props`data.directories`
+          ),
         ],
       },
     ],
@@ -288,10 +297,16 @@ export const handleMessage = [
       },
     ],
     operation: [
-      isOwnMessage,
+      equals(state`live.isLoading`),
       {
-        true: actions.acknowledgeOperation,
-        false: actions.receiveTransformation,
+        false: [
+          isOwnMessage,
+          {
+            true: actions.acknowledgeOperation,
+            false: actions.receiveTransformation,
+          },
+        ],
+        true: [],
       },
     ],
     'connection-loss': [

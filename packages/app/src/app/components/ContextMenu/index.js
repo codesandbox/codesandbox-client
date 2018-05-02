@@ -63,18 +63,14 @@ class ContextMenu extends React.Component {
           >
             {show && (
               <Motion
-                defaultStyle={{ size: 0.75, opacity: 0.6 }}
-                style={{
-                  size: spring(1, { stiffness: 200, damping: 26 }),
-                  opacity: spring(1),
-                }}
+                defaultStyle={{ opacity: 0.6 }}
+                style={{ opacity: spring(1) }}
               >
-                {({ size, opacity }) => (
+                {({ opacity }) => (
                   <Container
                     style={{
                       left: x,
                       top: y,
-                      transform: `scale(${size}, ${size})`,
                       opacity,
                     }}
                   >

@@ -26,16 +26,6 @@ class Files extends React.Component {
     const store = this.props.store;
     const sandbox = store.editor.currentSandbox;
 
-    const openedModulesByUsers = {};
-
-    // if (store.live.isLive) {
-    //   store.live.usersMetadata.forEach(user => {
-    //     openedModulesByUsers[user.currentModuleShortid] =
-    //       openedModulesByUsers[user.currentModuleShortid] || [];
-    //     openedModulesByUsers[user.currentModuleShortid].push(user.color);
-    //   });
-    // }
-
     return (
       <WorkspaceItem
         defaultOpen
@@ -61,7 +51,6 @@ class Files extends React.Component {
             this.directory = el;
           }}
           title={sandbox.title || 'Project'}
-          openedModulesByUsers={openedModulesByUsers}
           depth={-1}
           id={null}
           shortid={null}

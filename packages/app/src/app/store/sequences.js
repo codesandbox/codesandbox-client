@@ -8,7 +8,7 @@ import {
   saveNewModule,
   createOptimisticModule,
   updateOptimisticModule,
-  removeOptimisticModule,
+  removeModule,
 } from './modules/files/actions';
 
 import { disconnect } from './modules/live/actions';
@@ -47,7 +47,10 @@ export const ensurePackageJSON = [
           saveNewModule,
           {
             success: [updateOptimisticModule],
-            error: [removeOptimisticModule],
+            error: [
+              set(props`moduleShortid`, props`optimisticModule.shortid`),
+              removeModule,
+            ],
           },
           set(props`title`, props`backupTitle`),
           set(props`newCode`, props`backupCode`),
@@ -320,3 +323,5 @@ export const loadSandbox = factories.withLoadApp([
   },
   set(state`editor.isLoading`, false),
 ]);
+
+export const setUpdateStatus = [set(state`updateStatus`, props`status`)];

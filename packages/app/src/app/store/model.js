@@ -75,4 +75,5 @@ export default {
   ),
   maxStorage: types.number,
   usedStorage: types.number,
+  updateStatus: types.maybe(types.string),
 };

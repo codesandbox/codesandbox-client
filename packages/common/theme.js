@@ -58,6 +58,7 @@ const theme = createTheme({
   green: '#5da700',
   redBackground: '#400000',
   red: '#F27777',
+  dangerBackground: '#DC3545',
 });
 
 export default theme;

@@ -72,7 +72,7 @@ const modals = {
   },
   storageManagement: {
     Component: StorageManagementModal,
-    width: 600,
+    width: 800,
   },
 };
 

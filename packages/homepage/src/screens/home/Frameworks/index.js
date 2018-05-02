@@ -207,6 +207,16 @@ const TEMPLATE_SUPPORT = {
     css: ['Global'],
     description: 'Used for React projects, based on: ',
   },
+  '@dojo/cli-create-app': {
+    loaders: [ts, html, cssGlobal, image],
+    css: ['Global', 'Scoped', 'Modules'],
+    description: 'Used for Dojo 2 projects, based on: ',
+  },
+  cxjs: {
+    loaders: [ts, html, cssGlobal, scss, sass, less, stylus, image],
+    css: ['Global', 'Scoped', 'Modules'],
+    description: 'Used for CxJS projects, based on: ',
+  },
   'vue-cli': {
     loaders: [
       js,

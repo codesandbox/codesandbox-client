@@ -263,6 +263,13 @@ export function sendModuleCreated(context) {
   sendModuleInfo(context, 'module:created', 'module', moduleShortid);
 }
 
+export function sendMassModuleCreated({ live, props }) {
+  live.send('module:mass-created', {
+    directories: props.directories,
+    modules: props.modules,
+  });
+}
+
 export function sendModuleDeleted(context) {
   sendModuleInfo(
     context,

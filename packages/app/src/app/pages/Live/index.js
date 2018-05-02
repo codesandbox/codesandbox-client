@@ -2,7 +2,6 @@ import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import { DragDropContext } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
 
 import Navigation from 'app/pages/common/Navigation';
 import Fullscreen from 'common/components/flex/Fullscreen';
@@ -15,6 +14,7 @@ import Skeleton from 'app/components/Skeleton';
 import Padding from 'common/components/spacing/Padding';
 import SignInButton from 'app/pages/common/SignInButton';
 
+import HTML5Backend from '../common/HTML5BackendWithFolderSupport';
 import Editor from '../Sandbox/Editor';
 import BlinkingDot from './BlinkingDot';
 

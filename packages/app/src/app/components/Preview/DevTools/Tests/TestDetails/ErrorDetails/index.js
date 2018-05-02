@@ -64,7 +64,8 @@ const formatDiffMessage = (error: TestError, path: string) => {
   if (
     error.mappedErrors &&
     error.mappedErrors[0] &&
-    error.mappedErrors[0].fileName.endsWith(path)
+    error.mappedErrors[0].fileName.endsWith(path) &&
+    error.mappedErrors[0]._originalScriptCode
   ) {
     const mappedError = error.mappedErrors[0];
 

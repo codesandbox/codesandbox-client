@@ -14,3 +14,4 @@ export const autoDownloadTypes = 'settings.autoDownloadTypes';
 export const newPackagerExperiment = 'settings.newPackagerExperiment';
 export const zenMode = 'settings.zenMode';
 export const keybindings = 'settings.keybindings';
+export const enableLigatures = 'settings.enableLigatures';

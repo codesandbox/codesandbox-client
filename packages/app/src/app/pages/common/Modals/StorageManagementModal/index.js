@@ -39,6 +39,7 @@ class StorageManagementModal extends React.Component {
             <FilesList
               files={store.uploadedFiles}
               deleteFile={signals.files.deletedUploadedFile}
+              addFileToSandbox={signals.files.addedFileToSandbox}
             />
           )}
         {isEmpty && (

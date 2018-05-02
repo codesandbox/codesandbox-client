@@ -3,25 +3,25 @@ version: 2
 jobs:
   build-dependencies:
     docker:
-      - image: circleci/node:9.2.1
+      - image: circleci/node:9.11.1
     working_directory: ~/codesandbox-client
     steps:
       - checkout
       - restore_cache:
           keys:
-            - v7-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
-            - v7-dependency-cache-{{ .Branch }}
-            - v7-dependency-cache
+            - v8-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+            - v8-dependency-cache-{{ .Branch }}
+            - v8-dependency-cache
       - restore_cache:
           keys:
-            - v7-standalone-dependency-cache-{{ .Branch }}-{{ checksum "standalone-packages/codesandbox-browserfs/yarn.lock" }}
-            - v7-standalone-dependency-cache-{{ .Branch }}
-            - v7-standalone-dependency-cache
+            - v8-standalone-dependency-cache-{{ .Branch }}-{{ checksum "standalone-packages/codesandbox-browserfs/yarn.lock" }}
+            - v8-standalone-dependency-cache-{{ .Branch }}
+            - v8-standalone-dependency-cache
       - run:
           name: Install Dependencies
           command: yarn install
       - save_cache:
-          key: v7-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          key: v8-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
           paths:
             - node_modules
             - packages/app/node_modules
@@ -31,36 +31,36 @@ jobs:
             - packages/react-sandpack/node_modules
             - packages/sandpack/node_modules
       - save_cache:
-          key: v7-standalone-dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          key: v8-standalone-dependency-cache-{{ .Branch }}-{{ checksum "standalone-packages/codesandbox-browserfs/yarn.lock" }}
           paths:
             - standalone-packages/codesandbox-browserfs/node_modules
       - run:
           name: Build
           command: yarn build:dependents
       - save_cache:
-          key: v7-repo-{{ .Environment.CIRCLE_SHA1 }}
+          key: v8-repo-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - ~/codesandbox-client
 
   build-prod:
     docker:
-      - image: circleci/node:9.2.1
+      - image: circleci/node:9.11.1
     working_directory: ~/codesandbox-client
     steps:
       - restore_cache:
-          key: v7-repo-{{ .Environment.CIRCLE_SHA1 }}
+          key: v8-repo-{{ .Environment.CIRCLE_SHA1 }}
       # We do this to compare sizes from these builds with master
       - restore_cache:
-          key: v7-prod-app-build-cache-master
+          key: v8-prod-app-build-cache-master
       - run:
           name: Build Application
           command: yarn build:prod
       - save_cache:
-          key: v7-prod-app-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+          key: v8-prod-app-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - ./packages/app/www
       - save_cache:
-          key: v7-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+          key: v8-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - ./www
       - store_artifacts:
@@ -73,7 +73,7 @@ jobs:
     working_directory: ~/codesandbox-client
     steps:
       - restore_cache:
-          key: v7-repo-{{ .Environment.CIRCLE_SHA1 }}
+          key: v8-repo-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: Start Test Server
           command: yarn start:test
@@ -97,11 +97,11 @@ jobs:
 
   test-jest:
     docker:
-      - image: circleci/node:9.2.1
+      - image: circleci/node:9.11.1
     working_directory: ~/codesandbox-client
     steps:
       - restore_cache:
-          key: v7-repo-{{ .Environment.CIRCLE_SHA1 }}
+          key: v8-repo-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: Test
           command: yarn test --ci --testResultsProcessor="jest-junit"
@@ -110,11 +110,11 @@ jobs:
 
   lint:
     docker:
-      - image: circleci/node:9.2.1
+      - image: circleci/node:9.11.1
     working_directory: ~/codesandbox-client
     steps:
       - restore_cache:
-          key: v7-repo-{{ .Environment.CIRCLE_SHA1 }}
+          key: v8-repo-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: Lint
           command: yarn lint
@@ -124,10 +124,10 @@ jobs:
     working_directory: ~/codesandbox-client
     steps:
       - restore_cache:
-          key: v7-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+          key: v8-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: Docker Sign In
-          command: echo $DOCKER_PWD | docker login -u $DOCKER_USER --password-stdin
+          command: "if [ -n $DOCKER_USER ]; then echo $DOCKER_PWD | docker login -u $DOCKER_USER --password-stdin; else exit 0; fi"
       - run:
           name: Create Dockerfile
           command: |
@@ -141,7 +141,7 @@ jobs:
           command: docker build -t codesandbox/client:${CIRCLE_SHA1:0:7} .
       - deploy:
           name: Push Image
-          command: docker push codesandbox/client:${CIRCLE_SHA1:0:7}
+          command: "if [ -n $DOCKER_USER ]; then docker push codesandbox/client:${CIRCLE_SHA1:0:7}; else exit 0; fi"
 
 workflows:
   version: 2

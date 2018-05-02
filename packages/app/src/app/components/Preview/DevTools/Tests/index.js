@@ -42,7 +42,7 @@ export type TestError = Error & {
       lineNumber: number,
       content: string,
       highlight: boolean,
-    }>,
+    }> | null,
   }>,
 };
 

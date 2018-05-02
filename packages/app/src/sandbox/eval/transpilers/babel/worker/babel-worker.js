@@ -18,6 +18,7 @@ import {
 } from './get-prefixed-name';
 
 let fsInitialized = false;
+let lastConfig = null;
 
 async function initializeBrowserFS() {
   return new Promise(resolve => {
@@ -67,6 +68,8 @@ async function installPlugin(Babel, BFSRequire, plugin, currentPath, isV7) {
       Babel.availablePresets
     );
   } catch (e) {
+    console.warn('First time compiling ' + plugin + ' went wrong, got:');
+    console.warn(e);
     const prefixedName = getPrefixedPluginName(plugin, isV7);
 
     evaluatedPlugin = evaluateFromPath(
@@ -77,6 +80,8 @@ async function installPlugin(Babel, BFSRequire, plugin, currentPath, isV7) {
       Babel.availablePlugins,
       Babel.availablePresets
     );
+
+    console.log('Second try succeeded');
   }
 
   if (!evaluatedPlugin) {
@@ -195,7 +200,7 @@ self.addEventListener('message', async event => {
     const transpilerOptions = event.data.babelTranspilerOptions;
     loadCustomTranspiler(
       transpilerOptions && transpilerOptions.babelURL,
-      transpilerOptions && transpilerOptions.babelEnvUrl
+      transpilerOptions && transpilerOptions.babelEnvURL
     );
     self.postMessage({
       type: 'result',
@@ -225,7 +230,7 @@ self.addEventListener('message', async event => {
 
   const babelUrl = babelTranspilerOptions && babelTranspilerOptions.babelURL;
   const babelEnvUrl =
-    babelTranspilerOptions && babelTranspilerOptions.babelEnvUrl;
+    babelTranspilerOptions && babelTranspilerOptions.babelEnvURL;
 
   if (babelUrl || babelEnvUrl) {
     loadCustomTranspiler(babelUrl, babelEnvUrl);
@@ -234,11 +239,15 @@ self.addEventListener('message', async event => {
       process.env.NODE_ENV === 'development'
         ? `${process.env.CODESANDBOX_HOST || ''}/static/js/babel.7.00-beta.js`
         : `${process.env.CODESANDBOX_HOST ||
-            ''}/static/js/babel.7.00-beta.min.js`
+            ''}/static/js/babel.7.00-beta-1.min.js`
     );
   }
 
-  resetCache();
+  const stringifiedConfig = JSON.stringify(babelTranspilerOptions);
+  if (lastConfig !== stringifiedConfig) {
+    resetCache();
+    lastConfig = stringifiedConfig;
+  }
 
   const flattenedPresets = flatten(config.presets || []);
   const flattenedPlugins = flatten(config.plugins || []);
@@ -246,9 +255,18 @@ self.addEventListener('message', async event => {
   if (!disableCodeSandboxPlugins) {
     if (
       flattenedPresets.indexOf('env') > -1 &&
-      Object.keys(Babel.availablePresets).indexOf('env') === -1
+      Object.keys(Babel.availablePresets).indexOf('env') === -1 &&
+      version !== 7
     ) {
       Babel.registerPreset('env', Babel.availablePresets.latest);
+    }
+
+    if (
+      flattenedPresets.indexOf('env') > -1 &&
+      Object.keys(Babel.availablePresets).indexOf('env') === -1 &&
+      version === 7
+    ) {
+      Babel.registerPreset('env', Babel.availablePresets.es2015);
     }
 
     if (
@@ -265,6 +283,14 @@ self.addEventListener('message', async event => {
     ) {
       const pragmaticPlugin = await import(/* webpackChunkName: 'babel-plugin-jsx-pragmatic' */ 'babel-plugin-jsx-pragmatic');
       Babel.registerPlugin('jsx-pragmatic', pragmaticPlugin);
+    }
+
+    if (
+      flattenedPlugins.indexOf('transform-cx-jsx') > -1 &&
+      Object.keys(Babel.availablePlugins).indexOf('transform-cx-jsx') === -1
+    ) {
+      const cxJsxPlugin = await import(/* webpackChunkName: 'transform-cx-jsx' */ 'babel-plugin-transform-cx-jsx');
+      Babel.registerPlugin('transform-cx-jsx', cxJsxPlugin);
     }
   }
 
@@ -336,12 +362,28 @@ self.addEventListener('message', async event => {
       }
     }
 
-    plugins.push(['babel-plugin-detective', { source: true, nodes: true }]);
+    plugins.push([
+      'babel-plugin-detective',
+      { source: true, nodes: true, generated: true },
+    ]);
 
-    const customConfig = {
-      ...config,
-      plugins,
-    };
+    const customConfig =
+      /^\/node_modules/.test(path) && /\.js$/.test(path)
+        ? {
+            plugins: [
+              version === 7
+                ? 'transform-modules-commonjs'
+                : 'transform-es2015-modules-commonjs',
+              [
+                'babel-plugin-detective',
+                { source: true, nodes: true, generated: true },
+              ],
+            ],
+          }
+        : {
+            ...config,
+            plugins,
+          };
 
     const result = Babel.transform(code, customConfig);
 

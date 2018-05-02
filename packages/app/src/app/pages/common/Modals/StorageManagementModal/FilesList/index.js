@@ -3,9 +3,10 @@ import moment from 'moment';
 import { sortBy } from 'lodash';
 import filesize from 'filesize';
 import DeleteFileButton from '../DeleteFileButton';
+import AddFileToSandboxButton from '../AddFileToSandboxButton';
 import { HeaderTitle, Table, StatBody, Body, FileRow } from './elements';
 
-function FilesList({ files, deleteFile }) {
+function FilesList({ files, deleteFile, addFileToSandbox }) {
   return (
     <Table>
       <thead>
@@ -13,6 +14,7 @@ function FilesList({ files, deleteFile }) {
           <HeaderTitle>File</HeaderTitle>
           <HeaderTitle>Created</HeaderTitle>
           <HeaderTitle>Size</HeaderTitle>
+          <HeaderTitle />
           <HeaderTitle />
         </tr>
       </thead>
@@ -26,6 +28,13 @@ function FilesList({ files, deleteFile }) {
             </td>
             <td>{moment(f.insertedAt).format('ll')}</td>
             <td>{filesize(f.objectSize)}</td>
+            <StatBody style={{ padding: '0.55rem 0.5rem', cursor: 'pointer' }}>
+              <AddFileToSandboxButton
+                url={f.url}
+                name={f.name}
+                onAddFileToSandbox={addFileToSandbox}
+              />
+            </StatBody>
             <StatBody style={{ padding: '0.55rem 0.5rem', cursor: 'pointer' }}>
               <DeleteFileButton id={f.id} onDelete={deleteFile} />
             </StatBody>

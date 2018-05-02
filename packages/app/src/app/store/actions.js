@@ -55,6 +55,11 @@ export function setUrlOptions({ state, router, utils }) {
     );
 
     if (module) {
+      state.push('editor.tabs', {
+        type: 'module',
+        moduleShortid: module.shortid,
+        dirty: false,
+      });
       state.set('editor.currentModuleShortid', module.shortid);
     }
   }
@@ -89,6 +94,8 @@ export function setUrlOptions({ state, router, utils }) {
     state.set('preferences.settings.forceRefresh', options.forceRefresh);
   if (options.expandDevTools)
     state.set('preferences.showConsole', options.expandDevTools);
+  if (options.runOnClick)
+    state.set(`preferences.runOnClick`, options.runOnClick);
 }
 
 export const setSandboxConfigOptions = ({ state }) => {
