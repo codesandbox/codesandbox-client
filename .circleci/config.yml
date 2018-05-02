@@ -129,14 +129,6 @@ jobs:
           name: Docker Sign In
           command: "[ -n \"$DOCKER_USER\" ] && echo $DOCKER_PWD | docker login -u $DOCKER_USER --password-stdin || true"
       - run:
-          name: Create Dockerfile
-          command: |
-            cat > Dockerfile <<EOF
-            FROM busybox:1.28.1
-            WORKDIR /codesandbox
-            COPY www /codesandbox
-            EOF
-      - run:
           name: Create Image
           command: "[ -n \"$DOCKER_USER\" ] && docker build -t codesandbox/client:${CIRCLE_SHA1:0:7} . || true"
       - deploy:
