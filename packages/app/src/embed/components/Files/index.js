@@ -70,7 +70,7 @@ function Files({
           shortid={m.shortid}
           title={m.title}
           key={m.shortid}
-          type={m.type || ''}
+          type={m._type || ''}
           depth={depth}
           setCurrentModule={setCurrentModule}
           active={m.id === currentModule}

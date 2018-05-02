@@ -108,7 +108,7 @@ export default class FuzzySearch extends React.PureComponent {
                     {item.m.isNotSynced && <NotSyncedIconWithMargin />}
                     <EntryIcons
                       isNotSynced={item.m.isNotSynced}
-                      type={item.m.type}
+                      type={item.m._type}
                       error={item.m.errors && item.m.errors.length > 0}
                     />
                     <Name>{item.m.title}</Name>

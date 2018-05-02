@@ -70,7 +70,7 @@ class Tab extends React.Component {
       >
         <EntryIcons
           isNotSynced={isNotSynced}
-          type={module.type}
+          type={module._type}
           error={hasError}
         />
         <TabTitle>{module.title}</TabTitle>

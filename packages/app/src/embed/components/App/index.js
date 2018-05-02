@@ -119,7 +119,7 @@ export default class App extends React.PureComponent<{}, State> {
       const data = response.data;
       data.modules.forEach((module, index) => {
         const { title, code } = module;
-        data.modules[index].type = getType(title, code);
+        data.modules[index]._type = getType(title, code);
       });
 
       this.setState({ sandbox: data });

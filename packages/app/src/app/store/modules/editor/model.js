@@ -38,7 +38,7 @@ const Module = types.model({
   shortid: types.string,
   sourceId: types.string,
   title: types.string,
-  type: types.maybe(types.string),
+  _type: types.maybe(types.string),
 });
 
 const Git = types.model({
