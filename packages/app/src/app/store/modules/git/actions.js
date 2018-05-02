@@ -1,11 +1,5 @@
 export function openPr({ state, browser }) {
-  const pr = state.get('git.pr');
-  const user = state.get('user');
-  const git = state.get('editor.currentSandbox.originalGit');
-
-  const url = `https://github.com/${git.username}/${git.repo}/compare/${
-    git.branch
-  }...${user.username}:${pr.newBranch}?expand=1`;
+  const url = state.get('git.pr.prURL');
 
   browser.openWindow(url);
 }
@@ -81,4 +75,16 @@ export function saveGithubData({ api, state, props }) {
 
 export function redirectToGithubSandbox({ props, router }) {
   router.updateSandboxUrl({ git: props.git });
+}
+
+export function setPRURL({ state }) {
+  const pr = state.get('git.pr');
+  const user = state.get('user');
+  const git = state.get('editor.currentSandbox.originalGit');
+
+  const url = `https://github.com/${git.username}/${git.repo}/compare/${
+    git.branch
+  }...${user.username}:${pr.newBranch}?expand=1`;
+
+  state.set('git.pr.prURL', url);
 }

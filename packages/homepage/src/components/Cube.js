@@ -37,7 +37,7 @@ const Sides = styled.div`
     background-color: ${({ color }) => color.clearer(0.2)};
     border: ${({ size }) => size / 70}px solid rgba(255, 255, 255, 0.4);
   }
-`;
+`.withComponent(({ noAnimation, color, ...rest }) => <div {...rest} />);
 
 const Side = styled.div`
   transform-origin: 50% 50%;
