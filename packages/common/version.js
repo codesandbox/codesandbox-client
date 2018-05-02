@@ -1,17 +1,22 @@
 import preval from 'babel-plugin-preval/macro';
 
 const versionType = preval`module.exports = (() => {
-
   if (process.env.NODE_ENV === 'development') {
-    if (process.env.STAGING) {
-      return 'STAGING'
-    }
-      return 'DEV';
-
+    return 'DEV';
   }
-  return 'PROD'
+  if (process.env.STAGING_BRANCH) {
+    return 'PR';
+  }
+  return 'PROD';
 })()`;
 
-const versionNumber = Math.floor(preval`module.exports = Date.now()` / 1000);
+const versionNumber = Math.floor(preval`module.exports = Date.now();` / 1000);
 
-export default preval(`module.exports = "${versionType}-${versionNumber}"`);
+const shortCommitSha = preval(`
+var execSync = require('child_process').execSync;
+module.exports = execSync('git rev-parse --short HEAD').toString().trim();
+`);
+
+export default preval(
+  `module.exports = "${versionType}-${versionNumber}-${shortCommitSha}";`
+);
