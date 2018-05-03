@@ -14,7 +14,11 @@ const versionNumber = Math.floor(preval`module.exports = Date.now();` / 1000);
 
 const shortCommitSha = preval(`
 var execSync = require('child_process').execSync;
-module.exports = execSync('git rev-parse --short HEAD').toString().trim();
+try {
+  module.exports = execSync('git rev-parse --short HEAD').toString().trim();
+} catch (e) {
+  module.exports = 'unknown';
+}
 `);
 
 export default preval(

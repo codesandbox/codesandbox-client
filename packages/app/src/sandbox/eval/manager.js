@@ -22,6 +22,7 @@ import DependencyNotFoundError from '../errors/dependency-not-found-error';
 import ModuleNotFoundError from '../errors/module-not-found-error';
 import TestRunner from './tests/jest-lite';
 import dependenciesToQuery from '../npm/dependencies-to-query';
+import isESModule from './utils/is-es-module';
 
 type Externals = {
   [name: string]: string,
@@ -186,7 +187,7 @@ export default class Manager {
 
       // Check if module syntax, only transpile when that's NOT the case
       // TODO move this check to the packager
-      if (!/^(import|export)\s/gm.test(module.code)) {
+      if (!isESModule(module.code)) {
         module.requires = this.manifest.contents[path].requires;
       }
 
@@ -734,7 +735,15 @@ export default class Manager {
    */
   async save() {
     try {
-      await localforage.setItem(this.id, this.serialize());
+      const serialized = this.serialize();
+      if (process.env.NODE_ENV === 'development') {
+        debug(
+          'Saving cache of ' +
+            (JSON.stringify(serialized).length / 1024).toFixed(2) +
+            ' kb'
+        );
+      }
+      await localforage.setItem(this.id, serialized);
     } catch (e) {
       if (process.env.NODE_ENV === 'development') {
         console.error(e);
