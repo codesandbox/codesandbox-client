@@ -7,7 +7,7 @@ export const Container = styled.div`
   box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.75);
 
   ${delayEffect(0)};
-  top: 40px;
+  top: 35px;
 
   right: 0;
 
