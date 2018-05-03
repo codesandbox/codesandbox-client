@@ -123,6 +123,7 @@ jobs:
     machine: true
     working_directory: ~/codesandbox-client
     steps:
+      - checkout
       - restore_cache:
           key: v8-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
       - run:
