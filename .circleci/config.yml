@@ -36,7 +36,7 @@ jobs:
             - standalone-packages/codesandbox-browserfs/node_modules
       - run:
           name: Build
-          command: yarn build:dependents
+          command: yarn build:deps
       - save_cache:
           key: v8-repo-{{ .Environment.CIRCLE_SHA1 }}
           paths:
@@ -80,7 +80,7 @@ jobs:
           background: true
       - run:
           name: Setup BrowserStack local environment
-          command: ./packages/app/integration-tests/BrowserStackLocal --key $BROWSER_STACK_KEY
+          command: "[ -n \"$BROWSER_STACK_KEY\" ] && ./packages/app/integration-tests/BrowserStackLocal --key $BROWSER_STACK_KEY || true"
           background: true
       - run:
           name: Test Integrations
@@ -127,21 +127,13 @@ jobs:
           key: v8-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: Docker Sign In
-          command: "if [ -n $DOCKER_USER ]; then echo $DOCKER_PWD | docker login -u $DOCKER_USER --password-stdin; else exit 0; fi"
-      - run:
-          name: Create Dockerfile
-          command: |
-            cat > Dockerfile <<EOF
-            FROM busybox:1.28.1
-            WORKDIR /codesandbox
-            COPY www /codesandbox
-            EOF
+          command: "[ -n \"$DOCKER_USER\" ] && echo $DOCKER_PWD | docker login -u $DOCKER_USER --password-stdin || true"
       - run:
           name: Create Image
-          command: docker build -t codesandbox/client:${CIRCLE_SHA1:0:7} .
+          command: "[ -n \"$DOCKER_USER\" ] && docker build -t codesandbox/client:${CIRCLE_SHA1:0:7} . || true"
       - deploy:
           name: Push Image
-          command: "if [ -n $DOCKER_USER ]; then docker push codesandbox/client:${CIRCLE_SHA1:0:7}; else exit 0; fi"
+          command: "[ -n \"$DOCKER_USER\" ] && docker push codesandbox/client:${CIRCLE_SHA1:0:7} || true"
 
 workflows:
   version: 2
