@@ -9,6 +9,7 @@ import infiniteLoops from './plugins/babel-plugin-transform-prevent-infinite-loo
 import dynamicCSSModules from './plugins/babel-plugin-dynamic-css-modules';
 
 import { buildWorkerError } from '../../utils/worker-error-handler';
+import isESModule from '../../../utils/is-es-module';
 import getDependencies from './get-require-statements';
 
 import { evaluateFromPath, resetCache } from './evaluate';
@@ -16,6 +17,8 @@ import {
   getPrefixedPluginName,
   getPrefixedPresetName,
 } from './get-prefixed-name';
+
+import regexGetRequireStatements from './simple-get-require-statements';
 
 let fsInitialized = false;
 let lastConfig = null;
@@ -223,6 +226,27 @@ self.addEventListener('message', async event => {
   } = event.data;
 
   if (type !== 'compile') {
+    return;
+  }
+
+  // When we find a node_module that already is commonjs we will just get the
+  // dependencies from the file and return the same code. We get the dependencies
+  // with a regex since commonjs modules just have `require` and regex is MUCH
+  // faster than generating an AST from the code.
+  if (path.startsWith('/node_modules') && !isESModule(code)) {
+    regexGetRequireStatements(code).forEach(dependency => {
+      self.postMessage({
+        type: 'add-dependency',
+        path: dependency.path,
+        isGlob: dependency.type === 'glob',
+      });
+    });
+
+    self.postMessage({
+      type: 'result',
+      transpiledCode: code,
+    });
+
     return;
   }
 
