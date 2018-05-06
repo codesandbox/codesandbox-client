@@ -61,19 +61,20 @@ export async function saveCache(
   }
 
   if (shouldSaveOnlineCache(firstRun)) {
-    if (process.env.NODE_ENV === 'development') {
-      debug(
-        'Saving cache of ' +
-          (JSON.stringify(managerState).length / 1024).toFixed(2) +
-          'kb to CodeSandbox API'
-      );
-    }
+    const stringifiedManagerState = JSON.stringify(managerState);
+
+    debug(
+      'Saving cache of ' +
+        (stringifiedManagerState.length / 1024).toFixed(2) +
+        'kb to CodeSandbox API'
+    );
+
     return window
       .fetch(`${host}/api/v1/sandboxes/${sandboxId}/cache`, {
         method: 'POST',
         body: JSON.stringify({
           version: SCRIPT_VERSION,
-          data: JSON.stringify(managerState),
+          data: stringifiedManagerState,
         }),
         headers: {
           'Content-Type': 'application/json',
@@ -110,12 +111,11 @@ export async function consumeCache(manager: Manager) {
     const version = SCRIPT_VERSION;
 
     if (cache.version === version) {
-      if (process.env.NODE_ENV === 'development') {
-        debug(
-          `Loading cache from ${cache === localData ? 'localStorage' : 'API'}`,
-          cache
-        );
-      }
+      debug(
+        `Loading cache from ${cache === localData ? 'localStorage' : 'API'}`,
+        cache
+      );
+
       await manager.load(cache);
 
       return true;
