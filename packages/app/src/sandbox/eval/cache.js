@@ -1,4 +1,4 @@
-// Responsible for consuming and syncing with the server cache
+// Responsible for consuming and syncing with the server/local cache
 import localforage from 'localforage';
 import _debug from 'app/utils/debug';
 import type { default as Manager } from './manager';
@@ -23,10 +23,6 @@ function shouldSaveOnlineCache(firstRun: boolean) {
   }
 
   if (!window.__SANDBOX_DATA__) {
-    return true;
-  }
-
-  if (window.__SANDBOX_DATA__.latestSha !== window.__SANDBOX_DATA__.sha) {
     return true;
   }
 
