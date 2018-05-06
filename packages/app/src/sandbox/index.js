@@ -1,6 +1,8 @@
 import { camelizeKeys } from 'humps';
 import { isStandalone, listen, dispatch } from 'codesandbox-api';
 
+import _debug from 'app/utils/debug';
+
 import registerServiceWorker from 'common/registerServiceWorker';
 import requirePolyfills from 'common/load-dynamic-polyfills';
 import { getModulePath } from 'common/sandbox/modules';
@@ -12,6 +14,12 @@ import setupConsole from './console';
 import { Encode } from 'console-feed';
 
 const host = process.env.CODESANDBOX_HOST;
+const debug = _debug('cs:sandbox');
+
+export const SCRIPT_VERSION =
+  document.currentScript && document.currentScript.src.replace(host + '/', '');
+
+debug('Booting sandbox');
 
 function getId() {
   if (process.env.LOCAL_SERVER) {
