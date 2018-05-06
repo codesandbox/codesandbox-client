@@ -7,6 +7,8 @@ import { SCRIPT_VERSION } from '../';
 
 const debug = _debug('cs:compiler:cache');
 
+const host = process.env.CODESANDBOX_HOST;
+
 localforage.config({
   name: 'CodeSandboxApp',
   storeName: 'sandboxes', // Should be alphanumeric, with underscores.
@@ -67,7 +69,7 @@ export async function saveCache(
       );
     }
     return window
-      .fetch(`/api/v1/sandboxes/${sandboxId}/cache`, {
+      .fetch(`${host}/api/v1/sandboxes/${sandboxId}/cache`, {
         method: 'POST',
         body: JSON.stringify({
           version: SCRIPT_VERSION,
