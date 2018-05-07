@@ -27,11 +27,15 @@ export const newSandboxWizard = () => `/s`;
 export const newSandboxUrl = () => `/s/new`;
 export const parcelSandboxUrl = () => `/s/vanilla`;
 export const newReactTypeScriptSandboxUrl = () => `/s/react-ts`;
+export const newDojoSandboxUrl = () =>
+  `/s/github/dojo/dojo-codesandbox-template`;
 export const newPreactSandboxUrl = () => `/s/preact`;
 export const newVueSandboxUrl = () => `/s/vue`;
 export const importFromGitHubUrl = () => `/s/github`;
 export const newSvelteSandboxUrl = () => `/s/svelte`;
 export const newAngularSandboxUrl = () => `/s/angular`;
+export const newCxJSSandboxUrl = () =>
+  `/s/github/codaxy/cxjs-codesandbox-template`;
 export const uploadFromCliUrl = () => `/s/cli`;
 
 const sandboxGitUrl = (git: {
@@ -76,7 +80,7 @@ export const frameUrl = (shortid: string, append: string = '') => {
   const path = append.indexOf('/') === 0 ? append.substr(1) : append;
 
   if (process.env.LOCAL_SERVER) {
-    return `http://localhost:3001/${path}`;
+    return `http://localhost:3002/${path}`;
   }
 
   if (process.env.STAGING) {

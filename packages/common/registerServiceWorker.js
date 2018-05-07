@@ -20,7 +20,7 @@ const isLocalhost = Boolean(
 
 const isHttp = Boolean(window.location.protocol === 'http:');
 
-export default function register(swUrl, sendNotification) {
+export default function register(swUrl, { onUpdated, onInstalled }) {
   if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
     // The URL constructor is available in all browsers that support SW.
     const publicUrl = new URL(process.env.PUBLIC_URL, window.location);
@@ -34,7 +34,7 @@ export default function register(swUrl, sendNotification) {
     window.addEventListener('load', () => {
       if (!isLocalhost && !isHttp) {
         // It's neither localhost nor http. Just register service worker
-        registerValidSW(swUrl, sendNotification);
+        registerValidSW(swUrl, { onUpdated, onInstalled });
       } else if (isLocalhost) {
         // This is running on localhost. Lets check if a service worker still exists or not.
         checkValidServiceWorker(swUrl);
@@ -43,7 +43,7 @@ export default function register(swUrl, sendNotification) {
   }
 }
 
-function registerValidSW(swUrl, sendNotification) {
+function registerValidSW(swUrl, { onUpdated, onInstalled }) {
   navigator.serviceWorker
     .register(swUrl)
     .then(registration => {
@@ -56,22 +56,45 @@ function registerValidSW(swUrl, sendNotification) {
               // the fresh content will have been added to the cache.
               // It's the perfect time to display a "New content is
               // available; please refresh." message in your web app.
-              if (sendNotification) {
-                sendNotification(
-                  'CodeSandbox received an update, refresh to see it!',
-                  'notice'
-                );
+              if (onUpdated) {
+                onUpdated();
               }
             } else {
               // At this point, everything has been precached.
               // It's the perfect time to display a
               // "Content is cached for offline use." message.
-              if (sendNotification) {
-                sendNotification(
-                  'CodeSandbox has been cached, it now works offline.',
-                  'success'
-                );
+              if (onInstalled) {
+                onInstalled();
               }
+            }
+          } else if (installingWorker.state === 'redundant') {
+            if ('storage' in navigator && 'estimate' in navigator.storage) {
+              navigator.storage.estimate().then(results => {
+                const percentUsed = results.usage / results.quota * 100;
+                // Let's assume that if we're using 95% of our quota, then this failure
+                // was due to quota exceeded errors.
+                // TODO: Hardcoding a threshold stinks.
+                if (percentUsed >= 0.95) {
+                  // Get rid of the existing SW so that we're not stuck
+                  // with the previously cached content.
+                  registration.unregister();
+
+                  // Let's assume that we have some way of doing this without inadvertantly
+                  // blowing away storage being used on the origin by something other than
+                  // our service worker.
+                  // I don't think that the Clear-Site-Data: header helps here, unfortunately.
+                  self.caches.keys().then(names => {
+                    names.forEach(name => {
+                      self.caches.delete(name);
+                    });
+                  });
+
+                  // TODO clear indexeddb
+                }
+              });
+            } else {
+              // What about browsers that don't support navigator.storage.estimate()?
+              // There's no way of guessing why the service worker is redundant.
             }
           }
         };

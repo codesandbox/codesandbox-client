@@ -1,5 +1,5 @@
 // @flow
-import SassWorker from 'worker-loader?name=sass-transpiler.[hash].worker.js!./sass-worker.js';
+import SassWorker from 'worker-loader?publicPath=/&name=sass-transpiler.[hash].worker.js!./worker';
 
 import WorkerTranspiler from '../worker-transpiler';
 import { type LoaderContext } from '../../transpiled-module';
@@ -34,6 +34,7 @@ class SassTranspiler extends WorkerTranspiler {
           path: loaderContext.path,
           indentedSyntax,
         },
+        loaderContext._module.getId(),
         loaderContext,
         (err, data) => {
           if (err) {

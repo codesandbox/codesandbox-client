@@ -1,6 +1,9 @@
 import { clone } from 'mobx-state-tree';
 import { getModulePath } from 'common/sandbox/modules';
 import getDefinition from 'common/templates';
+import { chunk } from 'lodash';
+import { MAX_FILE_SIZE } from 'codesandbox-import-utils/lib/is-text';
+import denormalize from 'codesandbox-import-utils/lib/create-sandbox/denormalize';
 
 import { resolveModuleWrapped } from '../../utils/resolve-module-wrapped';
 
@@ -10,6 +13,133 @@ export function whenModuleIsSelected({ state, props, path }) {
   return currentModule.shortid === props.moduleShortid
     ? path.true()
     : path.false();
+}
+
+export function massCreateModules({ state, props, api, path }) {
+  const { directories, modules, directoryShortid } = props;
+  const sandboxId = state.get('editor.currentId');
+
+  return api
+    .post(`/sandboxes/${sandboxId}/modules/mcreate`, {
+      directoryShortid,
+      modules,
+      directories,
+    })
+    .then(data =>
+      path.success({ modules: data.modules, directories: data.directories })
+    )
+    .catch(error => {
+      console.error(error);
+      return path.error({ error });
+    });
+}
+
+export function getUploadedFiles({ api, path }) {
+  return api
+    .get('/users/current_user/uploads')
+    .then(data => path.success({ uploadedFilesInfo: data }))
+    .catch(error => path.error({ error }));
+}
+
+export function deleteUploadedFile({ api, props, path }) {
+  return api
+    .delete(`/users/current_user/uploads/${props.id}`)
+    .then(() => path.success())
+    .catch(error => path.error({ error }));
+}
+
+export async function uploadFiles({ api, props, path }) {
+  const parsedFiles = {};
+  // We first create chunks so we don't overload the server with 100 multiple
+  // upload requests
+  const filePaths = Object.keys(props.files);
+  const chunkedFilePaths = chunk(filePaths, 5);
+
+  try {
+    // We traverse all files and upload them when necessary, then add them to the
+    // parsedFiles object
+    /* eslint-disable no-restricted-syntax no-await-in-loop */
+    for (const filePathsChunk of chunkedFilePaths) {
+      await Promise.all(
+        filePathsChunk.map(async filePath => {
+          const file = props.files[filePath];
+          const dataURI = file.dataURI;
+
+          if (
+            (/\.(j|t)sx?$/.test(filePath) ||
+              /\.json?$/.test(filePath) ||
+              /\.html?$/.test(filePath) ||
+              file.type.startsWith('text/') ||
+              file.type === 'application/json') &&
+            dataURI.length < MAX_FILE_SIZE
+          ) {
+            const text = atob(dataURI.replace(/^.*base64,/, ''));
+            parsedFiles[filePath] = {
+              content: text,
+              isBinary: false,
+            };
+          } else {
+            await api
+              .post('/users/current_user/uploads', {
+                content: dataURI,
+                name: filePath,
+              })
+              .then(data => {
+                parsedFiles[filePath] = {
+                  content: data.url,
+                  isBinary: true,
+                };
+              })
+              .catch(e => {
+                e.message = `Error uploading ${filePath}: ${e.message}`;
+
+                throw e;
+              });
+          }
+        })
+      );
+    }
+    /* eslint-enable */
+
+    // We create a module format that CodeSandbox understands
+    const { modules, directories } = denormalize(parsedFiles);
+
+    // If the directory was dropped in a subdirectory we need to shift all
+    // the root directories to that directory
+    const relativeDirectories = directories.map(dir => {
+      if (dir.directoryShortid == null) {
+        return {
+          ...dir,
+          directoryShortid: props.directoryShortid,
+        };
+      }
+
+      return dir;
+    });
+
+    const relativeModules = modules.map(m => {
+      if (m.directoryShortid == null) {
+        return {
+          ...m,
+          directoryShortid: props.directoryShortid,
+        };
+      }
+
+      return m;
+    });
+
+    // Proceed to give the data for `massCreateModules`
+    return path.success({
+      modules: relativeModules,
+      directories: relativeDirectories,
+    });
+  } catch (error) {
+    console.error(error);
+    if (error.message.indexOf('413') !== -1) {
+      return path.discardError();
+    }
+    return path.error({ error: error.message });
+  }
 }
 
 export function saveNewDirectoryDirectoryShortid({ api, state, props, path }) {
@@ -43,7 +173,7 @@ export function createOptimisticModule({ state, props, utils }) {
     directoryShortid: props.directoryShortid || null,
     code: props.newCode || '',
     shortid: utils.createOptimisticId(),
-    isBinary: false,
+    isBinary: props.isBinary === undefined ? false : props.isBinary,
     sourceId: state.get('editor.currentSandbox.sourceId'),
   };
 
@@ -64,25 +194,30 @@ export function createOptimisticDirectory({ state, props, utils }) {
 
 export function updateOptimisticModule({ state, props }) {
   const sandbox = state.get('editor.currentSandbox');
-  const optimisticModuleIndex = sandbox.modules.findIndex(
+  let optimisticModuleIndex = sandbox.modules.findIndex(
     module => module.shortid === props.optimisticModule.shortid
   );
 
-  state.merge(
-    `editor.sandboxes.${sandbox.id}.modules.${optimisticModuleIndex}`,
-    {
-      id: props.newModule.id,
-      shortid: props.newModule.shortid,
-    }
+  const existingModule = state.get(
+    `editor.sandboxes.${sandbox.id}.modules.${optimisticModuleIndex}`
   );
-}
+  const newModule = {
+    ...existingModule,
+    id: props.newModule.id,
+    shortid: props.newModule.shortid,
+  };
 
-export function removeOptimisticModule({ state, props }) {
-  const sandbox = state.get('editor.currentSandbox');
-  const optimisticModuleIndex = sandbox.modules.findIndex(
+  state.push(`editor.sandboxes.${sandbox.id}.modules`, newModule);
+
+  if (
+    state.get('editor.currentModuleShortid') === props.optimisticModule.shortid
+  ) {
+    state.set(`editor.currentModuleShortid`, props.newModule.shortid);
+  }
+
+  optimisticModuleIndex = sandbox.modules.findIndex(
     module => module.shortid === props.optimisticModule.shortid
   );
-
   state.splice(
     `editor.sandboxes.${sandbox.id}.modules`,
     optimisticModuleIndex,
@@ -192,7 +327,7 @@ export function removeDirectory({ state, props }) {
   const sandboxId = state.get('editor.currentId');
   const sandbox = state.get('editor.currentSandbox');
   const directoryIndex = sandbox.directories.findIndex(
-    directoryEntry => directoryEntry.shortid === props.moduleShortid
+    directoryEntry => directoryEntry.shortid === props.directoryShortid
   );
   const removedDirectory = clone(sandbox.directories[directoryIndex]);
 
@@ -293,6 +428,7 @@ export function saveNewModule({ api, state, props, path }) {
         title: props.title,
         directoryShortid: props.directoryShortid,
         code: props.newCode || '',
+        isBinary: props.isBinary === undefined ? false : props.isBinary,
       },
     })
     .then(data => path.success({ newModule: data }))

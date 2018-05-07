@@ -1,31 +1,50 @@
 import React from 'react';
-import { inject } from 'mobx-react';
+import { inject, observer } from 'mobx-react';
 import { DropTarget } from 'react-dnd';
+import { reaction } from 'mobx';
 import Modal from 'app/components/Modal';
 import Alert from 'app/components/Alert';
+import { NativeTypes } from 'react-dnd-html5-backend';
 
 import validateTitle from './validateTitle';
 import Entry from './Entry';
 import DirectoryChildren from './DirectoryChildren';
-import getModuleParents from './getModuleParents';
 import { EntryContainer, Overlay, Opener } from './elements';
 
+const readDataURL = imageFile =>
+  new Promise(resolve => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      resolve(e.target.result);
+    };
+    reader.readAsDataURL(imageFile);
+  });
+
+const getFiles = async files => {
+  const returnedFiles = {};
+  await Promise.all(
+    Array.from(files)
+      .filter(Boolean)
+      .map(async file => {
+        const dataURI = await readDataURL(file);
+        returnedFiles[file.path || file.name] = {
+          dataURI,
+          type: file.type,
+        };
+      })
+  );
+
+  return returnedFiles;
+};
 class DirectoryEntry extends React.Component {
   constructor(props) {
     super(props);
 
-    const { id, modules, directories, currentModuleId } = this.props;
-    const currentModuleParents = getModuleParents(
-      modules,
-      directories,
-      currentModuleId
-    );
-
-    const isParentOfModule = currentModuleParents.includes(id);
+    const { id, store } = this.props;
 
     this.state = {
       creating: '',
-      open: props.root || isParentOfModule,
+      open: props.root || store.editor.shouldDirectoryBeOpen(id),
       showDeleteDirectoryModal: false,
       showDeleteModuleModal: false,
       moduleToDeleteTitle: null,
@@ -37,24 +56,22 @@ class DirectoryEntry extends React.Component {
     if (this.props.innerRef) {
       this.props.innerRef(this);
     }
+
+    this.openListener = reaction(
+      () => this.props.store.editor.currentModuleShortid,
+      () => {
+        if (!this.state.open) {
+          const { id, store } = this.props;
+
+          this.setState({ open: store.editor.shouldDirectoryBeOpen(id) });
+        }
+      }
+    );
   }
 
-  componentWillReceiveProps(nextProps, nextState) {
-    if (
-      !nextState.open &&
-      this.props.currentModuleId !== nextProps.currentModuleId
-    ) {
-      const { id, modules, directories, currentModuleId } = nextProps;
-      const currentModuleParents = getModuleParents(
-        modules,
-        directories,
-        currentModuleId
-      );
-
-      const isParentOfModule = currentModuleParents.includes(id);
-      if (isParentOfModule) {
-        this.setState({ open: isParentOfModule });
-      }
+  componentWillUnmount() {
+    if (this.openListener) {
+      this.openListener();
     }
   }
 
@@ -107,6 +124,22 @@ class DirectoryEntry extends React.Component {
     this.resetState();
   };
 
+  onUploadFileClick = () => {
+    const fileSelector = document.createElement('input');
+    fileSelector.setAttribute('type', 'file');
+    fileSelector.setAttribute('multiple', 'true');
+    fileSelector.onchange = async event => {
+      const files = await getFiles(event.target.files);
+
+      this.props.signals.files.filesUploaded({
+        files,
+        directoryShortid: this.props.shortid,
+      });
+    };
+
+    fileSelector.click();
+  };
+
   renameDirectory = (directoryShortid, title) => {
     this.props.signals.files.directoryRenamed({ title, directoryShortid });
   };
@@ -129,7 +162,8 @@ class DirectoryEntry extends React.Component {
   setOpen = open => this.setState({ open });
 
   validateModuleTitle = (_, title) => {
-    const { directories, modules, id } = this.props;
+    const { store, id } = this.props;
+    const { directories, modules } = store.editor.currentSandbox;
     return validateTitle(id, title, [...directories, ...modules]);
   };
 
@@ -141,11 +175,15 @@ class DirectoryEntry extends React.Component {
   };
 
   getChildren = () => {
-    const { modules, directories, shortid } = this.props;
+    const { shortid } = this.props;
 
     return [
-      ...modules.filter(m => m.directoryShortid === shortid),
-      ...directories.filter(d => d.directoryShortid === shortid),
+      ...this.props.store.editor.currentSandbox.modules.filter(
+        m => m.directoryShortid === shortid
+      ),
+      ...this.props.store.editor.currentSandbox.directories.filter(
+        d => d.directoryShortid === shortid
+      ),
     ];
   };
 
@@ -161,23 +199,18 @@ class DirectoryEntry extends React.Component {
     const {
       id,
       shortid,
-      sandboxId,
-      sandboxTemplate,
-      modules,
-      directories,
-      title,
-      openMenu,
-      currentModuleId,
       connectDropTarget, // eslint-disable-line
       isOver, // eslint-disable-line
-      isInProjectView,
       depth = 0,
       root,
-      mainModuleId,
-      errors,
-      corrections,
+      store,
     } = this.props;
     const { creating, open } = this.state;
+    const currentSandbox = store.editor.currentSandbox;
+
+    const title = root
+      ? 'Project'
+      : currentSandbox.directories.find(m => m.id === id).title;
 
     return connectDropTarget(
       <div style={{ position: 'relative' }}>
@@ -197,9 +230,13 @@ class DirectoryEntry extends React.Component {
               rename={!root && this.renameDirectory}
               onCreateModuleClick={this.onCreateModuleClick}
               onCreateDirectoryClick={this.onCreateDirectoryClick}
+              onUploadFileClick={
+                this.props.store.isLoggedIn &&
+                currentSandbox.privacy === 0 &&
+                this.onUploadFileClick
+              }
               deleteEntry={!root && this.deleteDirectory}
               hasChildren={this.getChildren().length > 0}
-              openMenu={openMenu}
               closeTree={this.closeTree}
             />
             <Modal
@@ -222,7 +259,7 @@ class DirectoryEntry extends React.Component {
                     showDeleteDirectoryModal: false,
                   });
                   this.props.signals.files.directoryDeleted({
-                    moduleShortid: shortid,
+                    directoryShortid: shortid,
                   });
                 }}
               />
@@ -243,22 +280,12 @@ class DirectoryEntry extends React.Component {
             />
           )}
           <DirectoryChildren
-            modules={modules}
-            directories={directories}
             depth={depth}
             renameModule={this.renameModule}
-            openMenu={openMenu}
-            sandboxId={sandboxId}
-            mainModuleId={mainModuleId}
-            sandboxTemplate={sandboxTemplate}
             parentShortid={shortid}
             deleteEntry={this.deleteModule}
             setCurrentModule={this.setCurrentModule}
-            currentModuleId={currentModuleId}
-            isInProjectView={isInProjectView}
             markTabsNotDirty={this.markTabsNotDirty}
-            errors={errors}
-            corrections={corrections}
           />
           <Modal
             isOpen={this.state.showDeleteModuleModal}
@@ -311,8 +338,16 @@ const entryTarget = {
     if (!monitor.isOver({ shallow: true })) return;
 
     const sourceItem = monitor.getItem();
+    if (sourceItem.dirContent) {
+      sourceItem.dirContent.then(async droppedFiles => {
+        const files = await getFiles(droppedFiles);
 
-    if (sourceItem.directory) {
+        props.signals.files.filesUploaded({
+          files,
+          directoryShortid: props.shortid,
+        });
+      });
+    } else if (sourceItem.directory) {
       props.signals.files.directoryMovedToDirectory({
         shortid: sourceItem.shortid,
         directoryShortid: props.shortid,
@@ -347,6 +382,8 @@ function collectTarget(connectMonitor, monitor) {
   };
 }
 
-export default inject('signals')(
-  DropTarget('ENTRY', entryTarget, collectTarget)(DirectoryEntry)
+export default inject('signals', 'store')(
+  DropTarget(['ENTRY', NativeTypes.FILE], entryTarget, collectTarget)(
+    observer(DirectoryEntry)
+  )
 );

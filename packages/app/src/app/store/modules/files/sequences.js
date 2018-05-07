@@ -1,9 +1,70 @@
-import { push, set } from 'cerebral/operators';
+import { push, set, concat } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
-import { ensureOwnedSandbox } from '../../sequences';
+import { ensureOwnedSandbox, closeModal } from '../../sequences';
 import { setCurrentModule, addNotification } from '../../factories';
-import { closeTabByIndex } from '../../actions';
+import { closeTabByIndex, setModal } from '../../actions';
+import {
+  sendModuleCreated,
+  sendModuleDeleted,
+  sendModuleUpdated,
+  sendMassModuleCreated,
+  sendDirectoryCreated,
+  sendDirectoryDeleted,
+  sendDirectoryUpdated,
+} from '../live/actions';
 import * as actions from './actions';
+
+export const getUploadedFiles = [
+  set(props`modal`, 'storageManagement'),
+  setModal,
+  actions.getUploadedFiles,
+  {
+    success: [
+      set(state`uploadedFiles`, props`uploadedFilesInfo.uploads`),
+      set(state`maxStorage`, props`uploadedFilesInfo.maxSize`),
+      set(state`usedStorage`, props`uploadedFilesInfo.currentSize`),
+    ],
+    error: [
+      addNotification('Unable to get uploaded files information', 'error'),
+    ],
+  },
+];
+
+export const removeModule = [
+  ensureOwnedSandbox,
+  actions.whenModuleIsSelected,
+  {
+    true: setCurrentModule(state`editor.mainModule.id`),
+    false: [],
+  },
+  actions.whenCloseTab,
+  {
+    true: closeTabByIndex,
+    false: [],
+  },
+  actions.removeModule,
+];
+
+export const massCreateModules = [
+  ensureOwnedSandbox,
+  actions.massCreateModules,
+  {
+    success: [
+      concat(state`editor.currentSandbox.modules`, props`modules`),
+      concat(state`editor.currentSandbox.directories`, props`directories`),
+      sendMassModuleCreated,
+    ],
+    error: [],
+  },
+];
+
+export const deleteUploadedFile = [
+  actions.deleteUploadedFile,
+  {
+    success: [set(state`uploadedFiles`, null), getUploadedFiles],
+    error: [addNotification('Unable to delete uploaded file', 'error')],
+  },
+];
 
 export const createModule = [
   ensureOwnedSandbox,
@@ -18,13 +79,36 @@ export const createModule = [
     success: [
       actions.updateOptimisticModule,
       setCurrentModule(props`newModule.id`),
+      set(props`moduleShortid`, props`newModule.shortid`),
+      sendModuleCreated,
     ],
     error: [
-      actions.removeOptimisticModule,
+      set(props`moduleShortid`, props`optimisticModule.shortid`),
+      removeModule,
       setCurrentModule(state`editor.mainModule.shortid.id`),
       addNotification('Unable to save new file', 'error'),
     ],
   },
+];
+
+export const addFileToSandbox = [
+  set(props`newCode`, props`url`),
+  set(props`title`, props`name`),
+  set(props`isBinary`, true),
+  closeModal,
+  createModule,
+];
+
+export const uploadFiles = [
+  set(props`modal`, 'uploading'),
+  setModal,
+  actions.uploadFiles,
+  {
+    success: [set(state`uploadedFiles`, null), massCreateModules],
+    error: [addNotification(props`error`, 'error')],
+    discardError: [],
+  },
+  closeModal,
 ];
 
 export const renameModule = [
@@ -32,7 +116,7 @@ export const renameModule = [
   actions.renameModule,
   actions.saveNewModuleName,
   {
-    success: [],
+    success: [sendModuleUpdated],
     error: [
       actions.revertModuleName,
       addNotification('Could not rename file', 'error'),
@@ -45,7 +129,7 @@ export const renameDirectory = [
   actions.renameDirectory,
   actions.saveNewDirectoryName,
   {
-    success: [],
+    success: [sendDirectoryUpdated],
     error: [
       actions.revertDirectoryName,
       addNotification('Could not rename file', 'error'),
@@ -62,7 +146,11 @@ export const createDirectory = [
   ),
   actions.saveDirectory,
   {
-    success: actions.updateOptimisticDirectory,
+    success: [
+      actions.updateOptimisticDirectory,
+      set(props`directoryShortid`, props`newDirectory.shortid`),
+      sendDirectoryCreated,
+    ],
     error: [
       actions.removeOptimisticDirectory,
       addNotification('Unable to save new directory', 'error'),
@@ -70,13 +158,17 @@ export const createDirectory = [
   },
 ];
 
-export const deleteDirectory = [
-  ensureOwnedSandbox,
+export const removeDirectory = [
   set(state`editor.currentModuleShortid`, state`editor.mainModule.shortid`),
   actions.removeDirectory,
+];
+
+export const deleteDirectory = [
+  ensureOwnedSandbox,
+  removeDirectory,
   actions.deleteDirectory,
   {
-    success: [],
+    success: [sendDirectoryDeleted],
     error: [
       push(
         state`editor.sandboxes.${state`editor.currentId`}.directories`,
@@ -92,7 +184,10 @@ export const moveDirectoryToDirectory = [
   actions.moveDirectoryToDirectory,
   actions.saveNewDirectoryDirectoryShortid,
   {
-    success: [],
+    success: [
+      set(props`directoryShortid`, props`shortid`),
+      sendDirectoryUpdated,
+    ],
     error: [
       actions.revertMoveDirectoryToDirectory,
       addNotification('Could not save new directory location', 'error'),
@@ -105,7 +200,7 @@ export const moveModuleToDirectory = [
   actions.moveModuleToDirectory,
   actions.saveNewModuleDirectoryShortid,
   {
-    success: [],
+    success: [sendModuleUpdated],
     error: [
       actions.revertMoveModuleToDirectory,
       addNotification('Could not save new module location', 'error'),
@@ -114,21 +209,10 @@ export const moveModuleToDirectory = [
 ];
 
 export const deleteModule = [
-  ensureOwnedSandbox,
-  actions.whenModuleIsSelected,
-  {
-    true: setCurrentModule(state`editor.mainModule.id`),
-    false: [],
-  },
-  actions.whenCloseTab,
-  {
-    true: closeTabByIndex,
-    false: [],
-  },
-  actions.removeModule,
+  removeModule,
   actions.deleteModule,
   {
-    success: [],
+    success: [sendModuleDeleted],
     error: [
       push(
         state`editor.sandboxes.${state`editor.currentId`}.modules`,

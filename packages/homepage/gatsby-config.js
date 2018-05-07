@@ -53,12 +53,19 @@ module.exports = {
           'gatsby-remark-autolink-headers',
           `gatsby-remark-prismjs`,
           {
-            resolve: 'gatsby-plugin-nprogress',
+            resolve: 'gatsby-remark-embed-youtube',
             options: {
-              color: '#6CAEDD',
+              width: 740,
+              height: 370,
             },
           },
         ],
+      },
+    },
+    {
+      resolve: 'gatsby-plugin-nprogress',
+      options: {
+        color: '#6CAEDD',
       },
     },
     `gatsby-plugin-styled-components`,

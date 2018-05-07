@@ -1,7 +1,7 @@
 // @flow
 import * as React from 'react';
 import type { Sandbox, Module, Preferences } from 'common/types';
-import { listen, notifyListeners } from 'codesandbox-api';
+import { listen, dispatch, registerFrame } from 'codesandbox-api';
 import { debounce } from 'lodash';
 
 import { frameUrl } from 'common/utils/url-generator';
@@ -11,31 +11,6 @@ import { generateFileFromSandbox } from 'common/templates/configuration/package-
 
 import Navigator from './Navigator';
 import { Container, StyledFrame } from './elements';
-
-let frames = [];
-
-function sendMessage(sandboxId: string, message: Object) {
-  const rawMessage = JSON.parse(JSON.stringify(message));
-  frames.forEach(frame => {
-    frame.postMessage(
-      { ...rawMessage, codesandbox: true },
-      frameUrl(sandboxId)
-    );
-  });
-}
-
-export function dispatch(sandboxId: string, message: Object = {}) {
-  const finalMessage = {
-    ...message,
-    codesandbox: true,
-  };
-  sendMessage(sandboxId, finalMessage);
-  notifyListeners(finalMessage, window);
-}
-
-export function evaluateInSandbox(sandboxId: string, command: string) {
-  dispatch(sandboxId, { type: 'evaluate', command });
-}
 
 type Props = {
   onInitialized: (preview: BasePreview) => void, // eslint-disable-line no-use-before-define
@@ -56,6 +31,8 @@ type Props = {
   showNavigation?: boolean,
   inactive?: boolean,
   dragging?: boolean,
+  hide: boolean,
+  noPreview: boolean,
 };
 
 type State = {
@@ -83,11 +60,11 @@ class BasePreview extends React.Component<Props, State> {
     // when the user navigates the iframe app, which shows the loading screen
     this.initialPath = props.initialPath;
 
+    this.listener = listen(this.handleMessage);
+
     if (props.delay) {
       this.executeCode = debounce(this.executeCode, 800);
     }
-
-    frames = [];
   }
 
   static defaultProps = {
@@ -106,10 +83,6 @@ class BasePreview extends React.Component<Props, State> {
     if (this.disposeInitializer) {
       this.disposeInitializer();
     }
-  }
-
-  componentDidMount() {
-    this.listener = listen(this.handleMessage);
   }
 
   openNewWindow = () => {
@@ -137,11 +110,9 @@ class BasePreview extends React.Component<Props, State> {
   };
 
   handleMessage = (data: Object, source: any) => {
-    if (source) {
-      if (data.type === 'initialized') {
-        if (frames.indexOf(source) === -1) {
-          frames.push(source);
-        }
+    if (data && data.codesandbox) {
+      if (data.type === 'initialized' && source) {
+        registerFrame(source);
 
         if (!this.state.frameInitialized && this.props.onInitialized) {
           this.disposeInitializer = this.props.onInitialized(this);
@@ -205,8 +176,8 @@ class BasePreview extends React.Component<Props, State> {
     const sandbox = this.props.sandbox;
 
     if (settings.clearConsoleEnabled) {
-      console.clear(); // eslint-disable-line no-console
-      dispatch(sandbox.id, { type: 'clear-console' });
+      console.clear('__internal__'); // eslint-disable-line no-console
+      dispatch({ type: 'clear-console' });
     }
 
     // Do it here so we can see the dependency fetching screen if needed
@@ -215,20 +186,22 @@ class BasePreview extends React.Component<Props, State> {
       this.handleRefresh();
     } else {
       if (!this.props.isInProjectView) {
-        evaluateInSandbox(
-          this.props.sandbox.id,
-          `history.pushState({}, null, '/')`
-        );
+        dispatch({
+          type: 'evaluate',
+          command: `history.pushState({}, null, '/')`,
+        });
       }
 
       const modulesObject = {};
 
       sandbox.modules.forEach(m => {
         const path = getModulePath(sandbox.modules, sandbox.directories, m.id);
-        modulesObject[path] = {
-          path,
-          code: m.code,
-        };
+        if (path) {
+          modulesObject[path] = {
+            path,
+            code: m.code,
+          };
+        }
       });
 
       const extraModules = this.props.extraModules || {};
@@ -241,7 +214,7 @@ class BasePreview extends React.Component<Props, State> {
         };
       }
 
-      sendMessage(sandbox.id, {
+      dispatch({
         type: 'compile',
         version: 3,
         entry: this.getRenderedModule(),
@@ -293,7 +266,7 @@ class BasePreview extends React.Component<Props, State> {
   };
 
   handleBack = () => {
-    sendMessage(this.props.sandbox.id, {
+    dispatch({
       type: 'urlback',
     });
 
@@ -305,7 +278,7 @@ class BasePreview extends React.Component<Props, State> {
   };
 
   handleForward = () => {
-    sendMessage(this.props.sandbox.id, {
+    dispatch({
       type: 'urlforward',
     });
 
@@ -344,12 +317,19 @@ class BasePreview extends React.Component<Props, State> {
       settings,
       isInProjectView,
       dragging,
+      hide,
+      noPreview,
     } = this.props;
     const { historyPosition, history, urlInAddressBar } = this.state;
     const url = urlInAddressBar || frameUrl(sandbox.id);
 
+    if (noPreview) {
+      // Means that preview is open in another tab definitely
+      return null;
+    }
+
     return (
-      <Container style={{ flex: 1 }}>
+      <Container style={{ flex: 1, display: hide ? 'none' : undefined }}>
         {showNavigation && (
           <Navigator
             url={decodeURIComponent(url)}

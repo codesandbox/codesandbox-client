@@ -17,7 +17,9 @@ self.window.document = {
   head: { appendChild: () => {}, removeChild: () => {} },
 };
 
-self.importScripts(['/static/js/less.min.js']);
+self.importScripts(
+  `${process.env.CODESANDBOX_HOST || ''}/static/js/less.min.js']`
+);
 
 self.postMessage('ready');
 
@@ -45,7 +47,7 @@ self.addEventListener('message', event => {
       .render(cleanCode, { filename, plugins: [FileManager(context, files)] })
       .then(({ css }) =>
         self.postMessage({
-          type: 'compiled',
+          type: 'result',
           transpiledCode: css,
         })
       )

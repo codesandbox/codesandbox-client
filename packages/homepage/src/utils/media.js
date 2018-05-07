@@ -12,4 +12,16 @@ export default {
       ${css(...args)};
     }
   `,
+
+  fromTablet: (...args) => css`
+    @media (min-width: 660px) {
+      ${css(...args)};
+    }
+  `,
+
+  fromDesktop: (...args) => css`
+    @media (min-width: 1280px) {
+      ${css(...args)};
+    }
+  `,
 };

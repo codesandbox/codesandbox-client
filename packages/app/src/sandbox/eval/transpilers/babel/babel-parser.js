@@ -29,18 +29,21 @@ const DEFAULT_BABEL_CONFIG = {
 /**
  * Parses the .babelrc if it exists, if it doesn't it will return a default config
  */
-export default function getBabelConfig(config: Object = {}, path: string) {
-  let resolvedConfig = DEFAULT_BABEL_CONFIG;
+export default function getBabelConfig(
+  config: ?Object,
+  loaderOptions: Object,
+  path: string
+) {
+  const resolvedConfig = config || DEFAULT_BABEL_CONFIG;
 
-  resolvedConfig = {
+  if (loaderOptions.disableCodeSandboxPlugins) {
+    return resolvedConfig;
+  }
+
+  return {
     ...resolvedConfig,
-    plugins: config.plugins != null ? config.plugins : resolvedConfig.plugins,
-    presets: config.presets != null ? config.presets : resolvedConfig.presets,
     sourceMaps: 'inline',
     sourceFileName: path,
-    sourceMapTarget: `${path}:transpiled`,
     filename: path,
   };
-
-  return resolvedConfig;
 }

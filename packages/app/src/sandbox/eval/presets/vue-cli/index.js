@@ -39,7 +39,7 @@ export default function initialize() {
     'vue-cli',
     ['vue', 'json', 'js'],
     {
-      '@': '{{sandboxRoot}}',
+      '@': '{{sandboxRoot}}/src',
       vue$: 'vue/dist/vue.common.js',
     },
     {
@@ -113,27 +113,8 @@ export default function initialize() {
     });
   }
 
-  const babelConfig = {
-    presets: [
-      // babel preset env starts with latest, then drops rules.
-      // We don't have env, so we just support latest
-      'latest',
-      'stage-2',
-    ],
-    plugins: [
-      'transform-runtime',
-      'transform-vue-jsx',
-      'transform-decorators-legacy',
-    ],
-  };
-
-  const babelWithConfig = {
-    transpiler: babelTranspiler,
-    options: babelConfig,
-  };
-
   vuePreset.registerTranspiler(module => /\.jsx?$/.test(module.path), [
-    babelWithConfig,
+    { transpiler: babelTranspiler },
   ]);
   vuePreset.registerTranspiler(module => /\.tsx?$/.test(module.path), [
     { transpiler: typescriptTranspiler },

@@ -2,6 +2,7 @@
 
 import type { SourceMap } from './utils/get-source-map';
 import { type LoaderContext } from '../transpiled-module';
+import type { default as Manager } from '../manager';
 
 type TranspilerResult = {
   transpiledCode: string,
@@ -10,15 +11,11 @@ type TranspilerResult = {
 };
 
 export default class Transpiler {
-  cachedResults: {
-    [id: string]: TranspilerResult,
-  };
   cacheable: boolean;
   name: string;
   HMREnabled: boolean;
 
   constructor(name: string) {
-    this.cachedResults = {};
     this.cacheable = true;
     this.name = name;
     this.HMREnabled = true;
@@ -26,6 +23,8 @@ export default class Transpiler {
 
   /* eslint-disable */
   initialize() {}
+
+  dispose() {}
 
   cleanModule(loaderContext: LoaderContext) {}
 
@@ -41,9 +40,18 @@ export default class Transpiler {
     code: string,
     loaderContext: LoaderContext
   ): Promise<TranspilerResult> {
-    return this.doTranspilation(code, loaderContext).then(result => {
-      this.cachedResults[code] = result;
-      return result;
+    return this.doTranspilation(code, loaderContext);
+  }
+
+  /**
+   * Get custom info of the current transpiler, this is open for implementation
+   * per transpiler
+   */
+  getTranspilerContext(manager: Manager): Promise<Object> {
+    return Promise.resolve({
+      name: this.name,
+      HMREnabled: this.HMREnabled,
+      cacheable: this.cacheable,
     });
   }
 }

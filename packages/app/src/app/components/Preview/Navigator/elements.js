@@ -16,8 +16,10 @@ export const Icons = styled.div`
   display: flex;
 `;
 
-export const Icon = styled.div`
+export const Icon = styled.button`
   display: inline-block;
+  border: none;
+  background-color: transparent;
   color: ${props =>
     props.disabled ? props.theme.gray : props.theme.gray.darken(0.3)};
   font-size: 1.5rem;
@@ -25,6 +27,8 @@ export const Icon = styled.div`
   margin: 0 0.1rem;
   vertical-align: middle;
   text-align: center;
+  padding: 0;
+  outline: none;
 
   ${props =>
     !props.disabled &&

@@ -16,7 +16,8 @@ export default ({ token, theme }: Props) => {
       <a href={linkHref} className="cs__blurb" target="_blank" rel="noopener">
         <strong>Rollbar</strong>{' '}
         <span>
-          Real-time error monitoring, alerting, and analytics for software developers{' '}
+          Real-time error monitoring, alerting, and analytics for software
+          developers{' '}
           <span aria-label="rocket" role="img">
             🚀
           </span>

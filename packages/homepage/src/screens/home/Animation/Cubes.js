@@ -51,7 +51,7 @@ const SmallCube = styled(
 const OFFSETS = [84, 32, 54, 110];
 
 // eslint-disable-next-line react/no-multi-comp
-export default class Cubes extends React.PureComponent {
+export default class Cubes extends React.Component {
   els = {};
 
   constructor(props) {

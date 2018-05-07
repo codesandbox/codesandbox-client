@@ -36,9 +36,7 @@ export default class DependencyHit extends React.PureComponent {
   makeSearchUrl(hitName: string) {
     return `${
       process.env.CODESANDBOX_HOST
-    }/search?refinementList%5Bnpm_dependencies.dependency%5D%5B0%5D=${
-      hitName
-    }&page=1`;
+    }/search?refinementList%5Bnpm_dependencies.dependency%5D%5B0%5D=${hitName}&page=1`;
   }
 
   stopPropagation(e) {

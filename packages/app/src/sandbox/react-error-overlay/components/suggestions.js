@@ -21,9 +21,9 @@ export function createSuggestions(error: SandboxError) {
     button.setAttribute('onmouseover', 'this.style.backgroundColor="#78CDF7"');
     button.setAttribute(
       'onmouseout',
-      `this.style.backgroundColor="${suggestionsButtonStyle[
-        'background-color'
-      ]}"`
+      `this.style.backgroundColor="${
+        suggestionsButtonStyle['background-color']
+      }"`
     );
     applyStyles(button, suggestionsButtonStyle);
 

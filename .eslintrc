@@ -25,6 +25,7 @@
     "no-plusplus": 0,
     "no-underscore-dangle": "off",
     "no-nested-ternary": "warn",
-    "react/require-default-props": "off"
+    "react/require-default-props": "off",
+    "import/no-named-default": 0
   }
 }

@@ -46,22 +46,25 @@ export default function(code: string, loaderContext: LoaderContext) {
       };
     }
 
-    return postcss(plugins)
-      .process(code, options)
-      .then(result => {
-        if (result.messages) {
-          result.messages.forEach(m => {
-            if (m.type === 'dependency') {
-              loaderContext.addDependency(m.file);
-            }
-          });
-        }
+    return (
+      postcss(plugins)
+        // Explcitly give undefined if code is null, otherwise postcss crashses
+        .process(code === null ? undefined : code, options)
+        .then(result => {
+          if (result.messages) {
+            result.messages.forEach(m => {
+              if (m.type === 'dependency') {
+                loaderContext.addDependency(m.file);
+              }
+            });
+          }
 
-        const map = result.map && result.map.toJSON();
-        resolve({ transpiledCode: result.css, sourceMap: map });
+          const map = result.map && result.map.toJSON();
+          resolve({ transpiledCode: result.css, sourceMap: map });
 
-        return null; // silence bluebird warning
-      })
-      .catch(err => reject(err));
+          return null; // silence bluebird warning
+        })
+        .catch(err => reject(err))
+    );
   });
 }

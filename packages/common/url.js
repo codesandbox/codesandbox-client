@@ -60,9 +60,7 @@ export const getSandboxOptions = (url: string) => {
   result.verticalMode = url.includes('verticallayout=1');
   result.runOnClick = url.includes('runonclick=0')
     ? false
-    : url.includes('runonclick=1') ||
-      navigator.appVersion.indexOf('X11') !== -1 ||
-      navigator.appVersion.indexOf('Linux') !== -1;
+    : url.includes('runonclick=1') ? true : undefined;
 
   return result;
 };

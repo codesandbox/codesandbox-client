@@ -2,6 +2,13 @@ import { set, when, equals, toggle, increment } from 'cerebral/operators';
 import { state, props, string } from 'cerebral/tags';
 import * as actions from './actions';
 import { closeTabByIndex } from '../../actions';
+import { renameModule } from '../files/sequences';
+import {
+  sendModuleSaved,
+  getSelectionsForCurrentModule,
+  sendChangeCurrentModule,
+  setReceivingStatus,
+} from '../live/actions';
 import {
   ensureOwnedSandbox,
   forkSandbox,
@@ -43,22 +50,25 @@ export const stopResizing = set(state`editor.isResizing`, false);
 
 export const createZip = actions.createZip;
 
-export const prettifyCode = [
-  actions.prettifyCode,
+export const changeCurrentModule = [
+  setReceivingStatus,
+  setCurrentModule(props`id`),
+  equals(state`live.isLive`),
   {
-    success: [actions.setCode, actions.addChangedModule],
-    invalidPrettierSandboxConfig: addNotification(
-      'Invalid JSON in sandbox .prettierrc file',
-      'error'
-    ),
-    error: addNotification(
-      string`Something went wrong prettifying the code: "${props`error.message`}"`,
-      'error'
-    ),
+    true: [
+      equals(state`live.isCurrentEditor`),
+      {
+        true: [
+          getSelectionsForCurrentModule,
+          set(state`editor.pendingUserSelections`, props`selections`),
+          sendChangeCurrentModule,
+        ],
+        false: [],
+      },
+    ],
+    false: [],
   },
 ];
-
-export const changeCurrentModule = setCurrentModule(props`id`);
 
 export const unsetDirtyTab = actions.unsetDirtyTab;
 
@@ -158,6 +168,7 @@ export const saveCode = [
     ],
     false: [],
   },
+  sendModuleSaved,
 ];
 
 export const addNpmDependency = [
@@ -191,7 +202,10 @@ export const handlePreviewAction = [
     'show-error': actions.addErrorFromPreview,
     'show-correction': actions.addCorrectionFromPreview,
     'show-glyph': actions.addGlyphFromPreview,
-    'source.module.rename': actions.renameModuleFromPreview,
+    'source.module.rename': [
+      actions.consumeRenameModuleFromPreview,
+      renameModule,
+    ],
     'source.dependencies.add': [
       set(props`name`, props`action.dependency`),
       addNpmDependency,
@@ -213,4 +227,19 @@ export const setPreviewBounds = [actions.setPreviewBounds];
 
 export const setPreviewContent = [
   set(state`editor.previewWindow.content`, props`content`),
+];
+
+export const prettifyCode = [
+  actions.prettifyCode,
+  {
+    success: [changeCode],
+    invalidPrettierSandboxConfig: addNotification(
+      'Invalid JSON in sandbox .prettierrc file',
+      'error'
+    ),
+    error: addNotification(
+      string`Something went wrong prettifying the code: "${props`error.message`}"`,
+      'error'
+    ),
+  },
 ];

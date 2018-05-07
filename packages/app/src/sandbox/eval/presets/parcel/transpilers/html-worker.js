@@ -72,7 +72,6 @@ self.addEventListener('message', async event => {
       self.postMessage({
         type: 'add-dependency',
         path: assetPath,
-        isEntry: true,
       });
 
       resources.push(assetPath);
@@ -127,8 +126,12 @@ self.addEventListener('message', async event => {
           const result = addDependency(node.attrs[attr]);
 
           if (result) {
-            node.tag = false;
-            node.content = [];
+            if (node.tag === 'link' || node.tag === 'script') {
+              node.tag = false;
+              node.content = [];
+            } else {
+              node.attrs[attr] = result;
+            }
           }
         }
       }
@@ -154,7 +157,8 @@ setupHTML();
   resources.forEach(resource => {
     const resourcePath = JSON.stringify(resource);
     compiledCode += `\n`;
-    compiledCode += `\trequire(${resourcePath});`;
+    compiledCode += `\trequire(${resourcePath});\n`;
+    compiledCode += `\tmodule.hot.accept(${resourcePath});`;
   });
   compiledCode += '\n}';
 
@@ -168,7 +172,7 @@ if (document.readyState !== 'complete') {
 `;
 
   self.postMessage({
-    type: 'compiled',
+    type: 'result',
     transpiledCode: compiledCode,
   });
 });

@@ -62,7 +62,6 @@
     "indent": [true, "spaces"],
     "interface-name": [false],
     "quotemark": [false],
-    "linebreak-style": [true, "LF"],
     "no-require-imports": false,
     "no-var-requires": false,
     "no-trailing-whitespace": true,

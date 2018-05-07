@@ -1,6 +1,6 @@
 // @flow
 
-import HTMLWorker from 'worker-loader?name=parcel-html-transpiler.[hash].worker.js!./html-worker.js';
+import HTMLWorker from 'worker-loader?publicPath=/&name=parcel-html-transpiler.[hash].worker.js!./html-worker.js';
 import type { LoaderContext } from '../../../transpiled-module';
 import WorkerTranspiler from '../../../transpilers/worker-transpiler';
 
@@ -17,6 +17,7 @@ class HTMLTranspiler extends WorkerTranspiler {
         {
           code,
         },
+        loaderContext._module.getId(),
         loaderContext,
         (err, data) => {
           if (err) {

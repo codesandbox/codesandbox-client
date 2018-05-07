@@ -1,13 +1,27 @@
 // @flow
 import angular from './angular';
-import vue from './vue';
+import babel from './babel';
+import parcel from './parcel';
+import preact from './preact';
 import react from './react';
 import reactTs from './react-ts';
-import preact from './preact';
 import svelte from './svelte';
-import parcel from './parcel';
+import vue from './vue';
+import cxjs from './cxjs';
+import dojo from './dojo';
 
-export { angular, vue, react, reactTs, preact, svelte, parcel };
+export {
+  angular,
+  babel,
+  vue,
+  react,
+  reactTs,
+  preact,
+  svelte,
+  parcel,
+  dojo,
+  cxjs,
+};
 
 export default function getDefinition(
   theme:
@@ -18,6 +32,8 @@ export default function getDefinition(
     | 'create-react-app-typescript'
     | 'angular-cli'
     | 'parcel'
+    | 'cxjs'
+    | '@dojo/cli-create-app'
 ) {
   switch (theme) {
     case react.name:
@@ -34,6 +50,12 @@ export default function getDefinition(
       return angular;
     case parcel.name:
       return parcel;
+    case babel.name:
+      return babel;
+    case cxjs.name:
+      return cxjs;
+    case dojo.name:
+      return dojo;
     default:
       return react;
   }

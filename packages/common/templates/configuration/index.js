@@ -5,9 +5,11 @@ import sandboxConfig from './sandbox';
 import babelrc from './babelrc';
 import angularCli from './angular-cli';
 import tsconfig from './tsconfig';
+import babelTranspiler from './babel-transpiler';
 
 const configs = {
   babelrc,
+  babelTranspiler,
   packageJSON,
   prettierRC,
   sandboxConfig,

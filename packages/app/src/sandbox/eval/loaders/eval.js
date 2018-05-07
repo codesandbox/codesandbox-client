@@ -19,11 +19,8 @@ export default function(
 
   const globalsCode = ', ' + Object.keys(globals).join(', ');
   const globalsValues = Object.keys(globals).map(k => globals[k]);
-
   try {
-    const newCode = `(function evaluate(require, module, exports, process, setImmediate, Buffer, global${
-      globalsCode
-    }) {${code}\n})`;
+    const newCode = `(function evaluate(require, module, exports, process, setImmediate, Buffer, global${globalsCode}) {${code}\n})`;
     // eslint-disable-next-line no-eval
     (0, eval)(newCode).apply(this, [
       require,

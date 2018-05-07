@@ -4,6 +4,8 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+
+  max-height: 100%;
   z-index: 100;
   background-color: ${props => props.theme.background4};
 `;

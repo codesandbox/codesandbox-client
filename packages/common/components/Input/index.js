@@ -1,6 +1,6 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-const Input = styled.input`
+export const styles = css`
   transition: 0.3s ease border-color;
   background-color: rgba(0, 0, 0, 0.3);
   border: none;
@@ -19,5 +19,11 @@ const Input = styled.input`
     border-color: ${props => props.theme.secondary.clearer(0.6)};
   }
 `;
+
+const Input = styled.input`
+  ${styles};
+`;
+
+export const TextArea = Input.withComponent('textarea');
 
 export default Input;

@@ -8,12 +8,8 @@ import Tab from 'app/pages/Sandbox/Editor/Content/Tabs/Tab';
 
 import DevTools from 'app/components/Preview/DevTools';
 
-import Fullscreen from 'common/components/flex/Fullscreen';
-import Centered from 'common/components/flex/Centered';
-import theme from 'common/theme';
-
 import { resolveModule, findMainModule } from 'common/sandbox/modules';
-import playSVG from './play.svg';
+import RunOnClick from 'common/components/RunOnClick';
 
 import { Container, Tabs, Split } from './elements';
 
@@ -226,6 +222,7 @@ export default class Content extends React.PureComponent<Props, State> {
     autoCompleteEnabled: true,
     vimMode: false,
     tabWidth: 2,
+    enableLigatures: false,
   });
 
   setCurrentModule = (moduleId: string) => {
@@ -259,28 +256,6 @@ export default class Content extends React.PureComponent<Props, State> {
     return () => {};
   };
 
-  RunOnClick = () => (
-    <Fullscreen
-      style={{ backgroundColor: theme.primary(), cursor: 'pointer' }}
-      onClick={() => this.setState({ running: true })}
-    >
-      <Centered horizontal vertical>
-        <img width={170} height={170} src={playSVG} alt="Run Sandbox" />
-        <div
-          style={{
-            color: theme.red(),
-            fontSize: '2rem',
-            fontWeight: 700,
-            marginTop: 24,
-            textTransform: 'uppercase',
-          }}
-        >
-          Click to run
-        </div>
-      </Centered>
-    </Fullscreen>
-  );
-
   setDragging = (dragging: boolean) => {
     this.setState({ dragging });
   };
@@ -304,7 +279,17 @@ export default class Content extends React.PureComponent<Props, State> {
 
     if (!mainModule) throw new Error('Cannot find main module');
 
-    const { RunOnClick } = this;
+    const sandboxConfig = sandbox.modules.find(
+      x => x.directoryShortid == null && x.title === 'sandbox.config.json'
+    );
+    let view = 'browser';
+    if (sandboxConfig) {
+      try {
+        view = JSON.parse(sandboxConfig.code || '').view || 'browser';
+      } catch (e) {
+        /* swallow */
+      }
+    }
 
     return (
       <Container style={{ flexDirection: verticalMode ? 'column' : 'row' }}>
@@ -375,7 +360,7 @@ export default class Content extends React.PureComponent<Props, State> {
             verticalMode={verticalMode}
           >
             {!this.state.running ? (
-              <RunOnClick />
+              <RunOnClick onClick={() => this.setState({ running: true })} />
             ) : (
               <div
                 style={{
@@ -403,6 +388,7 @@ export default class Content extends React.PureComponent<Props, State> {
                   setDragging={this.setDragging}
                   sandboxId={sandbox.id}
                   shouldExpandDevTools={this.props.expandDevTools}
+                  view={view}
                 />
               </div>
             )}

@@ -3,6 +3,7 @@ import { render } from 'react-dom';
 import { ThemeProvider } from 'styled-components';
 import { Router } from 'react-router-dom';
 import history from 'app/utils/history';
+import _debug from 'app/utils/debug';
 import VERSION from 'common/version';
 import registerServiceWorker from 'common/registerServiceWorker';
 import requirePolyfills from 'common/load-dynamic-polyfills';
@@ -15,6 +16,8 @@ import controller from './controller';
 import App from './pages/index';
 import './split-pane.css';
 import logError from './utils/error';
+
+const debug = _debug('cs:app');
 
 if (process.env.NODE_ENV === 'production') {
   try {
@@ -67,6 +70,8 @@ if (process.env.NODE_ENV === 'production') {
   }
 }
 
+window.__isTouch = !matchMedia('(pointer:fine)').matches;
+
 requirePolyfills().then(() => {
   const rootEl = document.getElementById('root');
 
@@ -76,7 +81,19 @@ requirePolyfills().then(() => {
       message,
     });
 
-  registerServiceWorker('/service-worker.js', showNotification);
+  registerServiceWorker('/service-worker.js', {
+    onUpdated: () => {
+      debug('Updated SW');
+      controller.getSignal('setUpdateStatus')({ status: 'available' });
+    },
+    onInstalled: () => {
+      debug('Installed SW');
+      showNotification(
+        'CodeSandbox has been installed, it now works offline!',
+        'success'
+      );
+    },
+  });
 
   try {
     render(

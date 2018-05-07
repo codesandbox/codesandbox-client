@@ -4,6 +4,7 @@ import CrossIcon from 'react-icons/lib/md/clear';
 import EditIcon from 'react-icons/lib/go/pencil';
 import AddFileIcon from 'react-icons/lib/md/insert-drive-file';
 import AddDirectoryIcon from 'react-icons/lib/md/create-new-folder';
+import UploadFileIcon from 'react-icons/lib/md/file-upload';
 
 import Tooltip from 'common/components/Tooltip';
 
@@ -23,15 +24,31 @@ function EditIcons({
   onEdit,
   onCreateFile,
   onCreateDirectory,
+  active,
+  onUploadFile,
+  forceShow,
 }) {
+  // Phones need double click if we show elements on click, that's why we only want
+  // to show these edit icons when the user clicks and hasn't activated the module
+  if (window.__isTouch && !active && !forceShow) {
+    return null;
+  }
+
   return (
     <div className={className}>
-      {hovering && (
+      {(hovering || (window.__isTouch && active) || forceShow) && (
         <Container>
           {onEdit && (
             <Tooltip title="Edit">
               <Icon onClick={handleClick(onEdit)}>
                 <EditIcon />
+              </Icon>
+            </Tooltip>
+          )}
+          {onUploadFile && (
+            <Tooltip title="Upload Files">
+              <Icon onClick={handleClick(onUploadFile)}>
+                <UploadFileIcon />
               </Icon>
             </Tooltip>
           )}

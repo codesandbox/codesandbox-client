@@ -1,7 +1,10 @@
 // @flow
 import * as React from 'react';
+import { TextOperation } from 'ot';
 import { debounce } from 'lodash';
 import { getModulePath } from 'common/sandbox/modules';
+import { css } from 'glamor';
+import { listen } from 'codesandbox-api';
 
 import getTemplate from 'common/templates';
 import type {
@@ -13,9 +16,9 @@ import type {
 } from 'common/types';
 
 /* eslint-disable import/no-webpack-loader-syntax */
-import SyntaxHighlightWorker from 'worker-loader?name=monaco-syntax-highlighter.[hash].worker.js!./workers/syntax-highlighter';
-import LinterWorker from 'worker-loader?name=monaco-linter.[hash].worker.js!./workers/linter';
-import TypingsFetcherWorker from 'worker-loader?name=monaco-typings-ata.[hash].worker.js!./workers/fetch-dependency-typings';
+import SyntaxHighlightWorker from 'worker-loader?publicPath=/&name=monaco-syntax-highlighter.[hash].worker.js!./workers/syntax-highlighter';
+import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash].worker.js!./workers/linter';
+import TypingsFetcherWorker from 'worker-loader?publicPath=/&name=monaco-typings-ata.[hash].worker.js!./workers/fetch-dependency-typings';
 /* eslint-enable import/no-webpack-loader-syntax */
 
 import MonacoEditorComponent from './MonacoReactComponent';
@@ -27,6 +30,78 @@ import type { Props, Editor } from '../types';
 type State = {
   fuzzySearchEnabled: boolean,
 };
+
+function indexToLineAndColumn(lines, index) {
+  let offset = 0;
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    if (offset + line.length + 1 > index) {
+      return {
+        lineNumber: i + 1,
+        column: index - offset + 1,
+      };
+    }
+
+    // + 1 is for the linebreak character which is not included
+    offset += line.length + 1;
+  }
+
+  // +2 for column (length is already a +1), because +1 for Monaco and +1 for linebreak
+  return {
+    lineNumber: lines.length,
+    column: (lines[lines.length - 1] || '').length + 1,
+  };
+}
+
+const fadeIn = css.keyframes('fadeIn', {
+  // optional name
+  '0%': { opacity: 0 },
+  '100%': { opacity: 1 },
+});
+
+const fadeOut = css.keyframes('fadeOut', {
+  // optional name
+  '0%': { opacity: 1 },
+  '100%': { opacity: 0 },
+});
+
+function lineAndColumnToIndex(lines, lineNumber, column) {
+  let currentLine = 0;
+  let index = 0;
+
+  while (currentLine + 1 < lineNumber) {
+    index += lines[currentLine].length;
+    index += 1; // Linebreak character
+    currentLine += 1;
+  }
+
+  index += column - 1;
+
+  return index;
+}
+
+function getSelection(lines, selection) {
+  const startSelection = lineAndColumnToIndex(
+    lines,
+    selection.startLineNumber,
+    selection.startColumn
+  );
+  const endSelection = lineAndColumnToIndex(
+    lines,
+    selection.endLineNumber,
+    selection.endColumn
+  );
+
+  return {
+    selection:
+      startSelection === endSelection ? [] : [startSelection, endSelection],
+    cursorPosition: lineAndColumnToIndex(
+      lines,
+      selection.positionLineNumber,
+      selection.positionColumn
+    ),
+  };
+}
 
 let modelCache = {};
 
@@ -59,6 +134,8 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   sizeProbeInterval: ?number;
   editor: any;
   monaco: any;
+  receivingCode: ?boolean = false;
+  transpilationListener: ?Function;
 
   constructor(props: Props) {
     super(props);
@@ -79,6 +156,12 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
     this.resizeEditor = debounce(this.resizeEditor, 500);
     this.commitLibChanges = debounce(this.commitLibChanges, 300);
+    this.onSelectionChangedDebounced = debounce(
+      this.onSelectionChangedDebounced,
+      500
+    );
+
+    this.transpilationListener = this.setupTranspilationListener();
   }
 
   shouldComponentUpdate(nextProps: Props) {
@@ -87,6 +170,10 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       this.props.height !== nextProps.height
     ) {
       this.resizeEditor();
+    }
+
+    if (this.props.readOnly !== nextProps.readOnly && this.editor) {
+      this.editor.updateOptions({ readOnly: !!nextProps.readOnly });
     }
     return false;
   }
@@ -108,12 +195,27 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       if (this.typingsFetcherWorker) {
         this.typingsFetcherWorker.terminate();
       }
+      if (this.transpilationListener) {
+        this.transpilationListener();
+      }
       clearTimeout(this.sizeProbeInterval);
     });
 
     if (this.disposeInitializer) {
       this.disposeInitializer();
     }
+  }
+
+  setupTranspilationListener() {
+    return listen(({ type, code, path }) => {
+      if (type === 'add-extra-lib') {
+        const dtsPath = `${path}.d.ts`;
+        this.monaco.languages.typescript.typescriptDefaults._extraLibs[
+          `file:///${dtsPath}`
+        ] = code;
+        this.commitLibChanges();
+      }
+    });
   }
 
   configureEditor = async (editor: any, monaco: any) => {
@@ -128,7 +230,13 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
     requestAnimationFrame(() => {
       this.setupWorkers();
-      editor.onDidChangeModelContent(() => {
+      editor.onDidChangeModelContent(e => {
+        const { isLive, sendTransforms } = this.props;
+
+        if (isLive && sendTransforms && !this.receivingCode) {
+          this.sendChangeOperations(e);
+        }
+
         this.handleChange();
       });
     });
@@ -147,7 +255,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     await this.initializeModules(sandbox.modules);
     await this.openNewModel(currentModule.id, currentModule.title);
 
-    this.addKeyCommands();
     import(/* webpackChunkName: 'monaco-emmet' */ './enable-emmet').then(
       enableEmmet => {
         enableEmmet.default(editor, monaco, {});
@@ -199,9 +306,57 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       },
     });
 
+    editor.onDidChangeCursorSelection(selectionChange => {
+      // TODO: add another debounced action to send the current data. So we can
+      // have the correct cursor pos no matter what
+      const { onSelectionChanged, isLive } = this.props;
+      // Reason 3 is update by mouse or arrow keys
+      if (isLive) {
+        const lines = editor.getModel().getLinesContent() || [];
+        const data = {
+          primary: getSelection(lines, selectionChange.selection),
+          secondary: selectionChange.secondarySelections.map(s =>
+            getSelection(lines, s)
+          ),
+        };
+        if (
+          (selectionChange.reason === 3 ||
+            /* alt + shift + arrow keys */ selectionChange.source ===
+              'moveWordCommand' ||
+            /* click inside a selection */ selectionChange.source === 'api') &&
+          onSelectionChanged
+        ) {
+          this.onSelectionChangedDebounced.cancel();
+          onSelectionChanged({
+            selection: data,
+            moduleShortid: this.currentModule.shortid,
+          });
+        } else {
+          // This is just on typing, we send a debounced selection update as a
+          // safeguard to make sure we are in sync
+          this.onSelectionChangedDebounced({
+            selection: data,
+            moduleShortid: this.currentModule.shortid,
+          });
+        }
+      }
+    });
+
     if (this.props.onInitialized) {
       this.disposeInitializer = this.props.onInitialized(this);
     }
+
+    // TODO remove this as soon as we solve the keybinding issues
+    editor.addCommand(
+      // eslint-disable-next-line
+      this.monaco.KeyMod.CtrlCmd | this.monaco.KeyCode.KEY_S,
+      () => {
+        const { onSave } = this.props;
+        if (onSave) {
+          onSave(this.getCode());
+        }
+      }
+    );
   };
 
   setCompilerOptions = () => {
@@ -234,6 +389,8 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       suppressImplicitAnyIndexErrors:
         hasNativeTypescript && existingConfig.suppressImplicitAnyIndexErrors,
       noUnusedLocals: hasNativeTypescript && existingConfig.noUnusedLocals,
+
+      newLine: this.monaco.languages.typescript.NewLineKind.LineFeed,
     };
 
     this.monaco.languages.typescript.typescriptDefaults.setCompilerOptions(
@@ -247,6 +404,10 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       noSemanticValidation: false,
       noSyntaxValidation: !hasNativeTypescript,
     });
+  };
+
+  setReceivingCode = (receiving: boolean) => {
+    this.receivingCode = receiving;
   };
 
   setTSConfig = (config: Object) => {
@@ -268,6 +429,9 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       nextId: newModule.id,
       nextTitle: newModule.title,
     }).then(() => {
+      // Mark as receiving code so we don't send operations to others because
+      // of a module switch
+      this.receivingCode = true;
       if (newModule === this.currentModule) {
         this.changeCode(newModule.code || '');
       }
@@ -279,6 +443,253 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       if (corrections) {
         this.setCorrections(corrections);
       }
+
+      this.receivingCode = false;
+      if (this.props.onCodeReceived) {
+        // Whenever the user changes a module we set up a state that defines
+        // that the changes of code are not sent to live users. We need to reset
+        // this state when we're doing changing modules
+        this.props.onCodeReceived();
+        this.liveOperationCode = '';
+      }
+    });
+  };
+
+  onSelectionChangedDebounced = data => {
+    if (this.props.onSelectionChanged) {
+      this.props.onSelectionChanged(data);
+    }
+  };
+
+  liveOperationCode = '';
+  sendChangeOperations = changeEvent => {
+    const { sendTransforms, isLive, onCodeReceived } = this.props;
+
+    if (sendTransforms && changeEvent.changes) {
+      const otOperation = new TextOperation();
+      // TODO: add a comment explaining what "delta" is
+      let delta = 0;
+
+      this.liveOperationCode =
+        this.liveOperationCode || this.currentModule.code || '';
+      // eslint-disable-next-line no-restricted-syntax
+      for (const change of [...changeEvent.changes].reverse()) {
+        const cursorStartOffset =
+          lineAndColumnToIndex(
+            this.liveOperationCode.split(/\r?\n/),
+            change.range.startLineNumber,
+            change.range.startColumn
+          ) + delta;
+
+        const retain = cursorStartOffset - otOperation.targetLength;
+        if (retain > 0) {
+          otOperation.retain(retain);
+        }
+
+        if (change.rangeLength > 0) {
+          otOperation.delete(change.rangeLength);
+          delta -= change.rangeLength;
+        }
+
+        if (change.text) {
+          otOperation.insert(change.text);
+          delta += change.text.length;
+        }
+      }
+
+      const remaining = this.liveOperationCode.length - otOperation.baseLength;
+      if (remaining > 0) {
+        otOperation.retain(remaining);
+      }
+      this.liveOperationCode = otOperation.apply(this.liveOperationCode);
+
+      sendTransforms(otOperation);
+
+      requestAnimationFrame(() => {
+        this.liveOperationCode = '';
+      });
+    } else if (!isLive && onCodeReceived) {
+      onCodeReceived();
+    }
+  };
+
+  userClassesGenerated = {};
+  userSelectionDecorations = {};
+  updateUserSelections = (
+    userSelections: Array<
+      | {
+          userId: string,
+          selection: null,
+        }
+      | {
+          userId: string,
+          name: string,
+          selection: any,
+          color: Array<number>,
+        }
+    >
+  ) => {
+    const lines = this.editor.getModel().getLinesContent() || [];
+
+    userSelections.forEach(data => {
+      const { userId } = data;
+
+      const decorationId = this.currentModule.shortid + userId;
+      if (data.selection === null) {
+        this.userSelectionDecorations[
+          decorationId
+        ] = this.editor.deltaDecorations(
+          this.userSelectionDecorations[decorationId] || [],
+          [],
+          data.userId
+        );
+
+        return;
+      }
+
+      const decorations = [];
+      const { selection, color, name } = data;
+
+      if (selection) {
+        const addCursor = (position, className) => {
+          const cursorPos = indexToLineAndColumn(lines, position);
+
+          decorations.push({
+            range: new this.monaco.Range(
+              cursorPos.lineNumber,
+              cursorPos.column,
+              cursorPos.lineNumber,
+              cursorPos.column
+            ),
+            options: {
+              className: this.userClassesGenerated[className],
+            },
+          });
+        };
+
+        const addSelection = (start, end, className) => {
+          const from = indexToLineAndColumn(lines, start);
+          const to = indexToLineAndColumn(lines, end);
+
+          decorations.push({
+            range: new this.monaco.Range(
+              from.lineNumber,
+              from.column,
+              to.lineNumber,
+              to.column
+            ),
+            options: {
+              className: this.userClassesGenerated[className],
+            },
+          });
+        };
+
+        const prefix = color.join('-') + userId;
+        const cursorClassName = prefix + '-cursor';
+        const secondaryCursorClassName = prefix + '-secondary-cursor';
+        const selectionClassName = prefix + '-selection';
+        const secondarySelectionClassName = prefix + '-secondary-selection';
+
+        if (!this.userClassesGenerated[cursorClassName]) {
+          const nameStyles = {
+            content: name,
+            position: 'absolute',
+            top: -17,
+            backgroundColor: `rgb(${color[0]}, ${color[1]}, ${color[2]})`,
+            zIndex: 20,
+            color:
+              color[0] + color[1] + color[2] > 500
+                ? 'rgba(0, 0, 0, 0.8)'
+                : 'white',
+            padding: '2px 4px',
+            borderRadius: 2,
+            borderBottomLeftRadius: 0,
+            fontSize: '.75rem',
+            fontWeight: 600,
+            userSelect: 'none',
+            pointerEvents: 'none',
+            width: 'max-content',
+          };
+          this.userClassesGenerated[cursorClassName] = `${css({
+            backgroundColor: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.8)`,
+            width: '2px !important',
+            cursor: 'text',
+            zIndex: 30,
+            ':before': {
+              animation: `${fadeOut} 0.3s`,
+              animationDelay: '1s',
+              animationFillMode: 'forwards',
+              opacity: 1,
+              ...nameStyles,
+            },
+            ':hover': {
+              ':before': {
+                animation: `${fadeIn} 0.3s`,
+                animationFillMode: 'forwards',
+                opacity: 0,
+                ...nameStyles,
+              },
+            },
+          })}`;
+        }
+
+        if (!this.userClassesGenerated[secondaryCursorClassName]) {
+          this.userClassesGenerated[secondaryCursorClassName] = `${css({
+            backgroundColor: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.6)`,
+            width: '2px !important',
+          })}`;
+        }
+
+        if (!this.userClassesGenerated[selectionClassName]) {
+          this.userClassesGenerated[selectionClassName] = `${css({
+            backgroundColor: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.3)`,
+            borderRadius: '3px',
+            minWidth: 7.6,
+          })}`;
+        }
+
+        if (!this.userClassesGenerated[secondarySelectionClassName]) {
+          this.userClassesGenerated[secondarySelectionClassName] = `${css({
+            backgroundColor: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.2)`,
+            borderRadius: '3px',
+            minWidth: 7.6,
+          })}`;
+        }
+
+        addCursor(selection.primary.cursorPosition, cursorClassName);
+        if (selection.primary.selection.length) {
+          addSelection(
+            selection.primary.selection[0],
+            selection.primary.selection[1],
+            selectionClassName
+          );
+        }
+
+        if (selection.secondary.length) {
+          selection.secondary.forEach(s => {
+            addCursor(s.cursorPosition, secondaryCursorClassName);
+
+            if (s.selection.length) {
+              addSelection(
+                s.selection[0],
+                s.selection[1],
+                secondarySelectionClassName
+              );
+            }
+          });
+        }
+      }
+
+      // Allow new model to attach in case it's attaching
+      requestAnimationFrame(() => {
+        this.userSelectionDecorations[
+          decorationId
+        ] = this.editor.deltaDecorations(
+          this.userSelectionDecorations[decorationId] || [],
+          decorations,
+          userId
+        );
+      });
     });
   };
 
@@ -317,6 +728,55 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         this.currentModule.title,
         this.editor.getModel().getVersionId()
       );
+      this.lint(
+        code,
+        this.currentModule.title,
+        this.editor.getModel().getVersionId()
+      );
+    }
+  };
+
+  applyOperation = (operation: any) => {
+    this.liveOperationCode = '';
+    let index = 0;
+    for (let i = 0; i < operation.ops.length; i++) {
+      const op = operation.ops[i];
+      if (TextOperation.isRetain(op)) {
+        index += op;
+      } else if (TextOperation.isInsert(op)) {
+        const { lineNumber, column } = indexToLineAndColumn(
+          this.editor.getModel().getLinesContent() || [],
+          index
+        );
+        this.editor.getModel().applyEdits([
+          {
+            range: new this.monaco.Range(
+              lineNumber,
+              column,
+              lineNumber,
+              column
+            ),
+            text: op,
+            forceMoveMarkers: true,
+          },
+        ]);
+        index += op.length;
+      } else if (TextOperation.isDelete(op)) {
+        const lines = this.editor.getModel().getLinesContent() || [];
+        const from = indexToLineAndColumn(lines, index);
+        const to = indexToLineAndColumn(lines, index - op);
+        this.editor.getModel().applyEdits([
+          {
+            range: new this.monaco.Range(
+              from.lineNumber,
+              from.column,
+              to.lineNumber,
+              to.column
+            ),
+            text: '',
+          },
+        ]);
+      }
     }
   };
 
@@ -349,6 +809,12 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
           sandbox.directories,
           module.id
         );
+
+        if (path === '') {
+          // Parent dir got deleted
+          this.disposeModel(module.id);
+          return;
+        }
 
         // Check for changed path, if that's
         // the case create a new model with corresponding tag, ditch the other model
@@ -641,6 +1107,9 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         // the old extraLib definition and defining a new one.
         modelCache[currentId].lib.dispose();
         modelCache[currentId].lib = this.addLib(currentModule.code || '', path);
+
+        // Reset changes
+        this.changes = { code: '', changes: [] };
       }
     }
 
@@ -650,9 +1119,9 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
 
   updateCode(code: string = '') {
     const pos = this.editor.getPosition();
-    const lines = this.editor.getModel().getLinesContent();
+    const lines = this.editor.getModel().getLinesContent() || [];
     const lastLine = lines.length;
-    const lastLineColumn = lines[lines.length - 1].length;
+    const lastLineColumn = (lines[lines.length - 1] || '').length;
     const editOperation = {
       identifier: {
         major: 1,
@@ -662,6 +1131,11 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       range: new this.monaco.Range(0, 0, lastLine + 1, lastLineColumn),
       forceMoveMarkers: false,
     };
+
+    // For the live operation we need to send the operation based on the old code,
+    // that's why we set the 'liveOperationCode' to the last code so the operation
+    // will be applied on that code instead of `currentModule.code`
+    this.liveOperationCode = this.getCode();
 
     this.editor.getModel().pushEditOperations([], [editOperation], null);
     this.editor.setPosition(pos);
@@ -722,14 +1196,16 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   };
 
   handleChange = () => {
-    const newCode = this.editor.getModel().getValue();
+    const newCode = this.editor.getModel().getValue() || '';
     const currentModule = this.currentModule;
     const title = currentModule.title;
 
-    if (
-      currentModule.code !== newCode &&
-      !(currentModule.code === null && newCode === '')
-    ) {
+    const oldCode = this.currentModule.code || '';
+
+    const codeEquals =
+      oldCode.replace(/\r\n/g, '\n') === newCode.replace(/\r\n/g, '\n');
+
+    if (!codeEquals) {
       if (this.props.onChange) {
         this.props.onChange(newCode);
       }
@@ -816,16 +1292,6 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     }
   };
 
-  addKeyCommands = () => {
-    // Disabled, we now let keybinding manager handle this
-    // this.editor.addCommand(
-    //   this.monaco.KeyMod.CtrlCmd | this.monaco.KeyCode.KEY_S, // eslint-disable-line no-bitwise
-    //   () => {
-    //     this.handleSaveCode();
-    //   }
-    // );
-  };
-
   disposeModules = (modules: Array<Module>) => {
     if (this.editor) {
       this.editor.setModel(null);
@@ -892,31 +1358,34 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   ) => {
     // Remove the first slash, as this will otherwise create errors in monaco
     const path = getModulePath(modules, directories, module.id);
+    if (path) {
+      // We need to add this as a lib specifically to Monaco, because Monaco
+      // tends to lose type definitions if you don't touch a file for a while.
+      // Related issue: https://github.com/Microsoft/monaco-editor/issues/461
+      const lib = this.addLib(module.code || '', path);
 
-    // We need to add this as a lib specifically to Monaco, because Monaco
-    // tends to lose type definitions if you don't touch a file for a while.
-    // Related issue: https://github.com/Microsoft/monaco-editor/issues/461
-    const lib = this.addLib(module.code || '', path);
+      const mode = await this.getMode(module.title);
 
-    const mode = await this.getMode(module.title);
+      const model = this.monaco.editor.createModel(
+        module.code || '',
+        mode === 'javascript' ? 'typescript' : mode,
+        new this.monaco.Uri().with({ path, scheme: 'file' })
+      );
 
-    const model = this.monaco.editor.createModel(
-      module.code || '',
-      mode === 'javascript' ? 'typescript' : mode,
-      new this.monaco.Uri().with({ path, scheme: 'file' })
-    );
+      model.updateOptions({ tabSize: this.props.settings.tabWidth });
 
-    model.updateOptions({ tabSize: this.props.settings.tabWidth });
+      modelCache[module.id] = modelCache[module.id] || {
+        model: null,
+        decorations: [],
+        cursorPos: null,
+      };
+      modelCache[module.id].model = model;
+      modelCache[module.id].lib = lib;
 
-    modelCache[module.id] = modelCache[module.id] || {
-      model: null,
-      decorations: [],
-      cursorPos: null,
-    };
-    modelCache[module.id].model = model;
-    modelCache[module.id].lib = lib;
+      return model;
+    }
 
-    return model;
+    return undefined;
   };
 
   getModelById = async (id: string) => {
@@ -940,7 +1409,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     requestAnimationFrame(() => {
       if (modelInfo.cursorPos) {
         this.editor.setPosition(modelInfo.cursorPos);
-        this.editor.revealPositionInCenter(modelInfo.cursorPos);
+        this.editor.revealPosition(modelInfo.cursorPos);
       }
 
       this.syntaxHighlight(
@@ -1030,7 +1499,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         'Source Code Pro',
         'monospace'
       ),
-      fontLigatures: true,
+      fontLigatures: settings.enableLigatures,
       minimap: {
         enabled: false,
       },
@@ -1040,6 +1509,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       folding: true,
       glyphMargin: false,
       fixedOverflowWidgets: true,
+      readOnly: !!this.props.readOnly,
     };
   };
 

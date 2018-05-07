@@ -3,6 +3,7 @@ import * as React from 'react';
 import { ThemeProvider } from 'styled-components';
 import { Prompt } from 'react-router-dom';
 import { reaction } from 'mobx';
+import { TextOperation } from 'ot';
 import { inject, observer } from 'mobx-react';
 import getTemplateDefinition from 'common/templates';
 import type { ModuleError } from 'common/types';
@@ -11,10 +12,9 @@ import CodeEditor from 'app/components/CodeEditor';
 import type { Editor, Settings } from 'app/components/CodeEditor/types';
 import DevTools from 'app/components/Preview/DevTools';
 import FilePath from 'app/components/CodeEditor/FilePath';
+
 import Preview from './Preview';
-
 import Tabs from './Tabs';
-
 import { FullSize } from './elements';
 
 const settings = store =>
@@ -30,6 +30,7 @@ const settings = store =>
     tabWidth: store.preferences.settings.prettierConfig
       ? store.preferences.settings.prettierConfig.tabWidth || 2
       : 2,
+    enableLigatures: store.preferences.settings.enableLigatures,
   }: Settings);
 
 type Props = {
@@ -198,6 +199,72 @@ class EditorPreview extends React.Component<Props, State> {
         }
       }
     );
+    const disposeLiveHandler = reaction(
+      () => store.live.receivingCode,
+      () => {
+        if (editor.setReceivingCode) {
+          editor.setReceivingCode(store.live.receivingCode);
+        }
+      }
+    );
+
+    const disposePendingOperationHandler = reaction(
+      () =>
+        store.editor.pendingOperation &&
+        store.editor.pendingOperation.map(x => x),
+      () => {
+        if (store.editor.pendingOperation && store.live.isLive) {
+          if (editor.setReceivingCode) {
+            editor.setReceivingCode(true);
+          }
+          if (editor.applyOperation) {
+            editor.applyOperation(
+              TextOperation.fromJSON(store.editor.pendingOperation)
+            );
+          } else {
+            try {
+              if (editor.currentModule) {
+                const operation = TextOperation.fromJSON(
+                  store.editor.pendingOperation
+                );
+
+                this.props.signals.editor.codeChanged({
+                  code: operation.apply(editor.currentModule.code || ''),
+                  moduleShortid: editor.currentModule.shortid,
+                });
+              }
+            } catch (e) {
+              console.error(e);
+            }
+          }
+          if (editor.setReceivingCode) {
+            editor.setReceivingCode(false);
+          }
+          this.props.signals.live.onOperationApplied();
+        }
+      }
+    );
+
+    const updateUserSelections = () => {
+      if (store.editor.pendingUserSelections) {
+        if (editor.updateUserSelections) {
+          if (store.live.isLive) {
+            requestAnimationFrame(() => {
+              editor.updateUserSelections(store.editor.pendingUserSelections);
+              this.props.signals.live.onSelectionDecorationsApplied();
+            });
+          } else {
+            this.props.signals.live.onSelectionDecorationsApplied();
+          }
+        }
+      }
+    };
+    const disposeLiveSelectionHandler = reaction(
+      () => store.editor.pendingUserSelections.map(x => x),
+      updateUserSelections
+    );
+    updateUserSelections();
+
     const disposeModuleHandler = reaction(
       () => [store.editor.currentModule, store.editor.currentModule.code],
       ([newModule]) => {
@@ -212,6 +279,7 @@ class EditorPreview extends React.Component<Props, State> {
           const corrections = store.editor.corrections.map(e => e);
           changeModule(newModule, errors, corrections);
         } else if (editor.changeCode) {
+          // Only code changed from outside the editor
           editor.changeCode(newModule.code || '');
         }
       }
@@ -235,6 +303,9 @@ class EditorPreview extends React.Component<Props, State> {
       disposeToggleDevtools();
       disposeResizeHandler();
       disposeGlyphsHandler();
+      disposeLiveHandler();
+      disposePendingOperationHandler();
+      disposeLiveSelectionHandler();
     };
   };
 
@@ -250,6 +321,15 @@ class EditorPreview extends React.Component<Props, State> {
           )
         )
     );
+  };
+
+  sendTransforms = operation => {
+    const currentModuleShortid = this.props.store.editor.currentModuleShortid;
+
+    this.props.signals.live.onTransformMade({
+      moduleShortid: currentModuleShortid,
+      operation: operation.toJSON(),
+    });
   };
 
   render() {
@@ -326,6 +406,11 @@ class EditorPreview extends React.Component<Props, State> {
               width={editorWidth}
               height={editorHeight}
               settings={settings(store)}
+              sendTransforms={this.sendTransforms}
+              readOnly={store.live.isLive && !store.live.isCurrentEditor}
+              isLive={store.live.isLive}
+              onCodeReceived={signals.live.onCodeReceived}
+              onSelectionChanged={signals.live.onSelectionChanged}
               onNpmDependencyAdded={name => {
                 if (sandbox.owned) {
                   signals.editor.addNpmDependency({ name, isDev: true });
@@ -351,7 +436,12 @@ class EditorPreview extends React.Component<Props, State> {
                 store.editor.parsedConfigurations.typescript.parsed
               }
             />
-            <Preview width={this.state.width} height={this.state.height} />
+
+            <Preview
+              runOnClick={this.props.store.preferences.runOnClick}
+              width={this.state.width}
+              height={this.state.height}
+            />
           </div>
 
           <DevTools
@@ -360,7 +450,13 @@ class EditorPreview extends React.Component<Props, State> {
                 this.devtools = component;
               }
             }}
-            setDragging={() => this.props.signals.editor.resizingStarted()}
+            setDragging={dragging => {
+              if (dragging) {
+                this.props.signals.editor.resizingStarted();
+              } else {
+                this.props.signals.editor.resizingStopped();
+              }
+            }}
             sandboxId={sandbox.id}
             shouldExpandDevTools={store.preferences.showDevtools}
             zenMode={preferences.settings.zenMode}

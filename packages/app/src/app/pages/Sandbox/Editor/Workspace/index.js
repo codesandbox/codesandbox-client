@@ -3,18 +3,22 @@ import { inject, observer } from 'mobx-react';
 
 import VERSION from 'common/version';
 
-import workspaceItems from 'app/store/modules/workspace/items';
+import getWorkspaceItems from 'app/store/modules/workspace/items';
 import SocialInfo from 'app/components/SocialInfo';
 
 import Files from './items/Files';
 import ProjectInfo from './items/ProjectInfo';
 import GitHub from './items/GitHub';
+import Live from './items/Live';
 import Deployment from './items/Deployment';
 import ConfigurationFiles from './items/ConfigurationFiles';
 import NotOwnedSandboxInfo from './items/NotOwnedSandboxInfo';
 
 import ConnectionNotice from './ConnectionNotice';
 import Advertisement from './Advertisement';
+import WorkspaceItem from './WorkspaceItem';
+import Chat from './Chat';
+// import DowntimeNotice from './DowntimeNotice';
 
 import { Container, ContactContainer, ItemTitle } from './elements';
 
@@ -24,6 +28,7 @@ const idToItem = {
   github: GitHub,
   deploy: Deployment,
   config: ConfigurationFiles,
+  live: Live,
 };
 
 function Workspace({ store }) {
@@ -38,13 +43,19 @@ function Workspace({ store }) {
 
   const Component = sandbox.owned ? idToItem[currentItem] : NotOwnedSandboxInfo;
 
-  const item = workspaceItems.find(i => i.id === currentItem);
+  const item = getWorkspaceItems(store).find(i => i.id === currentItem);
   return (
     <Container>
       {sandbox.owned && <ItemTitle>{item.name}</ItemTitle>}
-      <div style={{ flex: 1 }}>
+      <div style={{ flex: 1, overflowY: 'auto' }}>
         <Component />
       </div>
+      {store.live.isLive &&
+        store.live.roomInfo.chatEnabled && (
+          <WorkspaceItem defaultOpen title="Chat">
+            <Chat />
+          </WorkspaceItem>
+        )}
       {!preferences.settings.zenMode && (
         <div>
           {!store.isPatron && !sandbox.owned && <Advertisement />}
@@ -61,10 +72,12 @@ function Workspace({ store }) {
                 fontWeight: 600,
                 color: 'rgba(255, 255, 255, 0.3)',
               }}
+              className="codesandbox-version"
             >
               {VERSION}
             </div>
           </ContactContainer>
+          {/* <DowntimeNotice /> */}
           <ConnectionNotice />
         </div>
       )}

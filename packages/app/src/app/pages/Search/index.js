@@ -40,7 +40,10 @@ const searchStateToUrl = (props, searchState) =>
 class Search extends React.PureComponent {
   constructor(props) {
     super(props);
-    this.state = { searchState: qs.parse(props.location.search.slice(1)) };
+    this.state = {
+      searchState: qs.parse(props.location.search.slice(1)),
+      randomSearch: getRandomSearch(),
+    };
 
     this.unlisten = this.props.history.listen((location, action) => {
       if (action === 'PUSH') {
@@ -91,7 +94,7 @@ class Search extends React.PureComponent {
                 <SearchBox
                   autoFocus
                   translations={{
-                    placeholder: `Search for a ${getRandomSearch()}...`,
+                    placeholder: `Search for a ${this.state.randomSearch}...`,
                   }}
                 />
                 <Row alignItems="flex-start">

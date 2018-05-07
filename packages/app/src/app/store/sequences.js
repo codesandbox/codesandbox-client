@@ -1,5 +1,5 @@
 import { sequence } from 'cerebral';
-import { when, push, set, equals } from 'cerebral/operators';
+import { when, push, unset, set, equals } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 import * as actions from './actions';
 import * as factories from './factories';
@@ -8,8 +8,10 @@ import {
   saveNewModule,
   createOptimisticModule,
   updateOptimisticModule,
-  removeOptimisticModule,
+  removeModule,
 } from './modules/files/actions';
+
+import { disconnect } from './modules/live/actions';
 
 export const unloadApp = actions.stopListeningToConnectionChange;
 
@@ -45,7 +47,10 @@ export const ensurePackageJSON = [
           saveNewModule,
           {
             success: [updateOptimisticModule],
-            error: [removeOptimisticModule],
+            error: [
+              set(props`moduleShortid`, props`optimisticModule.shortid`),
+              removeModule,
+            ],
           },
           set(props`title`, props`backupTitle`),
           set(props`newCode`, props`backupCode`),
@@ -153,6 +158,12 @@ export const signIn = [
 ];
 
 export const signOut = [
+  set(state`workspace.openedWorkspaceItem`, 'files'),
+  when(state`live.isLive`),
+  {
+    true: disconnect,
+    false: [],
+  },
   actions.signOut,
   set(state`jwt`, null),
   actions.removeJwtFromStorage,
@@ -164,6 +175,7 @@ export const signOut = [
   set(state`user.jwt`, null),
   set(state`user.badges`, []),
   set(state`user.integrations`, {}),
+  unset(state`user`),
 ];
 
 export const getZeitUserDetails = [
@@ -252,18 +264,42 @@ export const loadSandboxPage = factories.withLoadApp([]);
 
 export const loadGitHubPage = factories.withLoadApp([]);
 
+export const resetLive = [
+  set(state`live.isLive`, false),
+  set(state`live.error`, null),
+  set(state`live.isLoading`, false),
+  set(state`live.isOwner`, false),
+  set(state`live.roomInfo`, undefined),
+];
+
+export const setSandbox = [
+  when(state`live.isLoading`),
+  {
+    true: [],
+    false: [
+      when(state`live.isLive`),
+      {
+        true: resetLive,
+        false: [],
+      },
+    ],
+  },
+  set(state`editor.currentId`, props`sandbox.id`),
+  actions.setCurrentModuleShortid,
+  actions.setMainModuleShortid,
+  actions.setInitialTab,
+  actions.setUrlOptions,
+  actions.setSandboxConfigOptions,
+  actions.setWorkspace,
+];
+
 export const loadSandbox = factories.withLoadApp([
   set(state`editor.error`, null),
   when(state`editor.sandboxes.${props`id`}`),
   {
     true: [
-      set(state`editor.currentId`, props`id`),
       set(props`sandbox`, state`editor.sandboxes.${props`id`}`),
-      actions.setCurrentModuleShortid,
-      actions.setMainModuleShortid,
-      actions.setInitialTab,
-      actions.setUrlOptions,
-      actions.setWorkspace,
+      setSandbox,
     ],
     false: [
       set(state`editor.isLoading`, true),
@@ -276,12 +312,7 @@ export const loadSandbox = factories.withLoadApp([
       {
         success: [
           set(state`editor.sandboxes.${props`sandbox.id`}`, props`sandbox`),
-          set(state`editor.currentId`, props`sandbox.id`),
-          actions.setCurrentModuleShortid,
-          actions.setMainModuleShortid,
-          actions.setInitialTab,
-          actions.setUrlOptions,
-          actions.setWorkspace,
+          setSandbox,
           ensurePackageJSON,
         ],
         notFound: set(state`editor.notFound`, true),
@@ -291,3 +322,5 @@ export const loadSandbox = factories.withLoadApp([
   },
   set(state`editor.isLoading`, false),
 ]);
+
+export const setUpdateStatus = [set(state`updateStatus`, props`status`)];

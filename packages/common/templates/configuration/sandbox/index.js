@@ -1,6 +1,5 @@
 // @flow
 import type { ConfigurationFile } from '../types';
-import ui from './ui';
 
 const config: ConfigurationFile = {
   title: 'sandbox.config.json',
@@ -8,12 +7,12 @@ const config: ConfigurationFile = {
   description: 'Configuration specific to the current sandbox.',
   moreInfoUrl:
     'https://codesandbox.io/docs/configuration#sandbox-configuration',
-  ui,
   getDefaultCode: () =>
     JSON.stringify(
       {
         infiniteLoopProtection: true,
         hardReloadOnChange: false,
+        view: 'browser',
       },
       null,
       2

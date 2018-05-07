@@ -16,7 +16,7 @@ import FuzzySearch from '../FuzzySearch';
 import { Container, CodeContainer } from './elements';
 
 // eslint-disable-next-line
-import LinterWorker from 'worker-loader?name=monaco-linter.[hash].worker.js!../Monaco/workers/linter';
+import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash].worker.js!../Monaco/workers/linter';
 
 import type { Props, Editor } from '../types';
 
@@ -165,7 +165,27 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
           cm.display.input.textarea.value &&
           cm.display.input.textarea.value.slice(-1).match(filter)
         ) {
-          cm.showHint({ hint: this.server.getHint, completeSingle: false });
+          cm.showHint({
+            hint: this.server.getHint,
+            completeSingle: false,
+            customKeys: {
+              Up: (_cm, handle) => handle.moveFocus(-1),
+              Down: (_cm, handle) => handle.moveFocus(1),
+              PageUp: (_cm, handle) =>
+                handle.moveFocus(-handle.menuSize() + 1, true),
+              PageDown: (_cm, handle) =>
+                handle.moveFocus(handle.menuSize() - 1, true),
+              Home: (_cm, handle) => handle.setFocus(0),
+              End: (_cm, handle) => handle.setFocus(handle.length - 1),
+              Enter: (_cm, handle) => handle.pick(),
+              Tab: (_cm, handle) => handle.pick(),
+              // We disable this in vimMode, because we want vim to go from
+              // insert mode to normal mode when you press enter. This does that
+              ...(settings.vimMode
+                ? {}
+                : { Esc: (_cm, handle) => handle.close() }),
+            },
+          });
         }
       }
     };
@@ -274,8 +294,10 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
 
   changeCode = (code: string = '') => {
     const pos = this.codemirror.getCursor();
-    this.codemirror.setValue(code);
     this.codemirror.setCursor(pos);
+    if (this.getCode() !== code) {
+      this.codemirror.setValue(code);
+    }
   };
 
   getMode = async (title: string) => {
@@ -345,7 +367,7 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
       highlightLines(this.codemirror, this.props.highlightedLines);
     }
 
-    this.codemirror.on('change', this.handleChange);
+    this.codemirror.on('changes', this.handleChange);
     this.changeSettings(this.settings);
   };
 
@@ -383,7 +405,9 @@ class CodemirrorEditor extends React.Component<Props, State> implements Editor {
 
   setCurrentModule = (moduleId: string) => {
     this.closeFuzzySearch();
-    this.codemirror.focus();
+    if (!window.__isTouch) {
+      this.codemirror.focus();
+    }
     if (this.props.onModuleChange) {
       this.props.onModuleChange(moduleId);
     }

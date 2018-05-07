@@ -1,6 +1,4 @@
 // @flow
-import VueIcon from 'common/components/logos/Vue';
-
 import Template from './template';
 import { decorateSelector } from '../theme';
 import configurations from './configuration';
@@ -28,7 +26,6 @@ export default new VueTemplate(
   'Vue',
   'https://github.com/vuejs/vue-cli',
   'vue',
-  VueIcon,
   decorateSelector(() => '#41B883'),
   {
     showOnHomePage: true,

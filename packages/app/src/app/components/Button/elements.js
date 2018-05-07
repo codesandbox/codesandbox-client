@@ -2,7 +2,8 @@ import styled, { css, keyframes } from 'styled-components';
 import Link from 'react-router-dom/Link';
 import theme from 'common/theme';
 
-const getBackgroundColor = ({ disabled, red, secondary }) => {
+const getBackgroundColor = ({ disabled, red, secondary, danger }) => {
+  if (danger) return `background-color: ${theme.dangerBackground()}`;
   if (disabled) return `background: ${theme.background2.darken(0.1)()}`;
   if (secondary) return `background: #3A4B5D`;
   if (red)

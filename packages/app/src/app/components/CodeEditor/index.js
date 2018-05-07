@@ -5,6 +5,7 @@ import Loadable from 'react-loadable';
 import Loading from 'app/components/Loading';
 import Title from 'app/components/Title';
 import SubTitle from 'app/components/SubTitle';
+import getUI from 'common/templates/configuration/ui';
 import Centered from 'common/components/flex/Centered';
 import Margin from 'common/components/spacing/Margin';
 import isImage from 'common/utils/is-image';
@@ -85,7 +86,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
       module.id
     );
     const config = template.configurationFiles[modulePath];
-    if (config && config.ui && this.state.showConfigUI) {
+    if (config && getUI(config.type) && this.state.showConfigUI) {
       return (
         <Configuration
           {...props}
@@ -125,7 +126,9 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
     }
 
     const Editor =
-      settings.vimMode || settings.codeMirror ? CodeMirror : Monaco;
+      (settings.vimMode || settings.codeMirror) && !props.isLive
+        ? CodeMirror
+        : Monaco;
 
     return (
       <div
@@ -140,7 +143,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
         }}
       >
         {config &&
-          (config.ui ? (
+          (getUI(config.type) ? (
             <Icons>
               <Tooltip title="Switch to UI Configuration">
                 <Icon onClick={this.toggleConfigUI}>

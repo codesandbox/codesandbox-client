@@ -4,25 +4,43 @@ import styled from 'styled-components';
 import media from '../../../utils/media';
 
 const Container = styled.div`
-  display: flex;
-  flex-direction: column;
   position: relative;
-
-  align-items: center;
-  text-align: center;
-
   color: white;
+  padding: 1.5rem 1rem;
+  border: 0 solid rgba(255, 255, 255, 0.12);
+  border-top-width: 1px;
 
-  margin: 1rem;
+  &:first-child {
+    border-top-width: 0;
+  }
 
-  width: calc(25% - 2rem);
+  ${media.fromTablet`
+    width: calc(50%);
+    border-right-width: 1px;
 
-  ${media.tablet`
-    width: calc(50% - 2rem);
+    &:nth-child(-n+2) {
+      border-top-width: 0;
+    }
+  
+    &:nth-child(2n) {
+      border-right-width: 0;
+    }
   `};
 
-  ${media.phone`
-    width: 100%;
+  ${media.fromDesktop`
+    width: calc(25%);
+
+    &:nth-child(2n) {
+      border-right-width: 1px;
+    }
+    
+    &:nth-child(-n+4) {
+      border-top-width: 0;
+    }
+
+    &:nth-child(4n) {
+      border-right-width: 0;
+    }
   `};
 
   svg {
@@ -64,8 +82,8 @@ const Description = styled.div`
 
 const NewBadge = styled.div`
   position: absolute;
-  top: -0.9rem;
-  right: 5.2rem;
+  top: 1.25rem;
+  left: 3.6rem;
   padding: 0 5px;
   background-image: linear-gradient(
     45deg,
@@ -83,8 +101,8 @@ const NewBadge = styled.div`
 const PatronBadge = styled.a`
   display: block;
   position: absolute;
-  top: -0.9rem;
-  right: 4.2rem;
+  top: 1.25rem;
+  left: 3.6rem;
   padding: 0 5px;
   background-image: linear-gradient(-225deg, #ffc766 0%, #f6b053 100%);
 

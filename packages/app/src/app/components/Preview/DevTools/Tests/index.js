@@ -1,8 +1,7 @@
 // @flow
 /* eslint-disable no-param-reassign */
 import React from 'react';
-import { actions, listen } from 'codesandbox-api';
-import { dispatch } from 'app/components/Preview';
+import { actions, dispatch, listen } from 'codesandbox-api';
 import SplitPane from 'react-split-pane';
 
 import immer from 'immer';
@@ -25,7 +24,8 @@ export type Status = 'idle' | 'running' | 'pass' | 'fail';
 type Props = {
   hidden: boolean,
   sandboxId: string,
-  updateStatus: (
+  standalone?: boolean,
+  updateStatus?: (
     type: 'success' | 'warning' | 'error' | 'info' | 'clear',
     count?: number
   ) => void,
@@ -42,7 +42,7 @@ export type TestError = Error & {
       lineNumber: number,
       content: string,
       highlight: boolean,
-    }>,
+    }> | null,
   }>,
 };
 
@@ -87,6 +87,10 @@ class Tests extends React.Component<Props, State> {
 
   componentDidMount() {
     this.listener = listen(this.handleMessage);
+
+    if (this.props.standalone) {
+      this.runAllTests();
+    }
   }
 
   componentWillUnmount() {
@@ -117,13 +121,17 @@ class Tests extends React.Component<Props, State> {
       switch (data.event) {
         case 'initialize_tests': {
           this.currentDescribeBlocks = [];
-          this.props.updateStatus('clear');
+          if (this.props.updateStatus) {
+            this.props.updateStatus('clear');
+          }
           this.setState(INITIAL_STATE);
           break;
         }
         case 'total_test_start': {
           this.currentDescribeBlocks = [];
-          this.props.updateStatus('clear');
+          if (this.props.updateStatus) {
+            this.props.updateStatus('clear');
+          }
           this.setState({
             ...this.state,
             running: true,
@@ -144,13 +152,15 @@ class Tests extends React.Component<Props, State> {
             f => this.getStatus(this.state.files[f]) === 'pass'
           ).length;
 
-          if (failingTests > 0) {
-            this.props.updateStatus('error', failingTests);
-          } else if (passingTests === files.length) {
-            this.props.updateStatus('success', passingTests);
-          } else {
-            // Not all tests are run
-            this.props.updateStatus('warning', files.length - passingTests);
+          if (this.props.updateStatus) {
+            if (failingTests > 0) {
+              this.props.updateStatus('error', failingTests);
+            } else if (passingTests === files.length) {
+              this.props.updateStatus('success', passingTests);
+            } else {
+              // Not all tests are run
+              this.props.updateStatus('warning', files.length - passingTests);
+            }
           }
 
           break;
@@ -223,6 +233,13 @@ class Tests extends React.Component<Props, State> {
 
           this.setState(
             immer(this.state, state => {
+              if (!state.files[test.path]) {
+                state.files[test.path] = {
+                  tests: {},
+                  fileName: test.path,
+                };
+              }
+
               const currentTest =
                 state.files[test.path].tests[testName.join('||||')];
               if (!currentTest) {
@@ -325,7 +342,7 @@ class Tests extends React.Component<Props, State> {
   };
 
   toggleWatching = () => {
-    dispatch(this.props.sandboxId, {
+    dispatch({
       type: 'set-test-watching',
       watching: !this.state.watching,
     });
@@ -334,7 +351,7 @@ class Tests extends React.Component<Props, State> {
 
   runAllTests = () => {
     this.setState({ files: {} }, () => {
-      dispatch(this.props.sandboxId, {
+      dispatch({
         type: 'run-all-tests',
       });
     });
@@ -346,7 +363,7 @@ class Tests extends React.Component<Props, State> {
         state.files[file.fileName].tests = {};
       }),
       () => {
-        dispatch(this.props.sandboxId, {
+        dispatch({
           type: 'run-tests',
           path: file.fileName,
         });
@@ -355,7 +372,7 @@ class Tests extends React.Component<Props, State> {
   };
 
   openFile = (path: string) => {
-    dispatch(this.props.sandboxId, actions.editor.openModule(path));
+    dispatch(actions.editor.openModule(path));
   };
 
   render() {

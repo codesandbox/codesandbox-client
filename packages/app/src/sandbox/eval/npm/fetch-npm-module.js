@@ -30,6 +30,10 @@ export function getCombinedMetas() {
   return combinedMetas;
 }
 
+export function setCombinedMetas(givenCombinedMetas: Meta) {
+  combinedMetas = givenCombinedMetas;
+}
+
 function normalize(
   depName: string,
   files: MetaFiles,
@@ -50,10 +54,28 @@ function normalize(
   return fileObject;
 }
 
+function normalizeJSDelivr(
+  depName: string,
+  files: any,
+  fileObject: Meta = {},
+  rootPath
+) {
+  for (let i = 0; i < files.length; i += 1) {
+    const absolutePath = pathUtils.join(rootPath, files[i].name);
+    fileObject[absolutePath] = true; // eslint-disable-line no-param-reassign
+  }
+
+  return fileObject;
+}
+
+const TEMP_USE_JSDELIVR = true;
+
 function getUnpkgUrl(name: string, version: string) {
   const nameWithoutAlias = name.replace(/\/\d*\.\d*\.\d*$/, '');
 
-  return `https://unpkg.com/${nameWithoutAlias}@${version}`;
+  return TEMP_USE_JSDELIVR
+    ? `https://cdn.jsdelivr.net/npm/${nameWithoutAlias}@${version}`
+    : `https://unpkg.com/${nameWithoutAlias}@${version}`;
 }
 
 function getMeta(name: string, version: string) {
@@ -64,7 +86,11 @@ function getMeta(name: string, version: string) {
   }
 
   metas[id] = window
-    .fetch(`https://unpkg.com/${nameWithoutAlias}@${version}/?meta`)
+    .fetch(
+      TEMP_USE_JSDELIVR
+        ? `https://data.jsdelivr.com/v1/package/npm/${nameWithoutAlias}@${version}/flat`
+        : `https://unpkg.com/${nameWithoutAlias}@${version}/?meta`
+    )
     .then(x => x.json());
 
   return metas[id];
@@ -75,13 +101,14 @@ function downloadDependency(depName: string, depVersion: string, path: string) {
     return packages[path];
   }
 
-  const relativePath = path.replace(
-    new RegExp(
-      `.*${pathUtils.join('/node_modules', depName)}`.replace('/', '\\/')
-    ),
-    ''
-  );
-
+  const relativePath = path
+    .replace(
+      new RegExp(
+        `.*${pathUtils.join('/node_modules', depName)}`.replace('/', '\\/')
+      ),
+      ''
+    )
+    .replace(/#/g, '%23');
   const isGitHub = /\//.test(depVersion);
 
   const url = isGitHub
@@ -270,7 +297,8 @@ export default async function fetchModule(
 
   const meta = await getMeta(dependencyName, version);
 
-  const normalizedMeta = normalize(
+  const normalizeFunction = TEMP_USE_JSDELIVR ? normalizeJSDelivr : normalize;
+  const normalizedMeta = normalizeFunction(
     dependencyName,
     meta.files,
     {},
@@ -290,7 +318,7 @@ export default async function fetchModule(
 
   if (foundPath === '//empty.js') {
     return {
-      path: '//empty.js',
+      path: '/node_modules/empty/index.js',
       code: 'module.exports = {};',
       requires: [],
     };
