@@ -3,8 +3,6 @@ import { flattenDeep, uniq, values, isEqual } from 'lodash';
 import resolve from 'browser-resolve';
 import localforage from 'localforage';
 
-import VERSION from 'common/version';
-
 import * as pathUtils from 'common/utils/path';
 import _debug from 'app/utils/debug';
 
@@ -12,6 +10,7 @@ import type { Module } from './entities/module';
 import TranspiledModule from './transpiled-module';
 import type { SerializedTranspiledModule } from './transpiled-module';
 import Preset from './presets';
+import { SCRIPT_VERSION } from '../';
 import fetchModule, {
   getCombinedMetas,
   setCombinedMetas,
@@ -58,16 +57,6 @@ export type Manifest = {
 const NODE_LIBS = ['dgram', 'net', 'tls', 'fs', 'module', 'child_process'];
 const debug = _debug('cs:compiler:manager');
 
-localforage.config({
-  name: 'CodeSandboxApp',
-  storeName: 'sandboxes', // Should be alphanumeric, with underscores.
-  description:
-    'Cached transpilations of the sandboxes, for faster initialization time.',
-});
-
-// Prewarm store
-localforage.keys();
-
 export default class Manager {
   id: string;
   transpiledModules: {
@@ -95,7 +84,7 @@ export default class Manager {
 
   // All paths are resolved at least twice: during transpilation and evaluation.
   // We can improve performance by almost 2x in this scenario if we cache the lookups
-  cachedPaths: { [path: string]: string };
+  cachedPaths: { [path: string]: { [path: string]: string } };
 
   configurations: Configurations;
 
@@ -354,6 +343,14 @@ export default class Manager {
     return result;
   }
 
+  verifyTreeTranspiled() {
+    return Promise.all(
+      this.getTranspiledModules()
+        .filter(tModule => !tModule.source)
+        .map(tModule => tModule.transpile(this))
+    );
+  }
+
   clearCompiledCache() {
     this.getTranspiledModules().map(tModule => tModule.resetCompilation());
   }
@@ -425,8 +422,12 @@ export default class Manager {
     const aliasedPath = this.getAliasedDependencyPath(path, currentPath);
     const shimmedPath = coreLibraries[aliasedPath] || aliasedPath;
 
-    const pathId = shimmedPath + currentPath;
-    const cachedPath = this.cachedPaths[pathId];
+    const dirredPath = pathUtils.dirname(currentPath);
+
+    if (!this.cachedPaths[dirredPath]) {
+      this.cachedPaths[dirredPath] = {};
+    }
+    const cachedPath = this.cachedPaths[dirredPath][shimmedPath];
     try {
       let resolvedPath;
 
@@ -451,7 +452,7 @@ export default class Manager {
           ),
         });
 
-        this.cachedPaths[pathId] = resolvedPath;
+        this.cachedPaths[dirredPath][shimmedPath] = resolvedPath;
       }
 
       if (NODE_LIBS.includes(shimmedPath) || resolvedPath === '//empty.js') {
@@ -464,7 +465,12 @@ export default class Manager {
 
       return this.transpiledModules[resolvedPath].module;
     } catch (e) {
-      delete this.cachedPaths[pathId];
+      if (
+        this.cachedPaths[dirredPath] &&
+        this.cachedPaths[dirredPath][shimmedPath]
+      ) {
+        delete this.cachedPaths[dirredPath][shimmedPath];
+      }
 
       let connectedPath = /^(\w|@\w)/.test(shimmedPath)
         ? pathUtils.join('/node_modules', shimmedPath)
@@ -699,7 +705,11 @@ export default class Manager {
     Object.keys(this.transpiledModules).forEach(path => {
       Object.keys(this.transpiledModules[path].tModules).forEach(query => {
         const tModule = this.transpiledModules[path].tModules[query];
-        serializedTModules[tModule.getId()] = tModule.serialize();
+
+        // Only save modules that are not precomputed
+        if (tModule.module.requires == null) {
+          serializedTModules[tModule.getId()] = tModule.serialize();
+        }
       });
     });
 
@@ -708,7 +718,8 @@ export default class Manager {
     return {
       transpiledModules: serializedTModules,
       cachedPaths: this.cachedPaths,
-      version: VERSION,
+      version: SCRIPT_VERSION,
+      timestamp: new Date().getTime(),
       configurations: this.configurations,
       meta: getCombinedMetas(),
       dependenciesQuery,
@@ -729,32 +740,8 @@ export default class Manager {
     return dependenciesToQuery(normalizedDependencies);
   }
 
-  /**
-   * Generate a JSON structure out of this manager that can be used to load
-   * the manager later on. This is useful for faster initial loading.
-   */
-  async save() {
+  async load(data: Object) {
     try {
-      const serialized = this.serialize();
-      if (process.env.NODE_ENV === 'development') {
-        debug(
-          'Saving cache of ' +
-            (JSON.stringify(serialized).length / 1024).toFixed(2) +
-            ' kb'
-        );
-      }
-      await localforage.setItem(this.id, serialized);
-    } catch (e) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error(e);
-      }
-      this.clearCache();
-    }
-  }
-
-  async load() {
-    try {
-      const data = await localforage.getItem(this.id);
       if (data) {
         this.clearCache();
         const {
@@ -768,6 +755,7 @@ export default class Manager {
           transpiledModules: { [id: string]: SerializedTranspiledModule },
           cachedPaths: { [path: string]: string },
           version: string,
+          timestamp: number,
           configurations: Object,
           dependenciesQuery: string,
           meta: any,
@@ -776,7 +764,7 @@ export default class Manager {
         // Only use the cache if the cached version was cached with the same
         // version of the compiler and dependencies haven't changed
         if (
-          version === VERSION &&
+          version === SCRIPT_VERSION &&
           dependenciesQuery === this.getDependencyQuery()
         ) {
           setCombinedMetas(meta);
@@ -799,7 +787,7 @@ export default class Manager {
           Object.keys(tModules).forEach(id => {
             const tModule = tModules[id];
 
-            tModule.load(serializedTModules[id], tModules);
+            tModule.load(serializedTModules[id], tModules, this);
           });
           debug(`Loaded cache.`);
         }
