@@ -19,13 +19,14 @@ localforage.config({
 // Prewarm store
 localforage.keys();
 
-function shouldSaveOnlineCache(firstRun: boolean) {
+function shouldSaveOnlineCache(firstRun: boolean, sandboxId: string) {
   if (!firstRun) {
     return false;
   }
 
   if (!window.__SANDBOX_DATA__) {
-    return true;
+    // TODO remove this check
+    return sandboxId.charCodeAt(0) < 105;
   }
 
   return false;
@@ -60,7 +61,7 @@ export async function saveCache(
     this.clearCache();
   }
 
-  if (shouldSaveOnlineCache(firstRun)) {
+  if (shouldSaveOnlineCache(firstRun, sandboxId)) {
     const stringifiedManagerState = JSON.stringify(managerState);
 
     debug(
