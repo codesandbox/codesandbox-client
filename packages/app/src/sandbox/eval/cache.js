@@ -25,8 +25,9 @@ function shouldSaveOnlineCache(firstRun: boolean, sandboxId: string) {
   }
 
   if (!window.__SANDBOX_DATA__) {
+    // Only enable for 50% of the sandboxes
     // TODO remove this check
-    return sandboxId.charCodeAt(0) < 105;
+    return sandboxId.charCodeAt(0) < 112;
   }
 
   return false;
