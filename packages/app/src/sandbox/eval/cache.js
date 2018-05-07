@@ -80,7 +80,11 @@ export async function saveCache(
           'Content-Type': 'application/json',
         },
       })
-      .then(x => x.json());
+      .then(x => x.json())
+      .catch(e => {
+        console.error('Something went wrong while saving cache.');
+        console.error(e);
+      });
   }
 
   return Promise.resolve(false);
