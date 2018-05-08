@@ -57,7 +57,7 @@ export async function saveCache(
     if (process.env.NODE_ENV === 'development') {
       console.error(e);
     }
-    this.clearCache();
+    manager.clearCache();
   }
 
   if (shouldSaveOnlineCache(firstRun)) {
