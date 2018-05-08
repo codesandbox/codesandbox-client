@@ -46,7 +46,7 @@ class Search extends React.PureComponent {
     };
 
     this.unlisten = this.props.history.listen((location, action) => {
-      if (action === 'PUSH') {
+      if (action === 'PUSH' || action === 'POP') {
         this.setState({
           searchState: qs.parse(location.search.slice(1)),
         });
