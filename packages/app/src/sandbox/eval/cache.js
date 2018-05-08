@@ -19,15 +19,13 @@ localforage.config({
 // Prewarm store
 localforage.keys();
 
-function shouldSaveOnlineCache(firstRun: boolean, sandboxId: string) {
+function shouldSaveOnlineCache(firstRun: boolean) {
   if (!firstRun) {
     return false;
   }
 
   if (!window.__SANDBOX_DATA__) {
-    // Only enable for 50% of the sandboxes
-    // TODO remove this check
-    return sandboxId.charCodeAt(0) < 112;
+    return true;
   }
 
   return false;
@@ -62,7 +60,7 @@ export async function saveCache(
     this.clearCache();
   }
 
-  if (shouldSaveOnlineCache(firstRun, sandboxId)) {
+  if (shouldSaveOnlineCache(firstRun)) {
     const stringifiedManagerState = JSON.stringify(managerState);
 
     debug(
