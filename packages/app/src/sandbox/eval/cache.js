@@ -9,15 +9,20 @@ const debug = _debug('cs:compiler:cache');
 
 const host = process.env.CODESANDBOX_HOST;
 
-localforage.config({
-  name: 'CodeSandboxApp',
-  storeName: 'sandboxes', // Should be alphanumeric, with underscores.
-  description:
-    'Cached transpilations of the sandboxes, for faster initialization time.',
-});
+try {
+  localforage.config({
+    name: 'CodeSandboxApp',
+    storeName: 'sandboxes', // Should be alphanumeric, with underscores.
+    description:
+      'Cached transpilations of the sandboxes, for faster initialization time.',
+  });
 
-// Prewarm store
-localforage.keys();
+  // Prewarm store
+  localforage.keys();
+} catch (e) {
+  console.warn('Problems initializing IndexedDB store.');
+  console.warn(e);
+}
 
 function shouldSaveOnlineCache(firstRun: boolean) {
   if (!firstRun) {
@@ -107,24 +112,31 @@ function findCacheToUse(cache1, cache2) {
 }
 
 export async function consumeCache(manager: Manager) {
-  const cacheData = window.__SANDBOX_DATA__;
-  const localData = await localforage.getItem(manager.id);
+  try {
+    const cacheData = window.__SANDBOX_DATA__;
+    const localData = await localforage.getItem(manager.id);
 
-  const cache = findCacheToUse(cacheData && cacheData.data, localData);
-  if (cache) {
-    const version = SCRIPT_VERSION;
+    const cache = findCacheToUse(cacheData && cacheData.data, localData);
+    if (cache) {
+      const version = SCRIPT_VERSION;
 
-    if (cache.version === version) {
-      debug(
-        `Loading cache from ${cache === localData ? 'localStorage' : 'API'}`,
-        cache
-      );
+      if (cache.version === version) {
+        debug(
+          `Loading cache from ${cache === localData ? 'localStorage' : 'API'}`,
+          cache
+        );
 
-      await manager.load(cache);
+        await manager.load(cache);
 
-      return true;
+        return true;
+      }
     }
-  }
 
-  return false;
+    return false;
+  } catch (e) {
+    console.warn('Problems consuming cache');
+    console.warn(e);
+
+    return false;
+  }
 }
