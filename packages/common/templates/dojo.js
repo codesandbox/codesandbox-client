@@ -24,5 +24,9 @@ export default new DojoTemplate(
   'https://github.com/dojo/cli-create-app',
   'github/dojo/dojo-codesandbox-template',
   decorateSelector(() => '#D3471C'),
-  { showOnHomePage: true, isTypeScript: true }
+  {
+    showOnHomePage: true,
+    showCube: false,
+    isTypescript: true,
+  }
 );

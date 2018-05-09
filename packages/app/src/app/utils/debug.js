@@ -1,5 +1,8 @@
 const getDebugger = () => {
-  if (process.env.NODE_ENV === 'production') {
+  if (
+    process.env.NODE_ENV === 'production' &&
+    document.location.search.indexOf('debug') === -1
+  ) {
     // Return a debugger that will log to sentry
     return (key: string) => (message: string) => {
       if (typeof window.Raven === 'object') {

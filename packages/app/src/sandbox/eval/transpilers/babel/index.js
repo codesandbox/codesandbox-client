@@ -1,6 +1,8 @@
 // @flow
 import BabelWorker from 'worker-loader?publicPath=/&name=babel-transpiler.[hash].worker.js!./worker/index.js';
 
+import isESModule from '../../utils/is-es-module';
+import regexGetRequireStatements from './worker/simple-get-require-statements';
 import getBabelConfig from './babel-parser';
 import WorkerTranspiler from '../worker-transpiler';
 import { type LoaderContext } from '../../transpiled-module';
@@ -33,9 +35,32 @@ class BabelTranspiler extends WorkerTranspiler {
     return window.babelworkers.pop();
   }
 
-  doTranspilation(code: string, loaderContext: LoaderContext): Promise<void> {
+  doTranspilation(
+    code: string,
+    loaderContext: LoaderContext
+  ): Promise<{ transpiledCode: string }> {
     return new Promise((resolve, reject) => {
       const path = loaderContext.path;
+
+      // When we find a node_module that already is commonjs we will just get the
+      // dependencies from the file and return the same code. We get the dependencies
+      // with a regex since commonjs modules just have `require` and regex is MUCH
+      // faster than generating an AST from the code.
+      if (path.startsWith('/node_modules') && !isESModule(code)) {
+        regexGetRequireStatements(code).forEach(dependency => {
+          if (dependency.isGlob) {
+            loaderContext.addDependenciesInDirectory(dependency.path);
+          } else {
+            loaderContext.addDependency(dependency.path);
+          }
+        });
+
+        resolve({
+          transpiledCode: code,
+        });
+        return;
+      }
+
       const configs = loaderContext.options.configurations;
 
       const foundConfig = configs.babel && configs.babel.parsed;

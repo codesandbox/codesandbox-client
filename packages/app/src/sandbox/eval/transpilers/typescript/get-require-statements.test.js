@@ -14,6 +14,21 @@ describe('get-require-statements', () => {
     expect(getRequireStatements(sourceFile, ts)).toMatchSnapshot();
   }
 
+  function testRegex(code) {
+    const results = [];
+
+    code.split('\n').forEach(line => {
+      const regex = /import\s.*['|"|`](.*)['|"|`]|require\((.*)\)|import\((.*)\)/;
+
+      const [, ...results] = line.match(regex);
+
+      const path = results.find(Boolean);
+      results.push({ type: 'direct', path });
+    });
+
+    return results;
+  }
+
   it('can find simple requires', () => {
     const code = `
       import React from 'react';
@@ -44,6 +59,14 @@ describe('get-require-statements', () => {
     const code = `
       const page = import('./' + this.props.page);
       const page2 = require('./page/' + this.props.page2);
+    `;
+
+    testAst(code);
+  });
+
+  it('can find reexports', () => {
+    const code = `
+      export * from './Hello';
     `;
 
     testAst(code);

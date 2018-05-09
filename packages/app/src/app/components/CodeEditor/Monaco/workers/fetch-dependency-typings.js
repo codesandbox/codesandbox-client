@@ -173,15 +173,19 @@ function fetchFromMeta(dependency, version, fetchedPaths) {
   return doFetch(depUrl)
     .then(response => JSON.parse(response))
     .then(meta => {
-      const filterAndFlatten = files =>
+      const filterAndFlatten = (files, filter) =>
         files.reduce((paths, file) => {
-          if (/\.d\.ts$/.test(file.name)) {
+          if (filter.test(file.name)) {
             paths.push(file.name);
           }
           return paths;
         }, []);
 
-      const dtsFiles = filterAndFlatten(meta.files);
+      let dtsFiles = filterAndFlatten(meta.files, /\.d\.ts$/);
+      if (dtsFiles.length === 0) {
+        // if no .d.ts files found, fallback to .ts files
+        dtsFiles = filterAndFlatten(meta.files, /\.ts$/);
+      }
 
       if (dtsFiles.length === 0) {
         throw new Error('No inline typings found.');

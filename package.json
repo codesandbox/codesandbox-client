@@ -6,7 +6,7 @@
   "scripts": {
     "build": "yarn build:deps && yarn build:prod",
     "build:prod": "lerna run build --scope app --scope homepage --parallel && gulp",
-    "build:deps": "lerna run build:dev --scope codesandbox-{api,browserfs}",
+    "build:deps": "lerna run build:dev --scope codesandbox-api --scope codesandbox-browserfs",
     "start": "yarn build:deps && lerna run start --scope app --stream",
     "start:fast": "lerna run start --scope app --stream",
     "start:home": "lerna run start --scope homepage --stream",

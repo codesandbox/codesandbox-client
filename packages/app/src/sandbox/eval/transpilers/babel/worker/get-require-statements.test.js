@@ -58,6 +58,14 @@ describe('get-require-statements', () => {
     testAst(code);
   });
 
+  it('can find reexports', () => {
+    const code = `
+      export * from './Hello';
+    `;
+
+    testAst(code);
+  });
+
   it('can work with real life code', () => {
     const code = `
     import React from 'react'

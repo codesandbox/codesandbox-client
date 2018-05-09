@@ -16,9 +16,11 @@ let iframeReference = null;
 
 function changeText(text: string) {
   if (iframeReference) {
-    iframeReference.contentDocument
-      .getElementsByClassName('text')
-      .item(0).textContent = text;
+    if (iframeReference.contentDocument) {
+      iframeReference.contentDocument
+        .getElementsByClassName('text')
+        .item(0).textContent = text;
+    }
   }
 }
 

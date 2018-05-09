@@ -5,6 +5,7 @@ import typescriptTranspiler from '../../transpilers/typescript';
 import rawTranspiler from '../../transpilers/raw';
 import jsonTranspiler from '../../transpilers/json';
 import stylesTranspiler from '../../transpilers/style';
+import dojoStylesTranspiler from './transpilers/style';
 import babelTranspiler from '../../transpilers/babel';
 
 export default function initialize() {
@@ -47,7 +48,7 @@ export default function initialize() {
   ]);
 
   preset.registerTranspiler(module => /\.m\.css$/.test(module.path), [
-    { transpiler: stylesTranspiler, options: { module: true } },
+    { transpiler: dojoStylesTranspiler },
   ]);
 
   preset.registerTranspiler(module => /\.css$/.test(module.path), [
