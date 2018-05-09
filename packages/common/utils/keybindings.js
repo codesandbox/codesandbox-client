@@ -70,7 +70,7 @@ export const KEYBINDINGS = {
   },
 
   'editor.switch-next-tab': {
-    title: 'Switch Next Tab',
+    title: 'Switch To Next Tab',
     type: 'View',
     bindings: [['Control', 'S']],
     signal: 'editor.switchTab',
@@ -78,7 +78,7 @@ export const KEYBINDINGS = {
   },
 
   'editor.switch-previous-tab': {
-    title: 'Switch Previous Tab',
+    title: 'Switch To Previous Tab',
     type: 'View',
     bindings: [['Control', 'Z']],
     signal: 'editor.switchTab',
