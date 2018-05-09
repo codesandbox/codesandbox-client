@@ -144,7 +144,7 @@ module.exports = merge(commonConfig, {
           },
         },
         {
-          urlPattern: /$\.worker\.js$/,
+          urlPattern: /\.worker\.js$/,
           handler: 'cacheFirst',
           options: {
             cache: {
