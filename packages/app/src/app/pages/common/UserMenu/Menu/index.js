@@ -2,10 +2,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import UserIcon from 'react-icons/lib/ti/user';
-import LogoIcon from 'common/components/Logo';
 import ExitIcon from 'react-icons/lib/md/exit-to-app';
 import FolderIcon from 'react-icons/lib/md/folder';
 import SettingsIcon from 'react-icons/lib/md/settings';
+import InfoIcon from '../../../../pages/Sandbox/Editor/Navigation/InfoIcon';
 
 import {
   profileUrl,
@@ -32,7 +32,7 @@ function Menu({ username, openPreferences, openStorageManagement, signOut }) {
       >
         <Item>
           <Icon>
-            <LogoIcon width={12} height={12} />
+            <InfoIcon />
           </Icon>My Sandboxes
         </Item>
       </Link>
