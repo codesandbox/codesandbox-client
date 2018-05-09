@@ -128,16 +128,32 @@ module.exports = merge(commonConfig, {
       },
       minify: true,
       // For unknown URLs, fallback to the index page
-      navigateFallback: 'https://new.codesandbox.io/frame.html',
-      staticFileGlobs: ['www/frame.html'],
-      stripPrefix: 'www/',
+      staticFileGlobs: [], // don't pre-cache anything
       // Ignores URLs starting from /__ (useful for Firebase):
       // https://github.com/facebookincubator/create-react-app/issues/2237#issuecomment-302693219
-      navigateFallbackWhitelist: [/^(?!\/__).*/],
       // Don't precache sourcemaps (they're large) and build asset manifest:
-      staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
       maximumFileSizeToCacheInBytes: 5242880,
+      directoryIndex: false,
+      verbose: true,
       runtimeCaching: [
+        {
+          urlPattern: /^https:\/\/\w+\.codesandbox\.\w+\/$/, // request to /
+          handler: 'networkFirst',
+          options: {
+            debug: true,
+          },
+        },
+        {
+          urlPattern: /\.worker\.js$/,
+          handler: 'cacheFirst',
+          options: {
+            cache: {
+              maxEntries: 50,
+              name: 'workers-cache',
+            },
+            debug: true,
+          },
+        },
         {
           urlPattern: /api\/v1\/sandboxes/,
           handler: 'networkFirst',
@@ -146,6 +162,7 @@ module.exports = merge(commonConfig, {
               maxEntries: 50,
               name: 'sandboxes-cache',
             },
+            debug: true,
           },
         },
         {
@@ -156,12 +173,13 @@ module.exports = merge(commonConfig, {
               maxAgeSeconds: 60 * 60 * 24,
               name: 'dependency-version-cache',
             },
+            debug: true,
           },
         },
         {
           // These should be dynamic, since it's not loaded from this domain
           // But from the root domain
-          urlPattern: /codesandbox\.io\/static\/js\//,
+          urlPattern: /codesandbox\.\w+\/static\/(js|browserfs)\//,
           handler: 'fastest',
           options: {
             cache: {
@@ -169,6 +187,7 @@ module.exports = merge(commonConfig, {
               maxAgeSeconds: 60 * 60 * 24,
               name: 'static-root-cache',
             },
+            debug: true,
           },
         },
         {
@@ -180,6 +199,7 @@ module.exports = merge(commonConfig, {
               maxAgeSeconds: 60 * 60 * 24 * 7,
               name: 'dependency-url-generator-cache',
             },
+            debug: true,
           },
         },
         {
@@ -190,6 +210,7 @@ module.exports = merge(commonConfig, {
               maxAgeSeconds: 60 * 60 * 24 * 7,
               name: 'dependency-files-cache',
             },
+            debug: true,
           },
         },
         {
@@ -201,6 +222,7 @@ module.exports = merge(commonConfig, {
               name: 'unpkg-dep-cache',
               maxAgeSeconds: 60 * 60 * 24 * 7,
             },
+            debug: true,
           },
         },
         {
@@ -212,6 +234,7 @@ module.exports = merge(commonConfig, {
               name: 'jsdelivr-dep-cache',
               maxAgeSeconds: 60 * 60 * 24 * 7,
             },
+            debug: true,
           },
         },
         {
@@ -223,6 +246,7 @@ module.exports = merge(commonConfig, {
               name: 'cloudflare-cache',
               maxAgeSeconds: 60 * 60 * 24 * 7,
             },
+            debug: true,
           },
         },
       ],
