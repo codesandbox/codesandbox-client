@@ -109,7 +109,7 @@ export function removeExternalResource({ api, state, props, path }) {
     .catch(error => path.error({ error }));
 }
 
-export function toggleMarkAsTemplate({ api, state, props, path }) {
+export function toggleMarkAsTemplate({ api, state, props }) {
   const sandboxId = state.get('editor.currentId');
   return api
     .post(`/sandboxes/${sandboxId}/template`, {

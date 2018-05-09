@@ -17,6 +17,7 @@ import createEditableTags from 'app/components/EditableTags';
 import Tags from 'app/components/Tags';
 
 import getTemplateDefinition from 'common/templates';
+import Switch from 'common/components/Switch';
 import { WorkspaceInputContainer } from '../elements';
 
 import {
@@ -31,8 +32,6 @@ import {
   PropertyName,
   AlignLeft,
 } from './elements';
-
-import Switch from 'common/components/Switch';
 
 class Project extends React.Component {
   state = {
