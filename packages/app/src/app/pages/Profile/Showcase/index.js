@@ -35,7 +35,10 @@ class Showcase extends React.Component {
       return (
         <Centered vertical horizontal>
           <Margin top={4}>
-            <ErrorTitle>This user doesn{"'"}t have a sandbox yet</ErrorTitle>
+            <ErrorTitle>
+              {isCurrentUser ? "You don't" : "This user doesn't"} have any
+              sandboxes yet
+            </ErrorTitle>
           </Margin>
         </Centered>
       );

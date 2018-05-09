@@ -39,7 +39,7 @@ export default function initialize() {
     'vue-cli',
     ['vue', 'json', 'js'],
     {
-      '@': '{{sandboxRoot}}',
+      '@': '{{sandboxRoot}}/src',
       vue$: 'vue/dist/vue.common.js',
     },
     {

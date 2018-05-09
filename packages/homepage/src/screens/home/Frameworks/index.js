@@ -52,7 +52,9 @@ const Container = styled.div`
     margin-top: 1rem;
     height: 340px;
   `};
-`;
+`.withComponent(({ color, children, ...rest }) => (
+  <div {...rest}>{children}</div>
+));
 
 const Pane = styled(MaxWidth)`
   color: rgba(255, 255, 255, 0.8);
@@ -313,7 +315,7 @@ export default class Frameworks extends React.Component {
               }}
               updateCheck={template}
             >
-              <TemplateName color={template.color}>
+              <TemplateName>
                 <TemplateIcon width={96} height={96} />
                 <h4>{template.niceName}</h4>
               </TemplateName>
@@ -339,7 +341,7 @@ export default class Frameworks extends React.Component {
               </div>
 
               <HeaderTitle>Supported Loaders</HeaderTitle>
-              <TemplateIcons color={template.color}>
+              <TemplateIcons>
                 {TEMPLATE_SUPPORT[template.name].loaders.map((data, i) => (
                   <FileType
                     key={template.name + data.title}

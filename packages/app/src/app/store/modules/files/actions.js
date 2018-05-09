@@ -135,6 +135,9 @@ export async function uploadFiles({ api, props, path }) {
     });
   } catch (error) {
     console.error(error);
+    if (error.message.indexOf('413') !== -1) {
+      return path.discardError();
+    }
     return path.error({ error: error.message });
   }
 }

@@ -128,16 +128,28 @@ module.exports = merge(commonConfig, {
       },
       minify: true,
       // For unknown URLs, fallback to the index page
-      navigateFallback: 'https://new.codesandbox.io/frame.html',
-      staticFileGlobs: ['www/frame.html'],
-      stripPrefix: 'www/',
+      staticFileGlobs: [], // don't pre-cache anything
       // Ignores URLs starting from /__ (useful for Firebase):
       // https://github.com/facebookincubator/create-react-app/issues/2237#issuecomment-302693219
-      navigateFallbackWhitelist: [/^(?!\/__).*/],
       // Don't precache sourcemaps (they're large) and build asset manifest:
-      staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
       maximumFileSizeToCacheInBytes: 5242880,
+      directoryIndex: false,
+      verbose: true,
       runtimeCaching: [
+        {
+          urlPattern: /^https:\/\/\w+\.codesandbox\.\w+\/$/, // request to /
+          handler: 'networkFirst',
+        },
+        {
+          urlPattern: /\.worker\.js$/,
+          handler: 'cacheFirst',
+          options: {
+            cache: {
+              maxEntries: 50,
+              name: 'workers-cache',
+            },
+          },
+        },
         {
           urlPattern: /api\/v1\/sandboxes/,
           handler: 'networkFirst',
@@ -161,7 +173,7 @@ module.exports = merge(commonConfig, {
         {
           // These should be dynamic, since it's not loaded from this domain
           // But from the root domain
-          urlPattern: /codesandbox\.io\/static\/js\//,
+          urlPattern: /codesandbox\.\w+\/static\/(js|browserfs)\//,
           handler: 'fastest',
           options: {
             cache: {

@@ -20,22 +20,45 @@ export async function createApiData({ props, state }) {
   const { contents } = props;
   const sandboxId = state.get('editor.currentId');
   const sandbox = state.get(`editor.sandboxes.${sandboxId}`);
-  let apiData = {};
+  let apiData = {
+    files: [],
+  };
   const filePaths = Object.keys(contents.files);
+
+  let packageJSON = {};
+  const projectPackage = contents.files['package.json'];
+
+  if (projectPackage) {
+    const data = await projectPackage.async('text'); // eslint-disable-line no-await-in-loop
+
+    const parsed = JSON.parse(data);
+    packageJSON = parsed;
+  }
+  packageJSON = omitHomepage(packageJSON);
+
+  // We force the sandbox id, so ZEIT will always group the deployments to a
+  // single sandbox
+  packageJSON.name = `csb-${sandbox.id}`;
+
+  apiData.name = `csb-${sandbox.id}`;
+  apiData.deploymentType = 'NPM';
+  apiData.public = true;
+
+  apiData.files.push({
+    file: 'package.json',
+    data: JSON.stringify(packageJSON, null, 2),
+  });
+
   for (let i = 0; i < filePaths.length; i += 1) {
     const filePath = filePaths[i];
     const file = contents.files[filePath];
 
-    if (!file.dir) {
-      apiData[filePath] = await file.async('text'); // eslint-disable-line no-await-in-loop
+    if (!file.dir && filePath !== 'package.json') {
+      const data = await file.async('text'); // eslint-disable-line no-await-in-loop
+
+      apiData.files.push({ file: filePath, data });
     }
   }
-
-  apiData.package = omitHomepage(JSON.parse(apiData['package.json']));
-  // We force the sandbox id, so ZEIT will always group the deployments to a
-  // single sandbox
-  apiData.package.name = `csb-${sandbox.id}`;
-  delete apiData['package.json'];
 
   const template = getTemplate(sandbox.template);
 
@@ -53,7 +76,7 @@ export function postToZeit({ http, path, props, state }) {
   return http
     .request({
       method: 'POST',
-      url: 'https://api.zeit.co/now/deployments',
+      url: 'https://api.zeit.co/v3/now/deployments',
       body: apiData,
       headers: { Authorization: `bearer ${token}` },
     })

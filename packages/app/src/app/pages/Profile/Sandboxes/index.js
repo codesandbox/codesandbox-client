@@ -4,7 +4,7 @@ import { inject, observer } from 'mobx-react';
 import Button from 'app/components/Button';
 import SandboxList from 'app/components/SandboxList';
 
-import { Navigation, Notice } from './elements';
+import { Navigation, Notice, NoSandboxes } from './elements';
 
 const PER_PAGE_COUNT = 15;
 
@@ -71,6 +71,13 @@ class Sandboxes extends React.Component {
     if (isLoadingSandboxes || !sandboxes || !sandboxes.get(page))
       return <div />;
 
+    const sandboxesPage = sandboxes.get(page);
+
+    if (sandboxesPage.length === 0)
+      return (
+        <NoSandboxes source={source} isCurrentUser={isProfileCurrentUser} />
+      );
+
     return (
       <div>
         {isProfileCurrentUser && (
@@ -81,7 +88,7 @@ class Sandboxes extends React.Component {
         )}
         <SandboxList
           isCurrentUser={isProfileCurrentUser}
-          sandboxes={sandboxes.get(page)}
+          sandboxes={sandboxesPage}
           onDelete={source === 'currentSandboxes' && this.deleteSandbox}
         />
         <Navigation>

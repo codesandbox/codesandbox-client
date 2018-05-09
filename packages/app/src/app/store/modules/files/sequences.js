@@ -106,6 +106,7 @@ export const uploadFiles = [
   {
     success: [set(state`uploadedFiles`, null), massCreateModules],
     error: [addNotification(props`error`, 'error')],
+    discardError: [],
   },
   closeModal,
 ];

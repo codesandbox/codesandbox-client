@@ -8,5 +8,5 @@ export default new Template(
   'https://github.com/sveltejs/svelte',
   'svelte',
   decorateSelector(() => '#AA1E1E'),
-  { showOnHomePage: true, distDir: 'public' }
+  { showOnHomePage: true, showCube: false, distDir: 'public' }
 );

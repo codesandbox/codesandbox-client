@@ -84,6 +84,7 @@
     "build:webpack-release": "webpack -p --config src/webpack.config.js",
     "watch:webpack-release": "webpack -w -p --config src/webpack.config.js",
     "build:all": "npm-run-all --parallel build:tsc build:scripts --sequential build:rollup --parallel build:webpack build:webpack-release",
+    "build:dev": "npm-run-all --parallel build:tsc build:scripts --sequential build:rollup --parallel build:webpack build:webpack-release --sequential script:make_dist",
     "start": "npm-run-all build --parallel watch:tsc watch:scripts watch:rollup watch:webpack watch:webpack-release",
     "test:build:tsc": "tsc -p test",
     "test:watch:tsc": "tsc --watch -p test",

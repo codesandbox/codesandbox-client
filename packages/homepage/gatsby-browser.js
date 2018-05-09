@@ -1,2 +1,7 @@
-import 'core-js/es6/map';
-import 'core-js/es6/set';
+import detectOldBrowser from 'common/detect-old-browser';
+
+exports.onClientEntry = () => {
+  if (detectOldBrowser()) {
+    require('babel-polyfill');
+  }
+};

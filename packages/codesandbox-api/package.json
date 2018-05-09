@@ -23,6 +23,7 @@
     "prebuild": "rimraf dist",
     "build:clean": "tsc && rollup -c",
     "build": "tsc && rollup -c && rimraf compiled && typedoc --out dist/docs --target es6 --theme minimal src",
+    "build:dev": "tsc && rollup -c",
     "start": "nodemon --watch \"src/**/*.ts\" -e ts --exec \"npm run build:clean\"",
     "test": "echo TODO",
     "test:watch": "jest --watch",

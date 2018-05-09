@@ -22,6 +22,7 @@ import {
 } from './boilerplates';
 
 import loadDependencies from './npm';
+import { consumeCache, saveCache } from './eval/cache';
 import getDefinition from '../../../common/templates/index';
 
 let initializedResizeListener = false;
@@ -246,8 +247,7 @@ async function updateManager(
   if (firstLoad && newManager) {
     // We save the state of transpiled modules, and load it here again. Gives
     // faster initial loads.
-
-    await manager.load();
+    await consumeCache(manager);
   }
 
   manager.updateConfigurations(configurations);
@@ -395,16 +395,18 @@ async function compile({
 
     dispatch({ type: 'status', status: 'transpiling' });
 
+    await manager.verifyTreeTranspiled();
     await manager.preset.setup(manager);
     await manager.transpileModules(managerModuleToTranspile);
+
+    const managerTranspiledModuleToTranspile = manager.getTranspiledModule(
+      managerModuleToTranspile
+    );
 
     debug(`Transpilation time ${Date.now() - t}ms`);
 
     dispatch({ type: 'status', status: 'evaluating' });
 
-    const managerTranspiledModuleToTranspile = manager.getTranspiledModule(
-      managerModuleToTranspile
-    );
     if (!skipEval) {
       resetScreen();
 
@@ -533,7 +535,7 @@ async function compile({
       type: 'success',
     });
 
-    manager.save();
+    saveCache(sandboxId, managerModuleToTranspile, manager, firstLoad);
   } catch (e) {
     console.log('Error in sandbox:');
     console.error(e);

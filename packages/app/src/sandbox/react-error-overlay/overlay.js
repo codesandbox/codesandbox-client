@@ -162,7 +162,7 @@ function disposeCurrentView(force: boolean) {
   additionalReference = null;
 }
 
-function unmount(force: boolean = false) {
+function unmount(force: boolean = true) {
   disposeCurrentView(force);
   drainErrors();
   errorReferences = [];

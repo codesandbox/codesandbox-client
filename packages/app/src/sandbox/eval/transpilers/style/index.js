@@ -4,16 +4,10 @@ import Transpiler from '../';
 import { type LoaderContext } from '../../transpiled-module';
 
 import insertCss from './utils/insert-css';
+import toDefinition from './utils/to-definition';
 import getModules from './get-modules';
 
 const getStyleId = id => id + '-css'; // eslint-disable-line
-
-function classesToDefinition(classes): string {
-  return Object.keys(classes).reduce(
-    (previous, className) => previous + `export const ${className}: string;\n`,
-    ''
-  );
-}
 
 class StyleTranspiler extends Transpiler {
   constructor() {
@@ -42,7 +36,7 @@ class StyleTranspiler extends Transpiler {
         dispatch({
           type: 'add-extra-lib',
           path,
-          code: classesToDefinition(exportTokens),
+          code: toDefinition(exportTokens),
         });
         return Promise.resolve({ transpiledCode: result });
       });

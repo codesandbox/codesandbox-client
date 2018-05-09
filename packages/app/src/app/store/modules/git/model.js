@@ -39,6 +39,7 @@ export default {
       newBranch: types.string,
       sha: types.string,
       url: types.string,
+      prURL: types.maybe(types.string),
     })
   ),
   isCommiting: types.boolean,
