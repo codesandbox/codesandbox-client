@@ -34,6 +34,14 @@ export const closeTab = [
   },
 ];
 
+export const switchTab = [
+  hasEnoughTabs,
+  {
+    false: [],
+    true: [actions.switchToTab],
+  },
+];
+
 export const clearErrors = [
   set(state`editor.errors`, []),
   set(state`editor.corrections`, []),

@@ -370,3 +370,24 @@ export function setPreviewBounds({ props, state }) {
     state.set(`editor.previewWindow.height`, props.height);
   }
 }
+
+export function switchToTab({ state, props }) {
+  const tabs = state.get('editor.tabs');
+
+  const currentModuleShortid = state.get(`editor.currentModuleShortid`);
+  const currentTabIndex = tabs.findIndex(
+    t => t.moduleShortid === currentModuleShortid
+  );
+
+  const switchToTabIndex = (tabLength, currentIdx) => {
+    if (props.shouldSwitchNext) {
+      return currentIdx >= tabLength ? 0 : currentIdx + 1;
+    }
+    return currentIdx <= 0 ? tabs.length - 1 : currentIdx - 1;
+  };
+
+  const index = switchToTabIndex(tabs.length - 1, currentTabIndex);
+  const moduleShortid = state.get(`editor.tabs.${index}.moduleShortid`);
+
+  state.set('editor.currentModuleShortid', moduleShortid);
+}

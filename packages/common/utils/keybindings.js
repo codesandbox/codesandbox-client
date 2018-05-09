@@ -69,6 +69,22 @@ export const KEYBINDINGS = {
     }),
   },
 
+  'editor.switch-next-tab': {
+    title: 'Switch Next Tab',
+    type: 'View',
+    bindings: [['Control', 'S']],
+    signal: 'editor.switchTab',
+    payload: () => ({ shouldSwitchNext: true }),
+  },
+
+  'editor.switch-previous-tab': {
+    title: 'Switch Previous Tab',
+    type: 'View',
+    bindings: [['Control', 'Z']],
+    signal: 'editor.switchTab',
+    payload: () => ({ shouldSwitchNext: false }),
+  },
+
   'editor.zen-mode': {
     title: 'Toggle Zen Mode',
     type: 'View',

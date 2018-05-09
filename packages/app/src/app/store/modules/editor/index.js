@@ -85,5 +85,6 @@ export default Module({
     quickActionsClosed: sequences.closeQuickActions,
     setPreviewBounds: sequences.setPreviewBounds,
     setPreviewContent: sequences.setPreviewContent,
+    switchTab: sequences.switchTab,
   },
 });
