@@ -706,8 +706,12 @@ export default class Manager {
       Object.keys(this.transpiledModules[path].tModules).forEach(query => {
         const tModule = this.transpiledModules[path].tModules[query];
 
-        // Only save modules that are not precomputed
-        if (tModule.module.requires == null) {
+        if (
+          !this.manifest.contents[tModule.module.path] ||
+          (tModule.module.path.endsWith('.js') &&
+            tModule.module.requires == null)
+        ) {
+          // Only save modules that are not precomputed
           serializedTModules[tModule.getId()] = tModule.serialize();
         }
       });
@@ -715,13 +719,20 @@ export default class Manager {
 
     const dependenciesQuery = this.getDependencyQuery();
 
+    const meta = {};
+    Object.keys(getCombinedMetas() || {}).forEach(p => {
+      const dir = pathUtils.dirname(p.replace('/node_modules', ''));
+      meta[dir] = meta[dir] || [];
+      meta[dir].push(pathUtils.basename(p));
+    });
+
     return {
       transpiledModules: serializedTModules,
       cachedPaths: this.cachedPaths,
       version: SCRIPT_VERSION,
       timestamp: new Date().getTime(),
       configurations: this.configurations,
-      meta: getCombinedMetas(),
+      meta,
       dependenciesQuery,
     };
   }
@@ -767,7 +778,13 @@ export default class Manager {
           version === SCRIPT_VERSION &&
           dependenciesQuery === this.getDependencyQuery()
         ) {
-          setCombinedMetas(meta);
+          const combinedMetas = {};
+          Object.keys(meta).forEach(dir => {
+            meta[dir].forEach(file => {
+              combinedMetas[`/node_modules` + dir + '/' + file] = true;
+            });
+          });
+          setCombinedMetas(combinedMetas);
 
           this.cachedPaths = cachedPaths;
           this.configurations = configurations;
@@ -794,7 +811,8 @@ export default class Manager {
       }
     } catch (e) {
       if (process.env.NODE_ENV === 'development') {
-        console.error(e);
+        console.warn('Problems parsing cache');
+        console.warn(e);
       }
     }
     this.clearCache();
