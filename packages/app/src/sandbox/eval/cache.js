@@ -1,7 +1,12 @@
 // Responsible for consuming and syncing with the server/local cache
 import localforage from 'localforage';
 import _debug from 'app/utils/debug';
+import { decompress, compress } from 'lz-string';
 import type { default as Manager } from './manager';
+
+import CompressWorker from 'workerize-loader!./compress-worker';
+
+const compressor = new CompressWorker();
 
 import { SCRIPT_VERSION } from '../';
 
@@ -57,6 +62,7 @@ export async function saveCache(
           'kb to localStorage'
       );
     }
+
     localforage.setItem(manager.id, managerState);
   } catch (e) {
     if (process.env.NODE_ENV === 'development') {
@@ -66,11 +72,14 @@ export async function saveCache(
   }
 
   if (shouldSaveOnlineCache(firstRun)) {
-    const stringifiedManagerState = JSON.stringify(managerState);
+    debug('Sending cache data to worker to compress');
+    const compressedData = await compressor.compress(
+      JSON.stringify(managerState)
+    );
 
     debug(
       'Saving cache of ' +
-        (stringifiedManagerState.length / 1024).toFixed(2) +
+        (compressedData.length / 1024).toFixed(2) +
         'kb to CodeSandbox API'
     );
 
@@ -79,7 +88,7 @@ export async function saveCache(
         method: 'POST',
         body: JSON.stringify({
           version: SCRIPT_VERSION,
-          data: stringifiedManagerState,
+          data: compressedData,
         }),
         headers: {
           'Content-Type': 'application/json',
@@ -113,7 +122,9 @@ function findCacheToUse(cache1, cache2) {
 
 export async function consumeCache(manager: Manager) {
   try {
-    const cacheData = window.__SANDBOX_DATA__;
+    const cacheData =
+      window.__SANDBOX_DATA__ &&
+      JSON.parse(decompress(window.__SANDBOX_DATA__));
     const localData = await localforage.getItem(manager.id);
 
     const cache = findCacheToUse(cacheData && cacheData.data, localData);
@@ -136,6 +147,12 @@ export async function consumeCache(manager: Manager) {
   } catch (e) {
     console.warn('Problems consuming cache');
     console.warn(e);
+
+    try {
+      localforage.removeItem(manager.id);
+    } catch (e) {
+      /* no */
+    }
 
     return false;
   }

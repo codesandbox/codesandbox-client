@@ -484,6 +484,10 @@ export default class TranspiledModule {
    * @param {*} manager
    */
   async transpile(manager: Manager) {
+    if (this.source) {
+      return this;
+    }
+
     if (manager.transpileJobs[this.getId()]) {
       // Is already being transpiled
       return this;
@@ -491,10 +495,6 @@ export default class TranspiledModule {
 
     // eslint-disable-next-line
     manager.transpileJobs[this.getId()] = true;
-
-    if (this.source) {
-      return this;
-    }
 
     this.hasMissingDependencies = false;
 
