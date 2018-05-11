@@ -38,6 +38,8 @@ const ESLINT_PLUGIN_VUE_INDEX = `module.exports = {
   }
 }`;
 
+const sepRe = `\\${path.sep}`; // path separator regex
+
 module.exports = {
   entry: SANDBOX_ONLY
     ? {
@@ -72,7 +74,6 @@ module.exports = {
 
   output: {
     path: paths.appBuild,
-    pathinfo: true,
     publicPath,
   },
 
@@ -84,7 +85,7 @@ module.exports = {
         exclude: [
           /eslint\.4\.1\.0\.min\.js$/,
           /typescriptServices\.js$/,
-          new RegExp('babel-runtime\\' + path.sep),
+          new RegExp(`babel-runtime${sepRe}`),
         ],
         loader: 'happypack/loader',
       },
@@ -92,9 +93,15 @@ module.exports = {
       // Transpile node dependencies, node deps are often not transpiled for IE11
       {
         test: [
-          /\/node_modules\/.*ansi-styles/,
-          /\/node_modules\/.*chalk/,
-          /\/node_modules\/.*jest/,
+          new RegExp(`${sepRe}node_modules${sepRe}.*ansi-styles`),
+          new RegExp(`${sepRe}node_modules${sepRe}.*chalk`),
+          new RegExp(`${sepRe}node_modules${sepRe}.*jest`),
+          new RegExp(
+            `${sepRe}node_modules${sepRe}vue-template-es2015-compiler`
+          ),
+          new RegExp(
+            `${sepRe}node_modules${sepRe}babel-plugin-transform-vue-jsx`
+          ),
         ],
         loader: 'babel-loader',
         query: {
@@ -120,9 +127,7 @@ module.exports = {
 
       // `eslint-plugin-vue/lib/index.js` depends on `fs` module we cannot use in browsers, so needs shimming.
       {
-        test: new RegExp(
-          `eslint-plugin-vue\\${path.sep}lib\\${path.sep}index\\.js$`
-        ),
+        test: new RegExp(`eslint-plugin-vue${sepRe}lib${sepRe}index\\.js$`),
         loader: 'string-replace-loader',
         options: {
           search: '[\\s\\S]+', // whole file.
@@ -133,9 +138,7 @@ module.exports = {
       // `eslint` has some dynamic `require(...)`.
       // Delete those.
       {
-        test: new RegExp(
-          `eslint\\${path.sep}lib\\${path.sep}(?:linter|rules)\\.js$`
-        ),
+        test: new RegExp(`eslint${sepRe}lib${sepRe}(?:linter|rules)\\.js$`),
         loader: 'string-replace-loader',
         options: {
           search: '(?:\\|\\||(\\())\\s*require\\(.+?\\)',
@@ -156,9 +159,7 @@ module.exports = {
       },
       // Patch for `babel-eslint`
       {
-        test: new RegExp(
-          `babel-eslint\\${path.sep}lib\\${path.sep}index\\.js$`
-        ),
+        test: new RegExp(`babel-eslint${sepRe}lib${sepRe}index\\.js$`),
         loader: 'string-replace-loader',
         options: {
           search: '[\\s\\S]+', // whole file.
@@ -169,7 +170,7 @@ module.exports = {
       },
       {
         test: new RegExp(
-          `babel-eslint\\${path.sep}lib\\${path.sep}patch-eslint-scope\\.js$`
+          `babel-eslint${sepRe}lib${sepRe}patch-eslint-scope\\.js$`
         ),
         loader: 'string-replace-loader',
         options: {
@@ -388,7 +389,7 @@ module.exports = {
     // us from using eslint in the browser, therefore we need to stop it!
     !SANDBOX_ONLY &&
       new webpack.NormalModuleReplacementPlugin(
-        new RegExp(['eslint', 'lib', 'load-rules'].join(`\\${path.sep}`)),
+        new RegExp(['eslint', 'lib', 'load-rules'].join(sepRe)),
         path.join(paths.config, 'stubs/load-rules.compiled.js')
       ),
 
