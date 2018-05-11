@@ -19,7 +19,6 @@ import resolveDependency from './loaders/dependency-resolver';
 import evaluate from './loaders/eval';
 
 import type { default as Manager } from './manager';
-import { ignoreNextCache } from './cache';
 import HMR from './hmr';
 
 const debug = _debug('cs:compiler:transpiled-module');
@@ -657,7 +656,7 @@ export default class TranspiledModule {
           if (manager.isFirstLoad) {
             // We're in a reload loop! Ignore all caches!
 
-            ignoreNextCache();
+            manager.clearCache();
           }
 
           location.reload();
