@@ -79,6 +79,7 @@ export default class Manager {
   hardReload: boolean;
   hmrStatus: 'idle' | 'check' | 'apply' | 'fail' | 'dispose' = 'idle';
   testRunner: TestRunner;
+  isFirstLoad: boolean;
 
   // List of modules that are being transpiled, to prevent duplicate jobs.
   transpileJobs: { [transpiledModuleId: string]: true };

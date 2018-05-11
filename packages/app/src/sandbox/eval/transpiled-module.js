@@ -654,7 +654,11 @@ export default class TranspiledModule {
           : this.isEntry && !this.isTestFile;
 
         if (shouldReloadPage) {
-          ignoreNextCache();
+          if (manager.isFirstLoad) {
+            // We're in a reload loop! Ignore all caches!
+
+            ignoreNextCache();
+          }
 
           location.reload();
           return {};
