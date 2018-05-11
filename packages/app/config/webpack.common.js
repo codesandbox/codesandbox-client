@@ -72,7 +72,6 @@ module.exports = {
 
   output: {
     path: paths.appBuild,
-    pathinfo: true,
     publicPath,
   },
 
