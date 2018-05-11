@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "build": "yarn build:deps && yarn build:prod",
-    "build:prod": "yarn build:clean && lerna run build --scope app --scope homepage --parallel && gulp",
+    "build:prod": "lerna run build --scope app --scope homepage --parallel && gulp",
     "build:clean": "lerna run build:clean --scope app --scope homepage && rimraf www",
     "build:deps": "lerna run build:dev --scope codesandbox-api --scope codesandbox-browserfs",
     "start": "yarn build:deps && lerna run start --scope app --stream",
