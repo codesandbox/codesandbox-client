@@ -139,6 +139,9 @@ module.exports = merge(commonConfig, {
         {
           urlPattern: /^https:\/\/\w+\.codesandbox\.\w+\/$/, // request to /
           handler: 'networkFirst',
+          options: {
+            debug: true,
+          },
         },
         {
           urlPattern: /\.worker\.js$/,
@@ -148,6 +151,7 @@ module.exports = merge(commonConfig, {
               maxEntries: 50,
               name: 'workers-cache',
             },
+            debug: true,
           },
         },
         {
@@ -158,6 +162,7 @@ module.exports = merge(commonConfig, {
               maxEntries: 50,
               name: 'sandboxes-cache',
             },
+            debug: true,
           },
         },
         {
@@ -168,6 +173,7 @@ module.exports = merge(commonConfig, {
               maxAgeSeconds: 60 * 60 * 24,
               name: 'dependency-version-cache',
             },
+            debug: true,
           },
         },
         {
@@ -181,6 +187,7 @@ module.exports = merge(commonConfig, {
               maxAgeSeconds: 60 * 60 * 24,
               name: 'static-root-cache',
             },
+            debug: true,
           },
         },
         {
@@ -192,6 +199,7 @@ module.exports = merge(commonConfig, {
               maxAgeSeconds: 60 * 60 * 24 * 7,
               name: 'dependency-url-generator-cache',
             },
+            debug: true,
           },
         },
         {
@@ -202,6 +210,7 @@ module.exports = merge(commonConfig, {
               maxAgeSeconds: 60 * 60 * 24 * 7,
               name: 'dependency-files-cache',
             },
+            debug: true,
           },
         },
         {
@@ -213,6 +222,7 @@ module.exports = merge(commonConfig, {
               name: 'unpkg-dep-cache',
               maxAgeSeconds: 60 * 60 * 24 * 7,
             },
+            debug: true,
           },
         },
         {
@@ -224,6 +234,7 @@ module.exports = merge(commonConfig, {
               name: 'jsdelivr-dep-cache',
               maxAgeSeconds: 60 * 60 * 24 * 7,
             },
+            debug: true,
           },
         },
         {
@@ -235,6 +246,7 @@ module.exports = merge(commonConfig, {
               name: 'cloudflare-cache',
               maxAgeSeconds: 60 * 60 * 24 * 7,
             },
+            debug: true,
           },
         },
       ],
