@@ -81,7 +81,7 @@ export function postToZeit({ http, path, props, state }) {
       headers: { Authorization: `bearer ${token}` },
     })
     .then(response => {
-      const url = `https://${response.result.host}`;
+      const url = `https://${response.url}`;
       return path.success({ url });
     })
     .catch(error => path.error({ error }));
