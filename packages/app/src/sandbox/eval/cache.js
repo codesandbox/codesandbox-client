@@ -9,6 +9,8 @@ const debug = _debug('cs:compiler:cache');
 
 const host = process.env.CODESANDBOX_HOST;
 
+let APICacheUsed = false;
+
 try {
   localforage.config({
     name: 'CodeSandboxApp',
@@ -24,8 +26,8 @@ try {
   console.warn(e);
 }
 
-function shouldSaveOnlineCache(firstRun: boolean) {
-  if (!firstRun) {
+function shouldSaveOnlineCache(firstRun: boolean, changes: number) {
+  if (!firstRun || changes > 0) {
     return false;
   }
 
@@ -40,6 +42,7 @@ export async function saveCache(
   sandboxId: string,
   managerModuleToTranspile: any,
   manager: Manager,
+  changes: number,
   firstRun: boolean
 ) {
   const managerState = {
@@ -65,7 +68,7 @@ export async function saveCache(
     manager.clearCache();
   }
 
-  if (shouldSaveOnlineCache(firstRun)) {
+  if (shouldSaveOnlineCache(firstRun, changes)) {
     const stringifiedManagerState = JSON.stringify(managerState);
 
     debug(
@@ -88,6 +91,29 @@ export async function saveCache(
       .then(x => x.json())
       .catch(e => {
         console.error('Something went wrong while saving cache.');
+        console.error(e);
+      });
+  }
+
+  return Promise.resolve(false);
+}
+
+export function deleteAPICache(sandboxId: string) {
+  if (APICacheUsed) {
+    debug('Deleting cache of API');
+    return window
+      .fetch(`${host}/api/v1/sandboxes/${sandboxId}/cache`, {
+        method: 'DELETE',
+        body: JSON.stringify({
+          version: SCRIPT_VERSION,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(x => x.json())
+      .catch(e => {
+        console.error('Something went wrong while deleting cache.');
         console.error(e);
       });
   }
@@ -136,6 +162,12 @@ export async function consumeCache(manager: Manager) {
       const version = SCRIPT_VERSION;
 
       if (cache.version === version) {
+        if (cache === localData) {
+          APICacheUsed = false;
+        } else {
+          APICacheUsed = true;
+        }
+
         debug(
           `Loading cache from ${cache === localData ? 'localStorage' : 'API'}`,
           cache

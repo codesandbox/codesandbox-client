@@ -22,7 +22,7 @@ import {
 } from './boilerplates';
 
 import loadDependencies from './npm';
-import { consumeCache, saveCache } from './eval/cache';
+import { consumeCache, saveCache, deleteAPICache } from './eval/cache';
 import getDefinition from '../../../common/templates/index';
 
 let initializedResizeListener = false;
@@ -41,6 +41,7 @@ export function getCurrentManager(): ?Manager {
 
 let firstLoad = true;
 let hadError = false;
+let changedModuleCount = 0;
 
 const DEPENDENCY_ALIASES = {
   '@vue/cli-plugin-babel': '@vue/babel-preset-app',
@@ -251,7 +252,9 @@ async function updateManager(
   }
 
   manager.updateConfigurations(configurations);
-  return manager.updateData(managerModules);
+  return manager.updateData(managerModules).then(x => {
+    changedModuleCount = x.length;
+  });
 }
 
 function initializeResizeListener() {
@@ -535,13 +538,23 @@ async function compile({
       type: 'success',
     });
 
-    saveCache(sandboxId, managerModuleToTranspile, manager, firstLoad);
+    saveCache(
+      sandboxId,
+      managerModuleToTranspile,
+      manager,
+      changedModuleCount,
+      firstLoad
+    );
   } catch (e) {
     console.log('Error in sandbox:');
     console.error(e);
 
     if (manager) {
       manager.clearCache();
+
+      if (firstLoad && changedModuleCount === 0) {
+        deleteAPICache(manager.id);
+      }
     }
 
     if (firstLoad) {
