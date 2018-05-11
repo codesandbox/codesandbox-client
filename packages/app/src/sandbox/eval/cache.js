@@ -1,7 +1,7 @@
 // Responsible for consuming and syncing with the server/local cache
 import localforage from 'localforage';
 import _debug from 'app/utils/debug';
-import type { default as Manager } from './manager';
+// import type { default as Manager } from './manager';
 
 import { SCRIPT_VERSION } from '../';
 
