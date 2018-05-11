@@ -16,9 +16,9 @@ import type {
 } from 'common/types';
 
 /* eslint-disable import/no-webpack-loader-syntax */
-import SyntaxHighlightWorker from 'worker-loader?publicPath=/&name=monaco-syntax-highlighter.[hash].worker.js!./workers/syntax-highlighter';
-import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash].worker.js!./workers/linter';
-import TypingsFetcherWorker from 'worker-loader?publicPath=/&name=monaco-typings-ata.[hash].worker.js!./workers/fetch-dependency-typings';
+import SyntaxHighlightWorker from 'worker-loader?publicPath=/&name=monaco-syntax-highlighter.[hash:8].worker.js!./workers/syntax-highlighter';
+import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash:8].worker.js!./workers/linter';
+import TypingsFetcherWorker from 'worker-loader?publicPath=/&name=monaco-typings-ata.[hash:8].worker.js!./workers/fetch-dependency-typings';
 /* eslint-enable import/no-webpack-loader-syntax */
 
 import MonacoEditorComponent from './MonacoReactComponent';

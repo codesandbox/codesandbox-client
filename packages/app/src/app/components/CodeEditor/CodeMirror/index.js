@@ -16,7 +16,7 @@ import FuzzySearch from '../FuzzySearch';
 import { Container, CodeContainer } from './elements';
 
 // eslint-disable-next-line
-import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash].worker.js!../Monaco/workers/linter';
+import LinterWorker from 'worker-loader?publicPath=/&name=monaco-linter.[hash:8].worker.js!../Monaco/workers/linter';
 
 import type { Props, Editor } from '../types';
 

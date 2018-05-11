@@ -1,5 +1,5 @@
 // @flow
-import BabelWorker from 'worker-loader?publicPath=/&name=babel-transpiler.[hash].worker.js!./worker/index.js';
+import BabelWorker from 'worker-loader?publicPath=/&name=babel-transpiler.[hash:8].worker.js!./worker/index.js';
 
 import isESModule from '../../utils/is-es-module';
 import regexGetRequireStatements from './worker/simple-get-require-statements';
