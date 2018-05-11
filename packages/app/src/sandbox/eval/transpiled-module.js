@@ -653,6 +653,12 @@ export default class TranspiledModule {
           : this.isEntry && !this.isTestFile;
 
         if (shouldReloadPage) {
+          try {
+            localStorage.setItem('ignoreCache', 'true');
+          } catch (e) {
+            /* nothing */
+          }
+
           location.reload();
           return {};
         }

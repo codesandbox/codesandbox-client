@@ -113,6 +113,13 @@ function findCacheToUse(cache1, cache2) {
 
 export async function consumeCache(manager: Manager) {
   try {
+    const shouldIgnoreCache = localStorage.getItem('ignoreCache');
+    if (shouldIgnoreCache) {
+      localStorage.removeItem('ignoreCache');
+
+      return false;
+    }
+
     const cacheData = window.__SANDBOX_DATA__;
     const localData = await localforage.getItem(manager.id);
 
