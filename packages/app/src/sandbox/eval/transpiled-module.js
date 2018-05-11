@@ -19,6 +19,7 @@ import resolveDependency from './loaders/dependency-resolver';
 import evaluate from './loaders/eval';
 
 import type { default as Manager } from './manager';
+import { ignoreNextCache } from './cache';
 import HMR from './hmr';
 
 const debug = _debug('cs:compiler:transpiled-module');
@@ -653,11 +654,7 @@ export default class TranspiledModule {
           : this.isEntry && !this.isTestFile;
 
         if (shouldReloadPage) {
-          try {
-            localStorage.setItem('ignoreCache', 'true');
-          } catch (e) {
-            /* nothing */
-          }
+          ignoreNextCache();
 
           location.reload();
           return {};

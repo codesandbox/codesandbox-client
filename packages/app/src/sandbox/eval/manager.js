@@ -23,6 +23,8 @@ import TestRunner from './tests/jest-lite';
 import dependenciesToQuery from '../npm/dependencies-to-query';
 import isESModule from './utils/is-es-module';
 
+import { ignoreNextCache } from './cache';
+
 type Externals = {
   [name: string]: string,
 };
@@ -828,6 +830,7 @@ export default class Manager {
 
   clearCache() {
     try {
+      ignoreNextCache();
       localforage.clear();
     } catch (ex) {
       if (process.env.NODE_ENV === 'development') {
