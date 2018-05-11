@@ -41,7 +41,7 @@ export async function createApiData({ props, state }) {
   packageJSON.name = `csb-${sandbox.id}`;
 
   apiData.name = `csb-${sandbox.id}`;
-  apiData.deploymentType = 'NPM';
+  apiData.deploymentType = 'STATIC';
   apiData.public = true;
 
   apiData.files.push({
