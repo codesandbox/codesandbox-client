@@ -10,6 +10,7 @@
     "start:test": "cross-env LOCAL_SERVER=1 NODE_ENV=test SANDBOX_ONLY=true node scripts/start.js",
     "build": "cross-env NODE_ENV=production node scripts/build.js",
     "build:sandbox": "cross-env NODE_ENV=production SANDBOX_ONLY=true node scripts/build.js",
+    "build:clean": "rimraf www",
     "test": "jest --env=jsdom",
     "test:watch": "jest --watch --env=jsdom",
     "test:integrations": "jest --config integration-tests/jest.config.json --maxWorkers=2",
