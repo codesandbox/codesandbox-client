@@ -1,7 +1,7 @@
 // Responsible for consuming and syncing with the server/local cache
 import localforage from 'localforage';
 import _debug from 'app/utils/debug';
-// import type { default as Manager } from './manager';
+import type { default as Manager } from './manager';
 
 import { SCRIPT_VERSION } from '../';
 
@@ -109,6 +109,14 @@ function findCacheToUse(cache1, cache2) {
   }
 
   return cache2.timestamp > cache1.timestamp ? cache2 : cache1;
+}
+
+export function ignoreNextCache() {
+  try {
+    localStorage.setItem('ignoreCache', 'true');
+  } catch (e) {
+    console.warn(e);
+  }
 }
 
 export async function consumeCache(manager: Manager) {
