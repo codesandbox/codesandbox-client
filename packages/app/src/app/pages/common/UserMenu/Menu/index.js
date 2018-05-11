@@ -5,9 +5,13 @@ import UserIcon from 'react-icons/lib/ti/user';
 import ExitIcon from 'react-icons/lib/md/exit-to-app';
 import FolderIcon from 'react-icons/lib/md/folder';
 import SettingsIcon from 'react-icons/lib/md/settings';
-
-import { profileUrl, patronUrl } from 'common/utils/url-generator';
+import {
+  profileUrl,
+  profileSandboxesUrl,
+  patronUrl,
+} from 'common/utils/url-generator';
 import PatronBadge from 'common/utils/badges/PatronBadge';
+import InfoIcon from '../../../../pages/Sandbox/Editor/Navigation/InfoIcon';
 
 import { Container, Item, Icon } from './elements';
 
@@ -19,6 +23,16 @@ function Menu({ username, openPreferences, openStorageManagement, signOut }) {
           <Icon>
             <UserIcon />
           </Icon>My Profile
+        </Item>
+      </Link>
+      <Link
+        style={{ textDecoration: 'none' }}
+        to={profileSandboxesUrl(username)}
+      >
+        <Item>
+          <Icon>
+            <InfoIcon />
+          </Icon>My Sandboxes
         </Item>
       </Link>
       <Item onClick={openStorageManagement}>
