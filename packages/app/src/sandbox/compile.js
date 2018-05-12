@@ -582,6 +582,12 @@ async function compile({
 
     hadError = true;
   } finally {
+    try {
+      localStorage.removeItem('running');
+    } catch (e) {
+      /* no */
+    }
+
     if (manager) {
       const managerState = {
         ...manager.serialize(),
@@ -601,12 +607,6 @@ async function compile({
 
   dispatch({ type: 'status', status: 'idle' });
   dispatch({ type: 'done' });
-
-  try {
-    localStorage.removeItem('running');
-  } catch (e) {
-    /* no */
-  }
 
   if (typeof window.__puppeteer__ === 'function') {
     window.__puppeteer__('done');
