@@ -82,4 +82,12 @@ export const CodeContainer = styled.div`
   .name-of-PropertyAssignment {
     color: #99c794;
   }
+
+  .typeName-of-TypeReference {
+    color: #5faeec;
+  }
+
+  .name-of-PropertyAccessExpression {
+    color: #83bdc9;
+  }
 `;
