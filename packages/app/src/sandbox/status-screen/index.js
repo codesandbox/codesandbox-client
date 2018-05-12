@@ -18,7 +18,11 @@ let iframeReference = null;
 
 function changeText(text: string) {
   if (iframeReference) {
-    if (iframeReference.contentDocument) {
+    if (
+      iframeReference.contentDocument &&
+      iframeReference.contentDocument.getElementsByClassName('text') &&
+      iframeReference.contentDocument.getElementsByClassName('text').item(0)
+    ) {
       iframeReference.contentDocument
         .getElementsByClassName('text')
         .item(0).textContent = text;

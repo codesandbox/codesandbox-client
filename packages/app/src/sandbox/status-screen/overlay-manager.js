@@ -30,9 +30,9 @@ function createIframe() {
     if (iframe.contentDocument) {
       resolve(iframe);
     } else {
-      document.getElementById('frame').addEventListener('load', () => {
+      document.getElementById('frame').onload = () => {
         resolve(iframe);
-      });
+      };
     }
   });
 }
