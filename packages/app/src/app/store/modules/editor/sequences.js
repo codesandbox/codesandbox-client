@@ -182,16 +182,22 @@ export const addNpmDependency = [
     false: [actions.getLatestVersion],
   },
   actions.addNpmDependencyToPackage,
-  getCodeOperation,
-  sendTransform,
+  equals(state`live.isLive`),
+  {
+    true: [getCodeOperation, sendTransform],
+    false: [],
+  },
   saveCode,
 ];
 
 export const removeNpmDependency = [
   ensureOwnedSandbox,
   actions.removeNpmDependencyFromPackage,
-  getCodeOperation,
-  sendTransform,
+  equals(state`live.isLive`),
+  {
+    true: [getCodeOperation, sendTransform],
+    false: [],
+  },
   saveCode,
 ];
 

@@ -1,6 +1,8 @@
 import { TextOperation } from 'ot';
 import { camelizeKeys } from 'humps';
 
+import VERSION from 'common/version';
+
 export function createRoom({ api, props }) {
   const id = props.sandboxId;
 
@@ -47,6 +49,7 @@ export function initializeLiveState({ props, state }) {
       messages: [],
       users: {},
     },
+    version: VERSION,
   });
   state.set('live.isLive', true);
   state.set('live.error', null);

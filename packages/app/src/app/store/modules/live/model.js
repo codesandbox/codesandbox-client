@@ -36,6 +36,7 @@ export default {
       sandboxId: types.string,
       editorIds: types.array(types.string),
       usersMetadata: types.map(UserMetadata),
+      version: types.string,
       users: types.array(
         types.model({
           id: types.string,

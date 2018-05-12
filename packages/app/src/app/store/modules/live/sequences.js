@@ -8,6 +8,7 @@ import {
   toggle,
 } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
+import VERSION from 'common/version';
 
 import * as factories from '../../factories';
 import { setSandbox, openModal, resetLive } from '../../sequences';
@@ -133,6 +134,11 @@ export const handleMessage = [
             props`changedModuleShortids`
           ),
           set(state`live.roomInfo`, props`roomInfo`),
+          when(state`live.roomInfo.version`, v => v !== VERSION),
+          {
+            true: [set(props`modal`, 'liveVersionMismatch'), openModal],
+            false: [],
+          },
           // Whether this is first load
           equals(state`live.isLoading`),
           {
@@ -360,7 +366,13 @@ export const createLive = [
   initializeLive,
 ];
 
-export const sendTransform = [actions.sendTransform];
+export const sendTransform = [
+  equals(state`live.isCurrentEditor`),
+  {
+    true: [actions.sendTransform],
+    false: [],
+  },
+];
 
 export const applyTransformation = [
   when(

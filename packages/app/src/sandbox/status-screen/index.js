@@ -44,6 +44,8 @@ export default function setScreen(screen: Screen) {
         if (currentScreen) {
           changeText(currentScreen.text);
         }
+
+        firstLoaded = null;
       }, 600);
     }
   } else if (currentScreen) {
