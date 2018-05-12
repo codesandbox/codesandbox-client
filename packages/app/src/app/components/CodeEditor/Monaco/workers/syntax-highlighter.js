@@ -28,20 +28,60 @@ function nodeToRange(node) {
   return [0, 0];
 }
 
-function addChildNodes(node, lines, classifications) {
-  self.ts.forEachChild(node, id => {
-    const [start, end] = nodeToRange(id);
+function getNodeType(parent, node) {
+  return Object.keys(parent).find(key => parent[key] === node);
+}
 
-    const { offset, line: startLine } = getLineNumberAndOffset(start, lines);
-    const { line: endLine } = getLineNumberAndOffset(end, lines);
-    classifications.push({
-      start: id.getStart() + 1 - offset,
-      end: id.getEnd() + 1 - offset,
-      kind: self.ts.SyntaxKind[id.kind],
-      node: id,
-      startLine,
-      endLine,
+function getParentRanges(node) {
+  const ranges = [];
+  const [start, end] = nodeToRange(node);
+  let lastEnd = start;
+
+  self.ts.forEachChild(node, child => {
+    const [start, end] = nodeToRange(child);
+
+    ranges.push({
+      start: lastEnd,
+      end: start,
     });
+    lastEnd = end;
+  });
+
+  if (lastEnd !== end) {
+    ranges.push({
+      start: lastEnd,
+      end,
+    });
+  }
+
+  return ranges;
+}
+
+function addChildNodes(node, lines, classifications) {
+  const parentKind = ts.SyntaxKind[node.kind];
+
+  self.ts.forEachChild(node, id => {
+    const type = getNodeType(node, id);
+
+    classifications.push(
+      ...getParentRanges(id).map(({ start, end }) => {
+        const { offset, line: startLine } = getLineNumberAndOffset(
+          start,
+          lines
+        );
+        const { line: endLine } = getLineNumberAndOffset(end, lines);
+
+        return {
+          start: start + 1 - offset,
+          end: end + 1 - offset,
+          kind: ts.SyntaxKind[id.kind],
+          parentKind,
+          type,
+          startLine,
+          endLine,
+        };
+      })
+    );
 
     addChildNodes(id, lines, classifications);
   });
