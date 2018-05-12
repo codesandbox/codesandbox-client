@@ -25,6 +25,8 @@ import loadDependencies from './npm';
 import { consumeCache, saveCache, deleteAPICache } from './eval/cache';
 import getDefinition from '../../../common/templates/index';
 
+import { showRunOnClick } from './status-screen/run-on-click';
+
 let initializedResizeListener = false;
 let manager: ?Manager = null;
 let actionsEnabled = false;
@@ -303,6 +305,18 @@ async function compile({
   dispatch({
     type: 'start',
   });
+
+  try {
+    if (localStorage.getItem('running')) {
+      localStorage.removeItem('running');
+      showRunOnClick();
+      return;
+    }
+
+    localStorage.setItem('running', 'true');
+  } catch (e) {
+    /* no */
+  }
 
   const startTime = Date.now();
   try {
@@ -587,6 +601,12 @@ async function compile({
 
   dispatch({ type: 'status', status: 'idle' });
   dispatch({ type: 'done' });
+
+  try {
+    localStorage.removeItem('running');
+  } catch (e) {
+    /* no */
+  }
 
   if (typeof window.__puppeteer__ === 'function') {
     window.__puppeteer__('done');

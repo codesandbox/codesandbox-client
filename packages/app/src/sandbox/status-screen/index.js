@@ -2,6 +2,8 @@
 // This is the loading screen
 import loadingHtml from '!raw-loader!./loading-screen.html';
 
+import { createOverlay, resetOverlay } from './overlay-manager';
+
 type LoadingScreen = {
   type: 'loading',
   text: string,
@@ -24,53 +26,28 @@ function changeText(text: string) {
   }
 }
 
-function createOverlay() {
-  return new Promise(resolve => {
-    const iframe = document.createElement('iframe');
-
-    iframe.setAttribute(
-      'style',
-      `position: fixed; top: 0; left: 0; width: 100%; height: 100%; border: none; z-index: 214748366;`
-    );
-
-    iframe.onload = () => {
-      iframe.contentDocument.body.innerHTML = loadingHtml;
-      iframeReference = iframe;
-
-      if (currentScreen) {
-        changeText(currentScreen.text);
-      }
-      resolve();
-    };
-
-    document.body.appendChild(iframe);
-  });
-}
-
 export function resetScreen() {
   currentScreen = null;
-  try {
-    window.document.body.removeChild(iframeReference);
-    iframeReference = null;
-  } catch (e) {
-    /* nothing */
-  }
+  iframeReference = null;
+  resetOverlay();
 }
 
 export default function setScreen(screen: Screen) {
-  if (!iframeReference && !currentScreen) {
+  if (!iframeReference) {
     if (!firstLoaded) {
       // Give the illusion of faster loading by showing the loader screen later
-      firstLoaded = setTimeout(() => {
+      firstLoaded = setTimeout(async () => {
+        if (!iframeReference && currentScreen) {
+          iframeReference = await createOverlay(loadingHtml);
+        }
+
         if (currentScreen) {
-          createOverlay();
+          changeText(currentScreen.text);
         }
       }, 600);
-    } else {
-      createOverlay(screen.text);
     }
-  } else if (screen.type === 'loading') {
-    changeText(screen.text);
+  } else if (currentScreen) {
+    changeText(currentScreen.text);
   }
 
   currentScreen = screen;
