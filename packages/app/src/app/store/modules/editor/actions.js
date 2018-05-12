@@ -16,7 +16,10 @@ export async function getLatestVersion({ props, api }) {
 }
 
 export function addNpmDependencyToPackage({ state, props }) {
-  const { parsed } = state.get('editor.parsedConfigurations.package');
+  const { parsed, code: oldCode } = state.get(
+    'editor.parsedConfigurations.package'
+  );
+
   const type = props.isDev ? 'devDependencies' : 'dependencies';
 
   parsed[type] = parsed[type] || {};
@@ -24,18 +27,22 @@ export function addNpmDependencyToPackage({ state, props }) {
   parsed[type] = sortObjectByKeys(parsed[type]);
 
   return {
+    oldCode,
     code: JSON.stringify(parsed, null, 2),
     moduleShortid: state.get(`editor.currentPackageJSON.shortid`),
   };
 }
 
 export function removeNpmDependencyFromPackage({ state, props }) {
-  const { parsed } = state.get('editor.parsedConfigurations.package');
+  const { parsed, code: oldCode } = state.get(
+    'editor.parsedConfigurations.package'
+  );
 
   delete parsed.dependencies[props.name];
   parsed.dependencies = sortObjectByKeys(parsed.dependencies);
 
   return {
+    oldCode,
     code: JSON.stringify(parsed, null, 2),
     moduleShortid: state.get(`editor.currentPackageJSON.shortid`),
   };

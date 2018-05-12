@@ -539,3 +539,16 @@ export function getCurrentModuleIdOfUser({ props, state }) {
 
   return {};
 }
+
+export function getCodeOperation({ props }) {
+  const { oldCode, code } = props;
+
+  const op = new TextOperation();
+
+  op.delete(oldCode.length);
+  op.insert(code);
+
+  return {
+    operation: op.toJSON(),
+  };
+}

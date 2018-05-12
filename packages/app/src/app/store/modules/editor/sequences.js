@@ -8,6 +8,8 @@ import {
   getSelectionsForCurrentModule,
   sendChangeCurrentModule,
   setReceivingStatus,
+  getCodeOperation,
+  sendTransform,
 } from '../live/actions';
 import {
   ensureOwnedSandbox,
@@ -180,12 +182,16 @@ export const addNpmDependency = [
     false: [actions.getLatestVersion],
   },
   actions.addNpmDependencyToPackage,
+  getCodeOperation,
+  sendTransform,
   saveCode,
 ];
 
 export const removeNpmDependency = [
   ensureOwnedSandbox,
   actions.removeNpmDependencyFromPackage,
+  getCodeOperation,
+  sendTransform,
   saveCode,
 ];
 
