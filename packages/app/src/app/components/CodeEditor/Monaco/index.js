@@ -990,6 +990,8 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
         if (this.editor.getModel()) {
           if (version === this.editor.getModel().getVersionId()) {
             this.updateLintWarnings(markers);
+          } else {
+            this.updateLintWarnings([]);
           }
         }
       });
