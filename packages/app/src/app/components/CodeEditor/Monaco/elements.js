@@ -62,52 +62,32 @@ export const CodeContainer = styled.div`
   .mtk5 {
     color: #99c794 !important;
   }
-  .mtk12.PropertyAssignment {
-    color: #99c794;
-  }
-  .mtk12.PropertyAssignment.PropertyAccessExpression {
-    color: #fac863;
-  }
-  .mtk12.Identifier.JsxOpeningElement {
-    color: #ec5f67;
-  }
-  .mtk12.Identifier.JsxExpression.JsxClosingElement {
-    color: #ec5f67;
-  }
-  .mtk12.Identifier.JsxClosingElement {
-    color: #ec5f67 !important;
-  }
-  .mtk12.Identifier.JsxSelfClosingElement {
-    color: #ec5f67;
-  }
-  .mtk12.Identifier.VariableStatement.JsxClosingElement {
-    color: #ec5f67 !important;
-  }
-  .mtk12.VariableStatement.JsxSelfClosingElement.Identifier {
-    color: #ec5f67;
-  }
-  .mtk12.Identifier.JsxAttribute.VariableDeclaration {
-    color: #aa759f;
-  }
-  .mtk12.JsxExpression.VariableStatement {
-    color: #fac863;
-  }
-  .mtk12.VariableStatement.JsxSelfClosingElement {
-    color: #e0e0e0;
-  }
-  .mtk12.VariableStatement.JsxClosingElement {
-    color: #e0e0e0;
-  }
-  .mtk12.JsxElement.JsxText {
-    color: #e0e0e0;
-  }
-  .JsxText {
+
+  .JsxText,
+  .JsxSelfClosingElement,
+  .JsxClosingElement {
     color: #e0e0e0;
   }
 
-  .Identifier.CallExpression
-    + .OpenParenToken.CallExpression
-    + .Identifier.CallExpression {
-    color: #fac863 !important;
+  .tagName-of-JsxOpeningElement,
+  .tagName-of-JsxClosingElement,
+  .tagName-of-JsxSelfClosingElement {
+    color: #ec5f67;
+  }
+
+  .name-of-JsxAttribute {
+    color: #aa759f;
+  }
+
+  .name-of-PropertyAssignment {
+    color: #99c794;
+  }
+
+  .typeName-of-TypeReference {
+    color: #5faeec;
+  }
+
+  .name-of-PropertyAccessExpression {
+    color: #83bdc9;
   }
 `;
