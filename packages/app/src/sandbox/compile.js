@@ -43,7 +43,7 @@ export function getCurrentManager(): ?Manager {
 
 let firstLoad = true;
 let hadError = false;
-let lastHTML = '';
+let lastHTML = null;
 let changedModuleCount = 0;
 
 const DEPENDENCY_ALIASES = {
@@ -413,7 +413,6 @@ async function compile({
     dispatch({ type: 'status', status: 'transpiling' });
 
     await manager.verifyTreeTranspiled();
-    await manager.preset.setup(manager);
     await manager.transpileModules(managerModuleToTranspile);
 
     const managerTranspiledModuleToTranspile = manager.getTranspiledModule(
@@ -459,7 +458,7 @@ async function compile({
         }
       }
 
-      if ((!manager.webpackHMR || firstLoad) && !manager.preset.htmlDisabled) {
+      if (!manager.webpackHMR && !manager.preset.htmlDisabled) {
         const htmlModulePath = templateDefinition
           .getHTMLEntries(configurations)
           .find(p => modules[p]);
@@ -471,22 +470,22 @@ async function compile({
             ? '<div id="app"></div>'
             : '<div id="root"></div>';
 
-        if (html !== lastHTML) {
-          // Only set this body if the server hasn't set it already or the
-          // html is not a full html file
-          document.open('text/html');
-          document.write(html.replace(/%PUBLIC_URL%/g, ''));
-          document.close();
+        // Only set this body if the server hasn't set it already or the
+        // html is not a full html file
+        document.open('text/html');
+        document.write(html.replace(/%PUBLIC_URL%/g, ''));
+        document.close();
 
-          if (manager) {
-            manager.clearCompiledCache();
-          }
-
-          lastHTML = html;
+        if (manager) {
+          manager.clearCompiledCache();
         }
+
+        lastHTML = html;
       }
 
       handleExternalResources(externalResources);
+
+      await manager.preset.setup(manager);
 
       const tt = Date.now();
       const oldHTML = document.body.innerHTML;
