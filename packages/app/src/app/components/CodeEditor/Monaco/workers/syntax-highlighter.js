@@ -38,13 +38,13 @@ function getParentRanges(node) {
   let lastEnd = start;
 
   self.ts.forEachChild(node, child => {
-    const [start, end] = nodeToRange(child);
+    const [s, e] = nodeToRange(child);
 
     ranges.push({
       start: lastEnd,
-      end: start,
+      end: s,
     });
-    lastEnd = end;
+    lastEnd = e;
   });
 
   if (lastEnd !== end) {
@@ -58,7 +58,7 @@ function getParentRanges(node) {
 }
 
 function addChildNodes(node, lines, classifications) {
-  const parentKind = ts.SyntaxKind[node.kind];
+  const parentKind = self.ts.SyntaxKind[node.kind];
 
   self.ts.forEachChild(node, id => {
     const type = getNodeType(node, id);
@@ -74,7 +74,7 @@ function addChildNodes(node, lines, classifications) {
         return {
           start: start + 1 - offset,
           end: end + 1 - offset,
-          kind: ts.SyntaxKind[id.kind],
+          kind: self.ts.SyntaxKind[id.kind],
           parentKind,
           type,
           startLine,
