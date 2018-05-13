@@ -1,6 +1,8 @@
 import { TextOperation } from 'ot';
 import { camelizeKeys } from 'humps';
 
+import VERSION from 'common/version';
+
 export function createRoom({ api, props }) {
   const id = props.sandboxId;
 
@@ -47,6 +49,7 @@ export function initializeLiveState({ props, state }) {
       messages: [],
       users: {},
     },
+    version: VERSION,
   });
   state.set('live.isLive', true);
   state.set('live.error', null);
@@ -255,12 +258,21 @@ function sendModuleInfo(
 
 export function sendModuleSaved(context) {
   const { moduleShortid } = context.props;
-  sendModuleInfo(context, 'module:saved', 'module', moduleShortid);
+  sendModuleInfo(context, 'module:saved', 'module', moduleShortid, {
+    sendModule: false,
+  });
 }
 
 export function sendModuleCreated(context) {
   const { moduleShortid } = context.props;
   sendModuleInfo(context, 'module:created', 'module', moduleShortid);
+}
+
+export function sendMassModuleCreated({ live, props }) {
+  live.send('module:mass-created', {
+    directories: props.directories,
+    modules: props.modules,
+  });
 }
 
 export function sendModuleDeleted(context) {
@@ -366,7 +378,7 @@ export function updateModule({ props, state }) {
     moduleEntry => moduleEntry.shortid === props.moduleShortid
   );
 
-  state.set(
+  state.merge(
     `editor.sandboxes.${sandbox.id}.modules.${moduleIndex}`,
     props.module
   );
@@ -531,4 +543,17 @@ export function getCurrentModuleIdOfUser({ props, state }) {
   }
 
   return {};
+}
+
+export function getCodeOperation({ props }) {
+  const { oldCode, code } = props;
+
+  const op = new TextOperation();
+
+  op.delete(oldCode.length);
+  op.insert(code);
+
+  return {
+    operation: op.toJSON(),
+  };
 }

@@ -101,13 +101,14 @@ function downloadDependency(depName: string, depVersion: string, path: string) {
     return packages[path];
   }
 
-  const relativePath = path.replace(
-    new RegExp(
-      `.*${pathUtils.join('/node_modules', depName)}`.replace('/', '\\/')
-    ),
-    ''
-  );
-
+  const relativePath = path
+    .replace(
+      new RegExp(
+        `.*${pathUtils.join('/node_modules', depName)}`.replace('/', '\\/')
+      ),
+      ''
+    )
+    .replace(/#/g, '%23');
   const isGitHub = /\//.test(depVersion);
 
   const url = isGitHub

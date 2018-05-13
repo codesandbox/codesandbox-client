@@ -16,7 +16,10 @@ export async function getLatestVersion({ props, api }) {
 }
 
 export function addNpmDependencyToPackage({ state, props }) {
-  const { parsed } = state.get('editor.parsedConfigurations.package');
+  const { parsed, code: oldCode } = state.get(
+    'editor.parsedConfigurations.package'
+  );
+
   const type = props.isDev ? 'devDependencies' : 'dependencies';
 
   parsed[type] = parsed[type] || {};
@@ -24,18 +27,22 @@ export function addNpmDependencyToPackage({ state, props }) {
   parsed[type] = sortObjectByKeys(parsed[type]);
 
   return {
+    oldCode,
     code: JSON.stringify(parsed, null, 2),
     moduleShortid: state.get(`editor.currentPackageJSON.shortid`),
   };
 }
 
 export function removeNpmDependencyFromPackage({ state, props }) {
-  const { parsed } = state.get('editor.parsedConfigurations.package');
+  const { parsed, code: oldCode } = state.get(
+    'editor.parsedConfigurations.package'
+  );
 
   delete parsed.dependencies[props.name];
   parsed.dependencies = sortObjectByKeys(parsed.dependencies);
 
   return {
+    oldCode,
     code: JSON.stringify(parsed, null, 2),
     moduleShortid: state.get(`editor.currentPackageJSON.shortid`),
   };
@@ -113,7 +120,7 @@ export function outputModuleIdFromActionPath({ state, props, utils }) {
   return { id: module ? module.id : null };
 }
 
-export function renameModuleFromPreview({ state, props, utils }) {
+export function consumeRenameModuleFromPreview({ state, props, utils }) {
   const sandbox = state.get('editor.currentSandbox');
   const module = utils.resolveModule(
     props.action.path.replace(/^\//, ''),
@@ -122,15 +129,12 @@ export function renameModuleFromPreview({ state, props, utils }) {
   );
 
   if (module) {
-    const moduleIndex = sandbox.modules.findIndex(
-      moduleEntry => moduleEntry.id === module.id
-    );
-
-    state.set(
-      `editor.sandboxes.${sandbox.id}.modules.${moduleIndex}.title`,
-      props.title
-    );
+    return {
+      moduleShortid: module.shortid,
+      title: props.action.title,
+    };
   }
+  return {};
 }
 
 export function addErrorFromPreview({ state, props, utils }) {
@@ -218,7 +222,9 @@ export function unsetDirtyTab({ state }) {
     tab => tab.moduleShortid === currentModule.shortid
   );
 
-  state.set(`editor.tabs.${tabIndex}.dirty`, false);
+  if (tabIndex !== -1) {
+    state.set(`editor.tabs.${tabIndex}.dirty`, false);
+  }
 }
 
 export function outputChangedModules({ state }) {

@@ -42,7 +42,7 @@ export function setCurrentModuleById(id) {
       moduleEntry => moduleEntry.id === resolve.value(id)
     );
 
-    if (module) {
+    if (module && state.get('editor.currentModuleShortid') !== module.shortid) {
       state.set('editor.currentModuleShortid', module.shortid);
     }
   };

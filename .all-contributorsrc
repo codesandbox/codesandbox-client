@@ -505,6 +505,54 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "mdugue",
+      "name": "Manuel Dugué",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/894149?v=4",
+      "profile": "http://manueldugue.de",
+      "contributions": [
+        "bug",
+        "code"
+      ]
+    },
+    {
+      "login": "DemianD",
+      "name": "Demian Dekoninck",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/5346497?v=4",
+      "profile": "https://dem.be",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Saeris",
+      "name": "Drake Costa",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/3144549?v=4",
+      "profile": "http://www.saeris.io",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "mstijak",
+      "name": "Marko Stijak",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/433394?v=4",
+      "profile": "https://cxjs.io/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Komar0ff",
+      "name": "Ilya",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/10588170?v=4",
+      "profile": "https://twitter.com/ilya_komar0ff",
+      "contributions": [
+        "question",
+        "ideas"
+      ]
     }
-  ]
+  ],
+  "repoType": "github"
 }

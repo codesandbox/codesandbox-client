@@ -1,17 +1,25 @@
 import { camelizeKeys } from 'humps';
 import { isStandalone, listen, dispatch } from 'codesandbox-api';
 
+import _debug from 'app/utils/debug';
+
 import registerServiceWorker from 'common/registerServiceWorker';
 import requirePolyfills from 'common/load-dynamic-polyfills';
 import { getModulePath } from 'common/sandbox/modules';
 import { generateFileFromSandbox } from 'common/templates/configuration/package-json';
+import { Encode } from 'console-feed';
 
 import setupHistoryListeners from './url-listeners';
 import compile, { getCurrentManager } from './compile';
 import setupConsole from './console';
-import transformJSON from './console/transform-json';
 
 const host = process.env.CODESANDBOX_HOST;
+const debug = _debug('cs:sandbox');
+
+export const SCRIPT_VERSION =
+  document.currentScript && document.currentScript.src.replace(host + '/', '');
+
+debug('Booting sandbox');
 
 function getId() {
   if (process.env.LOCAL_SERVER) {
@@ -31,7 +39,7 @@ function getId() {
 }
 
 requirePolyfills().then(() => {
-  registerServiceWorker('/sandbox-service-worker.js');
+  registerServiceWorker('/sandbox-service-worker.js', {});
 
   function sendReady() {
     dispatch({ type: 'initialized' });
@@ -54,6 +62,20 @@ requirePolyfills().then(() => {
         let result = null;
         let error = false;
         try {
+          // Attempt to wrap command in parentheses, fixing issues
+          // where directly returning objects results in unexpected
+          // behaviour.
+          if (data.command && data.command.charAt(0) === '{') {
+            try {
+              const wrapped = `(${data.command})`;
+              // `new Function` is used to validate Javascript syntax
+              const validate = new Function(wrapped);
+              data.command = wrapped;
+            } catch (e) {
+              // We shouldn't wrap the expression
+            }
+          }
+
           result = (0, eval)(data.command); // eslint-disable-line no-eval
         } catch (e) {
           result = e;
@@ -64,7 +86,7 @@ requirePolyfills().then(() => {
           dispatch({
             type: 'eval-result',
             error,
-            result: transformJSON(result),
+            result: Encode(result),
           });
         } catch (e) {
           console.error(e);

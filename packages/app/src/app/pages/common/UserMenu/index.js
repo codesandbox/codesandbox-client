@@ -41,6 +41,9 @@ function UserMenu({ signals, store, small }) {
             openPreferences={() => {
               signals.modalOpened({ modal: 'preferences' });
             }}
+            openStorageManagement={() => {
+              signals.files.gotUploadedFiles();
+            }}
             signOut={() => {
               signals.signOutClicked();
             }}

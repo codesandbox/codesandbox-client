@@ -2,11 +2,14 @@ import { set, when, equals, toggle, increment } from 'cerebral/operators';
 import { state, props, string } from 'cerebral/tags';
 import * as actions from './actions';
 import { closeTabByIndex } from '../../actions';
+import { renameModule } from '../files/sequences';
 import {
   sendModuleSaved,
   getSelectionsForCurrentModule,
   sendChangeCurrentModule,
   setReceivingStatus,
+  getCodeOperation,
+  sendTransform,
 } from '../live/actions';
 import {
   ensureOwnedSandbox,
@@ -179,12 +182,22 @@ export const addNpmDependency = [
     false: [actions.getLatestVersion],
   },
   actions.addNpmDependencyToPackage,
+  equals(state`live.isLive`),
+  {
+    true: [getCodeOperation, sendTransform],
+    false: [],
+  },
   saveCode,
 ];
 
 export const removeNpmDependency = [
   ensureOwnedSandbox,
   actions.removeNpmDependencyFromPackage,
+  equals(state`live.isLive`),
+  {
+    true: [getCodeOperation, sendTransform],
+    false: [],
+  },
   saveCode,
 ];
 
@@ -201,7 +214,10 @@ export const handlePreviewAction = [
     'show-error': actions.addErrorFromPreview,
     'show-correction': actions.addCorrectionFromPreview,
     'show-glyph': actions.addGlyphFromPreview,
-    'source.module.rename': actions.renameModuleFromPreview,
+    'source.module.rename': [
+      actions.consumeRenameModuleFromPreview,
+      renameModule,
+    ],
     'source.dependencies.add': [
       set(props`name`, props`action.dependency`),
       addNpmDependency,

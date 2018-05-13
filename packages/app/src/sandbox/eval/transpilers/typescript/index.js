@@ -1,5 +1,5 @@
 // @flow
-import TypeScriptWorker from 'worker-loader?publicPath=/&name=typescript-transpiler.[hash].worker.js!./typescript-worker.js';
+import TypeScriptWorker from 'worker-loader?publicPath=/&name=typescript-transpiler.[hash:8].worker.js!./typescript-worker.js';
 
 import WorkerTranspiler from '../worker-transpiler';
 import { type LoaderContext } from '../../transpiled-module';

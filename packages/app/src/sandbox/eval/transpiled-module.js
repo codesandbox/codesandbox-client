@@ -109,7 +109,7 @@ export type LoaderContext = {
   ) => void,
   addDependenciesInDirectory: (
     depPath: string,
-    options: {
+    options: ?{
       isAbsolute: boolean,
       isEntry: boolean,
     }
@@ -484,6 +484,10 @@ export default class TranspiledModule {
    * @param {*} manager
    */
   async transpile(manager: Manager) {
+    if (this.source) {
+      return this;
+    }
+
     if (manager.transpileJobs[this.getId()]) {
       // Is already being transpiled
       return this;
@@ -491,10 +495,6 @@ export default class TranspiledModule {
 
     // eslint-disable-next-line
     manager.transpileJobs[this.getId()] = true;
-
-    if (this.source) {
-      return this;
-    }
 
     this.hasMissingDependencies = false;
 
@@ -636,6 +636,7 @@ export default class TranspiledModule {
       if (this.module.path === '/node_modules/empty/index.js') {
         return {};
       }
+
       // This scenario only happens when we are in an inconsistent state, the quickest way to solve
       // this state is to just hard reload everything.
       manager.clearCache();
@@ -652,6 +653,13 @@ export default class TranspiledModule {
           : this.isEntry && !this.isTestFile;
 
         if (shouldReloadPage) {
+          if (manager.isFirstLoad) {
+            // We're in a reload loop! Ignore all caches!
+
+            manager.clearCache();
+            manager.deleteAPICache();
+          }
+
           location.reload();
           return {};
         }
@@ -766,10 +774,6 @@ export default class TranspiledModule {
           localModule.path
         );
 
-        if (transpiledModule === requiredTranspiledModule) {
-          throw new Error(`${localModule.path} is importing itself`);
-        }
-
         // Check if this module has been evaluated before, if so return the exports
         // of that compilation
         const cache = requiredTranspiledModule.compilation;
@@ -779,12 +783,17 @@ export default class TranspiledModule {
           : manager.evaluateTranspiledModule(requiredTranspiledModule);
       }
 
+      const globals = manager.testRunner.testGlobals(this.module);
+
+      globals.__dirname = pathUtils.dirname(this.module.path);
+      globals.__filename = this.module.path;
+
       const exports = evaluate(
         this.source.compiledCode,
         require,
         this.compilation,
         manager.envVariables,
-        manager.testRunner.testGlobals(this.module),
+        globals,
         { asUMD }
       );
 
@@ -871,7 +880,8 @@ export default class TranspiledModule {
 
   async load(
     data: SerializedTranspiledModule,
-    state: { [id: string]: TranspiledModule }
+    state: { [id: string]: TranspiledModule },
+    manager: Manager
   ) {
     this.query = data.query;
     this.assets = data.assets;
@@ -881,24 +891,44 @@ export default class TranspiledModule {
     this.isTestFile = data.isTestFile;
     this.source = data.source;
 
+    const loadModule = (depId: string, initiator = false) => {
+      if (state[depId]) {
+        return state[depId];
+      }
+
+      const [path, ...queryParts] = depId.split(':');
+      const query = queryParts.join(':');
+
+      const module = manager.transpiledModules[path].module;
+      const tModule = manager.getTranspiledModule(module, query);
+
+      if (initiator) {
+        tModule.dependencies.add(this);
+      } else {
+        tModule.initiators.add(this);
+      }
+
+      return tModule;
+    };
+
     data.dependencies.forEach((depId: string) => {
-      this.dependencies.add(state[depId]);
+      this.dependencies.add(loadModule(depId));
     });
     data.childModules.forEach((depId: string) => {
-      this.childModules.push(state[depId]);
+      this.childModules.push(loadModule(depId));
     });
     data.initiators.forEach((depId: string) => {
-      this.initiators.add(state[depId]);
+      this.initiators.add(loadModule(depId, true));
     });
     data.transpilationDependencies.forEach((depId: string) => {
-      this.transpilationDependencies.add(state[depId]);
+      this.transpilationDependencies.add(loadModule(depId));
     });
     data.transpilationInitiators.forEach((depId: string) => {
-      this.transpilationInitiators.add(state[depId]);
+      this.transpilationInitiators.add(loadModule(depId, true));
     });
 
     data.asyncDependencies.forEach((depId: string) => {
-      this.asyncDependencies.push(Promise.resolve(state[depId]));
+      this.asyncDependencies.push(Promise.resolve(loadModule(depId)));
     });
   }
 }

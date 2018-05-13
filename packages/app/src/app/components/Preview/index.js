@@ -176,7 +176,7 @@ class BasePreview extends React.Component<Props, State> {
     const sandbox = this.props.sandbox;
 
     if (settings.clearConsoleEnabled) {
-      console.clear(); // eslint-disable-line no-console
+      console.clear('__internal__'); // eslint-disable-line no-console
       dispatch({ type: 'clear-console' });
     }
 

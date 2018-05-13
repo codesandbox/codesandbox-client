@@ -22,7 +22,10 @@ import {
 } from './boilerplates';
 
 import loadDependencies from './npm';
+import { consumeCache, saveCache, deleteAPICache } from './eval/cache';
 import getDefinition from '../../../common/templates/index';
+
+import { showRunOnClick } from './status-screen/run-on-click';
 
 let initializedResizeListener = false;
 let manager: ?Manager = null;
@@ -41,6 +44,7 @@ export function getCurrentManager(): ?Manager {
 let firstLoad = true;
 let hadError = false;
 let lastHTML = '';
+let changedModuleCount = 0;
 
 const DEPENDENCY_ALIASES = {
   '@vue/cli-plugin-babel': '@vue/babel-preset-app',
@@ -247,12 +251,13 @@ async function updateManager(
   if (firstLoad && newManager) {
     // We save the state of transpiled modules, and load it here again. Gives
     // faster initial loads.
-
-    await manager.load();
+    await consumeCache(manager);
   }
 
   manager.updateConfigurations(configurations);
-  return manager.updateData(managerModules);
+  return manager.updateData(managerModules).then(x => {
+    changedModuleCount = x.length;
+  });
 }
 
 function initializeResizeListener() {
@@ -301,6 +306,18 @@ async function compile({
   dispatch({
     type: 'start',
   });
+
+  try {
+    if (localStorage.getItem('running')) {
+      localStorage.removeItem('running');
+      showRunOnClick();
+      return;
+    }
+
+    localStorage.setItem('running', 'true');
+  } catch (e) {
+    /* no */
+  }
 
   const startTime = Date.now();
   try {
@@ -396,16 +413,18 @@ async function compile({
 
     dispatch({ type: 'status', status: 'transpiling' });
 
+    await manager.verifyTreeTranspiled();
     await manager.preset.setup(manager);
     await manager.transpileModules(managerModuleToTranspile);
+
+    const managerTranspiledModuleToTranspile = manager.getTranspiledModule(
+      managerModuleToTranspile
+    );
 
     debug(`Transpilation time ${Date.now() - t}ms`);
 
     dispatch({ type: 'status', status: 'evaluating' });
 
-    const managerTranspiledModuleToTranspile = manager.getTranspiledModule(
-      managerModuleToTranspile
-    );
     if (!skipEval) {
       resetScreen();
 
@@ -543,13 +562,23 @@ async function compile({
       type: 'success',
     });
 
-    manager.save();
+    saveCache(
+      sandboxId,
+      managerModuleToTranspile,
+      manager,
+      changedModuleCount,
+      firstLoad
+    );
   } catch (e) {
     console.log('Error in sandbox:');
     console.error(e);
 
     if (manager) {
       manager.clearCache();
+
+      if (firstLoad && changedModuleCount === 0) {
+        deleteAPICache(manager.id);
+      }
     }
 
     if (firstLoad) {
@@ -563,6 +592,12 @@ async function compile({
 
     hadError = true;
   } finally {
+    try {
+      localStorage.removeItem('running');
+    } catch (e) {
+      /* no */
+    }
+
     if (manager) {
       const managerState = {
         ...manager.serialize(),

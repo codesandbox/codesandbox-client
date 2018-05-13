@@ -8,6 +8,8 @@ import _debug from 'app/utils/debug';
 import Notifications from 'app/pages/common/Notifications';
 import Loading from 'app/components/Loading';
 
+import send, { DNT } from 'common/utils/analytics';
+
 import Modals from './common/Modals';
 import Sandbox from './Sandbox';
 import NewSandbox from './NewSandbox';
@@ -88,9 +90,10 @@ class Routes extends React.Component<Props> {
               routeDebugger(
                 `Sending '${location.pathname + location.search}' to ga.`
               );
-              if (typeof window.ga === 'function') {
+              if (typeof window.ga === 'function' && !DNT) {
                 window.ga('set', 'page', location.pathname + location.search);
-                window.ga('send', 'pageview');
+
+                send('pageview');
               }
             }
             return null;

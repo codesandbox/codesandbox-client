@@ -1,5 +1,5 @@
 // @flow
-import LessWorker from 'worker-loader?publicPath=/&name=less-transpiler.[hash].worker.js!./less-worker.js';
+import LessWorker from 'worker-loader?publicPath=/&name=less-transpiler.[hash:8].worker.js!./less-worker.js';
 
 import WorkerTranspiler from '../worker-transpiler';
 import { type LoaderContext } from '../../transpiled-module';

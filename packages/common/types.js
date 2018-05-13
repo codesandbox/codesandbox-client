@@ -140,6 +140,7 @@ export type Sandbox = {
     | 'create-react-app'
     | 'create-react-app-typescript'
     | 'angular-cli'
+    | '@dojo/cli-create-app'
     | 'vue-cli'
     | 'preact-cli'
     | 'svelte',

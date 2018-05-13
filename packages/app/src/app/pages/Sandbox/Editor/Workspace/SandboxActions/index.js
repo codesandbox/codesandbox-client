@@ -1,10 +1,11 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
+import TrashIcon from 'react-icons/lib/fa/trash';
 
 import Button from 'app/components/Button';
 import { WorkspaceInputContainer, WorkspaceSubtitle } from '../elements';
 
-import { PrivacySelect, PatronMessage } from './elements';
+import { PrivacySelect, PatronMessage, CenteredText } from './elements';
 
 function SandboxActions({ store, signals }) {
   const sandbox = store.editor.currentSandbox;
@@ -41,6 +42,7 @@ function SandboxActions({ store, signals }) {
         <Button
           block
           small
+          danger
           style={{
             margin: '0.75rem 0.25rem',
             boxSizing: 'border-box',
@@ -51,7 +53,10 @@ function SandboxActions({ store, signals }) {
             })
           }
         >
-          Delete Sandbox
+          <CenteredText>
+            <TrashIcon />
+            <span>Delete Sandbox</span>
+          </CenteredText>
         </Button>
       </WorkspaceInputContainer>
     </div>

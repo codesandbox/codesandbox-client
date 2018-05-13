@@ -100,6 +100,7 @@ export default function setupHistoryListeners() {
         const el = ev.target;
         if (
           el.nodeName === 'A' &&
+          !el.__vue__ && // workaround for vue-router <router-link>
           el.href.indexOf('#') !== -1 &&
           el.href.substr(-1) !== '#'
         ) {

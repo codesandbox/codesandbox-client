@@ -8,6 +8,7 @@ import {
   toggle,
 } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
+import VERSION from 'common/version';
 
 import * as factories from '../../factories';
 import { setSandbox, openModal, resetLive } from '../../sequences';
@@ -133,6 +134,11 @@ export const handleMessage = [
             props`changedModuleShortids`
           ),
           set(state`live.roomInfo`, props`roomInfo`),
+          when(state`live.roomInfo.version`, v => v !== VERSION),
+          {
+            true: [set(props`modal`, 'liveVersionMismatch'), openModal],
+            false: [],
+          },
           // Whether this is first load
           equals(state`live.isLoading`),
           {
@@ -159,12 +165,8 @@ export const handleMessage = [
         true: [],
         false: [
           actions.consumeModule,
-          actions.setReceivingStatus,
           set(props`shortid`, props`moduleShortid`),
-          set(props`code`, props`module.code`),
-          changeCode,
           setModuleSaved,
-          actions.unSetReceivingStatus,
         ],
       },
     ],
@@ -175,6 +177,19 @@ export const handleMessage = [
         false: [
           actions.consumeModule,
           push(state`editor.currentSandbox.modules`, props`module`),
+        ],
+      },
+    ],
+    'module:mass-created': [
+      isOwnMessage,
+      {
+        true: [],
+        false: [
+          concat(state`editor.currentSandbox.modules`, props`data.modules`),
+          concat(
+            state`editor.currentSandbox.directories`,
+            props`data.directories`
+          ),
         ],
       },
     ],
@@ -288,10 +303,16 @@ export const handleMessage = [
       },
     ],
     operation: [
-      isOwnMessage,
+      equals(state`live.isLoading`),
       {
-        true: actions.acknowledgeOperation,
-        false: actions.receiveTransformation,
+        false: [
+          isOwnMessage,
+          {
+            true: actions.acknowledgeOperation,
+            false: actions.receiveTransformation,
+          },
+        ],
+        true: [],
       },
     ],
     'connection-loss': [
@@ -345,7 +366,13 @@ export const createLive = [
   initializeLive,
 ];
 
-export const sendTransform = [actions.sendTransform];
+export const sendTransform = [
+  equals(state`live.isCurrentEditor`),
+  {
+    true: [actions.sendTransform],
+    false: [],
+  },
+];
 
 export const applyTransformation = [
   when(

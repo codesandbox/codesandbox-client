@@ -14,7 +14,7 @@ const mdRegex = /\.md$/;
 const vueRegex = /\.vue$/;
 const svgRegex = /\.svg$/;
 
-export function getMode(title: string) {
+export function getMode(title: string = '') {
   if (title === 'favicon.ico') {
     return 'favicon';
   }

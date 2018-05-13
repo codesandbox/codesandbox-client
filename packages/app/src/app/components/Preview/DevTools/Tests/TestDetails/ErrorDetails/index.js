@@ -46,15 +46,11 @@ const formatDiffMessage = (error: TestError, path: string) => {
       .replace(/(Difference:)/m, `<span style="color:${white}">$1</span>`)
       .replace(
         /(Expected.*\n)(.*)/m,
-        `<span style="color:${
-          white
-        }">$1</span><span style="color:${theme.green()}">$2</span>`
+        `<span style="color:${white}">$1</span><span style="color:${theme.green()}">$2</span>`
       )
       .replace(
         /(Received.*\n)(.*)/m,
-        `<span style="color:${
-          white
-        }">$1</span><span style="color:${theme.red()}">$2</span>`
+        `<span style="color:${white}">$1</span><span style="color:${theme.red()}">$2</span>`
       )
       .replace(/^(-.*)/gm, `<span style="color:${theme.red()}">$1</span>`)
       .replace(
@@ -68,7 +64,8 @@ const formatDiffMessage = (error: TestError, path: string) => {
   if (
     error.mappedErrors &&
     error.mappedErrors[0] &&
-    error.mappedErrors[0].fileName.endsWith(path)
+    error.mappedErrors[0].fileName.endsWith(path) &&
+    error.mappedErrors[0]._originalScriptCode
   ) {
     const mappedError = error.mappedErrors[0];
 

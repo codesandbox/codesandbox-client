@@ -59,7 +59,7 @@ export function notifyListeners(data: Object, source?: MessageEvent['source']) {
 function notifyFrames(message: Object) {
   const rawMessage = JSON.parse(JSON.stringify(message));
   bundlers.forEach(frame => {
-    if (frame) {
+    if (frame && frame.postMessage) {
       frame.postMessage({ ...rawMessage, codesandbox: true }, '*');
     }
   });

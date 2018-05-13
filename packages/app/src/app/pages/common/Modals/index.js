@@ -14,6 +14,9 @@ import SelectSandboxModal from './SelectSandboxModal';
 import SearchDependenciesModal from './SearchDependenciesModal';
 import DeleteProfileSandboxModal from './DeleteProfileSandboxModal';
 import LiveSessionEndedModal from './LiveSessionEndedModal';
+import LiveSessionVersionMismatch from './LiveSessionVersionMismatch';
+import UploadModal from './UploadModal';
+import StorageManagementModal from './StorageManagementModal';
 
 const modals = {
   preferences: {
@@ -63,6 +66,18 @@ const modals = {
   liveSessionEnded: {
     Component: LiveSessionEndedModal,
     width: 600,
+  },
+  liveVersionMismatch: {
+    Component: LiveSessionVersionMismatch,
+    width: 600,
+  },
+  uploading: {
+    Component: UploadModal,
+    width: 600,
+  },
+  storageManagement: {
+    Component: StorageManagementModal,
+    width: 800,
   },
 };
 

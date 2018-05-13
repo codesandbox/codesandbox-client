@@ -16,6 +16,7 @@ export type Settings = {
   lintEnabled: boolean,
   vimMode: boolean,
   tabWidth: number,
+  enableLigatures: boolean,
 };
 
 export interface Editor {

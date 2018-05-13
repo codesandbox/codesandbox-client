@@ -4,6 +4,8 @@ import { reaction } from 'mobx';
 import { inject, observer } from 'mobx-react';
 
 import BasePreview from 'app/components/Preview';
+import RunOnClick from 'common/components/RunOnClick';
+
 import FlyingContainer from './FlyingContainer';
 import Tests from './DevTools/Tests';
 import Console from './DevTools/Console';
@@ -13,6 +15,7 @@ type Props = {
   height: ?number,
   store: any,
   signals: any,
+  runOnClick?: boolean,
 };
 
 type State = {
@@ -22,6 +25,7 @@ type State = {
 class Preview extends React.Component<Props, State> {
   state = {
     aligned: window.innerHeight > window.innerWidth ? 'bottom' : 'right',
+    running: !this.props.runOnClick,
   };
 
   onPreviewInitialized = preview => {
@@ -253,32 +257,42 @@ class Preview extends React.Component<Props, State> {
               {content === 'console' && (
                 <Console alignRight={alignRight} alignBottom={alignBottom} />
               )}
-              <BasePreview
-                onInitialized={this.onPreviewInitialized}
-                sandbox={store.editor.currentSandbox}
-                extraModules={{ '/package.json': packageJSON }}
-                currentModule={store.editor.currentModule}
-                settings={store.preferences.settings}
-                initialPath={store.editor.initialPath}
-                isInProjectView={store.editor.isInProjectView}
-                onClearErrors={() => signals.editor.errorsCleared()}
-                onAction={action =>
-                  signals.editor.previewActionReceived({ action })
-                }
-                hide={hide}
-                noPreview={completelyHidden}
-                onOpenNewWindow={() =>
-                  this.props.signals.preferences.viewModeChanged({
-                    showEditor: true,
-                    showPreview: false,
-                  })
-                }
-                onToggleProjectView={() => signals.editor.projectViewToggled()}
-                showDevtools={store.preferences.showDevtools}
-                isResizing={store.editor.isResizing}
-                alignRight={alignRight}
-                alignBottom={alignBottom}
-              />
+              {this.state.running ? (
+                <BasePreview
+                  onInitialized={this.onPreviewInitialized}
+                  sandbox={store.editor.currentSandbox}
+                  extraModules={{ '/package.json': packageJSON }}
+                  currentModule={store.editor.currentModule}
+                  settings={store.preferences.settings}
+                  initialPath={store.editor.initialPath}
+                  isInProjectView={store.editor.isInProjectView}
+                  onClearErrors={() => signals.editor.errorsCleared()}
+                  onAction={action =>
+                    signals.editor.previewActionReceived({ action })
+                  }
+                  hide={hide}
+                  noPreview={completelyHidden}
+                  onOpenNewWindow={() =>
+                    this.props.signals.preferences.viewModeChanged({
+                      showEditor: true,
+                      showPreview: false,
+                    })
+                  }
+                  onToggleProjectView={() =>
+                    signals.editor.projectViewToggled()
+                  }
+                  showDevtools={store.preferences.showDevtools}
+                  isResizing={store.editor.isResizing}
+                  alignRight={alignRight}
+                  alignBottom={alignBottom}
+                />
+              ) : (
+                <RunOnClick
+                  onClick={() => {
+                    this.setState({ running: true });
+                  }}
+                />
+              )}
             </React.Fragment>
           );
         }}

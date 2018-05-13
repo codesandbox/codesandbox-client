@@ -87,7 +87,12 @@ export default class App extends React.PureComponent<{}, State> {
       editorSize,
       forceRefresh,
       expandDevTools,
-      runOnClick,
+      runOnClick:
+        runOnClick === false
+          ? false
+          : runOnClick ||
+            navigator.appVersion.indexOf('X11') !== -1 ||
+            navigator.appVersion.indexOf('Linux') !== -1,
       verticalMode,
       highlightedLines: highlightedLines || [],
     };

@@ -14,7 +14,7 @@ export interface Props {
     value: string
   ) => void;
   value: string;
-  codeMirrorOptions?: codemirror.EditorConfiguration;
+  codeMirrorOptions?: Partial<codemirror.EditorConfiguration>;
   className?: string;
   style?: Object;
 }
@@ -35,6 +35,7 @@ export default class CodeMirror extends React.Component<Props> {
         style={style}
       >
         <Controlled
+          // @ts-ignore
           options={{
             keyMap: 'sublime',
             indentUnit: 2,
