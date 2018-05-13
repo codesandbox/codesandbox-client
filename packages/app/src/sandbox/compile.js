@@ -476,7 +476,7 @@ async function compile({
         document.write(html.replace(/%PUBLIC_URL%/g, ''));
         document.close();
 
-        if (manager) {
+        if (manager && lastHTML !== html) {
           manager.clearCompiledCache();
         }
 
