@@ -332,7 +332,6 @@ async function compile({
   hadError = false;
 
   actionsEnabled = hasActions;
-  handleExternalResources(externalResources);
 
   let managerModuleToTranspile = null;
   try {
@@ -486,6 +485,8 @@ async function compile({
           lastHTML = html;
         }
       }
+
+      handleExternalResources(externalResources);
 
       const tt = Date.now();
       const oldHTML = document.body.innerHTML;
