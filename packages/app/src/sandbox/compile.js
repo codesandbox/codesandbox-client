@@ -482,7 +482,7 @@ async function compile({
 
         lastHTML = html;
       }
-
+      // TODO add the external resources to the HTML manually
       handleExternalResources(externalResources);
 
       await manager.preset.setup(manager);
