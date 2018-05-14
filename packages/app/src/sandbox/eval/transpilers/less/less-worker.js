@@ -18,7 +18,7 @@ self.window.document = {
 };
 
 self.importScripts(
-  `${process.env.CODESANDBOX_HOST || ''}/static/js/less.min.js']`
+  `${process.env.CODESANDBOX_HOST || ''}/static/js/less.min.js`
 );
 
 self.postMessage('ready');
