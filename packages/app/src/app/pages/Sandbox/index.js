@@ -53,7 +53,7 @@ class SandboxPage extends React.Component {
             titles={[
               {
                 content: 'Loading Sandbox',
-                delay: 0,
+                delay: 0.6,
               },
               {
                 content: 'Fetching git repository...',
