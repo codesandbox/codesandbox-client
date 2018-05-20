@@ -41,6 +41,22 @@ export function getCurrentManager(): ?Manager {
   return manager;
 }
 
+export function getSandboxHTML(html: string) {
+  if (html.includes('<body>')) {
+    return html;
+  }
+
+  return `<html>
+  <head>
+    <title>Sandbox</title>
+  </head>
+  <body>
+${html}
+  </body>
+</html>
+  `;
+}
+
 let firstLoad = true;
 let hadError = false;
 let lastHTML = null;
@@ -464,11 +480,13 @@ async function compile({
           .find(p => modules[p]);
         const htmlModule = modules[htmlModulePath];
 
-        const html = htmlModule
-          ? htmlModule.code
-          : template === 'vue-cli'
-            ? '<div id="app"></div>'
-            : '<div id="root"></div>';
+        const html = getSandboxHTML(
+          htmlModule
+            ? htmlModule.code
+            : template === 'vue-cli'
+              ? '<div id="app"></div>'
+              : '<div id="root"></div>'
+        );
 
         // Only set this body if the server hasn't set it already or the
         // html is not a full html file
@@ -482,8 +500,10 @@ async function compile({
 
         lastHTML = html;
       }
-      // TODO add the external resources to the HTML manually
-      handleExternalResources(externalResources);
+
+      const extDate = Date.now();
+      await handleExternalResources(externalResources);
+      debug('Loaded external resources in ' + (Date.now() - extDate) + 'ms');
 
       await manager.preset.setup(manager);
 

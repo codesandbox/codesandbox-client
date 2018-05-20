@@ -42,6 +42,16 @@ function addResource(resource: string) {
   }
 }
 
+async function waitForLoaded() {
+  return new Promise(resolve => {
+    if (document.readyState !== 'complete') {
+      window.addEventListener('load', resolve);
+    } else {
+      resolve();
+    }
+  });
+}
+
 let cachedExternalResources = '';
 
 export default function handleExternalResources(externalResources) {
@@ -50,5 +60,9 @@ export default function handleExternalResources(externalResources) {
     clearExternalResources();
     externalResources.forEach(addResource);
     cachedExternalResources = extResString;
+
+    return waitForLoaded();
   }
+
+  return Promise.resolve();
 }
