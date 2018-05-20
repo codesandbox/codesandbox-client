@@ -295,7 +295,7 @@ function sendResize() {
     if (document.body) {
       dispatch({
         type: 'resize',
-        height: height,
+        height,
       });
     }
   }
