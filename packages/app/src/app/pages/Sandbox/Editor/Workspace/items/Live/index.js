@@ -1,8 +1,6 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 
-import Button from 'app/components/Button';
-
 import LiveInfo from './LiveInfo';
 import LiveButton from './LiveButton';
 
@@ -43,37 +41,22 @@ const Live = ({ signals, store }) => (
           live!
         </Description>
 
-        {store.isPatron ? (
-          <React.Fragment>
-            <WorkspaceSubtitle>Create live room</WorkspaceSubtitle>
-            <Description>
-              To invite others you need to generate a URL that others can join.
-            </Description>
-            <WorkspaceInputContainer>
-              <LiveButton
-                onClick={() => {
-                  signals.live.createLiveClicked({
-                    sandboxId: store.editor.currentId,
-                  });
-                }}
-                isLoading={store.live.isLoading}
-              />
-            </WorkspaceInputContainer>
-          </React.Fragment>
-        ) : (
-          <React.Fragment>
-            <WorkspaceSubtitle>Patron Required</WorkspaceSubtitle>
-            <Description>
-              To share your sandbox for real time collaboration you need to be a
-              CodeSandbox Patron.
-            </Description>
-            <WorkspaceInputContainer>
-              <Button target="_blank" block to="/patron">
-                Become a Patron
-              </Button>
-            </WorkspaceInputContainer>
-          </React.Fragment>
-        )}
+        <React.Fragment>
+          <WorkspaceSubtitle>Create live room</WorkspaceSubtitle>
+          <Description>
+            To invite others you need to generate a URL that others can join.
+          </Description>
+          <WorkspaceInputContainer>
+            <LiveButton
+              onClick={() => {
+                signals.live.createLiveClicked({
+                  sandboxId: store.editor.currentId,
+                });
+              }}
+              isLoading={store.live.isLoading}
+            />
+          </WorkspaceInputContainer>
+        </React.Fragment>
       </React.Fragment>
     )}
   </div>
