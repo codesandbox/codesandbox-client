@@ -110,11 +110,14 @@ requirePolyfills().then(() => {
     }
   }
 
-  listen(handleMessage);
+  if (!isStandalone) {
+    listen(handleMessage);
 
-  sendReady();
-  setupHistoryListeners();
-  setupConsole();
+    sendReady();
+
+    setupHistoryListeners();
+    setupConsole();
+  }
 
   if (process.env.NODE_ENV === 'test' || isStandalone) {
     // We need to fetch the sandbox ourselves...

@@ -49,6 +49,7 @@ export function getSandboxHTML(html: string) {
   return `<html>
   <head>
     <title>Sandbox</title>
+    <script>/* This is a dummy script that contains the sandbox activator */</script>
   </head>
   <body>
 ${html}
