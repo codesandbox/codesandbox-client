@@ -42,7 +42,7 @@ function addResource(resource: string) {
   }
 }
 
-async function waitForLoaded() {
+function waitForLoaded() {
   return new Promise(resolve => {
     if (document.readyState !== 'complete') {
       window.addEventListener('load', resolve);
