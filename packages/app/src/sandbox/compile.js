@@ -491,7 +491,7 @@ async function compile({
 
         // Only set this body if the server hasn't set it already or the
         // html is not a full html file
-        document.open('text/html');
+        document.open('text/html', 'replace');
         document.write(html.replace(/%PUBLIC_URL%/g, ''));
         document.close();
 
