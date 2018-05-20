@@ -403,6 +403,9 @@ class EditorPreview extends React.Component<Props, State> {
               onInitialized={this.onInitialized}
               sandbox={sandbox}
               currentModule={currentModule}
+              isModuleSynced={store.editor.isModuleSynced(
+                currentModule.shortid
+              )}
               width={editorWidth}
               height={editorHeight}
               settings={settings(store)}

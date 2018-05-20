@@ -41,31 +41,23 @@ export function getCurrentManager(): ?Manager {
   return manager;
 }
 
-export function getSandboxHTML(html: string) {
+export function getHTMLParts(html: string) {
   if (html.includes('<body>')) {
-    // const matcher = /<body>([\s\S]*)<\/body>/m
-    // const matches = html.match(matcher)[1];
+    const bodyMatcher = /<body>([\s\S]*)<\/body>/m;
+    const headMatcher = /<head>([\s\S]*)<\/head>/m;
+    const body = html.match(bodyMatcher)[1];
+    const head = html.match(headMatcher)[1];
 
-    // return matches[1];
-
-    return html;
+    return { body, head };
   }
 
-  return `<html>
-  <head>
-    <title>Sandbox</title>
-    <script>/* This is a dummy script that contains the sandbox activator */</script>
-  </head>
-  <body>
-${html}
-  </body>
-</html>
-  `;
+  return { head: '', body: html };
 }
 
 let firstLoad = true;
 let hadError = false;
-let lastHTML = null;
+let lastHeadHTML = null;
+let lastBodyHTML = null;
 let changedModuleCount = 0;
 
 const DEPENDENCY_ALIASES = {
@@ -486,31 +478,25 @@ async function compile({
           .find(p => modules[p]);
         const htmlModule = modules[htmlModulePath];
 
-        const html = htmlModule
-          ? htmlModule.code
-          : template === 'vue-cli'
-            ? '<div id="app"></div>'
-            : '<div id="root"></div>';
+        const { head, body } = getHTMLParts(
+          htmlModule
+            ? htmlModule.code
+            : template === 'vue-cli'
+              ? '<div id="app"></div>'
+              : '<div id="root"></div>'
+        );
 
-        // Only set this body if the server hasn't set it already or the
-        // html is not a full html file
-        if (html.includes('<body')) {
-          if (!firstLoad) {
-            // TODO: give a sha from the server and compare it locally, if it's the same
-            // skip this setting of HTML since it's already done by the server.
-            document.open('text/html', 'replace');
-            document.write(html.replace(/%PUBLIC_URL%/g, ''));
-            document.close();
-          }
-        } else {
-          document.body.innerHTML = html;
+        document.body.innerHTML = body;
+
+        if (lastHeadHTML && lastHeadHTML !== head) {
+          document.location.reload();
         }
-
-        if (manager && lastHTML !== html) {
+        if (manager && lastBodyHTML && lastBodyHTML !== body) {
           manager.clearCompiledCache();
         }
 
-        lastHTML = html;
+        lastBodyHTML = body;
+        lastHeadHTML = head;
       }
 
       const extDate = Date.now();

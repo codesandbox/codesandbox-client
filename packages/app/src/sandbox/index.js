@@ -58,6 +58,8 @@ requirePolyfills().then(() => {
         history.back();
       } else if (data.type === 'urlforward') {
         history.forward();
+      } else if (data.type === 'refresh') {
+        document.location.reload();
       } else if (data.type === 'evaluate') {
         let result = null;
         let error = false;
