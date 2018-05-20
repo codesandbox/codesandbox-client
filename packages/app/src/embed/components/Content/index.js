@@ -340,6 +340,7 @@ export default class Content extends React.PureComponent<Props, State> {
               <CodeEditor
                 onInitialized={this.onCodeEditorInitialized}
                 currentModule={currentModule || mainModule}
+                isModuleSynced
                 sandbox={sandbox}
                 settings={this.getPreferences()}
                 canSave={false}

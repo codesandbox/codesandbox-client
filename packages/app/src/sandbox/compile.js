@@ -14,7 +14,7 @@ import createCodeSandboxOverlay from './codesandbox-overlay';
 import handleExternalResources from './external-resources';
 
 import defaultBoilerplates from './boilerplates/default-boilerplates';
-import resizeEventListener from './resize-event-listener';
+
 import {
   getBoilerplates,
   evalBoilerplates,
@@ -41,8 +41,24 @@ export function getCurrentManager(): ?Manager {
   return manager;
 }
 
+export function getHTMLParts(html: string) {
+  if (html.includes('<body>')) {
+    const bodyMatcher = /<body>([\s\S]*)<\/body>/m;
+    const headMatcher = /<head>([\s\S]*)<\/head>/m;
+    const body = html.match(bodyMatcher)[1];
+    const head = html.match(headMatcher)[1];
+
+    return { body, head };
+  }
+
+  return { head: '', body: html };
+}
+
 let firstLoad = true;
 let hadError = false;
+let lastHeadHTML = null;
+let lastBodyHTML = null;
+let lastHeight = 0;
 let changedModuleCount = 0;
 
 const DEPENDENCY_ALIASES = {
@@ -259,16 +275,37 @@ async function updateManager(
   });
 }
 
-function initializeResizeListener() {
-  const listener = resizeEventListener();
-  listener.addResizeListener(document.body, () => {
+function getDocumentHeight() {
+  const body = document.body;
+  const html = document.documentElement;
+
+  const height = Math.max(
+    body.scrollHeight,
+    body.offsetHeight,
+    html.clientHeight,
+    html.scrollHeight,
+    html.offsetHeight
+  );
+}
+
+function sendResize() {
+  const height = getDocumentHeight();
+
+  if (lastHeight !== height) {
     if (document.body) {
       dispatch({
         type: 'resize',
-        height: document.body.getBoundingClientRect().height,
+        height,
       });
     }
-  });
+  }
+
+  lastHeight = height;
+}
+
+function initializeResizeListener() {
+  setInterval(sendResize, 5000);
+
   initializedResizeListener = true;
 }
 
@@ -331,7 +368,6 @@ async function compile({
   hadError = false;
 
   actionsEnabled = hasActions;
-  handleExternalResources(externalResources);
 
   let managerModuleToTranspile = null;
   try {
@@ -413,7 +449,6 @@ async function compile({
     dispatch({ type: 'status', status: 'transpiling' });
 
     await manager.verifyTreeTranspiled();
-    await manager.preset.setup(manager);
     await manager.transpileModules(managerModuleToTranspile);
 
     const managerTranspiledModuleToTranspile = manager.getTranspiledModule(
@@ -459,23 +494,38 @@ async function compile({
         }
       }
 
-      if ((!manager.webpackHMR || firstLoad) && !manager.preset.htmlDisabled) {
-        if (!managerTranspiledModuleToTranspile.compilation || isModuleView) {
-          const htmlModule =
-            modules[
-              templateDefinition
-                .getHTMLEntries(configurations)
-                .find(p => modules[p])
-            ];
+      if (!manager.webpackHMR && !manager.preset.htmlDisabled) {
+        const htmlModulePath = templateDefinition
+          .getHTMLEntries(configurations)
+          .find(p => modules[p]);
+        const htmlModule = modules[htmlModulePath];
 
-          const html = htmlModule
+        const { head, body } = getHTMLParts(
+          htmlModule
             ? htmlModule.code
             : template === 'vue-cli'
               ? '<div id="app"></div>'
-              : '<div id="root"></div>';
-          document.body.innerHTML = html;
+              : '<div id="root"></div>'
+        );
+
+        document.body.innerHTML = body;
+
+        if (lastHeadHTML && lastHeadHTML !== head) {
+          document.location.reload();
         }
+        if (manager && lastBodyHTML && lastBodyHTML !== body) {
+          manager.clearCompiledCache();
+        }
+
+        lastBodyHTML = body;
+        lastHeadHTML = head;
       }
+
+      const extDate = Date.now();
+      await handleExternalResources(externalResources);
+      debug('Loaded external resources in ' + (Date.now() - extDate) + 'ms');
+
+      await manager.preset.setup(manager);
 
       const tt = Date.now();
       const oldHTML = document.body.innerHTML;

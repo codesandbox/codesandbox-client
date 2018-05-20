@@ -58,6 +58,8 @@ requirePolyfills().then(() => {
         history.back();
       } else if (data.type === 'urlforward') {
         history.forward();
+      } else if (data.type === 'refresh') {
+        document.location.reload();
       } else if (data.type === 'evaluate') {
         let result = null;
         let error = false;
@@ -110,11 +112,14 @@ requirePolyfills().then(() => {
     }
   }
 
-  listen(handleMessage);
+  if (!isStandalone) {
+    listen(handleMessage);
 
-  sendReady();
-  setupHistoryListeners();
-  setupConsole();
+    sendReady();
+
+    setupHistoryListeners();
+    setupConsole();
+  }
 
   if (process.env.NODE_ENV === 'test' || isStandalone) {
     // We need to fetch the sandbox ourselves...
