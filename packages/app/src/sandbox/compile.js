@@ -495,9 +495,13 @@ async function compile({
         // Only set this body if the server hasn't set it already or the
         // html is not a full html file
         if (html.includes('<body')) {
-          document.open('text/html', 'replace');
-          document.write(html.replace(/%PUBLIC_URL%/g, ''));
-          document.close();
+          if (!firstLoad) {
+            // TODO: give a sha from the server and compare it locally, if it's the same
+            // skip this setting of HTML since it's already done by the server.
+            document.open('text/html', 'replace');
+            document.write(html.replace(/%PUBLIC_URL%/g, ''));
+            document.close();
+          }
         } else {
           document.body.innerHTML = html;
         }
