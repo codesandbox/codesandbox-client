@@ -43,6 +43,11 @@ export function getCurrentManager(): ?Manager {
 
 export function getSandboxHTML(html: string) {
   if (html.includes('<body>')) {
+    // const matcher = /<body>([\s\S]*)<\/body>/m
+    // const matches = html.match(matcher)[1];
+
+    // return matches[1];
+
     return html;
   }
 
@@ -475,25 +480,31 @@ async function compile({
         }
       }
 
+      const extDate = Date.now();
+      await handleExternalResources(externalResources);
+      debug('Loaded external resources in ' + (Date.now() - extDate) + 'ms');
+
       if (!manager.webpackHMR && !manager.preset.htmlDisabled) {
         const htmlModulePath = templateDefinition
           .getHTMLEntries(configurations)
           .find(p => modules[p]);
         const htmlModule = modules[htmlModulePath];
 
-        const html = getSandboxHTML(
-          htmlModule
-            ? htmlModule.code
-            : template === 'vue-cli'
-              ? '<div id="app"></div>'
-              : '<div id="root"></div>'
-        );
+        const html = htmlModule
+          ? htmlModule.code
+          : template === 'vue-cli'
+            ? '<div id="app"></div>'
+            : '<div id="root"></div>';
 
         // Only set this body if the server hasn't set it already or the
         // html is not a full html file
-        document.open('text/html', 'replace');
-        document.write(html.replace(/%PUBLIC_URL%/g, ''));
-        document.close();
+        if (html.includes('<body')) {
+          document.open('text/html', 'replace');
+          document.write(html.replace(/%PUBLIC_URL%/g, ''));
+          document.close();
+        } else {
+          document.body.innerHTML = html;
+        }
 
         if (manager && lastHTML !== html) {
           manager.clearCompiledCache();
@@ -501,10 +512,6 @@ async function compile({
 
         lastHTML = html;
       }
-
-      const extDate = Date.now();
-      await handleExternalResources(externalResources);
-      debug('Loaded external resources in ' + (Date.now() - extDate) + 'ms');
 
       await manager.preset.setup(manager);
 
