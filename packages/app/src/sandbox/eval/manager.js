@@ -349,7 +349,7 @@ export default class Manager {
   verifyTreeTranspiled() {
     return Promise.all(
       this.getTranspiledModules()
-        .filter(tModule => !tModule.source)
+        .filter(tModule => tModule.shouldTranspile())
         .map(tModule => tModule.transpile(this))
     );
   }
@@ -689,7 +689,13 @@ export default class Manager {
     );
 
     return Promise.all(
-      transpiledModulesToUpdate.map(tModule => tModule.transpile(this))
+      transpiledModulesToUpdate.map(tModule => {
+        if (tModule.shouldTranspile()) {
+          return tModule.transpile(this);
+        }
+
+        return Promise.resolve(tModule);
+      })
     );
   }
 

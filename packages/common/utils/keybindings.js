@@ -1,13 +1,35 @@
+const isIOS =
+  typeof navigator !== 'undefined' &&
+  !!navigator.platform.match(/(iPhone|iPod|iPad)/i);
 const isMac =
   typeof navigator !== 'undefined' &&
-  !!navigator.platform.match(/(Mac|iPhone|iPod|iPad)/i);
-const metaKey = isMac ? 'Meta' : 'Alt';
-const metaOrCtrlKey = isMac ? 'Meta' : 'Control';
+  (isIOS || !!navigator.platform.match(/Mac/i));
+const metaKey = isMac ? (isIOS ? 'Alt' : 'Meta') : 'Alt';
+const metaOrCtrlKey = isMac ? (isIOS ? 'Alt' : 'Meta') : 'Control';
+const ctrlOrAltKey = isIOS ? 'Alt' : 'Control';
+
+// String.fromCharCode receives UTF-16 code units, but the keyCode represents the actual
+// "physical" key on the keyboard. For this reason it's sketchy (some do match) to
+// String.fromCharCode(e.keyCode) so we have this table with the correct mapping.
+// KeyCode is a weird spec (it is a key event api after all) but it's defined in a way that
+// it's i18n safe: In the US keyboard "," and "<" are on the same physical key so they
+// both have keyCode 188. One might expect this will break in non-US keyboards since
+// these characters are in different physical keys, however, the spec is defined in a way
+// that no matter which physical key the "," and the "<" are in, they'll always be keyCode 188.
+// http://www.javascripter.net/faq/keycodes.htm
+const keyCodeMapping = {
+  '188': ',',
+};
 
 export function normalizeKey(e: KeyboardEvent) {
   if (e.key) {
     if (e.key.split('').length === 1) {
-      const key = String.fromCharCode(e.keyCode).toUpperCase();
+      let key;
+      if (Object.prototype.hasOwnProperty.call(keyCodeMapping, e.keyCode)) {
+        key = keyCodeMapping[e.keyCode];
+      } else {
+        key = String.fromCharCode(e.keyCode).toUpperCase();
+      }
       if (key === ' ') {
         return 'Space';
       }
@@ -60,7 +82,7 @@ export const KEYBINDINGS = {
   'editor.close-tab': {
     title: 'Close Current Tab',
     type: 'View',
-    bindings: [['Control', 'W']],
+    bindings: [[ctrlOrAltKey, 'W']],
     signal: 'editor.tabClosed',
     payload: state => ({
       tabIndex: state.editor.tabs
