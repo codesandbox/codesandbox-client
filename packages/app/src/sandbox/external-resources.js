@@ -43,6 +43,7 @@ function addResource(resource: string) {
 
   return new Promise(r => {
     el.onload = r;
+    el.onerror = r;
   });
 }
 
