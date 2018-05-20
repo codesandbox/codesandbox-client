@@ -143,7 +143,8 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
         {!isModuleSynced &&
           module.title === 'index.html' && (
             <Icons style={{ fontSize: '.875rem' }}>
-              Save this file to see changes
+              You may have to save this file and refresh the preview to see
+              changes
             </Icons>
           )}
         {config &&

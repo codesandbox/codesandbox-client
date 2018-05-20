@@ -1,5 +1,4 @@
 import { fromPairs, toPairs, sortBy } from 'lodash';
-import { dispatch } from 'codesandbox-api';
 import slugify from 'common/utils/slugify';
 import { clone } from 'mobx-state-tree';
 
