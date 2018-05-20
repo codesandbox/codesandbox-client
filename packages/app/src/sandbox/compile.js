@@ -14,7 +14,7 @@ import createCodeSandboxOverlay from './codesandbox-overlay';
 import handleExternalResources from './external-resources';
 
 import defaultBoilerplates from './boilerplates/default-boilerplates';
-import resizeEventListener from './resize-event-listener';
+
 import {
   getBoilerplates,
   evalBoilerplates,
@@ -58,6 +58,7 @@ let firstLoad = true;
 let hadError = false;
 let lastHeadHTML = null;
 let lastBodyHTML = null;
+let lastHeight = 0;
 let changedModuleCount = 0;
 
 const DEPENDENCY_ALIASES = {
@@ -274,16 +275,37 @@ async function updateManager(
   });
 }
 
-function initializeResizeListener() {
-  const listener = resizeEventListener();
-  listener.addResizeListener(document.body, () => {
+function getDocumentHeight() {
+  const body = document.body;
+  const html = document.documentElement;
+
+  const height = Math.max(
+    body.scrollHeight,
+    body.offsetHeight,
+    html.clientHeight,
+    html.scrollHeight,
+    html.offsetHeight
+  );
+}
+
+function sendResize() {
+  const height = getDocumentHeight();
+
+  if (lastHeight !== height) {
     if (document.body) {
       dispatch({
         type: 'resize',
-        height: document.body.getBoundingClientRect().height,
+        height: height,
       });
     }
-  });
+  }
+
+  lastHeight = height;
+}
+
+function initializeResizeListener() {
+  setInterval(sendResize, 5000);
+
   initializedResizeListener = true;
 }
 
