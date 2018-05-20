@@ -292,6 +292,17 @@ export default class TranspiledModule {
     }
   }
 
+  /**
+   * Determines if this is a module that should be transpiled if updated. If this
+   * is a transpilationDependency that's updated then it should not get transpiled, but the parent should.
+   */
+  shouldTranspile() {
+    return (
+      !this.source &&
+      !(this.initiators.size === 0 && this.transpilationInitiators.size > 0)
+    );
+  }
+
   update(module: Module): TranspiledModule {
     if (this.module.path !== module.path || this.module.code !== module.code) {
       this.module = module;
