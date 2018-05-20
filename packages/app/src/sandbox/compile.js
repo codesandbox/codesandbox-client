@@ -480,10 +480,6 @@ async function compile({
         }
       }
 
-      const extDate = Date.now();
-      await handleExternalResources(externalResources);
-      debug('Loaded external resources in ' + (Date.now() - extDate) + 'ms');
-
       if (!manager.webpackHMR && !manager.preset.htmlDisabled) {
         const htmlModulePath = templateDefinition
           .getHTMLEntries(configurations)
@@ -512,6 +508,10 @@ async function compile({
 
         lastHTML = html;
       }
+
+      const extDate = Date.now();
+      await handleExternalResources(externalResources);
+      debug('Loaded external resources in ' + (Date.now() - extDate) + 'ms');
 
       await manager.preset.setup(manager);
 
