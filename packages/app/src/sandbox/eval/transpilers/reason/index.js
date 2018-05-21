@@ -2,6 +2,7 @@
 import ReasonWorker from 'worker-loader?publicPath=/&name=reason-transpiler.[hash:8].worker.js!./worker';
 
 import { basename } from 'path';
+import stripANSI from 'strip-ansi';
 
 import Transpiler from '../';
 import { type LoaderContext } from '../../transpiled-module';
@@ -40,8 +41,11 @@ function getDependencyList(
   list: Set<ReasonModule>,
   module: ReasonModule
 ) {
-  const deps = window.ocaml
-    .reason_list_dependencies(module.code)
+  const listFunction = module.path.endsWith('.re')
+    ? window.ocaml.reason_list_dependencies
+    : window.ocaml.list_dependencies;
+
+  const deps = listFunction(module.code)
     .filter(x => IGNORED_DEPENDENCIES.indexOf(x) === -1)
     .filter(x => !list.has(x));
 
@@ -74,11 +78,12 @@ class ReasonTranspiler extends Transpiler {
         'https://cdn.rawgit.com/jaredly/docre/73fb3c05/static/bs-3.0.0.js'
       );
       await addScript('https://reason.surge.sh/bucklescript-deps.js');
+      await addScript('https://unpkg.com/reason@3.1.0/refmt.js');
     }
 
     const reasonModules = loaderContext
       .getModules()
-      .filter(x => x.path.endsWith('.re'))
+      .filter(x => x.path.endsWith('.re') || x.path.endsWith('.ml'))
       .map(x => ({
         ...x,
         moduleName: getModuleName(x.path),
@@ -100,23 +105,34 @@ class ReasonTranspiler extends Transpiler {
 
     const newCode = Array.from(modulesToAdd)
       .map(x => {
+        const usedCode = x.path.endsWith('.re')
+          ? x.code
+          : window.printRE(window.parseML(x.code));
+
         const moduleName = x.moduleName;
 
         return `module ${moduleName} = {
 #1 ${moduleName}
-${x.code}
+${usedCode}
 };`;
       })
       .join('\n\n');
 
-    console.log(newCode);
-
-    const { js_code, js_error_msg } = window.ocaml.reason_compile_super_errors(
-      newCode
-    );
+    const {
+      js_code,
+      js_error_msg,
+      row,
+      column,
+      text,
+    } = window.ocaml.reason_compile_super_errors(newCode);
 
     if (js_error_msg) {
-      return Promise.reject(js_error_msg);
+      const error = new Error(stripANSI(text));
+      error.name = 'Reason Compile Error';
+      error.fileName = loaderContext._module.module.path;
+      error.lineNumber = row + 1;
+      error.columnNumber = column;
+      return Promise.reject(error);
     } else {
       return Promise.resolve({
         transpiledCode: js_code,
