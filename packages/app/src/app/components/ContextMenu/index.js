@@ -18,7 +18,7 @@ class ContextMenu extends React.Component {
     this.mousedown = window.addEventListener('mousedown', mousedownEvent => {
       const { show } = this.state;
 
-      if (show) {
+      if (show && this.el) {
         if (!this.el.contains(mousedownEvent.target)) {
           this.close();
         }
@@ -55,13 +55,13 @@ class ContextMenu extends React.Component {
     return (
       <div onContextMenu={this.onContextMenu}>
         {children}
-        <Portal>
-          <div
-            ref={el => {
-              this.el = el;
-            }}
-          >
-            {show && (
+        {show && (
+          <Portal>
+            <div
+              ref={el => {
+                this.el = el;
+              }}
+            >
               <Motion
                 defaultStyle={{ opacity: 0.6 }}
                 style={{ opacity: spring(1) }}
@@ -89,9 +89,9 @@ class ContextMenu extends React.Component {
                   </Container>
                 )}
               </Motion>
-            )}
-          </div>
-        </Portal>
+            </div>
+          </Portal>
+        )}
       </div>
     );
   }

@@ -58,7 +58,9 @@ class Notifications extends React.Component {
 
   render() {
     const notifications = this.props.store.notifications;
-
+    if (notifications.length === 0) {
+      return null;
+    }
     return (
       <Portal>
         <div onMouseEnter={this.hoverOn} onMouseLeave={this.hoverOff}>

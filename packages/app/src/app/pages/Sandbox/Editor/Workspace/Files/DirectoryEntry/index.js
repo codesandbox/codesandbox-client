@@ -239,31 +239,33 @@ class DirectoryEntry extends React.Component {
               hasChildren={this.getChildren().length > 0}
               closeTree={this.closeTree}
             />
-            <Modal
-              isOpen={this.state.showDeleteDirectoryModal}
-              onClose={this.closeModals}
-              width={400}
-            >
-              <Alert
-                title="Delete Directory"
-                body={
-                  <span>
-                    Are you sure you want to delete <b>{title}</b>?
-                    <br />
-                    The directory will be permanently removed.
-                  </span>
-                }
-                onCancel={this.closeModals}
-                onDelete={() => {
-                  this.setState({
-                    showDeleteDirectoryModal: false,
-                  });
-                  this.props.signals.files.directoryDeleted({
-                    directoryShortid: shortid,
-                  });
-                }}
-              />
-            </Modal>
+            {this.state.showDeleteDirectoryModal && (
+              <Modal
+                isOpen={this.state.showDeleteDirectoryModal}
+                onClose={this.closeModals}
+                width={400}
+              >
+                <Alert
+                  title="Delete Directory"
+                  body={
+                    <span>
+                      Are you sure you want to delete <b>{title}</b>?
+                      <br />
+                      The directory will be permanently removed.
+                    </span>
+                  }
+                  onCancel={this.closeModals}
+                  onDelete={() => {
+                    this.setState({
+                      showDeleteDirectoryModal: false,
+                    });
+                    this.props.signals.files.directoryDeleted({
+                      directoryShortid: shortid,
+                    });
+                  }}
+                />
+              </Modal>
+            )}
           </EntryContainer>
         )}
         <Opener open={open}>
@@ -287,32 +289,34 @@ class DirectoryEntry extends React.Component {
             setCurrentModule={this.setCurrentModule}
             markTabsNotDirty={this.markTabsNotDirty}
           />
-          <Modal
-            isOpen={this.state.showDeleteModuleModal}
-            onClose={this.closeModals}
-            width={400}
-          >
-            <Alert
-              title="Delete File"
-              body={
-                <span>
-                  Are you sure you want to delete{' '}
-                  <b>{this.state.moduleToDeleteTitle}</b>?
-                  <br />
-                  The file will be permanently removed.
-                </span>
-              }
-              onCancel={this.closeModals}
-              onDelete={() => {
-                this.setState({
-                  showDeleteModuleModal: false,
-                });
-                this.props.signals.files.moduleDeleted({
-                  moduleShortid: this.state.moduleToDeleteShortid,
-                });
-              }}
-            />
-          </Modal>
+          {this.state.showDeleteModuleModal && (
+            <Modal
+              isOpen={this.state.showDeleteModuleModal}
+              onClose={this.closeModals}
+              width={400}
+            >
+              <Alert
+                title="Delete File"
+                body={
+                  <span>
+                    Are you sure you want to delete{' '}
+                    <b>{this.state.moduleToDeleteTitle}</b>?
+                    <br />
+                    The file will be permanently removed.
+                  </span>
+                }
+                onCancel={this.closeModals}
+                onDelete={() => {
+                  this.setState({
+                    showDeleteModuleModal: false,
+                  });
+                  this.props.signals.files.moduleDeleted({
+                    moduleShortid: this.state.moduleToDeleteShortid,
+                  });
+                }}
+              />
+            </Modal>
+          )}
           {creating === 'module' && (
             <Entry
               id=""
