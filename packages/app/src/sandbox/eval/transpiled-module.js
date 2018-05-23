@@ -792,8 +792,6 @@ export default class TranspiledModule {
 
     try {
       // eslint-disable-next-line no-inner-declarations
-
-      // eslint-disable-next-line no-inner-declarations
       function require(path: string) {
         const bfsModule = BrowserFS.BFSRequire(path);
 
