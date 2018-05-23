@@ -182,6 +182,7 @@ const PREINSTALLED_DEPENDENCIES = [
   'babel-plugin-jsx-pragmatic',
   '@babel/core',
   'flow-bin',
+  ...BABEL_DEPENDENCIES,
 ];
 
 function getDependencies(parsedPackage, templateDefinition, configurations) {
@@ -229,13 +230,15 @@ function getDependencies(parsedPackage, templateDefinition, configurations) {
     }
   });
 
-  let preinstalledDependencies = PREINSTALLED_DEPENDENCIES;
-  if (templateDefinition.name !== 'babel-repl') {
-    preinstalledDependencies = [
-      ...preinstalledDependencies,
-      ...BABEL_DEPENDENCIES,
-    ];
-  }
+  const sandpackConfig =
+    configurations.customTemplate &&
+    configurations.customTemplate.parsed &&
+    configurations.customTemplate.parsed.sandpack;
+
+  const preinstalledDependencies =
+    sandpackConfig.preInstalledDependencies == null
+      ? PREINSTALLED_DEPENDENCIES
+      : sandpackConfig.preInstalledDependencies;
 
   preinstalledDependencies.forEach(dep => {
     if (returnedDependencies[dep]) {
@@ -287,6 +290,8 @@ function getDocumentHeight() {
     html.scrollHeight,
     html.offsetHeight
   );
+
+  return height;
 }
 
 function sendResize() {
@@ -421,14 +426,15 @@ async function compile({
     }
     const t = Date.now();
 
-    await updateManager(
-      sandboxId,
-      template,
-      modules,
-      manifest,
-      configurations,
-      isNewCombination
-    );
+    const updatedModules =
+      (await updateManager(
+        sandboxId,
+        template,
+        modules,
+        manifest,
+        configurations,
+        isNewCombination
+      )) || [];
 
     const possibleEntries = templateDefinition.getEntries(configurations);
 
@@ -446,6 +452,8 @@ async function compile({
 
     const main = absolute(foundMain);
     managerModuleToTranspile = modules[main];
+
+    await manager.preset.setup(manager, updatedModules);
 
     dispatch({ type: 'status', status: 'transpiling' });
 
@@ -525,8 +533,6 @@ async function compile({
       const extDate = Date.now();
       await handleExternalResources(externalResources);
       debug('Loaded external resources in ' + (Date.now() - extDate) + 'ms');
-
-      await manager.preset.setup(manager);
 
       const tt = Date.now();
       const oldHTML = document.body.innerHTML;

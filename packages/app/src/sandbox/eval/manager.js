@@ -632,7 +632,7 @@ export default class Manager {
    * Find all changed, added and deleted modules. Update trees and
    * delete caches accordingly
    */
-  updateData(modules: { [path: string]: Module }) {
+  async updateData(modules: { [path: string]: Module }) {
     this.transpileJobs = {};
     this.hardReload = false;
     this.isFirstLoad = false;
@@ -713,15 +713,15 @@ export default class Manager {
       transpiledModulesToUpdate
     );
 
-    return Promise.all(
+    return (await Promise.all(
       transpiledModulesToUpdate.map(tModule => {
         if (tModule.shouldTranspile()) {
           return tModule.transpile(this);
         }
 
-        return Promise.resolve(tModule);
+        return Promise.resolve(false);
       })
-    );
+    )).filter(Boolean);
   }
 
   /**
@@ -855,7 +855,9 @@ export default class Manager {
   dispose() {
     if (this.preset) {
       this.preset.transpilers.forEach(t => {
-        t.dispose();
+        if (t.dispose) {
+          t.dispose();
+        }
       });
     }
   }

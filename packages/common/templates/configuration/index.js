@@ -6,6 +6,7 @@ import babelrc from './babelrc';
 import angularCli from './angular-cli';
 import tsconfig from './tsconfig';
 import babelTranspiler from './babel-transpiler';
+import customCodeSandbox from './custom-codesandbox';
 
 const configs = {
   babelrc,
@@ -15,6 +16,7 @@ const configs = {
   sandboxConfig,
   angularCli,
   tsconfig,
+  customCodeSandbox,
 };
 
 export default configs;

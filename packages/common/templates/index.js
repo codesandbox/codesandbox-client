@@ -9,9 +9,11 @@ import svelte from './svelte';
 import vue from './vue';
 import cxjs from './cxjs';
 import dojo from './dojo';
+import custom from './custom';
 
 export {
   angular,
+  custom,
   babel,
   vue,
   react,
@@ -56,6 +58,8 @@ export default function getDefinition(
       return cxjs;
     case dojo.name:
       return dojo;
+    case custom.name:
+      return custom;
     default:
       return react;
   }

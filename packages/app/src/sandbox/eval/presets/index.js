@@ -86,6 +86,15 @@ export default class Preset {
     this.alias = { ...this.defaultAliases, ...aliases };
   };
 
+  reset = () => {
+    this.loaders = [];
+  };
+
+  resetTranspilers = () => {
+    this.transpilers.clear();
+    this.loaders.length = 0;
+  };
+
   /**
    * Checks if there is an alias given for the path, if there is it will return
    * the altered path, otherwise it will just return the known path.

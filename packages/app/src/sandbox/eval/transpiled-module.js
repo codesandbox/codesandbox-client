@@ -217,7 +217,9 @@ export default class TranspiledModule {
     // all transpilers that clears side effects if there are any. Example:
     // Remove CSS styles from the dom.
     manager.preset.getLoaders(this.module, this.query).forEach(t => {
-      t.transpiler.cleanModule(this.getLoaderContext(manager, t.options));
+      if (t.transpiler.cleanModule) {
+        t.transpiler.cleanModule(this.getLoaderContext(manager, t.options));
+      }
     });
     manager.removeTranspiledModule(this);
   }
@@ -607,7 +609,10 @@ export default class TranspiledModule {
     ) {
       const hasHMR = manager.preset
         .getLoaders(this.module, this.query)
-        .some(t => t.transpiler.HMREnabled);
+        .some(
+          t =>
+            t.transpiler.HMREnabled == null ? true : t.transpiler.HMREnabled
+        );
 
       if (!hasHMR) {
         manager.markHardReload();
@@ -882,7 +887,10 @@ export default class TranspiledModule {
       if (
         manager.preset
           .getLoaders(this.module, this.query)
-          .some(t => !t.transpiler.cacheable)
+          .some(
+            t =>
+              t.transpiler.cacheable == null ? false : !t.transpiler.cacheable
+          )
       ) {
         this.compilation = null;
       }
