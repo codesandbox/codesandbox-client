@@ -89,6 +89,8 @@ export default function initialize() {
     setup: async (manager: Manager, updatedModules) => {
       if (updatedModules.some(m => m.module.path.startsWith('/.codesandbox'))) {
         initialized = false;
+        manager.clearCompiledCache();
+        manager.clearCache();
       }
 
       if (!initialized) {
