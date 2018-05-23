@@ -485,6 +485,10 @@ export default class Manager {
         });
 
         this.cachedPaths[dirredPath][path] = resolvedPath;
+
+        if (!this.transpiledModules[resolvedPath]) {
+          throw new Error(`Could not find '${resolvedPath}' in local files.`);
+        }
       } catch (e) {
         if (
           this.cachedPaths[dirredPath] &&
@@ -502,7 +506,7 @@ export default class Manager {
         connectedPath = connectedPath.replace('/node_modules/', '');
 
         if (!isDependency) {
-          throw new ModuleNotFoundError(shimmedPath, false);
+          throw new ModuleNotFoundError(shimmedPath, false, currentPath);
         }
 
         const dependencyName = getDependencyName(connectedPath);
@@ -511,7 +515,7 @@ export default class Manager {
           this.manifest.dependencies.find(d => d.name === dependencyName) ||
           this.manifest.dependencyDependencies[dependencyName]
         ) {
-          throw new ModuleNotFoundError(connectedPath, true);
+          throw new ModuleNotFoundError(connectedPath, true, currentPath);
         } else {
           throw new DependencyNotFoundError(connectedPath, currentPath);
         }
