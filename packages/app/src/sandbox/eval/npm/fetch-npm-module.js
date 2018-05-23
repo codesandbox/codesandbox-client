@@ -8,6 +8,7 @@ import type { Manifest } from '../manager';
 
 import DependencyNotFoundError from '../../errors/dependency-not-found-error';
 import getDependencyName from '../utils/get-dependency-name';
+import { packageFilter } from '../utils/resolve-utils';
 
 type Meta = {
   [path: string]: any,
@@ -145,18 +146,11 @@ function resolvePath(
       {
         filename: currentPath,
         extensions: defaultExtensions.map(ext => '.' + ext),
-        packageFilter: p => {
-          if (!p.main && p.module) {
-            // eslint-disable-next-line
-            p.main = p.module;
-          }
-
-          return p;
-        },
+        packageFilter,
         moduleDirectory: [
           'node_modules',
           manager.envVariables.NODE_PATH,
-        ].filter(x => x),
+        ].filter(Boolean),
         isFile: (p, c, cb) => {
           const callback = cb || c;
 
@@ -165,55 +159,50 @@ function resolvePath(
         readFile: async (p, c, cb) => {
           const callback = cb || c;
 
-          if (manager.transpiledModules[p]) {
-            return callback(null, manager.transpiledModules[p].module.code);
-          }
+          try {
+            return callback(null, manager.readFileSync(p));
+          } catch (e) {
+            const depPath = p.replace('/node_modules/', '');
+            const depName = getDependencyName(depPath);
 
-          const depPath = p.replace('/node_modules/', '');
-          const depName = getDependencyName(depPath);
+            // To prevent infinite loops we keep track of which dependencies have been requested before.
+            if (!manager.transpiledModules[p] && !meta[p]) {
+              const err = new Error('Could not find ' + p);
+              err.code = 'ENOENT';
 
-          // To prevent infinite loops we keep track of which dependencies have been requested before.
-          if (!manager.transpiledModules[p] && !meta[p]) {
-            const err = new Error('Could not find ' + p);
-            err.code = 'ENOENT';
-
-            callback(err);
-            return null;
-          }
-
-          // eslint-disable-next-line
-          const subDepVersionVersionInfo = await findDependencyVersion(
-            currentPath,
-            manager,
-            defaultExtensions,
-            depName
-          );
-
-          if (subDepVersionVersionInfo) {
-            const { version: subDepVersion } = subDepVersionVersionInfo;
-            try {
-              const module = await downloadDependency(
-                depName,
-                subDepVersion,
-                p
-              );
-
-              if (module) {
-                manager.addModule(module);
-
-                callback(null, module.code);
-                return null;
-              }
-            } catch (e) {
-              // Let it throw the error
+              return callback(err);
             }
+
+            // eslint-disable-next-line
+            const subDepVersionVersionInfo = await findDependencyVersion(
+              currentPath,
+              manager,
+              defaultExtensions,
+              depName
+            );
+
+            if (subDepVersionVersionInfo) {
+              const { version: subDepVersion } = subDepVersionVersionInfo;
+              try {
+                const module = await downloadDependency(
+                  depName,
+                  subDepVersion,
+                  p
+                );
+
+                if (module) {
+                  manager.addModule(module);
+
+                  callback(null, module.code);
+                  return null;
+                }
+              } catch (er) {
+                // Let it throw the error
+              }
+            }
+
+            return callback(e);
           }
-
-          const err = new Error('Could not find ' + p);
-          err.code = 'ENOENT';
-
-          callback(err);
-          return null;
         },
       },
       (err, resolvedPath) => {
