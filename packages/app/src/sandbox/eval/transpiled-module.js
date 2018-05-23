@@ -17,6 +17,7 @@ import type { WarningStructure } from './transpilers/utils/worker-warning-handle
 
 import resolveDependency from './loaders/dependency-resolver';
 import evaluate from './loaders/eval';
+import isESModule from './utils/is-es-module';
 
 import type { default as Manager } from './manager';
 import HMR from './hmr';
@@ -642,17 +643,49 @@ export default class TranspiledModule {
     return this;
   }
 
-  evaluate(manager: Manager, { asUMD = false }: { asUMD: boolean } = {}) {
+  evaluate(
+    manager: Manager,
+    { asUMD = false }: { asUMD: boolean } = {},
+    initiator?: TranspiledModule
+  ) {
     if (this.source == null) {
       if (this.module.path === '/node_modules/empty/index.js') {
         return {};
       }
 
-      // This scenario only happens when we are in an inconsistent state, the quickest way to solve
-      // this state is to just hard reload everything.
-      manager.clearCache();
+      if (
+        this.module.path.startsWith('/node_modules') &&
+        !isESModule(this.module.code)
+      ) {
+        if (process.env.NODE_ENV === 'development') {
+          console.warn('[WARN] Sandpack: loading an untranspiled module');
+        }
+        // This code is probably required as a dynamic require. Since we can
+        // assume that node_modules dynamic requires are only done for node
+        // utilites we will just set the transpiled code according to how
+        // node handles that.
 
-      throw new Error(`${this.module.path} hasn't been transpiled yet.`);
+        let code = this.module.path.endsWith('.json')
+          ? `module.exports = JSON.parse(${JSON.stringify(this.module.code)})`
+          : this.module.code;
+
+        code += `\n//# sourceURL=${location.origin}${this.module.path}${
+          this.query ? `?${this.hash}` : ''
+        }`;
+
+        this.source = new ModuleSource(this.module.path, code, null);
+
+        if (initiator) {
+          initiator.dependencies.add(this);
+          this.initiators.add(initiator);
+        }
+      } else {
+        // This scenario only happens when we are in an inconsistent state, the quickest way to solve
+        // this state is to just hard reload everything.
+        manager.clearCache();
+
+        throw new Error(`${this.module.path} hasn't been transpiled yet.`);
+      }
     }
 
     const localModule = this.module;
@@ -766,22 +799,16 @@ export default class TranspiledModule {
           return bfsModule;
         }
 
-        // First check if there is an alias for the path, in that case
-        // we must alter the path to it
-        const aliasedPath = manager.preset.getAliasedPath(path);
-
-        // eslint-disable-line no-unused-vars
-        if (/^(\w|@\w)/.test(aliasedPath) && !aliasedPath.includes('!')) {
-          // So it must be a dependency
-          if (
-            aliasedPath.startsWith('codesandbox-api') ||
-            aliasedPath.startsWith('babel-runtime')
-          )
-            return resolveDependency(aliasedPath, manager.externals);
+        // So it must be a dependency
+        if (
+          path.startsWith('codesandbox-api') ||
+          path.startsWith('babel-runtime')
+        ) {
+          return resolveDependency(path, manager.externals);
         }
 
         const requiredTranspiledModule = manager.resolveTranspiledModule(
-          aliasedPath,
+          path,
           localModule.path
         );
 
@@ -791,8 +818,17 @@ export default class TranspiledModule {
 
         return cache
           ? cache.exports
-          : manager.evaluateTranspiledModule(requiredTranspiledModule);
+          : manager.evaluateTranspiledModule(
+              requiredTranspiledModule,
+              transpiledModule
+            );
       }
+
+      require.resolve = function resolve(path: string) {
+        const foundModule = manager.resolveModule(path, localModule.path);
+
+        return foundModule.path;
+      };
 
       const globals = manager.testRunner.testGlobals(this.module);
 

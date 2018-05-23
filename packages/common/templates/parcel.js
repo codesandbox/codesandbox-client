@@ -4,14 +4,22 @@ import Template from './template';
 import { decorateSelector } from '../theme';
 import configurations from './configuration';
 
+import { absolute } from 'common/utils/path';
+
 class ParcelTemplate extends Template {
-  getEntries() {
+  getEntries(configurationFiles: { [type: string]: Object }) {
     const entries = [];
 
+    entries.push(
+      configurationFiles.package &&
+        configurationFiles.package.parsed &&
+        configurationFiles.package.parsed.main &&
+        absolute(configurationFiles.package.parsed.main)
+    );
     entries.push('/index.html');
     entries.push('/src/index.html');
 
-    return entries;
+    return entries.filter(Boolean);
   }
 }
 
