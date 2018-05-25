@@ -719,11 +719,11 @@ export default class TranspiledModule {
 
     if (this.hmrConfig) {
       /* eslint-disable no-param-reassign */
-      manager.hmrStatus = 'dispose';
+      manager.setHmrStatus('dispose');
       // Call module.hot.dispose handler
       // https://webpack.js.org/api/hot-module-replacement/#dispose-or-adddisposehandler-
       this.hmrConfig.callDisposeHandler();
-      manager.hmrStatus = 'idle';
+      manager.setHmrStatus('idle');
       /* eslint-enable */
     }
 
@@ -734,7 +734,10 @@ export default class TranspiledModule {
       exports: {},
       hot: {
         accept: (path: string | Array<string>, cb) => {
-          if (typeof path === 'undefined') {
+          if (
+            typeof path === 'undefined' ||
+            (typeof path !== 'string' || !Array.isArray(path))
+          ) {
             // Self mark hot
             this.hmrConfig = this.hmrConfig || new HMR();
             if (this.hmrConfig) {
@@ -784,6 +787,8 @@ export default class TranspiledModule {
         },
         data: hotData,
         status: () => manager.hmrStatus,
+        addStatusHandler: manager.addStatusHandler,
+        removeStatusHandler: manager.removeStatusHandler,
       },
     };
     this.compilation.hot.data = hotData;
@@ -845,13 +850,13 @@ export default class TranspiledModule {
       );
 
       /* eslint-disable no-param-reassign */
-      manager.hmrStatus = 'apply';
+      manager.setHmrStatus('apply');
       const hmrConfig = this.hmrConfig;
       if (hmrConfig && hmrConfig.isHot()) {
         hmrConfig.setDirty(false);
         hmrConfig.callAcceptCallback();
       }
-      manager.hmrStatus = 'idle';
+      manager.setHmrStatus('idle');
       /* eslint-enable */
 
       return exports;
