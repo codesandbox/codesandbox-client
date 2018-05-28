@@ -38,6 +38,10 @@ class ContextMenu extends React.Component {
       x: event.clientX + 10,
       y: event.clientY + 10,
     });
+
+    if (this.props.onContextMenu) {
+      this.props.onContextMenu(event);
+    }
   };
 
   close = () => {
@@ -49,11 +53,11 @@ class ContextMenu extends React.Component {
   };
 
   render() {
-    const { children, items } = this.props;
+    const { children, items, ...props } = this.props;
     const { show, x, y } = this.state;
 
     return (
-      <div onContextMenu={this.onContextMenu}>
+      <div {...props} onContextMenu={this.onContextMenu}>
         {children}
         {show && (
           <Portal>

@@ -28,6 +28,7 @@ import preferences from './modules/preferences';
 import workspace from './modules/workspace';
 import files from './modules/files';
 import live from './modules/live';
+import dashboard from './modules/dashboard';
 
 export default Module({
   model,
@@ -89,6 +90,7 @@ export default Module({
   },
   catch: [[errors.AuthenticationError, sequences.showAuthenticationError]],
   modules: {
+    dashboard,
     patron,
     editor,
     profile,
