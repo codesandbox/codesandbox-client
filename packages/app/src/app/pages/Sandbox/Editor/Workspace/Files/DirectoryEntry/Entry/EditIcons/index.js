@@ -39,7 +39,7 @@ function EditIcons({
       {(hovering || (window.__isTouch && active) || forceShow) && (
         <Container>
           {onEdit && (
-            <Tooltip title="Edit">
+            <Tooltip title="Rename">
               <Icon onClick={handleClick(onEdit)}>
                 <EditIcon />
               </Icon>
