@@ -41,11 +41,13 @@ class Entry extends React.PureComponent {
     this.setState({ error: isInvalidTitle });
   };
 
-  handleRename = (title, force) => {
-    const { shortid } = this.props;
-    const canRename = !this.handleValidateTitle(title);
+  handleRename = (newTitle, force) => {
+    const { shortid, title } = this.props
+    if (newTitle === title) return
+    
+    const canRename = !this.handleValidateTitle(newTitle);
     if (canRename && this.props.rename) {
-      this.props.rename(shortid, title);
+      this.props.rename(shortid, newTitle);
       this.resetState();
     } else if (force) this.resetState();
   };
