@@ -25,7 +25,6 @@ export const Sidebar = styled.div`
   height: 100vh;
   background-color: ${props => props.theme.background};
 
-  padding: 1rem;
   ${paddingTop};
 
   box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.3);
@@ -34,5 +33,4 @@ export const Sidebar = styled.div`
 export const Content = styled.div`
   ${paddingTop};
   width: 100%;
-  padding-left: 2rem;
 `;

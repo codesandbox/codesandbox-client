@@ -3,25 +3,35 @@ import Input from 'common/components/Input';
 
 import TimeIcon from 'react-icons/lib/md/access-time';
 import TrashIcon from 'react-icons/lib/md/delete';
-import InfoIcon from 'app/pages/Sandbox/Editor/Navigation/InfoIcon';
 import DropboxIcon from 'react-icons/lib/fa/dropbox';
 
 import Item from './Item';
-import { Items } from './elements';
+import SandboxesItem from './SandboxesItem';
+import { Items, CategoryHeader } from './elements';
 
-export default class Sidebar extends React.PureComponent {
-  props: Props;
+export default class Sidebar extends React.Component {
+  shouldComponentUpdate() {
+    // Without this the app won't update on route changes, we've tried using
+    // `withRouter`, but it caused the app to remount on every route change.
+    return true;
+  }
 
   render() {
     return (
       <div>
-        <Input block placeholder="Filter Sandboxes" />
+        <div style={{ margin: '0 1rem' }}>
+          <Input block placeholder="Filter Sandboxes" />
+        </div>
 
         <Items>
-          <Item Icon={TimeIcon} name="Recent" />
-          <Item Icon={InfoIcon} name="Sandboxes" />
-          <Item Icon={DropboxIcon} name="Dropbox" />
-          <Item Icon={TrashIcon} name="Deleted Sandboxes" />
+          <CategoryHeader>My Sandboxes</CategoryHeader>
+          <Item Icon={TimeIcon} path="/dashboard/recents" name="Recent" />
+          <SandboxesItem />
+          <Item
+            Icon={TrashIcon}
+            path="/dashboard/deleted"
+            name="Deleted Sandboxes"
+          />
         </Items>
       </div>
     );

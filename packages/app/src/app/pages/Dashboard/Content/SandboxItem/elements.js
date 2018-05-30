@@ -5,7 +5,6 @@ export const Container = styled.div`
   background-color: ${props => props.theme.background};
   overflow: hidden;
   border-radius: 2px;
-  height: fit-content;
   user-select: none;
 
   border: 2px solid transparent;

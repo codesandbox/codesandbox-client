@@ -29,7 +29,9 @@ export default class SandboxItem extends React.PureComponent<Props> {
 
   componentDidMount() {
     if (this.props.selected) {
-      this.el.focus();
+      if (this.el && typeof this.el.focus === 'function') {
+        this.el.focus();
+      }
     }
   }
 
@@ -38,7 +40,7 @@ export default class SandboxItem extends React.PureComponent<Props> {
   };
 
   openSandbox = () => {
-    // TODO support git
+    // Git sandboxes aren't shown here anyway
     history.push(sandboxUrl({ id: this.props.id }));
 
     return true;
@@ -64,17 +66,9 @@ export default class SandboxItem extends React.PureComponent<Props> {
           ...style,
           paddingRight: PADDING,
           boxSizing: 'border-box',
-          outline: 'none',
         }}
         id={id}
         className="sandbox-item"
-        onClick={this.handleOnClick}
-        onContextMenu={this.handleOnContextMenu}
-        onDoubleClick={this.openSandbox}
-        onFocus={this.handleOnFocus}
-        onKeyDown={this.handleKeyDown}
-        role="button"
-        tabIndex={0}
         ref={el => {
           this.el = el;
         }}
@@ -85,7 +79,17 @@ export default class SandboxItem extends React.PureComponent<Props> {
           },
         ]}
       >
-        <Container selected={this.props.selected}>
+        <Container
+          style={{ outline: 'none' }}
+          onContextMenu={this.handleOnContextMenu}
+          onClick={this.handleOnClick}
+          onDoubleClick={this.openSandbox}
+          onFocus={this.handleOnFocus}
+          onKeyDown={this.handleKeyDown}
+          role="button"
+          tabIndex={0}
+          selected={this.props.selected}
+        >
           <SandboxImageContainer>
             <SandboxImage
               style={{

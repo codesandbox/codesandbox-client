@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 const Container = styled.div`
-  position: absolute;
+  position: fixed;
   border: 1px solid ${props => props.theme.secondary};
   background-color: ${props => props.theme.secondary.clearer(0.5)};
   pointer-events: none;
