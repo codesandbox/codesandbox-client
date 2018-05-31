@@ -29,11 +29,28 @@ const FOLDER_QUERY = gql`
 
 // eslint-disable-next-line react/prefer-stateless-function
 export default class SandboxesItem extends React.Component {
+  state = {
+    open: false,
+  };
+
+  toggleOpen = () => {
+    this.setState(state => ({ open: !state.open }));
+  };
+
   render() {
     return (
-      <Item path={'/dashboard/sandboxes'} Icon={InfoIcon} name="Sandboxes">
+      <Item
+        onClick={this.toggleOpen}
+        path={'/dashboard/sandboxes'}
+        Icon={InfoIcon}
+        name="Sandboxes"
+      >
         {({ match }) => (
-          <ReactShow show={!!match} duration={250} unmountOnHide>
+          <ReactShow
+            show={this.state.open || !!match}
+            duration={250}
+            unmountOnHide
+          >
             <Query query={FOLDER_QUERY}>
               {({ data, loading, error }) => {
                 if (loading) {

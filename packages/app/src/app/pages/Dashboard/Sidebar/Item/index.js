@@ -7,7 +7,7 @@ export default ({ name, Icon, path, children }) => (
     path={path}
     children={res => (
       <Fragment>
-        <Container to={path} selected={!!res.match}>
+        <Container to={path} activeClassName={'active'} exact>
           <IconContainer>
             <Icon />
           </IconContainer>

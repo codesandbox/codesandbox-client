@@ -5,12 +5,12 @@ import { Query } from 'react-apollo';
 import Sandboxes from '../Sandboxes';
 
 const QUERY = gql`
-  {
+  query collection($path: String!) {
     me {
-      collections {
+      collection(path: $path) {
         id
         sandboxes {
-          id
+          shortid
           title
           description
           insertedAt
@@ -26,23 +26,19 @@ const QUERY = gql`
 `;
 
 export default props => {
-  const path = props.match.params.path || '/';
-
-  console.log(path);
+  const path = '/' + (props.match.params.path || '');
 
   return (
-    <Query query={QUERY}>
+    <Query query={QUERY} variables={{ path }}>
       {({ loading, error, data }) => {
         if (error) {
           return <div>Error!</div>;
         }
 
-        console.log(data);
-
         return loading ? (
           <div>Loading...</div>
         ) : (
-          <Sandboxes Header={'/'} sandboxes={[]} />
+          <Sandboxes Header={path} sandboxes={data.me.collection.sandboxes} />
         );
       }}
     </Query>

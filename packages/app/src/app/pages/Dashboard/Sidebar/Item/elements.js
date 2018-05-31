@@ -1,12 +1,12 @@
 import styled, { keyframes, css } from 'styled-components';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 const selectAnimation = keyframes`
   0% { background-position: 0% 0%  }
   100% { background-position: -100% 0%  }
 `;
 
-export const Container = styled(Link)`
+export const Container = styled(NavLink)`
   display: flex;
   width: 100%;
   height: 2.5rem;
@@ -29,14 +29,13 @@ export const Container = styled(Link)`
   background-size: 200%;
 
   background-position: 0% 0%;
-  ${props =>
-    props.selected &&
-    css`
-      animation: ${selectAnimation} 0.3s;
 
-      animation-fill-mode: forwards;
-      color: white;
-    `};
+  &.active {
+    animation: ${selectAnimation} 0.3s;
+
+    animation-fill-mode: forwards;
+    color: white;
+  }
 `;
 
 export const IconContainer = styled.div`

@@ -112,12 +112,12 @@ class SandboxGrid extends React.Component<*, State> {
 
     return (
       <SandboxItem
-        id={item.id}
-        title={item.title || item.id}
+        id={item.shortid}
+        title={item.title || item.shortid}
         details={editedSince}
         style={style}
         key={key}
-        selected={this.selectedSandboxesObject[item.id]}
+        selected={this.selectedSandboxesObject[item.shortid]}
         setSandboxesSelected={this.setSandboxesSelected}
       />
     );
@@ -132,8 +132,8 @@ class SandboxGrid extends React.Component<*, State> {
 
     this.selectedSandboxesObject = {};
     // Create an object to make it O(1)
-    selectedSandboxes.forEach(id => {
-      this.selectedSandboxesObject[id] = true;
+    selectedSandboxes.forEach(shortid => {
+      this.selectedSandboxesObject[shortid] = true;
     });
 
     return (

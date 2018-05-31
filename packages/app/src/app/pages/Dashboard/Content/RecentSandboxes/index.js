@@ -8,7 +8,7 @@ const QUERY = gql`
   {
     me {
       sandboxes(limit: 20, orderBy: { field: "updated_at", direction: DESC }) {
-        id
+        shortid
         title
         description
         insertedAt
