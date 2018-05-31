@@ -490,6 +490,10 @@ export default class Manager {
 
         this.cachedPaths[dirredPath][path] = resolvedPath;
 
+        if (resolvedPath === '//empty.js') {
+          return SHIMMED_MODULE;
+        }
+
         if (!this.transpiledModules[resolvedPath]) {
           throw new Error(`Could not find '${resolvedPath}' in local files.`);
         }
@@ -524,11 +528,12 @@ export default class Manager {
           throw new DependencyNotFoundError(connectedPath, currentPath);
         }
       }
-
-      if (resolvedPath === '//empty.js') {
-        return SHIMMED_MODULE;
-      }
     }
+
+    if (resolvedPath === '//empty.js') {
+      return SHIMMED_MODULE;
+    }
+
     return this.transpiledModules[resolvedPath].module;
   }
 
