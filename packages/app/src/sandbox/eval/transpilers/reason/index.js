@@ -95,7 +95,6 @@ class ReasonTranspiler extends Transpiler {
         moduleName: getModuleName(x.path),
       }));
 
-    const a = Date.now();
     const mainReasonModule: ReasonModule = reasonModules.find(
       m => m.path === loaderContext._module.module.path
     );
@@ -103,8 +102,6 @@ class ReasonTranspiler extends Transpiler {
     const modulesToAdd: Set<ReasonModule> = new Set();
 
     getDependencyList(reasonModules, modulesToAdd, mainReasonModule);
-
-    console.log(a - Date.now());
 
     modulesToAdd.forEach(m => {
       if (m.path !== loaderContext._module.module.path) {
@@ -152,7 +149,7 @@ ${usedCode}
 
     if (js_error_msg) {
       const error = new Error(stripANSI(text));
-      console.log(js_error_msg, row, column, text);
+
       error.name = 'Reason Compile Error';
       error.fileName = loaderContext._module.module.path;
       error.lineNumber = row + 1;
