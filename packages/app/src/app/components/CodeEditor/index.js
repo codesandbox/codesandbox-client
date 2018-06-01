@@ -74,9 +74,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
   render() {
     const props = this.props;
 
-    const settings = props.settings;
-    const module = props.currentModule;
-    const sandbox = props.sandbox;
+    const { isModuleSynced, sandbox, currentModule: module, settings } = props;
     const dependencies = getDependencies(sandbox);
 
     const template = getDefinition(sandbox.template);
@@ -142,6 +140,13 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
           bottom: 0,
         }}
       >
+        {!isModuleSynced &&
+          module.title === 'index.html' && (
+            <Icons style={{ fontSize: '.875rem' }}>
+              You may have to save this file and refresh the preview to see
+              changes
+            </Icons>
+          )}
         {config &&
           (getUI(config.type) ? (
             <Icons>

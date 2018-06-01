@@ -181,7 +181,8 @@ class Preview extends React.Component<Props, State> {
   };
 
   handleModuleSyncedChange = (preview, change) => {
-    if (change) {
+    const settings = this.props.store.preferences.settings;
+    if (!settings.livePreviewEnabled && change) {
       preview.executeCodeImmediately();
     }
   };

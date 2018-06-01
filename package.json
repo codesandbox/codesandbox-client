@@ -48,7 +48,7 @@
     "eslint-plugin-import": "^2.3.0",
     "eslint-plugin-jsx-a11y": "^5.0.3",
     "eslint-plugin-react": "~7.4.0",
-    "flow-bin": "^0.64.0",
+    "flow-bin": "^0.72.0",
     "gulp": "^3.9.1",
     "lerna": "^2.5.1",
     "lint-staged": "^5.0.0",

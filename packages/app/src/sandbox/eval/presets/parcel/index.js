@@ -21,7 +21,16 @@ export default function initialize() {
     'parcel',
     ['js', 'jsx', 'ts', 'tsx', 'json', 'less', 'scss', 'sass', 'styl', 'css'],
     {},
-    { htmlDisabled: true }
+    {
+      htmlDisabled: true,
+      setup: manager => {
+        const packageJSON = manager.configurations.package;
+
+        if (packageJSON && packageJSON.parsed && packageJSON.parsed.alias) {
+          manager.preset.setAdditionalAliases(packageJSON.parsed.alias);
+        }
+      },
+    }
   );
 
   parcelPreset.registerTranspiler(module => /\.jsx?$/.test(module.path), [

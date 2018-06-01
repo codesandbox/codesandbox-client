@@ -22,6 +22,7 @@ import ModuleNotFoundError from '../errors/module-not-found-error';
 import TestRunner from './tests/jest-lite';
 import dependenciesToQuery from '../npm/dependencies-to-query';
 import isESModule from './utils/is-es-module';
+import { packageFilter } from './utils/resolve-utils';
 
 import { ignoreNextCache, deleteAPICache } from './cache';
 
@@ -57,7 +58,22 @@ export type Manifest = {
 };
 
 const NODE_LIBS = ['dgram', 'net', 'tls', 'fs', 'module', 'child_process'];
+// For these dependencies we don't want to follow along with the `browser` field
+const SKIPPED_BROWSER_FIELD_DEPENDENCIES = ['babel-core', '@babel/core'].reduce(
+  (result, next) => ({
+    ...result,
+    [`/node_modules/${next}/package.json`]: true,
+  }),
+  {}
+);
+const SHIMMED_MODULE: Module = {
+  path: pathUtils.join('/node_modules', 'empty', 'index.js'),
+  code: `// empty`,
+  requires: [],
+};
 const debug = _debug('cs:compiler:manager');
+
+type HMRStatus = 'idle' | 'check' | 'apply' | 'fail' | 'dispose';
 
 export default class Manager {
   id: string;
@@ -77,7 +93,8 @@ export default class Manager {
   dependencies: Object;
   webpackHMR: boolean;
   hardReload: boolean;
-  hmrStatus: 'idle' | 'check' | 'apply' | 'fail' | 'dispose' = 'idle';
+  hmrStatus: HMRStatus = 'idle';
+  hmrStatusChangeListeners: Set<Function>;
   testRunner: TestRunner;
   isFirstLoad: boolean;
 
@@ -100,6 +117,7 @@ export default class Manager {
     this.webpackHMR = false;
     this.hardReload = false;
     this.hmrStatus = 'idle';
+    this.hmrStatusChangeListeners = new Set();
     this.isFirstLoad = true;
     this.transpiledModulesByHash = {};
     this.configurations = {};
@@ -177,6 +195,13 @@ export default class Manager {
         code: this.manifest.contents[path].content,
       };
 
+      if (SKIPPED_BROWSER_FIELD_DEPENDENCIES[path]) {
+        const pJsonCode = JSON.parse(this.manifest.contents[path].content);
+        // eslint-disable-next-line
+        delete pJsonCode.browser;
+        module.code = JSON.stringify(pJsonCode, null, 2);
+      }
+
       // Check if module syntax, only transpile when that's NOT the case
       // TODO move this check to the packager
       if (!isESModule(module.code)) {
@@ -209,7 +234,7 @@ export default class Manager {
     try {
       const exports = this.evaluateTranspiledModule(transpiledModule);
 
-      this.hmrStatus = 'idle';
+      this.setHmrStatus('idle');
 
       return exports;
     } catch (e) {
@@ -220,8 +245,11 @@ export default class Manager {
     }
   }
 
-  evaluateTranspiledModule(transpiledModule: TranspiledModule) {
-    return transpiledModule.evaluate(this);
+  evaluateTranspiledModule(
+    transpiledModule: TranspiledModule,
+    initiator?: TranspiledModule
+  ) {
+    return transpiledModule.evaluate(this, undefined, initiator);
   }
 
   addModule(module: Module) {
@@ -333,7 +361,7 @@ export default class Manager {
    * @param {*} entry
    */
   async transpileModules(entry: Module, isTestFile: boolean = false) {
-    this.hmrStatus = 'check';
+    this.setHmrStatus('check');
     this.setEnvironmentVariables();
     const transpiledModule = this.getTranspiledModule(entry);
 
@@ -422,82 +450,91 @@ export default class Manager {
     currentPath: string,
     defaultExtensions: Array<string> = ['js', 'jsx', 'json']
   ): Module {
-    const aliasedPath = this.getAliasedDependencyPath(path, currentPath);
-    const shimmedPath = coreLibraries[aliasedPath] || aliasedPath;
-
     const dirredPath = pathUtils.dirname(currentPath);
-
-    if (!this.cachedPaths[dirredPath]) {
+    if (this.cachedPaths[dirredPath] === undefined) {
       this.cachedPaths[dirredPath] = {};
     }
-    const cachedPath = this.cachedPaths[dirredPath][shimmedPath];
-    try {
-      let resolvedPath;
 
-      if (cachedPath) {
-        resolvedPath = cachedPath;
-      } else {
+    const cachedPath = this.cachedPaths[dirredPath][path];
+
+    let resolvedPath;
+
+    if (cachedPath) {
+      resolvedPath = cachedPath;
+    } else {
+      const presetAliasedPath = this.preset
+        .getAliasedPath(path)
+        .replace(/.*\{\{sandboxRoot\}\}/, '');
+
+      const aliasedPath = this.getAliasedDependencyPath(
+        presetAliasedPath,
+        currentPath
+      );
+      const shimmedPath = coreLibraries[aliasedPath] || aliasedPath;
+
+      if (NODE_LIBS.includes(shimmedPath)) {
+        return SHIMMED_MODULE;
+      }
+
+      try {
         resolvedPath = resolve.sync(shimmedPath, {
           filename: currentPath,
           extensions: defaultExtensions.map(ext => '.' + ext),
           isFile: this.isFile,
           readFileSync: this.readFileSync,
-          packageFilter: p => {
-            if (!p.main && p.module) {
-              // eslint-disable-next-line
-              p.main = p.module;
-            }
-
-            return p;
-          },
+          packageFilter,
           moduleDirectory: ['node_modules', this.envVariables.NODE_PATH].filter(
             Boolean
           ),
         });
 
-        this.cachedPaths[dirredPath][shimmedPath] = resolvedPath;
-      }
+        this.cachedPaths[dirredPath][path] = resolvedPath;
 
-      if (NODE_LIBS.includes(shimmedPath) || resolvedPath === '//empty.js') {
-        return {
-          path: pathUtils.join('/node_modules', 'empty', 'index.js'),
-          code: `// empty`,
-          requires: [],
-        };
-      }
+        if (resolvedPath === '//empty.js') {
+          return SHIMMED_MODULE;
+        }
 
-      return this.transpiledModules[resolvedPath].module;
-    } catch (e) {
-      if (
-        this.cachedPaths[dirredPath] &&
-        this.cachedPaths[dirredPath][shimmedPath]
-      ) {
-        delete this.cachedPaths[dirredPath][shimmedPath];
-      }
+        if (!this.transpiledModules[resolvedPath]) {
+          throw new Error(`Could not find '${resolvedPath}' in local files.`);
+        }
+      } catch (e) {
+        if (
+          this.cachedPaths[dirredPath] &&
+          this.cachedPaths[dirredPath][path]
+        ) {
+          delete this.cachedPaths[dirredPath][path];
+        }
 
-      let connectedPath = /^(\w|@\w)/.test(shimmedPath)
-        ? pathUtils.join('/node_modules', shimmedPath)
-        : pathUtils.join(pathUtils.dirname(currentPath), shimmedPath);
+        let connectedPath = /^(\w|@\w)/.test(shimmedPath)
+          ? pathUtils.join('/node_modules', shimmedPath)
+          : pathUtils.join(pathUtils.dirname(currentPath), shimmedPath);
 
-      const isDependency = connectedPath.includes('/node_modules/');
+        const isDependency = connectedPath.includes('/node_modules/');
 
-      connectedPath = connectedPath.replace('/node_modules/', '');
+        connectedPath = connectedPath.replace('/node_modules/', '');
 
-      if (!isDependency) {
-        throw new ModuleNotFoundError(shimmedPath, false);
-      }
+        if (!isDependency) {
+          throw new ModuleNotFoundError(shimmedPath, false, currentPath);
+        }
 
-      const dependencyName = getDependencyName(connectedPath);
+        const dependencyName = getDependencyName(connectedPath);
 
-      if (
-        this.manifest.dependencies.find(d => d.name === dependencyName) ||
-        this.manifest.dependencyDependencies[dependencyName]
-      ) {
-        throw new ModuleNotFoundError(connectedPath, true);
-      } else {
-        throw new DependencyNotFoundError(connectedPath);
+        if (
+          this.manifest.dependencies.find(d => d.name === dependencyName) ||
+          this.manifest.dependencyDependencies[dependencyName]
+        ) {
+          throw new ModuleNotFoundError(connectedPath, true, currentPath);
+        } else {
+          throw new DependencyNotFoundError(connectedPath, currentPath);
+        }
       }
     }
+
+    if (resolvedPath === '//empty.js') {
+      return SHIMMED_MODULE;
+    }
+
+    return this.transpiledModules[resolvedPath].module;
   }
 
   downloadDependency(
@@ -537,6 +574,21 @@ export default class Manager {
     }
   };
 
+  setHmrStatus = (status: HMRStatus) => {
+    this.hmrStatusChangeListeners.forEach(v => {
+      v(status);
+    });
+    this.hmrStatus = status;
+  };
+
+  addStatusHandler = (cb: Function) => {
+    this.hmrStatusChangeListeners.add(cb);
+  };
+
+  removeStatusHandler = (cb: Function) => {
+    this.hmrStatusChangeListeners.delete(cb);
+  };
+
   /**
    * Resolve the transpiled module from the path, note that the path can actually
    * include loaders. That's why we're focussing on first extracting this query
@@ -556,12 +608,8 @@ export default class Manager {
     // pop() mutates queryPath, queryPath is now just the loaders
     const modulePath = queryPath.pop();
 
-    const newPath = this.preset
-      .getAliasedPath(modulePath)
-      .replace(/.*\{\{sandboxRoot\}\}/, '');
-
     const module = this.resolveModule(
-      newPath,
+      modulePath,
       currentPath,
       ignoredExtensions || this.preset.ignoredExtensions
     );
@@ -685,7 +733,8 @@ export default class Manager {
     debug(
       `Generated update diff, updating ${
         transpiledModulesToUpdate.length
-      } modules.`
+      } modules.`,
+      transpiledModulesToUpdate
     );
 
     return Promise.all(
@@ -704,7 +753,7 @@ export default class Manager {
    * continuing
    */
   markHardReload() {
-    this.hmrStatus = 'fail';
+    this.setHmrStatus('fail');
     this.hardReload = true;
   }
 

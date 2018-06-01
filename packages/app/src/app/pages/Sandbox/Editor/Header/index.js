@@ -131,17 +131,17 @@ const Header = ({ store, signals }) => {
           tooltip="Create New Sandbox"
           Icon={PlusIcon}
         />
-        {!store.isLoggedIn && (
-          <Action
-            onClick={() =>
-              signals.modalOpened({
-                modal: 'preferences',
-              })
-            }
-            tooltip="Preferences"
-            Icon={SettingsIcon}
-          />
-        )}
+
+        <Action
+          onClick={() =>
+            signals.modalOpened({
+              modal: 'preferences',
+            })
+          }
+          tooltip="Preferences"
+          Icon={SettingsIcon}
+        />
+
         <Margin
           style={{
             zIndex: 20,
