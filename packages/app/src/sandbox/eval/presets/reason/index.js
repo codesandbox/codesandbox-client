@@ -30,7 +30,7 @@ export default function initialize() {
 
   preset.registerTranspiler(module => /\.re$/.test(module.path), [
     { transpiler: reasonTranspiler },
-    { transpiler: babelTranspiler },
+    { transpiler: babelTranspiler, options: { simpleRequire: true } },
   ]);
 
   preset.registerTranspiler(() => true, [{ transpiler: rawTranspiler }]);
