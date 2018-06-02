@@ -3,11 +3,10 @@ import { Route } from 'react-router-dom';
 import { Container, IconContainer, ItemName } from './elements';
 
 export default ({ name, Icon, path, children }) => (
-  <Route
-    path={path}
-    children={res => (
+  <Route path={path}>
+    {res => (
       <Fragment>
-        <Container to={path} activeClassName={'active'} exact>
+        <Container to={path} activeClassName="active" exact>
           <IconContainer>
             <Icon />
           </IconContainer>
@@ -17,5 +16,5 @@ export default ({ name, Icon, path, children }) => (
         {children && children(res)}
       </Fragment>
     )}
-  />
+  </Route>
 );

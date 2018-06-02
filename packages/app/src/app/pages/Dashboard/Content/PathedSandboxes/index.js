@@ -35,10 +35,14 @@ export default props => {
           return <div>Error!</div>;
         }
 
-        return loading ? (
-          <div>Loading...</div>
-        ) : (
-          <Sandboxes Header={path} sandboxes={data.me.collection.sandboxes} />
+        return (
+          <Sandboxes
+            isLoading={loading}
+            Header={path}
+            sandboxes={
+              loading || !data.me.collection ? [] : data.me.collection.sandboxes
+            }
+          />
         );
       }}
     </Query>

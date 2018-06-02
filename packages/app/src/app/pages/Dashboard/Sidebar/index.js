@@ -18,7 +18,7 @@ export default class Sidebar extends React.Component {
 
   render() {
     return (
-      <div>
+      <div style={{ width: 300, overflowY: 'auto' }}>
         <div style={{ margin: '0 1rem' }}>
           <Input block placeholder="Filter Sandboxes" />
         </div>
@@ -27,11 +27,7 @@ export default class Sidebar extends React.Component {
           <CategoryHeader>My Sandboxes</CategoryHeader>
           <Item Icon={TimeIcon} path="/dashboard/recents" name="Recent" />
           <SandboxesItem />
-          <Item
-            Icon={TrashIcon}
-            path="/dashboard/deleted"
-            name="Deleted Sandboxes"
-          />
+          <Item Icon={TrashIcon} path="/dashboard/deleted" name="Trash" />
         </Items>
       </div>
     );

@@ -29,10 +29,12 @@ export default () => (
         return <div>Error!</div>;
       }
 
-      return loading ? (
-        <div>Loading...</div>
-      ) : (
-        <Sandboxes Header={'Recent Sandboxes'} sandboxes={data.me.sandboxes} />
+      return (
+        <Sandboxes
+          isLoading={loading}
+          Header={'Recent Sandboxes'}
+          sandboxes={loading ? [] : data.me.sandboxes}
+        />
       );
     }}
   </Query>

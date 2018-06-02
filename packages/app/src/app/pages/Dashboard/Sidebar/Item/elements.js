@@ -1,4 +1,4 @@
-import styled, { keyframes, css } from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { NavLink } from 'react-router-dom';
 
 const selectAnimation = keyframes`
@@ -10,6 +10,7 @@ export const Container = styled(NavLink)`
   display: flex;
   width: 100%;
   height: 2.5rem;
+  user-select: none;
 
   align-items: center;
 
@@ -35,6 +36,7 @@ export const Container = styled(NavLink)`
 
     animation-fill-mode: forwards;
     color: white;
+    font-weight: 600;
   }
 `;
 

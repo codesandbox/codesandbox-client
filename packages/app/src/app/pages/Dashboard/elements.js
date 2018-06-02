@@ -19,7 +19,7 @@ const paddingTop = css`
 `;
 
 export const Sidebar = styled.div`
-  width: 300px;
+  display: flex;
   box-sizing: border-box;
 
   height: 100vh;
