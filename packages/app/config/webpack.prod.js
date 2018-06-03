@@ -52,10 +52,9 @@ module.exports = merge(commonConfig, {
     concatenateModules: true, //ModuleConcatenationPlugin
     namedModules: true, // NamedModulesPlugin()
     noEmitOnErrors: true, // NoEmitOnErrorsPlugin
-    // splitChunks: {
-    //   chunks: 'all',
-    //   name: 'vendors',
-    // },
+    splitChunks: {
+      chunks: 'all',
+    },
     runtimeChunk: 'single',
   },
   plugins: [

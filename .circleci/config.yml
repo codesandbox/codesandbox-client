@@ -139,6 +139,13 @@ jobs:
 workflows:
   version: 2
   build-and-test:
+    triggers:
+      - schedule:
+          cron: "0 0 * * *"
+          filters:
+            branches:
+              only:
+                - master
     jobs:
       - build-dependencies
       - test-integrations:

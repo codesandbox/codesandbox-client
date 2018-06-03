@@ -118,7 +118,12 @@ function build(previousSizeMap) {
     printFileSizes(stats, previousSizeMap);
     fs.writeFile(
       paths.appBuild + '/stats.json',
-      JSON.stringify(stats.toJson())
+      JSON.stringify(stats.toJson()),
+      err => {
+        if (err) {
+          console.error(err);
+        }
+      }
     );
     console.log();
 
