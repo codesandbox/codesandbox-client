@@ -24,7 +24,7 @@
     "autoprefixer": "8.5.0",
     "babel-core": "^6.26.0",
     "babel-jest": "^21.2.0",
-    "babel-loader": "7.1.4",
+    "babel-loader": "7.1.1",
     "babel-macros": "^1.0.2",
     "babel-plugin-codegen": "^1.2.0",
     "babel-plugin-lodash": "^3.2.11",
