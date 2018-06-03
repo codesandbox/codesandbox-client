@@ -31,7 +31,7 @@ module.exports = merge(commonConfig, {
       new UglifyJSPlugin({
         cache: true,
         parallel: true,
-        sourceMap: true,
+        sourceMap: false,
         uglifyOptions: {
           compress: {
             // inline is buggy as of uglify-es 3.3.7
@@ -48,7 +48,6 @@ module.exports = merge(commonConfig, {
       }),
     ],
     concatenateModules: true, //ModuleConcatenationPlugin
-
     namedModules: true, // NamedModulesPlugin()
     noEmitOnErrors: true, // NoEmitOnErrorsPlugin
     splitChunks: {
