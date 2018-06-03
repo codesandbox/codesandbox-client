@@ -20,7 +20,8 @@ const __PROD__ = NODE_ENV === 'production'; // eslint-disable-line no-underscore
 // const __TEST__ = NODE_ENV === 'test'; // eslint-disable-line no-underscore-dangle
 const babelConfig = __DEV__ ? babelDev : babelProd;
 
-const publicPath = SANDBOX_ONLY || __DEV__ ? '/' : getHost() + '/';
+const publicPath =
+  SANDBOX_ONLY || __DEV__ ? 'http://localhost:3000/' : getHost() + '/';
 
 // Shim for `eslint-plugin-vue/lib/index.js`
 const ESLINT_PLUGIN_VUE_INDEX = `module.exports = {
@@ -65,6 +66,7 @@ module.exports = {
         ],
       },
   target: 'web',
+  mode: 'development',
 
   node: {
     setImmediate: false,
@@ -75,6 +77,7 @@ module.exports = {
   output: {
     path: paths.appBuild,
     publicPath,
+    globalObject: 'this',
   },
 
   module: {
@@ -188,12 +191,6 @@ module.exports = {
           replace: `throw new Error('module assert not found')`,
         },
       },
-      // JSON is not enabled by default in Webpack but both Node and Browserify
-      // allow it implicitly so we also enable it.
-      {
-        test: /\.json$/,
-        loader: 'json-loader',
-      },
       // "postcss" loader applies autoprefixer to our CSS.
       // "css" loader resolves paths in CSS and adds assets as dependencies.
       // "style" loader turns CSS into JS modules that inject <style> tags.
@@ -294,7 +291,6 @@ module.exports = {
             chunks: ['sandbox-startup', 'sandbox'],
             filename: 'frame.html',
             template: paths.sandboxHtml,
-            publicPath,
             minify: __PROD__ && {
               removeComments: true,
               collapseWhitespace: true,
@@ -313,10 +309,10 @@ module.exports = {
           // Generates an `index.html` file with the <script> injected.
           new HtmlWebpackPlugin({
             inject: true,
-            chunks: ['common-sandbox', 'common', 'app'],
+            chunks: ['app'],
+            chunksSortMode: 'manual',
             filename: 'app.html',
             template: paths.appHtml,
-            publicPath,
             minify: __PROD__ && {
               removeComments: false,
               collapseWhitespace: true,
@@ -332,10 +328,10 @@ module.exports = {
           }),
           new HtmlWebpackPlugin({
             inject: true,
-            chunks: ['sandbox-startup', 'common-sandbox', 'sandbox'],
+            chunks: ['sandbox-startup', 'sandbox'],
+            chunksSortMode: 'manual',
             filename: 'frame.html',
             template: paths.sandboxHtml,
-            publicPath,
             minify: __PROD__ && {
               removeComments: true,
               collapseWhitespace: true,
@@ -351,7 +347,8 @@ module.exports = {
           }),
           new HtmlWebpackPlugin({
             inject: true,
-            chunks: ['common-sandbox', 'common', 'embed'],
+            chunks: ['embed'],
+            chunksSortMode: 'manual',
             filename: 'embed.html',
             template: path.join(paths.embedSrc, 'index.html'),
             minify: __PROD__ && {
@@ -375,15 +372,6 @@ module.exports = {
     // a plugin that prints an error when you attempt to do this.
     // See https://github.com/facebookincubator/create-react-app/issues/240
     new CaseSensitivePathsPlugin(),
-
-    // Expose BrowserFS, process, and Buffer globals.
-    // NOTE: If you intend to use BrowserFS in a script tag, you do not need
-    // to expose a BrowserFS global.
-    new webpack.ProvidePlugin({
-      // Only use our local dev version of browserfs when in dev mode
-      // process: 'processGlobal',
-      // Buffer: 'bufferGlobal',
-    }),
 
     // With this plugin we override the load-rules of eslint, this function prevents
     // us from using eslint in the browser, therefore we need to stop it!
@@ -425,34 +413,5 @@ module.exports = {
         },
       ].filter(x => x)
     ),
-
-    ...(SANDBOX_ONLY
-      ? [
-          new webpack.optimize.CommonsChunkPlugin({
-            async: true,
-            children: true,
-            minChunks: 2,
-          }),
-        ]
-      : [
-          // We first create a common chunk between embed and app, to share components
-          // and dependencies.
-          new webpack.optimize.CommonsChunkPlugin({
-            name: 'common',
-            chunks: ['app', 'embed'],
-          }),
-          // Then we find all commonalities between sandbox and common, because sandbox
-          // is always loaded by embed and app.
-          new webpack.optimize.CommonsChunkPlugin({
-            name: 'common-sandbox',
-            chunks: ['common', 'sandbox'],
-          }),
-          new webpack.optimize.CommonsChunkPlugin({
-            async: true,
-            children: true,
-            minChunks: 2,
-          }),
-        ]),
-    new webpack.NamedModulesPlugin(),
   ].filter(Boolean),
 };

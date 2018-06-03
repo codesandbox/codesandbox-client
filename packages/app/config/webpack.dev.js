@@ -3,9 +3,9 @@ const webpack = require('webpack');
 const commonConfig = require('./webpack.common');
 
 const devEntries = [
-  'react-hot-loader/patch',
+  // 'react-hot-loader/patch',
   'webpack-dev-server/client?/',
-  'webpack/hot/only-dev-server',
+  // 'webpack/hot/only-dev-server',
 ];
 
 module.exports = merge(
@@ -23,8 +23,7 @@ module.exports = merge(
       filename: 'static/js/[name].js',
     },
     plugins: [
-      new webpack.HotModuleReplacementPlugin(),
-      new webpack.NoEmitOnErrorsPlugin(),
+      // new webpack.HotModuleReplacementPlugin(),
     ],
   }
 );
