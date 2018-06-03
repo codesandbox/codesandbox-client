@@ -59,7 +59,7 @@ module.exports = merge(commonConfig, {
     runtimeChunk: 'single',
   },
   plugins: [
-    new BundleAnalyzerPlugin(),
+    process.env.ANALYZE && new BundleAnalyzerPlugin(),
     new webpack.DefinePlugin({ VERSION: JSON.stringify(VERSION) }),
     new webpack.LoaderOptionsPlugin({
       minimize: true,
@@ -260,5 +260,5 @@ module.exports = merge(commonConfig, {
     new ManifestPlugin({
       fileName: 'file-manifest.json',
     }),
-  ],
+  ].filter(Boolean),
 });

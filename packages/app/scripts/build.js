@@ -106,6 +106,7 @@ function build(previousSizeMap) {
     if (err) {
       console.error('Failed to create a production build. Reason:');
       console.error(err.message || err);
+      console.error(err.stack);
       process.exit(1);
     }
 
