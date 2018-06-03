@@ -7,7 +7,6 @@ import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 import InfoIcon from 'app/pages/Sandbox/Editor/Navigation/InfoIcon';
 import DelayedAnimation from 'app/components/DelayedAnimation';
-import ContextMenu from 'app/components/ContextMenu';
 
 import Item from '../Item';
 
@@ -40,8 +39,12 @@ export default class SandboxesItem extends React.Component {
 
   render() {
     return (
-      <ContextMenu
-        items={[
+      <Item
+        onClick={this.toggleOpen}
+        path={'/dashboard/sandboxes'}
+        Icon={InfoIcon}
+        name="My Sandboxes"
+        contextItems={[
           {
             title: 'Create Folder',
             icon: AddFolderIcon,
@@ -52,82 +55,74 @@ export default class SandboxesItem extends React.Component {
           },
         ]}
       >
-        <Item
-          onClick={this.toggleOpen}
-          path={'/dashboard/sandboxes'}
-          Icon={InfoIcon}
-          name="My Sandboxes"
-        >
-          {({ match }) => (
-            <ReactShow
-              show={this.state.open || !!match}
-              duration={250}
-              unmountOnHide
-            >
-              <Query query={FOLDER_QUERY}>
-                {({ data, loading, error }) => {
-                  if (loading) {
-                    return (
-                      <DelayedAnimation
-                        style={{
-                          margin: '1rem',
-                          fontWeight: 600,
-                          color: 'rgba(255, 255, 255, 0.6)',
-                        }}
-                        delay={600}
-                      >
-                        Loading...
-                      </DelayedAnimation>
-                    );
-                  }
-
-                  if (error) {
-                    return <div>Error!</div>;
-                  }
-
-                  const folders = data.me.collections;
-                  const children = getDirectChildren('/', folders);
-
+        {({ match }) => (
+          <ReactShow
+            show={this.state.open || !!match}
+            duration={250}
+            unmountOnHide
+          >
+            <Query query={FOLDER_QUERY}>
+              {({ data, loading, error }) => {
+                if (loading) {
                   return (
-                    <Container>
-                      {Array.from(children)
-                        .sort()
-                        .map(name => {
-                          const path = '/' + name;
-                          return (
-                            <Route
-                              key={path}
-                              path={`/dashboard/sandboxes${path}`}
-                            >
-                              {({ match: childMatch }) => (
-                                <FolderEntry
-                                  path={path}
-                                  folders={data.me.collections}
-                                  name={name}
-                                  open={!!childMatch}
-                                />
-                              )}
-                            </Route>
-                          );
-                        })}
-                      {(this.state.creatingDirectory ||
-                        children.size === 0) && (
-                        <CreateFolderEntry
-                          noFocus={!this.state.creatingDirectory}
-                          basePath=""
-                          close={() => {
-                            this.setState({ creatingDirectory: false });
-                          }}
-                        />
-                      )}
-                    </Container>
+                    <DelayedAnimation
+                      style={{
+                        margin: '1rem',
+                        fontWeight: 600,
+                        color: 'rgba(255, 255, 255, 0.6)',
+                      }}
+                      delay={600}
+                    >
+                      Loading...
+                    </DelayedAnimation>
                   );
-                }}
-              </Query>
-            </ReactShow>
-          )}
-        </Item>
-      </ContextMenu>
+                }
+
+                if (error) {
+                  return <div>Error!</div>;
+                }
+
+                const folders = data.me.collections;
+                const children = getDirectChildren('/', folders);
+
+                return (
+                  <Container>
+                    {Array.from(children)
+                      .sort()
+                      .map(name => {
+                        const path = '/' + name;
+                        return (
+                          <Route
+                            key={path}
+                            path={`/dashboard/sandboxes${path}`}
+                          >
+                            {({ match: childMatch }) => (
+                              <FolderEntry
+                                path={path}
+                                folders={data.me.collections}
+                                name={name}
+                                open={!!childMatch}
+                              />
+                            )}
+                          </Route>
+                        );
+                      })}
+                    {(this.state.creatingDirectory || children.size === 0) && (
+                      <CreateFolderEntry
+                        noFocus={!this.state.creatingDirectory}
+                        basePath=""
+                        close={() => {
+                          this.setState({ creatingDirectory: false });
+                        }}
+                      />
+                    )}
+                  </Container>
+                );
+              }}
+            </Query>
+          </ReactShow>
+        )}
+      </Item>
     );
   }
 }

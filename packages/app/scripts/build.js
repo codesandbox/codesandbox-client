@@ -101,7 +101,8 @@ function build(previousSizeMap) {
       process.env.NODE_ENV === 'production' ? 'production' : 'development'
     } build...`
   );
-  webpack(config).run((err, stats) => {
+  let compiler = webpack(config);
+  compiler.run((err, stats) => {
     if (err) {
       console.error('Failed to create a production build. Reason:');
       console.error(err.message || err);

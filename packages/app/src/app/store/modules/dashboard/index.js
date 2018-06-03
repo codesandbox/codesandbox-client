@@ -5,7 +5,6 @@ import * as sequences from './sequences';
 export default Module({
   model,
   state: {
-    sandboxes: [],
     selectedSandboxes: [],
   },
   getters: {},

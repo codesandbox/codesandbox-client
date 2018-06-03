@@ -81,6 +81,7 @@ export default ({ basePath, noFocus, close, depth }) => {
                 if (el) {
                   if (!noFocus) {
                     el.focus();
+                    el.select();
                   }
                   input = el;
                 }

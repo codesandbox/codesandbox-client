@@ -5,7 +5,6 @@ import { withLoadApp } from '../../factories';
 import * as actions from './actions';
 
 export const loadDashboard = withLoadApp([
-  actions.getUserSandboxes,
   set(state`dashboard.sandboxes`, props`sandboxes`),
 ]);
 

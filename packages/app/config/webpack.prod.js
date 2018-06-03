@@ -2,6 +2,8 @@ const merge = require('webpack-merge');
 const webpack = require('webpack');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
+  .BundleAnalyzerPlugin;
 const ManifestPlugin = require('webpack-manifest-plugin');
 const childProcess = require('child_process');
 const commonConfig = require('./webpack.common');
@@ -50,17 +52,14 @@ module.exports = merge(commonConfig, {
     concatenateModules: true, //ModuleConcatenationPlugin
     namedModules: true, // NamedModulesPlugin()
     noEmitOnErrors: true, // NoEmitOnErrorsPlugin
-    splitChunks: {
-      cacheGroups: {
-        common: {
-          name: 'common',
-          chunks: 'all',
-        },
-      },
-    },
+    // splitChunks: {
+    //   chunks: 'all',
+    //   name: 'vendors',
+    // },
     runtimeChunk: 'single',
   },
   plugins: [
+    new BundleAnalyzerPlugin(),
     new webpack.DefinePlugin({ VERSION: JSON.stringify(VERSION) }),
     new webpack.LoaderOptionsPlugin({
       minimize: true,

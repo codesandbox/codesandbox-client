@@ -1,6 +1,8 @@
 // @ts-check
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
+import HTML5Backend from 'react-dnd-html5-backend';
+import { DragDropContext } from 'react-dnd';
 
 import Navigation from 'app/pages/common/Navigation';
 
@@ -41,4 +43,6 @@ class Dashboard extends React.Component {
   }
 }
 
-export default inject('store', 'signals')(observer(Dashboard));
+export default inject('store', 'signals')(
+  DragDropContext(HTML5Backend)(observer(Dashboard))
+);

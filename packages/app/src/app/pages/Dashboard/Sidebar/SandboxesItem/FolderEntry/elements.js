@@ -19,6 +19,12 @@ export const Container = styled(NavLink)`
   &:hover {
     color: rgba(255, 255, 255, 0.8);
   }
+
+  &:focus {
+    outline: none;
+    border-color: ${props => props.theme.secondary.clearer(0.5)};
+    color: rgba(255, 255, 255, 0.8);
+  }
 `;
 
 export const CreateDirectoryContainer = Container.withComponent('div');

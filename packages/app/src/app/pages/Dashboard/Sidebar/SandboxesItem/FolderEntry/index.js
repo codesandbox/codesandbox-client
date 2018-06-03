@@ -67,6 +67,18 @@ export default class FolderEntry extends React.Component {
     this.setState({ renamingDirectory: false, open: true });
   };
 
+  handleKeyDown = e => {
+    if (e.keyCode === 39) {
+      // Right arrow
+
+      this.setState({ open: true });
+    } else if (e.keyCode === 37) {
+      // Left arrow
+
+      this.setState({ open: false });
+    }
+  };
+
   render() {
     const { name, path, folders, depth } = this.props;
 
@@ -121,6 +133,8 @@ export default class FolderEntry extends React.Component {
             exact
             depth={depth}
             to={url}
+            onKeyDown={this.handleKeyDown}
+            tabIndex={0}
           >
             <IconContainer>
               <AnimatedChevron
@@ -165,10 +179,12 @@ export default class FolderEntry extends React.Component {
                   ) : (
                     <form onSubmit={submit}>
                       <Input
+                        block
                         innerRef={node => {
                           if (node) {
                             input = node;
                             node.focus();
+                            node.select();
                           }
                         }}
                         defaultValue={name}
@@ -191,11 +207,7 @@ export default class FolderEntry extends React.Component {
           </Container>
         </ContextMenu>
 
-        <ReactShow
-          show={children.size > 0 && this.state.open}
-          duration={250}
-          unmountOnHide={false}
-        >
+        <ReactShow show={children.size > 0 && this.state.open} duration={250}>
           {Array.from(children)
             .sort()
             .map(childName => {

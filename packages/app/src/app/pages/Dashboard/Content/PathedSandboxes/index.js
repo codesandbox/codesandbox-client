@@ -3,6 +3,7 @@ import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
 
 import Sandboxes from '../Sandboxes';
+import Navigation from './Navigation';
 
 const QUERY = gql`
   query collection($path: String!) {
@@ -38,7 +39,7 @@ export default props => {
         return (
           <Sandboxes
             isLoading={loading}
-            Header={path}
+            Header={<Navigation path={path} />}
             sandboxes={
               loading || !data.me.collection ? [] : data.me.collection.sandboxes
             }

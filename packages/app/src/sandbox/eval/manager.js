@@ -19,7 +19,7 @@ import coreLibraries from './npm/get-core-libraries';
 import getDependencyName from './utils/get-dependency-name';
 import DependencyNotFoundError from '../errors/dependency-not-found-error';
 import ModuleNotFoundError from '../errors/module-not-found-error';
-import TestRunner from './tests/jest-lite';
+import type TestRunner from './tests/jest-lite';
 import dependenciesToQuery from '../npm/dependencies-to-query';
 import isESModule from './utils/is-es-module';
 import { packageFilter } from './utils/resolve-utils';
@@ -37,6 +37,8 @@ type ModuleObject = {
 type Configurations = {
   [type: string]: Object,
 };
+
+const resolveTestRunner = import('./tests/jest-lite').then(m => m.default);
 
 export type Manifest = {
   contents: {
@@ -92,7 +94,7 @@ export default class Manager {
   webpackHMR: boolean;
   hardReload: boolean;
   hmrStatus: 'idle' | 'check' | 'apply' | 'fail' | 'dispose' = 'idle';
-  testRunner: TestRunner;
+  testRunner: Promise<TestRunner>;
   isFirstLoad: boolean;
 
   // List of modules that are being transpiled, to prevent duplicate jobs.
@@ -120,7 +122,7 @@ export default class Manager {
 
     this.modules = modules;
     Object.keys(modules).forEach(k => this.addModule(modules[k]));
-    this.testRunner = new TestRunner(this);
+    this.testRunner = resolveTestRunner;
 
     window.manager = this;
     if (process.env.NODE_ENV === 'development') {
