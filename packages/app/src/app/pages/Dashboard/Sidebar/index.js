@@ -3,7 +3,6 @@ import Input from 'common/components/Input';
 
 import TimeIcon from 'react-icons/lib/md/access-time';
 import TrashIcon from 'react-icons/lib/md/delete';
-import DropboxIcon from 'react-icons/lib/fa/dropbox';
 
 import Item from './Item';
 import SandboxesItem from './SandboxesItem';

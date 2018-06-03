@@ -5,6 +5,7 @@ import SandboxGrid from '../SandboxGrid';
 
 import { Container, HeaderContainer } from './elements';
 
+// eslint-disable-next-line react/prefer-stateless-function
 class Content extends React.Component {
   render() {
     const { sandboxes, Header, isLoading } = this.props;

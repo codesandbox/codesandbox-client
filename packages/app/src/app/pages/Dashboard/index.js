@@ -15,8 +15,6 @@ import {
   NavigationContainer,
 } from './elements';
 
-import 'app/graphql/client';
-
 class Dashboard extends React.Component {
   componentDidMount() {
     this.props.signals.dashboard.dashboardMounted();
