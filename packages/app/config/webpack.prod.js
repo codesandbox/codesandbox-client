@@ -59,7 +59,7 @@ module.exports = merge(commonConfig, {
           },
         },
         parallel: true,
-        cache: true,
+        cache: false,
         sourceMap: true,
       }),
     ],
