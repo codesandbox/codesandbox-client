@@ -445,6 +445,12 @@ export default class Manager {
     this.webpackHMR = true;
   }
 
+  getPresetAliasedPath(path: string) {
+    return this.preset
+      .getAliasedPath(path)
+      .replace(/.*\{\{sandboxRoot\}\}/, '');
+  }
+
   resolveModule(
     path: string,
     currentPath: string,
@@ -462,9 +468,7 @@ export default class Manager {
     if (cachedPath) {
       resolvedPath = cachedPath;
     } else {
-      const presetAliasedPath = this.preset
-        .getAliasedPath(path)
-        .replace(/.*\{\{sandboxRoot\}\}/, '');
+      const presetAliasedPath = this.getPresetAliasedPath(path);
 
       const aliasedPath = this.getAliasedDependencyPath(
         presetAliasedPath,
