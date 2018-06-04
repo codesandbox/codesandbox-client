@@ -449,6 +449,8 @@ async function compile({
 
     dispatch({ type: 'status', status: 'transpiling' });
 
+    await manager.preset.setup(manager);
+
     await manager.verifyTreeTranspiled();
     await manager.transpileModules(managerModuleToTranspile);
 
@@ -525,8 +527,6 @@ async function compile({
       const extDate = Date.now();
       await handleExternalResources(externalResources);
       debug('Loaded external resources in ' + (Date.now() - extDate) + 'ms');
-
-      await manager.preset.setup(manager);
 
       const tt = Date.now();
       const oldHTML = document.body.innerHTML;
