@@ -180,7 +180,6 @@ const PREINSTALLED_DEPENDENCIES = [
   'babel-plugin-transform-prevent-infinite-loops',
   'babel-plugin-transform-vue-jsx',
   'babel-plugin-jsx-pragmatic',
-  '@babel/core',
   'flow-bin',
 ];
 
