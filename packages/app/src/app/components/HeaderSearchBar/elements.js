@@ -47,3 +47,16 @@ export const StyledSearchButton = styled.button`
   border: none;
   cursor: pointer;
 `;
+
+export const ResultContainer = styled.div`
+  transition: 0.3s ease all;
+  background: black;
+  position: absolute;
+  width: 100%;
+  z-index: 10;
+`;
+
+export const ResultItem = styled.div`
+  color: white;
+  padding: 7px;
+`;

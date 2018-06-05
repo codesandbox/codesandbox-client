@@ -932,18 +932,18 @@ ajv@^6.1.0:
     fast-json-stable-stringify "^2.0.0"
     json-schema-traverse "^0.3.0"
 
-algoliasearch-helper@^2.21.0:
-  version "2.24.0"
-  resolved "https://registry.yarnpkg.com/algoliasearch-helper/-/algoliasearch-helper-2.24.0.tgz#6ebf91683a82799bc4019ee1ad92d0ad0f41167b"
+algoliasearch-helper@^2.26.0:
+  version "2.26.0"
+  resolved "https://registry.yarnpkg.com/algoliasearch-helper/-/algoliasearch-helper-2.26.0.tgz#cb784b692a5aacf17062493cb0b94f6d60d30d0f"
   dependencies:
-    events "^1.1.0"
-    lodash "^4.13.1"
-    qs "^6.2.1"
+    events "^1.1.1"
+    lodash "^4.17.5"
+    qs "^6.5.1"
     util "^0.10.3"
 
-algoliasearch@^3.24.0:
-  version "3.26.0"
-  resolved "https://registry.yarnpkg.com/algoliasearch/-/algoliasearch-3.26.0.tgz#5059cfe4b049ae1a1b9b7c25f5dbd3e75db6126a"
+algoliasearch@^3.24.5:
+  version "3.24.6"
+  resolved "https://registry.yarnpkg.com/algoliasearch/-/algoliasearch-3.24.6.tgz#f7acfc59d3728010b9a08134950a4989a08f7227"
   dependencies:
     agentkeepalive "^2.2.0"
     debug "^2.6.8"
@@ -961,9 +961,9 @@ algoliasearch@^3.24.0:
     semver "^5.1.0"
     tunnel-agent "^0.6.0"
 
-algoliasearch@^3.24.5:
-  version "3.24.6"
-  resolved "https://registry.yarnpkg.com/algoliasearch/-/algoliasearch-3.24.6.tgz#f7acfc59d3728010b9a08134950a4989a08f7227"
+algoliasearch@^3.27.1:
+  version "3.27.1"
+  resolved "https://registry.yarnpkg.com/algoliasearch/-/algoliasearch-3.27.1.tgz#e1af42b97dbf44a2dd3a8c907be99c0c34e48414"
   dependencies:
     agentkeepalive "^2.2.0"
     debug "^2.6.8"
@@ -14723,7 +14723,7 @@ qrcode.react@^0.8.0:
     prop-types "^15.6.0"
     qr.js "0.0.0"
 
-qs@6.5.1, qs@^6.2.1, qs@^6.5.0, qs@^6.5.1, qs@~6.5.1:
+qs@6.5.1, qs@^6.5.0, qs@^6.5.1, qs@~6.5.1:
   version "6.5.1"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.5.1.tgz#349cdf6eef89ec45c12d7d5eb3fc0c870343a6d8"
 
@@ -15148,12 +15148,12 @@ react-inspector@^2.2.0, react-inspector@^2.2.2:
     babel-runtime "^6.26.0"
     is-dom "^1.0.9"
 
-react-instantsearch@^4.0.6:
-  version "4.5.2"
-  resolved "https://registry.yarnpkg.com/react-instantsearch/-/react-instantsearch-4.5.2.tgz#37c359eb0b1ab9d67690351970d6c59d0269f2c7"
+react-instantsearch@^5.1.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/react-instantsearch/-/react-instantsearch-5.1.0.tgz#f7267fbc38e58c339b068be40dfc6b6ab93fbe10"
   dependencies:
-    algoliasearch "^3.24.0"
-    algoliasearch-helper "^2.21.0"
+    algoliasearch "^3.27.1"
+    algoliasearch-helper "^2.26.0"
     classnames "^2.2.5"
     lodash "^4.17.4"
     prop-types "^15.5.10"

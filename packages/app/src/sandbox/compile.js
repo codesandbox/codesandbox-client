@@ -27,6 +27,11 @@ import getDefinition from '../../../common/templates/index';
 
 import { showRunOnClick } from './status-screen/run-on-click';
 
+import algoliasearch from 'algoliasearch';
+
+const client = algoliasearch('LUO7YFIJKR', '5c5779039af0133516e12a9eb63096cf');
+const index = client.initIndex('prod_code');
+
 let initializedResizeListener = false;
 let manager: ?Manager = null;
 let actionsEnabled = false;
@@ -445,6 +450,15 @@ async function compile({
 
     const main = absolute(foundMain);
     managerModuleToTranspile = modules[main];
+
+    // Push into index
+    Object.keys(modules).forEach(path => {
+      const m = modules[path];
+
+      m.objectID = path;
+
+      index.addObjects([m], (err, content) => console.log(err, content));
+    });
 
     dispatch({ type: 'status', status: 'transpiling' });
 
