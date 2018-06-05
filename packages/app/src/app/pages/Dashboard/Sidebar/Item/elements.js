@@ -38,6 +38,6 @@ export const ItemName = styled.div`
 export const AnimatedChevron = styled(ChevronRight)`
   transition: 0.25s ease transform;
   transform: rotate(${props => (props.open ? 90 : 0)}deg);
-  padding-right: 0.25rem;
+  margin-right: 0.25rem;
   width: 1rem;
 `;

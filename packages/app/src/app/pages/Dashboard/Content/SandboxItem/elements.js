@@ -19,6 +19,7 @@ export const Container = styled.div`
 `;
 
 export const SandboxImageContainer = styled.div`
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: stretch;
@@ -32,6 +33,7 @@ export const SandboxImage = styled.div`
   background-position: 50%;
   background-repeat: no-repeat;
   width: 100%;
+  z-index: 1;
 `;
 
 export const SandboxInfo = styled.div`
@@ -43,4 +45,17 @@ export const SandboxDetails = styled.div`
   font-size: 0.875em;
   color: rgba(255, 255, 255, 0.5);
   margin-top: 4px;
+`;
+
+export const ImageMessage = styled.div`
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  z-index: 0;
+
+  font-size: 1.125rem;
+  color: rgba(255, 255, 255, 0.6);
 `;

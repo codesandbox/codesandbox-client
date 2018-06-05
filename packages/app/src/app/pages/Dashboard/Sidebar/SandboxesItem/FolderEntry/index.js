@@ -84,6 +84,7 @@ class FolderEntry extends React.Component {
       canDrop,
       connectDropTarget,
       connectDragSource,
+      isDragging,
     } = this.props;
 
     const url = `/dashboard/sandboxes${path}`;
@@ -232,7 +233,10 @@ class FolderEntry extends React.Component {
             </Container>
           </ContextMenu>
 
-          <ReactShow show={children.size > 0 && this.state.open} duration={250}>
+          <ReactShow
+            show={children.size > 0 && !isDragging && this.state.open}
+            duration={250}
+          >
             {Array.from(children)
               .sort()
               .map(childName => {
@@ -273,10 +277,13 @@ class FolderEntry extends React.Component {
 }
 
 const entrySource = {
-  canDrag: props => true,
+  canDrag: () => true,
+
   beginDrag: props => {
     if (props.closeTree) props.closeTree();
-    return {};
+    return {
+      path: props.path,
+    };
   },
 };
 const collectSource = (connect, monitor) => ({
@@ -285,7 +292,7 @@ const collectSource = (connect, monitor) => ({
 });
 
 DropFolderEntry = inject('store', 'signals')(
-  DropTarget('SANDBOX', entryTarget, collectTarget)(
+  DropTarget(['SANDBOX', 'FOLDER'], entryTarget, collectTarget)(
     DragSource('FOLDER', entrySource, collectSource)(observer(FolderEntry))
   )
 );

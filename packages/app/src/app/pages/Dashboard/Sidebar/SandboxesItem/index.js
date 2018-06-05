@@ -130,7 +130,7 @@ class SandboxesItem extends React.Component {
 }
 
 export default inject('store', 'signals')(
-  DropTarget('SANDBOX', entryTarget, collectTarget)(
+  DropTarget(['SANDBOX', 'FOLDER'], entryTarget, collectTarget)(
     withRouter(observer(SandboxesItem))
   )
 );

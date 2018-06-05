@@ -32,7 +32,7 @@ export default class Item extends React.Component {
   };
 
   render() {
-    const { name, contextItems, Icon, path, children, ...props } = this.props;
+    const { name, contextItems, Icon, path, children, style } = this.props;
 
     const UsedContainer = getContainer(contextItems);
     return (
@@ -43,7 +43,7 @@ export default class Item extends React.Component {
           return (
             <Fragment>
               <UsedContainer
-                {...props}
+                style={style}
                 to={path}
                 activeClassName="active"
                 exact

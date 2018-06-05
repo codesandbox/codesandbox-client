@@ -15,6 +15,7 @@ import {
   SandboxImage,
   SandboxInfo,
   SandboxDetails,
+  ImageMessage,
 } from './elements';
 
 type Props = {
@@ -132,6 +133,7 @@ class SandboxItem extends React.Component<Props> {
                   selected={selected}
                 >
                   <SandboxImageContainer>
+                    <ImageMessage>Generating Screenshot...</ImageMessage>
                     <SandboxImage
                       style={{
                         backgroundImage: `url(${`/api/v1/sandboxes/${id}/screenshot.png`})`,

@@ -75,6 +75,8 @@ const SHIMMED_MODULE: Module = {
 };
 const debug = _debug('cs:compiler:manager');
 
+type HMRStatus = 'idle' | 'check' | 'apply' | 'fail' | 'dispose';
+
 export default class Manager {
   id: string;
   transpiledModules: {
@@ -93,7 +95,8 @@ export default class Manager {
   dependencies: Object;
   webpackHMR: boolean;
   hardReload: boolean;
-  hmrStatus: 'idle' | 'check' | 'apply' | 'fail' | 'dispose' = 'idle';
+  hmrStatus: HMRStatus = 'idle';
+  hmrStatusChangeListeners: Set<Function>;
   testRunner: Promise<TestRunner>;
   isFirstLoad: boolean;
 
@@ -116,6 +119,7 @@ export default class Manager {
     this.webpackHMR = false;
     this.hardReload = false;
     this.hmrStatus = 'idle';
+    this.hmrStatusChangeListeners = new Set();
     this.isFirstLoad = true;
     this.transpiledModulesByHash = {};
     this.configurations = {};
@@ -232,7 +236,7 @@ export default class Manager {
     try {
       const exports = this.evaluateTranspiledModule(transpiledModule);
 
-      this.hmrStatus = 'idle';
+      this.setHmrStatus('idle');
 
       return exports;
     } catch (e) {
@@ -359,7 +363,7 @@ export default class Manager {
    * @param {*} entry
    */
   async transpileModules(entry: Module, isTestFile: boolean = false) {
-    this.hmrStatus = 'check';
+    this.setHmrStatus('check');
     this.setEnvironmentVariables();
     const transpiledModule = this.getTranspiledModule(entry);
 
@@ -488,6 +492,10 @@ export default class Manager {
 
         this.cachedPaths[dirredPath][path] = resolvedPath;
 
+        if (resolvedPath === '//empty.js') {
+          return SHIMMED_MODULE;
+        }
+
         if (!this.transpiledModules[resolvedPath]) {
           throw new Error(`Could not find '${resolvedPath}' in local files.`);
         }
@@ -522,11 +530,12 @@ export default class Manager {
           throw new DependencyNotFoundError(connectedPath, currentPath);
         }
       }
-
-      if (resolvedPath === '//empty.js') {
-        return SHIMMED_MODULE;
-      }
     }
+
+    if (resolvedPath === '//empty.js') {
+      return SHIMMED_MODULE;
+    }
+
     return this.transpiledModules[resolvedPath].module;
   }
 
@@ -565,6 +574,21 @@ export default class Manager {
 
       throw e;
     }
+  };
+
+  setHmrStatus = (status: HMRStatus) => {
+    this.hmrStatusChangeListeners.forEach(v => {
+      v(status);
+    });
+    this.hmrStatus = status;
+  };
+
+  addStatusHandler = (cb: Function) => {
+    this.hmrStatusChangeListeners.add(cb);
+  };
+
+  removeStatusHandler = (cb: Function) => {
+    this.hmrStatusChangeListeners.delete(cb);
   };
 
   /**
@@ -731,7 +755,7 @@ export default class Manager {
    * continuing
    */
   markHardReload() {
-    this.hmrStatus = 'fail';
+    this.setHmrStatus('fail');
     this.hardReload = true;
   }
 
