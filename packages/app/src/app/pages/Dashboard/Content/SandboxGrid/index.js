@@ -2,6 +2,7 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 
 import moment from 'moment';
+import { uniq } from 'lodash';
 
 import Grid from 'react-virtualized/dist/commonjs/Grid';
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
@@ -11,6 +12,8 @@ import SandboxItem, { PADDING } from '../SandboxItem';
 import Selection, { getBounds } from '../Selection';
 
 import { Content } from './elements';
+
+import DragLayer from '../DragLayer';
 
 type State = {
   selection: ?{
@@ -29,9 +32,38 @@ class SandboxGrid extends React.Component<*, State> {
     selection: undefined,
   };
 
-  setSandboxesSelected = ids => {
-    this.props.signals.dashboard.sandboxesSelected({
-      sandboxIds: ids,
+  setSandboxesSelected = (ids, { additive = false, range = false } = {}) => {
+    const { store, sandboxes, signals } = this.props;
+    const selectedSandboxes = store.dashboard.selectedSandboxes;
+    if (range === true) {
+      const indexedSandboxes = sandboxes.map((sandbox, i) => ({ sandbox, i }));
+
+      // We need to select a range
+      const firstIndexInfo = indexedSandboxes.find(
+        ({ sandbox }) => selectedSandboxes.indexOf(sandbox.id) > -1
+      );
+
+      const [id] = ids;
+
+      const lastIndexInfo = indexedSandboxes.find(
+        ({ sandbox }) => sandbox.id === id
+      );
+
+      if (firstIndexInfo && lastIndexInfo) {
+        const indexes = [firstIndexInfo.i, lastIndexInfo.i].sort();
+        const sandboxIds = indexedSandboxes
+          .map(({ sandbox }) => sandbox.id)
+          .slice(indexes[0], indexes[1] + 1);
+
+        signals.dashboard.sandboxesSelected({
+          sandboxIds,
+        });
+        return;
+      }
+    }
+
+    signals.dashboard.sandboxesSelected({
+      sandboxIds: additive ? uniq([...selectedSandboxes, ...ids]) : ids,
     });
   };
 
@@ -45,7 +77,9 @@ class SandboxGrid extends React.Component<*, State> {
       },
     });
 
-    this.setSandboxesSelected([]);
+    if (!event.metaKey) {
+      this.setSandboxesSelected([]);
+    }
 
     document.addEventListener('mousemove', this.onMouseMove);
     document.addEventListener('mouseup', this.onMouseUp);
@@ -95,13 +129,15 @@ class SandboxGrid extends React.Component<*, State> {
         }
       }
 
-      this.setSandboxesSelected(selectedSandboxes.map(el => el.id));
+      this.setSandboxesSelected(selectedSandboxes.map(el => el.id), {
+        additive: event.metaKey,
+      });
     }
   };
 
   cellRenderer = ({ rowIndex, columnIndex, key, style }) => {
     const index = rowIndex * this.columnCount + columnIndex;
-    const { sandboxes } = this.props;
+    const { sandboxes, signals } = this.props;
 
     if (index > sandboxes.length - 1) {
       return null;
@@ -112,32 +148,39 @@ class SandboxGrid extends React.Component<*, State> {
 
     return (
       <SandboxItem
-        id={item.shortid}
-        title={item.title || item.shortid}
+        id={item.id}
+        title={item.title || item.id}
         details={editedSince}
         style={style}
         key={key}
-        selected={this.selectedSandboxesObject[item.shortid]}
+        selected={this.selectedSandboxesObject[item.id]}
         setSandboxesSelected={this.setSandboxesSelected}
+        setDragging={signals.dashboard.dragChanged}
+        isDraggingItem={
+          this.isDragging && this.selectedSandboxesObject[item.id]
+        }
+        collectionPath={item.collection.path}
       />
     );
   };
 
   render() {
     const { selection } = this.state;
-    const { sandboxes } = this.props;
+    const { sandboxes, store } = this.props;
 
     const { selectedSandboxes } = this.props.store.dashboard;
     const sandboxCount = sandboxes.length;
 
+    this.isDragging = store.dashboard.isDragging;
     this.selectedSandboxesObject = {};
     // Create an object to make it O(1)
-    selectedSandboxes.forEach(shortid => {
-      this.selectedSandboxesObject[shortid] = true;
+    selectedSandboxes.forEach(id => {
+      this.selectedSandboxesObject[id] = true;
     });
 
     return (
       <Content onMouseDown={this.onMouseDown}>
+        <DragLayer />
         <AutoSizer>
           {({ width, height }) => {
             const columnCount = Math.floor(width / (BASE_WIDTH + PADDING));

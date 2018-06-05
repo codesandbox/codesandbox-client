@@ -1,7 +1,13 @@
 import React, { Fragment } from 'react';
-import { Route } from 'react-router-dom';
-import { Container, IconContainer, ItemName } from './elements';
+import { Route, withRouter } from 'react-router-dom';
+import ReactShow from 'react-show';
 import ContextMenu from 'app/components/ContextMenu';
+import {
+  AnimatedChevron,
+  Container,
+  IconContainer,
+  ItemName,
+} from './elements';
 
 const getContainer = contextItems => {
   if (contextItems) {
@@ -15,23 +21,55 @@ const getContainer = contextItems => {
   return Container;
 };
 
-export default ({ name, contextItems, Icon, path, children }) => {
-  const UsedContainer = getContainer(contextItems);
+export default class Item extends React.Component {
+  state = {
+    open: undefined,
+  };
 
-  return (
-    <Route path={path}>
-      {res => (
-        <Fragment>
-          <UsedContainer to={path} activeClassName="active" exact>
-            <IconContainer>
-              <Icon />
-            </IconContainer>
-            <ItemName>{name}</ItemName>
-          </UsedContainer>
+  toggleOpen = e => {
+    e.preventDefault();
+    this.setState(state => ({ open: !state.open }));
+  };
 
-          {children && children(res)}
-        </Fragment>
-      )}
-    </Route>
-  );
-};
+  render() {
+    const { name, contextItems, Icon, path, children, ...props } = this.props;
+
+    const UsedContainer = getContainer(contextItems);
+    return (
+      <Route path={path}>
+        {res => {
+          const isOpen =
+            this.state.open === undefined ? res.match : this.state.open;
+          return (
+            <Fragment>
+              <UsedContainer
+                {...props}
+                to={path}
+                activeClassName="active"
+                exact
+              >
+                {children ? (
+                  <AnimatedChevron onClick={this.toggleOpen} open={isOpen} />
+                ) : (
+                  <div
+                    style={{ width: 16, height: 16, marginRight: '0.25rem' }}
+                  />
+                )}
+                <IconContainer>
+                  <Icon />
+                </IconContainer>
+                <ItemName>{name}</ItemName>
+              </UsedContainer>
+
+              {children && (
+                <ReactShow show={isOpen} duration={250} unmountOnHide>
+                  {children(res)}
+                </ReactShow>
+              )}
+            </Fragment>
+          );
+        }}
+      </Route>
+    );
+  }
+}

@@ -1,40 +1,24 @@
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
-
-const selectAnimation = keyframes`
-  0% { background-position: 0% 0%  }
-  100% { background-position: -100% 0%  }
-`;
+import ChevronRight from 'react-icons/lib/md/chevron-right';
 
 export const Container = styled(NavLink)`
   display: flex;
+  transition: 0.3s ease background-color;
   width: 100%;
   height: 2.5rem;
   user-select: none;
 
   align-items: center;
 
-  padding: 0 1rem;
+  padding: 0 0.5rem;
   box-sizing: border-box;
 
   color: rgba(255, 255, 255, 0.8);
   text-decoration: none;
 
-  background-image: linear-gradient(
-    to right,
-    transparent 0%,
-    transparent 50%,
-    #6caedd 50%,
-    #6caedd 100%
-  );
-  background-size: 200%;
-
-  background-position: 0% 0%;
-
   &.active {
-    animation: ${selectAnimation} 0.3s;
-
-    animation-fill-mode: forwards;
+    background-color: ${props => props.theme.secondary};
     color: white;
     font-weight: 600;
   }
@@ -49,4 +33,11 @@ export const IconContainer = styled.div`
 
 export const ItemName = styled.div`
   font-size: 0.875rem;
+`;
+
+export const AnimatedChevron = styled(ChevronRight)`
+  transition: 0.25s ease transform;
+  transform: rotate(${props => (props.open ? 90 : 0)}deg);
+  padding-right: 0.25rem;
+  width: 1rem;
 `;

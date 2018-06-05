@@ -22,14 +22,14 @@ const authLink = setContext((_, { headers }) => {
 export const client = new ApolloClient({
   link: authLink.concat(httpLink),
   cache: new InMemoryCache({
-    // dataIdFromObject: object => {
-    //   switch (object.__typename) {
-    //     case 'Collection':
-    //       return object.path;
-    //     default:
-    //       return object.id;
-    //   }
-    // },
+    cacheRedirects: {
+      Query: {
+        collection: (_, args, { getCacheKey }) =>
+          getCacheKey({ __typename: 'Collection', path: args.path }),
+      },
+    },
   }),
   queryDeduplication: true,
 });
+
+console.log(client);

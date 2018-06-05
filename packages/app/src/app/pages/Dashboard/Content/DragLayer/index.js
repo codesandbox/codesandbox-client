@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+
 import { DragLayer } from 'react-dnd';
 
 import SelectedSandboxItems from './SelectedSandboxItems';
@@ -20,18 +20,38 @@ function getItemCoords(props) {
   const { x, y } = currentOffset;
 
   return {
-    x: x + props.item.left,
-    y: y + props.item.top,
+    x,
+    y,
+    left: props.item.left,
+    top: props.item.top,
   };
 }
 
 class CustomDragLayer extends React.Component {
-  renderItem(type, item, { x, y }) {
-    return <SelectedSandboxItems x={x} y={y} id={item.id} />;
+  renderItem(type, item, isOverPossibleTargets, { x, y, left, top }) {
+    if (type !== 'SANDBOX') {
+      return null;
+    }
+    return (
+      <SelectedSandboxItems
+        isOverPossibleTargets={isOverPossibleTargets}
+        x={x}
+        y={y}
+        left={left}
+        top={top}
+        id={item.id}
+      />
+    );
   }
 
   render() {
-    const { item, itemType, currentOffset, isDragging } = this.props;
+    const {
+      item,
+      itemType,
+      isOverPossibleTargets,
+      currentOffset,
+      isDragging,
+    } = this.props;
 
     if (!isDragging || !currentOffset) {
       return null;
@@ -39,30 +59,27 @@ class CustomDragLayer extends React.Component {
 
     return (
       <div style={layerStyles}>
-        <div id="draglayer-preview">
-          {this.renderItem(itemType, item, getItemCoords(this.props))}
+        <div>
+          {this.renderItem(
+            itemType,
+            item,
+            isOverPossibleTargets,
+            getItemCoords(this.props)
+          )}
         </div>
       </div>
     );
   }
 }
 
-CustomDragLayer.propTypes = {
-  item: PropTypes.object,
-  itemType: PropTypes.string,
-  currentOffset: PropTypes.shape({
-    x: PropTypes.number.isRequired,
-    y: PropTypes.number.isRequired,
-  }),
-  isDragging: PropTypes.bool.isRequired,
-};
-
 function collect(monitor) {
+  const isOverPossibleTargets = monitor.getTargetIds().length > 0;
   return {
     item: monitor.getItem(),
     itemType: monitor.getItemType(),
     currentOffset: monitor.getSourceClientOffset(),
     isDragging: monitor.isDragging(),
+    isOverPossibleTargets,
   };
 }
 

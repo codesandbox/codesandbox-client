@@ -5,32 +5,13 @@ import { Query } from 'react-apollo';
 import Sandboxes from '../Sandboxes';
 import Navigation from './Navigation';
 
-const QUERY = gql`
-  query collection($path: String!) {
-    me {
-      collection(path: $path) {
-        id
-        sandboxes {
-          shortid
-          title
-          description
-          insertedAt
-          updatedAt
-
-          source {
-            template
-          }
-        }
-      }
-    }
-  }
-`;
+import { PATHED_SANDBOXES_CONTENT_QUERY } from '../../queries';
 
 export default props => {
   const path = '/' + (props.match.params.path || '');
 
   return (
-    <Query query={QUERY} variables={{ path }}>
+    <Query query={PATHED_SANDBOXES_CONTENT_QUERY} variables={{ path }}>
       {({ loading, error, data }) => {
         if (error) {
           return <div>Error!</div>;

@@ -5,6 +5,7 @@ import history from 'app/utils/history';
 import { sandboxUrl } from 'common/utils/url-generator';
 import { DragSource } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
+import { Spring } from 'react-spring';
 
 import ContextMenu from 'app/components/ContextMenu';
 
@@ -21,12 +22,12 @@ type Props = {
   title: string,
   details: string,
   selected: boolean,
-  setSandboxesSelected: (ids: string[]) => void,
+  setSandboxesSelected: (ids: string[], additive?: boolean) => void,
 };
 
 export const PADDING = 32;
 
-class SandboxItem extends React.PureComponent<Props> {
+class SandboxItem extends React.Component<Props> {
   el: HTMLDivElement;
 
   componentDidMount() {
@@ -48,12 +49,19 @@ class SandboxItem extends React.PureComponent<Props> {
     }
   }
 
-  preventDefault = e => {
+  handleMouseDown = e => {
     e.stopPropagation();
+
+    if (!this.props.selected) {
+      this.selectSandbox(e);
+    }
   };
 
   selectSandbox = e => {
-    this.props.setSandboxesSelected([this.props.id]);
+    this.props.setSandboxesSelected([this.props.id], {
+      additive: e.metaKey,
+      range: e.shiftKey,
+    });
   };
 
   openSandbox = () => {
@@ -70,11 +78,10 @@ class SandboxItem extends React.PureComponent<Props> {
     }
   };
 
-  handleOnClick = this.selectSandbox;
   handleOnContextMenu = this.selectSandbox;
   handleOnFocus = e => {
     if (!this.props.selected) {
-      this.selectSandbox();
+      this.selectSandbox(e);
     }
   };
 
@@ -84,59 +91,63 @@ class SandboxItem extends React.PureComponent<Props> {
       id,
       title,
       details,
-      isDragging,
       connectDragSource,
-      connectDragPreview,
+      selected,
+      isDraggingItem,
     } = this.props;
 
-    return connectDragSource(
-      <div
-        style={{ color: isDragging ? 'red' : 'inherit' }}
-        onMouseDown={this.preventDefault}
-      >
-        <ContextMenu
-          style={{
-            ...style,
-            paddingRight: PADDING,
-            boxSizing: 'border-box',
-          }}
-          id={id}
-          className="sandbox-item"
-          ref={el => {
-            this.el = el;
-          }}
-          items={[
-            {
-              title: 'Open Sandbox',
-              action: this.openSandbox,
-            },
-          ]}
-        >
-          <Container
-            style={{ outline: 'none' }}
-            onContextMenu={this.handleOnContextMenu}
-            onClick={this.handleOnClick}
-            onDoubleClick={this.openSandbox}
-            onFocus={this.handleOnFocus}
-            onKeyDown={this.handleKeyDown}
-            role="button"
-            tabIndex={0}
-            selected={this.props.selected}
+    return (
+      <Spring to={style}>
+        {newStyle => (
+          <ContextMenu
+            style={{
+              ...newStyle,
+              paddingRight: PADDING,
+              boxSizing: 'border-box',
+              opacity: isDraggingItem ? 0 : 1,
+            }}
+            id={id}
+            className="sandbox-item"
+            ref={el => {
+              this.el = el;
+            }}
+            items={[
+              {
+                title: 'Open Sandbox',
+                action: this.openSandbox,
+              },
+            ]}
           >
-            <SandboxImageContainer>
-              <SandboxImage
-                style={{
-                  backgroundImage: `url(${`/api/v1/sandboxes/${id}/screenshot.png`})`,
-                }}
-              />
-            </SandboxImageContainer>
-            <SandboxInfo>
-              <div>{title}</div>
-              <SandboxDetails>{details}</SandboxDetails>
-            </SandboxInfo>
-          </Container>
-        </ContextMenu>
-      </div>
+            {connectDragSource(
+              <div>
+                <Container
+                  style={{ outline: 'none' }}
+                  onMouseDown={this.handleMouseDown}
+                  onContextMenu={this.handleOnContextMenu}
+                  onDoubleClick={this.openSandbox}
+                  onFocus={this.handleOnFocus}
+                  onKeyDown={this.handleKeyDown}
+                  role="button"
+                  tabIndex={0}
+                  selected={selected}
+                >
+                  <SandboxImageContainer>
+                    <SandboxImage
+                      style={{
+                        backgroundImage: `url(${`/api/v1/sandboxes/${id}/screenshot.png`})`,
+                      }}
+                    />
+                  </SandboxImageContainer>
+                  <SandboxInfo>
+                    <div>{title}</div>
+                    <SandboxDetails>{details}</SandboxDetails>
+                  </SandboxInfo>
+                </Container>
+              </div>
+            )}
+          </ContextMenu>
+        )}
+      </Spring>
     );
   }
 }
@@ -146,11 +157,18 @@ class SandboxItem extends React.PureComponent<Props> {
  */
 const cardSource = {
   beginDrag(props) {
+    props.setDragging({ isDragging: true });
+
     return {
       left: props.style.left,
       top: props.style.top,
       id: props.id,
+      collectionPath: props.collectionPath,
     };
+  },
+
+  endDrag(props) {
+    props.setDragging({ isDragging: false });
   },
 };
 
@@ -161,7 +179,6 @@ function collect(connect, monitor) {
   return {
     connectDragSource: connect.dragSource(),
     connectDragPreview: connect.dragPreview(),
-    isDragging: monitor.isDragging(),
   };
 }
 

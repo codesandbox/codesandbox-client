@@ -6,10 +6,12 @@ export default Module({
   model,
   state: {
     selectedSandboxes: [],
+    isDragging: false,
   },
   getters: {},
   signals: {
     dashboardMounted: sequences.loadDashboard,
     sandboxesSelected: sequences.selectSandboxes,
+    dragChanged: sequences.setDragging,
   },
 });

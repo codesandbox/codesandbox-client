@@ -1,87 +1,36 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import { TweenMax, Elastic } from 'gsap';
-import { throttle } from 'lodash';
-import test from 'react-spring';
+import { memoize } from 'lodash';
 
-import { Container } from './elements';
-
-const ROTATIONS = [-4, 7, -7];
+import AnimatedSandboxItem from './AnimatedSandboxItem';
 
 class SelectedSandboxItems extends React.Component {
-  // constructor() {
-  //   super();
-  //   this.animate = throttle(this.animate, 50);
-  // }
-
-  // getStyles = i => {
-  //   return {
-  //     ...this.props.transformStyles,
-  //     position: 'absolute',
-  //     transform: `${this.props.transformStyles.transform} rotateZ(${
-  //       ROTATIONS[i]
-  //     }deg)`,
-  //     zIndex: 3 - i,
-  //   };
-  // };
-
-  // componentWillUpdate() {
-  //   this.animate();
-  // }
-
-  getSelectedIds = () => [
-    this.props.id,
-    ...this.props.store.dashboard.selectedSandboxes
-      .filter(x => x !== this.props.id)
-      .slice(0, 2),
-  ];
-
-  // animate = (id: string, i: number, styles) => {
-  //   const { selectedSandboxes } = this.props.store.dashboard;
-  //   const selectedIds = this.getSelectedIds();
-
-  //   requestAnimationFrame(() => {
-  //     return selectedIds.forEach((id, i) => {
-  //       if (i === 0) {
-  //         return;
-  //       }
-
-  //       const styles = this.getStyles(i);
-
-  //       TweenMax.to(`#draglayer-preview-item-${id}`, 0.8 - i * 0.05, {
-  //         ...styles,
-  //         ease: Elastic.easeOut.config(1, 0.4),
-  //       });
-  //     });
-  //   });
-  // };
+  getSelectedIds = memoize((id, sandboxes) => [
+    id,
+    ...sandboxes.filter(x => x !== this.props.id),
+  ]);
 
   render() {
-    const { x, y } = this.props;
-    const { selectedSandboxes } = this.props.store.dashboard;
-    const selectedIds = this.getSelectedIds();
+    const { x, y, left, top, isOverPossibleTargets } = this.props;
+    const selectedSandboxes = this.props.store.dashboard.selectedSandboxes;
+    const selectedIds = this.getSelectedIds(this.props.id, selectedSandboxes);
 
-    return selectedIds.map((id, i) => {
-      const styles = { x, y };
+    const scale = isOverPossibleTargets ? 0.4 : 0.8;
 
-      return (
-        <Spring to={styles} key={id}>
-          {({ x, y }) => (
-            <Container
-              i={i}
-              isLast={i === selectedIds.length - 1}
-              id={`draglayer-preview-item-${id}`}
-              style={{
-                position: 'absolute',
-                transform: `translate3d(${x}px, ${y}px, 8px)`,
-              }}
-            >
-              {selectedSandboxes.length}
-            </Container>
-          )}
-        </Spring>
-      );
-    });
+    return selectedIds.map((id, i) => (
+      <AnimatedSandboxItem
+        key={id}
+        id={id}
+        i={i}
+        isLast={i === selectedIds.length - 1}
+        x={x}
+        y={y}
+        left={left}
+        top={top}
+        scale={scale}
+        selectedSandboxes={selectedIds}
+      />
+    ));
   }
 }
 

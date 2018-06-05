@@ -11,20 +11,15 @@ import {
   AnimatedChevron,
 } from './elements';
 
-import { FOLDER_QUERY } from '../';
-
-const CREATE_FOLDER = gql`
-  mutation createCollection($path: String!) {
-    createCollection(path: $path) {
-      path
-    }
-  }
-`;
+import {
+  PATHED_SANDBOXES_FOLDER_QUERY,
+  CREATE_FOLDER_MUTATION,
+} from '../../../queries';
 
 export default ({ basePath, noFocus, close, depth }) => {
   let input;
   return (
-    <Mutation mutation={CREATE_FOLDER}>
+    <Mutation mutation={CREATE_FOLDER_MUTATION}>
       {mutate => (
         <form
           onSubmit={e => {
@@ -36,6 +31,7 @@ export default ({ basePath, noFocus, close, depth }) => {
               optimisticResponse: {
                 __typename: 'Mutation',
                 createCollection: {
+                  id: 'optimistic-id',
                   path,
                   __typename: 'Collection',
                 },
@@ -43,14 +39,14 @@ export default ({ basePath, noFocus, close, depth }) => {
               update: (proxy, { data: { createCollection } }) => {
                 // Read the data from our cache for this query.
                 const d = proxy.readQuery({
-                  query: FOLDER_QUERY,
+                  query: PATHED_SANDBOXES_FOLDER_QUERY,
                 });
 
                 // Add our collection from the mutation to the end.
                 d.me.collections.push(createCollection);
                 // Write our data back to the cache.
                 proxy.writeQuery({
-                  query: FOLDER_QUERY,
+                  query: PATHED_SANDBOXES_FOLDER_QUERY,
                   data: d,
                 });
               },

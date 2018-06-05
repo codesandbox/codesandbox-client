@@ -4,26 +4,10 @@ import { Query } from 'react-apollo';
 
 import Sandboxes from '../Sandboxes';
 
-const QUERY = gql`
-  {
-    me {
-      sandboxes(limit: 20, orderBy: { field: "updated_at", direction: DESC }) {
-        shortid
-        title
-        description
-        insertedAt
-        updatedAt
-
-        source {
-          template
-        }
-      }
-    }
-  }
-`;
+import { RECENT_SANDBOXES_CONTENT_QUERY } from '../../queries';
 
 export default () => (
-  <Query query={QUERY}>
+  <Query query={RECENT_SANDBOXES_CONTENT_QUERY}>
     {({ loading, error, data }) => {
       if (error) {
         return <div>Error!</div>;
