@@ -7,7 +7,7 @@ import registerServiceWorker from 'common/registerServiceWorker';
 import requirePolyfills from 'common/load-dynamic-polyfills';
 import { getModulePath } from 'common/sandbox/modules';
 import { generateFileFromSandbox } from 'common/templates/configuration/package-json';
-import { Encode } from 'console-feed';
+import { Encode } from 'console-feed/lib/Transform';
 
 import setupHistoryListeners from './url-listeners';
 import compile, { getCurrentManager } from './compile';
