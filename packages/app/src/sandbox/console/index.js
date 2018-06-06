@@ -1,5 +1,5 @@
 import { dispatch } from 'codesandbox-api';
-import { Hook } from 'console-feed';
+import Hook from 'console-feed';
 
 export default function setupConsole() {
   Hook(window.console, log => {

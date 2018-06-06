@@ -713,7 +713,7 @@ export default class TranspiledModule {
       ) {
         return this.compilation.exports;
       }
-    } else if (this.compilation && this.compilation.exports) {
+    } else if (this.compilation && this.compilation.exports && !this.isEntry) {
       return this.compilation.exports;
     }
 

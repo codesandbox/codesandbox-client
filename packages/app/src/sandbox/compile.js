@@ -453,10 +453,6 @@ async function compile({
     await manager.verifyTreeTranspiled();
     await manager.transpileModules(managerModuleToTranspile);
 
-    const managerTranspiledModuleToTranspile = manager.getTranspiledModule(
-      managerModuleToTranspile
-    );
-
     debug(`Transpilation time ${Date.now() - t}ms`);
 
     dispatch({ type: 'status', status: 'evaluating' });
@@ -464,37 +460,7 @@ async function compile({
     if (!skipEval) {
       resetScreen();
 
-      if (
-        !manager.webpackHMR &&
-        (!managerTranspiledModuleToTranspile.compilation || isModuleView)
-      ) {
-        try {
-          const children = document.body.children;
-          // Do unmounting for react
-          if (
-            manifest &&
-            manifest.dependencies.find(n => n.name === 'react-dom')
-          ) {
-            const reactDOMModule = manager.resolveModule('react-dom', '');
-            const reactDOM = manager.evaluateModule(reactDOMModule);
-
-            reactDOM.unmountComponentAtNode(document.body);
-
-            for (let i = 0; i < children.length; i += 1) {
-              if (children[i].tagName === 'DIV') {
-                reactDOM.unmountComponentAtNode(children[i]);
-              }
-            }
-          }
-        } catch (e) {
-          /* don't do anything with this error */
-
-          if (process.env.NODE_ENV === 'development') {
-            console.error('Problem while cleaning up');
-            console.error(e);
-          }
-        }
-      }
+      manager.preset.preEvaluate(manager);
 
       if (!manager.webpackHMR && !manager.preset.htmlDisabled) {
         const htmlModulePath = templateDefinition

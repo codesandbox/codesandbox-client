@@ -43,13 +43,18 @@ export default class Preset {
   hasDotEnv: boolean;
 
   /**
-   * Code to run before evaluating entry
+   * Code to run before evaluating and transpiling entry
    */
   setup: LifeCycleFunction;
   /**
    * Code to run after done
    */
   teardown: LifeCycleFunction;
+
+  /**
+   * Code to run before evaluation
+   */
+  preEvaluate: LifeCycleFunction;
 
   constructor(
     name: string,
@@ -60,9 +65,11 @@ export default class Preset {
       setup,
       teardown,
       htmlDisabled,
+      preEvaluate,
     }: {
       hasDotEnv?: boolean,
       setup?: LifeCycleFunction,
+      preEvaluate?: LifeCycleFunction,
       teardown?: LifeCycleFunction,
       htmlDisabled?: boolean,
     } = {}
@@ -80,6 +87,7 @@ export default class Preset {
     const noop = () => {};
     this.setup = setup || noop;
     this.teardown = teardown || noop;
+    this.preEvaluate = preEvaluate || noop;
     this.htmlDisabled = htmlDisabled || false;
   }
 
