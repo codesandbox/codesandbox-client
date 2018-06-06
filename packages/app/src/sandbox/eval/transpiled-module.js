@@ -300,6 +300,7 @@ export default class TranspiledModule {
   shouldTranspile() {
     return (
       !this.source &&
+      !this.isTestFile &&
       !(this.initiators.size === 0 && this.transpilationInitiators.size > 0)
     );
   }

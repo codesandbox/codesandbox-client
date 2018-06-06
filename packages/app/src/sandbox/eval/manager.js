@@ -726,17 +726,14 @@ export default class Manager {
       ])
     );
     const transpiledModulesToUpdate = allModulesToUpdate.filter(
-      m => !TestRunner.isTest(m.module.path)
+      m => !m.isTestFile
     );
 
     // Reset test files, but don't transpile. We want to do that in the test runner
     // so we can catch any errors
-    allModulesToUpdate
-      .filter(m => TestRunner.isTest(m.module.path))
-      .forEach(m => {
-        m.setIsTestFile(true);
-        m.resetTranspilation();
-      });
+    allModulesToUpdate.filter(m => m.isTestFile).forEach(m => {
+      m.resetTranspilation();
+    });
 
     debug(
       `Generated update diff, updating ${
