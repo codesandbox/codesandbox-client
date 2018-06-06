@@ -41,7 +41,7 @@ export function getCurrentManager(): ?Manager {
   return manager;
 }
 
-export function getHTMLParts(html: string) {
+export function getHTMLParts(html: string = '') {
   if (html.includes('<body>')) {
     const bodyMatcher = /<body>([\s\S]*)<\/body>/m;
     const headMatcher = /<head>([\s\S]*)<\/head>/m;
