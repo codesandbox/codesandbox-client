@@ -160,7 +160,7 @@ class Preview extends React.Component<Props, State> {
 
   handleCodeChange = preview => {
     const settings = this.props.store.preferences.settings;
-    if (settings.livePreviewEnabled) {
+    if (false && settings.livePreviewEnabled) {
       if (settings.instantPreviewEnabled) {
         preview.executeCodeImmediately();
       } else {

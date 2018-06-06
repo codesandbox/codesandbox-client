@@ -1,8 +1,13 @@
 // @flow
 import * as React from 'react';
 import type { Sandbox, Module, Preferences } from 'common/types';
-import { listen, dispatch, registerFrame } from 'codesandbox-api';
+import {
+  listen,
+  dispatch as windowDispatch,
+  registerFrame,
+} from 'codesandbox-api';
 import { debounce } from 'lodash';
+import io from 'socket.io-client';
 
 import { frameUrl } from 'common/utils/url-generator';
 import { getModulePath } from 'common/sandbox/modules';
@@ -43,6 +48,46 @@ type State = {
   url: ?string,
 };
 
+const IS_SERVER = true;
+
+const dispatch = message => {
+  if (IS_SERVER) {
+  } else {
+    windowDispatch(message);
+  }
+};
+
+const getDiff = (a, b) => {
+  const diff = {};
+
+  Object.keys(b)
+    .filter(p => {
+      if (a[p]) {
+        if (a[p].code !== b[p].code) {
+          return true;
+        }
+      } else {
+        return true;
+      }
+
+      return false;
+    })
+    .forEach(p => {
+      diff[p] = {
+        code: b[p].code,
+        path: p,
+      };
+    });
+
+  Object.keys(a).forEach(p => {
+    if (!b[p]) {
+      diff[p] = null;
+    }
+  });
+
+  return diff;
+};
+
 class BasePreview extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
@@ -51,7 +96,9 @@ class BasePreview extends React.Component<Props, State> {
       frameInitialized: false,
       history: [],
       historyPosition: -1,
-      urlInAddressBar: frameUrl(props.sandbox.id, props.initialPath || ''),
+      urlInAddressBar: IS_SERVER
+        ? `https://${props.sandbox.id}.sse.cs.lbogdan.tk`
+        : frameUrl(props.sandbox.id, props.initialPath || ''),
       url: null,
     };
 
@@ -60,11 +107,52 @@ class BasePreview extends React.Component<Props, State> {
     // when the user navigates the iframe app, which shows the loading screen
     this.initialPath = props.initialPath;
 
-    this.listener = listen(this.handleMessage);
+    this.lastSent = {
+      sandboxId: props.sandbox.id,
+      modules: this.getModulesToSend(),
+    };
+
+    if (IS_SERVER) {
+      this.$socket = io({ autoConnect: false });
+
+      this.$socket.on('connect', () => {
+        this.$socket.emit('sandbox', props.sandbox.id);
+
+        if (!this.started) {
+          this.start();
+        }
+      });
+
+      this.$socket.on('sandbox:start', () => {
+        this.started = true;
+        if (!this.state.frameInitialized && this.props.onInitialized) {
+          this.disposeInitializer = this.props.onInitialized(this);
+        }
+        this.setState({
+          frameInitialized: true,
+        });
+      });
+
+      this.$socket.on('sandbox:stop', () => {
+        this.started = false;
+        this.setState({
+          frameInitialized: false,
+        });
+        this.stopped = true;
+      });
+
+      this.$socket.open();
+    } else {
+      this.listener = listen(this.handleMessage);
+    }
 
     if (props.delay) {
       this.executeCode = debounce(this.executeCode, 800);
     }
+  }
+
+  start() {
+    this.$socket.emit('sandbox:start');
   }
 
   static defaultProps = {
@@ -171,6 +259,33 @@ class BasePreview extends React.Component<Props, State> {
       : getModulePath(sandbox.modules, sandbox.directories, currentModule.id);
   };
 
+  getModulesToSend = () => {
+    const modulesObject = {};
+    const sandbox = this.props.sandbox;
+
+    sandbox.modules.forEach(m => {
+      const path = getModulePath(sandbox.modules, sandbox.directories, m.id);
+      if (path) {
+        modulesObject[path] = {
+          path,
+          code: m.code,
+        };
+      }
+    });
+
+    const extraModules = this.props.extraModules || {};
+    const modulesToSend = { ...extraModules, ...modulesObject };
+
+    if (!modulesToSend['/package.json']) {
+      modulesToSend['/package.json'] = {
+        code: generateFileFromSandbox(sandbox),
+        path: '/package.json',
+      };
+    }
+
+    return modulesToSend;
+  };
+
   executeCodeImmediately = (initialRender: boolean = false) => {
     const settings = this.props.settings;
     const sandbox = this.props.sandbox;
@@ -192,39 +307,26 @@ class BasePreview extends React.Component<Props, State> {
         });
       }
 
-      const modulesObject = {};
+      const modulesToSend = this.getModulesToSend();
+      if (IS_SERVER) {
+        const diff = getDiff(this.lastSent.modules, modulesToSend);
 
-      sandbox.modules.forEach(m => {
-        const path = getModulePath(sandbox.modules, sandbox.directories, m.id);
-        if (path) {
-          modulesObject[path] = {
-            path,
-            code: m.code,
-          };
+        if (Object.keys(diff).length > 0) {
+          this.$socket.emit('sandbox:update', diff);
         }
-      });
-
-      const extraModules = this.props.extraModules || {};
-      const modulesToSend = { ...extraModules, ...modulesObject };
-
-      if (!modulesToSend['/package.json']) {
-        modulesToSend['/package.json'] = {
-          code: generateFileFromSandbox(sandbox),
-          path: '/package.json',
-        };
+      } else {
+        dispatch({
+          type: 'compile',
+          version: 3,
+          entry: this.getRenderedModule(),
+          modules: modulesToSend,
+          sandboxId: sandbox.id,
+          externalResources: sandbox.externalResources,
+          isModuleView: !this.props.isInProjectView,
+          template: sandbox.template,
+          hasActions: !!this.props.onAction,
+        });
       }
-
-      dispatch({
-        type: 'compile',
-        version: 3,
-        entry: this.getRenderedModule(),
-        modules: modulesToSend,
-        sandboxId: sandbox.id,
-        externalResources: sandbox.externalResources,
-        isModuleView: !this.props.isInProjectView,
-        template: sandbox.template,
-        hasActions: !!this.props.onAction,
-      });
     }
   };
 
@@ -351,19 +453,27 @@ class BasePreview extends React.Component<Props, State> {
           />
         )}
 
-        <StyledFrame
-          sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups allow-presentation"
-          src={frameUrl(sandbox.id, this.initialPath)}
-          id="sandbox"
-          title={sandbox.id}
-          hideNavigation={!showNavigation}
-          style={{
-            pointerEvents:
-              dragging || inactive || this.props.isResizing
-                ? 'none'
-                : 'initial',
-          }}
-        />
+        {this.state.frameInitialized ? (
+          <StyledFrame
+            sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups allow-presentation"
+            src={
+              IS_SERVER
+                ? `https://${sandbox.id}.sse.cs.lbogdan.tk`
+                : frameUrl(sandbox.id, this.initialPath)
+            }
+            id="sandbox"
+            title={sandbox.id}
+            hideNavigation={!showNavigation}
+            style={{
+              pointerEvents:
+                dragging || inactive || this.props.isResizing
+                  ? 'none'
+                  : 'initial',
+            }}
+          />
+        ) : (
+          <div style={{ padding: '1rem' }}>Initializing...</div>
+        )}
       </Container>
     );
   }
