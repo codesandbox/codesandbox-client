@@ -800,7 +800,6 @@ export default class TranspiledModule {
       // eslint-disable-next-line no-inner-declarations
       function require(path: string) {
         const usedPath = manager.getPresetAliasedPath(path);
-
         const bfsModule = BrowserFS.BFSRequire(usedPath);
 
         if (bfsModule) {
@@ -949,7 +948,11 @@ export default class TranspiledModule {
     this.isTestFile = data.isTestFile;
     this.source = data.source;
 
-    const loadModule = (depId: string, initiator = false) => {
+    const loadModule = (
+      depId: string,
+      initiator = false,
+      transpilation = false
+    ) => {
       if (state[depId]) {
         return state[depId];
       }
@@ -961,9 +964,17 @@ export default class TranspiledModule {
       const tModule = manager.getTranspiledModule(module, query);
 
       if (initiator) {
-        tModule.dependencies.add(this);
+        if (transpilation) {
+          tModule.transpilationDependencies.add(this);
+        } else {
+          tModule.dependencies.add(this);
+        }
       } else {
-        tModule.initiators.add(this);
+        if (transpilation) {
+          tModule.transpilationInitiators.add(this);
+        } else {
+          tModule.initiators.add(this);
+        }
       }
 
       return tModule;
@@ -979,10 +990,10 @@ export default class TranspiledModule {
       this.initiators.add(loadModule(depId, true));
     });
     data.transpilationDependencies.forEach((depId: string) => {
-      this.transpilationDependencies.add(loadModule(depId));
+      this.transpilationDependencies.add(loadModule(depId, false, true));
     });
     data.transpilationInitiators.forEach((depId: string) => {
-      this.transpilationInitiators.add(loadModule(depId, true));
+      this.transpilationInitiators.add(loadModule(depId, true, true));
     });
 
     data.asyncDependencies.forEach((depId: string) => {
