@@ -344,13 +344,16 @@ async function compile({
   });
 
   try {
-    if (localStorage.getItem('running')) {
+    // We set it as a time value for people that run two sandboxes on one computer
+    // they execute at the same time and we don't want them to conflict, so we check
+    // if the message was set a second ago
+    if (Date.now() < localStorage.getItem('running') > 1000) {
       localStorage.removeItem('running');
       showRunOnClick();
       return;
     }
 
-    localStorage.setItem('running', 'true');
+    localStorage.setItem('running', Date.now());
   } catch (e) {
     /* no */
   }
