@@ -1,19 +1,11 @@
 // @ts-check
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 export const Container = styled.div`
   background-color: ${props => props.theme.background};
   overflow: hidden;
   border-radius: 2px;
   user-select: none;
-
-  border: 2px solid transparent;
-
-  ${props =>
-    props.selected &&
-    css`
-      border-color: ${props.theme.secondary};
-    `};
 
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 `;
@@ -37,6 +29,7 @@ export const SandboxImage = styled.div`
 `;
 
 export const SandboxInfo = styled.div`
+  position: relative;
   display: flex;
   padding: 0.6rem 0.75rem;
   font-size: 0.875em;

@@ -17,7 +17,7 @@ export default class Sidebar extends React.Component {
 
   render() {
     return (
-      <div style={{ width: 300, overflowY: 'auto' }}>
+      <div style={{ width: 275, overflowY: 'auto' }}>
         <div style={{ margin: '0 1rem' }}>
           <Input block placeholder="Filter Sandboxes" />
         </div>

@@ -8,7 +8,8 @@ import { getEmptyImage } from 'react-dnd-html5-backend';
 import { Spring } from 'react-spring';
 
 import ContextMenu from 'app/components/ContextMenu';
-import getIcon from 'common/templates/icons';
+import getTemplate from 'common/templates';
+import theme from 'common/theme';
 
 import {
   Container,
@@ -93,10 +94,13 @@ class SandboxItem extends React.Component<Props> {
       id,
       title,
       details,
+      template,
       connectDragSource,
       selected,
       isDraggingItem,
     } = this.props;
+
+    const templateInfo = getTemplate(template);
 
     return (
       <Spring to={style}>
@@ -121,7 +125,13 @@ class SandboxItem extends React.Component<Props> {
             ]}
           >
             {connectDragSource(
-              <div>
+              <div
+                style={{
+                  padding: 2,
+                  borderRadius: 2,
+                  backgroundColor: selected ? theme.secondary() : 'transparent',
+                }}
+              >
                 <Container
                   style={{ outline: 'none' }}
                   onMouseDown={this.handleMouseDown}
@@ -131,18 +141,28 @@ class SandboxItem extends React.Component<Props> {
                   onKeyDown={this.handleKeyDown}
                   role="button"
                   tabIndex={0}
-                  selected={selected}
                 >
                   <SandboxImageContainer>
                     <ImageMessage>Generating Screenshot...</ImageMessage>
 
                     <SandboxImage
                       style={{
-                        backgroundImage: `url(${`/api/v1/sandboxes/${id}/screenshot.png`})`,
+                        backgroundImage: `url(${`/api/v1/sandboxes/new/screenshot.png`})`,
                       }}
                     />
                   </SandboxImageContainer>
                   <SandboxInfo>
+                    <div
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        bottom: 0,
+                        left: 0,
+                        width: 2,
+                        height: '100%',
+                        backgroundColor: templateInfo.color(),
+                      }}
+                    />
                     <div style={{ flex: 1 }}>
                       <div>{title}</div>
                       <SandboxDetails>{details}</SandboxDetails>
