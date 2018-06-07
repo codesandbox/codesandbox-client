@@ -104,6 +104,7 @@ class BasePreview extends React.Component<Props, State> {
         ? `https://${props.sandbox.id}.sse.cs.lbogdan.tk`
         : frameUrl(props.sandbox.id, props.initialPath || ''),
       url: null,
+      terminalMessages: [],
     };
 
     // we need a value that doesn't change when receiving `initialPath`
@@ -144,6 +145,14 @@ class BasePreview extends React.Component<Props, State> {
           stopped: true,
         });
         this.stopped = true;
+      });
+
+      this.$socket.on('sandbox:log', ({ chan, data }) => {
+        const message = `[${chan}]: ${data}`;
+        console.log(message);
+        this.setState(state => ({
+          terminalMessages: [...state.terminalMessages, message],
+        }));
       });
 
       console.log('hallo');
@@ -484,7 +493,15 @@ class BasePreview extends React.Component<Props, State> {
           />
         ) : (
           <div style={{ padding: '1rem' }}>
-            {this.state.stopped ? 'Stopped' : 'Initializing...'}{' '}
+            {this.state.stopped ? (
+              'Stopped'
+            ) : (
+              <div>
+                {this.state.terminalMessages.map((message, i) => (
+                  <pre key={i}>{message}</pre>
+                ))}
+              </div>
+            )}{' '}
           </div>
         )}
       </Container>
