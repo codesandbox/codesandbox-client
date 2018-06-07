@@ -7,4 +7,7 @@ export default {
     order: types.enumeration('order', ['desc', 'asc']),
     field: types.string,
   }),
+  filters: types.model({
+    blacklistedTemplates: types.array(types.string),
+  }),
 };

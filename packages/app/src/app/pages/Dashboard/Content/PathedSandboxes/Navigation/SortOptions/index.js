@@ -1,36 +1,28 @@
 import React from 'react';
-import ArrowDown from 'react-icons/lib/md/arrow-downward';
-import { Transition } from 'react-spring';
 import { inject, observer } from 'mobx-react';
 
 import Option from './Option';
-import { Container, OrderName, OverlayContainer } from './elements';
+import { Container, Arrow, OrderName, OverlayContainer } from './elements';
 
-const Empty = () => <span />;
+import OverlayComponent from '../Overlay';
 
 const FIELD_TO_NAME = {
-  updated_at: 'Last Modified',
-  inserted_at: 'Last Created',
+  updatedAt: 'Last Modified',
+  insertedAt: 'Last Created',
   title: 'Name',
 };
 
 class SortOptions extends React.Component {
-  state = {
-    showModal: false,
-  };
-
-  componentDidMount() {
-    document.addEventListener('mousedown', this.listenForClick);
-  }
-
-  listenForClick = (e: MouseEvent) => {
-    if (!e.defaultPrevented && this.state.showModal) {
-      this.setState({ showModal: false });
-    }
-  };
-
-  toggleModal = () => {
-    this.setState(state => ({ showModal: !state.showModal }));
+  toggleSort = e => {
+    e.preventDefault();
+    const orderBy = this.props.store.dashboard.orderBy;
+    const orderByChanged = this.props.signals.dashboard.orderByChanged;
+    orderByChanged({
+      orderBy: {
+        order: orderBy.order === 'asc' ? 'desc' : 'asc',
+        field: orderBy.field,
+      },
+    });
   };
 
   setField = (field: string) => {
@@ -45,8 +37,7 @@ class SortOptions extends React.Component {
   };
 
   render() {
-    const { showModal } = this.state;
-    const { field } = this.props.store.dashboard.orderBy;
+    const { field, order } = this.props.store.dashboard.orderBy;
 
     const Overlay = style => (
       <OverlayContainer style={style}>
@@ -59,33 +50,28 @@ class SortOptions extends React.Component {
         <Option
           setField={this.setField}
           currentField={field}
-          field="inserted_at"
-          name={FIELD_TO_NAME.inserted_at}
+          field="insertedAt"
+          name={FIELD_TO_NAME.insertedAt}
         />
         <Option
           setField={this.setField}
           currentField={field}
-          field="updated_at"
-          name={FIELD_TO_NAME.updated_at}
+          field="updatedAt"
+          name={FIELD_TO_NAME.updatedAt}
         />
       </OverlayContainer>
     );
 
     return (
-      <Container onMouseDown={e => e.preventDefault()}>
-        Sort by{' '}
-        <OrderName onClick={this.toggleModal}>
-          {FIELD_TO_NAME[field]} <ArrowDown />
-        </OrderName>
-        <Transition
-          from={{ height: 0, opacity: 0 }}
-          enter={{ height: 'auto', opacity: 1 }}
-          leave={{ height: 0, opacity: 0 }}
-        >
-          {/* TODO: Fix this */}
-          {showModal ? Overlay : Empty}
-        </Transition>
-      </Container>
+      <OverlayComponent Overlay={Overlay}>
+        {open => (
+          <Container>
+            Sort by{' '}
+            <OrderName onClick={open}>{FIELD_TO_NAME[field]} </OrderName>
+            <Arrow onClick={this.toggleSort} isAsc={order === 'asc'} />
+          </Container>
+        )}
+      </OverlayComponent>
     );
   }
 }

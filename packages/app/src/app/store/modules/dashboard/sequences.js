@@ -1,4 +1,4 @@
-import { set } from 'cerebral/operators';
+import { set, push } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 
 import { withLoadApp } from '../../factories';
@@ -15,3 +15,9 @@ export const setDragging = [
 ];
 
 export const setOrderBy = [set(state`dashboard.orderBy`, props`orderBy`)];
+
+export const addBlacklistedTemplate = [
+  push(state`dashboard.filters.blacklistedTemplates`, props`template`),
+];
+
+export const removeBlacklistedTemplate = [actions.removeBlacklistedTemplate];

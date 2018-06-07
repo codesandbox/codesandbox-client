@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 export const Container = styled.div`
   display: flex;
   align-items: center;
+  position: relative;
 `;
 
 export const NavigationLink = styled(Link)`
@@ -29,21 +30,11 @@ export const NavigationLink = styled(Link)`
         `};
 `;
 
-export const OrderBy = styled.div`
+export const FilterContainer = styled.div`
   position: absolute;
   right: 2rem;
-
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 0.875rem;
-`;
-
-export const OrderName = styled.span`
-  transition: 0.3s ease color;
-  color: rgba(255, 255, 255, 0.8);
-
-  cursor: pointer;
-
-  &:hover {
-    color: white;
-  }
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
 `;

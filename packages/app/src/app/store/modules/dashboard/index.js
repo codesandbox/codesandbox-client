@@ -1,14 +1,19 @@
 import { Module } from 'cerebral';
 import model from './model';
 import * as sequences from './sequences';
+import * as computed from './computed';
 
 export default Module({
   model,
+  computed,
   state: {
     selectedSandboxes: [],
     orderBy: {
-      field: 'updated_at',
+      field: 'updatedAt',
       order: 'desc',
+    },
+    filters: {
+      blacklistedTemplates: [],
     },
     isDragging: false,
   },
@@ -18,5 +23,7 @@ export default Module({
     sandboxesSelected: sequences.selectSandboxes,
     dragChanged: sequences.setDragging,
     orderByChanged: sequences.setOrderBy,
+    blacklistedTemplateAdded: sequences.addBlacklistedTemplate,
+    blacklistedTemplateRemoved: sequences.removeBlacklistedTemplate,
   },
 });
