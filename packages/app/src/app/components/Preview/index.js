@@ -119,6 +119,11 @@ class BasePreview extends React.Component<Props, State> {
 
   setupSockets = (id: string) => {
     if (this.$socket) {
+      this.started = false;
+      this.setState({
+        frameInitialized: false,
+        stopped: true,
+      });
       this.$socket.close();
     }
 
