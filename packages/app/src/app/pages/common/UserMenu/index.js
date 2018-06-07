@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { inject, observer } from 'mobx-react';
+import { inject } from 'mobx-react';
 
 import HoverMenu from 'app/components/HoverMenu';
 import Relative from 'common/components/Relative';
@@ -14,9 +14,8 @@ import {
   Username,
 } from './elements';
 
-function UserMenu({ signals, store, small }) {
+function UserMenu({ signals, small, user, userMenuOpen }) {
   const smallImage = small || false;
-  const { user, userMenuOpen } = store;
 
   return (
     <Relative>
@@ -55,4 +54,4 @@ function UserMenu({ signals, store, small }) {
   );
 }
 
-export default inject('store', 'signals')(observer(UserMenu));
+export default inject('signals')(UserMenu);
