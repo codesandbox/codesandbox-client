@@ -64,8 +64,8 @@ export const RENAME_FOLDER_MUTATION = gql`
 `;
 
 export const ADD_SANDBOXES_TO_FOLDER_MUTATION = gql`
-  mutation AddToCollection($collectionId: ID, $sandboxIds: [ID]!) {
-    addToCollection(collectionId: $collectionId, sandboxIds: $sandboxIds) {
+  mutation AddToCollection($collectionPath: String!, $sandboxIds: [ID]!) {
+    addToCollection(collectionPath: $collectionPath, sandboxIds: $sandboxIds) {
       sandboxes {
         ...Sandbox
       }

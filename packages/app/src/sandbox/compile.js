@@ -585,7 +585,7 @@ async function compile({
     try {
       // Testing
       const ttt = Date.now();
-      const testRunner = await manager.testRunner;
+      const testRunner = manager.testRunner;
       testRunner.findTests(modules);
       await testRunner.runTests();
       debug(`Test Evaluation time: ${Date.now() - ttt}ms`);

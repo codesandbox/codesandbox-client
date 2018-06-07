@@ -9,4 +9,5 @@ export const Container = styled.div`
 
 export const HeaderContainer = styled.div`
   font-size: 1.25rem;
+  color: white;
 `;

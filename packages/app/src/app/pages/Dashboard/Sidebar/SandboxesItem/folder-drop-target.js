@@ -8,14 +8,14 @@ import {
 } from '../../queries';
 
 function addSandboxesToCollection(props, item) {
-  const { id, path, store } = props;
+  const { path, store } = props;
 
   const selectedSandboxes = store.dashboard.selectedSandboxes;
 
   client.mutate({
     mutation: ADD_SANDBOXES_TO_FOLDER_MUTATION,
     variables: {
-      collectionId: id,
+      collectionPath: path || '/',
       sandboxIds: selectedSandboxes.toJS(),
     },
     optimisticResponse: {

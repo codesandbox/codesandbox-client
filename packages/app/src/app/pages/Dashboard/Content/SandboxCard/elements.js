@@ -37,8 +37,11 @@ export const SandboxImage = styled.div`
 `;
 
 export const SandboxInfo = styled.div`
+  display: flex;
   padding: 0.6rem 0.75rem;
   font-size: 0.875em;
+
+  align-items: center;
 `;
 
 export const SandboxDetails = styled.div`

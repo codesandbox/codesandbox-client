@@ -6,6 +6,10 @@ export default Module({
   model,
   state: {
     selectedSandboxes: [],
+    orderBy: {
+      field: 'updated_at',
+      order: 'desc',
+    },
     isDragging: false,
   },
   getters: {},
@@ -13,5 +17,6 @@ export default Module({
     dashboardMounted: sequences.loadDashboard,
     sandboxesSelected: sequences.selectSandboxes,
     dragChanged: sequences.setDragging,
+    orderByChanged: sequences.setOrderBy,
   },
 });

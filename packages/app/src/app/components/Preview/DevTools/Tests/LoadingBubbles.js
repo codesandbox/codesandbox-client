@@ -6,7 +6,7 @@ export default props => (
     width="1em"
     height="1em"
     viewBox="0 0 32 32"
-    fill="#6CAEDD"
+    fill="#40A9F3"
     {...props}
   >
     <circle transform="translate(8 0)" cx={0} cy={16} r={0}>

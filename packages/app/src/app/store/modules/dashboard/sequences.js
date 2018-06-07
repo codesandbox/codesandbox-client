@@ -13,3 +13,5 @@ export const selectSandboxes = [
 export const setDragging = [
   set(state`dashboard.isDragging`, props`isDragging`),
 ];
+
+export const setOrderBy = [set(state`dashboard.orderBy`, props`orderBy`)];

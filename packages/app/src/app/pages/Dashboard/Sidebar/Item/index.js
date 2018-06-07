@@ -11,9 +11,9 @@ import {
 
 const getContainer = contextItems => {
   if (contextItems) {
-    return ({ children, ...props }) => (
+    return props => (
       <ContextMenu items={contextItems}>
-        <Container {...props}>{children}</Container>
+        {React.createElement(Container, props)}
       </ContextMenu>
     );
   }

@@ -8,7 +8,7 @@ import { Container, HeaderContainer } from './elements';
 // eslint-disable-next-line react/prefer-stateless-function
 class Content extends React.Component {
   render() {
-    const { sandboxes, Header, isLoading } = this.props;
+    const { sandboxes, Header, isLoading, orderBy } = this.props;
 
     return (
       <Container>

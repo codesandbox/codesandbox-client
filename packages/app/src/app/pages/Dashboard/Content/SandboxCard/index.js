@@ -8,6 +8,7 @@ import { getEmptyImage } from 'react-dnd-html5-backend';
 import { Spring } from 'react-spring';
 
 import ContextMenu from 'app/components/ContextMenu';
+import getIcon from 'common/templates/icons';
 
 import {
   Container,
@@ -134,6 +135,7 @@ class SandboxItem extends React.Component<Props> {
                 >
                   <SandboxImageContainer>
                     <ImageMessage>Generating Screenshot...</ImageMessage>
+
                     <SandboxImage
                       style={{
                         backgroundImage: `url(${`/api/v1/sandboxes/${id}/screenshot.png`})`,
@@ -141,8 +143,10 @@ class SandboxItem extends React.Component<Props> {
                     />
                   </SandboxImageContainer>
                   <SandboxInfo>
-                    <div>{title}</div>
-                    <SandboxDetails>{details}</SandboxDetails>
+                    <div style={{ flex: 1 }}>
+                      <div>{title}</div>
+                      <SandboxDetails>{details}</SandboxDetails>
+                    </div>
                   </SandboxInfo>
                 </Container>
               </div>

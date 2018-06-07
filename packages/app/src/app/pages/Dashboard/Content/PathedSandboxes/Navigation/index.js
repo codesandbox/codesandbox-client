@@ -1,9 +1,12 @@
 // @ts-check
 import React from 'react';
 import { join } from 'path';
-import { Container, NavigationLink } from './elements';
 
-export default ({ path }: { path: string }) => {
+import { Container } from './elements';
+import NavigationLink from './NavigationLink';
+import SortOptions from './SortOptions';
+
+export default ({ path }) => {
   const splittedPath = path === '/' ? [''] : path.split('/');
 
   const paths = splittedPath.reduce((bases, next) => {
@@ -20,12 +23,15 @@ export default ({ path }: { path: string }) => {
     <Container>
       {paths.map(({ name, url }, i) => (
         <NavigationLink
-          to={`/dashboard/sandboxes${url}`}
-          last={i === splittedPath.length - 1}
-        >
-          {name}
-        </NavigationLink>
+          name={name}
+          path={url}
+          splittedPath={splittedPath}
+          i={i}
+          key={url}
+        />
       ))}
+
+      <SortOptions />
     </Container>
   );
 };
