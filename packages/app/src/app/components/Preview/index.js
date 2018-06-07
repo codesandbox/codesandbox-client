@@ -1,11 +1,7 @@
 // @flow
 import * as React from 'react';
 import type { Sandbox, Module, Preferences } from 'common/types';
-import {
-  listen,
-  dispatch as windowDispatch,
-  registerFrame,
-} from 'codesandbox-api';
+import { listen, dispatch, registerFrame } from 'codesandbox-api';
 import { debounce } from 'lodash';
 import io from 'socket.io-client';
 
@@ -49,13 +45,6 @@ type State = {
 };
 
 const IS_SERVER = true;
-
-const dispatch = message => {
-  if (IS_SERVER) {
-  } else {
-    windowDispatch(message);
-  }
-};
 
 const getDiff = (a, b) => {
   const diff = {};
@@ -118,50 +107,7 @@ class BasePreview extends React.Component<Props, State> {
     };
 
     if (IS_SERVER) {
-      this.$socket = io({ autoConnect: false });
-
-      this.$socket.on('connect', () => {
-        this.$socket.emit('sandbox', props.sandbox.id);
-
-        if (!this.started) {
-          this.start();
-        }
-      });
-
-      this.$socket.on('sandbox:start', () => {
-        this.started = true;
-        if (!this.state.frameInitialized && this.props.onInitialized) {
-          this.disposeInitializer = this.props.onInitialized(this);
-        }
-        this.setState({
-          frameInitialized: true,
-        });
-      });
-
-      this.$socket.on('sandbox:stop', () => {
-        this.started = false;
-        this.setState({
-          frameInitialized: false,
-          stopped: true,
-        });
-        this.stopped = true;
-      });
-
-      this.$socket.on('sandbox:log', ({ chan, data }) => {
-        const message = `[${chan}]: ${data}`;
-        console.log(message);
-        dispatch({
-          type: 'console',
-          log: message,
-        });
-        this.setState(state => ({
-          terminalMessages: [...state.terminalMessages, message],
-        }));
-      });
-
-      console.log('hallo');
-
-      this.$socket.open();
+      this.setupSockets(props.sandbox.id);
     } else {
       this.listener = listen(this.handleMessage);
     }
@@ -170,6 +116,55 @@ class BasePreview extends React.Component<Props, State> {
       this.executeCode = debounce(this.executeCode, 800);
     }
   }
+
+  setupSockets = (id: string) => {
+    if (this.$socket) {
+      this.$socket.close();
+    }
+
+    this.$socket = io({ autoConnect: false });
+
+    this.$socket.on('connect', () => {
+      this.$socket.emit('sandbox', id);
+
+      if (!this.started) {
+        this.start();
+      }
+    });
+
+    this.$socket.on('sandbox:start', () => {
+      this.started = true;
+      if (!this.state.frameInitialized && this.props.onInitialized) {
+        this.disposeInitializer = this.props.onInitialized(this);
+      }
+      this.setState({
+        frameInitialized: true,
+      });
+    });
+
+    this.$socket.on('sandbox:stop', () => {
+      this.started = false;
+      this.setState({
+        frameInitialized: false,
+        stopped: true,
+      });
+      this.stopped = true;
+    });
+
+    this.$socket.on('sandbox:log', ({ chan, data }) => {
+      const message = `[${chan}]: ${data}`;
+      console.log(message);
+      dispatch({
+        type: 'console',
+        log: message,
+      });
+      this.setState(state => ({
+        terminalMessages: [...state.terminalMessages, message],
+      }));
+    });
+
+    this.$socket.open();
+  };
 
   start() {
     this.$socket.emit('sandbox:start');
@@ -207,6 +202,8 @@ class BasePreview extends React.Component<Props, State> {
     const url = IS_SERVER
       ? `https://${newId}.sse.cs.lbogdan.tk`
       : frameUrl(newId, this.props.initialPath || '');
+
+    this.setupSockets(newId);
     this.setState(
       {
         history: [url],
