@@ -81,9 +81,13 @@ const getDiff = (a, b) => {
 
   Object.keys(a).forEach(p => {
     if (!b[p]) {
-      diff[p] = null;
+      diff[p] = {
+        path: p,
+        code: null,
+      };
     }
   });
+  console.log(diff);
 
   return diff;
 };
@@ -137,9 +141,12 @@ class BasePreview extends React.Component<Props, State> {
         this.started = false;
         this.setState({
           frameInitialized: false,
+          stopped: true,
         });
         this.stopped = true;
       });
+
+      console.log('hallo');
 
       this.$socket.open();
     } else {
@@ -171,6 +178,8 @@ class BasePreview extends React.Component<Props, State> {
     if (this.disposeInitializer) {
       this.disposeInitializer();
     }
+
+    this.$socket.close();
   }
 
   openNewWindow = () => {
@@ -310,6 +319,8 @@ class BasePreview extends React.Component<Props, State> {
       const modulesToSend = this.getModulesToSend();
       if (IS_SERVER) {
         const diff = getDiff(this.lastSent.modules, modulesToSend);
+
+        this.lastSent.modules = modulesToSend;
 
         if (Object.keys(diff).length > 0) {
           this.$socket.emit('sandbox:update', diff);
@@ -472,7 +483,9 @@ class BasePreview extends React.Component<Props, State> {
             }}
           />
         ) : (
-          <div style={{ padding: '1rem' }}>Initializing...</div>
+          <div style={{ padding: '1rem' }}>
+            {this.state.stopped ? 'Stopped' : 'Initializing...'}{' '}
+          </div>
         )}
       </Container>
     );
