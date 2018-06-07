@@ -150,6 +150,10 @@ class BasePreview extends React.Component<Props, State> {
       this.$socket.on('sandbox:log', ({ chan, data }) => {
         const message = `[${chan}]: ${data}`;
         console.log(message);
+        dispatch({
+          type: 'console',
+          log: message,
+        });
         this.setState(state => ({
           terminalMessages: [...state.terminalMessages, message],
         }));
@@ -200,7 +204,9 @@ class BasePreview extends React.Component<Props, State> {
   };
 
   handleSandboxChange = (newId: string) => {
-    const url = frameUrl(newId, this.props.initialPath);
+    const url = IS_SERVER
+      ? `https://${newId}.sse.cs.lbogdan.tk`
+      : frameUrl(newId, this.props.initialPath || '');
     this.setState(
       {
         history: [url],
