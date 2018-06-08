@@ -192,7 +192,9 @@ class BasePreview extends React.Component<Props, State> {
       this.disposeInitializer();
     }
 
-    this.$socket.close();
+    if (this.$socket) {
+      this.$socket.close();
+    }
   }
 
   openNewWindow = () => {
@@ -481,7 +483,7 @@ class BasePreview extends React.Component<Props, State> {
           />
         )}
 
-        {this.state.frameInitialized ? (
+        {this.state.frameInitialized && !IS_SERVER ? (
           <StyledFrame
             sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups allow-presentation"
             src={
