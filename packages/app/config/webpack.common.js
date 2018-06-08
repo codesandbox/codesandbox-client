@@ -25,7 +25,18 @@ const publicPath = SANDBOX_ONLY || __DEV__ ? '/' : getHost() + '/';
 // Shim for `eslint-plugin-vue/lib/index.js`
 const ESLINT_PLUGIN_VUE_INDEX = `module.exports = {
   rules: {${fs
-    .readdirSync('../../node_modules/eslint-plugin-vue/lib/rules')
+    .readdirSync(
+      path.join(
+        __dirname,
+        '..',
+        '..',
+        '..',
+        'node_modules',
+        'eslint-plugin-vue',
+        'lib',
+        'rules'
+      )
+    )
     .filter(filename => path.extname(filename) === '.js')
     .map(filename => {
       const ruleId = path.basename(filename, '.js');

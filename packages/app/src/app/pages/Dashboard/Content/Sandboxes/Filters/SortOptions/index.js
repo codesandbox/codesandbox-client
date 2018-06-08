@@ -68,7 +68,7 @@ class SortOptions extends React.Component {
           <Container>
             Sort by{' '}
             <OrderName onClick={open}>{FIELD_TO_NAME[field]} </OrderName>
-            <Arrow onClick={this.toggleSort} isAsc={order === 'asc'} />
+            <Arrow onClick={this.toggleSort} isAscending={order === 'asc'} />
           </Container>
         )}
       </OverlayComponent>

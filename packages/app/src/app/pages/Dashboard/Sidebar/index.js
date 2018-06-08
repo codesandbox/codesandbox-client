@@ -2,10 +2,10 @@ import React from 'react';
 import Input from 'common/components/Input';
 
 import TimeIcon from 'react-icons/lib/md/access-time';
-import TrashIcon from 'react-icons/lib/md/delete';
 
 import Item from './Item';
 import SandboxesItem from './SandboxesItem';
+import TrashItem from './TrashItem';
 import { Items, CategoryHeader } from './elements';
 
 export default class Sidebar extends React.Component {
@@ -26,7 +26,7 @@ export default class Sidebar extends React.Component {
           <CategoryHeader>My Sandboxes</CategoryHeader>
           <Item Icon={TimeIcon} path="/dashboard/recents" name="Recent" />
           <SandboxesItem />
-          <Item Icon={TrashIcon} path="/dashboard/deleted" name="Trash" />
+          <TrashItem />
         </Items>
       </div>
     );

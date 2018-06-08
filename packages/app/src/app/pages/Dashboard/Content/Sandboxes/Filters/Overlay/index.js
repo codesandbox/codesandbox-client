@@ -14,14 +14,23 @@ class OverlayComponent extends React.Component {
     document.addEventListener('mousedown', this.listenForClick);
   }
 
+  componentWillUnmount() {
+    document.removeEventListener('mousedown', this.listenForClick);
+    this.unmounted = true;
+  }
+
   listenForClick = (e: MouseEvent) => {
     if (!e.defaultPrevented && this.state.isOpen) {
-      this.setState({ isOpen: false });
+      if (!this.unmounted) {
+        this.setState({ isOpen: false });
+      }
     }
   };
 
   open = () => {
-    this.setState({ isOpen: true });
+    if (!this.unmounted) {
+      this.setState({ isOpen: true });
+    }
   };
 
   render() {
@@ -29,6 +38,7 @@ class OverlayComponent extends React.Component {
     const { isOpen } = this.state;
 
     return (
+      // eslint-disable-next-line jsx-a11y/no-static-element-interactions
       <div
         style={{ position: 'relative' }}
         onMouseDown={e => e.preventDefault()}

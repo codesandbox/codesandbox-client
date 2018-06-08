@@ -6,7 +6,6 @@ import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router';
 
 import { Query } from 'react-apollo';
-import gql from 'graphql-tag';
 import InfoIcon from 'app/pages/Sandbox/Editor/Navigation/InfoIcon';
 import DelayedAnimation from 'app/components/DelayedAnimation';
 
@@ -55,7 +54,7 @@ class SandboxesItem extends React.Component {
             },
           ]}
         >
-          {({ match }) => (
+          {() => (
             <Query query={PATHED_SANDBOXES_FOLDER_QUERY}>
               {({ data, loading, error }) => {
                 if (loading) {
@@ -66,7 +65,7 @@ class SandboxesItem extends React.Component {
                         fontWeight: 600,
                         color: 'rgba(255, 255, 255, 0.6)',
                       }}
-                      delay={600}
+                      delay={0.6}
                     >
                       Loading...
                     </DelayedAnimation>

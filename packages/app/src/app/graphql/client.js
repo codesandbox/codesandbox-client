@@ -1,9 +1,16 @@
 import { ApolloClient } from 'apollo-client';
-import { createHttpLink } from 'apollo-link-http';
+import {
+  ApolloLink,
+  Observable,
+  Operation,
+  NextLink,
+  FetchResult,
+} from 'apollo-link';
+import { BatchHttpLink } from 'apollo-link-batch-http';
 import { setContext } from 'apollo-link-context';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 
-const httpLink = createHttpLink({
+const httpLink = new BatchHttpLink({
   uri: '/api/graphql',
 });
 
@@ -19,8 +26,16 @@ const authLink = setContext((_, { headers }) => {
   };
 });
 
+const absintheAfterware = new ApolloLink((operation, forward) => {
+  return forward(operation).map(result => {
+    result.data = result.payload.data;
+
+    return result;
+  });
+});
+
 export const client = new ApolloClient({
-  link: authLink.concat(httpLink),
+  link: authLink.concat(absintheAfterware.concat(httpLink)),
   cache: new InMemoryCache({
     cacheRedirects: {
       Query: {

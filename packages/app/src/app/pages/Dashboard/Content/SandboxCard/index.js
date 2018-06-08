@@ -3,9 +3,9 @@
 import React from 'react';
 import history from 'app/utils/history';
 import { sandboxUrl } from 'common/utils/url-generator';
+import TrashIcon from 'react-icons/lib/md/delete';
 import { DragSource } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
-import { Spring } from 'react-spring';
 
 import ContextMenu from 'app/components/ContextMenu';
 import getTemplate from 'common/templates';
@@ -26,6 +26,8 @@ type Props = {
   details: string,
   selected: boolean,
   setSandboxesSelected: (ids: string[], additive?: boolean) => void,
+  deleteSandboxes: () => void,
+  collectionPath: string,
 };
 
 export const PADDING = 32;
@@ -52,6 +54,57 @@ class SandboxItem extends React.Component<Props> {
     }
   }
 
+  getContextItems = () => {
+    if (this.props.removedAt) {
+      return [
+        {
+          title: 'Delete Permanently',
+          action: this.deletePermanently,
+          icon: TrashIcon,
+          color: theme.red.darken(0.2)(),
+        },
+      ];
+    }
+
+    const { selectedCount } = this.props;
+    if (this.props.selectedCount > 1) {
+      return [
+        {
+          title: `Move ${selectedCount} sandboxes to Trash`,
+          action: () => {
+            this.props.deleteSandboxes();
+            return true;
+          },
+          icon: TrashIcon,
+          color: theme.red.darken(0.2)(),
+        },
+      ];
+    }
+
+    return [
+      {
+        title: 'Open Sandbox',
+        action: this.openSandbox,
+      },
+      {
+        title: 'Open Sandbox in new tab',
+        action: () => {
+          this.openSandbox(true);
+          return true;
+        },
+      },
+      {
+        title: `Move to Trash`,
+        action: () => {
+          this.props.deleteSandboxes();
+          return true;
+        },
+        icon: TrashIcon,
+        color: theme.red.darken(0.2)(),
+      },
+    ];
+  };
+
   handleMouseDown = e => {
     e.stopPropagation();
 
@@ -67,12 +120,21 @@ class SandboxItem extends React.Component<Props> {
     });
   };
 
-  openSandbox = () => {
+  openSandbox = (openNewWindow = false) => {
     // Git sandboxes aren't shown here anyway
-    history.push(sandboxUrl({ id: this.props.id }));
+    const url = sandboxUrl({ id: this.props.id });
+    if (!this.props.removedAt) {
+      if (openNewWindow) {
+        window.open(url, '_blank');
+      } else {
+        history.push(url);
+      }
+    }
 
     return true;
   };
+
+  deletePermanently = () => {};
 
   handleKeyDown = (e: KeyboardEvent) => {
     if (e.keyCode === 13) {
@@ -81,7 +143,11 @@ class SandboxItem extends React.Component<Props> {
     }
   };
 
-  handleOnContextMenu = this.selectSandbox;
+  handleOnContextMenu = e => {
+    if (!this.props.selected) {
+      this.selectSandbox(e);
+    }
+  };
   handleOnFocus = e => {
     if (!this.props.selected) {
       this.selectSandbox(e);
@@ -98,82 +164,74 @@ class SandboxItem extends React.Component<Props> {
       connectDragSource,
       selected,
       isDraggingItem,
+      removedAt,
     } = this.props;
 
     const templateInfo = getTemplate(template);
 
     return (
-      <Spring to={style}>
-        {newStyle => (
-          <ContextMenu
+      <ContextMenu
+        style={{
+          ...style,
+          paddingRight: PADDING,
+          boxSizing: 'border-box',
+          opacity: isDraggingItem ? 0 : 1,
+        }}
+        id={id}
+        className="sandbox-item"
+        ref={el => {
+          this.el = el;
+        }}
+        items={this.getContextItems()}
+      >
+        {connectDragSource(
+          <div
             style={{
-              ...newStyle,
-              paddingRight: PADDING,
-              boxSizing: 'border-box',
-              opacity: isDraggingItem ? 0 : 1,
+              padding: 2,
+              borderRadius: 2,
+              backgroundColor: selected ? theme.secondary() : 'transparent',
             }}
-            id={id}
-            className="sandbox-item"
-            ref={el => {
-              this.el = el;
-            }}
-            items={[
-              {
-                title: 'Open Sandbox',
-                action: this.openSandbox,
-              },
-            ]}
           >
-            {connectDragSource(
-              <div
-                style={{
-                  padding: 2,
-                  borderRadius: 2,
-                  backgroundColor: selected ? theme.secondary() : 'transparent',
-                }}
-              >
-                <Container
-                  style={{ outline: 'none' }}
-                  onMouseDown={this.handleMouseDown}
-                  onContextMenu={this.handleOnContextMenu}
-                  onDoubleClick={this.openSandbox}
-                  onFocus={this.handleOnFocus}
-                  onKeyDown={this.handleKeyDown}
-                  role="button"
-                  tabIndex={0}
-                >
-                  <SandboxImageContainer>
-                    <ImageMessage>Generating Screenshot...</ImageMessage>
+            <Container
+              style={{ outline: 'none' }}
+              onMouseDown={this.handleMouseDown}
+              onContextMenu={this.handleOnContextMenu}
+              onDoubleClick={this.openSandbox}
+              onFocus={this.handleOnFocus}
+              onKeyDown={this.handleKeyDown}
+              role="button"
+              tabIndex={0}
+            >
+              <SandboxImageContainer>
+                <ImageMessage>Generating Screenshot...</ImageMessage>
 
-                    <SandboxImage
-                      style={{
-                        backgroundImage: `url(${`/api/v1/sandboxes/new/screenshot.png`})`,
-                      }}
-                    />
-                  </SandboxImageContainer>
-                  <SandboxInfo>
-                    <div
-                      style={{
-                        position: 'absolute',
-                        top: 0,
-                        bottom: 0,
-                        left: 0,
-                        width: 2,
-                        height: '100%',
-                        backgroundColor: templateInfo.color(),
-                      }}
-                    />
-                    <div style={{ flex: 1 }}>
-                      <div>{title}</div>
-                      <SandboxDetails>{details}</SandboxDetails>
-                    </div>
-                  </SandboxInfo>
-                </Container>
-              </div>
-            )}
-          </ContextMenu>
+                <SandboxImage
+                  style={{
+                    backgroundImage: `url(${`/api/v1/sandboxes/${id}/screenshot.png`})`,
+                  }}
+                />
+              </SandboxImageContainer>
+              <SandboxInfo>
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    bottom: 0,
+                    left: 0,
+                    width: 2,
+                    height: '100%',
+                    backgroundColor: templateInfo.color(),
+                  }}
+                />
+                <div style={{ flex: 1 }}>
+                  <div>{title}</div>
+                  <SandboxDetails>{details}</SandboxDetails>
+                </div>
+              </SandboxInfo>
+            </Container>
+          </div>
         )}
-      </Spring>
+      </ContextMenu>
     );
   }
 }
@@ -190,18 +248,25 @@ const cardSource = {
       top: props.style.top,
       id: props.id,
       collectionPath: props.collectionPath,
+      removedAt: props.removedAt,
     };
   },
 
-  endDrag(props) {
+  endDrag(props, monitor) {
     props.setDragging({ isDragging: false });
+
+    const result = monitor.getDropResult();
+
+    if (result && result.delete) {
+      props.deleteSandboxes();
+    }
   },
 };
 
 /**
  * Specifies the props to inject into your component.
  */
-function collect(connect, monitor) {
+function collect(connect) {
   return {
     connectDragSource: connect.dragSource(),
     connectDragPreview: connect.dragPreview(),

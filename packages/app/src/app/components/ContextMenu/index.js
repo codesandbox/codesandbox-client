@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { spring, Motion } from 'react-motion';
+import { Spring } from 'react-spring';
 
 import Portal from '../Portal';
 import { Container, Item } from './elements';
@@ -13,6 +13,7 @@ class ContextMenu extends React.Component {
       show: false,
     };
   }
+
   onContextMenu = event => {
     event.preventDefault();
     this.mousedown = window.addEventListener('mousedown', mousedownEvent => {
@@ -44,12 +45,23 @@ class ContextMenu extends React.Component {
     }
   };
 
-  close = () => {
+  componentWillUnmount() {
+    this.unregisterListeners();
+    this.unmounted = true;
+  }
+
+  unregisterListeners = () => {
     window.removeEventListener('keydown', this.keydown);
     window.removeEventListener('mousedown', this.mousedown);
-    this.setState({
-      show: false,
-    });
+  };
+
+  close = () => {
+    if (!this.unmounted) {
+      this.unregisterListeners();
+      this.setState({
+        show: false,
+      });
+    }
   };
 
   render() {
@@ -66,16 +78,17 @@ class ContextMenu extends React.Component {
                 this.el = el;
               }}
             >
-              <Motion
-                defaultStyle={{ opacity: 0.6 }}
-                style={{ opacity: spring(1) }}
+              <Spring
+                from={{ opacity: 0.6, height: 0 }}
+                to={{ opacity: 1, height: 'auto' }}
               >
-                {({ opacity }) => (
+                {({ opacity, height }) => (
                   <Container
                     style={{
                       left: x,
                       top: y,
                       opacity,
+                      height,
                     }}
                   >
                     <div>
@@ -92,7 +105,7 @@ class ContextMenu extends React.Component {
                     </div>
                   </Container>
                 )}
-              </Motion>
+              </Spring>
             </div>
           </Portal>
         )}

@@ -73,7 +73,7 @@ export const OrderName = styled.span`
 export const Arrow = styled(ArrowDown)`
   transition: 0.3s ease all;
 
-  transform: rotate(${props => (props.isAsc ? -180 : 0)}deg);
+  transform: rotate(${props => (props.isAscending ? -180 : 0)}deg);
   cursor: pointer;
 
   font-size: 1rem;

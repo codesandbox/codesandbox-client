@@ -10,15 +10,12 @@ import Table from 'react-virtualized/dist/commonjs/Table';
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
 import 'react-virtualized/styles.css';
 
-import theme from 'common/theme';
-
 import SandboxItem, { PADDING } from '../SandboxCard';
-
 import Selection, { getBounds } from '../Selection';
-
 import { Content, StyledRow } from './elements';
-
 import DragLayer from '../DragLayer';
+
+import { deleteSandboxes } from '../../queries';
 
 type State = {
   selection: ?{
@@ -71,6 +68,18 @@ class SandboxGrid extends React.Component<*, State> {
     signals.dashboard.sandboxesSelected({
       sandboxIds: additive ? uniq([...selectedSandboxes, ...ids]) : ids,
     });
+  };
+
+  deleteSandboxes = () => {
+    const collectionPaths = uniq(
+      this.props.sandboxes
+        .filter(sandbox => this.selectedSandboxesObject[sandbox.id])
+        .map(s => s.collection.path)
+    );
+    deleteSandboxes(
+      this.props.store.dashboard.selectedSandboxes,
+      collectionPaths
+    );
   };
 
   onMouseDown = (event: MouseEvent) => {
@@ -151,7 +160,7 @@ class SandboxGrid extends React.Component<*, State> {
     }
     const item = sandboxes[index];
 
-    const editedSince = moment.utc(item.updatedAt).fromNow();
+    const editedSince = moment.utc(item.removedAt || item.updatedAt).fromNow();
 
     return (
       <SandboxItem
@@ -161,13 +170,16 @@ class SandboxGrid extends React.Component<*, State> {
         style={style}
         key={key}
         template={item.source.template}
+        removedAt={item.removedAt}
         selected={this.selectedSandboxesObject[item.id]}
+        selectedCount={this.props.store.dashboard.selectedSandboxes.length}
         setSandboxesSelected={this.setSandboxesSelected}
         setDragging={signals.dashboard.dragChanged}
         isDraggingItem={
           this.isDragging && this.selectedSandboxesObject[item.id]
         }
         collectionPath={item.collection.path}
+        deleteSandboxes={this.deleteSandboxes}
       />
     );
   };

@@ -28,6 +28,8 @@ function addSandboxesToCollection(props, item) {
       },
     },
 
+    refetchQueries: ['DeletedSandboxes'],
+
     update: (cache, { data: { addToCollection } }) => {
       // Update new folder
       try {
@@ -48,23 +50,25 @@ function addSandboxesToCollection(props, item) {
         // Means that the cache didn't exist yet, no biggie
       }
 
-      // Update old folders
-      const collectionPath = item.collectionPath;
+      if (!item.removedAt) {
+        // Update old folders
+        const collectionPath = item.collectionPath;
 
-      const oldFolderCacheData = cache.readQuery({
-        query: PATHED_SANDBOXES_CONTENT_QUERY,
-        variables: { path: collectionPath },
-      });
+        const oldFolderCacheData = cache.readQuery({
+          query: PATHED_SANDBOXES_CONTENT_QUERY,
+          variables: { path: collectionPath },
+        });
 
-      oldFolderCacheData.me.collection.sandboxes = oldFolderCacheData.me.collection.sandboxes.filter(
-        x => selectedSandboxes.indexOf(x.id) === -1
-      );
+        oldFolderCacheData.me.collection.sandboxes = oldFolderCacheData.me.collection.sandboxes.filter(
+          x => selectedSandboxes.indexOf(x.id) === -1
+        );
 
-      cache.writeQuery({
-        query: PATHED_SANDBOXES_CONTENT_QUERY,
-        variables: { path: collectionPath },
-        data: oldFolderCacheData,
-      });
+        cache.writeQuery({
+          query: PATHED_SANDBOXES_CONTENT_QUERY,
+          variables: { path: collectionPath },
+          data: oldFolderCacheData,
+        });
+      }
     },
   });
 }
@@ -112,7 +116,7 @@ export const entryTarget = {
     const type = monitor.getItemType();
 
     if (type === 'SANDBOX') {
-      if (source.collectionPath === (props.path || '/')) {
+      if (!source.removedAt && source.collectionPath === (props.path || '/')) {
         return false;
       }
       return true;

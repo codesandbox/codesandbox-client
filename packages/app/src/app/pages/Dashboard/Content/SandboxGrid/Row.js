@@ -56,6 +56,7 @@ export default function defaultRowRenderer({
       role="row"
       style={style}
       id={id}
+      tabIndex="0"
     >
       {columns}
     </div>

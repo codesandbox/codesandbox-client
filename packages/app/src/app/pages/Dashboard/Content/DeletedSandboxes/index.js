@@ -1,13 +1,20 @@
 import React from 'react';
-import gql from 'graphql-tag';
+import { observer, inject } from 'mobx-react';
 import { Query } from 'react-apollo';
 
 import Sandboxes from '../Sandboxes';
 
-import { RECENT_SANDBOXES_CONTENT_QUERY } from '../../queries';
+import { DELETED_SANDBOXES_CONTENT_QUERY } from '../../queries';
 
-export default () => (
-  <Query query={RECENT_SANDBOXES_CONTENT_QUERY}>
+const DeletedSandboxes = ({ store }) => (
+  <Query
+    variables={{
+      orderField: store.dashboard.orderBy.field,
+      orderDirection: store.dashboard.orderBy.order.toUpperCase(),
+    }}
+    fetchPolicy="cache-and-network"
+    query={DELETED_SANDBOXES_CONTENT_QUERY}
+  >
     {({ loading, error, data }) => {
       if (error) {
         return <div>Error!</div>;
@@ -16,10 +23,12 @@ export default () => (
       return (
         <Sandboxes
           isLoading={loading}
-          Header={'Deleted Sandboxes'}
+          Header="Deleted Sandboxes"
           sandboxes={loading ? [] : data.me.sandboxes}
         />
       );
     }}
   </Query>
 );
+
+export default inject('signals', 'store')(observer(DeletedSandboxes));

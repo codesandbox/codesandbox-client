@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { Route, withRouter } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import ReactShow from 'react-show';
 import ContextMenu from 'app/components/ContextMenu';
 import {

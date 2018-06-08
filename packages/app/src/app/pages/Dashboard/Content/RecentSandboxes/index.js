@@ -1,6 +1,5 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
-import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
 
 import Sandboxes from '../Sandboxes';

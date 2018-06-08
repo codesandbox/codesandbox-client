@@ -9,7 +9,7 @@ import DeletedSandboxes from './DeletedSandboxes';
 const Content = () => (
   <React.Fragment>
     <Route path="/dashboard/recents" component={RecentSandboxes} />
-    <Route path="/dashboard/deleted" component={DeletedSandboxes} />
+    <Route path="/dashboard/trash" component={DeletedSandboxes} />
     <Route path="/dashboard/sandboxes/:path*" component={PathedSandboxes} />
   </React.Fragment>
 );

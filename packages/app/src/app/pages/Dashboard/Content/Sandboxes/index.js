@@ -19,7 +19,7 @@ class Content extends React.Component {
         </HeaderContainer>
         {isLoading ? (
           <DelayedAnimation
-            delay={600}
+            delay={0.6}
             style={{
               marginTop: '2rem',
               fontWeight: 600,

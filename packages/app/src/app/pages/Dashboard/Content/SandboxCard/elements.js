@@ -1,7 +1,9 @@
 // @ts-check
 import styled from 'styled-components';
+import fadeIn from 'common/utils/animation/fade-in';
 
 export const Container = styled.div`
+  ${fadeIn(0)};
   background-color: ${props => props.theme.background};
   overflow: hidden;
   border-radius: 2px;
