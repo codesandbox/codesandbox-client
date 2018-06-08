@@ -22,18 +22,16 @@ The imported repository will always stay up to date with your latest commits. Th
 
 We infer sandbox settings based on several files in a repository.
 
-| Sandbox Setting             | Inferred from                                                                  |
-| --------------------------- | ------------------------------------------------------------------------------ |
-| Title                       | `name` field in `package.json`                                                 |
-| Description                 | `description` field in `package.json`                                          |
-| Tags                        | `keywords` field in `package.json`                                             |
-| Dependencies                | `dependencies` and `devDependencies` fields in `package.json`                  |
-| Entry file                  | `main` field in `package.json`. Otherwise defaults to default template setting |
-| Template - Vue              | If there are `.vue` files.                                                     |
-| Template - Preact           | If `package.json` dependencies contains `preact-cli`.                          |
-| Template - React            | If `package.json` dependencies contains `react-scripts`.                       |
-| Template - React-Typescript | If `package.json` dependencies contains `react-scripts-ts`.                    |
-| Template - Svelte           | If `package.json` dependencies contains `svelte`.                              |
+| Sandbox Setting             | Inferred from                                               |
+| --------------------------- | ----------------------------------------------------------- |
+| Title                       | `name` field in `package.json`                              |
+| Description                 | `description` field in `package.json`                       |
+| Tags                        | `keywords` field in `package.json`                          |
+| Template - Vue              | If there are `.vue` files.                                  |
+| Template - Preact           | If `package.json` dependencies contains `preact-cli`.       |
+| Template - React            | If `package.json` dependencies contains `react-scripts`.    |
+| Template - React-Typescript | If `package.json` dependencies contains `react-scripts-ts`. |
+| Template - Svelte           | If `package.json` dependencies contains `svelte`.           |
 
 ### Source
 
