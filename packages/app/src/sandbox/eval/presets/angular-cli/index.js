@@ -14,6 +14,132 @@ import lessTranspiler from '../../transpilers/less';
 
 let polyfillsLoaded = false;
 
+async function addAngularJSONPolyfills(manager) {
+  const { parsed } = manager.configurations['angular-config'];
+
+  const defaultProject = parsed.defaultProject;
+  const project = parsed.projects[defaultProject];
+  const build = project.architect.build;
+
+  if (build.options) {
+    if (project.root && build.options.polyfill) {
+      const polyfillLocation = absolute(
+        join(project.root, build.options.polyfill)
+      );
+      const polyfills = manager.resolveModule(polyfillLocation, '/');
+
+      await manager.transpileModules(polyfills);
+      manager.evaluateModule(polyfills);
+    }
+  }
+}
+
+async function addAngularCLIPolyfills(manager) {
+  const { parsed } = manager.configurations['angular-cli'];
+  if (parsed.apps && parsed.apps[0]) {
+    const app = parsed.apps[0];
+
+    if (app.root && app.polyfills) {
+      const polyfillLocation = absolute(join(app.root, app.polyfills));
+      const polyfills = manager.resolveModule(polyfillLocation, '/');
+
+      await manager.transpileModules(polyfills);
+      manager.evaluateModule(polyfills);
+    }
+  }
+}
+
+async function addAngularJSONResources(manager) {
+  const { parsed } = manager.configurations['angular-config'];
+
+  const defaultProject = parsed.defaultProject;
+  const project = parsed.projects[defaultProject];
+  const build = project.architect.build;
+
+  if (build.options) {
+    const { styles = [], scripts = [] } = build.options;
+
+    /* eslint-disable no-await-in-loop */
+    for (let i = 0; i < styles.length; i++) {
+      const p = styles[i];
+
+      const finalPath = absolute(join(project.root, p));
+
+      const tModule = await manager.resolveTranspiledModuleAsync(
+        finalPath,
+        '/'
+      );
+
+      await tModule.transpile(manager);
+      tModule.setIsEntry(true);
+      tModule.evaluate(manager);
+    }
+
+    const scriptTModules = await Promise.all(
+      scripts.map(async p => {
+        const finalPath = absolute(join(project.root, p));
+        const tModule = await manager.resolveTranspiledModuleAsync(
+          finalPath,
+          '/'
+        );
+        tModule.setIsEntry(true);
+        return tModule.transpile(manager);
+      })
+    );
+
+    scriptTModules.forEach(t => {
+      t.evaluate(manager, { asUMD: true });
+    });
+  }
+}
+
+async function addAngularCLIResources(manager) {
+  const { parsed } = manager.configurations['angular-cli'];
+  if (parsed.apps && parsed.apps[0]) {
+    const app = parsed.apps[0];
+
+    const { styles = [], scripts = [] } = app;
+
+    /* eslint-disable no-await-in-loop */
+    for (let i = 0; i < styles.length; i++) {
+      const p = styles[i];
+      const finalPath = absolute(join(app.root || 'src', p));
+
+      const tModule = await manager.resolveTranspiledModuleAsync(
+        finalPath,
+        '/'
+      );
+
+      await tModule.transpile(manager);
+      tModule.setIsEntry(true);
+      tModule.evaluate(manager);
+    }
+    /* eslint-enable no-await-in-loop */
+
+    const scriptTModules = await Promise.all(
+      scripts.map(async p => {
+        const finalPath = absolute(join(app.root || 'src', p));
+        const tModule = await manager.resolveTranspiledModuleAsync(
+          finalPath,
+          '/'
+        );
+        tModule.setIsEntry(true);
+        return tModule.transpile(manager);
+      })
+    );
+
+    scriptTModules.forEach(t => {
+      t.evaluate(manager, { asUMD: true });
+    });
+
+    if (app.environmentSource && app.environments && app.environments.dev) {
+      manager.preset.setAdditionalAliases({
+        [app.environmentSource]: app.environments.dev,
+      });
+    }
+  }
+}
+
 export default function initialize() {
   const preset = new Preset(
     'angular-cli',
@@ -21,73 +147,24 @@ export default function initialize() {
     {},
     {
       setup: async manager => {
-        const { parsed } = manager.configurations['angular-cli'];
         if (!polyfillsLoaded) {
           const zone = manager.resolveModule('zone.js', '/');
           await manager.transpileModules(zone);
           manager.evaluateModule(zone);
 
-          if (parsed.apps && parsed.apps[0]) {
-            const app = parsed.apps[0];
-
-            if (app.root && app.polyfills) {
-              const polyfillLocation = absolute(join(app.root, app.polyfills));
-              const polyfills = manager.resolveModule(polyfillLocation, '/');
-
-              await manager.transpileModules(polyfills);
-              manager.evaluateModule(polyfills);
-            }
+          if (!manager.configurations['angular-config'].generated) {
+            await addAngularJSONPolyfills(manager);
+          } else {
+            await addAngularCLIPolyfills(manager);
           }
 
           polyfillsLoaded = true;
         }
 
-        if (parsed.apps && parsed.apps[0]) {
-          const app = parsed.apps[0];
-
-          const { styles = [], scripts = [] } = app;
-
-          /* eslint-disable no-await-in-loop */
-          for (let i = 0; i < styles.length; i++) {
-            const p = styles[i];
-            const finalPath = absolute(join(app.root || 'src', p));
-
-            const tModule = await manager.resolveTranspiledModuleAsync(
-              finalPath,
-              '/'
-            );
-
-            await tModule.transpile(manager);
-            tModule.setIsEntry(true);
-            tModule.evaluate(manager);
-          }
-          /* eslint-enable no-await-in-loop */
-
-          const scriptTModules = await Promise.all(
-            scripts.map(async p => {
-              const finalPath = absolute(join(app.root || 'src', p));
-              const tModule = await manager.resolveTranspiledModuleAsync(
-                finalPath,
-                '/'
-              );
-              tModule.setIsEntry(true);
-              return tModule.transpile(manager);
-            })
-          );
-
-          scriptTModules.forEach(t => {
-            t.evaluate(manager, { asUMD: true });
-          });
-
-          if (
-            app.environmentSource &&
-            app.environments &&
-            app.environments.dev
-          ) {
-            manager.preset.setAdditionalAliases({
-              [app.environmentSource]: app.environments.dev,
-            });
-          }
+        if (!manager.configurations['angular-config'].generated) {
+          await addAngularJSONResources(manager);
+        } else {
+          await addAngularCLIResources(manager);
         }
       },
     }
