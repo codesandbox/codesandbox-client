@@ -98,8 +98,6 @@ class AngularTemplate extends Template {
     entries.push('/public/index.html');
     entries.push('/index.html');
 
-    console.log(entries);
-
     return entries;
   }
 }
