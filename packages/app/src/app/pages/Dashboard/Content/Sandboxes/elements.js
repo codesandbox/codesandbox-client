@@ -8,6 +8,7 @@ export const Container = styled.div`
 `;
 
 export const HeaderContainer = styled.div`
+  position: relative;
   font-size: 1.25rem;
   color: white;
 `;

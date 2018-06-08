@@ -2,17 +2,21 @@ import React from 'react';
 import DelayedAnimation from 'app/components/DelayedAnimation';
 
 import SandboxGrid from '../SandboxGrid';
+import Filters from './Filters';
 
 import { Container, HeaderContainer } from './elements';
 
 // eslint-disable-next-line react/prefer-stateless-function
 class Content extends React.Component {
   render() {
-    const { sandboxes, Header, isLoading } = this.props;
+    const { sandboxes, Header, isLoading, possibleTemplates = [] } = this.props;
 
     return (
       <Container>
-        <HeaderContainer>{Header}</HeaderContainer>
+        <HeaderContainer>
+          {Header}
+          <Filters possibleTemplates={possibleTemplates} />
+        </HeaderContainer>
         {isLoading ? (
           <DelayedAnimation
             delay={600}

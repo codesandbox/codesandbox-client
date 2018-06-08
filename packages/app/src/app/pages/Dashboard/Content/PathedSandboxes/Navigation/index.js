@@ -2,12 +2,10 @@
 import React from 'react';
 import { join } from 'path';
 
-import { Container, FilterContainer } from './elements';
+import { Container } from './elements';
 import NavigationLink from './NavigationLink';
-import SortOptions from './SortOptions';
-import FilterOptions from './FilterOptions';
 
-export default ({ path, possibleTemplates }) => {
+export default ({ path }) => {
   const splittedPath = path === '/' ? [''] : path.split('/');
 
   const paths = splittedPath.reduce((bases, next) => {
@@ -31,11 +29,6 @@ export default ({ path, possibleTemplates }) => {
           key={url}
         />
       ))}
-
-      <FilterContainer>
-        <FilterOptions possibleTemplates={possibleTemplates} />
-        <SortOptions />
-      </FilterContainer>
     </Container>
   );
 };

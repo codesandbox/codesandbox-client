@@ -50,7 +50,9 @@ const FilterOptions = ({ possibleTemplates, store, signals }) => {
   const templateMessage =
     templateCount === possibleTemplates.length
       ? 'all templates'
-      : `${templateCount} ${templateCount === 1 ? 'template' : 'templates'}`;
+      : `${Math.max(0, templateCount)} ${
+          templateCount === 1 ? 'template' : 'templates'
+        }`;
 
   return (
     <OverlayComponent Overlay={Overlay}>

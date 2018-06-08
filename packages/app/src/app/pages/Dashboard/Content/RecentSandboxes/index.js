@@ -1,4 +1,5 @@
 import React from 'react';
+import { observer, inject } from 'mobx-react';
 import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
 
@@ -6,8 +7,14 @@ import Sandboxes from '../Sandboxes';
 
 import { RECENT_SANDBOXES_CONTENT_QUERY } from '../../queries';
 
-export default () => (
-  <Query query={RECENT_SANDBOXES_CONTENT_QUERY}>
+const RecentSandboxes = ({ store }) => (
+  <Query
+    variables={{
+      orderField: store.dashboard.orderBy.field,
+      orderDirection: store.dashboard.orderBy.order.toUpperCase(),
+    }}
+    query={RECENT_SANDBOXES_CONTENT_QUERY}
+  >
     {({ loading, error, data }) => {
       if (error) {
         return <div>Error!</div>;
@@ -23,3 +30,5 @@ export default () => (
     }}
   </Query>
 );
+
+export default inject('signals', 'store')(observer(RecentSandboxes));

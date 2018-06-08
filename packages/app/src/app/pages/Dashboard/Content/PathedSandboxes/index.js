@@ -42,12 +42,8 @@ const PathedSandboxes = props => {
             return (
               <Sandboxes
                 isLoading={loading}
-                Header={
-                  <Navigation
-                    possibleTemplates={possibleTemplates}
-                    path={path}
-                  />
-                }
+                possibleTemplates={possibleTemplates}
+                Header={<Navigation path={path} />}
                 sandboxes={orderedSandboxes}
               />
             );

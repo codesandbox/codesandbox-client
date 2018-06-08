@@ -90,9 +90,12 @@ export const PATHED_SANDBOXES_CONTENT_QUERY = gql`
 `;
 
 export const RECENT_SANDBOXES_CONTENT_QUERY = gql`
-  {
+  query sandboxes($orderField: String!, $orderDirection: Direction!) {
     me {
-      sandboxes(limit: 20, orderBy: { field: "updated_at", direction: DESC }) {
+      sandboxes(
+        limit: 20
+        orderBy: { field: $orderField, direction: $orderDirection }
+      ) {
         ...Sandbox
       }
     }
