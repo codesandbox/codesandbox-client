@@ -45,8 +45,6 @@ You can export a local project to CodeSandbox by using our [CLI](https://github.
 
 You can install our CLI by running `npm install -g codesandbox`. Then you can export a project by running `codesandbox {directory}`.
 
-_Note: Our CLI is not updated yet and only supports `create-react-app` projects at this moment_
-
 ### Example usage
 
 ```
