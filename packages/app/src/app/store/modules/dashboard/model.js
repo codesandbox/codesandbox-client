@@ -9,5 +9,6 @@ export default {
   }),
   filters: types.model({
     blacklistedTemplates: types.array(types.string),
+    search: types.string,
   }),
 };

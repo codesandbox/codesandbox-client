@@ -113,6 +113,17 @@ export const RECENT_SANDBOXES_CONTENT_QUERY = gql`
   ${SANDBOX_FRAGMENT}
 `;
 
+export const SEARCH_SANDBOXES_QUERY = gql`
+  query SearchSandboxes {
+    me {
+      sandboxes(orderBy: { field: "updated_at", direction: DESC }) {
+        ...Sandbox
+      }
+    }
+  }
+  ${SANDBOX_FRAGMENT}
+`;
+
 export const DELETED_SANDBOXES_CONTENT_QUERY = gql`
   query DeletedSandboxes($orderField: String!, $orderDirection: Direction!) {
     me {
@@ -134,7 +145,12 @@ export function deleteSandboxes(selectedSandboxes, collectionPaths = null) {
     variables: {
       sandboxIds: selectedSandboxes.toJS(),
     },
-    refetchQueries: ['DeletedSandboxes', 'PathedSandboxes'],
+    refetchQueries: [
+      'DeletedSandboxes',
+      'PathedSandboxes',
+      'RecentSandboxes',
+      'SearchSandboxes',
+    ],
     update: cache => {
       if (collectionPaths) {
         collectionPaths.forEach(collectionPath => {

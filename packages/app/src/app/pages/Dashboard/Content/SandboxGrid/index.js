@@ -26,7 +26,7 @@ type State = {
   },
 };
 
-const BASE_WIDTH = 290;
+const BASE_WIDTH = 300;
 const BASE_HEIGHT = 242;
 const IS_TABLE = false;
 

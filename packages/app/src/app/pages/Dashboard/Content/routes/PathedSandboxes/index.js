@@ -1,15 +1,14 @@
 import React from 'react';
-import gql from 'graphql-tag';
-import { sortBy, uniq } from 'lodash';
+import { uniq } from 'lodash';
 import { inject, observer, Observer } from 'mobx-react';
 import { Query } from 'react-apollo';
 
 import { basename } from 'path';
 
-import Sandboxes from '../Sandboxes';
+import Sandboxes from '../../Sandboxes';
 import Navigation from './Navigation';
 
-import { PATHED_SANDBOXES_CONTENT_QUERY } from '../../queries';
+import { PATHED_SANDBOXES_CONTENT_QUERY } from '../../../queries';
 
 const PathedSandboxes = props => {
   const path = '/' + (props.match.params.path || '');

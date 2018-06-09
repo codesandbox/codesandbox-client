@@ -4,7 +4,7 @@ import { inject, observer } from 'mobx-react';
 import {
   entryTarget,
   collectTarget,
-} from '../../../Sidebar/SandboxesItem/folder-drop-target';
+} from '../../../../Sidebar/SandboxesItem/folder-drop-target';
 import { NavigationLink } from './elements';
 
 const Link = ({ name, path, isOver, splittedPath, i, connectDropTarget }) =>

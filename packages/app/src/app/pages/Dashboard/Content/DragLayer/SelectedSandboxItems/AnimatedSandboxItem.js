@@ -50,25 +50,24 @@ export default class AnimatedSandboxItem extends React.Component<Props> {
         native
         immediate={i === 0 ? el => el !== 'scale' : false}
         from={{ x: this.pos.x, y: this.pos.y, shadow: 2, scale: 1 }}
-        to={{
-          scale,
-          x,
-          y,
-          shadow: isLast ? 16 : 2,
-        }}
+        to={{ scale, x, y, shadow: isLast ? 16 : 2 }}
         key={id}
       >
         {({ x: newX, y: newY, scale: newScale, shadow: newShadow }) => (
           <animated.div
             style={{
               position: 'absolute',
-              boxShadow: newShadow.interpolate(
-                s => `0 ${s}px ${s * 2}px rgba(0, 0, 0, 0.3)`
-              ),
+              willChange: 'transform',
+              boxShadow:
+                this.props.i === 0 || this.props.isLast
+                  ? newShadow.interpolate(
+                      s => `0 ${s}px ${s * 2}px rgba(0, 0, 0, 0.3)`
+                    )
+                  : 'inherit',
               transform: interpolate(
                 [newX, newY, newScale],
                 (xx, yy, zz) =>
-                  `translate3d(${xx}px, ${yy}px, 8px) scale(${zz}, ${zz})`
+                  `translate3d(${xx}px, ${yy}px, 0px) scale3d(${zz}, ${zz}, ${zz})`
               ),
               zIndex: i === 0 ? 20 : 10,
             }}

@@ -2,9 +2,9 @@ import React from 'react';
 import { observer, inject } from 'mobx-react';
 import { Query } from 'react-apollo';
 
-import Sandboxes from '../Sandboxes';
+import Sandboxes from '../../Sandboxes';
 
-import { RECENT_SANDBOXES_CONTENT_QUERY } from '../../queries';
+import { RECENT_SANDBOXES_CONTENT_QUERY } from '../../../queries';
 
 const RecentSandboxes = ({ store }) => (
   <Query

@@ -21,3 +21,7 @@ export const addBlacklistedTemplate = [
 ];
 
 export const removeBlacklistedTemplate = [actions.removeBlacklistedTemplate];
+
+export const changeSearch = [
+  set(state`dashboard.filters.search`, props`search`),
+];

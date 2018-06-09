@@ -27,7 +27,7 @@ type Props = {
   selected: boolean,
   setSandboxesSelected: (ids: string[], additive?: boolean) => void,
   deleteSandboxes: () => void,
-  collectionPath: string,
+  collectionPath: string, // eslint-disable-line react/no-unused-prop-types
 };
 
 export const PADDING = 32;
@@ -164,7 +164,6 @@ class SandboxItem extends React.Component<Props> {
       connectDragSource,
       selected,
       isDraggingItem,
-      removedAt,
     } = this.props;
 
     const templateInfo = getTemplate(template);

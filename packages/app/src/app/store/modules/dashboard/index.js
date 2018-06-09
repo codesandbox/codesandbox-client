@@ -14,6 +14,7 @@ export default Module({
     },
     filters: {
       blacklistedTemplates: [],
+      search: '',
     },
     isDragging: false,
   },
@@ -25,5 +26,6 @@ export default Module({
     orderByChanged: sequences.setOrderBy,
     blacklistedTemplateAdded: sequences.addBlacklistedTemplate,
     blacklistedTemplateRemoved: sequences.removeBlacklistedTemplate,
+    searchChanged: sequences.changeSearch,
   },
 });

@@ -1,4 +1,6 @@
 import React from 'react';
+import history from 'app/utils/history';
+import { inject, observer } from 'mobx-react';
 import Input from 'common/components/Input';
 
 import TimeIcon from 'react-icons/lib/md/access-time';
@@ -8,18 +10,34 @@ import SandboxesItem from './SandboxesItem';
 import TrashItem from './TrashItem';
 import { Items, CategoryHeader } from './elements';
 
-export default class Sidebar extends React.Component {
+class Sidebar extends React.Component {
   shouldComponentUpdate() {
     // Without this the app won't update on route changes, we've tried using
     // `withRouter`, but it caused the app to remount on every route change.
     return true;
   }
 
+  handleSearchFocus = () => {
+    history.push('/dashboard/search');
+  };
+
+  handleSearchChange = e => {
+    this.props.signals.dashboard.searchChanged({ search: e.target.value });
+  };
+
   render() {
+    const { store } = this.props;
+
     return (
       <div style={{ width: 275, overflowY: 'auto' }}>
         <div style={{ margin: '0 1rem' }}>
-          <Input block placeholder="Filter Sandboxes" />
+          <Input
+            onFocus={this.handleSearchFocus}
+            block
+            value={store.dashboard.filters.search}
+            onChange={this.handleSearchChange}
+            placeholder="Filter Sandboxes"
+          />
         </div>
 
         <Items>
@@ -32,3 +50,5 @@ export default class Sidebar extends React.Component {
     );
   }
 }
+
+export default inject('signals', 'store')(observer(Sidebar));
