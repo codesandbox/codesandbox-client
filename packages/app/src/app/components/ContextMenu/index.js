@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Spring } from 'react-spring';
 
 import Portal from '../Portal';
-import { Container, Item } from './elements';
+import { Container, Item, ItemContainer } from './elements';
 
 class ContextMenu extends React.Component {
   constructor(props) {
@@ -68,6 +68,23 @@ class ContextMenu extends React.Component {
     const { children, items, ...props } = this.props;
     const { show, x, y } = this.state;
 
+    const mapFunction = (item, i) => {
+      if (Array.isArray(item)) {
+        return <ItemContainer key={i}>{item.map(mapFunction)}</ItemContainer>;
+      }
+
+      return (
+        <Item
+          key={item.title}
+          color={item.color}
+          onClick={() => item.action() && this.close()}
+        >
+          {item.icon && <item.icon />}
+          {item.title}
+        </Item>
+      );
+    };
+
     return (
       <div {...props} onContextMenu={this.onContextMenu}>
         {children}
@@ -91,18 +108,7 @@ class ContextMenu extends React.Component {
                       height,
                     }}
                   >
-                    <div>
-                      {items.map(item => (
-                        <Item
-                          key={item.title}
-                          color={item.color}
-                          onClick={() => item.action() && this.close()}
-                        >
-                          {item.icon && <item.icon />}
-                          {item.title}
-                        </Item>
-                      ))}
-                    </div>
+                    {items.map(mapFunction)}
                   </Container>
                 )}
               </Spring>

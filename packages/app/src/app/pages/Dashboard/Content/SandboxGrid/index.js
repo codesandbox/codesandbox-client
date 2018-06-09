@@ -15,7 +15,7 @@ import Selection, { getBounds } from '../Selection';
 import { Content, StyledRow } from './elements';
 import DragLayer from '../DragLayer';
 
-import { deleteSandboxes } from '../../queries';
+import { deleteSandboxes, permanentlyDeleteSandboxes } from '../../queries';
 
 type State = {
   selection: ?{
@@ -80,6 +80,10 @@ class SandboxGrid extends React.Component<*, State> {
       this.props.store.dashboard.selectedSandboxes,
       collectionPaths
     );
+  };
+
+  permanentlyDeleteSandboxes = () => {
+    permanentlyDeleteSandboxes(this.props.store.dashboard.selectedSandboxes);
   };
 
   onMouseDown = (event: MouseEvent) => {
@@ -180,6 +184,7 @@ class SandboxGrid extends React.Component<*, State> {
         }
         collectionPath={item.collection.path}
         deleteSandboxes={this.deleteSandboxes}
+        permanentlyDeleteSandboxes={this.permanentlyDeleteSandboxes}
       />
     );
   };

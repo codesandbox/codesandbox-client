@@ -6,10 +6,14 @@ import { sandboxUrl } from 'common/utils/url-generator';
 import TrashIcon from 'react-icons/lib/md/delete';
 import { DragSource } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
+import { Mutation } from 'react-apollo';
 
+import Input from 'common/components/Input';
 import ContextMenu from 'app/components/ContextMenu';
 import getTemplate from 'common/templates';
 import theme from 'common/theme';
+
+import { RENAME_SANDBOX_MUTATION } from '../../queries';
 
 import {
   Container,
@@ -27,6 +31,7 @@ type Props = {
   selected: boolean,
   setSandboxesSelected: (ids: string[], additive?: boolean) => void,
   deleteSandboxes: () => void,
+  permanentlyDeleteSandboxes: () => void,
   collectionPath: string, // eslint-disable-line react/no-unused-prop-types
 };
 
@@ -34,6 +39,18 @@ export const PADDING = 32;
 
 class SandboxItem extends React.Component<Props> {
   el: HTMLDivElement;
+
+  state = {
+    renamingSandbox: false,
+  };
+
+  getSandboxFromProps = () => ({
+    id: this.props.id,
+    title: this.props.title,
+    source: {
+      template: this.props.template.name,
+    },
+  });
 
   componentDidMount() {
     if (this.props.selected) {
@@ -58,8 +75,14 @@ class SandboxItem extends React.Component<Props> {
     if (this.props.removedAt) {
       return [
         {
-          title: 'Delete Permanently',
-          action: this.deletePermanently,
+          title:
+            this.props.selectedCount > 1
+              ? `Delete ${this.props.selectedCount} Sandboxes Permanently`
+              : 'Delete Permanently',
+          action: () => {
+            this.props.permanentlyDeleteSandboxes();
+            return true;
+          },
           icon: TrashIcon,
           color: theme.red.darken(0.2)(),
         },
@@ -82,26 +105,37 @@ class SandboxItem extends React.Component<Props> {
     }
 
     return [
-      {
-        title: 'Open Sandbox',
-        action: this.openSandbox,
-      },
-      {
-        title: 'Open Sandbox in new tab',
-        action: () => {
-          this.openSandbox(true);
-          return true;
+      [
+        {
+          title: 'Open Sandbox',
+          action: this.openSandbox,
         },
-      },
-      {
-        title: `Move to Trash`,
-        action: () => {
-          this.props.deleteSandboxes();
-          return true;
+        {
+          title: 'Open Sandbox in new tab',
+          action: () => {
+            this.openSandbox(true);
+            return true;
+          },
         },
-        icon: TrashIcon,
-        color: theme.red.darken(0.2)(),
-      },
+        {
+          title: `Move to Trash`,
+          action: () => {
+            this.props.deleteSandboxes();
+            return true;
+          },
+          icon: TrashIcon,
+          color: theme.red.darken(0.2)(),
+        },
+      ],
+      [
+        {
+          title: `Rename Sandbox`,
+          action: () => {
+            this.setState({ renamingSandbox: true });
+            return true;
+          },
+        },
+      ],
     ];
   };
 
@@ -124,7 +158,7 @@ class SandboxItem extends React.Component<Props> {
     // Git sandboxes aren't shown here anyway
     const url = sandboxUrl({ id: this.props.id });
     if (!this.props.removedAt) {
-      if (openNewWindow) {
+      if (openNewWindow === true) {
         window.open(url, '_blank');
       } else {
         history.push(url);
@@ -133,8 +167,6 @@ class SandboxItem extends React.Component<Props> {
 
     return true;
   };
-
-  deletePermanently = () => {};
 
   handleKeyDown = (e: KeyboardEvent) => {
     if (e.keyCode === 13) {
@@ -178,9 +210,6 @@ class SandboxItem extends React.Component<Props> {
         }}
         id={id}
         className="sandbox-item"
-        ref={el => {
-          this.el = el;
-        }}
         items={this.getContextItems()}
       >
         {connectDragSource(
@@ -198,6 +227,9 @@ class SandboxItem extends React.Component<Props> {
               onDoubleClick={this.openSandbox}
               onFocus={this.handleOnFocus}
               onKeyDown={this.handleKeyDown}
+              innerRef={el => {
+                this.el = el;
+              }}
               role="button"
               tabIndex={0}
             >
@@ -223,7 +255,66 @@ class SandboxItem extends React.Component<Props> {
                   }}
                 />
                 <div style={{ flex: 1 }}>
-                  <div>{title}</div>
+                  <div>
+                    {this.state.renamingSandbox ? (
+                      <Mutation mutation={RENAME_SANDBOX_MUTATION}>
+                        {mutate => {
+                          let input = null;
+
+                          const saveName = () => {
+                            this.setState({ renamingSandbox: false });
+
+                            mutate({
+                              variables: {
+                                title: input.value,
+                                id: this.props.id,
+                              },
+                              optimisticResponse: {
+                                __typename: 'Mutation',
+                                renameSandbox: {
+                                  __typename: 'Sandbox',
+                                  id: this.props.id,
+                                  title: input.value,
+                                },
+                              },
+                            });
+                          };
+
+                          return (
+                            <Input
+                              innerRef={node => {
+                                input = node;
+                                if (node) {
+                                  node.select();
+                                }
+                              }}
+                              onKeyDown={e => {
+                                if (e.keyCode === 13) {
+                                  // Enter
+                                  e.preventDefault();
+                                  e.stopPropagation();
+
+                                  saveName();
+                                } else if (e.keyCode === 27) {
+                                  // Escape
+                                  e.preventDefault();
+                                  e.stopPropagation();
+
+                                  this.setState({ renamingSandbox: false });
+                                }
+                              }}
+                              onBlur={saveName}
+                              block
+                              defaultValue={title}
+                              small
+                            />
+                          );
+                        }}
+                      </Mutation>
+                    ) : (
+                      title
+                    )}
+                  </div>
                   <SandboxDetails>{details}</SandboxDetails>
                 </div>
               </SandboxInfo>

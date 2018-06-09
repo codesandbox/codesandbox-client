@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
-import { DragDropContext } from 'react-dnd';
 import QuickActions from 'app/pages/Sandbox/QuickActions';
 
 import Navigation from 'app/pages/common/Navigation';
@@ -12,7 +11,6 @@ import Padding from 'common/components/spacing/Padding';
 import Skeleton from 'app/components/Skeleton';
 
 import Editor from './Editor';
-import HTML5Backend from '../common/HTML5BackendWithFolderSupport';
 
 class SandboxPage extends React.Component {
   componentWillMount() {
@@ -155,6 +153,4 @@ class SandboxPage extends React.Component {
   }
 }
 
-export default inject('signals', 'store')(
-  DragDropContext(HTML5Backend)(observer(SandboxPage))
-);
+export default inject('signals', 'store')(observer(SandboxPage));

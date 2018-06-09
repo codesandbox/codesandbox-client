@@ -84,6 +84,24 @@ export const DELETE_SANDBOXES_MUTATION = gql`
   ${SANDBOX_FRAGMENT}
 `;
 
+export const RENAME_SANDBOX_MUTATION = gql`
+  mutation RenameSandbox($id: [ID]!, $title: String!) {
+    renameSandbox(id: $id, title: $title) {
+      ...Sandbox
+    }
+  }
+  ${SANDBOX_FRAGMENT}
+`;
+
+export const PERMANENTLY_DELETE_SANDBOXES_MUTATION = gql`
+  mutation PermanentlyDeleteSandboxes($sandboxIds: [ID]!) {
+    permanentlyDeleteSandboxes(sandboxIds: $sandboxIds) {
+      ...Sandbox
+    }
+  }
+  ${SANDBOX_FRAGMENT}
+`;
+
 export const PATHED_SANDBOXES_CONTENT_QUERY = gql`
   query PathedSandboxes($path: String!) {
     me {
@@ -125,12 +143,12 @@ export const SEARCH_SANDBOXES_QUERY = gql`
 `;
 
 export const DELETED_SANDBOXES_CONTENT_QUERY = gql`
-  query DeletedSandboxes($orderField: String!, $orderDirection: Direction!) {
+  query DeletedSandboxes {
     me {
       sandboxes(
         showDeleted: true
-        orderBy: { field: $orderField, direction: $orderDirection }
-      ) @connection(key: "deletedSandboxes") {
+        orderBy: { field: "updated_at", direction: DESC }
+      ) {
         ...Sandbox
         removedAt
       }
@@ -138,6 +156,33 @@ export const DELETED_SANDBOXES_CONTENT_QUERY = gql`
   }
   ${SANDBOX_FRAGMENT}
 `;
+
+export function permanentlyDeleteSandboxes(selectedSandboxes) {
+  client.mutate({
+    mutation: PERMANENTLY_DELETE_SANDBOXES_MUTATION,
+    variables: {
+      sandboxIds: selectedSandboxes.toJS(),
+    },
+    update: cache => {
+      try {
+        const oldDeleteCache = cache.readQuery({
+          query: DELETED_SANDBOXES_CONTENT_QUERY,
+        });
+
+        oldDeleteCache.me.sandboxes = oldDeleteCache.me.sandboxes.filter(
+          x => selectedSandboxes.indexOf(x.id) === -1
+        );
+
+        cache.writeQuery({
+          query: DELETED_SANDBOXES_CONTENT_QUERY,
+          data: oldDeleteCache,
+        });
+      } catch (e) {
+        // cache doesn't exist, no biggie!
+      }
+    },
+  });
+}
 
 export function deleteSandboxes(selectedSandboxes, collectionPaths = null) {
   client.mutate({

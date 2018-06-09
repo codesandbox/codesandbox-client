@@ -13,7 +13,7 @@ import { PATHED_SANDBOXES_CONTENT_QUERY } from '../../../queries';
 const PathedSandboxes = props => {
   const path = '/' + (props.match.params.path || '');
 
-  document.title = `CodeSandbox - ${basename(path) || 'Dashboard'}`;
+  document.title = `${basename(path) || 'Dashboard'} - CodeSandbox`;
 
   return (
     <Query query={PATHED_SANDBOXES_CONTENT_QUERY} variables={{ path }}>
