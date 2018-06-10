@@ -15,33 +15,35 @@ class ContextMenu extends React.Component {
   }
 
   onContextMenu = event => {
-    event.preventDefault();
-    this.mousedown = window.addEventListener('mousedown', mousedownEvent => {
-      const { show } = this.state;
+    if (!this.unmounted) {
+      event.preventDefault();
+      this.mousedown = window.addEventListener('mousedown', mousedownEvent => {
+        const { show } = this.state;
 
-      if (show && this.el) {
-        if (!this.el.contains(mousedownEvent.target)) {
+        if (show && this.el) {
+          if (!this.el.contains(mousedownEvent.target)) {
+            this.close();
+          }
+        }
+      });
+
+      this.keydown = window.addEventListener('keydown', keydownEvent => {
+        const { show } = this.state;
+        if (keydownEvent.keyCode === 27 && show) {
+          // Escape
           this.close();
         }
+      });
+
+      this.setState({
+        show: true,
+        x: event.clientX + 10,
+        y: event.clientY + 10,
+      });
+
+      if (this.props.onContextMenu) {
+        this.props.onContextMenu(event);
       }
-    });
-
-    this.keydown = window.addEventListener('keydown', keydownEvent => {
-      const { show } = this.state;
-      if (keydownEvent.keyCode === 27 && show) {
-        // Escape
-        this.close();
-      }
-    });
-
-    this.setState({
-      show: true,
-      x: event.clientX + 10,
-      y: event.clientY + 10,
-    });
-
-    if (this.props.onContextMenu) {
-      this.props.onContextMenu(event);
     }
   };
 
@@ -65,6 +67,10 @@ class ContextMenu extends React.Component {
   };
 
   render() {
+    if (this.unmounted) {
+      return null;
+    }
+
     const { children, items, ...props } = this.props;
     const { show, x, y } = this.state;
 

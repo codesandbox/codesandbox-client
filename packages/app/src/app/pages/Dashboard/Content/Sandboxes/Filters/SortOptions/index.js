@@ -69,7 +69,10 @@ class SortOptions extends React.Component {
           <Container hideOrder={hideOrder}>
             Sort by{' '}
             <OrderName onClick={open}>{FIELD_TO_NAME[field]} </OrderName>
-            <Arrow onClick={this.toggleSort} isAscending={order === 'asc'} />
+            <Arrow
+              onClick={this.toggleSort}
+              style={{ transform: `rotate(${order === 'asc' ? -180 : 0}deg)` }}
+            />
           </Container>
         )}
       </OverlayComponent>

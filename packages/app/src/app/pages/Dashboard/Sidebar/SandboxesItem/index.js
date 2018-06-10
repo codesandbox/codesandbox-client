@@ -27,10 +27,6 @@ class SandboxesItem extends React.Component {
     creatingDirectory: false,
   };
 
-  defaultProps = {
-    path: '/',
-  };
-
   render() {
     const { isOver, canDrop, connectDropTarget } = this.props;
 
@@ -75,8 +71,6 @@ class SandboxesItem extends React.Component {
                 if (error) {
                   return <div>Error!</div>;
                 }
-
-                console.log(data);
 
                 const folders = data.me.collections;
                 const foldersByPath = {};

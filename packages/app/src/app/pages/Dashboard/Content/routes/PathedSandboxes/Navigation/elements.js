@@ -18,7 +18,7 @@ export const NavigationLink = styled(Link)`
   }
 
   ${props =>
-    props.isLast
+    props.last
       ? css`
           color: white;
         `

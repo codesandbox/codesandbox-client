@@ -160,7 +160,7 @@ class SandboxGrid extends React.Component<*, State> {
     const { sandboxes, signals } = this.props;
 
     if (index === sandboxes.length && this.props.ExtraElement) {
-      return <this.props.ExtraElement style={style} />;
+      return <this.props.ExtraElement key="extra" style={style} />;
     }
 
     if (index > sandboxes.length - 1) {
