@@ -1,11 +1,11 @@
 import React from 'react';
-import { Spring, animated } from 'react-spring';
+import { Spring } from 'react-spring';
 import { inject } from 'mobx-react';
 import { ThemeProvider } from 'styled-components';
 
 import theme from 'common/theme';
 import Portal from 'app/components/Portal';
-import { Container } from './elements';
+import { Container, AnimatedModalContainer } from './elements';
 
 import Modal from './Modal';
 
@@ -62,6 +62,7 @@ class CreateNewSandbox extends React.PureComponent {
         left: toRects.x,
         height: toRects.height,
         width: toRects.width,
+        overflow: 'auto',
       },
       {
         position: 'fixed',
@@ -69,21 +70,12 @@ class CreateNewSandbox extends React.PureComponent {
         top: fromRects.y,
         width: fromRects.width,
         height: fromRects.height,
+        overflow: 'hidden',
       },
     ];
 
     if (!this.state.closingCreating) {
       usedRects = usedRects.reverse();
-    }
-
-    if (this.state.forking) {
-      usedRects[1] = {
-        position: 'fixed',
-        left: 0,
-        top: 0,
-        width: 2000,
-        height: 2000,
-      };
     }
 
     return (
@@ -93,14 +85,27 @@ class CreateNewSandbox extends React.PureComponent {
             <ThemeProvider theme={theme}>
               <Spring native from={usedRects[0]} to={usedRects[1]}>
                 {newStyle => (
-                  <animated.div style={newStyle}>
+                  <AnimatedModalContainer
+                    forking={this.state.forking}
+                    style={
+                      this.state.forking
+                        ? {
+                            position: 'fixed',
+                            left: 0,
+                            top: 0,
+                            right: 0,
+                            bottom: 0,
+                          }
+                        : newStyle
+                    }
+                  >
                     <Modal
                       width={toRects.width}
                       forking={this.state.forking}
                       closing={this.state.closingCreating}
                       createSandbox={this.createSandbox}
                     />
-                  </animated.div>
+                  </AnimatedModalContainer>
                 )}
               </Spring>
             </ThemeProvider>
@@ -112,11 +117,20 @@ class CreateNewSandbox extends React.PureComponent {
             this.ref = node;
           }}
           style={style}
-          onClick={this.handleClick}
-          tabIndex="0"
-          role="button"
         >
-          <Container hide={this.state.creating}>Create Sandbox</Container>
+          <Container
+            onClick={this.handleClick}
+            tabIndex="0"
+            role="button"
+            hide={this.state.creating}
+            onKeyDown={e => {
+              if (e.keyCode === 13) {
+                this.handleClick();
+              }
+            }}
+          >
+            Create Sandbox
+          </Container>
           <Portal>
             <div
               style={{

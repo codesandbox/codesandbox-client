@@ -38,6 +38,7 @@ class SortOptions extends React.Component {
 
   render() {
     const { field, order } = this.props.store.dashboard.orderBy;
+    const { hideOrder } = this.props;
 
     const Overlay = style => (
       <OverlayContainer style={style}>
@@ -65,7 +66,7 @@ class SortOptions extends React.Component {
     return (
       <OverlayComponent Overlay={Overlay}>
         {open => (
-          <Container>
+          <Container hideOrder={hideOrder}>
             Sort by{' '}
             <OrderName onClick={open}>{FIELD_TO_NAME[field]} </OrderName>
             <Arrow onClick={this.toggleSort} isAscending={order === 'asc'} />

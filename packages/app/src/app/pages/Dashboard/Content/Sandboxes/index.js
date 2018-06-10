@@ -14,6 +14,7 @@ class Content extends React.Component {
       Header,
       isLoading,
       ExtraElement,
+      hideOrder,
       possibleTemplates = [],
     } = this.props;
 
@@ -21,7 +22,10 @@ class Content extends React.Component {
       <Container>
         <HeaderContainer>
           {Header}
-          <Filters possibleTemplates={possibleTemplates} />
+          <Filters
+            hideOrder={hideOrder}
+            possibleTemplates={possibleTemplates}
+          />
         </HeaderContainer>
         {isLoading ? (
           <DelayedAnimation

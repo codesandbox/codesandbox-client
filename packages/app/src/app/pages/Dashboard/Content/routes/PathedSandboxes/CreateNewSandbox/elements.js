@@ -1,4 +1,5 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+import { animated } from 'react-spring';
 
 export const Container = styled.div`
   transition: 0.3s ease background-color;
@@ -16,12 +17,23 @@ export const Container = styled.div`
   background-color: ${props => props.theme.secondary.clearer(0.9)};
   border-style: dashed;
   overflow: hidden;
+  outline: none;
 
   cursor: pointer;
 
   ${props => props.hide && 'opacity: 0'};
 
-  &:hover {
+  &:hover,
+  &:focus {
     background-color: ${props => props.theme.secondary.clearer(0.8)};
   }
+`;
+
+export const AnimatedModalContainer = styled(animated.div)`
+  ${props =>
+    props.forking &&
+    css`
+      transition: 0.15s ease all;
+      position: fixed;
+    `};
 `;

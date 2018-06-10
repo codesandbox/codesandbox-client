@@ -5,9 +5,9 @@ import FilterOptions from './FilterOptions';
 
 import { Container } from './elements';
 
-export default ({ possibleTemplates }) => (
+export default ({ possibleTemplates, hideOrder }) => (
   <Container>
     <FilterOptions possibleTemplates={possibleTemplates} />
-    <SortOptions />
+    <SortOptions hideOrder={hideOrder} />
   </Container>
 );

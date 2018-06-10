@@ -33,10 +33,18 @@ export const IconContainer = styled.div`
 `;
 
 export const Container = styled.div`
+  transition: 0.3s ease opacity;
   color: rgba(255, 255, 255, 0.6);
   font-size: 0.875rem;
   width: 175px;
   text-align: right;
+
+  ${props =>
+    props.hideOrder &&
+    css`
+      opacity: 0.5;
+      pointer-events: none;
+    `};
 `;
 
 export const OverlayContainer = styled.div`

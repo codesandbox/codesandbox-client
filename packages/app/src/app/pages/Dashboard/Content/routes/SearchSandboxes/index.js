@@ -55,13 +55,16 @@ const SearchSandboxes = ({ store }) => (
           let possibleTemplates = [];
           if (sandboxes) {
             possibleTemplates = uniq(sandboxes.map(x => x.source.template));
-            sandboxes = store.dashboard.getFilteredSandboxes(sandboxes);
+            if (!search) {
+              sandboxes = store.dashboard.getFilteredSandboxes(sandboxes);
+            }
           }
 
           return (
             <Sandboxes
               isLoading={loading}
               Header={Header}
+              hideOrder={!!search}
               sandboxes={loading ? [] : sandboxes}
               possibleTemplates={possibleTemplates}
             />

@@ -7342,6 +7342,10 @@ fuse.js@^3.0.1, fuse.js@^3.2.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/fuse.js/-/fuse.js-3.2.0.tgz#f0448e8069855bf2a3e683cdc1d320e7e2a07ef4"
 
+fuse.js@^3.2.1:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/fuse.js/-/fuse.js-3.2.1.tgz#6320cb94ce56ec9755c89ade775bcdbb0358d425"
+
 gatsby-1-config-css-modules@^1.0.11:
   version "1.0.11"
   resolved "https://registry.yarnpkg.com/gatsby-1-config-css-modules/-/gatsby-1-config-css-modules-1.0.11.tgz#5a102c6b11f9a6963b3892ecc959511e1688e525"

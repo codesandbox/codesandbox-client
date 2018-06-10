@@ -186,6 +186,11 @@ class SandboxItem extends React.Component<Props> {
       this.selectSandbox(e);
     }
   };
+  handleOnBlur = () => {
+    if (this.props.selected) {
+      this.props.setSandboxesSelected([]);
+    }
+  };
 
   render() {
     const {
@@ -226,6 +231,7 @@ class SandboxItem extends React.Component<Props> {
               onMouseDown={this.handleMouseDown}
               onContextMenu={this.handleOnContextMenu}
               onDoubleClick={this.openSandbox}
+              onBlur={this.handleOnBlur}
               onFocus={this.handleOnFocus}
               onKeyDown={this.handleKeyDown}
               innerRef={el => {
