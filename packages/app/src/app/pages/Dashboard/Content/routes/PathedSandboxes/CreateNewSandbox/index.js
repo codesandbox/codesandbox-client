@@ -18,10 +18,12 @@ class CreateNewSandbox extends React.PureComponent {
 
   componentDidMount() {
     document.addEventListener('mousedown', this.mouseListener);
+    document.addEventListener('keydown', this.keydownListener);
   }
 
   componentWillUnmount() {
     document.removeEventListener('mousedown', this.mouseListener);
+    document.removeEventListener('keydown', this.keydownListener);
   }
 
   createSandbox = template => {
@@ -35,13 +37,25 @@ class CreateNewSandbox extends React.PureComponent {
     });
   };
 
+  close = () => {
+    this.setState({ closingCreating: true }, () => {
+      setTimeout(() => {
+        this.setState({ creating: false, closingCreating: false });
+      }, 500);
+    });
+  };
+
   mouseListener = e => {
     if (!e.defaultPrevented && this.state.creating) {
-      this.setState({ closingCreating: true }, () => {
-        setTimeout(() => {
-          this.setState({ creating: false, closingCreating: false });
-        }, 500);
-      });
+      this.close();
+    }
+  };
+
+  keydownListener = e => {
+    if (e.keyCode === 27) {
+      // Escape
+
+      this.close();
     }
   };
 

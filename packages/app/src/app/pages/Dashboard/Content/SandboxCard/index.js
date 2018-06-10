@@ -3,7 +3,6 @@
 import React from 'react';
 import history from 'app/utils/history';
 import { sandboxUrl } from 'common/utils/url-generator';
-import TrashIcon from 'react-icons/lib/md/delete';
 import { DragSource } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import { Mutation } from 'react-apollo';
@@ -34,6 +33,7 @@ type Props = {
   permanentlyDeleteSandboxes: () => void,
   collectionPath: string, // eslint-disable-line react/no-unused-prop-types
   sandbox: Object,
+  page: ?string,
 };
 
 export const PADDING = 32;
@@ -44,14 +44,6 @@ class SandboxItem extends React.Component<Props> {
   state = {
     renamingSandbox: false,
   };
-
-  getSandboxFromProps = () => ({
-    id: this.props.id,
-    title: this.props.title,
-    source: {
-      template: this.props.template.name,
-    },
-  });
 
   componentDidMount() {
     if (this.props.selected) {
@@ -84,7 +76,6 @@ class SandboxItem extends React.Component<Props> {
             this.props.permanentlyDeleteSandboxes();
             return true;
           },
-          icon: TrashIcon,
           color: theme.red.darken(0.2)(),
         },
       ];
@@ -99,13 +90,20 @@ class SandboxItem extends React.Component<Props> {
             this.props.deleteSandboxes();
             return true;
           },
-          icon: TrashIcon,
           color: theme.red.darken(0.2)(),
         },
       ];
     }
 
     return [
+      this.props.page === 'recents' && [
+        {
+          title: 'Show In Folder',
+          action: () => {
+            history.push(`/dashboard/sandboxes${this.props.collectionPath}`);
+          },
+        },
+      ],
       [
         {
           title: 'Open Sandbox',
@@ -124,7 +122,6 @@ class SandboxItem extends React.Component<Props> {
             this.props.deleteSandboxes();
             return true;
           },
-          icon: TrashIcon,
           color: theme.red.darken(0.2)(),
         },
       ],
@@ -137,7 +134,7 @@ class SandboxItem extends React.Component<Props> {
           },
         },
       ],
-    ];
+    ].filter(Boolean);
   };
 
   handleMouseDown = e => {

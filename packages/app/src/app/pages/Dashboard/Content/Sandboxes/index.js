@@ -16,6 +16,7 @@ class Content extends React.Component {
       ExtraElement,
       hideOrder,
       possibleTemplates = [],
+      page,
     } = this.props;
 
     return (
@@ -39,7 +40,11 @@ class Content extends React.Component {
             Fetching Sandboxes...
           </DelayedAnimation>
         ) : (
-          <SandboxGrid ExtraElement={ExtraElement} sandboxes={sandboxes} />
+          <SandboxGrid
+            page={page}
+            ExtraElement={ExtraElement}
+            sandboxes={sandboxes}
+          />
         )}
       </Container>
     );

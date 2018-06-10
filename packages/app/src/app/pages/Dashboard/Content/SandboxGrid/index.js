@@ -190,6 +190,7 @@ class SandboxGrid extends React.Component<*, State> {
         collectionPath={item.collection.path}
         deleteSandboxes={this.deleteSandboxes}
         permanentlyDeleteSandboxes={this.permanentlyDeleteSandboxes}
+        page={this.props.page}
       />
     );
   };

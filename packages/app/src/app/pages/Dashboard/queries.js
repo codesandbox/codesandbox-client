@@ -15,6 +15,7 @@ const SANDBOX_FRAGMENT = gql`
     description
     insertedAt
     updatedAt
+    privacy
 
     source {
       template

@@ -24,6 +24,7 @@ const RecentSandboxes = ({ store }) => (
           isLoading={loading}
           Header={'Recent Sandboxes'}
           sandboxes={loading ? [] : data.me.sandboxes}
+          page="recents"
         />
       );
     }}
