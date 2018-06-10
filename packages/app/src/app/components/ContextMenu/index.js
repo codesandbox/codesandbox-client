@@ -77,7 +77,15 @@ class ContextMenu extends React.Component {
         <Item
           key={item.title}
           color={item.color}
-          onClick={() => item.action() && this.close()}
+          onMouseDown={e => {
+            e.preventDefault();
+          }}
+          onClick={e => {
+            if (item.action()) {
+              e.preventDefault();
+              this.close();
+            }
+          }}
         >
           {item.icon && <item.icon />}
           {item.title}

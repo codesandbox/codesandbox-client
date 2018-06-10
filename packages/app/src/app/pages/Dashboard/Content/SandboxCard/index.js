@@ -85,7 +85,7 @@ class SandboxItem extends React.Component<Props> {
     if (this.props.selectedCount > 1) {
       return [
         {
-          title: `Move ${selectedCount} sandboxes to Trash`,
+          title: `Move ${selectedCount} Sandboxes To Trash`,
           action: () => {
             this.props.deleteSandboxes();
             return true;
@@ -116,14 +116,6 @@ class SandboxItem extends React.Component<Props> {
             return true;
           },
         },
-        {
-          title: `Move to Trash`,
-          action: () => {
-            this.props.deleteSandboxes();
-            return true;
-          },
-          color: theme.red.darken(0.2)(),
-        },
       ],
       [
         {
@@ -132,6 +124,14 @@ class SandboxItem extends React.Component<Props> {
             this.setState({ renamingSandbox: true });
             return true;
           },
+        },
+        {
+          title: `Move to Trash`,
+          action: () => {
+            this.props.deleteSandboxes();
+            return true;
+          },
+          color: theme.red.darken(0.2)(),
         },
       ],
     ].filter(Boolean);
@@ -183,8 +183,8 @@ class SandboxItem extends React.Component<Props> {
       this.selectSandbox(e);
     }
   };
-  handleOnBlur = () => {
-    if (this.props.selected) {
+  handleOnBlur = (e: MouseEvent) => {
+    if (this.props.selected && e.bubbles) {
       this.props.setSandboxesSelected([]);
     }
   };
