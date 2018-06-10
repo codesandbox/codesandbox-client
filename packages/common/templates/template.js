@@ -12,6 +12,7 @@ type Options = {
   isTypescript?: boolean,
   externalResourcesEnabled?: boolean,
   showCube?: boolean,
+  main?: boolean,
 };
 
 const defaultConfigurations = {
@@ -25,6 +26,7 @@ export default class Template {
   niceName: string;
   shortid: string;
   url: string;
+  main: boolean;
   color: () => string;
 
   showOnHomePage: boolean;
@@ -50,6 +52,7 @@ export default class Template {
     this.shortid = shortid;
     this.color = color;
 
+    this.main = options.main || false;
     this.showOnHomePage = options.showOnHomePage || false;
     this.distDir = options.distDir || 'build';
     this.configurationFiles = {

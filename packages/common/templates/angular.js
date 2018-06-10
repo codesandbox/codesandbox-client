@@ -68,5 +68,6 @@ export default new AngularTemplate(
     isTypescript: true,
     distDir: 'dist',
     showOnHomePage: true,
+    main: true,
   }
 );

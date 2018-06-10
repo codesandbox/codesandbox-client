@@ -4,6 +4,8 @@ import { state, props } from 'cerebral/tags';
 import { withLoadApp } from '../../factories';
 import * as actions from './actions';
 
+import { forkSandbox } from '../../sequences';
+
 export const loadDashboard = withLoadApp([]);
 
 export const selectSandboxes = [
@@ -25,3 +27,5 @@ export const removeBlacklistedTemplate = [actions.removeBlacklistedTemplate];
 export const changeSearch = [
   set(state`dashboard.filters.search`, props`search`),
 ];
+
+export const createSandbox = [forkSandbox];

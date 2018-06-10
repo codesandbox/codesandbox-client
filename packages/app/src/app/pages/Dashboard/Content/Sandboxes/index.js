@@ -9,7 +9,13 @@ import { Container, HeaderContainer } from './elements';
 // eslint-disable-next-line react/prefer-stateless-function
 class Content extends React.Component {
   render() {
-    const { sandboxes, Header, isLoading, possibleTemplates = [] } = this.props;
+    const {
+      sandboxes,
+      Header,
+      isLoading,
+      ExtraElement,
+      possibleTemplates = [],
+    } = this.props;
 
     return (
       <Container>
@@ -29,7 +35,7 @@ class Content extends React.Component {
             Fetching Sandboxes...
           </DelayedAnimation>
         ) : (
-          <SandboxGrid sandboxes={sandboxes} />
+          <SandboxGrid ExtraElement={ExtraElement} sandboxes={sandboxes} />
         )}
       </Container>
     );

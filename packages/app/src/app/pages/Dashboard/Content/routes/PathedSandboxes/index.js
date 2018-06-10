@@ -7,6 +7,7 @@ import { basename } from 'path';
 
 import Sandboxes from '../../Sandboxes';
 import Navigation from './Navigation';
+import CreateNewSandbox from './CreateNewSandbox';
 
 import { PATHED_SANDBOXES_CONTENT_QUERY } from '../../../queries';
 
@@ -40,6 +41,12 @@ const PathedSandboxes = props => {
 
             return (
               <Sandboxes
+                ExtraElement={({ style }) => (
+                  <CreateNewSandbox
+                    collectionId={data && data.me && data.me.collection.id}
+                    style={style}
+                  />
+                )}
                 isLoading={loading}
                 possibleTemplates={possibleTemplates}
                 Header={<Navigation path={path} />}

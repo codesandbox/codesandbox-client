@@ -159,6 +159,10 @@ class SandboxGrid extends React.Component<*, State> {
     const index = rowIndex * this.columnCount + columnIndex;
     const { sandboxes, signals } = this.props;
 
+    if (index === sandboxes.length && this.props.ExtraElement) {
+      return <this.props.ExtraElement style={style} />;
+    }
+
     if (index > sandboxes.length - 1) {
       return null;
     }
@@ -173,6 +177,7 @@ class SandboxGrid extends React.Component<*, State> {
         details={editedSince}
         style={style}
         key={key}
+        sandbox={item}
         template={item.source.template}
         removedAt={item.removedAt}
         selected={this.selectedSandboxesObject[item.id]}
@@ -207,7 +212,7 @@ class SandboxGrid extends React.Component<*, State> {
     const { sandboxes, store } = this.props;
 
     const { selectedSandboxes } = this.props.store.dashboard;
-    const sandboxCount = sandboxes.length;
+    let sandboxCount = sandboxes.length;
 
     this.isDragging = store.dashboard.isDragging;
     this.selectedSandboxesObject = {};
@@ -221,6 +226,10 @@ class SandboxGrid extends React.Component<*, State> {
         <DragLayer />
         <AutoSizer>
           {({ width, height }) => {
+            if (this.props.ExtraElement) {
+              sandboxCount += 1;
+            }
+
             const columnCount = Math.max(
               1,
               Math.floor(width / (BASE_WIDTH + PADDING))

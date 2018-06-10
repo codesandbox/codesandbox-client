@@ -143,27 +143,34 @@ export function getGitChanges({ api, state }) {
     .then(gitChanges => ({ gitChanges }));
 }
 
-export function forkSandbox({ state, api }) {
+export function forkSandbox({ state, props, api }) {
   return api
-    .post(`/sandboxes/${state.get('editor.currentId')}/fork`)
+    .post(
+      `/sandboxes/${props.sandboxId || state.get('editor.currentId')}/fork`,
+      props.body || {}
+    )
     .then(data => ({ forkedSandbox: data }));
 }
 
 export function moveModuleContent({ props, state }) {
   const currentSandbox = state.get('editor.currentSandbox');
 
-  return {
-    sandbox: Object.assign({}, props.forkedSandbox, {
-      modules: props.forkedSandbox.modules.map(module =>
-        Object.assign(module, {
-          code: currentSandbox.modules.find(
-            currentSandboxModule =>
-              currentSandboxModule.shortid === module.shortid
-          ).code,
-        })
-      ),
-    }),
-  };
+  if (currentSandbox) {
+    return {
+      sandbox: Object.assign({}, props.forkedSandbox, {
+        modules: props.forkedSandbox.modules.map(module =>
+          Object.assign(module, {
+            code: currentSandbox.modules.find(
+              currentSandboxModule =>
+                currentSandboxModule.shortid === module.shortid
+            ).code,
+          })
+        ),
+      }),
+    };
+  }
+
+  return { sandbox: props.forkedSandbox };
 }
 
 export function closeTabByIndex({ state, props }) {

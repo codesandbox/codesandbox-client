@@ -33,6 +33,7 @@ type Props = {
   deleteSandboxes: () => void,
   permanentlyDeleteSandboxes: () => void,
   collectionPath: string, // eslint-disable-line react/no-unused-prop-types
+  sandbox: Object,
 };
 
 export const PADDING = 32;
@@ -264,20 +265,22 @@ class SandboxItem extends React.Component<Props> {
                           const saveName = () => {
                             this.setState({ renamingSandbox: false });
 
-                            mutate({
-                              variables: {
-                                title: input.value,
-                                id: this.props.id,
-                              },
-                              optimisticResponse: {
-                                __typename: 'Mutation',
-                                renameSandbox: {
-                                  __typename: 'Sandbox',
-                                  id: this.props.id,
+                            if (input.value !== title) {
+                              mutate({
+                                variables: {
                                   title: input.value,
+                                  id: this.props.id,
                                 },
-                              },
-                            });
+                                optimisticResponse: {
+                                  __typename: 'Mutation',
+                                  renameSandbox: {
+                                    __typename: 'Sandbox',
+                                    ...this.props.sandbox,
+                                    title: input.value,
+                                  },
+                                },
+                              });
+                            }
                           };
 
                           return (

@@ -27,5 +27,6 @@ export default Module({
     blacklistedTemplateAdded: sequences.addBlacklistedTemplate,
     blacklistedTemplateRemoved: sequences.removeBlacklistedTemplate,
     searchChanged: sequences.changeSearch,
+    createSandboxClicked: sequences.createSandbox,
   },
 });
