@@ -2,8 +2,7 @@ import * as React from 'react';
 
 import { inject, observer } from 'mobx-react';
 import { clone } from 'mobx-state-tree';
-import { spring, Motion } from 'react-motion';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import { Transition } from 'react-spring';
 import Portal from 'app/components/Portal';
 
 import Notification from './Notification';
@@ -61,42 +60,42 @@ class Notifications extends React.Component {
     if (notifications.length === 0) {
       return null;
     }
+
     return (
       <Portal>
         <div onMouseEnter={this.hoverOn} onMouseLeave={this.hoverOff}>
-          <ReactCSSTransitionGroup
-            transitionName="notifications"
-            transitionEnterTimeout={500}
-            transitionLeaveTimeout={300}
+          <Transition
+            items={notifications.map((notif, i) => ({ ...notif, i }))}
+            keys={notif => notif.id}
+            from={{ bottom: -150, opacity: 1 }}
+            enter={item => ({
+              bottom: 24 + 60 * (notifications.length - 1 - item.i),
+              opacity: 1,
+            })}
+            update={item => ({
+              bottom: 24 + 60 * (notifications.length - 1 - item.i),
+              opacity: 1,
+            })}
+            leave={item => ({
+              bottom: 24 + 60 * (notifications.length - 1 - item.i),
+              opacity: 0,
+            })}
           >
-            {notifications.map((originalNotification, index) => {
+            {notifications.map(originalNotification => styles => {
               const notification = clone(originalNotification);
 
               return (
-                <Motion
-                  key={notification.id}
-                  defaultStyle={{ y: -150 }}
-                  style={{
-                    y: spring(24 + 60 * (notifications.length - 1 - index)),
-                  }}
-                >
-                  {({ y }) => (
-                    <NotificationContainer
-                      key={notification.id}
-                      style={{ bottom: y }}
-                    >
-                      <Notification
-                        title={notification.title}
-                        type={notification.notificationType}
-                        buttons={notification.buttons}
-                        close={() => this.closeNotification(notification.id)}
-                      />
-                    </NotificationContainer>
-                  )}
-                </Motion>
+                <NotificationContainer key={notification.id} style={styles}>
+                  <Notification
+                    title={notification.title}
+                    type={notification.notificationType}
+                    buttons={notification.buttons}
+                    close={() => this.closeNotification(notification.id)}
+                  />
+                </NotificationContainer>
               );
             })}
-          </ReactCSSTransitionGroup>
+          </Transition>
         </div>
       </Portal>
     );

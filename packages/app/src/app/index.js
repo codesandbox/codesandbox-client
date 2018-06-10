@@ -84,6 +84,8 @@ requirePolyfills().then(() => {
       message,
     });
 
+  window.showNotification = showNotification;
+
   registerServiceWorker('/service-worker.js', {
     onUpdated: () => {
       debug('Updated SW');

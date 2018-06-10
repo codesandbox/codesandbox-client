@@ -76,6 +76,8 @@ class SandboxesItem extends React.Component {
                   return <div>Error!</div>;
                 }
 
+                console.log(data);
+
                 const folders = data.me.collections;
                 const foldersByPath = {};
 
