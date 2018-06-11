@@ -124,7 +124,7 @@ export default class Manager {
 
     this.modules = modules;
     Object.keys(modules).forEach(k => this.addModule(modules[k]));
-    this.testRunner = TestRunner;
+    this.testRunner = new TestRunner(this);
 
     window.manager = this;
     if (process.env.NODE_ENV === 'development') {
