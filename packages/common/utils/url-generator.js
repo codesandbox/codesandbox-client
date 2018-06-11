@@ -98,6 +98,7 @@ export const signInUrl = (extraScopes: boolean = false) =>
 export const signInZeitUrl = () => '/auth/zeit';
 
 export const profileUrl = (username: string) => `/u/${username}`;
+export const dashboardUrl = () => `/dashboard`;
 export const profileSandboxesUrl = (username: string, page?: number) =>
   `${profileUrl(username)}/sandboxes${page ? `/${page}` : ''}`;
 export const profileLikesUrl = (username: string, page?: number) =>
