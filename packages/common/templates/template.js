@@ -12,6 +12,7 @@ type Options = {
   isTypescript?: boolean,
   externalResourcesEnabled?: boolean,
   showCube?: boolean,
+  isServer?: boolean,
 };
 
 const defaultConfigurations = {
@@ -35,6 +36,7 @@ export default class Template {
   isTypescript: boolean;
   externalResourcesEnabled: boolean;
   showCube: boolean;
+  isServer: boolean;
 
   constructor(
     name: string,
@@ -50,6 +52,7 @@ export default class Template {
     this.shortid = shortid;
     this.color = color;
 
+    this.isServer = options.isServer || false;
     this.showOnHomePage = options.showOnHomePage || false;
     this.distDir = options.distDir || 'build';
     this.configurationFiles = {

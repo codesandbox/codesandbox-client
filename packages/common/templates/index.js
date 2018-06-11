@@ -9,6 +9,7 @@ import svelte from './svelte';
 import vue from './vue';
 import cxjs from './cxjs';
 import dojo from './dojo';
+import gatsby from './gatsby';
 
 export {
   angular,
@@ -34,6 +35,7 @@ export default function getDefinition(
     | 'parcel'
     | 'cxjs'
     | '@dojo/cli-create-app'
+    | 'gatsby'
 ) {
   switch (theme) {
     case react.name:
@@ -56,6 +58,8 @@ export default function getDefinition(
       return cxjs;
     case dojo.name:
       return dojo;
+    case gatsby.name:
+      return gatsby;
     default:
       return react;
   }

@@ -7,6 +7,7 @@ import io from 'socket.io-client';
 
 import { frameUrl } from 'common/utils/url-generator';
 import { getModulePath } from 'common/sandbox/modules';
+import getTemplate from 'common/templates';
 
 import { generateFileFromSandbox } from 'common/templates/configuration/package-json';
 
@@ -43,8 +44,6 @@ type State = {
   urlInAddressBar: string,
   url: ?string,
 };
-
-const IS_SERVER = true;
 
 const getDiff = (a, b) => {
   const diff = {};
@@ -84,13 +83,14 @@ const getDiff = (a, b) => {
 class BasePreview extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
+    this.IS_SERVER = getTemplate(props.sandbox.template).isServer;
 
     this.state = {
       frameInitialized: false,
       history: [],
       historyPosition: -1,
-      urlInAddressBar: IS_SERVER
-        ? `https://${props.sandbox.id}.sse.cs.lbogdan.tk`
+      urlInAddressBar: this.IS_SERVER
+        ? `https://${props.sandbox.id}.sse.codesandbox.stream`
         : frameUrl(props.sandbox.id, props.initialPath || ''),
       url: null,
       terminalMessages: [],
@@ -106,7 +106,7 @@ class BasePreview extends React.Component<Props, State> {
       modules: this.getModulesToSend(),
     };
 
-    if (IS_SERVER) {
+    if (this.IS_SERVER) {
       this.setupSockets(props.sandbox.id);
     } else {
       this.listener = listen(this.handleMessage);
@@ -127,7 +127,7 @@ class BasePreview extends React.Component<Props, State> {
       this.$socket.close();
     }
 
-    this.$socket = io({ autoConnect: false });
+    this.$socket = io('https://sse.codesandbox.stream', { autoConnect: false });
 
     this.$socket.on('connect', () => {
       this.$socket.emit('sandbox', id);
@@ -206,8 +206,10 @@ class BasePreview extends React.Component<Props, State> {
   };
 
   handleSandboxChange = (newId: string) => {
-    const url = IS_SERVER
-      ? `https://${newId}.sse.cs.lbogdan.tk`
+    this.IS_SERVER = getTemplate(this.props.sandbox.template).isServer;
+
+    const url = this.IS_SERVER
+      ? `https://${newId}.sse.codesandbox.stream`
       : frameUrl(newId, this.props.initialPath || '');
 
     this.setupSockets(newId);
@@ -336,7 +338,7 @@ class BasePreview extends React.Component<Props, State> {
       }
 
       const modulesToSend = this.getModulesToSend();
-      if (IS_SERVER) {
+      if (this.IS_SERVER) {
         const diff = getDiff(this.lastSent.modules, modulesToSend);
 
         this.lastSent.modules = modulesToSend;
@@ -387,8 +389,16 @@ class BasePreview extends React.Component<Props, State> {
     const { history, historyPosition } = this.state;
     const url = history[historyPosition];
 
-    // $FlowIssue
-    document.getElementById('sandbox').src = url;
+    console.log(history, historyPosition);
+
+    if (document.getElementById('sandbox')) {
+      // $FlowIssue
+      document.getElementById('sandbox').src =
+        url ||
+        (this.IS_SERVER
+          ? `https://${this.props.sandbox.id}.sse.codesandbox.stream`
+          : frameUrl(this.props.sandbox.id));
+    }
 
     this.setState({
       history: [url],
@@ -453,7 +463,11 @@ class BasePreview extends React.Component<Props, State> {
       noPreview,
     } = this.props;
     const { historyPosition, history, urlInAddressBar } = this.state;
-    const url = urlInAddressBar || frameUrl(sandbox.id);
+    const url =
+      urlInAddressBar ||
+      (this.IS_SERVER
+        ? `https://${sandbox.id}.sse.codesandbox.stream`
+        : frameUrl(sandbox.id));
 
     if (noPreview) {
       // Means that preview is open in another tab definitely
@@ -483,12 +497,12 @@ class BasePreview extends React.Component<Props, State> {
           />
         )}
 
-        {this.state.frameInitialized && !IS_SERVER ? (
+        {this.state.frameInitialized || !this.IS_SERVER ? (
           <StyledFrame
             sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups allow-presentation"
             src={
-              IS_SERVER
-                ? `https://${sandbox.id}.sse.cs.lbogdan.tk`
+              this.IS_SERVER
+                ? `https://${sandbox.id}.sse.codesandbox.stream`
                 : frameUrl(sandbox.id, this.initialPath)
             }
             id="sandbox"
