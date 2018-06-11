@@ -2,6 +2,7 @@
 import styled from 'styled-components';
 import fadeIn from 'common/utils/animation/fade-in';
 import Tooltip from 'common/components/Tooltip';
+import MoreInfoIcon from './KebabIcon';
 
 export const Container = styled.div`
   ${fadeIn(0)};
@@ -68,4 +69,16 @@ export const ImageMessage = styled.div`
 
   font-size: 1.125rem;
   color: rgba(255, 255, 255, 0.6);
+`;
+
+export const KebabIcon = styled(MoreInfoIcon)`
+  transition: 0.3s ease color;
+  font-size: 1.75rem;
+  height: 16px;
+  width: 20px;
+  color: rgba(255, 255, 255, 0.6);
+
+  &:hover {
+    color: rgba(255, 255, 255, 0.8);
+  }
 `;

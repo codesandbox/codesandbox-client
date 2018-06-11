@@ -26,6 +26,7 @@ import {
   ImageMessage,
   PrivacyIconContainer,
   SandboxTitle,
+  KebabIcon,
 } from './elements';
 
 type Props = {
@@ -299,123 +300,127 @@ class SandboxItem extends React.Component<Props> {
           opacity: isDraggingItem ? 0 : 1,
         }}
         id={id}
+        childFunction
         className="sandbox-item"
         items={this.getContextItems()}
       >
-        {connectDragSource(
-          <div
-            style={{
-              padding: 2,
-              borderRadius: 2,
-              backgroundColor: selected ? theme.secondary() : 'transparent',
-            }}
-          >
-            <Container
-              style={{ outline: 'none' }}
-              onMouseDown={this.handleMouseDown}
-              onContextMenu={this.handleOnContextMenu}
-              onDoubleClick={this.openSandbox}
-              onBlur={this.handleOnBlur}
-              onFocus={this.handleOnFocus}
-              onKeyDown={this.handleKeyDown}
-              innerRef={el => {
-                this.el = el;
+        {onContextMenu =>
+          connectDragSource(
+            <div
+              style={{
+                padding: 2,
+                borderRadius: 2,
+                backgroundColor: selected ? theme.secondary() : 'transparent',
               }}
-              role="button"
-              tabIndex={0}
             >
-              <SandboxImageContainer>
-                <ImageMessage>Generating Screenshot...</ImageMessage>
+              <Container
+                style={{ outline: 'none' }}
+                onMouseDown={this.handleMouseDown}
+                onContextMenu={this.handleOnContextMenu}
+                onDoubleClick={this.openSandbox}
+                onBlur={this.handleOnBlur}
+                onFocus={this.handleOnFocus}
+                onKeyDown={this.handleKeyDown}
+                innerRef={el => {
+                  this.el = el;
+                }}
+                role="button"
+                tabIndex={0}
+              >
+                <SandboxImageContainer>
+                  <ImageMessage>Generating Screenshot...</ImageMessage>
 
-                <SandboxImage
-                  style={{
-                    backgroundImage: `url(${`/api/v1/sandboxes/${id}/screenshot.png`})`,
-                  }}
-                />
-              </SandboxImageContainer>
-              <SandboxInfo>
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    bottom: 0,
-                    left: 0,
-                    width: 2,
-                    height: '100%',
-                    backgroundColor: templateInfo.color(),
-                  }}
-                />
-                <div style={{ flex: 1 }}>
-                  <div>
-                    {this.state.renamingSandbox ? (
-                      <Mutation mutation={RENAME_SANDBOX_MUTATION}>
-                        {mutate => {
-                          let input = null;
+                  <SandboxImage
+                    style={{
+                      backgroundImage: `url(${`/api/v1/sandboxes/${id}/screenshot.png`})`,
+                    }}
+                  />
+                </SandboxImageContainer>
+                <SandboxInfo>
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      bottom: 0,
+                      left: 0,
+                      width: 2,
+                      height: '100%',
+                      backgroundColor: templateInfo.color(),
+                    }}
+                  />
+                  <div style={{ flex: 1 }}>
+                    <div>
+                      {this.state.renamingSandbox ? (
+                        <Mutation mutation={RENAME_SANDBOX_MUTATION}>
+                          {mutate => {
+                            let input = null;
 
-                          const saveName = () => {
-                            this.setState({ renamingSandbox: false });
+                            const saveName = () => {
+                              this.setState({ renamingSandbox: false });
 
-                            if (input.value !== title) {
-                              mutate({
-                                variables: {
-                                  title: input.value,
-                                  id: this.props.id,
-                                },
-                                optimisticResponse: {
-                                  __typename: 'Mutation',
-                                  renameSandbox: {
-                                    __typename: 'Sandbox',
-                                    ...this.props.sandbox,
+                              if (input.value !== title) {
+                                mutate({
+                                  variables: {
                                     title: input.value,
+                                    id: this.props.id,
                                   },
-                                },
-                              });
-                            }
-                          };
+                                  optimisticResponse: {
+                                    __typename: 'Mutation',
+                                    renameSandbox: {
+                                      __typename: 'Sandbox',
+                                      ...this.props.sandbox,
+                                      title: input.value,
+                                    },
+                                  },
+                                });
+                              }
+                            };
 
-                          return (
-                            <Input
-                              innerRef={node => {
-                                input = node;
-                                if (node) {
-                                  node.select();
-                                }
-                              }}
-                              onKeyDown={e => {
-                                if (e.keyCode === 13) {
-                                  // Enter
-                                  e.preventDefault();
-                                  e.stopPropagation();
+                            return (
+                              <Input
+                                innerRef={node => {
+                                  input = node;
+                                  if (node) {
+                                    node.select();
+                                  }
+                                }}
+                                onKeyDown={e => {
+                                  if (e.keyCode === 13) {
+                                    // Enter
+                                    e.preventDefault();
+                                    e.stopPropagation();
 
-                                  saveName();
-                                } else if (e.keyCode === 27) {
-                                  // Escape
-                                  e.preventDefault();
-                                  e.stopPropagation();
+                                    saveName();
+                                  } else if (e.keyCode === 27) {
+                                    // Escape
+                                    e.preventDefault();
+                                    e.stopPropagation();
 
-                                  this.setState({ renamingSandbox: false });
-                                }
-                              }}
-                              onBlur={saveName}
-                              block
-                              defaultValue={title}
-                              small
-                            />
-                          );
-                        }}
-                      </Mutation>
-                    ) : (
-                      <SandboxTitle>
-                        {title} {this.getPrivacyIcon()}
-                      </SandboxTitle>
-                    )}
+                                    this.setState({ renamingSandbox: false });
+                                  }
+                                }}
+                                onBlur={saveName}
+                                block
+                                defaultValue={title}
+                                small
+                              />
+                            );
+                          }}
+                        </Mutation>
+                      ) : (
+                        <SandboxTitle>
+                          {title} {this.getPrivacyIcon()}
+                        </SandboxTitle>
+                      )}
+                    </div>
+                    <SandboxDetails>{details}</SandboxDetails>
                   </div>
-                  <SandboxDetails>{details}</SandboxDetails>
-                </div>
-              </SandboxInfo>
-            </Container>
-          </div>
-        )}
+                  <KebabIcon onClick={onContextMenu} />
+                </SandboxInfo>
+              </Container>
+            </div>
+          )
+        }
       </ContextMenu>
     );
   }

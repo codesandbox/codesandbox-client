@@ -71,7 +71,7 @@ class ContextMenu extends React.Component {
       return null;
     }
 
-    const { children, items, ...props } = this.props;
+    const { children, childFunction, items, ...props } = this.props;
     const { show, x, y } = this.state;
 
     const mapFunction = (item, i) => {
@@ -101,7 +101,7 @@ class ContextMenu extends React.Component {
 
     return (
       <div {...props} onContextMenu={this.onContextMenu}>
-        {children}
+        {childFunction ? children(this.onContextMenu) : children}
         {show && (
           <Portal>
             <div
