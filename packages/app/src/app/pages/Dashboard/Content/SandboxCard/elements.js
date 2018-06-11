@@ -1,6 +1,7 @@
 // @ts-check
 import styled from 'styled-components';
 import fadeIn from 'common/utils/animation/fade-in';
+import Tooltip from 'common/components/Tooltip';
 
 export const Container = styled.div`
   ${fadeIn(0)};
@@ -37,6 +38,17 @@ export const SandboxInfo = styled.div`
   font-size: 0.875em;
 
   align-items: center;
+`;
+
+export const SandboxTitle = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+export const PrivacyIconContainer = styled(Tooltip)`
+  display: flex;
+  margin-left: 0.5rem;
+  color: rgba(255, 255, 255, 0.4);
 `;
 
 export const SandboxDetails = styled.div`

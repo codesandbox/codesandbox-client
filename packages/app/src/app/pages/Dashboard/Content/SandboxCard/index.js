@@ -7,6 +7,9 @@ import { DragSource } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import { Mutation } from 'react-apollo';
 
+import Unlisted from 'react-icons/lib/md/insert-link';
+import Private from 'react-icons/lib/md/lock';
+
 import Input from 'common/components/Input';
 import ContextMenu from 'app/components/ContextMenu';
 import getTemplate from 'common/templates';
@@ -21,6 +24,8 @@ import {
   SandboxInfo,
   SandboxDetails,
   ImageMessage,
+  PrivacyIconContainer,
+  SandboxTitle,
 } from './elements';
 
 type Props = {
@@ -34,6 +39,10 @@ type Props = {
   collectionPath: string, // eslint-disable-line react/no-unused-prop-types
   sandbox: Object,
   page: ?string,
+  privacy: number,
+  isPatron: boolean,
+  setSandboxesPrivacy: () => void,
+  undeleteSandboxes: () => void,
 };
 
 export const PADDING = 32;
@@ -43,6 +52,24 @@ class SandboxItem extends React.Component<Props> {
 
   state = {
     renamingSandbox: false,
+  };
+
+  getPrivacyIcon = () => {
+    if (this.props.privacy === 1) {
+      return (
+        <PrivacyIconContainer title="Unlisted Sandbox">
+          <Unlisted />
+        </PrivacyIconContainer>
+      );
+    } else if (this.props.privacy === 2) {
+      return (
+        <PrivacyIconContainer title="Private Sandbox">
+          <Private />
+        </PrivacyIconContainer>
+      );
+    }
+
+    return null;
   };
 
   componentDidMount() {
@@ -65,12 +92,23 @@ class SandboxItem extends React.Component<Props> {
   }
 
   getContextItems = () => {
+    const { selectedCount } = this.props;
     if (this.props.removedAt) {
       return [
         {
           title:
-            this.props.selectedCount > 1
-              ? `Delete ${this.props.selectedCount} Sandboxes Permanently`
+            selectedCount > 1
+              ? `Move ${selectedCount} Sandboxes To 'My Sandboxes'`
+              : "Move Sandbox To 'My Sandboxes'",
+          action: () => {
+            this.props.undeleteSandboxes();
+            return true;
+          },
+        },
+        {
+          title:
+            selectedCount > 1
+              ? `Delete ${selectedCount} Sandboxes Permanently`
               : 'Delete Permanently',
           action: () => {
             this.props.permanentlyDeleteSandboxes();
@@ -81,17 +119,42 @@ class SandboxItem extends React.Component<Props> {
       ];
     }
 
-    const { selectedCount } = this.props;
-    if (this.props.selectedCount > 1) {
+    if (selectedCount > 1) {
       return [
-        {
-          title: `Move ${selectedCount} Sandboxes To Trash`,
-          action: () => {
-            this.props.deleteSandboxes();
-            return true;
+        this.props.isPatron &&
+          [
+            {
+              title: `Make ${selectedCount} Sandboxes Public`,
+              action: () => {
+                this.props.setSandboxesPrivacy(0);
+                return true;
+              },
+            },
+            {
+              title: `Make ${selectedCount} Sandboxes Unlisted`,
+              action: () => {
+                this.props.setSandboxesPrivacy(1);
+                return true;
+              },
+            },
+            {
+              title: `Make ${selectedCount} Sandboxes Private`,
+              action: () => {
+                this.props.setSandboxesPrivacy(2);
+                return true;
+              },
+            },
+          ].filter(Boolean),
+        [
+          {
+            title: `Move ${selectedCount} Sandboxes To Trash`,
+            action: () => {
+              this.props.deleteSandboxes();
+              return true;
+            },
+            color: theme.red.darken(0.2)(),
           },
-          color: theme.red.darken(0.2)(),
-        },
+        ],
       ];
     }
 
@@ -117,6 +180,30 @@ class SandboxItem extends React.Component<Props> {
           },
         },
       ],
+      this.props.isPatron &&
+        [
+          this.props.privacy !== 0 && {
+            title: `Make Sandbox Public`,
+            action: () => {
+              this.props.setSandboxesPrivacy(0);
+              return true;
+            },
+          },
+          this.props.privacy !== 1 && {
+            title: `Make Sandbox Unlisted`,
+            action: () => {
+              this.props.setSandboxesPrivacy(1);
+              return true;
+            },
+          },
+          this.props.privacy !== 2 && {
+            title: `Make Sandbox Private`,
+            action: () => {
+              this.props.setSandboxesPrivacy(2);
+              return true;
+            },
+          },
+        ].filter(Boolean),
       [
         {
           title: `Rename Sandbox`,
@@ -318,7 +405,9 @@ class SandboxItem extends React.Component<Props> {
                         }}
                       </Mutation>
                     ) : (
-                      title
+                      <SandboxTitle>
+                        {title} {this.getPrivacyIcon()}
+                      </SandboxTitle>
                     )}
                   </div>
                   <SandboxDetails>{details}</SandboxDetails>

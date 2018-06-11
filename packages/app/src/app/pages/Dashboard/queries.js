@@ -85,6 +85,15 @@ export const DELETE_SANDBOXES_MUTATION = gql`
   ${SANDBOX_FRAGMENT}
 `;
 
+export const SET_SANDBOXES_PRIVACY_MUTATION = gql`
+  mutation SetSandboxesPrivacy($sandboxIds: [ID]!, $privacy: Int!) {
+    setSandboxesPrivacy(sandboxIds: $sandboxIds, privacy: $privacy) {
+      ...Sandbox
+    }
+  }
+  ${SANDBOX_FRAGMENT}
+`;
+
 export const RENAME_SANDBOX_MUTATION = gql`
   mutation RenameSandbox($id: [ID]!, $title: String!) {
     renameSandbox(id: $id, title: $title) {
@@ -158,6 +167,27 @@ export const DELETED_SANDBOXES_CONTENT_QUERY = gql`
   ${SANDBOX_FRAGMENT}
 `;
 
+export function undeleteSandboxes(selectedSandboxes) {
+  client.mutate({
+    mutation: ADD_SANDBOXES_TO_FOLDER_MUTATION,
+    variables: {
+      sandboxIds: selectedSandboxes.toJS(),
+      collectionPath: '/',
+    },
+    optimisticResponse: {
+      __typename: 'Mutation',
+      addToCollection: {
+        __typename: 'Collection',
+        // We keep this empty, because it will be loaded later regardless. We
+        // just want the main directory to update immediately
+        sandboxes: [],
+      },
+    },
+
+    refetchQueries: ['DeletedSandboxes'],
+  });
+}
+
 export function permanentlyDeleteSandboxes(selectedSandboxes) {
   client.mutate({
     mutation: PERMANENTLY_DELETE_SANDBOXES_MUTATION,
@@ -220,6 +250,16 @@ export function deleteSandboxes(selectedSandboxes, collectionPaths = null) {
           }
         });
       }
+    },
+  });
+}
+
+export function setSandboxesPrivacy(selectedSandboxes, privacy) {
+  client.mutate({
+    mutation: SET_SANDBOXES_PRIVACY_MUTATION,
+    variables: {
+      sandboxIds: selectedSandboxes.toJS(),
+      privacy,
     },
   });
 }
