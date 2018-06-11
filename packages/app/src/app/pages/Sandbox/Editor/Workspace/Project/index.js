@@ -1,7 +1,6 @@
 import * as React from 'react';
-
 import { inject, observer } from 'mobx-react';
-
+import { Link } from 'react-router-dom';
 import {
   sandboxUrl,
   githubRepoUrl,
@@ -11,7 +10,6 @@ import {
 import UserWithAvatar from 'app/components/UserWithAvatar';
 import Stats from 'app/pages/common/Stats';
 import PrivacyStatus from 'app/components/PrivacyStatus';
-import ConfirmLink from 'app/components/ConfirmLink';
 import GithubBadge from 'app/components/GithubBadge';
 import createEditableTags from 'app/components/EditableTags';
 import Tags from 'app/components/Tags';
@@ -219,14 +217,10 @@ class Project extends React.Component {
           <Item flex>
             <PropertyName>Forked From</PropertyName>
             <PropertyValue>
-              <ConfirmLink
-                enabled={!store.editor.isAllModulesSynced}
-                message="You have unsaved changes. Are you sure you want to navigate away?"
-                to={sandboxUrl(sandbox.forkedFromSandbox)}
-              >
+              <Link to={sandboxUrl(sandbox.forkedFromSandbox)}>
                 {sandbox.forkedFromSandbox.title ||
                   sandbox.forkedFromSandbox.id}
-              </ConfirmLink>
+              </Link>
             </PropertyValue>
           </Item>
         )}

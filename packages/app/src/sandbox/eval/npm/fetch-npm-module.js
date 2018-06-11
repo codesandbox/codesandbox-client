@@ -69,7 +69,7 @@ function normalizeJSDelivr(
   return fileObject;
 }
 
-const TEMP_USE_JSDELIVR = true;
+const TEMP_USE_JSDELIVR = false;
 
 function getUnpkgUrl(name: string, version: string) {
   const nameWithoutAlias = name.replace(/\/\d*\.\d*\.\d*$/, '');
