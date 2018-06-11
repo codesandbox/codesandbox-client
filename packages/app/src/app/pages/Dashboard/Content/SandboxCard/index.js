@@ -160,7 +160,7 @@ class SandboxItem extends React.Component<Props> {
     }
 
     return [
-      this.props.page === 'recents' && [
+      (this.props.page === 'recents' || this.props.page === 'search') && [
         {
           title: 'Show In Folder',
           action: () => {

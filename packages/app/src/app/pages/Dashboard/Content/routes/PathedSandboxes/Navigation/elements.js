@@ -17,10 +17,15 @@ export const NavigationLink = styled(Link)`
     color: white;
   }
 
+  &:last-child {
+    margin-right: 0;
+  }
+
   ${props =>
     props.last
       ? css`
           color: white;
+          margin-left: 0.5rem;
         `
       : css`
           &::after {
