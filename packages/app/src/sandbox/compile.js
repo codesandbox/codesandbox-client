@@ -180,7 +180,6 @@ const PREINSTALLED_DEPENDENCIES = [
   'babel-plugin-transform-prevent-infinite-loops',
   'babel-plugin-transform-vue-jsx',
   'babel-plugin-jsx-pragmatic',
-  '@babel/core',
   'flow-bin',
 ];
 
@@ -280,7 +279,7 @@ function getDocumentHeight() {
   const body = document.body;
   const html = document.documentElement;
 
-  const height = Math.max(
+  return Math.max(
     body.scrollHeight,
     body.offsetHeight,
     html.clientHeight,
@@ -345,13 +344,16 @@ async function compile({
   });
 
   try {
-    if (localStorage.getItem('running')) {
+    // We set it as a time value for people that run two sandboxes on one computer
+    // they execute at the same time and we don't want them to conflict, so we check
+    // if the message was set a second ago
+    if (Date.now() < localStorage.getItem('running') > 1000) {
       localStorage.removeItem('running');
       showRunOnClick();
       return;
     }
 
-    localStorage.setItem('running', 'true');
+    localStorage.setItem('running', Date.now());
   } catch (e) {
     /* no */
   }
@@ -449,12 +451,10 @@ async function compile({
 
     dispatch({ type: 'status', status: 'transpiling' });
 
+    await manager.preset.setup(manager);
+
     await manager.verifyTreeTranspiled();
     await manager.transpileModules(managerModuleToTranspile);
-
-    const managerTranspiledModuleToTranspile = manager.getTranspiledModule(
-      managerModuleToTranspile
-    );
 
     debug(`Transpilation time ${Date.now() - t}ms`);
 
@@ -463,37 +463,7 @@ async function compile({
     if (!skipEval) {
       resetScreen();
 
-      if (
-        !manager.webpackHMR &&
-        (!managerTranspiledModuleToTranspile.compilation || isModuleView)
-      ) {
-        try {
-          const children = document.body.children;
-          // Do unmounting for react
-          if (
-            manifest &&
-            manifest.dependencies.find(n => n.name === 'react-dom')
-          ) {
-            const reactDOMModule = manager.resolveModule('react-dom', '');
-            const reactDOM = manager.evaluateModule(reactDOMModule);
-
-            reactDOM.unmountComponentAtNode(document.body);
-
-            for (let i = 0; i < children.length; i += 1) {
-              if (children[i].tagName === 'DIV') {
-                reactDOM.unmountComponentAtNode(children[i]);
-              }
-            }
-          }
-        } catch (e) {
-          /* don't do anything with this error */
-
-          if (process.env.NODE_ENV === 'development') {
-            console.error('Problem while cleaning up');
-            console.error(e);
-          }
-        }
-      }
+      manager.preset.preEvaluate(manager);
 
       if (!manager.webpackHMR && !manager.preset.htmlDisabled) {
         const htmlModulePath = templateDefinition
@@ -502,7 +472,7 @@ async function compile({
         const htmlModule = modules[htmlModulePath];
 
         const { head, body } = getHTMLParts(
-          htmlModule
+          htmlModule && htmlModule.code
             ? htmlModule.code
             : template === 'vue-cli'
               ? '<div id="app"></div>'
@@ -525,8 +495,6 @@ async function compile({
       const extDate = Date.now();
       await handleExternalResources(externalResources);
       debug('Loaded external resources in ' + (Date.now() - extDate) + 'ms');
-
-      await manager.preset.setup(manager);
 
       const tt = Date.now();
       const oldHTML = document.body.innerHTML;

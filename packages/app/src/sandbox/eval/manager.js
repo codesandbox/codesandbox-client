@@ -445,6 +445,12 @@ export default class Manager {
     this.webpackHMR = true;
   }
 
+  getPresetAliasedPath(path: string) {
+    return this.preset
+      .getAliasedPath(path)
+      .replace(/.*\{\{sandboxRoot\}\}/, '');
+  }
+
   resolveModule(
     path: string,
     currentPath: string,
@@ -462,9 +468,7 @@ export default class Manager {
     if (cachedPath) {
       resolvedPath = cachedPath;
     } else {
-      const presetAliasedPath = this.preset
-        .getAliasedPath(path)
-        .replace(/.*\{\{sandboxRoot\}\}/, '');
+      const presetAliasedPath = this.getPresetAliasedPath(path);
 
       const aliasedPath = this.getAliasedDependencyPath(
         presetAliasedPath,
@@ -722,13 +726,14 @@ export default class Manager {
       ])
     );
     const transpiledModulesToUpdate = allModulesToUpdate.filter(
-      m => !TestRunner.isTest(m.module.path)
+      m => !m.isTestFile
     );
+
     // Reset test files, but don't transpile. We want to do that in the test runner
     // so we can catch any errors
-    allModulesToUpdate
-      .filter(m => TestRunner.isTest(m.module.path))
-      .forEach(m => m.resetTranspilation());
+    allModulesToUpdate.filter(m => m.isTestFile).forEach(m => {
+      m.resetTranspilation();
+    });
 
     debug(
       `Generated update diff, updating ${
