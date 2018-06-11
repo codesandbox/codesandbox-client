@@ -10,9 +10,12 @@ import vue from './vue';
 import cxjs from './cxjs';
 import dojo from './dojo';
 import gatsby from './gatsby';
+import nuxt from './nuxt';
 
 export {
   angular,
+  gatsby,
+  nuxt,
   babel,
   vue,
   react,
@@ -36,6 +39,7 @@ export default function getDefinition(
     | 'cxjs'
     | '@dojo/cli-create-app'
     | 'gatsby'
+    | 'nuxt'
 ) {
   switch (theme) {
     case react.name:
@@ -60,6 +64,8 @@ export default function getDefinition(
       return dojo;
     case gatsby.name:
       return gatsby;
+    case nuxt.name:
+      return nuxt;
     default:
       return react;
   }
