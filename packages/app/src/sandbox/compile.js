@@ -616,7 +616,7 @@ async function compile({
 
     if (manager) {
       const managerState = {
-        ...manager.serialize(),
+        ...manager.serialize(false),
       };
       delete managerState.cachedPaths;
       managerState.entry = managerModuleToTranspile

@@ -920,7 +920,7 @@ export default class TranspiledModule {
     }
   }
 
-  serialize(): SerializedTranspiledModule {
+  serialize(optimizeForSize: boolean = true): SerializedTranspiledModule {
     const serializableObject = {};
 
     const sourceEqualsCompiled =
@@ -932,7 +932,7 @@ export default class TranspiledModule {
     serializableObject.emittedAssets = this.emittedAssets;
     serializableObject.isEntry = this.isEntry;
     serializableObject.isTestFile = this.isTestFile;
-    if (!sourceEqualsCompiled) {
+    if (!sourceEqualsCompiled || !optimizeForSize) {
       serializableObject.source = this.source;
     }
     serializableObject.sourceEqualsCompiled = sourceEqualsCompiled;

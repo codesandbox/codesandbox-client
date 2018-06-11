@@ -762,7 +762,7 @@ export default class Manager {
     this.hardReload = true;
   }
 
-  serialize() {
+  serialize(optimizeForSize: boolean = true) {
     const serializedTModules = {};
 
     Object.keys(this.transpiledModules).forEach(path => {
@@ -775,7 +775,9 @@ export default class Manager {
             tModule.module.requires == null)
         ) {
           // Only save modules that are not precomputed
-          serializedTModules[tModule.getId()] = tModule.serialize();
+          serializedTModules[tModule.getId()] = tModule.serialize(
+            optimizeForSize
+          );
         }
       });
     });
