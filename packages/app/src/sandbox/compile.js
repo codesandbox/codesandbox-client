@@ -460,8 +460,6 @@ async function compile({
 
     dispatch({ type: 'status', status: 'transpiling' });
 
-    await manager.preset.setup(manager);
-
     await manager.verifyTreeTranspiled();
     await manager.transpileModules(managerModuleToTranspile);
 
