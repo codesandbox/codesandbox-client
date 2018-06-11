@@ -161,8 +161,9 @@ class Preview extends React.Component<Props, State> {
 
   handleCodeChange = preview => {
     const settings = this.props.store.preferences.settings;
-    const isServer = getTemplate(this.props.store.currentSandbox.template)
-      .isServer;
+    const isServer = getTemplate(
+      this.props.store.editor.currentSandbox.template
+    ).isServer;
     if (!isServer && settings.livePreviewEnabled) {
       if (settings.instantPreviewEnabled) {
         preview.executeCodeImmediately();
@@ -185,8 +186,9 @@ class Preview extends React.Component<Props, State> {
 
   handleModuleSyncedChange = (preview, change) => {
     const settings = this.props.store.preferences.settings;
-    const isServer = getTemplate(this.props.store.currentSandbox.template)
-      .isServer;
+    const isServer = getTemplate(
+      this.props.store.editor.currentSandbox.template
+    ).isServer;
     if ((isServer || !settings.livePreviewEnabled) && change) {
       preview.executeCodeImmediately();
     }
