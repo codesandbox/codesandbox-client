@@ -12,10 +12,7 @@ class ContextMenu extends React.Component {
       y: 0,
       show: false,
     };
-  }
-  onContextMenu = event => {
-    event.preventDefault();
-    this.mousedown = window.addEventListener('mousedown', mousedownEvent => {
+    this.mousedownCb = mousedownEvent => {
       const { show } = this.state;
 
       if (show && this.el) {
@@ -23,15 +20,19 @@ class ContextMenu extends React.Component {
           this.close();
         }
       }
-    });
-
-    this.keydown = window.addEventListener('keydown', keydownEvent => {
+    };
+    this.keydownCb = keydownEvent => {
       const { show } = this.state;
       if (keydownEvent.keyCode === 27 && show) {
         // Escape
         this.close();
       }
-    });
+    };
+  }
+  onContextMenu = event => {
+    event.preventDefault();
+    window.addEventListener('mousedown', this.mousedownCb);
+    window.addEventListener('keydown', this.keydownCb);
 
     this.setState({
       show: true,
@@ -41,8 +42,8 @@ class ContextMenu extends React.Component {
   };
 
   close = () => {
-    window.removeEventListener('keydown', this.keydown);
-    window.removeEventListener('mousedown', this.mousedown);
+    window.removeEventListener('keydown', this.keydownCb);
+    window.removeEventListener('mousedown', this.mousedownCb);
     this.setState({
       show: false,
     });
