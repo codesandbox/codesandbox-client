@@ -45,6 +45,10 @@ export async function saveCache(
   changes: number,
   firstRun: boolean
 ) {
+  if (!sandboxId) {
+    return;
+  }
+
   const managerState = {
     ...manager.serialize(),
   };
