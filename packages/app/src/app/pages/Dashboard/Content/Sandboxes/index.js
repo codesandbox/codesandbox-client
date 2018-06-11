@@ -22,7 +22,27 @@ class Content extends React.Component {
     return (
       <Container>
         <HeaderContainer>
-          {Header}
+          <div
+            style={{
+              display: 'flex',
+              verticalAlign: 'middle',
+              alignItems: 'center',
+            }}
+          >
+            {Header}{' '}
+            {sandboxes &&
+              !isLoading && (
+                <span
+                  style={{
+                    fontSize: '1rem',
+                    fontWeight: 600,
+                    color: 'rgba(255, 255, 255, 0.6',
+                  }}
+                >
+                  {sandboxes.length}
+                </span>
+              )}
+          </div>
           <Filters
             hideOrder={hideOrder}
             possibleTemplates={possibleTemplates}

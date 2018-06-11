@@ -43,7 +43,12 @@ const PathedSandboxes = props => {
               <Sandboxes
                 ExtraElement={({ style }) => (
                   <CreateNewSandbox
-                    collectionId={data && data.me && data.me.collection.id}
+                    collectionId={
+                      data &&
+                      data.me &&
+                      data.me.collection &&
+                      data.me.collection.id
+                    }
                     style={style}
                   />
                 )}

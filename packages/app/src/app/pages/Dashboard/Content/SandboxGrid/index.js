@@ -70,8 +70,21 @@ class SandboxGrid extends React.Component<*, State> {
       }
     }
 
+    let sandboxIds = ids;
+
+    if (additive) {
+      sandboxIds = store.dashboard.selectedSandboxes.filter(
+        id => ids.indexOf(id) === -1
+      );
+      const additiveIds = ids.filter(
+        id => store.dashboard.selectedSandboxes.indexOf(id) === -1
+      );
+
+      sandboxIds = uniq([...sandboxIds, ...additiveIds]);
+    }
+
     signals.dashboard.sandboxesSelected({
-      sandboxIds: additive ? uniq([...selectedSandboxes, ...ids]) : ids,
+      sandboxIds,
     });
   };
 

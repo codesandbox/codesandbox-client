@@ -93,7 +93,6 @@ class SandboxesItem extends React.Component {
                           >
                             {({ match: childMatch }) => (
                               <FolderEntry
-                                id={foldersByPath[path].id}
                                 path={path}
                                 folders={folders}
                                 foldersByPath={foldersByPath}

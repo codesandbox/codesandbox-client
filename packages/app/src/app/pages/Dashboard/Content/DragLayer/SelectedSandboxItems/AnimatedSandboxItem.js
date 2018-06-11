@@ -41,7 +41,7 @@ export default class AnimatedSandboxItem extends React.Component<Props> {
   render() {
     const { id, x, y, scale, i, isLast, selectedSandboxes } = this.props;
 
-    if (!this.state.render) {
+    if (!this.state.render || !this.pos) {
       return null;
     }
 

@@ -249,7 +249,6 @@ class FolderEntry extends React.Component {
                   >
                     {({ match }) => (
                       <DropFolderEntry
-                        id={foldersByPath[childPath].id}
                         path={childPath}
                         folders={folders}
                         foldersByPath={foldersByPath}

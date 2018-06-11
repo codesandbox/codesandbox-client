@@ -225,14 +225,6 @@ class SandboxItem extends React.Component<Props> {
     ].filter(Boolean);
   };
 
-  handleMouseDown = e => {
-    e.stopPropagation();
-
-    if (!this.props.selected) {
-      this.selectSandbox(e);
-    }
-  };
-
   selectSandbox = e => {
     this.props.setSandboxesSelected([this.props.id], {
       additive: e.metaKey,
@@ -254,6 +246,14 @@ class SandboxItem extends React.Component<Props> {
     return true;
   };
 
+  handleMouseDown = e => {
+    e.stopPropagation();
+
+    if (!this.props.selected || e.metaKey) {
+      this.selectSandbox(e);
+    }
+  };
+
   handleKeyDown = (e: KeyboardEvent) => {
     if (e.keyCode === 13) {
       // enter
@@ -267,7 +267,7 @@ class SandboxItem extends React.Component<Props> {
     }
   };
   handleOnFocus = e => {
-    if (!this.props.selected) {
+    if (!this.props.selected && e.bubbles) {
       this.selectSandbox(e);
     }
   };
