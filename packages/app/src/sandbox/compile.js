@@ -230,9 +230,10 @@ function getDependencies(parsedPackage, templateDefinition, configurations) {
   });
 
   const sandpackConfig =
-    configurations.customTemplate &&
-    configurations.customTemplate.parsed &&
-    configurations.customTemplate.parsed.sandpack;
+    (configurations.customTemplate &&
+      configurations.customTemplate.parsed &&
+      configurations.customTemplate.parsed.sandpack) ||
+    {};
 
   const preinstalledDependencies =
     sandpackConfig.preInstalledDependencies == null
