@@ -36,7 +36,8 @@ class Canvas {
         // Create a dot
         const x = j * gridSize + gridSize * Math.random();
         const y = i * gridSize + gridSize * Math.random();
-        const dot = new Dot(x, y, [108, 174, 221], 1);
+        // const dot = new Dot(x, y, [108, 174, 221], 1);
+        const dot = new Dot(x, y, [223, 176, 122], 1);
 
         // Push to into an array of dots
         this.dots.push(dot);

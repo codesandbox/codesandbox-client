@@ -31,7 +31,7 @@ export default new ParcelTemplate(
   decorateSelector(() => '#dfb07a'),
   {
     showOnHomePage: true,
-    showCube: false,
+    showCube: true,
     extraConfigurations: {
       '/.babelrc': configurations.babelrc,
       '/tsconfig.json': configurations.tsconfig,
