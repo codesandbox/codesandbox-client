@@ -42,9 +42,10 @@ const SearchSandboxes = ({ store }) => (
             sandboxes = searchIndex.search(search);
           }
 
-          const Header = search
-            ? `${sandboxes.length} search results for '${search}'`
-            : 'Search results for all sandboxes';
+          const Header =
+            search && sandboxes
+              ? `${sandboxes.length} search results for '${search}'`
+              : 'Search results for all sandboxes';
 
           if (search) {
             document.title = `Search: '${search}' - CodeSandbox`;

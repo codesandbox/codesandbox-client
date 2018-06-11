@@ -181,7 +181,12 @@ class SandboxGrid extends React.Component<*, State> {
     }
     const item = sandboxes[index];
 
-    const editedSince = moment.utc(item.removedAt || item.updatedAt).fromNow();
+    const usedOrder =
+      item.removedAt ||
+      item[this.props.store.dashboard.orderBy.field] ||
+      item.updatedAt;
+
+    const editedSince = moment.utc(usedOrder).fromNow();
 
     return (
       <SandboxItem
