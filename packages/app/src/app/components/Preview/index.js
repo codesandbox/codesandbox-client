@@ -136,7 +136,7 @@ class BasePreview extends React.Component<Props, State> {
 
       dispatch({
         type: 'terminal:message',
-        data: '> CodeSandbox: connected! Initializing container...',
+        data: '> CodeSandbox: connected! Initializing container...\n\r',
       });
 
       if (!this.started) {
@@ -147,7 +147,7 @@ class BasePreview extends React.Component<Props, State> {
     this.$socket.on('sandbox:start', () => {
       dispatch({
         type: 'terminal:message',
-        data: '> CodeSandbox: sandbox started',
+        data: '> CodeSandbox: sandbox started\n\r',
       });
 
       this.started = true;

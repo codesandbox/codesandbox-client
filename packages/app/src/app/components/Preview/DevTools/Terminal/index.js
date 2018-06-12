@@ -32,7 +32,7 @@ class TerminalComponent extends React.PureComponent {
 
   handleMessage = data => {
     if (data.type === 'terminal:message') {
-      this.term.writeln(data.data.trim());
+      this.term.write(data.data);
 
       if (this.props.updateStatus) {
         this.props.updateStatus('info');
