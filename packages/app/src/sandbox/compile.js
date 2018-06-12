@@ -2,6 +2,7 @@ import { dispatch, reattach, clearErrorTransformers } from 'codesandbox-api';
 import { absolute } from 'common/utils/path';
 import _debug from 'app/utils/debug';
 import parseConfigurations from 'common/templates/configuration/parse';
+import { CODE_SEARCH_SIZE_LIMIT } from 'common/utils/config';
 
 import initializeErrorTransformers from './errors/transformers';
 import getPreset from './eval';
@@ -455,16 +456,28 @@ async function compile({
       return str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
-    // Push into index
-    Object.keys(modules).forEach(path => {
+    const codeIndexBatch = Object.keys(modules).map(path => {
       const m = modules[path];
 
       m.objectID = path;
       m.sandboxId = sandboxId;
       m.code = htmlEntities(m.code);
 
-      // FIXME(sven): run a preprocess phase and batch insert all modules
-      index.addObjects([m], (err, content) => console.log(err, content));
+      if (m.code.length > CODE_SEARCH_SIZE_LIMIT) {
+        console.warn(path + ' is too big to be indexed');
+        m.code = '';
+      }
+
+      return m;
+
+      // FIXME(sven): update only the code who changed
+    });
+
+    // Push into index
+    index.addObjects(codeIndexBatch, err => {
+      if (err) {
+        console.error('Code index encountered an error', err);
+      }
     });
 
     dispatch({ type: 'status', status: 'transpiling' });

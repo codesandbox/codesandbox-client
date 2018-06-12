@@ -16,3 +16,5 @@ export const CODE_SEARCH_ALGOLIA_DEFAULT_INDEX =
   process.env.NODE_ENV === 'production' || process.env.LOCAL_SERVER
     ? 'prod_code'
     : 'dev_code';
+
+export const CODE_SEARCH_SIZE_LIMIT = 10 * 1000;
