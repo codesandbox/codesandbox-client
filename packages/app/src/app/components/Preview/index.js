@@ -112,9 +112,8 @@ class BasePreview extends React.Component<Props, State> {
 
     if (this.IS_SERVER) {
       this.setupSockets(props.sandbox.id);
-    } else {
-      this.listener = listen(this.handleMessage);
     }
+    this.listener = listen(this.handleMessage);
 
     if (props.delay) {
       this.executeCode = debounce(this.executeCode, 800);

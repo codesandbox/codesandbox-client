@@ -12,5 +12,5 @@ export default {
     file: 'dist/index.js',
     format: 'umd',
   },
-  plugins: [json(), babel(), resolve(), commonjs(), uglify()],
+  plugins: [json(), babel(), resolve(), commonjs()],
 };

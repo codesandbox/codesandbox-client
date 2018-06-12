@@ -1,4 +1,4 @@
-import { dispatch, isStandalone } from 'codesandbox-api';
+import { dispatch, isStandalone, listen } from 'codesandbox-api';
 
 function sendUrlChange(url: string) {
   dispatch({
@@ -27,6 +27,17 @@ function pathWithHash(location) {
 }
 
 export default function setupHistoryListeners() {
+  function handleMessage(data, source) {
+    if (source) {
+      if (data.type === 'urlback') {
+        history.back();
+      } else if (data.type === 'urlforward') {
+        history.forward();
+      } else if (data.type === 'refresh') {
+        document.location.reload();
+      }
+    }
+  }
   if (!isStandalone) {
     Object.assign(window.history, {
       go(delta) {
@@ -129,4 +140,5 @@ export default function setupHistoryListeners() {
       sendUrlChange(document.location.href);
     });
   }
+  return listen(handleMessage);
 }
