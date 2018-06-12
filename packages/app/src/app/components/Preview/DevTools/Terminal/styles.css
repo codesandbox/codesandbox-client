@@ -38,6 +38,7 @@
 .xterm {
   font-family: Menlo, courier-new, courier, monospace;
   font-feature-settings: 'liga' 0;
+  font-weight: 100;
   position: relative;
   user-select: none;
   -ms-user-select: none;
@@ -105,7 +106,6 @@
 
 .xterm .xterm-screen {
   position: relative;
-  padding: 0.5rem;
 }
 
 .xterm .xterm-screen canvas {

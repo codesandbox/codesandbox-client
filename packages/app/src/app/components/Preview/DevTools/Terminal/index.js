@@ -15,8 +15,12 @@ class TerminalComponent extends React.PureComponent {
     this.term.setOption('theme', {
       background: '#1c2022',
     });
-    this.term.setOption('fontFamily', 'Menlo');
+    this.term.setOption('allowTransparency', true);
+    this.term.setOption('fontFamily', 'Source Code Pro');
+    this.term.setOption('fontWeight', 'normal');
+    this.term.setOption('fontWeightBold', 'bold');
     this.term.setOption('lineHeight', 1.3);
+    this.term.setOption('fontSize', 14);
 
     this.listener = listen(this.handleMessage);
   }
@@ -55,7 +59,7 @@ class TerminalComponent extends React.PureComponent {
           bottom: 0,
           left: 0,
           right: 0,
-          height,
+          height: height - 48,
           padding: '1rem',
           visibility: hidden ? 'hidden' : 'visible',
         }}
