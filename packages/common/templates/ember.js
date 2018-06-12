@@ -16,17 +16,18 @@ export class EmberTemplate extends Template {
     entries.push('/src/main.ts');
     return entries;
   }
-  }
+}
 
-  export default new EmberTemplate(
+export default new EmberTemplate(
   'ember',
-  'ember-cli',
+  'ember',
   'https://www.emberjs.com',
-  'github/emberjs/ember-codesandbox-template',
+  'ember',
   decorateSelector(() => '#E04E39'),
   {
     showOnHomePage: true,
     showCube: false,
     isTypescript: true,
+    distDir: 'dist',
   }
-  );
+);
