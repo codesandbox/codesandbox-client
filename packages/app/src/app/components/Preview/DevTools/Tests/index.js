@@ -449,7 +449,5 @@ export default {
   title: 'Tests',
   Content: Tests,
   actions: [],
-  show: (template: Template) => {
-    return !getTemplate(template).isServer;
-  },
+  show: (template: Template) => !getTemplate(template).isServer,
 };

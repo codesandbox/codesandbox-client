@@ -45,7 +45,7 @@ class TerminalComponent extends React.PureComponent {
   }
 
   render() {
-    const { height, hidden, style } = this.props;
+    const { height, hidden } = this.props;
 
     return (
       <div
@@ -71,7 +71,5 @@ export default {
   title: 'Terminal',
   Content: TerminalComponent,
   actions: [],
-  show: template => {
-    return getTemplate(template).isServer;
-  },
+  show: template => getTemplate(template).isServer,
 };

@@ -6,8 +6,6 @@ import type { Sandbox, Module, Preferences } from 'common/types';
 import { listen, dispatch, registerFrame } from 'codesandbox-api';
 import { debounce } from 'lodash';
 import io from 'socket.io-client';
-import parse from 'console-feed/lib/Hook/parse';
-import { Encode } from 'console-feed/lib/Transform';
 
 import { frameUrl } from 'common/utils/url-generator';
 import { getModulePath } from 'common/sandbox/modules';
