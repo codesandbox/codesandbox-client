@@ -8,14 +8,14 @@
  */
 
 /* @flow */
-import { applyStyles } from '../utils/dom/css';
 import {
   additionalChildStyle,
-  groupStyle,
   groupElemLeft,
   groupElemRight,
+  groupStyle,
 } from '../styles';
 import { consumeEvent } from '../utils/dom/consumeEvent';
+import { applyStyles } from '../utils/dom/css';
 import { enableTabClick } from '../utils/dom/enableTabClick';
 
 type SwitchCallback = (offset: number) => void;

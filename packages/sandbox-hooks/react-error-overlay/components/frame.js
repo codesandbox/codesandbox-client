@@ -8,23 +8,23 @@
  */
 
 /* @flow */
+import { getCurrentManager } from 'app/src/sandbox/compile';
 import { actions, dispatch } from 'codesandbox-api';
+import {
+  anchorStyle,
+  depStyle,
+  functionNameStyle,
+  hiddenStyle,
+  linkStyle,
+  omittedFramesCollapsedStyle,
+  omittedFramesExpandedStyle,
+} from '../styles';
+import { applyStyles } from '../utils/dom/css';
 import { enableTabClick } from '../utils/dom/enableTabClick';
-import { createCode } from './code';
 import { isInternalFile } from '../utils/isInternalFile';
+import { createCode } from './code';
 import type { StackFrame } from '../utils/stack-frame';
 import type { FrameSetting, OmitsObject } from './frames';
-import { applyStyles } from '../utils/dom/css';
-import {
-  omittedFramesExpandedStyle,
-  omittedFramesCollapsedStyle,
-  functionNameStyle,
-  depStyle,
-  linkStyle,
-  anchorStyle,
-  hiddenStyle,
-} from '../styles';
-import { getCurrentManager } from '../../compile';
 
 function getGroupToggle(
   document: Document,

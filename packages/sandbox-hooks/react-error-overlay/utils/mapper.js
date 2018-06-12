@@ -7,10 +7,11 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
+// TODO change this
+import { getCurrentManager } from 'app/src/sandbox/compile';
 // @flow
 import StackFrame from './stack-frame';
 import { getSourceMap } from './getSourceMap';
-import { getCurrentManager } from '../../compile';
 import { getLinesAround } from './getLinesAround';
 import { settle } from 'settle-promise';
 

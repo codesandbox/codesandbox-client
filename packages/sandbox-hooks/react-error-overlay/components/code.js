@@ -9,7 +9,8 @@
 
 /* @flow */
 import type { ScriptLine } from '../utils/stack-frame';
-import { applyStyles } from '../utils/dom/css';
+import codeFrame from 'babel-code-frame';
+import generateAnsiHtml from 'react-dev-utils/ansiHTML';
 import {
   codeStyle,
   primaryErrorStyle,
@@ -17,10 +18,7 @@ import {
   secondaryErrorStyle,
   secondaryPreStyle,
 } from '../styles';
-
-import generateAnsiHtml from 'react-dev-utils/ansiHTML';
-
-import codeFrame from 'babel-code-frame';
+import { applyStyles } from '../utils/dom/css';
 
 function createCode(
   document: Document,

@@ -96,6 +96,7 @@ module.exports = {
           new RegExp(`${sepRe}node_modules${sepRe}.*ansi-styles`),
           new RegExp(`${sepRe}node_modules${sepRe}.*chalk`),
           new RegExp(`${sepRe}node_modules${sepRe}.*jest`),
+          new RegExp(`sandbox-hooks`),
           new RegExp(
             `${sepRe}node_modules${sepRe}vue-template-es2015-compiler`
           ),

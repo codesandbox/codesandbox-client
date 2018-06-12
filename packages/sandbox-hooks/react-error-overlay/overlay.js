@@ -9,6 +9,7 @@
 
 /* @flow */
 import { transformError } from 'codesandbox-api';
+import { getCurrentManager } from 'app/src/sandbox/compile';
 
 import {
   register as registerError,
@@ -51,7 +52,6 @@ import { createOverlay } from './components/overlay';
 import { updateAdditional } from './components/additional';
 
 import buildError from '../errors';
-import { getCurrentManager } from '../compile';
 
 const CONTEXT_SIZE: number = 3;
 let iframeReference: HTMLIFrameElement | null = null;

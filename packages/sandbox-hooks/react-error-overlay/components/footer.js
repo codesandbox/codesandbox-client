@@ -8,8 +8,8 @@
  */
 
 /* @flow */
-import { applyStyles } from '../utils/dom/css';
 import { footerStyle } from '../styles';
+import { applyStyles } from '../utils/dom/css';
 
 function createFooter(document: Document) {
   const div = document.createElement('div');

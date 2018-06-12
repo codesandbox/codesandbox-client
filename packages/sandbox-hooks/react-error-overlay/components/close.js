@@ -8,8 +8,8 @@
  */
 
 /* @flow */
+import { closeButtonStyle, hintsStyle, hintStyle } from '../styles';
 import { applyStyles } from '../utils/dom/css';
-import { hintsStyle, hintStyle, closeButtonStyle } from '../styles';
 
 function createHint(document: Document, hint: string, title: string) {
   const span = document.createElement('span');

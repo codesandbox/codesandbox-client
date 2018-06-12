@@ -8,26 +8,25 @@
  */
 
 /* @flow */
-import { applyStyles } from '../utils/dom/css';
+import { areActionsEnabled } from 'app/src/sandbox/compile';
 import {
   containerStyle,
-  overlayStyle,
   headerStyle,
   messageHeaderStyle,
   originalHeaderStyle,
   originalMessageHeaderStyle,
+  overlayStyle,
 } from '../styles';
+import { applyStyles } from '../utils/dom/css';
+import { updateAdditional } from './additional';
 import { createClose } from './close';
-import { createFrames } from './frames';
 import { createFooter } from './footer';
+import { createFrames } from './frames';
+import { createSuggestions } from './suggestions';
 import type { CloseCallback } from './close';
 import type { StackFrame } from '../utils/stack-frame';
-import { updateAdditional } from './additional';
 import type { FrameSetting } from './frames';
 import type { SwitchCallback } from './additional';
-import { createSuggestions } from './suggestions';
-
-import { areActionsEnabled } from '../../compile';
 
 function createOverlay(
   document: Document,
