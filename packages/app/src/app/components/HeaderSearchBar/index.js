@@ -1,8 +1,14 @@
 import React, { Component } from 'react';
 import history from 'app/utils/history';
+import { dispatch, actions } from 'codesandbox-api';
 import { searchUrl } from 'common/utils/url-generator';
+import {
+  CODE_SEARCH_ALGOLIA_API_KEY,
+  CODE_SEARCH_ALGOLIA_APPLICATION_ID,
+  CODE_SEARCH_ALGOLIA_DEFAULT_INDEX,
+} from 'common/utils/config';
 
-import { InstantSearch, PoweredBy } from 'react-instantsearch/dom';
+import { Configure, InstantSearch, PoweredBy } from 'react-instantsearch/dom';
 import { connectHits, connectSearchBox } from 'react-instantsearch/connectors';
 
 import {
@@ -18,7 +24,17 @@ const Hits = connectHits(({ hits, onClick }) => (
   <ResultContainer>
     {hits.map(hit => (
       <ResultItem key={hit.objectID}>
-        <a onClick={() => onClick(hit)}>{hit.path}</a>
+        <a onClick={() => onClick(hit)}>
+          {hit.path}
+
+          <pre>
+            <code
+              dangerouslySetInnerHTML={{
+                __html: hit._snippetResult.code.value,
+              }}
+            />
+          </pre>
+        </a>
       </ResultItem>
     ))}
   </ResultContainer>
@@ -55,18 +71,20 @@ class HeaderSearchBar extends Component {
     this.setState({ query });
   };
 
-  onClick = hit => {
-    console.log('open', hit);
+  onClick = ({ path }) => {
+    dispatch(actions.editor.openModule(path));
   };
 
   render() {
     return (
       <Container>
         <InstantSearch
-          appId="LUO7YFIJKR"
-          apiKey="5c5779039af0133516e12a9eb63096cf"
-          indexName="prod_code"
+          appId={CODE_SEARCH_ALGOLIA_APPLICATION_ID}
+          apiKey={CODE_SEARCH_ALGOLIA_API_KEY}
+          indexName={CODE_SEARCH_ALGOLIA_DEFAULT_INDEX}
         >
+          <Configure facetFilters={['sandboxId:' + this.props.sandboxId]} />
+
           <form onSubmit={this.onFormSubmit}>
             <Search onChange={this.onSearch} />
             <StyledSearchButton>

@@ -52,7 +52,7 @@ export const ResultContainer = styled.div`
   transition: 0.3s ease all;
   background: black;
   position: absolute;
-  width: 100%;
+  // width: 100%;
   z-index: 10;
 `;
 

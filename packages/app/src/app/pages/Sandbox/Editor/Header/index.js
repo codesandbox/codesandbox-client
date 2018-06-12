@@ -93,7 +93,7 @@ const Header = ({ store, signals }) => {
 
       <Right>
         <div style={{ marginRight: '0.5rem', fontSize: '.875rem' }}>
-          <HeaderSearchBar />
+          <HeaderSearchBar sandboxId={store.editor.currentId} />
         </div>
 
         {store.updateStatus === 'available' && (

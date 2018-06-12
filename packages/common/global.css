@@ -60,3 +60,8 @@ a {
 .react-console::-webkit-scrollbar-thumb:hover {
   background-color: rgba(0, 0, 0, 0.4);
 }
+
+ais-highlight-0000000000 {
+  color: white;
+  font-style: italic;
+}

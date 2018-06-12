@@ -451,12 +451,19 @@ async function compile({
     const main = absolute(foundMain);
     managerModuleToTranspile = modules[main];
 
+    function htmlEntities(str) {
+      return str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
     // Push into index
     Object.keys(modules).forEach(path => {
       const m = modules[path];
 
       m.objectID = path;
+      m.sandboxId = sandboxId;
+      m.code = htmlEntities(m.code);
 
+      // FIXME(sven): run a preprocess phase and batch insert all modules
       index.addObjects([m], (err, content) => console.log(err, content));
     });
 
