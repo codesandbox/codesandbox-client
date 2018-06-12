@@ -1,10 +1,9 @@
 // @flow
 import { dispatch, actions } from 'codesandbox-api';
-
-import type TranspiledModule from '../eval/transpiled-module';
+import { getCurrentManager } from 'app/src/sandbox/compile';
+import type TranspiledModule from 'app/src/sandbox/eval/transpiled-module';
 
 import type { ErrorRecord } from 'sandbox-hooks/react-error-overlay/utils/errorRegister';
-import { getCurrentManager } from '../compile';
 
 type TModuleError = Error & {
   hideLine?: boolean,
