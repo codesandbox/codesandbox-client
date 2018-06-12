@@ -68,6 +68,8 @@ class Canvas {
 
       if (renderDelta > 4000) {
         this.lowPerf = true;
+      } else {
+        this.lowPerf = false;
       }
 
       let distX;
