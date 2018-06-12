@@ -7,11 +7,11 @@ import registerServiceWorker from 'common/registerServiceWorker';
 import requirePolyfills from 'common/load-dynamic-polyfills';
 import { getModulePath } from 'common/sandbox/modules';
 import { generateFileFromSandbox } from 'common/templates/configuration/package-json';
+import setupConsole from 'sandbox-hooks/console';
+import setupHistoryListeners from 'sandbox-hooks/url-listeners';
 import { Encode } from 'console-feed/lib/Transform';
 
-import setupHistoryListeners from './url-listeners';
 import compile, { getCurrentManager } from './compile';
-import setupConsole from './console';
 
 const host = process.env.CODESANDBOX_HOST;
 const debug = _debug('cs:sandbox');

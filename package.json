@@ -34,7 +34,8 @@
     "packages/common",
     "packages/codesandbox-api",
     "packages/sandpack",
-    "packages/react-sandpack"
+    "packages/react-sandpack",
+    "packages/sandbox-hooks"
   ],
   "devDependencies": {
     "all-contributors-cli": "^4.3.0",

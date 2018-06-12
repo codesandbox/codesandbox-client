@@ -2,14 +2,14 @@ import { dispatch, reattach, clearErrorTransformers } from 'codesandbox-api';
 import { absolute } from 'common/utils/path';
 import _debug from 'app/utils/debug';
 import parseConfigurations from 'common/templates/configuration/parse';
+import initializeErrorTransformers from 'sandbox-hooks/errors/transformers';
 
-import initializeErrorTransformers from './errors/transformers';
 import getPreset from './eval';
 import Manager from './eval/manager';
 
 import { resetScreen } from './status-screen';
 
-import { inject, unmount } from './react-error-overlay/overlay';
+import { inject, unmount } from 'sandbox-hooks/react-error-overlay/overlay';
 import createCodeSandboxOverlay from './codesandbox-overlay';
 import handleExternalResources from './external-resources';
 

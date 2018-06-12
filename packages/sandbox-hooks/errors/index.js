@@ -3,7 +3,7 @@ import { dispatch, actions } from 'codesandbox-api';
 
 import type TranspiledModule from '../eval/transpiled-module';
 
-import type { ErrorRecord } from '../react-error-overlay/utils/errorRegister';
+import type { ErrorRecord } from 'sandbox-hooks/react-error-overlay/utils/errorRegister';
 import { getCurrentManager } from '../compile';
 
 type TModuleError = Error & {

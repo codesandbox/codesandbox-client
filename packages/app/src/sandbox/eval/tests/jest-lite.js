@@ -20,8 +20,8 @@ import {
 } from 'jest-circus/build/state';
 
 import run from './run-circus';
-import { parse } from '../../react-error-overlay/utils/parser';
-import { map } from '../../react-error-overlay/utils/mapper';
+import { parse } from 'sandbox-hooks/react-error-overlay/utils/parser';
+import { map } from 'sandbox-hooks/react-error-overlay/utils/mapper';
 
 import type Manager from '../manager';
 import type { Module } from '../entities/module';
