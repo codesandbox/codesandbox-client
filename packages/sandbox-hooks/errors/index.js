@@ -65,6 +65,8 @@ const wrappedResolveModule = (manager, path) => {
 };
 
 function buildDynamicError(ref: ErrorRecord) {
+  // TODO remove this logic for the SSE handler, move it to something more generic
+  // like a file store
   const manager = getCurrentManager();
 
   const relevantFrame = ref.enhancedFrames.find(r =>
