@@ -134,12 +134,22 @@ class BasePreview extends React.Component<Props, State> {
     this.$socket.on('connect', () => {
       this.$socket.emit('sandbox', id);
 
+      dispatch({
+        type: 'terminal:message',
+        data: '> CodeSandbox: connected! Initializing container...',
+      });
+
       if (!this.started) {
         this.start();
       }
     });
 
     this.$socket.on('sandbox:start', () => {
+      dispatch({
+        type: 'terminal:message',
+        data: '> CodeSandbox: sandbox started',
+      });
+
       this.started = true;
       if (!this.state.frameInitialized && this.props.onInitialized) {
         this.disposeInitializer = this.props.onInitialized(this);
@@ -162,8 +172,9 @@ class BasePreview extends React.Component<Props, State> {
       const message = `[${chan}]: ${data}`;
       console.log(message);
       dispatch({
-        type: 'console',
-        log: Encode(parse('log', [message.trimEnd()])),
+        type: 'terminal:message',
+        chan,
+        data,
       });
       this.setState(state => ({
         terminalMessages: [...state.terminalMessages, message],
@@ -462,6 +473,10 @@ class BasePreview extends React.Component<Props, State> {
       hide,
       noPreview,
     } = this.props;
+    if (this.IS_SERVER && !this.state.frameInitialized) {
+      return null;
+    }
+
     const { historyPosition, history, urlInAddressBar } = this.state;
     const url =
       urlInAddressBar ||
@@ -497,37 +512,23 @@ class BasePreview extends React.Component<Props, State> {
           />
         )}
 
-        {this.state.frameInitialized || !this.IS_SERVER ? (
-          <StyledFrame
-            sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups allow-presentation"
-            src={
-              this.IS_SERVER
-                ? `https://${sandbox.id}.sse.codesandbox.stream`
-                : frameUrl(sandbox.id, this.initialPath)
-            }
-            id="sandbox"
-            title={sandbox.id}
-            hideNavigation={!showNavigation}
-            style={{
-              pointerEvents:
-                dragging || inactive || this.props.isResizing
-                  ? 'none'
-                  : 'initial',
-            }}
-          />
-        ) : (
-          <div style={{ padding: '1rem' }}>
-            {this.state.stopped ? (
-              'Stopped'
-            ) : (
-              <div>
-                {this.state.terminalMessages.map((message, i) => (
-                  <pre key={i}>{message}</pre>
-                ))}
-              </div>
-            )}{' '}
-          </div>
-        )}
+        <StyledFrame
+          sandbox="allow-forms allow-scripts allow-same-origin allow-modals allow-popups allow-presentation"
+          src={
+            this.IS_SERVER
+              ? `https://${sandbox.id}.sse.codesandbox.stream`
+              : frameUrl(sandbox.id, this.initialPath)
+          }
+          id="sandbox"
+          title={sandbox.id}
+          hideNavigation={!showNavigation}
+          style={{
+            pointerEvents:
+              dragging || inactive || this.props.isResizing
+                ? 'none'
+                : 'initial',
+          }}
+        />
       </Container>
     );
   }

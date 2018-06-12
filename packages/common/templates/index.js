@@ -27,20 +27,20 @@ export {
   cxjs,
 };
 
-export default function getDefinition(
-  theme:
-    | 'create-react-app'
-    | 'vue-cli'
-    | 'preact-cli'
-    | 'svelte'
-    | 'create-react-app-typescript'
-    | 'angular-cli'
-    | 'parcel'
-    | 'cxjs'
-    | '@dojo/cli-create-app'
-    | 'gatsby'
-    | 'nuxt'
-) {
+export type Template =
+  | 'create-react-app'
+  | 'vue-cli'
+  | 'preact-cli'
+  | 'svelte'
+  | 'create-react-app-typescript'
+  | 'angular-cli'
+  | 'parcel'
+  | 'cxjs'
+  | '@dojo/cli-create-app'
+  | 'gatsby'
+  | 'nuxt';
+
+export default function getDefinition(theme: Template) {
   switch (theme) {
     case react.name:
       return react;

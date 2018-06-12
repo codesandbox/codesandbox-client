@@ -5,6 +5,7 @@ import { actions, dispatch, listen } from 'codesandbox-api';
 import SplitPane from 'react-split-pane';
 
 import immer from 'immer';
+import getTemplate, { type Template } from 'common/templates';
 
 import { Container, TestDetails, TestContainer } from './elements';
 
@@ -448,4 +449,7 @@ export default {
   title: 'Tests',
   Content: Tests,
   actions: [],
+  show: (template: Template) => {
+    return !getTemplate(template).isServer;
+  },
 };

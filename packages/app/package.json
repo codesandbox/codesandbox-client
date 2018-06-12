@@ -198,7 +198,8 @@
     "vue-eslint-parser": "^2.0.3",
     "vue-hot-reload-api": "^2.2.4",
     "vue-template-compiler": "^2.5.2",
-    "vue-template-es2015-compiler": "^1.6.0"
+    "vue-template-es2015-compiler": "^1.6.0",
+    "xterm": "^3.4.1"
   },
   "jest": {
     "roots": [
@@ -212,7 +213,7 @@
       "/create-zip\\/.*\\/files/"
     ],
     "transformIgnorePatterns": [
-      "node_modules/(?!(common|react-icons))"
+      "node_modules/(?!(common|react-icons|sandbox-hooks))"
     ],
     "moduleNameMapper": {
       "\\.css$": "<rootDir>/__mocks__/styleMock.js",

@@ -388,6 +388,7 @@ export default class Content extends React.PureComponent<Props, State> {
                 <DevTools
                   setDragging={this.setDragging}
                   sandboxId={sandbox.id}
+                  template={sandbox.template}
                   shouldExpandDevTools={this.props.expandDevTools}
                   view={view}
                 />

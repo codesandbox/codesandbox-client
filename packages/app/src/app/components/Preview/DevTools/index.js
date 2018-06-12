@@ -11,6 +11,7 @@ import Unread from './Unread';
 import console from './Console';
 import tests from './Tests';
 import problems from './Problems';
+import terminal from './Terminal';
 
 import { Container, Header, Tab, Actions } from './elements';
 
@@ -39,6 +40,7 @@ const PANES = {
   [console.title]: console,
   [problems.title]: problems,
   [tests.title]: tests,
+  [terminal.title]: terminal,
 };
 
 export type Status = {
@@ -48,6 +50,7 @@ export type Status = {
 
 type Props = {
   sandboxId: string,
+  template: string,
   setDragging?: (dragging: boolean) => void,
   zenMode?: boolean,
   shouldExpandDevTools?: boolean,
@@ -317,10 +320,15 @@ export default class DevTools extends React.PureComponent<Props, State> {
   node: HTMLElement;
 
   render() {
-    const { sandboxId, zenMode } = this.props;
+    const { sandboxId, template, zenMode } = this.props;
     const { hidden, height, status } = this.state;
 
     const { actions } = PANES[this.state.currentPane];
+
+    const PANES_TO_SHOW = Object.keys(PANES).filter(
+      paneName =>
+        PANES[paneName].show === undefined || PANES[paneName].show(template)
+    );
 
     return (
       <Container
@@ -337,7 +345,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
           onTouchStart={this.handleTouchStart}
           onMouseDown={this.handleMouseDown}
         >
-          {Object.keys(PANES).map(title => (
+          {PANES_TO_SHOW.map(title => (
             <Tab
               active={title === this.state.currentPane}
               onClick={e => {
@@ -382,7 +390,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
             />
           </Actions>
         </Header>
-        {Object.keys(PANES).map(title => {
+        {PANES_TO_SHOW.map(title => {
           const { Content } = PANES[title];
           return (
             <Content
@@ -390,6 +398,7 @@ export default class DevTools extends React.PureComponent<Props, State> {
               hidden={hidden || title !== this.state.currentPane}
               updateStatus={this.updateStatus(title)}
               sandboxId={sandboxId}
+              height={this.state.height}
             />
           );
         })}

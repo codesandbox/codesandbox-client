@@ -1,13 +1,14 @@
 import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;
 
   max-height: 100%;
   z-index: 100;
-  background-color: ${props => props.theme.background4};
+  background-color: ${props => props.theme.background2};
 `;
 
 export const Header = styled.div`
