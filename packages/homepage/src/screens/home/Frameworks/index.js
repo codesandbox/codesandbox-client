@@ -251,6 +251,11 @@ const TEMPLATE_SUPPORT = {
     css: ['Global', 'Scoped'],
     description: 'Used for Angular projects, based on: ',
   },
+  'ember': {
+    loaders: [ts, html, scss, sass, less, cssGlobal, image],
+    css: ['Global', 'Scoped'],
+    description: 'Used for ember-cli project, based on: '
+  },
   parcel: {
     loaders: [js, ts, html, scss, sass, less, cssGlobal, stylus, image],
     css: ['Global', 'Modules'],

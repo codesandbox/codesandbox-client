@@ -144,6 +144,7 @@ export type Sandbox = {
     | 'vue-cli'
     | 'preact-cli'
     | 'svelte',
+    | 'ember',
   entry: string,
   originalGit: ?GitInfo,
   originalGitCommitSha: ?string,

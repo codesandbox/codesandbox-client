@@ -1,6 +1,7 @@
 // @flow
 import angular from './angular';
 import babel from './babel';
+import ember from './ember';
 import parcel from './parcel';
 import preact from './preact';
 import react from './react';
@@ -12,6 +13,7 @@ import dojo from './dojo';
 
 export {
   angular,
+  ember,
   babel,
   vue,
   react,
@@ -34,6 +36,7 @@ export default function getDefinition(
     | 'parcel'
     | 'cxjs'
     | '@dojo/cli-create-app'
+    | 'ember'
 ) {
   switch (theme) {
     case react.name:
@@ -46,6 +49,8 @@ export default function getDefinition(
       return reactTs;
     case svelte.name:
       return svelte;
+    case ember.name:
+      return ember;
     case angular.name:
       return angular;
     case parcel.name:

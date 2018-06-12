@@ -11,6 +11,7 @@ import {
   newVueSandboxUrl,
   newAngularSandboxUrl,
   newDojoSandboxUrl,
+  newEmberSandboxUrl,
   newSvelteSandboxUrl,
   newCxJSSandboxUrl,
   importFromGitHubUrl,
@@ -25,6 +26,7 @@ import SvelteIcon from 'common/components/logos/Svelte';
 import AngularIcon from 'common/components/logos/Angular';
 import CxJSIcon from 'common/components/logos/CxJS';
 import DojoIcon from 'common/components/logos/Dojo';
+import EmberIcon from 'common/components/logos/Ember';
 
 import {
   Container,
@@ -71,6 +73,14 @@ function NewSandbox({ signals }) {
           height={50}
           text="Vue"
           href={newVueSandboxUrl()}
+          onClick={() => signals.modalClosed()}
+        />
+        <Logo
+          Icon={EmberIcon}
+          width={50}
+          height={50}
+          text="Ember"
+          href={newEmberSandboxUrl()}
           onClick={() => signals.modalClosed()}
         />
         <Logo

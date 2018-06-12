@@ -16,6 +16,7 @@ import {
   parcel,
   cxjs,
   dojo,
+  ember,
 } from 'common/templates';
 
 import Background from './Background';
@@ -76,6 +77,7 @@ const TEMPLATES = [
   svelte,
   cxjs,
   dojo,
+  ember,
 ];
 
 export default class Animation extends React.PureComponent {

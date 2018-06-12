@@ -29,6 +29,7 @@ export default class Background extends React.PureComponent {
   colors = {
     'create-react-app': '#1E2428',
     '@dojo/cli-create-app': '#211D1C',
+    'ember': '#E04E39',
     'vue-cli': '#1D2525',
     'preact-cli': '#202328',
     svelte: '#202022',
