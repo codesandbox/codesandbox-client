@@ -14,6 +14,7 @@ import GitProvider from './providers/Git';
 import LiveProvider from './providers/Live';
 import OTProvider from './providers/OT';
 import KeybindingManagerProvider from './providers/KeybindingManager';
+import SSEProvider from './providers/SSE';
 
 import * as sequences from './sequences';
 import * as errors from './errors';
@@ -113,5 +114,6 @@ export default Module({
     keybindingManager: KeybindingManagerProvider,
     live: LiveProvider,
     ot: OTProvider,
+    sse: SSEProvider,
   },
 });

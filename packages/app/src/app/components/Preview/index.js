@@ -82,6 +82,40 @@ const getDiff = (a, b) => {
   return diff;
 };
 
+async function retrieveSSEToken() {
+  const jwt = localStorage.getItem('jwt');
+
+  if (jwt) {
+    const existingKey = localStorage.getItem('sse');
+    const currentTime = new Date().getTime();
+
+    if (existingKey) {
+      if (currentTime - existingKey.timestamp > 24 * 60 * 60 * 1000) {
+        return existingKey.key;
+      }
+    }
+
+    return fetch('/api/v1/users/current_user/sse', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    })
+      .then(x => x.json())
+      .then(({ result }) => result.jwt)
+      .then(token => {
+        localStorage.setItem('sse', {
+          key: token,
+          timestamp: currentTime,
+        });
+
+        return token;
+      });
+  }
+
+  return null;
+}
+
 class BasePreview extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
@@ -118,7 +152,7 @@ class BasePreview extends React.Component<Props, State> {
     }
   }
 
-  setupSockets = (id: string) => {
+  setupSockets = async (id: string) => {
     if (this.$socket) {
       this.started = false;
       this.setState({
@@ -130,6 +164,8 @@ class BasePreview extends React.Component<Props, State> {
     this.$socket = io('https://sse1.codesandbox.stream', {
       autoConnect: false,
     });
+
+    const token = await retrieveSSEToken();
 
     this.$socket.on('connect', () => {
       this.$socket.emit('sandbox', id);
