@@ -90,8 +90,9 @@ async function retrieveSSEToken() {
     const currentTime = new Date().getTime();
 
     if (existingKey) {
-      if (currentTime - existingKey.timestamp > 24 * 60 * 60 * 1000) {
-        return existingKey.key;
+      const parsedKey = JSON.parse(existingKey);
+      if (currentTime - parsedKey.timestamp > 24 * 60 * 60 * 1000) {
+        return parsedKey.key;
       }
     }
 
@@ -105,10 +106,13 @@ async function retrieveSSEToken() {
       .then(x => x.json())
       .then(({ result }) => result.jwt)
       .then(token => {
-        localStorage.setItem('sse', {
-          key: token,
-          timestamp: currentTime,
-        });
+        localStorage.setItem(
+          'sse',
+          JSON.stringify({
+            key: token,
+            timestamp: currentTime,
+          })
+        );
 
         return token;
       });
