@@ -61,10 +61,10 @@ manager.updatePreview({
     '/index.js': {
       code: `console.log('New Text!')`,
     },
-    entry: '/index.js',
-    dependencies: {
-      uuid: 'latest',
-    },
+  },
+  entry: '/index.js',
+  dependencies: {
+    uuid: 'latest',
   },
 });
 ```
