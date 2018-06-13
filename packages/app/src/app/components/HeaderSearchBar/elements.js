@@ -49,14 +49,23 @@ export const StyledSearchButton = styled.button`
 `;
 
 export const ResultContainer = styled.div`
-  transition: 0.3s ease all;
-  background: black;
+  background: #24282a;
   position: absolute;
   // width: 100%;
   z-index: 10;
+
+  transition: all 0.3s ease-in-out 0s, visibility 0s linear 0.3s,
+    z-index 0s linear 0.01s;
+`;
+
+const selectedCss = `
+  background-color: rgba(108,174,221,0.09);
+  border-color: rgb(38,110,161);
 `;
 
 export const ResultItem = styled.div`
-  color: white;
-  padding: 7px;
+  padding: 20px 10px;
+  border-left: 2px solid transparent;
+
+  ${({ selected }) => (selected === true ? selectedCss : '')};
 `;

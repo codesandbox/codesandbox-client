@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import history from 'app/utils/history';
 import { dispatch, actions } from 'codesandbox-api';
 import { searchUrl } from 'common/utils/url-generator';
+import getType from '../../utils/get-type';
+import EntryIcons from 'app/pages/Sandbox/Editor/Workspace/Files/DirectoryEntry/Entry/EntryIcons';
 import {
   CODE_SEARCH_ALGOLIA_API_KEY,
   CODE_SEARCH_ALGOLIA_APPLICATION_ID,
@@ -20,31 +22,131 @@ import {
   ResultItem,
 } from './elements';
 
-const Hits = connectHits(({ hits, onClick }) => (
-  <ResultContainer>
-    {hits.map(hit => (
-      <ResultItem key={hit.objectID}>
-        <a onClick={() => onClick(hit)}>
-          {hit.path}
+const KEY_CLOSE = 27;
+const KEY_OPEN = 13;
+const KEY_UP = 38;
+const KEY_DOWN = 40;
 
-          <pre>
-            <code
-              dangerouslySetInnerHTML={{
-                __html: hit._snippetResult.code.value,
-              }}
-            />
-          </pre>
-        </a>
-      </ResultItem>
-    ))}
-  </ResultContainer>
-));
+function getSnippetResult(hit) {
+  const snippet = hit._snippetResult.code;
 
-const Search = connectSearchBox(({ currentRefinement, refine, onChange }) => (
+  if (snippet.matchLevel === 'none') {
+    return '…';
+  }
+
+  return snippet.value;
+}
+
+const nameFromPath = n => n.split('/').pop();
+
+const Hits = connectHits(
+  class extends Component {
+    constructor(props) {
+      super(props);
+
+      this.state = this.getInitialState();
+    }
+
+    getInitialState = () => ({
+      selected: -1, // nothing
+    });
+
+    componentDidMount = () => {
+      window.addEventListener('keydown', this.onKeyDown);
+    };
+
+    onKeyDown = e => {
+      if (e.keyCode === KEY_CLOSE) {
+        this.props.onCancel();
+      }
+
+      if (e.keyCode === KEY_UP) {
+        this.setState(({ selected }) => ({
+          selected: Math.max(selected - 1, 0),
+        }));
+      }
+
+      if (e.keyCode === KEY_DOWN) {
+        const maxIndex = this.props.hits.length - 1;
+
+        this.setState(({ selected }) => ({
+          selected: Math.min(selected + 1, maxIndex),
+        }));
+      }
+
+      if (e.keyCode === KEY_OPEN) {
+        // If an entry has been selected, open it
+        if (this.state.selected !== -1) {
+          e.preventDefault();
+          e.stopPropagation();
+
+          this.openSelected();
+          this.setState(this.getInitialState);
+
+          this.props.onCancel();
+        }
+      }
+    };
+
+    componentWillUnmount = () => {
+      window.removeEventListener('keydown', this.onKeyDown);
+    };
+
+    select = selected => () => {
+      this.setState({ selected });
+    };
+
+    openSelected = () => {
+      if (this.state.selected === -1) {
+        // Nothing was selected
+        return;
+      }
+
+      const entry = this.props.hits[this.state.selected];
+
+      if (typeof entry !== 'undefined') {
+        this.props.onOpen(entry.path);
+      }
+    };
+
+    render() {
+      const { hits } = this.props;
+
+      return (
+        <ResultContainer>
+          {hits.map((hit, i) => (
+            <a
+              key={hit.objectID}
+              onClick={this.openSelected}
+              onMouseOver={this.select(i)}
+            >
+              <ResultItem selected={this.state.selected === i}>
+                <div>
+                  <EntryIcons type={getType(nameFromPath(hit.path))} />
+                  {hit.path}
+                </div>
+
+                <pre>
+                  <code
+                    dangerouslySetInnerHTML={{
+                      __html: getSnippetResult(hit),
+                    }}
+                  />
+                </pre>
+              </ResultItem>
+            </a>
+          ))}
+        </ResultContainer>
+      );
+    }
+  }
+);
+
+const Search = connectSearchBox(({ value, refine, onChange }) => (
   <Input
-    autocomplete="off"
+    autoComplete="off"
     type="text"
-    value={currentRefinement}
+    value={value}
     name="q"
     placeholder="Search sandboxes"
     onChange={e => {
@@ -58,8 +160,12 @@ class HeaderSearchBar extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { query: '' };
+    this.state = this.getInitialState();
   }
+
+  getInitialState = () => ({
+    query: '',
+  });
 
   onFormSubmit = e => {
     e.preventDefault();
@@ -71,8 +177,12 @@ class HeaderSearchBar extends Component {
     this.setState({ query });
   };
 
-  onClick = ({ path }) => {
+  onOpen = path => {
     dispatch(actions.editor.openModule(path));
+  };
+
+  onCancel = () => {
+    this.setState(this.getInitialState);
   };
 
   render() {
@@ -85,14 +195,18 @@ class HeaderSearchBar extends Component {
         >
           <Configure facetFilters={['sandboxId:' + this.props.sandboxId]} />
 
-          <form onSubmit={this.onFormSubmit}>
-            <Search onChange={this.onSearch} />
+          <form onSubmit={this.onFormSubmit} autoComplete="off">
+            <Search onChange={this.onSearch} value={this.state.query} />
             <StyledSearchButton>
               <StyledSearchIcon />
             </StyledSearchButton>
           </form>
 
-          {this.state.query.length > 0 ? <Hits onClick={this.onClick} /> : ''}
+          {this.state.query.length > 0 ? (
+            <Hits onCancel={this.onCancel} onOpen={this.onOpen} />
+          ) : (
+            ''
+          )}
         </InstantSearch>
       </Container>
     );
