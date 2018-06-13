@@ -98,6 +98,7 @@ async function retrieveSSEToken() {
     return fetch('/api/v1/users/current_user/sse', {
       method: 'POST',
       headers: {
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${jwt}`,
       },
     })
@@ -168,7 +169,7 @@ class BasePreview extends React.Component<Props, State> {
     const token = await retrieveSSEToken();
 
     this.$socket.on('connect', () => {
-      this.$socket.emit('sandbox', id);
+      this.$socket.emit('sandbox', { id, token });
 
       dispatch({
         type: 'terminal:message',
