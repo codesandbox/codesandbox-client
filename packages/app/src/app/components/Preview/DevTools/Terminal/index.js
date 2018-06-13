@@ -15,10 +15,9 @@ class TerminalComponent extends React.PureComponent {
     this.term.setOption('theme', {
       background: '#1c2022',
     });
-    this.term.setOption('allowTransparency', true);
-    this.term.setOption('fontFamily', 'Menlo');
-    this.term.setOption('fontWeight', '100');
-    this.term.setOption('fontWeightBold', '100');
+    this.term.setOption('fontFamily', 'Source Code Pro');
+    this.term.setOption('fontWeight', 'normal');
+    this.term.setOption('fontWeightBold', 'bold');
     this.term.setOption('lineHeight', 1.4);
     this.term.setOption('fontSize', 14);
 

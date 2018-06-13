@@ -86,6 +86,7 @@ async function retrieveSSEToken() {
   const jwt = localStorage.getItem('jwt');
 
   if (jwt) {
+    const parsedJWT = JSON.parse(jwt);
     const existingKey = localStorage.getItem('sse');
     const currentTime = new Date().getTime();
 
@@ -100,11 +101,11 @@ async function retrieveSSEToken() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${jwt}`,
+        Authorization: `Bearer ${parsedJWT}`,
       },
     })
       .then(x => x.json())
-      .then(({ result }) => result.jwt)
+      .then(result => result.jwt)
       .then(token => {
         localStorage.setItem(
           'sse',
@@ -115,7 +116,8 @@ async function retrieveSSEToken() {
         );
 
         return token;
-      });
+      })
+      .catch(() => null);
   }
 
   return null;
