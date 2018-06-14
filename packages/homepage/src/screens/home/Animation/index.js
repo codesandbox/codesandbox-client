@@ -67,8 +67,8 @@ const Message = styled.div`
 `;
 
 const TEMPLATES = [
-  parcel,
   react,
+  parcel,
   vue,
   angular,
   preact,
