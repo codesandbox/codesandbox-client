@@ -2,13 +2,7 @@ import { dispatch, reattach, clearErrorTransformers } from 'codesandbox-api';
 import { absolute } from 'common/utils/path';
 import _debug from 'app/utils/debug';
 import parseConfigurations from 'common/templates/configuration/parse';
-import { CODE_SEARCH_SIZE_LIMIT } from 'common/utils/config';
-
-import {
-  CODE_SEARCH_ALGOLIA_API_KEY,
-  CODE_SEARCH_ALGOLIA_APPLICATION_ID,
-  CODE_SEARCH_ALGOLIA_DEFAULT_INDEX,
-} from 'common/utils/config';
+import * as codeSearch from 'common/utils/code-search';
 
 import initializeErrorTransformers from './errors/transformers';
 import getPreset from './eval';
@@ -33,14 +27,6 @@ import { consumeCache, saveCache, deleteAPICache } from './eval/cache';
 import getDefinition from '../../../common/templates/index';
 
 import { showRunOnClick } from './status-screen/run-on-click';
-
-import algoliasearch from 'algoliasearch';
-
-const client = algoliasearch(
-  CODE_SEARCH_ALGOLIA_APPLICATION_ID,
-  CODE_SEARCH_ALGOLIA_API_KEY
-);
-const index = client.initIndex(CODE_SEARCH_ALGOLIA_DEFAULT_INDEX);
 
 let initializedResizeListener = false;
 let manager: ?Manager = null;
@@ -461,33 +447,7 @@ async function compile({
     const main = absolute(foundMain);
     managerModuleToTranspile = modules[main];
 
-    function htmlEntities(str) {
-      return str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    }
-
-    const codeIndexBatch = Object.keys(modules).map(path => {
-      const m = modules[path];
-
-      m.objectID = path;
-      m.sandboxId = sandboxId;
-      m.code = htmlEntities(m.code);
-
-      if (m.code.length > CODE_SEARCH_SIZE_LIMIT) {
-        console.warn(path + ' is too big to be indexed');
-        m.code = '';
-      }
-
-      return m;
-
-      // FIXME(sven): update only the code who changed
-    });
-
-    // Push into index
-    index.addObjects(codeIndexBatch, err => {
-      if (err) {
-        console.error('Code index encountered an error', err);
-      }
-    });
+    codeSearch.indexModules(modules, sandboxId);
 
     dispatch({ type: 'status', status: 'transpiling' });
 
