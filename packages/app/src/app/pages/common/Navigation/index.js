@@ -14,7 +14,7 @@ import UserMenu from '../UserMenu';
 import { LogoWithBorder, Border, Title, Actions, Action } from './elements';
 
 function Navigation({ signals, store, title }) {
-  const { user, isPatron } = store;
+  const { isLoggedIn, isPatron } = store;
 
   return (
     <Row justifyContent="space-between">
@@ -51,7 +51,7 @@ function Navigation({ signals, store, title }) {
             </Tooltip>
           </Action>
         </Actions>
-        {user ? <UserMenu /> : <SignInButton />}
+        {isLoggedIn ? <UserMenu /> : <SignInButton />}
       </Row>
     </Row>
   );
