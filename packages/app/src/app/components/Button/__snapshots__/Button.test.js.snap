@@ -48,9 +48,9 @@ exports[`Button renders disabled 1`] = `
   transition: 0.3s ease all;
   border: none;
   outline: none;
-  background: rgb(25,29,31);
+  background-color: rgb(25,29,31);
   background-size: 720%;
-  border: 161A1C;
+  border: 2px solid #161A1C;
   border-radius: 4px;
   box-sizing: border-box;
   font-size: 1.125em;
@@ -68,7 +68,7 @@ exports[`Button renders disabled 1`] = `
 }
 
 .c0:hover {
-  background: rgb(25,29,31);
+  background-color: rgb(25,29,31);
 }
 
 <button
@@ -219,7 +219,7 @@ exports[`Button renders secondary 1`] = `
   transition: 0.3s ease all;
   border: none;
   outline: none;
-  background: #3A4B5D;
+  background-color: #3A4B5D;
   background-size: 720%;
   border: 1px solid #56a0d6;
   border-radius: 4px;
@@ -240,7 +240,7 @@ exports[`Button renders secondary 1`] = `
 }
 
 .c0:hover {
-  background: #3A4B5D;
+  background-color: #3A4B5D;
 }
 
 <button
