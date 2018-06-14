@@ -81,9 +81,6 @@ const Hits = connectHits(
           e.stopPropagation();
 
           this.openSelected();
-          this.setState(this.getInitialState);
-
-          this.props.onCancel();
         }
       }
     };
@@ -107,6 +104,9 @@ const Hits = connectHits(
       if (typeof entry !== 'undefined') {
         this.props.onOpen(entry.path);
       }
+
+      this.setState(this.getInitialState);
+      this.props.onCancel();
     };
 
     render() {
