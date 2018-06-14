@@ -16,5 +16,6 @@ export default function(code: string, loaderContext: LoaderContext) {
   if (Array.isArray(part)) {
     part = part[query.index];
   }
-  return Promise.resolve({ transpiledCode: part.content });
+
+  return Promise.resolve({ transpiledCode: part ? part.content : '' });
 }
