@@ -12,28 +12,34 @@ class ContextMenu extends React.Component {
       y: 0,
       show: false,
     };
+
+    this.mousedownHandler = mousedownEvent => {
+      const { show } = this.state;
+
+      if (show && this.el) {
+        if (!this.el.contains(mousedownEvent.target)) {
+          this.close();
+        }
+      }
+    };
+
+    this.keydownHandler = keydownEvent => {
+      const { show } = this.state;
+      if (keydownEvent.keyCode === 27 && show) {
+        // Escape
+        this.close();
+      }
+    };
   }
 
   onContextMenu = event => {
     if (!this.unmounted) {
       event.preventDefault();
-      this.mousedown = window.addEventListener('mousedown', mousedownEvent => {
-        const { show } = this.state;
-
-        if (show && this.el) {
-          if (!this.el.contains(mousedownEvent.target)) {
-            this.close();
-          }
-        }
-      });
-
-      this.keydown = window.addEventListener('keydown', keydownEvent => {
-        const { show } = this.state;
-        if (keydownEvent.keyCode === 27 && show) {
-          // Escape
-          this.close();
-        }
-      });
+      this.mousedown = window.addEventListener(
+        'mousedown',
+        this.mousedownHandler
+      );
+      this.keydown = window.addEventListener('keydown', this.keydownHandler);
 
       this.setState({
         show: true,
@@ -53,8 +59,8 @@ class ContextMenu extends React.Component {
   }
 
   unregisterListeners = () => {
-    window.removeEventListener('keydown', this.keydown);
-    window.removeEventListener('mousedown', this.mousedown);
+    window.removeEventListener('keydown', this.keydownHandler);
+    window.removeEventListener('mousedown', this.mousedownHandler);
   };
 
   close = () => {
