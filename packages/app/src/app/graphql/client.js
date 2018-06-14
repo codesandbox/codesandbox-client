@@ -21,14 +21,16 @@ const authLink = setContext((_, { headers }) => {
   };
 });
 
-const absintheAfterware = new ApolloLink((operation, forward) => {
-  return forward(operation).map(result => {
+const absintheAfterware = new ApolloLink((operation, forward) =>
+  forward(operation).map(result => {
+    /* eslint-disable no-param-reassign */
     result.errors = result.payload.errors;
     result.data = result.payload.data;
+    /* eslint-enable */
 
     return result;
-  });
-});
+  })
+);
 
 const errorHandler = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {
@@ -58,5 +60,3 @@ export const client = new ApolloClient({
   }),
   queryDeduplication: true,
 });
-
-console.log(client);

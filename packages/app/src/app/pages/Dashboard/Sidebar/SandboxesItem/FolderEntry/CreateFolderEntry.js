@@ -1,5 +1,4 @@
 import React from 'react';
-import gql from 'graphql-tag';
 import { Mutation } from 'react-apollo';
 
 import AddFolderIcon from 'react-icons/lib/md/create-new-folder';

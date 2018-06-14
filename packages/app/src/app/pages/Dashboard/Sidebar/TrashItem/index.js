@@ -6,7 +6,6 @@ import { withRouter } from 'react-router';
 import { inject, observer } from 'mobx-react';
 
 import Item from '../Item';
-import { deleteSandboxes } from '../../queries';
 
 const TrashItem = ({ isOver, canDrop, connectDropTarget }) =>
   connectDropTarget(
