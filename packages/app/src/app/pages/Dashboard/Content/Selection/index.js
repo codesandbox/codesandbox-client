@@ -1,7 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const Container = styled.div`
+import { Spring, animated } from 'react-spring';
+
+const Container = styled(animated.div)`
   position: fixed;
   border: 1px solid ${props => props.theme.secondary};
   background-color: ${props => props.theme.secondary.clearer(0.5)};
@@ -25,7 +27,11 @@ export function getBounds(startX, startY, endX, endY) {
 const Selection = ({ startX, startY, endX, endY }) => {
   const { top, height, left, width } = getBounds(startX, startY, endX, endY);
 
-  return <Container style={{ top, width, left, height }} />;
+  return (
+    <Spring native immediate to={{ top, height, left, width }}>
+      {style => <Container style={style} />}
+    </Spring>
+  );
 };
 
 export default Selection;

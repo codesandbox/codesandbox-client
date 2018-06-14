@@ -8,7 +8,7 @@ import OverlayComponent from '../Overlay';
 
 import Option from './Option';
 
-const FilterOptions = ({ possibleTemplates, store, signals }) => {
+const FilterOptions = ({ possibleTemplates, hideFilters, store, signals }) => {
   const toggleTemplate = (name, select) =>
     select
       ? signals.dashboard.blacklistedTemplateRemoved({
@@ -57,7 +57,7 @@ const FilterOptions = ({ possibleTemplates, store, signals }) => {
   return (
     <OverlayComponent Overlay={Overlay}>
       {open => (
-        <Container>
+        <Container hideFilters={hideFilters}>
           Showing{' '}
           <TemplatesName onClick={open}>{templateMessage}</TemplatesName>
         </Container>

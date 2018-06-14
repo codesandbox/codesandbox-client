@@ -2,7 +2,10 @@
 import styled from 'styled-components';
 import fadeIn from 'common/utils/animation/fade-in';
 import Tooltip from 'common/components/Tooltip';
+import ContextMenu from 'app/components/ContextMenu';
 import MoreInfoIcon from './KebabIcon';
+
+export const PADDING = 32;
 
 export const Container = styled.div`
   ${fadeIn(0)};
@@ -12,6 +15,12 @@ export const Container = styled.div`
   user-select: none;
 
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+`;
+
+export const StyledContextMenu = styled(ContextMenu)`
+  padding-right: ${PADDING}px;
+  box-sizing: border-box;
+  opacity: ${({ isDraggingItem }) => (isDraggingItem ? 0 : 1)};
 `;
 
 export const SandboxImageContainer = styled.div`

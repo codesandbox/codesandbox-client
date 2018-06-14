@@ -100,7 +100,10 @@ class ContextMenu extends React.Component {
     };
 
     return (
-      <div {...props} onContextMenu={this.onContextMenu}>
+      <div
+        {...props}
+        onContextMenu={childFunction ? undefined : this.onContextMenu}
+      >
         {childFunction ? children(this.onContextMenu) : children}
         {show && (
           <Portal>

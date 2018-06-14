@@ -1,12 +1,20 @@
 import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
+  transition: 0.3s ease opacity;
   position: relative;
   color: rgba(255, 255, 255, 0.6);
   font-size: 0.875rem;
 
   margin-right: 1rem;
   vertical-align: middle;
+
+  ${props =>
+    props.hideFilters &&
+    css`
+      opacity: 0.5;
+      pointer-events: none;
+    `};
 `;
 
 export const TemplatesName = styled.span`

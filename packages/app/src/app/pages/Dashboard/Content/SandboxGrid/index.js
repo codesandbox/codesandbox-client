@@ -3,6 +3,7 @@ import { inject, observer } from 'mobx-react';
 
 import moment from 'moment';
 import { uniq } from 'lodash';
+import { basename } from 'path';
 
 import Grid from 'react-virtualized/dist/commonjs/Grid';
 import Column from 'react-virtualized/dist/commonjs/Table/Column';
@@ -10,7 +11,8 @@ import Table from 'react-virtualized/dist/commonjs/Table';
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
 import 'react-virtualized/styles.css';
 
-import SandboxItem, { PADDING } from '../SandboxCard';
+import SandboxItem from '../SandboxCard';
+import { PADDING } from '../SandboxCard/elements';
 import Selection, { getBounds } from '../Selection';
 import { Content, StyledRow } from './elements';
 import DragLayer from '../DragLayer';
@@ -160,7 +162,7 @@ class SandboxGrid extends React.Component<*, State> {
 
       // eslint-disable-next-line no-restricted-syntax
       for (const sandbox of sandboxes) {
-        const [{ top, height, left, width }] = sandbox.getClientRects();
+        const { top, height, left, width } = sandbox.getBoundingClientRect();
         const padding = IS_TABLE ? 0 : PADDING;
         const boxWidth = width - padding;
         const boxHeight = height - padding;
@@ -194,12 +196,28 @@ class SandboxGrid extends React.Component<*, State> {
     }
     const item = sandboxes[index];
 
-    const usedOrder =
-      item.removedAt ||
-      item[this.props.store.dashboard.orderBy.field] ||
-      item.updatedAt;
+    const getOrder = () => {
+      if (item.removedAt) {
+        return `Deleted ${moment.utc(item.removedAt).fromNow()}`;
+      }
 
-    const editedSince = moment.utc(usedOrder).fromNow();
+      const orderField = this.props.store.dashboard.orderBy.field;
+      if (orderField === 'insertedAt') {
+        return `Created ${moment.utc(item.insertedAt).fromNow()}`;
+      }
+
+      return `Edited ${moment.utc(item.updatedAt).fromNow()}`;
+    };
+
+    let editedSince = getOrder();
+
+    if (this.props.page === 'search' || this.props.page === 'recents') {
+      const dir = basename(item.collection.path) || 'My Sandboxes';
+
+      if (dir) {
+        editedSince += ` in ${dir}`;
+      }
+    }
 
     return (
       <SandboxItem

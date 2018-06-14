@@ -11,7 +11,6 @@ import Unlisted from 'react-icons/lib/md/insert-link';
 import Private from 'react-icons/lib/md/lock';
 
 import Input from 'common/components/Input';
-import ContextMenu from 'app/components/ContextMenu';
 import getTemplate from 'common/templates';
 import theme from 'common/theme';
 
@@ -20,6 +19,7 @@ import { RENAME_SANDBOX_MUTATION } from '../../queries';
 import {
   Container,
   SandboxImageContainer,
+  StyledContextMenu,
   SandboxImage,
   SandboxInfo,
   SandboxDetails,
@@ -46,9 +46,7 @@ type Props = {
   undeleteSandboxes: () => void,
 };
 
-export const PADDING = 32;
-
-class SandboxItem extends React.Component<Props> {
+class SandboxItem extends React.PureComponent<Props> {
   el: HTMLDivElement;
 
   state = {
@@ -292,13 +290,9 @@ class SandboxItem extends React.Component<Props> {
     const templateInfo = getTemplate(template);
 
     return (
-      <ContextMenu
-        style={{
-          ...style,
-          paddingRight: PADDING,
-          boxSizing: 'border-box',
-          opacity: isDraggingItem ? 0 : 1,
-        }}
+      <StyledContextMenu
+        style={style}
+        isDraggingItem={isDraggingItem}
         id={id}
         childFunction
         className="sandbox-item"
@@ -316,7 +310,10 @@ class SandboxItem extends React.Component<Props> {
               <Container
                 style={{ outline: 'none' }}
                 onMouseDown={this.handleMouseDown}
-                onContextMenu={this.handleOnContextMenu}
+                onContextMenu={e => {
+                  onContextMenu(e);
+                  this.handleOnContextMenu(e);
+                }}
                 onDoubleClick={this.openSandbox}
                 onBlur={this.handleOnBlur}
                 onFocus={this.handleOnFocus}
@@ -421,7 +418,7 @@ class SandboxItem extends React.Component<Props> {
             </div>
           )
         }
-      </ContextMenu>
+      </StyledContextMenu>
     );
   }
 }
