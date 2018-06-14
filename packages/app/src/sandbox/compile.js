@@ -4,6 +4,12 @@ import _debug from 'app/utils/debug';
 import parseConfigurations from 'common/templates/configuration/parse';
 import { CODE_SEARCH_SIZE_LIMIT } from 'common/utils/config';
 
+import {
+  CODE_SEARCH_ALGOLIA_API_KEY,
+  CODE_SEARCH_ALGOLIA_APPLICATION_ID,
+  CODE_SEARCH_ALGOLIA_DEFAULT_INDEX,
+} from 'common/utils/config';
+
 import initializeErrorTransformers from './errors/transformers';
 import getPreset from './eval';
 import Manager from './eval/manager';
@@ -30,8 +36,11 @@ import { showRunOnClick } from './status-screen/run-on-click';
 
 import algoliasearch from 'algoliasearch';
 
-const client = algoliasearch('LUO7YFIJKR', '5c5779039af0133516e12a9eb63096cf');
-const index = client.initIndex('prod_code');
+const client = algoliasearch(
+  CODE_SEARCH_ALGOLIA_APPLICATION_ID,
+  CODE_SEARCH_ALGOLIA_API_KEY
+);
+const index = client.initIndex(CODE_SEARCH_ALGOLIA_DEFAULT_INDEX);
 
 let initializedResizeListener = false;
 let manager: ?Manager = null;
