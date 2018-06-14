@@ -4,24 +4,17 @@ exports[`Button renders 1`] = `
 .c0 {
   -webkit-transition: 0.3s ease all;
   transition: 0.3s ease all;
-  -webkit-animation-name: cUPaoU;
-  animation-name: cUPaoU;
-  -webkit-animation-duration: 300ms;
-  animation-duration: 300ms;
-  -webkit-animation-timing-function: ease;
-  animation-timing-function: ease;
   border: none;
   outline: none;
-  background-image: linear-gradient(270deg,#fed29d,#A58B66,#7abae8,#56a0d6);
+  background-color: #40A9F3;
   background-size: 720%;
-  border: none;
+  border: 2px solid #66B9F4;
   border-radius: 4px;
   box-sizing: border-box;
   font-size: 1.125em;
   text-align: center;
   color: white;
   font-weight: 400;
-  box-shadow: 0 3px 3px rgba(0,0,0,0.5);
   width: inherit;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -29,31 +22,12 @@ exports[`Button renders 1`] = `
   user-select: none;
   -webkit-text-decoration: none;
   text-decoration: none;
+  font-weight: 600;
   cursor: pointer;
 }
 
 .c0:hover {
-  -webkit-animation-name: eEnBCQ;
-  animation-name: eEnBCQ;
-  -webkit-animation-duration: 300ms;
-  animation-duration: 300ms;
-  -webkit-animation-timing-function: ease;
-  animation-timing-function: ease;
-  -webkit-animation-direction: normal;
-  animation-direction: normal;
-  -webkit-animation-fill-mode: forwards;
-  animation-fill-mode: forwards;
-  box-shadow: 0 7px 10px rgba(0,0,0,0.5);
-  -webkit-transform: translateY(-1px);
-  -ms-transform: translateY(-1px);
-  transform: translateY(-1px);
-}
-
-.c0:active {
-  -webkit-transform: translateY(1px);
-  -ms-transform: translateY(1px);
-  transform: translateY(1px);
-  box-shadow: 0 0 0 rgba(0,0,0,0.5);
+  background-color: #66b9f4;
 }
 
 <button
@@ -72,17 +46,11 @@ exports[`Button renders disabled 1`] = `
 .c0 {
   -webkit-transition: 0.3s ease all;
   transition: 0.3s ease all;
-  -webkit-animation-name: cUPaoU;
-  animation-name: cUPaoU;
-  -webkit-animation-duration: 300ms;
-  animation-duration: 300ms;
-  -webkit-animation-timing-function: ease;
-  animation-timing-function: ease;
   border: none;
   outline: none;
   background: rgb(25,29,31);
   background-size: 720%;
-  border: none;
+  border: 161A1C;
   border-radius: 4px;
   box-sizing: border-box;
   font-size: 1.125em;
@@ -96,6 +64,11 @@ exports[`Button renders disabled 1`] = `
   user-select: none;
   -webkit-text-decoration: none;
   text-decoration: none;
+  font-weight: 600;
+}
+
+.c0:hover {
+  background: rgb(25,29,31);
 }
 
 <button
@@ -115,24 +88,17 @@ exports[`Button renders href 1`] = `
 .c0 {
   -webkit-transition: 0.3s ease all;
   transition: 0.3s ease all;
-  -webkit-animation-name: cUPaoU;
-  animation-name: cUPaoU;
-  -webkit-animation-duration: 300ms;
-  animation-duration: 300ms;
-  -webkit-animation-timing-function: ease;
-  animation-timing-function: ease;
   border: none;
   outline: none;
-  background-image: linear-gradient(270deg,#fed29d,#A58B66,#7abae8,#56a0d6);
+  background-color: #40A9F3;
   background-size: 720%;
-  border: none;
+  border: 2px solid #66B9F4;
   border-radius: 4px;
   box-sizing: border-box;
   font-size: 1.125em;
   text-align: center;
   color: white;
   font-weight: 400;
-  box-shadow: 0 3px 3px rgba(0,0,0,0.5);
   width: inherit;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -140,31 +106,12 @@ exports[`Button renders href 1`] = `
   user-select: none;
   -webkit-text-decoration: none;
   text-decoration: none;
+  font-weight: 600;
   cursor: pointer;
 }
 
 .c0:hover {
-  -webkit-animation-name: eEnBCQ;
-  animation-name: eEnBCQ;
-  -webkit-animation-duration: 300ms;
-  animation-duration: 300ms;
-  -webkit-animation-timing-function: ease;
-  animation-timing-function: ease;
-  -webkit-animation-direction: normal;
-  animation-direction: normal;
-  -webkit-animation-fill-mode: forwards;
-  animation-fill-mode: forwards;
-  box-shadow: 0 7px 10px rgba(0,0,0,0.5);
-  -webkit-transform: translateY(-1px);
-  -ms-transform: translateY(-1px);
-  transform: translateY(-1px);
-}
-
-.c0:active {
-  -webkit-transform: translateY(1px);
-  -ms-transform: translateY(1px);
-  transform: translateY(1px);
-  box-shadow: 0 0 0 rgba(0,0,0,0.5);
+  background-color: #66b9f4;
 }
 
 <a
@@ -184,24 +131,17 @@ exports[`Button renders onClick 1`] = `
 .c0 {
   -webkit-transition: 0.3s ease all;
   transition: 0.3s ease all;
-  -webkit-animation-name: cUPaoU;
-  animation-name: cUPaoU;
-  -webkit-animation-duration: 300ms;
-  animation-duration: 300ms;
-  -webkit-animation-timing-function: ease;
-  animation-timing-function: ease;
   border: none;
   outline: none;
-  background-image: linear-gradient(270deg,#fed29d,#A58B66,#7abae8,#56a0d6);
+  background-color: #40A9F3;
   background-size: 720%;
-  border: none;
+  border: 2px solid #66B9F4;
   border-radius: 4px;
   box-sizing: border-box;
   font-size: 1.125em;
   text-align: center;
   color: white;
   font-weight: 400;
-  box-shadow: 0 3px 3px rgba(0,0,0,0.5);
   width: inherit;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -209,31 +149,12 @@ exports[`Button renders onClick 1`] = `
   user-select: none;
   -webkit-text-decoration: none;
   text-decoration: none;
+  font-weight: 600;
   cursor: pointer;
 }
 
 .c0:hover {
-  -webkit-animation-name: eEnBCQ;
-  animation-name: eEnBCQ;
-  -webkit-animation-duration: 300ms;
-  animation-duration: 300ms;
-  -webkit-animation-timing-function: ease;
-  animation-timing-function: ease;
-  -webkit-animation-direction: normal;
-  animation-direction: normal;
-  -webkit-animation-fill-mode: forwards;
-  animation-fill-mode: forwards;
-  box-shadow: 0 7px 10px rgba(0,0,0,0.5);
-  -webkit-transform: translateY(-1px);
-  -ms-transform: translateY(-1px);
-  transform: translateY(-1px);
-}
-
-.c0:active {
-  -webkit-transform: translateY(1px);
-  -ms-transform: translateY(1px);
-  transform: translateY(1px);
-  box-shadow: 0 0 0 rgba(0,0,0,0.5);
+  background-color: #66b9f4;
 }
 
 <button
@@ -253,24 +174,17 @@ exports[`Button renders properties 1`] = `
 .c0 {
   -webkit-transition: 0.3s ease all;
   transition: 0.3s ease all;
-  -webkit-animation-name: cUPaoU;
-  animation-name: cUPaoU;
-  -webkit-animation-duration: 300ms;
-  animation-duration: 300ms;
-  -webkit-animation-timing-function: ease;
-  animation-timing-function: ease;
   border: none;
   outline: none;
-  background-image: linear-gradient(270deg,#fed29d,#A58B66,#7abae8,#56a0d6);
+  background-color: #40A9F3;
   background-size: 720%;
-  border: none;
+  border: 2px solid #66B9F4;
   border-radius: 4px;
   box-sizing: border-box;
   font-size: 1.125em;
   text-align: center;
   color: white;
   font-weight: 400;
-  box-shadow: 0 3px 3px rgba(0,0,0,0.5);
   width: inherit;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -278,31 +192,12 @@ exports[`Button renders properties 1`] = `
   user-select: none;
   -webkit-text-decoration: none;
   text-decoration: none;
+  font-weight: 600;
   cursor: pointer;
 }
 
 .c0:hover {
-  -webkit-animation-name: eEnBCQ;
-  animation-name: eEnBCQ;
-  -webkit-animation-duration: 300ms;
-  animation-duration: 300ms;
-  -webkit-animation-timing-function: ease;
-  animation-timing-function: ease;
-  -webkit-animation-direction: normal;
-  animation-direction: normal;
-  -webkit-animation-fill-mode: forwards;
-  animation-fill-mode: forwards;
-  box-shadow: 0 7px 10px rgba(0,0,0,0.5);
-  -webkit-transform: translateY(-1px);
-  -ms-transform: translateY(-1px);
-  transform: translateY(-1px);
-}
-
-.c0:active {
-  -webkit-transform: translateY(1px);
-  -ms-transform: translateY(1px);
-  transform: translateY(1px);
-  box-shadow: 0 0 0 rgba(0,0,0,0.5);
+  background-color: #66b9f4;
 }
 
 <button
@@ -310,7 +205,7 @@ exports[`Button renders properties 1`] = `
   style={
     Object {
       "fontSize": "0.875em",
-      "padding": "0.5em 0.75em",
+      "padding": "0.5em 0.7em",
     }
   }
 >
@@ -322,12 +217,6 @@ exports[`Button renders secondary 1`] = `
 .c0 {
   -webkit-transition: 0.3s ease all;
   transition: 0.3s ease all;
-  -webkit-animation-name: cUPaoU;
-  animation-name: cUPaoU;
-  -webkit-animation-duration: 300ms;
-  animation-duration: 300ms;
-  -webkit-animation-timing-function: ease;
-  animation-timing-function: ease;
   border: none;
   outline: none;
   background: #3A4B5D;
@@ -339,7 +228,6 @@ exports[`Button renders secondary 1`] = `
   text-align: center;
   color: #56a0d6;
   font-weight: 400;
-  box-shadow: 0 3px 3px rgba(0,0,0,0.5);
   width: inherit;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -347,31 +235,12 @@ exports[`Button renders secondary 1`] = `
   user-select: none;
   -webkit-text-decoration: none;
   text-decoration: none;
+  font-weight: 600;
   cursor: pointer;
 }
 
 .c0:hover {
-  -webkit-animation-name: eEnBCQ;
-  animation-name: eEnBCQ;
-  -webkit-animation-duration: 300ms;
-  animation-duration: 300ms;
-  -webkit-animation-timing-function: ease;
-  animation-timing-function: ease;
-  -webkit-animation-direction: normal;
-  animation-direction: normal;
-  -webkit-animation-fill-mode: forwards;
-  animation-fill-mode: forwards;
-  box-shadow: 0 7px 10px rgba(0,0,0,0.5);
-  -webkit-transform: translateY(-1px);
-  -ms-transform: translateY(-1px);
-  transform: translateY(-1px);
-}
-
-.c0:active {
-  -webkit-transform: translateY(1px);
-  -ms-transform: translateY(1px);
-  transform: translateY(1px);
-  box-shadow: 0 0 0 rgba(0,0,0,0.5);
+  background: #3A4B5D;
 }
 
 <button
@@ -390,24 +259,17 @@ exports[`Button renders to 1`] = `
 .c0 {
   -webkit-transition: 0.3s ease all;
   transition: 0.3s ease all;
-  -webkit-animation-name: cUPaoU;
-  animation-name: cUPaoU;
-  -webkit-animation-duration: 300ms;
-  animation-duration: 300ms;
-  -webkit-animation-timing-function: ease;
-  animation-timing-function: ease;
   border: none;
   outline: none;
-  background-image: linear-gradient(270deg,#fed29d,#A58B66,#7abae8,#56a0d6);
+  background-color: #40A9F3;
   background-size: 720%;
-  border: none;
+  border: 2px solid #66B9F4;
   border-radius: 4px;
   box-sizing: border-box;
   font-size: 1.125em;
   text-align: center;
   color: white;
   font-weight: 400;
-  box-shadow: 0 3px 3px rgba(0,0,0,0.5);
   width: inherit;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -415,31 +277,12 @@ exports[`Button renders to 1`] = `
   user-select: none;
   -webkit-text-decoration: none;
   text-decoration: none;
+  font-weight: 600;
   cursor: pointer;
 }
 
 .c0:hover {
-  -webkit-animation-name: eEnBCQ;
-  animation-name: eEnBCQ;
-  -webkit-animation-duration: 300ms;
-  animation-duration: 300ms;
-  -webkit-animation-timing-function: ease;
-  animation-timing-function: ease;
-  -webkit-animation-direction: normal;
-  animation-direction: normal;
-  -webkit-animation-fill-mode: forwards;
-  animation-fill-mode: forwards;
-  box-shadow: 0 7px 10px rgba(0,0,0,0.5);
-  -webkit-transform: translateY(-1px);
-  -ms-transform: translateY(-1px);
-  transform: translateY(-1px);
-}
-
-.c0:active {
-  -webkit-transform: translateY(1px);
-  -ms-transform: translateY(1px);
-  transform: translateY(1px);
-  box-shadow: 0 0 0 rgba(0,0,0,0.5);
+  background-color: #66b9f4;
 }
 
 <a

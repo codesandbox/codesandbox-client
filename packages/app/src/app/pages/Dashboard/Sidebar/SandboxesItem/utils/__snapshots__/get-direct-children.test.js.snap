@@ -2,51 +2,20 @@
 
 exports[`get-direct-children works with deeper paths 1`] = `
 Array [
-  Object {
-    "id": undefined,
-    "part": "test2",
-  },
-  Object {
-    "id": undefined,
-    "part": "test2",
-  },
-  Object {
-    "id": undefined,
-    "part": "test3",
-  },
-  Object {
-    "id": undefined,
-    "part": "test2",
-  },
-  Object {
-    "id": undefined,
-    "part": "test2",
-  },
+  "test2",
+  "test3",
 ]
 `;
 
 exports[`get-direct-children works with root path 1`] = `
 Array [
-  Object {
-    "id": undefined,
-    "part": "test",
-  },
-  Object {
-    "id": undefined,
-    "part": "test",
-  },
-  Object {
-    "id": undefined,
-    "part": "test2",
-  },
+  "test",
+  "test2",
 ]
 `;
 
 exports[`get-direct-children works with sub paths 1`] = `
 Array [
-  Object {
-    "id": undefined,
-    "part": "test2",
-  },
+  "test2",
 ]
 `;
