@@ -54,6 +54,8 @@ function Sidebar({ sandbox, setCurrentModule, currentModule }: Props) {
     }
   }
 
+  npmDependencies = npmDependencies || {};
+
   return (
     <Container>
       <Item>
