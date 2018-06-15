@@ -352,3 +352,14 @@ export function createPackageJSON({ props }) {
     newCode: code,
   };
 }
+
+export function getContributors({ state }) {
+  return window
+    .fetch(
+      'https://raw.githubusercontent.com/CompuIves/codesandbox-client/master/.all-contributorsrc'
+    )
+    .then(x => x.json())
+    .then(x => x.contributors.map(u => u.login))
+    .then(names => state.set('contributors', names))
+    .catch(() => {});
+}

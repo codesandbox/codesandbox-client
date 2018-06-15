@@ -7,6 +7,7 @@ export default {
   userMenuOpen: types.boolean,
   authToken: types.maybe(types.string),
   error: types.maybe(types.string),
+  contributors: types.array(types.string),
   user: types.maybe(
     types.model({
       avatarUrl: types.maybe(types.string),

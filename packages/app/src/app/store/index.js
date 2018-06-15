@@ -17,6 +17,7 @@ import KeybindingManagerProvider from './providers/KeybindingManager';
 
 import * as sequences from './sequences';
 import * as errors from './errors';
+import { isContributor } from './computed';
 import { isPatron, isLoggedIn, hasLogIn } from './getters';
 
 import patron from './modules/patron';
@@ -40,6 +41,7 @@ export default Module({
     user: null,
     connected: true,
     notifications: [],
+    contributors: [],
     userMenuOpen: false,
     isLoadingZeit: false,
     isLoadingCLI: false,
@@ -60,6 +62,9 @@ export default Module({
     isPatron,
     isLoggedIn,
     hasLogIn,
+  },
+  computed: {
+    isContributor,
   },
   signals: {
     appUnmounted: sequences.unloadApp,

@@ -122,6 +122,7 @@ export function withLoadApp(continueSequence) {
         },
         set(state`hasLoadedApp`, true),
         set(state`isAuthenticating`, false),
+        actions.getContributors,
       ],
     },
   ]);
