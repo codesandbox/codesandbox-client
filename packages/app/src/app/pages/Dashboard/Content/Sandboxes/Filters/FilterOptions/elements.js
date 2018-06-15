@@ -87,7 +87,7 @@ export const CheckBox = styled.span`
   ${props =>
     props.selected
       ? css`
-          background: ${props.template.color()}
+          background: ${props.color}
             url("data:image/svg+xml;utf8,<svg viewBox='0 0 10 9' xmlns='http://www.w3.org/2000/svg'><path d='M1 4.88l2.378 2.435L9.046 1.6' stroke-width='1.6' stroke='%23FFF' fill='none' fill-rule='evenodd' stroke-linecap='round' stroke-linejoin='round'/></svg>")
             no-repeat 50%/10px;
         `
@@ -100,7 +100,7 @@ export const CheckBox = styled.span`
   ${props =>
     props.selected &&
     css`
-      border-color: ${props.template.color()};
+      border-color: ${props.color};
     `};
   box-shadow: none;
   display: inline-block;

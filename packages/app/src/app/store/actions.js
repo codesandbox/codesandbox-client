@@ -173,6 +173,10 @@ export function moveModuleContent({ props, state }) {
   return { sandbox: props.forkedSandbox };
 }
 
+export function setSignedInCookie() {
+  document.cookie = 'signedIn=true';
+}
+
 export function closeTabByIndex({ state, props }) {
   const sandbox = state.get('editor.currentSandbox');
   const currentModule = state.get('editor.currentModule');

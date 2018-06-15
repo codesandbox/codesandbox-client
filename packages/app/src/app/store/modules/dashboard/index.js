@@ -26,6 +26,8 @@ export default Module({
     orderByChanged: sequences.setOrderBy,
     blacklistedTemplateAdded: sequences.addBlacklistedTemplate,
     blacklistedTemplateRemoved: sequences.removeBlacklistedTemplate,
+    blacklistedTemplatesCleared: sequences.clearBlacklistedTemplates,
+    blacklistedTemplatesChanged: sequences.setBlacklistedTemplates,
     searchChanged: sequences.changeSearch,
     createSandboxClicked: sequences.createSandbox,
   },

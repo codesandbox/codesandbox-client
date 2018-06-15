@@ -18,6 +18,11 @@ const FilterOptions = ({ possibleTemplates, hideFilters, store, signals }) => {
           template: name,
         });
 
+  const allSelected = possibleTemplates.every(
+    template =>
+      store.dashboard.filters.blacklistedTemplates.indexOf(template) > -1
+  );
+
   const Overlay = style => (
     <OverlayContainer style={style}>
       {orderBy(
@@ -38,10 +43,29 @@ const FilterOptions = ({ possibleTemplates, hideFilters, store, signals }) => {
             toggleTemplate={toggleTemplate}
             selected={selected}
             key={template.name}
-            template={template}
+            color={template.color}
+            name={template.name}
+            niceName={template.niceName}
           />
         );
       })}
+
+      <Option
+        toggleTemplate={() => {
+          if (allSelected) {
+            signals.dashboard.blacklistedTemplatesCleared();
+          } else {
+            signals.dashboard.blacklistedTemplatesChanged({
+              templates: possibleTemplates || [],
+            });
+          }
+        }}
+        selected={!allSelected}
+        color="#374140"
+        name="all"
+        style={{ marginTop: '.5rem' }}
+        niceName="Select All"
+      />
     </OverlayContainer>
   );
 

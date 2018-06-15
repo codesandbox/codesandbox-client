@@ -104,6 +104,7 @@ export function withLoadApp(continueSequence) {
                   success: [
                     set(state`user`, props`user`),
                     actions.setPatronPrice,
+                    actions.setSignedInCookie,
                   ],
                   error: [
                     addNotification(
