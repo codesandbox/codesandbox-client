@@ -73,7 +73,6 @@ module.exports = merge(commonConfig, {
         return name;
       },
     },
-    runtimeChunk: 'single',
   },
   plugins: [
     process.env.ANALYZE && new BundleAnalyzerPlugin(),
