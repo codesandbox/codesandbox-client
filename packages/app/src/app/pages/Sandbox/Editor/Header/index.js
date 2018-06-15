@@ -132,6 +132,16 @@ const Header = ({ store, signals }) => {
         <Action
           onClick={() =>
             signals.modalOpened({
+              modal: 'preferences',
+            })
+          }
+          tooltip="Preferences"
+          Icon={SettingsIcon}
+        />
+
+        <Action
+          onClick={() =>
+            signals.modalOpened({
               modal: 'newSandbox',
             })
           }
@@ -144,16 +154,6 @@ const Header = ({ store, signals }) => {
           href={dashboardUrl()}
           tooltip="Dashboard"
           Icon={InfoIcon}
-        />
-
-        <Action
-          onClick={() =>
-            signals.modalOpened({
-              modal: 'preferences',
-            })
-          }
-          tooltip="Preferences"
-          Icon={SettingsIcon}
         />
 
         <Margin

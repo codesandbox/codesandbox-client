@@ -4,6 +4,7 @@ import { inject, observer } from 'mobx-react';
 
 import Navigation from 'app/pages/common/Navigation';
 import SignInButton from 'app/pages/common/SignInButton';
+import { client } from 'app/graphql/client';
 
 import SidebarContents from './Sidebar';
 import Content from './Content';
@@ -20,6 +21,11 @@ import {
 class Dashboard extends React.Component {
   componentDidMount() {
     this.props.signals.dashboard.dashboardMounted();
+  }
+
+  componentWillUnmount() {
+    // Reset store so new visits get fresh data
+    client.resetStore();
   }
 
   render() {
