@@ -319,7 +319,7 @@ module.exports = {
           // Generates an `index.html` file with the <script> injected.
           new HtmlWebpackPlugin({
             inject: true,
-            chunks: ['app'],
+            chunks: ['common-sandbox', 'common', 'app'],
             chunksSortMode: 'manual',
             filename: 'app.html',
             template: paths.appHtml,
@@ -338,7 +338,7 @@ module.exports = {
           }),
           new HtmlWebpackPlugin({
             inject: true,
-            chunks: ['sandbox-startup', 'sandbox'],
+            chunks: ['sandbox-startup', 'common-sandbox', 'sandbox'],
             chunksSortMode: 'manual',
             filename: 'frame.html',
             template: paths.sandboxHtml,
@@ -357,7 +357,7 @@ module.exports = {
           }),
           new HtmlWebpackPlugin({
             inject: true,
-            chunks: ['embed'],
+            chunks: ['common-sandbox', 'common', 'embed'],
             chunksSortMode: 'manual',
             filename: 'embed.html',
             template: path.join(paths.embedSrc, 'index.html'),
