@@ -155,10 +155,10 @@ exports.modifyWebpackConfig = ({ config, stage }) => {
       });
 
       break;
-    case 'build-css': {
-      config._config.plugins[1].filename = 'codesandbox-homepage-styles.css';
-      break;
-    }
+    // case 'build-css': {
+    //   config._config.plugins[1].filename = 'codesandbox-homepage-styles.css';
+    //   break;
+    // }
     default:
       break;
   }
