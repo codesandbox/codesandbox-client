@@ -43,8 +43,9 @@ export const decorateSelector = selector => {
 
 const createTheme = colors =>
   Object.keys(colors)
-    .map(c => colors[c])
-    .map(result => decorateSelector(() => result));
+    .map(c => ({ key: c, value: colors[c] }))
+    .map(({ key, value }) => ({ key, value: decorateSelector(() => value) }))
+    .reduce((prev, { key, value }) => ({ ...prev, [key]: value }), {});
 
 const theme = createTheme({
   background: '#24282A',
