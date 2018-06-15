@@ -7,7 +7,7 @@ import { basename } from 'path';
 
 import Sandboxes from '../../Sandboxes';
 import Navigation from './Navigation';
-import CreateNewSandbox from './CreateNewSandbox';
+import CreateNewSandbox from '../../CreateNewSandbox';
 
 import { PATHED_SANDBOXES_CONTENT_QUERY } from '../../../queries';
 

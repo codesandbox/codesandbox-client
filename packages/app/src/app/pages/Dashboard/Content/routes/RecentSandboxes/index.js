@@ -4,6 +4,7 @@ import { Query } from 'react-apollo';
 
 import Sandboxes from '../../Sandboxes';
 
+import CreateNewSandbox from '../../CreateNewSandbox';
 import { RECENT_SANDBOXES_CONTENT_QUERY } from '../../../queries';
 
 const RecentSandboxes = ({ store }) => {
@@ -25,6 +26,7 @@ const RecentSandboxes = ({ store }) => {
           <Sandboxes
             isLoading={loading}
             Header={'Recent Sandboxes'}
+            ExtraElement={({ style }) => <CreateNewSandbox style={style} />}
             hideFilters
             sandboxes={loading ? [] : data.me.sandboxes}
             page="recents"

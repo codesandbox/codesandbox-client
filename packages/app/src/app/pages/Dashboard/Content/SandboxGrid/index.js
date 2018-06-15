@@ -184,16 +184,21 @@ class SandboxGrid extends React.Component<*, State> {
   };
 
   cellRenderer = ({ rowIndex, columnIndex, key, style }) => {
-    const index = rowIndex * this.columnCount + columnIndex;
+    let index = rowIndex * this.columnCount + columnIndex;
     const { sandboxes, signals } = this.props;
 
-    if (index === sandboxes.length && this.props.ExtraElement) {
-      return <this.props.ExtraElement key="extra" style={style} />;
+    if (this.props.ExtraElement) {
+      if (index === 0) {
+        return <this.props.ExtraElement key="extra" style={style} />;
+      }
+
+      index--;
     }
 
     if (index > sandboxes.length - 1) {
       return null;
     }
+
     const item = sandboxes[index];
 
     const getOrder = () => {
