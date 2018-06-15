@@ -157,5 +157,4 @@ workflows:
           requires:
             - build-prod
             - lint
-            - test-integrations
             - test-jest
