@@ -28,14 +28,17 @@
       "git add"
     ]
   },
-  "workspaces": [
-    "packages/homepage",
-    "packages/app",
-    "packages/common",
-    "packages/codesandbox-api",
-    "packages/sandpack",
-    "packages/react-sandpack"
+  "workspaces": {
+    "packages": [
+      "packages/app",
+      "packages/common",
+      "packages/codesandbox-api",
+      "packages/sandpack",
+      "packages/react-sandpack",
+      "packages/homepage"
   ],
+  "nohoist": ["**/webpack", "**/webpack/**", "**/gatsby", "**/gatsby/**"]
+},
   "devDependencies": {
     "all-contributors-cli": "^4.3.0",
     "babel-eslint": "^8.2.1",

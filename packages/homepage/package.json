@@ -38,6 +38,7 @@
   "license": "MIT",
   "main": "n/a",
   "scripts": {
+    "patch": "sed -i -e 's/if(c\\.initial) return;/if(!c||c.initial) return;/g' ./node_modules/extract-text-webpack-plugin/index.js",
     "build": "gatsby build && yarn remove-styles",
     "build:clean": "rimraf public",
     "remove-styles": "rimraf public/styles.css",
@@ -50,7 +51,8 @@
     "extract-text-webpack-plugin": "^2.0.0-beta",
     "gatsby-cli": "^1.1.20",
     "prettier": "^1.8.2",
-    "rimraf": "^2.6.2"
+    "rimraf": "^2.6.2",
+    "webpack": "^1.13.3"
   },
   "browserslist": [
     "> 1%",

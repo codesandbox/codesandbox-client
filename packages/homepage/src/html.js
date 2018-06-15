@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 let stylesStr;
 if (process.env.NODE_ENV === `production`) {
   try {
-    stylesStr = require(`!raw-loader!../public/styles.css`);
+    stylesStr = require(`!raw-loader!../public/codesandbox-homepage-styles.css`);
   } catch (e) {
     console.log(e);
   }
