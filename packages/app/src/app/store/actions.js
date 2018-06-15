@@ -278,6 +278,10 @@ export function removeJwtFromStorage({ jwt }) {
   jwt.reset();
 }
 
+export function setSignedInCookie() {
+  document.cookie = 'signedIn=true; Path=/;';
+}
+
 export function listenToConnectionChange({ connection }) {
   connection.addListener('connectionChanged');
 }

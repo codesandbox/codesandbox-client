@@ -103,6 +103,7 @@ export function withLoadApp(continueSequence) {
                 {
                   success: [
                     set(state`user`, props`user`),
+                    actions.setSignedInCookie,
                     actions.setPatronPrice,
                   ],
                   error: [
