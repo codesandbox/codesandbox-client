@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { sortBy, takeRight } from 'lodash';
+import { sortBy, takeRight } from 'lodash-es';
 import { inject, observer } from 'mobx-react';
 
 import AutosizeTextArea from 'common/components/AutosizeTextArea';

@@ -1,6 +1,6 @@
 import React from 'react';
 import * as templates from 'common/templates';
-import { chunk, sortBy } from 'lodash';
+import { chunk, sortBy } from 'lodash-es';
 
 import { Container, InnerContainer, Templates, Title } from './elements';
 import Template from './Template';

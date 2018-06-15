@@ -1,5 +1,5 @@
 // @flow
-import { flattenDeep, uniq, values, isEqual } from 'lodash';
+import { flattenDeep, uniq, values, isEqual } from 'lodash-es';
 import resolve from 'browser-resolve';
 import localforage from 'localforage';
 

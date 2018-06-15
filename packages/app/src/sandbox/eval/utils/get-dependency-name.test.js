@@ -2,11 +2,11 @@ import getDependencyName from './get-dependency-name';
 
 describe('getDependencyName', () => {
   it('can find a simple dependency name', () => {
-    expect(getDependencyName('lodash/test')).toBe('lodash');
+    expect(getDependencyName('lodash/test')).toBe('lodash-es');
   });
 
   it('can find a simple dependency name from no path', () => {
-    expect(getDependencyName('lodash')).toBe('lodash');
+    expect(getDependencyName('lodash-es')).toBe('lodash-es');
   });
 
   it('can find a simple dependency name from an organization', () => {

@@ -1,4 +1,4 @@
-import { pickBy } from 'lodash';
+import { pickBy } from 'lodash-es';
 
 import fetchDependencies from './fetch-dependencies';
 import dependenciesToQuery from './dependencies-to-query';

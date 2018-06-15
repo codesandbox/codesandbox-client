@@ -1,5 +1,5 @@
 import React from 'react';
-import { uniq } from 'lodash';
+import { uniq } from 'lodash-es';
 import { inject, observer, Observer } from 'mobx-react';
 import { Query } from 'react-apollo';
 

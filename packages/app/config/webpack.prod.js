@@ -1,6 +1,6 @@
 const merge = require('webpack-merge');
 const webpack = require('webpack');
-const { isEqual } = require('lodash');
+const { isEqual } = require('lodash-es');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')

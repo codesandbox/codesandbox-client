@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-import { sortBy } from 'lodash';
+import { sortBy } from 'lodash-es';
 import filesize from 'filesize';
 import DeleteFileButton from '../DeleteFileButton';
 import AddFileToSandboxButton from '../AddFileToSandboxButton';

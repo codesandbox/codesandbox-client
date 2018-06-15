@@ -2,7 +2,7 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 
 import moment from 'moment';
-import { uniq } from 'lodash';
+import { uniq } from 'lodash-es';
 import { basename } from 'path';
 
 import Grid from 'react-virtualized/dist/commonjs/Grid';
