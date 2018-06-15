@@ -105,6 +105,8 @@ export function withLoadApp(continueSequence) {
                     set(state`user`, props`user`),
                     actions.setPatronPrice,
                     actions.setSignedInCookie,
+                    set(props`modal`, 'changelogDashboard'),
+                    actions.setModal,
                   ],
                   error: [
                     addNotification(
