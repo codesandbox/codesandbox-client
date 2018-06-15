@@ -1,4 +1,4 @@
-import { mapValues, memoize } from 'lodash';
+import { mapValues, memoize } from 'lodash-es';
 import Color from 'color';
 
 const colorMethods = [
