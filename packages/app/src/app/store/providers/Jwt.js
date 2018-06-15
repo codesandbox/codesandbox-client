@@ -8,7 +8,7 @@ export default Provider({
     );
   },
   set(jwt) {
-    document.cookie = `signedIn=true`;
+    document.cookie = `signedIn=true; Path=/;`;
 
     return store.set('jwt', jwt);
   },

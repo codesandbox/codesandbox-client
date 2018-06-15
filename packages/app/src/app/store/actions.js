@@ -174,7 +174,7 @@ export function moveModuleContent({ props, state }) {
 }
 
 export function setSignedInCookie() {
-  document.cookie = 'signedIn=true';
+  document.cookie = 'signedIn=true; Path=/;';
 }
 
 export function closeTabByIndex({ state, props }) {
