@@ -1,5 +1,5 @@
 import React from 'react';
-import { debounce } from 'lodash-es';
+import { debounce } from 'lodash';
 
 import getScrollPos from '../utils/scroll';
 

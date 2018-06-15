@@ -1,4 +1,4 @@
-import { mapValues, memoize } from 'lodash-es';
+import memoizeOne from 'memoize-one';
 import Color from 'color';
 
 const colorMethods = [
@@ -34,7 +34,7 @@ const addModifier = (fn, method, ...modifierArgs) => (...args) =>
 export const decorateSelector = selector => {
   // add member functions to our selector
   colorMethods.forEach(method => {
-    selector[method] = memoize((...args) =>
+    selector[method] = memoizeOne((...args) =>
       decorateSelector(addModifier(selector, method, ...args))
     );
   });
@@ -42,7 +42,9 @@ export const decorateSelector = selector => {
 };
 
 const createTheme = colors =>
-  mapValues(colors, result => decorateSelector(() => result));
+  Object.keys(colors)
+    .map(c => colors[c])
+    .map(result => decorateSelector(() => result));
 
 const theme = createTheme({
   background: '#24282A',
