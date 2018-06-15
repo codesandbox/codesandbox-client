@@ -28,6 +28,11 @@ const LIVE = {
   name: 'Live',
 };
 
+const MORE = {
+  id: 'more',
+  name: 'More',
+};
+
 export default function getItems(store) {
   if (
     store.live.isLive &&
@@ -60,6 +65,10 @@ export default function getItems(store) {
 
   if (store.isLoggedIn) {
     items.push(LIVE);
+  }
+
+  if (!store.isLoggedIn) {
+    items.push(MORE);
   }
 
   return items;

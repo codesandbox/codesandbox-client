@@ -52,13 +52,15 @@ function Navigation({ signals, store, title }) {
             </Tooltip>
           </Action>
 
-          <Action>
-            <Tooltip position="bottom" title="Dashboard">
-              <Link style={{ color: 'white' }} to={dashboardUrl()}>
-                <InfoIcon height={35} />
-              </Link>
-            </Tooltip>
-          </Action>
+          {user && (
+            <Action>
+              <Tooltip position="bottom" title="Dashboard">
+                <Link style={{ color: 'white' }} to={dashboardUrl()}>
+                  <InfoIcon height={35} />
+                </Link>
+              </Tooltip>
+            </Action>
+          )}
         </Actions>
 
         {user ? <UserMenu /> : <SignInButton />}

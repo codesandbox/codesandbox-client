@@ -149,12 +149,14 @@ const Header = ({ store, signals }) => {
           Icon={PlusIcon}
         />
 
-        <Action
-          style={{ marginTop: 2 }}
-          href={dashboardUrl()}
-          tooltip="Dashboard"
-          Icon={InfoIcon}
-        />
+        {store.isLoggedIn && (
+          <Action
+            style={{ marginTop: 2 }}
+            href={dashboardUrl()}
+            tooltip="Dashboard"
+            Icon={InfoIcon}
+          />
+        )}
 
         <Margin
           style={{

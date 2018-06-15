@@ -144,11 +144,13 @@ export function getGitChanges({ api, state }) {
 }
 
 export function forkSandbox({ state, props, api }) {
+  const sandboxId = props.sandboxId || state.get('editor.currentId');
+  const url = sandboxId.includes('/')
+    ? `/sandboxes/fork/${sandboxId}`
+    : `/sandboxes/${sandboxId}/fork`;
+
   return api
-    .post(
-      `/sandboxes/${props.sandboxId || state.get('editor.currentId')}/fork`,
-      props.body || {}
-    )
+    .post(url, props.body || {})
     .then(data => ({ forkedSandbox: data }));
 }
 
