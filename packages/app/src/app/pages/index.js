@@ -14,6 +14,7 @@ import send, { DNT } from 'common/utils/analytics';
 import Modals from './common/Modals';
 import Sandbox from './Sandbox';
 import NewSandbox from './NewSandbox';
+import Dashboard from './Dashboard';
 import { Container, Content } from './elements';
 
 import HTML5Backend from './common/HTML5BackendWithFolderSupport';
@@ -23,10 +24,6 @@ const routeDebugger = _debug('cs:app:router');
 const SignIn = Loadable({
   loader: () =>
     import(/* webpackChunkName: 'page-sign-in' */ './common/SignIn'),
-  LoadingComponent: Loading,
-});
-const Dashboard = Loadable({
-  loader: () => import(/* webpackChunkName: 'page-dashboard' */ './Dashboard'),
   LoadingComponent: Loading,
 });
 const Live = Loadable({
