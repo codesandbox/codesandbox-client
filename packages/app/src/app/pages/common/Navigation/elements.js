@@ -27,6 +27,9 @@ export const Actions = styled.div`
 `;
 
 export const Action = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   transition: 0.3s ease all;
   margin: 0 1rem;
   cursor: pointer;

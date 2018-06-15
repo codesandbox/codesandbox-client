@@ -97,7 +97,7 @@ class SandboxItem extends React.PureComponent<Props> {
       });
     }
 
-    if (!this.state.screenshotUrl) {
+    if (!this.state.screenshotUrl && this.hasScreenshot()) {
       // We only request the screenshot if the sandbox card is in view for > 1 second
       this.screenshotTimeout = setTimeout(() => {
         this.requestScreenshot();

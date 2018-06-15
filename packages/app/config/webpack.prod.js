@@ -56,23 +56,27 @@ module.exports = merge(commonConfig, {
     concatenateModules: true, // ModuleConcatenationPlugin
     namedModules: true, // NamedModulesPlugin()
     noEmitOnErrors: true, // NoEmitOnErrorsPlugin
-    splitChunks: {
-      chunks: 'all',
-      name(module, chunks, cacheGroup) {
-        const name = normalize(module, chunks, cacheGroup);
 
-        if (name === 'vendors~app~embed~sandbox') {
-          return 'common-sandbox';
-        }
+    optimization: {
+      splitChunks: {
+        chunks: 'all',
+        name(module, chunks, cacheGroup) {
+          const name = normalize(module, chunks, cacheGroup);
 
-        if (name === 'vendors~app~embed') {
-          return 'common';
-        }
-        // generate a chunk name using default strategy...
-        return name;
+          if (name === 'vendors~app~embed~sandbox') {
+            return 'common-sandbox';
+          }
+
+          if (name === 'vendors~app~embed') {
+            return 'common';
+          }
+          // generate a chunk name using default strategy...
+          return name;
+        },
       },
     },
   },
+
   plugins: [
     process.env.ANALYZE && new BundleAnalyzerPlugin(),
     new webpack.DefinePlugin({ VERSION: JSON.stringify(VERSION) }),

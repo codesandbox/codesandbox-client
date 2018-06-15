@@ -20,6 +20,7 @@ export const Container = styled.div`
   outline: none;
 
   cursor: pointer;
+  user-select: none;
 
   ${props => props.hide && 'opacity: 0'};
 

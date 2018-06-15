@@ -35,25 +35,6 @@ const Header = ({ store, signals }) => {
       <Left>
         <Logo />
 
-        {store.isLoggedIn &&
-          (sandbox.userLiked ? (
-            <Action
-              tooltip="Undo like"
-              title="Like"
-              Icon={FullHeartIcon}
-              onClick={() =>
-                signals.editor.likeSandboxToggled({ id: sandbox.id })
-              }
-            />
-          ) : (
-            <Action
-              title="Like"
-              Icon={HeartIcon}
-              onClick={() =>
-                signals.editor.likeSandboxToggled({ id: sandbox.id })
-              }
-            />
-          ))}
         <Action
           onClick={() => signals.editor.forkSandboxClicked()}
           title="Fork"
@@ -80,7 +61,13 @@ const Header = ({ store, signals }) => {
             placeholder={
               store.editor.isAllModulesSynced ? 'All modules are saved' : false
             }
-            tooltip="Save"
+            style={
+              store.editor.changedModuleShortids.length > 2
+                ? { color: theme.secondary(), fontWeight: 600 }
+                : {}
+            }
+            title="Save"
+            tooltip="Save Modified Files"
             Icon={Save}
           />
         )}
@@ -90,6 +77,25 @@ const Header = ({ store, signals }) => {
           Icon={Download}
           onClick={() => signals.editor.createZipClicked()}
         />
+
+        {store.isLoggedIn &&
+          (sandbox.userLiked ? (
+            <Action
+              tooltip="Undo like"
+              Icon={FullHeartIcon}
+              onClick={() =>
+                signals.editor.likeSandboxToggled({ id: sandbox.id })
+              }
+            />
+          ) : (
+            <Action
+              tooltip="Like"
+              Icon={HeartIcon}
+              onClick={() =>
+                signals.editor.likeSandboxToggled({ id: sandbox.id })
+              }
+            />
+          ))}
       </Left>
 
       <Right>
@@ -133,7 +139,12 @@ const Header = ({ store, signals }) => {
           Icon={PlusIcon}
         />
 
-        <Action href={dashboardUrl()} tooltip="Dashboard" Icon={InfoIcon} />
+        <Action
+          style={{ marginTop: 2 }}
+          href={dashboardUrl()}
+          tooltip="Dashboard"
+          Icon={InfoIcon}
+        />
 
         <Action
           onClick={() =>

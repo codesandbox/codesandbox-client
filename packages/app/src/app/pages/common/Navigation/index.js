@@ -54,7 +54,7 @@ function Navigation({ signals, store, title }) {
 
           <Action>
             <Tooltip position="bottom" title="Dashboard">
-              <Link to={dashboardUrl()}>
+              <Link style={{ color: 'white' }} to={dashboardUrl()}>
                 <InfoIcon height={35} />
               </Link>
             </Tooltip>
