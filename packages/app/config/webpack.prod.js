@@ -1,9 +1,12 @@
 const merge = require('webpack-merge');
 const webpack = require('webpack');
+const { isEqual } = require('lodash');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
   .BundleAnalyzerPlugin;
+const normalizeName = require('webpack/lib/optimize/SplitChunksPlugin')
+  .normalizeName;
 const ManifestPlugin = require('webpack-manifest-plugin');
 const childProcess = require('child_process');
 const commonConfig = require('./webpack.common');
@@ -18,6 +21,8 @@ const COMMIT_HASH = childProcess
   .execSync('git rev-parse --short HEAD')
   .toString();
 const VERSION = `${COMMIT_COUNT}-${COMMIT_HASH}`;
+
+const normalize = normalizeName({ name: true, automaticNameDelimiter: '~' });
 
 module.exports = merge(commonConfig, {
   devtool: 'source-map',
@@ -49,11 +54,24 @@ module.exports = merge(commonConfig, {
         },
       }),
     ],
-    concatenateModules: true, //ModuleConcatenationPlugin
+    concatenateModules: true, // ModuleConcatenationPlugin
     namedModules: true, // NamedModulesPlugin()
     noEmitOnErrors: true, // NoEmitOnErrorsPlugin
     splitChunks: {
       chunks: 'all',
+      name(module, chunks, cacheGroup) {
+        const name = normalize(module, chunks, cacheGroup);
+
+        if (name === 'vendors~app~embed~sandbox') {
+          return 'common-sandbox';
+        }
+
+        if (name === 'vendors~app~embed') {
+          return 'common';
+        }
+        // generate a chunk name using default strategy...
+        return name;
+      },
     },
     runtimeChunk: 'single',
   },
