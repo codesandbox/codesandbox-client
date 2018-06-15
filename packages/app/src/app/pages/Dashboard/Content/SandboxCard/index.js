@@ -296,6 +296,34 @@ class SandboxItem extends React.PureComponent<Props> {
     }
   };
 
+  getImageMessage = () => {
+    if (this.props.removedAt) {
+      return (
+        <TrashIcon
+          style={{
+            fontSize: '3rem',
+          }}
+        />
+      );
+    }
+
+    if (this.props.privacy === 2) {
+      return (
+        <Private
+          style={{
+            fontSize: '3rem',
+          }}
+        />
+      );
+    }
+
+    return `Generating Screenshot...`;
+  };
+
+  hasScreenshot = () => {
+    return !this.props.removedAt && this.props.privacy !== 2;
+  };
+
   render() {
     const {
       style,
@@ -349,26 +377,15 @@ class SandboxItem extends React.PureComponent<Props> {
                 tabIndex={0}
               >
                 <SandboxImageContainer>
-                  <ImageMessage>
-                    {removedAt ? (
-                      <TrashIcon
-                        style={{
-                          fontSize: '3rem',
-                        }}
-                      />
-                    ) : (
-                      `Generating Screenshot...`
-                    )}
-                  </ImageMessage>
+                  <ImageMessage>{this.getImageMessage()}</ImageMessage>
 
-                  {!removedAt &&
-                    screenshotUrl && (
-                      <SandboxImage
-                        style={{
-                          backgroundImage: `url(${screenshotUrl})`,
-                        }}
-                      />
-                    )}
+                  {this.hasScreenshot() && (
+                    <SandboxImage
+                      style={{
+                        backgroundImage: `url(${screenshotUrl})`,
+                      }}
+                    />
+                  )}
                 </SandboxImageContainer>
                 <SandboxInfo>
                   <div
