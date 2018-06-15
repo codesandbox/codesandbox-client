@@ -2,7 +2,7 @@ import React from 'react';
 import { DropTarget } from 'react-dnd';
 import TrashIcon from 'react-icons/lib/md/delete';
 
-import { withRouter } from 'react-router';
+import { withRouter } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 
 import Item from '../Item';

@@ -1,9 +1,8 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
+import { Route, withRouter } from 'react-router-dom';
 import { DropTarget } from 'react-dnd';
 import AddFolderIcon from 'react-icons/lib/md/create-new-folder';
 import { inject, observer } from 'mobx-react';
-import { withRouter } from 'react-router';
 
 import { Query } from 'react-apollo';
 import InfoIcon from 'app/pages/Sandbox/Editor/Navigation/InfoIcon';
