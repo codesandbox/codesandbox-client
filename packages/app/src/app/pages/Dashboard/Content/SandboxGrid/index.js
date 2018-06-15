@@ -244,6 +244,7 @@ class SandboxGrid extends React.Component<*, State> {
         page={this.props.page}
         privacy={item.privacy}
         isPatron={this.props.store.isPatron}
+        screenshotUrl={item.screenshotUrl}
       />
     );
   };

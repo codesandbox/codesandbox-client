@@ -173,10 +173,6 @@ export function moveModuleContent({ props, state }) {
   return { sandbox: props.forkedSandbox };
 }
 
-export function setSignedInCookie() {
-  document.cookie = 'signedIn=true; Path=/;';
-}
-
 export function closeTabByIndex({ state, props }) {
   const sandbox = state.get('editor.currentSandbox');
   const currentModule = state.get('editor.currentModule');
@@ -287,6 +283,10 @@ export function setJwtFromStorage({ jwt, state }) {
 
 export function removeJwtFromStorage({ jwt }) {
   jwt.reset();
+}
+
+export function setSignedInCookie() {
+  document.cookie = 'signedIn=true; Path=/;';
 }
 
 export function listenToConnectionChange({ connection }) {

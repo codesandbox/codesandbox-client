@@ -16,6 +16,7 @@ const SANDBOX_FRAGMENT = gql`
     insertedAt
     updatedAt
     privacy
+    screenshotUrl
 
     source {
       template

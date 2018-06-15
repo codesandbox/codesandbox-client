@@ -6,6 +6,7 @@ import { sandboxUrl } from 'common/utils/url-generator';
 import { DragSource } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import { Mutation } from 'react-apollo';
+import TrashIcon from 'react-icons/lib/md/delete';
 
 import Unlisted from 'react-icons/lib/md/insert-link';
 import Private from 'react-icons/lib/md/lock';
@@ -51,6 +52,13 @@ class SandboxItem extends React.PureComponent<Props> {
 
   state = {
     renamingSandbox: false,
+    screenshotUrl: this.props.screenshotUrl,
+  };
+
+  requestScreenshot = () => {
+    this.setState({
+      screenshotUrl: `/api/v1/sandboxes/${this.props.id}/screenshot.png`,
+    });
   };
 
   getPrivacyIcon = () => {
@@ -87,6 +95,19 @@ class SandboxItem extends React.PureComponent<Props> {
         // when it already knows it's being dragged so we can hide it with CSS.
         captureDraggingState: true,
       });
+    }
+
+    if (!this.state.screenshotUrl) {
+      // We only request the screenshot if the sandbox card is in view for > 1 second
+      this.screenshotTimeout = setTimeout(() => {
+        this.requestScreenshot();
+      }, 1000);
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.screenshotTimeout) {
+      clearTimeout(this.screenshotTimeout);
     }
   }
 
@@ -285,7 +306,10 @@ class SandboxItem extends React.PureComponent<Props> {
       connectDragSource,
       selected,
       isDraggingItem,
+      removedAt,
     } = this.props;
+
+    const { screenshotUrl } = this.state;
 
     const templateInfo = getTemplate(template);
 
@@ -325,13 +349,26 @@ class SandboxItem extends React.PureComponent<Props> {
                 tabIndex={0}
               >
                 <SandboxImageContainer>
-                  <ImageMessage>Generating Screenshot...</ImageMessage>
+                  <ImageMessage>
+                    {removedAt ? (
+                      <TrashIcon
+                        style={{
+                          fontSize: '3rem',
+                        }}
+                      />
+                    ) : (
+                      `Generating Screenshot...`
+                    )}
+                  </ImageMessage>
 
-                  <SandboxImage
-                    style={{
-                      backgroundImage: `url(${`/api/v1/sandboxes/${id}/screenshot.png`})`,
-                    }}
-                  />
+                  {!removedAt &&
+                    screenshotUrl && (
+                      <SandboxImage
+                        style={{
+                          backgroundImage: `url(${screenshotUrl})`,
+                        }}
+                      />
+                    )}
                 </SandboxImageContainer>
                 <SandboxInfo>
                   <div
