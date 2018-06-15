@@ -109,6 +109,7 @@ module.exports = {
           new RegExp(`${sepRe}node_modules${sepRe}.*ansi-styles`),
           new RegExp(`${sepRe}node_modules${sepRe}.*chalk`),
           new RegExp(`${sepRe}node_modules${sepRe}.*jest`),
+          new RegExp(`${sepRe}node_modules${sepRe}.*lodash-es`),
           new RegExp(
             `${sepRe}node_modules${sepRe}vue-template-es2015-compiler`
           ),

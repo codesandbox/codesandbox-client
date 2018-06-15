@@ -37,7 +37,7 @@
       "packages/react-sandpack",
       "packages/homepage"
   ],
-  "nohoist": ["**/webpack", "**/webpack/**", "**/gatsby", "**/gatsby/**"]
+  "nohoist": ["**/gatsby", "**/gatsby/**"]
 },
   "devDependencies": {
     "all-contributors-cli": "^4.3.0",
