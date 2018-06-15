@@ -338,7 +338,7 @@ module.exports = {
           }),
           new HtmlWebpackPlugin({
             inject: true,
-            chunks: ['sandbox-startup', 'common-sandbox', 'sandbox'],
+            chunks: ['common-sandbox', 'sandbox'],
             chunksSortMode: 'manual',
             filename: 'frame.html',
             template: paths.sandboxHtml,
