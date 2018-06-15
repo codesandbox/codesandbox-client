@@ -10,8 +10,9 @@ import HeartIcon from 'react-icons/lib/fa/heart-o';
 import FullHeartIcon from 'react-icons/lib/fa/heart';
 import SettingsIcon from 'react-icons/lib/md/settings';
 import ShareIcon from 'react-icons/lib/md/share';
+import InfoIcon from 'app/pages/Sandbox/Editor/Navigation/InfoIcon';
 
-import { patronUrl } from 'common/utils/url-generator';
+import { patronUrl, dashboardUrl } from 'common/utils/url-generator';
 
 import PatronBadge from '-!svg-react-loader!common/utils/badges/svg/patron-4.svg'; // eslint-disable-line import/no-webpack-loader-syntax
 import Margin from 'common/components/spacing/Margin';
@@ -131,6 +132,8 @@ const Header = ({ store, signals }) => {
           tooltip="Create New Sandbox"
           Icon={PlusIcon}
         />
+
+        <Action href={dashboardUrl()} tooltip="Dashboard" Icon={InfoIcon} />
 
         <Action
           onClick={() =>

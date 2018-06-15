@@ -1,12 +1,13 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
-import { patronUrl } from 'common/utils/url-generator';
+import { patronUrl, dashboardUrl } from 'common/utils/url-generator';
 
 import PlusIcon from 'react-icons/lib/go/plus';
 import Row from 'common/components/flex/Row';
 import Tooltip from 'common/components/Tooltip';
 import HeaderSearchBar from 'app/components/HeaderSearchBar';
+import InfoIcon from 'app/pages/Sandbox/Editor/Navigation/InfoIcon';
 import PatronBadge from '-!svg-react-loader!common/utils/badges/svg/patron-4.svg'; // eslint-disable-line import/no-webpack-loader-syntax
 
 import SignInButton from '../SignInButton';
@@ -50,7 +51,16 @@ function Navigation({ signals, store, title }) {
               <PlusIcon height={35} />
             </Tooltip>
           </Action>
+
+          <Action>
+            <Tooltip position="bottom" title="Dashboard">
+              <Link to={dashboardUrl()}>
+                <InfoIcon height={35} />
+              </Link>
+            </Tooltip>
+          </Action>
         </Actions>
+
         {user ? <UserMenu /> : <SignInButton />}
       </Row>
     </Row>
