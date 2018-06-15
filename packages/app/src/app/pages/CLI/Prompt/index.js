@@ -29,7 +29,7 @@ function Prompt({ error, token, loading, username, signIn }) {
           You need to sign in with your GitHub account to use the CLI.
         </SubTitle>
         <Buttons>
-          <Button onClick={signIn}>Sign in with Github</Button>
+          <Button onClick={signIn}>Sign in with GitHub</Button>
         </Buttons>
       </Container>
     );
