@@ -56,10 +56,12 @@ function Sidebar({ sandbox, setCurrentModule, currentModule }: Props) {
 
   npmDependencies = npmDependencies || {};
 
+  const sandboxTitle = sandbox.title || sandbox.id;
+
   return (
     <Container>
       <Item>
-        <Title>{sandbox.title || sandbox.id}</Title>
+        <Title title={sandboxTitle}>{sandboxTitle}</Title>
         {sandbox.author && (
           <Author>
             Made by <strong>{sandbox.author.username}</strong>

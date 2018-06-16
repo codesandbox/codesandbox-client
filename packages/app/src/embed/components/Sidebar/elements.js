@@ -16,8 +16,8 @@ export const Title = styled.h2`
   padding: 0 1rem;
   margin: 0;
   font-size: 1rem;
-  line-height: 3rem;
-  height: 3rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
   vertical-align: middle;
   box-sizing: border-box;
 `;
