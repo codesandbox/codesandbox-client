@@ -32,11 +32,13 @@ function Header({
   setMixedView,
   toggleSidebar,
 }: Props) {
+  const sandboxTitle = sandbox.title || sandbox.id;
+
   return (
     <Container>
       <LeftAligned>
         <MenuIcon onClick={toggleSidebar} />
-        <Title>{sandbox.title || sandbox.id}</Title>
+        <Title title={sandboxTitle}>{sandboxTitle}</Title>
       </LeftAligned>
       <CenterAligned>
         <ModeIcons
