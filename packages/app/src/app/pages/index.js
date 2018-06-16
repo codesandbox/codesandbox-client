@@ -93,7 +93,7 @@ class Routes extends React.Component<Props> {
               if (typeof window.ga === 'function' && !DNT) {
                 window.ga('set', 'page', location.pathname + location.search);
 
-                send('pageview');
+                send('pageview', { path: location.pathname + location.search });
               }
             }
             return null;
