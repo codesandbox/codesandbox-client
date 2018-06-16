@@ -84,7 +84,7 @@ export function setUrlOptions({ state, router, utils }) {
   if (options.forceRefresh)
     state.set('preferences.settings.forceRefresh', options.forceRefresh);
   if (options.expandDevTools)
-    state.set('preferences.showConsole', options.expandDevTools);
+    state.set('preferences.showDevtools', options.expandDevTools);
   if (options.runOnClick)
     state.set(`preferences.runOnClick`, options.runOnClick);
 }
