@@ -57,22 +57,20 @@ module.exports = merge(commonConfig, {
     namedModules: true, // NamedModulesPlugin()
     noEmitOnErrors: true, // NoEmitOnErrorsPlugin
 
-    optimization: {
-      splitChunks: {
-        chunks: 'all',
-        name(module, chunks, cacheGroup) {
-          const name = normalize(module, chunks, cacheGroup);
+    splitChunks: {
+      chunks: 'all',
+      name(module, chunks, cacheGroup) {
+        const name = normalize(module, chunks, cacheGroup);
 
-          if (name === 'vendors~app~embed~sandbox') {
-            return 'common-sandbox';
-          }
+        if (name === 'vendors~app~embed~sandbox') {
+          return 'common-sandbox';
+        }
 
-          if (name === 'vendors~app~embed') {
-            return 'common';
-          }
-          // generate a chunk name using default strategy...
-          return name;
-        },
+        if (name === 'vendors~app~embed') {
+          return 'common';
+        }
+        // generate a chunk name using default strategy...
+        return name;
       },
     },
   },

@@ -116,15 +116,17 @@ function build(previousSizeMap) {
     console.log('File sizes after gzip:');
     console.log();
     printFileSizes(stats, previousSizeMap);
-    fs.writeFile(
-      paths.appBuild + '/stats.json',
-      JSON.stringify(stats.toJson()),
-      err => {
-        if (err) {
-          console.error(err);
-        }
-      }
-    );
+
+    // fs.writeFile(
+    //   paths.appBuild + '/stats.json',
+    //   JSON.stringify(stats.toJson()),
+    //   err => {
+    //     if (err) {
+    //       console.error(err);
+    //     }
+    //   }
+    // );
+
     console.log();
 
     let openCommand = process.platform === 'win32' ? 'start' : 'open';

@@ -21,6 +21,12 @@ module.exports = merge(
     devtool: 'eval',
     output: {
       filename: 'static/js/[name].js',
+      pathinfo: false,
+    },
+    optimization: {
+      removeAvailableModules: false,
+      removeEmptyChunks: false,
+      splitChunks: false,
     },
     plugins: [
       // new webpack.HotModuleReplacementPlugin(),
