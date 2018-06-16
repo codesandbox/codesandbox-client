@@ -47,10 +47,9 @@ class Entry extends React.PureComponent {
 
     if (newTitle !== title && canRename && rename) {
       this.resetState();
-
-      return rename(shortid, newTitle);
+      rename(shortid, newTitle);
     } else if (force) {
-      return this.resetState();
+      this.resetState();
     }
   };
 
