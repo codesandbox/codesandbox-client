@@ -87,7 +87,6 @@ module.exports = {
   output: {
     path: paths.appBuild,
     publicPath,
-    globalObject: 'this',
   },
 
   module: {
