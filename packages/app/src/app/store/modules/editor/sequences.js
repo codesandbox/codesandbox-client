@@ -18,7 +18,7 @@ import {
   closeModal,
 } from '../../sequences';
 
-import { setCurrentModule, addNotification } from '../../factories';
+import { setCurrentModule, addNotification, track } from '../../factories';
 
 export const openQuickActions = set(state`editor.quickActionsOpen`, true);
 
@@ -116,6 +116,7 @@ export const forceForkSandbox = [
 ];
 
 export const changeCode = [
+  track('change-code', {}, { trackOnce: true }),
   actions.setCode,
   actions.addChangedModule,
   actions.unsetDirtyTab,
@@ -140,6 +141,7 @@ export const saveChangedModules = [
 ];
 
 export const saveCode = [
+  track('save-code', {}),
   ensureOwnedSandbox,
   when(props`code`),
   {

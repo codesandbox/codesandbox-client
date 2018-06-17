@@ -5,6 +5,7 @@ import ModeIcons from 'app/components/ModeIcons';
 import { getModulePath } from 'common/sandbox/modules';
 import QRCode from 'qrcode.react';
 import Button from 'app/components/Button';
+import track from 'app/utils/analytics';
 
 import {
   optionsToParameterizedUrl,
@@ -44,6 +45,10 @@ class ShareView extends React.Component {
     expandDevTools: false,
     showQRCode: false,
   };
+
+  componentDidMount() {
+    track('share-opened', {});
+  }
 
   handleChange = e => this.setState({ message: e.target.value });
 

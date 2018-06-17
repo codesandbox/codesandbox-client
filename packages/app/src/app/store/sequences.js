@@ -135,6 +135,7 @@ export const fetchGitChanges = [
 
 export const signIn = [
   set(state`isAuthenticating`, true),
+  factories.track('sign-in', {}),
   actions.signInGithub,
   {
     success: [
