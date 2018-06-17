@@ -47,7 +47,7 @@ class ShareView extends React.Component {
   };
 
   componentDidMount() {
-    track('share-opened', {});
+    track('Share Modal Opened', {});
   }
 
   handleChange = e => this.setState({ message: e.target.value });

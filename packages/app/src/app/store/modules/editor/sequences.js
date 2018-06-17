@@ -53,7 +53,7 @@ export const stopResizing = set(state`editor.isResizing`, false);
 export const createZip = actions.createZip;
 
 export const changeCurrentModule = [
-  track('change-current-module', {}),
+  track('Open File', {}),
   setReceivingStatus,
   setCurrentModule(props`id`),
   equals(state`live.isLive`),
@@ -117,14 +117,14 @@ export const forceForkSandbox = [
 ];
 
 export const changeCode = [
-  track('change-code', {}, { trackOnce: true }),
+  track('Change Code', {}, { trackOnce: true }),
   actions.setCode,
   actions.addChangedModule,
   actions.unsetDirtyTab,
 ];
 
 export const saveChangedModules = [
-  track('save-all', {}),
+  track('Save Modified Modules', {}),
   ensureOwnedSandbox,
   actions.outputChangedModules,
   actions.saveChangedModules,
@@ -143,7 +143,7 @@ export const saveChangedModules = [
 ];
 
 export const saveCode = [
-  track('save-code', {}),
+  track('Save Code', {}),
   ensureOwnedSandbox,
   when(props`code`),
   {
@@ -178,7 +178,7 @@ export const saveCode = [
 ];
 
 export const addNpmDependency = [
-  track('add-dependency', {}),
+  track('Add NPM Dependency', {}),
   closeModal,
   ensureOwnedSandbox,
   when(props`version`),
@@ -196,7 +196,7 @@ export const addNpmDependency = [
 ];
 
 export const removeNpmDependency = [
-  track('remove-dependency', {}),
+  track('Remove NPM Dependency', {}),
   ensureOwnedSandbox,
   actions.removeNpmDependencyFromPackage,
   equals(state`live.isLive`),
@@ -248,7 +248,7 @@ export const setPreviewContent = [
 ];
 
 export const prettifyCode = [
-  track('prettify', {}),
+  track('Prettify Code', {}),
   actions.prettifyCode,
   {
     success: [changeCode],

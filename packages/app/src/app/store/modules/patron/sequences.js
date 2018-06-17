@@ -15,7 +15,7 @@ export const clearError = set(state`patron.error`, null);
 export const loadPatron = withLoadApp([]);
 
 export const createSubscription = [
-  track('create-subscription', {}),
+  track('Create Patron Subscription', {}),
   clearError,
   set(state`patron.isUpdatingSubscription`, true),
   actions.subscribe,
@@ -25,7 +25,7 @@ export const createSubscription = [
 ];
 
 export const updateSubscription = [
-  track('update-subscription', {}),
+  track('Update Patron Subscription', {}),
   clearError,
   set(state`patron.isUpdatingSubscription`, true),
   actions.updateSubscription,
@@ -35,7 +35,7 @@ export const updateSubscription = [
 ];
 
 export const cancelSubscription = [
-  track('cancel-subscription', {}),
+  track('Cancel Subscription', {}),
   actions.whenConfirmedCancelSubscription,
   {
     true: [
