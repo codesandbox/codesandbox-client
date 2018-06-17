@@ -1,7 +1,7 @@
 import { sequence, parallel } from 'cerebral';
 import { set, when } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
-import { track as trackAnalytics } from 'app/utils/analytics';
+import trackAnalytics from 'common/utils/analytics';
 import * as actions from './actions';
 
 export function addTabById(id) {

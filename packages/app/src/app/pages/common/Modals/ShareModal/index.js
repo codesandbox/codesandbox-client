@@ -5,7 +5,7 @@ import ModeIcons from 'app/components/ModeIcons';
 import { getModulePath } from 'common/sandbox/modules';
 import QRCode from 'qrcode.react';
 import Button from 'app/components/Button';
-import track from 'app/utils/analytics';
+import track from 'common/utils/analytics';
 
 import {
   optionsToParameterizedUrl,
