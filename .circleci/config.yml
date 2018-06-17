@@ -42,7 +42,7 @@ jobs:
           paths:
             - ~/codesandbox-client
 
-  build-prod:
+  build-app:
     docker:
       - image: circleci/node:9.11.1
     working_directory: ~/codesandbox-client
@@ -54,18 +54,48 @@ jobs:
           key: v8-prod-app-build-cache-master
       - run:
           name: Build Application
-          command: yarn build:prod
+          command: yarn build:app
       - save_cache:
           key: v8-prod-app-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - ./packages/app/www
+
+  build-homepage:
+    docker:
+      - image: circleci/node:9.11.1
+    working_directory: ~/codesandbox-client
+    steps:
+      - restore_cache:
+          key: v8-repo-{{ .Environment.CIRCLE_SHA1 }}
+      - run:
+          name: Build Application
+          command: yarn build:homepage
+      - save_cache:
+          key: v8-prod-homepage-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+            - ./packages/homepage/public
+
+  build-combine:
+    docker:
+      - image: circleci/node:9.11.1
+    working_directory: ~/codesandbox-client
+    steps:
+      - restore_cache:
+          key: v8-repo-{{ .Environment.CIRCLE_SHA1 }}
+
+      # Restore app build
+      - restore_cache:
+          key: v8-prod-app-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+      # Restore homepage build
+      - restore_cache:
+          key: v8-prod-homepage-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+      - run:
+          name: Build Application
+          command: yarn build:combine
       - save_cache:
           key: v8-prod-build-cache-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - ./www
-      - store_artifacts:
-          path: ./www
-          destination: www
 
   test-integrations:
     docker:
@@ -150,12 +180,19 @@ workflows:
       - lint:
           requires:
             - build-dependencies
-      - build-prod:
+      - build-app:
           requires:
             - build-dependencies
+      - build-homepage:
+          requires:
+            - build-dependencies
+      - build-combine:
+          requires:
+            - build-app
+            - build-homepage
       - create-docker-image:
           requires:
-            - build-prod
             - lint
             - test-integrations
             - test-jest
+            - build-combine
