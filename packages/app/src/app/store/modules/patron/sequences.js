@@ -1,7 +1,7 @@
 import { set } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 import * as actions from './actions';
-import { addNotification, withLoadApp } from '../../factories';
+import { addNotification, withLoadApp, track } from '../../factories';
 
 export const changePrice = set(state`patron.price`, props`price`);
 
@@ -15,6 +15,7 @@ export const clearError = set(state`patron.error`, null);
 export const loadPatron = withLoadApp([]);
 
 export const createSubscription = [
+  track('create-subscription', {}),
   clearError,
   set(state`patron.isUpdatingSubscription`, true),
   actions.subscribe,
@@ -24,6 +25,7 @@ export const createSubscription = [
 ];
 
 export const updateSubscription = [
+  track('update-subscription', {}),
   clearError,
   set(state`patron.isUpdatingSubscription`, true),
   actions.updateSubscription,
@@ -33,6 +35,7 @@ export const updateSubscription = [
 ];
 
 export const cancelSubscription = [
+  track('cancel-subscription', {}),
   actions.whenConfirmedCancelSubscription,
   {
     true: [

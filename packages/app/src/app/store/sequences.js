@@ -107,6 +107,7 @@ export const addNotification = factories.addNotification(
 );
 
 export const forkSandbox = sequence('forkSandbox', [
+  factories.track('fork', {}),
   set(state`editor.isForkingSandbox`, true),
   actions.forkSandbox,
   actions.moveModuleContent,
@@ -159,6 +160,7 @@ export const signIn = [
 ];
 
 export const signOut = [
+  factories.track('sign-out', {}),
   set(state`workspace.openedWorkspaceItem`, 'files'),
   when(state`live.isLive`),
   {
