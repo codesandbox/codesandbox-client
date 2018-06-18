@@ -107,6 +107,7 @@ export const addNotification = factories.addNotification(
 );
 
 export const forkSandbox = sequence('forkSandbox', [
+  factories.track('Fork Sandbox', {}),
   set(state`editor.isForkingSandbox`, true),
   actions.forkSandbox,
   actions.moveModuleContent,
@@ -135,6 +136,7 @@ export const fetchGitChanges = [
 
 export const signIn = [
   set(state`isAuthenticating`, true),
+  factories.track('Sign In', {}),
   actions.signInGithub,
   {
     success: [
@@ -158,6 +160,7 @@ export const signIn = [
 ];
 
 export const signOut = [
+  factories.track('Sign Out', {}),
   set(state`workspace.openedWorkspaceItem`, 'files'),
   when(state`live.isLive`),
   {

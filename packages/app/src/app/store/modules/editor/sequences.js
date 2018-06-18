@@ -18,7 +18,7 @@ import {
   closeModal,
 } from '../../sequences';
 
-import { setCurrentModule, addNotification } from '../../factories';
+import { setCurrentModule, addNotification, track } from '../../factories';
 
 export const openQuickActions = set(state`editor.quickActionsOpen`, true);
 
@@ -53,6 +53,7 @@ export const stopResizing = set(state`editor.isResizing`, false);
 export const createZip = actions.createZip;
 
 export const changeCurrentModule = [
+  track('Open File', {}),
   setReceivingStatus,
   setCurrentModule(props`id`),
   equals(state`live.isLive`),
@@ -116,12 +117,14 @@ export const forceForkSandbox = [
 ];
 
 export const changeCode = [
+  track('Change Code', {}, { trackOnce: true }),
   actions.setCode,
   actions.addChangedModule,
   actions.unsetDirtyTab,
 ];
 
 export const saveChangedModules = [
+  track('Save Modified Modules', {}),
   ensureOwnedSandbox,
   actions.outputChangedModules,
   actions.saveChangedModules,
@@ -140,6 +143,7 @@ export const saveChangedModules = [
 ];
 
 export const saveCode = [
+  track('Save Code', {}),
   ensureOwnedSandbox,
   when(props`code`),
   {
@@ -174,6 +178,7 @@ export const saveCode = [
 ];
 
 export const addNpmDependency = [
+  track('Add NPM Dependency', {}),
   closeModal,
   ensureOwnedSandbox,
   when(props`version`),
@@ -191,6 +196,7 @@ export const addNpmDependency = [
 ];
 
 export const removeNpmDependency = [
+  track('Remove NPM Dependency', {}),
   ensureOwnedSandbox,
   actions.removeNpmDependencyFromPackage,
   equals(state`live.isLive`),
@@ -242,6 +248,7 @@ export const setPreviewContent = [
 ];
 
 export const prettifyCode = [
+  track('Prettify Code', {}),
   actions.prettifyCode,
   {
     success: [changeCode],
