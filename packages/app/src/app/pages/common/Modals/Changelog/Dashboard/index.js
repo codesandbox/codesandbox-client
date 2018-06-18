@@ -24,7 +24,7 @@ function DashboardChangelog() {
         backgroundColor: theme.background(),
       }}
     >
-      <h1 style={titleStyles}>Update Day!</h1>
+      <h1 style={titleStyles}>What{"'"}s New</h1>
 
       <p style={descriptionStyles}>
         You can now manage your sandboxes with your own dashboard.

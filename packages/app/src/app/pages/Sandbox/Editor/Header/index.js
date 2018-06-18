@@ -61,11 +61,7 @@ const Header = ({ store, signals }) => {
             placeholder={
               store.editor.isAllModulesSynced ? 'All modules are saved' : false
             }
-            style={
-              store.editor.changedModuleShortids.length > 2
-                ? { color: theme.secondary(), fontWeight: 600 }
-                : {}
-            }
+            blink={store.editor.changedModuleShortids.length > 2}
             title="Save"
             tooltip="Save Modified Files"
             Icon={Save}
