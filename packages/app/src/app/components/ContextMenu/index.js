@@ -11,6 +11,7 @@ class ContextMenu extends React.Component {
       x: 0,
       y: 0,
       show: false,
+      down: true,
     };
 
     this.mousedownHandler = mousedownEvent => {
@@ -34,6 +35,17 @@ class ContextMenu extends React.Component {
 
   onContextMenu = event => {
     if (!this.unmounted) {
+      const body = document.body;
+      const html = document.documentElement;
+
+      const height = Math.max(
+        body.scrollHeight,
+        body.offsetHeight,
+        html.clientHeight,
+        html.scrollHeight,
+        html.offsetHeight
+      );
+
       event.preventDefault();
       this.mousedown = window.addEventListener(
         'mousedown',
@@ -41,10 +53,12 @@ class ContextMenu extends React.Component {
       );
       this.keydown = window.addEventListener('keydown', this.keydownHandler);
 
+      const isDown = height - event.clientY > 150;
       this.setState({
         show: true,
         x: event.clientX + 10,
-        y: event.clientY + 10,
+        y: event.clientY + (isDown ? 10 : -10),
+        down: isDown,
       });
 
       if (this.props.onContextMenu) {
@@ -78,7 +92,7 @@ class ContextMenu extends React.Component {
     }
 
     const { children, childFunction, items, ...props } = this.props;
-    const { show, x, y } = this.state;
+    const { show, x, y, down } = this.state;
 
     const mapFunction = (item, i) => {
       if (Array.isArray(item)) {
@@ -126,7 +140,7 @@ class ContextMenu extends React.Component {
                   <Container
                     style={{
                       left: x,
-                      top: y,
+                      top: down ? y : y - height,
                       opacity,
                       height,
                     }}

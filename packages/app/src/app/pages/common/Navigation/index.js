@@ -4,16 +4,25 @@ import { Link } from 'react-router-dom';
 import { patronUrl, dashboardUrl } from 'common/utils/url-generator';
 
 import PlusIcon from 'react-icons/lib/go/plus';
-import BellIcon from 'react-icons/lib/md/notifications-none';
+import BellIcon from 'react-icons/lib/md/notifications';
 import Row from 'common/components/flex/Row';
 import Tooltip from 'common/components/Tooltip';
 import HeaderSearchBar from 'app/components/HeaderSearchBar';
 import InfoIcon from 'app/pages/Sandbox/Editor/Navigation/InfoIcon';
+import OverlayComponent from 'app/components/Overlay';
+import Notifications from './Notifications';
 import PatronBadge from '-!svg-react-loader!common/utils/badges/svg/patron-4.svg'; // eslint-disable-line import/no-webpack-loader-syntax
 
 import SignInButton from '../SignInButton';
 import UserMenu from '../UserMenu';
-import { LogoWithBorder, Border, Title, Actions, Action } from './elements';
+import {
+  LogoWithBorder,
+  Border,
+  Title,
+  Actions,
+  Action,
+  UnreadIcon,
+} from './elements';
 
 function Navigation({ signals, store, title }) {
   const { isLoggedIn, isPatron, user } = store;
@@ -41,7 +50,9 @@ function Navigation({ signals, store, title }) {
               </Tooltip>
             </Action>
           )}
+
           <Action
+            style={{ fontSize: '1.125rem' }}
             onClick={() =>
               signals.modalOpened({
                 modal: 'newSandbox',
@@ -54,7 +65,7 @@ function Navigation({ signals, store, title }) {
           </Action>
 
           {user && (
-            <Action>
+            <Action style={{ fontSize: '1.125rem' }}>
               <Tooltip position="bottom" title="Dashboard">
                 <Link style={{ color: 'white' }} to={dashboardUrl()}>
                   <InfoIcon height={35} />
@@ -64,16 +75,24 @@ function Navigation({ signals, store, title }) {
           )}
 
           {user && (
-            <Action>
-              <Tooltip position="bottom" title="Notifications">
-                <Link
-                  style={{ color: 'white', fontSize: '1.25rem' }}
-                  to={dashboardUrl()}
+            <OverlayComponent
+              isOpen={store.userNotifications.notificationsOpened}
+              Overlay={Notifications}
+              onOpen={signals.userNotifications.notificationsOpened}
+              onClose={signals.userNotifications.notificationsClosed}
+            >
+              {open => (
+                <Action
+                  style={{ position: 'relative', fontSize: '1.25rem' }}
+                  onClick={open}
                 >
                   <BellIcon height={35} />
-                </Link>
-              </Tooltip>
-            </Action>
+                  {store.userNotifications.unreadCount > 0 && (
+                    <UnreadIcon count={store.userNotifications.unreadCount} />
+                  )}
+                </Action>
+              )}
+            </OverlayComponent>
           )}
         </Actions>
 

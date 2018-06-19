@@ -1,10 +1,9 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
+import OverlayComponent from 'app/components/Overlay';
 
 import Option from './Option';
 import { Container, Arrow, OrderName, OverlayContainer } from './elements';
-
-import OverlayComponent from '../Overlay';
 
 const FIELD_TO_NAME = {
   updatedAt: 'Last Modified',
@@ -64,7 +63,7 @@ class SortOptions extends React.Component {
     );
 
     return (
-      <OverlayComponent event="Order By" Overlay={Overlay}>
+      <OverlayComponent event="Dashboard Order By" Overlay={Overlay}>
         {open => (
           <Container hideOrder={hideOrder}>
             Sort by{' '}

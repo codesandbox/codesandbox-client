@@ -8,7 +8,8 @@ const Empty = () => <span />;
 
 class OverlayComponent extends React.Component {
   state = {
-    isOpen: false,
+    isOpen: this.props.isOpen === undefined ? false : this.props.isOpen,
+    controlled: this.props.isOpen !== undefined,
   };
 
   componentDidMount() {
@@ -20,13 +21,26 @@ class OverlayComponent extends React.Component {
     this.unmounted = true;
   }
 
+  isOpen = () => {
+    const { isOpen: isOpenProps } = this.props;
+    const { isOpen: isOpenState, controlled } = this.state;
+
+    return controlled ? isOpenProps : isOpenState;
+  };
+
   listenForClick = (e: MouseEvent) => {
-    if (!e.defaultPrevented && this.state.isOpen) {
+    if (!e.defaultPrevented && this.isOpen()) {
       if (!this.unmounted) {
         if (this.props.event) {
-          track(`Closed Dashboard ${this.props.event}`);
+          track(`Closed ${this.props.event}`);
         }
-        this.setState({ isOpen: false });
+        if (this.state.controlled) {
+          if (this.props.onClose) {
+            this.props.onClose();
+          }
+        } else {
+          this.setState({ isOpen: false });
+        }
       }
     }
   };
@@ -34,15 +48,22 @@ class OverlayComponent extends React.Component {
   open = () => {
     if (!this.unmounted) {
       if (this.props.event) {
-        track(`Opened Dashboard ${this.props.event}`);
+        track(`Opened ${this.props.event}`);
       }
-      this.setState({ isOpen: true });
+      if (this.state.controlled) {
+        if (this.props.onOpen) {
+          this.props.onOpen();
+        }
+      } else {
+        this.setState({ isOpen: true });
+      }
     }
   };
 
   render() {
     const { children, Overlay } = this.props;
-    const { isOpen } = this.state;
+
+    const isOpen = this.isOpen();
 
     return (
       // eslint-disable-next-line jsx-a11y/no-static-element-interactions

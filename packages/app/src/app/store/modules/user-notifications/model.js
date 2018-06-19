@@ -1,11 +1,7 @@
 import { types } from 'mobx-state-tree';
 
 export default {
-  notifications: types.array(
-    types.model({
-      type: types.string,
-      unread: types.boolean,
-    })
-  ),
+  unreadCount: types.number,
   connected: types.boolean,
+  notificationsOpened: types.boolean,
 };

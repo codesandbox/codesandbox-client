@@ -2,9 +2,9 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import * as templates from 'common/templates';
 import { orderBy } from 'lodash-es';
+import OverlayComponent from 'app/components/Overlay';
 
 import { Container, TemplatesName, OverlayContainer } from './elements';
-import OverlayComponent from '../Overlay';
 
 import Option from './Option';
 
@@ -79,7 +79,7 @@ const FilterOptions = ({ possibleTemplates, hideFilters, store, signals }) => {
         }`;
 
   return (
-    <OverlayComponent event="Order By" Overlay={Overlay}>
+    <OverlayComponent event="Dashboard Order By" Overlay={Overlay}>
       {open => (
         <Container hideFilters={hideFilters}>
           Showing{' '}

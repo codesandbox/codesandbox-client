@@ -31,19 +31,16 @@ export default Provider({
     });
   },
   listen(signalPath) {
-    // const signal = this.context.controller.getSignal(signalPath);
-    // channel.onMessage = (event: any, data: any) => {
-    //   const disconnected = data == null && event === 'phx_error';
-    //   const alteredEvent = disconnected ? 'connection-loss' : event;
-    //   const _isOwnMessage = Boolean(
-    //     data && data._messageId && sentMessages.delete(data._messageId)
-    //   );
-    //   signal({
-    //     event: alteredEvent,
-    //     _isOwnMessage,
-    //     data: data == null ? {} : data,
-    //   });
-    //   return data;
-    // };
+    const signal = this.context.controller.getSignal(signalPath);
+    channel.onMessage = (event: any, data: any) => {
+      const disconnected = data == null && event === 'phx_error';
+      const alteredEvent = disconnected ? 'connection-loss' : event;
+
+      signal({
+        event: alteredEvent,
+        data: data == null ? {} : data,
+      });
+      return data;
+    };
   },
 });
