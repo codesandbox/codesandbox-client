@@ -82,7 +82,7 @@ const modals = {
   },
   changelogDashboard: {
     Component: DashboardChangelog,
-    width: 450,
+    width: 500,
   },
 };
 

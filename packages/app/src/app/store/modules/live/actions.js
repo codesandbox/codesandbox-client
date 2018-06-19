@@ -13,10 +13,6 @@ export function createRoom({ api, props }) {
     .then(({ id: roomId }) => ({ roomId }));
 }
 
-export function connect({ live }) {
-  return live.connect();
-}
-
 export function disconnect({ live, ot }) {
   ot.reset();
   live.disconnect();

@@ -5,6 +5,7 @@ import moment from 'moment';
 import { uniq } from 'lodash-es';
 import { basename } from 'path';
 
+import track from 'common/utils/analytics';
 import Grid from 'react-virtualized/dist/commonjs/Grid';
 import Column from 'react-virtualized/dist/commonjs/Table/Column';
 import Table from 'react-virtualized/dist/commonjs/Table';
@@ -46,6 +47,7 @@ class SandboxGrid extends React.Component<*, State> {
     const { store, sandboxes, signals } = this.props;
     const selectedSandboxes = store.dashboard.selectedSandboxes;
     if (range === true) {
+      track('Dashboard Sandbox Shift Selection');
       const indexedSandboxes = sandboxes.map((sandbox, i) => ({ sandbox, i }));
 
       // We need to select a range
@@ -75,6 +77,7 @@ class SandboxGrid extends React.Component<*, State> {
     let sandboxIds = ids;
 
     if (additive) {
+      track('Dashboard Sandbox Additive Selection');
       sandboxIds = store.dashboard.selectedSandboxes.filter(
         id => ids.indexOf(id) === -1
       );
@@ -115,6 +118,7 @@ class SandboxGrid extends React.Component<*, State> {
   };
 
   onMouseDown = (event: MouseEvent) => {
+    track('Dashboard Sandbox Selection Started');
     this.setState({
       selection: {
         startX: event.clientX,

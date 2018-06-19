@@ -3,6 +3,7 @@ import { when, push, unset, set, equals } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 import * as actions from './actions';
 import * as factories from './factories';
+import { connectToChannel as setupNotifications } from './modules/user-notifications/actions';
 
 import {
   saveNewModule,
@@ -146,7 +147,10 @@ export const signIn = [
         success: [
           set(state`user`, props`user`),
           actions.setPatronPrice,
+          actions.setSignedInCookie,
           actions.setStoredSettings,
+          actions.connectWebsocket,
+          setupNotifications,
         ],
         error: [
           factories.addNotification('Github Authentication Error', 'error'),

@@ -274,6 +274,10 @@ export function getUser({ api, path }) {
     .catch(() => path.error());
 }
 
+export function connectWebsocket({ socket }) {
+  return socket.connect();
+}
+
 export function setJwtFromProps({ jwt, state, props }) {
   jwt.set(props.jwt);
   state.set('jwt', props.jwt);

@@ -1,0 +1,30 @@
+import { Provider } from 'cerebral';
+import { Socket } from 'phoenix';
+import _debug from 'app/utils/debug';
+
+let socket = null;
+const debug = _debug('cs:socket');
+
+export default Provider({
+  connect() {
+    const { state, jwt } = this.context;
+    const token = state.get('jwt') || jwt.get();
+
+    socket =
+      socket ||
+      new Socket(`wss://${location.host}/socket`, {
+        params: {
+          guardian_token: token,
+        },
+      });
+
+    socket.connect();
+    window.socket = socket;
+
+    debug('Connecting to socket', socket);
+  },
+
+  getSocket() {
+    return socket;
+  },
+});

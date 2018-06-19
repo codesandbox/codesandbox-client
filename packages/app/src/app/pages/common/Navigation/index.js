@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { patronUrl, dashboardUrl } from 'common/utils/url-generator';
 
 import PlusIcon from 'react-icons/lib/go/plus';
+import BellIcon from 'react-icons/lib/md/notifications-none';
 import Row from 'common/components/flex/Row';
 import Tooltip from 'common/components/Tooltip';
 import HeaderSearchBar from 'app/components/HeaderSearchBar';
@@ -57,6 +58,19 @@ function Navigation({ signals, store, title }) {
               <Tooltip position="bottom" title="Dashboard">
                 <Link style={{ color: 'white' }} to={dashboardUrl()}>
                   <InfoIcon height={35} />
+                </Link>
+              </Tooltip>
+            </Action>
+          )}
+
+          {user && (
+            <Action>
+              <Tooltip position="bottom" title="Notifications">
+                <Link
+                  style={{ color: 'white', fontSize: '1.25rem' }}
+                  to={dashboardUrl()}
+                >
+                  <BellIcon height={35} />
                 </Link>
               </Tooltip>
             </Action>

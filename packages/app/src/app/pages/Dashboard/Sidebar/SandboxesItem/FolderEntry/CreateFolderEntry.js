@@ -3,6 +3,7 @@ import { Mutation } from 'react-apollo';
 
 import AddFolderIcon from 'react-icons/lib/md/create-new-folder';
 import Input from 'common/components/Input';
+import track from 'common/utils/analytics';
 
 import {
   CreateDirectoryContainer,
@@ -24,6 +25,10 @@ export default ({ basePath, noFocus, close, depth }) => {
           onSubmit={e => {
             e.preventDefault();
             const path = basePath + '/' + input.value;
+
+            track('Create Dashboard Directory', {
+              path,
+            });
 
             mutate({
               variables: { path },

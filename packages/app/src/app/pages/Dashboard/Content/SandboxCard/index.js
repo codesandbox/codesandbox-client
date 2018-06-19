@@ -14,6 +14,7 @@ import Private from 'react-icons/lib/md/lock';
 import Input from 'common/components/Input';
 import getTemplate from 'common/templates';
 import theme from 'common/theme';
+import track from 'common/utils/analytics';
 
 import { RENAME_SANDBOX_MUTATION } from '../../queries';
 
@@ -274,6 +275,7 @@ class SandboxItem extends React.PureComponent<Props> {
   };
 
   handleKeyDown = (e: KeyboardEvent) => {
+    track('Dashboard Sandbox Opened With Enter');
     if (e.keyCode === 13) {
       // enter
       this.openSandbox();
@@ -281,6 +283,7 @@ class SandboxItem extends React.PureComponent<Props> {
   };
 
   handleOnContextMenu = e => {
+    track('Dashboard Sandbox Context Menu Opened');
     if (!this.props.selected) {
       this.selectSandbox(e);
     }

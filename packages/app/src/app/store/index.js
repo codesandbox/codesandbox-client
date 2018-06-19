@@ -11,7 +11,9 @@ import UtilsProvider from './providers/Utils';
 import JSZipProvider from './providers/JSZip';
 import SettingsStoreProvider from './providers/SettingsStore';
 import GitProvider from './providers/Git';
+import SocketProvider from './providers/Socket';
 import LiveProvider from './providers/Live';
+import NotificationsProvider from './providers/Notifications';
 import OTProvider from './providers/OT';
 import KeybindingManagerProvider from './providers/KeybindingManager';
 
@@ -30,6 +32,7 @@ import workspace from './modules/workspace';
 import files from './modules/files';
 import live from './modules/live';
 import dashboard from './modules/dashboard';
+import userNotifications from './modules/user-notifications';
 
 export default Module({
   model,
@@ -105,6 +108,7 @@ export default Module({
     workspace,
     files,
     live,
+    userNotifications,
   },
   providers: {
     api: ApiProvider,
@@ -118,6 +122,8 @@ export default Module({
     settingsStore: SettingsStoreProvider,
     git: GitProvider,
     keybindingManager: KeybindingManagerProvider,
+    socket: SocketProvider,
+    notifications: NotificationsProvider,
     live: LiveProvider,
     ot: OTProvider,
   },

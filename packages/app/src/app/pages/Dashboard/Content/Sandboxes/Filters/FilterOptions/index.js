@@ -79,7 +79,7 @@ const FilterOptions = ({ possibleTemplates, hideFilters, store, signals }) => {
         }`;
 
   return (
-    <OverlayComponent Overlay={Overlay}>
+    <OverlayComponent event="Order By" Overlay={Overlay}>
       {open => (
         <Container hideFilters={hideFilters}>
           Showing{' '}

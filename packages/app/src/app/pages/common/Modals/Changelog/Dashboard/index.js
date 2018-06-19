@@ -1,5 +1,8 @@
 import React from 'react';
+import { inject } from 'mobx-react';
 import theme from 'common/theme';
+
+import Button from 'app/components/Button';
 
 // Inline styles because styled-components didn't load the styles
 const titleStyles = {
@@ -9,14 +12,24 @@ const titleStyles = {
   marginTop: 0,
 };
 
+const subTitleStyles = {
+  fontWeight: 600,
+  color: 'rgba(255, 255, 255, .9)',
+  fontSize: '1rem',
+  marginTop: '1rem',
+  marginBottom: 0,
+};
+
 const descriptionStyles = {
   lineHeight: 1.6,
   color: 'rgba(255, 255, 255, 0.7)',
   fontWeight: 600,
-  fontSize: '1rem',
+  fontSize: '.875rem',
+  marginTop: '.5rem',
+  marginBottom: 0,
 };
 
-function DashboardChangelog() {
+function DashboardChangelog({ signals }) {
   return (
     <div
       style={{
@@ -26,8 +39,19 @@ function DashboardChangelog() {
     >
       <h1 style={titleStyles}>What{"'"}s New</h1>
 
+      <div
+        style={{
+          width: '100%',
+          height: 200,
+          backgroundColor: 'rgba(0, 0, 0, 0.3)',
+          borderRadius: 2,
+        }}
+      />
+
+      <h2 style={subTitleStyles}>Dashboard</h2>
+
       <p style={descriptionStyles}>
-        You can now manage your sandboxes with your own dashboard.
+        You can now manage your sandboxes in your own dashboard!
       </p>
 
       <p style={{ ...descriptionStyles, marginBottom: 0 }}>
@@ -36,8 +60,37 @@ function DashboardChangelog() {
         system, you can create directories and organize sandboxes there. Make
         sure to keep an eye.
       </p>
+
+      <h2 style={subTitleStyles}>Teams</h2>
+
+      <p style={descriptionStyles}>
+        You can now manage your sandboxes in your own dashboard!
+      </p>
+
+      <h2 style={subTitleStyles}>Free CodeSandbox Live</h2>
+
+      <p style={descriptionStyles}>
+        You can now manage your sandboxes in your own dashboard!
+      </p>
+
+      <div style={{ display: 'flex' }}>
+        <Button
+          style={{ marginTop: '1rem', marginRight: '.25rem' }}
+          block
+          small
+          secondary
+          onClick={() => {
+            signals.modalClosed();
+          }}
+        >
+          Close
+        </Button>
+        <Button style={{ marginTop: '1rem', marginLeft: '.25rem' }} block small>
+          View Announcement
+        </Button>
+      </div>
     </div>
   );
 }
 
-export default DashboardChangelog;
+export default inject('signals')(DashboardChangelog);

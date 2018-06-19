@@ -2,6 +2,7 @@ import React from 'react';
 import { observer } from 'mobx-react';
 
 import { Transition } from 'react-spring';
+import track from 'common/utils/analytics';
 
 const Empty = () => <span />;
 
@@ -22,6 +23,9 @@ class OverlayComponent extends React.Component {
   listenForClick = (e: MouseEvent) => {
     if (!e.defaultPrevented && this.state.isOpen) {
       if (!this.unmounted) {
+        if (this.props.event) {
+          track(`Closed Dashboard ${this.props.event}`);
+        }
         this.setState({ isOpen: false });
       }
     }
@@ -29,6 +33,9 @@ class OverlayComponent extends React.Component {
 
   open = () => {
     if (!this.unmounted) {
+      if (this.props.event) {
+        track(`Opened Dashboard ${this.props.event}`);
+      }
       this.setState({ isOpen: true });
     }
   };

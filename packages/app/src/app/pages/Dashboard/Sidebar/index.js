@@ -41,35 +41,23 @@ class Sidebar extends React.Component {
         </div>
 
         <Items>
-          <CategoryHeader>My Sandboxes</CategoryHeader>
+          <CategoryHeader>
+            {store.user
+              ? `${store.user.username}${
+                  store.user.username.endsWith('s') ? "'" : "'s"
+                } Sandboxes`
+              : 'My Sandboxes'}
+          </CategoryHeader>
           <Item Icon={TimeIcon} path="/dashboard/recents" name="Recent" />
           <SandboxesItem />
           <TrashItem />
+        </Items>
 
-          {/* My Collections parts */}
-          {/* <div
-            style={{
-              width: '100%',
-              boxSizing: 'border-box',
-              padding: '0 1rem',
-              display: 'flex',
-            }}
-          >
-            <div
-              style={{
-                width: '100%',
-                height: '1px',
-                margin: '0.5rem 0',
-                backgroundColor: 'rgba(255, 255, 255, 0.2)',
-              }}
-            />
-          </div>
-
-          <Item
-            Icon={TimeIcon}
-            path="/dashboard/recents"
-            name="My Collections"
-          /> */}
+        <Items>
+          <CategoryHeader>Koekjes Team</CategoryHeader>
+          <Item Icon={TimeIcon} path="/dashboard/recents" name="Recent" />
+          <SandboxesItem />
+          <TrashItem />
         </Items>
       </div>
     );
