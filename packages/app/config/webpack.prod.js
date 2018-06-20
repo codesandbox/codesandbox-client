@@ -240,6 +240,7 @@ module.exports = merge(commonConfig, {
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     new ManifestPlugin({
       fileName: 'file-manifest.json',
+      publicPath: commonConfig.output.publicPath,
     }),
   ],
 });
