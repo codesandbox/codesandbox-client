@@ -38,6 +38,8 @@ const BASE_WIDTH = 300;
 const BASE_HEIGHT = 242;
 const IS_TABLE = false;
 
+const diff = (a, b) => (a > b ? a - b : b - a);
+
 class SandboxGrid extends React.Component<*, State> {
   state = {
     selection: undefined,
@@ -94,15 +96,12 @@ class SandboxGrid extends React.Component<*, State> {
   };
 
   deleteSandboxes = () => {
-    const collectionPaths = uniq(
+    const collections = uniq(
       this.props.sandboxes
         .filter(sandbox => this.selectedSandboxesObject[sandbox.id])
-        .map(s => s.collection.path)
+        .map(s => s.collection)
     );
-    deleteSandboxes(
-      this.props.store.dashboard.selectedSandboxes,
-      collectionPaths
-    );
+    deleteSandboxes(this.props.store.dashboard.selectedSandboxes, collections);
   };
 
   undeleteSandboxes = () => {
@@ -118,7 +117,6 @@ class SandboxGrid extends React.Component<*, State> {
   };
 
   onMouseDown = (event: MouseEvent) => {
-    track('Dashboard Sandbox Selection Started');
     this.setState({
       selection: {
         startX: event.clientX,
@@ -137,6 +135,14 @@ class SandboxGrid extends React.Component<*, State> {
   };
 
   onMouseUp = () => {
+    if (
+      this.state.selection &&
+      (diff(this.state.selection.startX, this.state.selection.endX) > 50 ||
+        diff(this.state.selection.startY, this.state.selection.endY) > 50)
+    ) {
+      track('Dashboard Sandbox Selection Done');
+    }
+
     document.removeEventListener('mousemove', this.onMouseMove);
     document.removeEventListener('mouseup', this.onMouseUp);
     this.setState({
@@ -220,7 +226,7 @@ class SandboxGrid extends React.Component<*, State> {
 
     let editedSince = getOrder();
 
-    if (this.props.page === 'search' || this.props.page === 'recents') {
+    if (this.props.page === 'search' || this.props.page === 'recent') {
       const dir = basename(item.collection.path) || 'My Sandboxes';
 
       if (dir) {
@@ -246,6 +252,7 @@ class SandboxGrid extends React.Component<*, State> {
           this.isDragging && this.selectedSandboxesObject[item.id]
         }
         collectionPath={item.collection.path}
+        collectionTeamId={item.collection.teamId}
         deleteSandboxes={this.deleteSandboxes}
         undeleteSandboxes={this.undeleteSandboxes}
         permanentlyDeleteSandboxes={this.permanentlyDeleteSandboxes}
@@ -362,7 +369,7 @@ class SandboxGrid extends React.Component<*, State> {
 
             return (
               <Grid
-                style={{ outline: 'none' }}
+                style={{ outline: 'none', overflowX: 'hidden' }}
                 cellCount={sandboxCount}
                 cellRenderer={this.cellRenderer}
                 width={width}

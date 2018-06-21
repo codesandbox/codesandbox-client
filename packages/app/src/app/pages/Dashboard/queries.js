@@ -24,14 +24,42 @@ const SANDBOX_FRAGMENT = gql`
 
     collection {
       path
+      teamId
     }
   }
 `;
 
-export const PATHED_SANDBOXES_FOLDER_QUERY = gql`
+const TEAM_FRAGMENT = gql`
+  fragment Team on Team {
+    id
+    name
+  }
+`;
+
+export const TEAMS_QUERY = gql`
   {
     me {
-      collections {
+      teams {
+        ...Team
+      }
+    }
+  }
+  ${TEAM_FRAGMENT}
+`;
+
+export const CREATE_TEAM_MUTATION = gql`
+  mutation CreateTeam($name: String!) {
+    createTeam(name: $name) {
+      ...Team
+    }
+  }
+  ${TEAM_FRAGMENT}
+`;
+
+export const PATHED_SANDBOXES_FOLDER_QUERY = gql`
+  query PathedSandboxesFolders($teamId: ID) {
+    me {
+      collections(teamId: $teamId) {
         ...SidebarCollection
       }
     }
@@ -40,8 +68,8 @@ export const PATHED_SANDBOXES_FOLDER_QUERY = gql`
 `;
 
 export const CREATE_FOLDER_MUTATION = gql`
-  mutation createCollection($path: String!) {
-    createCollection(path: $path) {
+  mutation createCollection($path: String!, $teamId: ID) {
+    createCollection(path: $path, teamId: $teamId) {
       ...SidebarCollection
     }
   }
@@ -49,8 +77,8 @@ export const CREATE_FOLDER_MUTATION = gql`
 `;
 
 export const DELETE_FOLDER_MUTATION = gql`
-  mutation deleteCollection($path: String!) {
-    deleteCollection(path: $path) {
+  mutation deleteCollection($path: String!, $teamId: ID) {
+    deleteCollection(path: $path, teamId: $teamId) {
       ...SidebarCollection
     }
   }
@@ -58,8 +86,18 @@ export const DELETE_FOLDER_MUTATION = gql`
 `;
 
 export const RENAME_FOLDER_MUTATION = gql`
-  mutation renameCollection($path: String!, $newPath: String!) {
-    renameCollection(path: $path, newPath: $newPath) {
+  mutation renameCollection(
+    $path: String!
+    $newPath: String!
+    $teamId: ID
+    $newTeamId: ID
+  ) {
+    renameCollection(
+      path: $path
+      newPath: $newPath
+      teamId: $teamId
+      newTeamId: $newTeamId
+    ) {
       ...SidebarCollection
     }
   }
@@ -67,8 +105,16 @@ export const RENAME_FOLDER_MUTATION = gql`
 `;
 
 export const ADD_SANDBOXES_TO_FOLDER_MUTATION = gql`
-  mutation AddToCollection($collectionPath: String!, $sandboxIds: [ID]!) {
-    addToCollection(collectionPath: $collectionPath, sandboxIds: $sandboxIds) {
+  mutation AddToCollection(
+    $collectionPath: String!
+    $sandboxIds: [ID]!
+    $teamId: ID
+  ) {
+    addToCollection(
+      collectionPath: $collectionPath
+      sandboxIds: $sandboxIds
+      teamId: $teamId
+    ) {
       sandboxes {
         ...Sandbox
       }
@@ -114,9 +160,9 @@ export const PERMANENTLY_DELETE_SANDBOXES_MUTATION = gql`
 `;
 
 export const PATHED_SANDBOXES_CONTENT_QUERY = gql`
-  query PathedSandboxes($path: String!) {
+  query PathedSandboxes($path: String!, $teamId: ID) {
     me {
-      collection(path: $path) {
+      collection(path: $path, teamId: $teamId) {
         id
         path
         sandboxes {
@@ -216,7 +262,7 @@ export function permanentlyDeleteSandboxes(selectedSandboxes) {
   });
 }
 
-export function deleteSandboxes(selectedSandboxes, collectionPaths = null) {
+export function deleteSandboxes(selectedSandboxes, collections = []) {
   client.mutate({
     mutation: DELETE_SANDBOXES_MUTATION,
     variables: {
@@ -229,12 +275,12 @@ export function deleteSandboxes(selectedSandboxes, collectionPaths = null) {
       'SearchSandboxes',
     ],
     update: cache => {
-      if (collectionPaths) {
-        collectionPaths.forEach(collectionPath => {
+      if (collections) {
+        collections.forEach(({ path, teamId }) => {
           try {
             const oldFolderCacheData = cache.readQuery({
               query: PATHED_SANDBOXES_CONTENT_QUERY,
-              variables: { path: collectionPath },
+              variables: { path, teamId },
             });
 
             oldFolderCacheData.me.collection.sandboxes = oldFolderCacheData.me.collection.sandboxes.filter(
@@ -243,7 +289,7 @@ export function deleteSandboxes(selectedSandboxes, collectionPaths = null) {
 
             cache.writeQuery({
               query: PATHED_SANDBOXES_CONTENT_QUERY,
-              variables: { path: collectionPath },
+              variables: { path, teamId },
               data: oldFolderCacheData,
             });
           } catch (e) {

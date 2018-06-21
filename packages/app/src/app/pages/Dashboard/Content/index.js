@@ -5,14 +5,22 @@ import RecentSandboxes from './routes/RecentSandboxes';
 import PathedSandboxes from './routes/PathedSandboxes';
 import DeletedSandboxes from './routes/DeletedSandboxes';
 import SearchSandboxes from './routes/SearchSandboxes';
+import CreateTeam from './routes/CreateTeam';
+import TeamView from './routes/TeamView';
 
 const Content = () => (
   <Switch>
-    <Route path="/dashboard/recents" component={RecentSandboxes} />
+    <Route path="/dashboard/recent" component={RecentSandboxes} />
     <Route path="/dashboard/trash" component={DeletedSandboxes} />
     <Route path="/dashboard/sandboxes/:path*" component={PathedSandboxes} />
     <Route path="/dashboard/search" component={SearchSandboxes} />
-    <Redirect to="/dashboard/recents" />
+    <Route path="/dashboard/team/new" component={CreateTeam} />
+    <Route exact path="/dashboard/team/:teamId" component={TeamView} />
+    <Route
+      path="/dashboard/team/:teamId/sandboxes/:path*"
+      component={PathedSandboxes}
+    />
+    <Redirect to="/dashboard/recent" />
   </Switch>
 );
 

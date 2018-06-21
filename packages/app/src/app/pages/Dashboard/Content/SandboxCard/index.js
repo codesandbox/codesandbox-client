@@ -40,6 +40,7 @@ type Props = {
   deleteSandboxes: () => void,
   permanentlyDeleteSandboxes: () => void,
   collectionPath: string, // eslint-disable-line react/no-unused-prop-types
+  collectionTeamId: ?string,
   sandbox: Object,
   page: ?string,
   privacy: number,
@@ -180,11 +181,19 @@ class SandboxItem extends React.PureComponent<Props> {
     }
 
     return [
-      (this.props.page === 'recents' || this.props.page === 'search') && [
+      (this.props.page === 'recent' || this.props.page === 'search') && [
         {
           title: 'Show In Folder',
           action: () => {
-            history.push(`/dashboard/sandboxes${this.props.collectionPath}`);
+            if (this.props.collectionTeamId) {
+              history.push(
+                `/dashboard/team/${this.props.collectionTeamId}/sandboxes${
+                  this.props.collectionPath
+                }`
+              );
+            } else {
+              history.push(`/dashboard/sandboxes${this.props.collectionPath}`);
+            }
           },
         },
       ],
@@ -489,6 +498,7 @@ const cardSource = {
       top: props.style.top,
       id: props.id,
       collectionPath: props.collectionPath,
+      collectionTeamId: props.collectionTeamId,
       removedAt: props.removedAt,
     };
   },

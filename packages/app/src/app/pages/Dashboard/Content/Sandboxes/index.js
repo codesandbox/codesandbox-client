@@ -4,7 +4,7 @@ import DelayedAnimation from 'app/components/DelayedAnimation';
 import SandboxGrid from '../SandboxGrid';
 import Filters from './Filters';
 
-import { Container, HeaderContainer } from './elements';
+import { Container, HeaderContainer } from '../elements';
 
 // eslint-disable-next-line react/prefer-stateless-function
 class Content extends React.Component {

@@ -27,7 +27,6 @@ export const handleMessage = [
         false: [actions.addUnreadCount],
         true: [],
       },
-      actions.addNotification,
     ],
   },
 ];

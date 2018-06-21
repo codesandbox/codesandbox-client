@@ -53,5 +53,9 @@ export const Sidebar = styled.div`
 
 export const Content = styled.div`
   ${paddingTop};
+
+  box-sizing: border-box;
+  height: 100vh;
+  overflow-y: auto;
   width: 100%;
 `;

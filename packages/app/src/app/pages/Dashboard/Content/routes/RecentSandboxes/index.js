@@ -29,7 +29,7 @@ const RecentSandboxes = ({ store }) => {
             ExtraElement={({ style }) => <CreateNewSandbox style={style} />}
             hideFilters
             sandboxes={loading ? [] : data.me.sandboxes}
-            page="recents"
+            page="recent"
           />
         );
       }}

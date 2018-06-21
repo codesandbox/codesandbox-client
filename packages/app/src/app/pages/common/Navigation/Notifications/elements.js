@@ -32,7 +32,7 @@ export const NoNotifications = styled.div`
 export const Loading = styled.div`
   ${delayEffect(1)};
 
-  padding: 0.75 1rem;
+  padding: 0.75rem 1rem;
   min-height: 100px;
 `;
 

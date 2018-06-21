@@ -85,9 +85,11 @@ class FolderEntry extends React.Component {
       connectDropTarget,
       connectDragSource,
       isDragging,
+      basePath,
+      teamId,
     } = this.props;
 
-    const url = `/dashboard/sandboxes${path}`;
+    const url = `${basePath}${path}`;
     const children = getDirectChildren(path, folders);
 
     return connectDropTarget(
@@ -118,22 +120,28 @@ class FolderEntry extends React.Component {
                 action: () => {
                   client.mutate({
                     mutation: DELETE_FOLDER_MUTATION,
-                    variables: { path },
+                    variables: { path, teamId },
 
                     refetchQueries: [
                       {
                         query: PATHED_SANDBOXES_CONTENT_QUERY,
-                        variables: { path: '/' },
+                        variables: { path: '/', teamId },
                       },
                     ],
                     update: (cache, { data: { deleteCollection } }) => {
                       const cacheData = cache.readQuery({
                         query: PATHED_SANDBOXES_FOLDER_QUERY,
+                        variables: {
+                          teamId,
+                        },
                       });
                       cacheData.me.collections = deleteCollection;
 
                       cache.writeQuery({
                         query: PATHED_SANDBOXES_FOLDER_QUERY,
+                        variables: {
+                          teamId,
+                        },
                         data: cacheData,
                       });
                     },
@@ -183,16 +191,25 @@ class FolderEntry extends React.Component {
                         variables: {
                           path,
                           newPath: join(dirname(path), input.value),
+                          teamId,
+                          newTeamId: teamId,
                         },
                         update: (cache, { data: { renameCollection } }) => {
+                          const variables = {};
+                          if (teamId) {
+                            variables.teamId = teamId;
+                          }
+
                           const cacheData = cache.readQuery({
                             query: PATHED_SANDBOXES_FOLDER_QUERY,
+                            variables,
                           });
                           cacheData.me.collections = renameCollection;
 
                           cache.writeQuery({
                             query: PATHED_SANDBOXES_FOLDER_QUERY,
                             data: cacheData,
+                            variables,
                           });
                         },
                       });
@@ -243,13 +260,12 @@ class FolderEntry extends React.Component {
                 const childPath = join(path, childName);
 
                 return (
-                  <Route
-                    key={childPath}
-                    path={`/dashboard/sandboxes${childPath}`}
-                  >
+                  <Route key={childPath} path={`${basePath}${childPath}`}>
                     {({ match }) => (
                       <DropFolderEntry
                         path={childPath}
+                        basePath={basePath}
+                        teamId={teamId}
                         folders={folders}
                         foldersByPath={foldersByPath}
                         key={childName}
@@ -264,6 +280,7 @@ class FolderEntry extends React.Component {
           </ReactShow>
           {this.state.creatingDirectory && (
             <CreateFolderEntry
+              teamId={teamId}
               depth={this.props.depth}
               close={() => this.setState({ creatingDirectory: false })}
               basePath={path}
@@ -282,6 +299,7 @@ const entrySource = {
     if (props.closeTree) props.closeTree();
     return {
       path: props.path,
+      teamId: props.teamId,
     };
   },
 };

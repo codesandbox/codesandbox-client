@@ -16,7 +16,7 @@ import {
   CREATE_FOLDER_MUTATION,
 } from '../../../queries';
 
-export default ({ basePath, noFocus, close, depth }) => {
+export default ({ basePath, teamId, noFocus, close, depth }) => {
   let input;
   return (
     <Mutation mutation={CREATE_FOLDER_MUTATION}>
@@ -31,7 +31,7 @@ export default ({ basePath, noFocus, close, depth }) => {
             });
 
             mutate({
-              variables: { path },
+              variables: { path, teamId },
               optimisticResponse: {
                 __typename: 'Mutation',
                 createCollection: {
@@ -41,9 +41,14 @@ export default ({ basePath, noFocus, close, depth }) => {
                 },
               },
               update: (proxy, { data: { createCollection } }) => {
+                const variables = {};
+                if (teamId) {
+                  variables.teamId = teamId;
+                }
                 // Read the data from our cache for this query.
                 const d = proxy.readQuery({
                   query: PATHED_SANDBOXES_FOLDER_QUERY,
+                  variables,
                 });
 
                 // Add our collection from the mutation to the end.
@@ -51,6 +56,7 @@ export default ({ basePath, noFocus, close, depth }) => {
                 // Write our data back to the cache.
                 proxy.writeQuery({
                   query: PATHED_SANDBOXES_FOLDER_QUERY,
+                  variables,
                   data: d,
                 });
               },

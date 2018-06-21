@@ -18,7 +18,7 @@ export const StyledRow = styled(Row)`
 
 export const Content = styled.div`
   width: 100%;
-  height: 100%;
+  height: calc(100% - 23px);
   padding-top: 2rem;
   box-sizing: border-box;
 `;

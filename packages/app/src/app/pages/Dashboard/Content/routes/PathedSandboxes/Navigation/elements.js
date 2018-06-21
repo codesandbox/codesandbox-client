@@ -22,10 +22,18 @@ export const NavigationLink = styled(Link)`
   }
 
   ${props =>
+    props.first
+      ? css`
+          margin-left: 0;
+        `
+      : css`
+          margin-left: 0.5rem;
+        `};
+
+  ${props =>
     props.last
       ? css`
           color: white;
-          margin-left: 0.5rem;
         `
       : css`
           &::after {

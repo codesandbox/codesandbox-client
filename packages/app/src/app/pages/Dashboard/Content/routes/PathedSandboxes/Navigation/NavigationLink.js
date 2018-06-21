@@ -13,6 +13,7 @@ const Link = ({ name, path, isOver, splittedPath, i, connectDropTarget }) =>
       <NavigationLink
         to={`/dashboard/sandboxes${path}`}
         last={i === splittedPath.length - 1 ? 'true' : undefined}
+        first={i === 0 ? 'true' : undefined}
         style={isOver ? { color: 'white' } : {}}
         path={path}
       >

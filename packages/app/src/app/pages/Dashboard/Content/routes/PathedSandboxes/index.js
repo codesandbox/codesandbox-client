@@ -13,11 +13,12 @@ import { PATHED_SANDBOXES_CONTENT_QUERY } from '../../../queries';
 
 const PathedSandboxes = props => {
   const path = '/' + (props.match.params.path || '');
+  const teamId = props.match.params.teamId;
 
   document.title = `${basename(path) || 'Dashboard'} - CodeSandbox`;
 
   return (
-    <Query query={PATHED_SANDBOXES_CONTENT_QUERY} variables={{ path }}>
+    <Query query={PATHED_SANDBOXES_CONTENT_QUERY} variables={{ path, teamId }}>
       {({ loading, error, data }) => (
         <Observer>
           {() => {

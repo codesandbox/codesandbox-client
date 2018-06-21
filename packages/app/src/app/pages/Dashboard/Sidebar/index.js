@@ -1,7 +1,9 @@
 import React from 'react';
 import history from 'app/utils/history';
 import { inject, observer } from 'mobx-react';
+import { Query } from 'react-apollo';
 import Input from 'common/components/Input';
+import Button from 'app/components/Button';
 
 import TimeIcon from 'react-icons/lib/md/access-time';
 
@@ -9,6 +11,7 @@ import Item from './Item';
 import SandboxesItem from './SandboxesItem';
 import TrashItem from './TrashItem';
 import { Items, CategoryHeader } from './elements';
+import { TEAMS_QUERY } from '../queries';
 
 class Sidebar extends React.Component {
   shouldComponentUpdate() {
@@ -41,24 +44,46 @@ class Sidebar extends React.Component {
         </div>
 
         <Items>
-          <CategoryHeader>
-            {store.user
-              ? `${store.user.username}${
-                  store.user.username.endsWith('s') ? "'" : "'s"
-                } Sandboxes`
-              : 'My Sandboxes'}
-          </CategoryHeader>
-          <Item Icon={TimeIcon} path="/dashboard/recents" name="Recent" />
+          <Item Icon={TimeIcon} path="/dashboard/recent" name="Recent" />
           <SandboxesItem />
           <TrashItem />
         </Items>
 
-        <Items>
-          <CategoryHeader>Koekjes Team</CategoryHeader>
-          <Item Icon={TimeIcon} path="/dashboard/recents" name="Recent" />
-          <SandboxesItem />
-          <TrashItem />
-        </Items>
+        <Query query={TEAMS_QUERY}>
+          {({ loading, data, error }) => {
+            if (loading) {
+              return null;
+            }
+
+            if (error) {
+              return null;
+            }
+
+            const teams = data.me.teams;
+
+            return teams.map(team => (
+              <div key={team.id}>
+                <Items>
+                  <CategoryHeader to={`/dashboard/team/${team.id}`}>
+                    {team.name}
+                  </CategoryHeader>
+                  <SandboxesItem teamId={team.id} />
+                </Items>
+              </div>
+            ));
+          }}
+        </Query>
+
+        <div style={{ margin: '2rem', fontSize: '.875rem' }}>
+          <Button
+            style={{ display: 'block' }}
+            to="/dashboard/team/new"
+            small
+            block
+          >
+            Create Team
+          </Button>
+        </div>
       </div>
     );
   }

@@ -27,12 +27,16 @@ class SandboxesItem extends React.Component {
   };
 
   render() {
-    const { isOver, canDrop, connectDropTarget } = this.props;
+    const { isOver, canDrop, teamId, connectDropTarget } = this.props;
+
+    const basePath = teamId
+      ? `/dashboard/team/${teamId}/sandboxes`
+      : '/dashboard/sandboxes';
 
     return connectDropTarget(
       <div>
         <Item
-          path={'/dashboard/sandboxes'}
+          path={basePath}
           Icon={InfoIcon}
           name="My Sandboxes"
           style={
@@ -50,7 +54,7 @@ class SandboxesItem extends React.Component {
           ]}
         >
           {() => (
-            <Query query={PATHED_SANDBOXES_FOLDER_QUERY}>
+            <Query variables={{ teamId }} query={PATHED_SANDBOXES_FOLDER_QUERY}>
               {({ data, loading, error }) => {
                 if (loading) {
                   return (
@@ -86,12 +90,11 @@ class SandboxesItem extends React.Component {
                       .map(name => {
                         const path = '/' + name;
                         return (
-                          <Route
-                            key={path}
-                            path={`/dashboard/sandboxes${path}`}
-                          >
+                          <Route key={path} path={`${basePath}${path}`}>
                             {({ match: childMatch }) => (
                               <FolderEntry
+                                basePath={basePath}
+                                teamId={teamId}
                                 path={path}
                                 folders={folders}
                                 foldersByPath={foldersByPath}
@@ -104,6 +107,7 @@ class SandboxesItem extends React.Component {
                       })}
                     {(this.state.creatingDirectory || children.size === 0) && (
                       <CreateFolderEntry
+                        teamId={teamId}
                         noFocus={!this.state.creatingDirectory}
                         basePath=""
                         close={() => {

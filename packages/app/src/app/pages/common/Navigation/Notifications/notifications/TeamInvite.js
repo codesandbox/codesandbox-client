@@ -27,6 +27,12 @@ const Button = styled.div`
   color: white;
   background-color: ${props =>
     props.decline ? props.theme.red : props.theme.secondary};
+
+  border: 2px solid
+    ${props =>
+      props.decline
+        ? props.theme.red.lighten(0.1)
+        : props.theme.secondary.lighten(0.2)};
   display: flex;
   align-items: center;
   justify-content: center;
