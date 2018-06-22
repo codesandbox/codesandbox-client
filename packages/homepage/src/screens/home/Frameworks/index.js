@@ -79,7 +79,7 @@ const Flex = styled.div`
   `};
 `;
 
-const Intro = styled(Column)`
+const Intro = Column.extend`
   flex: 1;
 
   ${media.phone`

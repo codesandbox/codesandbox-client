@@ -6,7 +6,7 @@ export const Container = styled.div`
   padding: 1rem 0;
 `;
 
-export const PriceInput = styled(Input)`
+export const PriceInput = Input.extend`
   font-size: 1.5rem;
   padding-left: 2rem;
   padding-right: 1rem;

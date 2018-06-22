@@ -8,7 +8,7 @@ export const CardContainer = styled.div`
   border-radius: 4px;
 `;
 
-export const NameInput = styled(Input)`
+export const NameInput = Input.extend`
   width: 100%;
   font-size: 0.875rem;
   padding: 0.5rem;

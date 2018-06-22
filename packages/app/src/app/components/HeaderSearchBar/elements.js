@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import SearchIcon from 'react-icons/lib/go/search';
 import Relative from 'common/components/Relative';
 
-export const Container = styled(Relative)`
+export const Container = Relative.extend`
   display: flex;
   align-items: center;
   font-weight: 500;

@@ -7,6 +7,6 @@ export const Container = styled.div`
   align-items: center;
 `;
 
-export const StyledInput = styled(Input)`
+export const StyledInput = Input.extend`
   text-align: center;
 `;

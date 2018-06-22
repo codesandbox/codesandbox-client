@@ -25,6 +25,6 @@ export const NavigationLink = styled(NavLink)`
   }
 `;
 
-export const CenteredRow = styled(Row)`
+export const CenteredRow = Row.extend`
   width: 100%;
 `;

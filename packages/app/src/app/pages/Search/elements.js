@@ -7,7 +7,7 @@ export const Content = styled.div`
   color: white;
 `;
 
-export const StyledTitle = styled(Title)`
+export const StyledTitle = Title.extend`
   display: inline-block;
   text-align: left;
   font-size: 2rem;

@@ -8,7 +8,7 @@ export const Container = styled.div`
   margin: 1rem;
 `;
 
-export const Content = styled(Centered)`
+export const Content = Centered.extend`
   max-width: 50em;
   margin: auto;
   margin-top: 10%;
@@ -25,7 +25,7 @@ export const Description = styled.div`
   margin-bottom: 1rem;
 `;
 
-export const StyledInput = styled(Input)`
+export const StyledInput = Input.extend`
   font-size: 1.25rem;
   margin-bottom: 2rem;
 `;

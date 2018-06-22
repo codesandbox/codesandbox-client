@@ -7,7 +7,7 @@ export const Container = styled.div`
   margin: 1rem;
 `;
 
-export const Content = styled(Centered)`
+export const Content = Centered.extend`
   max-width: 50em;
   margin: auto;
   margin-top: 10%;
