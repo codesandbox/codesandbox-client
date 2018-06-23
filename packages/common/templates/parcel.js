@@ -10,7 +10,7 @@ class ParcelTemplate extends Template {
   getEntries(configurationFiles: { [type: string]: Object }) {
     const entries = [];
 
-    if (typeof document !== 'undefined') {
+    if (typeof document !== 'undefined' && document.location.pathname !== '/') {
       // Push the location of the address bar, eg. when someone has a file
       // /2.html open, you actually want to have that as entry point instead
       // of index.html.
