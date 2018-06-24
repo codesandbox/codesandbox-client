@@ -80,6 +80,7 @@ function Navigation({ signals, store, title }) {
               Overlay={Notifications}
               onOpen={signals.userNotifications.notificationsOpened}
               onClose={signals.userNotifications.notificationsClosed}
+              event="Notifications"
             >
               {open => (
                 <Action

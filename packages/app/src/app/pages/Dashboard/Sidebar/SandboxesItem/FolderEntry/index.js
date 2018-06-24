@@ -7,6 +7,7 @@ import TrashIcon from 'react-icons/lib/md/delete';
 import { Mutation } from 'react-apollo';
 import { DropTarget, DragSource } from 'react-dnd';
 import { inject, observer } from 'mobx-react';
+import track from 'common/utils/analytics';
 import { client } from 'app/graphql/client';
 
 import ReactShow from 'react-show';
@@ -118,6 +119,7 @@ class FolderEntry extends React.Component {
                 icon: TrashIcon,
                 color: theme.red.darken(0.2)(),
                 action: () => {
+                  track('Dashboard - Folder Deleted');
                   client.mutate({
                     mutation: DELETE_FOLDER_MUTATION,
                     variables: { path, teamId },
@@ -183,6 +185,7 @@ class FolderEntry extends React.Component {
                     let input;
 
                     const submit = e => {
+                      track('Dashboard - Folder Renamed');
                       if (e) {
                         e.preventDefault();
                       }

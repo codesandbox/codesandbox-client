@@ -6,6 +6,7 @@ import { Mutation } from 'react-apollo';
 
 import Input from 'common/components/Input';
 import Button from 'app/components/Button';
+import track from 'common/utils/analytics';
 
 import { INVITE_TO_TEAM } from '../../../../queries';
 
@@ -24,6 +25,8 @@ const AddTeamMember = ({ teamId, signals }) => (
       const submit = e => {
         e.preventDefault();
         e.stopPropagation();
+
+        track('Team - Add Member');
 
         const isEmail = input.value.indexOf('@') > -1;
 

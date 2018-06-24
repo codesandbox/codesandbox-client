@@ -3,6 +3,7 @@ import React from 'react';
 import Input from 'common/components/Input';
 import Button from 'app/components/Button';
 import { Mutation } from 'react-apollo';
+import track from 'common/utils/analytics';
 
 import { Container, Description, HeaderContainer } from '../../elements';
 import { Label, ComingSoon, Overlay } from './elements';
@@ -49,6 +50,8 @@ export default class CreateTeam extends React.PureComponent {
               e.preventDefault();
               e.stopPropagation();
               const name = this.state.inputValue;
+
+              track('Team - Create Team');
 
               mutate({
                 variables: {

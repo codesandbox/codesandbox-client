@@ -4,6 +4,7 @@ import { Query, Mutation } from 'react-apollo';
 import UserWithAvatar from 'app/components/UserWithAvatar';
 import Button from 'app/components/Button';
 import Margin from 'common/components/spacing/Margin';
+import track from 'common/utils/analytics';
 
 import { Container, HeaderContainer, Description } from '../../elements';
 import { TeamContainer, Section, Members, MemberHeader } from './elements';
@@ -93,6 +94,8 @@ export default class TeamView extends React.PureComponent {
                               mutation={REVOKE_TEAM_INVITATION}
                             >
                               {(mutate, { loading: revokeLoading }) => {
+                                track('Team - Revoke Invitation');
+
                                 const handleClick = () =>
                                   mutate({
                                     variables: { userId: user.id, teamId },

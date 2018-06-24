@@ -26,7 +26,7 @@ export default ({ basePath, teamId, noFocus, close, depth }) => {
             e.preventDefault();
             const path = basePath + '/' + input.value;
 
-            track('Create Dashboard Directory', {
+            track('Dashboard - Create Directory', {
               path,
             });
 

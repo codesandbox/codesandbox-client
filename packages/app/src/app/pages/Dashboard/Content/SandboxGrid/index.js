@@ -49,7 +49,7 @@ class SandboxGrid extends React.Component<*, State> {
     const { store, sandboxes, signals } = this.props;
     const selectedSandboxes = store.dashboard.selectedSandboxes;
     if (range === true) {
-      track('Dashboard Sandbox Shift Selection');
+      track('Dashboard - Sandbox Shift Selection');
       const indexedSandboxes = sandboxes.map((sandbox, i) => ({ sandbox, i }));
 
       // We need to select a range
@@ -79,7 +79,7 @@ class SandboxGrid extends React.Component<*, State> {
     let sandboxIds = ids;
 
     if (additive) {
-      track('Dashboard Sandbox Additive Selection');
+      track('Dashboard - Sandbox Additive Selection');
       sandboxIds = store.dashboard.selectedSandboxes.filter(
         id => ids.indexOf(id) === -1
       );
@@ -140,7 +140,7 @@ class SandboxGrid extends React.Component<*, State> {
       (diff(this.state.selection.startX, this.state.selection.endX) > 50 ||
         diff(this.state.selection.startY, this.state.selection.endY) > 50)
     ) {
-      track('Dashboard Sandbox Selection Done');
+      track('Dashboard - Sandbox Selection Done');
     }
 
     document.removeEventListener('mousemove', this.onMouseMove);

@@ -79,7 +79,7 @@ const FilterOptions = ({ possibleTemplates, hideFilters, store, signals }) => {
         }`;
 
   return (
-    <OverlayComponent event="Dashboard Order By" Overlay={Overlay}>
+    <OverlayComponent event="Dashboard - Order By" Overlay={Overlay}>
       {open => (
         <Container hideFilters={hideFilters}>
           Showing{' '}

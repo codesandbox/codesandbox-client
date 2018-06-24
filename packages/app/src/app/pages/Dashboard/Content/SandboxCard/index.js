@@ -284,7 +284,7 @@ class SandboxItem extends React.PureComponent<Props> {
   };
 
   handleKeyDown = (e: KeyboardEvent) => {
-    track('Dashboard Sandbox Opened With Enter');
+    track('Dashboard - Sandbox Opened With Enter');
     if (e.keyCode === 13) {
       // enter
       this.openSandbox();
@@ -292,7 +292,7 @@ class SandboxItem extends React.PureComponent<Props> {
   };
 
   handleOnContextMenu = e => {
-    track('Dashboard Sandbox Context Menu Opened');
+    track('Dashboard - Sandbox Context Menu Opened');
     if (!this.props.selected) {
       this.selectSandbox(e);
     }
@@ -491,6 +491,7 @@ class SandboxItem extends React.PureComponent<Props> {
  */
 const cardSource = {
   beginDrag(props) {
+    track('Dashboard - Sandbox Dragged');
     props.setDragging({ isDragging: true });
 
     return {

@@ -25,6 +25,10 @@ export default Provider({
   },
 
   getSocket() {
+    if (!socket) {
+      this.context.socket.connect();
+    }
+
     return socket;
   },
 });

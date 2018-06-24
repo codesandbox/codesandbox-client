@@ -2,6 +2,7 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import { inject } from 'mobx-react';
 import { Mutation } from 'react-apollo';
+import track from 'common/utils/analytics';
 
 import { NotificationContainer } from '../elements';
 import {
@@ -85,6 +86,7 @@ const TeamInvite = ({
           mutation={REJECT_TEAM_INVITATION}
           refetchQueries={['RecentNotifications']}
           onCompleted={() => {
+            track('Team - Invitation Rejected');
             signals.notificationAdded({
               message: `Rejected invitation to ${teamName}`,
               type: 'success',
@@ -102,6 +104,7 @@ const TeamInvite = ({
           mutation={ACCEPT_TEAM_INVITATION}
           refetchQueries={['RecentNotifications', 'TeamsSidebar']}
           onCompleted={() => {
+            track('Team - Invitation Accepted');
             signals.notificationAdded({
               message: `Accepted invitation to ${teamName}`,
               type: 'success',

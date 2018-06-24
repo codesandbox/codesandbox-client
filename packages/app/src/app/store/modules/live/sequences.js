@@ -20,7 +20,7 @@ import * as actions from './actions';
 
 export const initializeLive = factories.withLoadApp([
   set(state`live.isLoading`, true),
-  // actions.connect, This is now done always
+  factories.track('Live Session Joined', {}),
   actions.joinChannel,
   {
     success: [

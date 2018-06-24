@@ -63,7 +63,7 @@ class SortOptions extends React.Component {
     );
 
     return (
-      <OverlayComponent event="Dashboard Order By" Overlay={Overlay}>
+      <OverlayComponent event="Dashboard - Order By" Overlay={Overlay}>
         {open => (
           <Container hideOrder={hideOrder}>
             Sort by{' '}
