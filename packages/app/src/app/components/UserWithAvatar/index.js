@@ -15,7 +15,7 @@ function UserWithAvatar({
 }) {
   return (
     <CenteredText {...props}>
-      <Image src={avatarUrl} alt={username} />
+      {avatarUrl && <Image src={avatarUrl} alt={username} />}
       <AuthorName useBigName={useBigName}>
         <Names>
           {name && <div>{name}</div>}

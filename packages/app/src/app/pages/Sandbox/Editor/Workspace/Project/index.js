@@ -7,12 +7,15 @@ import {
   profileUrl,
 } from 'common/utils/url-generator';
 
+import TeamIcon from 'react-icons/lib/md/people';
+
 import UserWithAvatar from 'app/components/UserWithAvatar';
 import Stats from 'app/pages/common/Stats';
 import PrivacyStatus from 'app/components/PrivacyStatus';
 import GithubBadge from 'app/components/GithubBadge';
 import createEditableTags from 'app/components/EditableTags';
 import Tags from 'app/components/Tags';
+import Tooltip from 'common/components/Tooltip';
 
 import getTemplateDefinition from 'common/templates';
 import { WorkspaceInputContainer } from '../elements';
@@ -169,16 +172,26 @@ class Project extends React.Component {
           )}
         </Item>
 
-        {!!sandbox.author && (
-          <Item>
-            <UserLink to={profileUrl(sandbox.author.username)}>
-              <UserWithAvatar
-                username={sandbox.author.username}
-                avatarUrl={sandbox.author.avatarUrl}
-                subscriptionSince={sandbox.author.subscriptionSince}
-              />
-            </UserLink>
-          </Item>
+        {!sandbox.team &&
+          !!sandbox.author && (
+            <Item>
+              <UserLink to={profileUrl(sandbox.author.username)}>
+                <UserWithAvatar
+                  username={sandbox.author.username}
+                  avatarUrl={sandbox.author.avatarUrl}
+                  subscriptionSince={sandbox.author.subscriptionSince}
+                />
+              </UserLink>
+            </Item>
+          )}
+
+        {!!sandbox.team && (
+          <Tooltip title="This sandbox is owned by this team">
+            <Item style={{ color: 'white', display: 'flex' }}>
+              <TeamIcon style={{ fontSize: '1.125em', marginRight: '.5rem' }} />
+              <div>{sandbox.team.name}</div>
+            </Item>
+          </Tooltip>
         )}
         {!!sandbox.git && (
           <Item>

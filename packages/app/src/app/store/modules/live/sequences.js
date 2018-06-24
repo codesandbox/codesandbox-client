@@ -78,7 +78,7 @@ export const handleMessage = [
       set(state`live.roomInfo.ownerIds`, props`data.owner_ids`),
       set(state`live.roomInfo.connectionCount`, props`data.connection_count`),
       set(props`data.user_id`, props`data.joined_user_id`),
-      isOwnMessage,
+      when(props`data.user_id`, state`user.id`, (a, b) => a === b),
       {
         false: [
           equals(state`live.notificationsHidden`),
