@@ -41,7 +41,7 @@ export default function getItems(store) {
       (store.user &&
         store.live &&
         store.live.roomInfo &&
-        store.live.roomInfo.ownerId === store.user.id)
+        store.live.roomInfo.ownerIds.indexOf(store.user.id) > -1)
     )
   ) {
     return [FILES, LIVE];

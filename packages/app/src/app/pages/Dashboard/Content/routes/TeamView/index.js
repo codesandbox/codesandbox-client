@@ -1,5 +1,6 @@
 import React from 'react';
 import { Query, Mutation } from 'react-apollo';
+import { inject, Observer } from 'mobx-react';
 
 import UserWithAvatar from 'app/components/UserWithAvatar';
 import Button from 'app/components/Button';
@@ -11,6 +12,7 @@ import { TeamContainer, Section, Members, MemberHeader } from './elements';
 import { TEAM_QUERY, REVOKE_TEAM_INVITATION } from '../../../queries';
 
 import AddTeamMember from './AddTeamMember';
+import RemoveTeamMember from './RemoveTeamMember';
 
 const User = ({ user, rightElement }) => (
   <div
@@ -36,111 +38,119 @@ const User = ({ user, rightElement }) => (
   </div>
 );
 
-export default class TeamView extends React.PureComponent {
+class TeamView extends React.PureComponent {
   render() {
     const { teamId } = this.props.match.params;
 
     return (
       <Container>
         <Query query={TEAM_QUERY} variables={{ id: teamId }}>
-          {({ data, loading, error }) => {
-            if (loading || error) {
-              return null;
-            }
+          {({ data, loading, error }) => (
+            <Observer>
+              {() => {
+                const currentUser = this.props.store.user;
+                if (loading || error) {
+                  return null;
+                }
 
-            return (
-              <TeamContainer>
-                <Section>
-                  <HeaderContainer>{data.me.team.name}</HeaderContainer>
-                  <Description>
-                    This is a description of the team, they are very cool. Come
-                    here to create examples for other teams to see, very
-                    interesting examples are preferred of course.
-                  </Description>
-                </Section>
-                <Section>
-                  <HeaderContainer>Team Members</HeaderContainer>
+                return (
+                  <TeamContainer>
+                    <Section>
+                      <HeaderContainer>{data.me.team.name}</HeaderContainer>
+                      <Description>
+                        This is a description of the team, they are very cool.
+                        Come here to create examples for other teams to see,
+                        very interesting examples are preferred of course.
+                      </Description>
+                    </Section>
+                    <Section>
+                      <HeaderContainer>Team Members</HeaderContainer>
 
-                  <Members style={{ fontSize: '1rem' }}>
-                    {data.me.team.users.map(user => (
-                      <User
-                        user={user}
-                        key={user.username}
-                        rightElement={
-                          data.me.team.creatorId === user.id && (
-                            <div
-                              style={{
-                                float: 'right',
-                                fontSize: '.875rem',
-                                fontWeight: 400,
-                                fontStyle: 'italic',
-                              }}
-                            >
-                              Owner
-                            </div>
-                          )
-                        }
-                      />
-                    ))}
+                      <Members style={{ fontSize: '1rem' }}>
+                        {data.me.team.users.map(user => (
+                          <User
+                            user={user}
+                            key={user.username}
+                            rightElement={
+                              <RemoveTeamMember
+                                creatorId={data.me.team.creatorId}
+                                currentUserId={currentUser.id}
+                                userId={user.id}
+                                name={user.name || user.usermame}
+                                teamId={teamId}
+                                totalMemberSize={
+                                  data.me.team.users.length +
+                                  data.me.team.invitees.length
+                                }
+                              />
+                            }
+                          />
+                        ))}
 
-                    {data.me.team.invitees &&
-                      data.me.team.invitees.length > 0 && (
-                        <React.Fragment>
-                          <MemberHeader>Invited Members</MemberHeader>
+                        {data.me.team.invitees &&
+                          data.me.team.invitees.length > 0 && (
+                            <React.Fragment>
+                              <MemberHeader>Invited Members</MemberHeader>
 
-                          {data.me.team.invitees.map(user => (
-                            <Mutation
-                              key={user.username}
-                              mutation={REVOKE_TEAM_INVITATION}
-                            >
-                              {(mutate, { loading: revokeLoading }) => {
-                                track('Team - Revoke Invitation');
+                              {data.me.team.invitees.map(user => (
+                                <Mutation
+                                  key={user.username}
+                                  mutation={REVOKE_TEAM_INVITATION}
+                                >
+                                  {(mutate, { loading: revokeLoading }) => {
+                                    track('Team - Revoke Invitation');
 
-                                const handleClick = () =>
-                                  mutate({
-                                    variables: { userId: user.id, teamId },
-                                  });
+                                    const handleClick = () =>
+                                      mutate({
+                                        variables: { userId: user.id, teamId },
+                                      });
 
-                                return (
-                                  <User
-                                    user={user}
-                                    style={{ opacity: revokeLoading ? 0.5 : 1 }}
-                                    rightElement={
-                                      <div
+                                    return (
+                                      <User
+                                        user={user}
                                         style={{
-                                          float: 'right',
-                                          fontSize: '.75rem',
+                                          opacity: revokeLoading ? 0.5 : 1,
                                         }}
-                                      >
-                                        <Button
-                                          onClick={handleClick}
-                                          disabled={revokeLoading}
-                                          small
-                                        >
-                                          {revokeLoading
-                                            ? 'Revoking...'
-                                            : 'Revoke'}
-                                        </Button>
-                                      </div>
-                                    }
-                                  />
-                                );
-                              }}
-                            </Mutation>
-                          ))}
-                        </React.Fragment>
-                      )}
+                                        rightElement={
+                                          <div
+                                            style={{
+                                              float: 'right',
+                                              fontSize: '.75rem',
+                                            }}
+                                          >
+                                            <Button
+                                              onClick={handleClick}
+                                              disabled={revokeLoading}
+                                              small
+                                            >
+                                              {revokeLoading
+                                                ? 'Revoking...'
+                                                : 'Revoke'}
+                                            </Button>
+                                          </div>
+                                        }
+                                      />
+                                    );
+                                  }}
+                                </Mutation>
+                              ))}
+                            </React.Fragment>
+                          )}
 
-                    <Margin top={1}>
-                      <AddTeamMember teamId={teamId} />
-                    </Margin>
-                  </Members>
-                </Section>
-              </TeamContainer>
-            );
-          }}
+                        <Margin top={1}>
+                          <AddTeamMember teamId={teamId} />
+                        </Margin>
+                      </Members>
+                    </Section>
+                  </TeamContainer>
+                );
+              }}
+            </Observer>
+          )}
         </Query>
       </Container>
     );
   }
 }
+
+export default inject('store', 'signals')(TeamView);

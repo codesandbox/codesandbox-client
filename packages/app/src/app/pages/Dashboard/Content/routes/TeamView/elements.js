@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import CrossIcon from 'react-icons/lib/md/clear';
 
 export const TeamContainer = styled.div`
   display: flex;
@@ -27,4 +28,14 @@ export const MemberHeader = styled.div`
 
   font-weight: 600;
   color: rgba(255, 255, 255, 0.6);
+`;
+
+export const StyledCrossIcon = styled(CrossIcon)`
+  transition: 0.3s ease color;
+  color: white;
+  cursor: pointer;
+
+  &:hover {
+    color: ${props => props.theme.red};
+  }
 `;

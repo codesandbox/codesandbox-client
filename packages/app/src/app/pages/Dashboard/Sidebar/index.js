@@ -4,8 +4,10 @@ import { inject, observer } from 'mobx-react';
 import { Query } from 'react-apollo';
 import Input from 'common/components/Input';
 import Button from 'app/components/Button';
-
 import TimeIcon from 'react-icons/lib/md/access-time';
+import PeopleIcon from 'react-icons/lib/md/people';
+
+import { teamOverviewUrl } from 'common/utils/url-generator';
 
 import Item from './Item';
 import SandboxesItem from './SandboxesItem';
@@ -33,7 +35,7 @@ class Sidebar extends React.Component {
 
     return (
       <div style={{ width: 275, overflowY: 'auto' }}>
-        <div style={{ margin: '0 1rem' }}>
+        <div style={{ margin: '0 1rem', marginBottom: '1.5rem' }}>
           <Input
             onFocus={this.handleSearchFocus}
             block
@@ -43,7 +45,7 @@ class Sidebar extends React.Component {
           />
         </div>
 
-        <Items>
+        <Items style={{ marginBottom: '1rem' }}>
           <Item Icon={TimeIcon} path="/dashboard/recent" name="Recent" />
           <SandboxesItem />
           <TrashItem />
@@ -64,9 +66,12 @@ class Sidebar extends React.Component {
             return teams.map(team => (
               <div key={team.id}>
                 <Items>
-                  <CategoryHeader to={`/dashboard/teams/${team.id}`}>
-                    {team.name}
-                  </CategoryHeader>
+                  <CategoryHeader>{team.name}</CategoryHeader>
+                  <Item
+                    Icon={PeopleIcon}
+                    path={teamOverviewUrl(team.id)}
+                    name="Team Overview"
+                  />
                   <SandboxesItem teamId={team.id} />
                 </Items>
               </div>

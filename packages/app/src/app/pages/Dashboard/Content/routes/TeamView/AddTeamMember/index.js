@@ -51,7 +51,8 @@ const AddTeamMember = ({ teamId, signals }) => (
         input.value = '';
       };
 
-      const errorMessage = error && error.graphQLErrors[0].message;
+      const errorMessage =
+        error && error.graphQLErrors && error.graphQLErrors[0].message;
 
       return (
         <React.Fragment>

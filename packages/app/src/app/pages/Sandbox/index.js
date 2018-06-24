@@ -30,9 +30,8 @@ class SandboxPage extends React.Component {
   }
 
   fetchSandbox = () => {
-    this.props.signals.editor.sandboxChanged({
-      id: this.props.match.params.id,
-    });
+    const id = this.props.match.params.id;
+    this.props.signals.editor.sandboxChanged({ id });
   };
 
   componentDidUpdate(prevProps) {

@@ -33,7 +33,7 @@ export function initializeLiveState({ props, state }) {
   state.set('live.roomInfo', {
     connectionCount: 1,
     roomId: props.roomId,
-    ownerId: props.ownerId,
+    ownerIds: props.ownerIds,
     sandboxId: props.sandboxId,
     editorIds: props.editorIds,
     mode: props.mode,

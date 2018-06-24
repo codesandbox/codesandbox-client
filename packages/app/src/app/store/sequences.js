@@ -12,7 +12,8 @@ import {
   removeModule,
 } from './modules/files/actions';
 
-import { disconnect } from './modules/live/actions';
+import { disconnect, createRoom } from './modules/live/actions';
+import { initializeLive } from './modules/live/common-sequences';
 
 export const unloadApp = actions.stopListeningToConnectionChange;
 
@@ -275,7 +276,6 @@ export const resetLive = [
   set(state`live.isLive`, false),
   set(state`live.error`, null),
   set(state`live.isLoading`, false),
-  set(state`live.isOwner`, false),
   set(state`live.roomInfo`, undefined),
 ];
 
@@ -300,6 +300,28 @@ export const setSandbox = [
   actions.setWorkspace,
 ];
 
+export const createLiveSessionIfTeam = [
+  when(
+    props`sandbox.team`,
+    props`sandbox.owned`,
+    (team, owned) => team && owned
+  ),
+  {
+    true: [
+      set(props`sandboxId`, props`sandbox.id`),
+
+      set(state`live.isTeam`, true),
+      when(props`sandbox.team.roomId`),
+      {
+        true: [set(props`roomId`, props`sandbox.team.roomId`)],
+        false: [factories.track('Create Team Live Session', {}), createRoom],
+      },
+      initializeLive,
+    ],
+    false: [],
+  },
+];
+
 export const loadSandbox = factories.withLoadApp([
   set(state`editor.error`, null),
   when(state`editor.sandboxes.${props`id`}`),
@@ -321,6 +343,7 @@ export const loadSandbox = factories.withLoadApp([
           set(state`editor.sandboxes.${props`sandbox.id`}`, props`sandbox`),
           setSandbox,
           ensurePackageJSON,
+          createLiveSessionIfTeam,
         ],
         notFound: set(state`editor.notFound`, true),
         error: set(state`editor.error`, props`error.message`),

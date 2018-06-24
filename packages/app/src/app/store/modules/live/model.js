@@ -18,10 +18,10 @@ const UserMetadata = types.model({
 
 export default {
   isLive: types.boolean,
+  isTeam: types.boolean,
   isLoading: types.boolean,
   receivingCode: types.boolean,
   error: types.maybe(types.string),
-  isOwner: types.boolean,
   reconnecting: types.boolean,
   notificationsHidden: types.boolean,
   followingUserId: types.maybe(types.string),
@@ -29,7 +29,7 @@ export default {
     types.model({
       startTime: types.maybe(types.number),
       connectionCount: types.number,
-      ownerId: types.string,
+      ownerIds: types.array(types.string),
       roomId: types.string,
       mode: types.string,
       chatEnabled: types.boolean,

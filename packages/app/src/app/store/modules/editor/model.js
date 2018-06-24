@@ -22,6 +22,12 @@ const Author = types.model({
   viewCount: types.number,
 });
 
+const Team = types.model({
+  id: types.string,
+  name: types.string,
+  roomId: types.maybe(types.string),
+});
+
 const Directory = types.model({
   directoryShortid: types.maybe(types.string),
   id: types.string,
@@ -85,6 +91,7 @@ const Sandbox = types.model({
   userLiked: types.boolean,
   version: types.number,
   viewCount: types.number,
+  team: types.maybe(Team),
 });
 
 export default {

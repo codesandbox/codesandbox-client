@@ -337,6 +337,21 @@ export const TEAM_QUERY = gql`
   ${TEAM_FRAGMENT}
 `;
 
+export const LEAVE_TEAM = gql`
+  mutation LeaveTeam($teamId: ID!) {
+    leaveTeam(teamId: $teamId)
+  }
+`;
+
+export const REMOVE_FROM_TEAM = gql`
+  mutation RemoveFromTeam($teamId: ID!, $userId: ID!) {
+    removeFromTeam(teamId: $teamId, userId: $userId) {
+      ...Team
+    }
+  }
+  ${TEAM_FRAGMENT}
+`;
+
 export const INVITE_TO_TEAM = gql`
   mutation InviteToTeam($teamId: ID!, $username: String, $email: String) {
     inviteToTeam(teamId: $teamId, email: $email, username: $username) {

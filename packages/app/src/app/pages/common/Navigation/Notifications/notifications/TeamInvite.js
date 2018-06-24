@@ -2,6 +2,8 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import { inject } from 'mobx-react';
 import { Mutation } from 'react-apollo';
+import history from 'app/utils/history';
+import { teamOverviewUrl } from 'common/utils/url-generator';
 import track from 'common/utils/analytics';
 
 import { NotificationContainer } from '../elements';
@@ -109,6 +111,8 @@ const TeamInvite = ({
               message: `Accepted invitation to ${teamName}`,
               type: 'success',
             });
+
+            history.push(teamOverviewUrl(teamId));
           }}
         >
           {(mutate, { loading }) => (

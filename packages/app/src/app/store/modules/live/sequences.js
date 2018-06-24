@@ -17,22 +17,17 @@ import { changeCode, changeCurrentModule } from '../editor/sequences';
 import { setModuleSaved } from '../editor/actions';
 import { removeModule, removeDirectory } from '../files/sequences';
 import * as actions from './actions';
+import { initializeLive as commonInitializeLive } from './common-sequences';
 
-export const initializeLive = factories.withLoadApp([
-  set(state`live.isLoading`, true),
-  factories.track('Live Session Joined', {}),
-  actions.joinChannel,
-  {
-    success: [
-      set(props`listenSignalPath`, 'live.liveMessageReceived'),
-      actions.initializeLiveState,
-      actions.listen,
-    ],
-    error: set(state`live.error`, props`reason`),
-  },
-]);
+export const initializeLive = commonInitializeLive;
 
 const isOwnMessage = when(props`_isOwnMessage`);
+
+const isPrimaryOwner = when(
+  state`live.roomInfo.ownerIds`,
+  state`user.id`,
+  (ids, id) => ids[0] === id
+);
 
 export const applySelectionsForModule = [
   actions.getSelectionsForCurrentModule,
@@ -75,6 +70,8 @@ export const handleMessage = [
     'user:entered': [
       actions.consumeUserState,
       set(state`live.roomInfo.users`, props`users`),
+      set(state`live.roomInfo.editorIds`, props`data.editor_ids`),
+      set(state`live.roomInfo.ownerIds`, props`data.owner_ids`),
       set(state`live.roomInfo.connectionCount`, props`data.connection_count`),
       set(props`data.user_id`, props`data.joined_user_id`),
       isOwnMessage,
@@ -91,7 +88,7 @@ export const handleMessage = [
         ],
         true: [],
       },
-      equals(state`live.isOwner`),
+      isPrimaryOwner,
       {
         true: [
           actions.addUserMetadata,
@@ -114,6 +111,8 @@ export const handleMessage = [
       actions.clearUserSelections,
       actions.consumeUserState,
       set(state`live.roomInfo.users`, props`users`),
+      set(state`live.roomInfo.ownerIds`, props`data.owner_ids`),
+      set(state`live.roomInfo.editorIds`, props`data.editor_ids`),
       set(state`live.roomInfo.connectionCount`, props`data.connection_count`),
       when(props`data.multiple_connections`),
       {
@@ -124,7 +123,7 @@ export const handleMessage = [
       },
     ],
     state: [
-      when(state`live.isOwner`),
+      isPrimaryOwner,
       {
         true: [],
         false: [
@@ -334,9 +333,9 @@ export const handleMessage = [
       set(props`modal`, 'liveSessionEnded'),
       openModal,
       when(
-        state`live.roomInfo.ownerId`,
+        state`live.roomInfo.ownerIds`,
         state`live.user.id`,
-        (i1, i2) => i1 === i2
+        (i1, i2) => i1.indexOf(i2) > -1
       ),
       {
         true: [],
@@ -362,7 +361,6 @@ export const sendSelection = [
 
 export const createLive = [
   factories.track('Create Live Session', {}),
-  set(state`live.isOwner`, true),
   actions.createRoom,
   initializeLive,
 ];

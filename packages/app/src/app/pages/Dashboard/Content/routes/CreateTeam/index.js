@@ -1,9 +1,11 @@
 import React from 'react';
+import { Mutation } from 'react-apollo';
 
 import Input from 'common/components/Input';
 import Button from 'app/components/Button';
-import { Mutation } from 'react-apollo';
 import track from 'common/utils/analytics';
+import history from 'app/utils/history';
+import { teamOverviewUrl } from 'common/utils/url-generator';
 
 import { Container, Description, HeaderContainer } from '../../elements';
 import { Label, ComingSoon, Overlay } from './elements';
@@ -36,7 +38,7 @@ export default class CreateTeam extends React.PureComponent {
 
   render() {
     return (
-      <Container style={{ width: 500, paddingBottom: '1rem' }}>
+      <Container style={{ width: 500 }}>
         <HeaderContainer>Create a Team</HeaderContainer>
 
         <Description>
@@ -79,6 +81,15 @@ export default class CreateTeam extends React.PureComponent {
                     data: d,
                   });
                 },
+              }).then(({ data }) => {
+                if (window.showNotification) {
+                  window.showNotification(
+                    `Succesfully created team '${data.createTeam.name}'`,
+                    'success'
+                  );
+                }
+
+                history.push(teamOverviewUrl(data.createTeam.id));
               });
             };
 
@@ -118,7 +129,7 @@ export default class CreateTeam extends React.PureComponent {
 
                 <Button
                   disabled={this.state.inputValue === ''}
-                  style={{ float: 'right' }}
+                  style={{ float: 'right', marginBottom: '1rem' }}
                 >
                   Create Team!
                 </Button>
