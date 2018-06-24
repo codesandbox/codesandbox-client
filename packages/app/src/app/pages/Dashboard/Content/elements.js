@@ -12,3 +12,11 @@ export const HeaderContainer = styled.div`
   font-size: 1.25rem;
   color: white;
 `;
+
+export const Description = styled.p`
+  font-size: 1rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+
+  line-height: 1.6;
+`;

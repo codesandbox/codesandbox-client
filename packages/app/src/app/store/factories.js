@@ -3,7 +3,7 @@ import { set, when } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 import trackAnalytics from 'common/utils/analytics';
 import * as actions from './actions';
-import { connectToChannel as setupNotifications } from './modules/user-notifications/actions';
+import { initializeNotifications } from './modules/user-notifications/sequences';
 
 export function addTabById(id) {
   // eslint-disable-next-line
@@ -126,7 +126,7 @@ export function withLoadApp(continueSequence) {
                     actions.connectWebsocket,
                     set(props`modal`, 'changelogDashboard'),
                     actions.setModal,
-                    setupNotifications,
+                    initializeNotifications,
                   ],
                   error: [
                     addNotification(

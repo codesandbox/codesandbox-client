@@ -33,18 +33,33 @@ const TEAM_FRAGMENT = gql`
   fragment Team on Team {
     id
     name
+    creatorId
+
+    users {
+      id
+      name
+      username
+      avatarUrl
+    }
+
+    invitees {
+      id
+      name
+      username
+      avatarUrl
+    }
   }
 `;
 
 export const TEAMS_QUERY = gql`
-  {
+  query TeamsSidebar {
     me {
       teams {
-        ...Team
+        id
+        name
       }
     }
   }
-  ${TEAM_FRAGMENT}
 `;
 
 export const CREATE_TEAM_MUTATION = gql`
@@ -310,3 +325,47 @@ export function setSandboxesPrivacy(selectedSandboxes, privacy) {
     },
   });
 }
+
+export const TEAM_QUERY = gql`
+  query Team($id: ID!) {
+    me {
+      team(id: $id) {
+        ...Team
+      }
+    }
+  }
+  ${TEAM_FRAGMENT}
+`;
+
+export const INVITE_TO_TEAM = gql`
+  mutation InviteToTeam($teamId: ID!, $username: String, $email: String) {
+    inviteToTeam(teamId: $teamId, email: $email, username: $username) {
+      ...Team
+    }
+  }
+  ${TEAM_FRAGMENT}
+`;
+
+export const REVOKE_TEAM_INVITATION = gql`
+  mutation RevokeTeamInvitation($teamId: ID!, $userId: ID!) {
+    revokeTeamInvitation(teamId: $teamId, userId: $userId) {
+      ...Team
+    }
+  }
+  ${TEAM_FRAGMENT}
+`;
+
+export const ACCEPT_TEAM_INVITATION = gql`
+  mutation AcceptTeamInvitation($teamId: ID!) {
+    acceptTeamInvitation(teamId: $teamId) {
+      ...Team
+    }
+  }
+  ${TEAM_FRAGMENT}
+`;
+
+export const REJECT_TEAM_INVITATION = gql`
+  mutation RejectTeamInvitation($teamId: ID!) {
+    rejectTeamInvitation(teamId: $teamId)
+  }
+`;

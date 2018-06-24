@@ -1,13 +1,5 @@
 import styled from 'styled-components';
 
-export const Description = styled.p`
-  font-size: 1rem;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.7);
-
-  line-height: 1.6;
-`;
-
 export const Label = styled.label`
   display: block;
   font-weight: 600;

@@ -187,7 +187,7 @@ class SandboxItem extends React.PureComponent<Props> {
           action: () => {
             if (this.props.collectionTeamId) {
               history.push(
-                `/dashboard/team/${this.props.collectionTeamId}/sandboxes${
+                `/dashboard/teams/${this.props.collectionTeamId}/sandboxes${
                   this.props.collectionPath
                 }`
               );

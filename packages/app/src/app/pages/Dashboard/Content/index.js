@@ -14,10 +14,10 @@ const Content = () => (
     <Route path="/dashboard/trash" component={DeletedSandboxes} />
     <Route path="/dashboard/sandboxes/:path*" component={PathedSandboxes} />
     <Route path="/dashboard/search" component={SearchSandboxes} />
-    <Route path="/dashboard/team/new" component={CreateTeam} />
-    <Route exact path="/dashboard/team/:teamId" component={TeamView} />
+    <Route path="/dashboard/teams/new" component={CreateTeam} />
+    <Route exact path="/dashboard/teams/:teamId" component={TeamView} />
     <Route
-      path="/dashboard/team/:teamId/sandboxes/:path*"
+      path="/dashboard/teams/:teamId/sandboxes/:path*"
       component={PathedSandboxes}
     />
     <Redirect to="/dashboard/recent" />

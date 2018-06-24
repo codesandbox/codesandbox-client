@@ -4,8 +4,8 @@ import Input from 'common/components/Input';
 import Button from 'app/components/Button';
 import { Mutation } from 'react-apollo';
 
-import { Container, HeaderContainer } from '../../elements';
-import { Description, Label, ComingSoon, Overlay } from './elements';
+import { Container, Description, HeaderContainer } from '../../elements';
+import { Label, ComingSoon, Overlay } from './elements';
 import { CREATE_TEAM_MUTATION, TEAMS_QUERY } from '../../../queries';
 
 import Plan from './Plan';

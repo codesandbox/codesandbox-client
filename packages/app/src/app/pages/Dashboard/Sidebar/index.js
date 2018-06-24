@@ -64,7 +64,7 @@ class Sidebar extends React.Component {
             return teams.map(team => (
               <div key={team.id}>
                 <Items>
-                  <CategoryHeader to={`/dashboard/team/${team.id}`}>
+                  <CategoryHeader to={`/dashboard/teams/${team.id}`}>
                     {team.name}
                   </CategoryHeader>
                   <SandboxesItem teamId={team.id} />
@@ -77,7 +77,7 @@ class Sidebar extends React.Component {
         <div style={{ margin: '2rem', fontSize: '.875rem' }}>
           <Button
             style={{ display: 'block' }}
-            to="/dashboard/team/new"
+            to="/dashboard/teams/new"
             small
             block
           >

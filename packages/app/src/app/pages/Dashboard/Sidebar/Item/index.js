@@ -40,6 +40,10 @@ export default class Item extends React.Component {
         {res => {
           const isOpen =
             this.state.open === undefined ? res.match : this.state.open;
+
+          if (res.match && this.state.open === undefined) {
+            this.setState({ open: true });
+          }
           return (
             <Fragment>
               <UsedContainer

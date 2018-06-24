@@ -23,6 +23,8 @@ export const Container = styled.div`
 
 export const NotificationsContainer = styled.div`
   color: rgba(255, 255, 255, 0.6);
+  height: 500px;
+  overflow-y: auto;
 `;
 
 export const NoNotifications = styled.div`
@@ -33,7 +35,6 @@ export const Loading = styled.div`
   ${delayEffect(1)};
 
   padding: 0.75rem 1rem;
-  min-height: 100px;
 `;
 
 export const Title = styled.div`
@@ -53,6 +54,7 @@ export const NotificationContainer = styled.div`
     props.read
       ? css`
           border-color: rgba(0, 0, 0, 0.3);
+          opacity: 0.6;
         `
       : css`
           border-color: ${props.theme.secondary.clearer(0.2)()};

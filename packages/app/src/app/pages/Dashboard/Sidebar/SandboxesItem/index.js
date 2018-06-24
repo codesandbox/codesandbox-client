@@ -20,7 +20,6 @@ import getDirectChildren from './utils/get-direct-children';
 
 import { PATHED_SANDBOXES_FOLDER_QUERY } from '../../queries';
 
-// eslint-disable-next-line react/prefer-stateless-function
 class SandboxesItem extends React.Component {
   state = {
     creatingDirectory: false,
@@ -30,7 +29,7 @@ class SandboxesItem extends React.Component {
     const { isOver, canDrop, teamId, connectDropTarget } = this.props;
 
     const basePath = teamId
-      ? `/dashboard/team/${teamId}/sandboxes`
+      ? `/dashboard/teams/${teamId}/sandboxes`
       : '/dashboard/sandboxes';
 
     return connectDropTarget(
@@ -38,7 +37,7 @@ class SandboxesItem extends React.Component {
         <Item
           path={basePath}
           Icon={InfoIcon}
-          name="My Sandboxes"
+          name={teamId ? 'Our Sandboxes' : 'My Sandboxes'}
           style={
             isOver && canDrop ? { backgroundColor: 'rgba(0, 0, 0, 0.3)' } : {}
           }
@@ -99,7 +98,7 @@ class SandboxesItem extends React.Component {
                                 folders={folders}
                                 foldersByPath={foldersByPath}
                                 name={name}
-                                open={!!childMatch}
+                                open={childMatch ? !!childMatch : childMatch}
                               />
                             )}
                           </Route>

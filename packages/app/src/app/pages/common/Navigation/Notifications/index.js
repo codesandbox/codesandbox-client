@@ -12,10 +12,13 @@ import {
   Title,
 } from './elements';
 
-const VIEW_QUERY = gql`
-  {
+export const VIEW_QUERY = gql`
+  query RecentNotifications {
     me {
-      notifications {
+      notifications(
+        limit: 20
+        orderBy: { field: "insertedAt", direction: DESC }
+      ) {
         id
         type
         data
@@ -25,13 +28,13 @@ const VIEW_QUERY = gql`
   }
 `;
 
-const getNotificationComponent = (type, data, unread) => {
+const getNotificationComponent = (type, data, read) => {
   const parsedData = JSON.parse(data);
 
   if (type === 'team_invite') {
     return (
       <TeamInvite
-        unread={unread}
+        read={read}
         teamId={parsedData.team_id}
         teamName={parsedData.team_name}
         userId={parsedData.user_id}
@@ -40,13 +43,15 @@ const getNotificationComponent = (type, data, unread) => {
       />
     );
   }
+
+  return <div />;
 };
 
 export default style => (
   <Container style={style}>
     <Title>Notifications</Title>
     <NotificationsContainer>
-      <Query query={VIEW_QUERY}>
+      <Query fetchPolicy="cache-and-network" query={VIEW_QUERY}>
         {({ loading, error, data }) => {
           if (error) {
             return (

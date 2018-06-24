@@ -24,9 +24,10 @@ export const handleMessage = [
     'new-notification': [
       when(state`userNotifications.notificationsOpened`),
       {
-        false: [actions.addUnreadCount],
         true: [],
+        false: [actions.addUnreadCount],
       },
     ],
+    otherwise: [],
   },
 ];
