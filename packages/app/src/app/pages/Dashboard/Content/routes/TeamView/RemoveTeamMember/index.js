@@ -68,6 +68,7 @@ export default ({
               onClick={() => {
                 let confirmation = true;
                 if (isOwnUser && isCreator) {
+                  // eslint-disable-next-line no-alert
                   confirmation = confirm(
                     "Are you sure you want to leave? You won't be able to access the team again."
                   );
