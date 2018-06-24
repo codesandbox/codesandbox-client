@@ -58,7 +58,11 @@ export const handleMessage = [
   equals(props`event`),
   {
     join: [
-      set(props`message`, 'Connected to Live!'),
+      when(state`live.isTeam`),
+      {
+        true: [set(props`message`, 'Connected to Live Team!')],
+        false: [set(props`message`, 'Connected to Live!')],
+      },
       factories.addNotification(props`message`, 'success'),
       when(state`live.reconnecting`),
       {
