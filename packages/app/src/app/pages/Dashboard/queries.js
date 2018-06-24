@@ -33,6 +33,7 @@ const TEAM_FRAGMENT = gql`
   fragment Team on Team {
     id
     name
+    description
     creatorId
 
     users {
@@ -383,4 +384,13 @@ export const REJECT_TEAM_INVITATION = gql`
   mutation RejectTeamInvitation($teamId: ID!) {
     rejectTeamInvitation(teamId: $teamId)
   }
+`;
+
+export const SET_TEAM_DESCRIPTION = gql`
+  mutation SetTeamDescription($teamId: ID!, $description: String!) {
+    SetTeamDescription(teamId: $teamId, description: $description) {
+      ...Team
+    }
+  }
+  ${TEAM_FRAGMENT}
 `;

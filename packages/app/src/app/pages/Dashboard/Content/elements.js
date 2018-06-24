@@ -15,6 +15,7 @@ export const HeaderContainer = styled.div`
 
 export const Description = styled.p`
   font-size: 1rem;
+  width: 100%;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.7);
 

@@ -297,11 +297,13 @@ class SandboxItem extends React.PureComponent<Props> {
       this.selectSandbox(e);
     }
   };
+
   handleOnFocus = e => {
-    if (!this.props.selected && e.bubbles) {
+    if (!this.props.selected) {
       this.selectSandbox(e);
     }
   };
+
   handleOnBlur = (e: MouseEvent) => {
     if (this.props.selected && e.bubbles) {
       this.props.setSandboxesSelected([]);

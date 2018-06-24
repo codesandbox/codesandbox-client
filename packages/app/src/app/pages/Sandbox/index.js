@@ -29,6 +29,12 @@ class SandboxPage extends React.Component {
     this.fetchSandbox();
   }
 
+  componentWillUnmount() {
+    if (this.props.store.live.isLive) {
+      this.props.signals.live.onNavigateAway({});
+    }
+  }
+
   fetchSandbox = () => {
     const id = this.props.match.params.id;
     this.props.signals.editor.sandboxChanged({ id });

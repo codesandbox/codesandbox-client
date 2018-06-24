@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import CrossIcon from 'react-icons/lib/md/clear';
+import EditIcon from 'react-icons/lib/go/pencil';
 
 export const TeamContainer = styled.div`
   display: flex;
@@ -37,5 +38,19 @@ export const StyledCrossIcon = styled(CrossIcon)`
 
   &:hover {
     color: ${props => props.theme.red};
+  }
+`;
+
+export const StyledEditIcon = styled(EditIcon)`
+  transition: 0.3s ease color;
+  vertical-align: middle;
+  font-size: 1rem;
+  margin-bottom: 5px;
+  margin-left: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+
+  &:hover {
+    color: white;
   }
 `;

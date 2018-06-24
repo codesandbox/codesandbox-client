@@ -4,12 +4,23 @@ import { inject, Observer } from 'mobx-react';
 
 import UserWithAvatar from 'app/components/UserWithAvatar';
 import Button from 'app/components/Button';
+import AutosizeTextArea from 'common/components/AutosizeTextArea';
 import Margin from 'common/components/spacing/Margin';
 import track from 'common/utils/analytics';
 
 import { Container, HeaderContainer, Description } from '../../elements';
-import { TeamContainer, Section, Members, MemberHeader } from './elements';
-import { TEAM_QUERY, REVOKE_TEAM_INVITATION } from '../../../queries';
+import {
+  TeamContainer,
+  Section,
+  Members,
+  MemberHeader,
+  StyledEditIcon,
+} from './elements';
+import {
+  TEAM_QUERY,
+  REVOKE_TEAM_INVITATION,
+  SET_TEAM_DESCRIPTION,
+} from '../../../queries';
 
 import AddTeamMember from './AddTeamMember';
 import RemoveTeamMember from './RemoveTeamMember';
@@ -39,6 +50,10 @@ const User = ({ user, rightElement }) => (
 );
 
 class TeamView extends React.PureComponent {
+  state = {
+    editingDescription: false,
+  };
+
   render() {
     const { teamId } = this.props.match.params;
 
@@ -53,14 +68,105 @@ class TeamView extends React.PureComponent {
                   return null;
                 }
 
+                document.title = `${data.me.team.name} - CodeSandbox`;
+
+                const description =
+                  data.me.team.description ||
+                  `This is a description for your team. You can change this description and invite people to the team so they can edit the sandboxes of this team.`;
+
                 return (
                   <TeamContainer>
                     <Section>
                       <HeaderContainer>{data.me.team.name}</HeaderContainer>
                       <Description>
-                        This is a description of the team, they are very cool.
-                        Come here to create examples for other teams to see,
-                        very interesting examples are preferred of course.
+                        {this.state.editingDescription ? (
+                          <Mutation mutation={SET_TEAM_DESCRIPTION}>
+                            {(mutate, { loading: descriptionLoading }) => {
+                              let input = null;
+
+                              const stopEditing = () => {
+                                this.setState({ editingDescription: false });
+                              };
+                              const submit = e => {
+                                e.preventDefault();
+                                e.stopPropagation();
+
+                                mutate({
+                                  variables: {
+                                    teamId,
+                                    description: input.value,
+                                  },
+                                }).then(stopEditing);
+                              };
+
+                              return (
+                                <form
+                                  onSubmit={
+                                    descriptionLoading ? undefined : submit
+                                  }
+                                  style={{ width: '100%' }}
+                                >
+                                  <div
+                                    style={{
+                                      width: '100%',
+                                      lineHeight: '1.6',
+                                    }}
+                                  >
+                                    <AutosizeTextArea
+                                      inputRef={node => {
+                                        input = node;
+                                      }}
+                                      multiline
+                                      style={{
+                                        padding: '.5em',
+                                        lineHeight: '1.6',
+                                      }}
+                                      defaultValue={description}
+                                    />
+                                  </div>
+                                  <div
+                                    style={{
+                                      display: 'flex',
+                                      width: 300,
+                                      float: 'right',
+                                    }}
+                                  >
+                                    <Button
+                                      style={{ marginRight: '.5rem' }}
+                                      red
+                                      small
+                                      onClick={stopEditing}
+                                      type="reset"
+                                      disabled={descriptionLoading}
+                                    >
+                                      Cancel
+                                    </Button>
+                                    <Button
+                                      style={{ marginLeft: '.5rem' }}
+                                      small
+                                      type="submit"
+                                      disabled={descriptionLoading}
+                                    >
+                                      Confirm
+                                    </Button>
+                                  </div>
+                                </form>
+                              );
+                            }}
+                          </Mutation>
+                        ) : (
+                          <div>
+                            {description}
+
+                            <StyledEditIcon
+                              onClick={() => {
+                                this.setState(state => ({
+                                  editingDescription: !state.editingDescription,
+                                }));
+                              }}
+                            />
+                          </div>
+                        )}
                       </Description>
                     </Section>
                     <Section>
