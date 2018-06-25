@@ -1,6 +1,6 @@
 export function isContributor(username: string) {
   return (
-    this.contributors.find(
+    this.contributors.findIndex(
       contributor =>
         contributor.toLocaleLowerCase() === username.toLocaleLowerCase()
     ) > -1
