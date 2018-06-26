@@ -64,7 +64,6 @@ export const handleMessage = [
         false: [set(props`message`, 'Connected to Live!')],
       },
       factories.addNotification(props`message`, 'success'),
-      set(state`live.deviceId`, props`data.device_id`),
       when(state`live.reconnecting`),
       {
         true: [actions.resendOutboundOTTransforms],

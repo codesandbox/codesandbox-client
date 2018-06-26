@@ -100,6 +100,20 @@ export function updateSandboxUrl(sandbox) {
   };
 }
 
+const shouldShowChangelogModal = when(state`hasLogIn`, loggedIn => {
+  return true;
+  if (!loggedIn) {
+    return false;
+  }
+  if (document.cookie.includes('changelog-seen=1')) {
+    return false;
+  }
+
+  document.cookie = 'changelog-seen=1; Path=/;';
+
+  return true;
+});
+
 export function withLoadApp(continueSequence) {
   return sequence('loadApp', [
     when(state`hasLoadedApp`),
@@ -112,6 +126,13 @@ export function withLoadApp(continueSequence) {
         actions.setStoredSettings,
         actions.setKeybindings,
         actions.startKeybindings,
+
+        shouldShowChangelogModal,
+        {
+          true: [set(props`modal`, 'changelogDashboard'), actions.setModal],
+          false: [],
+        },
+
         when(state`jwt`),
         {
           true: [
@@ -124,8 +145,6 @@ export function withLoadApp(continueSequence) {
                     actions.setPatronPrice,
                     actions.setSignedInCookie,
                     actions.connectWebsocket,
-                    set(props`modal`, 'changelogDashboard'),
-                    actions.setModal,
                     initializeNotifications,
                   ],
                   error: [

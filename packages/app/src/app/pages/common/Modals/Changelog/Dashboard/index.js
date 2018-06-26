@@ -10,6 +10,16 @@ const titleStyles = {
   color: 'rgba(255, 255, 255, 0.9)',
   fontSize: '1.125rem',
   marginTop: 0,
+  marginBottom: 0,
+  width: '100%',
+};
+
+const dateStyles = {
+  color: 'rgba(255, 255, 255, 0.5)',
+  fontSize: '.875rem',
+  float: 'right',
+  width: '100%',
+  textAlign: 'right',
 };
 
 const subTitleStyles = {
@@ -37,7 +47,12 @@ function DashboardChangelog({ signals }) {
         backgroundColor: theme.background(),
       }}
     >
-      <h1 style={titleStyles}>What{"'"}s New</h1>
+      <div
+        style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center' }}
+      >
+        <h1 style={titleStyles}>What{"'"}s New</h1>
+        <div style={dateStyles}>June 28, 2018</div>
+      </div>
 
       <div
         style={{
