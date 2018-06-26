@@ -7,15 +7,28 @@ import {
 } from '../../../../Sidebar/SandboxesItem/folder-drop-target';
 import { NavigationLink } from './elements';
 
-const Link = ({ name, path, isOver, splittedPath, i, connectDropTarget }) =>
+const Link = ({
+  teamId,
+  name,
+  path,
+  isOver,
+  splittedPath,
+  i,
+  connectDropTarget,
+}) =>
   connectDropTarget(
     <div>
       <NavigationLink
-        to={`/dashboard/sandboxes${path}`}
+        to={
+          teamId
+            ? `/dashboard/teams/${teamId}/sandboxes${path}`
+            : `/dashboard/sandboxes${path}`
+        }
         last={i === splittedPath.length - 1 ? 'true' : undefined}
         first={i === 0 ? 'true' : undefined}
         style={isOver ? { color: 'white' } : {}}
         path={path}
+        teamId={teamId}
       >
         {name}
       </NavigationLink>

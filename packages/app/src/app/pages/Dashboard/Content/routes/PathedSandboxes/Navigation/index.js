@@ -22,6 +22,7 @@ export default ({ path, teamId }) => {
     <Container>
       {paths.map(({ name, url }, i) => (
         <NavigationLink
+          teamId={teamId}
           name={name}
           path={url}
           splittedPath={splittedPath}

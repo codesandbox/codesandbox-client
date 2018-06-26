@@ -1,5 +1,6 @@
 import React from 'react';
 import { inject } from 'mobx-react';
+import { Link } from 'react-router-dom';
 import theme from 'common/theme';
 
 import Button from 'app/components/Button';
@@ -40,6 +41,8 @@ const descriptionStyles = {
   marginBottom: 0,
 };
 
+const W = props => <span {...props} style={{ color: 'white' }} />;
+
 function DashboardChangelog({ signals }) {
   return (
     <div
@@ -64,31 +67,39 @@ function DashboardChangelog({ signals }) {
         }}
       />
 
-      <p style={descriptionStyles}>Welcome to the new CodeSandbox!</p>
-
-      <h2 style={subTitleStyles}>Dashboard</h2>
-
       <p style={descriptionStyles}>
-        You can now manage your sandboxes in your own dashboard!
+        We{"'"}re back with a new update! This update is very focused on{' '}
+        <W>collaboration</W> and <W>organization</W>. Let{"'"}s take a look!
       </p>
 
-      <p style={{ ...descriptionStyles, marginBottom: 0 }}>
-        In the dashboard you can delete, update and organize many sandboxes at
-        the same time. The dashboard looks very much like your local file
-        system, you can create directories and organize sandboxes there. Make
-        sure to keep an eye.
+      <h2 style={subTitleStyles}>Brand New Dashboard</h2>
+      <p style={descriptionStyles}>
+        You can now manage your sandboxes in your own{' '}
+        <Link to="/dashboard">dashboard</Link>! You{"'"}re able to{' '}
+        <W>filter, sort, search, delete, create and update</W> multiple
+        sandboxes at the same time. The possibilities are endless!
       </p>
 
-      <h2 style={subTitleStyles}>Teams</h2>
-
+      <h2 style={subTitleStyles}>Create Teams</h2>
       <p style={descriptionStyles}>
-        You can now manage your sandboxes in your own dashboard!
+        An extension to the dashboard is <W>teams</W>! You can now create a team
+        with unlimited members to share sandboxes for collaboration. All
+        sandboxes automatically sync using <W>live collaboration</W> between
+        team members.
       </p>
 
       <h2 style={subTitleStyles}>Free CodeSandbox Live</h2>
-
       <p style={descriptionStyles}>
-        You can now manage your sandboxes in your own dashboard!
+        Teams is not our only feature that allows for collaboration. We also
+        have <W>real time collaboration</W> with{' '}
+        <Link target="_blank" to="/docs/live">
+          CodeSandbox Live
+        </Link>. Until now this was behind a{' '}
+        <Link target="_blank" to="/patron">
+          Patron
+        </Link>{' '}
+        subscription, but we{"'"}re happy to announce that{' '}
+        <W>CodeSandbox Live is from now on free for everyone</W>!
       </p>
 
       <div style={{ display: 'flex' }}>
