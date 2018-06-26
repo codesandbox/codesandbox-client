@@ -91,7 +91,11 @@ class SandboxPage extends React.Component {
       );
     }
 
-    if (store.editor.isLoading || store.editor.currentSandbox == null) {
+    if (
+      store.editor.isLoading ||
+      store.live.isLoading ||
+      store.editor.currentSandbox == null
+    ) {
       return (
         <React.Fragment>
           <Skeleton
