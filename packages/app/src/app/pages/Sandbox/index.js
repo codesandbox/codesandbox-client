@@ -49,25 +49,6 @@ class SandboxPage extends React.Component {
   getContent() {
     const { store } = this.props;
 
-    if (store.editor.isLoading) {
-      return (
-        <React.Fragment>
-          <Skeleton
-            titles={[
-              {
-                content: 'Loading Sandbox',
-                delay: 0.6,
-              },
-              {
-                content: 'Fetching git repository...',
-                delay: 2,
-              },
-            ]}
-          />
-        </React.Fragment>
-      );
-    }
-
     if (store.editor.notFound) {
       return (
         <React.Fragment>
@@ -106,6 +87,25 @@ class SandboxPage extends React.Component {
           <Title style={{ fontSize: '1.25rem' }}>{store.editor.error}</Title>
           <br />
           <Link to="/s">Create Sandbox</Link>
+        </React.Fragment>
+      );
+    }
+
+    if (store.editor.isLoading || store.editor.currentSandbox == null) {
+      return (
+        <React.Fragment>
+          <Skeleton
+            titles={[
+              {
+                content: 'Loading Sandbox',
+                delay: 0.6,
+              },
+              {
+                content: 'Fetching git repository...',
+                delay: 2,
+              },
+            ]}
+          />
         </React.Fragment>
       );
     }

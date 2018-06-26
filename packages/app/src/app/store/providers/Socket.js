@@ -23,8 +23,6 @@ export default Provider({
       window.socket = socket;
       debug('Connecting to socket', socket);
     }
-
-    return socket;
   },
 
   getSocket() {
