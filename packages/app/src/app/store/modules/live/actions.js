@@ -36,7 +36,6 @@ export function initializeLiveState({ props, state }) {
     ownerIds: props.ownerIds,
     sandboxId: props.sandboxId,
     editorIds: props.editorIds,
-    deviceId: props.deviceId,
     sourceOfTruthDeviceId: props.sourceOfTruthDeviceId,
     mode: props.mode,
     chatEnabled: props.chatEnabled,
@@ -49,6 +48,7 @@ export function initializeLiveState({ props, state }) {
     },
     version: VERSION,
   });
+  state.set('live.deviceId', props.deviceId);
   state.set('live.isLive', true);
   state.set('live.error', null);
 }
