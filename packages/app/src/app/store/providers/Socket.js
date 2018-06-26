@@ -10,18 +10,21 @@ export default Provider({
     const { state, jwt } = this.context;
     const token = state.get('jwt') || jwt.get();
 
-    socket =
-      socket ||
-      new Socket(`wss://${location.host}/socket`, {
-        params: {
-          guardian_token: token,
-        },
-      });
+    if (!socket) {
+      socket =
+        socket ||
+        new Socket(`wss://${location.host}/socket`, {
+          params: {
+            guardian_token: token,
+          },
+        });
 
-    socket.connect();
-    window.socket = socket;
+      socket.connect();
+      window.socket = socket;
+      debug('Connecting to socket', socket);
+    }
 
-    debug('Connecting to socket', socket);
+    return socket;
   },
 
   getSocket() {
