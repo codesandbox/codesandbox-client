@@ -117,10 +117,9 @@ export default class CreateTeam extends React.PureComponent {
                     </QuestionHeader>
 
                     <Description>
-                      You can benefit from all Patron features as long as Team
-                      Pro is not released yet. This means that you can create
-                      unlimited private and unlisted sandboxes as a Patron in
-                      your team.
+                      You can benefit from all Patron features. This means that
+                      you can create unlimited private and unlisted sandboxes as
+                      a Patron in your team.
                       <br />
                       <br />
                       When we release Team Pro it will be required to have a Pro
