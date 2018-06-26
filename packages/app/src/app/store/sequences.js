@@ -334,7 +334,10 @@ export const loadSandbox = factories.withLoadApp([
   set(state`editor.error`, null),
   when(state`editor.sandboxes.${props`id`}`),
   {
-    true: [createLiveSessionIfTeam],
+    true: [
+      set(props`sandbox`, state`editor.sandboxes.${props`id`}`),
+      createLiveSessionIfTeam,
+    ],
     false: [
       set(state`editor.isLoading`, true),
       set(state`editor.notFound`, false),
