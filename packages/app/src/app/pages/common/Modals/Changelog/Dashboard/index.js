@@ -12,6 +12,7 @@ const titleStyles = {
   marginTop: 0,
   marginBottom: 0,
   width: '100%',
+  textTransform: 'uppercase',
 };
 
 const dateStyles = {
@@ -62,6 +63,8 @@ function DashboardChangelog({ signals }) {
           borderRadius: 2,
         }}
       />
+
+      <p style={descriptionStyles}>Welcome to the new CodeSandbox!</p>
 
       <h2 style={subTitleStyles}>Dashboard</h2>
 

@@ -101,7 +101,7 @@ export function updateSandboxUrl(sandbox) {
 }
 
 const shouldShowChangelogModal = when(state`hasLogIn`, loggedIn => {
-  return true;
+  // return true;
   if (!loggedIn) {
     return false;
   }
