@@ -26,9 +26,13 @@ const AddTeamMember = ({ teamId, signals }) => (
         e.preventDefault();
         e.stopPropagation();
 
-        track('Team - Add Member');
+        let isEmail = input.value.indexOf('@') > -1;
 
-        const isEmail = input.value.indexOf('@') > -1;
+        track('Team - Add Member', { email: isEmail });
+
+        isEmail = false;
+
+        // We don't enable email for now for privacy reasons
 
         const variables = { teamId };
 
@@ -65,7 +69,7 @@ const AddTeamMember = ({ teamId, signals }) => (
               innerRef={node => {
                 input = node;
               }}
-              placeholder="Add member by username or email"
+              placeholder="Add member by username"
               block
             />
             <Button disabled={loading} style={{ width: 200 }} small>

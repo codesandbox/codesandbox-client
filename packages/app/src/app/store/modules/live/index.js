@@ -15,6 +15,7 @@ export default Module({
     reconnecting: false,
     notificationsHidden: false,
     followingUserId: null,
+    deviceId: null,
   },
   computed: {
     isEditor,

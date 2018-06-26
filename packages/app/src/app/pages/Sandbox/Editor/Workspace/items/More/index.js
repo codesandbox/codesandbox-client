@@ -6,8 +6,8 @@ import { Description } from '../../elements';
 const More = () => (
   <div>
     <Description>
-      Sign in to be able to make deployments, collaborate live with others and
-      make commits to GitHub!
+      Sign in to be able to make deployments, collaborate live with others, make
+      commits to GitHub and do so much more!
     </Description>
 
     <Margin margin={1}>

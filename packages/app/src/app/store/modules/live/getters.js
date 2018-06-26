@@ -12,7 +12,7 @@ export function isOwner() {
   // We only mark the first owner as the 'real' owner. This owner is responsible
   // for syncing state with everyone. When this owner leaves the second owner
   // will become the first one and take over the responsibility of syncing.
-  return this.isLive && this.roomInfo.ownerIds.indexOf(user.id) > -1;
+  return this.isLive && user && this.roomInfo.ownerIds.indexOf(user.id) > -1;
 }
 
 export function liveUsersByModule() {

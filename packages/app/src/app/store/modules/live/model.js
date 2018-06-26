@@ -25,6 +25,7 @@ export default {
   reconnecting: types.boolean,
   notificationsHidden: types.boolean,
   followingUserId: types.maybe(types.string),
+  deviceId: types.maybe(types.string),
   roomInfo: types.maybe(
     types.model({
       startTime: types.maybe(types.number),
@@ -37,6 +38,7 @@ export default {
       editorIds: types.array(types.string),
       usersMetadata: types.map(UserMetadata),
       version: types.string,
+      sourceOfTruthDeviceId: types.string,
       users: types.array(
         types.model({
           id: types.string,

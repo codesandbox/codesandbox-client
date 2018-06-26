@@ -24,9 +24,9 @@ export const initializeLive = commonInitializeLive;
 const isOwnMessage = when(props`_isOwnMessage`);
 
 const isPrimaryOwner = when(
-  state`live.roomInfo.ownerIds`,
-  state`user.id`,
-  (ids, id) => ids[0] === id
+  state`live.roomInfo.sourceOfTruthDeviceId`,
+  state`live.deviceId`,
+  (i1, i2) => i1 === i2
 );
 
 export const applySelectionsForModule = [
@@ -64,6 +64,7 @@ export const handleMessage = [
         false: [set(props`message`, 'Connected to Live!')],
       },
       factories.addNotification(props`message`, 'success'),
+      set(state`live.deviceId`, props`data.device_id`),
       when(state`live.reconnecting`),
       {
         true: [actions.resendOutboundOTTransforms],
@@ -76,6 +77,10 @@ export const handleMessage = [
       set(state`live.roomInfo.users`, props`users`),
       set(state`live.roomInfo.editorIds`, props`data.editor_ids`),
       set(state`live.roomInfo.ownerIds`, props`data.owner_ids`),
+      set(
+        state`live.roomInfo.sourceOfTruthDeviceId`,
+        props`data.source_of_truth_device_id`
+      ),
       set(state`live.roomInfo.connectionCount`, props`data.connection_count`),
       set(props`data.user_id`, props`data.joined_user_id`),
       when(props`data.user_id`, state`user.id`, (a, b) => a === b),
@@ -116,6 +121,10 @@ export const handleMessage = [
       actions.consumeUserState,
       set(state`live.roomInfo.users`, props`users`),
       set(state`live.roomInfo.ownerIds`, props`data.owner_ids`),
+      set(
+        state`live.roomInfo.sourceOfTruthDeviceId`,
+        props`data.source_of_truth_device_id`
+      ),
       set(state`live.roomInfo.editorIds`, props`data.editor_ids`),
       set(state`live.roomInfo.connectionCount`, props`data.connection_count`),
       when(props`data.multiple_connections`),
@@ -336,11 +345,7 @@ export const handleMessage = [
       actions.disconnect,
       set(props`modal`, 'liveSessionEnded'),
       openModal,
-      when(
-        state`live.roomInfo.ownerIds`,
-        state`live.user.id`,
-        (i1, i2) => i1.indexOf(i2) > -1
-      ),
+      isPrimaryOwner,
       {
         true: [],
         false: [set(state`editor.currentSandbox.owned`, false)],

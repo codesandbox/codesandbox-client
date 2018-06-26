@@ -36,6 +36,7 @@ export function initializeLiveState({ props, state }) {
     ownerIds: props.ownerIds,
     sandboxId: props.sandboxId,
     editorIds: props.editorIds,
+    sourceOfTruthDeviceId: props.sourceOfTruthDeviceId,
     mode: props.mode,
     chatEnabled: props.chatEnabled,
     usersMetadata: {},
