@@ -8,7 +8,13 @@ import history from 'app/utils/history';
 import { teamOverviewUrl } from 'common/utils/url-generator';
 
 import { Container, Description, HeaderContainer } from '../../elements';
-import { Label, ComingSoon, Overlay } from './elements';
+import {
+  Label,
+  ComingSoon,
+  Overlay,
+  PatronInfo,
+  QuestionHeader,
+} from './elements';
 import { CREATE_TEAM_MUTATION, TEAMS_QUERY } from '../../../queries';
 
 import Plan from './Plan';
@@ -16,14 +22,14 @@ import Plan from './Plan';
 const FREE_POINTS = [
   'Unlimited Users',
   'Maximum of 50 Sandboxes',
-  '20 Mb Static File Hosting',
+  '20 Mb Static File Hosting per User',
   'Live Collaboration',
 ];
 
 const PRO_POINTS = [
   'Unlimited Users',
   'Unlimited Sandboxes',
-  '500 Mb Static File Hosting',
+  '500 Mb Static File Hosting per User',
   'Live Collaboration',
   'Team Invoices',
   'Private & Unlisted Sandboxes',
@@ -102,6 +108,26 @@ export default class CreateTeam extends React.PureComponent {
                 <Plan selected points={FREE_POINTS} name="Free" />
 
                 <ComingSoon style={{ position: 'relative' }}>
+                  <PatronInfo>
+                    <QuestionHeader>
+                      What if I{"'"}m a{' '}
+                      <a target="_blank" href="/patron">
+                        Patron
+                      </a>?
+                    </QuestionHeader>
+
+                    <Description>
+                      You can benefit from all Patron features as long as Team
+                      Pro is not released yet. This means that you can create
+                      unlimited private and unlisted sandboxes as a Patron in
+                      your team.
+                      <br />
+                      <br />
+                      When we release Team Pro it will be required to have a Pro
+                      subscription to get the Patron functionality.
+                    </Description>
+                  </PatronInfo>
+
                   <Overlay className="overlay">
                     Coming Soon
                     <div style={{ fontSize: '1.125rem' }}>

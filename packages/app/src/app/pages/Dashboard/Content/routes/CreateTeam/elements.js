@@ -39,3 +39,18 @@ export const Overlay = styled.div`
 
   color: white;
 `;
+
+export const PatronInfo = styled.div`
+  position: absolute;
+  left: 100%;
+  margin-left: 2rem;
+  width: 400px;
+`;
+
+export const QuestionHeader = styled.h2`
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  color: white;
+`;

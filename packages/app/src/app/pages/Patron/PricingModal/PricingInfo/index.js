@@ -19,9 +19,9 @@ function PricingInfo() {
         </thead>
         <tbody>
           <Feature
-            feature="CodeSandbox Live"
-            free="Disabled"
-            supporter="Enabled"
+            feature="Teams"
+            free="Enabled"
+            supporter="Enabled, lifted limits"
           />
           <Feature feature="Private Sandboxes" free="No" supporter="Yes" />
           <Feature feature="Sandbox Limit" free="50" supporter="Unlimited" />
