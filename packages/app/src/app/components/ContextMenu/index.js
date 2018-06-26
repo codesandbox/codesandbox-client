@@ -12,6 +12,7 @@ class ContextMenu extends React.Component {
       y: 0,
       show: false,
       down: true,
+      right: true,
     };
 
     this.mousedownHandler = mousedownEvent => {
@@ -46,6 +47,14 @@ class ContextMenu extends React.Component {
         html.offsetHeight
       );
 
+      const width = Math.max(
+        body.scrollWidth,
+        body.offsetWidth,
+        html.clientWidth,
+        html.scrollWidth,
+        html.offsetWidth
+      );
+
       event.preventDefault();
       this.mousedown = window.addEventListener(
         'mousedown',
@@ -54,11 +63,13 @@ class ContextMenu extends React.Component {
       this.keydown = window.addEventListener('keydown', this.keydownHandler);
 
       const isDown = height - event.clientY > 150;
+      const isLeft = width - event.clientX > 200;
       this.setState({
         show: true,
         x: event.clientX + 10,
         y: event.clientY + (isDown ? 10 : -10),
         down: isDown,
+        left: isLeft,
       });
 
       if (this.props.onContextMenu) {
@@ -92,7 +103,7 @@ class ContextMenu extends React.Component {
     }
 
     const { children, childFunction, items, ...props } = this.props;
-    const { show, x, y, down } = this.state;
+    const { show, x, y, down, left } = this.state;
 
     const mapFunction = (item, i) => {
       if (Array.isArray(item)) {
@@ -133,13 +144,13 @@ class ContextMenu extends React.Component {
               }}
             >
               <Spring
-                from={{ opacity: 0.6, height: 0 }}
-                to={{ opacity: 1, height: 'auto' }}
+                from={{ opacity: 0.6, height: 0, width: 'auto' }}
+                to={{ opacity: 1, height: 'auto', width: 'auto' }}
               >
-                {({ opacity, height }) => (
+                {({ opacity, height, width }) => (
                   <Container
                     style={{
-                      left: x,
+                      left: left ? x : x - width,
                       top: down ? y : y - height,
                       opacity,
                       height,
