@@ -314,16 +314,11 @@ export const createLiveSessionIfTeam = [
       when(props`sandbox.team.roomId`),
       {
         true: [set(props`roomId`, props`sandbox.team.roomId`)],
-        false: [
-          setSandbox,
-          factories.track('Create Team Live Session', {}),
-          createRoom,
-        ],
+        false: [factories.track('Create Team Live Session', {}), createRoom],
       },
       initializeLive,
     ],
-
-    false: [setSandbox],
+    false: [],
   },
 ];
 
@@ -333,6 +328,7 @@ export const loadSandbox = factories.withLoadApp([
   {
     true: [
       set(props`sandbox`, state`editor.sandboxes.${props`id`}`),
+      setSandbox,
       createLiveSessionIfTeam,
     ],
     false: [
@@ -346,8 +342,9 @@ export const loadSandbox = factories.withLoadApp([
       {
         success: [
           set(state`editor.sandboxes.${props`sandbox.id`}`, props`sandbox`),
-          createLiveSessionIfTeam,
+          setSandbox,
           ensurePackageJSON,
+          createLiveSessionIfTeam,
         ],
         notFound: set(state`editor.notFound`, true),
         error: set(state`editor.error`, props`error.message`),
