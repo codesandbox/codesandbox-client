@@ -70,7 +70,11 @@ class SortOptions extends React.Component {
             <OrderName onClick={open}>{FIELD_TO_NAME[field]} </OrderName>
             <Arrow
               onClick={this.toggleSort}
-              style={{ transform: `rotate(${order === 'asc' ? -180 : 0}deg)` }}
+              style={{
+                transform: `rotate(${order === 'asc' ? -180 : 0}deg)`,
+                fontSize: '.875rem',
+                marginLeft: 4,
+              }}
             />
           </Container>
         )}

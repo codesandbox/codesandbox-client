@@ -315,7 +315,7 @@ export const createLiveSessionIfTeam = [
       {
         true: [set(props`roomId`, props`sandbox.team.roomId`)],
         false: [
-          set(state`editor.sandboxes.${props`id`}`, props`sandbox`),
+          set(state`editor.sandboxes.${props`sandbox.id`}`, props`sandbox`),
           setSandbox,
           factories.track('Create Team Live Session', {}),
           createRoom,
@@ -324,7 +324,7 @@ export const createLiveSessionIfTeam = [
       initializeLive,
     ],
     false: [
-      set(state`editor.sandboxes.${props`id`}`, props`sandbox`),
+      set(state`editor.sandboxes.${props`sandbox.id`}`, props`sandbox`),
       setSandbox,
     ],
   },
