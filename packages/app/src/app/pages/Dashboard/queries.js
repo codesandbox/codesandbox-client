@@ -354,8 +354,8 @@ export const REMOVE_FROM_TEAM = gql`
 `;
 
 export const INVITE_TO_TEAM = gql`
-  mutation InviteToTeam($teamId: ID!, $username: String, $email: String) {
-    inviteToTeam(teamId: $teamId, email: $email, username: $username) {
+  mutation InviteToTeam($teamId: ID!, $username: String!) {
+    inviteToTeam(teamId: $teamId, username: $username) {
       ...Team
     }
   }
