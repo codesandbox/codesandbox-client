@@ -8,7 +8,7 @@ export const Container = styled.div`
   background-color: ${props => props.theme.background};
 `;
 
-export const RowContainer = styled(Row)`
+export const RowContainer = Row.extend`
   justify-content: center;
   color: rgba(255, 255, 255, 0.8);
   padding-top: 1.5rem;

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import Row from 'common/components/flex/Row';
 
-export const ClickableContainer = styled(Row)`
+export const ClickableContainer = Row.extend`
   cursor: pointer;
 `;
 

@@ -43,7 +43,7 @@ const Title = styled.div`
   }
 `;
 
-const StyledInput = styled(Input)`
+const StyledInput = Input.extend`
   width: calc(100% - 1.5rem);
   margin: 0 0.75rem;
   font-size: 0.875rem;

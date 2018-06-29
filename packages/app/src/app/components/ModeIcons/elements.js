@@ -102,10 +102,10 @@ const Icon = styled.div`
   height: 100%;
 `;
 
-export const EditorIcon = styled(Icon)`
+export const EditorIcon = Icon.extend`
   background-color: ${({ theme }) => theme.templateColor || theme.secondary};
 `;
 
-export const PreviewIcon = styled(Icon)`
+export const PreviewIcon = Icon.extend`
   background-color: ${({ theme }) => theme.primary};
 `;

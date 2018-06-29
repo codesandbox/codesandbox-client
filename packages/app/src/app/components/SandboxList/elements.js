@@ -15,7 +15,7 @@ export const Table = styled.table`
   margin-bottom: 2rem;
 `;
 
-export const StatTitle = styled(HeaderTitle)`
+export const StatTitle = HeaderTitle.extend`
   width: 2rem;
   text-align: center;
 `;
