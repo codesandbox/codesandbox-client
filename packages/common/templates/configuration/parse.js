@@ -27,21 +27,27 @@ export default function parseConfigurations(
     const module = resolveModule(path);
     const configurationFile = configurationFiles[path];
 
+    let baseObject = {
+      path,
+    };
     let code = null;
 
     if (module) {
       code = module.code;
     } else if (configurationFile.getDefaultCode) {
       code = configurationFile.getDefaultCode(template, resolveModule);
+      baseObject = { ...baseObject, generated: true };
     } else if (sandbox && configurationFile.generateFileFromSandbox) {
       code = configurationFile.generateFileFromSandbox(sandbox);
+      baseObject = { ...baseObject, generated: true };
     }
 
+    baseObject = {
+      ...baseObject,
+      code,
+    };
+
     if (code) {
-      const baseObject = {
-        code,
-        path,
-      };
       try {
         const parsed = parse(code);
 

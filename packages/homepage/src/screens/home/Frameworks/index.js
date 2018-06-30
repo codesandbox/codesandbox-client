@@ -244,7 +244,7 @@ const TEMPLATE_SUPPORT = {
   svelte: {
     loaders: [js, html, image],
     css: ['Global', 'Scoped', 'Modules'],
-    description: 'Used for Preact projects, based on: ',
+    description: 'Used for Svelte projects, based on: ',
   },
   'angular-cli': {
     loaders: [ts, html, scss, sass, less, stylus, cssGlobal, image],

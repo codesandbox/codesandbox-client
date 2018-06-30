@@ -7,7 +7,7 @@ import registerServiceWorker from 'common/registerServiceWorker';
 import requirePolyfills from 'common/load-dynamic-polyfills';
 import { getModulePath } from 'common/sandbox/modules';
 import { generateFileFromSandbox } from 'common/templates/configuration/package-json';
-import { Encode } from 'console-feed';
+import { Encode } from 'console-feed/lib/Transform';
 
 import setupHistoryListeners from './url-listeners';
 import compile, { getCurrentManager } from './compile';
@@ -17,7 +17,7 @@ const host = process.env.CODESANDBOX_HOST;
 const debug = _debug('cs:sandbox');
 
 export const SCRIPT_VERSION =
-  document.currentScript && document.currentScript.src.replace(host + '/', '');
+  document.currentScript && document.currentScript.src;
 
 debug('Booting sandbox');
 

@@ -361,6 +361,7 @@ export const sendSelection = [
 ];
 
 export const createLive = [
+  factories.track('Create Live Session', {}),
   set(state`live.isOwner`, true),
   actions.createRoom,
   initializeLive,
@@ -413,6 +414,7 @@ export const removeEditor = [
 export const sendChat = [actions.sendChat];
 
 export const setChatEnabled = [
+  factories.track('Enable Live Chat', {}),
   equals(state`live.isOwner`),
   {
     true: [
@@ -424,6 +426,7 @@ export const setChatEnabled = [
 ];
 
 export const setFollowing = [
+  factories.track('Follow Along in Live', {}),
   set(state`live.followingUserId`, props`userId`),
   actions.getCurrentModuleIdOfUser,
   when(props`moduleShortid`),

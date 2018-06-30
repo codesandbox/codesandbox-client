@@ -1,12 +1,17 @@
 // @flow
 import * as React from 'react';
-
 import type { Sandbox } from 'common/types';
-
 import ModeIcons from 'app/components/ModeIcons';
 import EditorLink from '../EditorLink';
 
-import { Container, MenuIcon, RightAligned, Title } from './elements';
+import {
+  Container,
+  MenuIcon,
+  Title,
+  RightAligned,
+  CenterAligned,
+  LeftAligned,
+} from './elements';
 
 type Props = {
   sandbox: Sandbox,
@@ -27,17 +32,23 @@ function Header({
   setMixedView,
   toggleSidebar,
 }: Props) {
+  const sandboxTitle = sandbox.title || sandbox.id;
+
   return (
     <Container>
-      <MenuIcon onClick={toggleSidebar} />
-      <Title>{sandbox.title || sandbox.id}</Title>
-      <ModeIcons
-        showEditor={showEditor}
-        showPreview={showPreview}
-        setEditorView={setEditorView}
-        setPreviewView={setPreviewView}
-        setMixedView={setMixedView}
-      />
+      <LeftAligned>
+        <MenuIcon onClick={toggleSidebar} />
+        <Title title={sandboxTitle}>{sandboxTitle}</Title>
+      </LeftAligned>
+      <CenterAligned>
+        <ModeIcons
+          showEditor={showEditor}
+          showPreview={showPreview}
+          setEditorView={setEditorView}
+          setPreviewView={setPreviewView}
+          setMixedView={setMixedView}
+        />
+      </CenterAligned>
       <RightAligned>
         <EditorLink small sandbox={sandbox} />
       </RightAligned>

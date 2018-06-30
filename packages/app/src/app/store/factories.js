@@ -1,6 +1,7 @@
 import { sequence, parallel } from 'cerebral';
 import { set, when } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
+import trackAnalytics from 'common/utils/analytics';
 import * as actions from './actions';
 
 export function addTabById(id) {
@@ -31,6 +32,22 @@ export function addTabById(id) {
         }
       }
     }
+  };
+}
+
+const trackedEvents = {};
+
+export function track(e, args, { trackOnce } = { trackOnce: false }) {
+  return () => {
+    if (!trackOnce || !trackedEvents[e]) {
+      trackAnalytics(e, args);
+
+      if (trackOnce) {
+        trackedEvents[e] = true;
+      }
+    }
+
+    return {};
   };
 }
 
@@ -103,6 +120,7 @@ export function withLoadApp(continueSequence) {
                 {
                   success: [
                     set(state`user`, props`user`),
+                    actions.setSignedInCookie,
                     actions.setPatronPrice,
                   ],
                   error: [
@@ -121,6 +139,7 @@ export function withLoadApp(continueSequence) {
         },
         set(state`hasLoadedApp`, true),
         set(state`isAuthenticating`, false),
+        actions.getContributors,
       ],
     },
   ]);

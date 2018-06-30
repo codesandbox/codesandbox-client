@@ -74,6 +74,7 @@ const SHIMMED_MODULE: Module = {
 const debug = _debug('cs:compiler:manager');
 
 type HMRStatus = 'idle' | 'check' | 'apply' | 'fail' | 'dispose';
+type Stage = 'transpilation' | 'evaluation';
 
 export default class Manager {
   id: string;
@@ -108,6 +109,8 @@ export default class Manager {
 
   configurations: Configurations;
 
+  stage: Stage;
+
   constructor(id: string, preset: Preset, modules: { [path: string]: Module }) {
     this.id = id;
     this.preset = preset;
@@ -121,6 +124,7 @@ export default class Manager {
     this.isFirstLoad = true;
     this.transpiledModulesByHash = {};
     this.configurations = {};
+    this.stage = 'transpilation';
 
     this.modules = modules;
     Object.keys(modules).forEach(k => this.addModule(modules[k]));
@@ -166,8 +170,14 @@ export default class Manager {
   }
 
   // Hoist these 2 functions to the top, since they get executed A LOT
-  isFile = (p: string) =>
-    !!this.transpiledModules[p] || !!getCombinedMetas()[p];
+  isFile = (p: string) => {
+    if (this.stage === 'transpilation') {
+      // In transpilation phase we can afford to download the file if not found,
+      // because we're async. That's why we also include the meta here.
+      return !!this.transpiledModules[p] || !!getCombinedMetas()[p];
+    }
+    return !!this.transpiledModules[p];
+  };
 
   readFileSync = (p: string) => {
     if (this.transpiledModules[p]) {
@@ -179,6 +189,10 @@ export default class Manager {
     err.code = 'ENOENT';
 
     throw err;
+  };
+
+  setStage = (stage: Stage) => {
+    this.stage = stage;
   };
 
   setManifest(manifest: ?Manifest) {
@@ -445,6 +459,12 @@ export default class Manager {
     this.webpackHMR = true;
   }
 
+  getPresetAliasedPath(path: string) {
+    return this.preset
+      .getAliasedPath(path)
+      .replace(/.*\{\{sandboxRoot\}\}/, '');
+  }
+
   resolveModule(
     path: string,
     currentPath: string,
@@ -462,9 +482,7 @@ export default class Manager {
     if (cachedPath) {
       resolvedPath = cachedPath;
     } else {
-      const presetAliasedPath = this.preset
-        .getAliasedPath(path)
-        .replace(/.*\{\{sandboxRoot\}\}/, '');
+      const presetAliasedPath = this.getPresetAliasedPath(path);
 
       const aliasedPath = this.getAliasedDependencyPath(
         presetAliasedPath,
@@ -722,13 +740,14 @@ export default class Manager {
       ])
     );
     const transpiledModulesToUpdate = allModulesToUpdate.filter(
-      m => !TestRunner.isTest(m.module.path)
+      m => !m.isTestFile
     );
+
     // Reset test files, but don't transpile. We want to do that in the test runner
     // so we can catch any errors
-    allModulesToUpdate
-      .filter(m => TestRunner.isTest(m.module.path))
-      .forEach(m => m.resetTranspilation());
+    allModulesToUpdate.filter(m => m.isTestFile).forEach(m => {
+      m.resetTranspilation();
+    });
 
     debug(
       `Generated update diff, updating ${

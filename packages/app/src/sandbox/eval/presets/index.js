@@ -43,13 +43,18 @@ export default class Preset {
   hasDotEnv: boolean;
 
   /**
-   * Code to run before evaluating entry
+   * Code to run before evaluating and transpiling entry
    */
   setup: LifeCycleFunction;
   /**
    * Code to run after done
    */
   teardown: LifeCycleFunction;
+
+  /**
+   * Code to run before evaluation
+   */
+  preEvaluate: LifeCycleFunction;
 
   constructor(
     name: string,
@@ -60,9 +65,11 @@ export default class Preset {
       setup,
       teardown,
       htmlDisabled,
+      preEvaluate,
     }: {
       hasDotEnv?: boolean,
       setup?: LifeCycleFunction,
+      preEvaluate?: LifeCycleFunction,
       teardown?: LifeCycleFunction,
       htmlDisabled?: boolean,
     } = {}
@@ -73,24 +80,34 @@ export default class Preset {
 
     this.hasDotEnv = hasDotEnv || false;
     this.alias = alias || {};
+    this.aliasedPathCache = {};
     this.defaultAliases = alias || {};
     this.ignoredExtensions = ignoredExtensions || ['js', 'jsx', 'json'];
 
     const noop = () => {};
     this.setup = setup || noop;
     this.teardown = teardown || noop;
+    this.preEvaluate = preEvaluate || noop;
     this.htmlDisabled = htmlDisabled || false;
   }
 
   setAdditionalAliases = (aliases: Object) => {
     this.alias = { ...this.defaultAliases, ...aliases };
+    this.aliasedPathCache = {};
   };
 
+  aliasedPathCache = {};
   /**
    * Checks if there is an alias given for the path, if there is it will return
    * the altered path, otherwise it will just return the known path.
    */
   getAliasedPath(path: string): string {
+    if (this.aliasedPathCache[path] === null) {
+      return path;
+    } else if (this.aliasedPathCache[path]) {
+      return this.aliasedPathCache[path];
+    }
+
     const aliases = Object.keys(this.alias);
 
     const exactAliases = aliases.filter(a => a.endsWith('$'));
@@ -105,10 +122,11 @@ export default class Preset {
     });
 
     if (exactFoundAlias) {
+      this.aliasedPathCache[path] = this.alias[exactFoundAlias];
       return this.alias[exactFoundAlias];
     }
 
-    const pathParts = path.split('/'); // eslint-disable-line prefer-const
+    const pathParts = path.split('/');
 
     // Find matching aliases
     const foundAlias = orderBy(aliases, a => -a.split('/').length).find(a => {
@@ -117,9 +135,13 @@ export default class Preset {
     });
 
     if (foundAlias) {
+      const replacedPath = path.replace(foundAlias, this.alias[foundAlias]);
+      this.aliasedPathCache[path] = replacedPath;
       // if an alias is found we will replace the path with the alias
-      return path.replace(foundAlias, this.alias[foundAlias]);
+      return replacedPath;
     }
+
+    this.aliasedPathCache[path] = null;
 
     return path;
   }

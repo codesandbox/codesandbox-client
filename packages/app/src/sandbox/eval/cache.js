@@ -68,7 +68,7 @@ export async function saveCache(
     manager.clearCache();
   }
 
-  if (shouldSaveOnlineCache(firstRun, changes)) {
+  if (shouldSaveOnlineCache(firstRun, changes) && SCRIPT_VERSION) {
     const stringifiedManagerState = JSON.stringify(managerState);
 
     debug(
