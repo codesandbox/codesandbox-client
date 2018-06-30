@@ -100,6 +100,9 @@ class CreateNewSandbox extends React.PureComponent {
               <Spring native from={usedRects[0]} to={usedRects[1]}>
                 {newStyle => (
                   <AnimatedModalContainer
+                    tabIndex="-1"
+                    aria-modal="true"
+                    aria-labelledby="new-sandbox"
                     forking={this.state.forking}
                     style={
                       this.state.forking

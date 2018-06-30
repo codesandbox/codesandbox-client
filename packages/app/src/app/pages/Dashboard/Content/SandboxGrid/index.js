@@ -227,7 +227,9 @@ class SandboxGrid extends React.Component<*, State> {
     let editedSince = getOrder();
 
     if (this.props.page === 'search' || this.props.page === 'recent') {
-      const dir = basename(item.collection.path) || 'My Sandboxes';
+      const dir =
+        basename(item.collection.path) ||
+        (item.collection.teamId ? 'Our Sandboxes' : 'My Sandboxes');
 
       if (dir) {
         editedSince += ` in ${dir}`;

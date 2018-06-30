@@ -6,7 +6,7 @@ import history from 'app/utils/history';
 import { teamOverviewUrl } from 'common/utils/url-generator';
 import track from 'common/utils/analytics';
 
-import { NotificationContainer } from '../elements';
+import { NotificationContainer, NotificationImage as Image } from '../elements';
 import {
   REJECT_TEAM_INVITATION,
   ACCEPT_TEAM_INVITATION,
@@ -14,14 +14,6 @@ import {
 
 const Container = NotificationContainer.extend`
   display: flex;
-`;
-
-const Image = styled.img`
-  border-radius: 4px;
-  width: 24px;
-  height: 24px;
-  margin-right: 1rem;
-  margin-top: 0.25rem;
 `;
 
 const Buttons = styled.div`

@@ -23,7 +23,7 @@ export const Container = styled.div`
 
 export const NotificationsContainer = styled.div`
   color: rgba(255, 255, 255, 0.6);
-  height: 500px;
+  max-height: 500px;
   overflow-y: auto;
 `;
 
@@ -63,4 +63,22 @@ export const NotificationContainer = styled.div`
             border-color: ${props.theme.secondary()};
           }
         `};
+
+  ${props =>
+    props.success &&
+    css`
+      border-color: ${props.theme.green.clearer(0.2)()};
+
+      &:hover {
+        border-color: ${props.theme.green()};
+      }
+    `};
+`;
+
+export const NotificationImage = styled.img`
+  border-radius: 4px;
+  width: 24px;
+  height: 24px;
+  margin-right: 1rem;
+  margin-top: 0.25rem;
 `;

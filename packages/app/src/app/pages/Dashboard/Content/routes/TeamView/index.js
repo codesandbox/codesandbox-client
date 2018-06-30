@@ -1,6 +1,7 @@
 import React from 'react';
 import { Query, Mutation } from 'react-apollo';
 import { inject, Observer } from 'mobx-react';
+import { sortBy } from 'lodash-es';
 
 import UserWithAvatar from 'app/components/UserWithAvatar';
 import Button from 'app/components/Button';
@@ -173,7 +174,10 @@ class TeamView extends React.PureComponent {
                       <HeaderContainer>Team Members</HeaderContainer>
 
                       <Members style={{ fontSize: '1rem' }}>
-                        {data.me.team.users.map(user => (
+                        {sortBy(
+                          data.me.team.users,
+                          u => u.name || u.username
+                        ).map(user => (
                           <User
                             user={user}
                             key={user.username}

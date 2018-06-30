@@ -11,6 +11,7 @@ import {
   Loading,
   Title,
 } from './elements';
+import TeamAccepted from './notifications/TeamAccepted';
 
 export const VIEW_QUERY = gql`
   query RecentNotifications {
@@ -40,6 +41,15 @@ const getNotificationComponent = (type, data, read) => {
         userId={parsedData.user_id}
         inviterName={parsedData.inviter_name}
         inviterAvatar={parsedData.inviter_avatar}
+      />
+    );
+  } else if (type === 'team_accepted') {
+    return (
+      <TeamAccepted
+        read={read}
+        teamName={parsedData.team_name}
+        userAvatar={parsedData.user_avatar}
+        userName={parsedData.user_name}
       />
     );
   }

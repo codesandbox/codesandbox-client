@@ -25,7 +25,7 @@ const RecentSandboxes = ({ store }) => {
         return (
           <Sandboxes
             isLoading={loading}
-            Header={'Recent Sandboxes'}
+            Header="Recent Sandboxes"
             ExtraElement={({ style }) => <CreateNewSandbox style={style} />}
             hideFilters
             sandboxes={loading ? [] : data.me.sandboxes}
