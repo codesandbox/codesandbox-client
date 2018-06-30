@@ -37,7 +37,7 @@ const getFileNameFromVm = vm => {
 export default function initialize() {
   const vuePreset = new Preset(
     'vue-cli',
-    ['vue', 'json', 'js'],
+    ['vue', 'json', 'js', 'ts'],
     {
       '@': '{{sandboxRoot}}/src',
       vue$: 'vue/dist/vue.common.js',
