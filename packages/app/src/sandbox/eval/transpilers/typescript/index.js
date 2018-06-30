@@ -15,7 +15,7 @@ class TypeScriptTranspiler extends WorkerTranspiler {
     return new Promise((resolve, reject) => {
       const path = loaderContext.path;
 
-      let foundConfig = loaderContext.options;
+      let foundConfig = null;
       if (
         loaderContext.options.configurations &&
         loaderContext.options.configurations.typescript &&
