@@ -38,20 +38,34 @@ export function setUrlOptions({ state, router, utils }) {
 
   if (options.currentModule) {
     const sandbox = state.get('editor.currentSandbox');
-    const module = utils.resolveModule(
-      options.currentModule,
-      sandbox.modules,
-      sandbox.directories,
-      options.currentModule.directoryShortid
-    );
 
-    if (module) {
-      state.push('editor.tabs', {
-        type: 'module',
-        moduleShortid: module.shortid,
-        dirty: false,
+    try {
+      const module = utils.resolveModule(
+        options.currentModule,
+        sandbox.modules,
+        sandbox.directories,
+        options.currentModule.directoryShortid
+      );
+
+      if (module) {
+        state.push('editor.tabs', {
+          type: 'module',
+          moduleShortid: module.shortid,
+          dirty: false,
+        });
+        state.set('editor.currentModuleShortid', module.shortid);
+      }
+    } catch (err) {
+      const now = Date.now();
+      const title = `Could not find the module ${options.currentModule}`;
+
+      state.push('notifications', {
+        title,
+        id: now,
+        notificationType: 'warning',
+        endTime: now + 2000,
+        buttons: [],
       });
-      state.set('editor.currentModuleShortid', module.shortid);
     }
   }
 
