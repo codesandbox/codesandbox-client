@@ -21,7 +21,15 @@ function FilesList({ files, deleteFile, addFileToSandbox }) {
       <Body>
         {sortBy(files, 'name').map((f, i) => (
           <FileRow index={i} key={f.id}>
-            <td>
+            <td
+              style={{
+                maxWidth: 100,
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+              title={f.name}
+            >
               <a target="_blank" rel="noreferrer noopener" href={f.url}>
                 {f.name}
               </a>
