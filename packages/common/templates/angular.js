@@ -9,9 +9,8 @@ import { decorateSelector } from '../theme';
 function getAngularCLIEntries(parsed) {
   const entries = [];
 
-  const app = parsed.apps && parsed.apps[0];
-
   if (parsed) {
+    const app = parsed.apps && parsed.apps[0];
     if (app && app.root && app.main) {
       entries.push(absolute(join(app.root, app.main)));
     }
@@ -22,33 +21,40 @@ function getAngularCLIEntries(parsed) {
 
 function getAngularJSONEntries(parsed) {
   const entries = [];
-  const defaultProject = parsed.defaultProject;
-  const project = parsed.projects[defaultProject];
-  const build = project.architect.build;
 
-  if (build.options.main) {
-    entries.push(absolute(join(project.root, build.options.main)));
+  if (parsed) {
+    const defaultProject = parsed.defaultProject;
+    const project = parsed.projects[defaultProject];
+    const build = project.architect.build;
+
+    if (build.options.main) {
+      entries.push(absolute(join(project.root, build.options.main)));
+    }
   }
 
   return entries;
 }
 
 function getAngularCLIHTMLEntry(parsed) {
-  const app = parsed.apps && parsed.apps[0];
-  if (app && app.root && app.index) {
-    return [absolute(join(app.root, app.index))];
+  if (parsed) {
+    const app = parsed.apps && parsed.apps[0];
+    if (app && app.root && app.index) {
+      return [absolute(join(app.root, app.index))];
+    }
   }
 
   return [];
 }
 
 function getAngularJSONHTMLEntry(parsed) {
-  const defaultProject = parsed.defaultProject;
-  const project = parsed.projects[defaultProject];
-  const build = project.architect.build;
+  if (parsed) {
+    const defaultProject = parsed.defaultProject;
+    const project = parsed.projects[defaultProject];
+    const build = project.architect.build;
 
-  if (build && project.root != null && build.options && build.options.index) {
-    return [absolute(join(project.root, build.options.index))];
+    if (build && project.root != null && build.options && build.options.index) {
+      return [absolute(join(project.root, build.options.index))];
+    }
   }
 
   return [];
