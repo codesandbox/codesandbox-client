@@ -491,6 +491,7 @@ export default class Manager {
       const shimmedPath = coreLibraries[aliasedPath] || aliasedPath;
 
       if (NODE_LIBS.includes(shimmedPath)) {
+        this.cachedPaths[dirredPath][path] = shimmedPath;
         return SHIMMED_MODULE;
       }
 
@@ -702,6 +703,7 @@ export default class Manager {
     this.getModules().forEach(m => {
       if (
         !m.path.startsWith('/node_modules') &&
+        m.path !== '/var/task/node_modules/browser-resolve/empty.js' &&
         !modules[m.path] &&
         !m.parent // not an emitted module
       ) {
@@ -841,7 +843,7 @@ export default class Manager {
           meta,
         }: {
           transpiledModules: { [id: string]: SerializedTranspiledModule },
-          cachedPaths: { [path: string]: string },
+          cachedPaths: { [path: string]: { [path: string]: string } },
           version: string,
           timestamp: number,
           configurations: Object,
