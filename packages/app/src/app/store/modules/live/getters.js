@@ -9,10 +9,11 @@ export function isCurrentEditor() {
 export function isOwner() {
   const user = getParent(this).user;
 
-  // We only mark the first owner as the 'real' owner. This owner is responsible
-  // for syncing state with everyone. When this owner leaves the second owner
-  // will become the first one and take over the responsibility of syncing.
   return this.isLive && user && this.roomInfo.ownerIds.indexOf(user.id) > -1;
+}
+
+export function isSourceOfTruth() {
+  return this.roomInfo && this.roomInfo.sourceOfTruthDeviceId === this.deviceId;
 }
 
 export function liveUsersByModule() {

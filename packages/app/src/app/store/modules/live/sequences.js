@@ -23,12 +23,6 @@ export const initializeLive = commonInitializeLive;
 
 const isOwnMessage = when(props`_isOwnMessage`);
 
-const isPrimaryOwner = when(
-  state`live.roomInfo.sourceOfTruthDeviceId`,
-  state`live.deviceId`,
-  (i1, i2) => i1 === i2
-);
-
 export const applySelectionsForModule = [
   actions.getSelectionsForCurrentModule,
   concat(state`editor.pendingUserSelections`, props`selections`),
@@ -96,7 +90,7 @@ export const handleMessage = [
         ],
         true: [],
       },
-      isPrimaryOwner,
+      when(state`live.isSourceOfTruth`),
       {
         true: [
           actions.addUserMetadata,
@@ -135,7 +129,7 @@ export const handleMessage = [
       },
     ],
     state: [
-      isPrimaryOwner,
+      when(state`live.isSourceOfTruth`),
       {
         true: [],
         false: [
@@ -344,7 +338,7 @@ export const handleMessage = [
       actions.disconnect,
       set(props`modal`, 'liveSessionEnded'),
       openModal,
-      isPrimaryOwner,
+      when(state`live.isSourceOfTruth`),
       {
         true: [],
         false: [set(state`editor.currentSandbox.owned`, false)],

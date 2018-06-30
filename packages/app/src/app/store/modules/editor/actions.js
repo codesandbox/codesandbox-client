@@ -319,9 +319,20 @@ export function saveModuleCode({ props, state, api }) {
     module => module.shortid === props.moduleShortid
   );
 
-  return api.put(`/sandboxes/${sandbox.id}/modules/${moduleToSave.shortid}`, {
-    module: { code: moduleToSave.code },
-  });
+  const codeToSave = moduleToSave.code;
+  const title = moduleToSave.title;
+
+  return api
+    .put(`/sandboxes/${sandbox.id}/modules/${moduleToSave.shortid}`, {
+      module: { code: codeToSave },
+    })
+    .then(x => {
+      if (x.code !== codeToSave) {
+        throw new Error(
+          `Something went wrong while saving the code of '${title}', please try again.`
+        );
+      }
+    });
 }
 
 export function getCurrentModuleId({ state }) {

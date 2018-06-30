@@ -12,7 +12,7 @@ export const UserSelection = types.model({
 
 const UserMetadata = types.model({
   selection: types.maybe(UserSelection),
-  currentModuleShortid: types.string,
+  currentModuleShortid: types.maybe(types.string),
   color: types.array(types.number),
 });
 

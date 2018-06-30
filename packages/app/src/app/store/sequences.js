@@ -12,7 +12,7 @@ import {
   removeModule,
 } from './modules/files/actions';
 
-import { disconnect, createRoom } from './modules/live/actions';
+import { disconnect } from './modules/live/actions';
 import { initializeLive } from './modules/live/common-sequences';
 
 export const unloadApp = actions.stopListeningToConnectionChange;
@@ -276,6 +276,7 @@ export const resetLive = [
   set(state`live.isLive`, false),
   set(state`live.error`, null),
   set(state`live.isLoading`, false),
+  set(state`live.deviceId`, null),
   set(state`live.roomInfo`, undefined),
 ];
 
@@ -300,28 +301,30 @@ export const setSandbox = [
   actions.setWorkspace,
 ];
 
-export const createLiveSessionIfTeam = [
+export const joinLiveSessionIfTeam = [
   when(
     props`sandbox.team`,
     props`sandbox.owned`,
-    (team, owned) => team && owned
+    (team, owned) => team && owned && team.roomId
   ),
   {
     true: [
       set(props`sandboxId`, props`sandbox.id`),
-
       set(state`live.isTeam`, true),
-      when(props`sandbox.team.roomId`),
-      {
-        true: [set(props`roomId`, props`sandbox.team.roomId`)],
-        false: [
-          set(state`editor.sandboxes.${props`sandbox.id`}`, props`sandbox`),
-          setSandbox,
-          factories.track('Create Team Live Session', {}),
-          createRoom,
-        ],
-      },
+      set(props`roomId`, props`sandbox.team.roomId`),
       initializeLive,
+
+      when(state`live.isSourceOfTruth`),
+      {
+        true: [
+          set(state`editor.sandboxes.${props`sandbox.id`}`, props`sandbox`),
+          set(state`live.isLoading`, true),
+          setSandbox,
+          set(state`live.isLoading`, false),
+          factories.track('Create Team Live Session', {}),
+        ],
+        false: [set(state`editor.currentId`, props`sandbox.id`)],
+      },
     ],
     false: [
       set(state`editor.sandboxes.${props`sandbox.id`}`, props`sandbox`),
@@ -332,11 +335,14 @@ export const createLiveSessionIfTeam = [
 
 export const loadSandbox = factories.withLoadApp([
   set(state`editor.error`, null),
-  when(state`editor.sandboxes.${props`id`}`),
+  when(
+    state`editor.sandboxes.${props`id`}`,
+    sandbox => sandbox && !sandbox.team
+  ),
   {
     true: [
       set(props`sandbox`, state`editor.sandboxes.${props`id`}`),
-      createLiveSessionIfTeam,
+      joinLiveSessionIfTeam,
     ],
     false: [
       set(state`editor.isLoading`, true),
@@ -347,7 +353,7 @@ export const loadSandbox = factories.withLoadApp([
 
       actions.getSandbox,
       {
-        success: [createLiveSessionIfTeam, ensurePackageJSON],
+        success: [joinLiveSessionIfTeam, ensurePackageJSON],
         notFound: set(state`editor.notFound`, true),
         error: set(state`editor.error`, props`error.message`),
       },

@@ -2,7 +2,12 @@ import { Module } from 'cerebral';
 import model from './model';
 
 import * as sequences from './sequences';
-import { isCurrentEditor, liveUsersByModule, isOwner } from './getters';
+import {
+  isCurrentEditor,
+  liveUsersByModule,
+  isOwner,
+  isSourceOfTruth,
+} from './getters';
 import { isEditor } from './computed';
 
 export default Module({
@@ -24,6 +29,7 @@ export default Module({
     isCurrentEditor,
     liveUsersByModule,
     isOwner,
+    isSourceOfTruth,
   },
   signals: {
     roomJoined: sequences.initializeLive,
