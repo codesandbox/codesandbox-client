@@ -60,6 +60,14 @@ class Entry extends React.PureComponent {
     return false;
   };
 
+  discardModuleChanges = () => {
+    const { shortid, discardModuleChanges } = this.props;
+    if (discardModuleChanges) {
+      return discardModuleChanges(shortid);
+    }
+    return false;
+  };
+
   rename = () => {
     this.setState({ state: 'editing' });
     return true; // To close it
@@ -96,33 +104,41 @@ class Entry extends React.PureComponent {
     const { state, error, selected, hovering } = this.state;
 
     const items = [
-      onCreateModuleClick && {
-        title: 'Create File',
-        action: onCreateModuleClick,
-        icon: AddFileIcon,
-      },
-      onCreateDirectoryClick && {
-        title: 'Create Directory',
-        action: onCreateDirectoryClick,
-        icon: AddDirectoryIcon,
-      },
-      onUploadFileClick && {
-        title: 'Upload Files',
-        action: onUploadFileClick,
-        icon: UploadFileIcon,
-      },
-      rename && {
-        title: 'Rename',
-        action: this.rename,
-        icon: EditIcon,
-      },
-      deleteEntry && {
-        title: 'Delete',
-        action: this.delete,
-        color: theme.red.darken(0.2)(),
-        icon: DeleteIcon,
-      },
-    ].filter(x => x);
+      [
+        onCreateModuleClick && {
+          title: 'Create File',
+          action: onCreateModuleClick,
+          icon: AddFileIcon,
+        },
+        onCreateDirectoryClick && {
+          title: 'Create Directory',
+          action: onCreateDirectoryClick,
+          icon: AddDirectoryIcon,
+        },
+        onUploadFileClick && {
+          title: 'Upload Files',
+          action: onUploadFileClick,
+          icon: UploadFileIcon,
+        },
+        rename && {
+          title: 'Rename',
+          action: this.rename,
+          icon: EditIcon,
+        },
+        deleteEntry && {
+          title: 'Delete',
+          action: this.delete,
+          color: theme.red.darken(0.2)(),
+          icon: DeleteIcon,
+        },
+      ].filter(Boolean),
+      [
+        isNotSynced && {
+          title: 'Discard Changes',
+          actions: this.discardModuleChanges,
+        },
+      ],
+    ].filter(Boolean);
 
     return connectDragSource(
       <div>

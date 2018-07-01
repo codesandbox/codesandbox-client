@@ -195,6 +195,10 @@ class DirectoryEntry extends React.Component {
     this.props.signals.editor.moduleDoubleClicked();
   };
 
+  discardChanges = moduleShortid => {
+    this.props.signals.editor.discardModuleChanges({ moduleShortid });
+  };
+
   render() {
     const {
       id,
@@ -227,6 +231,7 @@ class DirectoryEntry extends React.Component {
               isOpen={open}
               onClick={this.toggleOpen}
               renameValidator={this.validateDirectoryTitle}
+              discardModuleChanges={this.discardChanges}
               rename={!root && this.renameDirectory}
               onCreateModuleClick={this.onCreateModuleClick}
               onCreateDirectoryClick={this.onCreateDirectoryClick}
@@ -288,6 +293,7 @@ class DirectoryEntry extends React.Component {
             deleteEntry={this.deleteModule}
             setCurrentModule={this.setCurrentModule}
             markTabsNotDirty={this.markTabsNotDirty}
+            discardModuleChanges={this.discardChanges}
           />
           {this.state.showDeleteModuleModal && (
             <Modal

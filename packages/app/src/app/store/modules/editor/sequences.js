@@ -73,6 +73,8 @@ export const changeCurrentModule = [
   },
 ];
 
+export const changeCurrentTab = [set(state`editor.currentTabId`, props`tabId`)];
+
 export const unsetDirtyTab = actions.unsetDirtyTab;
 
 export const updatePrivacy = [
@@ -128,7 +130,7 @@ export const saveChangedModules = [
   ensureOwnedSandbox,
   actions.outputChangedModules,
   actions.saveChangedModules,
-  set(state`editor.changedModuleShortids`, []),
+  actions.removeChangedModules,
   when(state`editor.currentSandbox.originalGit`),
   {
     true: [
@@ -175,6 +177,23 @@ export const saveCode = [
     false: [],
   },
   sendModuleSaved,
+];
+
+export const discardModuleChanges = [
+  track('Code Discarded', {}),
+  actions.getSavedCode,
+  when(props`code`),
+  {
+    true: [
+      changeCode,
+      equals(state`live.isLive`),
+      {
+        true: [getCodeOperation, sendTransform],
+        false: [],
+      },
+    ],
+    false: [],
+  },
 ];
 
 export const addNpmDependency = [

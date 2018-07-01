@@ -14,6 +14,7 @@ import GitProvider from './providers/Git';
 import SocketProvider from './providers/Socket';
 import LiveProvider from './providers/Live';
 import NotificationsProvider from './providers/Notifications';
+import ModuleRecover from './providers/ModuleRecover';
 import OTProvider from './providers/OT';
 import KeybindingManagerProvider from './providers/KeybindingManager';
 
@@ -125,6 +126,7 @@ export default Module({
     socket: SocketProvider,
     notifications: NotificationsProvider,
     live: LiveProvider,
+    recover: ModuleRecover,
     ot: OTProvider,
   },
 });

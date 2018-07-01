@@ -21,6 +21,7 @@ class DirectoryChildren extends React.Component {
       isInProjectView,
       markTabsNotDirty,
       store,
+      discardModuleChanges,
     } = this.props;
 
     const {
@@ -73,6 +74,7 @@ class DirectoryChildren extends React.Component {
             markTabsNotDirty={markTabsNotDirty}
             renameModule={renameModule}
             deleteEntry={deleteEntry}
+            discardModuleChanges={discardModuleChanges}
           />
         ))}
       </div>

@@ -33,6 +33,8 @@ class ModuleEntry extends React.Component {
 
     const liveUsers = store.live.liveUsersByModule[module.shortid] || [];
 
+    const isNotSynced = !store.editor.isModuleSynced(module.shortid);
+
     return (
       <Entry
         id={module.id}
@@ -44,7 +46,7 @@ class ModuleEntry extends React.Component {
         type={type || 'function'}
         rename={isMainModule ? undefined : renameModule}
         deleteEntry={isMainModule ? undefined : deleteEntry}
-        isNotSynced={!store.editor.isModuleSynced(module.shortid)}
+        isNotSynced={isNotSynced}
         renameValidator={this.validateTitle}
         setCurrentModule={setCurrentModule}
         isMainModule={isMainModule}

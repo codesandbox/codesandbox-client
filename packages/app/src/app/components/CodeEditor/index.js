@@ -20,6 +20,7 @@ import type { Props } from './types';
 import Monaco from './Monaco';
 import ImageViewer from './ImageViewer';
 import Configuration from './Configuration';
+import MonacoDiff from './MonacoDiff';
 import { Icons, Icon } from './elements';
 
 const CodeMirror = Loadable({
@@ -74,7 +75,37 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
   render() {
     const props = this.props;
 
-    const { isModuleSynced, sandbox, currentModule: module, settings } = props;
+    const {
+      isModuleSynced,
+      currentTab,
+      sandbox,
+      currentModule: module,
+      settings,
+    } = props;
+
+    if (currentTab && currentTab.type === 'DIFF') {
+      return (
+        <div
+          style={{
+            height: props.height || '100%',
+            width: props.width || '100%',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+          }}
+        >
+          <MonacoDiff
+            originalCode={currentTab.codeA}
+            modifiedCode={currentTab.codeB}
+            title={currentTab.fileTitle}
+            {...props}
+          />
+        </div>
+      );
+    }
+
     const dependencies = getDependencies(sandbox);
 
     const template = getDefinition(sandbox.template);

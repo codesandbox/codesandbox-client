@@ -256,9 +256,7 @@ function sendModuleInfo(
 
 export function sendModuleSaved(context) {
   const { moduleShortid } = context.props;
-  sendModuleInfo(context, 'module:saved', 'module', moduleShortid, {
-    sendModule: false,
-  });
+  sendModuleInfo(context, 'module:saved', 'module', moduleShortid);
 }
 
 export function sendModuleCreated(context) {

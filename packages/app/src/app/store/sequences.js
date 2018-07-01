@@ -10,6 +10,7 @@ import {
   createOptimisticModule,
   updateOptimisticModule,
   removeModule,
+  recoverFiles,
 } from './modules/files/actions';
 
 import { disconnect } from './modules/live/actions';
@@ -329,6 +330,11 @@ export const joinLiveSessionIfTeam = [
     false: [
       set(state`editor.sandboxes.${props`sandbox.id`}`, props`sandbox`),
       setSandbox,
+      when(props`sandbox.owned`),
+      {
+        true: [recoverFiles],
+        false: [],
+      },
     ],
   },
 ];
@@ -342,7 +348,7 @@ export const loadSandbox = factories.withLoadApp([
   {
     true: [
       set(props`sandbox`, state`editor.sandboxes.${props`id`}`),
-      joinLiveSessionIfTeam,
+      setSandbox,
     ],
     false: [
       set(state`editor.isLoading`, true),

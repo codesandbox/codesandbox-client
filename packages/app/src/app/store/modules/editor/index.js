@@ -9,6 +9,7 @@ import {
   currentPackageJSON,
   currentPackageJSONCode,
   parsedConfigurations,
+  currentTab,
 } from './getters';
 import { isModuleSynced, shouldDirectoryBeOpen } from './computed';
 import { loadSandbox } from '../../sequences';
@@ -26,6 +27,7 @@ export default Module({
     error: null,
     isResizing: false,
     changedModuleShortids: [],
+    currentTabId: null,
     tabs: [],
     errors: [],
     glyphs: [],
@@ -54,6 +56,7 @@ export default Module({
     currentPackageJSON,
     currentPackageJSONCode,
     parsedConfigurations,
+    currentTab,
   },
   computed: {
     isModuleSynced,
@@ -85,5 +88,7 @@ export default Module({
     quickActionsClosed: sequences.closeQuickActions,
     setPreviewBounds: sequences.setPreviewBounds,
     setPreviewContent: sequences.setPreviewContent,
+    currentTabChanged: sequences.changeCurrentTab,
+    discardModuleChanges: sequences.discardModuleChanges,
   },
 });

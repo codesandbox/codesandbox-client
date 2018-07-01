@@ -46,7 +46,7 @@ class MonacoEditor extends React.PureComponent {
   };
 
   initMonaco = () => {
-    const { theme, options } = this.props;
+    const { theme, options, diffEditor = false } = this.props;
     const context = this.props.context || window;
     if (this.containerElement && typeof context.monaco !== 'undefined') {
       // Before initializing monaco editor
@@ -54,11 +54,9 @@ class MonacoEditor extends React.PureComponent {
       const editorService = {
         openEditor: model => this.props.openReference(model),
       };
-      this.editor = context.monaco.editor.create(
-        this.containerElement,
-        options,
-        { editorService }
-      );
+      this.editor = context.monaco.editor[
+        diffEditor ? 'createDiffEditor' : 'create'
+      ](this.containerElement, options, { editorService });
       if (theme) {
         context.monaco.editor.setTheme(theme);
       }

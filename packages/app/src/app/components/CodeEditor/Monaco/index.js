@@ -25,7 +25,10 @@ import MonacoEditorComponent from './MonacoReactComponent';
 import FuzzySearch from '../FuzzySearch';
 import { Container, CodeContainer } from './elements';
 import defineTheme from './define-theme';
+import getSettings from './settings';
+
 import type { Props, Editor } from '../types';
+import getMode from './mode';
 
 type State = {
   fuzzySearchEnabled: boolean,
@@ -104,17 +107,6 @@ function getSelection(lines, selection) {
 }
 
 let modelCache = {};
-
-const fontFamilies = (...families) =>
-  families
-    .filter(Boolean)
-    .map(
-      family => (family.indexOf(' ') !== -1 ? JSON.stringify(family) : family)
-    )
-    .join(', ');
-
-const requireAMDModule = paths =>
-  new Promise(resolve => window.require(paths, () => resolve()));
 
 class MonacoEditor extends React.Component<Props, State> implements Editor {
   static defaultProps = {
@@ -1061,7 +1053,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   updateLintWarnings = async (markers: Array<Object>) => {
     const currentModule = this.currentModule;
 
-    const mode = await this.getMode(currentModule.title);
+    const mode = await getMode(currentModule.title);
     if (mode === 'javascript' || mode === 'vue') {
       this.monaco.editor.setModelMarkers(
         this.editor.getModel(),
@@ -1173,7 +1165,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   };
 
   syntaxHighlight = async (code: string, title: string, version: string) => {
-    const mode = await this.getMode(title);
+    const mode = await getMode(title);
     if (mode === 'typescript' || mode === 'javascript') {
       if (this.syntaxWorker) {
         this.syntaxWorker.postMessage({
@@ -1186,7 +1178,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   };
 
   lint = async (code: string, title: string, version: number) => {
-    const mode = await this.getMode(title);
+    const mode = await getMode(title);
     if (this.settings.lintEnabled) {
       if (mode === 'javascript' || mode === 'vue') {
         if (this.lintWorker) {
@@ -1370,7 +1362,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       // Related issue: https://github.com/Microsoft/monaco-editor/issues/461
       const lib = this.addLib(module.code || '', path);
 
-      const mode = await this.getMode(module.title);
+      const mode = await getMode(module.title);
 
       const model = this.monaco.editor.createModel(
         module.code || '',
@@ -1497,24 +1489,8 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     const currentModule = this.currentModule;
 
     return {
-      selectOnLineNumbers: true,
-      fontSize: settings.fontSize,
-      fontFamily: fontFamilies(
-        settings.fontFamily,
-        'Menlo',
-        'Source Code Pro',
-        'monospace'
-      ),
-      fontLigatures: settings.enableLigatures,
-      minimap: {
-        enabled: false,
-      },
+      ...getSettings(settings),
       ariaLabel: currentModule.title,
-      formatOnPaste: true,
-      lineHeight: (settings.lineHeight || 1.5) * settings.fontSize,
-      folding: true,
-      glyphMargin: false,
-      fixedOverflowWidgets: true,
       readOnly: !!this.props.readOnly,
     };
   };

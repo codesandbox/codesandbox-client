@@ -338,6 +338,7 @@ class EditorPreview extends React.Component<Props, State> {
     const notSynced = !store.editor.isAllModulesSynced;
     const sandbox = store.editor.currentSandbox;
     const preferences = store.preferences;
+    const currentTab = store.editor.currentTab;
     const { x, y, width, content } = store.editor.previewWindow;
 
     const windowVisible = !!content;
@@ -402,6 +403,7 @@ class EditorPreview extends React.Component<Props, State> {
             <CodeEditor
               onInitialized={this.onInitialized}
               sandbox={sandbox}
+              currentTab={currentTab}
               currentModule={currentModule}
               isModuleSynced={store.editor.isModuleSynced(
                 currentModule.shortid
