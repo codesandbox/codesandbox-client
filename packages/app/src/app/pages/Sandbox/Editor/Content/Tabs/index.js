@@ -60,6 +60,10 @@ class EditorTabs extends React.Component {
     this.props.signals.editor.moduleSelected({ id: moduleId });
   };
 
+  discardModuleChanges = moduleShortid => {
+    this.props.signals.editor.discardModuleChanges({ moduleShortid });
+  };
+
   prettifyModule = () => {
     this.props.signals.editor.prettifyClicked({
       moduleShortid: this.props.store.editor.currentModuleShortid,
@@ -144,6 +148,7 @@ class EditorTabs extends React.Component {
                 return (
                   <ModuleTab
                     setCurrentModule={this.setCurrentModule}
+                    discardModuleChanges={this.discardModuleChanges}
                     active={
                       currentTab &&
                       currentTab.moduleShortid === tab.moduleShortid

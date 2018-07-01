@@ -24,12 +24,14 @@ class TabContainer extends React.Component {
       children,
       isNotSynced,
       title,
+      items,
     } = this.props;
 
     return connectDropTarget(
       connectDragSource(
         <span ref={innerRef} style={{ opacity: isDragging ? 0.8 : 1 }}>
           <Tab
+            items={items}
             active={active}
             dirty={dirty}
             isOver={isOver}

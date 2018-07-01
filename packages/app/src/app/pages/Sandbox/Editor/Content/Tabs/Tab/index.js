@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
 
+import ContextMenu from 'app/components/ContextMenu';
 import { Container, TabTitle, StyledCloseIcon } from './elements';
 
 class Tab extends React.Component {
@@ -54,29 +55,32 @@ class Tab extends React.Component {
       onDoubleClick,
       children,
       title,
+      items,
     } = this.props;
     const { hovering } = this.state;
 
     return (
-      <Container
-        active={active}
-        dirty={dirty}
-        isOver={isOver}
-        onClick={onClick}
-        onDoubleClick={onDoubleClick}
-        onMouseDown={this.onMouseDown}
-        onMouseEnter={this.handleMouseEnter}
-        onMouseLeave={this.handleMouseLeave}
-      >
-        {title ? (
-          <React.Fragment>
-            <TabTitle>{title}</TabTitle>
-            {this.renderTabStatus()}
-          </React.Fragment>
-        ) : (
-          children({ hovering, closeTab: this.closeTab })
-        )}
-      </Container>
+      <ContextMenu childStyles={{ height: 'calc(100% - 1px)' }} items={items}>
+        <Container
+          active={active}
+          dirty={dirty}
+          isOver={isOver}
+          onClick={onClick}
+          onDoubleClick={onDoubleClick}
+          onMouseDown={this.onMouseDown}
+          onMouseEnter={this.handleMouseEnter}
+          onMouseLeave={this.handleMouseLeave}
+        >
+          {title ? (
+            <React.Fragment>
+              <TabTitle>{title}</TabTitle>
+              {this.renderTabStatus()}
+            </React.Fragment>
+          ) : (
+            children({ hovering, closeTab: this.closeTab })
+          )}
+        </Container>
+      </ContextMenu>
     );
   }
 }

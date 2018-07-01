@@ -32,6 +32,7 @@ const Directory = types.model({
 
 const Module = types.model({
   code: types.maybe(types.string),
+  savedCode: types.maybe(types.string),
   directoryShortid: types.maybe(types.string),
   id: types.string,
   isBinary: types.maybe(types.boolean),

@@ -69,6 +69,21 @@ export function setModuleSaved({ props, state }) {
   state.splice('editor.changedModuleShortids', indexToRemove, 1);
 }
 
+export function setModuleSavedCode({ props, state }) {
+  const sandbox = state.get('editor.currentSandbox');
+
+  const moduleIndex = sandbox.modules.findIndex(
+    m => m.shortid === props.moduleShortid
+  );
+
+  if (moduleIndex > -1) {
+    state.set(
+      `editor.sandboxes.${sandbox.id}.modules.${moduleIndex}.savedCode`,
+      props.savedCode
+    );
+  }
+}
+
 export function ensureValidPrivacy({ props, path }) {
   const privacy = Number(props.privacy);
 
@@ -275,8 +290,22 @@ export function addChangedModule({ state, props }) {
   const moduleShortid =
     props.moduleShortid || state.get('editor.currentModuleShortid');
 
-  if (state.get('editor.changedModuleShortids').indexOf(moduleShortid) === -1) {
-    state.push('editor.changedModuleShortids', moduleShortid);
+  const module = state
+    .get('editor.currentSandbox.modules')
+    .find(m => m.shortid === moduleShortid);
+
+  if (module) {
+    const moduleIndex = state
+      .get('editor.changedModuleShortids')
+      .indexOf(moduleShortid);
+
+    if (moduleIndex === -1) {
+      if (module.savedCode !== module.code) {
+        state.push('editor.changedModuleShortids', moduleShortid);
+      }
+    } else if (module.savedCode === module.code) {
+      state.splice('editor.changedModuleShortids', moduleIndex, 1);
+    }
   }
 }
 
@@ -291,6 +320,39 @@ export function saveChangedModules({ props, api, state, recover }) {
       recover.clearSandbox(sandboxId);
       return undefined;
     });
+}
+
+export function removeChangedModules({ props, state }) {
+  props.changedModules.forEach(module => {
+    const sandbox = state.get('editor.currentSandbox');
+    const index = sandbox.modules.findIndex(m => m.id === module.id);
+
+    if (index !== -1) {
+      const currentCode = state.get(
+        `editor.sandboxes.${sandbox.id}.modules.${index}.code`
+      );
+      // If the code hasn't change between the save call and this action we can just reset
+      // the saved code. Otherwise we must set the savedCode to the value of the last save.
+      if (currentCode === module.code) {
+        state.set(
+          `editor.sandboxes.${sandbox.id}.modules.${index}.savedCode`,
+          undefined
+        );
+      } else {
+        state.set(
+          `editor.sandboxes.${sandbox.id}.modules.${index}.savedCode`,
+          module.code
+        );
+      }
+    }
+  });
+
+  state.set(
+    'editor.changedModuleShortids',
+    state
+      .get('editor.changedModuleShortids')
+      .filter(shortid => !props.changedModules.find(m => m.shortid === shortid))
+  );
 }
 
 export function prettifyCode({ utils, state, props, path }) {
@@ -334,6 +396,29 @@ export function saveModuleCode({ props, state, api, recover }) {
     .then(x => {
       recover.remove(sandbox.id, moduleToSave);
 
+      const newSandbox = state.get('editor.currentSandbox');
+      const newModuleToSave = sandbox.modules.find(
+        module => module.shortid === props.moduleShortid
+      );
+
+      const index = newSandbox.modules.findIndex(
+        m => m.id === newModuleToSave.id
+      );
+
+      if (index > -1) {
+        if (newModuleToSave.code === moduleToSave.code) {
+          state.set(
+            `editor.sandboxes.${newSandbox.id}.modules.${index}.savedCode`,
+            undefined
+          );
+        } else {
+          state.set(
+            `editor.sandboxes.${newSandbox.id}.modules.${index}.savedCode`,
+            moduleToSave.code
+          );
+        }
+      }
+
       return x;
     });
 }
@@ -374,15 +459,33 @@ export function setCode({ props, state, recover }) {
   const module = currentSandbox.modules[moduleIndex];
 
   if (module) {
+    if (!module.savedCode) {
+      state.set(
+        `editor.sandboxes.${currentId}.modules.${moduleIndex}.savedCode`,
+        module.code
+      );
+    }
+
+    if (currentSandbox.owned) {
+      const savedCode = state.get(
+        `editor.sandboxes.${currentId}.modules.${moduleIndex}.savedCode`,
+        module.code
+      );
+
+      // Save the code to localStorage so we can recover in case of a crash
+      recover.save(
+        currentId,
+        currentSandbox.version,
+        module,
+        props.code,
+        savedCode
+      );
+    }
+
     state.set(
       `editor.sandboxes.${currentId}.modules.${moduleIndex}.code`,
       props.code
     );
-
-    if (currentSandbox.owned) {
-      // Save the code to localStorage so we can recover in case of a crash
-      recover.save(currentId, currentSandbox.version, module, props.code);
-    }
   }
 }
 
@@ -399,4 +502,23 @@ export function setPreviewBounds({ props, state }) {
   if (props.height != null) {
     state.set(`editor.previewWindow.height`, props.height);
   }
+}
+
+export function getSavedCode({ props, state }) {
+  const sandbox = state.get('editor.currentSandbox');
+  const moduleIndex = sandbox.modules.findIndex(
+    m => m.shortid === props.moduleShortid
+  );
+
+  if (moduleIndex > -1) {
+    const module = state.get(`editor.currentSandbox.modules.${moduleIndex}`);
+
+    if (module.savedCode) {
+      return { oldCode: module.code, code: module.savedCode };
+    }
+
+    return { oldCode: module.code, code: module.code };
+  }
+
+  return {};
 }

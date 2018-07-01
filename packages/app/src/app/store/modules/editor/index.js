@@ -89,5 +89,6 @@ export default Module({
     setPreviewBounds: sequences.setPreviewBounds,
     setPreviewContent: sequences.setPreviewContent,
     currentTabChanged: sequences.changeCurrentTab,
+    discardModuleChanges: sequences.discardModuleChanges,
   },
 });

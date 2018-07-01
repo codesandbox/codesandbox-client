@@ -3,12 +3,13 @@ import { Provider } from 'cerebral';
 const getKey = (id, moduleShortid) => `recover:${id}:${moduleShortid}:code`;
 
 export default Provider({
-  save(currentId, version, module, code) {
+  save(currentId, version, module, code, savedCode) {
     try {
       localStorage.setItem(
         getKey(currentId, module.shortid),
         JSON.stringify({
           code,
+          savedCode,
           version,
           timestamp: new Date().getTime(),
           sandboxId: currentId,
