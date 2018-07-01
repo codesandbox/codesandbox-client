@@ -10,6 +10,7 @@ import {
   setReceivingStatus,
   getCodeOperation,
   sendTransform,
+  unSetReceivingStatus,
 } from '../live/actions';
 import {
   ensureOwnedSandbox,
@@ -184,7 +185,19 @@ export const discardModuleChanges = [
   actions.getSavedCode,
   when(props`code`),
   {
-    true: [changeCode],
+    true: [
+      equals(state`live.isLive`),
+      {
+        true: [
+          setReceivingStatus,
+          getCodeOperation,
+          sendTransform,
+          changeCode,
+          unSetReceivingStatus,
+        ],
+        false: [changeCode],
+      },
+    ],
     false: [],
   },
 ];
@@ -201,10 +214,15 @@ export const addNpmDependency = [
   actions.addNpmDependencyToPackage,
   equals(state`live.isLive`),
   {
-    true: [getCodeOperation, sendTransform],
-    false: [],
+    true: [
+      setReceivingStatus,
+      getCodeOperation,
+      sendTransform,
+      saveCode,
+      unSetReceivingStatus,
+    ],
+    false: [saveCode],
   },
-  saveCode,
 ];
 
 export const removeNpmDependency = [
@@ -213,10 +231,15 @@ export const removeNpmDependency = [
   actions.removeNpmDependencyFromPackage,
   equals(state`live.isLive`),
   {
-    true: [getCodeOperation, sendTransform],
-    false: [],
+    true: [
+      setReceivingStatus,
+      getCodeOperation,
+      sendTransform,
+      saveCode,
+      unSetReceivingStatus,
+    ],
+    false: [saveCode],
   },
-  saveCode,
 ];
 
 export const updateSandboxPackage = [actions.updateSandboxPackage, saveCode];
