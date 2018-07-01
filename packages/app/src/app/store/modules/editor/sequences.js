@@ -185,12 +185,12 @@ export const discardModuleChanges = [
   when(props`code`),
   {
     true: [
-      changeCode,
       equals(state`live.isLive`),
       {
         true: [getCodeOperation, sendTransform],
         false: [],
       },
+      changeCode,
     ],
     false: [],
   },
