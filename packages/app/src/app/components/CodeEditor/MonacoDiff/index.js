@@ -7,10 +7,12 @@ import defineTheme from '../Monaco/define-theme';
 
 import { Container, CodeContainer } from '../Monaco/elements';
 import getSettings from '../Monaco/settings';
+import getMode from '../Monaco/mode';
 
 type Props = {
   originalCode: string,
   modifiedCode: string,
+  title?: string,
   settings: Settings,
 };
 
@@ -40,13 +42,14 @@ export default class MonacoDiff extends React.Component<Props>
 
   configureEditor = async (editor: any, monaco: any) => {
     this.editor = editor;
+    const mode = await getMode(this.props.title);
     const originalModel = monaco.editor.createModel(
       this.props.originalCode,
-      'application/javascript'
+      mode
     );
     const modifiedModel = monaco.editor.createModel(
       this.props.modifiedCode,
-      'application/javascript'
+      mode
     );
 
     window.addEventListener('resize', this.resizeEditor);

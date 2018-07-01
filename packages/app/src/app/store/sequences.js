@@ -9,6 +9,7 @@ import {
   createOptimisticModule,
   updateOptimisticModule,
   removeModule,
+  recoverFiles,
 } from './modules/files/actions';
 
 import { disconnect } from './modules/live/actions';
@@ -317,6 +318,7 @@ export const loadSandbox = factories.withLoadApp([
           set(state`editor.sandboxes.${props`sandbox.id`}`, props`sandbox`),
           setSandbox,
           ensurePackageJSON,
+          recoverFiles,
         ],
         notFound: set(state`editor.notFound`, true),
         error: set(state`editor.error`, props`error.message`),

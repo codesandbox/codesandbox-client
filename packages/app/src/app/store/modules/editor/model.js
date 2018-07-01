@@ -124,6 +124,7 @@ export default {
         titleB: types.string,
         codeA: types.string,
         codeB: types.string,
+        fileTitle: types.maybe(types.string),
       })
     )
   ),

@@ -87,9 +87,14 @@ export function setCurrentModuleByTab({ state, props }) {
       state.get('editor.tabs').length - 1 >= props.tabIndex
         ? props.tabIndex
         : props.tabIndex - 1;
-    const moduleShortid = state.get(`editor.tabs.${index}.moduleShortid`);
 
-    state.set('editor.currentModuleShortid', moduleShortid);
+    const currentTab = state.get(`editor.tabs.${index}`);
+
+    if (currentTab.moduleShortid) {
+      const moduleShortid = currentTab.moduleShortid;
+
+      state.set('editor.currentModuleShortid', moduleShortid);
+    }
   }
 }
 
@@ -275,14 +280,17 @@ export function addChangedModule({ state, props }) {
   }
 }
 
-export function saveChangedModules({ props, api, state }) {
+export function saveChangedModules({ props, api, state, recover }) {
   const sandboxId = state.get('editor.currentId');
 
   return api
     .put(`/sandboxes/${sandboxId}/modules/mupdate`, {
       modules: props.changedModules,
     })
-    .then(() => undefined);
+    .then(() => {
+      recover.clearSandbox(sandboxId);
+      return undefined;
+    });
 }
 
 export function prettifyCode({ utils, state, props, path }) {
@@ -313,15 +321,21 @@ export function prettifyCode({ utils, state, props, path }) {
     .catch(error => path.error({ error }));
 }
 
-export function saveModuleCode({ props, state, api }) {
+export function saveModuleCode({ props, state, api, recover }) {
   const sandbox = state.get('editor.currentSandbox');
   const moduleToSave = sandbox.modules.find(
     module => module.shortid === props.moduleShortid
   );
 
-  return api.put(`/sandboxes/${sandbox.id}/modules/${moduleToSave.shortid}`, {
-    module: { code: moduleToSave.code },
-  });
+  return api
+    .put(`/sandboxes/${sandbox.id}/modules/${moduleToSave.shortid}`, {
+      module: { code: moduleToSave.code },
+    })
+    .then(x => {
+      recover.remove(sandbox.id, moduleToSave);
+
+      return x;
+    });
 }
 
 export function getCurrentModuleId({ state }) {
@@ -350,13 +364,14 @@ export function warnUnloadingContent({ browser, state }) {
   });
 }
 
-export function setCode({ props, state }) {
+export function setCode({ props, state, recover }) {
   const currentId = state.get('editor.currentId');
+  const currentSandbox = state.get('editor.currentSandbox');
   const moduleShortid = props.moduleShortid;
   const moduleIndex = state
     .get('editor.currentSandbox')
     .modules.findIndex(module => module.shortid === moduleShortid);
-  const module = state.get('editor.currentSandbox').modules[moduleIndex];
+  const module = currentSandbox.modules[moduleIndex];
 
   if (module) {
     state.set(
@@ -364,17 +379,9 @@ export function setCode({ props, state }) {
       props.code
     );
 
-    try {
-      localStorage.setItem(
-        `${currentId}:${moduleShortid}:code`,
-        JSON.stringify({
-          code: props.code,
-          // We share that part too to find out what cookies like
-          moduleCodeLength: module.code.length,
-        })
-      );
-    } catch (e) {
-      // Too bad
+    if (currentSandbox.owned) {
+      // Save the code to localStorage so we can recover in case of a crash
+      recover.save(currentId, currentSandbox.version, module, props.code);
     }
   }
 }

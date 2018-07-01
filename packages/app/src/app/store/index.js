@@ -12,6 +12,7 @@ import JSZipProvider from './providers/JSZip';
 import SettingsStoreProvider from './providers/SettingsStore';
 import GitProvider from './providers/Git';
 import LiveProvider from './providers/Live';
+import ModuleRecover from './providers/ModuleRecover';
 import OTProvider from './providers/OT';
 import KeybindingManagerProvider from './providers/KeybindingManager';
 
@@ -117,6 +118,7 @@ export default Module({
     git: GitProvider,
     keybindingManager: KeybindingManagerProvider,
     live: LiveProvider,
+    recover: ModuleRecover,
     ot: OTProvider,
   },
 });

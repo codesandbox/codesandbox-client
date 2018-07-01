@@ -31,6 +31,7 @@ type DiffTab = {
   codeB: string,
   titleA: string,
   titleB: string,
+  fileTitle?: string,
 };
 
 export type Tab = ModuleTab | DiffTab;

@@ -544,3 +544,25 @@ export function setDefaultNewCode({ state, props }) {
 
   return {};
 }
+
+export function recoverFiles({ recover, state }) {
+  const sandbox = state.get('editor.currentSandbox');
+
+  const recoverList = recover.getRecoverList(sandbox.id, sandbox.modules);
+
+  recoverList.forEach(({ recoverData, module }) => {
+    const titleA = `saved '${module.title}'`;
+    const titleB = `recovered '${module.title}'`;
+    state.push('editor.tabs', {
+      type: 'DIFF',
+      codeA: module.code,
+      codeB: recoverData.code,
+      titleA,
+      titleB,
+      fileTitle: module.title,
+      id: `${titleA} - ${titleB}`,
+    });
+  });
+
+  return {};
+}

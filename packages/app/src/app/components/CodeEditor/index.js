@@ -99,6 +99,7 @@ export default class CodeEditor extends React.PureComponent<Props, State> {
           <MonacoDiff
             originalCode={currentTab.codeA}
             modifiedCode={currentTab.codeB}
+            title={currentTab.fileTitle}
             {...props}
           />
         </div>
