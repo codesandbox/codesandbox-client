@@ -19,6 +19,7 @@ class ModuleEntry extends React.Component {
       depth,
       renameModule,
       deleteEntry,
+      discardModuleChanges,
     } = this.props;
     const currentModuleShortid = store.editor.currentModuleShortid;
     const mainModuleId = store.editor.mainModule.id;
@@ -52,6 +53,7 @@ class ModuleEntry extends React.Component {
         isMainModule={isMainModule}
         moduleHasError={hasError}
         markTabsNotDirty={markTabsNotDirty}
+        discardModuleChanges={discardModuleChanges}
       />
     );
   }

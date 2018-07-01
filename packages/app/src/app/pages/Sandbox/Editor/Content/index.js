@@ -16,6 +16,7 @@ import FilePath from 'app/components/CodeEditor/FilePath';
 import Preview from './Preview';
 import Tabs from './Tabs';
 import { FullSize } from './elements';
+import preventGestureScroll, { removeListener } from './prevent-gesture-scroll';
 
 const settings = store =>
   ({
@@ -45,10 +46,11 @@ type State = {
 
 class EditorPreview extends React.Component<Props, State> {
   state = { width: null, height: null };
-  interval: number;
+  interval: IntervalID; // eslint-disable-line
   disposeEditorChange: Function;
   el: ?HTMLElement;
   devtools: DevTools;
+  contentNode: ?HTMLElement;
 
   componentDidMount() {
     this.props.signals.editor.contentMounted();
@@ -62,12 +64,20 @@ class EditorPreview extends React.Component<Props, State> {
     this.interval = setInterval(() => {
       this.getBounds();
     }, 1000);
+
+    if (this.contentNode) {
+      preventGestureScroll(this.contentNode);
+    }
   }
 
   componentWillUnmount() {
     this.disposeEditorChange();
     window.removeEventListener('resize', this.getBounds);
     clearInterval(this.interval);
+
+    if (this.contenNode) {
+      removeListener(this.contentNode);
+    }
   }
 
   getBounds = el => {
@@ -365,7 +375,13 @@ class EditorPreview extends React.Component<Props, State> {
           templateColor: getTemplateDefinition(sandbox.template).color,
         }}
       >
-        <FullSize>
+        <FullSize
+          innerRef={node => {
+            if (node) {
+              this.contentNode = node;
+            }
+          }}
+        >
           <Prompt
             when={notSynced && !store.editor.isForkingSandbox}
             message={() =>

@@ -62,6 +62,7 @@ class Entry extends React.PureComponent {
 
   discardModuleChanges = () => {
     const { shortid, discardModuleChanges } = this.props;
+
     if (discardModuleChanges) {
       return discardModuleChanges(shortid);
     }
@@ -105,6 +106,12 @@ class Entry extends React.PureComponent {
 
     const items = [
       [
+        isNotSynced && {
+          title: 'Discard Changes',
+          action: this.discardModuleChanges,
+        },
+      ].filter(Boolean),
+      [
         onCreateModuleClick && {
           title: 'Create File',
           action: onCreateModuleClick,
@@ -132,12 +139,6 @@ class Entry extends React.PureComponent {
           icon: DeleteIcon,
         },
       ].filter(Boolean),
-      [
-        isNotSynced && {
-          title: 'Discard Changes',
-          actions: this.discardModuleChanges,
-        },
-      ],
     ].filter(Boolean);
 
     return connectDragSource(

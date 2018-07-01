@@ -4,7 +4,7 @@ import { Spring } from 'react-spring';
 import Portal from '../Portal';
 import { Container, Item, ItemContainer } from './elements';
 
-class ContextMenu extends React.Component {
+class ContextMenu extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -107,6 +107,9 @@ class ContextMenu extends React.Component {
 
     const mapFunction = (item, i) => {
       if (Array.isArray(item)) {
+        if (item.length === 0) {
+          return null;
+        }
         return <ItemContainer key={i}>{item.map(mapFunction)}</ItemContainer>;
       }
 

@@ -197,6 +197,8 @@ class DirectoryEntry extends React.Component {
 
   discardChanges = moduleShortid => {
     this.props.signals.editor.discardModuleChanges({ moduleShortid });
+
+    return true;
   };
 
   render() {
