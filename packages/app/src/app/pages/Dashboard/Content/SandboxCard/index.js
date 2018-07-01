@@ -81,6 +81,24 @@ class SandboxItem extends React.PureComponent<Props> {
     return null;
   };
 
+  checkScreenshot() {
+    if (!this.state.screenshotUrl && this.hasScreenshot()) {
+      // We only request the screenshot if the sandbox card is in view for > 1 second
+      this.screenshotTimeout = setTimeout(() => {
+        this.requestScreenshot();
+      }, 1000);
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.id !== this.props.id) {
+      console.log('banaan');
+      this.setState({ screenshotUrl: nextProps.screenshotUrl }, () => {
+        this.checkScreenshot();
+      });
+    }
+  }
+
   componentDidMount() {
     if (this.props.selected) {
       if (this.el && typeof this.el.focus === 'function') {
@@ -99,12 +117,7 @@ class SandboxItem extends React.PureComponent<Props> {
       });
     }
 
-    if (!this.state.screenshotUrl && this.hasScreenshot()) {
-      // We only request the screenshot if the sandbox card is in view for > 1 second
-      this.screenshotTimeout = setTimeout(() => {
-        this.requestScreenshot();
-      }, 1000);
-    }
+    this.checkScreenshot();
   }
 
   componentWillUnmount() {

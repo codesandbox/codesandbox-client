@@ -390,6 +390,7 @@ export function saveModuleCode({ props, state, api, recover }) {
   );
 
   const codeToSave = moduleToSave.code;
+  const title = moduleToSave.title;
 
   return api
     .put(`/sandboxes/${sandbox.id}/modules/${moduleToSave.shortid}`, {
