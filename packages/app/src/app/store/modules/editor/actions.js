@@ -356,11 +356,27 @@ export function setCode({ props, state }) {
   const moduleIndex = state
     .get('editor.currentSandbox')
     .modules.findIndex(module => module.shortid === moduleShortid);
+  const module = state.get('editor.currentSandbox').modules[moduleIndex];
 
-  state.set(
-    `editor.sandboxes.${currentId}.modules.${moduleIndex}.code`,
-    props.code
-  );
+  if (module) {
+    state.set(
+      `editor.sandboxes.${currentId}.modules.${moduleIndex}.code`,
+      props.code
+    );
+
+    try {
+      localStorage.setItem(
+        `${currentId}:${moduleShortid}:code`,
+        JSON.stringify({
+          code: props.code,
+          // We share that part too to find out what cookies like
+          moduleCodeLength: module.code.length,
+        })
+      );
+    } catch (e) {
+      // Too bad
+    }
+  }
 }
 
 export function setPreviewBounds({ props, state }) {

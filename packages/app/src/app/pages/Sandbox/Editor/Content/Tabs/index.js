@@ -1,5 +1,5 @@
 import React from 'react';
-import { inject, observer } from 'mobx-react';
+import { inject, observer, Observer } from 'mobx-react';
 
 import { canPrettify } from 'app/utils/prettify';
 import Tooltip from 'common/components/Tooltip';
@@ -17,6 +17,8 @@ import {
   IconWrapper,
   Line,
 } from './elements';
+
+import ModuleTab from './ModuleTab';
 
 class EditorTabs extends React.Component {
   componentDidUpdate(prevProps) {
@@ -76,7 +78,7 @@ class EditorTabs extends React.Component {
   tabEls = {};
 
   render() {
-    const { store } = this.props;
+    const { store, signals } = this.props;
     const sandbox = store.editor.currentSandbox;
     const moduleObject = {};
     // We keep this object to keep track if there are duplicate titles.
@@ -88,6 +90,7 @@ class EditorTabs extends React.Component {
     });
 
     store.editor.tabs
+      .filter(tab => tab.type === 'MODULE')
       .filter(tab => moduleObject[tab.moduleShortid])
       .forEach(tab => {
         const module = moduleObject[tab.moduleShortid];
@@ -96,6 +99,7 @@ class EditorTabs extends React.Component {
         tabNamesObject[module.title].push(module.shortid);
       });
 
+    const currentTab = store.editor.currentTab;
     const currentModule = store.editor.currentModule;
 
     const previewVisible = store.editor.previewWindow.content === 'browser';
@@ -111,55 +115,84 @@ class EditorTabs extends React.Component {
         >
           {store.editor.tabs
             .map(tab => ({ ...tab, module: moduleObject[tab.moduleShortid] }))
-            .filter(tab => tab.module)
             .map((tab, i) => {
-              const { module } = tab;
-              const modulesWithName = tabNamesObject[module.title];
-              const id = tab.module.id;
-              let dirName = null;
-
-              if (
-                modulesWithName.length > 1 &&
-                module.directoryShortid != null
-              ) {
-                const dir = sandbox.directories.find(
-                  d =>
-                    d.shortid === module.directoryShortid &&
-                    d.sourceId === module.sourceId
-                );
-
-                if (dir) {
-                  dirName = dir.title;
+              if (tab.type === 'MODULE') {
+                if (tab.module == null) {
+                  return null;
                 }
+
+                const { module } = tab;
+                const modulesWithName = tabNamesObject[module.title];
+                const id = tab.module.id;
+                let dirName = null;
+
+                if (
+                  modulesWithName.length > 1 &&
+                  module.directoryShortid != null
+                ) {
+                  const dir = sandbox.directories.find(
+                    d =>
+                      d.shortid === module.directoryShortid &&
+                      d.sourceId === module.sourceId
+                  );
+
+                  if (dir) {
+                    dirName = dir.title;
+                  }
+                }
+
+                return (
+                  <ModuleTab
+                    setCurrentModule={this.setCurrentModule}
+                    active={
+                      currentTab &&
+                      currentTab.moduleShortid === tab.moduleShortid
+                    }
+                    key={id}
+                    module={tab.module}
+                    hasError={Boolean(
+                      store.editor.errors.filter(error => error.moduleId === id)
+                        .length
+                    )}
+                    closeTab={this.closeTab}
+                    moveTab={this.moveTab}
+                    markNotDirty={this.markNotDirty}
+                    dirName={dirName}
+                    tabCount={store.editor.tabs.length}
+                    position={i}
+                    dirty={tab.dirty}
+                    isNotSynced={Boolean(
+                      store.editor.changedModuleShortids.includes(
+                        tab.module.shortid
+                      )
+                    )}
+                    innerRef={el => {
+                      this.tabEls[id] = el;
+                    }}
+                  />
+                );
+              } else if (tab.type === 'DIFF') {
+                return (
+                  <TabContainer
+                    active={currentTab && currentTab.id === tab.id}
+                    key={tab.id}
+                    onClick={() =>
+                      signals.editor.currentTabChanged({ tabId: tab.id })
+                    }
+                    closeTab={this.closeTab}
+                    moveTab={this.moveTab}
+                    tabCount={store.editor.tabs.length}
+                    position={i}
+                    dirty={tab.dirty}
+                    innerRef={el => {
+                      this.tabEls[tab.id] = el;
+                    }}
+                    title={`Diff: ${tab.titleA} - ${tab.titleB}`}
+                  />
+                );
               }
 
-              return (
-                <TabContainer
-                  setCurrentModule={this.setCurrentModule}
-                  active={currentModule.id === id}
-                  key={id}
-                  module={tab.module}
-                  hasError={Boolean(
-                    store.editor.errors.filter(error => error.moduleId === id)
-                      .length
-                  )}
-                  closeTab={this.closeTab}
-                  moveTab={this.moveTab}
-                  markNotDirty={this.markNotDirty}
-                  dirName={dirName}
-                  tabCount={store.editor.tabs.length}
-                  position={i}
-                  dirty={tab.dirty}
-                  isNotSynced={Boolean(
-                    store.editor.changedModuleShortids.includes(
-                      tab.module.shortid
-                    )
-                  )}
-                  innerRef={el => {
-                    this.tabEls[id] = el;
-                  }}
-                />
-              );
+              return null;
             })}
         </TabsContainer>
 

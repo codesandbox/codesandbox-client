@@ -109,12 +109,23 @@ export default {
       color: types.maybe(types.array(types.number)),
     })
   ),
+  currentTabId: types.maybe(types.string),
   tabs: types.array(
-    types.model({
-      type: types.string,
-      moduleShortid: types.string,
-      dirty: types.boolean,
-    })
+    types.union(
+      types.model({
+        type: types.literal('MODULE'),
+        moduleShortid: types.string,
+        dirty: types.boolean,
+      }),
+      types.model({
+        id: types.string,
+        type: types.literal('DIFF'),
+        titleA: types.string,
+        titleB: types.string,
+        codeA: types.string,
+        codeB: types.string,
+      })
+    )
   ),
   errors: types.array(
     types.model({

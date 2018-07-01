@@ -73,6 +73,8 @@ export const changeCurrentModule = [
   },
 ];
 
+export const changeCurrentTab = [set(state`editor.currentTabId`, props`tabId`)];
+
 export const unsetDirtyTab = actions.unsetDirtyTab;
 
 export const updatePrivacy = [

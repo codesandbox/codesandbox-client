@@ -25,6 +25,8 @@ import MonacoEditorComponent from './MonacoReactComponent';
 import FuzzySearch from '../FuzzySearch';
 import { Container, CodeContainer } from './elements';
 import defineTheme from './define-theme';
+import getSettings from './settings';
+
 import type { Props, Editor } from '../types';
 
 type State = {
@@ -104,14 +106,6 @@ function getSelection(lines, selection) {
 }
 
 let modelCache = {};
-
-const fontFamilies = (...families) =>
-  families
-    .filter(Boolean)
-    .map(
-      family => (family.indexOf(' ') !== -1 ? JSON.stringify(family) : family)
-    )
-    .join(', ');
 
 const requireAMDModule = paths =>
   new Promise(resolve => window.require(paths, () => resolve()));
@@ -1497,24 +1491,8 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     const currentModule = this.currentModule;
 
     return {
-      selectOnLineNumbers: true,
-      fontSize: settings.fontSize,
-      fontFamily: fontFamilies(
-        settings.fontFamily,
-        'Menlo',
-        'Source Code Pro',
-        'monospace'
-      ),
-      fontLigatures: settings.enableLigatures,
-      minimap: {
-        enabled: false,
-      },
+      ...getSettings(settings),
       ariaLabel: currentModule.title,
-      formatOnPaste: true,
-      lineHeight: (settings.lineHeight || 1.5) * settings.fontSize,
-      folding: true,
-      glyphMargin: false,
-      fixedOverflowWidgets: true,
       readOnly: !!this.props.readOnly,
     };
   };

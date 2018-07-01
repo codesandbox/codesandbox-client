@@ -67,6 +67,7 @@ export function setCurrentModuleById(id) {
 
 export function setCurrentModule(id) {
   return sequence('setCurrentModule', [
+    set(state`editor.currentTabId`, null),
     addTabById(id),
     setCurrentModuleById(id),
   ]);
