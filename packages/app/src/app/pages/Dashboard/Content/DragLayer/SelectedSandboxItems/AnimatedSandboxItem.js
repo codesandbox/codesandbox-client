@@ -18,6 +18,9 @@ type Props = {
   selectedSandboxes: Array<string>,
 };
 
+const BASE_IMAGE_LOCATION =
+  'https://s3.eu-west-1.amazonaws.com/prod.imager.images/';
+
 export default class AnimatedSandboxItem extends React.Component<Props> {
   state = { render: true };
   componentWillMount() {
@@ -76,7 +79,7 @@ export default class AnimatedSandboxItem extends React.Component<Props> {
               <SandboxImageContainer>
                 <SandboxImage
                   style={{
-                    backgroundImage: `url(${`/api/v1/sandboxes/${id}/screenshot.png`})`,
+                    backgroundImage: `url(${`${BASE_IMAGE_LOCATION}${id}.png`})`, // A hack we do just for performance
                   }}
                 />
               </SandboxImageContainer>
