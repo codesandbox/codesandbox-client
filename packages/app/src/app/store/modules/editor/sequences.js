@@ -184,14 +184,7 @@ export const discardModuleChanges = [
   actions.getSavedCode,
   when(props`code`),
   {
-    true: [
-      equals(state`live.isLive`),
-      {
-        true: [getCodeOperation, sendTransform],
-        false: [],
-      },
-      changeCode,
-    ],
+    true: [changeCode],
     false: [],
   },
 ];
