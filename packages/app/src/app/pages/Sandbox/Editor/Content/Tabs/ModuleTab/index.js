@@ -42,15 +42,19 @@ export default class ModuleTab extends React.PureComponent {
       <TabContainer
         onClick={this.setCurrentModule}
         onDoubleClick={this.props.markNotDirty}
-        items={[
-          {
-            title: 'Discard Changes',
-            action: () => {
-              this.props.discardModuleChanges(this.props.module.shortid);
-              return true;
-            },
-          },
-        ]}
+        items={
+          isNotSynced
+            ? [
+                {
+                  title: 'Discard Changes',
+                  action: () => {
+                    this.props.discardModuleChanges(this.props.module.shortid);
+                    return true;
+                  },
+                },
+              ]
+            : []
+        }
         {...props}
       >
         {({ hovering, closeTab }) => (
