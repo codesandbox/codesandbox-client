@@ -92,7 +92,6 @@ class SandboxItem extends React.PureComponent<Props> {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.id !== this.props.id) {
-      console.log('banaan');
       this.setState({ screenshotUrl: nextProps.screenshotUrl }, () => {
         this.checkScreenshot();
       });

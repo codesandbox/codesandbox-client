@@ -63,14 +63,16 @@ class FolderEntry extends React.Component {
   };
 
   handleKeyDown = e => {
-    if (e.keyCode === 39) {
-      // Right arrow
+    if (!this.state.renamingDirectory) {
+      if (e.keyCode === 39) {
+        // Right arrow
 
-      this.setState({ open: true });
-    } else if (e.keyCode === 37) {
-      // Left arrow
+        this.setState({ open: true });
+      } else if (e.keyCode === 37) {
+        // Left arrow
 
-      this.setState({ open: false });
+        this.setState({ open: false });
+      }
     }
   };
 
