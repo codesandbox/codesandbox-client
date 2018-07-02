@@ -55,7 +55,7 @@ function DashboardChangelog({ signals }) {
         style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center' }}
       >
         <h1 style={titleStyles}>What{"'"}s New</h1>
-        <div style={dateStyles}>June 28, 2018</div>
+        <div style={dateStyles}>July 2nd, 2018</div>
       </div>
 
       <div
@@ -72,7 +72,7 @@ function DashboardChangelog({ signals }) {
         <W>collaboration</W> and <W>organization</W>. Let{"'"}s take a look!
       </p>
 
-      <h2 style={subTitleStyles}>Brand New Dashboard</h2>
+      <h2 style={subTitleStyles}>Dashboard</h2>
       <p style={descriptionStyles}>
         You can now manage your sandboxes in your own{' '}
         <Link to="/dashboard">dashboard</Link>! You{"'"}re able to{' '}
@@ -100,6 +100,12 @@ function DashboardChangelog({ signals }) {
         </Link>{' '}
         subscription, but we{"'"}re happy to announce that{' '}
         <W>CodeSandbox Live is from now on free for everyone</W>!
+      </p>
+
+      <h2 style={subTitleStyles}>And More</h2>
+      <p style={descriptionStyles}>
+        There{"'"}s a lot more included in this update! Make sure to check out
+        the announcement post to find out more about this update.
       </p>
 
       <div style={{ display: 'flex' }}>
