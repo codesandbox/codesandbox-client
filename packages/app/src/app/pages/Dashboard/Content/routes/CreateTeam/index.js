@@ -21,14 +21,12 @@ import Plan from './Plan';
 
 const FREE_POINTS = [
   'Unlimited Users',
-  'Maximum of 50 Sandboxes',
   '20 Mb Static File Hosting per User',
   'Live Collaboration',
 ];
 
 const PRO_POINTS = [
   'Unlimited Users',
-  'Unlimited Sandboxes',
   '500 Mb Static File Hosting per User',
   'Live Collaboration',
   'Team Invoices',
