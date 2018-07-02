@@ -56,9 +56,8 @@ const SearchSandboxes = ({ store }) => (
           let possibleTemplates = [];
           if (sandboxes) {
             possibleTemplates = uniq(sandboxes.map(x => x.source.template));
-            if (!search) {
-              sandboxes = store.dashboard.getFilteredSandboxes(sandboxes);
-            }
+
+            sandboxes = store.dashboard.getFilteredSandboxes(sandboxes);
           }
 
           return (
