@@ -3,15 +3,18 @@ import { when, push, unset, set, equals } from 'cerebral/operators';
 import { state, props } from 'cerebral/tags';
 import * as actions from './actions';
 import * as factories from './factories';
+import { connectToChannel as setupNotifications } from './modules/user-notifications/actions';
 
 import {
   saveNewModule,
   createOptimisticModule,
   updateOptimisticModule,
   removeModule,
+  recoverFiles,
 } from './modules/files/actions';
 
 import { disconnect } from './modules/live/actions';
+import { initializeLive } from './modules/live/common-sequences';
 
 export const unloadApp = actions.stopListeningToConnectionChange;
 
@@ -146,7 +149,10 @@ export const signIn = [
         success: [
           set(state`user`, props`user`),
           actions.setPatronPrice,
+          actions.setSignedInCookie,
           actions.setStoredSettings,
+          actions.connectWebsocket,
+          setupNotifications,
         ],
         error: [
           factories.addNotification('Github Authentication Error', 'error'),
@@ -271,7 +277,7 @@ export const resetLive = [
   set(state`live.isLive`, false),
   set(state`live.error`, null),
   set(state`live.isLoading`, false),
-  set(state`live.isOwner`, false),
+  set(state`live.deviceId`, null),
   set(state`live.roomInfo`, undefined),
 ];
 
@@ -296,9 +302,49 @@ export const setSandbox = [
   actions.setWorkspace,
 ];
 
+export const joinLiveSessionIfTeam = [
+  when(
+    props`sandbox.team`,
+    props`sandbox.owned`,
+    (team, owned) => team && owned && team.roomId
+  ),
+  {
+    true: [
+      set(props`sandboxId`, props`sandbox.id`),
+      set(state`live.isTeam`, true),
+      set(props`roomId`, props`sandbox.team.roomId`),
+      initializeLive,
+
+      when(state`live.isSourceOfTruth`),
+      {
+        true: [
+          set(state`editor.sandboxes.${props`sandbox.id`}`, props`sandbox`),
+          set(state`live.isLoading`, true),
+          setSandbox,
+          set(state`live.isLoading`, false),
+          factories.track('Create Team Live Session', {}),
+        ],
+        false: [set(state`editor.currentId`, props`sandbox.id`)],
+      },
+    ],
+    false: [
+      set(state`editor.sandboxes.${props`sandbox.id`}`, props`sandbox`),
+      setSandbox,
+      when(props`sandbox.owned`),
+      {
+        true: [recoverFiles],
+        false: [],
+      },
+    ],
+  },
+];
+
 export const loadSandbox = factories.withLoadApp([
   set(state`editor.error`, null),
-  when(state`editor.sandboxes.${props`id`}`),
+  when(
+    state`editor.sandboxes.${props`id`}`,
+    sandbox => sandbox && !sandbox.team
+  ),
   {
     true: [
       set(props`sandbox`, state`editor.sandboxes.${props`id`}`),
@@ -313,11 +359,7 @@ export const loadSandbox = factories.withLoadApp([
 
       actions.getSandbox,
       {
-        success: [
-          set(state`editor.sandboxes.${props`sandbox.id`}`, props`sandbox`),
-          setSandbox,
-          ensurePackageJSON,
-        ],
+        success: [joinLiveSessionIfTeam, ensurePackageJSON],
         notFound: set(state`editor.notFound`, true),
         error: set(state`editor.error`, props`error.message`),
       },

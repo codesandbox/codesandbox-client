@@ -101,10 +101,12 @@ function build(previousSizeMap) {
       process.env.NODE_ENV === 'production' ? 'production' : 'development'
     } build...`
   );
-  webpack(config).run((err, stats) => {
+  let compiler = webpack(config);
+  compiler.run((err, stats) => {
     if (err) {
       console.error('Failed to create a production build. Reason:');
       console.error(err.message || err);
+      console.error(err.stack);
       process.exit(1);
     }
 
@@ -114,10 +116,17 @@ function build(previousSizeMap) {
     console.log('File sizes after gzip:');
     console.log();
     printFileSizes(stats, previousSizeMap);
-    fs.writeFile(
-      paths.appBuild + '/stats.json',
-      JSON.stringify(stats.toJson())
-    );
+
+    // fs.writeFile(
+    //   paths.appBuild + '/stats.json',
+    //   JSON.stringify(stats.toJson()),
+    //   err => {
+    //     if (err) {
+    //       console.error(err);
+    //     }
+    //   }
+    // );
+
     console.log();
 
     let openCommand = process.platform === 'win32' ? 'start' : 'open';

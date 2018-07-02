@@ -1,7 +1,8 @@
 import styled from 'styled-components';
+import { animated } from 'react-spring';
 import theme from 'common/theme';
 
-export const Container = styled.div`
+export const Container = styled(animated.div)`
   position: fixed;
 
   font-size: 0.75rem;
@@ -11,6 +12,7 @@ export const Container = styled.div`
   border-radius: 3px;
   z-index: 20;
   overflow: hidden;
+  padding: 4px 0;
 
   transform-origin: 0% 0%;
   font-weight: 600;
@@ -22,7 +24,6 @@ export const Item = styled.div`
   align-items: center;
   padding: 0.6rem 1rem;
 
-  border-bottom: 1px solid ${() => theme.background2()};
   border-left: 2px solid transparent;
   cursor: pointer;
 
@@ -42,5 +43,17 @@ export const Item = styled.div`
     background-color: ${() => theme.background2.lighten(0.3)()};
     border-left-color: ${props =>
       props.color ? props.color : theme.secondary()};
+  }
+`;
+
+export const ItemContainer = styled.div`
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 4px;
+  margin-bottom: 4px;
+
+  &:last-child {
+    border-bottom: inherit;
+    padding-bottom: 0;
+    margin-bottom: 0;
   }
 `;

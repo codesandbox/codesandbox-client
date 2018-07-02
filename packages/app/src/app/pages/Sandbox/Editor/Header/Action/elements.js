@@ -1,9 +1,21 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { Link } from 'react-router-dom';
 import Tooltip from 'common/components/Tooltip';
 
+const blink = keyframes`
+	0% {color: rgba(255, 255, 255, 0.7);}
+	50%{color: rgba(255, 255, 255, 1);}
+	100% {color: rgba(255, 255, 255, 0.7);}
+`;
+
 const styles = props =>
   `
+  ${props.blink &&
+    `
+        animation: ${blink} 1s infinite;
+        font-weight: 600;
+      `}
+
   display: flex !important;
   transition: 0.3s ease all;
   flex-direction: row;
@@ -49,17 +61,20 @@ export const Action = styled.div`
 `;
 
 export const ActionLink = styled(Link)`
-  ${styles} text-decoration: none;
+  ${styles};
+  text-decoration: none;
 `;
 
 export const ActionA = styled.a`
-  ${styles} text-decoration: none;
+  ${styles};
+  text-decoration: none;
 `;
 
 export const ActionTooltip = styled(Tooltip)`
-  ${styles} ${props =>
-      props.disabledAction &&
-      `
+  ${styles};
+  ${props =>
+    props.disabledAction &&
+    `
     color: rgba(255,255,255,0.3);
     cursor: default;
 

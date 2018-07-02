@@ -1,7 +1,7 @@
 // @flow
 import * as React from 'react';
 import { TextOperation } from 'ot';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import { getModulePath } from 'common/sandbox/modules';
 import { css } from 'glamor';
 import { listen } from 'codesandbox-api';
@@ -25,7 +25,10 @@ import MonacoEditorComponent from './MonacoReactComponent';
 import FuzzySearch from '../FuzzySearch';
 import { Container, CodeContainer } from './elements';
 import defineTheme from './define-theme';
+import getSettings from './settings';
+
 import type { Props, Editor } from '../types';
+import getMode from './mode';
 
 type State = {
   fuzzySearchEnabled: boolean,
@@ -104,17 +107,6 @@ function getSelection(lines, selection) {
 }
 
 let modelCache = {};
-
-const fontFamilies = (...families) =>
-  families
-    .filter(Boolean)
-    .map(
-      family => (family.indexOf(' ') !== -1 ? JSON.stringify(family) : family)
-    )
-    .join(', ');
-
-const requireAMDModule = paths =>
-  new Promise(resolve => window.require(paths, () => resolve()));
 
 class MonacoEditor extends React.Component<Props, State> implements Editor {
   static defaultProps = {
@@ -1061,7 +1053,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   updateLintWarnings = async (markers: Array<Object>) => {
     const currentModule = this.currentModule;
 
-    const mode = await this.getMode(currentModule.title);
+    const mode = await getMode(currentModule.title);
     if (mode === 'javascript' || mode === 'vue') {
       this.monaco.editor.setModelMarkers(
         this.editor.getModel(),
@@ -1147,33 +1139,8 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     this.editor.setPosition(pos);
   }
 
-  getMode = async (title: string) => {
-    if (title == null) return 'javascript';
-
-    const kind = title.match(/\.([^.]*)$/);
-
-    if (kind) {
-      if (kind[1] === 'css') return 'css';
-      if (kind[1] === 'scss') return 'scss';
-      if (kind[1] === 'json') return 'json';
-      if (kind[1] === 'html') return 'html';
-      if (kind[1] === 'vue') {
-        if (!this.monaco.languages.getLanguages().find(l => l.id === 'vue')) {
-          await requireAMDModule(['vs/language/vue/monaco.contribution']);
-        }
-        return 'vue';
-      }
-      if (kind[1] === 'less') return 'less';
-      if (kind[1] === 'md') return 'markdown';
-      if (/jsx?$/.test(kind[1])) return 'javascript';
-      if (/tsx?$/.test(kind[1])) return 'typescript';
-    }
-
-    return 'typescript';
-  };
-
   syntaxHighlight = async (code: string, title: string, version: string) => {
-    const mode = await this.getMode(title);
+    const mode = await getMode(title);
     if (mode === 'typescript' || mode === 'javascript') {
       if (this.syntaxWorker) {
         this.syntaxWorker.postMessage({
@@ -1186,7 +1153,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   };
 
   lint = async (code: string, title: string, version: number) => {
-    const mode = await this.getMode(title);
+    const mode = await getMode(title);
     if (this.settings.lintEnabled) {
       if (mode === 'javascript' || mode === 'vue') {
         if (this.lintWorker) {
@@ -1370,7 +1337,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       // Related issue: https://github.com/Microsoft/monaco-editor/issues/461
       const lib = this.addLib(module.code || '', path);
 
-      const mode = await this.getMode(module.title);
+      const mode = await getMode(module.title);
 
       const model = this.monaco.editor.createModel(
         module.code || '',
@@ -1497,24 +1464,8 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
     const currentModule = this.currentModule;
 
     return {
-      selectOnLineNumbers: true,
-      fontSize: settings.fontSize,
-      fontFamily: fontFamilies(
-        settings.fontFamily,
-        'Menlo',
-        'Source Code Pro',
-        'monospace'
-      ),
-      fontLigatures: settings.enableLigatures,
-      minimap: {
-        enabled: false,
-      },
+      ...getSettings(settings),
       ariaLabel: currentModule.title,
-      formatOnPaste: true,
-      lineHeight: (settings.lineHeight || 1.5) * settings.fontSize,
-      folding: true,
-      glyphMargin: false,
-      fixedOverflowWidgets: true,
       readOnly: !!this.props.readOnly,
     };
   };

@@ -14,7 +14,7 @@ function ButtonComponent({ small = false, style = {}, ...props }: Props) {
     ...style,
     ...(small
       ? {
-          padding: '0.5em 0.75em',
+          padding: '0.5em 0.7em',
           fontSize: '0.875em',
         }
       : {

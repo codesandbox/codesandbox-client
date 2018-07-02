@@ -10,6 +10,7 @@ import {
   setReceivingStatus,
   getCodeOperation,
   sendTransform,
+  unSetReceivingStatus,
 } from '../live/actions';
 import {
   ensureOwnedSandbox,
@@ -73,6 +74,8 @@ export const changeCurrentModule = [
   },
 ];
 
+export const changeCurrentTab = [set(state`editor.currentTabId`, props`tabId`)];
+
 export const unsetDirtyTab = actions.unsetDirtyTab;
 
 export const updatePrivacy = [
@@ -128,7 +131,7 @@ export const saveChangedModules = [
   ensureOwnedSandbox,
   actions.outputChangedModules,
   actions.saveChangedModules,
-  set(state`editor.changedModuleShortids`, []),
+  actions.removeChangedModules,
   when(state`editor.currentSandbox.originalGit`),
   {
     true: [
@@ -177,6 +180,28 @@ export const saveCode = [
   sendModuleSaved,
 ];
 
+export const discardModuleChanges = [
+  track('Code Discarded', {}),
+  actions.getSavedCode,
+  when(props`code`),
+  {
+    true: [
+      equals(state`live.isLive`),
+      {
+        true: [
+          setReceivingStatus,
+          getCodeOperation,
+          sendTransform,
+          changeCode,
+          unSetReceivingStatus,
+        ],
+        false: [changeCode],
+      },
+    ],
+    false: [],
+  },
+];
+
 export const addNpmDependency = [
   track('Add NPM Dependency', {}),
   closeModal,
@@ -189,10 +214,15 @@ export const addNpmDependency = [
   actions.addNpmDependencyToPackage,
   equals(state`live.isLive`),
   {
-    true: [getCodeOperation, sendTransform],
-    false: [],
+    true: [
+      setReceivingStatus,
+      getCodeOperation,
+      sendTransform,
+      saveCode,
+      unSetReceivingStatus,
+    ],
+    false: [saveCode],
   },
-  saveCode,
 ];
 
 export const removeNpmDependency = [
@@ -201,10 +231,15 @@ export const removeNpmDependency = [
   actions.removeNpmDependencyFromPackage,
   equals(state`live.isLive`),
   {
-    true: [getCodeOperation, sendTransform],
-    false: [],
+    true: [
+      setReceivingStatus,
+      getCodeOperation,
+      sendTransform,
+      saveCode,
+      unSetReceivingStatus,
+    ],
+    false: [saveCode],
   },
-  saveCode,
 ];
 
 export const updateSandboxPackage = [actions.updateSandboxPackage, saveCode];

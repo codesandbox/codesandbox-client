@@ -19,6 +19,23 @@ export type Settings = {
   enableLigatures: boolean,
 };
 
+type ModuleTab = {
+  type: 'MODULE',
+  moduleShortid: string,
+  dirty: boolean,
+};
+
+type DiffTab = {
+  type: 'DIFF',
+  codeA: string,
+  codeB: string,
+  titleA: string,
+  titleB: string,
+  fileTitle?: string,
+};
+
+export type Tab = ModuleTab | DiffTab;
+
 export interface Editor {
   changeSandbox?: (
     sandbox: Sandbox,
@@ -46,6 +63,7 @@ export interface Editor {
 
 export type Props = {
   currentModule: Module,
+  currentTab: ?Tab,
   sandbox: Sandbox,
   onChange: (code: string) => void,
   onInitialized: (editor: Editor) => Function,

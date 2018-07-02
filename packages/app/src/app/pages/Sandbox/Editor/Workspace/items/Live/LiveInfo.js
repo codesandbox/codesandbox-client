@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
-import { sortBy } from 'lodash';
+import { sortBy } from 'lodash-es';
 
 import RecordIcon from 'react-icons/lib/md/fiber-manual-record';
 import Input from 'common/components/Input';
@@ -152,7 +152,8 @@ class LiveInfo extends React.Component {
     const {
       roomInfo,
       isOwner,
-      ownerId,
+      isTeam,
+      ownerIds,
       setMode,
       addEditor,
       removeEditor,
@@ -167,20 +168,35 @@ class LiveInfo extends React.Component {
       followingUserId,
     } = this.props;
 
-    const owner = roomInfo.users.find(u => u.id === ownerId);
+    const owners = roomInfo.users.filter(u => ownerIds.indexOf(u.id) > -1);
 
     const editors = sortBy(
       roomInfo.users.filter(
-        u => roomInfo.editorIds.indexOf(u.id) > -1 && u.id !== ownerId
+        u =>
+          roomInfo.editorIds.indexOf(u.id) > -1 && ownerIds.indexOf(u.id) === -1
       ),
       'username'
     );
     const otherUsers = sortBy(
       roomInfo.users.filter(
-        u => u.id !== ownerId && roomInfo.editorIds.indexOf(u.id) === -1
+        u =>
+          ownerIds.indexOf(u.id) === -1 &&
+          roomInfo.editorIds.indexOf(u.id) === -1
       ),
       'username'
     );
+
+    const liveMessage = (() => {
+      if (isTeam) {
+        return 'Your team is live!';
+      }
+
+      if (isOwner) {
+        return "You've gone live!";
+      }
+
+      return 'You are live!';
+    })();
 
     return (
       <Container>
@@ -190,7 +206,7 @@ class LiveInfo extends React.Component {
               'Reconnecting...'
             ) : (
               <React.Fragment>
-                <RecordIcon /> {isOwner ? "You've gone live!" : 'You are live!'}
+                <RecordIcon /> {liveMessage}
               </React.Fragment>
             )}
           </div>
@@ -208,15 +224,16 @@ class LiveInfo extends React.Component {
           value={`https://codesandbox.io/live/${roomInfo.roomId}`}
         />
 
-        {isOwner && (
-          <WorkspaceInputContainer>
-            <LiveButton
-              message="Stop Session"
-              onClick={onSessionCloseClicked}
-              showIcon={false}
-            />
-          </WorkspaceInputContainer>
-        )}
+        {isOwner &&
+          !isTeam && (
+            <WorkspaceInputContainer>
+              <LiveButton
+                message="Stop Session"
+                onClick={onSessionCloseClicked}
+                showIcon={false}
+              />
+            </WorkspaceInputContainer>
+          )}
 
         <Margin top={1}>
           <SubTitle>Preferences</SubTitle>
@@ -268,35 +285,38 @@ class LiveInfo extends React.Component {
           </ModeSelect>
         </Margin>
 
-        {owner && (
+        {owners && (
           <Margin top={1}>
-            <SubTitle>Owner</SubTitle>
+            <SubTitle>Owners</SubTitle>
             <Users>
-              <User
-                currentUserId={currentUserId}
-                user={owner}
-                roomInfo={roomInfo}
-                type="Owner"
-                sideView={
-                  owner.id !== currentUserId && (
-                    <IconContainer>
-                      {followingUserId === owner.id ? (
-                        <Tooltip title="Stop following">
-                          <UnFollowIcon
-                            onClick={() => setFollowing({ userId: null })}
-                          />
-                        </Tooltip>
-                      ) : (
-                        <Tooltip title="Follow along">
-                          <FollowIcon
-                            onClick={() => setFollowing({ userId: owner.id })}
-                          />
-                        </Tooltip>
-                      )}
-                    </IconContainer>
-                  )
-                }
-              />
+              {owners.map(owner => (
+                <User
+                  key={owner.id}
+                  currentUserId={currentUserId}
+                  user={owner}
+                  roomInfo={roomInfo}
+                  type="Owner"
+                  sideView={
+                    owner.id !== currentUserId && (
+                      <IconContainer>
+                        {followingUserId === owner.id ? (
+                          <Tooltip title="Stop following">
+                            <UnFollowIcon
+                              onClick={() => setFollowing({ userId: null })}
+                            />
+                          </Tooltip>
+                        ) : (
+                          <Tooltip title="Follow along">
+                            <FollowIcon
+                              onClick={() => setFollowing({ userId: owner.id })}
+                            />
+                          </Tooltip>
+                        )}
+                      </IconContainer>
+                    )
+                  }
+                />
+              ))}
             </Users>
           </Margin>
         )}

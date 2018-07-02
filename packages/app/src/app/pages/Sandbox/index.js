@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
-import { DragDropContext } from 'react-dnd';
 import QuickActions from 'app/pages/Sandbox/QuickActions';
 
 import Navigation from 'app/pages/common/Navigation';
@@ -12,7 +11,6 @@ import Padding from 'common/components/spacing/Padding';
 import Skeleton from 'app/components/Skeleton';
 
 import Editor from './Editor';
-import HTML5Backend from '../common/HTML5BackendWithFolderSupport';
 
 class SandboxPage extends React.Component {
   componentWillMount() {
@@ -31,10 +29,15 @@ class SandboxPage extends React.Component {
     this.fetchSandbox();
   }
 
+  componentWillUnmount() {
+    if (this.props.store.live.isLive) {
+      this.props.signals.live.onNavigateAway({});
+    }
+  }
+
   fetchSandbox = () => {
-    this.props.signals.editor.sandboxChanged({
-      id: this.props.match.params.id,
-    });
+    const id = this.props.match.params.id;
+    this.props.signals.editor.sandboxChanged({ id });
   };
 
   componentDidUpdate(prevProps) {
@@ -45,25 +48,6 @@ class SandboxPage extends React.Component {
 
   getContent() {
     const { store } = this.props;
-
-    if (store.editor.isLoading) {
-      return (
-        <React.Fragment>
-          <Skeleton
-            titles={[
-              {
-                content: 'Loading Sandbox',
-                delay: 0.6,
-              },
-              {
-                content: 'Fetching git repository...',
-                delay: 2,
-              },
-            ]}
-          />
-        </React.Fragment>
-      );
-    }
 
     if (store.editor.notFound) {
       return (
@@ -103,6 +87,29 @@ class SandboxPage extends React.Component {
           <Title style={{ fontSize: '1.25rem' }}>{store.editor.error}</Title>
           <br />
           <Link to="/s">Create Sandbox</Link>
+        </React.Fragment>
+      );
+    }
+
+    if (
+      store.editor.isLoading ||
+      store.live.isLoading ||
+      store.editor.currentSandbox == null
+    ) {
+      return (
+        <React.Fragment>
+          <Skeleton
+            titles={[
+              {
+                content: 'Loading Sandbox',
+                delay: 0.6,
+              },
+              {
+                content: 'Fetching git repository...',
+                delay: 2,
+              },
+            ]}
+          />
         </React.Fragment>
       );
     }
@@ -155,6 +162,4 @@ class SandboxPage extends React.Component {
   }
 }
 
-export default inject('signals', 'store')(
-  DragDropContext(HTML5Backend)(observer(SandboxPage))
-);
+export default inject('signals', 'store')(observer(SandboxPage));

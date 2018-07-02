@@ -1,5 +1,5 @@
 // @flow
-import flatten from 'lodash/flatten';
+import { flatten } from 'lodash-es';
 
 import delay from 'common/utils/delay';
 

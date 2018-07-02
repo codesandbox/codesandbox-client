@@ -1,18 +1,21 @@
 import * as React from 'react';
-import { spring, Motion } from 'react-motion';
+import { Spring } from 'react-spring';
 
 import Portal from '../Portal';
-import { Container, Item } from './elements';
+import { Container, Item, ItemContainer } from './elements';
 
-class ContextMenu extends React.Component {
+class ContextMenu extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       x: 0,
       y: 0,
       show: false,
+      down: true,
+      right: true,
     };
-    this.mousedownCb = mousedownEvent => {
+
+    this.mousedownHandler = mousedownEvent => {
       const { show } = this.state;
 
       if (show && this.el) {
@@ -21,7 +24,8 @@ class ContextMenu extends React.Component {
         }
       }
     };
-    this.keydownCb = keydownEvent => {
+
+    this.keydownHandler = keydownEvent => {
       const { show } = this.state;
       if (keydownEvent.keyCode === 27 && show) {
         // Escape
@@ -29,33 +33,112 @@ class ContextMenu extends React.Component {
       }
     };
   }
-  onContextMenu = event => {
-    event.preventDefault();
-    window.addEventListener('mousedown', this.mousedownCb);
-    window.addEventListener('keydown', this.keydownCb);
 
-    this.setState({
-      show: true,
-      x: event.clientX + 10,
-      y: event.clientY + 10,
-    });
+  onContextMenu = event => {
+    if (!this.unmounted) {
+      const body = document.body;
+      const html = document.documentElement;
+
+      const height = Math.max(
+        body.scrollHeight,
+        body.offsetHeight,
+        html.clientHeight,
+        html.scrollHeight,
+        html.offsetHeight
+      );
+
+      const width = Math.max(
+        body.scrollWidth,
+        body.offsetWidth,
+        html.clientWidth,
+        html.scrollWidth,
+        html.offsetWidth
+      );
+
+      event.preventDefault();
+      this.mousedown = window.addEventListener(
+        'mousedown',
+        this.mousedownHandler
+      );
+      this.keydown = window.addEventListener('keydown', this.keydownHandler);
+
+      const isDown = height - event.clientY > 150;
+      const isLeft = width - event.clientX > 200;
+      this.setState({
+        show: true,
+        x: event.clientX + 10,
+        y: event.clientY + (isDown ? 10 : -10),
+        down: isDown,
+        left: isLeft,
+      });
+
+      if (this.props.onContextMenu) {
+        this.props.onContextMenu(event);
+      }
+    }
+  };
+
+  componentWillUnmount() {
+    this.unregisterListeners();
+    this.unmounted = true;
+  }
+
+  unregisterListeners = () => {
+    window.removeEventListener('keydown', this.keydownHandler);
+    window.removeEventListener('mousedown', this.mousedownHandler);
   };
 
   close = () => {
-    window.removeEventListener('keydown', this.keydownCb);
-    window.removeEventListener('mousedown', this.mousedownCb);
-    this.setState({
-      show: false,
-    });
+    if (!this.unmounted) {
+      this.unregisterListeners();
+      this.setState({
+        show: false,
+      });
+    }
   };
 
   render() {
-    const { children, items } = this.props;
-    const { show, x, y } = this.state;
+    if (this.unmounted) {
+      return null;
+    }
+
+    const { children, childFunction, items, ...props } = this.props;
+    const { show, x, y, down, left } = this.state;
+
+    const mapFunction = (item, i) => {
+      if (Array.isArray(item)) {
+        if (item.length === 0) {
+          return null;
+        }
+        return <ItemContainer key={i}>{item.map(mapFunction)}</ItemContainer>;
+      }
+
+      return (
+        <Item
+          key={item.title}
+          color={item.color}
+          onMouseDown={e => {
+            e.preventDefault();
+          }}
+          onClick={e => {
+            if (item.action()) {
+              e.preventDefault();
+              this.close();
+            }
+          }}
+        >
+          {item.icon && <item.icon />}
+          {item.title}
+        </Item>
+      );
+    };
 
     return (
-      <div onContextMenu={this.onContextMenu}>
-        {children}
+      <div
+        {...props}
+        onContextMenu={childFunction ? undefined : this.onContextMenu}
+      >
+        {childFunction ? children(this.onContextMenu) : children}
         {show && (
           <Portal>
             <div
@@ -63,33 +146,23 @@ class ContextMenu extends React.Component {
                 this.el = el;
               }}
             >
-              <Motion
-                defaultStyle={{ opacity: 0.6 }}
-                style={{ opacity: spring(1) }}
+              <Spring
+                from={{ opacity: 0.6, height: 0, width: 'auto' }}
+                to={{ opacity: 1, height: 'auto', width: 'auto' }}
               >
-                {({ opacity }) => (
+                {({ opacity, height, width }) => (
                   <Container
                     style={{
-                      left: x,
-                      top: y,
+                      left: left ? x : x - width,
+                      top: down ? y : y - height,
                       opacity,
+                      height,
                     }}
                   >
-                    <div>
-                      {items.map(item => (
-                        <Item
-                          key={item.title}
-                          color={item.color}
-                          onClick={() => item.action() && this.close()}
-                        >
-                          {item.icon && <item.icon />}
-                          {item.title}
-                        </Item>
-                      ))}
-                    </div>
+                    {items.map(mapFunction)}
                   </Container>
                 )}
-              </Motion>
+              </Spring>
             </div>
           </Portal>
         )}

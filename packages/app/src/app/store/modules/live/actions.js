@@ -13,10 +13,6 @@ export function createRoom({ api, props }) {
     .then(({ id: roomId }) => ({ roomId }));
 }
 
-export function connect({ live }) {
-  return live.connect();
-}
-
 export function disconnect({ live, ot }) {
   ot.reset();
   live.disconnect();
@@ -37,9 +33,10 @@ export function initializeLiveState({ props, state }) {
   state.set('live.roomInfo', {
     connectionCount: 1,
     roomId: props.roomId,
-    ownerId: props.ownerId,
+    ownerIds: props.ownerIds,
     sandboxId: props.sandboxId,
     editorIds: props.editorIds,
+    sourceOfTruthDeviceId: props.sourceOfTruthDeviceId,
     mode: props.mode,
     chatEnabled: props.chatEnabled,
     usersMetadata: {},
@@ -51,6 +48,7 @@ export function initializeLiveState({ props, state }) {
     },
     version: VERSION,
   });
+  state.set('live.deviceId', props.deviceId);
   state.set('live.isLive', true);
   state.set('live.error', null);
 }
@@ -258,9 +256,7 @@ function sendModuleInfo(
 
 export function sendModuleSaved(context) {
   const { moduleShortid } = context.props;
-  sendModuleInfo(context, 'module:saved', 'module', moduleShortid, {
-    sendModule: false,
-  });
+  sendModuleInfo(context, 'module:saved', 'module', moduleShortid);
 }
 
 export function sendModuleCreated(context) {

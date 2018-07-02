@@ -1,9 +1,10 @@
 import { clone } from 'mobx-state-tree';
 import { getModulePath } from 'common/sandbox/modules';
 import getDefinition from 'common/templates';
-import { chunk } from 'lodash';
+import { chunk } from 'lodash-es';
 import { MAX_FILE_SIZE } from 'codesandbox-import-utils/lib/is-text';
 import denormalize from 'codesandbox-import-utils/lib/create-sandbox/denormalize';
+import track from 'common/utils/analytics';
 
 import { resolveModuleWrapped } from '../../utils/resolve-module-wrapped';
 
@@ -540,6 +541,53 @@ export function setDefaultNewCode({ state, props }) {
       newCode: code,
       optimisticModule: { ...props.optimisticModule, code },
     };
+  }
+
+  return {};
+}
+
+export function recoverFiles({ recover, controller, state }) {
+  const sandbox = state.get('editor.currentSandbox');
+
+  const recoverList = recover.getRecoverList(sandbox.id, sandbox.modules);
+  recover.clearSandbox(sandbox.id);
+
+  const recoveredList = recoverList
+    .map(({ recoverData, module }) => {
+      if (module.code === recoverData.savedCode) {
+        const titleA = `saved '${module.title}'`;
+        const titleB = `recovered '${module.title}'`;
+        state.push('editor.tabs', {
+          type: 'DIFF',
+          codeA: module.code,
+          codeB: recoverData.code,
+          titleA,
+          titleB,
+          fileTitle: module.title,
+          id: `${titleA} - ${titleB}`,
+        });
+
+        const signal = controller.getSignal('editor.codeChanged');
+        signal({
+          code: recoverData.code,
+          moduleShortid: module.shortid,
+        });
+
+        return true;
+      }
+
+      return false;
+    })
+    .filter(Boolean);
+
+  if (recoveredList.length > 0 && window.showNotification) {
+    track('Files Recovered', { fileCount: recoveredList.length });
+    window.showNotification(
+      `We recovered ${
+        recoveredList.length
+      } unsaved files from a previous session`,
+      'notice'
+    );
   }
 
   return {};

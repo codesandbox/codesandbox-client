@@ -1,5 +1,5 @@
 // @flow
-import { flattenDeep } from 'lodash';
+import { flattenDeep } from 'lodash-es';
 
 import { actions, dispatch } from 'codesandbox-api';
 import _debug from 'app/utils/debug';

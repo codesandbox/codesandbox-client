@@ -10,8 +10,9 @@ import HeartIcon from 'react-icons/lib/fa/heart-o';
 import FullHeartIcon from 'react-icons/lib/fa/heart';
 import SettingsIcon from 'react-icons/lib/md/settings';
 import ShareIcon from 'react-icons/lib/md/share';
+import InfoIcon from 'app/pages/Sandbox/Editor/Navigation/InfoIcon';
 
-import { patronUrl } from 'common/utils/url-generator';
+import { patronUrl, dashboardUrl } from 'common/utils/url-generator';
 
 import PatronBadge from '-!svg-react-loader!common/utils/badges/svg/patron-4.svg'; // eslint-disable-line import/no-webpack-loader-syntax
 import Margin from 'common/components/spacing/Margin';
@@ -34,25 +35,6 @@ const Header = ({ store, signals }) => {
       <Left>
         <Logo />
 
-        {store.isLoggedIn &&
-          (sandbox.userLiked ? (
-            <Action
-              tooltip="Undo like"
-              title="Like"
-              Icon={FullHeartIcon}
-              onClick={() =>
-                signals.editor.likeSandboxToggled({ id: sandbox.id })
-              }
-            />
-          ) : (
-            <Action
-              title="Like"
-              Icon={HeartIcon}
-              onClick={() =>
-                signals.editor.likeSandboxToggled({ id: sandbox.id })
-              }
-            />
-          ))}
         <Action
           onClick={() => signals.editor.forkSandboxClicked()}
           title="Fork"
@@ -79,7 +61,9 @@ const Header = ({ store, signals }) => {
             placeholder={
               store.editor.isAllModulesSynced ? 'All modules are saved' : false
             }
-            tooltip="Save"
+            blink={store.editor.changedModuleShortids.length > 2}
+            title="Save"
+            tooltip="Save Modified Files"
             Icon={Save}
           />
         )}
@@ -89,6 +73,25 @@ const Header = ({ store, signals }) => {
           Icon={Download}
           onClick={() => signals.editor.createZipClicked()}
         />
+
+        {store.isLoggedIn &&
+          (sandbox.userLiked ? (
+            <Action
+              tooltip="Undo like"
+              Icon={FullHeartIcon}
+              onClick={() =>
+                signals.editor.likeSandboxToggled({ id: sandbox.id })
+              }
+            />
+          ) : (
+            <Action
+              tooltip="Like"
+              Icon={HeartIcon}
+              onClick={() =>
+                signals.editor.likeSandboxToggled({ id: sandbox.id })
+              }
+            />
+          ))}
       </Left>
 
       <Right>
@@ -125,6 +128,16 @@ const Header = ({ store, signals }) => {
         <Action
           onClick={() =>
             signals.modalOpened({
+              modal: 'preferences',
+            })
+          }
+          tooltip="Preferences"
+          Icon={SettingsIcon}
+        />
+
+        <Action
+          onClick={() =>
+            signals.modalOpened({
               modal: 'newSandbox',
             })
           }
@@ -132,15 +145,14 @@ const Header = ({ store, signals }) => {
           Icon={PlusIcon}
         />
 
-        <Action
-          onClick={() =>
-            signals.modalOpened({
-              modal: 'preferences',
-            })
-          }
-          tooltip="Preferences"
-          Icon={SettingsIcon}
-        />
+        {store.isLoggedIn && (
+          <Action
+            style={{ marginTop: 2 }}
+            href={dashboardUrl()}
+            tooltip="Dashboard"
+            Icon={InfoIcon}
+          />
+        )}
 
         <Margin
           style={{

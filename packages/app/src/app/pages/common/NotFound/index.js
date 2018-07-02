@@ -12,8 +12,12 @@ function NotFound() {
       <Title>404</Title>
       <SubTitle>We could not find the page you{"'"}re looking for :(</SubTitle>
       <Buttons>
-        <Button href="/">To Homepage</Button>
-        <Button to={newSandboxWizard()}>Create Sandbox</Button>
+        <Button small block style={{ margin: '.5rem' }} to={newSandboxWizard()}>
+          Create Sandbox
+        </Button>
+        <Button small block style={{ margin: '.5rem' }} href="/">
+          To Homepage
+        </Button>
       </Buttons>
     </Container>
   );

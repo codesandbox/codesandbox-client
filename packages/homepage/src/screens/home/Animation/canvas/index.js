@@ -170,8 +170,8 @@ class Canvas {
         const distance = Math.sqrt(distX * distX + distY * distY);
 
         this.dots[i].setSpeed(
-          distX / distance / 20 * ((Math.random() + 0.1) * 0.2),
-          distY / distance / 20 * ((Math.random() + 0.1) * 0.2)
+          (distX / distance / 20) * ((Math.random() + 0.1) * 0.2),
+          (distY / distance / 20) * ((Math.random() + 0.1) * 0.2)
         );
       }
       this.calibrated = true;

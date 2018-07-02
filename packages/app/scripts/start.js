@@ -57,20 +57,28 @@ function clearConsole() {
 function setupCompiler(port, protocol) {
   // "Compiler" is a low-level interface to Webpack.
   // It lets us listen to some events and provide our own custom messages.
-  compiler = webpack(config, handleCompile);
+  try {
+    compiler = webpack(config, handleCompile);
+  } catch (err) {
+    console.log(chalk.red('Failed to compile.'));
+    console.log();
+    console.log(err.message || err);
+    console.log();
+    process.exit(1);
+  }
 
   // "invalid" event fires when you have changed a file, and Webpack is
   // recompiling a bundle. WebpackDevServer takes care to pause serving the
   // bundle, so if you refresh, it'll wait instead of serving the old one.
   // "invalid" is short for "bundle invalidated", it doesn't imply any errors.
-  compiler.plugin('invalid', function() {
+  compiler.hooks.invalid.tap('invalid', function() {
     clearConsole();
     console.log('Compiling...');
   });
 
   // "done" event fires when Webpack has finished recompiling the bundle.
   // Whether or not you have warnings or errors, you will get this event.
-  compiler.plugin('done', stats => {
+  compiler.hooks.done.tap('done', stats => {
     clearConsole();
     const hasErrors = stats.hasErrors();
     const hasWarnings = stats.hasWarnings();
@@ -217,8 +225,8 @@ function runDevServer(port, protocol, index) {
     // as we specified in the config. In development, we always serve from /.
     publicPath: config.output.publicPath,
     // WebpackDevServer is noisy by default so we emit custom message instead
-    // by listening to the compiler events with `compiler.plugin` calls above.
-    quiet: true,
+    // by listening to the compiler events with `compiler.hooks[...].tap` calls above.
+    quiet: false,
     // Reportedly, this avoids CPU overload on some systems.
     // https://github.com/facebookincubator/create-react-app/issues/293
     watchOptions: {
@@ -259,7 +267,7 @@ function run(port) {
     http
       .createServer(function(req, res) {
         if (req.url.includes('.js')) {
-          proxy.web(req, res, { target: 'http://localhost:3000' + req.url });
+          proxy.web(req, res, { target: 'http://localhost:3000' });
         } else {
           proxy.web(req, res, {
             target: 'http://localhost:3000/frame.html',

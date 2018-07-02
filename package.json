@@ -12,7 +12,7 @@
     "start:fast": "lerna run start --scope app --stream",
     "start:home": "lerna run start --scope homepage --stream",
     "start:test": "lerna run start:test --scope app --stream",
-    "start:dev_api": "lerna run start --parallel --ignore app & lerna run start:dev_api --scope app --stream",
+    "start:dev_api": "lerna run start --parallel --scope codesandbox-api & lerna run start:dev_api --scope app --stream",
     "test": "lerna run test --ignore codesandbox-browserfs",
     "test:integrations": "lerna exec --scope app --stream -- yarn test:integrations",
     "test:jest-lite": "lerna exec --scope app --stream -- yarn run test jest-lite --watch --coverage",
@@ -28,14 +28,17 @@
       "git add"
     ]
   },
-  "workspaces": [
-    "packages/homepage",
-    "packages/app",
-    "packages/common",
-    "packages/codesandbox-api",
-    "packages/sandpack",
-    "packages/react-sandpack"
+  "workspaces": {
+    "packages": [
+      "packages/app",
+      "packages/common",
+      "packages/codesandbox-api",
+      "packages/sandpack",
+      "packages/react-sandpack",
+      "packages/homepage"
   ],
+  "nohoist": ["**/gatsby", "**/gatsby/**"]
+},
   "devDependencies": {
     "all-contributors-cli": "^4.3.0",
     "babel-eslint": "^8.2.1",

@@ -2,6 +2,10 @@ const merge = require('webpack-merge');
 const webpack = require('webpack');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
+  .BundleAnalyzerPlugin;
+const normalizeName = require('webpack/lib/optimize/SplitChunksPlugin')
+  .normalizeName;
 const ManifestPlugin = require('webpack-manifest-plugin');
 const childProcess = require('child_process');
 const commonConfig = require('./webpack.common');
@@ -17,6 +21,8 @@ const COMMIT_HASH = childProcess
   .toString();
 const VERSION = `${COMMIT_COUNT}-${COMMIT_HASH}`;
 
+const normalize = normalizeName({ name: true, automaticNameDelimiter: '~' });
+
 module.exports = merge(commonConfig, {
   devtool: 'source-map',
   output: {
@@ -24,27 +30,57 @@ module.exports = merge(commonConfig, {
     chunkFilename: 'static/js/[name].[chunkhash:8].chunk.js',
     sourceMapFilename: '[file].map', // Default
   },
+  mode: 'production',
+
+  optimization: {
+    minimizer: [
+      new UglifyJSPlugin({
+        cache: true,
+        parallel: true,
+        sourceMap: false,
+        uglifyOptions: {
+          compress: {
+            // inline is buggy as of uglify-es 3.3.7
+            // https://github.com/mishoo/UglifyJS2/issues/2842
+            inline: 1,
+          },
+          mangle: {
+            safari10: true,
+          },
+          output: {
+            comments: false,
+          },
+        },
+      }),
+    ],
+    concatenateModules: true, // ModuleConcatenationPlugin
+    namedModules: true, // NamedModulesPlugin()
+    noEmitOnErrors: true, // NoEmitOnErrorsPlugin
+
+    splitChunks: {
+      chunks: 'all',
+      name(module, chunks, cacheGroup) {
+        const name = normalize(module, chunks, cacheGroup);
+
+        if (name === 'vendors~app~embed~sandbox') {
+          return 'common-sandbox';
+        }
+
+        if (name === 'vendors~app~embed') {
+          return 'common';
+        }
+        // generate a chunk name using default strategy...
+        return name;
+      },
+    },
+  },
+
   plugins: [
-    new webpack.optimize.ModuleConcatenationPlugin(),
+    process.env.ANALYZE && new BundleAnalyzerPlugin(),
     new webpack.DefinePlugin({ VERSION: JSON.stringify(VERSION) }),
     new webpack.LoaderOptionsPlugin({
       minimize: true,
       debug: false,
-    }),
-    new UglifyJSPlugin({
-      cache: true,
-      parallel: true,
-      sourceMap: true,
-      uglifyOptions: {
-        compress: {
-          // inline is buggy as of uglify-es 3.3.7
-          // https://github.com/mishoo/UglifyJS2/issues/2842
-          inline: 1,
-        },
-        mangle: {
-          safari10: true,
-        },
-      },
     }),
     // Generate a service worker script that will precache, and keep up to date,
     // the HTML & assets that are part of the Webpack build.
@@ -242,5 +278,5 @@ module.exports = merge(commonConfig, {
       fileName: 'file-manifest.json',
       publicPath: commonConfig.output.publicPath,
     }),
-  ],
+  ].filter(Boolean),
 });

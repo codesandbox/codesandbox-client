@@ -42,9 +42,9 @@ class Entry extends React.PureComponent {
   };
 
   handleRename = (newTitle, force) => {
-    const { shortid, title } = this.props
-    if (newTitle === title) return
-    
+    const { shortid, title } = this.props;
+    if (newTitle === title) return;
+
     const canRename = !this.handleValidateTitle(newTitle);
     if (canRename && this.props.rename) {
       this.props.rename(shortid, newTitle);
@@ -56,6 +56,15 @@ class Entry extends React.PureComponent {
     const { shortid, title, deleteEntry } = this.props;
     if (deleteEntry) {
       return deleteEntry(shortid, title);
+    }
+    return false;
+  };
+
+  discardModuleChanges = () => {
+    const { shortid, discardModuleChanges } = this.props;
+
+    if (discardModuleChanges) {
+      return discardModuleChanges(shortid);
     }
     return false;
   };
@@ -96,33 +105,41 @@ class Entry extends React.PureComponent {
     const { state, error, selected, hovering } = this.state;
 
     const items = [
-      onCreateModuleClick && {
-        title: 'Create File',
-        action: onCreateModuleClick,
-        icon: AddFileIcon,
-      },
-      onCreateDirectoryClick && {
-        title: 'Create Directory',
-        action: onCreateDirectoryClick,
-        icon: AddDirectoryIcon,
-      },
-      onUploadFileClick && {
-        title: 'Upload Files',
-        action: onUploadFileClick,
-        icon: UploadFileIcon,
-      },
-      rename && {
-        title: 'Rename',
-        action: this.rename,
-        icon: EditIcon,
-      },
-      deleteEntry && {
-        title: 'Delete',
-        action: this.delete,
-        color: theme.red.darken(0.2)(),
-        icon: DeleteIcon,
-      },
-    ].filter(x => x);
+      [
+        isNotSynced && {
+          title: 'Discard Changes',
+          action: this.discardModuleChanges,
+        },
+      ].filter(Boolean),
+      [
+        onCreateModuleClick && {
+          title: 'Create File',
+          action: onCreateModuleClick,
+          icon: AddFileIcon,
+        },
+        onCreateDirectoryClick && {
+          title: 'Create Directory',
+          action: onCreateDirectoryClick,
+          icon: AddDirectoryIcon,
+        },
+        onUploadFileClick && {
+          title: 'Upload Files',
+          action: onUploadFileClick,
+          icon: UploadFileIcon,
+        },
+        rename && {
+          title: 'Rename',
+          action: this.rename,
+          icon: EditIcon,
+        },
+        deleteEntry && {
+          title: 'Delete',
+          action: this.delete,
+          color: theme.red.darken(0.2)(),
+          icon: DeleteIcon,
+        },
+      ].filter(Boolean),
+    ].filter(Boolean);
 
     return connectDragSource(
       <div>

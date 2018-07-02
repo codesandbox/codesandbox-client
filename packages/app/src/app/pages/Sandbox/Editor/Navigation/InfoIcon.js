@@ -2,10 +2,10 @@ import React from 'react';
 
 import IconBase from 'react-icons/IconBase';
 
-export default () => (
+export default ({ width, height }) => (
   <IconBase
-    width="1em"
-    height="1em"
+    width={width || '1em'}
+    height={height || '1em'}
     viewBox="0 0 241 241"
     version="1.1"
     xmlnsXlink="http://www.w3.org/1999/xlink"
