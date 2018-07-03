@@ -59,7 +59,7 @@ export default class MonacoDiff extends React.Component<Props>
     modifiedCode: string,
     title: string
   ) => {
-    const mode = await getMode(title);
+    const mode = await getMode(title, this.monaco);
     const originalModel = this.monaco.editor.createModel(originalCode, mode);
     const modifiedModel = this.monaco.editor.createModel(modifiedCode, mode);
 

@@ -1,4 +1,4 @@
-const requireAMDModule = paths =>
+const requireAMDModule = (paths, monaco) =>
   new Promise(resolve => window.require(paths, () => resolve()));
 export default async (title: string) => {
   if (title == null) return 'javascript';
@@ -11,7 +11,7 @@ export default async (title: string) => {
     if (kind[1] === 'json') return 'json';
     if (kind[1] === 'html') return 'html';
     if (kind[1] === 'vue') {
-      if (!this.monaco.languages.getLanguages().find(l => l.id === 'vue')) {
+      if (!monaco.languages.getLanguages().find(l => l.id === 'vue')) {
         await requireAMDModule(['vs/language/vue/monaco.contribution']);
       }
       return 'vue';

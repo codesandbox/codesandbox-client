@@ -1053,7 +1053,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   updateLintWarnings = async (markers: Array<Object>) => {
     const currentModule = this.currentModule;
 
-    const mode = await getMode(currentModule.title);
+    const mode = await getMode(currentModule.title, this.monaco);
     if (mode === 'javascript' || mode === 'vue') {
       this.monaco.editor.setModelMarkers(
         this.editor.getModel(),
@@ -1140,7 +1140,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   }
 
   syntaxHighlight = async (code: string, title: string, version: string) => {
-    const mode = await getMode(title);
+    const mode = await getMode(title, this.monaco);
     if (mode === 'typescript' || mode === 'javascript') {
       if (this.syntaxWorker) {
         this.syntaxWorker.postMessage({
@@ -1153,7 +1153,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
   };
 
   lint = async (code: string, title: string, version: number) => {
-    const mode = await getMode(title);
+    const mode = await getMode(title, this.monaco);
     if (this.settings.lintEnabled) {
       if (mode === 'javascript' || mode === 'vue') {
         if (this.lintWorker) {
@@ -1337,7 +1337,7 @@ class MonacoEditor extends React.Component<Props, State> implements Editor {
       // Related issue: https://github.com/Microsoft/monaco-editor/issues/461
       const lib = this.addLib(module.code || '', path);
 
-      const mode = await getMode(module.title);
+      const mode = await getMode(module.title, this.monaco);
 
       const model = this.monaco.editor.createModel(
         module.code || '',
