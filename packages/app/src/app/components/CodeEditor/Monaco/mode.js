@@ -1,6 +1,7 @@
-const requireAMDModule = (paths, monaco) =>
+const requireAMDModule = paths =>
   new Promise(resolve => window.require(paths, () => resolve()));
-export default async (title: string) => {
+
+export default async (title: string, monaco) => {
   if (title == null) return 'javascript';
 
   const kind = title.match(/\.([^.]*)$/);
