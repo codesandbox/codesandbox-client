@@ -1,3 +1,3 @@
-import { version } from '../package.json';
+import pjson from 'pjson';
 
-export default version;
+export default pjson.version;
