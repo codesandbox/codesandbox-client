@@ -100,7 +100,11 @@ class SandboxItem extends React.PureComponent<Props> {
 
   componentDidMount() {
     if (this.props.selected) {
-      if (this.el && typeof this.el.focus === 'function') {
+      if (
+        this.el &&
+        typeof this.el.focus === 'function' &&
+        !this.props.isScrolling
+      ) {
         this.el.focus();
       }
     }

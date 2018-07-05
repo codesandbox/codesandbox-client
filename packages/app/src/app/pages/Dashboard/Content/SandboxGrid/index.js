@@ -193,7 +193,7 @@ class SandboxGrid extends React.Component<*, State> {
     }
   };
 
-  cellRenderer = ({ rowIndex, columnIndex, key, style }) => {
+  cellRenderer = ({ rowIndex, columnIndex, key, style, isScrolling }) => {
     let index = rowIndex * this.columnCount + columnIndex;
     const { sandboxes, signals } = this.props;
 
@@ -238,6 +238,7 @@ class SandboxGrid extends React.Component<*, State> {
 
     return (
       <SandboxItem
+        isScrolling={isScrolling}
         id={item.id}
         title={item.title || item.id}
         details={editedSince}
