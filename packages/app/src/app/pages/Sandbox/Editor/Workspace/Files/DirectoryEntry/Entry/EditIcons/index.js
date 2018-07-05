@@ -34,40 +34,40 @@ function EditIcons({
   }
 
   return (
-    <div className={className}>
+    <div className={className} style={{ pointerEvents: 'none' }}>
       <Container>
         {onEdit && (
           <Tooltip title="Rename">
             <Icon onClick={handleClick(onEdit)}>
-              <EditIcon />
+              <EditIcon style={{ pointerEvents: 'auto' }} />
             </Icon>
           </Tooltip>
         )}
         {onUploadFile && (
           <Tooltip title="Upload Files">
             <Icon onClick={handleClick(onUploadFile)}>
-              <UploadFileIcon />
+              <UploadFileIcon style={{ pointerEvents: 'auto' }} />
             </Icon>
           </Tooltip>
         )}
         {onCreateFile && (
           <Tooltip title="New File">
             <Icon onClick={handleClick(onCreateFile)}>
-              <AddFileIcon />
+              <AddFileIcon style={{ pointerEvents: 'auto' }} />
             </Icon>
           </Tooltip>
         )}
         {onCreateDirectory && (
           <Tooltip title="New Directory">
             <Icon onClick={handleClick(onCreateDirectory)}>
-              <AddDirectoryIcon />
+              <AddDirectoryIcon style={{ pointerEvents: 'auto' }} />
             </Icon>
           </Tooltip>
         )}
         {onDelete && (
           <Tooltip title="Delete">
             <Icon onClick={handleClick(onDelete)}>
-              <CrossIcon />
+              <CrossIcon style={{ pointerEvents: 'auto' }} />
             </Icon>
           </Tooltip>
         )}
