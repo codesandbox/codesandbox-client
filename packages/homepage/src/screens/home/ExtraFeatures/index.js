@@ -61,7 +61,6 @@ export default () => (
         <Feature
           Icon={LiveIcon}
           title="Live Collaboration"
-          patron
           description="Edit sandboxes together in real time, Google Docs style. Use Classroom Mode to control who can make edits."
         />
         <Feature
