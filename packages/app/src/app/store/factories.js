@@ -109,12 +109,9 @@ const shouldShowChangelogModal = when(state`hasLogIn`, loggedIn => {
     return false;
   }
 
-  // Don't show it yet, make announcement first
-  return false;
+  document.cookie = 'changelog-seen=1; Path=/;';
 
-  // document.cookie = 'changelog-seen=1; Path=/;';
-
-  // return true;
+  return true;
 });
 
 export function withLoadApp(continueSequence) {

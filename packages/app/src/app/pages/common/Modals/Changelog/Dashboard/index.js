@@ -58,13 +58,14 @@ function DashboardChangelog({ signals }) {
         <div style={dateStyles}>July 2nd, 2018</div>
       </div>
 
-      <div
+      <img
+        alt="CodeSandbox Announcement"
         style={{
           width: '100%',
-          height: 200,
           backgroundColor: 'rgba(0, 0, 0, 0.3)',
           borderRadius: 2,
         }}
+        src="https://cdn-images-1.medium.com/max/1600/1*wIMw31_Phf1WNEP6zjuTUw.png"
       />
 
       <p style={descriptionStyles}>
@@ -120,7 +121,14 @@ function DashboardChangelog({ signals }) {
         >
           Close
         </Button>
-        <Button style={{ marginTop: '1rem', marginLeft: '.25rem' }} block small>
+        <Button
+          href="https://medium.com/@compuives/announcing-codesandbox-dashboard-teams-876f5933160b"
+          style={{ marginTop: '1rem', marginLeft: '.25rem' }}
+          block
+          small
+          target="_blank"
+          rel="noreferrer noopener"
+        >
           View Announcement
         </Button>
       </div>
