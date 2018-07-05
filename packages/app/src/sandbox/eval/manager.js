@@ -71,12 +71,6 @@ const SHIMMED_MODULE: Module = {
   code: `// empty`,
   requires: [],
 };
-// We use this for 'module' to trick dependencies that we're in a node environment
-const SHIMMED_FUNCTION: Module = {
-  path: pathUtils.join('/node_modules', 'module.js'),
-  code: 'module.exports = () => {}',
-  requires: [],
-};
 const debug = _debug('cs:compiler:manager');
 
 type HMRStatus = 'idle' | 'check' | 'apply' | 'fail' | 'dispose';
@@ -482,9 +476,6 @@ export default class Manager {
       );
       const shimmedPath = coreLibraries[aliasedPath] || aliasedPath;
 
-      if (shimmedPath === 'module') {
-        return SHIMMED_FUNCTION;
-      }
       if (NODE_LIBS.includes(shimmedPath)) {
         return SHIMMED_MODULE;
       }

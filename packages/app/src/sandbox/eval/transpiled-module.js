@@ -827,6 +827,22 @@ export default class TranspiledModule {
           return bfsModule;
         }
 
+        if (path === 'module') {
+          return class NodeModule {
+            filename = undefined;
+            id = undefined;
+            loaded = false;
+
+            _resolveFilename() {
+              return manager.resolveModule(usedPath, localModule.path);
+            }
+
+            _nodeModulePaths() {
+              return [];
+            }
+          };
+        }
+
         // So it must be a dependency
         if (
           path.startsWith('codesandbox-api') ||
