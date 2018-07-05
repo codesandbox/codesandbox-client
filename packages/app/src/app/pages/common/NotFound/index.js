@@ -1,12 +1,15 @@
 import React from 'react';
 
+import { inject } from 'mobx-react';
 import SubTitle from 'app/components/SubTitle';
 import Button from 'app/components/Button';
 import { newSandboxWizard } from 'common/utils/url-generator';
 
 import { Container, Title, Buttons } from './elements';
 
-function NotFound() {
+function NotFound({ store }) {
+  const { hasLogIn } = store;
+
   return (
     <Container>
       <Title>404</Title>
@@ -16,10 +19,11 @@ function NotFound() {
           Create Sandbox
         </Button>
         <Button small block style={{ margin: '.5rem' }} href="/">
-          To Homepage
+          To {hasLogIn ? 'Dashboard' : 'Homepage'}
         </Button>
       </Buttons>
     </Container>
   );
 }
-export default NotFound;
+
+export default inject('store')(NotFound);

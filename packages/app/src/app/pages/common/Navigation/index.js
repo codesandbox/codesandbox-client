@@ -30,7 +30,7 @@ function Navigation({ signals, store, title }) {
   return (
     <Row justifyContent="space-between">
       <Row>
-        <a href="/">
+        <a href="/?from-app=1">
           <LogoWithBorder height={40} width={40} />
         </a>
         <Border width={1} size={500} />

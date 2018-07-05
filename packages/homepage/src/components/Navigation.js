@@ -127,7 +127,7 @@ export default class Navigation extends React.PureComponent {
       <MaxWidth width={1280}>
         <Container>
           <Left>
-            <Link to="/">
+            <Link to="/?from-app=1">
               <StyledLogo title="CodeSandbox" width={50} height={50} />
             </Link>
           </Left>
