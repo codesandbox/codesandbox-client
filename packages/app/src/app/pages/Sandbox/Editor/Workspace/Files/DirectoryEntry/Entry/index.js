@@ -25,7 +25,6 @@ class Entry extends React.PureComponent {
       state: props.state || '',
       error: false,
       selected: false,
-      hovering: false,
     };
   }
 
@@ -76,9 +75,6 @@ class Entry extends React.PureComponent {
 
   setCurrentModule = () => this.props.setCurrentModule(this.props.id);
 
-  onMouseEnter = () => this.setState({ hovering: true });
-  onMouseLeave = () => this.setState({ hovering: false });
-
   render() {
     const {
       title,
@@ -102,7 +98,7 @@ class Entry extends React.PureComponent {
       root,
       rightColors,
     } = this.props;
-    const { state, error, selected, hovering } = this.state;
+    const { state, error, selected } = this.state;
 
     const items = [
       [
@@ -151,8 +147,6 @@ class Entry extends React.PureComponent {
             nameValidationError={error}
             active={active}
             editing={state === 'editing' || selected}
-            onMouseEnter={this.onMouseEnter}
-            onMouseLeave={this.onMouseLeave}
             alternative={isMainModule}
             rightColors={rightColors}
             noTransition
@@ -179,10 +173,10 @@ class Entry extends React.PureComponent {
             {state === '' && (
               <Right>
                 {isMainModule ? (
-                  <span style={{ opacity: hovering ? 1 : 0 }}>main</span>
+                  <span className="mainIndicator">main</span>
                 ) : (
                   <EditIcons
-                    hovering={hovering}
+                    className="actionIcons"
                     onCreateFile={onCreateModuleClick}
                     onCreateDirectory={onCreateDirectoryClick}
                     onUploadFile={onUploadFileClick}
